@@ -131,15 +131,6 @@ inline bool projectSkyDirection(Point direction, CameraAngles camera, float roll
     screen = {view.x * sx * distance / (roll * depth), view.y * sy * distance / (roll * depth), 0};
     return true;
 }
-// Scale direct manipulation by the projected tangent at the current focus.
-// A narrower inner circumference must not make the map suddenly drag faster.
-inline Point surfaceDrag(float dx, float dy, float sx, float sy, float roll, float anchorV, float aspect)
-{
-    const float e = .0001f;
-    float tx = overviewPoint(e, 0, roll, anchorV, aspect).x / e;
-    float ty = overviewPoint(0, e, roll, anchorV, aspect).y / e;
-    return {-dx / std::max(1.0f, sx * tx), -dy / std::max(1.0f, sy * ty), 0};
-}
 // Fade from native 2D map dimensions to the uniform 3D ring mapping.
 inline float verticalScale(float, float, float roll, float aspect)
 {

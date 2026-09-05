@@ -46,7 +46,7 @@ class TorusView
     mutable TorusPicking::Hit cachedPick;
     float pickU = 0, pickV = 0;
     int pickWidth = 0, pickHeight = 0;
-    bool target, dragging;
+    bool target;
     bool moving = false;
     bool held = false;
     Uint32 lastMove = 0;
@@ -54,7 +54,6 @@ class TorusView
     float amount, zoom;
     float travelU, travelV;
     float cameraU = 0, cameraV = 0, cameraZoom = 1;
-    float surfaceScaleX, surfaceScaleY;
     float viewAspect = 1.6f, ringAspect = 0, ringCentreX = 0, ringCentreY = 0;
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;

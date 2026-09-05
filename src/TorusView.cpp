@@ -163,8 +163,7 @@ GLuint createMaterial()
 } // namespace
 
 TorusView::TorusView()
-    : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0), surfaceScaleX(1),
-      surfaceScaleY(1), baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
+    : target(false), amount(0), zoom(1), travelU(0), travelV(0), baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
       lastFrame(0), clouds(&globalContainer->settings), texture(0), cloudTexture(0), framebuffer(0),
       material(0), meshBuffer(0), cloudBuffer(0), indexBuffer(0), meshKey{}, failed(false), originX(0),
       originY(0), focusU(0.5f), focusV(0.5f)
@@ -207,7 +206,7 @@ void TorusView::releaseResources()
 void TorusView::reset()
 {
     releaseResources();
-    target = dragging = failed = false;
+    target = failed = false;
     amount = travelU = travelV = cameraU = cameraV = 0;
     worldW = worldH = 0;
     lastFrame = 0;
@@ -241,7 +240,6 @@ void TorusView::toggle()
         if (!active())
             resetCamera();
         target = !target;
-        dragging = false;
         lastFrame = SDL_GetTicks();
     }
 }
@@ -285,39 +283,8 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
 {
     if (!active())
         return false;
-    if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_MIDDLE && dragging)
-    {
-        dragging = false;
-        return true;
-    }
-    if (e.type == SDL_MOUSEMOTION)
-    {
-        if (!(e.motion.state & SDL_BUTTON_MMASK))
-            dragging = false;
-        if (dragging && target && worldW && worldH)
-        {
-            // Move the camera focus across the fixed world surface.
-            auto movement = TorusGeometry::surfaceDrag(e.motion.xrel, e.motion.yrel, surfaceScaleX,
-                                                       surfaceScaleY, smooth(amount), 0.5f, viewAspect);
-            travelU += movement.x;
-            travelV += movement.y;
-            travelU -= std::floor(travelU);
-            travelV -= std::floor(travelV);
-            auto position =
-                TorusGeometry::destination(baseViewportX, baseViewportY, travelU, travelV, worldW, worldH);
-            vx = position.x;
-            vy = position.y;
-        }
-        return dragging;
-    }
-    if (e.type == SDL_MOUSEBUTTONDOWN && e.button.x >= 0 && e.button.x < width && e.button.y >= 16)
-    {
-        if (e.button.button == SDL_BUTTON_MIDDLE)
-        {
-            dragging = true;
-            return true;
-        }
-    }
+    // The middle button pans through the ordinary 2D path in every mode, so the
+    // ring moves at the speed the flat map does; only the wheel is handled here.
     if (e.type == SDL_MOUSEWHEEL)
     {
         int x, y;
@@ -615,8 +582,6 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float scale = std::min(width / 5.0f, height / 4.5f) * mix(1, cameraZoom, roll);
     float sx = std::exp(mix(std::log(game.map.getW() * 32 / (8 * pi)), std::log(scale), pull));
     float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
-    surfaceScaleX = sx;
-    surfaceScaleY = sy;
     // The folded ring sits centred in the view; the flat map keeps its focus there.
     // The ring's silhouette is measured once per view shape in camera units.
     if (ringAspect != viewAspect)
