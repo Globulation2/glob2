@@ -3,170 +3,69 @@
 
 #include "GameGUIKeyActions.h"
 
+#include "KeyActionTable.h"
+
 namespace GameGUIKeyActions
 {
+	static KeyActionTable table(ActionSize);
+
 	void init()
 	{
-		names.resize(ActionSize);
-	
-		names[DoNothing] = "do nothing";
-		keys["do nothing"] = DoNothing;
-
-		names[UpgradeBuilding] = "upgrade building";
-		keys["upgrade building"] = UpgradeBuilding;
-
-		names[ShowMainMenu] = "show main menu";
-		keys["show main menu"] = ShowMainMenu;
-
-		names[IncreaseUnitsWorking] = "increase units working";
-		keys["increase units working"] = IncreaseUnitsWorking;
-
-		names[DecreaseUnitsWorking] = "decrease units working";
-		keys["decrease units working"] = DecreaseUnitsWorking;
-
-		names[OpenChatBox] = "open chat box";
-		keys["open chat box"] = OpenChatBox;
-
-		names[IterateSelection] = "iterate selection";
-		keys["iterate selection"] = IterateSelection;
-
-		names[GoToEvent] = "go to event";
-		keys["go to event"] = GoToEvent;
-
-		names[GoToHome] = "go to home";
-		keys["go to home"] = GoToHome;
-
-		names[PauseGame] = "pause game";
-		keys["pause game"] = PauseGame;
-		
-		names[HardPause] = "hard pause";
-		keys["hard pause"] = HardPause;
-		
-		names[ToggleDrawUnitPaths] = "toggle draw unit paths";
-		keys["toggle draw unit paths"] = ToggleDrawUnitPaths;
-		
-		names[DestroyBuilding] = "destroy building";
-		keys["destroy building"] = DestroyBuilding;
-		
-		names[RepairBuilding] = "repair building";
-		keys["repair building"] = RepairBuilding;
-		
-		names[ToggleDrawInformation] = "toggle draw information";
-		keys["toggle draw information"] = ToggleDrawInformation;
-		
-		names[ToggleDrawAccessibilityAids] = "toggle draw accessibility aids";
-		keys["toggle draw accessibility aids"] = ToggleDrawAccessibilityAids;
-		
-		names[MarkMap] = "mark map";
-		keys["mark map"] = MarkMap;
-		
-		names[ToggleRecordingVoice] = "toggle recording voice";
-		keys["toggle recording voice"] = ToggleRecordingVoice;
-		
-		names[ViewHistory] = "view history";
-		keys["view history"] = ViewHistory;
-		
-		names[SelectConstructSwarm] = "select construct swarm";
-		keys["select construct swarm"] = SelectConstructSwarm;
-		
-		names[SelectConstructInn] = "select construct inn";
-		keys["select construct inn"] = SelectConstructInn;
-		
-		names[SelectConstructHospital] = "select construct hospital";
-		keys["select construct hospital"] = SelectConstructHospital;
-		
-		names[SelectConstructRacetrack] = "select construct racetrack";
-		keys["select construct racetrack"] = SelectConstructRacetrack;
-		
-		names[SelectConstructSwimmingPool] = "select construct swimmingpool";
-		keys["select construct swimmingpool"] = SelectConstructSwimmingPool;
-		
-		names[SelectConstructBarracks] = "select construct barracks";
-		keys["select construct barracks"] = SelectConstructBarracks;
-		
-		names[SelectConstructSchool] = "select construct school";
-		keys["select construct school"] = SelectConstructSchool;
-		
-		names[SelectConstructDefenceTower] = "select construct defencetower";
-		keys["select construct defencetower"] = SelectConstructDefenceTower;
-		
-		names[SelectConstructStoneWall] = "select construct stonewall";
-		keys["select construct stonewall"] = SelectConstructStoneWall;
-		
-		names[SelectConstructMarket] = "select construct market";
-		keys["select construct market"] = SelectConstructMarket;
-		
-		names[SelectPlaceExplorationFlag] = "select place explorationflag";
-		keys["select place explorationflag"] = SelectPlaceExplorationFlag;
-		
-		names[SelectPlaceWarFlag] = "select place warflag";
-		keys["select place warflag"] = SelectPlaceWarFlag;
-		
-		names[SelectPlaceClearingFlag] = "select place clearingflag";
-		keys["select place clearingflag"] = SelectPlaceClearingFlag;
-		
-		names[SelectPlaceForbiddenArea] = "select place forbidden area";
-		keys["select place forbidden area"] = SelectPlaceForbiddenArea;
-		
-		names[SelectPlaceGuardArea] = "select place guard area";
-		keys["select place guard area"] = SelectPlaceGuardArea;
-		
-		names[SelectPlaceClearingArea] = "select place clearing area";
-		keys["select place clearing area"] = SelectPlaceClearingArea;
-		
-		names[SwitchToAddingAreas] = "switch to adding areas";
-		keys["switch to adding areas"] = SwitchToAddingAreas;
-		
-		names[SwitchToRemovingAreas] = "switch to removing areas";
-		keys["switch to removing areas"] = SwitchToRemovingAreas;
-		
-		names[SwitchToAreaBrush1] = "switch to area brush 1";
-		keys["switch to area brush 1"] = SwitchToAreaBrush1;
-		
-		names[SwitchToAreaBrush2] = "switch to area brush 2";
-		keys["switch to area brush 2"] = SwitchToAreaBrush2;
-		
-		names[SwitchToAreaBrush3] = "switch to area brush 3";
-		keys["switch to area brush 3"] = SwitchToAreaBrush3;
-		
-		names[SwitchToAreaBrush4] = "switch to area brush 4";
-		keys["switch to area brush 4"] = SwitchToAreaBrush4;
-		
-		names[SwitchToAreaBrush5] = "switch to area brush 5";
-		keys["switch to area brush 5"] = SwitchToAreaBrush5;
-		
-		names[SwitchToAreaBrush6] = "switch to area brush 6";
-		keys["switch to area brush 6"] = SwitchToAreaBrush6;
-		
-		names[SwitchToAreaBrush7] = "switch to area brush 7";
-		keys["switch to area brush 7"] = SwitchToAreaBrush7;
-		
-		names[SwitchToAreaBrush8] = "switch to area brush 8";
-		keys["switch to area brush 8"] = SwitchToAreaBrush8;
+		table.add(DoNothing, "do nothing");
+		table.add(UpgradeBuilding, "upgrade building");
+		table.add(ShowMainMenu, "show main menu");
+		table.add(IncreaseUnitsWorking, "increase units working");
+		table.add(DecreaseUnitsWorking, "decrease units working");
+		table.add(OpenChatBox, "open chat box");
+		table.add(IterateSelection, "iterate selection");
+		table.add(GoToEvent, "go to event");
+		table.add(GoToHome, "go to home");
+		table.add(PauseGame, "pause game");
+		table.add(HardPause, "hard pause");
+		table.add(ToggleDrawUnitPaths, "toggle draw unit paths");
+		table.add(DestroyBuilding, "destroy building");
+		table.add(RepairBuilding, "repair building");
+		table.add(ToggleDrawInformation, "toggle draw information");
+		table.add(ToggleDrawAccessibilityAids, "toggle draw accessibility aids");
+		table.add(MarkMap, "mark map");
+		table.add(ToggleRecordingVoice, "toggle recording voice");
+		table.add(ViewHistory, "view history");
+		table.add(SelectConstructSwarm, "select construct swarm");
+		table.add(SelectConstructInn, "select construct inn");
+		table.add(SelectConstructHospital, "select construct hospital");
+		table.add(SelectConstructRacetrack, "select construct racetrack");
+		table.add(SelectConstructSwimmingPool, "select construct swimmingpool");
+		table.add(SelectConstructBarracks, "select construct barracks");
+		table.add(SelectConstructSchool, "select construct school");
+		table.add(SelectConstructDefenceTower, "select construct defencetower");
+		table.add(SelectConstructStoneWall, "select construct stonewall");
+		table.add(SelectConstructMarket, "select construct market");
+		table.add(SelectPlaceExplorationFlag, "select place explorationflag");
+		table.add(SelectPlaceWarFlag, "select place warflag");
+		table.add(SelectPlaceClearingFlag, "select place clearingflag");
+		table.add(SelectPlaceForbiddenArea, "select place forbidden area");
+		table.add(SelectPlaceGuardArea, "select place guard area");
+		table.add(SelectPlaceClearingArea, "select place clearing area");
+		table.add(SwitchToAddingAreas, "switch to adding areas");
+		table.add(SwitchToRemovingAreas, "switch to removing areas");
+		table.add(SwitchToAreaBrush1, "switch to area brush 1");
+		table.add(SwitchToAreaBrush2, "switch to area brush 2");
+		table.add(SwitchToAreaBrush3, "switch to area brush 3");
+		table.add(SwitchToAreaBrush4, "switch to area brush 4");
+		table.add(SwitchToAreaBrush5, "switch to area brush 5");
+		table.add(SwitchToAreaBrush6, "switch to area brush 6");
+		table.add(SwitchToAreaBrush7, "switch to area brush 7");
+		table.add(SwitchToAreaBrush8, "switch to area brush 8");
 	}
 
 	const std::string getName(Uint32 action)
 	{
-		// Defensive bounds check: every current caller passes an id in
-		// [DoNothing, ActionSize), but an out-of-range id must not index
-		// past the vector. Return an empty name for unknown ids.
-		if(action < names.size())
-			return names[action];
-		return std::string();
+		return table.getName(action);
 	}
 
 	std::optional<Uint32> getAction(const std::string& name)
 	{
-		// Pure lookup: returns the action id for a canonical name, or
-		// std::nullopt when the name is unknown (e.g. a typo in the user's
-		// keyboard-gui.txt). Uses find() rather than operator[] so an
-		// unknown name is neither silently mapped to DoNothing (id 0) nor
-		// inserted into the static map. The caller decides how to handle
-		// the not-found case.
-		std::map<std::string, Uint32>::const_iterator it = keys.find(name);
-		if(it == keys.end())
-			return std::nullopt;
-		return it->second;
+		return table.getAction(name);
 	}
 	
 	std::string getDefaultConfigurationFile()
@@ -179,6 +78,3 @@ namespace GameGUIKeyActions
 		return "keyboard-gui.txt";
 	}
 }
-
-std::vector<std::string> GameGUIKeyActions::names;
-std::map<std::string, Uint32> GameGUIKeyActions::keys;

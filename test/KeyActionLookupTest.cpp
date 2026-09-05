@@ -23,12 +23,12 @@ class KeyActionLookupTest : public CPPUNIT_NS::TestCase
 		CPPUNIT_TEST(testGuiKnownNameResolves);
 		CPPUNIT_TEST(testGuiDoNothingNameResolves);
 		CPPUNIT_TEST(testGuiUnknownNameIsNullopt);
-		CPPUNIT_TEST(testGuiUnknownNameDoesNotGrowMap);
+		CPPUNIT_TEST(testGuiUnknownNameStaysUnknown);
 		CPPUNIT_TEST(testGuiRoundTripAllActions);
 		CPPUNIT_TEST(testGuiGetNameOutOfRangeIsEmpty);
 		CPPUNIT_TEST(testMapEditKnownNameResolves);
 		CPPUNIT_TEST(testMapEditUnknownNameIsNullopt);
-		CPPUNIT_TEST(testMapEditUnknownNameDoesNotGrowMap);
+		CPPUNIT_TEST(testMapEditUnknownNameStaysUnknown);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -63,12 +63,11 @@ protected:
 		CPPUNIT_ASSERT(!GameGUIKeyActions::getAction("not a real action").has_value());
 	}
 
-	void testGuiUnknownNameDoesNotGrowMap(void)
+	void testGuiUnknownNameStaysUnknown(void)
 	{
-		size_t before = GameGUIKeyActions::keys.size();
-		GameGUIKeyActions::getAction("some bogus token");
-		GameGUIKeyActions::getAction("another bogus token");
-		CPPUNIT_ASSERT_EQUAL(before, GameGUIKeyActions::keys.size());
+		// A failed lookup must not teach the table the bogus name.
+		CPPUNIT_ASSERT(!GameGUIKeyActions::getAction("some bogus token").has_value());
+		CPPUNIT_ASSERT(!GameGUIKeyActions::getAction("some bogus token").has_value());
 	}
 
 	void testGuiRoundTripAllActions(void)
@@ -102,11 +101,10 @@ protected:
 		CPPUNIT_ASSERT(!MapEditKeyActions::getAction("select delete toool").has_value());
 	}
 
-	void testMapEditUnknownNameDoesNotGrowMap(void)
+	void testMapEditUnknownNameStaysUnknown(void)
 	{
-		size_t before = MapEditKeyActions::keys.size();
-		MapEditKeyActions::getAction("bogus mapedit token");
-		CPPUNIT_ASSERT_EQUAL(before, MapEditKeyActions::keys.size());
+		CPPUNIT_ASSERT(!MapEditKeyActions::getAction("bogus mapedit token").has_value());
+		CPPUNIT_ASSERT(!MapEditKeyActions::getAction("bogus mapedit token").has_value());
 	}
 };
 CPPUNIT_TEST_SUITE_REGISTRATION(KeyActionLookupTest);

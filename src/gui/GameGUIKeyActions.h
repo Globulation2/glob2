@@ -5,9 +5,7 @@
 
 #include "SDL.h"
 #include <string>
-#include <map>
 #include <optional>
-#include <vector>
 
 ///This namespace stores everything related to the key actions that can occur at key-press
 ///in GameGUI
@@ -79,8 +77,5 @@ namespace GameGUIKeyActions
 	
 	///Returns the name of the file for the personal configuration
 	std::string getConfigurationFile();
-	
-	extern std::vector<std::string> names;
-	extern std::map<std::string, Uint32> keys;
 };
 

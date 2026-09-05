@@ -5,9 +5,7 @@
 
 #include "SDL.h"
 #include <string>
-#include <map>
 #include <optional>
-#include <vector>
 
 ///This namespace stores everything related to the key actions that can occur at key-press
 ///in MapEdit
@@ -56,7 +54,4 @@ namespace MapEditKeyActions
 	
 	///Returns the name of the file for the configuration
 	std::string getConfigurationFile();
-	
-	extern std::vector<std::string> names;
-	extern std::map<std::string, Uint32> keys;
 };

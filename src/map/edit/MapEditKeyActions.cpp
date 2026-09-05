@@ -3,102 +3,46 @@
 
 #include "MapEditKeyActions.h"
 
+#include "KeyActionTable.h"
+
 namespace MapEditKeyActions
 {
+	static KeyActionTable table(ActionSize);
+
 	void init()
 	{
-		names.resize(ActionSize);
-	
-		names[DoNothing] = "do nothing";
-		keys["do nothing"] = DoNothing;
-	
-		names[SwitchToBuildingView] = "switch to building view";
-		keys["switch to building view"] = SwitchToBuildingView;
-	
-		names[SwitchToFlagView] = "switch to flag view";
-		keys["switch to flag view"] = SwitchToFlagView;
-	
-		names[SwitchToTerrainView] = "switch to terrain view";
-		keys["switch to terrain view"] = SwitchToTerrainView;
-	
-		names[SwitchToTeamsView] = "switch to teams view";
-		keys["switch to teams view"] = SwitchToTeamsView;
-	
-		names[OpenSaveScreen] = "open save menu";
-		keys["open save menu"] = OpenSaveScreen;
-	
-		names[OpenLoadScreen] = "open load menu";
-		keys["open load menu"] = OpenLoadScreen;
-	
-		names[SelectSwarm] = "select swarm building";
-		keys["select swarm building"] = SelectSwarm;
-	
-		names[SelectInn] = "select inn building";
-		keys["select inn building"] = SelectInn;
-	
-		names[SelectHospital] = "select hospital building";
-		keys["select hospital building"] = SelectHospital;
-	
-		names[SelectRacetrack] = "select racetrack building";
-		keys["select racetrack building"] = SelectRacetrack;
-	
-		names[SelectSwimmingpool] = "select swimmingpool building";
-		keys["select swimmingpool building"] = SelectSwimmingpool;
-	
-		names[SelectSchool] = "select school building";
-		keys["select school building"] = SelectSchool;
-	
-		names[SelectBarracks] = "select barracks building";
-		keys["select barracks building"] = SelectBarracks;
-	
-		names[SelectTower] = "select tower building";
-		keys["select tower building"] = SelectTower;
-	
-		names[SelectStonewall] = "select wall building";
-		keys["select wall building"] = SelectStonewall;
-	
-		names[SelectMarket] = "select market building";
-		keys["select market building"] = SelectMarket;
-	
-		names[SelectExplorationFlag] = "select explorationflag";
-		keys["select explorationflag"] = SelectExplorationFlag;
-	
-		names[SelectWarFlag] = "select warflag";
-		keys["select warflag"] = SelectWarFlag;
-	
-		names[SelectClearingFlag] = "select clearingflag";
-		keys["select clearingflag"] = SelectClearingFlag;
-	
-		names[ToggleMenuScreen] = "toggle menu screen";
-		keys["toggle menu screen"] = ToggleMenuScreen;
-	
-		names[SelectDeleteTool] = "select delete tool";
-		keys["select delete tool"] = SelectDeleteTool;
-		
+		table.add(DoNothing, "do nothing");
+		table.add(SwitchToBuildingView, "switch to building view");
+		table.add(SwitchToFlagView, "switch to flag view");
+		table.add(SwitchToTerrainView, "switch to terrain view");
+		table.add(SwitchToTeamsView, "switch to teams view");
+		table.add(OpenSaveScreen, "open save menu");
+		table.add(OpenLoadScreen, "open load menu");
+		table.add(SelectSwarm, "select swarm building");
+		table.add(SelectInn, "select inn building");
+		table.add(SelectHospital, "select hospital building");
+		table.add(SelectRacetrack, "select racetrack building");
+		table.add(SelectSwimmingpool, "select swimmingpool building");
+		table.add(SelectSchool, "select school building");
+		table.add(SelectBarracks, "select barracks building");
+		table.add(SelectTower, "select tower building");
+		table.add(SelectStonewall, "select wall building");
+		table.add(SelectMarket, "select market building");
+		table.add(SelectExplorationFlag, "select explorationflag");
+		table.add(SelectWarFlag, "select warflag");
+		table.add(SelectClearingFlag, "select clearingflag");
+		table.add(ToggleMenuScreen, "toggle menu screen");
+		table.add(SelectDeleteTool, "select delete tool");
 	}
 
 	const std::string getName(Uint32 action)
 	{
-		// Defensive bounds check: every current caller passes an id in
-		// [DoNothing, ActionSize), but an out-of-range id must not index
-		// past the vector. Return an empty name for unknown ids.
-		if(action < names.size())
-			return names[action];
-		return std::string();
+		return table.getName(action);
 	}
 
 	std::optional<Uint32> getAction(const std::string& name)
 	{
-		// Pure lookup: returns the action id for a canonical name, or
-		// std::nullopt when the name is unknown (e.g. a typo in the user's
-		// keyboard-mapedit.txt). Uses find() rather than operator[] so an
-		// unknown name is neither silently mapped to DoNothing (id 0) nor
-		// inserted into the static map. The caller decides how to handle
-		// the not-found case.
-		std::map<std::string, Uint32>::const_iterator it = keys.find(name);
-		if(it == keys.end())
-			return std::nullopt;
-		return it->second;
+		return table.getAction(name);
 	}
 	
 	std::string getDefaultConfigurationFile()
@@ -111,6 +55,3 @@ namespace MapEditKeyActions
 		return "keyboard-mapedit.txt";
 	}
 }
-
-std::vector<std::string> MapEditKeyActions::names;
-std::map<std::string, Uint32> MapEditKeyActions::keys;
