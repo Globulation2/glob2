@@ -127,6 +127,7 @@ int main(int argc, char** argv) {
         assert(gui.loadFromHeaders(map,header,true,true));
         gui.localPlayer=gui.localTeamNo=0;
         gui.adjustLocalTeam();
+        gui.adjustInitialViewport();
         assert(gui.canChangeGameSpeed());
         SDL_Event key={}; key.type=SDL_KEYDOWN;
         key.key.keysym.sym=SDLK_MINUS; key.key.keysym.mod=KMOD_CTRL;

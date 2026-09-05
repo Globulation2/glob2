@@ -6,6 +6,7 @@ All preferences, saves and replays go into a disposable profile.
 """
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -18,7 +19,14 @@ try:
         result = subprocess.run(
             [str(root / 'build/src/game-speed-tests'), profile], cwd=work,
             env=dict(os.environ, SDL_AUDIODRIVER='dummy'), timeout=60,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
         )
+        print(result.stdout, end='')
+        if result.returncode == 0:
+            checksums = re.findall(r'nox::gui\.game\.checkSum\(\) = ([0-9a-f]+)', result.stdout)
+            assert len(checksums) == 7, 'Missing engine checksums'
+            assert len(set(checksums[:4])) == 1, 'Speed or pause changed the game state'
+            assert len(set(checksums[4:])) == 1, 'Playback speed changed the replay state'
     raise SystemExit(result.returncode)
 finally:
     if os.name != 'nt':
