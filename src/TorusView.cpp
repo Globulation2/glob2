@@ -124,21 +124,17 @@ GLuint createMaterial()
 {
     const char *vertex =
         "#version 120\n"
-        "varying vec2 uv; varying vec3 light;\n"
+        "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
         "uniform vec2 mapOffset;\n"
-        "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;}\n";
+        "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;normal=gl_Normal;}\n";
+    // A sun off to the left: its highlight lies on the ring's left flank, where
+    // the surface normal bisects the sun and the eye, never on the front face.
     const char *fragment = "#version 120\n"
-                           "uniform sampler2D world; uniform sampler2D visibility; uniform float fold;\n"
-                           "varying vec2 uv; varying vec3 light;\n"
+                           "uniform sampler2D world; uniform vec3 sunHalf; uniform float specular;\n"
+                           "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
                            "void main(){\n"
-                           " vec3 terrain=texture2D(world,uv).rgb;\n"
-                           " float seen=texture2D(visibility,uv).r;\n"
-                           " vec2 grid=abs(fract(uv*vec2(48.0,24.0)-0.5)-0.5);\n"
-                           " float line=1.0-smoothstep(0.0,0.035,min(grid.x,grid.y));\n"
-                           " vec3 unknown=vec3(0.22,0.31,0.41)+line*vec3(0.035,0.045,0.055);\n"
-                           " vec3 surface=mix(terrain,unknown,(1.0-seen)*fold);\n"
-                           " gl_FragColor=vec4(surface*light,1.0);\n"
-                           "}\n";
+                           "  float s = pow(max(dot(normalize(normal), sunHalf), 0.0), 36.0) * specular;\n"
+                           "  gl_FragColor=vec4(texture2D(world,uv).rgb*light + vec3(1.0, 0.96, 0.85) * s, 1.0);}\n";
     GLuint vs = glCreateShader(GL_VERTEX_SHADER), fs = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vs, 1, &vertex, 0);
     glCompileShader(vs);
@@ -166,10 +162,10 @@ GLuint createMaterial()
 } // namespace
 
 TorusView::TorusView()
-    : target(false), dragging(false), amount(0), zoom(1), travelU(0), travelV(0), surfaceScaleX(1),
-      surfaceScaleY(1), baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
-      lastFrame(0), texture(0), visibility(0), framebuffer(0), material(0), meshBuffer(0), indexBuffer(0),
-      meshKey{}, failed(false), originX(0), originY(0), focusU(0.5f), focusV(0.5f)
+    : target(false), amount(0), zoom(1), travelU(0), travelV(0), baseViewportX(0), baseViewportY(0), worldW(0), worldH(0), atlasW(0), atlasH(0),
+      lastFrame(0), clouds(&globalContainer->settings), texture(0), cloudTexture(0), framebuffer(0),
+      material(0), meshBuffer(0), cloudBuffer(0), indexBuffer(0), meshKey{}, failed(false), originX(0),
+      originY(0), focusU(0.5f), focusV(0.5f)
 {
 }
 TorusView::~TorusView() { releaseResources(); }
@@ -182,23 +178,24 @@ void TorusView::releaseResources()
     {
         if (meshBuffer)
             glDeleteBuffers(1, &meshBuffer);
+        if (cloudBuffer)
+            glDeleteBuffers(1, &cloudBuffer);
         if (indexBuffer)
             glDeleteBuffers(1, &indexBuffer);
         if (material)
             glDeleteProgram(material);
         if (texture)
             glDeleteTextures(1, &texture);
-        if (visibility)
-            glDeleteTextures(1, &visibility);
+        if (cloudTexture)
+            glDeleteTextures(1, &cloudTexture);
         if (framebuffer)
             glDeleteFramebuffers(1, &framebuffer);
     }
 #endif
     graphicsContext = nullptr;
-    texture = visibility = framebuffer = material = meshBuffer = indexBuffer = 0;
+    texture = cloudTexture = framebuffer = material = meshBuffer = cloudBuffer = indexBuffer = 0;
     atlasW = atlasH = 0;
-    discoveryPixels.clear();
-    discoveryScratch.clear();
+    cloudW = cloudH = 0;
     vertices.clear();
     cachedPickX = cachedPickY = -1;
     cachedPickFound = false;
@@ -208,7 +205,7 @@ void TorusView::releaseResources()
 void TorusView::reset()
 {
     releaseResources();
-    target = dragging = failed = false;
+    target = failed = false;
     amount = travelU = travelV = cameraU = cameraV = 0;
     worldW = worldH = 0;
     lastFrame = 0;
@@ -242,11 +239,34 @@ void TorusView::toggle()
         if (!active())
             resetCamera();
         target = !target;
-        dragging = false;
         lastFrame = SDL_GetTicks();
     }
 }
 void TorusView::resetCamera() { zoom = cameraZoom = 1; }
+void TorusView::setHeld(bool down)
+{
+    if (!available())
+        return;
+    if (down && !active())
+    {
+        resetCamera();
+        lastFrame = SDL_GetTicks();
+    }
+    held = down;
+}
+
+void TorusView::notifyMove()
+{
+    if (!available())
+        return;
+    if (!active())
+    {
+        resetCamera();
+        lastFrame = SDL_GetTicks();
+    }
+    lastMove = SDL_GetTicks();
+    moving = true;
+}
 void TorusView::setViewport(int x, int y)
 {
     if (!worldW || !worldH || !active())
@@ -262,39 +282,8 @@ bool TorusView::event(const SDL_Event &e, int width, int &vx, int &vy)
 {
     if (!active())
         return false;
-    if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_MIDDLE && dragging)
-    {
-        dragging = false;
-        return true;
-    }
-    if (e.type == SDL_MOUSEMOTION)
-    {
-        if (!(e.motion.state & SDL_BUTTON_MMASK))
-            dragging = false;
-        if (dragging && target && worldW && worldH)
-        {
-            // Move the camera focus across the fixed world surface.
-            auto movement = TorusGeometry::surfaceDrag(e.motion.xrel, e.motion.yrel, surfaceScaleX,
-                                                       surfaceScaleY, smooth(amount), focusV + cameraV);
-            travelU += movement.x;
-            travelV += movement.y;
-            travelU -= std::floor(travelU);
-            travelV -= std::floor(travelV);
-            auto position =
-                TorusGeometry::destination(baseViewportX, baseViewportY, travelU, travelV, worldW, worldH);
-            vx = position.x;
-            vy = position.y;
-        }
-        return dragging;
-    }
-    if (e.type == SDL_MOUSEBUTTONDOWN && e.button.x >= 0 && e.button.x < width && e.button.y >= 16)
-    {
-        if (e.button.button == SDL_BUTTON_MIDDLE)
-        {
-            dragging = true;
-            return true;
-        }
-    }
+    // The middle button pans through the ordinary 2D path in every mode, so the
+    // ring moves at the speed the flat map does; only the wheel is handled here.
     if (e.type == SDL_MOUSEWHEEL)
     {
         int x, y;
@@ -371,50 +360,37 @@ bool TorusView::prepareRenderTarget()
 #endif
 }
 
-void TorusView::updateDiscovery(Game &game, int team, unsigned options)
+// The cloud layer lives on its own ring above the ground, sampled from the
+// same world-anchored field as the shadows the atlas already carries.
+void TorusView::updateClouds()
 {
 #ifdef HAVE_OPENGL
-    // Discovery comes from the map, independently of cloud brightness.
-    // The flipped rows and half-tile sample centers match the world atlas.
-    discoveryScratch.resize(worldW * worldH * 4);
-    auto &discovered = discoveryScratch;
-    Uint32 visibleTeams =
-        globalContainer->replaying ? globalContainer->replayVisibleTeams : game.teams[team]->me;
-    for (int y = 0; y < worldH; ++y)
-        for (int x = 0; x < worldW; ++x)
-        {
-            unsigned char value = (options & Game::DRAW_WHOLE_MAP) ||
-                                          game.map.isMapDiscovered(originX + x, originY + y, visibleTeams)
-                                      ? 255
-                                      : 0;
-            for (int c = 0; c < 4; ++c)
-                discovered[((worldH - 1 - y) * worldW + x) * 4 + c] = value;
-        }
-    // Discovery usually remains unchanged. Avoid reallocating or uploading
-    // its texture on frames that only animate the world.
-    if (discovered != discoveryPixels)
+    int gridW, gridH;
+    clouds.computeWorld(worldW, worldH, SDL_GetTicks64() / 40, cloudPixels, gridW, gridH);
+    glPushAttrib(GL_TEXTURE_BIT);
+    if (!cloudTexture || gridW != cloudW || gridH != cloudH)
     {
-        glPushAttrib(GL_TEXTURE_BIT);
-        if (!visibility)
-        {
-            glGenTextures(1, &visibility);
-            glBindTexture(GL_TEXTURE_2D, visibility);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, worldW, worldH, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                         discovered.data());
-        }
-        else
-        {
-            glBindTexture(GL_TEXTURE_2D, visibility);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, worldW, worldH, GL_RGBA, GL_UNSIGNED_BYTE,
-                            discovered.data());
-        }
-        discoveryPixels.swap(discovered);
-        glPopAttrib();
+        if (cloudTexture)
+            glDeleteTextures(1, &cloudTexture);
+        cloudW = gridW;
+        cloudH = gridH;
+        glGenTextures(1, &cloudTexture);
+        glBindTexture(GL_TEXTURE_2D, cloudTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, cloudW, cloudH, 0, GL_ALPHA, GL_UNSIGNED_BYTE,
+                     &cloudPixels[0]);
     }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, cloudTexture);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, cloudW, cloudH, GL_ALPHA, GL_UNSIGNED_BYTE, &cloudPixels[0]);
+    }
+    glPopAttrib();
 #endif
 }
 
@@ -424,7 +400,11 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     Uint32 now = SDL_GetTicks();
     float dt = std::min(0.1f, float(now - lastFrame) / 1000.0f);
     lastFrame = now;
-    if (!amount && target)
+    // A pause in the movement ends the pull-back.
+    if (moving && now - lastMove > 250)
+        moving = false;
+    const bool pullBack = target || moving || held;
+    if (!amount && pullBack)
     {
         // Put the current viewport center on the front of the torus. Preserve
         // its sub-tile offset, so even the first/last frame matches normal 2D.
@@ -443,10 +423,12 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         worldH = game.map.getH();
         travelU = travelV = cameraU = cameraV = 0;
     }
-    amount = clamp(amount + (target ? dt : -dt) / 1.8f, 0, 1);
+    // Movement pulls back slowly; the return is quick. The hand switch keeps its own pace.
+    const float pace = target ? 1.8f : (held ? 0.45f : (moving ? 4.0f : 0.45f));
+    amount = clamp(amount + (pullBack ? dt : -dt) / pace, 0, 1);
     // The ordinary map and minimap track the same destination as the torus.
     // Ease the sub-tile remainder away while returning to the tile-based 2D camera.
-    if (!target)
+    if (!pullBack)
     {
         float settle = amount == 0 ? 1 : 1 - std::exp(-16 * dt);
         travelU = mix(travelU, std::round(travelU * worldW) / worldW, settle);
@@ -492,7 +474,14 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         return false;
     }
     // Keep terrain, units, clouds and pointer previews on the normal render cadence.
+    // The whole texture is redrawn: no scissor, program or depth test may be left
+    // over from the ring, whatever the driver restored.
     {
+        glUseProgram(0);
+        glActiveTexture(GL_TEXTURE0);
+        glDisable(GL_SCISSOR_TEST);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glViewport(0, 0, atlasW, atlasH);
         glOrtho(0, game.map.getW() * 32, game.map.getH() * 32, 0, -1, 1);
@@ -500,12 +489,15 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         // Capture the normal cloud and shadow layers along with the world,
         // respecting the same graphics-quality setting as the 2D view.
         game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0, originX, originY, team,
-                     options);
+                     options | Game::DRAW_NO_CLOUD_LAYER);
         if (game.gui)
             game.gui->drawTorusMapOverlay(originX, originY);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        updateDiscovery(game, team, options);
     }
+    const bool drawClouds =
+        (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0;
+    if (drawClouds)
+        updateClouds();
 
     // Save GL state AFTER the game renderer: its state cache must still match
     // the restored state when the ordinary HUD resumes drawing.
@@ -513,8 +505,10 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
     glEnable(GL_SCISSOR_TEST);
     // The sidebar is translucent: render beneath it, while retaining the
-    // playable-area camera center and input bounds.
-    glScissor(0, 0, gfx->getW(), height - 16);
+    // playable-area camera center and input bounds. The scissor box is in
+    // framebuffer pixels: the viewport the 2D view draws through maps the
+    // logical size onto them, whatever the window system reports.
+    glScissor(oldViewport[0], oldViewport[1], oldViewport[2], (height - 16) * oldViewport[3] / gfx->getH());
     glClearColor(0.025f, 0.037f, 0.06f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -537,27 +531,54 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     // One direct, restrained pullback. There is no intermediate zoom to a
     // distant full-map sheet, then zoom back in to the torus.
     float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
-    float cameraDistance = TorusGeometry::hoverDistance(anchorV);
-    float scale = std::min(width / 10.0f, height / 9.0f) * mix(1, cameraZoom, roll);
+    // The ring keeps one attitude on screen: the surface slides around the
+    // tube as the view pans, and turns about the axis as it scrolls, while
+    // the sky drifts with both so the movement stays readable.
+    const float ringV = 0.5f;
+    float cameraDistance = TorusGeometry::hoverDistance(ringV);
+    viewAspect = float(width) / std::max(1, height - 16);
+    float scale = std::min(width / 5.0f, height / 4.5f) * mix(1, cameraZoom, roll);
     float sx = std::exp(mix(std::log(game.map.getW() * 32 / (8 * pi)), std::log(scale), pull));
     float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
-    surfaceScaleX = sx;
-    surfaceScaleY = sy;
-    float cx = width * 0.5f, cy = (height + 16) * 0.5f;
+    // The folded ring sits centred in the view; the flat map keeps its focus there.
+    // The ring's silhouette is measured once per view shape in camera units.
+    if (ringAspect != viewAspect)
+    {
+        float minX = 1e9f, maxX = -1e9f, minY = 1e9f, maxY = -1e9f;
+        for (int j = 0; j <= 40; ++j)
+            for (int i = 0; i <= 40; ++i)
+            {
+                auto p = TorusGeometry::overviewPoint(i / 40.0f - 0.5f, j / 40.0f - 0.5f, 1, ringV, viewAspect);
+                float w = 1 - p.z / cameraDistance;
+                minX = std::min(minX, p.x / w);
+                maxX = std::max(maxX, p.x / w);
+                minY = std::min(minY, p.y / w);
+                maxY = std::max(maxY, p.y / w);
+            }
+        ringCentreX = (minX + maxX) * 0.5f;
+        ringCentreY = (minY + maxY) * 0.5f;
+        ringAspect = viewAspect;
+    }
+    float cx = width * 0.5f - ringCentreX * scale * smooth(roll);
+    float cy = (height + 16) * 0.5f - ringCentreY * scale * smooth(roll);
     float major = smooth(roll), minor = smooth(roll / 0.85f);
-    float ya = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(anchorV, aspect);
-    float viewPitch = pa + TorusGeometry::overviewTilt(anchorV, roll);
-    drawSky(ya, viewPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
+    float ya = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, aspect);
+    float viewPitch = pa + TorusGeometry::overviewTilt(ringV, roll, viewAspect);
+    float skyPitch = viewPitch + (anchorV - 0.5f) * pi * 0.5f;
+    drawSky(ya, skyPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
     if (material)
     {
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, visibility);
-        glActiveTexture(GL_TEXTURE0);
         glUseProgram(material);
         glUniform1i(glGetUniformLocation(material, "world"), 0);
-        glUniform1i(glGetUniformLocation(material, "visibility"), 1);
-        glUniform1f(glGetUniformLocation(material, "fold"), pull);
         glUniform2f(glGetUniformLocation(material, "mapOffset"), anchorU, 1 - anchorV);
+        // A low sun far to the left and a little above; the eye looks along +z.
+        // The highlight sits where the normal bisects the two, on the left flank.
+        float lx = -1.0f, ly = 0.25f, lz = 0.15f;
+        const float ll = std::sqrt(lx * lx + ly * ly + lz * lz);
+        lx /= ll, ly /= ll, lz = lz / ll + 1;
+        const float hl = std::sqrt(lx * lx + ly * ly + lz * lz);
+        glUniform3f(glGetUniformLocation(material, "sunHalf"), lx / hl, ly / hl, lz / hl);
+        glUniform1f(glGetUniformLocation(material, "specular"), 0.9f * roll);
     }
     const int U = meshColumns, V = meshRows;
     using MeshVertex = TorusPicking::Vertex;
@@ -565,7 +586,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     pickV = anchorV;
     pickWidth = width;
     pickHeight = height;
-    float key[8] = {roll, anchorV, sx, sy, cx, cy, scale, cameraDistance};
+    float key[8] = {roll, ringV, sx, sy, cx, cy, scale, cameraDistance};
     GLint oldArrayBuffer, oldIndexBuffer;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldArrayBuffer);
     glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &oldIndexBuffer);
@@ -574,13 +595,27 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     {
         if (!meshBuffer)
             glGenBuffers(1, &meshBuffer);
+        if (!cloudBuffer)
+            glGenBuffers(1, &cloudBuffer);
         cachedPickX = cachedPickY = -1;
         vertices.resize((U + 1) * (V + 1));
+        std::vector<MeshVertex> cloudVertices(vertices.size());
+        // The cloud ring floats above the ground by a fixed share of the tube
+        // radius; it settles onto the flat map as the fold opens.
+        const float cloudHeight = 0.036f * roll + 0.003f, e = 0.001f;
         for (int j = 0; j <= V; ++j)
             for (int i = 0; i <= U; ++i)
             {
                 float du = float(i) / U - 0.5f, dv = float(j) / V - 0.5f;
-                auto p = TorusGeometry::overviewPoint(du, dv, roll, anchorV);
+                auto p = TorusGeometry::overviewPoint(du, dv, roll, ringV, viewAspect);
+                auto pu = TorusGeometry::overviewPoint(du + e, dv, roll, ringV, viewAspect);
+                auto pv = TorusGeometry::overviewPoint(du, dv + e, roll, ringV, viewAspect);
+                TorusGeometry::Point tu = TorusGeometry::subtract(pu, p), tv = TorusGeometry::subtract(pv, p);
+                TorusGeometry::Point n = {tu.y * tv.z - tu.z * tv.y, tu.z * tv.x - tu.x * tv.z,
+                                          tu.x * tv.y - tu.y * tv.x};
+                float len = std::max(1e-12f, TorusGeometry::length(n));
+                TorusGeometry::Point c = {p.x + n.x / len * cloudHeight, p.y + n.y / len * cloudHeight,
+                                          p.z + n.z / len * cloudHeight};
                 float a = du * 2 * pi * major, b = pa + dv * 2 * pi * minor;
                 float nx = std::sin(a) * std::cos(b), ny = std::sin(b), nz = std::cos(a) * std::cos(b);
                 float ry = ny * std::cos(viewPitch) - nz * std::sin(viewPitch);
@@ -590,10 +625,19 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 float w = 1 - p.z * roll / cameraDistance;
                 vertices[j * (U + 1) + i] = {{cx * w + p.x * sx, cy * w + p.y * sy, p.z * scale, w},
                                              {light, light, light},
-                                             {du, -dv}};
+                                             {du, -dv},
+                                             {nx, ry, rz}};
+                float cw = 1 - c.z * roll / cameraDistance;
+                cloudVertices[j * (U + 1) + i] = {{cx * cw + c.x * sx, cy * cw + c.y * sy, c.z * scale, cw},
+                                                  {light, light, light},
+                                                  {du, -dv},
+                                                  {nx, ry, rz}};
             }
         glBindBuffer(GL_ARRAY_BUFFER, meshBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(MeshVertex), vertices.data(),
+                     GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, cloudBuffer);
+        glBufferData(GL_ARRAY_BUFFER, cloudVertices.size() * sizeof(MeshVertex), cloudVertices.data(),
                      GL_DYNAMIC_DRAW);
         std::memcpy(meshKey, key, sizeof(key));
     }
@@ -618,13 +662,40 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glEnableClientState(GL_COLOR_ARRAY);
     glClientActiveTexture(GL_TEXTURE0);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_NORMAL_ARRAY);
     glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
                     reinterpret_cast<void *>(offsetof(MeshVertex, position)));
     glColorPointer(3, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, color)));
     glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
+    glNormalPointer(GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, normal)));
     // Geometry stays on the GPU while stationary. Longitude navigation only
     // changes a uniform; latitude or unfolding rebuilds one shared vertex grid.
     glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
+    if (drawClouds && cloudTexture)
+    {
+        // White clouds lit like the ground, blended over it without writing depth.
+        glUseProgram(0);
+        glBindTexture(GL_TEXTURE_2D, cloudTexture);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE);
+        glMatrixMode(GL_TEXTURE);
+        glPushMatrix();
+        glLoadIdentity();
+        glTranslatef(anchorU, anchorV, 0);
+        glScalef(1, -1, 1);
+        glBindBuffer(GL_ARRAY_BUFFER, cloudBuffer);
+        glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
+                        reinterpret_cast<void *>(offsetof(MeshVertex, position)));
+        glColorPointer(3, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, color)));
+        glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
+        glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
+    }
     glPopClientAttrib();
     glBindBuffer(GL_ARRAY_BUFFER, oldArrayBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldIndexBuffer);

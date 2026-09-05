@@ -35,6 +35,25 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
         }
 }
 
+void DynamicClouds::computeWorld(const int worldWidth, const int worldHeight, const int time,
+                                 std::valarray<unsigned char> &out, int &gridW, int &gridH) const
+{
+    // The same lattice as the 2D layer, coarsened only for maps whose
+    // lattice would not fit a texture.
+    int cell = granularity;
+    while (std::max(worldWidth, worldHeight) * 32 / cell > 2048)
+        cell *= 2;
+    gridW = worldWidth * 32 / cell;
+    gridH = worldHeight * 32 / cell;
+    if (out.size() != static_cast<size_t>(gridW * gridH))
+        out.resize(gridW * gridH);
+    CloudField field(worldWidth * 32, worldHeight * 32, time, cloudSize, cloudStability, maxCloudSpeed,
+                     windStability, maxAlpha);
+    for (int y = 0; y < gridH; ++y)
+        for (int x = 0; x < gridW; ++x)
+            out[y * gridW + x] = field.opacity(x * cell, y * cell, std::max(.01f, cloudHeight));
+}
+
 void DynamicClouds::render(DrawableSurface *dest, const int, const int, DynamicClouds::Layer layer)
 {
     if (!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU))

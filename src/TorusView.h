@@ -3,6 +3,7 @@
 #ifndef GLOB2_TORUS_VIEW_H
 #define GLOB2_TORUS_VIEW_H
 #include "TorusPicking.h"
+#include "DynamicClouds.h"
 #include <SDL.h>
 class Game;
 
@@ -12,8 +13,14 @@ class TorusView
   public:
     TorusView();
     ~TorusView();
-    bool active() const { return target || amount > 0; }
+    // Drawn as a torus: switched on, pulled back by movement, or still unfolding.
+    bool active() const { return target || moving || held || amount > 0; }
+    // Switched on by hand: the wheel zooms the ring.
     bool enabled() const { return target; }
+    // The 2D view moved this frame: pull back slowly while it keeps moving.
+    void notifyMove();
+    // A pan button is held: pull back for as long as it stays down, even without movement.
+    void setHeld(bool down);
     bool available() const;
     // Drop camera, picking and GPU state before loading another game.
     void reset();
@@ -29,7 +36,7 @@ class TorusView
   private:
     void releaseResources();
     bool prepareRenderTarget();
-    void updateDiscovery(Game &game, int team, unsigned options);
+    void updateClouds();
     static constexpr int meshColumns = 160, meshRows = 160;
     std::vector<TorusPicking::Vertex> vertices;
     mutable int cachedPickX = -1, cachedPickY = -1;
@@ -37,19 +44,24 @@ class TorusView
     mutable TorusPicking::Hit cachedPick;
     float pickU = 0, pickV = 0;
     int pickWidth = 0, pickHeight = 0;
-    bool target, dragging;
+    bool target;
+    bool moving = false;
+    bool held = false;
+    Uint32 lastMove = 0;
     float amount, zoom;
     float travelU, travelV;
     float cameraU = 0, cameraV = 0, cameraZoom = 1;
-    float surfaceScaleX, surfaceScaleY;
+    float viewAspect = 1.6f, ringAspect = 0, ringCentreX = 0, ringCentreY = 0;
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
     Uint32 lastFrame;
-    std::vector<unsigned char> discoveryPixels, discoveryScratch;
+    DynamicClouds clouds;
+    std::valarray<unsigned char> cloudPixels;
+    int cloudW = 0, cloudH = 0;
     SDL_GLContext graphicsContext = nullptr;
     unsigned graphicsGeneration = 0;
-    unsigned texture, visibility, framebuffer, material;
-    unsigned meshBuffer, indexBuffer;
+    unsigned texture, cloudTexture, framebuffer, material;
+    unsigned meshBuffer, cloudBuffer, indexBuffer;
     float meshKey[8];
     bool failed;
     int originX, originY;

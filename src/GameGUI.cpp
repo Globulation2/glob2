@@ -228,6 +228,7 @@ void GameGUI::init()
 
 	hasEndOfGameDialogBeenShown=false;
 	panPushed=false;
+            torusView.setHeld(false);
 
 	buildingsChoiceName.clear();
 	buildingsChoiceName.push_back("swarm");
@@ -477,10 +478,11 @@ void GameGUI::step(void)
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
 	handleKeyAlways();
-	viewportX += torusView.active() ? 0 : viewportSpeedX;
-	viewportY += torusView.active() ? 0 : viewportSpeedY;
+	viewportX += viewportSpeedX;
+	viewportY += viewportSpeedY;
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
+    if (viewportX != oldViewportX || viewportY != oldViewportY) torusView.notifyMove();
     if (torusView.active()) torusView.setViewport(viewportX,viewportY);
 
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
@@ -934,6 +936,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		if (button==SDL_BUTTON_MIDDLE)
 		{
 			panPushed=false;
+            torusView.setHeld(false);
 		}
 	}
 
@@ -1063,6 +1066,7 @@ void GameGUI::processEvent(SDL_Event *event)
 				{
 					// Enable panning
 					panPushed=true;
+                    torusView.setHeld(true);
 					panMouseX=event->button.x;
 					panMouseY=event->button.y;
 					panViewX=viewportX;
@@ -1098,6 +1102,7 @@ void GameGUI::processEvent(SDL_Event *event)
 			miniMapPushed=false;
 			selectionPushed=false;
 			panPushed=false;
+            torusView.setHeld(false);
 			// showUnitWorkingToBuilding=false;
 		}
 		else if (event->type==SDL_MOUSEWHEEL)
@@ -1860,11 +1865,6 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
-    if (torusView.active() && !miniMapPushed) {
-        mouseX=mx; mouseY=my; viewportSpeedX=viewportSpeedY=0;
-        dragStep(mx, my, button);
-        return;
-    }
 	const int scrollZoneWidth = 10;
 	game.mouseX=mouseX=mx;
 	game.mouseY=mouseY=my;

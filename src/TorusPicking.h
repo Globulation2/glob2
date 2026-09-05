@@ -11,7 +11,7 @@ namespace TorusPicking
 // Homogeneous pixel coordinates are shared with the OpenGL vertex buffer.
 struct Vertex
 {
-    float position[4], color[3], uv[2];
+    float position[4], color[3], uv[2], normal[3];
 };
 struct Hit
 {

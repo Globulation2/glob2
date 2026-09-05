@@ -144,17 +144,37 @@ KeyboardManager::KeyboardManager(ShortcutMode mode)
 {
 	if(mode == GameGUIShortcuts)
 	{
-		if(!loadKeyboardLayout(GameGUIKeyActions::getConfigurationFile()))
-		{
+		if(loadKeyboardLayout(GameGUIKeyActions::getConfigurationFile()))
+			addMissingDefaults(GameGUIKeyActions::getDefaultConfigurationFile());
+		else
 			loadKeyboardLayout(GameGUIKeyActions::getDefaultConfigurationFile());
-		}
 	}
 	else if(mode == MapEditShortcuts)
 	{
-		if(!loadKeyboardLayout(MapEditKeyActions::getConfigurationFile()))
-		{
+		if(loadKeyboardLayout(MapEditKeyActions::getConfigurationFile()))
+			addMissingDefaults(MapEditKeyActions::getDefaultConfigurationFile());
+		else
 			loadKeyboardLayout(MapEditKeyActions::getDefaultConfigurationFile());
-		}
+	}
+}
+
+void KeyboardManager::addMissingDefaults(const std::string& file)
+{
+	// a layout saved before an action existed keeps its own keys and gains the default key for that action
+	std::list<KeyboardShortcut> own;
+	own.swap(shortcuts);
+	loadKeyboardLayout(file);
+	std::list<KeyboardShortcut> defaults;
+	defaults.swap(shortcuts);
+	shortcuts.swap(own);
+	for(const KeyboardShortcut& d : defaults)
+	{
+		bool bound = false;
+		for(const KeyboardShortcut& ks : shortcuts)
+			if(ks.getAction() == d.getAction())
+				bound = true;
+		if(!bound)
+			shortcuts.push_back(d);
 	}
 }
 

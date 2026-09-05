@@ -97,20 +97,25 @@ inline Point focusedPoint(float du, float dv, float roll, float anchorV)
     }
     return {x, y * std::cos(phi) - z * std::sin(phi), y * std::sin(phi) + z * std::cos(phi)};
 }
-// Keep the overview outside the ring at a fixed distance. Tilt over its
-// inner wall rather than diving into the hole or changing the lens.
+// Keep the overview outside the ring at a fixed distance.
 inline float hoverDistance(float) { return 18.0f; }
-inline float overviewTilt(float anchorV, float roll)
+// The ring-plane tilt whose silhouette, about 2(R+r) wide and
+// 2(R+r) sin t + 2r cos t high, has the aspect ratio of the view.
+inline float fitTilt(float aspect)
 {
-    // Spread the inner-wall correction across the whole orbit. Its angular
-    // derivative is bounded by pi/6 < 1, so it cannot cancel or reverse the
-    // base latitude rotation (the old clamped smoothstep could do both).
-    float inner = 0.5f * (1 - std::cos(latitude(anchorV, 1)));
-    return -(pi / 3) * inner * smooth(roll);
+    const float outer = 2 * (4 + std::cos(defaultTilt) - 1 + 1), tube = 2;
+    float target = outer / std::max(0.1f, aspect);
+    float t = std::asin(std::min(1.0f, target / std::sqrt(outer * outer + tube * tube))) - std::atan2(tube, outer);
+    return std::max(0.15f, std::min(1.3f, t));
 }
-inline Point overviewPoint(float du, float dv, float roll, float anchorV)
+// Pitch the camera so the folded ring lies at the fitting tilt; the flat map stays level.
+inline float overviewTilt(float anchorV, float roll, float aspect)
 {
-    return rotate(focusedPoint(du, dv, roll, anchorV), {0, overviewTilt(anchorV, roll)});
+    return (-fitTilt(aspect) - latitude(anchorV, 1)) * smooth(roll);
+}
+inline Point overviewPoint(float du, float dv, float roll, float anchorV, float aspect)
+{
+    return rotate(focusedPoint(du, dv, roll, anchorV), {0, overviewTilt(anchorV, roll, aspect)});
 }
 // A direction at infinity uses the same camera rotation and perspective as
 // the world mesh, without camera translation. The camera looks along -Z.
@@ -125,15 +130,6 @@ inline bool projectSkyDirection(Point direction, CameraAngles camera, float roll
         return false;
     screen = {view.x * sx * distance / (roll * depth), view.y * sy * distance / (roll * depth), 0};
     return true;
-}
-// Scale direct manipulation by the projected tangent at the current focus.
-// A narrower inner circumference must not make the map suddenly drag faster.
-inline Point surfaceDrag(float dx, float dy, float sx, float sy, float roll, float anchorV)
-{
-    const float e = .0001f;
-    float tx = overviewPoint(e, 0, roll, anchorV).x / e;
-    float ty = overviewPoint(0, e, roll, anchorV).y / e;
-    return {-dx / std::max(1.0f, sx * tx), -dy / std::max(1.0f, sy * ty), 0};
 }
 // Fade from native 2D map dimensions to the uniform 3D ring mapping.
 inline float verticalScale(float, float, float roll, float aspect)

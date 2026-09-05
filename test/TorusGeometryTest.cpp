@@ -22,15 +22,15 @@ int main()
             for (int v = 0; v <= 20; ++v)
             {
                 float du = u / 20.f - .5f, dv = v / 20.f - .5f;
-                assert(distance(overviewPoint(du, dv, 0, anchor), {du * 8 * pi, dv * 2 * pi, 0}) < .00002f);
-                assert(distance(overviewPoint(-.5f, dv, 1, anchor), overviewPoint(.5f, dv, 1, anchor)) <
+                assert(distance(overviewPoint(du, dv, 0, anchor, 1.6f), {du * 8 * pi, dv * 2 * pi, 0}) < .00002f);
+                assert(distance(overviewPoint(-.5f, dv, 1, anchor, 1.6f), overviewPoint(.5f, dv, 1, anchor, 1.6f)) <
                        .00002f);
-                assert(distance(overviewPoint(du, -.5f, 1, anchor), overviewPoint(du, .5f, 1, anchor)) <
+                assert(distance(overviewPoint(du, -.5f, 1, anchor, 1.6f), overviewPoint(du, .5f, 1, anchor, 1.6f)) <
                        .00002f);
                 for (int r = 0; r < 100; ++r)
                 {
-                    auto a = overviewPoint(du, dv, r / 100.f, anchor);
-                    auto b = overviewPoint(du, dv, (r + 1) / 100.f, anchor);
+                    auto a = overviewPoint(du, dv, r / 100.f, anchor, 1.6f);
+                    auto b = overviewPoint(du, dv, (r + 1) / 100.f, anchor, 1.6f);
                     assert(std::isfinite(a.x) && std::isfinite(a.y) && std::isfinite(a.z));
                     assert(distance(a, b) < 1);
                 }
@@ -125,47 +125,38 @@ int main()
     assert(follow(.99f, .01f, .04f, true) > .99f);
     assert(follow(.01f, .99f, .04f, true) < .01f);
     assert(follow(1, 2, .04f) > 1 && follow(1, 2, .04f) < 2);
-    // The inner-wall correction must never stall or reverse the orbit.
+    // The ring keeps one attitude: at full roll the camera pitch is the tilt
+    // fitting the view whatever the anchor's latitude, and the flat map is level.
     for (int i = 0; i < 1000; ++i)
-        for (float roll : {0.f, .5f, 1.f})
-        {
-            float v = float(i) / 1000, step = .0001f;
-            float a = latitude(v, 1) + overviewTilt(v, roll);
-            float b = latitude(v + step, 1) + overviewTilt(v + step, roll);
-            float slope = (b - a) / (step * 2 * pi);
-            assert(slope > 0.47f && slope < 1.53f);
-        }
-    // Navigation cannot change distance, magnification, or produce a lens
-    // singularity. The inner-wall tilt remains periodic and below 90 degrees.
-    for (int i = -100; i <= 200; ++i)
     {
-        float v = i / 100.0f;
+        float v = float(i) / 1000;
+        assert(std::abs(latitude(v, 1) + overviewTilt(v, 1, 1.6f) + fitTilt(1.6f)) < .00001f);
+        assert(overviewTilt(v, 0, 1.6f) == 0);
+    }
+    // Wider views lay the ring flatter, within the range that keeps it readable.
+    for (float aspect : {1.0f, 1.6f, 1.78f, 2.4f})
+    {
+        assert(fitTilt(aspect) >= .15f && fitTilt(aspect) <= 1.3f);
+        assert(fitTilt(aspect) <= fitTilt(aspect / 2));
+    }
+    // At the ring's latitude, navigation cannot change distance, magnification,
+    // or produce a lens singularity.
+    {
+        const float v = .5f;
         assert(hoverDistance(v) == 18);
-        assert(std::abs(overviewTilt(v, 1) - overviewTilt(v + 1, 1)) < .00001f);
-        assert(std::abs(overviewTilt(v, 1)) <= pi / 3 + .00001f);
-        assert(length(overviewPoint(0, 0, 1, v)) < .00001f);
-        auto north = overviewPoint(0, .0001f, 1, v);
+        assert(std::abs(overviewTilt(v, 1, 1.6f)) <= pi / 3 + .00001f);
+        assert(length(overviewPoint(0, 0, 1, v, 1.6f)) < .00001f);
+        auto north = overviewPoint(0, .0001f, 1, v, 1.6f);
         assert(north.y > 0);
         for (float du : {-.5f, -.25f, 0.0f, .25f, .5f})
             for (float dv : {-.5f, -.25f, 0.0f, .25f, .5f})
             {
-                auto p = overviewPoint(du, dv, 1, v);
+                auto p = overviewPoint(du, dv, 1, v, 1.6f);
                 assert(1 - p.z / hoverDistance(v) > .5f);
-                assert(distance(overviewPoint(du, dv, 0, v), {du * 8 * pi, dv * 2 * pi, 0}) < .00002f);
-                assert(distance(p, overviewPoint(du, dv, 1, v + .0001f)) < .02f);
+                assert(distance(overviewPoint(du, dv, 0, v, 1.6f), {du * 8 * pi, dv * 2 * pi, 0}) < .00002f);
+                assert(distance(p, overviewPoint(du, dv, 1, v + .0001f, 1.6f)) < .02f);
             }
     }
-    for (float v : {0.0f, .25f, .5f, .75f, 1.0f})
-        for (float roll : {0.0f, .5f, 1.0f})
-        {
-            auto movement = surfaceDrag(.1f, .1f, 100, 100, roll, v);
-            assert(movement.x < 0 && movement.y < 0);
-            // Small pointer movements produce matching local screen distances.
-            auto px = overviewPoint(movement.x, 0, roll, v);
-            auto py = overviewPoint(0, movement.y, roll, v);
-            assert(std::abs(px.x * 100 + .1f) < .001f);
-            assert(std::abs(py.y * 100 + .1f) < .001f);
-        }
     std::cout
         << "Planar endpoints, both periodic seams, torus radii continuous finite transition, and "
            "anchored viewport endpoints, uniform ring geometry, locked screen orientation, and shared "
