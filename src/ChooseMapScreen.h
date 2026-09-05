@@ -4,6 +4,8 @@
 #pragma once
 
 #include "MapHeader.h"
+#include "MapTiling.h"
+#include <map>
 #include "GameHeader.h"
 #include "Glob2Screen.h"
 #include <GUINumber.h>
@@ -102,16 +104,22 @@ private:
 	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
 	//! Repeat factors and team count for a map, see MapTiling.h; hidden for games and replays
 	Number *repeatX, *repeatY, *teamCount, *coloniesPerTeam;
+	//! Captions above the four controls
+	Text *repeatXText, *repeatYText, *teamCountText, *coloniesPerTeamText;
+	//! Header and size of every map in the list, read once
+	std::map<std::string, MapTiling::MapInfo> mapInfos;
+	//! Header and size of a listed map, read on first use
+	const MapTiling::MapInfo& infoOfMap(const std::string& fileName);
+	//! Reorder the active list: maps that allow the current numbers first, the others after
+	void sortMapList();
 	//! The header of the selected map as it is in the file; mapHeader describes the repeated map
 	MapHeader sourceMapHeader;
 	//! Fill the repeat and team controls for the selected map
 	void updateTilingControls();
 	//! The repeat factors and team count currently chosen; the widgets only mirror them
 	int tileX = 1, tileY = 1, tileTeams = 0, tileColonies = 0;
-	//! The team count the controls last set on their own, 0 once the user picked one
-	int teamCountFollowingColonies = 0;
-	//! The colonies per team the controls last set on their own, 0 once the user picked one
-	int coloniesFollowingMax = 0;
+	//! True once the user set the colony count or the swarms per colony; until then they follow the map
+	bool teamsPicked = false, swarmsPicked = false;
 	//! Derive mapHeader from the controls
 	void applyTiling();
 	//! True when the controls ask for a repeated map

@@ -3518,3 +3518,15 @@ Repeat map horizontally
 Repeat map vertically
 [colonies per team]
 Colonies per team
+[tile x]
+tile x
+[tile y]
+tile y
+[colonies]
+colonies
+[swarms]
+swarms
+[number of colonies]
+Number of colonies, one per player
+[swarms per colony]
+Swarms per colony
