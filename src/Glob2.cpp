@@ -245,8 +245,10 @@ static int dumpResources(const std::string& mapName)
 			if (map.getRessource(x, y).type == CORN)
 			{
 				cornCount++;
-				if (x < minX) minX = x; if (x > maxX) maxX = x;
-				if (y < minY) minY = y; if (y > maxY) maxY = y;
+				if (x < minX) minX = x;
+				if (x > maxX) maxX = x;
+				if (y < minY) minY = y;
+				if (y > maxY) maxY = y;
 			}
 
 	const int teamCount = game.mapHeader.getNumberOfTeams();
