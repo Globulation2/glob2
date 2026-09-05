@@ -13,6 +13,9 @@
 #include "EditorMainMenu.h"
 #include "Engine.h"
 #include "Game.h"
+#include "Building.h"
+#include "Unit.h"
+#include "FormatableString.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
 #include "MapGenerator.h"
@@ -412,6 +415,58 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	}
 	return 0;
 }
+
+static void dumpTeams(const Game& game)
+{
+	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); t++)
+	{
+		Team* team = game.teams[t];
+		int units = 0, buildings = 0, swarmCount = 0;
+		std::string where;
+		for (int i = 0; i < Unit::MAX_COUNT; i++)
+			if (team->myUnits[i] && !team->myUnits[i]->isDead)
+			{
+				units++;
+				where += FormatableString(" u%0,%1").arg(team->myUnits[i]->posX).arg(team->myUnits[i]->posY);
+			}
+		for (int i = 0; i < Building::MAX_COUNT; i++)
+			if (Building* b = team->myBuildings[i])
+			{
+				buildings++;
+				if (b->type->unitProductionTime)
+				{
+					swarmCount++;
+					where += FormatableString(" (%0,%1)").arg(b->posX).arg(b->posY);
+				}
+			}
+		std::cout << "  team " << t << " units=" << units << " buildings=" << buildings << " swarms=" << swarmCount << where << std::endl;
+	}
+}
+
+// Headless check of a repeated map: -dump-tiled <map> <rx> <ry> <colonies> <swarms>
+static int dumpTiled(const std::string& mapName, int rx, int ry, int colonies, int swarms)
+{
+	using namespace GAGCore;
+	InputStream* stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapName));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "dump-tiled: cannot open " << mapName << std::endl;
+		delete stream;
+		return 1;
+	}
+	Game game(NULL);
+	bool ok = game.load(stream);
+	delete stream;
+	if (!ok || !game.tileForPlay(rx, ry, colonies, swarms))
+	{
+		std::cerr << "dump-tiled: failed on " << mapName << std::endl;
+		return 1;
+	}
+	std::cout << "Map " << mapName << " " << rx << "x" << ry << " : " << game.map.getW() << "x" << game.map.getH()
+	          << ", teams=" << game.mapHeader.getNumberOfTeams() << std::endl;
+	dumpTeams(game);
+	return 0;
+}
 #endif  // !YOG_SERVER_ONLY
 
 int Glob2::run(int argc, char *argv[])
@@ -438,6 +493,12 @@ int Glob2::run(int argc, char *argv[])
 			if (ai + 2 < argc && argv[ai + 2][0] >= '0' && argv[ai + 2][0] <= '9')
 				team = atoi(argv[ai + 2]);
 			int ret = dumpWheatPlan(argv[ai + 1], team);
+			delete globalContainer;
+			return ret;
+		}
+		else if (strcmp(argv[ai], "-dump-tiled") == 0 && ai + 5 < argc)
+		{
+			int ret = dumpTiled(argv[ai + 1], atoi(argv[ai + 2]), atoi(argv[ai + 3]), atoi(argv[ai + 4]), atoi(argv[ai + 5]));
 			delete globalContainer;
 			return ret;
 		}
