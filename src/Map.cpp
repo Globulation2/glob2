@@ -2111,6 +2111,17 @@ void Map::setNoRessource(int x, int y, int l)
 			cases[coordToIndex(dx, dy)].ressource.clear();
 }
 
+void Map::removeUnallowedRessources(int x, int y, int w, int h)
+{
+	for (int dx=x; dx<x+w; dx++)
+		for (int dy=y; dy<y+h; dy++)
+		{
+			Ressource& r=cases[coordToIndex(dx, dy)].ressource;
+			if (r.type!=NO_RES_TYPE && getTerrainType(dx, dy)!=globalContainer->ressourcesTypes.get(r.type)->terrain)
+				r.clear();
+		}
+}
+
 void Map::setRessource(int x, int y, int type, int l)
 {
 	assert(l>=0);

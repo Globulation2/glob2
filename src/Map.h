@@ -498,6 +498,9 @@ public:
 
 	//! With l==0, it will remove no ressource. (Unaligned coordinates)
 	void setNoRessource(int x, int y, int l);
+	//! Removes every ressource in the w by h area at (x, y) whose terrain no longer allows it,
+	//! used after the terrain under it changed
+	void removeUnallowedRessources(int x, int y, int w, int h);
 	//! With l==0, it will add ressource only on one case. (Aligned coordinates)
 	void setRessource(int x, int y, int type, int l);
 	bool isRessourceAllowed(int x, int y, int type);
