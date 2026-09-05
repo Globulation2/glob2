@@ -5,6 +5,7 @@
 #include "TorusPicking.h"
 #include "Game.h"
 #include "BuildingGuiState.h"
+#include "DynamicClouds.h"
 #include <SDL.h>
 
 // Presentation-only state. Never serialized or sent to other players.
@@ -34,7 +35,7 @@ class TorusView
   private:
     void releaseResources();
     bool prepareRenderTarget();
-    void updateDiscovery(Game &game, int team, unsigned options);
+    void updateClouds();
     static constexpr int meshColumns = 160, meshRows = 160;
     std::vector<TorusPicking::Vertex> vertices;
     mutable int cachedPickX = -1, cachedPickY = -1;
@@ -52,11 +53,13 @@ class TorusView
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
     Uint32 lastFrame;
-    std::vector<unsigned char> discoveryPixels, discoveryScratch;
+    DynamicClouds clouds;
+    std::valarray<unsigned char> cloudPixels;
+    int cloudW = 0, cloudH = 0;
     SDL_GLContext graphicsContext = nullptr;
     unsigned graphicsGeneration = 0;
-    unsigned texture, visibility, framebuffer, material;
-    unsigned meshBuffer, indexBuffer;
+    unsigned texture, cloudTexture, framebuffer, material;
+    unsigned meshBuffer, cloudBuffer, indexBuffer;
     float meshKey[8];
     bool failed;
     int originX, originY;

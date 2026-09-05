@@ -83,5 +83,10 @@ public:
 	 */
 	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time, const int worldWidth, const int worldHeight);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
+	/**
+	 * Samples the cloud layer over the whole world at a coarse lattice.
+	 * @param out receives gridW*gridH opacities, row-major from the map origin
+	 */
+	void computeWorld(const int worldWidth, const int worldHeight, const int time, std::valarray<unsigned char> &out, int &gridW, int &gridH) const;
 };
 

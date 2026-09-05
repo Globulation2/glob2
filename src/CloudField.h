@@ -21,13 +21,23 @@ struct CloudField
         amplitude = std::sqrt(float(alpha)) * 1.8f;
         timeCoordinate = int(float(time) * 256 / std::max(1.0f, stability));
     }
+    float sample(int x, int y, float magnification) const
+    {
+        int nx = int((x / magnification + offsetX) * frequency);
+        int ny = int((y / magnification + offsetY) * frequency);
+        return amplitude * (SimplexNoise::getNoise3D(nx, ny, timeCoordinate) - 149);
+    }
+    // Periodic in both axes: the four samples one period apart are blended
+    // by position, so the field is continuous across the map seams.
     unsigned char opacity(int x, int y, float magnification = 1) const
     {
         x = ((x % width) + width) % width;
         y = ((y % height) + height) % height;
-        int nx = int((x / magnification + offsetX) * frequency);
-        int ny = int((y / magnification + offsetY) * frequency);
-        float value = amplitude * (SimplexNoise::getNoise3D(nx, ny, timeCoordinate) - 149);
+        float fx = float(x) / width, fy = float(y) / height;
+        float top = sample(x, y, magnification) * (1 - fx) + sample(x - width, y, magnification) * fx;
+        float bottom = sample(x, y - height, magnification) * (1 - fx) +
+                       sample(x - width, y - height, magnification) * fx;
+        float value = top * (1 - fy) + bottom * fy;
         return static_cast<unsigned char>(std::min(float(maxAlpha), value * value / 65536));
     }
 };

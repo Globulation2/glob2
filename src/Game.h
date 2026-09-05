@@ -161,6 +161,7 @@ public:
 		DRAW_SCRIPT_AREAS = 0x40,
 		DRAW_NO_RESSOURCE_GROWTH_AREAS = 0x80,
 		DRAW_OVERLAY = 0x100,
+		DRAW_NO_CLOUD_LAYER = 0x200,
 	};
 
 	/// This method will prepare the game with the provided gameHeader,
