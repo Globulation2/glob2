@@ -15,6 +15,7 @@ isDarwinPlatform = sys.platform=='darwin'
 
 def establish_options(env):
     opts = Variables('options_cache.py')
+    opts.Add("CXX", "C++ compiler", env["CXX"])
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
