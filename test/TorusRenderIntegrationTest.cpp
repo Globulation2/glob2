@@ -5,9 +5,10 @@
 #include "TorusPicking.h"
 #include "DynamicClouds.h"
 #include <SDL.h>
-// Expose only camera state to advance transitions deterministically in tests.
+// Expose camera and settings widgets for deterministic integration checks.
 #define private public
 #include "TorusView.h"
+#include "SettingsScreen.h"
 #undef private
 #include "GameGUI.h"
 #include "Engine.h"
@@ -15,7 +16,6 @@
 #include "Unit.h"
 #include "GameGUIKeyActions.h"
 #include "CloudField.h"
-#include "GameGUIDialog.h"
 #include "GUIButton.h"
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
@@ -84,22 +84,33 @@ int main(int argc, char **argv)
         assert(!Settings().automaticTorus);
         globalContainer->settings.automaticTorus = false;
         {
-            InGameOptionScreen options(&gui);
+            SettingsScreen options;
             const int oldMute = globalContainer->settings.mute;
             assert(!options.automaticTorus->getState());
             options.automaticTorus->setState(true);
-            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, InGameOptionScreen::AUTOMATIC_TORUS, 0);
+            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, SettingsScreen::AUTOMATIC_TORUS, 0);
             assert(globalContainer->settings.automaticTorus);
             assert(globalContainer->settings.mute == oldMute);
-            globalContainer->settings.save("torus-option-test.txt");
-            Settings restored;
-            restored.load("torus-option-test.txt");
-            assert(restored.automaticTorus);
-            options.automaticTorus->setState(false);
-            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, InGameOptionScreen::AUTOMATIC_TORUS, 0);
-            assert(!globalContainer->settings.automaticTorus);
+            options.onAction(nullptr, BUTTON_RELEASED, SettingsScreen::OK, 0);
         }
         Settings restored;
+        restored.load();
+        assert(restored.automaticTorus);
+        {
+            SettingsScreen options;
+            assert(options.automaticTorus->getState());
+            options.automaticTorus->setState(false);
+            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, SettingsScreen::AUTOMATIC_TORUS, 0);
+            assert(!globalContainer->settings.automaticTorus);
+            options.onAction(nullptr, BUTTON_RELEASED, SettingsScreen::CANCEL, 0);
+            assert(globalContainer->settings.automaticTorus);
+        }
+        {
+            SettingsScreen options;
+            options.automaticTorus->setState(false);
+            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, SettingsScreen::AUTOMATIC_TORUS, 0);
+            options.onAction(nullptr, BUTTON_RELEASED, SettingsScreen::OK, 0);
+        }
         restored.load();
         assert(!restored.automaticTorus);
         TorusView view;

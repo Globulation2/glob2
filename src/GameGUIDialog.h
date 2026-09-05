@@ -97,14 +97,12 @@ public:
 	{
 		OK = 0,
 		MUTE = 1,
-		AUTOMATIC_TORUS = 2,
 	};
 
 public:
 	Selector *musicVol;
 	Selector *voiceVol;
 	OnOffButton* mute;
-	OnOffButton* automaticTorus;
 	Text *musicVolText;
 	Text *voiceVolText;
 public:

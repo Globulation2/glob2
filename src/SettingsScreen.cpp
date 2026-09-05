@@ -116,6 +116,10 @@ SettingsScreen::SettingsScreen()
 	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
 	addWidgetToGroup(scrollwheelText, generalGroup);
 
+	automaticTorus=new OnOffButton(230, 270, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.automaticTorus, AUTOMATIC_TORUS);
+	addWidgetToGroup(automaticTorus, generalGroup);
+	automaticTorusText=new Text(260, 270, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[automatic torus view]"), 180);
+	addWidgetToGroup(automaticTorusText, generalGroup);
 	
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	//TODO: warning style should be defined centrally.
@@ -474,6 +478,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 
 			rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
 			scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
+			automaticTorusText->setText(Toolkit::getStringTable()->getString("[automatic torus view]"));
 
 			musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
 			audioMuteText->setText(Toolkit::getStringTable()->getString("[mute]"));
@@ -543,6 +548,10 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			globalContainer->settings.scrollWheelEnabled=scrollwheel->getState();
 			scrollWheelEnabled=scrollwheel->getState();
+		}
+		else if (source==automaticTorus)
+		{
+			globalContainer->settings.automaticTorus=automaticTorus->getState();
 		}
 		else if (source==lowquality)
 		{

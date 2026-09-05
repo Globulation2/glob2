@@ -38,9 +38,9 @@ settings. Existing customized layouts gain missing default actions only when the
 By default, the modes are separate. Scrolling and middle-dragging never change
 modes, and only G starts a 1.8-second transition in either direction.
 
-To opt into movement-triggered folding, open the in-game menu, choose **Options**,
-and enable **Automatic torus view**. The setting takes effect immediately and is
-saved locally. Scrolling with direction keys, screen edges or middle-drag then
+To opt into movement-triggered folding, open **Settings → General** from the main
+menu and enable **Automatic torus view**, then press **OK** to save it locally.
+Scrolling with direction keys, screen edges or middle-drag then
 folds out gradually (4 seconds for a full transition). After movement stops for
 250 ms, it returns to 2D quickly (0.45 seconds for a full transition). G keeps
 the overview open; press it again to release it. Selection and painting gestures
@@ -231,8 +231,8 @@ still needed to determine whether his separate startup/display issue remains.
 ### Navigation experiment
 
 Movement-triggered folding from `feat/torus-pan` interrupted ordinary scrolling
-in playtesting, so explicit mode switching remains the default. The in-game
-option supports the automatic behavior for players who prefer it. Both modes
+in playtesting, so explicit mode switching remains the default. The main-menu
+setting supports the automatic behavior for players who prefer it. Both modes
 share the fixed-axis geometry, rendering fixes and large-map optimizations.
 This preference does not require rebasing onto the separate fullscreen-scaling
 or AI trainer/refactoring PRs.

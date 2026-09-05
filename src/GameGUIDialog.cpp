@@ -345,7 +345,7 @@ Uint32 InGameAllianceScreen::getChatMask(void)
 
 //! Option Screen
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, 320, 360)
+:OverlayScreen(globalContainer->gfx, 320, 300)
 {
 	Text *audioMuteText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Mute]"), 200);
 	addWidget(audioMuteText);
@@ -373,17 +373,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 		voiceVolText->visible=false;
 	}
 
-	automaticTorus = new OnOffButton(19, 200, 20, 20, ALIGN_LEFT, ALIGN_TOP,
-		globalContainer->settings.automaticTorus, AUTOMATIC_TORUS);
-	addWidget(automaticTorus);
-	addWidget(new Text(50, 200, ALIGN_LEFT, ALIGN_TOP, "standard",
-		Toolkit::getStringTable()->getString("[automatic torus view]"), 260));
-	addWidget(new Text(19, 230, ALIGN_LEFT, ALIGN_TOP, "little",
-		Toolkit::getStringTable()->getString("[automatic torus scrolling]"), 290));
-	addWidget(new Text(19, 250, ALIGN_LEFT, ALIGN_TOP, "little",
-		Toolkit::getStringTable()->getString("[automatic torus pin]"), 290));
-
-	addWidget(new TextButton(0, 310, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
@@ -392,7 +382,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	else
 		oss << " SDL";
 		
-	addWidget(new Text(0, 280, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
+	addWidget(new Text(0, 220, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
 	dispatchInit();
 }
 
@@ -416,10 +406,6 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 		globalContainer->settings.musicVolume = musicVol->getValue();
 		globalContainer->settings.voiceVolume = voiceVol->getValue();
 		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
-	}
-	else if (action==BUTTON_STATE_CHANGED && source==automaticTorus)
-	{
-		globalContainer->settings.automaticTorus = automaticTorus->getState();
 	}
 	else if (action==BUTTON_STATE_CHANGED && source==mute)
 	{
