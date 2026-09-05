@@ -578,6 +578,7 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(60);
 		// load resources
 		ressources = Toolkit::getSprite("data/gfx/ressource");
+		ressources->createTextureAtlas(true);
 		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
 		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
 		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");

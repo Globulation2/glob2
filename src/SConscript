@@ -45,6 +45,8 @@ FertilityCalculatorThreadMessage.cpp
 Game.cpp
 GameEvent.cpp
 GameGUI.cpp
+TorusView.cpp
+TorusViewRender.cpp
 GameGUIDefaultAssignManager.cpp
 GameGUIDialog.cpp
 GameGUIGhostBuildingManager.cpp
@@ -261,6 +263,17 @@ local = env.Clone()
 source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
+
+# Optional integration executable; normal game/server builds do not build it.
+if not env['server']:
+    render_test = local.Program("torus-render-test",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("TorusRenderIntegrationTest", "#test/TorusRenderIntegrationTest.cpp")])
+    local.Alias("torus-render-test", render_test)
+    render_benchmark = local.Program("torus-render-benchmark",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("TorusRenderBenchmark", "#test/TorusRenderBenchmark.cpp")])
+    local.Alias("torus-render-benchmark", render_benchmark)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")

@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Leo Wandersleb
 
-#ifndef _DYNAMICCLOUDS_H
-#define _DYNAMICCLOUDS_H
+#pragma once
 
-#include "PerlinNoise.h"
 #include "Settings.h"
-#include <math.h>
+#include <algorithm>
 #include <valarray>
 
 namespace GAGCore
@@ -48,16 +46,13 @@ class DynamicClouds
 	 * this value is set in preferences.txt: cloudHeight=150
 	 */
 	float cloudHeight;
-	/**
-	 * helper variable (sqrt(maxAlpha))
-	 */
-	float rootOfMaxAlpha;
 	/// screen width/granularity+1
 	int wGrid;
 	/// screen height/granularity+1
 	int hGrid;
 	///cloud/shadow density
-	std::valarray<unsigned char> alphaMap;
+	std::valarray<unsigned char> alphaMap, cloudMap;
+    int renderOffsetX, renderOffsetY, renderCellSize;
 public:
 	 ///render() distinguishes between CLOUD and SHADOW
 	enum Layer {
@@ -69,9 +64,8 @@ public:
 	///initializes DynamicClouds using the settings file (preferences.txt)
 	DynamicClouds(Settings * settings)
 	{
-		granularity=settings->cloudPatchSize;
+		granularity=std::max(1, settings->cloudPatchSize);
 		maxAlpha=(unsigned char)settings->cloudMaxAlpha;
-		rootOfMaxAlpha=sqrt((float)maxAlpha);
 		maxCloudSpeed=settings->cloudMaxSpeed;
 		windStability=settings->cloudWindStability;
 		cloudStability=settings->cloudStability;
@@ -86,9 +80,16 @@ public:
 	 * @param w width of the alphaMap
 	 * @param h height of the alphaMap
 	 * @param time time
+	 * @param includeCloudLayer false when only shadows will be rendered
+	 * @param maxGridSize overview sampling budget per world axis; zero keeps native detail
 	 */
-	void compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeght, const int time);
+	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time, const int worldWidth, const int worldHeight,
+                 bool includeCloudLayer = true, int maxGridSize = 0);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
+	/**
+	 * Samples the cloud layer over the whole world at a coarse lattice.
+	 * @param out receives gridW*gridH opacities, row-major from the map origin
+	 */
+	void computeWorld(const int worldWidth, const int worldHeight, const int time, std::valarray<unsigned char> &out, int &gridW, int &gridH,
+                      int maxGridSize = 2048) const;
 };
-
-#endif /* _DYNAMICCLOUDS_H */

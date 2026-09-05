@@ -24,6 +24,9 @@
 #endif
 #endif // defined(__APPLE__)
 #endif // HAVE_OPENGL
+#ifdef HAVE_OPENGL
+#include <AlphaMapRender.h>
+#endif
 #include "SDL_ttf.h"
 #include <SDL_image.h>
 #include <math.h>
@@ -1606,10 +1609,11 @@ namespace GAGCore
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
+			constexpr double pi = 3.14159265358979323846;
 			for (int i=0; i<tot; i++)
 			{
-				double angle0 = (2*M_PI*(double)i)/((double)tot);
-				double angle1 = (2*M_PI*(double)(i+1))/((double)tot);
+				double angle0 = (2*pi*(double)i)/((double)tot);
+				double angle1 = (2*pi*(double)(i+1))/((double)tot);
 				glVertex2d(fx+fray*sin(angle0), fy+fray*cos(angle0));
 				glVertex2d(fx+fray*sin(angle1), fy+fray*cos(angle1));
 			}
@@ -1680,14 +1684,6 @@ namespace GAGCore
 			if (surface->dirty)
 				surface->uploadToTexture();
 
-			// state change
-			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(true);
-			glState.doTexture(true);
-			glColor4ub(255, 255, 255, alpha);
-
-			// draw
-			glState.setTexture(surface->texture);
 			if (surface->textureInfo && surface->textureInfo->sprite)
 			{
 				Sprite* sprite = surface->textureInfo->sprite;
@@ -1718,6 +1714,13 @@ namespace GAGCore
 			}
 			else
 			{
+				// Atlas frames only queue geometry; finishDrawingSprite sets their
+				// state once for the batch. Immediate draws need it here.
+				glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glState.doBlend(true);
+				glState.doTexture(true);
+				glColor4ub(255, 255, 255, alpha);
+				glState.setTexture(surface->texture);
 				glBegin(GL_QUADS);
 				glTexCoord2f(static_cast<float>(sx) * surface->texMultX, static_cast<float>(sy) * surface->texMultY);
 				glVertex2f(x, y);
@@ -1894,35 +1897,7 @@ namespace GAGCore
 			} else {
 				glState.doBlend(true);
 				glState.doTexture(false);
-				for (int dy=0; dy < mapH-1; dy++)
-				{
-					int midy = y + dy * cellH + cellH/2;
-					for (int dx=0; dx < mapW-1; dx++)
-					{
-
-						glBegin(GL_TRIANGLE_FAN);
-						//This interpolates to find the center color, then fans out to the four corners.
-						int midx = x + dx * cellW + cellW/2;
-						int mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-						int mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-						glColor4ub(color.r, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-						glVertex2f(midx, midy);
-						//Touch each of the four corners
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
-						glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
-
-						glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
-
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glEnd();
-					}
-				}
+				drawAlphaMapBatched(map, mapW, mapH, x, y, cellW, cellH, color.r, color.g, color.b);
 			}
 		}
 		else
@@ -2080,6 +2055,7 @@ namespace GAGCore
 	GraphicContext::~GraphicContext(void)
 	{
 		freeDummySurface();
+		if (glContext) SDL_GL_DeleteContext(glContext);
 		TTF_Quit();
 		SDL_Quit();
 
@@ -2127,6 +2103,7 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
@@ -2134,6 +2111,12 @@ namespace GAGCore
 		optionFlags &= ~USEGPU;
 		#endif
 
+		// SDL windows do not own their GL contexts. Release the old context
+		// explicitly, including all renderer resources attached to it.
+		if (glContext) {
+			SDL_GL_DeleteContext(glContext);
+			glContext = nullptr;
+		}
 		// if window exists, delete it
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -2166,11 +2149,18 @@ namespace GAGCore
 		}
 		{
 			_gc = this;
-			// enable GL context
-			if (flags & USEGPU)
+			// Use the effective flags: software-only builds clear USEGPU above.
+			if (optionFlags & USEGPU)
 			{
-				SDL_GLContext context = SDL_GL_CreateContext(window);
-				SDL_GL_MakeCurrent(window, context);
+				glContext = SDL_GL_CreateContext(window);
+				if (!glContext || SDL_GL_MakeCurrent(window, glContext) != 0)
+				{
+					fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
+					if (glContext) SDL_GL_DeleteContext(glContext);
+					glContext = nullptr;
+					return false;
+				}
+				++glContextGeneration;
 			}
 			// set _glFormat
 			if ((optionFlags & USEGPU) && (_gc->sdlsurface->format->BitsPerPixel != 32))

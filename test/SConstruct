@@ -1,6 +1,8 @@
 import sys
 
 env = Environment()
+if "CXX" in ARGUMENTS:
+  env["CXX"] = ARGUMENTS["CXX"]
 
 if sys.platform.startswith("linux"):
   ccflags = '-Wall -g'

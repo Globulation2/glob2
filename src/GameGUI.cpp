@@ -179,6 +179,8 @@ GameGUI::~GameGUI()
 
 void GameGUI::init()
 {
+	torusView.reset();
+	torusPointerDown = false;
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;
@@ -329,6 +331,9 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
+    if (torusView.active()) {
+        if (!torusPointerDown || !torusMapPointer(mx, my, mx, my)) return;
+    }
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
 		dragging from correctly going through intermediate cells.
@@ -339,7 +344,7 @@ void GameGUI::dragStep(int mx, int my, int button)
 	// int mx, my;
 	// Uint8 button = SDL_GetMouseState(&mx, &my);
         // fprintf (stderr, "enter dragStep: button: %d, mx: %d, selectionMode: %d\n", button, mx, selectionMode);
-	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
@@ -480,7 +485,7 @@ void GameGUI::step(void)
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 
 	assert(localTeam);
@@ -860,6 +865,29 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    if ((event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_MIDDLE) ||
+        (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST))
+    {
+        panPushed = false;
+    }
+    if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+    {
+        viewportSpeedX = viewportSpeedY = 0;
+        torusView.stopMoving();
+        if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
+        torusPointerDown = false;
+        torusView.setPointerHeld(false);
+    }
+    if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT)
+        torusView.setPointerHeld(false);
+
+    if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText) {
+        int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
+        if (event->type == SDL_MOUSEMOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
+        if (torusView.event(*event, width)) return;
+        if (torusView.active() && handleTorusPointer(*event)) return;
+    }
+
 	// handle typing
 	if (typingInputScreen)
 	{
@@ -915,16 +943,6 @@ void GameGUI::processEvent(SDL_Event *event)
 		handleKeyDump(event->key);
 	
 	
-	if (event->type==SDL_MOUSEBUTTONUP)
-	{
-		int button=event->button.button;
-		if (button==SDL_BUTTON_MIDDLE)
-		{
-			panPushed=false;
-		}
-	}
-
-
 	if (event->type == SDL_MOUSEBUTTONDOWN)
 	{
 		int butx = event->button.x;
@@ -1000,7 +1018,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		if (event->type==SDL_KEYDOWN)
 		{
-			handleKey(event->key.keysym, true);
+			handleKey(event->key.keysym, true, event->key.repeat != 0);
 		}
 		else if (event->type==SDL_KEYUP)
 		{
@@ -1198,7 +1216,17 @@ void GameGUI::repairAndUpgradeBuilding(Building *building, bool repair, bool upg
 	}
 }
 
-void GameGUI::handleKey(SDL_Keysym key, bool pressed)
+void GameGUI::toggleTorusView()
+{
+    if (!torusView.available() || typingInputScreen || inGameMenu != IGM_NONE || scrollableText) return;
+    if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
+    torusPointerDown=false;
+    torusView.toggle();
+    selectionPushed = panPushed = miniMapPushed = false;
+    viewportSpeedX = viewportSpeedY = 0;
+}
+
+void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 {
 
 	int modifier;
@@ -1223,6 +1251,9 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 				}
 				break;
+                case GameGUIKeyActions::ToggleTorusView:
+                    if (!repeat) toggleTorusView();
+                    break;
 				case GameGUIKeyActions::ShowMainMenu:
 				{
 					if (inGameMenu==IGM_NONE)
@@ -1302,7 +1333,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					viewportX = evX-((sw-RIGHT_MENU_WIDTH)>>6);
 					viewportY = evY-(sh>>6);
 					
-					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+					viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::GoToHome:
@@ -1318,7 +1349,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					viewportX = evX-((sw-RIGHT_MENU_WIDTH)>>6);
 					viewportY = evY-(sh>>6);
 					
-					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+					viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::PauseGame:
@@ -1871,7 +1902,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 		viewportY = (panViewY+dy)&game.map.getMaskH();
 	}
 	
-	moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+	viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 
 	dragStep(mx, my, button);
 }
@@ -2012,7 +2043,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int oldViewportX = viewportX;
 			int oldViewportY = viewportY;
 			minimapMouseToPos(globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + mx, my, &viewportX, &viewportY, true);
-			moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+			viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 		}
 	}
 	// Check if one of the panel buttons has been clicked
@@ -2931,6 +2962,7 @@ void GameGUI::drawUnitInfos(void)
 			unsigned resImg = r->gfxId + r->sizesCount - 1;
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
 			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8-rdec, ypos, globalContainer->ressources, resImg);
+			globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
 		}
 		else
 		{
@@ -3700,6 +3732,7 @@ void GameGUI::drawRessourceInfos(void)
 		if (!rt->eternal)
 			resImg--;
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+16, ypos, globalContainer->ressources, resImg);
+		globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
 		
 		// Draw ressource count
 		if (rt->granular)
@@ -4122,6 +4155,7 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
+    if (!torusView.active()) {
 	if (selectionMode==TOOL_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
@@ -4173,6 +4207,7 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
 	}
 
+    }
 	// draw message List
 	if (game.anyPlayerWaited && game.maskAwayPlayer && game.anyPlayerWaitedTimeFor>2)
 	{
@@ -4379,26 +4414,32 @@ void GameGUI::drawAll(int team)
 	
 	updateHilightInGame();
 	arrowPositions.clear();
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	const bool drewTorus = torusView.active() &&
+		torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
+			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+	if (!drewTorus)
 	{
-		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);
-	}
-	else
-	{
-		std::set<Building*> visibleBuildings;
+		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+		{
+			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
+			game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, drawOptions);
+		}
+		else
+		{
+			std::set<Building*> visibleBuildings;
 		
-		globalContainer->gfx->setClipRect();
+			globalContainer->gfx->setClipRect();
 		
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
+			game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, drawOptions, &visibleBuildings);
 		
-		// generate and draw particles
-		generateNewParticles(&visibleBuildings);
-		drawParticles();
-	}
+			// generate and draw particles
+			generateNewParticles(&visibleBuildings);
+			drawParticles();
+		}
 
+	}
 	///Draw ghost buildings
-	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+	if (!torusView.active() && !globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 	
 	// if paused, tint the game area
 	if (gamePaused)
@@ -4438,7 +4479,7 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
 
-	// draw menu if any
+    // draw menu if any
 	if (inGameMenu)
 	{
 		globalContainer->gfx->setClipRect();
@@ -4999,7 +5040,7 @@ void GameGUI::centerViewportOnSelection(void)
 		viewportX = viewportX & game.map.getMaskW();
 		viewportY = viewportY & game.map.getMaskH();
 		
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 }
 
@@ -5324,10 +5365,15 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 	}
 }
 
-void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
+void GameGUI::viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
 {
 	if ((viewportX==oldViewportX) && (viewportY==oldViewportY))
 		return;
+
+    if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText &&
+        !(lastMouseButtonState & SDL_BUTTON(SDL_BUTTON_LEFT)))
+        torusView.notifyMove();
+    torusView.setViewport(viewportX, viewportY);
 	
 	int dx = viewportX - oldViewportX;
 	if (dx > game.map.getW() / 2)
@@ -5347,4 +5393,95 @@ void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, i
 		p->x -= dx * 32;
 		p->y -= dy * 32;
 	}
+}
+
+// Adapt the rendered surface to the normal tool coordinate system, retaining
+// sub-tile precision for even-sized buildings and wrapping at the map seams.
+bool GameGUI::torusMapPointer(int x, int y, int &mx, int &my) const
+{
+    int px, py;
+    if (!torusView.pick(x, y, px, py))
+        return false;
+    mx = (px - viewportX * 32) & (game.map.getW() * 32 - 1);
+    my = (py - viewportY * 32) & (game.map.getH() * 32 - 1);
+    return true;
+}
+
+bool GameGUI::handleTorusPointer(const SDL_Event &event)
+{
+    if (event.type != SDL_MOUSEBUTTONDOWN && event.type != SDL_MOUSEBUTTONUP)
+        return false;
+    if (event.button.button != SDL_BUTTON_LEFT)
+        return false;
+    bool onMap = event.button.x >= 0 && event.button.y >= 16 &&
+        event.button.x < globalContainer->gfx->getW() - RIGHT_MENU_WIDTH;
+    if (!onMap && !torusPointerDown)
+        return false;
+    int mx, my;
+    bool hit = onMap && torusMapPointer(event.button.x, event.button.y, mx, my);
+    mouseX = event.button.x;
+    mouseY = event.button.y;
+    if (event.type == SDL_MOUSEBUTTONDOWN)
+    {
+        torusPointerDown = hit;
+        torusView.setPointerHeld(hit);
+        if (hit)
+        {
+            // The atlas renderer's mouse hit refers to a previous capture.
+            // Resolve units at the picked map cell, with normal visibility rules.
+            game.mouseUnit = NULL;
+            int x = ((mx >> 5) + viewportX) & game.map.getMaskW();
+            int y = ((my >> 5) + viewportY) & game.map.getMaskH();
+            Uint16 gid = game.map.getAirUnit(x, y);
+            if (gid == NOGUID)
+                gid = game.map.getGroundUnit(x, y);
+            if (gid != NOGUID &&
+                (Unit::GIDtoTeam(gid) == localTeamNo || game.map.isFOWDiscovered(x, y, localTeam->me) ||
+                 globalContainer->replaying))
+                game.mouseUnit = game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
+            handleMapClick(mx, my, SDL_BUTTON_LEFT);
+        }
+    }
+    else
+    {
+        if (torusPointerDown)
+        {
+            if (hit && selectionMode == BUILDING_SELECTION && selectionPushed &&
+                selection.building->type->isVirtual)
+                moveFlag(mx, my, true);
+            else if (selectionMode == BRUSH_SELECTION || selectionMode == TOOL_SELECTION)
+            {
+                if (hit)
+                    toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
+                else
+                    toolManager.finishPointerGesture(localTeamNo);
+            }
+        }
+        torusPointerDown = false;
+        miniMapPushed = selectionPushed = panPushed = false;
+    }
+    return true;
+}
+
+void GameGUI::drawTorusMapOverlay(int originX, int originY)
+{
+    if (globalContainer->replaying)
+        return;
+    ghostManager.drawAll(originX, originY, localTeamNo);
+    int px, py;
+    if ((selectionMode == TOOL_SELECTION || selectionMode == BRUSH_SELECTION) &&
+        torusView.pick(mouseX, mouseY, px, py))
+    {
+        int mx = (px - originX * 32) & (game.map.getW() * 32 - 1);
+        int my = (py - originY * 32) & (game.map.getH() * 32 - 1);
+        toolManager.drawTool(mx, my, localTeamNo, originX, originY);
+    }
+    if (selectionMode == BUILDING_SELECTION)
+    {
+        Building *b = selection.building;
+        int x, y;
+        game.map.buildingPosToCursor(b->posXLocal, b->posYLocal, b->type->width, b->type->height, &x, &y,
+                                     originX, originY);
+        globalContainer->gfx->drawCircle(x, y, b->type->width * 16, 0, 0, 190);
+    }
 }

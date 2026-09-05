@@ -329,6 +329,8 @@ namespace GAGCore
 		//! the minimum acceptable resolution
 		int minW, minH;
 		SDL_Window *window = nullptr;
+		SDL_GLContext glContext = nullptr;
+		unsigned glContextGeneration = 0;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -343,6 +345,8 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+		unsigned getGLContextGeneration() const { return glContextGeneration; }
+
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
@@ -456,11 +460,12 @@ namespace GAGCore
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
-		bool createTextureAtlas();
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
 	
 	public:
+		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
+		bool createTextureAtlas(bool allowVariableSizes = false);
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }
 		//! Destructor

@@ -382,7 +382,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	else
 		oss << " SDL";
 		
-	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
+	addWidget(new Text(0, 220, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
 	dispatchInit();
 }
 
@@ -407,7 +407,7 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 		globalContainer->settings.voiceVolume = voiceVol->getValue();
 		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
 	}
-	else if (action==BUTTON_STATE_CHANGED)
+	else if (action==BUTTON_STATE_CHANGED && source==mute)
 	{
 		globalContainer->settings.mute = mute->getState();
 		musicVol->visible = ! globalContainer->settings.mute;

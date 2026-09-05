@@ -23,6 +23,7 @@
 #include "BuildingType.h"
 #include "Game.h"
 #include "GameUtilities.h"
+#include "MapRenderGeometry.h"
 #include "GlobalContainer.h"
 #include "LogFileManager.h"
 #include "Order.h"
@@ -1812,8 +1813,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
 	imgid=unit->skin->startImage[unit->action];
-	int px, py;
-	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+	// The map traversal already supplies the visible wrapped copy. Rewrapping
+	// the unit position with a small-viewport margin hides units near the end
+	// of a full-world capture and draws seam copies at the same location.
+	int px=x*32, py=y*32;
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
@@ -2356,9 +2359,17 @@ inline void Game::drawMapGroundBuildings(int left, int top, int right, int bot, 
 						|| (building->seenByMask & visibleTeams)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
-						int px,py;
-						map.mapCaseToDisplayable(building->posXLocal, building->posYLocal, &px, &py, viewportX, viewportY);
-					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						const BuildingType *type = building->type;
+						const int frame = type->gameSpriteImage;
+						const int spriteW = type->gameSpritePtr->getW(frame);
+						const int spriteH = type->gameSpritePtr->getH(frame);
+						const int width = type->width * 32, height = type->height * 32;
+						MapRenderGeometry::wrappedCopies(
+						    (building->posXLocal - viewportX) * 32,
+						    (building->posYLocal - viewportY) * 32,
+						    std::min(0, width - spriteW) - 64, std::min(0, height - spriteH) - 64,
+						    width + 64, height + 64, map.getW() * 32, map.getH() * 32, sw, sh,
+						    [&](int px, int py) { drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions); });
 						drawnBuildings.insert(building);
 					}
 				}
@@ -2822,6 +2833,7 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 	// Draw the code
 	//globalContainer->gfx->drawFilledRect(bx, by, 40, 40, 0,0,0,128);
 	//globalContainer->gfx->drawCircle(bx+20, by+20, 20, Color::white);
+	constexpr double pi = 3.14159265358979323846;
 	Color transpWhite = Color(255, 255, 255, 192);
 	globalContainer->gfx->drawLine(
 		bx+20+cosf(angle)*5,
@@ -2832,14 +2844,14 @@ inline void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewport
 	globalContainer->gfx->drawLine(
 		bx+20+cosf(angle)*17,
 		by+20+sinf(angle)*17,
-		bx+20+cosf(angle-M_PI/6)*10,
-		by+20+sinf(angle-M_PI/6)*10,
+		bx+20+cosf(angle-pi/6)*10,
+		by+20+sinf(angle-pi/6)*10,
 		Color::white);
 	globalContainer->gfx->drawLine(
 		bx+20+cosf(angle)*17,
 		by+20+sinf(angle)*17,
-		bx+20+cosf(angle+M_PI/6)*10,
-		by+20+sinf(angle+M_PI/6)*10,
+		bx+20+cosf(angle+pi/6)*10,
+		by+20+sinf(angle+pi/6)*10,
 		Color::white);
 	globalContainer->gfx->drawSprite(bx+decX+4, by+decY+4, unitSprite, imgid, 160);
 }
@@ -2874,7 +2886,7 @@ inline bool Game::isOnScreen(int left, int top, int right, int bot, int viewport
 
 
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings)
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, int cloudGridLimit)
 {
 	static int time = 0;
 	static DynamicClouds ds(&globalContainer->settings);
@@ -2898,7 +2910,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	// compute and draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		ds.compute(viewportX, viewportY, sw, sh, time);
+		ds.compute(viewportX, viewportY, sw, sh, SDL_GetTicks64()/40, map.getW(), map.getH(),
+		           !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
@@ -2908,7 +2921,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 
 	// draw cloud overlay if we are in high quality
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) &&
+	    (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
 
 	// Draw units that are off the screen for the selected building

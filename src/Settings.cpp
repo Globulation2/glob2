@@ -29,6 +29,7 @@ Settings::Settings()
 	screenWidth = 800;
 	screenHeight = 600;
 	optionFlags = 0;
+	automaticTorus = false;
 	language = "en";
 	musicVolume = 190;
 	voiceVolume = 190;
@@ -104,6 +105,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(optionFlags);
+		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
 		READ_PARSED_INT(musicVolume);
 		READ_PARSED_INT(voiceVolume);
@@ -171,6 +173,7 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
+		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);

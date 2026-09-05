@@ -605,3 +605,5 @@
 [Your IP address was temporarily banned]
 [Your unit got converted to %0's team]
 [Your username was banned]
+
+[automatic torus view]

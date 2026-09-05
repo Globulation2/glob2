@@ -8,8 +8,7 @@ on:
 jobs:
   linux:
     name: linux (${{ matrix.image }})
-    runs-on: ubuntu-latest
-    container: ${{ matrix.image }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
@@ -17,35 +16,78 @@ jobs:
         # 1.74 (catches C++20 features the oldest supported compiler lacks),
         # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
         # that no longer come in transitively).
-        image: [ubuntu:22.04, ubuntu:24.04]
+        include:
+          - image: ubuntu:22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
     steps:
       - name: Install dependencies
+        timeout-minutes: 15
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          apt-get update -qq
-          apt-get install -y --no-install-recommends \
-            ca-certificates git g++ python3 scons pkg-config \
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
 
       - uses: actions/checkout@v4
 
       - name: Build glob2
-        run: scons -j$(nproc) release=1
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
+
+      - name: Test torus geometry, picking and cloud coordinates
+        run: |
+          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+          /tmp/torus-geometry
+          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+          /tmp/torus-picking
+          ${{ matrix.compiler }} -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+          /tmp/cloud-field
+          ${{ matrix.compiler }} -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+          /tmp/map-render-geometry
+
+      - name: Exercise GPU and software game rendering
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 torus-render-test
+          mkdir -p /tmp/glob2-render-profile
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            xvfb-run -a build/src/torus-render-test -g -F -m -s 1120x720
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            build/src/torus-render-test -G -F -m -s 1120x720
 
       - name: Build the YOG server
-        run: scons -j$(nproc) release=1 server=1 --build=build-server
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
 
       - name: Build and run the tests
         working-directory: test
         run: |
-          scons -j$(nproc)
+          scons CXX=${{ matrix.compiler }} -j$(nproc)
           ./TestsRunner
+
+      - name: Build without OpenGL
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software
+          python3 test/SoftwareStartupTest.py build-software/src/glob2
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software torus-render-test
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            build-software/src/torus-render-test -g -F -m -s 1120x720
 
   windows:
     name: windows (mingw-w64)
@@ -82,6 +124,17 @@ jobs:
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Test torus geometry, picking and cloud coordinates
+        run: |
+          g++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+          /tmp/torus-geometry
+          g++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+          /tmp/torus-picking
+          g++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+          /tmp/cloud-field
+          g++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+          /tmp/map-render-geometry
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server

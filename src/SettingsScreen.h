@@ -52,6 +52,7 @@ public:
 		CONSTRUCTIONSITES=20,
 		UPGRADES=21,
 		FLAGSETTINGS=22,
+		AUTOMATIC_TORUS=23,
 	};
 private:
 	Settings old_settings;
@@ -62,7 +63,7 @@ private:
 	
 	TextButton *ok, *cancel;
 	TextButton *buildings, *flags, *constructionsites, *upgrades;
-	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
+	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel, *automaticTorus;
 	Selector *musicVol;
 	Selector *voiceVol;
 	OnOffButton *audioMute, *rememberUnitButton;
@@ -74,7 +75,7 @@ private:
 	int flagRadiusGroupNumbers[3];
 //	Text *title;
 	Text *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText, *automaticTorusText;
 	Text *actDisplay;
 	Text *rebootWarning;
 
