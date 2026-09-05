@@ -107,6 +107,8 @@ public:
 
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, TerrainType terrainType=WATER);
+	//! Repeat the terrain, resources and discovery rx by ry times; units, buildings and team zones are dropped
+	void tile(int rx, int ry);
 	// !This call is needed to use the Map!
 	void setGame(Game *game);
 	//! Load a map from a stream and relink with associated game
