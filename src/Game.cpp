@@ -1813,8 +1813,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action>=0);
 	assert(unit->action<NB_MOVE);
 	imgid=unit->skin->startImage[unit->action];
-	int px, py;
-	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+	// The map traversal already supplies the visible wrapped copy. Rewrapping
+	// the unit position with a small-viewport margin hides units near the end
+	// of a full-world capture and draws seam copies at the same location.
+	int px=x*32, py=y*32;
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{

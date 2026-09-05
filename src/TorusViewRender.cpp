@@ -327,9 +327,8 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         travelU = mix(travelU, std::round(travelU * worldW) / worldW, settle);
         travelV = mix(travelV, std::round(travelV * worldH) / worldH, settle);
     }
-    // Input remains the logical map destination; render the mesh, picking and
-    // distant sky through one smoothly following camera. Never filter the sky
-    // separately, which would make the universe drift relative to the surface.
+    // Input remains the logical map destination. Smooth the rendered focus for
+    // the surface and picking; the sky shares only its horizontal movement.
     cameraU = TorusGeometry::follow(cameraU, travelU, dt, true);
     cameraV = TorusGeometry::follow(cameraV, travelV, dt, true);
     cameraZoom = TorusGeometry::follow(cameraZoom, zoom, dt);
@@ -427,8 +426,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     // distant full-map sheet, then zoom back in to the torus.
     float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
     // The ring keeps one attitude on screen: the surface slides around the
-    // tube as the view pans, and turns about the axis as it scrolls, while
-    // the sky drifts with both so the movement stays readable.
+    // tube as the view pans, and turns about the axis as it scrolls.
     const float ringV = 0.5f;
     float cameraDistance = TorusGeometry::hoverDistance(ringV);
     viewAspect = float(width) / std::max(1, height - 16);
@@ -459,10 +457,11 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float cx = width * 0.5f - ringCentreX * scale * smooth(roll);
     float cy = (height + 16) * 0.5f - ringCentreY * scale * smooth(roll);
     float major = smooth(roll), minor = smooth(roll / 0.85f);
-    float ya = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, aspect);
+    float skyYaw = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, aspect);
     float viewPitch = pa + TorusGeometry::overviewTilt(ringV, roll, viewAspect);
-    float skyPitch = viewPitch + (anchorV - 0.5f) * pi * 0.5f;
-    drawSky(ya, skyPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
+    // Vertical navigation rolls the map around the tube, without pitching the
+    // sky. Its tilt follows only the explicit transition and window shape.
+    drawSky(skyYaw, viewPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
     if (material)
     {
         glUseProgram(material);

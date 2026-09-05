@@ -12,6 +12,7 @@
 #include "GameGUI.h"
 #include "Engine.h"
 #include "Team.h"
+#include "Unit.h"
 #include "GameGUIKeyActions.h"
 #ifdef HAVE_OPENGL
 #ifdef __APPLE__
@@ -44,6 +45,23 @@ int main(int argc, char **argv)
         assert(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
+        // Units in the last 15 tiles of a full-world capture must keep their
+        // visible copy's position, including movement across either seam.
+        Unit *explorer = gui.game.addUnit(0, 0, 0, EXPLORER, 0, 128, 1, 1);
+        assert(explorer);
+        for (int x : {-1, 0, gui.game.map.getW() - 8, gui.game.map.getW()})
+            for (int y : {-1, 0, gui.game.map.getH() - 8, gui.game.map.getH()})
+            {
+                gui.game.mouseX = x * 32;
+                gui.game.mouseY = y * 32;
+                gui.game.mouseUnit = nullptr;
+                gui.game.drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
+                    (-y) & gui.game.map.getMaskH(), gui.game.map.getW(), gui.game.map.getH(),
+                    0, Game::DRAW_WHOLE_MAP);
+                assert(gui.game.mouseUnit == explorer);
+            }
+        gui.game.mouseX = gui.game.mouseY = -1;
+        gui.game.mouseUnit = nullptr;
         // Upgrading an old keyboard layout must neither shadow custom keys
         // nor lose the new default when its key is available.
         KeyboardManager keyboard(GameGUIShortcuts);

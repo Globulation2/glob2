@@ -40,7 +40,9 @@ and stopping movement never folds or unfolds the map. Only the G shortcut
 starts a 1.8-second transition in either direction. Ordinary 2D frames use the
 normal viewport renderer, without full-world texture captures or torus mesh
 updates. In 3D, both axes slide the map around a ring whose orientation stays
-fixed. The overview fits the playable area and adapts its tilt to the window.
+fixed. The star field follows horizontal navigation only; vertical navigation
+rolls the map around the tube without tilting the sky. The overview fits the
+playable area and adapts its tilt to the window.
 
 ## Rendering and interaction
 
@@ -56,6 +58,9 @@ The shared building renderer draws every wrapped copy intersecting its viewport,
 including sprite overhang at map seams. This fixes buildings disappearing from
 the full-world texture and applies to software rendering as well. There is no
 separate implementation of building or unit drawing for the torus.
+Units likewise use the visible wrapped cell supplied by the map traversal,
+so explorers and ground units retain their position near atlas edges and
+while moving across seams.
 
 Picking uses the same triangles and homogeneous coordinates as the GPU. It
 selects the nearest visible surface, interpolates UVs with perspective
@@ -73,8 +78,9 @@ without stretching: the inner circumference compresses and the outer one
 expands. There is deliberately no conformal UV correction.
 
 Keyboard steps and wheel zoom use a shared exponential camera response (about
-63 ms time constant). Mesh projection, picking, and the distant sky use the same
-rendered focus; wrapped coordinates interpolate across the shortest seam.
+63 ms time constant). Surface rendering and picking share the rendered focus;
+the distant sky shares its horizontal component. Wrapped coordinates interpolate
+across the shortest seam.
 
 GPU setup is separate from frame drawing. Loading a game
 resets the camera, picking cache, textures and buffers together. GPU objects are
@@ -171,5 +177,5 @@ still needed to determine whether his separate startup/display issue remains.
 
 The movement-triggered folding from `feat/torus-pan` was removed after playtesting:
 it interrupted ordinary scrolling. The fixed-axis 3D geometry, wrapped-building
-fix, and shared cloud rendering remain. This local experiment keeps 2D gameplay
+fix, and shared cloud rendering remain. The experiment keeps 2D gameplay
 and the optional torus view separate.
