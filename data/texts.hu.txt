@@ -1772,3 +1772,9 @@ Csatorna szélessége
 Földhíd szélessége
 [Lake size]
 Tó mérete
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

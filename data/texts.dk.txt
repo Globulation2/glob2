@@ -1848,3 +1848,9 @@ Kanalbredde
 Landbroens bredde
 [Lake size]
 Søstørrelse
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

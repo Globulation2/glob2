@@ -1842,3 +1842,9 @@ Cortex
 Πλάτος χερσαίας γέφυρας
 [Lake size]
 Μέγεθος λίμνης
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

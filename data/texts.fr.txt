@@ -1782,3 +1782,9 @@ Largeur du chenal
 Largeur du pont terrestre
 [Lake size]
 Taille des lacs
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

@@ -1780,3 +1780,9 @@ Automaticky zobraziť prehľad mapy v tvare torusu pri pohybe po mape (OpenGL).
 Šírka pevninského mosta
 [Lake size]
 Veľkosť jazera
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team

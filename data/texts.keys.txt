@@ -883,3 +883,6 @@
 [Channel width]
 [Land bridge width]
 [Lake size]
+[repeat map horizontally]
+[repeat map vertically]
+[colonies per team]

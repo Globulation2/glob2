@@ -1770,3 +1770,9 @@ Larĝo de kanalo
 Larĝo de terponto
 [Lake size]
 Grandeco de lago
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[colonies per team]
+Colonies per team
