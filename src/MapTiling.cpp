@@ -2,6 +2,7 @@
 #include "MapTiling.h"
 #include "MapHeader.h"
 #include "Game.h"
+#include "MapThumbnail.h"
 #include "Team.h"
 #include "Utilities.h"
 #include "BinaryStream.h"
@@ -74,7 +75,12 @@ namespace MapTiling
 		if (!map.valid || map.w * rx > MAX_MAP_SIDE || map.h * ry > MAX_MAP_SIDE)
 			return false;
 		const int colonies = colonyCount(map.header.getNumberOfTeams(), rx, ry);
-		return teams >= 1 && teams <= colonies && swarms >= 1 && swarms * teams <= colonies;
+		// a count of 0 was not chosen and follows the map, so it never fails
+		if (teams < 1)
+			return true;
+		if (teams > colonies)
+			return false;
+		return swarms < 1 || swarms * teams <= colonies;
 	}
 
 	void adjust(const MapInfo& map, int& rx, int& ry, int& teams, int& swarms)
@@ -101,17 +107,32 @@ namespace MapTiling
 		swarms = std::max(1, std::min(swarms, colonyCount(mapTeams, rx, ry) / teams));
 	}
 
+	//! Loads the map of `source` into `game` and repeats it; false when either step fails.
+	static bool loadTiled(const MapHeader& source, int rx, int ry, int teams, int perTeam, Game& game)
+	{
+		std::unique_ptr<GAGCore::InputStream> in(new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(source.getFileName())));
+		if (in->isEndOfStream())
+			return false;
+		if (!game.load(in.get()))
+			return false;
+		return game.tileForPlay(rx, ry, teams, perTeam);
+	}
+
+	bool tiledThumbnail(const MapHeader& source, int rx, int ry, int teams, int perTeam, MapThumbnail& thumbnail)
+	{
+		Game game(NULL, NULL);
+		if (!loadTiled(source, rx, ry, teams, perTeam, game))
+			return false;
+		thumbnail.loadFromMap(game.map, game.mapHeader);
+		return true;
+	}
+
 	MapHeader writeTiledMap(const MapHeader& source, int rx, int ry, int teams, int perTeam)
 	{
 		MapHeader failed;
 		failed.setNumberOfTeams(0);
-		std::unique_ptr<GAGCore::InputStream> in(new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(source.getFileName())));
-		if (in->isEndOfStream())
-			return failed;
 		Game game(NULL, NULL);
-		if (!game.load(in.get()))
-			return failed;
-		if (!game.tileForPlay(rx, ry, teams, perTeam))
+		if (!loadTiled(source, rx, ry, teams, perTeam, game))
 			return failed;
 		const int placed = placedColonyCount(colonyCount(source.getNumberOfTeams(), rx, ry), teams, perTeam);
 		std::string name = FormatableString("%0 %1x%2 %3t%4c").arg(source.getMapName()).arg(rx).arg(ry).arg(teams).arg(placed / teams);
