@@ -202,6 +202,10 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						// painted at (x-1..x+1) change the tiles from (x-2, y-2) on; only the
 						// ressources those tiles no longer allow go
 						game.map.removeUnallowedRessources(x-2, y-2, 4, 4);
+						// grass is also the brush that clears: the tiles the cell touches go bare
+						for (int ty=y-1; ty<=y; ty++)
+							for (int tx=x-1; tx<=x; tx++)
+								game.map.getRessource(tx, ty).clear();
 						break;
 					case TerrainSelector::Sand:
 						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
@@ -266,6 +270,9 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					case TerrainSelector::Water:
 						game.map.setUMatPos(x, y, GRASS, 1);
 						game.map.removeUnallowedRessources(x-2, y-2, 4, 4);
+						for (int ty=y-1; ty<=y; ty++)
+							for (int tx=x-1; tx<=x; tx++)
+								game.map.getRessource(tx, ty).clear();
 						break;
 					case TerrainSelector::Wheat:
 						if(game.map.isRessourceTakeable(x, y, CORN))
