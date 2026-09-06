@@ -3,7 +3,6 @@
 
 #include "Bullet.h"
 #include <assert.h>
-#include <SDL_endian.h>
 #include <Stream.h>
 
 Bullet::Bullet(GAGCore::InputStream *stream, Sint32 versionMinor)
@@ -35,8 +34,11 @@ bool Bullet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	py = stream->readSint32("py");
 	speedX = stream->readSint32("speedX");
 	speedY = stream->readSint32("speedY");
-	ticksInitial = 0;
 	ticksLeft = stream->readSint32("ticksLeft");
+	if (versionMinor >= 85)
+		ticksInitial = stream->readSint32("ticksInitial");
+	else
+		ticksInitial = ticksLeft;
 	shootDamage = stream->readSint32("shootDamage");
 	targetX = stream->readSint32("targetX");
 	targetY = stream->readSint32("targetY");
@@ -55,6 +57,7 @@ void Bullet::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(speedX, "speedX");
 	stream->writeSint32(speedY, "speedY");
 	stream->writeSint32(ticksLeft, "ticksLeft");
+	stream->writeSint32(ticksInitial, "ticksInitial");
 	stream->writeSint32(shootDamage, "shootDamage");
 	stream->writeSint32(targetX, "targetX");
 	stream->writeSint32(targetY, "targetY");
@@ -68,7 +71,6 @@ void Bullet::step(void)
 {
 	if (ticksLeft>0)
 	{
-		//printf("bullet %d stepped to p=(%d, %d), tl=%d\n", (int)this, px, py, ticksLeft);
 		px+=speedX;
 		py+=speedY;
 		ticksLeft--;

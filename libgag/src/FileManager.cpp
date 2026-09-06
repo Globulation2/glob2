@@ -46,11 +46,31 @@
 
 namespace GAGCore
 {
+	// Detect paths that should bypass the dirList search and be used as-is.
+	// The dirList loop unconditionally prepends a search root + DIR_SEPARATOR,
+	// which turns "/tmp/foo" into "<root>//tmp/foo" and never opens. Callers
+	// passing absolute paths (e.g. --save-game-as /tmp/foo.game) need direct
+	// access. POSIX absolutes start with '/'; Windows absolutes can also be
+	// drive-letter ("C:\..." / "C:/...") or UNC ("\\server\share").
+	static bool isAbsolutePath(const std::string& path)
+	{
+		if (path.empty()) return false;
+		if (path[0] == '/') return true;
+#ifdef WIN32
+		if (path[0] == '\\') return true;
+		if (path.size() >= 3 && path[1] == ':' &&
+			((path[0] >= 'A' && path[0] <= 'Z') ||
+			 (path[0] >= 'a' && path[0] <= 'z')))
+			return true;
+#endif
+		return false;
+	}
+
 	FileManager::FileManager(const std::string gameName)
 	{
 		#ifndef WIN32
-		const std::string homeDir = getenv("HOME");
-		if (!homeDir.empty())
+		const char* homeDir = getenv("HOME");
+		if (homeDir && *homeDir)
 		{
 			std::string gameLocal(homeDir);
 			gameLocal += "/.";
@@ -190,23 +210,36 @@ namespace GAGCore
 	
 	StreamBackend *FileManager::openOutputStreamBackend(const std::string filename)
 	{
+		if (isAbsolutePath(filename))
+		{
+			FILE *fp = fopen(filename.c_str(), "wb");
+			if (fp)
+				return new FileStreamBackend(fp);
+			return new FileStreamBackend(NULL);
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
-			
+
 			FILE *fp = fopen(path.c_str(), "wb");
 			if (fp)
 				return new FileStreamBackend(fp);
 		}
-	
+
 		return new FileStreamBackend(NULL);
 	}
 	
 	StreamBackend *FileManager::openInputStreamBackend(const std::string filename)
-	{	
-	
+	{
+		if (isAbsolutePath(filename))
+		{
+			FILE *fp = fopen(filename.c_str(), "rb");
+			if (fp)
+				return new FileStreamBackend(fp);
+			return new FileStreamBackend(NULL);
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
@@ -223,6 +256,17 @@ namespace GAGCore
 	
 	StreamBackend *FileManager::openCompressedOutputStreamBackend(const std::string filename)
 	{
+		if (isAbsolutePath(filename))
+		{
+			//Test if it can be opened first
+			FILE *fp = fopen(filename.c_str(), "wb");
+			if (fp)
+			{
+				fclose(fp);
+				return new ZLibStreamBackend(filename, false);
+			}
+			return new ZLibStreamBackend("", false);
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
@@ -243,6 +287,16 @@ namespace GAGCore
 	
 	StreamBackend *FileManager::openCompressedInputStreamBackend(const std::string filename)
 	{
+		if (isAbsolutePath(filename))
+		{
+			FILE *fp = fopen(filename.c_str(), "rb");
+			if (fp)
+			{
+				fclose(fp);
+				return new ZLibStreamBackend(filename, true);
+			}
+			return new ZLibStreamBackend("", false);
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
@@ -262,13 +316,19 @@ namespace GAGCore
 	
 	SDL_RWops *FileManager::open(const std::string filename, const std::string mode)
 	{
+		if (isAbsolutePath(filename))
+		{
+			SDL_RWops *fp = openWithbackup(filename.c_str(), mode.c_str());
+			if (fp)
+				return fp;
+			return NULL;
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
 	
-			//std::cerr << "FileManager::open trying to open " << path << " corresponding to source [" << dirList[i] << "] and filename [" << filename << "] with mode " << mode << "\n" << std::endl;
 			SDL_RWops *fp = openWithbackup(path.c_str(), mode.c_str());
 			if (fp)
 				return fp;
@@ -279,6 +339,13 @@ namespace GAGCore
 	
 	FILE *FileManager::openFP(const std::string filename, const std::string mode)
 	{
+		if (isAbsolutePath(filename))
+		{
+			FILE *fp = openWithbackupFP(filename.c_str(), mode.c_str());
+			if (fp)
+				return fp;
+			return NULL;
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
@@ -295,6 +362,14 @@ namespace GAGCore
 	
 	std::ifstream *FileManager::openIFStream(const std::string &fileName)
 	{
+		if (isAbsolutePath(fileName))
+		{
+			std::ifstream *fp = new std::ifstream(fileName.c_str());
+			if (fp->good())
+				return fp;
+			delete fp;
+			return NULL;
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
@@ -340,13 +415,19 @@ namespace GAGCore
 	
 	time_t FileManager::mtime(const std::string filename)
 	{
+		if (isAbsolutePath(filename))
+		{
+			struct stat stats;
+			if (stat(filename.c_str(), &stats) == 0)
+				return stats.st_mtime;
+			return 0;
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
 			path += DIR_SEPARATOR;
 			path += filename;
 	
-			//std::cerr << "FileManager::open trying to open " << path << " corresponding to source [" << dirList[i] << "] and filename [" << filename << "] with mode " << mode << "\n" << std::endl;
 			struct stat stats;
 			if (stat(path.c_str(), &stats) == 0)
 				return stats.st_mtime;
@@ -356,6 +437,11 @@ namespace GAGCore
 	
 	void FileManager::remove(const std::string filename)
 	{
+		if (isAbsolutePath(filename))
+		{
+			std::remove(filename.c_str());
+			return;
+		}
 		for (size_t i = 0; i < dirList.size(); ++i)
 		{
 			std::string path(dirList[i]);
@@ -388,6 +474,26 @@ namespace GAGCore
 		return (s.st_mode & S_IFDIR) != 0;
 	}
 	
+	bool FileManager::exists(const std::string filename)
+	{
+		if (isAbsolutePath(filename))
+		{
+			struct stat stats;
+			return stat(filename.c_str(), &stats) == 0;
+		}
+		for (size_t i = 0; i < dirList.size(); ++i)
+		{
+			std::string path(dirList[i]);
+			path += DIR_SEPARATOR;
+			path += filename;
+
+			struct stat stats;
+			if (stat(path.c_str(), &stats) == 0)
+				return true;
+		}
+		return false;
+	}
+
 	bool FileManager::gzip(const std::string &source, const std::string &dest)
 	{
 		// Open streams

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __FILEMANAGER_H
-#define __FILEMANAGER_H
+#pragma once
 
 #include "GAGSys.h"
 #include <vector>
@@ -75,6 +74,8 @@ namespace GAGCore
 		void remove(const std::string filename);
 		//! Returns true if filename is a directory
 		bool isDir(const std::string filename);
+		//! Returns true if filename resolves through the virtual filesystem
+		bool exists(const std::string filename);
 		
 		//! Compress source to dest uzing gzip, returns true on success
 		bool gzip(const std::string &source, const std::string &dest);
@@ -112,5 +113,3 @@ namespace GAGCore
 		const std::string getNextDirectoryEntry(void);
 	};
 }
-
-#endif

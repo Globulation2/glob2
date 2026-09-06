@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2010 Leo Wandersleb
 
-#ifndef NATSORTTEST_H_
-#define NATSORTTEST_H_
+#pragma once
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -45,4 +44,3 @@ private:
 			int(&func)(const nat_char*, const nat_char*));
 };
 
-#endif /* NATSORTTEST_H_ */

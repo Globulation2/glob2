@@ -1,0 +1,236 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2008 Bradley Arsenault
+
+#include "NetConnectionThread.h"
+#include "Order.h"
+#include "StreamBackend.h"
+#include "BinaryStream.h"
+#include "NetMessage.h"
+#include "SDLCompat.h"
+#include <string>
+
+using namespace GAGCore;
+using std::static_pointer_cast;
+
+NetConnectionThread::NetConnectionThread(std::queue<std::shared_ptr<NetConnectionThreadMessage> >& outgoing, std::recursive_mutex& outgoingMutex)
+	: ThreadMessageQueues<NetConnectionThreadMessage>(outgoing, outgoingMutex)
+{
+	set=SDLNet_AllocSocketSet(1);
+	connected=false;
+}
+
+
+
+NetConnectionThread::~NetConnectionThread()
+{
+	SDLNet_FreeSocketSet(set);
+}
+
+
+
+void NetConnectionThread::operator()()
+{
+	while(true)
+	{
+		SDL_Delay(20);
+		{
+			//First parse incoming thread messages
+			while(true)
+			{
+				std::shared_ptr<NetConnectionThreadMessage> message;
+				{
+					std::lock_guard<std::recursive_mutex> lock(incomingMutex);
+					if(!incoming.empty())
+					{
+						message = incoming.front();
+						incoming.pop();
+					}
+					else
+					{
+						break;
+					}
+				}
+				Uint8 type = message->getMessageType();
+				switch(type)
+				{
+					case NTMConnect:
+					{
+						std::shared_ptr<NTConnect> info = static_pointer_cast<NTConnect>(message);
+						if(!connected)
+						{
+							//Resolve the address
+							if(SDLNet_ResolveHost(&address, info->getServer().c_str(), info->getPort()) == -1)
+							{
+								std::shared_ptr<NTCouldNotConnect> error(new NTCouldNotConnect(SDLNet_GetError()));
+								sendToMainThread(error);
+							}
+							else
+							{
+								//Open the connection
+								socket=SDLNet_TCP_Open(&address);
+								if(!socket)
+								{
+									std::shared_ptr<NTCouldNotConnect> error(new NTCouldNotConnect(SDLNet_GetError()));
+									sendToMainThread(error);
+								}
+								else
+								{
+									SDLNet_TCP_AddSocket(set, socket);
+									connected=true;
+									std::shared_ptr<NTConnected> connected(new NTConnected(info->getServer()));
+									sendToMainThread(connected);
+								}
+							}
+						}
+					}
+					break;
+					case NTMCloseConnection:
+					{
+						std::shared_ptr<NTCloseConnection> info = static_pointer_cast<NTCloseConnection>(message);
+						if(connected)
+						{
+							closeConnection();
+						}
+					}
+					break;
+					case NTMSendMessage:
+					{
+						std::shared_ptr<NTSendMessage> info = static_pointer_cast<NTSendMessage>(message);
+						if(connected)
+						{
+							std::shared_ptr<NetMessage> message = info->getMessage();
+							MemoryStreamBackend* msb = new MemoryStreamBackend;
+							BinaryOutputStream* bos = new BinaryOutputStream(msb);
+							bos->writeUint8(message->getMessageType(), "messageType");
+							message->encodeData(bos);
+							
+							msb->seekFromEnd(0);
+							Uint32 length = msb->getPosition();
+							msb->seekFromStart(0);
+							
+							Uint8* newData = new Uint8[length+NET_FRAME_LENGTH_PREFIX_BYTES];
+							SDLNet_Write16(length, newData);
+							msb->read(newData+NET_FRAME_LENGTH_PREFIX_BYTES, length);
+
+							Uint32 result=SDLNet_TCP_Send(socket, newData, length+NET_FRAME_LENGTH_PREFIX_BYTES);
+							if(result<(length+NET_FRAME_LENGTH_PREFIX_BYTES))
+							{
+								std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
+								sendToMainThread(error);
+								closeConnection();
+							}
+							
+							delete bos;
+							delete[] newData;
+						}
+					}
+					break;
+					case NTMAcceptConnection:
+					{
+						std::shared_ptr<NTAcceptConnection> info = static_pointer_cast<NTAcceptConnection>(message);
+						if(!connected)
+						{
+							connected=true;
+							socket=info->getSocket();
+							address = *SDLNet_TCP_GetPeerAddress(socket);
+							SDLNet_TCP_AddSocket(set, socket);
+						}
+					}
+					break;
+					case NTMExitThread:
+					{
+						if(connected)
+						{
+							closeConnection();
+						}
+						hasExited=true;
+						return;
+					}
+					break;
+				}
+			}
+			
+			while (connected)
+			{
+				SDL_Delay(50);
+				int numReady = SDLNet_CheckSockets(set, 0);
+				//This checks if there are any active sockets.
+				//SDLNet_CheckSockets is used because it is non-blocking
+				if(numReady==-1)
+				{
+					std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
+					sendToMainThread(error);
+					perror("SDLNet_CheckSockets");
+					if(connected)
+						closeConnection();
+					break;
+				}
+				else if(numReady)
+				{
+					//Read and interpret the length of the message
+					Uint8* lengthData = new Uint8[NET_FRAME_LENGTH_PREFIX_BYTES];
+					int amount = SDLNet_TCP_Recv(socket, lengthData, NET_FRAME_LENGTH_PREFIX_BYTES);
+					if(amount <= 0)
+					{
+						std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
+						sendToMainThread(error);
+						closeConnection();
+					}
+					else
+					{
+						Uint16 length = SDLNet_Read16(lengthData);
+						//Read in the data.
+						Uint8* data = new Uint8[length];
+
+						for(int i=0; i<length; ++i)
+						{
+							amount = SDLNet_TCP_Recv(socket, data+i, 1);
+							if(amount <= 0)
+							{
+								std::shared_ptr<NTLostConnection> error(new NTLostConnection(SDLNet_GetError()));
+								sendToMainThread(error);
+								closeConnection();
+							}
+						}
+						if(connected)
+						{
+										
+							MemoryStreamBackend* msb = new MemoryStreamBackend(data, length);
+							msb->seekFromStart(0);
+							BinaryInputStream* bis = new BinaryInputStream(msb);
+
+							//Now interpret the message from the data, and add it to the queue
+							std::shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
+							std::shared_ptr<NTRecievedMessage> recieved(new NTRecievedMessage(message));
+							sendToMainThread(recieved);
+
+							delete bis;
+						}
+						delete[] data;
+					}
+					delete[] lengthData;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+	}
+}
+
+
+
+bool NetConnectionThread::isConnected()
+{
+	return connected;
+}
+
+
+
+void NetConnectionThread::closeConnection()
+{
+	SDLNet_TCP_DelSocket(set, socket);
+	SDLNet_TCP_Close(socket);
+	connected=false;
+}

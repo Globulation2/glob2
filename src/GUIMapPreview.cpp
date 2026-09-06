@@ -1,19 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <FileManager.h>
-#include <GraphicContext.h>
 #include <StringTable.h>
 #include <Toolkit.h>
-#include <Stream.h>
-#include <StreamFilter.h>
-#include <BinaryStream.h>
 #include <GUIStyle.h>
 using namespace GAGCore;
 
 #include "GUIMapPreview.h"
-#include "Map.h"
-#include "Utilities.h"
 
 MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign)
 {
@@ -21,8 +14,8 @@ MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign)
 	this->y = y;
 	this->hAlignFlag = hAlign;
 	this->vAlignFlag = vAlign;
-	this->w = 128;
-	this->h = 128;
+	this->w = PreviewSize;
+	this->h = PreviewSize;
 	surface = NULL;
 }
 
@@ -33,8 +26,8 @@ MapPreview::MapPreview(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::st
 	this->y = y;
 	this->hAlignFlag = hAlign;
 	this->vAlignFlag = vAlign;
-	this->w = 128;
-	this->h = 128;
+	this->w = PreviewSize;
+	this->h = PreviewSize;
 	surface = NULL;
 }
 
@@ -93,35 +86,36 @@ void MapPreview::setMapThumbnail(const MapThumbnail &nthumbnail)
 
 void MapPreview::paint(void)
 {
-	int x, y, w, h;
-	getScreenPos(&x, &y, &w, &h);
-	
+	int sx, sy, sw, sh;
+	getScreenPos(&sx, &sy, &sw, &sh);
+
 	assert(parent);
 	assert(parent->getSurface());
-	
+	DrawableSurface *target = parent->getSurface();
+
+	// getScreenPos returns the layout area; ALIGN_FILL means "centre the
+	// fixed PreviewSize tile within the available area on that axis".
 	if (hAlignFlag == ALIGN_FILL)
-		x += (w-128)>>1;
+		sx += (sw - PreviewSize) / 2;
 	if (vAlignFlag == ALIGN_FILL)
-		y += (h-128)>>1;
-	
+		sy += (sh - PreviewSize) / 2;
+
 	if (surface)
 	{
-		parent->getSurface()->drawSurface(x, y, surface);
+		target->drawSurface(sx, sy, surface);
 	}
 	else
 	{
-		/*parent->getSurface()->drawLine(x, y, x+127, y+127, 255, 0, 0);
-		parent->getSurface()->drawLine(x+127, y, x, y+127, 255, 0, 0);*/
-		/*parent->getSurface()->drawRect(x, y, 128, 128, ColorTheme::frontColor);*/
 		Font *standardFont = Toolkit::getFont("standard");
 		assert(standardFont);
-		std::string line0 = Toolkit::getStringTable()->getString("[GUIMapPreview text 0]");
-		std::string line1 = Toolkit::getStringTable()->getString("[GUIMapPreview text 1]");
-		int sw0 = standardFont->getStringWidth(line0);
-		int sw1 = standardFont->getStringWidth(line1);
-		int sh = standardFont->getStringHeight(line0);
-		parent->getSurface()->drawString(x+((128-sw0)>>1), y+64-sh, standardFont, line0);
-		parent->getSurface()->drawString(x+((128-sw1)>>1), y+64, standardFont, line1);
+		const std::string line0 = Toolkit::getStringTable()->getString("[GUIMapPreview text 0]");
+		const std::string line1 = Toolkit::getStringTable()->getString("[GUIMapPreview text 1]");
+		const int line0Width = standardFont->getStringWidth(line0);
+		const int line1Width = standardFont->getStringWidth(line1);
+		const int lineHeight = standardFont->getStringHeight(line0);
+		const int centerY    = sy + PreviewSize / 2;
+		target->drawString(sx + (PreviewSize - line0Width) / 2, centerY - lineHeight, standardFont, line0);
+		target->drawString(sx + (PreviewSize - line1Width) / 2, centerY,              standardFont, line1);
 	}
-	Style::style->drawFrame(parent->getSurface(), x, y, 128, 128, Color::ALPHA_TRANSPARENT);
+	Style::style->drawFrame(target, sx, sy, PreviewSize, PreviewSize, Color::ALPHA_TRANSPARENT);
 }

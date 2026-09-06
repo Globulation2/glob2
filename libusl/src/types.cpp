@@ -4,10 +4,31 @@
 #include "interpreter.h"
 #include "debug.h"
 #include "usl.h"
-#include "native.h"
 
 #include <cassert>
 #include <algorithm>
+#include <typeinfo>
+
+
+void Heap::collectGarbage()
+{
+	using std::for_each;
+	using std::mem_fn;
+
+	// filter copy, delete unrefs
+	Values marked;
+	for (size_t i = 0; i < values.size(); i++)
+	{
+		if (values[i]->marked)
+			marked.push_back(values[i]);
+		else
+			delete values[i];
+	}
+
+	// clean heap
+	swap(values, marked);
+	for_each(values.begin(), values.end(), mem_fn(&Value::clearGCMark));
+}
 
 
 void Value::dump(std::ostream &stream) const

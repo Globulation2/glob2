@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GUI_NUMBER_H
-#define __GUI_NUMBER_H
+#pragma once
 
 #include "GUIBase.h"
 #include <vector>
@@ -48,6 +47,4 @@ namespace GAGGUI
 		virtual void onSDLMouseWheel(SDL_Event* event);
 	};
 }
-
-#endif
 

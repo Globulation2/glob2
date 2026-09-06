@@ -1,5 +1,4 @@
-#ifndef CODE_H
-#define CODE_H
+#pragma once
 
 #include <cassert>
 #include <ostream>
@@ -117,4 +116,3 @@ struct CreateCode: Code
 	typename ThunkType::Prototype* prototype;
 };
 
-#endif // ndef CODE_H

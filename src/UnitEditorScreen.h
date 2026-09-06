@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __UNIT_EDITOR_SCREEN_H
-#define __UNIT_EDITOR_SCREEN_H
+#pragma once
 
 #include <GUIBase.h>
 
@@ -10,7 +9,6 @@
 namespace GAGGUI
 {
 	class TextInput;
-	class MultiTextButton;
 }
 using namespace GAGGUI;
 class Unit;
@@ -34,8 +32,6 @@ protected:
 	
 protected:
 	Unit *unit; //!< unit being edited
-	MultiTextButton *skin;
 	TextInput *hungryness;
 };
 
-#endif
