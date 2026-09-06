@@ -9,6 +9,8 @@
 #include "StreamBackend.h"
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <fstream>
 
 GlobalContainer* globalContainer = nullptr;
 
@@ -17,13 +19,43 @@ static void require(bool ok, const char* message)
     if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
 }
 
-int main()
+static void writeFixture(GAGCore::MemoryStreamBackend& bytes, const char* path)
 {
+    bytes.seekFromEnd(0);
+    std::ofstream output(path, std::ios::binary);
+    output.write(bytes.getBuffer(), bytes.getPosition());
+    output.close();
+    require(!output.fail(), "write fixture file");
+}
+
+int main(int argc, char** argv)
+{
+    require(argc == 1 || (argc == 3 && (!std::strcmp(argv[1], "--load") ||
+                                      !std::strcmp(argv[1], "--write-fixture"))),
+            "usage: harness [--load FILE | --write-fixture FILE]");
     GlobalContainer globals;
     globalContainer = &globals;
     globals.runNoX = true;
     globals.buildingsTypes.init();
     IntBuildingType::init();
+    if (argc == 3 && !std::strcmp(argv[1], "--load"))
+    {
+        FILE* file = std::fopen(argv[2], "rb");
+        require(file != nullptr, "open fixture");
+        GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
+        Game loaded(nullptr);
+        require(loaded.load(&reader), "load entering-explorer fixture");
+        require(loaded.mapHeader.getNumberOfTeams() == 1 && loaded.teams[0], "fixture team exists");
+        auto* unit = loaded.teams[0]->myUnits[0];
+        require(unit && unit->typeNum == EXPLORER, "fixture explorer exists");
+        require(unit->displacement == Unit::DIS_ENTERING_BUILDING, "fixture entry state");
+        require(unit->posX == 8 && unit->posY == 8 && unit->dx == 1 && unit->dy == 0,
+                "fixture destination and direction");
+        require(loaded.map.getAirUnit(7, 8) == unit->gid, "fixture previous-tile occupancy");
+        require(unit->attachedBuilding == loaded.teams[0]->myBuildings[0], "fixture entered building");
+        std::puts("Entering-explorer saved fixture loaded with its previous-tile occupancy intact");
+        return 0;
+    }
     const int innType = globals.buildingsTypes.getTypeNum("inn", 0, false);
     const int positions[][2] = {{8,8}, {0,0}, {31,31}, {0,31}, {31,0}};
     int cases = 0;
@@ -58,6 +90,9 @@ int main()
                 auto* bytes = new GAGCore::MemoryStreamBackend;
                 GAGCore::BinaryOutputStream writer(bytes);
                 game.save(&writer, false, "entering explorer regression");
+                if (argc == 3 && !std::strcmp(argv[1], "--write-fixture") &&
+                    position[0] == 8 && position[1] == 8 && dx == 1 && dy == 0)
+                    writeFixture(*bytes, argv[2]);
                 auto* copy = new GAGCore::MemoryStreamBackend(*bytes);
                 copy->seekFromStart(0);
                 GAGCore::BinaryInputStream reader(copy);

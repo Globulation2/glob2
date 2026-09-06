@@ -153,3 +153,5 @@ fix in `4ce1d5bc`; expected negative controls print integrity diagnostics.
 
 It needs no display, AI tournament tooling, or external save files. Linux CI runs
 it on both supported Ubuntu versions.
+
+Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).

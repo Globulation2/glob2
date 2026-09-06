@@ -1,0 +1,13 @@
+--- a/src/Game_io.cpp
++++ b/src/Game_io.cpp
+@@ -336,8 +336,8 @@
+ 				// already has the building's position but stays registered on the
+ 				// cell it came from until it is inside (see UnitDisplacement.cpp).
+ 				const bool entering = unit->displacement == Unit::DIS_ENTERING_BUILDING;
+-				const int expectedX = entering ? ((unit->posX - unit->dx) & map.wMask) : unit->posX;
+-				const int expectedY = entering ? ((unit->posY - unit->dy) & map.hMask) : unit->posY;
++				const int expectedX = unit->posX;
++				const int expectedY = unit->posY;
+ 				checkInvariant(expectedX == x);
+ 				checkInvariant(expectedY == y);
+ 			}
