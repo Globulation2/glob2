@@ -90,8 +90,8 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 }
 
 // Validate the current selection's referent and clear it if the referent is gone.
-// Called from drawPanel() before dispatching to the per-mode draw routines so
-// that those routines can assume the selection is still valid. Keep selection
+// Called before cycling and from drawPanel() before dispatching to the per-mode
+// draw routines so those routines can assume the selection is valid. Keep selection
 // validation here rather than in draw functions — draws should be pure.
 void GameGUI::checkSelection(void)
 {
@@ -120,6 +120,11 @@ void GameGUI::checkSelection(void)
 // never produces a network order, never reads RNG, never mutates sim state.
 void GameGUI::iterateSelection(void)
 {
+	// Destruction clears the live view pointer, but the cached payload can
+	// still point to freed memory until the next draw. Validate before either
+	// the building or unit branch dereferences that payload.
+	checkSelection();
+
 	if (selectionMode==BUILDING_SELECTION)
 	{
 		Building* selBuild=selectionBuilding();
