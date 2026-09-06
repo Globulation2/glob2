@@ -638,6 +638,7 @@ public:
 	bool buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y) provided the unit canSwim.
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindBuildingWeighted(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
 	bool pathfindLocalResource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all resources mixed in clearing flags.
 	
 	//! Make local gradient dirty in the area. Wrap-safe on x,y
@@ -659,6 +660,16 @@ public:
 	void updateClearAreasGradient(int teamNumber);
 	void updateClearAreasGradient();
 	
+	// Weighted distance fields for the alternative pathfinder (MapWeightedField.cpp).
+	static constexpr Uint16 COST_INFINITY = 0xFFFF;
+	int weightedStepCost(int dx, int dy, size_t targetIndex, bool canSwim) const;
+	//! Dijkstra from every GRADIENT_AT_GOAL cell of seed; GRADIENT_FORBIDDEN cells are obstacles.
+	void buildWeightedField(const Uint8 *seed, Uint16 *cost, bool canSwim);
+	//! Derive the Uint8 gradient consumers read (255 - tiles) from a cost field.
+	void writeGradientFromCost(const Uint16 *cost, Uint8 *gradient) const;
+	//! Step toward the neighbour with the lowest step + cost-to-go. strict requires real progress.
+	bool directionByCost(Uint32 teamMask, bool canSwim, int x, int y, const Uint16 *cost, int *dx, int *dy, bool strict) const;
+
 	///Implements A* algorithm for point to point pathfinding. Does not cache path, designed to be fast
 	bool pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength);
 	
@@ -709,6 +720,8 @@ public:
 	//[int team][int resourceNumber][bool unitCanSwim]
 	//255=resource, 0=obstacle, the higher it is, the closer it is to the resource.
 	Uint8 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][2];
+	// Weighted cost field behind resourcesGradient for teams on the alternative pathfinder; NULL otherwise.
+	Uint16 *resourcesCost[Team::MAX_COUNT][MAX_NB_RESOURCES][2];
 	
 	// Used to go out of forbidden areas
 	//[int team][bool unitCanSwim]

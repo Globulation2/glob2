@@ -6,6 +6,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "PathfindStats.h"
+#include "PathfindPolicy.h"
 
 // Chamfer distance transform with orthogonal=1, diagonal=1 weights (Chebyshev
 // distance) on a toroidal grid. Two sweeps per pass — forward (NW, N, NE, W)
@@ -144,6 +145,15 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSw
 			gradient[i]=GRADIENT_FORBIDDEN;
 	}
 
+	if (PathfindPolicy::useAlternative(teamNumber))
+	{
+		Uint16 *&cost = resourcesCost[teamNumber][resourceType][canSwim];
+		if (cost == NULL)
+			cost = new Uint16[size];
+		buildWeightedField(gradient, cost, canSwim);
+		writeGradientFromCost(cost, gradient);
+		return;
+	}
 	updateGlobalGradient(gradient);
 }
 

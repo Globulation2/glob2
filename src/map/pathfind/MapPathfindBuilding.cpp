@@ -7,6 +7,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "PathfindStats.h"
+#include "PathfindPolicy.h"
 
 
 
@@ -127,6 +128,8 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		int teamNumber=building->owner->teamNumber;
 		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy);
 	}
+	if (PathfindPolicy::useAlternative(building->owner->teamNumber))
+		return pathfindBuildingWeighted(building, canSwim, x, y, dx, dy);
 	Uint8 *gradient=building->localGradient[canSwim];
 	if (isInLocalGradient(x, y, bx, by))
 	{
@@ -198,6 +201,35 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	return false;
 }
 
+
+// Alternative pathfinder: no 32x32 local field, one weighted full-map field per
+// building, rebuilt lazily when the unit cannot make progress and the field is
+// older than 128 ticks (same throttle as the baseline global gradient).
+bool Map::pathfindBuildingWeighted(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
+{
+	Uint32 teamMask=building->owner->me;
+	if (building->globalGradient[canSwim]==NULL)
+	{
+		building->globalGradient[canSwim]=new Uint8[size];
+		updateGlobalGradient(building, canSwim);
+		building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
+	}
+	if (building->locked[canSwim])
+		return false;
+	const Uint16 *cost=building->globalCost[canSwim];
+	assert(cost);
+	if (directionByCost(teamMask, canSwim, x, y, cost, dx, dy, true))
+		return true;
+	if (building->lastGlobalGradientUpdateStepCounter[canSwim]+128>game->stepCounter)
+		return directionByCost(teamMask, canSwim, x, y, cost, dx, dy, false);
+	updateGlobalGradient(building, canSwim);
+	building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
+	if (building->locked[canSwim])
+		return false;
+	if (directionByCost(teamMask, canSwim, x, y, cost, dx, dy, true))
+		return true;
+	return directionByCost(teamMask, canSwim, x, y, cost, dx, dy, false);
+}
 
 void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 {

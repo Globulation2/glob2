@@ -179,6 +179,7 @@ map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindBuilding.cpp
 map/pathfind/MapPathfindRessource.cpp
+map/pathfind/MapWeightedField.cpp
 map/MapQuery.cpp
 map/MapResources.cpp
 map/MapStep.cpp
@@ -428,6 +429,7 @@ map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindRessource.cpp
+map/pathfind/MapWeightedField.cpp
 map/MapQuery.cpp
 map/MapResources.cpp
 map/MapStep.cpp

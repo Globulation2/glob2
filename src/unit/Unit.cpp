@@ -13,6 +13,7 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include <Stream.h>
+#include <cstdlib>
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 {
@@ -285,14 +286,21 @@ void Unit::syncStep(void)
 #ifdef BURST_UNIT_MODE
 	delta=0;
 #else
-	if (delta<=UNIT_DELTA_MAX-speed)
+	// GLOB2_DIAG_SQRT2: a diagonal step covers sqrt(2) the distance, so it
+	// advances delta at speed/sqrt(2) (181/256). Experiment switch for the
+	// pathfinding A/B harness; applies to every team.
+	static const bool diagonalSqrt2 = getenv("GLOB2_DIAG_SQRT2") != NULL;
+	int stepSpeed = speed;
+	if (diagonalSqrt2 && dx != 0 && dy != 0 && (action == WALK || action == SWIM))
+		stepSpeed = (speed * 181) >> 8;
+	if (delta<=UNIT_DELTA_MAX-stepSpeed)
 	{
-		delta+=speed;
+		delta+=stepSpeed;
 	}
 	else
 #endif
 	{
-		delta+=(speed-UNIT_DELTA_QUANTUM);
+		delta+=(stepSpeed-UNIT_DELTA_QUANTUM);
 
 		endOfAction();
 

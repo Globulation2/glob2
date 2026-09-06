@@ -6,6 +6,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "PathfindStats.h"
+#include "PathfindPolicy.h"
 
 
 
@@ -118,6 +119,15 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	else
 		building->locked[canSwim]=false;
 
+	if (PathfindPolicy::useAlternative(building->owner->teamNumber))
+	{
+		Uint16 *&cost = building->globalCost[canSwim];
+		if (cost == NULL)
+			cost = new Uint16[size];
+		buildWeightedField(gradient, cost, canSwim);
+		writeGradientFromCost(cost, gradient);
+		return;
+	}
 	updateGlobalGradient(gradient);
 }
 

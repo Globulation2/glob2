@@ -22,6 +22,7 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
+		globalCost[i]=NULL;
 		localResources[i]=NULL;
 	}
 	load(stream, types, owner, versionMinor);
@@ -116,6 +117,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
+		globalCost[i]=NULL;
 		localResources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
@@ -163,6 +165,8 @@ void Building::resetPathfindGradients()
 		locked[i] = false;
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
+		delete[] globalCost[i];
+		globalCost[i] = NULL;
 		delete[] localResources[i];
 		localResources[i] = NULL;
 	}

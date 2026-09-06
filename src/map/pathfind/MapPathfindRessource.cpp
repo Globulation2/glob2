@@ -7,6 +7,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "PathfindStats.h"
+#include "PathfindPolicy.h"
 
 
 
@@ -31,7 +32,13 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int
 		return false;
 	}
 
-	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true))
+	const Uint16 *cost = resourcesCost[teamNumber][resourceType][canSwim];
+	if (PathfindPolicy::useAlternative(teamNumber) && cost != NULL)
+	{
+		if (directionByCost(teamMask, canSwim, x, y, cost, dx, dy, true))
+			return true;
+	}
+	else if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true))
 		return true;
 
 	PathfindStats::get().pathfindResourceStuck++;

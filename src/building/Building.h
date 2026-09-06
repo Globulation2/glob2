@@ -562,6 +562,8 @@ public:
 	bool dirtyLocalGradient[SWIM_VARIANT_COUNT];
 	Uint8 localGradient[SWIM_VARIANT_COUNT][LOCAL_GRID_AREA];
 	Uint8 *globalGradient[SWIM_VARIANT_COUNT];
+	//! Weighted cost field behind globalGradient when the owner uses the alternative pathfinder.
+	Uint16 *globalCost[SWIM_VARIANT_COUNT];
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
 	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_VARIANT_COUNT];
 
