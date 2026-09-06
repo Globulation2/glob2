@@ -19,10 +19,7 @@ namespace
 	// The isFreeFor*/isHardSpaceFor* predicates only need: a sized cases[] vector,
 	// and w/h/wMask/hMask/wDec/hDec for coordToIndex(). We set those directly.
 	//
-	// The destructor resets size fields before Map::~Map() runs, because Map's
-	// clear() else-branch (the path taken when arraysBuilt==false) asserts
-	// w==0 / h==0 / etc. — that's a real assert in production, but it expects
-	// to see a constructed-then-clear()'d Map, not a manually-poked one.
+	// The fixture resets its dimension metadata before base cleanup.
 	struct GrassMap : Map
 	{
 		GrassMap()
@@ -42,7 +39,6 @@ namespace
 			wMask = hMask = 0;
 			wDec = hDec = 0;
 			size = 0;
-			// Map::~Map() will call clear() which asserts these are 0.
 		}
 
 		void putBuilding(int x, int y, Uint16 gbid = 0)

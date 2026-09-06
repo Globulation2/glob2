@@ -63,9 +63,21 @@ namespace GAGCore
 		SHA1Final(sha1, &sha1Context);
 	}
 	
+	void BinaryInputStream::read(void *data, size_t size, const std::string name)
+	{
+		if (size == 0) return;
+		if (checkedReads)
+		{
+			if (!backend->readExact(data, size))
+				throw std::ios_base::failure("Incomplete binary field: " + name);
+		}
+		else
+			backend->read(data, size);
+	}
+
 	void BinaryInputStream::readEndianIndependent(void *v, size_t size, const std::string name)
 	{
-		backend->read(v, size);
+		read(v, size, name);
 		if (size==2)
 		{
 			*(Uint16 *)v = ntohs(*(Uint16 *)v);
@@ -91,9 +103,6 @@ namespace GAGCore
 	std::string BinaryInputStream::readText(const std::string name)
 	{
 		size_t len = readUint32("");
-		std::valarray<char> buffer(len+1);
-		read(&buffer[0], len, "");
-		buffer[len] = 0;
 
 		// We don't use strings longer than MAX_BINARY_STRING_LENGTH, so beyond that the bits don't represent a string.
 		if (len > MAX_BINARY_STRING_LENGTH)
@@ -104,6 +113,10 @@ namespace GAGCore
 			//  - MapEdit.cpp : 1135
 			throw std::ios_base::failure("String "+name+" length > "+std::to_string(MAX_BINARY_STRING_LENGTH));
 		}
+
+		std::valarray<char> buffer(len+1);
+		read(&buffer[0], len, "");
+		buffer[len] = 0;
 
 		return std::string(&buffer[0]);
 	}

@@ -56,10 +56,10 @@ struct GrassMap : Map {
         wMask = 7; hMask = 7;
         size = 64;
         cases.assign(64, Case{});           // default: terrain=0 (grass), no bldg/unit
-        // arraysBuilt stays false, so clear() takes the else-branch
+        // No Sector or auxiliary arrays are allocated.
     }
     ~GrassMap() {
-        // Map::clear()'s else-branch asserts these are 0 before letting Map::~Map() proceed
+        // Reset fixture dimensions before base cleanup.
         w = h = wMask = hMask = wDec = hDec = 0;
         size = 0;
     }
@@ -140,3 +140,18 @@ software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`). Xvfb and xauth must be installed.
 The GL run requires an OpenGL-enabled build. On macOS, the Homebrew SDL workaround
 described above also applies. To run with sanitizers, use the flags in the selection
 regression instructions with the `aspect-test` target instead.
+
+### Savegame safety
+
+Build `scons release=1 server=0 savegame-safety-test`, then run
+`python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness`
+(use `.exe` on Windows). No display is required. The runner uses a disposable
+profile and working directory; an optional final argument supplies a truncated
+save that must be rejected.
+
+The harness checks the production autosave path, byte equivalence with direct
+serialization, successful reload, truncated map data from file and memory
+streams, recovery after failed loads, and oversized map-area strings. Atomic
+replacement tests cover callback/open/rename failures and temporary-file cleanup.
+On POSIX, child processes impose file-size limits to exercise short writes and
+buffered flush errors while checking that the previous save survives unchanged.
