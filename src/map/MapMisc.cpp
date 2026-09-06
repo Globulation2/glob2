@@ -22,7 +22,7 @@ Uint32 Map::checkSum(bool heavy)
 			cs+=
 				c.terrain +
 				c.building +
-				c.ressource.getUint32() +
+				c.resource.getUint32() +
 				c.groundUnit +
 				c.airUnit +
 				c.forbidden +

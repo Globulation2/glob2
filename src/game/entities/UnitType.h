@@ -13,7 +13,7 @@ namespace GAGCore
 }
 
 // UnitType is an aggregate so that the per-type defaults in race.cpp can use
-// C++20 designated initializers ({ .startImage = {...}, .hungryness = N, ... }).
+// C++20 designated initializers ({ .startImage = {...}, .hungriness = N, ... }).
 // Aggregate-ness requires no user-declared constructors and no virtual
 // functions; the previous virtual ~UnitType() and the unused
 // UnitType(InputStream*) constructor were dropped accordingly. No callers
@@ -21,11 +21,11 @@ namespace GAGCore
 // removing the virtual destructor is behavior-preserving.
 struct UnitType
 {
-	// caracteristic modulated by player choice, if 0, feature disabled
+	// characteristic modulated by player choice, if 0, feature disabled
 	// display infos
 	Uint32 startImage[NB_MOVE];
 
-	Sint32 hungryness;
+	Sint32 hungriness;
 
 	Sint32 performance[NB_ABILITY];
 

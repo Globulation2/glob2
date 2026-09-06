@@ -46,7 +46,7 @@ namespace GAGCore
 	DrawableSurface::DrawableSurface(const SDL_Surface *sourceSurface)
 	{
 		assert(sourceSurface);
-		// beurk, const cast here becasue SDL API sucks
+		// beurk, const cast here because SDL API sucks
 		sdlsurface = convertForUpload(const_cast<SDL_Surface *>(sourceSurface));
 		assert(sdlsurface);
 		setClipRect();
@@ -82,7 +82,7 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
-			glState.alocatedTextureCount++;
+			glState.allocatedTextureCount++;
 			initTextureSize();
 		}
 		#endif
@@ -168,7 +168,7 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
-			glState.alocatedTextureCount--;
+			glState.allocatedTextureCount--;
 
 			// The next line causes a desynchronization between _doScissors and glIsEnabled(GL_SCISSOR_TEST),
 			// which causes the setClipRect() functions to not reset the clipping the way it should,  so many

@@ -507,7 +507,7 @@ namespace GAGCore
 			return false;
 		}
 		
-		// Preapare source
+		// Prepare source
 		srcStream->seekFromEnd(0);
 		size_t fileLength = srcStream->getPosition();
 		srcStream->seekFromStart(0);

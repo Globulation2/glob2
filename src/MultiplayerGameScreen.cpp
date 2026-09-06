@@ -152,7 +152,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 		}
 		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + static_cast<int>(AI::SIZE)))
 		{
-			game->addAIPlayer((AI::ImplementitionID)(par1-ADD_AI));
+			game->addAIPlayer((AI::ImplementationID)(par1-ADD_AI));
 		}
 		else if ((par1>=CLOSE_BUTTONS)&&(par1<static_cast<int>(CLOSE_BUTTONS)+Team::MAX_COUNT))
 		{
@@ -188,7 +188,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 
 
 
-void MultiplayerGameScreen::recieveTextMessage(std::shared_ptr<YOGMessage> message)
+void MultiplayerGameScreen::receiveTextMessage(std::shared_ptr<YOGMessage> message)
 {
 	chatWindow->addText(message->formatForReading());
 	chatWindow->addText("\n");

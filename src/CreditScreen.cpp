@@ -29,7 +29,7 @@ protected:
 	std::string filename;
 	std::string font;
 	std::vector<std::string> text;
-	std::vector<int> xPos; // Pre-calculated postions for text centering
+	std::vector<int> xPos; // Pre-calculated positions for text centering
 	int offset;
 	// whether the units sprite contains the worker walk frames; when false,
 	// the '*' decoration is skipped instead of indexing the sprite out of range
@@ -102,7 +102,7 @@ void ScrollingText::internalInit(void)
 	getScreenPos(&x, &y, &w, &h);
 	offset = -h + 25;
 	
-	// Measures all the length of all the lines of the file (usefull for centering)
+	// Measures all the length of all the lines of the file (useful for centering)
 	for (size_t i = 0; i < text.size(); i++)
 	{
 		std::string &s = text[i];
@@ -113,7 +113,7 @@ void ScrollingText::internalInit(void)
 			// If we can find a "<" and a ">" in this line
 			if ((f != std::string::npos) && (l != std::string::npos))
 			{
-				// Rips off the e-mail adresses
+				// Rips off the e-mail addresses
 				s.erase(f, l-f+1);
 			}
 		}

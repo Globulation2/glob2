@@ -110,10 +110,10 @@ void EndGameStat::paint(void)
 		int e_height = h - max_height - 8;
 
 		//Draw horizontal lines to given the scale of the graphs values.
-		double line_seperate=double(e_height)/double(num);
+		double line_separate=double(e_height)/double(num);
 		for(int n=0; n<num; ++n)
 		{
-			int pos=int(double(n)*line_seperate+0.5);
+			int pos=int(double(n)*line_separate+0.5);
 			int value=maxValue - (maxValue*n)/num;
 			if(n!=0)
 				parent->getSurface()->drawHorzLine(x+e_width-5, y+pos, 10, 255, 255, 255);
@@ -123,10 +123,10 @@ void EndGameStat::paint(void)
 		}
 
 		///Draw vertical lines to give the timescale
-		double time_line_seperate=double(e_width)/double(15);
+		double time_line_separate=double(e_width)/double(15);
 		for(int n=1; n<16; ++n)
 		{
-			int pos = int(double(x)+time_line_seperate*double(n)+0.5);
+			int pos = int(double(x)+time_line_separate*double(n)+0.5);
 			int time = (time_period * n) / 15;
 			if(n!=15)
 				parent->getSurface()->drawVertLine(pos, y+e_height-5, 10, 255, 255, 255);
@@ -325,7 +325,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 		}
 		else
 		{
-			FormatableString strText;
+			FormattableString strText;
 			if ((t->allies) & (gui->getLocalTeam()->me))
 				strText = Toolkit::getStringTable()->getString("[Won : your ally %0 has the most prestige]");
 			else

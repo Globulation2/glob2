@@ -116,9 +116,9 @@ private:
 	std::string building;
 	///The type of zone when placing zones
 	ZoneType zoneType;
-	///Used to indicate the stength of hilight, because it blends during the draw
-	float hilightStrength;
-	///Queues up orderws for this manager
+	///Used to indicate the strength of highlight, because it blends during the draw
+	float highlightStrength;
+	///Queues up orders for this manager
 	std::queue<std::shared_ptr<Order> > orders;
 };
 

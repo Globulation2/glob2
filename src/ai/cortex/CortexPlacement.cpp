@@ -103,10 +103,10 @@ namespace Cortex
 	// never report a radius larger than the true minimum. Return -1 if no CORN is
 	// found within `cap`.
 	//
-	// CORN detection: map.getRessource(x, y).type == CORN — identical to the
+	// CORN detection: map.getResource(x, y).type == CORN — identical to the
 	// isCorn() predicate in CortexWheat.cpp (anonymous namespace, line ~29) so
 	// the two subsystems agree on what counts as wheat.
-	// C++: Ressource.h:#define CORN 1; Map::getRessource (map/Map.h:302).
+	// C++: Resource.h:#define CORN 1; Map::getResource (map/Map.h:302).
 	//
 	// Determinism: fixed ring/scan order (top row → right col → bottom row →
 	// left col, no rand, no pointer reads), warp-safe via normalizeX/normalizeY.
@@ -117,7 +117,7 @@ namespace Cortex
 			if (r == 0)
 			{
 				// Centre tile: radius-0 ring is just (x, y) itself.
-				if (map.getRessource(map.normalizeX(x), map.normalizeY(y)).type == CORN)
+				if (map.getResource(map.normalizeX(x), map.normalizeY(y)).type == CORN)
 					return 0;
 				continue;
 			}
@@ -136,7 +136,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y - r);
-				if (map.getRessource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == CORN)
 					return r;
 			}
 			// Right column: (x+r, y-r .. y+r-1)
@@ -144,7 +144,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + r);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getRessource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == CORN)
 					return r;
 			}
 			// Bottom row: (x+r .. x-r+1, y+r) — right-to-left
@@ -152,7 +152,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + r);
-				if (map.getRessource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == CORN)
 					return r;
 			}
 			// Left column: (x-r, y+r .. y-r+1) — bottom-to-top
@@ -160,7 +160,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x - r);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getRessource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == CORN)
 					return r;
 			}
 		}

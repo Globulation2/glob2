@@ -67,7 +67,7 @@ bool MapScriptSGSL::load(GAGCore::InputStream *stream, Game *game)
 	}
 	stream->readLeaveSection();
 	
-	// load stories datas
+	// load stories data
 	stream->readEnterSection("stories");
 	for (unsigned i = 0; i < stories.size(); i++)
 	{
@@ -132,7 +132,7 @@ void MapScriptSGSL::save(GAGCore::OutputStream *stream, const Game *game)
 	}
 	stream->writeLeaveSection();
 	
-	// save stories datas
+	// save stories data
 	stream->writeEnterSection("stories");
 	for (unsigned i = 0; i < stories.size(); i++)
 	{
@@ -221,9 +221,9 @@ Sint32 MapScriptSGSL::checkSum()
 
 ErrorReport MapScriptSGSL::compileScript(Game *game, const char *script)
 {
-	StringAquisition aquisition(functions);
-	aquisition.open(script);
-	return parseScript(&aquisition, game);
+	StringAcquisition acquisition(functions);
+	acquisition.open(script);
+	return parseScript(&acquisition, game);
 }
 
 ErrorReport MapScriptSGSL::compileScript(Game *game)
@@ -233,16 +233,16 @@ ErrorReport MapScriptSGSL::compileScript(Game *game)
 
 ErrorReport MapScriptSGSL::loadScript(const std::string filename, Game *game)
 {
-	FileAquisition aquisition(functions);
-	if (aquisition.open(filename))
-		return parseScript(&aquisition, game);
+	FileAcquisition acquisition(functions);
+	if (acquisition.open(filename))
+		return parseScript(&acquisition, game);
 	else
 		return ErrorReport(ErrorReport::ET_NO_SUCH_FILE);
 }
 
 bool MapScriptSGSL::hasTeamWon(unsigned teamNumber) const
 {
-	// Seb: Cheapo hack. Script should intialize hasWon first :-)
+	// Seb: Cheapo hack. Script should initialize hasWon first :-)
 	if (testMainTimer() && hasWon.size()>teamNumber)
 	{
 		return hasWon.at(teamNumber);
@@ -252,7 +252,7 @@ bool MapScriptSGSL::hasTeamWon(unsigned teamNumber) const
 
 bool MapScriptSGSL::hasTeamLost(unsigned teamNumber) const
 {
-	// Seb: Cheapo hack. Script should intialize hasLost first :-)
+	// Seb: Cheapo hack. Script should initialize hasLost first :-)
 	if(hasLost.size()>teamNumber)
 		return hasLost.at(teamNumber);
 	return false;

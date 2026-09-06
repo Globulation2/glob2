@@ -78,8 +78,8 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 				}
 				else
 				{
-					assert(false); // Now there shouldn't be any more ressources on "terrain".
-					sprite=globalContainer->ressources;
+					assert(false); // Now there shouldn't be any more resources on "terrain".
+					sprite=globalContainer->resources;
 					id-=272;
 				}
 				if ((id < 256) || (id >= 256+16))
@@ -88,7 +88,7 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 	globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
 }
 
-void Game::drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
+void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
@@ -104,21 +104,21 @@ void Game::drawMapRessources(int left, int top, int right, int bot, int viewport
 						visibleTeams) ||
 				((drawOptions & DRAW_WHOLE_MAP) != 0))
 			{
-				const auto& r = map.getRessource(x+viewportX, y+viewportY);
+				const auto& r = map.getResource(x+viewportX, y+viewportY);
 				if (r.type!=NO_RES_TYPE)
 				{
-					Sprite *sprite=globalContainer->ressources;
+					Sprite *sprite=globalContainer->resources;
 					int type=r.type;
 					int amount=r.amount;
 					int variety=r.variety;
-					const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
+					const ResourceType *rt=globalContainer->resourcesTypes.get(type);
 					int imgid=rt->gfxId+(variety*rt->sizesCount)+amount;
 					if (!rt->eternal)
 						imgid--;
 					int dx=(sprite->getW(imgid)-32)>>1;
 					int dy=(sprite->getH(imgid)-32)>>1;
 					assert(type>=0);
-					assert(type<(int)globalContainer->ressourcesTypes.size());
+					assert(type<(int)globalContainer->resourcesTypes.size());
 					assert(amount>=0);
 					assert(amount<=rt->sizesCount);
 					assert(variety>=0);
@@ -126,7 +126,7 @@ void Game::drawMapRessources(int left, int top, int right, int bot, int viewport
 					globalContainer->gfx->drawSprite((x<<5)-dx, (y<<5)-dy, sprite, imgid);
 				}
 			}
-	globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
 }
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
@@ -175,14 +175,14 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 		if (view.selectedUnit && view.selectedUnit->verbose)
 		{
 			Building *b=view.selectedUnit->attachedBuilding;
-			if (b && b->localRessources[1])
+			if (b && b->localResources[1])
 				for (int y=top-1; y<=bot; y++)
 					for (int x=left-1; x<=right; x++)
 						if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
 						{
 							int lx=(x+viewportX-b->posX+15)&31;
 							int ly=(y+viewportY-b->posY+15)&31;
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localRessources[1][lx+ly*32]);
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localResources[1][lx+ly*32]);
 						}
 		}
 
@@ -234,22 +234,22 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
-				if((drawOptions & DRAW_NO_RESSOURCE_GROWTH_AREAS) != 0)
+				if((drawOptions & DRAW_NO_RESOURCE_GROWTH_AREAS) != 0)
 				{
-					if(!map.canRessourcesGrow(x+viewportX, y+viewportY))
+					if(!map.canResourcesGrow(x+viewportX, y+viewportY))
 					{
 						globalContainer->gfx->drawLine((x<<5), 8+(y<<5), 32+(x<<5), 8+(y<<5), 128, 64, 0);
 						globalContainer->gfx->drawLine((x<<5), 16+(y<<5), 32+(x<<5), 16+(y<<5), 128, 64, 0);
 						globalContainer->gfx->drawLine((x<<5), 24+(y<<5), 32+(x<<5), 24+(y<<5), 128, 64, 0);
 
-						if (map.canRessourcesGrow(x+viewportX, y+viewportY-1))
+						if (map.canResourcesGrow(x+viewportX, y+viewportY-1))
 							globalContainer->gfx->drawHorzLine((x<<5), (y<<5), 32, 255, 128, 0);
-						if (map.canRessourcesGrow(x+viewportX, y+viewportY+1))
+						if (map.canResourcesGrow(x+viewportX, y+viewportY+1))
 							globalContainer->gfx->drawHorzLine((x<<5), 32+(y<<5), 32, 255, 128, 0);
 
-						if (map.canRessourcesGrow(x+viewportX-1, y+viewportY))
+						if (map.canResourcesGrow(x+viewportX-1, y+viewportY))
 							globalContainer->gfx->drawVertLine((x<<5), (y<<5), 32, 255, 128, 0);
-						if (map.canRessourcesGrow(x+viewportX+1, y+viewportY))
+						if (map.canResourcesGrow(x+viewportX+1, y+viewportY))
 							globalContainer->gfx->drawVertLine(32+(x<<5), (y<<5), 32, 255, 128, 0);
 						}
 				}

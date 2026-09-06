@@ -17,28 +17,28 @@
 #include "Utilities.h"
 #include "Order.h"
 
-bool Building::isRessourceFull(void)
+bool Building::isResourceFull(void)
 {
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
 	{
-		if (ressources[i]+type->multiplierRessource[i]<=type->maxRessource[i])
+		if (resources[i]+type->multiplierResource[i]<=type->maxResource[i])
 			return false;
 	}
 	return true;
 }
 
-int Building::neededRessource(void)
+int Building::neededResource(void)
 {
 	Sint32 minProportion = MIN_PROPORTION_INIT;
-	int minType = RESSOURCE_TYPE_NONE;
-	int deci=syncRand()%MAX_RESSOURCES;
-	for (int ib=0; ib<MAX_RESSOURCES; ib++)
+	int minType = RESOURCE_TYPE_NONE;
+	int deci=syncRand()%MAX_RESOURCES;
+	for (int ib=0; ib<MAX_RESOURCES; ib++)
 	{
-		int i=(ib+deci)%MAX_RESSOURCES;
-		int maxr=type->maxRessource[i];
+		int i=(ib+deci)%MAX_RESOURCES;
+		int maxr=type->maxResource[i];
 		if (maxr)
 		{
-			Sint32 proportion=(ressources[i]<<FIXED_POINT_SHIFT_16)/maxr;
+			Sint32 proportion=(resources[i]<<FIXED_POINT_SHIFT_16)/maxr;
 			if (proportion<minProportion)
 			{
 				minProportion=proportion;
@@ -49,37 +49,37 @@ int Building::neededRessource(void)
 	return minType;
 }
 
-void Building::neededRessources(int needs[MAX_NB_RESSOURCES])
+void Building::neededResources(int needs[MAX_NB_RESOURCES])
 {
-	for (int ri=0; ri<MAX_NB_RESSOURCES; ri++)
-		needs[ri]=Building::neededRessource(ri);
+	for (int ri=0; ri<MAX_NB_RESOURCES; ri++)
+		needs[ri]=Building::neededResource(ri);
 }
 
-void Building::computeWishedRessources(int needs[MAX_NB_RESSOURCES])
+void Building::computeWishedResources(int needs[MAX_NB_RESOURCES])
 {
 	 // we balance the system with Units working on it:
-	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		needs[ri] = (WISHED_RESOURCE_NUM * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * WISHED_RESOURCE_DEN);
+	for (int ri = 0; ri < MAX_NB_RESOURCES; ri++)
+		needs[ri] = (WISHED_RESOURCE_NUM * (type->maxResource[ri] - resources[ri])) / (type->multiplierResource[ri] * WISHED_RESOURCE_DEN);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
+			assert((*ui)->destinationPurpose < MAX_NB_RESOURCES);
 			needs[(*ui)->destinationPurpose]--;
 		}
 }
 
-int Building::neededRessource(int r)
+int Building::neededResource(int r)
 {
 	assert(r >= 0);
-	int need = type->maxRessource[r] - ressources[r] + 1 - type->multiplierRessource[r];
+	int need = type->maxResource[r] - resources[r] + 1 - type->multiplierResource[r];
 	return std::max(need,0);
 }
 
 
-int Building::totalWishedRessource()
+int Building::totalWishedResource()
 {
 	int sum=0;
-	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
+	for (int ri = 0; ri < MAX_NB_RESOURCES; ri++)
 		sum += wishedResources[ri];
 	return sum;
 }
@@ -106,7 +106,7 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		owner->removeFromAbilitiesLists(this);
 
 		// We remove all units who are going to the building:
-		// Notice that the algotithm is not fast but clean.
+		// Notice that the algorithm is not fast but clean.
 		std::list<Unit *> unitsToRemove;
 		for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 		{
@@ -200,8 +200,8 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	owner->prestige+=type->prestige;
 	owner->addToStaticAbilitiesLists(this);
 
-	//Update the pointer ressources to the newly changed type
-	updateRessourcesPointer();
+	//Update the pointer resources to the newly changed type
+	updateResourcesPointer();
 
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
@@ -276,8 +276,8 @@ void Building::updateCallLists(void)
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
-	bool ressourceFull=isRessourceFull();
-	if (ressourceFull && !(type->canExchange && owner->openMarket()))
+	bool resourceFull=isResourceFull();
+	if (resourceFull && !(type->canExchange && owner->openMarket()))
 	{
 		// Then we don't need anyone more to fill me, if I'm still in the call list for units,
 		// remove me
@@ -337,7 +337,7 @@ void Building::updateCallLists(void)
 		// this is for food handling
 		if (type->canFeedUnit)
 		{
-			if (ressources[CORN]>(int)unitsInside.size())
+			if (resources[CORN]>(int)unitsInside.size())
 			{
 				if (inCanFeedUnit!=LS_IN)
 				{

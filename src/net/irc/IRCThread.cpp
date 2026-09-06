@@ -90,7 +90,7 @@ void IRCThread::operator()()
 			message+=irc.getChatMessageSource();
 			message+=">";
 			message+=irc.getChatMessage();
-			std::shared_ptr<ITRecieveMessage> m(new ITRecieveMessage(message));
+			std::shared_ptr<ITReceiveMessage> m(new ITReceiveMessage(message));
 			sendToMainThread(m);
 			irc.freeChatMessage();
 		}
@@ -140,7 +140,7 @@ void IRCThread::operator()()
 				message += " : ";
 				message += irc.getInfoMessageText();
 			}
-			std::shared_ptr<ITRecieveMessage> m(new ITRecieveMessage(message));
+			std::shared_ptr<ITReceiveMessage> m(new ITReceiveMessage(message));
 			sendToMainThread(m);
 			irc.freeInfoMessage();
 		}

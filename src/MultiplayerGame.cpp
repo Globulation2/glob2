@@ -314,7 +314,7 @@ void MultiplayerGame::updateReadyState()
 
 
 
-void MultiplayerGame::addAIPlayer(AI::ImplementitionID type)
+void MultiplayerGame::addAIPlayer(AI::ImplementationID type)
 {
 	shared_ptr<NetAddAI> message(new NetAddAI((Uint8)type));
 	client->sendNetMessage(message);
@@ -387,10 +387,10 @@ int MultiplayerGame::getLocalPlayerNumber()
 
 
 
-void MultiplayerGame::recieveMessage(std::shared_ptr<NetMessage> message)
+void MultiplayerGame::receiveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
-	//This recieves responces to creating a game
+	//This receives responses to creating a game
 	if(type==MNetCreateGameAccepted)
 	{
 		shared_ptr<NetCreateGameAccepted> info = static_pointer_cast<NetCreateGameAccepted>(message);
@@ -474,7 +474,7 @@ void MultiplayerGame::recieveMessage(std::shared_ptr<NetMessage> message)
 			shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 			client->sendNetMessage(message);
 			std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
-			assembler->startRecievingFile(mapHeader.getFileName());
+			assembler->startReceivingFile(mapHeader.getFileName());
 			client->setYOGClientFileAssembler(fileID, assembler);
 		}
 		
@@ -580,7 +580,7 @@ void MultiplayerGame::recieveMessage(std::shared_ptr<NetMessage> message)
 	if(type==MNetAddAI)
 	{
 		shared_ptr<NetAddAI> info = static_pointer_cast<NetAddAI>(message);
-		playerManager.addAIPlayer(static_cast<AI::ImplementitionID>(info->getType()));
+		playerManager.addAIPlayer(static_cast<AI::ImplementationID>(info->getType()));
 		
 		shared_ptr<MGPlayerListChangedEvent> event(new MGPlayerListChangedEvent);
 		sendToListeners(event);

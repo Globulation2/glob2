@@ -210,7 +210,7 @@ void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
 				if (Building::GIDtoTeam(bgid)==teamNumber)
 				{
 					Building *b=game->teams[teamNumber]->myBuildings[Building::GIDtoID(bgid)];
-					b->resetLocalRessources();
+					b->resetLocalResources();
 				}
 		}
 	}

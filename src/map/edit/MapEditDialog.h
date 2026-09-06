@@ -28,7 +28,7 @@ class Unit;
 
 class Game;
 
-///This is the map editor menu screen. It has 5 buttons. Its very similair to the in-game main menu
+///This is the map editor menu screen. It has 5 buttons. Its very similar to the in-game main menu
 class MapEditMenuScreen : public OverlayScreen
 {
 public:
@@ -95,7 +95,7 @@ private:
 	Text* playerName[Team::MAX_COUNT];
 	//! Player colors
 	ColorButton *color[Team::MAX_COUNT];
-	//! Player ally temas
+	//! Player ally teams
 	MultiTextButton *allyTeamNumbers[Team::MAX_COUNT];
 	//! Multi-text button containing an aiSelector
 	MultiTextButton *aiSelector[Team::MAX_COUNT];

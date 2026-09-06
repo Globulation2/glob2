@@ -214,34 +214,34 @@ std::string NTLostConnection::getError() const
 
 
 
-NTRecievedMessage::NTRecievedMessage(std::shared_ptr<NetMessage> message)
+NTReceivedMessage::NTReceivedMessage(std::shared_ptr<NetMessage> message)
 	: message(message)
 {
 }
 
 
 
-Uint8 NTRecievedMessage::getMessageType() const
+Uint8 NTReceivedMessage::getMessageType() const
 {
-	return NTMRecievedMessage;
+	return NTMReceivedMessage;
 }
 
 
 
-std::string NTRecievedMessage::format() const
+std::string NTReceivedMessage::format() const
 {
 	std::ostringstream s;
-	s<<"NTRecievedMessage("<<"message->format()="<<message->format()<<"; "<<")";
+	s<<"NTReceivedMessage("<<"message->format()="<<message->format()<<"; "<<")";
 	return s.str();
 }
 
 
 
-bool NTRecievedMessage::operator==(const NetConnectionThreadMessage& rhs) const
+bool NTReceivedMessage::operator==(const NetConnectionThreadMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NTRecievedMessage))
+	if(typeid(rhs)==typeid(NTReceivedMessage))
 	{
-		const NTRecievedMessage& r = dynamic_cast<const NTRecievedMessage&>(rhs);
+		const NTReceivedMessage& r = dynamic_cast<const NTReceivedMessage&>(rhs);
 		if(r.message == message)
 			return true;
 	}
@@ -249,7 +249,7 @@ bool NTRecievedMessage::operator==(const NetConnectionThreadMessage& rhs) const
 }
 
 
-std::shared_ptr<NetMessage> NTRecievedMessage::getMessage() const
+std::shared_ptr<NetMessage> NTReceivedMessage::getMessage() const
 {
 	return message;
 }

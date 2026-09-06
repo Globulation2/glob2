@@ -15,13 +15,13 @@ int AINumbi::estimateFood(Building *building)
 {
 	int rx, ry, dist;
 	bool found;
-	if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
+	if (map->resourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY-1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY-1, &rx, &ry, &dist))
+	else if (map->resourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY-1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY+building->type->height+1, &rx, &ry, &dist))
+	else if (map->resourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX+building->type->width+1, building->posY+building->type->height+1, &rx, &ry, &dist))
 		found=true;
-	else if (map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
+	else if (map->resourceAvailableUpdate(team->teamNumber, CORN, 0, building->posX-1, building->posY+building->type->height+1, &rx, &ry, &dist))
 		found=true;
 	else
 		found=false;
@@ -39,14 +39,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
-			if (map->isRessourceTakeable(rx+i, ry, CORN)||map->isRessourceTakeable(rx+i, ry-1, CORN))
+			if (map->isResourceTakeable(rx+i, ry, CORN)||map->isResourceTakeable(rx+i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		rxr=rx+i;
 		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
-			if (map->isRessourceTakeable(rx-i, ry, CORN)||map->isRessourceTakeable(rx-i, ry-1, CORN))
+			if (map->isResourceTakeable(rx-i, ry, CORN)||map->isResourceTakeable(rx-i, ry-1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
@@ -56,14 +56,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
-			if (map->isRessourceTakeable(rx, ry+i, CORN)||map->isRessourceTakeable(rx-1, ry+i, CORN))
+			if (map->isResourceTakeable(rx, ry+i, CORN)||map->isResourceTakeable(rx-1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
-			if (map->isRessourceTakeable(rx, ry-i, CORN)||map->isRessourceTakeable(rx-1, ry-i, CORN))
+			if (map->isResourceTakeable(rx, ry-i, CORN)||map->isResourceTakeable(rx-1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -74,14 +74,14 @@ int AINumbi::estimateFood(Building *building)
 
 		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
-			if (map->isRessourceTakeable(rx, ry+i, CORN)||map->isRessourceTakeable(rx+1, ry+i, CORN))
+			if (map->isResourceTakeable(rx, ry+i, CORN)||map->isResourceTakeable(rx+1, ry+i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
 		ryb=ry+i;
 		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
-			if (map->isRessourceTakeable(rx, ry-i, CORN)||map->isRessourceTakeable(rx+1, ry-i, CORN))
+			if (map->isResourceTakeable(rx, ry-i, CORN)||map->isResourceTakeable(rx+1, ry-i, CORN))
 				h++;
 			else if (hole--<0)
 				break;
@@ -91,13 +91,13 @@ int AINumbi::estimateFood(Building *building)
 		w=0;
 		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
-			if (map->isRessourceTakeable(rx+i, ry, CORN)||map->isRessourceTakeable(rx+i, ry+1, CORN))
+			if (map->isResourceTakeable(rx+i, ry, CORN)||map->isResourceTakeable(rx+i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
 		hole=AI_NUMBI_CORN_SCAN_HOLE_TOLERANCE;
 		for (i=0; i<AI_NUMBI_CORN_SCAN_MAX_RADIUS; i++)
-			if (map->isRessourceTakeable(rx-i, ry, CORN)||map->isRessourceTakeable(rx-i, ry+1, CORN))
+			if (map->isResourceTakeable(rx-i, ry, CORN)||map->isResourceTakeable(rx-i, ry+1, CORN))
 				w++;
 			else if (hole--<0)
 				break;
@@ -110,11 +110,11 @@ int AINumbi::estimateFood(Building *building)
 		return 0;
 }
 
-std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors)
+std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int warriors)
 {
 	std::list<Building *> swarms=team->swarms;
 	int ss=swarms.size();
-	Sint32 numberRequested=1+(nbWorkersFator/(ss+1));
+	Sint32 numberRequested=1+(nbWorkersFactor/(ss+1));
 	int nbu=countUnits();
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
@@ -134,14 +134,14 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 
 		int f=estimateFood(b);
 		int numberRequestedTemp=numberRequested;
-		int numberRequestedLoca=b->maxUnitWorking;
+		int numberRequestedLocal=b->maxUnitWorking;
 		if (f<(nbu*AI_NUMBI_LOW_FOOD_PER_UNIT-1))
 			numberRequestedTemp=0;
-		else if (numberRequestedLoca==0)
+		else if (numberRequestedLocal==0)
 			if (f<(nbu*AI_NUMBI_HIGH_FOOD_PER_UNIT+1))
 				numberRequestedTemp=0;
 
-		if (numberRequestedLoca!=numberRequestedTemp)
+		if (numberRequestedLocal!=numberRequestedTemp)
 		{
 			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequestedTemp));
 		}

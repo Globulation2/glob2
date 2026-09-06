@@ -36,7 +36,7 @@ struct SGSLToken
 		// Generic language stuff
 		FUNC_CALL=10,
 
-		// Syntaxic token
+		// Syntactic token
 		S_PAROPEN=20,
 		S_PARCLOSE,
 		S_SEMICOL,
@@ -62,7 +62,7 @@ struct SGSLToken
 		S_SUMMONFLAG,
 		S_DESTROYFLAG,
 		S_WIN,
-		S_LOOSE,
+		S_LOSE,
 		S_LABEL,
 		S_JUMP,
 		S_SETAREA,
@@ -184,11 +184,11 @@ struct ErrorReport
 };
 
 // Text parser, returns tokens
-class Aquisition
+class Acquisition
 {
 public:
-	Aquisition(const Functions& functions);
-	virtual ~Aquisition(void);
+	Acquisition(const Functions& functions);
+	virtual ~Acquisition(void);
 
 public:
 	const SGSLToken *getToken() { return &token; }
@@ -209,11 +209,11 @@ private:
 };
 
 // File parser
-class FileAquisition: public Aquisition
+class FileAcquisition: public Acquisition
 {
 public:
-	FileAquisition(const Functions& functions) : Aquisition(functions) { fp=NULL; }
-	virtual ~FileAquisition() { if (fp) fclose(fp); }
+	FileAcquisition(const Functions& functions) : Acquisition(functions) { fp=NULL; }
+	virtual ~FileAcquisition() { if (fp) fclose(fp); }
 	bool open(const std::string filename);
 
 	virtual int getChar(void) { return ::fgetc(fp); }
@@ -224,11 +224,11 @@ private:
 };
 
 //String parser
-class StringAquisition: public Aquisition
+class StringAcquisition: public Acquisition
 {
 public:
-	StringAquisition(const Functions& functions);
-	virtual ~StringAquisition();
+	StringAcquisition(const Functions& functions);
+	virtual ~StringAcquisition();
 	void open(const std::string& text);
 
 	virtual int getChar(void);
@@ -239,7 +239,7 @@ private:
 	int pos;
 };
 
-// Independant story line
+// Independent story line
 class Story
 {
 	static const bool verbose = false;
@@ -256,7 +256,7 @@ public:
 	void syncStep(GameGUI *gui);
 	Sint32 checkSum() { return lineSelector; }
 
-	void sendSpace() { recievedSpace=true; }
+	void sendSpace() { receivedSpace=true; }
 	
 	
 private:
@@ -271,14 +271,14 @@ private:
 	void hintVisible(GameGUI* gui);
 	void setHighlightItem(GameGUI* gui, bool doSet);
 	void setGUIChoice(GameGUI* gui, SGSLToken::TokenType object, bool enable);
-	void hilightItem(GameGUI* gui);
-	void unhilightItem(GameGUI* gui);
-	void hilightUnits(GameGUI* gui);
-	void unhilightUnits(GameGUI* gui);
-	void hilightBuildings(GameGUI* gui);
-	void unhilightBuildings(GameGUI* gui);
-	void hilightBuildingOnPanel(GameGUI* gui);
-	void unhilightBuildingOnPanel(GameGUI* gui);
+	void highlightItem(GameGUI* gui);
+	void unhighlightItem(GameGUI* gui);
+	void highlightUnits(GameGUI* gui);
+	void unhighlightUnits(GameGUI* gui);
+	void highlightBuildings(GameGUI* gui);
+	void unhighlightBuildings(GameGUI* gui);
+	void highlightBuildingOnPanel(GameGUI* gui);
+	void unhighlightBuildingOnPanel(GameGUI* gui);
 	void resetAI(GameGUI* gui);
 	
 	
@@ -292,7 +292,7 @@ private:
 	int valueOfVariable(const Game *game, SGSLToken::TokenType type, int teamNumber, int level);
 	
 	MapScriptSGSL *mapscript;
-	bool recievedSpace;
+	bool receivedSpace;
 };
 
 ///These "areas" are now officially deprecated, replaced by "areas" in Map, which operate on a per-square basis
@@ -347,7 +347,7 @@ public:
 private:
 	friend class Story;
 
-	ErrorReport parseScript(Aquisition *donnees, Game *game);
+	ErrorReport parseScript(Acquisition *donnees, Game *game);
 	SGSLParseStatus parseStatement(SGSLParseContext &ctx);
 	SGSLParseStatus parseFunctionCall(SGSLParseContext &ctx);
 	SGSLParseStatus parseSummonUnits(SGSLParseContext &ctx);

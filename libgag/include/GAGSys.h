@@ -36,7 +36,7 @@
 // Remove this comment once all other SDL deps have been removed.
 #include <SDL.h>
 
-// usefull macros
+// useful macros
 #ifndef MAX
 #define MAX(a, b) ((a)>(b) ? (a) : (b))
 #endif

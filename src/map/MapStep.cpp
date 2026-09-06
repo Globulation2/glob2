@@ -14,16 +14,16 @@
 #include <algorithm>
 
 
-// growRessources, syncStep, fog of war, discovery, explored area
+// growResources, syncStep, fog of war, discovery, explored area
 
-void Map::growRessources(void)
+void Map::growResources(void)
 {
 	int dy=(syncRand()&0x3);
 	for (int y=dy; y<h; y+=4)
 	{
 		for (int x=(syncRand()&0xF); x<w; x+=(syncRand()&0x1F))
 		{
-			const Ressource &r = getRessource(x, y);
+			const Resource &r = getResource(x, y);
 			if (r.type!=NO_RES_TYPE)
 			{
 				// we look around to see if there is any water :
@@ -57,19 +57,19 @@ void Map::growRessources(void)
 				{
 					if (r.amount<=(syncRand()&7))
 					{
-						// we grow ressource:
-						if(canRessourcesGrow(x, y))
-							incRessource(x, y, r.type, r.variety);
+						// we grow resource:
+						if(canResourcesGrow(x, y))
+							incResource(x, y, r.type, r.variety);
 					}
-					else if (globalContainer->ressourcesTypes.get(r.type)->expendable)
+					else if (globalContainer->resourcesTypes.get(r.type)->expendable)
 					{
-						// we extand ressource:
+						// we extend resource:
 						int dx, dy;
 						Unit::dxDyFromDirection((syncRand()&7), &dx, &dy);
 						int nx=x+dx;
 						int ny=y+dy;
-						if(canRessourcesGrow(nx, ny))
-							incRessource(nx, ny, r.type, r.variety);
+						if(canResourcesGrow(nx, ny))
+							incResource(nx, ny, r.type, r.variety);
 					}
 				}
 			}
@@ -81,7 +81,7 @@ void Map::growRessources(void)
 #ifndef YOG_SERVER_ONLY
 void Map::syncStep(Uint32 stepCounter)
 {
-	growRessources();
+	growResources();
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
 	game->animations->step();
@@ -99,11 +99,11 @@ void Map::syncStep(Uint32 stepCounter)
 	{
 		int numberOfTeam=game->mapHeader.getNumberOfTeams();
 		for (int t=0; t<numberOfTeam; t++)
-			for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int r=0; r<MAX_RESOURCES; r++)
 				for (int s=0; s<2; s++)
 					if (!gradientUpdated[t][r][s])
 					{
-						updateRessourcesGradient(t, r, (bool)s);
+						updateResourcesGradient(t, r, (bool)s);
 						gradientUpdated[t][r][s]=true;
 						return;
 					}
@@ -126,7 +126,7 @@ void Map::syncStep(Uint32 stepCounter)
 				
 
 		for (int t=0; t<numberOfTeam; t++)
-			for (int r=0; r<MAX_RESSOURCES; r++)
+			for (int r=0; r<MAX_RESOURCES; r++)
 				for (int s=0; s<2; s++)
 					gradientUpdated[t][r][s]=false;
 		for (int t=0; t<numberOfTeam; t++)

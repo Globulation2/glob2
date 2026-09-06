@@ -33,7 +33,7 @@ void YOGClientDownloadableMapList::requestMapListUpdate()
 
 
 
-void YOGClientDownloadableMapList::recieveMessage(std::shared_ptr<NetMessage> message)
+void YOGClientDownloadableMapList::receiveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	if(type == MNetDownloadableMapInfos)

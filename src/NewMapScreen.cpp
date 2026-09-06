@@ -42,18 +42,18 @@ NewMapScreen::NewMapScreen()
 	logRepeatAreaTimes->visible=false;
 	addWidget(logRepeatAreaTimes);
 	
-	methodes=new List(20, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
-	methodes->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[swamp terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[river terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[concrete islands terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[isles terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[old random terrain]"));
-	methodes->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
-	methodes->setSelectionIndex(0);
-	addWidget(methodes);
+	methods=new List(20, 100, 280, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu");
+	methods->addText(Toolkit::getStringTable()->getString("[uniform terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[swamp terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[river terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[islands terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[crater lakes terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[concrete islands terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[isles terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[old random terrain]"));
+	methods->addText(Toolkit::getStringTable()->getString("[old islands terrain]"));
+	methods->setSelectionIndex(0);
+	addWidget(methods);
 	
 	// eUNIFORM
 
@@ -303,15 +303,15 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 
 		// all
-		if (source==methodes)
+		if (source==methods)
 		{
-			auto sel = methodes->selection();
+			auto sel = methods->selection();
 			if (!sel)
 				return;
-			MapGenerationDescriptor::Methode old=descriptor.methode;
-			descriptor.methode=(MapGenerationDescriptor::Methode)*sel;
+			MapGenerationDescriptor::Method old=descriptor.method;
+			descriptor.method=(MapGenerationDescriptor::Method)*sel;
 
-			if (old!=descriptor.methode)
+			if (old!=descriptor.method)
 			{
 				terrains->visible=false;
 				ratioText->visible=false;
@@ -353,12 +353,12 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 				areaTimesText->visible=false;
 			
 				// not eUNIFORM
-				nbTeams->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				nbWorkers->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				numberOfTeamText->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
-				numberOfWorkerText->setVisible(descriptor.methode!=MapGenerationDescriptor::eUNIFORM);
+				nbTeams->setVisible(descriptor.method!=MapGenerationDescriptor::eUNIFORM);
+				nbWorkers->setVisible(descriptor.method!=MapGenerationDescriptor::eUNIFORM);
+				numberOfTeamText->setVisible(descriptor.method!=MapGenerationDescriptor::eUNIFORM);
+				numberOfWorkerText->setVisible(descriptor.method!=MapGenerationDescriptor::eUNIFORM);
 
-				switch (descriptor.methode)
+				switch (descriptor.method)
 				{
 					case MapGenerationDescriptor::eUNIFORM:
 						terrains->visible=true;

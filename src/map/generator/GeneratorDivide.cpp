@@ -82,7 +82,7 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if(h > 50)
 				{
-					game.map.setRessource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
+					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
 				}
 			}
 			wheatWoodPoints.clear();
@@ -97,7 +97,7 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
 				if(h > 50)
 				{
-					game.map.setRessource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, CORN, 1);
+					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, CORN, 1);
 					wheatPoints.push_back(wheatWoodPoints[j]);
 				}
 			}
@@ -118,7 +118,7 @@ bool MapGenerator::divideUpPlayerLands(Game& game, MapGenerationDescriptor& desc
 			chooseRandomPoints(game, stoneLocations, numberOfStone);
 			for(unsigned int j=0; j<stoneLocations.size(); ++j)
 			{
-				game.map.setRessource(stoneLocations[j].x, stoneLocations[j].y, STONE, 1);
+				game.map.setResource(stoneLocations[j].x, stoneLocations[j].y, STONE, 1);
 			}
 			
 			

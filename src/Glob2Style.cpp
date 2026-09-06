@@ -41,7 +41,7 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 		
 		target->drawSprite(x+w-20, y, sprite, 4);
 		
-		// hightlight of buttons
+		// highlight of buttons
 		if (highlight > 0)
 		{
 			target->drawSprite(x, y, sprite, 1, highlight);
@@ -71,7 +71,7 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 		
 		target->drawSprite(x+w-10, y, sprite, 10);
 		
-		// hightlight of buttons
+		// highlight of buttons
 		if (highlight > 0)
 		{
 			target->drawSprite(x, y, sprite, 7, highlight);

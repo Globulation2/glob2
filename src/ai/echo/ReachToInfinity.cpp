@@ -103,12 +103,12 @@ void ReachToInfinity::tick_initial_setup(Echo& echo)
 				mo_ratios->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 				echo.add_management_order(mo_ratios);
 
-				ManagementOrder* mo_tracker=new AddRessourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, *i);
+				ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, *i);
 				echo.add_management_order(mo_tracker);
 			}
 			if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 			{
-				ManagementOrder* mo_tracker=new AddRessourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, *i);
+				ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, *i);
 				echo.add_management_order(mo_tracker);
 			}
 		}
@@ -125,7 +125,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 
 		//Constraints around the location of wheat
 		AIEcho::Gradients::GradientInfo gi_wheat;
-		gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+		gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 		//You want to be close to wheat
 		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_ECHO_RTI_INN_WHEAT_WEIGHT));
 		//You can't be farther than 10 units from wheat
@@ -134,13 +134,13 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		//Constraints around nearby settlement
 		AIEcho::Gradients::GradientInfo gi_building;
 		gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-		gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+		gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 		//You want to be close to other buildings, but wheat is more important
 		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_ECHO_RTI_BUILD_CLUSTER_WEIGHT));
 
 		AIEcho::Gradients::GradientInfo gi_building_construction;
 		gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 		//You don't want to be too close
 		bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, AI_ECHO_RTI_INN_CONSTRUCTION_MIN_DIST));
 
@@ -148,10 +148,10 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		if(echo.is_fruit_on_map())
 		{
 			AIEcho::Gradients::GradientInfo gi_fruit;
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-			gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-			//You want to be reasnobly close to fruit, closer if possible
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+			gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
+			//You want to be reasonably close to fruit, closer if possible
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, AI_ECHO_RTI_INN_FRUIT_WEIGHT));
 		}
 
@@ -164,7 +164,7 @@ void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
 		mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_completion);
 
-		ManagementOrder* mo_tracker=new AddRessourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, id);
+		ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, id);
 		mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 		echo.add_management_order(mo_tracker);
 	}

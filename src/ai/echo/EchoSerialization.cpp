@@ -72,14 +72,14 @@ bool Echo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMino
 	signature_check(stream, player, versionMinor);
 
 	stream->readEnterSection("ressource_trackers");
-	Uint32 ressourceTrackerSize=stream->readUint32("size");
-	for(Uint32 ressourceTrackerIndex=0; ressourceTrackerIndex<ressourceTrackerSize; ++ressourceTrackerIndex)
+	Uint32 resourceTrackerSize=stream->readUint32("size");
+	for(Uint32 resourceTrackerIndex=0; resourceTrackerIndex<resourceTrackerSize; ++resourceTrackerIndex)
 	{
-		stream->readEnterSection(ressourceTrackerIndex);
+		stream->readEnterSection(resourceTrackerIndex);
 		int id=stream->readUint32("echo_building_id");
-		std::shared_ptr<RessourceTracker> rt(new RessourceTracker(*this, stream, player, versionMinor));
+		std::shared_ptr<ResourceTracker> rt(new ResourceTracker(*this, stream, player, versionMinor));
 		bool activated=stream->readUint8("active");
-		ressource_trackers[id]=std::make_tuple(rt, activated);
+		resource_trackers[id]=std::make_tuple(rt, activated);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -185,11 +185,11 @@ void Echo::save(GAGCore::OutputStream *stream)
 	signature_write(stream);
 
 	stream->writeEnterSection("ressource_trackers");
-	stream->writeUint32(ressource_trackers.size(), "size");
-	Uint32 ressourceTrackerIndex=0;
-	for(tracker_iterator i=ressource_trackers.begin(); i!=ressource_trackers.end(); ++ressourceTrackerIndex, ++i)
+	stream->writeUint32(resource_trackers.size(), "size");
+	Uint32 resourceTrackerIndex=0;
+	for(tracker_iterator i=resource_trackers.begin(); i!=resource_trackers.end(); ++resourceTrackerIndex, ++i)
 	{
-		stream->writeEnterSection(ressourceTrackerIndex);
+		stream->writeEnterSection(resourceTrackerIndex);
 		stream->writeUint32(i->first, "echo_building_id");
 		std::get<0>(i->second)->save(stream);
 		stream->writeUint8(std::get<1>(i->second), "active");

@@ -16,7 +16,7 @@ namespace AINames
 	namespace
 	{
 		// Single source of truth for the AI roster, in display order — one
-		// row per AI::ImplementitionID. Everything user-facing about an AI's
+		// row per AI::ImplementationID. Everything user-facing about an AI's
 		// identity is derived from here, so the CLI parsers, their error/help
 		// text, and the localized UI labels can never drift apart.
 		//   cliName   — lowercase name accepted by --ai-types/--matchup, or

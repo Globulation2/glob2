@@ -29,7 +29,7 @@ public:
 
 public:
 	TerrainType terrainType;
-	enum Methode
+	enum Method
 	{
 		/// No terrain (terrain undefined)
 		eNONE=-1,
@@ -49,7 +49,7 @@ public:
 		eOLDISLANDS=8
 	};
 
-	Methode methode;
+	Method method;
 	
 	Sint32 wDec, hDec;
 	
@@ -57,17 +57,17 @@ public:
 		woodRatio, fruitRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
 	Sint32 oldIslandSize, oldBeach;
 	Sint32 smooth;
-	Sint32 ressource[MAX_NB_RESSOURCES];
+	Sint32 resource[MAX_NB_RESOURCES];
 	///n=2^n-times the same landscape. So 0=all random.
 	Uint32 logRepeatAreaTimes;
 
 	Sint32 nbTeams, nbWorkers;
 public:
-	// Thoses may not be in data
+	// Those may not be in data
 	Sint32 bootX[Team::MAX_COUNT];
 	Sint32 bootY[Team::MAX_COUNT];
 public:
-	enum {DATA_SIZE=100+MAX_NB_RESSOURCES*4};
+	enum {DATA_SIZE=100+MAX_NB_RESOURCES*4};
 protected:
 	//! Serialized form of MapGenerationDescriptor
 	Uint8 data[DATA_SIZE];

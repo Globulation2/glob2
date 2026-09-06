@@ -63,7 +63,7 @@ bool YOGServerMapDatabank::doesMapExist(const std::string& map)
 
 
 
-YOGMapUploadRefusalReason YOGServerMapDatabank::canRecieveFromPlayer(const YOGDownloadableMapInfo& map)
+YOGMapUploadRefusalReason YOGServerMapDatabank::canReceiveFromPlayer(const YOGDownloadableMapInfo& map)
 {
 	for(std::vector<std::tuple<YOGDownloadableMapInfo, int> >::iterator i = uploadingMaps.begin(); i!=uploadingMaps.end(); ++i)
 	{
@@ -80,7 +80,7 @@ YOGMapUploadRefusalReason YOGServerMapDatabank::canRecieveFromPlayer(const YOGDo
 
 
 
-Uint16 YOGServerMapDatabank::recieveMapFromPlayer(const YOGDownloadableMapInfo& map, std::shared_ptr<YOGServerPlayer> player)
+Uint16 YOGServerMapDatabank::receiveMapFromPlayer(const YOGDownloadableMapInfo& map, std::shared_ptr<YOGServerPlayer> player)
 {
 	int fileID = server->getFileDistributionManager().allocateFileDistributor();
 	server->getFileDistributionManager().getDistributor(fileID)->loadFromPlayer(player);

@@ -27,7 +27,7 @@ namespace
 	{
 		PlayerVoice pv;
 		for (int i = 0; i < sampleCount; ++i)
-			pv.voiceDatas.push(fill);
+			pv.voiceData.push(fill);
 		// Prime the interpolation endpoints the way addVoiceData/the mixer do:
 		// front is the current segment start, second sample its end.
 		pv.voiceVal0 = fill;
@@ -72,7 +72,7 @@ protected:
 		}
 		CPPUNIT_ASSERT(sawExhausted);
 		CPPUNIT_ASSERT_EQUAL(1, exhaustedCount);
-		CPPUNIT_ASSERT(pv.voiceDatas.empty());
+		CPPUNIT_ASSERT(pv.voiceData.empty());
 	}
 
 	// A one-sample queue: the very first rollover pops it and must report
@@ -89,7 +89,7 @@ protected:
 			sawExhausted = sawExhausted || exhausted;
 		}
 		CPPUNIT_ASSERT(sawExhausted);
-		CPPUNIT_ASSERT(pv.voiceDatas.empty());
+		CPPUNIT_ASSERT(pv.voiceData.empty());
 	}
 
 	// A single advance that does not cross a rollover must not pop anything and
@@ -97,11 +97,11 @@ protected:
 	void testNoRolloverKeepsQueueIntact()
 	{
 		PlayerVoice pv = makeVoice(4, 1.0f);
-		const size_t before = pv.voiceDatas.size();
+		const size_t before = pv.voiceData.size();
 		bool exhausted = false;
 		pv.advanceOutputSample(exhausted);
 		CPPUNIT_ASSERT(!exhausted);
-		CPPUNIT_ASSERT_EQUAL(before, pv.voiceDatas.size());
+		CPPUNIT_ASSERT_EQUAL(before, pv.voiceData.size());
 	}
 
 	// The returned contribution is computed from the entry state (subIndex 0,

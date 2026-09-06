@@ -28,11 +28,11 @@ void AICastor::computeObstacleUnitMap()
 		const auto& c=cases[i];
 		if (c.building!=NOGBID)
 			obstacleUnitMap[i]=0;
-		else if (c.ressource.type!=NO_RES_TYPE)
+		else if (c.resource.type!=NO_RES_TYPE)
 			obstacleUnitMap[i]=0;
 		else if (c.forbidden&teamMask)
 			obstacleUnitMap[i]=0;
-		else if (!canSwim && (c.terrain>=AI_CASTOR_TERRAIN_WATER_FIRST) && (c.terrain<AI_CASTOR_TERRAIN_WATER_FIRST+AI_CASTOR_TERRAIN_WATER_COUNT)) // !canSwim && isWatter ?
+		else if (!canSwim && (c.terrain>=AI_CASTOR_TERRAIN_WATER_FIRST) && (c.terrain<AI_CASTOR_TERRAIN_WATER_FIRST+AI_CASTOR_TERRAIN_WATER_COUNT)) // !canSwim && isWater ?
 			obstacleUnitMap[i]=0;
 		else
 			obstacleUnitMap[i]=1;
@@ -53,7 +53,7 @@ void AICastor::computeObstacleBuildingMap()
 			obstacleBuildingMap[i]=0;
 		else  if (c.terrain>=AI_CASTOR_TERRAIN_GRASS_COUNT) // if (!isGrass)
 			obstacleBuildingMap[i]=0;
-		else if (c.ressource.type!=NO_RES_TYPE)
+		else if (c.resource.type!=NO_RES_TYPE)
 			obstacleBuildingMap[i]=0;
 		else
 			obstacleBuildingMap[i]=1;
@@ -107,7 +107,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	Uint8 *gradient=buildingNeighbourMap;
 	const auto& cases=map->cases;
 	
-	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	
 	// we skip building with already a neighbour:
 	bool neighbour=false;
@@ -303,7 +303,7 @@ void AICastor::computeWorkPowerMap()
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungryness;
+			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungriness;
 			if (range<0)
 				continue;
 			if (range>maxRange)
@@ -376,7 +376,7 @@ void AICastor::computeWorkRangeMap()
 		Unit *u=myUnits[i];
 		if (u && u->typeNum==WORKER && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
-			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungryness;
+			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungriness;
 			if (range<0)
 				continue;
 			if (range>GRADIENT_AT_GOAL)
@@ -488,7 +488,7 @@ void AICastor::computeWheatCareMap()
 	int h=map->h;
 	size_t size=w*h;
 	size_t sizeMask=(size-1);
-	//Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	
 	Uint8 *temp=wheatCareMap[1];
 	wheatCareMap[1]=wheatCareMap[0];
@@ -516,7 +516,7 @@ void AICastor::computeWheatGrowthMap()
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
-	Uint8 *wheatGradient=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	

@@ -53,9 +53,9 @@ namespace
 		{
 			cases[coordToIndex(x, y)].groundUnit = guid;
 		}
-		void putRessource(int x, int y, int type = 0)
+		void putResource(int x, int y, int type = 0)
 		{
-			Ressource &r = cases[coordToIndex(x, y)].ressource;
+			Resource &r = cases[coordToIndex(x, y)].resource;
 			r.type = type;
 			r.amount = 1;
 			r.variety = 0;
@@ -91,9 +91,9 @@ void MapQueryTest::testFreeForGroundUnit_CleanGrassPasses()
 	CPPUNIT_ASSERT( g.isFreeForGroundUnit(3, 3, false, kTeam0) );
 }
 
-void MapQueryTest::testFreeForGroundUnit_RessourceFails()
+void MapQueryTest::testFreeForGroundUnit_ResourceFails()
 {
-	GrassMap g; g.putRessource(3, 3);
+	GrassMap g; g.putResource(3, 3);
 	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
 }
 
@@ -156,9 +156,9 @@ void MapQueryTest::testFreeForBuilding_GrassPasses()
 	CPPUNIT_ASSERT( g.isFreeForBuilding(3, 3) );
 }
 
-void MapQueryTest::testFreeForBuilding_RessourceFails()
+void MapQueryTest::testFreeForBuilding_ResourceFails()
 {
-	GrassMap g; g.putRessource(3, 3);
+	GrassMap g; g.putResource(3, 3);
 	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
 }
 
@@ -224,9 +224,9 @@ void MapQueryTest::testHardSpaceForGroundUnit_IgnoresUnit()
 	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
 }
 
-void MapQueryTest::testHardSpaceForGroundUnit_RessourceStillFails()
+void MapQueryTest::testHardSpaceForGroundUnit_ResourceStillFails()
 {
-	GrassMap g; g.putRessource(3, 3);
+	GrassMap g; g.putResource(3, 3);
 	CPPUNIT_ASSERT( !g.isHardSpaceForGroundUnit(3, 3, false, kTeam0) );
 }
 
@@ -257,9 +257,9 @@ void MapQueryTest::testHardSpaceForBuilding_IgnoresUnit()
 	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
 }
 
-void MapQueryTest::testHardSpaceForBuilding_RessourceFails()
+void MapQueryTest::testHardSpaceForBuilding_ResourceFails()
 {
-	GrassMap g; g.putRessource(3, 3);
+	GrassMap g; g.putResource(3, 3);
 	CPPUNIT_ASSERT( !g.isHardSpaceForBuilding(3, 3) );
 }
 

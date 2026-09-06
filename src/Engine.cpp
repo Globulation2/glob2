@@ -43,7 +43,7 @@ int Engine::run(void)
 		std::vector<std::string> musicDirs;
 		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
 		{
-			if (globalContainer->fileManager->isDir(FormatableString("%0/%1").arg("data/zik/").arg(filename)))
+			if (globalContainer->fileManager->isDir(FormattableString("%0/%1").arg("data/zik/").arg(filename)))
 			{
 				std::cerr << "music dir found: " << filename << std::endl;
 				musicDirs.push_back(filename);
@@ -56,9 +56,9 @@ int Engine::run(void)
 			size_t musicIndex(rand() % musicDirs.size());
 			const std::string& musicDir(musicDirs[musicIndex]);
 			std::cerr << "selecting music dir " << musicDir << std::endl;
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a1.ogg").arg(musicDir), MusicTrack::InGameDefault);
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a2.ogg").arg(musicDir), MusicTrack::BuildingEvent);
-			globalContainer->mix->loadTrack(FormatableString("data/zik/%0/a3.ogg").arg(musicDir), MusicTrack::WarEvent);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a1.ogg").arg(musicDir), MusicTrack::InGameDefault);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a2.ogg").arg(musicDir), MusicTrack::BuildingEvent);
+			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a3.ogg").arg(musicDir), MusicTrack::WarEvent);
 		}
 		else
 		{

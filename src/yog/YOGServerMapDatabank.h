@@ -28,11 +28,11 @@ public:
 	bool doesMapExist(const std::string& map);
 
 	///Returns whether the given map can be obtained from the player, returns YOGMapUploadReasonUnknown
-	///if it it can be recieved
-	YOGMapUploadRefusalReason canRecieveFromPlayer(const YOGDownloadableMapInfo& map);
+	///if it it can be received
+	YOGMapUploadRefusalReason canReceiveFromPlayer(const YOGDownloadableMapInfo& map);
 
-	///Starts recieving a map from the given player, and returns the file ID for the transfer
-	Uint16 recieveMapFromPlayer(const YOGDownloadableMapInfo& map, std::shared_ptr<YOGServerPlayer> player);
+	///Starts receiving a map from the given player, and returns the file ID for the transfer
+	Uint16 receiveMapFromPlayer(const YOGDownloadableMapInfo& map, std::shared_ptr<YOGServerPlayer> player);
 	
 	///Sends the list of maps to the given player
 	void sendMapListToPlayer(std::shared_ptr<YOGServerPlayer> player);

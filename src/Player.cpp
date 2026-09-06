@@ -30,7 +30,7 @@ Player::Player(Sint32 number, const std::string& name, Team *team, PlayerType ty
 	setTeam(team);
 	if (type>=P_AI)
 	{
-		ai=new AI(implementitionIdFromPlayerType(type), this);
+		ai=new AI(implementationIdFromPlayerType(type), this);
 	}
 	else
 	{
@@ -82,7 +82,7 @@ void Player::setBasePlayer(const BasePlayer *initial, Team *teams[Team::MAX_COUN
 
 	if (type>=P_AI)
 	{
-		ai=new AI((AI::ImplementitionID)(type-P_AI), this);
+		ai=new AI((AI::ImplementationID)(type-P_AI), this);
 	}
 	else if(type==P_NONE)
 	{
@@ -102,7 +102,7 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Si
 	stream->read(signature, FILE_SIG_LEN, "signatureStart");
 	if (memcmp(signature,FILE_SIG_PLAYER_BEGIN,FILE_SIG_LEN)!=0)
 	{
-		fprintf(stderr, "Player::load: Signature missmatch at begin of Player\n");
+		fprintf(stderr, "Player::load: Signature mismatch at begin of Player\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -147,7 +147,7 @@ bool Player::load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Si
 	stream->read(signature, FILE_SIG_LEN, "signatureEnd");
 	if (memcmp(signature,FILE_SIG_PLAYER_END,FILE_SIG_LEN)!=0)
 	{
-		fprintf(stderr, "Player::load: Signature missmatch at end of Player\n");
+		fprintf(stderr, "Player::load: Signature mismatch at end of Player\n");
 		stream->readLeaveSection();
 		return false;
 	}
@@ -174,7 +174,7 @@ void Player::save(GAGCore::OutputStream  *stream)
 
 
 
-void Player::makeItAI(AI::ImplementitionID aiType)
+void Player::makeItAI(AI::ImplementationID aiType)
 {
 	BasePlayer::makeItAI(aiType);
 	if(ai)

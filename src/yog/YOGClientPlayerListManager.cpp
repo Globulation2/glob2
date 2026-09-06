@@ -13,7 +13,7 @@ YOGClientPlayerListManager::YOGClientPlayerListManager(YOGClient* /*client*/)
 
 
 
-void YOGClientPlayerListManager::recieveMessage(std::shared_ptr<NetMessage> message)
+void YOGClientPlayerListManager::receiveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	if(type==MNetUpdatePlayerList)

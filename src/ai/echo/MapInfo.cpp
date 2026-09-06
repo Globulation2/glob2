@@ -55,16 +55,16 @@ bool MapInfo::is_discovered(int x, int y)
 
 
 
-bool MapInfo::is_ressource(int x, int y, int type)
+bool MapInfo::is_resource(int x, int y, int type)
 {
-	return echo.player->map->isRessourceTakeable(x, y, type);
+	return echo.player->map->isResourceTakeable(x, y, type);
 }
 
 
 
-bool MapInfo::is_ressource(int x, int y)
+bool MapInfo::is_resource(int x, int y)
 {
-	return echo.player->map->isRessource(x, y);
+	return echo.player->map->isResource(x, y);
 }
 
 
@@ -113,7 +113,7 @@ bool MapInfo::backs_onto_sand(int x, int y)
 
 
 
-int MapInfo::get_ammount_ressource(int x, int y)
+int MapInfo::get_amount_resource(int x, int y)
 {
-	return echo.player->map->getRessource(x, y).amount;
+	return echo.player->map->getResource(x, y).amount;
 }

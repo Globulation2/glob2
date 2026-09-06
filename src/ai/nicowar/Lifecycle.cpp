@@ -26,14 +26,14 @@ NewNicowar::NewNicowar()
 	skilled_work_phase=0;
 	upgrading_phase_1=false;
 	upgrading_phase_2=false;
-	war_preperation=false;
+	war_preparation=false;
 	war=false;
 	fruit_phase=false;
 	starving_recovery=false;
 	no_workers_phase=false;
 	can_swim=false;
 	defend_explorers=false;
-	explorer_attack_preperation_phase=false;
+	explorer_attack_preparation_phase=false;
 	explorer_attack_phase=false;
 	starving_recovery_inns = 0;
 	exploration_on_fruit=false;
@@ -66,7 +66,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		skilled_work_phase=stream->readUint8("skilled_work_phase");
 		upgrading_phase_1=stream->readUint8("upgrading_phase_1");
 		upgrading_phase_2=stream->readUint8("upgrading_phase_2");
-		war_preperation=stream->readUint8("war_preperation");
+		war_preparation=stream->readUint8("war_preperation");
 		war=stream->readUint8("war");
 		fruit_phase=stream->readUint8("fruit_phase");
 		starving_recovery=stream->readUint8("starving_recovery");
@@ -78,7 +78,7 @@ bool NewNicowar::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 		buildings_under_construction=stream->readUint32("buildings_under_construction");
 		for(int n=0; n<PlacementSize; ++n)
 		{
-			buildings_under_construction_per_type[n]=stream->readUint8(FormatableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
+			buildings_under_construction_per_type[n]=stream->readUint8(FormattableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
 		}
 			
 		stream->readEnterSection("placement_queue");
@@ -158,7 +158,7 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	stream->writeUint8(skilled_work_phase, "skilled_work_phase");
 	stream->writeUint8(upgrading_phase_1, "upgrading_phase_1");
 	stream->writeUint8(upgrading_phase_2, "upgrading_phase_2");
-	stream->writeUint8(war_preperation, "war_preperation");
+	stream->writeUint8(war_preparation, "war_preperation");
 	stream->writeUint8(war, "war");
 	stream->writeUint8(fruit_phase, "fruit_phase");
 	stream->writeUint8(starving_recovery, "starving_recovery");
@@ -168,7 +168,7 @@ void NewNicowar::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(buildings_under_construction, "buildings_under_construction");
 	for(int n=0; n<PlacementSize; ++n)
 	{
-		stream->writeUint8(buildings_under_construction_per_type[n], FormatableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
+		stream->writeUint8(buildings_under_construction_per_type[n], FormattableString("buildings_under_construction_per_type[%0]").arg(n).c_str());
 	}
 		
 	stream->writeEnterSection("placement_queue");
@@ -385,13 +385,13 @@ void NewNicowar::initialize(Echo& echo)
 	{	
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
-			ManagementOrder* mo_tracker=new AddRessourceTracker(AI_NICOWAR_RESSOURCE_TRACKER_DEPTH, CORN, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, CORN, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			echo.add_management_order(mo_tracker);
 		}
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::FOOD_BUILDING)
 		{
-			ManagementOrder* mo_tracker=new AddRessourceTracker(AI_NICOWAR_RESSOURCE_TRACKER_DEPTH, CORN, *i);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, CORN, *i);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, *i));
 			echo.add_management_order(mo_tracker);
 		}

@@ -67,7 +67,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		{
 			performAction("area drag motion", relMouseX, relMouseY);
 		}
-		else if(isDraggingNoRessourceGrowthArea)
+		else if(isDraggingNoResourceGrowthArea)
 		{
 			performAction("no ressource growth area drag motion", relMouseX, relMouseY);
 		}
@@ -115,7 +115,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 				performAction("delete drag start");
 			else if(selectionMode==ChangeAreas)
 				performAction("area drag start");
-			else if(selectionMode==ChangeNoRessourceGrowthAreas)
+			else if(selectionMode==ChangeNoResourceGrowthAreas)
 				performAction("no ressource growth area drag start");
 			else
 			{
@@ -149,7 +149,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 			performAction("delete drag end");
 		if(isDraggingArea)
 			performAction("area drag end");
-		if(isDraggingNoRessourceGrowthArea)
+		if(isDraggingNoResourceGrowthArea)
 			performAction("no ressource growth area drag end");
 	}
 	else if(event.type==SDL_MOUSEBUTTONUP && event.button.button==SDL_BUTTON_MIDDLE)

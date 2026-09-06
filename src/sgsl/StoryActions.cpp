@@ -103,57 +103,57 @@ void Story::hintVisible(GameGUI* gui)
 
 namespace
 {
-	/// One row of the script-name to GUI-object mapping used by hilightItem /
-	/// unhilightItem.
-	struct HilightItemName
+	/// One row of the script-name to GUI-object mapping used by highlightItem /
+	/// unhighlightItem.
+	struct HighlightItemName
 	{
 		const char* name;
-		GameGUI::HilightObject object;
+		GameGUI::HighlightObject object;
 	};
 
-	/// The sole authority for which GUI item each script hilight name points at.
+	/// The sole authority for which GUI item each script highlight name points at.
 	/// The names are the SGSL surface — they appear verbatim in campaign scripts
-	/// (`hilightItem("main menu icon")`), so they cannot be reworded. The draw sites
+	/// (`highlightItem("main menu icon")`), so they cannot be reworded. The draw sites
 	/// in GameGUIDraw*.cpp find their arrow by looking the object back up in
-	/// GameGUI::hilights, so each name must resolve to a distinct object; see
-	/// hilightItemObjectsAreDistinct below.
-	constexpr HilightItemName hilightItemNames[] =
+	/// GameGUI::highlights, so each name must resolve to a distinct object; see
+	/// highlightItemObjectsAreDistinct below.
+	constexpr HighlightItemName highlightItemNames[] =
 	{
-		{ "main menu icon",              GameGUI::HilightMainMenuIcon },
-		{ "right side panel",            GameGUI::HilightRightSidePanel },
-		{ "under minimap icons",         GameGUI::HilightUnderMinimapIcon },
-		{ "units assigned bar",          GameGUI::HilightUnitsAssignedBar },
-		{ "units ratio bar",             GameGUI::HilightRatioBar },
-		{ "workers working free stat",   GameGUI::HilightWorkersWorkingFreeStat },
-		{ "explorers working free stat", GameGUI::HilightExplorersWorkingFreeStat },
-		{ "warriors working free stat",  GameGUI::HilightWarriorsWorkingFreeStat },
-		{ "forbidden zone on panel",     GameGUI::HilightForbiddenZoneOnPanel },
-		{ "guard zone on panel",         GameGUI::HilightGuardZoneOnPanel },
-		{ "clearing zone on panel",      GameGUI::HilightClearingZoneOnPanel },
-		{ "brush selector",              GameGUI::HilightBrushSelector },
+		{ "main menu icon",              GameGUI::HighlightMainMenuIcon },
+		{ "right side panel",            GameGUI::HighlightRightSidePanel },
+		{ "under minimap icons",         GameGUI::HighlightUnderMinimapIcon },
+		{ "units assigned bar",          GameGUI::HighlightUnitsAssignedBar },
+		{ "units ratio bar",             GameGUI::HighlightRatioBar },
+		{ "workers working free stat",   GameGUI::HighlightWorkersWorkingFreeStat },
+		{ "explorers working free stat", GameGUI::HighlightExplorersWorkingFreeStat },
+		{ "warriors working free stat",  GameGUI::HighlightWarriorsWorkingFreeStat },
+		{ "forbidden zone on panel",     GameGUI::HighlightForbiddenZoneOnPanel },
+		{ "guard zone on panel",         GameGUI::HighlightGuardZoneOnPanel },
+		{ "clearing zone on panel",      GameGUI::HighlightClearingZoneOnPanel },
+		{ "brush selector",              GameGUI::HighlightBrushSelector },
 	};
 
-	/// True when no two rows share a HilightObject. A duplicate means a row was
+	/// True when no two rows share a HighlightObject. A duplicate means a row was
 	/// copy-pasted and kept the object it was copied from, which aims one script
 	/// name at another name's arrow and leaves its own arrow unreachable.
-	constexpr bool hilightItemObjectsAreDistinct()
+	constexpr bool highlightItemObjectsAreDistinct()
 	{
-		for (std::size_t i = 0; i < std::size(hilightItemNames); ++i)
-			for (std::size_t j = i + 1; j < std::size(hilightItemNames); ++j)
-				if (hilightItemNames[i].object == hilightItemNames[j].object)
+		for (std::size_t i = 0; i < std::size(highlightItemNames); ++i)
+			for (std::size_t j = i + 1; j < std::size(highlightItemNames); ++j)
+				if (highlightItemNames[i].object == highlightItemNames[j].object)
 					return false;
 		return true;
 	}
 
-	static_assert(hilightItemObjectsAreDistinct(),
-		"two SGSL hilight item names resolve to the same GameGUI::HilightObject");
+	static_assert(highlightItemObjectsAreDistinct(),
+		"two SGSL hilight item names resolve to the same GameGUI::HighlightObject");
 
-	/// Resolves a script hilight item name to the GUI object it selects, or nullopt
-	/// if the name is not hilightable. An unknown name is not an error — it is
+	/// Resolves a script highlight item name to the GUI object it selects, or nullopt
+	/// if the name is not highlightable. An unknown name is not an error — it is
 	/// silently ignored, as it always has been.
-	std::optional<GameGUI::HilightObject> hilightObjectFromName(const std::string& name)
+	std::optional<GameGUI::HighlightObject> highlightObjectFromName(const std::string& name)
 	{
-		for (const HilightItemName& entry : hilightItemNames)
+		for (const HighlightItemName& entry : highlightItemNames)
 		{
 			if (name == entry.name)
 				return entry.object;
@@ -165,64 +165,64 @@ namespace
 void Story::setHighlightItem(GameGUI* gui, bool doSet)
 {
 	const std::string n = line[++lineSelector].msg;
-	const std::optional<GameGUI::HilightObject> object = hilightObjectFromName(n);
+	const std::optional<GameGUI::HighlightObject> object = highlightObjectFromName(n);
 	if(!object)
 		return;
 
 	if(doSet)
 	{
-		gui->hilights.insert(*object);
+		gui->highlights.insert(*object);
 	}
 	else
 	{
-		gui->hilights.erase(*object);
+		gui->highlights.erase(*object);
 	}
 }
 
-void Story::hilightItem(GameGUI* gui)
+void Story::highlightItem(GameGUI* gui)
 {
 	setHighlightItem(gui, true);
 }
 
-void Story::unhilightItem(GameGUI* gui)
+void Story::unhighlightItem(GameGUI* gui)
 {
 	setHighlightItem(gui, false);
 }
 
-void Story::hilightUnits(GameGUI* gui)
+void Story::highlightUnits(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
-	gui->hilights.insert(GameGUI::HilightWorkers+n);
+	gui->highlights.insert(GameGUI::HighlightWorkers+n);
 }
 
-void Story::unhilightUnits(GameGUI* gui)
+void Story::unhighlightUnits(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_WORKER;
-	gui->hilights.erase(GameGUI::HilightWorkers+n);
+	gui->highlights.erase(GameGUI::HighlightWorkers+n);
 }
 
-void Story::hilightBuildings(GameGUI* gui)
+void Story::highlightBuildings(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->hilights.insert(GameGUI::HilightBuildingOnMap+n);
+	gui->highlights.insert(GameGUI::HighlightBuildingOnMap+n);
 }
 
-void Story::unhilightBuildings(GameGUI* gui)
+void Story::unhighlightBuildings(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->hilights.erase(GameGUI::HilightBuildingOnMap+n);
+	gui->highlights.erase(GameGUI::HighlightBuildingOnMap+n);
 }
 
-void Story::hilightBuildingOnPanel(GameGUI* gui)
+void Story::highlightBuildingOnPanel(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->hilights.insert(GameGUI::HilightBuildingOnPanel+n);
+	gui->highlights.insert(GameGUI::HighlightBuildingOnPanel+n);
 }
 
-void Story::unhilightBuildingOnPanel(GameGUI* gui)
+void Story::unhighlightBuildingOnPanel(GameGUI* gui)
 {
 	int n = line[++lineSelector].type - SGSLToken::S_SWARM_B;
-	gui->hilights.erase(GameGUI::HilightBuildingOnPanel+n);
+	gui->highlights.erase(GameGUI::HighlightBuildingOnPanel+n);
 }
 
 void Story::resetAI(GameGUI* gui)
@@ -231,7 +231,7 @@ void Story::resetAI(GameGUI* gui)
 	int aitype = line[++lineSelector].value;
 	if(gui->game.players[player])
 	{
-		gui->game.players[player]->makeItAI(static_cast<AI::ImplementitionID>(aitype));
+		gui->game.players[player]->makeItAI(static_cast<AI::ImplementationID>(aitype));
 	}
 }
 
@@ -281,7 +281,7 @@ void Story::setGUIChoice(GameGUI* gui, SGSLToken::TokenType object, bool enable)
 
 
 static const FunctionArgumentDescription totoDescription[] = {
-	{ SGSLToken::S_WIN, SGSLToken::S_LOOSE },
+	{ SGSLToken::S_WIN, SGSLToken::S_LOSE },
 	{ SGSLToken::INT, SGSLToken::INT },
 	{ -1, -1}
 };
@@ -316,42 +316,42 @@ static const FunctionArgumentDescription hintVisibleDescription[] = {
 	{ -1, -1}
 };
 
-static const FunctionArgumentDescription hilightItemDescription[] = {
+static const FunctionArgumentDescription highlightItemDescription[] = {
 	{ SGSLToken::STRING, SGSLToken::STRING },
 	{ -1, -1}
 };
 
-static const FunctionArgumentDescription unhilightItemDescription[] = {
+static const FunctionArgumentDescription unhighlightItemDescription[] = {
 	{ SGSLToken::STRING, SGSLToken::STRING },
 	{ -1, -1}
 };
 
-static const FunctionArgumentDescription hilightUnitsDescription[] = {
+static const FunctionArgumentDescription highlightUnitsDescription[] = {
 	{ SGSLToken::S_WORKER, SGSLToken::S_WARRIOR },
 	{ -1, -1}
 };
 
-static const FunctionArgumentDescription unhilightUnitsDescription[] = {
+static const FunctionArgumentDescription unhighlightUnitsDescription[] = {
 	{ SGSLToken::S_WORKER, SGSLToken::S_WARRIOR },
 	{ -1, -1}
 };
 
-static const FunctionArgumentDescription hilightBuildingsDescription[] = {
+static const FunctionArgumentDescription highlightBuildingsDescription[] = {
 	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
-static const FunctionArgumentDescription unhilightBuildingsDescription[] = {
+static const FunctionArgumentDescription unhighlightBuildingsDescription[] = {
 	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
-static const FunctionArgumentDescription hilightBuildingOnPanelDescription[] = {
+static const FunctionArgumentDescription highlightBuildingOnPanelDescription[] = {
 	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
 
-static const FunctionArgumentDescription unhilightBuildingOnPanelDescription[] = {
+static const FunctionArgumentDescription unhighlightBuildingOnPanelDescription[] = {
 	{ SGSLToken::S_SWARM_B, SGSLToken::S_MARKET_B },
 	{ -1, -1}
 };
@@ -371,13 +371,13 @@ MapScriptSGSL::MapScriptSGSL()
 	functions["objectiveFailed"] = std::make_pair(objectiveFailedDescription, &Story::objectiveFailed);
 	functions["hintHidden"] = std::make_pair(hintHiddenDescription, &Story::hintHidden);
 	functions["hintVisible"] = std::make_pair(hintVisibleDescription, &Story::hintVisible);
-	functions["hilightItem"] = std::make_pair(hilightItemDescription, &Story::hilightItem);
-	functions["unhilightItem"] = std::make_pair(unhilightItemDescription, &Story::unhilightItem);
-	functions["hilightUnits"] = std::make_pair(hilightUnitsDescription, &Story::hilightUnits);
-	functions["unhilightUnits"] = std::make_pair(unhilightUnitsDescription, &Story::unhilightUnits);
-	functions["hilightBuildings"] = std::make_pair(hilightBuildingsDescription, &Story::hilightBuildings);
-	functions["unhilightBuildings"] = std::make_pair(unhilightBuildingsDescription, &Story::unhilightBuildings);
-	functions["hilightBuildingOnPanel"] = std::make_pair(hilightBuildingOnPanelDescription, &Story::hilightBuildingOnPanel);
-	functions["unhilightBuildingOnPanel"] = std::make_pair(unhilightBuildingOnPanelDescription, &Story::unhilightBuildingOnPanel);
+	functions["hilightItem"] = std::make_pair(highlightItemDescription, &Story::highlightItem);
+	functions["unhilightItem"] = std::make_pair(unhighlightItemDescription, &Story::unhighlightItem);
+	functions["hilightUnits"] = std::make_pair(highlightUnitsDescription, &Story::highlightUnits);
+	functions["unhilightUnits"] = std::make_pair(unhighlightUnitsDescription, &Story::unhighlightUnits);
+	functions["hilightBuildings"] = std::make_pair(highlightBuildingsDescription, &Story::highlightBuildings);
+	functions["unhilightBuildings"] = std::make_pair(unhighlightBuildingsDescription, &Story::unhighlightBuildings);
+	functions["hilightBuildingOnPanel"] = std::make_pair(highlightBuildingOnPanelDescription, &Story::highlightBuildingOnPanel);
+	functions["unhilightBuildingOnPanel"] = std::make_pair(unhighlightBuildingOnPanelDescription, &Story::unhighlightBuildingOnPanel);
 	functions["resetAI"] = std::make_pair(resetAIDescription, &Story::resetAI);
 }

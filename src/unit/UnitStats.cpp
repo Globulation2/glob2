@@ -20,7 +20,7 @@ int Unit::getRealArmor(bool isMagic) const
 		return performance[ARMOR] - fruitCount * armorReductionPerHappyness;
 }
 
-//! Return the real attack strengh, taking into account the experience level
+//! Return the real attack strength, taking into account the experience level
 int Unit::getRealAttackStrength(void) const
 {
 	return performance[ATTACK_STRENGTH] + experienceLevel;
@@ -32,7 +32,7 @@ int Unit::getNextLevelThreshold(void) const
 	return (experienceLevel + 1) * (experienceLevel + 1) * race->getUnitType(typeNum, level[ATTACK_STRENGTH])->experiencePerLevel;
 }
 
-//! Increment experience. If level-up occures, handle it. Multiple level-up may occur at once.
+//! Increment experience. If level-up occurs, handle it. Multiple level-up may occur at once.
 void Unit::incrementExperience(int increment)
 {
 	experience += increment;
@@ -50,8 +50,8 @@ void Unit::incrementExperience(int increment)
 int Unit::numberOfStepsLeftUntilHungry(void)
 {
 	int timeLeft;
-	if (hungryness)
-		timeLeft = (hungry-trigHungry) / hungryness;
+	if (hungriness)
+		timeLeft = (hungry-trigHungry) / hungriness;
 	else
 		timeLeft = INT_MAX;
 	stepsLeftUntilHungry = timeLeft;
@@ -61,10 +61,10 @@ int Unit::numberOfStepsLeftUntilHungry(void)
 //! Iterate on all resource types to see if it is gettable
 void Unit::computeMinDistToResources(void)
 {
-	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
-		if (!owner->map->ressourceAvailable(owner->teamNumber, ri, performance[SWIM], posX, posY, &minDistToResource[ri]))
+	for (size_t ri = 0; ri < MAX_RESOURCES; ri++)
+		if (!owner->map->resourceAvailable(owner->teamNumber, ri, performance[SWIM], posX, posY, &minDistToResource[ri]))
 			minDistToResource[ri] = UNIT_MIN_DIST_NOT_REACHABLE;
 	// the dist to an already carried resource is zero
-	if (carriedRessource >= 0)
-		minDistToResource[carriedRessource] = 0;
+	if (carriedResource >= 0)
+		minDistToResource[carriedResource] = 0;
 }

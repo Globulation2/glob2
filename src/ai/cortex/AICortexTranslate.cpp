@@ -626,7 +626,7 @@ void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool 
 	           // wantWheatBlitzLift; liftAll selects the wheat-blitz full-lift mode.
 
 	// Rebuild the ADD/DEL checkerboard masks for our wheat (the bounded colony-region
-	// scan, RNG-free) at the per-game open-margin and emit one OrderAlterateForbidden
+	// scan, RNG-free) at the per-game open-margin and emit one OrderAlterForbidden
 	// per non-empty diff. No build cooldown: these are area-paint orders, not
 	// OrderCreates, and the reconcile is self-correcting — a paint already in place
 	// yields an empty diff next cycle, so re-running it every cycle is free. The
@@ -639,9 +639,9 @@ void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool 
 	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
 	// DEL first so freeing dead tiles never races the ADD of fresh ones.
 	if (wr.del.getApplicationCount() > 0)
-		orderQueue.push(shared_ptr<Order>(new OrderAlterateForbidden(
+		orderQueue.push(shared_ptr<Order>(new OrderAlterForbidden(
 			teamNumber, BrushTool::MODE_DEL, &wr.del, map)));
 	if (wr.add.getApplicationCount() > 0)
-		orderQueue.push(shared_ptr<Order>(new OrderAlterateForbidden(
+		orderQueue.push(shared_ptr<Order>(new OrderAlterForbidden(
 			teamNumber, BrushTool::MODE_ADD, &wr.add, map)));
 }

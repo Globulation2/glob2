@@ -8,16 +8,16 @@
 
 
 
-// Resource grid mutations + ressource availability + points/area names
+// Resource grid mutations + resource availability + points/area names
 
-void Map::decRessource(int x, int y)
+void Map::decResource(int x, int y)
 {
-	Ressource &r = getCase(x, y).ressource;
+	Resource &r = getCase(x, y).resource;
 	
 	if (r.type == NO_RES_TYPE || r.amount == 0)
 		return;
 	
-	const RessourceType *fulltype = globalContainer->ressourcesTypes.get(r.type);
+	const ResourceType *fulltype = globalContainer->resourcesTypes.get(r.type);
 	
 	if (!fulltype->shrinkable)
 		return;
@@ -35,16 +35,16 @@ void Map::decRessource(int x, int y)
 	}
 }
 
-void Map::decRessource(int x, int y, int ressourceType)
+void Map::decResource(int x, int y, int resourceType)
 {
-	if (isRessourceTakeable(x, y, ressourceType))
-		decRessource(x, y);
+	if (isResourceTakeable(x, y, resourceType))
+		decResource(x, y);
 }
 
-bool Map::incRessource(int x, int y, int ressourceType, int variety)
+bool Map::incResource(int x, int y, int resourceType, int variety)
 {
-	Ressource &r = getCase(x, y).ressource;
-	const RessourceType *fulltype;
+	Resource &r = getCase(x, y).resource;
+	const ResourceType *fulltype;
 	if (r.type == NO_RES_TYPE)
 	{
 		if (getBuilding(x, y) != NOGBID)
@@ -52,12 +52,12 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 		if (getGroundUnit(x, y) != NOGUID)
 			return false;
 
-		fulltype = globalContainer->ressourcesTypes.get(ressourceType);
+		fulltype = globalContainer->resourcesTypes.get(resourceType);
 		if (getTerrainType(x, y) == fulltype->terrain)
 		{
-			r.type = ressourceType;
+			r.type = resourceType;
 			r.variety = variety;
-			r.amount = RESSOURCE_INITIAL_AMOUNT;
+			r.amount = RESOURCE_INITIAL_AMOUNT;
 			r.animation = 0;
 			return true;
 		}
@@ -68,10 +68,10 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 	}
 	else
 	{
-		fulltype = globalContainer->ressourcesTypes.get(r.type);
+		fulltype = globalContainer->resourcesTypes.get(r.type);
 	}
 
-	if (r.type != ressourceType)
+	if (r.type != resourceType)
 		return false;
 	if (!fulltype->shrinkable)
 		return false;
@@ -88,49 +88,49 @@ bool Map::incRessource(int x, int y, int ressourceType, int variety)
 }
 
 
-void Map::setNoRessource(int x, int y, int l)
+void Map::setNoResource(int x, int y, int l)
 {
 	assert(l>=0);
 	assert(l<w);
 	assert(l<h);
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
-			cases[coordToIndex(dx, dy)].ressource.clear();
+			cases[coordToIndex(dx, dy)].resource.clear();
 }
 
-void Map::removeUnallowedRessources(int x, int y, int w, int h)
+void Map::removeUnallowedResources(int x, int y, int w, int h)
 {
 	for (int dx=x; dx<x+w; dx++)
 		for (int dy=y; dy<y+h; dy++)
 		{
-			Ressource& r=cases[coordToIndex(dx, dy)].ressource;
-			if (r.type!=NO_RES_TYPE && getTerrainType(dx, dy)!=globalContainer->ressourcesTypes.get(r.type)->terrain)
+			Resource& r=cases[coordToIndex(dx, dy)].resource;
+			if (r.type!=NO_RES_TYPE && getTerrainType(dx, dy)!=globalContainer->resourcesTypes.get(r.type)->terrain)
 				r.clear();
 		}
 }
 
-void Map::setRessource(int x, int y, int type, int l)
+void Map::setResource(int x, int y, int type, int l)
 {
 	assert(l>=0);
 	assert(l<w);
 	assert(l<h);
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
-			if (isRessourceAllowed(dx, dy, type))
+			if (isResourceAllowed(dx, dy, type))
 			{
-				Ressource& rp=cases[coordToIndex(dx, dy)].ressource;
+				Resource& rp=cases[coordToIndex(dx, dy)].resource;
 				rp.type=type;
-				const RessourceType *rt=globalContainer->ressourcesTypes.get(type);
+				const ResourceType *rt=globalContainer->resourcesTypes.get(type);
 				rp.variety=syncRand()%rt->varietiesCount;
 				assert(rt->sizesCount>1);
-				rp.amount=RESSOURCE_INITIAL_AMOUNT+syncRand()%(rt->sizesCount-1);
+				rp.amount=RESOURCE_INITIAL_AMOUNT+syncRand()%(rt->sizesCount-1);
 				rp.animation=0;
 			}
 }
 
-bool Map::isRessourceAllowed(int x, int y, int type)
+bool Map::isResourceAllowed(int x, int y, int type)
 {
-	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && (getTerrainType(x, y)==globalContainer->ressourcesTypes.get(type)->terrain);
+	return (getBuilding(x, y) == NOGBID) && (getGroundUnit(x, y) == NOGUID) && (getTerrainType(x, y)==globalContainer->resourcesTypes.get(type)->terrain);
 }
 
 bool Map::isPointSet(int n, int x, int y) const
@@ -159,15 +159,15 @@ void Map::setAreaName(int n, std::string name)
 }
 
 
-bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y) const
+bool Map::resourceAvailable(int teamNumber, int resourceType, bool canSwim, int x, int y) const
 {
-	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
+	Uint8 g = getGradient(teamNumber, resourceType, canSwim, x, y);
 	return g>GRADIENT_UNREACHABLE; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
-bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist) const
+bool Map::resourceAvailable(int teamNumber, int resourceType, bool canSwim, int x, int y, int *dist) const
 {
-	Uint8 g = getGradient(teamNumber, ressourceType, canSwim, x, y);
+	Uint8 g = getGradient(teamNumber, resourceType, canSwim, x, y);
 	if (g>GRADIENT_UNREACHABLE)
 	{
 		*dist = GRADIENT_AT_GOAL-g;
@@ -177,17 +177,17 @@ bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, in
 		return false;
 }
 
-bool Map::ressourceAvailableUpdate(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+bool Map::resourceAvailableUpdate(int teamNumber, int resourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 {
 	// distance and availability
 	bool result;
 	if (dist)
-		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y, dist);
+		result = resourceAvailable(teamNumber, resourceType, canSwim, x, y, dist);
 	else
-		result = ressourceAvailable(teamNumber, ressourceType, canSwim, x, y);
+		result = resourceAvailable(teamNumber, resourceType, canSwim, x, y);
 		
 	// target position
-	Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
+	Uint8 *gradient = resourcesGradient[teamNumber][resourceType][canSwim];
 	getGlobalGradientDestination(gradient, x, y, targetX, targetY);
 
 	return result;
@@ -248,7 +248,7 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 
 /*
 This was the old way. I was much more complex but reliable with partially broken gradients. Let's keep it for now in case of such type of gradient reappears
-bool Map::ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+bool Map::resourceAvailable(int teamNumber, int resourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
 
 commented out version last seen in revision 0ea2652945a0
 

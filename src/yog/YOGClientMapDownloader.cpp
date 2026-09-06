@@ -27,7 +27,7 @@ void YOGClientMapDownloader::startDownloading(const YOGDownloadableMapInfo& map)
 	// construct downloader
 	fileID = map.getFileID();
 	std::shared_ptr<YOGClientFileAssembler> assembler(new YOGClientFileAssembler(client, fileID));
-	assembler->startRecievingFile(map.getMapHeader().getFileName());
+	assembler->startReceivingFile(map.getMapHeader().getFileName());
 	client->setYOGClientFileAssembler(fileID, assembler);
 	
 	std::shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
@@ -41,14 +41,14 @@ void YOGClientMapDownloader::cancelDownload()
 {
 	if(state == DownloadingMap)
 	{
-		client->getYOGClientFileAssembler(fileID)->cancelRecievingFile();
+		client->getYOGClientFileAssembler(fileID)->cancelReceivingFile();
 		state = Nothing;
 	}
 }
 
 
 
-void YOGClientMapDownloader::recieveMessage(std::shared_ptr<NetMessage> message)
+void YOGClientMapDownloader::receiveMessage(std::shared_ptr<NetMessage> message)
 {
 
 }
@@ -57,7 +57,7 @@ void YOGClientMapDownloader::recieveMessage(std::shared_ptr<NetMessage> message)
 
 void YOGClientMapDownloader::update()
 {
-	if(client->getYOGClientFileAssembler(fileID)->fileInformationRecieved() && state == DownloadingMap && getPercentDownloaded()==100)
+	if(client->getYOGClientFileAssembler(fileID)->fileInformationReceived() && state == DownloadingMap && getPercentDownloaded()==100)
 	{
 		state = Finished;
 	}

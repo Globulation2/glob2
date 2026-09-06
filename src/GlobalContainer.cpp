@@ -81,7 +81,7 @@ GlobalContainer::GlobalContainer(void)
 	terrain = NULL;
 	terrainShader = NULL;
 	terrainBlack = NULL;
-	ressources = NULL;
+	resources = NULL;
 	units = NULL;
 
 	menuFont = NULL;
@@ -237,8 +237,8 @@ void GlobalContainer::loadClient(void)
 		
 		updateLoadProgressScreen(60);
 		// load resources
-		ressources = Toolkit::getSprite("data/gfx/ressource");
-		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
+		resources = Toolkit::getSprite("data/gfx/ressource");
+		resourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
 		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
 		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
 		areaGuard = Toolkit::getSprite("data/gfx/area-guard");

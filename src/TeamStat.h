@@ -62,7 +62,7 @@ struct TeamStat
 	int totalAttackPower;
 	int totalDefensePower;
 		
-	int happiness[HAPPYNESS_COUNT+1];
+	int happiness[HAPPINESS_COUNT+1];
 };
 
 struct TeamSmoothedStat
@@ -131,7 +131,7 @@ private:
 	friend class EndGameStat;
 	friend class EndGameScreen;
 	
-	//! Thoses stats are used when player has ended the game
+	//! Those stats are used when player has ended the game
 	friend class Team;
 	friend class Game;
 	

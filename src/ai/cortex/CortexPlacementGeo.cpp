@@ -238,7 +238,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getRessource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == CORN)
 					return true;
 			}
 		return false;
@@ -256,7 +256,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getRessource(nx, ny).type == CORN)
+				if (map.getResource(nx, ny).type == CORN)
 					count++;
 			}
 		return count;
@@ -283,7 +283,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getRessource(nx, ny).type != CORN)
+				if (map.getResource(nx, ny).type != CORN)
 					continue;
 				if (((nx + ny) & 1) == WHEAT_PARITY)
 					continue; // the checkerboard-forbidden half: not sustained.
@@ -308,7 +308,7 @@ namespace Cortex
 			{
 				const int nx = map.normalizeX(x + dx);
 				const int ny = map.normalizeY(y + dy);
-				if (map.getRessource(nx, ny).type != CORN)
+				if (map.getResource(nx, ny).type != CORN)
 					continue;
 				if (map.isForbidden(nx, ny, teamMask))
 					continue;
