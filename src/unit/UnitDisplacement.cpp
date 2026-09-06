@@ -11,6 +11,7 @@
 
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include "PathfindStats.h"
 
 void Unit::handleDisplacement(void)
 {
@@ -124,6 +125,7 @@ void Unit::handleDisplacement(void)
 					if (verbose)
 						printf("guid=(%d) Giving resource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->resources[carriedResource]);
 					targetBuilding->addResourceIntoBuilding(carriedResource);
+					PathfindStats::get().deliveries[owner->teamNumber]++;
 					carriedResource=UNIT_CARRIED_RESOURCE_NONE;
 				}
 

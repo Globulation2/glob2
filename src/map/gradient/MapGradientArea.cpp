@@ -7,6 +7,7 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "PathfindStats.h"
 
 
 
@@ -14,6 +15,7 @@
 
 void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 {
+	PathfindStats::Scope pfScope(PathfindStats::get().areaGradient);
 	Uint8 *gradient = forbiddenGradient[teamNumber][canSwim];
 	assert(gradient);
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
@@ -88,6 +90,7 @@ void Map::updateForbiddenGradient()
 
 void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
 {
+	PathfindStats::Scope pfScope(PathfindStats::get().areaGradient);
 	Uint8 *gradient = guardAreasGradient[teamNumber][canSwim];
 	assert(gradient);
 
@@ -129,6 +132,7 @@ void Map::updateGuardAreasGradient()
 
 void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
 {
+	PathfindStats::Scope pfScope(PathfindStats::get().areaGradient);
 	Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
 	assert(gradient);
 

@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "PathfindStats.h"
 
 
 
@@ -88,6 +89,7 @@ inline Uint32 scoreMinigradDirection(const Uint8 miniGrad[MINIGRAD_AREA],
 
 bool Map::directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict) const
 {
+	PathfindStats::get().minigradCalls++;
 	Uint32 maxs[MINIGRAD_DIRECTIONS];
 	for (int d = 0; d < MINIGRAD_DIRECTIONS; ++d)
 		maxs[d] = scoreMinigradDirection(miniGrad, minigradDirections[d]);

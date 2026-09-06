@@ -6,6 +6,7 @@
 #include "Utilities.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "PathfindStats.h"
 
 
 
@@ -114,6 +115,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 
 bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
+	PathfindStats::get().pathfindBuildingCalls++;
 	assert(building);
 	int bx=building->posX;
 	int by=building->posY;

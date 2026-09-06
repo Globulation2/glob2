@@ -5,6 +5,7 @@
 #include "BuildingType.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "PathfindStats.h"
 
 
 
@@ -12,6 +13,7 @@
 
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
+	PathfindStats::Scope pfScope(PathfindStats::get().buildingGlobal);
 	assert(building);
 	assert(building->type);
 	int posX=building->posX;

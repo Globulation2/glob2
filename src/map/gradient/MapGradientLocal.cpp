@@ -5,6 +5,7 @@
 #include "BuildingType.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "PathfindStats.h"
 
 
 
@@ -26,6 +27,7 @@ void fillGradientRectangle(Uint8* gradient, int posW, int posH) {
 
 void Map::updateLocalGradient(Building *building, bool canSwim)
 {
+	PathfindStats::Scope pfScope(PathfindStats::get().localGradient);
 	assert(building);
 	assert(building->type);
 	building->dirtyLocalGradient[canSwim]=false;

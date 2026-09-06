@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "PathfindStats.h"
 
 // Chamfer distance transform with orthogonal=1, diagonal=1 weights (Chebyshev
 // distance) on a toroidal grid. Two sweeps per pass — forward (NW, N, NE, W)
@@ -33,6 +34,7 @@
 // throttle. On correct code the loop exits in a handful of passes.
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
+	PathfindStats::Scope pfScope(PathfindStats::get().globalChamfer);
 	int passes = 0;
 	bool changed;
 	do
@@ -103,11 +105,13 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 			abort();
 		}
 	} while (changed);
+	PathfindStats::get().chamferPasses += passes;
 }
 
 
 void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSwim)
 {
+	PathfindStats::Scope pfScope(PathfindStats::get().resourcesGradient);
 	Uint8 *gradient=resourcesGradient[teamNumber][resourceType][canSwim];
 	assert(gradient);
 

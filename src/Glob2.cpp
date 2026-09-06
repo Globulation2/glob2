@@ -126,6 +126,14 @@ int Glob2::runNoX()
 int Glob2::runTestGames()
 {
 	globalContainer->automaticEndingSteps=90000;
+	// GLOB2_MAX_TICKS caps a -test-games run (e.g. 15000 = 10 game minutes)
+	// so pathfinding A/B simulations finish in bounded time.
+	if (const char* envMaxTicks = getenv("GLOB2_MAX_TICKS"))
+	{
+		long v = atol(envMaxTicks);
+		if (v > 0)
+			globalContainer->automaticEndingSteps = (int)v;
+	}
 	int maxRuns = globalContainer->runTestGamesCount;
 	int run = 0;
 	while(maxRuns == 0 || run < maxRuns)

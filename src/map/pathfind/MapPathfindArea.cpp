@@ -3,6 +3,7 @@
 
 #include "Map.h"
 #include "MapInternal.h"
+#include "PathfindStats.h"
 
 #include <queue>
 
@@ -84,6 +85,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	targetX = (targetX + w) & wMask;
 	targetY = (targetY + h) & hMask;
 
+	PathfindStats::Scope pfScope(PathfindStats::get().pointToPoint);
 	AStarComparator compare(aStarPoints);
 
 	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
@@ -162,6 +164,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	}
 
 	AStarAlgorithmPoint final = aStarPoints[(targetX << hDec) + targetY];
+	PathfindStats::get().pointToPointExpanded += aStarExaminedPoints.size();
 
 	//Clear all of the examined points for the next call to this algorithm
 	for(unsigned i=0; i<aStarExaminedPoints.size(); ++i)

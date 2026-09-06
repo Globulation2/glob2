@@ -8,6 +8,8 @@
 #include "DatasetWriter.h"
 #include "Engine.h"
 #include "EngineTiming.h"
+#include "PathfindStats.h"
+#include <ctime>
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Player.h"
@@ -314,6 +316,8 @@ void Engine::printAutomaticEndingSummary()
 	// compared side by side after a single game.
 	if (getenv("GLOB2_TEAM_TIMELINE"))
 		printTeamTimeline();
+	if (getenv("GLOB2_PATHFIND_STATS"))
+		PathfindStats::print(gui.game.mapHeader.getNumberOfTeams(), 1000.0 * std::clock() / CLOCKS_PER_SEC);
 }
 
 // Per-team timeline dump (see GLOB2_TEAM_TIMELINE in printAutomaticEndingSummary).

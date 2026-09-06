@@ -6,6 +6,7 @@
 #include "BuildingType.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include "PathfindStats.h"
 
 
 
@@ -16,6 +17,7 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int
 	assert(resourceType<MAX_RESOURCES);
 	const Uint8 *gradient=resourcesGradient[teamNumber][resourceType][canSwim];
 	assert(gradient);
+	PathfindStats::get().pathfindResourceCalls++;
 	Uint8 max=gradient[x+y*w];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	if (max==GRADIENT_FORBIDDEN)
@@ -32,6 +34,7 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int
 	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true))
 		return true;
 
+	PathfindStats::get().pathfindResourceStuck++;
 	*stopWork=false;
 	return false;
 }

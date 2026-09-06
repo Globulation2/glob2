@@ -8,6 +8,28 @@
 #include "Building.h"
 
 #include "Utilities.h"
+#include "PathfindStats.h"
+
+namespace
+{
+void countMove(const Unit* u, bool randomWhileWorking)
+{
+	if (u->dx == 0 && u->dy == 0)
+		return;
+	PathfindStats::Counters& c = PathfindStats::get();
+	int t = u->owner->teamNumber;
+	if (u->dx != 0 && u->dy != 0)
+		c.movesDiagonal[t]++;
+	else
+		c.movesCardinal[t]++;
+	if (u->action == SWIM)
+		c.movesSwim[t]++;
+	else
+		c.movesWalk[t]++;
+	if (randomWhileWorking)
+		c.movesRandomWhileWorking[t]++;
+}
+}
 
 namespace
 {
@@ -57,6 +79,7 @@ void Unit::handleActionRandomGround()
 	wrapPosition();
 	selectPreferredGroundMovement();
 	speed=performance[action];
+	countMove(this, attachedBuilding != NULL);
 	claimOccupiedMapSlot();
 }
 
@@ -92,6 +115,7 @@ void Unit::handleActionGoingTarget()
 
 	selectPreferredGroundMovement();
 	speed=performance[action];
+	countMove(this, false);
 	claimOccupiedMapSlot();
 }
 
@@ -125,6 +149,8 @@ void Unit::handleActionGoingDxDy()
 
 	selectPreferredMovement();
 	speed=performance[action];
+	if (!performance[FLY])
+		countMove(this, false);
 
 	claimOccupiedMapSlot();
 
