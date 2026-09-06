@@ -21,7 +21,7 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
 	game.map.setGame(&game);
 	setRandomSyncRandSeed();
 	
-	switch (descriptor.methode)
+	switch (descriptor.method)
 	{
 		case MapGenerationDescriptor::eUNIFORM:
 			game.map.makeHomogenMap(descriptor.terrainType);
@@ -162,7 +162,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			int total_height = heights[y * game.map.getW() + x];
 			if(total_height<=10)
 			{
-				game.map.setRessource(x, y, ALGA, 1);
+				game.map.setResource(x, y, ALGA, 1);
 			}
 		}
 	}
@@ -205,7 +205,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 			chooseRandomPoints(game, points, fruit_n);
 			for(unsigned int j=0; j<points.size(); ++j)
 			{
-				game.map.setRessource(points[j].x, points[j].y, CHERRY + syncRand()%3, 1);
+				game.map.setResource(points[j].x, points[j].y, CHERRY + syncRand()%3, 1);
 			}
 		}
 	}
@@ -409,7 +409,7 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 			for(int y=-2; y<=2; ++y)
 			{
 				int ny = game.map.normalizeY(possible[r].y + y);
-				game.map.setRessource(nx, ny, ALGA, 1);
+				game.map.setResource(nx, ny, ALGA, 1);
 			}
 		}
 	}

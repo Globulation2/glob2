@@ -107,7 +107,7 @@ void YOGServerFileDistributor::update()
 
 void YOGServerFileDistributor::addMapRequestee(std::shared_ptr<YOGServerPlayer> player)
 {
-	garunteeDataRequested();
+	guaranteeDataRequested();
 	players.push_back(std::make_tuple(player, boost::posix_time::second_clock::local_time(), 0));
 }
 
@@ -160,11 +160,11 @@ void YOGServerFileDistributor::loadDataFromFile()
 		istream->seekFromStart(0);
 		fileInfo = std::shared_ptr<NetSendFileInformation>(new NetSendFileInformation(size, fileID));
 		
-		int ammount=0;
-		while(ammount < size)
+		int amount=0;
+		while(amount < size)
 		{
 			std::shared_ptr<NetSendFileChunk> message(new NetSendFileChunk(istream, fileID));
-			ammount += message->getChunkSize();
+			amount += message->getChunkSize();
 			chunks.push_back(message);
 		}
 	}
@@ -182,7 +182,7 @@ void YOGServerFileDistributor::requestDataFromPlayer()
 	}
 }
 
-void YOGServerFileDistributor::garunteeDataRequested()
+void YOGServerFileDistributor::guaranteeDataRequested()
 {
 	if(player)
 		requestDataFromPlayer();

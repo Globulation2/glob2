@@ -11,18 +11,18 @@
 #include "Map.h"
 #include "Unit.h"
 
-void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
+void Map::oldAddResourcesRandomMap(MapGenerationDescriptor &descriptor)
 {
 	int *bootX=descriptor.bootX;
 	int *bootY=descriptor.bootY;
 	int nbTeams=descriptor.nbTeams;
-	int limiteDist=(w+h)/(2*nbTeams);
+	int limitDist=(w+h)/(2*nbTeams);
 	
-	// let's add ressources to old map generator
+	// let's add resources to old map generator
 	for (int team=0; team<nbTeams; team++)
 	{
-		int smallestWidth=limiteDist;
-		int smallestRessource=0;
+		int smallestWidth=limitDist;
+		int smallestResource=0;
 		
 		bool dirUsed[8];
 		for (int i=0; i<8; i++)
@@ -57,7 +57,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 					int width=0;
 					int dx, dy, dist;
 					Unit::dxDyFromDirection(dir, &dx, &dy);
-					for (dist=5; dist<limiteDist; dist++)
+					for (dist=5; dist<limitDist; dist++)
 						if (isGrass(bootX[team]+dx*dist, bootY[team]+dy*dist))
 							width++;
 						else if (width>3)
@@ -76,7 +76,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			if (maxWidth<smallestWidth)
 			{
 				smallestWidth=maxWidth;
-				smallestRessource=res;
+				smallestResource=res;
 			}
 			
 			int dx, dy;
@@ -85,12 +85,12 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			dx*=d;
 			dy*=d;
 			
-			int amount=descriptor.ressource[res];
+			int amount=descriptor.resource[res];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, res, amount);
+				setResource(bootX[team]+dx, bootY[team]+dy, res, amount);
 		}
 
-		if (smallestWidth<limiteDist)
+		if (smallestWidth<limitDist)
 		{
 			int maxDir=0;
 			int maxWidth=0;
@@ -101,7 +101,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 					int width=0;
 					int dx, dy, dist;
 					Unit::dxDyFromDirection(dir, &dx, &dy);
-					for (dist=0; dist<2*limiteDist; dist++)
+					for (dist=0; dist<2*limitDist; dist++)
 						if (isGrass(bootX[team]+dx*dist, bootY[team]+dy*dist))
 							width++;
 						else if (width>3)
@@ -124,9 +124,9 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			dx*=d;
 			dy*=d;
 			
-			int amount=descriptor.ressource[smallestRessource];
+			int amount=descriptor.resource[smallestResource];
 			if (amount>0)
-				setRessource(bootX[team]+dx, bootY[team]+dy, smallestRessource, amount);
+				setResource(bootX[team]+dx, bootY[team]+dy, smallestResource, amount);
 		}
 
 		int maxDir=0;
@@ -137,7 +137,7 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 			int width=0;
 			int dx, dy, dist;
 			Unit::dxDyFromDirection(dir, &dx, &dy);
-			for (dist=0; dist<2*limiteDist; dist++)
+			for (dist=0; dist<2*limitDist; dist++)
 				if (isWater(bootX[team]+dx*dist, bootY[team]+dy*dist))
 					width++;
 				else if (width>3)
@@ -159,16 +159,16 @@ void Map::oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor)
 		dx*=d;
 		dy*=d;
 		
-		int amount=descriptor.ressource[ALGA];
+		int amount=descriptor.resource[ALGA];
 		if (amount>0)
-			setRessource(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
+			setResource(bootX[team]+dx, bootY[team]+dy, ALGA, amount);
 	}
 	
-	// Let's smooth ressources...
+	// Let's smooth resources...
 	int maxAmount=0;
 	for (int r=0; r<4; r++)
-		if (maxAmount<descriptor.ressource[r])
-			maxAmount=descriptor.ressource[r];
-	smoothRessources(maxAmount*3);
+		if (maxAmount<descriptor.resource[r])
+			maxAmount=descriptor.resource[r];
+	smoothResources(maxAmount*3);
 }
 

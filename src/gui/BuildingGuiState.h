@@ -45,7 +45,7 @@ struct BuildingGuiState
 	/// OrderModifyClearingFlag payload also carries the whole array). Cleared
 	/// by reconcileBuildingGuiState on ORDER_MODIFY_CLEARING_FLAG (non-local /
 	/// replay).
-	std::optional<std::array<bool, BASIC_COUNT>> pendingClearingRessources;
+	std::optional<std::array<bool, BASIC_COUNT>> pendingClearingResources;
 
 	/// Pending min-level-to-flag (warflag / explorationflag). Cleared by
 	/// reconcileBuildingGuiState on ORDER_MODIFY_MIN_LEVEL_TO_FLAG (non-local /

@@ -128,11 +128,11 @@ void MapGenerator::findBorderPoints(Game& game, std::vector<int>& grid, std::vec
 
 
 
-void MapGenerator::fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int ressourceType, int maxFillSize)
+void MapGenerator::fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int resourceType, int maxFillSize)
 {
 	for(unsigned int n=0;  n<points.size(); ++n)
 	{
-		game.map.setRessource(points[n].x, points[n].y, ressourceType, 1+syncRand()%maxFillSize);
+		game.map.setResource(points[n].x, points[n].y, resourceType, 1+syncRand()%maxFillSize);
 	}
 }
 

@@ -39,7 +39,7 @@ private:
 	Button* addMap;
 	/// Opens the map editor screen and edits the selected map
 	Button* editMap;
-	/// Remvoes the map from the list of maps
+	/// Removes the map from the list of maps
 	Button* removeMap;
 	/// Text editor changes the name of the campaign
 	TextInput* nameEditor;

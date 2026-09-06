@@ -28,7 +28,7 @@ namespace Cortex
 
 		bool isCorn(Map& map, int x, int y)
 		{
-			return map.getRessource(x, y).type == CORN;
+			return map.getResource(x, y).type == CORN;
 		}
 	} // namespace
 

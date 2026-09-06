@@ -7,80 +7,80 @@ using namespace AIEcho;
 using namespace AIEcho::Gradients;
 
 
-Entities::Ressource::Ressource(int ressource_type) : ressource_type(ressource_type)
+Entities::Resource::Resource(int resource_type) : resource_type(resource_type)
 {
 }
 
-bool Entities::Ressource::is_entity(Map* map, int posx, int posy)
+bool Entities::Resource::is_entity(Map* map, int posx, int posy)
 {
-	return map->isRessourceTakeable(posx, posy, ressource_type);
+	return map->isResourceTakeable(posx, posy, resource_type);
 }
 
-bool Entities::Ressource::operator==(const Entity& rhs) const
+bool Entities::Resource::operator==(const Entity& rhs) const
 {
-	if(typeid(rhs)!=typeid(Entities::Ressource))
+	if(typeid(rhs)!=typeid(Entities::Resource))
 		return false;
-	return static_cast<const Entities::Ressource&>(rhs).ressource_type==ressource_type;
+	return static_cast<const Entities::Resource&>(rhs).resource_type==resource_type;
 }
 
-bool Entities::Ressource::can_change()
+bool Entities::Resource::can_change()
 {
-	return ressource_type==WOOD || ressource_type==CORN || ressource_type==ALGA;
+	return resource_type==WOOD || resource_type==CORN || resource_type==ALGA;
 }
 
-Entities::EntityType Entities::Ressource::get_type()
+Entities::EntityType Entities::Resource::get_type()
 {
-	return Entities::ERessource;
+	return Entities::EResource;
 }
 
-bool Entities::Ressource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool Entities::Resource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("Ressource");
-	ressource_type = stream->readSint32("ressource_type");
+	resource_type = stream->readSint32("ressource_type");
 	stream->readLeaveSection();
 	return true;
 }
 
-void Entities::Ressource::save(GAGCore::OutputStream *stream)
+void Entities::Resource::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("Ressource");
-	stream->writeSint32(ressource_type, "ressource_type");
+	stream->writeSint32(resource_type, "ressource_type");
 	stream->writeLeaveSection();
 }
 
 
-Entities::AnyRessource::AnyRessource()
+Entities::AnyResource::AnyResource()
 {
 }
 
-bool Entities::AnyRessource::is_entity(Map* map, int posx, int posy)
+bool Entities::AnyResource::is_entity(Map* map, int posx, int posy)
 {
-	return map->isRessource(posx, posy);
+	return map->isResource(posx, posy);
 }
 
-bool Entities::AnyRessource::operator==(const Entity& rhs) const
+bool Entities::AnyResource::operator==(const Entity& rhs) const
 {
-	return typeid(rhs)==typeid(Entities::AnyRessource);
+	return typeid(rhs)==typeid(Entities::AnyResource);
 }
 
-bool Entities::AnyRessource::can_change()
+bool Entities::AnyResource::can_change()
 {
 	return true;
 }
 
-Entities::EntityType Entities::AnyRessource::get_type()
+Entities::EntityType Entities::AnyResource::get_type()
 {
-	return Entities::EAnyRessource;
+	return Entities::EAnyResource;
 }
 
-bool Entities::AnyRessource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool Entities::AnyResource::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("AnyRessource");
 	stream->readLeaveSection();
 	return true;
 }
 
-void Entities::AnyRessource::save(GAGCore::OutputStream *stream)
+void Entities::AnyResource::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AnyRessource");
 	stream->writeLeaveSection();

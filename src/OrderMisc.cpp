@@ -86,15 +86,15 @@ std::shared_ptr<OrderVoiceData> OrderVoiceData::deserialize(const Uint8 *data, i
 	return order;
 }
 
-OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas)
+OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData)
 {
 	this->recepientsMask = recepientsMask;
-	this->framesDatasLength = framesDatasLength;
+	this->framesDataLength = framesDataLength;
 	this->frameCount = frameCount;
 
-	data = (Uint8 *)malloc(framesDatasLength+5);
-	if (framesDatas)
-		memcpy(data+5, framesDatas, framesDatasLength);
+	data = (Uint8 *)malloc(framesDataLength+5);
+	if (framesData)
+		memcpy(data+5, framesData, framesDataLength);
 }
 
 OrderVoiceData::~OrderVoiceData()
@@ -115,7 +115,7 @@ bool OrderVoiceData::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 	if (dataLength<5)
 		return false;
 
-	this->framesDatasLength = (size_t)dataLength - 5;
+	this->framesDataLength = (size_t)dataLength - 5;
 	this->recepientsMask = getUint32(data, 0);
 	this->frameCount = getUint8(data, 4);
 

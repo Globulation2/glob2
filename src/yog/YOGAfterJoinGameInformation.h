@@ -15,7 +15,7 @@ namespace GAGCore
 	class InputStream;
 }
 
-///This class holds all of the data that is sent to a player immeddiettly after they join a game,
+///This class holds all of the data that is sent to a player immediately after they join a game,
 ///including all of the information that isn't visible directly from the lobby
 class YOGAfterJoinGameInformation
 {

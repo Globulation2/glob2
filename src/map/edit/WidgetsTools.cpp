@@ -83,25 +83,25 @@ void TerrainSelector::draw()
 	if(terrainType==Water)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 259);
 	if(terrainType==Wheat)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 19);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 19);
 	if(terrainType==Trees)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 2);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 2);
 	if(terrainType==Stone)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 34);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 34);
 	if(terrainType==Algae)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 44);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 44);
 	if(terrainType==Papyrus)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 24);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 24);
 	if(terrainType==CherryTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 54);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 54);
 	if(terrainType==OrangeTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 59);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 59);
 	if(terrainType==PruneTree)
-		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->ressources, 64);
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 64);
 	if (terrainType == Grass || terrainType == Sand || terrainType == Water)
 		globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
 	else
-		globalContainer->gfx->finishDrawingSprite(globalContainer->ressources, 255);
+		globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
 	if (me.terrainType == terrainType)
 	{
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, 22);

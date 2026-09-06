@@ -153,7 +153,7 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 		}
 		else
 		{
-			AI::ImplementitionID iid;
+			AI::ImplementationID iid;
 			if (!globalContainer->testGamesMatchup.empty())
 			{
 				// --matchup: matchup[k] is the AI for team k. teamColor
@@ -162,21 +162,21 @@ GameHeader Engine::createRandomGame(int numberOfTeams)
 				// matchup[0]). Team-count consistency was verified by the
 				// caller (createRandomGame() parameterless) before we got
 				// here, so direct indexing is safe.
-				iid = static_cast<AI::ImplementitionID>(
+				iid = static_cast<AI::ImplementationID>(
 					globalContainer->testGamesMatchup[teamColor]);
 			}
 			else if (!globalContainer->testGamesAIPool.empty())
 			{
 				int idx = syncRand() % globalContainer->testGamesAIPool.size();
-				iid = static_cast<AI::ImplementitionID>(globalContainer->testGamesAIPool[idx]);
+				iid = static_cast<AI::ImplementationID>(globalContainer->testGamesAIPool[idx]);
 			}
 			else
 			{
-				iid = static_cast<AI::ImplementitionID>(syncRand() % AI_RANDOM_PICK_COUNT + 1);
+				iid = static_cast<AI::ImplementationID>(syncRand() % AI_RANDOM_PICK_COUNT + 1);
 			}
-			FormatableString name("%0 %1");
+			FormattableString name("%0 %1");
 			name.arg(AINames::getAIText(iid)).arg(i-1);
-			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementationID(iid));
 		}
 		gameHeader.setAllyTeamNumber(teamColor, teamColor);
 		count+=1;

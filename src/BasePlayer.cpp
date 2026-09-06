@@ -69,7 +69,7 @@ void BasePlayer::setTeamNumber(Sint32 teamNumber)
 // (Game::setGameHeader, Player::setBasePlayer, ...) can safely index
 // teams[teamNumber] and players[number] without re-validating, and `type` is
 // range-checked before the enum cast so `type >= P_AI` branches can safely
-// derive an AI::ImplementitionID from it. Returns false on bad input; the
+// derive an AI::ImplementationID from it. Returns false on bad input; the
 // outer GameHeader/Player load propagates the failure.
 bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
@@ -149,7 +149,7 @@ Uint32 BasePlayer::checkSum()
 }
 
 
-void BasePlayer::makeItAI(AI::ImplementitionID aiType)
+void BasePlayer::makeItAI(AI::ImplementationID aiType)
 {
-	type=playerTypeFromImplementitionID(aiType);
+	type=playerTypeFromImplementationID(aiType);
 }

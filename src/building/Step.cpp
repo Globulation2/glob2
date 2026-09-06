@@ -16,18 +16,18 @@
 
 namespace
 {
-	/// Sentinel for the best need-scaled ressource distance found so far: larger
-	/// than any real value, so the first reachable needed ressource always wins
+	/// Sentinel for the best need-scaled resource distance found so far: larger
+	/// than any real value, so the first reachable needed resource always wins
 	/// the running-minimum comparison.
-	constexpr int UNREACHABLE_RESSOURCE_DIST = 100000;
+	constexpr int UNREACHABLE_RESOURCE_DIST = 100000;
 
-	/// Weight of the harvest level in a ressource candidate's ranking key. The
+	/// Weight of the harvest level in a resource candidate's ranking key. The
 	/// harvest level dominates the comparison; the walk level breaks ties.
 	constexpr int HARVEST_LEVEL_WEIGHT = 10;
 
-	/// Composite "experience" key used to rank ressource-carrying candidates;
+	/// Composite "experience" key used to rank resource-carrying candidates;
 	/// higher is preferred.
-	int bringRessourcesLevel(const Unit* unit)
+	int bringResourcesLevel(const Unit* unit)
 	{
 		return unit->level[HARVEST] * HARVEST_LEVEL_WEIGHT + unit->level[WALK];
 	}
@@ -35,7 +35,7 @@ namespace
 
 void Building::step(void)
 {
-	computeWishedRessources(wishedResources);
+	computeWishedResources(wishedResources);
 
 	updateCallLists();
 	if(underAttackTimer>0)
@@ -46,7 +46,7 @@ void Building::step(void)
 }
 
 
-bool Building::considerUnitForRessources(Unit* unit, int* dist, int* resource)
+bool Building::considerUnitForResources(Unit* unit, int* dist, int* resource)
 {
 	if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
@@ -61,7 +61,7 @@ bool Building::considerUnitForRessources(Unit* unit, int* dist, int* resource)
 
 	Map* map = owner->map;
 	int distBuilding=0;
-	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 	bool canSwim=unit->performance[SWIM];
 	if(!map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
 	{
@@ -74,32 +74,32 @@ bool Building::considerUnitForRessources(Unit* unit, int* dist, int* resource)
 		return false;
 	}
 
-	// A unit already carrying a needed ressource is taken as-is; its distance
+	// A unit already carrying a needed resource is taken as-is; its distance
 	// metric is just the gradient distance to the building.
-	int unitr = unit->carriedRessource;
-	if((unitr>=0) && neededRessource(unitr))
+	int unitr = unit->carriedResource;
+	if((unitr>=0) && neededResource(unitr))
 	{
 		*dist = distBuilding;
 		*resource = unitr;
 		return true;
 	}
 
-	// Otherwise look for the best reachable needed ressource the unit could
-	// fetch, scoring by combined (building + ressource) distance scaled by how
-	// badly the ressource is needed. Track whether the only candidates were
-	// out of hunger range, and whether they were regular ressources or fruit,
+	// Otherwise look for the best reachable needed resource the unit could
+	// fetch, scoring by combined (building + resource) distance scaled by how
+	// badly the resource is needed. Track whether the only candidates were
+	// out of hunger range, and whether they were regular resources or fruit,
 	// so the rejection reason is specific.
-	int bestDist = UNREACHABLE_RESSOURCE_DIST;
-	int bestResource = RESSOURCE_TYPE_NONE;
+	int bestDist = UNREACHABLE_RESOURCE_DIST;
+	int bestResource = RESOURCE_TYPE_NONE;
 	bool regularFound=false;
 	bool fruitFound=false;
 	bool regularFoundTooFar=false;
 	bool fruitFoundTooFar=false;
 	int x=unit->posX;
 	int y=unit->posY;
-	for(int r=0; r<MAX_NB_RESSOURCES; ++r)
+	for(int r=0; r<MAX_NB_RESOURCES; ++r)
 	{
-		int need = neededRessource(r);
+		int need = neededResource(r);
 		if(need>0)
 		{
 			if(r<BASIC_COUNT)
@@ -107,7 +107,7 @@ bool Building::considerUnitForRessources(Unit* unit, int* dist, int* resource)
 			else
 				fruitFound=true;
 			int distResource = 0;
-			if (map->ressourceAvailable(owner->teamNumber, r, canSwim, x, y, &distResource))
+			if (map->resourceAvailable(owner->teamNumber, r, canSwim, x, y, &distResource))
 			{
 				if(distResource<timeLeft)
 				{
@@ -129,7 +129,7 @@ bool Building::considerUnitForRessources(Unit* unit, int* dist, int* resource)
 			}
 		}
 	}
-	if(bestResource == RESSOURCE_TYPE_NONE)
+	if(bestResource == RESOURCE_TYPE_NONE)
 	{
 		if(regularFound)
 		{
@@ -153,7 +153,7 @@ bool Building::considerUnitForRessources(Unit* unit, int* dist, int* resource)
 	return true;
 }
 
-void Building::gatherBringRessourcesCandidates(BringRessourcesCandidate* candidates)
+void Building::gatherBringResourcesCandidates(BringResourcesCandidate* candidates)
 {
 	for(int n=0; n<Unit::MAX_COUNT; ++n)
 	{
@@ -170,7 +170,7 @@ void Building::gatherBringRessourcesCandidates(BringRessourcesCandidate* candida
 
 		int dist;
 		int resource;
-		if(considerUnitForRessources(unit, &dist, &resource))
+		if(considerUnitForResources(unit, &dist, &resource))
 		{
 			candidates[n].unit = unit;
 			candidates[n].distance = dist;
@@ -179,7 +179,7 @@ void Building::gatherBringRessourcesCandidates(BringRessourcesCandidate* candida
 	}
 }
 
-void Building::selectUnitCarryingNeededRessource(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel)
+void Building::selectUnitCarryingNeededResource(const BringResourcesCandidate* candidates, BringResourcesSelection& sel)
 {
 	for(int n=0; n<Unit::MAX_COUNT; ++n)
 	{
@@ -187,14 +187,14 @@ void Building::selectUnitCarryingNeededRessource(const BringRessourcesCandidate*
 		if(unit==NULL)
 			continue;
 
-		int r=unit->carriedRessource;
-		int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
-		if ((r>=0) && neededRessource(r))
+		int r=unit->carriedResource;
+		int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
+		if ((r>=0) && neededResource(r))
 		{
 			int value=candidates[n].distance-(timeLeft>>1);
-			int level = bringRessourcesLevel(unit);
+			int level = bringResourcesLevel(unit);
 			// Every carrying candidate has its destinationPurpose set to the
-			// ressource it carries, not only the one finally chosen.
+			// resource it carries, not only the one finally chosen.
 			unit->destinationPurpose=r;
 			if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
 			{
@@ -206,7 +206,7 @@ void Building::selectUnitCarryingNeededRessource(const BringRessourcesCandidate*
 	}
 }
 
-void Building::selectEmptyHandedUnit(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel)
+void Building::selectEmptyHandedUnit(const BringResourcesCandidate* candidates, BringResourcesSelection& sel)
 {
 	for(int n=0; n<Unit::MAX_COUNT; ++n)
 	{
@@ -214,10 +214,10 @@ void Building::selectEmptyHandedUnit(const BringRessourcesCandidate* candidates,
 		if(unit==NULL)
 			continue;
 
-		if (unit->carriedRessource<0)
+		if (unit->carriedResource<0)
 		{
 			int value=candidates[n].distance;
-			int level = bringRessourcesLevel(unit);
+			int level = bringResourcesLevel(unit);
 			if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
 			{
 				sel.minValue=value;
@@ -229,7 +229,7 @@ void Building::selectEmptyHandedUnit(const BringRessourcesCandidate* candidates,
 	}
 }
 
-void Building::selectUnitCarryingUnwantedRessource(const BringRessourcesCandidate* candidates, BringRessourcesSelection& sel)
+void Building::selectUnitCarryingUnwantedResource(const BringResourcesCandidate* candidates, BringResourcesSelection& sel)
 {
 	for(int n=0; n<Unit::MAX_COUNT; ++n)
 	{
@@ -237,11 +237,11 @@ void Building::selectUnitCarryingUnwantedRessource(const BringRessourcesCandidat
 		if(unit==NULL)
 			continue;
 
-		int r2=unit->carriedRessource;
-		if ((r2>=0) && !neededRessource(r2))
+		int r2=unit->carriedResource;
+		if ((r2>=0) && !neededResource(r2))
 		{
 			int value=candidates[n].distance;
-			int level = bringRessourcesLevel(unit);
+			int level = bringResourcesLevel(unit);
 			if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
 			{
 				sel.minValue=value;
@@ -253,7 +253,7 @@ void Building::selectUnitCarryingUnwantedRessource(const BringRessourcesCandidat
 	}
 }
 
-bool Building::subscribeToBringRessourcesStep()
+bool Building::subscribeToBringResourcesStep()
 {
 	for(int i=0; i<UnitCantWorkReasonSize; ++i)
 	{
@@ -262,28 +262,28 @@ bool Building::subscribeToBringRessourcesStep()
 	if (buildingState==DEAD)
 		return false;
 	if (verbose)
-		printf("bgid=%d, subscribeToBringRessourcesStep()...\n", gid);
+		printf("bgid=%d, subscribeToBringResourcesStep()...\n", gid);
 
 	bool hired=false;
 	if ((Sint32)unitsWorking.size()<desiredMaxUnitWorking)
 	{
-		BringRessourcesCandidate candidates[Unit::MAX_COUNT];
-		gatherBringRessourcesCandidates(candidates);
+		BringResourcesCandidate candidates[Unit::MAX_COUNT];
+		gatherBringResourcesCandidates(candidates);
 
 		// Hire the best candidate in strict priority tiers: a unit already
-		// carrying a needed ressource first, then an empty-handed unit, then a
-		// unit carrying an unwanted ressource. A later tier is only consulted
+		// carrying a needed resource first, then an empty-handed unit, then a
+		// unit carrying an unwanted resource. A later tier is only consulted
 		// when the earlier tiers found nobody.
-		BringRessourcesSelection sel;
+		BringResourcesSelection sel;
 		sel.maxLevel = -1;
 		sel.minValue = INT_MAX;
 		sel.choosen = NULL;
 
-		selectUnitCarryingNeededRessource(candidates, sel);
+		selectUnitCarryingNeededResource(candidates, sel);
 		if (sel.choosen==NULL)
 			selectEmptyHandedUnit(candidates, sel);
 		if (sel.choosen==NULL)
-			selectUnitCarryingUnwantedRessource(candidates, sel);
+			selectUnitCarryingUnwantedResource(candidates, sel);
 
 		if (sel.choosen)
 		{
@@ -312,7 +312,7 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist)
 		unitsFailingRequirements[UnitTooLowLevel] += 1;
 		return false;
 	}
-	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungryness;
+	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
 	// warpDistSquare returns squared Euclidean distance, so timeLeft is
 	// squared here to keep the comparison in the same units. Worker/warrior
 	// flags compare against Map::buildingAvailable (linear gradient
@@ -343,8 +343,8 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 	int distBuilding = 0;
 	// timeLeft and distBuilding are both linear (in ticks-remaining and
 	// linear gradient steps respectively); compare as-is. The corresponding
-	// check in subscribeToBringRessourcesStep uses the same pairing.
-	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungryness;
+	// check in subscribeToBringResourcesStep uses the same pairing.
+	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
 	bool canSwim = unit->performance[SWIM];
 	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
 	{
@@ -356,7 +356,7 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
 		return false;
 	}
-	if (anyRessourceToClear[canSwim] == 2)
+	if (anyResourceToClear[canSwim] == 2)
 	{
 		unitsFailingRequirements[UnitCantAccessResource] += 1;
 		return false;
@@ -385,8 +385,8 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist)
 	int distBuilding = 0;
 	// timeLeft and distBuilding are both linear (in ticks-remaining and
 	// linear gradient steps respectively); compare as-is. The corresponding
-	// check in subscribeToBringRessourcesStep uses the same pairing.
-	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungryness;
+	// check in subscribeToBringResourcesStep uses the same pairing.
+	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
 	bool canSwim = unit->performance[SWIM];
 	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
 	{
@@ -488,7 +488,7 @@ bool Building::subscribeForFlagingStep()
 					if(unit==NULL)
 						continue;
 
-					int timeLeft=unit->hungry/unit->race->hungryness;
+					int timeLeft=unit->hungry/unit->race->hungriness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					timeLeft*=timeLeft;
 					hp*=hp;
@@ -513,11 +513,11 @@ bool Building::subscribeForFlagingStep()
 					if(unit==NULL)
 						continue;
 
-					int timeLeft=unit->hungry/unit->race->hungryness;
+					int timeLeft=unit->hungry/unit->race->hungriness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist = distances[n];
 					int value=dist-2*timeLeft-2*hp;
-					//We want to maximize the attack level, use higher level soldeirs first
+					//We want to maximize the attack level, use higher level soldiers first
 					int level=unit->performance[ATTACK_SPEED]*unit->getRealAttackStrength();
 					if ((level > maxLevel) || (level==maxLevel && value<minValue))
 					{
@@ -535,7 +535,7 @@ bool Building::subscribeForFlagingStep()
 					if(unit==NULL)
 						continue;
 
-					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungryness;
+					int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 					int hp=(unit->hp<<4)/unit->race->unitTypes[0][0].performance[HP];
 					int dist = distances[n];
 					int value=dist-timeLeft-hp;

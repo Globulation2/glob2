@@ -6,7 +6,7 @@
 // by role across four siblings, following the grouping IntBuildingType::Number
 // already uses:
 //   - BuildingTypesColony.cpp  : swarm, inn, hospital, market
-//   - BuildingTypesUpgrade.cpp : racetrack, swimmingpool, barracks, school
+//   - BuildingTypesUpgrade.cpp : racetrack, swimming pool, barracks, school
 //   - BuildingTypesDefence.cpp : defencetower, stonewall
 //   - BuildingTypesFlags.cpp   : exploration, war and clearing flags
 // each declaring one or more non-static BuildingType[] arrays; this file
@@ -92,15 +92,15 @@ static void checkIntegrity()
 	{
 		BuildingType *bt = entry(i);
 
-		// Need ressource integrity:
-		bool needRessource = false;
-		for (unsigned j = 0; j < MAX_RESSOURCES; ++j)
-			if (bt->maxRessource[j])
+		// Need resource integrity:
+		bool needResource = false;
+		for (unsigned j = 0; j < MAX_RESOURCES; ++j)
+			if (bt->maxResource[j])
 			{
-				needRessource = true;
+				needResource = true;
 				break;
 			}
-		if (needRessource)
+		if (needResource)
 			assert(bt->fillable || bt->foodable);
 
 		// hpInc integrity:
@@ -127,8 +127,8 @@ static void checkIntegrity()
 		if (bt->isBuildingSite)
 		{
 			int resSum = 0;
-			for (int j = 0; j < MAX_RESSOURCES; ++j)
-				resSum += bt->maxRessource[j];
+			for (int j = 0; j < MAX_RESOURCES; ++j)
+				resSum += bt->maxResource[j];
 			int hpSum = bt->hpInit + resSum * bt->hpInc;
 			if (hpSum < bt->hpMax)
 			{
@@ -144,22 +144,22 @@ static void checkIntegrity()
 		// flag integrity:
 		if (bt->isVirtual)
 		{
-			assert(bt->isCloacked);
+			assert(bt->isCloaked);
 			assert(bt->defaultUnitStayRange);
 		}
-		if (bt->isCloacked)
+		if (bt->isCloaked)
 		{
 			assert(bt->isVirtual);
 			assert(bt->defaultUnitStayRange);
 		}
 		if (bt->defaultUnitStayRange)
 		{
-			assert(bt->isCloacked);
+			assert(bt->isCloaked);
 			assert(bt->isVirtual);
 		}
 		if (bt->zonableForbidden)
 		{
-			assert(bt->isCloacked);
+			assert(bt->isCloaked);
 			assert(bt->isVirtual);
 			assert(bt->defaultUnitStayRange);
 		}

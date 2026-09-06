@@ -70,7 +70,7 @@ enum NetMessageType
 	MNetAcceptMapUpload,
 	MNetRefuseMapUpload,
 	MNetCancelSendingFile,
-	MNetCancelRecievingFile,
+	MNetCancelReceivingFile,
 	MNetRequestMapThumbnail,
 	MNetSendMapThumbnail,
 	MNetSubmitRatingOnMap,

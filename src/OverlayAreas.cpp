@@ -63,7 +63,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 			{
 				if(b->type->shootDamage > 0)
 				{
-					int power = (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
+					int power = (b->type->shootDamage*b->type->shootRhythm) >> SHOOTING_COOLDOWN_MAGNITUDE;
 					OverlayFill::spreadPoint(b->posX, b->posY, power, b->type->shootingRange, width, height, overlay, overlaymax);
 				}
 			}

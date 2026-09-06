@@ -33,7 +33,7 @@ public:
 	CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly);
 	/// Destructor
 	virtual ~CustomGameOtherOptions();
-	///Recieves an action from a widget
+	///Receives an action from a widget
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	
 	///These are the end values for this screen

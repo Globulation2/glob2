@@ -2,7 +2,7 @@
 //
 // Behavior lock for BrushAccumulator::applyBrush/getBitmap, focused on
 // strokes that cross the torus seam. The bitmap and its AreaDimensions
-// feed OrderAlterateArea, which goes over the network and into the game
+// feed OrderAlterArea, which goes over the network and into the game
 // checksum — so every expectation here (dimensions, origin, exact set
 // bits) is wire-format-relevant and must not drift.
 //

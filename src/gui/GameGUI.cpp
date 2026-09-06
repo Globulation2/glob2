@@ -163,7 +163,7 @@ void GameGUI::init()
 	scrollWheelWorkingChanges=0;
 	scrollWheelStayRangeChanges=0;
 
-	hilights.clear();
+	highlights.clear();
 
 	musicController.reset();
 }

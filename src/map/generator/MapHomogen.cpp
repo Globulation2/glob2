@@ -47,7 +47,7 @@ void Map::controlSand(void)
 		}
 }
 
-void Map::smoothRessources(int times)
+void Map::smoothResources(int times)
 {
 	for (int s=0; s<times; s++)
 		for (int y=0; y<h; y++)
@@ -62,7 +62,7 @@ void Map::smoothRessources(int times)
 						setTerrain(x, y, d+273);
 					else 
 					{
-						// we extand ressource:
+						// we extend resource:
 						int dx, dy;
 						Unit::dxDyFromDirection(syncRand()&7, &dx, &dy);
 						int nx=x+dx;

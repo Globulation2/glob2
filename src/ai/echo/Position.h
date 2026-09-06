@@ -5,7 +5,7 @@
 
 namespace AIEcho
 {
-	///A position on a map. Simple x and y cordinates, and a comparison operator for stoarge and maps and sets
+	///A position on a map. Simple x and y coordinates, and a comparison operator for storage and maps and sets
 	class position
 	{
 	public:

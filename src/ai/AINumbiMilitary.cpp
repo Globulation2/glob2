@@ -13,7 +13,7 @@
 
 using std::shared_ptr;
 
-std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested)
+std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, Sint32 numberRequested)
 {
 	Unit **myUnits=team->myUnits;
 	int ft=0;
@@ -23,13 +23,13 @@ std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout
 
 	if (attackPhase==0)
 	{
-		if (ft>=critticalMass)
+		if (ft>=criticalMass)
 		{
-			//printf("AI:(crittical mass)new attack with %d units.\n", ft);
+			//printf("AI:(critical mass)new attack with %d units.\n", ft);
 			attackPhase=1;
 		}
 		attackTimer++;
-		if ((attackTimer>=critticalTimeout)&&(ft>numberRequested))
+		if ((attackTimer>=criticalTimeout)&&(ft>numberRequested))
 		{
 			attackTimer=0;
 			//printf("AI:(timeout)new attack with %d units.\n", ft);
@@ -39,7 +39,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout
 	}
 	else if (attackPhase==1)
 	{
-		if (ft<=(critticalMass/AI_NUMBI_STOP_ATTACK_DIVISOR))
+		if (ft<=(criticalMass/AI_NUMBI_STOP_ATTACK_DIVISOR))
 		{
 			attackPhase=3;
 			//printf("AI:stop attack.\n");
@@ -126,8 +126,8 @@ std::shared_ptr<Order>AINumbi::mayAttack(int critticalMass, int critticalTimeout
 			if ((*bit)->type->shortTypeNum==IntBuildingType::WAR_FLAG)
 				return shared_ptr<Order>(new OrderDelete((*bit)->gid));
 		attackPhase=0;
-		critticalWarriors*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
-		critticalTime*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
+		criticalWarriors*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
+		criticalTime*=AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER;
 		return shared_ptr<Order>(new NullOrder);
 	}
 	else

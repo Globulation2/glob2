@@ -62,8 +62,8 @@ namespace
 		{
 			for (int y = 0; y < map.getH(); ++y)
 			{
-				if (map.isRessourceTakeable(x, y, CORN)
-				    || map.isRessourceTakeable(x, y, WOOD))
+				if (map.isResourceTakeable(x, y, CORN)
+				    || map.isResourceTakeable(x, y, WOOD))
 				{
 					distance[map.coordToIndex(x, y)] = 0;
 					frontier.emplace(x, y);

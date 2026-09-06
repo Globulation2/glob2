@@ -22,11 +22,11 @@ void Building::updateBuildingSite(void)
 {
 	assert(type->isBuildingSite);
 
-	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
+	if (isResourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
 		// we really uses the resources of the building site:
-		for(int i=0; i<MAX_RESSOURCES; i++)
-			ressources[i]-=type->maxRessource[i];
+		for(int i=0; i<MAX_RESOURCES; i++)
+			resources[i]-=type->maxResource[i];
 
 		owner->prestige-=type->prestige;
 		typeNum=type->nextLevel;
@@ -35,8 +35,8 @@ void Building::updateBuildingSite(void)
 		constructionResultState=NO_CONSTRUCTION;
 		owner->prestige+=type->prestige;
 
-		//Update the pointer ressources to the newly changed type
-		updateRessourcesPointer();
+		//Update the pointer resources to the newly changed type
+		updateResourcesPointer();
 
 
 		//now that building is complete clear the workers
@@ -98,11 +98,11 @@ void Building::updateUnitsWorking(void)
 			Unit *fu=NULL;
 			std::list<Unit *>::iterator ittemp;
 
-			// First choice: free a unit who has a not needed ressource..
+			// First choice: free a unit who has a not needed resource..
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
-				int r=(*it)->carriedRessource;
-				if (r>=0 && !neededRessource(r))
+				int r=(*it)->carriedResource;
+				if (r>=0 && !neededResource(r))
 				{
 					fu=(*it);
 					fu->standardRandomActivity();
@@ -113,13 +113,13 @@ void Building::updateUnitsWorking(void)
 				}
 			}
 			if(fu!=NULL) continue;
-			// Second choice: free a unit who has no ressource..
+			// Second choice: free a unit who has no resource..
 			if (fu==NULL)
 			{
 				int minDistSquare=INT_MAX;
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
-					int r=(*it)->carriedRessource;
+					int r=(*it)->carriedResource;
 					if (r<0)
 					{
 						int tx = posX;
@@ -188,7 +188,7 @@ void Building::updateUnitsHarvesting(void)
 			// TODO: replacing the remove by an erase should be a lot faster but
 			// it causes the game to crash when a market gets destroyed. No idea
 			// why. Actually there's no point bothering about this here as this
-			// method is not performance critical but still it's weired to me
+			// method is not performance critical but still it's weird to me
 			// why it doesn't work the other way round.
 			// unitsHarvesting.erase(tmpIt);
 		}
@@ -197,7 +197,7 @@ void Building::updateUnitsHarvesting(void)
 
 void Building::update(void)
 {
-	computeWishedRessources(wishedResources);
+	computeWishedResources(wishedResources);
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
@@ -222,7 +222,7 @@ void Building::setMapDiscovered(void)
 	owner->map->setMapExploredByBuilding(posX-vr, posY-vr, type->width+vr*2, type->height+vr*2, owner->teamNumber);
 }
 
-void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
+void Building::getResourceCountToRepair(int resources[BASIC_COUNT])
 {
 	assert(!type->isBuildingSite);
 	int repairLevelTypeNum=type->prevLevel;
@@ -232,7 +232,7 @@ void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 	Sint32 fTotErr=0;
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
-		int fVal=fDestructionRatio*repairBt->maxRessource[i];
+		int fVal=fDestructionRatio*repairBt->maxResource[i];
 		int iVal=(fVal>>FIXED_POINT_SHIFT_16);
 		fTotErr+=fVal&(int)FIXED_POINT_FRAC_MASK;
 		if (fTotErr>=(int)FIXED_POINT_ONE)
@@ -240,7 +240,7 @@ void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 			fTotErr-=(int)FIXED_POINT_ONE;
 			iVal++;
 		}
-		ressources[i]=repairBt->maxRessource[i]-iVal;
+		resources[i]=repairBt->maxResource[i]-iVal;
 	}
 }
 
@@ -278,9 +278,9 @@ bool Building::tryToBuildingSiteRoom(void)
 		{
 			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
 			Sint32 fTotErr=0;
-			for (int i=0; i<MAX_RESSOURCES; i++)
+			for (int i=0; i<MAX_RESOURCES; i++)
 			{
-				int fVal=fDestructionRatio*targetBt->maxRessource[i];
+				int fVal=fDestructionRatio*targetBt->maxResource[i];
 				int iVal=(fVal>>FIXED_POINT_SHIFT_16);
 				fTotErr+=fVal&(int)FIXED_POINT_FRAC_MASK;
 				if (fTotErr>=(int)FIXED_POINT_ONE)
@@ -288,7 +288,7 @@ bool Building::tryToBuildingSiteRoom(void)
 					fTotErr-=(int)FIXED_POINT_ONE;
 					iVal++;
 				}
-				ressources[i]=iVal;
+				resources[i]=iVal;
 			}
 		}
 
@@ -304,24 +304,24 @@ bool Building::tryToBuildingSiteRoom(void)
 		type=targetBt;
 		owner->prestige+=type->prestige;
 
-		//Update the pointer ressources to the newly changed type
-		updateRessourcesPointer();
+		//Update the pointer resources to the newly changed type
+		updateResourcesPointer();
 
 		buildingState=ALIVE;
 		owner->addToStaticAbilitiesLists(this);
 
 		// towers may already have some stone!
 		if (constructionResultState==UPGRADE)
-			for (int i=0; i<MAX_NB_RESSOURCES; i++)
+			for (int i=0; i<MAX_NB_RESOURCES; i++)
 			{
-				int res=ressources[i];
-				int resMax=type->maxRessource[i];
+				int res=resources[i];
+				int resMax=type->maxResource[i];
 				if (res>0 && resMax>0)
 				{
 					if (res>resMax)
 						res=resMax;
 					if (verbose)
-						printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
+						printf("using %d resources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
 					hp+=res*type->hpInc;
 					hp = std::min(hp, type->hpMax);
 				}
@@ -340,13 +340,13 @@ bool Building::tryToBuildingSiteRoom(void)
 		posX=newPosX;
 		posY=newPosY;
 
-		// flag usefull :
+		// flag useful :
 		unitStayRange=type->defaultUnitStayRange;
 
 		// quality parameters
 		// hp=type->hpInit; // (Uint16)
 
-		// prefered parameters
+		// preferred parameters
 		productionTimeout=type->unitProductionTime;
 
 		totalRatio=0;
@@ -361,7 +361,7 @@ bool Building::tryToBuildingSiteRoom(void)
 }
 
 /// Toggle (add or remove) the forbidden zone covering the footprint this building would
-/// occupy if it completed its current upgrade. Dispereses units so the building site
+/// occupy if it completed its current upgrade. Disperses units so the building site
 /// isn't waiting for space when there are lots of units around.
 ///
 /// The post-mutation refresh of displayedForbiddenView is per-client display state
@@ -430,7 +430,7 @@ bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState
 
 bool Building::fullInside(void)
 {
-	if ((type->canFeedUnit) && (ressources[CORN]<=(int)unitsInside.size()))
+	if ((type->canFeedUnit) && (resources[CORN]<=(int)unitsInside.size()))
 		return true;
 	else
 		return ((signed)unitsInside.size()>=maxUnitInside);
@@ -440,23 +440,23 @@ bool Building::fullInside(void)
 int Building::desiredNumberOfWorkers(void)
 {
 	//If It's virtual, then this building is a flag and always gets
-	//full ressources
+	//full resources
 	if(type->isVirtual)
 	{
 		return maxUnitWorking;
 	}
-	//Otherwise, this building gets what the user desires, up to a limit of 2 units per 1 needed ressource,
-	//thus if no ressources are needed, then no units will be working here.
-	int neededRessourcesSum = 0;
-	for (size_t ri = 0; ri < MAX_RESSOURCES; ri++)
+	//Otherwise, this building gets what the user desires, up to a limit of 2 units per 1 needed resource,
+	//thus if no resources are needed, then no units will be working here.
+	int neededResourcesSum = 0;
+	for (size_t ri = 0; ri < MAX_RESOURCES; ri++)
 	{
-		int neededRessources = (type->maxRessource[ri] - ressources[ri]) / type->multiplierRessource[ri];
-		if (neededRessources > 0)
-			neededRessourcesSum += neededRessources;
+		int neededResources = (type->maxResource[ri] - resources[ri]) / type->multiplierResource[ri];
+		if (neededResources > 0)
+			neededResourcesSum += neededResources;
 	}
 	int user_num = maxUnitWorking;
-	int max_considering_ressources = (WISHED_RESOURCE_NUM * neededRessourcesSum) / WISHED_RESOURCE_DEN;
-	return std::min(user_num, max_considering_ressources);
+	int max_considering_resources = (WISHED_RESOURCE_NUM * neededResourcesSum) / WISHED_RESOURCE_DEN;
+	return std::min(user_num, max_considering_resources);
 }
 
 

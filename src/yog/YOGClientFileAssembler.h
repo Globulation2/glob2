@@ -18,11 +18,11 @@ namespace GAGCore
 	class BinaryInputStream;
 }
 
-///This class holds the responsibility of sending and recieving maps over the network.
+///This class holds the responsibility of sending and receiving maps over the network.
 class YOGClientFileAssembler
 {
 public:
-	///Contructs a YOGClientFileAssembler connected to the given client, and the given fileID
+	///Constructs a YOGClientFileAssembler connected to the given client, and the given fileID
 	YOGClientFileAssembler(std::weak_ptr<YOGClient> client, Uint16 fileID);
 	
 	///Updates the map assembler
@@ -31,23 +31,23 @@ public:
 	///This starts sending the map file with the given map name
 	void startSendingFile(std::string mapname);
 	
-	///This starts recieving a map with the given map name
-	void startRecievingFile(std::string mapname);
+	///This starts receiving a map with the given map name
+	void startReceivingFile(std::string mapname);
 	
-	///This recieves a message from YOG
+	///This receives a message from YOG
 	void handleMessage(std::shared_ptr<NetMessage> message);
 
 	///This cancels the sending of a file
 	void cancelSendingFile();
 	
-	///This cancels the recieving of a file
-	void cancelRecievingFile();
+	///This cancels the receiving of a file
+	void cancelReceivingFile();
 
 	///This tells the percentage the transfer has from completing, 100% is there was no transfer and/or its complete
 	Uint8 getPercentage();
 	
-	///Tells true if the file information has been recieved. If it hasn't, percent completed is still 100%
-	bool fileInformationRecieved();
+	///Tells true if the file information has been received. If it hasn't, percent completed is still 100%
+	bool fileInformationReceived();
 private:
 	void sendNextChunk();
 
@@ -55,7 +55,7 @@ private:
 	{
 		NoTransfer,
 		SendingFile,
-		RecivingFile,
+		ReceivingFile,
 	};
 	
 	TransferMode mode;

@@ -40,11 +40,11 @@ struct BuildingType
 	Sint32 flagImage = 49;
 	Sint32 crossConnectMultiImage = 0; // If true, mean we have a wall-like building
 
-	// could be Uint8, if non 0 tell the number of maximum units locked by bulding for:
+	// could be Uint8, if non 0 tell the number of maximum units locked by building for:
 	// by order of priority (top = max)
 	Sint32 upgrade[NB_ABILITY] = {}; // What kind on units can be upgraded here
 	Sint32 upgradeTime[NB_ABILITY] = {}; // Time to upgrade an unit, given the upgrade type needed.
-	Sint32 upgradeInParallel = 0; // if true, can learn all upgardes with one learning time into the building
+	Sint32 upgradeInParallel = 0; // if true, can learn all upgrades with one learning time into the building
 	Sint32 foodable = 0;
 	Sint32 fillable = 0;
 	Sint32 zonable[NB_UNIT_TYPE] = {}; // If an unit is required for a presence.
@@ -56,26 +56,26 @@ struct BuildingType
 	Sint32 timeToHealUnit = 0;
 	Sint32 insideSpeed = 12;
 	Sint32 canExchange = 0;
-	Sint32 useTeamRessources = 0;
+	Sint32 useTeamResources = 0;
 
 	Sint32 width = 0, height = 0; // Uint8, size in square
 	Sint32 decLeft = 0, decTop = 0;
 	Sint32 isVirtual = 0; // bool, doesn't occupy ground occupation map, used for war-flag and exploration-flag.
-	Sint32 isCloacked = 0; // bool, graphicaly invisible for enemy.
+	Sint32 isCloaked = 0; // bool, graphically invisible for enemy.
 	Sint32 shootingRange = 0; // Uint8, if 0 can't shoot
 	Sint32 shootDamage = 0; // Uint8
 	Sint32 shootSpeed = 0; // Uint8, the actual speed at which the shots fly through the air.
-	Sint32 shootRythme = 0; // Uint8, The frequency with which a tower fires. It fires once every
-	                        // SHOOTING_COOLDOWN_MAX/shootRythme ticks.
+	Sint32 shootRhythm = 0; // Uint8, The frequency with which a tower fires. It fires once every
+	                        // SHOOTING_COOLDOWN_MAX/shootRhythm ticks.
 	Sint32 maxBullets = 0;
 	Sint32 multiplierStoneToBullets = 0; // The tower gets this many bullets every time a worker delivers stone to it.
 
 	Sint32 unitProductionTime = 0; // Uint8, nb tick to produce one unit
-	Sint32 ressourceForOneUnit = 0; // The amount of wheat consumed in the production of a unit.
+	Sint32 resourceForOneUnit = 0; // The amount of wheat consumed in the production of a unit.
 
-	Sint32 maxRessource[MAX_NB_RESSOURCES] = {};
-	// multiplierRessource defaults: 1 for the basic 5 (wood/corn/papyrus/stone/algue), 10 for fruits 0..9.
-	Sint32 multiplierRessource[MAX_NB_RESSOURCES] = { 1, 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
+	Sint32 maxResource[MAX_NB_RESOURCES] = {};
+	// multiplierResource defaults: 1 for the basic 5 (wood/corn/papyrus/stone/algue), 10 for fruits 0..9.
+	Sint32 multiplierResource[MAX_NB_RESOURCES] = { 1, 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
 	Sint32 maxUnitInside = 0;
 	Sint32 maxUnitWorking = 0;
 
@@ -91,7 +91,7 @@ struct BuildingType
 	Sint32 shortTypeNum = 0; // BuildingTypeShortNumber, Should not be used by the main engine, but only to choose the next level building.
 	Sint32 isBuildingSite = 0;
 
-	// Flag usefull
+	// Flag useful
 	Sint32 defaultUnitStayRange = 0;
 	Sint32 maxUnitStayRange = 0;
 

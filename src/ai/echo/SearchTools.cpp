@@ -86,7 +86,7 @@ void building_search_iterator::set_to_next()
 		return;
 	}
 	if(position->first==AI_ECHO_ITER_NOT_STARTED && positionSaved==position)
-	{                        // This fixes an infinit loop.
+	{                        // This fixes an infinite loop.
 		is_end=true;     // In some special cases the program Logic 
 		return;          // must have been wrong.
 	}

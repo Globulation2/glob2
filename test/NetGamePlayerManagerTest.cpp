@@ -70,7 +70,7 @@ void testRemoval(int count, int removed, bool mixed, bool invertReady)
 	for (int i = 0; i < count; ++i)
 	{
 		if (mixed && i % 2)
-			manager.addAIPlayer(static_cast<AI::ImplementitionID>(i % AI::SIZE));
+			manager.addAIPlayer(static_cast<AI::ImplementationID>(i % AI::SIZE));
 		else
 		{
 			manager.addPerson(100 + i, "Human " + std::to_string(i));
@@ -143,11 +143,11 @@ void testAllAITypes()
 		NetGamePlayerManager manager(header);
 		manager.setNumberOfTeams(2);
 		manager.addPerson(1, "Host");
-		manager.addAIPlayer(static_cast<AI::ImplementitionID>(id));
+		manager.addAIPlayer(static_cast<AI::ImplementationID>(id));
 		manager.removePerson(1);
 		const BasePlayer& ai = header.getBasePlayer(0);
 		check(ai.type == Uint32(BasePlayer::P_AI) + Uint32(id), "encoded AI type survives compaction");
-		check(BasePlayer::implementitionIdFromPlayerType(ai.type) == id, "AI implementation round-trips");
+		check(BasePlayer::implementationIdFromPlayerType(ai.type) == id, "AI implementation round-trips");
 		check(ai.number == 0 && ai.numberMask == 1 && manager.isEveryoneReadyToGo(), "AI slot and readiness survive compaction");
 		checkRoundTrip(header);
 	}

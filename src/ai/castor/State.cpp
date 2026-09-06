@@ -40,8 +40,8 @@ bool AICastor::enoughFreeWorkers()
 void AICastor::computeCanSwim()
 {
 	//printf("computeCanSwim()...\n");
-	// If our population has more healthy-working-units able to swimm than healthy-working-units
-	// unable to swimm then we choose to be able to go trough water:
+	// If our population has more healthy-working-units able to swim than healthy-working-units
+	// unable to swim then we choose to be able to go through water:
 	Unit **myUnits=team->myUnits;
 	int sumCanSwim=0;
 	int sumCantSwim=0;

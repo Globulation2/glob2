@@ -201,8 +201,8 @@ void NetConnectionThread::operator()()
 
 							//Now interpret the message from the data, and add it to the queue
 							std::shared_ptr<NetMessage> message = NetMessage::getNetMessage(bis);
-							std::shared_ptr<NTRecievedMessage> recieved(new NTRecievedMessage(message));
-							sendToMainThread(recieved);
+							std::shared_ptr<NTReceivedMessage> received(new NTReceivedMessage(message));
+							sendToMainThread(received);
 
 							delete bis;
 						}

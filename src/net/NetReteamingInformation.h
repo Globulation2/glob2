@@ -29,7 +29,7 @@ public:
 	///Sets the player with the given name to be automatically set to the given team
 	void setPlayerToTeam(const std::string& playerName, int team);
 	
-	///Returns true if this player name has an automatic team number assocciatted with it
+	///Returns true if this player name has an automatic team number associated with it
 	bool doesPlayerHaveTeam(const std::string& playerName) const;
 	
 	///Returns the team for the given player, -1 is this player doesn't have an automatic team

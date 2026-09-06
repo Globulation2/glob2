@@ -94,7 +94,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	// we get and push ai orders, if they are needed for this frame
 	for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		if (gui.game.players[i]->ai && !net->orderRecieved(i))
+		if (gui.game.players[i]->ai && !net->orderReceived(i))
 		{
 			shared_ptr<Order> order = gui.game.players[i]->ai->getOrder(gui.gamePaused);
 			net->pushOrder(order, i, true);
@@ -118,7 +118,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	}
 }
 
-// Once allOrdersRecieved() is true for this tick, commit the tick: validate
+// Once allOrdersReceived() is true for this tick, commit the tick: validate
 // checksums (assert on desync), execute the matched orders, pump the replay
 // reader if we're in playback, and run game.syncStep. Called only from inside
 // the !hardPause branch, so the original !gui.hardPause guard on syncStep is
@@ -203,7 +203,7 @@ void Engine::drawAndPaceFrame(MainLoopState& st)
 		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		)
 	{
-		FormatableString fileName = FormatableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(st.frameNumber++, 10, 10, '0');
+		FormattableString fileName = FormattableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(st.frameNumber++, 10, 10, '0');
 		printf("printing video shot %s\n", fileName.c_str());
 		globalContainer->gfx->printScreen(fileName.c_str());
 	}
@@ -213,7 +213,7 @@ void Engine::drawAndPaceFrame(MainLoopState& st)
 	Sint64 currentTime = static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(st.startTime);
 	//if we are more than MAX_CATCHUP_MS milliseconds behind where we should be,
 	//then truncate it. This is to avoid playing "catchup" for long
-	//periods of time if Glob2 recieved allmost no cpu time
+	//periods of time if Glob2 received allmost no cpu time
 	if ((currentTime - st.needToBeTime) > MAX_CATCHUP_MS)
 		st.needToBeTime = currentTime - MAX_CATCHUP_MS;
 
@@ -288,7 +288,7 @@ void Engine::printAutomaticEndingSummary()
 		else if (bp.type == BasePlayer::P_IP)
 			std::cout << "ip";
 		else if (bp.type >= BasePlayer::P_AI)
-			std::cout << AINames::getAIText(BasePlayer::implementitionIdFromPlayerType(bp.type));
+			std::cout << AINames::getAIText(BasePlayer::implementationIdFromPlayerType(bp.type));
 		else
 			std::cout << "none";
 	}
@@ -318,7 +318,7 @@ void Engine::printTeamTimeline()
 		if (bp.teamNumber < 0 || bp.teamNumber >= nbTeams)
 			continue;
 		if (bp.type >= BasePlayer::P_AI)
-			aiLabel[bp.teamNumber] = AINames::getAIText(BasePlayer::implementitionIdFromPlayerType(bp.type));
+			aiLabel[bp.teamNumber] = AINames::getAIText(BasePlayer::implementationIdFromPlayerType(bp.type));
 		else if (bp.type == BasePlayer::P_LOCAL)
 			aiLabel[bp.teamNumber] = "local";
 	}
@@ -466,7 +466,7 @@ void Engine::prepareNextGameSession(bool& doRunOnceAgain)
 //   2. pollAutomaticEndingConditions - headless end-condition tripwire
 //   3. gui.step                   - GUI input (skipped under --nox / off-cadence)
 //   4. gatherAndAdvanceOrders     - push local+AI orders, advance net (if prev tick committed)
-//   5. (gate flip) readyNow = net->allOrdersRecieved()
+//   5. (gate flip) readyNow = net->allOrdersReceived()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
 //   8. drawAndPaceFrame            - draw, videoshot, sleep
@@ -508,7 +508,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 			// Gate flip: from "previous tick committed" to "all orders for
 			// this tick are now in." Downstream helpers take readyNow, not
 			// wasReadyLastTick.
-			readyNow = net->allOrdersRecieved();
+			readyNow = net->allOrdersReceived();
 
 			executeOrdersAndStep(readyNow);
 		}

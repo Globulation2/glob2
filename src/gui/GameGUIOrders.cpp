@@ -91,9 +91,9 @@ void GameGUI::reconcileBuildingGuiState(const std::shared_ptr<Order>& order)
 			auto omcf = std::static_pointer_cast<OrderModifyClearingFlag>(order);
 			auto it = buildingGuiState.find(omcf->gid);
 			if (it != buildingGuiState.end()
-				&& (landed(*omcf) || (it->second.pendingClearingRessources
-					&& std::equal(omcf->clearingRessources, omcf->clearingRessources + BASIC_COUNT, it->second.pendingClearingRessources->begin()))))
-				it->second.pendingClearingRessources.reset();
+				&& (landed(*omcf) || (it->second.pendingClearingResources
+					&& std::equal(omcf->clearingResources, omcf->clearingResources + BASIC_COUNT, it->second.pendingClearingResources->begin()))))
+				it->second.pendingClearingResources.reset();
 			break;
 		}
 		case ORDER_MODIFY_MIN_LEVEL_TO_FLAG:
@@ -133,12 +133,12 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 			if (messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
 				if (mo->recepientsMask &(1<<localPlayer))
-					addMessage(Color(230, 230, 230), FormatableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()), true);
+					addMessage(Color(230, 230, 230), FormattableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()), true);
 			}
 			else if (messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
 			{
 				if (mo->recepientsMask &(1<<localPlayer))
-					addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()), true);
+					addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()), true);
 				else if (sp==localPlayer)
 				{
 					// Echo the outgoing private message once per recipient. The
@@ -146,7 +146,7 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 					// bit; messageRecipientPlayers drops any bit outside the
 					// live player range instead of indexing an empty slot.
 					for (int k : messageRecipientPlayers(mo->recepientsMask, game.gameHeader.getNumberOfPlayers()))
-						addMessage(Color(99, 255, 242), FormatableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
+						addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
 				}
 			}
 			else
@@ -168,7 +168,7 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 			int qp=order->sender;
 			if (qp==localPlayer)
 				isRunning=false;
-			addMessage(Color(200, 200, 200), FormatableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name), true);
+			addMessage(Color(200, 200, 200), FormattableString(Toolkit::getStringTable()->getString("[%0 has left the game]")).arg(game.players[qp]->name), true);
 			game.executeOrder(order, localPlayer);
 		}
 		break;

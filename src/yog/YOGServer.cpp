@@ -440,7 +440,7 @@ YOGServerMapDatabank& YOGServer::getMapDatabank()
 
 
 
-YOGServerFileDistributationManager& YOGServer::getFileDistributionManager()
+YOGServerFileDistributionManager& YOGServer::getFileDistributionManager()
 {
 	return fileDistributionManager;
 }

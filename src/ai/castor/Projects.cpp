@@ -137,7 +137,7 @@ void AICastor::addProjects()
 		if (addProject(project))
 			return;
 	}*/
-	// all critical projects succeded.
+	// all critical projects succeeded.
 	
 	// enough workers
 	buildsAmount=0;

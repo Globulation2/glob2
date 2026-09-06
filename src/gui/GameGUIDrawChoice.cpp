@@ -86,9 +86,9 @@ void GameGUI::drawChoiceSprites(int panelTopY, const std::vector<std::string>& t
 		globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
 		globalContainer->gfx->setClipRect();
-		if (hilights.find(HilightBuildingOnPanel + IntBuildingType::shortNumberFromType(type)) != hilights.end())
+		if (highlights.find(HighlightBuildingOnPanel + IntBuildingType::shortNumberFromType(type)) != highlights.end())
 		{
-			arrowPositions.push_back(HilightArrowPosition(x + off.dx - 36, y - 6 + off.dy, 38));
+			arrowPositions.push_back(HighlightArrowPosition(x + off.dx - 36, y - 6 + off.dy, 38));
 		}
 	}
 }
@@ -149,20 +149,20 @@ void GameGUI::drawChoiceInfoPanel(const std::string& type)
 	const int colLeftX = panelLeftX + 4 + (RIGHT_MENU_WIDTH - 128) / 2;
 	const int colRightX = colLeftX + 64;
 
-	// maxRessource[] indexes are the engine-wide resource ordering: 0=Wood, 1=Corn,
+	// maxResource[] indexes are the engine-wide resource ordering: 0=Wood, 1=Corn,
 	// 2=Papyrus, 3=Stone, 4=Alga. Don't reorder without auditing every consumer.
 	globalContainer->gfx->drawString(colLeftX, buildingInfoStart + 6, globalContainer->littleFont,
-		FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxRessource[0]).c_str());
+		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Wood]")).arg(bt->maxResource[0]).c_str());
 	globalContainer->gfx->drawString(colLeftX, buildingInfoStart + 17, globalContainer->littleFont,
-		FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxRessource[3]).c_str());
+		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Stone]")).arg(bt->maxResource[3]).c_str());
 
 	globalContainer->gfx->drawString(colRightX, buildingInfoStart + 6, globalContainer->littleFont,
-		FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxRessource[4]).c_str());
+		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Alga]")).arg(bt->maxResource[4]).c_str());
 	globalContainer->gfx->drawString(colRightX, buildingInfoStart + 17, globalContainer->littleFont,
-		FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxRessource[1]).c_str());
+		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Corn]")).arg(bt->maxResource[1]).c_str());
 
 	globalContainer->gfx->drawString(colLeftX, buildingInfoStart + 28, globalContainer->littleFont,
-		FormatableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxRessource[2]).c_str());
+		FormattableString("%0: %1").arg(Toolkit::getStringTable()->getString("[Papyrus]")).arg(bt->maxResource[2]).c_str());
 }
 
 void GameGUI::drawChoice(int panelTopY, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine)
@@ -170,7 +170,7 @@ void GameGUI::drawChoice(int panelTopY, std::vector<std::string> &types, std::ve
 	assert(numberPerLine >= 2);
 	assert(numberPerLine <= 3);
 
-	// 1. Paint icon grid (and queue tutorial-hilight arrows).
+	// 1. Paint icon grid (and queue tutorial-highlight arrows).
 	drawChoiceSprites(panelTopY, types, states, numberPerLine);
 
 	// 2. Paint the selection highlight over the active tool's icon, if any.

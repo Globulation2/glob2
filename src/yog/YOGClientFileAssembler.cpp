@@ -55,12 +55,12 @@ void YOGClientFileAssembler::startSendingFile(std::string mapname)
 
 
 
-void YOGClientFileAssembler::startRecievingFile(std::string mapname)
+void YOGClientFileAssembler::startReceivingFile(std::string mapname)
 {
 	filename=mapname;
 	obackend = new MemoryStreamBackend;
 	ostream.reset(new BinaryOutputStream(obackend));
-	mode=RecivingFile;
+	mode=ReceivingFile;
 	finished=0;
 }
 
@@ -76,7 +76,7 @@ void YOGClientFileAssembler::handleMessage(std::shared_ptr<NetMessage> message)
 	}
 	if(type == MNetSendFileChunk)
 	{
-		if(mode == RecivingFile)
+		if(mode == ReceivingFile)
 		{
 			shared_ptr<NetSendFileChunk> info = static_pointer_cast<NetSendFileChunk>(message);
 			Uint32 bsize = info->getChunkSize();
@@ -115,10 +115,10 @@ void YOGClientFileAssembler::cancelSendingFile()
 
 
 
-void YOGClientFileAssembler::cancelRecievingFile()
+void YOGClientFileAssembler::cancelReceivingFile()
 {
 	std::shared_ptr<YOGClient> nclient(client);
-	shared_ptr<NetCancelRecievingFile> message(new NetCancelRecievingFile(fileID));
+	shared_ptr<NetCancelReceivingFile> message(new NetCancelReceivingFile(fileID));
 	nclient->sendNetMessage(message);
 	size = 0;
 	finished = 0;
@@ -139,7 +139,7 @@ Uint8 YOGClientFileAssembler::getPercentage()
 
 
 
-bool YOGClientFileAssembler::fileInformationRecieved()
+bool YOGClientFileAssembler::fileInformationReceived()
 {
 	if(size == 0)
 		return false;

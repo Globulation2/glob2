@@ -451,8 +451,8 @@ shared_ptr<Order> AICortex::getOrder(void)
 						continue;
 					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
 					          << " at=" << bb->posX << "," << bb->posY
-					          << " corn=" << bb->ressources[CORN] << "/" << bb->type->maxRessource[CORN]
-					          << " cornAvail=" << (g->map.ressourceAvailable(tm->teamNumber, CORN, false, bb->posX, bb->posY) ? 1 : 0)
+					          << " corn=" << bb->resources[CORN] << "/" << bb->type->maxResource[CORN]
+					          << " cornAvail=" << (g->map.resourceAvailable(tm->teamNumber, CORN, false, bb->posX, bb->posY) ? 1 : 0)
 					          << " cornGrad=" << (int)g->map.getGradient(tm->teamNumber, CORN, false, bb->posX, bb->posY)
 					          << "\n";
 				}

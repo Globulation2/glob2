@@ -188,15 +188,15 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="select no ressources growth")
 	{
 		performAction("unselect");
-		selectionMode=ChangeNoRessourceGrowthAreas;
-		noRessourceGrowthButton->setSelected();
+		selectionMode=ChangeNoResourceGrowthAreas;
+		noResourceGrowthButton->setSelected();
 		if (brush.getType() == BrushTool::MODE_NONE)
 			brush.defaultSelection();
 		brush.setAddRemoveEnabledState(true);
 	}
 	else if(action=="handle terrain click")
 	{
-		if(terrainType==TerrainSelector::NoTerrain && selectionMode!=RemoveObject && selectionMode!=ChangeAreas && selectionMode!=ChangeNoRessourceGrowthAreas)
+		if(terrainType==TerrainSelector::NoTerrain && selectionMode!=RemoveObject && selectionMode!=ChangeAreas && selectionMode!=ChangeNoResourceGrowthAreas)
 			performAction("select grass");
 		brush.handleClick(relMouseX, relMouseY);
 	}
@@ -259,18 +259,18 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	}
 	else if(action=="no ressource growth area drag start")
 	{
-		isDraggingNoRessourceGrowthArea=true;
-		handleNoRessourceGrowthClick(mouseX, mouseY);
+		isDraggingNoResourceGrowthArea=true;
+		handleNoResourceGrowthClick(mouseX, mouseY);
 		hasMapBeenModified = true;
 	}
 	else if(action=="no ressource growth area drag motion")
 	{
-		handleNoRessourceGrowthClick(mouseX, mouseY);
+		handleNoResourceGrowthClick(mouseX, mouseY);
 		hasMapBeenModified = true;
 	}
 	else if(action=="no ressource growth area drag end")
 	{
-		isDraggingNoRessourceGrowthArea=false;
+		isDraggingNoResourceGrowthArea=false;
 		resetPlacementTracking();
 	}
 	else if(action=="add team")

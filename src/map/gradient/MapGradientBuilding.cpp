@@ -8,7 +8,7 @@
 
 
 
-// updateGlobalGradient(Building*), updateLocalRessources
+// updateGlobalGradient(Building*), updateLocalResources
 
 void Map::updateGlobalGradient(Building *building, bool canSwim)
 {
@@ -59,7 +59,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 				if (yi2+(xi*xi)<=r2)
 				{
 					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-					if(cases[addr].ressource.type!=NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
+					if(cases[addr].resource.type!=NO_RES_TYPE && building->clearingResources[cases[addr].resource.type])
 					{
 						if(gradient[addr] == GRADIENT_UNREACHABLE)
 							gradient[addr] = GRADIENT_AT_GOAL;
@@ -79,7 +79,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			{
 				if (c.forbidden&teamMask)
 					gradient[wyx] = GRADIENT_FORBIDDEN;
-				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
+				else if (c.resource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
 					gradient[wyx] = GRADIENT_FORBIDDEN;
 				else if(immobileUnits[wyx] != 255)
 					gradient[wyx] = GRADIENT_FORBIDDEN;
@@ -120,7 +120,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 }
 
 
-bool Map::updateLocalRessources(Building *building, bool canSwim)
+bool Map::updateLocalResources(Building *building, bool canSwim)
 {
 	assert(building);
 	assert(building->type);
@@ -131,16 +131,16 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 	int posY=building->posY;
 	Uint32 teamMask=building->owner->me;
 
-	Uint8 *gradient=building->localRessources[canSwim];
+	Uint8 *gradient=building->localResources[canSwim];
 	if (gradient==NULL)
 	{
 		gradient=new Uint8[LOCAL_GRID_AREA];
-		building->localRessources[canSwim]=gradient;
+		building->localResources[canSwim]=gradient;
 	}
 	assert(gradient);
 
-	bool *clearingRessources=building->clearingRessources;
-	bool anyRessourceToClear=false;
+	bool *clearingResources=building->clearingResources;
+	bool anyResourceToClear=false;
 
 	memset(gradient, GRADIENT_UNREACHABLE, LOCAL_GRID_AREA);
 	int range=building->unitStayRange;
@@ -163,13 +163,13 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 			{
 				if (c.forbidden&teamMask)
 					gradient[addrl]=GRADIENT_FORBIDDEN;
-				else if (c.ressource.type!=NO_RES_TYPE)
+				else if (c.resource.type!=NO_RES_TYPE)
 				{
-					Sint8 t=c.ressource.type;
-					if (t<BASIC_COUNT && clearingRessources[t])
+					Sint8 t=c.resource.type;
+					if (t<BASIC_COUNT && clearingResources[t])
 					{
 						gradient[addrl]=GRADIENT_AT_GOAL;
-						anyRessourceToClear=true;
+						anyResourceToClear=true;
 					}
 					else
 						gradient[addrl]=GRADIENT_FORBIDDEN;
@@ -185,15 +185,15 @@ bool Map::updateLocalRessources(Building *building, bool canSwim)
 				gradient[addrl]=GRADIENT_FORBIDDEN;
 		}
 	}
-	// PORT: this is the SOLE reset for localRessourcesCleanTime[canSwim]; runs unconditionally
+	// PORT: this is the SOLE reset for localResourcesCleanTime[canSwim]; runs unconditionally
 	// PORT: before both the false return below and the true return at function end. Building::clearingFlagStep
 	// PORT: relies on this side effect rather than resetting the timer itself.
-	building->localRessourcesCleanTime[canSwim]=0;
-	if (anyRessourceToClear)
-		building->anyRessourceToClear[canSwim]=1;
+	building->localResourcesCleanTime[canSwim]=0;
+	if (anyResourceToClear)
+		building->anyResourceToClear[canSwim]=1;
 	else
 	{
-		building->anyRessourceToClear[canSwim]=2;
+		building->anyResourceToClear[canSwim]=2;
 		return false;
 	}
 	propagateLocalGradient32(gradient);

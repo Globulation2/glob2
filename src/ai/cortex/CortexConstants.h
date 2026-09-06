@@ -204,9 +204,9 @@ namespace Cortex
 	// The lever is per-building maxUnitWorking, set via OrderModifyBuilding (the
 	// same lever AICastor uses, ai/castor/Control.cpp:227-272). Engine facts the
 	// thresholds are derived from (game/entities/BuildingTypesColony.cpp):
-	//   Swarm L0: holds 20 CORN, costs ressourceForOneUnit==5 per unit, makes one
+	//   Swarm L0: holds 20 CORN, costs resourceForOneUnit==5 per unit, makes one
 	//             unit / unitProductionTime==150 ticks, and STALLS outright when
-	//             ressources[CORN] < 5 (building/TypeSteps.cpp:31). Worker count only
+	//             resources[CORN] < 5 (building/TypeSteps.cpp:31). Worker count only
 	//             refills the buffer; it does NOT speed production (timeout-gated).
 	//   Inn  L0: holds 10 CORN, feeds maxUnitInside==4 units, 1 CORN per unit per
 	//            timeToFeedUnit==24 ticks (~5x a swarm's draw per tick) — hungrier.
@@ -261,7 +261,7 @@ namespace Cortex
 
 	/// Inn wheat-starvation throttle. An inn whose nearest CORN tile is farther than
 	/// this many Chebyshev tiles (or absent within the scan cap) cannot keep haulers
-	/// usefully busy — they have nothing to fetch — so its worker count is forced to
+	/// usefuly busy — they have nothing to fetch — so its worker count is forced to
 	/// CORTEX_INN_WORKER_MIN regardless of its corn deficit. Mirrors the swarm
 	/// wheat-starved clamp (CORTEX_SWARM_WHEAT_STARVED_RADIUS). Measured from the
 	/// inn's top-left corner via TrackedBuilding::nearestWheatDist. AI-design rule.
@@ -285,7 +285,7 @@ namespace Cortex
 	///
 	/// Derivation (all from the engine, verified): a worker drains from full
 	/// (HUNGRY_MAX 150000) to its eat trigger (trigHungry = HUNGRY_MAX/4 = 37500) at
-	/// hungryness 350/tick while active → it needs feeding once per
+	/// hungriness 350/tick while active → it needs feeding once per
 	/// (150000-37500)/350 ≈ 321 ticks (UnitMedical.cpp:53,197; Unit.cpp:99). One
 	/// feeding occupies a single inn slot for timeToFeedUnit ticks and refills it to
 	/// full (UnitDisplacement.cpp:294,321). An inn has maxUnitInside such slots, so

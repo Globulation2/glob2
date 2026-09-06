@@ -261,55 +261,55 @@ Uint16 NetCancelSendingFile::getFileID() const
 	return fileID;
 }
 
-NetCancelRecievingFile::NetCancelRecievingFile()
+NetCancelReceivingFile::NetCancelReceivingFile()
 	: fileID(0)
 {
 
 }
 
-NetCancelRecievingFile::NetCancelRecievingFile(Uint16 fileID)
+NetCancelReceivingFile::NetCancelReceivingFile(Uint16 fileID)
 	:fileID(fileID)
 {
 }
 
-Uint8 NetCancelRecievingFile::getMessageType() const
+Uint8 NetCancelReceivingFile::getMessageType() const
 {
-	return MNetCancelRecievingFile;
+	return MNetCancelReceivingFile;
 }
 
-void NetCancelRecievingFile::encodeData(GAGCore::OutputStream* stream) const
+void NetCancelReceivingFile::encodeData(GAGCore::OutputStream* stream) const
 {
 	stream->writeEnterSection("NetCancelRecievingFile");
 	stream->writeUint16(fileID, "fileID");
 	stream->writeLeaveSection();
 }
 
-void NetCancelRecievingFile::decodeData(GAGCore::InputStream* stream)
+void NetCancelReceivingFile::decodeData(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("NetCancelRecievingFile");
 	fileID = stream->readUint16("fileID");
 	stream->readLeaveSection();
 }
 
-std::string NetCancelRecievingFile::format() const
+std::string NetCancelReceivingFile::format() const
 {
 	std::ostringstream s;
-	s<<"NetCancelRecievingFile("<<"fileID="<<fileID<<"; "<<")";
+	s<<"NetCancelReceivingFile("<<"fileID="<<fileID<<"; "<<")";
 	return s.str();
 }
 
-bool NetCancelRecievingFile::operator==(const NetMessage& rhs) const
+bool NetCancelReceivingFile::operator==(const NetMessage& rhs) const
 {
-	if(typeid(rhs)==typeid(NetCancelRecievingFile))
+	if(typeid(rhs)==typeid(NetCancelReceivingFile))
 	{
-		const NetCancelRecievingFile& r = dynamic_cast<const NetCancelRecievingFile&>(rhs);
+		const NetCancelReceivingFile& r = dynamic_cast<const NetCancelReceivingFile&>(rhs);
 		if(r.fileID == fileID)
 			return true;
 	}
 	return false;
 }
 
-Uint16 NetCancelRecievingFile::getFileID() const
+Uint16 NetCancelReceivingFile::getFileID() const
 {
 	return fileID;
 }

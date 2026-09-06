@@ -130,7 +130,7 @@ void YOGClient::update()
 	while(message)
 	{
 		Uint8 type = message->getMessageType();
-		//This recieves the server information
+		//This receives the server information
 		if(type==MNetSendServerInformation)
 		{
 			shared_ptr<NetSendServerInformation> info = static_pointer_cast<NetSendServerInformation>(message);
@@ -141,7 +141,7 @@ void YOGClient::update()
 			sendToListeners(event);
 			connectionState = WaitingForLoginInformation;
 		}
-		//This recieves a login acceptance message
+		//This receives a login acceptance message
 		if(type==MNetLoginSuccessful)
 		{
 			shared_ptr<NetLoginSuccessful> info = static_pointer_cast<NetLoginSuccessful>(message);
@@ -152,7 +152,7 @@ void YOGClient::update()
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
-		//This recieves a login refusal message
+		//This receives a login refusal message
 		if(type==MNetRefuseLogin)
 		{
 			shared_ptr<NetRefuseLogin> info = static_pointer_cast<NetRefuseLogin>(message);
@@ -161,7 +161,7 @@ void YOGClient::update()
 			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
 			sendToListeners(event);
 		}
-		//This recieves a registration acceptance message
+		//This receives a registration acceptance message
 		if(type==MNetRegistrationAccepted)
 		{
 			shared_ptr<NetRegistrationAccepted> info = static_pointer_cast<NetRegistrationAccepted>(message);
@@ -172,7 +172,7 @@ void YOGClient::update()
 			shared_ptr<YOGLoginAcceptedEvent> event(new YOGLoginAcceptedEvent);
 			sendToListeners(event);
 		}
-		//This recieves a regisration refusal message
+		//This receives a registration refusal message
 		if(type==MNetRegistrationRefused)
 		{
 			shared_ptr<NetRegistrationRefused> info = static_pointer_cast<NetRegistrationRefused>(message);
@@ -181,19 +181,19 @@ void YOGClient::update()
 			shared_ptr<YOGLoginRefusedEvent> event(new YOGLoginRefusedEvent(info->getRefusalReason()));
 			sendToListeners(event);
 		}
-		///This recieves a game list update message
+		///This receives a game list update message
 		if(type==MNetUpdateGameList)
 		{
 			if(gameListManager)
-				gameListManager->recieveMessage(message);
+				gameListManager->receiveMessage(message);
 		}
-		///This recieves a player list update message
+		///This receives a player list update message
 		if(type==MNetUpdatePlayerList)
 		{
 			if(playerListManager)
-				playerListManager->recieveMessage(message);
+				playerListManager->receiveMessage(message);
 		}
-		///This recieves a YOGMessage list update message
+		///This receives a YOGMessage list update message
 		if(type==MNetSendYOGMessage)
 		{
 			shared_ptr<NetSendYOGMessage> yogmessage = static_pointer_cast<NetSendYOGMessage>(message);
@@ -201,64 +201,64 @@ void YOGClient::update()
 			{
 				if(!blocked->isPlayerBlocked(yogmessage->getMessage()->getSender()))
 				{
-					chatChannels[yogmessage->getChannel()]->recieveMessage(yogmessage->getMessage());
+					chatChannels[yogmessage->getChannel()]->receiveMessage(yogmessage->getMessage());
 				}
 			}
 			else
 			{
-				std::cerr<<"Recieved YOGMessage on a channel without a local YOGClientChatChannel"<<std::endl;
+				std::cerr<<"Received YOGMessage on a channel without a local YOGClientChatChannel"<<std::endl;
 			}
 		}
 
 		if(type==MNetCreateGameAccepted)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetCreateGameRefused)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetGameJoinAccepted)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetGameJoinRefused)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendMapHeader)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendGameHeader)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendAfterJoinGameInformation)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendGamePlayerInfo)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetStartGame)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetRefuseGameStart)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendOrder)
 		{
@@ -266,57 +266,57 @@ void YOGClient::update()
 			//say, the leftover orders in transit after a player
 			//quits a game
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetRequestFile)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetKickPlayer)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetReadyToLaunch)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetNotReadyToLaunch)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSetLatencyMode)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetPlayerJoinsGame)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetAddAI)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetRemoveAI)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetChangePlayersTeam)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type == MNetSendReteamingInformation)
 		{
 			if(joinedGame)
-				joinedGame->recieveMessage(message);
+				joinedGame->receiveMessage(message);
 		}
 		if(type==MNetSendFileInformation)
 		{
@@ -348,20 +348,20 @@ void YOGClient::update()
 		if(type == MNetAcceptMapUpload)
 		{
 			if(uploader)
-				uploader->recieveMessage(message);
+				uploader->receiveMessage(message);
 		}
 		if(type == MNetRefuseMapUpload)
 		{
 			if(uploader)
-				uploader->recieveMessage(message);
+				uploader->receiveMessage(message);
 		}
 		if(type == MNetDownloadableMapInfos)
 		{
-			downloadableMapList->recieveMessage(message);
+			downloadableMapList->receiveMessage(message);
 		}
 		if(type == MNetSendMapThumbnail)
 		{
-			downloadableMapList->recieveMessage(message);
+			downloadableMapList->receiveMessage(message);
 		}
 		message = nc.getMessage();
 	}
@@ -378,7 +378,7 @@ void YOGClient::update()
 				//say, the leftover orders in transit after a player
 				//quits a game
 				if(joinedGame)
-					joinedGame->recieveMessage(message);
+					joinedGame->receiveMessage(message);
 			}
 			message = gameConnection->getMessage();
 		}

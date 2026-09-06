@@ -102,13 +102,13 @@ namespace Cortex
 	/// reachable wheat to harvest.
 	/// v13 (2026-06-06, inn hauler ceiling = corn-deficit demand) added
 	/// TrackedBuilding.restockTripsNeeded — for inns, the CORN deficit (maxCorn - corn)
-	/// expressed in hauler TRIPS (deficit / multiplierRessource[CORN]). Corn is the feed
+	/// expressed in hauler TRIPS (deficit / multiplierResource[CORN]). Corn is the feed
 	/// resource that limits how many units the inn sustains, so the hauler ceiling tracks
 	/// how empty the corn buffer is; fruit is happiness garnish and is excluded. The
 	/// worker-tuning loop sets the inn's maxUnitWorking to this (clamped to [MIN, CAP]),
 	/// EXCEPT when nearestWheatDist puts all corn beyond CORTEX_INN_WHEAT_STARVED_RADIUS,
 	/// which forces the floor (haulers would have nothing to fetch). It does NOT gate on
-	/// Map::ressourceAvailable: that probes the inn's own footprint tile, which the
+	/// Map::resourceAvailable: that probes the inn's own footprint tile, which the
 	/// resource gradient always marks forbidden, so it zeroed the deficit and pinned
 	/// every inn to one hauler. -1 for swarms / unknown.
 	/// v15 (2026-06-06, offense-hold relocation) added flagPosture + offenseHoldUntil:
@@ -224,14 +224,14 @@ namespace Cortex
 	{
 		Sint32 valid;          ///< 0 = empty slot.
 		Sint32 gid;            ///< Building::gid (OrderModifyBuilding target), or -1 when invalid.
-		Sint32 corn;           ///< ressources[CORN] — the current wheat buffer driving the control loop.
-		Sint32 maxCorn;        ///< type->maxRessource[CORN] — the buffer ceiling.
+		Sint32 corn;           ///< resources[CORN] — the current wheat buffer driving the control loop.
+		Sint32 maxCorn;        ///< type->maxResource[CORN] — the buffer ceiling.
 		Sint32 maxUnitWorking; ///< Current maxUnitWorking (worker request); the value the loop nudges +/-1.
 		Sint32 unitsInside;    ///< unitsInside.size() — occupancy (inns: units feeding/queued).
 		Sint32 maxUnitInside;  ///< type->maxUnitInside — occupancy ceiling.
 		Sint32 nearestWheatDist; ///< Chebyshev to the nearest CORN tile (supply-distance expansion signal), or -1 if none within CORTEX_WHEAT_SCAN_CAP.
 		Sint32 harvestableWheatNearby; ///< Swarms only: count of non-forbidden CORN tiles within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the footprint (the wheat-starved worker-throttle signal). -1 for inns / when unknown (game absent).
-		Sint32 restockTripsNeeded; ///< Inns only: collectable restock demand in hauler trips (Σ over stocked resources of (cap-stock)/multiplier, counting only resources currently reachable/in-sight via Map::ressourceAvailable). The inn-hauler ceiling. -1 for swarms / when unknown (game absent).
+		Sint32 restockTripsNeeded; ///< Inns only: collectable restock demand in hauler trips (Σ over stocked resources of (cap-stock)/multiplier, counting only resources currently reachable/in-sight via Map::resourceAvailable). The inn-hauler ceiling. -1 for swarms / when unknown (game absent).
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy raise/restore swarm priority for the panic defense.
 		Sint32 ticksSinceFinished; ///< Inns only: ticks since Cortex first saw this inn finished (the post-build tune-cooldown clock); -1 = unknown / not tracked. Stamped by AICortex after observe(); swarms leave it -1.
 		Sint32 diagBlindCornNearby; ///< DIAGNOSTIC (inns only): forbidden-BLIND CORN-tile count within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. (diagBlindCornNearby - harvestableWheatNearby) is the forbidden-but-present corn — separates checkerboard-forbidding from field depletion at a feedCap blackout. No policy reads it; -1 when unknown. NOT networked (observation is rebuilt each cycle).
@@ -245,7 +245,7 @@ namespace Cortex
 		Sint32 valid;          ///< 0 = empty slot.
 		Sint32 gid;            ///< Building::gid (OrderModifyBuilding/OrderChangePriority target), or -1 when invalid.
 		Sint32 maxUnitWorking; ///< Current maxUnitWorking (worker cap) on the site.
-		Sint32 deliveriesLeft; ///< Resource hauler-trips still needed to finish the site = sum over resources of ceil((maxRessource-ressources)/multiplier). Caps how many workers can usefully build it.
+		Sint32 deliveriesLeft; ///< Resource hauler-trips still needed to finish the site = sum over resources of ceil((maxResource-resources)/multiplier). Caps how many workers can usefuly build it.
 		Sint32 priority;       ///< Building::priority (-1/0/+1) — lets the policy pin every construction site to LOW so construction never out-recruits feeding/production. C++: building/Building.h:516
 	};
 

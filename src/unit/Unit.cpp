@@ -55,7 +55,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 		this->performance[i]=race->getUnitType(typeNum, level)->performance[i];
 		this->level[i]=level;
 		this->canLearn[i]=(bool)race->getUnitType(typeNum, 3)->performance[i]; //TODO: is is a better way to hack this?
-		// This hack prevent units from unlearning. Units level 3 must have all the abilities of all preceedings levels
+		// This hack prevent units from unlearning. Units level 3 must have all the abilities of all preceding levels
 	}
 
 	experience = 0;
@@ -87,14 +87,14 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	else
 		trigHP = 20;
 
-	// warriors wait more tiem before going to eat
+	// warriors wait more time before going to eat
 	hungry = HUNGRY_MAX;
-	hungryness = race->hungryness;
+	hungriness = race->hungriness;
 	if (performance[ATTACK_SPEED])
 		trigHungry = (hungry*UNIT_HUNGRY_TRIG_NUM_WARRIOR)/UNIT_HUNGRY_TRIG_DEN;
 	else
 		trigHungry = hungry/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
-	trigHungryCarying = hungry/UNIT_HUNGRY_TRIG_DIVISOR_CARRYING;
+	trigHungryCarrying = hungry/UNIT_HUNGRY_TRIG_DIVISOR_CARRYING;
 	fruitMask = 0;
 	fruitCount = 0;
 
@@ -106,7 +106,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	targetBuilding=NULL;
 	ownExchangeBuilding=NULL;
 	destinationPurpose=UNIT_DEST_PURPOSE_NONE;
-	carriedRessource=UNIT_CARRIED_RESSOURCE_NONE;
+	carriedResource=UNIT_CARRIED_RESOURCE_NONE;
 	jobTimer = 0;
 
 	previousClearingArea=std::nullopt;
@@ -150,7 +150,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 	else if(inside == false)
 	{
 		assert(destinationPurpose>=0);
-		assert(b->neededRessource(destinationPurpose));
+		assert(b->neededResource(destinationPurpose));
 		activity=ACT_FILLING;
 		attachedBuilding=b;
 		setTargetBuilding(NULL);
@@ -194,7 +194,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 				case ACT_FILLING:
 				{
 					assert(attachedBuilding);
-					if (carriedRessource==destinationPurpose)
+					if (carriedResource==destinationPurpose)
 					{
 						displacement=DIS_GOING_TO_BUILDING;
 						setTargetBuilding(attachedBuilding);
@@ -202,9 +202,9 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					}
 					else
 					{
-						displacement=DIS_GOING_TO_RESSOURCE;
+						displacement=DIS_GOING_TO_RESOURCE;
 						targetBuilding=NULL;
-						owner->map->ressourceAvailableUpdate(owner->teamNumber, destinationPurpose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
 						validTarget=true;
 					}
 				}
@@ -236,16 +236,16 @@ void Unit::syncStep(void)
 			int enemyTeam=GIDtoTeam(enemyGUID);
 			Unit *enemy=owner->game->teams[enemyTeam]->myUnits[enemyID];
 
-			int degats=getRealAttackStrength()-enemy->getRealArmor(false);
-			if (degats<=0)
-				degats=1;
-			enemy->hp-=degats;
+			int damage=getRealAttackStrength()-enemy->getRealArmor(false);
+			if (damage<=0)
+				damage=1;
+			enemy->hp-=damage;
 
 			enemy->underAttackTimer = UNDER_ATTACK_TIMER_TICKS;
 
 			enemy->owner->pushGameEvent(GameEvent::unitUnderAttack(owner->game->stepCounter, enemy->posX, enemy->posY, enemy->typeNum));
 
-			incrementExperience(degats);
+			incrementExperience(damage);
 		}
 		else
 		{
@@ -255,10 +255,10 @@ void Unit::syncStep(void)
 				int enemyID=Building::GIDtoID(enemyGBID);
 				int enemyTeam=Building::GIDtoTeam(enemyGBID);
 				Building *enemy=owner->game->teams[enemyTeam]->myBuildings[enemyID];
-				int degats=getRealAttackStrength()-enemy->type->armor;
-				if (degats<=0)
-					degats=1;
-				enemy->hp-=degats;
+				int damage=getRealAttackStrength()-enemy->type->armor;
+				if (damage<=0)
+					damage=1;
+				enemy->hp-=damage;
 
 				enemy->underAttackTimer = UNDER_ATTACK_TIMER_TICKS;
 
@@ -266,7 +266,7 @@ void Unit::syncStep(void)
 
 				if (enemy->hp<0)
 					enemy->kill();
-				incrementExperience(degats);
+				incrementExperience(damage);
 			}
 		}
 	}

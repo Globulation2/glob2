@@ -43,9 +43,9 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the upgrading phase 1:
-	///1) Atleast strategy.upgrading_phase_1_school_min schools
-	///2) Atleast strategy.upgrading_phase_1_unit_min units
-	///3) Atleast strategy.upgrading_phase_1_trained_worker_min of them are trained for upgrading to level 2
+	///1) At least strategy.upgrading_phase_1_school_min schools
+	///2) At least strategy.upgrading_phase_1_unit_min units
+	///3) At least strategy.upgrading_phase_1_trained_worker_min of them are trained for upgrading to level 2
 	BuildingSearch schools(echo);
 	schools.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools.add_condition(new NotUnderConstruction);
@@ -62,9 +62,9 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 
 	///Qualifications for the upgrading phase 2:
-	///1) Atleast strategy.upgrading_phase_2_school_min level 2 or level 3 schools
-	///2) Atleast strategy.upgrading_phase_2_unit_min units
-	///3) Atleast strategy.upgrading_phase_2_trained_worker_min of them are trained for upgrading to level 3
+	///1) At least strategy.upgrading_phase_2_school_min level 2 or level 3 schools
+	///2) At least strategy.upgrading_phase_2_unit_min units
+	///3) At least strategy.upgrading_phase_2_trained_worker_min of them are trained for upgrading to level 3
 	BuildingSearch schools_2(echo);
 	schools_2.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	schools_2.add_condition(new NotUnderConstruction);
@@ -85,10 +85,10 @@ void NewNicowar::check_phases(Echo& echo)
 		upgrading_phase_2=false;
 	}
 
-	///Qualifications for the war preperation phase:
-	///1) Atleast strategy.war_preperation_phase_unit_min units
-	///2) Less than strategy.war_preperation_phase_barracks_max barracks OR
-	///3) Less than strategy.war_preperation_phase_trained_warrior_max trained warriors
+	///Qualifications for the war preparation phase:
+	///1) At least strategy.war_preparation_phase_unit_min units
+	///2) Less than strategy.war_preparation_phase_barracks_max barracks OR
+	///3) Less than strategy.war_preparation_phase_trained_warrior_max trained warriors
 	BuildingSearch barracks(echo);
 	barracks.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
 	int barracks_count=barracks.count_buildings();
@@ -99,17 +99,17 @@ void NewNicowar::check_phases(Echo& echo)
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
 	}
 
-	if(stat->totalUnit>=strategy.war_preperation_phase_unit_min && (warrior_count < strategy.war_preperation_phase_trained_warrior_max || barracks_count<strategy.war_preperation_phase_barracks_max))
+	if(stat->totalUnit>=strategy.war_preparation_phase_unit_min && (warrior_count < strategy.war_preparation_phase_trained_warrior_max || barracks_count<strategy.war_preparation_phase_barracks_max))
 	{
-		war_preperation=true;
+		war_preparation=true;
 	}
 	else
 	{
-		war_preperation=false;
+		war_preparation=false;
 	}
 
 	///Qualifications for the war phase:
-	///Atleast strategy.war_phase_trained_warrior_min trained warriors
+	///At least strategy.war_phase_trained_warrior_min trained warriors
 	if(warrior_count >= strategy.war_phase_trained_warrior_min)
 	{
 		war=true;
@@ -119,8 +119,8 @@ void NewNicowar::check_phases(Echo& echo)
 		war=false;
 	}
 
-	///Qualifcations for the fruit phase:
-	///Atleast strategy.fruit_phase_unit_min units, and fruits on the map
+	///Qualifications for the fruit phase:
+	///At least strategy.fruit_phase_unit_min units, and fruits on the map
 	if(echo.is_fruit_on_map() && stat->totalUnit >= strategy.fruit_phase_unit_min)
 	{
 		fruit_phase=true;
@@ -132,7 +132,7 @@ void NewNicowar::check_phases(Echo& echo)
 	
 	///Qualifications for the starving recovery phase:
 	///1) More than strategy.starvation_recovery_phase_starving_no_inn_min_percent % units hungry but not able to eat
-	///2) Atleast one unit (because of devision by 0)
+	///2) At least one unit (because of division by 0)
 	if(stat->totalUnit > AI_NICOWAR_STARVATION_MIN_UNITS)
 	{
 		int total_starving_percent = stat->needFoodNoInns * 100 / stat->totalUnit;
@@ -153,7 +153,7 @@ void NewNicowar::check_phases(Echo& echo)
 	///Qualifications for the no worker phase:
 	///1) More than strategy.no_workers_phase_free_worker_minimum_percen % workers free
 	///2) No needed jobs
-	///3) Atleast one worker (because of devision by 0)
+	///3) At least one worker (because of division by 0)
 	if(stat->numberUnitPerType[WORKER] > 0)
 	{
 		const int workers_free = (stat->isFree[WORKER]  -  stat->totalNeeded) * 100 / stat->numberUnitPerType[WORKER];
@@ -172,7 +172,7 @@ void NewNicowar::check_phases(Echo& echo)
 	}
 	
 	///Qualifications for the can swim phase:
-	///1) Atleast one worker that can swim
+	///1) At least one worker that can swim
 	int total_can_swim=0;
 	for(int i=0; i<AI_NICOWAR_LEVEL_COUNT; ++i)
 		total_can_swim += stat->upgradeStatePerType[WORKER][SWIM][i];
@@ -196,15 +196,15 @@ void NewNicowar::check_phases(Echo& echo)
 		defend_explorers=false;
 	}
 	
-	///Qualifications for the explorer attack preperation phase
+	///Qualifications for the explorer attack preparation phase
 	//1) This teams prestige greater than 0
 	if(echo.player->team->prestige > 0)
 	{
-		explorer_attack_preperation_phase = true;
+		explorer_attack_preparation_phase = true;
 	}
 	else
 	{
-		explorer_attack_preperation_phase = false;
+		explorer_attack_preparation_phase = false;
 	}
 	
 	///Qualifications for the explorer attack phase

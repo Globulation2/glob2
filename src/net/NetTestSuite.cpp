@@ -613,7 +613,7 @@ int NetTestSuite::testYOGPlayerSessionInfo()
 int NetTestSuite::testNetReteamingInformation()
 {
 	shared_ptr<NetReteamingInformation> info(new NetReteamingInformation);
-	//Test the intial state
+	//Test the initial state
 	if(!testInitial<NetReteamingInformation>())
 		return 1;
 	
@@ -667,13 +667,13 @@ int NetTestSuite::testListenerConnection()
 	//Attempts to transmit a NetSendOrder over the connection
 	shared_ptr<NetLoginSuccessful> netSendLogin1(new NetLoginSuccessful);
 	nc_client.sendMessage(netSendLogin1);
-	//Allow time for the request to be proccessed
+	//Allow time for the request to be processed
 	SDL_Delay(100);
 	
 	nc_client.update();
 	nc_server.update();
 	
-	//Recieves the message on the other end
+	//Receives the message on the other end
 	shared_ptr<NetMessage> netSendLogin2 = nc_server.getMessage();
 	if(!netSendLogin2)
 	{

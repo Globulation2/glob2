@@ -112,10 +112,10 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	unitConversionGained = stream->readSint32("unitConversionGained");
 
 	stream->readEnterSection("teamRessources");
-	for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
+	for (unsigned int i=0; i<MAX_NB_RESOURCES; ++i)
 	{
 		stream->readEnterSection(i);
-		teamRessources[i] = stream->readUint32("teamRessources");
+		teamResources[i] = stream->readUint32("teamRessources");
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -233,10 +233,10 @@ void Team::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(unitConversionGained, "unitConversionGained");
 
 	stream->writeEnterSection("teamRessources");
-	for (unsigned int i=0; i<MAX_NB_RESSOURCES; ++i)
+	for (unsigned int i=0; i<MAX_NB_RESOURCES; ++i)
 	{
 		stream->writeEnterSection(i);
-		stream->writeUint32(teamRessources[i], "teamRessources");
+		stream->writeUint32(teamResources[i], "teamRessources");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();

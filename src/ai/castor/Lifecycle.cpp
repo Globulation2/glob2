@@ -102,7 +102,7 @@ void AICastor::firstInit()
 	enemyPowerMap=NULL;
 	enemyRangeMap=NULL;
 	
-	ressourcesCluster=NULL;
+	resourcesCluster=NULL;
 }
 
 AICastor::AICastor(Player *player)
@@ -240,9 +240,9 @@ void AICastor::init(Player *player)
 		delete[] enemyWarriorsMap;
 	enemyWarriorsMap=new Uint8[size];
 	
-	if (ressourcesCluster!=NULL)
-		delete[] ressourcesCluster;
-	ressourcesCluster=new Uint16[size];
+	if (resourcesCluster!=NULL)
+		delete[] resourcesCluster;
+	resourcesCluster=new Uint16[size];
 }
 
 AICastor::~AICastor()
@@ -295,8 +295,8 @@ AICastor::~AICastor()
 	if (enemyWarriorsMap!=NULL)
 		delete[] enemyWarriorsMap;
 	
-	if (ressourcesCluster!=NULL)
-		delete[] ressourcesCluster;
+	if (resourcesCluster!=NULL)
+		delete[] resourcesCluster;
 
 	for(std::list<Project *>::iterator i=projects.begin(); i!=projects.end(); ++i)
 	{

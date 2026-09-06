@@ -13,7 +13,7 @@ class MapQueryTest: public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( MapQueryTest );
 		// isFreeForGroundUnit(x, y, canSwim, teamMask)
 		CPPUNIT_TEST( testFreeForGroundUnit_CleanGrassPasses );
-		CPPUNIT_TEST( testFreeForGroundUnit_RessourceFails );
+		CPPUNIT_TEST( testFreeForGroundUnit_ResourceFails );
 		CPPUNIT_TEST( testFreeForGroundUnit_BuildingFails );
 		CPPUNIT_TEST( testFreeForGroundUnit_UnitFails );
 		CPPUNIT_TEST( testFreeForGroundUnit_WaterFailsWhenNotSwim );
@@ -27,7 +27,7 @@ class MapQueryTest: public CppUnit::TestFixture
 
 		// isFreeForBuilding(x, y) and rect variants
 		CPPUNIT_TEST( testFreeForBuilding_GrassPasses );
-		CPPUNIT_TEST( testFreeForBuilding_RessourceFails );
+		CPPUNIT_TEST( testFreeForBuilding_ResourceFails );
 		CPPUNIT_TEST( testFreeForBuilding_BuildingFails );
 		CPPUNIT_TEST( testFreeForBuilding_UnitFails );
 		CPPUNIT_TEST( testFreeForBuilding_WaterFails );
@@ -39,14 +39,14 @@ class MapQueryTest: public CppUnit::TestFixture
 
 		// isHardSpaceForGroundUnit(x, y, canSwim, me)
 		CPPUNIT_TEST( testHardSpaceForGroundUnit_IgnoresUnit );
-		CPPUNIT_TEST( testHardSpaceForGroundUnit_RessourceStillFails );
+		CPPUNIT_TEST( testHardSpaceForGroundUnit_ResourceStillFails );
 		CPPUNIT_TEST( testHardSpaceForGroundUnit_BuildingStillFails );
 		CPPUNIT_TEST( testHardSpaceForGroundUnit_WaterFailsWhenNotSwim );
 		CPPUNIT_TEST( testHardSpaceForGroundUnit_ForbiddenStillFails );
 
 		// isHardSpaceForBuilding family
 		CPPUNIT_TEST( testHardSpaceForBuilding_IgnoresUnit );
-		CPPUNIT_TEST( testHardSpaceForBuilding_RessourceFails );
+		CPPUNIT_TEST( testHardSpaceForBuilding_ResourceFails );
 		CPPUNIT_TEST( testHardSpaceForBuilding_BuildingFails );
 		CPPUNIT_TEST( testHardSpaceForBuilding_NonGrassFails );
 		CPPUNIT_TEST( testHardSpaceForBuilding_RectAllGrassPasses );
@@ -62,7 +62,7 @@ class MapQueryTest: public CppUnit::TestFixture
 
 public:
 	void testFreeForGroundUnit_CleanGrassPasses();
-	void testFreeForGroundUnit_RessourceFails();
+	void testFreeForGroundUnit_ResourceFails();
 	void testFreeForGroundUnit_BuildingFails();
 	void testFreeForGroundUnit_UnitFails();
 	void testFreeForGroundUnit_WaterFailsWhenNotSwim();
@@ -74,7 +74,7 @@ public:
 	void testFreeForGroundUnitNoForbidden_StillBlocksBuilding();
 
 	void testFreeForBuilding_GrassPasses();
-	void testFreeForBuilding_RessourceFails();
+	void testFreeForBuilding_ResourceFails();
 	void testFreeForBuilding_BuildingFails();
 	void testFreeForBuilding_UnitFails();
 	void testFreeForBuilding_WaterFails();
@@ -85,13 +85,13 @@ public:
 	void testFreeForBuilding_RectGidTolerantDifferentGidFails();
 
 	void testHardSpaceForGroundUnit_IgnoresUnit();
-	void testHardSpaceForGroundUnit_RessourceStillFails();
+	void testHardSpaceForGroundUnit_ResourceStillFails();
 	void testHardSpaceForGroundUnit_BuildingStillFails();
 	void testHardSpaceForGroundUnit_WaterFailsWhenNotSwim();
 	void testHardSpaceForGroundUnit_ForbiddenStillFails();
 
 	void testHardSpaceForBuilding_IgnoresUnit();
-	void testHardSpaceForBuilding_RessourceFails();
+	void testHardSpaceForBuilding_ResourceFails();
 	void testHardSpaceForBuilding_BuildingFails();
 	void testHardSpaceForBuilding_NonGrassFails();
 	void testHardSpaceForBuilding_RectAllGrassPasses();

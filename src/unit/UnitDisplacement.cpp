@@ -39,9 +39,9 @@ void Unit::handleDisplacement(void)
 			if (verbose)
 				printf("guid=(%d) handleDisplacement() ACT_FILLING, displacement=%d\n", gid, displacement);
 
-			if (displacement==DIS_GOING_TO_RESSOURCE)
+			if (displacement==DIS_GOING_TO_RESOURCE)
 			{
-				if (auto off = owner->map->doesUnitTouchRessource(this, destinationPurpose))
+				if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
 				{
 					dx = off->dx;
 					dy = off->dy;
@@ -51,11 +51,11 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_HARVESTING)
 			{
-				// we got the ressource.
-				carriedRessource=destinationPurpose;
-				owner->map->decRessource(posX+dx, posY+dy, carriedRessource);
+				// we got the resource.
+				carriedResource=destinationPurpose;
+				owner->map->decResource(posX+dx, posY+dy, carriedResource);
 				assert(movement == MOV_HARVESTING);
-				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to aditionaly decRessource() the same ressource.
+				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.
 
 				setTargetBuilding(attachedBuilding);
 				if (auto off = owner->map->doesUnitTouchBuilding(this, attachedBuilding->gid))
@@ -100,14 +100,14 @@ void Unit::handleDisplacement(void)
 
 					assert(attachedBuilding);
 					assert(attachedBuilding->type->canFeedUnit);
-					assert(destinationPurpose>=HAPPYNESS_BASE);
+					assert(destinationPurpose>=HAPPINESS_BASE);
 
-					// Let's grab the right ressource.
+					// Let's grab the right resource.
 
-					if (targetBuilding->ressources[destinationPurpose]>0)
+					if (targetBuilding->resources[destinationPurpose]>0)
 					{
-						targetBuilding->removeRessourceFromBuilding(destinationPurpose);
-						carriedRessource=destinationPurpose;
+						targetBuilding->removeResourceFromBuilding(destinationPurpose);
+						carriedResource=destinationPurpose;
 
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
@@ -119,17 +119,17 @@ void Unit::handleDisplacement(void)
 							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
 					}
 				}
-				else if ((carriedRessource>=0) && (targetBuilding->ressources[carriedRessource]<targetBuilding->type->maxRessource[carriedRessource]))
+				else if ((carriedResource>=0) && (targetBuilding->resources[carriedResource]<targetBuilding->type->maxResource[carriedResource]))
 				{
 					if (verbose)
-						printf("guid=(%d) Giving ressource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->ressources[carriedRessource]);
-					targetBuilding->addRessourceIntoBuilding(carriedRessource);
-					carriedRessource=UNIT_CARRIED_RESSOURCE_NONE;
+						printf("guid=(%d) Giving resource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->resources[carriedResource]);
+					targetBuilding->addResourceIntoBuilding(carriedResource);
+					carriedResource=UNIT_CARRIED_RESOURCE_NONE;
 				}
 
 				if (!loopMove && !exchangeReady)
 				{
-					//NOTE: if attachedBuilding has become NULL; it's beacause the building doesn't need me anymore.
+					//NOTE: if attachedBuilding has become NULL; it's because the building doesn't need me anymore.
 					if (!attachedBuilding)
 					{
 						if (verbose)
@@ -141,34 +141,34 @@ void Unit::handleDisplacement(void)
 					}
 					else
 					{
-						///Find a ressource that the building wants and a location to get it from
-						///The location may be a market, or the harvesting the ressource from the
+						///Find a resource that the building wants and a location to get it from
+						///The location may be a market, or the harvesting the resource from the
 						///map.
-						int needs[MAX_NB_RESSOURCES];
-						attachedBuilding->computeWishedRessources(needs);
+						int needs[MAX_NB_RESOURCES];
+						attachedBuilding->computeWishedResources(needs);
 						int teamNumber=owner->teamNumber;
 						bool canSwim=performance[SWIM];
 						int timeLeft = numberOfStepsLeftUntilHungry();
 						if (timeLeft > 0)
 						{
-							int bestRessource=-1;
+							int bestResource=-1;
 							int minValue=owner->map->getW()+owner->map->getW();
 							bool takeInExchangeBuilding=false;
 							Map* map=owner->map;
-							for (int r=0; r<MAX_NB_RESSOURCES; r++)
+							for (int r=0; r<MAX_NB_RESOURCES; r++)
 							{
 								int need=needs[r];
 								if (need>0)
 								{
-									int distToRessource;
-									if (map->ressourceAvailable(teamNumber, r, canSwim, posX, posY, &distToRessource))
+									int distToResource;
+									if (map->resourceAvailable(teamNumber, r, canSwim, posX, posY, &distToResource))
 									{
-										if ((distToRessource<<1)>=timeLeft)
-											continue; //We don't choose this ressource, because it won't have time to reach the ressource and bring it back.
-										int value=distToRessource/need;
+										if ((distToResource<<1)>=timeLeft)
+											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.
+										int value=distToResource/need;
 										if (value<minValue)
 										{
-											bestRessource=r;
+											bestResource=r;
 											minValue=value;
 											takeInExchangeBuilding=false;
 										}
@@ -176,17 +176,17 @@ void Unit::handleDisplacement(void)
 
 									if (attachedBuilding->type->canFeedUnit)
 										for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
-											if ((*bi)->ressources[r]>0)
+											if ((*bi)->resources[r]>0)
 											{
 												int buildingDist;
 												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
 												{
-													// We increase the cost to get a ressource in an exchange building to reflect the costs to get the ressources to the exchange building.
+													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
 													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
 													int value=(buildingDist+5)/need;
 													if (value<minValue)
 													{
-														bestRessource=r;
+														bestResource=r;
 														minValue=value;
 
 														ownExchangeBuilding=*bi;
@@ -199,11 +199,11 @@ void Unit::handleDisplacement(void)
 							}
 
 							if (verbose)
-								printf("guid=(%d) bestRessource=%d, minValue=%d\n", gid, bestRessource, minValue);
+								printf("guid=(%d) bestResource=%d, minValue=%d\n", gid, bestResource, minValue);
 
-							if (bestRessource>=0)
+							if (bestResource>=0)
 							{
-								destinationPurpose=bestRessource;
+								destinationPurpose=bestResource;
 								assert(activity==ACT_FILLING);
 								if (takeInExchangeBuilding)
 								{
@@ -216,16 +216,16 @@ void Unit::handleDisplacement(void)
 								else
 								{
 									int dummyDist;
-									if (auto off = owner->map->doesUnitTouchRessource(this, destinationPurpose))
+									if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
 									{
 										dx = off->dx;
 										dy = off->dy;
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->ressourceAvailableUpdate(teamNumber, destinationPurpose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
 									{
-										displacement=DIS_GOING_TO_RESSOURCE;
+										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;
 									}
 									else
@@ -238,7 +238,7 @@ void Unit::handleDisplacement(void)
 							else
 							{
 								if (verbose)
-									printf("guid=(%d) can't find any wished ressource, unsubscribing.\n", gid);
+									printf("guid=(%d) can't find any wished resource, unsubscribing.\n", gid);
 								stopAttachedForBuilding(false);
 							}
 						}
@@ -379,7 +379,7 @@ void Unit::handleDisplacement(void)
 			{
 				validTarget=false;
 				if (typeNum==WORKER)
-					displacement=DIS_CLEARING_RESSOURCES;
+					displacement=DIS_CLEARING_RESOURCES;
 				else if (typeNum==EXPLORER)
 					displacement=DIS_REMOVING_BLACK_AROUND;
 				else if (typeNum==WARRIOR)
@@ -399,12 +399,12 @@ void Unit::handleDisplacement(void)
 							int x=posX+tdx;
 							int y=posY+tdy;
 							if (map->warpDistSquare(x, y, targetX, targetY)<=usr2
-								&& map->isRessourceTakeable(x, y, attachedBuilding->clearingRessources))
+								&& map->isResourceTakeable(x, y, attachedBuilding->clearingResources))
 							{
 								dx=tdx;
 								dy=tdy;
 								validTarget=false;
-								displacement=DIS_CLEARING_RESSOURCES;
+								displacement=DIS_CLEARING_RESOURCES;
 								//movement=MOV_HARVESTING;
 								return;
 							}

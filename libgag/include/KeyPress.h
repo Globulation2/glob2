@@ -50,7 +50,7 @@ public:
 	///Returns whether control must be held with the key
 	bool needControl() const;
 	
-	///Returns whether the meta must be helt with the key
+	///Returns whether the meta must be held with the key
 	bool needMeta() const;
 	
 	///Returns whether shift must be held with the key

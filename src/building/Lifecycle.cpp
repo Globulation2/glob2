@@ -22,7 +22,7 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
-		localRessources[i]=NULL;
+		localResources[i]=NULL;
 	}
 	load(stream, types, owner, versionMinor);
 }
@@ -68,22 +68,22 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	underAttackTimer=0;
 	canNotConvertUnitTimer=0;
 
-	// flag usefull :
+	// flag useful :
 	unitStayRange=type->defaultUnitStayRange;
 	for(int i=0; i<BASIC_COUNT; i++)
-		clearingRessources[i]=true;
-	clearingRessources[STONE]=false;
+		clearingResources[i]=true;
+	clearingResources[STONE]=false;
 	minLevelToFlag=0;
 
 	// building specific :
-	for(int i=0; i<MAX_NB_RESSOURCES; i++)
-		localRessource[i]=0;
-	updateRessourcesPointer();
+	for(int i=0; i<MAX_NB_RESOURCES; i++)
+		localResource[i]=0;
+	updateResourcesPointer();
 
 	// quality parameters
 	hp=type->hpInit; // (Uint16)
 
-	// prefered parameters
+	// preferred parameters
 
 	productionTimeout=type->unitProductionTime;
 
@@ -97,8 +97,8 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		percentUsed[i]=0;
 	}
 
-	receiveRessourceMask=0;
-	sendRessourceMask=0;
+	receiveResourceMask=0;
+	sendResourceMask=0;
 
 	shootingStep=0;
 	shootingCooldown=SHOOTING_COOLDOWN_MAX;
@@ -116,14 +116,14 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
-		localRessources[i]=NULL;
+		localResources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
 		lastGlobalGradientUpdateStepCounter[i]=0;
 
-		localRessources[i]=0;
-		localRessourcesCleanTime[i]=0;
-		anyRessourceToClear[i]=0;
+		localResources[i]=0;
+		localResourcesCleanTime[i]=0;
+		anyResourceToClear[i]=0;
 	}
 
 	verbose=false;
@@ -144,14 +144,14 @@ Building::~Building()
 	freeGradients();
 }
 
-void Building::resetLocalRessources()
+void Building::resetLocalResources()
 {
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		dirtyLocalGradient[i] = true;
 		locked[i] = false;
-		delete[] localRessources[i];
-		localRessources[i] = NULL;
+		delete[] localResources[i];
+		localResources[i] = NULL;
 	}
 }
 
@@ -163,8 +163,8 @@ void Building::resetPathfindGradients()
 		locked[i] = false;
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
-		delete[] localRessources[i];
-		localRessources[i] = NULL;
+		delete[] localResources[i];
+		localResources[i] = NULL;
 	}
 }
 
@@ -174,8 +174,8 @@ void Building::freeGradients()
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		lastGlobalGradientUpdateStepCounter[i] = 0;
-		localRessourcesCleanTime[i] = 0;
-		anyRessourceToClear[i] = 0;
+		localResourcesCleanTime[i] = 0;
+		anyResourceToClear[i] = 0;
 	}
 }
 
@@ -227,24 +227,24 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	{
 		std::ostringstream oss;
 		oss << "clearingRessources[" << i << "]";
-		clearingRessources[i] = (bool)stream->readSint32(oss.str().c_str());
+		clearingResources[i] = (bool)stream->readSint32(oss.str().c_str());
 	}
-	assert(clearingRessources[STONE] == false);
+	assert(clearingResources[STONE] == false);
 
 	minLevelToFlag = stream->readSint32("minLevelToFlag");
 
 	// Building Specific
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
 	{
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
-		localRessource[i] = stream->readSint32(oss.str().c_str());
+		localResource[i] = stream->readSint32(oss.str().c_str());
 	}
 
 	// quality parameters
 	hp = stream->readSint32("hp");
 
-	// prefered parameters
+	// preferred parameters
 	productionTimeout = stream->readSint32("productionTimeout");
 	totalRatio = stream->readSint32("totalRatio");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -261,8 +261,8 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 		}
 	}
 
-	receiveRessourceMask = stream->readUint32("receiveRessourceMask");
-	sendRessourceMask = stream->readUint32("sendRessourceMask");
+	receiveResourceMask = stream->readUint32("receiveRessourceMask");
+	sendResourceMask = stream->readUint32("sendRessourceMask");
 
 	shootingStep = stream->readUint32("shootingStep");
 	shootingCooldown = stream->readSint32("shootingCooldown");
@@ -272,7 +272,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	typeNum = stream->readSint32("typeNum");
 	type = types->get(typeNum);
 	assert(type);
-	updateRessourcesPointer();
+	updateResourcesPointer();
 
 	// reload data from type
 	shortTypeNum = type->shortTypeNum;
@@ -346,22 +346,22 @@ void Building::save(GAGCore::OutputStream *stream)
 	{
 		std::ostringstream oss;
 		oss << "clearingRessources[" << i << "]";
-		stream->writeSint32(clearingRessources[i], oss.str().c_str());
+		stream->writeSint32(clearingResources[i], oss.str().c_str());
 	}
 	stream->writeSint32(minLevelToFlag, "minLevelToFlag");
 
 	// Building Specific
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
 	{
 		std::ostringstream oss;
 		oss << "localRessource[" << i << "]";
-		stream->writeSint32(localRessource[i], oss.str().c_str());
+		stream->writeSint32(localResource[i], oss.str().c_str());
 	}
 
 	// quality parameters
 	stream->writeSint32(hp, "hp");
 
-	// prefered parameters
+	// preferred parameters
 	stream->writeSint32(productionTimeout, "productionTimeout");
 	stream->writeSint32(totalRatio, "totalRatio");
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -378,8 +378,8 @@ void Building::save(GAGCore::OutputStream *stream)
 		}
 	}
 
-	stream->writeUint32(receiveRessourceMask, "receiveRessourceMask");
-	stream->writeUint32(sendRessourceMask, "sendRessourceMask");
+	stream->writeUint32(receiveResourceMask, "receiveRessourceMask");
+	stream->writeUint32(sendResourceMask, "sendRessourceMask");
 
 	stream->writeUint32(shootingStep, "shootingStep");
 	stream->writeSint32(shootingCooldown, "shootingCooldown");
