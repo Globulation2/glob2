@@ -86,8 +86,11 @@ void YOGServerFileDistributor::update()
 			std::get<0>(*i)->sendMessage(fileInfo);
 			std::get<2>(*i) = 1;
 		}
-		else if(std::get<2>(*i) == 0) {
-			// WORKAROUND
+		else if(std::get<2>(*i) == 0)
+		{
+			// The header arrives through the next server update. Advance past
+			// this recipient so waiting for it cannot stall the message pump.
+			++i;
 			continue;
 		}
 		else if(std::get<2>(*i)-1 < (int)chunks.size() && std::get<1>(*i) < localtime)
@@ -172,6 +175,8 @@ void YOGServerFileDistributor::requestDataFromPlayer()
 {
 	if(!startedLoading)
 	{
+		// All recipients share this upload, including guests who rejoin.
+		startedLoading=true;
 		shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 		player->sendMessage(message);
 	}

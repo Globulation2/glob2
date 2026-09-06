@@ -484,6 +484,12 @@ if not env['server']:
     terrain_test = local.Program('TerrainResourcesHarness', terrain_sources)
     local.Alias('terrain-test', terrain_test)
 
+if not env['server']:
+    lan_sources = [source for source in source_files if source != 'Glob2.cpp']
+    lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
+    lan_test = local.Program('LANSessionHarness', lan_sources)
+    local.Alias('lan-test', lan_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)
