@@ -182,6 +182,7 @@ private:
 	/// detailed snapshot. Gated by GLOB2_TEAM_TIMELINE; used to compare two
 	/// AIs' trajectories after a single headless game.
 	void printTeamTimeline();
+	void printMapStats();
 
 	/// Tell the YOG multiplayer session how this match ended (won, lost,
 	/// quit). Caller checks `multiplayer` is non-null.

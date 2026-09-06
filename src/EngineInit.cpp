@@ -12,6 +12,7 @@
 #include "CustomGameScreen.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include <vector>
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -286,6 +287,117 @@ void Engine::createRandomGame()
 		saveInitialGameStateOrExit(dumpPath, "GLOB2_DUMP_GAME", map.getMapName());
 	if (!globalContainer->testGamesSaveGameAs.empty())
 		saveInitialGameStateOrExit(globalContainer->testGamesSaveGameAs, "--save-game-as", map.getMapName());
+	if (getenv("GLOB2_MAP_STATS"))
+	{
+		printMapStats();
+		exit(0);
+	}
+}
+
+// GLOB2_MAP_STATS: print start-position asymmetry of the loaded map (swarm
+// positions, resources and terrain around each start, pairwise distances,
+// a coarse ASCII map) and exit. Analysis aid for AI-vs-AI results.
+void Engine::printMapStats()
+{
+	Game& game = gui.game;
+	Map& m = game.map;
+	int w = m.getW(), h = m.getH();
+	int nbTeams = game.mapHeader.getNumberOfTeams();
+	std::cout << "MAPSTATS map=\"" << game.mapHeader.getMapName() << "\" size=" << w << "x" << h << " teams=" << nbTeams << std::endl;
+	std::vector<int> sx(nbTeams, -1), sy(nbTeams, -1);
+	for (int t = 0; t < nbTeams; t++)
+	{
+		Team* team = game.teams[t];
+		if (!team) continue;
+		for (int i = 0; i < Building::MAX_COUNT; i++)
+		{
+			Building* b = team->myBuildings[i];
+			if (b && b->shortTypeNum == IntBuildingType::SWARM_BUILDING && sx[t] < 0)
+			{
+				sx[t] = b->posX;
+				sy[t] = b->posY;
+			}
+		}
+		std::cout << "MAPSTATS team=" << t << " swarm=" << sx[t] << "," << sy[t] << " allies=0x" << std::hex << team->allies << std::dec << std::endl;
+	}
+	const char* resNames[8] = {"wood", "corn", "papyrus", "stone", "alga", "cherry", "orange", "prune"};
+	for (int t = 0; t < nbTeams; t++)
+	{
+		if (sx[t] < 0) continue;
+		for (int radius : {12, 24, 40})
+		{
+			int res[8] = {0}, resAmount[8] = {0}, water = 0, sand = 0, grass = 0;
+			for (int dy = -radius; dy <= radius; dy++)
+				for (int dx = -radius; dx <= radius; dx++)
+				{
+					int x = (sx[t] + dx) & m.getMaskW(), y = (sy[t] + dy) & m.getMaskH();
+					const Resource& r = m.getResource(x, y);
+					if (r.type != NO_RES_TYPE && r.type < 8) { res[r.type]++; resAmount[r.type] += r.amount; }
+					if (m.isWater(x, y)) water++;
+					else if (m.isSand(x, y)) sand++;
+					else grass++;
+				}
+			std::cout << "MAPSTATS team=" << t << " radius=" << radius << " water=" << water << " sand=" << sand << " grass=" << grass;
+			for (int i = 0; i < 8; i++)
+				std::cout << " " << resNames[i] << "=" << res[i] << "/" << resAmount[i];
+			std::cout << std::endl;
+		}
+		// Nearest tile of each resource type.
+		std::cout << "MAPSTATS team=" << t << " nearest";
+		for (int i = 0; i < 8; i++)
+		{
+			int best = -1;
+			for (int y = 0; y < h; y++)
+				for (int x = 0; x < w; x++)
+					if (m.getResource(x, y).type == i)
+					{
+						int d = m.warpDistMax(x, y, sx[t], sy[t]);
+						if (best < 0 || d < best) best = d;
+					}
+			std::cout << " " << resNames[i] << "=" << best;
+		}
+		std::cout << std::endl;
+	}
+	for (int a = 0; a < nbTeams; a++)
+		for (int b = a + 1; b < nbTeams; b++)
+			if (sx[a] >= 0 && sx[b] >= 0)
+				std::cout << "MAPSTATS dist team" << a << "-team" << b << "=" << m.warpDistMax(sx[a], sy[a], sx[b], sy[b]) << std::endl;
+	// Coarse ASCII map, 2x2 cells per character.
+	for (int y = 0; y < h; y += 2)
+	{
+		std::string line;
+		for (int x = 0; x < w; x += 2)
+		{
+			char c = '.';
+			bool water = false, sand = false;
+			int resType = -1;
+			for (int dy = 0; dy < 2; dy++)
+				for (int dx = 0; dx < 2; dx++)
+				{
+					int xx = x + dx, yy = y + dy;
+					for (int t = 0; t < nbTeams; t++)
+						if (sx[t] >= 0 && abs(xx - sx[t]) <= 1 && abs(yy - sy[t]) <= 1)
+							c = '0' + t;
+					if (m.isWater(xx, yy)) water = true;
+					else if (m.isSand(xx, yy)) sand = true;
+					int rt = m.getResource(xx, yy).type;
+					if (rt != NO_RES_TYPE && (resType < 0 || rt < resType)) resType = rt;
+				}
+			if (c == '.')
+			{
+				if (resType == WOOD) c = 'T';
+				else if (resType == CORN) c = 'c';
+				else if (resType == STONE) c = '#';
+				else if (resType == ALGA) c = 'a';
+				else if (resType >= CHERRY) c = 'f';
+				else if (resType == PAPYRUS) c = 'p';
+				else if (water) c = '~';
+				else if (sand) c = ':';
+			}
+			line += c;
+		}
+		std::cout << "MAPROW " << line << std::endl;
+	}
 }
 
 void Engine::saveInitialGameStateOrExit(const std::string& path, const std::string& label, const std::string& mapName)
