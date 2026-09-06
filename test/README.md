@@ -56,10 +56,10 @@ struct GrassMap : Map {
         wMask = 7; hMask = 7;
         size = 64;
         cases.assign(64, Case{});           // default: terrain=0 (grass), no bldg/unit
-        // arraysBuilt stays false, so clear() takes the else-branch
+        // No Sector or auxiliary arrays are allocated.
     }
     ~GrassMap() {
-        // Map::clear()'s else-branch asserts these are 0 before letting Map::~Map() proceed
+        // Reset fixture dimensions before base cleanup.
         w = h = wMask = hMask = wDec = hDec = 0;
         size = 0;
     }
