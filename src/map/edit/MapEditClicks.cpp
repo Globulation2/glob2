@@ -186,32 +186,33 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					switch(terrainType)
 					{
 					case TerrainSelector::Grass:
-						game.removeUnitAndBuildingAndFlags(x, y, 3, Game::DEL_BUILDING | Game::DEL_UNIT);
 						game.map.setUMatPos(x, y, GRASS, 1);
 						// a tile is drawn from the undermap corners at (x..x+1, y..y+1), so cells
 						// painted at (x-1..x+1) change the tiles from (x-2, y-2) on; only the
-						// resources those tiles no longer allow go
+						// resources, buildings and units those tiles no longer allow go
 						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
+						game.removeUnallowedUnitsAndBuildings(x-2, y-2, 4, 4);
 						// grass is also the brush that clears: the tiles the cell touches go bare
+						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
 						for (int ty=y-1; ty<=y; ty++)
 							for (int tx=x-1; tx<=x; tx++)
 								game.map.getResource(tx, ty).clear();
 						break;
 					case TerrainSelector::Sand:
-						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
 						game.map.setUMatPos(x, y, SAND, 1);
 						// a tile is drawn from the undermap corners at (x..x+1, y..y+1), so cells
 						// painted at (x-1..x+1) change the tiles from (x-2, y-2) on; only the
-						// resources those tiles no longer allow go
+						// resources, buildings and units those tiles no longer allow go
 						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
+						game.removeUnallowedUnitsAndBuildings(x-2, y-2, 4, 4);
 						break;
 					case TerrainSelector::Water:
-						game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
 						game.map.setUMatPos(x, y, WATER, 1);
 						// a tile is drawn from the undermap corners at (x..x+1, y..y+1), so cells
 						// painted at (x-1..x+1) change the tiles from (x-2, y-2) on; only the
-						// resources those tiles no longer allow go
+						// resources, buildings and units those tiles no longer allow go
 						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
+						game.removeUnallowedUnitsAndBuildings(x-2, y-2, 4, 4);
 						break;
 					case TerrainSelector::Wheat:
 						resToSet=CORN;
