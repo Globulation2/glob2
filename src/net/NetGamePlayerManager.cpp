@@ -92,6 +92,8 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 {
 	//Remove the player. Any players that are after this player are moved backwards
 	gameHeader.getBasePlayer(playerNumber) = BasePlayer();
+	// Clear the vacated slot before copying a surviving player's readiness into it.
+	readyToStart[playerNumber] = true;
 	for(int x=playerNumber+1; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
@@ -111,7 +113,6 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 			readyToStart[x] = true;
 		}
 	}
-	readyToStart[playerNumber] = true;
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() - 1);
 }
 
