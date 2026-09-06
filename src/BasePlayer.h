@@ -2,8 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef BasePlayer_h
-#define BasePlayer_h
+#pragma once
 
 #include <SDL_net.h>
 #include "AI.h"
@@ -17,6 +16,26 @@ class BasePlayer
 public:
 	/**
 	 * Players can be AI or human players at the local machine or connected via a network.
+	 *
+	 * RUST PORT: don't replicate this layout. PlayerType conflates two
+	 * orthogonal facts — "what kind of slot" (none / lost / network /
+	 * local / AI) and "which AI implementation" — by reserving P_AI=5
+	 * as a base and treating P_AI+n as "AI implementation n". That's a
+	 * sentinel-by-arithmetic encoding with no type safety: nothing
+	 * prevents adding a real PlayerType in the trailing range, and
+	 * round-tripping requires the helpers below. It survives in C++
+	 * only because the value is serialized into saves, replays, and
+	 * the network protocol, so renumbering would break wire compat.
+	 *
+	 * The Rust version should split this into two fields, e.g.:
+	 *     enum PlayerKind { None, LostDropping, LostFinal, Network, Local, AI }
+	 *     struct BasePlayer {
+	 *         kind: PlayerKind,
+	 *         ai_type: Option<AI::ImplementitionID>,  // Some iff kind == AI
+	 *         ...
+	 *     }
+	 * Saves get re-versioned in the port anyway, so this is the right
+	 * moment to fix it.
 	 */
  	enum PlayerType
 	{
@@ -50,13 +69,19 @@ public:
 	};
 
 	PlayerType type;
-	//TODO: Explain
+	/// Player slot index. Valid range: [0, Team::MAX_COUNT). Used to index
+	/// Game::players[] and as the bit position in numberMask.
 	Sint32 number;
-	//TODO: Explain
+	/// Cached 1 << number. Kept in sync via setNumber().
 	Uint32 numberMask;
 	std::string name;
+	/// Index of the Team this player controls. Valid range:
+	/// [0, mapHeader.getNumberOfTeams()) — must point at a live Team slot.
+	/// BasePlayer::load enforces the wider [0, Team::MAX_COUNT) bound; the
+	/// tighter map-aware bound is checked at the Game::setGameHeader call
+	/// site, where mapHeader is available.
 	Sint32 teamNumber;
-	//TODO: Explain
+	/// Cached 1 << teamNumber. Kept in sync via setTeamNumber().
 	Uint32 teamNumberMask;
 	///true if this player is to quit but still has orders to process
 	bool quitting;
@@ -64,7 +89,8 @@ public:
 	Uint32 quitUStep;
 	//TODO: Explain
 	Uint32 lastUStepToExecute;
-	///Used to identify the player over the internet
+	/// YOG player ID copied into the game header. Live YOGPlayerID values are
+	/// Uint16; this field stays Uint32 for version-86 saved-game compatibility.
 	Uint32 playerID;
 
 public:
@@ -86,6 +112,16 @@ public:
 
 	void setNumber(Sint32 number);
 	void setTeamNumber(Sint32 teamNumber);
+	/// True iff a raw serialized type value is a valid PlayerType. Because of
+	/// the P_AI+n encoding (see the PlayerType comment above), the valid range
+	/// is [P_NONE, P_AI + AI::SIZE): the base kinds 0..P_AI-1 plus one slot per
+	/// AI implementation. Anything else came from a corrupt or hostile stream —
+	/// casting it to PlayerType would be undefined behavior, and using it would
+	/// index AI dispatch tables out of range.
+	static bool isValidSerializedType(Uint32 rawType)
+	{
+		return rawType < Uint32(P_AI) + Uint32(AI::SIZE);
+	}
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream) const;
 
@@ -95,5 +131,3 @@ public:
 	//TODO: Explain
 	bool disableRecursiveDestruction;
 };
-
-#endif

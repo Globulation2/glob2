@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GUILIST_H
-#define __GUILIST_H
+#pragma once
 
 #include "GUIBase.h"
+#include <algorithm>
+#include <optional>
 #include <vector>
 #include <string>
 
@@ -91,8 +92,24 @@ namespace GAGGUI
 	
 		//! Return the index of the current selection. Returns -1 if no selection
 		int getSelectionIndex(void) const;
+		//! Return the current selection as an optional index. std::nullopt if no selection.
+		std::optional<size_t> selection(void) const;
 		//! Set the index of the current selection. Set -1 for no selection
 		void setSelectionIndex(int index);
+		//! Set or clear the current selection. std::nullopt clears it; an
+		//! out-of-range index is ignored (same policy as setSelectionIndex).
+		void setSelection(std::optional<size_t> index);
+		//! The selection to restore after entries were removed, given the
+		//! previously selected index and the list's new entry count: nothing
+		//! if the list is now empty, otherwise previousIndex clamped to the
+		//! new last entry. Pure helper — safe against the size_t underflow
+		//! of the naive `min(previousIndex, newCount - 1)` when newCount is 0.
+		static std::optional<size_t> selectionAfterRemoval(size_t previousIndex, size_t newCount)
+		{
+			if (newCount == 0)
+				return std::nullopt;
+			return std::min(previousIndex, newCount - 1);
+		}
 		
 		//! Scrolls the List to be centered on item
 		void centerOnItem(int index);
@@ -109,6 +126,4 @@ namespace GAGGUI
 		virtual void handleItemClick(size_t element, int mx, int my);
 	};
 }
-
-#endif
 

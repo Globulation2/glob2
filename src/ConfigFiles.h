@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __CONFIG_FILES_H
-#define __CONFIG_FILES_H
+#pragma once
 
 #include <Toolkit.h>
 #include <FileManager.h>
 using namespace GAGCore;
 #include <vector>
 #include <map>
+#include <memory>
 #include <sstream>
+#include <fstream>
 #include <iostream>
 #include <assert.h>
 
@@ -78,15 +79,34 @@ public:
 			delete entries[i];
 	}
 	
-	void load(const std::string &fileName, bool isDefault = false)
+	/// Parses \a fileName (looked up through the FileManager search path) into
+	/// this vector's entries. When \a isDefault is true the parsed block feeds
+	/// \ref defaultEntry — the template every later entry is cloned from —
+	/// instead of appending a named entry.
+	///
+	/// Returns true when the file was found and parsed. Returns false, leaving
+	/// existing entries untouched, when the file cannot be opened — e.g. an
+	/// optional, user-overridable override file (data/nicowar.txt) that is not
+	/// present. Callers that require the file (the default block) must treat
+	/// false as an error; callers loading an optional override may ignore it.
+	/// The Rust port models this return as Result<(), _>.
+	bool load(const std::string &fileName, bool isDefault = false)
 	{
 		bool first = true;
 		ConfigBlock b;
 		std::string bName;
-		
-		std::ifstream *stream = Toolkit::getFileManager()->openIFStream(fileName);
-		assert(stream);
-		
+
+		// openIFStream returns NULL when the file is absent. Guard it: an
+		// unchecked deref here was a release-build crash (the assert that used
+		// to stand in was compiled out with NDEBUG). unique_ptr also frees the
+		// stream on every exit path, replacing the lone happy-path delete.
+		std::unique_ptr<std::ifstream> stream(Toolkit::getFileManager()->openIFStream(fileName));
+		if (!stream)
+		{
+			std::cerr << "ConfigVector::load(" << fileName << ") : file not found" << std::endl;
+			return false;
+		}
+
 		while (stream->good())
 		{
 			int c = stream->get();
@@ -147,11 +167,11 @@ public:
 		
 		if (b.lines.size() > 0)
 			addBlock(bName, &b, isDefault);
-			
-		delete stream;
+
+		return true;
 	}
-	
-	void loadDefault(const std::string &fileName) { load(fileName, true); }
+
+	bool loadDefault(const std::string &fileName) { return load(fileName, true); }
 	
 	T* get(size_t id)
 	{
@@ -171,5 +191,3 @@ public:
 	
 	const std::string getNameById(size_t id) { return entriesToName[id]; }
 };
-
-#endif

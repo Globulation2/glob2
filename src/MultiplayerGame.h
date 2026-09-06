@@ -1,17 +1,49 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#ifndef __MultiplayerGame_h
-#define __MultiplayerGame_h
+#pragma once
 
 #include "YOGClient.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "NetEngine.h"
 #include "MultiplayerGameEventListener.h"
-#include <list>
+#include "ListenerList.h"
 #include "NetGamePlayerManager.h"
 #include "NetReteamingInformation.h"
+
+// === Multiplayer-game sentinels and tunables ===
+
+//! "Local player not found in this game header" sentinel returned by
+//! MultiplayerGame::getLocalPlayer(). See MultiplayerGame.cpp:696.
+static constexpr int LOCAL_PLAYER_NONE = -1;
+
+//! "Download percentage never reported yet" sentinel for
+//! MultiplayerGame::previousPercentage. Distinct from 100% (= complete);
+//! valid percentages are 0..100, so 255 is unambiguous.
+//! See MultiplayerGame.cpp:43.
+static constexpr Uint8 MP_DOWNLOAD_PCT_UNREPORTED = 255;
+
+//! Download "complete" percentage threshold. Used both as the equality
+//! test for download-finished (MultiplayerGame.cpp:311) and as the
+//! "no transfer in progress / done" return value of
+//! MultiplayerGame::percentageDownloadFinished()
+//! (MultiplayerGame.cpp:715, 719).
+static constexpr Uint8 DOWNLOAD_PCT_COMPLETE = 100;
+
+//! Default network latency, in tick slots, written into the GameHeader
+//! by MultiplayerGame::setDefaultGameHeaderValues().
+//! See MultiplayerGame.cpp:655.
+static constexpr int MP_DEFAULT_GAME_LATENCY_TICKS = 12;
+
+//! Default order send-rate (1 send per N ticks) written into the
+//! GameHeader by MultiplayerGame::setDefaultGameHeaderValues().
+//! See MultiplayerGame.cpp:656.
+static constexpr int MP_DEFAULT_ORDER_RATE_TICKS = 6;
+
+//! "No chat channel selected yet" sentinel for YOGClientChatChannel
+//! channel id (Uint32). See MultiplayerGameScreen.cpp:29.
+static constexpr Uint32 YOG_CHAT_CHANNEL_NONE = static_cast<Uint32>(-1);
 
 ///This class represents a multi-player game, both in the game and while waiting for players
 ///and setting up options. It channels its information through a YOGClient
@@ -104,9 +136,6 @@ public:
 	///This updates the team for a player
 	void changeTeam(int playerNum, int teamNum);
 	
-	///Sends a message to other players in the game
-//	void sendMessage(const std::string& message);
-	
 	///Returns the reason for being kicked
 	YOGKickReason getKickReason() const;
 	
@@ -136,7 +165,7 @@ public:
 	void setGameResult(YOGGameResult result);
 	
 	///Returns true if the given player is ready to start
-	bool isReadyToStart(int playerID);
+	bool isReadyToStart(YOGPlayerID playerID);
 	
 	///Sets whether the player (as in the actual person) is ready, usually by clicking a check box
 	void setHumanReady(bool isReady);
@@ -197,8 +226,6 @@ private:
 	//API/engine stuff
 	NetEngine* netEngine;
 	NetGamePlayerManager playerManager;
-	std::list<MultiplayerGameEventListener*> listeners;
+	ListenerList<MultiplayerGameEventListener> listeners;
 };
 
-
-#endif

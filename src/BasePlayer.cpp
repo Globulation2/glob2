@@ -4,9 +4,7 @@
 
 #include "BasePlayer.h"
 
-#include "GlobalContainer.h"
 #include "Stream.h"
-#include "LogFileManager.h"
 
 BasePlayer::BasePlayer()
 {
@@ -55,26 +53,69 @@ BasePlayer::~BasePlayer(void)
 void BasePlayer::setNumber(Sint32 number)
 {
 	this->number=number;
-	this->numberMask=1<<number;
+	// Player-slot bit, not a team bit — Uint32(1) avoids signed-shift UB at slot 31.
+	this->numberMask=Uint32(1)<<number;
 };
 
 void BasePlayer::setTeamNumber(Sint32 teamNumber)
 {
 	this->teamNumber=teamNumber;
-	this->teamNumberMask=1<<teamNumber;
+	this->teamNumberMask=Team::teamNumberToMask(teamNumber);
 };
 
+// Wire/storage validation point: reads a BasePlayer from a .game, .replay,
+// save file, or network packet. `number` and `teamNumber` are bounds-checked
+// against Team::MAX_COUNT here so every downstream consumer
+// (Game::setGameHeader, Player::setBasePlayer, ...) can safely index
+// teams[teamNumber] and players[number] without re-validating, and `type` is
+// range-checked before the enum cast so `type >= P_AI` branches can safely
+// derive an AI::ImplementitionID from it. Returns false on bad input; the
+// outer GameHeader/Player load propagates the failure.
 bool BasePlayer::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+	// An invalid or already-exhausted stream (truncated save, short packet)
+	// would make every read below return garbage or zero-fill. Checking EOS
+	// *after* the reads would be unsound: MemoryStreamBackend reports EOS
+	// when a valid record ends exactly at the buffer end, and does not
+	// advance past a failed overread. So guard at entry and rely on the
+	// per-field range checks below to catch mid-record corruption.
+	if (!stream->isValid() || stream->isEndOfStream())
+	{
+		fprintf(stderr, "BasePlayer::load: stream invalid or exhausted before BasePlayer record\n");
+		return false;
+	}
 	stream->readEnterSection("BasePlayer");
-	type = (PlayerType)stream->readUint32("type");
+	const Uint32 rawType = stream->readUint32("type");
 	number = stream->readSint32("number");
 	numberMask = stream->readUint32("numberMask");
-	playerID = stream->readUint16("playerID");
+	// The saved field is Uint32; pre-86 saves encoded the live Uint16 YOG ID.
+	if (versionMinor >= 86)
+		playerID = stream->readUint32("playerID");
+	else
+		playerID = stream->readUint16("playerID");
 	name = stream->readText("name");
 	teamNumber = stream->readSint32("teamNumber");
 	teamNumberMask = stream->readUint32("teamNumberMask");
 	stream->readLeaveSection();
+	if (!isValidSerializedType(rawType))
+	{
+		fprintf(stderr, "BasePlayer::load: invalid player type %u (must be below %u)\n",
+			(unsigned)rawType, (unsigned)P_AI + (unsigned)AI::SIZE);
+		return false;
+	}
+	type = (PlayerType)rawType;
+	if (number < 0 || number >= Team::MAX_COUNT)
+	{
+		fprintf(stderr, "BasePlayer::load: out-of-range player number %d (must be in [0, %d))\n",
+			(int)number, Team::MAX_COUNT);
+		return false;
+	}
+	if (teamNumber < 0 || teamNumber >= Team::MAX_COUNT)
+	{
+		fprintf(stderr, "BasePlayer::load: out-of-range teamNumber %d (must be in [0, %d))\n",
+			(int)teamNumber, Team::MAX_COUNT);
+		return false;
+	}
 	return true;
 }
 
@@ -84,7 +125,7 @@ void BasePlayer::save(GAGCore::OutputStream *stream) const
 	stream->writeUint32((Uint32)type, "type");
 	stream->writeSint32(number, "number");
 	stream->writeUint32(numberMask, "numberMask");
-	stream->writeUint16(playerID, "playerID");
+	stream->writeUint32(playerID, "playerID");
 	stream->writeText(name, "name");
 	stream->writeSint32(teamNumber, "teamNumber");
 	stream->writeUint32(teamNumberMask, "teamNumberMask");
@@ -100,14 +141,6 @@ Uint32 BasePlayer::checkSum()
 	cs^=numberMask;
 	cs^=teamNumber;
 	cs^=teamNumberMask;
-	//Uint32 netHost=SDL_SwapBE32(ip.host);
-	//Uint32 netPort=(Uint32)SDL_SwapBE16(ip.port);
-	//cs^=netHost;
-	// IP adress can't stay in checksum, because:
-	// We now support NAT or IP may simply be differents between computers
-	// And we uses checkSum in network.
-	// (we could uses two differents check sums, but the framework would be heavier)
-	//cs^=netPort;
 
 	for (unsigned i=0; i<name.size(); i++)
 		cs^=name[i];
@@ -118,6 +151,5 @@ Uint32 BasePlayer::checkSum()
 
 void BasePlayer::makeItAI(AI::ImplementitionID aiType)
 {
-	type=(PlayerType)(P_AI+aiType);
+	type=playerTypeFromImplementitionID(aiType);
 }
-

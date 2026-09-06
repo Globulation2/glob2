@@ -116,6 +116,8 @@ namespace GAGCore
 	bool Sprite::createTextureAtlas()
 	{
 #ifdef HAVE_OPENGL
+		if (!Toolkit::gc || !(Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU))
+			return false;
 #ifdef DEBUG_SPRITE_NOT_DRAWN
 		sprites.push_back(this);
 #endif
@@ -168,6 +170,8 @@ namespace GAGCore
 		glGenBuffers(1, &vbo);
 		glGenBuffers(1, &texCoordBuffer);
 		return true; // Success
+#else
+		return false;
 #endif
 	}
 	

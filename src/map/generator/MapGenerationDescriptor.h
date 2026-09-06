@@ -1,0 +1,74 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+
+#pragma once
+
+#include "Ressource.h"
+#include "TerrainType.h"
+#include "Team.h"
+
+namespace GAGCore
+{
+	class InputStream;
+	class OutputStream;
+}
+
+class MapGenerationDescriptor
+{
+public:
+	MapGenerationDescriptor();
+	virtual ~MapGenerationDescriptor(void);
+	
+	Uint8 *getData();
+	bool setData(const Uint8 *data, int dataLength);
+	int getDataLength() {return DATA_SIZE; }
+	
+	void save(GAGCore::OutputStream *stream);
+	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
+	Uint32 checkSum();
+
+public:
+	TerrainType terrainType;
+	enum Methode
+	{
+		/// No terrain (terrain undefined)
+		eNONE=-1,
+		/// Uniform terrain (all of one type. completely unstructured)
+		eUNIFORM=0,
+		/// swamp-like terrain with water here and land there
+		eSWAMP=1,
+		/// a more or less winding river
+		eRIVER=2,
+		/// islands that have organic shape and no passage from one to the next
+		eISLANDS=3,
+		/// all connected land with round lakes
+		eCRATERLAKES=4,
+		eCONCRETEISLANDS=5,
+		eISLES=6,
+		eOLDRANDOM=7,
+		eOLDISLANDS=8
+	};
+
+	Methode methode;
+	
+	Sint32 wDec, hDec;
+	
+	Sint32 waterRatio, sandRatio, grassRatio, desertRatio, wheatRatio,
+		woodRatio, fruitRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
+	Sint32 oldIslandSize, oldBeach;
+	Sint32 smooth;
+	Sint32 ressource[MAX_NB_RESSOURCES];
+	///n=2^n-times the same landscape. So 0=all random.
+	Uint32 logRepeatAreaTimes;
+
+	Sint32 nbTeams, nbWorkers;
+public:
+	// Thoses may not be in data
+	Sint32 bootX[Team::MAX_COUNT];
+	Sint32 bootY[Team::MAX_COUNT];
+public:
+	enum {DATA_SIZE=100+MAX_NB_RESSOURCES*4};
+protected:
+	//! Serialized form of MapGenerationDescriptor
+	Uint8 data[DATA_SIZE];
+};

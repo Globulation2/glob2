@@ -21,9 +21,6 @@ namespace GAGGUI
 			extension(extension), recurse(recurse), 
 			current("")
 	{
-		// There is a problem with this call: it doesn't use the child's virtual methods (fileToList and listToFile)
-		// For now: call it explicitly from the child's constructor or the program
-		//this->generateList();
 	}
 	
 	FileList::FileList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font,
@@ -34,9 +31,6 @@ namespace GAGGUI
 			extension(extension), recurse(recurse), 
 			current("")
 	{
-		// There is a problem with this call: it doesn't use the child's virtual methods (fileToList and listToFile)
-		// For now: call it explicitly from the child's constructor or the program
-		//this->generateList();
 	}
 	FileList::~FileList()
 	{}
@@ -121,7 +115,6 @@ namespace GAGGUI
 	std::string FileList::fileToList(const std::string fileName) const
 	{
 		// this default behaviour is probably not what you want
-		//std::cout << "FileList::fileToList(\"" << fileName << "\") !" << std::endl;
 		std::string listName(fileName);
 		if (! extension.empty())
 			listName.resize(listName.size() - (extension.size() + 1));
@@ -131,7 +124,6 @@ namespace GAGGUI
 	std::string FileList::listToFile(const std::string listName) const
 	{
 		// this default behaviour is probably not what you want
-		//std::cout << "FileList::listToFile(\"" << listName << "\") !" << std::endl;
 		std::string fileName(listName);
 		if (! this->extension.empty())
 		{

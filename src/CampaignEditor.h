@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
-#ifndef CAMPAIGN_EDITOR_H
-#define CAMPAIGN_EDITOR_H
+#pragma once
 
 #include "Glob2Screen.h"
 #include "Campaign.h"
@@ -61,7 +60,7 @@ public:
 	{
 		OK,
 		CANCEL,
-		ISLOCKED,
+		ISUNLOCKED,
 	};
 private:
 	CampaignMapEntry& entry;
@@ -86,8 +85,7 @@ private:
 	Text *descriptionEditorLabel;
 	/// The button that says whether this entry is unlocked by default
 	OnOffButton* isUnlocked;
-	/// The is locked label
+	/// The label for isUnlocked
 	Text *isUnlockedLabel;
 };
 
-#endif

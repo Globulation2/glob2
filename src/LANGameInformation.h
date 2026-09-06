@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
-#ifndef __LANGameInformation_h
-#define __LANGameInformation_h
+#pragma once
 
 #include "YOGGameInfo.h"
 #include "SDL_net.h"
@@ -40,4 +39,3 @@ private:
 
 
 
-#endif
