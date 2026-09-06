@@ -1,6 +1,6 @@
 #include "parser.h"
 #include "native.h"
-#include "error.h"
+#include "position.h"
 #include <memory>
 
 using std::string;

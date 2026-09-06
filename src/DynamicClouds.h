@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Leo Wandersleb
 
-#ifndef _DYNAMICCLOUDS_H
-#define _DYNAMICCLOUDS_H
+#pragma once
 
 #include "PerlinNoise.h"
 #include "Settings.h"
@@ -91,4 +90,3 @@ public:
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
 };
 
-#endif /* _DYNAMICCLOUDS_H */

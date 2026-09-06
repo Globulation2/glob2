@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __UTILITIES_H_GZ
-#define __UTILITIES_H_GZ
+#pragma once
 
 #include <stdlib.h>
 #include <errno.h>
+
+#include <string>
 
 #include <SDL_net.h>
 
@@ -25,6 +26,22 @@ inline Uint32 syncRand(void)
 	return randomGenerator();
 }
 
+// 32-bit right-rotate by 1 bit. Used to mix per-section checksums into the
+// running game/network checksum so that re-ordered identical inputs produce
+// different outputs. Open-coded as `(x<<31)|(x>>1)` so the compiler emits a
+// single ROR instruction without a branch on the shift amount; modern
+// compilers also recognize this exact named-helper form.
+//
+// Determinism note: this rotate feeds the on-the-wire lockstep checksum --
+// match it exactly in the Rust port (use `u32::rotate_right(1)`). Do not
+// substitute a similar-looking expression like `x >> 1` (a divide).
+inline Uint32 rotr1(Uint32 x) { return (x << 31) | (x >> 1); }
+
+// 32-bit left-rotate by 1 bit. Sibling of rotr1 -- used by Unit and Map
+// checksum mixers. Same determinism caveats apply: the Rust port must use
+// `u32::rotate_left(1)`.
+inline Uint32 rotl1(Uint32 x) { return (x << 1) | (x >> 31); }
+
 ///The actual random seeds are stored in GameHeader, which automatically randomizes them
 void setSyncRandSeed();
 void setSyncRandSeed(Uint32 seed);
@@ -40,8 +57,6 @@ namespace Utilities
 	// rectangle
 	//! return true if (x,y) is in r
 	bool ptInRect(int x, int y, SDL_Rect *r);
-	// FIXME : please Luc document this :
-	void rectClipRect(int &x, int &y, int &w, int &h, SDL_Rect &r);
 	void rectExtendRect(SDL_Rect *rs, SDL_Rect *rd);
 	void rectExtendRect(int xs, int ys, int ws, int hs, int *xd, int *yd, int *wd, int *hd);
 	void sdcRects(SDL_Rect *source, SDL_Rect *destination, SDL_Rect clipping);
@@ -91,6 +106,17 @@ namespace Utilities
 	
 	//! tokenize the string into 32 static char[256] strings. Returns the number of tokens. All tokens are valids
 	int staticTokenize(const char *s, int n, char token[32][256]);
+
+	//! If s starts with prefix, return s without that prefix; otherwise return s
+	//! unchanged. Never throws. Used by the LoadSaveScreen filename-to-display-name
+	//! callbacks to remove the listing-root directory (e.g. "replays/") from a full
+	//! virtual path while leaving unexpected names intact.
+	std::string stripPrefix(const std::string& s, const std::string& prefix);
+	//! If s ends with suffix, return s without that suffix; otherwise return s
+	//! unchanged. Never throws. Counterpart of stripPrefix for file extensions
+	//! (e.g. ".replay"): a stray file without the expected extension passes
+	//! through instead of crashing the dialog.
+	std::string stripSuffix(const std::string& s, const std::string& suffix);
 	
 	//! helpers for fixed points manipulation
 	inline int intToFixed(int i, const int precision = 256) {return  i * precision; }
@@ -134,5 +160,4 @@ namespace Utilities
 	void write(int fd, const void *buf, size_t count);
 };
 
-#endif
 

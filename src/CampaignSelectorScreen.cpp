@@ -5,6 +5,7 @@
 #include "StringTable.h"
 #include "Toolkit.h"
 #include "Campaign.h"
+#include <cassert>
 
 CampaignSelectorScreen::CampaignSelectorScreen(bool isSelectingSave)
 {
@@ -35,7 +36,7 @@ void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, i
 		if (source == ok)
 		{
 			// we accept only if a valid map is selected
-			if (fileList->getSelectionIndex()!=-1)
+			if (fileList->selection())
 				endExecute(OK);
 		}
 		else if (source == cancel)
@@ -45,23 +46,23 @@ void CampaignSelectorScreen::onAction(Widget *source, Action action, int par1, i
 	}
 	if (action == LIST_ELEMENT_SELECTED)
 	{
-		if (fileList->getSelectionIndex()!=-1)
+		if (fileList->selection())
 		{
-			Campaign toload;
-			toload.load(getCampaignName());
-			description->setText(Toolkit::getStringTable()->getString(toload.getDescription()));
+			description->setText(Toolkit::getStringTable()->getString(descriptionCache.getDescription(getCampaignName())));
 		}
 		else
 		{
-			description->setText("");	
+			description->setText("");
 		}
 	}
 }
 
 
 
-std::string CampaignSelectorScreen::getCampaignName()
+std::string CampaignSelectorScreen::getCampaignName() const
 {
-	return fileList->fullName(fileList->getText(fileList->getSelectionIndex()).c_str())+".txt";
+	auto sel = fileList->selection();
+	assert(sel);
+	return fileList->fullName(fileList->getText(*sel).c_str())+".txt";
 }
 

@@ -2,7 +2,6 @@
 // Copyright (C) 2007 Leo Wandersleb
 
 #include "DynamicClouds.h"
-#include "GraphicContext.h"
 #include "GlobalContainer.h"
 #include "SimplexNoise.h"
 

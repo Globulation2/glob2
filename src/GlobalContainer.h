@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GLOBALCONTAINER_H
-#define __GLOBALCONTAINER_H
+#pragma once
 
-#include "BuildingsTypes.h"
-#include "RessourcesTypes.h"
+#include <memory>
+#include <vector>
+
+#include "BuildingType.h"
+#include "RessourceType.h"
 #include "Settings.h"
 
 namespace GAGCore
@@ -20,10 +22,9 @@ using namespace GAGCore;
 
 class SoundMixer;
 class VoiceRecorder;
-class LogFileManager;
-class UnitsSkins;
 class ReplayReader;
 class ReplayWriter;
+class DatasetWriter;
 
 class GlobalContainer
 {
@@ -47,20 +48,15 @@ public:
 #endif  // !YOG_SERVER_ONLY
 	void load(void);
 
-	//void setUsername(const std::string &name);
-	//const std::string &getUsername(void) { return settings.getUsername(); }
-	const char *getComputerHostName(void);
-
 public:
-	FileManager *fileManager;
-	LogFileManager *logFileManager;
+	FileManager *fileManager; //!< Borrowed from Toolkit; not owned by GlobalContainer.
 
 #ifndef YOG_SERVER_ONLY
-	GraphicContext *gfx;
-	SoundMixer *mix;
-	VoiceRecorder *voiceRecorder;
-	
-	DrawableSurface *title;
+	GraphicContext *gfx; //!< Borrowed from Toolkit; not owned by GlobalContainer.
+	std::unique_ptr<SoundMixer> mix; //!< Owned.
+	std::unique_ptr<VoiceRecorder> voiceRecorder; //!< Owned.
+
+	std::unique_ptr<DrawableSurface> title; //!< Owned.
 	
 	Sprite *terrain;
 	Sprite *terrainWater;
@@ -81,9 +77,7 @@ public:
 	Sprite *brush;
 	Sprite *magiceffect;
 	Sprite *particles;
-	
-	UnitsSkins *unitsSkins;
-	
+
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;
@@ -104,7 +98,42 @@ public:
 	bool automaticGameGlobalEndConditions; //! Set false if the automatic game will end if the local team wins/loses, true to wait for the entire game to finish
 	
 	bool runTestGames; //! runs test games
-	
+	int runTestGamesCount; //! number of test games to run (0 = infinite)
+	//! AI implementation IDs (AI::ImplementitionID values) eligible for random
+	//! AI assignment in createRandomGame. Empty means "all AIs allowed" (legacy
+	//! behavior: NUMBI..NICOWAR uniformly). Set via --ai-types.
+	//! Mutually exclusive with testGamesMatchup.
+	std::vector<int> testGamesAIPool;
+
+	//! Bare map name (no .map extension, no path) to pin createRandomGame to.
+	//! Empty means "pick a random map from maps/" (legacy). Set via --map.
+	std::string testGamesMap;
+
+	//! Per-team AI implementation IDs for createRandomGame. testGamesMatchup[k]
+	//! is the AI assigned to team k. Empty means "use testGamesAIPool or random
+	//! default" (legacy). Set via --matchup. Validated against the loaded map's
+	//! getNumberOfTeams() at game creation time. Requires testGamesMap to be
+	//! set (else we'd have no team count to validate against).
+	std::vector<int> testGamesMatchup;
+
+	//! Path for --save-game-as: write the fully-initialised tick-0 game state
+	//! to this .game file before running, so the same scenario can later be
+	//! replayed deterministically via --nox. Empty means "do not save". Only
+	//! the -test-games / -test-games-nox flow honors this (the save happens
+	//! inside createRandomGame). Pair with GLOB2_TEST_SEED for full
+	//! reproducibility — the seed mirrored into GameHeader::seed is the
+	//! one captured in testGamesSeed below.
+	std::string testGamesSaveGameAs;
+
+	//! Seed actually passed to setSyncRandSeed() at the top of runTestGames().
+	//! createRandomGame() mirrors this into GameHeader::seed so the saved
+	//! .game file (via --save-game-as or GLOB2_DUMP_GAME) loads with the same
+	//! syncRand state. Without this mirror, GameHeader's constructor default
+	//! (time(NULL) at header-construction time) wins and the loaded game
+	//! diverges from the original -test-games-nox run.
+	Uint32 testGamesSeed;
+	bool testGamesSeedSet;
+
 	bool runTestMapGeneration; //! runs test map generation
 	
 	bool hostServer;
@@ -123,17 +152,12 @@ public:
 	bool replayShowFlags; //!< Show all flags or show none. Can be edited real-time.
 
 #ifndef YOG_SERVER_ONLY
-	ReplayReader *replayReader; //!< Reads and processes replay files, and outputs orders
-	ReplayWriter *replayWriter; //!< Writes orders into replay files
+	std::unique_ptr<ReplayReader> replayReader; //!< Owned. Reads and processes replay files, and outputs orders.
+	std::unique_ptr<ReplayWriter> replayWriter; //!< Owned. Writes orders into replay files.
+	std::unique_ptr<DatasetWriter> datasetWriter; //!< Owned. Writes (state, action) records for AI training (GLOB2_DATASET_PATH).
 #endif  // !YOG_SERVER_ONLY
 
-public:
-#ifndef YOG_SERVER_ONLY
-	Uint32 getConfigCheckSum();
-#endif  // !YOG_SERVER_ONLY
 };
 
 extern GlobalContainer *globalContainer;
-
-#endif
 

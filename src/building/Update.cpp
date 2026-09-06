@@ -3,22 +3,19 @@
 
 #include <list>
 #include <math.h>
-#include <Stream.h>
 #include <stdlib.h>
 #include <algorithm>
 #include <climits>
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "FixedPoint.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
 #include "Order.h"
-#include "Bullet.h"
-#include "Integrity.h"
 
 
 void Building::updateBuildingSite(void)
@@ -27,7 +24,7 @@ void Building::updateBuildingSite(void)
 
 	if (isRessourceFull() && (buildingState!=WAITING_FOR_DESTRUCTION))
 	{
-		// we really uses the resources of the buildingsite:
+		// we really uses the resources of the building site:
 		for(int i=0; i<MAX_RESSOURCES; i++)
 			ressources[i]-=type->maxRessource[i];
 
@@ -43,9 +40,7 @@ void Building::updateBuildingSite(void)
 
 
 		//now that building is complete clear the workers
-		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); it++)
-			(*it)->standardRandomActivity();
-		unitsWorking.clear();
+		releaseAllWorkers();
 
 		if (type->maxUnitWorking)
 		{
@@ -54,7 +49,6 @@ void Building::updateBuildingSite(void)
 		}
 		else
 			maxUnitWorking=0;
-		maxUnitWorkingLocal=maxUnitWorking;
 
 		// The working units still works for us, but
 		// we don't have any unit in buildings
@@ -77,8 +71,7 @@ void Building::updateBuildingSite(void)
 			owner->clearingFlags.push_back(this);
 
 		setMapDiscovered();
-		std::shared_ptr<GameEvent> event(new BuildingCompletedEvent(owner->game->stepCounter, getMidX(), getMidY(), shortTypeNum));
-		owner->pushGameEvent(event);
+		owner->pushGameEvent(GameEvent::buildingCompleted(owner->game->stepCounter, getMidX(), getMidY(), shortTypeNum));
 
 		// we need to do an update again
 		updateCallLists();
@@ -93,10 +86,8 @@ void Building::updateUnitsWorking(void)
 {
 	if (maxUnitWorking==0)
 	{
-		// This is only a special optimisation case:
-		for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
-			(*it)->standardRandomActivity();
-		unitsWorking.clear();
+		// This is only a special optimization case:
+		releaseAllWorkers();
 	}
 	else
 	{
@@ -107,7 +98,7 @@ void Building::updateUnitsWorking(void)
 			Unit *fu=NULL;
 			std::list<Unit *>::iterator ittemp;
 
-			// First choice: free an unit who has a not needed ressource..
+			// First choice: free a unit who has a not needed ressource..
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
 				int r=(*it)->carriedRessource;
@@ -122,7 +113,7 @@ void Building::updateUnitsWorking(void)
 				}
 			}
 			if(fu!=NULL) continue;
-			// Second choice: free an unit who has no ressource..
+			// Second choice: free a unit who has no ressource..
 			if (fu==NULL)
 			{
 				int minDistSquare=INT_MAX;
@@ -206,7 +197,7 @@ void Building::updateUnitsHarvesting(void)
 
 void Building::update(void)
 {
-	computeWishedRessources();
+	computeWishedRessources(wishedResources);
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
@@ -237,16 +228,16 @@ void Building::getRessourceCountToRepair(int ressources[BASIC_COUNT])
 	int repairLevelTypeNum=type->prevLevel;
 	BuildingType *repairBt=globalContainer->buildingsTypes.get(repairLevelTypeNum);
 	assert(repairBt);
-	Sint32 fDestructionRatio=(hp<<16)/type->hpMax;
+	Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
 	Sint32 fTotErr=0;
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
 		int fVal=fDestructionRatio*repairBt->maxRessource[i];
-		int iVal=(fVal>>16);
-		fTotErr+=fVal&65535;
-		if (fTotErr>=65536)
+		int iVal=(fVal>>FIXED_POINT_SHIFT_16);
+		fTotErr+=fVal&(int)FIXED_POINT_FRAC_MASK;
+		if (fTotErr>=(int)FIXED_POINT_ONE)
 		{
-			fTotErr-=65536;
+			fTotErr-=(int)FIXED_POINT_ONE;
 			iVal++;
 		}
 		ressources[i]=repairBt->maxRessource[i]-iVal;
@@ -258,7 +249,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 
-	int targetLevelTypeNum=-1;
+	int targetLevelTypeNum=BUILDING_LEVEL_NONE;
 	if (constructionResultState==UPGRADE)
 		targetLevelTypeNum=type->nextLevel;
 	else if (constructionResultState==REPAIR)
@@ -266,7 +257,7 @@ bool Building::tryToBuildingSiteRoom(void)
 	else
 		assert(false);
 
-	if (targetLevelTypeNum==-1)
+	if (targetLevelTypeNum==BUILDING_LEVEL_NONE)
 		return false;
 
 	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
@@ -285,16 +276,16 @@ bool Building::tryToBuildingSiteRoom(void)
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
-			Sint32 fDestructionRatio=(hp<<16)/type->hpMax;
+			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
 			Sint32 fTotErr=0;
 			for (int i=0; i<MAX_RESSOURCES; i++)
 			{
 				int fVal=fDestructionRatio*targetBt->maxRessource[i];
-				int iVal=(fVal>>16);
-				fTotErr+=fVal&65535;
-				if (fTotErr>=65536)
+				int iVal=(fVal>>FIXED_POINT_SHIFT_16);
+				fTotErr+=fVal&(int)FIXED_POINT_FRAC_MASK;
+				if (fTotErr>=(int)FIXED_POINT_ONE)
 				{
-					fTotErr-=65536;
+					fTotErr-=(int)FIXED_POINT_ONE;
 					iVal++;
 				}
 				ressources[i]=iVal;
@@ -303,7 +294,7 @@ bool Building::tryToBuildingSiteRoom(void)
 
 		if (!type->isVirtual)
 		{
-			owner->map->setBuilding(posX, posY, type->decLeft, type->decLeft, NOGBID);
+			owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 			owner->map->setBuilding(newPosX, newPosY, newWidth, newHeight, gid);
 		}
 
@@ -332,6 +323,7 @@ bool Building::tryToBuildingSiteRoom(void)
 					if (verbose)
 						printf("using %d ressources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
 					hp+=res*type->hpInc;
+					hp = std::min(hp, type->hpMax);
 				}
 			}
 
@@ -339,7 +331,6 @@ bool Building::tryToBuildingSiteRoom(void)
 		if (verbose)
 			printf("bgid=%d, uses maxUnitWorkingPreferred=%d\n", gid, maxUnitWorkingPreferred);
 		maxUnitWorking=maxUnitWorkingPreferred;
-		maxUnitWorkingLocal=maxUnitWorking;
 		maxUnitInside=type->maxUnitInside;
 		updateCallLists();
 		updateUnitsWorking();
@@ -348,12 +339,9 @@ bool Building::tryToBuildingSiteRoom(void)
 		// position
 		posX=newPosX;
 		posY=newPosY;
-		posXLocal=posX;
-		posYLocal=posY;
 
 		// flag usefull :
 		unitStayRange=type->defaultUnitStayRange;
-		unitStayRangeLocal=unitStayRange;
 
 		// quality parameters
 		// hp=type->hpInit; // (Uint16)
@@ -372,17 +360,21 @@ bool Building::tryToBuildingSiteRoom(void)
 	return isRoom;
 }
 
-#include "GameGUI.h"
-
-void Building::addForbiddenZoneToUpgradeArea(void)
+/// Toggle (add or remove) the forbidden zone covering the footprint this building would
+/// occupy if it completed its current upgrade. Dispereses units so the building site
+/// isn't waiting for space when there are lots of units around.
+///
+/// The post-mutation refresh of displayedForbiddenView is per-client display state
+/// (not in Map::checkSum) — it runs only when this building's team is the locally-
+/// displayed team, identified via Map::getDisplayedTeam() (mirrored from GameGUI's
+/// localTeamNo). updateForbiddenGradient, by contrast, is sim state and runs
+/// unconditionally for the owning team.
+void Building::modifyForbiddenZoneForUpgradeArea(bool add)
 {
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 
-	int targetLevelTypeNum=-1;
-	targetLevelTypeNum=type->nextLevel;
-
-	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
+	BuildingType *targetBt=globalContainer->buildingsTypes.get(type->nextLevel);
 	int newPosX=midPosX+targetBt->decLeft;
 	int newPosY=midPosY+targetBt->decTop;
 	int newWidth=targetBt->width;
@@ -392,41 +384,19 @@ void Building::addForbiddenZoneToUpgradeArea(void)
 	{
 		for(int y=newPosY; y<(newPosY+newHeight); ++y)
 		{
-			owner->map->addForbidden(x, y, owner->teamNumber);
+			if (add)
+				owner->map->addForbidden(x, y, owner->teamNumber);
+			else
+				owner->map->removeForbidden(x, y, owner->teamNumber);
 		}
 	}
-	if(owner == owner->game->gui->getLocalTeam())
-		owner->map->computeLocalForbidden(owner->teamNumber);
+	if(owner->teamNumber == owner->map->getDisplayedTeam())
+		owner->map->computeDisplayedForbidden(owner->teamNumber);
 	owner->map->updateForbiddenGradient(owner->teamNumber);
 }
 
-
-
-void Building::removeForbiddenZoneFromUpgradeArea(void)
-{
-	int midPosX=posX-type->decLeft;
-	int midPosY=posY-type->decTop;
-
-	int targetLevelTypeNum=-1;
-	targetLevelTypeNum=type->nextLevel;
-
-	BuildingType *targetBt=globalContainer->buildingsTypes.get(targetLevelTypeNum);
-	int newPosX=midPosX+targetBt->decLeft;
-	int newPosY=midPosY+targetBt->decTop;
-	int newWidth=targetBt->width;
-	int newHeight=targetBt->height;
-
-	for(int x=newPosX; x<(newPosX+newWidth); ++x)
-	{
-		for(int y=newPosY; y<(newPosY+newHeight); ++y)
-		{
-			owner->map->removeForbidden(x, y, owner->teamNumber);
-		}
-	}
-	if(owner == owner->game->gui->getLocalTeam())
-		owner->map->computeLocalForbidden(owner->teamNumber);
-	owner->map->updateForbiddenGradient(owner->teamNumber);
-}
+void Building::addForbiddenZoneToUpgradeArea(void)      { modifyForbiddenZoneForUpgradeArea(true); }
+void Building::removeForbiddenZoneFromUpgradeArea(void) { modifyForbiddenZoneForUpgradeArea(false); }
 
 
 
@@ -435,17 +405,17 @@ bool Building::isHardSpaceForBuildingSite(void)
 	return isHardSpaceForBuildingSite(constructionResultState);
 }
 
-bool Building::isHardSpaceForBuildingSite(ConstructionResultState constructionResultState)
+bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState)
 {
-	int tltn=-1;
-	if (constructionResultState==UPGRADE)
+	int tltn=BUILDING_LEVEL_NONE;
+	if (requestedState==UPGRADE)
 		tltn=type->nextLevel;
-	else if (constructionResultState==REPAIR)
+	else if (requestedState==REPAIR)
 		tltn=type->prevLevel;
 	else
 		assert(false);
 
-	if (tltn==-1)
+	if (tltn==BUILDING_LEVEL_NONE)
 		return true;
 	BuildingType *bt=globalContainer->buildingsTypes.get(tltn);
 	int x=posX+bt->decLeft-type->decLeft;
@@ -469,7 +439,7 @@ bool Building::fullInside(void)
 
 int Building::desiredNumberOfWorkers(void)
 {
-	//If its virtual, than this building is a flag and always gets
+	//If It's virtual, then this building is a flag and always gets
 	//full ressources
 	if(type->isVirtual)
 	{
@@ -485,7 +455,7 @@ int Building::desiredNumberOfWorkers(void)
 			neededRessourcesSum += neededRessources;
 	}
 	int user_num = maxUnitWorking;
-	int max_considering_ressources = (4 * neededRessourcesSum) / 3;
+	int max_considering_ressources = (WISHED_RESOURCE_NUM * neededRessourcesSum) / WISHED_RESOURCE_DEN;
 	return std::min(user_num, max_considering_ressources);
 }
 

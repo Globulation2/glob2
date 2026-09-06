@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __PLAYER_H
-#define __PLAYER_H
+#pragma once
 
 #include <assert.h>
 #include <vector>
@@ -55,4 +54,3 @@ public:
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);
 };
 
-#endif

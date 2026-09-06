@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2005 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GLOB2_SCREEN_H
-#define __GLOB2_SCREEN_H
+#pragma once
 
 #include <GUIBase.h>
 #include <GUITabScreen.h>
@@ -19,7 +18,7 @@ public:
 	
 private:
 	unsigned getNextTerrain(void);
-	int randomSeed;
+	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
 };
 
 class Glob2TabScreen : public TabScreen
@@ -31,8 +30,7 @@ public:
 	
 private:
 	unsigned getNextTerrain(void);
-	int randomSeed;
+	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
 };
 
-#endif
 
