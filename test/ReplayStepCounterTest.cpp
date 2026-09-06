@@ -81,11 +81,8 @@ public:
 	Uint8 getOrderType(void) { return ORDER_DELETE; }
 };
 
-// Records the versionMinor the last decode was resolved against, so a test can
-// assert which format the reader asked for. Real orders ignore the parameter
-// unless they are version-gated (only OrderCreate is, at
-// FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS), which is why the value has to
-// be observed here rather than inferred from a decoded order.
+// Record the requested version because supported replay versions currently
+// decode identically.
 Uint32 lastDecodeVersionMinor = 0;
 
 std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)
@@ -265,33 +262,27 @@ void testVersionBounds()
 	}
 }
 
-// 4. Orders are decoded against the replay's own format version, not the
-// running build's. NetSendOrder::decodeData used to hardcode VERSION_MINOR,
-// which is right for live network traffic (both peers run this build) but
-// wrong for a replay, which is a stored format that may predate it. Nothing
-// observable diverges in the currently supported window — OrderCreate's gate
-// at 78 is the only version gate in the order layer and sits below the
-// REPLAY_MINIMUM_VERSION_MINOR floor of 86 — so the plumbing is asserted
-// directly. Without it, the next order-format gate would silently misparse
-// every replay written before it.
+// 4. Both the initial scan and playback use the replay header version.
 void testDecodeVersionPlumbing()
 {
 	const Uint16 oldVersion = REPLAY_MINIMUM_VERSION_MINOR;
 
-	// A version this test would be meaningless at: if the floor ever rises to
-	// meet the current build, the assertion below could pass by coincidence.
+	// Require an older version so a hardcoded VERSION_MINOR cannot pass.
 	check(oldVersion != VERSION_MINOR,
 	      "decodeVersion: replay floor is below the current build version");
 
 	ReplayReader reader;
-	bool loaded = reader.loadReplay(writeReplayBody(oldVersion, false, 7), false);
+	const bool wideCounters = oldVersion >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR;
+	lastDecodeVersionMinor = 0;
+	bool loaded = reader.loadReplay(writeReplayBody(oldVersion, wideCounters, 7), false);
 	check(loaded, "decodeVersion: old-but-supported replay loads");
 	if (!loaded)
 		return;
 
-	// loadReplay decodes the whole order stream once to measure the replay, so
-	// the recorded version is already the one under test; clear it so the
-	// assertion below is about retrieveOrder specifically.
+	check(lastDecodeVersionMinor == oldVersion,
+	      "decodeVersion: initial scan uses the replay header version");
+
+	// Reset the recorder to check playback independently of the initial scan.
 	lastDecodeVersionMinor = 0;
 
 	for (Uint32 i = 0; i < 7; i++)

@@ -37,13 +37,9 @@ public:
 
 	void changeOrder(std::shared_ptr<Order> newOrder);
 
-	/// Selects the save-format version the payload is interpreted against by
-	/// the next decodeData() call. Live network traffic must leave this at the
-	/// VERSION_MINOR default: both peers run the same build, so the current
-	/// version is by definition the right one. Replays are the exception —
-	/// they are a stored format that can predate this build, so ReplayReader
-	/// sets the version recorded in the replay's own header. Has no effect on
-	/// encodeData(), which always writes the current format.
+	/// Sets the version used by subsequent decodeData() calls.
+	/// Defaults to VERSION_MINOR; replay readers supply their header version.
+	/// Does not affect encoding.
 	void setDecodeVersionMinor(Uint32 newVersionMinor);
 
 	Uint8 getMessageType() const;
@@ -59,8 +55,6 @@ public:
 private:
 	std::shared_ptr<Order> order;
 
-	/// Save-format version handed to Order::getOrder when decoding. Defaults to
-	/// VERSION_MINOR (correct for the network path); see setDecodeVersionMinor.
 	Uint32 decodeVersionMinor;
 };
 
