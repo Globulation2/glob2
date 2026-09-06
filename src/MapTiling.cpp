@@ -9,8 +9,36 @@
 #include "FormatableString.h"
 #include "Toolkit.h"
 #include "FileManager.h"
+#include <algorithm>
+#include <cstdlib>
 #include <memory>
 #include <cstring>
+
+namespace
+{
+	//! A path under the system temp directory for a generated tiled map, not under any
+	//! directory FileManager or ChooseMapScreen searches, so tiled maps never show up
+	//! alongside the user's own maps. A per-process counter keeps concurrent tilings
+	//! (e.g. host and a local test client) from colliding on the same file.
+	std::string tempTiledMapPath(const std::string& name)
+	{
+		static int counter = 0;
+		std::string fileName = name;
+		std::replace_if(fileName.begin(), fileName.end(), [](char c) { return c == ' ' || c == '\t' || c == '/' || c == '\\'; }, '_');
+#ifdef WIN32
+		const char* dir = getenv("TEMP");
+		if (!dir || !*dir)
+			dir = getenv("TMP");
+		if (!dir || !*dir)
+			dir = ".";
+#else
+		const char* dir = getenv("TMPDIR");
+		if (!dir || !*dir)
+			dir = "/tmp";
+#endif
+		return FormatableString("%0/glob2-tiled-%1-%2.map").arg(dir).arg(counter++).arg(fileName);
+	}
+}
 
 namespace MapTiling
 {
@@ -139,17 +167,24 @@ namespace MapTiling
 		MapHeader header = game.mapHeader;
 		header.setMapName(name);
 		header.setIsSavedGame(false);
-		std::unique_ptr<GAGCore::OutputStream> out(new GAGCore::BinaryOutputStream(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(header.getFileName())));
+		// Tiled maps are generated, not authored: write them to the temp directory
+		// rather than next to the user's own maps, so they never show up in the
+		// map list. The file name override makes every later reload of `header`
+		// (hosting, LAN/YOG transfer) find the same temp file.
+		const std::string path = tempTiledMapPath(name);
+		header.setFileNameOverride(path);
+		std::unique_ptr<GAGCore::OutputStream> out(new GAGCore::BinaryOutputStream(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(path)));
 		if (out->isEndOfStream())
 			return failed;
 		game.save(out.get(), true, name);
 		out.reset();
 		// read the header back so it carries the checksum of the file as written
-		std::unique_ptr<GAGCore::InputStream> check(new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(header.getFileName())));
+		std::unique_ptr<GAGCore::InputStream> check(new GAGCore::BinaryInputStream(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(path)));
 		MapHeader written;
 		if (check->isEndOfStream() || !written.load(check.get()))
 			return failed;
 		written.setMapName(name);
+		written.setFileNameOverride(path);
 		return written;
 	}
 
