@@ -6,6 +6,8 @@
 
 #include <SDL_keycode.h>
 
+#include <FormatableString.h>
+#include <StringTable.h>
 #include <Toolkit.h>
 
 #include "Game.h"
@@ -80,6 +82,24 @@ void GameGUI::toggleTorusView()
     viewportSpeedX = viewportSpeedY = 0;
 }
 
+bool GameGUI::canChangeGameSpeed() const
+{
+	return globalContainer->replaying || !game.gameHeader.hasNetworkPlayer();
+}
+
+void GameGUI::changeGameSpeed(int amount)
+{
+	if(!canChangeGameSpeed())
+		return;
+	const int oldSpeed=globalContainer->settings.gameSpeed;
+	globalContainer->settings.changeGameSpeed(amount);
+	if(oldSpeed!=globalContainer->settings.gameSpeed)
+		globalContainer->settings.save();
+	addMessage(Color(230, 230, 230), FormattableString("%0: %1")
+		.arg(Toolkit::getStringTable()->getString("[game speed]"))
+		.arg(globalContainer->settings.getGameSpeedText()), false);
+}
+
 void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 {
 	if (typingInputScreen == NULL)
@@ -91,6 +111,18 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 		else
 		{
 			Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
+			// Older personal shortcut files do not contain the new speed actions.
+			// Provide a fallback when the configurable shortcut system did not
+			// resolve an action; configured actions still take precedence.
+			if(action_t==GameGUIKeyActions::DoNothing && pressed
+				&& (key.mod&KMOD_CTRL))
+			{
+				if(key.sym==SDLK_PLUS || key.sym==SDLK_EQUALS
+					|| key.sym==SDLK_KP_PLUS)
+					action_t=GameGUIKeyActions::IncreaseGameSpeed;
+				else if(key.sym==SDLK_MINUS || key.sym==SDLK_KP_MINUS)
+					action_t=GameGUIKeyActions::DecreaseGameSpeed;
+			}
 			switch(action_t)
 			{
 				case GameGUIKeyActions::DoNothing:
@@ -210,6 +242,12 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 					// AI-only and replay playback have no live peer and are safe.
 					if (globalContainer->replaying || !game.gameHeader.hasNetworkPlayer())
 						hardPause=!hardPause;
+					break;
+				case GameGUIKeyActions::IncreaseGameSpeed:
+					changeGameSpeed(1);
+					break;
+				case GameGUIKeyActions::DecreaseGameSpeed:
+					changeGameSpeed(-1);
 					break;
 				case GameGUIKeyActions::ToggleDrawUnitPaths:
 					drawPathLines=!drawPathLines;
@@ -424,11 +462,11 @@ void GameGUI::handleKeyAlways(void)
 			viewportY += yMotion;
 		if (keystate[SDL_SCANCODE_KP_2])
 			viewportY += yMotion;
-		if ((keystate[SDL_SCANCODE_LEFT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+		if ((keystate[SDL_SCANCODE_LEFT]) && (typingInputScreen == NULL)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 			viewportX -= xMotion;
 		if (keystate[SDL_SCANCODE_KP_4])
 			viewportX -= xMotion;
-		if ((keystate[SDL_SCANCODE_RIGHT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+		if ((keystate[SDL_SCANCODE_RIGHT]) && (typingInputScreen == NULL)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 			viewportX += xMotion;
 		if (keystate[SDL_SCANCODE_KP_6])
 			viewportX += xMotion;

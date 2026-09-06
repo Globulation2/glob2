@@ -36,8 +36,8 @@ private:
 	int phase;
 	int attackPhase;
 	int phaseTime;
-	int critticalWarriors;
-	int critticalTime;
+	int criticalWarriors;
+	int criticalTime;
 	int attackTimer;
 	// [POSSIBLE BUG M7] Sized AI_NUMBI_LEGACY_NB_BUILDING (=15) for save-format
 	// compatibility; comment originally read "BuildingType::NB_BUILDING=15 with
@@ -48,13 +48,13 @@ private:
 	int estimateFood(Building *building);
 	int countUnits(void);
 	int countUnits(const int medicalState);
-	std::shared_ptr<Order>swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFator, const int workers, const int explorers, const int warriors);
+	std::shared_ptr<Order>swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int warriors);
 	void nextMainBuilding(const int buildingType);
 	int nbFreeAround(const int buildingType, int posX, int posY, int width, int height);
 	bool parseBuildingType(const int buildingType);
-	void squareCircleScann(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my);
+	void squareCircleScan(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my);
 	bool findNewEmplacement(const int buildingType, int *posX, int *posY);
-	std::shared_ptr<Order>mayAttack(int critticalMass, int critticalTimeout, Sint32 numberRequested);
+	std::shared_ptr<Order>mayAttack(int criticalMass, int criticalTimeout, Sint32 numberRequested);
 	std::shared_ptr<Order>adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType);
 	std::shared_ptr<Order>checkoutExpands(const int numbers, const int workers);
 	std::shared_ptr<Order>mayUpgrade(const int ptrigger, const int ntrigger);

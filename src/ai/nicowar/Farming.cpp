@@ -33,15 +33,15 @@ void NewNicowar::update_farming(Echo& echo)
 				const int wood_dist = AI_NICOWAR_FARM_WOOD_WATER_DIST;
 				const int wheat_dist = AI_NICOWAR_FARM_WHEAT_WATER_DIST;
 
-				bool is_wood = mi.is_ressource(x, y, WOOD);
-				bool is_wheat = mi.is_ressource(x, y, CORN);
+				bool is_wood = mi.is_resource(x, y, WOOD);
+				bool is_wheat = mi.is_resource(x, y, CORN);
 
 				bool is_in_wheat_zone = water_gradient.within_dist(x, y, wheat_dist);
 				bool is_in_wood_zone = water_gradient.within_dist(x, y, wood_dist);
 
 				bool farm_spot = false;
 
-				//Permament farming exists for every second row and column
+				//Permanent farming exists for every second row and column
 				if(x%AI_NICOWAR_FARM_PATTERN_STRIDE==1 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==1)
 				{
 					if((is_wood && is_in_wood_zone) || (is_wheat && is_in_wheat_zone))
@@ -53,19 +53,19 @@ void NewNicowar::update_farming(Echo& echo)
 				//Expand the farm horizontally
 				if((x%AI_NICOWAR_FARM_PATTERN_STRIDE==0 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==1))
 				{
-					if(is_wood && mi.is_ressource(x-1, y, WOOD) && !mi.is_ressource(x+1,y) && water_gradient.within_dist(x+1, y, wood_dist) && mi.is_grass(x+1,y))
+					if(is_wood && mi.is_resource(x-1, y, WOOD) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wood_dist) && mi.is_grass(x+1,y))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_ressource(x-1, y, CORN) && !mi.is_ressource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_grass(x+1,y))
+					else if(is_wheat && mi.is_resource(x-1, y, CORN) && !mi.is_resource(x+1,y) && water_gradient.within_dist(x+1, y, wheat_dist) && mi.is_grass(x+1,y))
 					{
 						farm_spot = true;
 					}
-					else if(is_wood && mi.is_ressource(x+1, y, WOOD) && !mi.is_ressource(x-1,y) && water_gradient.within_dist(x-1, y, wood_dist) && mi.is_grass(x-1,y))
+					else if(is_wood && mi.is_resource(x+1, y, WOOD) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wood_dist) && mi.is_grass(x-1,y))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_ressource(x+1, y, CORN) && !mi.is_ressource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_grass(x-1,y))
+					else if(is_wheat && mi.is_resource(x+1, y, CORN) && !mi.is_resource(x-1,y) && water_gradient.within_dist(x-1, y, wheat_dist) && mi.is_grass(x-1,y))
 					{
 						farm_spot = true;
 					}
@@ -74,19 +74,19 @@ void NewNicowar::update_farming(Echo& echo)
 				//Expand the farm vertically
 				if((x%AI_NICOWAR_FARM_PATTERN_STRIDE==1 && y%AI_NICOWAR_FARM_PATTERN_STRIDE==0))
 				{
-					if(is_wood && mi.is_ressource(x, y-1, WOOD) && !mi.is_ressource(x,y+1) && water_gradient.within_dist(x, y+1, wood_dist) && mi.is_grass(x,y+1))
+					if(is_wood && mi.is_resource(x, y-1, WOOD) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wood_dist) && mi.is_grass(x,y+1))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_ressource(x, y-1, CORN) && !mi.is_ressource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_grass(x,y+1))
+					else if(is_wheat && mi.is_resource(x, y-1, CORN) && !mi.is_resource(x,y+1) && water_gradient.within_dist(x, y+1, wheat_dist) && mi.is_grass(x,y+1))
 					{
 						farm_spot = true;
 					}
-					else if(is_wood && mi.is_ressource(x, y+1, WOOD) && !mi.is_ressource(x,y-1) && water_gradient.within_dist(x, y-1, wood_dist) && mi.is_grass(x,y-1))
+					else if(is_wood && mi.is_resource(x, y+1, WOOD) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wood_dist) && mi.is_grass(x,y-1))
 					{
 						farm_spot = true;
 					}
-					else if(is_wheat && mi.is_ressource(x, y+1, CORN) && !mi.is_ressource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_grass(x,y-1))
+					else if(is_wheat && mi.is_resource(x, y+1, CORN) && !mi.is_resource(x,y-1) && water_gradient.within_dist(x, y-1, wheat_dist) && mi.is_grass(x,y-1))
 					{
 						farm_spot = true;
 					}
@@ -123,7 +123,7 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 {
 	if(fruit_phase && !exploration_on_fruit)
 	{
-		//Constraints arround nearby settlement
+		//Constraints around nearby settlement
 		AIEcho::Gradients::GradientInfo gi_building;
 		gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 
@@ -132,10 +132,10 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		BuildingOrder* bo_cherry = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, AI_NICOWAR_FRUIT_FLAG_WORKERS);
 		//You want the closest fruit to your settlement possible
 		bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
-		//Constraint arround the location of fruit
+		//Constraint around the location of fruit
 		AIEcho::Gradients::GradientInfo gi_cherry;
-		gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-		//You want to be ontop of the cherry trees
+		gi_cherry.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+		//You want to be on top of the cherry trees
 		bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		//Add the building order to the list of orders
 		unsigned int id_cherry=echo.add_building_order(bo_cherry);
@@ -149,10 +149,10 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		BuildingOrder* bo_orange = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG, AI_NICOWAR_FRUIT_FLAG_WORKERS);
 		//You want the closest fruit to your settlement possible
 		bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
-		//Constraints arround the location of fruit
+		//Constraints around the location of fruit
 		AIEcho::Gradients::GradientInfo gi_orange;
-		gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-		//You want to be ontop of the orange trees
+		gi_orange.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+		//You want to be on top of the orange trees
 		bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		unsigned int id_orange=echo.add_building_order(bo_orange);
 
@@ -164,8 +164,8 @@ void NewNicowar::update_fruit_flags(AIEcho::Echo& echo)
 		//You want the closest fruit to your settlement possible
 		bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_NICOWAR_FRUIT_FLAG_BUILDING_PREF));
 		AIEcho::Gradients::GradientInfo gi_prune;
-		gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-		//You want to be ontop of the prune trees
+		gi_prune.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
+		//You want to be on top of the prune trees
 		bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, AI_NICOWAR_FRUIT_FLAG_ON_FRUIT_DIST));
 		//Add the building order to the list of orders
 		unsigned int id_prune=echo.add_building_order(bo_prune);

@@ -13,16 +13,20 @@
 
 #include <algorithm>
 #include <Stream.h>
+#include <BinaryStream.h>
+#include <limits>
 
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
+try
 {
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	assert(header.getVersionMinor()>=16);
 
 	Sint32 versionMinor = header.getVersionMinor();
 
 	clear();
-	
+
 	stream->readEnterSection("Map");
 
 	char signature[4];
@@ -36,6 +40,9 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	// We load and compute size:
 	wDec = stream->readSint32("wDec");
 	hDec = stream->readSint32("hDec");
+	if (wDec < 0 || hDec < 0 || wDec >= std::numeric_limits<int>::digits ||
+		hDec >= std::numeric_limits<int>::digits || wDec + hDec >= std::numeric_limits<int>::digits)
+		return false;
 	w = 1<<wDec;
 	h = 1<<hDec;
 	wMask = w-1;
@@ -67,8 +74,10 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 
 		cases[i].terrain = stream->readUint16("terrain");
 		cases[i].building = stream->readUint16("building");
+		if (cases[i].building != NOGBID && cases[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
+			return false;
 
-		stream->read(&(cases[i].ressource), 4, "ressource");
+		stream->read(&(cases[i].resource), 4, "ressource");
 		cases[i].groundUnit = stream->readUint16("groundUnit");
 		cases[i].airUnit = stream->readUint16("airUnit");
 		cases[i].forbidden = stream->readUint32("forbidden");
@@ -77,7 +86,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 		cases[i].guardArea = stream->readUint32("guardArea");
 		cases[i].clearArea = stream->readUint32("clearArea");
 		cases[i].scriptAreas = stream->readUint16("scriptAreas");
-		cases[i].canRessourcesGrow = stream->readUint8("canRessourcesGrow");
+		cases[i].canResourcesGrow = stream->readUint8("canRessourcesGrow");
 		if(versionMinor >= 63)
 			cases[i].fertility = stream->readUint16("fertility");
 		fertilityMaximum = std::max(fertilityMaximum, cases[i].fertility);
@@ -96,65 +105,14 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	const bool restoreExploredArea = header.getIsSavedGame() && versionMinor >= EXPLORED_AREA_SAVED_VERSION_MINOR;
 	if (restoreExploredArea)
 		loadExploredArea(stream, header.getNumberOfTeams(), game != NULL);
-	
-	if (game)
-	{
-                /* Must set game field before following action as they
-                   may need it (in particular
-                   makeDiscoveredAreasExplored uses it). */
-		this->game=game;
 
-		// This is a game, so we do compute gradients
-		for (int t=0; t<header.getNumberOfTeams(); t++)
-			for (int r=0; r<MAX_RESSOURCES; r++)
-				for (int s=0; s<2; s++)
-				{
-					assert(ressourcesGradient[t][r][s]==NULL);
-					ressourcesGradient[t][r][s]=new Uint8[size];
-					updateRessourcesGradient(t, r, (bool)s);
-				}
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			for (int r=0; r<MAX_RESSOURCES; r++)
-				for (int s=0; s<1; s++)
-					gradientUpdated[t][r][s]=false;
-
-		for (int t=0; t<header.getNumberOfTeams(); t++)
-			for (int s=0; s<2; s++)
-			{
-				assert(forbiddenGradient[t][s] == NULL);
-				forbiddenGradient[t][s] = new Uint8[size];
-				updateForbiddenGradient(t, s);
-				
-				assert(guardAreasGradient[t][s] == NULL);
-				guardAreasGradient[t][s] = new Uint8[size];
-				updateGuardAreasGradient(t, s);
-			
-				assert(clearAreasGradient[t][s] == NULL);
-				clearAreasGradient[t][s] = new Uint8[size];
-				updateClearAreasGradient(t, s);
-				
-				guardGradientUpdated[t][s] = false;
-				clearGradientUpdated[t][s] = false;
-			}
-		for (int t=0; t<header.getNumberOfTeams(); t++)
-		{
-			if (!restoreExploredArea)
-			{
-				assert(exploredArea[t] == NULL);
-				exploredArea[t] = new Uint8[size];
-				initExploredArea(t);
-				makeDiscoveredAreasExplored(t);
-			}
-			assert(exploredArea[t]);
-			
-			clearingAreaClaims[t] = new Uint16[size];
-			memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
-		}
-	}
+	this->game = game;
 
 	// We load sectors:
 	wSector = stream->readSint32("wSector");
 	hSector = stream->readSint32("hSector");
+	if (wSector < 0 || hSector < 0 || wSector > w || hSector > h)
+		return false;
 	sizeSector = wSector*hSector;
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
@@ -168,7 +126,7 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 #endif  // !YOG_SERVER_ONLY
 
 	arraysBuilt = true;
-	
+
 	stream->readEnterSection("sectors");
 	for (int i=0; i<sizeSector; i++)
 	{
@@ -184,15 +142,77 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 
 	stream->read(signature, 4, "signatureEnd");
 	stream->readLeaveSection();
-	
+
 	if (memcmp(signature, "MapE", 4)!=0)
 	{
 		fprintf(stderr, "Map:: Failed to find signature at the end of Map.\n");
 		return false;
 	}
-	
+
+	if (game)
+	{
+                /* Must set game field before following action as they
+                   may need it (in particular
+                   makeDiscoveredAreasExplored uses it). */
+		this->game=game;
+
+		// This is a game, so we do compute gradients
+		for (int t=0; t<header.getNumberOfTeams(); t++)
+			for (int r=0; r<MAX_RESOURCES; r++)
+				for (int s=0; s<2; s++)
+				{
+					assert(resourcesGradient[t][r][s]==NULL);
+					resourcesGradient[t][r][s]=new Uint8[size];
+					updateResourcesGradient(t, r, (bool)s);
+				}
+		for (int t=0; t<Team::MAX_COUNT; t++)
+			for (int r=0; r<MAX_RESOURCES; r++)
+				for (int s=0; s<1; s++)
+					gradientUpdated[t][r][s]=false;
+
+		for (int t=0; t<header.getNumberOfTeams(); t++)
+			for (int s=0; s<2; s++)
+			{
+				assert(forbiddenGradient[t][s] == NULL);
+				forbiddenGradient[t][s] = new Uint8[size];
+				updateForbiddenGradient(t, s);
+
+				assert(guardAreasGradient[t][s] == NULL);
+				guardAreasGradient[t][s] = new Uint8[size];
+				updateGuardAreasGradient(t, s);
+
+				assert(clearAreasGradient[t][s] == NULL);
+				clearAreasGradient[t][s] = new Uint8[size];
+				updateClearAreasGradient(t, s);
+
+				guardGradientUpdated[t][s] = false;
+				clearGradientUpdated[t][s] = false;
+			}
+		for (int t=0; t<header.getNumberOfTeams(); t++)
+		{
+			if (!restoreExploredArea)
+			{
+				assert(exploredArea[t] == NULL);
+				exploredArea[t] = new Uint8[size];
+				initExploredArea(t);
+				makeDiscoveredAreasExplored(t);
+			}
+			assert(exploredArea[t]);
+
+			clearingAreaClaims[t] = new Uint16[size];
+			memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
+		}
+	}
+
 	return true;
 }
+catch (const std::ios_base::failure& error)
+{
+	std::cerr << "Map::load: " << error.what() << std::endl;
+	clear();
+	return false;
+}
+
 
 void Map::save(GAGCore::OutputStream *stream)
 {
@@ -214,7 +234,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint16(cases[i].terrain, "terrain");
 		stream->writeUint16(cases[i].building, "building");
 		
-		stream->write(&(cases[i].ressource), 4, "ressource");
+		stream->write(&(cases[i].resource), 4, "ressource");
 		
 		stream->writeUint16(cases[i].groundUnit, "groundUnit");
 		stream->writeUint16(cases[i].airUnit, "airUnit");
@@ -222,7 +242,7 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeUint32(cases[i].guardArea, "guardArea");
 		stream->writeUint32(cases[i].clearArea, "clearArea");
 		stream->writeUint16(cases[i].scriptAreas, "scriptAreas");
-		stream->writeUint8(cases[i].canRessourcesGrow, "canRessourcesGrow");
+		stream->writeUint8(cases[i].canResourcesGrow, "canRessourcesGrow");
 		stream->writeUint16(cases[i].fertility, "fertility");
 		stream->writeLeaveSection();
 	}
@@ -264,21 +284,21 @@ void Map::addTeam(void)
 	assert(numberOfTeam>0);
 	
 	for (int t=0; t<oldNumberOfTeam; t++)
-		for (int r=0; r<MAX_RESSOURCES; r++)
+		for (int r=0; r<MAX_RESOURCES; r++)
 			for (int s=0; s<2; s++)
-				assert(ressourcesGradient[t][r][s]);
+				assert(resourcesGradient[t][r][s]);
 	for (int t=oldNumberOfTeam; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MAX_RESSOURCES; r++)
+		for (int r=0; r<MAX_RESOURCES; r++)
 			for (int s=0; s<2; s++)
-				assert(ressourcesGradient[t][r][s]==NULL);
+				assert(resourcesGradient[t][r][s]==NULL);
 	
 	int t=oldNumberOfTeam;
-	for (int r=0; r<MAX_RESSOURCES; r++)
+	for (int r=0; r<MAX_RESOURCES; r++)
 		for (int s=0; s<2; s++)
 		{
-			assert(ressourcesGradient[t][r][s]==NULL);
-			ressourcesGradient[t][r][s]=new Uint8[size];
-			updateRessourcesGradient(t, r, (bool)s);
+			assert(resourcesGradient[t][r][s]==NULL);
+			resourcesGradient[t][r][s]=new Uint8[size];
+			updateResourcesGradient(t, r, (bool)s);
 		}
 	
 	for (int s=0; s<2; s++)
@@ -309,12 +329,12 @@ void Map::removeTeam(void)
 	assert(numberOfTeam<Team::MAX_COUNT);
 	
 	int t=numberOfTeam;
-	for (int r=0; r<MAX_RESSOURCES; r++)
+	for (int r=0; r<MAX_RESOURCES; r++)
 		for (int s=0; s<2; s++)
 		{
-			if(ressourcesGradient[t][r][s])
-				delete[] ressourcesGradient[t][r][s];
-			ressourcesGradient[t][r][s]=NULL;
+			if(resourcesGradient[t][r][s])
+				delete[] resourcesGradient[t][r][s];
+			resourcesGradient[t][r][s]=NULL;
 		}
 
 	for (int s=0; s<2; s++)

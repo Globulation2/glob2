@@ -7,7 +7,7 @@
 
 using namespace GAGCore;
 
-std::string getRessourceName(int type)
+std::string getResourceName(int type)
 {
 	if(type == WOOD)
 		return Toolkit::getStringTable()->getString("[Wood]");

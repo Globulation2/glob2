@@ -190,7 +190,7 @@ namespace AIEcho
 	static constexpr int AI_ECHO_RTI_SCHOOL_ENEMY_DIST_WEIGHT = 3;
 
 
-	// ---- Secondary-building (racetrack/swimmingpool/school) population gating
+	// ---- Secondary-building (racetrack/swimming pool/school) population gating
 	// "if (totalUnit/SECONDARY_BLDG_RATIO) >= number && number < MAX_*"
 	// (ReachToInfinity.cpp:505, 548, 596.)
 
@@ -257,7 +257,7 @@ namespace AIEcho
 
 	// ---- Resource tracker sampling ------------------------------------------
 
-	/// Sampling cadence for RessourceTracker — samples building resources
+	/// Sampling cadence for ResourceTracker — samples building resources
 	/// every THIS many ticks. (Management.cpp:346.)
 	static constexpr int AI_ECHO_TRACKER_SAMPLE_INTERVAL_TICKS = 10;
 

@@ -115,7 +115,7 @@ namespace Utilities
 	void sdcRects(SDL_Rect *source, SDL_Rect *destination, SDL_Rect clipping)
 	{
 		//sdc= Source-Destination-Clipping
-		//Use if destination have the same size than source & cliping on destination
+		//Use if destination have the same size than source & clipping on destination
 		int dx=clipping.x-destination->x;
 		int dy=clipping.y-destination->y;
 
@@ -293,7 +293,7 @@ namespace Utilities
 			else
 				m=m<<1;
 		assert(false);
-		//failsafe relase case
+		//failsafe release case
 		m=1;
 		for (int i=0; i<32; i++)
 			if (m>=a)

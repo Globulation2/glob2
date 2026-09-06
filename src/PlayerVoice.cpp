@@ -30,17 +30,17 @@ float PlayerVoice::advanceOutputSample(bool &exhausted)
 	{
 		voiceSubIndex -= 1.0f;
 		voiceVal0 = voiceVal1;
-		voiceDatas.pop();
+		voiceData.pop();
 
 		// If that pop drained the queue, the voice is finished. Report it and
 		// return WITHOUT reading front() — the previous code read front() on the
 		// now-empty queue (undefined behavior) before this check.
-		if (voiceDatas.empty())
+		if (voiceData.empty())
 		{
 			exhausted = true;
 			return contribution;
 		}
-		voiceVal1 = voiceDatas.front();
+		voiceVal1 = voiceData.front();
 	}
 
 	return contribution;

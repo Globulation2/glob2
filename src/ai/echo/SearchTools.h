@@ -61,7 +61,7 @@ namespace AIEcho
 			void add_condition(Conditions::BuildingCondition* condition);
 			///This counts up all the buildings that satisfy the conditions
 			int count_buildings();
-			///Returns the begininng iterator
+			///Returns the beginning iterator
 			building_search_iterator begin();
 			///Returns the one-past-the-end iterator
 			building_search_iterator end();
@@ -73,7 +73,7 @@ namespace AIEcho
 		};
 
 		///This class is a standard iterator that is used to iterate over teams that qualify as "enemies".
-		///It returns an integer corrosponding to the teams id.
+		///It returns an integer corresponding to the teams id.
 		class enemy_team_iterator
 		{
 		public:
@@ -150,13 +150,13 @@ namespace AIEcho
 			bool is_guard_area(int x, int y);
 			bool is_clearing_area(int x, int y);
 			bool is_discovered(int x, int y);
-			bool is_ressource(int x, int y, int type);
-			bool is_ressource(int x, int y);
+			bool is_resource(int x, int y, int type);
+			bool is_resource(int x, int y);
 			bool is_water(int x, int y);
 			bool is_sand(int x, int y);
 			bool is_grass(int x, int y);
 			bool backs_onto_sand(int x, int y);
-			int get_ammount_ressource(int x, int y);
+			int get_amount_resource(int x, int y);
 		private:
 			Echo& echo;
 		};

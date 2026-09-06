@@ -49,7 +49,7 @@ void NetGamePlayerManager::addPerson(YOGPlayerID playerID, const std::string& na
 
 
 
-void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
+void NetGamePlayerManager::addAIPlayer(AI::ImplementationID type)
 {
 	//16 is current maximum
 	if(gameHeader.getNumberOfPlayers() < 16)
@@ -60,9 +60,9 @@ void NetGamePlayerManager::addAIPlayer(AI::ImplementitionID type)
 			BasePlayer& bp = gameHeader.getBasePlayer(x);
 			if(bp.type == BasePlayer::P_NONE)
 			{
-				FormatableString name("%0 %1");
+				FormattableString name("%0 %1");
 				name.arg(AINames::getAIText(type)).arg(x+1);
-				bp = BasePlayer(x, name, team_number, Player::playerTypeFromImplementitionID(type));
+				bp = BasePlayer(x, name, team_number, Player::playerTypeFromImplementationID(type));
 				readyToStart[x] = true;
 				break;
 			}
@@ -92,6 +92,8 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 {
 	//Remove the player. Any players that are after this player are moved backwards
 	gameHeader.getBasePlayer(playerNumber) = BasePlayer();
+	// Clear the vacated slot before copying a surviving player's readiness into it.
+	readyToStart[playerNumber] = true;
 	for(int x=playerNumber+1; x<Team::MAX_COUNT; ++x)
 	{
 		BasePlayer& bp = gameHeader.getBasePlayer(x);
@@ -100,7 +102,7 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 			bp.setNumber(bp.number - 1);
 			if(bp.type >= Player::P_AI)
 			{
-				FormatableString name("%0 %1");
+				FormattableString name("%0 %1");
 				name.arg(AINames::getAIText(bp.type - (int)Player::P_AI)).arg(bp.number+1);
 				bp.name = name;
 			}
@@ -111,7 +113,6 @@ void NetGamePlayerManager::removePlayer(int playerNumber)
 			readyToStart[x] = true;
 		}
 	}
-	readyToStart[playerNumber] = true;
 	gameHeader.setNumberOfPlayers(gameHeader.getNumberOfPlayers() - 1);
 }
 
@@ -201,7 +202,7 @@ int NetGamePlayerManager::chooseTeamNumber()
 		if(bp.type != BasePlayer::P_NONE)
 			numberOfPlayersPerTeam[bp.teamNumber] += 1;
 	}
-	//Chooes a team number that has the lowest number of players attached
+	//Choose a team number that has the lowest number of players attached
 	int lowest_number = TEAM_PLAYERCOUNT_INFINITY;
 	int team_number = 0;
 	for(int x=0; x<numberOfTeams; ++x)

@@ -40,7 +40,7 @@ const Token Tokenizer::next()
 
 const Token::Type Lexer::tokenTypes[] =
 {
-	Token::Type(SPACE,   "a space",                 "[[:blank:]]+"),
+	Token::Type(SPACE,   "a space",                 "[ \t]+"),
 	Token::Type(VAL,     "'val'",                   "val"),
 	Token::Type(DEF,     "'def'",                   "def"),
 	Token::Type(FUN,     "'fun'",                   "fun"),

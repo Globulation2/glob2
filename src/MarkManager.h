@@ -23,7 +23,7 @@ static constexpr int MARK_LINE_OFFSET_PX = 4;
 class Mark
 {
 public:
-	///Construct a Mark. The px and py cordinates are on the map, not on the screen
+	///Construct a Mark. The px and py coordinates are on the map, not on the screen
 	///r, g, and b are colors and time is how long the Mark is to stay on the screen
 	Mark(int px, int py, GAGCore::Color color, const int time=MARK_DEFAULT_LIFETIME_TICKS);
 
@@ -41,7 +41,7 @@ private:
 	///Use <= rather than == to be robust against any future caller passing
 	///an odd lifetime or any future code path that skips a tick.
 	bool expired() const { return showTicks <= 0; }
-	///x and y here indicate the x and y screen cordinates
+	///x and y here indicate the x and y screen coordinates
 	void draw(int x, int y, float scale) const;
 	///This draws the mark in a minimap where s is the size of the minimap (in pixels),
 	///local is the local team number, x and y are the locations of the minimap in

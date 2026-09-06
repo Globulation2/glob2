@@ -8,11 +8,11 @@
 #include "YOGServerFileDistributor.h"
 
 ///This class manages all file transfers on the server
-class YOGServerFileDistributationManager
+class YOGServerFileDistributionManager
 {
 public:
 	///Constructs a distributor
-	YOGServerFileDistributationManager();
+	YOGServerFileDistributionManager();
 
 	///Allocates a file distributor, returns the transfer ID
 	int allocateFileDistributor();

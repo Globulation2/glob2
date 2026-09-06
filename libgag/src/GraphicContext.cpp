@@ -273,6 +273,23 @@ namespace GAGCore
 		return std::min(static_cast<float>(drawableW) / sdlsurface->w, static_cast<float>(drawableH) / sdlsurface->h);
 	}
 
+	void GraphicContext::glLetterbox(float &scale, int &offX, int &offY)
+	{
+		scale = drawableScale();
+		offX = (drawableW - static_cast<int>(sdlsurface->w * scale + 0.5f)) / 2;
+		offY = (drawableH - static_cast<int>(sdlsurface->h * scale + 0.5f)) / 2;
+	}
+
+	void GraphicContext::applyGLViewport(void)
+	{
+		#ifdef HAVE_OPENGL
+		float scale;
+		int offX, offY;
+		glLetterbox(scale, offX, offY);
+		glViewport(offX, offY, static_cast<int>(sdlsurface->w * scale + 0.5f), static_cast<int>(sdlsurface->h * scale + 0.5f));
+		#endif
+	}
+
 	void GraphicContext::updateWindowSize(void)
 	{
 		if (!window)
@@ -284,7 +301,7 @@ namespace GAGCore
 		if (optionFlags & USEGPU)
 		{
 			SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
-			glViewport(0, 0, drawableW, drawableH);
+			applyGLViewport();
 		}
 		else
 		#endif
@@ -302,8 +319,21 @@ namespace GAGCore
 	{
 		if (!isScalingActive())
 			return;
-		x = x * sdlsurface->w / windowW;
-		y = y * sdlsurface->h / windowH;
+		// letterboxed the same way as the GL viewport / software blit, but in
+		// window points rather than drawable pixels or window-surface pixels
+		float scale = std::min(static_cast<float>(windowW) / sdlsurface->w, static_cast<float>(windowH) / sdlsurface->h);
+		int offX = static_cast<int>((windowW - sdlsurface->w * scale) / 2.0f);
+		int offY = static_cast<int>((windowH - sdlsurface->h * scale) / 2.0f);
+		x = static_cast<Sint32>((x - offX) / scale);
+		y = static_cast<Sint32>((y - offY) / scale);
+		if (x < 0)
+			x = 0;
+		else if (x >= sdlsurface->w)
+			x = sdlsurface->w - 1;
+		if (y < 0)
+			y = 0;
+		else if (y >= sdlsurface->h)
+			y = sdlsurface->h - 1;
 	}
 
 	void GraphicContext::translateMouseEvent(SDL_Event *event)
@@ -441,8 +471,11 @@ namespace GAGCore
 				}
 				++glContextGeneration;
 				#ifdef HAVE_OPENGL
+				// Map the logical projection onto a centered, aspect-correct sub-rect of the
+				// drawable so fullscreen scales without distorting circles into ellipses.
+				// The drawable is in pixels; on HiDPI it is larger than the window points mouse events use.
 				SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
-				glViewport(0, 0, drawableW, drawableH);
+				applyGLViewport();
 				#endif
 			}
 			// set _glFormat
@@ -556,7 +589,20 @@ namespace GAGCore
 				{
 					SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
 					if (windowSurface)
-						SDL_BlitScaled(sdlsurface, NULL, windowSurface, NULL);
+					{
+						// Letterbox instead of stretching to fill, so a mismatched aspect
+						// ratio doesn't squash circles into ellipses (see applyGLViewport()
+						// for the equivalent GL-mode fix).
+						float scale = std::min(static_cast<float>(windowSurface->w) / sdlsurface->w, static_cast<float>(windowSurface->h) / sdlsurface->h);
+						SDL_Rect dst;
+						dst.w = static_cast<int>(sdlsurface->w * scale + 0.5f);
+						dst.h = static_cast<int>(sdlsurface->h * scale + 0.5f);
+						dst.x = (windowSurface->w - dst.w) / 2;
+						dst.y = (windowSurface->h - dst.h) / 2;
+						if (dst.x || dst.y)
+							SDL_FillRect(windowSurface, NULL, SDL_MapRGB(windowSurface->format, 0, 0, 0));
+						SDL_BlitScaled(sdlsurface, NULL, windowSurface, &dst);
+					}
 				}
 				SDL_UpdateWindowSurface(window);
 			}

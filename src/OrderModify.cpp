@@ -51,11 +51,11 @@ bool OrderModifyBuilding::setData(const Uint8 *data, int dataLength, Uint32 vers
 
 // OrderModifyExchange' code
 
-OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask)
+OrderModifyExchange::OrderModifyExchange(Uint16 gid, Uint32 receiveResourceMask, Uint32 sendResourceMask)
 {
 	this->gid=gid;
-	this->receiveRessourceMask=receiveRessourceMask;
-	this->sendRessourceMask=sendRessourceMask;
+	this->receiveResourceMask=receiveResourceMask;
+	this->sendResourceMask=sendResourceMask;
 }
 
 std::shared_ptr<OrderModifyExchange> OrderModifyExchange::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
@@ -70,8 +70,8 @@ Uint8 *OrderModifyExchange::getData(void)
 {
 	assert(sizeof(data) == getDataLength());
 	addUint16(data, gid, 0);
-	addUint32(data, receiveRessourceMask, 2);
-	addUint32(data, sendRessourceMask, 6);
+	addUint32(data, receiveResourceMask, 2);
+	addUint32(data, sendResourceMask, 6);
 	return data;
 }
 
@@ -80,8 +80,8 @@ bool OrderModifyExchange::setData(const Uint8 *data, int dataLength, Uint32 vers
 	if (dataLength!=getDataLength())
 		return false;
 	gid=getUint16(data, 0);
-	receiveRessourceMask=getUint32(data, 2);
-	sendRessourceMask=getUint32(data, 6);
+	receiveResourceMask=getUint32(data, 2);
+	sendResourceMask=getUint32(data, 6);
 	return true;
 }
 
@@ -155,10 +155,10 @@ bool OrderModifyFlag::setData(const Uint8 *data, int dataLength, Uint32 versionM
 
 // OrderModifyClearingFlags' code
 
-OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT])
+OrderModifyClearingFlag::OrderModifyClearingFlag(Uint16 gid, bool clearingResources[BASIC_COUNT])
 {
 	this->gid=gid;
-	memcpy(this->clearingRessources, clearingRessources, sizeof(bool)*BASIC_COUNT);
+	memcpy(this->clearingResources, clearingResources, sizeof(bool)*BASIC_COUNT);
 }
 
 std::shared_ptr<OrderModifyClearingFlag> OrderModifyClearingFlag::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
@@ -181,7 +181,7 @@ Uint8 *OrderModifyClearingFlag::getData(void)
 		data=(Uint8 *)malloc(2+BASIC_COUNT);
 	addUint16(data, gid, 0);
 	for (int i=0; i<BASIC_COUNT; i++)
-		addUint8(data, (Uint8)clearingRessources[i], 2+i);
+		addUint8(data, (Uint8)clearingResources[i], 2+i);
 	return data;
 }
 
@@ -191,7 +191,7 @@ bool OrderModifyClearingFlag::setData(const Uint8 *data, int dataLength, Uint32 
 		return false;
 	this->gid=getUint16(data, 0);
 	for (int i=0; i<BASIC_COUNT; i++)
-		clearingRessources[i]=(bool)getUint8(data, 2+i);
+		clearingResources[i]=(bool)getUint8(data, 2+i);
 
 	return true;
 }
@@ -272,10 +272,10 @@ bool OrderMoveFlag::setData(const Uint8 *data, int dataLength, Uint32 versionMin
 	return true;
 }
 
-// OrderAlterateArea's code
+// OrderAlterArea's code
 
 #ifndef YOG_SERVER_ONLY
-OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map)
+OrderAlterArea::OrderAlterArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map)
 {
 	assert(acc);
 
@@ -294,13 +294,13 @@ OrderAlterateArea::OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumula
 }
 #endif
 
-OrderAlterateArea::~OrderAlterateArea(void)
+OrderAlterArea::~OrderAlterArea(void)
 {
 	if (_data)
 		free(_data);
 }
 
-Uint8 *OrderAlterateArea::getData(void)
+Uint8 *OrderAlterArea::getData(void)
 {
 	if (_data)
 		free (_data);
@@ -314,12 +314,12 @@ Uint8 *OrderAlterateArea::getData(void)
 	addSint16(_data, minY, 8);
 	addSint16(_data, maxX, 10);
 	addSint16(_data, maxY, 12);
-	mask.serialize(_data+ALTERATE_AREA_HEADER_BYTES);
+	mask.serialize(_data+ALTER_AREA_HEADER_BYTES);
 
 	return _data;
 }
 
-std::optional<size_t> OrderAlterateArea::expectedBitmapBytes(Sint16 minX, Sint16 minY,
+std::optional<size_t> OrderAlterArea::expectedBitmapBytes(Sint16 minX, Sint16 minY,
                                                               Sint16 maxX, Sint16 maxY)
 {
 	// Promote to int so the subtraction can't overflow Sint16. The brush-side
@@ -334,11 +334,11 @@ std::optional<size_t> OrderAlterateArea::expectedBitmapBytes(Sint16 minX, Sint16
 	return (bits + 7) / 8;
 }
 
-bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
+bool OrderAlterArea::setData(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	if (dataLength < ALTERATE_AREA_HEADER_BYTES)
+	if (dataLength < ALTER_AREA_HEADER_BYTES)
 	{
-		printf("OrderAlterateArea::setData(dataLength=%d) failure\n", dataLength);
+		printf("OrderAlterArea::setData(dataLength=%d) failure\n", dataLength);
 		for (int i=0; i<dataLength; i++)
 			printf("data[%d]=%d\n", i, data[i]);
 		return false;
@@ -360,43 +360,43 @@ bool OrderAlterateArea::setData(const Uint8 *data, int dataLength, Uint32 versio
 	const auto expectedPayload = expectedBitmapBytes(minX, minY, maxX, maxY);
 	if (!expectedPayload)
 		return false;
-	if (static_cast<size_t>(dataLength) != ALTERATE_AREA_HEADER_BYTES + *expectedPayload)
+	if (static_cast<size_t>(dataLength) != ALTER_AREA_HEADER_BYTES + *expectedPayload)
 		return false;
 
-	mask.deserialize(data + ALTERATE_AREA_HEADER_BYTES,
+	mask.deserialize(data + ALTER_AREA_HEADER_BYTES,
 		static_cast<size_t>(maxX - minX) * static_cast<size_t>(maxY - minY));
 
 	return true;
 }
 
-int OrderAlterateArea::getDataLength(void)
+int OrderAlterArea::getDataLength(void)
 {
-	int length=ALTERATE_AREA_HEADER_BYTES+mask.getByteLength();
-	assert(length>=ALTERATE_AREA_HEADER_BYTES);
+	int length=ALTER_AREA_HEADER_BYTES+mask.getByteLength();
+	assert(length>=ALTER_AREA_HEADER_BYTES);
 	return length;
 }
 
-// OrderAlterate* concrete subclass factories.
+// OrderAlter* concrete subclass factories.
 
-std::shared_ptr<OrderAlterateForbidden> OrderAlterateForbidden::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+std::shared_ptr<OrderAlterForbidden> OrderAlterForbidden::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	auto order = std::make_shared<OrderAlterateForbidden>();
+	auto order = std::make_shared<OrderAlterForbidden>();
 	if (!order->setData(data, dataLength, versionMinor))
 		return nullptr;
 	return order;
 }
 
-std::shared_ptr<OrderAlterateGuardArea> OrderAlterateGuardArea::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+std::shared_ptr<OrderAlterGuardArea> OrderAlterGuardArea::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	auto order = std::make_shared<OrderAlterateGuardArea>();
+	auto order = std::make_shared<OrderAlterGuardArea>();
 	if (!order->setData(data, dataLength, versionMinor))
 		return nullptr;
 	return order;
 }
 
-std::shared_ptr<OrderAlterateClearArea> OrderAlterateClearArea::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
+std::shared_ptr<OrderAlterClearArea> OrderAlterClearArea::deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor)
 {
-	auto order = std::make_shared<OrderAlterateClearArea>();
+	auto order = std::make_shared<OrderAlterClearArea>();
 	if (!order->setData(data, dataLength, versionMinor))
 		return nullptr;
 	return order;

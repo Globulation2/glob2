@@ -41,10 +41,10 @@ bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 		int ratio_rhs_unit = (rhs->maxUnitWorking  - rhs->unitsWorking.size()) * lhs->unitsWorking.size();
 		if(ratio_lhs_unit == ratio_rhs_unit)
 		{
-			int ratio_lhs_ressource = lhs->totalWishedRessource();
-			int ratio_rhs_ressource = rhs->totalWishedRessource();
-			if(ratio_lhs_ressource != ratio_rhs_ressource)
-				return ratio_lhs_ressource > ratio_rhs_ressource;
+			int ratio_lhs_resource = lhs->totalWishedResource();
+			int ratio_rhs_resource = rhs->totalWishedResource();
+			if(ratio_lhs_resource != ratio_rhs_resource)
+				return ratio_lhs_resource > ratio_rhs_resource;
 			// Tiebreak on gid: std::sort is unstable, so without a final
 			// total order the position of tied buildings is unspecified
 			// and can diverge across binaries (= multiplayer desync).
@@ -104,7 +104,7 @@ void Team::updateAllBuildingTasks()
 					if(i->second[j]->type->isVirtual)
 						thisFound |= (i->second)[j]->subscribeForFlagingStep();
 					else
-						thisFound |= (i->second)[j]->subscribeToBringRessourcesStep();
+						thisFound |= (i->second)[j]->subscribeToBringResourcesStep();
 					found |= thisFound;
 					foundPer[j] = thisFound;
 				}
@@ -125,8 +125,8 @@ void Team::syncStep(void)
 	if (noMoreBuildingSitesCountdown>0)
 		noMoreBuildingSitesCountdown--;
 
-	int nbUsefullUnits = 0;
-	int nbUsefullUnitsAlone = 0;
+	int nbUsefulUnits = 0;
+	int nbUsefulUnitsAlone = 0;
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		Unit *u = myUnits[i];
@@ -134,9 +134,9 @@ void Team::syncStep(void)
 		{
 			if (u->typeNum != EXPLORER)
 			{
-				nbUsefullUnits++;
+				nbUsefulUnits++;
 				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->attachedBuilding && u->attachedBuilding->type->canFeedUnit))
-					nbUsefullUnitsAlone++;
+					nbUsefulUnitsAlone++;
 			}
 			u->syncStep();
 			if (u->isDead)
@@ -193,7 +193,7 @@ void Team::syncStep(void)
 		assert(building->unitsWorking.size()==0);
 		assert(building->unitsInside.size()==0);
 
-		//TODO: optimisation: we can avoid some of thoses remove(Building *) by keeping a building state to detect which remove() are needed.
+		//TODO: optimisation: we can avoid some of those remove(Building *) by keeping a building state to detect which remove() are needed.
 		buildingsTryToBuildingSiteRoom.remove(building);
 
 		// Sim must not read GameGUI state. Route the selection
@@ -233,7 +233,7 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
-			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->ressources[CORN]>(*it)->type->ressourceForOneUnit)
+			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->resources[CORN]>(*it)->type->resourceForOneUnit)
 				isEnoughFoodInSwarm=true;
 			(*it)->swarmStep();
 		}
@@ -245,7 +245,7 @@ void Team::syncStep(void)
 		(*it)->clearingFlagStep();
 
 	bool isDying= (playersMask==0)
-		|| (!isEnoughFoodInSwarm && nbUsefullUnitsAlone==0 && (nbUsefullUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
+		|| (!isEnoughFoodInSwarm && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
 	{
 		isAlive=false;

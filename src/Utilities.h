@@ -131,7 +131,7 @@ namespace Utilities
 		
 		};
 	
-		//! An error (not normal disconnection) occcured while reading or writing on the file descriptor.
+		//! An error (not normal disconnection) occurred while reading or writing on the file descriptor.
 		struct FileDescriptorError : public FileDescriptor
 		{
 			FileDescriptorError(int errNumber) : errNumber(errNumber) {}
@@ -148,14 +148,14 @@ namespace Utilities
 	/*! Read data on a file descriptor
 		\param fd source file descriptor,
 		\param buf destination pointer where to put the data,
-		\param count exact amout to read. The function only returns when this amount of data has been written or if an exception has been raised.
+		\param count exact amount to read. The function only returns when this amount of data has been written or if an exception has been raised.
 	*/
 	void read(int fd, void *buf, size_t count);
 	
 	/*! Write data on a file descriptor
 		\param fd destination file descriptor,
 		\param buf source pointer where to get the data,
-		\param count exact amout to write. The function only returns when this amount of data has been written or if an exception has been raised.
+		\param count exact amount to write. The function only returns when this amount of data has been written or if an exception has been raised.
 	*/
 	void write(int fd, const void *buf, size_t count);
 };

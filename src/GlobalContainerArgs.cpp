@@ -80,7 +80,7 @@ namespace
 		return fallback;
 	}
 
-	// Parse a comma-separated AI name list into AI::ImplementitionID values.
+	// Parse a comma-separated AI name list into AI::ImplementationID values.
 	// Used by --ai-types (which warns and skips on unknown) and --matchup
 	// (which warns and exits(1) on unknown). The flag name is included in the
 	// stderr message; valid AI names are kept canonical here so both flags

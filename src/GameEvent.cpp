@@ -51,13 +51,13 @@ std::string GameEvent::formatMessage(const Game& game) const
 	switch (type)
 	{
 	case GEUnitUnderAttack:
-		return FormatableString(table->getString("[Your %0 are under attack]"))
+		return FormattableString(table->getString("[Your %0 are under attack]"))
 		           .arg(getUnitName(typeNum));
 	case GEUnitLostConversion:
-		return FormatableString(table->getString("[Your unit got converted to %0's team]"))
+		return FormattableString(table->getString("[Your unit got converted to %0's team]"))
 		           .arg(displayPlayerName(*game.teams[otherTeamNumber]));
 	case GEUnitGainedConversion:
-		return FormatableString(table->getString("[%0's team unit got converted to your team]"))
+		return FormattableString(table->getString("[%0's team unit got converted to your team]"))
 		           .arg(displayPlayerName(*game.teams[otherTeamNumber]));
 	case GEBuildingUnderAttack:
 	{

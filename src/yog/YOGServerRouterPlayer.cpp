@@ -40,7 +40,7 @@ void YOGServerRouterPlayer::update()
 	while(message)
 	{
 		Uint8 type = message->getMessageType();
-		//This recieves the client information
+		//This receives the client information
 		if(type==MNetSendOrder)
 		{
 			shared_ptr<NetSendOrder> info = static_pointer_cast<NetSendOrder>(message);

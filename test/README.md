@@ -56,10 +56,10 @@ struct GrassMap : Map {
         wMask = 7; hMask = 7;
         size = 64;
         cases.assign(64, Case{});           // default: terrain=0 (grass), no bldg/unit
-        // arraysBuilt stays false, so clear() takes the else-branch
+        // No Sector or auxiliary arrays are allocated.
     }
     ~GrassMap() {
-        // Map::clear()'s else-branch asserts these are 0 before letting Map::~Map() proceed
+        // Reset fixture dimensions before base cleanup.
         w = h = wMask = hMask = wDec = hDec = 0;
         size = 0;
     }
@@ -85,3 +85,103 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 - Testing other Map behaviors (`doesUnitTouch*`, `doesPosTouch*`, `setClearingArea*`, `markImmobileUnit`, etc.).
 - Adding regression tests around any Map state mutator before refactoring it.
 - **Don't use** for behaviors that genuinely need real `Game` / `Team` / `Unit` / `Building` wiring (e.g. `doesUnitTouchEnemy` reaches into `game->teams[]->myBuildings[]`) — those need either a different stub set or a refactor to decouple first.
+
+## Real LAN session regression
+
+From the repository root:
+
+```sh
+scons -j2 release=1 server=0 lan-test
+python3 test/run_lan_session_test.py build/src/LANSessionHarness
+```
+
+This runs separate host and joining client processes with real SDL lobby widgets,
+YOG anonymous LAN server, game router, and TCP connections. The joiner uses the
+actual `LANFindScreen` Connect path. It clicks Ready and Leave Game, then rejoins.
+Both cycles force a map download and compare all 616018 bytes against the fixture
+source (`maps/FourSquares1.map`). The host verifies readiness, roster size, unique
+player IDs, slot masks, and both departures. The map's current size is not hardcoded
+in the test. Linux CI runs this automatically with SDL's dummy video/audio drivers.
+
+For two physical machines, run these from each machine's repository root, using
+absolute capture prefixes whose parent directories already exist:
+
+```sh
+SDL_VIDEODRIVER=dummy ./build/src/LANSessionHarness host 127.0.0.1 2 /tmp/lan-host
+SDL_VIDEODRIVER=dummy ./build/src/LANSessionHarness join HOST_IP 2 /tmp/lan-guest
+```
+
+Start the joiner after the host prints `HOST roster=1`. TCP ports 7489 and 7491
+must be reachable; this does not connect to the public YOG service. Omit
+`SDL_VIDEODRIVER=dummy` to show the real window. Normal game profiles are preserved;
+the harness uses `.glob2-lan-test-host` and `.glob2-lan-test-join` profiles containing
+only test data. Fixed input timers allow map transfer before leaving; the runner
+bounds startup, execution, and child cleanup. Logs and captures are written under
+`output/lan-session-test` by default (`--output` overrides it).
+
+## Aspect-ratio and screen-capture regression
+
+`FullscreenAspectHarness` links libgag and opens a real SDL window. It checks
+presentation pixels, clipping, logical-resolution screen captures, and translated
+mouse motion/button events and polling at equal, wide, tall, odd, and downscaled
+window sizes. It exercises the same scaling path used by desktop fullscreen.
+The software run also checks every pixel in 24 opaque/translucent rectangle
+intersections, including rectangles above the clip area and empty rectangles.
+It does not load a game profile or change saved display settings.
+
+```sh
+scons -j2 release=1 server=0 aspect-test
+./build/libgag/src/FullscreenAspectHarness gl
+./build/libgag/src/FullscreenAspectHarness software
+```
+
+Ubuntu CI runs both under `xvfb-run -a -s '-screen 0 1600x1400x24'`, using Mesa
+software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`). Xvfb and xauth must be installed.
+The GL run requires an OpenGL-enabled build. On macOS, the Homebrew SDL workaround
+described above also applies. To run with sanitizers, use the flags in the selection
+regression instructions with the `aspect-test` target instead.
+
+## Wrapped building footprint regression
+
+From the repository root, run `scons -j8 release=1 server=0 building-footprint-test`
+and `./build/src/BuildingFootprintHarness`. The harness links the real engine and
+round-trips generated fixtures through binary saved games. It checks exact map
+occupancy, missing/stale-cell repair, repeated integrity checks, and ground exits
+for interior, negative-origin and positive wrapped footprints. It protects the
+runtime fix in `fafb5e9a`: the old predicate erased valid wrapped cells on load and
+could subsequently abort in `Building::findGroundExit`.
+
+It needs no display, AI tournament tooling, or external save files. Linux CI runs
+it on both supported Ubuntu versions.
+
+Saved state and step-by-step before/after reproduction: [PR #165 fixture](fixtures/wrapped-building/README.md).
+
+## Entering unit save regression
+
+From the repository root, run `scons -j8 release=1 server=0 entering-unit-save-test`
+and `./build/src/EnteringUnitSaveHarness`. The harness links the real engine and
+round-trips generated fixtures through binary saved games. It exercises eight
+entry directions at five interior/edge/corner positions, preserves the building
+reference and animation destination, and rejects both a misplaced entering
+explorer and stale occupancy for an ordinary explorer. It protects the runtime
+fix in `4ce1d5bc`; expected negative controls print integrity diagnostics.
+
+It needs no display, AI tournament tooling, or external save files. Linux CI runs
+it on both supported Ubuntu versions.
+
+Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).
+
+### Savegame safety
+
+Build `scons release=1 server=0 savegame-safety-test`, then run
+`python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness`
+(use `.exe` on Windows). No display is required. The runner uses a disposable
+profile and working directory; an optional final argument supplies a truncated
+save that must be rejected.
+
+The harness checks the production autosave path, byte equivalence with direct
+serialization, successful reload, truncated map data from file and memory
+streams, recovery after failed loads, and oversized map-area strings. Atomic
+replacement tests cover callback/open/rename failures and temporary-file cleanup.
+On POSIX, child processes impose file-size limits to exercise short writes and
+buffered flush errors while checking that the previous save survives unchanged.

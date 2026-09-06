@@ -63,6 +63,8 @@ namespace GameGUIKeyActions
 		SwitchToAreaBrush7,
 		SwitchToAreaBrush8,
 		ToggleTorusView,
+		IncreaseGameSpeed,
+		DecreaseGameSpeed,
 		ActionSize,
 	};
 

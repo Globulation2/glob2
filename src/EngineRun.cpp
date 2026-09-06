@@ -26,24 +26,31 @@ using std::shared_ptr;
 
 void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st)
 {
-	if (globalContainer->replaying)
+	const int previousSpeed = st.speed;
+	int renderInterval = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedRenderInterval() : 1;
+	st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
+
+	// Replay fast-forward uses the uncapped preset.
+	if (globalContainer->replaying && globalContainer->replayFastForward
+		&& !gui.gamePaused && !gui.hardPause)
 	{
-		if (globalContainer->replayFastForward && !gui.gamePaused)
-		{
-			st.speed = REPLAY_FAST_FORWARD_MS;
-			if (st.nextGuiStep < 0) st.nextGuiStep = REPLAY_FAST_FORWARD_DRAW_RATIO - 1;
-		}
-		else
-		{
-			st.speed = GAME_TICK_MS;
-			if (st.nextGuiStep < 0) st.nextGuiStep = 0;
-		}
+		st.speed = REPLAY_FAST_FORWARD_MS;
+		renderInterval = REPLAY_FAST_FORWARD_DRAW_RATIO;
 	}
-	else
+
+	// Pausing must not turn an uncapped preset into a busy loop, and GUI
+	// input should be rendered on every paused frame.
+	if (gui.gamePaused || gui.hardPause)
 	{
-		// Process the GUI as usual, every step
-		st.nextGuiStep = 0;
+		st.speed = GAME_TICK_MS;
+		renderInterval = 1;
 	}
+	if (st.nextGuiStep < 0 || st.nextGuiStep >= renderInterval)
+		st.nextGuiStep = renderInterval - 1;
+
+	// A preset change or pause starts a fresh timing budget.
+	if (st.speed != previousSpeed)
+		st.needToBeTime = static_cast<Sint64>(SDL_GetTicks64() - st.startTime);
 }
 
 // Headless / scripted-test polling: under --nox automaticEndingGame, flip
@@ -94,7 +101,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	// we get and push ai orders, if they are needed for this frame
 	for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		if (gui.game.players[i]->ai && !net->orderRecieved(i))
+		if (gui.game.players[i]->ai && !net->orderReceived(i))
 		{
 			shared_ptr<Order> order = gui.game.players[i]->ai->getOrder(gui.gamePaused);
 			net->pushOrder(order, i, true);
@@ -118,7 +125,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	}
 }
 
-// Once allOrdersRecieved() is true for this tick, commit the tick: validate
+// Once allOrdersReceived() is true for this tick, commit the tick: validate
 // checksums (assert on desync), execute the matched orders, pump the replay
 // reader if we're in playback, and run game.syncStep. Called only from inside
 // the !hardPause branch, so the original !gui.hardPause guard on syncStep is
@@ -190,20 +197,21 @@ void Engine::executeOrdersAndStep(bool readyNow)
 	}
 }
 
-void Engine::drawAndPaceFrame(MainLoopState& st)
+void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 {
-	if (st.nextGuiStep == 0)
+	const bool renderedFrame = st.nextGuiStep == 0;
+	if (renderedFrame)
 	{
 		gui.drawAll(gui.localTeamNo);
 		globalContainer->gfx->nextFrame();
 	}
 
 	// if required, save videoshot
-	if (!(globalContainer->videoshotName.empty()) &&
+	if (renderedFrame && !(globalContainer->videoshotName.empty()) &&
 		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		)
 	{
-		FormatableString fileName = FormatableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(st.frameNumber++, 10, 10, '0');
+		FormattableString fileName = FormattableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(st.frameNumber++, 10, 10, '0');
 		printf("printing video shot %s\n", fileName.c_str());
 		globalContainer->gfx->printScreen(fileName.c_str());
 	}
@@ -213,18 +221,22 @@ void Engine::drawAndPaceFrame(MainLoopState& st)
 	Sint64 currentTime = static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(st.startTime);
 	//if we are more than MAX_CATCHUP_MS milliseconds behind where we should be,
 	//then truncate it. This is to avoid playing "catchup" for long
-	//periods of time if Glob2 recieved allmost no cpu time
+	//periods of time if Glob2 received allmost no cpu time
 	if ((currentTime - st.needToBeTime) > MAX_CATCHUP_MS)
 		st.needToBeTime = currentTime - MAX_CATCHUP_MS;
 
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
 	Uint64 delay = std::max<Sint64>(0, st.needToBeTime - currentTime);
-	SDL_Delay(delay);
+	if (delay > 0)
+		SDL_Delay(delay);
+	else if (!readyNow)
+		SDL_Delay(1);
 
 	// we set CPU stats
 	// Convert slept time into CPU load for one game tick.
-	const int loadPercent = static_cast<int>(
-		(GAME_TICK_MS * 100 - delay * 100) / GAME_TICK_MS);
+	const int loadPercent = st.speed > 0
+		? static_cast<int>((std::max<Sint64>(0, static_cast<Sint64>(st.speed) - static_cast<Sint64>(delay)) * 100) / st.speed)
+		: 100;
 	gui.setCpuLoad(loadPercent);
 }
 
@@ -288,7 +300,7 @@ void Engine::printAutomaticEndingSummary()
 		else if (bp.type == BasePlayer::P_IP)
 			std::cout << "ip";
 		else if (bp.type >= BasePlayer::P_AI)
-			std::cout << AINames::getAIText(BasePlayer::implementitionIdFromPlayerType(bp.type));
+			std::cout << AINames::getAIText(BasePlayer::implementationIdFromPlayerType(bp.type));
 		else
 			std::cout << "none";
 	}
@@ -318,7 +330,7 @@ void Engine::printTeamTimeline()
 		if (bp.teamNumber < 0 || bp.teamNumber >= nbTeams)
 			continue;
 		if (bp.type >= BasePlayer::P_AI)
-			aiLabel[bp.teamNumber] = AINames::getAIText(BasePlayer::implementitionIdFromPlayerType(bp.type));
+			aiLabel[bp.teamNumber] = AINames::getAIText(BasePlayer::implementationIdFromPlayerType(bp.type));
 		else if (bp.type == BasePlayer::P_LOCAL)
 			aiLabel[bp.teamNumber] = "local";
 	}
@@ -466,7 +478,7 @@ void Engine::prepareNextGameSession(bool& doRunOnceAgain)
 //   2. pollAutomaticEndingConditions - headless end-condition tripwire
 //   3. gui.step                   - GUI input (skipped under --nox / off-cadence)
 //   4. gatherAndAdvanceOrders     - push local+AI orders, advance net (if prev tick committed)
-//   5. (gate flip) readyNow = net->allOrdersRecieved()
+//   5. (gate flip) readyNow = net->allOrdersReceived()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
 //   8. drawAndPaceFrame            - draw, videoshot, sleep
@@ -476,10 +488,11 @@ void Engine::prepareNextGameSession(bool& doRunOnceAgain)
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
 	MainLoopState st;
-	st.speed = GAME_TICK_MS;
+	st.adjustableGameSpeed = gui.canChangeGameSpeed();
+	st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
 	st.wasReadyLastTick = true;
-	// If playing in fast-forward, we process the GUI and draw everything only
-	// once every 3 game-steps so the overall fps stays about the same.
+	// At higher game-speed presets (and during replay fast-forward), render
+	// less frequently so simulation can use the available CPU.
 	st.nextGuiStep = 1;
 	st.needToBeTime = 0;
 	st.startTime = SDL_GetTicks64();
@@ -508,7 +521,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 			// Gate flip: from "previous tick committed" to "all orders for
 			// this tick are now in." Downstream helpers take readyNow, not
 			// wasReadyLastTick.
-			readyNow = net->allOrdersRecieved();
+			readyNow = net->allOrdersReceived();
 
 			executeOrdersAndStep(readyNow);
 		}
@@ -524,7 +537,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		}
 
 		if (!globalContainer->runNoX)
-			drawAndPaceFrame(st);
+			drawAndPaceFrame(st, readyNow);
 
 		if (handleExitRequest())
 			break;

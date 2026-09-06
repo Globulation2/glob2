@@ -18,7 +18,7 @@ public:
 	
 private:
 	unsigned getNextTerrain(void);
-	int randomSeed;
+	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
 };
 
 class Glob2TabScreen : public TabScreen
@@ -30,7 +30,7 @@ public:
 	
 private:
 	unsigned getNextTerrain(void);
-	int randomSeed;
+	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
 };
 
 

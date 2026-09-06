@@ -17,8 +17,8 @@ Entities::Entity* Entities::Entity::load_entity(GAGCore::InputStream *stream, Pl
 		case Entities::EBuilding:        entity = new Entities::Building; break;
 		case Entities::EAnyTeamBuilding: entity = new Entities::AnyTeamBuilding; break;
 		case Entities::EAnyBuilding:     entity = new Entities::AnyBuilding; break;
-		case Entities::ERessource:       entity = new Entities::Ressource; break;
-		case Entities::EAnyRessource:    entity = new Entities::AnyRessource; break;
+		case Entities::EResource:       entity = new Entities::Resource; break;
+		case Entities::EAnyResource:    entity = new Entities::AnyResource; break;
 		case Entities::EWater:           entity = new Entities::Water; break;
 		case Entities::EPosition:        entity = new Entities::Position; break;
 		case Entities::ESand:            entity = new Entities::Sand; break;

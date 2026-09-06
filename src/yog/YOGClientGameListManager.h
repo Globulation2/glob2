@@ -19,8 +19,8 @@ public:
 	///Constructs the yog game list manager with a link to the YOGClient
 	YOGClientGameListManager(YOGClient* client);
 
-	///Recieves an incoming message
-	void recieveMessage(std::shared_ptr<NetMessage> message);
+	///Receives an incoming message
+	void receiveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This will return the list of games on hosted on the server.
 	const std::list<YOGGameInfo>& getGameList() const;

@@ -173,7 +173,7 @@ int MapEdit::run(void)
 				performAction("delete drag motion");
 			else if(isDraggingArea)
 				performAction("area drag motion");
-			else if(isDraggingNoRessourceGrowthArea)
+			else if(isDraggingNoResourceGrowthArea)
 				performAction("no ressource growth area drag motion");
 		}
 		

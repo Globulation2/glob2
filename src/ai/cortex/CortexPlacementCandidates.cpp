@@ -40,7 +40,7 @@ namespace Cortex
 					const bool insideY = (dy >= 0 && dy < h);
 					if (insideX && insideY)
 						continue;
-					if (map.isRessource(map.normalizeX(x + dx), map.normalizeY(y + dy)))
+					if (map.isResource(map.normalizeX(x + dx), map.normalizeY(y + dy)))
 						return true;
 				}
 			return false;

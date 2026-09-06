@@ -48,7 +48,7 @@ Sint32 displayedPriority(const BuildingGuiStateMap& m, const Building& b)
 bool displayedClearingResource(const BuildingGuiStateMap& m, const Building& b, int i)
 {
 	const BuildingGuiState* s = lookup(m, b);
-	return (s && s->pendingClearingRessources) ? (*s->pendingClearingRessources)[i] : b.clearingRessources[i];
+	return (s && s->pendingClearingResources) ? (*s->pendingClearingResources)[i] : b.clearingResources[i];
 }
 
 Sint32 displayedMinLevelToFlag(const BuildingGuiStateMap& m, const Building& b)

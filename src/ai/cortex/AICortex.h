@@ -244,7 +244,7 @@ private:
 	/// translateAction (gated by CortexPolicy::wantWheatProtection) — not as a
 	/// competing action. Rebuilds the full ADD/DEL checkerboard tile masks over our
 	/// wheat (a bounded colony-region scan, RNG-free) at the per-game open-margin
-	/// wheatOpenMargin and appends one OrderAlterateForbidden per non-empty diff
+	/// wheatOpenMargin and appends one OrderAlterForbidden per non-empty diff
 	/// (DEL before ADD). A single order carries the whole diff, so all newly-revealed
 	/// wheat is fenced in one cycle. Self-correcting: an already-painted diff is empty
 	/// next cycle, so re-running each cycle is free when there is no new work.

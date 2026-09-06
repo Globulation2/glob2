@@ -92,6 +92,15 @@ namespace GAGGUI
 		return last;
 	}
 	
+	void Widget::setTooltip(const std::string &text, const std::string &font)
+	{
+		tooltip=text;
+		tooltipFont=font;
+		tooltipFontPtr=Toolkit::getFont(font.c_str());
+		lastIdleTick=currentTick=0;
+		mx=my=-1;
+	}
+
 	Widget::Widget()
 	{
 		this->tooltipFontPtr = NULL;
@@ -537,7 +546,7 @@ namespace GAGGUI
 		// a switch in each specific onSDLEvent method
 		// we never receive neither SDL_QUIT nor
 		// SDL_VIDEORESIZE (not dispatched)
-		// For the moment, we do not take the following event in accout :
+		// For the moment, we do not take the following event in account :
 		// SDL_SYSWMEVENT, SDL_JOY*****, 
 		switch(event->type)
 		{

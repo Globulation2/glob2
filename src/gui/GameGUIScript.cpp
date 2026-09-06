@@ -109,18 +109,18 @@ void GameGUI::setCampaignGame(Campaign& campaign, const std::string& missionName
 
 
 
-void GameGUI::updateHilightInGame()
+void GameGUI::updateHighlightInGame()
 {
 	game.highlightUnitType = 0;
-	if(hilights.find(HilightWorkers) != hilights.end())
+	if(highlights.find(HighlightWorkers) != highlights.end())
 	{
 		game.highlightUnitType |= 1<<WORKER;
 	}
-	if(hilights.find(HilightExplorers) != hilights.end())
+	if(highlights.find(HighlightExplorers) != highlights.end())
 	{
 		game.highlightUnitType |= 1<<EXPLORER;
 	}
-	if(hilights.find(HilightWarriors) != hilights.end())
+	if(highlights.find(HighlightWarriors) != highlights.end())
 	{
 		game.highlightUnitType |= 1<<WARRIOR;
 	}
@@ -129,7 +129,7 @@ void GameGUI::updateHilightInGame()
 
 	for(int i=0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
-		if(hilights.find(HilightBuildingOnMap + i) != hilights.end())
+		if(highlights.find(HighlightBuildingOnMap + i) != highlights.end())
 		{
 			game.highlightBuildingType |= 1<<(i);
 		}

@@ -57,6 +57,8 @@ namespace GameGUIKeyActions
 		table.add(SwitchToAreaBrush6, "switch to area brush 6");
 		table.add(SwitchToAreaBrush7, "switch to area brush 7");
 		table.add(SwitchToAreaBrush8, "switch to area brush 8");
+		table.add(IncreaseGameSpeed, "increase game speed");
+		table.add(DecreaseGameSpeed, "decrease game speed");
 	}
 
 	const std::string getName(Uint32 action)

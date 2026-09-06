@@ -44,7 +44,7 @@ bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 			}
 		teams[s]->createLists();
 	}
-	map.smoothRessources(descriptor.oldIslandSize/10);
+	map.smoothResources(descriptor.oldIslandSize/10);
 	return true;
 }
 
@@ -58,8 +58,8 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, 5);
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, 5);
-		map.setNoRessource(descriptor.bootX[s]+2, descriptor.bootY[s]+0, 5);
-		map.setNoRessource(descriptor.bootX[s]+2, descriptor.bootY[s]+2, 5);
+		map.setNoResource(descriptor.bootX[s]+2, descriptor.bootY[s]+0, 5);
+		map.setNoResource(descriptor.bootX[s]+2, descriptor.bootY[s]+2, 5);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
 		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], globalContainer->buildingsTypes.get(typeNum), s, false))

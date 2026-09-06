@@ -227,7 +227,7 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 					&&
 					b->constructionResultState == Building::NO_CONSTRUCTION
 					&&
-					(b->ressources[CORN]) > ((b->wishedResources[CORN]) * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN))
+					(b->resources[CORN]) > ((b->wishedResources[CORN]) * AI_WARRUSH_HEAVILY_WORKED_RATIO_NUM / AI_WARRUSH_HEAVILY_WORKED_RATIO_DEN))
 			{//heavily worked swarms and inns sometimes are full and have no workers
 				++num_worked_buildings;
 				if(verbose)std::cout << "C";
@@ -334,7 +334,7 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 	{
 		//This is basically a way to change all the swarms without bothering to remember
 		//anything. (It can only issue one order per tick, so it has to do it over several
-		//ticks and calculate the orders seperately.)
+		//ticks and calculate the orders separately.)
 		Building *out_of_date_swarm = getSwarmWithoutSettings(AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, AI_WARRUSH_SWARM_RATIO_WARRIOR);
 		if(out_of_date_swarm)
 		{
@@ -396,7 +396,7 @@ std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 	}
 	if(acc.getApplicationCount())
 	{
-		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc,map));
+		return shared_ptr<Order>(new OrderAlterGuardArea(team->teamNumber,BrushTool::MODE_DEL,&acc,map));
 	}
 	else return shared_ptr<Order>(new NullOrder);
 }
@@ -449,7 +449,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	
 	if(guard_add_acc.getApplicationCount())
 	{
-		return shared_ptr<Order>(new OrderAlterateGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc, map));
+		return shared_ptr<Order>(new OrderAlterGuardArea(team->teamNumber,BrushTool::MODE_ADD,&guard_add_acc, map));
 	}
 	else return shared_ptr<Order>(new NullOrder);
 }
@@ -482,7 +482,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			if((!map->isRessourceTakeable(x, y, WOOD) && !map->isRessourceTakeable(x, y, CORN)))
+			if((!map->isResourceTakeable(x, y, WOOD) && !map->isResourceTakeable(x, y, CORN)))
 			{
 				if(map->isForbidden(x, y, team->me))
 				{
@@ -493,9 +493,9 @@ std::shared_ptr<Order> AIWarrush::farm()
 						&& !map->isForbidden (x,y + 1,team->me)
 						&& !map->isForbidden (x,y - 1,team->me)
 						//Or fruits'!
-						&& !map->isRessourceTakeable(x, y, CHERRY)
-						&& !map->isRessourceTakeable(x, y, ORANGE)
-						&& !map->isRessourceTakeable(x, y, PRUNE)
+						&& !map->isResourceTakeable(x, y, CHERRY)
+						&& !map->isResourceTakeable(x, y, ORANGE)
+						&& !map->isResourceTakeable(x, y, PRUNE)
 						)
 					{
 						del_acc.applyBrush(BrushApplication(x, y, 0), map);
@@ -509,7 +509,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 			}
 			
 			//we never clear anything but wood
-			if(!map->isRessourceTakeable(x, y, WOOD))
+			if(!map->isResourceTakeable(x, y, WOOD))
 			{
 				if(map->isClearArea(x, y, team->me))
 				{
@@ -518,7 +518,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 			}
 
 			//we clear wood if it's next to nice stuff like wheat or buildings
-			if(map->isRessourceTakeable(x, y, WOOD))
+			if(map->isResourceTakeable(x, y, WOOD))
 			{
 				if(!map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me))
 				{
@@ -526,7 +526,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 					{
 						for(int ymod=-1;ymod<=1;ymod++)
 						{
-							if(map->isRessourceTakeable(x+xmod, y+ymod, CORN)
+							if(map->isResourceTakeable(x+xmod, y+ymod, CORN)
 									|| (map->getBuilding(x+xmod,y+ymod)!=NOGBID
 									&& (team->me & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)))
 							{
@@ -543,7 +543,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==1 && ((y%2==1 && x%4==1) || (y%2==0 && x%4==3)))
 			{
-				if(map->isRessourceTakeable(x, y, WOOD))
+				if(map->isResourceTakeable(x, y, WOOD))
 				{
 					if(!map->isForbidden(x, y, team->me) && !map->isClearArea(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
 					{
@@ -554,7 +554,7 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			if(x%2==y%2)
 			{
-				if(map->isRessourceTakeable(x, y, CORN))
+				if(map->isResourceTakeable(x, y, CORN))
 				{
 					if(!map->isForbidden(x, y, team->me) && map->isMapDiscovered(x, y, team->me) && water_gradient(x, y) > (AI_WARRUSH_GRADIENT_MAX - AI_WARRUSH_WATER_NEAR_OFFSET))
 					{
@@ -565,9 +565,9 @@ std::shared_ptr<Order> AIWarrush::farm()
 
 			//FORBID FRUITS!!! They're horrible for our warriors and we hate converting.
 			if(
-				(	map->isRessourceTakeable(x, y, CHERRY)
-					|| map->isRessourceTakeable(x, y, ORANGE)
-					|| map->isRessourceTakeable(x, y, PRUNE)	)
+				(	map->isResourceTakeable(x, y, CHERRY)
+					|| map->isResourceTakeable(x, y, ORANGE)
+					|| map->isResourceTakeable(x, y, PRUNE)	)
 				&& !map->isForbidden(x, y, team->me)
 				&& map->isMapDiscovered(x, y, team->me)
 					)
@@ -579,13 +579,13 @@ std::shared_ptr<Order> AIWarrush::farm()
 	}
 
 	if(del_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc, map));
+		return shared_ptr<Order>(new OrderAlterForbidden(team->teamNumber, BrushTool::MODE_DEL, &del_acc, map));
 	if(add_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc, map));
+		return shared_ptr<Order>(new OrderAlterForbidden(team->teamNumber, BrushTool::MODE_ADD, &add_acc, map));
 	if(clr_del_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc, map));
+		return shared_ptr<Order>(new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_DEL, &clr_del_acc, map));
 	if(clr_add_acc.getApplicationCount()>0)
-		return shared_ptr<Order>(new OrderAlterateClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map));
+		return shared_ptr<Order>(new OrderAlterClearArea(team->teamNumber, BrushTool::MODE_ADD, &clr_add_acc, map));
 
 	//nothing to do...
 	return shared_ptr<Order>(new NullOrder());
@@ -654,11 +654,11 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 		for(int y=0;y<map->h;y++)
 		{
 			Case c=map->getCase(x,y);
-			if (c.ressource.type==resource_type)
+			if (c.resource.type==resource_type)
 			{
 				gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
 			}
-			else if (c.ressource.type!=NO_RES_TYPE)
+			else if (c.resource.type!=NO_RES_TYPE)
 			{
 				gradient(x, y) = 0;
 			}
@@ -714,7 +714,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 		for(int y=0;y<map->h;y++)
 		{
 			Case c=map->getCase(x,y);
-			if (c.ressource.type!=NO_RES_TYPE)
+			if (c.resource.type!=NO_RES_TYPE)
 			{
 				availability_gradient(x, y) = 0;
 			}

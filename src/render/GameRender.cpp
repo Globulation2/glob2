@@ -158,7 +158,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	time++;
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
-	drawMapRessources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
+	drawMapResources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapGroundUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
 	drawMapDebugAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
 	drawMapGroundBuildings(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, visibleBuildings, buildingGuiState);
@@ -267,7 +267,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
 
 					if ((type->canFeedUnit) || (type->unitProductionTime))
-						drawBuildingResourceBar(x+1, y+1, type, type->maxRessource[CORN], building->ressources[CORN], 255, 255, 120);
+						drawBuildingResourceBar(x+1, y+1, type, type->maxResource[CORN], building->resources[CORN], 255, 255, 120);
 				}
 			}
 		}
@@ -277,14 +277,14 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 				for (int pi=0; pi<gameHeader.getNumberOfPlayers(); pi++)
-					if (players[pi] && players[pi]->ai && players[pi]->ai->implementitionID==AI::CASTOR)
+					if (players[pi] && players[pi]->ai && players[pi]->ai->implementationID==AI::CASTOR)
 					{
 						AICastor *ai=(AICastor *)players[pi]->ai->aiImplementation;
 						//Uint8 *gradient=ai->wheatCareMap[1];
 						Uint8 *gradient=ai->hydratationMap;
 						//Uint8 *gradient=ai->enemyWarriorsMap;
 						//Uint8 *gradient=map.forbiddenGradient[1][0];
-						//Uint8 *gradient=map.ressourcesGradient[0][CORN][0];
+						//Uint8 *gradient=map.resourcesGradient[0][CORN][0];
 
 						assert(gradient);
 						size_t addr=((x+viewportX)&map.wMask)+map.w*((y+viewportY)&map.hMask);

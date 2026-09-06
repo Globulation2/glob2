@@ -39,7 +39,7 @@ private:
 #endif  // !YOG_SERVER_ONLY
 
 public:
-	GlobalContainer(void);
+	explicit GlobalContainer(const char *profileName="glob2");
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
@@ -63,8 +63,8 @@ public:
 	Sprite *terrainCloud;
 	Sprite *terrainBlack;
 	Sprite *terrainShader;
-	Sprite *ressources;
-	Sprite *ressourceMini;
+	Sprite *resources;
+	Sprite *resourceMini;
 	Sprite *areaClearing;
 	Sprite *areaForbidden;
 	Sprite *areaGuard;
@@ -87,7 +87,7 @@ public:
 #ifndef YOG_SERVER_ONLY
 	BuildingsTypes buildingsTypes;
 #endif  // !YOG_SERVER_ONLY
-	RessourcesTypes ressourcesTypes;
+	ResourcesTypes resourcesTypes;
 
 	std::string videoshotName; //!< the name of videoshot to record. If empty, do not record videoshot
 	bool runNoX;
@@ -99,7 +99,7 @@ public:
 	
 	bool runTestGames; //! runs test games
 	int runTestGamesCount; //! number of test games to run (0 = infinite)
-	//! AI implementation IDs (AI::ImplementitionID values) eligible for random
+	//! AI implementation IDs (AI::ImplementationID values) eligible for random
 	//! AI assignment in createRandomGame. Empty means "all AIs allowed" (legacy
 	//! behavior: NUMBI..NICOWAR uniformly). Set via --ai-types.
 	//! Mutually exclusive with testGamesMatchup.

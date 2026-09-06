@@ -151,9 +151,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
 		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio);
 
-		if ((unit->performance[HARVEST]) && (unit->carriedRessource>=0))
-			globalContainer->gfx->drawSprite(px+24, py, globalContainer->ressourceMini, unit->carriedRessource);
-		globalContainer->gfx->finishDrawingSprite(globalContainer->ressourceMini, 255);
+		if ((unit->performance[HARVEST]) && (unit->carriedResource>=0))
+			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedResource);
+		globalContainer->gfx->finishDrawingSprite(globalContainer->resourceMini, 255);
 	}
 
 	if (drawOptions & DRAW_ACCESSIBILITY)
@@ -177,7 +177,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 void Game::drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
-	//Reset the mouse unit to NULL, as this time arround there may not be a unit
+	//Reset the mouse unit to NULL, as this time around there may not be a unit
 	//under the mouse pointer
 	view.mouseUnit=NULL;
 	for (int y=top-1; y<=bot; y++)
@@ -281,7 +281,7 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	int i_sw = sw - 40;
 	int i_sh = sh - 40;
 
-	// The units draw position releative to the center of the internal square
+	// The units draw position relative to the center of the internal square
 	int rel_cx = px - i_sx - i_sw/2;
 	int rel_cy = py - i_sy - i_sh/2;
 	if(rel_cx == 0)
@@ -289,7 +289,7 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	if(rel_cy == 0)
 		rel_cy = 1;
 
-	// Decide which edge of the screen the box is on, and compute its center cordinates
+	// Decide which edge of the screen the box is on, and compute its center coordinates
 	int bx = 0;
 	int by = 0;
 	float slope = float(rel_cy) / float(rel_cx);

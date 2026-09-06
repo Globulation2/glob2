@@ -7,6 +7,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <functional>
 
 //! this is the host filesystem directory separator
 #ifndef DIR_SEPARATOR
@@ -19,6 +20,7 @@
 namespace GAGCore
 {
 	class StreamBackend;
+	class OutputStream;
 	
 	//! File Manager (filesystem abstraction)
 	class FileManager
@@ -44,6 +46,7 @@ namespace GAGCore
 		int fileListIndex;
 	
 	private:
+		static bool isAbsolutePath(const std::string& path);
 		//! clear the list of file for directory listing
 		void clearFileList(void);
 		//! internal function that does the real listing job
@@ -77,14 +80,17 @@ namespace GAGCore
 		//! Returns true if filename resolves through the virtual filesystem
 		bool exists(const std::string filename);
 		
-		//! Compress source to dest uzing gzip, returns true on success
+		//! Compress source to dest using gzip, returns true on success
 		bool gzip(const std::string &source, const std::string &dest);
-		//! Uncompress source to dest uzing gzip, returns true on success
+		//! Uncompress source to dest using gzip, returns true on success
 		bool gunzip(const std::string &source, const std::string &dest);
 	
 		//! Open an output stream backend, use it to construct specific output streams
 		StreamBackend *openOutputStreamBackend(const std::string filename);
 		
+		//! Replace a file only after the writer, flush, and close all succeed.
+		bool writeAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer);
+
 		//! Open an input stream backend, use it to construct specific input streams
 		StreamBackend *openInputStreamBackend(const std::string filename);
 		

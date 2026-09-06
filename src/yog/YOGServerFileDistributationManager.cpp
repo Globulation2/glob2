@@ -4,14 +4,14 @@
 #include "YOGServerFileDistributationManager.h"
 
 
-YOGServerFileDistributationManager::YOGServerFileDistributationManager()
+YOGServerFileDistributionManager::YOGServerFileDistributionManager()
 {
 	currentID=1;
 }
 
 
 
-int YOGServerFileDistributationManager::allocateFileDistributor()
+int YOGServerFileDistributionManager::allocateFileDistributor()
 {
 	int id = chooseTransferID();
 	files[id] = std::shared_ptr<YOGServerFileDistributor>(new YOGServerFileDistributor(id));
@@ -20,7 +20,7 @@ int YOGServerFileDistributationManager::allocateFileDistributor()
 
 
 
-void YOGServerFileDistributationManager::update()
+void YOGServerFileDistributionManager::update()
 {
 	for(std::map<Uint16, std::shared_ptr<YOGServerFileDistributor> >::iterator i = files.begin(); i!=files.end(); ++i)
 	{
@@ -31,14 +31,14 @@ void YOGServerFileDistributationManager::update()
 
 
 
-std::shared_ptr<YOGServerFileDistributor> YOGServerFileDistributationManager::getDistributor(Uint16 transferID)
+std::shared_ptr<YOGServerFileDistributor> YOGServerFileDistributionManager::getDistributor(Uint16 transferID)
 {
 	return files[transferID];
 }
 
 
 
-void YOGServerFileDistributationManager::removeDistributor(Uint16 transferID)
+void YOGServerFileDistributionManager::removeDistributor(Uint16 transferID)
 {
 	std::map<Uint16, std::shared_ptr<YOGServerFileDistributor> >::iterator i = files.find(transferID);
 	if(i != files.end())
@@ -49,7 +49,7 @@ void YOGServerFileDistributationManager::removeDistributor(Uint16 transferID)
 
 
 
-Uint16 YOGServerFileDistributationManager::chooseTransferID()
+Uint16 YOGServerFileDistributionManager::chooseTransferID()
 {
 	while(files.find(currentID) != files.end())
 	{

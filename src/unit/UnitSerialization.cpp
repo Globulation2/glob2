@@ -69,9 +69,9 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 
 	// hungry
 	hungry = stream->readSint32("hungry");
-	hungryness = stream->readSint32("hungryness");
+	hungriness = stream->readSint32("hungryness");
 	trigHungry = stream->readSint32("trigHungry");
-	trigHungryCarying = HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_CARRYING;
+	trigHungryCarrying = HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_CARRYING;
 	fruitMask = stream->readUint32("fruitMask");
 	fruitCount = stream->readUint32("fruitCount");
 
@@ -92,7 +92,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	experienceLevel = stream->readSint32("experienceLevel");
 
 	destinationPurpose = stream->readSint32("destinationPurpose");
-	carriedRessource = stream->readSint32("carriedRessource");
+	carriedResource = stream->readSint32("carriedRessource");
 
 	jobTimer = stream->readSint32("jobTimer");
 
@@ -152,7 +152,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 
 	// hungry
 	stream->writeSint32(hungry, "hungry");
-	stream->writeSint32(hungryness, "hungryness");
+	stream->writeSint32(hungriness, "hungryness");
 	stream->writeSint32(trigHungry, "trigHungry");
 	stream->writeUint32(fruitMask, "fruitMask");
 	stream->writeUint32(fruitCount, "fruitCount");
@@ -173,7 +173,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(experienceLevel, "experienceLevel");
 
 	stream->writeSint32(destinationPurpose, "destinationPurpose");
-	stream->writeSint32(carriedRessource, "carriedRessource");
+	stream->writeSint32(carriedResource, "carriedRessource");
 	stream->writeSint32(jobTimer, "jobTimer");
 
 
@@ -333,9 +333,9 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=trigHungry;
 	if (checkSumsVector)
 		checkSumsVector->push_back(trigHungry);// [22]
-	cs^=trigHungryCarying;
+	cs^=trigHungryCarrying;
 	if (checkSumsVector)
-		checkSumsVector->push_back(trigHungryCarying);// [23]
+		checkSumsVector->push_back(trigHungryCarrying);// [23]
 	cs=rotl1(cs);
 
 	cs^=fruitMask;
@@ -374,9 +374,9 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector)
 	cs^=destinationPurpose;
 	if (checkSumsVector)
 		checkSumsVector->push_back(destinationPurpose);// [31]
-	cs^=carriedRessource;
+	cs^=carriedResource;
 	if (checkSumsVector)
-		checkSumsVector->push_back(carriedRessource);// [33]
+		checkSumsVector->push_back(carriedResource);// [33]
 
 	if (checkSumsVector)
 		checkSumsVector->push_back(0);// [34]

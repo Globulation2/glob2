@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 //
-// Regression harness for BH-195: OrderAlterateArea::setData must reject
+// Regression harness for BH-195: OrderAlterArea::setData must reject
 // malformed packets where the header-declared bitmap area doesn't match the
 // payload length, or where the dimensions would overflow / exceed the brush
 // side cap. Pre-fix tree: TC1, TC2 pass; TC3-TC7 fail (or crash in release).
@@ -55,10 +55,10 @@ void writeHeader(Uint8* buf, Sint16 minX, Sint16 minY, Sint16 maxX, Sint16 maxY)
 void tc1_happyPath()
 {
 	// sideX=sideY=10, bits=100, bytes = bitToByte(100) = ceil(100/8) = 13
-	Uint8 buf[ALTERATE_AREA_HEADER_BYTES + 13] = {0};
+	Uint8 buf[ALTER_AREA_HEADER_BYTES + 13] = {0};
 	writeHeader(buf, 45, 45, 55, 55);
 
-	OrderAlterateForbidden order;
+	OrderAlterForbidden order;
 	bool ok = order.setData(buf, sizeof(buf), 0);
 	check(ok, "TC1", "well-formed 10x10 brush accepted");
 	if (ok)
@@ -71,8 +71,8 @@ void tc1_happyPath()
 // TC2 — dataLength below header size is rejected.
 void tc2_undersizedHeader()
 {
-	Uint8 buf[ALTERATE_AREA_HEADER_BYTES - 1] = {0};
-	OrderAlterateForbidden order;
+	Uint8 buf[ALTER_AREA_HEADER_BYTES - 1] = {0};
+	OrderAlterForbidden order;
 	bool ok = order.setData(buf, sizeof(buf), 0);
 	check(!ok, "TC2", "dataLength<14 rejected");
 }
@@ -80,9 +80,9 @@ void tc2_undersizedHeader()
 // TC3 — maxX < minX (negative side) is rejected.
 void tc3_negativeSide()
 {
-	Uint8 buf[ALTERATE_AREA_HEADER_BYTES] = {0};
+	Uint8 buf[ALTER_AREA_HEADER_BYTES] = {0};
 	writeHeader(buf, 60, 45, 55, 55);   // sideX = -5
-	OrderAlterateForbidden order;
+	OrderAlterForbidden order;
 	bool ok = order.setData(buf, sizeof(buf), 0);
 	check(!ok, "TC3", "negative side rejected");
 }
@@ -95,9 +95,9 @@ void tc4_sideOverCap()
 	// the OOB read inside BitArray::deserialize doesn't crash the harness
 	// before we can record the FAIL.
 	constexpr int payloadLen = 1250;
-	Uint8 buf[ALTERATE_AREA_HEADER_BYTES + payloadLen] = {0};
+	Uint8 buf[ALTER_AREA_HEADER_BYTES + payloadLen] = {0};
 	writeHeader(buf, 0, 0, 1000, 10);
-	OrderAlterateForbidden order;
+	OrderAlterForbidden order;
 	bool ok = order.setData(buf, sizeof(buf), 0);
 	check(!ok, "TC4", "side > ORDER_AREA_BRUSH_MAX_SIDE rejected");
 }
@@ -106,9 +106,9 @@ void tc4_sideOverCap()
 // signed-int multiply that would otherwise be UB.
 void tc5_overflowAttack()
 {
-	Uint8 buf[ALTERATE_AREA_HEADER_BYTES] = {0};
+	Uint8 buf[ALTER_AREA_HEADER_BYTES] = {0};
 	writeHeader(buf, -32768, -32768, 32767, 32767);
-	OrderAlterateForbidden order;
+	OrderAlterForbidden order;
 	bool ok = order.setData(buf, sizeof(buf), 0);
 	check(!ok, "TC5", "overflow-attack header rejected without UB");
 }
@@ -117,9 +117,9 @@ void tc5_overflowAttack()
 // Pre-fix: BitArray::deserialize std::copies past the end of the buffer.
 void tc6_payloadTooShort()
 {
-	Uint8 buf[ALTERATE_AREA_HEADER_BYTES + 5] = {0};
+	Uint8 buf[ALTER_AREA_HEADER_BYTES + 5] = {0};
 	writeHeader(buf, 0, 0, 10, 10);
-	OrderAlterateForbidden order;
+	OrderAlterForbidden order;
 	bool ok = order.setData(buf, sizeof(buf), 0);
 	check(!ok, "TC6", "payload-too-short rejected (was OOB read)");
 }
@@ -127,9 +127,9 @@ void tc6_payloadTooShort()
 // TC7 — 2x2 header claims 1 bitmap byte but 100 are provided.
 void tc7_payloadTooLong()
 {
-	Uint8 buf[ALTERATE_AREA_HEADER_BYTES + 100] = {0};
+	Uint8 buf[ALTER_AREA_HEADER_BYTES + 100] = {0};
 	writeHeader(buf, 0, 0, 2, 2);
-	OrderAlterateForbidden order;
+	OrderAlterForbidden order;
 	bool ok = order.setData(buf, sizeof(buf), 0);
 	check(!ok, "TC7", "payload-too-long rejected");
 }

@@ -18,7 +18,7 @@ static constexpr int TEAM_PLAYERCOUNT_INFINITY = 10000;
 class YOGServerGame;
 
 ///This class handles the players and AI's that can join, be kicked out of, disconnect, leave
-///and otherwise be mangled arround with in an online game during the setup stage
+///and otherwise be mangled around with in an online game during the setup stage
 class NetGamePlayerManager
 {
 public:
@@ -27,7 +27,7 @@ public:
 	///Adds a person to the gameHeader
 	void addPerson(YOGPlayerID playerID, const std::string& name);
 	///This is intended to add an AI to the game
-	void addAIPlayer(AI::ImplementitionID type);
+	void addAIPlayer(AI::ImplementationID type);
 	///Removes a person from the gameHeader
 	void removePerson(YOGPlayerID playerID);
 	///Removes a player, human or AI

@@ -46,7 +46,7 @@ static constexpr int AI_NUMBI_DEFEND_PHASE   = 10;    // phase < 10
 
 // ----------------------------------------------------------------------------
 // Per-phase swarmsForWorkers tuples
-// (minSwarmNumbers, nbWorkersFator, workers, explorers, warriors)
+// (minSwarmNumbers, nbWorkersFactor, workers, explorers, warriors)
 // ----------------------------------------------------------------------------
 
 // phase 0: rush food
@@ -292,7 +292,7 @@ static constexpr int AI_NUMBI_NEAR_CORN_TYPE_CUTOFF = 1;
 // mayAttack
 // ----------------------------------------------------------------------------
 
-// Stop-attack threshold divisor: `ft <= critticalMass / DIVISOR` ends attack.
+// Stop-attack threshold divisor: `ft <= criticalMass / DIVISOR` ends attack.
 static constexpr int AI_NUMBI_STOP_ATTACK_DIVISOR = 2;
 // 1-in-32 chance per enemy-building scan to drop a war flag.
 static constexpr int AI_NUMBI_ENEMY_FLAG_CHANCE_MASK = 0x1F;
@@ -301,7 +301,7 @@ static constexpr int AI_NUMBI_MAX_WAR_FLAGS = 5;
 // OrderCreate war-flag init: unitsInside / unitsWorking flags (=1, =1).
 static constexpr int AI_NUMBI_WAR_FLAG_INIT_UNITS_WORKING = 1;
 static constexpr int AI_NUMBI_WAR_FLAG_INIT_FLAG_RADIUS   = 1;
-// Exponential backoff multiplier applied to critticalWarriors and critticalTime
+// Exponential backoff multiplier applied to criticalWarriors and criticalTime
 // after a stop-attack.
 static constexpr int AI_NUMBI_ATTACK_BACKOFF_MULTIPLIER = 2;
 

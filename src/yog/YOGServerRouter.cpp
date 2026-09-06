@@ -95,7 +95,7 @@ void YOGServerRouter::update()
 	if(message)
 	{
 		Uint8 type = message->getMessageType();
-		//This recieves the client information
+		//This receives the client information
 		if(type==MNetAcknowledgeRouter)
 		{
 			shared_ptr<NetAcknowledgeRouter> info = static_pointer_cast<NetAcknowledgeRouter>(message);

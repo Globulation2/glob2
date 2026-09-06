@@ -47,7 +47,7 @@ if sys.platform == "darwin" or sys.platform.startswith("linux"):
 gag_server = gag_env.StaticLibrary('gagserver', [
   gag_env.Object('gagserver-' + name + '.o', '../libgag/src/' + name + '.cpp')
   for name in Split("""
-    BinaryStream FileManager FormatableString Stream StreamBackend
+    BinaryStream FileManager FileManagerAtomic FormatableString Stream StreamBackend
     StreamFilter StringTable TextStream Toolkit
   """)])
 
@@ -372,6 +372,17 @@ wcdecode_env.Program( target = 'GameHeaderDefaultAlliancesTest',
                         wcdecode_objs[1], wcdecode_objs[2],
                         baseplayer_objs[1],
                       ] )
+
+
+# Exercise lobby compaction and binary player-info round trips using the
+# real manager and existing GameHeader/WinningConditions link surface.
+player_manager_objs = [
+  wcdecode_env.Object('NetGamePlayerManagerTest.o', 'NetGamePlayerManagerTest.cpp'),
+  wcdecode_env.Object('NetGamePlayerManager-test.o', '../src/net/NetGamePlayerManager.cpp'),
+  wcdecode_env.Object('NetReteamingInformation-test.o', '../src/net/NetReteamingInformation.cpp'),
+  gameheader_objs[1], wcdecode_objs[1], wcdecode_objs[2], baseplayer_objs[1],
+]
+wcdecode_env.Program(target = 'NetGamePlayerManagerTest', source = player_manager_objs)
 
 
 # Standalone regression harness for the BaseTeam "colorPAD" wire byte

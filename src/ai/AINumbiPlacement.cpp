@@ -195,7 +195,7 @@ bool AINumbi::parseBuildingType(const int buildingType)
 	return (buildingType==IntBuildingType::DEFENSE_BUILDING);
 }
 
-void AINumbi::squareCircleScann(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my)
+void AINumbi::squareCircleScan(int &dx, int &dy, int &sx, int &sy, int &x, int &y, int &mx, int &my)
 {
 	if (x>=mx)
 	{
@@ -247,7 +247,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 	}
 	if (b==NULL)
 	{
-		// TODO : scan the units and find a ressoucefull place.
+		// TODO : scan the units and find a resourceful place.
 		return false;
 	}
 	int typeNum=globalContainer->buildingsTypes.getTypeNum(IntBuildingType::typeFromShortNumber(buildingType), 0, true);
@@ -297,7 +297,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 		// above (see L9 comment); it is the original literal preserved as-is.
 		for (int i=0; i<AI_NUMBI_SCAN_ITERATIONS; i++)
 		{
-			squareCircleScann(dx, dy, sx, sy, px, py, mx, my);
+			squareCircleScan(dx, dy, sx, sy, px, py, mx, my);
 
 			if (map->isFreeForBuilding(px, py, width, height))
 			{
@@ -305,7 +305,7 @@ bool AINumbi::findNewEmplacement(const int buildingType, int *posX, int *posY)
 				if ((valid>AI_NUMBI_PLACEMENT_SCORE_MIN)&&(game->checkRoomForBuilding(px, py, bt, player->team->teamNumber)))
 				{
 					int rx, ry, dist;
-					bool nr=map->ressourceAvailableUpdate(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
+					bool nr=map->resourceAvailableUpdate(team->teamNumber, CORN, 0, px, py, &rx, &ry, &dist);
 					if (nr)
 					{
 						if (((dist<=(AI_NUMBI_CORN_DISTANCE_BIAS+width*height))&&(buildingType<=AI_NUMBI_NEAR_CORN_TYPE_CUTOFF))||((dist>=(AI_NUMBI_CORN_DISTANCE_BIAS+width*height))&&(buildingType>AI_NUMBI_NEAR_CORN_TYPE_CUTOFF)))

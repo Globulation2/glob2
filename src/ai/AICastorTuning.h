@@ -83,7 +83,7 @@ static constexpr int AI_CASTOR_SWARM_FOODLOCK_BACKOFF = 2048; // 1 min 22 s
 static constexpr int AI_CASTOR_PROJECT_ABORT_BACKOFF = 8192;  // 5 min 27 s
 
 // Wheat-history rotation mask: every 512 ticks (~20.5 s) the
-// oldWheatGradient[] ring rotates and re-snapshots map->ressourcesGradient.
+// oldWheatGradient[] ring rotates and re-snapshots map->resourcesGradient.
 // C++: GetOrder.cpp:105.
 static constexpr int AI_CASTOR_WHEAT_HISTORY_INTERVAL_MASK = 511;
 
@@ -459,7 +459,7 @@ static constexpr int AI_CASTOR_SCORE_NEIGHBOUR_DIRECT_SHIFT = 2; // (direct << 2
 
 
 // ---------------------------------------------------------------------------
-// computeRessourcesCluster
+// computeResourcesCluster
 // ---------------------------------------------------------------------------
 
 // Cluster id space = Uint16::MAX + 1.

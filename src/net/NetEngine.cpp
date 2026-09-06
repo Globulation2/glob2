@@ -95,7 +95,7 @@ void NetEngine::pushOrder(std::shared_ptr<Order> order, int playerNumber, bool i
 	order->sender=playerNumber;
 	orders[playerNumber].push_back(order); 
 
-	///The local player and network players all have padding arround their order
+	///The local player and network players all have padding around their order
 	if(! isAI)
 	{
 		for(int i=0; i<(networkOrderRate - 1); ++i)
@@ -126,7 +126,7 @@ void NetEngine::addLocalOrder(std::shared_ptr<Order> order)
 
 
 
-bool NetEngine::allOrdersRecieved()
+bool NetEngine::allOrdersReceived()
 {
 	for(int p=0; p<numberOfPlayers; ++p)
 	{
@@ -181,7 +181,7 @@ void NetEngine::prepareForLatency(int playerNumber, int latency)
 
 
 
-bool NetEngine::orderRecieved(int playerNumber)
+bool NetEngine::orderReceived(int playerNumber)
 {
 	if(orders[playerNumber].empty())
 		return false;

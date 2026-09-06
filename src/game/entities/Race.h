@@ -15,7 +15,7 @@ class Race
 {
 public:
 	static UnitType unitTypes[NB_UNIT_TYPE][NB_UNIT_LEVELS];
-	static Sint32 hungryness;
+	static Sint32 hungriness;
 
 public:
 	Race();
@@ -23,7 +23,7 @@ public:
 
 	void load();
 	// Installs the compile-time default unit-type table from race.cpp into
-	// Race::unitTypes (and seeds Race::hungryness). Replaces the previous
+	// Race::unitTypes (and seeds Race::hungriness). Replaces the previous
 	// runtime parser of data/units.txt.
 	static void loadDefault();
 

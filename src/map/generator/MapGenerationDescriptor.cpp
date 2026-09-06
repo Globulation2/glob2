@@ -15,7 +15,7 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	
 	terrainType=GRASS;
 	
-	methode=eUNIFORM;
+	method=eUNIFORM;
 	waterRatio=50;
 	sandRatio=50;
 	grassRatio=50;
@@ -33,8 +33,8 @@ MapGenerationDescriptor::MapGenerationDescriptor()
 	
 	oldIslandSize=50;
 	oldBeach=1;	
-	for (int i=0; i<MAX_NB_RESSOURCES; i++)
-		ressource[i]=7;
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
+		resource[i]=7;
 	
 	nbWorkers=4;
 	nbTeams=4;
@@ -48,14 +48,14 @@ MapGenerationDescriptor::~MapGenerationDescriptor()
 
 Uint8 *MapGenerationDescriptor::getData()
 {
-	assert(DATA_SIZE==100+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==100+MAX_NB_RESOURCES*4);
 	
 	addSint32(data, wDec, 0);
 	addSint32(data, hDec, 4);
 
 	addSint32(data, (Sint32)terrainType, 8);
 
-	addSint32(data, (Sint32)methode, 12);
+	addSint32(data, (Sint32)method, 12);
 	addSint32(data, waterRatio, 16);
 	addSint32(data, sandRatio, 20);
 	addSint32(data, grassRatio, 24);
@@ -80,15 +80,15 @@ Uint8 *MapGenerationDescriptor::getData()
 
 	addUint32(data, logRepeatAreaTimes, 84);
 
-	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		addSint32(data, ressource[i], 88+i*4);
+	for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
+		addSint32(data, resource[i], 88+i*4);
 
 	return data;
 }
 
 bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 {
-	assert(DATA_SIZE==100+MAX_NB_RESSOURCES*4);
+	assert(DATA_SIZE==100+MAX_NB_RESOURCES*4);
 	assert(getDataLength()==DATA_SIZE);
 	assert(getDataLength()==dataLength);
 	
@@ -97,7 +97,7 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	
 	terrainType=(TerrainType)getSint32(data, 8);
 
-	methode=(Methode)getSint32(data, 12);
+	method=(Method)getSint32(data, 12);
 	waterRatio=getSint32(data, 16);
 	sandRatio=getSint32(data, 20);
 	grassRatio=getSint32(data, 24);
@@ -122,8 +122,8 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	fruitRatio = getSint32(data, 80);
 	logRepeatAreaTimes = getSint32(data, 84);
 
-	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		ressource[i]=getSint32(data, 88+i*4);
+	for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
+		resource[i]=getSint32(data, 88+i*4);
 
 	bool good=true;
 	if (getDataLength()!=dataLength)
@@ -173,7 +173,7 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs^=wDec+(hDec<<16);
 	cs^=(Sint32)terrainType;
 	cs=rotr1(cs);
-	cs^=(Sint32)methode;
+	cs^=(Sint32)method;
 	cs=rotr1(cs);
 	cs ^= waterRatio;
 	cs=rotr1(cs);
@@ -207,8 +207,8 @@ Uint32 MapGenerationDescriptor::checkSum()
 	cs=rotr1(cs);
 	cs ^= logRepeatAreaTimes;
 
-	for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-		cs+=ressource[i]<<(3*i);
+	for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
+		cs+=resource[i]<<(3*i);
 
 	cs=rotr1(cs);
 	cs^=nbWorkers;

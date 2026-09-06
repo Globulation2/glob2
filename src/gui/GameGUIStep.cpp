@@ -10,11 +10,13 @@
 #include <optional>
 
 #include <FileManager.h>
+#include <SDLCompat.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <Stream.h>
 #include <BinaryStream.h>
 
+#include "EngineTiming.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
@@ -49,7 +51,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	{
 		Uint16 gid=selBuild->gid;
 		shared_ptr<OrderMoveFlag> oms(new OrderMoveFlag(gid, posX, posY, drop));
-		// First, we check if anoter move of the same flag is already in the "orderQueue".
+		// First, we check if another move of the same flag is already in the "orderQueue".
 		bool found=false;
 		for (std::list<shared_ptr<Order> >::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
 		{
@@ -213,9 +215,17 @@ void GameGUI::step(void)
 
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
-	handleKeyAlways();
-	viewportX += viewportSpeedX;
-	viewportY += viewportSpeedY;
+	// Continuous scrolling keeps its normal 25 Hz cadence at every game speed.
+	const Uint64 now=SDL_GetTicks64();
+	const unsigned viewportSteps=std::min<Uint64>((now-lastViewportStep)/GAME_TICK_MS, 5);
+	if(viewportSteps)
+		lastViewportStep=now-(now-lastViewportStep)%GAME_TICK_MS;
+	for(unsigned i=0; i<viewportSteps; ++i)
+	{
+		handleKeyAlways();
+		viewportX += viewportSpeedX;
+		viewportY += viewportSpeedY;
+	}
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 
@@ -276,7 +286,7 @@ void GameGUI::step(void)
 		order = toolManager.getOrder();
 	}
 
-	///This shows the mission briefing at the begginning of the mission
+	///This shows the mission briefing at the beginning of the mission
 	if(game.stepCounter == 12)
 	{
 		if(game.missionBriefing != "")
@@ -316,16 +326,8 @@ void GameGUI::syncStep(void)
 	{
 		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");
-		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(fileName));
-		if (stream->isEndOfStream())
-		{
-			std::cerr << "GameGUI::syncStep : can't open autosave file " << name << " for writing" << std::endl;
-		}
-		else
-		{
-			save(stream, name);
-		}
-		delete stream;
+		if (!Toolkit::getFileManager()->writeAtomically(fileName, [&](OutputStream& stream) { save(&stream, name); }))
+			std::cerr << "GameGUI::syncStep: autosave failed; previous save retained" << std::endl;
 	}
 }
 

@@ -244,7 +244,7 @@ namespace Cortex
 			obs.totalPrestige = game->totalPrestige;
 
 			// fruitOnMap: replicate Echo::check_fruit() directly off the Map
-			// (AIEcho/MapInfo::is_ressource -> Map::isRessourceTakeable) so the
+			// (AIEcho/MapInfo::is_resource -> Map::isResourceTakeable) so the
 			// direct binding carries no Echo dependency. Any takeable fruit
 			// (CHERRY/ORANGE/PRUNE) anywhere on the map flips this on.
 			Map& map = game->map;
@@ -252,9 +252,9 @@ namespace Cortex
 			const int h = map.getH();
 			for (int x = 0; x < w && obs.fruitOnMap == 0; x++)
 				for (int y = 0; y < h; y++)
-					if (map.isRessourceTakeable(x, y, CHERRY)
-					 || map.isRessourceTakeable(x, y, ORANGE)
-					 || map.isRessourceTakeable(x, y, PRUNE))
+					if (map.isResourceTakeable(x, y, CHERRY)
+					 || map.isResourceTakeable(x, y, ORANGE)
+					 || map.isResourceTakeable(x, y, PRUNE))
 					{
 						obs.fruitOnMap = 1;
 						break;

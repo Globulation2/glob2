@@ -46,7 +46,7 @@ private:
 
 
 
-///Shutsdown the server
+///Shuts down the server
 class YOGServerRestart : public YOGServerAdministratorCommand
 {
 public:

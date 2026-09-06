@@ -74,6 +74,8 @@ private:
 	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel, *automaticTorus;
 	Selector *musicVol;
 	Selector *voiceVol;
+	Selector *gameSpeed;
+	Text *gameSpeedText;
 	OnOffButton *audioMute, *rememberUnitButton;
 	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
 	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
@@ -107,7 +109,7 @@ private:
 	void handleButtonAction(int par1);
 	void flushDefaultsToSettings();
 	void handleListSelected(Widget* source, int par1);
-	void handleValueChanged();
+	void handleValueChanged(Widget* source);
 	void handleButtonStateChanged(Widget* source);
 	// Re-applies the current locale to every string-bearing widget. Called after the
 	// user picks a new language in the language list — every label, button, and text
@@ -136,6 +138,8 @@ private:
 	void setVisibilityFromGraphicType(void);
 	//! If mute is set, do not show volume slider
 	void setVisibilityFromAudioSettings(void);
+	//! Refresh the game speed label after changing the preset or language.
+	void updateGameSpeedText(void);
 	//! reset res and redraw everything
 	void updateGfxCtx(void);
 	//! Return a string representing the actual display mode

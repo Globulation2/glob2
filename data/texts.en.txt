@@ -248,6 +248,8 @@ Custom cursor
 Damage
 [Damaged Map]
 Damaged Map
+[decrease game speed]
+Decrease Game Speed
 [decrease units working]
 Decrease Units Working
 [Defeat Your Oppenents]
@@ -384,6 +386,8 @@ Fullscreen
 Game full
 [game shortcuts]
 Game Shortcuts
+[game speed]
+Game speed
 [Game]
 Game
 [general settings]
@@ -440,6 +444,8 @@ hungry
 Hungriness
 [In way]
 On the way
+[increase game speed]
+Increase Game Speed
 [increase units working]
 Increase Units Working
 [inn explanation 2]
@@ -1189,7 +1195,7 @@ The provided passwords don't match. Please retype them.
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently, the YOG metaserver is down.
 [yog block command help]
-/block <playername>    Blocks a player; you will no longer see his text.
+/block <playername>    Blocks a player; you will no longer see their text.
 [yog block command player %0 already blocked]
 Player %0 already blocked
 [yog block command player %0 blocked]
@@ -1224,3 +1230,9 @@ Toggle 2D / torus view
 
 [automatic torus view]
 Automatic torus view
+[game speed help]
+Single-player and replays only. Multiplayer runs at 1x.
+[maximum game speed]
+Maximum
+[multiplayer game speed]
+Game speed: 1x (multiplayer)

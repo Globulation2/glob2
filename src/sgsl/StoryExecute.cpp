@@ -21,7 +21,7 @@ Story::Story(MapScriptSGSL *mapscript)
 {
 	lineSelector = 0;
 	internTimer=0;
-	recievedSpace=false;
+	receivedSpace=false;
 	this->mapscript=mapscript;
 }
 
@@ -224,7 +224,7 @@ bool Story::testCondition(GameGUI *gui)
 				return true;
 			}
 
-			case (SGSLToken::S_LOOSE):
+			case (SGSLToken::S_LOSE):
 			{
 				mapscript->hasLost.at(line[++lineSelector].value)=true;
 				return true;
@@ -317,7 +317,7 @@ bool Story::testCondition(GameGUI *gui)
 
 			case (SGSLToken::S_SPACE):
 			{
-				if (recievedSpace)
+				if (receivedSpace)
 				{
 					return true;
 				}
@@ -351,7 +351,7 @@ void Story::syncStep(GameGUI *gui)
 		cycleLeft--;
 		if (verbose)
 			std::cout << "Story::syncStep : SGSL thread " << this << " PC : " << lineSelector << " (" << SGSLToken::getNameByType(line[lineSelector].type) << ")" << std::endl;
-		recievedSpace=false;
+		receivedSpace=false;
 	}
 
 	if (!cycleLeft)

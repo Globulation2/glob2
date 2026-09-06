@@ -9,7 +9,7 @@
 #include <Toolkit.h>
 #include "PerlinNoise.h"
 
-/// these faders are factors to be applieable to heightfields. they map (0,0)-(w,h) to [0..1]
+/// these faders are factors to be applicable to heightfields. they map (0,0)-(w,h) to [0..1]
 
 inline float faderCenter   (int x, int y, int w, int h) /// to have zero at the borders and 1 in the center
 {
@@ -197,7 +197,7 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 
 void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
 {
-	/// riverRadius referes to the distance between center of the river and the maximum distance that gets lowered.
+	/// riverRadius refers to the distance between center of the river and the maximum distance that gets lowered.
 	makeStamp(maxDiameter/2);
 	/// level the map
 	operator=(1.0);

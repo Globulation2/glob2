@@ -62,10 +62,10 @@ Map::Map()
 	
 	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MAX_NB_RESSOURCES; r++)
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
 			for (int s=0; s<2; s++)
 			{
-				ressourcesGradient[t][r][s] = NULL;
+				resourcesGradient[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
 			}
 	for (int t=0; t<Team::MAX_COUNT; t++)
@@ -111,110 +111,44 @@ Map::~Map(void)
 
 void Map::clear()
 {
-	if (arraysBuilt)
+	// A failed load can own only a subset of these arrays.
+	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			if (ressourcesGradient[t][0][0])
-				for (int r=0; r<MAX_RESSOURCES; r++)
-					for (int s=0; s<2; s++)
-					{
-						assert(ressourcesGradient[t][r][s]);
-						delete[] ressourcesGradient[t][r][s];
-						ressourcesGradient[t][r][s] = NULL;
-					}
-		
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			if (forbiddenGradient[t][0])
-				for (int s=0; s<2; s++)
-				{
-					assert(forbiddenGradient[t][s]);
-					delete[] forbiddenGradient[t][s];
-					forbiddenGradient[t][s] = NULL;
-					assert(guardAreasGradient[t][s]);
-					delete[] guardAreasGradient[t][s];
-					guardAreasGradient[t][s] = NULL;
-					assert(clearAreasGradient[t][s]);
-					delete[] clearAreasGradient[t][s];
-					clearAreasGradient[t][s] = NULL;
-					
-					guardGradientUpdated[t][s] = false;
-					clearGradientUpdated[t][s] = false;
-				}
-		
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			if (exploredArea[t])
+		for (int r=0; r<MAX_RESOURCES; ++r)
+			for (int swim=0; swim<2; ++swim)
 			{
-				assert(exploredArea[t]);
-				delete[] exploredArea[t];
-				exploredArea[t] = NULL;
+				delete[] resourcesGradient[t][r][swim];
+				resourcesGradient[t][r][swim] = NULL;
+				gradientUpdated[t][r][swim] = false;
 			}
-		
-		assert(undermap);
-		delete[] undermap;
-		undermap=NULL;
-		
-		assert(sectors);
-		delete[] sectors;
-		sectors=NULL;
-
-		assert(listedAddr);
-		delete[] listedAddr;
-		listedAddr=NULL;
-		
-		assert(aStarPoints);
-		delete[] aStarPoints;
-		aStarPoints=NULL;
-
-		for (int t=0; t<Team::MAX_COUNT; t++)
+		for (int swim=0; swim<2; ++swim)
 		{
-			if (clearingAreaClaims[t])
-			{
-				assert(clearingAreaClaims[t]);
-				delete[] clearingAreaClaims[t];
-				clearingAreaClaims[t]=NULL;
-			}
+			delete[] forbiddenGradient[t][swim];
+			forbiddenGradient[t][swim] = NULL;
+			delete[] guardAreasGradient[t][swim];
+			guardAreasGradient[t][swim] = NULL;
+			delete[] clearAreasGradient[t][swim];
+			clearAreasGradient[t][swim] = NULL;
+			guardGradientUpdated[t][swim] = false;
+			clearGradientUpdated[t][swim] = false;
 		}
-		
-		assert(immobileUnits);
-		delete[] immobileUnits;
-		immobileUnits=NULL;
-
-		arraysBuilt=false;
+		delete[] exploredArea[t];
+		exploredArea[t] = NULL;
+		delete[] clearingAreaClaims[t];
+		clearingAreaClaims[t] = NULL;
 	}
-	else
-	{
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			for (int r=0; r<MAX_RESSOURCES; r++)
-				for (int s=0; s<2; s++)
-					assert(ressourcesGradient[t][r][s]==NULL);
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			for (int s=0; s<2; s++)
-			{
-				assert(forbiddenGradient[t][s] == NULL);
-				assert(guardAreasGradient[t][s] == NULL);
-				assert(clearAreasGradient[t][s] == NULL);
-			}
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			assert(exploredArea[t] == NULL);
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			assert(clearingAreaClaims[t] == NULL);
-		
-		assert(undermap==NULL);
-		assert(sectors==NULL);
-		assert(listedAddr==NULL);
+	delete[] undermap;
+	undermap = NULL;
+	delete[] sectors;
+	sectors = NULL;
+	delete[] listedAddr;
+	listedAddr = NULL;
+	delete[] aStarPoints;
+	aStarPoints = NULL;
+	delete[] immobileUnits;
+	immobileUnits = NULL;
+	arraysBuilt = false;
 
-		assert(w==0);
-		assert(h==0);
-		assert(size==0);
-		assert(wMask==0);
-		assert(hMask==0);
-		assert(wDec==0);
-		assert(hDec==0);
-		assert(wSector==0);
-		assert(hSector==0);
-		assert(sizeSector==0);
-	}
-	
 	w=h=0;
 	size=0;
 	wMask=hMask=0;
@@ -224,7 +158,7 @@ void Map::clear()
 	displayedTeam = NO_DISPLAYED_TEAM;
 
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MAX_RESSOURCES; r++)
+		for (int r=0; r<MAX_RESOURCES; r++)
 			for (int s=0; s<2; s++)
 				gradientUpdated[t][r][s]=false;
 }
@@ -261,7 +195,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	
 	listedAddr = new Uint8*[size];
 
-	//numberOfTeam=0, then ressourcesGradient[][][] is empty. This is done by clear();
+	//numberOfTeam=0, then resourcesGradient[][][] is empty. This is done by clear();
 
 	regenerateMap(0, 0, w, h);
 

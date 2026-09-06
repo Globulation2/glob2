@@ -37,8 +37,8 @@ void AINumbi::init(Player *player)
 	phase=0;
 	phaseTime=AI_NUMBI_PHASE_TIME_DEFAULT_TICKS;
 	attackPhase=0;
-	critticalWarriors=AI_NUMBI_CRITICAL_WARRIORS_DEFAULT;
-	critticalTime=AI_NUMBI_CRITICAL_TIME_DEFAULT_TICKS;
+	criticalWarriors=AI_NUMBI_CRITICAL_WARRIORS_DEFAULT;
+	criticalTime=AI_NUMBI_CRITICAL_TIME_DEFAULT_TICKS;
 	attackTimer=0;
 	for (int i=0; i<IntBuildingType::NB_BUILDING; i++)
 		mainBuilding[i]=0;
@@ -68,8 +68,8 @@ bool AINumbi::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	phase            = stream->readSint32("phase");
 	attackPhase      = stream->readSint32("attackPhase");
 	phaseTime        = stream->readSint32("phaseTime");
-	critticalWarriors= stream->readSint32("critticalWarriors");
-	critticalTime    = stream->readSint32("critticalTime");
+	criticalWarriors= stream->readSint32("critticalWarriors");
+	criticalTime    = stream->readSint32("critticalTime");
 	attackTimer      = stream->readSint32("attackTimer");
 
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
@@ -91,8 +91,8 @@ void AINumbi::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(phase, "phase");
 	stream->writeSint32(attackPhase, "attackPhase");
 	stream->writeSint32(phaseTime, "phaseTime");
-	stream->writeSint32(critticalWarriors, "critticalWarriors");
-	stream->writeSint32(critticalTime, "critticalTime");
+	stream->writeSint32(criticalWarriors, "critticalWarriors");
+	stream->writeSint32(criticalTime, "critticalTime");
 	stream->writeSint32(attackTimer, "attackTimer");
 
 	for (int bi=0; bi<IntBuildingType::NB_BUILDING; bi++)
@@ -240,7 +240,7 @@ std::shared_ptr<Order>AINumbi::getOrder(void)
 			case 6:
 				return adjustBuildings(AI_NUMBI_PHASE10_BARRACKS_NUMBERS, AI_NUMBI_PHASE10_BARRACKS_NUMBERS_INC, AI_NUMBI_PHASE10_BARRACKS_WORKERS, IntBuildingType::ATTACK_BUILDING);
 			case 7:
-				return mayAttack(critticalWarriors, critticalTime, AI_NUMBI_WAR_FLAG_UNITS);
+				return mayAttack(criticalWarriors, criticalTime, AI_NUMBI_WAR_FLAG_UNITS);
 			case 8:
 				return checkoutExpands(AI_NUMBI_PHASE10_EXPAND_NUMBERS, AI_NUMBI_PHASE10_EXPAND_WORKERS);
 			case 9:

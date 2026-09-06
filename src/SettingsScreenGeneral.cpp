@@ -36,7 +36,7 @@ void SettingsScreen::buildLanguageWidgets()
 {
 	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
 	addWidgetToGroup(language, generalGroup);
-	languageList=new List(20, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	languageList=new List(20, 90, 180, 170, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	Font *listFont = Toolkit::getFont("standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 	{
@@ -118,9 +118,16 @@ void SettingsScreen::buildGraphicsToggles()
 	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
 	addWidgetToGroup(scrollwheelText, generalGroup);
 
-	automaticTorus=new OnOffButton(230, 270, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.automaticTorus, AUTOMATIC_TORUS);
+	gameSpeedText=new Text(230, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
+	addWidgetToGroup(gameSpeedText, generalGroup);
+	gameSpeed=new Selector(230, 285, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180,
+		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
+	addWidgetToGroup(gameSpeed, generalGroup);
+	updateGameSpeedText();
+
+	automaticTorus=new OnOffButton(20, 270, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.automaticTorus, AUTOMATIC_TORUS);
 	addWidgetToGroup(automaticTorus, generalGroup);
-	automaticTorusText=new Text(260, 270, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[automatic torus view]"), 180);
+	automaticTorusText=new Text(50, 270, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[automatic torus view]"), 180);
 	addWidgetToGroup(automaticTorusText, generalGroup);
 
 

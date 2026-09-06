@@ -31,13 +31,15 @@ public:
 	 *     enum PlayerKind { None, LostDropping, LostFinal, Network, Local, AI }
 	 *     struct BasePlayer {
 	 *         kind: PlayerKind,
-	 *         ai_type: Option<AI::ImplementitionID>,  // Some iff kind == AI
+	 *         ai_type: Option<AI::ImplementationID>,  // Some iff kind == AI
 	 *         ...
 	 *     }
 	 * Saves get re-versioned in the port anyway, so this is the right
 	 * moment to fix it.
 	 */
- 	enum PlayerType
+	// P_AI+n includes values beyond the named enumerators. A fixed underlying
+	// type keeps those encoded AI values valid C++ enum values as well.
+	enum PlayerType : Uint32
 	{
 		///A non existing player //NOTE : we don't need any more because null player are not created
 		P_NONE=0,
@@ -53,13 +55,13 @@ public:
 		P_AI=5
 	};
 	//TODO: Explain
-	static AI::ImplementitionID implementitionIdFromPlayerType(PlayerType type)
+	static AI::ImplementationID implementationIdFromPlayerType(PlayerType type)
 	{
 		assert(type>=P_AI);
-		return (AI::ImplementitionID)((int)type-(int)P_AI);
+		return (AI::ImplementationID)((int)type-(int)P_AI);
 	}
 	//TODO: Explain
-	static PlayerType playerTypeFromImplementitionID(AI::ImplementitionID iid)
+	static PlayerType playerTypeFromImplementationID(AI::ImplementationID iid)
 	{
 		return (PlayerType)((int)iid+(int)P_AI);
 	}
@@ -116,8 +118,7 @@ public:
 	/// the P_AI+n encoding (see the PlayerType comment above), the valid range
 	/// is [P_NONE, P_AI + AI::SIZE): the base kinds 0..P_AI-1 plus one slot per
 	/// AI implementation. Anything else came from a corrupt or hostile stream —
-	/// casting it to PlayerType would be undefined behavior, and using it would
-	/// index AI dispatch tables out of range.
+	/// using it would index AI dispatch tables out of range.
 	static bool isValidSerializedType(Uint32 rawType)
 	{
 		return rawType < Uint32(P_AI) + Uint32(AI::SIZE);
@@ -127,7 +128,7 @@ public:
 
 	Uint32 checkSum();
 
-	virtual void makeItAI(AI::ImplementitionID aiType);
+	virtual void makeItAI(AI::ImplementationID aiType);
 	//TODO: Explain
 	bool disableRecursiveDestruction;
 };

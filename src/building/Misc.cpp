@@ -74,7 +74,7 @@ void Building::kill(void)
 		{
 			bool good=false;
 			for (int r=0; r<BASIC_COUNT; r++)
-				if (ressources[r]>0)
+				if (resources[r]>0)
 				{
 					good=true;
 					break;
@@ -159,25 +159,25 @@ void Building::removeUnitFromInside(Unit* unit)
 
 
 
-void Building::updateRessourcesPointer()
+void Building::updateResourcesPointer()
 {
-	if(!type->useTeamRessources)
+	if(!type->useTeamResources)
 	{
-		ressources=localRessource;
+		resources=localResource;
 	}
 	else
 	{
-		ressources=owner->teamRessources;
+		resources=owner->teamResources;
 	}
 }
 
 
 
-void Building::addRessourceIntoBuilding(int ressourceType)
+void Building::addResourceIntoBuilding(int resourceType)
 {
-	ressources[ressourceType]+=type->multiplierRessource[ressourceType];
+	resources[resourceType]+=type->multiplierResource[resourceType];
 	//You can not exceed the maximum amount
-	ressources[ressourceType] = std::min(ressources[ressourceType], type->maxRessource[ressourceType]);
+	resources[resourceType] = std::min(resources[resourceType], type->maxResource[resourceType]);
 	switch (constructionResultState)
 	{
 		case NO_CONSTRUCTION:
@@ -192,12 +192,12 @@ void Building::addRessourceIntoBuilding(int ressourceType)
 
 		case REPAIR:
 		{
-			int totRessources=0;
-			for (unsigned i=0; i<MAX_NB_RESSOURCES; i++)
-				totRessources+=type->maxRessource[i];
-			if (totRessources>0)
+			int totResources=0;
+			for (unsigned i=0; i<MAX_NB_RESOURCES; i++)
+				totResources+=type->maxResource[i];
+			if (totResources>0)
 			{
-				hp += type->hpMax/totRessources;
+				hp += type->hpMax/totResources;
 				hp = std::min(hp, type->hpMax);
 			}
 		}
@@ -211,10 +211,10 @@ void Building::addRessourceIntoBuilding(int ressourceType)
 
 
 
-void Building::removeRessourceFromBuilding(int ressourceType)
+void Building::removeResourceFromBuilding(int resourceType)
 {
-	ressources[ressourceType]-=type->multiplierRessource[ressourceType];
-	ressources[ressourceType]= std::max(ressources[ressourceType], 0);
+	resources[resourceType]-=type->multiplierResource[resourceType];
+	resources[resourceType]= std::max(resources[resourceType], 0);
 	updateCallLists();
 }
 
@@ -296,11 +296,11 @@ void Building::checkGroundExitQuality(
 	{
 		if (owner->map->isFreeForGroundUnit(extraTestX, extraTestY, canSwim, me))
 			oldQuality++;
-		if (owner->map->isRessource(testX, testY-1))
+		if (owner->map->isResource(testX, testY-1))
 		{
-			if (exitQuality<EXIT_QUALITY_NEAR_RESSOURCE+oldQuality)
+			if (exitQuality<EXIT_QUALITY_NEAR_RESOURCE+oldQuality)
 			{
-				exitQuality=EXIT_QUALITY_NEAR_RESSOURCE+oldQuality;
+				exitQuality=EXIT_QUALITY_NEAR_RESOURCE+oldQuality;
 				exitX=testX;
 				exitY=testY;
 			}
@@ -314,7 +314,7 @@ void Building::checkGroundExitQuality(
 				exitX=testX;
 				exitY=testY;
 			}
-			oldQuality=EXIT_QUALITY_NEAR_RESSOURCE;
+			oldQuality=EXIT_QUALITY_NEAR_RESOURCE;
 		}
 	}
 }
@@ -354,16 +354,16 @@ int Building::getLongLevel(void)
 
 Uint32 Building::eatOnce(Uint32 *mask)
 {
-	ressources[CORN]--;
-	assert(ressources[CORN]>=0);
+	resources[CORN]--;
+	assert(resources[CORN]>=0);
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
-	for (int i=0; i<HAPPYNESS_COUNT; i++)
+	for (int i=0; i<HAPPINESS_COUNT; i++)
 	{
-		int resId=i+HAPPYNESS_BASE;
-		if (ressources[resId])
+		int resId=i+HAPPINESS_BASE;
+		if (resources[resId])
 		{
-			ressources[resId]--;
+			resources[resId]--;
 			fruitMask|=(1<<i);
 			fruitCount++;
 		}
@@ -376,11 +376,11 @@ Uint32 Building::eatOnce(Uint32 *mask)
 int Building::availableHappynessLevel()
 {
 	int inside = (int)unitsInside.size();
-	if (ressources[CORN] <= inside)
+	if (resources[CORN] <= inside)
 		return 0;
 	int happyness = 1;
-	for (int i = 0; i < HAPPYNESS_COUNT; i++)
-		if (ressources[i + HAPPYNESS_BASE]  >inside)
+	for (int i = 0; i < HAPPINESS_COUNT; i++)
+		if (resources[i + HAPPINESS_BASE]  >inside)
 			happyness++;
 	return happyness;
 }
@@ -390,7 +390,7 @@ bool Building::canConvertUnit(void)
 	assert(type->canFeedUnit);
 	return
 			canNotConvertUnitTimer<=0 &&
-			((int)unitsInside.size()<ressources[CORN]) && 
+			((int)unitsInside.size()<resources[CORN]) && 
 			((int)unitsInside.size()<maxUnitInside);
 }
 
@@ -490,8 +490,8 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector)
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [13]
 
-	for (int i=0; i<MAX_RESSOURCES; i++)
-		cs^=localRessource[i];
+	for (int i=0; i<MAX_RESOURCES; i++)
+		cs^=localResource[i];
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [14]
 	cs=(cs<<31)|(cs>>1);

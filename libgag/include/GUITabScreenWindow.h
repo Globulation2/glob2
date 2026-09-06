@@ -14,8 +14,8 @@ namespace GAGGUI
 namespace GAGGUI
 {
 	///A TabScreenWindow is like a Screen, except that its meant to operate as a tab
-	///in a TabScreen, rather than a whole screen by itself. A TabScreenWindow bassically
-	///recieves events from the widgets in its TabScreen group, and has a return code
+	///in a TabScreen, rather than a whole screen by itself. A TabScreenWindow basically
+	///receives events from the widgets in its TabScreen group, and has a return code
 	class TabScreenWindow
 	{
 	public:
@@ -57,7 +57,7 @@ namespace GAGGUI
 		///Ends the execution of the TabScreenWindow with the given end value
 		void endExecute(int returnCode);
 		
-		///Sets whether this window is acticated or not
+		///Sets whether this window is activated or not
 		void setActivated(bool activated);
 		
 		///This is the parent of this tab screen window

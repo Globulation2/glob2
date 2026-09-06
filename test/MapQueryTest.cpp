@@ -19,10 +19,7 @@ namespace
 	// The isFreeFor*/isHardSpaceFor* predicates only need: a sized cases[] vector,
 	// and w/h/wMask/hMask/wDec/hDec for coordToIndex(). We set those directly.
 	//
-	// The destructor resets size fields before Map::~Map() runs, because Map's
-	// clear() else-branch (the path taken when arraysBuilt==false) asserts
-	// w==0 / h==0 / etc. — that's a real assert in production, but it expects
-	// to see a constructed-then-clear()'d Map, not a manually-poked one.
+	// The fixture resets its dimension metadata before base cleanup.
 	struct GrassMap : Map
 	{
 		GrassMap()
@@ -42,7 +39,6 @@ namespace
 			wMask = hMask = 0;
 			wDec = hDec = 0;
 			size = 0;
-			// Map::~Map() will call clear() which asserts these are 0.
 		}
 
 		void putBuilding(int x, int y, Uint16 gbid = 0)
@@ -53,9 +49,9 @@ namespace
 		{
 			cases[coordToIndex(x, y)].groundUnit = guid;
 		}
-		void putRessource(int x, int y, int type = 0)
+		void putResource(int x, int y, int type = 0)
 		{
-			Ressource &r = cases[coordToIndex(x, y)].ressource;
+			Resource &r = cases[coordToIndex(x, y)].resource;
 			r.type = type;
 			r.amount = 1;
 			r.variety = 0;
@@ -91,9 +87,9 @@ void MapQueryTest::testFreeForGroundUnit_CleanGrassPasses()
 	CPPUNIT_ASSERT( g.isFreeForGroundUnit(3, 3, false, kTeam0) );
 }
 
-void MapQueryTest::testFreeForGroundUnit_RessourceFails()
+void MapQueryTest::testFreeForGroundUnit_ResourceFails()
 {
-	GrassMap g; g.putRessource(3, 3);
+	GrassMap g; g.putResource(3, 3);
 	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
 }
 
@@ -156,9 +152,9 @@ void MapQueryTest::testFreeForBuilding_GrassPasses()
 	CPPUNIT_ASSERT( g.isFreeForBuilding(3, 3) );
 }
 
-void MapQueryTest::testFreeForBuilding_RessourceFails()
+void MapQueryTest::testFreeForBuilding_ResourceFails()
 {
-	GrassMap g; g.putRessource(3, 3);
+	GrassMap g; g.putResource(3, 3);
 	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
 }
 
@@ -224,9 +220,9 @@ void MapQueryTest::testHardSpaceForGroundUnit_IgnoresUnit()
 	CPPUNIT_ASSERT( !g.isFreeForGroundUnit(3, 3, false, kTeam0) );
 }
 
-void MapQueryTest::testHardSpaceForGroundUnit_RessourceStillFails()
+void MapQueryTest::testHardSpaceForGroundUnit_ResourceStillFails()
 {
-	GrassMap g; g.putRessource(3, 3);
+	GrassMap g; g.putResource(3, 3);
 	CPPUNIT_ASSERT( !g.isHardSpaceForGroundUnit(3, 3, false, kTeam0) );
 }
 
@@ -257,9 +253,9 @@ void MapQueryTest::testHardSpaceForBuilding_IgnoresUnit()
 	CPPUNIT_ASSERT( !g.isFreeForBuilding(3, 3) );
 }
 
-void MapQueryTest::testHardSpaceForBuilding_RessourceFails()
+void MapQueryTest::testHardSpaceForBuilding_ResourceFails()
 {
-	GrassMap g; g.putRessource(3, 3);
+	GrassMap g; g.putResource(3, 3);
 	CPPUNIT_ASSERT( !g.isHardSpaceForBuilding(3, 3) );
 }
 

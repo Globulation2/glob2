@@ -90,8 +90,8 @@ namespace AIEcho
 
 		unsigned int add_building_order(Construction::BuildingOrder* bo);
 		void add_management_order(Management::ManagementOrder* mo);
-		void add_ressource_tracker(Management::RessourceTracker* rt, int building_id);
-		std::shared_ptr<Management::RessourceTracker> get_ressource_tracker(int building_id);
+		void add_resource_tracker(Management::ResourceTracker* rt, int building_id);
+		std::shared_ptr<Management::ResourceTracker> get_resource_tracker(int building_id);
 
 		TeamStat& get_team_stats();
 		void flare(int x, int y);
@@ -106,9 +106,9 @@ namespace AIEcho
 		Player* player;
 	private:
 
-		friend class AIEcho::Management::AddRessourceTracker;
-		friend class AIEcho::Management::PauseRessourceTracker;
-		friend class AIEcho::Management::UnPauseRessourceTracker;
+		friend class AIEcho::Management::AddResourceTracker;
+		friend class AIEcho::Management::PauseResourceTracker;
+		friend class AIEcho::Management::UnPauseResourceTracker;
 		friend class AIEcho::Management::ChangeAlliances;
 		friend class AIEcho::Management::SendMessage;
 
@@ -120,10 +120,10 @@ namespace AIEcho
 		Uint32 other_view;
 
 		void update_management_orders();
-		void pause_ressource_tracker(int building_id);
-		void unpause_ressource_tracker(int building_id);
+		void pause_resource_tracker(int building_id);
+		void unpause_resource_tracker(int building_id);
 		void init_starting_buildings();
-		void update_ressource_trackers();
+		void update_resource_trackers();
 		void update_building_orders();
 		void check_fruit();
 
@@ -134,11 +134,11 @@ namespace AIEcho
 		Construction::FlagMap fm;
 		std::vector<std::shared_ptr<Construction::BuildingOrder> > building_orders;
 		std::vector<std::shared_ptr<Management::ManagementOrder> > management_orders;
-		std::map<int, std::tuple<std::shared_ptr<Management::RessourceTracker>, bool> > ressource_trackers;
-		typedef std::map<int, std::tuple<std::shared_ptr<Management::RessourceTracker>, bool> >::iterator tracker_iterator;
+		std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> > resource_trackers;
+		typedef std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> >::iterator tracker_iterator;
 		std::set<int> starting_buildings;
 		int timer;
-		///This to keep multiuple buildings from being constructed on the same tick.
+		///This to keep multiple buildings from being constructed on the same tick.
 		///Before the next building is constructed, the previous building must be
 		///found on the BuildingRegister
 		int previous_building_id;

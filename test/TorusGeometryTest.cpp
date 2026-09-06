@@ -179,7 +179,10 @@ int main()
             for (int col = 0; col <= 8; ++col)
             {
                 float u = float(col) / 8 - .5f, v = float(row) / 32 - .5f;
-                const float e = .0002f;
+                // The inner wall of a fat torus has very small derivatives.
+                // Use a resolvable interval for float positions even on targets
+                // without fused multiply-add; tiny differences lose significance.
+                const float e = .001f;
                 auto dx = subtract(focusedPoint(u + e, v, 1, .5f, shape), focusedPoint(u - e, v, 1, .5f, shape));
                 auto dy = subtract(focusedPoint(u, v + e, 1, .5f, shape), focusedPoint(u, v - e, 1, .5f, shape));
                 float tileAspect = length(dx) / (mapAspect * length(dy));

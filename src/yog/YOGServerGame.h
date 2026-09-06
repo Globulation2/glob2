@@ -32,7 +32,7 @@ public:
 	void addPlayer(std::shared_ptr<YOGServerPlayer> player);
 
 	///Adds an AI to the game
-	void addAIPlayer(AI::ImplementitionID type);
+	void addAIPlayer(AI::ImplementationID type);
 
 	///Removes the player from the game
 	void removePlayer(std::shared_ptr<YOGServerPlayer> player);
@@ -74,10 +74,10 @@ public:
 	///Sends that a player is not ready to start
 	void setNotReadyToStart(YOGPlayerID playerID);
 
-	///Recieves a game start request, refuses to the host if not all the players are ready
+	///Receives a game start request, refuses to the host if not all the players are ready
 	///While the host is normally updated with this information, lag from the connection
 	///May cause the host to start the game just as another player has joined
-	void recieveGameStartRequest();
+	void receiveGameStartRequest();
 	
 	///Starts the game
 	void startGame();
@@ -109,7 +109,7 @@ private:
 	bool gameStarted;
 	bool hasAddedHost;
 	bool oldReadyToLaunch;
-	bool recievedMapHeader;
+	bool receivedMapHeader;
 	bool requested;
 	std::shared_ptr<YOGServerPlayer> host;
 	GameHeader gameHeader;

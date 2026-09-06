@@ -137,55 +137,55 @@ public:
 	/// Show the dialog that says that the replay ended
 	void showEndOfReplayScreen();
 	
-	///This is an enum for the current hilight object. The hilighted object is shown with a large arrow.
+	///This is an enum for the current highlight object. The highlighted object is shown with a large arrow.
 	///This is primarily for tutorials
-	enum HilightObject
+	enum HighlightObject
 	{
-		///This causes the main menu icon to be hilighted
-		HilightMainMenuIcon=1,
-		///This causes all workers on the map to be hilighted
-		HilightWorkers=2,
-		///This causes all explorers on the map to be hilighted
-		HilightExplorers=3,
-		///This causes all warriors on the map to be hilighted
-		HilightWarriors=4,
-		///This causes the right-side menu to be hilighted
-		HilightRightSidePanel=5,
-		///This causes the minimap icons to be hilighted
-		HilightUnderMinimapIcon=6,
-		///This causes the units working bar to be hilighted
-		HilightUnitsAssignedBar=7,
-		///This causes the worker/explorer/warrior ratio bars on a swarm to be hilighted
-		HilightRatioBar=8,
-		///This causes the workers working/free statistic to be hilighted
-		HilightWorkersWorkingFreeStat=9,
-		///This causes the exploresrs working/free statistic to be hilighted
-		HilightExplorersWorkingFreeStat=10,
-		///This causes the warriors working/free statistic to be hilighted
-		HilightWarriorsWorkingFreeStat=11,
-		///This causes the forbidden zone to be hilighted
-		HilightForbiddenZoneOnPanel=12,
-		///This causes the defense zone to be hilighted
-		HilightGuardZoneOnPanel=13,
-		///This causes the clearing zone to be hilighted
-		HilightClearingZoneOnPanel=14,
-		///This causes the brush selector to be hilighted
-		HilightBrushSelector=15,
+		///This causes the main menu icon to be highlighted
+		HighlightMainMenuIcon=1,
+		///This causes all workers on the map to be highlighted
+		HighlightWorkers=2,
+		///This causes all explorers on the map to be highlighted
+		HighlightExplorers=3,
+		///This causes all warriors on the map to be highlighted
+		HighlightWarriors=4,
+		///This causes the right-side menu to be highlighted
+		HighlightRightSidePanel=5,
+		///This causes the minimap icons to be highlighted
+		HighlightUnderMinimapIcon=6,
+		///This causes the units working bar to be highlighted
+		HighlightUnitsAssignedBar=7,
+		///This causes the worker/explorer/warrior ratio bars on a swarm to be highlighted
+		HighlightRatioBar=8,
+		///This causes the workers working/free statistic to be highlighted
+		HighlightWorkersWorkingFreeStat=9,
+		///This causes the explorers working/free statistic to be highlighted
+		HighlightExplorersWorkingFreeStat=10,
+		///This causes the warriors working/free statistic to be highlighted
+		HighlightWarriorsWorkingFreeStat=11,
+		///This causes the forbidden zone to be highlighted
+		HighlightForbiddenZoneOnPanel=12,
+		///This causes the defense zone to be highlighted
+		HighlightGuardZoneOnPanel=13,
+		///This causes the clearing zone to be highlighted
+		HighlightClearingZoneOnPanel=14,
+		///This causes the brush selector to be highlighted
+		HighlightBrushSelector=15,
 		
-		///Anything above this number causes a particular building on the right side menu to be hilighted,
-		///the value is HilightBuilding+IntBuildingType
-		HilightBuildingOnPanel=50,
-		///Anything above this number causes the particular building on the actual map to be hilighted
-		///the value is HilightBuilding+IntBuildingType
-		HilightBuildingOnMap=100,
+		///Anything above this number causes a particular building on the right side menu to be highlighted,
+		///the value is HighlightBuilding+IntBuildingType
+		HighlightBuildingOnPanel=50,
+		///Anything above this number causes the particular building on the actual map to be highlighted
+		///the value is HighlightBuilding+IntBuildingType
+		HighlightBuildingOnMap=100,
 	};
 	
-	///Stores the currently hilighted elements
-	std::set<int> hilights;
+	///Stores the currently highlighted elements
+	std::set<int> highlights;
 	
-	struct HilightArrowPosition
+	struct HighlightArrowPosition
 	{
-		HilightArrowPosition(int x, int y, int sprite) : x(x), y(y), sprite(sprite) {}
+		HighlightArrowPosition(int x, int y, int sprite) : x(x), y(y), sprite(sprite) {}
 		int x;
 		int y;
 		int sprite;
@@ -193,14 +193,16 @@ public:
 	///The arrows must be the last things to be drawn,
 	///So there positions are stored during the drawing
 	///proccess, and they are drawn last
-	std::vector<HilightArrowPosition> arrowPositions;
+	std::vector<HighlightArrowPosition> arrowPositions;
 	
-	///This sends the hilight values to the Game class, setting Game::highlightBuildingType and Game::highlightUnitType
-	void updateHilightInGame();
+	///This sends the highlight values to the Game class, setting Game::highlightBuildingType and Game::highlightUnitType
+	void updateHighlightInGame();
 	
 	KeyboardManager keyboardManager;
 public:
 	Game game;
+	/// Live network games always use normal speed; replays remain adjustable.
+	bool canChangeGameSpeed() const;
 	friend class Game;
 	bool gamePaused;
 	bool hardPause;
@@ -237,6 +239,7 @@ private:
 	void toggleTorusView();
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
+	void changeGameSpeed(int amount);
 	void handleKeySwitchToAreaBrush(int figure);
 	void handleKeySelectConstruct(const char *buildingName);
 	void handleKeySelectPlaceFlag(const char *flagName);
@@ -262,7 +265,7 @@ private:
 	void drawRedButton(int x, int y, std::string caption, bool doLanguageLookup=true);
 	void drawTextCenter(int x, int y, std::string caption);
 	void drawValueAlignedRight(int y, int v);
-	void drawCosts(int ressources[BASIC_COUNT], Font *font);
+	void drawCosts(int resources[BASIC_COUNT], Font *font);
 	void drawCheckButton(int x, int y, std::string caption, bool isSet);
 	void drawRadioButton(int x, int y, bool isSet);
 
@@ -275,10 +278,10 @@ private:
 	void drawOverlayInfos(void);
 	//! Draw the particles (eye-candy)
 	void drawParticles(void);
-	//! Draw the panel: clip rect, background, tutorial hilight, panel buttons,
+	//! Draw the panel: clip rect, background, tutorial highlight, panel buttons,
 	//! then defers to dispatchSelectionPanel for the body.
 	void drawPanel(void);
-	//! Dispatch on selectionMode. BUILDING_/UNIT_/RESSOURCE_SELECTION each draw
+	//! Dispatch on selectionMode. BUILDING_/UNIT_/RESOURCE_SELECTION each draw
 	//! their per-selection panel; the default arm forwards to either
 	//! dispatchDisplayModePanel or dispatchReplayDisplayModePanel depending on
 	//! globalContainer->replaying.
@@ -295,7 +298,7 @@ private:
 	//! `panelTopY` is the single Y origin for both the sprite grid and the mouse hit grid;
 	//! all four helpers anchor to it so layout and hit-test cannot drift apart.
 	void drawChoice(int panelTopY, std::vector<std::string> &types, std::vector<bool> &states, unsigned numberPerLine = 2);
-	//! Paint the icon grid for the choice panel and queue any tutorial-hilight arrows.
+	//! Paint the icon grid for the choice panel and queue any tutorial-highlight arrows.
 	//! `panelTopY` is the Y of the first row of cells.
 	void drawChoiceSprites(int panelTopY, const std::vector<std::string>& types, const std::vector<bool>& states, unsigned numberPerLine);
 	//! Paint the selection-highlight sprite over cell `selIdx`.
@@ -332,7 +335,7 @@ private:
 	//! or scroll-resize. Ally-gated. No ypos advance.
 	void drawBuildingFlagInfo(Building* selBuild, BuildingType* buildingType, int ypos);
 	//! Draw the "working" label, count, and the maxUnitWorking scrollbox.
-	//! Queues the tutorial hilight arrow when active. Ally-gated. Advances
+	//! Queues the tutorial highlight arrow when active. Ally-gated. Advances
 	//! ypos past the working bar when present.
 	void drawBuildingWorkingControls(Building* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the three priority radio buttons (low / medium / high) for
@@ -347,7 +350,7 @@ private:
 	//! Draw armor / shoot damage / shoot range text rows for combat buildings.
 	//! Advances ypos.
 	void drawBuildingCombatStats(Building* selBuild, BuildingType* buildingType, int& ypos);
-	//! Draw the market exchange panel (per-happyness ressource readouts) for
+	//! Draw the market exchange panel (per-happyness resource readouts) for
 	//! buildings that can exchange and that the local team has shared-vision
 	//! exchange visibility on. Advances ypos.
 	void drawBuildingExchange(Building* selBuild, BuildingType* buildingType, int& ypos);
@@ -357,7 +360,7 @@ private:
 	void drawBuildingResources(Building* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw the swarm production progress bar plus the per-unit-type ratio
 	//! scrollboxes (worker / explorer / warrior). Queues the ratio-bar
-	//! tutorial hilight arrow when active. Ally-gated. Advances ypos.
+	//! tutorial highlight arrow when active. Ally-gated. Advances ypos.
 	void drawBuildingSwarmRatios(Building* selBuild, BuildingType* buildingType, int& ypos);
 	//! Draw any "X units can't access resource"-style explanations of why the
 	//! building isn't filling its assigned worker slots. Ally-gated. Advances
@@ -370,8 +373,8 @@ private:
 	void drawBuildingActionButtons(Building* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
 	//! Draw the upgrade preview tooltip (cost + new abilities) shown on hover over the upgrade button (extracted from drawBuildingInfos)
 	void drawBuildingUpgradePreview(Building* selBuild, BuildingType* buildingType, unsigned unitInsideBarYDec);
-	//! Draw the infos about a ressource on map (type and number left)
-	void drawRessourceInfos(void);
+	//! Draw the infos about a resource on map (type and number left)
+	void drawResourceInfos(void);
 	//! Draw the replay panel
 	void drawReplayPanel(void);
 	//! Draw the bottom bar with the replay's time bar
@@ -421,15 +424,15 @@ private:
 		NO_SELECTION=0,
 		BUILDING_SELECTION,
 		UNIT_SELECTION,
-		RESSOURCE_SELECTION,
+		RESOURCE_SELECTION,
 		TOOL_SELECTION,
 		BRUSH_SELECTION
 	} selectionMode;
 	//! Payload for the current selection, tagged by selectionMode. std::monostate
 	//! is the active alternative for the three payload-less modes (NO_SELECTION,
 	//! and TOOL_/BRUSH_SELECTION, whose real state lives in toolManager/brush).
-	//! BUILDING_/UNIT_/RESSOURCE_SELECTION hold Building*/Unit*/int respectively.
-	//! Read it through selectionBuilding()/selectionUnit()/selectionRessource(),
+	//! BUILDING_/UNIT_/RESOURCE_SELECTION hold Building*/Unit*/int respectively.
+	//! Read it through selectionBuilding()/selectionUnit()/selectionResource(),
 	//! which assert (via std::get) that the active alternative matches the mode.
 	std::variant<std::monostate, Building*, Unit*, int> selection;
 	
@@ -448,7 +451,7 @@ private:
 	//! Precondition: selectionMode is the matching mode (caller-guaranteed).
 	Building* selectionBuilding() const { return std::get<Building*>(selection); }
 	Unit* selectionUnit() const { return std::get<Unit*>(selection); }
-	int selectionRessource() const { return std::get<int>(selection); }
+	int selectionResource() const { return std::get<int>(selection); }
 	void checkSelection(void);
 	
 	/// This function causes all information about the selected unit to be dumped
@@ -482,11 +485,11 @@ private:
 	//! whether script text was updated in last step, required because of our translation override common text mechanism
 	bool scriptTextUpdated;
 
-	//! True if the mouse's button way never relased since selection.
+	//! True if the mouse's button way never released since selection.
 	bool selectionPushed;
 	//! The position of the flag when it was pushed.
 	Sint32 selectionPushedPosX, selectionPushedPosY;
-	//! True if the mouse's button way never relased since click im minimap.
+	//! True if the mouse's button way never released since click im minimap.
 	bool miniMapPushed;
 	//! True if we try to put a mark in the minimap
 	bool putMark;
@@ -519,6 +522,7 @@ private:
 	int mouseX, mouseY;
 	//! for mouse motion
 	int viewportSpeedX, viewportSpeedY;
+	Uint64 lastViewportStep;
 
 	// menu related functions
 	enum InGameMenu
@@ -663,7 +667,7 @@ private:
 		int lifeSpan; //!< maximum age of the particle
 		
 		int startImg; //!< image of the particle at birth
-		int endImg; //!< image of the partile at death
+		int endImg; //!< image of the particle at death
 		Color color; //!< color (team) of this particle
 	};
 	

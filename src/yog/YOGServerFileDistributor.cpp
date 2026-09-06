@@ -86,8 +86,11 @@ void YOGServerFileDistributor::update()
 			std::get<0>(*i)->sendMessage(fileInfo);
 			std::get<2>(*i) = 1;
 		}
-		else if(std::get<2>(*i) == 0) {
-			// WORKAROUND
+		else if(std::get<2>(*i) == 0)
+		{
+			// The header arrives through the next server update. Advance past
+			// this recipient so waiting for it cannot stall the message pump.
+			++i;
 			continue;
 		}
 		else if(std::get<2>(*i)-1 < (int)chunks.size() && std::get<1>(*i) < localtime)
@@ -104,7 +107,7 @@ void YOGServerFileDistributor::update()
 
 void YOGServerFileDistributor::addMapRequestee(std::shared_ptr<YOGServerPlayer> player)
 {
-	garunteeDataRequested();
+	guaranteeDataRequested();
 	players.push_back(std::make_tuple(player, boost::posix_time::second_clock::local_time(), 0));
 }
 
@@ -157,11 +160,11 @@ void YOGServerFileDistributor::loadDataFromFile()
 		istream->seekFromStart(0);
 		fileInfo = std::shared_ptr<NetSendFileInformation>(new NetSendFileInformation(size, fileID));
 		
-		int ammount=0;
-		while(ammount < size)
+		int amount=0;
+		while(amount < size)
 		{
 			std::shared_ptr<NetSendFileChunk> message(new NetSendFileChunk(istream, fileID));
-			ammount += message->getChunkSize();
+			amount += message->getChunkSize();
 			chunks.push_back(message);
 		}
 	}
@@ -172,12 +175,14 @@ void YOGServerFileDistributor::requestDataFromPlayer()
 {
 	if(!startedLoading)
 	{
+		// All recipients share this upload, including guests who rejoin.
+		startedLoading=true;
 		shared_ptr<NetRequestFile> message(new NetRequestFile(fileID));
 		player->sendMessage(message);
 	}
 }
 
-void YOGServerFileDistributor::garunteeDataRequested()
+void YOGServerFileDistributor::guaranteeDataRequested()
 {
 	if(player)
 		requestDataFromPlayer();

@@ -30,10 +30,10 @@
  * The GlobalContainer basically holds all preferences, data,
  * configuration information, etc.
  */
-GlobalContainer::GlobalContainer(void)
+GlobalContainer::GlobalContainer(const char *profileName)
 {
 	// Init toolkit
-	Toolkit::init("glob2");
+	Toolkit::init(profileName);
 
 	// init virtual filesystem
 	fileManager = Toolkit::getFileManager();
@@ -81,7 +81,7 @@ GlobalContainer::GlobalContainer(void)
 	terrain = NULL;
 	terrainShader = NULL;
 	terrainBlack = NULL;
-	ressources = NULL;
+	resources = NULL;
 	units = NULL;
 
 	menuFont = NULL;
@@ -237,9 +237,9 @@ void GlobalContainer::loadClient(void)
 		
 		updateLoadProgressScreen(60);
 		// load resources
-		ressources = Toolkit::getSprite("data/gfx/ressource");
-		ressources->createTextureAtlas(true);
-		ressourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
+		resources = Toolkit::getSprite("data/gfx/ressource");
+		resources->createTextureAtlas(true);
+		resourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
 		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
 		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
 		areaGuard = Toolkit::getSprite("data/gfx/area-guard");

@@ -7,11 +7,11 @@
 
 #include <string>
 
-//! No ressource identifier. This correspond to ressource type 255. On this case, variety, amout and animation are zero.
+//! No resource identifier. This correspond to resource type 255. On this case, variety, amount and animation are zero.
 #define NO_RES_TYPE 0xFF
 
-//! Either a ressource type is NO_RES_TYPE and all others fields are zero, or the ressource has a valid type and amount is NOT zero. This constraint does not apply if a ressource is eternal.
-struct Ressource
+//! Either a resource type is NO_RES_TYPE and all others fields are zero, or the resource has a valid type and amount is NOT zero. This constraint does not apply if a resource is eternal.
+struct Resource
 {
 	Uint8 type = NO_RES_TYPE;
 	Uint8 variety = 0;
@@ -22,10 +22,10 @@ struct Ressource
 	Uint32 getUint32() const { return animation | (amount<<8) | (variety<<16) | (type<<24); }
 };
 
-std::string getRessourceName(int type);
+std::string getResourceName(int type);
 
-#define MAX_NB_RESSOURCES 15
-#define MAX_RESSOURCES 8
+#define MAX_NB_RESOURCES 15
+#define MAX_RESOURCES 8
 #define NO_RES -1
 #define WOOD 0
 #define CORN 1
@@ -36,6 +36,6 @@ std::string getRessourceName(int type);
 #define ORANGE 6
 #define PRUNE 7
 #define BASIC_COUNT 5
-#define HAPPYNESS_BASE 5
-#define HAPPYNESS_COUNT (MAX_RESSOURCES-BASIC_COUNT)
+#define HAPPINESS_BASE 5
+#define HAPPINESS_COUNT (MAX_RESOURCES-BASIC_COUNT)
 

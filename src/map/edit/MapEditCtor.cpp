@@ -134,7 +134,7 @@ MapEdit::MapEdit()
 	orange = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, 248, 32, 32), "terrain view", "orange selector", "select orange tree", TerrainSelector::OrangeTree);
 	cherry = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+32+decX, 248, 32, 32), "terrain view", "cherry selector", "select cherry tree", TerrainSelector::CherryTree);
 	prune = new TerrainSelector(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+64+decX, 248, 32, 32), "terrain view", "prune selector", "select prune tree", TerrainSelector::PruneTree);
-	noRessourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
+	noResourceGrowthButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 294, 112, 16), "terrain view", "no ressources growth button", "select no ressources growth", "[no ressources growth areas]");
 	areasButton = new BlueButton(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH + 8+decX, 320, 112, 16), "terrain view", "script areas button", "select change areas", "[Script Areas]");
 	areaNumber = new NumberCycler(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 336, 8, 16), "terrain view", "script area number selector", "update script area number", 9);
 	areaNameLabel = new TextLabel(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+24+decX, 336, 104, 16), "terrain view", "script area name label", "open area name", "", false, Toolkit::getStringTable()->getString("[Unnamed Area]"));
@@ -151,7 +151,7 @@ MapEdit::MapEdit()
 	addWidget(orange);
 	addWidget(cherry);
 	addWidget(prune);
-	addWidget(noRessourceGrowthButton);
+	addWidget(noResourceGrowthButton);
 	addWidget(areasButton);
 	addWidget(areaNumber);
 	addWidget(areaNameLabel);
@@ -270,7 +270,7 @@ MapEdit::MapEdit()
 	isDraggingDelete=false;
 	isScrollDragging=false;
 	isDraggingArea=false;
-	isDraggingNoRessourceGrowthArea=false;
+	isDraggingNoResourceGrowthArea=false;
 
 	lastPlacementX=-1;
 	lastPlacementY=-1;

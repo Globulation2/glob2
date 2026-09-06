@@ -116,22 +116,22 @@ namespace Cortex
 				// Wheat-economy tracking: record per-swarm supply signals up to the
 				// bounded POD array. Buildings beyond CORTEX_MAX_TRACKED_SWARMS are
 				// not individually tracked — that's intentional (bounded array).
-				// C++: Building::ressources (Sint32*), building/Building.h:538
-				// C++: BuildingType::maxRessource[], maxUnitWorking, maxUnitInside
+				// C++: Building::resources (Sint32*), building/Building.h:538
+				// C++: BuildingType::maxResource[], maxUnitWorking, maxUnitInside
 				//      game/entities/BuildingType.h:76,80,79
 				// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
 				// C++: nearestCornDist: Chebyshev to nearest CORN tile, ai/cortex/CortexPlacement
-				// NOTE: b->ressources[CORN] is safe — for buildings with local (not
-				// global) ressources it points to localRessources; for global-ressource
-				// buildings it points to Team::teamRessources. The swarm is always a
-				// local-ressource building, so this is the building's own wheat stock.
+				// NOTE: b->resources[CORN] is safe — for buildings with local (not
+				// global) resources it points to localResources; for global-resource
+				// buildings it points to Team::teamResources. The swarm is always a
+				// local-resource building, so this is the building's own wheat stock.
 				if (obs.swarmCount < CORTEX_MAX_TRACKED_SWARMS)
 				{
 					TrackedBuilding& t = obs.trackedSwarms[obs.swarmCount];
 					t.valid           = 1;
 					t.gid             = b->gid;
-					t.corn            = b->ressources[CORN];
-					t.maxCorn         = bt->maxRessource[CORN];
+					t.corn            = b->resources[CORN];
+					t.maxCorn         = bt->maxResource[CORN];
 					t.maxUnitWorking  = b->maxUnitWorking;
 					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
 					t.maxUnitInside   = bt->maxUnitInside;
@@ -166,8 +166,8 @@ namespace Cortex
 			// FOOD_BUILDING == IntBuildingType::FOOD_BUILDING; guarded by the same
 			// ALIVE/!isBuildingSite predicate used for swarmsProducing above.
 			// Buildings beyond CORTEX_MAX_TRACKED_INNS are silently not tracked.
-			// C++: Building::ressources[CORN], building/Building.h:538
-			// C++: BuildingType::maxRessource[CORN], maxUnitInside, maxUnitWorking
+			// C++: Building::resources[CORN], building/Building.h:538
+			// C++: BuildingType::maxResource[CORN], maxUnitInside, maxUnitWorking
 			//      game/entities/BuildingType.h:76,79,80
 			// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
 			if (bt->shortTypeNum == IntBuildingType::FOOD_BUILDING
@@ -179,8 +179,8 @@ namespace Cortex
 					TrackedBuilding& t = obs.trackedInns[obs.innCount];
 					t.valid           = 1;
 					t.gid             = b->gid;
-					t.corn            = b->ressources[CORN];
-					t.maxCorn         = bt->maxRessource[CORN];
+					t.corn            = b->resources[CORN];
+					t.maxCorn         = bt->maxResource[CORN];
 					t.maxUnitWorking  = b->maxUnitWorking;
 					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
 					t.maxUnitInside   = bt->maxUnitInside;
@@ -215,23 +215,23 @@ namespace Cortex
 					// resource that limits how many units the inn sustains, so the hauler
 					// count tracks how empty the corn buffer is; fruit is happiness garnish
 					// and does not drive feeding, so it is deliberately excluded. One trip
-					// delivers multiplierRessource[CORN] units, so divide the deficit by it.
+					// delivers multiplierResource[CORN] units, so divide the deficit by it.
 					//
-					// We do NOT gate on Map::ressourceAvailable here: it reads the team
-					// resource gradient at (posX, posY), but updateRessourcesGradient marks
+					// We do NOT gate on Map::resourceAvailable here: it reads the team
+					// resource gradient at (posX, posY), but updateResourcesGradient marks
 					// every building-occupied tile GRADIENT_FORBIDDEN (MapGradientGlobal.cpp
 					// :141), so probing the inn's OWN footprint corner always returned false
 					// and zeroed the deficit — pinning every inn to one hauler. "No corn in
 					// reach" is instead handled coarsely in the policy via nearestWheatDist
-					// (CORTEX_INN_WHEAT_STARVED_RADIUS). C++: maxRessource/multiplierRessource
+					// (CORTEX_INN_WHEAT_STARVED_RADIUS). C++: maxResource/multiplierResource
 					// game/entities/BuildingType.h:76,78.
 					if (game != NULL)
 					{
-						const int cornDeficit = bt->maxRessource[CORN] - b->ressources[CORN];
+						const int cornDeficit = bt->maxResource[CORN] - b->resources[CORN];
 						if (cornDeficit > 0)
 						{
-							const int mult = (bt->multiplierRessource[CORN] > 0)
-								? bt->multiplierRessource[CORN] : 1;
+							const int mult = (bt->multiplierResource[CORN] > 0)
+								? bt->multiplierResource[CORN] : 1;
 							t.restockTripsNeeded = cornDeficit / mult;
 						}
 						else
@@ -296,23 +296,23 @@ namespace Cortex
 
 			// Construction sites (new builds AND in-progress upgrades): record the
 			// resource hauler-trips still needed so the policy can pour idle workers
-			// into them. A delivery adds multiplierRessource[r] to ressources[r]
+			// into them. A delivery adds multiplierResource[r] to resources[r]
 			// (building/Misc.cpp:178), so the trips left for resource r are
-			// ceil((maxRessource[r] - ressources[r]) / multiplierRessource[r]); the
-			// sum over the basic resource types bounds how many workers can usefully
-			// build it. b->ressources is the site's own (local) build stock.
+			// ceil((maxResource[r] - resources[r]) / multiplierResource[r]); the
+			// sum over the basic resource types bounds how many workers can usefuly
+			// build it. b->resources is the site's own (local) build stock.
 			// C++: BuildingType::isBuildingSite game/entities/BuildingType.h:92,
-			//      maxRessource/multiplierRessource :76,78; Building::ressources :538.
+			//      maxResource/multiplierResource :76,78; Building::resources :538.
 			if (bt->isBuildingSite && b->buildingState == Building::ALIVE
 			 && obs.siteCount < CORTEX_MAX_TRACKED_SITES)
 			{
 				int deliveriesLeft = 0;
-				for (int r = 0; r < MAX_RESSOURCES; r++)
+				for (int r = 0; r < MAX_RESOURCES; r++)
 				{
-					const int mult = bt->multiplierRessource[r];
+					const int mult = bt->multiplierResource[r];
 					if (mult <= 0)
 						continue;
-					const int rem = bt->maxRessource[r] - b->ressources[r];
+					const int rem = bt->maxResource[r] - b->resources[r];
 					if (rem > 0)
 						deliveriesLeft += (rem + mult - 1) / mult; // ceil to whole trips.
 				}
