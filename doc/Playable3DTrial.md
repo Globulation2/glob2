@@ -19,6 +19,10 @@ Rotated view:
 
 ![Rotated 3D game world](images/glob-3d/rotated.jpg)
 
+TRELLIS swarm model (current integration):
+
+![Textured 3D swarm in the rotated game world](images/glob-3d/trellis-swarm.jpg)
+
 ## Run
 
 ```sh
@@ -48,8 +52,11 @@ a save from the isolated profile.
 - Existing selection, construction, flag, area, minimap, and scrolling controls
   continue to use the original order and simulation systems.
 
-Buildings and resources are upright, camera-facing sprites with transparency and
-depth testing. Their original team colors and building damage variants are used.
+Completed swarms use the local TRELLIS model, with a solid ground-centered mesh,
+team-colored original texture and lighting on both sides of the walls. Swarm
+placement previews use the same mesh. Other buildings, construction sites and
+resources remain upright, camera-facing sprites with transparency and depth
+testing. Their original team colors and building damage variants are used.
 The ground uses the existing terrain tiles, with fog of war and area overlays.
 This initial map surface is flat; the camera and objects provide the 3D view.
 Building and unit status indicators share the original 2D drawing functions.
@@ -79,6 +86,26 @@ stationary pose; building work reuses the worker harvest clip. Unit heading and
 flight altitude come from the live unit state. The metaball topology changes
 between poses, so the trial uses per-frame triangle meshes rather than skeletal
 skinning. Display lists cache these poses for repeated rendering.
+
+## Swarm model
+
+The original local TRELLIS GLB is retained at
+`datasrc/gfx/buildings/swarm-trellis.glb`. Its conversion script preserves the
+surface and UVs, removes duplicate triangles and extracts the embedded color
+texture. This first integration keeps approximately 199,000 triangles so the
+shape remains faithful. Runtime display lists cache geometry; team textures
+retain 2048px detail and use mipmaps when zoomed out. No reduced-detail levels
+are implemented yet, so many swarms may cost more GPU time and memory.
+
+```sh
+blender -b --disable-autoexec --python tools/export_swarm_model.py -- "$PWD"
+python3 test/World3DSwarmAssetsTest.py
+```
+
+The original sprite remains the fallback if the mesh or texture is unavailable.
+Swarm worker/stock/health indicators and picking bounds follow the model's
+projected bounds. The simulation footprint stays unchanged. The original 2D
+view continues to draw its swarm sprite.
 
 ## Rebuild the unit assets
 

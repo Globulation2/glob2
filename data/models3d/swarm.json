@@ -1,0 +1,22 @@
+{
+  "source": "datasrc/gfx/buildings/swarm-trellis.glb",
+  "source_sha256": "c33fd3b6b54f977ac7a74be391a8ba719b5d340de9aee1517a73ade7cbaa7301",
+  "triangles": 198982,
+  "bounds": [
+    [
+      -0.49999999999999994,
+      -0.4831004090674356,
+      0.0
+    ],
+    [
+      0.49999999999999994,
+      0.4831004090674356,
+      1.1519660054344516
+    ]
+  ],
+  "coordinates": "Z-up, XY centered, base at Z=0, longest ground span=1",
+  "texture": "swarm-basecolor.png",
+  "conversion": "Original surface, UVs and embedded texture; exact duplicate triangles removed; coordinates normalized",
+  "duplicate_triangles_removed": 989,
+  "texture_sha256": "ca733a51e0998274004e007faccb64e933f3aafafb44261d1e95cdc817462508"
+}
