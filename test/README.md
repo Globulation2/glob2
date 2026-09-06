@@ -1,6 +1,6 @@
 # glob2/test/
 
-CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exception is `GameGUISelectionHarness`, which uses the top-level `selection-test` target described below.
+CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exceptions are `GameGUISelectionHarness` and `TerrainResourcesHarness`, which use the top-level `selection-test` and `terrain-test` targets described below.
 
 ## Selection lifetime regression
 
@@ -9,37 +9,6 @@ point. It exercises selected building/unit deletion before the next GUI draw,
 null selections, and a live unit with no peer. It runs headlessly, using the real
 `GameGUI`, entity classes, selection setters, and destruction hooks. A friend
 fixture accesses the private selection API without exposing it to game callers.
-
-Build and run it from the repository root (the Linux CI also runs this target):
-
-```sh
-scons -j8 release=1 server=0 selection-test
-./build/src/GameGUISelectionHarness
-```
-
-For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux:
-
-```sh
-scons -j8 release=0 server=0 --build=build/selection-asan selection-test \
-  CXXFLAGS='-g -fsanitize=address,undefined -fno-omit-frame-pointer' \
-  LINKFLAGS='-g -fsanitize=address,undefined'
-./build/selection-asan/src/GameGUISelectionHarness
-```
-
-If Homebrew sdl2-compat cannot locate SDL3 under the macOS sanitizer, prefix
-the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
-
-SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
-normal build. This is a direct method regression, not an interactive replay test.
-
-## Selection lifetime regression
-
-`GameGUISelectionHarness.cpp` links the real client objects with a test entry
-point. It exercises selected building/unit deletion before the next GUI draw,
-null selections, and a live unit with no peer. It runs headlessly, using the real
-`GameGUI`, entity classes, selection setters, and destruction hooks. A friend
-fixture accesses the private selection API without exposing it to game callers.
-There are no generated sources or substitute entity/GUI classes.
 
 Build and run it from the repository root (the Linux CI also runs this target):
 
