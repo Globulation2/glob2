@@ -13,7 +13,9 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
-#ifndef WIN32
+#ifdef WIN32
+#include <process.h>
+#else
 #include <sys/resource.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -34,8 +36,17 @@ static std::string contents(const fs::path& path)
 static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 {
 	const std::string path = (directory / "atomic.game").string();
+#ifdef WIN32
+	const auto process = _getpid();
+#else
+	const auto process = getpid();
+#endif
+	const std::string collision = path + ".tmp-" + std::to_string(process) + "-0";
+	{ std::ofstream existing(collision); existing << "keep"; }
 	const auto write = [](OutputStream& stream) { stream.write("complete", 8, "data"); };
 	assert(files.writeAtomically(path, write));
+	assert(contents(collision) == "keep");
+	fs::remove(collision);
 	assert(contents(path) == "complete");
 	assert(!files.writeAtomically(path, [](OutputStream& stream) {
 		stream.write("partial", 7, "data");
@@ -76,7 +87,7 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 #endif
 	for (const auto& entry : fs::directory_iterator(directory))
 		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
-	std::cout << "PASS atomic creation/replacement, seek, serialization/open/rename failure, temporary cleanup" << std::endl;
+	std::cout << "PASS atomic creation/replacement, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup" << std::endl;
 #ifndef WIN32
 	std::cout << "PASS injected short write and buffered flush failure preserve previous bytes" << std::endl;
 #endif

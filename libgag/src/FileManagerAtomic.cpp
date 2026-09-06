@@ -6,6 +6,9 @@
 #include <memory>
 #ifdef WIN32
 #include <windows.h>
+#include <fcntl.h>
+#include <io.h>
+#include <sys/stat.h>
 #else
 #include <unistd.h>
 #endif
@@ -14,6 +17,26 @@ namespace GAGCore
 {
 	namespace
 	{
+		FILE *openExclusive(const std::string& path)
+		{
+#ifdef WIN32
+			const int fd = _open(path.c_str(), _O_WRONLY | _O_CREAT | _O_EXCL | _O_BINARY,
+				_S_IREAD | _S_IWRITE);
+			if (fd < 0) return NULL;
+			FILE *file = _fdopen(fd, "wb");
+			if (!file)
+			{
+				const int error = errno;
+				_close(fd);
+				std::remove(path.c_str());
+				errno = error;
+			}
+			return file;
+#else
+			return fopen(path.c_str(), "wbx");
+#endif
+		}
+
 		class CheckedFileBackend : public FileStreamBackend
 		{
 		public:
@@ -73,7 +96,7 @@ namespace GAGCore
 			for (int attempt = 0; attempt < 100; ++attempt)
 			{
 				temporary = path + ".tmp-" + std::to_string(process) + "-" + std::to_string(sequence++);
-				file = fopen(temporary.c_str(), "wbx");
+				file = openExclusive(temporary);
 				if (file || errno != EEXIST) break;
 			}
 			if (!file) continue;
