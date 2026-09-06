@@ -51,6 +51,11 @@ jobs:
           scons -j$(nproc) release=1 server=0 terrain-test
           ./build/src/TerrainResourcesHarness
 
+      - name: Build and run the LAN session regression
+        run: |
+          scons -j$(nproc) release=1 server=0 lan-test
+          python3 test/run_lan_session_test.py build/src/LANSessionHarness
+
       - name: Build and run the tests
         working-directory: test
         run: |

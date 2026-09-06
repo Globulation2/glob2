@@ -85,3 +85,36 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 - Testing other Map behaviors (`doesUnitTouch*`, `doesPosTouch*`, `setClearingArea*`, `markImmobileUnit`, etc.).
 - Adding regression tests around any Map state mutator before refactoring it.
 - **Don't use** for behaviors that genuinely need real `Game` / `Team` / `Unit` / `Building` wiring (e.g. `doesUnitTouchEnemy` reaches into `game->teams[]->myBuildings[]`) — those need either a different stub set or a refactor to decouple first.
+
+## Real LAN session regression
+
+From the repository root:
+
+```sh
+scons -j2 release=1 server=0 lan-test
+python3 test/run_lan_session_test.py build/src/LANSessionHarness
+```
+
+This runs separate host and joining client processes with real SDL lobby widgets,
+YOG anonymous LAN server, game router, and TCP connections. The joiner uses the
+actual `LANFindScreen` Connect path. It clicks Ready and Leave Game, then rejoins.
+Both cycles force a map download and compare all 616018 bytes against the fixture
+source (`maps/FourSquares1.map`). The host verifies readiness, roster size, unique
+player IDs, slot masks, and both departures. The map's current size is not hardcoded
+in the test. Linux CI runs this automatically with SDL's dummy video/audio drivers.
+
+For two physical machines, run these from each machine's repository root, using
+absolute capture prefixes whose parent directories already exist:
+
+```sh
+SDL_VIDEODRIVER=dummy ./build/src/LANSessionHarness host 127.0.0.1 2 /tmp/lan-host
+SDL_VIDEODRIVER=dummy ./build/src/LANSessionHarness join HOST_IP 2 /tmp/lan-guest
+```
+
+Start the joiner after the host prints `HOST roster=1`. TCP ports 7489 and 7491
+must be reachable; this does not connect to the public YOG service. Omit
+`SDL_VIDEODRIVER=dummy` to show the real window. Normal game profiles are preserved;
+the harness uses `.glob2-lan-test-host` and `.glob2-lan-test-join` profiles containing
+only test data. Fixed input timers allow map transfer before leaving; the runner
+bounds startup, execution, and child cleanup. Logs and captures are written under
+`output/lan-session-test` by default (`--output` overrides it).
