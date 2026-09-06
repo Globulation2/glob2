@@ -13,7 +13,7 @@
 
 // Resource pathfinding for units (pathfindResource, pathfindLocalResource, pathfindRandom)
 
-bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
+bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int swimClass, Building *target, int x, int y, int *dx, int *dy, bool *stopWork)
 {
 	assert(resourceType<MAX_RESOURCES);
 	const Uint8 *gradient=resourcesGradient[teamNumber][resourceType][canSwim];
@@ -32,10 +32,20 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int
 		return false;
 	}
 
-	const Uint16 *cost = resourcesCost[teamNumber][resourceType][canSwim];
-	if (PathfindPolicy::useAlternative(teamNumber) && cost != NULL)
+	const Uint16 *cost = NULL;
+	if (PathfindPolicy::useAlternative(teamNumber))
 	{
-		if (directionByCost(teamMask, canSwim, x, y, cost, dx, dy, true))
+		activeSwimClasses[teamNumber] |= 1u << swimClass;
+		if (target != NULL)
+			cost = composedField(target, resourceType, swimClass);
+		if (cost == NULL)
+			cost = resourcesCost[teamNumber][resourceType][swimClass];
+	}
+	if (cost != NULL)
+	{
+		if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, true))
+			return true;
+		if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, false))
 			return true;
 	}
 	else if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true))

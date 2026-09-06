@@ -73,7 +73,7 @@ void WeightedFieldTest::testOpenGridIsOctileOnTorus()
 	Field f(map.cells());
 	const int gx = 1, gy = 2;
 	f.seed[map.coordToIndex(gx, gy)] = GRADIENT_AT_GOAL;
-	map.buildWeightedField(f.seed.data(), f.cost.data(), false);
+	map.buildWeightedField(f.seed.data(), f.cost.data(), 0);
 	for (int y = 0; y < 8; y++)
 		for (int x = 0; x < 8; x++)
 		{
@@ -91,7 +91,7 @@ void WeightedFieldTest::testObstaclesForcePathAround()
 	for (int y = 0; y < 7; y++)
 		f.seed[map.coordToIndex(4, y)] = GRADIENT_FORBIDDEN;
 	f.seed[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.buildWeightedField(f.seed.data(), f.cost.data(), false);
+	map.buildWeightedField(f.seed.data(), f.cost.data(), 0);
 	// (3,0) is adjacent-ish: two cardinal steps west.
 	CPPUNIT_ASSERT_EQUAL(30, (int)f.cost[map.coordToIndex(3, 0)]);
 	// (5,0): wrap east is 3 cardinal steps (5->6->7->0).
@@ -116,7 +116,7 @@ void WeightedFieldTest::testWaterCostsDoubleForSwimmers()
 	}
 	Field f(map.cells());
 	f.seed[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.buildWeightedField(f.seed.data(), f.cost.data(), true);
+	map.buildWeightedField(f.seed.data(), f.cost.data(), 5);
 	// (3,0) -> (2,0) water 20 -> (1,0) water 20 -> (0,0) land 10 = 50.
 	// Around: (3,0)->(4,0)->...->(7,0)->(0,0) = 5 land steps = 50. Tie: 50.
 	CPPUNIT_ASSERT_EQUAL(50, (int)f.cost[map.coordToIndex(3, 0)]);
@@ -133,7 +133,7 @@ void WeightedFieldTest::testWaterCostsDoubleForSwimmers()
 		g.seed[map.coordToIndex(2, y)] = GRADIENT_FORBIDDEN;
 	}
 	g.seed[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.buildWeightedField(g.seed.data(), g.cost.data(), false);
+	map.buildWeightedField(g.seed.data(), g.cost.data(), 0);
 	CPPUNIT_ASSERT_EQUAL(50, (int)g.cost[map.coordToIndex(3, 0)]);
 	CPPUNIT_ASSERT_EQUAL(40, (int)g.cost[map.coordToIndex(4, 0)]);
 }
@@ -148,7 +148,7 @@ void WeightedFieldTest::testUnreachableCellsStayInfinite()
 			if (dx || dy)
 				f.seed[map.coordToIndex(6 + dx, 6 + dy)] = GRADIENT_FORBIDDEN;
 	f.seed[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.buildWeightedField(f.seed.data(), f.cost.data(), false);
+	map.buildWeightedField(f.seed.data(), f.cost.data(), 0);
 	CPPUNIT_ASSERT_EQUAL((int)Map::COST_INFINITY, (int)f.cost[map.coordToIndex(6, 6)]);
 	CPPUNIT_ASSERT_EQUAL(0, (int)f.cost[map.coordToIndex(0, 0)]);
 }
@@ -163,7 +163,7 @@ void WeightedFieldTest::testGradientWriteback()
 			if (dx || dy)
 				f.seed[map.coordToIndex(6 + dx, 6 + dy)] = GRADIENT_FORBIDDEN;
 	f.seed[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.buildWeightedField(f.seed.data(), f.cost.data(), false);
+	map.buildWeightedField(f.seed.data(), f.cost.data(), 0);
 	std::vector<Uint8> gradient = f.seed;
 	map.writeGradientFromCost(f.cost.data(), gradient.data());
 	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_AT_GOAL, (int)gradient[map.coordToIndex(0, 0)]);
@@ -180,18 +180,18 @@ void WeightedFieldTest::testDirectionByCostPrefersCheapestTotal()
 	GrassMap map;
 	Field f(map.cells());
 	f.seed[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.buildWeightedField(f.seed.data(), f.cost.data(), false);
+	map.buildWeightedField(f.seed.data(), f.cost.data(), 0);
 	int dx = 9, dy = 9;
 	// From (3,3) the cheapest neighbour is the diagonal (2,2).
-	CPPUNIT_ASSERT(map.directionByCost(1, false, 3, 3, f.cost.data(), &dx, &dy, true));
+	CPPUNIT_ASSERT(map.directionByCost(1, 0, 3, 3, f.cost.data(), &dx, &dy, true));
 	CPPUNIT_ASSERT_EQUAL(-1, dx);
 	CPPUNIT_ASSERT_EQUAL(-1, dy);
 	// From (3,0) it is straight west.
-	CPPUNIT_ASSERT(map.directionByCost(1, false, 3, 0, f.cost.data(), &dx, &dy, true));
+	CPPUNIT_ASSERT(map.directionByCost(1, 0, 3, 0, f.cost.data(), &dx, &dy, true));
 	CPPUNIT_ASSERT_EQUAL(-1, dx);
 	CPPUNIT_ASSERT_EQUAL(0, dy);
 	// At the goal: stay.
-	CPPUNIT_ASSERT(map.directionByCost(1, false, 0, 0, f.cost.data(), &dx, &dy, true));
+	CPPUNIT_ASSERT(map.directionByCost(1, 0, 0, 0, f.cost.data(), &dx, &dy, true));
 	CPPUNIT_ASSERT_EQUAL(0, dx);
 	CPPUNIT_ASSERT_EQUAL(0, dy);
 }
@@ -201,13 +201,13 @@ void WeightedFieldTest::testDirectionByCostBlockedNeighbour()
 	GrassMap map;
 	Field f(map.cells());
 	f.seed[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
-	map.buildWeightedField(f.seed.data(), f.cost.data(), false);
+	map.buildWeightedField(f.seed.data(), f.cost.data(), 0);
 	// Another unit stands on (2,2): from (3,3) the strict move must pick a
 	// neighbour that still makes progress, e.g. (2,3) or (3,2) (cost 20+... ),
 	// never the occupied diagonal.
 	map.putGroundUnit(2, 2);
 	int dx = 9, dy = 9;
-	CPPUNIT_ASSERT(map.directionByCost(1, false, 3, 3, f.cost.data(), &dx, &dy, true));
+	CPPUNIT_ASSERT(map.directionByCost(1, 0, 3, 3, f.cost.data(), &dx, &dy, true));
 	CPPUNIT_ASSERT(!(dx == -1 && dy == -1));
 	CPPUNIT_ASSERT((dx == -1 && dy == 0) || (dx == 0 && dy == -1));
 	// Fully surrounded by units: strict fails, non-strict also fails (no free cell).
@@ -215,6 +215,6 @@ void WeightedFieldTest::testDirectionByCostBlockedNeighbour()
 		for (int ddx = -1; ddx <= 1; ddx++)
 			if (ddx || ddy)
 				map.putGroundUnit(3 + ddx, 3 + ddy);
-	CPPUNIT_ASSERT(!map.directionByCost(1, false, 3, 3, f.cost.data(), &dx, &dy, true));
-	CPPUNIT_ASSERT(!map.directionByCost(1, false, 3, 3, f.cost.data(), &dx, &dy, false));
+	CPPUNIT_ASSERT(!map.directionByCost(1, 0, 3, 3, f.cost.data(), &dx, &dy, true));
+	CPPUNIT_ASSERT(!map.directionByCost(1, 0, 3, 3, f.cost.data(), &dx, &dy, false));
 }

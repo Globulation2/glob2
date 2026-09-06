@@ -14,6 +14,7 @@
 #include <GAGSys.h>
 #include <Stream.h>
 #include "Sector.h"
+#include "Map.h"
 #include "render/GameAnimations.h"
 
 Sector::Sector(Game *) {}
@@ -34,3 +35,7 @@ UnitDeathAnimation::UnitDeathAnimation(int x_, int y_, Team *t)
 // setGame (the GrassMap fixture bypasses it), but Map.o's symbol is still linked.
 void GameAnimations::resize(int) {}
 #endif
+
+// Reached only through Map::ensureBuildingField, which the weighted-field
+// test never calls (it seeds fields directly).
+void Map::updateGlobalGradient(Building *, bool) {}

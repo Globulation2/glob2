@@ -19,11 +19,10 @@
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
+	initWeightedFields();
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
-		globalCost[i]=NULL;
-		weightedFieldDirty[i]=true;
 		localResources[i]=NULL;
 	}
 	load(stream, types, owner, versionMinor);
@@ -31,6 +30,7 @@ Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *ow
 
 Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture)
 {
+	initWeightedFields();
 	// identity
 	this->gid=gid;
 	owner=team;
@@ -118,8 +118,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		globalGradient[i]=NULL;
-		globalCost[i]=NULL;
-		weightedFieldDirty[i]=true;
 		localResources[i]=NULL;
 		dirtyLocalGradient[i]=true;
 		locked[i]=false;
@@ -150,10 +148,11 @@ Building::~Building()
 
 void Building::resetLocalResources()
 {
+	for (int c=0; c<PATHFIND_SWIM_CLASS_COUNT; c++)
+		weightedFieldDirty[c] = true;
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		dirtyLocalGradient[i] = true;
-		weightedFieldDirty[i] = true;
 		locked[i] = false;
 		delete[] localResources[i];
 		localResources[i] = NULL;
@@ -162,15 +161,13 @@ void Building::resetLocalResources()
 
 void Building::resetPathfindGradients()
 {
+	freeWeightedFields();
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		dirtyLocalGradient[i] = true;
-		weightedFieldDirty[i] = true;
 		locked[i] = false;
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
-		delete[] globalCost[i];
-		globalCost[i] = NULL;
 		delete[] localResources[i];
 		localResources[i] = NULL;
 	}
@@ -539,3 +536,35 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
+
+void Building::initWeightedFields()
+{
+	for (int c=0; c<PATHFIND_SWIM_CLASS_COUNT; c++)
+	{
+		globalCost[c]=NULL;
+		globalCostVersion[c]=0;
+		lastWeightedUpdateStep[c]=0;
+		weightedFieldDirty[c]=true;
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		{
+			composedCost[r][c]=NULL;
+			composedResVersion[r][c]=0;
+			composedBldVersion[r][c]=0;
+		}
+	}
+}
+
+void Building::freeWeightedFields()
+{
+	for (int c=0; c<PATHFIND_SWIM_CLASS_COUNT; c++)
+	{
+		delete[] globalCost[c];
+		globalCost[c]=NULL;
+		weightedFieldDirty[c]=true;
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		{
+			delete[] composedCost[r][c];
+			composedCost[r][c]=NULL;
+		}
+	}
+}

@@ -12,6 +12,7 @@
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include "PathfindStats.h"
+#include "PathfindPolicy.h"
 
 void Unit::handleDisplacement(void)
 {
@@ -163,7 +164,17 @@ void Unit::handleDisplacement(void)
 								if (need>0)
 								{
 									int distToResource;
-									if (map->resourceAvailable(teamNumber, r, canSwim, posX, posY, &distToResource))
+									bool available;
+									if (PathfindPolicy::useAlternative(teamNumber)
+										&& map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource))
+									{
+										// Round trip from the building: half of it is the way there.
+										distToResource = (distToResource + 1) / 2;
+										available = true;
+									}
+									else
+										available = map->resourceAvailable(teamNumber, r, canSwim, posX, posY, &distToResource);
+									if (available)
 									{
 										if ((distToResource<<1)>=timeLeft)
 											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.

@@ -508,7 +508,7 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy))
+	else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy, swimClass()))
 	{
 		movement=MOV_GOING_DX_DY;
 	}
@@ -559,7 +559,7 @@ void Unit::handleMovementGoingToResource()
 	int teamNumber=owner->teamNumber;
 	bool canSwim=performance[SWIM]>0;
 	bool stopWork;
-	if (map->pathfindResource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork))
+	if (map->pathfindResource(teamNumber, destinationPurpose, canSwim, swimClass(), attachedBuilding, posX, posY, &dx, &dy, &stopWork))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;

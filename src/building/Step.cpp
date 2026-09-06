@@ -13,6 +13,7 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Order.h"
+#include "PathfindPolicy.h"
 
 namespace
 {
@@ -107,11 +108,16 @@ bool Building::considerUnitForResources(Unit* unit, int* dist, int* resource)
 			else
 				fruitFound=true;
 			int distResource = 0;
-			if (map->resourceAvailable(owner->teamNumber, r, canSwim, x, y, &distResource))
+			int roundTrip = 0;
+			bool useRoundTrip = PathfindPolicy::useAlternative(owner->teamNumber)
+				&& map->roundTripDistance(this, r, unit->swimClass(), x, y, &roundTrip);
+			if (useRoundTrip || map->resourceAvailable(owner->teamNumber, r, canSwim, x, y, &distResource))
 			{
+				if (useRoundTrip)
+					distResource = roundTrip - distBuilding > 0 ? roundTrip - distBuilding : 0;
 				if(distResource<timeLeft)
 				{
-					int dist = (distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
+					int dist = (useRoundTrip ? roundTrip : distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
 					int value = dist / need;
 					if(value < bestDist)
 					{

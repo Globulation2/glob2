@@ -66,7 +66,6 @@ Map::Map()
 			for (int s=0; s<2; s++)
 			{
 				resourcesGradient[t][r][s] = NULL;
-				resourcesCost[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
 			}
 	for (int t=0; t<Team::MAX_COUNT; t++)
@@ -80,6 +79,16 @@ Map::Map()
 		}
 	for (int t = 0; t < Team::MAX_COUNT; t++)
 		exploredArea[t] = NULL;
+	for (int t=0; t<Team::MAX_COUNT; t++)
+	{
+		activeSwimClasses[t] = 0;
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+			for (int c=0; c<SWIM_CLASS_COUNT; c++)
+			{
+				resourcesCost[t][r][c] = NULL;
+				resourcesCostVersion[t][r][c] = 0;
+			}
+	}
 	
 	undermap=NULL;
 	sectors=NULL;
@@ -115,13 +124,19 @@ void Map::clear()
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
+		activeSwimClasses[t] = 0;
+		for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			for (int c=0; c<SWIM_CLASS_COUNT; ++c)
+			{
+				delete[] resourcesCost[t][r][c];
+				resourcesCost[t][r][c] = NULL;
+				resourcesCostVersion[t][r][c] = 0;
+			}
 		for (int r=0; r<MAX_RESOURCES; ++r)
 			for (int swim=0; swim<2; ++swim)
 			{
 				delete[] resourcesGradient[t][r][swim];
 				resourcesGradient[t][r][swim] = NULL;
-				delete[] resourcesCost[t][r][swim];
-				resourcesCost[t][r][swim] = NULL;
 				gradientUpdated[t][r][swim] = false;
 			}
 		for (int swim=0; swim<2; ++swim)

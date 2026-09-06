@@ -254,6 +254,8 @@ public:
 
 	// quality parameters
 	Sint32 performance[NB_ABILITY];
+	//! Swim class for the weighted pathfinder (Map::swimClass of walk/swim speed).
+	int swimClass() const;
 	Sint32 level[NB_ABILITY];
 	bool canLearn[NB_ABILITY];
 	Sint32 experience;

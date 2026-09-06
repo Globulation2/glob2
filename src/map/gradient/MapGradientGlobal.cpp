@@ -147,11 +147,7 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSw
 
 	if (PathfindPolicy::useAlternative(teamNumber))
 	{
-		Uint16 *&cost = resourcesCost[teamNumber][resourceType][canSwim];
-		if (cost == NULL)
-			cost = new Uint16[size];
-		buildWeightedField(gradient, cost, canSwim);
-		writeGradientFromCost(cost, gradient);
+		buildResourceClassFields(teamNumber, resourceType, canSwim, gradient);
 		return;
 	}
 	updateGlobalGradient(gradient);

@@ -32,6 +32,7 @@ namespace PathfindStats
 		Timer pointToPoint;         // Map::pathfindPointToPoint (A*)
 		Timer weightedField;        // Map::buildWeightedField (alternative pathfinder)
 		std::uint64_t directionByCostCalls = 0;
+		std::uint64_t composedFieldBuilds = 0;
 		std::uint64_t pointToPointExpanded = 0;
 		std::uint64_t minigradCalls = 0;
 		std::uint64_t pathfindBuildingCalls = 0;
@@ -86,7 +87,7 @@ namespace PathfindStats
 		printTimer("local_gradient", c.localGradient);
 		printTimer("point_to_point", c.pointToPoint);
 		printTimer("weighted_field", c.weightedField);
-		std::printf("GLOB2_PF direction_by_cost_calls=%llu\n", (unsigned long long)c.directionByCostCalls);
+		std::printf("GLOB2_PF direction_by_cost_calls=%llu composed_field_builds=%llu\n", (unsigned long long)c.directionByCostCalls, (unsigned long long)c.composedFieldBuilds);
 		std::printf("GLOB2_PF point_to_point_expanded=%llu\n", (unsigned long long)c.pointToPointExpanded);
 		std::printf("GLOB2_PF minigrad_calls=%llu pathfind_building_calls=%llu pathfind_resource_calls=%llu pathfind_resource_stuck=%llu\n",
 			(unsigned long long)c.minigradCalls, (unsigned long long)c.pathfindBuildingCalls,

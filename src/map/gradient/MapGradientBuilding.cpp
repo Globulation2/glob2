@@ -121,12 +121,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 
 	if (PathfindPolicy::useAlternative(building->owner->teamNumber))
 	{
-		Uint16 *&cost = building->globalCost[canSwim];
-		if (cost == NULL)
-			cost = new Uint16[size];
-		buildWeightedField(gradient, cost, canSwim);
-		writeGradientFromCost(cost, gradient);
-		building->weightedFieldDirty[canSwim]=false;
+		buildBuildingClassFields(building, canSwim, gradient);
 		return;
 	}
 	updateGlobalGradient(gradient);

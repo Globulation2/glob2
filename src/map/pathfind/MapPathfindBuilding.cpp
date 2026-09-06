@@ -114,7 +114,7 @@ bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int 
 }
 
 
-bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, int swimClass)
 {
 	PathfindStats::get().pathfindBuildingCalls++;
 	assert(building);
@@ -129,7 +129,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy);
 	}
 	if (PathfindPolicy::useAlternative(building->owner->teamNumber))
-		return pathfindBuildingWeighted(building, canSwim, x, y, dx, dy);
+		return pathfindBuildingWeighted(building, swimClass >= 0 ? swimClass : (canSwim ? DEFAULT_SWIM_CLASS : 0), x, y, dx, dy);
 	Uint8 *gradient=building->localGradient[canSwim];
 	if (isInLocalGradient(x, y, bx, by))
 	{
@@ -202,45 +202,27 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 }
 
 
-namespace {
-// A dirty weighted field is rebuilt at most this often (ticks); the baseline local
-// gradient refreshes immediately but only covers 32x32.
-constexpr Uint32 WEIGHTED_FIELD_DIRTY_REBUILD_TICKS = 25;
-}
-
 // Alternative pathfinder: no 32x32 local field, one weighted full-map field per
-// building, rebuilt lazily when the unit cannot make progress and the field is
-// older than 128 ticks (same throttle as the baseline global gradient).
-bool Map::pathfindBuildingWeighted(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
+// building and swim class (see Map::ensureBuildingField for when it is rebuilt).
+bool Map::pathfindBuildingWeighted(Building *building, int swimClass, int x, int y, int *dx, int *dy)
 {
 	Uint32 teamMask=building->owner->me;
-	if (building->globalGradient[canSwim]==NULL)
-	{
-		building->globalGradient[canSwim]=new Uint8[size];
-		updateGlobalGradient(building, canSwim);
-		building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
-	}
-	else if (building->weightedFieldDirty[canSwim]
-		&& building->lastGlobalGradientUpdateStepCounter[canSwim]+WEIGHTED_FIELD_DIRTY_REBUILD_TICKS<=game->stepCounter)
-	{
-		updateGlobalGradient(building, canSwim);
-		building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
-	}
-	if (building->locked[canSwim])
+	const Uint16 *cost=ensureBuildingField(building, swimClass);
+	if (cost==NULL)
 		return false;
-	const Uint16 *cost=building->globalCost[canSwim];
-	assert(cost);
-	if (directionByCost(teamMask, canSwim, x, y, cost, dx, dy, true))
+	if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, true))
 		return true;
-	if (building->lastGlobalGradientUpdateStepCounter[canSwim]+128>game->stepCounter)
-		return directionByCost(teamMask, canSwim, x, y, cost, dx, dy, false);
-	updateGlobalGradient(building, canSwim);
-	building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
-	if (building->locked[canSwim])
+	if (building->lastWeightedUpdateStep[swimClass]+128>game->stepCounter)
+		return directionByCost(teamMask, swimClass, x, y, cost, dx, dy, false);
+	// Stuck for a while: the field may be stale, rebuild it now.
+	building->weightedFieldDirty[swimClass]=true;
+	building->lastWeightedUpdateStep[swimClass]=0;
+	cost=ensureBuildingField(building, swimClass);
+	if (cost==NULL)
 		return false;
-	if (directionByCost(teamMask, canSwim, x, y, cost, dx, dy, true))
+	if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, true))
 		return true;
-	return directionByCost(teamMask, canSwim, x, y, cost, dx, dy, false);
+	return directionByCost(teamMask, swimClass, x, y, cost, dx, dy, false);
 }
 
 void Map::dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber)
