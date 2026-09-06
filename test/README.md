@@ -141,6 +141,21 @@ The GL run requires an OpenGL-enabled build. On macOS, the Homebrew SDL workarou
 described above also applies. To run with sanitizers, use the flags in the selection
 regression instructions with the `aspect-test` target instead.
 
+## Wrapped building footprint regression
+
+From the repository root, run `scons -j8 release=1 server=0 building-footprint-test`
+and `./build/src/BuildingFootprintHarness`. The harness links the real engine and
+round-trips generated fixtures through binary saved games. It checks exact map
+occupancy, missing/stale-cell repair, repeated integrity checks, and ground exits
+for interior, negative-origin and positive wrapped footprints. It protects the
+runtime fix in `fafb5e9a`: the old predicate erased valid wrapped cells on load and
+could subsequently abort in `Building::findGroundExit`.
+
+It needs no display, AI tournament tooling, or external save files. Linux CI runs
+it on both supported Ubuntu versions.
+
+Saved state and step-by-step before/after reproduction: [PR #165 fixture](fixtures/wrapped-building/README.md).
+
 ## Entering unit save regression
 
 From the repository root, run `scons -j8 release=1 server=0 entering-unit-save-test`

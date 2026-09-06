@@ -43,6 +43,12 @@ jobs:
           scons -j$(nproc) release=1 server=0 selection-test
           ./build/src/GameGUISelectionHarness
 
+      - name: Build and run the wrapped building footprint regression
+        run: |
+          scons -j$(nproc) release=1 server=0 building-footprint-test
+          ./build/src/BuildingFootprintHarness
+          ./build/src/BuildingFootprintHarness --load test/fixtures/wrapped-building/reproducer.game
+
       - name: Build and run the entering unit save regression
         run: |
           scons -j$(nproc) release=1 server=0 entering-unit-save-test
