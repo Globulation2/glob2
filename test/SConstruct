@@ -1,6 +1,15 @@
+import os
 import sys
 
+sys.path.append( os.path.abspath("../scons") )
+import ccache
+
 env = Environment()
+
+# Compiler cache, shared with the top-level build. Set before the Clone()s
+# below so every harness environment inherits it.
+if ccache.enabled():
+    ccache.enable(env)
 
 # Shared include paths so tests can compile against game headers.
 # echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
