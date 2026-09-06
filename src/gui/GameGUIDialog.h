@@ -101,13 +101,17 @@ public:
 public:
 	Selector *musicVol;
 	Selector *voiceVol;
+	Selector *gameSpeed;
 	OnOffButton* mute;
 	Text *musicVolText;
 	Text *voiceVolText;
+	Text *gameSpeedText;
+	bool adjustableGameSpeed;
 public:
 	InGameOptionScreen(GameGUI *gameGUI);
 	~InGameOptionScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
+	void updateGameSpeedText(void);
 };
 
 

@@ -195,6 +195,8 @@ public:
 	KeyboardManager keyboardManager;
 public:
 	Game game;
+	/// Live network games always use normal speed; replays remain adjustable.
+	bool canChangeGameSpeed() const;
 	friend class Game;
 	bool gamePaused;
 	bool hardPause;
@@ -228,6 +230,7 @@ private:
 	void handleKey(SDL_Keysym key, bool pressed);
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
+	void changeGameSpeed(int amount);
 	void handleKeySwitchToAreaBrush(int figure);
 	void handleKeySelectConstruct(const char *buildingName);
 	void handleKeySelectPlaceFlag(const char *flagName);
@@ -508,6 +511,7 @@ private:
 	int mouseX, mouseY;
 	//! for mouse motion
 	int viewportSpeedX, viewportSpeedY;
+	Uint64 lastViewportStep;
 
 	// menu related functions
 	enum InGameMenu

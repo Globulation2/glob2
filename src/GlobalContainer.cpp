@@ -30,10 +30,10 @@
  * The GlobalContainer basically holds all preferences, data,
  * configuration information, etc.
  */
-GlobalContainer::GlobalContainer(void)
+GlobalContainer::GlobalContainer(const char *profileName)
 {
 	// Init toolkit
-	Toolkit::init("glob2");
+	Toolkit::init(profileName);
 
 	// init virtual filesystem
 	fileManager = Toolkit::getFileManager();

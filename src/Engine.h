@@ -147,6 +147,7 @@ private:
 		Uint64 startTime;
 		unsigned frameNumber;
 		bool wasReadyLastTick;
+		bool adjustableGameSpeed; ///< Speed presets apply; live network games stay at GAME_TICK_MS
 	};
 
 	void updateTickSpeedAndDrawCadence(MainLoopState& st);
@@ -166,7 +167,7 @@ private:
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
 
-	void drawAndPaceFrame(MainLoopState& st);
+	void drawAndPaceFrame(MainLoopState& st, bool readyNow);
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.

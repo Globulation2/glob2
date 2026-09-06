@@ -30,16 +30,16 @@ static constexpr int GAME_TICK_MS = 40;
 static constexpr int MAX_CATCHUP_MS = 500;
 
 //! Tick interval (ms) the engine targets while replaying with fast-forward
-//! enabled. Pairs with REPLAY_FAST_FORWARD_DRAW_RATIO so the GUI is drawn
-//! once per N game-steps. ~3.33x normal speed at GAME_TICK_MS=40. See
-//! EngineRun.cpp.
-static constexpr int REPLAY_FAST_FORWARD_MS = 12;
+//! enabled: zero means uncapped, the simulation runs as fast as the CPU
+//! allows. Pairs with REPLAY_FAST_FORWARD_DRAW_RATIO so the GUI is still
+//! drawn once per N game-steps. See EngineRun.cpp.
+static constexpr int REPLAY_FAST_FORWARD_MS = 0;
 
-//! During replay fast-forward, draw 1 frame per (RATIO+1) simulation steps.
+//! During replay fast-forward, draw 1 frame per RATIO simulation steps.
 //! Encoded in the loop as `nextGuiStep = REPLAY_FAST_FORWARD_DRAW_RATIO - 1`
-//! after each draw, so the GUI updates every (RATIO+1)-th tick. See
+//! after each draw, so the GUI updates every RATIO-th tick. See
 //! EngineRun.cpp.
-static constexpr int REPLAY_FAST_FORWARD_DRAW_RATIO = 3;
+static constexpr int REPLAY_FAST_FORWARD_DRAW_RATIO = 16;
 
 // === Engine init-time constants ===
 
