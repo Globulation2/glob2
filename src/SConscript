@@ -544,3 +544,14 @@ if not env['server']:
     regression_sources += local.Object('EnteringUnitSaveHarness.o', '#test/EnteringUnitSaveHarness.cpp')
     regression_test = local.Program('EnteringUnitSaveHarness', regression_sources)
     local.Alias('entering-unit-save-test', regression_test)
+
+# Headless integration coverage for hunger and defeat detection.
+if not env['server']:
+    hunger_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    hunger_sources += [source for source in source_files if not source.endswith('.cpp')]
+    hunger_sources += local.Object('HungryDefeatHarness.o', '#test/HungryDefeatHarness.cpp')
+    hunger_env = local.Clone()
+    hunger_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    hunger_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    hunger_test = hunger_env.Program('HungryDefeatHarness', hunger_sources)
+    local.Alias('hungry-defeat-test', hunger_test)
