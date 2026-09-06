@@ -16,6 +16,7 @@ public:
 	Context(bool gpu) : GraphicContext(640, 480, gpu ? USEGPU : 0, "Glob2 aspect regression") {}
 	void resize(int w, int h)
 	{
+		if (windowW == w && windowH == h) return;
 		SDL_SetWindowSize(window, w, h);
 		SDL_Delay(100);
 		SDL_PumpEvents();
