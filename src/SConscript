@@ -512,3 +512,10 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
             PackTar(env["TARFILE"], file)
     
     PackTar(env["TARFILE"], "SConscript")
+
+# Real engine save/load regression, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('BuildingFootprintHarness.o', '#test/BuildingFootprintHarness.cpp')
+    regression_test = local.Program('BuildingFootprintHarness', regression_sources)
+    local.Alias('building-footprint-test', regression_test)
