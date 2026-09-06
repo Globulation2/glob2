@@ -38,6 +38,11 @@ jobs:
       - name: Build glob2
         run: scons -j$(nproc) release=1
 
+      - name: Build and run the selection lifetime regression
+        run: |
+          scons -j$(nproc) release=1 server=0 selection-test
+          ./build/src/GameGUISelectionHarness
+
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 server=1 --build=build-server
 

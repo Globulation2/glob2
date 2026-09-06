@@ -216,6 +216,8 @@ public:
 	/// network state and is never checksummed, networked, or saved.
 	int anyPlayerWaitedTimeFor;
 private:
+	friend class GameGUISelectionHarness;
+
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
 	

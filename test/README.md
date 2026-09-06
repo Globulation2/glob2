@@ -2,6 +2,37 @@
 
 CppUnit-based test fixtures for the C++ codebase. These have their own `SConstruct` and are **not** built by the top-level `scons` — run `scons -j16` from this directory, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. A top-level build reports "up to date" without touching them, so rebuild here before trusting a result.
 
+## Selection lifetime regression
+
+`GameGUISelectionHarness.cpp` links the real client objects with a test entry
+point. It exercises selected building/unit deletion before the next GUI draw,
+null selections, and a live unit with no peer. It runs headlessly, using the real
+`GameGUI`, entity classes, selection setters, and destruction hooks. A friend
+fixture accesses the private selection API without exposing it to game callers.
+There are no generated sources or substitute entity/GUI classes.
+
+Build and run it from the repository root (the Linux CI also runs this target):
+
+```sh
+scons -j8 release=1 server=0 selection-test
+./build/src/GameGUISelectionHarness
+```
+
+For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux:
+
+```sh
+scons -j8 release=0 server=0 --build=build/selection-asan selection-test \
+  CXXFLAGS='-g -fsanitize=address,undefined -fno-omit-frame-pointer' \
+  LINKFLAGS='-g -fsanitize=address,undefined'
+./build/selection-asan/src/GameGUISelectionHarness
+```
+
+If Homebrew sdl2-compat cannot locate SDL3 under the macOS sanitizer, prefix
+the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
+
+SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
+normal build. This is a direct method regression, not an interactive replay test.
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
