@@ -117,17 +117,17 @@ namespace GAGCore
 			{
 				if ((x == 0) && (y == 0) && (sdlsurface->w == sw) && (sdlsurface->h == sh))
 				{
-					// The framebuffer has the drawable's pixel size, which fullscreen
-					// scaling and HiDPI make larger than the logical surface. Read it
-					// whole and average each logical pixel's block of drawable pixels,
-					// so thin antialiased lines survive.
-					const int fbW = _gc->drawableW ? _gc->drawableW : sw;
-					const int fbH = _gc->drawableH ? _gc->drawableH : sh;
+					// Capture only the game viewport: including letterbox bars would
+					// squeeze screenshots and captured screen backgrounds. Average each
+					// logical pixel's block of drawable pixels so thin lines survive.
+					GLint viewport[4];
+					glGetIntegerv(GL_VIEWPORT, viewport);
+					const int fbW = viewport[2], fbH = viewport[3];
 					std::valarray<unsigned char> tempPixels(4*fbW*fbH);
 					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-					glReadPixels(0, 0, fbW, fbH, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					glReadPixels(viewport[0], viewport[1], fbW, fbH, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#else
-					glReadPixels(0, 0, fbW, fbH, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
+					glReadPixels(viewport[0], viewport[1], fbW, fbH, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#endif
 					if (fbW == sw && fbH == sh)
 					{
@@ -151,7 +151,7 @@ namespace GAGCore
 					for (int y = 0; y<sh; y++)
 					{
 						// GL rows run bottom-up, so logical row y covers window rows [y0, y1[ from the top
-						const int y0 = fbH - ((y+1)*fbH)/sh;
+						const int y0 = std::min(fbH-1, fbH - ((y+1)*fbH)/sh);
 						const int y1 = std::max(y0+1, fbH - (y*fbH)/sh);
 						unsigned *destPtr = &(((unsigned *)sdlsurface->pixels)[y*sw]);
 						for (int x = 0; x<sw; x++)

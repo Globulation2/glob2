@@ -118,3 +118,23 @@ the harness uses `.glob2-lan-test-host` and `.glob2-lan-test-join` profiles cont
 only test data. Fixed input timers allow map transfer before leaving; the runner
 bounds startup, execution, and child cleanup. Logs and captures are written under
 `output/lan-session-test` by default (`--output` overrides it).
+
+## Aspect-ratio and screen-capture regression
+
+`FullscreenAspectHarness` links libgag and opens a real SDL window. It checks
+presentation pixels, clipping, logical-resolution screen captures, and translated
+mouse motion/button events and polling at equal, wide, tall, odd, and downscaled
+window sizes. It exercises the same scaling path used by desktop fullscreen.
+It does not load a game profile or change saved display settings.
+
+```sh
+scons -j2 release=1 server=0 aspect-test
+./build/libgag/src/FullscreenAspectHarness gl
+./build/libgag/src/FullscreenAspectHarness software
+```
+
+Ubuntu CI runs both under `xvfb-run -a -s '-screen 0 1600x1400x24'`, using Mesa
+software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`). Xvfb and xauth must be installed.
+The GL run requires an OpenGL-enabled build. On macOS, the Homebrew SDL workaround
+described above also applies. To run with sanitizers, use the flags in the selection
+regression instructions with the `aspect-test` target instead.
