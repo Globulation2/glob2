@@ -9,6 +9,7 @@
 
 #include "Utilities.h"
 #include "PathfindStats.h"
+#include "PathfindPolicy.h"
 
 namespace
 {
@@ -106,7 +107,7 @@ void Unit::handleActionGoingTarget()
 {
 	assert(!performance[FLY]);
 	clearOccupiedMapSlot();
-	owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, &dx, &dy, performance[SWIM] > 0, owner->me, GOING_TARGET_MAX_PATH_LENGTH);
+	owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, &dx, &dy, performance[SWIM] > 0, owner->me, GOING_TARGET_MAX_PATH_LENGTH, PathfindPolicy::useAlternative(owner->teamNumber) ? swimClass() : -1);
 	directionFromDxDy();
 	wrapPosition();
 

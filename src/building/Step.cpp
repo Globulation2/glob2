@@ -64,7 +64,7 @@ bool Building::considerUnitForResources(Unit* unit, int* dist, int* resource)
 	int distBuilding=0;
 	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 	bool canSwim=unit->performance[SWIM];
-	if(!map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	if(!map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding, unit->swimClass()))
 	{
 		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
 		return false;
@@ -352,7 +352,7 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 	// check in subscribeToBringResourcesStep uses the same pairing.
 	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
 	bool canSwim = unit->performance[SWIM];
-	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding, unit->swimClass()))
 	{
 		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
 		return false;
@@ -394,7 +394,7 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist)
 	// check in subscribeToBringResourcesStep uses the same pairing.
 	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
 	bool canSwim = unit->performance[SWIM];
-	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding, unit->swimClass()))
 	{
 		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
 		return false;

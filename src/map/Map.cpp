@@ -82,6 +82,12 @@ Map::Map()
 	for (int t=0; t<Team::MAX_COUNT; t++)
 	{
 		activeSwimClasses[t] = 0;
+		for (int c=0; c<SWIM_CLASS_COUNT; c++)
+		{
+			forbiddenCost[t][c] = NULL;
+			guardAreasCost[t][c] = NULL;
+			clearAreasCost[t][c] = NULL;
+		}
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 			for (int c=0; c<SWIM_CLASS_COUNT; c++)
 			{
@@ -125,6 +131,12 @@ void Map::clear()
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
 		activeSwimClasses[t] = 0;
+		for (int c=0; c<SWIM_CLASS_COUNT; ++c)
+		{
+			delete[] forbiddenCost[t][c]; forbiddenCost[t][c] = NULL;
+			delete[] guardAreasCost[t][c]; guardAreasCost[t][c] = NULL;
+			delete[] clearAreasCost[t][c]; clearAreasCost[t][c] = NULL;
+		}
 		for (int r=0; r<MAX_NB_RESOURCES; ++r)
 			for (int c=0; c<SWIM_CLASS_COUNT; ++c)
 			{

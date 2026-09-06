@@ -55,7 +55,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
 		{
 			int buildingDist;//initialized in buildingAvailable next line
-			if (map->buildingAvailable((*bi), canSwim, x, y, &buildingDist) && (buildingDist < bestDist))
+			if (map->buildingAvailable((*bi), canSwim, x, y, &buildingDist, unit->swimClass()) && (buildingDist < bestDist))
 			{
 				choosen = (*bi);
 				bestDist = buildingDist;
@@ -142,7 +142,7 @@ Building *Team::findNearestFood(Unit *unit)
 					{
 						continue;
 					}
-					if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist))
+					if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist, unit->swimClass()))
 						continue;
 					if (dist >= maxDist)
 						continue;
@@ -197,7 +197,7 @@ Building *Team::findNearestFood(Unit *unit)
 			if (dist >= bestDist)
 				continue;
 
-			if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist))
+			if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist, unit->swimClass()))
 				continue;
 			if (dist >= bestDist)
 				continue;

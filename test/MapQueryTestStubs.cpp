@@ -39,3 +39,21 @@ void GameAnimations::resize(int) {}
 // Reached only through Map::ensureBuildingField, which the weighted-field
 // test never calls (it seeds fields directly).
 void Map::updateGlobalGradient(Building *, bool) {}
+
+// Map::warpDistSquare lives in MapMisc.cpp, which pulls in globalContainer
+// through dumpGradient. Same arithmetic, torus-wrapped per axis.
+namespace
+{
+	Sint32 wrapDist1d(int a, int b, int n)
+	{
+		Sint32 d = (a - b) % n;
+		if (d < 0) d = -d;
+		return d < n - d ? d : n - d;
+	}
+}
+Sint32 Map::warpDistSquare(int px, int py, int qx, int qy)
+{
+	Sint32 dx = wrapDist1d(px, qx, w);
+	Sint32 dy = wrapDist1d(py, qy, h);
+	return dx * dx + dy * dy;
+}

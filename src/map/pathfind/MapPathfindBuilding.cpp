@@ -67,9 +67,24 @@ bool Map::probeGlobalGradient(const Uint8 *gradient, int x, int y, int *dist) co
 	return false;
 }
 
-bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist)
+bool Map::buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist, int swimClass)
 {
 	assert(building);
+	if (PathfindPolicy::useAlternative(building->owner->teamNumber))
+	{
+		if (swimClass < 0)
+			swimClass = canSwim ? DEFAULT_SWIM_CLASS : 0;
+		const Uint16 *cost = ensureBuildingField(building, swimClass);
+		if (cost == NULL)
+			return false;
+		Uint16 c = cost[coordToIndex(x, y)];
+		for (int d = 0; d < 8 && c == COST_INFINITY; d++)
+			c = cost[coordToIndex(x + tabClose[d][0], y + tabClose[d][1])];
+		if (c == COST_INFINITY)
+			return false;
+		*dist = (c + 5) / 10;
+		return true;
+	}
 	int bx=building->posX;
 	int by=building->posY;
 	x&=wMask;
@@ -126,7 +141,7 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 	if (((cases[x+y*w].forbidden) & teamMask)!=0)
 	{
 		int teamNumber=building->owner->teamNumber;
-		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy);
+		return pathfindForbidden(building->globalGradient[canSwim], teamNumber, canSwim, x, y, dx, dy, swimClass);
 	}
 	if (PathfindPolicy::useAlternative(building->owner->teamNumber))
 		return pathfindBuildingWeighted(building, swimClass >= 0 ? swimClass : (canSwim ? DEFAULT_SWIM_CLASS : 0), x, y, dx, dy);

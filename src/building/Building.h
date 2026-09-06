@@ -574,6 +574,10 @@ public:
 	Uint16 *composedCost[MAX_NB_RESOURCES][PATHFIND_SWIM_CLASS_COUNT];
 	Uint32 composedResVersion[MAX_NB_RESOURCES][PATHFIND_SWIM_CLASS_COUNT];
 	Uint32 composedBldVersion[MAX_NB_RESOURCES][PATHFIND_SWIM_CLASS_COUNT];
+	//! Clearing flags: field seeded at the clearable resources in range, per swim class.
+	Uint16 *localResourcesCost[PATHFIND_SWIM_CLASS_COUNT];
+	Uint32 localResourcesCostStep[PATHFIND_SWIM_CLASS_COUNT];
+	bool localResourcesCostDirty[PATHFIND_SWIM_CLASS_COUNT];
 	void initWeightedFields();
 	void freeWeightedFields();
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.

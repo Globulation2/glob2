@@ -24,7 +24,7 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int
 	if (max==GRADIENT_FORBIDDEN)
 	{
 		*stopWork=true;
-		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy);
+		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy, swimClass);
 	}
 	if (max<2)
 	{
@@ -64,7 +64,7 @@ void Map::pathfindRandom(Unit *unit)
 	int y=unit->posY;
 	if ((cases[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
-		if (pathfindForbidden(NULL, unit->owner->teamNumber, (unit->performance[SWIM]>0), x, y, &unit->dx, &unit->dy))
+		if (pathfindForbidden(NULL, unit->owner->teamNumber, (unit->performance[SWIM]>0), x, y, &unit->dx, &unit->dy, unit->swimClass()))
 		{
 			unit->directionFromDxDy();
 		}
@@ -112,11 +112,13 @@ void Map::pathfindRandom(Unit *unit)
 }
 #endif  // !YOG_SERVER_ONLY
 
-bool Map::pathfindLocalResource(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindLocalResource(Building *building, bool canSwim, int x, int y, int *dx, int *dy, int swimClass)
 {
 	assert(building);
 	assert(building->type);
 	assert(building->type->isVirtual);
+	if (PathfindPolicy::useAlternative(building->owner->teamNumber))
+		return pathfindLocalResourceWeighted(building, swimClass >= 0 ? swimClass : (canSwim ? DEFAULT_SWIM_CLASS : 0), x, y, dx, dy);
 
 	int bx=building->posX;
 	int by=building->posY;

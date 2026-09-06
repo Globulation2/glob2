@@ -13,6 +13,7 @@
 #include "MapInternal.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
+#include "PathfindPolicy.h"
 #include <climits>
 
 void Unit::handleMovement(void)
@@ -279,7 +280,7 @@ void Unit::handleMovementAttackingAround()
 	// if we haven't found anything satisfactory, follow guard area gradients
 	if (movement == MOV_RANDOM_GROUND)
 	{
-		if (!attachedBuilding && owner->map->pathfindArea(Map::AreaKind::Guard, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+		if (!attachedBuilding && owner->map->pathfindArea(Map::AreaKind::Guard, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy, swimClass()))
 		{
 			directionFromDxDy();
 			movement = MOV_GOING_DX_DY;
@@ -345,7 +346,7 @@ void Unit::tryAcquireAttackTarget(int x, int y, int newQuality, int& quality)
 {
 	if (newQuality >= quality)
 		return;
-	bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
+	bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, GOING_TARGET_MAX_PATH_LENGTH, PathfindPolicy::useAlternative(owner->teamNumber) ? swimClass() : -1);
 	if (!pathfind)
 		return;
 	if (abs(x)<=1 && abs(y)<=1)
@@ -392,7 +393,7 @@ void Unit::handleMovementClearingResources()
 		}
 	bool canSwim=performance[SWIM];
 	assert(attachedBuilding);
-	if (map->pathfindLocalResource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
+	if (map->pathfindLocalResource(attachedBuilding, canSwim, posX, posY, &dx, &dy, swimClass()))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -422,7 +423,7 @@ void Unit::handleMovementRandom()
 		movement=MOV_RANDOM_FLY;
 	else if (map->getForbidden(posX, posY)&owner->me)
 	{
-		if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+		if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy, swimClass()))
 			directionFromDxDy();
 		else
 		{
@@ -454,7 +455,7 @@ void Unit::handleMovementRandom()
 			{
 				dx=0;
 				dy=0;
-				owner->map->pathfindArea(Map::AreaKind::Clear, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
+				owner->map->pathfindArea(Map::AreaKind::Clear, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy, swimClass());
 
 				targetX = tempTargetX;
 				targetY = tempTargetY;

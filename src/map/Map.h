@@ -635,18 +635,18 @@ public:
 	
 	//! Probe a full-map gradient at (x, y) and its 8 neighbors; sets *dist = GRADIENT_AT_GOAL - g if reachable.
 	bool probeGlobalGradient(const Uint8 *gradient, int x, int y, int *dist) const;
-	bool buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist);
+	bool buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist, int swimClass = -1);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y) provided the unit canSwim.
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy, int swimClass = -1);
 	bool pathfindBuildingWeighted(Building *building, int swimClass, int x, int y, int *dx, int *dy);
-	bool pathfindLocalResource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all resources mixed in clearing flags.
+	bool pathfindLocalResource(Building *building, bool canSwim, int x, int y, int *dx, int *dy, int swimClass = -1); // Used for all resources mixed in clearing flags.
 	
 	//! Make local gradient dirty in the area. Wrap-safe on x,y
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
-	bool pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, int swimClass = -1);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.
-	bool pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy);
+	bool pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, int swimClass = -1);
 	//! Update the forbidden gradient, 
 	void updateForbiddenGradient(int teamNumber, bool canSwim);
 	void updateForbiddenGradient(int teamNumber);
@@ -674,7 +674,10 @@ public:
 	void writeGradientFromCost(const Uint16 *cost, Uint8 *gradient) const;
 	//! Step toward the neighbour with the lowest step + cost-to-go. strict requires real progress;
 	//! otherwise a random non-worsening sidestep is accepted.
-	bool directionByCost(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *cost, int *dx, int *dy, bool strict) const;
+	bool directionByCost(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *cost, int *dx, int *dy, bool strict, bool ignoreForbidden = false) const;
+	static int minStepCost(int swimClass);
+	void buildAreaClassFields(Uint16 *fields[SWIM_CLASS_COUNT], int teamNumber, bool canSwim, Uint8 *gradient);
+	bool pathfindLocalResourceWeighted(Building *building, int swimClass, int x, int y, int *dx, int *dy);
 	void buildResourceClassFields(int teamNumber, Uint8 resourceType, bool canSwim, Uint8 *gradient);
 	void buildBuildingClassFields(Building *building, bool canSwim, Uint8 *gradient);
 	const Uint16 *ensureBuildingField(Building *building, int swimClass);
@@ -682,7 +685,7 @@ public:
 	bool roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
 
 	///Implements A* algorithm for point to point pathfinding. Does not cache path, designed to be fast
-	bool pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength);
+	bool pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength, int swimClass = -1);
 	
 	void initExploredArea(int teamNumber);
 	void makeDiscoveredAreasExplored(int teamNumber);
@@ -736,6 +739,11 @@ public:
 	Uint32 resourcesCostVersion[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	// Bit c set once a unit of swim class c has asked this team for a path.
 	Uint32 activeSwimClasses[Team::MAX_COUNT];
+	// Weighted cost fields behind the area gradients, per swim class; NULL for baseline teams.
+	Uint16 *forbiddenCost[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+	Uint16 *guardAreasCost[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+	Uint16 *clearAreasCost[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+	std::vector<Uint8> weightedSeedScratch;
 	
 	// Used to go out of forbidden areas
 	//[int team][bool unitCanSwim]
@@ -805,14 +813,19 @@ protected:
 	///This is a function-object that compares two points based on their total score in the A* algorithm
 	struct AStarComparator
 	{
-		AStarComparator(const AStarAlgorithmPoint* points) : points(points) {}
+		AStarComparator(const AStarAlgorithmPoint* points, bool totalOrder) : points(points), totalOrder(totalOrder) {}
 		bool operator()(int lhs, int rhs)
 		{
-			if(points[lhs].totalCost > points[rhs].totalCost)
-				return true;
+			if(points[lhs].totalCost != points[rhs].totalCost)
+				return points[lhs].totalCost > points[rhs].totalCost;
+			// Equal keys: a total order makes the pop sequence independent of the
+			// heap implementation (different STLs arrange equal elements differently).
+			if (totalOrder)
+				return lhs > rhs;
 			return false;
 		}
 		const AStarAlgorithmPoint* points;
+		bool totalOrder;
 	};
 	
 	//This array is kept and re-used for every point-to-point pathfind call

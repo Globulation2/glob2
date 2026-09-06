@@ -172,7 +172,7 @@ void Map::writeGradientFromCost(const Uint16 *cost, Uint8 *gradient) const
 	}
 }
 
-bool Map::directionByCost(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *cost, int *dx, int *dy, bool strict) const
+bool Map::directionByCost(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *cost, int *dx, int *dy, bool strict, bool ignoreForbidden) const
 {
 	PathfindStats::get().directionByCostCalls++;
 	bool canSwim = swimClass > 0;
@@ -198,7 +198,7 @@ bool Map::directionByCost(Uint32 teamMask, int swimClass, int x, int y, const Ui
 		int c = cost[n];
 		if (c == COST_INFINITY)
 			continue;
-		if (!isFreeForGroundUnit(x + ddx, y + ddy, canSwim, teamMask))
+		if (ignoreForbidden ? !isFreeForGroundUnitNoForbidden(x + ddx, y + ddy, canSwim) : !isFreeForGroundUnit(x + ddx, y + ddy, canSwim, teamMask))
 			continue;
 		if (c < current)
 		{
@@ -366,4 +366,132 @@ bool Map::roundTripDistance(Building *building, int resourceType, int swimClass,
 		return false;
 	*dist = (c + WEIGHT_CARDINAL / 2) / WEIGHT_CARDINAL;
 	return true;
+}
+
+int Map::minStepCost(int swimClass)
+{
+	if (swimClass > 0 && WATER_CARDINAL_COST[swimClass] < WEIGHT_CARDINAL)
+		return WATER_CARDINAL_COST[swimClass];
+	return WEIGHT_CARDINAL;
+}
+
+// Area fields (forbidden escape, guard, clear): one per swim class in use.
+void Map::buildAreaClassFields(Uint16 *fields[SWIM_CLASS_COUNT], int teamNumber, bool canSwim, Uint8 *gradient)
+{
+	Uint32 classes = canSwim ? (activeSwimClasses[teamNumber] & ~1u) : 1u;
+	if (canSwim && classes == 0)
+		classes = 1u << DEFAULT_SWIM_CLASS;
+	int lowest = -1;
+	for (int c = 0; c < SWIM_CLASS_COUNT; c++)
+	{
+		if (!((classes >> c) & 1u))
+			continue;
+		if (fields[c] == NULL)
+			fields[c] = new Uint16[size];
+		buildWeightedField(gradient, fields[c], c);
+		if (lowest < 0)
+			lowest = c;
+	}
+	writeGradientFromCost(fields[lowest], gradient);
+}
+
+namespace
+{
+	// Clearing-flag fields are refreshed at least this often (ticks), like the
+	// baseline local-resources gradient, and sooner when a unit is stuck.
+	constexpr Uint32 CLEARING_FIELD_REFRESH_TICKS = 125;
+	constexpr Uint32 CLEARING_FIELD_STUCK_TICKS = 25;
+}
+
+// Clearing flag: field seeded at every clearable resource within the flag's
+// range; cells outside the range are obstacles so the field stays local.
+bool Map::pathfindLocalResourceWeighted(Building *building, int swimClass, int x, int y, int *dx, int *dy)
+{
+	bool canSwim = swimClass > 0;
+	Uint32 teamMask = building->owner->me;
+	Uint32 now = game->stepCounter;
+	Uint16 *&cost = building->localResourcesCost[swimClass];
+	bool rebuild = cost == NULL
+		|| building->localResourcesCostDirty[swimClass]
+		|| building->localResourcesCostStep[swimClass] + CLEARING_FIELD_REFRESH_TICKS <= now;
+	if (!rebuild)
+	{
+		// A goal tile next to the unit that is no longer takeable means the field is stale.
+		for (int d = 0; d < 8; d++)
+		{
+			int nx = x + tabClose[d][0];
+			int ny = y + tabClose[d][1];
+			if (cost[coordToIndex(nx, ny)] == 0 && !isResourceTakeable(nx, ny, building->clearingResources))
+			{
+				rebuild = true;
+				break;
+			}
+		}
+	}
+	if (rebuild)
+	{
+		if (cost == NULL)
+			cost = new Uint16[size];
+		if (weightedSeedScratch.size() != size)
+			weightedSeedScratch.assign(size, GRADIENT_FORBIDDEN);
+		Uint8 *seed = weightedSeedScratch.data();
+		int bx = building->posX;
+		int by = building->posY;
+		int range = building->unitStayRange;
+		int range2 = range * range;
+		bool anyToClear = false;
+		for (size_t i = 0; i < size; i++)
+		{
+			int cx = i & wMask;
+			int cy = i >> wDec;
+			if (warpDistSquare(cx, cy, bx, by) > range2)
+			{
+				seed[i] = GRADIENT_FORBIDDEN;
+				continue;
+			}
+			const Case &c = cases[i];
+			if (c.forbidden & teamMask)
+				seed[i] = GRADIENT_FORBIDDEN;
+			else if (c.resource.type != NO_RES_TYPE)
+			{
+				Sint8 t = c.resource.type;
+				if (t < BASIC_COUNT && building->clearingResources[t])
+				{
+					seed[i] = GRADIENT_AT_GOAL;
+					anyToClear = true;
+				}
+				else
+					seed[i] = GRADIENT_FORBIDDEN;
+			}
+			else if (c.building != NOGBID)
+				seed[i] = GRADIENT_FORBIDDEN;
+			else if (immobileUnits[i] != IMMOBILE_UNIT_NONE)
+				seed[i] = GRADIENT_FORBIDDEN;
+			else if (!canSwim && isWater((unsigned)i))
+				seed[i] = GRADIENT_FORBIDDEN;
+			else
+				seed[i] = GRADIENT_UNREACHABLE;
+		}
+		building->localResourcesCostDirty[swimClass] = false;
+		building->localResourcesCostStep[swimClass] = now;
+		building->localResourcesCleanTime[canSwim] = 0;
+		if (!anyToClear)
+		{
+			building->anyResourceToClear[canSwim] = 2;
+			for (size_t i = 0; i < size; i++)
+				cost[i] = COST_INFINITY;
+			return false;
+		}
+		building->anyResourceToClear[canSwim] = 1;
+		buildWeightedField(seed, cost, swimClass);
+	}
+	if (cost[coordToIndex(x, y)] == COST_INFINITY)
+		return false;
+	if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, true))
+		return true;
+	if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, false))
+		return true;
+	if (building->localResourcesCostStep[swimClass] + CLEARING_FIELD_STUCK_TICKS <= now)
+		building->localResourcesCostDirty[swimClass] = true;
+	return false;
 }

@@ -8,6 +8,7 @@
 #include "Unit.h"
 #include "MapInternal.h"
 #include "PathfindStats.h"
+#include "PathfindPolicy.h"
 
 
 
@@ -72,6 +73,11 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 		}
 	}
 
+	if (PathfindPolicy::useAlternative(teamNumber))
+	{
+		buildAreaClassFields(forbiddenCost[teamNumber], teamNumber, canSwim, gradient);
+		return;
+	}
 	updateGlobalGradient(gradient);
 }
 
@@ -114,6 +120,11 @@ void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
 
+	if (PathfindPolicy::useAlternative(teamNumber))
+	{
+		buildAreaClassFields(guardAreasCost[teamNumber], teamNumber, canSwim, gradient);
+		return;
+	}
 	updateGlobalGradient(gradient);
 }
 
@@ -156,6 +167,11 @@ void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
 
+	if (PathfindPolicy::useAlternative(teamNumber))
+	{
+		buildAreaClassFields(clearAreasCost[teamNumber], teamNumber, canSwim, gradient);
+		return;
+	}
 	updateGlobalGradient(gradient);
 }
 

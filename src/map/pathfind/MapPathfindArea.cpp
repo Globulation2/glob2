@@ -4,16 +4,31 @@
 #include "Map.h"
 #include "MapInternal.h"
 #include "PathfindStats.h"
+#include "PathfindPolicy.h"
 
 #include <queue>
 
 
 // Area pathfinding (forbidden, guard, clear, point-to-point)
 
-bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, int swimClass)
 {
 	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
 	assert(gradient);
+	if (PathfindPolicy::useAlternative(teamNumber))
+	{
+		if (swimClass < 0)
+			swimClass = canSwim ? DEFAULT_SWIM_CLASS : 0;
+		activeSwimClasses[teamNumber] |= 1u << swimClass;
+		const Uint16 *cost = forbiddenCost[teamNumber][swimClass];
+		if (cost != NULL)
+		{
+			Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+			if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, true, true))
+				return !(*dx == 0 && *dy == 0);
+			return directionByCost(teamMask, swimClass, x, y, cost, dx, dy, false, true);
+		}
+	}
 
 	// Pick the neighbor with the highest (base, option) lexicographically. The base gradient
 	// dominates; the option gradient is used as a tiebreaker. Reject results where the chosen
@@ -48,8 +63,34 @@ bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool ca
 	return false;
 }
 
-bool Map::pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy, int swimClass)
 {
+	if (PathfindPolicy::useAlternative(teamNumber))
+	{
+		if (swimClass < 0)
+			swimClass = canSwim ? DEFAULT_SWIM_CLASS : 0;
+		activeSwimClasses[teamNumber] |= 1u << swimClass;
+		const Uint16 *cost = (kind == AreaKind::Guard)
+			? guardAreasCost[teamNumber][swimClass]
+			: clearAreasCost[teamNumber][swimClass];
+		if (cost != NULL)
+		{
+			Uint16 here = cost[coordToIndex(x, y)];
+			if (here == 0 || here == COST_INFINITY)
+				return false;
+			Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+			if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, true))
+				return true;
+			if (directionByCost(teamMask, swimClass, x, y, cost, dx, dy, false))
+				return true;
+			switch (kind)
+			{
+				case AreaKind::Guard: updateGuardAreasGradient(teamNumber, canSwim); break;
+				case AreaKind::Clear: updateClearAreasGradient(teamNumber, canSwim); break;
+			}
+			return false;
+		}
+	}
 	Uint8 *gradient = (kind == AreaKind::Guard)
 		? guardAreasGradient[teamNumber][canSwim]
 		: clearAreasGradient[teamNumber][canSwim];
@@ -75,7 +116,7 @@ bool Map::pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y
 
 
 
-bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength)
+bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength, int swimClass)
 {
 	//This implements a fairly standard A* algorithm, except that each node does not store the location
 	//of the node that lead to it, thus, you can't trace backwards to the starting point to get the path.
@@ -86,7 +127,12 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	targetY = (targetY + h) & hMask;
 
 	PathfindStats::Scope pfScope(PathfindStats::get().pointToPoint);
-	AStarComparator compare(aStarPoints);
+	// Weighted (octile + terrain) costs and a heap with a total order for
+	// units on the alternative pathfinder; the baseline keeps unit costs.
+	const bool weighted = swimClass >= 0;
+	const int heuristicUnit = weighted ? minStepCost(swimClass) : 1;
+	const int maxCost = weighted ? maximumLength * 10 : maximumLength;
+	AStarComparator compare(aStarPoints, weighted);
 
 	///Priority queues use heaps internally, which I've read is the fastest for A* algorithm
 	std::priority_queue<int, std::vector<int>, AStarComparator> openList(compare);
@@ -108,7 +154,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 		AStarAlgorithmPoint& pos = aStarPoints[position];
 		pos.isClosed = true;
 
-		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumLength))
+		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maxCost))
 		{
 			break;
 		}
@@ -127,8 +173,8 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 				}
 				else
 				{
-					int moveCost = pos.moveCost + 1;
-					int totalCost = moveCost +  warpDistMax(targetX, targetY, nx, ny);
+					int moveCost = pos.moveCost + (weighted ? weightedStepCost(lx, ly, coordToIndex(nx, ny), swimClass) : 1);
+					int totalCost = moveCost + heuristicUnit * warpDistMax(targetX, targetY, nx, ny);
 
 					//If this cell hasn't been examined at all yet
 					if(npos.x == -1)

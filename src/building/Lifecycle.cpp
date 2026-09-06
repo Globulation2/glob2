@@ -149,7 +149,10 @@ Building::~Building()
 void Building::resetLocalResources()
 {
 	for (int c=0; c<PATHFIND_SWIM_CLASS_COUNT; c++)
+	{
 		weightedFieldDirty[c] = true;
+		localResourcesCostDirty[c] = true;
+	}
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 	{
 		dirtyLocalGradient[i] = true;
@@ -542,6 +545,9 @@ void Building::initWeightedFields()
 	for (int c=0; c<PATHFIND_SWIM_CLASS_COUNT; c++)
 	{
 		globalCost[c]=NULL;
+		localResourcesCost[c]=NULL;
+		localResourcesCostStep[c]=0;
+		localResourcesCostDirty[c]=true;
 		globalCostVersion[c]=0;
 		lastWeightedUpdateStep[c]=0;
 		weightedFieldDirty[c]=true;
@@ -561,6 +567,9 @@ void Building::freeWeightedFields()
 		delete[] globalCost[c];
 		globalCost[c]=NULL;
 		weightedFieldDirty[c]=true;
+		delete[] localResourcesCost[c];
+		localResourcesCost[c]=NULL;
+		localResourcesCostDirty[c]=true;
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
 			delete[] composedCost[r][c];

@@ -192,7 +192,7 @@ void Unit::handleDisplacement(void)
 											if ((*bi)->resources[r]>0)
 											{
 												int buildingDist;
-												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
+												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist, swimClass()))
 												{
 													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
 													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
