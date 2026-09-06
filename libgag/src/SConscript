@@ -1,5 +1,5 @@
 libgag_sources = Split("""
-BinaryStream.cpp    CursorManager.cpp     FileManager.cpp   FormatableString.cpp
+BinaryStream.cpp    CursorManager.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
 GraphicContext.cpp GraphicContextDraw.cpp GraphicContextCompound.cpp
 DrawableSurface.cpp DrawableSurfaceDraw.cpp DrawableSurfaceCompound.cpp
 GUIAnimation.cpp    GUIBase.cpp           GUIButton.cpp
@@ -15,7 +15,7 @@ GUITabScreen.cpp    GUITabScreenWindow.cpp  TextSort.cpp    GUICheckList.cpp
 
 libgag_just_server = Split("""
 
-BinaryStream.cpp     Stream.cpp     FileManager.cpp   FormatableString.cpp
+BinaryStream.cpp     Stream.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
 TextStream.cpp      StreamFilter.cpp   StreamBackend.cpp StringTable.cpp  Toolkit.cpp
 """)
 

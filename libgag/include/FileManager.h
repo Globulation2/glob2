@@ -46,6 +46,7 @@ namespace GAGCore
 		int fileListIndex;
 	
 	private:
+		static bool isAbsolutePath(const std::string& path);
 		//! clear the list of file for directory listing
 		void clearFileList(void);
 		//! internal function that does the real listing job
