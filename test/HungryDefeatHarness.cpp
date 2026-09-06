@@ -10,9 +10,11 @@
 #include "Building.h"
 #include "IntBuildingType.h"
 #include "WinningConditions.h"
+#include "Utilities.h"
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <vector>
 
 GlobalContainer* globalContainer = nullptr;
 
@@ -27,9 +29,11 @@ struct Colony
     Game& game = gui.game;
     Team* team;
     Building* inn;
+    std::vector<Uint32> trace;
 
     Colony()
     {
+        setSyncRandSeed(110);
         game.map.setSize(5, 5, GRASS);
         game.map.setGame(&game);
         for (int y = 0; y < 32; ++y)
@@ -68,11 +72,12 @@ struct Colony
         team->syncStep();
         team->checkWinConditions();
         require(team->isAlive == alive && team->hasLost == !alive, message);
+        trace.push_back(team->checkSum());
         ++game.stepCounter;
     }
 };
 
-static void checkFeeding(int type)
+static std::vector<Uint32> checkFeeding(int type)
 {
     Colony c;
     Unit* u = c.unit(type);
@@ -94,7 +99,10 @@ static void checkFeeding(int type)
     }
     require(entered && timerReachedZero && u->hungry == Unit::HUNGRY_MAX,
             "unit completes its meal, including the zero timer boundary");
-    std::printf("PASS: type %d reserves last place and recovers through real simulation\n", type);
+    Uint32 digest = 2166136261u;
+    for (Uint32 checksum : c.trace) digest = (digest ^ checksum) * 16777619u;
+    std::printf("TRACE type=%d seed=110 ticks=%zu digest=%08x\n", type, c.trace.size(), unsigned(digest));
+    return c.trace;
 }
 
 int main(int argc, char** argv)
@@ -108,8 +116,12 @@ int main(int argc, char** argv)
     globals.settings.rememberUnit = false;
     globals.buildingsTypes.init();
     IntBuildingType::init();
-    checkFeeding(WORKER);
-    checkFeeding(WARRIOR);
+    for (int type : {WORKER, WARRIOR})
+    {
+        const auto first = checkFeeding(type);
+        const auto second = checkFeeding(type);
+        require(first == second, "identical seeds and fixtures reproduce every team checksum");
+    }
     {
         Colony c;
         c.step(false, "an empty colony without a swarm still loses");

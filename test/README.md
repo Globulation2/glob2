@@ -197,5 +197,7 @@ A hungry worker or warrior reserves the final inn place during Team::syncStep,
 then walks, enters, and completes its meal without being declared defeated. Checks
 include the feeding timer's zero boundary, the actual death winning condition,
 and controls for an empty colony, healthy worker, no food, explorer-only reservation,
-and missing controlling players. The fixture initializes map occupancy and race
+and missing controlling players. Both feeding cases run twice with seed 110 and
+compare every team checksum; printed trace digests support platform comparisons.
+The fixture initializes map occupancy and race
 data before exercising the real unit activity and movement code.
