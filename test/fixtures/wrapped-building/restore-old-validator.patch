@@ -1,0 +1,15 @@
+--- a/src/Game_io.cpp
++++ b/src/Game_io.cpp
+@@ -311,10 +311,10 @@
+ 				// Footprints may straddle the map edge (posX can be -1), so
+ 				// measure the cell's offset from the building with wrap-around.
+ 				const auto buildingEndX = building->posX + building->type->width;
+-				healOutsideCoord(((x - building->posX) & map.wMask) < building->type->width,
++				healOutsideCoord((x >= building->posX || x < (buildingEndX & map.wMask)) && x < buildingEndX,
+ 				                 "X", x, building->posX, buildingEndX);
+ 				const auto buildingEndY = building->posY + building->type->height;
+-				healOutsideCoord(((y - building->posY) & map.hMask) < building->type->height,
++				healOutsideCoord((y >= building->posY || y < (buildingEndY & map.hMask)) && y < buildingEndY,
+ 				                 "Y", y, building->posY, buildingEndY);
+ 			}
+ 			if (c.groundUnit != NOGUID)
