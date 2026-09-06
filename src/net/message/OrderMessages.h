@@ -37,6 +37,15 @@ public:
 
 	void changeOrder(std::shared_ptr<Order> newOrder);
 
+	/// Selects the save-format version the payload is interpreted against by
+	/// the next decodeData() call. Live network traffic must leave this at the
+	/// VERSION_MINOR default: both peers run the same build, so the current
+	/// version is by definition the right one. Replays are the exception —
+	/// they are a stored format that can predate this build, so ReplayReader
+	/// sets the version recorded in the replay's own header. Has no effect on
+	/// encodeData(), which always writes the current format.
+	void setDecodeVersionMinor(Uint32 newVersionMinor);
+
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
 	/// Wire format: Uint32 size | size bytes payload | Uint8 sender | Uint32 checksum.
@@ -49,6 +58,10 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 private:
 	std::shared_ptr<Order> order;
+
+	/// Save-format version handed to Order::getOrder when decoding. Defaults to
+	/// VERSION_MINOR (correct for the network path); see setDecodeVersionMinor.
+	Uint32 decodeVersionMinor;
 };
 
 /// Latency probe sent periodically to measure round-trip time.

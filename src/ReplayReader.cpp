@@ -22,6 +22,7 @@ ReplayReader::ReplayReader()
 	numOrders = 0;
 	stepsUntilNextOrder = -1;
 	wideStepCounter = false;
+	versionMinor = VERSION_MINOR;
 	checksum = 0;
 }
 
@@ -89,6 +90,11 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 	// Replays written before version 87 store step counters as Uint16
 	wideStepCounter = (version_minor >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR);
 
+	// Orders in this replay are in the format of the version that wrote it, not
+	// necessarily this build's. The check above bounds it to a version this
+	// build can still parse.
+	versionMinor = version_minor;
+
 	// If there are no orders, this is also not a valid replay (there should be at least a NullOrder)
 	if (stream->isEndOfStream())
 	{
@@ -112,6 +118,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 		{
 			// Read an order from the stream
 			NetSendOrder msg;
+			msg.setDecodeVersionMinor(versionMinor);
 			msg.decodeData(stream);
 			order = msg.getOrder();
 
@@ -213,6 +220,7 @@ std::shared_ptr<Order> ReplayReader::retrieveOrder()
 	{
 		// Read the order from the stream
 		NetSendOrder msg;
+		msg.setDecodeVersionMinor(versionMinor);
 		msg.decodeData(stream);
 		order = msg.getOrder();
 

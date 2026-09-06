@@ -81,8 +81,16 @@ public:
 	Uint8 getOrderType(void) { return ORDER_DELETE; }
 };
 
-std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 /*versionMinor*/)
+// Records the versionMinor the last decode was resolved against, so a test can
+// assert which format the reader asked for. Real orders ignore the parameter
+// unless they are version-gated (only OrderCreate is, at
+// FILE_FORMAT_VERSION_ORDER_CREATE_FLAG_RADIUS), which is why the value has to
+// be observed here rather than inferred from a decoded order.
+Uint32 lastDecodeVersionMinor = 0;
+
+std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)
 {
+	lastDecodeVersionMinor = versionMinor;
 	if (netDataLength < 1 || netData == NULL)
 		return std::shared_ptr<Order>();
 	if (netData[0] == ORDER_NULL)
@@ -257,6 +265,43 @@ void testVersionBounds()
 	}
 }
 
+// 4. Orders are decoded against the replay's own format version, not the
+// running build's. NetSendOrder::decodeData used to hardcode VERSION_MINOR,
+// which is right for live network traffic (both peers run this build) but
+// wrong for a replay, which is a stored format that may predate it. Nothing
+// observable diverges in the currently supported window — OrderCreate's gate
+// at 78 is the only version gate in the order layer and sits below the
+// REPLAY_MINIMUM_VERSION_MINOR floor of 86 — so the plumbing is asserted
+// directly. Without it, the next order-format gate would silently misparse
+// every replay written before it.
+void testDecodeVersionPlumbing()
+{
+	const Uint16 oldVersion = REPLAY_MINIMUM_VERSION_MINOR;
+
+	// A version this test would be meaningless at: if the floor ever rises to
+	// meet the current build, the assertion below could pass by coincidence.
+	check(oldVersion != VERSION_MINOR,
+	      "decodeVersion: replay floor is below the current build version");
+
+	ReplayReader reader;
+	bool loaded = reader.loadReplay(writeReplayBody(oldVersion, false, 7), false);
+	check(loaded, "decodeVersion: old-but-supported replay loads");
+	if (!loaded)
+		return;
+
+	// loadReplay decodes the whole order stream once to measure the replay, so
+	// the recorded version is already the one under test; clear it so the
+	// assertion below is about retrieveOrder specifically.
+	lastDecodeVersionMinor = 0;
+
+	for (Uint32 i = 0; i < 7; i++)
+		reader.advanceStep();
+	std::shared_ptr<Order> order = reader.retrieveOrder();
+	check(order && order->getOrderType() == ORDER_DELETE, "decodeVersion: order read back");
+	check(lastDecodeVersionMinor == oldVersion,
+	      "decodeVersion: order decoded against the replay's version, not VERSION_MINOR");
+}
+
 }  // namespace
 
 int main(int /*argc*/, char* /*argv*/[])
@@ -264,6 +309,7 @@ int main(int /*argc*/, char* /*argv*/[])
 	testWideRoundTrip();
 	testOldFormatUint16();
 	testVersionBounds();
+	testDecodeVersionPlumbing();
 	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
 	return failures == 0 ? 0 : 1;
 }

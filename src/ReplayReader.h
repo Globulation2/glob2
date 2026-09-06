@@ -114,6 +114,14 @@ private:
 	/// (format version >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR)
 	bool wideStepCounter;
 
+	/// The save-format version the loaded replay was written with, taken from
+	/// the replay's own header. Orders must be decoded against this rather than
+	/// against VERSION_MINOR: a replay is a stored format and may predate this
+	/// build, so a version-gated Order field could otherwise be read at the
+	/// wrong offset or width. Constrained to
+	/// [REPLAY_MINIMUM_VERSION_MINOR, VERSION_MINOR] by the check in loadReplay.
+	Uint32 versionMinor;
+
 	/// The game's current checksum (or 0 if it's not given)
 	Uint32 checksum;
 };
