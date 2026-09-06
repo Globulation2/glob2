@@ -2733,7 +2733,7 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 			globalContainer->gfx->setClipRect();
 			if(hilights.find(HilightBuildingOnPanel+IntBuildingType::shortNumberFromType(type)) != hilights.end())
 			{
-				arrowPositions.push_back(HilightArrowPosition(x+decX-36, y-6+decX, 38));
+				arrowPositions.push_back(HilightArrowPosition(x+decX-36, y-6+decY, 38));
 			}
 		}
 	}
