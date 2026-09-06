@@ -57,13 +57,13 @@ static constexpr int AI_NICOWAR_EXPLORER_ATTACK_INTERVAL_TICKS = 1000;
 static constexpr int AI_NICOWAR_EXPLORER_ATTACK_OFFSET         = 570;
 
 // ---------------------------------------------------------------------------
-// Ressource tracker depth: AddRessourceTracker(N, CORN, id) records the last
+// Resource tracker depth: AddResourceTracker(N, CORN, id) records the last
 // N resource samples per tracked building. Used at every tracker-creation
 // site (initialization, every newly-ordered inn/swarm, and the per-level
 // inn assignment math which multiplies a wheat-trigger threshold by this
 // same N to convert per-tick wheat into the tracker's accumulated total).
 // ---------------------------------------------------------------------------
-static constexpr int AI_NICOWAR_RESSOURCE_TRACKER_DEPTH = 25;
+static constexpr int AI_NICOWAR_RESOURCE_TRACKER_DEPTH = 25;
 
 // ---------------------------------------------------------------------------
 // Phase iteration / level dimensions (Phases.cpp).
@@ -127,7 +127,7 @@ static constexpr int AI_NICOWAR_RACETRACK_BUILDING_PREF    = 2;
 static constexpr int AI_NICOWAR_RACETRACK_SAND_MIN         = 2;
 static constexpr int AI_NICOWAR_RACETRACK_CONSTRUCTION_MIN = 4;
 
-// --- Swimmingpool (SWIMSPEED_BUILDING) ---
+// --- Swimming pool (SWIMSPEED_BUILDING) ---
 static constexpr int AI_NICOWAR_SWIMMINGPOOL_ORDER_WORKERS    = 6;
 static constexpr int AI_NICOWAR_SWIMMINGPOOL_WOOD_PREF        = 4;
 static constexpr int AI_NICOWAR_SWIMMINGPOOL_WATER_MIN_DIST   = 6;

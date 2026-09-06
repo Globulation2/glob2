@@ -24,7 +24,7 @@ namespace GAGCore
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{
-		//! Typical usefull alpha values pre-defined
+		//! Typical useful alpha values pre-defined
 		enum Alpha
 		{
 			ALPHA_TRANSPARENT = 0, //!< constant for transparent alpha
@@ -40,7 +40,7 @@ namespace GAGCore
 		
 		//! Return HSV values in pointers
 		void getHSV(float *hue, float *sat, float *lum);
-		//! Set color from HLS, alpha unctouched
+		//! Set color from HLS, alpha untouched
 		void setHSV(float hue, float sat, float lum);
 		
 		//! pack components in a 32 bits int given SDL screen values
@@ -67,7 +67,7 @@ namespace GAGCore
 	
 	class Sprite;
 	
-	//! Font with a given foundery, shape and color
+	//! Font with a given foundry, shape and color
 	class Font
 	{
 	public:
@@ -182,7 +182,7 @@ namespace GAGCore
 	protected:
 		//! Protectedconstructor, only called by GraphicContext
 		DrawableSurface() { sdlsurface = NULL; }
-		//! allocate textre in GPU for this surface
+		//! allocate texture in GPU for this surface
 		void allocateTexture(void);
 		//! reset the texture size upon changes
 		void initTextureSize(void);
@@ -262,7 +262,7 @@ namespace GAGCore
 		void drawString(float x, float y, Font *font, const std::string &msg, float w = 0, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 
-		//! Draw an alpha map of size mapW, mapH using a specific color at coordinantes x, y using cells of size cellW, cellH
+		//! Draw an alpha map of size mapW, mapH using a specific color at coordinates x, y using cells of size cellW, cellH
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		

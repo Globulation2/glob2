@@ -61,7 +61,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	Uint8 borderG;
 	Uint8 borderB;
 	Uint8 borderA;
-	// draw the either black or transparent border arround the minimap
+	// draw the either black or transparent border around the minimap
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		borderR = 0;
@@ -115,7 +115,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	globalContainer->gfx->drawSurface(gameWidth-menuWidth+xOffset, yOffset, surface);
 
 	//Draw the viewport square, taking into account that it may
-	//wrap arround the sides of the minimap
+	//wrap around the sides of the minimap
 
 	int startx, starty, endx, endy;
 	convertToScreen(viewportX, viewportY, startx, starty);
@@ -146,7 +146,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	if(minimapMode == HideFOW)
 		globalContainer->gfx->drawHorzLine(mini_x, mini_y + line_row , mini_w, 100, 100, 100);
 	
-	///Draw a 1 pixel border arround the minimap
+	///Draw a 1 pixel border around the minimap
 	globalContainer->gfx->drawRect(gameWidth-menuWidth+xOffset-1,
 	                               yOffset-1, 
 	                               width+2, 
@@ -278,7 +278,7 @@ void Minimap::computeColors(int row, int localTeam)
 		{ (220*3)/5, (25*3)/5, (30*3)/5 }, // enemy FOW
 	};
 
-	int pcol[3+MAX_RESSOURCES];
+	int pcol[3+MAX_RESOURCES];
 
 	// get data
 	int szX = mini_w;
@@ -352,7 +352,7 @@ void Minimap::computeColors(int row, int localTeam)
 				{
 					// get color to add
 					int pcolIndex;
-					const auto& r = game->map.getRessource(minidx, minidy);
+					const auto& r = game->map.getResource(minidx, minidy);
 					if (r.type!=NO_RES_TYPE)
 					{
 						pcolIndex=r.type + 3;
@@ -399,9 +399,9 @@ void Minimap::computeColors(int row, int localTeam)
 				lg += pcol[i]*terrainColor[i][1];
 				lb += pcol[i]*terrainColor[i][2];
 			}
-			for (int i=0; i<MAX_RESSOURCES; i++)
+			for (int i=0; i<MAX_RESOURCES; i++)
 			{
-				const RessourceType *rt = globalContainer->ressourcesTypes.get(i);
+				const ResourceType *rt = globalContainer->resourcesTypes.get(i);
 				lr += pcol[i+3]*(rt->minimapR);
 				lg += pcol[i+3]*(rt->minimapG);
 				lb += pcol[i+3]*(rt->minimapB);

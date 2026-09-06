@@ -17,7 +17,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 {
 	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
 
-	Uint32 drawOptions = Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESSOURCE_GROWTH_AREAS;
+	Uint32 drawOptions = Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESOURCE_GROWTH_AREAS;
 	if(isFertilityOn)
 	{
 		drawOptions |= Game::DRAW_OVERLAY;
@@ -60,7 +60,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		{
 			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
 		}
-		if(selectionMode==ChangeNoRessourceGrowthAreas)
+		if(selectionMode==ChangeNoResourceGrowthAreas)
 			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
 	}
 
@@ -133,7 +133,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 				globalContainer->gfx->drawLine(rectX+rectW-1, rectY, rectX, rectY+rectH-1, 255, 0, 0, 127);
 				
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-				globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
+				globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
 				globalContainer->littleFont->popStyle();
 			}
 			else

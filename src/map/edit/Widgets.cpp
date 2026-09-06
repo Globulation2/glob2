@@ -139,8 +139,8 @@ void SingleLevelSelector::draw()
 
 
 
-PanelIcon::PanelIcon(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int iconNumber, int panelModeHilight)
-	: MapEditorWidget(me, area, group, name, action), iconNumber(iconNumber), panelModeHilight(panelModeHilight)
+PanelIcon::PanelIcon(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, int iconNumber, int panelModeHighlight)
+	: MapEditorWidget(me, area, group, name, action), iconNumber(iconNumber), panelModeHighlight(panelModeHighlight)
 {
 
 }
@@ -150,7 +150,7 @@ PanelIcon::PanelIcon(MapEdit& me, const widgetRectangle& area, const std::string
 void PanelIcon::draw()
 {
 	// draw buttons
-	if (me.panelMode==panelModeHilight)
+	if (me.panelMode==panelModeHighlight)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, iconNumber+1);
 	else
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->gamegui, iconNumber);

@@ -64,9 +64,9 @@ void IRCTextMessageHandler::update()
 		Uint8 type = message->getMessageType();
 		switch(type)
 		{
-			case ITMRecieveMessage:
+			case ITMReceiveMessage:
 			{
-				std::shared_ptr<ITRecieveMessage> info = static_pointer_cast<ITRecieveMessage>(message);
+				std::shared_ptr<ITReceiveMessage> info = static_pointer_cast<ITReceiveMessage>(message);
 				sendToAllListeners(info->getMessage());
 			}
 			break;

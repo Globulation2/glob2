@@ -15,37 +15,37 @@
 #include "Team.h"
 #include "TeamDisplay.h"
 
-void GameGUI::drawRessourceInfos(void)
+void GameGUI::drawResourceInfos(void)
 {
 	// Precondition (established by checkSelection() in drawPanel): when we
 	// reach here the resource selection still references a live resource tile.
 	// The early-return is defensive — should never trigger.
-	const Ressource &r = game.map.getRessource(selectionRessource());
+	const Resource &r = game.map.getResource(selectionResource());
 	if (r.type==NO_RES_TYPE)
 		return;
 
-	int ypos = YPOS_BASE_RESSOURCE;
+	int ypos = YPOS_BASE_RESOURCE;
 
-	// Draw ressource name
-	const std::string &ressourceName = getRessourceName(r.type);
-	int titleLen = globalContainer->littleFont->getStringWidth(ressourceName.c_str());
+	// Draw resource name
+	const std::string &resourceName = getResourceName(r.type);
+	int titleLen = globalContainer->littleFont->getStringWidth(resourceName.c_str());
 	int titlePos = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+((RIGHT_MENU_WIDTH-titleLen)>>1);
-	globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, ressourceName.c_str());
+	globalContainer->gfx->drawString(titlePos, ypos+(YOFFSET_TEXT_PARA>>1), globalContainer->littleFont, resourceName.c_str());
 	ypos += 2*YOFFSET_TEXT_PARA;
 
-	// Draw ressource image
-	const RessourceType* rt = globalContainer->ressourcesTypes.get(r.type);
+	// Draw resource image
+	const ResourceType* rt = globalContainer->resourcesTypes.get(r.type);
 	unsigned resImg = rt->gfxId + r.variety*rt->sizesCount + r.amount;
 	if (!rt->eternal)
 		resImg--;
-	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+16, ypos, globalContainer->ressources, resImg);
+	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+16, ypos, globalContainer->resources, resImg);
 
-	// Draw ressource count
+	// Draw resource count
 	if (rt->granular)
 	{
 		int sizesCount=rt->sizesCount;
 		int amount=r.amount;
-		const std::string amountS = FormatableString("%0/%1").arg(amount).arg(sizesCount);
+		const std::string amountS = FormattableString("%0/%1").arg(amount).arg(sizesCount);
 		int amountSH = globalContainer->littleFont->getStringHeight(amountS.c_str());
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-64, ypos+((32-amountSH)>>1), globalContainer->littleFont, amountS.c_str());
 	}
@@ -59,14 +59,14 @@ void GameGUI::drawReplayPanel(void)
 	int y = REPLAY_PANEL_YOFFSET;
 	int inc = REPLAY_PANEL_SPACE_BETWEEN_OPTIONS;
 
-	globalContainer->gfx->drawString(x, y, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[Options]")));
+	globalContainer->gfx->drawString(x, y, font, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[Options]")));
 
 	drawCheckButton(x, y + 1*inc, Toolkit::getStringTable()->getString("[fog of war]"), globalContainer->replayShowFog);
 	drawCheckButton(x, y + 2*inc, Toolkit::getStringTable()->getString("[combined vision]"), (globalContainer->replayVisibleTeams == 0xFFFFFFFF));
 	drawCheckButton(x, y + 3*inc, Toolkit::getStringTable()->getString("[show areas]"), (globalContainer->replayShowAreas));
 	drawCheckButton(x, y + 4*inc, Toolkit::getStringTable()->getString("[show flags]"), (globalContainer->replayShowFlags));
 
-	globalContainer->gfx->drawString(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET, font, FormatableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
+	globalContainer->gfx->drawString(x, y + REPLAY_PANEL_PLAYERLIST_YOFFSET, font, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[players]")));
 
 	for (int i = 0; i < game.teamsCount(); i++)
 	{
@@ -137,7 +137,7 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 	if (time2_hour <= 99)
 	{
 		globalContainer->gfx->drawString(REPLAY_BAR_TIMER_X, y+3, globalContainer->littleFont,
-			FormatableString("%0:%1:%2 / %3:%4:%5")
+			FormattableString("%0:%1:%2 / %3:%4:%5")
 			.arg(time1_hour)
 			.arg(time1_min,2,10,'0')
 			.arg(time1_sec,2,10,'0')
@@ -150,7 +150,7 @@ void GameGUI::drawReplayProgressBar(bool drawBackground)
 	{
 		// Time did not get saved properly, don't show it
 		globalContainer->gfx->drawString(REPLAY_BAR_TIMER_X, y+3, globalContainer->littleFont,
-			FormatableString("%0:%1:%2")
+			FormattableString("%0:%1:%2")
 			.arg(time1_hour)
 			.arg(time1_min,2,10,'0')
 			.arg(time1_sec,2,10,'0')
@@ -189,25 +189,25 @@ void GameGUI::drawFlagView(void)
 		globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+decX, YPOS_BASE_FLAG+YOFFSET_BRUSH, globalContainer->gamegui, 22);
 	}
 	globalContainer->gfx->finishDrawingSprite(globalContainer->gamegui, 255);
-	if(hilights.find(HilightForbiddenZoneOnPanel) != hilights.end())
+	if(highlights.find(HighlightForbiddenZoneOnPanel) != highlights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+8+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
 	}
-	if(hilights.find(HilightGuardZoneOnPanel) != hilights.end())
+	if(highlights.find(HighlightGuardZoneOnPanel) != highlights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+48+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
 	}
-	if(hilights.find(HilightClearingZoneOnPanel) != hilights.end())
+	if(highlights.find(HighlightClearingZoneOnPanel) != highlights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
+		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+88+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH, 38));
 	}
 
 	// draw brush
 	brush.draw(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+ZONE_STRIP_HEIGHT);
 
-	if(hilights.find(HilightBrushSelector) != hilights.end())
+	if(highlights.find(HighlightBrushSelector) != highlights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+ZONE_STRIP_HEIGHT+30, 38));
+		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36+dec, YPOS_BASE_FLAG+YOFFSET_BRUSH+ZONE_STRIP_HEIGHT+30, 38));
 	}
 
 	// draw brush help text

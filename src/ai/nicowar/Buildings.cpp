@@ -187,7 +187,7 @@ void NewNicowar::queue_barracks(Echo& echo)
 	const int barracks_count=bs_finished.count_buildings() + bs_upgrading.count_buildings() + buildings_under_construction_per_type[RegularBarracks];
 
 	int demand=0;
-	if(war_preperation)
+	if(war_preparation)
 	{
 		demand=strategy.war_preparation_phase_number_of_barracks;
 		///This only kicks in right at the start, so that it doesn't build barracks when it doesn't need to
@@ -217,9 +217,9 @@ void NewNicowar::queue_hospitals(Echo& echo)
 	int demand=0;
 	if(echo.player->team->stats.getLatestStat()->needHeal > 0)
 		demand += strategy.base_number_of_hospitals;
-	if(war_preperation || war)
+	if(war_preparation || war)
 	{
-		demand+=total_warrior/strategy.war_preperation_phase_warriors_per_hospital;
+		demand+=total_warrior/strategy.war_preparation_phase_warriors_per_hospital;
 	}
 
 	if(demand > hospital_count)
@@ -315,9 +315,9 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	//The main order for the inn
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, AI_NICOWAR_INN_ORDER_WORKERS);
 
-	//Constraints arround the location of wheat
+	//Constraints around the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_INN_WHEAT_MIN_DIST));
 	//You can't be farther than 10 units from wheat
@@ -329,10 +329,10 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	//You dont want to be too close to water, so that farm can develop between it and water
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, AI_NICOWAR_INN_WATER_MIN_DIST));
 
-	//Constraints arround nearby settlement
+	//Constraints around nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
@@ -340,7 +340,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -356,12 +356,12 @@ int NewNicowar::order_regular_inn(Echo& echo)
 
 	if(echo.is_fruit_on_map())
 	{
-		//Constraints arround the location of fruit
+		//Constraints around the location of fruit
 		AIEcho::Gradients::GradientInfo gi_fruit;
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-		gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-		//You want to be reasnobly close to fruit, closer if possible
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+		gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
+		//You want to be reasonably close to fruit, closer if possible
 		bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, AI_NICOWAR_INN_FRUIT_PREF));
 	}
 
@@ -369,11 +369,11 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	unsigned int id=echo.add_building_order(bo);
 
 	//Change the number of workers assigned when the building is finished
-	ManagementOrder* mo_completion=new SendMessage(FormatableString("update inn %0").arg(id));
+	ManagementOrder* mo_completion=new SendMessage(FormattableString("update inn %0").arg(id));
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_completion);
 
-	ManagementOrder* mo_tracker=new AddRessourceTracker(AI_NICOWAR_RESSOURCE_TRACKER_DEPTH, CORN, id);
+	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, CORN, id);
 	mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_tracker);
 
@@ -386,9 +386,9 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	//The main order for the swarm
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWARM_BUILDING, AI_NICOWAR_SWARM_ORDER_WORKERS);
 
-	//Constraints arround the location of wheat
+	//Constraints around the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_SWARM_WHEAT_PREF));
 
@@ -398,10 +398,10 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	//You dont want to be too close to water, so that farm can develop between it and water
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, AI_NICOWAR_SWARM_WATER_MIN_DIST));
 
-	//Constraints arround nearby settlement
+	//Constraints around nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
@@ -409,7 +409,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -419,11 +419,11 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	unsigned int id=echo.add_building_order(bo);
 
 	//Change the number of workers assigned when the building is finished
-	ManagementOrder* mo_completion=new SendMessage(FormatableString("update swarm %0").arg(id));
+	ManagementOrder* mo_completion=new SendMessage(FormattableString("update swarm %0").arg(id));
 	mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_completion);
 
-	ManagementOrder* mo_tracker=new AddRessourceTracker(AI_NICOWAR_RESSOURCE_TRACKER_DEPTH, CORN, id);
+	ManagementOrder* mo_tracker=new AddResourceTracker(AI_NICOWAR_RESOURCE_TRACKER_DEPTH, CORN, id);
 	mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 	echo.add_management_order(mo_tracker);
 
@@ -436,9 +436,9 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	//The main order for the racetrack
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, AI_NICOWAR_RACETRACK_ORDER_WORKERS);
 
-	//Constraints arround the location of wood
+	//Constraints around the location of wood
 	AIEcho::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_RACETRACK_WOOD_PREF));
 
@@ -448,31 +448,31 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 	//You dont want to be too close to water. allows farms to develop
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, AI_NICOWAR_RACETRACK_WATER_MIN_DIST));
 
-	//Constraints arround the location of stone
+	//Constraints around the location of stone
 	AIEcho::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+	gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 	//You want to be close to stone
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, AI_NICOWAR_RACETRACK_STONE_PREF));
 	//But not to close, so you have room to upgrade
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, AI_NICOWAR_RACETRACK_STONE_MIN));
 
-	//Constraints arround nearby settlement
+	//Constraints around nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_NICOWAR_RACETRACK_BUILDING_PREF));
 
-	//Constraints arround water. Can't be too close to sand.
+	//Constraints around water. Can't be too close to sand.
 	AIEcho::Gradients::GradientInfo gi_sand;
 	gi_sand.add_source(new AIEcho::Gradients::Entities::Sand);
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_sand, AI_NICOWAR_RACETRACK_SAND_MIN));
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -487,12 +487,12 @@ int NewNicowar::order_regular_racetrack(Echo& echo)
 
 int NewNicowar::order_regular_swimmingpool(Echo& echo)
 {
-	//The main order for the swimmingpool
+	//The main order for the swimming pool
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, AI_NICOWAR_SWIMMINGPOOL_ORDER_WORKERS);
 
-	//Constraints arround the location of wood
+	//Constraints around the location of wood
 	AIEcho::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_SWIMMINGPOOL_WOOD_PREF));
 
@@ -502,35 +502,35 @@ int NewNicowar::order_regular_swimmingpool(Echo& echo)
 	//You dont want to be too close to water. allows farms to develop
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, AI_NICOWAR_SWIMMINGPOOL_WATER_MIN_DIST));
 
-	//Constraints arround the location of wheat
+	//Constraints around the location of wheat
 	AIEcho::Gradients::GradientInfo gi_wheat;
-	gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+	gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 	//You want to be close to wheat
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_NICOWAR_SWIMMINGPOOL_WHEAT_PREF));
 
-	//Constraints arround the location of stone
+	//Constraints around the location of stone
 	AIEcho::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+	gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 	//You don't want to be too close, so you have room to upgrade
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, AI_NICOWAR_SWIMMINGPOOL_STONE_MIN));
 
-	//Constraints arround nearby settlement
+	//Constraints around nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings, but wheat is more important
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_NICOWAR_SWIMMINGPOOL_BUILDING_PREF));
 
-	//Constraints arround water. Can't be too close to sand.
+	//Constraints around water. Can't be too close to sand.
 	AIEcho::Gradients::GradientInfo gi_sand;
 	gi_sand.add_source(new AIEcho::Gradients::Entities::Sand);
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_sand, AI_NICOWAR_SWIMMINGPOOL_SAND_MIN));
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -548,10 +548,10 @@ int NewNicowar::order_regular_school(Echo& echo)
 	//The main order for the school
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::SCIENCE_BUILDING, AI_NICOWAR_SCHOOL_ORDER_WORKERS);
 
-	//Constraints arround nearby settlement
+	//Constraints around nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
@@ -565,19 +565,19 @@ int NewNicowar::order_regular_school(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, AI_NICOWAR_SCHOOL_CONSTRUCTION_MIN));
 
-	//Constraints arround the enemy
+	//Constraints around the enemy
 	AIEcho::Gradients::GradientInfo gi_enemy;
 	for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 	{
 		gi_enemy.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(*i, false));
 	}
-//	gi_enemy.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+//	gi_enemy.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	bo->add_constraint(new AIEcho::Construction::MaximizedDistance(gi_enemy, AI_NICOWAR_SCHOOL_ENEMY_MAX_DIST));
 
 	//Add the building order to the list of orders
@@ -598,22 +598,22 @@ int NewNicowar::order_regular_barracks(Echo& echo)
 	//You dont want to be too close to water. allows farms to develop
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, AI_NICOWAR_BARRACKS_WATER_MIN_DIST));
 
-	//Constraints arround the location of stone
+	//Constraints around the location of stone
 	AIEcho::Gradients::GradientInfo gi_stone;
-	gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+	gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 	//You want to be close to stone
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, AI_NICOWAR_BARRACKS_STONE_PREF));
 
-	//Constraints arround the location of wood
+	//Constraints around the location of wood
 	AIEcho::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_BARRACKS_WOOD_PREF));
 
-	//Constraints arround nearby settlement
+	//Constraints around nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
@@ -621,7 +621,7 @@ int NewNicowar::order_regular_barracks(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -639,9 +639,9 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 	//The main order for the hospital
 	BuildingOrder* bo = new BuildingOrder(IntBuildingType::HEAL_BUILDING, AI_NICOWAR_HOSPITAL_ORDER_WORKERS);
 
-	//Constraints arround the location of wood
+	//Constraints around the location of wood
 	AIEcho::Gradients::GradientInfo gi_wood;
-	gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+	gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 	//You want to be close to wood
 	bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, AI_NICOWAR_HOSPITAL_WOOD_PREF));
 
@@ -651,10 +651,10 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 	//You dont want to be too close to water. allows farms to develop
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, AI_NICOWAR_HOSPITAL_WATER_MIN_DIST));
 
-	//Constraints arround nearby settlement
+	//Constraints around nearby settlement
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You want to be close to other buildings
@@ -662,7 +662,7 @@ int NewNicowar::order_regular_hospital(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building_construction;
 	gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+	gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 	if(!can_swim)
 		gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::Water);
 	//You don't want to be too close
@@ -699,25 +699,25 @@ void NewNicowar::manage_inn(Echo& echo, int id)
 	int level=echo.get_building_register().get_level(id);
 	int assigned=echo.get_building_register().get_assigned(id);
 
-	//Do nothing if the ressource_tracker order hasn't been processed yet
-	if(! echo.get_ressource_tracker(id))
+	//Do nothing if the resource_tracker order hasn't been processed yet
+	if(! echo.get_resource_tracker(id))
 		return;
-	int total_ressource_level = echo.get_ressource_tracker(id)->get_total_level();
+	int total_resource_level = echo.get_resource_tracker(id)->get_total_level();
 	
 	int to_assign = 0;
-	if(level==1 && total_ressource_level>(strategy.level_1_inn_low_wheat_trigger_ammount*AI_NICOWAR_RESSOURCE_TRACKER_DEPTH))
+	if(level==1 && total_resource_level>(strategy.level_1_inn_low_wheat_trigger_amount*AI_NICOWAR_RESOURCE_TRACKER_DEPTH))
 		to_assign=strategy.level_1_inn_units_assigned_normal_wheat;
-	else if(level==1 && total_ressource_level<=(strategy.level_1_inn_low_wheat_trigger_ammount*AI_NICOWAR_RESSOURCE_TRACKER_DEPTH))
+	else if(level==1 && total_resource_level<=(strategy.level_1_inn_low_wheat_trigger_amount*AI_NICOWAR_RESOURCE_TRACKER_DEPTH))
 		to_assign=strategy.level_1_inn_units_assigned_low_wheat;
 
-	if(level==2 && total_ressource_level>(strategy.level_2_inn_low_wheat_trigger_ammount*AI_NICOWAR_RESSOURCE_TRACKER_DEPTH))
+	if(level==2 && total_resource_level>(strategy.level_2_inn_low_wheat_trigger_amount*AI_NICOWAR_RESOURCE_TRACKER_DEPTH))
 		to_assign=strategy.level_2_inn_units_assigned_normal_wheat;
-	else if(level==2 && total_ressource_level<=(strategy.level_2_inn_low_wheat_trigger_ammount*AI_NICOWAR_RESSOURCE_TRACKER_DEPTH))
+	else if(level==2 && total_resource_level<=(strategy.level_2_inn_low_wheat_trigger_amount*AI_NICOWAR_RESOURCE_TRACKER_DEPTH))
 		to_assign=strategy.level_2_inn_units_assigned_low_wheat;
 
-	if(level==3 && total_ressource_level>(strategy.level_3_inn_low_wheat_trigger_ammount*AI_NICOWAR_RESSOURCE_TRACKER_DEPTH))
+	if(level==3 && total_resource_level>(strategy.level_3_inn_low_wheat_trigger_amount*AI_NICOWAR_RESOURCE_TRACKER_DEPTH))
 		to_assign=strategy.level_3_inn_units_assigned_normal_wheat;
-	else if(level==3 && total_ressource_level<=(strategy.level_3_inn_low_wheat_trigger_ammount*AI_NICOWAR_RESSOURCE_TRACKER_DEPTH))
+	else if(level==3 && total_resource_level<=(strategy.level_3_inn_low_wheat_trigger_amount*AI_NICOWAR_RESOURCE_TRACKER_DEPTH))
 		to_assign=strategy.level_3_inn_units_assigned_low_wheat;
 	
 	///The number of units assigned to an Inn depends entirely on its level
@@ -742,10 +742,10 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 	int assigned=echo.get_building_register().get_assigned(id);
 	int to_assign=0;
 
-	//Do nothing if the ressource_tracker order hasn't been processed yet
-	if(! echo.get_ressource_tracker(id))
+	//Do nothing if the resource_tracker order hasn't been processed yet
+	if(! echo.get_resource_tracker(id))
 		return;
-	int total_ressource_level = echo.get_ressource_tracker(id)->get_total_level();
+	int total_resource_level = echo.get_resource_tracker(id)->get_total_level();
 
 	int worker_ratio=0;
 	int explorer_ratio=0;
@@ -754,8 +754,8 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 
 	to_assign=strategy.base_swarm_units_assigned;
 
-	///Double units when ressource level is low
-	if(total_ressource_level <= (strategy.base_swarm_low_wheat_trigger_ammount * AI_NICOWAR_RESSOURCE_TRACKER_DEPTH))
+	///Double units when resource level is low
+	if(total_resource_level <= (strategy.base_swarm_low_wheat_trigger_amount * AI_NICOWAR_RESOURCE_TRACKER_DEPTH))
 		to_assign*=2;
 
 	///Half units if world is hungry
@@ -788,7 +788,7 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 		needed_explorers+=strategy.fruit_phase_extra_number_of_explorers;
 	if(defend_explorers)
 		needed_explorers+=(stat->totalUnit * strategy.defense_explorer_population_percent) / 100;
-	if(explorer_attack_preperation_phase)
+	if(explorer_attack_preparation_phase)
 		needed_explorers+=strategy.offense_explorer_number;
 
 	if(total_explorers<needed_explorers)
@@ -796,10 +796,10 @@ void NewNicowar::manage_swarm(Echo& echo, int id)
 	else
 		explorer_ratio=0;
 
-	///Warriors are constructed during the war preperation phase
-	if(war_preperation)
+	///Warriors are constructed during the war preparation phase
+	if(war_preparation)
 	{
-		warrior_ratio=strategy.war_preperation_swarm_warrior_ratio;
+		warrior_ratio=strategy.war_preparation_swarm_warrior_ratio;
 	}
 	else
 	{

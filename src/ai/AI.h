@@ -21,7 +21,7 @@ class AI
 {
 public:
 	///TODO: Explain
-	enum ImplementitionID
+	enum ImplementationID
 	{
 		///Reference to AINull
 		NONE=0,
@@ -40,15 +40,15 @@ public:
 
 		SIZE
 	};
-	static const ImplementitionID toggleAI=CASTOR;
+	static const ImplementationID toggleAI=CASTOR;
 
 public:
-	AI(ImplementitionID implementitionID, Player *player);
+	AI(ImplementationID implementationID, Player *player);
 	AI(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	~AI();
 
 	AIImplementation *aiImplementation;
-	ImplementitionID implementitionID;
+	ImplementationID implementationID;
 
 	Player *player;
 

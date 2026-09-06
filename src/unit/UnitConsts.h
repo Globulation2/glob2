@@ -93,8 +93,8 @@ static constexpr int BULLET_MIN_DAMAGE = 1;
 
 //! `Unit::destinationPurpose` sentinel meaning "no destination chosen yet".
 static constexpr int UNIT_DEST_PURPOSE_NONE = -1;
-//! `Unit::carriedRessource` sentinel meaning "not carrying anything".
-static constexpr int UNIT_CARRIED_RESSOURCE_NONE = -1;
+//! `Unit::carriedResource` sentinel meaning "not carrying anything".
+static constexpr int UNIT_CARRIED_RESOURCE_NONE = -1;
 //! Free-slot search sentinel: starting `targetID = -1` means "no free slot
 //! found yet" (UnitActivity.cpp conversion code).
 static constexpr int UNIT_TARGETID_NONE = -1;
@@ -125,7 +125,7 @@ static constexpr int UNIT_HUNGRY_TRIG_DEN = 10;
 //! `trigHungry = hungry / 4` (25% remaining food).
 static constexpr int UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT = 4;
 //! Divisor for the carrying-a-resource hunger trigger:
-//! `trigHungryCarying = hungry / 10` (10% remaining food).
+//! `trigHungryCarrying = hungry / 10` (10% remaining food).
 static constexpr int UNIT_HUNGRY_TRIG_DIVISOR_CARRYING = 10;
 
 //! Vision radius (in tiles) granted to flying units; produces a 7x7 reveal

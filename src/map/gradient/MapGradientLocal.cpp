@@ -85,7 +85,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 				if (yi2+(xi*xi)<=r2)
 				{
 					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-					if(cases[addr].ressource.type != NO_RES_TYPE && building->clearingRessources[cases[addr].ressource.type])
+					if(cases[addr].resource.type != NO_RES_TYPE && building->clearingResources[cases[addr].resource.type])
 					{
 						int xxi=clip_0_31(LOCAL_GRID_CENTER+xi);
 						gradient[xxi+(yyi<<LOCAL_GRID_SHIFT)]=GRADIENT_AT_GOAL;
@@ -115,7 +115,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 			{
 				if (c.forbidden&teamMask)
 					gradient[wyx] = GRADIENT_FORBIDDEN;
-				else if (c.ressource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
+				else if (c.resource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
 					gradient[wyx] = GRADIENT_FORBIDDEN;
 				else if(immobileUnits[wyx] != 255)
 					gradient[wyx] = GRADIENT_FORBIDDEN;

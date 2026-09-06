@@ -91,11 +91,11 @@ private:
 };
 
 /// Receiver -> sender: aborts an in-flight inbound file transfer.
-class NetCancelRecievingFile : public NetMessage
+class NetCancelReceivingFile : public NetMessage
 {
 public:
-	NetCancelRecievingFile();
-	NetCancelRecievingFile(Uint16 fileID);
+	NetCancelReceivingFile();
+	NetCancelReceivingFile(Uint16 fileID);
 
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;

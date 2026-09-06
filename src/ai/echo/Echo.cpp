@@ -33,7 +33,7 @@ void AIEcho::signature_check(GAGCore::InputStream *stream, Player *player, Sint3
 	if (memcmp(signature,"EchoSig", AI_ECHO_SIGNATURE_LENGTH)!=0)
 	{
 
-		std::cerr<<"Signature match failed. Expected \"EchoSig\", recieved \""<<signature<<"\""<<std::endl;
+		std::cerr<<"Signature match failed. Expected \"EchoSig\", received \""<<signature<<"\""<<std::endl;
 		assert(false);
 	}
 }
@@ -94,45 +94,45 @@ void Echo::update_management_orders()
 
 
 
-void Echo::add_ressource_tracker(Management::RessourceTracker* rt, int building_id)
+void Echo::add_resource_tracker(Management::ResourceTracker* rt, int building_id)
 {
-	ressource_trackers[building_id]=std::make_tuple(std::shared_ptr<RessourceTracker>(rt), true);
+	resource_trackers[building_id]=std::make_tuple(std::shared_ptr<ResourceTracker>(rt), true);
 }
 
 
 
-std::shared_ptr<Management::RessourceTracker> Echo::get_ressource_tracker(int building_id)
+std::shared_ptr<Management::ResourceTracker> Echo::get_resource_tracker(int building_id)
 {
-	if(ressource_trackers.find(building_id)==ressource_trackers.end())
-		return std::shared_ptr<Management::RessourceTracker>();
-	return std::get<0>(ressource_trackers[building_id]);
+	if(resource_trackers.find(building_id)==resource_trackers.end())
+		return std::shared_ptr<Management::ResourceTracker>();
+	return std::get<0>(resource_trackers[building_id]);
 }
 
 
 
-void Echo::pause_ressource_tracker(int building_id)
+void Echo::pause_resource_tracker(int building_id)
 {
-	std::get<1>(ressource_trackers[building_id])=false;
+	std::get<1>(resource_trackers[building_id])=false;
 }
 
 
 
-void Echo::unpause_ressource_tracker(int building_id)
+void Echo::unpause_resource_tracker(int building_id)
 {
-	std::get<1>(ressource_trackers[building_id])=true;
+	std::get<1>(resource_trackers[building_id])=true;
 }
 
 
 
-void Echo::update_ressource_trackers()
+void Echo::update_resource_trackers()
 {
-	for(std::map<int, std::tuple<std::shared_ptr<Management::RessourceTracker>, bool> >::iterator i = ressource_trackers.begin(); i!=ressource_trackers.end();)
+	for(std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> >::iterator i = resource_trackers.begin(); i!=resource_trackers.end();)
 	{
 		if(!br.is_building_found(i->first) && !br.is_building_pending(i->first))
 		{
-			std::map<int, std::tuple<std::shared_ptr<Management::RessourceTracker>, bool> >::iterator current=i;
+			std::map<int, std::tuple<std::shared_ptr<Management::ResourceTracker>, bool> >::iterator current=i;
 			++i;
-			ressource_trackers.erase(current);
+			resource_trackers.erase(current);
 			continue;
 		}
 		else if(br.is_building_found(i->first))
@@ -225,11 +225,11 @@ void Echo::check_fruit()
 	{
 		for(int y=0; y<mi.get_height(); ++y)
 		{
-			if(mi.is_ressource(x, y, CHERRY))
+			if(mi.is_resource(x, y, CHERRY))
 				is_fruit=true;
-			if(mi.is_ressource(x, y, ORANGE))
+			if(mi.is_resource(x, y, ORANGE))
 				is_fruit=true;
-			if(mi.is_ressource(x, y, PRUNE))
+			if(mi.is_resource(x, y, PRUNE))
 				is_fruit=true;
 			if(is_fruit)
 				return;
@@ -305,7 +305,7 @@ std::shared_ptr<Order> Echo::getOrder(void)
 	if(update_gm)
 		gm->update();
 	br.tick();
-	update_ressource_trackers();
+	update_resource_trackers();
 	update_management_orders();
 	echoai->tick(*this);
 	update_management_orders();

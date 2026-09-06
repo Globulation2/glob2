@@ -427,17 +427,17 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 		// get or create the voice
 		PlayerVoice &pv = voices[order->sender];
 		// insert 200 ms silence to let packets come if we aer the first
-		if (pv.voiceDatas.empty())
+		if (pv.voiceData.empty())
 		{
 			for (size_t j=0; j<2000; j++)
-				pv.voiceDatas.push(0);
+				pv.voiceData.push(0);
 			pv.voiceVal0 = pv.voiceVal1 = 0;
 			pv.voiceSubIndex = 0;
 		}
 		
 		SpeexBits bits;
 		speex_bits_init(&bits);
-		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDatasLength);
+		speex_bits_read_from(&bits, (char *)order->getFramesData(), order->framesDataLength);
 		// read each frame
 		for (size_t i=0; i<order->frameCount; i++)
 		{
@@ -445,7 +445,7 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 			speex_decode(speexDecoderState, &bits, floatBuffer);
 			
 			for (size_t j=0; j<SPEEX_FRAME_SIZE; j++)
-				pv.voiceDatas.push(floatBuffer[j]);
+				pv.voiceData.push(floatBuffer[j]);
 		}
 		speex_bits_destroy(&bits);
 		

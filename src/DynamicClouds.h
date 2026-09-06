@@ -86,7 +86,7 @@ public:
 	 * @param h height of the alphaMap
 	 * @param time time
 	 */
-	void compute(const int viewPortX, const int viewPortY, const int viewPortWdth, const int viewPortHeght, const int time);
+	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
 };
 

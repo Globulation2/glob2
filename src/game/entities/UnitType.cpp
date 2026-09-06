@@ -9,7 +9,7 @@ UnitType& UnitType::operator+=(const UnitType &a)
 	for (int i=0; i<NB_MOVE; i++)
 		startImage[i]=a.startImage[i];
 
-	hungryness+=a.hungryness;
+	hungriness+=a.hungriness;
 
 	for (int i=0; i<NB_ABILITY; i++)
 		performance[i]+=a.performance[i];
@@ -27,7 +27,7 @@ UnitType UnitType::operator+(const UnitType &a)
 
 UnitType& UnitType::operator/=(int a)
 {
-	hungryness/=a;
+	hungriness/=a;
 
 	for (int i=0; i<NB_ABILITY; i++)
 		performance[i]/=a;
@@ -45,7 +45,7 @@ UnitType UnitType::operator/(int a)
 
 UnitType& UnitType::operator*=(int a)
 {
-	hungryness*=a;
+	hungriness*=a;
 
 	for (int i=0; i<NB_ABILITY; i++)
 		performance[i]*=a;
@@ -77,8 +77,8 @@ void UnitType::copyIf(const UnitType a, const UnitType b)
 	for (int i=0; i<NB_MOVE; i++)
 		startImage[i]=a.startImage[i];
 
-	if (b.hungryness)
-		hungryness=a.hungryness;
+	if (b.hungriness)
+		hungriness=a.hungriness;
 
 	for (int i=0; i<NB_ABILITY; i++)
 		if (b.performance[i])
@@ -91,8 +91,8 @@ void UnitType::copyIfNot(const UnitType a, const UnitType b)
 	for (int i=0; i<NB_MOVE; i++)
 		startImage[i]=a.startImage[i];
 
-	if (!(b.hungryness))
-		hungryness=a.hungryness;
+	if (!(b.hungriness))
+		hungriness=a.hungriness;
 
 	for (int i=0; i<NB_ABILITY; i++)
 		if (!(b.performance[i]))
@@ -111,7 +111,7 @@ void UnitType::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	startImage[HARVEST] = stream->readUint32("startImageHarvest");
 	startImage[ATTACK_SPEED] = stream->readUint32("startImageAttack");
 
-	hungryness = stream->readSint32("hungryness");
+	hungriness = stream->readSint32("hungryness");
 
 	performance[STOP_WALK] = stream->readSint32("stopWalkSpeed");
 	performance[STOP_SWIM] = stream->readSint32("stopSwimSpeed");
@@ -149,7 +149,7 @@ void UnitType::save(GAGCore::OutputStream *stream)
 	stream->writeUint32(startImage[HARVEST], "startImageHarvest");
 	stream->writeUint32(startImage[ATTACK_SPEED], "startImageAttack");
 
-	stream->writeSint32(hungryness, "hungryness");
+	stream->writeSint32(hungriness, "hungryness");
 
 	stream->writeSint32(performance[STOP_WALK], "stopWalkSpeed");
 	stream->writeSint32(performance[STOP_SWIM], "stopSwimSpeed");

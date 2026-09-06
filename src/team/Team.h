@@ -180,7 +180,7 @@ public:
 	Sint32 unitConversionGained;
 
 	/// Team-wide resource totals, for markets.
-	Sint32 teamRessources[MAX_NB_RESSOURCES];
+	Sint32 teamResources[MAX_NB_RESOURCES];
 
 private:
 	std::queue<GameEvent> events;

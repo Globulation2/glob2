@@ -200,8 +200,8 @@ std::shared_ptr<NetMessage> NetMessage::getNetMessage(GAGCore::InputStream* stre
 		case MNetCancelSendingFile:
 		message.reset(new NetCancelSendingFile);
 		break;
-		case MNetCancelRecievingFile:
-		message.reset(new NetCancelRecievingFile);
+		case MNetCancelReceivingFile:
+		message.reset(new NetCancelReceivingFile);
 		break;
 		case MNetRequestMapThumbnail:
 		message.reset(new NetRequestMapThumbnail);

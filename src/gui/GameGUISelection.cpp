@@ -57,7 +57,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 		selection=u;
 		view.selectedUnit=u;
 	}
-	else if (selectionMode==RESSOURCE_SELECTION)
+	else if (selectionMode==RESOURCE_SELECTION)
 	{
 		selection=static_cast<int>(newSelection);
 	}
@@ -103,8 +103,8 @@ void GameGUI::checkSelection(void)
 	{
 		clearSelection();
 	}
-	else if ((selectionMode==RESSOURCE_SELECTION)
-		&& (game.map.getRessource(selectionRessource()).type==NO_RES_TYPE))
+	else if ((selectionMode==RESOURCE_SELECTION)
+		&& (game.map.getResource(selectionResource()).type==NO_RES_TYPE))
 	{
 		clearSelection();
 	}

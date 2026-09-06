@@ -9,12 +9,12 @@
 
 
 
-// Ressource pathfinding for units (pathfindRessource, pathfindLocalRessource, pathfindRandom)
+// Resource pathfinding for units (pathfindResource, pathfindLocalResource, pathfindRandom)
 
-bool Map::pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
+bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
 {
-	assert(ressourceType<MAX_RESSOURCES);
-	const Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+	assert(resourceType<MAX_RESOURCES);
+	const Uint8 *gradient=resourcesGradient[teamNumber][resourceType][canSwim];
 	assert(gradient);
 	Uint8 max=gradient[x+y*w];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
@@ -92,7 +92,7 @@ void Map::pathfindRandom(Unit *unit)
 }
 #endif  // !YOG_SERVER_ONLY
 
-bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindLocalResource(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
 {
 	assert(building);
 	assert(building->type);
@@ -102,12 +102,12 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	int by=building->posY;
 	Uint32 teamMask=building->owner->me;
 
-	Uint8 *gradient=building->localRessources[canSwim];
+	Uint8 *gradient=building->localResources[canSwim];
 	if (gradient==NULL)
 	{
-		if (!updateLocalRessources(building, canSwim))
+		if (!updateLocalResources(building, canSwim))
 			return false;
-		gradient=building->localRessources[canSwim];
+		gradient=building->localResources[canSwim];
 	}
 	assert(gradient);
 	//HACK: I have no idea what is going on or why isInLocalGradient(x, y, bx, by) was asserted and why isInLocalGradient(x, y, bx, by) checks for the rectangle it is checking for, but this fixes a rare crash.
@@ -121,12 +121,12 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 	bool found=false;
 	bool gradientUsable=false;
 
-	// PORT: escalation path — bumps localRessourcesCleanTime by 16 to trigger clearingFlagStep's
+	// PORT: escalation path — bumps localResourcesCleanTime by 16 to trigger clearingFlagStep's
 	// PORT: recompute (which checks >125) sooner. The 125/128 thresholds are slightly mismatched;
 	// PORT: align them in the Rust port (probably both should be 125).
-	if (currentg==GRADIENT_UNREACHABLE && (building->localRessourcesCleanTime[canSwim]+=16)<128)
+	if (currentg==GRADIENT_UNREACHABLE && (building->localResourcesCleanTime[canSwim]+=16)<128)
 	{
-		// This means there are still ressources, but they are unreachable.
+		// This means there are still resources, but they are unreachable.
 		// We wait 5[s] before recomputing anything.
 		return false;
 	}
@@ -163,7 +163,7 @@ bool Map::pathfindLocalRessource(Building *building, bool canSwim, int x, int y,
 		}
 	}
 
-	updateLocalRessources(building, canSwim);
+	updateLocalResources(building, canSwim);
 
 	max=0;
 	currentg=gradient[lx+(ly<<5)];

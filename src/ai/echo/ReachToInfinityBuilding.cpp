@@ -40,35 +40,35 @@ void ReachToInfinity::tick_inns_near_wheat(Echo& echo)
 			//The main order for the inn
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::FOOD_BUILDING, 2);
 
-			//Constraints arround the location of wheat
+			//Constraints around the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_ECHO_RTI_INN_WHEAT_WEIGHT));
 			//You can't be farther than 10 units from wheat
 			bo->add_constraint(new AIEcho::Construction::MaximumDistance(gi_wheat, AI_ECHO_RTI_INN_WHEAT_MAX_DIST));
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_ECHO_RTI_BUILD_CLUSTER_WEIGHT));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, AI_ECHO_RTI_INN_CONSTRUCTION_MIN_DIST));
 
 			if(echo.is_fruit_on_map())
 			{
-				//Constraints arround the location of fruit
+				//Constraints around the location of fruit
 				AIEcho::Gradients::GradientInfo gi_fruit;
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-				gi_fruit.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-				//You want to be reasnobly close to fruit, closer if possible
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+				gi_fruit.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
+				//You want to be reasonably close to fruit, closer if possible
 				bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_fruit, AI_ECHO_RTI_INN_FRUIT_WEIGHT));
 			}
 
@@ -81,7 +81,7 @@ void ReachToInfinity::tick_inns_near_wheat(Echo& echo)
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_completion);
 
-			ManagementOrder* mo_tracker=new AddRessourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, id);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, id);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_tracker);
 		}
@@ -103,22 +103,22 @@ void ReachToInfinity::tick_swarms_near_wheat(Echo& echo)
 			//The main order for the swarm
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWARM_BUILDING, AI_ECHO_RTI_SWARM_WORKERS_NEW);
 
-			//Constraints arround the location of wheat
+			//Constraints around the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_ECHO_RTI_INN_WHEAT_WEIGHT));
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_ECHO_RTI_SWARM_CLUSTER_WEIGHT));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, AI_ECHO_RTI_INN_CONSTRUCTION_MIN_DIST));
 
@@ -138,7 +138,7 @@ void ReachToInfinity::tick_swarms_near_wheat(Echo& echo)
 			echo.add_management_order(mo_ratios);
 
 			//Add a tracker
-			ManagementOrder* mo_tracker=new AddRessourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, id);
+			ManagementOrder* mo_tracker=new AddResourceTracker(AI_ECHO_RTI_TRACKER_LENGTH, CORN, id);
 			mo_tracker->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_tracker);
 
@@ -159,30 +159,30 @@ void ReachToInfinity::tick_racetrack_near_stone_wood(Echo& echo)
 			//The main order for the racetrack
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::WALKSPEED_BUILDING, AI_ECHO_RTI_RACETRACK_WORKERS);
 
-			//Constraints arround the location of wood
+			//Constraints around the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
-			gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+			gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 			//You want to be close to wood
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, AI_ECHO_RTI_RACETRACK_WOOD_WEIGHT));
 
-			//Constraints arround the location of stone
+			//Constraints around the location of stone
 			AIEcho::Gradients::GradientInfo gi_stone;
-			gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+			gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 			//You want to be close to stone
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_stone, AI_ECHO_RTI_RACETRACK_STONE_WEIGHT));
 			//But not to close, so you have room to upgrade
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, AI_ECHO_RTI_RACETRACK_STONE_MIN_DIST));
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_ECHO_RTI_BUILD_CLUSTER_WEIGHT));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, AI_ECHO_RTI_RACETRACK_CONSTR_MIN_DIST));
 
@@ -202,37 +202,37 @@ void ReachToInfinity::tick_swimmingpool_near_wheat_wood(Echo& echo)
 		const int number=bs.count_buildings();
 		if((echo.player->team->stats.getLatestStat()->totalUnit/AI_ECHO_RTI_SECONDARY_BLDG_RATIO)>=number && number<AI_ECHO_RTI_SWIMMINGPOOL_MAX)
 		{
-			//The main order for the swimmingpool
+			//The main order for the swimming pool
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SWIMSPEED_BUILDING, AI_ECHO_RTI_SWIMMINGPOOL_WORKERS);
 
-			//Constraints arround the location of wood
+			//Constraints around the location of wood
 			AIEcho::Gradients::GradientInfo gi_wood;
-			gi_wood.add_source(new AIEcho::Gradients::Entities::Ressource(WOOD));
+			gi_wood.add_source(new AIEcho::Gradients::Entities::Resource(WOOD));
 			//You want to be close to wood
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wood, AI_ECHO_RTI_SWIMMINGPOOL_WOOD_WEIGHT));
 
-			//Constraints arround the location of wheat
+			//Constraints around the location of wheat
 			AIEcho::Gradients::GradientInfo gi_wheat;
-			gi_wheat.add_source(new AIEcho::Gradients::Entities::Ressource(CORN));
+			gi_wheat.add_source(new AIEcho::Gradients::Entities::Resource(CORN));
 			//You want to be close to wheat
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_wheat, AI_ECHO_RTI_SWIMMINGPOOL_WHEAT_WEIGHT));
 
-			//Constraints arround the location of stone
+			//Constraints around the location of stone
 			AIEcho::Gradients::GradientInfo gi_stone;
-			gi_stone.add_source(new AIEcho::Gradients::Entities::Ressource(STONE));
+			gi_stone.add_source(new AIEcho::Gradients::Entities::Resource(STONE));
 			//You don't want to be too close, so you have room to upgrade
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_stone, AI_ECHO_RTI_SWIMMINGPOOL_STONE_MIN_DIST));
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_ECHO_RTI_BUILD_CLUSTER_WEIGHT));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, AI_ECHO_RTI_SWIMMINGPOOL_CONSTR_MIN_DIST));
 
@@ -256,26 +256,26 @@ void ReachToInfinity::tick_school_inland(Echo& echo)
 			//The main order for the school
 			BuildingOrder* bo = new BuildingOrder(IntBuildingType::SCIENCE_BUILDING, AI_ECHO_RTI_SCHOOL_WORKERS);
 
-			//Constraints arround nearby settlement
+			//Constraints around nearby settlement
 			AIEcho::Gradients::GradientInfo gi_building;
 			gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You want to be close to other buildings, but wheat is more important
 			bo->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, AI_ECHO_RTI_BUILD_CLUSTER_WEIGHT));
 
 			AIEcho::Gradients::GradientInfo gi_building_construction;
 			gi_building_construction.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, true));
-			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_building_construction.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			//You don't want to be too close
 			bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_building_construction, AI_ECHO_RTI_SCHOOL_CONSTR_MIN_DIST));
 
-			//Constraints arround the enemy
+			//Constraints around the enemy
 			AIEcho::Gradients::GradientInfo gi_enemy;
 			for(enemy_team_iterator i(echo); i!=enemy_team_iterator(); ++i)
 			{
 				gi_enemy.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(*i, false));
 			}
-			gi_enemy.add_obstacle(new AIEcho::Gradients::Entities::AnyRessource);
+			gi_enemy.add_obstacle(new AIEcho::Gradients::Entities::AnyResource);
 			bo->add_constraint(new AIEcho::Construction::MaximizedDistance(gi_enemy, AI_ECHO_RTI_SCHOOL_ENEMY_DIST_WEIGHT));
 
 			//Add the building order to the list of orders
@@ -326,11 +326,11 @@ void ReachToInfinity::tick_upgrade_l1_to_l2(Echo& echo)
 
 				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
-					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_pause=new PauseResourceTracker(buildings[chosen]);
 					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_pause);
 
-					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_unpause=new UnPauseResourceTracker(buildings[chosen]);
 					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_unpause);
 
@@ -397,11 +397,11 @@ void ReachToInfinity::tick_upgrade_l2_to_l3(Echo& echo)
 
 				if(echo.get_building_register().get_type(buildings[chosen])==IntBuildingType::FOOD_BUILDING)
 				{
-					ManagementOrder* mo_tracker_pause=new PauseRessourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_pause=new PauseResourceTracker(buildings[chosen]);
 					mo_tracker_pause->add_condition(new ParticularBuilding(new UnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_pause);
 
-					ManagementOrder* mo_tracker_unpause=new UnPauseRessourceTracker(buildings[chosen]);
+					ManagementOrder* mo_tracker_unpause=new UnPauseResourceTracker(buildings[chosen]);
 					mo_tracker_unpause->add_condition(new ParticularBuilding(new NotUnderConstruction, buildings[chosen]));
 					echo.add_management_order(mo_tracker_unpause);
 
@@ -432,7 +432,7 @@ void ReachToInfinity::tick_delete_old_inns_swarms(Echo& echo)
 		inns.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=inns.begin(); i!=inns.end(); ++i)
 		{
-			std::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
+			std::shared_ptr<ResourceTracker> rt=echo.get_resource_tracker(*i);
 			if(rt)
 			{
 				if(rt->get_age()>AI_ECHO_RTI_INN_DELETE_AGE_TICKS)
@@ -452,7 +452,7 @@ void ReachToInfinity::tick_delete_old_inns_swarms(Echo& echo)
 		swarms.add_condition(new NotUnderConstruction);
 		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
 		{
-			std::shared_ptr<RessourceTracker> rt=echo.get_ressource_tracker(*i);
+			std::shared_ptr<ResourceTracker> rt=echo.get_resource_tracker(*i);
 			if(rt)
 			{
 				if(rt->get_age()>AI_ECHO_RTI_SWARM_DELETE_AGE_TICKS)

@@ -31,11 +31,11 @@
         d1 = d0 - 1.0; \
 
 
-// Konstruktor
+// Constructor
 PerlinNoise::PerlinNoise() {
 
 }
-// Destruktor
+// Destructor
 PerlinNoise::~PerlinNoise() {
 }
 

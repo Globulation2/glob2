@@ -135,7 +135,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		&& lmx<22)
 	{
 
-		// cleared ressources for clearing flags: one checkbox row per clearable
+		// cleared resources for clearing flags: one checkbox row per clearable
 		// resource (stone is never cleared, so it has no row)
 		if (buildingType->type == "clearingflag")
 		{
@@ -149,7 +149,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 						for (int k=0; k<BASIC_COUNT; k++)
 							next[k] = displayedClearingResource(*selBuild, k);
 						next[i] = !next[i];
-						pendingFor(selBuild->gid).pendingClearingRessources = next;
+						pendingFor(selBuild->gid).pendingClearingResources = next;
 						bool wire[BASIC_COUNT];
 						for (int k=0; k<BASIC_COUNT; k++) wire[k] = next[k];
 						orderQueue.push_back(shared_ptr<Order>(new OrderModifyClearingFlag(selBuild->gid, wire)));
@@ -204,25 +204,25 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		ypos += YOFFSET_TOWER;
 	ypos += YOFFSET_B_SEP;
 
-	//Exchannge building
+	//Exchange building
 	//Exchanging as a feature is broken
 	/*
 	// If revived: build the next masks in local Uint32 variables, stash them
-	// as pending state on BuildingGuiState (add pendingReceiveRessourceMask /
-	// pendingSendRessourceMask there), then emit the order. Same pattern as
+	// as pending state on BuildingGuiState (add pendingReceiveResourceMask /
+	// pendingSendResourceMask there), then emit the order. Same pattern as
 	// pendingMaxUnitWorking / pendingPriority / pendingRatio.
 	if (selBuild->type->canExchange && ((selBuild->owner->allies)&(1<<localTeamNo)))
 	{
 		int startY = ypos+YOFFSET_TEXT_PARA;
-		int endY = startY+HAPPYNESS_COUNT*YOFFSET_TEXT_PARA;
+		int endY = startY+HAPPINESS_COUNT*YOFFSET_TEXT_PARA;
 		if ((my>startY) && (my<endY))
 		{
 			int r = (my-startY)/YOFFSET_TEXT_PARA;
-			Uint32 nextRecv = selBuild->receiveRessourceMask;
-			Uint32 nextSend = selBuild->sendRessourceMask;
+			Uint32 nextRecv = selBuild->receiveResourceMask;
+			Uint32 nextSend = selBuild->sendResourceMask;
 			if ((lmx>92) && (lmx<104))
 			{
-				if (selBuild->receiveRessourceMask & (1<<r))
+				if (selBuild->receiveResourceMask & (1<<r))
 				{
 					nextRecv &= ~(1<<r);
 				}
@@ -236,7 +236,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 
 			if ((lmx>110) && (lmx<122))
 			{
-				if (selBuild->sendRessourceMask & (1<<r))
+				if (selBuild->sendResourceMask & (1<<r))
 				{
 					nextSend &= ~(1<<r);
 				}
@@ -250,10 +250,10 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		}
 	}
 	*/
-	// ressources in
-	for (unsigned i=0; i<globalContainer->ressourcesTypes.size(); i++)
+	// resources in
+	for (unsigned i=0; i<globalContainer->resourcesTypes.size(); i++)
 	{
-		if (buildingType->maxRessource[i])
+		if (buildingType->maxResource[i])
 		{
 			ypos += 11;
 		}

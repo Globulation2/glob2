@@ -49,7 +49,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 	{
 		Uint16 gid=selBuild->gid;
 		shared_ptr<OrderMoveFlag> oms(new OrderMoveFlag(gid, posX, posY, drop));
-		// First, we check if anoter move of the same flag is already in the "orderQueue".
+		// First, we check if another move of the same flag is already in the "orderQueue".
 		bool found=false;
 		for (std::list<shared_ptr<Order> >::iterator it=orderQueue.begin(); it!=orderQueue.end(); ++it)
 		{
@@ -273,7 +273,7 @@ void GameGUI::step(void)
 		order = toolManager.getOrder();
 	}
 
-	///This shows the mission briefing at the begginning of the mission
+	///This shows the mission briefing at the beginning of the mission
 	if(game.stepCounter == 12)
 	{
 		if(game.missionBriefing != "")

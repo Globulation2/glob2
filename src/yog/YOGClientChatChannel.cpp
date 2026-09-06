@@ -86,7 +86,7 @@ void YOGClientChatChannel::removeListener(YOGClientChatListener* listener)
 
 
 
-void YOGClientChatChannel::recieveMessage(std::shared_ptr<YOGMessage> message)
+void YOGClientChatChannel::receiveMessage(std::shared_ptr<YOGMessage> message)
 {
 	messageHistory.push_back(std::make_tuple(message, boost::posix_time::second_clock::local_time()));
 	sendToListeners(message);
@@ -96,7 +96,7 @@ void YOGClientChatChannel::recieveMessage(std::shared_ptr<YOGMessage> message)
 
 void YOGClientChatChannel::sendToListeners(std::shared_ptr<YOGMessage> message)
 {
-	listeners.notify(&YOGClientChatListener::recieveTextMessage, message);
+	listeners.notify(&YOGClientChatListener::receiveTextMessage, message);
 }
 
 

@@ -193,7 +193,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	if (id==SLOT_INDEX_NONE)
 		return NULL;
 
-	//ok, now we can safely deposite an unit.
+	//ok, now we can safely deposit an unit.
 	int gid=Unit::GIDfrom(id, team);
 	if (fly)
 		map.setAirUnit(x, y, gid);
@@ -227,7 +227,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 		return NULL;
 	}
 
-	//ok, now we can safely deposite an building.
+	//ok, now we can safely deposit an building.
 	int gid=Building::GIDfrom(id, teamNumber);
 
 	int w=globalContainer->buildingsTypes.get(typeNum)->width;

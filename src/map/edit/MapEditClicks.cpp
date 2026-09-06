@@ -190,28 +190,28 @@ void MapEdit::handleTerrainClick(int mx, int my)
 						game.map.setUMatPos(x, y, GRASS, 1);
 						// a tile is drawn from the undermap corners at (x..x+1, y..y+1), so cells
 						// painted at (x-1..x+1) change the tiles from (x-2, y-2) on; only the
-						// ressources those tiles no longer allow go
-						game.map.removeUnallowedRessources(x-2, y-2, 4, 4);
+						// resources those tiles no longer allow go
+						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
 						// grass is also the brush that clears: the tiles the cell touches go bare
 						for (int ty=y-1; ty<=y; ty++)
 							for (int tx=x-1; tx<=x; tx++)
-								game.map.getRessource(tx, ty).clear();
+								game.map.getResource(tx, ty).clear();
 						break;
 					case TerrainSelector::Sand:
 						game.removeUnitAndBuildingAndFlags(x, y, 2, Game::DEL_BUILDING | Game::DEL_UNIT);
 						game.map.setUMatPos(x, y, SAND, 1);
 						// a tile is drawn from the undermap corners at (x..x+1, y..y+1), so cells
 						// painted at (x-1..x+1) change the tiles from (x-2, y-2) on; only the
-						// ressources those tiles no longer allow go
-						game.map.removeUnallowedRessources(x-2, y-2, 4, 4);
+						// resources those tiles no longer allow go
+						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
 						break;
 					case TerrainSelector::Water:
 						game.removeUnitAndBuildingAndFlags(x, y, 5, Game::DEL_BUILDING | Game::DEL_UNIT);
 						game.map.setUMatPos(x, y, WATER, 1);
 						// a tile is drawn from the undermap corners at (x..x+1, y..y+1), so cells
 						// painted at (x-1..x+1) change the tiles from (x-2, y-2) on; only the
-						// ressources those tiles no longer allow go
-						game.map.removeUnallowedRessources(x-2, y-2, 4, 4);
+						// resources those tiles no longer allow go
+						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
 						break;
 					case TerrainSelector::Wheat:
 						resToSet=CORN;
@@ -240,9 +240,9 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					case TerrainSelector::NoTerrain:
 						break;
 					}
-					if(resToSet!=-1 && game.map.isRessourceAllowed(x, y, resToSet))
+					if(resToSet!=-1 && game.map.isResourceAllowed(x, y, resToSet))
 					{
-						game.map.setRessource(x, y, resToSet, 1);
+						game.map.setResource(x, y, resToSet, 1);
 					}
 				}
 			}
@@ -259,38 +259,38 @@ void MapEdit::handleTerrainClick(int mx, int my)
 					case TerrainSelector::Sand:
 					case TerrainSelector::Water:
 						game.map.setUMatPos(x, y, GRASS, 1);
-						game.map.removeUnallowedRessources(x-2, y-2, 4, 4);
+						game.map.removeUnallowedResources(x-2, y-2, 4, 4);
 						for (int ty=y-1; ty<=y; ty++)
 							for (int tx=x-1; tx<=x; tx++)
-								game.map.getRessource(tx, ty).clear();
+								game.map.getResource(tx, ty).clear();
 						break;
 					case TerrainSelector::Wheat:
-						if(game.map.isRessourceTakeable(x, y, CORN))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, CORN))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Trees:
-						if(game.map.isRessourceTakeable(x, y, WOOD))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, WOOD))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Stone:
-						if(game.map.isRessourceTakeable(x, y, STONE))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, STONE))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Algae:
-						if(game.map.isRessourceTakeable(x, y, ALGA))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, ALGA))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Papyrus:
-						if(game.map.isRessourceTakeable(x, y, PAPYRUS))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, PAPYRUS))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::CherryTree:
 					case TerrainSelector::OrangeTree:
 					case TerrainSelector::PruneTree:
-						if(game.map.isRessourceTakeable(x, y, CHERRY)
-						|| game.map.isRessourceTakeable(x, y, ORANGE)
-						|| game.map.isRessourceTakeable(x, y, PRUNE))
-							game.map.setNoRessource(x, y, 1);
+						if(game.map.isResourceTakeable(x, y, CHERRY)
+						|| game.map.isResourceTakeable(x, y, ORANGE)
+						|| game.map.isResourceTakeable(x, y, PRUNE))
+							game.map.setNoResource(x, y, 1);
 						break;
 					case TerrainSelector::Grass:
 					case TerrainSelector::NoTerrain:
@@ -340,7 +340,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 						game.map.setPoint(areaNumber->getIndex(), x, y);
 						break;
 					case BrushTool::CT_NO_RESOURCE_GROWTH:
-						game.map.getCase(x, y).canRessourcesGrow=false;
+						game.map.getCase(x, y).canResourcesGrow=false;
 						break;
 					}
 				}
@@ -357,7 +357,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 						game.map.unsetPoint(areaNumber->getIndex(), x, y);
 						break;
 					case BrushTool::CT_NO_RESOURCE_GROWTH:
-						game.map.getCase(x, y).canRessourcesGrow=true;
+						game.map.getCase(x, y).canResourcesGrow=true;
 						break;
 					default:break;
 					}
@@ -381,7 +381,7 @@ void MapEdit::handleAreaClick(int mx, int my)
 
 
 
-void MapEdit::handleNoRessourceGrowthClick(int mx, int my)
+void MapEdit::handleNoResourceGrowthClick(int mx, int my)
 {
 	handleClick(mx,my,BrushTool::CT_NO_RESOURCE_GROWTH);
 }
@@ -397,12 +397,12 @@ void MapEdit::regenerateGameHeader()
 	{
 		if (i==0)
 		{
-			std::string name = FormatableString("Player %0").arg(playerNumber);
+			std::string name = FormattableString("Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_LOCAL);
 		}
 		else
 		{
-			std::string name = FormatableString("AI Player %0").arg(playerNumber);
+			std::string name = FormattableString("AI Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_AI);
 		}
 		playerNumber+=1;

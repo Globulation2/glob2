@@ -69,7 +69,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 
 	if (panPushed)
 	{
-		// handle paning
+		// handle panning
 		int dx = (mx-panMouseX)>>1;
 		int dy = (my-panMouseY)>>1;
 		viewportX = (panViewX+dx)&game.map.getMaskW();
@@ -183,15 +183,15 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			}
 			else
 			{
-				// and ressource
-				if (game.map.isRessource(mapX, mapY) && game.map.isMapDiscovered(mapX, mapY, localTeam->me))
+				// and resource
+				if (game.map.isResource(mapX, mapY) && game.map.isMapDiscovered(mapX, mapY, localTeam->me))
 				{
-					setSelection(RESSOURCE_SELECTION, mapY*game.map.getW()+mapX);
+					setSelection(RESOURCE_SELECTION, mapY*game.map.getW()+mapX);
 					selectionPushed=true;
 				}
 				else
 				{
-					if (selectionMode == RESSOURCE_SELECTION)
+					if (selectionMode == RESOURCE_SELECTION)
 						clearSelection();
 				}
 			}

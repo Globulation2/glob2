@@ -20,7 +20,7 @@
 bool Map::checkTile(int x, int y, TileChecks c, bool canSwim,
                     Uint32 teamMask, Uint16 ignoreGid) const
 {
-	if (c.noRessource && isRessource(x, y))
+	if (c.noResource && isResource(x, y))
 		return false;
 	Uint16 buid = getBuilding(x, y);
 	if (buid != NOGBID && buid != ignoreGid)
@@ -120,35 +120,35 @@ std::optional<Offset> Map::doesPosTouchBuilding(int x, int y, Uint16 gbid) const
 	return std::nullopt;
 }
 
-std::optional<Offset> Map::doesUnitTouchRessource(Unit *unit) const
+std::optional<Offset> Map::doesUnitTouchResource(Unit *unit) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
 	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRessource(x+tdx, y+tdy) && ((getForbidden(x+tdx, y+tdy)&me)==0))
+			if (isResource(x+tdx, y+tdy) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }
 
-std::optional<Offset> Map::doesUnitTouchRessource(Unit *unit, int ressourceType) const
+std::optional<Offset> Map::doesUnitTouchResource(Unit *unit, int resourceType) const
 {
 	int x=unit->posX;
 	int y=unit->posY;
 	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRessourceTakeable(x+tdx, y+tdy, ressourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
+			if (isResourceTakeable(x+tdx, y+tdy, resourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }
 
-std::optional<Offset> Map::doesPosTouchRessource(int x, int y, int ressourceType) const
+std::optional<Offset> Map::doesPosTouchResource(int x, int y, int resourceType) const
 {
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
-			if (isRessourceTakeable(x+tdx, y+tdy, ressourceType))
+			if (isResourceTakeable(x+tdx, y+tdy, resourceType))
 				return Offset{tdx, tdy};
 	return std::nullopt;
 }

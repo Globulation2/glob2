@@ -39,10 +39,10 @@ namespace AIEcho
 		class AssignWorkers;
 		class ChangeSwarm;
 		class DestroyBuilding;
-		class RessourceTracker;
-		class AddRessourceTracker;
-		class PauseRessourceTracker;
-		class UnPauseRessourceTracker;
+		class ResourceTracker;
+		class AddResourceTracker;
+		class PauseResourceTracker;
+		class UnPauseResourceTracker;
 		class ChangeFlagSize;
 		class ChangeFlagMinimumLevel;
 		class GlobalManagementOrder;
@@ -182,7 +182,7 @@ namespace AIEcho
 
 		///This constraint doesn't use gradients, unlike the other ones. In particular, it only allows one
 		///position to be allowed, the center of the building with the provided GBID. Notice this is not
-		///like other building ID's, it can only be obtained with enemy_building_iterator or a similair
+		///like other building ID's, it can only be obtained with enemy_building_iterator or a similar
 		///method.
 		class CenterOfBuilding : public Constraint
 		{
@@ -272,13 +272,13 @@ namespace AIEcho
 
 		///The building register is a very important sub system of Echo. It keeps track of buildings.
 		///A seemingly simple process, but very, very important. Buildings you construct are looked for,
-		///found, recorded, etc. Allot of seemingly odd code is found here, meant to work arround some
-		///of the difficulties of other parts of glob2, so that the AI programmer can have a seemless,
+		///found, recorded, etc. A lot of seemingly odd code is found here, meant to work around some
+		///of the difficulties of other parts of glob2, so that the AI programmer can have a seamless,
 		///comfortable interface. Nothing here is directly important to an AI programmer.
 		///The system puts buildings through three stages. The first is where the building order has been
 		///issued by the ai, but it hasn't satisfied its conditions, and thus hasn't been sent to the glob2
 		///engine. The second is where the building conditions are satisfied and the building order
-		///has been sent, but the engine is awaiting the pertimiter of the building to be cleared before
+		///has been sent, but the engine is awaiting the perimeter of the building to be cleared before
 		///it sets the building in place. The third stage is where the building has been set in place,
 		///and was detected on the map. In this stage, an engine gid has been found and a pointer to
 		///the building in memory secured. The fourth stage is where the building is being upgraded.
@@ -287,7 +287,7 @@ namespace AIEcho
 		///If the register knows when a building is being upgraded, it knows when the building is
 		///expected to change in size and to what size, and this bug is solved.
 		///Another unmentioned part is that during the second stage, the building can be timed out if
-		///it was unable to be set for various reasons (ressources grew into its area)
+		///it was unable to be set for various reasons (resources grew into its area)
 		class BuildingRegister
 		{
 		public:
@@ -319,10 +319,10 @@ namespace AIEcho
 			friend class AIEcho::Management::AssignWorkers;
 			friend class AIEcho::Management::ChangeSwarm;
 			friend class AIEcho::Management::DestroyBuilding;
-			friend class AIEcho::Management::RessourceTracker;
-			friend class AIEcho::Management::AddRessourceTracker;
-			friend class AIEcho::Management::PauseRessourceTracker;
-			friend class AIEcho::Management::UnPauseRessourceTracker;
+			friend class AIEcho::Management::ResourceTracker;
+			friend class AIEcho::Management::AddResourceTracker;
+			friend class AIEcho::Management::PauseResourceTracker;
+			friend class AIEcho::Management::UnPauseResourceTracker;
 			friend class AIEcho::Management::ChangeFlagSize;
 			friend class AIEcho::Management::ChangeFlagMinimumLevel;
 			friend class AIEcho::Management::GlobalManagementOrder;
@@ -353,8 +353,8 @@ namespace AIEcho
 			found_iterator end() { return found_buildings.end(); }
 			///The last variables in both of these is simply a "this exists" variable. Its used to combat the fact
 			///that pending_buildings[id] may create a new object, and the system can't tell the difference between it and something
-			///real. So bassically, the last variable is set to true when the object is supposed to be there, false is
-			///the default value if its accidentilly created.
+			///real. So basically, the last variable is set to true when the object is supposed to be there, false is
+			///the default value if its accidentally created.
 			std::map<int, std::tuple<int, int, int, int> > pending_buildings;
 			std::map<int, std::tuple<int, int, int, int, boost::logic::tribool> > found_buildings;
 			unsigned int building_id;

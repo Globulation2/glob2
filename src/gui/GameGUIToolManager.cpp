@@ -18,7 +18,7 @@ using namespace GAGCore;
 GameGUIToolManager::GameGUIToolManager(Game& game, BrushTool& brush, GameGUIDefaultAssignManager& defaultAssign, GameGUIGhostBuildingManager& ghostManager)
 	: game(game), brush(brush), defaultAssign(defaultAssign), ghostManager(ghostManager)
 {
-	hilightStrength = 0;
+	highlightStrength = 0;
 	mode = NoTool;
 	zoneType = Forbidden;
 }
@@ -308,15 +308,15 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 	{
 		if (zoneType == Forbidden)
 		{
-			orders.push(std::shared_ptr<Order>(new OrderAlterateForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Guard)
 		{
-			orders.push(std::shared_ptr<Order>(new OrderAlterateGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else if (zoneType == Clearing)
 		{
-			orders.push(std::shared_ptr<Order>(new OrderAlterateClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
+			orders.push(std::shared_ptr<Order>(new OrderAlterClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
 		}
 		else
 			assert(false);
@@ -380,11 +380,11 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	if(ghostManager.isGhostBuilding(tempX, tempY, bt->width, bt->height))
 		isRoom = false;
 	
-	// Increase/Decrease hilight strength, given whether there is room or not
+	// Increase/Decrease highlight strength, given whether there is room or not
 	if (isRoom)
-		hilightStrength = std::min(hilightStrength + 0.1f, 1.0f);
+		highlightStrength = std::min(highlightStrength + 0.1f, 1.0f);
 	else
-		hilightStrength = std::max(hilightStrength - 0.1f, 0.0f);
+		highlightStrength = std::max(highlightStrength - 0.1f, 0.0f);
 		
 	// we get the screen dimensions of the building
 	int rectW = (bt->width) * 32;
@@ -394,7 +394,7 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 	
 	// Draw the building
 	sprite->setBaseColor(game.teams[localteam]->color);
-	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, hilightStrength));
+	int spriteIntensity = 127+static_cast<int>(128.0f*splineInterpolation(1.f, 0.f, 1.f, highlightStrength));
 	globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
 	globalContainer->gfx->finishDrawingSprite(sprite, spriteIntensity);
 
@@ -408,12 +408,12 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 			globalContainer->gfx->drawLine(rectX+rectW-1, rectY, rectX, rectY+rectH-1, 255, 0, 0, 127);
 			
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
-			globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormatableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
+			globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(game.teams[localteam]->noMoreBuildingSitesCountdown/40).arg((game.teams[localteam]->noMoreBuildingSitesCountdown%40)/4).c_str());
 			globalContainer->littleFont->popStyle();
 		}
 		else
 		{
-			// Draw the square arround the building, denoting its size when upgraded
+			// Draw the square around the building, denoting its size when upgraded
 			if (isRoom)
 				globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 255, 255, 127);
 			else

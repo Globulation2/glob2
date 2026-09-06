@@ -58,7 +58,7 @@ protected:
 	void testGuiUnknownNameIsNullopt(void)
 	{
 		// A plausible real typo: the canonical name is "select construct
-		// swimmingpool" (one word), not "swimming pool".
+		// swimming pool" (one word), not "swimming pool".
 		CPPUNIT_ASSERT(!GameGUIKeyActions::getAction("select construct swimming pool").has_value());
 		CPPUNIT_ASSERT(!GameGUIKeyActions::getAction("not a real action").has_value());
 	}

@@ -148,7 +148,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 0, 255, 255, 255, 255, 64, 0);
 
 		if ((type->canFeedUnit) || (type->unitProductionTime))
-			drawBuildingResourceBar(x+1, y+1, type, type->maxRessource[CORN], building->ressources[CORN], 255, 255, 120);
+			drawBuildingResourceBar(x+1, y+1, type, type->maxResource[CORN], building->resources[CORN], 255, 255, 120);
 
 		if (type->maxBullets)
 			drawBuildingResourceBar(x+1, y+1, type, type->maxBullets, building->bullets, 200, 200, 200);

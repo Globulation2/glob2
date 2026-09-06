@@ -18,7 +18,7 @@
 struct PlayerVoice
 {
 	//! Decoded 8 kHz float samples awaiting playback.
-	std::queue<float> voiceDatas;
+	std::queue<float> voiceData;
 	//! Fractional playback position in [0,1) between voiceVal0 and voiceVal1.
 	float voiceSubIndex = 0.0f;
 	//! Left/right endpoints of the current linear-interpolation segment.

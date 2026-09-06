@@ -23,7 +23,7 @@ namespace GAGCore
 }
 
 /**
- * Player extends BasePlayer by an associated AI, a Game, a Map, a Team and a startng position.
+ * Player extends BasePlayer by an associated AI, a Game, a Map, a Team and a starting position.
  */
 class Player:public BasePlayer
 {
@@ -39,7 +39,7 @@ public:
 	bool load(GAGCore::InputStream *stream, Team *teams[Team::MAX_COUNT], Sint32 versionMinor);
 	void save(GAGCore::OutputStream  *stream);
 
-	void makeItAI(AI::ImplementitionID aiType);
+	void makeItAI(AI::ImplementationID aiType);
 public:
 	Sint32 startPositionX, startPositionY;
 

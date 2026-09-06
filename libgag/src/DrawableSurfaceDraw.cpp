@@ -153,7 +153,7 @@ namespace GAGCore
 		if ((x < clipRect.x) || (x >= clipRect.x + clipRect.w))
 			return;
 
-		// set l positiv
+		// set l positive
 		if (l < 0)
 		{
 			y += l;
@@ -221,7 +221,7 @@ namespace GAGCore
 		if ((y < clipRect.y) || (y >= clipRect.y + clipRect.h))
 			return;
 
-		// set l positiv
+		// set l positive
 		if (l < 0)
 		{
 			x += l;

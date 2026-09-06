@@ -72,7 +72,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	size_t bestIndex=0;
 	Sint32 bestScore=0;
 	
-	Uint8 *wheatGradientMap=map->ressourcesGradient[team->teamNumber][CORN][canSwim];
+	Uint8 *wheatGradientMap=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
@@ -149,7 +149,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	return shared_ptr<Order>();
 }
 
-void AICastor::computeRessourcesCluster()
+void AICastor::computeResourcesCluster()
 {
 	int w=map->w;
 	int h=map->h;
@@ -157,7 +157,7 @@ void AICastor::computeRessourcesCluster()
 	int hMask=map->hMask;
 	size_t size=w*h;
 	
-	memset(ressourcesCluster, 0, size*2);
+	memset(resourcesCluster, 0, size*2);
 	
 	Uint8 old=NO_RES_TYPE;
 	Uint16 id=0;
@@ -168,12 +168,12 @@ void AICastor::computeRessourcesCluster()
 		for (int x=0; x<w; x++)
 		{
 			const auto& c = map->cases[map->coordToIndex(x, y)]; // case
-			const auto& r=c.ressource; // ressource
-			Uint8 rt=r.type; // ressources type
+			const auto& r=c.resource; // resource
+			Uint8 rt=r.type; // resources type
 			
-			int rci=x+y*w; // ressource cluster index
-			Uint16 *rcp=&ressourcesCluster[rci]; // ressource cluster pointer
-			Uint16 rc=*rcp; // ressource cluster
+			int rci=x+y*w; // resource cluster index
+			Uint16 *rcp=&resourcesCluster[rci]; // resource cluster pointer
+			Uint16 rc=*rcp; // resource cluster
 			
 			if (rt==NO_RES_TYPE)
 			{
@@ -202,7 +202,7 @@ void AICastor::computeRessourcesCluster()
 						Uint16 oldid=id;
 						usedid[oldid]=false;
 						id=rc; // newid
-						// We have to correct last ressourcesCluster values:
+						// We have to correct last resourcesCluster values:
 						*rcp=id;
 						while (*rcp==oldid)
 						{
@@ -213,14 +213,14 @@ void AICastor::computeRessourcesCluster()
 				}
 			}
 		}
-		memcpy(ressourcesCluster+((y+1)&hMask)*w, ressourcesCluster+y*w, w*2);
+		memcpy(resourcesCluster+((y+1)&hMask)*w, resourcesCluster+y*w, w*2);
 	}
 	
 }
 
 void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 {
-	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	//In this algorithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
 	int w=map->w;
 	int h=map->h;
@@ -352,7 +352,7 @@ void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)
 
 void AICastor::updateGlobalGradient(Uint8 *gradient)
 {
-	//In this algotithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
+	//In this algorithm, "l" stands for one case at Left, "r" for one case at Right, "u" for Up, and "d" for Down.
 	// Warning, this is *nearly* a copy-past, 4 times, once for each direction.
 	
 	int w=map->w;

@@ -29,7 +29,7 @@ namespace AIEcho
 	}
 
 	///These are all conditions on a particular Building. They are used in several places, such as when counting numbers of buildings, or
-	///for setting a condition on an order to change the number of units assigned, making them very usefull. Its important to note that
+	///for setting a condition on an order to change the number of units assigned, making them very useful. Its important to note that
 	///none of the conditions work on enemies buildings, they only work on buildings on you're own team.
 	namespace Conditions
 	{
@@ -57,7 +57,7 @@ namespace AIEcho
 			friend class Construction::BuildingOrder;
 			friend class EitherCondition;
 			///This function checks if the condition passes. The third state, indeterminate, means that the condition
-			///is impossible to fullfill. For example, a condition on a particular building could never pass if that
+			///is impossible to fulfill. For example, a condition on a particular building could never pass if that
 			///building is destroyed.
 			virtual boost::logic::tribool passes(Echo& echo)=0;
 			virtual ConditionType get_type()=0;
@@ -178,8 +178,8 @@ namespace AIEcho
 			CNotSpecificBuildingType = 5,
 			CBuildingLevel = 6,
 			CUpgradable = 7,
-			CRessourceTrackerAmount = 8,
-			CRessourceTrackerAge = 9,
+			CResourceTrackerAmount = 8,
+			CResourceTrackerAge = 9,
 			// value 10 reserved (was CTicksPassed, removed — debug-only, never instantiated by any AI)
 		};
 
@@ -237,7 +237,7 @@ namespace AIEcho
 			{ s->writeEnterSection("BeingUpgraded"); s->writeLeaveSection(); }
 		};
 
-		///Similair to BeingUpgraded, but this also takes a level, in which the building is being upgraded
+		///Similar to BeingUpgraded, but this also takes a level, in which the building is being upgraded
 		///to a particular level. When possible, use this instead od combining BeingUpgraded and BuildingLevel
 		class BeingUpgradedTo : public BuildingCondition
 		{
@@ -310,8 +310,8 @@ namespace AIEcho
 			{ s->writeEnterSection("Upgradable"); s->writeLeaveSection(); }
 		};
 
-		///This class compares the total amount of ressources recorded by a ressource tracker.
-		class RessourceTrackerAmount : public BuildingCondition
+		///This class compares the total amount of resources recorded by a resource tracker.
+		class ResourceTrackerAmount : public BuildingCondition
 		{
 		public:
 			enum TrackerMethod
@@ -320,10 +320,10 @@ namespace AIEcho
 				Lesser,
 			};
 
-			explicit RessourceTrackerAmount(int amount, TrackerMethod tracker_method);
+			explicit ResourceTrackerAmount(int amount, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			RessourceTrackerAmount() = default;
+			ResourceTrackerAmount() = default;
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
@@ -332,8 +332,8 @@ namespace AIEcho
 			int tracker_method = 0;
 		};
 
-		///This class compares the age provided by a ressource tracker
-		class RessourceTrackerAge : public BuildingCondition
+		///This class compares the age provided by a resource tracker
+		class ResourceTrackerAge : public BuildingCondition
 		{
 		public:
 			enum TrackerMethod
@@ -342,10 +342,10 @@ namespace AIEcho
 				Lesser,
 			};
 
-			explicit RessourceTrackerAge(int age, TrackerMethod tracker_method);
+			explicit ResourceTrackerAge(int age, TrackerMethod tracker_method);
 		private:
 			friend class BuildingCondition;
-			RessourceTrackerAge() = default;
+			ResourceTrackerAge() = default;
 			bool passes(Echo& echo, int id);
 			BuildingConditionType get_type();
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);

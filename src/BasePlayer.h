@@ -31,7 +31,7 @@ public:
 	 *     enum PlayerKind { None, LostDropping, LostFinal, Network, Local, AI }
 	 *     struct BasePlayer {
 	 *         kind: PlayerKind,
-	 *         ai_type: Option<AI::ImplementitionID>,  // Some iff kind == AI
+	 *         ai_type: Option<AI::ImplementationID>,  // Some iff kind == AI
 	 *         ...
 	 *     }
 	 * Saves get re-versioned in the port anyway, so this is the right
@@ -55,13 +55,13 @@ public:
 		P_AI=5
 	};
 	//TODO: Explain
-	static AI::ImplementitionID implementitionIdFromPlayerType(PlayerType type)
+	static AI::ImplementationID implementationIdFromPlayerType(PlayerType type)
 	{
 		assert(type>=P_AI);
-		return (AI::ImplementitionID)((int)type-(int)P_AI);
+		return (AI::ImplementationID)((int)type-(int)P_AI);
 	}
 	//TODO: Explain
-	static PlayerType playerTypeFromImplementitionID(AI::ImplementitionID iid)
+	static PlayerType playerTypeFromImplementationID(AI::ImplementationID iid)
 	{
 		return (PlayerType)((int)iid+(int)P_AI);
 	}
@@ -128,7 +128,7 @@ public:
 
 	Uint32 checkSum();
 
-	virtual void makeItAI(AI::ImplementitionID aiType);
+	virtual void makeItAI(AI::ImplementationID aiType);
 	//TODO: Explain
 	bool disableRecursiveDestruction;
 };

@@ -32,6 +32,6 @@ protected:
 	
 protected:
 	Unit *unit; //!< unit being edited
-	TextInput *hungryness;
+	TextInput *hungriness;
 };
 

@@ -26,16 +26,16 @@ ManagementOrder* ManagementOrder::load_order(GAGCore::InputStream *stream, Playe
 			mo=new DestroyBuilding;
 			mo->load(stream, player, versionMinor);
 			break;
-		case MAddRessourceTracker:
-			mo=new AddRessourceTracker;
+		case MAddResourceTracker:
+			mo=new AddResourceTracker;
 			mo->load(stream, player, versionMinor);
 			break;
-		case MPauseRessourceTracker:
-			mo=new PauseRessourceTracker;
+		case MPauseResourceTracker:
+			mo=new PauseResourceTracker;
 			mo->load(stream, player, versionMinor);
 			break;
-		case MUnPauseRessourceTracker:
-			mo=new UnPauseRessourceTracker;
+		case MUnPauseResourceTracker:
+			mo=new UnPauseResourceTracker;
 			mo->load(stream, player, versionMinor);
 			break;
 		case MChangeFlagSize:

@@ -46,7 +46,7 @@ public:
 
 
 	/**
-	 * all variables shoudl really be private, we're working on it
+	 * all variables should really be private, we're working on it
 	 * TODO: make all variables private
 	 */
 private:

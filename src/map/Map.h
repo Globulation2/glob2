@@ -43,7 +43,7 @@ struct Case
 	Uint16 terrain = 0; // default, not really meaningful.
 	Uint16 building = NOGBID;
 
-	Ressource ressource;
+	Resource resource;
 
 	Uint16 groundUnit = NOGUID;
 	Uint16 airUnit = NOGUID;
@@ -55,7 +55,7 @@ struct Case
 	Uint32 clearArea = 0; // This is a mask, one bit by team, 1=clear area, 0=normal
 
 	Uint16 scriptAreas = 0; // This is also a mask. A single bit represents an area #n, on or off for the square
-	Uint8 canRessourcesGrow = 1; // This is a boolean, it represents whether ressources are allowed to grow into this location.
+	Uint8 canResourcesGrow = 1; // This is a boolean, it represents whether resources are allowed to grow into this location.
 	
 	Uint16 fertility = 0; // This is a value that represents the fertility of this square, the chance that wheat will grow on it
 };
@@ -125,13 +125,13 @@ public:
 	void addTeam(void);
 	void removeTeam(void);
 
-	//! Grow ressources on map
-	void growRessources(void);
+	//! Grow resources on map
+	void growResources(void);
 #ifndef YOG_SERVER_ONLY
-	//! Do a step associated with map (grow ressources and process bullets)
+	//! Do a step associated with map (grow resources and process bullets)
 	void syncStep(Uint32 stepCounter);
 #endif  // !YOG_SERVER_ONLY
-	//! Switch the Fog of War bufferRessourceType
+	//! Switch the Fog of War bufferResourceType
 	void switchFogOfWar(void);
 
 	//! Return map width
@@ -156,13 +156,13 @@ public:
 		return ((y & hMask) << wDec) + (x & wMask);
 	}
 
-	///Returns a normalized version of the x cordinate, taking into account that x coordinates wrap around
+	///Returns a normalized version of the x coordinate, taking into account that x coordinates wrap around
 	int normalizeX(int x) const
 	{
 		return x & wMask;
 	}
 	
-	///Returns a normalized version of the y cordinate, taking into account that y coordinates wrap around
+	///Returns a normalized version of the y coordinate, taking into account that y coordinates wrap around
 	int normalizeY(int y) const
 	{
 		return y & hMask;
@@ -292,7 +292,7 @@ public:
 		return cases[pos].terrain;
 	}
 
-	//! Return the typeof terrain. If type is unregistred, returns unknown (-1).
+	//! Return the typeof terrain. If type is unregistered, returns unknown (-1).
 	int getTerrainType(int x, int y) const
 	{
 		unsigned t = getTerrain(x, y);
@@ -306,27 +306,27 @@ public:
 			return TERRAIN_TYPE_UNKNOWN;
 	}
 
-	const Ressource& getRessource(int x, int y) const
+	const Resource& getResource(int x, int y) const
 	{
-		return cases[coordToIndex(x, y)].ressource;
+		return cases[coordToIndex(x, y)].resource;
 	}
 
-	const Ressource& getRessource(size_t pos) const
+	const Resource& getResource(size_t pos) const
 	{
-		return cases[pos].ressource;
+		return cases[pos].resource;
 	}
 
-	Ressource& getRessource(int x, int y)
+	Resource& getResource(int x, int y)
 	{
-		return cases[coordToIndex(x, y)].ressource;
+		return cases[coordToIndex(x, y)].resource;
 	}
 	
-	Ressource& getRessource(size_t pos)
+	Resource& getResource(size_t pos)
 	{
-		return cases[pos].ressource;
+		return cases[pos].resource;
 	}
 	
-	//Returns the combined forbidden and hidden foribidden masks
+	//Returns the combined forbidden and hidden forbidden masks
 	Uint32 getForbidden(int x, int y) const
 	{
 		return cases[coordToIndex(x, y)].forbidden;
@@ -408,51 +408,51 @@ public:
 		return ((t>=16)&&(t<=255));
 	}
 
-	bool isRessource(int x, int y) const
+	bool isResource(int x, int y) const
 	{
-		return getCase(x, y).ressource.type != NO_RES_TYPE;
+		return getCase(x, y).resource.type != NO_RES_TYPE;
 	}
 
-	bool isRessourceTakeable(int x, int y, int ressourceType) const
+	bool isResourceTakeable(int x, int y, int resourceType) const
 	{
-		const Ressource &ressource = getCase(x, y).ressource;
-		return (ressource.type == ressourceType && ressource.amount > 0);
+		const Resource &resource = getCase(x, y).resource;
+		return (resource.type == resourceType && resource.amount > 0);
 	}
 
-	bool isRessourceTakeable(int x, int y, bool ressourceTypes[BASIC_COUNT]) const
+	bool isResourceTakeable(int x, int y, bool resourceTypes[BASIC_COUNT]) const
 	{
-		const Ressource &ressource = getCase(x, y).ressource;
-		return (ressource.type != NO_RES_TYPE
-			&& ressource.amount > 0
-			&& ressource.type < BASIC_COUNT
-			&& ressourceTypes[ressource.type]);
+		const Resource &resource = getCase(x, y).resource;
+		return (resource.type != NO_RES_TYPE
+			&& resource.amount > 0
+			&& resource.type < BASIC_COUNT
+			&& resourceTypes[resource.type]);
 	}
 
-	bool isRessource(int x, int y, int *ressourceType) const
+	bool isResource(int x, int y, int *resourceType) const
 	{
-		const Ressource &ressource = getCase(x, y).ressource;
-		if (ressource.type == NO_RES_TYPE)
+		const Resource &resource = getCase(x, y).resource;
+		if (resource.type == NO_RES_TYPE)
 			return false;
-		*ressourceType = ressource.type;
+		*resourceType = resource.type;
 		return true;
 	}
 
-	bool canRessourcesGrow(int x, int y) const
+	bool canResourcesGrow(int x, int y) const
 	{
-		return getCase(x, y).canRessourcesGrow;
+		return getCase(x, y).canResourcesGrow;
 	}
 
-	//! Decrement ressource at position (x,y). Return true on success, false otherwise.
-	void decRessource(int x, int y);
-	//! Decrement ressource at position (x,y) if ressource type = ressourceType. Return true on success, false otherwise.
-	void decRessource(int x, int y, int ressourceType);
-	bool incRessource(int x, int y, int ressourceType, int variety);
+	//! Decrement resource at position (x,y). Return true on success, false otherwise.
+	void decResource(int x, int y);
+	//! Decrement resource at position (x,y) if resource type = resourceType. Return true on success, false otherwise.
+	void decResource(int x, int y, int resourceType);
+	bool incResource(int x, int y, int resourceType, int variety);
 
 private:
 	//! Per-tile predicate driver shared by isFree*/isHardSpace*.
 	//! Each flag toggles whether one occupancy/terrain test contributes to rejection.
 	struct TileChecks {
-		bool noRessource    : 1; //!< reject if a ressource sits on the tile
+		bool noResource    : 1; //!< reject if a resource sits on the tile
 		bool noUnit         : 1; //!< reject if a ground unit sits on the tile
 		bool waterBlocks    : 1; //!< reject water tiles unless canSwim is true
 		bool requireGrass   : 1; //!< reject any tile whose terrain isn't grass
@@ -473,7 +473,7 @@ public:
 	bool isFreeForBuilding(int x, int y) const;
 	bool isFreeForBuilding(int x, int y, int w, int h) const;
 	bool isFreeForBuilding(int x, int y, int w, int h, Uint16 gid) const;
-	// The "hardSpace" keywork means "Free" but you don't count Ground-Units as obstacles.
+	// The "hardSpace" keyword means "Free" but you don't count Ground-Units as obstacles.
 	bool isHardSpaceForGroundUnit(int x, int y, bool canSwim, Uint32 me) const;
 	bool isHardSpaceForBuilding(int x, int y) const;
 	bool isHardSpaceForBuilding(int x, int y, int w, int h) const;
@@ -484,12 +484,12 @@ public:
 	//! Return contact direction (dx, dy) if (x, y) touches building gbid; nullopt otherwise.
 	std::optional<Offset> doesPosTouchBuilding(int x, int y, Uint16 gbid) const;
 
-	//! Return contact direction (dx, dy) if unit touches a ressource of any type; nullopt otherwise.
-	std::optional<Offset> doesUnitTouchRessource(Unit *unit) const;
-	//! Return contact direction (dx, dy) if unit touches a ressource of the given type; nullopt otherwise.
-	std::optional<Offset> doesUnitTouchRessource(Unit *unit, int ressourceType) const;
-	//! Return contact direction (dx, dy) if (x, y) touches a ressource of the given type; nullopt otherwise.
-	std::optional<Offset> doesPosTouchRessource(int x, int y, int ressourceType) const;
+	//! Return contact direction (dx, dy) if unit touches a resource of any type; nullopt otherwise.
+	std::optional<Offset> doesUnitTouchResource(Unit *unit) const;
+	//! Return contact direction (dx, dy) if unit touches a resource of the given type; nullopt otherwise.
+	std::optional<Offset> doesUnitTouchResource(Unit *unit, int resourceType) const;
+	//! Return contact direction (dx, dy) if (x, y) touches a resource of the given type; nullopt otherwise.
+	std::optional<Offset> doesPosTouchResource(int x, int y, int resourceType) const;
 	//! Return contact direction (dx, dy) if unit touches an enemy; nullopt otherwise.
 	std::optional<Offset> doesUnitTouchEnemy(Unit *unit) const;
 
@@ -541,14 +541,14 @@ public:
 	//! Set undermap terrain type at (x,y) (undermap positions) on an area
 	void setUMatPos(int x, int y, TerrainType t, int l);
 
-	//! With l==0, it will remove no ressource. (Unaligned coordinates)
-	void setNoRessource(int x, int y, int l);
-	//! Removes every ressource in the w by h area at (x, y) whose terrain no longer allows it,
+	//! With l==0, it will remove no resource. (Unaligned coordinates)
+	void setNoResource(int x, int y, int l);
+	//! Removes every resource in the w by h area at (x, y) whose terrain no longer allows it,
 	//! used after the terrain under it changed
-	void removeUnallowedRessources(int x, int y, int w, int h);
-	//! With l==0, it will add ressource only on one case. (Aligned coordinates)
-	void setRessource(int x, int y, int type, int l);
-	bool isRessourceAllowed(int x, int y, int type);
+	void removeUnallowedResources(int x, int y, int w, int h);
+	//! With l==0, it will add resource only on one case. (Aligned coordinates)
+	void setResource(int x, int y, int type, int l);
+	bool isResourceAllowed(int x, int y, int type);
 	
 
 	///The following is for script areas, which are named areas for map scripts set in the editor
@@ -573,7 +573,7 @@ public:
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a pathline to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;
-	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid aligned object (buildings, ressources, units)
+	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid aligned object (buildings, resources, units)
 	void displayToMapCaseAligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from screen (mx,my) to map (px,py) for standard grid unaligned object (terrain)
 	void displayToMapCaseUnaligned(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
@@ -593,16 +593,16 @@ public:
 		GT_SIZE = 6
 	};
 	
-	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y) const;
-	bool ressourceAvailable(int teamNumber, int ressourceType, bool canSwim, int x, int y, int *dist) const;
-	bool ressourceAvailableUpdate(int teamNumber, int ressourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
+	bool resourceAvailable(int teamNumber, int resourceType, bool canSwim, int x, int y) const;
+	bool resourceAvailable(int teamNumber, int resourceType, bool canSwim, int x, int y, int *dist) const;
+	bool resourceAvailableUpdate(int teamNumber, int resourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
 	
 	//! Starting from position (x, y) using gradient, returns the gradient destination in (targetX, targetY)
 	bool getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
 	
-	Uint8 getGradient(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y) const
+	Uint8 getGradient(int teamNumber, Uint8 resourceType, bool canSwim, int x, int y) const
 	{
-		const Uint8 *gradient = ressourcesGradient[teamNumber][ressourceType][canSwim];
+		const Uint8 *gradient = resourcesGradient[teamNumber][resourceType][canSwim];
 		assert(gradient);
 		return gradient[coordToIndex(x, y)];
 	}
@@ -619,11 +619,11 @@ public:
 	// chamfer sweeps it forward and backward until stable. Defined in
 	// MapGradientGlobal.cpp.
 	void updateGlobalGradient(Uint8 *gradient);
-	void updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim);
+	void updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSwim);
 	bool directionFromMinigrad(Uint8 miniGrad[25], int *dx, int *dy, const bool strict) const;
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int *dx, int *dy, const Uint8 *gradient, bool strict) const;
 	bool directionByMinigrad(Uint32 teamMask, bool canSwim, int x, int y, int bx, int by, int *dx, int *dy, Uint8 localGradient[1024], bool strict) const;
-	bool pathfindRessource(int teamNumber, Uint8 ressourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork);
+	bool pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork);
 #ifndef YOG_SERVER_ONLY
 	void pathfindRandom(Unit *unit);
 #endif  // !YOG_SERVER_ONLY
@@ -631,14 +631,14 @@ public:
 	void updateLocalGradient(Building *building, bool canSwim); //The 32*32 gradient
 	void updateGlobalGradient(Building *building, bool canSwim); //The full-sized gradient
 	//!A special gradient for clearing flags. Returns false if there is nothing to clear.
-	bool updateLocalRessources(Building *building, bool canSwim);
+	bool updateLocalResources(Building *building, bool canSwim);
 	
 	//! Probe a full-map gradient at (x, y) and its 8 neighbors; sets *dist = GRADIENT_AT_GOAL - g if reachable.
 	bool probeGlobalGradient(const Uint8 *gradient, int x, int y, int *dist) const;
 	bool buildingAvailable(Building *building, bool canSwim, int x, int y, int *dist);
 	//!requests the next step (dx, dy) to take to get to the building from (x,y) provided the unit canSwim.
 	bool pathfindBuilding(Building *building, bool canSwim, int x, int y, int *dx, int *dy);
-	bool pathfindLocalRessource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all ressources mixed in clearing flags.
+	bool pathfindLocalResource(Building *building, bool canSwim, int x, int y, int *dx, int *dy); // Used for all resources mixed in clearing flags.
 	
 	//! Make local gradient dirty in the area. Wrap-safe on x,y
 	void dirtyLocalGradient(int x, int y, int wl, int hl, int teamNumber);
@@ -705,10 +705,10 @@ public:
 	Uint16 fertilityMaximum;
 	
 public:
-	// Used to go to ressources
-	//[int team][int ressourceNumber][bool unitCanSwim]
+	// Used to go to resources
+	//[int team][int resourceNumber][bool unitCanSwim]
 	//255=resource, 0=obstacle, the higher it is, the closer it is to the resource.
-	Uint8 *ressourcesGradient[Team::MAX_COUNT][MAX_NB_RESSOURCES][2];
+	Uint8 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][2];
 	
 	// Used to go out of forbidden areas
 	//[int team][bool unitCanSwim]
@@ -727,7 +727,7 @@ public:
 	// 0=unexplored, 255=just explored
 	Uint8 *exploredArea[Team::MAX_COUNT];
 	
-	/// This shows how many "claims" there are on a particular ressource square
+	/// This shows how many "claims" there are on a particular resource square
 	/// This is so that not all 150 free units go after one piece of wood
 	/// Each square is the gid of the claiming unit
 	Uint16 *clearingAreaClaims[Team::MAX_COUNT];
@@ -739,7 +739,7 @@ public:
 	
 protected:
 	//Used for scheduling computation time.
-	bool gradientUpdated[Team::MAX_COUNT][MAX_NB_RESSOURCES][2];
+	bool gradientUpdated[Team::MAX_COUNT][MAX_NB_RESOURCES][2];
 	//Used for scheduling computation time on the guard area gradients
 	bool guardGradientUpdated[Team::MAX_COUNT][2];
 	//Used for scheduling computation time on the clear area gradients
@@ -804,12 +804,12 @@ public:
 public:
 	void makeHomogenMap(TerrainType terrainType);
 	void controlSand(void);
-	void smoothRessources(int times);
+	void smoothResources(int times);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool oldMakeRandomMap(MapGenerationDescriptor &descriptor);
-	void oldAddRessourcesRandomMap(MapGenerationDescriptor &descriptor);
+	void oldAddResourcesRandomMap(MapGenerationDescriptor &descriptor);
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
-	void oldAddRessourcesIslandsMap(MapGenerationDescriptor &descriptor);
+	void oldAddResourcesIslandsMap(MapGenerationDescriptor &descriptor);
 
 };
 

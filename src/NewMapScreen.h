@@ -28,7 +28,7 @@ public:
 
 private:
 	Number *mapSizeX, *mapSizeY;
-	List *methodes, *terrains;
+	List *methods, *terrains;
 	Ratio *waterRatio, *sandRatio, *grassRatio, *desertRatio;
 	Ratio *wheatRatio, *woodRatio, *stoneRatio, *algaeRatio, *craterDensity;
 	Ratio *riverDiameter, *fruitRatio;

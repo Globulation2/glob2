@@ -94,7 +94,7 @@ int Engine::initCustom(const std::string &gameName)
 	MapHeader mapHeader = loadMapHeader(gameName);
 	GameHeader gameHeader = loadGameHeader(gameName);
 
-	// If the game is a network saved game, we need to toogle net players to ai players:
+	// If the game is a network saved game, we need to toggle net players to ai players:
 	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
 	{
 		if (verbose)
@@ -330,7 +330,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	}
 
 	gui.game.clearingUncontrolledTeams();
-	finalAdjustements();
+	finalAdjustments();
 
 	net = std::make_unique<NetEngine>(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
@@ -399,13 +399,13 @@ GameHeader Engine::prepareCampaign(MapHeader& mapHeader, int& localPlayer, int& 
 		{
 			localPlayer = playerNumber;
 			localTeam = i;
-			std::string name = FormatableString("Player %0").arg(playerNumber);
+			std::string name = FormattableString("Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_LOCAL);
 			wasHuman=true;
 		}
 		else if (mapHeader.getBaseTeam(i).type==BaseTeam::T_AI || wasHuman)
 		{
-			std::string name = FormatableString("AI Player %0").arg(playerNumber);
+			std::string name = FormattableString("AI Player %0").arg(playerNumber);
 			gameHeader.getBasePlayer(i) = BasePlayer(playerNumber, name.c_str(), i, BasePlayer::P_AI);
 		}
 		playerNumber+=1;
@@ -508,7 +508,7 @@ void Engine::showMapLoadError()
 		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
 }
 
-void Engine::finalAdjustements(void)
+void Engine::finalAdjustments(void)
 {
 	gui.adjustLocalTeam();
 	if (!globalContainer->runNoX)

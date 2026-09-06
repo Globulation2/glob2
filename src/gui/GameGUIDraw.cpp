@@ -73,9 +73,9 @@ void GameGUI::drawPanelButtons(int y)
 			drawPanelButton(y, 2, RDM_NB_VIEWS, 4);
 	}
 
-	if(hilights.find(HilightUnderMinimapIcon) != hilights.end())
+	if(highlights.find(HighlightUnderMinimapIcon) != highlights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, y, 38));
+		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, y, 38));
 	}
 }
 
@@ -88,20 +88,20 @@ void GameGUI::drawPanelButton(int y, int pos, int numButtons, int sprite)
 
 void GameGUI::drawValueAlignedRight(int y, int v)
 {
-	FormatableString s("%0");
+	FormattableString s("%0");
 	s.arg(v);
 	int len = globalContainer->littleFont->getStringWidth(s.c_str());
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-len-2, y, globalContainer->littleFont, s.c_str());
 }
 
-void GameGUI::drawCosts(int ressources[BASIC_COUNT], Font *font)
+void GameGUI::drawCosts(int resources[BASIC_COUNT], Font *font)
 {
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
 		int y = i>>1;
 		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+4+(i&0x1)*64, 256+172-42+y*12,
 			font,
-			FormatableString("%0: %1").arg(getRessourceName(i)).arg(ressources[i]).c_str());
+			FormattableString("%0: %1").arg(getResourceName(i)).arg(resources[i]).c_str());
 	}
 }
 
@@ -143,9 +143,9 @@ void GameGUI::drawPanel(void)
 	else
 		globalContainer->gfx->drawFilledRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 133, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128, 0, 0, 40, 180);
 
-	if(hilights.find(HilightRightSidePanel) != hilights.end())
+	if(highlights.find(HighlightRightSidePanel) != highlights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, globalContainer->gfx->getH()/2, 38));
+		arrowPositions.push_back(HighlightArrowPosition(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-36, globalContainer->gfx->getH()/2, 38));
 	}
 
 	// draw the panel selection buttons
@@ -164,8 +164,8 @@ void GameGUI::dispatchSelectionPanel(void)
 	case UNIT_SELECTION:
 		drawUnitInfos();
 		break;
-	case RESSOURCE_SELECTION:
-		drawRessourceInfos();
+	case RESOURCE_SELECTION:
+		drawResourceInfos();
 		break;
 	default:
 		if (!globalContainer->replaying)
@@ -210,11 +210,11 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 		drawReplayPanel();
 		break;
 	case RDM_STAT_TEXT_VIEW:
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormattableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
 		teamStats->drawText(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
 		break;
 	case RDM_STAT_GRAPH_VIEW:
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormatableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+15, YPOS_BASE_STAT+5, globalContainer->littleFont, FormattableString("%0 %1").arg(Toolkit::getStringTable()->getString("[watching:]")).arg(displayPlayerName(*localTeam)).c_str());
 		teamStats->drawStat(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET, YPOS_BASE_STAT+15);
 		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+64, Toolkit::getStringTable()->getString("[Starving Map]"), showStarvingMap);
 		drawCheckButton(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8, YPOS_BASE_STAT+155+88, Toolkit::getStringTable()->getString("[Damaged Map]"), showDamagedMap);
@@ -263,36 +263,36 @@ void GameGUI::drawTopScreenBar(void)
 
 		globalContainer->gfx->drawSprite(dec+2, -1, globalContainer->unitmini, i);
 		globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, actC[0], actC[1], actC[2]));
-		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, FormatableString("%0 / %1").arg(free).arg(tot).c_str());
+		globalContainer->gfx->drawString(dec+22, 0, globalContainer->littleFont, FormattableString("%0 / %1").arg(free).arg(tot).c_str());
 		globalContainer->littleFont->popStyle();
 
-		// Tutorial hilight arrow for this counter. The sprite, the free/total
+		// Tutorial highlight arrow for this counter. The sprite, the free/total
 		// counter, and the arrow position above all key off the unit-type index
 		// i (WORKER=0, EXPLORER=1, WARRIOR=2 from UnitConsts.h); the matching
-		// hilight id must too. This table keeps that pairing in one place so it
+		// highlight id must too. This table keeps that pairing in one place so it
 		// cannot be silently swapped. Indices follow the UnitConsts ordering,
-		// NOT the Hilight* enum's numeric order (which lists explorer/warrior
+		// NOT the Highlight* enum's numeric order (which lists explorer/warrior
 		// the other way around), so the mapping is spelled out explicitly.
-		static const int hilightForUnitType[3] = {
-			HilightWorkersWorkingFreeStat,   // i == WORKER
-			HilightExplorersWorkingFreeStat, // i == EXPLORER
-			HilightWarriorsWorkingFreeStat,  // i == WARRIOR
+		static const int highlightForUnitType[3] = {
+			HighlightWorkersWorkingFreeStat,   // i == WORKER
+			HighlightExplorersWorkingFreeStat, // i == EXPLORER
+			HighlightWarriorsWorkingFreeStat,  // i == WARRIOR
 		};
-		if(hilights.find(hilightForUnitType[i]) != hilights.end())
+		if(highlights.find(highlightForUnitType[i]) != highlights.end())
 		{
-			arrowPositions.push_back(HilightArrowPosition(dec+22, 32, 39));
+			arrowPositions.push_back(HighlightArrowPosition(dec+22, 32, 39));
 		}
 
 		dec += 70;
 	}
 
 	// draw prestige stats
-	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormatableString("%0 / %1 / %2").arg(localTeam->prestige).arg(game.totalPrestige).arg(game.prestigeToReach).c_str());
+	globalContainer->gfx->drawString(dec+0, 0, globalContainer->littleFont, FormattableString("%0 / %1 / %2").arg(localTeam->prestige).arg(game.totalPrestige).arg(game.prestigeToReach).c_str());
 
 	dec += 90;
 
 	// draw unit conversion stats
-	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, FormatableString("+%0 / -%1").arg(localTeam->unitConversionGained).arg(localTeam->unitConversionLost).c_str());
+	globalContainer->gfx->drawString(dec, 0, globalContainer->littleFont, FormattableString("+%0 / -%1").arg(localTeam->unitConversionGained).arg(localTeam->unitConversionLost).c_str());
 
 	// draw CPU load
 	dec += 70;
@@ -352,9 +352,9 @@ void GameGUI::drawTopScreenBar(void)
 		index = 47;
 	globalContainer->gfx->drawSprite(pos, IGM_OBJECTIVES_ICON_Y, globalContainer->gamegui, index);
 
-	if(hilights.find(HilightMainMenuIcon) != hilights.end())
+	if(highlights.find(HighlightMainMenuIcon) != highlights.end())
 	{
-		arrowPositions.push_back(HilightArrowPosition(pos-32, 32, 43));
+		arrowPositions.push_back(HighlightArrowPosition(pos-32, 32, 43));
 	}
 }
 
@@ -402,11 +402,11 @@ void GameGUI::drawOverlayInfos(void)
 			}
 		}
 	}
-	else if (selectionMode==RESSOURCE_SELECTION)
+	else if (selectionMode==RESOURCE_SELECTION)
 	{
-		int ressource = selectionRessource();
-		int rx = ressource & game.map.getMaskW();
-		int ry = ressource >> game.map.getShiftW();
+		int resource = selectionResource();
+		int rx = resource & game.map.getMaskW();
+		int ry = resource >> game.map.getShiftW();
 		int px, py;
 		game.map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
@@ -436,7 +436,7 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			if (pm&apm)
 			{
-				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, FormatableString(Toolkit::getStringTable()->getString("[waiting for %0]")).arg(game.players[pi2]->name).c_str());
+				globalContainer->gfx->drawString(44, 44+pnb*20, globalContainer->standardFont, FormattableString(Toolkit::getStringTable()->getString("[waiting for %0]")).arg(game.players[pi2]->name).c_str());
 				pnb++;
 			}
 			pm=pm<<1;
@@ -485,7 +485,7 @@ void GameGUI::drawOverlayInfos(void)
 		// show script counter
 		if (game.sgslScript.getMainTimer())
 		{
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormatableString("%0").arg(game.sgslScript.getMainTimer()).c_str());
+			globalContainer->gfx->drawString(globalContainer->gfx->getW()-165, ymesg, globalContainer->standardFont, FormattableString("%0").arg(game.sgslScript.getMainTimer()).c_str());
 			yinc = std::max(yinc, 32);
 		}
 
@@ -507,7 +507,7 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->standardFont->popStyle();
 	}
 
-	// Draw icon if trasmitting
+	// Draw icon if transmitting
 	if (globalContainer->voiceRecorder->recordingNow)
 		globalContainer->gfx->drawSprite(5, globalContainer->gfx->getH()-50, globalContainer->gamegui, 24);
 
@@ -535,7 +535,7 @@ void GameGUI::drawOverlayInfos(void)
 	if(!scrollableText)
 		messageManager.drawAllChatMessages(32, globalContainer->gfx->getH() - 165);
 
-	// Draw the bar contining number of units, CPU load, etc...
+	// Draw the bar continuing number of units, CPU load, etc...
 	drawTopScreenBar();
 }
 
@@ -619,7 +619,7 @@ void GameGUI::drawAll(int team)
 								((globalContainer->replaying && !globalContainer->replayShowFog) ? Game::DRAW_WHOLE_MAP : 0) |
 								Game::DRAW_AREA;
 
-	updateHilightInGame();
+	updateHighlightInGame();
 	arrowPositions.clear();
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
@@ -694,7 +694,7 @@ void GameGUI::drawAll(int team)
 	if (scrollableText)
 		drawInGameScrollableText();
 
-	// draw the hilight arrows
+	// draw the highlight arrows
 	for(int i=0; i<(int)arrowPositions.size(); ++i)
 	{
 		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);

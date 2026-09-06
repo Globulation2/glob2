@@ -29,7 +29,7 @@ using namespace GAGGUI;
 
 ///This screen is the setup screen for a multiplayer game. It functions both for the host
 ///and the joined player. It uses the information it gets from the given MultiplayerGame.
-///This doesn't continue dispaying irc, it merely keeps it up to date and turns it on/off
+///This doesn't continue displaying irc, it merely keeps it up to date and turns it on/off
 ///when starting and finishing games
 class MultiplayerGameScreen : public TabScreenWindow, public YOGClientChatListener, public MultiplayerGameEventListener
 {
@@ -67,7 +67,7 @@ private:
 	void onTimer(Uint32 tick);
 	void onAction(Widget *source, Action action, int par1, int par2);
 
-	void recieveTextMessage(std::shared_ptr<YOGMessage> message);
+	void receiveTextMessage(std::shared_ptr<YOGMessage> message);
 
 	void handleMultiplayerGameEvent(std::shared_ptr<MultiplayerGameEvent> event);
 

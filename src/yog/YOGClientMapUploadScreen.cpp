@@ -54,11 +54,11 @@ YOGClientMapUploadScreen::YOGClientMapUploadScreen(std::shared_ptr<YOGClient> cl
 	MapHeader mapHeader = engine.loadMapHeader(mapFile);
 	mapName->setText(mapHeader.getMapName());
 	std::string textTemp;
-	textTemp = FormatableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
+	textTemp = FormattableString("%0%1").arg(mapHeader.getNumberOfTeams()).arg(Toolkit::getStringTable()->getString("[teams]"));
 	mapInfo->setText(textTemp);
-	textTemp = FormatableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
+	textTemp = FormattableString("%0 %1.%2").arg(Toolkit::getStringTable()->getString("[Version]")).arg(mapHeader.getVersionMajor()).arg(mapHeader.getVersionMinor());
 	mapVersion->setText(textTemp);
-	textTemp = FormatableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
+	textTemp = FormattableString("%0 x %1").arg(preview->getLastWidth()).arg(preview->getLastHeight());
 	mapSize->setText(textTemp);
 	isUploading = false;
 }
@@ -124,7 +124,7 @@ void YOGClientMapUploadScreen::onTimer(Uint32 tick)
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::WaitingForUploadReply)
 		{
-			uploadStatusText->setText(FormatableString(Toolkit::getStringTable()->getString("[Map Upload: Waiting for reply]")));
+			uploadStatusText->setText(FormattableString(Toolkit::getStringTable()->getString("[Map Upload: Waiting for reply]")));
 		}
 		else if(uploader.getUploadingState() == YOGClientMapUploader::Finished)
 		{

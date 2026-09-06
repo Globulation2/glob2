@@ -168,9 +168,9 @@ bool CustomGameScreen::isActive(int i)
 
 
 
-AI::ImplementitionID CustomGameScreen::getAiImplementation(int i)
+AI::ImplementationID CustomGameScreen::getAiImplementation(int i)
 {
-	return (AI::ImplementitionID)aiSelector[i]->getIndex();
+	return (AI::ImplementationID)aiSelector[i]->getIndex();
 }
 
 
@@ -184,12 +184,12 @@ int CustomGameScreen::getSelectedColor(int i)
 
 namespace
 {
-	FormatableString aiSelectorName(AI::ImplementitionID iid, int selectorIndex)
+	FormattableString aiSelectorName(AI::ImplementationID iid, int selectorIndex)
 	{
 		// selectorIndex is the position in the visible selector list; selector 0
 		// is the human, so AI selectors start at 1 and display as "AI Name N"
 		// with N = selectorIndex - 1.
-		FormatableString name("%0 %1");
+		FormattableString name("%0 %1");
 		name.arg(AINames::getAIText(iid)).arg(selectorIndex - 1);
 		return name;
 	}
@@ -224,9 +224,9 @@ void CustomGameScreen::updatePlayers()
 		}
 		else
 		{
-			AI::ImplementitionID iid = getAiImplementation(i);
-			FormatableString name = aiSelectorName(iid, i);
-			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+			AI::ImplementationID iid = getAiImplementation(i);
+			FormattableString name = aiSelectorName(iid, i);
+			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementationID(iid));
 			aiColors.push_back(teamColor);
 		}
 		count += 1;
