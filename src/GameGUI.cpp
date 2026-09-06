@@ -2741,22 +2741,25 @@ void GameGUI::drawChoice(int pos, std::vector<std::string> &types, std::vector<b
 
 	globalContainer->gfx->setClipRect(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 128, RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-128);
 
-	// draw building selection if needed
-	if (selectionMode == TOOL_SELECTION)
+	// draw building selection if needed. selectionMode and the panel being
+	// painted are independent axes: the user can tab-cycle the displayed
+	// panel while a tool from a *different* panel stays selected, which
+	// leaves sel unset (-1) here -- a legitimate UI state, not an error, so
+	// there is simply nothing to highlight rather than something to assert on.
+	if (selectionMode == TOOL_SELECTION && sel>=0)
 	{
 		int sw;
 		if (numberPerLine == 2)
 			sw = globalContainer->gamegui->getW(8);
 		else
 			sw = globalContainer->gamegui->getW(23);
-			
-	  
-		assert(sel>=0);
+
+
 		int x=((sel  % numberPerLine)*width)+globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
 		int y=((sel / numberPerLine)*46)+YPOS_BASE_BUILDING;
-		
+
 		int decX = (width - sw) / 2;
-		
+
 		if (numberPerLine == 2)
 			globalContainer->gfx->drawSprite(x+decX, y+1, globalContainer->gamegui, 8);
 		else
