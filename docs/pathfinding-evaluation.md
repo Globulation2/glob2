@@ -323,3 +323,43 @@ Playing it: build the branch (`scons release=1`) and start the game with
 The team mask selects who uses the alternative (bit per team number;
 `1` = only team 0), the timing switch applies to everyone. A game played
 with these switches only replays identically with the same switches.
+
+## 8. Iteration 3: feature complete, weighted pathfinder by default
+
+Every ground movement now goes through the weighted fields:
+
+- forbidden-area escape, guard areas and clear areas (fields per swim class;
+  the forbidden escape ignores the forbidden flag of intermediate cells so a
+  unit inside a zone can walk out);
+- clearing flags (field seeded at the clearable resources in range,
+  refreshed every 125 ticks, on nearby map changes, when a unit is stuck,
+  or when a goal tile next to the unit is no longer takeable);
+- warrior target A* (octile + terrain costs, heap with a total order on
+  equal keys so the pop sequence does not depend on the STL);
+- hiring distances (`buildingAvailable`) read the unit's class field.
+
+Diagonal timing also applies to flying units. Defaults flipped: the
+weighted pathfinder is on for every team and diagonal steps take √2 the
+time. `GLOB2_PATHFIND_ALT_TEAMS=0` restores the chamfer pathfinder for all
+teams (any other bitmask selects teams), `GLOB2_DIAG_SQRT2=0` restores
+equal timing. The A/B harness keeps working: it passes explicit masks.
+
+Outcome, 10 seeds × mirrored sides, ALT (weighted) relative to BASE (chamfer), both with √2 timing:
+
+| map | units | buildings | deliveries | random steps while working | swim moves | tiles per delivery |
+|---|---|---|---|---|---|---|
+| Mazury (128², water) | **+30 %** | +7.6 % | +7.6 % | 0 % | −72 % | −1.1 % |
+| balanced_for_2 (64², no water) | −2.3 % | −3.3 % | −3.2 % | −26 % | (≈0 either way) | −3.3 % |
+
+A mixed game (Castor, Warrush, Nicowar, Numbi on G2, exercising war flags,
+clearing flags and guard areas) runs through without assertions; per game
+only 1–2 calls reach the old minigrad steering. Same seed twice gives an
+identical order stream. CPU with everyone on the weighted code: 6.6–6.9 s
+per 10 game minutes on Mazury (chamfer baseline 5.65 s); 160 unit tests
+pass; the server target builds.
+
+Known limits: the Uint16 cost caps a path at 6553 tiles (longer reads as
+unreachable); the round-robin scheduler still rebuilds one resource field
+per tick blindly (dirty tracking would cut the CPU further); the
+balanced_for_2 result stays within noise because every resource is a few
+tiles from every building there.
