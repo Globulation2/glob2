@@ -153,3 +153,5 @@ could subsequently abort in `Building::findGroundExit`.
 
 It needs no display, AI tournament tooling, or external save files. Linux CI runs
 it on both supported Ubuntu versions.
+
+Saved state and step-by-step before/after reproduction: [PR #165 fixture](fixtures/wrapped-building/README.md).

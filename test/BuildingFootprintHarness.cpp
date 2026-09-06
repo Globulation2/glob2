@@ -8,6 +8,8 @@
 #include "StreamBackend.h"
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <fstream>
 #include <memory>
 
 GlobalContainer* globalContainer = nullptr;
@@ -33,13 +35,43 @@ static void checkFootprint(const Game& game, const Building& building)
         }
 }
 
-int main()
+static void writeFixture(GAGCore::MemoryStreamBackend& bytes, const char* path)
 {
+    bytes.seekFromEnd(0);
+    std::ofstream output(path, std::ios::binary);
+    output.write(bytes.getBuffer(), bytes.getPosition());
+    output.close();
+    require(!output.fail(), "write fixture file");
+}
+
+int main(int argc, char** argv)
+{
+    require(argc == 1 || (argc == 3 && (!std::strcmp(argv[1], "--load") ||
+                                      !std::strcmp(argv[1], "--write-fixture"))),
+            "usage: harness [--load FILE | --write-fixture FILE]");
     GlobalContainer globals;
     globalContainer = &globals;
     globals.runNoX = true;
     globals.buildingsTypes.init();
     IntBuildingType::init();
+    if (argc == 3 && !std::strcmp(argv[1], "--load"))
+    {
+        FILE* file = std::fopen(argv[2], "rb");
+        require(file != nullptr, "open fixture");
+        GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
+        Game loaded(nullptr);
+        require(loaded.load(&reader), "load wrapped-building fixture");
+        require(loaded.map.getW() == 32 && loaded.map.getH() == 32, "fixture dimensions");
+        require(loaded.mapHeader.getNumberOfTeams() == 1 && loaded.teams[0], "fixture team exists");
+        auto* building = loaded.teams[0]->myBuildings[0];
+        require(building != nullptr, "fixture building exists");
+        checkFootprint(loaded, *building);
+        int x, y, dx, dy;
+        require(building->findGroundExit(&x, &y, &dx, &dy, false), "fixture building exit");
+        require(loaded.map.getBuilding(x - dx, y - dy) == building->gid, "fixture exit adjacency");
+        std::puts("Wrapped-building saved fixture loaded with intact footprint and valid exit");
+        return 0;
+    }
     const int type = globals.buildingsTypes.getTypeNum("swarm", 0, false);
     const int positions[][2] = {{8,8}, {-1,8}, {8,-1}, {-1,-1}, {31,31}};
     for (const auto& position : positions)
@@ -65,6 +97,9 @@ int main()
         auto* bytes = new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream writer(bytes);
         game.save(&writer, false, "wrapped footprint regression");
+        if (argc == 3 && !std::strcmp(argv[1], "--write-fixture") &&
+            position[0] == -1 && position[1] == -1)
+            writeFixture(*bytes, argv[2]);
         auto* copy = new GAGCore::MemoryStreamBackend(*bytes);
         copy->seekFromStart(0);
         GAGCore::BinaryInputStream reader(copy);
