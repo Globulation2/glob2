@@ -9,6 +9,7 @@
 #include "GameGUI.h"
 #include "Engine.h"
 #include "Team.h"
+#include "TorusMapFixture.h"
 #include <algorithm>
 #include <cassert>
 #include <cstdio>
@@ -40,13 +41,24 @@ static int run(int argc, char **argv)
     {
         GameGUI gui;
         const char *path = std::getenv("GLOB2_BENCH_MAP");
-        auto mapHeader = Engine::loadMapHeader(path ? path : "maps/Oazis.map");
-        GameHeader gameHeader;
-        for (int i = 0; i < mapHeader.getNumberOfTeams(); ++i)
-            gameHeader.getBasePlayer(i) = BasePlayer(i, "Benchmark", i, BasePlayer::P_LOCAL);
-        gameHeader.setNumberOfPlayers(mapHeader.getNumberOfTeams());
+        if (const char *size = std::getenv("GLOB2_BENCH_SIZE"))
+        {
+            int w = 0, h = 0;
+            assert(std::sscanf(size, "%dx%d", &w, &h) == 2);
+            gui.init();
+            makeTorusMapFixture(gui.game, w, h);
+            path = "synthetic checkerboard";
+        }
+        else
+        {
+            auto mapHeader = Engine::loadMapHeader(path ? path : "maps/Oazis.map");
+            GameHeader gameHeader;
+            for (int i = 0; i < mapHeader.getNumberOfTeams(); ++i)
+                gameHeader.getBasePlayer(i) = BasePlayer(i, "Benchmark", i, BasePlayer::P_LOCAL);
+            gameHeader.setNumberOfPlayers(mapHeader.getNumberOfTeams());
+            assert(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
+        }
         gui.localPlayer = gui.localTeamNo = 0;
-        assert(gui.loadFromHeaders(mapHeader, gameHeader, true, true));
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
         int width = globalContainer->gfx->getW() - 160, height = globalContainer->gfx->getH();

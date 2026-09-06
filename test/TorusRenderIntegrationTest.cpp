@@ -13,6 +13,7 @@
 #include "GameGUI.h"
 #include "Engine.h"
 #include "Team.h"
+#include "TorusMapFixture.h"
 #include "Unit.h"
 #include "GameGUIKeyActions.h"
 #include "CloudField.h"
@@ -277,6 +278,51 @@ static int run(int argc, char **argv)
             gui.drawAll(0);
             std::cout << "Manual/automatic modes, saved option and pointer hold passed\n";
             std::cout << "Navigation, GL state, picking and reload lifecycle passed\n";
+            // Reuse the renderer across changing map shapes at one window size.
+            // This catches stale fitting/mesh caches as well as tall-map apertures.
+            TorusView rectangularView;
+            for (const auto &size : {std::make_pair(64, 128), std::make_pair(512, 64),
+                                     std::make_pair(64, 512), std::make_pair(128, 128)})
+            {
+                GameGUI rectangular;
+                rectangular.init();
+                makeTorusMapFixture(rectangular.game, size.first, size.second);
+                rectangular.localPlayer = rectangular.localTeamNo = 0;
+                rectangular.adjustLocalTeam();
+                rectangularView.reset();
+                rectangularView.toggle();
+                int vx = 0, vy = 0;
+                for (float phase : {0.f, .1f, .5f, 1.f})
+                {
+                    rectangularView.amount = phase;
+                    rectangularView.lastFrame = SDL_GetTicks();
+                    assert(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
+                    assert(glGetError() == GL_NO_ERROR);
+                }
+                assert(rectangularView.ringMapAspect == float(size.first) / size.second);
+                for (const auto &vertex : rectangularView.vertices)
+                {
+                    float x = vertex.position[0] / vertex.position[3];
+                    float y = vertex.position[1] / vertex.position[3];
+                    assert(x >= 0 && x <= 960 && y >= 16 && y <= 720);
+                }
+                rectangularView.setViewport(size.first - 1, size.second - 1);
+                assert(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
+                int hits = 0;
+                for (int y = 100; y < 700; y += 40)
+                    for (int x = 100; x < 900; x += 40)
+                    {
+                        int px, py;
+                        if (rectangularView.pick(x, y, px, py))
+                        {
+                            assert(px >= 0 && px < size.first * 32 && py >= 0 && py < size.second * 32);
+                            ++hits;
+                        }
+                    }
+                assert(hits > 10);
+            }
+            std::cout << "Rectangular-map rendering, fitting, picking and cache changes passed\n";
+
 #endif
         }
     }

@@ -82,10 +82,14 @@ Middle-drag follows the ordinary map panning path. An explicit view toggle
 finishes any active painting gesture before changing the projection. Automatic
 transitions wait for pointer gestures to finish.
 
-The torus has uniform angular texture coordinates, major radius 3 and minor
-radius 1. A flat toroidal map cannot be embedded in an ordinary ring torus
-without stretching: the inner circumference compresses and the outer one
-expands. There is deliberately no conformal UV correction.
+The ring and tube radii follow the map's width-to-height ratio `a`:
+`R/r = sqrt(1 + a*a)`, with the outer radius held at 4. Wide maps produce
+thin rings; tall maps produce fat rings. Isothermal texture coordinates make
+equal map steps equally long in both surface tangent directions. Tiles stay
+locally square, although their area varies around the tube and perspective
+still foreshortens them. Uniform angular mesh rows keep the surface smooth
+without increasing its vertex count. Clouds and picking share this mapping;
+camera fitting and mesh caches include the map aspect ratio.
 
 Keyboard steps and wheel zoom use a shared exponential camera response (about
 63 ms time constant). Surface rendering and picking share the rendered focus;
@@ -137,7 +141,9 @@ frame times after warmup. It excludes simulation, HUD drawing and frame pacing;
 these numbers are not whole-game FPS. `GLOB2_BENCH_MODE="Torus clouds"` isolates
 that case for a sampling profiler. `GLOB2_BENCH_CAPTURE` optionally saves a PPM
 of the final overview. The benchmark uses a hidden window and generates no
-input events.
+input events. Set `GLOB2_BENCH_SIZE=64x128` or `512x64` to render a synthetic
+terrain checkerboard for rectangular-map checks (power-of-two dimensions from
+64 to 512). This overrides `GLOB2_BENCH_MAP`.
 
 On the Apple M3, Oazis (256 × 256) took about 130 ms per torus frame before these
 changes. CPU sampling identified whole-world cloud noise generation first,
@@ -152,6 +158,12 @@ normal 2D retains its native detail.
 The GPU integration check compares all resource frames before and after atlas
 creation at three scales and two opacity levels, including frame dimensions.
 On macOS, the maximum pixel difference was zero.
+
+The map-proportioned geometry was additionally checked with synthetic 64 × 128,
+512 × 64, 64 × 512 and 128 × 128 terrain grids. Rendering, viewport fitting,
+picking and changing map dimensions passed. A 150-frame Oazis run with this
+geometry measured 16.64 ms median and 17.87 ms p95 with clouds on the M3;
+concurrent desktop load affects these rendering-only measurements.
 
 ### Earlier cloud submission benchmark
 

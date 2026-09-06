@@ -52,12 +52,40 @@ inline float follow(float current, float target, float dt, bool wrapped = false)
         delta -= std::round(delta);
     return current + delta * -std::expm1(-16.0f * dt);
 }
-// Classic ring geometry and uniform texture coordinates. Map aspect ratio
-// does not change the shape or compress artwork toward the inner rim.
+// Isothermal torus coordinates: sqrt((R/r)^2 - 1) = map width / height.
+// This makes equal map steps equally long in both tangent directions. Tile
+// area varies with curvature, but a rectangular map adds no aspect distortion.
 constexpr float defaultTilt = -0.65f;
-inline float latitude(float v, float, float roll = 1)
+struct Shape
 {
-    return (v - 0.5f) * 2 * pi + defaultTilt * smooth(roll);
+    float aspect, majorRadius, tubeRadius, latitudeScale, phase;
+    explicit Shape(float mapAspect = 1) : aspect(mapAspect)
+    {
+        const float ratio = std::sqrt(1 + aspect * aspect);
+        tubeRadius = 4 / (ratio + 1);
+        majorRadius = 4 - tubeRadius; // Keep the outer radius and camera range fixed.
+        latitudeScale = (ratio + 1) / aspect;
+        phase = std::atan2(std::sin(defaultTilt / 2), latitudeScale * std::cos(defaultTilt / 2)) / pi;
+    }
+};
+// Unwrap atan2 so folding and navigation stay continuous across either seam.
+inline float latitude(float v, const Shape &shape)
+{
+    const float t = v - 0.5f + shape.phase;
+    const float turns = std::floor(t + 0.5f), angle = pi * (t - turns);
+    return 2 * std::atan2(shape.latitudeScale * std::sin(angle), std::cos(angle)) + turns * 2 * pi;
+}
+inline float latitude(float v, float aspect) { return latitude(v, Shape(aspect)); }
+// Even angular spacing keeps fat rings smooth without increasing mesh size.
+// The inverse mapping supplies UVs; rendering, clouds and picking share them.
+inline float meshOffset(float row, float anchorV, const Shape &shape)
+{
+    const float angle = latitude(anchorV - 0.5f, shape) + row * 2 * pi;
+    const float turns = std::floor((angle + pi) / (2 * pi));
+    const float half = angle / 2 - turns * pi;
+    const float v = std::atan2(std::sin(half), shape.latitudeScale * std::cos(half)) / pi
+                    + turns + 0.5f - shape.phase;
+    return std::max(-0.5f, std::min(0.5f, v - anchorV));
 }
 struct CameraAngles
 {
@@ -76,21 +104,24 @@ inline Point subtract(Point a, Point b) { return {a.x - b.x, a.y - b.y, a.z - b.
 // is exactly the original world surface transformed into the local tangent
 // frame; moving the anchor changes the camera, never a tile's place on the ring.
 // At zero roll it is the ordinary flat map centered on that same tile.
-inline Point focusedPoint(float du, float dv, float roll, float anchorV)
+inline Point focusedPoint(float du, float dv, float roll, float anchorV, const Shape &shape = Shape())
 {
     float minor = smooth(roll / 0.85f), major = smooth(roll);
-    float phi = latitude(anchorV, 1), arc = dv * 2 * pi;
-    float y = arc * std::cos(phi), z = -arc * std::sin(phi);
+    float phi = latitude(anchorV, shape);
+    float arc = dv * 2 * pi;
+    arc += (latitude(anchorV + dv, shape) - phi - arc) * smooth(roll);
+    float y = shape.tubeRadius * arc * std::cos(phi), z = -shape.tubeRadius * arc * std::sin(phi);
     if (minor > 0.000001f)
     {
-        float half = arc * minor / 2, chord = 2 * std::sin(half) / minor;
+        float half = arc * minor / 2, chord = 2 * shape.tubeRadius * std::sin(half) / minor;
         y = chord * std::cos(phi + half);
         z = -chord * std::sin(phi + half);
     }
     float x = du * 8 * pi;
     if (major > 0.000001f)
     {
-        float a = du * 2 * pi * major, radius = (4 + (std::cos(phi) - 1) * major) / major;
+        float a = du * 2 * pi * major;
+        float radius = 4 / major + shape.majorRadius + shape.tubeRadius * std::cos(phi) - 4;
         x = (radius + z) * std::sin(a);
         float half = std::sin(a / 2);
         z = z * std::cos(a) - 2 * radius * half * half;
@@ -101,21 +132,24 @@ inline Point focusedPoint(float du, float dv, float roll, float anchorV)
 inline float hoverDistance(float) { return 18.0f; }
 // The ring-plane tilt whose silhouette, about 2(R+r) wide and
 // 2(R+r) sin t + 2r cos t high, has the aspect ratio of the view.
-inline float fitTilt(float aspect)
+inline float fitTilt(float aspect, const Shape &shape = Shape())
 {
-    const float outer = 2 * (4 + std::cos(defaultTilt) - 1 + 1), tube = 2;
+    const float outer = 2 * (shape.majorRadius + shape.tubeRadius), tube = 2 * shape.tubeRadius;
     float target = outer / std::max(0.1f, aspect);
-    float t = std::asin(std::min(1.0f, target / std::sqrt(outer * outer + tube * tube))) - std::atan2(tube, outer);
-    return std::max(0.15f, std::min(1.3f, t));
+    float t = std::asin(std::min(1.0f, target / std::sqrt(outer * outer + tube * tube)))
+              - std::atan2(tube, outer);
+    // A fat ring needs a steeper view to keep its inner opening visible.
+    float apertureTilt = std::asin(shape.tubeRadius / shape.majorRadius) + 0.08f;
+    return std::min(1.55f, std::max(apertureTilt, t));
 }
 // Pitch the camera so the folded ring lies at the fitting tilt; the flat map stays level.
-inline float overviewTilt(float anchorV, float roll, float aspect)
+inline float overviewTilt(float anchorV, float roll, float aspect, const Shape &shape = Shape())
 {
-    return (-fitTilt(aspect) - latitude(anchorV, 1)) * smooth(roll);
+    return (-fitTilt(aspect, shape) - latitude(anchorV, shape)) * smooth(roll);
 }
-inline Point overviewPoint(float du, float dv, float roll, float anchorV, float aspect)
+inline Point overviewPoint(float du, float dv, float roll, float anchorV, float aspect, const Shape &shape = Shape())
 {
-    return rotate(focusedPoint(du, dv, roll, anchorV), {0, overviewTilt(anchorV, roll, aspect)});
+    return rotate(focusedPoint(du, dv, roll, anchorV, shape), {0, overviewTilt(anchorV, roll, aspect, shape)});
 }
 // A direction at infinity uses the same camera rotation and perspective as
 // the world mesh, without camera translation. The camera looks along -Z.
@@ -131,10 +165,10 @@ inline bool projectSkyDirection(Point direction, CameraAngles camera, float roll
     screen = {view.x * sx * distance / (roll * depth), view.y * sy * distance / (roll * depth), 0};
     return true;
 }
-// Fade from native 2D map dimensions to the uniform 3D ring mapping.
+// Fade from native 2D dimensions to the locally square 3D surface mapping.
 inline float verticalScale(float, float, float roll, float aspect)
 {
-    return std::exp((1 - smooth(roll)) * std::log(4 / aspect));
+    return std::exp((1 - smooth(roll)) * std::log(4 / (Shape(aspect).tubeRadius * aspect)));
 }
 } // namespace TorusGeometry
 #endif

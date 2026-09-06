@@ -12,7 +12,10 @@ float distance(Point a, Point b)
 Point worldTorus(float u, float v)
 {
     float a = (u - .5f) * 2 * pi, b = latitude(v, 1);
-    return {(3 + std::cos(b)) * std::sin(a), std::sin(b), (3 + std::cos(b)) * std::cos(a)};
+    Shape shape;
+    return {(shape.majorRadius + shape.tubeRadius * std::cos(b)) * std::sin(a),
+            shape.tubeRadius * std::sin(b),
+            (shape.majorRadius + shape.tubeRadius * std::cos(b)) * std::cos(a)};
 }
 int main()
 {
@@ -22,7 +25,7 @@ int main()
             for (int v = 0; v <= 20; ++v)
             {
                 float du = u / 20.f - .5f, dv = v / 20.f - .5f;
-                assert(distance(overviewPoint(du, dv, 0, anchor, 1.6f), {du * 8 * pi, dv * 2 * pi, 0}) < .00002f);
+                assert(distance(overviewPoint(du, dv, 0, anchor, 1.6f), {du * 8 * pi, dv * 2 * pi * Shape().tubeRadius, 0}) < .00002f);
                 assert(distance(overviewPoint(-.5f, dv, 1, anchor, 1.6f), overviewPoint(.5f, dv, 1, anchor, 1.6f)) <
                        .00002f);
                 assert(distance(overviewPoint(du, -.5f, 1, anchor, 1.6f), overviewPoint(du, .5f, 1, anchor, 1.6f)) <
@@ -70,7 +73,7 @@ int main()
                     auto expected = rotate(subtract(worldTorus(u + du, v + dv), worldTorus(u, v)),
                                            {-(u - .5f) * 2 * pi, latitude(v, 1)});
                     assert(distance(focusedPoint(du, dv, 1, v), expected) < 0.00002f);
-                    assert(distance(focusedPoint(du, dv, 0, v), {du * 8 * pi, dv * 2 * pi, 0}) < 0.00002f);
+                    assert(distance(focusedPoint(du, dv, 0, v), {du * 8 * pi, dv * 2 * pi * Shape().tubeRadius, 0}) < 0.00002f);
                     assert(distance(focusedPoint(du, dv, 1, v), focusedPoint(du, dv, 1, v + 1)) < 0.00002f);
                     for (float roll : {0.0f, 0.1f, 0.4f, 0.7f, 1.0f})
                     {
@@ -136,7 +139,7 @@ int main()
     // Wider views lay the ring flatter, within the range that keeps it readable.
     for (float aspect : {1.0f, 1.6f, 1.78f, 2.4f})
     {
-        assert(fitTilt(aspect) >= .15f && fitTilt(aspect) <= 1.3f);
+        assert(fitTilt(aspect) >= .15f && fitTilt(aspect) <= 1.55f);
         assert(fitTilt(aspect) <= fitTilt(aspect / 2));
     }
     // At the ring's latitude, navigation cannot change distance, magnification,
@@ -153,12 +156,53 @@ int main()
             {
                 auto p = overviewPoint(du, dv, 1, v, 1.6f);
                 assert(1 - p.z / hoverDistance(v) > .5f);
-                assert(distance(overviewPoint(du, dv, 0, v, 1.6f), {du * 8 * pi, dv * 2 * pi, 0}) < .00002f);
+                assert(distance(overviewPoint(du, dv, 0, v, 1.6f), {du * 8 * pi, dv * 2 * pi * Shape().tubeRadius, 0}) < .00002f);
                 assert(distance(p, overviewPoint(du, dv, 1, v + .0001f, 1.6f)) < .02f);
             }
     }
+    // Rectangular maps must not stretch a tile in one tangent direction.
+    // Compare independently measured edge derivatives, not the radius formula.
+    for (float mapAspect : {.125f, .5f, 1.f, 2.f, 8.f})
+    {
+        Shape shape(mapAspect);
+        assert(shape.majorRadius > shape.tubeRadius);
+        assert(std::abs(shape.majorRadius + shape.tubeRadius - 4) < .00001f);
+        float previous = -.5f;
+        for (int row = 0; row <= 160; ++row)
+        {
+            float dv = meshOffset(float(row) / 160, .5f, shape);
+            assert(dv >= previous - .00001f);
+            assert(std::abs(latitude(.5f + dv, shape) - latitude(0, shape) - row * 2 * pi / 160) < .0001f);
+            previous = dv;
+        }
+        for (int row = 0; row <= 32; ++row)
+            for (int col = 0; col <= 8; ++col)
+            {
+                float u = float(col) / 8 - .5f, v = float(row) / 32 - .5f;
+                const float e = .0002f;
+                auto dx = subtract(focusedPoint(u + e, v, 1, .5f, shape), focusedPoint(u - e, v, 1, .5f, shape));
+                auto dy = subtract(focusedPoint(u, v + e, 1, .5f, shape), focusedPoint(u, v - e, 1, .5f, shape));
+                float tileAspect = length(dx) / (mapAspect * length(dy));
+                assert(std::abs(tileAspect - 1) < .015f);
+                for (float roll : {0.f, .1f, .5f, .9f, 1.f})
+                {
+                    auto p = overviewPoint(u, v, roll, .5f, 1.6f, shape);
+                    assert(std::isfinite(p.x) && std::isfinite(p.y) && std::isfinite(p.z));
+                    assert(1 - p.z * roll / hoverDistance(.5f) > .25f);
+                }
+                assert(distance(overviewPoint(-.5f, v, 1, .5f, 1.6f, shape),
+                                overviewPoint(.5f, v, 1, .5f, 1.6f, shape)) < .00002f);
+                assert(distance(overviewPoint(u, -.5f, 1, .5f, 1.6f, shape),
+                                overviewPoint(u, .5f, 1, .5f, 1.6f, shape)) < .00002f);
+            }
+        // The 2D endpoint still maps one cell to exactly 32 pixels on either axis.
+        float sx = 128 * 32 / (8 * pi);
+        float sy = sx * verticalScale(.5f, .5f, 0, mapAspect);
+        auto p = overviewPoint(1.f / 128, mapAspect / 128, 0, .5f, 1.6f, shape);
+        assert(std::abs(p.x * sx - 32) < .0001f && std::abs(p.y * sy - 32) < .0001f);
+    }
     std::cout
         << "Planar endpoints, both periodic seams, torus radii continuous finite transition, and "
-           "anchored viewport endpoints, uniform ring geometry, locked screen orientation, and shared "
+           "anchored viewport endpoints, map-proportioned ring geometry and locally square tiles, locked screen orientation, and shared "
            "wrapped navigation, and fixed-world hovering camera passed\n";
 }

@@ -23,23 +23,30 @@ int main()
     // Project actual rendered triangles, then recover their surface UVs at
     // interior points. This covers both winding orders and perspective as the
     // map unfolds, including the inner side of the torus.
+    for (float mapAspect : {.125f, .5f, 1.f, 2.f, 8.f})
     for (float roll : {0.f, .2f, .5f, .8f, 1.f})
         for (float focus : {0.f, .25f, .5f, .75f, 1.f})
         {
+            TorusGeometry::Shape shape(mapAspect);
             std::vector<Vertex> vertices;
             const int n = 40;
             for (int j = 0; j <= n; ++j)
                 for (int i = 0; i <= n; ++i)
                 {
-                    float u = float(i) / n - .5f, v = float(j) / n - .5f;
-                    auto p = TorusGeometry::overviewPoint(u, v, roll, focus, 1.6f);
+                    float u = float(i) / n - .5f, v = TorusGeometry::meshOffset(float(j) / n, focus, shape);
+                    auto p = TorusGeometry::overviewPoint(u, v, roll, focus, 1.6f, shape);
                     float w = 1 - p.z * roll / 18;
                     vertices.push_back(
                         {{500 * w + p.x * 80, 400 * w + p.y * 80, p.z * 80, w}, {1, 1, 1}, {u, -v}});
                 }
-            Hit center;
-            assert(mesh(vertices, n, n, 500, 400, center));
-            assert(std::isfinite(center.u) && std::isfinite(center.v));
+            // Only the flat surface necessarily covers the exact anchor: on a
+            // curved surface it can sit beyond the polygonal silhouette.
+            if (roll == 0)
+            {
+                Hit center;
+                assert(mesh(vertices, n, n, 500, 400, center));
+                assert(std::isfinite(center.u) && std::isfinite(center.v));
+            }
             Hit outside;
             assert(!mesh(vertices, n, n, -10000, -10000, outside));
             for (int index : {87, 330, 899, 1200})

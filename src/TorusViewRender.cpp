@@ -441,6 +441,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float pull = smooth(amount);
     float roll = smooth(amount);
     float aspect = float(game.map.getW()) / game.map.getH();
+    const TorusGeometry::Shape shape(aspect);
     // One direct, restrained pullback. There is no intermediate zoom to a
     // distant full-map sheet, then zoom back in to the torus.
     float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
@@ -451,13 +452,14 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     viewAspect = float(width) / std::max(1, height - 16);
     // The folded ring sits centred in the view; the flat map keeps its focus there.
     // The ring's silhouette is measured once per view shape in camera units.
-    if (ringAspect != viewAspect)
+    if (ringAspect != viewAspect || ringMapAspect != aspect)
     {
         float minX = 1e9f, maxX = -1e9f, minY = 1e9f, maxY = -1e9f;
         for (int j = 0; j <= 40; ++j)
             for (int i = 0; i <= 40; ++i)
             {
-                auto p = TorusGeometry::overviewPoint(i / 40.0f - 0.5f, j / 40.0f - 0.5f, 1, ringV, viewAspect);
+                float dv = TorusGeometry::meshOffset(j / 40.0f, ringV, shape);
+                auto p = TorusGeometry::overviewPoint(i / 40.0f - 0.5f, dv, 1, ringV, viewAspect, shape);
                 float w = 1 - p.z / cameraDistance;
                 minX = std::min(minX, p.x / w);
                 maxX = std::max(maxX, p.x / w);
@@ -469,15 +471,15 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         ringWidth = maxX - minX;
         ringHeight = maxY - minY;
         ringAspect = viewAspect;
+        ringMapAspect = aspect;
     }
     float scale = 0.9f * std::min(width / ringWidth, (height - 16) / ringHeight) * mix(1, cameraZoom, roll);
     float sx = std::exp(mix(std::log(game.map.getW() * 32 / (8 * pi)), std::log(scale), pull));
     float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
     float cx = width * 0.5f - ringCentreX * scale * smooth(roll);
     float cy = (height + 16) * 0.5f - ringCentreY * scale * smooth(roll);
-    float major = smooth(roll), minor = smooth(roll / 0.85f);
-    float skyYaw = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, aspect);
-    float viewPitch = pa + TorusGeometry::overviewTilt(ringV, roll, viewAspect);
+    float skyYaw = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, shape);
+    float viewPitch = pa + TorusGeometry::overviewTilt(ringV, roll, viewAspect, shape);
     // Vertical navigation rolls the map around the tube, without pitching the
     // sky. Its tilt follows only the explicit transition and window shape.
     drawSky(skyYaw, viewPitch, roll, sx, sy, cameraDistance, width, height, gfx->getW());
@@ -501,7 +503,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     pickV = anchorV;
     pickWidth = width;
     pickHeight = height;
-    float key[8] = {roll, ringV, sx, sy, cx, cy, scale, cameraDistance};
+    float key[9] = {roll, ringV, sx, sy, cx, cy, scale, cameraDistance, aspect};
     GLint oldArrayBuffer, oldIndexBuffer;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldArrayBuffer);
     glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &oldIndexBuffer);
@@ -517,24 +519,25 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         cloudVertices.resize(vertices.size());
         // The cloud ring floats above the ground by a fixed share of the tube
         // radius; it settles onto the flat map as the fold opens.
-        const float cloudHeight = 0.039f * roll, e = 0.001f;
+        // Keep clouds outside the ground and inside the aperture on very tall maps.
+        const float cloudHeight = std::min(0.039f * shape.tubeRadius,
+                                          0.25f * (shape.majorRadius - shape.tubeRadius)) * roll;
+        const float e = 0.0001f;
         for (int j = 0; j <= V; ++j)
             for (int i = 0; i <= U; ++i)
             {
-                float du = float(i) / U - 0.5f, dv = float(j) / V - 0.5f;
-                auto p = TorusGeometry::overviewPoint(du, dv, roll, ringV, viewAspect);
-                auto pu = TorusGeometry::overviewPoint(du + e, dv, roll, ringV, viewAspect);
-                auto pv = TorusGeometry::overviewPoint(du, dv + e, roll, ringV, viewAspect);
+                float du = float(i) / U - 0.5f;
+                float dv = TorusGeometry::meshOffset(float(j) / V, ringV, shape);
+                auto p = TorusGeometry::overviewPoint(du, dv, roll, ringV, viewAspect, shape);
+                auto pu = TorusGeometry::overviewPoint(du + e, dv, roll, ringV, viewAspect, shape);
+                auto pv = TorusGeometry::overviewPoint(du, dv + e, roll, ringV, viewAspect, shape);
                 TorusGeometry::Point tu = TorusGeometry::subtract(pu, p), tv = TorusGeometry::subtract(pv, p);
                 TorusGeometry::Point n = {tu.y * tv.z - tu.z * tv.y, tu.z * tv.x - tu.x * tv.z,
                                           tu.x * tv.y - tu.y * tv.x};
                 float len = std::max(1e-12f, TorusGeometry::length(n));
                 TorusGeometry::Point c = {p.x + n.x / len * cloudHeight, p.y + n.y / len * cloudHeight,
                                           p.z + n.z / len * cloudHeight};
-                float a = du * 2 * pi * major, b = pa + dv * 2 * pi * minor;
-                float nx = std::sin(a) * std::cos(b), ny = std::sin(b), nz = std::cos(a) * std::cos(b);
-                float ry = ny * std::cos(viewPitch) - nz * std::sin(viewPitch);
-                float rz = ny * std::sin(viewPitch) + nz * std::cos(viewPitch);
+                float nx = n.x / len, ry = n.y / len, rz = n.z / len;
                 float light =
                     mix(1, 0.48f + 0.52f * clamp(-nx * 0.35f - ry * 0.45f + rz * 0.82f, 0, 1), roll);
                 float w = 1 - p.z * roll / cameraDistance;
