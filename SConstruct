@@ -249,6 +249,9 @@ def main():
     # tools like ar fall back to /tmp, which sandboxed environments may block.
     if 'TMPDIR' in os.environ:
         env['ENV']['TMPDIR'] = os.environ['TMPDIR']
+    # Likewise for SOURCE_DATE_EPOCH, needed by build tools for reproducible builds.
+    if 'SOURCE_DATE_EPOCH' in os.environ:
+        env['ENV']['SOURCE_DATE_EPOCH'] = os.environ['SOURCE_DATE_EPOCH']
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
 
