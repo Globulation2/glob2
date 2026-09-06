@@ -2,6 +2,7 @@
 // Exercise real terrain regeneration and resource clearing without a window.
 #include "Building.h"
 #include "Game.h"
+#include "GameGUI.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "Map.h"
@@ -19,6 +20,7 @@ int main()
 	GlobalContainer globals;
 	globalContainer = &globals;
 	globals.runNoX = true;
+	globals.settings.rememberUnit = false;
 	const int positions[][2] = {{8, 8}, {0, 0}, {15, 0}, {0, 15}, {15, 15}};
 	int strokes = 0;
 	for (int type = 0; type < MAX_RESOURCES; ++type)
@@ -81,14 +83,19 @@ int main()
 	const int swarm = globals.buildingsTypes.getTypeNum("swarm", 0, false);
 	const int swarmW = globals.buildingsTypes.get(swarm)->width;
 	const int swarmH = globals.buildingsTypes.get(swarm)->height;
-	constexpr int swarmX = 8, swarmY = 8, workerX = 6, workerY = 9, explorerX = 11, explorerY = 9;
+	constexpr int swarmX = 8, swarmY = 8;
 
 	struct World
 	{
-		Game game{nullptr, nullptr};
+		GameGUI gui;
+		Game& game = gui.game;
 		int swarmW, swarmH;
+		int swarmX, swarmY, workerX, workerY, explorerX, explorerY;
 		Uint16 swarmGid, workerGid, explorerGid;
-		World(int swarm, int w, int h) : swarmW(w), swarmH(h)
+		World(int swarm, int w, int h, int offsetX = 0, int offsetY = 0) : swarmW(w), swarmH(h),
+            swarmX((8 + offsetX) & 15), swarmY((8 + offsetY) & 15),
+            workerX((6 + offsetX) & 15), workerY((9 + offsetY) & 15),
+            explorerX((11 + offsetX) & 15), explorerY((9 + offsetY) & 15)
 		{
 			game.map.setSize(4, 4, GRASS);
 			game.map.setGame(&game);
@@ -120,12 +127,13 @@ int main()
 		{
 			auto touched = [&](int x, int y)
 			{
-				return paint == GRASS && (x == px || x == px - 1) && (y == py || y == py - 1);
+				return paint == GRASS && (((x - px) & 15) == 0 || ((x - px) & 15) == 15)
+                    && (((y - py) & 15) == 0 || ((y - py) & 15) == 15);
 			};
 			bool swarmStands = true;
 			for (int y = swarmY; y < swarmY + swarmH; ++y)
 				for (int x = swarmX; x < swarmX + swarmW; ++x)
-					if (!game.map.isGrass(x, y) || touched(x, y))
+					if (!game.map.isGrass(x & 15, y & 15) || touched(x, y))
 						swarmStands = false;
 			const bool workerStands = !game.map.isWater(workerX, workerY) && !touched(workerX, workerY);
 			const bool explorerStands = !touched(explorerX, explorerY);
@@ -139,15 +147,19 @@ int main()
 	};
 
 	int entityStrokes = 0;
-	for (TerrainType paint : {GRASS, SAND, WATER})
-		for (int py = 4; py <= 13; ++py)
-			for (int px = 4; px <= 13; ++px)
-			{
-				World world(swarm, swarmW, swarmH);
-				world.stroke(px, py, paint);
-				world.check(px, py, paint);
-				++entityStrokes;
-			}
+    const int offsets[][2] = {{0, 0}, {-8, -8}, {7, -8}, {-8, 7}, {7, 7}};
+    for (const auto& offset : offsets)
+        for (TerrainType paint : {GRASS, SAND, WATER})
+            for (int py = 4; py <= 13; ++py)
+                for (int px = 4; px <= 13; ++px)
+                {
+                    World world(swarm, swarmW, swarmH, offset[0], offset[1]);
+                    const int x = (px + offset[0]) & 15;
+                    const int y = (py + offset[1]) & 15;
+                    world.stroke(x, y, paint);
+                    world.check(x, y, paint);
+                    ++entityStrokes;
+                }
 
 	// A cell touches the tiles c-1..c; the cell 2*swarmX+swarmW-c touches their mirror
 	// image across the swarm, the same distance east as c is west, and must agree.
@@ -160,17 +172,45 @@ int main()
 			assert(west.alive(west.swarmGid, true) == east.alive(east.swarmGid, true));
 		}
 
-	// Four water cells make the walker's tile open water: the walker goes, the explorer stays.
-	{
-		World world(swarm, swarmW, swarmH);
-		for (int y = workerY; y <= workerY + 1; ++y)
-			for (int x = workerX; x <= workerX + 1; ++x)
-				world.stroke(x, y, WATER);
-		assert(world.game.map.isWater(workerX, workerY));
-		assert(!world.alive(world.workerGid, false));
-		assert(world.game.map.getGroundUnit(workerX, workerY) == NOGUID);
-		assert(world.alive(world.explorerGid, false));
-		++entityStrokes;
-	}
-	std::printf("Terrain entity regressions passed: %d strokes, 3 terrains, %dx%d swarm, walker and explorer\n", entityStrokes, swarmW, swarmH);
+	// Co-located air units survive flooding, while only swimming ground units remain.
+    for (bool swimming : {false, true})
+        for (const auto& offset : offsets)
+        {
+            World world(swarm, swarmW, swarmH, offset[0], offset[1]);
+            Unit* worker = world.game.getUnit(world.workerGid);
+            worker->performance[SWIM] = swimming ? worker->race->getUnitType(WORKER, 1)->performance[SWIM] : 0;
+            Unit* explorer = world.game.getUnit(world.explorerGid);
+            world.game.map.setAirUnit(explorer->posX, explorer->posY, NOGUID);
+            explorer->posX = world.workerX;
+            explorer->posY = world.workerY;
+            world.game.map.setAirUnit(explorer->posX, explorer->posY, explorer->gid);
+            for (int y = world.workerY; y <= world.workerY + 1; ++y)
+                for (int x = world.workerX; x <= world.workerX + 1; ++x)
+                    world.stroke(x & 15, y & 15, WATER);
+            assert(world.game.map.isWater(world.workerX, world.workerY));
+            assert(world.alive(world.workerGid, false) == swimming);
+            assert(world.game.map.getGroundUnit(world.workerX, world.workerY) == (swimming ? world.workerGid : NOGUID));
+            assert(world.alive(world.explorerGid, false));
+            assert(world.game.map.getAirUnit(world.workerX, world.workerY) == world.explorerGid);
+            ++entityStrokes;
+        }
+
+    // A single deletion flag addresses exactly one occupancy layer.
+    for (unsigned flag : {unsigned(Game::DEL_GROUND_UNIT), unsigned(Game::DEL_AIR_UNIT)})
+    {
+        World world(swarm, swarmW, swarmH);
+        Unit* explorer = world.game.getUnit(world.explorerGid);
+        world.game.map.setAirUnit(explorer->posX, explorer->posY, NOGUID);
+        explorer->posX = world.workerX;
+        explorer->posY = world.workerY;
+        world.game.map.setAirUnit(explorer->posX, explorer->posY, explorer->gid);
+        world.game.removeUnitAndBuildingAndFlags(world.workerX, world.workerY, 1, flag);
+        assert(world.alive(world.workerGid, false) == (flag == Game::DEL_AIR_UNIT));
+        assert(world.alive(world.explorerGid, false) == (flag == Game::DEL_GROUND_UNIT));
+        assert(world.game.map.getGroundUnit(world.workerX, world.workerY) == (flag == Game::DEL_AIR_UNIT ? world.workerGid : NOGUID));
+        assert(world.game.map.getAirUnit(world.workerX, world.workerY) == (flag == Game::DEL_GROUND_UNIT ? world.explorerGid : NOGUID));
+        assert(world.alive(world.swarmGid, true));
+    }
+    std::printf("Terrain entity regressions passed: %d strokes, 3 terrains, interior and four wrapped corners, swimmers and separate occupancy layers\n", entityStrokes);
+    return 0;
 }
