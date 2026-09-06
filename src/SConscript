@@ -497,7 +497,9 @@ if not env['server']:
     local.Alias('speed-tests', speed_test)
 
 if not env['server']:
-    savegame_sources = [source for source in source_files if source != 'Glob2.cpp']
+    # Compile with local, not savegame_env, to avoid rebuilding shared objects under a second environment.
+    savegame_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    savegame_sources += [source for source in source_files if not source.endswith('.cpp')]
     savegame_sources += local.Object('SavegameSafetyHarness.o', '#test/SavegameSafetyHarness.cpp')
     savegame_env = local.Clone()
     # Headless tests use a console entry point so failures reach the CI log.
