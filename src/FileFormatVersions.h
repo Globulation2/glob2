@@ -80,6 +80,9 @@ static constexpr int FILE_FORMAT_VERSION_USL_MAPSCRIPT = 82;
 //! Drop unit-skin name into the save stream (UnitSerialization.cpp:25).
 static constexpr int FILE_FORMAT_VERSION_DROP_UNIT_SKIN_NAME = 84;
 
+//! Live team statistics, smoothing history and sampling positions.
+static constexpr int FILE_FORMAT_VERSION_LIVE_TEAM_STATS = 89;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend

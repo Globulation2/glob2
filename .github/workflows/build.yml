@@ -54,6 +54,11 @@ jobs:
           scons -j$(nproc) release=1 server=0 savegame-safety-test
           python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness
 
+      - name: Test team statistics save compatibility
+        run: |
+          scons -j$(nproc) release=1 server=0 team-stats-save-test
+          python3 test/run-team-stats-save-tests.py build/src/TeamStatsSaveHarness
+
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 server=1 --build=build-server
 
@@ -130,6 +135,11 @@ jobs:
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 savegame-safety-test
           python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness.exe
+
+      - name: Test team statistics save compatibility
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 team-stats-save-test
+          python3 test/run-team-stats-save-tests.py build/src/TeamStatsSaveHarness.exe
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server

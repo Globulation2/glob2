@@ -129,7 +129,8 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		stream->readLeaveSection();
 		return false;
 	}
-	stats.step(this, true);
+	if (versionMinor < FILE_FORMAT_VERSION_LIVE_TEAM_STATS)
+		stats.step(this, true);
 
 	if(versionMinor >= FILE_FORMAT_VERSION_RACE_FIELD)
 	{

@@ -170,3 +170,18 @@ streams, recovery after failed loads, and oversized map-area strings. Atomic
 replacement tests cover callback/open/rename failures and temporary-file cleanup.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
+
+
+## Team statistics save compatibility
+
+```sh
+scons -j8 release=1 server=0 team-stats-save-test
+python3 test/run-team-stats-save-tests.py build/src/TeamStatsSaveHarness
+```
+
+This headless test verifies live statistics and smoothing across all 32 sampling
+positions and repeated binary reloads, with history-ring wrap, named text fields,
+invalid-index and truncated-field controls. It compares version-84 and version-88
+save traces against outputs from the original loader. Linux and Windows CI run
+it in disposable profiles and check that preferences remain unchanged.
+See [fixtures and reproduction steps](fixtures/team-stats/README.md).
