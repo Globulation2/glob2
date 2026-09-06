@@ -535,3 +535,10 @@ if not env['server']:
     regression_sources += local.Object('BuildingFootprintHarness.o', '#test/BuildingFootprintHarness.cpp')
     regression_test = local.Program('BuildingFootprintHarness', regression_sources)
     local.Alias('building-footprint-test', regression_test)
+
+# Real engine save/load regression, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('EnteringUnitSaveHarness.o', '#test/EnteringUnitSaveHarness.cpp')
+    regression_test = local.Program('EnteringUnitSaveHarness', regression_sources)
+    local.Alias('entering-unit-save-test', regression_test)

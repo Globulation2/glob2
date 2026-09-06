@@ -156,6 +156,21 @@ it on both supported Ubuntu versions.
 
 Saved state and step-by-step before/after reproduction: [PR #165 fixture](fixtures/wrapped-building/README.md).
 
+## Entering unit save regression
+
+From the repository root, run `scons -j8 release=1 server=0 entering-unit-save-test`
+and `./build/src/EnteringUnitSaveHarness`. The harness links the real engine and
+round-trips generated fixtures through binary saved games. It exercises eight
+entry directions at five interior/edge/corner positions, preserves the building
+reference and animation destination, and rejects both a misplaced entering
+explorer and stale occupancy for an ordinary explorer. It protects the runtime
+fix in `4ce1d5bc`; expected negative controls print integrity diagnostics.
+
+It needs no display, AI tournament tooling, or external save files. Linux CI runs
+it on both supported Ubuntu versions.
+
+Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).
+
 ### Savegame safety
 
 Build `scons release=1 server=0 savegame-safety-test`, then run
