@@ -564,6 +564,8 @@ public:
 	Uint8 *globalGradient[SWIM_VARIANT_COUNT];
 	//! Weighted cost field behind globalGradient when the owner uses the alternative pathfinder.
 	Uint16 *globalCost[SWIM_VARIANT_COUNT];
+	//! Set whenever the map changes near the building; the weighted field is rebuilt on next use.
+	bool weightedFieldDirty[SWIM_VARIANT_COUNT];
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
 	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_VARIANT_COUNT];
 

@@ -202,6 +202,12 @@ bool Map::pathfindBuilding(Building *building, bool canSwim, int x, int y, int *
 }
 
 
+namespace {
+// A dirty weighted field is rebuilt at most this often (ticks); the baseline local
+// gradient refreshes immediately but only covers 32x32.
+constexpr Uint32 WEIGHTED_FIELD_DIRTY_REBUILD_TICKS = 25;
+}
+
 // Alternative pathfinder: no 32x32 local field, one weighted full-map field per
 // building, rebuilt lazily when the unit cannot make progress and the field is
 // older than 128 ticks (same throttle as the baseline global gradient).
@@ -211,6 +217,12 @@ bool Map::pathfindBuildingWeighted(Building *building, bool canSwim, int x, int 
 	if (building->globalGradient[canSwim]==NULL)
 	{
 		building->globalGradient[canSwim]=new Uint8[size];
+		updateGlobalGradient(building, canSwim);
+		building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
+	}
+	else if (building->weightedFieldDirty[canSwim]
+		&& building->lastGlobalGradientUpdateStepCounter[canSwim]+WEIGHTED_FIELD_DIRTY_REBUILD_TICKS<=game->stepCounter)
+	{
 		updateGlobalGradient(building, canSwim);
 		building->lastGlobalGradientUpdateStepCounter[canSwim]=game->stepCounter;
 	}

@@ -126,6 +126,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 			cost = new Uint16[size];
 		buildWeightedField(gradient, cost, canSwim);
 		writeGradientFromCost(cost, gradient);
+		building->weightedFieldDirty[canSwim]=false;
 		return;
 	}
 	updateGlobalGradient(gradient);

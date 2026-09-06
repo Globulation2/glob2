@@ -227,3 +227,55 @@ metrics are therefore whole-economy metrics, not just path lengths.
 
 2-team maps available: Dejans, SmallForTwo, balanced_for_2 (64×64), Muka
 (64×128), Mazury, strange2 (128×128).
+
+## 6. Iteration 1: weighted Dijkstra fields (A1/A2 + B2 + C1, D per run)
+
+Implemented behind `GLOB2_PATHFIND_ALT_TEAMS` (`src/map/pathfind/MapWeightedField.cpp`):
+Dial bucket-queue Dijkstra into a Uint16 cost field, octile 10/14, water
+×2 for swimmers, argmin steering with a non-strict sidestep when blocked,
+one weighted full-map field per building (no 32×32 local field) rebuilt
+when the map changes nearby (at most every 25 ticks) or when a unit is
+stuck and the field is older than 128 ticks. Resource and building fields
+only; forbidden/guard/clear areas stay on the baseline. Unit tests in
+`test/WeightedFieldTest.cpp`.
+
+**CPU.** A full-map weighted rebuild costs 150–190 µs on 128×128, *less*
+than the 230–240 µs chamfer it replaces (the chamfer needs ~4 passes over
+the whole map, Dijkstra touches each cell once). Total simulation CPU with
+both teams on the alternative: 4.6–4.8 s vs 5.65 s baseline per 10 game
+minutes on Mazury.
+
+**Determinism.** Same seed and mask twice → identical order stream, with
+and without `GLOB2_DIAG_SQRT2`.
+
+**Outcome, 10 seeds × mirrored sides = 20 team-games per cell** (Nicowar
+vs Nicowar, 10 game minutes; ALT relative to BASE):
+
+| map | diag √2 timing | units | buildings | deliveries | random steps while working | swim moves | tiles per delivery |
+|---|---|---|---|---|---|---|---|
+| balanced_for_2 (64², no water) | off | +3.0 % | −0.5 % | −2.0 % | −38 % | −85 % | −3.2 % |
+| balanced_for_2 | on | −1.9 % | −2.7 % | −3.3 % | −32 % | −74 % | −3.9 % |
+| Mazury (128², water) | off | −11.4 % | −7.3 % | −7.1 % | −11 % | −76 % | −4.7 % |
+| Mazury | on | −2.2 % | −2.0 % | −2.6 % | +0.3 % | −66 % | −0.3 % |
+
+Reading: the path-level metrics move the way they should (fewer tiles
+walked per delivery, far less swimming, a third fewer random steps in
+crowds on the small map). The economy-level outcome is within noise
+(per-game standard deviation of units is ~20 on 60–90, so the ±2–3 %
+cells are not significant) except Mazury without the diagonal timing fix,
+where the octile field is a genuine handicap: it avoids diagonals that the
+unchanged movement code still makes 41 % faster. With the timing fix the
+handicap disappears, which confirms that A and D must ship together.
+
+Why the outcome does not improve yet: the remaining ~3 % fewer deliveries
+come from hiring, not walking. `Building::considerUnitForResources`
+compares the field distance to the unit's hunger budget in "tiles"; octile
+and water-weighted distances are larger than Chebyshev ones for the same
+route, so alternative teams reject slightly more far jobs. The traffic and
+intermediate-stop problems (Layer E) and crowd queueing (C2) are untouched
+in this iteration and are where the visible gains are expected.
+
+Next: (1) express the hunger budget in the same cost units as the field so
+hiring is not biased against the alternative; (2) C2 wait/sidestep instead
+of the random step; (3) E1 composed (building, resource) fields and E3
+round-trip hiring.
