@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #define SDL_MAIN_HANDLED
+#ifdef main
+#undef main
+#endif
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -245,4 +248,5 @@ int main(int argc, char** argv)
     malformedStats(game);
     textRoundTrip();
     std::puts("Team statistics save regressions passed: 32 sampling phases, ring wrap, repeated loads, text streams and corruption controls");
+    return 0;
 }
