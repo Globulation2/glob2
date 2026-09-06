@@ -5,7 +5,8 @@
 #include "Toolkit.h"
 #include "StringTable.h"
 #include "ChooseMapScreen.h"
-#include "Game.h"
+#include "GlobalContainer.h"
+#include "GUIMessageBox.h"
 #include <set>
 #include <algorithm>
 #include "GUICheckList.h"
@@ -13,8 +14,8 @@
 
 CampaignEditor::CampaignEditor(const std::string& name)
 {
-	if(name!="")
-		campaign.load(name);
+	if (name != "" && !campaign.load(name))
+		campaign.setName(name);
 	StringTable& table=*Toolkit::getStringTable();
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", table.getString("[campaign editor]"));
 	mapList = new List(10, 50, 300, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
@@ -46,8 +47,12 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 	{
 		if (source == ok)
 		{
-			campaign.save();
-			endExecute(OK);
+			if (campaign.save())
+				endExecute(OK);
+			else
+				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
+					Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
+					Toolkit::getStringTable()->getString("[ok]"));
 		}
 		else if (source == cancel)
 		{
@@ -87,25 +92,30 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (source == editMap)
 		{
-			for(unsigned i=0; i<campaign.getMapCount(); ++i)
+			auto sel = mapList->selection();
+			if (sel)
 			{
-				if(mapList->getSelectionIndex()!=-1 && campaign.getMap(i).getMapName()==mapList->get())
+				for(unsigned i=0; i<campaign.getMapCount(); ++i)
 				{
-					CampaignMapEntryEditor cmee(campaign, campaign.getMap(i));
-					int rcmee = cmee.execute(gfx, 40);
-					if(rcmee==CampaignMapEntryEditor::OK)
+					if(campaign.getMap(i).getMapName()==mapList->get())
 					{
-						mapList->setText(mapList->getSelectionIndex(), campaign.getMap(i).getMapName());
-					}
-					else if(rcmee==CampaignMapEntryEditor::CANCEL)
-					{
+						CampaignMapEntryEditor cmee(campaign, campaign.getMap(i));
+						int rcmee = cmee.execute(gfx, 40);
+						if(rcmee==CampaignMapEntryEditor::OK)
+						{
+							mapList->setText(*sel, campaign.getMap(i).getMapName());
+						}
+						else if(rcmee==CampaignMapEntryEditor::CANCEL)
+						{
+						}
 					}
 				}
 			}
 		}
 		else if (source == removeMap)
 		{
-			if(mapList->getSelectionIndex()!=-1)
+			auto sel = mapList->selection();
+			if (sel)
 			{
 				for(unsigned i=0; i<campaign.getMapCount(); ++i)
 				{
@@ -115,8 +125,8 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 						campaign.getMap(i).getUnlockedByMaps().erase(iter);
 					}
 				}
-				campaign.removeMap(mapList->getSelectionIndex());
-				mapList->removeText(mapList->getSelectionIndex());
+				campaign.removeMap(*sel);
+				mapList->removeText(*sel);
 			}
 		}
 	}
@@ -153,7 +163,7 @@ CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEn
 	nameEditorLabel = new Text(405, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map name]"));
 	nameEditor=new TextInput(420, 105, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", entry.getMapName());
 	isUnlockedLabel = new Text(430, 140, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[unlocked at start]"));
-	isUnlocked = new OnOffButton(405, 140, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, entry.isUnlocked(), ISLOCKED);
+	isUnlocked = new OnOffButton(405, 140, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, entry.isUnlocked(), ISUNLOCKED);
 	descriptionEditorLabel = new Text(405, 170, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", table.getString("[map description]"));
 	descriptionEditor = new TextArea(420, 195, 180, 225, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false, entry.getDescription().c_str());
 	ok = new TextButton(260, 430, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", table.getString("[ok]"), OK);

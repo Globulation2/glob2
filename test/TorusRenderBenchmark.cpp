@@ -24,7 +24,10 @@
 #endif
 
 GlobalContainer *globalContainer = nullptr;
-int main(int argc, char **argv)
+class TorusRenderBenchmark
+{
+public:
+static int run(int argc, char **argv)
 {
     SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
     globalContainer = new GlobalContainer;
@@ -78,7 +81,7 @@ int main(int argc, char **argv)
             else globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
             measure(clouds ? "2D clouds" : "2D no clouds", [&] {
                 globalContainer->gfx->setClipRect();
-                gui.game.drawMap(0, 0, width, height, 0, 0, x, y, 0, Game::DRAW_WHOLE_MAP);
+                gui.game.drawMap(0, 0, width, height, 0, 0, x, y, 0, gui.view, Game::DRAW_WHOLE_MAP);
             });
             view.reset();
             view.toggle();
@@ -110,4 +113,11 @@ int main(int argc, char **argv)
     }
 #endif
     delete globalContainer;
+    return 0;
+}
+};
+
+int main(int argc, char **argv)
+{
+    return TorusRenderBenchmark::run(argc, argv);
 }

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2006 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GLOB2_STYLE_H
-#define __GLOB2_STYLE_H
+#pragma once
 
 #include <GUIStyle.h>
 
@@ -27,4 +26,3 @@ protected:
 	Sprite *sprite;
 };
 
-#endif

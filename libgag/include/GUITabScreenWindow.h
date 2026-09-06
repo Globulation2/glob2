@@ -2,8 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef GUITabScreenWindow_h
-#define GUITabScreenWindow_h
+#pragma once
 
 #include "GUIBase.h"
 
@@ -70,5 +69,3 @@ namespace GAGGUI
 		bool activated;
 	};
 };
-
-#endif

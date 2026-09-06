@@ -72,6 +72,11 @@ jobs:
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             build/src/torus-render-test -G -F -m -s 1120x720
 
+      - name: Build and run the selection lifetime regression
+        run: |
+          scons -j$(nproc) release=1 server=0 selection-test
+          ./build/src/GameGUISelectionHarness
+
       - name: Build the YOG server
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
 
@@ -80,6 +85,10 @@ jobs:
         run: |
           scons CXX=${{ matrix.compiler }} -j$(nproc)
           ./TestsRunner
+          for harness in ./*Harness ./*Test; do
+            echo "== $harness"
+            "$harness"
+          done
 
       - name: Build without OpenGL
         run: |

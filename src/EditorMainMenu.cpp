@@ -73,7 +73,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1==LOADMAP)
 		{
-			ChooseMapScreen chooseMapScreen("maps", "map", false, "games", "game", NULL);
+			ChooseMapScreen chooseMapScreen("maps", "map", false, "games", "game", false);
 			int rc=chooseMapScreen.execute(globalContainer->gfx, 40);
 			if (rc==ChooseMapScreen::OK)
 			{

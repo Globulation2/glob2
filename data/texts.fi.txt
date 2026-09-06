@@ -70,10 +70,6 @@ Numbi
 ReachToInfinity - Ei hyökkää, mutta rakentaa valtavan tukikohdan ja yrittää voimakkaasti käännyttää joukkoja omalle puolelleen. Vaikeustaso: aloittelija.
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Toubib
-[AIToubib]
-Toubib
 [AIWarrush-Description]
 Warrush - Hyökkää nopeasti työntäen puolustamiseen painottavan pelaajan häviön partaalle. Vaikeustaso: normaali.
 [AIWarrush]

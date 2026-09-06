@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
 
-#ifndef GUICheckList_h
-#define GUICheckList_h
+#pragma once
 
 #include "GUIList.h"
 
@@ -32,7 +31,3 @@ namespace GAGGUI
 		virtual void handleItemClick(size_t element, int mx, int my);
 	};
 };
-
-
-
-#endif

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GUITEXT_H
-#define __GUITEXT_H
+#pragma once
 
 #include "GUIBase.h"
 #include "GraphicContext.h"
@@ -44,5 +43,3 @@ namespace GAGGUI
 		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int w, int h);
 	};
 }
-
-#endif

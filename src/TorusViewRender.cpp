@@ -396,10 +396,15 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glClear(GL_COLOR_BUFFER_BIT);
         // Capture the normal map and cloud shadows,
         // respecting the same graphics-quality setting as the 2D view.
-        game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0, originX, originY, team,
-                     options | Game::DRAW_NO_CLOUD_LAYER, nullptr, cloudGridLimit);
         if (game.gui)
-            game.gui->drawTorusMapOverlay(originX, originY);
+            game.gui->drawTorusMap(originX, originY, team, options | Game::DRAW_NO_CLOUD_LAYER, cloudGridLimit);
+        else
+        {
+            Game::ViewState mapView;
+            game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
+                         originX, originY, team, mapView, options | Game::DRAW_NO_CLOUD_LAYER,
+                         nullptr, nullptr, cloudGridLimit);
+        }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     const bool drawClouds =

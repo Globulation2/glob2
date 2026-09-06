@@ -54,6 +54,10 @@ AI
 Castor plays a conservative game and does very well on maps with few resources. Medium Difficulty.
 [AICastor]
 Castor
+[AICortex-Description]
+Cortex - Experimental three-layer AI. Work in progress.
+[AICortex]
+Cortex
 [AINicowar-Description]
 Nicowar plays aggressively, grows large fast and throws huge armies at its opponents. Hard Difficulty.
 [AINicowar]
@@ -70,10 +74,6 @@ Numbi
 ReachToInfinity - Does not attack, but builds monstrous bases and aggressively converts units. Easy Difficulty.
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Toubib
-[AIToubib]
-Toubib
 [AIWarrush-Description]
 Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]
@@ -308,6 +308,8 @@ enter
 equals
 [ERROR_CANT_LOAD_MAP]
 The map couldn't be loaded because the file is either damaged or an incompatible version.
+[ERROR_CANT_SAVE_CAMPAIGN]
+The campaign couldn't be saved. Check that the destination directory exists, is writable, and has free space.
 [escape]
 escape
 [explorationflag explanation 2]

@@ -1,9 +1,8 @@
 #include "code.h"
-#include "native.h"
 #include "interpreter.h"
 #include "tree.h"
 #include "debug.h"
-#include "error.h"
+#include "position.h"
 #include "usl.h"
 
 #include <sstream>

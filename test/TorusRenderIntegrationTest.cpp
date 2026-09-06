@@ -28,7 +28,10 @@
 #include <iostream>
 
 GlobalContainer *globalContainer = nullptr;
-int main(int argc, char **argv)
+class TorusRenderIntegrationTest
+{
+public:
+static int run(int argc, char **argv)
 {
     SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
     globalContainer = new GlobalContainer;
@@ -55,16 +58,16 @@ int main(int argc, char **argv)
         for (int x : {-1, 0, gui.game.map.getW() - 8, gui.game.map.getW()})
             for (int y : {-1, 0, gui.game.map.getH() - 8, gui.game.map.getH()})
             {
-                gui.game.mouseX = x * 32;
-                gui.game.mouseY = y * 32;
-                gui.game.mouseUnit = nullptr;
+                gui.view.mouseX = x * 32;
+                gui.view.mouseY = y * 32;
+                gui.view.mouseUnit = nullptr;
                 gui.game.drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
                     (-y) & gui.game.map.getMaskH(), gui.game.map.getW(), gui.game.map.getH(),
-                    0, Game::DRAW_WHOLE_MAP);
-                assert(gui.game.mouseUnit == explorer);
+                    0, Game::DRAW_WHOLE_MAP, gui.view);
+                assert(gui.view.mouseUnit == explorer);
             }
-        gui.game.mouseX = gui.game.mouseY = -1;
-        gui.game.mouseUnit = nullptr;
+        gui.view.mouseX = gui.view.mouseY = -1;
+        gui.view.mouseUnit = nullptr;
         // Upgrading an old keyboard layout must neither shadow custom keys
         // nor lose the new default when its key is available.
         KeyboardManager keyboard(GameGUIShortcuts);
@@ -159,7 +162,7 @@ int main(int argc, char **argv)
                 return pixels;
             };
             std::vector<std::vector<unsigned char>> reference;
-            for (float scale : {1.f, .5f, .75f})
+            for (float scale : {1.f, .5f, .75f, 2.f})
                 for (Uint8 alpha : {Uint8(255), Uint8(127)})
                     reference.push_back(captureResources(scale, alpha));
             std::vector<std::pair<int, int>> sizes;
@@ -167,7 +170,7 @@ int main(int argc, char **argv)
                 sizes.emplace_back(resources.getW(i), resources.getH(i));
             assert(resources.createTextureAtlas(true));
             int sample = 0, maximumDifference = 0;
-            for (float scale : {1.f, .5f, .75f})
+            for (float scale : {1.f, .5f, .75f, 2.f})
                 for (Uint8 alpha : {Uint8(255), Uint8(127)})
                 {
                     auto actual = captureResources(scale, alpha);
@@ -278,4 +281,11 @@ int main(int argc, char **argv)
         }
     }
     delete globalContainer;
+    return 0;
+}
+};
+
+int main(int argc, char **argv)
+{
+    return TorusRenderIntegrationTest::run(argc, argv);
 }

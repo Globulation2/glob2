@@ -70,10 +70,6 @@ AINumbi
 ReachToInfinity - Nie atakuje, ale buduje ogromne bazy i agresywnie konwertuje jednostki. Mała trudność.
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Toubib
-[AIToubib]
-AIToubib
 [AIWarrush-Description]
 Warrush - Atakuje szybko i skutecznie, często spychając broniącego się gracza na straconą pozycję. Średnia trudność.
 [AIWarrush]

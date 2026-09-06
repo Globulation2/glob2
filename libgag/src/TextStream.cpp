@@ -168,20 +168,6 @@ namespace GAGCore
 						while ((next != '*' || (nextChar(), next != '/')) && !stream->isEndOfStream())
 							nextChar();
 						nextChar();
-						
-						/* More human readable version.
-						nextChar();
-						while (!ifs.eof())
-						{
-							while ((next != '*') && !ifs.eof())
-								nextChar();
-							nextChar();
-							if (next == '/')
-							{
-								nextChar();
-								break;
-							}
-						}*/
 					}
 					else
 					{
@@ -451,8 +437,6 @@ namespace GAGCore
 		assert(backend);
 		Parser p(backend);
 		p.parse(&table);
-		/*for (std::map<std::string, std::string>::iterator i = table.begin(); i != table.end(); ++i)
-			std::cout << i->first << " = " << i->second << std::endl;*/
 	}
 	
 	void TextInputStream::readEnterSection(const std::string name)

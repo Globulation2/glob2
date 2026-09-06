@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
 
-#ifndef CustomGameOtherOptions_h
-#define CustomGameOtherOptions_h
+#pragma once
+
+#include <array>
 
 #include "AI.h"
 #include "Glob2Screen.h"
@@ -60,11 +61,11 @@ private:
 	TextButton* cancel;
 	
 	///List of the player names
-	Text ** playerNames;
+	std::array<Text*, Team::MAX_COUNT> playerNames{};
 	//! Player colors
-	ColorButton ** color;
-	//! Player ally temas
-	MultiTextButton ** allyTeamNumbers;
+	std::array<ColorButton*, Team::MAX_COUNT> color{};
+	//! Player ally teams
+	std::array<MultiTextButton*, Team::MAX_COUNT> allyTeamNumbers{};
 
 	///Button fixing teams during the match
 	OnOffButton *teamsFixed;
@@ -88,7 +89,5 @@ private:
 	
 	GameHeader& gameHeader;
 	GameHeader oldGameHeader;
-	MapHeader& mapHeader;
 };
 
-#endif

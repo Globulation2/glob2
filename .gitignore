@@ -3,6 +3,7 @@ options_cache.py
 libgag.a
 libusl.a
 src/glob2
+testResults.xml
 .sconf_temp
 .sconsign.dblite
 *.o
@@ -15,3 +16,9 @@ build-software/
 vcpkg_installed/
 
 experiment/
+.DS_Store
+compile_commands.json
+.cache/
+Glob2.app/
+Glob2-*.dmg
+/.tmp

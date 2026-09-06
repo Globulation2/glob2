@@ -224,9 +224,11 @@ and recreation. No desktop input is generated.
 
 The fixed-axis navigation and elevated cloud layer were adapted from Giszmo's
 `feat/torus-pan` branch (through `b838f8de`), whose implementation was authored by
-Bob. This PR keeps its master baseline; it does not merge the separate AI trainer
-and fullscreen-scaling branches. Native testing on Giszmo's display setup is
-still needed to determine whether his separate startup/display issue remains.
+Bob. This draft tracks master through merge commits. The AI trainer/refactoring
+and fullscreen-scaling work has now landed in master and is included through
+that base, with torus integration adapted to the split GUI/render modules and
+separate viewer and pending-building state. Native testing on Giszmo's Wayland
+setup is still needed to verify the combined behavior.
 
 ### Navigation experiment
 
