@@ -28,6 +28,11 @@ l2 = env.StaticLibrary("gag_server", libgag_just_server)
 
 if not env['server']:
     Default(l1)
+    aspect_env = env.Clone()
+    aspect_env.Append(CPPPATH=['#libgag/src'])
+    aspect_test = aspect_env.Program('FullscreenAspectHarness',
+        [aspect_env.Object('FullscreenAspectHarness.o', '#test/FullscreenAspectHarness.cpp'), l1])
+    env.Alias('aspect-test', aspect_test)
 else:
     Default(l2)
 

@@ -31,7 +31,7 @@ jobs:
             libboost-date-time-dev libboost-thread-dev libboost-system-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
-            libcppunit-dev
+            libcppunit-dev xvfb xauth libgl1-mesa-dri
 
       - uses: actions/checkout@v4
 
@@ -55,6 +55,14 @@ jobs:
         run: |
           scons -j$(nproc) release=1 server=0 lan-test
           python3 test/run_lan_session_test.py build/src/LANSessionHarness
+
+      - name: Build and run the aspect-ratio regression
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          scons -j$(nproc) release=1 server=0 aspect-test
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness gl
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness software
 
       - name: Build and run the tests
         working-directory: test
