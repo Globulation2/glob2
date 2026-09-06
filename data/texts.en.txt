@@ -1195,7 +1195,7 @@ The provided passwords don't match. Please retype them.
 [YESTS_UNABLE_TO_CONNECT]
 Unable to connect. Apparently, the YOG metaserver is down.
 [yog block command help]
-/block <playername>    Blocks a player; you will no longer see his text.
+/block <playername>    Blocks a player; you will no longer see their text.
 [yog block command player %0 already blocked]
 Player %0 already blocked
 [yog block command player %0 blocked]
