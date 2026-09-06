@@ -2,6 +2,25 @@
 
 CppUnit-based test fixtures for the C++ codebase. These have their own `SConstruct` and are **not** built by the top-level `scons` — run `scons -j16` from this directory, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. A top-level build reports "up to date" without touching them, so rebuild here before trusting a result.
 
+## Selection lifetime regression
+
+`GameGUISelectionHarness` checks cycling immediately after selected buildings
+and units are deleted, before drawing validates the cached selection. It also
+checks null selections, live cycling/wraparound, building ownership, and tool
+selection. The build extracts the production `checkSelection`, `iterateSelection`,
+and destruction hooks into a small stub fixture; it does not copy their logic
+or run the interactive event loop. The normal CI harness loop runs this test.
+To additionally check memory accesses on macOS or Linux, run from `test/`:
+
+```sh
+scons GameGUISelectionHarness selection_sanitize=1
+./GameGUISelectionHarness
+```
+
+This enables AddressSanitizer and UndefinedBehaviorSanitizer for this harness
+only. Without the validation at the start of `iterateSelection`, the deleted
+building case reports a heap-use-after-free under AddressSanitizer.
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.

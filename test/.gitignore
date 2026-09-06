@@ -7,6 +7,7 @@
 .sconsign.dblite
 .sconf_temp/
 testResults.xml
+GameGUISelectionHarness.generated.cpp
 
 # Compiled test harnesses / runners (extensionless executables).
 # Sources keep their .cpp/.h extension, so these patterns never catch them.
