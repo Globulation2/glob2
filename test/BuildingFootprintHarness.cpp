@@ -53,6 +53,7 @@ int main(int argc, char** argv)
     GlobalContainer globals;
     globalContainer = &globals;
     globals.runNoX = true;
+    globals.settings.rememberUnit = false;
     globals.buildingsTypes.init();
     IntBuildingType::init();
     if (argc == 3 && !std::strcmp(argv[1], "--load"))
