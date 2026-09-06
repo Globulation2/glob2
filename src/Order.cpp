@@ -42,12 +42,12 @@ std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, 
 		return OrderMoveFlag::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_CHANGE_PRIORITY:
 		return OrderChangePriority::deserialize(netData+1, netDataLength-1, versionMinor);
-	case ORDER_ALTERATE_FORBIDDEN:
-		return OrderAlterateForbidden::deserialize(netData+1, netDataLength-1, versionMinor);
-	case ORDER_ALTERATE_GUARD_AREA:
-		return OrderAlterateGuardArea::deserialize(netData+1, netDataLength-1, versionMinor);
-	case ORDER_ALTERATE_CLEAR_AREA:
-		return OrderAlterateClearArea::deserialize(netData+1, netDataLength-1, versionMinor);
+	case ORDER_ALTER_FORBIDDEN:
+		return OrderAlterForbidden::deserialize(netData+1, netDataLength-1, versionMinor);
+	case ORDER_ALTER_GUARD_AREA:
+		return OrderAlterGuardArea::deserialize(netData+1, netDataLength-1, versionMinor);
+	case ORDER_ALTER_CLEAR_AREA:
+		return OrderAlterClearArea::deserialize(netData+1, netDataLength-1, versionMinor);
 	case ORDER_NULL:
 		return std::shared_ptr<Order>(new NullOrder());
 	case ORDER_TEXT_MESSAGE:
@@ -65,7 +65,7 @@ std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, 
 	case ORDER_ADJUST_LATENCY :
 		return AdjustLatency::deserialize(netData+1, netDataLength-1, versionMinor);
 	default:
-		printf("Bad packet recieved in Order.cpp (%d)\n", netData[0]);
+		printf("Bad packet received in Order.cpp (%d)\n", netData[0]);
 	}
 	return std::shared_ptr<Order>();
 }

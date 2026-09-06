@@ -11,7 +11,7 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 	unsigned int _w, _h; /// map size
 	float * _stamp; /// smooth 0 to 1 gradient lookup to generate craters, islands and rivers
 	unsigned int _r; /// radius of the _stamp
-	PerlinNoise _pn;/// to get reproducable corellated random numbers
+	PerlinNoise _pn;/// to get reproducible correlated random numbers
 public:
 	enum kindOfMap {SWAMP=0,ISLANDS=1,RIVER=2,CRATERS=3,RANDOM=4};
 	

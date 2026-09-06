@@ -39,7 +39,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	/// 1 to avoid division by zero,
 	unsigned int tmpTotal=1+descriptor.waterRatio+descriptor.grassRatio;
 	unsigned int sectionIslandCount=std::max(1u, static_cast<unsigned int>((descriptor.nbTeams+descriptor.extraIslands) / (1 << power2Divider)));
-	switch (descriptor.methode)
+	switch (descriptor.method)
 	{
 		case MapGenerationDescriptor::eSWAMP:
 			hm.makeSwamp(smoothingFactor);
@@ -210,15 +210,15 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	{
 		for (unsigned x=0; x<wHeightMap; x++)
 		{
-			int tmpRessource=NO_RES;
+			int tmpResource=NO_RES;
 			if(hm(x+wHeightMap*y)<algaeLevel)
 			{
-				tmpRessource=ALGA;
+				tmpResource=ALGA;
 			//following places stone next to sand & water and keeps wheat & wood more inland without clogging up the interior too badly
 			}
 			else if(hm(x+wHeightMap*y) < stoneLevel)
 			{
-				tmpRessource=STONE;
+				tmpResource=STONE;
 			}
 			else if(hm(x+wHeightMap*y)<wheatWoodLevel)
 			{
@@ -226,20 +226,20 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				//if the map is ascending at x+w/2,y set wheat. else set wood
 				if(hm((x+wHeightMap/2)%wHeightMap+wHeightMap*y)<hm((x+wHeightMap/2+1)%wHeightMap+wHeightMap*y))
 				{
-					tmpRessource=CORN;
+					tmpResource=CORN;
 				}
 				else
 				{
-					tmpRessource=WOOD;
+					tmpResource=WOOD;
 				}
 			}
-			if (tmpRessource!=NO_RES)
+			if (tmpResource!=NO_RES)
 			{
 				for (int yRepeat=0; yRepeat<hRepeat; yRepeat++)
 				{
 					for (int xRepeat=0; xRepeat<wRepeat; xRepeat++)
 					{
-						setRessource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,tmpRessource,1);
+						setResource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,tmpResource,1);
 					}
 				}
 			}
@@ -268,26 +268,26 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				case 2:
 				default: fruit = PRUNE; break;
 			}
-			//choose coordinate where there is grass but no ressource yet
+			//choose coordinate where there is grass but no resource yet
 			int x, y;
 			do
 			{
 				x=(rand()%wHeightMap);
 				y=(rand()%hHeightMap);
-			} while (getUMTerrain(x, y)!=GRASS || isRessource(x,y));
+			} while (getUMTerrain(x, y)!=GRASS || isResource(x,y));
 			//choose size of grove (tree count)
 			int grovesize=(rand()%10)+1;
 			for (int i=0; i<grovesize; i++)
 			{
 				for (int yRepeat=0; yRepeat<hRepeat; yRepeat++)
 					for (int xRepeat=0; xRepeat<wRepeat; xRepeat++)
-						setRessource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,fruit,1);
+						setResource(xRepeat*wHeightMap+x,yRepeat*hHeightMap+y,fruit,1);
 				//find a valid neighbor of actual coordinate
 				for (int iTry=0; iTry<100; iTry++)
 				{
 					int xNew=x+rand()%3-1;
 					int yNew=y+rand()%3-1;
-					if(getUMTerrain(xNew, yNew)==GRASS && !isRessource(xNew,yNew))
+					if(getUMTerrain(xNew, yNew)==GRASS && !isResource(xNew,yNew))
 					{
 						x=xNew;
 						y=yNew;

@@ -136,7 +136,7 @@ FractionValueText::~FractionValueText()
 
 void FractionValueText::draw()
 {
-	globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, FormatableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(*numerator).arg(*denominator).c_str());
+	globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, FormattableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(*numerator).arg(*denominator).c_str());
 }
 
 

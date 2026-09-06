@@ -14,11 +14,11 @@ YOGClientGameListManager::YOGClientGameListManager(YOGClient* /*client*/)
 
 
 
-void YOGClientGameListManager::recieveMessage(std::shared_ptr<NetMessage> message)
+void YOGClientGameListManager::receiveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
 	
-	///This recieves a game list update message
+	///This receives a game list update message
 	if(type==MNetUpdateGameList)
 	{
 		std::shared_ptr<NetUpdateGameList> info = static_pointer_cast<NetUpdateGameList>(message);

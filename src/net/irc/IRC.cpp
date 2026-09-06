@@ -95,7 +95,7 @@ void IRC::forceDisconnect(void)
 	}
 }
 
-void IRC::interpreteIRCMessage(const std::string &message)
+void IRC::interpretIRCMessage(const std::string &message)
 {
 	char tempMessage[IRC_MESSAGE_SIZE];
 	char *prefix;
@@ -306,7 +306,7 @@ void IRC::step(void)
 			{
 				if (verbose)
 					printf("YOG (IRC) has received [%s]\n", data);
-				interpreteIRCMessage(data);
+				interpretIRCMessage(data);
 			}
 			else
 			{

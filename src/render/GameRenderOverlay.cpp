@@ -56,7 +56,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 		{
 			int x=(*it)->px-(viewportX<<5);
 			int y=(*it)->py-(viewportY<<5);
-			int balisticShift = 0;
+			int ballisticShift = 0;
 
 			if (x<0)
 				x+=mapPixW;
@@ -69,13 +69,13 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 				float speedX = static_cast<float>((*it)->speedX);
 				float speedY = static_cast<float>((*it)->speedY);
 				float K = static_cast<float>(sqrt(speedX * speedX + speedY * speedY));
-				balisticShift = static_cast<int>(K * ((-1.0f * time * time) / duration + time));
+				ballisticShift = static_cast<int>(K * ((-1.0f * time * time) / duration + time));
 			}
 
 			if ( (x<=sw) && (y<=sh) )
 			{
-				globalContainer->gfx->drawSprite(x, y-balisticShift, bulletSprite, BULLET_IMGID);
-				globalContainer->gfx->drawSprite(x+(balisticShift/2), y, bulletSprite, BULLET_IMGID+1);
+				globalContainer->gfx->drawSprite(x, y-ballisticShift, bulletSprite, BULLET_IMGID);
+				globalContainer->gfx->drawSprite(x+(ballisticShift/2), y, bulletSprite, BULLET_IMGID+1);
 			}
 		}
 		globalContainer->gfx->finishDrawingSprite(bulletSprite, 255);
@@ -177,7 +177,7 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 			case OverlayArea::Fertility: overlayColor=Color(0, 192, 128); break;
 			case OverlayArea::None:      break;
 		}
-		///Both width and height have +2 to cover half-squares arround the edge of the viewport
+		///Both width and height have +2 to cover half-squares around the edge of the viewport
 		int width = (right - left) + 2;
 		int height = (bot - top) + 2;
 

@@ -11,7 +11,7 @@ namespace Utilities
 	//!
 	//! Bit `pos` lives in byte `pos/8` at bit `pos%8`, counting from the
 	//! least significant bit of each byte. This ordering is part of the wire
-	//! format — OrderAlterateArea transmits a BitArray mask verbatim via
+	//! format — OrderAlterArea transmits a BitArray mask verbatim via
 	//! serialize()/deserialize(), so both ends must agree on it. Do not
 	//! reorder to MSB-first: it would silently corrupt masks between a
 	//! patched and an unpatched peer rather than fail loudly.

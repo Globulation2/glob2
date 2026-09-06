@@ -198,7 +198,7 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 
 			//Cause the building to be updated after its completion. Not all buildings need
 			//to be updated, in which case the order will simply be ignored
-			ManagementOrder* mo_completion=new SendMessage(FormatableString("update %0 %1").arg(type).arg(id));
+			ManagementOrder* mo_completion=new SendMessage(FormattableString("update %0 %1").arg(type).arg(id));
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_completion);
 		}
@@ -222,7 +222,7 @@ void NewNicowar::upgrade_buildings(Echo& echo)
 
 			//Cause the building to be updated after its completion. Not all buildings need
 			//to be updated, in which case the order will simply be ignored
-			ManagementOrder* mo_completion=new SendMessage(FormatableString("update %0 %1").arg(type).arg(id));
+			ManagementOrder* mo_completion=new SendMessage(FormattableString("update %0 %1").arg(type).arg(id));
 			mo_completion->add_condition(new ParticularBuilding(new NotUnderConstruction, id));
 			echo.add_management_order(mo_completion);
 		}

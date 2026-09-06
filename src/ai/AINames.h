@@ -7,7 +7,7 @@
 namespace AINames
 {
 	/// Sentinel returned by parseAIName() when the supplied name does
-	/// not match any known AI::ImplementitionID. Distinct from any
+	/// not match any known AI::ImplementationID. Distinct from any
 	/// valid AI id (which are 0..AI::SIZE-1); callers compare with `== AI_UNKNOWN_NAME`.
 	static const int AI_UNKNOWN_NAME = -1;
 
@@ -15,7 +15,7 @@ namespace AINames
 	std::string getAIDescription(int id);
 
 	/// Resolve a CLI-friendly AI name (case-insensitive) to its
-	/// AI::ImplementitionID value (1..AI::SIZE-1). Returns AI_UNKNOWN_NAME on unknown.
+	/// AI::ImplementationID value (1..AI::SIZE-1). Returns AI_UNKNOWN_NAME on unknown.
 	/// Used by --ai-types and --matchup parsers in GlobalContainer.cpp;
 	/// keep the name table here to avoid drift between the two CLIs.
 	int parseAIName(const std::string& name);

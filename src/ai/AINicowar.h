@@ -7,7 +7,7 @@
 #include "AINicowarTuning.h"
 #include "ConfigFiles.h"
 
-///This class represents the configuragle strategy that Nicowar will take. It uses the same algorithms,
+///This class represents the configurable strategy that Nicowar will take. It uses the same algorithms,
 ///but this can allow it to fine tune the variables in those algorithms
 class NicowarStrategy : LoadableFromConfigFile
 {
@@ -44,14 +44,14 @@ public:
 	int upgrading_phase_2_unit_min = 0;
 	///Minimum number of trained workers to activate the upgrading phase 2
 	int upgrading_phase_2_trained_worker_min = 0;
-	///The minimum warrior level to be considered "trained" for the war preperation and war phases, starting at 0
+	///The minimum warrior level to be considered "trained" for the war preparation and war phases, starting at 0
 	int minimum_warrior_level_for_trained = 0;
-	///Minimum number of units to activate the war preperation phase
-	int war_preperation_phase_unit_min = 0;
-	///Maximum number of barracks to activate the war preperation phase
-	int war_preperation_phase_barracks_max = 0;
-	///Maximum number of trained warriors to activate the war preperation phase
-	int war_preperation_phase_trained_warrior_max = 0;
+	///Minimum number of units to activate the war preparation phase
+	int war_preparation_phase_unit_min = 0;
+	///Maximum number of barracks to activate the war preparation phase
+	int war_preparation_phase_barracks_max = 0;
+	///Maximum number of trained warriors to activate the war preparation phase
+	int war_preparation_phase_trained_warrior_max = 0;
 	///Minimum number of trained warriors to activate the war phase
 	int war_phase_trained_warrior_min = 0;
 	///Minimum number of units to activate the fruit phase
@@ -68,34 +68,34 @@ public:
 	int level_2_inn_units_can_feed = 0;
 	///How many units a level 3 Inn can feed, used to determine when more inns are needed
 	int level_3_inn_units_can_feed = 0;
-	///How many units it takes to consitute a new swarm when in the growth phase
+	///How many units it takes to constitute a new swarm when in the growth phase
 	int growth_phase_units_per_swarm = 0;
-	///How many units it takes to consitute a new swarm when not in the growth phase
+	///How many units it takes to constitute a new swarm when not in the growth phase
 	int non_growth_phase_units_per_swarm = 0;
 	///The maximum number of swarms that can be made during the growth phase
 	int growth_phase_maximum_swarms = 0;
 	///The number of racetracks to be built during the skilled work phase
 	int skilled_work_phase_number_of_racetracks = 0;
-	///The number of swimmingpools to be built during the skilled work phase
+	///The number of swimming pools to be built during the skilled work phase
 	int skilled_work_phase_number_of_swimmingpools = 0;
 	///The number of schools to be built during the skilled work phase
 	int skilled_work_phase_number_of_schools = 0;
-	///The number of barracks to be built during the war preperation phase
+	///The number of barracks to be built during the war preparation phase
 	int war_preparation_phase_number_of_barracks = 0;
 	///The base number of hospitals to build, these are only built when there is first demand
 	int base_number_of_hospitals = 0;
 	///The number of warriors required to trigger another hospital
-	int war_preperation_phase_warriors_per_hospital = 0;
+	int war_preparation_phase_warriors_per_hospital = 0;
 	///The base number of construction sites that can go at once
 	int base_number_of_construction_sites = 0;
 	///The number of extra construction sites when in starving recovery mode (to facilitate extra inns to be constructed0
 	int starving_recovery_phase_number_of_extra_construction_sites = 0;
-	///The ammount of wheat that triggers a level 1 inn to increase the units working
-	int level_1_inn_low_wheat_trigger_ammount = 0;
-	///The ammount of wheat that triggers a level 2 inn to increase the units working
-	int level_2_inn_low_wheat_trigger_ammount = 0;
-	///The ammount of wheat that triggers a level 3 inn to increase the units working
-	int level_3_inn_low_wheat_trigger_ammount = 0;
+	///The amount of wheat that triggers a level 1 inn to increase the units working
+	int level_1_inn_low_wheat_trigger_amount = 0;
+	///The amount of wheat that triggers a level 2 inn to increase the units working
+	int level_2_inn_low_wheat_trigger_amount = 0;
+	///The amount of wheat that triggers a level 3 inn to increase the units working
+	int level_3_inn_low_wheat_trigger_amount = 0;
 	///The number of units to assign to an level 1 inn when its wheat is above the trigger
 	int level_1_inn_units_assigned_normal_wheat = 0;
 	///The number of units to assign to an level 2 inn when its wheat is above the trigger
@@ -110,8 +110,8 @@ public:
 	int level_3_inn_units_assigned_low_wheat = 0;
 	///The base number of units to assign to a swarm, which is doubled/halved based on conditions
 	int base_swarm_units_assigned = 0;
-	///The ammount of ressources that caused a swarm to double its units assigned if it goes below this ammount
-	int base_swarm_low_wheat_trigger_ammount = 0;
+	///The amount of resources that caused a swarm to double its units assigned if it goes below this amount
+	int base_swarm_low_wheat_trigger_amount = 0;
 	///The percentage of units that are hungry/starving that will cause swarms to halve the number of units assigned, (more wheat to inns)
 	int base_swarm_hungry_reduce_trigger_percent = 0;
 	///The ratio of workers assigned to swarms during the growth phase
@@ -124,8 +124,8 @@ public:
 	int fruit_phase_extra_number_of_explorers = 0;
 	///The base ratio of explorers to use when explorers are needed
 	int base_swarm_explorer_ratio = 0;
-	///The warrior ratio during the war preperation phase
-	int war_preperation_swarm_warrior_ratio = 0;
+	///The warrior ratio during the war preparation phase
+	int war_preparation_swarm_warrior_ratio = 0;
 	///The percentage of total population that should be dedicated to defense explorers, when they are created
 	int defense_explorer_population_percent = 0;
 	///The number of explorers to produce for attacks
@@ -142,7 +142,7 @@ public:
 	int upgrading_phase_1_hospital_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an racetrack
 	int upgrading_phase_1_racetrack_chance = 0;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an swimmingpool
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an swimming pool
 	int upgrading_phase_1_swimmingpool_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an barracks
 	int upgrading_phase_1_barracks_chance = 0;
@@ -156,7 +156,7 @@ public:
 	int upgrading_phase_2_hospital_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an racetrack
 	int upgrading_phase_2_racetrack_chance = 0;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an swimmingpool
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an swimming pool
 	int upgrading_phase_2_swimmingpool_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an barracks
 	int upgrading_phase_2_barracks_chance = 0;
@@ -237,7 +237,7 @@ private:
 		PlacementSize,
 	};
 
-	///This function is called at the very begginning of the game,
+	///This function is called at the very beginning of the game,
 	///to initialize the existing buildings with the right amount of units
 	void initialize(AIEcho::Echo& echo);
 
@@ -248,14 +248,14 @@ private:
 	///Swarms become a big priority, so does gaining territory and exploration.
 	bool growth_phase;
 	///During the skilled work phase, Nicowar tries to better the skills of its workers
-	///by building 1 Racetrack, 1 Swimmingpool and 2 Schools
+	///by building 1 Racetrack, 1 Swimming pool and 2 Schools
 	bool skilled_work_phase;
 	///During the upgrading_phase_1 , Nicowar tries to upgrade its level 1 buildings in small numbers.
 	bool upgrading_phase_1;
 	///During the upgrading_phase_2 , Nicowar tries to upgrade its level 2 buildings in small numbers.
 	bool upgrading_phase_2;
-	///During the war preperation phase, warriors are made and barracks are prioritized
-	bool war_preperation;
+	///During the war preparation phase, warriors are made and barracks are prioritized
+	bool war_preparation;
 	///During the war phase, the enemies are attacked
 	bool war;
 	///During the fruit phase, explorers are stationed on fruit trees and Nicowar starts converting
@@ -270,8 +270,8 @@ private:
 	///During this phase, Nicowar tries to construct many explorers, in case its attacked by enemy explorers
 	bool defend_explorers;
 	///During this phase, Nicowar tries to construct many explorers so that it can launch an attack with them
-	bool explorer_attack_preperation_phase;
-	///During this phase, Nicowar will activily attack its oppenents with explorers
+	bool explorer_attack_preparation_phase;
+	///During this phase, Nicowar will actively attack its opponents with explorers
 	bool explorer_attack_phase;
 
 
@@ -286,7 +286,7 @@ private:
 	void queue_swarms(AIEcho::Echo& echo);
 	///This function decides how many racetracks are needed and queues them up.
 	void queue_racetracks(AIEcho::Echo& echo);
-	///This function decides how many swimmingpools are needed and queues them up.
+	///This function decides how many swimming pools are needed and queues them up.
 	void queue_swimmingpools(AIEcho::Echo& echo);
 	///This function decides how many schools are needed and queues them up.
 	void queue_schools(AIEcho::Echo& echo);
@@ -297,7 +297,7 @@ private:
 	///This counts how many StarvingRecoveryInn's there are under construction
 	int starving_recovery_inns;
 
-	///This function starts construction on buildings that are queued for construction. Its carefull
+	///This function starts construction on buildings that are queued for construction. Its careful
 	///not to construct too much or too little at once
 	void order_buildings(AIEcho::Echo& echo);
 	///This function starts construction of a RegularInn, and returns the ID code
@@ -319,7 +319,7 @@ private:
 	///This integer stores the number of buildings being constructed based on their placement id,
 	///it counts buildings that are queued to be constructed but have not been started yet
 	int buildings_under_construction_per_type[PlacementSize];
-	///This is the queue for buildings that have yet to be proccessed for construction
+	///This is the queue for buildings that have yet to be processed for construction
 	std::list<BuildingPlacement> placement_queue;
 	///This is the queue for buildings that are going to be constructed
 	std::list<BuildingPlacement> construction_queue;
@@ -332,7 +332,7 @@ private:
 	///of a new Inn and periodically thereafter
 	void manage_inn(AIEcho::Echo& echo, int id);
 	///This function updated the units assigned and the creation
-	///ratios of a particular Swarm. Its done afeter the completion
+	///ratios of a particular Swarm. Its done after the completion
 	///of a new swarm and periodically thereafter
 	void manage_swarm(AIEcho::Echo& echo, int id);
 
@@ -359,8 +359,8 @@ private:
 	void control_attacks(AIEcho::Echo& echo);
 	///This function chooses the enemy team to target
 	void choose_enemy_target(AIEcho::Echo& echo);
-	///This function digs out an enemy building that is surrounded by ressources.
-	///It will also cause Nicowar to dig itself out in certain situtation
+	///This function digs out an enemy building that is surrounded by resources.
+	///It will also cause Nicowar to dig itself out in certain situation
 	///Returns true if there are buildings that it can dig out, false otherwise
 	bool dig_out_enemy(AIEcho::Echo& echo);
 
@@ -374,7 +374,7 @@ private:
 	
 	///This function calculates the positions of defense flags
 	void compute_defense_flag_positioning(AIEcho::Echo& echo);
-	///This function adds the specific value to the counts arround the given pos, used in compute_defense_flag_positioning
+	///This function adds the specific value to the counts around the given pos, used in compute_defense_flag_positioning
 	void modify_points(Uint16* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations);
 	///This vector stores the ID's for all current defense flags
 	std::vector<int> defense_flags;

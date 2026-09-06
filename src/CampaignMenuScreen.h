@@ -32,7 +32,7 @@ private:
 	Text* title;
 	/// The exit to menuscreen button
 	Button* exitButton;
-	/// The "start mission" buttion
+	/// The "start mission" button
 	Button* startMission;
 
 	/// The box where the players name is put

@@ -22,7 +22,7 @@ void ReachToInfinity::tick_explorer_flags_fruit(Echo& echo)
 		{
 			if(echo.get_team_stats().numberUnitPerType[EXPLORER]>=AI_ECHO_RTI_FRUIT_FLAG_EXPLORER_MIN && !flag_on_cherry && !flag_on_orange && !flag_on_prune)
 			{
-				//Constraints arround nearby settlement
+				//Constraints around nearby settlement
 				AIEcho::Gradients::GradientInfo gi_building;
 				gi_building.add_source(new AIEcho::Gradients::Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
 
@@ -34,10 +34,10 @@ void ReachToInfinity::tick_explorer_flags_fruit(Echo& echo)
 					//You want the closest fruit to your settlement possible
 					bo_cherry->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
-					//Constraint arround the location of fruit
+					//Constraint around the location of fruit
 					AIEcho::Gradients::GradientInfo gi_cherry;
-					gi_cherry.add_source(new AIEcho::Gradients::Entities::Ressource(CHERRY));
-					//You want to be ontop of the cherry trees
+					gi_cherry.add_source(new AIEcho::Gradients::Entities::Resource(CHERRY));
+					//You want to be on top of the cherry trees
 					bo_cherry->add_constraint(new AIEcho::Construction::MaximumDistance(gi_cherry, 0));
 
 					//Add the building order to the list of orders
@@ -65,10 +65,10 @@ void ReachToInfinity::tick_explorer_flags_fruit(Echo& echo)
 					//You want the closest fruit to your settlement possible
 					bo_orange->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
-					//Constraints arround the location of fruit
+					//Constraints around the location of fruit
 					AIEcho::Gradients::GradientInfo gi_orange;
-					gi_orange.add_source(new AIEcho::Gradients::Entities::Ressource(ORANGE));
-					//You want to be ontop of the orange trees
+					gi_orange.add_source(new AIEcho::Gradients::Entities::Resource(ORANGE));
+					//You want to be on top of the orange trees
 					bo_orange->add_constraint(new AIEcho::Construction::MaximumDistance(gi_orange, 0));
 
 					unsigned int id_orange=echo.add_building_order(bo_orange);
@@ -96,8 +96,8 @@ void ReachToInfinity::tick_explorer_flags_fruit(Echo& echo)
 					bo_prune->add_constraint(new AIEcho::Construction::MinimizedDistance(gi_building, 1));
 
 					AIEcho::Gradients::GradientInfo gi_prune;
-					gi_prune.add_source(new AIEcho::Gradients::Entities::Ressource(PRUNE));
-					//You want to be ontop of the prune trees
+					gi_prune.add_source(new AIEcho::Gradients::Entities::Resource(PRUNE));
+					//You want to be on top of the prune trees
 					bo_prune->add_constraint(new AIEcho::Construction::MaximumDistance(gi_prune, 0));
 
 					//Add the building order to the list of orders
@@ -173,16 +173,16 @@ void ReachToInfinity::tick_farming_areas(Echo& echo)
 			{
 				if((x%AI_ECHO_RTI_FARMING_PATTERN_STRIDE==1 && y%AI_ECHO_RTI_FARMING_PATTERN_STRIDE==1))
 				{
-					if((!mi.is_ressource(x, y, WOOD) &&
-					    !mi.is_ressource(x, y, CORN)) &&
+					if((!mi.is_resource(x, y, WOOD) &&
+					    !mi.is_resource(x, y, CORN)) &&
 					    mi.is_forbidden_area(x, y))
 					{
 						mo_non_farming->add_location(x, y);
 					}
 					else
 					{
-						if((mi.is_ressource(x, y, WOOD) ||
-						    mi.is_ressource(x, y, CORN)) &&
+						if((mi.is_resource(x, y, WOOD) ||
+						    mi.is_resource(x, y, CORN)) &&
 						    mi.is_discovered(x, y) &&
 						    !mi.is_forbidden_area(x, y) &&
 						    gradient.within_dist(x, y, AI_ECHO_RTI_FARMING_WATER_MAX_DIST))

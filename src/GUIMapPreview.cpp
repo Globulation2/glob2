@@ -41,7 +41,7 @@ MapPreview::~MapPreview()
 
 
 
-std::string MapPreview::getMethode(void)
+std::string MapPreview::getMethod(void)
 {
 	return Toolkit::getStringTable()->getString("[handmade map]");
 }

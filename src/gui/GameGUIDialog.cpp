@@ -448,7 +448,7 @@ void InGameOptionScreen::updateGameSpeedText(void)
 		gameSpeedText->setText(Toolkit::getStringTable()->getString("[multiplayer game speed]"));
 		return;
 	}
-	gameSpeedText->setText(FormatableString("%0: %1")
+	gameSpeedText->setText(FormattableString("%0: %1")
 		.arg(Toolkit::getStringTable()->getString("[game speed]"))
 		.arg(globalContainer->settings.getGameSpeedText()));
 }

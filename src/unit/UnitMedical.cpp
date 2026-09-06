@@ -41,10 +41,10 @@ void Unit::selectPreferredGroundMovement(void)
 bool Unit::isUnitHungry(void)
 {
 	int realTrigHungry;
-	if (carriedRessource==-1)
+	if (carriedResource==-1)
 		realTrigHungry=trigHungry;
 	else
-		realTrigHungry=trigHungryCarying;
+		realTrigHungry=trigHungryCarrying;
 
 	return (hungry<=realTrigHungry);
 }
@@ -188,7 +188,7 @@ void Unit::handleMedical(void)
 
 	if (verbose)
 		printf("guid=(%d) handleMedical...\n", gid);
-	hungry -= hungryness;
+	hungry -= hungriness;
 	if (hungry<=0)
 		hp--;
 

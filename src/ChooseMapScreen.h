@@ -26,7 +26,7 @@ class ChooseMapScreen : public Glob2Screen
 public:
 	/// Constructor. Directory is the source of the listed files.
 	/// extension is the file extension to show. If recurse is true,
-	/// subdirectoried are shown and can be opened.
+	/// subdirectories are shown and can be opened.
 	ChooseMapScreen(const char *directory, const char *extension, bool recurse, const char* alternateDirectory=NULL, const char* alternateExtension=NULL, const bool alternateRecurse=false);
 	//! Destructor
 	virtual ~ChooseMapScreen();

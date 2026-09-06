@@ -280,7 +280,7 @@ std::string SettingsScreen::getDefaultUnitAssignmentText(int type, int level, bo
 	else if(level%2 == 0)
 	{
 		// Even level = under-construction site; label as "build <name> level N".
-		value = FormatableString(Toolkit::getStringTable()->getString("[build %0 level %1]")).arg(tname).arg(level/2 + 1);
+		value = FormattableString(Toolkit::getStringTable()->getString("[build %0 level %1]")).arg(tname).arg(level/2 + 1);
 	}
 	else if(level == 1 && globalContainer->buildingsTypes.getByType(IntBuildingType::typeFromShortNumber(type), level+1, false) == NULL)
 	{
@@ -290,7 +290,7 @@ std::string SettingsScreen::getDefaultUnitAssignmentText(int type, int level, bo
 	else
 	{
 		// Odd level >= 1: completed building; label as "<name> level N".
-		value = FormatableString(Toolkit::getStringTable()->getString("[%0 level %1]")).arg(tname).arg(level/2+1);
+		value = FormattableString(Toolkit::getStringTable()->getString("[%0 level %1]")).arg(tname).arg(level/2+1);
 	}
 	return value;
 }

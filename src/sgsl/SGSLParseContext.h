@@ -20,7 +20,7 @@ enum class SGSLParseStatus
 //! The error position always names the token consumed just before the error.
 struct SGSLParseContext
 {
-	Aquisition *donnees;
+	Acquisition *donnees;
 	Game *game;
 	Story *story;
 	int numberOfTeams;

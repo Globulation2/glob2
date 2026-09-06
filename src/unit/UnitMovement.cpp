@@ -37,7 +37,7 @@ void Unit::handleMovement(void)
 		case DIS_ATTACKING_AROUND:
 			handleMovementAttackingAround();
 			break;
-		case DIS_CLEARING_RESSOURCES:
+		case DIS_CLEARING_RESOURCES:
 			handleMovementClearingResources();
 			break;
 		case DIS_RANDOM:
@@ -56,8 +56,8 @@ void Unit::handleMovement(void)
 		case DIS_EXITING_BUILDING:
 			handleMovementExitingBuilding();
 			break;
-		case DIS_GOING_TO_RESSOURCE:
-			handleMovementGoingToRessource();
+		case DIS_GOING_TO_RESOURCE:
+			handleMovementGoingToResource();
 			break;
 		case DIS_HARVESTING:
 			handleMovementHarvesting();
@@ -78,14 +78,14 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 		medical == MED_FREE &&
 		(displacement == DIS_RANDOM
 		|| displacement == DIS_GOING_TO_FLAG
-		|| displacement == DIS_GOING_TO_RESSOURCE
+		|| displacement == DIS_GOING_TO_RESOURCE
 		|| displacement == DIS_GOING_TO_BUILDING))
 	{
 		Map *map = owner->map;
 		// TODO : be sure this is the right thing to do and add a decent comment
 		if (movement == MOV_HARVESTING)
 		{
-			map->decRessource(posX + dx, posY + dy);
+			map->decResource(posX + dx, posY + dy);
 			hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 		}
 		for (int tdx = -1; tdx <= 1; tdx++)
@@ -95,8 +95,8 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 				int y = (posY + tdy) & map->hMask;
 				Case mapCase = map->cases[(y << map->wDec) + x];
 				if ((mapCase.clearArea & owner->me)
-					&& (mapCase.ressource.type != NO_RES_TYPE)
-					&& globalContainer->ressourcesTypes.get(mapCase.ressource.type)->clearable
+					&& (mapCase.resource.type != NO_RES_TYPE)
+					&& globalContainer->resourcesTypes.get(mapCase.resource.type)->clearable
 					&& !(mapCase.forbidden & owner->me))
 				{
 					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber, gid);
@@ -369,7 +369,7 @@ void Unit::handleMovementClearingResources()
 	Map *map=owner->map;
 	if (movement==MOV_HARVESTING)
 	{
-		map->decRessource(posX+dx, posY+dy);
+		map->decResource(posX+dx, posY+dy);
 		hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 	}
 
@@ -382,7 +382,7 @@ void Unit::handleMovementClearingResources()
 		{
 			int x=posX+tdx;
 			int y=posY+tdy;
-			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isRessourceTakeable(x, y, attachedBuilding->clearingRessources) && !(owner->map->isForbidden(x, y, owner->me)))
+			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isResourceTakeable(x, y, attachedBuilding->clearingResources) && !(owner->map->isForbidden(x, y, owner->me)))
 			{
 				dx=tdx;
 				dy=tdy;
@@ -392,12 +392,12 @@ void Unit::handleMovementClearingResources()
 		}
 	bool canSwim=performance[SWIM];
 	assert(attachedBuilding);
-	if (map->pathfindLocalRessource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
+	if (map->pathfindLocalResource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
 	}
-	else if (attachedBuilding->anyRessourceToClear[canSwim]==2)
+	else if (attachedBuilding->anyResourceToClear[canSwim]==2)
 	{
 		stopAttachedForBuilding(false);
 		movement=MOV_RANDOM_GROUND;
@@ -438,7 +438,7 @@ void Unit::handleMovementRandom()
 		// area reachable from this cell. Both cases mean "nothing found".
 		Uint8 g = owner->map->getClearingGradient(owner->teamNumber, performance[SWIM]>0, posX, posY);
 		int distance = GRADIENT_AT_GOAL - g;
-		if(g > GRADIENT_UNREACHABLE && distance < ((hungry-trigHungry) / race->hungryness) && medical == MED_FREE)
+		if(g > GRADIENT_UNREACHABLE && distance < ((hungry-trigHungry) / race->hungriness) && medical == MED_FREE)
 		{
 			int tempTargetX, tempTargetY;
 			bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
@@ -553,13 +553,13 @@ void Unit::handleMovementExitingBuilding()
 	}
 }
 
-void Unit::handleMovementGoingToRessource()
+void Unit::handleMovementGoingToResource()
 {
 	Map *map=owner->map;
 	int teamNumber=owner->teamNumber;
 	bool canSwim=performance[SWIM]>0;
 	bool stopWork;
-	if (map->pathfindRessource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork))
+	if (map->pathfindResource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;

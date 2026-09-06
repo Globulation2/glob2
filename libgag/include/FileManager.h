@@ -77,9 +77,9 @@ namespace GAGCore
 		//! Returns true if filename resolves through the virtual filesystem
 		bool exists(const std::string filename);
 		
-		//! Compress source to dest uzing gzip, returns true on success
+		//! Compress source to dest using gzip, returns true on success
 		bool gzip(const std::string &source, const std::string &dest);
-		//! Uncompress source to dest uzing gzip, returns true on success
+		//! Uncompress source to dest using gzip, returns true on success
 		bool gunzip(const std::string &source, const std::string &dest);
 	
 		//! Open an output stream backend, use it to construct specific output streams

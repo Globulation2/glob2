@@ -48,7 +48,7 @@ static constexpr int NET_FRAME_LENGTH_PREFIX_BYTES = 2;
 static constexpr int ORDER_TEXT_MESSAGE_MAX_LEN = 256;
 
 //! Maximum width or height (in tiles) for the bounding box of an
-//! area-alteration brush stroke encoded by OrderAlterateArea.
+//! area-alteration brush stroke encoded by OrderAlterArea.
 //! See OrderModify.cpp:302-303, 350-351.
 static constexpr int ORDER_AREA_BRUSH_MAX_SIDE = 512;
 
@@ -56,13 +56,13 @@ static constexpr int ORDER_AREA_BRUSH_MAX_SIDE = 512;
 class Order
 {
 public:
-	///Contructs an Order
+	///Constructs an Order
  	Order(void);
 	virtual ~Order(void) {}
 	///Returns the Order Type
 	virtual Uint8 getOrderType(void)=0;
 
-	///Takes in an arbitrary amount of information and returns its assocciatted order
+	///Takes in an arbitrary amount of information and returns its associated order
 	static std::shared_ptr<Order> getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor);
 
 	///Returns the encoded data buffer of data for the Order
@@ -179,7 +179,7 @@ protected:
 	Uint8 data[10];
 };
 
-//! Cancel a building upgarde or repair if pending
+//! Cancel a building upgrade or repair if pending
 class OrderCancelConstruction:public Order
 {
 public:
@@ -264,7 +264,7 @@ class OrderModifyExchange:public OrderModify
 {
 public:
 	OrderModifyExchange() = default;
-	OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask);
+	OrderModifyExchange(Uint16 gid, Uint32 receiveResourceMask, Uint32 sendResourceMask);
 	virtual ~OrderModifyExchange(void) {}
 
 	//! See OrderModifyBuilding::deserialize.
@@ -276,8 +276,8 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MODIFY_EXCHANGE; }
 
 	Uint16 gid;
-	Uint32 receiveRessourceMask;
-	Uint32 sendRessourceMask;
+	Uint32 receiveResourceMask;
+	Uint32 sendResourceMask;
 
 protected:
 	Uint8 data[10];
@@ -333,7 +333,7 @@ class OrderModifyClearingFlag:public OrderModify
 {
 public:
 	OrderModifyClearingFlag() = default;
-	OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT]);
+	OrderModifyClearingFlag(Uint16 gid, bool clearingResources[BASIC_COUNT]);
 	virtual ~OrderModifyClearingFlag(void);
 
 	//! See OrderModifyBuilding::deserialize.
@@ -345,7 +345,7 @@ public:
 	Uint8 getOrderType(void) { return ORDER_MODIFY_CLEARING_FLAG; }
 
 	Uint16 gid;
-	bool clearingRessources[BASIC_COUNT];
+	bool clearingResources[BASIC_COUNT];
 
 protected:
 	Uint8 *data = nullptr;
@@ -400,29 +400,29 @@ protected:
 class BrushAccumulator;
 
 //! Number of bytes in the fixed-width header that precedes the variable-length
-//! BitArray mask payload in every OrderAlterateArea wire encoding:
+//! BitArray mask payload in every OrderAlterArea wire encoding:
 //! teamNumber(1) + type(1) + centerX/Y(2*2) + minX/Y(2*2) + maxX/Y(2*2) = 14.
-static constexpr int ALTERATE_AREA_HEADER_BYTES = 14;
+static constexpr int ALTER_AREA_HEADER_BYTES = 14;
 
-class OrderAlterateArea:public OrderModify
+class OrderAlterArea:public OrderModify
 {
 public:
-	OrderAlterateArea() = default;
+	OrderAlterArea() = default;
 	#ifndef YOG_SERVER_ONLY
-	OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
+	OrderAlterArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
 	#endif
-	virtual ~OrderAlterateArea(void);
+	virtual ~OrderAlterArea(void);
 
 	Uint8 *getData(void);
 
-	//! Parse the wire format for an OrderAlterate{Forbidden,GuardArea,ClearArea}
+	//! Parse the wire format for an OrderAlter{Forbidden,GuardArea,ClearArea}
 	//! packet. Layout: 14-byte fixed header
 	//! (teamNumber: Uint8, type: Uint8, centerX/Y: Sint16, minX/Y: Sint16,
 	//! maxX/Y: Sint16, all big-endian)
 	//! followed by ceil((maxX-minX) * (maxY-minY) / 8) bitmap bytes.
 	//!
 	//! Returns false (without mutating the bitmap) on any of:
-	//!   - dataLength < ALTERATE_AREA_HEADER_BYTES
+	//!   - dataLength < ALTER_AREA_HEADER_BYTES
 	//!   - maxX < minX or maxY < minY (negative-side dimensions)
 	//!   - maxX-minX or maxY-minY > ORDER_AREA_BRUSH_MAX_SIDE
 	//!   - dataLength does not equal header + expected bitmap byte count
@@ -457,46 +457,46 @@ protected:
 	Uint8 *_data = nullptr;
 };
 
-class OrderAlterateForbidden:public OrderAlterateArea
+class OrderAlterForbidden:public OrderAlterArea
 {
 public:
-	OrderAlterateForbidden() = default;
+	OrderAlterForbidden() = default;
 	#ifndef YOG_SERVER_ONLY
-	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
+	OrderAlterForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 
 	//! See OrderModifyBuilding::deserialize.
-	static std::shared_ptr<OrderAlterateForbidden> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	static std::shared_ptr<OrderAlterForbidden> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
-	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
+	Uint8 getOrderType(void) { return ORDER_ALTER_FORBIDDEN; }
 };
 
-class OrderAlterateGuardArea:public OrderAlterateArea
+class OrderAlterGuardArea:public OrderAlterArea
 {
 public:
-	OrderAlterateGuardArea() = default;
+	OrderAlterGuardArea() = default;
 	#ifndef YOG_SERVER_ONLY
-	OrderAlterateGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
+	OrderAlterGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 
 	//! See OrderModifyBuilding::deserialize.
-	static std::shared_ptr<OrderAlterateGuardArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	static std::shared_ptr<OrderAlterGuardArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
-	Uint8 getOrderType(void) { return ORDER_ALTERATE_GUARD_AREA; }
+	Uint8 getOrderType(void) { return ORDER_ALTER_GUARD_AREA; }
 };
 
-class OrderAlterateClearArea:public OrderAlterateArea
+class OrderAlterClearArea:public OrderAlterArea
 {
 public:
-	OrderAlterateClearArea() = default;
+	OrderAlterClearArea() = default;
 	#ifndef YOG_SERVER_ONLY
-	OrderAlterateClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
+	OrderAlterClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterArea(teamNumber, type, acc, map) { }
 	#endif
 
 	//! See OrderModifyBuilding::deserialize.
-	static std::shared_ptr<OrderAlterateClearArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	static std::shared_ptr<OrderAlterClearArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
-	Uint8 getOrderType(void) { return ORDER_ALTERATE_CLEAR_AREA; }
+	Uint8 getOrderType(void) { return ORDER_ALTER_CLEAR_AREA; }
 };
 
 
@@ -557,7 +557,7 @@ class OrderVoiceData:public MiscOrder
 {
 public:
 	OrderVoiceData() = default;
-	OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas);
+	OrderVoiceData(Uint32 recepientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData);
 	virtual ~OrderVoiceData(void);
 
 	//! See OrderModifyBuilding::deserialize.
@@ -565,13 +565,13 @@ public:
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return framesDatasLength+5; }
+	int getDataLength(void) { return framesDataLength+5; }
 	int getStrippedDataLength(void) { return 5; }
 	Uint8 getOrderType(void) { return ORDER_VOICE_DATA; }
 	Uint8 *getFramesData(void) { return data+5; }
 
 	Uint32 recepientsMask;
-	size_t framesDatasLength = 0;
+	size_t framesDataLength = 0;
 	Uint8 frameCount = 0;
 	Uint8 *data = nullptr;
 };

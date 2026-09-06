@@ -5,7 +5,7 @@
 // It must be true that (x % NOISE_WRAP_INDEX) == (x & NOISE_MOD_MASK)
 // so NOISE_WRAP_INDEX must be a power of two, and NOISE_MOD_MASK must be
 // that power of 2 - 1.  as indices are implemented, as unsigned chars,
-// NOISE_WRAP_INDEX shoud be less than or equal to 256.
+// NOISE_WRAP_INDEX should be less than or equal to 256.
 // There's no good reason to change it from 256, really.
 
 #define NOISE_WRAP_INDEX  256   

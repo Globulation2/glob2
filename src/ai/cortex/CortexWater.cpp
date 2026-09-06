@@ -91,7 +91,7 @@ namespace Cortex
 						// tile, so the passability gate would reject it) and may lie one step
 						// past the reach radius while still harvestable from inside it.
 						if (algaeAdjacent != NULL && !*algaeAdjacent
-						 && map.isRessourceTakeable(nx, ny, ALGA)
+						 && map.isResourceTakeable(nx, ny, ALGA)
 						 && map.isMapDiscovered(nx, ny, team->allies))
 							*algaeAdjacent = true;
 						// Stay within the colony vicinity ("relative proximity"): a
@@ -136,7 +136,7 @@ namespace Cortex
 		// exactly like the placement / fruit scans — never unfogged truth.
 		for (int x = 0; x < w && out.algaeDiscovered == 0; x++)
 			for (int y = 0; y < h; y++)
-				if (map.isRessourceTakeable(x, y, ALGA)
+				if (map.isResourceTakeable(x, y, ALGA)
 				 && map.isMapDiscovered(x, y, team->allies))
 				{
 					out.algaeDiscovered = 1;

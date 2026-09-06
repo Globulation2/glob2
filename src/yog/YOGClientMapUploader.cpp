@@ -60,10 +60,10 @@ void YOGClientMapUploader::cancelUpload()
 
 
 
-void YOGClientMapUploader::recieveMessage(std::shared_ptr<NetMessage> message)
+void YOGClientMapUploader::receiveMessage(std::shared_ptr<NetMessage> message)
 {
 	Uint8 type = message->getMessageType();
-	//This recieves the server information
+	//This receives the server information
 	if(type==MNetAcceptMapUpload)
 	{
 		shared_ptr<NetAcceptMapUpload> info = static_pointer_cast<NetAcceptMapUpload>(message);

@@ -26,8 +26,8 @@ public:
 	///If this uploader is uploading a map, this will cancel the upload
 	void cancelUpload();
 	
-	///This recieves a message from the server
-	void recieveMessage(std::shared_ptr<NetMessage> message);
+	///This receives a message from the server
+	void receiveMessage(std::shared_ptr<NetMessage> message);
 	
 	///This updates the uploader
 	void update();

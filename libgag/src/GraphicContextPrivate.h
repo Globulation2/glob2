@@ -68,14 +68,14 @@ namespace GAGCore
 		GLenum _sfactor, _dfactor;
 		bool isTextureSRectangle;
 		bool useATIWorkaround;
-		unsigned alocatedTextureCount;
+		unsigned allocatedTextureCount;
 
 		GLState(void)
 		{
 			resetCache();
 			isTextureSRectangle = false;
 			useATIWorkaround = false;
-			alocatedTextureCount = 0;
+			allocatedTextureCount = 0;
 		}
 
 		void resetCache(void)

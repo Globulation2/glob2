@@ -63,8 +63,8 @@ BuildingCondition* BuildingCondition::load_condition(GAGCore::InputStream *strea
 		LOAD_CASE(CNotSpecificBuildingType, NotSpecificBuildingType)
 		LOAD_CASE(CBuildingLevel,           BuildingLevel)
 		LOAD_CASE(CUpgradable,              Upgradable)
-		LOAD_CASE(CRessourceTrackerAmount,  RessourceTrackerAmount)
-		LOAD_CASE(CRessourceTrackerAge,     RessourceTrackerAge)
+		LOAD_CASE(CResourceTrackerAmount,  ResourceTrackerAmount)
+		LOAD_CASE(CResourceTrackerAge,     ResourceTrackerAge)
 	}
 	stream->readLeaveSection();
 	return condition;

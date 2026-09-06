@@ -92,14 +92,14 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 			if (!isPlayerAlive) break;
 			executeMoveFlag(*std::static_pointer_cast<OrderMoveFlag>(order), localPlayer);
 			break;
-		case ORDER_ALTERATE_FORBIDDEN:
-			executeAlterateForbidden(*std::static_pointer_cast<OrderAlterateForbidden>(order), localPlayer);
+		case ORDER_ALTER_FORBIDDEN:
+			executeAlterForbidden(*std::static_pointer_cast<OrderAlterForbidden>(order), localPlayer);
 			break;
-		case ORDER_ALTERATE_GUARD_AREA:
-			executeAlterateGuardArea(*std::static_pointer_cast<OrderAlterateGuardArea>(order), localPlayer);
+		case ORDER_ALTER_GUARD_AREA:
+			executeAlterGuardArea(*std::static_pointer_cast<OrderAlterGuardArea>(order), localPlayer);
 			break;
-		case ORDER_ALTERATE_CLEAR_AREA:
-			executeAlterateClearArea(*std::static_pointer_cast<OrderAlterateClearArea>(order), localPlayer);
+		case ORDER_ALTER_CLEAR_AREA:
+			executeAlterClearArea(*std::static_pointer_cast<OrderAlterClearArea>(order), localPlayer);
 			break;
 		case ORDER_MODIFY_SWARM:
 			if (!isPlayerAlive) break;
@@ -199,8 +199,8 @@ void Game::executeModifyExchange(const OrderModifyExchange& ome, int localPlayer
 	Building *b=lookupBuilding(ome.gid);
 	if ((b) && (b->buildingState==Building::ALIVE))
 	{
-		b->receiveRessourceMask=ome.receiveRessourceMask;
-		b->sendRessourceMask=ome.sendRessourceMask;
+		b->receiveResourceMask=ome.receiveResourceMask;
+		b->sendResourceMask=ome.sendResourceMask;
 		b->update();
 	}
 }
@@ -237,7 +237,7 @@ void Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 		&& b->type->defaultUnitStayRange
 		&& b->type->zonable[WORKER])
 	{
-		memcpy(b->clearingRessources, omcf.clearingRessources, sizeof(bool)*BASIC_COUNT);
+		memcpy(b->clearingResources, omcf.clearingResources, sizeof(bool)*BASIC_COUNT);
 	}
 }
 
@@ -287,7 +287,7 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 	}
 }
 
-void Game::executeAlterateForbidden(const OrderAlterateForbidden& oaa, int localPlayer)
+void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer)
 {
 	if (oaa.type == BrushTool::MODE_ADD)
 	{
@@ -327,7 +327,7 @@ void Game::executeAlterateForbidden(const OrderAlterateForbidden& oaa, int local
 				orderMaskIndex++;
 			}
 
-		// We remove, so we need to refresh the gradients, unfortunatly
+		// We remove, so we need to refresh the gradients, unfortunately
 		teams[oaa.teamNumber]->dirtyGlobalGradient();
 		map.dirtyLocalGradient(oaa.centerX+oaa.minX-GRADIENT_DIRTY_BORDER_TILES, oaa.centerY+oaa.minY-GRADIENT_DIRTY_BORDER_TILES, oaa.maxX-oaa.minX+2*GRADIENT_DIRTY_BORDER_TILES, oaa.maxY-oaa.minY+2*GRADIENT_DIRTY_BORDER_TILES, oaa.teamNumber);
 	}
@@ -338,7 +338,7 @@ void Game::executeAlterateForbidden(const OrderAlterateForbidden& oaa, int local
 	map.updateClearAreasGradient(oaa.teamNumber);
 }
 
-void Game::executeAlterateGuardArea(const OrderAlterateGuardArea& oaa, int localPlayer)
+void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer)
 {
 	if (oaa.type == BrushTool::MODE_ADD)
 	{
@@ -383,7 +383,7 @@ void Game::executeAlterateGuardArea(const OrderAlterateGuardArea& oaa, int local
 	map.updateGuardAreasGradient(oaa.teamNumber);
 }
 
-void Game::executeAlterateClearArea(const OrderAlterateClearArea& oaa, int localPlayer)
+void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer)
 {
 	if (oaa.type == BrushTool::MODE_ADD)
 	{

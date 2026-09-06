@@ -26,7 +26,7 @@ class Player;
 //   * reconcileWheatForbidden(Player*, ...) — the live wrapper. It derives the
 //     team mask, consumer (inn) seeds, and colony region from the player, calls
 //     scanWheatForbidden, and (when asked) accumulates the ADD/DEL tile lists
-//     into BrushAccumulators ready for OrderAlterateForbidden. It still emits no
+//     into BrushAccumulators ready for OrderAlterForbidden. It still emits no
 //     Orders — the action layer (AICortex::translateAction) does that.
 //
 // Determinism (this runs inside lockstep): index-ordered scans, a 0-1 BFS with a
@@ -91,7 +91,7 @@ namespace Cortex
 		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false);
 
 	//! Result of the live reconcile: the diff counts plus (when buildMasks) the
-	//! two BrushAccumulators ready to hand to OrderAlterateForbidden(MODE_ADD/DEL).
+	//! two BrushAccumulators ready to hand to OrderAlterForbidden(MODE_ADD/DEL).
 	struct WheatReconcile
 	{
 		Sint32 addCount = 0; //!< tiles to newly forbid (desired - current).

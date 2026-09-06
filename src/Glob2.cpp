@@ -90,7 +90,7 @@ void Glob2::drawYOGSplashScreen(void)
 	globalContainer->gfx->nextFrame();
 }
 
-void Glob2::mutiplayerYOG(void)
+void Glob2::multiplayerYOG(void)
 {
 	if (verbose)
 		printf("Glob2:: starting YOGLoginScreen...\n");
@@ -174,7 +174,7 @@ int Glob2::runTestMapGeneration()
 		
 		int oldBeach = (syncRand() % 4);
 		
-		descriptor.methode = static_cast<MapGenerationDescriptor::Methode>(type);
+		descriptor.method = static_cast<MapGenerationDescriptor::Method>(type);
 		descriptor.nbTeams = teams;
 		descriptor.wDec=wDec;
 		descriptor.hDec=hDec;
@@ -239,7 +239,7 @@ static int dumpResources(const std::string& mapName)
 	int minX = w, minY = h, maxX = -1, maxY = -1;
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
-			if (map.getRessource(x, y).type == CORN)
+			if (map.getResource(x, y).type == CORN)
 			{
 				cornCount++;
 				if (x < minX) minX = x; if (x > maxX) maxX = x;
@@ -264,7 +264,7 @@ static int dumpResources(const std::string& mapName)
 		for (int x = 0; x < w; x++)
 		{
 			char c;
-			if (map.getRessource(x, y).type == CORN)      c = 'C';
+			if (map.getResource(x, y).type == CORN)      c = 'C';
 			else if (map.isWater(x, y))                    c = '~';
 			else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
 			else                                           c = '.';
@@ -400,7 +400,7 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 				else if (cls == Cortex::WC_OPEN_MARGIN)    c = 'o';
 				else if (cls == Cortex::WC_FORBIDDEN)      c = 'X';
 				else if (cls == Cortex::WC_CHECKER_OPEN)   c = '+';
-				else if (map.getRessource(x, y).type == CORN) c = 'c';
+				else if (map.getResource(x, y).type == CORN) c = 'c';
 				else if (map.isWater(x, y))                c = '~';
 				else if (!map.isFreeForGroundUnitNoForbidden(x, y, false)) c = '#';
 				else                                       c = '.';
@@ -582,7 +582,7 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::MULTIPLAYERS_YOG:
 			{
-				mutiplayerYOG();
+				multiplayerYOG();
 			}
 			break;
 			case MainMenuScreen::MULTIPLAYERS_LAN:

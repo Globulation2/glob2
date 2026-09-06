@@ -29,7 +29,7 @@ void NewNicowar::compute_defense_flag_positioning(AIEcho::Echo& echo)
 	//This algorithm does that, except optimized. A list is maintained to keep track of squares
 	//that have a value other than 0 as these are the only ones we want to place a flag on, and
 	//when a defense flag position is chosen, all units or buildings within range of the flag
-	//have all squares within their range -1, effectivly doing the same as recalculating all
+	//have all squares within their range -1, effectively doing the same as recalculating all
 	//squares excluding those units now covered by a defense flag
 	MapInfo     mi(echo);
 	const int   w      = mi.get_width();
@@ -325,7 +325,7 @@ void NewNicowar::modify_points(Uint16* counts, int w, int h, int x, int y, int d
 
 void NewNicowar::compute_explorer_flag_attack_positioning(AIEcho::Echo& echo)
 {
-	//The algorithm here is interesting. Bassically, an enemy unit is selected. Every enemy unit within 4 squares of this unit
+	//The algorithm here is interesting. Basically, an enemy unit is selected. Every enemy unit within 4 squares of this unit
 	//is counted as part of the larger group, and every unit 4 squares from those and so on, as long as it doesn't go past
 	//6 squares from the average. Flags are put on the average x and y of largest groups
 	MapInfo mi(echo);

@@ -47,13 +47,13 @@ namespace
 		switch(areatype)
 		{
 			case ClearingArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateClearArea(team, mode, &acc, map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterClearArea(team, mode, &acc, map)));
 				break;
 			case ForbiddenArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateForbidden(team, mode, &acc, map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterForbidden(team, mode, &acc, map)));
 				break;
 			case GuardArea:
-				echo.push_order(shared_ptr<Order>(new OrderAlterateGuardArea(team, mode, &acc, map)));
+				echo.push_order(shared_ptr<Order>(new OrderAlterGuardArea(team, mode, &acc, map)));
 				break;
 		}
 	}

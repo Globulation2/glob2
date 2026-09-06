@@ -106,9 +106,9 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 }
 
 
-void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool canSwim)
+void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSwim)
 {
-	Uint8 *gradient=ressourcesGradient[teamNumber][ressourceType][canSwim];
+	Uint8 *gradient=resourcesGradient[teamNumber][resourceType][canSwim];
 	assert(gradient);
 
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
@@ -120,7 +120,7 @@ void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool can
 			gradient[i]=GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != 255)
 			gradient[i]=GRADIENT_FORBIDDEN;
-		else if (c.ressource.type==NO_RES_TYPE)
+		else if (c.resource.type==NO_RES_TYPE)
 		{
 			if (c.building!=NOGBID)
 				gradient[i]=GRADIENT_FORBIDDEN;
@@ -129,9 +129,9 @@ void Map::updateRessourcesGradient(int teamNumber, Uint8 ressourceType, bool can
 			else
 				gradient[i]=GRADIENT_UNREACHABLE;
 		}
-		else if (c.ressource.type==ressourceType)
+		else if (c.resource.type==resourceType)
 		{
-			if (globalContainer->ressourcesTypes.get(ressourceType)->visibleToBeCollected && !(fogOfWar[i]&teamMask))
+			if (globalContainer->resourcesTypes.get(resourceType)->visibleToBeCollected && !(fogOfWar[i]&teamMask))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
 				gradient[i]=GRADIENT_AT_GOAL;

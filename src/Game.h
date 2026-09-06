@@ -36,9 +36,9 @@ class OrderModifyFlag;
 class OrderModifyClearingFlag;
 class OrderModifyMinLevelToFlag;
 class OrderMoveFlag;
-class OrderAlterateForbidden;
-class OrderAlterateGuardArea;
-class OrderAlterateClearArea;
+class OrderAlterForbidden;
+class OrderAlterGuardArea;
+class OrderAlterClearArea;
 class OrderModifySwarm;
 class OrderDelete;
 class OrderChangePriority;
@@ -159,7 +159,7 @@ public:
 		DRAW_WHOLE_MAP = 0x10,
 		DRAW_ACCESSIBILITY = 0x20,
 		DRAW_SCRIPT_AREAS = 0x40,
-		DRAW_NO_RESSOURCE_GROWTH_AREAS = 0x80,
+		DRAW_NO_RESOURCE_GROWTH_AREAS = 0x80,
 		DRAW_OVERLAY = 0x100,
 	};
 
@@ -183,7 +183,7 @@ public:
 	void prestigeSyncStep();
 
 	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
-	/// internal proccessing.
+	/// internal processing.
 	void syncStep(Sint32 localTeam);
 
 	void dirtyWarFlagGradient();
@@ -227,7 +227,7 @@ public:
 	/// shadow to consult.
 	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr);
 
-	///Sets the mask respresenting which players the game is waiting on
+	///Sets the mask representing which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
 
 	///This dumps all data in text form to the given file
@@ -256,7 +256,7 @@ private:
 	///Initiates Game
 	void init(GameGUI *gui, MapEdit* edit);
 
-	///Clears existing game information, deleting the teams and players, in preperation of a new game.
+	///Clears existing game information, deleting the teams and players, in preparation of a new game.
 	void clearGame();
 
 	/// Look up a Building by its global ID. Returns nullptr if the slot is empty.
@@ -276,9 +276,9 @@ private:
 	/// maxUnitWorking through zero so the building releases them on update().
 	void executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& order, int localPlayer);
 	void executeMoveFlag(const OrderMoveFlag& order, int localPlayer);
-	void executeAlterateForbidden(const OrderAlterateForbidden& order, int localPlayer);
-	void executeAlterateGuardArea(const OrderAlterateGuardArea& order, int localPlayer);
-	void executeAlterateClearArea(const OrderAlterateClearArea& order, int localPlayer);
+	void executeAlterForbidden(const OrderAlterForbidden& order, int localPlayer);
+	void executeAlterGuardArea(const OrderAlterGuardArea& order, int localPlayer);
+	void executeAlterClearArea(const OrderAlterClearArea& order, int localPlayer);
 	void executeModifySwarm(const OrderModifySwarm& order, int localPlayer);
 	/// Delete-building. Bypasses the team-alive gate: dead-team buildings
 	/// can still be torn down.
@@ -316,8 +316,8 @@ private:
 	void drawMapWater(int sw, int sh, int viewportX, int viewportY, int time);
 	///draws the terrain tiles of sand and gras
 	void drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
-	///draws the resources like algues, wheat or fruit trees
-	void drawMapRessources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+	///draws the resources like algae, wheat or fruit trees
+	void drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	///draws the ground units. up till now those are workers and warriors
 	void drawMapGroundUnits(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	///draws debug information. switched in the code.

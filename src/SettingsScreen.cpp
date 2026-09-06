@@ -219,7 +219,7 @@ void SettingsScreen::handleValueChanged(Widget* source)
 void SettingsScreen::updateGameSpeedText(void)
 {
 	gameSpeed->setTooltip(Toolkit::getStringTable()->getString("[game speed help]"), "standard");
-	gameSpeedText->setText(FormatableString("%0: %1")
+	gameSpeedText->setText(FormattableString("%0: %1")
 		.arg(Toolkit::getStringTable()->getString("[game speed]"))
 		.arg(globalContainer->settings.getGameSpeedText()));
 }

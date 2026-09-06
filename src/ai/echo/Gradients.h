@@ -42,8 +42,8 @@ namespace AIEcho
 				EBuilding,
 				EAnyTeamBuilding,
 				EAnyBuilding,
-				ERessource,
-				EAnyRessource,
+				EResource,
+				EAnyResource,
 				EWater,
 				EPosition,
 				ESand,
@@ -91,7 +91,7 @@ namespace AIEcho
 				bool under_construction;
 			};
 
-			///Matches any building of a particular team and consruction state
+			///Matches any building of a particular team and construction state
 			class AnyTeamBuilding : public Entity
 			{
 			public:
@@ -128,13 +128,13 @@ namespace AIEcho
 				bool under_construction;
 			};
 
-			///Matches a particular ressource type
-			class Ressource : public Entity
+			///Matches a particular resource type
+			class Resource : public Entity
 			{
 			public:
-				explicit Ressource(int ressource_type);
+				explicit Resource(int resource_type);
 			protected:
-				Ressource() : ressource_type(-1) {}
+				Resource() : resource_type(-1) {}
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
 				bool operator==(const Entity& rhs) const;
@@ -143,14 +143,14 @@ namespace AIEcho
 				bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 				void save(GAGCore::OutputStream *stream);
 			private:
-				int ressource_type;
+				int resource_type;
 			};
 
-			///Matches any ressource type
-			class AnyRessource : public Entity
+			///Matches any resource type
+			class AnyResource : public Entity
 			{
 			public:
-				AnyRessource();
+				AnyResource();
 			protected:
 				friend class Entity;
 				bool is_entity(Map* map, int posx, int posy);
@@ -210,7 +210,7 @@ namespace AIEcho
 			};
 		};
 
-		///The gradient info class is used to hold the information about sources and obstacles taht are used to compute a gradient
+		///The gradient info class is used to hold the information about sources and obstacles that are used to compute a gradient
 		class GradientInfo
 		{
 		public:
@@ -237,7 +237,7 @@ namespace AIEcho
 			///Returns true if the provided position matches any of the obstacles that where added
 			bool match_obstacle(Map* map, int posx, int posy);
 			///Returns true if this GradientInfo has any entities that can change, causing it to need to be updated.
-			///This is an optmization, as many gradients don't need to be update
+			///This is an optimization, as many gradients don't need to be update
 			bool needs_updating() const;
 
 			bool operator==(const GradientInfo& rhs) const;
@@ -257,7 +257,7 @@ namespace AIEcho
 
 
 		///A generic, all purpose gradient. The gradient is referenced by its GradientInfo, which it uses continually in its computation.
-		///Echo gradients are probably the slowest gradients in the game. However, they have one key difference compared to other gradinents,
+		///Echo gradients are probably the slowest gradients in the game. However, they have one key difference compared to other gradients,
 		///they can be shared, and they are generic, even more so than Nicowar gradients (which where decently generic, but not entirely).
 		class Gradient
 		{
@@ -289,13 +289,13 @@ namespace AIEcho
 
 		///The gradient manager is a very important part of the system, just like the gradient itself is. The gradient manager takes upon the task
 		///of managing and updating various gradients in the game. It returns a matching gradient when provided a GradientInfo.
-		///This object is shared among all Echo AI's, which means gradients that aren't specific to a particular team (such as most Ressource
-		///gradients) don't have to be recalculated for every Echo AI seperately. This saves allot of cpu time when their are multiple Echo AI's.
+		///This object is shared among all Echo AI's, which means gradients that aren't specific to a particular team (such as most Resource
+		///gradients) don't have to be recalculated for every Echo AI separately. This saves a lot of cpu time when their are multiple Echo AI's.
 		class GradientManager
 		{
 		public:
 			explicit GradientManager(Map* map);
-			///A simple function, returns the Gradient that matches the GradientInfo. Its garunteed to be up to date within the last 150 ticks.
+			///A simple function, returns the Gradient that matches the GradientInfo. Its guaranteed to be up to date within the last 150 ticks.
 			///If a matching gradient isn't found, a new one is created. 150 ticks may sound like a large amount of leeway, however, most
 			///gradients are updated sooner than that. As well, at normal game speed, 150 ticks is only 6 seconds, and you can count it yourself,
 			///not much changes in the game in six seconds.

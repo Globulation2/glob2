@@ -50,7 +50,7 @@ SGSLToken::TokenSymbolLookupTable SGSLToken::table[] =
 	{ S_SUMMONFLAG, "summonFlag" },
 	{ S_DESTROYFLAG, "destroyFlag" },
 	{ S_WIN, "win" },
-	{ S_LOOSE, "loose" },
+	{ S_LOSE, "loose" },
 	{ S_LABEL, "label" },
 	{ S_JUMP, "jump" },
 	{ S_SETAREA, "setArea"},
@@ -161,13 +161,13 @@ std::string ErrorReport::getErrorString(void) const
 	return strings[(int)type];
 }
 
-//Text aquisition by the parser
-Aquisition::~Aquisition(void)
+//Text acquisition by the parser
+Acquisition::~Acquisition(void)
 {
 
 }
 
-Aquisition::Aquisition(const Functions& functions) :
+Acquisition::Acquisition(const Functions& functions) :
 	functions(functions)
 {
 	token.type=SGSLToken::NIL;
@@ -185,7 +185,7 @@ Aquisition::Aquisition(const Functions& functions) :
 
 
 //Tokenizer
-void Aquisition::nextToken()
+void Acquisition::nextToken()
 {
 	string word;
 	int c;
@@ -319,7 +319,7 @@ void Aquisition::nextToken()
 		token.type = SGSLToken::NIL;
 }
 
-bool FileAquisition::open(const std::string filename)
+bool FileAcquisition::open(const std::string filename)
 {
 	if (fp != NULL)
 		fclose(fp);
@@ -332,24 +332,24 @@ bool FileAquisition::open(const std::string filename)
 }
 
 
-StringAquisition::StringAquisition(const Functions& functions) :
-	Aquisition(functions)
+StringAcquisition::StringAcquisition(const Functions& functions) :
+	Acquisition(functions)
 {
 	pos=0;
 }
 
-StringAquisition::~StringAquisition()
+StringAcquisition::~StringAcquisition()
 {
 	
 }
 
-void StringAquisition::open(const std::string& text)
+void StringAcquisition::open(const std::string& text)
 {
 	buffer = text;
 	pos=0;
 }
 
-int StringAquisition::getChar(void)
+int StringAcquisition::getChar(void)
 {
 	if (pos < int(buffer.length()))
 	{
@@ -359,7 +359,7 @@ int StringAquisition::getChar(void)
 		return EOF;
 }
 
-int StringAquisition::ungetChar(char c)
+int StringAcquisition::ungetChar(char c)
 {
 	if (pos > 0)
 	{

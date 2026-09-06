@@ -85,7 +85,7 @@ void GameGUI::changeGameSpeed(int amount)
 	globalContainer->settings.changeGameSpeed(amount);
 	if(oldSpeed!=globalContainer->settings.gameSpeed)
 		globalContainer->settings.save();
-	addMessage(Color(230, 230, 230), FormatableString("%0: %1")
+	addMessage(Color(230, 230, 230), FormattableString("%0: %1")
 		.arg(Toolkit::getStringTable()->getString("[game speed]"))
 		.arg(globalContainer->settings.getGameSpeedText()), false);
 }
@@ -449,11 +449,11 @@ void GameGUI::handleKeyAlways(void)
 			viewportY += yMotion;
 		if (keystate[SDL_SCANCODE_KP_2])
 			viewportY += yMotion;
-		if ((keystate[SDL_SCANCODE_LEFT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+		if ((keystate[SDL_SCANCODE_LEFT]) && (typingInputScreen == NULL)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 			viewportX -= xMotion;
 		if (keystate[SDL_SCANCODE_KP_4])
 			viewportX -= xMotion;
-		if ((keystate[SDL_SCANCODE_RIGHT]) && (typingInputScreen == NULL)) // we haave a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
+		if ((keystate[SDL_SCANCODE_RIGHT]) && (typingInputScreen == NULL)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
 			viewportX += xMotion;
 		if (keystate[SDL_SCANCODE_KP_6])
 			viewportX += xMotion;

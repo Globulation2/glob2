@@ -29,9 +29,9 @@ namespace AIEcho
 			MAssignWorkers,
 			MChangeSwarm,
 			MDestroyBuilding,
-			MAddRessourceTracker,
-			MPauseRessourceTracker,
-			MUnPauseRessourceTracker,
+			MAddResourceTracker,
+			MPauseResourceTracker,
+			MUnPauseResourceTracker,
 			MChangeFlagSize,
 			MChangeFlagMinimumLevel,
 			MAddArea,
@@ -45,7 +45,7 @@ namespace AIEcho
 
 
 		///A generic management order can have conditions attached to it. This makes management orders
-		///both convinient and usefull. They will wait for the conditions to be satisfied before
+		///both convenient and useful. They will wait for the conditions to be satisfied before
 		///performing their change.
 		class ManagementOrder
 		{
@@ -58,7 +58,7 @@ namespace AIEcho
 			///This acts somewhat like a condition tester of its own. Like passes_conditions, this one
 			///checks for the conditions for the management order to execute at all. indeterminate means
 			///that its impossible to execute, false means wait some more and true means ready to execute
-			///For example, the ChangeFlagSize order requires that the building be in existance, and
+			///For example, the ChangeFlagSize order requires that the building be in existence, and
 			///that its a flag.
 			virtual boost::logic::tribool wait(Echo& echo)=0;
 
@@ -132,19 +132,19 @@ namespace AIEcho
 		};
 
 
-		///A ressource tracker is generally used for management, like most other things. A ressource trackers job is to keep
-		///track of the number of ressources in a particular building, and returning averages over a small period of time.
-		///Its better to use a ressource tracker than getting the ressource amounts directly, because a ressource tracker
+		///A resource tracker is generally used for management, like most other things. A resource trackers job is to keep
+		///track of the number of resources in a particular building, and returning averages over a small period of time.
+		///Its better to use a resource tracker than getting the resource amounts directly, because a resource tracker
 		///returns trends, and small anomalies like an Inn running out of food for only a second don't impact its result greatly.
-		class RessourceTracker
+		class ResourceTracker
 		{
 		public:
-			RessourceTracker(Echo& echo, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : echo(echo)
+			ResourceTracker(Echo& echo, GAGCore::InputStream* stream, Player* player, Sint32 versionMinor) : echo(echo)
 				{ load(stream, player, versionMinor);  }
-			RessourceTracker(Echo& echo, int building_id, int length, int ressource);
-			///Returns the total ressources the building possessed within the time frame
+			ResourceTracker(Echo& echo, int building_id, int length, int resource);
+			///Returns the total resources the building possessed within the time frame
 			int get_total_level();
-			///Returns the number of ticks the ressource tracker has been tracking.
+			///Returns the number of ticks the resource tracker has been tracking.
 			int get_age();
 		private:
 			friend class AIEcho::Echo;
@@ -157,15 +157,15 @@ namespace AIEcho
 			int length;
 			Echo& echo;
 			int building_id;
-			int ressource;
+			int resource;
 		};
 
-		///This adds a ressource tracker to a building
-		class AddRessourceTracker : public ManagementOrder
+		///This adds a resource tracker to a building
+		class AddResourceTracker : public ManagementOrder
 		{
 		public:
-			AddRessourceTracker(int length, int ressource, int building_id);
-			AddRessourceTracker() : length(0), building_id(0), ressource(0) {}
+			AddResourceTracker(int length, int resource, int building_id);
+			AddResourceTracker() : length(0), building_id(0), resource(0) {}
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -174,15 +174,15 @@ namespace AIEcho
 			void save(GAGCore::OutputStream *stream);
 			int length;
 			int building_id;
-			int ressource;
+			int resource;
 		};
 
-		///This pauses a ressource tracker. This is mainly done when a building is about to be upgraded.
-		class PauseRessourceTracker : public ManagementOrder
+		///This pauses a resource tracker. This is mainly done when a building is about to be upgraded.
+		class PauseResourceTracker : public ManagementOrder
 		{
 		public:
-			PauseRessourceTracker() : building_id(0) {}
-			PauseRessourceTracker(int building_id);
+			PauseResourceTracker() : building_id(0) {}
+			PauseResourceTracker(int building_id);
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -192,12 +192,12 @@ namespace AIEcho
 			int building_id;
 		};
 
-		///This unpauses a ressource tracker. This should be done when a building is done being upgraded.
-		class UnPauseRessourceTracker : public ManagementOrder
+		///This unpauses a resource tracker. This should be done when a building is done being upgraded.
+		class UnPauseResourceTracker : public ManagementOrder
 		{
 		public:
-			UnPauseRessourceTracker() : building_id(0) {}
-			UnPauseRessourceTracker(int building_id);
+			UnPauseResourceTracker() : building_id(0) {}
+			UnPauseResourceTracker(int building_id);
 		protected:
 			void modify(Echo& echo);
 			boost::logic::tribool wait(Echo& echo);
@@ -333,7 +333,7 @@ namespace AIEcho
 			ChangeAlliances() {}
 			///You pass in a team number, that can be retrieved from enemy_team_iterator or a similar method. Then you pass in modifiers
 			///on each of the possible alliances. If you pass in true, that alliance mode is set. If you pass in false, that alliance
-			///mode is unset. If you pass in undeterminate, that alliance mode is not changed, keeping whatever value it had before.
+			///mode is unset. If you pass in indeterminate, that alliance mode is not changed, keeping whatever value it had before.
 			ChangeAlliances(int team, boost::logic::tribool is_allied, boost::logic::tribool is_enemy, boost::logic::tribool view_market, boost::logic::tribool view_inn, boost::logic::tribool view_other);
 		protected:
 			void modify(Echo& echo);
@@ -411,30 +411,30 @@ inline AIEcho::Management::ManagementOrderType AIEcho::Management::DestroyBuildi
 }
 
 
-inline int AIEcho::Management::RessourceTracker::get_age()
+inline int AIEcho::Management::ResourceTracker::get_age()
 {
 	return timer;
 }
 
 
 
-inline AIEcho::Management::ManagementOrderType AIEcho::Management::AddRessourceTracker::get_type()
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::AddResourceTracker::get_type()
 {
-	return MAddRessourceTracker;
+	return MAddResourceTracker;
 }
 
 
 
-inline AIEcho::Management::ManagementOrderType AIEcho::Management::PauseRessourceTracker::get_type()
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::PauseResourceTracker::get_type()
 {
-	return MPauseRessourceTracker;
+	return MPauseResourceTracker;
 }
 
 
 
-inline AIEcho::Management::ManagementOrderType AIEcho::Management::UnPauseRessourceTracker::get_type()
+inline AIEcho::Management::ManagementOrderType AIEcho::Management::UnPauseResourceTracker::get_type()
 {
-	return MUnPauseRessourceTracker;
+	return MUnPauseResourceTracker;
 }
 
 

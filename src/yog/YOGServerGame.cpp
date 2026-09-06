@@ -21,7 +21,7 @@ YOGServerGame::YOGServerGame(Uint16 gameID, Uint32 chatChannel, const std::strin
 	requested=false;
 	gameStarted=false;
 	oldReadyToLaunch=false;
-	recievedMapHeader=false;
+	receivedMapHeader=false;
 	hasAddedHost=false;
 	latencyMode = 0;
 	latencyUpdateTimer = SDL_GetTicks64();
@@ -90,7 +90,7 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 		info.setMapFileID(mapFile);
 		shared_ptr<NetSendAfterJoinGameInformation> afterjoin(new NetSendAfterJoinGameInformation(info));
 		player->sendMessage(afterjoin);
-		///If its the host, we don't add them until we've recieved the NetReteamingInformation
+		///If its the host, we don't add them until we've received the NetReteamingInformation
 		playerManager.addPerson(player->getPlayerID(), player->getPlayerName());
 	}
 	players.push_back(player);
@@ -107,7 +107,7 @@ void YOGServerGame::addPlayer(shared_ptr<YOGServerPlayer> player)
 
 
 
-void YOGServerGame::addAIPlayer(AI::ImplementitionID type)
+void YOGServerGame::addAIPlayer(AI::ImplementationID type)
 {
 	playerManager.addAIPlayer(type);
 
@@ -203,7 +203,7 @@ void YOGServerGame::setMapHeader(const MapHeader& nmapHeader)
 	playerManager.setNumberOfTeams(mapHeader.getNumberOfTeams());
 	server.getGameInfo(gameID).setMapName(mapHeader.getMapName());
 	server.getGameInfo(gameID).setNumberOfTeams(mapHeader.getNumberOfTeams());
-	recievedMapHeader=true;
+	receivedMapHeader=true;
 	server.getFileDistributionManager().getDistributor(mapFile)->loadFromPlayer(host);
 }
 
@@ -296,7 +296,7 @@ void YOGServerGame::setNotReadyToStart(YOGPlayerID playerID)
 
 
 
-void YOGServerGame::recieveGameStartRequest()
+void YOGServerGame::receiveGameStartRequest()
 {
 	if(playerManager.isEveryoneReadyToGo())
 	{

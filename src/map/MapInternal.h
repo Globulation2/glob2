@@ -75,16 +75,16 @@ constexpr std::uint8_t EXPLORED_BY_BUILDING_MIN = 2;
 // files and older saves reseed it from the discovery map on load.
 constexpr int EXPLORED_AREA_SAVED_VERSION_MINOR = 88;
 
-// Initial Ressource::amount when a fresh resource is seeded onto a tile.
-constexpr int RESSOURCE_INITIAL_AMOUNT = 1;
+// Initial Resource::amount when a fresh resource is seeded onto a tile.
+constexpr int RESOURCE_INITIAL_AMOUNT = 1;
 
 // Corn growth probability denominator: corn grows on 1-in-CORN_GROWTH_DIVISOR
-// random rolls. Comment in Map::growRessources says "Growth rate of corn is 1/3".
+// random rolls. Comment in Map::growResources says "Growth rate of corn is 1/3".
 constexpr int CORN_GROWTH_DIVISOR = 3;
 
 // Chamfer-dilate a LOCAL_GRID_W * LOCAL_GRID_W gradient buffer in-place. Each free cell is
 // raised to max(self, max(neighbor) - 1); 0 (obstacle) and 255 (source) are preserved.
-// Used by both Map::updateLocalGradient and Map::updateLocalRessources.
+// Used by both Map::updateLocalGradient and Map::updateLocalResources.
 void propagateLocalGradient32(std::uint8_t* gradient);
 
 // Spiral outward from (startX, startY) for `steps` cells in each of E, S, W, N (in order),

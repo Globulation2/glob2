@@ -23,8 +23,8 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	// parameters
 	int ypos = 50;
 	addWidget(new Text(10, ypos, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[hungryness]")));
-	hungryness = new TextInput(10, ypos, 100, 25, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
-	addWidget(hungryness);
+	hungriness = new TextInput(10, ypos, 100, 25, ALIGN_RIGHT, ALIGN_TOP, "standard", "");
+	addWidget(hungriness);
 
 	// ok / cancel
 	addWidget(new TextButton(10, 10, 135, 40, ALIGN_LEFT, ALIGN_BOTTOM, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
@@ -33,7 +33,7 @@ UnitEditorScreen::UnitEditorScreen(Unit *toEdit) :
 	// important, widgets must be initialised by hand as we use custom event loop
 	dispatchInit();
 
-	hungryness->setText(unit->hungryness);
+	hungriness->setText(unit->hungriness);
 }
 
 UnitEditorScreen::~UnitEditorScreen()
@@ -48,7 +48,7 @@ void UnitEditorScreen::onAction(Widget *source, Action action, int par1, int par
 		if (par1 == OK)
 		{
 			endValue = par1;
-			unit->hungryness = hungryness->getText<Sint32>();
+			unit->hungriness = hungriness->getText<Sint32>();
 		}
 		else if (par1 == CANCEL)
 		{

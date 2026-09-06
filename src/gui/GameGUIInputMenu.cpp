@@ -107,7 +107,7 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 						}
 					}
 
-					// we have a special cases for uncontroled Teams:
+					// we have a special cases for uncontrolled Teams:
 					// FIXME : remove this
 					for (int ti=0; ti<game.mapHeader.getNumberOfTeams(); ti++)
 						if (game.teams[ti]->playersMask==0)

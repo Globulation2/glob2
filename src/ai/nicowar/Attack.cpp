@@ -24,7 +24,7 @@ int NewNicowar::choose_building_to_attack(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyRessource);
+	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
@@ -97,7 +97,7 @@ void NewNicowar::control_attacks(Echo& echo)
 	
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyRessource);
+	gi_building.add_obstacle(new Entities::AnyResource);
 	if(num_pool == 0)
 		gi_building.add_obstacle(new Entities::Water);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
@@ -122,7 +122,7 @@ void NewNicowar::choose_enemy_target(Echo& echo)
 {
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyRessource);
+	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
 
 	if(target==AI_NICOWAR_NO_TARGET || !echo.player->game->teams[target]->isAlive)
@@ -174,7 +174,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_building;
 	gi_building.add_source(new Entities::AnyTeamBuilding(echo.player->team->teamNumber, false));
-	gi_building.add_obstacle(new Entities::AnyRessource);
+	gi_building.add_obstacle(new Entities::AnyResource);
 	Gradient& gradient=echo.get_gradient_manager().get_gradient(gi_building);
 
 	for(enemy_building_iterator ebi(echo, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
@@ -198,7 +198,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 
 	AIEcho::Gradients::GradientInfo gi_pathfind;
 	gi_pathfind.add_source(new Entities::Position(bx, by));
-	gi_pathfind.add_obstacle(new Entities::Ressource(STONE));
+	gi_pathfind.add_obstacle(new Entities::Resource(STONE));
 	Gradient& gradient_pathfind=echo.get_gradient_manager().get_gradient(gi_pathfind);
 
 	///Next, find the closest point manhattan distance wise, to the building that is accessible
@@ -222,7 +222,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		}
 	}
 
-	///Next, follow a path arround stone between the closest point and the buildings position, 
+	///Next, follow a path around stone between the closest point and the buildings position, 
 	///placing Clearing flags as you go
 
 	int xpos=closest_x;
@@ -246,7 +246,7 @@ bool NewNicowar::dig_out_enemy(Echo& echo)
 		if(lowest_entity == 0)
 			break;
 
-		//Test diagnols first, then the horizontals and verticals.
+		//Test diagonals first, then the horizontals and verticals.
 		if(gradient_pathfind.get_height(lx, uy) < lowest_entity && gradient_pathfind.get_height(lx, uy)>=0)
 		{
 			lowest_entity=gradient_pathfind.get_height(lx, uy);

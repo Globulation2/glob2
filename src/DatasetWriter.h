@@ -30,7 +30,7 @@
     per team:
       [4B] i32 prestige
       [4B] u32 flags                (bit0=isAlive, bit1=hasWon, bit2=hasLost)
-      [4B × 15] i32 teamRessources  (MAX_NB_RESSOURCES)
+      [4B × 15] i32 teamResources  (MAX_NB_RESOURCES)
       [4B × 3]  i32 unit_count_by_type     (WORKER, EXPLORER, WARRIOR)
       [4B × 13] i32 building_count_by_type (NB_BUILDING)
     [4B] u32 grid_w                 (≤32, == min(map_w, 32))

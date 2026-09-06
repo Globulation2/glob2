@@ -129,8 +129,8 @@ void DatasetWriter::writeStateBlob(int senderTeamNum, Game& game)
 	if (senderTeam->hasLost) flags |= 1u << 2;
 	writeU32(flags);
 
-	for (int i = 0; i < MAX_NB_RESSOURCES; i++)
-		writeI32(senderTeam->teamRessources[i]);
+	for (int i = 0; i < MAX_NB_RESOURCES; i++)
+		writeI32(senderTeam->teamResources[i]);
 
 	for (int i = 0; i < NB_UNIT_TYPE; i++)
 		writeI32(stat->numberUnitPerType[i]);
@@ -194,7 +194,7 @@ void DatasetWriter::writeStateBlob(int senderTeamNum, Game& game)
 
 					if (currentlyVisible)
 					{
-						const Ressource& r = map.getRessource(sx, sy);
+						const Resource& r = map.getResource(sx, sy);
 						if (r.type != NO_RES_TYPE)
 							resourceSum += r.amount;
 					}

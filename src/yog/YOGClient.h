@@ -53,14 +53,14 @@ public:
 	const std::string& getIPAddress() const;
 	
 	///This defines the current state of the connection. There are many states,
-	///due to the asychronous design.
+	///due to the asynchronous design.
 	enum ConnectionState
 	{
 		//This signified unconnected.
 		NotConnected,
 		///This is the starting state
 		NeedToSendClientInformation,
-		///This means that the client is waiting to recieve server information
+		///This means that the client is waiting to receive server information
 		WaitingForServerInformation,
 		///This means that the YOGClient is waiting for an external force to send
 		///login information to the YOGClient. This would usually be the GUI that
@@ -100,7 +100,7 @@ public:
 	///considered logged-in and does not need to attempt a login
 	void attemptRegistration(const std::string& username, const std::string& password);
 	
-	///This will return the login state. When this is unknown (it hasn't recieved a reply
+	///This will return the login state. When this is unknown (it hasn't received a reply
 	///yet), this returns YOGLoginUnknown. In the case when there has been multiple
 	///attempts at a login (or registration), this returns the state of the most recent attempt that has
 	///gotten a reply.
@@ -115,10 +115,10 @@ public:
 	///Sends the message to create a new game with the given game name to the server
 	void createGame(const std::string& name);
 
-	///Assocciattes the provided MultiplayerGame with this connection
+	///Associates the provided MultiplayerGame with this connection
 	void setMultiplayerGame(std::shared_ptr<MultiplayerGame> game);
 
-	///Returns the assocciatted MultiplayerGame
+	///Returns the associated MultiplayerGame
 	std::shared_ptr<MultiplayerGame> getMultiplayerGame();
 
 	///Sets a file assembler for the given id
@@ -154,7 +154,7 @@ public:
 	///This adds an event listener
 	void addEventListener(YOGClientEventListener* listener);
 
-	///This removes an event listenr
+	///This removes an event listener
 	void removeEventListener(YOGClientEventListener* listener);
 
 	///This attaches a NetConnection to this client for the game-router connection
@@ -206,10 +206,10 @@ protected:
 	friend class YOGClientDownloadableMapList;
 	friend class YOGClientMapDownloader;
     
-    ///Sends a message on behalf of the assocciatted MultiplayerGame or YOGClientChatChannel
+    ///Sends a message on behalf of the associated MultiplayerGame or YOGClientChatChannel
     void sendNetMessage(std::shared_ptr<NetMessage> message);
 
-	///Adds a new YOGClientChatChannel to recieve chat events (done by YOGClientChatChannel itself)
+	///Adds a new YOGClientChatChannel to receive chat events (done by YOGClientChatChannel itself)
 	void addYOGClientChatChannel(YOGClientChatChannel* channel);
 
 	///Removes the YOGClientChatChannel (done by YOGClientChatChannel itself)

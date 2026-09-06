@@ -244,7 +244,7 @@ namespace Cortex
 		/// Wheat-forbidden upkeep decision, evaluated EVERY decision cycle in
 		/// PARALLEL with decide()'s single primary action — not as a competing
 		/// decision the build/upgrade scorers could starve. Painting the checkerboard
-		/// is area-paint (OrderAlterateForbidden), not an OrderCreate, so it need not
+		/// is area-paint (OrderAlterForbidden), not an OrderCreate, so it need not
 		/// contend for the cycle's one action slot. The policy still owns the gate:
 		/// true only when the colony is not starving (never wall off wheat while the
 		/// colony is dying) and the reconcile has real work (newly-revealed wheat to

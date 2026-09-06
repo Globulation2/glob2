@@ -24,7 +24,7 @@ void Building::swarmStep(void)
 	if (hp<type->hpMax)
 		hp++;
 	assert(NB_UNIT_TYPE==3);
-	if ((ressources[CORN]>=type->ressourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
+	if ((resources[CORN]>=type->resourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))
 		productionTimeout--;
 
 	if (productionTimeout<0)
@@ -66,7 +66,7 @@ void Building::swarmStep(void)
 			Unit * u=owner->game->addUnit(posX, posY, owner->teamNumber, minType, 0, 0, dx, dy);
 			if (u)
 			{
-				ressources[CORN]-=type->ressourceForOneUnit;
+				resources[CORN]-=type->resourceForOneUnit;
 				updateCallLists();
 
 				u->activity=Unit::ACT_RANDOM;
@@ -114,12 +114,12 @@ namespace
 void Building::convertStoneToBullet()
 {
 	// create bullet from stones in stock
-	if (ressources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
+	if (resources[STONE]>0 && (bullets<=(type->maxBullets-type->multiplierStoneToBullets)))
 	{
-		ressources[STONE]--;
+		resources[STONE]--;
 		bullets += type->multiplierStoneToBullets;
 
-		// we need to be stone-feeded
+		// we need to be stone-fed
 		updateCallLists();
 	}
 }
@@ -128,7 +128,7 @@ bool Building::tickShootingCooldown()
 {
 	if (shootingCooldown > 0)
 	{
-		shootingCooldown -= type->shootRythme;
+		shootingCooldown -= type->shootRhythm;
 		return false;
 	}
 	return true;
@@ -164,20 +164,20 @@ void Building::turretStep(Uint32 stepCounter)
 int Building::scoreWarriorTarget(const Unit* target, int ring) const
 {
 	int targetOffense = (target->getRealAttackStrength() * target->performance[ATTACK_SPEED]); // 88 to 1024
-	int targetWeakeness = 0; // 0 to 512
+	int targetWeakness = 0; // 0 to 512
 	if (target->hp > 0)
 	{
 		if (target->hp < type->shootDamage) // hahaha, how mean!
-			targetWeakeness = 512;
+			targetWeakness = 512;
 		else
-			targetWeakeness = 256 / target->hp;
+			targetWeakness = 256 / target->hp;
 	}
 	int targetProximity = 0; // 0 to 512
 	if (ring <= 0)
 		targetProximity = 512;
 	else
 		targetProximity = (256 / ring);
-	return targetOffense + targetWeakeness + targetProximity;
+	return targetOffense + targetWeakness + targetProximity;
 }
 
 void Building::applyCandidate(TurretTarget& best, int score, int ticks,
@@ -334,7 +334,7 @@ Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int 
 
 	assert(dpx);
 	assert(dpy);
-	if (abs(dpx)>abs(dpy)) //we avoid a square root, since all ditances are squares lengthed.
+	if (abs(dpx)>abs(dpy)) //we avoid a square root, since all distances are squares lengthed.
 	{
 		mdp=abs(dpx);
 		sol.speedX=((dpx*type->shootSpeed)/(mdp<<Q8_FIXED_POINT_SHIFT));
@@ -375,14 +375,14 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 
 
 // Per-tick maintenance for a clearing-flag building. While the flag has worker
-// room, each swim variant's `localRessourcesCleanTime` is incremented by one
+// room, each swim variant's `localResourcesCleanTime` is incremented by one
 // tick; once the *prior* value exceeds CLEARING_FLAG_REFRESH_TICKS (~5s), the
-// local-ressource gradient is recomputed via Map::updateLocalRessources, which
-// resets the timer back to 0. If the recompute reports no reachable ressources,
+// local-resource gradient is recomputed via Map::updateLocalResources, which
+// resets the timer back to 0. If the recompute reports no reachable resources,
 // every worker is released.
 //
-// PORT: timer is reset inside Map::updateLocalRessources (MapGradientBuilding.cpp:197),
-// PORT: not here. It is also bumped by +=16 from MapPathfindRessource.cpp:132 when units
+// PORT: timer is reset inside Map::updateLocalResources (MapGradientBuilding.cpp:197),
+// PORT: not here. It is also bumped by +=16 from MapPathfindResource.cpp:132 when units
 // PORT: find resources unreachable, which short-circuits the wait.
 void Building::clearingFlagStep()
 {
@@ -392,13 +392,13 @@ void Building::clearingFlagStep()
 
 	for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
 	{
-		int& timer = localRessourcesCleanTime[canSwim];
+		int& timer = localResourcesCleanTime[canSwim];
 		const bool refreshDue = (timer > CLEARING_FLAG_REFRESH_TICKS);
 		++timer;
 		if (!refreshDue)
 			continue;
 
-		if (!owner->map->updateLocalRessources(this, canSwim))
+		if (!owner->map->updateLocalResources(this, canSwim))
 		{
 			// PORT: verify standardRandomActivity() detaches unit->attachedBuilding and updates call lists.
 			// PORT: if not, the Rust port should call removeUnitFromWorking(unit) per unit instead of clear().

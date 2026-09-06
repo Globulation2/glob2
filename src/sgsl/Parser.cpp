@@ -18,7 +18,7 @@ using std::cerr;
 using std::endl;
 
 // Control of the syntax of the script
-ErrorReport MapScriptSGSL::parseScript(Aquisition *donnees, Game *game)
+ErrorReport MapScriptSGSL::parseScript(Acquisition *donnees, Game *game)
 {
 	ErrorReport er;
 	er.type=ErrorReport::ET_OK;
@@ -87,7 +87,7 @@ SGSLParseStatus MapScriptSGSL::parseStatement(SGSLParseContext &ctx)
 		case (SGSLToken::S_GUIENABLE):
 		case (SGSLToken::S_GUIDISABLE):
 			return parseGUIChoice(ctx);
-		case (SGSLToken::S_LOOSE):
+		case (SGSLToken::S_LOSE):
 		case (SGSLToken::S_WIN):
 			return parseWinLoose(ctx);
 		case (SGSLToken::S_HIDE):

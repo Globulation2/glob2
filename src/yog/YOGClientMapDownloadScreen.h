@@ -57,7 +57,7 @@ private:
 	void requestMaps();
 	///This updates the map info
 	void updateMapInfo();
-	///This updates the visibilily
+	///This updates the visibility
 	void updateVisibility();
 	///This updates the map preview
 	void updateMapPreview();

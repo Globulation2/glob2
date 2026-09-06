@@ -16,7 +16,7 @@ namespace {
 
 Sint32 starvationLimitedTravelDistance(const Unit *unit)
 {
-	return std::max(0, unit->hungry) / unit->race->hungryness + unit->hp;
+	return std::max(0, unit->hungry) / unit->race->hungriness + unit->hp;
 }
 
 } // namespace
@@ -166,7 +166,7 @@ Building *Team::findNearestFood(Unit *unit)
 	}
 
 	//Second, we check if we have any satisfactory inns on our team.
-	// That mean it has to be better or equal than the ennemy food.
+	// That mean it has to be better or equal than the enemy food.
 	if (unit->performance[FLY])
 	{
 		Sint32 bestDist = maxDist;

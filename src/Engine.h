@@ -48,13 +48,13 @@ public:
 	/// is a lone map that runs with campaign semantics
 	int initCampaign(const std::string &mapName);
 
-	/// Displays the CustomMap dialogue, and initiates a game from the settings it recieves
+	/// Displays the CustomMap dialogue, and initiates a game from the settings it receives
 	int initCustom();
 
 	/// Initiate a custom game from the provided game, without adjusting settings from the user
 	int initCustom(const std::string &gameName);
 
-	/// Show the load/save dialoge, and use initCustom(gameName) to load the game
+	/// Show the load/save dialog, and use initCustom(gameName) to load the game
 	int initLoadGame();
 
 	/// Initiate a game with the given MultiplayerGame
@@ -118,8 +118,8 @@ private:
 
 	//! Load a game. Return true on success
 	bool loadGame(const std::string &filename);
-	//! Do the final adjustements, like setting local teams and viewport, rendering minimap
-	void finalAdjustements(void);
+	//! Do the final adjustments, like setting local teams and viewport, rendering minimap
+	void finalAdjustments(void);
 	void showMapLoadError();
 	void saveInitialGameStateOrExit(const std::string& path, const std::string& label, const std::string& mapName);
 
@@ -162,7 +162,7 @@ private:
 	/// Called only from inside the !hardPause branch.
 	void gatherAndAdvanceOrders(bool wasReadyLastTick);
 
-	/// Once allOrdersRecieved() is true for this tick, validate checksums,
+	/// Once allOrdersReceived() is true for this tick, validate checksums,
 	/// execute the matched orders, pump the replay reader, and run
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
@@ -205,7 +205,7 @@ private:
 	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
 	//! flushed even when run() is never reached after initGame allocated it.
 	std::unique_ptr<ChecksumSidecarWriter> checksumSidecar;
-	//! The MultiplayerGame, recieves orders from across a network
+	//! The MultiplayerGame, receives orders from across a network
 	shared_ptr<MultiplayerGame> multiplayer;
 
 	Uint64 automaticGameStartTick, automaticGameEndTick;

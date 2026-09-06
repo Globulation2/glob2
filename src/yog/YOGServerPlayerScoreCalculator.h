@@ -15,7 +15,7 @@ public:
 	///Constructs the score calculator
 	YOGServerPlayerScoreCalculator(YOGServer* server);
 
-	///Proccesses the result of a single game
+	///Processes the result of a single game
 	void proccessResults(YOGGameResults& results, GameHeader& header);
 private:
 	YOGServer* server;

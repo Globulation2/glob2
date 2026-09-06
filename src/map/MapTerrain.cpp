@@ -15,45 +15,45 @@ void Map::setUMatPos(int x, int y, TerrainType t, int l)
 			{
 				if (getUMTerrain(dx,dy-1)==WATER)
 				{
-// 					setNoRessource(dx, dy-1, 1);
+// 					setNoResource(dx, dy-1, 1);
 					setUMTerrain(dx,dy-1,SAND);
 				}
 				if (getUMTerrain(dx,dy+1)==WATER)
 				{
-// 					setNoRessource(dx, dy+1, 1);
+// 					setNoResource(dx, dy+1, 1);
 					setUMTerrain(dx,dy+1,SAND);
 				}
 
 				if (getUMTerrain(dx-1,dy)==WATER)
 				{
-// 					setNoRessource(dx-1, dy, 1);
+// 					setNoResource(dx-1, dy, 1);
 					setUMTerrain(dx-1,dy,SAND);
 				}
 				if (getUMTerrain(dx+1,dy)==WATER)
 				{
-// 					setNoRessource(dx+1, dy, 1);
+// 					setNoResource(dx+1, dy, 1);
 					setUMTerrain(dx+1,dy,SAND);
 				}
 
 				if (getUMTerrain(dx-1,dy-1)==WATER)
 				{
-// 					setNoRessource(dx-1, dy-1, 1);
+// 					setNoResource(dx-1, dy-1, 1);
 					setUMTerrain(dx-1,dy-1,SAND);
 				}
 				if (getUMTerrain(dx+1,dy-1)==WATER)
 				{
-// 					setNoRessource(dx+1, dy-1, 1);
+// 					setNoResource(dx+1, dy-1, 1);
 					setUMTerrain(dx+1,dy-1,SAND);
 				}
 
 				if (getUMTerrain(dx+1,dy+1)==WATER)
 				{
-// 					setNoRessource(dx+1, dy+1, 1);
+// 					setNoResource(dx+1, dy+1, 1);
 					setUMTerrain(dx+1,dy+1,SAND);
 				}
 				if (getUMTerrain(dx-1,dy+1)==WATER)
 				{
-// 					setNoRessource(dx-1, dy+1, 1);
+// 					setNoResource(dx-1, dy+1, 1);
 					setUMTerrain(dx-1,dy+1,SAND);
 				}
 			}
@@ -61,45 +61,45 @@ void Map::setUMatPos(int x, int y, TerrainType t, int l)
 			{
 				if (getUMTerrain(dx,dy-1)==GRASS)
 				{
-// 					setNoRessource(dx, dy-1, 1);
+// 					setNoResource(dx, dy-1, 1);
 					setUMTerrain(dx,dy-1,SAND);
 				}
 				if (getUMTerrain(dx,dy+1)==GRASS)
 				{
-// 					setNoRessource(dx, dy+1, 1);
+// 					setNoResource(dx, dy+1, 1);
 					setUMTerrain(dx,dy+1,SAND);
 				}
 
 				if (getUMTerrain(dx-1,dy)==GRASS)
 				{
-// 					setNoRessource(dx-1, dy, 1);
+// 					setNoResource(dx-1, dy, 1);
 					setUMTerrain(dx-1,dy,SAND);
 				}
 				if (getUMTerrain(dx+1,dy)==GRASS)
 				{
-// 					setNoRessource(dx+1, dy, 1);
+// 					setNoResource(dx+1, dy, 1);
 					setUMTerrain(dx+1,dy,SAND);
 				}
 
 				if (getUMTerrain(dx-1,dy-1)==GRASS)
 				{
-// 					setNoRessource(dx-1, dy-1, 1);
+// 					setNoResource(dx-1, dy-1, 1);
 					setUMTerrain(dx-1,dy-1,SAND);
 				}
 				if (getUMTerrain(dx+1,dy-1)==GRASS)
 				{
-// 					setNoRessource(dx+1, dy-1, 1);
+// 					setNoResource(dx+1, dy-1, 1);
 					setUMTerrain(dx+1,dy-1,SAND);
 				}
 
 				if (getUMTerrain(dx+1,dy+1)==GRASS)
 				{
-// 					setNoRessource(dx+1, dy+1, 1);
+// 					setNoResource(dx+1, dy+1, 1);
 					setUMTerrain(dx+1,dy+1,SAND);
 				}
 				if (getUMTerrain(dx-1,dy+1)==GRASS)
 				{
-// 					setNoRessource(dx-1, dy+1, 1);
+// 					setNoResource(dx-1, dy+1, 1);
 					setUMTerrain(dx-1,dy+1,SAND);
 				}
 			}
@@ -131,7 +131,7 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
 
 		The index in the following table is :
 		val[0] + val[1]*k + val[2]*k^2 + val[3]*k^3
-		where k is the number of different possibilites.
+		where k is the number of different possibilities.
 		
 		H = grass
 		S = sand
