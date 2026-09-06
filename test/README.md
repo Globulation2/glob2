@@ -1,6 +1,6 @@
 # glob2/test/
 
-CppUnit-based test fixtures for the C++ codebase. These have their own `SConstruct` and are **not** built by the top-level `scons` — run `scons -j16` from this directory, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. A top-level build reports "up to date" without touching them, so rebuild here before trusting a result.
+CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exception is `GameGUISelectionHarness`, which uses the top-level `selection-test` target described below.
 
 ## Selection lifetime regression
 
@@ -9,7 +9,6 @@ point. It exercises selected building/unit deletion before the next GUI draw,
 null selections, and a live unit with no peer. It runs headlessly, using the real
 `GameGUI`, entity classes, selection setters, and destruction hooks. A friend
 fixture accesses the private selection API without exposing it to game callers.
-There are no generated sources or substitute entity/GUI classes.
 
 Build and run it from the repository root (the Linux CI also runs this target):
 
