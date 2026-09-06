@@ -279,3 +279,47 @@ Next: (1) express the hunger budget in the same cost units as the field so
 hiring is not biased against the alternative; (2) C2 wait/sidestep instead
 of the random step; (3) E1 composed (building, resource) fields and E3
 round-trip hiring.
+
+## 7. Iteration 2: swim classes, composed fields, round-trip hiring, random sidestep
+
+Changes (commit "Add swim classes, composed resource fields and round-trip hiring"):
+
+- **Swim classes.** Water cost is the unit's own walk/swim ratio (walk and
+  swim levels upgrade independently), bucketed into six classes with water
+  at 0.5, 0.7, 1.0, 1.3, 2.0 or 3.0 times the land cost, plus class 0 for
+  non-swimmers. Fields exist per class a team actually has units in.
+- **Composed fields (E1).** Per (building, resource, class), a Dijkstra
+  seeded at every resource tile with the carrying cost from there to the
+  building. A worker descending it ends at the tile that minimises
+  `d(unit, tile) + d(tile, building)`. Rebuilt when either parent field
+  changes (about every 40 ticks per active triple).
+- **Round-trip hiring (E3).** `considerUnitForResources` and the
+  next-resource choice after a delivery use the composed distance.
+- **Random sidestep (C2).** When no strictly closer free neighbour exists,
+  the unit moves to a random (syncRand) neighbour that is no farther from
+  the goal; two units blocking each other therefore do not mirror each
+  other. The plain random step stays as the last resort.
+
+Outcome, 10 seeds × mirrored sides, √2 diagonal timing on, ALT relative to BASE:
+
+| map | units | buildings | deliveries | random steps while working | swim moves | tiles per delivery |
+|---|---|---|---|---|---|---|
+| Mazury (128², water) | **+15.6 %** | +6.8 % | +7.6 % | −15 % | −62 % | −2.5 % |
+| balanced_for_2 (64², no water) | −2.3 % | −1.8 % | −2.2 % | −28 % | −70 % | −3.1 % |
+
+On Mazury the alternative now wins in the same start slot on nearly every
+seed (iteration 1 was −2 %); the gain comes from the composed fields and
+round-trip hiring, since the walking metrics barely moved between the two
+iterations. On the small no-water map nothing changes beyond crowd
+behaviour: resources are a few tiles from every building, so which tile a
+worker picks makes no difference there.
+
+CPU on Mazury with both teams on the alternative: 6.4 s per 10 game
+minutes (baseline 5.65 s); the extra is ~2 600 composed rebuilds at
+~210 µs. Determinism: order stream identical for the same seed and mask.
+
+Playing it: build the branch (`scons release=1`) and start the game with
+`GLOB2_PATHFIND_ALT_TEAMS=0xFFF GLOB2_DIAG_SQRT2=1 ./build/src/glob2`.
+The team mask selects who uses the alternative (bit per team number;
+`1` = only team 0), the timing switch applies to everyone. A game played
+with these switches only replays identically with the same switches.
