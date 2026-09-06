@@ -33,6 +33,15 @@ the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
 SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
 normal build. This is a direct method regression, not an interactive replay test.
 
+## Terrain resource regression
+
+From the repository root, run `scons -j8 release=1 server=0 terrain-test`
+and `./build/src/TerrainResourcesHarness`. The harness links the actual client
+objects and exercises terrain regeneration and resource clearing for all eight
+resource types, all three base terrains, overlapping strokes, and all four
+wrapped map corners. A whole-map oracle checks both removal and preservation.
+These are headless map-operation tests; they do not drive editor mouse events.
+
 ## Map subclass test pattern
 
 Pattern used by `MapQueryTest.cpp` (commit `2d42c340`). Lets you write tests against `Map`'s predicates with a minimal link surface — no `globalContainer`, no real `Sector` array, no transitive pull of `Bullet` / `Team` / `Building` / `Unit` into the test binary.
