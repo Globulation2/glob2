@@ -114,6 +114,7 @@ void GameGUI::step(void)
 	// we get all pending events but for mousemotion we only keep the last one
 	while (SDL_PollEvent(&event))
 	{
+		GAGCore::GraphicContext::translateMouseEvent(&event);
 		if (event.type==SDL_MOUSEMOTION)
 		{
 			lastMouseX = event.motion.x;

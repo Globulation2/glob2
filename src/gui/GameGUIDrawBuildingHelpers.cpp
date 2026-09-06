@@ -220,10 +220,8 @@ void GameGUI::drawBuildingPriorityControls(Building* selBuild, BuildingType* bui
 	if (selBuild->buildingState != Building::ALIVE)
 		return;
 
-	// Pending priority radio (if the user has just clicked) overlays the
-	// authoritative value until the corresponding OrderChangePriority lands;
-	// during replay the map is empty, so this resolves to selBuild->priority.
-	const int priority = displayedPriority(*selBuild);
+	// If we're replaying, display the actual value, not the locally cached one (changeable by the gui user)
+	const int priority = (globalContainer->replaying?selBuild->priority:displayedPriority(*selBuild));
 
 	ypos += YOFFSET_B_SEP;
 

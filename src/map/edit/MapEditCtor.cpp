@@ -31,8 +31,9 @@ MapEdit::MapEdit()
 	viewportY=0;
 	xSpeed=0;
 	ySpeed=0;
-	mouseX=0;
-	mouseY=0;
+	// screen center, not (0,0) -- see handleMapScroll()
+	mouseX=globalContainer->gfx->getW()/2;
+	mouseY=globalContainer->gfx->getH()/2;
 	relMouseX=0;
 	relMouseY=0;
 	wasMinimapRendered=false;

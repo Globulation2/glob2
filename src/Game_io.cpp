@@ -308,14 +308,14 @@ bool Game::integrity(void)
 					}
 				};
 
+				// Footprints may straddle the map edge (posX can be -1), so
+				// measure the cell's offset from the building with wrap-around.
 				const auto buildingEndX = building->posX + building->type->width;
-				healOutsideCoord(x >= building->posX || x < (buildingEndX & map.wMask),
+				healOutsideCoord(((x - building->posX) & map.wMask) < building->type->width,
 				                 "X", x, building->posX, buildingEndX);
-				healOutsideCoord(x < buildingEndX, "X", x, building->posX, buildingEndX);
 				const auto buildingEndY = building->posY + building->type->height;
-				healOutsideCoord(y >= building->posY || y < (buildingEndY & map.hMask),
+				healOutsideCoord(((y - building->posY) & map.hMask) < building->type->height,
 				                 "Y", y, building->posY, buildingEndY);
-				healOutsideCoord(y < buildingEndY, "Y", y, building->posY, buildingEndY);
 			}
 			if (c.groundUnit != NOGUID)
 			{
@@ -332,8 +332,14 @@ bool Game::integrity(void)
 				checkInvariant(teams[tid]);
 				const auto unit = teams[tid]->myUnits[Unit::GIDtoID(c.airUnit)];
 				checkInvariant(unit);
-				checkInvariant(unit->posX == x);
-				checkInvariant(unit->posY == y);
+				// A unit on its final step into a building (DIS_ENTERING_BUILDING)
+				// already has the building's position but stays registered on the
+				// cell it came from until it is inside (see UnitDisplacement.cpp).
+				const bool entering = unit->displacement == Unit::DIS_ENTERING_BUILDING;
+				const int expectedX = entering ? ((unit->posX - unit->dx) & map.wMask) : unit->posX;
+				const int expectedY = entering ? ((unit->posY - unit->dy) & map.hMask) : unit->posY;
+				checkInvariant(expectedX == x);
+				checkInvariant(expectedY == y);
 			}
 		}
 	return true;

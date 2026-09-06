@@ -97,6 +97,7 @@ namespace GAGGUI
 		assert(event->type == SDL_MOUSEWHEEL);
 		int mouse_x, mouse_y;
 		SDL_GetMouseState(&mouse_x, &mouse_y);
+		GAGCore::GraphicContext::translateMouseCoordinates(mouse_x, mouse_y);
 		int x, y, w, h;
 		getScreenPos(&x, &y, &w, &h);
 		const unsigned count = (h-4) / textHeight;

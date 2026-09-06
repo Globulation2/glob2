@@ -98,6 +98,7 @@ namespace GAGGUI
 			Uint64 time = SDL_GetTicks64();
 			while (SDL_PollEvent(&event))
 			{
+				GAGCore::GraphicContext::translateMouseEvent(&event);
 				if (event.type==SDL_QUIT)
 				{
 					quitApplication = true;
