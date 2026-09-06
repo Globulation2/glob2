@@ -45,11 +45,18 @@ public:
 	/// Returns the user-friendly name of the map	
 	const std::string& getMapName() const;
 	
-	/// Returns the file name of the map. isCampaignMap is a special override when the game is loading campaign maps
+	/// Returns the file name of the map. isCampaignMap is a special override when the game is loading campaign maps.
+	/// If a file name override is set, it is returned as-is and isCampaignMap/isReplay are ignored.
 	std::string getFileName(bool isCampaignMap=false, bool isReplay=false) const;
-	
+
 	/// Sets the user-friendly name of the map
 	void setMapName(const std::string& newMapName);
+
+	/// Makes getFileName() return `fileName` verbatim instead of deriving it from mapName.
+	/// For maps generated to a location outside the usual maps/games/replays/campaigns
+	/// directories (e.g. MapTiling's temporary files) so every later reload of this same
+	/// MapHeader finds the file without listing it among the user's own maps.
+	void setFileNameOverride(const std::string& fileName);
 
 	/// Returns the offset of the Map info in the game save.
 	/// This is used to quickly gain access to Map data, for
@@ -112,6 +119,9 @@ private:
 	Uint8 SHA1[20];
 
 	std::string mapName;
+
+	/// See setFileNameOverride(). Empty unless explicitly set; never serialized.
+	std::string fileNameOverride;
 };
 
 

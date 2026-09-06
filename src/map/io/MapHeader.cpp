@@ -22,6 +22,7 @@ void MapHeader::reset()
 	mapName = "";
 	mapOffset = 0;
 	isSavedGame=false;
+	fileNameOverride = "";
 	resetGameSHA1();
 }
 
@@ -135,6 +136,8 @@ const std::string& MapHeader::getMapName() const
 
 std::string MapHeader::getFileName(bool isCampaignMap, bool isReplay) const
 {
+	if (!fileNameOverride.empty())
+		return fileNameOverride;
 	if(isReplay)
 		return glob2NameToFilename("replays", mapName, "replay");
 	else if(isCampaignMap)
@@ -150,6 +153,13 @@ std::string MapHeader::getFileName(bool isCampaignMap, bool isReplay) const
 void MapHeader::setMapName(const std::string& newMapName)
 {
 	mapName = newMapName;
+}
+
+
+
+void MapHeader::setFileNameOverride(const std::string& fileName)
+{
+	fileNameOverride = fileName;
 }
 
 
