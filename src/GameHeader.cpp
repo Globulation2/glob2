@@ -3,6 +3,8 @@
 
 #include "GameHeader.h"
 
+#include "FileFormatVersions.h"
+
 #include <ctime>
 
 GameHeader::GameHeader()
@@ -33,6 +35,28 @@ void GameHeader::reset()
 
 
 
+namespace
+{
+	// 1-based ally-team IDs. reset() seeds allyTeamNumbers[i] = i+1, so
+	// team 1 and team 2 are the lowest two groups available.
+	constexpr Uint8 HUMAN_ALLY_TEAM = 1;
+	constexpr Uint8 ENEMY_ALLY_TEAM = 2;
+}
+
+void GameHeader::setDefaultAlliances(std::optional<int> humanColor, const std::vector<int>& aiColors)
+{
+	for (int i = 0; i < Team::MAX_COUNT; ++i)
+		setAllyTeamNumber(i, i + 1);
+	if (!humanColor)
+		return;
+	setAllyTeamNumber(*humanColor, HUMAN_ALLY_TEAM);
+	for (int aiColor : aiColors)
+		if (aiColor != *humanColor)
+			setAllyTeamNumber(aiColor, ENEMY_ALLY_TEAM);
+}
+
+
+
 bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("GameHeader");
@@ -44,37 +68,48 @@ bool GameHeader::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		return false;
 	}
 	stream->readEnterSection("players");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
 		stream->readEnterSection(i);
-		players[i].load(stream, versionMinor);
-		stream->readLeaveSection(i);
+		if (i < Team::MAX_COUNT)
+		{
+			if (!players[i].load(stream, versionMinor))
+			{
+				stream->readLeaveSection();
+				stream->readLeaveSection();
+				stream->readLeaveSection();
+				return false;
+			}
+		}
+		else
+		{
+			BasePlayer scratch;
+			// Trailing on-disk slots beyond Team::MAX_COUNT are padding; their
+			// teamNumber field is never consumed, so a bad value here is not a
+			// crash hazard. Discard validation failures.
+			scratch.load(stream, versionMinor);
+		}
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	if(versionMinor >= 71)
+	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
 		stream->readEnterSection("allyTeamNumbers");
-		for(int i=0; i<Team::MAX_COUNT; ++i)
+		for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 		{
-			allyTeamNumbers[i] = stream->readUint8("allyTeamNumber");
+			Uint8 v = stream->readUint8("allyTeamNumber");
+			if (i < Team::MAX_COUNT)
+				allyTeamNumbers[i] = v;
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
-		
-		stream->readEnterSection("winningConditions");
-		winningConditions.clear();
-		Uint32 size = stream->readUint32("size");
-		for(unsigned int i=0; i<size; ++i)
-		{
-			stream->readEnterSection(i);
-			winningConditions.push_back(WinningCondition::getWinningCondition(stream, versionMinor));
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
+
+		if (!WinningCondition::loadWinningConditions(stream, versionMinor, winningConditions))
+			return false;
 	}
-	if(versionMinor >= 64)
+	if(versionMinor >= FILE_FORMAT_VERSION_UNIFIED_SEED)
 		seed = stream->readUint32("seed");
-	if(versionMinor >=  72)
+	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
 	stream->readLeaveSection();
 	return true;
@@ -89,17 +124,21 @@ void GameHeader::save(GAGCore::OutputStream *stream) const
 	stream->writeUint8(orderRate, "orderRate");
 	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeEnterSection("players");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
 		stream->writeEnterSection(i);
-		players[i].save(stream);
+		if (i < Team::MAX_COUNT)
+			players[i].save(stream);
+		else
+			BasePlayer().save(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
 	stream->writeEnterSection("allyTeamNumbers");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
-		stream->writeUint8(allyTeamNumbers[i], "allyTeamNumber");
+		const Uint8 v = (i < Team::MAX_COUNT) ? allyTeamNumbers[i] : static_cast<Uint8>(i + 1);
+		stream->writeUint8(v, "allyTeamNumber");
 	}
 	stream->writeLeaveSection();
 	stream->writeUint8(allyTeamsFixed, "allyTeamsFixed");
@@ -126,30 +165,24 @@ bool GameHeader::loadWithoutPlayerInfo(GAGCore::InputStream *stream, Sint32 vers
 	stream->readEnterSection("GameHeader");
 	gameLatency = stream->readSint32("gameLatency");
 	orderRate = stream->readUint8("orderRate");
-	if(versionMinor >= 71)
+	if(versionMinor >= FILE_FORMAT_VERSION_ALLIES_AND_WIN_CONDITIONS)
 	{
 		stream->readEnterSection("allyTeamNumbers");
-		for(int i=0; i<Team::MAX_COUNT; ++i)
+		for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 		{
-			allyTeamNumbers[i] = stream->readUint8("allyTeamNumber");
+			Uint8 v = stream->readUint8("allyTeamNumber");
+			if (i < Team::MAX_COUNT)
+				allyTeamNumbers[i] = v;
 		}
 		stream->readLeaveSection();
 		allyTeamsFixed = stream->readUint8("allyTeamsFixed");
-		
-		stream->readEnterSection("winningConditions");
-		winningConditions.clear();
-		Uint32 size = stream->readUint32("size");
-		for(unsigned int i=0; i<size; ++i)
-		{
-			stream->readEnterSection(i);
-			winningConditions.push_back(WinningCondition::getWinningCondition(stream, versionMinor));
-			stream->readLeaveSection();
-		}
-		stream->readLeaveSection();
+
+		if (!WinningCondition::loadWinningConditions(stream, versionMinor, winningConditions))
+			return false;
 	}
-	if(versionMinor >= 64)
+	if(versionMinor >= FILE_FORMAT_VERSION_UNIFIED_SEED)
 		seed = stream->readUint32("seed");
-	if(versionMinor >=  72)
+	if(versionMinor >=  FILE_FORMAT_VERSION_MAP_DISCOVERED_FLAG)
 		mapDiscovered = stream->readUint8("mapDiscovered");
 	stream->readLeaveSection();
 	return true;
@@ -163,9 +196,10 @@ void GameHeader::saveWithoutPlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeSint32(gameLatency, "gameLatency");
 	stream->writeUint8(orderRate, "orderRate");
 	stream->writeEnterSection("allyTeamNumbers");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
-		stream->writeUint8(allyTeamNumbers[i], "allyTeamNumber");
+		const Uint8 v = (i < Team::MAX_COUNT) ? allyTeamNumbers[i] : static_cast<Uint8>(i + 1);
+		stream->writeUint8(v, "allyTeamNumber");
 	}
 	stream->writeLeaveSection();
 	stream->writeUint8(allyTeamsFixed, "allyTeamsFixed");
@@ -192,11 +226,28 @@ bool GameHeader::loadPlayerInfo(GAGCore::InputStream *stream, Sint32 versionMino
 	stream->readEnterSection("GameHeader");
 	numberOfPlayers = stream->readSint32("numberOfPlayers");
 	stream->readEnterSection("players");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
 		stream->readEnterSection(i);
-		players[i].load(stream, versionMinor);
-		stream->readLeaveSection(i);
+		if (i < Team::MAX_COUNT)
+		{
+			if (!players[i].load(stream, versionMinor))
+			{
+				stream->readLeaveSection();
+				stream->readLeaveSection();
+				stream->readLeaveSection();
+				return false;
+			}
+		}
+		else
+		{
+			BasePlayer scratch;
+			// Trailing on-disk slots beyond Team::MAX_COUNT are padding; their
+			// fields are never consumed, so a bad value here is not a crash
+			// hazard. Discard validation failures.
+			scratch.load(stream, versionMinor);
+		}
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 	stream->readLeaveSection();
@@ -210,10 +261,13 @@ void GameHeader::savePlayerInfo(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("GameHeader");
 	stream->writeSint32(numberOfPlayers, "numberOfPlayers");
 	stream->writeEnterSection("players");
-	for(int i=0; i<Team::MAX_COUNT; ++i)
+	for(int i=0; i<Team::MAX_COUNT_ON_DISK; ++i)
 	{
 		stream->writeEnterSection(i);
-		players[i].save(stream);
+		if (i < Team::MAX_COUNT)
+			players[i].save(stream);
+		else
+			BasePlayer().save(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();

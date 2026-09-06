@@ -3,14 +3,12 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "MultiplayerGameScreen.h"
+#include "AI.h"
 #include "AINames.h"
 #include "YOGClientLobbyScreen.h"
-#include "Utilities.h"
 #include "GlobalContainer.h"
-#include "NetConsts.h"
 #include "Order.h"
 
-#include <FormatableString.h>
 #include <GUIText.h>
 #include <GUITextArea.h>
 #include <GUITextInput.h>
@@ -19,14 +17,13 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 
-#include "IRC.h"
 #include "YOGMessage.h"
 #include "CustomGameOtherOptions.h"
 
 using std::static_pointer_cast;
 
 MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat)
-	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), game(game), gameChat(new YOGClientChatChannel(static_cast<unsigned int>(-1), client)), ircChat(ircChat)
+	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), game(game), gameChat(new YOGClientChatChannel(YOG_CHAT_CHANNEL_NONE, client)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -83,7 +80,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<
 
 	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[awaiting players]")));
 
-	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		int dx=320*(i/8);
 		int dy=20*(i%8);
@@ -112,7 +109,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<
 
 	chatWindow=new TextArea(20, 280, 220, 135, ALIGN_FILL, ALIGN_FILL, "standard");
 	addWidget(chatWindow);
-	textInput=new TextInput(20, 90, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, 256);
+	textInput=new TextInput(20, 90, 220, 25, ALIGN_FILL, ALIGN_BOTTOM, "standard", "", true, ORDER_TEXT_MESSAGE_MAX_LEN);
 	addWidget(textInput);
 	
 	updateJoinedPlayers();
@@ -153,11 +150,11 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 			game->leaveGame();
 			endExecute(Cancelled);
 		}
-		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + AI::SIZE))
+		else if ((par1 >= ADD_AI) && (par1 < ADD_AI + static_cast<int>(AI::SIZE)))
 		{
 			game->addAIPlayer((AI::ImplementitionID)(par1-ADD_AI));
 		}
-		else if ((par1>=CLOSE_BUTTONS)&&(par1<CLOSE_BUTTONS+MAX_NUMBER_OF_PLAYERS))
+		else if ((par1>=CLOSE_BUTTONS)&&(par1<static_cast<int>(CLOSE_BUTTONS)+Team::MAX_COUNT))
 		{
 			game->kickPlayer(par1 - CLOSE_BUTTONS);
 		}
@@ -175,7 +172,7 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 	{
 		if(par1 == READY)
 			game->setHumanReady(isReady->getState());
-		else if(par1 > COLOR_BUTTONS)
+		else if((par1 >= COLOR_BUTTONS) && (par1 < static_cast<int>(COLOR_BUTTONS) + Team::MAX_COUNT))
 			game->changeTeam(par1 - COLOR_BUTTONS, par2);
 	}
 	else if (action==TEXT_VALIDATED)
@@ -270,7 +267,7 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(std::shared_ptr<Multiplay
 	{
 		shared_ptr<MGPlayerReadyStatusChanged> info = static_pointer_cast<MGPlayerReadyStatusChanged>(event);
 		GameHeader& gh = game->getGameHeader();
-		for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+		for (int i=0; i<Team::MAX_COUNT; i++)
 		{
 			BasePlayer& bp = gh.getBasePlayer(i);
 			if(bp.playerID == info->getPlayerID())
@@ -295,7 +292,7 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 {
 	GameHeader& gh = game->getGameHeader();
 	MapHeader& mh = game->getMapHeader();
-	for (int i=0; i<MAX_NUMBER_OF_PLAYERS; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		color[i]->clearColors();
 		for (int j=0; j<mh.getNumberOfTeams(); j++)

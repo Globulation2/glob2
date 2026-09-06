@@ -1,0 +1,146 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2007 Bradley Arsenault
+// Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+
+#pragma once
+
+#include <vector>
+#include <GUIList.h>
+#include "IRCTextMessageHandler.h"
+#include "YOGClientEventListener.h"
+#include "YOGClientChatListener.h"
+#include "YOGClientGameListListener.h"
+#include "YOGClientPlayerListListener.h"
+#include "GUITabScreenWindow.h"
+
+namespace GAGGUI
+{
+	class TextInput;
+	class TextArea;
+	class TextButton;
+	class TabScreen;
+	class Widget;
+}
+
+class YOGClient;
+class YOGClientChatChannel;
+class MultiplayerGameScreen;
+
+using namespace GAGGUI;
+
+/// A widget that maintains the list of players, and draws an icon based
+/// on whether that player is from YOG or from IRC
+class YOGClientPlayerList : public List
+{
+public:
+
+	/// Constructor
+	YOGClientPlayerList(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string &font);
+
+	/// Destructor, release sprites
+	virtual ~YOGClientPlayerList();
+	
+	/// Represents the type of network a player can be in
+	enum NetworkType
+	{
+		ALL_NETWORK = 0,
+		YOG_NETWORK,
+		IRC_NETWORK,
+	};
+
+	/// Add a new player with its network;
+	void addPlayer(const std::string &nick, NetworkType network);
+
+	///Clears the lists of players
+	void clear(void);
+
+private:
+	//! An array that contains for each player the related network
+	std::vector<NetworkType> networks;
+	//! sprite for networks
+	GAGCore::Sprite *networkSprite;
+
+	///Draws an item on the screen
+	virtual void drawItem(int x, int y, size_t element);
+};
+
+///This is the main YOG screen
+class YOGClientLobbyScreen : public TabScreenWindow, public YOGClientEventListener, public YOGClientChatListener, public IRCTextMessageListener, public YOGClientGameListListener, public YOGClientPlayerListListener
+{
+public:
+	///This takes a YOGClient. The client must be logged in when this is called.
+	YOGClientLobbyScreen(TabScreen* parent, std::shared_ptr<YOGClient> client);
+
+	virtual ~YOGClientLobbyScreen();
+	
+	///Responds to timer events
+	virtual void onTimer(Uint32 tick);
+	///Responds to widget events
+	void onAction(Widget *source, Action action, int par1, int par2);
+	///Responds to YOG events
+	void handleYOGClientEvent(std::shared_ptr<YOGClientEvent> event);
+	///Handle text message events from IRCTextMessageHandler
+	void handleIRCTextMessage(const std::string& message);
+	///Handles text message events from the YOGClientChatChannel
+	void recieveTextMessage(std::shared_ptr<YOGMessage> message);
+	///Handles an internal message
+	void recieveInternalMessage(const std::string& message);
+	///Handles when the game list has been updated from YOGClientGameListManager
+	void gameListUpdated();
+	///Handles when the game list has been updated from YOGClientPlayerListManager
+	void playerListUpdated();
+
+
+	///The end-codes of the screen
+	enum
+	{
+		ConnectionLost,
+		Cancelled,
+	};
+
+private:
+	enum
+	{
+		CANCEL=2,
+		CREATE_GAME=3,
+		UPDATE_LIST=4,
+		JOIN=7,
+		
+		STARTED=11
+	};
+
+	///This launches the menu to host a game
+	void hostGame();
+	///This launches the menu to join a game
+	void joinGame();
+	///This updates the list of games
+	void updateGameList();
+	///This updates the list of players
+	void updatePlayerList();
+	///This updates the text box with information about the selected game
+	void updateBoxInfo();
+	///This will try to match and auto-complete a half-entered nick name
+	void autoCompleteNick();
+	///This wsill update the visibility of the host and join buttons depnding on whether the player
+	///is currently in a game or not
+	void updateButtonVisibility();
+	///Called when this tab is activated
+	void onActivated();
+
+	List *gameList;
+	TextArea *gameInfo;
+	YOGClientPlayerList *playerList;
+	TextInput *textInput;
+	TextArea *chatWindow;
+	
+	TextButton *joinButton;
+	TextButton *hostButton;
+
+	std::shared_ptr<YOGClient> client;
+	std::shared_ptr<YOGClientChatChannel> lobbyChat;
+	std::shared_ptr<IRCTextMessageHandler> ircChat;
+	
+	int gameScreen;
+
+};
+

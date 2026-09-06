@@ -70,10 +70,6 @@ Numbi
 Reach-To-Infinity ist mehr eine Machbarkeitsstudie. Er wirtschaftet und wirtschaftet und wirtschaftet, greift aber nicht an.
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-Toubib
-[AIToubib]
-Toubib
 [AIWarrush-Description]
 Warrush ist der schnellste Angreifer. Ohne zu schummeln schafft er es, den Kampf vor der Haustür seiner Gegner stattfinden zu lassen
 [AIWarrush]

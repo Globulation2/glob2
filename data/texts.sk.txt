@@ -70,10 +70,6 @@ UINumbi
 
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-
-[AIToubib]
-UIToubib
 [AIWarrush-Description]
 
 [AIWarrush]

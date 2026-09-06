@@ -2,12 +2,12 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <sstream>
+#include <iostream>
+#include <cstdlib>
 
 #include <FormatableString.h>
-#include <GraphicContext.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <SupportFunctions.h>
 #include <Stream.h>
 
 #include "Game.h"
@@ -44,13 +44,13 @@ void TeamStat::reset()
 	}
 	totalFree=0;
 	totalNeeded=0;
-	for(int i=0; i<4; ++i)
+	for(int i=0; i<NB_UNIT_LEVELS; ++i)
 		totalNeededPerLevel[i]=0;
 	totalBuilding=0;
 	for(int i=0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
 		numberBuildingPerType[i]=0;
-		for(int j=0; j<6; ++j)
+		for(int j=0; j<NB_BUILDING_LONG_LEVELS; ++j)
 			numberBuildingPerTypePerLevel[i][j]=0;
 	}
 	needFoodCritical=0;
@@ -59,14 +59,14 @@ void TeamStat::reset()
 	needHeal=0;
 	needNothing=0;
 	for(int i=0; i<NB_ABILITY; ++i)
-		for(int j=0; j<4; ++j)
+		for(int j=0; j<NB_UNIT_LEVELS; ++j)
 		{
 			upgradeState[i][j]=0;
 		}
 	for(int k=0; k<NB_UNIT_TYPE; ++k)
 	{
 		for(int i=0; i<NB_ABILITY; ++i)
-			for(int j=0; j<4; ++j)
+			for(int j=0; j<NB_UNIT_LEVELS; ++j)
 				upgradeStatePerType[k][i][j]=0;
 	}
 	totalFood=0;
@@ -98,7 +98,7 @@ void TeamSmoothedStat::reset()
 		isFree[i]=0;
 	}
 	totalNeeded=0;
-	for(int i=0; i<4; ++i)
+	for(int i=0; i<NB_UNIT_LEVELS; ++i)
 		totalNeededPerLevel[i]=0;
 }
 
@@ -119,10 +119,34 @@ TeamStats::~TeamStats()
 void TeamStats::step(Team *team, bool reloaded)
 {
 	// handle end of game stat step
-	if (((team->game->stepCounter & 0x1FF) == 0) && !reloaded)
+	if (((team->game->stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) == 0) && !reloaded)
 	{
 		endOfGameStats.push_back(EndOfGameStat(stats[statsIndex].totalUnit, stats[statsIndex].totalBuilding, team->prestige,
 			stats[statsIndex].totalHP, stats[statsIndex].totalAttackPower, stats[statsIndex].totalDefensePower));
+
+		// Optional rich per-team economy/food trace for AI debugging. Gated by
+		// GLOB2_TEAM_TIMELINE (same flag as Engine::printTeamTimeline). Emitted
+		// here so it captures the live food/worker state at each 512-tick sample
+		// — data that the archived EndOfGameStat (6 scalars) cannot carry.
+		if (getenv("GLOB2_TEAM_TIMELINE"))
+		{
+			const TeamStat &s = stats[statsIndex];
+			std::cout << "GLOB2_ECON team=" << team->teamNumber
+				<< " tick=" << team->game->stepCounter
+				<< " workers=" << s.numberUnitPerType[WORKER]
+				<< " warriors=" << s.numberUnitPerType[WARRIOR]
+				<< " explorers=" << s.numberUnitPerType[EXPLORER]
+				<< " food=" << s.totalFood << "/" << s.totalFoodCapacity
+				<< " fooded=" << s.totalUnitFooded << "/" << s.totalUnitFoodable
+				<< " foodCritical=" << s.needFoodCritical
+				<< " needFood=" << s.needFood
+				<< " swarm=" << s.numberBuildingPerType[IntBuildingType::SWARM_BUILDING]
+				<< " inn=" << s.numberBuildingPerType[IntBuildingType::FOOD_BUILDING]
+				<< " school=" << s.numberBuildingPerType[IntBuildingType::SCIENCE_BUILDING]
+				<< " barracks=" << s.numberBuildingPerType[IntBuildingType::ATTACK_BUILDING]
+				<< " tower=" << s.numberBuildingPerType[IntBuildingType::DEFENSE_BUILDING]
+				<< std::endl;
+		}
 	}
 	
 	// handle in game stat step
@@ -171,7 +195,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		{
 			maxStat.totalNeeded=smoothedStat.totalNeeded;
 		}
-		for(int k=0; k<4; ++k)
+		for(int k=0; k<NB_UNIT_LEVELS; ++k)
 		{
 			if (smoothedStat.totalNeededPerLevel[k]>maxStat.totalNeededPerLevel[k])
 				maxStat.totalNeededPerLevel[k]=smoothedStat.totalNeededPerLevel[k];
@@ -251,7 +275,7 @@ void TeamStats::step(Team *team, bool reloaded)
 			stat.numberBuildingPerType[b->type->shortTypeNum]++;
 			int longLevel=b->getLongLevel();
 			assert(longLevel>=0);
-			assert(longLevel<=5);
+			assert(longLevel<=MAX_BUILDING_LONG_LEVEL);
 			stat.numberBuildingPerTypePerLevel[b->type->shortTypeNum][longLevel]++;
 			stat.totalHP += b->hp;
 			stat.totalDefensePower += (b->type->shootDamage*b->type->shootRythme) >> SHOOTING_COOLDOWN_MAGNITUDE;
@@ -265,7 +289,7 @@ void TeamStats::step(Team *team, bool reloaded)
 	for (int j=0; j<NB_UNIT_TYPE; j++)
 		stat.isFree[j]=maxStat.isFree[j];
 	stat.totalNeeded=maxStat.totalNeeded;
-	for(int k=0; k<4; ++k)
+	for(int k=0; k<NB_UNIT_LEVELS; ++k)
 		stat.totalNeededPerLevel[k]=maxStat.totalNeededPerLevel[k];
 }
 
@@ -281,29 +305,28 @@ void TeamStats::drawText(int posx, int posy)
 	TeamStat &newStats=stats[statsIndex];
 	
 	// general
-	//gfx->drawString(textStartPosX, textStartPosY, font, strings->getString("[Statistics]"));
-	textStartPosY -= 5; // this is to correct for the removal of the title
+	textStartPosY -= 5;
 	gfx->drawString(textStartPosX, textStartPosY+15, font, FormatableString("%0 %1").arg(newStats.totalUnit).arg(strings->getString("[Units]")).c_str());
 	if (newStats.totalUnit)
 	{
 		// worker
-		int free=newStats.isFree[0]-newStats.totalNeeded;
+		int free=newStats.isFree[WORKER]-newStats.totalNeeded;
 		int seeking=newStats.totalNeeded;
 		if (free<0)
 		{
 			free=0;
-			seeking=newStats.isFree[0];
+			seeking=newStats.isFree[WORKER];
 		}
-		gfx->drawString(textStartPosX, textStartPosY+30, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[0]).arg(strings->getString("[workers]")).arg(((float)newStats.numberUnitPerType[0])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+30, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[WORKER]).arg(strings->getString("[workers]")).arg(((float)newStats.numberUnitPerType[WORKER])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
 		gfx->drawString(textStartPosX+5, textStartPosY+42, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(free).arg(strings->getString("[free]")).c_str());
 		gfx->drawString(textStartPosX+5, textStartPosY+54, font, FormatableString("%0 %1 %2").arg(strings->getString("[and]")).arg(seeking).arg(strings->getString("[seeking a job]")).c_str());
 
 		// explorer
-		gfx->drawString(textStartPosX, textStartPosY+69, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[1]).arg(strings->getString("[explorers]")).arg(((float)newStats.numberUnitPerType[1])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
-		gfx->drawString(textStartPosX+5, textStartPosY+81, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[1]).arg(strings->getString("[free]")).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+69, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[EXPLORER]).arg(strings->getString("[explorers]")).arg(((float)newStats.numberUnitPerType[EXPLORER])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX+5, textStartPosY+81, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[EXPLORER]).arg(strings->getString("[free]")).c_str());
 		// warrior
-		gfx->drawString(textStartPosX, textStartPosY+96, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[2]).arg(strings->getString("[warriors]")).arg(((float)newStats.numberUnitPerType[2])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
-		gfx->drawString(textStartPosX+5, textStartPosY+108, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[2]).arg(strings->getString("[free]")).c_str());
+		gfx->drawString(textStartPosX, textStartPosY+96, font, FormatableString("%0 %1 (%2 %)").arg(newStats.numberUnitPerType[WARRIOR]).arg(strings->getString("[warriors]")).arg(((float)newStats.numberUnitPerType[WARRIOR])*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
+		gfx->drawString(textStartPosX+5, textStartPosY+108, font, FormatableString("%0 %1 %2").arg(strings->getString("[of which]")).arg(newStats.isFree[WARRIOR]).arg(strings->getString("[free]")).c_str());
 
 		// living state
 		gfx->drawString(textStartPosX, textStartPosY+123, font, FormatableString("%0 %1 (%2 %)").arg(newStats.needNothing).arg(strings->getString("[are ok]")).arg(((float)newStats.needNothing)*100.0f/((float)newStats.totalUnit), 0, 0).c_str());
@@ -344,26 +367,17 @@ void TeamStats::drawStat(int posx, int posy)
 	int textStartPos=posx+4;
 	int startPoxY=posy;
 	
-	// compute total units
-	/*int maxUnit=0;
-	int i;
-	for (i=0; i<STATS_SIZE; i++)
-	{
-		if (stats[i].totalUnit>maxUnit)
-			maxUnit=stats[i].totalUnit;
-	}*/
 	int maxWorker=0;
 	for (int i=0; i<STATS_SIZE; i++)
-		if (stats[i].numberUnitPerType[0]>maxWorker)
-			maxWorker=stats[i].numberUnitPerType[0];
+		if (stats[i].numberUnitPerType[WORKER]>maxWorker)
+			maxWorker=stats[i].numberUnitPerType[WORKER];
 
 	if (maxWorker==0)
 		return;
 
 	// captions
 	{
-		//gfx->drawString(textStartPos, startPoxY, font, strings->getString("[Statistics]"));
-		startPoxY -= 10; // this is to correct for the removal of the title
+		startPoxY -= 10;
 		
 		int dec=0;
 		std::string Total=strings->getString("[Total]");
@@ -402,25 +416,13 @@ void TeamStats::drawStat(int posx, int posy)
 		gfx->drawString(textStartPos, startPoxY+104, font, Free);
 		font->popStyle();
 
-		/*dec+=font->getStringWidth(Free);
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;*/
-
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 224, 210, 17));
 		gfx->drawString(textStartPos+64, startPoxY+104, font, hungry);
 		font->popStyle();
 
-		/*dec+=font->getStringWidth(hungry);
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;*/
-
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 249, 167, 14));
 		gfx->drawString(textStartPos, startPoxY+104+12, font, starving);
 		font->popStyle();
-
-		/*dec+=font->getStringWidth(starving);
-		gfx->drawString(textStartPos+dec, startPoxY+104, font, "/");
-		dec+=sLen;*/
 
 		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 250, 25, 25));
 		gfx->drawString(textStartPos+64, startPoxY+104+12, font, wounded);
@@ -428,10 +430,10 @@ void TeamStats::drawStat(int posx, int posy)
 	}
 
 	// graph
-	for (int i=0; i<128; i++)
+	for (int i=0; i<STATS_SIZE; i++)
 	{
-		int index=(statsIndex+i+1)&0x7F;
-		
+		int index=(statsIndex+i+1)&(STATS_SIZE - 1);
+
 		int free=stats[index].isFree[WORKER]-stats[index].totalNeeded;
 		int seeking=stats[index].totalNeeded;
 		if (free<0)
@@ -508,7 +510,7 @@ int TeamStats::getWorkersNeeded()
 
 int TeamStats::getWorkersBalance()
 {
-	return (stats[statsIndex].isFree[0]-stats[statsIndex].totalNeeded);
+	return (stats[statsIndex].isFree[WORKER]-stats[statsIndex].totalNeeded);
 }
 
 int TeamStats::getWorkersLevel(int level)

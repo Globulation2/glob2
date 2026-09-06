@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __STREAMBACKEND_H
-#define __STREAMBACKEND_H
+#pragma once
 
 #include <fstream>
 #include <iostream>
@@ -139,5 +138,3 @@ namespace GAGCore
 		virtual Uint32 getHash(void) { return hash; }
 	};
 }
-
-#endif

@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __SOUNDMIXER_H
-#define __SOUNDMIXER_H
+#pragma once
 
 #include <SDL.h>
 #include <SDL_audio.h>
@@ -12,6 +11,9 @@
 #include <queue>
 #include <map>
 #include <memory>
+
+#include "MusicTrack.h"
+#include "PlayerVoice.h"
 
 class OrderVoiceData;
 
@@ -33,18 +35,8 @@ public:
 	unsigned musicVolume;
 	unsigned voiceVolume;
 	
-	//! Voice for one player
-	struct PlayerVoice
-	{
-		//! float sample from speex decoder
-		std::queue<float> voiceDatas;
-		//! subsample precision for voice (8Khz instead of 44.1Khz)
-		float voiceSubIndex;
-		//! value used for interpolation and optimisation. Linear interpolation is done on the 8Khz audio datas
-		float voiceVal0;
-		float voiceVal1;
-	};
-	//! Map of voices to players
+	//! Map of voices to players. PlayerVoice (the SDL-free resampling state
+	//! machine) lives in PlayerVoice.h.
 	std::map<int, PlayerVoice> voices;
 	//! pointer to the structure holding the speex decoder
 	void *speexDecoderState;
@@ -60,10 +52,23 @@ public:
 
 	~SoundMixer();
 
-	//! load an ogg file. Return the index in the track list. If index is given, attempt to replace the current track at this index
+	//! Load an ogg file and add (or replace at `index`) into the track list.
+	//! Returns the resulting track index on success, -1 if the file cannot be
+	//! opened, or -2 if it is not a valid ogg bitstream. On success the
+	//! OggVorbis_File takes ownership of the underlying FILE* and closes it via
+	//! ov_clear in ~SoundMixer.
 	int loadTrack(const std::string name, int index = -1);
 
+	//! Load `name` into the slot for the given enum track. Convenience wrapper
+	//! over the int-indexed overload so callers don't hard-code track numbers.
+	int loadTrack(const std::string name, MusicTrack track);
+
 	void setNextTrack(unsigned i, bool earlyChange=false);
+
+	//! Enum-typed overload of setNextTrack. Prefer this in new code so call
+	//! sites read as `setNextTrack(MusicTrack::WarEvent, true)` rather than
+	//! `setNextTrack(4, true)`.
+	void setNextTrack(MusicTrack track, bool earlyChange=false);
 
 	void setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute);
 	
@@ -76,7 +81,6 @@ public:
 	void addVoiceData(std::shared_ptr<OrderVoiceData> order);
 };
 
-#endif
 
 
 

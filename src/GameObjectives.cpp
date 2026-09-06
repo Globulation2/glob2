@@ -2,9 +2,10 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "GameObjectives.h"
+#include "FileFormatVersions.h"
+#include "ScriptNumber.h"
 #include "Stream.h"
 #include <cassert>
-#include <iostream>
 
 
 GameObjectives::GameObjectives() :
@@ -34,13 +35,29 @@ void GameObjectives::addNewObjective(const std::string& objective, bool ishidden
 	completed.push_back(complete);
 	failed.push_back(nfailed);
 	types.push_back(type);
-	scriptNumbers.push_back(scriptNumber);
+	scriptNumbers.push_back(ScriptNumber::clampToWireDomain(scriptNumber));
+}
+
+
+
+bool GameObjectives::isValidObjectiveIndex(int n) const
+{
+	// The six vectors are parallel arrays over the same objectives; texts
+	// is the reference for the current count.
+	assert(hidden.size() == texts.size());
+	assert(completed.size() == texts.size());
+	assert(failed.size() == texts.size());
+	assert(types.size() == texts.size());
+	assert(scriptNumbers.size() == texts.size());
+	return n >= 0 && n < (int)texts.size();
 }
 
 
 
 void GameObjectives::removeObjective(int n)
 {
+	if (!isValidObjectiveIndex(n))
+		return;
 	texts.erase(texts.begin() + n);
 	hidden.erase(hidden.begin() + n);
 	completed.erase(completed.begin() + n);
@@ -53,15 +70,15 @@ void GameObjectives::removeObjective(int n)
 
 void GameObjectives::setGameObjectiveText(int n, const std::string& objective)
 {
-	assert(n < (int)texts.size());
-	texts[n] = objective;
+	if (isValidObjectiveIndex(n))
+		texts[n] = objective;
 }
 
 
 
 const std::string& GameObjectives::getGameObjectiveText(int n)
 {
-	if (n >= 0 && n < (int)texts.size())
+	if (isValidObjectiveIndex(n))
 		return texts[n];
 	else
 		return invalidText;
@@ -71,7 +88,7 @@ const std::string& GameObjectives::getGameObjectiveText(int n)
 
 void GameObjectives::setObjectiveHidden(int n)
 {
-	if (n >= 0 && n < (int)hidden.size())
+	if (isValidObjectiveIndex(n))
 		hidden[n]=true;
 }
 
@@ -79,7 +96,7 @@ void GameObjectives::setObjectiveHidden(int n)
 
 void GameObjectives::setObjectiveVisible(int n)
 {
-	if (n >= 0 && n < (int)hidden.size())
+	if (isValidObjectiveIndex(n))
 		hidden[n]=false;
 }
 
@@ -87,7 +104,7 @@ void GameObjectives::setObjectiveVisible(int n)
 
 bool GameObjectives::isObjectiveVisible(int n)
 {
-	if (n >= 0 && n < (int)hidden.size())
+	if (isValidObjectiveIndex(n))
 		return !hidden[n];
 	else
 		return false;
@@ -98,8 +115,7 @@ bool GameObjectives::isObjectiveVisible(int n)
 
 void GameObjectives::setObjectiveComplete(int n)
 {
-	assert(completed.size() == failed.size());
-	if (n >= 0 && n < (int)completed.size())
+	if (isValidObjectiveIndex(n))
 	{
 		completed[n]=true;
 		failed[n]=false;
@@ -110,8 +126,7 @@ void GameObjectives::setObjectiveComplete(int n)
 
 void GameObjectives::setObjectiveIncomplete(int n)
 {
-	assert(completed.size() == failed.size());
-	if (n >= 0 && n < (int)completed.size())
+	if (isValidObjectiveIndex(n))
 	{
 		completed[n]=false;
 		failed[n]=false;
@@ -122,8 +137,7 @@ void GameObjectives::setObjectiveIncomplete(int n)
 
 void GameObjectives::setObjectiveFailed(int n)
 {
-	assert(completed.size() == failed.size());
-	if (n >= 0 && n < (int)completed.size())
+	if (isValidObjectiveIndex(n))
 	{
 		completed[n]=false;
 		failed[n]=true;
@@ -134,7 +148,7 @@ void GameObjectives::setObjectiveFailed(int n)
 
 bool GameObjectives::isObjectiveComplete(int n)
 {
-	if (n >= 0 && n < (int)completed.size())
+	if (isValidObjectiveIndex(n))
 		return completed[n];
 	else
 		return false;
@@ -144,7 +158,7 @@ bool GameObjectives::isObjectiveComplete(int n)
 
 bool GameObjectives::isObjectiveFailed(int n)
 {
-	if (n >= 0 && n < (int)failed.size())
+	if (isValidObjectiveIndex(n))
 		return failed[n];
 	else
 		return false;
@@ -154,15 +168,15 @@ bool GameObjectives::isObjectiveFailed(int n)
 
 void GameObjectives::setObjectiveType(int n, GameObjectiveType type)
 {
-	assert(n < (int)types.size());
-	types[n] = type;
+	if (isValidObjectiveIndex(n))
+		types[n] = type;
 }
 
 
 
 GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
 {
-	if (n >= 0 && n < (int)types.size())
+	if (isValidObjectiveIndex(n))
 		return types[n];
 	else
 		return Invalid;
@@ -172,16 +186,18 @@ GameObjectives::GameObjectiveType GameObjectives::getObjectiveType(int n)
 
 void GameObjectives::setScriptNumber(int n, int scriptNumber)
 {
-	assert(n < (int)scriptNumbers.size());
-	scriptNumbers[n] = scriptNumber;
+	if (isValidObjectiveIndex(n))
+		scriptNumbers[n] = ScriptNumber::clampToWireDomain(scriptNumber);
 }
 
 
 
 int GameObjectives::getScriptNumber(int n)
 {
-	assert(n < (int)scriptNumbers.size());
-	return scriptNumbers[n];
+	if (isValidObjectiveIndex(n))
+		return scriptNumbers[n];
+	else
+		return InvalidScriptNumber;
 }
 
 
@@ -198,6 +214,8 @@ void GameObjectives::encodeData(GAGCore::OutputStream* stream) const
 		stream->writeUint8(completed[i], "completed");
 		stream->writeUint8(failed[i], "failed");
 		stream->writeUint8(types[i], "type");
+		// Fits by construction: every scriptNumbers entry point clamps to
+		// the [0..MaxScriptNumber] Uint8 wire domain.
 		stream->writeUint8(scriptNumbers[i], "scriptNumber");
 		stream->writeLeaveSection();
 	}
@@ -222,7 +240,7 @@ void GameObjectives::decodeData(GAGCore::InputStream* stream, Uint32 versionMino
 		texts.push_back(stream->readText("text"));
 		hidden.push_back(stream->readUint8("hidden"));
 		completed.push_back(stream->readUint8("completed"));
-		if(versionMinor>=76)
+		if(versionMinor>=FILE_FORMAT_VERSION_BRIEFING_HINTS_OBJ_FAILED)
 			failed.push_back(stream->readUint8("failed"));
 		else
 			failed.push_back(false);

@@ -2,6 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 
 #include "GameHints.h"
+#include "ScriptNumber.h"
 #include "Stream.h"
 #include <cassert>
 
@@ -12,9 +13,9 @@ GameHints::GameHints()
 
 
 
-int GameHints::getNumberOfHints()
+int GameHints::getNumberOfHints() const
 {
-	return texts.size();
+	return static_cast<int>(texts.size());
 }
 
 
@@ -23,7 +24,7 @@ void GameHints::addNewHint(const std::string& hint, bool nhidden, int scriptNumb
 {
 	texts.push_back(hint);
 	hidden.push_back(nhidden);
-	scriptNumbers.push_back(scriptNumber);
+	scriptNumbers.push_back(ScriptNumber::clampToWireDomain(scriptNumber));
 }
 
 
@@ -45,7 +46,7 @@ void GameHints::setGameHintText(int n, const std::string& hint)
 
 
 
-const std::string& GameHints::getGameHintText(int n)
+const std::string& GameHints::getGameHintText(int n) const
 {
 	assert (n < (int)texts.size());
 	return texts[n];
@@ -69,7 +70,7 @@ void GameHints::setHintVisible(int n)
 
 
 
-bool GameHints::isHintVisible(int n)
+bool GameHints::isHintVisible(int n) const
 {
 	if (n >= 0 && n < (int)hidden.size())
 		return !hidden[n];
@@ -82,12 +83,12 @@ bool GameHints::isHintVisible(int n)
 void GameHints::setScriptNumber(int n, int scriptNumber)
 {
 	assert(n < (int)scriptNumbers.size());
-	scriptNumbers[n]=scriptNumber;
+	scriptNumbers[n]=ScriptNumber::clampToWireDomain(scriptNumber);
 }
 
 
 
-int GameHints::getScriptNumber(int n)
+int GameHints::getScriptNumber(int n) const
 {
 	assert(n < (int)scriptNumbers.size());
 	return scriptNumbers[n];
@@ -104,6 +105,8 @@ void GameHints::encodeData(GAGCore::OutputStream* stream) const
 		stream->writeEnterSection(i);
 		stream->writeText(texts[i], "text");
 		stream->writeUint8(hidden[i], "hidden");
+		// Fits by construction: every scriptNumbers entry point clamps to
+		// the [0..MaxScriptNumber] Uint8 wire domain.
 		stream->writeUint8(scriptNumbers[i], "scriptNumber");
 		stream->writeLeaveSection();
 	}

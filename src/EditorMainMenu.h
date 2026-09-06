@@ -2,8 +2,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef EditorMainMenu_h
-#define EditorMainMenu_h
+#pragma once
 
 #include "Glob2Screen.h"
 
@@ -39,4 +38,3 @@ public:
 
 
 
-#endif

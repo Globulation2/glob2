@@ -156,6 +156,8 @@ def configure(env, server_only):
         if isDarwinPlatform:
             print("Using Apple's OpenGL framework")
             env.Append(FRAMEWORKS=["OpenGL", "CoreFoundation"])
+            # Silence Apple's hundreds of OpenGL deprecation warnings.
+            env.Append(CPPDEFINES=["GL_SILENCE_DEPRECATION"])
         elif conf.CheckLib("GL") and conf.CheckCXXHeader("GL/gl.h"):
             gl_libraries.append("GL")
         elif conf.CheckLib("GL") and conf.CheckCXXHeader("OpenGL/gl.h"):
@@ -243,11 +245,22 @@ def main():
               default='build',
               help='build directory')
     env = Environment()
+    # SCons scrubs the shell environment for build commands; without TMPDIR,
+    # tools like ar fall back to /tmp, which sandboxed environments may block.
+    if 'TMPDIR' in os.environ:
+        env['ENV']['TMPDIR'] = os.environ['TMPDIR']
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
 
+    # Emit compile_commands.json for clangd / IDE LSPs.
+    env.Tool('compilation_db')
+    env.CompilationDatabase()
+
     if env['mingw'] or env['mingwcross']:
         Tool('mingw')(env)
+    if env['mingw'] or isWindowsPlatform:
+        # Windows caps command lines at 32K; pass the link arguments via @response-file
+        env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
 
     if env['mingwcross']:
             env.Platform('cygwin')
@@ -291,8 +304,22 @@ def main():
 
     env.Append(CPPPATH=['#libgag/include', '#'])
     env.Append(CPPPATH=['#libusl/src', '#'])
-    env.Append(CPPPATH=['#src'])
-    env.Append(CXXFLAGS=' -Wall -fPIC')
+    env.Append(CPPPATH=['#src', '#src/yog', '#src/ai', '#src/building',
+                        '#src/game/entities',
+                        '#src/gui',
+                        '#src/map', '#src/map/edit', '#src/map/generator',
+                        '#src/map/gradient', '#src/map/io', '#src/map/pathfind',
+                        '#src/net', '#src/net/irc', '#src/net/message',
+                        '#src/sgsl',
+                        '#src/team',
+                        '#src/unit'])
+    env.Append(CXXFLAGS=' -std=gnu++20 -Wall -fPIC')
+    # Uninitialized-read diagnostics: DET_INIT=zero|pattern forces deterministic
+    # stack initialization (see CLAUDE.md). Env var, not a cached scons option.
+    _detinit = os.environ.get('DET_INIT')
+    if _detinit:
+        env.Append(CXXFLAGS=' -ftrivial-auto-var-init=' + _detinit)
+        env.Append(CCFLAGS=' -ftrivial-auto-var-init=' + _detinit)
     env.Append(LINKFLAGS=' -Wall')
     env.Append(LIBS=['SDL2_net'])
     if not server_only:

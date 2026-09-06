@@ -3,22 +3,19 @@
 
 #include <list>
 #include <math.h>
-#include <Stream.h>
 #include <stdlib.h>
 #include <algorithm>
-#include <climits>
 
 #include "Building.h"
 #include "BuildingType.h"
+#include "EngineTiming.h"
+#include "FixedPoint.h"
 #include "Game.h"
 #include "GlobalContainer.h"
-#include "LogFileManager.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Utilities.h"
 #include "Order.h"
-#include "Bullet.h"
-#include "Integrity.h"
 
 bool Building::isRessourceFull(void)
 {
@@ -32,8 +29,8 @@ bool Building::isRessourceFull(void)
 
 int Building::neededRessource(void)
 {
-	Sint32 minProportion=0x7FFFFFFF;
-	int minType=-1;
+	Sint32 minProportion = MIN_PROPORTION_INIT;
+	int minType = RESSOURCE_TYPE_NONE;
 	int deci=syncRand()%MAX_RESSOURCES;
 	for (int ib=0; ib<MAX_RESSOURCES; ib++)
 	{
@@ -41,7 +38,7 @@ int Building::neededRessource(void)
 		int maxr=type->maxRessource[i];
 		if (maxr)
 		{
-			Sint32 proportion=(ressources[i]<<16)/maxr;
+			Sint32 proportion=(ressources[i]<<FIXED_POINT_SHIFT_16)/maxr;
 			if (proportion<minProportion)
 			{
 				minProportion=proportion;
@@ -58,29 +55,16 @@ void Building::neededRessources(int needs[MAX_NB_RESSOURCES])
 		needs[ri]=Building::neededRessource(ri);
 }
 
-void Building::wishedRessources(int needs[MAX_NB_RESSOURCES])
+void Building::computeWishedRessources(int needs[MAX_NB_RESSOURCES])
 {
 	 // we balance the system with Units working on it:
 	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		needs[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
+		needs[ri] = (WISHED_RESOURCE_NUM * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * WISHED_RESOURCE_DEN);
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurpose >= 0)
 		{
 			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
 			needs[(*ui)->destinationPurpose]--;
-		}
-}
-
-void Building::computeWishedRessources()
-{
-	 // we balance the system with Units working on it:
-	for (int ri = 0; ri < MAX_NB_RESSOURCES; ri++)
-		wishedResources[ri] = (4 * (type->maxRessource[ri] - ressources[ri])) / (type->multiplierRessource[ri] * 3);
-	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurpose >= 0)
-		{
-			assert((*ui)->destinationPurpose < MAX_NB_RESSOURCES);
-			wishedResources[(*ui)->destinationPurpose]--;
 		}
 }
 
@@ -108,13 +92,13 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 	{
 		if (hp<type->hpMax)
 		{
-			if ((type->prevLevel==-1) || !isHardSpaceForBuildingSite(REPAIR))
+			if ((type->prevLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(REPAIR))
 				return;
 			constructionResultState=REPAIR;
 		}
 		else
 		{
-			if ((type->nextLevel==-1) || !isHardSpaceForBuildingSite(UPGRADE))
+			if ((type->nextLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(UPGRADE))
 				return;
 			constructionResultState=UPGRADE;
 		}
@@ -145,7 +129,6 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		maxUnitWorkingPrevious = maxUnitWorking;
 		buildingState=WAITING_FOR_CONSTRUCTION;
-		maxUnitWorkingLocal=0;
 		maxUnitWorking=0;
 		maxUnitInside=0;
 		updateCallLists();
@@ -154,7 +137,6 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		//following reassigns units to work on upgrade, certain buildings will
 		//glitch if units are not unassigned and then reassigned like this
 		maxUnitWorking = unitWorking;
-		maxUnitWorkingLocal = maxUnitWorking;
 		maxUnitWorkingPreferred = maxUnitWorking;
 		maxUnitWorkingFuture = unitWorkingFuture;
 		updateConstructionState(); // To switch to a real building site, if all units have been freed from building.
@@ -169,7 +151,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	if (type->isBuildingSite)
 	{
 		assert(buildingState==ALIVE);
-		int targetLevelTypeNum=-1;
+		int targetLevelTypeNum=BUILDING_LEVEL_NONE;
 
 		if (constructionResultState==UPGRADE)
 			targetLevelTypeNum=type->prevLevel;
@@ -178,7 +160,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		else
 			assert(false);
 
-		if (targetLevelTypeNum!=-1)
+		if (targetLevelTypeNum!=BUILDING_LEVEL_NONE)
 		{
 			recoverTypeNum=targetLevelTypeNum;
 			recoverType=globalContainer->buildingsTypes.get(targetLevelTypeNum);
@@ -223,14 +205,11 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 	posX=midPosX+type->decLeft;
 	posY=midPosY+type->decTop;
-	posXLocal=posX;
-	posYLocal=posY;
 
 	if (!type->isVirtual)
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
 
 	maxUnitWorking=maxUnitWorkingPrevious;
-	maxUnitWorkingLocal=maxUnitWorking; //maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();
@@ -271,7 +250,6 @@ void Building::launchDelete(void)
 		buildingState=WAITING_FOR_DESTRUCTION;
 		maxUnitWorkingPrevious = maxUnitWorking;
 		maxUnitWorking=0;
-		maxUnitWorkingLocal=0;
 		maxUnitInside=0;
 		desiredMaxUnitWorking = 0;
 		updateCallLists();
@@ -285,7 +263,6 @@ void Building::cancelDelete(void)
 {
 	buildingState=ALIVE;
 	maxUnitWorking=maxUnitWorkingPrevious;
-	maxUnitWorkingLocal=maxUnitWorking;
 	maxUnitInside=type->maxUnitInside;
 	updateCallLists();
 	updateUnitsWorking();
@@ -306,7 +283,7 @@ void Building::updateCallLists(void)
 		// remove me
 		if(callListState != 0)
 		{
-			owner->remove_building_needing_work(this, oldPriority);
+			owner->removeBuildingNeedingWork(this, oldPriority);
 			callListState=0;
 			oldPriority = priority;
 		}
@@ -319,15 +296,20 @@ void Building::updateCallLists(void)
 			// I need units, if I am not in the call lists, add me
 			if(callListState != 1)
 			{
-				owner->add_building_needing_work(this, priority);
+				owner->addBuildingNeedingWork(this, priority);
 				callListState = 1;
 				oldPriority = priority;
 			}
-			// if i am in the call lists, update my then my position will need to be updated
-			else if(callListState == 1 && oldPriority == priority)
+			// I am in the call list. Re-register at current priority. This
+			// handles both BH-230 (priority changed -> move to new bucket)
+			// and the original same-priority re-sort, which is observable
+			// because Team::updateAllBuildingTasks calls subscribe* on each
+			// building in the bucket, and subscribe* -> updateCallLists
+			// mutates the bucket mid-iteration.
+			else
 			{
-				owner->remove_building_needing_work(this, oldPriority);
-				owner->add_building_needing_work(this, priority);
+				owner->removeBuildingNeedingWork(this, oldPriority);
+				owner->addBuildingNeedingWork(this, priority);
 				oldPriority = priority;
 			}
 		}
@@ -336,7 +318,7 @@ void Building::updateCallLists(void)
 	{
 		if(callListState != 0)
 		{
-			owner->remove_building_needing_work(this, oldPriority);
+			owner->removeBuildingNeedingWork(this, oldPriority);
 			callListState=0;
 			oldPriority = priority;
 		}
@@ -348,7 +330,7 @@ void Building::updateCallLists(void)
 		for (int i=0; i<NB_ABILITY; i++)
 			if (inUpgrade[i]!=LS_IN && type->upgrade[i])
 			{
-				owner->upgrade[i].push_front(this);
+				owner->canUpgrade[i].push_front(this);
 				inUpgrade[i]=LS_IN;
 			}
 
@@ -360,8 +342,8 @@ void Building::updateCallLists(void)
 				if (inCanFeedUnit!=LS_IN)
 				{
 					owner->canFeedUnit.push_front(this);
-					//A Building newly getting available to feed is locked to conversion for 150 frames
-					canNotConvertUnitTimer=150;
+					//A Building newly getting available to feed is locked to conversion for CANNOT_CONVERT_TIMER_INIT frames
+					canNotConvertUnitTimer=CANNOT_CONVERT_TIMER_INIT;
 					inCanFeedUnit=LS_IN;
 				}
 			}
@@ -388,7 +370,7 @@ void Building::updateCallLists(void)
 		for (int i=0; i<NB_ABILITY; i++)
 			if (inUpgrade[i]!=LS_OUT && type->upgrade[i])
 			{
-				owner->upgrade[i].remove(this);
+				owner->canUpgrade[i].remove(this);
 				inUpgrade[i]=LS_OUT;
 			}
 

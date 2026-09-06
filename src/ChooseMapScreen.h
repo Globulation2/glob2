@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __CHOOSE_MAP_SCREEN_H
-#define __CHOOSE_MAP_SCREEN_H
+#pragma once
 
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "Glob2Screen.h"
 #include <GUINumber.h>
+#include <string>
 
 namespace GAGGUI
 {
@@ -99,7 +99,7 @@ private:
 	//! The widget that will show a preview of the selection map
 	MapPreview *mapPreview;
 	//! The textual informations about the selected map
-	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate, *varPrestigeText;
+	Text *mapName, *mapInfo, *mapVersion, *mapSize, *mapDate;
 	//! True when the selected map is valid
 	bool validMapSelected;
 	//! Default type
@@ -110,8 +110,19 @@ private:
 	/// Called after a new mapHeader and gameHeader have been loaded.
 	void updateMapInformation();
 
+	/// Returns the file list currently shown: fileList when DisplayRegular, alternateFileList when DisplayAlternate.
+	Glob2FileList* activeFileList() const;
+
+	/// Returns the LoadableType paired with the active list: type1 when DisplayRegular, type2 when DisplayAlternate.
+	LoadableType activeType() const;
+
+	/// Maps a LoadableType to its display string ([the games]/[the maps]/[the replays]). Asserts on NONE.
+	static std::string loadableTypeName(LoadableType type);
+
+	/// Switches to newMode: flips list visibility, sets the switchType button label to the other list's type name, and fires selectionChanged() on the newly-active list.
+	void setDirectoryMode(DirectoryMode newMode);
+
 	/// Designates whether there will be verbose debugging output.
 	static const bool verbose = false;
 };
 
-#endif

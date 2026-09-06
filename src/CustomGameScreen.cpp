@@ -2,26 +2,23 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "CustomGameScreen.h"
-#include "Utilities.h"
 #include "AINames.h"
-#include "Game.h"
 #include "GlobalContainer.h"
-#include "GUIGlob2FileList.h"
-#include "GUIMapPreview.h"
 #include <GUIButton.h>
 #include <GUIText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
-#include <Stream.h>
 #include <FormatableString.h>
 #include "Player.h"
 #include "CustomGameOtherOptions.h"
 #include "AIDescriptionScreen.h"
+#include <optional>
+#include <vector>
 
 CustomGameScreen::CustomGameScreen() :
 	ChooseMapScreen("maps", "map", true)
 {
-	for (int i=0; i<NumberOfPlayerSelectors; i++)
+	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		isPlayerActive[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, i == 0, 100+i);
 		addWidget(isPlayerActive[i]);
@@ -65,11 +62,16 @@ CustomGameScreen::~CustomGameScreen()
 
 
 
+// Invoked by ChooseMapScreen::updateMapInformation when the user picks a map.
+// Lays out the player-selector widgets to match the map's team count. The
+// widget arrays are sized Team::MAX_COUNT, which is also the engine-wide cap
+// on team count (enforced by MapHeader::load), so the loops below cannot
+// index past array end.
 void CustomGameScreen::validMapSelectedhandler(void)
 {
 	int i;
 	// set the correct number of colors
-	for (i = 0; i<NumberOfPlayerSelectors; i++)
+	for (i = 0; i<Team::MAX_COUNT; i++)
 	{
 		color[i]->clearColors();
 		for (int j = 0; j<mapHeader.getNumberOfTeams(); j++)
@@ -97,7 +99,7 @@ void CustomGameScreen::validMapSelectedhandler(void)
 		aiSelector[i]->show();
 	}
 	// Close the rest
-	for (; i<NumberOfPlayerSelectors; i++)
+	for (; i<Team::MAX_COUNT; i++)
 	{
 		isPlayerActive[i]->setState(false);
 		color[i]->hide();
@@ -180,38 +182,57 @@ int CustomGameScreen::getSelectedColor(int i)
 
 
 
+namespace
+{
+	FormatableString aiSelectorName(AI::ImplementitionID iid, int selectorIndex)
+	{
+		// selectorIndex is the position in the visible selector list; selector 0
+		// is the human, so AI selectors start at 1 and display as "AI Name N"
+		// with N = selectorIndex - 1.
+		FormatableString name("%0 %1");
+		name.arg(AINames::getAIText(iid)).arg(selectorIndex - 1);
+		return name;
+	}
+}
+
+// Rebuilds gameHeader.players[] from the current selector widget state.
+// Active selectors are packed into slots [0..count); slots [count..MAX_COUNT)
+// are cleared to default BasePlayer{} so stale entries from earlier edits
+// (or earlier map selections) cannot leak into save files or network packets,
+// which serialize all MAX_COUNT_ON_DISK slots regardless of numberOfPlayers.
+// The alliance layout (human's team vs allied AIs, or free-for-all when no
+// human selector is active) is delegated to GameHeader::setDefaultAlliances,
+// which also resets stale ally numbers from previous configurations.
 void CustomGameScreen::updatePlayers()
 {
+	for (int i = 0; i < Team::MAX_COUNT; i++)
+		gameHeader.getBasePlayer(i) = BasePlayer();
+
 	int count = 0;
-	int humanColor = 0;
-	for (int i=0; i<NumberOfPlayerSelectors; i++)
+	std::optional<int> humanColor;
+	std::vector<int> aiColors;
+	for (int i = 0; i < Team::MAX_COUNT; i++)
 	{
-		if (isActive(i))
+		if (!isActive(i))
+			continue;
+
+		int teamColor = getSelectedColor(i);
+		if (i == 0)
 		{
-			int teamColor=getSelectedColor(i);
-			if (i==0)
-			{
-				gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
-				humanColor = teamColor;
-				gameHeader.setAllyTeamNumber(teamColor, 1);
-			}
-			else
-			{
-				AI::ImplementitionID iid=getAiImplementation(i);
-				FormatableString name("%0 %1");
-				name.arg(AINames::getAIText(iid)).arg(i-1);
-				gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
-				if(teamColor != humanColor)
-					gameHeader.setAllyTeamNumber(teamColor, 2);
-			}
-			count+=1;
+			gameHeader.getBasePlayer(count) = BasePlayer(0, globalContainer->settings.getUsername().c_str(), teamColor, BasePlayer::P_LOCAL);
+			humanColor = teamColor;
 		}
 		else
 		{
-			gameHeader.getBasePlayer(i) = BasePlayer();
+			AI::ImplementitionID iid = getAiImplementation(i);
+			FormatableString name = aiSelectorName(iid, i);
+			gameHeader.getBasePlayer(count) = BasePlayer(i, name.c_str(), teamColor, Player::playerTypeFromImplementitionID(iid));
+			aiColors.push_back(teamColor);
 		}
+		count += 1;
 	}
 	gameHeader.setNumberOfPlayers(count);
+	gameHeader.setDefaultAlliances(humanColor, aiColors);
 }
 
 

@@ -2,12 +2,51 @@ import sys
 
 env = Environment()
 
-if sys.platform.startswith("linux"):
-  ccflags = '-Wall -g'
-else:
-  ccflags = '/EHsc /MD /GR'
+# Shared include paths so tests can compile against game headers.
+# echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
+# which need libgag and SDL2 headers visible at parse time even when the
+# test itself never references those types.
+common_cpppath = ['..', '../src', '../src/ai',
+                  '../src/building', '../src/game/entities',
+                  '../src/gui', '../src/team', '../src/unit',
+                  '../src/net', '../src/net/irc', '../src/net/message',
+                  '../src/yog', '../src/sgsl',
+                  '../src/map', '../src/map/edit', '../src/map/generator',
+                  '../src/map/gradient', '../src/map/io', '../src/map/pathfind',
+                  '../libgag/include', '../libusl/src']
+common_defines = ['HAVE_CONFIG_H', '_THREAD_SAFE']
 
-env.Append(CCFLAGS = ccflags)
+if sys.platform.startswith("linux"):
+  env.Append(CCFLAGS = Split('-Wall -g -std=gnu++17'))
+  env.Append(CPPPATH = common_cpppath + ['/usr/include/SDL2'])
+  env.Append(CPPDEFINES = common_defines)
+elif sys.platform == "darwin":
+  env.Append(CCFLAGS = Split('-Wall -g -std=gnu++17'))
+  env.Append(CPPPATH = common_cpppath + [
+      '/opt/homebrew/include',
+      '/opt/homebrew/include/SDL2',
+      '/usr/local/include',
+      '/usr/local/include/SDL2'])
+  env.Append(LIBPATH = ['/opt/homebrew/lib', '/usr/local/lib'])
+  env.Append(CPPDEFINES = common_defines)
+else:
+  env.Append(CCFLAGS = Split('/EHsc /MD /GR'))
+
+# Server-mode libgag, built here rather than picked up from ../build: the main
+# scons only emits libgagserver.a under `server=1`, so a plain client build
+# leaves the harnesses below unlinkable. YOG_SERVER_ONLY strips the OpenGL /
+# SDL_ttf / SDL_image / fribidi surface the harnesses never touch.
+gag_env = env.Clone()
+gag_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  gag_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+gag_server = gag_env.StaticLibrary('gagserver', [
+  gag_env.Object('gagserver-' + name + '.o', '../libgag/src/' + name + '.cpp')
+  for name in Split("""
+    BinaryStream FileManager FormatableString Stream StreamBackend
+    StreamFilter StringTable TextStream Toolkit
+  """)])
 
 sources = Split("""
 TestsRunner.cpp
@@ -17,6 +56,63 @@ PerlinNoiseTest.cpp
 
 HelloWorldTest.cpp
 
+BitArrayTest.cpp
+
+BrushAccumulatorTest.cpp
+BrushTestStubs.cpp
+../src/Brush.cpp
+
+GradientBFSTest.cpp
+../src/ai/echo/GradientBFS.cpp
+
+MapQueryTest.cpp
+MapQueryTestStubs.cpp
+../src/map/Map.cpp
+../src/map/MapQuery.cpp
+../src/map/MapTerrain.cpp
+../src/BitArray.cpp
+../src/Utilities.cpp
+../src/building/BuildingUtils.cpp
+../src/unit/UnitUtils.cpp
+
+GameMusicControllerTest.cpp
+../src/gui/GameMusicController.cpp
+
+PlayerVoiceDrainTest.cpp
+../src/PlayerVoice.cpp
+
+GhostBuildingOverlapTest.cpp
+
+BrushToolHitTest.cpp
+
+TurretScanTileTest.cpp
+
+ParticleCrossfadeTest.cpp
+
+CortexUpgradeTest.cpp
+
+FilenameStripTest.cpp
+
+GUIListSelectionTest.cpp
+
+ScrollWheelTargetTest.cpp
+
+BuildingFailureDisplayTest.cpp
+
+OverlayFillTest.cpp
+../src/OverlayFill.cpp
+
+MessageRecipientsTest.cpp
+../src/net/message/MessageRecipients.cpp
+
+SpriteCenteringTest.cpp
+
+PanelButtonHitTest.cpp
+
+KeyActionLookupTest.cpp
+../src/gui/GameGUIKeyActions.cpp
+../src/map/edit/MapEditKeyActions.cpp
+
 natsort/NatSortTest.cpp
 """)
 
@@ -24,4 +120,314 @@ natsort/NatSortTest.cpp
 env.Append(LIBS=['cppunit'])
 
 env.Program( sources )
+
+
+# Standalone behaviour-equivalence harness for WinningConditions.cpp.
+# Emits a deterministic golden text stream covering every WC predicate
+# (Death/Allies/Prestige/Script/OpponentsDefeated). To verify a refactor of
+# WinningConditions.cpp is behaviour-preserving, run on the cleaned-up tree,
+# save stdout, then `git stash` / re-run / diff. Doesn't use cppunit.
+harness_sources = Split("""
+WinningConditionsHarness.cpp
+WinningConditionsTestStubs.cpp
+../src/WinningConditions.cpp
+""")
+
+env.Program( target = 'WinningConditionsHarness', source = harness_sources )
+
+
+# Standalone behaviour-equivalence harness for src/Campaign.cpp::load.
+# Verifies that load() correctly distinguishes valid campaigns from missing,
+# empty, garbage, and bogus-version files. Pre-fix tree silently returns true
+# for the four broken cases; post-fix tree returns false. Self-contained:
+# synthesizes its own /tmp fixture files. Links the server-mode libgag for
+# FileManager / Toolkit / TextStream / StreamBackend; a small stubs file
+# covers the unused glob2NameToFilename symbol that Campaign::save
+# references.
+campaign_env = env.Clone()
+campaign_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
+campaign_env.Append(LIBS = [gag_server, 'z'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  campaign_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+campaign_sources = Split("""
+CampaignLoadHarness.cpp
+CampaignLoadTestStubs.cpp
+../src/Campaign.cpp
+""")
+
+campaign_env.Program( target = 'CampaignLoadHarness', source = campaign_sources )
+
+
+# Standalone regression harness for CS-051 (CampaignMenuScreen selection
+# index/name divergence). Builds a non-linear-unlock campaign in memory,
+# proves the old `campaign.getMap(displayedIndex)` algorithm picks the
+# wrong map, and proves `Campaign::findUnlockedMap(name)` picks the right
+# one. Pre-fix tree fails to LINK (helper does not exist); post-fix tree
+# builds and exits 0. Reuses the same env / libgagserver.a / stubs as
+# CampaignLoadHarness because Campaign.cpp's link surface is identical.
+campaign_sel_sources = Split("""
+CampaignSelectionHarness.cpp
+CampaignLoadTestStubs.cpp
+../src/Campaign.cpp
+""")
+
+campaign_env.Program( target = 'CampaignSelectionHarness', source = campaign_sel_sources )
+
+
+# Standalone regression harness for the Campaign map-list bounds fixes:
+# removeMap ignoring out-of-range indices and getMap failing deterministically
+# instead of invoking UB. Reuses the same env / libgagserver.a / stubs as the
+# other Campaign harnesses because Campaign.cpp's link surface is identical.
+campaign_bounds_sources = Split("""
+CampaignBoundsHarness.cpp
+CampaignLoadTestStubs.cpp
+../src/Campaign.cpp
+""")
+
+campaign_env.Program( target = 'CampaignBoundsHarness', source = campaign_bounds_sources )
+
+
+# Standalone regression harness for the CampaignSelectorScreen description
+# re-parse smell: every selection event used to re-parse the whole campaign
+# file just to show its description. CampaignDescriptionCache parses each
+# file at most once per instance; the harness proves correct lookup, the
+# empty-description behaviour for unreadable files, and (by rewriting the
+# fixture between lookups) that repeated lookups don't touch the disk.
+# Pre-fix tree fails to LINK (the cache class does not exist). Reuses the
+# same env / libgagserver.a / stubs as the other Campaign harnesses.
+campaign_desc_sources = Split("""
+CampaignDescriptionCacheHarness.cpp
+CampaignLoadTestStubs.cpp
+../src/Campaign.cpp
+""")
+
+campaign_env.Program( target = 'CampaignDescriptionCacheHarness', source = campaign_desc_sources )
+
+
+# Standalone regression harness for BH-195 (OrderAlterateArea::setData
+# OOB read on malformed bitmap payload). Builds synthetic Uint8 buffers
+# and checks that setData rejects them. Compiled with YOG_SERVER_ONLY so
+# OrderModify.cpp's BrushAccumulator constructor is stripped, removing
+# the Brush/Map link dependency — only OrderModify.o + BitArray.o are
+# needed because the other Order classes in OrderModify.cpp are pure
+# byte marshalers with no Game/Team/Unit references.
+alterate_env = env.Clone()
+alterate_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  alterate_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+# Give the YOG_SERVER_ONLY builds of OrderModify.cpp / BitArray.cpp unique
+# object names so they don't collide with the main-env builds used by
+# TestsRunner above (different -D flags → different actions).
+alterate_objs = [
+  alterate_env.Object('OrderAlterateAreaTest.o', 'OrderAlterateAreaTest.cpp'),
+  alterate_env.Object('OrderModify-alterate.o', '../src/OrderModify.cpp'),
+  alterate_env.Object('BitArray-alterate.o', '../src/BitArray.cpp'),
+]
+alterate_env.Program( target = 'OrderAlterateAreaTest', source = alterate_objs )
+
+
+# Standalone regression harness for BH-207 (NetSendOrder::decodeData allocating
+# a multi-GB Uint8[] from an attacker-supplied size and letting std::bad_alloc
+# escape, while callers — loadReplay / retrieveOrder / getNetMessage — only
+# catch std::ios_base::failure). The harness stubs Order::getOrder so it
+# doesn't need to link the full Order class hierarchy; it just needs
+# OrderMessages.cpp + the server-mode libgag (BinaryStream + MemoryStreamBackend).
+netsend_env = env.Clone()
+netsend_env.Append(CPPDEFINES = ['YOG_SERVER_ONLY'])
+netsend_env.Append(LIBS = [gag_server, 'z'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  netsend_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+netsend_objs = [
+  netsend_env.Object('NetSendOrderDecodeTest.o', 'NetSendOrderDecodeTest.cpp'),
+  netsend_env.Object('OrderMessages-netsend.o', '../src/net/message/OrderMessages.cpp'),
+]
+netsend_env.Program( target = 'NetSendOrderDecodeTest', source = netsend_objs )
+
+
+# Standalone regression harness for BH-066 (null WinningCondition shared_ptr
+# pushed unchecked into GameHeader::winningConditions on corrupt/truncated
+# input). Exercises WinningCondition::loadWinningConditions -- the shared
+# read loop both GameHeader loaders now go through -- against a round-trip,
+# an unknown type tag, and a truncated stream. Reuses the harness stubs for
+# MapHeader/SGSL and links the server-mode libgag for BinaryStream +
+# MemoryStreamBackend. Distinct object names: pkg-config sdl2 cflags differ
+# from the main env's compile action.
+wcdecode_env = env.Clone()
+wcdecode_env.Append(LIBS = [gag_server, 'z'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  wcdecode_env.ParseConfig("pkg-config sdl2 --cflags --libs")
+
+wcdecode_objs = [
+  wcdecode_env.Object('WinningConditionDecodeTest.o', 'WinningConditionDecodeTest.cpp'),
+  wcdecode_env.Object('WinningConditions-decode.o', '../src/WinningConditions.cpp'),
+  wcdecode_env.Object('WinningConditionsTestStubs-decode.o', 'WinningConditionsTestStubs.cpp'),
+]
+wcdecode_env.Program( target = 'WinningConditionDecodeTest', source = wcdecode_objs )
+
+
+# Standalone regression harness for WinningCondition::setPrestigeWinCondition,
+# the in-place prestige toggle used by CustomGameOtherOptions (which used to
+# reset the whole winning-condition list to defaults before maybe erasing
+# prestige). Checks removal/insertion is scoped to the prestige entry and that
+# re-insertion lands at the default-order evaluation position. Pre-fix tree
+# fails to LINK (the helper does not exist). Reuses the wcdecode env's
+# WinningConditions object and stubs.
+prestige_toggle_objs = [
+  wcdecode_env.Object('WinningConditionPrestigeToggleTest.o', 'WinningConditionPrestigeToggleTest.cpp'),
+  wcdecode_objs[1], wcdecode_objs[2],
+]
+wcdecode_env.Program( target = 'WinningConditionPrestigeToggleTest', source = prestige_toggle_objs )
+
+
+# Standalone regression harness for Bullet::ticksInitial serialization
+# (save() used to omit the field and load() zeroed it, flattening the
+# ballistic-arc rendering of in-flight bullets after a reload). Checks a
+# version-85 round-trip and the pre-85 default (ticksInitial = ticksLeft).
+# Bullet.cpp only needs Stream, so it reuses the wcdecode env's
+# libgagserver.a link surface. Distinct object name for Bullet.cpp because
+# the main build compiles it with different flags.
+bullet_objs = [
+  wcdecode_env.Object('BulletSaveLoadTest.o', 'BulletSaveLoadTest.cpp'),
+  wcdecode_env.Object('Bullet-saveload.o', '../src/Bullet.cpp'),
+]
+wcdecode_env.Program( target = 'BulletSaveLoadTest', source = bullet_objs )
+
+
+# Standalone harness for the per-team Map::exploredArea section of saved
+# games: a keep=true round-trip restores every team byte-for-byte and leaves
+# the stream aligned; keep=false consumes the section without allocating.
+# Uses the Map-subclass fixture (test/README.md) with the MapQuery Sector
+# stubs, so the link surface is Map.cpp's own dependencies plus
+# libgagserver.a for the streams. Distinct object names because the same
+# sources are also compiled into TestsRunner under the plain env.
+explored_area_objs = [
+  wcdecode_env.Object('MapExploredAreaSaveLoadTest.o', 'MapExploredAreaSaveLoadTest.cpp'),
+  wcdecode_env.Object('MapExploredAreaIO-saveload.o', '../src/map/io/MapExploredAreaIO.cpp'),
+  wcdecode_env.Object('Map-saveload.o', '../src/map/Map.cpp'),
+  wcdecode_env.Object('MapQuery-saveload.o', '../src/map/MapQuery.cpp'),
+  wcdecode_env.Object('MapTerrain-saveload.o', '../src/map/MapTerrain.cpp'),
+  wcdecode_env.Object('BitArray-saveload.o', '../src/BitArray.cpp'),
+  wcdecode_env.Object('Utilities-saveload.o', '../src/Utilities.cpp'),
+  wcdecode_env.Object('BuildingUtils-saveload.o', '../src/building/BuildingUtils.cpp'),
+  wcdecode_env.Object('UnitUtils-saveload.o', '../src/unit/UnitUtils.cpp'),
+  wcdecode_env.Object('MapQueryTestStubs-saveload.o', 'MapQueryTestStubs.cpp'),
+]
+wcdecode_env.Program( target = 'MapExploredAreaSaveLoadTest', source = explored_area_objs )
+
+
+# Standalone regression harness for BasePlayer::playerID serialization
+# (the field is Uint32 but save/load moved it as Uint16, truncating YOG
+# identifiers above 0xFFFF). Checks a version-86 round-trip with a wide
+# playerID and the pre-86 Uint16 wire layout. BasePlayer.cpp only needs
+# Stream plus inline Team helpers, so it reuses the wcdecode env's
+# libgagserver.a link surface. Distinct object name for BasePlayer.cpp
+# because the main build compiles it with different flags.
+baseplayer_objs = [
+  wcdecode_env.Object('BasePlayerSaveLoadTest.o', 'BasePlayerSaveLoadTest.cpp'),
+  wcdecode_env.Object('BasePlayer-saveload.o', '../src/BasePlayer.cpp'),
+]
+wcdecode_env.Program( target = 'BasePlayerSaveLoadTest', source = baseplayer_objs )
+
+
+# Standalone regression harness for GameHeader section handling on text
+# streams (load/loadPlayerInfo used to pass the player-loop index into
+# readLeaveSection(size_t count), popping `i` nesting levels instead of 1 —
+# masked by BinaryInputStream's no-op but assert-fatal on TextInputStream).
+# Checks full and player-info round-trips through TextOutputStream /
+# TextInputStream. Reuses the wcdecode env's libgagserver.a link surface
+# plus the WinningConditions objects (GameHeader saves/loads winning
+# conditions) and the BasePlayer object. Distinct object name for
+# GameHeader.cpp because the main build compiles it with different flags.
+gameheader_objs = [
+  wcdecode_env.Object('GameHeaderTextSaveLoadTest.o', 'GameHeaderTextSaveLoadTest.cpp'),
+  wcdecode_env.Object('GameHeader-saveload.o', '../src/GameHeader.cpp'),
+]
+wcdecode_env.Program( target = 'GameHeaderTextSaveLoadTest',
+                      source = gameheader_objs + [
+                        wcdecode_objs[1], wcdecode_objs[2],
+                        baseplayer_objs[1],
+                      ] )
+
+
+# Standalone regression harness for GameHeader::setDefaultAlliances, the
+# widget-free custom-game alliance layout used by
+# CustomGameScreen::updatePlayers (which used to track the human's color with
+# an `int humanColor = 0;` sentinel, so a missing human silently made team 0
+# "the human's team"). Checks the human/enemy split, the shared-color case,
+# the explicit no-human free-for-all, and the stale-layout reset. Pre-fix
+# tree fails to LINK (the helper does not exist). Reuses the GameHeader
+# object and its link surface.
+default_alliances_objs = [
+  wcdecode_env.Object('GameHeaderDefaultAlliancesTest.o', 'GameHeaderDefaultAlliancesTest.cpp'),
+  gameheader_objs[1],
+]
+wcdecode_env.Program( target = 'GameHeaderDefaultAlliancesTest',
+                      source = default_alliances_objs + [
+                        wcdecode_objs[1], wcdecode_objs[2],
+                        baseplayer_objs[1],
+                      ] )
+
+
+# Standalone regression harness for the BaseTeam "colorPAD" wire byte
+# (load() pins color.a to ALPHA_OPAQUE but save() used to write the live
+# alpha, so save->load->save drifted when alpha was non-opaque). Checks
+# that a round-trip pins alpha opaque and that the byte stream is stable.
+# Race is stubbed in the test file (only reached for pre-73 streams), so
+# BaseTeam.cpp reuses the wcdecode env's libgagserver.a link surface.
+# Distinct object name for BaseTeam.cpp because the main build compiles
+# it with different flags.
+baseteam_objs = [
+  wcdecode_env.Object('BaseTeamSaveLoadTest.o', 'BaseTeamSaveLoadTest.cpp'),
+  wcdecode_env.Object('BaseTeam-saveload.o', '../src/BaseTeam.cpp'),
+]
+wcdecode_env.Program( target = 'BaseTeamSaveLoadTest', source = baseteam_objs )
+
+
+# Standalone regression harness for GameObjectives index handling and
+# scriptNumber serialization: removeObjective and the assert-only accessors
+# used to invoke UB on out-of-range indices, and scriptNumber (an int in
+# memory) is serialized as Uint8, so the entry points clamp to the [0..255]
+# wire domain. GameObjectives.cpp only needs Stream, so it reuses the
+# wcdecode env's libgagserver.a link surface. Distinct object name because
+# the main build compiles it with different flags.
+gameobjectives_objs = [
+  wcdecode_env.Object('GameObjectivesTest.o', 'GameObjectivesTest.cpp'),
+  wcdecode_env.Object('GameObjectives-test.o', '../src/GameObjectives.cpp'),
+]
+wcdecode_env.Program( target = 'GameObjectivesTest', source = gameobjectives_objs )
+
+
+# Standalone regression harness for GameHints scriptNumber serialization:
+# the value is an int in memory but serialized as Uint8, so the entry points
+# clamp to the [0..255] wire domain, mirroring GameObjectives. GameHints.cpp
+# only needs Stream, so it reuses the wcdecode env's libgagserver.a link
+# surface. Distinct object name because the main build compiles it with
+# different flags.
+gamehints_objs = [
+  wcdecode_env.Object('GameHintsTest.o', 'GameHintsTest.cpp'),
+  wcdecode_env.Object('GameHints-test.o', '../src/GameHints.cpp'),
+]
+wcdecode_env.Program( target = 'GameHintsTest', source = gamehints_objs )
+
+
+# Standalone regression harness for the replay inter-order step counter
+# (stepsSinceLastOrder was Uint16 and wrapped after 65535 order-less ticks,
+# silently corrupting tick-to-order alignment; version 87 widened it to
+# Uint32, gated on the replay's VERSION_MINOR). Checks a round-trip with
+# >65535 quiet steps, the pre-87 Uint16 wire layout through the gated read,
+# and version floor/ceiling rejection. GameGUI and the Order hierarchy are
+# stubbed in the test file (same trick as NetSendOrderDecodeTest.cpp);
+# reuses the YOG_SERVER_ONLY OrderMessages object and the wcdecode env's
+# libgagserver.a link surface. Distinct object names for Replay*.cpp
+# because the main build compiles them with different flags.
+replay_objs = [
+  wcdecode_env.Object('ReplayStepCounterTest.o', 'ReplayStepCounterTest.cpp'),
+  wcdecode_env.Object('ReplayWriter-steptest.o', '../src/ReplayWriter.cpp'),
+  wcdecode_env.Object('ReplayReader-steptest.o', '../src/ReplayReader.cpp'),
+  netsend_objs[1],
+]
+wcdecode_env.Program( target = 'ReplayStepCounterTest', source = replay_objs )
 

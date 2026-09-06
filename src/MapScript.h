@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
 
-#ifndef MapScript_h
-#define MapScript_h
+#pragma once
 
 #include "SDL.h"
 #include <string>
@@ -34,8 +33,11 @@ public:
 	///Encodes this MapScript into a bit stream
 	void encodeData(GAGCore::OutputStream* stream) const;
 
-	///Decodes this MapScript from a bit stream
-	void decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
+	///Decodes this MapScript from a bit stream. Returns false if the stored
+	///mode byte is not a known MapScriptMode (corrupt or future-version file);
+	///the caller must treat that as a load failure — `mode` is left at USL and
+	///no compile is attempted.
+	bool decodeData(GAGCore::InputStream* stream, Uint32 versionMinor);
 
 	///This returns the string representing the mapscript
 	const std::string& getMapScript() const;
@@ -49,12 +51,11 @@ public:
 	///This sets the current map script mode
 	void setMapScriptMode(MapScriptMode newMode);
 	
-	///This compiles the code and returns false on error
+	///This compiles the code and returns false on error.
+	///USL is the only mode; an unknown mode (unreachable after decodeData
+	///validation) fails deterministically rather than falling off the end.
 	bool compileCode();
-	
-	///This test compiles the code and returns false on error
-	bool testCompileCode(const std::string& testScript);
-	
+
 	///This returns the error
 	const MapScriptError& getError() const;
 	
@@ -67,4 +68,3 @@ private:
 	MapScriptUSL usl;
 };
 
-#endif
