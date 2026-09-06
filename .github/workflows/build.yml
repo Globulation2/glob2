@@ -41,6 +41,11 @@ jobs:
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 server=1 --build=build-server
 
+      - name: Build and run the terrain resource regression
+        run: |
+          scons -j$(nproc) release=1 server=0 terrain-test
+          ./build/src/TerrainResourcesHarness
+
       - name: Build and run the tests
         working-directory: test
         run: |
