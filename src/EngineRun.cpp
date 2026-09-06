@@ -26,24 +26,31 @@ using std::shared_ptr;
 
 void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st)
 {
-	if (globalContainer->replaying)
+	const int previousSpeed = st.speed;
+	int renderInterval = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedRenderInterval() : 1;
+	st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
+
+	// Replay fast-forward uses the uncapped preset.
+	if (globalContainer->replaying && globalContainer->replayFastForward
+		&& !gui.gamePaused && !gui.hardPause)
 	{
-		if (globalContainer->replayFastForward && !gui.gamePaused)
-		{
-			st.speed = REPLAY_FAST_FORWARD_MS;
-			if (st.nextGuiStep < 0) st.nextGuiStep = REPLAY_FAST_FORWARD_DRAW_RATIO - 1;
-		}
-		else
-		{
-			st.speed = GAME_TICK_MS;
-			if (st.nextGuiStep < 0) st.nextGuiStep = 0;
-		}
+		st.speed = REPLAY_FAST_FORWARD_MS;
+		renderInterval = REPLAY_FAST_FORWARD_DRAW_RATIO;
 	}
-	else
+
+	// Pausing must not turn an uncapped preset into a busy loop, and GUI
+	// input should be rendered on every paused frame.
+	if (gui.gamePaused || gui.hardPause)
 	{
-		// Process the GUI as usual, every step
-		st.nextGuiStep = 0;
+		st.speed = GAME_TICK_MS;
+		renderInterval = 1;
 	}
+	if (st.nextGuiStep < 0 || st.nextGuiStep >= renderInterval)
+		st.nextGuiStep = renderInterval - 1;
+
+	// A preset change or pause starts a fresh timing budget.
+	if (st.speed != previousSpeed)
+		st.needToBeTime = static_cast<Sint64>(SDL_GetTicks64() - st.startTime);
 }
 
 // Headless / scripted-test polling: under --nox automaticEndingGame, flip
@@ -190,16 +197,17 @@ void Engine::executeOrdersAndStep(bool readyNow)
 	}
 }
 
-void Engine::drawAndPaceFrame(MainLoopState& st)
+void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 {
-	if (st.nextGuiStep == 0)
+	const bool renderedFrame = st.nextGuiStep == 0;
+	if (renderedFrame)
 	{
 		gui.drawAll(gui.localTeamNo);
 		globalContainer->gfx->nextFrame();
 	}
 
 	// if required, save videoshot
-	if (!(globalContainer->videoshotName.empty()) &&
+	if (renderedFrame && !(globalContainer->videoshotName.empty()) &&
 		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		)
 	{
@@ -219,12 +227,16 @@ void Engine::drawAndPaceFrame(MainLoopState& st)
 
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
 	Uint64 delay = std::max<Sint64>(0, st.needToBeTime - currentTime);
-	SDL_Delay(delay);
+	if (delay > 0)
+		SDL_Delay(delay);
+	else if (!readyNow)
+		SDL_Delay(1);
 
 	// we set CPU stats
 	// Convert slept time into CPU load for one game tick.
-	const int loadPercent = static_cast<int>(
-		(GAME_TICK_MS * 100 - delay * 100) / GAME_TICK_MS);
+	const int loadPercent = st.speed > 0
+		? static_cast<int>((std::max<Sint64>(0, static_cast<Sint64>(st.speed) - static_cast<Sint64>(delay)) * 100) / st.speed)
+		: 100;
 	gui.setCpuLoad(loadPercent);
 }
 
@@ -476,10 +488,11 @@ void Engine::prepareNextGameSession(bool& doRunOnceAgain)
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
 	MainLoopState st;
-	st.speed = GAME_TICK_MS;
+	st.adjustableGameSpeed = gui.canChangeGameSpeed();
+	st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
 	st.wasReadyLastTick = true;
-	// If playing in fast-forward, we process the GUI and draw everything only
-	// once every 3 game-steps so the overall fps stays about the same.
+	// At higher game-speed presets (and during replay fast-forward), render
+	// less frequently so simulation can use the available CPU.
 	st.nextGuiStep = 1;
 	st.needToBeTime = 0;
 	st.startTime = SDL_GetTicks64();
@@ -524,7 +537,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 		}
 
 		if (!globalContainer->runNoX)
-			drawAndPaceFrame(st);
+			drawAndPaceFrame(st, readyNow);
 
 		if (handleExitRequest())
 			break;

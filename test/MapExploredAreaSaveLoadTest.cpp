@@ -39,8 +39,8 @@ constexpr int kMapDec = 3;   // 8x8
 constexpr int kTeams = 3;
 constexpr Uint32 kSentinel = 0xC0FFEE42u;
 
-// Sized Map with no Sector array; see test/README.md. exploredArea is owned
-// here because Map::clear() only frees it on the arraysBuilt path.
+// Sized Map with no Sector array; see test/README.md. The fixture releases
+// its explored-area buffers before base cleanup.
 struct TeamMap : Map
 {
 	TeamMap()

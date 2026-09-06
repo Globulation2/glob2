@@ -6,6 +6,8 @@
 
 #include <SDL_keycode.h>
 
+#include <FormatableString.h>
+#include <StringTable.h>
 #include <Toolkit.h>
 
 #include "Game.h"
@@ -70,6 +72,24 @@ void GameGUI::handleKeySelectPlaceArea(GameGUIToolManager::ZoneType zone)
 	toolManager.activateZoneTool(zone);
 }
 
+bool GameGUI::canChangeGameSpeed() const
+{
+	return globalContainer->replaying || !game.gameHeader.hasNetworkPlayer();
+}
+
+void GameGUI::changeGameSpeed(int amount)
+{
+	if(!canChangeGameSpeed())
+		return;
+	const int oldSpeed=globalContainer->settings.gameSpeed;
+	globalContainer->settings.changeGameSpeed(amount);
+	if(oldSpeed!=globalContainer->settings.gameSpeed)
+		globalContainer->settings.save();
+	addMessage(Color(230, 230, 230), FormattableString("%0: %1")
+		.arg(Toolkit::getStringTable()->getString("[game speed]"))
+		.arg(globalContainer->settings.getGameSpeedText()), false);
+}
+
 void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 {
 	if (typingInputScreen == NULL)
@@ -81,6 +101,18 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 		else
 		{
 			Uint32 action_t = keyboardManager.getAction(KeyPress(key, pressed));
+			// Older personal shortcut files do not contain the new speed actions.
+			// Provide a fallback when the configurable shortcut system did not
+			// resolve an action; configured actions still take precedence.
+			if(action_t==GameGUIKeyActions::DoNothing && pressed
+				&& (key.mod&KMOD_CTRL))
+			{
+				if(key.sym==SDLK_PLUS || key.sym==SDLK_EQUALS
+					|| key.sym==SDLK_KP_PLUS)
+					action_t=GameGUIKeyActions::IncreaseGameSpeed;
+				else if(key.sym==SDLK_MINUS || key.sym==SDLK_KP_MINUS)
+					action_t=GameGUIKeyActions::DecreaseGameSpeed;
+			}
 			switch(action_t)
 			{
 				case GameGUIKeyActions::DoNothing:
@@ -197,6 +229,12 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					// AI-only and replay playback have no live peer and are safe.
 					if (globalContainer->replaying || !game.gameHeader.hasNetworkPlayer())
 						hardPause=!hardPause;
+					break;
+				case GameGUIKeyActions::IncreaseGameSpeed:
+					changeGameSpeed(1);
+					break;
+				case GameGUIKeyActions::DecreaseGameSpeed:
+					changeGameSpeed(-1);
 					break;
 				case GameGUIKeyActions::ToggleDrawUnitPaths:
 					drawPathLines=!drawPathLines;

@@ -490,6 +490,22 @@ if not env['server']:
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
 
+if not env['server']:
+    speed_sources = [source for source in source_files if source != 'Glob2.cpp']
+    speed_sources += local.Object('GameSpeedTest.o', '#test/GameSpeedTest.cpp')
+    speed_test = local.Program('game-speed-tests', speed_sources)
+    local.Alias('speed-tests', speed_test)
+
+if not env['server']:
+    savegame_sources = [source for source in source_files if source != 'Glob2.cpp']
+    savegame_sources += local.Object('SavegameSafetyHarness.o', '#test/SavegameSafetyHarness.cpp')
+    savegame_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
+    savegame_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    savegame_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
+    local.Alias('savegame-safety-test', savegame_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)

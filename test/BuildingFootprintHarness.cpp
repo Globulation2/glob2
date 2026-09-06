@@ -2,6 +2,7 @@
 // Regression for wrapped footprints being erased by Game::load integrity repair.
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "GameGUI.h"
 #include "Building.h"
 #include "IntBuildingType.h"
 #include "BinaryStream.h"
@@ -59,7 +60,8 @@ int main(int argc, char** argv)
         FILE* file = std::fopen(argv[2], "rb");
         require(file != nullptr, "open fixture");
         GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
-        Game loaded(nullptr);
+        GameGUI restoredGUI;
+        Game& loaded = restoredGUI.game;
         require(loaded.load(&reader), "load wrapped-building fixture");
         require(loaded.map.getW() == 32 && loaded.map.getH() == 32, "fixture dimensions");
         require(loaded.mapHeader.getNumberOfTeams() == 1 && loaded.teams[0], "fixture team exists");
@@ -76,7 +78,8 @@ int main(int argc, char** argv)
     const int positions[][2] = {{8,8}, {-1,8}, {8,-1}, {-1,-1}, {31,31}};
     for (const auto& position : positions)
     {
-        Game game(nullptr);
+        GameGUI gui;
+        Game& game = gui.game;
         game.map.setSize(5, 5, GRASS);
         game.map.setGame(&game);
         game.addTeam(0);
@@ -103,7 +106,8 @@ int main(int argc, char** argv)
         auto* copy = new GAGCore::MemoryStreamBackend(*bytes);
         copy->seekFromStart(0);
         GAGCore::BinaryInputStream reader(copy);
-        Game loaded(nullptr);
+        GameGUI restoredGUI;
+        Game& loaded = restoredGUI.game;
         require(loaded.load(&reader), "wrapped building save must load");
         auto* restored = loaded.teams[0]->myBuildings[0];
         checkFootprint(loaded, *restored);
@@ -118,4 +122,5 @@ int main(int argc, char** argv)
         }
     }
     std::puts("Building footprint regressions passed: repair, idempotence, save/load and exits at five positions");
+    return 0;
 }
