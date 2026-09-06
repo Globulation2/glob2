@@ -335,6 +335,10 @@ namespace GAGCore
 		int drawableW = 0, drawableH = 0;
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
+		//! the GL viewport that fits the logical resolution into the drawable without distorting its aspect ratio, letterboxed/pillarboxed as needed
+		void glLetterbox(float &scale, int &offX, int &offY);
+		//! apply glLetterbox() as the current GL viewport
+		void applyGLViewport(void);
 		//! true when sdlsurface was allocated here rather than fetched from SDL
 		bool ownsSurface = false;
 		//! release sdlsurface when this context allocated it

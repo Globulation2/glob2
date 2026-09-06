@@ -23,14 +23,18 @@ namespace GAGCore
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glState.doScissor(true);
-			// glScissor operates in drawable pixels; scale from logical coordinates
+			// glScissor operates in drawable pixels; scale from logical coordinates,
+			// through the same letterbox as the viewport (see applyGLViewport())
 			int sx = clipRect.x, sy = getH() - clipRect.y - clipRect.h, sw = clipRect.w, sh = clipRect.h;
 			if (drawableW && (drawableW != getW() || drawableH != getH()))
 			{
-				sx = sx * drawableW / getW();
-				sy = sy * drawableH / getH();
-				sw = sw * drawableW / getW();
-				sh = sh * drawableH / getH();
+				float scale;
+				int offX, offY;
+				glLetterbox(scale, offX, offY);
+				sx = static_cast<int>(sx * scale + 0.5f) + offX;
+				sy = static_cast<int>(sy * scale + 0.5f) + offY;
+				sw = static_cast<int>(sw * scale + 0.5f);
+				sh = static_cast<int>(sh * scale + 0.5f);
 			}
 			glScissor(sx, sy, sw, sh);
 		}
