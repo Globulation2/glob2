@@ -1,6 +1,6 @@
 # glob2/test/
 
-CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exception is `GameGUISelectionHarness`, which uses the top-level `selection-test` target described below.
+CppUnit-based test fixtures and standalone harnesses for the C++ codebase. Most use this directory's `SConstruct`: run `scons -j16` here, then the in-tree `./TestsRunner` and `./WinningConditionsHarness` binaries. Rebuild these tests here before trusting a result; the top-level build does not build them. The exceptions are `GameGUISelectionHarness` and `TerrainResourcesHarness`, which use the top-level `selection-test` and `terrain-test` targets described below.
 
 ## Selection lifetime regression
 
@@ -31,6 +31,15 @@ the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
 
 SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
 normal build. This is a direct method regression, not an interactive replay test.
+
+## Terrain resource regression
+
+From the repository root, run `scons -j8 release=1 server=0 terrain-test`
+and `./build/src/TerrainResourcesHarness`. The harness links the actual client
+objects and exercises terrain regeneration and resource clearing for all eight
+resource types, all three base terrains, overlapping strokes, and all four
+wrapped map corners. A whole-map oracle checks both removal and preservation.
+These are headless map-operation tests; they do not drive editor mouse events.
 
 ## Map subclass test pattern
 

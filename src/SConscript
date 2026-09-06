@@ -491,6 +491,12 @@ if not env['server']:
     selection_test = local.Program('GameGUISelectionHarness', selection_sources)
     local.Alias('selection-test', selection_test)
 
+if not env['server']:
+    terrain_sources = [source for source in source_files if source != 'Glob2.cpp']
+    terrain_sources += local.Object('TerrainResourcesHarness.o', '#test/TerrainResourcesHarness.cpp')
+    terrain_test = local.Program('TerrainResourcesHarness', terrain_sources)
+    local.Alias('terrain-test', terrain_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)
@@ -513,4 +519,3 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
             PackTar(env["TARFILE"], file)
     
     PackTar(env["TARFILE"], "SConscript")
-
