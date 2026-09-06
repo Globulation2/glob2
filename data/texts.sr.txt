@@ -70,10 +70,6 @@ Nicowar
 
 [AIReachToInfinity]
 ReachToInfinity
-[AIToubib-Description]
-
-[AIToubib]
-AIToubib
 [AIWarrush-Description]
 
 [AIWarrush]

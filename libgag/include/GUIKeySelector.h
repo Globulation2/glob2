@@ -2,8 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __GUIKeySelector_h
-#define __GUIKeySelector_h
+#pragma once
 
 #include "GUIBase.h"
 #include "GraphicContext.h"
@@ -56,6 +55,3 @@ namespace GAGGUI
 		bool blinkVisible;
 	};
 };
-
-
-#endif

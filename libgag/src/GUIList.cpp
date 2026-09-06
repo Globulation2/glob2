@@ -425,11 +425,24 @@ namespace GAGGUI
 	{
 		return nth;
 	}
+
+	std::optional<size_t> List::selection(void) const
+	{
+		return nth >= 0 ? std::optional<size_t>(static_cast<size_t>(nth)) : std::nullopt;
+	}
 	
 	void List::setSelectionIndex(int index)
 	{
 		if ((index >= -1 ) && (index < static_cast<int>(strings.size())))
 			this->nth = index;
+	}
+
+	void List::setSelection(std::optional<size_t> index)
+	{
+		if (!index)
+			this->nth = -1;
+		else if (*index < strings.size())
+			this->nth = static_cast<Sint32>(*index);
 	}
 	
 	void List::centerOnItem(int index)

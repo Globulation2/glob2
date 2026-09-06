@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
-#ifndef CAMPAIGN_SELECTOR_SCREEN_H
-#define CAMPAIGN_SELECTOR_SCREEN_H
+#pragma once
 
+#include "Campaign.h"
 #include "Glob2Screen.h"
 #include "GUIText.h"
 #include "GUIButton.h"
@@ -17,7 +17,7 @@ class CampaignSelectorScreen : public Glob2Screen
 public:
 	CampaignSelectorScreen(bool isSelectingSave=false);
 	void onAction(Widget *source, Action action, int par1, int par2);
-	std::string getCampaignName();
+	std::string getCampaignName() const;
 
 	enum
 	{
@@ -37,8 +37,10 @@ private:
 	FileList *fileList;
 	/// The description
 	TextArea* description;
+	/// Descriptions already read from disk, so highlighting the same file
+	/// twice doesn't re-parse the whole campaign file each time
+	CampaignDescriptionCache descriptionCache;
 };
 
 
-#endif
 

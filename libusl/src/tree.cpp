@@ -1,7 +1,7 @@
 #include "tree.h"
 #include "code.h"
 #include "debug.h"
-#include "error.h"
+#include "position.h"
 #include "types.h"
 #include <sstream>
 
@@ -10,14 +10,14 @@ using std::ostringstream;
 using std::endl;
 
 
-void Node::generate(ThunkPrototype* thunk, DebugInfo* debug, Code* code)
+void Node::emit(ThunkPrototype* thunk, CodeGen& cg, Code* code)
 {
 	thunk->body.push_back(code);
-	
-	if (debug != 0)
+
+	if (cg.debug != 0)
 	{
 		size_t address = thunk->body.size();
-		ThunkDebugInfo* scopeDebug = debug->get(thunk);
+		ThunkDebugInfo* scopeDebug = cg.debug->get(thunk);
 		ThunkDebugInfo::Source2Address::iterator it = scopeDebug->source2Address.find(position);
 		if (it != scopeDebug->source2Address.end())
 		{
@@ -46,15 +46,15 @@ void Node::dumpSpecific(std::ostream &stream, unsigned indent) const
 }
 
 
-void ExpressionNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void ExpressionNode::generate(ScopePrototype* scope, CodeGen& cg)
 {
-	generate(static_cast<ThunkPrototype*>(scope), debug, heap);
+	generate(static_cast<ThunkPrototype*>(scope), cg);
 }
 
 
-void ConstNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
+void ConstNode::generate(ThunkPrototype* thunk, CodeGen& cg)
 {
-	Node::generate(thunk, debug, new ConstCode(value));
+	emit(thunk, cg, new ConstCode(value));
 }
 
 void ConstNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -70,11 +70,11 @@ SelectNode::~SelectNode()
 	delete receiver;
 }
 
-void SelectNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
+void SelectNode::generate(ThunkPrototype* thunk, CodeGen& cg)
 {
-	receiver->generate(thunk, debug, heap);
-	Node::generate(thunk, debug, new SelectCode(name));
-	Node::generate(thunk, debug, new EvalCode());
+	receiver->generate(thunk, cg);
+	emit(thunk, cg, new SelectCode(name));
+	emit(thunk, cg, new EvalCode());
 }
 
 void SelectNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -91,15 +91,15 @@ ApplyNode::~ApplyNode()
 	delete argument;
 }
 
-void ApplyNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
+void ApplyNode::generate(ThunkPrototype* thunk, CodeGen& cg)
 {
-	ThunkPrototype* arg = new ThunkPrototype(heap, thunk);
-	argument->generate(arg, debug, heap);
-	
-	function->generate(thunk, debug, heap);
-	Node::generate(thunk, debug, new ThunkCode());
-	Node::generate(thunk, debug, new CreateCode<Thunk>(arg));
-	Node::generate(thunk, debug, new ApplyCode());
+	ThunkPrototype* arg = new ThunkPrototype(cg.heap, thunk);
+	argument->generate(arg, cg);
+
+	function->generate(thunk, cg);
+	emit(thunk, cg, new ThunkCode());
+	emit(thunk, cg, new CreateCode<Thunk>(arg));
+	emit(thunk, cg, new ApplyCode());
 }
 
 void ApplyNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -115,33 +115,33 @@ DecNode::~DecNode()
 	delete body;
 }
 
-void DecNode::declare(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void DecNode::declare(ScopePrototype* scope, CodeGen& cg)
 {
-	scope->members[name] = new ThunkPrototype(heap, scope);
-	
+	scope->members[name] = new ThunkPrototype(cg.heap, scope);
+
 	if (type == VAR)
 	{
 		// TODO: setter
 	}
 }
 
-void DecNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
+void DecNode::generate(ThunkPrototype* thunk, CodeGen& cg)
 {
 	ScopePrototype* scope = dynamic_cast<ScopePrototype*>(thunk);
 	assert(scope);
-	generate(scope, debug, heap);
+	generate(scope, cg);
 }
 
-void DecNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void DecNode::generate(ScopePrototype* scope, CodeGen& cg)
 {
 	switch (type) {
 	case DEF:
 		{
 			ThunkPrototype* def = scope->members[name];
 			assert(def);
-			body->generate(def, debug, heap);
+			body->generate(def, cg);
 
-			Node::generate(scope, debug, new ConstCode(&nil));
+			emit(scope, cg, new ConstCode(&nil));
 		}
 		break;
 	case AUTO: // TODO: optimize constant AUTO
@@ -150,15 +150,15 @@ void DecNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
 		{
 			size_t index = scope->locals.size();
 			scope->locals.push_back(name);
-			
-			body->generate(scope, debug, heap);
-			Node::generate(scope, debug, new DupCode(0));
-			Node::generate(scope, debug, new ValCode(index));
-			
+
+			body->generate(scope, cg);
+			emit(scope, cg, new DupCode(0));
+			emit(scope, cg, new ValCode(index));
+
 			ThunkPrototype* getter = scope->members[name];
-			Node::generate(getter, debug, new ThunkCode());
-			Node::generate(getter, debug, new ParentCode());
-			Node::generate(getter, debug, new ValRefCode(index));
+			emit(getter, cg, new ThunkCode());
+			emit(getter, cg, new ParentCode());
+			emit(getter, cg, new ValRefCode(index));
 		}
 		break;
 	}
@@ -189,18 +189,18 @@ void BlockNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 	}
 }
 
-void BlockNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
+void BlockNode::generate(ThunkPrototype* thunk, CodeGen& cg)
 {
-	ScopePrototype* scope = new ScopePrototype(heap, thunk);
+	ScopePrototype* scope = new ScopePrototype(cg.heap, thunk);
 	scope->members["this"] = thisMember(scope);
-	generateMembers(scope, debug, heap);
-	Node::generate(thunk, debug, new ThunkCode());
-	Node::generate(thunk, debug, new CreateCode<Scope>(scope));
-	Node::generate(thunk, debug, new EvalCode());
+	generateMembers(scope, cg);
+	emit(thunk, cg, new ThunkCode());
+	emit(thunk, cg, new CreateCode<Scope>(scope));
+	emit(thunk, cg, new EvalCode());
 }
 
 
-void ExecutionBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void ExecutionBlock::generateMembers(ScopePrototype* scope, CodeGen& cg)
 {
 	if (!elements.empty())
 	{
@@ -208,32 +208,32 @@ void ExecutionBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, He
 		{
 			DecNode* dec = dynamic_cast<DecNode*>(*it);
 			if (dec != 0)
-				dec->declare(scope, debug, heap);
+				dec->declare(scope, cg);
 		}
-	
+
 		for (Elements::const_iterator it = elements.begin(); it != elements.end() - 1; ++it)
 		{
 			Node* element = *it;
-			element->generate(scope, debug, heap);
-			Node::generate(scope, debug, new PopCode());
+			element->generate(scope, cg);
+			emit(scope, cg, new PopCode());
 		}
-	
-		elements.back()->generate(scope, debug, heap);
+
+		elements.back()->generate(scope, cg);
 	}
 	else
 	{
-		Node::generate(scope, debug, new ConstCode(&nil));
+		emit(scope, cg, new ConstCode(&nil));
 	}
 }
 
 
-void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void RecordBlock::generateMembers(ScopePrototype* scope, CodeGen& cg)
 {
 	for (Elements::const_iterator it = elements.begin(); it != elements.end(); ++it)
 	{
 		DecNode* dec = dynamic_cast<DecNode*>(*it);
 		if (dec != 0)
-			dec->declare(scope, debug, heap);
+			dec->declare(scope, cg);
 	}
 
 	for (Elements::const_iterator it = elements.begin(); it != elements.end(); ++it)
@@ -241,26 +241,26 @@ void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap*
 		size_t index = scope->locals.size();
 
 		Node* element = *it;
-		element->generate(scope, debug, heap);
+		element->generate(scope, cg);
 
 		ThunkPrototype* getter;
 
 		DecNode* dec = dynamic_cast<DecNode*>(element);
 		if (dec)
 		{
-			Node::generate(scope, debug, new PopCode());
-			
+			emit(scope, cg, new PopCode());
+
 			getter = scope->members[dec->name];
 		}
 		else
 		{
 			scope->locals.push_back("");
-			Node::generate(scope, debug, new ValCode(index));
+			emit(scope, cg, new ValCode(index));
 
-			getter = new ThunkPrototype(heap, scope);
-			Node::generate(getter, debug, new ThunkCode());
-			Node::generate(getter, debug, new ParentCode());
-			Node::generate(getter, debug, new ValRefCode(index));
+			getter = new ThunkPrototype(cg.heap, scope);
+			emit(getter, cg, new ThunkCode());
+			emit(getter, cg, new ParentCode());
+			emit(getter, cg, new ValRefCode(index));
 		}
 
 		stringstream str;
@@ -268,14 +268,14 @@ void RecordBlock::generateMembers(ScopePrototype* scope, DebugInfo* debug, Heap*
 		scope->members[str.str()] = getter;
 	}
 
-	Node::generate(scope, debug, new ThunkCode());
+	emit(scope, cg, new ThunkCode());
 }
 
 
-void DefLookupNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
+void DefLookupNode::generate(ThunkPrototype* thunk, CodeGen& cg)
 {
-	Node::generate(thunk, debug, new ThunkCode());
-	
+	emit(thunk, cg, new ThunkCode());
+
 	ThunkPrototype* member;
 	Prototype* prototype = thunk;
 	while (true)
@@ -283,14 +283,14 @@ void DefLookupNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap
 		member = prototype->lookup(name);
 		if (member != 0)
 			break;
-		
+
 		ThunkPrototype* t = dynamic_cast<ThunkPrototype*>(prototype);
 		assert(t != 0);
-		
-		Node::generate(thunk, debug, new ParentCode());
-		
+
+		emit(thunk, cg, new ParentCode());
+
 		prototype = t->outer;
-		
+
 		if (prototype == 0)
 		{
 			ostringstream message;
@@ -298,9 +298,9 @@ void DefLookupNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap
 			throw Exception(position, message.str());
 		}
 	}
-	
-	Node::generate(thunk, debug, new CreateCode<Thunk>(member));
-	Node::generate(thunk, debug, new EvalCode());
+
+	emit(thunk, cg, new CreateCode<Thunk>(member));
+	emit(thunk, cg, new EvalCode());
 }
 
 void DefLookupNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -310,33 +310,33 @@ void DefLookupNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 }
 
 
-void IgnorePatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void IgnorePatternNode::generate(ScopePrototype* scope, CodeGen& cg)
 {
-	Node::generate(scope, debug, new PopCode());
+	emit(scope, cg, new PopCode());
 }
 
 
-void NilPatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void NilPatternNode::generate(ScopePrototype* scope, CodeGen& cg)
 {
 	// TODO: check we really got nil
-	Node::generate(scope, debug, new PopCode());
+	emit(scope, cg, new PopCode());
 }
 
 
-void ValPatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void ValPatternNode::generate(ScopePrototype* scope, CodeGen& cg)
 {
 	size_t index = scope->locals.size();
 	scope->locals.push_back(name);
-	
-	Node::generate(scope, debug, new EvalCode());
-	Node::generate(scope, debug, new ValCode(index));
-	
-	ScopePrototype* getter = new ScopePrototype(heap, scope);
+
+	emit(scope, cg, new EvalCode());
+	emit(scope, cg, new ValCode(index));
+
+	ScopePrototype* getter = new ScopePrototype(cg.heap, scope);
 	scope->members[name] = getter;
-	
-	Node::generate(getter, debug, new ThunkCode());
-	Node::generate(getter, debug, new ParentCode());
-	Node::generate(getter, debug, new ValRefCode(index));
+
+	emit(getter, cg, new ThunkCode());
+	emit(getter, cg, new ParentCode());
+	emit(getter, cg, new ValRefCode(index));
 }
 
 void ValPatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -346,20 +346,20 @@ void ValPatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
 }
 
 
-void DefPatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void DefPatternNode::generate(ScopePrototype* scope, CodeGen& cg)
 {
 	size_t index = scope->members.size();
 	scope->locals.push_back(name);
-	
-	Node::generate(scope, debug, new ValCode(index));
-	
-	ScopePrototype* getter = new ScopePrototype(heap, scope);
+
+	emit(scope, cg, new ValCode(index));
+
+	ScopePrototype* getter = new ScopePrototype(cg.heap, scope);
 	scope->members[name] = getter;
-	
-	Node::generate(getter, debug, new ThunkCode());
-	Node::generate(getter, debug, new ParentCode());
-	Node::generate(getter, debug, new ValRefCode(index));
-	Node::generate(getter, debug, new EvalCode());
+
+	emit(getter, cg, new ThunkCode());
+	emit(getter, cg, new ParentCode());
+	emit(getter, cg, new ValRefCode(index));
+	emit(getter, cg, new EvalCode());
 }
 
 void DefPatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -377,21 +377,21 @@ TuplePatternNode::~TuplePatternNode()
 	}
 }
 
-void TuplePatternNode::generate(ScopePrototype* scope, DebugInfo* debug, Heap* heap)
+void TuplePatternNode::generate(ScopePrototype* scope, CodeGen& cg)
 {
-	Node::generate(scope, debug, new EvalCode());
+	emit(scope, cg, new EvalCode());
 	int index = 0;
 	for (Members::iterator it = members.begin(); it != members.end(); ++it)
 	{
 		stringstream str;
 		str << index;
 
-		Node::generate(scope, debug, new DupCode(0));
-		Node::generate(scope, debug, new SelectCode(str.str()));
-		(*it)->generate(scope, debug, heap);
+		emit(scope, cg, new DupCode(0));
+		emit(scope, cg, new SelectCode(str.str()));
+		(*it)->generate(scope, cg);
 		++index;
 	}
-	Node::generate(scope, debug, new PopCode());
+	emit(scope, cg, new PopCode());
 }
 
 void TuplePatternNode::dumpSpecific(std::ostream &stream, unsigned indent) const
@@ -410,18 +410,18 @@ FunNode::~FunNode()
 	delete body;
 }
 
-void FunNode::generate(ThunkPrototype* thunk, DebugInfo* debug, Heap* heap)
+void FunNode::generate(ThunkPrototype* thunk, CodeGen& cg)
 {
-	ScopePrototype* scope = new ScopePrototype(heap, thunk);
-	arg->generate(scope, debug, heap);
+	ScopePrototype* scope = new ScopePrototype(cg.heap, thunk);
+	arg->generate(scope, cg);
 	BlockNode* block = dynamic_cast<BlockNode*>(body);
 	if (block == 0)
-		body->generate(scope, debug, heap);
+		body->generate(scope, cg);
 	else
-		block->generateMembers(scope, debug, heap);
-	
-	Node::generate(thunk, debug, new ThunkCode());
-	Node::generate(thunk, debug, new CreateCode<Function>(scope));
+		block->generateMembers(scope, cg);
+
+	emit(thunk, cg, new ThunkCode());
+	emit(thunk, cg, new CreateCode<Function>(scope));
 }
 
 void FunNode::dumpSpecific(std::ostream &stream, unsigned indent) const

@@ -441,7 +441,7 @@ namespace GAGGUI
 					case SDL_QUIT:
 					{
 						run=false;
-						returnCode=-1;
+						returnCode=QUIT_APPLICATION;
 						break;
 					}
 					break;
@@ -457,17 +457,6 @@ namespace GAGGUI
 						wasWindowEvent=true;
 					}
 					break;
-					case SDL_WINDOWEVENT_RESIZED:
-					{
-						// FIXME: window resize is broken
-						// gfx->setRes(event.window.data1, event.window.data2);
-					}
-					break;
-					case SDL_WINDOWEVENT_SIZE_CHANGED:
-					{
-						onAction(NULL, SCREEN_RESIZED, gfx->getW(), gfx->getH());
-					}
-					break;
 					case SDL_KEYDOWN:
 					{
 						//Manual integration of cmd+q and alt f4
@@ -475,7 +464,7 @@ namespace GAGGUI
 						if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
 						{
 							run=false;
-							returnCode=-1;
+							returnCode=QUIT_APPLICATION;
 							break;
 						}
 #						endif
@@ -483,7 +472,7 @@ namespace GAGGUI
 						if(event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
 						{
 							run=false;
-							returnCode=-1;
+							returnCode=QUIT_APPLICATION;
 							break;
 						}
 #						endif
@@ -591,13 +580,6 @@ namespace GAGGUI
 				{
 					if ((*it)->visible)
 						(*it)->onSDLMouseButtonDown(event);
-				}
-				break;
-			case SDL_WINDOWEVENT_EXPOSED:
-				for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
-				{
-					if ((*it)->visible)
-						(*it)->onSDLVideoExpose(event);
 				}
 				break;
 			case SDL_TEXTINPUT:
@@ -712,6 +694,85 @@ namespace GAGGUI
 		return Screen::execute(this->gfx, stepLength);
 	}
 	
+	void repostQuitEvent()
+	{
+		SDL_Event quitEvent;
+		SDL_zero(quitEvent);
+		quitEvent.type = SDL_QUIT;
+		SDL_PushEvent(&quitEvent);
+	}
+
+	int OverlayScreen::executeModal(GraphicContext *parentCtx)
+	{
+		// Preserve the backdrop because nextFrame() leaves the GL back buffer stale.
+		parentCtx->setClipRect();
+		DrawableSurface *background = new DrawableSurface(parentCtx->getW(), parentCtx->getH());
+		background->drawSurface(0, 0, parentCtx);
+
+		dispatchPaint();
+		run = true;
+		bool quitApplication = false;
+
+		while (endValue < 0 && run)
+		{
+			const Uint64 frameStart = SDL_GetTicks64();
+
+			SDL_Event event;
+			while (SDL_PollEvent(&event))
+			{
+				if (event.type == SDL_QUIT)
+				{
+					quitApplication = true;
+					break;
+				}
+				if (event.type == SDL_KEYDOWN)
+				{
+#					ifdef USE_OSX
+					if (event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
+					{
+						quitApplication = true;
+						break;
+					}
+#					endif
+#					ifdef USE_WIN32
+					if (event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
+					{
+						quitApplication = true;
+						break;
+					}
+#					endif
+				}
+				translateAndProcessEvent(&event);
+			}
+
+			if (quitApplication)
+			{
+				run = false;
+				returnCode = QUIT_APPLICATION;
+				break;
+			}
+
+			dispatchTimer(frameStart);
+
+			dispatchPaint();
+			parentCtx->drawSurface(0, 0, background);
+			parentCtx->drawSurface(decX, decY, getSurface());
+			parentCtx->nextFrame();
+
+			const Uint64 frameEnd = SDL_GetTicks64();
+			const Sint64 elapsed = static_cast<Sint64>(frameEnd) - static_cast<Sint64>(frameStart);
+			SDL_Delay(static_cast<Uint32>(std::max<Sint64>(40 - elapsed, 0)));
+		}
+
+		delete background;
+		if (quitApplication)
+		{
+			repostQuitEvent();
+			return QUIT_APPLICATION;
+		}
+		return endValue;
+	}
+
 	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 	{
 		int newX, newY;

@@ -2,8 +2,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef __ORDER_H
-#define __ORDER_H
+#pragma once
 
 #include <assert.h>
 
@@ -12,8 +11,46 @@
 #include "UnitConsts.h"
 #include "BitArray.h"
 #include <memory>
+#include <optional>
 
 class Map;
+
+// === Order-protocol sentinels (cross-slice) ===
+
+//! "Checksum not yet set" sentinel for Order::gameCheckSum. The Order is
+//! sent before the receiving end has computed its post-tick checksum, so
+//! this value means "skip the cross-check this tick". See Order.cpp:9,
+//! MultiplayerGame.cpp:522, NetEngine.cpp:158, 211, 217-219.
+static constexpr Uint32 ORDER_CHECKSUM_NONE = static_cast<Uint32>(-1);
+
+//! "Sender unset" sentinel for Order::sender (set by NetGame::getOrder()
+//! once the wire data has been mapped to a player number). See Order.cpp:8.
+static constexpr int ORDER_SENDER_NONE = -1;
+
+//! Wire encoding of an absent OrderCreate::flagRadius. The field is only
+//! meaningful for virtual (flag) buildings, where it carries a non-negative
+//! unitStayRange; for every other building the in-memory value is
+//! std::nullopt and this sentinel is what travels on the wire (offset 24 of
+//! the 28-byte payload). See OrderBuilding.cpp getData/setData and
+//! Game::executeCreate (Game_orders.cpp).
+static constexpr Sint32 ORDER_CREATE_NO_FLAG_RADIUS = -1;
+
+//! Length, in bytes, of the big-endian length prefix that precedes every
+//! framed network message (TCP and UDP alike). See
+//! NetConnectionThread.cpp:111-115, 182, 192-194; NetBroadcaster.cpp:53-55;
+//! NetBroadcastListener.cpp:38.
+static constexpr int NET_FRAME_LENGTH_PREFIX_BYTES = 2;
+
+//! Maximum chat-message text length (including NUL terminator) used by
+//! MessageOrder when validating wire-side text payloads, and matched by
+//! the MultiplayerGameScreen TextInput widget's max-length.
+//! See OrderMisc.cpp:37, 73; MultiplayerGameScreen.cpp:115.
+static constexpr int ORDER_TEXT_MESSAGE_MAX_LEN = 256;
+
+//! Maximum width or height (in tiles) for the bounding box of an
+//! area-alteration brush stroke encoded by OrderAlterateArea.
+//! See OrderModify.cpp:302-303, 350-351.
+static constexpr int ORDER_AREA_BRUSH_MAX_SIDE = 512;
 
 //! An Order represents a synchronized event in the game
 class Order
@@ -46,9 +83,13 @@ public:
 class OrderCreate:public Order
 {
 public:
-	OrderCreate(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, Sint32 flagRadius=-1);
+	OrderCreate() = default;
+	OrderCreate(Sint32 teamNumber, Sint32 posX, Sint32 posY, Sint32 typeNum, Sint32 unitWorking, Sint32 unitWorkingFuture, std::optional<Sint32> flagRadius=std::nullopt);
 	virtual ~OrderCreate(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderCreate> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_CREATE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -60,7 +101,10 @@ public:
 	Sint32 typeNum;
 	Sint32 unitWorking;
 	Sint32 unitWorkingFuture;
-	Sint32 flagRadius;
+	//! Flag attraction radius (unitStayRange), set only for virtual (flag)
+	//! buildings; std::nullopt for ordinary buildings. On the wire an absent
+	//! value is encoded as ORDER_CREATE_NO_FLAG_RADIUS.
+	std::optional<Sint32> flagRadius;
 
  private:
 	Uint8 data[28];
@@ -71,9 +115,13 @@ public:
 class OrderDelete:public Order
 {
 public:
-	OrderDelete(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderDelete() = default;
 	OrderDelete(Uint16 gid);
 	virtual ~OrderDelete(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderDelete> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_DELETE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -89,9 +137,13 @@ protected:
 class OrderCancelDelete:public Order
 {
 public:
-	OrderCancelDelete(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderCancelDelete() = default;
 	OrderCancelDelete(Uint16 gid);
 	virtual ~OrderCancelDelete(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderCancelDelete> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_CANCEL_DELETE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -107,9 +159,13 @@ protected:
 class OrderConstruction:public Order
 {
 public:
-	OrderConstruction(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderConstruction() = default;
 	OrderConstruction(Uint16 gid, Uint32 unitWorking, Uint32 unitWorkingFuture);
 	virtual ~OrderConstruction(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderConstruction> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_CONSTRUCTION; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -127,9 +183,13 @@ protected:
 class OrderCancelConstruction:public Order
 {
 public:
-	OrderCancelConstruction(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderCancelConstruction() = default;
 	OrderCancelConstruction(Uint16 gid, Uint32 unitWorking);
 	virtual ~OrderCancelConstruction(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderCancelConstruction> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_CANCEL_CONSTRUCTION; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -147,9 +207,13 @@ protected:
 class OrderChangePriority:public Order
 {
 public:
-	OrderChangePriority(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderChangePriority() = default;
 	OrderChangePriority(Uint16 gid, Sint32 priority);
 	virtual ~OrderChangePriority(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderChangePriority> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_CHANGE_PRIORITY; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -175,9 +239,13 @@ public:
 class OrderModifyBuilding:public OrderModify
 {
 public:
-	OrderModifyBuilding(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderModifyBuilding() = default;
 	OrderModifyBuilding(Uint16 gid, Uint16 numberRequested);
 	virtual ~OrderModifyBuilding(void) {}
+
+	//! Decode a wire payload (no leading order-type byte). Returns nullptr on
+	//! malformed input; Order::getOrder treats that as a dropped order.
+	static std::shared_ptr<OrderModifyBuilding> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -186,18 +254,21 @@ public:
 
 	Uint16 gid;
 	Uint16 numberRequested;
-	
+
 protected:
 	Uint8 data[4];
 };
 
-//! Change the 
+//! Change the
 class OrderModifyExchange:public OrderModify
 {
 public:
-	OrderModifyExchange(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderModifyExchange() = default;
 	OrderModifyExchange(Uint16 gid, Uint32 receiveRessourceMask, Uint32 sendRessourceMask);
 	virtual ~OrderModifyExchange(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderModifyExchange> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -207,7 +278,7 @@ public:
 	Uint16 gid;
 	Uint32 receiveRessourceMask;
 	Uint32 sendRessourceMask;
-	
+
 protected:
 	Uint8 data[10];
 };
@@ -215,9 +286,12 @@ protected:
 class OrderModifySwarm:public OrderModify
 {
 public:
-	OrderModifySwarm(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderModifySwarm() = default;
 	OrderModifySwarm(Uint16 gid, Sint32 ratio[NB_UNIT_TYPE]);
 	virtual ~OrderModifySwarm(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderModifySwarm> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -228,15 +302,20 @@ public:
 	Sint32 ratio[NB_UNIT_TYPE];
 
 protected:
-	Uint8 data[14];
+	//! Wire encoding buffer: Uint16 gid || Sint32 ratio[NB_UNIT_TYPE].
+	//! Size must track getDataLength() — keep both as 2+4*NB_UNIT_TYPE.
+	Uint8 data[2+4*NB_UNIT_TYPE];
 };
 
 class OrderModifyFlag:public OrderModify
 {
 public:
-	OrderModifyFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderModifyFlag() = default;
 	OrderModifyFlag(Uint16 gid, Sint32 range);
 	virtual ~OrderModifyFlag(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderModifyFlag> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -253,9 +332,12 @@ protected:
 class OrderModifyClearingFlag:public OrderModify
 {
 public:
-	OrderModifyClearingFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderModifyClearingFlag() = default;
 	OrderModifyClearingFlag(Uint16 gid, bool clearingRessources[BASIC_COUNT]);
 	virtual ~OrderModifyClearingFlag(void);
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderModifyClearingFlag> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -266,15 +348,18 @@ public:
 	bool clearingRessources[BASIC_COUNT];
 
 protected:
-	Uint8 *data;
+	Uint8 *data = nullptr;
 };
 
 class OrderModifyMinLevelToFlag:public OrderModify
 {
 public:
-	OrderModifyMinLevelToFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderModifyMinLevelToFlag() = default;
 	OrderModifyMinLevelToFlag(Uint16 gid, Uint16 minLevelToFlag);
 	virtual ~OrderModifyMinLevelToFlag(void);
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderModifyMinLevelToFlag> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -291,9 +376,12 @@ protected:
 class OrderMoveFlag:public OrderModify
 {
 public:
-	OrderMoveFlag(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderMoveFlag() = default;
 	OrderMoveFlag(Uint16 gid, Sint32 x, Sint32 y, bool drop);
 	virtual ~OrderMoveFlag(void) {}
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderMoveFlag> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -311,19 +399,50 @@ protected:
 
 class BrushAccumulator;
 
+//! Number of bytes in the fixed-width header that precedes the variable-length
+//! BitArray mask payload in every OrderAlterateArea wire encoding:
+//! teamNumber(1) + type(1) + centerX/Y(2*2) + minX/Y(2*2) + maxX/Y(2*2) = 14.
+static constexpr int ALTERATE_AREA_HEADER_BYTES = 14;
+
 class OrderAlterateArea:public OrderModify
 {
 public:
-	OrderAlterateArea(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderAlterateArea() = default;
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map);
 	#endif
 	virtual ~OrderAlterateArea(void);
-	
+
 	Uint8 *getData(void);
+
+	//! Parse the wire format for an OrderAlterate{Forbidden,GuardArea,ClearArea}
+	//! packet. Layout: 14-byte fixed header
+	//! (teamNumber: Uint8, type: Uint8, centerX/Y: Sint16, minX/Y: Sint16,
+	//! maxX/Y: Sint16, all big-endian)
+	//! followed by ceil((maxX-minX) * (maxY-minY) / 8) bitmap bytes.
+	//!
+	//! Returns false (without mutating the bitmap) on any of:
+	//!   - dataLength < ALTERATE_AREA_HEADER_BYTES
+	//!   - maxX < minX or maxY < minY (negative-side dimensions)
+	//!   - maxX-minX or maxY-minY > ORDER_AREA_BRUSH_MAX_SIDE
+	//!   - dataLength does not equal header + expected bitmap byte count
+	//!
+	//! These rejections are required because the source `data` buffer comes
+	//! from network or replay traffic and its length is the only ground
+	//! truth for the bitmap-payload size — the header-declared dimensions
+	//! cannot be trusted, and BitArray::deserialize does no bound check.
+	//! See BH-195.
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
 	int getDataLength(void);
-	
+
+	//! Returns the expected number of bitmap payload bytes for the given
+	//! brush bounding box, or std::nullopt if the box is invalid (negative
+	//! side, or side > ORDER_AREA_BRUSH_MAX_SIDE). Pure helper, separated
+	//! from setData so the malformed-packet rejections can be unit-tested
+	//! without a full wire-buffer round-trip.
+	static std::optional<size_t> expectedBitmapBytes(Sint16 minX, Sint16 minY,
+	                                                 Sint16 maxX, Sint16 maxY);
+
 	Uint8 teamNumber;
 	Uint8 type;
 	Sint16 centerX;
@@ -333,41 +452,50 @@ public:
 	Sint16 maxX;
 	Sint16 maxY;
 	Utilities::BitArray mask;
-	
+
 protected:
-	Uint8 *_data;
+	Uint8 *_data = nullptr;
 };
 
 class OrderAlterateForbidden:public OrderAlterateArea
 {
 public:
-	OrderAlterateForbidden(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
+	OrderAlterateForbidden() = default;
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateForbidden(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
-	
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderAlterateForbidden> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_FORBIDDEN; }
 };
 
 class OrderAlterateGuardArea:public OrderAlterateArea
 {
 public:
-	OrderAlterateGuardArea(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
+	OrderAlterateGuardArea() = default;
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateGuardArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
-	
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderAlterateGuardArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_GUARD_AREA; }
 };
 
 class OrderAlterateClearArea:public OrderAlterateArea
 {
 public:
-	OrderAlterateClearArea(const Uint8 *data, int dataLength, Uint32 versionMinor) : OrderAlterateArea(data, dataLength, versionMinor) { }
+	OrderAlterateClearArea() = default;
 	#ifndef YOG_SERVER_ONLY
 	OrderAlterateClearArea(Uint8 teamNumber, Uint8 type, BrushAccumulator *acc, const Map* map) : OrderAlterateArea(teamNumber, type, acc, map) { }
 	#endif
-	
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderAlterateClearArea> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_ALTERATE_CLEAR_AREA; }
 };
 
@@ -396,9 +524,12 @@ public:
 class MessageOrder:public MiscOrder
 {
 public:
-	MessageOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	MessageOrder() = default;
 	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text);
 	virtual ~MessageOrder(void);
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<MessageOrder> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -417,17 +548,20 @@ public:
 	Uint32 messageOrderType;
 
  protected:
-	Uint8 *data;
-	int length;
+	Uint8 *data = nullptr;
+	int length = 0;
 };
 
 //! A voice message
 class OrderVoiceData:public MiscOrder
 {
 public:
-	OrderVoiceData(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	OrderVoiceData() = default;
 	OrderVoiceData(Uint32 recepientsMask, size_t framesDatasLength, Uint8 frameCount, const Uint8 *framesDatas);
 	virtual ~OrderVoiceData(void);
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<OrderVoiceData> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
@@ -437,22 +571,25 @@ public:
 	Uint8 *getFramesData(void) { return data+5; }
 
 	Uint32 recepientsMask;
-	size_t framesDatasLength;
-	Uint8 frameCount;
-	Uint8 *data;
+	size_t framesDatasLength = 0;
+	Uint8 frameCount = 0;
+	Uint8 *data = nullptr;
 };
 
 class SetAllianceOrder:public MiscOrder
 {
 public:
-	SetAllianceOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	SetAllianceOrder() = default;
 	SetAllianceOrder(Uint32 teamNumber, Uint32 alliedMask, Uint32 enemyMask, Uint32 visionExchangeMask, Uint32 visionFoodMask, Uint32 visionOtherMask);
 	virtual ~SetAllianceOrder(void) { }
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<SetAllianceOrder> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 getOrderType(void) { return ORDER_SET_ALLIANCE; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 24; }
+	int getDataLength(void) { return DATA_LENGTH; }
 
 	Uint32 teamNumber;
 	Uint32 alliedMask;
@@ -462,27 +599,34 @@ public:
 	Uint32 visionOtherMask;
 
  protected:
-	Uint8 data[24];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 24;
+	Uint8 data[DATA_LENGTH];
 };
 
 class MapMarkOrder:public MiscOrder
 {
 public:
-	MapMarkOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	MapMarkOrder() = default;
 	MapMarkOrder(Uint32 teamNumber, Sint32 x, Sint32 y);
 	virtual ~MapMarkOrder(void) { }
-	
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<MapMarkOrder> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
+
 	Uint8 getOrderType(void) { return ORDER_MAP_MARK; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 12; }
+	int getDataLength(void) { return DATA_LENGTH; }
 
 	Uint32 teamNumber;
 	Sint32 x;
 	Sint32 y;
 
 private:
-	Uint8 data[12];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 12;
+	Uint8 data[DATA_LENGTH];
 };
 
 // Net orders
@@ -490,57 +634,70 @@ private:
 class PauseGameOrder:public MiscOrder
 {
 public:
-	PauseGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	PauseGameOrder() = default;
 	PauseGameOrder(bool startPause);
 	virtual ~PauseGameOrder(void) { }
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<PauseGameOrder> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 getOrderType(void) { return ORDER_PAUSE_GAME; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 1; }
+	int getDataLength(void) { return DATA_LENGTH; }
 
 	bool pause;
-	
+
 private:
-	Uint8 data[1];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 1;
+	Uint8 data[DATA_LENGTH];
 };
 
 class PlayerQuitsGameOrder:public MiscOrder
 {
 public:
-	PlayerQuitsGameOrder(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	PlayerQuitsGameOrder() = default;
 	PlayerQuitsGameOrder(Sint32 player);
 	virtual ~PlayerQuitsGameOrder(void) { }
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<PlayerQuitsGameOrder> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 getOrderType(void) { return ORDER_PLAYER_QUIT_GAME; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 4; }
-	
+	int getDataLength(void) { return DATA_LENGTH; }
+
 	Sint32 player;
-	
+
 private:
-	Uint8 data[4];
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 4;
+	Uint8 data[DATA_LENGTH];
 };
 
 
 class AdjustLatency:public MiscOrder
 {
 public:
-	AdjustLatency(const Uint8 *data, int dataLength, Uint32 versionMinor);
+	AdjustLatency() = default;
 	AdjustLatency(Uint16 latencyAdjustment);
 	virtual ~AdjustLatency(void) { }
+
+	//! See OrderModifyBuilding::deserialize.
+	static std::shared_ptr<AdjustLatency> deserialize(const Uint8 *data, int dataLength, Uint32 versionMinor);
 
 	Uint8 getOrderType(void) { return ORDER_ADJUST_LATENCY; }
 	Uint8 *getData(void);
 	bool setData(const Uint8 *data, int dataLength, Uint32 versionMinor);
-	int getDataLength(void) { return 2; }
-	
-	Uint16 latencyAdjustment;
-	
-private:
-	Uint8 data[2];
-};
+	int getDataLength(void) { return DATA_LENGTH; }
 
-#endif
+	Uint16 latencyAdjustment;
+
+private:
+	//! Serialized byte length; sizes both data[] and getDataLength() from one source.
+	static constexpr int DATA_LENGTH = 2;
+	Uint8 data[DATA_LENGTH];
+};
  

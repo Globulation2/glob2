@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef INCLUDED_SDL_GRAPHICCONTEXT_H
-#define INCLUDED_SDL_GRAPHICCONTEXT_H
+#pragma once
 
 #include "GAGSys.h"
 #include "CursorManager.h"
@@ -482,5 +481,3 @@ namespace GAGCore
 		virtual int getFrameCount(void);
 	};
 }
-
-#endif

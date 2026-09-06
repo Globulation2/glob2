@@ -115,7 +115,7 @@ float PerlinNoise::Noise2d( float pos[ 2 ] ) {
   int indexLD, indexRD, indexLU, indexRU;
   float distFromL, distFromR, distFromD, distFromU;
   float *q, sX, sY, a, b, t, u, v;
-  register int indexL, indexR;
+  int indexL, indexR;
 
   if ( ! initialized ) { reseed(); }
 
@@ -160,7 +160,7 @@ float PerlinNoise::Noise3d( float pos[ 3 ] ) {
   int indexLD, indexLU, indexRD, indexRU;
   float distFromL, distFromR, distFromD, distFromU, distFromB, distFromF;
   float *q, sX, sY, sZ, a, b, c, d, t, u, v;
-  register int indexL, indexR;
+  int indexL, indexR;
 
   if ( ! initialized ) { reseed(); }
 
@@ -285,19 +285,3 @@ void PerlinNoise::generateLookupTables() {
   // And we're done. Set initialized to true
   initialized = 1;
 }
-// ----------------------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------------------
-/*float
-PerlinNoise::Turbulence( Vec3f &p, int oct, bool hard ) {
-
-  Vec3f tp = p;
-  float f_tp[ 3 ] = { tp.x, tp.y, tp.z };
-
-  float val, amp = 1.0, sum = 0.0;
-  for ( int i = 0;i < oct;i++, amp *= 0.5, tp *= 2.0 ) {
-    val = Noise3d( f_tp );
-    if ( hard ) val = fabs( val );
-    sum += amp * val;
-  }
-  return 0.5 + 0.5*( sum * ( ( float ) ( 1 << oct ) / ( float ) ( ( 1 << ( oct + 1 ) ) - 1 ) ) );
-}*/

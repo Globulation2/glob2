@@ -3,215 +3,92 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #include "GameEvent.h"
-#include "Toolkit.h"
-#include "StringTable.h"
+
 #include "FormatableString.h"
-#include "UnitConsts.h"
+#include "Game.h"
 #include "IntBuildingType.h"
+#include "StringTable.h"
+#include "Team.h"
+#include "TeamDisplay.h"
+#include "Toolkit.h"
+#include "UnitDisplayNames.h"
 
 using namespace GAGCore;
 
-GameEvent::GameEvent(Uint32 step, Sint16 x, Sint16 y)
-	: step(step), x(x), y(y)
+GameEvent::GameEvent(GameEventType type, Uint32 step, Sint16 x, Sint16 y, Uint32 typeNum, Uint8 otherTeamNumber)
+	: type(type), step(step), x(x), y(y), typeNum(typeNum), otherTeamNumber(otherTeamNumber)
 {
-
 }
 
-
-
-GameEvent::~GameEvent()
+GameEvent GameEvent::unitUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint32 unitType)
 {
-
+	return GameEvent(GEUnitUnderAttack, step, x, y, unitType, 0);
 }
 
-
-
-Uint32 GameEvent::getStep()
+GameEvent GameEvent::unitLostConversion(Uint32 step, Sint16 x, Sint16 y, Uint8 otherTeamNumber)
 {
-	return step;
+	return GameEvent(GEUnitLostConversion, step, x, y, 0, otherTeamNumber);
 }
 
-
-	
-Sint16 GameEvent::getX()
+GameEvent GameEvent::unitGainedConversion(Uint32 step, Sint16 x, Sint16 y, Uint8 otherTeamNumber)
 {
-	return x;
+	return GameEvent(GEUnitGainedConversion, step, x, y, 0, otherTeamNumber);
 }
 
-
-
-Sint16 GameEvent::getY()
+GameEvent GameEvent::buildingUnderAttack(Uint32 step, Sint16 x, Sint16 y, Uint8 buildingType)
 {
-	return y;
+	return GameEvent(GEBuildingUnderAttack, step, x, y, buildingType, 0);
 }
 
-
-
-UnitUnderAttackEvent::UnitUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint32 type)
-	: GameEvent(step, x, y), type(type)
+GameEvent GameEvent::buildingCompleted(Uint32 step, Sint16 x, Sint16 y, Uint8 buildingType)
 {
-
+	return GameEvent(GEBuildingCompleted, step, x, y, buildingType, 0);
 }
 
-
-
-std::string UnitUnderAttackEvent::formatMessage()
+std::string GameEvent::formatMessage(const Game& game) const
 {
-	std::string message;
-	message+=FormatableString(Toolkit::getStringTable()->getString("[Your %0 are under attack]"))
-	                         .arg(getUnitName(type));
-	return message;
+	StringTable* table = Toolkit::getStringTable();
+	switch (type)
+	{
+	case GEUnitUnderAttack:
+		return FormatableString(table->getString("[Your %0 are under attack]"))
+		           .arg(getUnitName(typeNum));
+	case GEUnitLostConversion:
+		return FormatableString(table->getString("[Your unit got converted to %0's team]"))
+		           .arg(displayPlayerName(*game.teams[otherTeamNumber]));
+	case GEUnitGainedConversion:
+		return FormatableString(table->getString("[%0's team unit got converted to your team]"))
+		           .arg(displayPlayerName(*game.teams[otherTeamNumber]));
+	case GEBuildingUnderAttack:
+	{
+		std::string key = "[the ";
+		key += IntBuildingType::typeFromShortNumber(typeNum);
+		key += " is under attack]";
+		return table->getString(key.c_str());
+	}
+	case GEBuildingCompleted:
+	{
+		std::string key = "[the ";
+		key += IntBuildingType::typeFromShortNumber(typeNum);
+		key += " is finished]";
+		return table->getString(key.c_str());
+	}
+	case GESize:
+		break;
+	}
+	return std::string();
 }
 
-
-
-GAGCore::Color UnitUnderAttackEvent::formatColor()
+GAGCore::Color GameEvent::formatColor() const
 {
-	return GAGCore::Color(200, 30, 30);
+	switch (type)
+	{
+	case GEUnitUnderAttack:      return GAGCore::Color(200, 30, 30);
+	case GEUnitLostConversion:   return GAGCore::Color(140, 0, 0);
+	case GEUnitGainedConversion: return GAGCore::Color(100, 255, 100);
+	case GEBuildingUnderAttack:  return GAGCore::Color(255, 0, 0);
+	case GEBuildingCompleted:    return GAGCore::Color(30, 255, 30);
+	case GESize:                 break;
+	}
+	return GAGCore::Color();
 }
-
-
-
-Uint8 UnitUnderAttackEvent::getEventType()
-{
-	return GEUnitUnderAttack;
-}
-
-
-
-
-UnitLostConversionEvent::UnitLostConversionEvent(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName)
-	: GameEvent(step, x, y), teamName(teamName)
-{
-
-}
-
-
-
-std::string UnitLostConversionEvent::formatMessage()
-{
-	std::string message;
-	message += FormatableString(Toolkit::getStringTable()->getString("[Your unit got converted to %0's team]")).arg(teamName);
-	return message;
-}
-
-
-
-GAGCore::Color UnitLostConversionEvent::formatColor()
-{
-	return GAGCore::Color(140, 0, 0);
-}
-
-
-
-Uint8 UnitLostConversionEvent::getEventType()
-{
-	return GEUnitLostConversion;
-}
-
-
-
-
-UnitGainedConversionEvent::UnitGainedConversionEvent(Uint32 step, Sint16 x, Sint16 y, const std::string& teamName)
-	: GameEvent(step, x, y), teamName(teamName)
-{
-
-}
-
-
-
-std::string UnitGainedConversionEvent::formatMessage()
-{
-	std::string message;
-	message += FormatableString(Toolkit::getStringTable()->getString("[%0's team unit got converted to your team]")).arg(teamName);
-	return message;
-}
-
-
-
-GAGCore::Color UnitGainedConversionEvent::formatColor()
-{
-	return GAGCore::Color(100, 255, 100);
-}
-
-
-
-Uint8 UnitGainedConversionEvent::getEventType()
-{
-	return GEUnitGainedConversion;
-}
-
-
-
-
-BuildingUnderAttackEvent::BuildingUnderAttackEvent(Uint32 step, Sint16 x, Sint16 y, Uint8 type)
-	: GameEvent(step, x, y), type(type)
-{
-
-}
-
-
-
-std::string BuildingUnderAttackEvent::formatMessage()
-{
-	std::string message;
-	std::string key = "[the ";
-	key += IntBuildingType::typeFromShortNumber(type);
-	key += " is under attack]";
-	message += Toolkit::getStringTable()->getString(key.c_str());
-	return message;
-}
-
-
-
-GAGCore::Color BuildingUnderAttackEvent::formatColor()
-{
-	return GAGCore::Color(255, 0, 0);
-}
-
-
-
-Uint8 BuildingUnderAttackEvent::getEventType()
-{
-	return GEBuildingUnderAttack;
-}
-
-
-
-
-BuildingCompletedEvent::BuildingCompletedEvent(Uint32 step, Sint16 x, Sint16 y, Uint8 type)
-	: GameEvent(step, x, y), type(type)
-{
-
-}
-
-
-
-std::string BuildingCompletedEvent::formatMessage()
-{
-	std::string message;
-	std::string key = "[the ";
-	key += IntBuildingType::typeFromShortNumber(type);
-	key += " is finished]";
-	message += Toolkit::getStringTable()->getString(key.c_str());
-	return message;
-}
-
-
-
-GAGCore::Color BuildingCompletedEvent::formatColor()
-{
-	return GAGCore::Color(30, 255, 30);
-}
-
-
-
-Uint8 BuildingCompletedEvent::getEventType()
-{
-	return GEBuildingCompleted;
-}
-
-
-
-///code_append_marker
-

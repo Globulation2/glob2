@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
-#ifndef CAMPAIGN_H
-#define CAMPAIGN_H
+#pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -69,15 +69,26 @@ public:
 
 	///Loads the campaign with the provided name
 	bool load(const std::string& fileName);
-	///Save the campaign
-	void save(bool isGameSave=false);
+	///Save the campaign. Returns false if the destination file cannot be opened
+	///(read-only directory, full disk, missing path); callers should react instead
+	///of silently dropping the user's progress / edits.
+	bool save(bool isGameSave=false);
 	///Gets the number of maps in this campaign
 	size_t getMapCount() const;
-	///Returns the name of the map n
+	///Returns the entry for map n. Precondition: n < getMapCount(); violating
+	///it throws std::out_of_range rather than invoking undefined behavior.
+	///Rust port: plain Vec indexing (which panics) has the same contract.
+	///For name-based UI selection use findUnlockedMap instead of an index.
 	CampaignMapEntry& getMap(unsigned n);
+	///Looks up an unlocked map by its display name.
+	///Returns nullptr if no map with that name exists or if the matching map is still locked.
+	///Use this from UI selection paths so a list-index mismatch (the displayed list shows
+	///only unlocked maps; campaign.maps holds locked entries too) cannot confuse the lookup.
+	CampaignMapEntry* findUnlockedMap(const std::string& mapName);
 	///Appends a map to the list of maps
 	void appendMap(CampaignMapEntry& map);
-	///Removes map n
+	///Removes map n. Out-of-range n is silently ignored (stale UI indices must
+	///not corrupt the map list). Rust port: guard the index before Vec::remove.
 	void removeMap(unsigned n);
 
 	///Sets a particular map as completed and unlocks all the maps that are unlocked by this "played" map
@@ -106,4 +117,25 @@ private:
 };
 
 
-#endif
+///Caches campaign descriptions keyed by campaign file name, for selection
+///UIs that show the description of whichever file is highlighted.
+///
+///The campaign file format stores the description as the *last* field and
+///TextInputStream parses the whole file up front, so there is no cheaper
+///"read only the description" path — the only way to avoid re-parsing the
+///file on every list-selection event is to remember the result. The cache
+///is meant to live as long as its owning screen; campaign files don't
+///change while a selector is open, so there is no invalidation.
+class CampaignDescriptionCache
+{
+public:
+	///Returns the description of the campaign stored in fileName, loading
+	///and caching it on first request. Unreadable or corrupt files yield ""
+	///(cached too), matching what Campaign::load leaves behind on failure.
+	const std::string& getDescription(const std::string& fileName);
+
+private:
+	std::map<std::string, std::string> descriptions;
+};
+
+
