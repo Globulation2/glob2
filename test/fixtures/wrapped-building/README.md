@@ -61,7 +61,7 @@ The source setup is in `test/BuildingFootprintHarness.cpp`. To generate another 
 The bundled file is 47498 bytes, SHA-256:
 
 ```text
-68c839123fa9a34469c13ea7a984498cb9877873d1ef315748603fd92bd877f2
+8723b7b92b9ecd7ce71c58c8af1ba109644df3964fc041f00eb5d63175e43746
 ```
 
 Generated output need not be byte-identical across toolchains or builds; the
