@@ -61,7 +61,7 @@ The source setup is in `test/EnteringUnitSaveHarness.cpp`. To generate another c
 The bundled file is 47841 bytes, SHA-256:
 
 ```text
-f41e2061ba7013ce24b10aa0ad3f6dde516d7c1812d203790ad503d99fee468e
+ff85d82f983409056022b42df237e769bb29b079a6786840f2e3e517bf64d442
 ```
 
 Generated output need not be byte-identical across toolchains or builds; the
