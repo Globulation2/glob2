@@ -78,7 +78,7 @@ namespace GAGCore
 			w -= clipRect.x - x;
 			x = clipRect.x;
 		}
-		if (y < 0)
+		if (y < clipRect.y)
 		{
 			h -= clipRect.y - y;
 			y = clipRect.y;

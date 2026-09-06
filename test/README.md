@@ -125,6 +125,8 @@ bounds startup, execution, and child cleanup. Logs and captures are written unde
 presentation pixels, clipping, logical-resolution screen captures, and translated
 mouse motion/button events and polling at equal, wide, tall, odd, and downscaled
 window sizes. It exercises the same scaling path used by desktop fullscreen.
+The software run also checks every pixel in 24 opaque/translucent rectangle
+intersections, including rectangles above the clip area and empty rectangles.
 It does not load a game profile or change saved display settings.
 
 ```sh

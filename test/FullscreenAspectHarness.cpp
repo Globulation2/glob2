@@ -45,6 +45,40 @@ Color pixel(SDL_Surface* surface, int x, int y)
 bool red(Color c) { return c.r > 240 && c.g < 10 && c.b < 10; }
 bool green(Color c) { return c.g > 240 && c.r < 10 && c.b < 10; }
 
+void checkSoftwareClipping()
+{
+	DrawableSurface surface(96, 80);
+	const SDL_Rect clip{20, 30, 40, 25};
+	const SDL_Rect rectangles[] = {
+		{0, 0, 96, 80}, {25, 10, 20, 35}, {25, 10, 20, 10},
+		{25, 30, 20, 10}, {25, 35, 20, 10}, {25, 55, 20, 10},
+		{-10, -10, 100, 100}, {0, 35, 30, 10}, {50, 35, 30, 10},
+		{25, 45, 20, 30}, {25, 35, 0, 10}, {25, 35, 10, 0}
+	};
+	for (Uint8 alpha : {Uint8(255), Uint8(128)})
+		for (const SDL_Rect& rect : rectangles)
+		{
+			surface.setClipRect();
+			surface.drawFilledRect(0, 0, 96, 80, Color(20, 40, 60));
+			surface.setClipRect(clip.x, clip.y, clip.w, clip.h);
+			surface.drawFilledRect(rect.x, rect.y, rect.w, rect.h, Color(220, 180, 140, alpha));
+			for (int y=0; y<80; ++y)
+				for (int x=0; x<96; ++x)
+				{
+					bool inside=x>=rect.x && x<rect.x+rect.w && y>=rect.y && y<rect.y+rect.h
+						&& x>=clip.x && x<clip.x+clip.w && y>=clip.y && y<clip.y+clip.h;
+					Color actual=pixel(surface.getSDLSurface(), x, y);
+					Color expected=inside ? (alpha==255 ? Color(220,180,140) : Color(120,110,100)) : Color(20,40,60);
+					int tolerance=inside && alpha!=255 ? 1 : 0;
+					require(std::abs(int(actual.r)-expected.r)<=tolerance
+						&& std::abs(int(actual.g)-expected.g)<=tolerance
+						&& std::abs(int(actual.b)-expected.b)<=tolerance,
+						"Software rectangle differs from its clip intersection");
+				}
+		}
+	std::puts("PASS software clipping: 24 opaque/alpha rectangle intersections, all pixels checked");
+}
+
 void checkBounds(SDL_Surface* surface, bool wantGreen, int x, int y, int w, int h, int tolerance=1)
 {
 	int left=surface->w, top=surface->h, right=-1, bottom=-1;
@@ -146,6 +180,7 @@ int main(int argc, char** argv)
 	try
 	{
 		Context context(gpu);
+		if (!gpu) checkSoftwareClipping();
 		for (auto size : {std::pair{640, 480}, {1280, 800}, {800, 1280}, {853, 641}, {480, 270}})
 			run(context, gpu, size.first, size.second);
 	}
