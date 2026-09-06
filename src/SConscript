@@ -499,7 +499,11 @@ if not env['server']:
 if not env['server']:
     savegame_sources = [source for source in source_files if source != 'Glob2.cpp']
     savegame_sources += local.Object('SavegameSafetyHarness.o', '#test/SavegameSafetyHarness.cpp')
-    savegame_test = local.Program('SavegameSafetyHarness', savegame_sources)
+    savegame_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
+    savegame_env['LINKFLAGS'] = [flag for flag in local['LINKFLAGS'] if flag != '-mwindows']
+    savegame_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
 #Add libgag, not as a library, but as an object

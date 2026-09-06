@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#define SDL_MAIN_HANDLED
+#ifdef main
+#undef main
+#endif
 #include "GlobalContainer.h"
 #include "Engine.h"
 #include <BinaryStream.h>
@@ -94,6 +98,9 @@ static std::unique_ptr<BinaryInputStream> input(const std::string& bytes, bool f
 
 int main(int argc, char **argv)
 {
+	SDL_SetMainReady();
+	std::setvbuf(stdout, nullptr, _IONBF, 0);
+	std::cout << "Starting headless savegame safety checks" << std::endl;
 	assert(argc == 2 || argc == 3);
 	assert(std::string(argv[1]).find("glob2-save-test-") == 0);
 	GlobalContainer globals(argv[1]);
@@ -204,4 +211,5 @@ int main(int argc, char **argv)
 			std::cout << "PASS issue #130 attachment rejected without abort" << std::endl;
 		}
 	}
+	return 0;
 }
