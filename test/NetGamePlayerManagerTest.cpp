@@ -132,6 +132,26 @@ void testRepeatedRemovalAndRejoin()
 	manager.addPerson(5, "New host");
 	check(header.getBasePlayer(0).numberMask == 1 && manager.isReadyToGo(5), "empty lobby can be reused");
 }
+
+void testAllAITypes()
+{
+	// Include the highest encoded type, which exceeds the range of an enum
+	// whose only named values are P_NONE through P_AI unless its type is fixed.
+	for (int id = AI::NONE; id < AI::SIZE; ++id)
+	{
+		GameHeader header;
+		NetGamePlayerManager manager(header);
+		manager.setNumberOfTeams(2);
+		manager.addPerson(1, "Host");
+		manager.addAIPlayer(static_cast<AI::ImplementitionID>(id));
+		manager.removePerson(1);
+		const BasePlayer& ai = header.getBasePlayer(0);
+		check(ai.type == Uint32(BasePlayer::P_AI) + Uint32(id), "encoded AI type survives compaction");
+		check(BasePlayer::implementitionIdFromPlayerType(ai.type) == id, "AI implementation round-trips");
+		check(ai.number == 0 && ai.numberMask == 1 && manager.isEveryoneReadyToGo(), "AI slot and readiness survive compaction");
+		checkRoundTrip(header);
+	}
+}
 }
 
 int main()
@@ -144,6 +164,7 @@ int main()
 				for (bool invertReady : {false, true})
 					testRemoval(count, removed, mixed, invertReady);
 	testRepeatedRemovalAndRejoin();
+	testAllAITypes();
 	std::printf("NetGamePlayerManagerTest: %d failures\n", failures);
 	return failures == 0 ? 0 : 1;
 }
