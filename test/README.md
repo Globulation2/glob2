@@ -140,3 +140,18 @@ software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`). Xvfb and xauth must be installed.
 The GL run requires an OpenGL-enabled build. On macOS, the Homebrew SDL workaround
 described above also applies. To run with sanitizers, use the flags in the selection
 regression instructions with the `aspect-test` target instead.
+
+### Savegame safety
+
+Build `scons release=1 server=0 savegame-safety-test`, then run
+`python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness`
+(use `.exe` on Windows). No display is required. The runner uses a disposable
+profile and working directory; an optional final argument supplies a truncated
+save that must be rejected.
+
+The harness checks the production autosave path, byte equivalence with direct
+serialization, successful reload, truncated map data from file and memory
+streams, recovery after failed loads, and oversized map-area strings. Atomic
+replacement tests cover callback/open/rename failures and temporary-file cleanup.
+On POSIX, child processes impose file-size limits to exercise short writes and
+buffered flush errors while checking that the previous save survives unchanged.

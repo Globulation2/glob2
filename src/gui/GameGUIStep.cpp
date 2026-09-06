@@ -323,16 +323,8 @@ void GameGUI::syncStep(void)
 	{
 		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");
-		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(fileName));
-		if (stream->isEndOfStream())
-		{
-			std::cerr << "GameGUI::syncStep : can't open autosave file " << name << " for writing" << std::endl;
-		}
-		else
-		{
-			save(stream, name);
-		}
-		delete stream;
+		if (!Toolkit::getFileManager()->writeAtomically(fileName, [&](OutputStream& stream) { save(&stream, name); }))
+			std::cerr << "GameGUI::syncStep: autosave failed; previous save retained" << std::endl;
 	}
 }
 

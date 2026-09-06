@@ -13,16 +13,20 @@
 
 #include <algorithm>
 #include <Stream.h>
+#include <BinaryStream.h>
+#include <limits>
 
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
+try
 {
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 	assert(header.getVersionMinor()>=16);
 
 	Sint32 versionMinor = header.getVersionMinor();
 
 	clear();
-	
+
 	stream->readEnterSection("Map");
 
 	char signature[4];
@@ -36,6 +40,9 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	// We load and compute size:
 	wDec = stream->readSint32("wDec");
 	hDec = stream->readSint32("hDec");
+	if (wDec < 0 || hDec < 0 || wDec >= std::numeric_limits<int>::digits ||
+		hDec >= std::numeric_limits<int>::digits || wDec + hDec >= std::numeric_limits<int>::digits)
+		return false;
 	w = 1<<wDec;
 	h = 1<<hDec;
 	wMask = w-1;
@@ -67,6 +74,8 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 
 		cases[i].terrain = stream->readUint16("terrain");
 		cases[i].building = stream->readUint16("building");
+		if (cases[i].building != NOGBID && cases[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
+			return false;
 
 		stream->read(&(cases[i].resource), 4, "ressource");
 		cases[i].groundUnit = stream->readUint16("groundUnit");
@@ -96,7 +105,50 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 	const bool restoreExploredArea = header.getIsSavedGame() && versionMinor >= EXPLORED_AREA_SAVED_VERSION_MINOR;
 	if (restoreExploredArea)
 		loadExploredArea(stream, header.getNumberOfTeams(), game != NULL);
-	
+
+	this->game = game;
+
+	// We load sectors:
+	wSector = stream->readSint32("wSector");
+	hSector = stream->readSint32("hSector");
+	if (wSector < 0 || hSector < 0 || wSector > w || hSector > h)
+		return false;
+	sizeSector = wSector*hSector;
+	assert(sectors == NULL);
+	sectors = new Sector[sizeSector];
+
+#ifndef YOG_SERVER_ONLY
+	// Map::setGame is bypassed on the loaded-game path (Game::load uses
+	// Map::load directly and the game pointer is set inline above), so
+	// the per-sector render buckets must be sized here too.
+	if (game)
+		game->animations->resize(sizeSector);
+#endif  // !YOG_SERVER_ONLY
+
+	arraysBuilt = true;
+
+	stream->readEnterSection("sectors");
+	for (int i=0; i<sizeSector; i++)
+	{
+		stream->readEnterSection(i);
+		if (!sectors[i].load(stream, this->game, versionMinor))
+		{
+			stream->readLeaveSection(3);
+			return false;
+		}
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+
+	stream->read(signature, 4, "signatureEnd");
+	stream->readLeaveSection();
+
+	if (memcmp(signature, "MapE", 4)!=0)
+	{
+		fprintf(stderr, "Map:: Failed to find signature at the end of Map.\n");
+		return false;
+	}
+
 	if (game)
 	{
                 /* Must set game field before following action as they
@@ -124,15 +176,15 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 				assert(forbiddenGradient[t][s] == NULL);
 				forbiddenGradient[t][s] = new Uint8[size];
 				updateForbiddenGradient(t, s);
-				
+
 				assert(guardAreasGradient[t][s] == NULL);
 				guardAreasGradient[t][s] = new Uint8[size];
 				updateGuardAreasGradient(t, s);
-			
+
 				assert(clearAreasGradient[t][s] == NULL);
 				clearAreasGradient[t][s] = new Uint8[size];
 				updateClearAreasGradient(t, s);
-				
+
 				guardGradientUpdated[t][s] = false;
 				clearGradientUpdated[t][s] = false;
 			}
@@ -146,53 +198,21 @@ bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
 				makeDiscoveredAreasExplored(t);
 			}
 			assert(exploredArea[t]);
-			
+
 			clearingAreaClaims[t] = new Uint16[size];
 			memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
 		}
 	}
 
-	// We load sectors:
-	wSector = stream->readSint32("wSector");
-	hSector = stream->readSint32("hSector");
-	sizeSector = wSector*hSector;
-	assert(sectors == NULL);
-	sectors = new Sector[sizeSector];
-
-#ifndef YOG_SERVER_ONLY
-	// Map::setGame is bypassed on the loaded-game path (Game::load uses
-	// Map::load directly and the game pointer is set inline above), so
-	// the per-sector render buckets must be sized here too.
-	if (game)
-		game->animations->resize(sizeSector);
-#endif  // !YOG_SERVER_ONLY
-
-	arraysBuilt = true;
-	
-	stream->readEnterSection("sectors");
-	for (int i=0; i<sizeSector; i++)
-	{
-		stream->readEnterSection(i);
-		if (!sectors[i].load(stream, this->game, versionMinor))
-		{
-			stream->readLeaveSection(3);
-			return false;
-		}
-		stream->readLeaveSection();
-	}
-	stream->readLeaveSection();
-
-	stream->read(signature, 4, "signatureEnd");
-	stream->readLeaveSection();
-	
-	if (memcmp(signature, "MapE", 4)!=0)
-	{
-		fprintf(stderr, "Map:: Failed to find signature at the end of Map.\n");
-		return false;
-	}
-	
 	return true;
 }
+catch (const std::ios_base::failure& error)
+{
+	std::cerr << "Map::load: " << error.what() << std::endl;
+	clear();
+	return false;
+}
+
 
 void Map::save(GAGCore::OutputStream *stream)
 {

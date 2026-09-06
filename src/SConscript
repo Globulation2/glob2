@@ -496,6 +496,12 @@ if not env['server']:
     speed_test = local.Program('game-speed-tests', speed_sources)
     local.Alias('speed-tests', speed_test)
 
+if not env['server']:
+    savegame_sources = [source for source in source_files if source != 'Glob2.cpp']
+    savegame_sources += local.Object('SavegameSafetyHarness.o', '#test/SavegameSafetyHarness.cpp')
+    savegame_test = local.Program('SavegameSafetyHarness', savegame_sources)
+    local.Alias('savegame-safety-test', savegame_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)
