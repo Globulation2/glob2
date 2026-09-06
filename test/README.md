@@ -4,22 +4,34 @@ CppUnit-based test fixtures for the C++ codebase. These have their own `SConstru
 
 ## Selection lifetime regression
 
-`GameGUISelectionHarness` checks cycling immediately after selected buildings
-and units are deleted, before drawing validates the cached selection. It also
-checks null selections, live cycling/wraparound, building ownership, and tool
-selection. The build extracts the production `checkSelection`, `iterateSelection`,
-and destruction hooks into a small stub fixture; it does not copy their logic
-or run the interactive event loop. The normal CI harness loop runs this test.
-To additionally check memory accesses on macOS or Linux, run from `test/`:
+`GameGUISelectionHarness.cpp` links the real client objects with a test entry
+point. It exercises selected building/unit deletion before the next GUI draw,
+null selections, and a live unit with no peer. It runs headlessly, using the real
+`GameGUI`, entity classes, selection setters, and destruction hooks. A friend
+fixture accesses the private selection API without exposing it to game callers.
+There are no generated sources or substitute entity/GUI classes.
+
+Build and run it from the repository root (the Linux CI also runs this target):
 
 ```sh
-scons GameGUISelectionHarness selection_sanitize=1
-./GameGUISelectionHarness
+scons -j8 release=1 server=0 selection-test
+./build/src/GameGUISelectionHarness
 ```
 
-This enables AddressSanitizer and UndefinedBehaviorSanitizer for this harness
-only. Without the validation at the start of `iterateSelection`, the deleted
-building case reports a heap-use-after-free under AddressSanitizer.
+For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux:
+
+```sh
+scons -j8 release=0 server=0 --build=build/selection-asan selection-test \
+  CXXFLAGS='-g -fsanitize=address,undefined -fno-omit-frame-pointer' \
+  LINKFLAGS='-g -fsanitize=address,undefined'
+./build/selection-asan/src/GameGUISelectionHarness
+```
+
+If Homebrew sdl2-compat cannot locate SDL3 under the macOS sanitizer, prefix
+the harness command with `DYLD_LIBRARY_PATH=/opt/homebrew/lib`.
+
+SCons caches compiler/linker flags; pass `CXXFLAGS=-g LINKFLAGS=-g` to return to a
+normal build. This is a direct method regression, not an interactive replay test.
 
 ## Map subclass test pattern
 

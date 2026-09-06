@@ -1,35 +1,6 @@
 import sys
-import re
-from pathlib import Path
 
 env = Environment()
-
-# Compile the exact production methods against small lifetime-test stubs;
-# changes to the real methods regenerate the harness instead of leaving a
-# copied implementation in the test. The existing CI harness loop runs it.
-def selection_harness_source(target, source, env):
-  production = Path(str(source[0])).read_text()
-  methods = []
-  for name in ('checkSelection', 'iterateSelection',
-               'onBuildingDestroyed', 'onUnitDestroyed'):
-    match = re.search(r'^void GameGUI::' + name + r'\([^\n]*\)\n\{.*?^\}',
-                      production, re.MULTILINE | re.DOTALL)
-    if match is None:
-      raise RuntimeError('Cannot locate production method: ' + name)
-    methods.append(match.group(0))
-  template = Path(str(source[1])).read_text()
-  Path(str(target[0])).write_text(
-      template.replace('@PRODUCTION_METHODS@', '\n\n'.join(methods)))
-
-selection_source = env.Command('GameGUISelectionHarness.generated.cpp',
-    ['../src/gui/GameGUISelection.cpp', 'GameGUISelectionHarness.cpp.in'],
-    selection_harness_source)
-selection_env = env.Clone()
-selection_env.Append(CXXFLAGS=['-std=c++17', '-g', '-UNDEBUG'])
-if ARGUMENTS.get('selection_sanitize', '0') == '1':
-  selection_env.Append(CXXFLAGS=['-fsanitize=address,undefined', '-fno-omit-frame-pointer'],
-                       LINKFLAGS=['-fsanitize=address,undefined'])
-selection_env.Program('GameGUISelectionHarness', selection_source)
 
 # Shared include paths so tests can compile against game headers.
 # echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
