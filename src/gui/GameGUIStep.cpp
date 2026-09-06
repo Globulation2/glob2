@@ -10,11 +10,13 @@
 #include <optional>
 
 #include <FileManager.h>
+#include <SDLCompat.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <Stream.h>
 #include <BinaryStream.h>
 
+#include "EngineTiming.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
@@ -210,9 +212,17 @@ void GameGUI::step(void)
 
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
-	handleKeyAlways();
-	viewportX += viewportSpeedX;
-	viewportY += viewportSpeedY;
+	// Continuous scrolling keeps its normal 25 Hz cadence at every game speed.
+	const Uint64 now=SDL_GetTicks64();
+	const unsigned viewportSteps=std::min<Uint64>((now-lastViewportStep)/GAME_TICK_MS, 5);
+	if(viewportSteps)
+		lastViewportStep=now-(now-lastViewportStep)%GAME_TICK_MS;
+	for(unsigned i=0; i<viewportSteps; ++i)
+	{
+		handleKeyAlways();
+		viewportX += viewportSpeedX;
+		viewportY += viewportSpeedY;
+	}
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 
@@ -313,16 +323,8 @@ void GameGUI::syncStep(void)
 	{
 		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");
-		OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(fileName));
-		if (stream->isEndOfStream())
-		{
-			std::cerr << "GameGUI::syncStep : can't open autosave file " << name << " for writing" << std::endl;
-		}
-		else
-		{
-			save(stream, name);
-		}
-		delete stream;
+		if (!Toolkit::getFileManager()->writeAtomically(fileName, [&](OutputStream& stream) { save(&stream, name); }))
+			std::cerr << "GameGUI::syncStep: autosave failed; previous save retained" << std::endl;
 	}
 }
 

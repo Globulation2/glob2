@@ -2,6 +2,7 @@
 // Save during an explorer's final step into a building; retain corruption checks.
 #include "GlobalContainer.h"
 #include "Game.h"
+#include "GameGUI.h"
 #include "Unit.h"
 #include "Building.h"
 #include "IntBuildingType.h"
@@ -43,7 +44,8 @@ int main(int argc, char** argv)
         FILE* file = std::fopen(argv[2], "rb");
         require(file != nullptr, "open fixture");
         GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
-        Game loaded(nullptr);
+        GameGUI restoredGUI;
+        Game& loaded = restoredGUI.game;
         require(loaded.load(&reader), "load entering-explorer fixture");
         require(loaded.mapHeader.getNumberOfTeams() == 1 && loaded.teams[0], "fixture team exists");
         auto* unit = loaded.teams[0]->myUnits[0];
@@ -64,7 +66,8 @@ int main(int argc, char** argv)
             for (int dy = -1; dy <= 1; ++dy)
             {
                 if (!dx && !dy) continue;
-                Game game(nullptr);
+                GameGUI gui;
+                Game& game = gui.game;
                 game.map.setSize(5, 5, GRASS);
                 game.map.setGame(&game);
                 game.addTeam(0);
@@ -80,6 +83,8 @@ int main(int argc, char** argv)
                 unit->attachedBuilding = inn;
                 inn->unitsInside.push_back(unit);
                 unit->displacement = Unit::DIS_ENTERING_BUILDING;
+                unit->movement = Unit::MOV_ENTERING_BUILDING;
+                unit->action = FLY;
                 unit->dx = dx;
                 unit->dy = dy;
                 const int oldX = (position[0] - dx + 32) % 32;
@@ -96,7 +101,8 @@ int main(int argc, char** argv)
                 auto* copy = new GAGCore::MemoryStreamBackend(*bytes);
                 copy->seekFromStart(0);
                 GAGCore::BinaryInputStream reader(copy);
-                Game loaded(nullptr);
+                GameGUI restoredGUI;
+                Game& loaded = restoredGUI.game;
                 require(loaded.load(&reader), "save during building entry must load");
                 auto* restored = loaded.teams[0]->myUnits[0];
                 require(restored->posX == position[0] && restored->posY == position[1],
@@ -120,4 +126,5 @@ int main(int argc, char** argv)
                 ++cases;
             }
     std::printf("Entering unit save regressions passed: %d directions/positions and corruption controls\n", cases);
+    return 0;
 }

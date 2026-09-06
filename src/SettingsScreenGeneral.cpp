@@ -118,6 +118,13 @@ void SettingsScreen::buildGraphicsToggles()
 	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
 	addWidgetToGroup(scrollwheelText, generalGroup);
 
+	gameSpeedText=new Text(230, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
+	addWidgetToGroup(gameSpeedText, generalGroup);
+	gameSpeed=new Selector(230, 285, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180,
+		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
+	addWidgetToGroup(gameSpeed, generalGroup);
+	updateGameSpeedText();
+
 	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	//TODO: warning style should be defined centrally.
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));

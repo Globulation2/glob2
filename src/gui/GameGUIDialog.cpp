@@ -11,6 +11,7 @@
 #include "GUISelector.h"
 #include "GUITextArea.h"
 #include "GUIText.h"
+#include "FormatableString.h"
 #include "Player.h"
 #include "SoundMixer.h"
 #include "StringTable.h"
@@ -346,8 +347,9 @@ Uint32 InGameAllianceScreen::getChatMask(void)
 
 //! Option Screen
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, 320, 300)
+:OverlayScreen(globalContainer->gfx, 320, 360)
 {
+	adjustableGameSpeed=gameGUI->canChangeGameSpeed();
 	Text *audioMuteText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Mute]"), 200);
 	addWidget(audioMuteText);
 
@@ -366,6 +368,14 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	voiceVol=new Selector(19, 160, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.voiceVolume, 256, true);
 	addWidget(voiceVol);
 
+	gameSpeedText=new Text(10, 195, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+	addWidget(gameSpeedText);
+	gameSpeed=new Selector(19, 225, ALIGN_LEFT, ALIGN_TOP, 256,
+		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
+	addWidget(gameSpeed);
+	gameSpeed->visible=adjustableGameSpeed;
+	updateGameSpeedText();
+
 	if(globalContainer->settings.mute)
 	{
 		musicVol->visible=false;
@@ -374,7 +384,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 		voiceVolText->visible=false;
 	}
 
-	addWidget(new TextButton(0, 250, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	addWidget(new TextButton(0, 310, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
@@ -383,7 +393,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	else
 		oss << " SDL";
 		
-	addWidget(new Text(0, 200, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
+	addWidget(new Text(0, 260, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
 	dispatchInit();
 }
 
@@ -404,9 +414,19 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 	}
 	else if (action==VALUE_CHANGED)
 	{
-		globalContainer->settings.musicVolume = musicVol->getValue();
-		globalContainer->settings.voiceVolume = voiceVol->getValue();
-		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
+		if(source==gameSpeed)
+		{
+			if(!adjustableGameSpeed)
+				return;
+			globalContainer->settings.gameSpeed=gameSpeed->getValue();
+			updateGameSpeedText();
+		}
+		else
+		{
+			globalContainer->settings.musicVolume = musicVol->getValue();
+			globalContainer->settings.voiceVolume = voiceVol->getValue();
+			globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
+		}
 	}
 	else if (action==BUTTON_STATE_CHANGED)
 	{
@@ -417,6 +437,20 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 		voiceVolText->visible = ! globalContainer->settings.mute;
 		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
 	}
+}
+
+
+
+void InGameOptionScreen::updateGameSpeedText(void)
+{
+	if(!adjustableGameSpeed)
+	{
+		gameSpeedText->setText(Toolkit::getStringTable()->getString("[multiplayer game speed]"));
+		return;
+	}
+	gameSpeedText->setText(FormattableString("%0: %1")
+		.arg(Toolkit::getStringTable()->getString("[game speed]"))
+		.arg(globalContainer->settings.getGameSpeedText()));
 }
 
 

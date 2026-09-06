@@ -39,7 +39,7 @@ private:
 #endif  // !YOG_SERVER_ONLY
 
 public:
-	GlobalContainer(void);
+	explicit GlobalContainer(const char *profileName="glob2");
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);

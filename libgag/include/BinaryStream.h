@@ -61,12 +61,27 @@ namespace GAGCore
 	{
 	private:
 		StreamBackend *backend;
+		bool checkedReads = false;
 		
 	public:
 		BinaryInputStream(StreamBackend *backend) { this->backend = backend; }
 		virtual ~BinaryInputStream() { delete backend; }
 	
-		virtual void read(void *data, size_t size, const std::string name) { backend->read(data, size); }
+		class CheckedReads
+		{
+			BinaryInputStream *stream;
+			bool previous;
+		public:
+			explicit CheckedReads(InputStream *input) : stream(dynamic_cast<BinaryInputStream *>(input)), previous(stream && stream->checkedReads)
+			{
+				if (stream) stream->checkedReads = true;
+			}
+			~CheckedReads() { if (stream) stream->checkedReads = previous; }
+			CheckedReads(const CheckedReads&) = delete;
+			CheckedReads& operator=(const CheckedReads&) = delete;
+		};
+
+		virtual void read(void *data, size_t size, const std::string name);
 	
 		virtual void readEndianIndependent(void *v, size_t size, const std::string name);
 	

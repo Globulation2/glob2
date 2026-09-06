@@ -21,6 +21,7 @@
 #include <GUIList.h>
 #include <GUIButton.h>
 #include <GUISelector.h>
+#include <FormatableString.h>
 #include <Toolkit.h>
 #include <StringTable.h>
 #include "SoundMixer.h"
@@ -75,7 +76,7 @@ void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action==LIST_ELEMENT_SELECTED)
 		handleListSelected(source, par1);
 	else if (action==VALUE_CHANGED)
-		handleValueChanged();
+		handleValueChanged(source);
 	else if (action==BUTTON_STATE_CHANGED)
 		handleButtonStateChanged(source);
 	else if (action==KEY_CHANGED)
@@ -202,11 +203,25 @@ void SettingsScreen::handleListSelected(Widget* source, int par1)
 }
 
 
-void SettingsScreen::handleValueChanged()
+void SettingsScreen::handleValueChanged(Widget* source)
 {
+	if(source==gameSpeed)
+	{
+		globalContainer->settings.gameSpeed=gameSpeed->getValue();
+		updateGameSpeedText();
+		return;
+	}
 	globalContainer->settings.musicVolume = musicVol->getValue();
 	globalContainer->settings.voiceVolume = voiceVol->getValue();
 	globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
+}
+
+void SettingsScreen::updateGameSpeedText(void)
+{
+	gameSpeed->setTooltip(Toolkit::getStringTable()->getString("[game speed help]"), "standard");
+	gameSpeedText->setText(FormattableString("%0: %1")
+		.arg(Toolkit::getStringTable()->getString("[game speed]"))
+		.arg(globalContainer->settings.getGameSpeedText()));
 }
 
 
@@ -298,6 +313,7 @@ void SettingsScreen::retranslateUiStrings()
 
 	rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
 	scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
+	updateGameSpeedText();
 
 	musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
 	audioMuteText->setText(Toolkit::getStringTable()->getString("[mute]"));

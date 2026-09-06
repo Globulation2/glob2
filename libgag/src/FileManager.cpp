@@ -52,7 +52,7 @@ namespace GAGCore
 	// passing absolute paths (e.g. --save-game-as /tmp/foo.game) need direct
 	// access. POSIX absolutes start with '/'; Windows absolutes can also be
 	// drive-letter ("C:\..." / "C:/...") or UNC ("\\server\share").
-	static bool isAbsolutePath(const std::string& path)
+	bool FileManager::isAbsolutePath(const std::string& path)
 	{
 		if (path.empty()) return false;
 		if (path[0] == '/') return true;

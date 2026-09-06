@@ -27,6 +27,12 @@ namespace GAGCore
 		virtual void write(const void *data, const size_t size) = 0;
 		virtual void flush(void) = 0;
 		virtual void read(void *data, size_t size) = 0;
+		virtual bool readExact(void *data, size_t size)
+		{
+			const size_t before = getPosition();
+			read(data, size);
+			return getPosition() - before == size;
+		}
 		virtual void putc(int c) = 0;
 		virtual int getChar(void) = 0;
 		virtual void seekFromStart(int displacement) = 0;
@@ -40,7 +46,7 @@ namespace GAGCore
 	//! The FILE* implementation of stream backend
 	class FileStreamBackend : public StreamBackend
 	{
-	private:
+	protected:
 		FILE *fp;
 		
 	public:
@@ -51,6 +57,7 @@ namespace GAGCore
 		virtual void write(const void *data, const size_t size) { assert(fp); fwrite(data, size, 1 ,fp); }
 		virtual void flush(void) { assert(fp); fflush(fp); }
 		virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+		virtual bool readExact(void *data, size_t size) { return fp && fread(data, 1, size, fp) == size; }
 		virtual void putc(int c) { assert(fp); fputc(c, fp); }
 		virtual int getChar(void) { assert(fp); return fgetc(fp); }
 		virtual void seekFromStart(int displacement) { assert(fp); fseek(fp, displacement, SEEK_SET); }

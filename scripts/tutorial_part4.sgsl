@@ -32,7 +32,7 @@ show("Ха-ха-ха! У нас есть всё о чём хорошая кол�
 show("ﻫﺎﻫﺎﻫﺎ! ﺃﺻﺒﺢ ﻟﺪﻳﻨﺎ ﻛﻞ ﻣﺎ ﺗﺤﺘﺎﺟﻪ ﺍﻟﻤﺴﺘﻌﻤﺮﺍﺕ ﺍﻟﺠﻴﺪﺓ! ﻟﺪﻳﻨﺎ ﺍﻟﺤﻤﺎﻳﺔ، ﻭﺍﻟﻤﺒﺎﻧﻲ ﺍﻟﻤﺘﻄﻮﺭﺓ، ﻭﺍﻟﻤﺪﺍﺭﺱ، ﻭﻣﺴﺘﺸﻔﻰ، ﻭﺑﻌﺾ ﺍﻟﻤﻨﺎﺯﻝ، ﻭﻣﻴﺪﺍﻥ ﻟﻠﺴﺒﺎﻕ، ﻭﺑﺮﻛﺔ ﻟﻠﺴﺒﺎﺣﺔ، ﻓﻤﺎ ﺍﻟﺬﻱ ﻗﺪ ﻳﺘﻤﻨﺎﻩ ﺍﻟﻤﺮء ﺑﻌﺪ ﻛﻞ ﻫﺬﺍ؟ ﻓﻲ ﺍﻟﻮﺍﻗﻊ ﻻ ﻳﺒﺪﻭ ﺃﻧﻪ ﻗﺪ ﺗﺒﻘﻰ ﺃﻣﺎﻣﻨﺎ ﺍﻟﻜﺜﻴﺮ. ﺑﺈﻣﻜﺎﻧﻚ ﺍﻻﺳﺘﻤﺮﺍﺭ ﻓﻲ ﺗﺮﻗﻴﺔ ﺍﻟﻤﺒﺎﻧﻲ ﺇﻥ ﺭﻏﺒﺖ. ﻓﻔﻲ ﺍﻟﻮﺍﻗﻊ ﻣﺎ ﻳﺰﺍﻝ ﻫﻨﺎﻙ ﻣﺴﺘﻮﻯ ﺃﻋﻠﻰ ﻣﻦ ﻣﺴﺘﻮﻯ ﻣﺒﺎﻧﻴﻚ ﺍﻟﺤﺎﻟﻴﺔ. ﺇﻧﻪ ﺍﻟﻤﺴﺘﻮﻯ ٣ ﺍﻟﺨﺎﺭﻕ! ﻳﺠﺐ ﺃﻥ ﺗﺠﻌﻞ ﺍﻟﻮﺻﻮﻝ ﺇﻟﻰ ﺍﻟﻤﺴﺘﻮﻯ ﺍﻟﺜﺎﻟﺚ ﻣﻦ ﺃﻫﺪﺍﻓﻚ ﻓﻲ ﺍﻟﻠﻌﺐ، ﻓﻬﻮ ﻳﻌﻄﻴﻚ ﺃﻓﻀﻠﻴﺔ ﻛﺒﻴﺮﺓ ﻋﻠﻰ ﻋﺪﻭﻙ.",ar)
 space
 
-show("Talking about enemies, have you managed to spot yours? I think he is hiding north-west from our base. You can scroll there now.")
+show("Talking about enemies, have you managed to spot yours? I think they're hiding north-west from our base. You can scroll there now.")
 show("En parlant d'ennemis, avez-vous pensé à rechercher les vôtres ? Je pense qu'ils se cachent au Nord-Ouest de notre base. Vous pouvez aller regarder dès maintenant.", fr)
 show("Wo wir gerade über Feinde reden: Hast du es geschafft deinen zu finden? Ich denke er versteckt sich im Nordwesten deiner Basis. Du kannst nun dorthin scrollen.",de)
 show("Hablando de enemigos  ¿Haz logrado ver dónde están los tuyos?  Creo que se esconde al noroeste de nuestra base, puedes dar un vistazo.",es)

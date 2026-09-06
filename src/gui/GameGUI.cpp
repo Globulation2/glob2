@@ -8,6 +8,7 @@
 
 #include <GUITextInput.h>
 #include <GUIList.h>
+#include <SDLCompat.h>
 #include <Toolkit.h>
 
 #include "Game.h"
@@ -112,6 +113,7 @@ void GameGUI::init()
 
 	viewportSpeedX=0;
 	viewportSpeedY=0;
+	lastViewportStep=SDL_GetTicks64();
 
 	showStarvingMap=false;
 	showDamagedMap=false;
