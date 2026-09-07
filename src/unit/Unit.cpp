@@ -285,14 +285,18 @@ void Unit::syncStep(void)
 #ifdef BURST_UNIT_MODE
 	delta=0;
 #else
-	if (delta<=UNIT_DELTA_MAX-speed)
+	// A diagonal step covers sqrt(2) tiles, so it advances delta at speed/sqrt(2) (181/256).
+	int stepSpeed=speed;
+	if (dx!=0 && dy!=0 && (action==WALK || action==SWIM || action==FLY))
+		stepSpeed=(speed*181)>>8;
+	if (delta<=UNIT_DELTA_MAX-stepSpeed)
 	{
-		delta+=speed;
+		delta+=stepSpeed;
 	}
 	else
 #endif
 	{
-		delta+=(speed-UNIT_DELTA_QUANTUM);
+		delta+=(stepSpeed-UNIT_DELTA_QUANTUM);
 
 		endOfAction();
 
