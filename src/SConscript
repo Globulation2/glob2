@@ -471,10 +471,6 @@ source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
 if not env['server']:
-    buffer_sources = ['#test/BufferedFileStreamHarness.cpp', '../libgag/src/libgag.a']
-    buffer_test = local.Program('BufferedFileStreamHarness', buffer_sources)
-    local.Alias('buffered-file-test', buffer_test)
-
     geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
     geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
     geometry_test = local.Program('CortexGeometryHarness', geometry_sources)
