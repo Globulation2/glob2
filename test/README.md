@@ -194,10 +194,13 @@ and run `python3 test/run-hungry-defeat-tests.py build/src/HungryDefeatHarness`
 harness owns a live headless GameGUI, with preference saving disabled.
 
 A hungry worker or warrior reserves the final inn place during Team::syncStep,
-then walks, enters, and completes its meal without being declared defeated. Checks
+then walks, enters, completes its meal, and exits without being declared defeated.
+Each unit type is tested with one corn (the final food) and ten corn; the test
+continues for 300 ticks after eating and checks refreshed medical status. Checks
 include the feeding timer's zero boundary, the actual death winning condition,
 and controls for an empty colony, healthy worker, no food, explorer-only reservation,
-and missing controlling players. Both feeding cases run twice with seed 110 and
+a fed unit needing unavailable healing, and missing controlling players. All four
+feeding cases run twice with seed 110 and
 compare every team checksum; printed trace digests support platform comparisons.
 The fixture initializes map occupancy and race
 data before exercising the real unit activity and movement code.

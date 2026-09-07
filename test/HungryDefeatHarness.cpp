@@ -31,7 +31,7 @@ struct Colony
     Building* inn;
     std::vector<Uint32> trace;
 
-    Colony()
+    Colony(int corn = 10)
     {
         setSyncRandSeed(110);
         game.map.setSize(5, 5, GRASS);
@@ -49,7 +49,7 @@ struct Colony
         inn = new Building(8, 8, 0, type, team, &globalContainer->buildingsTypes, 0, 0);
         team->myBuildings[0] = inn;
         game.map.setBuilding(8, 8, inn->type->width, inn->type->height, inn->gid);
-        inn->resources[CORN] = 10;
+        inn->resources[CORN] = corn;
         inn->maxUnitInside = 1;
         inn->updateCallLists();
         game.map.setMapDiscovered();
@@ -77,9 +77,9 @@ struct Colony
     }
 };
 
-static std::vector<Uint32> checkFeeding(int type)
+static std::vector<Uint32> checkFeeding(int type, int corn)
 {
-    Colony c;
+    Colony c(corn);
     Unit* u = c.unit(type);
     // Complete an ordinary action: the simulation itself reserves the last meal.
     u->delta = 255;
@@ -99,9 +99,14 @@ static std::vector<Uint32> checkFeeding(int type)
     }
     require(entered && timerReachedZero && u->hungry == Unit::HUNGRY_MAX,
             "unit completes its meal, including the zero timer boundary");
+    require(c.inn->resources[CORN] == corn - 1, "one meal consumes exactly one corn");
+    for (int tick = 0; tick < 300; ++tick)
+        c.step(true, "fed colony remains alive through exit and medical refresh");
+    require(u->attachedBuilding == nullptr && u->medical == Unit::MED_FREE,
+            "fed unit exits and refreshes medical status");
     Uint32 digest = 2166136261u;
     for (Uint32 checksum : c.trace) digest = (digest ^ checksum) * 16777619u;
-    std::printf("TRACE type=%d seed=110 ticks=%zu digest=%08x\n", type, c.trace.size(), unsigned(digest));
+    std::printf("TRACE type=%d corn=%d seed=110 ticks=%zu digest=%08x\n", type, corn, c.trace.size(), unsigned(digest));
     return c.trace;
 }
 
@@ -117,9 +122,10 @@ int main(int argc, char** argv)
     globals.buildingsTypes.init();
     IntBuildingType::init();
     for (int type : {WORKER, WARRIOR})
+    for (int corn : {1, 10})
     {
-        const auto first = checkFeeding(type);
-        const auto second = checkFeeding(type);
+        const auto first = checkFeeding(type, corn);
+        const auto second = checkFeeding(type, corn);
         require(first == second, "identical seeds and fixtures reproduce every team checksum");
     }
     {
@@ -141,6 +147,13 @@ int main(int argc, char** argv)
         c.inn->updateCallLists();
         c.unit();
         c.step(false, "hungry colony with no food still loses");
+    }
+    {
+        Colony c(0);
+        Unit* u = c.unit();
+        u->hungry = Unit::HUNGRY_MAX;
+        u->hp = u->trigHP;
+        c.step(false, "being fed does not override needing unavailable healing");
     }
     {
         Colony c;
