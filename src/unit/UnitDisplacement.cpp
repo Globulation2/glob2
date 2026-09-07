@@ -161,7 +161,12 @@ void Unit::handleDisplacement(void)
 								if (need>0)
 								{
 									int distToResource;
-									if (map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource))
+									bool available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
+									if (available)
+										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
+									else
+										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
+									if (available)
 									{
 										if ((distToResource<<1)>=timeLeft)
 											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.

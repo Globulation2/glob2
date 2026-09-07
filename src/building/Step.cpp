@@ -103,7 +103,12 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 		return false;
 	}
 
-	*dist = (distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
+	// Score by the whole job: the round-trip field when a fetcher has already
+	// built one, the plain walk out and back otherwise.
+	int roundTrip = 0;
+	if(!owner->map->roundTripDistance(this, wantedResource, unit->swimClass(), unit->posX, unit->posY, &roundTrip))
+		roundTrip = distBuilding + distResource;
+	*dist = roundTrip<<Q8_FIXED_POINT_SHIFT;
 	return true;
 }
 
