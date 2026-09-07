@@ -25,10 +25,7 @@ public:
 	
 	///If this downloader is downloading a map, this will cancel the download
 	void cancelDownload();
-	
-	///This receives a message from the server
-	void receiveMessage(std::shared_ptr<NetMessage> message);
-	
+
 	///This updates the downloader
 	void update();
 

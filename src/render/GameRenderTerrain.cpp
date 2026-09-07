@@ -131,17 +131,6 @@ void Game::drawMapResources(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
-	if (DEBUG_RENDER_GRADIENTS)
-		for (int y=top-1; y<=bot; y++)
-			for (int x=left-1; x<=right; x++)
-			{
-				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->wheatCareMap[0][(x+viewportX)+(y+viewportY)*map.w]);
-				//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((AICastor *)players[1]->ai->aiImplementation)->notGrassMap[(x+viewportX)+(y+viewportY)*map.w]);
-//				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, map.guardAreasGradient[0][1][(x+viewportX)+(y+viewportY)*map.w]);
-//				globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, ((Nicowar::AINicowar*)players[3]->ai->aiImplementation)->getGradientManager().getGradient(Nicowar::Gradient::VillageCenter, Nicowar::Gradient::Resource).getHeight(x+viewportX, y+viewportY));
-				//((AICastor *)players[0].ai->aiImplementation)->wheatCareMap
-			}
-
 	// We draw debug area:
 	if (DEBUG_RENDER_GRADIENTS)
 	{

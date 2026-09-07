@@ -246,12 +246,4 @@ bool Map::getGlobalGradientDestination(Uint8 *gradient, int x, int y, Sint32 *ta
 }
 
 
-/*
-This was the old way. I was much more complex but reliable with partially broken gradients. Let's keep it for now in case of such type of gradient reappears
-bool Map::resourceAvailable(int teamNumber, int resourceType, bool canSwim, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
-
-commented out version last seen in revision 0ea2652945a0
-
-*/
-
 

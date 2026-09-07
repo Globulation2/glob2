@@ -48,13 +48,6 @@ void YOGClientMapDownloader::cancelDownload()
 
 
 
-void YOGClientMapDownloader::receiveMessage(std::shared_ptr<NetMessage> message)
-{
-
-}
-
-
-
 void YOGClientMapDownloader::update()
 {
 	if(client->getYOGClientFileAssembler(fileID)->fileInformationReceived() && state == DownloadingMap && getPercentDownloaded()==100)

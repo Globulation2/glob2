@@ -797,7 +797,6 @@ public:
 	Sint32 warpDist1d(int p, int q, int l);///distance of coordinates p and q on a loop of length l
 	Sint32 warpDistSquare(int px, int py, int qx, int qy); //!< The distance^2 between (px, py) and (qx, qy), warp-safe.
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
-	Sint32 warpDistSum(int px, int py, int qx, int qy); //!< The combined distance on x and r y axis, between (px, py) and (qx, qy), warp-safe.
 	bool isInLocalGradient(int ux, int uy, int bx, int by); //!< Return true if the unit @(ux, uy) is close enough of building @(bx, by).
 	void dumpGradient(Uint8 *gradient, const std::string filename = "gradient.dump.pgm");
 
@@ -807,9 +806,7 @@ public:
 	void smoothResources(int times);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool oldMakeRandomMap(MapGenerationDescriptor &descriptor);
-	void oldAddResourcesRandomMap(MapGenerationDescriptor &descriptor);
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
-	void oldAddResourcesIslandsMap(MapGenerationDescriptor &descriptor);
 
 };
 

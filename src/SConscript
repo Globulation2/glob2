@@ -210,9 +210,7 @@ map/generator/GeneratorHeightmap.cpp
 map/generator/MapHomogen.cpp
 map/generator/MapOldRandom.cpp
 map/generator/MapRandom.cpp
-map/generator/MapOldRandomRessources.cpp
 map/generator/MapOldIslands.cpp
-map/generator/MapOldIslandsRessources.cpp
 map/generator/GameMaps.cpp
 map/io/MapHeader.cpp
 MapScript.cpp
@@ -293,7 +291,6 @@ unit/Unit.cpp
 unit/UnitAction.cpp
 unit/UnitActivity.cpp
 unit/UnitDisplacement.cpp
-UnitEditorScreen.cpp
 unit/UnitGeometry.cpp
 unit/UnitMedical.cpp
 unit/UnitMovement.cpp
@@ -339,7 +336,6 @@ yog/YOGGameInfo.cpp
 yog/YOGGameResults.cpp
 yog/YOGLoginScreen.cpp
 yog/YOGMessage.cpp
-yog/YOGPlayerPrivateInfo.cpp
 yog/YOGPlayerSessionInfo.cpp
 yog/YOGPlayerStoredInfo.cpp
 yog/YOGRegisterScreen.cpp

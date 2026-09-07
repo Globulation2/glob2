@@ -153,9 +153,7 @@ private:
 	
 	bool addProject(Project *project);
 	void addProjects();
-	
-	void choosePhase();
-	
+
 	std::shared_ptr<Order>continueProject(Project *project);
 	
 	bool enoughFreeWorkers();
@@ -183,9 +181,7 @@ private:
 	void computeEnemyWarriorsMap();
 
 	std::shared_ptr<Order>findGoodBuilding(Sint32 typeNum, bool food, bool defense, bool critical);
-	
-	void computeResourcesCluster();
-	
+
 public:
 	void updateGlobalGradientNoObstacle(Uint8 *gradient);
 	void updateGlobalGradient(Uint8 *gradient);
@@ -252,6 +248,4 @@ public:
 	Uint8 *enemyPowerMap;
 	Uint8 *enemyRangeMap;
 	Uint8 *enemyWarriorsMap;
-	
-	Uint16 *resourcesCluster;
 };
