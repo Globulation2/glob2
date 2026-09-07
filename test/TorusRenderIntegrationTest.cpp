@@ -3,6 +3,7 @@
 // either -g (OpenGL) or -G (software). No desktop input is generated.
 #include "GlobalContainer.h"
 #include "TorusPicking.h"
+#include "TorusGeometry.h"
 #include "DynamicClouds.h"
 #include <SDL.h>
 // Expose camera and settings widgets for deterministic integration checks.
@@ -298,13 +299,22 @@ static int run(int argc, char **argv)
                     rectangularView.lastFrame = SDL_GetTicks();
                     assert(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
                     assert(glGetError() == GL_NO_ERROR);
+                    // Picking the original screen center must still reach the
+                    // same map location after each step of the transition.
+                    int px, py;
+                    assert(rectangularView.pick(480, 368, px, py));
+                    const int expectedX = TorusPicking::worldPixel(rectangularView.pickU, rectangularView.originX, size.first);
+                    const int expectedY = TorusPicking::worldPixel(rectangularView.pickV, rectangularView.originY, size.second);
+                    assert(std::abs(TorusGeometry::wrappedDelta(px, expectedX, size.first * 32)) <= 2);
+                    assert(std::abs(TorusGeometry::wrappedDelta(py, expectedY, size.second * 32)) <= 2);
                 }
                 assert(rectangularView.ringMapAspect == float(size.first) / size.second);
                 for (const auto &vertex : rectangularView.vertices)
                 {
                     float x = vertex.position[0] / vertex.position[3];
                     float y = vertex.position[1] / vertex.position[3];
-                    assert(x >= 0 && x <= 960 && y >= 16 && y <= 720);
+                    assert(std::isfinite(x) && std::isfinite(y));
+                    assert(x >= 0 && x <= 960); // The distant rim may crop vertically.
                 }
                 rectangularView.setViewport(size.first - 1, size.second - 1);
                 assert(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));

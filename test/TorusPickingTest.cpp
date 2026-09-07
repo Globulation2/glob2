@@ -26,9 +26,10 @@ int main()
     for (float viewAspect : {.9f, 1.6f, 2.4f})
     for (float mapAspect : {.125f, .5f, 1.f, 2.f, 8.f})
     for (float roll : {0.f, .2f, .5f, .8f, 1.f})
-        for (float focus : {0.f, .25f, .5f, .75f, 1.f})
+        for (int focusCase = 0; focusCase <= 5; ++focusCase)
         {
             TorusGeometry::Shape shape(mapAspect);
+            const float focus = focusCase == 5 ? TorusGeometry::overviewLatitude(viewAspect, shape) : focusCase / 4.f;
             std::vector<Vertex> vertices;
             const int n = 40;
             for (int j = 0; j <= n; ++j)
@@ -40,9 +41,9 @@ int main()
                     vertices.push_back(
                         {{500 * w + p.x * 80, 400 * w + p.y * 80, p.z * 80, w}, {1, 1, 1}, {u, -v}});
                 }
-            // Only the flat surface necessarily covers the exact anchor: on a
-            // curved surface it can sit beyond the polygonal silhouette.
-            if (roll == 0)
+            // The flat surface and the camera-facing overview must cover the
+            // focus; arbitrary surface latitudes can be hidden by the ring.
+            if (roll == 0 || focusCase == 5)
             {
                 Hit center;
                 assert(mesh(vertices, n, n, 500, 400, center));

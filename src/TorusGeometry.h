@@ -130,15 +130,23 @@ inline Point focusedPoint(float du, float dv, float roll, float anchorV, const S
 }
 // Keep the overview outside the ring at a fixed distance.
 inline float hoverDistance(float) { return 18.0f; }
-// In an orthographic view a torus is the projected major circle expanded
-// by the tube radius: width 2(R+r), height 2R sin(tilt)+2r. Fit that silhouette
-// to the playable area. Favor the camera-facing landscape over keeping the
-// inner opening visible; a fat ring may naturally hide its opening.
+// Start with a tilt fitting the silhouette to the viewport. Wide maps have
+// thin tubes: lay those rings flatter to favor the foreground landscape.
+// Framing follows the focused tile, so the distant rim may leave the view.
 inline float fitTilt(float aspect, const Shape &shape = Shape())
 {
     const float targetHeight = 2 * (shape.majorRadius + shape.tubeRadius) / std::max(0.1f, aspect);
     const float sine = (targetHeight - 2 * shape.tubeRadius) / (2 * shape.majorRadius);
-    return std::asin(std::max(0.0f, std::min(1.0f, sine)));
+    return std::min(std::asin(std::max(0.0f, std::min(1.0f, sine))),
+                    std::atan(1 / std::sqrt(shape.aspect)));
+}
+// Place the focused tile where the surface faces the camera. With the same
+// scale on both screen axes, its conformal map coordinates project as squares.
+inline float overviewLatitude(float viewAspect, const Shape &shape)
+{
+    const float half = -fitTilt(viewAspect, shape) / 2;
+    return std::atan2(std::sin(half), shape.latitudeScale * std::cos(half)) / pi
+           + 0.5f - shape.phase;
 }
 // Pitch the camera so the folded ring lies at the fitting tilt; the flat map stays level.
 inline float overviewTilt(float anchorV, float roll, float aspect, const Shape &shape = Shape())

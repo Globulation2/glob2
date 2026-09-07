@@ -447,10 +447,10 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
     // The ring keeps one attitude on screen: the surface slides around the
     // tube as the view pans, and turns about the axis as it scrolls.
-    const float ringV = 0.5f;
-    float cameraDistance = TorusGeometry::hoverDistance(ringV);
     viewAspect = float(width) / std::max(1, height - 16);
-    // The folded ring sits centred in the view; the flat map keeps its focus there.
+    const float ringV = TorusGeometry::overviewLatitude(viewAspect, shape);
+    float cameraDistance = TorusGeometry::hoverDistance(ringV);
+    // Keep the focused landscape at screen center throughout the transition.
     // The ring's silhouette is measured once per view shape in camera units.
     if (ringAspect != viewAspect || ringMapAspect != aspect)
     {
@@ -466,8 +466,6 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 minY = std::min(minY, p.y / w);
                 maxY = std::max(maxY, p.y / w);
             }
-        ringCentreX = (minX + maxX) * 0.5f;
-        ringCentreY = (minY + maxY) * 0.5f;
         ringWidth = maxX - minX;
         ringHeight = maxY - minY;
         ringAspect = viewAspect;
@@ -476,8 +474,8 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     float scale = 0.9f * std::min(width / ringWidth, (height - 16) / ringHeight) * mix(1, cameraZoom, roll);
     float sx = std::exp(mix(std::log(game.map.getW() * 32 / (8 * pi)), std::log(scale), pull));
     float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
-    float cx = width * 0.5f - ringCentreX * scale * smooth(roll);
-    float cy = (height + 16) * 0.5f - ringCentreY * scale * smooth(roll);
+    float cx = width * 0.5f;
+    float cy = (height + 16) * 0.5f;
     float skyYaw = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, shape);
     float viewPitch = pa + TorusGeometry::overviewTilt(ringV, roll, viewAspect, shape);
     // Vertical navigation rolls the map around the tube, without pitching the

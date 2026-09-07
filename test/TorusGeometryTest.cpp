@@ -167,15 +167,25 @@ int main()
         Shape shape(mapAspect);
         assert(shape.majorRadius > shape.tubeRadius);
         assert(std::abs(shape.majorRadius + shape.tubeRadius - 4) < .00001f);
-        // Match the window silhouette when possible; otherwise take the
-        // nearest attainable height without stretching the world itself.
+        // The focused tile stays at the camera origin and faces the eye. Test
+        // actual projected edge lengths throughout the fold and at full roll.
         for (float viewAspect : {1.f, 1.6f, 2.4f})
         {
-            float height = 2 * shape.majorRadius * std::sin(fitTilt(viewAspect, shape))
-                           + 2 * shape.tubeRadius;
-            float target = std::max(2 * shape.tubeRadius, 8 / viewAspect);
-            assert(std::abs(height - target) < .00001f);
+            const float anchor = overviewLatitude(viewAspect, shape);
+            for (float roll : {0.f, .1f, .5f, .9f, 1.f})
+            {
+                assert(length(overviewPoint(0, 0, roll, anchor, viewAspect, shape)) < .00001f);
+                assert(std::abs(overviewTilt(anchor, roll, viewAspect, shape)) < .00001f);
+            }
+            const float e = .0001f;
+            auto x = overviewPoint(e, 0, 1, anchor, viewAspect, shape);
+            auto y = overviewPoint(0, e, 1, anchor, viewAspect, shape);
+            const float dx = x.x / (1 - x.z / 18);
+            const float dy = y.y / (1 - y.z / 18);
+            assert(std::abs(dx / (mapAspect * dy) - 1) < .01f);
         }
+        if (mapAspect == 8)
+            assert(fitTilt(1.6f, shape) < 20 * pi / 180);
         float previous = -.5f;
         for (int row = 0; row <= 160; ++row)
         {

@@ -49,7 +49,7 @@ class TorusView
     float amount, zoom;
     float travelU, travelV;
     float cameraU = 0, cameraV = 0, cameraZoom = 1;
-    float viewAspect = 1.6f, ringAspect = 0, ringMapAspect = 0, ringCentreX = 0, ringCentreY = 0;
+    float viewAspect = 1.6f, ringAspect = 0, ringMapAspect = 0;
     float ringWidth = 1, ringHeight = 1;
     int baseViewportX, baseViewportY, worldW, worldH;
     int atlasW, atlasH;
