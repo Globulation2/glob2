@@ -634,3 +634,10 @@ if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
     hiring_sources = [source for source in source_files if source != 'Glob2.cpp']
     hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
     local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))
+
+# Real engine regression for units surviving building destruction, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('BuildingExpelHarness.o', '#test/BuildingExpelHarness.cpp')
+    regression_test = local.Program('BuildingExpelHarness', regression_sources)
+    local.Alias('building-expel-test', regression_test)

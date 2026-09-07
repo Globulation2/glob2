@@ -98,32 +98,48 @@ void Map::syncStep(Uint32 stepCounter)
 	while (!updated)
 	{
 		int numberOfTeam=game->mapHeader.getNumberOfTeams();
+		bool anyInUse=false;
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESOURCES; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					if (resourcesGradient[t][r][s] && !gradientUpdated[t][r][s])
+					if (resourcesGradient[t][r][s])
 					{
-						updateResourcesGradient(t, r, s);
-						gradientUpdated[t][r][s]=true;
-						return;
+						anyInUse=true;
+						if (!gradientUpdated[t][r][s])
+						{
+							updateResourcesGradient(t, r, s);
+							gradientUpdated[t][r][s]=true;
+							return;
+						}
 					}
 		for (int t=0; t<numberOfTeam; t++)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
-				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
+				if(guardAreasGradient[t][s])
 				{
-					updateGuardAreasGradient(t, s);
-					guardGradientUpdated[t][s]=true;
-					return;
+					anyInUse=true;
+					if(!guardGradientUpdated[t][s])
+					{
+						updateGuardAreasGradient(t, s);
+						guardGradientUpdated[t][s]=true;
+						return;
+					}
 				}
 		for (int t=0; t<numberOfTeam; t++)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
-				if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
+				if(clearAreasGradient[t][s])
 				{
-					updateClearAreasGradient(t, s);
-					clearGradientUpdated[t][s]=true;
-					return;
+					anyInUse=true;
+					if(!clearGradientUpdated[t][s])
+					{
+						updateClearAreasGradient(t, s);
+						clearGradientUpdated[t][s]=true;
+						return;
+					}
 				}
-				
+
+		// No gradient is allocated: there is nothing to round robin over.
+		if (!anyInUse)
+			return;
 
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESOURCES; r++)

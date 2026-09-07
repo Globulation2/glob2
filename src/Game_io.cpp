@@ -322,6 +322,8 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 			const auto building = team->myBuildings[bi];
 			if (!building)
 				continue;
+			if (building->buildingState==Building::DEAD)  // kill() cleared its footprint
+				continue;
 			const auto x = building->posX;
 			const auto y = building->posY;
 			const auto type = building->type;

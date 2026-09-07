@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <algorithm>
 #include "Unit.h"
 #include "Race.h"
 #include "Team.h"
@@ -437,4 +438,45 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 		}
 	}
 	return false;
+}
+
+// Training is all-or-nothing; a meal or a healing is granted pro rata, and
+// a started meal costs a whole wheat.
+void Unit::applyPartialInsideBenefit()
+{
+	if (displacement!=DIS_INSIDE)
+		return;
+	int total;
+	if (destinationPurpose==FEED)
+		total=attachedBuilding->type->timeToFeedUnit;
+	else if (destinationPurpose==HEAL)
+		total=attachedBuilding->type->timeToHealUnit;
+	else
+		return;
+	int elapsed=std::min(total, total+insideTimeout);
+	if (total<=0 || elapsed<=0)
+		return;
+	if (destinationPurpose==FEED)
+	{
+		if (attachedBuilding->resources[CORN]<=0)
+			return;
+		hungry+=((HUNGRY_MAX-hungry)*elapsed)/total;
+		fruitCount=attachedBuilding->eatOnce(&fruitMask);
+	}
+	else
+		hp+=((performance[HP]-hp)*elapsed)/total;
+}
+
+void Unit::expelFromBuilding(int x, int y, int dx, int dy)
+{
+	applyPartialInsideBenefit();
+	standardRandomActivity();
+	insideTimeout=0;
+	posX=x;
+	posY=y;
+	this->dx=dx;
+	this->dy=dy;
+	delta=0;
+	movement=MOV_EXITING_BUILDING;
+	handleActionExitingBuilding();
 }

@@ -217,6 +217,18 @@ the initial occupancy explicitly, so failures in painting or occupancy can be
 reproduced independently of the fresh-map initialization bug. Linux CI runs all
 scenarios.
 
+## Building expulsion regression
+
+From the repository root, run `scons -j8 release=1 server=0 building-expel-test`
+and `./build/src/BuildingExpelHarness`. The harness links the real engine and
+checks that a destroyed building puts the units inside it, entering it, or
+waiting to leave it back on the map alive (footprint first, then the ring around
+it; a unit with no free tile dies), and that the expelled units keep the share of
+the meal or healing they had already received while a started meal still costs
+the building one wheat. Every scenario then runs real simulation steps and
+re-checks `Game::integrity`. It needs no display, AI tournament tooling, or
+external save files.
+
 ### Savegame safety
 
 Build `scons release=1 server=0 savegame-safety-test`, then run
