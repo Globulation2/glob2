@@ -57,8 +57,9 @@ jobs:
 
       - name: Test savegame loading and atomic autosaves
         run: |
-          scons -j$(nproc) release=1 server=0 savegame-safety-test
+          scons -j$(nproc) release=1 server=0 savegame-safety-test buffered-file-test
           python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness
+          ./build/src/BufferedFileStreamHarness
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 server=1 --build=build-server
