@@ -93,6 +93,8 @@ CortexUpgradeTest.cpp
 
 FilenameStripTest.cpp
 
+AllyTeamWidgetIndexTest.cpp
+
 GUIListSelectionTest.cpp
 
 ScrollWheelTargetTest.cpp
