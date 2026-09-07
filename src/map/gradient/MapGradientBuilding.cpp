@@ -59,7 +59,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 				if (yi2+(xi*xi)<=r2)
 				{
 					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-					if(cases[addr].resource.type!=NO_RES_TYPE && building->clearingResources[cases[addr].resource.type])
+					if(cases[addr].resource.type < BASIC_COUNT && building->clearingResources[cases[addr].resource.type])
 					{
 						if(gradient[addr] == GRADIENT_UNREACHABLE)
 							gradient[addr] = GRADIENT_AT_GOAL;

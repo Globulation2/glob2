@@ -85,7 +85,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 				if (yi2+(xi*xi)<=r2)
 				{
 					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-					if(cases[addr].resource.type != NO_RES_TYPE && building->clearingResources[cases[addr].resource.type])
+					if(cases[addr].resource.type < BASIC_COUNT && building->clearingResources[cases[addr].resource.type])
 					{
 						int xxi=clip_0_31(LOCAL_GRID_CENTER+xi);
 						gradient[xxi+(yyi<<LOCAL_GRID_SHIFT)]=GRADIENT_AT_GOAL;
