@@ -1204,3 +1204,19 @@ View History
 ﺗﺤﻮﻟﺖ ﻭﺣﺪﺗﻚ ﺇﻟﻰ ﻓﺮﻳﻖ %0
 [Your username was banned]
 ﺣُﻈﺮ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺍﻟﺨﺎﺹ ﺑﻚ. ﻳُﺮﺟﻰ ﺍﻟﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء ﻟﺘﻐﻴﻴﺮ ﻫﺬﺍ.
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[tile x]
+tile x
+[tile y]
+tile y
+[colonies]
+colonies
+[bases]
+bases
+[number of colonies]
+Number of colonies, one per player; raising it repeats the map until they fit
+[bases per colony]
+Bases per colony; a base is one team of the map as drawn, its buildings and units

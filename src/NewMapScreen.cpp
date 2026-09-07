@@ -17,19 +17,21 @@ using namespace GAGGUI;
 NewMapScreen::NewMapScreen()
 {
 	mapSizeX=new Number(20, 50, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	mapSizeX->add(32);
 	mapSizeX->add(64);
 	mapSizeX->add(128);
 	mapSizeX->add(256);
 	mapSizeX->add(512);
-	mapSizeX->setNth(descriptor.wDec-6);
+	mapSizeX->setNth(descriptor.wDec-5);
 	addWidget(mapSizeX);
 	
 	mapSizeY=new Number(20, 75, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
+	mapSizeY->add(32);
 	mapSizeY->add(64);
 	mapSizeY->add(128);
 	mapSizeY->add(256);
 	mapSizeY->add(512);
-	mapSizeY->setNth(descriptor.hDec-6);
+	mapSizeY->setNth(descriptor.hDec-5);
 	addWidget(mapSizeY);
 
 	logRepeatAreaTimes=new Number(310, 75, 114, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");

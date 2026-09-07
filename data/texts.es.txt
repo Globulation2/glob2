@@ -1206,3 +1206,19 @@ Tu dirección IP está baneada temporalmente. Espere o contacte con los administ
 Tu unidad ha sido convertida por el jugador %0
 [Your username was banned]
 Tu nombre de usuario ha sido baneado. Contacte con los administradores.
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[tile x]
+tile x
+[tile y]
+tile y
+[colonies]
+colonies
+[bases]
+bases
+[number of colonies]
+Number of colonies, one per player; raising it repeats the map until they fit
+[bases per colony]
+Bases per colony; a base is one team of the map as drawn, its buildings and units

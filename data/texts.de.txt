@@ -1206,3 +1206,19 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[tile x]
+tile x
+[tile y]
+tile y
+[colonies]
+colonies
+[bases]
+bases
+[number of colonies]
+Number of colonies, one per player; raising it repeats the map until they fit
+[bases per colony]
+Bases per colony; a base is one team of the map as drawn, its buildings and units
