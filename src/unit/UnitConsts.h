@@ -33,6 +33,12 @@ enum Abilities
 	HEAL=17, /* old 12 */
 	FEED=18 /* old 13 */
 };
+
+//! Pathfinding swim classes. Class 0 is a unit that cannot swim; classes 1 and
+//! up bucket the unit's walk/swim speed ratio, from water being cheaper than
+//! land to water being three times dearer (see Map::swimClass). The map keeps
+//! one gradient per class so every unit is routed at its own water cost.
+static constexpr int SWIM_CLASS_COUNT = 7;
 const int NB_MOVE=9;
 const int NB_ABILITY=17;
 
@@ -104,9 +110,9 @@ static constexpr int UNIT_MIN_DIST_NOT_REACHABLE = -1;
 //! `Unit::previousClearingAreaDistance` (`Uint32`) sentinel meaning "no
 //! claim recorded". Stored as `0xFFFFFFFF`. UnitMovement.cpp:474.
 static constexpr Uint32 UNIT_CLEAR_AREA_DISTANCE_NONE = static_cast<Uint32>(-1);
-// NOTE: the "no clearing-gradient target" sentinel (254) lives in the map
-// slice as `GRADIENT_FORBIDDEN_BORDER` / `GRADIENT_AT_GOAL` and is consumed
-// from UnitMovement.cpp:441-442 — no per-slice unit constant is needed.
+// NOTE: the clearing-gradient sentinels live in the map slice (MapInternal.h,
+// `GRADIENT_UNREACHABLE` / `GRADIENT_AT_GOAL`) and are consumed from
+// Unit::handleMovementRandom — no per-slice unit constant is needed.
 
 // === HP / hunger trigger ratios ===
 //! Numerator of the "low HP, retreat to heal" trigger: `trigHP = (hp*3)/10`.

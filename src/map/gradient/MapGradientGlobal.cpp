@@ -7,7 +7,9 @@
 #include "MapInternal.h"
 
 // Chamfer distance transform with orthogonal=1, diagonal=1 weights (Chebyshev
-// distance) on a toroidal grid. Two sweeps per pass — forward (NW, N, NE, W)
+// distance) on a toroidal grid, for the AIs' own Uint8 helper maps (Castor,
+// Warrush). The pathfinding gradients are Uint16 and built by
+// Map::propagateGradient (MapGradientField.cpp). Two sweeps per pass — forward (NW, N, NE, W)
 // then backward (SE, S, SW, E) — repeated until a full pass writes nothing.
 //
 // Cell value semantics:
@@ -106,10 +108,22 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 }
 
 
-void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSwim)
+Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass)
 {
-	Uint8 *gradient=resourcesGradient[teamNumber][resourceType][canSwim];
+	Uint16 *&gradient = resourcesGradient[teamNumber][resourceType][swimClass];
+	if (gradient == NULL)
+	{
+		gradient = new Uint16[size];
+		updateResourcesGradient(teamNumber, resourceType, swimClass);
+	}
+	return gradient;
+}
+
+void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
+{
+	Uint16 *gradient=resourcesGradient[teamNumber][resourceType][swimClass];
 	assert(gradient);
+	bool canSwim = swimClass > 0;
 
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
@@ -118,13 +132,13 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSw
 		const Case& c=cases[i];
 		if (c.forbidden & teamMask)
 			gradient[i]=GRADIENT_FORBIDDEN;
-		else if(immobileUnits[i] != 255)
+		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i]=GRADIENT_FORBIDDEN;
 		else if (c.resource.type==NO_RES_TYPE)
 		{
 			if (c.building!=NOGBID)
 				gradient[i]=GRADIENT_FORBIDDEN;
-			else if (!canSwim && (c.terrain>=256 && c.terrain<16+256)) //!canSwim && isWater
+			else if (!canSwim && isWater(i))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
 				gradient[i]=GRADIENT_UNREACHABLE;
@@ -140,6 +154,5 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSw
 			gradient[i]=GRADIENT_FORBIDDEN;
 	}
 
-	updateGlobalGradient(gradient);
+	propagateGradient(gradient, swimClass);
 }
-

@@ -171,10 +171,9 @@ map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
 map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientLocal.cpp
+map/gradient/MapGradientField.cpp
 map/io/MapExploredAreaIO.cpp
 map/io/MapIO.cpp
-map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindBuilding.cpp
@@ -421,10 +420,9 @@ map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
 map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientLocal.cpp
+map/gradient/MapGradientField.cpp
 map/io/MapExploredAreaIO.cpp
 map/io/MapIO.cpp
-map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindRessource.cpp

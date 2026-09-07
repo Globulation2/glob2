@@ -62,7 +62,7 @@ int Unit::numberOfStepsLeftUntilHungry(void)
 void Unit::computeMinDistToResources(void)
 {
 	for (size_t ri = 0; ri < MAX_RESOURCES; ri++)
-		if (!owner->map->resourceAvailable(owner->teamNumber, ri, performance[SWIM], posX, posY, &minDistToResource[ri]))
+		if (!owner->map->resourceAvailable(owner->teamNumber, ri, swimClass(), posX, posY, &minDistToResource[ri]))
 			minDistToResource[ri] = UNIT_MIN_DIST_NOT_REACHABLE;
 	// the dist to an already carried resource is zero
 	if (carriedResource >= 0)

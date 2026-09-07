@@ -3,37 +3,35 @@
 
 #include "Map.h"
 #include "Utilities.h"
-#include "BuildingType.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
 
 
-// Resource pathfinding for units (pathfindResource, pathfindLocalResource, pathfindRandom)
+// Resource pathfinding for units (pathfindResource, pathfindRandom)
 
-bool Map::pathfindResource(int teamNumber, Uint8 resourceType, bool canSwim, int x, int y, int *dx, int *dy, bool *stopWork)
+bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork)
 {
 	assert(resourceType<MAX_RESOURCES);
-	const Uint8 *gradient=resourcesGradient[teamNumber][resourceType][canSwim];
-	assert(gradient);
-	Uint8 max=gradient[x+y*w];
+	const Uint16 *gradient=getResourceGradient(teamNumber, resourceType, swimClass);
+	Uint16 here=gradient[coordToIndex(x, y)];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
-	if (max==GRADIENT_FORBIDDEN)
+	if (here==GRADIENT_FORBIDDEN)
 	{
 		*stopWork=true;
-		return pathfindForbidden(gradient, teamNumber, canSwim, x, y, dx, dy);
+		return pathfindForbidden(gradient, teamNumber, swimClass, x, y, dx, dy);
 	}
-	if (max<2)
+	if (here==GRADIENT_UNREACHABLE)
 	{
 		*stopWork=true;
 		return false;
 	}
-
-	if (directionByMinigrad(teamMask, canSwim, x, y, dx, dy, gradient, true))
-		return true;
-
 	*stopWork=false;
-	return false;
+	if (here==GRADIENT_AT_GOAL)
+		return false; // standing where the resource was: it is gone, wander until the gradient is rebuilt
+	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
+		return true;
+	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
 }
 
 
@@ -44,7 +42,7 @@ void Map::pathfindRandom(Unit *unit)
 	int y=unit->posY;
 	if ((cases[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
-		if (pathfindForbidden(NULL, unit->owner->teamNumber, (unit->performance[SWIM]>0), x, y, &unit->dx, &unit->dy))
+		if (pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, &unit->dx, &unit->dy))
 		{
 			unit->directionFromDxDy();
 		}
@@ -91,117 +89,3 @@ void Map::pathfindRandom(Unit *unit)
 	}
 }
 #endif  // !YOG_SERVER_ONLY
-
-bool Map::pathfindLocalResource(Building *building, bool canSwim, int x, int y, int *dx, int *dy)
-{
-	assert(building);
-	assert(building->type);
-	assert(building->type->isVirtual);
-
-	int bx=building->posX;
-	int by=building->posY;
-	Uint32 teamMask=building->owner->me;
-
-	Uint8 *gradient=building->localResources[canSwim];
-	if (gradient==NULL)
-	{
-		if (!updateLocalResources(building, canSwim))
-			return false;
-		gradient=building->localResources[canSwim];
-	}
-	assert(gradient);
-	//HACK: I have no idea what is going on or why isInLocalGradient(x, y, bx, by) was asserted and why isInLocalGradient(x, y, bx, by) checks for the rectangle it is checking for, but this fixes a rare crash.
-	if(!isInLocalGradient(x, y, bx, by))
-		return false;
-
-	int lx=(x-bx+15+32)&31;
-	int ly=(y-by+15+32)&31;
-	int max=0;
-	Uint8 currentg=gradient[lx+(ly<<5)];
-	bool found=false;
-	bool gradientUsable=false;
-
-	// PORT: escalation path — bumps localResourcesCleanTime by 16 to trigger clearingFlagStep's
-	// PORT: recompute (which checks >125) sooner. The 125/128 thresholds are slightly mismatched;
-	// PORT: align them in the Rust port (probably both should be 125).
-	if (currentg==GRADIENT_UNREACHABLE && (building->localResourcesCleanTime[canSwim]+=16)<128)
-	{
-		// This means there are still resources, but they are unreachable.
-		// We wait 5[s] before recomputing anything.
-		return false;
-	}
-
-	if (currentg>GRADIENT_UNREACHABLE && currentg!=GRADIENT_AT_GOAL)
-	{
-		for (int sd=0; sd<=1; sd++)
-			for (int d=sd; d<8; d+=2)
-			{
-				int ddx, ddy;
-				Unit::dxDyFromDirection(d, &ddx, &ddy);
-				int lxddx=clip_0_31(lx+ddx);
-				int lyddy=clip_0_31(ly+ddy);
-				Uint8 g=gradient[lxddx+(lyddy<<5)];
-				if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
-					gradientUsable=true;
-				if (g>=max && isFreeForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
-				{
-					max=g;
-					*dx=ddx;
-					*dy=ddy;
-					found=true;
-				}
-			}
-
-		if (gradientUsable)
-		{
-			if (!found)
-			{
-				*dx=0;
-				*dy=0;
-			}
-			return true;
-		}
-	}
-
-	updateLocalResources(building, canSwim);
-
-	max=0;
-	currentg=gradient[lx+(ly<<5)];
-	found=false;
-	gradientUsable=false;
-
-	if (currentg==GRADIENT_UNREACHABLE)
-		return false;
-
-	if (currentg==GRADIENT_FORBIDDEN || currentg==GRADIENT_AT_GOAL)
-		return false;
-
-	for (int sd=0; sd<=1; sd++)
-		for (int d=sd; d<8; d+=2)
-		{
-			int ddx, ddy;
-			Unit::dxDyFromDirection(d, &ddx, &ddy);
-			int lxddx=clip_0_31(lx+ddx);
-			int lyddy=clip_0_31(ly+ddy);
-			Uint8 g=gradient[lxddx+(lyddy<<5)];
-			if (!gradientUsable && g>currentg && isHardSpaceForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
-				gradientUsable=true;
-			if (g>=max && isFreeForGroundUnit(x+ddx, y+ddy, canSwim, teamMask))
-			{
-				max=g;
-				*dx=ddx;
-				*dy=ddy;
-				found=true;
-			}
-		}
-
-	if (!gradientUsable)
-		return false;
-
-	if (!found)
-	{
-		*dx=0;
-		*dy=0;
-	}
-	return true;
-}
