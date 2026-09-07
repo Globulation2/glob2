@@ -216,8 +216,8 @@ public:
 	void swarmStep(void);
 	/// This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(Uint32 stepCounter);
-	/// Kills the building, removing all units that are working or inside the building,
-	/// changing the state and adding it to the list of buildings to be deleted
+	/// Kills the building: releases its workers, expels the units inside onto
+	/// the footprint or the ring around it, and queues it for deletion.
 	void kill(void);
 
 	/// This function removes the unit from the list of units working on the building. Units will remove themselves
@@ -263,6 +263,9 @@ public:
 	/// and provides the x and y coordinates, along with the direction the unit should be travelling
 	/// when it leaves.
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
+
+	/// Free tile for a unit expelled by kill(): footprint first, then the ring; dx/dy point outwards.
+	bool findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *dx, int *dy);
 
 	/// Returns the script level number. Construction sites are odd numbers and completed buildings
 	/// even, from 0 to 5
