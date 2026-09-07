@@ -15,6 +15,8 @@ class GradientTest: public CppUnit::TestFixture
 		CPPUNIT_TEST( testWaterCostsBySwimClass );
 		CPPUNIT_TEST( testUnreachableCellsStayUnreachable );
 		CPPUNIT_TEST( testSeedBelowGoalPropagates );
+		CPPUNIT_TEST( testSeedsBeyondBucketWindow );
+		CPPUNIT_TEST( testMaxCostStopsPropagation );
 		CPPUNIT_TEST( testDirectionPrefersCheapestTotal );
 		CPPUNIT_TEST( testDirectionBlockedNeighbour );
 		CPPUNIT_TEST( testSwimClassFromSpeeds );
@@ -26,6 +28,8 @@ public:
 	void testWaterCostsBySwimClass();
 	void testUnreachableCellsStayUnreachable();
 	void testSeedBelowGoalPropagates();
+	void testSeedsBeyondBucketWindow();
+	void testMaxCostStopsPropagation();
 	void testDirectionPrefersCheapestTotal();
 	void testDirectionBlockedNeighbour();
 	void testSwimClassFromSpeeds();

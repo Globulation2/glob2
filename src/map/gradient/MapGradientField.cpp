@@ -5,7 +5,9 @@
 #include "MapInternal.h"
 #include "Utilities.h"
 
+#include <algorithm>
 #include <cstdlib>
+#include <utility>
 #include <vector>
 
 // Building and reading the pathfinding gradients (cell values: MapInternal.h).
@@ -24,8 +26,12 @@ namespace
 	constexpr int BUCKETS = MAX_STEP + 1;
 	// Costs above this would run into the sentinels; propagation stops there.
 	constexpr int COST_LIMIT = GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1 - MAX_STEP;
+	static_assert(COST_LIMIT == Map::GRADIENT_COST_LIMIT);
 
 	std::vector<int> buckets[BUCKETS];
+	// Seeds whose cost lies beyond the bucket window, sorted by (cost, cell);
+	// each enters its bucket once the sweep reaches its cost.
+	std::vector<std::pair<int, int>> deferredSeeds;
 }
 
 static_assert(WATER_STEP[Map::SWIM_CLASS_EVEN] == GRADIENT_STEP);
@@ -63,22 +69,39 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 }
 
 // Seeds are the cells above GRADIENT_UNREACHABLE; each starts at its own cost
-// (0 for GRADIENT_AT_GOAL). GRADIENT_FORBIDDEN cells are obstacles.
-void Map::propagateGradient(Uint16 *gradient, int swimClass)
+// (0 for GRADIENT_AT_GOAL, anything up to COST_LIMIT otherwise, e.g. a resource
+// tile seeded with its distance to a building). GRADIENT_FORBIDDEN cells are
+// obstacles.
+void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 {
+	const int limit = std::min(maxCost, COST_LIMIT);
 	for (int b = 0; b < BUCKETS; b++)
 		buckets[b].clear();
+	deferredSeeds.clear();
 	size_t pending = 0;
 	for (size_t i = 0; i < size; i++)
 		if (gradient[i] > GRADIENT_UNREACHABLE)
 		{
 			int cost = GRADIENT_AT_GOAL - gradient[i];
-			assert(cost <= MAX_STEP);
-			buckets[cost % BUCKETS].push_back((int)i);
+			if (cost <= MAX_STEP)
+			{
+				buckets[cost % BUCKETS].push_back((int)i);
+				pending++;
+			}
+			else
+				deferredSeeds.push_back({cost, (int)i});
+		}
+	std::sort(deferredSeeds.begin(), deferredSeeds.end());
+	size_t nextSeed = 0;
+	for (int cur = 0; (pending > 0 || nextSeed < deferredSeeds.size()) && cur <= limit; cur++)
+	{
+		if (pending == 0)
+			cur = deferredSeeds[nextSeed].first;
+		for (; nextSeed < deferredSeeds.size() && deferredSeeds[nextSeed].first == cur; nextSeed++)
+		{
+			buckets[cur % BUCKETS].push_back(deferredSeeds[nextSeed].second);
 			pending++;
 		}
-	for (int cur = 0; pending > 0 && cur <= COST_LIMIT; cur++)
-	{
 		std::vector<int> &bucket = buckets[cur % BUCKETS];
 		// Relaxations may append to other buckets but never to this one
 		// (every step costs at least 5), so iterating by index is safe.
@@ -99,7 +122,7 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass)
 					continue;
 				// The step from n to i enters i, so it is charged i's terrain.
 				int cost = cur + stepCost(dx, dy, (size_t)i, swimClass);
-				if (cost < GRADIENT_AT_GOAL - gradient[n])
+				if (cost <= limit && cost < GRADIENT_AT_GOAL - gradient[n])
 				{
 					gradient[n] = (Uint16)(GRADIENT_AT_GOAL - cost);
 					buckets[cost % BUCKETS].push_back((int)n);

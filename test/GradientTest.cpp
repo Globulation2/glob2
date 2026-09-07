@@ -168,6 +168,44 @@ void GradientTest::testSeedBelowGoalPropagates()
 	CPPUNIT_ASSERT_EQUAL(GRADIENT_STEP + GRADIENT_DIAGONAL_STEP, cost(g, map, 5, 5));
 }
 
+void GradientTest::testSeedsBeyondBucketWindow()
+{
+	// Seeds may start at any cost, as the round-trip gradients seed resource
+	// tiles with their distance to a building. Walls along x=2 and y=2 cut
+	// the torus into one 7x7 rectangle with the goal in the corner (3,3) and
+	// a seed at cost 60 in the opposite corner (1,1), 84 from the goal.
+	GrassMap map;
+	std::vector<Uint16> g = blank(map);
+	for (int i = 0; i < 8; i++)
+	{
+		g[map.coordToIndex(2, i)] = GRADIENT_FORBIDDEN;
+		g[map.coordToIndex(i, 2)] = GRADIENT_FORBIDDEN;
+	}
+	g[map.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
+	g[map.coordToIndex(1, 1)] = GRADIENT_AT_GOAL - 60;
+	map.propagateGradient(g.data(), 0);
+	CPPUNIT_ASSERT_EQUAL(0, cost(g, map, 3, 3));
+	CPPUNIT_ASSERT_EQUAL(60, cost(g, map, 1, 1));
+	// (0,0) and (1,0): 70 through the seed, 70 and 80 from the goal.
+	CPPUNIT_ASSERT_EQUAL(70, cost(g, map, 0, 0));
+	CPPUNIT_ASSERT_EQUAL(70, cost(g, map, 1, 0));
+	// (7,7): four diagonals from the goal beat 88 through the seed.
+	CPPUNIT_ASSERT_EQUAL(56, cost(g, map, 7, 7));
+	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_FORBIDDEN, (int)g[map.coordToIndex(2, 5)]);
+}
+
+void GradientTest::testMaxCostStopsPropagation()
+{
+	GrassMap map;
+	std::vector<Uint16> g = blank(map);
+	g[map.coordToIndex(0, 0)] = GRADIENT_AT_GOAL;
+	map.propagateGradient(g.data(), 0, 20);
+	CPPUNIT_ASSERT_EQUAL(20, cost(g, map, 2, 0));
+	CPPUNIT_ASSERT_EQUAL(14, cost(g, map, 1, 1));
+	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(3, 0)]);
+	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_UNREACHABLE, (int)g[map.coordToIndex(2, 2)]);
+}
+
 void GradientTest::testDirectionPrefersCheapestTotal()
 {
 	GrassMap map;

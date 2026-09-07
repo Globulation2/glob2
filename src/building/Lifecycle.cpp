@@ -20,7 +20,11 @@
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	{
 		globalGradient[i]=NULL;
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+			roundTripGradient[r][i]=NULL;
+	}
 	freeGradients();
 	load(stream, types, owner, versionMinor);
 }
@@ -112,7 +116,11 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 		inUpgrade[i]=LS_UNKNOWN;
 
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	{
 		globalGradient[i]=NULL;
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+			roundTripGradient[r][i]=NULL;
+	}
 	freeGradients();
 
 	verbose=false;
@@ -148,6 +156,13 @@ void Building::resetPathfindGradients()
 	{
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+		{
+			delete[] roundTripGradient[r][i];
+			roundTripGradient[r][i] = NULL;
+			roundTripGradientStep[r][i] = 0;
+			roundTripGradientUsedStep[r][i] = 0;
+		}
 	}
 }
 
