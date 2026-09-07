@@ -10,11 +10,13 @@
 
 // Resource pathfinding for units (pathfindResource, pathfindRandom)
 
-bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork)
+#ifndef YOG_SERVER_ONLY
+bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target)
 {
 	assert(resourceType<MAX_RESOURCES);
 	const Uint16 *gradient=getResourceGradient(teamNumber, resourceType, swimClass);
-	Uint16 here=gradient[coordToIndex(x, y)];
+	size_t hereIndex=coordToIndex(x, y);
+	Uint16 here=gradient[hereIndex];
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	if (here==GRADIENT_FORBIDDEN)
 	{
@@ -29,13 +31,22 @@ bool Map::pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, in
 	*stopWork=false;
 	if (here==GRADIENT_AT_GOAL)
 		return false; // standing where the resource was: it is gone, wander until the gradient is rebuilt
+	if (target)
+	{
+		// The round-trip gradient may lag behind this one by a few ticks; when
+		// it is blocked or stale here, the plain gradient below still leads to
+		// a resource.
+		const Uint16 *roundTrip=roundTripGradient(target, resourceType, swimClass);
+		if (roundTrip && roundTrip[hereIndex]>GRADIENT_UNREACHABLE
+			&& directionByGradient(teamMask, swimClass, x, y, roundTrip, dx, dy, true))
+			return true;
+	}
 	if (directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, true))
 		return true;
 	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
 }
 
 
-#ifndef YOG_SERVER_ONLY
 void Map::pathfindRandom(Unit *unit)
 {
 	int x=unit->posX;

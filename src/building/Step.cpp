@@ -84,8 +84,8 @@ bool Building::considerUnitForResources(Unit* unit, int* dist, int* resource)
 	}
 
 	// Otherwise look for the best reachable needed resource the unit could
-	// fetch, scoring by combined (building + resource) distance scaled by how
-	// badly the resource is needed. Track whether the only candidates were
+	// fetch, scoring by the round trip (unit to resource to building) scaled
+	// by how badly the resource is needed. Track whether the only candidates were
 	// out of hunger range, and whether they were regular resources or fruit,
 	// so the rejection reason is specific.
 	int bestDist = UNREACHABLE_RESOURCE_DIST;
@@ -106,11 +106,20 @@ bool Building::considerUnitForResources(Unit* unit, int* dist, int* resource)
 			else
 				fruitFound=true;
 			int distResource = 0;
-			if (map->resourceAvailable(owner->teamNumber, r, unit->swimClass(), x, y, &distResource))
+			int roundTrip = 0;
+			bool available = map->roundTripDistance(this, r, unit->swimClass(), x, y, &roundTrip);
+			if (available)
+				distResource = roundTrip - distBuilding;
+			else if (map->resourceAvailable(owner->teamNumber, r, unit->swimClass(), x, y, &distResource))
+			{
+				roundTrip = distBuilding + distResource;
+				available = true;
+			}
+			if (available)
 			{
 				if(distResource<timeLeft)
 				{
-					int dist = (distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
+					int dist = roundTrip<<Q8_FIXED_POINT_SHIFT;
 					int value = dist / need;
 					if(value < bestDist)
 					{
