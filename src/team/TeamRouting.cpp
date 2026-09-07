@@ -49,13 +49,12 @@ Building *Team::findNearestHeal(Unit *unit)
 		Sint32 x = unit->posX;
 		Sint32 y = unit->posY;
 		Sint32 maxDist = starvationLimitedTravelDistance(unit);
-		bool canSwim = unit->performance[SWIM];
 		Building *choosen=  NULL;
 		Sint32 bestDist = maxDist;
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
 		{
 			int buildingDist;//initialized in buildingAvailable next line
-			if (map->buildingAvailable((*bi), canSwim, x, y, &buildingDist) && (buildingDist < bestDist))
+			if (map->buildingAvailable((*bi), unit->swimClass(), x, y, &buildingDist) && (buildingDist < bestDist))
 			{
 				choosen = (*bi);
 				bestDist = buildingDist;
@@ -125,7 +124,6 @@ Building *Team::findNearestFood(Unit *unit)
 		else
 		{
 			Sint32 bestDist = maxDist;
-			bool canSwim = (unit->performance[SWIM] > 0);
 			for (int ti = 0; ti < header.getNumberOfTeams(); ti++)
 			{
 				if (ti == teamNumber)
@@ -142,7 +140,7 @@ Building *Team::findNearestFood(Unit *unit)
 					{
 						continue;
 					}
-					if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist))
+					if (!map->buildingAvailable(*bi, unit->swimClass(), unit->posX, unit->posY, &dist))
 						continue;
 					if (dist >= maxDist)
 						continue;
@@ -186,7 +184,6 @@ Building *Team::findNearestFood(Unit *unit)
 	}
 	else
 	{
-		bool canSwim = (unit->performance[SWIM] > 0);
 		Sint32 bestDist = maxDist;
 		Building *choosenFood = NULL;
 		for (std::list<Building *>::iterator bi=canFeedUnit.begin(); bi!=canFeedUnit.end(); ++bi)
@@ -197,7 +194,7 @@ Building *Team::findNearestFood(Unit *unit)
 			if (dist >= bestDist)
 				continue;
 
-			if (!map->buildingAvailable(*bi, canSwim, unit->posX, unit->posY, &dist))
+			if (!map->buildingAvailable(*bi, unit->swimClass(), unit->posX, unit->posY, &dist))
 				continue;
 			if (dist >= bestDist)
 				continue;

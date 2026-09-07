@@ -189,6 +189,8 @@ private:
 public:
 	void updateGlobalGradientNoObstacle(Uint8 *gradient);
 	void updateGlobalGradient(Uint8 *gradient);
+	//! The map's corn gradient for Castor's workers, on Castor's 8-bit scale.
+	Uint8 wheatGradientAt(size_t index);
 	
 	std::list<Project *> projects;
 	

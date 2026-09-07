@@ -17,8 +17,6 @@
 extern const int deltaOne[8][2];
 // use tabClose for original circular direction
 extern const int tabClose[8][2];
-// use tabMiniFar for all miniGrad far points
-extern const int tabFar[16][2];
 
 // helper to fill vectors
 template <typename T>
@@ -26,30 +24,31 @@ inline void fill(std::vector<T>& vec, const T& value) {
 	std::fill(vec.begin(), vec.end(), value);
 }
 
-// Local working grid: a building's local gradient and the clearing-flag local-resources
-// gradient both live in a 32x32 buffer centered on the building. Index = y << SHIFT | x.
-constexpr int LOCAL_GRID_W      = 32;
-constexpr int LOCAL_GRID_SHIFT  = 5;                            // 1 << SHIFT == W
-constexpr int LOCAL_GRID_AREA   = LOCAL_GRID_W * LOCAL_GRID_W;  // 1024
-constexpr int LOCAL_GRID_CENTER = LOCAL_GRID_W / 2 - 1;         // 15
-static_assert(1 << LOCAL_GRID_SHIFT == LOCAL_GRID_W);
-
-// Helper for updateLocalGradient and the local-gradient pathfinders.
-inline int clip_0_31(int x) { return (x < 0) ? 0 : (x > LOCAL_GRID_W - 1) ? LOCAL_GRID_W - 1 : x; }
-
-// Gradient sentinel values. Gradients propagate from goal cells (set to GRADIENT_AT_GOAL)
-// outward, decreasing by 1 per step. A unit at (x, y) walks toward whichever neighbor has
-// the highest gradient value.
+// Pathfinding gradients are Uint16 fields. A goal cell holds GRADIENT_AT_GOAL and every
+// other reachable cell GRADIENT_AT_GOAL - cost, where cost is the cheapest path to a goal
+// in tenths of a land step: GRADIENT_STEP per cardinal step, GRADIENT_DIAGONAL_STEP per
+// diagonal step (octile distance), and water at the rate of the unit's swim class. A unit
+// walks toward the neighbour whose value minus the step to reach it is highest.
 //   GRADIENT_FORBIDDEN        (0): obstacle / impassable — never enter.
-//   GRADIENT_UNREACHABLE      (1): reachable cell with no path to any goal yet.
-//   GRADIENT_FORBIDDEN_BORDER (254): forbidden-zone interior cell that borders a free cell;
-//                                    used as a fade-in source for the forbidden gradient so
-//                                    the gradient tapers into the forbidden zone.
-//   GRADIENT_AT_GOAL          (255): goal cell itself; distance to goal is GRADIENT_AT_GOAL - g.
-constexpr std::uint8_t GRADIENT_FORBIDDEN        = 0;
-constexpr std::uint8_t GRADIENT_UNREACHABLE      = 1;
-constexpr std::uint8_t GRADIENT_FORBIDDEN_BORDER = 254;
-constexpr std::uint8_t GRADIENT_AT_GOAL          = 255;
+//   GRADIENT_UNREACHABLE      (1): reachable cell with no path to any goal.
+//   GRADIENT_FORBIDDEN_BORDER    : forbidden-zone interior cell that borders a free cell;
+//                                  seeded one step below the goal so the forbidden gradient
+//                                  tapers into the forbidden zone.
+//   GRADIENT_AT_GOAL     (0xFFFF): goal cell itself.
+// The AIs' own Uint8 helper maps (Map::updateGlobalGradient(Uint8*)) use the same 0 / 1 /
+// max-of-type sentinels with one unit per step.
+constexpr int GRADIENT_STEP          = 10;
+constexpr int GRADIENT_DIAGONAL_STEP = 14;
+constexpr std::uint16_t GRADIENT_FORBIDDEN        = 0;
+constexpr std::uint16_t GRADIENT_UNREACHABLE      = 1;
+constexpr std::uint16_t GRADIENT_AT_GOAL          = 0xFFFF;
+constexpr std::uint16_t GRADIENT_FORBIDDEN_BORDER = GRADIENT_AT_GOAL - GRADIENT_STEP;
+
+// Distance to the goal in whole tiles, for a reachable gradient value.
+inline int gradientTiles(std::uint16_t g)
+{
+	return (GRADIENT_AT_GOAL - g + GRADIENT_STEP / 2) / GRADIENT_STEP;
+}
 
 // Sentinel for Map::immobileUnits[]: byte stores the team number of the immobile
 // unit on the tile, or IMMOBILE_UNIT_NONE if no immobile unit is present.
@@ -82,17 +81,11 @@ constexpr int RESOURCE_INITIAL_AMOUNT = 1;
 // random rolls. Comment in Map::growResources says "Growth rate of corn is 1/3".
 constexpr int CORN_GROWTH_DIVISOR = 3;
 
-// Chamfer-dilate a LOCAL_GRID_W * LOCAL_GRID_W gradient buffer in-place. Each free cell is
-// raised to max(self, max(neighbor) - 1); 0 (obstacle) and 255 (source) are preserved.
-// Used by both Map::updateLocalGradient and Map::updateLocalResources.
-void propagateLocalGradient32(std::uint8_t* gradient);
-
 // Spiral outward from (startX, startY) for `steps` cells in each of E, S, W, N (in order),
 // returning true on the first non-zero gradient cell encountered. The grid stride is
 // (1 << wDec) and x/y wrap modulo (wMask + 1) and (hMask + 1) — both must be powers of two.
-// Used to test reachability of building footprints in both the toroidal full map and the
-// 32x32 local grid (the local grid never wraps in practice, since spirals are short).
-inline bool spiralFindNonZero(const std::uint8_t* gradient, int startX, int startY, int steps,
+// Used to test reachability of building footprints on the toroidal map.
+inline bool spiralFindNonZero(const std::uint16_t* gradient, int startX, int startY, int steps,
                               int wMask, int hMask, int wDec)
 {
 	int x = startX, y = startY;

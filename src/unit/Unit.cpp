@@ -204,7 +204,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					{
 						displacement=DIS_GOING_TO_RESOURCE;
 						targetBuilding=NULL;
-						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
 						validTarget=true;
 					}
 				}
