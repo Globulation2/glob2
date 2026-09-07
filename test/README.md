@@ -185,3 +185,20 @@ streams, recovery after failed loads, and oversized map-area strings. Atomic
 replacement tests cover callback/open/rename failures and temporary-file cleanup.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
+
+## Cortex placement and buffered save regressions
+
+From the repository root:
+
+```sh
+scons -j6 release=1 cortex-geometry-test buffered-file-test
+./build/src/CortexGeometryHarness
+./build/src/BufferedFileStreamHarness
+```
+
+The geometry harness compares the per-search snapshot with the tile-scan helpers
+for 57,600 candidates, including wrapped corners, rectangular and empty
+footprints, construction sites, upgrade reservations, map-only occupants, and a
+dead building. The stream harness compares output bytes and SHA1 with the
+unbuffered backend across small writes, buffer boundaries, large blocks, seeks,
+header backpatches, reads, explicit flushes, and destruction.

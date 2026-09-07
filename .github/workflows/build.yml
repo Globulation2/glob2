@@ -55,6 +55,12 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Test Cortex placement and buffered output equivalence
+        run: |
+          scons -j$(nproc) release=1 server=0 cortex-geometry-test buffered-file-test
+          ./build/src/CortexGeometryHarness
+          ./build/src/BufferedFileStreamHarness
+
       - name: Test savegame loading and atomic autosaves
         run: |
           scons -j$(nproc) release=1 server=0 savegame-safety-test
