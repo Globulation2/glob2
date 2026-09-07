@@ -676,7 +676,7 @@ public:
 	//! otherwise a random non-worsening sidestep is accepted.
 	bool directionByCost(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *cost, int *dx, int *dy, bool strict, bool ignoreForbidden = false) const;
 	static int minStepCost(int swimClass);
-	void buildAreaClassFields(Uint16 *fields[SWIM_CLASS_COUNT], int teamNumber, bool canSwim, Uint8 *gradient);
+	void buildAreaClassFields(Uint16 *fields[SWIM_CLASS_COUNT], Uint8 *&savedSeed, int teamNumber, bool canSwim, Uint8 *gradient);
 	bool pathfindLocalResourceWeighted(Building *building, int swimClass, int x, int y, int *dx, int *dy);
 	void buildResourceClassFields(int teamNumber, Uint8 resourceType, bool canSwim, Uint8 *gradient);
 	void buildBuildingClassFields(Building *building, bool canSwim, Uint8 *gradient);
@@ -744,6 +744,12 @@ public:
 	Uint16 *guardAreasCost[Team::MAX_COUNT][SWIM_CLASS_COUNT];
 	Uint16 *clearAreasCost[Team::MAX_COUNT][SWIM_CLASS_COUNT];
 	std::vector<Uint8> weightedSeedScratch;
+	// Copy of the seed each weighted field was last built from; a rebuild with an identical seed is skipped.
+	Uint8 *resourcesSeed[Team::MAX_COUNT][MAX_NB_RESOURCES][2];
+	Uint8 *forbiddenSeed[Team::MAX_COUNT][2];
+	Uint8 *guardAreasSeed[Team::MAX_COUNT][2];
+	Uint8 *clearAreasSeed[Team::MAX_COUNT][2];
+	bool seedUnchanged(Uint8 *&saved, const Uint8 *seed);
 	
 	// Used to go out of forbidden areas
 	//[int team][bool unitCanSwim]

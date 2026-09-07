@@ -11,6 +11,7 @@
 #include "PathfindStats.h"
 
 #include <algorithm>
+#include <cstring>
 #include <vector>
 
 // Weighted distance fields (alternative pathfinder, see PathfindPolicy.h).
@@ -231,21 +232,38 @@ bool Map::directionByCost(Uint32 teamMask, int swimClass, int x, int y, const Ui
 }
 
 // Resource fields: one per swim class in use, built from the canSwim seed.
+// True when the seed equals the one the field was last built from; stores the
+// seed otherwise. A field built from the same seed is identical, so the
+// round-robin scheduler can skip the rebuild.
+bool Map::seedUnchanged(Uint8 *&saved, const Uint8 *seed)
+{
+	if (saved != NULL && memcmp(saved, seed, size) == 0)
+		return true;
+	if (saved == NULL)
+		saved = new Uint8[size];
+	memcpy(saved, seed, size);
+	return false;
+}
+
 void Map::buildResourceClassFields(int teamNumber, Uint8 resourceType, bool canSwim, Uint8 *gradient)
 {
 	Uint32 classes = canSwim ? (activeSwimClasses[teamNumber] & ~1u) : 1u;
 	if (canSwim && classes == 0)
 		classes = 1u << DEFAULT_SWIM_CLASS;
+	bool unchanged = seedUnchanged(resourcesSeed[teamNumber][resourceType][canSwim], gradient);
 	int lowest = -1;
 	for (int c = 0; c < SWIM_CLASS_COUNT; c++)
 	{
 		if (!((classes >> c) & 1u))
 			continue;
 		Uint16 *&cost = resourcesCost[teamNumber][resourceType][c];
-		if (cost == NULL)
-			cost = new Uint16[size];
-		buildWeightedField(gradient, cost, c);
-		resourcesCostVersion[teamNumber][resourceType][c]++;
+		if (cost == NULL || !unchanged)
+		{
+			if (cost == NULL)
+				cost = new Uint16[size];
+			buildWeightedField(gradient, cost, c);
+			resourcesCostVersion[teamNumber][resourceType][c]++;
+		}
 		if (lowest < 0)
 			lowest = c;
 	}
@@ -259,16 +277,20 @@ void Map::buildBuildingClassFields(Building *building, bool canSwim, Uint8 *grad
 	Uint32 classes = canSwim ? (activeSwimClasses[teamNumber] & ~1u) : 1u;
 	if (canSwim && classes == 0)
 		classes = 1u << DEFAULT_SWIM_CLASS;
+	bool unchanged = seedUnchanged(building->weightedSeed[canSwim], gradient);
 	int lowest = -1;
 	for (int c = 0; c < SWIM_CLASS_COUNT; c++)
 	{
 		if (!((classes >> c) & 1u))
 			continue;
 		Uint16 *&cost = building->globalCost[c];
-		if (cost == NULL)
-			cost = new Uint16[size];
-		buildWeightedField(gradient, cost, c);
-		building->globalCostVersion[c]++;
+		if (cost == NULL || !unchanged)
+		{
+			if (cost == NULL)
+				cost = new Uint16[size];
+			buildWeightedField(gradient, cost, c);
+			building->globalCostVersion[c]++;
+		}
 		building->weightedFieldDirty[c] = false;
 		building->lastWeightedUpdateStep[c] = game->stepCounter;
 		if (lowest < 0)
@@ -318,6 +340,8 @@ const Uint16 *Map::composedField(Building *building, int resourceType, int swimC
 	Uint32 rver = resourcesCostVersion[teamNumber][resourceType][swimClass];
 	Uint32 bver = building->globalCostVersion[swimClass];
 	Uint16 *&composed = building->composedCost[resourceType][swimClass];
+	// Rebuilt whenever a parent field changed, so it never disagrees with the
+	// plain resource field the callers also consult.
 	if (composed != NULL
 		&& building->composedResVersion[resourceType][swimClass] == rver
 		&& building->composedBldVersion[resourceType][swimClass] == bver)
@@ -350,6 +374,7 @@ const Uint16 *Map::composedField(Building *building, int resourceType, int swimC
 	runWeightedDijkstra(seed, composed, swimClass);
 	building->composedResVersion[resourceType][swimClass] = rver;
 	building->composedBldVersion[resourceType][swimClass] = bver;
+	building->composedStep[resourceType][swimClass] = game->stepCounter;
 	PathfindStats::get().composedFieldBuilds++;
 	return composed;
 }
@@ -376,19 +401,23 @@ int Map::minStepCost(int swimClass)
 }
 
 // Area fields (forbidden escape, guard, clear): one per swim class in use.
-void Map::buildAreaClassFields(Uint16 *fields[SWIM_CLASS_COUNT], int teamNumber, bool canSwim, Uint8 *gradient)
+void Map::buildAreaClassFields(Uint16 *fields[SWIM_CLASS_COUNT], Uint8 *&savedSeed, int teamNumber, bool canSwim, Uint8 *gradient)
 {
 	Uint32 classes = canSwim ? (activeSwimClasses[teamNumber] & ~1u) : 1u;
 	if (canSwim && classes == 0)
 		classes = 1u << DEFAULT_SWIM_CLASS;
+	bool unchanged = seedUnchanged(savedSeed, gradient);
 	int lowest = -1;
 	for (int c = 0; c < SWIM_CLASS_COUNT; c++)
 	{
 		if (!((classes >> c) & 1u))
 			continue;
-		if (fields[c] == NULL)
-			fields[c] = new Uint16[size];
-		buildWeightedField(gradient, fields[c], c);
+		if (fields[c] == NULL || !unchanged)
+		{
+			if (fields[c] == NULL)
+				fields[c] = new Uint16[size];
+			buildWeightedField(gradient, fields[c], c);
+		}
 		if (lowest < 0)
 			lowest = c;
 	}

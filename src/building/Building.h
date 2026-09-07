@@ -578,6 +578,9 @@ public:
 	Uint16 *localResourcesCost[PATHFIND_SWIM_CLASS_COUNT];
 	Uint32 localResourcesCostStep[PATHFIND_SWIM_CLASS_COUNT];
 	bool localResourcesCostDirty[PATHFIND_SWIM_CLASS_COUNT];
+	//! Seed the weighted building fields were last built from, per swim variant.
+	Uint8 *weightedSeed[SWIM_VARIANT_COUNT];
+	Uint32 composedStep[MAX_NB_RESOURCES][PATHFIND_SWIM_CLASS_COUNT];
 	void initWeightedFields();
 	void freeWeightedFields();
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.

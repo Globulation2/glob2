@@ -542,6 +542,8 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 
 void Building::initWeightedFields()
 {
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
+		weightedSeed[i]=NULL;
 	for (int c=0; c<PATHFIND_SWIM_CLASS_COUNT; c++)
 	{
 		globalCost[c]=NULL;
@@ -554,6 +556,7 @@ void Building::initWeightedFields()
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
 		{
 			composedCost[r][c]=NULL;
+			composedStep[r][c]=0;
 			composedResVersion[r][c]=0;
 			composedBldVersion[r][c]=0;
 		}
@@ -562,6 +565,11 @@ void Building::initWeightedFields()
 
 void Building::freeWeightedFields()
 {
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
+	{
+		delete[] weightedSeed[i];
+		weightedSeed[i]=NULL;
+	}
 	for (int c=0; c<PATHFIND_SWIM_CLASS_COUNT; c++)
 	{
 		delete[] globalCost[c];

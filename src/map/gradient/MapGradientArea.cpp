@@ -75,7 +75,7 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 
 	if (PathfindPolicy::useAlternative(teamNumber))
 	{
-		buildAreaClassFields(forbiddenCost[teamNumber], teamNumber, canSwim, gradient);
+		buildAreaClassFields(forbiddenCost[teamNumber], forbiddenSeed[teamNumber][canSwim], teamNumber, canSwim, gradient);
 		return;
 	}
 	updateGlobalGradient(gradient);
@@ -122,7 +122,7 @@ void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
 
 	if (PathfindPolicy::useAlternative(teamNumber))
 	{
-		buildAreaClassFields(guardAreasCost[teamNumber], teamNumber, canSwim, gradient);
+		buildAreaClassFields(guardAreasCost[teamNumber], guardAreasSeed[teamNumber][canSwim], teamNumber, canSwim, gradient);
 		return;
 	}
 	updateGlobalGradient(gradient);
@@ -169,7 +169,7 @@ void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
 
 	if (PathfindPolicy::useAlternative(teamNumber))
 	{
-		buildAreaClassFields(clearAreasCost[teamNumber], teamNumber, canSwim, gradient);
+		buildAreaClassFields(clearAreasCost[teamNumber], clearAreasSeed[teamNumber][canSwim], teamNumber, canSwim, gradient);
 		return;
 	}
 	updateGlobalGradient(gradient);
