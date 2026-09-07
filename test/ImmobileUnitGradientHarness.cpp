@@ -10,6 +10,11 @@
 #include "IntBuildingType.h"
 #include "MapInternal.h"
 #include "Race.h"
+#include "Player.h"
+#include "BasePlayer.h"
+#include "Brush.h"
+#include "Order.h"
+#include <memory>
 #include <cstdio>
 #include <cstdlib>
 
@@ -79,6 +84,40 @@ static void immobileUnitBlocksItsOwnTile()
 	std::puts("PASS an immobile unit blocks its own tile in the local gradient");
 }
 
+// Paints a full-width forbidden row at y, leaving gapX open (gapX < 0: no gap).
+static void forbidRow(World& world, int y, int gapX)
+{
+	BrushAccumulator row;
+	for (int x = 0; x < world.game.map.getW(); ++x)
+		if (x != gapX)
+			row.applyBrush(BrushApplication(x, y, 0), &world.game.map);
+	std::shared_ptr<Order> order(new OrderAlterForbidden(0, BrushTool::MODE_ADD, &row, &world.game.map));
+	order->sender = 0;
+	world.game.executeOrder(order, 0);
+}
+
+static void paintingForbiddenAreaRefreshesGradients()
+{
+	World world(20, 20);
+	Team* team = world.game.teams[0];
+	world.game.players[0] = new Player(0, "harness", team, BasePlayer::P_LOCAL);
+	world.game.gameHeader.setNumberOfPlayers(1);
+	// Two forbidden rows enclose y=24..54; the only way to the inn is the gap at (20, 23).
+	forbidRow(world, 23, 20);
+	forbidRow(world, 55, -1);
+	require(world.game.map.isForbidden(19, 23, team->me) && !world.game.map.isForbidden(20, 23, team->me), "the rows are painted with one gap");
+	// One unit inside the inn's local window, one far outside it.
+	int dist = -1, dx = 0, dy = 0;
+	require(world.game.map.buildingAvailable(world.inn, false, 20, 26, &dist), "near the inn the route runs through the gap");
+	require(world.game.map.buildingAvailable(world.inn, false, 40, 45, &dist), "far from the inn the route runs through the gap");
+	require(world.game.map.pathfindBuilding(world.inn, false, 40, 45, &dx, &dy) && dy == -1, "the far unit heads north");
+	forbidRow(world, 23, -1);
+	require(!world.game.map.buildingAvailable(world.inn, false, 20, 26, &dist), "closing the gap cuts off the near unit at once");
+	require(!world.game.map.buildingAvailable(world.inn, false, 40, 45, &dist), "closing the gap cuts off the far unit at once");
+	require(!world.game.map.pathfindBuilding(world.inn, false, 40, 45, &dx, &dy), "the far unit has no route left");
+	std::puts("PASS painting forbidden area refreshes building gradients");
+}
+
 int main()
 {
 	GlobalContainer globals;
@@ -90,6 +129,7 @@ int main()
 	Race::loadDefault();
 	freshMapHasNoImmobileUnits();
 	immobileUnitBlocksItsOwnTile();
+	paintingForbiddenAreaRefreshesGradients();
 	std::puts("Immobile unit gradient regressions passed");
 	return 0;
 }

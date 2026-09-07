@@ -307,6 +307,7 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				}
 				orderMaskIndex++;
 			}
+		teams[oaa.teamNumber]->dirtyGlobalGradient();
 	}
 	else if (oaa.type == BrushTool::MODE_DEL)
 	{

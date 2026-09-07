@@ -266,12 +266,15 @@ void Team::dirtyGlobalGradient()
 		Building *b=myBuildings[id];
 		if (b)
 			for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
+			{
+				b->dirtyLocalGradient[canSwim]=true;
 				if (b->globalGradient[canSwim])
 				{
 					delete[] b->globalGradient[canSwim];
 					b->globalGradient[canSwim]=NULL;
 					b->locked[canSwim]=false;
 				}
+			}
 	}
 }
 

@@ -178,7 +178,10 @@ and `./build/src/ImmobileUnitGradientHarness`. The harness links the real engine
 64x64 map and checks that a freshly built map (`Map::setSize`) carries no immobile
 unit on any tile and that a building's local gradient is reachable, then marks
 immobile units and checks that each blocks exactly its own tile of the local
-gradient and nothing else. It needs no display or external files.
+gradient and nothing else. A third scenario paints forbidden rows through the
+real order path and checks that closing the last gap cuts units off from the
+building at once, both inside and outside the local window. It needs no display
+or external files.
 
 ### Savegame safety
 
