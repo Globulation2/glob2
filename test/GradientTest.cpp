@@ -43,6 +43,7 @@ namespace
 			size = 0;
 		}
 		size_t cells() const { return size; }
+		void trackTraffic() { trafficDirection = new Uint8[size * 8](); }
 		void putWater(int x, int y) { tiles[coordToIndex(x, y)].terrain = 256; }
 		void putGroundUnit(int x, int y) { tiles[coordToIndex(x, y)].groundUnit = 0; }
 	};
@@ -195,6 +196,65 @@ void GradientTest::testSeedsBeyondBucketWindow()
 	// (7,7): four diagonals from the goal beat 88 through the seed.
 	CPPUNIT_ASSERT_EQUAL(56, cost(g, map, 7, 7));
 	CPPUNIT_ASSERT_EQUAL((int)GRADIENT_FORBIDDEN, (int)g[map.coordToIndex(2, 5)]);
+}
+
+void GradientTest::testTrafficMakesNarrowCellsOneWay()
+{
+	// Wall at x=4 with a one-wide gap at (4,3); goal at (3,3). From (5,3) the
+	// way is two steps west through the gap, or six steps east around the torus.
+	GrassMap map;
+	map.trackTraffic();
+	auto walled = [&map]()
+	{
+		std::vector<Uint16> g = blank(map);
+		for (int y = 0; y < 8; y++)
+			if (y != 3)
+				g[map.coordToIndex(4, y)] = GRADIENT_FORBIDDEN;
+		return g;
+	};
+	std::vector<Uint16> g = walled();
+	g[map.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
+	map.propagateGradient(g.data(), 0);
+	CPPUNIT_ASSERT_EQUAL(20, cost(g, map, 5, 3));
+
+	// Sixteen units recently crossed the gap eastward (tabClose[3] = east): a
+	// westbound step into it now pays the full lane penalty, three tiles.
+	map.trafficDirection[map.coordToIndex(4, 3) * 8 + 3] = 16;
+	std::vector<Uint16> lane = walled();
+	lane[map.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
+	map.propagateGradient(lane.data(), 0);
+	CPPUNIT_ASSERT_EQUAL(50, cost(lane, map, 5, 3));
+	// Following the flow costs nothing extra: eastbound from (3,3) to (5,3).
+	std::vector<Uint16> along = walled();
+	along[map.coordToIndex(5, 3)] = GRADIENT_AT_GOAL;
+	map.propagateGradient(along.data(), 0);
+	CPPUNIT_ASSERT_EQUAL(20, cost(along, map, 3, 3));
+	// Eight units the other way make it a partial penalty: 8 of 16.
+	map.trafficDirection[map.coordToIndex(4, 3) * 8 + 7] = 8;
+	std::vector<Uint16> partial = walled();
+	partial[map.coordToIndex(3, 3)] = GRADIENT_AT_GOAL;
+	map.propagateGradient(partial.data(), 0);
+	CPPUNIT_ASSERT_EQUAL(20 + 15, cost(partial, map, 5, 3));
+	// A unit at (5,3) sees the same cost and still takes the gap (around is 60).
+	int dx = 0, dy = 0;
+	CPPUNIT_ASSERT(map.directionByGradient(1, 0, 5, 3, partial.data(), &dx, &dy, true));
+	CPPUNIT_ASSERT_EQUAL(-1, dx);
+	CPPUNIT_ASSERT_EQUAL(0, dy);
+
+	// The same opposing traffic is free on open ground and beside a single wall.
+	map.trafficDirection[map.coordToIndex(2, 3) * 8 + 3] = 16;
+	map.trafficDirection[map.coordToIndex(2, 7) * 8 + 3] = 16;
+	std::vector<Uint16> open = blank(map);
+	open[map.coordToIndex(1, 6)] = GRADIENT_FORBIDDEN; // (2,7) has a wall on one side only
+	open[map.coordToIndex(0, 3)] = GRADIENT_AT_GOAL;
+	open[map.coordToIndex(0, 7)] = GRADIENT_AT_GOAL;
+	map.propagateGradient(open.data(), 0);
+	CPPUNIT_ASSERT_EQUAL(30, cost(open, map, 3, 3));
+	CPPUNIT_ASSERT_EQUAL(30, cost(open, map, 3, 7));
+
+	// Decay halves the counts.
+	map.decayTraffic();
+	CPPUNIT_ASSERT_EQUAL(8, (int)map.trafficDirection[map.coordToIndex(4, 3) * 8 + 3]);
 }
 
 void GradientTest::testMaxCostStopsPropagation()

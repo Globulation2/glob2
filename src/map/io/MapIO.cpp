@@ -66,6 +66,7 @@ try
 	aStarPoints=new AStarAlgorithmPoint[size];
 	immobileUnits = new Uint8[size];
 	memset(immobileUnits, 255, size*sizeof(Uint8));
+	trafficDirection = new Uint8[size*8]();
 
 	// We read what's inside the map:
 	stream->read(undermap, size, "undermap");

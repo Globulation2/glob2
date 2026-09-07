@@ -6,7 +6,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 // Tests for the pathfinding gradients (Map::propagateGradient,
-// Map::directionByGradient, Map::swimClass) on a small toroidal grass map.
+// Map::directionByGradient, Map::swimClass, Map::lanePenalty) on a small
+// toroidal grass map.
 class GradientTest: public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( GradientTest );
@@ -17,6 +18,7 @@ class GradientTest: public CppUnit::TestFixture
 		CPPUNIT_TEST( testSeedBelowGoalPropagates );
 		CPPUNIT_TEST( testSeedsBeyondBucketWindow );
 		CPPUNIT_TEST( testMaxCostStopsPropagation );
+		CPPUNIT_TEST( testTrafficMakesNarrowCellsOneWay );
 		CPPUNIT_TEST( testDirectionPrefersCheapestTotal );
 		CPPUNIT_TEST( testDirectionBlockedNeighbour );
 		CPPUNIT_TEST( testSwimClassFromSpeeds );
@@ -31,6 +33,7 @@ public:
 	void testSeedBelowGoalPropagates();
 	void testSeedsBeyondBucketWindow();
 	void testMaxCostStopsPropagation();
+	void testTrafficMakesNarrowCellsOneWay();
 	void testDirectionPrefersCheapestTotal();
 	void testDirectionBlockedNeighbour();
 	void testSwimClassFromSpeeds();
