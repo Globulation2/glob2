@@ -1,5 +1,6 @@
 #include "../src/GlobalContainer.h"
 #include "../src/Game.h"
+#include "../src/gui/GameGUI.h"
 #include "../src/team/Team.h"
 #include "../src/map/Map.h"
 #include "../src/building/Building.h"
@@ -17,7 +18,8 @@
 GlobalContainer* globalContainer = nullptr;
 namespace {
 struct Fixture {
-    Game game{nullptr};
+    GameGUI gui;
+    Game& game=gui.game;
     Fixture() {
         game.map.setSize(6,6,GRASS);game.map.setGame(&game);
         for(int t=0;t<3;++t) {
@@ -103,7 +105,7 @@ void starvationContinuesAfterSave() {
 }
 }
 int main() {
-    GlobalContainer container;globalContainer=&container;container.runNoX=true;
+    GlobalContainer container;globalContainer=&container;container.runNoX=true;container.settings.rememberUnit=false;
     container.buildingsTypes.init();IntBuildingType::init();
     starvationAndElimination();rescueBeforeStarvation();activeServiceStillSuspendsHunger();starvationContinuesAfterSave();
     std::cout<<"TrappedUnitLifecycleTest: wood/wheat starvation, elimination/winner, rescue, active-service protection and save/load PASS\n";
