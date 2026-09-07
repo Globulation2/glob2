@@ -89,7 +89,10 @@ equal map steps equally long in both surface tangent directions. Tiles stay
 locally square, although their area varies around the tube and perspective
 still foreshortens them. Uniform angular mesh rows keep the surface smooth
 without increasing its vertex count. Clouds and picking share this mapping;
-camera fitting and mesh caches include the map aspect ratio.
+camera fitting and mesh caches include the map aspect ratio. The camera tilt
+fits the ring silhouette to the playable area, prioritizing the front-facing
+landscape over keeping the hole open. Wide windows can naturally obscure the
+hole of a fat torus; wheel zoom still allows closer views and cropped sides.
 
 Keyboard steps and wheel zoom use a shared exponential camera response (about
 63 ms time constant). Surface rendering and picking share the rendered focus;

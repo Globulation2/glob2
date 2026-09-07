@@ -139,7 +139,7 @@ int main()
     // Wider views lay the ring flatter, within the range that keeps it readable.
     for (float aspect : {1.0f, 1.6f, 1.78f, 2.4f})
     {
-        assert(fitTilt(aspect) >= .15f && fitTilt(aspect) <= 1.55f);
+        assert(fitTilt(aspect) >= 0 && fitTilt(aspect) <= pi / 2);
         assert(fitTilt(aspect) <= fitTilt(aspect / 2));
     }
     // At the ring's latitude, navigation cannot change distance, magnification,
@@ -167,6 +167,15 @@ int main()
         Shape shape(mapAspect);
         assert(shape.majorRadius > shape.tubeRadius);
         assert(std::abs(shape.majorRadius + shape.tubeRadius - 4) < .00001f);
+        // Match the window silhouette when possible; otherwise take the
+        // nearest attainable height without stretching the world itself.
+        for (float viewAspect : {1.f, 1.6f, 2.4f})
+        {
+            float height = 2 * shape.majorRadius * std::sin(fitTilt(viewAspect, shape))
+                           + 2 * shape.tubeRadius;
+            float target = std::max(2 * shape.tubeRadius, 8 / viewAspect);
+            assert(std::abs(height - target) < .00001f);
+        }
         float previous = -.5f;
         for (int row = 0; row <= 160; ++row)
         {

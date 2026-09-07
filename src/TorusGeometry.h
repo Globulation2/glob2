@@ -130,17 +130,15 @@ inline Point focusedPoint(float du, float dv, float roll, float anchorV, const S
 }
 // Keep the overview outside the ring at a fixed distance.
 inline float hoverDistance(float) { return 18.0f; }
-// The ring-plane tilt whose silhouette, about 2(R+r) wide and
-// 2(R+r) sin t + 2r cos t high, has the aspect ratio of the view.
+// In an orthographic view a torus is the projected major circle expanded
+// by the tube radius: width 2(R+r), height 2R sin(tilt)+2r. Fit that silhouette
+// to the playable area. Favor the camera-facing landscape over keeping the
+// inner opening visible; a fat ring may naturally hide its opening.
 inline float fitTilt(float aspect, const Shape &shape = Shape())
 {
-    const float outer = 2 * (shape.majorRadius + shape.tubeRadius), tube = 2 * shape.tubeRadius;
-    float target = outer / std::max(0.1f, aspect);
-    float t = std::asin(std::min(1.0f, target / std::sqrt(outer * outer + tube * tube)))
-              - std::atan2(tube, outer);
-    // A fat ring needs a steeper view to keep its inner opening visible.
-    float apertureTilt = std::asin(shape.tubeRadius / shape.majorRadius) + 0.08f;
-    return std::min(1.55f, std::max(apertureTilt, t));
+    const float targetHeight = 2 * (shape.majorRadius + shape.tubeRadius) / std::max(0.1f, aspect);
+    const float sine = (targetHeight - 2 * shape.tubeRadius) / (2 * shape.majorRadius);
+    return std::asin(std::max(0.0f, std::min(1.0f, sine)));
 }
 // Pitch the camera so the folded ring lies at the fitting tilt; the flat map stays level.
 inline float overviewTilt(float anchorV, float roll, float aspect, const Shape &shape = Shape())
