@@ -171,6 +171,15 @@ it on both supported Ubuntu versions.
 
 Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).
 
+## Immobile unit gradient regression
+
+From the repository root, run `scons -j8 release=1 server=0 immobile-unit-gradient-test`
+and `./build/src/ImmobileUnitGradientHarness`. The harness links the real engine on a
+64x64 map and checks that a freshly built map (`Map::setSize`) carries no immobile
+unit on any tile and that a building's local gradient is reachable, then marks
+immobile units and checks that each blocks exactly its own tile of the local
+gradient and nothing else. It needs no display or external files.
+
 ### Savegame safety
 
 Build `scons release=1 server=0 savegame-safety-test`, then run

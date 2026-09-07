@@ -117,7 +117,7 @@ void Map::updateLocalGradient(Building *building, bool canSwim)
 					gradient[wyx] = GRADIENT_FORBIDDEN;
 				else if (c.resource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
 					gradient[wyx] = GRADIENT_FORBIDDEN;
-				else if(immobileUnits[wyx] != 255)
+				else if(immobileUnits[wyg+xg] != IMMOBILE_UNIT_NONE)
 					gradient[wyx] = GRADIENT_FORBIDDEN;
 				else if (!canSwim && isWater(xg, yg))
 					gradient[wyx] = GRADIENT_FORBIDDEN;
