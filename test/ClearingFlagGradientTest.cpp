@@ -1,15 +1,18 @@
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
+#define SDL_MAIN_HANDLED
+#ifdef main
+#undef main
+#endif
 #include "../src/GlobalContainer.h"
+#include "../src/gui/GameGUI.h"
 #include "../src/Game.h"
 #include "../src/team/Team.h"
 #include "../src/map/Map.h"
 #include "../src/building/Building.h"
 #include "../src/game/entities/BuildingType.h"
 #include "../src/building/IntBuildingType.h"
-#define protected public
-#include "../src/unit/Unit.h"
-#undef protected
-#include <BinaryStream.h>
-#include <StreamBackend.h>
 #include <cassert>
 #include <algorithm>
 #include <iostream>
@@ -17,7 +20,8 @@
 GlobalContainer* globalContainer = nullptr;
 namespace {
 struct Fixture {
-    Game game{nullptr};
+    GameGUI gui;
+    Game& game=gui.game;
     Fixture() {
         game.map.setSize(6,6,GRASS);game.map.setGame(&game);
         for(int t=0;t<3;++t) {
@@ -65,8 +69,11 @@ void fruitIsNeverAClearingTarget() {
 }
 }
 int main() {
-    GlobalContainer container;globalContainer=&container;container.runNoX=true;
+    SDL_SetMainReady();
+    GlobalContainer container("glob2-clearing-regression");globalContainer=&container;container.runNoX=true;
+    container.settings.rememberUnit=false;
     container.buildingsTypes.init();IntBuildingType::init();
     fruitIsNeverAClearingTarget();
     std::cout<<"ClearingFlagGradientTest: basic switches, all fruit, empty tiles, padding independence and swimming variants PASS\n";
+    return 0;
 }

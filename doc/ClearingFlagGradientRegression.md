@@ -11,14 +11,14 @@ Both builders now require a basic resource ID before accessing the switches.
 Fruit remains an obstacle; clearing flags do not support fruit-clearing switches.
 No save-format or AI configuration change is needed.
 
-## Reproduce and verify (Linux)
+## Reproduce and verify
 
 Install the normal SCons/C++20 game build dependencies, including the SDL2,
 SDL2_net, SDL2_ttf, SDL2_image, Vorbis, Speex, FriBidi, epoxy, Boost date-time,
 zlib, OpenGL and GLU development packages and pkg-config. From the repository:
 
 ```sh
-scons --build=build-pr release=1 server=0 CXXFLAGS= LINKFLAGS= -j4 build-pr/src/glob2
+scons --build=build-pr release=1 server=0 -j4 clearing-gradient-test
 python3 test/run_clearing_regression.py --build-dir build-pr
 ```
 
@@ -33,3 +33,8 @@ three fruit types, each enabled/disabled basic-resource switch, empty tiles,
 and both swimming variants. No display, AI implementation or saved tournament
 file is required. Expected final output: `ClearingFlagGradientTest: ... PASS`.
 The test must be linked against freshly rebuilt objects after source changes.
+
+The SCons target uses the configured compiler, platform libraries and sanitizer
+flags. On Windows add `mingw=1`. The runner executes the built binary in a
+disposable working directory and HOME, checking that seeded preferences remain
+unchanged. CI builds and executes this regression on Linux and Windows.
