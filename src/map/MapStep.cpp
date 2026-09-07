@@ -82,6 +82,8 @@ void Map::growResources(void)
 void Map::syncStep(Uint32 stepCounter)
 {
 	growResources();
+	if (stepCounter % TRAFFIC_DECAY_TICKS == 0)
+		decayTraffic();
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
 	game->animations->step();

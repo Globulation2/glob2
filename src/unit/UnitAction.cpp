@@ -89,6 +89,8 @@ void Unit::handleActionGoingTarget()
 
 	if(dx == 0 && dy == 0)
 		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	else
+		owner->map->recordTraffic(posX+dx, posY+dy, direction);
 
 	selectPreferredGroundMovement();
 	speed=performance[action];
@@ -122,6 +124,8 @@ void Unit::handleActionGoingDxDy()
 
 	if(dx == 0 && dy == 0)
 		owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	else if (!performance[FLY])
+		owner->map->recordTraffic(posX+dx, posY+dy, direction);
 
 	selectPreferredMovement();
 	speed=performance[action];

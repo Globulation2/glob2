@@ -757,6 +757,22 @@ public:
 	/// square, and if so, what team number it is. In terms of the engine, these
 	/// are treated like forbidden areas
 	Uint8 *immobileUnits;
+
+	/// Traffic through each cell: how many units recently entered it heading in
+	/// each of the 8 directions, halved every TRAFFIC_DECAY_TICKS (about 40 s: a
+	/// lane is a slow structure, one unit crosses a given cell only every few
+	/// hundred ticks). The gradients charge an extra step cost for entering a
+	/// passage (a cell walled on both sides) against its prevailing direction,
+	/// so a one-wide gap settles into a one-way lane. Derived from the
+	/// simulation, not saved.
+	Uint8 *trafficDirection;
+	static constexpr int TRAFFIC_DECAY_TICKS = 1024;
+	void recordTraffic(int x, int y, int direction);
+	void decayTraffic();
+	//! Whether cell `index` is walled on both sides across one axis in this gradient.
+	bool isPassage(size_t index, const Uint16 *gradient) const;
+	//! Extra cost of entering the passage at `index` heading in `direction`.
+	int lanePenalty(size_t index, int direction) const;
 	
 protected:
 	//Used for scheduling computation time.

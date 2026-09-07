@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <cstring>
 #include <utility>
 #include <vector>
 
@@ -32,9 +33,63 @@ namespace
 	// Seeds whose cost lies beyond the bucket window, sorted by (cost, cell);
 	// each enters its bucket once the sweep reaches its cost.
 	std::vector<std::pair<int, int>> deferredSeeds;
+
+	bool anyTraffic(const Uint8 *counts)
+	{
+		Uint64 all;
+		memcpy(&all, counts, sizeof all);
+		return all != 0;
+	}
 }
 
 static_assert(WATER_STEP[Map::SWIM_CLASS_EVEN] == GRADIENT_STEP);
+
+namespace
+{
+	// Full lane penalty, in gradient units (GRADIENT_STEP = one land step),
+	// reached when this many more units recently entered the passage against
+	// us than our way. Anything less pays in proportion, so a slight imbalance
+	// already tips the next units toward another gap and the lane reinforces
+	// itself.
+	constexpr int LANE_PENALTY = 30;
+	constexpr int LANE_FULL_EXCESS = 16;
+}
+
+void Map::recordTraffic(int x, int y, int direction)
+{
+	assert(direction >= 0 && direction < 8);
+	Uint8 &count = trafficDirection[coordToIndex(x, y) * 8 + direction];
+	if (count < 255)
+		count++;
+}
+
+void Map::decayTraffic()
+{
+	for (size_t i = 0; i < size * 8; i++)
+		trafficDirection[i] >>= 1;
+}
+
+bool Map::isPassage(size_t index, const Uint16 *gradient) const
+{
+	size_t x = index & wMask;
+	size_t y = index >> wDec;
+	for (int side = 1; side < 4; side += 2) // N and S, then E and W
+		if (gradient[coordToIndex(x + tabClose[side][0], y + tabClose[side][1])] == GRADIENT_FORBIDDEN
+			&& gradient[coordToIndex(x + tabClose[side + 4][0], y + tabClose[side + 4][1])] == GRADIENT_FORBIDDEN)
+			return true;
+	return false;
+}
+
+int Map::lanePenalty(size_t index, int direction) const
+{
+	const Uint8 *counts = trafficDirection + index * 8;
+	// Units that headed within 45 degrees of our way, and of the opposite way.
+	int same = counts[direction] + counts[(direction + 1) & 7] + counts[(direction + 7) & 7];
+	int opposing = counts[(direction + 4) & 7] + counts[(direction + 3) & 7] + counts[(direction + 5) & 7];
+	if (opposing <= same)
+		return 0;
+	return std::min(LANE_PENALTY, (opposing - same) * LANE_PENALTY / LANE_FULL_EXCESS);
+}
 
 int Map::swimClass(int walkSpeed, int swimSpeed)
 {
@@ -113,6 +168,7 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 				continue; // stale entry, a cheaper path was found later
 			size_t x = i & wMask;
 			size_t y = i >> wDec;
+			const bool lane = trafficDirection != NULL && anyTraffic(trafficDirection + (size_t)i * 8) && isPassage((size_t)i, gradient);
 			for (int d = 0; d < 8; d++)
 			{
 				int dx = tabClose[d][0];
@@ -120,8 +176,11 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 				size_t n = (((y + dy) & hMask) << wDec) | ((x + dx) & wMask);
 				if (gradient[n] == GRADIENT_FORBIDDEN)
 					continue;
-				// The step from n to i enters i, so it is charged i's terrain.
+				// The step from n to i enters i, so it is charged i's terrain;
+				// it heads the opposite way of d.
 				int cost = cur + stepCost(dx, dy, (size_t)i, swimClass);
+				if (lane)
+					cost += lanePenalty((size_t)i, (d + 4) & 7);
 				if (cost <= limit && cost < GRADIENT_AT_GOAL - gradient[n])
 				{
 					gradient[n] = (Uint16)(GRADIENT_AT_GOAL - cost);
@@ -162,6 +221,8 @@ bool Map::directionByGradient(Uint32 teamMask, int swimClass, int x, int y, cons
 		{
 			// Worth of going through n: its value less the step to get there.
 			int score = g - stepCost(ddx, ddy, n, swimClass);
+			if (trafficDirection != NULL && isPassage(n, gradient))
+				score -= lanePenalty(n, d);
 			if (score > best)
 			{
 				best = score;

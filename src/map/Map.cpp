@@ -80,6 +80,7 @@ Map::Map()
 	sizeSector=0;
 	
 	immobileUnits=NULL;
+	trafficDirection=NULL;
 
 	areaNames.resize(9);
 	
@@ -129,6 +130,8 @@ void Map::clear()
 	aStarPoints = NULL;
 	delete[] immobileUnits;
 	immobileUnits = NULL;
+	delete[] trafficDirection;
+	trafficDirection = NULL;
 	arraysBuilt = false;
 
 	w=h=0;
@@ -193,6 +196,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 
 	immobileUnits = new Uint8[w*h];
+	trafficDirection = new Uint8[(size_t)w*h*8]();
 	for (int i=0; i<w*h; i++) 
 	{
 		immobileUnits[i]=0;
