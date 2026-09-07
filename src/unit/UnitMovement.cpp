@@ -558,7 +558,7 @@ void Unit::handleMovementGoingToResource()
 	Map *map=owner->map;
 	int teamNumber=owner->teamNumber;
 	bool stopWork;
-	if (map->pathfindResource(teamNumber, destinationPurpose, swimClass(), posX, posY, &dx, &dy, &stopWork))
+	if (map->pathfindResource(teamNumber, destinationPurpose, swimClass(), posX, posY, &dx, &dy, &stopWork, attachedBuilding))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;

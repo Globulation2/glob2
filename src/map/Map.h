@@ -596,6 +596,8 @@ public:
 	static constexpr int SWIM_CLASS_EVEN = 3;
 	//! Cheapest possible step for a class, the A* heuristic unit.
 	static int minStepCost(int swimClass);
+	//! Highest cost a gradient can hold (see MapInternal.h).
+	static constexpr int GRADIENT_COST_LIMIT = 0xFFFF - 1 - 1 - 42;
 	//! Cost of stepping (dx, dy) into the cell at targetIndex, in gradient units.
 	int stepCost(int dx, int dy, size_t targetIndex, int swimClass) const;
 	
@@ -627,22 +629,38 @@ public:
 	// the pathfinding gradients are built by propagateGradient. Defined in
 	// MapGradientGlobal.cpp.
 	void updateGlobalGradient(Uint8 *gradient);
-	//! Dijkstra on a freshly seeded field (see MapInternal.h). Seed costs must be
-	//! between 0 and the largest terrain step (currently 42); do not pass a completed
-	//! field. Uses shared scratch storage: calls across all Maps must be serial and
-	//! non-reentrant. swimClass must be in [0, SWIM_CLASS_COUNT).
-	void propagateGradient(Uint16 *gradient, int swimClass);
+	//! Dijkstra from every seeded cell of a pathfinding gradient (see MapInternal.h).
+	//! Seeds may carry any cost up to GRADIENT_COST_LIMIT (0 for GRADIENT_AT_GOAL; e.g. a
+	//! resource tile seeded with its distance to a building); do not pass a completed
+	//! field. With maxCost, cells that would cost more stay unreachable. Uses shared
+	//! scratch storage: calls across all Maps must be serial and non-reentrant.
+	//! swimClass must be in [0, SWIM_CLASS_COUNT).
+	void propagateGradient(Uint16 *gradient, int swimClass, int maxCost = GRADIENT_COST_LIMIT);
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict) const;
 	void updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass);
-	bool pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork);
+	//! Direction toward a resource of resourceType. With a target building the round-trip
+	//! gradient is descended, so the unit heads for the resource that is nearest for
+	//! fetching and carrying it there; without one, for the resource nearest to itself.
+	bool pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target);
 #ifndef YOG_SERVER_ONLY
 	void pathfindRandom(Unit *unit);
 #endif  // !YOG_SERVER_ONLY
 
 	//! Rebuild the building's full-map gradient for a swim class.
 	void updateGlobalGradient(Building *building, int swimClass);
+	//! Rebuild the building's round-trip gradient for a resource type and swim class:
+	//! every tile of that resource is seeded with its distance to the building, so a
+	//! cell's value is the cheapest fetch-and-carry trip from there.
+	void updateRoundTripGradient(Building *building, int resourceType, int swimClass);
+	//! The building's round-trip gradient, built or refreshed on demand. NULL when the
+	//! building cannot be reached.
+	const Uint16 *roundTripGradient(Building *building, int resourceType, int swimClass);
+	//! Tiles of the cheapest trip from (x, y) to a resource of resourceType and on to the
+	//! building, read from a round-trip gradient a fetcher's walk has already built. False
+	//! when there is none or no such trip; the caller then scores by the plain distances.
+	bool roundTripDistance(Building *building, int resourceType, int swimClass, int x, int y, int *dist);
 	//! The building's gradient for a swim class, built or refreshed as needed; NULL if the building is unreachable.
 	const Uint16 *buildingGradient(Building *building, int swimClass);
 	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist);
