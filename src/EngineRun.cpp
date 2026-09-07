@@ -502,6 +502,8 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 	st.startTime = SDL_GetTicks64();
 	st.frameNumber = 0;
 
+	const bool tickRateEnabled = getenv("GLOB2_TICK_RATE") != NULL;
+	Uint64 tickRateLast = SDL_GetTicks64();
 	while (gui.isRunning)
 	{
 		st.nextGuiStep--;
@@ -528,6 +530,19 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 			readyNow = net->allOrdersReceived();
 
 			executeOrdersAndStep(readyNow);
+		}
+
+		// GLOB2_TICK_RATE: wall time per 512-tick window with the live unit count,
+		// for throughput comparisons at matched load in headless runs.
+		if (tickRateEnabled && gui.game.stepCounter > 0 && (gui.game.stepCounter & 511) == 0)
+		{
+			Uint64 now = SDL_GetTicks64();
+			int units = 0;
+			for (int t = 0; t < gui.game.mapHeader.getNumberOfTeams(); t++)
+				if (gui.game.teams[t])
+					units += gui.game.teams[t]->stats.getLatestStat()->totalUnit;
+			std::cout << "GLOB2_TICKRATE tick=" << gui.game.stepCounter << " ms=" << (now - tickRateLast) << " units=" << units << std::endl;
+			tickRateLast = now;
 		}
 
 		if (globalContainer->automaticEndingGame)
