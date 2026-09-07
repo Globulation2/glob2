@@ -1,6 +1,5 @@
 [Desktop Entry]
 Version=1.0
-Encoding=UTF-8
 Name=Globulation 2
 GenericName=Real Time Strategy Game
 GenericName[de]=Echtzeit-Strategiespiel
@@ -11,3 +10,4 @@ Terminal=false
 X-MultipleArgs=false
 Type=Application
 Categories=Game;StrategyGame;
+Keywords=Globulation;Game;Strategy;

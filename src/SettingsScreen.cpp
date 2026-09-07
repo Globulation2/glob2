@@ -29,7 +29,7 @@
 #include <string>
 
 SettingsScreen::SettingsScreen()
- : Glob2TabScreen(false, true), unitRatioGroupNumbers(), mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
+ : Glob2TabScreen(false, true), unitRatioGroupNumbers(), flagRadii(), flagRadiusTexts(), flagRadiusGroupNumbers(), mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
 {
 	old_settings=globalContainer->settings;
 

@@ -79,13 +79,25 @@ public:
 	TeamsEditor(Game* game);
 	virtual ~TeamsEditor() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
+	///Rebuilds the game's GameHeader from scratch out of the widget state
+	///(it does not mutate the existing header). Active slots are packed
+	///into consecutive player numbers; each slot's ally-team widget index
+	///(0-based) is written back as ally team number widgetIndex + 1, the
+	///inverse of allyTeamNumberToWidgetIndex().
 	void generateGameHeader();
-	
+
 	enum
 	{
 		OK,
 		CANCEL
 	};
+
+	///Widget return codes are base + slot index, one base per widget row
+	///kind, so onAction can recover the slot from the code.
+	static constexpr int PLAYER_ACTIVE_BASE = 100;
+	static constexpr int COLOR_BASE = 200;
+	static constexpr int AI_SELECTOR_BASE = 300;
+	static constexpr int ALLY_TEAM_BASE = 400;
 private:
 	Game* game;
 	
