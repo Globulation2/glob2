@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2022-2023 Nathan Mills
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
@@ -12,6 +13,51 @@
 #include "Utilities.h"
 #include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
+
+void MapEdit::draw(Uint64 frameTick)
+{
+	drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
+
+	drawMenu();
+	drawMiniMap();
+	wasMinimapRendered=false;
+	drawWidgets();
+	if(showingMenuScreen)
+	{
+		globalContainer->gfx->setClipRect();
+		menuScreen->dispatchTimer(frameTick);
+		menuScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
+	}
+	if(showingLoad || showingSave)
+	{
+		globalContainer->gfx->setClipRect();
+		loadSaveScreen->dispatchTimer(frameTick);
+		loadSaveScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
+	}
+	if(showingScriptEditor)
+	{
+		globalContainer->gfx->setClipRect();
+		scriptEditor->dispatchTimer(frameTick);
+		scriptEditor->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
+	}
+	if(showingTeamsEditor)
+	{
+		globalContainer->gfx->setClipRect();
+		teamsEditor->dispatchTimer(frameTick);
+		teamsEditor->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
+	}
+	if(isShowingAreaName)
+	{
+		globalContainer->gfx->setClipRect();
+		areaName->dispatchTimer(frameTick);
+		areaName->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
+	}
+}
 
 void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 {
