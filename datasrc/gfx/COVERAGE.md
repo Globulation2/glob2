@@ -68,7 +68,7 @@ as references. Walls remain unavailable. These findings supersede the initial
 
 All ten tree frames now use five native GIMP sources. Saved layer opacity and
 transparency are retained, and the four resource atlas levels use the final
-original-source images. Eight wheat frames also now use native GIMP exports. Final ripe color states 14/19 retain their existing upscales because matching larger sources were not recovered; other resource families still await migration.
+original-source images. Eight wheat frames also now use native GIMP exports. Final ripe color states 14/19 retain their existing upscales because matching larger sources were not recovered; remaining resource families are assessed in the papyrus/UI audit below.
 
 ## Layered building runtime migration
 
@@ -86,3 +86,12 @@ Hospital/tower direct-versus-split GIMP tests show only rounding differences; th
 smaller tower XCF reproduces classic visible team pixels and alpha exactly. Larger crystal finishing
 remains unresolved, so those building fallbacks stay unchanged. See the runtime
 recipe guide and compositing-audit manifest for reproducible evidence.
+
+## Papyrus and remaining sources
+
+Five original papyrus growth layers now replace resources 20–24, bringing
+original-source coverage to 60 frames. See RECOVERED-RUNTIME.md for the exact
+42 remaining resource frame IDs and UI/water audit. Older gold UI artwork and
+classic-size water/cloud variants are retained as references. Cursor scenes
+remain unaudited. No new imagery arrived after the two archives: Stéphane
+reported that Cyrille found no additional files in PR comment 5591994941.

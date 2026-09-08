@@ -43,14 +43,14 @@ provenance/           Source URLs, archive paths, old repository paths and hashe
 
 `data/gfx/` remains the classic runtime artwork. `data/highres/` is the runtime
 pack. `experiments/ai-upscale/` holds the earlier experiment and is not the
-original-source archive. Fifty-five frames (ten from the second archive, ten trees, eight wheat frames, three layered buildings and 24 area markers from the first) replace
+original-source archive. Fifty-five frames (ten from the second archive, ten trees, eight wheat frames, three layered buildings and five papyrus and 24 area markers from the first) replace
 experimental art in the runtime pack. See [export recipes and coverage](RECOVERED-RUNTIME.md).
 Other layered buildings and remaining resources still need runtime migration; the two final ripe wheat color states still lack larger originals.
 
 ## Provenance and preservation
 
 Stéphane supplied [glob2-highres.zip](https://h.magnenat.net/~steph/glob2-highres.zip)
-in [PR #207](https://github.com/Globulation2/glob2/pull/207#issuecomment-5590914680).
+in [PR #207](https://github.com/Globulation2/glob2/pull/207#issuecomment-6090914680).
 He recovered the files and also included the original building artist's concept
 art; supplying the archive is not an attribution of sole authorship. Existing
 embedded credits and file contents remain unchanged.
@@ -99,7 +99,7 @@ output directory, not in the source archive. Its historical behavior is unchange
 ## Second recovered archive
 
 Stéphane supplied [glob2-highres-more.zip](https://h.magnenat.net/~steph/glob2-highres-more.zip)
-in [this PR comment](https://github.com/Globulation2/glob2/pull/207#issuecomment-5591064207).
+in [this PR comment](https://github.com/Globulation2/glob2/pull/207#issuecomment-6091064207).
 The historical PNGs are under `reference-exports/buildings/`, grouped as swarm,
 flags, construction and direction templates. White/black-background renders and
 separate matte files are preserved unchanged. They require transparency extraction

@@ -299,3 +299,23 @@ All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored
 PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
 
 PASS software: original resources, all logical sizes
+
+2026-09-08 papyrus originals and subscription handoff (no C++ changes)
+ressource20: silhouette overlap 0.852, center delta 0.383 logical px, premultiplied RGB error 0.0035
+ressource21: silhouette overlap 0.836, center delta 0.315 logical px, premultiplied RGB error 0.0086
+ressource22: silhouette overlap 0.854, center delta 0.572 logical px, premultiplied RGB error 0.0117
+ressource23: silhouette overlap 0.863, center delta 0.405 logical px, premultiplied RGB error 0.0197
+ressource24: silhouette overlap 0.957, center delta 0.118 logical px, premultiplied RGB error 0.0115
+PASS all five original stages, source hashes, native pixels, alpha and logical registration
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool / unreplaced school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree/wheat/papyrus alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 15.9623 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 2.75712 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes

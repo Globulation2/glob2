@@ -3,7 +3,7 @@
 Ten frames from Stéphane’s second archive now replace experimental upscales.
 Ten tree frames and eight wheat frames from the first archive are also now incorporated. There is no AI
 step in these exports. The school and first two racetracks are now exported too. Other buildings and
-the remaining resource exports remain pending; other runtime frames keep their reviewed experimental versions for now.
+the remaining resource families have no verified matching larger sources; other runtime frames keep their reviewed experimental versions for now.
 
 | Runtime frame | Historical render | Native canvas | Logical canvas |
 | --- | --- | --- | --- |
@@ -237,3 +237,33 @@ Reproduce the audit with GIMP 2.10 using
 run `python3 tools/artwork/measure_building_compositing.py`. Disposable images stay
 in `.cache/original-art/compositing-audit/`; measurements and source hashes are
 recorded in [the audit manifest](provenance/building-compositing-audit.json).
+
+## Papyrus and remaining resource/UI audit
+
+All five papyrus stages (`ressource20`–`24`) now use layers 0–4 of
+`originals/terrain/papyrus.xcf`, respectively named `0.4`, `0.55`, `0.7`,
+`0.85`, and `full`. The historical file stays in its cataloged location even
+though the artwork is a resource. Each 199 × 199 native composite is reduced
+to 128 × 128 for the unchanged logical 32 × 32 canvas. Native alpha, offsets,
+and saved opacity are retained; no AI or classic alpha mask is used.
+
+Run `export_papyrus_gimp.py` with GIMP 2.10 as above, then
+`export_papyrus.py`, the runtime exporter, and `validate_papyrus.py`.
+Committed `derived/papyrus-native/` and `derived/papyrus-v1/` make the runtime
+pack reproducible without GIMP. All four resource atlas mips use these exports.
+Five stages overlap classic silhouettes by 83.6–95.7%, with centers within
+0.58 logical pixels; fine leaf antialiasing differs from classic downsampling.
+
+This brings original-source runtime coverage to **60 of 487 frames**.
+The other 42 resource frames lack verified matching larger sources: wheat ripe
+states 14/19, alternative papyrus 25–29, stones 30–39, algae 40–49 and fruit
+50–64. The older corn-stalk sources are an alternative style, not replacements
+for the current colorful wheat dots.
+
+The remaining UI XCF composites use an older gold theme; the brush sources are
+already 32 × 32. They are preserved without changing the current interface.
+The recovered water/cloud raster variants are 512 × 512, equal to classic
+canvas sizes, so they do not add native resolution. Cursor Blender sources
+still need a dedicated render/dependency audit; they have not been declared
+missing. `audit_ui_gimp.py` produces disposable visible-composite previews
+and layer metadata under `.cache/original-art/ui-audit/` without editing sources.

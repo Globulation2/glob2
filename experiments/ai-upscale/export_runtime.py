@@ -79,6 +79,7 @@ def main():
     print('Applied %d original wheat frames' % runtime_overrides.apply(records, OUT, ROOT/'datasrc/gfx/derived/wheat-v1'))
     print('Applied %d original building frames' % runtime_overrides.apply(records, OUT, ROOT/'datasrc/gfx/derived/buildings-v1'))
     print('Applied %d original marker frames' % runtime_overrides.apply(records, OUT, ROOT/'datasrc/gfx/derived/markers-v1'))
+    print('Applied %d original papyrus frames' % runtime_overrides.apply(records, OUT, ROOT/'datasrc/gfx/derived/papyrus-v1'))
     resource_levels=[]
     for level in range(4):
         slot=256>>level; border=32>>level

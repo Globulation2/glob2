@@ -142,3 +142,5 @@ original-source coverage to 55 frames. Direct/split GIMP compositing checks rule
 out group splitting as the large hospital/tower finishing discrepancy; the smaller
 tower XCF reproduces classic visible team pixels and alpha exactly but provides no extra resolution.
 Those building fallbacks remain unchanged.
+
+Papyrus follow-up: all five original growth layers now ship, bringing coverage to 60 original-source frames. Remaining resource/UI findings and subscription handoff are recorded in `docs/high-resolution/HANDOFF.md`.
