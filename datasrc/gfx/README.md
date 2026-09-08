@@ -2,11 +2,12 @@
 
 This is the shared home for Globulation 2's original artwork, combining the
 repository's existing sources with the archive recovered by Stéphane Magnenat
-on 8 September 2026. Start with the [browsable catalog](CATALOG.md).
+on 8 September 2026. Start with the [browsable catalog](CATALOG.md) and
+[visually verified building map](BUILDING-MAP.md).
 
 ```
 originals/
-  buildings/          Blender models and layered GIMP building artwork
+  buildings/          Layered artwork by family/level; existing Blender models
   units/              Original Blender animation sources
   resources/          Tree, wheat and historical wheat variants
   terrain/            Layered water and papyrus sources
@@ -32,7 +33,7 @@ provenance/           Source URLs, archive paths, old repository paths and hashe
   when a usable original source is missing; retain the classic runtime frame
   for classic/software mode and load failures. Report missing frames,
   insufficient resolution and layer/alignment problems before proposing new AI work.
-- Preserve historical names until their identity is verified. Concept artwork
+- Preserve historical basenames and group verified buildings by family/level. Concept artwork
   guides style; it is not interchangeable with an aligned game sprite.
 - Do not resave old Blender/GIMP files just to upgrade their file format. Work
   from copies, keep layer roles intact and record reproducible export settings.

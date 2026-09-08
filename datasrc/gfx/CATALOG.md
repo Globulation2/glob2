@@ -7,7 +7,17 @@ Regenerate with `python tools/artwork/catalog_originals.py` (Pillow required for
 | Category | Files |
 | --- | ---: |
 | concept-art/buildings | 20 |
-| originals/buildings | 20 |
+| originals/buildings | 4 |
+| originals/buildings/barracks/level-1 | 1 |
+| originals/buildings/barracks/level-3 | 2 |
+| originals/buildings/defencetower/level-2 | 2 |
+| originals/buildings/hosp/level-1 | 1 |
+| originals/buildings/inn/level-2 | 2 |
+| originals/buildings/inn/level-3 | 1 |
+| originals/buildings/racetrack/level-1 | 2 |
+| originals/buildings/racetrack/level-2 | 2 |
+| originals/buildings/racetrack/level-3 | 1 |
+| originals/buildings/school/level-2 | 2 |
 | originals/cursors | 14 |
 | originals/overlays | 4 |
 | originals/resources/tree | 5 |
@@ -26,30 +36,90 @@ Regenerate with `python tools/artwork/catalog_originals.py` (Pillow required for
 | reference-exports/ui/controls | 13 |
 | tools/units | 1 |
 
+## originals/buildings/barracks/level-1
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [__building5.xcf](originals/buildings/barracks/level-1/__building5.xcf) | xcf | 128 × 128 | Recovered archive |
+
+## originals/buildings/barracks/level-3
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [__building12.xcf](originals/buildings/barracks/level-3/__building12.xcf) | xcf | 128 × 128 | Recovered archive |
+| [__building19.xcf](originals/buildings/barracks/level-3/__building19.xcf) | xcf | 128 × 128 | Recovered archive |
+
 ## originals/buildings
 
 | File | Format | Source size | Provenance |
 | --- | --- | --- | --- |
-| [__building12.xcf](originals/buildings/__building12.xcf) | xcf | 128 × 128 | Recovered archive |
-| [__building19.xcf](originals/buildings/__building19.xcf) | xcf | 128 × 128 | Recovered archive |
-| [__building5.xcf](originals/buildings/__building5.xcf) | xcf | 128 × 128 | Recovered archive |
-| [auberge-goth-64.xcf](originals/buildings/auberge-goth-64.xcf) | xcf | 64 × 69 | Recovered archive |
-| [auberge-steam.xcf](originals/buildings/auberge-steam.xcf) | xcf | 384 × 384 | Recovered archive |
-| [building10.xcf](originals/buildings/building10.xcf) | xcf | 256 × 256 | Recovered archive |
-| [building3r.xcf](originals/buildings/building3r.xcf) | xcf | 192 × 192 | Recovered archive |
-| [building8.xcf](originals/buildings/building8.xcf) | xcf | 64 × 69 | Recovered archive |
 | [catapult-1.blend](originals/buildings/catapult-1.blend) | blend | — | Repository |
-| [course-goth-256.xcf](originals/buildings/course-goth-256.xcf) | xcf | 256 × 256 | Recovered archive |
-| [course-steam.xcf](originals/buildings/course-steam.xcf) | xcf | 1024 × 1024 | Recovered archive |
-| [course-terre.xcf](originals/buildings/course-terre.xcf) | xcf | 192 × 192 | Recovered archive |
-| [hopital1.xcf](originals/buildings/hopital1.xcf) | xcf | 256 × 256 | Recovered archive |
+
+## originals/buildings/defencetower/level-2
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [tower1.xcf](originals/buildings/defencetower/level-2/tower1.xcf) | xcf | 64 × 108 | Recovered archive |
+| [tower2.xcf](originals/buildings/defencetower/level-2/tower2.xcf) | xcf | 256 × 430 | Recovered archive |
+
+## originals/buildings/hosp/level-1
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [hopital1.xcf](originals/buildings/hosp/level-1/hopital1.xcf) | xcf | 256 × 256 | Recovered archive |
+
+## originals/buildings/inn/level-2
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [auberge-goth-64.xcf](originals/buildings/inn/level-2/auberge-goth-64.xcf) | xcf | 64 × 69 | Recovered archive |
+| [building8.xcf](originals/buildings/inn/level-2/building8.xcf) | xcf | 64 × 69 | Recovered archive |
+
+## originals/buildings/inn/level-3
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [auberge-steam.xcf](originals/buildings/inn/level-3/auberge-steam.xcf) | xcf | 384 × 384 | Recovered archive |
+
+## originals/buildings
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
 | [pool-1.blend](originals/buildings/pool-1.blend) | blend | — | Repository |
-| [science.xcf](originals/buildings/science.xcf) | xcf | 512 × 562 | Recovered archive |
-| [science1.xcf](originals/buildings/science1.xcf) | xcf | 64 × 70 | Recovered archive |
+
+## originals/buildings/racetrack/level-1
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [building3r.xcf](originals/buildings/racetrack/level-1/building3r.xcf) | xcf | 192 × 192 | Recovered archive |
+| [course-terre.xcf](originals/buildings/racetrack/level-1/course-terre.xcf) | xcf | 192 × 192 | Recovered archive |
+
+## originals/buildings/racetrack/level-2
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [building10.xcf](originals/buildings/racetrack/level-2/building10.xcf) | xcf | 256 × 256 | Recovered archive |
+| [course-goth-256.xcf](originals/buildings/racetrack/level-2/course-goth-256.xcf) | xcf | 256 × 256 | Recovered archive |
+
+## originals/buildings/racetrack/level-3
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [course-steam.xcf](originals/buildings/racetrack/level-3/course-steam.xcf) | xcf | 1024 × 1024 | Recovered archive |
+
+## originals/buildings/school/level-2
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [science.xcf](originals/buildings/school/level-2/science.xcf) | xcf | 512 × 562 | Recovered archive |
+| [science1.xcf](originals/buildings/school/level-2/science1.xcf) | xcf | 64 × 70 | Recovered archive |
+
+## originals/buildings
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
 | [tower-1.blend](originals/buildings/tower-1.blend) | blend | — | Repository |
 | [tower-2.blend](originals/buildings/tower-2.blend) | blend | — | Repository |
-| [tower1.xcf](originals/buildings/tower1.xcf) | xcf | 64 × 108 | Recovered archive |
-| [tower2.xcf](originals/buildings/tower2.xcf) | xcf | 256 × 430 | Recovered archive |
 
 ## originals/cursors
 

@@ -1107,7 +1107,7 @@
     },
     {
       "archive_path": "glob2-highres/buildings/__building12.xcf",
-      "path": "datasrc/gfx/originals/buildings/__building12.xcf",
+      "path": "datasrc/gfx/originals/buildings/barracks/level-3/__building12.xcf",
       "bytes": 135189,
       "sha256": "0ea0f6c99bc91a12d178f861843436161ab54f9579a7db63d24001340203b323",
       "archive_modified": [
@@ -1126,11 +1126,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "barracks2b0"
     },
     {
       "archive_path": "glob2-highres/buildings/__building19.xcf",
-      "path": "datasrc/gfx/originals/buildings/__building19.xcf",
+      "path": "datasrc/gfx/originals/buildings/barracks/level-3/__building19.xcf",
       "bytes": 139730,
       "sha256": "2daf66c6a0dd15022ec73665aa13eeaa884ea465c7d1b6256c5a148f622b4340",
       "archive_modified": [
@@ -1149,11 +1150,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "barracks2b0"
     },
     {
       "archive_path": "glob2-highres/buildings/__building5.xcf",
-      "path": "datasrc/gfx/originals/buildings/__building5.xcf",
+      "path": "datasrc/gfx/originals/buildings/barracks/level-1/__building5.xcf",
       "bytes": 81794,
       "sha256": "2794e12f5ee14ef3456d94c49ddb33251ec0538a7029245ca301a641df96c04f",
       "archive_modified": [
@@ -1172,11 +1174,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "barracks0b0"
     },
     {
       "archive_path": "glob2-highres/buildings/auberge-goth-64.xcf",
-      "path": "datasrc/gfx/originals/buildings/auberge-goth-64.xcf",
+      "path": "datasrc/gfx/originals/buildings/inn/level-2/auberge-goth-64.xcf",
       "bytes": 11883,
       "sha256": "8d9f87dece342a80972f0a8d00f5f3a2e1140c9612f7f8d15f0df21e435f1893",
       "archive_modified": [
@@ -1195,11 +1198,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "inn1b0"
     },
     {
       "archive_path": "glob2-highres/buildings/auberge-steam.xcf",
-      "path": "datasrc/gfx/originals/buildings/auberge-steam.xcf",
+      "path": "datasrc/gfx/originals/buildings/inn/level-3/auberge-steam.xcf",
       "bytes": 160084,
       "sha256": "ede5447f9b3393f07c8c3c9902fea8ddadd2c18c2e90807005015a24b1c65c57",
       "archive_modified": [
@@ -1218,11 +1222,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "inn2b0"
     },
     {
       "archive_path": "glob2-highres/buildings/building10.xcf",
-      "path": "datasrc/gfx/originals/buildings/building10.xcf",
+      "path": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
       "bytes": 301984,
       "sha256": "a2bda89aad23ea91f37d179fb0760e64e11923db6be981649b21185cb4829d9b",
       "archive_modified": [
@@ -1241,11 +1246,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "racetrack1b0"
     },
     {
       "archive_path": "glob2-highres/buildings/building3r.xcf",
-      "path": "datasrc/gfx/originals/buildings/building3r.xcf",
+      "path": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
       "bytes": 80247,
       "sha256": "dd79392b63b2cf972b5eb1f3aaf4fdcee5da31c3f657d1f04b0ccef27a8cb9b1",
       "archive_modified": [
@@ -1264,11 +1270,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "racetrack0b0"
     },
     {
       "archive_path": "glob2-highres/buildings/building8.xcf",
-      "path": "datasrc/gfx/originals/buildings/building8.xcf",
+      "path": "datasrc/gfx/originals/buildings/inn/level-2/building8.xcf",
       "bytes": 29830,
       "sha256": "be785d989d5a828f7402c4da186041d8107df1ac2d9e5a8781c9758409015280",
       "archive_modified": [
@@ -1287,11 +1294,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "inn1b0"
     },
     {
       "archive_path": "glob2-highres/buildings/course-goth-256.xcf",
-      "path": "datasrc/gfx/originals/buildings/course-goth-256.xcf",
+      "path": "datasrc/gfx/originals/buildings/racetrack/level-2/course-goth-256.xcf",
       "bytes": 33327,
       "sha256": "1c2a8c1b18e370e9d073a65647dc954c432f4f620abd7e90875dfad47ce1e7c1",
       "archive_modified": [
@@ -1310,11 +1318,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "racetrack1b0"
     },
     {
       "archive_path": "glob2-highres/buildings/course-steam.xcf",
-      "path": "datasrc/gfx/originals/buildings/course-steam.xcf",
+      "path": "datasrc/gfx/originals/buildings/racetrack/level-3/course-steam.xcf",
       "bytes": 1233875,
       "sha256": "9bd497e35f07f32312a37533d7a1fb25f3dd1c4a48c3529094be9891c0fb3229",
       "archive_modified": [
@@ -1333,11 +1342,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "racetrack2b0"
     },
     {
       "archive_path": "glob2-highres/buildings/course-terre.xcf",
-      "path": "datasrc/gfx/originals/buildings/course-terre.xcf",
+      "path": "datasrc/gfx/originals/buildings/racetrack/level-1/course-terre.xcf",
       "bytes": 146915,
       "sha256": "a9a0fc2f2f3a1e947ddad644364100ba1511597894df68072c3c74737d5ab9f0",
       "archive_modified": [
@@ -1356,11 +1366,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "racetrack0b0"
     },
     {
       "archive_path": "glob2-highres/buildings/hopital1.xcf",
-      "path": "datasrc/gfx/originals/buildings/hopital1.xcf",
+      "path": "datasrc/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
       "bytes": 284888,
       "sha256": "58ca0b3e781c6f5dcf0658bc0f82e569183602d039845d9f9a4f0e730791fb9a",
       "archive_modified": [
@@ -1379,11 +1390,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "hosp0b0"
     },
     {
       "archive_path": "glob2-highres/buildings/science.xcf",
-      "path": "datasrc/gfx/originals/buildings/science.xcf",
+      "path": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
       "bytes": 1532558,
       "sha256": "7670498eae808357f8f430543f9f89cf11a880b602c643b66089eca792306341",
       "archive_modified": [
@@ -1402,11 +1414,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "school1b0"
     },
     {
       "archive_path": "glob2-highres/buildings/science1.xcf",
-      "path": "datasrc/gfx/originals/buildings/science1.xcf",
+      "path": "datasrc/gfx/originals/buildings/school/level-2/science1.xcf",
       "bytes": 24105,
       "sha256": "f6f402c1de6c68a7adac21d4793470e819e2513dde275df1e642e679e45e4319",
       "archive_modified": [
@@ -1425,11 +1438,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "school1b0"
     },
     {
       "archive_path": "glob2-highres/buildings/tower1.xcf",
-      "path": "datasrc/gfx/originals/buildings/tower1.xcf",
+      "path": "datasrc/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
       "bytes": 24367,
       "sha256": "6c51179ad2ac3dd4e97c1c698e0821de513d526e799d7a24ddad43b516fa74a0",
       "archive_modified": [
@@ -1448,11 +1462,12 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "defencetower1b0"
     },
     {
       "archive_path": "glob2-highres/buildings/tower2.xcf",
-      "path": "datasrc/gfx/originals/buildings/tower2.xcf",
+      "path": "datasrc/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
       "bytes": 553621,
       "sha256": "25f741622134cc68e3c9e1355fe86fa953b7ca6ce730bd2e0ad759545ecc5b4a",
       "archive_modified": [
@@ -1471,7 +1486,8 @@
       "format": "xcf",
       "same_name_runtime_candidate": null,
       "runtime_dimensions": null,
-      "mapping_status": "unreviewed; filename matches are candidates, not approved mappings"
+      "mapping_status": "building identity visually confirmed; runtime export/state registration pending",
+      "identified_runtime_reference": "defencetower1b0"
     },
     {
       "archive_path": "glob2-highres/cursor/cursor_click.blend",

@@ -22,6 +22,11 @@ def destination(name):
     parts = p.parts[1:]
     group = parts[0]
     if group == 'buildings':
+        mapping = ART / 'provenance/building-map.json'
+        if mapping.exists():
+            for row in json.loads(mapping.read_text()):
+                if row['historical_name'] == parts[-1]:
+                    return ROOT / row['source']
         return ART / 'originals/buildings' / parts[-1]
     if group == 'buildings-concept':
         return ART / 'concept-art/buildings' / parts[-1]

@@ -1,11 +1,13 @@
 # Coverage and open questions
 
-This is a source inventory, not a claim of complete runtime coverage. No AI
+This is a source inventory, not a claim of complete runtime coverage. The
+[building visual map](BUILDING-MAP.md) resolves identities using base and hidden
+team layers compared with current game sprites. No AI
 generation or runtime frame replacement was performed during this import.
 
 | Family | Available originals | Remaining work / limitations |
 | --- | --- | --- |
-| Buildings | 16 recovered layered XCF files, 4 existing Blender models | Identify historical filenames, match game types/levels and inspect base/team layers, shadows, damage and construction states. |
+| Buildings | 16 recovered layered XCF files, 4 existing Blender models | All 16 XCF building identities/levels are visually matched; inspect export registration, base/team layers, shadows, damage and construction states. See BUILDING-MAP.md. |
 | Units | 9 existing Blender files | Keep animation and higher-resolution rendering aligned with PR #201; migration paths are in the provenance manifest. |
 | Resources | Tree and two wheat styles, including layered sources and historical PNGs | Separate styles deliberately; compare source canvas sizes and masks before choosing exports. No complete resource-family coverage claim. |
 | Terrain | Layered water, historical water/cloud images and papyrus | No explicit grass/sand transition source set identified in the supplied archive. Water variants need visual matching and repeat-boundary checks. |
@@ -32,8 +34,9 @@ content and logical frame dimensions still need checking.
 
 ## Mapping gaps to report before replacement
 
-- Names such as `building10`, `building3r` and `__building19` have not been
-  conclusively mapped to the modern building/state IDs.
+- Historical building identities are now mapped in [BUILDING-MAP.md](BUILDING-MAP.md).
+  `__building12` and `__building19` are both third-level barracks variants; their
+  final registration/state relationship remains unverified.
 - Damage/construction, shared construction, swarm, flags and wall coverage is
   not yet established from the source layers. Do not label these missing solely
   because their modern runtime filenames are absent.
