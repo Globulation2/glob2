@@ -7,8 +7,8 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <iostream>
-GameLoadScreen::GameLoadScreen(Initializer initialize)
-    : previousRng(getSyncRandState()), engine(std::make_unique<Engine>())
+GameLoadScreen::GameLoadScreen(Initializer initialize, GAGCore::CooperativeSlice slice)
+    : slice(std::move(slice)), previousRng(getSyncRandState()), engine(std::make_unique<Engine>())
 {
     auto& strings = *GAGCore::Toolkit::getStringTable();
     status = new GAGGUI::Text(0, 180, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", strings.getString("[Loading headers]"));
@@ -34,8 +34,7 @@ std::unique_ptr<Engine> GameLoadScreen::takeEngine()
 void GameLoadScreen::onTimer(Uint32)
 {
     try {
-        for (unsigned checkpoint = 0; checkpoint < 8; ++checkpoint)
-            if (task->advance()) { endExecute(task->result() ? 1 : 2); return; }
+        if (slice.advance(*task)) { endExecute(task->result() ? 1 : 2); return; }
         const char* stage = task->stage();
         if (*stage) status->setText(GAGCore::Toolkit::getStringTable()->getString(stage));
     } catch (const std::exception& error) {

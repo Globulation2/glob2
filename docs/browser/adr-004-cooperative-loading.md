@@ -9,7 +9,7 @@ coroutine frames to retain those objects across deliberate checkpoints. It has
 no browser APIs, threads, wall clock, or Asyncify dependency. Existing native
 callers can drain the same task through a synchronous adapter.
 
-Loading screens advance at most eight root checkpoints per callback. Awaited children report checkpoints
+Loading screens use the measured cooperative slice described below. Awaited children report checkpoints
 to that root; completing a child resumes the parent until its next checkpoint.
 Destroying the root destroys all suspended child frames. Exceptions propagate to
 the root result. Job lifetimes must be shorter than the game and stream they
@@ -104,7 +104,7 @@ an interrupted sweep and restarting from its partial monotonic result converges
 to the same values. Startup tests retain their existing callback completion limit;
 bounded batching avoids a browser callback for every new gradient checkpoint.
 
-Eight checkpoints is a work-count policy, not a measured wall-clock bound. Memory
+The time budget is checked at explicit checkpoints, not a preemption boundary. Memory
 allocation, team construction, and remaining parser/terrain operations still need
 latency qualification. Gradient changes also run the native speed/replay suite
 because simulation callers share the synchronous implementation.
@@ -124,3 +124,24 @@ rollback. Tests destroy jobs after the header/Team exist and at several subseque
 gradient checkpoints, exercising cleanup with both allocated and missing arrays.
 Race loading, object construction, and initial area-array filling still contain
 synchronous work and remain part of loading latency qualification.
+
+## Host work budgets and clock injection
+
+`CooperativeSlice` is a host pacing policy shared by game loading, editor loading,
+and generation. It advances a root until completion, four milliseconds of steady
+clock time, or 64 checkpoints, whichever is observed first. Cheap steps can be
+batched without paying browser callback and repaint overhead for each small piece
+of work. The checkpoint cap also protects against a frozen or coarse clock.
+
+The clock is injectable. Unit tests charge a fake clock for each step and verify
+elapsed-time stopping, a fresh budget on the next callback, completion without an
+extra callback, the checkpoint cap, and an oversized step stopping immediately
+at its next checkpoint. Lifecycle fixtures inject a frozen clock with an explicit
+eight-checkpoint cap so cancellation depth is reproducible; production uses the
+steady clock and the normal budgets. No test-only behavior switches are present.
+
+This does not guarantee that a frame lasts four milliseconds: a single unfinished
+parser/constructor operation can exceed the budget, and input/rendering cost is
+outside it. Such operations still require subdivision and measured latency gates.
+The clock controls pacing only; job results, simulation, and synchronous adapters
+remain independent of wall time.

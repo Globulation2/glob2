@@ -5,5 +5,5 @@
 class EditorGenerateScreen : public EditorLoadScreen
 {
 public:
-    EditorGenerateScreen(MapGenerationDescriptor descriptor, Uint32 seed);
+    EditorGenerateScreen(MapGenerationDescriptor descriptor, Uint32 seed, GAGCore::CooperativeSlice slice = GAGCore::CooperativeSlice());
 };

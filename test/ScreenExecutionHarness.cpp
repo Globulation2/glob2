@@ -3,7 +3,7 @@
 #include <ScreenStack.h>
 #include <InputState.h>
 #include <ApplicationHost.h>
-#include <CooperativeTask.h>
+#include <CooperativeSlice.h>
 #include <SDLGraphicContext.h>
 #include <stdexcept>
 #include <iostream>
@@ -54,8 +54,39 @@ GAGCore::CooperativeTask parentTask(int& live, bool fail)
     co_return result;
 }
 
+GAGCore::CooperativeTask timedWork(GAGCore::CooperativeSlice::Time& now, int& steps,
+                                  std::chrono::milliseconds cost, int count)
+{
+    for (int i = 0; i < count; ++i) {
+        ++steps; now += cost;
+        co_await GAGCore::CooperativeTask::checkpoint("work");
+    }
+    co_return true;
+}
 int main()
 {
+    {
+        using Slice = GAGCore::CooperativeSlice;
+        Slice::Time now{};
+        int steps = 0;
+        Slice slice([&] { return now; });
+        auto task = timedWork(now, steps, std::chrono::milliseconds(1), 10);
+        require(!slice.advance(task) && steps == 4, "Slice stops at its elapsed-time budget");
+        require(!slice.advance(task) && steps == 8, "Each callback starts a fresh time budget");
+        require(slice.advance(task) && task.result() && steps == 10, "Slice reports completion without an extra callback");
+        steps = 0;
+        auto slow = timedWork(now, steps, std::chrono::milliseconds(10), 3);
+        require(!slice.advance(slow) && steps == 1, "An expensive checkpoint stops the slice immediately afterward");
+        steps = 0;
+        auto cheap = timedWork(now, steps, std::chrono::milliseconds(0), 100);
+        require(!slice.advance(cheap) && steps == 64, "Checkpoint cap bounds zero-cost or low-resolution clocks");
+        require(slice.advance(cheap) && steps == 100, "Capped work resumes without skipping steps");
+        bool rejected = false;
+        try { Slice invalid([&] { return now; }, std::chrono::milliseconds(0)); }
+        catch (const std::invalid_argument&) { rejected = true; }
+        require(rejected, "Invalid time budgets are rejected");
+    }
+
     {
         GAGCore::InputState held;
         SDL_Event key{}; key.type = SDL_KEYDOWN; key.key.keysym.scancode = SDL_SCANCODE_LEFT;

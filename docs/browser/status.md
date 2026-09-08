@@ -52,6 +52,9 @@ infrastructure from the supported-release acceptance criteria.
   use nested jobs.
   Building-specific gradients and other long terrain operations still need subdivision;
   cross-platform generation parity is not yet certified.
+- Shared measured loading/generation slices with an injectable steady clock,
+  a four-millisecond target, and a 64-checkpoint cap. Deterministic tests cover
+  elapsed-time stopping, completion, oversized steps, and a frozen clock.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are

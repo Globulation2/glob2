@@ -22,6 +22,11 @@
 
 GlobalContainer* globalContainer = nullptr;
 void require(bool value, const char* message) { if (!value) throw std::runtime_error(message); }
+GAGCore::CooperativeSlice fixedSlice()
+{
+    return GAGCore::CooperativeSlice([] { return GAGCore::CooperativeSlice::Time{}; },
+                                   std::chrono::milliseconds(4), 8);
+}
 int main(int argc, char** argv)
 {
     require(argc == 2, "A disposable profile is required");
@@ -198,7 +203,7 @@ int main(int argc, char** argv)
         const auto rng = getSyncRandState();
         for (unsigned frames : {1u, 2u}) {
             GAGGUI::ScreenStack screens(*globalContainer->gfx);
-            screens.push(std::make_unique<EditorGenerateScreen>(MapGenerationDescriptor(), 12345));
+            screens.push(std::make_unique<EditorGenerateScreen>(MapGenerationDescriptor(), 12345, fixedSlice()));
             for (unsigned frame = 0; frame < frames; ++frame) screens.frame(frame, {});
             SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
             screens.frame(frames, {escape}); screens.frame(frames + 1, {});
@@ -213,7 +218,7 @@ int main(int argc, char** argv)
             descriptor.method = MapGenerationDescriptor::eCONCRETEISLANDS;
             descriptor.nbTeams = 2;
             GAGGUI::ScreenStack screens(*globalContainer->gfx);
-            screens.push(std::make_unique<EditorGenerateScreen>(descriptor, 12345));
+            screens.push(std::make_unique<EditorGenerateScreen>(descriptor, 12345, fixedSlice()));
             for (unsigned frame = 0; frame < frames; ++frame) {
                 require(screens.running(), "Partition cancellation fixture finished too early");
                 screens.frame(frame, {});
@@ -225,7 +230,7 @@ int main(int argc, char** argv)
         }
         GAGGUI::ScreenStack failed(*globalContainer->gfx);
         MapGenerationDescriptor invalid; invalid.wDec = -1;
-        failed.push(std::make_unique<EditorGenerateScreen>(invalid, 12345));
+        failed.push(std::make_unique<EditorGenerateScreen>(invalid, 12345, fixedSlice()));
         for (unsigned frame = 0; failed.running(); ++frame) {
             require(frame < 10, "Invalid generation descriptor did not fail promptly"); failed.frame(frame, {});
         }
@@ -276,7 +281,7 @@ int main(int argc, char** argv)
             GAGGUI::ScreenStack cancelled(*globalContainer->gfx);
             cancelled.push(std::make_unique<GameLoadScreen>([replay](Engine& engine) {
                 return replay ? engine.loadReplayTask("replays/last_game.replay") : engine.initCampaignTask("maps/balanced.map");
-            }));
+            }, fixedSlice()));
             for (unsigned frame = 0; frame < 20; ++frame) cancelled.frame(frame, {});
             SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
             cancelled.frame(20, {escape}); cancelled.frame(21, {});
@@ -288,7 +293,7 @@ int main(int argc, char** argv)
             GAGGUI::ScreenStack failed(*globalContainer->gfx);
             failed.push(std::make_unique<GameLoadScreen>([](Engine& engine) {
                 return engine.loadReplayTask("replays/missing-initialization-fixture.replay");
-            }));
+            }, fixedSlice()));
             unsigned attempts = 0;
             while (failed.running()) { failed.frame(attempts++, {}); require(attempts < 10, "Failed load did not return"); }
             require(failed.result() == 2 && getSyncRandState() == rng && !globalContainer->replaying,
@@ -296,7 +301,7 @@ int main(int argc, char** argv)
         }
         GAGGUI::ScreenStack screens(*globalContainer->gfx);
         unsigned frames = 0, loadingFrames = 0;
-        screens.push(std::make_unique<GameLoadScreen>([](Engine& engine) { return engine.initCampaignTask("maps/balanced.map"); }),
+        screens.push(std::make_unique<GameLoadScreen>([](Engine& engine) { return engine.initCampaignTask("maps/balanced.map"); }, fixedSlice()),
             [&](GAGGUI::Screen& screen, int result) {
                 require(result == 1, "Scheduled game initialization failed");
                 loadingFrames = frames;
@@ -347,7 +352,7 @@ int main(int argc, char** argv)
         setSyncRandState(originalRng);
         for (unsigned frames : {1u, 4u, 20u}) {
             GAGGUI::ScreenStack screens(*globalContainer->gfx);
-            screens.push(std::make_unique<EditorLoadScreen>("maps/balanced.map"));
+            screens.push(std::make_unique<EditorLoadScreen>("maps/balanced.map", fixedSlice()));
             for (unsigned frame = 0; frame < frames; ++frame) screens.frame(frame, {});
             SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
             screens.frame(frames, {escape}); screens.frame(frames + 1, {});
@@ -357,7 +362,7 @@ int main(int argc, char** argv)
         {
             std::unique_ptr<MapEdit> loaded;
             GAGGUI::ScreenStack screens(*globalContainer->gfx);
-            screens.push(std::make_unique<EditorLoadScreen>("maps/balanced.map"),
+            screens.push(std::make_unique<EditorLoadScreen>("maps/balanced.map", fixedSlice()),
                 [&](GAGGUI::Screen& screen, int result) {
                     require(result == 1, "Scheduled map load failed");
                     loaded = static_cast<EditorLoadScreen&>(screen).takeEditor();

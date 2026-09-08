@@ -99,11 +99,10 @@ contain synchronous work.
 Full generation latency and cancellation bounds remain open until those paths
 are subdivided and measured against large-map fixtures.
 
-The editor generation screen advances at most eight checkpoints per callback.
-This limits batching while avoiding browser callback clamping on every tiny
-partitioning step. Editor file loading and game startup now use the same eight-checkpoint policy
-after subdivision of their gradient work (ADR 004). Neither policy claims a wall-clock
-latency bound for the synchronous helpers still awaiting migration.
+The editor generation screen shares the four-millisecond/64-checkpoint host
+slice with game and editor loading (ADR 004). Timing controls pacing only and does
+not change RNG ordering or generated results. Individual synchronous operations
+can still exceed the slice's time target.
 
 ## Point and scoring passes
 
