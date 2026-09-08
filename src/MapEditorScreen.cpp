@@ -58,6 +58,11 @@ void MapEditorScreen::handleExecutionEvent(SDL_Event event)
 {
     if (isExecutionRunning()) input.push_back(event);
 }
+void MapEditorScreen::cancelExecutionInput()
+{
+    input.clear();
+    editor->suspendInput();
+}
 void MapEditorScreen::drawExecution()
 {
     if (started && isExecutionRunning()) editor->drawEditing();

@@ -353,7 +353,7 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		// Select mode
 		if (mode == MODE_STOPPED)
 		{
-			SDL_PauseAudio(0);
+			if (!suspended) SDL_PauseAudio(0);
 			mode = MODE_START;
 		}
 		else if (earlyChange)
@@ -373,6 +373,17 @@ int SoundMixer::loadTrack(const std::string name, MusicTrack track)
 void SoundMixer::setNextTrack(MusicTrack track, bool earlyChange)
 {
 	setNextTrack(static_cast<unsigned>(track), earlyChange);
+}
+
+void SoundMixer::setSuspended(bool value)
+{
+    if (suspended == value) return;
+    suspended = value;
+    if (!soundEnabled) return;
+    SDL_LockAudio();
+    const bool pause = suspended || mode == MODE_STOPPED;
+    SDL_UnlockAudio();
+    SDL_PauseAudio(pause ? 1 : 0);
 }
 
 // All writes to musicVolume/voiceVolume must hold SDL_LockAudio — mixaudio()

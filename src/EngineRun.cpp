@@ -558,6 +558,12 @@ bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
     return gui.isRunning;
 }
 
+void Engine::cancelSessionInput()
+{
+    sessionInput.clear();
+    gui.suspendInput();
+}
+
 bool Engine::finishSession()
 {
     if (!session) throw std::logic_error("No active engine session");

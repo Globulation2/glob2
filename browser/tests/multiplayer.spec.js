@@ -5,7 +5,7 @@ const {test, expect} = require('@playwright/test');
 test.use({trace:{mode:'retain-on-failure', screenshots:false, snapshots:true, sources:true}});
 const {spawn} = require('node:child_process');
 const {createInterface} = require('node:readline');
-const {mkdtemp, rm, readFile} = require('node:fs/promises');
+const {mkdir, mkdtemp, rm, readFile} = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const {randomUUID} = require('node:crypto');
@@ -13,8 +13,9 @@ const {randomUUID} = require('node:crypto');
 const root = path.resolve(__dirname, '../..');
 const platform = os.platform() === 'win32' ? 'windows' : os.platform();
 let lobby, gateway, tlsForwarder, work, profile, endpoint, secureEndpoint;
-async function start(binary, args, ready) {
-  const child = spawn(binary, args, {cwd: work, stdio: ['ignore', 'pipe', 'pipe']});
+async function start(binary, args, ready, profileName = 'service-' + randomUUID()) {
+  const child = spawn(binary, args, {cwd: work, stdio: ['ignore', 'pipe', 'pipe'],
+    env: {...process.env, GLOB2_USER_DATA_DIR:path.join(work, profileName)}});
   try {
     const line = await new Promise((resolve, reject) => {
       const lines = createInterface({input: child.stdout});
@@ -34,10 +35,12 @@ async function stop(child) {
 }
 
 test.beforeAll(async ({baseURL}) => {
-  work = await mkdtemp(path.join(os.tmpdir(), 'glob2-yog-'));
+  const profiles = path.join(root, 'build/test-profiles');
+  await mkdir(profiles, {recursive:true});
+  work = await mkdtemp(path.join(profiles, 'glob2-yog-'));
   profile = 'glob2-yog-test-' + randomUUID();
   lobby = (await start(path.join(root, `build/${platform}/client/release/src/net-connection-test`),
-    ['--serve', profile], line => line === 'YOG test server ready')).child;
+    ['--serve', profile], line => line === 'YOG test server ready', profile)).child;
   const started = await start(path.join(root, `build/${platform}/gateway/release/glob2-ws-gateway`),
     ['--port', '0', '--origin', new URL(baseURL).origin], line => line.startsWith('gateway listening on '));
   gateway = started.child;
@@ -51,7 +54,6 @@ test.beforeAll(async ({baseURL}) => {
 test.afterAll(async () => {
   await stop(tlsForwarder); await stop(gateway); await stop(lobby);
   if (work) await rm(work, {recursive: true, force: true});
-  if (profile) await rm(path.join(os.homedir(), '.' + profile), {recursive: true, force: true});
 });
 
 test('browser YOG login exchanges the native protocol through the real gateway', async ({page}) => {
@@ -278,7 +280,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await expect.poll(hostTypes).toContain(16);
     const started = await start(path.join(root, `build/${platform}/client/release/src/native-multiplayer-peer`),
       transport === 'WSS' ? [nativeProfile, secureEndpoint, path.join(work, 'cert.pem')] : [nativeProfile],
-      line => line.startsWith('native peer joined order-rate='));
+      line => line.startsWith('native peer joined order-rate='), nativeProfile);
     peer = started.child;
     peer.stdout.on('data', chunk => peerLog.push(String(chunk)));
     peer.stderr.on('data', chunk => peerLog.push(String(chunk)));
@@ -287,7 +289,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(125);
     await page.screenshot({path: testInfo.outputPath('native-cross-play.png')});
     await expect.poll(() => peer.exitCode ?? peer.signalCode, {timeout: 45000}).toBe(0);
-    const bytes = await readFile(path.join(os.homedir(), '.' + nativeProfile, 'replays/last_game.replay.checksums'));
+    const bytes = await readFile(path.join(work, nativeProfile, 'replays/last_game.replay.checksums'));
     const teams = bytes.readUInt32LE(4), count = bytes.readUInt32LE(12);
     expect(count).toBeGreaterThanOrEqual(250);
     const native = new Map();
@@ -321,7 +323,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
   } finally {
     await stop(peer);
     await testInfo.attach('native-peer-log', {body: peerLog.join(''), contentType: 'text/plain'});
-    await rm(path.join(os.homedir(), '.' + nativeProfile), {recursive: true, force: true});
+    await rm(path.join(work, nativeProfile), {recursive: true, force: true});
   }
 });
 

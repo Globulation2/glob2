@@ -3,6 +3,7 @@
 #include <GraphicContext.h>
 #include <emscripten.h>
 #include <stdexcept>
+#include <emscripten/html5.h>
 
 namespace GAGCore::ApplicationHost
 {

@@ -27,6 +27,7 @@
 #include "Utilities.h"
 #include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
+#include "SoundMixer.h"
 #include <SDL_net.h>
 #include <iostream>
 #include <filesystem>
@@ -220,6 +221,19 @@ int main(int argc, char** argv)
         dialog.beginPersistence(std::move(operation));
         control->current = PersistenceState::Succeeded;
         require(dialog.pollPersistence(), "Successful persistence must complete the save dialog");
+    }
+    {
+        auto& audio=*globalContainer->mix;
+        require(audio.soundEnabled && !audio.tracks.empty(),"Dummy audio fixture must be available");
+        audio.setSuspended(true);
+        audio.setNextTrack(0);
+        require(SDL_GetAudioStatus()==SDL_AUDIO_PAUSED,"A track change must not resume suspended audio");
+        audio.setSuspended(false);
+        require(SDL_GetAudioStatus()==SDL_AUDIO_PLAYING,"Foreground audio resumes its selected track");
+        audio.setSuspended(false);
+        audio.setSuspended(true);
+        require(SDL_GetAudioStatus()==SDL_AUDIO_PAUSED,"Repeated lifecycle notifications must remain safe");
+        audio.setSuspended(false);
     }
     {
         Map map;
@@ -417,18 +431,41 @@ int main(int argc, char** argv)
                 loadingFrames = frames;
                 screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(screen).takeEngine()));
             });
-        bool suspended = false;
+        bool interrupted=false, modalOpened=false, browserSuspended=false;
+        Uint32 hostOffset=0;
         while (screens.running()) {
-            if (loadingFrames && frames == loadingFrames + 10) {
-                screens.suspendExecution();
-                suspended = true;
+            const Uint32 now=1000 + frames * 40;
+            if (loadingFrames && frames==loadingFrames+10) {
+                SDL_Event background{};background.type=SDL_APP_WILLENTERBACKGROUND;
+                SDL_Event foreground{};foreground.type=SDL_APP_DIDENTERFOREGROUND;
+                SDL_Event key{};key.type=SDL_KEYDOWN;key.key.keysym.sym=SDLK_p;key.key.keysym.scancode=SDL_SCANCODE_P;
+                screens.frame(now-40,{background});
+                screens.frame(now+100000,{key});
+                hostOffset=240000;
+                screens.frame(now-40+hostOffset,{foreground,key});
+                interrupted=true;
             }
-            screens.frame(1000 + frames * 40 + (suspended ? 60000 : 0), {});
+            if (loadingFrames && frames==loadingFrames+20) {
+                struct Child : GAGGUI::Screen {
+                    void onAction(GAGGUI::Widget*,GAGGUI::Action,int,int) override {}
+                    void updateExecution(Uint32) override { endExecute(0); }
+                    void drawExecution() override {}
+                };
+                screens.push(std::make_unique<Child>());
+                hostOffset+=60000;
+                modalOpened=true;
+            }
+            if (loadingFrames && frames==loadingFrames+30) {
+                screens.suspendExecution();
+                hostOffset+=60000;
+                browserSuspended=true;
+            }
+            screens.frame(now + hostOffset, {});
             require(++frames <= 2000, "Stack-driven loading/session failed to finish");
         }
-        // Resumption keeps the pending 40ms tick deadline; hidden time is excluded.
-        require(loadingFrames > 20 && frames == loadingFrames + 52 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
-                "Suspension must exclude hidden time and retain the pending tick deadline");
+        require(interrupted && modalOpened && browserSuspended && loadingFrames > 20 && frames == loadingFrames + 54 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
+                "Loading must yield before transferring the engine to the 50-tick session");
+
     }
     for (bool cancel : {false, true}) {
         auto editor = std::make_unique<MapEdit>();

@@ -114,14 +114,23 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 	return false;
 }
 
+void GameGUI::suspendInput()
+{
+    inputState.clearHeld();
+    lastMouseButtonState = 0;
+    viewportSpeedX = viewportSpeedY = 0;
+    selectionPushed = panPushed = false;
+    scrollWheelWorkingChanges = scrollWheelStayRangeChanges = 0;
+    mouseX = globalContainer->gfx->getW() / 2;
+    mouseY = globalContainer->gfx->getH() / 2;
+    toolManager.cancelDrag(localTeamNo);
+}
+
 void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
     if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-        lastMouseButtonState = 0;
-        viewportSpeedX = viewportSpeedY = 0;
-        selectionPushed = false;
-        toolManager.cancelDrag(localTeamNo);
+        suspendInput();
     }
     if (!inputState.hasFocus() && (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ||
         event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP ||

@@ -15,6 +15,7 @@
 #include "YOGClient.h"
 #include <GUIText.h>
 #include <GUIButton.h>
+#include "SoundMixer.h"
 
 namespace {
 // Keep graphics and the host alive until final writes have reached storage.
@@ -134,10 +135,25 @@ void Application::choose(int choice)
 bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events)
 {
     lastFrame = tick;
-    if (GAGCore::ApplicationHost::takeVisibilityChange(hidden)) screens.suspendExecution();
-    if (hidden) return true;
+    // Convert browser visibility into the same frame-boundary events as native
+    // lifecycle callbacks. Hidden frames still drain lifecycle events so that
+    // ScreenStack can freeze its clock and resume without catch-up.
+    auto frameEvents = events;
+    if (GAGCore::ApplicationHost::takeVisibilityChange(hidden)) {
+        screens.suspendExecution();
+        SDL_Event event{};
+        event.type = hidden ? SDL_APP_WILLENTERBACKGROUND : SDL_APP_DIDENTERFOREGROUND;
+        frameEvents.push_back(event);
+    }
+    for (const auto& event : frameEvents) {
+        if (!globalContainer->mix) break;
+        if (event.type == SDL_APP_WILLENTERBACKGROUND || event.type == SDL_APP_DIDENTERBACKGROUND)
+            globalContainer->mix->setSuspended(true);
+        else if (event.type == SDL_APP_DIDENTERFOREGROUND)
+            globalContainer->mix->setSuspended(false);
+    }
     int width, height;
-    if (GAGCore::ApplicationHost::takeViewportSize(width, height)) {
+    if (!hidden && GAGCore::ApplicationHost::takeViewportSize(width, height)) {
         const int oldWidth = globalContainer->gfx->getW(), oldHeight = globalContainer->gfx->getH();
         if (globalContainer->gfx->resizeViewport(width, height)) {
             screens.viewportResized(oldWidth, oldHeight, width, height);
@@ -154,12 +170,12 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events
     if (quitting) {
         // Repeated window-close events must not bypass a pending write or its
         // explicit failure decision. Closing a browser tab remains abrupt.
-        auto input = events;
+        auto input = frameEvents;
         std::erase_if(input, [](const SDL_Event& event) { return event.type == SDL_QUIT; });
         shutdownScreens.frame(tick, input);
         return shutdownScreens.running();
     }
-    screens.frame(tick, events);
+    screens.frame(tick, frameEvents);
     if (!screens.running()) {
         if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION) {
             quitting = true;

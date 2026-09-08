@@ -71,6 +71,7 @@ public:
 	void step(void);
     // Host-supplied events and monotonic time; no event polling in this phase.
     void step(const std::vector<SDL_Event>& events, Uint64 now);
+    void suspendInput();
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
 	//! Return position on x

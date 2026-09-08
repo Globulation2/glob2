@@ -90,6 +90,7 @@ public:
     void beginSession(Uint64 now);
     bool stepSession(Uint64 now);
     bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
+    void cancelSessionInput();
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
     bool finishSession();

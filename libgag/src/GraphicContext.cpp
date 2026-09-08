@@ -430,7 +430,7 @@ namespace GAGCore
         const char* selectedRenderer = SDL_getenv("GLOB2_RENDERER");
         if (selectedRenderer && std::string(selectedRenderer) == "sdl") flags |= PORTABLEGPU;
 #ifdef GLOB2_MOBILE
-        flags |= PORTABLEGPU;
+        flags |= PORTABLEGPU | RESIZABLE;
 #endif
         if (flags & PORTABLEGPU) flags &= ~USEGPU;
 		optionFlags = flags;
@@ -438,9 +438,9 @@ namespace GAGCore
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.
 			sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-		// FIXME: window resize is broken
-		// if (flags & RESIZABLE)
-		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
+        // SDL mobile hosts require a resizable window to permit both portrait
+        // and landscape. The portable renderer maps input through logical size.
+        if ((flags & PORTABLEGPU) && (flags & RESIZABLE)) sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
 		{

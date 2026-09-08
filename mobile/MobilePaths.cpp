@@ -25,6 +25,7 @@ std::string readAsset(const char* name)
 }
 void initializeMobilePaths()
 {
+    SDL_SetHint(SDL_HINT_ORIENTATIONS,"LandscapeLeft LandscapeRight Portrait PortraitUpsideDown");
     std::unique_ptr<char,decltype(&SDL_free)> writable(SDL_GetPrefPath("Globulation2","glob2"),SDL_free);
     if(!writable) throw std::runtime_error(SDL_GetError());
     std::filesystem::path root(writable.get());

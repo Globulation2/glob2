@@ -18,6 +18,7 @@ public:
     void suspendExecution() override;
     void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
     void handleExecutionEvent(SDL_Event event) override;
+    void cancelExecutionInput() override;
     void drawExecution() override;
     Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
 private:

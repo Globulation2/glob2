@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GraphicContext.h>
 #include <RenderBackend.h>
+#include <ScreenStack.h>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
@@ -9,7 +10,7 @@ using namespace GAGCore;
 class Context : public GraphicContext
 {
 public:
-    Context() : GraphicContext(320, 240, PORTABLEGPU, "Glob2 portable renderer test") {}
+    Context() : GraphicContext(320, 240, PORTABLEGPU | RESIZABLE, "Glob2 portable renderer test") {}
     SDL_Surface* capture() { return renderer->capture(); }
     void resetTextures() { renderer->reset(); }
     void resizeWindow(int width,int height) { SDL_SetWindowSize(window,width,height); updateWindowSize(); }
@@ -81,6 +82,42 @@ int main()
         int x=240,y=160;
         GraphicContext::translateMouseCoordinates(x,y);
         require(x==120 && y==80,"Raw mouse coordinates must use the same logical mapping");
+        {
+            struct ResourceScreen : GAGGUI::Screen {
+                Context& context; DrawableSurface& sprite;
+                int draws=0, red=255, green=255;
+                ResourceScreen(Context& context,DrawableSurface& sprite):context(context),sprite(sprite) {}
+                void onAction(GAGGUI::Widget*,GAGGUI::Action,int,int) override {}
+                void updateExecution(Uint32) override {}
+                void drawExecution() override {
+                    context.setClipRect();
+                    context.drawFilledRect(0,0,320,240,Color(0,0,0));
+                    context.drawSurface(40,40,32,32,&sprite);
+                    auto* pixels=context.capture();
+                    expect(pixels,50*pixels->w/320,50*pixels->h/240,red,green,0);
+                    SDL_FreeSurface(pixels);context.nextFrame();++draws;
+                }
+            };
+            GAGGUI::ScreenStack stack(context);
+            auto owned=std::make_unique<ResourceScreen>(context,sprite);auto* probe=owned.get();
+            stack.push(std::move(owned));stack.frame(0,{});
+            SDL_Event background{};background.type=SDL_APP_WILLENTERBACKGROUND;
+            SDL_Event reset{};reset.type=SDL_RENDER_DEVICE_RESET;
+            stack.frame(40,{background,reset});
+            require(probe->draws==1,"No rendering while backgrounded with a lost device");
+            // Change CPU pixels without the normal dirty notification: the
+            // deferred reset must recreate the previously cached texture.
+            auto* source=sprite.getSDLSurface();
+            SDL_FillRect(source,nullptr,SDL_MapRGB(source->format,255,0,0));
+            probe->green=0;
+            SDL_Event foreground{};foreground.type=SDL_APP_DIDENTERFOREGROUND;
+            stack.frame(100000,{foreground});
+            require(probe->draws==2,"Resource restoration precedes the first resumed draw");
+            SDL_FillRect(source,nullptr,SDL_MapRGB(source->format,0,255,0));
+            probe->red=0;probe->green=255;
+            reset.type=SDL_APP_LOWMEMORY;
+            stack.frame(100040,{reset});
+        }
         std::puts("PASS portable renderer: clipping, texture scaling, alpha, device reset, dirty textures, resized input");
     } catch(const std::exception& error) {
         std::fprintf(stderr,"FAIL: %s\n",error.what()); return 1;

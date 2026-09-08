@@ -323,6 +323,9 @@ namespace GAGGUI
         virtual void suspendExecution() {}
         virtual void viewportResized(int oldWidth, int oldHeight, int width, int height) {}
 		virtual void handleExecutionEvent(SDL_Event event);
+        // Called between frames before host interruption or a child transition.
+        // Discard held/queued input without synthesizing release actions.
+        virtual void cancelExecutionInput() {}
 		virtual void drawExecution();
         virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }
 		bool isExecutionRunning() const { return run; }

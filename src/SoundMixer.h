@@ -45,6 +45,7 @@ public:
 	
 protected:
 	void openAudio(void);
+    bool suspended = false;
 
 public:
 	SoundMixer(unsigned musicvol = 255, unsigned voicevol = 255, bool mute = false);
@@ -72,6 +73,7 @@ public:
 	void setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute);
 	
 	void stopMusic(void);
+    void setSuspended(bool value);
 	
 	//! Tells whether the given player is being heard in voip
 	bool isPlayerTransmittingVoice(int player);
@@ -79,7 +81,6 @@ public:
 	//! Add voice data from order. Data should be copied as order will be destroyed after this call
 	void addVoiceData(std::shared_ptr<OrderVoiceData> order);
 };
-
 
 
 

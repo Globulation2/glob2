@@ -69,6 +69,7 @@ void ScreenStack::boundary()
     auto additions = std::move(pending);
     pending.clear();
     for (auto& entry : additions) {
+        if (!screens.empty()) screens.back().screen->cancelExecutionInput();
         screens.push_back(std::move(entry));
         screens.back().screen->beginExecution(&surface);
     }
@@ -78,14 +79,53 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event>& events)
 {
     if (dispatching) throw std::logic_error("Screen stack frames cannot recurse");
     struct Guard { bool& flag; Guard(bool& f): flag(f) { flag = true; } ~Guard() { flag = false; } } guard(dispatching);
-    if (std::any_of(events.begin(), events.end(), [](const SDL_Event& e) { return e.type == SDL_QUIT; })) stop();
+    bool interrupted = false, resetTime = false;
+    for (const auto& event : events) {
+        if (event.type == SDL_RENDER_DEVICE_RESET || event.type == SDL_RENDER_TARGETS_RESET || event.type == SDL_APP_LOWMEMORY)
+            resetGraphics = true;
+        if (event.type == SDL_WINDOWEVENT && (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED ||
+            event.window.event == SDL_WINDOWEVENT_DISPLAY_CHANGED)) resizeGraphics = true;
+        if (event.type == SDL_QUIT || event.type == SDL_APP_TERMINATING) stop();
+        if (event.type == SDL_APP_WILLENTERBACKGROUND || event.type == SDL_APP_DIDENTERBACKGROUND) {
+            suspended = true; interrupted = resetTime = true;
+        } else if (event.type == SDL_APP_DIDENTERFOREGROUND) {
+            suspended = false; interrupted = resetTime = true;
+        } else if (event.type == SDL_WINDOWEVENT &&
+                   (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST ||
+                    event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)) interrupted = true;
+    }
+    if (!clockStarted) { frameTick = tick; clockStarted = true; }
+    else if (!suspended && !resetTime) frameTick += static_cast<Uint32>(tick - hostTick);
+    hostTick = tick;
+    if (interrupted) for (auto& entry : screens) entry.screen->cancelExecutionInput();
+    if (stopped) { boundary(); return; }
+    // Do not create screens, advance loading/simulation, or present in background.
+    if (suspended) return;
+    // Coalesce graphics notifications received while backgrounded. Recreate
+    // resources only when the context is usable, before any screen can draw.
+    if (resetGraphics) {
+        SDL_Event reset{}; reset.type = SDL_RENDER_DEVICE_RESET;
+        GAGCore::GraphicContext::translateMouseEvent(&reset);
+        resetGraphics = false;
+    }
+    if (resizeGraphics) {
+        SDL_Event resize{}; resize.type = SDL_WINDOWEVENT; resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
+        GAGCore::GraphicContext::translateMouseEvent(&resize);
+        resizeGraphics = false;
+    }
     boundary();
     if (screens.empty() || stopped) return;
     Screen& screen = *screens.back().screen;
     // Pending child transitions suspend the parent immediately.
-    if (pending.empty()) screen.updateExecution(tick);
+    if (pending.empty()) screen.updateExecution(frameTick);
     for (const auto& event : events) {
         if (event.type == SDL_QUIT) { stop(); break; }
+        if (event.type == SDL_RENDER_DEVICE_RESET || event.type == SDL_RENDER_TARGETS_RESET) continue;
+        if (interrupted && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP ||
+            event.type == SDL_TEXTINPUT || event.type == SDL_TEXTEDITING ||
+            event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEBUTTONDOWN ||
+            event.type == SDL_MOUSEBUTTONUP || event.type == SDL_MOUSEWHEEL ||
+            event.type == SDL_FINGERDOWN || event.type == SDL_FINGERUP || event.type == SDL_FINGERMOTION)) continue;
         if (stopped || !pending.empty() || !screen.isExecutionRunning()) break;
         screen.handleExecutionEvent(event);
     }
@@ -95,7 +135,9 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event>& events)
 
 Uint32 ScreenStack::delay(Uint32 now, Uint32 fallback)
 {
-    return screens.empty() ? fallback : screens.back().screen->executionDelay(now, fallback);
+    if (suspended) return 100;
+    const Uint32 logicalNow = clockStarted ? frameTick + static_cast<Uint32>(now - hostTick) : now;
+    return screens.empty() ? fallback : screens.back().screen->executionDelay(logicalNow, fallback);
 }
 
 int ScreenStack::execute(unsigned stepLength)

@@ -20,10 +20,10 @@ void GameSessionScreen::updateExecution(Uint32 tick)
         nextTick = clock;
         started = true;
     } else {
-        if (resetClock) { lastTick = tick; nextTick = clock; resetClock = false; }
-        clock += static_cast<Uint32>(tick - lastTick);
+        if (!resetClock) clock += static_cast<Uint32>(tick - lastTick);
         lastTick = tick;
     }
+    resetClock = false;
     if (clock < nextTick) return;
     const bool running = engine->stepSession(clock, input);
     input.clear();
@@ -45,6 +45,14 @@ void GameSessionScreen::handleExecutionEvent(SDL_Event event)
 {
     // Engine/GameGUI translates native coordinates once, at consumption.
     if (isExecutionRunning() && !finished) input.push_back(event);
+}
+
+void GameSessionScreen::cancelExecutionInput()
+{
+    input.clear();
+    engine->cancelSessionInput();
+    // Time spent under a child screen must not become simulation catch-up lag.
+    resetClock = true;
 }
 
 void GameSessionScreen::drawExecution()
