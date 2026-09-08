@@ -166,6 +166,20 @@ void Building::resetPathfindGradients()
 	}
 }
 
+void Building::freeIdleRoundTripGradients()
+{
+	// Fetchers keep a gradient alive by reading it; 500 ticks after the last one, it goes.
+	constexpr Uint32 ROUND_TRIP_IDLE_TICKS = 500;
+	Uint32 now = owner->game->stepCounter;
+	for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int c=0; c<SWIM_CLASS_COUNT; c++)
+			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+ROUND_TRIP_IDLE_TICKS<now)
+			{
+				delete[] roundTripGradient[r][c];
+				roundTripGradient[r][c] = NULL;
+			}
+}
+
 void Building::freeGradients()
 {
 	resetPathfindGradients();

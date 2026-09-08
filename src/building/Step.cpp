@@ -36,6 +36,8 @@ namespace
 void Building::step(void)
 {
 	computeWishedResources(wishedResources);
+	if (((owner->game->stepCounter + gid) & 255) == 0)
+		freeIdleRoundTripGradients();
 
 	updateCallLists();
 	if(underAttackTimer>0)
