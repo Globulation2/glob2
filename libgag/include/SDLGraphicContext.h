@@ -5,7 +5,6 @@
 
 #include "GAGSys.h"
 #include "CursorManager.h"
-#include "RenderBackend.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -22,6 +21,7 @@
 
 namespace GAGCore
 {
+    class RenderBackend;
 	//! Color is 4 bytes big but provides easy access to components
 	struct Color
 	{

@@ -5,6 +5,7 @@
 // Not part of the public libgag API.
 
 #pragma once
+#include <RenderBackend.h>
 
 #include <GraphicContext.h>
 #include <SDL.h>

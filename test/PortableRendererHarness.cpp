@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GraphicContext.h>
+#include <RenderBackend.h>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>

@@ -156,11 +156,7 @@ jobs:
         working-directory: test
         run: |
           scons -j$(nproc)
-          ./TestsRunner
-          for harness in ./*Harness ./*Test; do
-            echo "== $harness"
-            "$harness"
-          done
+          python3 run-standalone-tests.py
 
       - name: Test game speed controls and playback
         run: |
