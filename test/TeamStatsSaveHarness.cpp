@@ -169,7 +169,7 @@ int main(int argc, char** argv)
 {
     SDL_SetMainReady();
     require(argc == 3 || argc == 5, "usage: harness PROFILE ROOT [--write-fixture FILE | --legacy FILE]");
-    require(std::string(argv[1]).find("glob2-stats-test-") == 0, "disposable profile required");
+    require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
     GlobalContainer globals(argv[1]);
     globals.fileManager->addDir(argv[2]);
     globalContainer = &globals;

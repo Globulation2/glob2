@@ -205,7 +205,9 @@ buffered flush errors while checking that the previous save survives unchanged.
 
 ```sh
 scons -j8 release=1 server=0 team-stats-save-test
-python3 test/run-team-stats-save-tests.py build/src/TeamStatsSaveHarness
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
 ```
 
 This headless test verifies live statistics and smoothing across all 32 sampling
