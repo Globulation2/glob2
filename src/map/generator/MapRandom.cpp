@@ -50,25 +50,25 @@ GAGCore::CooperativeTask Map::makeRandomMapTask(MapGenerationDescriptor &descrip
 	switch (descriptor.method)
 	{
 		case MapGenerationDescriptor::eSWAMP:
-			hm.makeSwamp(smoothingFactor);
+			co_await hm.makeSwampTask(smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio*wHeightMap*hHeightMap/(float)tmpTotal);
 			sandTiles=0;
 			grassTiles=wHeightMap*hHeightMap-waterTiles;
 			break;
 		case MapGenerationDescriptor::eRIVER:
-			hm.makeRiver(descriptor.riverDiameter*(wHeightMap+hHeightMap)/2/100,smoothingFactor);
+			co_await hm.makeRiverTask(descriptor.riverDiameter*(wHeightMap+hHeightMap)/2/100,smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
 		case MapGenerationDescriptor::eCRATERLAKES:
-			hm.makeCraters(wHeightMap*hHeightMap*descriptor.craterDensity/30000, 30, smoothingFactor);
+			co_await hm.makeCratersTask(wHeightMap*hHeightMap*descriptor.craterDensity/30000, 30, smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
 		case MapGenerationDescriptor::eISLANDS:
-			hm.makeIslands(sectionIslandCount, smoothingFactor);
+			co_await hm.makeIslandsTask(sectionIslandCount, smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);

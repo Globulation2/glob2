@@ -43,8 +43,7 @@ job before the partial editor and restores the prior RNG state. Generation error
 return to an owned in-game message and the new-map flow.
 
 Checkpoints cover generation stages, selected terrain loops, and terrain sprite
-regeneration columns, preserving traversal and RNG order. Height-map, gradient,
-allocation, and other helper calls still contain synchronous work: this does not
+regeneration columns, preserving traversal and RNG order. Gradient, allocation, and other helper calls still contain synchronous work: this does not
 yet guarantee a maximum callback duration. Further subdivision and measured
 large-map latency gates are required before removing Asyncify.
 
@@ -52,3 +51,25 @@ Fruit placement now limits random retries, scans for an eligible tile, and fails
 if none remains, avoiding an endless loop. The expanded fixtures also exposed an
 old-islands building-placement call using team ID -1; it now uses the actual team.
 These fixes apply to native and browser execution alike.
+
+## Height-map jobs
+
+Height-map filling, noise, stamp construction/application, island-position
+searches, and normalization now yield after at most 1,024 counted loop iterations
+per pass. The terrain generator awaits these nested jobs. Synchronous entry
+points drain the same jobs. This bounds those loops' work between checkpoints,
+not wall-clock frame duration or every generation helper.
+
+Island coordinates use coroutine-owned vectors so destroying a suspended job
+releases temporary arrays. Height maps cannot be copied implicitly. A task borrows
+its height map; callers must retain that instance and must not run simultaneous
+jobs against it. Cancelling leaves partial private heights, which can be discarded
+or replaced by a fresh generation; they are never published by the editor.
+
+Stamp caches no longer cross instance boundaries. Repeated river lowering uses
+an instance-local cache invalidated when filling or replacing its stamp. Difference
+stamps apply explicitly. A one-crater repeat fixture catches the former cross-map
+skip; native checks also verify finite normalized values and cancellation/reuse
+during nested passes. Crater RNG draws have explicit x-then-y ordering instead of
+relying on compiler argument evaluation order. Newly generated layouts can change;
+existing saves and simulation rules remain unchanged.

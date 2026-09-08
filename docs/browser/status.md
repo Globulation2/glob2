@@ -44,7 +44,9 @@ infrastructure from the supported-release acceptance criteria.
   libc RNG/time reseeding and shared-noise interference. All nine native generation
   fixtures match synchronous and scheduled execution after unrelated RNG/noise
   activity. Editor generation uses an owned cancellable preparation screen with
-  RNG restoration and error transitions. Long helper calls still need subdivision;
+  RNG restoration and error transitions. Height-map noise, stamps, placement searches,
+  and normalization now yield through nested jobs with owned temporary arrays and
+  instance-local stamp state. Other long helper calls still need subdivision;
   cross-platform generation parity is not yet certified.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.

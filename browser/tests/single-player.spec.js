@@ -303,6 +303,7 @@ test('map generation can be cancelled before retrying', async ({page}) => {
   await screen(page, 'EditorGenerateScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'NewMapScreen');
+  await menu(page, 100, 140); // Swamp: exercises the resumable height-map passes.
   await menu(page, 160, 440);
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});

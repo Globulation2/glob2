@@ -39,6 +39,45 @@ int main(int argc, char** argv)
         }
     }
 
+    // A one-crater map repeats the exact first stamp location. Shared static
+    // stamp caches used to skip that stamp in the second map instance.
+    {
+        std::vector<float> expected;
+        for (unsigned repeat = 0; repeat < 2; ++repeat) {
+            setSyncRandSeed(42);
+            HeightMap heights(128, 128);
+            if (!repeat) heights.makeCraters(1, 30, 24);
+            else {
+                auto task = heights.makeCratersTask(1, 30, 24);
+                unsigned frames = 0;
+                while (!task.advance()) {
+                    require(++frames < 1000, "Height-map job exceeded fixture work budget");
+                    PerlinNoise unrelated(frames); unrelated.Noise(.25f, .5f);
+                }
+                require(task.result() && frames > 20, "Height-map work must yield within its passes");
+            }
+            for (unsigned i = 0; i < 128 * 128; ++i) {
+                require(std::isfinite(heights(i)) && heights(i) >= 0 && heights(i) <= 1,
+                        "Height-map normalization must remain finite and bounded");
+                if (!repeat) expected.push_back(heights(i));
+                else require(heights(i) == expected[i], "Stamp state must belong to each height map");
+            }
+        }
+        // Destroy nested jobs during stamp construction, filling, and noise work.
+        // The next operation must be safe even after cancellation of partial work.
+        for (unsigned stop : {1u, 5u, 20u, 40u}) {
+            HeightMap partial(128, 128);
+            {
+                auto task = partial.makeIslandsTask(2, 24);
+                for (unsigned frame = 0; frame < stop; ++frame)
+                    require(!task.advance(), "Cancellation fixture finished before its checkpoint");
+            }
+            partial.makeSwamp(24);
+            for (unsigned i = 0; i < 128 * 128; ++i)
+                require(std::isfinite(partial(i)), "Cancelled height map could not be reused");
+        }
+    }
+
     SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
     SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
     globalContainer = new GlobalContainer(argv[1]);
