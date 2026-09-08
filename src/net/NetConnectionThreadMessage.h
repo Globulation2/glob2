@@ -89,8 +89,6 @@ public:
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
-	///Retrieves error
-	std::string getError() const;
 private:
 	std::string error;
 };
@@ -159,8 +157,6 @@ public:
 	///Compares two IRCThreadMessage
 	bool operator==(const NetConnectionThreadMessage& rhs) const;
 
-	///Retrieves error
-	std::string getError() const;
 private:
 	std::string error;
 };

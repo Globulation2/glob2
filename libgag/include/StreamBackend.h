@@ -9,7 +9,6 @@
 #include <string>
 #include <stdio.h>
 #include <assert.h>
-#include "zlib.h"
 #ifdef putc
 #undef putc
 #endif
@@ -68,31 +67,6 @@ namespace GAGCore
 		virtual bool isValid(void) { return (fp != NULL); }
 	};
 	
-	//! The zlib implementation of stream backend. *important* all zlib activity is run through full-file buffer in memory
-	class ZLibStreamBackend : public StreamBackend
-	{
-	private:
-		MemoryStreamBackend* buffer;
-		std::string file;
-		bool isRead;
-	public:
-		//! Constructor. If file is "", isEndOfStream returns true and all other functions excepted destructor are invalid and will assert false if called
-		ZLibStreamBackend(const std::string& file, bool read);
-		virtual ~ZLibStreamBackend();
-		
-		virtual void write(const void *data, const size_t size);
-		virtual void flush(void);
-		virtual void read(void *data, size_t size);
-		virtual void putc(int c);
-		virtual int getChar(void);
-		virtual void seekFromStart(int displacement);
-		virtual void seekFromEnd(int displacement);
-		virtual void seekRelative(int displacement);
-		virtual size_t getPosition(void);
-		virtual bool isEndOfStream(void);
-		virtual bool isValid(void);
-	};
-	
 	//! A stream backend that lies in memory
 	class MemoryStreamBackend : public StreamBackend
 	{
@@ -117,31 +91,5 @@ namespace GAGCore
 		virtual bool isEndOfStream(void);
 		virtual bool isValid(void) { return true; }
 		virtual const char* getBuffer() { return datas.c_str(); }
-	};
-
-	//! A stream that doesn't save data, it just produces a hash. Don't try to read from it!
-	//! It uses the FNV-1a algorithm for its speed
-	class HashStreamBackend : public StreamBackend
-	{
-	private:
-		Uint32 hash;
-
-	public:
-		HashStreamBackend() { hash = 0x811c9dc5; }
-		virtual ~HashStreamBackend() {}
-
-		virtual void write(const void *data, const size_t size);
-		virtual void flush(void) {}
-		virtual void read(void *data, size_t size) { assert(false); }
-		virtual void putc(int c);
-		virtual int getChar(void) { assert(false); }
-		virtual void seekFromStart(int displacement) {}
-		virtual void seekFromEnd(int displacement) {}
-		virtual void seekRelative(int displacement) {}
-		virtual size_t getPosition(void) { return 0; }
-		virtual bool isEndOfStream(void) { return false; }
-		virtual bool isValid(void) { return true; }
-
-		virtual Uint32 getHash(void) { return hash; }
 	};
 }

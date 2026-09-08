@@ -262,7 +262,6 @@ bool NetPlayerIsBanned::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetPlayerIsBanned))
 	{
-		//const NetPlayerIsBanned& r = dynamic_cast<const NetPlayerIsBanned&>(rhs);
 		return true;
 	}
 	return false;
@@ -301,7 +300,6 @@ bool NetIPIsBanned::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetIPIsBanned))
 	{
-		//const NetIPIsBanned& r = dynamic_cast<const NetIPIsBanned&>(rhs);
 		return true;
 	}
 	return false;

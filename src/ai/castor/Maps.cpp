@@ -379,8 +379,8 @@ void AICastor::computeWorkRangeMap()
 			int range=((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->race->hungriness;
 			if (range<0)
 				continue;
-			if (range>GRADIENT_AT_GOAL)
-				range=GRADIENT_AT_GOAL;
+			if (range>AI_CASTOR_GRADIENT_WALL)
+				range=AI_CASTOR_GRADIENT_WALL;
 			int index=(u->posX&wMask)+((u->posY&hMask)<<wDec);
 			gradient[index]=(Uint8)range;
 		}
@@ -402,8 +402,8 @@ void AICastor::computeWorkAbilityMap()
 		Uint8 workRange=workRangeMap[i];
 		
 		Uint32 workAbility=((workPower*workRange)>>AI_CASTOR_WORK_ABILITY_NORM_SHIFT);
-		if (workAbility>GRADIENT_AT_GOAL)
-			workAbility=GRADIENT_AT_GOAL;
+		if (workAbility>AI_CASTOR_GRADIENT_WALL)
+			workAbility=AI_CASTOR_GRADIENT_WALL;
 
 		workAbilityMap[i]=(Uint8)workAbility;
 	}
@@ -454,10 +454,10 @@ void AICastor::computeHydratationMap()
 	for (size_t i=0; i<size; i++)
 	{
 		Uint16 value=gradient[i]>>AI_CASTOR_HYDRATATION_NORM_SHIFT;
-		if (value<GRADIENT_AT_GOAL)
+		if (value<AI_CASTOR_GRADIENT_WALL)
 			hydratationMap[i]=value;
 		else
-			hydratationMap[i]=GRADIENT_AT_GOAL;
+			hydratationMap[i]=AI_CASTOR_GRADIENT_WALL;
 	}
 	free(gradient);
 }
@@ -508,6 +508,17 @@ void AICastor::computeWheatCareMap()
 	map->updateGlobalGradient(wheatCareMap[0]);
 }
 
+// The map's resource gradients are Uint16 with GRADIENT_STEP per tile (MapInternal.h);
+// Castor's wheat maps and thresholds keep the historical 8-bit scale of 255 - tiles.
+Uint8 AICastor::wheatGradientAt(size_t index)
+{
+	Uint16 g=map->getResourceGradient(team->teamNumber, CORN, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index];
+	if (g<=GRADIENT_UNREACHABLE)
+		return (Uint8)g;
+	int tiles=gradientTiles(g);
+	return (Uint8)(tiles>AI_CASTOR_WHEAT_GRADIENT_PEAK-2 ? 2 : AI_CASTOR_WHEAT_GRADIENT_PEAK-tiles);
+}
+
 void AICastor::computeWheatGrowthMap()
 {
 	if (lastWheatGrowthMapComputed==timer)
@@ -516,12 +527,10 @@ void AICastor::computeWheatGrowthMap()
 	int w=map->w;
 	int h=map->h;
 	size_t size=w*h;
-	Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
-	
 	memcpy(wheatGrowthMap, obstacleBuildingMap, size);
 	
 	for (size_t i=0; i<size; i++)
-		if (wheatGradient[i]==AI_CASTOR_WHEAT_GRADIENT_PEAK)
+		if (wheatGradientAt(i)==AI_CASTOR_WHEAT_GRADIENT_PEAK)
 			wheatGrowthMap[i]=AI_CASTOR_WHEAT_GROWTH_BASE+(hydratationMap[i]>>AI_CASTOR_WHEAT_GROWTH_HYDRATATION_SHIFT);
 
 	map->updateGlobalGradient(wheatGrowthMap);
@@ -655,7 +664,7 @@ void AICastor::computeEnemyRangeMap()
 			int bh=b->type->height;
 			for (int dy=by; dy<by+bh; dy++)
 				for (int dx=bx; dx<bx+bw; dx++)
-					gradient[(dx&wMask)+((dy&hMask)<<wDec)]=GRADIENT_AT_GOAL;
+					gradient[(dx&wMask)+((dy&hMask)<<wDec)]=AI_CASTOR_GRADIENT_WALL;
 		}
 	}
 	

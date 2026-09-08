@@ -171,10 +171,9 @@ map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
 map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientLocal.cpp
+map/gradient/MapGradientField.cpp
 map/io/MapExploredAreaIO.cpp
 map/io/MapIO.cpp
-map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindBuilding.cpp
@@ -210,9 +209,7 @@ map/generator/GeneratorHeightmap.cpp
 map/generator/MapHomogen.cpp
 map/generator/MapOldRandom.cpp
 map/generator/MapRandom.cpp
-map/generator/MapOldRandomRessources.cpp
 map/generator/MapOldIslands.cpp
-map/generator/MapOldIslandsRessources.cpp
 map/generator/GameMaps.cpp
 map/io/MapHeader.cpp
 MapScript.cpp
@@ -293,7 +290,6 @@ unit/Unit.cpp
 unit/UnitAction.cpp
 unit/UnitActivity.cpp
 unit/UnitDisplacement.cpp
-UnitEditorScreen.cpp
 unit/UnitGeometry.cpp
 unit/UnitMedical.cpp
 unit/UnitMovement.cpp
@@ -339,7 +335,6 @@ yog/YOGGameInfo.cpp
 yog/YOGGameResults.cpp
 yog/YOGLoginScreen.cpp
 yog/YOGMessage.cpp
-yog/YOGPlayerPrivateInfo.cpp
 yog/YOGPlayerSessionInfo.cpp
 yog/YOGPlayerStoredInfo.cpp
 yog/YOGRegisterScreen.cpp
@@ -421,10 +416,9 @@ map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
 map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientLocal.cpp
+map/gradient/MapGradientField.cpp
 map/io/MapExploredAreaIO.cpp
 map/io/MapIO.cpp
-map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindRessource.cpp
@@ -483,6 +477,12 @@ if not env['server']:
     terrain_sources += local.Object('TerrainResourcesHarness.o', '#test/TerrainResourcesHarness.cpp')
     terrain_test = local.Program('TerrainResourcesHarness', terrain_sources)
     local.Alias('terrain-test', terrain_test)
+
+if not env['server']:
+    gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
+    gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
+    gradient_test = local.Program('GlobalGradientHarness', gradient_sources)
+    local.Alias('global-gradient-test', gradient_test)
 
 if not env['server']:
     lan_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -556,3 +556,10 @@ if not env['server']:
     regression_sources += local.Object('EnteringUnitSaveHarness.o', '#test/EnteringUnitSaveHarness.cpp')
     regression_test = local.Program('EnteringUnitSaveHarness', regression_sources)
     local.Alias('entering-unit-save-test', regression_test)
+
+# Real engine regression for immobile units and weighted building gradients, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('ImmobileUnitGradientHarness.o', '#test/ImmobileUnitGradientHarness.cpp')
+    regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
+    local.Alias('immobile-unit-gradient-test', regression_test)

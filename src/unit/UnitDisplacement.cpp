@@ -147,7 +147,6 @@ void Unit::handleDisplacement(void)
 						int needs[MAX_NB_RESOURCES];
 						attachedBuilding->computeWishedResources(needs);
 						int teamNumber=owner->teamNumber;
-						bool canSwim=performance[SWIM];
 						int timeLeft = numberOfStepsLeftUntilHungry();
 						if (timeLeft > 0)
 						{
@@ -161,7 +160,7 @@ void Unit::handleDisplacement(void)
 								if (need>0)
 								{
 									int distToResource;
-									if (map->resourceAvailable(teamNumber, r, canSwim, posX, posY, &distToResource))
+									if (map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource))
 									{
 										if ((distToResource<<1)>=timeLeft)
 											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.
@@ -179,7 +178,7 @@ void Unit::handleDisplacement(void)
 											if ((*bi)->resources[r]>0)
 											{
 												int buildingDist;
-												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
+												if (map->buildingAvailable(*bi, swimClass(), posX, posY, &buildingDist))
 												{
 													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
 													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
@@ -223,7 +222,7 @@ void Unit::handleDisplacement(void)
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;

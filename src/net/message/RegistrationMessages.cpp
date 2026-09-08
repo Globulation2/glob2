@@ -99,7 +99,6 @@ bool NetRegistrationAccepted::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetRegistrationAccepted))
 	{
-//		const NetRegistrationAccepted& r = dynamic_cast<const NetRegistrationAccepted&>(rhs);
 		return true;
 	}
 	return false;

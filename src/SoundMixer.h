@@ -30,7 +30,6 @@ public:
 	} mode;
 	std::vector<OggVorbis_File *> tracks;
 	int actTrack, nextTrack;
-	bool earlyChange;
 	bool soundEnabled;
 	unsigned musicVolume;
 	unsigned voiceVolume;

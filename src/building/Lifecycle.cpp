@@ -19,11 +19,9 @@
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
-	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
-	{
+	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 		globalGradient[i]=NULL;
-		localResources[i]=NULL;
-	}
+	freeGradients();
 	load(stream, types, owner, versionMinor);
 }
 
@@ -113,18 +111,9 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	for (int i=0; i<NB_ABILITY; i++)
 		inUpgrade[i]=LS_UNKNOWN;
 
-	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
-	{
+	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 		globalGradient[i]=NULL;
-		localResources[i]=NULL;
-		dirtyLocalGradient[i]=true;
-		locked[i]=false;
-		lastGlobalGradientUpdateStepCounter[i]=0;
-
-		localResources[i]=0;
-		localResourcesCleanTime[i]=0;
-		anyResourceToClear[i]=0;
-	}
+	freeGradients();
 
 	verbose=false;
 
@@ -144,39 +133,31 @@ Building::~Building()
 	freeGradients();
 }
 
-void Building::resetLocalResources()
+void Building::dirtyGradients()
 {
+	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+		dirtyGradient[i] = true;
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
-	{
-		dirtyLocalGradient[i] = true;
 		locked[i] = false;
-		delete[] localResources[i];
-		localResources[i] = NULL;
-	}
 }
 
 void Building::resetPathfindGradients()
 {
-	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
+	dirtyGradients();
+	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 	{
-		dirtyLocalGradient[i] = true;
-		locked[i] = false;
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
-		delete[] localResources[i];
-		localResources[i] = NULL;
 	}
 }
 
 void Building::freeGradients()
 {
 	resetPathfindGradients();
-	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
-	{
+	for (int i=0; i<SWIM_CLASS_COUNT; i++)
 		lastGlobalGradientUpdateStepCounter[i] = 0;
-		localResourcesCleanTime[i] = 0;
+	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 		anyResourceToClear[i] = 0;
-	}
 }
 
 void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)

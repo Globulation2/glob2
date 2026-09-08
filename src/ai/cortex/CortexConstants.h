@@ -360,10 +360,6 @@ namespace Cortex
 	/// tiles beyond this report "no wheat in reach" (-1). A few past WHEAT_MAX_DIST
 	/// so the supply-distance expansion trigger can still measure "just out of range".
 	static const int CORTEX_WHEAT_SCAN_CAP = 12;
-	/// Supply-distance expansion trigger: a swarm pinned at its worker cap whose
-	/// nearest CORN is beyond this has outrun its local wheat — warrant a NEW swarm
-	/// near fresh wheat rather than piling more haulers onto the starved one.
-	static const int CORTEX_SWARM_SUPPLY_RADIUS = 5;
 
 	/// Inn worker-access clearance (AI-design placement rule, no engine analogue).
 	/// An inn may touch a building on at most CORTEX_INN_MAX_TOUCH_SIDES of its four
