@@ -55,6 +55,15 @@ class IOSCommandTests(unittest.TestCase):
             discover_sdk.assert_not_called()
             run.assert_not_called()
 
+    def test_simulator_install_uses_task_device_set(self):
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        import ios
+        arguments=['ios.py','install','--device','test-udid','--simulator-set','build/test-simulators']
+        with patch.object(sys,'argv',arguments), patch('ios.discover'), patch('ios.subprocess.run') as run:
+            ios.main()
+        command=run.call_args.args[0]
+        self.assertEqual(command[:6],['xcrun','simctl','--set',str(Path('build/test-simulators').resolve()),'install','test-udid'])
+
 
 class MobileBuildTests(unittest.TestCase):
     def test_each_mobile_configuration_has_its_own_directory(self):

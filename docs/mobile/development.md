@@ -25,7 +25,7 @@ python3 mobile/doctor.py ios environment=simulator developer_dir=/Applications/X
 
 SDK versions are recorded in `mobile/toolchain.json`. Android uses NDK
 28.2.13676358, API 26 minimum, and separate arm64-v8a, armeabi-v7a, and x86_64
-outputs. iOS uses Xcode 26.2, deployment 15.0, and separate ARM64 device/simulator
+outputs. iOS uses Xcode 26.6, deployment 15.0, and separate ARM64 device/simulator
 outputs. Full Xcode is required; Apple Command Line Tools lack the iOS SDK.
 
 The task-local Android SDK root is `build/mobile-tools/android-sdk` unless
@@ -131,7 +131,34 @@ x86-64 image and APK; that emulator-host recipe has not been run locally.
 
 ## iOS setup and packaging
 
-Full Xcode 26.2 with device/simulator SDKs and CMake 3.24+ are required. Select
+Full Xcode 26.6 with device/simulator SDKs and CMake 3.24+ are required.
+Xcode is installed through Apple's installer or App Store; it and Apple's secured
+runtime storage are system-managed. Generated projects, dependencies, and simulator
+device data remain in the mobile worktree. Keep the global `xcode-select` unchanged.
+
+To install the matching ARM64 runtime and create an isolated simulator:
+
+```sh
+export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+mkdir -p build/mobile-tools/ios-runtime build/mobile-tools/ios-simulators
+xcodebuild -downloadPlatform iOS -architectureVariant arm64 \
+  -exportPath "$PWD/build/mobile-tools/ios-runtime"
+xcrun simctl runtime scan-and-mount
+xcrun simctl list runtimes
+xcrun simctl list devicetypes
+xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" create \
+  Glob2-Mobile DEVICE_TYPE_ID RUNTIME_ID
+xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" boot SIMULATOR_UDID
+xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" bootstatus SIMULATOR_UDID -b
+```
+
+Use IDs returned by the list/create commands. The install/launch commands below
+use this worktree's device set by default; `--simulator-set PATH` selects another
+explicit set. Apple verifies and manages the runtime image; the exported bundle
+is an optional local copy. Runtime installation may
+require substantial disk space. Do not delete other projects or simulator devices.
+
+ Select
 Xcode without changing `xcode-select` by passing `--developer-dir`:
 
 ```
@@ -151,7 +178,10 @@ certificates and matching provisioning profiles must already be available locall
 Simulator builds require no credentials. `--unsigned` also permits device compilation
 without signing credentials; that output cannot be installed on a device.
 The generated Xcode project invokes SCons
-for the shared core. These recipes are unverified until full Xcode is available.
+for the shared core. Xcode 26.6 simulator builds and unsigned device builds have
+passed locally. Physical-device signing and installation remain unverified.
+Release builds produce a matching `Glob2.app.dSYM` alongside the application.
+The CoreBluetooth framework is linked for the pinned SDL controller support.
 
 ## Cross compilation
 
@@ -255,3 +285,23 @@ than merging duplicate simulation changes. Preserve work first. After integratio
 rebuild native, Android, and web clients and run lifecycle, session, viewport,
 and browser persistence regressions. Keep the Emscripten lock unchanged unless
 an intentional update passes desktop/browser gates.
+
+## iOS diagnostics and save extraction
+
+Use the exact device set and UDID from setup:
+
+```sh
+xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" io SIMULATOR_UDID \
+  screenshot "$PWD/build/ios-screen.png"
+xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" get_app_container \
+  SIMULATOR_UDID org.globulation.glob2 data
+xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" shutdown SIMULATOR_UDID
+```
+
+The returned app-data container contains SDL's writable preference path, including
+created saves/maps/replays. Copy files from this container for inspection; leave
+bundle assets untouched. LLDB can use the target compilation database and dSYM;
+verify executable/symbol UUIDs with `xcrun dwarfdump --uuid APP/Glob2 APP.dSYM`.
+An unsigned device application is a compilation artifact and cannot be installed.
+Do not interpret simulator smoke tests as iOS 15 hardware, touch-layout, thermal,
+or performance qualification.

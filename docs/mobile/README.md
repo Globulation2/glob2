@@ -1,8 +1,8 @@
 # Mobile ports
 
 Android and iOS are additional clients built from the shared desktop/browser C++
-codebase. This is a working Android foundation and an unverified iOS build recipe,
-not a completed mobile release.
+codebase. Android and iOS now build and launch in their respective emulators/simulators.
+These are client foundations, not a completed mobile release.
 
 - [Architecture](architecture.md): shared code, platform boundaries, and coexistence.
 - [Developer guide](development.md): setup, build, install, launch, tests, and isolation.

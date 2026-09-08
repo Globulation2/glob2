@@ -27,6 +27,8 @@ def main():
     signing.add_argument('--team',help='Local Apple development team for device signing')
     signing.add_argument('--unsigned',action='store_true',help='Build an unsigned device app without credentials (not installable)')
     parser.add_argument('--device',help='Exact simulator or device identifier for install/launch')
+    parser.add_argument('--simulator-set',default=str(ROOT/'build/mobile-tools/ios-simulators'),
+                        help='Isolated simulator device set for install/launch')
     parser.add_argument('--cmake',default='cmake')
     args=parser.parse_args()
     if args.command=='install' and args.environment=='device' and args.unsigned:
@@ -43,11 +45,12 @@ def main():
     project=output/'xcode-project';configuration='Release' if args.release else 'Debug'
     sdk='iphonesimulator' if args.environment=='simulator' else 'iphoneos'
     app=project/'build'/(configuration+'-'+sdk)/'Glob2.app'
-    env=dict(os.environ)
+    (output/'tmp').mkdir(parents=True,exist_ok=True)
+    env=dict(os.environ,TMPDIR=str(output/'tmp'),TMP=str(output/'tmp'),TEMP=str(output/'tmp'))
     if args.developer_dir: env['DEVELOPER_DIR']=args.developer_dir
     if args.command in ('install','launch'):
         if args.environment=='simulator':
-            command=['xcrun','simctl',args.command,args.device,str(app) if args.command=='install' else 'org.globulation.glob2']
+            command=['xcrun','simctl','--set',str(Path(args.simulator_set).resolve()),args.command,args.device,str(app) if args.command=='install' else 'org.globulation.glob2']
         else:
             command=['xcrun','devicectl','device']+(['install','app','--device',args.device,str(app)] if args.command=='install' else ['process','launch','--device',args.device,'org.globulation.glob2'])
         subprocess.run(command,env=env,check=True);return
@@ -71,8 +74,9 @@ def main():
         'add_dependencies(Glob2 Glob2Core)',
         'target_link_libraries(Glob2 PRIVATE '+' '.join(map(cmake_quote,libraries))+')',
         'target_link_options(Glob2 PRIVATE -ObjC)',
+        'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(ROOT/'mobile/ios/Info.plist.in')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
-    for framework in ('UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
+    for framework in ('UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
     for folder in ('data','maps','campaigns','scripts'):
         for resource in sorted((ROOT/folder).rglob('*')):
@@ -81,6 +85,10 @@ def main():
                 lines.append('set_source_files_properties('+cmake_quote(resource)+' PROPERTIES MACOSX_PACKAGE_LOCATION '+cmake_quote(resource.relative_to(ROOT).parent)+')')
     write_if_changed(project/'CMakeLists.txt','\n'.join(lines)+'\n')
     configure=[args.cmake,'-G','Xcode','-S',str(project),'-B',str(project/'build'),'-DCMAKE_SYSTEM_NAME=iOS',
+        '-DCMAKE_XCODE_ATTRIBUTE_CACHE_ROOT='+str(output/'xcode-cache'),
+        '-DCMAKE_XCODE_ATTRIBUTE_SDK_STAT_CACHE_DIR='+str(output/'xcode-cache'),
+        '-DCMAKE_XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS=YES',
+        '-DCMAKE_XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT=dwarf-with-dsym',
         '-DCMAKE_CONFIGURATION_TYPES='+configuration,'-DCMAKE_OSX_SYSROOT='+sdk,'-DCMAKE_OSX_ARCHITECTURES=arm64','-DCMAKE_OSX_DEPLOYMENT_TARGET=15.0']
     if args.environment=='simulator' or args.unsigned:
         configure+=['-DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_ALLOWED=NO','-DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM=']

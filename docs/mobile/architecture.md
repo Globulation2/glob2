@@ -62,7 +62,8 @@ from a killed process.
 The portable SDL geometry backend owns GPU textures, clipping, presentation,
 ordered geometry, and reset handling. Mobile selects this renderer; desktop keeps
 its existing defaults and can opt in with `GLOB2_RENDERER=sdl`. The browser retains
-its existing renderer; the proposed WebGL2 implementation is not part of this change.
+its software default and the browser branch’s opt-in WebGL2 renderer. See the
+[browser renderer design](../browser/adr-006-webgl2-rendering.md) for context recovery.
 
 Mobile canvases expand to the window aspect ratio instead of letterboxing or
 stretching art. Legacy logical minimum sizes remain, while responsive entry menus

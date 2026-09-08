@@ -1,9 +1,9 @@
 # Mobile verification and remaining work
 
-Recorded 2026-09-08. Browser base: `5397fbd415786e005115c4c5a23d4767d7d650e3`,
-also the remote `codex/browser-experiment` tip when checked. Runtime implementation:
-`7333e4e8b`. Subsequent documentation, CI packaging, and iOS argument-preflight
-changes do not change game simulation or native rendering.
+Recorded 2026-09-08. Browser base: `017d5b437aa750d3b7a9c7f98192dac9aafcbb49`,
+merged into the mobile branch in `864950fec`. iOS qualification uses Xcode 26.6
+(17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
+Android evidence below was collected before this browser merge, on `7333e4e8b`.
 
 ## Current evidence
 
@@ -12,21 +12,41 @@ changes do not change game simulation or native rendering.
 | Desktop and browser | Native macOS release and Wasm release builds pass | Other desktop platforms not rebuilt locally |
 | Android ARM64 | Release APK packaged, alignment checked, developer signed, installed and launched on API 35 ARM64 emulator | No physical device qualification |
 | Android ARMv7 / x86-64 | Release APK builds, ELF/package alignment checks, and developer signing pass | No launch evidence on these ABIs |
-| iOS device / simulator | SDK discovery, separate identities, dependency and Xcode generation recipes implemented | Full Xcode is absent; neither app variant has been compiled or launched |
+| iOS device / simulator | ARM64 simulator and unsigned device apps build with matching dSYMs; simulator install, main menu, tutorial, touch selection, rotation, and retained-session resume pass | Signed physical-device installation and iOS 15 hardware remain unverified |
 | Shared lifecycle | Native screen/session/renderer harnesses pass; Android retained-activity background/resume exercised | Killed-process and multiplayer recovery unfinished |
 | Native touch and viewport | Responsive-menu and gameplay-touch integration harnesses pass; Android tutorial selection, placement, confirmation, rotation cancellation, and pan exercised | Complete phone panels and editor touch parity unfinished |
-| Browser compatibility | Nine tutorial/visibility/resize cases pass across Chromium, Firefox, WebKit after the final viewport changes | Not mobile Safari/Chrome device qualification |
-| Build tooling | 20 Python checks pass, including invalid identities, archive alignment, signed APK provenance, and fail-fast iOS requests | Does not prove iOS linking or IDE debugging |
+| Browser compatibility | 15 tutorial/visibility/resize/WebGL2 cases pass across Chromium, Firefox, WebKit after merge, including two isolated Chromium reruns | Not mobile Safari/Chrome device qualification |
+| Build tooling | 21 Python checks pass, including invalid identities, archive alignment, signed APK provenance, fail-fast iOS requests, and explicit simulator device-set routing | Does not prove iOS linking or IDE debugging |
 | CI | Android ABI matrix now packages, checks alignment, signs developer APKs, and collects symbols/diagnostics | Updated workflow has not yet been run; no automated emulator or iOS simulator gate |
 
 The three native 50-tick engine-session variants agree on `7e7f31de` after
 background and child-screen interruption. This is a lifecycle regression result,
 not the requested 100,000-tick ARM/Wasm determinism qualification.
 
-Browser synchronization also passed 24 viewport/storage cases and three visibility
-cases on the current browser base. One Firefox aborted-save retry timed out while
-Android compilation ran concurrently; its isolated rerun passed with unchanged
-assertions. Older pre-sync test counts and AI failures do not qualify this base.
+On the merged browser base, native renderer, screen lifecycle, gameplay touch,
+and engine-session harnesses pass. In the browser run, 13 of 15 cases passed on
+the first attempt. Two Chromium WebGL2 cases timed out on slow simulation progress
+while iOS compilation and runtime setup were active; both passed unchanged in an
+isolated rerun (30.4 seconds). The earlier browser-base storage evidence is not a
+substitute for full post-merge storage qualification.
+
+## iOS simulator screenshots
+
+Captured on an isolated iPhone 16 / iOS 26.5 simulator. The game reaches its main
+menu and a running tutorial, selects units/buildings, rotates, and resumes the
+same process after Home/backgrounding. No device signing credentials were used.
+
+![iOS touch main menu](screenshots/ios-menu.png)
+
+![iOS tutorial in portrait](screenshots/ios-gameplay-portrait.png)
+
+![iOS tutorial in landscape](screenshots/ios-gameplay-landscape.png)
+
+The screenshots expose remaining layout work: status bar/notch overlap with the
+legacy HUD, small legacy dialogs/panels, and missing touch tutorial instructions.
+These are not claims of complete phone usability. The simulator's first boot took
+about two minutes. Runtime registration required `simctl runtime scan-and-mount`;
+a duplicate record referred to the same runtime image and was left intact.
 
 ## Android emulator screenshots
 
@@ -56,8 +76,12 @@ Local ignored artifacts in the mobile worktree include:
 - `build-touch-fullscreen-tests.log`: native renderer, screen, menu, touch, session checks.
 - `build-touch-fullscreen-browser-tests.log`: nine browser checks.
 - `build/touch-fullscreen-*.png`: Android portrait/landscape, selection, placement and pan captures.
-- `build-foundation-tool-tests.log`: 20 build-tool checks.
-- `build-foundation-ios-doctor.log`: missing full-Xcode diagnostic.
+- `build-ios-tool-tests.log`: 21 build-tool checks.
+- `build-ios-simulator-final.log`, `build-ios-device-final.log`: successful app builds.
+- `build-ios-native-test-results.log`: merged native regression results.
+- `build-ios-browser-tests.log`, `build-ios-browser-rerun.log`: browser results and reruns.
+- `build-ios-boot.log`, `build-ios-launch.log`, `build-ios-resume.log`: first boot and same-process resume.
+- `build/ios-app-data-path.txt`: isolated writable container location.
 - `build-foundation-armv7.log` and `build-foundation-x86_64.log`: current ABI packaging runs.
 
 Release developer APKs live under
@@ -66,16 +90,16 @@ Signing keys remain local and are not CI artifacts. CI uses runner-provided SDK
 packages and Java 17 alongside the pinned NDK and Gradle; a fully archive-pinned
 Linux JDK/SDK bootstrap remains to be completed.
 
-The local iOS diagnostic reports that the selected developer directory is
-`/Library/Developer/CommandLineTools`, which lacks Xcode's iOS SDK. Install the
-pinned full Xcode version and pass `--developer-dir`; simulator/unsigned
-compilation needs no signing credentials. Device installation additionally needs
-local signing identity and provisioning configuration.
+Both iOS binaries identify their correct platform (IOS versus IOSSIMULATOR),
+minimum OS 15.0, and SDK 26.5. Their dSYM UUIDs match. The generated Xcode project
+keeps build caches in its target output; Apple manages Xcode and runtime storage
+system-wide, and simulator device data stays in `build/mobile-tools/ios-simulators`.
+No physical-device signing identity or provisioning profile has been qualified.
 
 ## Next foundation gates
 
-1. Compile and launch the ARM64 iOS simulator application with full Xcode; then
-   verify unsigned device compilation and locally signed device installation.
+1. Qualify locally signed iOS physical-device installation and address iOS safe-area,
+   status-bar, and keyboard occlusion in the shared UI integration.
 2. Run Android CI packaging and launch checks on the remaining ABIs; add automated
    emulator/simulator startup, lifecycle, and asset-path checks with diagnostics.
 3. Finish incremental modal/lifecycle coverage and durable native storage before
