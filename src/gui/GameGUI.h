@@ -527,6 +527,8 @@ private:
 	int panMouseX, panMouseY;
 	int lastMouseX = 0, lastMouseY = 0;
 	Uint16 lastMouseButtonState = 0;
+	//! Coordinate of viewport when began panning
+	int panViewX, panViewY;
 
 	bool showStarvingMap;
 	bool showDamagedMap;
@@ -710,5 +712,4 @@ private:
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
-
 

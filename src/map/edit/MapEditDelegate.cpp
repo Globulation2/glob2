@@ -9,7 +9,6 @@
 #include "ScriptEditorScreen.h"
 #include <sstream>
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
 void MapEdit::delegateMenu(SDL_Event& event)

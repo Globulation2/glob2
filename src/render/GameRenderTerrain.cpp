@@ -23,7 +23,6 @@
 
 
 #include "Brush.h"
-#include "FertilityCalculatorDialog.h"
 
 
 #include "GameRenderInternal.h"

@@ -12,7 +12,11 @@
 #include <cstddef>
 #include <cstring>
 #include <vector>
-#ifdef HAVE_OPENGL
+#if defined(HAVE_OPENGL) && !defined(__EMSCRIPTEN__)
+#define GLOB2_TORUS_OPENGL
+#endif
+
+#ifdef GLOB2_TORUS_OPENGL
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
@@ -38,7 +42,7 @@ float smooth(float x)
     return x * x * (3 - 2 * x);
 }
 float mix(float a, float b, float t) { return a + (b - a) * t; }
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
 struct SkyPoint
 {
     float x, y, z, brightness;
@@ -165,7 +169,7 @@ GLuint createMaterial()
 
 void TorusView::releaseResources()
 {
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     if (graphicsContext && graphicsContext == SDL_GL_GetCurrentContext() &&
         graphicsGeneration == globalContainer->gfx->getGLContextGeneration())
     {
@@ -198,7 +202,7 @@ void TorusView::releaseResources()
 
 bool TorusView::prepareRenderTarget()
 {
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     // Resolution/fullscreen changes can replace SDL's GL context. Object names
     // belong to their creating context; never delete or reuse them in another.
     if (graphicsContext != SDL_GL_GetCurrentContext() ||
@@ -257,7 +261,7 @@ bool TorusView::prepareRenderTarget()
 // same world-anchored field as the shadows the atlas already carries.
 void TorusView::updateClouds(int time)
 {
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     int gridW, gridH;
     clouds.computeWorld(worldW, worldH, time, cloudPixels, gridW, gridH, cloudGridLimit);
     glPushAttrib(GL_TEXTURE_BIT);
@@ -291,7 +295,7 @@ void TorusView::updateClouds(int time)
 
 bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height, float flatZoom, float fractionX, float fractionY)
 {
-#ifdef HAVE_OPENGL
+#ifdef GLOB2_TORUS_OPENGL
     if (!active() || !available())
     {
         reset();

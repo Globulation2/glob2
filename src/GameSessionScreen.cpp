@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameSessionScreen.h"
 #include "Engine.h"
+#include "GameLoadScreen.h"
+#include "MessageScreen.h"
+#include "GlobalContainer.h"
+#include "SoundMixer.h"
+#include <Toolkit.h>
+#include <StringTable.h>
 #include <stdexcept>
 
 GameSessionScreen::GameSessionScreen(GAGGUI::ScreenStack& stack, std::unique_ptr<Engine> engine)
@@ -8,7 +14,7 @@ GameSessionScreen::GameSessionScreen(GAGGUI::ScreenStack& stack, std::unique_ptr
 {
     if (!this->engine) throw std::invalid_argument("A game screen requires an initialized engine");
 }
-GameSessionScreen::~GameSessionScreen() { if (started) engine->restoreCursor(); }
+GameSessionScreen::~GameSessionScreen() { if (started && engine) engine->restoreCursor(); }
 
 void GameSessionScreen::updateExecution(Uint32 tick)
 {
@@ -29,9 +35,28 @@ void GameSessionScreen::updateExecution(Uint32 tick)
     input.clear();
     nextTick = clock + engine->sessionDelay(clock);
     if (!running) {
-        if (engine->finishSession()) {
-            engine->beginSession(clock);
-            nextTick = clock;
+        if (auto request = engine->finishSessionForHost()) {
+            engine->restoreCursor();
+            started = false;
+            finished = true;
+            stack.push(std::make_unique<GameLoadScreen>(std::move(engine), [request = *request](Engine& next) {
+                return request.replay ? next.loadReplayTask(request.filename) : next.initCustomTask(request.filename);
+            }), [this](GAGGUI::Screen& loading, int result) {
+                if (result == 1) {
+                    engine = static_cast<GameLoadScreen&>(loading).takeEngine();
+                    finished = false;
+                    resetClock = false;
+                    input.clear();
+                } else {
+                    if (globalContainer->mix) globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
+                    if (result == 2) {
+                        auto& strings = *GAGCore::Toolkit::getStringTable();
+                        stack.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_LOAD_MAP]"),
+                            std::vector<std::string>{strings.getString("[ok]")}),
+                            [this](GAGGUI::Screen&, int choice) { endExecute(choice); });
+                    } else endExecute(result);
+                }
+            });
             return;
         }
         finished = true;
@@ -62,14 +87,14 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 
 void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
-    engine->viewportResized(oldWidth, oldHeight, width, height);
+    if (engine) engine->viewportResized(oldWidth, oldHeight, width, height);
     input.clear();
     resetClock = true;
 }
 
 void GameSessionScreen::suspendExecution()
 {
-    engine->suspendInput();
+    if (engine) engine->suspendInput();
     input.clear();
     resetClock = true;
 }

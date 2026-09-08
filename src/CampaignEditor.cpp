@@ -6,7 +6,6 @@
 #include "StringTable.h"
 #include "ChooseMapScreen.h"
 #include "GlobalContainer.h"
-#include "GUIMessageBox.h"
 #include <set>
 #include <algorithm>
 #include "GUICheckList.h"
@@ -35,6 +34,9 @@ CampaignEditor::CampaignEditor(const std::string& name, GAGGUI::ScreenStack& scr
 	addWidget(ok);
 	addWidget(cancel);
 	addWidget(description);
+	saveStatus = new TextArea(320, 330, 310, 80, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+		"standard", true, "");
+	addWidget(saveStatus);
 	syncMapList();
 }
 
@@ -43,16 +45,12 @@ CampaignEditor::CampaignEditor(const std::string& name, GAGGUI::ScreenStack& scr
 
 void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 {
+	if (persistence) return;
 	if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{
 		if (source == ok)
 		{
-			if (campaign.save())
-				endExecute(OK);
-			else
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
-					Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
-					Toolkit::getStringTable()->getString("[ok]"));
+			saveCampaign();
 		}
 		else if (source == cancel)
 		{
@@ -122,6 +120,36 @@ void CampaignEditor::onAction(Widget *source, Action action, int par1, int par2)
 }
 
 
+
+void CampaignEditor::saveFailed()
+{
+	persistence.reset();
+	for (Widget* widget : std::initializer_list<Widget*>{ok, cancel, addMap, editMap, removeMap, nameEditor, description, mapList}) widget->visible = true;
+	saveStatus->setText(Toolkit::getStringTable()->getString("[campaign editor save failed]"));
+}
+
+void CampaignEditor::saveCampaign()
+{
+	try {
+		if (GAGCore::ApplicationHost::storageRestoreFailed() || !campaign.save()) { saveFailed(); return; }
+		persistence = GAGCore::ApplicationHost::persistStorage();
+		if (!persistence) { saveFailed(); return; }
+		for (Widget* widget : std::initializer_list<Widget*>{ok, cancel, addMap, editMap, removeMap, nameEditor, description, mapList}) widget->visible = false;
+		saveStatus->setText(Toolkit::getStringTable()->getString("[saving to storage]"));
+	} catch (const std::exception&) { saveFailed(); }
+}
+
+void CampaignEditor::onTimer(Uint32 tick)
+{
+	Glob2Screen::onTimer(tick);
+	if (!persistence) return;
+	const auto state = persistence->state();
+	if (state == GAGCore::ApplicationHost::PersistenceState::Failed) saveFailed();
+	else if (state == GAGCore::ApplicationHost::PersistenceState::Succeeded) {
+		persistence.reset();
+		endExecute(OK);
+	}
+}
 
 void CampaignEditor::syncMapList()
 {
@@ -226,6 +254,3 @@ void CampaignMapEntryEditor::onAction(Widget *source, Action action, int par1, i
 			nameEditor->deactivate();
 	}
 }
-
-
-

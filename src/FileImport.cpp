@@ -80,6 +80,17 @@ CooperativeTask FileImport::validate() {
             if (message.getOrder()->getOrderType() == ORDER_NULL) break;
             co_await CooperativeTask::checkpoint();
         }
+        // ReplayWriter::write() appends a complete terminator to the live
+        // recording. Older recordings may already contain one, so accept any
+        // additional complete terminators while still rejecting trailing or
+        // truncated command data.
+        while (input.getPosition() < file.bytes.size()) {
+            if (input.readUint32("steps") != 0) co_return false;
+            NetSendOrder message;
+            message.setDecodeVersionMinor(minor);
+            message.decodeData(&input);
+            if (message.getOrder()->getOrderType() != ORDER_NULL) co_return false;
+        }
     }
     // The complete supported format must be consumed, including the replay
     // terminator. Unlike playback recovery, importing never truncates corruption.

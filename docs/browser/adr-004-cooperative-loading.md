@@ -1,6 +1,6 @@
 # ADR 004: explicit coroutine jobs for nested loading
 
-Status: incremental implementation; loading is not yet fully latency-bounded.
+Status: accepted.
 
 Game loading is an ordered parser: teams precede the map, the map precedes
 players, and scripts follow integrity checks. Streams, section guards, and
@@ -14,6 +14,29 @@ to that root; completing a child resumes the parent until its next checkpoint.
 Destroying the root destroys all suspended child frames. Exceptions propagate to
 the root result. Job lifetimes must be shorter than the game and stream they
 borrow. A task and its game must not be used concurrently or advanced reentrantly.
+
+## Lifetime and reentrancy contract
+
+These rules are part of the API contract rather than an implementation detail:
+
+- The owner destroys or completes the task before destroying any game, stream,
+  generator, editor, buffer, or output parameter borrowed by its coroutine.
+- Coroutine parameters are copied when they must survive a screen transition;
+  references are used only for state owned by the task's enclosing screen.
+- One host thread advances a task. `advance()` must finish before that task is
+  advanced again, and task-owned state must not be mutated concurrently.
+- `result()` is read only after `advance()` reports completion. Cancelling means
+  destroying the task; callers do not publish partially prepared state.
+- Parent tasks own awaited children through the shared coroutine chain. Destroy
+  the root first so child frames release their local resources before the
+  objects they borrow.
+
+When debugging a loader, first check owner destruction order and whether a
+callback attempted to advance or mutate the same job. The alternative is an
+explicit state object for every parser stage. Coroutines keep ordered parser
+locals and cleanup in their lexical scopes, at the cost of these less familiar
+lifetime rules. Cancellation, AddressSanitizer, and repeated-load tests guard
+the contract.
 
 This differs from retaining arbitrary UI call stacks through Asyncify: all
 suspension points are explicit in parser code and resource ownership follows
@@ -30,13 +53,13 @@ it cannot assume every gradient array has been constructed. Error messages are
 owned screens rather than modal calls inside the loader.
 
 Current checkpoints cover game stages, teams and players, chunks of 512 terrain
-cells, gradient seeding, and individual propagation sweeps. Legacy fertility loading uses the bounded
-fertility job. Remaining work includes subdividing large team/player parsing,
-building-specific gradients, stream decompression, scripts, and allocation
-work; a checkpoint count is not evidence of a maximum frame time. In-session game reload callers still drain synchronously and need owned loading
-flows; startup and editor replacement are described below.
-Map generation also uses owned cooperative jobs (ADR 005). Editor sprites remain owned by the toolkit
-cache so destroying a staging editor cannot invalidate another editor's sprite.
+cells, gradient seeding, individual propagation sweeps, and bounded fertility
+work. A checkpoint count is a scheduling contract rather than a hard real-time
+guarantee: decompression, allocation, and other individual operations run until
+the next explicit checkpoint. In-session reload uses the same owned loading flow.
+Map generation also uses owned cooperative jobs (ADR 005). Editor sprites remain
+owned by the toolkit cache so destroying a staging editor cannot invalidate
+another editor's sprite.
 
 Tests cover nested suspension/completion, exception propagation, cancellation
 cleanup, partial gradient allocation cleanup, RNG restoration, and equality of
@@ -54,16 +77,15 @@ which owns the engine until initialization succeeds. The campaign screen remains
 alive while its mission loads and runs.
 
 Cancellation destroys the task before the engine, clears pending replay/network
-initialization, and restores the prior RNG state. This screen is for startup
-only, with no active session; replacing a live session requires a separate
-transaction because the legacy replay globals are shared. Engine file/replay
+initialization, and restores the prior RNG state. The same task is used when replacing a live session. The old session is finalized
+before loading begins because replay globals are shared. Engine file/replay
 writers are initialized at the final step, with no intervening UI checkpoint.
 Loader errors and campaign-save errors return to owned message screens.
 
-Synchronous adapters remain for command-line, native network, and in-session
-reload callers. Replay indexing, AI initialization, individual parser stages,
-serialization, and initial music loading are not yet fully subdivided. Passing
-startup cancellation tests does not certify a maximum loading frame duration.
+Synchronous adapters remain for command-line and native headless callers.
+Replay indexing, AI initialization, serialization, and music loading can each run
+until their next explicit checkpoint, so cancellation tests do not certify a
+maximum frame duration.
 
 ## Replacing a map inside the editor
 
@@ -81,8 +103,7 @@ supply their own hit-test coordinates.
 Native tests compare the retained map checksum/RNG after cancellation and a
 missing-file failure, then use input to verify the unsaved-edit prompt remains.
 Browser tests cancel a replacement, resume the original map, then successfully
-replace it and verify that it is unmodified. In-session game replacement is still
-separate work because engine replay/session globals require different ownership.
+replace it and verify that it is unmodified. Live game replacement uses the engine-owned transaction described in ADR 003.
 
 ## Gradients during loading
 

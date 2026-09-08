@@ -20,8 +20,8 @@ public:
 // Native hosts return after completion; browser hosts return after scheduling.
 void run(std::unique_ptr<Loop> loop, std::function<void()> complete);
 
-// Transitional wait for legacy modal loops. The browser implementation yields
-// through Asyncify until these loops become resumable application screens.
+// Compatibility wait for native-only modal loops. Browser-reachable code must
+// use scheduled screens or cooperative tasks; the browser implementation rejects it.
 void wait(std::uint32_t milliseconds);
 
 // Consume the newest host viewport request at an application frame boundary.
@@ -59,5 +59,7 @@ void screenChanged(const char* name);
 void importChanged(const char* state);
 void simulationAdvanced(std::uint32_t tick);
 void matchFrame(bool paused);
+// Read-only presentation diagnostic for the active multiplayer room.
+void roomReady(bool canStart);
 void exited(int result);
 }

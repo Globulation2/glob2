@@ -2,6 +2,7 @@
 #pragma once
 #include <GUIBase.h>
 #include <ScreenStack.h>
+#include "FrontendTheme.h"
 #include <memory>
 class MapEdit;
 class MapEditorScreen : public GAGGUI::Screen
@@ -17,6 +18,7 @@ public:
     void drawExecution() override;
     Uint32 executionDelay(Uint32 now, Uint32) override;
 private:
+    FrontendScope theme{false};
     GAGGUI::ScreenStack& screens;
     std::unique_ptr<MapEdit> editor;
     std::vector<SDL_Event> input;

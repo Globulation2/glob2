@@ -20,15 +20,11 @@ namespace GAGCore
 #endif
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
-		SDL_Surface *dest;
-		if (_gc->sdlsurface->format->BitsPerPixel == 32)
-		{
-			dest = SDL_ConvertSurfaceFormat(source, SDL_PIXELFORMAT_BGRA32, 0);
-		}
-		else
-		{
-			dest = SDL_ConvertSurface(source, &_glFormat, 0);
-		}
+		// Color::pack/unpack and software drawing use _glFormat. A 32-bit
+		// display is not necessarily BGRA (the browser uses RGBA), so loaded
+		// and cloned sprites must use the same format as generated surfaces.
+		// WebGL converts to RGBA separately at the texture upload boundary.
+		SDL_Surface *dest = SDL_ConvertSurface(source, &_glFormat, 0);
 		assert(dest);
 		return dest;
 	}

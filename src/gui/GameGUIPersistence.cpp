@@ -178,7 +178,7 @@ void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height
     const int oldX = viewportX, oldY = viewportY;
     viewportX = (viewportX + (oldWidth - 160) / 64 - (width - 160) / 64) & game.map.wMask;
     viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
-    moveParticles(oldX, viewportX, oldY, viewportY);
+    viewportChanged(oldX, viewportX, oldY, viewportY);
     if (gameMenuScreen) gameMenuScreen->viewportResized(oldWidth, oldHeight, width, height);
 }
 

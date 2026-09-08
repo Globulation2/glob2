@@ -24,6 +24,10 @@ class BuildLayoutTests(unittest.TestCase):
         self.assertEqual(build_identity({'server':'1'})['role'], 'server')
         self.assertEqual(build_identity({'mingwcross':'1'})['toolchain'], 'mingwcross')
         self.assertEqual(build_identity({})['role'], 'client')
+        self.assertTrue(build_identity({})['native_wss'])
+        self.assertFalse(build_identity({'wss':'0'})['native_wss'])
+        self.assertNotEqual(default_directory(build_identity({})),
+                            default_directory(build_identity({'wss':'0'})))
 
     def test_incompatible_explicit_directory_is_rejected(self):
         with tempfile.TemporaryDirectory() as path:

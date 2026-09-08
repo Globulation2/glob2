@@ -257,14 +257,13 @@ bool KeyboardManager::saveKeyboardLayout() const
 		file = MapEditKeyActions::getConfigurationFile();
 
 
-	std::string contents;
-	for(std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
-	{
-		if(i->isShortcutValid())
-			contents += i->format(mode) + "\n";
-	}
-
-	return Toolkit::getFileManager()->writeFileAtomic(file, contents);
+    return Toolkit::getFileManager()->writeAtomically(file, [this](OutputStream& output) {
+        for (const auto& shortcut : shortcuts) {
+            if (!shortcut.isShortcutValid()) continue;
+            const auto line = shortcut.format(mode) + "\n";
+            output.write(line.data(), line.size(), "shortcut");
+        }
+    });
 }
 
 

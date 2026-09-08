@@ -30,7 +30,10 @@ The browser SDK revision/version and Boost port version are recorded in
 release dependency lock covering SDK archive digests and native gateway
 dependencies is still required before reproducible release status.
 
-Validation consists of build identity unit tests plus real native-first,
-web-first, and concurrent CI jobs. Subsequent alternating builds must preserve
-object and artifact contents and timestamps, as well as tracked source files.
-This does not replace platform-specific runtime and determinism tests.
+CI validates the identity rules directly and builds native and WebAssembly
+outputs in their own jobs. `tests/build_system/coexistence.py` remains an
+explicit diagnostic for concurrent and alternating builds; it verifies that
+object and artifact contents, timestamps, and tracked source files remain
+unchanged. Running that full native build again in the browser job would
+duplicate the Linux lanes without improving routine pull-request coverage.
+These checks do not replace platform-specific runtime and determinism tests.

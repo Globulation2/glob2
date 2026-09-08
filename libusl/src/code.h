@@ -16,6 +16,7 @@ struct Code
 {
 	virtual ~Code() { }
 	virtual void execute(Thread* thread) = 0;
+	virtual void markForGC() {}
 	void dump(std::ostream &stream) const;
 	virtual void dumpSpecific(std::ostream &stream) const {};
 };
@@ -25,6 +26,7 @@ struct ConstCode: Code
 	ConstCode(Value* value);
 	
 	virtual void execute(Thread* thread);
+	void markForGC() override;
 	virtual void dumpSpecific(std::ostream &stream) const;
 	
 	Value* value;
@@ -111,8 +113,8 @@ struct CreateCode: Code
 	CreateCode(typename ThunkType::Prototype* prototype);
 	
 	virtual void execute(Thread* thread);
+	void markForGC() override;
 	virtual void dumpSpecific(std::ostream &stream) const;
 	
 	typename ThunkType::Prototype* prototype;
 };
-

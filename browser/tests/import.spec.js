@@ -1,5 +1,5 @@
 const {test, expect} = require('@playwright/test');
-const {gameURL} = require('./game-url');
+const {clickMainMenu,gameURL}=require('./main-menu');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const {createHash} = require('node:crypto');
@@ -21,7 +21,7 @@ async function chooseSave(page,name) {
   await menu(page,100,70+16*index);
 }
 async function exportedSave(page) {
-  await menu(page,480,200); await screen(page,'CustomGameScreen');
+  await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
   await menu(page,100,70); await menu(page,530,380);
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('p',{delay:80});
@@ -35,7 +35,7 @@ async function exportedSave(page) {
   await expect.poll(() => page.evaluate(() => glob2Diagnostics.saveDigest('Original.game'))).not.toBeNull();
   await expect.poll(async () => (await state(page)).persistence).toBe('persisted');
   await page.reload(); await screen(page,'MainMenuScreen');
-  await menu(page,160,200); await screen(page,'ChooseMapScreen'); await chooseSave(page,'Original.game');
+  await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen'); await chooseSave(page,'Original.game');
   const download = page.waitForEvent('download'); await menu(page,340,320);
   const file=await download;
   expect(file.suggestedFilename()).toBe('Original.game');
@@ -59,7 +59,7 @@ test('imports an exported save, preserves duplicate names, rejects corruption an
   }
   await page.reload(); await screen(page,'MainMenuScreen');
   expect(await page.evaluate(() => glob2Diagnostics.saveDigest('Original_(1).game'))).toEqual(expected);
-  await menu(page,160,200); await screen(page,'ChooseMapScreen');
+  await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen');
   await chooseSave(page,'Original_(1).game'); await menu(page,530,380);
   await expect.poll(async () => (await state(page)).screen).toBe('match');
   const loaded=(await state(page)).tick;
@@ -69,7 +69,7 @@ test('imports an exported save, preserves duplicate names, rejects corruption an
 
 test('imports a custom map and starts it through the normal setup screen', async ({page},info) => {
   const bytes=await fs.readFile(path.resolve(__dirname,'../../maps/balanced.map'));
-  await menu(page,480,200); await screen(page,'CustomGameScreen');
+  await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
   await select(page,'Imported.map',bytes); await imported(page);
   expect(await page.evaluate(() => glob2Diagnostics.mapDigest('Imported.map'))).toEqual(digest(bytes));
   await page.screenshot({path:info.outputPath('imported-map.png')});
@@ -81,7 +81,7 @@ test('imports a custom map and starts it through the normal setup screen', async
 
 test('imports a complete replay and rejects a truncated command stream', async ({page}) => {
   const bytes=await fs.readFile(path.resolve(__dirname,'../../tests/baselines/cross-replay.replay'));
-  await menu(page,160,200); await screen(page,'ChooseMapScreen'); await menu(page,340,440);
+  await clickMainMenu(page,'load'); await screen(page,'ChooseMapScreen'); await menu(page,340,440);
   await select(page,'Broken.replay',bytes.subarray(0,bytes.length-1));
   await expect.poll(async () => (await state(page)).import).toBe('invalid');
   await select(page,'Imported.replay',bytes); await imported(page);

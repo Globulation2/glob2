@@ -32,10 +32,13 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2) override;
 	void paint(void) override;
 	void onSDLEvent(SDL_Event *event) override;
+	void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
 
 private:
 	std::vector<MainMenuButton*> buttons;
 	std::unique_ptr<GAGCore::DrawableSurface> wordmark;
 	int focusedButton = -1;
 	int panelX, panelY, panelW, panelH;
+	bool compact = false;
+	void layout(int width, int height);
 };

@@ -23,11 +23,16 @@ def build_identity(arguments, host=None):
     if target == 'web':
         toolchain = 'emscripten'
     mode = 'profile' if enabled(arguments.get('profile', 0)) else ('release' if enabled(arguments.get('release', 0)) else 'debug')
-    return {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode}
+    native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
+    return {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
+            'native_wss': native_wss}
 
 
 def default_directory(identity):
-    return Path('build') / identity['toolchain'] / identity['role'] / identity['mode']
+    role = identity['role']
+    if role == 'client' and identity['target'] == 'native' and not identity['native_wss']:
+        role += '-tcp'
+    return Path('build') / identity['toolchain'] / role / identity['mode']
 
 
 def write_if_changed(path, content):

@@ -18,6 +18,7 @@ namespace GAGGUI
 	class Widget;
 	class List;
 	class ProgressBar;
+	class ScreenStack;
 }
 
 class YOGClient;
@@ -32,7 +33,8 @@ class YOGClientMapUploadScreen : public Glob2Screen
 public:
 
 	/// Constructor
-	YOGClientMapUploadScreen(std::shared_ptr<YOGClient> client, const std::string mapFile);
+	YOGClientMapUploadScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const std::string mapFile);
+	~YOGClientMapUploadScreen() override;
 
 	///Responds to widget events
 	void onAction(Widget *source, Action action, int par1, int par2);
@@ -48,6 +50,8 @@ public:
 		CONNECTIONLOST,
 	};
 private:
+	void showError(const char* key, int result);
+	ScreenStack& screens;
 	MapPreview* preview;
 	std::shared_ptr<YOGClient> client;
 	YOGClientMapUploader uploader;
@@ -61,4 +65,3 @@ private:
 	std::string mapFile;
 	bool isUploading;
 };
-
