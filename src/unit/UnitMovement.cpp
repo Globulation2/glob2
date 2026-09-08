@@ -562,6 +562,16 @@ void Unit::handleMovementGoingToResource()
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
+		// targetX/Y were set once, when the fetch task started; the gradient
+		// they were ascended from can be rebuilt while a unit is still en
+		// route (the resource depleted or a new one grew closer, forbidden
+		// area painted or cleared, ...), leaving the stored target pointing
+		// at a tile the current gradient no longer agrees is the goal, even
+		// though pathfindResource above just stepped correctly by the fresh
+		// gradient. Cheap check every action; only re-ascend (walk the
+		// gradient uphill from here) when it actually goes stale.
+		if (map->getGradient(teamNumber, destinationPurpose, swimClass(), targetX, targetY)!=GRADIENT_AT_GOAL)
+			map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
 	}
 	else
 	{
