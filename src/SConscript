@@ -171,10 +171,9 @@ map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
 map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientLocal.cpp
+map/gradient/MapGradientField.cpp
 map/io/MapExploredAreaIO.cpp
 map/io/MapIO.cpp
-map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindBuilding.cpp
@@ -417,10 +416,9 @@ map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
 map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientLocal.cpp
+map/gradient/MapGradientField.cpp
 map/io/MapExploredAreaIO.cpp
 map/io/MapIO.cpp
-map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindRessource.cpp
@@ -479,6 +477,12 @@ if not env['server']:
     terrain_sources += local.Object('TerrainResourcesHarness.o', '#test/TerrainResourcesHarness.cpp')
     terrain_test = local.Program('TerrainResourcesHarness', terrain_sources)
     local.Alias('terrain-test', terrain_test)
+
+if not env['server']:
+    gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
+    gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
+    gradient_test = local.Program('GlobalGradientHarness', gradient_sources)
+    local.Alias('global-gradient-test', gradient_test)
 
 if not env['server']:
     lan_sources = [source for source in source_files if source != 'Glob2.cpp']

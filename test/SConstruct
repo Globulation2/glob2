@@ -66,8 +66,10 @@ GradientBFSTest.cpp
 ../src/ai/echo/GradientBFS.cpp
 
 MapQueryTest.cpp
+GradientTest.cpp
 MapQueryTestStubs.cpp
 ../src/map/Map.cpp
+../src/map/gradient/MapGradientField.cpp
 ../src/map/MapQuery.cpp
 ../src/map/MapTerrain.cpp
 ../src/BitArray.cpp
@@ -88,6 +90,8 @@ BrushToolHitTest.cpp
 TurretScanTileTest.cpp
 
 ParticleCrossfadeTest.cpp
+
+UnitTimingTest.cpp
 
 CortexUpgradeTest.cpp
 

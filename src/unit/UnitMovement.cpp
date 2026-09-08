@@ -279,18 +279,18 @@ void Unit::handleMovementAttackingAround()
 	// if we haven't found anything satisfactory, follow guard area gradients
 	if (movement == MOV_RANDOM_GROUND)
 	{
-		if (!attachedBuilding && owner->map->pathfindArea(Map::AreaKind::Guard, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+		if (!attachedBuilding && owner->map->pathfindArea(Map::AreaKind::Guard, owner->teamNumber, swimClass(), posX, posY, &dx, &dy))
 		{
 			directionFromDxDy();
 			movement = MOV_GOING_DX_DY;
 			// get the target position of guard area for display
-			owner->map->getGlobalGradientDestination(owner->map->guardAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &targetX, &targetY);
+			owner->map->getGlobalGradientDestination(owner->map->getGuardAreasGradient(owner->teamNumber, swimClass()), posX, posY, &targetX, &targetY);
 			validTarget=true;
 		}
-		else if (attachedBuilding || (owner->map->getGuardAreasGradient(posX, posY, performance[SWIM]>0, owner->teamNumber) == GRADIENT_AT_GOAL))
+		else if (attachedBuilding || (owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(posX, posY)] == GRADIENT_AT_GOAL))
 		{
 			// are we into the guard area or war flag, and we have to go to the least known area.
-			int bestExplored = 3*GRADIENT_AT_GOAL;
+			int bestExplored = 3*EXPLORED_FRESH;
 			int bestDirection = -1;
 			for (int di = 0; di < 8; di++)
 			{
@@ -307,7 +307,7 @@ void Unit::handleMovementAttackingAround()
 				}
 				else
 				{
-					if (owner->map->getGuardAreasGradient(posX + cdx, posY + cdy, performance[SWIM]>0, owner->teamNumber) != GRADIENT_AT_GOAL)
+					if (owner->map->getGuardAreasGradient(owner->teamNumber, swimClass())[owner->map->coordToIndex(posX + cdx, posY + cdy)] != GRADIENT_AT_GOAL)
 						continue;
 				}
 				int explored = owner->map->getExplored(posX + 2*cdx, posY + 2*cdy, owner->teamNumber);
@@ -345,7 +345,7 @@ void Unit::tryAcquireAttackTarget(int x, int y, int newQuality, int& quality)
 {
 	if (newQuality >= quality)
 		return;
-	bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, (performance[SWIM] > 0 ? true : false), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
+	bool pathfind = owner->map->pathfindPointToPoint(posX, posY, posX+x, posY+y, &dx, &dy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
 	if (!pathfind)
 		return;
 	if (abs(x)<=1 && abs(y)<=1)
@@ -392,7 +392,7 @@ void Unit::handleMovementClearingResources()
 		}
 	bool canSwim=performance[SWIM];
 	assert(attachedBuilding);
-	if (map->pathfindLocalResource(attachedBuilding, canSwim, posX, posY, &dx, &dy))
+	if (map->pathfindBuilding(attachedBuilding, swimClass(), posX, posY, &dx, &dy))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -422,7 +422,7 @@ void Unit::handleMovementRandom()
 		movement=MOV_RANDOM_FLY;
 	else if (map->getForbidden(posX, posY)&owner->me)
 	{
-		if (map->pathfindForbidden(NULL, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy))
+		if (map->pathfindForbidden(NULL, owner->teamNumber, swimClass(), posX, posY, &dx, &dy))
 			directionFromDxDy();
 		else
 		{
@@ -434,14 +434,15 @@ void Unit::handleMovementRandom()
 	}
 	else if(performance[HARVEST])
 	{
-		// g==0: on obstacle. g==1: chamfer never propagated here, so no clearing
-		// area reachable from this cell. Both cases mean "nothing found".
-		Uint8 g = owner->map->getClearingGradient(owner->teamNumber, performance[SWIM]>0, posX, posY);
-		int distance = GRADIENT_AT_GOAL - g;
+		// g==0: on obstacle. g==1: no clearing area reachable from this cell.
+		// Both cases mean "nothing found".
+		const Uint16 *clearAreasGradient = owner->map->getClearAreasGradient(owner->teamNumber, swimClass());
+		Uint16 g = clearAreasGradient[owner->map->coordToIndex(posX, posY)];
+		int distance = gradientTiles(g);
 		if(g > GRADIENT_UNREACHABLE && distance < ((hungry-trigHungry) / race->hungriness) && medical == MED_FREE)
 		{
 			int tempTargetX, tempTargetY;
-			bool path = owner->map->getGlobalGradientDestination(owner->map->clearAreasGradient[owner->teamNumber][performance[SWIM]>0], posX, posY, &tempTargetX, &tempTargetY);
+			bool path = owner->map->getGlobalGradientDestination(clearAreasGradient, posX, posY, &tempTargetX, &tempTargetY);
 			int guid = owner->map->isClearingAreaClaimed(tempTargetX, tempTargetY, owner->teamNumber);
 			int other_distance = INT_MAX;
 			if(guid != NOGUID)
@@ -454,7 +455,7 @@ void Unit::handleMovementRandom()
 			{
 				dx=0;
 				dy=0;
-				owner->map->pathfindArea(Map::AreaKind::Clear, owner->teamNumber, (performance[SWIM]>0), posX, posY, &dx, &dy);
+				owner->map->pathfindArea(Map::AreaKind::Clear, owner->teamNumber, swimClass(), posX, posY, &dx, &dy);
 
 				targetX = tempTargetX;
 				targetY = tempTargetY;
@@ -493,7 +494,6 @@ void Unit::handleMovementRandom()
 void Unit::handleMovementGoingToFlagOrBuilding()
 {
 	Map *map=owner->map;
-	bool canSwim=performance[SWIM];
 
 	std::optional<Offset> enemyOff;
 	if (performance[ATTACK_SPEED] && medical==MED_FREE)
@@ -508,7 +508,7 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (map->pathfindBuilding(targetBuilding, canSwim, posX, posY, &dx, &dy))
+	else if (map->pathfindBuilding(targetBuilding, swimClass(), posX, posY, &dx, &dy))
 	{
 		movement=MOV_GOING_DX_DY;
 	}
@@ -557,9 +557,8 @@ void Unit::handleMovementGoingToResource()
 {
 	Map *map=owner->map;
 	int teamNumber=owner->teamNumber;
-	bool canSwim=performance[SWIM]>0;
 	bool stopWork;
-	if (map->pathfindResource(teamNumber, destinationPurpose, canSwim, posX, posY, &dx, &dy, &stopWork))
+	if (map->pathfindResource(teamNumber, destinationPurpose, swimClass(), posX, posY, &dx, &dy, &stopWork))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;

@@ -93,33 +93,33 @@ void Map::syncStep(Uint32 stepCounter)
 			updateExploredArea(team);
 	}
 	
-	// We only update one gradient per step:
+	// We only update one gradient per step, round robin over the gradients in use:
 	bool updated=false;
 	while (!updated)
 	{
 		int numberOfTeam=game->mapHeader.getNumberOfTeams();
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESOURCES; r++)
-				for (int s=0; s<2; s++)
-					if (!gradientUpdated[t][r][s])
+				for (int s=0; s<SWIM_CLASS_COUNT; s++)
+					if (resourcesGradient[t][r][s] && !gradientUpdated[t][r][s])
 					{
-						updateResourcesGradient(t, r, (bool)s);
+						updateResourcesGradient(t, r, s);
 						gradientUpdated[t][r][s]=true;
 						return;
 					}
 		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<2; s++)
-				if(!guardGradientUpdated[t][s])
+			for(int s=0; s<SWIM_CLASS_COUNT; s++)
+				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
 				{
-					updateGuardAreasGradient(t, (bool)s);
+					updateGuardAreasGradient(t, s);
 					guardGradientUpdated[t][s]=true;
 					return;
 				}
 		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<2; s++)
-				if(!clearGradientUpdated[t][s])
+			for(int s=0; s<SWIM_CLASS_COUNT; s++)
+				if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
 				{
-					updateClearAreasGradient(t, (bool)s);
+					updateClearAreasGradient(t, s);
 					clearGradientUpdated[t][s]=true;
 					return;
 				}
@@ -127,10 +127,10 @@ void Map::syncStep(Uint32 stepCounter)
 
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESOURCES; r++)
-				for (int s=0; s<2; s++)
+				for (int s=0; s<SWIM_CLASS_COUNT; s++)
 					gradientUpdated[t][r][s]=false;
 		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<2; s++)
+			for(int s=0; s<SWIM_CLASS_COUNT; s++)
 			{
 				guardGradientUpdated[t][s]=false;
 				clearGradientUpdated[t][s]=false;

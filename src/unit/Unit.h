@@ -254,6 +254,8 @@ public:
 
 	// quality parameters
 	Sint32 performance[NB_ABILITY];
+	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
+	int swimClass() const;
 	Sint32 level[NB_ABILITY];
 	bool canLearn[NB_ABILITY];
 	Sint32 experience;

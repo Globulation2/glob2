@@ -72,7 +72,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	size_t bestIndex=0;
 	Sint32 bestScore=0;
 	
-	Uint8 *wheatGradientMap=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
@@ -96,7 +95,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 			if (work<minWork)
 				continue;
 			
-			Uint32 wheatGradient=wheatGradientMap[corner0]+wheatGradientMap[corner1]+wheatGradientMap[corner2]+wheatGradientMap[corner3];
+			Uint32 wheatGradient=wheatGradientAt(corner0)+wheatGradientAt(corner1)+wheatGradientAt(corner2)+wheatGradientAt(corner3);
 			if (!defense)
 			{
 				if (food)
