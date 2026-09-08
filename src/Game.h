@@ -140,6 +140,8 @@ public:
 
 	///Saves data to a stream
 	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);
+	void saveBuildProjects(GAGCore::OutputStream* stream) const;
+	void loadBuildProjects(GAGCore::InputStream* stream);
 
 	enum FlagForRemoval
 	{
