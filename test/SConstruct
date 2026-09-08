@@ -121,6 +121,7 @@ MessageRecipientsTest.cpp
 ../src/net/message/MessageRecipients.cpp
 
 SpriteCenteringTest.cpp
+UnitAnimationTest.cpp
 
 PanelButtonHitTest.cpp
 

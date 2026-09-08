@@ -10,6 +10,7 @@
 #include "TeamDisplay.h"
 #include "UnitDisplayNames.h"
 #include "Unit.h"
+#include "render/UnitAnimation.h"
 #include "UnitType.h"
 #include "SDLCompat.h"
 
@@ -82,15 +83,7 @@ void UnitPicture::draw()
 	assert(dir<9);
 	assert(delta>=0);
 	assert(delta<256);
-	if (dir==8)
-	{
-		imgid+=8*(delta>>5);
-	}
-	else
-	{
-		imgid+=8*dir;
-		imgid+=(delta>>5);
-	}
+	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	Sprite *unitSprite=globalContainer->units;
 	unitSprite->setBaseColor(unit->owner->color);
