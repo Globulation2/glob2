@@ -84,7 +84,7 @@ Captures cover all selected assets, all swarm hues, enlarged damaged/constructio
 
 ## Resources and remaining world artwork
 
-All 65 resource frames now use the constrained Real-ESRGAN RGB pass, with exactly preserved bilinear source alpha. A separate padded atlas accommodates their different dimensions and builds mip levels independently for each frame. Terrain coverage expands to all 272 frames; shoreline alpha and edge bands retain the source geometry. Water, bullets, explosions, magic and particles use constrained finishing. Fog, clouds and area markings use faithful 4× bilinear resampling because they should retain their soft mask structure. Unit sprites and unit death animations remain with the unit animation follow-up.
+All 65 resource frames now use the constrained Real-ESRGAN RGB pass, with exactly preserved bilinear source alpha. A separate padded atlas accommodates their different dimensions and builds mip levels independently for each frame. Terrain coverage expands to all 272 frames; shoreline masks now follow shared corner topology, with compatible RGBA edges at every mip. Water, bullets, explosions, magic and particles use constrained finishing. Fog, clouds and area markings use faithful 4× bilinear resampling because they should retain their soft mask structure. Unit sprites and unit death animations remain with the unit animation follow-up.
 
 Regenerate with `upscale_resources.py` and `upscale_world.py` (both accept `--cache`), followed by `export_runtime.py`, `validate_runtime.py` and `pr_comparisons.py`. Selected corrected sources and model provenance are retained; inference inputs, raw trials and model binaries are excluded from the runtime pack.
 
@@ -93,3 +93,9 @@ Regenerate with `upscale_resources.py` and `upscale_world.py` (both accept `--ca
 The final 487-frame pack passes all 16 team hues, logical-size and GL checks, bounded cache reuse and session release. Dense-map frame times (HD/classic): 11.77/8.25 ms at 50%, 1.55/1.71 ms at 300%. GPU allocation: 358/45 MB. Draw calls: 24,634/24,623 at 50%, 613/613 at 300%. The full 16-hue stress test uses 856 MB CPU / 1.50 GB GPU, with 944 cached team frames. These replace the smaller-pack measurements above for this revision.
 
 Pixel checks verify that resource and terrain atlas textures actually produce color; GL error checks alone do not catch an incomplete mip chain. The atlas loader defines level zero and subsequent mips at the same exact dimensions, overriding the legacy power-of-two allocation. Repeated-map tests compare rendered building copies against explicit positions, keep one building identity, check identical wrapped picking in multiple visible periods, and advance visual state only on the primary draw.
+
+## Connected terrain construction
+
+Terrain is built as a connected tileset. Shared grass and sand textures are made periodic while retaining their grain. Transition masks follow the engine's four-corner grass/sand/water lookup, with shared boundary irregularity and seeded interior variation. Compatible edge profiles and corner pixels are matched in RGBA at every mip level before padding and packing. This changes the shoreline artwork, while tile IDs, simulation terrain and picking remain unchanged. All 91,136 allowed directed joins across four mip levels are checked against the exported atlas, along with every corner class.
+
+Run `connected_terrain.py` before `export_runtime.py`. The connected-terrain manifest records material and topology source hashes. `validate_runtime.py` reads actual atlas pixels to verify legal neighbors and corner junctions independently of generation. Terrain source alpha is intentionally rebuilt from topology; resource and building alpha policies are unchanged.

@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import shutil
 import numpy as np
+import connected_terrain
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -42,9 +43,9 @@ def main():
                 layers.append(dict(file=name,role='team' if name.endswith('r.png') else 'base',sha256=sha(OUT/name),source_sha256=sha(source)))
         records.append(dict(id=f['id'],width=f['width'],height=f['height'],scale=4,layers=layers,recipe=method))
     for i in range(272):
-        name=f'terrain{i}.png';source=EXP/('sr/corrected' if i<16 else 'world/corrected')/name;Image.open(source).convert('RGBA').save(OUT/name)
+        name=f'terrain{i}.png';source=EXP/'connected-terrain'/name;Image.open(source).convert('RGBA').save(OUT/name)
         w,h=Image.open(ROOT/'data/gfx'/name).size
-        records.append(dict(id=f'terrain{i}',width=w,height=h,scale=4,recipe='terrain constrained',layers=[dict(file=name,role='base',sha256=sha(OUT/name),source_sha256=sha(source))]))
+        records.append(dict(id=f'terrain{i}',width=w,height=h,scale=4,recipe='shared-material corner masks v1',layers=[dict(file=name,role='base',sha256=sha(OUT/name),source_sha256=sha(source))]))
     resource_sources=sorted((EXP/'resources/corrected').glob('ressource[0-9]*.png'),key=lambda p:int(p.stem[9:]))
     assert len(resource_sources)==65, 'Run upscale_resources.py before export'
     for source in resource_sources:
@@ -93,9 +94,10 @@ def main():
     atlas_levels=[]
     for level in range(4):
         slot=256>>level; border=64>>level; size=128>>level
+        tiles=connected_terrain.mip_tiles(level)
         atlas=Image.new('RGBA',(slot*16,slot*17))
         for i in range(272):
-            tile=Image.open(OUT/f'terrain{i}.png').convert('RGBA').resize((size,size),Image.Resampling.LANCZOS)
+            tile=Image.fromarray(tiles[i])
             padded=Image.fromarray(np.pad(np.asarray(tile),((border,border),(border,border),(0,0)),mode='edge'))
             atlas.paste(padded,((i%16)*slot,(i//16)*slot))
         name=f'terrain-atlas-mip{level}.png';atlas.save(OUT/name)

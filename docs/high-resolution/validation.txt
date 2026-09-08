@@ -31,3 +31,24 @@ PASS logical sizes, all frames/team hues, GL errors, bounded cache, session rele
 OK (171 tests)
 
 PASS missing pack, unsupported version, missing layers and incorrect logical dimensions
+
+Connected terrain validation, 2026-09-08
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 11.5269 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 4.85193 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 3.30427 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.91818 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 19.3215 ms, 24678 calls, 347843716 GPU bytes
+HD gameplay 100%: 6.71327 ms, 6343 calls, 347843716 GPU bytes
+HD gameplay 200%: 3.83291 ms, 1960 calls, 347843716 GPU bytes
+HD gameplay 300%: 3.01394 ms, 947 calls, 347843716 GPU bytes
+original dense map 50%: 11.754 ms, 24623 calls, 45406016 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 2.27661 ms, 613 calls, 45406016 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 22.1088 ms, 24634 calls, 357720532 GPU bytes, 260363776 HD CPU bytes, 10 colored frames
+HD dense map 300%: 2.39254 ms, 613 calls, 357829756 GPU bytes, 260429312 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release

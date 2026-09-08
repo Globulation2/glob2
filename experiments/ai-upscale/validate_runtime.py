@@ -58,3 +58,25 @@ import re
 expected={p.stem.removesuffix('r') for p in (ROOT/'data/gfx').glob('*.png') if re.fullmatch(r'(terrain|ressource|water|cloud|black|shade|area-clearing|area-forbidden|area-guard|bullet|explosion|magiceffect|particle)\d+r?\.png',p.name)}
 assert expected <= {f['id'] for f in m['frames']}
 print('PASS: complete non-unit world frame coverage')
+
+# Inspect the exported atlas pixels, independently of the generation path.
+from connected_terrain import topology
+import numpy as np
+topo=topology();joins=0
+for level,record in enumerate(m['terrain_atlas']['levels']):
+    atlas=np.asarray(Image.open(PACK/record['file']))
+    slot=256>>level;border=64>>level;size=128>>level
+    tiles={i:atlas[(i//16)*slot+border:(i//16)*slot+border+size,(i%16)*slot+border:(i%16)*slot+border+size] for i in topo}
+    corners={}
+    for i,a in tiles.items():
+        c=topo[i]
+        for symbol,pixel in zip(c,[a[0,0],a[0,-1],a[-1,0],a[-1,-1]]):
+            if symbol in corners:assert np.array_equal(corners[symbol],pixel),(level,i,symbol)
+            else:corners[symbol]=pixel
+        for j,b in tiles.items():
+            cb=topo[j]
+            if (c[1],c[3])==(cb[0],cb[2]):
+                assert np.array_equal(a[:,-1],b[:,0]),(level,i,j,'horizontal');joins+=1
+            if (c[2],c[3])==(cb[0],cb[1]):
+                assert np.array_equal(a[-1],b[0]),(level,i,j,'vertical');joins+=1
+print(f'PASS: {joins} exported atlas joins and all corner junctions, RGBA, four mip levels')
