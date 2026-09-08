@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 	IntBuildingType::init();
 	Race::loadDefault();
 	const int swimSpeeds[] = {0, 20, 14, 10, 7, 5, 3};
-	for (int swimClass = 0; swimClass < Map::SWIM_CLASS_COUNT; ++swimClass)
+	for (int swimClass = 0; swimClass < SWIM_CLASS_COUNT; ++swimClass)
 		staleTargetIsRefreshedAfterGradientRebuild(swimClass, swimSpeeds[swimClass]);
 	std::puts("Resource fetch target regressions passed");
 	return 0;
