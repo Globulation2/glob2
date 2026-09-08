@@ -69,9 +69,10 @@ std::shared_ptr<Order>AICastor::getOrder()
 			case 12:
 			{
 				size_t size=map->w*map->h;
-				Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
-				for (int i=0; i<4; i++)
-					memcpy(oldWheatGradient[i], wheatGradient, size);
+				for (size_t j=0; j<size; j++)
+					oldWheatGradient[0][j]=wheatGradientAt(j);
+				for (int i=1; i<4; i++)
+					memcpy(oldWheatGradient[i], oldWheatGradient[0], size);
 				for (int i=0; i<2; i++)
 					memset(wheatCareMap[i], 1, size);
 			}
@@ -101,8 +102,9 @@ std::shared_ptr<Order>AICastor::getOrder()
 		for (int i=3; i>0; i--)
 			oldWheatGradient[i]=oldWheatGradient[i-1];
 		oldWheatGradient[0]=temp;
-		Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
-		memcpy(oldWheatGradient[0], wheatGradient, map->w*map->h);
+		size_t size=map->w*map->h;
+		for (size_t j=0; j<size; j++)
+			oldWheatGradient[0][j]=wheatGradientAt(j);
 		computeObstacleUnitMap();
 		computeWheatCareMap();
 	}

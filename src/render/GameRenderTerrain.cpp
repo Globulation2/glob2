@@ -155,13 +155,8 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 					{
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY));
-						//int lx=(x+viewportX-b->posX+15+32)&31;
-						//int ly=(y+viewportY-b->posY+15+32)&31;
-						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[1][lx+ly*32]);
-						if(b->globalGradient[1])
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->globalGradient[1][(x+viewportX) + (y+viewportY)*map.w]);
-						//globalContainer->gfx->drawString((x<<5), (y<<5)+10, globalContainer->littleFont, lx);
-						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+10, globalContainer->littleFont, ly);
+						if(b->globalGradient[0])
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->globalGradient[0][(x+viewportX) + (y+viewportY)*map.w]);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
@@ -169,22 +164,6 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 					}
 				}
 	}
-
-	// We draw debug area:
-	if (DEBUG_RENDER_GRADIENTS)
-		if (view.selectedUnit && view.selectedUnit->verbose)
-		{
-			Building *b=view.selectedUnit->attachedBuilding;
-			if (b && b->localResources[1])
-				for (int y=top-1; y<=bot; y++)
-					for (int x=left-1; x<=right; x++)
-						if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
-						{
-							int lx=(x+viewportX-b->posX+15)&31;
-							int ly=(y+viewportY-b->posY+15)&31;
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localResources[1][lx+ly*32]);
-						}
-		}
 
 	// We draw debug area:
 	if (view.selectedBuilding && view.selectedBuilding->verbose)
@@ -198,16 +177,14 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 				{
 					if (b->verbose==1 || b->verbose==2)
 					{
-						if (b->globalGradient[b->verbose&1])
+						// verbose 1: the walkers' gradient; verbose 2: the first swimmers' gradient in use.
+						int swimClass=1;
+						while (b->verbose==2 && swimClass<SWIM_CLASS_COUNT-1 && !b->globalGradient[swimClass])
+							swimClass++;
+						const Uint16 *gradient=b->globalGradient[b->verbose==1 ? 0 : swimClass];
+						if (gradient)
 							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont,
-								b->globalGradient[b->verbose&1][((x+viewportX)&(map.getMaskW()))+((y+viewportY)&(map.getMaskH()))*w]);
-					}
-					else if ((b->verbose==3 || b->verbose==4) && map.isInLocalGradient(x+viewportX, y+viewportY, b->posX, b->posY))
-					{
-						int lx=(x+viewportX-b->posX+15)&31;
-						int ly=(y+viewportY-b->posY+15)&31;
-						if (!b->dirtyLocalGradient[b->verbose&1])
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->localGradient[b->verbose&1][lx+ly*32]);
+								gradient[((x+viewportX)&(map.getMaskW()))+((y+viewportY)&(map.getMaskH()))*w]);
 					}
 
 					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 192, 192, 192));

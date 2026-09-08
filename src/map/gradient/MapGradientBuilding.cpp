@@ -3,14 +3,16 @@
 
 #include "Map.h"
 #include "BuildingType.h"
+#include "Game.h"
 #include "Unit.h"
 #include "MapInternal.h"
 
 
 
-// updateGlobalGradient(Building*), updateLocalResources
+// updateGlobalGradient(Building*): the full-map gradient toward a building, a
+// flag's zone or, for a clearing flag, the clearable resources in its range.
 
-void Map::updateGlobalGradient(Building *building, bool canSwim)
+void Map::updateGlobalGradient(Building *building, int swimClass)
 {
 	assert(building);
 	assert(building->type);
@@ -19,16 +21,19 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	int posW=building->type->width;
 	Uint32 teamMask=building->owner->me;
 	Uint16 bgid=building->gid;
+	bool canSwim=swimClass>0;
 
-	Uint8 *gradient=building->globalGradient[canSwim];
+	Uint16 *gradient=building->globalGradient[swimClass];
 	assert(gradient);
+	building->dirtyGradient[swimClass]=false;
+	building->lastGlobalGradientUpdateStepCounter[swimClass]=game->stepCounter;
 
 	bool isClearingFlag=false;
 	bool isWarFlag=false;
 	if (building->type->isVirtual && building->type->zonable[WARRIOR])
 		isWarFlag=true;
 
-	memset(gradient, GRADIENT_UNREACHABLE, size);
+	std::fill(gradient, gradient+size, GRADIENT_UNREACHABLE);
 	if (building->type->isVirtual && !building->type->zonable[WORKER])
 	{
 		assert(!building->type->zonableForbidden);
@@ -50,6 +55,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	{
 		assert(!building->type->zonableForbidden);
 		isClearingFlag=true;
+		bool anyResourceToClear=false;
 		int r=building->unitStayRange;
 		int r2=r*r;
 		for (int yi=-r; yi<=r; yi++)
@@ -63,9 +69,11 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 					{
 						if(gradient[addr] == GRADIENT_UNREACHABLE)
 							gradient[addr] = GRADIENT_AT_GOAL;
+						anyResourceToClear=true;
 					}
 				}
 		}
+		building->anyResourceToClear[canSwim] = anyResourceToClear ? 1 : 2;
 	}
 
 	for (int y=0; y<h; y++)
@@ -81,7 +89,7 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 					gradient[wyx] = GRADIENT_FORBIDDEN;
 				else if (c.resource.type!=NO_RES_TYPE && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
 					gradient[wyx] = GRADIENT_FORBIDDEN;
-				else if(immobileUnits[wyx] != 255)
+				else if(immobileUnits[wyx] != IMMOBILE_UNIT_NONE)
 					gradient[wyx] = GRADIENT_FORBIDDEN;
 				//Clearing flags don't consider water an obstacle so long as that piece of
 				//water is under the flag, like algae
@@ -116,88 +124,5 @@ void Map::updateGlobalGradient(Building *building, bool canSwim)
 	else
 		building->locked[canSwim]=false;
 
-	updateGlobalGradient(gradient);
+	propagateGradient(gradient, swimClass);
 }
-
-
-bool Map::updateLocalResources(Building *building, bool canSwim)
-{
-	assert(building);
-	assert(building->type);
-	assert(building->type->isVirtual);
-
-
-	int posX=building->posX;
-	int posY=building->posY;
-	Uint32 teamMask=building->owner->me;
-
-	Uint8 *gradient=building->localResources[canSwim];
-	if (gradient==NULL)
-	{
-		gradient=new Uint8[LOCAL_GRID_AREA];
-		building->localResources[canSwim]=gradient;
-	}
-	assert(gradient);
-
-	bool *clearingResources=building->clearingResources;
-	bool anyResourceToClear=false;
-
-	memset(gradient, GRADIENT_UNREACHABLE, LOCAL_GRID_AREA);
-	int range=building->unitStayRange;
-	if (range>LOCAL_GRID_CENTER)
-		range=LOCAL_GRID_CENTER;
-	int range2=range*range;
-	for (int yl=0; yl<LOCAL_GRID_W; yl++)
-	{
-		int wyl=(yl<<LOCAL_GRID_SHIFT);
-		int yg=(yl+posY-LOCAL_GRID_CENTER)&hMask;
-		int wyg=w*yg;
-		int dyl2=(yl-LOCAL_GRID_CENTER)*(yl-LOCAL_GRID_CENTER);
-		for (int xl=0; xl<LOCAL_GRID_W; xl++)
-		{
-			int xg=(xl+posX-LOCAL_GRID_CENTER)&wMask;
-			const Case& c=cases[wyg+xg];
-			int addrl=wyl+xl;
-			int dist2=(xl-LOCAL_GRID_CENTER)*(xl-LOCAL_GRID_CENTER)+dyl2;
-			if (dist2<=range2)
-			{
-				if (c.forbidden&teamMask)
-					gradient[addrl]=GRADIENT_FORBIDDEN;
-				else if (c.resource.type!=NO_RES_TYPE)
-				{
-					Sint8 t=c.resource.type;
-					if (t<BASIC_COUNT && clearingResources[t])
-					{
-						gradient[addrl]=GRADIENT_AT_GOAL;
-						anyResourceToClear=true;
-					}
-					else
-						gradient[addrl]=GRADIENT_FORBIDDEN;
-				}
-				else if (c.building!=NOGBID)
-					gradient[addrl]=GRADIENT_FORBIDDEN;
-				else if(immobileUnits[wyg+xg] != 255)
-					gradient[addrl]=GRADIENT_FORBIDDEN;
-				else if (!canSwim && isWater(xg, yg))
-					gradient[addrl]=GRADIENT_FORBIDDEN;
-			}
-			else
-				gradient[addrl]=GRADIENT_FORBIDDEN;
-		}
-	}
-	// PORT: this is the SOLE reset for localResourcesCleanTime[canSwim]; runs unconditionally
-	// PORT: before both the false return below and the true return at function end. Building::clearingFlagStep
-	// PORT: relies on this side effect rather than resetting the timer itself.
-	building->localResourcesCleanTime[canSwim]=0;
-	if (anyResourceToClear)
-		building->anyResourceToClear[canSwim]=1;
-	else
-	{
-		building->anyResourceToClear[canSwim]=2;
-		return false;
-	}
-	propagateLocalGradient32(gradient);
-	return true;
-}
-
-

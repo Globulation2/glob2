@@ -6,8 +6,12 @@
 #include "Unit.h"
 #include "MapInternal.h"
 
+#include <algorithm>
+
 // Chamfer distance transform with orthogonal=1, diagonal=1 weights (Chebyshev
-// distance) on a toroidal grid. Two sweeps per pass — forward (NW, N, NE, W)
+// distance) on a toroidal grid, for the AIs' own Uint8 helper maps (Castor,
+// Warrush). The pathfinding gradients are Uint16 and built by
+// Map::propagateGradient (MapGradientField.cpp). Two sweeps per pass — forward (NW, N, NE, W)
 // then backward (SE, S, SW, E) — repeated until a full pass writes nothing.
 //
 // Cell value semantics:
@@ -33,63 +37,59 @@
 // throttle. On correct code the loop exits in a handful of passes.
 void Map::updateGlobalGradient(Uint8 *gradient)
 {
+	// Values below 3 cannot raise a free cell above its seed of 1.
+	// Without a stronger source, the initialized buffer is already the final field.
+	if (std::none_of(gradient, gradient + size, [](Uint8 value) { return value >= 3; }))
+		return;
+
 	int passes = 0;
 	bool changed;
 	do
 	{
 		changed = false;
 
-		// Forward sweep: in-set neighbors are NW, N, NE, W (already visited).
+		// Only the strongest neighbor matters: subtracting one preserves their order.
+		// Keep the in-place sweep order, including reads across the toroidal seams.
 		for (size_t y = 0; y < (size_t)h; y++)
 		{
-			size_t yu = ((y - 1) & hMask);
+			Uint8* row = gradient + (y << wDec);
+			const Uint8* previousRow = gradient + (((y - 1) & hMask) << wDec);
 			for (size_t x = 0; x < (size_t)w; x++)
 			{
-				Uint8 g = gradient[(y << wDec) | x];
-				if (g == 0)
+				const Uint8 g = row[x];
+				// Obstacles stay zero; a goal is already at the maximum possible value.
+				if (g == GRADIENT_FORBIDDEN || g == 255)
 					continue;
-				size_t xl = ((x - 1) & wMask);
-				size_t xr = ((x + 1) & wMask);
-				Uint8 best = g;
-				Uint8 vNW = gradient[(yu << wDec) | xl];
-				Uint8 vN  = gradient[(yu << wDec) | x ];
-				Uint8 vNE = gradient[(yu << wDec) | xr];
-				Uint8 vW  = gradient[(y  << wDec) | xl];
-				if (vNW >= 3 && (Uint8)(vNW - 1) > best) best = vNW - 1;
-				if (vN  >= 3 && (Uint8)(vN  - 1) > best) best = vN  - 1;
-				if (vNE >= 3 && (Uint8)(vNE - 1) > best) best = vNE - 1;
-				if (vW  >= 3 && (Uint8)(vW  - 1) > best) best = vW  - 1;
-				if (best != g)
+				const size_t xl = (x - 1) & wMask;
+				const size_t xr = (x + 1) & wMask;
+				// Forward neighbors: NW, N, NE, W.
+				const Uint8 neighborMax = std::max(std::max(previousRow[xl], previousRow[x]),
+					std::max(previousRow[xr], row[xl]));
+				if (neighborMax >= 3 && neighborMax - 1 > g)
 				{
-					gradient[(y << wDec) | x] = best;
+					row[x] = neighborMax - 1;
 					changed = true;
 				}
 			}
 		}
 
-		// Backward sweep: in-set neighbors are SE, S, SW, E (already visited).
 		for (size_t y = (size_t)h; y-- > 0; )
 		{
-			size_t yd = ((y + 1) & hMask);
+			Uint8* row = gradient + (y << wDec);
+			const Uint8* nextRow = gradient + (((y + 1) & hMask) << wDec);
 			for (size_t x = (size_t)w; x-- > 0; )
 			{
-				Uint8 g = gradient[(y << wDec) | x];
-				if (g == 0)
+				const Uint8 g = row[x];
+				if (g == GRADIENT_FORBIDDEN || g == 255)
 					continue;
-				size_t xl = ((x - 1) & wMask);
-				size_t xr = ((x + 1) & wMask);
-				Uint8 best = g;
-				Uint8 vSE = gradient[(yd << wDec) | xr];
-				Uint8 vS  = gradient[(yd << wDec) | x ];
-				Uint8 vSW = gradient[(yd << wDec) | xl];
-				Uint8 vE  = gradient[(y  << wDec) | xr];
-				if (vSE >= 3 && (Uint8)(vSE - 1) > best) best = vSE - 1;
-				if (vS  >= 3 && (Uint8)(vS  - 1) > best) best = vS  - 1;
-				if (vSW >= 3 && (Uint8)(vSW - 1) > best) best = vSW - 1;
-				if (vE  >= 3 && (Uint8)(vE  - 1) > best) best = vE  - 1;
-				if (best != g)
+				const size_t xl = (x - 1) & wMask;
+				const size_t xr = (x + 1) & wMask;
+				// Backward neighbors: SE, S, SW, E.
+				const Uint8 neighborMax = std::max(std::max(nextRow[xr], nextRow[x]),
+					std::max(nextRow[xl], row[xr]));
+				if (neighborMax >= 3 && neighborMax - 1 > g)
 				{
-					gradient[(y << wDec) | x] = best;
+					row[x] = neighborMax - 1;
 					changed = true;
 				}
 			}
@@ -106,10 +106,22 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 }
 
 
-void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSwim)
+Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass)
 {
-	Uint8 *gradient=resourcesGradient[teamNumber][resourceType][canSwim];
+	Uint16 *&gradient = resourcesGradient[teamNumber][resourceType][swimClass];
+	if (gradient == NULL)
+	{
+		gradient = new Uint16[size];
+		updateResourcesGradient(teamNumber, resourceType, swimClass);
+	}
+	return gradient;
+}
+
+void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
+{
+	Uint16 *gradient=resourcesGradient[teamNumber][resourceType][swimClass];
 	assert(gradient);
+	bool canSwim = swimClass > 0;
 
 	Uint32 teamMask=Team::teamNumberToMask(teamNumber);
 	assert(globalContainer);
@@ -118,13 +130,13 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSw
 		const Case& c=cases[i];
 		if (c.forbidden & teamMask)
 			gradient[i]=GRADIENT_FORBIDDEN;
-		else if(immobileUnits[i] != 255)
+		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i]=GRADIENT_FORBIDDEN;
 		else if (c.resource.type==NO_RES_TYPE)
 		{
 			if (c.building!=NOGBID)
 				gradient[i]=GRADIENT_FORBIDDEN;
-			else if (!canSwim && (c.terrain>=256 && c.terrain<16+256)) //!canSwim && isWater
+			else if (!canSwim && isWater(i))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
 				gradient[i]=GRADIENT_UNREACHABLE;
@@ -140,6 +152,5 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, bool canSw
 			gradient[i]=GRADIENT_FORBIDDEN;
 	}
 
-	updateGlobalGradient(gradient);
+	propagateGradient(gradient, swimClass);
 }
-
