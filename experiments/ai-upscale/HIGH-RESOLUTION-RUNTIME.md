@@ -135,3 +135,10 @@ Three completed layered buildings now use original exports: `school1b0`,
 Both layers retain logical registration and saved opacity (school team alpha 64).
 Hospital/tower and damaged-state candidates remain on existing fallbacks because
 no faithful completed export was verified. See RECOVERED-RUNTIME.md for details.
+
+
+All 24 area-marker animation frames now use native 128px originals, raising
+original-source coverage to 55 frames. Direct/split GIMP compositing checks rule
+out group splitting as the large hospital/tower finishing discrepancy; the smaller
+tower XCF reproduces classic visible team pixels and alpha exactly but provides no extra resolution.
+Those building fallbacks remain unchanged.

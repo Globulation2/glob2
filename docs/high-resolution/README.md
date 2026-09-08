@@ -1,6 +1,6 @@
 # High-resolution artwork and map zoom
 
-Original artwork is now organized in [datasrc/gfx](../../datasrc/gfx/README.md), with a [source catalog](../../datasrc/gfx/CATALOG.md) and [coverage report](../../datasrc/gfx/COVERAGE.md). Thirty-one frames now use recovered originals: ten tree and eight wheat growth/variant frames, both hives, three flags, five construction sites, the school and first two racetracks. See the [reproducible recipes and remaining gaps](../../datasrc/gfx/RECOVERED-RUNTIME.md). The other runtime artwork remains experimental. Replace frames with verified deterministic exports from originals as mappings are established; retain existing upscales where usable originals are unavailable.
+Original artwork is now organized in [datasrc/gfx](../../datasrc/gfx/README.md), with a [source catalog](../../datasrc/gfx/CATALOG.md) and [coverage report](../../datasrc/gfx/COVERAGE.md). Fifty-five frames now use recovered originals: ten tree and eight wheat growth/variant frames, both hives, three flags, five construction sites, the school, first two racetracks and all 24 area-marker animation frames. See the [reproducible recipes and remaining gaps](../../datasrc/gfx/RECOVERED-RUNTIME.md). The other runtime artwork remains experimental. Replace frames with verified deterministic exports from originals as mappings are established; retain existing upscales where usable originals are unavailable.
 
 This experiment upgrades selected map artwork while retaining the original 32-unit grid, sprite geometry, building footprints, simulation and orders. OpenGL draws the extra texture pixels directly into the framebuffer at 50%–300% zoom. Gameplay, replays and the editor use the same presentation camera; sidebar controls, menus and the minimap keep their normal size relative to map zoom.
 
@@ -16,7 +16,7 @@ This experiment upgrades selected map artwork while retaining the original 32-un
 
 ## Original-source exports
 
-The recovered PNGs have their white backgrounds removed using native color/matte data, with independent green team and neutral shadow layers. They retain logical dimensions and are packaged at 4×; native detail varies from 1.33× to 8×. No AI is used for these thirty-one replacements. Trees and wheat preserve native GIMP layer opacity and shadows; their final images also populate the resource atlas. The school and first two racetracks preserve separate original base/team groups and saved translucency. Other buildings and remaining resources still await migration. Wheat’s final ripe states (14/19) retain existing upscales because matching larger color variants were not recovered.
+The recovered PNGs have their white backgrounds removed using native color/matte data, with independent green team and neutral shadow layers. They retain logical dimensions and are packaged at 4×; native detail varies from 1.33× to 8×. No AI is used for these fifty-five replacements. Trees and wheat preserve native GIMP layer opacity and shadows; their final images also populate the resource atlas. The school and first two racetracks preserve separate original base/team groups and saved translucency. Other buildings and remaining resources still await migration. Wheat’s final ripe states (14/19) retain existing upscales because matching larger color variants were not recovered.
 
 ![Recovered flag: classic and final](images/warflag0.png)
 ![Recovered construction: classic and final](images/buildingsite3.png)
@@ -24,6 +24,8 @@ The recovered PNGs have their white backgrounds removed using native color/matte
 ![Trees: classic and recovered original](images/ressource9.png)
 
 ![Wheat: classic and recovered original](images/ressource13.png)
+
+![Forbidden marker: classic and original](images/area-forbidden3.png)
 
 ## Experimental fallback pipeline
 

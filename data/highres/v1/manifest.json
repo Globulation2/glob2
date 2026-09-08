@@ -9254,13 +9254,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/h1-archive-2026.png",
+          "sha256": "0cec5ec9b8d8a878496c43d93bccececae5057b2fda06d3e53877dbdd6013dfe",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-clearing0.png",
           "role": "base",
-          "sha256": "878f822daf2160bdfe6ff9ee4406708f0b421e710e26a712ff8d93d4a5c5a81b",
-          "source_sha256": "878f822daf2160bdfe6ff9ee4406708f0b421e710e26a712ff8d93d4a5c5a81b",
+          "sha256": "ce2c0a602fbad9b0a0088f643648632316a52102e36a5fbd4a6069b12121f244",
+          "source_sha256": "ce2c0a602fbad9b0a0088f643648632316a52102e36a5fbd4a6069b12121f244",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "67aea3e49e7dfa666e0bc1431aaa9d85259bdd72b2a3c990f5bc3cbc9ef0ca32"
@@ -9272,13 +9282,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/h2-archive-2026.png",
+          "sha256": "d84a5728241759ce3cca2f5949deab46feed98ed59dd6f9906cb406c1ba9ff83",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-clearing1.png",
           "role": "base",
-          "sha256": "88c0a4814fada25f21cf4781ddade527db09a4e46d0736b4f78e4d232c1c05ba",
-          "source_sha256": "88c0a4814fada25f21cf4781ddade527db09a4e46d0736b4f78e4d232c1c05ba",
+          "sha256": "8d49c273053dc520cae3f04df2c5640f180770bdf559d1c5f96e83cac4d6aabb",
+          "source_sha256": "8d49c273053dc520cae3f04df2c5640f180770bdf559d1c5f96e83cac4d6aabb",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "b9f3c0b4bc473ca86c16593da12b1948ef41ec3e9d277105a4a562c15b8d2908"
@@ -9290,13 +9310,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/h3-archive-2026.png",
+          "sha256": "dfb60f6b060007538b12d51d063cde033ede80e368cbbfea8a850c1ab646d276",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-clearing2.png",
           "role": "base",
-          "sha256": "c204d3d60cbea3cdff3be7f1d36493e55ef7b6f9d41ba839599fb322fba286c8",
-          "source_sha256": "c204d3d60cbea3cdff3be7f1d36493e55ef7b6f9d41ba839599fb322fba286c8",
+          "sha256": "46ad1e9d97f6bc2a74c22d668d2e2c9aab3647d5e1d10f2ef99e05bd342cfcd0",
+          "source_sha256": "46ad1e9d97f6bc2a74c22d668d2e2c9aab3647d5e1d10f2ef99e05bd342cfcd0",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "a90434a977f38eb5a382dd86d6f6755b248944f77de6d15b74ac93c66548f70a"
@@ -9308,13 +9338,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/h4-archive-2026.png",
+          "sha256": "ddbe5c02e5699cb21cf1637dda285cc26bc1d0c0630e5ee87b43fe21684dd624",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-clearing3.png",
           "role": "base",
-          "sha256": "040f0519db6c98740cd35cd585af31b4b3e046831d9210a3f4cf39d875c2fed2",
-          "source_sha256": "040f0519db6c98740cd35cd585af31b4b3e046831d9210a3f4cf39d875c2fed2",
+          "sha256": "a950c490d81703bd5d2da1a04a108726164f852f29858f194531c0a00d22235d",
+          "source_sha256": "a950c490d81703bd5d2da1a04a108726164f852f29858f194531c0a00d22235d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "8eae1f30ce25f4fbfe3d7c2427d9b23f7d74cc9dec36e5437302ead6038005af"
@@ -9326,13 +9366,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/h5-archive-2026.png",
+          "sha256": "155e5b5c4a3dc93bef5eb575d3b53dc6138828ee8b50a58cfe0b36b652b1462b",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-clearing4.png",
           "role": "base",
-          "sha256": "187347d6ddcd6468111e165f562281ec565f0b3156ba4c91cbf2765a2536cc19",
-          "source_sha256": "187347d6ddcd6468111e165f562281ec565f0b3156ba4c91cbf2765a2536cc19",
+          "sha256": "65d136c1a8de301931243ff4346e183d4145f206cdfd7a3d91243c8f6d441b7d",
+          "source_sha256": "65d136c1a8de301931243ff4346e183d4145f206cdfd7a3d91243c8f6d441b7d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5af36c2994904fe6b99ec8d288e18aa84df5a576eb10a2a2b3df177a028134a4"
@@ -9344,13 +9394,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/h6-archive-2026.png",
+          "sha256": "de6c447820739c36a93f4658cb80ac06b2fe56a93e25fc3cb1e5881320b0700b",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-clearing5.png",
           "role": "base",
-          "sha256": "79a875bf904cb99878c2635353c1c56a483afb9b75fc271b92ece0d39ef3a9ac",
-          "source_sha256": "79a875bf904cb99878c2635353c1c56a483afb9b75fc271b92ece0d39ef3a9ac",
+          "sha256": "482666e30886954017c3406b5c1853edf6223b507b1e3deb346e63e3a639ecc4",
+          "source_sha256": "482666e30886954017c3406b5c1853edf6223b507b1e3deb346e63e3a639ecc4",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "adf057bd19953b53b85d3a328d2ce61bbb590b02029a917631907b7b27bacb6f"
@@ -9362,13 +9422,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/h7-archive-2026.png",
+          "sha256": "b570ff493d232185364f4cba7c58cb0708d38951704ffcad7128f5a5490e9c98",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-clearing6.png",
           "role": "base",
-          "sha256": "9f790b075d6aa9c88ff80dd66b1d61bb295c4c5a242d91e09d662e056e4ab5e2",
-          "source_sha256": "9f790b075d6aa9c88ff80dd66b1d61bb295c4c5a242d91e09d662e056e4ab5e2",
+          "sha256": "bba9f982daa44bd98fad20ce664fba09d979c2845e07de8bec4b752b7147b027",
+          "source_sha256": "bba9f982daa44bd98fad20ce664fba09d979c2845e07de8bec4b752b7147b027",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "cb6fb367e87acb3753752ec8b518909f48c62c6147f5fa25760b9029df2567c7"
@@ -9380,13 +9450,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/h8-archive-2026.png",
+          "sha256": "7f6c61650d662c053a04a1d9f1ed75793d12e7669208487b0ffa45a715088ff8",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-clearing7.png",
           "role": "base",
-          "sha256": "e45b02334a2bd26c9131ecb21f4389ff433f695e4319250374e81d455ceebf51",
-          "source_sha256": "e45b02334a2bd26c9131ecb21f4389ff433f695e4319250374e81d455ceebf51",
+          "sha256": "9c9a7f44af7807961c6da0a09882730f76408ec677da0376b4b01e7a79029f7b",
+          "source_sha256": "9c9a7f44af7807961c6da0a09882730f76408ec677da0376b4b01e7a79029f7b",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "1fd9aa923f4bdab144c949cc9d8d7ac74056a310114754d3847edeb6bf2bb1c9"
@@ -9398,13 +9478,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/i0-archive-2026.png",
+          "sha256": "3c5c1f4fbf99b8fff4ed9d63cc31622e50ffb0bcd18d620e1577524bb3646a1f",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-forbidden0.png",
           "role": "base",
-          "sha256": "1a8e3a24e463a3fc2dff3795c66a124327c71ed1d613a37177a0b57ff1bfcccc",
-          "source_sha256": "1a8e3a24e463a3fc2dff3795c66a124327c71ed1d613a37177a0b57ff1bfcccc",
+          "sha256": "17bc3f70afeffe7c0b1a7ebd27d77fa125a0c254c4b80ee46fb661faf33ade87",
+          "source_sha256": "17bc3f70afeffe7c0b1a7ebd27d77fa125a0c254c4b80ee46fb661faf33ade87",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "955503f0acf88fe2d045900bd3f1d0a06cc08bcae9f06b549059d5f0569cd46d"
@@ -9416,13 +9506,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/i1-archive-2026.png",
+          "sha256": "61d42f32cd3f3d440c3774d5181d4f02c41cd1b2434bc63dbb07e527251d751c",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-forbidden1.png",
           "role": "base",
-          "sha256": "c0cb7b813eeb9c339fee600d02bb52c15dfff0998e94b1d7d9d1256694f47002",
-          "source_sha256": "c0cb7b813eeb9c339fee600d02bb52c15dfff0998e94b1d7d9d1256694f47002",
+          "sha256": "aec46b02f282f99e063e01b4cfad3e1786d619cc35aec24a6cff2de75f927b53",
+          "source_sha256": "aec46b02f282f99e063e01b4cfad3e1786d619cc35aec24a6cff2de75f927b53",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "7bb89bf0cde79659522b4dfa8db1e2b12518b6684d7d519607deedeffe37fdd2"
@@ -9434,13 +9534,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/i2-archive-2026.png",
+          "sha256": "434f04ee42ee91bb0fe3159406c363e5576c6d38fd7a04c8d943f57e1d7b7308",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-forbidden2.png",
           "role": "base",
-          "sha256": "c8d995ec0b0b98010cb7e033c19f88332e010d73b6a76d21f734c43fdb7c1a63",
-          "source_sha256": "c8d995ec0b0b98010cb7e033c19f88332e010d73b6a76d21f734c43fdb7c1a63",
+          "sha256": "5069334a858fe91798a92ab61b1140f23dbaaf51ec470168a10774fc1dd037e4",
+          "source_sha256": "5069334a858fe91798a92ab61b1140f23dbaaf51ec470168a10774fc1dd037e4",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5c65a0aa5653d8c6ef009eec2c4c3dec20f5b082a513edd8eb1c05ef4801c49a"
@@ -9452,13 +9562,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/i3-archive-2026.png",
+          "sha256": "cf87c0736a49c9ed15c7c7c9796e6270fd68e9eb411124baba43d99a981b46ac",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-forbidden3.png",
           "role": "base",
-          "sha256": "c9c33ee4298cf025317dc8418fe4817272f85d363e370499c5da064745a71c5b",
-          "source_sha256": "c9c33ee4298cf025317dc8418fe4817272f85d363e370499c5da064745a71c5b",
+          "sha256": "6b0d2fe1760cf8bd5a6b3ab3e5ad4d4a9481a57cab3fc262a1462df7a32dbf3d",
+          "source_sha256": "6b0d2fe1760cf8bd5a6b3ab3e5ad4d4a9481a57cab3fc262a1462df7a32dbf3d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "dcdc56f4a9746f29eb1b96978a9ebd26a25ead576ad8971476a0aa9dcac1e712"
@@ -9470,13 +9590,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/i4.png",
+          "sha256": "9ce6acd818f85bdc274d1c96de01392861524003a544331b89c5d58ea442d5b2",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-forbidden4.png",
           "role": "base",
-          "sha256": "c9c33ee4298cf025317dc8418fe4817272f85d363e370499c5da064745a71c5b",
-          "source_sha256": "c9c33ee4298cf025317dc8418fe4817272f85d363e370499c5da064745a71c5b",
+          "sha256": "6b0d2fe1760cf8bd5a6b3ab3e5ad4d4a9481a57cab3fc262a1462df7a32dbf3d",
+          "source_sha256": "6b0d2fe1760cf8bd5a6b3ab3e5ad4d4a9481a57cab3fc262a1462df7a32dbf3d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "dcdc56f4a9746f29eb1b96978a9ebd26a25ead576ad8971476a0aa9dcac1e712"
@@ -9488,13 +9618,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/i5-archive-2026.png",
+          "sha256": "86d8007f0fd71ab3df664ade3d5685e020442bf486fa1d88fcd43f048eae35fe",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-forbidden5.png",
           "role": "base",
-          "sha256": "c8d995ec0b0b98010cb7e033c19f88332e010d73b6a76d21f734c43fdb7c1a63",
-          "source_sha256": "c8d995ec0b0b98010cb7e033c19f88332e010d73b6a76d21f734c43fdb7c1a63",
+          "sha256": "5069334a858fe91798a92ab61b1140f23dbaaf51ec470168a10774fc1dd037e4",
+          "source_sha256": "5069334a858fe91798a92ab61b1140f23dbaaf51ec470168a10774fc1dd037e4",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5c65a0aa5653d8c6ef009eec2c4c3dec20f5b082a513edd8eb1c05ef4801c49a"
@@ -9506,13 +9646,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/i6-archive-2026.png",
+          "sha256": "b63ea25bd0fe29dc7e442debb4bf5ec19e2b362f86b6d62f957755a4d13ec60a",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-forbidden6.png",
           "role": "base",
-          "sha256": "c0cb7b813eeb9c339fee600d02bb52c15dfff0998e94b1d7d9d1256694f47002",
-          "source_sha256": "c0cb7b813eeb9c339fee600d02bb52c15dfff0998e94b1d7d9d1256694f47002",
+          "sha256": "aec46b02f282f99e063e01b4cfad3e1786d619cc35aec24a6cff2de75f927b53",
+          "source_sha256": "aec46b02f282f99e063e01b4cfad3e1786d619cc35aec24a6cff2de75f927b53",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "7bb89bf0cde79659522b4dfa8db1e2b12518b6684d7d519607deedeffe37fdd2"
@@ -9524,13 +9674,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/i7-archive-2026.png",
+          "sha256": "35729f1837e68ced59277f257b89b2207d3263424a1bf1750bc96aac4ee7dd2c",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-forbidden7.png",
           "role": "base",
-          "sha256": "88e5b1e5866bb35aa711ca08e05f342a479495e6206253d98090f8bf214dff16",
-          "source_sha256": "88e5b1e5866bb35aa711ca08e05f342a479495e6206253d98090f8bf214dff16",
+          "sha256": "9b0b2ffbaff695eb0847623c292d0d431688649255ce587682e81dc181eec47b",
+          "source_sha256": "9b0b2ffbaff695eb0847623c292d0d431688649255ce587682e81dc181eec47b",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e525363340d69a2e3c0f4bd7e0efe0f5866603553fad744ca87cc41b25d4e184"
@@ -9542,13 +9702,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/g0-archive-2026.png",
+          "sha256": "3307ac804027ad5652b6427b04d527bcf70b0e31007f28699eb060a5f399a64d",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-guard0.png",
           "role": "base",
-          "sha256": "e5ee56cdf1f54500747e08367fb41547cb56a47573f6eb773d763236331797c2",
-          "source_sha256": "e5ee56cdf1f54500747e08367fb41547cb56a47573f6eb773d763236331797c2",
+          "sha256": "aef919c78f831ed7544f546babffec93a1101b13120270c4bf74c55626bc7b5f",
+          "source_sha256": "aef919c78f831ed7544f546babffec93a1101b13120270c4bf74c55626bc7b5f",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "53f52eb8cacd408f5cb07ba5c589568d26b4b6970dc8a5bb437f89931f468a97"
@@ -9560,13 +9730,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/g1-archive-2026.png",
+          "sha256": "61ca21e960c66fe1948533398e84eed70c652eee3b88d1133821b4074b8c3dc1",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-guard1.png",
           "role": "base",
-          "sha256": "e290026d90ee8d4936e55a5f4edd47d85b9ae705e9c970bb05f8720013d33f0a",
-          "source_sha256": "e290026d90ee8d4936e55a5f4edd47d85b9ae705e9c970bb05f8720013d33f0a",
+          "sha256": "caab414d9bd43e036ef90291bc4503c8156a9cc434fd2bb9de28364afdcb57b5",
+          "source_sha256": "caab414d9bd43e036ef90291bc4503c8156a9cc434fd2bb9de28364afdcb57b5",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "c22394ce185dc53ec4a0547c3e1f9dde832fba90e7036f7456238f07f579acc8"
@@ -9578,13 +9758,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/g2-archive-2026.png",
+          "sha256": "50ecdd801108e931ccbfc751389d9b8ce25c2fe25d180909442fb811c70d909a",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-guard2.png",
           "role": "base",
-          "sha256": "ebb5571d1518c813d65866b5a118e5996fcde89be28f3e17a0885397db2ac240",
-          "source_sha256": "ebb5571d1518c813d65866b5a118e5996fcde89be28f3e17a0885397db2ac240",
+          "sha256": "f4d2973c59bebeab18d366c6269c8a85fc7eae5b270bfadb583515f82b5a6221",
+          "source_sha256": "f4d2973c59bebeab18d366c6269c8a85fc7eae5b270bfadb583515f82b5a6221",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "453d717b1f81e33ad700847fa979c2287fe763ed3208e09e74405b527d0651a2"
@@ -9596,13 +9786,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/g3-archive-2026.png",
+          "sha256": "71fcc0a3dd20434cac5855a99832ab6b76c72407b644a4d62e80a6c86f27dc36",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-guard3.png",
           "role": "base",
-          "sha256": "197bd3cdad1bbae8515e962c05761c3a3ac4177a5698313e6a2d061cd2ccd89a",
-          "source_sha256": "197bd3cdad1bbae8515e962c05761c3a3ac4177a5698313e6a2d061cd2ccd89a",
+          "sha256": "f6d55102cbcb104c10790f201628fe5e958c6102a97cd7f2c8db6093ab673a47",
+          "source_sha256": "f6d55102cbcb104c10790f201628fe5e958c6102a97cd7f2c8db6093ab673a47",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "4d6030a32a34250dcf3361c8e081aec6b639ae9a06bdfb648741a999ddca0d0a"
@@ -9614,13 +9814,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/g4-archive-2026.png",
+          "sha256": "a3e3049c120fb3758177beaf89ce659f2901e5914f04e14fe80885873b80930b",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-guard4.png",
           "role": "base",
-          "sha256": "98f770c553c443322caad2034f4f22247890365910b1543de6bcf1aefcb459b8",
-          "source_sha256": "98f770c553c443322caad2034f4f22247890365910b1543de6bcf1aefcb459b8",
+          "sha256": "72470ce245355279ca7cb05e98f326d16db4c55270b4a1ae94eb562a7bcdfb8b",
+          "source_sha256": "72470ce245355279ca7cb05e98f326d16db4c55270b4a1ae94eb562a7bcdfb8b",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "3fa7a03ec7d0d84e2b96cb3fd8b65832c3e5a164566ea60256a70ecc3444172d"
@@ -9632,13 +9842,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/g5-archive-2026.png",
+          "sha256": "9eb34051ab38294cad261bb05a8797fe944e73a5f0d3cecea0112db8d9f0f76d",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-guard5.png",
           "role": "base",
-          "sha256": "c0c2edfce7578931c04007ede0c1f16e171fd8e1f3463832de75efe0fc9c3ad0",
-          "source_sha256": "c0c2edfce7578931c04007ede0c1f16e171fd8e1f3463832de75efe0fc9c3ad0",
+          "sha256": "206a9e5787cf84cd15b61f8f3319813e60912833f08efafa0e613f7a4949184a",
+          "source_sha256": "206a9e5787cf84cd15b61f8f3319813e60912833f08efafa0e613f7a4949184a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "072d58a6f50d4004adb616f0d43ff0c64af9199e7da80c3b4612061f4c1562bf"
@@ -9650,13 +9870,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/g6-archive-2026.png",
+          "sha256": "1c319a0669d0cd041b9e106ba598ed0f3195e15b74e129d1c9ca0dc1f184f575",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-guard6.png",
           "role": "base",
-          "sha256": "12b416b7c13fbb42282fae0f2086aec88b5db3d6638c718348911d2488920f47",
-          "source_sha256": "12b416b7c13fbb42282fae0f2086aec88b5db3d6638c718348911d2488920f47",
+          "sha256": "deb94928b7bfe00b16ad639d6eb1b940974d63a945047a90adbbb474b41d7930",
+          "source_sha256": "deb94928b7bfe00b16ad639d6eb1b940974d63a945047a90adbbb474b41d7930",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "8a446f71d281102acc42031feee2b033e90d21a8bff8676965bb50d6f29b8a66"
@@ -9668,13 +9898,23 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "soft mask resampling",
+      "recipe": "recovered original area marker: native RGBA; original eight-frame sequence",
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/overlays/g7-archive-2026.png",
+          "sha256": "97bffb76358713883074da9b4052c3773c4dfafd363744b55555670360287982",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "area-guard7.png",
           "role": "base",
-          "sha256": "0d237f29d8a9a56eb455d7cf118056ad6feaec59696f4209aa1add06d8c8f33d",
-          "source_sha256": "0d237f29d8a9a56eb455d7cf118056ad6feaec59696f4209aa1add06d8c8f33d",
+          "sha256": "6e8c6f3ac033bcb46efd7957bcfc76c5d82edb3696a6029621c7085ae697eab5",
+          "source_sha256": "6e8c6f3ac033bcb46efd7957bcfc76c5d82edb3696a6029621c7085ae697eab5",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5886b73faa05fdaa22b3a64566ff9e15ce63a5a948730f460210d0807a961d24"

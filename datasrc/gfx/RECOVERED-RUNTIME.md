@@ -193,3 +193,47 @@ before replacement. The game loads the committed runtime PNGs without GIMP/Pytho
 These are differences observed between our exports and the classic sprites, not
 claims about who edited the artwork or when. All recovered XCFs and classic game
 assets remain byte-for-byte unchanged. No new AI generation or recoloring was used.
+
+
+## Area markers
+
+All 24 area marker frames now use original 128 × 128 images without resampling
+or AI. Guard `g0`–`g7` map to `area-guard0`–`7`; clearing `h1`–`h8` map to
+`area-clearing0`–`7`; forbidden `i0`–`i7` map to `area-forbidden0`–`7`.
+Recovered `-archive-2026` variants are used, except `i4.png`, which the import
+reused because its original bytes already existed in the repository. The full
+phase sequence is retained, including repeated/symmetric forbidden pulse frames.
+The forbidden sequence is not reordered by image similarity.
+
+`tools/artwork/export_markers.py` writes `derived/markers-v1/` with source hashes
+and native dimensions. The main pack exporter applies these complete frames.
+`tools/artwork/validate_markers.py` verifies every source/runtime pixel, logical
+32 × 32 size, animation-frame coverage and alpha coverage relative to classic.
+Native alpha coverage differs by less than 1.1% after accounting for scale.
+
+```sh
+python3 tools/artwork/export_markers.py
+python3 experiments/ai-upscale/export_runtime.py
+python3 tools/artwork/validate_markers.py
+```
+
+## Follow-up: hospital/tower compositing audit
+
+The direct GIMP XCF composite and our separately exported base/team reconstruction
+agree within rounding: at most one 8-bit code value for the hospital, and three
+for the tower (only five tower pixels differ by more than one). This rules out
+splitting the selected groups as the cause of the large finishing differences.
+Saved layer opacity and modes were preserved; originals were not resaved.
+
+The smaller `tower1.xcf` reproduces the classic tower team layer’s visible pixels and alpha **exactly**, at
+64 × 108 pixels. The larger `tower2.xcf` does not contain that same finished
+color/texture treatment in its selected layers. RGB stored under fully transparent pixels is ignored. The smaller source therefore
+confirms our export path can reproduce the classic artwork, but does not supply
+higher-resolution crystal detail. The cause/history of the differences between
+source files remains unknown; the hospital and tower runtime fallbacks are unchanged.
+
+Reproduce the audit with GIMP 2.10 using
+`tools/artwork/audit_building_compositing_gimp.py` through `python-fu-eval`, then
+run `python3 tools/artwork/measure_building_compositing.py`. Disposable images stay
+in `.cache/original-art/compositing-audit/`; measurements and source hashes are
+recorded in [the audit manifest](provenance/building-compositing-audit.json).

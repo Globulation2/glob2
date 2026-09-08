@@ -78,3 +78,11 @@ match the classic finishing; mechanical inn/racetrack sources were incomplete
 for final colored layers. No matching damage/construction group was verified.
 Those frames keep existing fallbacks. See RECOVERED-RUNTIME.md for exact recipes
 and observed differences; source bytes remain unchanged.
+
+## Area marker migration and compositing audit
+
+All 24 guard/clearing/forbidden animation frames now use native original images.
+Hospital/tower direct-versus-split GIMP tests show only rounding differences; the
+smaller tower XCF reproduces classic visible team pixels and alpha exactly. Larger crystal finishing
+remains unresolved, so those building fallbacks stay unchanged. See the runtime
+recipe guide and compositing-audit manifest for reproducible evidence.

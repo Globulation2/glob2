@@ -241,3 +241,61 @@ racetrack0b0r.png: alpha overlap 0.966; ceiling 253
 racetrack1b0.png: alpha overlap 0.979; ceiling 255
 racetrack1b0r.png: alpha overlap 0.907; ceiling 255
 PASS: three originals, both layers, source hashes, logical registration, saved translucency and runtime pixels
+area-guard0: mean premultiplied RGB error 0.0040, alpha coverage 1.006
+area-guard1: mean premultiplied RGB error 0.0037, alpha coverage 1.008
+area-guard2: mean premultiplied RGB error 0.0037, alpha coverage 1.005
+area-guard3: mean premultiplied RGB error 0.0037, alpha coverage 1.002
+area-guard4: mean premultiplied RGB error 0.0037, alpha coverage 1.000
+area-guard5: mean premultiplied RGB error 0.0035, alpha coverage 1.000
+area-guard6: mean premultiplied RGB error 0.0035, alpha coverage 1.000
+area-guard7: mean premultiplied RGB error 0.0036, alpha coverage 1.002
+area-clearing0: mean premultiplied RGB error 0.0054, alpha coverage 0.993
+area-clearing1: mean premultiplied RGB error 0.0055, alpha coverage 0.993
+area-clearing2: mean premultiplied RGB error 0.0053, alpha coverage 0.995
+area-clearing3: mean premultiplied RGB error 0.0055, alpha coverage 0.996
+area-clearing4: mean premultiplied RGB error 0.0054, alpha coverage 0.998
+area-clearing5: mean premultiplied RGB error 0.0054, alpha coverage 0.998
+area-clearing6: mean premultiplied RGB error 0.0054, alpha coverage 0.997
+area-clearing7: mean premultiplied RGB error 0.0053, alpha coverage 1.000
+area-forbidden0: mean premultiplied RGB error 0.0018, alpha coverage 0.992
+area-forbidden1: mean premultiplied RGB error 0.0036, alpha coverage 0.990
+area-forbidden2: mean premultiplied RGB error 0.0049, alpha coverage 0.989
+area-forbidden3: mean premultiplied RGB error 0.0055, alpha coverage 0.989
+area-forbidden4: mean premultiplied RGB error 0.0055, alpha coverage 0.989
+area-forbidden5: mean premultiplied RGB error 0.0049, alpha coverage 0.989
+area-forbidden6: mean premultiplied RGB error 0.0036, alpha coverage 0.990
+area-forbidden7: mean premultiplied RGB error 0.0034, alpha coverage 0.990
+PASS: 24 original animation frames, source hashes, native alpha and pixels, logical sizes and phase coverage
+PASS: split export differs only by <=3 code values; smaller tower XCF reproduces classic visible team pixels and alpha exactly
+
+2026-09-08: 24 recovered original area markers; 55 original-source runtime frames
+Re-export byte-identical; hospital/tower fallback PNGs unchanged.
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool / unreplaced school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree/wheat alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 18.8398 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 12.753 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 6.47311 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 4.65915 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 22.6615 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 6.88102 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 4.96264 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 3.27288 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 8.82418 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 1.35848 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 24.2395 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 2.78129 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 15.3444 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 2.63313 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
