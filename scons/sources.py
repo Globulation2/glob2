@@ -1,6 +1,9 @@
 """Source manifests shared by every Glob2 toolchain. Paths are relative to each library."""
 
 CLIENT_SOURCES = (
+    'Application.cpp',
+    'MapEditorScreen.cpp',
+    'MessageScreen.cpp',
     'ai/castor/Control.cpp',
     'ai/castor/GetOrder.cpp',
     'ai/castor/Lifecycle.cpp',
@@ -109,13 +112,19 @@ CLIENT_SOURCES = (
     'CustomGameScreen.cpp',
     'DynamicClouds.cpp',
     'EditorMainMenu.cpp',
+    'EditorLoadScreen.cpp',
+    'EditorGenerateScreen.cpp',
     'EndGameScreen.cpp',
     'Engine.cpp',
+    'GameSessionScreen.cpp',
+    'GameLoadScreen.cpp',
+    'SinglePlayerFlow.cpp',
     'EngineInit.cpp',
     'EngineLoaders.cpp',
     'EngineRun.cpp',
     'FertilityCalculator.cpp',
     'map/FertilityField.cpp',
+    'FertilityScreen.cpp',
     'FertilityCalculatorDialog.cpp',
     'Game.cpp',
     'Game_orders.cpp',
@@ -545,6 +554,7 @@ SERVER_SOURCES = (
 
 GAG_SOURCES = (
     'BackgroundFileWriter.cpp',
+    'ApplicationHost.cpp',
     'BinaryStream.cpp',
     'CursorManager.cpp',
     'FileManager.cpp',
@@ -560,6 +570,7 @@ GAG_SOURCES = (
     'GUIDropdown.cpp',
     'GUIAnimation.cpp',
     'GUIBase.cpp',
+    'ScreenStack.cpp',
     'GUIButton.cpp',
     'GUIFileList.cpp',
     'GUIKeySelector.cpp',
@@ -593,6 +604,7 @@ GAG_SOURCES = (
 )
 
 GAG_SERVER_SOURCES = (
+    'ApplicationHost.cpp',
     'BinaryStream.cpp',
     'Stream.cpp',
     'FileManager.cpp',

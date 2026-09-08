@@ -5,12 +5,13 @@
 
 #include "Glob2Screen.h"
 #include "GUIButton.h"
+#include <ScreenStack.h>
 
 ///This is the screen that provides the player with the choice of loading a campaign or starting a new one
 class CampaignMainMenu : public Glob2Screen
 {
 public:
-	CampaignMainMenu();
+	explicit CampaignMainMenu(GAGGUI::ScreenStack& screens);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	//! Widget return codes, delivered to onAction as par1. These identify
 	//! buttons only; they are never used as execute() return values.
@@ -29,6 +30,7 @@ public:
 		CANCELLED = 1,
 	};
 private:
+	GAGGUI::ScreenStack& screens;
 	//! Shared flow for the "new campaign" and "load campaign" buttons:
 	//! pick a campaign with CampaignSelectorScreen, then run it in
 	//! CampaignMenuScreen. Propagates application quit to our caller.

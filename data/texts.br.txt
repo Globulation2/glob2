@@ -521,7 +521,7 @@ Descrição do mapa
 [Map Discovered]
 Mapa
 [Map download failure: lost connection]
-<<<<<<< /media/disk-2/attila/glob2/data/texts.br.txt
+Map Download Failed: Connection to YOG lost
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
@@ -2196,3 +2196,27 @@ Espaço
 Isolamento
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 O início de cada colônia é medido no mapa pronto: o caminho até o trigo e a madeira, quão bem seu terreno volta a crescer, os depósitos e locais de construção ao alcance, e a distância até os rivais. Cada fator pontua de 0 a 1 contra uma barra fixa, o total os pondera, a equidade é o total da pior colônia dividido pelo da melhor, e a pontuação é o pior total multiplicado pela equidade.
+[ERROR_CANT_SAVE_MAP]
+The map could not be saved. Check the destination and available space. Your edits are still open.
+[Loading headers]
+Loading headers...
+[Loading teams]
+Loading teams...
+[Loading terrain]
+Loading terrain...
+[Building gradients]
+Building gradients...
+[Loading players]
+Loading players...
+[Loading scripts]
+Loading scripts...
+[Generating map]
+Generating map...
+[ERROR_CANT_GENERATE_MAP]
+The map could not be generated. Try different generation settings.
+[Loading units]
+Loading units...
+[Loading buildings]
+Loading buildings...
+[Resolving team links]
+Resolving team links...

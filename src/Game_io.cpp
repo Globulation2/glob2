@@ -144,7 +144,13 @@ namespace
 
 bool Game::load(GAGCore::InputStream *stream)
 {
+    return loadTask(stream).run();
+}
+
+GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
+{
 	assert(stream);
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
 
 	ReadSectionGuard gameSection(stream, "Game");
 
@@ -158,7 +164,7 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (verbose)
 		printf("Loading map header\n");
 	if (!tempMapHeader.load(stream))
-		return false;
+		co_return false;
 	mapHeader=tempMapHeader;
 	Sint32 versionMinor=mapHeader.getVersionMinor();
 
@@ -168,11 +174,11 @@ bool Game::load(GAGCore::InputStream *stream)
 	if (verbose)
 		printf("Loading game header\n");
 	if (!tempGameHeader.load(stream, versionMinor))
-		return false;
+		co_return false;
 	gameHeader=tempGameHeader;
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_BEGIN, "signatureStart"))
-		return false;
+		co_return false;
 
 	///Load the step counter
 	stepCounter = stream->readUint32("stepCounter");
@@ -185,12 +191,12 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->readUint32("SyncRandSeedC");
 
 		if (!readMatchingSignature(stream, FILE_SIG_GAME_SYNC, "signatureAfterSyncRand"))
-			return false;
+			co_return false;
 	}
 	else
 	{
 		if (!readMatchingSignature(stream, FILE_SIG_GAME_BUILT, "signatureBeforeTeams"))
-			return false;
+			co_return false;
 	}
 
 	///Load teams
@@ -198,33 +204,37 @@ bool Game::load(GAGCore::InputStream *stream)
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		stream->readEnterSection(i);
-		teams[i]=new Team(stream, this, versionMinor);
+        co_await GAGCore::CooperativeTask::checkpoint("[Loading teams]");
+		teams[i]=new Team(this);
+        if (!(co_await teams[i]->loadTask(stream, &globalContainer->buildingsTypes, versionMinor)))
+            co_return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_TEAM, "signatureAfterTeams"))
-		return false;
+		co_return false;
 
 	// Load the map. Team has to be saved and loaded first.
-	if(!map.load(stream, mapHeader, this))
-		return false;
+	if(!(co_await map.loadTask(stream, mapHeader, this)))
+		co_return false;
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_MAP, "signatureAfterMap"))
-		return false;
+		co_return false;
 
 	// Load the players. Both Map and Team must be loaded first.
 	stream->readEnterSection("players");
 	for (int i=0; i<gameHeader.getNumberOfPlayers(); ++i)
 	{
 		stream->readEnterSection(i);
+        co_await GAGCore::CooperativeTask::checkpoint("[Loading players]");
 		players[i]=new Player(stream, teams, versionMinor);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_PLAYER, "signatureAfterPlayers"))
-		return false;
+		co_return false;
 
 	// We have to finish Team's loading
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
@@ -234,17 +244,18 @@ bool Game::load(GAGCore::InputStream *stream)
 
 	// Check integrity of loaded game
 	if (!integrity())
-		return false;
+		co_return false;
 
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading scripts]");
 	// Now load the old map script
 	if (!sgslScript.load(stream, this))
-		return false;
+		co_return false;
 
 	if(versionMinor >= FILE_FORMAT_VERSION_USL_MAPSCRIPT)
 	{
 		// This is the new map script system
 		if (!mapscript.decodeData(stream, mapHeader.getVersionMinor()))
-			return false;
+			co_return false;
 	}
 
 	///Load the campaign text for the game.
@@ -284,7 +295,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		stream->readLeaveSection();
 		std::istringstream input(state.str());
 		input.imbue(std::locale::classic());
-		if (!(input >> savedRandom)) return false;
+		if (!(input >> savedRandom)) co_return false;
 		map.loadRuntimeState(stream, versionMinor);
 	}
 	gameSection.commit();
@@ -293,15 +304,10 @@ bool Game::load(GAGCore::InputStream *stream)
 	///compute it now
 	if(mapHeader.getVersionMinor() < FILE_FORMAT_VERSION_PRE_FERTILITY)
 	{
-	    if(globalContainer->runNoX)
-	    {
-	        FertilityCalculator::compute(map, {});
-	    }
-	    else
-	    {
-	        FertilityCalculatorDialog dialog(globalContainer->gfx, map);
-	        dialog.runModal();
-	    }
+        FertilityCalculator::Job fertility(map);
+        while (!fertility.advance(65536))
+            co_await GAGCore::CooperativeTask::checkpoint("[Computing Fertility]");
+        fertility.commit();
 	}
 
 	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
@@ -310,7 +316,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		hasSavedRandomState = true;
 	}
 
-	return true;
+	co_return true;
 }
 
 // Known gap, deliberately out of scope here: this writes into the building tile

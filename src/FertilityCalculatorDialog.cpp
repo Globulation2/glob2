@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007-2008 Bradley Arsenault
 
+#include <ApplicationHost.h>
 #include "FertilityCalculatorDialog.h"
 
 #include "FertilityCalculator.h"
@@ -51,7 +52,7 @@ void FertilityCalculatorDialog::runModal()
 		progressFraction.store(p, std::memory_order_relaxed);
 		refreshProgressDisplay();
 		dispatchPaint();
-		emscripten_sleep(1);
+		GAGCore::ApplicationHost::wait(1);
 	});
 	computeDone.store(true, std::memory_order_release);
 #else

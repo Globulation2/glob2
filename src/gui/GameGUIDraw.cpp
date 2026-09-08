@@ -370,12 +370,12 @@ void GameGUI::drawOverlayInfos(void)
 		if (selectionMode==TOOL_SELECTION)
 		{
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
+			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
 		}
 		else if (selectionMode==BRUSH_SELECTION)
 		{
 			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
+			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY, inputState.modifiers()); });
 		}
 		else if (selectionMode==BUILDING_SELECTION)
 		{
