@@ -1,3 +1,4 @@
+const {gameURL} = require('./game-url');
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
@@ -31,7 +32,7 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
       return put.apply(this,args);
     };
   }, fault);
-  await page.goto('/'); await screen(page,'MainMenuScreen');
+  await page.goto(gameURL()); await screen(page,'MainMenuScreen');
   await click(page,760,410); await screen(page,'CustomGameScreen');
   await click(page,380,280); await click(page,810,590);
   await expect.poll(async ()=>(await state(page)).tick).toBeGreaterThan(25);
@@ -58,7 +59,7 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   expect({size:exported.length,sha256:createHash('sha256').update(exported).digest('hex')}).toEqual(changed);
   await page.screenshot({path:info.outputPath('save-persistence-failure.png')});
   const restored=await context.newPage();
-  await restored.goto('/'); await screen(restored,'MainMenuScreen');
+  await restored.goto(gameURL()); await screen(restored,'MainMenuScreen');
   expect(await restored.evaluate(()=>glob2Diagnostics.saveDigest('Durability_regression.game'))).toEqual(original);
   await restored.close();
   await page.evaluate(()=>storageFault.disable());
@@ -83,7 +84,7 @@ test('restore failure is explained before entering the game', async ({page},info
       return open.apply(this,args);
     };
   });
-  await page.goto('/'); await screen(page,'MessageScreen');
+  await page.goto(gameURL()); await screen(page,'MessageScreen');
   expect((await state(page)).restore).toBe('failed');
   expect((await state(page)).persistence).toBe('restore-failed');
   await page.screenshot({path:info.outputPath('storage-restore-failure.png')});

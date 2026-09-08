@@ -178,7 +178,7 @@ cross-platform, or supported-browser certification matrix.
    on all supported native toolchains.
 2. Complete editor/network/modal transitions, resumable/cancellable loading,
    and removal of Asyncify from the scheduled browser host.
-3. WebGL2 rendering and context restoration, resize in remaining legacy flows,
+3. WebGL2 performance and remaining context-loss qualification, resize in remaining legacy flows,
    complete gesture/layout qualification, focus/visibility behavior, and browser interaction handling.
 4. Transactional persistence with durable completion and failure states,
    quota handling, and validated import/export for all local data types.
@@ -190,17 +190,17 @@ cross-platform, or supported-browser certification matrix.
    draining/rollback, operations documentation, and performance/soak gates.
 
 Short cross-play tests do not establish sustained determinism across native
-platforms. Reconnect, WebGL2, durable-save failure recovery, and stable browser
-support remain outstanding.
+platforms. Reconnect, complete renderer qualification, persistence coverage for
+all data types, and stable browser support remain outstanding.
 
 ## Immediate delivery focus
 
-Deliver the missing multiplayer and self-hosting features next. Single-player
-is already playable; further refactoring must resolve a concrete release blocker.
-Next delivery work is the upgraded handshake, secure endpoint configuration,
-identities/rooms, and coordinated recovery.
-Rendering, lifecycle, durable storage, and removal of Asyncify remain acceptance
-gates for the supported release, not reasons to keep expanding preparatory work.
+The current milestone adds WebGL2 drawing, live resize, software fallback and
+context restoration together. Next, finish the release gaps recorded in ADR 006
+and the remaining multiplayer/self-hosting work. Single-player is already
+playable; further refactoring must resolve a concrete release blocker. The
+upgraded handshake, secure endpoint policy, identities/rooms and coordinated
+recovery remain required, as do complete persistence and Asyncify removal.
 
 ## Gameplay evidence
 
@@ -209,3 +209,29 @@ screenshot illustrates the full-page client; the automated checksum assertions,
 not the image, establish the short cross-play result above.
 
 ![Browser client during native cross-play](screenshots/native-cross-play.png)
+
+
+## WebGL2 renderer milestone
+
+The browser now provides actual WebGL2 GPU drawing using `?renderer=webgl2`,
+with software fallback when unavailable. Software remains the default because
+initial GPU performance and full-suite qualification are unresolved. The existing
+2D GPU renderer is shared with desktop through the pinned Emscripten compatibility
+layer; see [ADR 006](adr-006-webgl2-rendering.md) for that delivery compromise and
+its maintenance costs. Texture initialization and atlas normalization fixes also
+keep the native non-rectangle texture path valid.
+
+The rendering suite verifies real custom-game controls, drawing-buffer resize,
+software selection, and two context-loss/restoration cycles without restarting
+the match. All 93 default-suite scenarios pass in Chromium, Firefox and WebKit
+on macOS arm64, including the dedicated opt-in WebGL cases. The 15 viewport
+scenarios also pass with WebGL selected explicitly; one Chromium cold-start
+timeout passed on a focused rerun. The startup allowance now accommodates cold
+texture creation on headless software GPUs. The assertions remain unchanged.
+Both native and Wasm clients build, all nine build-system tests pass, and the
+native session harness passes. The full WebGL-only suite still has editor-load
+and startup-cancellation deadline failures. Controlled performance baselines and
+actual Safari/Edge release testing remain open.
+
+![WebGL2 match after viewport resize](screenshots/webgl2-match.png)
+![Same running session after two graphics-context restorations](screenshots/webgl2-restored.png)

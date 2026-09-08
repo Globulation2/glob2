@@ -36,6 +36,8 @@ def build_web(directory, identity, arguments):
     env['PROGSUFFIX'] = '.html'
     config = output / 'include/glob2/BuildConfig.h'
     write_if_changed(config, '''#pragma once
+#define HAVE_OPENGL 1
+#define GLOB2_WEBGL2 1
 #define PACKAGE "glob2"
 #define PACKAGE_NAME "Globulation 2"
 #define PACKAGE_VERSION "Browser development"
@@ -47,6 +49,7 @@ def build_web(directory, identity, arguments):
     env.Append(CPPPATH=include_paths, CPPDEFINES=['HAVE_CONFIG_H'],
                CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
+        '-sLEGACY_GL_EMULATION=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
         '-sASYNCIFY', '-sASYNCIFY_STACK_SIZE=1048576', '-sALLOW_MEMORY_GROWTH',
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',

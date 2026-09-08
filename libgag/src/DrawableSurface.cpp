@@ -9,9 +9,15 @@
 #include <string>
 #include <valarray>
 #include <SDL_image.h>
+#ifdef GLOB2_WEBGL2
+#include <set>
+#endif
 
 namespace GAGCore
 {
+#ifdef GLOB2_WEBGL2
+    namespace { std::set<DrawableSurface*> gpuSurfaces; }
+#endif
 	SDL_Surface *DrawableSurface::convertForUpload(SDL_Surface *source)
 	{
 		SDL_Surface *dest;
@@ -83,6 +89,9 @@ namespace GAGCore
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
 			glState.allocatedTextureCount++;
+#ifdef GLOB2_WEBGL2
+            gpuSurfaces.insert(this);
+#endif
 			initTextureSize();
 		}
 		#endif
@@ -90,6 +99,7 @@ namespace GAGCore
 
 	void DrawableSurface::initTextureSize(void)
 	{
+        if (!texture || textureInfo) return;
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
@@ -104,7 +114,7 @@ namespace GAGCore
 				int w = getMinPowerOfTwo(sdlsurface->w);
 				int h = getMinPowerOfTwo(sdlsurface->h);
 				std::valarray<char> zeroBuffer((char)0, w * h * 4);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
 
 				texMultX = 1.0f / static_cast<float>(w);
 				texMultY = 1.0f / static_cast<float>(h);
@@ -131,7 +141,13 @@ namespace GAGCore
 
 			void *pixelsPtr;
 			GLenum pixelFormat;
-			#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+			#if defined(GLOB2_WEBGL2)
+            std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> rgba(
+                SDL_ConvertSurfaceFormat(sdlsurface, SDL_PIXELFORMAT_RGBA32, 0), SDL_FreeSurface);
+            if (!rgba) return;
+            pixelsPtr = rgba->pixels;
+            pixelFormat = GL_RGBA;
+            #elif SDL_BYTEORDER == SDL_BIG_ENDIAN
 			std::valarray<Uint32> tempPixels(sdlsurface->w * sdlsurface->h);
 			Uint32 *sourcePtr = static_cast<Uint32 *>(sdlsurface->pixels);
 			for (size_t i=0; i<tempPixels.size(); i++)
@@ -164,11 +180,16 @@ namespace GAGCore
 
 	void DrawableSurface::freeGPUTexture(void)
 	{
+#ifdef GLOB2_WEBGL2
+        gpuSurfaces.erase(this);
+#endif
+        if (!texture) return;
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
 			glState.allocatedTextureCount--;
+            texture = 0;
 
 			// The next line causes a desynchronization between _doScissors and glIsEnabled(GL_SCISSOR_TEST),
 			// which causes the setClipRect() functions to not reset the clipping the way it should,  so many
@@ -289,3 +310,36 @@ namespace GAGCore
 		dirty = true;
 	}
 }
+
+#ifdef GLOB2_WEBGL2
+namespace GAGCore {
+void GraphicContext::restoreBrowserContext()
+{
+    if (!_gc || !(_gc->optionFlags & USEGPU)) return;
+    glState.resetCache();
+    glDisable(GL_BLEND);
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_TEXTURE_2D);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, _gc->getW(), _gc->getH(), 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    _gc->applyGLViewport();
+    // CPU surfaces, including sprite atlases, remain the source of truth.
+    // Rebuild GPU objects without touching game, camera, or UI state.
+    glState.allocatedTextureCount = 0;
+    for (auto* surface : gpuSurfaces) {
+        glDeleteTextures(1, &surface->texture);
+        surface->texture = 0;
+        if (surface->textureInfo) continue;
+        glGenTextures(1, &surface->texture);
+        ++glState.allocatedTextureCount;
+        surface->initTextureSize();
+        surface->uploadToTexture();
+    }
+    _gc->setClipRect();
+}
+}
+#endif

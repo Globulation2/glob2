@@ -1,3 +1,4 @@
+const {gameURL} = require('./game-url');
 const {test, expect} = require('@playwright/test');
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
@@ -6,7 +7,7 @@ const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, del
 const menu = (page, x, y) => click(page, x + 280, y + 210);
 
 test.beforeEach(async ({page}) => {
-  await page.goto('/');
+  await page.goto(gameURL());
   await screen(page, 'MainMenuScreen');
 });
 

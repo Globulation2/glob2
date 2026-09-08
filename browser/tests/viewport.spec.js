@@ -1,3 +1,4 @@
+const {gameURL} = require('./game-url');
 const {test, expect} = require('@playwright/test');
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await snapshot(page)).screen).toContain(name);
@@ -8,13 +9,9 @@ async function resize(page,width,height) {
   await expect.poll(async () => { const s=await snapshot(page); return [s.width,s.height]; }).toEqual([width,height]);
   expect(await page.locator('#canvas').boundingBox()).toMatchObject({x:0,y:0,width,height});
   // Input and dimensions can work even when an offscreen surface is never presented.
-  await expect.poll(() => page.evaluate(() => {
-    const canvas = document.getElementById('canvas');
-    const pixels = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
-    return pixels.some((value,index) => index % 4 !== 3 && value !== 0);
-  })).toBe(true);
+  await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
 }
-test.beforeEach(async ({page}) => { await page.goto('/'); await screen(page,'MainMenuScreen'); });
+test.beforeEach(async ({page}) => { await page.goto(gameURL()); await screen(page,'MainMenuScreen'); });
 test('menus follow the viewport and keep their controls clickable', async ({page}) => {
   await resize(page,1280,720);
   await menu(page,160,360); await screen(page,'SettingsScreen');
@@ -25,9 +22,11 @@ test('menus follow the viewport and keep their controls clickable', async ({page
   await page.locator('#canvas').press('Escape'); await screen(page,'MainMenuScreen');
 });
 test('a running match survives resize and its open menu follows the new center', async ({page}, info) => {
+  // Cold texture creation on a headless software GPU can dominate startup.
+  test.setTimeout(120000);
   await menu(page,480,200); await screen(page,'CustomGameScreen');
   await menu(page,100,70); await menu(page,530,380);
-  await expect.poll(async () => (await snapshot(page)).tick).toBeGreaterThan(25);
+  await expect.poll(async () => (await snapshot(page)).tick, {timeout:60000}).toBeGreaterThan(25);
   const before=(await snapshot(page)).tick;
   await resize(page,1400,800); await resize(page,900,650);
   await expect.poll(async () => (await snapshot(page)).tick).toBeGreaterThan(before);

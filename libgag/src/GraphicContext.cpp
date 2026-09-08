@@ -370,7 +370,7 @@ namespace GAGCore
 
     bool GraphicContext::resizeViewport(int w, int h)
     {
-        if (!window || !sdlsurface || w <= 0 || h <= 0 || (optionFlags & USEGPU)) return false;
+        if (!window || !sdlsurface || w <= 0 || h <= 0) return false;
         if (w == getW() && h == getH()) return true;
         const auto& format = *sdlsurface->format;
         SDL_Surface* replacement = SDL_CreateRGBSurface(0, w, h, 32,
@@ -383,6 +383,17 @@ namespace GAGCore
         ownsSurface = true;
         SDL_GetWindowSize(window, &windowW, &windowH);
         drawableW = windowW; drawableH = windowH;
+#ifdef HAVE_OPENGL
+        if (optionFlags & USEGPU) {
+            SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0, w, h, 0, -1, 1);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            applyGLViewport();
+        }
+#endif
         setClipRect();
         return true;
     }
@@ -416,6 +427,11 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+#ifdef GLOB2_WEBGL2
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
 			sdlFlags |= SDL_WINDOW_OPENGL;
 		}
 		#else
@@ -553,7 +569,7 @@ namespace GAGCore
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 			{
-				gluOrtho2D(0, w, h, 0);
+				glOrtho(0, w, h, 0, -1, 1);
 				glEnable(GL_LINE_SMOOTH);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 				glState.doTexture(true);

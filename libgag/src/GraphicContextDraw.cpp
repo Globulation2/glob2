@@ -95,11 +95,11 @@ namespace GAGCore
 			setScaledLineWidth(1.0f);
 
 			// draw
-			glBegin(GL_LINES);
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_LINES);
 			glVertex2f(x, y);     glVertex2f(x+w, y);
 			glVertex2f(x+w, y);   glVertex2f(x+w, y+h);
 			glVertex2f(x+w, y+h); glVertex2f(x, y+h);
@@ -135,11 +135,11 @@ namespace GAGCore
 			glState.doTexture(false);
 
 			// draw
-			glBegin(GL_QUADS);
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_QUADS);
 			glVertex2f(x, y);
 			glVertex2f(x+w, y);
 			glVertex2f(x+w, y+h);
@@ -190,7 +190,6 @@ namespace GAGCore
 			glLineWidth(1.0f);
 
 			// draw
-			glBegin(GL_LINES);
 			if (color.a < 255)
 			{
 				// the passes overlap, so each carries the alpha that composes back to the requested one
@@ -199,6 +198,7 @@ namespace GAGCore
 			}
 			else
 				glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_LINES);
 			for (int i = 0; i < passes; ++i)
 			{
 				// offsets in window pixels from -(scale-1)/2 to +(scale-1)/2, mapped back to logical units
@@ -238,17 +238,17 @@ namespace GAGCore
 			double fy = y;
 			double fray = radius;
 
-			glBegin(GL_LINES);
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
 				glColor3ub(color.r, color.g, color.b);
+			glBegin(GL_LINES);
 			for (int i=0; i<tot; i++)
 			{
 				double angle0 = (2*M_PI*(double)i)/((double)tot);
 				double angle1 = (2*M_PI*(double)(i+1))/((double)tot);
-				glVertex2d(fx+fray*sin(angle0), fy+fray*cos(angle0));
-				glVertex2d(fx+fray*sin(angle1), fy+fray*cos(angle1));
+				glVertex2f(fx+fray*sin(angle0), fy+fray*cos(angle0));
+				glVertex2f(fx+fray*sin(angle1), fy+fray*cos(angle1));
 			}
 			glEnd();
 			setScaledLineWidth(1.0f);

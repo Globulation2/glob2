@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
+#include <GraphicContext.h>
 #include <emscripten.h>
 
 namespace GAGCore::ApplicationHost
@@ -10,6 +11,36 @@ struct ScheduledLoop { std::unique_ptr<Loop> loop; std::function<void()> complet
 void scheduledFrame(void* opaque)
 {
     auto* state = static_cast<ScheduledLoop*>(opaque);
+    if (EM_ASM_INT({ return Module.gpuRestorePending ? 1 : 0; })) {
+        // SDK-pinned compatibility state owns shaders and streaming buffers.
+        // Recreate it before asking the shared renderer to restore textures.
+        EM_ASM({
+            // Objects from the lost context are already destroyed by WebGL.
+            // Forget their handles rather than deleting them in the new context.
+            GL.textures.fill(null);
+            GL.buffers.fill(null);
+            GLImmediate.currentRenderer = null;
+            GLImmediate.lastRenderer = null;
+            GLImmediate.lastArrayBuffer = null;
+            GLImmediate.lastProgram = null;
+            GLImmediate.fixedFunctionProgram = null;
+            GLImmediate.currentMatrix = 0;
+            GLImmediate.totalEnabledClientAttributes = 0;
+            GLImmediate.enabledClientAttributes = new Array(2).fill(0);
+            GLImmediate.init();
+            GLctx.useProgram(null);
+            GLctx.currentProgram = 0;
+            GLctx.bindBuffer(GLctx.ARRAY_BUFFER, null);
+            GLctx.currentArrayBufferBinding = 0;
+        });
+        GraphicContext::restoreBrowserContext();
+        EM_ASM({
+            Module.gpuRestorePending = false;
+            Module.gpuLost = false;
+            Module.visibilityPending = true;
+            Module.gpuRestores = (Module.gpuRestores || 0) + 1;
+        });
+    }
     std::vector<SDL_Event> events;
     SDL_Event event;
     while (SDL_PollEvent(&event)) events.push_back(event);
@@ -40,7 +71,7 @@ bool takeVisibilityChange(bool& hidden)
     const int state = EM_ASM_INT({
         if (!Module.visibilityPending) return -1;
         Module.visibilityPending = false;
-        return document.hidden ? 1 : 0;
+        return document.hidden || Module.gpuLost ? 1 : 0;
     });
     if (state < 0) return false;
     hidden = state != 0;

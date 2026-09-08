@@ -14,7 +14,11 @@
 #endif
 
 #ifdef HAVE_OPENGL
-#if defined(__APPLE__)
+#if defined(GLOB2_WEBGL2)
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
+#elif defined(__APPLE__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #include <OpenGL/glu.h>
@@ -29,7 +33,7 @@
 #endif // defined(__APPLE__)
 #endif // HAVE_OPENGL
 
-#ifdef HAVE_OPENGL
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
 #define GL_GLEXT_PROTOTYPES
 	#if defined(__APPLE__) || defined(OPENGL_HEADER_DIRECTORY_OPENGL)
 		#include <OpenGL/gl.h>

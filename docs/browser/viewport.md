@@ -1,7 +1,9 @@
 # Viewport resize contract
 
 The browser host retains the newest viewport dimensions until the application
-consumes them at a frame boundary. The software renderer allocates a replacement
+consumes them at a frame boundary. Both software and WebGL2 use this event.
+WebGL2 updates its drawable and projection without replacing the context. The
+software renderer allocates a replacement
 surface before releasing its previous surface; nonpositive dimensions and failed
 allocations leave the old target intact. Desktop hosts do not request automatic
 resolution changes, preserving their existing video settings.
@@ -22,7 +24,8 @@ controls.
 ## Verification
 
 `browser/tests/viewport.spec.js` uses real browser resize and mouse/keyboard input
-in Chromium, Firefox and WebKit. It checks canvas dimensions and its page bounds,
+in Chromium, Firefox and WebKit. Set `GLOB2_TEST_RENDERER=webgl2` to run these
+same scenarios against the GPU backend. It checks canvas dimensions and its page bounds,
 nonblack rendered pixels, menu hit positions, ongoing simulation, the minimum-size
 notice, editor discard dialogs, and high-density displays. Screenshots capture the
 resized game menu and the notice. The native engine-session harness checks actual
@@ -31,10 +34,11 @@ checksum preservation, and minimap hit regions after resizing.
 
 ## Remaining release work
 
-This implementation covers scheduled application screens and the software
-renderer. Legacy blocking multiplayer flows defer application resize handling;
-those flows must migrate to the screen stack. WebGL2 rendering and context
-restoration remain separate required work. Camera coordinates retain the existing
+This implementation covers scheduled application screens with software and
+WebGL2 rendering. Legacy blocking multiplayer flows defer application resize handling;
+those flows must migrate to the screen stack. WebGL2 context restoration is
+covered by the rendering suite; its ownership and remaining qualification are
+recorded in [ADR 006](adr-006-webgl2-rendering.md). Camera coordinates retain the existing
 whole-tile precision. Broader selection/dragging and nested-dialog coverage is
 still needed, along with browser video-preference policy, hidden-tab lifecycle,
 and coordinated multiplayer suspension. Very narrow notice layouts and allocation

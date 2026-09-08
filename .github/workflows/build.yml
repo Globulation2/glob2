@@ -264,7 +264,7 @@ jobs:
           scons release=1 transport-test -j2
           python3 test/run-network-transport-tests.py
           python3 -m unittest discover -s tests/transport -v
-      - name: Test browser single-player and multiplayer
+      - name: Test browser lifecycle, renderers and multiplayer
         if: matrix.order == 'concurrent'
         working-directory: browser
         env:
@@ -273,6 +273,7 @@ jobs:
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium firefox webkit
           npm test
+          GLOB2_TEST_RENDERER=webgl2 npx playwright test viewport.spec.js
           xvfb-run -a npx playwright test --config visibility.config.js
       - name: Test self-hosting with real TLS and persistent volumes
         if: matrix.order == 'concurrent'

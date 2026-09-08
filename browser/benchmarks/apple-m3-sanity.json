@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-08",
+  "platform": "macOS arm64, Apple M3",
+  "sdk": "Emscripten 4.0.15",
+  "status": "preliminary sanity check; fixed-seed release fixtures and controlled baselines remain required",
+  "conditions": "Latest sequential runs without this task\u2019s other browser tests; other machine activity was not isolated. An earlier contended run measured approximately 18 WebGL and 25 software ticks/sec.",
+  "measurements": [
+    {
+      "renderer": "webgl2",
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3, Unspecified Version)",
+      "fixture": "first custom map, default options",
+      "elapsedMs": 6002.20000000298,
+      "ticks": 151,
+      "ticksPerSecond": 25.157442271154746
+    },
+    {
+      "renderer": "software",
+      "gpu": null,
+      "fixture": "first custom map, default options",
+      "elapsedMs": 6003.29999999702,
+      "ticks": 150,
+      "ticksPerSecond": 24.986257558355316
+    }
+  ]
+}

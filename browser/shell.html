@@ -27,6 +27,7 @@ fitCanvas();
 var Module = {
   noInitialRun: true,
   canvas,
+  GL_MAX_TEXTURE_IMAGE_UNITS: 1,
   browserLog: [],
   print(text) { Module.browserLog.push(String(text)); console.log(text); },
   printErr(text) { Module.browserLog.push(String(text)); console.error(text); },
@@ -50,7 +51,14 @@ var Module = {
     const height = Math.round(Math.max(1, innerHeight) * scale);
     Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
     canvas.focus();
-    Module.callMain(['-s', width + 'x' + height, '-F', '-G']);
+    // Keep the established default until the GPU backend passes performance gates.
+    const software = new URLSearchParams(location.search).get('renderer') !== 'webgl2';
+    const context = software ? null : canvas.getContext('webgl2', {
+      alpha:false, antialias:false, depth:false, stencil:false
+    });
+    const gpu = Boolean(context);
+    Module.renderer = gpu ? 'webgl2' : 'software';
+    Module.callMain(['-s', width + 'x' + height, '-F', gpu ? '-g' : '-G']);
   },
   onGameExit(code) {
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
@@ -69,7 +77,7 @@ async function localFileDigest(directory, name, extension) {
 // Read-only observability shared by developer tools and automated assertions.
 Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   snapshot() {
-    return Object.freeze({version:1, screen:Module.glob2Screen || 'loading',
+    return Object.freeze({version:1, renderer:Module.renderer || 'loading', contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
       tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
       paused:Boolean(Module.glob2Paused), width:canvas.width, height:canvas.height,
       restore:Module.storageRestore || 'restoring',
@@ -92,6 +100,12 @@ addEventListener('resize', () => {
   Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
 });
 Module.visibilityPending = true;
+canvas.addEventListener('webglcontextlost', event => {
+  event.preventDefault();
+  Module.gpuLost = true;
+  Module.visibilityPending = true;
+});
+canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
 document.addEventListener('visibilitychange', () => { Module.visibilityPending = true; });
 canvas.addEventListener('pointerdown', focusGame);
 canvas.addEventListener('keydown', () => Module.SDL2?.audioContext?.resume());
