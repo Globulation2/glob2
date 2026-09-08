@@ -60,7 +60,7 @@ return, the existing engine pacing limits catch-up debt to `MAX_CATCHUP_MS` (500
 ms). Cached presentation does not advance clouds, particles, dialog timers, or
 cursor animation. Continuous simulation during a drag would require a separate
 state-ownership design. Prolonged resizing may stall a network match; multiplayer
-timeout behavior still needs a Windows play test.
+recovery was verified in the Windows LAN acceptance test below.
 
 Build the integration harnesses with `scons resize-test aspect-test`. Run
 `build/libgag/src/WindowResizeHarness` and `FullscreenAspectHarness` with `software`
@@ -75,6 +75,9 @@ The resize harness passes in a Windows Server 2022 desktop VM with SDL 2.32.10,
 using both software rendering and OpenGL 1.1 GDI Generic. The same checks pass on
 Linux X11/Mesa llvmpipe and macOS Apple M3 OpenGL. For Windows desktop tests, use
 at least 1100 x 850 pixels and disable automatic remote-desktop size changes.
+Enable "Show window contents while dragging" in Windows Performance Options as
+well as full-window dragging in the RDP client. The client setting alone did not
+override the guest's disabled visual effect.
 
 For a repeatable native modal-loop exercise, run
 `WindowResizeHarness gl interactive` (Escape exits). Drag the window edges and use
@@ -84,6 +87,45 @@ inside the event pump. This passed in the Windows VM: one sustained sizing sessi
 presented 357 cached frames while normal frame 2351 stayed unchanged. Edge dragging
 and maximize/restore also retained the image and resumed normal drawing.
 
-Before marking the PR ready, exercise a network match, menu/tutorial/editor
-dialogs, fullscreen switching, minimization, and multi-display HiDPI transitions
-on supported desktops. The VM does not validate physical Windows GPU drivers.
+## Windows acceptance results (2026-09-08 UTC)
+
+The full client from `71da3dbbc` passed the following checks in the existing
+Windows Server 2022 VM, using SDL 2.32.10 and app-local Mesa 26.1.8 llvmpipe for
+OpenGL. This acceptance pass required no production code changes.
+
+- Two independent Windows clients played SmallForTwo over real loopback TCP.
+  Host and guest were each held in the native system-menu sizing loop for short,
+  ten-second, and greater-than-sixty-second pauses. The short/ten-second host
+  tests initially used outline resizing; full-window contents were enabled
+  before the sustained host test and all guest tests. The peer displayed its
+  waiting message, and both clients resumed after each pause. Both accepted
+  building-priority orders afterward. The guest left through the game menu and
+  the host received the victory result.
+- Separate `GLOB2_REPLAY_PATH` values and `GLOB2_CHECKSUM_SIDECAR=1` recorded both
+  clients. All **6,371 shared ticks (0 through 6370)** matched, including total,
+  team, unit, and building checksum records. The host recorded 7,276 ticks in
+  total because it continued after the guest departed. There were zero shared
+  tick mismatches. This establishes recovery for the tested LAN session; it
+  does not simulate Internet latency, packet loss, or a public YOG server.
+- The Introduction and Basics tutorial passed in software and Mesa GL: grow to
+  1000 pixels wide, shrink to 640 x 480, maximize, drag the maximized title bar
+  down to restore, and advance messages with Space. Tutorial text, units, and
+  terrain remained intact; the GL cloud rendering also survived the sequence.
+  No persistent white textures, blank regions, or duplicated sidebar edges
+  appeared in the inspected frames. Animation non-advancement inside the
+  callback is covered by the resize harness; this was not a frame-rate benchmark.
+- The tutorial's nested Save dialog (GL) and Load dialog (software) remained
+  visible and accepted Cancel after growing and shrinking with the dialog open.
+  The earlier editor pass covered menu clamping and relocated minimap input.
+  Both full-client tutorial backends also passed minimize/taskbar-restore.
+- GL fullscreen startup and settings-button input passed. Software switched
+  windowed -> fullscreen -> windowed live and retained working controls.
+  GL display-setting changes retain master's existing restart requirement;
+  they are not live fullscreen switches.
+
+Physical Windows GPU drivers and mixed-DPI multi-monitor transitions remain
+unverified hardware coverage, rather than known failures. The resize cache's
+maximum-texture-size fallback and Windows simulation pause are intentional
+limits described above. Broader campaign play and Internet multiplayer testing
+can extend this coverage without representing the current acceptance checks as
+an exhaustive proof of correctness.
