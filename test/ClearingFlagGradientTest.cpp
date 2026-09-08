@@ -68,9 +68,11 @@ void fruitIsNeverAClearingTarget() {
     }
 }
 }
-int main() {
+int main(int argc, char** argv) {
     SDL_SetMainReady();
-    GlobalContainer container("glob2-clearing-regression");globalContainer=&container;container.runNoX=true;
+    assert(argc == 2);
+    assert(std::string(argv[1]).find("glob2-save-test-") == 0);
+    GlobalContainer container(argv[1]);globalContainer=&container;container.runNoX=true;
     container.settings.rememberUnit=false;
     container.buildingsTypes.init();IntBuildingType::init();
     fruitIsNeverAClearingTarget();

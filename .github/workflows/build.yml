@@ -58,7 +58,7 @@ jobs:
       - name: Test clearing flag resource bounds
         run: |
           scons -j$(nproc) release=1 server=0 clearing-gradient-test
-          python3 test/run_clearing_regression.py --build-dir build
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest
 
       - name: Test savegame loading and atomic autosaves
         run: |
@@ -140,7 +140,7 @@ jobs:
       - name: Test clearing flag resource bounds
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 clearing-gradient-test
-          python3 test/run_clearing_regression.py --build-dir build
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest.exe
 
       - name: Test savegame loading and atomic autosaves
         run: |
