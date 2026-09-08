@@ -54,7 +54,7 @@ gag_server = gag_env.StaticLibrary('gagserver', [
   gag_env.Object('gagserver-' + name + '.o', '../libgag/src/' + name + '.cpp')
   for name in Split("""
     BinaryStream FileManager FileManagerAtomic FormatableString Stream StreamBackend
-    StreamFilter StringTable TextStream Toolkit
+    StringTable TextStream Toolkit
   """)])
 
 sources = Split("""

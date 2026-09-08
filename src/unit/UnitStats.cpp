@@ -58,13 +58,3 @@ int Unit::numberOfStepsLeftUntilHungry(void)
 	return timeLeft;
 }
 
-//! Iterate on all resource types to see if it is gettable
-void Unit::computeMinDistToResources(void)
-{
-	for (size_t ri = 0; ri < MAX_RESOURCES; ri++)
-		if (!owner->map->resourceAvailable(owner->teamNumber, ri, swimClass(), posX, posY, &minDistToResource[ri]))
-			minDistToResource[ri] = UNIT_MIN_DIST_NOT_REACHABLE;
-	// the dist to an already carried resource is zero
-	if (carriedResource >= 0)
-		minDistToResource[carriedResource] = 0;
-}

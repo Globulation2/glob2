@@ -71,58 +71,6 @@ ThunkPrototype::~ThunkPrototype()
 		delete *it;
 }
 
-/*
-struct ScopeSize: NativeThunk
-{
-	ScopeSize():
-		NativeThunk(0, "Scope::size")
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver)
-	{
-		Scope* scope = dynamic_cast<Scope*>(receiver);
-		assert(scope);
-		return new Integer(&thread->usl->heap, scope->locals.size());
-	}
-} scopeSize;
-
-struct ScopeAt: NativeMethod
-{
-	ScopeAt():
-		NativeMethod(0, "Scope::at", new ValPatternNode(Position(), "index"))
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		Scope* scope = dynamic_cast<Scope*>(receiver);
-		assert(scope);
-		
-		Integer* index = dynamic_cast<Integer*>(argument);
-		assert(index);
-
-		size_t i = index->value;
-		assert(i >= 0);
-		assert(i < scope->locals.size());
-
-		return scope->locals[i];
-	}
-} scopeAt;
-
-
-struct ScopeMetaPrototype: NativeThunk
-{
-	ScopeMetaPrototype():
-		NativeThunk(0, "Scope::metaPrototype")
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver)
-	{
-		Scope* scope = dynamic_cast<Scope*>(receiver);
-		assert(scope);
-		return new MetaPrototype(&thread->usl->heap, scope->scopePrototype(), scope->outer);
-	}
-} scopeMetaPrototype;
-*/
 ScopePrototype::ScopePrototype(Heap* heap, Prototype* outer):
 	ThunkPrototype(heap, outer)
 {
@@ -136,71 +84,6 @@ Scope::Scope(Heap* heap, ScopePrototype* prototype, Value* outer):
 	locals(prototype->locals.size(), 0)
 {}
 	
-/*
-NativeThunk::NativeThunk(Prototype* outer, const std::string& name):
-	ThunkPrototype(0, outer),
-	name(name)
-{
-	body.push_back(new ThunkCode());
-	body.push_back(new ParentCode());
-	body.push_back(new NativeThunkCode(this));
-}
-
-
-NativeMethod::NativeMethod(Prototype* outer, const std::string& name, PatternNode* argument):
-	ScopePrototype(0, outer),
-	name(name)
-{
-	argument->generate(this, 0, (Heap*) 0);
-	delete argument;
-	body.push_back(new ThunkCode());
-	body.push_back(new ParentCode());
-	body.push_back(new ThunkCode());
-	body.push_back(new ValRefCode(0));
-	body.push_back(new NativeMethodCode(this));
-}
-
-
-#include <iostream>
-struct PrototypeWith: NativeMethod
-{
-	PrototypeWith():
-		NativeMethod(0, "Prototype::with", new ValPatternNode(Position(), "that"))
-	{}
-	
-	Value* execute(Thread* thread, Value* receiver, Value* argument)
-	{
-		MetaPrototype* thisProt = dynamic_cast<MetaPrototype*>(receiver);
-		assert(thisProt);
-		
-		MetaPrototype* thatProt = dynamic_cast<MetaPrototype*>(argument);
-		if (thatProt == 0)
-		{
-			Scope* scope = dynamic_cast<Scope*>(argument);
-			assert(scope); // TODO: exception
-			thatProt = new MetaPrototype(&thread->usl->heap, scope->scopePrototype(), scope->outer);
-		}
-		assert(thatProt);
-
-		assert(dynamic_cast<Function*>(thisProt) == 0); // TODO: exception
-		ScopePrototype* target = new ScopePrototype(*thatProt->prototype);
-		target->body.push_back(new PopCode());
-		std::copy(thisProt->prototype->body.begin(), thisProt->prototype->body.end(), std::back_inserter(target->body));
-		foreach var in this
-			copy var in composedThunk
-		return composedThunk;/
-		
-		if (dynamic_cast<Function*>(thatProt))
-		{
-			return new Function(&thread->usl->heap, target, thatProt->outer);
-		}
-		else
-		{
-			return new Scope(&thread->usl->heap, target, thatProt->outer);
-		}
-	}
-} prototypeWith;
-*/
 struct MetaPrototypePrototype: Prototype
 {
 	MetaPrototypePrototype():

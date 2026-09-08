@@ -257,14 +257,6 @@ namespace Cortex
 			logits[o] = acts[o];
 	}
 
-	void CortexNet::forward(const int features[NUM_FEATURES], Sint32 logits[NUM_LOGITS]) const
-	{
-		Sint64 wide[NUM_LOGITS];
-		forwardWide(features, wide);
-		for (int o = 0; o < NUM_LOGITS; o++)
-			logits[o] = static_cast<Sint32>(wide[o]);
-	}
-
 	void CortexNet::forwardDecide(const int features[NUM_DECIDE_FEATURES],
 	                              Sint32 logits[NUM_DECIDE_LOGITS]) const
 	{

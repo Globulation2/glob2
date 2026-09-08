@@ -78,9 +78,6 @@ public:
 	/// Get the next order on the current step
 	std::shared_ptr<Order> retrieveOrder();
 
-	/// Get the stream that this reader uses, or NULL if there is none
-	GAGCore::InputStream *getStream() const;
-
 private:
 	/// You shouldn't copy-construct this class
 	ReplayReader(const ReplayReader &copy) { assert(false); };

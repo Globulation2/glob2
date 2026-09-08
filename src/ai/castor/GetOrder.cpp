@@ -191,17 +191,6 @@ std::shared_ptr<Order>AICastor::getOrder()
 		computeEnemyWarriorsMap();
 	}
 
-	/*if (onStrike)
-	{
-		if (timer>lastEnemyPowerMapComputed+AI_CASTOR_ENEMY_POWER_STRIKE_REFRESH) // each 5s
-			computeEnemyPowerMap();
-	}
-	else
-	{
-		if (timer>lastEnemyPowerMapComputed+AI_CASTOR_ENEMY_POWER_IDLE_REFRESH) // each 2min44s
-			computeEnemyPowerMap();
-	}*/
-	
 	if (priority>0)
 	{
 		std::shared_ptr<Order>order=controlFood();

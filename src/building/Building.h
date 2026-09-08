@@ -477,8 +477,6 @@ private:
 		int & oldQuality,
 		bool canSwim);
 
-	static std::string getBuildingName(int type);
-
 public:
 	// ─── Public data ────────────────────────────────────────────────
 

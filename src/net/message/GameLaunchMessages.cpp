@@ -40,7 +40,6 @@ bool NetStartGame::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetStartGame))
 	{
-		//const NetStartGame& r = dynamic_cast<const NetStartGame&>(rhs);
 		return true;
 	}
 	return false;
@@ -244,7 +243,6 @@ bool NetRequestGameStart::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetRequestGameStart))
 	{
-		//const NetRequestGameStart& r = dynamic_cast<const NetRequestGameStart&>(rhs);
 		return true;
 	}
 	return false;

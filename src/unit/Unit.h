@@ -291,14 +291,11 @@ public:
 public:
 	// optimisation cached values
 	int stepsLeftUntilHungry;
-	int minDistToResource[MAX_RESOURCES];
-	bool allResourcesAreTooFar;
 
 public:
 	// computing optimisation cached values
 	int numberOfStepsLeftUntilHungry(void);
-	void computeMinDistToResources(void);
-	
+
 public:
 	bool integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);

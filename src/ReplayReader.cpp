@@ -256,8 +256,3 @@ Uint32 ReplayReader::readStepCounter()
 	else
 		return stream->readUint16("replayStepCounter");
 }
-
-GAGCore::InputStream* ReplayReader::getStream() const
-{
-	return stream;
-}
