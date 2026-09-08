@@ -112,31 +112,6 @@ void AICastor::addProjects()
 		if (addProject(project))
 			return;
 	}
-	/*if (buildingSum[IntBuildingType::WALKSPEED_BUILDING][0]+buildingSum[IntBuildingType::WALKSPEED_BUILDING][1]==0)
-	{
-		Project *project=new Project(IntBuildingType::WALKSPEED_BUILDING, 1, 7, "boot");
-		project->successWait=strategy.successWait;
-		project->critical=true;
-		if (addProject(project))
-			return;
-	}
-	if (buildingSum[IntBuildingType::HEAL_BUILDING][0]+buildingSum[IntBuildingType::HEAL_BUILDING][1]==0)
-	{
-		Project *project=new Project(IntBuildingType::HEAL_BUILDING, 1, 3, "boot");
-		project->successWait=strategy.successWait;
-		project->critical=true;
-		project->multipleStart=true;
-		if (addProject(project))
-			return;
-	}
-	if (buildingSum[IntBuildingType::SCIENCE_BUILDING][0]+buildingSum[IntBuildingType::SCIENCE_BUILDING][1]==0)
-	{
-		Project *project=new Project(IntBuildingType::SCIENCE_BUILDING, 1, 5, "boot");
-		project->successWait=strategy.successWait;
-		project->critical=true;
-		if (addProject(project))
-			return;
-	}*/
 	// all critical projects succeeded.
 	
 	// enough workers
@@ -338,15 +313,11 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		{
 			if (mainWorkers>AI_CASTOR_FREE_WORKERS_LOW)
 				mainWorkers=((AI_CASTOR_FREE_WORKERS_LOW+mainWorkers)>>1);
-			//if (finalWorkers>AI_CASTOR_FREE_WORKERS_LOW)
-			//	finalWorkers=AI_CASTOR_FREE_WORKERS_LOW;
 		}
 		else
 		{
 			if (mainWorkers>isFree)
 				mainWorkers=((isFree+mainWorkers)>>1);
-			//if (finalWorkers>isFree)
-			//	finalWorkers=isFree;
 		}
 		
 		Building **myBuildings=team->myBuildings;

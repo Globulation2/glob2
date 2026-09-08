@@ -10,6 +10,7 @@
 #include "Building.h"
 
 #include "EngineTiming.h"
+#include "UnitTiming.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include <Stream.h>
@@ -204,7 +205,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					{
 						displacement=DIS_GOING_TO_RESOURCE;
 						targetBuilding=NULL;
-						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, performance[SWIM], posX, posY, &targetX, &targetY, NULL);
+						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
 						validTarget=true;
 					}
 				}
@@ -281,18 +282,21 @@ void Unit::syncStep(void)
 	if(underAttackTimer > 0)
 		underAttackTimer -= 1;
 
+// Burst mode completes an action every tick and keeps its original unscaled speed.
 //#define BURST_UNIT_MODE
+	int stepSpeed=speed;
 #ifdef BURST_UNIT_MODE
 	delta=0;
 #else
-	if (delta<=UNIT_DELTA_MAX-speed)
+	stepSpeed=unitActionStepSpeed(speed, action, dx, dy);
+	if (delta<=UNIT_DELTA_MAX-stepSpeed)
 	{
-		delta+=speed;
+		delta+=stepSpeed;
 	}
 	else
 #endif
 	{
-		delta+=(speed-UNIT_DELTA_QUANTUM);
+		delta+=(stepSpeed-UNIT_DELTA_QUANTUM);
 
 		endOfAction();
 

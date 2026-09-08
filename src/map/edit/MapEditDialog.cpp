@@ -5,6 +5,7 @@
 #include "FormatableString.h"
 #include "Game.h"
 #include "AINames.h"
+#include "AllyTeamWidgetIndex.h"
 #include "GameHeader.h"
 #include "GlobalContainer.h"
 #include "GUIButton.h"
@@ -87,14 +88,14 @@ TeamsEditor::TeamsEditor(Game* game)
 	
 	for(int i=0; i<Team::MAX_COUNT; ++i)
 	{
-		isPlayerActive[i] = new OnOffButton(10, 60+i*25, 21, 21, ALIGN_LEFT, ALIGN_TOP, gameHeader.getBasePlayer(i).type != BasePlayer::P_NONE, 100+i);
+		isPlayerActive[i] = new OnOffButton(10, 60+i*25, 21, 21, ALIGN_LEFT, ALIGN_TOP, gameHeader.getBasePlayer(i).type != BasePlayer::P_NONE, PLAYER_ACTIVE_BASE+i);
 		addWidget(isPlayerActive[i]);
 		if(i==0)
 		{
 			isPlayerActive[i]->visible=false;
 		}
 	
-		color[i] = new ColorButton(35, 60+25*i, 21, 21, ALIGN_LEFT, ALIGN_TOP, 200+i);
+		color[i] = new ColorButton(35, 60+25*i, 21, 21, ALIGN_LEFT, ALIGN_TOP, COLOR_BASE+i);
 		for (int j = 0; j<mapHeader.getNumberOfTeams(); j++)
 			color[i]->addColor(mapHeader.getBaseTeam(j).color);
 		color[i]->setSelectedColor(gameHeader.getBasePlayer(i).teamNumber);
@@ -109,7 +110,7 @@ TeamsEditor::TeamsEditor(Game* game)
 		else
 		{
 			playerName[i]=NULL;
-			aiSelector[i]=new MultiTextButton(60, 60+i*25, 100, 21, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[AI]"), 300+i);
+			aiSelector[i]=new MultiTextButton(60, 60+i*25, 100, 21, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[AI]"), AI_SELECTOR_BASE+i);
 			for (int aii=0; aii<AI::SIZE; aii++)
 				aiSelector[i]->addText(AINames::getAIText(aii));
 			if(gameHeader.getBasePlayer(i).type >= BasePlayer::P_AI)
@@ -119,7 +120,7 @@ TeamsEditor::TeamsEditor(Game* game)
 			addWidget(aiSelector[i]);
 		}
 		
-		allyTeamNumbers[i] = new MultiTextButton(185, 60+25*i, 21, 21, ALIGN_LEFT, ALIGN_TOP, "standard", "", 400+i);
+		allyTeamNumbers[i] = new MultiTextButton(185, 60+25*i, 21, 21, ALIGN_LEFT, ALIGN_TOP, "standard", "", ALLY_TEAM_BASE+i);
 		allyTeamNumbers[i]->clearTexts();
 		for(int j=0; j<mapHeader.getNumberOfTeams(); ++j)
 		{
@@ -127,7 +128,9 @@ TeamsEditor::TeamsEditor(Game* game)
 			s<<j+1;
 			allyTeamNumbers[i]->addText(s.str());
 		}
-		allyTeamNumbers[i]->setIndex(gameHeader.getAllyTeamNumber(gameHeader.getBasePlayer(i).teamNumber)-1);
+		allyTeamNumbers[i]->setIndex(allyTeamNumberToWidgetIndex(
+			gameHeader.getAllyTeamNumber(gameHeader.getBasePlayer(i).teamNumber),
+			mapHeader.getNumberOfTeams()));
 		addWidget(allyTeamNumbers[i]);
 		
 		
@@ -159,9 +162,9 @@ void TeamsEditor::onAction(Widget *source, Action action, int par1, int par2)
 		{
 			endValue=CANCEL;
 		}
-		else if(par1>=100 && par1<200)
+		else if(par1>=PLAYER_ACTIVE_BASE && par1<COLOR_BASE)
 		{
-			int n = par1-100;
+			int n = par1-PLAYER_ACTIVE_BASE;
 			color[n]->visible=isPlayerActive[n]->getState();
 			aiSelector[n]->visible=isPlayerActive[n]->getState();
 			allyTeamNumbers[n]->visible=isPlayerActive[n]->getState();
@@ -169,9 +172,9 @@ void TeamsEditor::onAction(Widget *source, Action action, int par1, int par2)
 	}
 	if(action==BUTTON_PRESSED || action==BUTTON_SHORTCUT)
 	{
-		if(par1>=200 && par1<300)
+		if(par1>=COLOR_BASE && par1<AI_SELECTOR_BASE)
 		{
-			int n = par1-200;
+			int n = par1-COLOR_BASE;
 			for(int i=0; i<Team::MAX_COUNT; ++i)
 			{
 				if(color[i]->getSelectedColor() == color[n]->getSelectedColor() && i!=n)
@@ -181,7 +184,7 @@ void TeamsEditor::onAction(Widget *source, Action action, int par1, int par2)
 			}
 		}
 	
-		if(par1>=400)
+		if(par1>=ALLY_TEAM_BASE)
 		{
 			GameHeader& gameHeader = game->gameHeader;
 			int team = -1;

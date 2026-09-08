@@ -135,10 +135,7 @@ public:
 	
 	///This updates the team for a player
 	void changeTeam(int playerNum, int teamNum);
-	
-	///Returns the reason for being kicked
-	YOGKickReason getKickReason() const;
-	
+
 	///Adds an event listener
 	void addEventListener(MultiplayerGameEventListener* listener);
 	
@@ -214,7 +211,6 @@ private:
 	//This is for if whether the player is ready to start or not (all factors considered like all information received,
 	//map downloaded if need be etc..)
 	bool wasReadyToStart;
-	bool sentReadyToStart;
 	bool humanReadyToStart;
 	
 	//Miscellaneous

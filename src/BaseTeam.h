@@ -33,17 +33,11 @@ public:
 	
 public:
 	bool disableRecursiveDestruction;
-	
-private:
-	Uint8 data[16];
 
 public:
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream) const;
 
-	Uint8 *getData();
-	bool setData(const Uint8 *data, int dataLength);
-	int getDataLength();
 	Uint32 checkSum();
 };
 

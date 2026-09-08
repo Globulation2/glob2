@@ -113,16 +113,4 @@ public:
 	MapGeneratorPoint(int x, int y) : x(x), y(y) {}
 	int x;
 	int y;
-	bool operator>(const MapGeneratorPoint& rhs)
-	{
-		if(x == rhs.x)
-			return y > rhs.y;
-		return x > rhs.x;
-	}
-	bool operator<(const MapGeneratorPoint& rhs)
-	{
-		if(x == rhs.x)
-			return y < rhs.y;
-		return x < rhs.x;
-	}
 };

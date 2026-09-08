@@ -9,7 +9,6 @@
 #include "MapEdit.h"
 #include "TeamDisplay.h"
 #include "UnitDisplayNames.h"
-#include "UnitEditorScreen.h"
 #include "Unit.h"
 #include "UnitType.h"
 #include "SDLCompat.h"

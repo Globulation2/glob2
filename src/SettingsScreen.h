@@ -79,6 +79,9 @@ private:
 	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
 	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
 	int unitRatioGroupNumbers[IntBuildingType::NB_BUILDING][6];
+	// One slot per flag type, indexed by type - EXPLORATION_FLAG. buildFlagsGroup()
+	// fills all three unconditionally, so unlike the sparse unitRatios grid these are
+	// never null; the null checks at the read sites are defensive only.
 	Number* flagRadii[3];
 	Text* flagRadiusTexts[3];
 	int flagRadiusGroupNumbers[3];
@@ -188,6 +191,5 @@ public:
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
-	static int menu(void);
 };
 

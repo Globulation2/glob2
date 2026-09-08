@@ -112,7 +112,7 @@ static constexpr int SLOT_INDEX_NONE = -1;
 static constexpr float TEAM_COLOR_HUE_DEGREES = 360.0f;
 
 //! Padding (in tiles) added on each side of the rectangle passed to
-//! Map::dirtyLocalGradient when a building/flag changes. The width/height
+//! Map::dirtyBuildingGradients when a building/flag changes. The width/height
 //! of the dirty rect therefore grows by 2 * GRADIENT_DIRTY_BORDER_TILES.
 //! See Game_orders.cpp:193, 279, 360, 496.
 static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
@@ -209,6 +209,8 @@ public:
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
 	bool removeUnitAndBuildingAndFlags(int x, int y, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
 	bool removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
+	//! Over the w*h tiles from (x, y), remove the buildings off grass and the ground units on water that cannot swim.
+	void removeUnallowedUnitsAndBuildings(int x, int y, int w, int h);
 	///A convenience function, returns a pointer to the unit with the guid, or NULL otherwise
 	Unit* getUnit(int guid);
 

@@ -235,7 +235,6 @@ bool NetLoginSuccessful::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetLoginSuccessful))
 	{
-//		const NetLoginSuccessful& r = dynamic_cast<const NetLoginSuccessful&>(rhs);
 		return true;
 	}
 	return false;
@@ -341,7 +340,6 @@ bool NetDisconnect::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetDisconnect))
 	{
-//		const NetDisconnect& r = dynamic_cast<const NetDisconnect&>(rhs);
 		return true;
 	}
 	return false;

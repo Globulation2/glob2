@@ -199,7 +199,6 @@ bool NetRouterAdministratorLoginAccepted::operator==(const NetMessage& rhs) cons
 {
 	if(typeid(rhs)==typeid(NetRouterAdministratorLoginAccepted))
 	{
-		//const NetRouterAdministratorLoginAccepted& r = dynamic_cast<const NetRouterAdministratorLoginAccepted&>(rhs);
 		return true;
 	}
 	return false;

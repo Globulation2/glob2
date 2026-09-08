@@ -40,14 +40,6 @@ MapPreview::~MapPreview()
 }
 
 
-
-std::string MapPreview::getMethod(void)
-{
-	return Toolkit::getStringTable()->getString("[handmade map]");
-}
-
-
-
 bool MapPreview::isThumbnailLoaded()
 {
 	return thumbnail.isLoaded();
