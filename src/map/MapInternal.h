@@ -44,7 +44,8 @@ constexpr std::uint16_t GRADIENT_UNREACHABLE      = 1;
 constexpr std::uint16_t GRADIENT_AT_GOAL          = 0xFFFF;
 constexpr std::uint16_t GRADIENT_FORBIDDEN_BORDER = GRADIENT_AT_GOAL - GRADIENT_STEP;
 
-// Distance to the goal in whole tiles, for a reachable gradient value.
+// Weighted cost rounded to whole land-step equivalents, for a reachable value.
+// This is not a geometric tile count: water and diagonal steps change the cost.
 inline int gradientTiles(std::uint16_t g)
 {
 	return (GRADIENT_AT_GOAL - g + GRADIENT_STEP / 2) / GRADIENT_STEP;

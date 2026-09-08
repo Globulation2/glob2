@@ -37,7 +37,7 @@ enum Abilities
 //! Pathfinding swim classes. Class 0 is a unit that cannot swim; classes 1 and
 //! up bucket the unit's walk/swim speed ratio, from water being cheaper than
 //! land to water being three times dearer (see Map::swimClass). The map keeps
-//! one gradient per class so every unit is routed at its own water cost.
+//! one gradient per class so units share routes at their quantized water cost.
 static constexpr int SWIM_CLASS_COUNT = 7;
 const int NB_MOVE=9;
 const int NB_ABILITY=17;

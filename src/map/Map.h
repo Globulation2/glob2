@@ -625,7 +625,10 @@ public:
 	// the pathfinding gradients are built by propagateGradient. Defined in
 	// MapGradientGlobal.cpp.
 	void updateGlobalGradient(Uint8 *gradient);
-	//! Dijkstra from every seeded cell of a pathfinding gradient (see MapInternal.h).
+	//! Dijkstra on a freshly seeded field (see MapInternal.h). Seed costs must be
+	//! between 0 and the largest terrain step (currently 42); do not pass a completed
+	//! field. Uses shared scratch storage: calls across all Maps must be serial and
+	//! non-reentrant. swimClass must be in [0, SWIM_CLASS_COUNT).
 	void propagateGradient(Uint16 *gradient, int swimClass);
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
@@ -711,6 +714,8 @@ public:
 protected:
 	// Pathfinding gradients, see MapInternal.h for the cell values. Indexed
 	// [team][swim class]; NULL until a unit of that class asks for one.
+	// Map owns the buffers and frees them on clear. Resource/guard/clear fields
+	// refresh round-robin in syncStep; forbidden fields refresh through map edits.
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
