@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GUIBase.h>
 #include <ScreenStack.h>
+#include <InputState.h>
 #include <SDLGraphicContext.h>
 #include <stdexcept>
 #include <iostream>
@@ -167,5 +168,23 @@ int main()
     quitting.frame(40, {event});
     require(!quitting.running() && quitting.result() == Screen::QUIT_APPLICATION && cancelled == 1,
             "Quit releases owned screens without starting another flow");
+    GAGCore::InputState held;
+    event = {}; event.type = SDL_KEYDOWN;
+    event.key.keysym.scancode = SDL_SCANCODE_LEFT;
+    event.key.keysym.mod = KMOD_CTRL;
+    held.observe(event);
+    require(held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == KMOD_CTRL,
+            "Held keys and modifiers come from supplied events");
+    event.type = SDL_WINDOWEVENT;
+    event.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
+    held.observe(event);
+    require(!held.hasFocus() && !held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == KMOD_NONE,
+            "Focus loss clears held input even without key-up delivery");
+    event = {}; event.type = SDL_KEYDOWN; event.key.keysym.scancode = SDL_SCANCODE_LEFT;
+    held.observe(event);
+    require(!held.keyboard()[SDL_SCANCODE_LEFT], "Unfocused input cannot become held");
+    event.type = SDL_WINDOWEVENT; event.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
+    held.observe(event);
+    require(held.hasFocus() && !held.keyboard()[SDL_SCANCODE_LEFT], "Focus return starts with released keys");
     std::cout << "PASS: screen phases, completion, reuse, quit and compatibility host\n";
 }

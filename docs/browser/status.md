@@ -21,7 +21,9 @@ infrastructure from the supported-release acceptance criteria.
   now drives the campaign new/load selector with deferred transitions. Other
   menus, mission execution, and the top-level host still require migration.
 - Incremental engine session phases with host-supplied timing, separate drawing,
-  and delay calculation. Input/modal handling and loading remain transitional.
+  and delay calculation. Gameplay accepts explicit input batches and tracks
+  held input from events, clearing it on focus loss. Modal handling, application
+  visibility, and loading remain transitional.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are

@@ -80,6 +80,7 @@ public:
     // scheduling. GUI input and modal flows remain transitional legacy code.
     void beginSession(Uint64 now);
     bool stepSession(Uint64 now);
+    bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
     bool finishSession();
@@ -179,6 +180,7 @@ private:
 	void drawFrame(MainLoopState& st);
     std::optional<MainLoopState> session;
     int sessionEndingTarget = 0;
+    std::vector<SDL_Event> sessionInput;
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.

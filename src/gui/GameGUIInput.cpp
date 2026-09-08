@@ -116,6 +116,17 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    inputState.observe(*event);
+    if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+        lastMouseButtonState = 0;
+        viewportSpeedX = viewportSpeedY = 0;
+        selectionPushed = false;
+        toolManager.cancelDrag(localTeamNo);
+    }
+    if (!inputState.hasFocus() && (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ||
+        event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP ||
+        event->type == SDL_MOUSEMOTION || event->type == SDL_MOUSEWHEEL)) return;
+
 	// handle typing
 	if (processTypingInput(event))
 		return;
@@ -198,7 +209,7 @@ void GameGUI::processEvent(SDL_Event *event)
 // to flush time.
 void GameGUI::accumulateScrollWheelDelta(int delta)
 {
-	SDL_Keymod mod = SDL_GetModState();
+	SDL_Keymod mod = inputState.modifiers();
 	switch (scrollWheelTarget(mod & KMOD_SHIFT, mod & KMOD_CTRL,
 	                          globalContainer->settings.scrollWheelEnabled))
 	{
@@ -350,7 +361,7 @@ void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 		// We send the order
 		else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
 		{
-			toolManager.handleMouseUp(mouseEvent.x, mouseEvent.y, localTeamNo, viewportX, viewportY);
+			toolManager.handleMouseUp(mouseEvent.x, mouseEvent.y, localTeamNo, viewportX, viewportY, inputState.modifiers());
 		}
 	}
 	miniMapPushed=false;

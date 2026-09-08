@@ -398,11 +398,11 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 
 void GameGUI::handleKeyAlways(void)
 {
-	SDL_PumpEvents();
-	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+	if (!inputState.hasFocus()) return;
+	const Uint8 *keystate = inputState.keyboard();
 	if (notmenu == false)
 	{
-		SDL_Keymod modState = SDL_GetModState();
+		SDL_Keymod modState = inputState.modifiers();
 		int xMotion = 1;
 		int yMotion = 1;
 		/* We check that only Control is held to avoid accidentally

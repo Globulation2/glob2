@@ -125,7 +125,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 			setSelection(UNIT_SELECTION, view.mouseUnit);
 			selectionPushed = true;
 			// handle dump of unit characteristics
-			if ((SDL_GetModState() & KMOD_SHIFT) != 0)
+			if ((inputState.modifiers() & KMOD_SHIFT) != 0)
 			{
 				OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("unit.dump.txt"));
 				if (stream->isEndOfStream())
@@ -163,7 +163,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 					selectionPushed=true;
 					// showUnitWorkingToBuilding=true;
 					// handle dump of building characteristics
-					if ((SDL_GetModState() & KMOD_SHIFT) != 0)
+					if ((inputState.modifiers() & KMOD_SHIFT) != 0)
 					{
 						OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("building.dump.txt"));
 						if (stream->isEndOfStream())

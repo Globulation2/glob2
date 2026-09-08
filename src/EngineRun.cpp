@@ -497,7 +497,7 @@ void Engine::prepareNextGameSession(bool& doRunOnceAgain)
 //   5. (gate flip) readyNow = net->allOrdersReceived()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
-//   8. drawAndPaceFrame            - draw, videoshot, sleep
+//   8. drawSession / sessionDelay  - draw, videoshot, host pacing
 //   9. handleExitRequest           - drain on exit request
 //
 // Track order readiness separately for the previous and current ticks.
@@ -518,13 +518,26 @@ void Engine::beginSession(Uint64 now)
 
 bool Engine::stepSession(Uint64 now)
 {
+    std::vector<SDL_Event> events;
+    SDL_Event event;
+    if (!globalContainer->runNoX)
+        while (SDL_PollEvent(&event)) events.push_back(event);
+    return stepSession(now, events);
+}
+
+bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
+{
     if (!session) throw std::logic_error("No active engine session");
     if (!gui.isRunning) return false;
     auto& st = *session;
     --st.nextGuiStep;
     updateTickSpeedAndDrawCadence(st, now);
     pollAutomaticEndingConditions(now);
-    if (!globalContainer->runNoX && st.nextGuiStep == 0) gui.step();
+    sessionInput.insert(sessionInput.end(), events.begin(), events.end());
+    if (!globalContainer->runNoX && st.nextGuiStep == 0) {
+        gui.step(sessionInput, now);
+        sessionInput.clear();
+    }
 
     bool readyNow = st.wasReadyLastTick;
     if (!gui.hardPause) {
@@ -553,6 +566,7 @@ bool Engine::finishSession()
     if (multiplayer) reportMultiplayerResult();
     teardownSession();
     session.reset();
+    sessionInput.clear();
     bool restart = false;
     prepareNextGameSession(restart);
     return restart;

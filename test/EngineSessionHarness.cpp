@@ -37,7 +37,14 @@ int main(int argc, char** argv)
         int iterations = 0;
         bool running;
         do {
-            running = engine.stepSession(now);
+            SDL_Event sentinel{};
+            sentinel.type = SDL_USEREVENT;
+            sentinel.user.code = 7821;
+            require(SDL_PushEvent(&sentinel) == 1, "Cannot enqueue host event");
+            running = engine.stepSession(now, {});
+            SDL_Event retained{};
+            require(SDL_PeepEvents(&retained, 1, SDL_GETEVENT, SDL_USEREVENT, SDL_USEREVENT) == 1 &&
+                    retained.user.code == 7821, "Explicit session input must not consume the host queue");
             engine.drawSession();
             const Uint32 delay = engine.sessionDelay(now);
             require(delay == engine.sessionDelay(now), "Delay queries must not advance the timing budget");

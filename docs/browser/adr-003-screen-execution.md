@@ -57,7 +57,24 @@ these same operations. The regression harness compares simulation checksums
 under regular and delayed callback schedules and checks invalid lifecycle calls.
 
 This is a session boundary, not yet the complete application scheduler:
-`GameGUI::step` still polls input and can open legacy modal dialogs. Finishing a
+`GameGUI::step(events, now)` consumes host-supplied input, but can still open
+legacy modal dialogs. Its no-argument compatibility wrapper polls SDL. Finishing a
 session can still synchronously load a requested save. Audio initialization and
 the end-game screen remain in `run()`. These remaining call stacks must migrate
 before a callback-only browser host can replace Asyncify.
+
+
+## Ordered gameplay input
+
+Gameplay owns held-key/modifier state derived from delivered events. Focus loss
+clears held keys, mouse dragging, and edge scrolling. Returning focus requires
+new input. Building previews and placement use those processed modifiers too.
+Mouse buttons update state from their events; motion is dispatched before a
+following button or focus event so an old motion cannot arrive after release.
+
+`Engine::stepSession(now, events)` buffers input until its GUI cadence and never
+consumes the host's event queue. The compatibility overload collects SDL events.
+The native session harness plants a sentinel in SDL's queue to check this
+boundary; the gameplay regression checks held-key scrolling and focus cleanup
+with supplied timer samples. Browser visibility pause/resume, full menu input
+migration, and nonblocking dialogs remain separate required work.

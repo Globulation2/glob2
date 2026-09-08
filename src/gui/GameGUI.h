@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <InputState.h>
 #include <memory>
 #include <optional>
 #include <queue>
@@ -68,6 +69,8 @@ public:
 	void adjustLocalTeam();
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
+    // Host-supplied events and monotonic time; no event polling in this phase.
+    void step(const std::vector<SDL_Event>& events, Uint64 now);
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
 	//! Return position on x
@@ -507,6 +510,9 @@ private:
 	//! for mouse motion
 	int viewportSpeedX, viewportSpeedY;
 	Uint64 lastViewportStep;
+    GAGCore::InputState inputState;
+    int lastMouseX = 0, lastMouseY = 0;
+    Uint32 lastMouseButtonState = 0;
 
 	// menu related functions
 	enum InGameMenu

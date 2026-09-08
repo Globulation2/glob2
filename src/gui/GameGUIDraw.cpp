@@ -363,12 +363,12 @@ void GameGUI::drawOverlayInfos(void)
 	if (selectionMode==TOOL_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY);
+		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY, inputState.modifiers());
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY);
+		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY, inputState.modifiers());
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
