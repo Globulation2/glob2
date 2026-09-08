@@ -45,13 +45,19 @@ namespace GAGCore
 
 	void GraphicContext::releaseFrameCache()
 	{
-		SDL_FreeSurface(lastFrame);
-		lastFrame = nullptr;
+		SDL_FreeSurface(frameCache.surface);
 		#ifdef HAVE_OPENGL
-		if (frameTexture) glDeleteTextures(1, &frameTexture);
+		if (frameCache.texture) glDeleteTextures(1, &frameCache.texture);
 		#endif
-		frameTexture = 0;
-		frameW = frameH = textureW = textureH = 0;
+		frameCache = FrameCache{};
+	}
+
+	void GraphicContext::reportFrameCacheFailure(const char *reason)
+	{
+		frameCache.valid = false;
+		if (!frameCache.failureReported)
+			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Cannot cache completed frame: %s", reason);
+		frameCache.failureReported = true;
 	}
 
 	void GraphicContext::cacheFrame()
@@ -64,23 +70,38 @@ namespace GAGCore
 			if (w <= 0 || h <= 0) return;
 			// Copy-before-swap works with the legacy GL renderer and needs no FBO extension.
 			glPushAttrib(GL_TEXTURE_BIT | GL_PIXEL_MODE_BIT);
-			if (!frameTexture) glGenTextures(1, &frameTexture);
-			glBindTexture(GL_TEXTURE_2D, frameTexture);
-			int tw = 1, th = 1;
-			while (tw < w) tw *= 2;
-			while (th < h) th *= 2;
-			GLint maximum;
-			glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maximum);
-			if (tw > maximum || th > maximum)
+			if (!frameCache.texture) glGenTextures(1, &frameCache.texture);
+			if (!frameCache.texture)
 			{
-				frameW = frameH = 0;
+				reportFrameCacheFailure("OpenGL texture creation failed");
 				glPopAttrib();
 				return;
 			}
-			if (tw != textureW || th != textureH)
+			glBindTexture(GL_TEXTURE_2D, frameCache.texture);
+			int tw = 1, th = 1;
+			while (tw < w) tw *= 2;
+			while (th < h) th *= 2;
+			if (tw > frameCache.maximumTextureSize || th > frameCache.maximumTextureSize)
+			{
+				reportFrameCacheFailure("frame exceeds the OpenGL texture size limit");
+				glPopAttrib();
+				return;
+			}
+			if (tw != frameCache.textureWidth || th != frameCache.textureHeight)
 			{
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tw, th, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-				textureW = tw; textureH = th;
+				// Query the allocation rather than clearing unrelated renderer GL errors.
+				GLint allocatedWidth = 0, allocatedHeight = 0;
+				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &allocatedWidth);
+				glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &allocatedHeight);
+				if (allocatedWidth != tw || allocatedHeight != th)
+				{
+					reportFrameCacheFailure("OpenGL texture allocation failed");
+					glPopAttrib();
+					return;
+				}
+				frameCache.textureWidth = tw;
+				frameCache.textureHeight = th;
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				// Windows' GDI renderer exposes GL 1.1, which lacks CLAMP_TO_EDGE.
@@ -90,22 +111,33 @@ namespace GAGCore
 			}
 			glReadBuffer(GL_BACK);
 			glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, w, h);
-			frameW = w; frameH = h;
+			frameCache.width = w;
+			frameCache.height = h;
+			frameCache.valid = true;
+			frameCache.failureReported = false;
 			glPopAttrib();
 			return;
 		}
 		#endif
-		if (!lastFrame || lastFrame->w != getW() || lastFrame->h != getH())
+		if (!frameCache.surface || frameCache.surface->w != getW() || frameCache.surface->h != getH())
 		{
-			SDL_FreeSurface(lastFrame);
-			lastFrame = SDL_CreateRGBSurfaceWithFormat(0, getW(), getH(), 32, sdlsurface->format->format);
+			SDL_FreeSurface(frameCache.surface);
+			frameCache.surface = SDL_CreateRGBSurfaceWithFormat(0, getW(), getH(), 32, sdlsurface->format->format);
+			if (!frameCache.surface)
+			{
+				reportFrameCacheFailure(SDL_GetError());
+				return;
+			}
+			SDL_SetSurfaceBlendMode(frameCache.surface, SDL_BLENDMODE_NONE);
 		}
-		if (lastFrame)
+		SDL_SetSurfaceBlendMode(sdlsurface, SDL_BLENDMODE_NONE);
+		if (SDL_BlitSurface(sdlsurface, nullptr, frameCache.surface, nullptr) != 0)
 		{
-			SDL_SetSurfaceBlendMode(lastFrame, SDL_BLENDMODE_NONE);
-			SDL_SetSurfaceBlendMode(sdlsurface, SDL_BLENDMODE_NONE);
-			SDL_BlitSurface(sdlsurface, nullptr, lastFrame, nullptr);
+			reportFrameCacheFailure(SDL_GetError());
+			return;
 		}
+		frameCache.valid = true;
+		frameCache.failureReported = false;
 	}
 
 	void GraphicContext::swapBuffers()
@@ -115,12 +147,11 @@ namespace GAGCore
 
 	void GraphicContext::presentLastFrame()
 	{
-		if (presenting || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
+		if (!frameCache.valid || presenting || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
 		FlagScope scope(presenting);
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
-			if (!frameTexture || frameW <= 0 || frameH <= 0) return;
 			int w, h;
 			SDL_GL_GetDrawableSize(window, &w, &h);
 			if (w <= 0 || h <= 0) return;
@@ -131,19 +162,25 @@ namespace GAGCore
 			glDisable(GL_DEPTH_TEST);
 			if (glState.isTextureSRectangle) glDisable(GL_TEXTURE_RECTANGLE_NV);
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, frameTexture);
+			glBindTexture(GL_TEXTURE_2D, frameCache.texture);
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 			glClearColor(0, 0, 0, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
-			const float scale = std::min(float(w) / frameW, float(h) / frameH);
-			const int width = int(frameW * scale + 0.5f), height = int(frameH * scale + 0.5f);
+			const float scale = std::min(float(w) / frameCache.width, float(h) / frameCache.height);
+			const int width = int(frameCache.width * scale + 0.5f), height = int(frameCache.height * scale + 0.5f);
 			glViewport((w - width) / 2, (h - height) / 2, width, height);
-			glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity();
-			glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();
-			glMatrixMode(GL_TEXTURE); glPushMatrix(); glLoadIdentity();
+			glMatrixMode(GL_PROJECTION);
+			glPushMatrix();
+			glLoadIdentity();
+			glMatrixMode(GL_MODELVIEW);
+			glPushMatrix();
+			glLoadIdentity();
+			glMatrixMode(GL_TEXTURE);
+			glPushMatrix();
+			glLoadIdentity();
 			// Sample pixel centers to avoid filtering into the unused power-of-two padding.
-			const float left = 0.5f / textureW, right = (frameW - 0.5f) / textureW;
-			const float bottom = 0.5f / textureH, top = (frameH - 0.5f) / textureH;
+			const float left = 0.5f / frameCache.textureWidth, right = (frameCache.width - 0.5f) / frameCache.textureWidth;
+			const float bottom = 0.5f / frameCache.textureHeight, top = (frameCache.height - 0.5f) / frameCache.textureHeight;
 			glBegin(GL_QUADS);
 			glTexCoord2f(left, bottom); glVertex2f(-1, -1);
 			glTexCoord2f(right, bottom); glVertex2f(1, -1);
@@ -151,21 +188,28 @@ namespace GAGCore
 			glTexCoord2f(left, top); glVertex2f(-1, 1);
 			glEnd();
 			glPopMatrix();
-			glMatrixMode(GL_MODELVIEW); glPopMatrix();
-			glMatrixMode(GL_PROJECTION); glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);
+			glPopMatrix();
+			glMatrixMode(GL_PROJECTION);
+			glPopMatrix();
 			glPopAttrib();
 			swapBuffers();
 			return;
 		}
 		#endif
-		if (!lastFrame) return;
 		SDL_Surface *target = SDL_GetWindowSurface(window);
 		if (!target || target->w <= 0 || target->h <= 0) return;
-		const float scale = std::min(float(target->w) / lastFrame->w, float(target->h) / lastFrame->h);
-		SDL_Rect dst{0, 0, int(lastFrame->w * scale + 0.5f), int(lastFrame->h * scale + 0.5f)};
-		dst.x = (target->w - dst.w) / 2; dst.y = (target->h - dst.h) / 2;
-		SDL_FillRect(target, nullptr, SDL_MapRGB(target->format, 0, 0, 0));
-		SDL_BlitScaled(lastFrame, nullptr, target, &dst);
+		const float scale = std::min(float(target->w) / frameCache.surface->w, float(target->h) / frameCache.surface->h);
+		SDL_Rect dst{0, 0, int(frameCache.surface->w * scale + 0.5f), int(frameCache.surface->h * scale + 0.5f)};
+		dst.x = (target->w - dst.w) / 2;
+		dst.y = (target->h - dst.h) / 2;
+		// An opaque, full-window copy already overwrites every pixel.
+		if (dst.w != target->w || dst.h != target->h)
+			SDL_FillRect(target, nullptr, SDL_MapRGB(target->format, 0, 0, 0));
+		if (dst.w == frameCache.surface->w && dst.h == frameCache.surface->h)
+			SDL_BlitSurface(frameCache.surface, nullptr, target, &dst);
+		else
+			SDL_BlitScaled(frameCache.surface, nullptr, target, &dst);
 		SDL_UpdateWindowSurface(window);
 	}
 }

@@ -13,9 +13,15 @@ class Context : public GraphicContext
 {
 	std::vector<Color> presentedPixels;
 	int presentedWidth = 0, presentedHeight = 0;
+	bool readback = true;
 	void swapBuffers() override
 	{
 		if (pollingEvents) ++cachedPresentations;
+		if (!readback)
+		{
+			GraphicContext::swapBuffers();
+			return;
+		}
 #ifdef HAVE_OPENGL
 		// Read the exact frame submitted to the window system. Post-swap GL_FRONT
 		// readback is not reliable on Mesa/Xvfb (it can return an all-black image).
@@ -34,6 +40,58 @@ public:
 	int cachedPresentations = 0;
 	Context(bool gpu) : GraphicContext(640, 480, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
 	void nextFrame() override { ++frames; GraphicContext::nextFrame(); }
+	void benchmark()
+	{
+		readback = false; // Pixel readback would dominate the work being measured.
+		if (getOptionFlags() & USEGPU) SDL_GL_SetSwapInterval(0);
+		const auto finish = [&] {
+#ifdef HAVE_OPENGL
+			if (getOptionFlags() & USEGPU) glFinish();
+#endif
+		};
+		for (auto size : {std::pair{640, 480}, {1024, 768}})
+		{
+			resize(size.first, size.second);
+			applyResize();
+			SDL_Event event;
+			while (GraphicContext::pollEvent(&event)) {}
+			setClipRect();
+			std::vector<double> frameTimes, copyTimes;
+			for (int batch = 0; batch < 6; ++batch)
+			{
+				constexpr int count = 60;
+				finish();
+				Uint64 start = SDL_GetPerformanceCounter();
+				for (int i = 0; i < count; ++i)
+				{
+					drawFilledRect(0, 0, getW(), getH(), Color(160, 20, 20));
+					drawFilledRect(0, 0, getW()/2, getH()/2, Color(20, 180, 20));
+					nextFrame();
+					finish();
+				}
+				const double frameMs = 1000.0 * (SDL_GetPerformanceCounter() - start)
+					/ SDL_GetPerformanceFrequency() / count;
+				start = SDL_GetPerformanceCounter();
+				for (int i = 0; i < count; ++i)
+				{
+					cacheFrame();
+					finish();
+				}
+				const double copyMs = 1000.0 * (SDL_GetPerformanceCounter() - start)
+					/ SDL_GetPerformanceFrequency() / count;
+				if (batch > 0)
+				{
+					frameTimes.push_back(frameMs);
+					copyTimes.push_back(copyMs);
+				}
+			}
+			std::sort(frameTimes.begin(), frameTimes.end());
+			std::sort(copyTimes.begin(), copyTimes.end());
+			std::printf("BENCH %dx%d: frame %.3f ms; cache-only %.3f ms (median of 5 x 60, GPU completion included)\n",
+				getW(), getH(), frameTimes[2], copyTimes[2]);
+		}
+	}
+
 	void resize(int w, int h)
 	{
 		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
@@ -54,7 +112,17 @@ public:
 	}
 	void recursiveExpose() { presenting = true; expose(); require(presenting, "Reentrant guard lost"); presenting = false; }
 	SDL_GLContext current() { return context; }
-	bool cached() { return lastFrame || frameTexture; }
+	bool cached() { return frameCache.valid; }
+	void checkTextureLimitRecovery()
+	{
+		const int maximum = frameCache.maximumTextureSize;
+		frameCache.maximumTextureSize = 1; // Emulate a device too small for this frame.
+		cacheFrame();
+		require(!cached(), "Oversized frame left a presentable cache");
+		frameCache.maximumTextureSize = maximum;
+		cacheFrame();
+		require(cached(), "Cache did not recover when the frame fit again");
+	}
 	Color pixel(int x, int y)
 	{
 		Color c;
@@ -90,6 +158,11 @@ int main(int argc, char **argv)
 #ifdef HAVE_OPENGL
 		if (gpu) std::printf("OpenGL %s; renderer %s\n", glGetString(GL_VERSION), glGetString(GL_RENDERER));
 #endif
+		if (argc > 2 && std::string(argv[2]) == "benchmark")
+		{
+			gfx.benchmark();
+			return 0;
+		}
 		const auto originalContext = gfx.current();
 		gfx.expose(); // No complete frame yet.
 		gfx.setClipRect();
@@ -133,6 +206,13 @@ int main(int argc, char **argv)
 #ifdef HAVE_OPENGL
 		if (gpu) require(glGetError() == GL_NO_ERROR, "GL error after cached presentation");
 #endif
+		gfx.resize(960, 600);
+		gfx.expose();
+		require(gfx.pixel(10, 100).r == 0 && gfx.pixel(10, 100).g == 0,
+			"Cached presentation did not clear the left letterbox bar");
+		require(gfx.pixel(950, 100).r == 0 && gfx.pixel(950, 100).g == 0,
+			"Cached presentation did not clear the right letterbox bar");
+		require(gfx.pixel(100, 100).g > 240, "Letterboxing corrupted the cached image");
 		for (auto size : {std::pair{800, 600}, {1024, 768}, {640, 480}})
 		{
 			gfx.resize(size.first, size.second);
@@ -158,6 +238,7 @@ int main(int argc, char **argv)
 		gfx.drawFilledRect(0, 0, 800, 600, Color(0, 255, 0));
 		gfx.nextFrame(); gfx.expose();
 		require(gfx.pixel(100, 100).g > 240, "Rendering failed after window recreation");
+		if (gpu) gfx.checkTextureLimitRecovery();
 		std::printf("PASS %s: cache, callback guards, reflow, context lifetime, input, minimum size, recreation\n", gpu ? "GL" : "software");
 		if (argc > 2 && std::string(argv[2]) == "interactive")
 		{

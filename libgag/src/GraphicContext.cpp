@@ -557,6 +557,7 @@ namespace GAGCore
 				gluOrtho2D(0, w, h, 0);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
+				glGetIntegerv(GL_MAX_TEXTURE_SIZE, &frameCache.maximumTextureSize);
 				glEnable(GL_LINE_SMOOTH);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 				glState.doTexture(true);

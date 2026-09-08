@@ -351,9 +351,18 @@ namespace GAGCore
 		bool pollingEvents = false;
 		bool presenting = false;
 		bool watchingEvents = false;
-		SDL_Surface *lastFrame = nullptr;
-		unsigned frameTexture = 0;
-		int frameW = 0, frameH = 0, textureW = 0, textureH = 0;
+		// Owned here and released explicitly while the GL context is still current.
+		struct FrameCache
+		{
+			SDL_Surface *surface = nullptr;
+			unsigned texture = 0;
+			int width = 0, height = 0;
+			int textureWidth = 0, textureHeight = 0;
+			int maximumTextureSize = 0;
+			bool valid = false;
+			bool failureReported = false;
+		} frameCache;
+		void reportFrameCacheFailure(const char *reason);
 		void releaseFrameCache();
 		void cacheFrame();
 		void presentLastFrame();

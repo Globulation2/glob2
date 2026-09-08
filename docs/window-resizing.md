@@ -87,6 +87,39 @@ inside the event pump. This passed in the Windows VM: one sustained sizing sessi
 presented 357 cached frames while normal frame 2351 stayed unchanged. Edge dragging
 and maximize/restore also retained the image and resumed normal drawing.
 
+## Presentation benchmark and polish
+
+`WindowResizeHarness software benchmark` and `WindowResizeHarness gl benchmark`
+measure a frame containing two opaque rectangles, with test pixel readback disabled.
+Each result is the median of five batches of 60 frames after a warm-up batch.
+GL requests swap interval zero and waits for GPU completion; the separate
+cache-only measurement includes that completion wait. These are presentation
+microbenchmarks, not gameplay frame rates, and the two timings are not additive.
+
+A release build on `pharaoh-dev-1.local`, X11/Xvfb (1280 x 1024), SDL 2.32.10,
+and Mesa 26.0.8 llvmpipe produced this comparison against `02bb97db4`:
+
+| Backend | Window | Before frame (ms) | After frame (ms) | After cache-only (ms) |
+| --- | --- | ---: | ---: | ---: |
+| Software | 640 x 480 | 1.986 | 1.930 | 0.081 |
+| Software | 1024 x 768 | 4.962 | 4.760 | 0.211 |
+| OpenGL / llvmpipe | 640 x 480 | 1.183 | 1.197 | 0.550 |
+| OpenGL / llvmpipe | 1024 x 768 | 3.034 | 3.092 | 1.427 |
+
+The software result is consistent with avoiding a redundant full-window clear
+and using an unscaled blit when dimensions match. The GL difference is small
+(about 1–2%); this single comparison does not establish a performance change.
+The completed-frame copy remains a per-frame cost, particularly on llvmpipe.
+Physical GPU and high-resolution gameplay performance still need separate profiling.
+
+Cache resources and validity now live in one structure, explicitly released before
+GL context destruction. The device texture limit is queried once per context.
+Texture allocation and software allocation/copy failures invalidate the cache and
+report once until recovery. The resize harness also checks letterbox pixels and
+recovery after a simulated device texture-size limit. Both resize backends and all
+five fullscreen/aspect sizes passed on Linux after the polish; the macOS harnesses
+also compile. The Windows acceptance below describes the earlier tested version.
+
 ## Windows acceptance results (2026-09-08 UTC)
 
 The full client from `71da3dbbc` passed the following checks in the existing
