@@ -1,0 +1,53 @@
+# High-resolution artwork and map zoom
+
+This experiment upgrades selected map artwork while retaining the original 32-unit grid, sprite geometry, building footprints, simulation and orders. OpenGL draws the extra texture pixels directly into the framebuffer at 50%–300% zoom. Gameplay, replays and the editor use the same presentation camera; sidebar controls, menus and the minimap keep their normal size relative to map zoom.
+
+Enable **High-resolution artwork** in General Settings and load a session. It defaults off. Alt + wheel zooms about the pointer; the bottom-left − / 100% / + controls use the map center. Software rendering retains original artwork and 100% scale.
+
+## Before and after
+
+[All 89 final frame comparisons](COMPARISONS.md). Originals are enlarged 4× using nearest-neighbor sampling; final upscales appear at exactly the same pixel dimensions. The comparison preserves the original lack of detail rather than hiding it behind a smaller image. No intermediate outputs are included in this gallery.
+
+![Inn construction: original and final](images/inn0c0.png)
+![School: original and final](images/school1b0.png)
+![Swarm: original and final](images/swarm0b0.png)
+
+## Final asset pipeline
+
+1. **Separate color and alpha before inference.** Start from the original base and green team layers. Fill transparent RGB from nearby visible pixels and pad buildings by 16 source pixels. Run local Real-ESRGAN x4plus through ncnn Vulkan on RGB, retaining logical geometry independently of the output resolution.
+2. **Constrain changes to the source style.** Restore broad source color/shading by subtracting low-frequency model differences. Retain 65% of the remaining building detail. This avoids globally changing palette or treating the model output as authoritative geometry.
+3. **Finish by family and frame.** Most improvements come from selective outline reconstruction rather than wholesale repainting. The outline repair combines learned alpha with the original (85% learned contribution), applies a narrow 0.45-output-pixel smoothing pass, and preserves dark translucent shadows. Painted repair blends 45% of the alternative anime model's structural RGB into the existing painted result. Team overlays with corresponding bases remain separate. Tower crystal repair caps reconstructed opacity at the source layer's maximum so damaged crystals stay translucent. Thin fragments and shared construction states are reviewed together.
+4. **Keep successful references fixed.** `pool0b0` and `school1b0` keep their approved baseline output bytes exactly. Walls retain the conservative treatment to preserve connected borders and translucent markings. `finishing.json` records the per-image selection, reference locks and review decisions.
+5. **Use generation selectively for the swarm.** The preferred completed-state generator result and matching construction state are the exceptions to the deterministic finishing approach. Their estimated transparency comes from matte extraction. Runtime export splits green recolorable geometry from neutral base/shadow pixels in those generated images, using their own aligned geometry rather than the original team mask. Compositing the exported layers reproduces the selected RGBA image exactly. All 16 engine hues are exercised by the runtime harness. Generator prompts are retained with the selected source artifacts.
+6. **Treat terrain conservatively.** The 16 grass variants are repeated 5×5 before inference, then center-cropped. Model detail is capped at ±6 channel values and mixed at 20%; it fades to zero at borders, retaining at least four output pixels of the bicubic source edge exactly. This preserves existing joins. Grass improvement is modest; water, shoreline transitions and other terrain remain original art. Each runtime atlas mip level is built separately per tile, then border-extruded and packed to avoid neighboring-frame sampling.
+7. **Export a standalone pack.** The versioned pack contains 89 frames and 141 base/team layers, original logical dimensions, scale and provenance hashes. Export validates source selections, dimensions and registration. The runtime reads a compact versioned index, validates required layers, and falls back atomically when a frame is incomplete. Python, models and the experiment gallery are not runtime dependencies.
+
+The experiments established that one recipe is insufficient: a universal generator repaint worked well for the swarm but failed to preserve the inn construction fragments; a full anime restoration simplified painted textures; unrestrained alpha reconstruction could make translucent overlays too bright. The selected pipeline therefore uses conservative color restoration, per-frame finishing, protected reference outputs and only two generated swarm states. The gallery shows only those final choices.
+
+The committed selected sources support deterministic runtime export. Model binaries and discarded intermediate outputs are intentionally omitted. Recreating upstream inference requires the recorded models and generation tools; exported runtime images do not.
+
+## Engine changes needed for zoom
+
+- **Texture resolution no longer defines geometry.** Sprite width/height remain logical source dimensions. GPU-only high-resolution surfaces and atlas regions draw into those rectangles. Original surfaces remain available for CPU/software use. Smaller team layers retain their own registration and dimensions.
+- **A shared camera converts both drawing and interaction.** Fractional world origin, zoom, viewport bounds and toroidal normalization live in `MapCamera`. Existing tile-origin helpers receive the camera's integer tile origin plus fractional offset. The world pass uses a scoped GL transform; queued batches flush before transforms change, and projection/clipping restore before UI drawing. There is no low-resolution map framebuffer enlarged afterward.
+- **Every world layer follows that transform.** Terrain, water, units, buildings, fog, clouds, effects, particles, placement ghosts, selections, brushes and world indicators move together. Particles retain world positions. Screen-edge indicators use screen space.
+- **Input uses the inverse conversion.** Hover, placement, drag tools, painting, selection, minimap navigation and event-centering agree with the displayed tiles. Alt-wheel is consumed before building-order handling, including fractional trackpad input. Drag and edge/key panning account for zoom. Zoom is local state, reset to 100% each session.
+- **Wrapping and culling use visible world bounds.** The viewport is divided by zoom, with existing overhang allowance. Toroidal picking and drawing share the same origin. When an axis is smaller than the viewport, one period is centered rather than repeating interactive objects.
+- **Sampling and resources stay explicit.** HD uses normalized 2D textures with linear sampling and mipmaps. Padded per-tile mips preserve terrain batching down to 50%. Team-color surfaces are created lazily and released with session resources. Legacy filtering and software originals remain available.
+- **Window and drawable pixels are distinct.** HiDPI output renders to the actual GL drawable. F11 toggles fullscreen without discarding textures. This experiment's window resize keeps the configured logical resolution and letterboxes/scales it; it does not implement the reflow and exposed-event caching in PR #198. Integration with that PR needs review because both touch the renderer/window code.
+
+## In-game captures
+
+These are actual OpenGL captures from the integration harness, not generated mockups.
+
+![Gameplay at 300%](images/gameplay-300.png)
+![Editor shoreline and inn at 300%](images/editor-shoreline-300.png)
+![One centered map period at 50%](images/small-map-50.png)
+
+## Validation, cost and follow-up
+
+See [runtime instructions and measured results](../../experiments/ai-upscale/HIGH-RESOLUTION-RUNTIME.md). The optimized build, pack validation, camera tests, eight wheel tests, gameplay/editor/replay integration, software rendering, fallback cases, and all-frame/all-hue cache checks pass in the experiment checkout. A 50-tick original/HD comparison produces matching simulation checksums. Three Maxima placement failures remain in the broader 195-test suite; that suite is not fully green.
+
+On the development Mac, the dense four-team fixture uses about 171 MB GPU memory with HD artwork, versus 42 MB with originals. At 50% zoom, measured frame times were about 16.5/11.3 ms HD/original; at 300%, about 2.1/2.0 ms. HD adds one draw call rather than per-tile calls. The deliberately maximal all-frames/all-16-hues stress test reaches 614 MB CPU and 1.19 GB GPU allocation; cache size stabilizes and releases on session close. These are local measurements against the updated renderer with original art, not a historical renderer benchmark or a cross-platform performance guarantee.
+
+**Unit upscaling can be done alongside [PR #201, increasing core unit animation poses from 8 to 32](https://github.com/Globulation2/glob2/pull/201).** Its added poses should be finished as coherent animation sequences, with consistent silhouettes, team layers, anchoring and frame coverage. This PR already scales unit rendering with the map, but deliberately retains original unit textures; it does not generate the expanded unit atlas.

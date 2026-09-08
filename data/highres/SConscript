@@ -1,0 +1,14 @@
+import os
+
+Import("env")
+Import("PackTar")
+
+# Only the versioned runtime pack is shipped, never experiment/model files.
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
+    PackTar(env["TARFILE"], "SConscript")
+    for directory, _, files in os.walk("v1"):
+        for name in sorted(files):
+            source = os.path.join(directory, name)
+            PackTar(env["TARFILE"], source)
+            env.Install(env["INSTALLDIR"] + "/glob2/data/highres/" + directory, source)
+    env.Alias("install", env["INSTALLDIR"] + "/glob2/data/highres")

@@ -75,6 +75,7 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
+	if(zoomControlPushed)return;
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
 		dragging from correctly going through intermediate cells.
@@ -84,6 +85,8 @@ void GameGUI::dragStep(int mx, int my, int button)
 		passed to us as a parameter. */
 	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
+		if (!camera.contains(mx,my) || my<16) return;
+		mx=mapMouseX(mx);my=mapMouseY(my);
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
 		{
@@ -134,7 +137,7 @@ void GameGUI::step(void)
 				when drawing areas with the brush. */
 			if (onViewport)
 			{
-				game.map.cursorToBuildingPos (lastMouseX, lastMouseY, 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
+				game.map.cursorToBuildingPos (mapMouseX(lastMouseX), mapMouseY(lastMouseY), 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
 			}
 			else
 			{
@@ -220,12 +223,15 @@ void GameGUI::step(void)
 	for(unsigned i=0; i<viewportSteps; ++i)
 	{
 		handleKeyAlways();
-		viewportX += viewportSpeedX;
-		viewportY += viewportSpeedY;
+        updateCamera();
+        camera.originX+=viewportSpeedX*32/camera.zoom;
+        camera.originY+=viewportSpeedY*32/camera.zoom;
+        camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 	}
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 
+	updateCamera();
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);

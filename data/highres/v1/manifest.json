@@ -1,0 +1,2098 @@
+{
+  "version": 1,
+  "selection_sha256": "fe744e0cf1e0c3411dfe72c96e07b1b63e9f57b1754fe587ac8f04277c48223e",
+  "frames": [
+    {
+      "id": "swarm0b0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "swarm0b0.png",
+          "role": "base",
+          "sha256": "9fdb9b2d8026c48592a52682973d4ded4a8520fee22da510980b606c684cd544",
+          "source_sha256": "e79dfafcc20a1ce00e0b26400ac787d34bee786886ff8aa342ba257c1101b3c9",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "003ba9aa314811ed60baf5828262895a9c856c2f60c545c6416715ad078263f5"
+        },
+        {
+          "file": "swarm0b0r.png",
+          "role": "team",
+          "sha256": "d5e99e78eb818a93f4c28c0524efb14c8d2f98f2a39dc79d8a916ed658c4769f",
+          "source_sha256": "e79dfafcc20a1ce00e0b26400ac787d34bee786886ff8aa342ba257c1101b3c9",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "4f6dea01007a35422ce45ad557c2750a9ff3ad4d322f2b54c770c38b3caec5d8"
+        }
+      ],
+      "recipe": "generator_v1"
+    },
+    {
+      "id": "swarm0c0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "swarm0c0.png",
+          "role": "base",
+          "sha256": "18d5a0a2b9268a8a1706440751e475e46fc6dea1aa297dfcb8be048aa841bdb5",
+          "source_sha256": "57fdeb17a26e476d6464b5355c9f80affd6d6fa0ac6e0ace11a155bafb11d93e",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": null
+        },
+        {
+          "file": "swarm0c0r.png",
+          "role": "team",
+          "sha256": "f81bc2878db78ebc71405f3c0bd6c6f9c7a034349c5e3850e911843d79c8051a",
+          "source_sha256": "57fdeb17a26e476d6464b5355c9f80affd6d6fa0ac6e0ace11a155bafb11d93e",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "ee456e96ff1511cce2f4d60e77b527af2fbb6f1315cfaf7628f4a2c0345f2f12"
+        }
+      ],
+      "recipe": "generator_construction"
+    },
+    {
+      "id": "inn0b0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn0b0.png",
+          "role": "base",
+          "sha256": "aeedf6307218f5a35616de59d88d3f30540672e085a3c038b81f3e1f7f6c682c",
+          "source_sha256": "aeedf6307218f5a35616de59d88d3f30540672e085a3c038b81f3e1f7f6c682c",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "b867bc6a5aa2bbd12e7d1d7fcbc5d7b83bacffe8d41fa34ec554ad09ea7bedd1"
+        },
+        {
+          "file": "inn0b0r.png",
+          "role": "team",
+          "sha256": "2a115d5558a4505f1328aaf410da5ab2afc13f0eb2e21ede3677f3ba20438aa2",
+          "source_sha256": "2a115d5558a4505f1328aaf410da5ab2afc13f0eb2e21ede3677f3ba20438aa2",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "a8f701e70a3b5399487b51dc7c772600267dbdb2a04ed97c3e341184c71e3a8d"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "inn0b1",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn0b1.png",
+          "role": "base",
+          "sha256": "295d4555eea86689ec1980d10451e00a7f2f4386e5e070d232cad6bb023f0984",
+          "source_sha256": "295d4555eea86689ec1980d10451e00a7f2f4386e5e070d232cad6bb023f0984",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "131e05b6ab3c10ff25f73004884415ab9411aea0946b656c71280471a69b8d5d"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "inn0c0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn0c0.png",
+          "role": "base",
+          "sha256": "a517e6e2ed33e01990a0731a521b267878f39cd211c6414fa88ea85a7c50ca99",
+          "source_sha256": "a517e6e2ed33e01990a0731a521b267878f39cd211c6414fa88ea85a7c50ca99",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "3999094ce67209228933f83f5f14bf3b290676004088f43d55c45fd20064abf2"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "inn1b0",
+      "width": 64,
+      "height": 69,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn1b0.png",
+          "role": "base",
+          "sha256": "2ebe77357d6eca07cc3b391a1b7ee0cb045e8635f26afa6d62ff1a3a09d6b22a",
+          "source_sha256": "2ebe77357d6eca07cc3b391a1b7ee0cb045e8635f26afa6d62ff1a3a09d6b22a",
+          "logical_width": 64,
+          "logical_height": 69,
+          "original_sha256": "16dd12fd579af2281ecf86a2d1731033146814fae10baf2b6cc648fdcd36acc5"
+        },
+        {
+          "file": "inn1b0r.png",
+          "role": "team",
+          "sha256": "2dd0caa0d333acae3472daac3e6145c3a399a8aad95f317519ac481421ea17dd",
+          "source_sha256": "2dd0caa0d333acae3472daac3e6145c3a399a8aad95f317519ac481421ea17dd",
+          "logical_width": 64,
+          "logical_height": 69,
+          "original_sha256": "fb80127f693e00669d35cfd02aef69b90291cdfdaf7c2a6ecee676d164a34ebb"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "inn1b1",
+      "width": 64,
+      "height": 69,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn1b1.png",
+          "role": "base",
+          "sha256": "95363fa0cbc56d2f282f6a87ec82854039ab98509101be2ebe03c81f9b83ffd1",
+          "source_sha256": "95363fa0cbc56d2f282f6a87ec82854039ab98509101be2ebe03c81f9b83ffd1",
+          "logical_width": 64,
+          "logical_height": 69,
+          "original_sha256": "5be62526cb58134fadcc60e57c6fc2f7d89bc9c7565ee78344122429167ee699"
+        },
+        {
+          "file": "inn1b1r.png",
+          "role": "team",
+          "sha256": "961f7a2d7474bad9aa7fadc7f3c60ed927d4fa095079723733bb08ea65639ff0",
+          "source_sha256": "961f7a2d7474bad9aa7fadc7f3c60ed927d4fa095079723733bb08ea65639ff0",
+          "logical_width": 64,
+          "logical_height": 69,
+          "original_sha256": "f7ce4471af582675e3313776e8116ece2b374080b3a7d743d891d0bec84b1f51"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "inn1c0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn1c0.png",
+          "role": "base",
+          "sha256": "8900963b84bd34c44b613e3aafdc182fe6be9dd6ddd65b1506c8a1312f06a29a",
+          "source_sha256": "8900963b84bd34c44b613e3aafdc182fe6be9dd6ddd65b1506c8a1312f06a29a",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "58dd3ce7ff90e0e6385c9fc6a0b1a1c6fba974f9ad306afeedb22fd6f39f87d0"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "inn2b0",
+      "width": 96,
+      "height": 96,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn2b0.png",
+          "role": "base",
+          "sha256": "23a39cde6b74365afe029f56b518fe107f8210a0994b18da806101cf1f43ff59",
+          "source_sha256": "23a39cde6b74365afe029f56b518fe107f8210a0994b18da806101cf1f43ff59",
+          "logical_width": 96,
+          "logical_height": 96,
+          "original_sha256": "92e748681d8121f2c92e482a7e93dec5048e0b4031d92940996d7093ab496bb8"
+        },
+        {
+          "file": "inn2b0r.png",
+          "role": "team",
+          "sha256": "e831c5869cea6db6f2a8d41701e1e7f6184ccbbed0257ef2fbe0dce352f1e038",
+          "source_sha256": "e831c5869cea6db6f2a8d41701e1e7f6184ccbbed0257ef2fbe0dce352f1e038",
+          "logical_width": 96,
+          "logical_height": 96,
+          "original_sha256": "31c3779b1919d2aae99f4bf11d63385b819eb9e14527e5ce7d61b4ee043bcdf7"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "inn2c0",
+      "width": 96,
+      "height": 96,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn2c0.png",
+          "role": "base",
+          "sha256": "58b75b1a88b4a5c16b08777cb4a8d31757830fc51102a46b364fe80b2be85db1",
+          "source_sha256": "58b75b1a88b4a5c16b08777cb4a8d31757830fc51102a46b364fe80b2be85db1",
+          "logical_width": 96,
+          "logical_height": 96,
+          "original_sha256": "2cfc52fcf9390aec9d178a8b54592ac60b3b306ba0c7ce60e29f0b4ce45df018"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "hosp0b0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "hosp0b0.png",
+          "role": "base",
+          "sha256": "25fd4b4e4d80dd1a2a5265c74c3d566f1e4c1168b30de7fdbf286f91c20d6f92",
+          "source_sha256": "25fd4b4e4d80dd1a2a5265c74c3d566f1e4c1168b30de7fdbf286f91c20d6f92",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "d73f31090498951aef47d36cd2e802047ccf2ec0aa30e542e35027cd4f8b120b"
+        },
+        {
+          "file": "hosp0b0r.png",
+          "role": "team",
+          "sha256": "359f8c408a54ad4238039d87d72097df481d44e11dbbace6bcd3c5d8d718c387",
+          "source_sha256": "359f8c408a54ad4238039d87d72097df481d44e11dbbace6bcd3c5d8d718c387",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "997951ed821b4ff56a664066f9cc0d339bfbbab0bf5462f9e5ccb1e81b4962d8"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "hosp0b1",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "hosp0b1.png",
+          "role": "base",
+          "sha256": "d0ca283a5246e93bb54d08de243935e37c611144d2e09400deb2e03eed10e812",
+          "source_sha256": "d0ca283a5246e93bb54d08de243935e37c611144d2e09400deb2e03eed10e812",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "3fe460541bd8c387e2f5843f8c84891b36dc064db9b43a4c15b514dc4aad0ccf"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "hosp0c0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "hosp0c0.png",
+          "role": "base",
+          "sha256": "ad85ed3fab7dd0355d12e797ced728c6f059f856423d5b655a0c4b60d849446a",
+          "source_sha256": "ad85ed3fab7dd0355d12e797ced728c6f059f856423d5b655a0c4b60d849446a",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "c2f847e85df250dade90c901c3b62ab8f9827052ac1cda27b9f04b0ab1108f53"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "hosp1b0",
+      "width": 64,
+      "height": 76,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "hosp1b0.png",
+          "role": "base",
+          "sha256": "c02d0e88207160a61ea731b1b44b4e53481e65791e3b70ad7ce7beba69be1ff6",
+          "source_sha256": "c02d0e88207160a61ea731b1b44b4e53481e65791e3b70ad7ce7beba69be1ff6",
+          "logical_width": 64,
+          "logical_height": 76,
+          "original_sha256": "ecc48871d90e7955fb195f3fe065cd7c8eeeb5b500b0604e2b6763da502a46e7"
+        },
+        {
+          "file": "hosp1b0r.png",
+          "role": "team",
+          "sha256": "6ff2f6287d35f4160f2a1fb8220b4ccbdb8b63f6530a525171d182f748747575",
+          "source_sha256": "6ff2f6287d35f4160f2a1fb8220b4ccbdb8b63f6530a525171d182f748747575",
+          "logical_width": 64,
+          "logical_height": 76,
+          "original_sha256": "1678d27e4f1c7b905e192d70443edb58ea4c4ccbe21e900f8208af7643a9e0e7"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "hosp1c0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "hosp1c0.png",
+          "role": "base",
+          "sha256": "c4ada2ca1418365954444bb6f272f59be5b8cd308b74f53ad6978b6fd1a71de5",
+          "source_sha256": "c4ada2ca1418365954444bb6f272f59be5b8cd308b74f53ad6978b6fd1a71de5",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "4d2c2b23550b3c2aca24ac297b3c44dba32029fd9ae56e8860aee4bbef95e723"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "hosp2b0",
+      "width": 64,
+      "height": 77,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "hosp2b0.png",
+          "role": "base",
+          "sha256": "0775015cfd828933a0be768f37041012ca1df7a43b46f8523cc321d6433acff5",
+          "source_sha256": "0775015cfd828933a0be768f37041012ca1df7a43b46f8523cc321d6433acff5",
+          "logical_width": 64,
+          "logical_height": 77,
+          "original_sha256": "c224d8a72e634d2b411d69b110f04d5b124bf40543701c786d0567b4fae88610"
+        },
+        {
+          "file": "hosp2b0r.png",
+          "role": "team",
+          "sha256": "5c93b466f2966b25f8bf15f66476e3b9565d47fb351eeb40a851ee2e3f01878d",
+          "source_sha256": "5c93b466f2966b25f8bf15f66476e3b9565d47fb351eeb40a851ee2e3f01878d",
+          "logical_width": 64,
+          "logical_height": 77,
+          "original_sha256": "393db0bfc5c86718a7473e87f1240eb81371aa4880b82ba53911b37ab2d44e03"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "hosp2c0",
+      "width": 64,
+      "height": 77,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "hosp2c0.png",
+          "role": "base",
+          "sha256": "f44540e82261f8edfbad0cf1c6d6e59e04b37a17b1cf000c25cad922b00d38c7",
+          "source_sha256": "f44540e82261f8edfbad0cf1c6d6e59e04b37a17b1cf000c25cad922b00d38c7",
+          "logical_width": 64,
+          "logical_height": 77,
+          "original_sha256": "66d2dfe74461912ce296bf7dd05c08a1609840216fd32fd3043ea64493ede924"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "racetrack0b0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "racetrack0b0.png",
+          "role": "base",
+          "sha256": "33c3ca6e7128016c004daf7e26b48c73a3328f14a9de27054d358a61a4d3cea1",
+          "source_sha256": "33c3ca6e7128016c004daf7e26b48c73a3328f14a9de27054d358a61a4d3cea1",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "afa0c85d7325a92f6752afeb5e0ddc6eb759f3f4eab1a8ea70be8f2c37ee2fc7"
+        },
+        {
+          "file": "racetrack0b0r.png",
+          "role": "team",
+          "sha256": "c2b5e4149cc1a1e9185d7da8085c20d5ca812029f9728617e58c8a0a7c31ff6c",
+          "source_sha256": "c2b5e4149cc1a1e9185d7da8085c20d5ca812029f9728617e58c8a0a7c31ff6c",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "a518909701433753fe850574c2feb77213a3392e0914e8af1394812f891fa416"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "racetrack0b1",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "racetrack0b1.png",
+          "role": "base",
+          "sha256": "084ced3a0f91fba443043e6abbc3e3011f32f4dc0f623de7eacb89773be5d528",
+          "source_sha256": "084ced3a0f91fba443043e6abbc3e3011f32f4dc0f623de7eacb89773be5d528",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "8d89001d72006f1cf211fb9f0c7e47d6ea279f711715ff80360e7dbae274fffb"
+        },
+        {
+          "file": "racetrack0b1r.png",
+          "role": "team",
+          "sha256": "1035aa3f1d92603f0b57759d6a31adfbbca8a67ecb55d94abdf00f7038fe182e",
+          "source_sha256": "1035aa3f1d92603f0b57759d6a31adfbbca8a67ecb55d94abdf00f7038fe182e",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "fe7ab8950fe88bcdd8477ae254ccff50b0ca47a6ddc2384d9e8493895a78bcb8"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "racetrack0b2",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "racetrack0b2.png",
+          "role": "base",
+          "sha256": "5fb7d3c0c6e687e7367745e2ed16b96b676d265fdac70dc3589702f7d39ca93a",
+          "source_sha256": "5fb7d3c0c6e687e7367745e2ed16b96b676d265fdac70dc3589702f7d39ca93a",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "b135efe0f654665b2a55431eff29c4022fe77165f826b00d0a7cf403a9418e63"
+        },
+        {
+          "file": "racetrack0b2r.png",
+          "role": "team",
+          "sha256": "9dec9144282a2c4ffdf452a2b669fed92f899da40dc3515d20a10ec4d6b60df5",
+          "source_sha256": "9dec9144282a2c4ffdf452a2b669fed92f899da40dc3515d20a10ec4d6b60df5",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "b9816a27595a209957075639890da1d5d6e685bd4ee8468b740d38b19769e14a"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "racetrack0c0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "racetrack0c0.png",
+          "role": "base",
+          "sha256": "da9ae0b0ea39b16fcf6190004893d7a35b5b1d62563054fb2c7646a103d1644d",
+          "source_sha256": "da9ae0b0ea39b16fcf6190004893d7a35b5b1d62563054fb2c7646a103d1644d",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "fcb65ce17357cdf58717f568f0a1a0d53e297bcbc310f272db28fe4f9fadad27"
+        },
+        {
+          "file": "racetrack0c0r.png",
+          "role": "team",
+          "sha256": "909a4e3044c5a8c82c10f9c2facf4c362a16d4a56b322234cce3eec11b6618a7",
+          "source_sha256": "909a4e3044c5a8c82c10f9c2facf4c362a16d4a56b322234cce3eec11b6618a7",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "776c10bfcc4b3458636ac973bd62b9c22605ff2d1e150675d1b7bd4a19921d29"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "racetrack1b0",
+      "width": 192,
+      "height": 192,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "racetrack1b0.png",
+          "role": "base",
+          "sha256": "a00e345ddac27d2f828620d340e1562d873216963319dafe186d38f9054fea16",
+          "source_sha256": "a00e345ddac27d2f828620d340e1562d873216963319dafe186d38f9054fea16",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "22d86b33e6ddb4bbbe4ab94c93d27f2c2d176f47f62d4a10040ce17a59ffddbe"
+        },
+        {
+          "file": "racetrack1b0r.png",
+          "role": "team",
+          "sha256": "341c7df42d45f7d01fca9fd0136171ae253b9ccecb17ed86a94b97a7f47d06cc",
+          "source_sha256": "341c7df42d45f7d01fca9fd0136171ae253b9ccecb17ed86a94b97a7f47d06cc",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "bef2032a040913e83e6443ce487814227b43c6fef97d23e281d5237f296ad3b0"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "racetrack1b1",
+      "width": 192,
+      "height": 192,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "racetrack1b1.png",
+          "role": "base",
+          "sha256": "c95af9ab7e6c8e46e2003ae6b42d1a17b9307cca40b0a0bb33cd066a7d97e89d",
+          "source_sha256": "c95af9ab7e6c8e46e2003ae6b42d1a17b9307cca40b0a0bb33cd066a7d97e89d",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "30961c8c21f7dc9f47597e74d383203a618758cf88e99b3999b0bab7aab7324e"
+        },
+        {
+          "file": "racetrack1b1r.png",
+          "role": "team",
+          "sha256": "c32f49d7ac4d0c1d2d9b167a1c09dc78ce4bce8a38d393330f99b7c01950694f",
+          "source_sha256": "c32f49d7ac4d0c1d2d9b167a1c09dc78ce4bce8a38d393330f99b7c01950694f",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "dc668875ba4172752f8a89f33ff8447b03839755be3fd49bdeb3a3930667c19d"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "racetrack1b2",
+      "width": 192,
+      "height": 192,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "racetrack1b2.png",
+          "role": "base",
+          "sha256": "5a3e24d46a03f1a0dc601fc092e19f9960af9a07612fde0bdff84e2320735a98",
+          "source_sha256": "5a3e24d46a03f1a0dc601fc092e19f9960af9a07612fde0bdff84e2320735a98",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "be7758d42bcfbc9d91f33e941f65435e8a3a5abac5bba0e8ea984b9681a697e3"
+        },
+        {
+          "file": "racetrack1b2r.png",
+          "role": "team",
+          "sha256": "ece1feec4e5717b96e8adc65f0eb638953bf108d4f770e6c86179f23664f25d1",
+          "source_sha256": "ece1feec4e5717b96e8adc65f0eb638953bf108d4f770e6c86179f23664f25d1",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "9aeacc9028f7b38f6249b5aeb0a41b441297afd0c82e21d92221aaf819218a09"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "racetrack2b0",
+      "width": 192,
+      "height": 192,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "racetrack2b0.png",
+          "role": "base",
+          "sha256": "db1cf926f1c59e7b93bebf049721cc0115427c3b666b840f0f1e41381a03b7d5",
+          "source_sha256": "db1cf926f1c59e7b93bebf049721cc0115427c3b666b840f0f1e41381a03b7d5",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "9c533da5a478744aef6c93b404a64055ebc97fdbd6be708fd99896c04cd8a69a"
+        },
+        {
+          "file": "racetrack2b0r.png",
+          "role": "team",
+          "sha256": "484f852560834dc672b77bf00b1fc48e029ce67e5ce6be530370f5b990866094",
+          "source_sha256": "484f852560834dc672b77bf00b1fc48e029ce67e5ce6be530370f5b990866094",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "e4e6c40c3532b05b6a8fcca1a462cbcc126a654adb117c8d6540ed1b8171efcd"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "pool0b0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "pool0b0.png",
+          "role": "base",
+          "sha256": "9bd3c6b853bea569de87114d3edbcba8390fb0d8668fd17061c024958d1238d2",
+          "source_sha256": "9bd3c6b853bea569de87114d3edbcba8390fb0d8668fd17061c024958d1238d2",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "69b69ed82ba2b6d6cbe41d8581a51a68c512f88f529710c35c94e8544e0e4986"
+        },
+        {
+          "file": "pool0b0r.png",
+          "role": "team",
+          "sha256": "372c63e48e6ab133c4938491dfb232f0816f5ee78b1ea85c70bb4eb0eac76961",
+          "source_sha256": "372c63e48e6ab133c4938491dfb232f0816f5ee78b1ea85c70bb4eb0eac76961",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "a64dcc7fbff5bd60a9e32a018513adaac3fbad7e4dae337ad8e8ff6868420564"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "pool0b1",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "pool0b1.png",
+          "role": "base",
+          "sha256": "93ab026acec7eadd39ec32f05e4ec9afbfb05a056064c382649e4ca4157f9ea0",
+          "source_sha256": "93ab026acec7eadd39ec32f05e4ec9afbfb05a056064c382649e4ca4157f9ea0",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "cb9e1239065d8b2d543a33302d8daa6156627dde1da4f2e9f3ded99617805189"
+        },
+        {
+          "file": "pool0b1r.png",
+          "role": "team",
+          "sha256": "4e3de7c1b7878f2e7fea3c8119dcfea8f961a5cea70322339fbb0610654523b2",
+          "source_sha256": "4e3de7c1b7878f2e7fea3c8119dcfea8f961a5cea70322339fbb0610654523b2",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "1338025b7847c1acf27711599bc5c15bc92bc15fcdbb7442328182fac33bbe69"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "pool0c0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "pool0c0.png",
+          "role": "base",
+          "sha256": "aa585a095c045271430debd79aec01dc1ed08c7c1f19e10dd74473d10a2622dd",
+          "source_sha256": "aa585a095c045271430debd79aec01dc1ed08c7c1f19e10dd74473d10a2622dd",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "9d5da96a448094e07caef79f287480e730660881e3966d5b356a9297e58f4273"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "pool1b0",
+      "width": 192,
+      "height": 174,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "pool1b0.png",
+          "role": "base",
+          "sha256": "40c9ff892659be81ff011825ed28944900054a9ce47fabff3a78bcd679ce29c7",
+          "source_sha256": "40c9ff892659be81ff011825ed28944900054a9ce47fabff3a78bcd679ce29c7",
+          "logical_width": 192,
+          "logical_height": 174,
+          "original_sha256": "6e4804960b8d0d14350f1830bb589a77f7d795cd4cf791f4614b571314c54480"
+        },
+        {
+          "file": "pool1b0r.png",
+          "role": "team",
+          "sha256": "c88bbd8b94ed123495ea0eda332d7084d944e960b3f91288d8e7a18f53271595",
+          "source_sha256": "c88bbd8b94ed123495ea0eda332d7084d944e960b3f91288d8e7a18f53271595",
+          "logical_width": 192,
+          "logical_height": 174,
+          "original_sha256": "ee33f518e9811b43ec296d67b6b25f088a139b36390bbde100ecb20432511a2b"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "pool2b0",
+      "width": 192,
+      "height": 203,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "pool2b0.png",
+          "role": "base",
+          "sha256": "7ce016866a238bb703a9303de25e042e8d4c48105adb72985a6c8d53db98cc7e",
+          "source_sha256": "7ce016866a238bb703a9303de25e042e8d4c48105adb72985a6c8d53db98cc7e",
+          "logical_width": 192,
+          "logical_height": 203,
+          "original_sha256": "56e4ca784653dda787f88b6cd8eb96580387424d8b8b932317c98c0d488e2d26"
+        },
+        {
+          "file": "pool2b0r.png",
+          "role": "team",
+          "sha256": "0358676b7a48e3f3c722797c445d949c804a588f406bbf1fdc658c7aaf467fb5",
+          "source_sha256": "0358676b7a48e3f3c722797c445d949c804a588f406bbf1fdc658c7aaf467fb5",
+          "logical_width": 192,
+          "logical_height": 203,
+          "original_sha256": "6696c078146e559774116a94dcbea75ecc1cac6fbdaf031e0e0a4ee46ce959ab"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "barracks0b0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "barracks0b0.png",
+          "role": "base",
+          "sha256": "85eae2dc0b354f9b9385b798ab735946d9155c4efec58a88f55ab232b261318c",
+          "source_sha256": "85eae2dc0b354f9b9385b798ab735946d9155c4efec58a88f55ab232b261318c",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "2574ca8da3aabf26b1d9acabd5000aed0a67bbf27932f0a7dfb8f4656de50ff0"
+        },
+        {
+          "file": "barracks0b0r.png",
+          "role": "team",
+          "sha256": "f5e15042e0d6f805f7be3097b7d8312364f5b62de6a2f05818e51213f173cd70",
+          "source_sha256": "f5e15042e0d6f805f7be3097b7d8312364f5b62de6a2f05818e51213f173cd70",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "7ca0c9b9caef4ff964b61327d02e286725045f53b3fe592a1781de505738aba6"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "barracks1b0",
+      "width": 128,
+      "height": 138,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "barracks1b0.png",
+          "role": "base",
+          "sha256": "b099eff662520487872b770494316fbdfc172b86393733a1e08c1ab6b7950796",
+          "source_sha256": "b099eff662520487872b770494316fbdfc172b86393733a1e08c1ab6b7950796",
+          "logical_width": 128,
+          "logical_height": 138,
+          "original_sha256": "1b62aa0c916ba7bd9c83b268dfe37278321b1ae6dfbf51cd2d8d145dffbdae62"
+        },
+        {
+          "file": "barracks1b0r.png",
+          "role": "team",
+          "sha256": "f9fb38a1b9558ef3642e5641486c720eede678325ef6fe905c1b9a0eb5e204e2",
+          "source_sha256": "f9fb38a1b9558ef3642e5641486c720eede678325ef6fe905c1b9a0eb5e204e2",
+          "logical_width": 128,
+          "logical_height": 138,
+          "original_sha256": "ce45dbca8db1e5b5fecb377d8f37194f27fd98e09a1e1303e7a61333e502204d"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "barracks2b0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "barracks2b0.png",
+          "role": "base",
+          "sha256": "1fa0c306f3146685cc9aa32b7c39a32bfb69a94c41fd7bfc8e19402c0ffa31b2",
+          "source_sha256": "1fa0c306f3146685cc9aa32b7c39a32bfb69a94c41fd7bfc8e19402c0ffa31b2",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "e03ef7703fbeae9955e756dc83e2b4bb450d5c248c155cae2822ab793b049466"
+        },
+        {
+          "file": "barracks2b0r.png",
+          "role": "team",
+          "sha256": "c92ed4376c342d62f1436007b49a9a938009976c6c6ba7f06e2403e47090fe0d",
+          "source_sha256": "c92ed4376c342d62f1436007b49a9a938009976c6c6ba7f06e2403e47090fe0d",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "a967b18b61cb597075c15718560b26b6bb71435e0b6932d53e100ab0f0b3cea3"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "school0b0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "school0b0.png",
+          "role": "base",
+          "sha256": "43f194b235fb4350f094fb605dc77f190e1ee117aba1bec8f2ed6801635c2fde",
+          "source_sha256": "43f194b235fb4350f094fb605dc77f190e1ee117aba1bec8f2ed6801635c2fde",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "fda16342c8270fcca7483c400d20896d5e4863628f44cabc78e94549ac7a84f9"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "school0b1",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "school0b1.png",
+          "role": "base",
+          "sha256": "9449d0a4ae30a73bc2e7816c2fad4e5b66e8f0104b617d06322fd3ae38c809f6",
+          "source_sha256": "9449d0a4ae30a73bc2e7816c2fad4e5b66e8f0104b617d06322fd3ae38c809f6",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "e2c8f86c715f4d46c8906e3816a41c3343b6daf1b3db8c2dc05da557c2993597"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "school1b0",
+      "width": 64,
+      "height": 70,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "school1b0.png",
+          "role": "base",
+          "sha256": "e3cef16bf83007427477592dad76b3e76e377314904be4c09950a916d6449ced",
+          "source_sha256": "e3cef16bf83007427477592dad76b3e76e377314904be4c09950a916d6449ced",
+          "logical_width": 64,
+          "logical_height": 70,
+          "original_sha256": "b69172081346aeab9423f032bb5004c06e83fb39229fc254dadf89b0477af309"
+        },
+        {
+          "file": "school1b0r.png",
+          "role": "team",
+          "sha256": "731b13d4ff6352974b3c10180f7014092b36239d42031e647c47278a8b960957",
+          "source_sha256": "731b13d4ff6352974b3c10180f7014092b36239d42031e647c47278a8b960957",
+          "logical_width": 64,
+          "logical_height": 70,
+          "original_sha256": "f8e566312ba7890fe431622c6125ed062cef4ee55dab83bc4bfda926fafe4066"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "school1b1",
+      "width": 64,
+      "height": 70,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "school1b1.png",
+          "role": "base",
+          "sha256": "40e09dcf3aa733e1ab7f4c0e4910fe5d57480edb6b828b44675ca347c1e593f6",
+          "source_sha256": "40e09dcf3aa733e1ab7f4c0e4910fe5d57480edb6b828b44675ca347c1e593f6",
+          "logical_width": 64,
+          "logical_height": 70,
+          "original_sha256": "09fae2d1abfd9898d7ebf7901e651f0ae813a3122bf339442504da9cd7fd2007"
+        },
+        {
+          "file": "school1b1r.png",
+          "role": "team",
+          "sha256": "e4420f115274f9d12a373e73cd00042170b0dc77d1095425f0e913dbb8357cf2",
+          "source_sha256": "e4420f115274f9d12a373e73cd00042170b0dc77d1095425f0e913dbb8357cf2",
+          "logical_width": 64,
+          "logical_height": 70,
+          "original_sha256": "f0c79291a0e3f9a63c41d046d1d2513d03d72576c6170817ef17df6d526b845b"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "school1b2",
+      "width": 64,
+      "height": 70,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "school1b2.png",
+          "role": "base",
+          "sha256": "ae4429183e61838cb58bad3c5ec8a0ca62ffe61ca42ed239a12a82f3ce65946e",
+          "source_sha256": "ae4429183e61838cb58bad3c5ec8a0ca62ffe61ca42ed239a12a82f3ce65946e",
+          "logical_width": 64,
+          "logical_height": 70,
+          "original_sha256": "56cace7a62f042cc06423d6167613f04d1e61d0071e1f5356566bc875a2d2fa0"
+        },
+        {
+          "file": "school1b2r.png",
+          "role": "team",
+          "sha256": "4eaa64fd2aabc24a15a499954a7a9555b9c74e9a1b42a2f1c650c1e4f1ccd859",
+          "source_sha256": "4eaa64fd2aabc24a15a499954a7a9555b9c74e9a1b42a2f1c650c1e4f1ccd859",
+          "logical_width": 64,
+          "logical_height": 70,
+          "original_sha256": "01ab4d6013f1ff642602148e40df156256c3e7cbfdeb77864fae9f9212df7c37"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "school1c0",
+      "width": 59,
+      "height": 70,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "school1c0.png",
+          "role": "base",
+          "sha256": "14050d9006e2b86e5fcd57f04ffee2779ebc947b6742ba8003a5f71517592553",
+          "source_sha256": "14050d9006e2b86e5fcd57f04ffee2779ebc947b6742ba8003a5f71517592553",
+          "logical_width": 59,
+          "logical_height": 70,
+          "original_sha256": "96729b4e535679e8ce14b9e492d0d76937dc08dff528aca9c20607095eaf4f25"
+        },
+        {
+          "file": "school1c0r.png",
+          "role": "team",
+          "sha256": "47eb07760d8911788c15eb7a551020b52dcf73e84cbdc091b9dec34c2a6aae97",
+          "source_sha256": "47eb07760d8911788c15eb7a551020b52dcf73e84cbdc091b9dec34c2a6aae97",
+          "logical_width": 59,
+          "logical_height": 70,
+          "original_sha256": "ec6a33286277dc48468bda2d8510bb921137908e13d8b8e8011db3587c4371d2"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "school2b0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "school2b0.png",
+          "role": "base",
+          "sha256": "e0e972f3296111acd0b048ae9352616b88d81271b7cf9e31934ac03aedd0623a",
+          "source_sha256": "e0e972f3296111acd0b048ae9352616b88d81271b7cf9e31934ac03aedd0623a",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "eb5f7b8e8afb4ef24ca52082030a7d048f8ed250503f3b344e5ee8e76b877e8c"
+        },
+        {
+          "file": "school2b0r.png",
+          "role": "team",
+          "sha256": "ed3ff8eaa2452b5adc76510e99d6722331f61cc7cba97a221b96096f512ac2e1",
+          "source_sha256": "ed3ff8eaa2452b5adc76510e99d6722331f61cc7cba97a221b96096f512ac2e1",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "d37542939b64bc3f64e5046652ee111600430966c072f510f75a5bc1d00efcac"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "defencetower0b0",
+      "width": 68,
+      "height": 59,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "defencetower0b0.png",
+          "role": "base",
+          "sha256": "a7e514fe094219416f68f008b20e2e4566ae3517d58a07d807edece69f4289f0",
+          "source_sha256": "a7e514fe094219416f68f008b20e2e4566ae3517d58a07d807edece69f4289f0",
+          "logical_width": 68,
+          "logical_height": 59,
+          "original_sha256": "b956f025f96e8e053de467d63a4d5fd621aeb8067147b7d449394c8d9ab4ca8d"
+        },
+        {
+          "file": "defencetower0b0r.png",
+          "role": "team",
+          "sha256": "1ea7973f2ceac2101b7a2dd391d842430b8f800f1044c9bfe4ad89749c4e2dd5",
+          "source_sha256": "1ea7973f2ceac2101b7a2dd391d842430b8f800f1044c9bfe4ad89749c4e2dd5",
+          "logical_width": 65,
+          "logical_height": 56,
+          "original_sha256": "cdd7201463f03180512b1d4b6edd7836ce464375e595e1ae816567069d09b871"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "defencetower1b0",
+      "width": 64,
+      "height": 108,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "defencetower1b0.png",
+          "role": "base",
+          "sha256": "eb389a1efdd139ab8105c9408c48c3974d3d7da2ed0359802eba7fc73786e323",
+          "source_sha256": "eb389a1efdd139ab8105c9408c48c3974d3d7da2ed0359802eba7fc73786e323",
+          "logical_width": 64,
+          "logical_height": 108,
+          "original_sha256": "95a6a612dd7d678753f20b36026e03d015e1a92f05a84b96f413523431eb8125"
+        },
+        {
+          "file": "defencetower1b0r.png",
+          "role": "team",
+          "sha256": "95f80b325e9b8530673d729fb1fc9300a3278cf01074751d37aa945f44759e9f",
+          "source_sha256": "95f80b325e9b8530673d729fb1fc9300a3278cf01074751d37aa945f44759e9f",
+          "logical_width": 64,
+          "logical_height": 108,
+          "original_sha256": "de7126e39c9fc952c341e485262efb58f06185bed3d6ffeecc8ed8c4885e3620"
+        }
+      ],
+      "recipe": "crystal_repair"
+    },
+    {
+      "id": "defencetower1b1",
+      "width": 64,
+      "height": 108,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "defencetower1b1.png",
+          "role": "base",
+          "sha256": "a3e4f34c8f0deed73edee70aafd313e9cae1157c135625e41bdc28c10abcb9fe",
+          "source_sha256": "a3e4f34c8f0deed73edee70aafd313e9cae1157c135625e41bdc28c10abcb9fe",
+          "logical_width": 64,
+          "logical_height": 108,
+          "original_sha256": "d97c4357640a2b5c0cf45b8593e62866b3aada704ac45fc678e20a8c374f3021"
+        },
+        {
+          "file": "defencetower1b1r.png",
+          "role": "team",
+          "sha256": "0df7c9e64bbe3687942f9cd403a0ce6f17695cf766665f2e8904648399761b97",
+          "source_sha256": "0df7c9e64bbe3687942f9cd403a0ce6f17695cf766665f2e8904648399761b97",
+          "logical_width": 64,
+          "logical_height": 108,
+          "original_sha256": "a38024981ddb6a55a1b7ca7fcb802aa64b67326a986fcdbbc609cdc60799053c"
+        }
+      ],
+      "recipe": "crystal_repair"
+    },
+    {
+      "id": "defencetower1b2",
+      "width": 64,
+      "height": 108,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "defencetower1b2.png",
+          "role": "base",
+          "sha256": "f189eadede1c52448a89439cee3fcd618779577e644ca144f2fc4a98874161f3",
+          "source_sha256": "f189eadede1c52448a89439cee3fcd618779577e644ca144f2fc4a98874161f3",
+          "logical_width": 64,
+          "logical_height": 108,
+          "original_sha256": "1e3c73809756d481d36fb4e9f6fc8a9085cb2ff74ea0b794a93f7f9766e4343f"
+        },
+        {
+          "file": "defencetower1b2r.png",
+          "role": "team",
+          "sha256": "a520766e0c08cda18658d440c2b51bcd13016d7d5056a300c6c4285cfd1e3109",
+          "source_sha256": "a520766e0c08cda18658d440c2b51bcd13016d7d5056a300c6c4285cfd1e3109",
+          "logical_width": 64,
+          "logical_height": 108,
+          "original_sha256": "dffb6dda71fd9ca442113f60a73907eef1baf87079bebda7d84559c3ac42ecfa"
+        }
+      ],
+      "recipe": "crystal_repair"
+    },
+    {
+      "id": "defencetower2b0",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "defencetower2b0.png",
+          "role": "base",
+          "sha256": "56290d108e214ea5de60dd21bdc60820ba2c2e0eb0bc9ae83697d45a7a7598e8",
+          "source_sha256": "56290d108e214ea5de60dd21bdc60820ba2c2e0eb0bc9ae83697d45a7a7598e8",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "4c141658b18fd1ef335af7a921b31abab41702657fdc05b36c5e927073d53164"
+        },
+        {
+          "file": "defencetower2b0r.png",
+          "role": "team",
+          "sha256": "a96c82149189d72cc663387b16ed914dd29bc364e460b0b8750cdee8c3811768",
+          "source_sha256": "a96c82149189d72cc663387b16ed914dd29bc364e460b0b8750cdee8c3811768",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "a8a111ff5011522d3312ed8a525e524e99ec2a8063bc32b9b68b59c10d2b7d34"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "market0b0",
+      "width": 96,
+      "height": 115,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "market0b0.png",
+          "role": "base",
+          "sha256": "a4d71a1483a60494eddcb5b0bc22969eb97f74c63b1b348c8a2d7b9288c6b4e7",
+          "source_sha256": "a4d71a1483a60494eddcb5b0bc22969eb97f74c63b1b348c8a2d7b9288c6b4e7",
+          "logical_width": 96,
+          "logical_height": 115,
+          "original_sha256": "c3191cc7c7e48d030cbc015cf60e5ee3c61e5da4aaf928658a0f24d62d42480b"
+        },
+        {
+          "file": "market0b0r.png",
+          "role": "team",
+          "sha256": "3e8092ac5b0041f56f4e1fc0435afcefc5a2a84869373cf9db46232866e228f0",
+          "source_sha256": "3e8092ac5b0041f56f4e1fc0435afcefc5a2a84869373cf9db46232866e228f0",
+          "logical_width": 96,
+          "logical_height": 115,
+          "original_sha256": "9b52cfa446050afcac3ff268cd8d927046cd7a278b0303f7a7a68dcf1393a1f2"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "wall0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall0.png",
+          "role": "base",
+          "sha256": "f9ffa721c3842833bd9dd3c34498ed67ebe05c80e3993abb80afe2f0372570c9",
+          "source_sha256": "f9ffa721c3842833bd9dd3c34498ed67ebe05c80e3993abb80afe2f0372570c9",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "3539fd9e17b6430331bd131724d0f8ea8159c00bdff7baa824f83707a5548113"
+        },
+        {
+          "file": "wall0r.png",
+          "role": "team",
+          "sha256": "2340040f082728cf8695d23a10d3a1da0e5d85eb666bc755419874b36d5ae791",
+          "source_sha256": "2340040f082728cf8695d23a10d3a1da0e5d85eb666bc755419874b36d5ae791",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "86a023a6bfd7f138b7178542c21f5769f08d24878a09504b1bcacbe90bb54468"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall1.png",
+          "role": "base",
+          "sha256": "3fb4635e8e0e42ccb0ccdd62a548cc8355c90aadbab80d0d1af11b8d4abda742",
+          "source_sha256": "3fb4635e8e0e42ccb0ccdd62a548cc8355c90aadbab80d0d1af11b8d4abda742",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "5ce35520b14077ad3eddbc89226f9091a248cf6b0a532575e6ec8b12ccd05e92"
+        },
+        {
+          "file": "wall1r.png",
+          "role": "team",
+          "sha256": "8e6bd81d1af3c3575c8d69d0aa6c6e3e59de00cfa048e71fb9de2f434858c5fa",
+          "source_sha256": "8e6bd81d1af3c3575c8d69d0aa6c6e3e59de00cfa048e71fb9de2f434858c5fa",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "f0023602d9ff6034d93294d4e8bd3f71266dfdc355c241baee022eba89d3ec4c"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall2.png",
+          "role": "base",
+          "sha256": "c7b8ae99164a48907fa3a637d3a9f96cc6146adbfaf0531ca14374ab3933933a",
+          "source_sha256": "c7b8ae99164a48907fa3a637d3a9f96cc6146adbfaf0531ca14374ab3933933a",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "44d11fac9e288f58045f7a177935428b22051b02163e849bd9f11ce63bb58e23"
+        },
+        {
+          "file": "wall2r.png",
+          "role": "team",
+          "sha256": "90d67653363bced845ba0192280cae2272dcde002d472b04e26b09f76ed81896",
+          "source_sha256": "90d67653363bced845ba0192280cae2272dcde002d472b04e26b09f76ed81896",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "de63fd5e939eb9586297f5330d68847fb9aa2b8d1001493a5e490d8d4988b109"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall3.png",
+          "role": "base",
+          "sha256": "99898db873a759187a178223f84cc71f3e3976aff213ea26f660210a1aaecd06",
+          "source_sha256": "99898db873a759187a178223f84cc71f3e3976aff213ea26f660210a1aaecd06",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "5e78114eb5550233e3a83aebc5487b21512eb7b5bccf1045205c49f31d8b15c8"
+        },
+        {
+          "file": "wall3r.png",
+          "role": "team",
+          "sha256": "34621549d6f86031216853053aa5a4296495bdd6d37bd1f9d7b95d0a59cf5f23",
+          "source_sha256": "34621549d6f86031216853053aa5a4296495bdd6d37bd1f9d7b95d0a59cf5f23",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "6568227200392d9950852204e05103fd9fbd4bf6ec7c517b02e787ad80c7be45"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall4.png",
+          "role": "base",
+          "sha256": "c0a011e9ac1f7776b57be14baa7d1081adea559ee42b287e59ba8d548860dff2",
+          "source_sha256": "c0a011e9ac1f7776b57be14baa7d1081adea559ee42b287e59ba8d548860dff2",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "7d738c39c49cc852bc915c360078c8fc97eaf8ec500136581bc771cc6d472b09"
+        },
+        {
+          "file": "wall4r.png",
+          "role": "team",
+          "sha256": "0e37d4b4e3e0b97a75de7055dec92c1353fe2e27171c757782dd67b93fcac511",
+          "source_sha256": "0e37d4b4e3e0b97a75de7055dec92c1353fe2e27171c757782dd67b93fcac511",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "1c94956b90e12931e726e367bd60ba57dc11c37c93abf70d84560f035cc82673"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall5",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall5.png",
+          "role": "base",
+          "sha256": "80f1e0694b4448e150604c13f0f1e5cc9a83c85cc5b5ba5ef24256c75517b86c",
+          "source_sha256": "80f1e0694b4448e150604c13f0f1e5cc9a83c85cc5b5ba5ef24256c75517b86c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "5ab2c4a454082b944818578d3ca15a2fb539ced9f466cc2a842b643a4925d4bc"
+        },
+        {
+          "file": "wall5r.png",
+          "role": "team",
+          "sha256": "15d88e4cb903d6f72477333778c4173965ccc7ce021fc2266984987bdaf40088",
+          "source_sha256": "15d88e4cb903d6f72477333778c4173965ccc7ce021fc2266984987bdaf40088",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "c1afec98f5f20c425adebfbd89716bdb912a4c68df3da146287755f6cd68cf05"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall6",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall6.png",
+          "role": "base",
+          "sha256": "4e52bd7aa2a3dcc66d9a8315a5413d5ea39a1aded22f08b3e27f2ef37a710ca0",
+          "source_sha256": "4e52bd7aa2a3dcc66d9a8315a5413d5ea39a1aded22f08b3e27f2ef37a710ca0",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "f8f6747b438055e048e86000cc3ca4fd12b834b44247682d5ed587b8332bc496"
+        },
+        {
+          "file": "wall6r.png",
+          "role": "team",
+          "sha256": "4beb18bc0987057d41fca9d5afb1d21b43d99ea3686b9b86812af8f457a743a1",
+          "source_sha256": "4beb18bc0987057d41fca9d5afb1d21b43d99ea3686b9b86812af8f457a743a1",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "2564341afbb88f7ac977961262eb9c171dfa433748be8b31ffee9adce8f98ab8"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall7",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall7.png",
+          "role": "base",
+          "sha256": "01802145482137b14a5fef61748a91c746b8c2bca7af703df7ee68f00f662406",
+          "source_sha256": "01802145482137b14a5fef61748a91c746b8c2bca7af703df7ee68f00f662406",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "6de3c6f5d9999543c246088930d4dfddfc0925aa5a950204e2d47ffd2617a81f"
+        },
+        {
+          "file": "wall7r.png",
+          "role": "team",
+          "sha256": "7007070dd52969fc4e51a5cdfb49f7fee58f2ff9b3ae74359ed7695b1b8f2b07",
+          "source_sha256": "7007070dd52969fc4e51a5cdfb49f7fee58f2ff9b3ae74359ed7695b1b8f2b07",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "cfc8a94a2dbaf9031f01df5dff850334053734e42ace39184a191f089e92345f"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall8",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall8.png",
+          "role": "base",
+          "sha256": "220fcd63aaa899ad33f5a07e7013609ea6f9e6f974788f100443953e031526ee",
+          "source_sha256": "220fcd63aaa899ad33f5a07e7013609ea6f9e6f974788f100443953e031526ee",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "4281be73784fe899bc89ff1cbf01d247aea45005399b440ecfe4e9eb597c5eb5"
+        },
+        {
+          "file": "wall8r.png",
+          "role": "team",
+          "sha256": "0ca8808f726efcabac4c44055e253a12b21fdbc934fc1fd8387aab292073cb6d",
+          "source_sha256": "0ca8808f726efcabac4c44055e253a12b21fdbc934fc1fd8387aab292073cb6d",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "9cf40bb9da40642cb542bf89c505bda7bcbeb4c762f86951a0d0cf83bdae159e"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall9",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall9.png",
+          "role": "base",
+          "sha256": "160910c260803c905703508538d60faaf07cb7caf4e90149e6132bc97f1a76c4",
+          "source_sha256": "160910c260803c905703508538d60faaf07cb7caf4e90149e6132bc97f1a76c4",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "ba97056b39e46d35edadb49f83caecaf17dfa8c1333f294535d8320d19ee9178"
+        },
+        {
+          "file": "wall9r.png",
+          "role": "team",
+          "sha256": "5ee2534a0572b3f7030aa58af0947a1c080a0d08ac5acabd4b459452bbf681c9",
+          "source_sha256": "5ee2534a0572b3f7030aa58af0947a1c080a0d08ac5acabd4b459452bbf681c9",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "f04d789a286607d738d734858197a978c4691a51302dd3c3eaa022590014d504"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall10",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall10.png",
+          "role": "base",
+          "sha256": "b3c204100d53c40df9bffd282e7ee13de549d005897eb49162ecabe0e80348f4",
+          "source_sha256": "b3c204100d53c40df9bffd282e7ee13de549d005897eb49162ecabe0e80348f4",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "9e359a0174991345c66b4fa3b3dcbfa1fdebfc92654202f048ac4a0e21e2fb61"
+        },
+        {
+          "file": "wall10r.png",
+          "role": "team",
+          "sha256": "3b826ced397b6befe535cbd1ff0a15da74feb629653f85b659ce817fda650ca0",
+          "source_sha256": "3b826ced397b6befe535cbd1ff0a15da74feb629653f85b659ce817fda650ca0",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "5f0d9ba6b72d5a1bb33a5aebe9610d12f74f04c5894c1f6602b2de11c5b17f4e"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall11",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall11.png",
+          "role": "base",
+          "sha256": "9cbf6bc9d63836057c2b98715ef7bb16821a84cc0d738aea57a9b192709d0c8f",
+          "source_sha256": "9cbf6bc9d63836057c2b98715ef7bb16821a84cc0d738aea57a9b192709d0c8f",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "b46d34fd7e37f1cd8971749692940fe6d327acdb2ce6e4ad15c56e66a02b67a3"
+        },
+        {
+          "file": "wall11r.png",
+          "role": "team",
+          "sha256": "93cc1e2a65aabaedefa5a7fef659a09b1431c412cdb54c1c48935dfd0ba0e8f1",
+          "source_sha256": "93cc1e2a65aabaedefa5a7fef659a09b1431c412cdb54c1c48935dfd0ba0e8f1",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "e9bea9993e5f1596e26528be268c68dba8f5db5a77a445a596fb6640f642aa24"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall12",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall12.png",
+          "role": "base",
+          "sha256": "7e847fcbf130fe37d4e292aea6bf0a9555d631c489bf730786fbadc91ad89ec0",
+          "source_sha256": "7e847fcbf130fe37d4e292aea6bf0a9555d631c489bf730786fbadc91ad89ec0",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "667c4d5bcee3fffc34c512a1617266bd849fc7735d5a5ef5b129e35573fbf836"
+        },
+        {
+          "file": "wall12r.png",
+          "role": "team",
+          "sha256": "29b44b54c5990a35d6de3d310e81f5028f390c066eee4ee0eee061d52298a192",
+          "source_sha256": "29b44b54c5990a35d6de3d310e81f5028f390c066eee4ee0eee061d52298a192",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "763f2ee8d30253c183381b9d66d31c602e4427b35ad257a10381b8f26678f7f2"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall13",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall13.png",
+          "role": "base",
+          "sha256": "e20c1740f5f6ff79d7247f1733469be68a8219c94e58006af170f072365fb8fc",
+          "source_sha256": "e20c1740f5f6ff79d7247f1733469be68a8219c94e58006af170f072365fb8fc",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "c8222f02edccdd75c0fab361bda095511a475fc739adebf54b52fc51ae7b4be4"
+        },
+        {
+          "file": "wall13r.png",
+          "role": "team",
+          "sha256": "3f1368178dd22a0191de24cab8a82359f2cf6dc066e647c0d9924fa69cb37289",
+          "source_sha256": "3f1368178dd22a0191de24cab8a82359f2cf6dc066e647c0d9924fa69cb37289",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "7ee99da53d0567b154a7af0388bee8ef8acc0f53851b7406ed83915dcc509c49"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall14",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall14.png",
+          "role": "base",
+          "sha256": "b8789ca8c0173a6cb306cb24e2ec4a40af8ded8563267206e8da6db3323dcaf5",
+          "source_sha256": "b8789ca8c0173a6cb306cb24e2ec4a40af8ded8563267206e8da6db3323dcaf5",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "edb76e8283b6806b183e85988b7a65bc87c7fefd6b47dd14317d976efd550acd"
+        },
+        {
+          "file": "wall14r.png",
+          "role": "team",
+          "sha256": "608ba27c8b4ef8ccbcefd09064976a309e0576bbce8043bd73bc1e42ffa7795e",
+          "source_sha256": "608ba27c8b4ef8ccbcefd09064976a309e0576bbce8043bd73bc1e42ffa7795e",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "d29ceaeea0fbc47a44d9cf6e1a5147c01ee47637cc3a00b759212ee05e3b81c9"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wall15",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wall15.png",
+          "role": "base",
+          "sha256": "b88377b3bd82053e96accfae72370970ca60aa94bb0c6264047e816551cb2fe5",
+          "source_sha256": "b88377b3bd82053e96accfae72370970ca60aa94bb0c6264047e816551cb2fe5",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "d47e344f65910a9454e13378cf120842c8eae70fb6034cc97c475f6dfb8547ba"
+        },
+        {
+          "file": "wall15r.png",
+          "role": "team",
+          "sha256": "6e2fa9e3044cd35a6a0b27e97f78bff70f61919b9b8b8759382e27dccd5ce053",
+          "source_sha256": "6e2fa9e3044cd35a6a0b27e97f78bff70f61919b9b8b8759382e27dccd5ce053",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "b0f9b876b5393c81c7cf59e3cf6572562cd63b05ceb5f1ea27e9982aa6f680ff"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "wallc0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "wallc0.png",
+          "role": "base",
+          "sha256": "03b9ab3fbbf9eba71ddc299684be913449201fbda1f2a655d37b5ed6bcc0202a",
+          "source_sha256": "03b9ab3fbbf9eba71ddc299684be913449201fbda1f2a655d37b5ed6bcc0202a",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "8b30c04eddeaddb1eb20b6ae04ae203bf7a8a1971c1efe3362dfc42409b8fd24"
+        },
+        {
+          "file": "wallc0r.png",
+          "role": "team",
+          "sha256": "dc9e6dfe7c200b849588a00b97228ef8222811722b7178e2d2a733f7f4dd6dfc",
+          "source_sha256": "dc9e6dfe7c200b849588a00b97228ef8222811722b7178e2d2a733f7f4dd6dfc",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "276ff832cff0832d28e1347654c21eca1e470a5d9765e81e071701848a3f4fad"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "buildingsite0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "buildingsite0.png",
+          "role": "base",
+          "sha256": "6281995bd57b1843df03c122756e7a8d4b14d933f1849a891bb47606e515b2be",
+          "source_sha256": "6281995bd57b1843df03c122756e7a8d4b14d933f1849a891bb47606e515b2be",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "e996483ddd7c59467b2c1491eecba1e471f7a3d5e1b716bfbad51011780c44ba"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "buildingsite4",
+      "width": 192,
+      "height": 192,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "buildingsite4.png",
+          "role": "base",
+          "sha256": "457f1f1dc57b807e2fb355b460b8aa0484787165bc1a367a54c41c0dc3f02627",
+          "source_sha256": "457f1f1dc57b807e2fb355b460b8aa0484787165bc1a367a54c41c0dc3f02627",
+          "logical_width": 192,
+          "logical_height": 192,
+          "original_sha256": "77d03bf7196f0c6b22fc2d2030d542982724130dcf72832f7e6ca1a7b127c112"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "buildingsite1",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "buildingsite1.png",
+          "role": "base",
+          "sha256": "8a1570aab963ac186d037a3d1f93740ba1d01fbbdbb32b13b5ff4b39af9f13d2",
+          "source_sha256": "8a1570aab963ac186d037a3d1f93740ba1d01fbbdbb32b13b5ff4b39af9f13d2",
+          "logical_width": 64,
+          "logical_height": 64,
+          "original_sha256": "2b8f2cc1d3a72177971ce2448acb73c53475ef705cf90f44ebedc264245e4253"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "buildingsite2",
+      "width": 96,
+      "height": 96,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "buildingsite2.png",
+          "role": "base",
+          "sha256": "0d4de0e20ee95bb1d53382f4fd81a0ecc280ca1667d0749e580f1e68e038f14a",
+          "source_sha256": "0d4de0e20ee95bb1d53382f4fd81a0ecc280ca1667d0749e580f1e68e038f14a",
+          "logical_width": 96,
+          "logical_height": 96,
+          "original_sha256": "4e6148c6e11fb8f458acfc6f8dc4833f5a8e377f3ecce98f848a200722f670ba"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "buildingsite3",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "buildingsite3.png",
+          "role": "base",
+          "sha256": "ba7aa88b71f621c83c0fcc4a2faba90325acf5fa93ccdaeb541a61568938f64b",
+          "source_sha256": "ba7aa88b71f621c83c0fcc4a2faba90325acf5fa93ccdaeb541a61568938f64b",
+          "logical_width": 128,
+          "logical_height": 128,
+          "original_sha256": "46d394cb1aab6eef184847415c28f268ae57ae49c9217d4419eaebdc50d8bad9"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "buildingsite5",
+      "width": 196,
+      "height": 196,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "buildingsite5.png",
+          "role": "base",
+          "sha256": "2810f869809c954109cf705fd04226b8bc3007f9c26421e63856d9812fa1d18d",
+          "source_sha256": "2810f869809c954109cf705fd04226b8bc3007f9c26421e63856d9812fa1d18d",
+          "logical_width": 196,
+          "logical_height": 196,
+          "original_sha256": "6591d889781997a86ad179e4808766abb8d78fde0a406bc91f81609102f45937"
+        }
+      ],
+      "recipe": "current"
+    },
+    {
+      "id": "explorationflag0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "explorationflag0r.png",
+          "role": "team",
+          "sha256": "bd81089bf90f40a663e668577d45e239f9af89df2c398e1f90a5a4107d27660d",
+          "source_sha256": "bd81089bf90f40a663e668577d45e239f9af89df2c398e1f90a5a4107d27660d",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "222e8d8fa4c23da5ad946d4456c834b411362c4466772e44e361298c834ba220"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "warflag0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "warflag0r.png",
+          "role": "team",
+          "sha256": "c12dac50c67826e42d7c9543102e2e244c7c48cc74a3e1e9479772071d7783db",
+          "source_sha256": "c12dac50c67826e42d7c9543102e2e244c7c48cc74a3e1e9479772071d7783db",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "ab6249d7e82dec718190eee681eb07226c1f8d89bfec58ddbadc56c51d7d57cc"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "clearingflag0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "clearingflag0r.png",
+          "role": "team",
+          "sha256": "ff1f90943d65e2364eb36e8ba3d8d8647443c9ddcc6b8daa2010de0b83ce371a",
+          "source_sha256": "ff1f90943d65e2364eb36e8ba3d8d8647443c9ddcc6b8daa2010de0b83ce371a",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "52c6beb9fc750d7651a2d29799e496c7b850a7e8f395367557431d007fd7d032"
+        }
+      ],
+      "recipe": "painted_repair"
+    },
+    {
+      "id": "inn3c0",
+      "width": 96,
+      "height": 96,
+      "scale": 4,
+      "layers": [
+        {
+          "file": "inn3c0.png",
+          "role": "base",
+          "sha256": "58b75b1a88b4a5c16b08777cb4a8d31757830fc51102a46b364fe80b2be85db1",
+          "source_sha256": "58b75b1a88b4a5c16b08777cb4a8d31757830fc51102a46b364fe80b2be85db1",
+          "logical_width": 96,
+          "logical_height": 96,
+          "original_sha256": "2cfc52fcf9390aec9d178a8b54592ac60b3b306ba0c7ce60e29f0b4ce45df018"
+        }
+      ],
+      "recipe": "outline_repair"
+    },
+    {
+      "id": "terrain0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain0.png",
+          "role": "base",
+          "sha256": "622d7429b77cb0ae4bb354348af4f6dade834f51d1dd0c70d358d9345aba6c8d",
+          "source_sha256": "9e42ef284655ef4dacfe888005ea43616805e66e87a51474549e46363f81ff8f",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "e09287e14a0919daee3260bf304aac6d2d459d936b6b4a74e21f5fc8a7cc4a41"
+        }
+      ]
+    },
+    {
+      "id": "terrain1",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain1.png",
+          "role": "base",
+          "sha256": "a1484d9468908991fa61852c3590a50f4da31702e3b42f9e92e72ec69175812f",
+          "source_sha256": "0f76816d38f5b10ad53bd22b52db522fd0bce17dd6270e0f4f7b78c8b75d419b",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "43b400bee6623afc7330b543e6e2dcfae3ac99296ede2428100aa565c50a0e47"
+        }
+      ]
+    },
+    {
+      "id": "terrain2",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain2.png",
+          "role": "base",
+          "sha256": "65785d433dbb75af91ab098af38e2451a640c83e9fa9a04d6f32aeb6518806be",
+          "source_sha256": "91cc82f4fb1268280fefbfb3504bb64bc23380e9b84c3551b1621cd0a3245dd7",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "169b2974dfea611aa1eb2ab6b7b66ff00d2755e2cc9bd5815befeb01d3b8c373"
+        }
+      ]
+    },
+    {
+      "id": "terrain3",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain3.png",
+          "role": "base",
+          "sha256": "e179bf7d38a474755c5ea32f36f4fd7153b47d3081cf6b51241a823f092fe20c",
+          "source_sha256": "acecc04b800fa4e1ab5b7a5535d58a7edf8560780114cb85a000e246b92a6547",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "99c3c8a209eae8d6cc989674a8b04f2b3ec0512616b78c571704d6dddf0d8a76"
+        }
+      ]
+    },
+    {
+      "id": "terrain4",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain4.png",
+          "role": "base",
+          "sha256": "1c643391f5f1e4662aa7c8cb302919d4aa130dd18f376ff55472f42e2c89a786",
+          "source_sha256": "1eb2894191e23548da8bf55a7c3b7d115795adecf2cb30d1b6fdcf6882e79767",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "3fe0febf5de914567e2c0aea0e539639c0a92156e4bb1c12d417ea550538a63a"
+        }
+      ]
+    },
+    {
+      "id": "terrain5",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain5.png",
+          "role": "base",
+          "sha256": "ec0b1eb00413203ad3216bc80fe3f7e8a7008bc9b7374d89df67a46b240bf1fc",
+          "source_sha256": "1972b0bea2a574b3e12f02dda5cc6e8d3183326a7eb6cf4e8a5289c4b8ed48dc",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "ce59e9001ba71be0aacab8d46c2a874d1dc8382e5d688137b285b89b44463f63"
+        }
+      ]
+    },
+    {
+      "id": "terrain6",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain6.png",
+          "role": "base",
+          "sha256": "399fe5426dc21a93c438462daead4a1e2b05a59688a703a2f95cfa6463dca494",
+          "source_sha256": "5367157295825aec5006d696dcc95464cbbafdb7278e28916b7d528668d3d75c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "6f66bca348255177a6ed19a3da12b3493ac90e9d6d390cc82f8d2d358e0ba151"
+        }
+      ]
+    },
+    {
+      "id": "terrain7",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain7.png",
+          "role": "base",
+          "sha256": "b3deea381a66a7b1d7226cc7f40508c96d4cc8d05dc1e964181b058af0ecb000",
+          "source_sha256": "2b61c2f8abe9809f673394456c046adc446b9634e04c47aca6c71450f7c3a241",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "0df3c2022bec402d8b7e7745fd5db241201d74b072cc2be789a28a848333bc07"
+        }
+      ]
+    },
+    {
+      "id": "terrain8",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain8.png",
+          "role": "base",
+          "sha256": "26fe218c2be358cd12303d79c3cd52f4b2613c393766ad61a0b57272c7b5f76b",
+          "source_sha256": "8e7d11c193697137c1429db49e31593bba1a2ba25e99e0f337aff180f4c96da4",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "1c6d337669b46d780e0c497c6b60861488eaae0d30a46a1cdca845f712f8ae05"
+        }
+      ]
+    },
+    {
+      "id": "terrain9",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain9.png",
+          "role": "base",
+          "sha256": "bbc1b6dc7719426c530648f6c014ae6f78ad42025aba3ce74071e9a24f648734",
+          "source_sha256": "f148d93b9d5619ad0d8130aeb0ec459caf6513a4ef49d378a60bc07daed41184",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "271eef96354fe3c33f08c31260942c3c0f52897c64f6f8b02a03e86ebdb1ce0b"
+        }
+      ]
+    },
+    {
+      "id": "terrain10",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain10.png",
+          "role": "base",
+          "sha256": "572b1cf0275537829ee23125107b3fc8f2bde89ba90b788fc16727c31fdc54dc",
+          "source_sha256": "81e7691b589bd92e8180beea6ea8856c993b71f5da7d0cf33fbc6bebfd1f3800",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "945e3550221c2415b5c5e3712a25e5326023cafcf2a734dda583726809ec7457"
+        }
+      ]
+    },
+    {
+      "id": "terrain11",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain11.png",
+          "role": "base",
+          "sha256": "788a645683d2a6d5b9c6ca25185238613d02b1f6e276ee1db0e4816273988ea3",
+          "source_sha256": "aed60fbc53aad77026924d9a285909d8f5540304bc1fc26a910d63feb86d3ded",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "bd4df70f08bb6e4186993a34492786f4fc3484b551b239c49e9e45d3aa95932c"
+        }
+      ]
+    },
+    {
+      "id": "terrain12",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain12.png",
+          "role": "base",
+          "sha256": "4311e3fa407cd043c94bb3f8b0064ecc096fcea8453e41d89615d7aa59aeb605",
+          "source_sha256": "b9d1a80ef090b2803a123ca5b1727cc85ef17db3329c6a5a475d51764d3885f4",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "e7608d17ea6f48bb3fe39e9dba0db6ca148398d9a1e889ef8b139bae1cc71629"
+        }
+      ]
+    },
+    {
+      "id": "terrain13",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain13.png",
+          "role": "base",
+          "sha256": "cab37af9addd43b58a5d7c9eafb77e6983ae14a1ff840f38cb6d7a61678c67e9",
+          "source_sha256": "17f350659d91f44b3ec45bc55329b1467582ac8fec12270a2ac2468b18550e8c",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "fd5fb48dc4515dc2f0d24f0e044b67dc56b4b88b4e801cc0f48898fbeafb9685"
+        }
+      ]
+    },
+    {
+      "id": "terrain14",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain14.png",
+          "role": "base",
+          "sha256": "dce7e77b4e56fe0fd8cea0101374adb442060e8db8bc28d051765fcc99f00eba",
+          "source_sha256": "0283f9280f1152ca7a78ffbe789a772cbf8b1c19d1c9ae95aded468a63a379cd",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "00c64e57c8ca91704b75eb7f2d9ddeebaeaae29467376d7e7350835016dc8524"
+        }
+      ]
+    },
+    {
+      "id": "terrain15",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "terrain constrained",
+      "layers": [
+        {
+          "file": "terrain15.png",
+          "role": "base",
+          "sha256": "3c69c54c19ea859d097c464a0e1aceebee6b51ec56549408850d89e0596c9576",
+          "source_sha256": "a83e9096f57608760d4fa7d411a702eee165cefb0b7532ec0e15df7932143dd9",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": "13c63e02581ffb901ea103b850b0b905215b33d9a33e2b633008c8cc83ef1b9e"
+        }
+      ]
+    }
+  ],
+  "terrain_atlas": {
+    "slot": 256,
+    "border": 64,
+    "levels": [
+      {
+        "file": "terrain-atlas-mip0.png",
+        "sha256": "dba2ac6cb6be923fc1878f494c132d288cfbc0b9f94e320aa0725df118ed6d13"
+      },
+      {
+        "file": "terrain-atlas-mip1.png",
+        "sha256": "46c16ea140f14bb12d8eb782d425f94bd4f56d3d188894e801c33379656e0494"
+      },
+      {
+        "file": "terrain-atlas-mip2.png",
+        "sha256": "591b57338d254e74a685c5bd93cf9d14cfe7d9247c8b62bacd4a97eac0bac358"
+      },
+      {
+        "file": "terrain-atlas-mip3.png",
+        "sha256": "be3d340dfbcf55a5458d8d6f26ee5e7cfdb21431cb3cf2552f32353244555d8c"
+      }
+    ]
+  }
+}

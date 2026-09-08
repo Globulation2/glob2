@@ -77,8 +77,10 @@ void MapEdit::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 	*cy+=game.teams[team]->startPosY-(game.map.getH()/2);
 	if (forScreenViewport)
 	{
-		*cx-=((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
-		*cy-=((globalContainer->gfx->getH())>>6);
+		camera.originX=*cx*32.0-camera.visibleW()/2;
+		camera.originY=*cy*32.0-camera.visibleH()/2;
+		camera.normalize();
+		*cx=camera.tileX();*cy=camera.tileY();
 	}
 
 	*cx&=game.map.getMaskW();

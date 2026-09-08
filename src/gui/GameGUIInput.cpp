@@ -1,3 +1,4 @@
+#include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -171,7 +172,15 @@ void GameGUI::processEvent(SDL_Event *event)
 		else if (event->type==SDL_MOUSEWHEEL)
 		{
 			int factor = event->wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1;
-			accumulateScrollWheelDelta(event->wheel.y * factor);
+			if (SDL_GetModState() & KMOD_ALT)
+            {
+                double delta=event->wheel.y;
+#if SDL_VERSION_ATLEAST(2,0,18)
+                delta=event->wheel.preciseY;
+#endif
+                zoomMap(delta*factor,mouseX,mouseY);
+            }
+            else accumulateScrollWheelDelta(event->wheel.y * factor);
 		}
 	}
 
@@ -200,7 +209,7 @@ void GameGUI::accumulateScrollWheelDelta(int delta)
 {
 	SDL_Keymod mod = SDL_GetModState();
 	switch (scrollWheelTarget(mod & KMOD_SHIFT, mod & KMOD_CTRL,
-	                          globalContainer->settings.scrollWheelEnabled))
+	                          globalContainer->settings.scrollWheelEnabled, mod & KMOD_ALT))
 	{
 	case ScrollWheelTarget::MaxUnitWorking:
 		scrollWheelWorkingChanges += delta;
@@ -278,6 +287,9 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 // bar / map, middle-click panning, and legacy wheel buttons 4/5.
 void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 {
+	updateCamera();
+    if(mouseEvent.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseEvent.x,mouseEvent.y))
+    {viewportX=camera.tileX();viewportY=camera.tileY();zoomControlPushed=true;return;}
 	int button=mouseEvent.button;
 
 	if (button==SDL_BUTTON_RIGHT)
@@ -339,18 +351,21 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 // open): finalize flag moves or brush/tool strokes, then clear pushed states.
 void GameGUI::handleMouseButtonUp(SDL_MouseButtonEvent mouseEvent)
 {
+	updateCamera();
+    if(mouseEvent.button==SDL_BUTTON_LEFT && zoomControlPushed)
+    {zoomControlPushed=false;miniMapPushed=selectionPushed=panPushed=false;return;}
 	int button=mouseEvent.button;
-	if ((button==SDL_BUTTON_LEFT) && (mouseEvent.x < globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button==SDL_BUTTON_LEFT) && camera.contains(mouseEvent.x,mouseEvent.y) && mouseEvent.y>=16)
 	{
 		if ((selectionMode==BUILDING_SELECTION) && selectionPushed && selectionBuilding()->type->isVirtual)
 		{
 			// update flag
-			moveFlag(mouseEvent.x, mouseEvent.y, true);
+			moveFlag(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), true);
 		}
 		// We send the order
 		else if (selectionMode==BRUSH_SELECTION || selectionMode==TOOL_SELECTION)
 		{
-			toolManager.handleMouseUp(mouseEvent.x, mouseEvent.y, localTeamNo, viewportX, viewportY);
+			toolManager.handleMouseUp(mapMouseX(mouseEvent.x), mapMouseY(mouseEvent.y), localTeamNo, viewportX, viewportY);
 		}
 	}
 	miniMapPushed=false;

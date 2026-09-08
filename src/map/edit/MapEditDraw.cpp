@@ -1,3 +1,4 @@
+#include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
@@ -15,7 +16,10 @@
 
 void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 {
-	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
+	updateCamera();
+	globalContainer->gfx->setClipRect();
+	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
+	globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
 
 	Uint32 drawOptions = Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESOURCE_GROWTH_AREAS;
 	if(isFertilityOn)
@@ -23,9 +27,9 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		drawOptions |= Game::DRAW_OVERLAY;
 	}
 
-	game.drawMap(sx, sy, sw, sh, RIGHT_MENU_WIDTH, 16, viewportX, viewportY, team, view, drawOptions);
+	game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, team, view, drawOptions);
 
-	if(widgetRectangle(sx, sy, sw, sh).is_in(mouseX, mouseY))
+	if(camera.contains(mouseX,mouseY) && mouseY>=16)
 	{
 		// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
 		const int firstX = firstPlacement ? firstPlacement->x : -1;
@@ -33,13 +37,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY);
 		if(selectionMode==EditingBuilding)
 		{
 			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
@@ -58,12 +62,14 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		}
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY);
 		}
 		if(selectionMode==ChangeNoResourceGrowthAreas)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY);
 	}
 
+	globalContainer->gfx->endMapTransform();
+	drawMapZoomControls(camera);
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 }
 
@@ -71,7 +77,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 
 void MapEdit::drawMiniMap(void)
 {
-	minimap.draw(team, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );
+	minimap.draw(team, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
 }
 
 
@@ -106,7 +112,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 		int tempX, tempY;
 		int mapX, mapY;
 		bool isRoom;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
+		game.map.cursorToBuildingPos(mapMouseX(mouseX), mapMouseY(mouseY), bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 		if (bt->isVirtual)
 			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, team);
 		else
@@ -185,6 +191,8 @@ bool MapEdit::isUpgradable(int buildingLevel)
 
 void MapEdit::drawMenuEyeCandy()
 {
+	globalContainer->gfx->endMapTransform();
+	drawMapZoomControls(camera);
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 
 	// bar background 
@@ -219,11 +227,11 @@ void MapEdit::drawPlacingUnitOnMap()
 	
 	int level=placingUnitLevel;
 	
-	int cx=(mouseX>>5)+viewportX;
-	int cy=(mouseY>>5)+viewportY;
+	int cx=((mapMouseX(mouseX)>>5)+viewportX)&game.map.getMaskW();
+	int cy=((mapMouseY(mouseY)>>5)+viewportY)&game.map.getMaskH();
 
-	int px=mouseX&0xFFFFFFE0;
-	int py=mouseY&0xFFFFFFE0;
+	int px=mapMouseX(mouseX)&0xFFFFFFE0;
+	int py=mapMouseY(mouseY)&0xFFFFFFE0;
 	int pw=32;
 	int ph=32;
 

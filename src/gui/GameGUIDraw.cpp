@@ -1,3 +1,4 @@
+#include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -360,15 +361,16 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
+	globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
 	if (selectionMode==TOOL_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY);
+		toolManager.drawTool(mapMouseX(mouseX), mapMouseY(mouseY), localTeamNo, viewportX, viewportY);
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY);
+		toolManager.drawTool(mapMouseX(mouseX), mapMouseY(mouseY), localTeamNo, viewportX, viewportY);
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -412,6 +414,7 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
 	}
 
+	globalContainer->gfx->endMapTransform();
 	// draw message List
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
 	// than this many GUI steps, so brief network hiccups don't flash the box.
@@ -607,6 +610,10 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+	updateCamera();
+	globalContainer->gfx->setClipRect();
+	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
+	globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
@@ -624,7 +631,7 @@ void GameGUI::drawAll(int team)
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState);
+		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState);
 	}
 	else
 	{
@@ -632,7 +639,7 @@ void GameGUI::drawAll(int team)
 
 		globalContainer->gfx->setClipRect();
 
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState);
+		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState);
 
 		// generate and draw particles
 		generateNewParticles(&visibleBuildings);
@@ -642,6 +649,7 @@ void GameGUI::drawAll(int team)
 	///Draw ghost buildings
 	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 
+	globalContainer->gfx->endMapTransform();
 	// if paused, tint the game area
 	if (gamePaused)
 	{
@@ -669,7 +677,7 @@ void GameGUI::drawAll(int team)
 	drawOptions = 0;
 
 	globalContainer->gfx->setClipRect();
-	minimap.draw(localTeamNo, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );
+	minimap.draw(localTeamNo, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
 
 	// draw the progress bar if this is a replay
 	if (globalContainer->replaying) drawReplayProgressBar();
@@ -678,6 +686,7 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
 
+	drawMapZoomControls(camera);
 	// draw menu if any
 	if (inGameMenu)
 	{

@@ -560,3 +560,8 @@ if not env['server']:
     regression_sources += local.Object('ImmobileUnitGradientHarness.o', '#test/ImmobileUnitGradientHarness.cpp')
     regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
     local.Alias('immobile-unit-gradient-test', regression_test)
+if not env['server']:
+    highres_sources = [source for source in source_files if source != 'Glob2.cpp']
+    highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
+    highres_test = local.Program('HighResolutionIntegrationHarness', highres_sources)
+    local.Alias('highres-integration-test', highres_test)
