@@ -46,7 +46,7 @@ void CampaignMainMenu::runCampaignSelection(bool newCampaign)
         [this, newCampaign](Screen& selected, int result) {
             if (result != CampaignSelectorScreen::OK) return;
             auto menu = std::make_unique<CampaignMenuScreen>(
-                static_cast<CampaignSelectorScreen&>(selected).getCampaignName());
+                static_cast<CampaignSelectorScreen&>(selected).getCampaignName(), screens);
             if (newCampaign) menu->setNewCampaign();
             screens.push(std::move(menu));
         });

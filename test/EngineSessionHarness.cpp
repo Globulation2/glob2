@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Engine.h"
+#include "GameSessionScreen.h"
 #include "GlobalContainer.h"
 #include <SDL_net.h>
 #include <iostream>
@@ -58,6 +59,19 @@ int main(int argc, char** argv)
         rejected = false;
         try { engine.stepSession(now); } catch (const std::logic_error&) { rejected = true; }
         require(rejected, "A finalized session must reject advancement");
+    }
+    {
+        auto engine = std::make_unique<Engine>();
+        require(engine->initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR, "Stack fixture load failed");
+        GAGGUI::ScreenStack screens(*globalContainer->gfx);
+        screens.push(std::make_unique<GameSessionScreen>(screens, std::move(engine)));
+        unsigned frames = 0;
+        while (screens.running()) {
+            screens.frame(1000 + frames * 40, {});
+            require(++frames <= 60, "Stack-driven session failed to finish");
+        }
+        require(frames == 51 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
+                "The stack must drive one session step per frame and defer its completion");
     }
     delete globalContainer;
     SDLNet_Quit();

@@ -91,7 +91,10 @@ int ScreenStack::execute(unsigned stepLength)
         frame(static_cast<Uint32>(start), events);
         if (running()) {
             const Uint64 elapsed = SDL_GetTicks64() - start;
-            GAGCore::ApplicationHost::wait(elapsed < stepLength ? stepLength - elapsed : 0);
+            const Uint32 fallback = elapsed < stepLength ? stepLength - elapsed : 0;
+            const Uint32 delay = screens.empty() ? fallback :
+                screens.back().screen->executionDelay(static_cast<Uint32>(SDL_GetTicks64()), fallback);
+            GAGCore::ApplicationHost::wait(delay);
         }
     }
     return result();

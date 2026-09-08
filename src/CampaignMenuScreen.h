@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Campaign.h"
+#include <ScreenStack.h>
 #include "Glob2Screen.h"
 #include "GUIButton.h"
 #include "GUICheckList.h"
@@ -17,7 +18,7 @@ class MapPreview;
 class CampaignMenuScreen : public Glob2Screen
 {
 public:
-	CampaignMenuScreen(const std::string& name);
+	CampaignMenuScreen(const std::string& name, GAGGUI::ScreenStack& screens);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void setNewCampaign();
 	enum
@@ -27,6 +28,7 @@ public:
 	};
 private:
 	Campaign campaign;
+    GAGGUI::ScreenStack& screens;
 
 	/// Title of the screen
 	Text* title;

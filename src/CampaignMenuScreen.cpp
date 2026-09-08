@@ -5,11 +5,12 @@
 #include "Toolkit.h"
 #include "StringTable.h"
 #include "Engine.h"
+#include "GameSessionScreen.h"
 #include "GlobalContainer.h"
 #include "GUIMapPreview.h"
 #include "GUIMessageBox.h"
 
-CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
+CampaignMenuScreen::CampaignMenuScreen(const std::string& name, GAGGUI::ScreenStack& screens) : screens(screens)
 {
 	if (!campaign.load(name))
 		campaign.setName(name);
@@ -35,6 +36,12 @@ CampaignMenuScreen::CampaignMenuScreen(const std::string& name)
 
 void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+    if (action == SCREEN_DESTROYED) {
+        // Also persist progress when application quit unwinds the stack and
+        // suppresses normal continuation callbacks.
+        campaign.save(true);
+        return;
+    }
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1==EXIT)
@@ -50,27 +57,18 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 			CampaignMapEntry* selected = getSelectedMission();
 			if (selected)
 			{
-				Engine engine;
-				int rc_e = engine.initCampaign(selected->getMapFileName(), campaign, selected->getMapName());
-				if (rc_e == Engine::EE_NO_ERROR)
-				{
-	    			int rcr = engine.run();
-	    			if(rcr == -1)
-	    			    endExecute(-1);
-				}
-				else if(rc_e == -1)
-				{
-					endExecute(-1);
-				}
-				repopulateAvailableMissions();
-				// Post-mission save persists completion / unlock state. If it
-				// silently dropped, the player would re-launch a "completed"
-				// mission or find the next one still locked, so surface the
-				// failure instead of swallowing it.
-				if (!campaign.save(true))
-					GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
-						Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
-						Toolkit::getStringTable()->getString("[ok]"));
+                auto engine = std::make_unique<Engine>();
+                int result = engine->initCampaign(selected->getMapFileName(), campaign, selected->getMapName());
+                if (result == Engine::EE_NO_ERROR) {
+                    screens.push(std::make_unique<GameSessionScreen>(screens, std::move(engine)),
+                        [this](Screen&, int) {
+                            repopulateAvailableMissions();
+                            if (!campaign.save(true))
+                                GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
+                                    Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
+                                    Toolkit::getStringTable()->getString("[ok]"));
+                        });
+                } else if (result == Screen::QUIT_APPLICATION) endExecute(result);
 			}
 		}
 	}

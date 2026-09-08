@@ -100,6 +100,7 @@ CLIENT_SOURCES = (
     'EditorMainMenu.cpp',
     'EndGameScreen.cpp',
     'Engine.cpp',
+    'GameSessionScreen.cpp',
     'EngineInit.cpp',
     'EngineLoaders.cpp',
     'EngineRun.cpp',

@@ -43,8 +43,8 @@ continuations that could open another flow. Recursive frames are rejected.
 The campaign new/load selector now uses this stack. Selection cancellation
 returns to the retained parent; successful selection queues the campaign menu.
 `ScreenStack::execute` is a transitional polling host for the current desktop
-and Asyncify browser callers. Campaign mission execution still uses the legacy
-engine loop, and other menu families have not yet migrated. This change does
+and Asyncify browser callers. Campaign mission execution now uses `GameSessionScreen`, described below;
+other menu families have not yet migrated. This change does
 not remove Asyncify or claim callback-safe mission loading.
 
 
@@ -59,8 +59,8 @@ under regular and delayed callback schedules and checks invalid lifecycle calls.
 This is a session boundary, not yet the complete application scheduler:
 `GameGUI::step(events, now)` consumes host-supplied input, but can still open
 legacy modal dialogs. Its no-argument compatibility wrapper polls SDL. Finishing a
-session can still synchronously load a requested save. Audio initialization and
-the end-game screen remain in `run()`. These remaining call stacks must migrate
+session can still synchronously load a requested save. Presentation preparation and end-game screen creation are shared with the
+owned game-session screen. Music loading is still synchronous. These remaining call stacks must migrate
 before a callback-only browser host can replace Asyncify.
 
 
@@ -78,3 +78,25 @@ The native session harness plants a sentinel in SDL's queue to check this
 boundary; the gameplay regression checks held-key scrolling and focus cleanup
 with supplied timer samples. Browser visibility pause/resume, full menu input
 migration, and nonblocking dialogs remain separate required work.
+
+
+## Campaign session ownership
+
+Campaign and tutorial menus now queue an owned `GameSessionScreen` after map
+initialization. It drives the engine's incremental session API and exposes the
+engine's requested delay to the common stack host. It retains the engine while
+an end-game screen is on top, so statistics and replay export do not outlive
+their game data. Returning from that screen completes the game screen and
+refreshes/saves the retained campaign menu. Stack shutdown also saves campaign
+progress while suppressing navigation continuations.
+
+The legacy `Engine::run` shares presentation preparation and end-screen creation
+with this path. Screen execution hooks are virtual so game presentation does
+not run the menu renderer or translate input coordinates twice. The native
+session harness checks the same fixture through this ownership path, and the
+browser suite exercises two tutorial start/quit/end-screen/return cycles.
+
+Map initialization, music loading, requested-save loading, and campaign save
+error dialogs are still synchronous. Custom games, replays, editor, and network
+menu flows still need to adopt the same ownership path before the browser host
+can shed Asyncify.

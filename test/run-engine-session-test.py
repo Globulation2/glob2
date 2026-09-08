@@ -25,7 +25,7 @@ try:
         print(result.stdout, end='')
         if result.returncode == 0:
             checksums = re.findall(r'nox::gui\.game\.checkSum\(\) = ([0-9a-f]+)', result.stdout)
-            assert len(checksums) == 2, 'Missing session checksums'
+            assert len(checksums) == 3, 'Missing session checksums'
             assert len(set(checksums)) == 1, 'Callback timing changed simulation state'
     raise SystemExit(result.returncode)
 finally:

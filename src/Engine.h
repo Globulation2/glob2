@@ -75,6 +75,9 @@ public:
 
 	//! Run game. A valid gui and netGame must exists
 	int run();
+    void prepareRun();
+    std::unique_ptr<GAGGUI::Screen> endRunScreen();
+    void restoreCursor();
 
     // Incremental session API. Requires an initialized game; the host owns
     // scheduling. GUI input and modal flows remain transitional legacy code.

@@ -540,26 +540,13 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::TUTORIAL:
 			{
-				Campaign campaign;
-				if(campaign.load("games/Tutorial_Campaign.txt"))
-				{
-					CampaignMenuScreen cms("games/Tutorial_Campaign.txt");
-					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms == -1)
-					{
-						isRunning = false;
-					}
-				}
-				else
-				{
-					CampaignMenuScreen cms("campaigns/Tutorial_Campaign.txt");
-					cms.setNewCampaign();
-					int rc_cms=cms.execute(globalContainer->gfx, 40);
-					if(rc_cms == -1)
-					{
-						isRunning = false;
-					}
-				}
+                ScreenStack screens(*globalContainer->gfx);
+                Campaign campaign;
+                const bool saved = campaign.load("games/Tutorial_Campaign.txt");
+                auto menu = std::make_unique<CampaignMenuScreen>(saved ? "games/Tutorial_Campaign.txt" : "campaigns/Tutorial_Campaign.txt", screens);
+                if (!saved) menu->setNewCampaign();
+                screens.push(std::move(menu));
+                if (screens.execute() == Screen::QUIT_APPLICATION) isRunning = false;
 			}
 			break;
 			case MainMenuScreen::LOAD_GAME:

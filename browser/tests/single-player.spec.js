@@ -30,12 +30,20 @@ test('campaign selector returns to its suspended parent and can reopen', async (
   await screen(page, 'MainMenuScreen');
 });
 
-test('launches the first tutorial mission through campaign controls', async ({page}) => {
+test('tutorial sessions quit through the end screen and can restart', async ({page}) => {
   await menu(page, 480, 120);
   await screen(page, 'CampaignMenuScreen');
-  await menu(page, 100, 60);
-  await menu(page, 160, 450);
-  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+  for (let attempt = 0; attempt < 2; ++attempt) {
+    await menu(page, 100, 60);
+    await menu(page, 160, 450);
+    await screen(page, 'match');
+    await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+    await page.locator('#canvas').press('Escape');
+    await click(page, 600, 500);
+    await screen(page, 'EndGameScreen');
+    await page.locator('#canvas').press('Enter');
+    await screen(page, 'CampaignMenuScreen');
+  }
 });
 
 test('custom match pauses, persists and resumes after reload', async ({page}) => {

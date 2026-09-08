@@ -319,9 +319,10 @@ namespace GAGGUI
 		
 		//! Nonblocking lifecycle. The host supplies time and already-polled input.
 		void beginExecution(GAGCore::DrawableSurface *surface);
-		void updateExecution(Uint32 tick);
-		void handleExecutionEvent(SDL_Event event);
-		void drawExecution();
+		virtual void updateExecution(Uint32 tick);
+		virtual void handleExecutionEvent(SDL_Event event);
+		virtual void drawExecution();
+        virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }
 		bool isExecutionRunning() const { return run; }
 		//! Complete once stopped; repeated calls do not repeat destruction callbacks.
 		int finishExecution();
