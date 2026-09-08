@@ -9,7 +9,7 @@ import subprocess
 
 
 def run(arguments):
-    subprocess.run(['scons', 'release=1', '-j2', *arguments], check=True)
+    subprocess.run(['scons', 'release=1', '-j2', '--debug=explain', *arguments], check=True)
 
 
 def snapshot(directory):

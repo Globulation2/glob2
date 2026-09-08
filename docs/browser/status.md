@@ -566,3 +566,26 @@ The complete standalone build and all 20 executables pass on macOS, including
 The new Linux hosted run is still required; local results do not substitute for
 the compiler/platform matrix. The coexistence jobs from the run above were
 still running at this checkpoint.
+
+## Cold-build configuration dependency fix — 2026-09-08
+
+The native-first coexistence job subsequently failed at its first no-op native
+build. Its expanded diagnostics showed widespread recompilation with identical
+compiler commands and unchanged object bytes (apart from the date/time banner
+and linked executable). A fresh local one-object build reproduced the failure:
+SCons reported `BuildConfig.h` as a new dependency only on the second invocation.
+The prior local coexistence passes used an already populated build directory.
+
+Native configuration is now registered as a generated SCons target with the
+configuration contents as its input. The scanner can discover the header on a
+cold build; unchanged contents retain the file and object timestamps. A fresh
+CursorManager build followed by a second invocation is a no-op. Changing the
+font configuration rebuilds the header and dependent object, then another
+unchanged invocation is again a no-op. The full local concurrent/incremental
+native/Wasm coexistence check and nine build-system unit tests pass. Logs:
+`/tmp/glob2-config-{probe-second,fixed-first,fixed-second,fixed-changed,
+fixed-changed-noop,coexistence,build-tests}.log`.
+
+Coexistence now includes SCons rebuild explanations in CI output and retains
+all byte/timestamp/source-contamination assertions. Hosted cold-build jobs still
+need to confirm this correction on their Linux runners.

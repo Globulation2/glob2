@@ -2,6 +2,18 @@
 
 ## Resume here
 
+Latest follow-up: browser reload/address-bar shortcuts pass automated checks
+with both renderers and actual Safari. The user uses **Colemak**: this Mac's UI
+automation physical S/U keys emit logical r/l, whereas its physical R/L emit
+p/i. Do not interpret an automation `super+r` attempt as a delivered Command-R.
+Windows CI passes. Linux exposed stale standalone harness dependencies, now
+fixed with all 20 executables passing locally (170 CppUnit cases). The hosted
+coexistence failure also reproduced locally on a cold configuration: SCons
+only discovered the generated header on the second build. Registering it as a
+generated target fixes the focused cold-build regression and local full
+coexistence check. Continue with hosted CI results; see the latest dated status
+sections rather than treating the older warm-build passes as cold-build proof.
+
 The user resumed work after the subscription handoff. The first follow-up
 verified the final click adapter in real-window Chromium with both renderers
 and in software input regressions across three engines. Actual Safari 26.6.2

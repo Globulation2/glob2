@@ -42,6 +42,7 @@ The toolbar reload path was verified. The original automated keyboard reload
 attempt was inconclusive: a subsequent plain-page input probe found that this
 Mac's keyboard layout makes the automation's physical `R` key emit `p` and its
 physical `L` emit `i`. That attempt did not deliver Command-R.
+The user subsequently confirmed that they use Colemak.
 This run did not cover quota exhaustion, context loss, clipboard, export permissions, hidden
 tabs, long campaigns or multiplayer in Safari. The named test save remains in
 this Safari profile's local store.
