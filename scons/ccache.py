@@ -8,6 +8,7 @@ leave CCACHE unset when regenerating it for tools/remove-unused-includes.py.
 
 import os
 import shutil
+import shlex
 
 # ccache settings forwarded into the environment scons scrubs for build
 # commands. Deliberately absent: CCACHE_SLOPPINESS. Marking include_file_mtime
@@ -23,13 +24,22 @@ def enabled():
 
 
 def enable(env):
-    """Prefix env's compilers with ccache. Call once CC and CXX are final."""
+    """Prefix compilation commands with ccache once CC and CXX are final."""
     binary = shutil.which('ccache')
     if not binary:
         raise SystemExit("CCACHE is set but ccache was not found on PATH")
-    for var in ('CC', 'CXX'):
-        if env.get(var) and not env[var].startswith(binary):
-            env[var] = binary + ' ' + env[var]
+    # Wrap compilation commands, not CC/CXX: SMARTLINK and configure link
+    # probes must keep the original compiler driver without a ccache process.
+    # Respect callers who already supplied a ccache-prefixed compiler.
+    for compiler, commands in (('CC', ('CCCOM', 'SHCCCOM')),
+                               ('CXX', ('CXXCOM', 'SHCXXCOM'))):
+        words = shlex.split(str(env.get(compiler, '')))
+        if words and os.path.basename(words[0]) == 'ccache':
+            continue
+        for command in commands:
+            value = env.get(command)
+            if value and not str(value).startswith(binary + ' '):
+                env[command] = binary + ' ' + str(value)
     for var in _FORWARDED:
         if var in os.environ:
             env['ENV'][var] = os.environ[var]

@@ -23,7 +23,7 @@ Options are cached in `options_cache.py`, so `release=1` and `server=1` stick un
 
 **`DET_INIT` — hunting uninitialized-read nondeterminism.** Valgrind/MSan don't work on modern macOS. Instead build twice, `DET_INIT=zero scons` and `DET_INIT=pattern scons`, and hammer one seed serially per build (add `MallocPreScribble=1 MallocScribble=1` to scribble the heap). If each build is internally stable but the two disagree, an uninitialized stack read is confirmed; if a scribbled build is still unstable run-to-run, the cause is not uninitialized memory. The env var is invisible to scons's dependency tracking, so rebuild affected objects when toggling.
 
-**`CCACHE=1`** wraps the C/C++ compilers in ccache (`scons/ccache.py`, used by
+**`CCACHE=1`** wraps C/C++ compilation commands in ccache (`scons/ccache.py`, used by
 both this SConstruct and `test/SConstruct`). Opt-in via the environment rather
 than a scons option so it never sticks in `options_cache.py`. Leave it unset
 when regenerating `compile_commands.json`, which would otherwise record the

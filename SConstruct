@@ -273,9 +273,8 @@ def main():
             env['AR']  = 'x86_64-w64-mingw32-ar'
             env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
 
-    # Compiler cache. Done here so it wraps whichever compiler the mingw
-    # branches above settled on, and before configure() runs its CheckCC /
-    # CheckCXX probes against the same command line.
+    # Cache compilation after compiler selection and before configure probes.
+    # Link commands continue to use the original compiler driver.
     if ccache.enabled():
         ccache.enable(env)
     
