@@ -508,3 +508,22 @@ and repeated-no-op coexistence run passes (`/tmp/glob2-resume-coexistence.log`),
 as do all nine build-system unit tests. A native dry run reports the executable
 and library up to date. These results do not resolve or replace Linux/Windows
 hosted CI qualification; a new hosted run is still required.
+
+## Upstream integration
+
+Integrated upstream `master` at `753531310` using a merge to preserve the
+reviewed PR history. Conflicts from wording changes were resolved around the
+existing scheduled application/editor loops; those loops and durable campaign
+controls remain intact. Upstream's resource-fetch target fix and regression are
+included, as is its shared-object SCons environment fix. The newly imported
+resource-fetch workflow command now uses the isolated Linux output path.
+
+Post-integration validation passes: release Wasm, native session/resource-fetch
+harness builds, the resource-fetch regression with unchanged disposable-profile
+preferences, native session/editor/fertility tests, nine build-system tests,
+15 Chromium WebGL single-player/input scenarios (2.1m), and both browser/native
+TCP and verified-WSS checksum matches (1.9m). The matches check at least 250
+native ticks and shared command-boundary checksums; they do not prove long-run
+all-AI determinism. Logs are `/tmp/glob2-upstream-{native,web,resource,session,
+single-player,crossplay,build-tests}.log`. The earlier 104-case qualification
+preceded this upstream simulation change and remains scoped to its revision.

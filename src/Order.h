@@ -525,7 +525,7 @@ class MessageOrder:public MiscOrder
 {
 public:
 	MessageOrder() = default;
-	MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text);
+	MessageOrder(Uint32 recipientsMask, Uint32 messageOrderType, const char * text);
 	virtual ~MessageOrder(void);
 
 	//! See OrderModifyBuilding::deserialize.
@@ -537,7 +537,7 @@ public:
 	char *getText(void) { return (char *)(data+9); }
 	Uint8 getOrderType(void) { return ORDER_TEXT_MESSAGE; }
 
-	Uint32 recepientsMask;
+	Uint32 recipientsMask;
 	enum MessageOrderType
 	{
 		BAD_MESSAGE_TYPE=0,
@@ -557,7 +557,7 @@ class OrderVoiceData:public MiscOrder
 {
 public:
 	OrderVoiceData() = default;
-	OrderVoiceData(Uint32 recepientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData);
+	OrderVoiceData(Uint32 recipientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData);
 	virtual ~OrderVoiceData(void);
 
 	//! See OrderModifyBuilding::deserialize.
@@ -570,7 +570,7 @@ public:
 	Uint8 getOrderType(void) { return ORDER_VOICE_DATA; }
 	Uint8 *getFramesData(void) { return data+5; }
 
-	Uint32 recepientsMask;
+	Uint32 recipientsMask;
 	size_t framesDataLength = 0;
 	Uint8 frameCount = 0;
 	Uint8 *data = nullptr;

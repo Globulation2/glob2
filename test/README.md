@@ -231,3 +231,18 @@ The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
 toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
 It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
 coverage in `TestsRunner`.
+
+## Resource-fetch target regression
+
+From the repository root:
+
+```sh
+scons -j8 release=1 server=0 resource-fetch-target-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/ResourceFetchTargetHarness .
+```
+
+The real-engine movement-method fixture checks every swim class: a valid resource
+target remains unchanged, and a depleted target is refreshed after its resource
+gradient is rebuilt. It invokes the movement method directly, rather than running
+an entire match. The shared runner isolates the profile and working directory and
+checks that preferences remain unchanged. Linux CI runs this regression.

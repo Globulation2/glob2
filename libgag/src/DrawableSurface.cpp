@@ -193,7 +193,7 @@ namespace GAGCore
 
 			// The next line causes a desynchronization between _doScissors and glIsEnabled(GL_SCISSOR_TEST),
 			// which causes the setClipRect() functions to not reset the clipping the way it should,  so many
-			// things don't get drawn properly and the game appears to "blink". Outcommenting it didn't cause
+			// things don't get drawn properly and the game appears to "blink". Commenting it out didn't cause
 			// any other problems.  If you think glState should be reset,  feel free to do so,  but also call
 			// functions like glDisable() as required.
 

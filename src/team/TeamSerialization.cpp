@@ -19,7 +19,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsTryToBuildingSiteRoom.clear();
 
-	// loading baseteam
+	// loading base team
 	if(!BaseTeam::load(stream, versionMinor))
 		co_return false;
 
@@ -165,7 +165,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 
 void Team::save(GAGCore::OutputStream *stream)
 {
-	// saving baseteam
+	// saving base team
 	BaseTeam::save(stream);
 
 	stream->writeEnterSection("Team");

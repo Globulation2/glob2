@@ -132,12 +132,12 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 
 			if (messageOrderType==MessageOrder::NORMAL_MESSAGE_TYPE)
 			{
-				if (mo->recepientsMask &(1<<localPlayer))
+				if (mo->recipientsMask &(1<<localPlayer))
 					addMessage(Color(230, 230, 230), FormattableString("%0 : %1").arg(game.players[sp]->name).arg(mo->getText()), true);
 			}
 			else if (messageOrderType==MessageOrder::PRIVATE_MESSAGE_TYPE)
 			{
-				if (mo->recepientsMask &(1<<localPlayer))
+				if (mo->recipientsMask &(1<<localPlayer))
 					addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[from:]")).arg(game.players[sp]->name).arg(mo->getText()), true);
 				else if (sp==localPlayer)
 				{
@@ -145,7 +145,7 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 					// mask can carry several recipients, so iterate every set
 					// bit; messageRecipientPlayers drops any bit outside the
 					// live player range instead of indexing an empty slot.
-					for (int k : messageRecipientPlayers(mo->recepientsMask, game.gameHeader.getNumberOfPlayers()))
+					for (int k : messageRecipientPlayers(mo->recipientsMask, game.gameHeader.getNumberOfPlayers()))
 						addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(game.players[k]->name).arg(mo->getText()), true);
 				}
 			}
@@ -158,7 +158,7 @@ void GameGUI::executeOrder(std::shared_ptr<Order> order)
 		case ORDER_VOICE_DATA:
 		{
 			std::shared_ptr<OrderVoiceData> ov = static_pointer_cast<OrderVoiceData>(order);
-			if (ov->recepientsMask & (1<<localPlayer))
+			if (ov->recipientsMask & (1<<localPlayer))
 				globalContainer->mix->addVoiceData(ov);
 			game.executeOrder(order, localPlayer);
 		}

@@ -12,7 +12,7 @@
 #include "Map.h"
 #include "Utilities.h"
 
-/// This random map generator generates a heightfield and then choses levels at which to draw the line between water, sand, gras and sand again (desert)
+/// This random map generator generates a height field and then chooses levels separating water, sand, grass, and desert.
 bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
     return makeRandomMapTask(descriptor).run();

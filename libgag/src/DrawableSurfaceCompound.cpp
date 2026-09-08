@@ -370,7 +370,7 @@ namespace GAGCore
 
 		font->drawString(this, x, y, w, output, alpha);
 
-		///////////// The following code is for translation textshots ////////////
+		///////////// The following code is for translation text shots ////////////
 		if(!translationPicturesDirectory.empty())
 		{
 			for(std::map<std::string, std::string>::iterator i=texts.begin(); i!=texts.end(); ++i)
@@ -400,7 +400,7 @@ namespace GAGCore
 		if(pos != std::string::npos)
 			output = output.substr(0, pos);
 
-		///////////// The following code is for translation textshots ////////////
+		///////////// The following code is for translation text shots ////////////
 		if(!translationPicturesDirectory.empty())
 		{
 			for(std::map<std::string, std::string>::iterator i=texts.begin(); i!=texts.end(); ++i)
@@ -447,7 +447,7 @@ namespace GAGCore
 		this->drawString(x, y, font, str.str());
 	}
 
-	//This code is for the textshot code
+	//This code is for the text shot code
 	std::map<std::string, std::string> DrawableSurface::texts;
 	std::set<std::string> DrawableSurface::wroteTexts;
 	std::vector<std::tuple<DrawableSurface::SRectangle, std::string, GAGCore::DrawableSurface*> > DrawableSurface::drawSquares;

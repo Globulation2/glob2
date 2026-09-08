@@ -326,7 +326,7 @@ int NewNicowar::order_regular_inn(Echo& echo)
 	//Constraints about the distance to water.
 	AIEcho::Gradients::GradientInfo gi_water;
 	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
-	//You dont want to be too close to water, so that farm can develop between it and water
+	//You don't want to be too close to water, so that farm can develop between it and water
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, AI_NICOWAR_INN_WATER_MIN_DIST));
 
 	//Constraints around nearby settlement
@@ -395,7 +395,7 @@ int NewNicowar::order_regular_swarm(Echo& echo)
 	//Constraints about the distance to water.
 	AIEcho::Gradients::GradientInfo gi_water;
 	gi_water.add_source(new AIEcho::Gradients::Entities::Water);
-	//You dont want to be too close to water, so that farm can develop between it and water
+	//You don't want to be too close to water, so that farm can develop between it and water
 	bo->add_constraint(new AIEcho::Construction::MinimumDistance(gi_water, AI_NICOWAR_SWARM_WATER_MIN_DIST));
 
 	//Constraints around nearby settlement

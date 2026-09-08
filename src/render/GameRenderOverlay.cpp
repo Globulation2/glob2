@@ -117,7 +117,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 {
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
-		// we have decrease on because we do unalign lookup
+		// we have decrease on because we do unaligned lookup
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 			{

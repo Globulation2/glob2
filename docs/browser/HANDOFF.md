@@ -120,15 +120,17 @@ final adapter. Eleven browser unit tests, nine build-system tests and the local 
 incremental coexistence check also pass. The 99-case suite is a current run;
 the broader historical 114-case import/corruption suite remains separate.
 
-1. Resolve and verify hosted CI. The latest older run inspected was
+1. Verify hosted CI after upstream integration. Upstream `master` at
+   `753531310` is now integrated, including the resource-fetch regression. Its
+   workflow path is corrected to the isolated Linux directory. The older run
+   inspected was
    `34274132634` at head `47e9e41ed`: Windows used the wrong harness directory,
    Linux referenced a missing resource-fetch harness under the old build path,
    and all coexistence jobs failed an opaque no-op-output assertion. Current
    Windows and Linux aspect-test paths are corrected; coexistence now reports
    exact changed files and whether bytes or only timestamps changed. The
-   resource-fetch step is not present in this checkout's workflow; inspect the
-   current PR merge/base context when addressing it. Do not claim hosted CI is
-   green from the local results.
+   resource-fetch step is now present after integration. Do not claim hosted CI
+   is green from the local results.
 2. Finish single-player release qualification: remaining Safari/Edge matrix,
    controlled renderer performance, browser shortcut/focus coverage and legacy
    writer audit. Safari 26.6.2 now has an actual-browser smoke pass; its full

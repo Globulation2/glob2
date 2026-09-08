@@ -124,7 +124,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	bool wasMouseMotion=false;
 
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
-	// we get all pending events but for mousemotion we only keep the last one
+	// we get all pending events but for mouse motion we only keep the last one
 	for (auto event : events)
 	{
 		GAGCore::GraphicContext::translateMouseEvent(&event);
@@ -252,7 +252,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	std::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
-		orderVoiceData->recepientsMask = chatMask ^ (chatMask & (1<<localPlayer));
+		orderVoiceData->recipientsMask = chatMask ^ (chatMask & (1<<localPlayer));
 		orderQueue.push_back(orderVoiceData);
 	}
 

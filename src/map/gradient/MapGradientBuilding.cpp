@@ -100,7 +100,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 			{
 				if (c.building==bgid)
 					gradient[wyx] = GRADIENT_AT_GOAL;
-				//Warflags don't consider enemy buildings an obstacle
+				//War flags don't consider enemy buildings an obstacle
 				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 					gradient[wyx] = GRADIENT_FORBIDDEN;
 				else if(gradient[wyx]!=GRADIENT_AT_GOAL)

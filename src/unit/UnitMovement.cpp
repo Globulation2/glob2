@@ -562,6 +562,10 @@ void Unit::handleMovementGoingToResource()
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
+		// Routing can follow a rebuilt gradient while the stored target is stale.
+		// Recompute the target only when it no longer marks a resource goal.
+		if (map->getGradient(teamNumber, destinationPurpose, swimClass(), targetX, targetY)!=GRADIENT_AT_GOAL)
+			map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
 	}
 	else
 	{

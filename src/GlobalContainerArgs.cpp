@@ -304,8 +304,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 				i++;
 				const char *resStr=&(argv[i][0]);
 				int ix, iy;
-				int nscaned = sscanf(resStr, "%dx%dx", &ix, &iy);
-				if (nscaned == 2)
+				int nScanned = sscanf(resStr, "%dx%dx", &ix, &iy);
+				if (nScanned == 2)
 				{
 					if (ix!=0 && iy!=0)
 					{

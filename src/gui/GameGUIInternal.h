@@ -20,7 +20,7 @@ using namespace GAGGUI;
 #define TYPING_INPUT_BASE_INC 7
 #define TYPING_INPUT_MAX_POS 46
 
-// these values are manually layouted for cuteste perception
+// These values are manually laid out for readability.
 #define YPOS_BASE_DEFAULT 180
 #define YPOS_BASE_CONSTRUCTION (YPOS_BASE_DEFAULT + 5)
 #define YPOS_BASE_FLAG (YPOS_BASE_DEFAULT + 5)
