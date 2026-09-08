@@ -47,6 +47,12 @@ legacy HUD, small legacy dialogs/panels, and missing touch tutorial instructions
 These are not claims of complete phone usability. The simulator's first boot took
 about two minutes. Runtime registration required `simctl runtime scan-and-mount`;
 a duplicate record referred to the same runtime image and was left intact.
+First-boot caches exhausted most remaining host disk space. After verification,
+the isolated simulator was shut down and rebuildable iOS dependency intermediates,
+cached Android installers, and the optional exported runtime copy were removed.
+Apps, core/dependency libraries, matching symbols, device data, logs, and screenshots
+remain. Approximately 3.5 GiB was free after cleanup; more headroom is needed for
+further clean builds or additional simulator devices.
 
 ## Android emulator screenshots
 
