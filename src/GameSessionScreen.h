@@ -19,6 +19,8 @@ public:
     void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
     void handleExecutionEvent(SDL_Event event) override;
     void cancelExecutionInput() override;
+    bool usesResponsiveViewport() const override { return true; }
+    std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
     void drawExecution() override;
     Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
 private:

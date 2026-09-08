@@ -7,6 +7,7 @@
 #include <SupportFunctions.h>
 #include <assert.h>
 #include <cstring>
+#include <cmath>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -300,7 +301,7 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-        if (renderer) { renderer->outputSize(drawableW, drawableH); setResponsiveViewport(responsiveViewport); return; }
+        if (renderer) { renderer->outputSize(drawableW, drawableH); setResponsiveViewport(responsiveViewport, responsiveMinW, responsiveMinH); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
@@ -319,15 +320,34 @@ namespace GAGCore
 		}
 	}
 
-    bool GraphicContext::setResponsiveViewport(bool enabled)
+    double GraphicContext::logicalUnitsPerPoint() const
+    {
+        float density=1;
+#ifdef __ANDROID__
+        float dpi=160;
+        if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(window), &dpi, nullptr, nullptr)==0 && dpi>0) density=dpi/160;
+#endif
+        if (!windowW || !windowH || !sdlsurface) return 1;
+        return density / std::min(double(windowW)/sdlsurface->w, double(windowH)/sdlsurface->h);
+    }
+
+    bool GraphicContext::setResponsiveViewport(bool enabled, int minimumWidth, int minimumHeight)
     {
         if (!renderer || !sdlsurface) return false;
 #ifndef GLOB2_MOBILE
         const char* requested = SDL_getenv("GLOB2_RESPONSIVE_UI");
         enabled = enabled && requested && std::string(requested) == "1";
 #endif
+#ifdef GLOB2_MOBILE
+        if (!enabled) {
+            enabled=true;
+            minimumWidth=fixedLogicalW; minimumHeight=fixedLogicalH;
+        }
+#endif
+        responsiveMinW=minimumWidth; responsiveMinH=minimumHeight;
         int width = fixedLogicalW, height = fixedLogicalH;
         if (enabled) {
+            if (windowW<=0 || windowH<=0) return enabled;
             float density = 1;
 #ifdef __ANDROID__
             float dpi = 160;
@@ -336,6 +356,11 @@ namespace GAGCore
 #endif
             width = std::max(1, static_cast<int>(windowW / density));
             height = std::max(1, static_cast<int>(windowH / density));
+            // Retain enough room for legacy controls while extending the world
+            // to the window's aspect ratio. This never stretches the artwork.
+            const double expansion=std::max({1.0,double(minimumWidth)/width,double(minimumHeight)/height});
+            width=static_cast<int>(std::ceil(width*expansion));
+            height=static_cast<int>(std::ceil(height*expansion));
         }
         responsiveViewport = enabled;
         if (getW() == width && getH() == height) return enabled;

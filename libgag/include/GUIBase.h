@@ -6,6 +6,7 @@
 #include "GAGSys.h"
 #include "GraphicContext.h"
 #include <vector>
+#include <utility>
 #include <set>
 #include <cassert>
 
@@ -327,6 +328,7 @@ namespace GAGGUI
         // Called between frames before host interruption or a child transition.
         // Discard held/queued input without synthesizing release actions.
         virtual bool usesResponsiveViewport() const { return false; }
+        virtual std::pair<int,int> minimumViewportSize() const { return {0,0}; }
         virtual void cancelExecutionInput() {}
 		virtual void drawExecution();
         virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }

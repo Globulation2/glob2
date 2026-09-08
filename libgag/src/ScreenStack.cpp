@@ -33,6 +33,17 @@ void ScreenStack::viewportResized(int oldWidth, int oldHeight, int width, int he
     for (auto& entry : pending) entry.screen->viewportResized(oldWidth, oldHeight, width, height);
 }
 
+void ScreenStack::configureViewport(Screen& screen)
+{
+    if (auto* context = dynamic_cast<GAGCore::GraphicContext*>(&surface)) {
+        const int oldWidth=context->getW(), oldHeight=context->getH();
+        const auto [minimumWidth,minimumHeight]=screen.minimumViewportSize();
+        context->setResponsiveViewport(screen.usesResponsiveViewport(),minimumWidth,minimumHeight);
+        if (oldWidth!=context->getW() || oldHeight!=context->getH())
+            viewportResized(oldWidth,oldHeight,context->getW(),context->getH());
+    }
+}
+
 void ScreenStack::stop()
 {
     stopped = true;
@@ -71,8 +82,7 @@ void ScreenStack::boundary()
     for (auto& entry : additions) {
         if (!screens.empty()) screens.back().screen->cancelExecutionInput();
         screens.push_back(std::move(entry));
-        if (auto* context = dynamic_cast<GAGCore::GraphicContext*>(&surface))
-            context->setResponsiveViewport(screens.back().screen->usesResponsiveViewport());
+        configureViewport(*screens.back().screen);
         screens.back().screen->beginExecution(&surface);
     }
 }
@@ -111,15 +121,17 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event>& events)
         resetGraphics = false;
     }
     if (resizeGraphics) {
+        const int oldWidth=surface.getW(), oldHeight=surface.getH();
         SDL_Event resize{}; resize.type = SDL_WINDOWEVENT; resize.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;
         GAGCore::GraphicContext::translateMouseEvent(&resize);
         resizeGraphics = false;
+        if (oldWidth!=surface.getW() || oldHeight!=surface.getH())
+            viewportResized(oldWidth,oldHeight,surface.getW(),surface.getH());
     }
     boundary();
     if (screens.empty() || stopped) return;
     Screen& screen = *screens.back().screen;
-    if (auto* context = dynamic_cast<GAGCore::GraphicContext*>(&surface))
-        context->setResponsiveViewport(screen.usesResponsiveViewport());
+    configureViewport(screen);
     // Pending child transitions suspend the parent immediately.
     if (pending.empty()) screen.updateExecution(frameTick);
     for (const auto& event : events) {

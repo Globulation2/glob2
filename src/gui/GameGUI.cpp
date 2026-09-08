@@ -13,6 +13,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameGUILoadSave.h"
@@ -81,6 +82,7 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 
 void GameGUI::init()
 {
+    touch = std::make_unique<GameGUITouch>(*this);
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;

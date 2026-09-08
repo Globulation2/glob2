@@ -15,6 +15,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
@@ -116,6 +117,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::suspendInput()
 {
+    if (touch) touch->cancel();
     inputState.clearHeld();
     lastMouseButtonState = 0;
     viewportSpeedX = viewportSpeedY = 0;
@@ -129,6 +131,7 @@ void GameGUI::suspendInput()
 void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
+    if (touch && touch->process(*event)) return;
     if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
         suspendInput();
     }

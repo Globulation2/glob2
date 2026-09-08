@@ -76,6 +76,9 @@ if not env['server']:
     menu_sources = [source for source in source_files if source != 'Glob2.cpp']
     menu_sources += local.Object('ResponsiveMenuHarness.o', '#test/ResponsiveMenuHarness.cpp')
     local.Alias('responsive-menu-test', local.Program('responsive-menu-test', menu_sources))
+    touch_sources = [source for source in source_files if source != 'Glob2.cpp']
+    touch_sources += local.Object('GameGUITouchHarness.o', '#test/GameGUITouchHarness.cpp')
+    local.Alias('gameplay-touch-test', local.Program('gameplay-touch-test', touch_sources))
 
 if not env['server']:
     transport_sources = [source for source in source_files if source != 'Glob2.cpp']

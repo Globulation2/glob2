@@ -35,5 +35,6 @@ private:
     bool resetGraphics = false, resizeGraphics = false;
     Uint32 hostTick = 0, frameTick = 0;
     void boundary();
+    void configureViewport(Screen& screen);
 };
 }

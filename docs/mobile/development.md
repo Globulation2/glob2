@@ -364,3 +364,50 @@ The requested floor is iOS 15 and Android 8 on 2 GB phones, including ARMv7;
 both orientations and 320x568 logical dimensions are required. Gameplay/editor
 parity is required; voice, cloud saves, and store submission are deferred.
 Keep the browser architecture contracts and all existing desktop checks.
+
+## Gameplay touch controls
+
+The portable SDL renderer enables gameplay touch input on native mobile and on
+opt-in desktop builds (`GLOB2_RENDERER=sdl`). Tap selects, one finger drags the
+camera, and two fingers navigate during building/flag placement or area painting.
+Movement below eight physical UI points remains a tap. Mobile canvases fill the
+available window aspect ratio, including portrait height; the world gains visible
+tiles instead of stretching. Gameplay and legacy dialogs retain an 800×600 minimum
+logical extent while responsive entry menus use device UI points. Camera movement
+currently uses whole tiles. Pinch zoom and the fully reflowed phone gameplay
+panels remain outstanding.
+
+Building/flag taps create a preview. The bottom OK/Cancel strip has 48-point hit
+height even when the game canvas is scaled. OK validates the preview's
+current world tile through the existing tool manager and queues one create order;
+failed validation retains the preview. Cancel exits placement. Crossing from a
+control into the map cannot confirm placement. Painting uses the shared area
+orders, with the existing stroke flushed before two-finger navigation or suspension.
+Touch-generated mouse events are suppressed; hardware mouse controls remain available.
+Rotation, focus loss, suspension, and mode changes invalidate held gestures.
+
+```sh
+scons release=1 -j8 gameplay-touch-test session-test portable-game-test
+mkdir -p build/touch-profile
+GLOB2_USER_DATA_DIR="$PWD/build/touch-profile" \
+  ./build/darwin/client/release/src/gameplay-touch-test
+python3 test/run-engine-session-test.py
+```
+
+The integration harness loads the real game and checks its order queue, toroidal
+pan, placement validation, gesture ownership, painting, replay protection,
+interruption, duplicate suppression, and a captured confirmation-bar pixel.
+These controls do not yet provide the complete small-phone gameplay/editor UI.
+The browser software renderer retains its existing input path until the shared
+browser touch/render integration is completed.
+
+Verified on 2026-09-08: desktop, Wasm, and Android ARM64 release builds;
+portable-renderer edge checks in portrait/landscape and modal restoration;
+responsive-menu, gameplay-touch, screen-lifecycle, and engine-session harnesses;
+and nine tutorial/visibility/resize browser checks across Chromium, Firefox, and
+WebKit. The Android emulator exercised palette selection without hover, preview,
+confirmation, cancellation on rotation, and camera dragging. Captures are under
+`build/touch-fullscreen-*.png`; logs use `build-touch-fullscreen-*`.
+An emulator System UI unresponsive dialog appeared during concurrent compilation
+and recovered with Wait. This is functional evidence, not device performance
+qualification. iOS and real-device touch qualification remain outstanding.

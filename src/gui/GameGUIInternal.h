@@ -117,9 +117,9 @@ constexpr int SCROLLBOX_ARROW_WIDTH = 18;
 #define REPLAY_PROGRESS_BAR_NUM_BUTTONS 3
 
 // The panel around the actual progress bar
-#define REPLAY_BAR_WIDTH (globalContainer->settings.screenWidth - RIGHT_MENU_WIDTH - 4)
+#define REPLAY_BAR_WIDTH (globalContainer->gfx->getW() - RIGHT_MENU_WIDTH - 4)
 #define REPLAY_BAR_HEIGHT (2*REPLAY_PROGRESS_BAR_Y_OFFSET + 20)
-#define REPLAY_BAR_Y (globalContainer->settings.screenHeight - REPLAY_BAR_HEIGHT)
+#define REPLAY_BAR_Y (globalContainer->gfx->getH() - REPLAY_BAR_HEIGHT)
 #define REPLAY_BAR_TIMER_X (REPLAY_PROGRESS_BAR_X_OFFSET + REPLAY_PROGRESS_BAR_CAP_WIDTH + 5)
 
 // Sprites for the replay bar

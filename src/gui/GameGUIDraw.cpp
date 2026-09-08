@@ -9,6 +9,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "PanelButtonHit.h"
@@ -360,7 +361,7 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
-	if (selectionMode==TOOL_SELECTION)
+	if (selectionMode==TOOL_SELECTION && (!touch->active() || touch->hasPreview()))
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY, inputState.modifiers());
@@ -607,6 +608,7 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+    if (touch) touch->prepareDraw();
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
@@ -700,6 +702,7 @@ void GameGUI::drawAll(int team)
 		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
 
 	}
+    if (touch) touch->drawControls();
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

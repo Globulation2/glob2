@@ -53,6 +53,7 @@ class MapMarkOrder;
 /*!
 	Handle all user input during game, draw & handle menu.
 */
+class GameGUITouch;
 class GameGUI
 {
 public:
@@ -226,6 +227,9 @@ public:
 private:
 	friend class GameGUISelectionHarness;
 	bool persistPreferences;
+    friend class GameGUITouch;
+    friend class GameGUITouchHarness;
+    std::unique_ptr<GameGUITouch> touch;
 
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);

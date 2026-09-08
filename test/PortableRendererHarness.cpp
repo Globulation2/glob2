@@ -127,11 +127,50 @@ int main()
         auto* portrait=context.capture();
         expect(portrait,portrait->w/2,portrait->h-2,90,30,150);
         SDL_FreeSurface(portrait);
+        context.setResponsiveViewport(true,800,600);
+        require(context.getW()==800 && context.getH()==1420,"Portrait game must extend to the full window height");
+        context.drawFilledRect(0,0,800,1420,Color(90,30,150));
+        auto* full=context.capture();
+        expect(full,full->w/2,2,90,30,150);expect(full,full->w/2,full->h-2,90,30,150);
+        SDL_FreeSurface(full);context.nextFrame();
+        context.resizeWindow(568,320);
+        require(context.getW()==1065 && context.getH()==600,"Landscape game must extend to the full window width");
+        context.drawFilledRect(0,0,1065,600,Color(90,30,150));
+        full=context.capture();
+        expect(full,2,full->h/2,90,30,150);expect(full,full->w-2,full->h/2,90,30,150);
+        SDL_FreeSurface(full);context.nextFrame();
+        context.resizeWindow(320,568);
         context.setResponsiveViewport(false);
         require(context.getW()==320 && context.getH()==240,"Legacy logical dimensions must be restored");
         auto* letterbox=context.capture();
         expect(letterbox,letterbox->w/2,2,0,0,0);
         SDL_FreeSurface(letterbox);
+        {
+            struct ViewportScreen : GAGGUI::Screen {
+                int changes=0;
+                void onAction(GAGGUI::Widget*,GAGGUI::Action,int,int) override {}
+                bool usesResponsiveViewport() const override { return true; }
+                std::pair<int,int> minimumViewportSize() const override { return {800,600}; }
+                void updateExecution(Uint32) override {}
+                void drawExecution() override {}
+                void viewportResized(int,int,int,int) override { ++changes; }
+            };
+            struct Child : GAGGUI::Screen {
+                void onAction(GAGGUI::Widget*,GAGGUI::Action,int,int) override {}
+                void updateExecution(Uint32) override { endExecute(0); }
+                void drawExecution() override {}
+            };
+            GAGGUI::ScreenStack stack(context);
+            auto parent=std::make_unique<ViewportScreen>();auto* probe=parent.get();
+            stack.push(std::move(parent));stack.frame(0,{});
+            require(context.getH()==1420 && probe->changes==1,"Entering gameplay must notify its expanded viewport");
+            stack.push(std::make_unique<Child>());stack.frame(40,{});stack.frame(80,{});
+            require(context.getH()==1420 && probe->changes==3,"A modal round trip must restore and notify the game viewport");
+            SDL_SetWindowSize(SDL_GetWindowFromID(context.windowID()),568,320);
+            SDL_Event resize{};resize.type=SDL_WINDOWEVENT;resize.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+            stack.frame(120,{resize});
+            require(context.getW()==1065 && context.getH()==600 && probe->changes==4,"Rotation must notify the retained game");
+        }
         SDL_setenv("GLOB2_RESPONSIVE_UI", "0", 1);
         std::puts("PASS portable renderer: clipping, texture scaling, alpha, device reset, dirty textures, resized input");
     } catch(const std::exception& error) {
