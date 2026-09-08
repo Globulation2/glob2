@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "ChooseMapScreen.h"
+#include <ApplicationHost.h>
 #include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
 #include "GlobalContainer.h"
@@ -49,6 +50,11 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose game]"));
 		deleteMap = new TextButton(250, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[delete]"), DELETEGAME);
 		addWidget(deleteMap);
+        if (GAGCore::ApplicationHost::canExportFiles()) {
+            exportButton = new TextButton(250, 300, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+                "menu", Toolkit::getStringTable()->getString("[export file]"), 5);
+            addWidget(exportButton);
+        }
 	}
 	else
 	{
@@ -150,7 +156,12 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 	}
 	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{
-		if (source == ok)
+        if (exportButton && source == exportButton) {
+            auto* active = activeFileList();
+            if (active->selection() && !GAGCore::ApplicationHost::exportLocalFile(active->listToFile(active->get())))
+                title->setText(Toolkit::getStringTable()->getString("[export failed]"));
+        }
+        else if (source == ok)
 		{
 			// we accept only if a valid map is selected
 			if (validMapSelected)

@@ -1266,3 +1266,7 @@ Export save
 Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
 [continue]
 Continue
+[export file]
+Export file
+[export failed]
+File export failed

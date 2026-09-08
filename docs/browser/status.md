@@ -126,6 +126,12 @@ infrastructure from the supported-release acceptance criteria.
   across Chromium, Firefox and WebKit, including no write retries while restore
   is failed and a successful fresh restore. The notice screenshot is checked.
 
+- The browser load-game chooser offers normal export of its selected save or
+  replay through the shared bounded file-export helper. Three save/export/load
+  scenarios pass across Chromium, Firefox and WebKit, verifying exact downloaded
+  bytes. Replay-specific export qualification, map/campaign-progress export and
+  import remain required. Native build and session checks pass.
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),

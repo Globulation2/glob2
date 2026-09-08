@@ -116,6 +116,16 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   expect(await digest()).toEqual(saved);
   // Each test owns a fresh browser context; only this test's save exists.
   expect(await page.evaluate(() => glob2Diagnostics.saves())).toEqual(['Browser_regression.game']);
+  await menu(page, 160, 200); await screen(page, 'ChooseMapScreen');
+  await menu(page, 100, 70);
+  const downloadEvent = page.waitForEvent('download');
+  await menu(page, 340, 320);
+  const download = await downloadEvent;
+  expect(download.suggestedFilename()).toBe('Browser_regression.game');
+  const bytes = await require('node:fs/promises').readFile(await download.path());
+  expect({size:bytes.length,sha256:require('node:crypto').createHash('sha256').update(bytes).digest('hex')}).toEqual(saved);
+  await menu(page, 530, 440); await screen(page, 'MainMenuScreen');
+
   await menu(page, 160, 200);
   await screen(page, 'ChooseMapScreen');
   await menu(page, 100, 70);

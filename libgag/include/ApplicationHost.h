@@ -31,6 +31,7 @@ bool takeVisibilityChange(bool& hidden);
 
 bool storageRestoreFailed();
 bool canExportFiles();
+bool exportLocalFile(const std::string& path);
 bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes);
 
 // Persistence completion is owned by the caller; releasing it is safe while pending.

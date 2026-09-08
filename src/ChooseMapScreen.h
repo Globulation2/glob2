@@ -92,6 +92,7 @@ private:
 	Button *deleteMap;
 	//! the switch type button
 	TextButton *switchType = nullptr;
+    TextButton *exportButton = nullptr;
 	//! The list of maps or games
 	Glob2FileList *fileList;
 	//! The alternate list of maps or games
