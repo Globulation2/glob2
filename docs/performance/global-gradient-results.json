@@ -1,0 +1,396 @@
+{
+  "metadata": {
+    "date": "2026-09-07",
+    "baseline_commit": "b47c7d23b",
+    "kernel_commit": "af8510619",
+    "cpu": "Apple M3, 8 cores, 24 GiB RAM",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+    "build": "scons release=1 server=0 CXXFLAGS= LINKFLAGS= (-O3)",
+    "core_metric": "CLOCK_THREAD_CPUTIME_ID around advancing Game::syncStep ticks; identical temporary instrumentation in all timed binaries",
+    "measurement_scope": "three serial repetitions of 15000 ticks, alternating order; AI order generation, startup, order execution and replay output outside core timer",
+    "original_experiment_base": "c71373bb2",
+    "fast_path_source_blob": "975f991a9a884602acefc80bc530d4748c2adab4"
+  },
+  "timing": [
+    {
+      "variant": "baseline",
+      "game": "G2",
+      "rep": 0,
+      "wall_s": 5.801870208000764,
+      "metrics": {
+        "ns": 4164610631,
+        "cpu_ns": 4144475680,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "kernel",
+      "game": "G2",
+      "rep": 0,
+      "wall_s": 5.10747133300174,
+      "metrics": {
+        "ns": 3644431360,
+        "cpu_ns": 3628180157,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "fast",
+      "game": "G2",
+      "rep": 0,
+      "wall_s": 5.405219332998968,
+      "metrics": {
+        "ns": 3773748629,
+        "cpu_ns": 3514916824,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "baseline",
+      "game": "playground-8numbi",
+      "rep": 0,
+      "wall_s": 5.493210915999953,
+      "metrics": {
+        "ns": 4028226048,
+        "cpu_ns": 4011635237,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    },
+    {
+      "variant": "kernel",
+      "game": "playground-8numbi",
+      "rep": 0,
+      "wall_s": 4.838938708002388,
+      "metrics": {
+        "ns": 3425710245,
+        "cpu_ns": 3420385652,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    },
+    {
+      "variant": "fast",
+      "game": "playground-8numbi",
+      "rep": 0,
+      "wall_s": 4.567341875001148,
+      "metrics": {
+        "ns": 3113018791,
+        "cpu_ns": 3107788574,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    },
+    {
+      "variant": "fast",
+      "game": "G2",
+      "rep": 1,
+      "wall_s": 4.6992977499976405,
+      "metrics": {
+        "ns": 3435232387,
+        "cpu_ns": 3426951622,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "kernel",
+      "game": "G2",
+      "rep": 1,
+      "wall_s": 4.83644245799951,
+      "metrics": {
+        "ns": 3571558216,
+        "cpu_ns": 3563702329,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "baseline",
+      "game": "G2",
+      "rep": 1,
+      "wall_s": 5.511072958004661,
+      "metrics": {
+        "ns": 4149414096,
+        "cpu_ns": 4133985276,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "fast",
+      "game": "playground-8numbi",
+      "rep": 1,
+      "wall_s": 4.584350542005268,
+      "metrics": {
+        "ns": 3140286451,
+        "cpu_ns": 3128528389,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    },
+    {
+      "variant": "kernel",
+      "game": "playground-8numbi",
+      "rep": 1,
+      "wall_s": 4.961664000002202,
+      "metrics": {
+        "ns": 3440331207,
+        "cpu_ns": 3430442594,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    },
+    {
+      "variant": "baseline",
+      "game": "playground-8numbi",
+      "rep": 1,
+      "wall_s": 5.605888375001086,
+      "metrics": {
+        "ns": 4020578826,
+        "cpu_ns": 3980751184,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    },
+    {
+      "variant": "baseline",
+      "game": "G2",
+      "rep": 2,
+      "wall_s": 5.495013499996276,
+      "metrics": {
+        "ns": 4118387771,
+        "cpu_ns": 4110742668,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "kernel",
+      "game": "G2",
+      "rep": 2,
+      "wall_s": 4.830908749994705,
+      "metrics": {
+        "ns": 3628030170,
+        "cpu_ns": 3613535876,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "fast",
+      "game": "G2",
+      "rep": 2,
+      "wall_s": 4.92502383300598,
+      "metrics": {
+        "ns": 3548725874,
+        "cpu_ns": 3509949592,
+        "calls": 15000
+      },
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "interference": []
+    },
+    {
+      "variant": "baseline",
+      "game": "playground-8numbi",
+      "rep": 2,
+      "wall_s": 5.507162542002334,
+      "metrics": {
+        "ns": 3955457213,
+        "cpu_ns": 3946743497,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    },
+    {
+      "variant": "kernel",
+      "game": "playground-8numbi",
+      "rep": 2,
+      "wall_s": 4.970596416998887,
+      "metrics": {
+        "ns": 3443206920,
+        "cpu_ns": 3432567468,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    },
+    {
+      "variant": "fast",
+      "game": "playground-8numbi",
+      "rep": 2,
+      "wall_s": 4.571422833003453,
+      "metrics": {
+        "ns": 3104834674,
+        "cpu_ns": 3100118977,
+        "calls": 15000
+      },
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "interference": []
+    }
+  ],
+  "validation": [
+    {
+      "variant": "baseline",
+      "game": "G2",
+      "steps": 15000,
+      "wall_s": 7.834986166002636,
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "checksums_sha256": "2d140199882888da1ceb23050f612d94ccb3eafa9656f29215177e767e06b60c"
+    },
+    {
+      "variant": "baseline",
+      "game": "gd-small-2ai",
+      "steps": 15000,
+      "wall_s": 1.9549165419957717,
+      "replay_sha256": "c2e6f1332b4fc3ddef139d82fd9166b8f85ce2ca2b377ca7bd9faaaf78bb6941",
+      "checksums_sha256": "ddfd8d0d285ccb1d036e5c482f6ace18fd6f08611ca4664122b9072272a93455"
+    },
+    {
+      "variant": "baseline",
+      "game": "gd-large-4ai",
+      "steps": 15000,
+      "wall_s": 6.552901249997376,
+      "replay_sha256": "b360042b5e9ea6ba48635c3b81ef370213d91670e2896282740f9c5b9bb334d7",
+      "checksums_sha256": "0f06beb5dace39a997c3d8709c2d19f3889e5d524db252161ed5f2c9896c97da"
+    },
+    {
+      "variant": "baseline",
+      "game": "gd-archipelago",
+      "steps": 15000,
+      "wall_s": 6.455199709002045,
+      "replay_sha256": "a761e0da41966fec0e4796ed6011a0e8d51039b78dc20d3133c3409850339ca8",
+      "checksums_sha256": "220bc65e2c94b618f9331565083b2eeb601a192775ec5f13688b1435fc53ef60"
+    },
+    {
+      "variant": "baseline",
+      "game": "gd-bigarena-long",
+      "steps": 15000,
+      "wall_s": 40.512225083002704,
+      "replay_sha256": "ced2f4b422eeef807817f971f4c7f236df9838c9d04eb6b56e80f5a0ae5fbb9b",
+      "checksums_sha256": "b75f69f5b8ff8b5f3b8968bcf85958709e2087f486c92a78b1c7a0cb7b5993e7"
+    },
+    {
+      "variant": "baseline",
+      "game": "playground-8numbi",
+      "steps": 15000,
+      "wall_s": 9.110053709002386,
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "checksums_sha256": "cb781f6639c11eee60e9fc11f409b67b45945c47bc2175e080650e41b6c90ed0"
+    },
+    {
+      "variant": "kernel",
+      "game": "G2",
+      "steps": 15000,
+      "wall_s": 7.880810874994495,
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "checksums_sha256": "2d140199882888da1ceb23050f612d94ccb3eafa9656f29215177e767e06b60c"
+    },
+    {
+      "variant": "kernel",
+      "game": "gd-small-2ai",
+      "steps": 15000,
+      "wall_s": 1.950268499997037,
+      "replay_sha256": "c2e6f1332b4fc3ddef139d82fd9166b8f85ce2ca2b377ca7bd9faaaf78bb6941",
+      "checksums_sha256": "ddfd8d0d285ccb1d036e5c482f6ace18fd6f08611ca4664122b9072272a93455"
+    },
+    {
+      "variant": "kernel",
+      "game": "gd-large-4ai",
+      "steps": 15000,
+      "wall_s": 5.945228958997177,
+      "replay_sha256": "b360042b5e9ea6ba48635c3b81ef370213d91670e2896282740f9c5b9bb334d7",
+      "checksums_sha256": "0f06beb5dace39a997c3d8709c2d19f3889e5d524db252161ed5f2c9896c97da"
+    },
+    {
+      "variant": "kernel",
+      "game": "gd-archipelago",
+      "steps": 15000,
+      "wall_s": 5.855624707997777,
+      "replay_sha256": "a761e0da41966fec0e4796ed6011a0e8d51039b78dc20d3133c3409850339ca8",
+      "checksums_sha256": "220bc65e2c94b618f9331565083b2eeb601a192775ec5f13688b1435fc53ef60"
+    },
+    {
+      "variant": "kernel",
+      "game": "gd-bigarena-long",
+      "steps": 15000,
+      "wall_s": 34.268072790997394,
+      "replay_sha256": "ced2f4b422eeef807817f971f4c7f236df9838c9d04eb6b56e80f5a0ae5fbb9b",
+      "checksums_sha256": "b75f69f5b8ff8b5f3b8968bcf85958709e2087f486c92a78b1c7a0cb7b5993e7"
+    },
+    {
+      "variant": "kernel",
+      "game": "playground-8numbi",
+      "steps": 15000,
+      "wall_s": 9.329681999995955,
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "checksums_sha256": "cb781f6639c11eee60e9fc11f409b67b45945c47bc2175e080650e41b6c90ed0"
+    },
+    {
+      "variant": "fast",
+      "game": "G2",
+      "steps": 15000,
+      "wall_s": 8.171962957996584,
+      "replay_sha256": "1086f62c59f68840cd79e54a7e048cc4f06a6b49c440d8282620aab33b0a246b",
+      "checksums_sha256": "2d140199882888da1ceb23050f612d94ccb3eafa9656f29215177e767e06b60c"
+    },
+    {
+      "variant": "fast",
+      "game": "gd-small-2ai",
+      "steps": 15000,
+      "wall_s": 1.8019599170002039,
+      "replay_sha256": "c2e6f1332b4fc3ddef139d82fd9166b8f85ce2ca2b377ca7bd9faaaf78bb6941",
+      "checksums_sha256": "ddfd8d0d285ccb1d036e5c482f6ace18fd6f08611ca4664122b9072272a93455"
+    },
+    {
+      "variant": "fast",
+      "game": "gd-large-4ai",
+      "steps": 15000,
+      "wall_s": 5.643594834000396,
+      "replay_sha256": "b360042b5e9ea6ba48635c3b81ef370213d91670e2896282740f9c5b9bb334d7",
+      "checksums_sha256": "0f06beb5dace39a997c3d8709c2d19f3889e5d524db252161ed5f2c9896c97da"
+    },
+    {
+      "variant": "fast",
+      "game": "gd-archipelago",
+      "steps": 15000,
+      "wall_s": 5.507952250001836,
+      "replay_sha256": "a761e0da41966fec0e4796ed6011a0e8d51039b78dc20d3133c3409850339ca8",
+      "checksums_sha256": "220bc65e2c94b618f9331565083b2eeb601a192775ec5f13688b1435fc53ef60"
+    },
+    {
+      "variant": "fast",
+      "game": "gd-bigarena-long",
+      "steps": 15000,
+      "wall_s": 33.83202566699765,
+      "replay_sha256": "ced2f4b422eeef807817f971f4c7f236df9838c9d04eb6b56e80f5a0ae5fbb9b",
+      "checksums_sha256": "b75f69f5b8ff8b5f3b8968bcf85958709e2087f486c92a78b1c7a0cb7b5993e7"
+    },
+    {
+      "variant": "fast",
+      "game": "playground-8numbi",
+      "steps": 15000,
+      "wall_s": 8.597938499995507,
+      "replay_sha256": "40f20c790e95dcc0c0e5d1c66ea94a211efbec45bf01f96a464cfde41c746e9b",
+      "checksums_sha256": "cb781f6639c11eee60e9fc11f409b67b45945c47bc2175e080650e41b6c90ed0"
+    }
+  ]
+}

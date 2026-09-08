@@ -125,6 +125,29 @@ void checkBoundariesAndObstacles()
 	check(6, 6, maze);
 }
 
+void checkInertFields()
+{
+	for (Uint8 value : {0, 1, 2})
+	{
+		check(0, 0, std::vector<Uint8>(1, value));
+		check(6, 6, std::vector<Uint8>(64 * 64, value));
+	}
+
+	std::vector<Uint8> values(64 * 64);
+	for (size_t i = 0; i < values.size(); ++i)
+		values[i] = i % 3;
+	check(6, 6, values);
+
+	// Even the weakest contributing source must prevent the early return.
+	// Put it last so the source scan must inspect the entire buffer.
+	for (Uint8 source : {3, 254, 255})
+	{
+		values.assign(values.size(), 1);
+		values.back() = source;
+		check(6, 6, values);
+	}
+}
+
 void checkRandomFields()
 {
 	std::mt19937 random(424242);
@@ -146,6 +169,7 @@ void checkRandomFields()
 int main()
 {
 	checkBoundariesAndObstacles();
+	checkInertFields();
 	checkRandomFields();
-	std::puts("GlobalGradientHarness: boundaries, obstacles, cutoff, mixed seeds and 3000 random fields PASS");
+	std::puts("GlobalGradientHarness: boundaries, obstacles, cutoff, inert fields, mixed seeds and 3000 random fields PASS");
 }

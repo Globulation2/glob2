@@ -198,5 +198,7 @@ scons -j8 release=1 server=0 global-gradient-test
 The harness calls the real `Map::updateGlobalGradient` and compares every output
 byte against an independent priority-frontier solver. It covers toroidal seams,
 diagonals, one-cell dimensions, winding obstacles, mixed seed strengths, the
-byte-distance cutoff, idempotence and 3,000 fixed-seed randomized fields. It runs
+byte-distance cutoff, idempotence and 3,000 fixed-seed randomized fields.
+It also checks inert fields containing only 0/1/2 and contributing sources at
+the end of the input buffer. It runs
 without a window or game assets and is included in the Linux CI jobs.
