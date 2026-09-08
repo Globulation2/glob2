@@ -80,6 +80,13 @@ infrastructure from the supported-release acceptance criteria.
   centered overlays and an in-game minimum-size notice. See [the contract and
   remaining limitations](viewport.md).
 
+- Browser visibility changes suspend scheduled screens, discard held gameplay/editor
+  gestures, and reset the single-player timing baseline on return. Native hosts
+  retain their visibility policy. A dedicated real-window Chromium test disables
+  Playwright focus overrides and checks hidden/visible transitions, suspended
+  ticks, resumption without catch-up, and working input afterward. This does not
+  implement coordinated multiplayer suspension.
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),

@@ -320,6 +320,7 @@ namespace GAGGUI
 		//! Nonblocking lifecycle. The host supplies time and already-polled input.
 		void beginExecution(GAGCore::DrawableSurface *surface);
 		virtual void updateExecution(Uint32 tick);
+        virtual void suspendExecution() {}
         virtual void viewportResized(int oldWidth, int oldHeight, int width, int height) {}
 		virtual void handleExecutionEvent(SDL_Event event);
 		virtual void drawExecution();

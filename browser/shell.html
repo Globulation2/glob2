@@ -87,6 +87,8 @@ function focusGame() {
 addEventListener('resize', () => {
   Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
 });
+Module.visibilityPending = true;
+document.addEventListener('visibilitychange', () => { Module.visibilityPending = true; });
 canvas.addEventListener('pointerdown', focusGame);
 canvas.addEventListener('keydown', () => Module.SDL2?.audioContext?.resume());
 </script>

@@ -68,6 +68,8 @@ void Application::choose(int choice)
 bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events)
 {
     lastFrame = tick;
+    if (GAGCore::ApplicationHost::takeVisibilityChange(hidden)) screens.suspendExecution();
+    if (hidden) return true;
     int width, height;
     if (GAGCore::ApplicationHost::takeViewportSize(width, height)) {
         const int oldWidth = globalContainer->gfx->getW(), oldHeight = globalContainer->gfx->getH();
@@ -92,6 +94,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events
 
 std::uint32_t Application::delay(std::uint32_t now)
 {
+    if (hidden) return 100;
     const auto elapsed = static_cast<std::uint32_t>(now - lastFrame);
     return screens.delay(now, elapsed < 40 ? 40 - elapsed : 0);
 }

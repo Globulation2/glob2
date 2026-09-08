@@ -66,3 +66,10 @@ void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, 
     input.clear();
     resetClock = true;
 }
+
+void GameSessionScreen::suspendExecution()
+{
+    engine->suspendInput();
+    input.clear();
+    resetClock = true;
+}

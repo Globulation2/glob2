@@ -74,3 +74,9 @@ void MapEditorScreen::viewportResized(int oldWidth, int oldHeight, int width, in
     input.clear();
     editor->viewportResized(oldWidth, oldHeight, width, height);
 }
+
+void MapEditorScreen::suspendExecution()
+{
+    editor->suspendInput();
+    input.clear();
+}

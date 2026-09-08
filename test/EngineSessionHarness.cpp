@@ -330,12 +330,18 @@ int main(int argc, char** argv)
                 loadingFrames = frames;
                 screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(screen).takeEngine()));
             });
+        bool suspended = false;
         while (screens.running()) {
-            screens.frame(1000 + frames * 40, {});
+            if (loadingFrames && frames == loadingFrames + 10) {
+                screens.suspendExecution();
+                suspended = true;
+            }
+            screens.frame(1000 + frames * 40 + (suspended ? 60000 : 0), {});
             require(++frames <= 2000, "Stack-driven loading/session failed to finish");
         }
-        require(loadingFrames > 20 && frames == loadingFrames + 51 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
-                "Loading must yield before transferring the engine to the 50-tick session");
+        // Resumption keeps the pending 40ms tick deadline; hidden time is excluded.
+        require(loadingFrames > 20 && frames == loadingFrames + 52 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
+                "Suspension must exclude hidden time and retain the pending tick deadline");
     }
     for (bool cancel : {false, true}) {
         auto editor = std::make_unique<MapEdit>();

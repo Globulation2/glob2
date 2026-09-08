@@ -75,6 +75,7 @@ public:
 	std::shared_ptr<Order> getOrder(void);
 	//! Return position on x
 	int getViewportX() { return viewportX; }
+    void suspendInput();
     void viewportResized(int oldWidth, int oldHeight, int width, int height);
 	//! Return position on y
 	int getViewportY() { return viewportY; }

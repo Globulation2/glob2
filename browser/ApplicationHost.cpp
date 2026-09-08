@@ -35,6 +35,17 @@ void wait(std::uint32_t milliseconds)
 {
     emscripten_sleep(milliseconds ? milliseconds : 1);
 }
+bool takeVisibilityChange(bool& hidden)
+{
+    const int state = EM_ASM_INT({
+        if (!Module.visibilityPending) return -1;
+        Module.visibilityPending = false;
+        return document.hidden ? 1 : 0;
+    });
+    if (state < 0) return false;
+    hidden = state != 0;
+    return true;
+}
 bool takeViewportSize(int& width, int& height)
 {
     return EM_ASM_INT({

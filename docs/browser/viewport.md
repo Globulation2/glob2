@@ -40,3 +40,16 @@ still needed, along with browser video-preference policy, hidden-tab lifecycle,
 and coordinated multiplayer suspension. Very narrow notice layouts and allocation
 failure messages need further work. These limitations keep the platform
 experimental; this document does not qualify the full release requirements.
+
+## Visibility lifecycle
+
+The browser retains visibility edges until the application consumes them, even
+when callbacks did not run while hidden. Scheduled screens suspend input on both
+edges; the application skips their update while hidden. A session resumes on its
+logical clock, preserving the pending tick deadline and excluding elapsed hidden
+time. The native regression inserts a 60-second gap and verifies the resulting
+50-tick session. `browser/visibility.config.js` runs a separate real-window
+Chromium regression without Playwright focus overrides; on Linux run it under
+`xvfb-run -a`. Ordinary headless tests do not prove document visibility behavior.
+Firefox/WebKit real-window qualification and coordinated multiplayer suspension
+remain required.

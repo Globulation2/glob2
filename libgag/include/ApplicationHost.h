@@ -25,6 +25,8 @@ void wait(std::uint32_t milliseconds);
 
 // Consume the newest host viewport request at an application frame boundary.
 bool takeViewportSize(int& width, int& height);
+// Visibility edges are retained even when no frame ran while hidden.
+bool takeVisibilityChange(bool& hidden);
 
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char* name);

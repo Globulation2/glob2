@@ -15,6 +15,7 @@ public:
     ~GameSessionScreen() override;
     void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {}
     void updateExecution(Uint32 tick) override;
+    void suspendExecution() override;
     void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
     void handleExecutionEvent(SDL_Event event) override;
     void drawExecution() override;

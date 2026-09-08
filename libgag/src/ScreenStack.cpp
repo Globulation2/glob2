@@ -21,6 +21,12 @@ void ScreenStack::push(std::unique_ptr<Screen> screen, Completion completed)
                        screens.empty() ? nullptr : screens.back().screen.get()});
 }
 
+void ScreenStack::suspendExecution()
+{
+    for (auto& entry : screens) entry.screen->suspendExecution();
+    for (auto& entry : pending) entry.screen->suspendExecution();
+}
+
 void ScreenStack::viewportResized(int oldWidth, int oldHeight, int width, int height)
 {
     for (auto& entry : screens) entry.screen->viewportResized(oldWidth, oldHeight, width, height);
