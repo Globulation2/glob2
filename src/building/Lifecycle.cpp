@@ -166,25 +166,35 @@ void Building::resetPathfindGradients()
 	}
 }
 
-void Building::freeIdleRoundTripGradients()
+void Building::freeIdleGradients()
 {
-	// Fetchers keep a gradient alive by reading it; 500 ticks after the last one, it goes.
-	constexpr Uint32 ROUND_TRIP_IDLE_TICKS = 500;
+	// Units keep a gradient alive by reading it; 500 ticks after the last one, it goes.
+	constexpr Uint32 IDLE_TICKS = 500;
 	Uint32 now = owner->game->stepCounter;
-	for (int r=0; r<MAX_NB_RESOURCES; r++)
-		for (int c=0; c<SWIM_CLASS_COUNT; c++)
-			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+ROUND_TRIP_IDLE_TICKS<now)
+	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+	{
+		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
+		{
+			delete[] globalGradient[c];
+			globalGradient[c] = NULL;
+		}
+		for (int r=0; r<MAX_NB_RESOURCES; r++)
+			if (roundTripGradient[r][c] && roundTripGradientUsedStep[r][c]+IDLE_TICKS<now)
 			{
 				delete[] roundTripGradient[r][c];
 				roundTripGradient[r][c] = NULL;
 			}
+	}
 }
 
 void Building::freeGradients()
 {
 	resetPathfindGradients();
 	for (int i=0; i<SWIM_CLASS_COUNT; i++)
+	{
 		lastGlobalGradientUpdateStepCounter[i] = 0;
+		globalGradientUsedStep[i] = 0;
+	}
 	for (int i=0; i<SWIM_VARIANT_COUNT; i++)
 		anyResourceToClear[i] = 0;
 }
