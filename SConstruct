@@ -153,6 +153,13 @@ def configure(env, server_only):
     if conf.CheckLib("boost_system"):
         env.Append(LIBS=["boost_system"])
     env.Append(LIBS=["pthread"])
+    if not server_only:
+        if not conf.CheckCXXHeader("openssl/ssl.h") or not conf.CheckLib("ssl") or not conf.CheckLib("crypto"):
+            missing.append("OpenSSL development headers and libraries")
+        env.Append(LIBS=["ssl", "crypto"])
+        if env["mingw"] or env["mingwcross"]:
+            env.Append(LIBS=["ws2_32", "mswsock"])
+
     
 
     if not conf.CheckCXXHeader("boost/logic/tribool.hpp"):

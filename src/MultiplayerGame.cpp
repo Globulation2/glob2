@@ -62,7 +62,7 @@ void MultiplayerGame::update()
 	if(state == ConnectingToGameRouter)
 	{
 		//This is a special case, it means the router ip is the same as the yog ip
-		if(gameRouterIP == "YOGIP")
+		if(gameRouterIP == "YOGIP" || client->getIPAddress().rfind("wss://", 0) == 0)
 		{
 			gameRouterIP = 	client->getIPAddress();
 		}

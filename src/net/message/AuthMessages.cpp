@@ -174,7 +174,7 @@ void NetAttemptLogin::decodeData(GAGCore::InputStream* stream)
 std::string NetAttemptLogin::format() const
 {
 	std::ostringstream s;
-	s<<"NetAttemptLogin("<<"username=\""<<username<<"\"; password=\""<<password<<"\")";
+	s<<"NetAttemptLogin("<<"username=\""<<username<<"\"; password=\""<<"[redacted]"<<"\")";
 	return s.str();
 }
 

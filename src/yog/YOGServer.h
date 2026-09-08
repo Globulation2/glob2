@@ -44,7 +44,7 @@ class YOGServer
 {
 public:
 	///Initiates the YOG Game Server and immediately begins listening on the YOG port.
-	YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy);
+	YOGServer(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, bool embeddedRouter = true);
 
 	///If the attempt to bind to the local port failed, this will be false
 	bool isListening();
@@ -177,7 +177,7 @@ private:
 	YOGServerBannedIPListManager bannedIPs;
 	YOGServerGameLog gameLog;
 	YOGServerRouterManager routerManager;
-	YOGServerRouter router;
+	std::unique_ptr<YOGServerRouter> router;
 	YOGServerMapDatabank maps;
 	YOGServerFileDistributionManager fileDistributionManager;
 	YOGServerPlayerScoreCalculator scoreCalculator;
