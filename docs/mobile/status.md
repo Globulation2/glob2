@@ -1,7 +1,7 @@
 # Mobile verification and remaining work
 
-Recorded 2026-09-08. Browser base: `017d5b437aa750d3b7a9c7f98192dac9aafcbb49`,
-merged into the mobile branch in `864950fec`. iOS qualification uses Xcode 26.6
+Recorded 2026-09-08. Browser base: `6d1d8bbaece30b547e67855e8180609abaf544f4`,
+merged into the mobile branch in `d6f754dd5`. iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 Android evidence below was collected before this browser merge, on `7333e4e8b`.
 
@@ -15,7 +15,7 @@ Android evidence below was collected before this browser merge, on `7333e4e8b`.
 | iOS device / simulator | ARM64 simulator and unsigned device apps build with matching dSYMs; simulator install, main menu, tutorial, touch selection, rotation, and retained-session resume pass | Signed physical-device installation and iOS 15 hardware remain unverified |
 | Shared lifecycle | Native screen/session/renderer harnesses pass; Android retained-activity background/resume exercised | Killed-process and multiplayer recovery unfinished |
 | Native touch and viewport | Responsive-menu and gameplay-touch integration harnesses pass; Android tutorial selection, placement, confirmation, rotation cancellation, and pan exercised | Complete phone panels and editor touch parity unfinished |
-| Browser compatibility | 15 tutorial/visibility/resize/WebGL2 cases pass across Chromium, Firefox, WebKit after merge, including two isolated Chromium reruns | Not mobile Safari/Chrome device qualification |
+| Browser compatibility | 39 focused viewport/storage/import/protocol cases pass across Chromium, Firefox, WebKit after the latest merge | Not mobile Safari/Chrome device qualification |
 | Build tooling | 21 Python checks pass, including invalid identities, archive alignment, signed APK provenance, fail-fast iOS requests, and explicit simulator device-set routing | Does not prove iOS linking or IDE debugging |
 | CI | Android ABI matrix now packages, checks alignment, signs developer APKs, and collects symbols/diagnostics | Updated workflow has not yet been run; no automated emulator or iOS simulator gate |
 
@@ -23,12 +23,32 @@ The three native 50-tick engine-session variants agree on `7e7f31de` after
 background and child-screen interruption. This is a lifecycle regression result,
 not the requested 100,000-tick ARM/Wasm determinism qualification.
 
-On the merged browser base, native renderer, screen lifecycle, gameplay touch,
+On the earlier `017d5b437` browser base, native renderer, screen lifecycle, gameplay touch,
 and engine-session harnesses pass. In the browser run, 13 of 15 cases passed on
 the first attempt. Two Chromium WebGL2 cases timed out on slow simulation progress
 while iOS compilation and runtime setup were active; both passed unchanged in an
 isolated rerun (30.4 seconds). The earlier browser-base storage evidence is not a
 substitute for full post-merge storage qualification.
+
+## Latest browser synchronization
+
+Merge `d6f754dd5` incorporates browser head `6d1d8bbae`: validated imports,
+campaign backup/recovery, durable editor save completion, and symmetric YOG
+protocol admission. Both independent GameGUI members were retained when
+resolving the merge conflict; mobile touch ownership and import preference
+isolation remain separate.
+
+After this merge, native gameplay-touch, screen, renderer, engine-session,
+transport and savegame-safety harnesses pass. Save tests include imported-file
+validation and pending/failure/retry cleanup, campaign backup validation and
+atomic failure preservation. All three session checksums remain `7e7f31de`.
+Desktop, Wasm and ARM64 iOS simulator application builds pass. All 39 focused
+browser cases pass across Chromium, Firefox and WebKit: viewport changes, map
+import, campaign progress backup merging, editor quota/transaction failures,
+and symmetric protocol admission/incompatible-version rejection. Logs are
+`build/allocation-merged-{native-tests,browser-tests,desktop,web,ios}.log`.
+This pass does not add
+Android packaging, simulator launch, or physical-device qualification.
 
 ## PR #198 layout integration
 
