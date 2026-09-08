@@ -543,6 +543,7 @@ void GameGUI::drawOverlayInfos(void)
 
 void GameGUI::drawInGameMenu(void)
 {
+    if (touch->drawPauseMenu()) return;
 	gameMenuScreen->dispatchPaint();
 	globalContainer->gfx->drawSurface((int)gameMenuScreen->decX, (int)gameMenuScreen->decY, gameMenuScreen->getSurface());
 

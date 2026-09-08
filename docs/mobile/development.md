@@ -318,3 +318,10 @@ expected pixels, accounting for framebuffer density.
 For native SDL-renderer debugging, `GLOB2_TOUCH_HUD=1` enables the phone HUD at
 larger window sizes once touch is active. It does not enable touch emulation or
 change the desktop renderer selection. Main/system menus are unaffected.
+
+The same gameplay harness also writes `touch-allocation-{portrait,landscape}.bmp`
+and `touch-pause-{portrait,landscape}.bmp`. Those cases check pending worker
+counts, limits, cancellation on selection change, responsive pause hit targets,
+and returning without an unintended world order. Keep sufficient disk headroom
+for archive construction: Apple's archive/index tools can need several copies
+of the roughly 400 MB core archive temporarily, beyond the final output size.

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Engine.h"
 #include "GameGUITouch.h"
+#include "GameGUIDialog.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include <SDL_net.h>
@@ -154,6 +155,70 @@ public:
             gui.scriptText.clear(); gui.swallowSpaceKey=false;
         }
         require(gui.game.checkSum()==hudChecksum,"HUD interaction must not mutate the simulation");
+        const int type=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
+        auto* building=new Building(0,0,2,type,gui.localTeam,&globalContainer->buildingsTypes,1,1);
+        gui.localTeam->myBuildings[2]=building;
+        require(building->type->maxUnitWorking>0,"Allocation fixture must accept workers");
+        gui.orderQueue.clear();
+        for (auto [width,height] : {std::pair{320,568}, {568,320}}) {
+            const int oldW=gfx->getW(),oldH=gfx->getH();
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            SDL_Event resized{};resized.type=SDL_WINDOWEVENT;resized.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resized);
+            gui.viewportResized(oldW,oldH,gfx->getW(),gfx->getH());
+            const float unit=gfx->logicalUnitsPerPoint();
+            gui.setSelection(GameGUI::BUILDING_SELECTION,building);
+            // Info opens the inspector for the selected entity.
+            tap(gfx->getW()*2.5f/6,gfx->getH()-24*unit);
+            const auto ui=GAGCore::MobileLayout::calculate(width,height,{},0,1,true);
+            const float plusX=(ui.panel.x+ui.panel.w-24)*unit, rowY=(ui.panel.y+48)*unit;
+            const int before=gui.displayedMaxUnitWorking(*building), authoritative=building->maxUnitWorking;
+            const auto simulation=gui.game.checkSum();
+            tap(plusX,rowY); tap(plusX,rowY);
+            require(gui.orderQueue.size()==2,"Two allocation taps must queue exactly two orders");
+            auto first=std::dynamic_pointer_cast<OrderModifyBuilding>(gui.orderQueue.front());gui.orderQueue.pop_front();
+            auto second=std::dynamic_pointer_cast<OrderModifyBuilding>(gui.orderQueue.front());gui.orderQueue.pop_front();
+            require(first && second && first->gid==building->gid && first->numberRequested==before+1 && second->numberRequested==before+2,
+                    "Rapid allocation taps use pending values and the shared order format");
+            require(building->maxUnitWorking==authoritative && gui.game.checkSum()==simulation,
+                    "Allocation UI must not change authoritative simulation state");
+            gui.drawAll(0);gfx->printScreen(width<height ? "touch-allocation-portrait.bmp" : "touch-allocation-landscape.bmp");gfx->nextFrame();
+            gui.requestWorkerAllocation(*building,MAX_UNIT_WORKING);gui.orderQueue.clear();
+            tap(plusX,rowY);require(gui.orderQueue.empty(),"Allocation at maximum must not queue duplicates");
+            finger(SDL_FINGERDOWN,1,plusX,rowY);
+            gui.clearSelection();finger(SDL_FINGERUP,1,plusX,rowY);
+            require(gui.orderQueue.empty(),"Selection changes cancel held allocation gestures");
+            gui.setSelection(GameGUI::BUILDING_SELECTION,building);
+            gui.requestWorkerAllocation(*building,0);gui.orderQueue.clear();
+            tap((ui.panel.x+24)*unit,rowY);require(gui.orderQueue.empty(),"Allocation at zero must not queue duplicates");
+            tap(gfx->getW()*5.5f/6,gfx->getH()-24*unit);
+            require(gui.inGameMenu==GameGUI::IGM_MAIN,"Toolbar opens the in-game pause menu");
+            gui.drawAll(0);gfx->printScreen(width<height ? "touch-pause-portrait.bmp" : "touch-pause-landscape.bmp");gfx->nextFrame();
+            const int columns=width>height ? 2 : 1, rows=(5+columns-1)/columns;
+            const float dialogW=std::min(560,width-24), buttonW=(dialogW-(columns-1)*8)/columns;
+            const float startX=(width-dialogW)/2, startY=(height-(rows*56+(rows-1)*8))/2;
+            const float returnX=(startX+(4%columns)*(buttonW+8)+buttonW/2)*unit;
+            const float returnY=(startY+(4/columns)*64+28)*unit;
+            finger(SDL_FINGERDOWN,1,returnX,returnY);
+            finger(SDL_FINGERMOTION,1,returnX+20*unit,returnY);
+            finger(SDL_FINGERUP,1,returnX+20*unit,returnY);
+            require(gui.inGameMenu==GameGUI::IGM_MAIN,"A dragged pause button must not activate");
+            SDL_Event mouse{};mouse.type=SDL_MOUSEBUTTONDOWN;mouse.button.button=SDL_BUTTON_LEFT;
+            mouse.button.x=int(returnX);mouse.button.y=int(returnY);
+            gui.processEvent(&mouse);mouse.type=SDL_MOUSEBUTTONUP;gui.processEvent(&mouse);
+            require(gui.inGameMenu==GameGUI::IGM_MAIN,"Switching to mouse cannot activate unseen desktop-menu geometry");
+            finger(SDL_FINGERDOWN,1,returnX,returnY);
+            finger(SDL_FINGERDOWN,2,returnX,returnY);
+            finger(SDL_FINGERUP,2,returnX,returnY);
+            finger(SDL_FINGERUP,1,returnX,returnY);
+            require(gui.inGameMenu==GameGUI::IGM_MAIN,"Switching back to touch consumes the whole gesture before accepting an action");
+            gui.drawAll(0);gfx->nextFrame();
+            tap(returnX,returnY);
+            require(gui.inGameMenu==GameGUI::IGM_NONE && gui.orderQueue.empty(),"Return resumes without leaking a world order");
+            tap(gfx->getW()*2.5f/6,gfx->getH()-24*unit); // Close the inspector before the next orientation.
+            gui.clearSelection();
+        }
+
     }
 };
 int main()

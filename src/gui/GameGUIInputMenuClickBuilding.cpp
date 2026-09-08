@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <optional>
+#include <algorithm>
 
 
 #include <Toolkit.h>
@@ -51,6 +52,18 @@ static std::optional<int> interpretScrollBoxClick(int lmx, int current, int max)
 	return std::nullopt;
 }
 
+bool GameGUI::requestWorkerAllocation(Building& building, int requested)
+{
+    if (globalContainer->replaying || building.owner->teamNumber!=localTeamNo ||
+        !building.type->maxUnitWorking || building.buildingState!=Building::ALIVE) return false;
+    requested=std::clamp(requested,0,int(MAX_UNIT_WORKING));
+    if (requested==displayedMaxUnitWorking(building)) return false;
+    pendingFor(building.gid).pendingMaxUnitWorking=requested;
+    orderQueue.push_back(std::make_shared<OrderModifyBuilding>(building.gid,requested));
+    defaultAssign.setDefaultAssignedUnits(building.typeNum,requested);
+    return true;
+}
+
 void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 {
 	Building* selBuild=selectionBuilding();
@@ -73,9 +86,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			const int current = displayedMaxUnitWorking(*selBuild);
 			if (auto nbReq = interpretScrollBoxClick(lmx, current, MAX_UNIT_WORKING))
 			{
-				pendingFor(selBuild->gid).pendingMaxUnitWorking = *nbReq;
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyBuilding(selBuild->gid, *nbReq)));
-				defaultAssign.setDefaultAssignedUnits(selBuild->typeNum, *nbReq);
+                requestWorkerAllocation(*selBuild,*nbReq);
 			}
 		}
 		ypos += YOFFSET_BAR + YOFFSET_B_SEP;

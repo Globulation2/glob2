@@ -78,6 +78,30 @@ They do not demonstrate iOS safe-area behavior or real-device performance.
 
 See [in-game HUD architecture and limitations](architecture.md#in-game-phone-hud).
 
+## Worker allocation and pause-menu verification
+
+Native gameplay-touch, screen lifecycle and portable-renderer harnesses pass.
+New phone tests exercise rapid worker taps, exact queued gid/count values,
+authoritative checksum preservation, zero/maximum no-ops, selection-change
+cancellation, and dragged-versus-tapped Return buttons in both orientations. Device-switch
+tests prevent stale mouse/touch menu coordinates from activating an action,
+including a two-finger sequence while switching back to touch.
+The Wasm and ARM64 iOS simulator application builds pass, along with all 15
+browser viewport cases across Chromium, Firefox, and WebKit.
+
+The captures below are native regression fixtures, not emulator screenshots.
+They include a test building and revealed terrain, with no live colony counters.
+
+![Fixed worker allocation controls](screenshots/gameplay-allocation-portrait.png)
+
+![Landscape in-game pause menu](screenshots/gameplay-pause-landscape.png)
+
+The iOS archive step exhausted temporary disk space. Failed simulator archives
+and stale iOS **device** objects/core archive were removed and regenerated as
+needed; source, SDKs, packaged device app, symbols, and captures were preserved.
+The next device rebuild will recompile its core. No simulator boot or Android
+packaging run is claimed for this change.
+
 ## iOS simulator screenshots
 
 Captured on an isolated iPhone 16 / iOS 26.5 simulator. The game reaches its main

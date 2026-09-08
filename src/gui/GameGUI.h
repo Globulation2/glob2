@@ -644,6 +644,7 @@ private:
 	Sint32 displayedPosX(const Building& b) const;
 	Sint32 displayedPosY(const Building& b) const;
 	Sint32 displayedMaxUnitWorking(const Building& b) const;
+    bool requestWorkerAllocation(Building& building, int requested);
 	Sint32 displayedUnitStayRange(const Building& b) const;
 	Sint32 displayedPriority(const Building& b) const;
 	bool displayedClearingResource(const Building& b, int i) const;

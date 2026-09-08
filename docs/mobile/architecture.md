@@ -177,9 +177,29 @@ notch/status area and home indicator; the world still fills the window beneath
 those margins. Android cutout-specific inset reporting remains to be added.
 
 This is a first usability pass, not completion of the phone interface. The
-inspector still scales and scrolls the legacy layout: small allocation arrows
-need larger dedicated controls, and bottom-anchored controls can leave excess
-scrolling space. In-game dialogs, replay controls, chat, some overlays/tutorial
+inspector still scales and scrolls the legacy layout: priority, flag-range, and production-ratio controls still need larger dedicated
+controls, and bottom-anchored controls can leave excess scrolling space. In-game
+load/save, options, objectives and alliance dialogs, replay controls, chat, some overlays/tutorial
 highlight positions, adjustable UI scale, and tablet layouts need further work.
 Browser rendering preserves its existing interface; the new HUD currently
 requires the native SDL renderer. Pinch zoom remains deferred.
+
+### Worker allocation and pause menu
+
+Owned, living buildings that accept workers expose a fixed inspector header with
+48-point minus/plus buttons and the current working/requested count. It stays
+visible while the rest of the inspector scrolls. The large controls and desktop
+worker scrollbar call `GameGUI::requestWorkerAllocation`, which validates the
+owner/state, clamps the request, suppresses no-op orders, updates the pending UI
+value, and queues the existing `OrderModifyBuilding`. Rapid taps accumulate
+against the pending count without changing authoritative simulation state.
+
+Touch gestures now also retain the selected building and dialog identities;
+changing the selection or dialog cancels a held action before release. Switching
+input devices consumes a pending menu gesture until the new layout is drawn,
+preventing a stale coordinate from selecting a different action. The
+in-game pause menu uses 56-point buttons, one column in portrait and two columns
+in landscape. Labels wrap at the available width. It dispatches the existing
+load/save/options/quit/return actions rather than adding another game-state path.
+The screens reached from those actions still use their existing layouts.
+System and main menus remain outside this change.
