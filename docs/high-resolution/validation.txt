@@ -319,3 +319,20 @@ All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored
 PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
 
 PASS software: original resources, all logical sizes
+
+Resumed integration with papyrus pack; provenance inventory validated
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 21.7723 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 8.03978 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 4.6647 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 3.98754 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 31.8748 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 7.58023 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 4.58768 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 4.12625 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 27.6987 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 7.22115 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 97.6923 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 4.9351 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release

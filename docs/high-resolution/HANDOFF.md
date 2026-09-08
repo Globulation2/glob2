@@ -1,7 +1,7 @@
 # High-resolution artwork and map zoom — handoff
 
-Last updated 2026-09-08. The user is switching subscriptions; stop expanding
-scope after this batch. Resume from this document and repository state.
+Last updated 2026-09-08. The user resumed work after the subscription handoff. Resume from this document
+and repository state.
 
 ## Location and review
 
@@ -166,3 +166,20 @@ measurements, not claims of cross-platform performance or historical baselines.
 After switching subscriptions, clone/fetch the branch if needed and read this
 file first. Local caches, /tmp binaries, app credentials and unsaved game sessions
 are not transferred by Git. No scheduled follow-up is configured by this handoff.
+
+## Resumed audit
+
+`ASSET-PROVENANCE.md` now lists every active frame by recipe category and links
+original source paths/native dimensions. Generate/check it with
+`tools/artwork/runtime_provenance.py` / `--check`; unknown recipes fail closed.
+Counts: 60 original-source, 116 constrained AI upscales, 273 generated-material
+frames, 38 non-AI mask resamples. Source/output hashes are validated.
+The latest gameplay/editor/replay integration passes with the papyrus pack.
+This run recorded 97.7 ms HD / 27.7 ms classic at dense 50% on the current Mac;
+that is materially slower than prior local runs. Do not dismiss it or claim
+performance readiness: repeat controlled profiling before merge to distinguish
+machine conditions from renderer cost. No renderer or runtime asset changes
+were made during this resumed inventory batch.
+Cursor render audit remains pending: no Blender executable was found in the
+installed apps or searched project caches. Do not claim cursor dependencies
+or render compatibility are verified. No new PR imagery replies were present.

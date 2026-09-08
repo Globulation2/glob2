@@ -94,3 +94,5 @@ Normal-scale material review (100% map zoom):
 ![Quiet flat grass and subtle water beneath resources at 100%](images/editor-materials-100.png)
 
 Current project state and resumption instructions: [handoff](HANDOFF.md).
+
+[Current per-frame original/upscaled inventory](ASSET-PROVENANCE.md).
