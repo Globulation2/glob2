@@ -1,6 +1,7 @@
 # First real-device preview
 
-This preview is for hands-on feedback, not release qualification. Start with a
+The first feedback device is a Pixel 6. This preview is for hands-on feedback,
+not release qualification. Start with a
 small single-player skirmish or tutorial. The simulation and file formats are
 shared with desktop/browser; the phone HUD is selected after touch input.
 
@@ -85,10 +86,11 @@ Feedback about text size, thumb reach and obscured world area is especially usef
 
 ## Known limitations
 
-- Narrow inspector tab captions can wrap awkwardly; long translations and keyboard
+- Inspector tabs now reflow into two rows. Long translations and keyboard
   occlusion are not yet fully qualified on physical devices.
-- Actual repair/upgrade initiation, loaded replay flows and complete dialog flows
-  still need device testing. Automated tests cover a subset, not every flow.
+- Repair/upgrade initiation and loaded replay pause/speed controls pass native
+  touch tests. Full replay sessions and complete dialog flows still need device
+  testing; automated tests cover a subset, not every flow.
 - Pinch zoom is deferred. Main/system-menu visual redesign is a separate effort.
 - There is no physical-device performance/thermal/memory qualification yet.
 - Background recovery, mobile multiplayer reconnection and editor parity from the
@@ -97,3 +99,13 @@ Feedback about text size, thumb reach and obscured world area is especially usef
   do not inherit this APK's verification.
 
 See [status](status.md) for the full evidence and older checkpoint boundaries.
+
+## Emulator evidence
+
+These API 35 ARM64 emulator captures show the live Actions sheet, software-keyboard
+save dialog, and the running match after reloading the tutorial save. They do not
+replace Pixel 6 testing.
+
+![Live Actions sheet](screenshots/preview-android-actions.png)
+![Save dialog and keyboard](screenshots/preview-android-keyboard.png)
+![Reloaded tutorial](screenshots/preview-android-reloaded.png)

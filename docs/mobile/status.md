@@ -5,6 +5,28 @@ merged into the mobile branch in `0b977ab61`. iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 Android evidence below was collected before this browser merge, on `7333e4e8b`.
 
+## Pixel 6 feedback preview (`b8c0a46f6`)
+
+- Inspector tabs reflow into at most three columns, retaining 48-point row targets
+  and readable captions in both orientations.
+- Native touch tests pass for repair/upgrade initiation and loaded replay
+  pause/speed controls. Healing cannot change a held Repair into Upgrade.
+- Android ARM64 release rebuilt, developer signed, installed and launched on the
+  isolated API 35 emulator. Tutorial gameplay, filename entry with the software
+  keyboard, fixed dialog actions, Hide keyboard and save submission were checked.
+- Wasm and iOS simulator release builds pass; 15 browser viewport checks pass
+  across Chromium, Firefox and WebKit after these changes.
+- Emulator reload testing exposed a shared USL garbage-collection lifetime bug.
+  The fix clears persistent root marks between collections and marks live thread
+  frames. A regression exercises 100 collections with a retained bridge value;
+  the corrected APK successfully reloads the tutorial save from both the main
+  menu and the running game. The same process remains alive and gameplay continues.
+- The Android emulator also verifies readable Actions tabs in the live match.
+- See [device testing](device-testing.md) for the Pixel 6 installation and feedback
+  route. No physical-device performance, thermal or complete-flow qualification
+  is implied by this preview. The emulator showed a System UI ANR during cold
+  boot before testing; it recovered after Wait. This is not game crash evidence.
+
 ## Resumed qualification (`89bea4560`)
 
 - Explicit Info tab preserves building details alongside Actions.

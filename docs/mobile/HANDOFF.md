@@ -31,6 +31,17 @@ Suggested first message to the new agent:
 > in-game UI, maintain compatibility with the browser branch, and update draft
 > PR #208 with honest evidence and remaining limitations.
 
+## Pixel 6 preview is prepared
+
+The user wants to test soon on a Pixel 6. Code `9a4ad5d4b` reflows tabs and adds
+repair/upgrade and loaded-replay control coverage. `b8c0a46f6` fixes the shared
+script GC lifetime crash discovered by emulator tutorial reload testing; the
+corrected APK passes the same reload sequence. See the newer preview section
+in [status](status.md) and [device-testing](device-testing.md). The local handoff
+folder is `build/mobile-preview`, containing the signed ARM64 APK, symbols,
+BUILD.json and checksums. Prior limitations below describe older checkpoints;
+physical-device feedback and broader qualification still remain.
+
 ## Resumed Actions qualification
 
 The user resumed implementation after the subscription handoff. Commit
