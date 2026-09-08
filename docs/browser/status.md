@@ -32,6 +32,10 @@ infrastructure from the supported-release acceptance criteria.
   Editor overlay/save actions run them through a scheduled progress screen;
   cancellation preserves unsaved edits. Old-format loading still uses the
   synchronous adapter, and file serialization/durable storage remain transitional.
+- Explicit cooperative game/map loading jobs and a cancellable editor-entry
+  loading screen with staged ownership and RNG restoration. Terrain chunks and
+  gradient boundaries yield; individual expensive operations and other loading
+  callers still need migration and latency validation.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are
@@ -54,13 +58,16 @@ On macOS arm64, September 2026:
   harness checks incremental quit, cancellation, and discard, plus fertility
   equality against the previous algorithm at three work budgets, progress,
   deferred publication, and cancellation through the real progress screen.
-- Twenty-seven browser checks cover startup, settings/credits/shutdown,
+  Cooperative loading tests cover nested lifetime/exception behavior, partial
+  allocation cleanup, RNG restoration, and matching loaded-game checksums.
+  The coroutine lifecycle tests also pass with AddressSanitizer.
+- Thirty browser checks cover startup, settings/credits/shutdown,
   editor/campaign-entry navigation and map quit decisions, campaign selector
   cancellation/reopen,
   custom options/AI descriptions and return-to-setup,
   tutorial launch, custom-game pause, save/reload byte
   equality, editor save cancellation and map reload persistence, load continuation,
-  and audio-context activation are exercised
+  editor load cancellation/restart, and audio-context activation are exercised
   in Chromium, Firefox, and WebKit using Playwright 1.63.0.
 - Alternating native/browser builds preserve compilation output contents
   and timestamps and do not change tracked files. CI also defines separate

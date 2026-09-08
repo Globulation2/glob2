@@ -4,6 +4,8 @@
 #include "MapEdit.h"
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
+#include "EditorLoadScreen.h"
+#include "Utilities.h"
 #include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
 #include <SDL_net.h>
@@ -80,6 +82,36 @@ int main(int argc, char** argv)
     {
         MapEdit editor;
         require(editor.load("maps/balanced.map"), "Editor fixture load failed");
+        const auto originalRng = getSyncRandState();
+        {
+            MapEdit partial;
+            auto task = partial.loadTask("maps/balanced.map");
+            while (std::string(task.stage()) != "[Building gradients]")
+                require(!task.advance(), "Fixture must reach gradient allocation checkpoints");
+            // Destruction at a partially built gradient array used to assert/leak.
+        }
+        setSyncRandState(originalRng);
+        for (unsigned frames : {1u, 4u, 20u}) {
+            GAGGUI::ScreenStack screens(*globalContainer->gfx);
+            screens.push(std::make_unique<EditorLoadScreen>("maps/balanced.map"));
+            for (unsigned frame = 0; frame < frames; ++frame) screens.frame(frame, {});
+            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+            screens.frame(frames, {escape}); screens.frame(frames + 1, {});
+            require(!screens.running() && screens.result() == 0, "Partial map loading must accept cancellation");
+            require(getSyncRandState() == originalRng, "Cancelled load must restore RNG state");
+        }
+        {
+            std::unique_ptr<MapEdit> loaded;
+            GAGGUI::ScreenStack screens(*globalContainer->gfx);
+            screens.push(std::make_unique<EditorLoadScreen>("maps/balanced.map"),
+                [&](GAGGUI::Screen& screen, int result) {
+                    require(result == 1, "Scheduled map load failed");
+                    loaded = static_cast<EditorLoadScreen&>(screen).takeEditor();
+                });
+            unsigned frame = 0;
+            while (screens.running()) { screens.frame(frame++, {}); require(frame < 2000, "Map load did not terminate"); }
+            require(frame > 20 && loaded->game.checkSum() == editor.game.checkSum(), "Scheduled and synchronous loads must agree");
+        }
         auto snapshot = [&]() {
             std::vector<Uint16> values;
             for (int x = 0; x < editor.game.map.getW(); ++x)

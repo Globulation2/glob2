@@ -387,6 +387,7 @@ public:
 	~MapEdit();
 	///Loads the game given by a particular file name
 	bool load(const std::string filename);
+    GAGCore::CooperativeTask loadTask(std::string filename);
 	///Writes a map after the owned fertility job has committed its results
 	bool save(const std::string filename, const std::string name);
 

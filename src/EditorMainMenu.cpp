@@ -11,6 +11,8 @@
 #include <GUIText.h>
 #include "MapEdit.h"
 #include "MapEditorScreen.h"
+#include "EditorLoadScreen.h"
+#include "MessageScreen.h"
 #include "MapGenerator.h"
 #include "NewMapScreen.h"
 #include <StringTable.h>
@@ -57,10 +59,17 @@ void EditorMainMenu::onAction(Widget*, Action action, int choice, int)
         screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false, "games", "game", false),
             [this](Screen& screen, int result) {
                 if (result != ChooseMapScreen::OK) return;
-                auto editor = std::make_unique<MapEdit>();
                 const auto filename = static_cast<ChooseMapScreen&>(screen).getMapHeader().getFileName();
-                if (!editor->load(filename)) return;
-                screens.push(std::make_unique<MapEditorScreen>(screens, std::move(editor)));
+                screens.push(std::make_unique<EditorLoadScreen>(filename), [this](Screen& loading, int result) {
+                    if (result == 1)
+                        screens.push(std::make_unique<MapEditorScreen>(screens,
+                            static_cast<EditorLoadScreen&>(loading).takeEditor()));
+                    else if (result == 2) {
+                        auto& strings = *Toolkit::getStringTable();
+                        screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_LOAD_MAP]"),
+                            std::vector<std::string>{strings.getString("[ok]")}));
+                    }
+                });
             });
         break;
     case NEWCAMPAIGN: screens.push(std::make_unique<CampaignEditor>("", screens)); break;

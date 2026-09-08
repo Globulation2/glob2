@@ -20,60 +20,28 @@
 
 bool MapEdit::load(const std::string filename)
 {
-	assert(filename.size());
-
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
-	if (stream->isEndOfStream())
-	{
-		std::cerr << "MapEdit::load(\"" << filename << "\") : error, can't open file." << std::endl;
-		delete stream;
-		return false;
-	}
-	else
-	{
-		bool rv;
-
-		try
-		{
-			rv = game.load(stream);
-		}
-		catch (std::exception &e)
-		{
-			std::cerr << "Failed to open map: bad format." << std::endl;
-
-			if (!globalContainer->runNoX)
-			{
-				// Display an error message
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
-			}
-
-			// We can't recover from this, so we quit
-			doQuitAfterLoadSave = true;
-
-			return false;
-		}
-		
-		delete stream;
-		if (!rv)
-			return false;
-		
-		// set the editor default values
-		team = 0;
-	
-		areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
-		
-		minimap.resetMinimapDrawing();
-		
-		game.map.computeDisplayedForbidden(team);
-		game.map.computeDisplayedClearArea(team);
-		game.map.computeDisplayedGuardArea(team);
-	
-		hasMapBeenModified = false;
-		return true;
-	}
-	return false;
+    return loadTask(filename).run();
 }
 
+GAGCore::CooperativeTask MapEdit::loadTask(std::string filename)
+{
+    auto stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(filename));
+    if (stream->isEndOfStream()) co_return false;
+    try {
+        if (!(co_await game.loadTask(stream.get()))) { doQuitAfterLoadSave = true; co_return false; }
+    } catch (const std::exception&) {
+        doQuitAfterLoadSave = true;
+        co_return false;
+    }
+    team = 0;
+    areaNameLabel->setLabel(game.map.getAreaName(areaNumber->getIndex()));
+    minimap.resetMinimapDrawing();
+    game.map.computeDisplayedForbidden(team);
+    game.map.computeDisplayedClearArea(team);
+    game.map.computeDisplayedGuardArea(team);
+    hasMapBeenModified = false;
+    co_return true;
+}
 
 
 bool MapEdit::save(const std::string filename, const std::string name)

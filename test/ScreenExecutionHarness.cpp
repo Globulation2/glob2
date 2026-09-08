@@ -3,6 +3,7 @@
 #include <ScreenStack.h>
 #include <InputState.h>
 #include <ApplicationHost.h>
+#include <CooperativeTask.h>
 #include <SDLGraphicContext.h>
 #include <stdexcept>
 #include <iostream>
@@ -37,8 +38,45 @@ struct Probe : Screen
     void onSDLEvent(SDL_Event*) override { ++inputs; endExecute(42); }
 };
 
+struct TaskLifetime { int& live; TaskLifetime(int& live) : live(live) { ++live; } ~TaskLifetime() { --live; } };
+GAGCore::CooperativeTask childTask(int& live, bool fail)
+{
+    TaskLifetime lifetime(live);
+    co_await GAGCore::CooperativeTask::checkpoint("child");
+    if (fail) throw std::runtime_error("child failure");
+    co_return true;
+}
+GAGCore::CooperativeTask parentTask(int& live, bool fail)
+{
+    TaskLifetime lifetime(live);
+    const bool result = co_await childTask(live, fail);
+    co_await GAGCore::CooperativeTask::checkpoint("parent");
+    co_return result;
+}
+
 int main()
 {
+    int live = 0;
+    {
+        auto task = parentTask(live, false);
+        require(live == 0 && !task.advance() && live == 2, "Nested jobs start lazily and stop at child checkpoints");
+        require(std::string(task.stage()) == "child", "Child progress is visible to the root");
+    }
+    require(live == 0, "Cancelling root releases suspended children");
+    {
+        auto task = parentTask(live, false);
+        task.advance();
+        require(!task.advance() && live == 1, "Child completion resumes its parent to the next checkpoint");
+        require(task.advance() && task.result() && live == 0, "Root completes with the child result");
+    }
+    {
+        auto task = parentTask(live, true);
+        task.advance();
+        require(task.advance(), "Child exception completes the root");
+        bool rejected = false;
+        try { task.result(); } catch (const std::runtime_error&) { rejected = true; }
+        require(rejected && live == 0, "Child exceptions propagate and release resources");
+    }
     SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
     SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
     GAGCore::GraphicContext context(800, 600, 0, "Screen lifecycle regression");

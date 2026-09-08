@@ -306,7 +306,7 @@ MapEdit::MapEdit()
 
 MapEdit::~MapEdit()
 {
-	Toolkit::releaseSprite("data/gui/editor");
+    // The toolkit owns this shared cache entry; other staging editors may use it.
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
 		delete *i;

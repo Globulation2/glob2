@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include <CooperativeTask.h>
 
 #include <list>
 #include <optional>
@@ -111,6 +112,7 @@ public:
 	void setGame(Game *game);
 	//! Load a map from a stream and relink with associated game
 	bool load(GAGCore::InputStream *stream, MapHeader& header, Game *game=NULL);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, MapHeader& header, Game *game);
 	//! Save a map
 	void save(GAGCore::OutputStream *stream);
 	//! Write the per-team explored area. Saved games only; save() decides.

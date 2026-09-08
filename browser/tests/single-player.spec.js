@@ -211,3 +211,27 @@ test('editor save cancellation keeps edits open and completed fertility saves th
   await screen(page, 'MainMenuScreen');
   expect(await digest()).toEqual(saved);
 });
+
+
+test('editor map loading can be cancelled and restarted', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await menu(page, 480, 360);
+  await screen(page, 'EditorMainMenu');
+  for (const cancel of [true, false]) {
+    await menu(page, 320, 150);
+    await screen(page, 'ChooseMapScreen');
+    await menu(page, 100, 70);
+    await menu(page, 530, 380);
+    if (cancel) {
+      await screen(page, 'EditorLoadScreen');
+      await page.locator('#canvas').press('Escape', {delay:80});
+    } else {
+      await screen(page, 'MapEditorScreen');
+      await page.locator('#canvas').press('Escape', {delay:80});
+      await click(page, 600, 525);
+    }
+    await screen(page, 'EditorMainMenu');
+  }
+  expect(errors).toEqual([]);
+});

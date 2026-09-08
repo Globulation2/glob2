@@ -3,6 +3,7 @@
 // Copyright (C) 2007 Bradley Arsenault
 
 #pragma once
+#include <CooperativeTask.h>
 
 #include <iostream>
 #include <memory>
@@ -134,6 +135,7 @@ public:
 
 	///Loads data from a stream
 	bool load(GAGCore::InputStream *stream);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream);
 
 	//! Check some available integrity constraints
 	bool integrity(void);

@@ -101,6 +101,7 @@ CLIENT_SOURCES = (
     'CustomGameScreen.cpp',
     'DynamicClouds.cpp',
     'EditorMainMenu.cpp',
+    'EditorLoadScreen.cpp',
     'EndGameScreen.cpp',
     'Engine.cpp',
     'GameSessionScreen.cpp',
