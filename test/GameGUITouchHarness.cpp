@@ -364,6 +364,9 @@ public:
             gui.clearSelection();gui.touch->panelOpen=false;
         }
 
+        for (const auto* key:{"[Actions]","[Info]","[Minimap]","[Fast forward]","[Hide keyboard]","[shutdown save failed]"})
+            require(!GAGCore::Toolkit::getStringTable()->getString(key).empty(),"New interface translations must not be blank");
+
         auto tr=[](const char* key) { return std::string(GAGCore::Toolkit::getStringTable()->getString(key)); };
         auto pressDialog=[&](const std::string& text) {
             for (int attempt=0;attempt<40;++attempt) {
