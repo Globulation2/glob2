@@ -73,6 +73,10 @@ if not env['server']:
     transport_sources += local.Object('NetConnectionHarness.o', '#test/NetConnectionHarness.cpp')
     transport_test = local.Program('net-connection-test', transport_sources)
     local.Alias('transport-test', transport_test)
+    peer_sources = [source for source in source_files if source != 'Glob2.cpp']
+    peer_sources += local.Object('NativeMultiplayerPeer.o', '#test/NativeMultiplayerPeer.cpp')
+    peer_test = local.Program('native-multiplayer-peer', peer_sources)
+    local.Alias('transport-test', peer_test)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")

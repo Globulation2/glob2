@@ -98,8 +98,18 @@ with an unused local TCP port to cover framing, rejected packets, queue limits,
 outbound limits, credential-log redaction, and a real TCP round trip. The Playwright multiplayer test uses that executable's
 isolated YOG fixture and the actual gateway, with real login controls and observed
 wire messages. It also enters and leaves the lobby with an isolated fixture
-account and saves a lobby screenshot. It does not claim account migration or
-match recovery coverage.
+account and saves a lobby screenshot. Match tests create a room through the
+actual controls, join from a second browser, ready both players, and compare
+checksums from their outgoing orders. A native headless peer also joins through
+YOG and records 250 simulation ticks; its checksums are compared with the browser
+at the negotiated command cadence. This uses the native game implementation,
+not a second simulation model.
+
+Run `cd browser && npx playwright test multiplayer.spec.js` for the cross-browser
+multiplayer suite. The default browser/browser cases use no AI and Maxima;
+`GLOB2_ALL_AIS=1` covers all seven shipped AIs and is enabled nightly. Native
+cross-play currently tests a two-human match on the build host. These short
+matches do not qualify sustained platform parity, account migration, or recovery.
 
 Native TCP currently runs SDL networking on a worker. SDL's connect/send calls
 still need bounded cancellation/deadline handling before release qualification;

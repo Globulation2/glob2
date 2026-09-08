@@ -18,6 +18,9 @@ infrastructure from the supported-release acceptance criteria.
   a native server through the gateway in integration tests. Successful account
   login and lobby exit are covered; the browser uses YOG chat without the optional
   native IRC bridge. Passwords are redacted from authentication message formatting.
+- Real-control multiplayer tests create, join, ready, and start YOG rooms,
+  then compare browser/browser order checksums. A native headless client records
+  250 ticks for comparison with browser checksums at command boundaries.
 - A bounded fixed-backend gateway with origin checks, backpressure,
   health/metrics endpoints, and real TCP/WebSocket integration tests.
 - An explicit native/browser application-host boundary for transitional
@@ -74,6 +77,11 @@ On macOS arm64, September 2026:
 
 - Native desktop, lobby, router, gateway, and release Wasm builds succeed.
 - Nine build identity/architecture tests and eight gateway integration tests pass.
+- Fifteen multiplayer checks pass across Chromium, Firefox, and WebKit: login,
+  lobby exit, browser/browser matches without AI and with Maxima, and browser/native
+  checksum comparisons through a 250-tick native run. Chromium additionally passes
+  browser/browser matches with every shipped AI. These use the actual YOG server
+  and gateway; native cross-play was tested on macOS arm64.
 - The native speed regression passes live speed, pause/hard pause, replay
   playback, and all seven expected checksum samples. The camera test now
   samples both cadences at the measurement window's end; previously the slower
@@ -130,14 +138,15 @@ cross-platform, or supported-browser certification matrix.
 7. Versioned self-hosting distribution, TLS deployment tests, backup/migration,
    draining/rollback, operations documentation, and performance/soak gates.
 
-No cross-play, reconnect, WebGL2, durable-save failure recovery, or stable
-browser support is claimed by this implementation slice.
+Short cross-play tests do not establish sustained determinism across native
+platforms. Reconnect, WebGL2, durable-save failure recovery, and stable browser
+support remain outstanding.
 
 ## Immediate delivery focus
 
 Deliver the missing multiplayer and self-hosting features next. Single-player
 is already playable; further refactoring must resolve a concrete release blocker.
-Next multiplayer evidence is complete browser/browser and browser/native matches,
-followed by the upgraded handshake, identities/rooms, and coordinated recovery.
+Next delivery work is the upgraded handshake, native secure WebSocket transport,
+identities/rooms, and coordinated recovery.
 Rendering, lifecycle, durable storage, and removal of Asyncify remain acceptance
 gates for the supported release, not reasons to keep expanding preparatory work.

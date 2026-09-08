@@ -5,6 +5,8 @@ on:
     branches: [master]
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: '19 4 * * *'
 
 jobs:
   linux:
@@ -260,9 +262,11 @@ jobs:
         run: |
           scons release=1 transport-test -j2
           python3 test/run-network-transport-tests.py
-      - name: Test browser single-player and YOG transport
+      - name: Test browser single-player and multiplayer
         if: matrix.order == 'concurrent'
         working-directory: browser
+        env:
+          GLOB2_ALL_AIS: ${{ github.event_name == 'schedule' && '1' || '0' }}
         run: |
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium firefox webkit

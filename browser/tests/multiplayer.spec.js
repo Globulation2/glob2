@@ -1,7 +1,7 @@
 const {test, expect} = require('@playwright/test');
 const {spawn} = require('node:child_process');
 const {createInterface} = require('node:readline');
-const {mkdtemp, rm} = require('node:fs/promises');
+const {mkdtemp, rm, readFile} = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const {randomUUID} = require('node:crypto');
@@ -25,7 +25,7 @@ async function start(binary, args, ready) {
   } catch (error) { child.kill(); throw error; }
 }
 async function stop(child) {
-  if (!child || child.exitCode !== null) return;
+  if (!child || child.exitCode !== null || child.signalCode !== null) return;
   await new Promise(resolve => { child.once('exit', resolve); child.kill(); });
 }
 
@@ -104,4 +104,162 @@ test('registered browser player enters and leaves the native YOG lobby', async (
   await page.locator('#canvas').press('Escape');
   await screen('MainMenuScreen');
   expect(errors).toEqual([]);
+});
+
+async function loginPlayer(page, name) {
+  await page.addInitScript(base => { globalThis.glob2Config = {websocketBase: base}; }, endpoint);
+  const screen = target => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(target);
+  const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
+  await page.goto('/'); await screen('MainMenuScreen');
+  await click(440, 490); await screen('YOGLoginScreen');
+  for (const [y, value] of [[510, name], [580, 'fixture-only']]) {
+    await click(420, y); await page.locator('#canvas').press('Home');
+    for (let i = 0; i < 32; ++i) await page.locator('#canvas').press('Delete');
+    await page.keyboard.type(value);
+  }
+  await click(810, 590); await screen('Glob2TabScreen');
+}
+function receivedTypes(page, direction = 'framereceived') {
+  const result = [];
+  page.on('websocket', socket => {
+    let bytes = Buffer.alloc(0);
+    socket.on(direction, ({payload}) => {
+      bytes = Buffer.concat([bytes, Buffer.from(payload)]);
+      while (bytes.length >= 2) {
+        const size = bytes.readUInt16BE(0);
+        if (!size || bytes.length < size + 2) break;
+        result.push(bytes[2]); bytes = bytes.subarray(size + 2);
+      }
+    });
+  });
+  return () => result;
+}
+
+function sentChecksums(page) {
+  const checksums = [];
+  page.on('websocket', socket => {
+    let bytes = Buffer.alloc(0);
+    socket.on('framesent', ({payload}) => {
+      bytes = Buffer.concat([bytes, Buffer.from(payload)]);
+      while (bytes.length >= 2) {
+        const size = bytes.readUInt16BE(0);
+        if (!size || bytes.length < size + 2) break;
+        const message = bytes.subarray(2, size + 2);
+        if (message[0] === 44 && message.length >= 11) { // NetSendOrder
+          const checksum = message.readUInt32BE(message.length - 4);
+          if (checksum !== 0xffffffff) checksums.push(checksum);
+        }
+        bytes = bytes.subarray(size + 2);
+      }
+    });
+  });
+  return checksums;
+}
+
+const multiplayerAIs = ['no AI', 'Numbi', 'Castor', 'Warrush', 'ReachToInfinity', 'Nicowar', 'Maxima', 'Cortex']
+  .map((name, id) => ({name, id}))
+  .filter(ai => process.env.GLOB2_ALL_AIS === '1' || ai.id === 0 || ai.id === 6);
+for (const ai of multiplayerAIs)
+test(`two browser players create, join and start a YOG match (${ai.name})`, async ({page, browser, baseURL}, testInfo) => {
+  const other = await browser.newContext({baseURL, viewport: {width: 1200, height: 900}});
+  const guest = await other.newPage();
+  try {
+    const hostTypes = receivedTypes(page), guestTypes = receivedTypes(guest);
+    const guestSent = receivedTypes(guest, 'framesent'), hostSent = receivedTypes(page, 'framesent');
+    const hostChecksums = sentChecksums(page), guestChecksums = sentChecksums(guest);
+    const errors = [];
+    for (const target of [page, guest]) target.on('pageerror', error => errors.push(String(error)));
+    const click = (target, x, y) => target.locator('#canvas').click({position: {x, y}, delay: 80});
+    await loginPlayer(page, 'transportplayer');
+    await loginPlayer(guest, 'transportguest');
+    const lists = guestTypes().filter(type => type === 50).length;
+    await click(page, 1090, 815);
+    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('ChooseMapScreen');
+    await click(page, 380, 280); await click(page, 810, 590);
+    await expect.poll(hostTypes).toContain(16); // NetCreateGameAccepted
+    await expect.poll(() => guestTypes().filter(type => type === 50).length).toBeGreaterThan(lists);
+    await click(guest, 100, 130); await click(guest, 1090, 245);
+    await expect.poll(guestTypes).toContain(18); // NetGameJoinAccepted
+    await expect.poll(guestSent).toContain(47); // NetSetGameInRouter
+    await guest.screenshot({path: testInfo.outputPath('joined-room.png')});
+    if (ai.id) {
+      await click(page, 1090, 410 - 30 * (ai.id - 1));
+      await expect.poll(hostSent).toContain(12); // NetAddAI
+    }
+    const ready = hostTypes().filter(type => type === 26).length;
+    await click(guest, 1170, 455);
+    await expect.poll(guestSent).toContain(26);
+    await expect.poll(() => hostTypes().filter(type => type === 26).length).toBeGreaterThan(ready);
+    await click(page, 1090, 475);
+    for (const target of [page, guest])
+      await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(100);
+    await expect.poll(() => Math.min(hostChecksums.length, guestChecksums.length)).toBeGreaterThanOrEqual(25);
+    const count = Math.min(hostChecksums.length, guestChecksums.length);
+    expect(count).toBeGreaterThanOrEqual(25);
+    expect(hostChecksums.slice(0, count)).toEqual(guestChecksums.slice(0, count));
+    expect(errors).toEqual([]);
+    await testInfo.attach('matching-order-checksums', {body: JSON.stringify({count, checksums: hostChecksums.slice(0, count)}), contentType: 'application/json'});
+    await page.screenshot({path: testInfo.outputPath('multiplayer-match.png')});
+  } finally { await other.close(); }
+});
+
+
+test('browser and native players complete matching simulation checkpoints', async ({page}, testInfo) => {
+  const nativeProfile = 'glob2-native-peer-' + randomUUID();
+  let peer;
+  const peerLog = [];
+  try {
+    const hostTypes = receivedTypes(page), checksums = sentChecksums(page);
+    const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
+    await loginPlayer(page, 'transportplayer');
+    await click(1090, 815);
+    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('ChooseMapScreen');
+    await click(380, 280); await click(810, 590);
+    await expect.poll(hostTypes).toContain(16);
+    const started = await start(path.join(root, `build/${platform}/client/release/src/native-multiplayer-peer`),
+      [nativeProfile], line => line.startsWith('native peer joined order-rate='));
+    peer = started.child;
+    peer.stdout.on('data', chunk => peerLog.push(String(chunk)));
+    peer.stderr.on('data', chunk => peerLog.push(String(chunk)));
+    await expect.poll(() => hostTypes().filter(type => type === 26).length).toBeGreaterThanOrEqual(2);
+    await click(1090, 475);
+    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(125);
+    await page.screenshot({path: testInfo.outputPath('native-cross-play.png')});
+    await expect.poll(() => peer.exitCode ?? peer.signalCode, {timeout: 45000}).toBe(0);
+    const bytes = await readFile(path.join(os.homedir(), '.' + nativeProfile, 'replays/last_game.replay.checksums'));
+    const teams = bytes.readUInt32LE(4), count = bytes.readUInt32LE(12);
+    expect(count).toBeGreaterThanOrEqual(250);
+    const native = new Map();
+    let offset = 20;
+    const u32 = () => { const value = bytes.readUInt32LE(offset); offset += 4; return value; };
+    for (let i = 0; i < count; ++i) {
+      const tick = u32(), checksum = u32(); native.set(tick, checksum);
+      for (let team = 0; team < teams; ++team) {
+        u32(); // Team checksum.
+        for (let group = 0; group < 2; ++group) {
+          const objects = u32();
+          for (let object = 0; object < objects; ++object) {
+            offset += 6; // Object ID and checksum.
+            const fields = u32(); offset += fields * 4;
+          }
+        }
+      }
+    }
+    expect(offset).toBe(bytes.length);
+    expect(checksums.length).toBeGreaterThanOrEqual(25);
+    await testInfo.attach('native-checkpoints', {body: bytes, contentType: 'application/octet-stream'});
+    await testInfo.attach('browser-order-checksums', {body: JSON.stringify(checksums), contentType: 'application/json'});
+    await testInfo.attach('checksum-alignment', {body: JSON.stringify({native: [...native].slice(0, 30), browser: checksums.slice(0, 8)}), contentType: 'application/json'});
+    // YOG finalizes the order rate at match start, after room readiness.
+    const orderRate = Number(/native match order-rate=(\d+)/.exec(peerLog.join(''))?.[1]);
+    expect(orderRate).toBeGreaterThan(0);
+    // Align command-boundary checksums using the negotiated order rate.
+    const compared = Math.min(checksums.length, Math.ceil(count / orderRate));
+    for (let i = 0; i < compared; ++i) expect(checksums[i]).toBe(native.get(i * orderRate));
+
+  } finally {
+    await stop(peer);
+    await testInfo.attach('native-peer-log', {body: peerLog.join(''), contentType: 'text/plain'});
+    await rm(path.join(os.homedir(), '.' + nativeProfile), {recursive: true, force: true});
+  }
 });

@@ -36,8 +36,9 @@ int main(int argc, char** argv) {
             globalContainer = new GlobalContainer(argv[2]);
             YOGServer server(YOGRequirePassword, YOGMultipleGames);
             require(server.isListening(), "YOG test port is already occupied");
-            require(server.registerInformation("transportplayer", "fixture-only", "127.0.0.1", NET_PROTOCOL_VERSION)
-                    == YOGLoginSuccessful, "Could not create isolated test account");
+            for (const auto* name : {"transportplayer", "transportguest"})
+                require(server.registerInformation(name, "fixture-only", "127.0.0.1", NET_PROTOCOL_VERSION)
+                        == YOGLoginSuccessful, "Could not create isolated test account");
             std::cout << "YOG test server ready" << std::endl;
             for (;;) { server.update(); SDL_Delay(10); }
         }
