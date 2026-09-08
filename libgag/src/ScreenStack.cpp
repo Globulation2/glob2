@@ -17,7 +17,7 @@ void ScreenStack::push(std::unique_ptr<Screen> screen, Completion completed)
 {
     if (!screen) throw std::invalid_argument("Cannot push a null screen");
     if (stopped) throw std::logic_error("Cannot push onto a stopped screen stack");
-    pending.push_back({std::move(screen), std::move(completed),
+    pending.push_back({std::move(completed), std::move(screen),
                        screens.empty() ? nullptr : screens.back().screen.get()});
 }
 

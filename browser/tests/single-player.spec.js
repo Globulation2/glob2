@@ -125,7 +125,7 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   expect(errors).toEqual([]);
 });
 
-test('editor setup can return through a legacy modal callback', async ({page}) => {
+test('editor setup and campaign entry dialogs return to their retained parents', async ({page}) => {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   await menu(page, 480, 360);
@@ -133,6 +133,23 @@ test('editor setup can return through a legacy modal callback', async ({page}) =
   await menu(page, 320, 90);
   await screen(page, 'NewMapScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
+  await screen(page, 'EditorMainMenu');
+  await menu(page, 320, 210);
+  await screen(page, 'CampaignEditor');
+  await menu(page, 80, 380);
+  await screen(page, 'ChooseMapScreen');
+  await menu(page, 100, 70);
+  await menu(page, 530, 380);
+  await screen(page, 'CampaignMapEntryEditor');
+  await menu(page, 350, 450);
+  await screen(page, 'CampaignEditor');
+  await menu(page, 100, 60);
+  await menu(page, 240, 380);
+  await screen(page, 'CampaignMapEntryEditor');
+  await menu(page, 540, 450);
+  await screen(page, 'CampaignEditor');
+  await menu(page, 540, 450);
+  await screen(page, 'EditorMainMenu');
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'MainMenuScreen');
   expect(errors).toEqual([]);

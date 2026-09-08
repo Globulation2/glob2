@@ -24,7 +24,7 @@ public:
     int execute(unsigned stepLength = 40);
     void stop();
 private:
-    struct Entry { std::unique_ptr<Screen> screen; Completion completed; Screen* owner; };
+    struct Entry { Completion completed; std::unique_ptr<Screen> screen; Screen* owner; };
     GAGCore::DrawableSurface& surface;
     std::vector<Entry> screens, pending;
     int lastResult = 0;

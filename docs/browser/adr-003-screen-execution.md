@@ -139,3 +139,19 @@ cover settings/credits return and application exit, alongside gameplay flows.
 Editor/network internals, loaders, and some dialogs remain blocking. The browser
 build still uses Asyncify for those paths; scheduled outer execution is not a
 claim that the complete runtime migration is finished.
+
+## Editor navigation and borrowed draft lifetime
+
+Editor setup, campaign selection, campaign editing, and campaign-map entry
+editing now queue child screens. Newly added entries use a draft owned by the
+completion callback; accepting the entry appends it to the campaign and displays
+its edited name. Existing entries borrow from the retained parent campaign.
+The stack destroys a completed/cancelled screen before releasing its completion
+callback, so captured resources outlive any screen that borrows them. The native
+harness checks normal completion, active cancellation, and cancellation before
+admission.
+
+The map editor's own run loop, generation/loading, and save-error message boxes
+remain synchronous. Failed map loading now returns without entering the editor
+with invalid map data. The browser regression adds and reopens a campaign entry,
+then cancels back through the owning parents.

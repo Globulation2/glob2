@@ -5,6 +5,7 @@
 
 #include "Glob2Screen.h"
 #include "Campaign.h"
+#include <ScreenStack.h>
 #include "GUIText.h"
 #include "GUIButton.h"
 #include "GUIList.h"
@@ -15,7 +16,7 @@
 class CampaignEditor : public Glob2Screen
 {
 public:
-	CampaignEditor(const std::string& name);
+	CampaignEditor(const std::string& name, GAGGUI::ScreenStack& screens);
 	void onAction(Widget *source, Action action, int par1, int par2);
 	enum
 	{
@@ -27,6 +28,7 @@ public:
 	};
 private:
 	Campaign campaign;
+    GAGGUI::ScreenStack& screens;
 	/// Title of the screen, depends on the directory given in parameter
 	Text *title;
 	/// The ok button

@@ -46,7 +46,7 @@ On macOS arm64, September 2026:
   and a stack-driven game session,
   checks lifecycle guards, and verifies repeatable delay queries.
 - Twenty-one browser checks cover startup, settings/credits/shutdown, legacy
-  editor-dialog suspension, campaign selector cancellation/reopen,
+  editor/campaign-entry navigation, campaign selector cancellation/reopen,
   custom options/AI descriptions and return-to-setup,
   tutorial launch, custom-game pause, save/reload byte
   equality, load continuation, and audio-context activation are exercised

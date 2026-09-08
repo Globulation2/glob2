@@ -187,6 +187,31 @@ int main()
     event.type = SDL_WINDOWEVENT; event.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
     held.observe(event);
     require(held.hasFocus() && !held.keyboard()[SDL_SCANCODE_LEFT], "Focus return starts with released keys");
+    struct BorrowingScreen : Screen {
+        std::weak_ptr<int> resource;
+        bool& aliveDuringDestruction;
+        bool complete;
+        BorrowingScreen(std::weak_ptr<int> resource, bool& alive, bool complete)
+            : resource(resource), aliveDuringDestruction(alive), complete(complete) {}
+        ~BorrowingScreen() override { aliveDuringDestruction = !resource.expired(); }
+        void onAction(Widget*, Action, int, int) override {}
+        void onTimer(Uint32) override { if (complete) endExecute(0); }
+    };
+    for (int mode = 0; mode < 3; ++mode) {
+        bool aliveDuringDestruction = false;
+        auto resource = std::make_shared<int>(7);
+        std::weak_ptr<int> released = resource;
+        ScreenStack lifetime(surface);
+        lifetime.push(std::make_unique<BorrowingScreen>(resource, aliveDuringDestruction, mode == 0),
+                      [resource](Screen&, int) {});
+        resource.reset();
+        if (mode != 2) lifetime.frame(0, {});
+        if (mode != 0) lifetime.stop();
+        lifetime.frame(40, {});
+        require(aliveDuringDestruction && released.expired(),
+                "Continuation-owned resources outlive screens on completion and cancellation");
+    }
+
     struct HostProbe : GAGCore::ApplicationHost::Loop {
         int& frames; bool& destroyed;
         HostProbe(int& frames, bool& destroyed) : frames(frames), destroyed(destroyed) {}
