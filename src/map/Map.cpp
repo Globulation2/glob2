@@ -193,10 +193,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 
 
 	immobileUnits = new Uint8[w*h];
-	for (int i=0; i<w*h; i++) 
-	{
-		immobileUnits[i]=0;
-	}
+	memset(immobileUnits, IMMOBILE_UNIT_NONE, w*h);
 
 	arraysBuilt=true;
 }

@@ -171,6 +171,20 @@ it on both supported Ubuntu versions.
 
 Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).
 
+## Immobile unit gradient regression
+
+From the repository root, run `scons -j8 release=1 server=0 immobile-unit-gradient-test`
+and `./build/src/ImmobileUnitGradientHarness`. The harness uses a fresh 64x64 map
+and real engine orders to check empty immobile-unit bookkeeping, exact blocked
+cells, and immediate building-route invalidation after painting and erasing a gap.
+It exercises all seven swim classes on weighted full-map gradients. No display or
+external save fixture is needed; normal game data must be available.
+
+Pass `fresh`, `occupancy`, or `forbidden` to run one scenario. The latter two clear
+the initial occupancy explicitly, so failures in painting or occupancy can be
+reproduced independently of the fresh-map initialization bug. Linux CI runs all
+scenarios.
+
 ### Savegame safety
 
 Build `scons release=1 server=0 savegame-safety-test`, then run
