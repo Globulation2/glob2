@@ -17,6 +17,19 @@ test('starts with a full-page game and restored local storage', async ({page}) =
   expect(await page.locator('#canvas').boundingBox()).toMatchObject({x:0,y:0,width:1200,height:900});
 });
 
+test('campaign selector returns to its suspended parent and can reopen', async ({page}) => {
+  await menu(page, 160, 120);
+  await screen(page, 'CampaignMainMenu');
+  for (let attempt = 0; attempt < 2; ++attempt) {
+    await menu(page, 320, 90);
+    await screen(page, 'CampaignSelectorScreen');
+    await page.locator('#canvas').press('Escape');
+    await screen(page, 'CampaignMainMenu');
+  }
+  await page.locator('#canvas').press('Escape');
+  await screen(page, 'MainMenuScreen');
+});
+
 test('launches the first tutorial mission through campaign controls', async ({page}) => {
   await menu(page, 480, 120);
   await screen(page, 'CampaignMenuScreen');

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GUIBase.h>
+#include <ScreenStack.h>
 #include <SDLGraphicContext.h>
 #include <stdexcept>
 #include <iostream>
@@ -98,5 +99,73 @@ int main()
     require(timer.execute(&surface, 40) == 9, "Legacy host must drive the same lifecycle");
     require(timer.timers == 1 && timer.paints == 1 && timer.destroyed == 1,
             "Timer completion must stop before another draw");
+    // A child request must return before construction/dispatch starts. The
+    // parent stays alive through child completion and resumes on a later frame.
+    struct Stacked : Screen {
+        void onAction(Widget*, Action, int, int) override {}
+        std::function<void()> input;
+        int& destroyed;
+        explicit Stacked(int& destroyed) : destroyed(destroyed) {}
+        ~Stacked() override { ++destroyed; }
+        void onSDLEvent(SDL_Event*) override { if (input) input(); }
+    };
+    int rootDestroyed = 0, childDestroyed = 0, callbacks = 0, rootInputs = 0;
+    ScreenStack stack(surface);
+    auto root = std::make_unique<Stacked>(rootDestroyed);
+    auto* rootPtr = root.get();
+    root->input = [&] {
+        ++rootInputs;
+        auto child = std::make_unique<Stacked>(childDestroyed);
+        auto* childPtr = child.get();
+        child->input = [childPtr] { childPtr->endExecute(17); };
+        stack.push(std::move(child), [&](Screen&, int result) {
+            require(result == 17 && rootDestroyed == 0 && childDestroyed == 0,
+                    "Completion can read child results while both screens live");
+            ++callbacks;
+        });
+    };
+    stack.push(std::move(root));
+    event = {}; event.type = SDL_USEREVENT;
+    stack.frame(0, {event, event});
+    require(rootInputs == 1 && callbacks == 0, "Opening input must not leak into a child");
+    stack.frame(40, {event});
+    require(callbacks == 0 && childDestroyed == 0, "Completion is deferred out of dispatch");
+    stack.frame(80, {});
+    require(callbacks == 1 && childDestroyed == 1 && rootDestroyed == 0,
+            "Child is destroyed after completion and parent remains alive");
+    rootPtr->endExecute(8);
+    stack.frame(120, {});
+    require(!stack.running() && stack.result() == 8 && rootDestroyed == 1,
+            "Root completion empties the stack and retains its result");
+
+    int abandonedParent = 0, abandonedChild = 0;
+    ScreenStack abandoning(surface);
+    auto parent = std::make_unique<Stacked>(abandonedParent);
+    auto* parentPtr = parent.get();
+    parent->input = [&] {
+        bool recursiveRejected = false;
+        try { abandoning.frame(1, {}); } catch (const std::logic_error&) { recursiveRejected = true; }
+        require(recursiveRejected, "Callbacks cannot recursively drive the host");
+        abandoning.push(std::make_unique<Stacked>(abandonedChild), [](Screen&, int) {
+            throw std::runtime_error("Cancelled child continuation must not run");
+        });
+        parentPtr->endExecute(4);
+    };
+    abandoning.push(std::move(parent));
+    abandoning.frame(0, {event});
+    abandoning.frame(40, {});
+    require(!abandoning.running() && abandonedParent == 1 && abandonedChild == 1,
+            "Completing a parent cancels children queued by its final callback");
+
+    int cancelled = 0;
+    ScreenStack quitting(surface);
+    quitting.push(std::make_unique<Stacked>(cancelled), [&](Screen&, int) {
+        throw std::runtime_error("Quit must not run admission/continuation callbacks");
+    });
+    quitting.frame(0, {});
+    event.type = SDL_QUIT;
+    quitting.frame(40, {event});
+    require(!quitting.running() && quitting.result() == Screen::QUIT_APPLICATION && cancelled == 1,
+            "Quit releases owned screens without starting another flow");
     std::cout << "PASS: screen phases, completion, reuse, quit and compatibility host\n";
 }

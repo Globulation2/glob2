@@ -17,8 +17,9 @@ infrastructure from the supported-release acceptance criteria.
 - An explicit native/browser application-host boundary for transitional
   waits and diagnostics. No forced SDL delay macro or sleep inside rendering.
 - Explicit screen begin/update/input/draw/finish phases, with a legacy host-loop
-  wrapper and automated lifecycle/completion tests. The owning screen stack
-  and nonblocking menu transitions are still pending.
+  wrapper and automated lifecycle/completion tests. An owning screen stack
+  now drives the campaign new/load selector with deferred transitions. Other
+  menus, mission execution, and the top-level host still require migration.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are
@@ -37,7 +38,8 @@ On macOS arm64, September 2026:
   the cause is not established and this rerun remains an open validation item.
   The new screen lifecycle harness passes, including creation/input/timer
   completion, reuse, supplied event modifiers, and the compatibility host.
-- Browser startup, tutorial launch, custom-game pause, save/reload byte
+- Twelve browser checks cover startup, campaign selector cancellation/reopen,
+  tutorial launch, custom-game pause, save/reload byte
   equality, load continuation, and audio-context activation are exercised
   in Chromium, Firefox, and WebKit using Playwright 1.63.0.
 - Alternating native/browser builds preserve compilation output contents

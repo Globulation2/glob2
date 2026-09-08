@@ -23,8 +23,26 @@ ignored input after completion, quit propagation, reuse, and compatibility.
 Run `scons release=1 screen-test` followed by
 `build/<toolchain>/client/release/libgag/src/ScreenExecutionHarness`.
 
-Next, introduce an owning screen stack with deferred push/pop transitions and
-completion callbacks, then migrate campaign/menu flows to it. Overlay modal
+An owning screen stack now supplies deferred transitions and completion
+callbacks for the campaign selector flow, as described below. Overlay modal
 loops, engine scheduling, resumable jobs, and removal of Asyncify are still
 required. Calling a legacy child `execute()` from a callback is still blocking;
 this API extraction does not claim that all screen callbacks are resumable.
+
+## Owning stack and first migrated flow
+
+`ScreenStack` owns screens with `unique_ptr`. Hosts submit an SDL event batch
+and a timer sample to `frame`; the stack itself does not poll or sleep. Pushes
+are queued and applied at a frame boundary. Requesting a child suspends further
+parent input immediately, so the opening input cannot activate the child.
+Completion callbacks can inspect the completed screen before it is destroyed;
+its parent stays alive. A pending child is cancelled if its parent completes
+before admission. Application quit unwinds owned screens without invoking
+continuations that could open another flow. Recursive frames are rejected.
+
+The campaign new/load selector now uses this stack. Selection cancellation
+returns to the retained parent; successful selection queues the campaign menu.
+`ScreenStack::execute` is a transitional polling host for the current desktop
+and Asyncify browser callers. Campaign mission execution still uses the legacy
+engine loop, and other menu families have not yet migrated. This change does
+not remove Asyncify or claim callback-safe mission loading.

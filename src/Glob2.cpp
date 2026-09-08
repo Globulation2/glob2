@@ -529,8 +529,9 @@ int Glob2::run(int argc, char *argv[])
 			break;
 			case MainMenuScreen::CAMPAIGN:
 			{
-				CampaignMainMenu ccs;
-				int rccs=ccs.execute(globalContainer->gfx, 40);
+				ScreenStack screens(*globalContainer->gfx);
+				screens.push(std::make_unique<CampaignMainMenu>(screens));
+				int rccs=screens.execute();
 				if(rccs == Screen::QUIT_APPLICATION)
 				{
 					isRunning = false;

@@ -476,6 +476,7 @@ GAG_SOURCES = (
     'DrawableSurfaceCompound.cpp',
     'GUIAnimation.cpp',
     'GUIBase.cpp',
+    'ScreenStack.cpp',
     'GUIButton.cpp',
     'GUIFileList.cpp',
     'GUIKeySelector.cpp',
