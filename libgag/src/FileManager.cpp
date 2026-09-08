@@ -9,6 +9,8 @@
 #include <SDL_endian.h>
 #include <iostream>
 #include <valarray>
+#include <filesystem>
+#include <stdexcept>
 #include <zlib.h>
 #include "BinaryStream.h"
 #include "TextStream.h"
@@ -68,9 +70,16 @@ namespace GAGCore
 
 	FileManager::FileManager(const std::string gameName)
 	{
+        const char* profile = SDL_getenv("GLOB2_USER_DATA_DIR");
+        if (profile && *profile) {
+            std::filesystem::path path(profile);
+            if (!path.is_absolute()) throw std::runtime_error("GLOB2_USER_DATA_DIR must be absolute");
+            std::filesystem::create_directories(path);
+            addDir(path.string());
+        }
 		#ifndef WIN32
 		const char* homeDir = getenv("HOME");
-		if (homeDir && *homeDir)
+		if ((!profile || !*profile) && homeDir && *homeDir)
 		{
 			std::string gameLocal(homeDir);
 			gameLocal += "/.";
@@ -78,12 +87,14 @@ namespace GAGCore
 			mkdir(gameLocal.c_str(), S_IRWXU);
 			addDir(gameLocal.c_str());
 		}
-		else
+		else if ((!profile || !*profile) && (!homeDir || !*homeDir))
 			std::cerr << "FileManager::FileManager : warning, can't get home directory by using getenv(\"HOME\")" << std::endl;
 		#endif
 #ifdef __APPLE__
 		addDir("./Contents/Resources");
 #endif
+		const char* assets = SDL_getenv("GLOB2_ASSET_DIR");
+		if (assets && *assets) addDir(assets);
 		addDir(".");
 
 		#ifndef WIN32

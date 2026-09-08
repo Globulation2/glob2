@@ -471,6 +471,7 @@ SERVER_SOURCES = (
 )
 
 GAG_SOURCES = (
+    'RenderBackend.cpp',
     'ApplicationHost.cpp',
     'BinaryStream.cpp',
     'CursorManager.cpp',

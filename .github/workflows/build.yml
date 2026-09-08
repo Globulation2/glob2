@@ -144,6 +144,14 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
 
+      - name: Test portable rendering and mobile input
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          scons release=1 -j$(nproc) portable-renderer-test mobile-input-test
+          ./build/linux/client/release/libgag/src/MobileInputHarness
+          xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
+
       - name: Build and run the tests
         working-directory: test
         run: |

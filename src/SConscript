@@ -69,6 +69,10 @@ if not env['server']:
     session_sources += local.Object('EngineSessionHarness.o', '#test/EngineSessionHarness.cpp')
     session_test = local.Program('engine-session-test', session_sources)
     local.Alias('session-test', session_test)
+    portable_game_sources = [source for source in source_files if source != 'Glob2.cpp']
+    portable_game_sources += local.Object('PortableGameHarness.o', '#test/PortableGameHarness.cpp')
+    portable_game_test = local.Program('portable-game-test', portable_game_sources)
+    local.Alias('portable-game-test', portable_game_test)
 
 if not env['server']:
     transport_sources = [source for source in source_files if source != 'Glob2.cpp']

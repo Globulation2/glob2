@@ -67,6 +67,7 @@ namespace GAGCore
 
 	DrawableSurface::~DrawableSurface(void)
 	{
+		if (_gc && _gc->renderer) _gc->renderer->forget(this);
 		SDL_FreeSurface(sdlsurface);
 		freeGPUTexture();
 	}
@@ -85,7 +86,7 @@ namespace GAGCore
 		#ifdef HAVE_OPENGL
 		if (textureInfo)
 			return;
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glGenTextures(1, reinterpret_cast<GLuint*>(&texture));
 			glState.allocatedTextureCount++;
@@ -101,7 +102,7 @@ namespace GAGCore
 	{
         if (!texture || textureInfo) return;
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			// only power of two textures are supported
 			if (!glState.isTextureSRectangle)
@@ -135,7 +136,7 @@ namespace GAGCore
 		{
 			return;
 		}
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glState.setTexture(texture);
 
@@ -185,7 +186,7 @@ namespace GAGCore
 #endif
         if (!texture) return;
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
 			glState.allocatedTextureCount--;

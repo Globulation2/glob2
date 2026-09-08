@@ -244,7 +244,11 @@ namespace GAGCore
 		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
 		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
 		cursorManager.releaseNativeCursor();
+		renderer.reset();
 		freeOwnedSurface();
+		if (window) SDL_DestroyWindow(window);
+		window = nullptr;
+		_gc = nullptr;
 		TTF_Quit();
 		SDL_Quit();
 
@@ -296,6 +300,7 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
+        if (renderer) { renderer->outputSize(drawableW, drawableH); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
@@ -341,12 +346,19 @@ namespace GAGCore
 			return;
 		switch (event->type)
 		{
+            case SDL_RENDER_DEVICE_RESET:
+            case SDL_RENDER_TARGETS_RESET:
+                if (_gc->renderer) _gc->renderer->reset();
+                break;
 			case SDL_MOUSEMOTION:
-				_gc->windowToLogical(event->motion.x, event->motion.y);
+                // SDL's renderer event watch already maps polled events to its
+                // logical size. Raw SDL_GetMouseState coordinates still need
+                // translateMouseCoordinates below.
+				if (!_gc->renderer) _gc->windowToLogical(event->motion.x, event->motion.y);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 			case SDL_MOUSEBUTTONUP:
-				_gc->windowToLogical(event->button.x, event->button.y);
+				if (!_gc->renderer) _gc->windowToLogical(event->button.x, event->button.y);
 				break;
 			case SDL_WINDOWEVENT:
 				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
@@ -415,8 +427,14 @@ namespace GAGCore
 		}
 
 		// set flags
+        const char* selectedRenderer = SDL_getenv("GLOB2_RENDERER");
+        if (selectedRenderer && std::string(selectedRenderer) == "sdl") flags |= PORTABLEGPU;
+#ifdef GLOB2_MOBILE
+        flags |= PORTABLEGPU;
+#endif
+        if (flags & PORTABLEGPU) flags &= ~USEGPU;
 		optionFlags = flags;
-		Uint32 sdlFlags = 0;
+		Uint32 sdlFlags = (flags & PORTABLEGPU) ? SDL_WINDOW_ALLOW_HIGHDPI : 0;
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.
 			sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -440,6 +458,7 @@ namespace GAGCore
 		#endif
 
 		// if window exists, delete it
+		renderer.reset();
 		freeOwnedSurface();
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -458,9 +477,17 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-		// SDL_GetWindowSurface is incompatible with SDL_WINDOW_OPENGL;
+		if (flags & PORTABLEGPU) {
+            renderer = makeSDLRenderBackend(window, w, h);
+            if (!renderer) {
+                std::cerr << "Cannot initialize portable renderer: " << SDL_GetError() << std::endl;
+                return false;
+            }
+            renderer->outputSize(drawableW, drawableH);
+        }
+        // SDL_GetWindowSurface is incompatible with SDL_WINDOW_OPENGL;
 		// in GPU mode, create a small dummy surface so format-dependent code works.
-		if (optionFlags & USEGPU)
+		if (renderer || (optionFlags & USEGPU))
 		{
 			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
 				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -486,7 +513,7 @@ namespace GAGCore
 		{
 			_gc = this;
 			// enable GL context
-			if (flags & USEGPU)
+			if (optionFlags & USEGPU)
 			{
 				SDL_GLContext context = SDL_GL_CreateContext(window);
 				SDL_GL_MakeCurrent(window, context);
@@ -596,6 +623,19 @@ namespace GAGCore
 			}
 
 
+            if (renderer) {
+                if (!pendingScreenshot.empty()) {
+                    std::unique_ptr<SDL_Surface, decltype(&SDL_FreeSurface)> pixels(renderer->capture(), SDL_FreeSurface);
+                    bool saved=false;
+                    for (size_t i=0;i<Toolkit::getFileManager()->getDirCount();++i) {
+                        auto path=Toolkit::getFileManager()->getDir(i)+DIR_SEPARATOR_S+pendingScreenshot;
+                        if(SDL_SaveBMP(pixels.get(),path.c_str())==0) {saved=true;break;}
+                    }
+                    if(!saved) std::cerr << "Cannot save screenshot: " << SDL_GetError() << std::endl;
+                    pendingScreenshot.clear();
+                }
+                renderer->present(); return;
+            }
 			#ifdef HAVE_OPENGL
 			if (optionFlags & GraphicContext::USEGPU)
 			{
@@ -632,6 +672,7 @@ namespace GAGCore
 	void GraphicContext::printScreen(const std::string filename)
 	{
 		SDL_Surface *toPrintSurface = NULL;
+        if (renderer) { pendingScreenshot=filename; return; }
 
 		// Fetch the surface to print
 		#ifdef HAVE_OPENGL

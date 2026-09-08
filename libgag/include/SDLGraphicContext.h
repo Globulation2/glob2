@@ -5,6 +5,7 @@
 
 #include "GAGSys.h"
 #include "CursorManager.h"
+#include "RenderBackend.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -324,6 +325,7 @@ namespace GAGCore
 			//TODO: either implement "resizable" as a resizable gui or explain what this does
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
+			PORTABLEGPU = 32,
 		};
 		
 	protected:
@@ -346,6 +348,8 @@ namespace GAGCore
 		//! refresh the window and drawable sizes after the window was resized
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
+		std::unique_ptr<RenderBackend> renderer;
+		std::string pendingScreenshot;
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -387,7 +391,7 @@ namespace GAGCore
 		virtual void shiftHSV(float hue, float sat, float lum) { }
 		
 		// reimplemented drawing commands for HW (GPU / GL) accelerated version
-		virtual bool canDrawStretchedSprite(void) { return (optionFlags & USEGPU) != 0; }
+		virtual bool canDrawStretchedSprite(void) { return renderer || (optionFlags & USEGPU) != 0; }
 		
 		virtual void drawPixel(int x, int y, const Color& color);
 		virtual void drawPixel(float x, float y, const Color& color);

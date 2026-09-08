@@ -18,6 +18,12 @@ if not env['server']:
     aspect_test = aspect_env.Program('FullscreenAspectHarness',
         [aspect_env.Object('FullscreenAspectHarness.o', '#test/FullscreenAspectHarness.cpp'), l1])
     env.Alias('aspect-test', aspect_test)
+    portable_test = env.Program('PortableRendererHarness',
+        [env.Object('PortableRendererHarness.o', '#test/PortableRendererHarness.cpp'), l1])
+    env.Alias('portable-renderer-test', portable_test)
+    mobile_input_test = env.Program('MobileInputHarness',
+        [env.Object('MobileInputHarness.o', '#test/MobileInputHarness.cpp')])
+    env.Alias('mobile-input-test', mobile_input_test)
     screen_test = env.Program('ScreenExecutionHarness',
         [env.Object('ScreenExecutionHarness.o', '#test/ScreenExecutionHarness.cpp'), l1])
     env.Alias('screen-test', screen_test)
