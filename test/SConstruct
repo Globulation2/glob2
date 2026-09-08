@@ -1,13 +1,14 @@
 import os
 import sys
 
-sys.path.append( os.path.abspath("../scons") )
+sys.path.insert(0, os.path.abspath('../scons'))
+from build_layout import write_if_changed
+config_dir = os.path.abspath('build/include')
+write_if_changed(os.path.join(config_dir, 'glob2/BuildConfig.h'),
+    '#pragma once\n#define PACKAGE_DATA_DIR ".."\n#define PACKAGE_SOURCE_DIR ".."\n#define PRIMARY_FONT "sans.ttf"\n')
+env = Environment(ENV=os.environ.copy())
+
 import ccache
-
-env = Environment()
-
-# Compiler cache, shared with the top-level build. Set before the Clone()s
-# below so every harness environment inherits it.
 if ccache.enabled():
     ccache.enable(env)
 
@@ -15,7 +16,7 @@ if ccache.enabled():
 # echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
 # which need libgag and SDL2 headers visible at parse time even when the
 # test itself never references those types.
-common_cpppath = ['..', '../src', '../src/ai',
+common_cpppath = [config_dir, '..', '../src', '../src/ai',
                   '../src/building', '../src/game/entities',
                   '../src/gui', '../src/team', '../src/unit',
                   '../src/net', '../src/net/irc', '../src/net/message',

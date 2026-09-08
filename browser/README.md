@@ -10,21 +10,23 @@ are disabled. Native builds keep their normal implementations.
 From the repository root:
 
 ```sh
-git clone --depth 1 https://github.com/emscripten-core/emsdk.git tools/browser-emsdk
-tools/browser-emsdk/emsdk install 4.0.15
-tools/browser-emsdk/emsdk activate 4.0.15
-python3 browser/build.py
-python3 -m http.server 8765 --bind 127.0.0.1 --directory build-browser
+python3 browser/setup.py
+scons target=web release=1 -j8
+python3 -m http.server 8765 --bind 127.0.0.1 --directory build/emscripten/client/release
 ```
 
-Open http://127.0.0.1:8765. The game starts automatically and fills the page. The SDK and build output are
-ignored by Git. The build script reads the native source lists without
-modifying native SCons configuration or generating a root `config.h`.
+Open http://127.0.0.1:8765. The game starts automatically and fills the page.
+The SDK and build output are ignored by Git. Shared source manifests in
+`scons/sources.py` drive native and browser builds. Each target owns its
+configuration, objects, compilation database, cache, and signature database.
+Native builds do not require Emscripten; browser builds do not probe system libraries.
 
-Boost headers default to `/opt/homebrew/include/boost`. Set `BOOST_INCLUDE`
-to the parent directory of your Boost headers on another machine. `EMXX`
-can override the Emscripten compiler path, and `JOBS` controls compilation
-parallelism (default 8).
+`browser/toolchain.json` pins the SDK revision and version. Boost headers come
+from the SDK's checksum-verified Boost port. `emsdk=/path/to/emsdk` selects an
+already installed matching SDK. Omit `release=1` for a debug build.
+`python3 browser/build.py` remains a compatibility wrapper for the release build.
+See [delivery contracts](../docs/browser/implementation.md) for output paths and
+remaining release gates.
 
 ## Playing and saving
 

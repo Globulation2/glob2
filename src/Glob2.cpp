@@ -4,6 +4,9 @@
 #include "Glob2.h"
 #include "GlobalContainer.h"
 #include "YOGServer.h"
+#ifdef GLOB2_ROUTER_ONLY
+#include "YOGServerRouter.h"
+#endif
 
 #ifndef YOG_SERVER_ONLY
 
@@ -450,6 +453,13 @@ int Glob2::run(int argc, char *argv[])
 	}
 	atexit(SDLNet_Quit);
 
+
+#ifdef GLOB2_ROUTER_ONLY
+	YOGServerRouter router;
+	int routerResult = router.run();
+	delete globalContainer;
+	return routerResult;
+#endif
 	if (globalContainer->hostServer)
 	{
 		YOGServer server(YOGRequirePassword, YOGMultipleGames);

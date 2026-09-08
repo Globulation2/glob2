@@ -9,7 +9,7 @@
 #include <SDL.h>
 #include <SDL_thread.h>
 #include <memory>
-#include "config.h"
+#include <glob2/BuildConfig.h>
 
 #ifdef HAVE_PORTAUDIO
 #include "portaudio.h"
