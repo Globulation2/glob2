@@ -88,9 +88,13 @@ on macOS arm64 in September 2026:
 - Upstream save-safety and weighted-gradient tests pass. Binary-string tests
   now cover embedded zero bytes, which occur in persisted password hashes.
 - The first post-rebase single-player run passed 40 of 42 browser scenarios.
-  Firefox and WebKit saved-match reload failed; this remains under investigation.
-- Multiplayer and Compose results from before the rebase are historical evidence,
-  not certification of this revision. Post-rebase results are recorded in the PR.
+  Firefox and WebKit saved-match reload failed; the focused rerun also failed in
+  Chromium. Saved-match reload remains an explicit merge blocker.
+- Both Compose deployment tests pass after the binary-string fix: trusted
+  HTTPS/WSS, private routes, account persistence across recreation, router-loss
+  refusal, and admission after restart.
+- Multiplayer results from before the rebase remain historical evidence; the
+  isolated branch still needs the full multiplayer matrix rerun.
   The six upstream AIs are retained unchanged; no Maxima or tournament changes
   are included in this branch.
 
