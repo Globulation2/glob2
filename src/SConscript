@@ -508,6 +508,18 @@ if not env['server']:
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
+if not env['server']:
+    # Compile with local, not trapped_env, to avoid rebuilding shared objects under a second environment.
+    trapped_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    trapped_sources += [source for source in source_files if not source.endswith('.cpp')]
+    trapped_sources += local.Object('TrappedUnitLifecycleTest.o', '#test/TrappedUnitLifecycleTest.cpp')
+    trapped_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
+    trapped_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    trapped_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    trapped_test = trapped_env.Program('TrappedUnitLifecycleTest', trapped_sources)
+    local.Alias('trapped-unit-test', trapped_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)

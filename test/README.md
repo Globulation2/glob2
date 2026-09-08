@@ -185,3 +185,17 @@ streams, recovery after failed loads, and oversized map-area strings. Atomic
 replacement tests cover callback/open/rename failures and temporary-file cleanup.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
+
+### Trapped worker lifecycle
+
+Build `scons release=1 server=0 trapped-unit-test`, then run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest`
+(use `.exe` on Windows). The shared runner isolates the profile and checks that
+preferences remain unchanged. No display or external save is needed.
+
+Normal game ticks exercise completed feeding and training behind wood/wheat,
+starvation and removal, team loss and the surviving team's win, rescue after an
+exit opens, and hunger protection during active service. Repeated seeded runs
+and save/load continuations compare per-tick unit state and win/loss results;
+the harness restores the same RNG checkpoint for both continuations. This is a
+focused lifecycle regression, not a whole-game replay compatibility test.
