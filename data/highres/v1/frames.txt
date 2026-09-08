@@ -68,9 +68,9 @@ buildingsite1 64 64 4 buildingsite1.png -
 buildingsite2 96 96 4 buildingsite2.png -
 buildingsite3 128 128 4 buildingsite3.png -
 buildingsite5 196 196 4 buildingsite5.png -
-explorationflag0 32 32 4 - explorationflag0r.png
-warflag0 32 32 4 - warflag0r.png
-clearingflag0 32 32 4 - clearingflag0r.png
+explorationflag0 32 32 4 explorationflag0.png explorationflag0r.png
+warflag0 32 32 4 warflag0.png warflag0r.png
+clearingflag0 32 32 4 clearingflag0.png clearingflag0r.png
 inn3c0 96 96 4 inn3c0.png -
 terrain0 32 32 4 terrain0.png -
 terrain1 32 32 4 terrain1.png -

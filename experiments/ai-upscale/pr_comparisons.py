@@ -28,7 +28,7 @@ def sheet(items,name):
     heights=[display_size(f)[1]+58 for f in items]
     out=Image.new('RGB',(width*2,sum(heights)+36),'#26362d');d=ImageDraw.Draw(out)
     d.text((16,12),'ORIGINAL - enlarged 4x',fill='white')
-    d.text((width+16,12),'FINAL UPSCALE - same dimensions',fill='white')
+    d.text((width+16,12),'FINAL RUNTIME ART - same dimensions',fill='white')
     y=36
     for f,h in zip(items,heights):
         d.line((0,y,width*2,y),fill='#637269')
@@ -39,7 +39,7 @@ def sheet(items,name):
     out.save(OUT/name)
 
 OUT.mkdir(parents=True,exist_ok=True)
-selected=['swarm0b0','inn0c0','hosp0b1','pool0b0','school1b0','defencetower1b1','ressource9','ressource19','ressource40']
+selected=['swarm0b0','swarm0c0','warflag0','buildingsite3','inn0c0','hosp0b1','pool0b0','school1b0','defencetower1b1','ressource9','ressource19','ressource40']
 for name in selected:
     match=[f for f in frames if f['id']==name]
     if match: sheet(match,name+'.png')

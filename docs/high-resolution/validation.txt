@@ -95,3 +95,35 @@ PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
 PASS: periodic opaque water; opposing edges agree through four mip levels
 PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
 PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+
+Recovered original pack validation (2026-09-08):
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 7.61315 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 1.99503 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 8.46165 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 3.22191 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 1.67981 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.54643 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 9.36832 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 2.79345 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 2.14592 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 1.80274 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 8.42567 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 1.42039 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 12.3609 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 1.05463 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release

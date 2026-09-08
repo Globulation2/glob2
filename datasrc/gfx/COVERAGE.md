@@ -52,3 +52,14 @@ content and logical frame dimensions still need checking.
 Where a source is absent or too small, retain the existing experimental HD
 upscale and report the gap. Classic assets remain available for classic/software
 mode and load failures. Prefer a usable original model/vector/layer source over AI enhancement.
+
+## Second archive: runtime replacements
+
+Both hive states, all three flags, and `buildingsite1` through `buildingsite5`
+now use recovered original renders. White backgrounds are removed deterministically;
+construction uses the supplied matching mattes, and hive/flag team layers remain
+separate from neutral shadows. See [recipes and limitations](RECOVERED-RUNTIME.md).
+`buildingsite0` has no matching replacement here. The `Construction160` variant,
+black-background hive variant and 16 classic-size direction templates are retained
+as references. Walls remain unavailable. These findings supersede the initial
+“not yet established” assessment above for hive/flag/shared construction coverage.

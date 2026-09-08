@@ -4,6 +4,9 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools/artwork"))
+import runtime_overrides
 import numpy as np
 import connected_terrain
 from PIL import Image
@@ -82,6 +85,7 @@ def main():
         method='world constrained' if frame_id.startswith(('water','bullet','explosion','magiceffect','particle')) else 'soft mask resampling'
         if frame_id=='water0':method='quiet ripples; periodic material v3'
         records.append(dict(id=frame_id,width=w,height=h,scale=4,recipe=method,layers=layers))
+    print('Applied %d recovered original frames' % runtime_overrides.apply(records, OUT))
     lines=['GLOB2_HIGHRES 1']
     for f in records:
         layer={x['role']:x['file'] for x in f['layers']}

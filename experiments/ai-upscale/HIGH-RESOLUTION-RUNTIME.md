@@ -22,7 +22,7 @@ build/src/glob2 -g
 
 ## Runtime pack
 
-`data/highres/v1` is the standalone pack: 487 frames (73 building/state/wall/flag/shared frames, 272 terrain frames, 65 resource frames and 77 other world frames), 543 layer PNGs, four padded terrain and four resource atlas levels, and two manifests. No model, Python, or generation dependencies are needed by the game. SCons install/dist includes this directory; the macOS bundle already copies the data directory.
+`data/highres/v1` is the standalone pack: 487 frames (73 building/state/wall/flag/shared frames, 272 terrain frames, 65 resource frames and 77 other world frames), 546 layer PNGs, four padded terrain and four resource atlas levels, and two manifests. No model, Python, or generation dependencies are needed by the game. SCons install/dist includes this directory; the macOS bundle already copies the data directory.
 
 `manifest.json` records logical dimensions, 4× scale, recipe, layer roles and dimensions, original/selected-source/output hashes, and atlas metadata. `frames.txt` is the compact runtime index, starting with `GLOB2_HIGHRES 1`; each following row contains:
 
@@ -32,7 +32,7 @@ frame-id logical-width logical-height scale base-file-or-dash team-file-or-dash
 
 The runtime validates version, logical size, physical layer dimensions and required layers. Invalid combinations fall back atomically to the original frame. Atlas rejection falls back to all original terrain frames, preserving batching. The exporter/validator verifies hashes; the C++ loader does not perform cryptographic integrity checks.
 
-Pool0b0 and school1b0 retain the selected baseline bytes. Deterministic finishing retains separate base/team layers. Both generated swarm states use team pixels extracted from their own green geometry and neutral base/shadow pixels; they never reuse the original, misaligned mask. Recoloring uses the engine’s existing hue rotation.
+Pool0b0 and school1b0 retain the selected baseline bytes. Deterministic finishing retains separate base/team layers. Both swarm states now use recovered original renders with separate native green geometry and neutral shadow layers; the previous generated versions remain only as historical candidates. Recoloring uses the engine’s existing hue rotation.
 
 Terrain atlas slots have 64 source pixels of extrusion around each 128-pixel tile. Each of the four levels is downsampled per tile before packing and border extrusion. The renderer clamps the maximum mip level to three, sufficient at 50% zoom. All terrain and the other non-unit world artwork use the pack; unit artwork remains original. The generated water material keeps the existing scrolling presentation.
 
@@ -103,3 +103,15 @@ Terrain is built as a connected tileset. Shared grass and sand textures are made
 Run `connected_terrain.py` before `export_runtime.py`. The connected-terrain manifest records material and topology source hashes. `validate_runtime.py` reads actual atlas pixels to verify legal neighbors and corner junctions independently of generation. Terrain source alpha is intentionally rebuilt from topology; resource and building alpha policies are unchanged.
 
 Gameplay/replay zoom buttons now occupy the bottom of the right sidebar. Building repair/upgrade/demolish controls and their hit targets move up to reserve the footer. Editor zoom controls remain at the bottom left.
+
+
+## Recovered originals (second archive)
+
+Ten frames now use deterministic recovered-source exports: `swarm0b0`,
+`swarm0c0`, the three flags, and `buildingsite1`–`buildingsite5`.
+See [source recipes, native resolutions and gaps](../../datasrc/gfx/RECOVERED-RUNTIME.md).
+This supersedes the generated swarm recipe described in the earlier experiment.
+The pack contains 487 frames and 546 layers after adding neutral flag base layers.
+No camera or simulation code changed for this migration. The integration harness
+passes on the replacement pack; dense HD scenes measured 12.36 ms at 50% and
+1.05 ms at 300%, compared with 8.43/1.42 ms using classic artwork on this Mac.

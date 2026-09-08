@@ -7,12 +7,13 @@
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
       "layers": [
         {
           "file": "swarm0b0.png",
           "role": "base",
-          "sha256": "9fdb9b2d8026c48592a52682973d4ded4a8520fee22da510980b606c684cd544",
-          "source_sha256": "e79dfafcc20a1ce00e0b26400ac787d34bee786886ff8aa342ba257c1101b3c9",
+          "sha256": "8586b89b95f5feb84520fd48b3ce5c6ef3f696758eba8c8b8ed973deb03a2ce9",
+          "source_sha256": "8586b89b95f5feb84520fd48b3ce5c6ef3f696758eba8c8b8ed973deb03a2ce9",
           "logical_width": 128,
           "logical_height": 128,
           "original_sha256": "003ba9aa314811ed60baf5828262895a9c856c2f60c545c6416715ad078263f5"
@@ -20,26 +21,36 @@
         {
           "file": "swarm0b0r.png",
           "role": "team",
-          "sha256": "d5e99e78eb818a93f4c28c0524efb14c8d2f98f2a39dc79d8a916ed658c4769f",
-          "source_sha256": "e79dfafcc20a1ce00e0b26400ac787d34bee786886ff8aa342ba257c1101b3c9",
+          "sha256": "7fddfffbe675b7b2b7fdaf87e78f6b8ca52f83ca3ac07e2c2b07724829beed92",
+          "source_sha256": "7fddfffbe675b7b2b7fdaf87e78f6b8ca52f83ca3ac07e2c2b07724829beed92",
           "logical_width": 128,
           "logical_height": 128,
           "original_sha256": "4f6dea01007a35422ce45ad557c2750a9ff3ad4d322f2b54c770c38b3caec5d8"
         }
       ],
-      "recipe": "generator_v1"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/swarm/Ruche.png",
+          "sha256": "88549c047160eb0a883b334eb091cad8adae4a03a2ffe63dc5d90d8b7ad554e8",
+          "native_size": [
+            256,
+            256
+          ]
+        }
+      ]
     },
     {
       "id": "swarm0c0",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
       "layers": [
         {
           "file": "swarm0c0.png",
           "role": "base",
-          "sha256": "18d5a0a2b9268a8a1706440751e475e46fc6dea1aa297dfcb8be048aa841bdb5",
-          "source_sha256": "57fdeb17a26e476d6464b5355c9f80affd6d6fa0ac6e0ace11a155bafb11d93e",
+          "sha256": "7535de51a77fd4e4415e9a45a30cbfdaf61157ed9ad42b5ee6b486cbf047bbe0",
+          "source_sha256": "7535de51a77fd4e4415e9a45a30cbfdaf61157ed9ad42b5ee6b486cbf047bbe0",
           "logical_width": 128,
           "logical_height": 128,
           "original_sha256": null
@@ -47,14 +58,23 @@
         {
           "file": "swarm0c0r.png",
           "role": "team",
-          "sha256": "f81bc2878db78ebc71405f3c0bd6c6f9c7a034349c5e3850e911843d79c8051a",
-          "source_sha256": "57fdeb17a26e476d6464b5355c9f80affd6d6fa0ac6e0ace11a155bafb11d93e",
+          "sha256": "35379ff139ab075a00d6348e7af14316ed7b8e342300737275e8d6738be81414",
+          "source_sha256": "35379ff139ab075a00d6348e7af14316ed7b8e342300737275e8d6738be81414",
           "logical_width": 128,
           "logical_height": 128,
           "original_sha256": "ee456e96ff1511cce2f4d60e77b527af2fbb6f1315cfaf7628f4a2c0345f2f12"
         }
       ],
-      "recipe": "generator_construction"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128c.png",
+          "sha256": "9bcb10af8d512456abd00e3424cb83665c32b598891bb64b355490daa2576a49",
+          "native_size": [
+            512,
+            512
+          ]
+        }
+      ]
     },
     {
       "id": "inn0b0",
@@ -1627,144 +1647,291 @@
       "width": 192,
       "height": 192,
       "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
       "layers": [
         {
           "file": "buildingsite4.png",
           "role": "base",
-          "sha256": "457f1f1dc57b807e2fb355b460b8aa0484787165bc1a367a54c41c0dc3f02627",
-          "source_sha256": "457f1f1dc57b807e2fb355b460b8aa0484787165bc1a367a54c41c0dc3f02627",
+          "sha256": "a244364f290a6778de96eeadbab62a2bf87cb79006f4dc9ef2a62cdc257864fb",
+          "source_sha256": "a244364f290a6778de96eeadbab62a2bf87cb79006f4dc9ef2a62cdc257864fb",
           "logical_width": 192,
           "logical_height": 192,
           "original_sha256": "77d03bf7196f0c6b22fc2d2030d542982724130dcf72832f7e6ca1a7b127c112"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192c.png",
+          "sha256": "b15b0425605344f9ba18b6ae6caa707683a726144dc0361a40bd5610a6515c51",
+          "native_size": [
+            384,
+            384
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192m.png",
+          "sha256": "e6edbe00b53a2df228f2baf1e516f76d72b40317684a805ff92aaefabda81cbb",
+          "native_size": [
+            384,
+            384
+          ]
+        }
+      ]
     },
     {
       "id": "buildingsite1",
       "width": 64,
       "height": 64,
       "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
       "layers": [
         {
           "file": "buildingsite1.png",
           "role": "base",
-          "sha256": "8a1570aab963ac186d037a3d1f93740ba1d01fbbdbb32b13b5ff4b39af9f13d2",
-          "source_sha256": "8a1570aab963ac186d037a3d1f93740ba1d01fbbdbb32b13b5ff4b39af9f13d2",
+          "sha256": "d3e049adf14663bad2d3a4bf1070f583a4c9cb6e7b78ff4510688cb65faf1456",
+          "source_sha256": "d3e049adf14663bad2d3a4bf1070f583a4c9cb6e7b78ff4510688cb65faf1456",
           "logical_width": 64,
           "logical_height": 64,
           "original_sha256": "2b8f2cc1d3a72177971ce2448acb73c53475ef705cf90f44ebedc264245e4253"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64c.png",
+          "sha256": "c69621d051f0634eda3c07bc87e243173e0693b8a97f5a3798ed11388aed9ae9",
+          "native_size": [
+            256,
+            256
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64m.png",
+          "sha256": "a7b540849cb3f7b0a5d0269b832ca9ffc9545b25fd9940e13c88247a18cb0408",
+          "native_size": [
+            256,
+            256
+          ]
+        }
+      ]
     },
     {
       "id": "buildingsite2",
       "width": 96,
       "height": 96,
       "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
       "layers": [
         {
           "file": "buildingsite2.png",
           "role": "base",
-          "sha256": "0d4de0e20ee95bb1d53382f4fd81a0ecc280ca1667d0749e580f1e68e038f14a",
-          "source_sha256": "0d4de0e20ee95bb1d53382f4fd81a0ecc280ca1667d0749e580f1e68e038f14a",
+          "sha256": "49c3afd3f3110e42b60598a829ebe61dc3e402b2572063a8bcaaa4b3d6ecfbaa",
+          "source_sha256": "49c3afd3f3110e42b60598a829ebe61dc3e402b2572063a8bcaaa4b3d6ecfbaa",
           "logical_width": 96,
           "logical_height": 96,
           "original_sha256": "4e6148c6e11fb8f458acfc6f8dc4833f5a8e377f3ecce98f848a200722f670ba"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96c.png",
+          "sha256": "fbb198ed42d149ef6f66094801a5e6b56b5537dddb52ac3e4276aada74acb323",
+          "native_size": [
+            384,
+            384
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96m.png",
+          "sha256": "2a1e5b5c1fc060176c8a33e4d9f8d5922d540a1ad8f9ee8e77d6b0b8f7ddf355",
+          "native_size": [
+            384,
+            384
+          ]
+        }
+      ]
     },
     {
       "id": "buildingsite3",
       "width": 128,
       "height": 128,
       "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
       "layers": [
         {
           "file": "buildingsite3.png",
           "role": "base",
-          "sha256": "ba7aa88b71f621c83c0fcc4a2faba90325acf5fa93ccdaeb541a61568938f64b",
-          "source_sha256": "ba7aa88b71f621c83c0fcc4a2faba90325acf5fa93ccdaeb541a61568938f64b",
+          "sha256": "74f4f6860ee9d7048efd56a074b2780b6b1de8792d39253177f1f4fbe6a7b922",
+          "source_sha256": "74f4f6860ee9d7048efd56a074b2780b6b1de8792d39253177f1f4fbe6a7b922",
           "logical_width": 128,
           "logical_height": 128,
           "original_sha256": "46d394cb1aab6eef184847415c28f268ae57ae49c9217d4419eaebdc50d8bad9"
         }
       ],
-      "recipe": "outline_repair"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128c.png",
+          "sha256": "d30d202c283512e6d23a9db0c6b5940e7345bfaa959925c13e11d4e310ddcd14",
+          "native_size": [
+            512,
+            512
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128m.png",
+          "sha256": "85be8078274de6720221a66fdc6173f6114607835a58cc19f03db4cdadace089",
+          "native_size": [
+            512,
+            512
+          ]
+        }
+      ]
     },
     {
       "id": "buildingsite5",
       "width": 196,
       "height": 196,
       "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
       "layers": [
         {
           "file": "buildingsite5.png",
           "role": "base",
-          "sha256": "2810f869809c954109cf705fd04226b8bc3007f9c26421e63856d9812fa1d18d",
-          "source_sha256": "2810f869809c954109cf705fd04226b8bc3007f9c26421e63856d9812fa1d18d",
+          "sha256": "1a44c7438560f608c933f20308ec2ef6fce6c6ab7a6479f3e4d82fc188ba8bb2",
+          "source_sha256": "1a44c7438560f608c933f20308ec2ef6fce6c6ab7a6479f3e4d82fc188ba8bb2",
           "logical_width": 196,
           "logical_height": 196,
           "original_sha256": "6591d889781997a86ad179e4808766abb8d78fde0a406bc91f81609102f45937"
         }
       ],
-      "recipe": "current"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256c.png",
+          "sha256": "f1dba0fce8a9b4ea4a40151258bec18465a031f19a461232e1056f7985a707ae",
+          "native_size": [
+            512,
+            512
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256m.png",
+          "sha256": "baac33676f1515dade11d177094858a37c6ecdb7f7e90bc582a5e020af3b66aa",
+          "native_size": [
+            512,
+            512
+          ]
+        }
+      ]
     },
     {
       "id": "explorationflag0",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
       "layers": [
+        {
+          "file": "explorationflag0.png",
+          "role": "base",
+          "sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee",
+          "source_sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": null
+        },
         {
           "file": "explorationflag0r.png",
           "role": "team",
-          "sha256": "bd81089bf90f40a663e668577d45e239f9af89df2c398e1f90a5a4107d27660d",
-          "source_sha256": "bd81089bf90f40a663e668577d45e239f9af89df2c398e1f90a5a4107d27660d",
+          "sha256": "1eb3f170e7455f8621e15f6637a01383c1ff18a3b87b380ae9aebac5e12b4ffc",
+          "source_sha256": "1eb3f170e7455f8621e15f6637a01383c1ff18a3b87b380ae9aebac5e12b4ffc",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "222e8d8fa4c23da5ad946d4456c834b411362c4466772e44e361298c834ba220"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/flags/ExploFlag.png",
+          "sha256": "5c772959f73fea52ba87c6e237bfc6c5e3dd0e92c43681a52b75339c420c4709",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ]
     },
     {
       "id": "warflag0",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
       "layers": [
+        {
+          "file": "warflag0.png",
+          "role": "base",
+          "sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee",
+          "source_sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": null
+        },
         {
           "file": "warflag0r.png",
           "role": "team",
-          "sha256": "c12dac50c67826e42d7c9543102e2e244c7c48cc74a3e1e9479772071d7783db",
-          "source_sha256": "c12dac50c67826e42d7c9543102e2e244c7c48cc74a3e1e9479772071d7783db",
+          "sha256": "2f7ab6fe190662a4dcd2e0acd21f423a50c8faf635aa2e89579784d8ed937cd0",
+          "source_sha256": "2f7ab6fe190662a4dcd2e0acd21f423a50c8faf635aa2e89579784d8ed937cd0",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "ab6249d7e82dec718190eee681eb07226c1f8d89bfec58ddbadc56c51d7d57cc"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/flags/WarFlag.png",
+          "sha256": "ba32b3139ab131456e67ec9c9df89a0477d111a42aaa4b736cac3726cf174160",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ]
     },
     {
       "id": "clearingflag0",
       "width": 32,
       "height": 32,
       "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
       "layers": [
+        {
+          "file": "clearingflag0.png",
+          "role": "base",
+          "sha256": "cd8968966745ded953dd027154adc39ef3bcd5995a05969acf866e7df057799e",
+          "source_sha256": "cd8968966745ded953dd027154adc39ef3bcd5995a05969acf866e7df057799e",
+          "logical_width": 32,
+          "logical_height": 32,
+          "original_sha256": null
+        },
         {
           "file": "clearingflag0r.png",
           "role": "team",
-          "sha256": "ff1f90943d65e2364eb36e8ba3d8d8647443c9ddcc6b8daa2010de0b83ce371a",
-          "source_sha256": "ff1f90943d65e2364eb36e8ba3d8d8647443c9ddcc6b8daa2010de0b83ce371a",
+          "sha256": "59b0d491345cd52279daf8052b3f8b59a35b7af21750355151e1d175fa7772a6",
+          "source_sha256": "59b0d491345cd52279daf8052b3f8b59a35b7af21750355151e1d175fa7772a6",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "52c6beb9fc750d7651a2d29799e496c7b850a7e8f395367557431d007fd7d032"
         }
       ],
-      "recipe": "painted_repair"
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/flags/RemoveFlag.png",
+          "sha256": "1b8d789fda8099353c2d935e4c1241eb3e1194dbe557626ee7db8be9846ec221",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ]
     },
     {
       "id": "inn3c0",
