@@ -202,10 +202,7 @@ bool MapEdit::performViewAction(const std::string& action, int relMouseX, int re
 		//Only compute when its x'ed in, not otherwise
 		if(isFertilityOn)
 		{
-			FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
-			dialog.runModal();
-			overlay.forceRecompute();
-			overlay.compute(game, OverlayArea::Fertility, team);
+			fertilityRequested = true;
 		}
 	}
 	else if(action=="quit editor")

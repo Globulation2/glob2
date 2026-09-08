@@ -171,3 +171,25 @@ suspended for this decision. The native fixture exercises cancel/discard; browse
 checks generate a uniform map and navigate both decisions through actual input.
 Generation, parsing, save I/O, fertility calculation, and remaining nested error
 or script dialogs still require resumable/asynchronous migration.
+
+## Resumable fertility work
+
+Fertility calculation now exposes a platform-independent `Job`. Seeding,
+resource reachability, and the weighting kernel all advance under an explicit
+operation budget. Temporary distances and output belong to the job. The map must
+remain alive and unchanged during the job; only a ready job may publish results.
+Cancellation is destruction of the job, leaving the map unchanged. Final commit
+copies the staged values in one pass so rendering never sees partial results.
+
+The editor owns a `FertilityScreen` child while calculating overlays or preparing
+a map save. Its host schedules bounded work and continues accepting cancellation.
+Canceling either the save selector or calculation preserves unsaved edits and
+cancels any pending quit. A failed file-open is reported through an owned message.
+The synchronous adapter remains for old map-format loading; serialization and
+browser durability are separate work still to migrate.
+
+A frozen pre-migration algorithm in the native harness checks exact equality at
+three operation budgets, including single-operation calls. Additional assertions
+cover monotonic progress, rejected premature commit, cancellation, and publication
+only after commit. Browser tests cover save cancellation, completed map writes,
+and reload persistence using real controls and read-only file digests.

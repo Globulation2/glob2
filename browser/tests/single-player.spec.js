@@ -176,3 +176,38 @@ test('map editor frames resume after cancelling quit and can discard a new map',
   await screen(page, 'EditorMainMenu');
   expect(errors).toEqual([]);
 });
+
+
+test('editor save cancellation keeps edits open and completed fertility saves the map', async ({page}) => {
+  await menu(page, 480, 360);
+  await screen(page, 'EditorMainMenu');
+  await menu(page, 320, 90);
+  await screen(page, 'NewMapScreen');
+  await menu(page, 160, 440);
+  await screen(page, 'MapEditorScreen');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await click(page, 600, 525);
+  await screen(page, 'MessageScreen');
+  await menu(page, 110, 360); // Save before quit.
+  await screen(page, 'MapEditorScreen');
+  await page.locator('#canvas').press('Escape', {delay:80}); // Cancel file selection.
+  await page.locator('#canvas').press('Escape', {delay:80}); // Reopen editor menu.
+  await click(page, 600, 525);
+  await screen(page, 'MessageScreen'); // Unsaved edits are still present.
+  await menu(page, 110, 360);
+  await screen(page, 'MapEditorScreen');
+  await click(page, 600, 515);
+  await page.locator('#canvas').press('Home');
+  for (let i=0; i<40; ++i) await page.locator('#canvas').press('Delete');
+  await page.locator('#canvas').pressSequentially('Browser editor', {delay:20});
+  await click(page, 520, 555);
+  await screen(page, 'EditorMainMenu'); // Returns only after job and map write complete.
+  const digest = () => page.evaluate(() => glob2Diagnostics.mapDigest('Browser_editor.map'));
+  await expect.poll(digest).not.toBeNull();
+  await expect.poll(async () => (await state(page)).persisting).toBe(false);
+  const saved = await digest();
+  expect(saved.size).toBeGreaterThan(1000);
+  await page.reload();
+  await screen(page, 'MainMenuScreen');
+  expect(await digest()).toEqual(saved);
+});

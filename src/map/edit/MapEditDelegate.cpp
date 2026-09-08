@@ -81,11 +81,15 @@ void MapEdit::delegateMenu(SDL_Event& event)
 		{
 			case LoadSaveScreen::OK:
 			{
-				save(loadSaveScreen->getFileName(), loadSaveScreen->getName());
-				performAction("close save screen");
-			}
+                pendingSaveFilename = loadSaveScreen->getFileName();
+                pendingSaveName = loadSaveScreen->getName();
+                fertilityRequested = true;
+                performAction("close save screen");
+            }
+            break;
 			case LoadSaveScreen::CANCEL:
 			{
+                doQuitAfterLoadSave = false;
 				performAction("close save screen");
 			}
 		}

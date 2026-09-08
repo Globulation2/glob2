@@ -380,12 +380,14 @@ class MapEdit
     bool editing = false, quitDecision = false;
     int editingResult = 0;
     GAGCore::InputState inputState;
+    bool fertilityRequested = false;
+    std::string pendingSaveFilename, pendingSaveName;
 public:
 	MapEdit();
 	~MapEdit();
 	///Loads the game given by a particular file name
 	bool load(const std::string filename);
-	///Saves the game to a particular file name
+	///Writes a map after the owned fertility job has committed its results
 	bool save(const std::string filename, const std::string name);
 
 	///Updates the editor after map generation
@@ -394,6 +396,8 @@ public:
     void beginEditing();
     bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick);
     void drawEditing();
+    bool needsFertility() const { return fertilityRequested; }
+    bool finishFertility(bool completed);
     bool needsQuitDecision() const { return quitDecision; }
     void resolveQuitDecision(int choice);
     int editingReturnCode() const { return editingResult; }

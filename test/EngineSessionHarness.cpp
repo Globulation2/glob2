@@ -2,6 +2,9 @@
 #include "Engine.h"
 #include "GameSessionScreen.h"
 #include "MapEdit.h"
+#include "FertilityCalculator.h"
+#include "FertilityScreen.h"
+#include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
 #include <SDL_net.h>
 #include <iostream>
@@ -77,6 +80,55 @@ int main(int argc, char** argv)
     {
         MapEdit editor;
         require(editor.load("maps/balanced.map"), "Editor fixture load failed");
+        auto snapshot = [&]() {
+            std::vector<Uint16> values;
+            for (int x = 0; x < editor.game.map.getW(); ++x)
+                for (int y = 0; y < editor.game.map.getH(); ++y)
+                    values.push_back(editor.game.map.getCase(x, y).fertility);
+            values.push_back(editor.game.map.fertilityMaximum);
+            return values;
+        };
+        const auto original = snapshot();
+        {
+            FertilityCalculator::Job cancelled(editor.game.map);
+            require(!cancelled.advance(0), "Zero work must not finish a job");
+            cancelled.advance(4096);
+            bool rejected = false;
+            try { cancelled.commit(); } catch (const std::logic_error&) { rejected = true; }
+            require(rejected, "Incomplete fertility must not be committed");
+        }
+        require(snapshot() == original, "Cancelled fertility changed the map");
+        LegacyFertilityReference::compute(editor.game.map, {});
+        const auto expected = snapshot();
+        require(expected.back() > 0, "Fertility oracle fixture must exercise nonzero weights");
+        for (const std::size_t budget : {1u, 7919u, 65536u}) {
+            for (int x = 0; x < editor.game.map.getW(); ++x)
+                for (int y = 0; y < editor.game.map.getH(); ++y)
+                    editor.game.map.getCase(x, y).fertility = 42;
+            editor.game.map.fertilityMaximum = 42;
+            const auto untouched = snapshot();
+            FertilityCalculator::Job job(editor.game.map);
+            float previous = 0;
+            while (!job.advance(budget)) {
+                require(job.progress() >= previous && job.progress() <= 1.f, "Progress must be monotonic");
+                previous = job.progress();
+            }
+            require(snapshot() == untouched, "Ready job published before commit");
+            job.commit(); job.commit();
+            require(snapshot() == expected, "Resumable fertility differs from original algorithm");
+        }
+        {
+            const auto beforeCancel = snapshot();
+            GAGGUI::ScreenStack screens(*globalContainer->gfx);
+            screens.push(std::make_unique<FertilityScreen>(editor.game.map));
+            SDL_Event escape{};
+            escape.type = SDL_KEYDOWN;
+            escape.key.keysym.sym = SDLK_ESCAPE;
+            screens.frame(1000, {escape});
+            screens.frame(1001, {});
+            require(!screens.running() && screens.result() == 0, "Fertility screen must accept cancellation");
+            require(snapshot() == beforeCancel, "Cancelling the progress screen changed the map");
+        }
         editor.beginEditing();
         editor.mapHasBeenModified();
         SDL_Event open{};
@@ -103,5 +155,5 @@ int main(int argc, char** argv)
     }
     delete globalContainer;
     SDLNet_Quit();
-    std::cout << "PASS: explicit engine sessions, supplied clocks, pacing and completion\n";
+    std::cout << "PASS: engine sessions, editor decisions, fertility equivalence and cancellation\n";
 }

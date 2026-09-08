@@ -53,6 +53,15 @@ var Module = {
   },
   onAbort(reason) { Module.printErr('Game stopped: ' + reason); }
 };
+async function localFileDigest(directory, name, extension) {
+  if (!/^[A-Za-z0-9 _.-]+$/.test(name) || name.includes('..') || !name.endsWith('.' + extension))
+    throw Error('Invalid local file name');
+  const path = '/home/web_user/.glob2/' + directory + '/' + name;
+  if (!FS.analyzePath(path).exists) return null;
+  const data = FS.readFile(path);
+  const bytes = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+  return Object.freeze({size:data.length, sha256:Array.from(bytes, b => b.toString(16).padStart(2,'0')).join('')});
+}
 // Read-only observability shared by developer tools and automated assertions.
 Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   snapshot() {
@@ -67,14 +76,8 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
     const path = '/home/web_user/.glob2/games';
     return FS.analyzePath(path).exists ? FS.readdir(path).filter(n => n.endsWith('.game')).sort() : [];
   },
-  async saveDigest(name) {
-    if (!/^[A-Za-z0-9 _.-]+\.game$/.test(name) || name.includes('..')) throw Error('Invalid save name');
-    const path = '/home/web_user/.glob2/games/' + name;
-    if (!FS.analyzePath(path).exists) return null;
-    const data = FS.readFile(path);
-    const bytes = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
-    return Object.freeze({size:data.length, sha256:Array.from(bytes, b => b.toString(16).padStart(2,'0')).join('')});
-  }
+  saveDigest(name) { return localFileDigest('games', name, 'game'); },
+  mapDigest(name) { return localFileDigest('maps', name, 'map'); }
 })});
 function focusGame() {
   canvas.focus();

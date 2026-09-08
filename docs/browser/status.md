@@ -28,6 +28,10 @@ infrastructure from the supported-release acceptance criteria.
   and delay calculation. Gameplay accepts explicit input batches and tracks
   held input from events, clearing it on focus loss. Modal handling, application
   visibility, and loading remain transitional.
+- Bounded, cancellable fertility jobs with staged results and an explicit commit.
+  Editor overlay/save actions run them through a scheduled progress screen;
+  cancellation preserves unsaved edits. Old-format loading still uses the
+  synchronous adapter, and file serialization/durable storage remain transitional.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are
@@ -47,13 +51,16 @@ On macOS arm64, September 2026:
   produces matching 50-tick checksums with regular callbacks, delayed callbacks,
   and a stack-driven game session,
   checks lifecycle guards, and verifies repeatable delay queries. The editor
-  harness checks incremental quit, cancellation, and discard.
-- Twenty-four browser checks cover startup, settings/credits/shutdown,
+  harness checks incremental quit, cancellation, and discard, plus fertility
+  equality against the previous algorithm at three work budgets, progress,
+  deferred publication, and cancellation through the real progress screen.
+- Twenty-seven browser checks cover startup, settings/credits/shutdown,
   editor/campaign-entry navigation and map quit decisions, campaign selector
   cancellation/reopen,
   custom options/AI descriptions and return-to-setup,
   tutorial launch, custom-game pause, save/reload byte
-  equality, load continuation, and audio-context activation are exercised
+  equality, editor save cancellation and map reload persistence, load continuation,
+  and audio-context activation are exercised
   in Chromium, Firefox, and WebKit using Playwright 1.63.0.
 - Alternating native/browser builds preserve compilation output contents
   and timestamps and do not change tracked files. CI also defines separate

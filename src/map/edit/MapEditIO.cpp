@@ -78,13 +78,8 @@ bool MapEdit::load(const std::string filename)
 
 bool MapEdit::save(const std::string filename, const std::string name)
 {
-	FertilityCalculatorDialog dialog(globalContainer->gfx, game.map);
-	dialog.runModal();
-
 	assert(filename.size());
 	assert(name.size());
-
-	hasMapBeenModified = false;
 
 	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
 	if (stream->isEndOfStream())
@@ -102,6 +97,7 @@ bool MapEdit::save(const std::string filename, const std::string name)
 		// in-game saves don't permanently clobber the live map name. The
 		// editor relies on the post-save mutation for its "current name"
 		// UI (the LoadSaveScreen default), so re-apply explicitly.
+		hasMapBeenModified = false;
 		game.mapHeader.setMapName(name);
 		game.mapHeader.setIsSavedGame(false);
 		return true;
@@ -128,13 +124,14 @@ void MapEdit::beginEditing()
 
 bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 {
-    if (!editing || quitDecision) return editing;
+    if (!editing || quitDecision || fertilityRequested) return editing;
     for (auto event : events) {
         GAGCore::GraphicContext::translateMouseEvent(&event);
         processEvent(event);
-        if (doFullQuit || doQuit || (doQuitAfterLoadSave && !showingSave)) break;
+        if (doFullQuit || doQuit || fertilityRequested || (doQuitAfterLoadSave && !showingSave)) break;
     }
     if (doFullQuit) { editingResult = -1; editing = false; return false; }
+    if (fertilityRequested) return true;
 	// While processing events the user could've tried to load a map that failed.
 	// Then we can't go through drawing everything because that would segfault.
 	if(doQuitAfterLoadSave && !showingSave)
@@ -235,4 +232,19 @@ void MapEdit::resolveQuitDecision(int choice)
         doQuitAfterLoadSave = true;
         performAction("open save screen");
     } else if (choice == 1) editing = false;
+}
+
+bool MapEdit::finishFertility(bool completed)
+{
+    fertilityRequested = false;
+    bool saved = true;
+    if (!pendingSaveFilename.empty()) {
+        if (completed) saved = save(pendingSaveFilename, pendingSaveName);
+        if (!completed || !saved) doQuitAfterLoadSave = false;
+        pendingSaveFilename.clear(); pendingSaveName.clear();
+    } else if (completed) {
+        overlay.forceRecompute();
+        overlay.compute(game, OverlayArea::Fertility, team);
+    } else isFertilityOn = false;
+    return saved;
 }

@@ -2,6 +2,7 @@
 #include "MapEditorScreen.h"
 #include "MapEdit.h"
 #include "MessageScreen.h"
+#include "FertilityScreen.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <stdexcept>
@@ -20,7 +21,16 @@ void MapEditorScreen::updateExecution(Uint32 tick)
     const bool running = editor->advanceEditing(input, tick);
     input.clear();
     if (!running) { endExecute(editor->editingReturnCode()); return; }
-    if (editor->needsQuitDecision()) {
+    if (editor->needsFertility()) {
+        screens.push(std::make_unique<FertilityScreen>(editor->game.map),
+            [this](GAGGUI::Screen&, int result) {
+                if (!editor->finishFertility(result == 1)) {
+                    auto& strings = *GAGCore::Toolkit::getStringTable();
+                    screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_SAVE_MAP]"),
+                        std::vector<std::string>{strings.getString("[ok]")}));
+                }
+            });
+    } else if (editor->needsQuitDecision()) {
         auto& strings = *GAGCore::Toolkit::getStringTable();
         screens.push(std::make_unique<MessageScreen>(strings.getString("[save before quit?]"),
             std::vector<std::string>{strings.getString("[Yes]"), strings.getString("[No]"), strings.getString("[Cancel]")}),
