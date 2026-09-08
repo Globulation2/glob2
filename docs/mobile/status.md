@@ -21,6 +21,8 @@ Android evidence below was collected before this browser merge, on `7333e4e8b`.
   frames. A regression exercises 100 collections with a retained bridge value;
   the corrected APK successfully reloads the tutorial save from both the main
   menu and the running game. The same process remains alive and gameplay continues.
+- All nine focused browser tutorial restart, background-input and persisted
+  save/reload tests pass across Chromium, Firefox and WebKit after the GC fix.
 - The Android emulator also verifies readable Actions tabs in the live match.
 - See [device testing](device-testing.md) for the Pixel 6 installation and feedback
   route. No physical-device performance, thermal or complete-flow qualification
