@@ -152,6 +152,8 @@ GameUtilities.cpp
 Glob2.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
+FrontendTheme.cpp
+MenuColony.cpp
 GlobalContainer.cpp
 GlobalContainerArgs.cpp
 GUIGlob2FileList.cpp
