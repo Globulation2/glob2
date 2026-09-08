@@ -1,0 +1,30 @@
+Clean PR branch validation (macOS)
+
+CppUnit:
+.........Hello, world!
+..................................................................................................................................................................
+
+
+OK (171 tests)
+
+
+
+OpenGL integration:
+Settings::load("preferences.txt") : error, can't open file.
+original gameplay 50%: 11.1604 ms, 24636 calls, 41294656 GPU bytes
+original gameplay 100%: 6.52597 ms, 6317 calls, 41294656 GPU bytes
+original gameplay 200%: 3.22123 ms, 1932 calls, 41296704 GPU bytes
+original gameplay 300%: 2.78594 ms, 926 calls, 41298752 GPU bytes
+HD gameplay 50%: 15.6671 ms, 24637 calls, 161056912 GPU bytes
+HD gameplay 100%: 6.73178 ms, 6318 calls, 161056912 GPU bytes
+HD gameplay 200%: 3.94289 ms, 1932 calls, 161056912 GPU bytes
+HD gameplay 300%: 4.03732 ms, 926 calls, 161056912 GPU bytes
+original dense map 50%: 11.3339 ms, 24623 calls, 42112832 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 2.07035 ms, 613 calls, 42112832 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 15.3431 ms, 24624 calls, 171109504 GPU bytes, 89681408 HD CPU bytes, 10 colored frames
+HD dense map 300%: 2.08454 ms, 614 calls, 171218728 GPU bytes, 89746944 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+Software integration:
+Settings::load("preferences.txt") : error, can't open file.
+PASS software game/editor rendering, original artwork, disabled zoom

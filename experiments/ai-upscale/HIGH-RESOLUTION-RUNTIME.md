@@ -69,7 +69,7 @@ The integration harness creates an isolated settings profile and replay fixture.
 
 `RuntimePackCheck.cpp` additionally exercises every frame in all 16 hues, checks logical dimensions and GL errors, confirms bounded cache reuse/release, and benchmarks a synthetic dense scene. It supports `original`, `software`, and `fallback` modes. Tested negative packs include missing files/layers, incorrect dimensions, a missing pack and an unsupported version.
 
-The eight focused scroll-wheel tests pass. The full CppUnit run reports 195 tests with three failures in MaximaPlacement tests (colony corn/blocked scoring, threat/conquered scoring, disconnected swimming builders). No AI code was changed in this experiment; those failures remain unresolved and prevent claiming an entirely green full suite.
+The eight focused scroll-wheel tests pass. The clean PR branch based on master passes all 171 CppUnit tests. The original experiment checkout had 195 tests with three failures in additional Maxima placement cases; the unrelated AI commits are excluded from the PR.
 
 ## Measurements and review limits
 

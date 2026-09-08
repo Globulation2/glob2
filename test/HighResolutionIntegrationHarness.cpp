@@ -44,7 +44,7 @@ public:
             assert(gui.camera.zoom==1&&Sprite::highResolutionStats().cpuBytes==0);
         }
         {
-            MapEdit editor;assert(editor.load("maps/Maxima_Dig_Out.map"));editor.minimap.setGame(editor.game);
+            MapEdit editor;assert(editor.load("maps/Archipelago.map"));editor.minimap.setGame(editor.game);
             editor.updateCamera();editor.zoomMap(10,300,300);
             editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
             editor.drawMenu();editor.drawMiniMap();editor.drawWidgets();
@@ -112,7 +112,7 @@ public:
         }
         globalContainer->replaying=false;
         {
-            MapEdit editor;assert(editor.load("maps/Maxima_Dig_Out.map"));editor.minimap.setGame(editor.game);editor.updateCamera();
+            MapEdit editor;assert(editor.load("maps/Archipelago.map"));editor.minimap.setGame(editor.game);editor.updateCamera();
             const auto checksum=editor.game.checkSum(nullptr,nullptr,nullptr,true);
             for(double zoom:{.5,1.,2.,3.})
             {
@@ -178,7 +178,7 @@ int main(int argc,char **argv)
     std::filesystem::copy_file("tests/baselines/gradient/gd-small-2ai.replay", ".cache/ai-upscale/replay-fixture/replays/gd-small-2ai.replay", std::filesystem::copy_options::overwrite_existing);
     GlobalContainer globals("glob2-hd-integration-test");globalContainer=&globals;
     globals.settings.screenWidth=1024;globals.settings.screenHeight=768;globals.settings.screenFlags=GraphicContext::USEGPU;
-    globals.settings.rememberUnit=false;globals.settings.mute=1;globals.disableReplayRecording=true;
+    globals.settings.rememberUnit=false;globals.settings.mute=1;
     globals.fileManager->addDir(".cache/ai-upscale/replay-fixture");
     const bool software=argc>1&&std::string(argv[1])=="software";
     if(software)globals.settings.screenFlags=0;
