@@ -233,6 +233,14 @@ namespace GAGGUI
 		//! Returns width of widget
 		Sint32 getHeight() const { return h; }
 		
+		//! Actual bounds after alignment, for enclosing panels and layout checks.
+		SDL_Rect getScreenRect()
+		{
+			SDL_Rect bounds;
+			getScreenPos(&bounds.x, &bounds.y, &bounds.w, &bounds.h);
+			return bounds;
+		}
+
 		//! Sets the screen position
 		virtual void setScreenPosition(int nx, int ny) { x = nx; y = ny; }
 	

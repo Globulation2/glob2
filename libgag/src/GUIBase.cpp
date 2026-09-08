@@ -631,6 +631,7 @@ namespace GAGGUI
 	
 	void Screen::dispatchPaint(void)
 	{
+		Style::style->onFrame();
 		assert(gfx);
 		gfx->setClipRect();
 		paint();

@@ -2,6 +2,9 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <GUIText.h>
+#include <GUIStyle.h>
+#include <sstream>
+#include <algorithm>
 #include <stdarg.h>
 #include <SupportFunctions.h>
 #include <assert.h>
@@ -66,7 +69,8 @@ namespace GAGGUI
 		assert(parent->getSurface());
 	
 		
-		fontPtr->pushStyle(style);
+		fontPtr->pushStyle(!customStyle && GAGGUI::Style::style->usesThemeTextColor()
+			? Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor) : style);
 		
 		if (hAlignFlag==ALIGN_FILL)
 			wDec=(w-fontPtr->getStringWidth(text.c_str()))>>1;
@@ -78,7 +82,28 @@ namespace GAGGUI
 		else
 			hDec=0;
 	
-		parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
+		// Wrap overflowing front-end labels at word boundaries. Legacy text
+		// keeps its original drawing path, including explicit chart colors.
+		const int available=std::min(w,parent->getSurface()->getW()-x-10);
+		if (GAGGUI::Style::style->usesThemeTextColor() && hAlignFlag!=ALIGN_FILL &&
+			available>0 && fontPtr->getStringWidth(text)>available)
+		{
+			std::istringstream words(text);
+			std::string word,line;
+			int lineY=y+hDec;
+			while(words >> word)
+			{
+				const std::string next=line.empty()?word:line+" "+word;
+				if(!line.empty() && fontPtr->getStringWidth(next)>available)
+				{
+					parent->getSurface()->drawString(x,lineY,fontPtr,line);
+					lineY+=fontPtr->getStringHeight(line); line=word;
+				}
+				else line=next;
+			}
+			parent->getSurface()->drawString(x,lineY,fontPtr,line);
+		}
+		else parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
 		fontPtr->popStyle();
 	}
 	
@@ -91,7 +116,8 @@ namespace GAGGUI
 		
 			if ((!keepW) || (!keepH))
 			{
-				fontPtr->pushStyle(style);
+				fontPtr->pushStyle(!customStyle && GAGGUI::Style::style->usesThemeTextColor()
+			? Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor) : style);
 				if (!keepW)
 					w = fontPtr->getStringWidth(newText);
 				if (!keepH)
@@ -105,5 +131,6 @@ namespace GAGGUI
 	void Text::setStyle(Font::Style style)
 	{
 		this->style = style;
+		customStyle = true;
 	}
 }

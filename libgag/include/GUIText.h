@@ -18,6 +18,7 @@ namespace GAGGUI
 		bool keepW;
 		bool keepH;
 		GAGCore::Font::Style style;
+		bool customStyle = false;
 	
 		// cache, recomputed at least on paint
 		GAGCore::Font *fontPtr;
