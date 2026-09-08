@@ -135,19 +135,19 @@ GAGCore::CooperativeTask MapGenerator::computeConcreteIslandsTask(Game& game, Ma
 	areaNumbers.insert(areaNumbers.end(), islandAreaNumbers.begin(), islandAreaNumbers.end());
 	
 	// Initially divide up the land
-	splitUpPoints(game, grid, 0, teamPoints, weights1);
-	splitUpArea(game, grid, 0, teamPoints, weights2, areaNumbers);
+	co_await splitUpPointsTask(game, grid, 0, teamPoints, weights1);
+	co_await splitUpAreaTask(game, grid, 0, teamPoints, weights2, areaNumbers);
 	
 	// Create a heightmap that will be used to give the map a rough edge
 	std::vector<int> heights(game.map.getW() * game.map.getH(), 75);
-	adjustHeightmapFromPerlinNoise(game, heights, 15);
+	co_await adjustHeightmapFromPerlinNoiseTask(game, heights, 15);
 	
 	// Compute the distance of every square from the border
 	std::vector<MapGeneratorPoint> sources;
 	findBorderPoints(game, grid, sources);
 	std::vector<MapGeneratorPoint> obstacles;
 	std::vector<int> distances;
-	computeDistances(game, sources, obstacles, distances);
+	co_await computeDistancesTask(game, sources, obstacles, distances);
 	
 	// Locations near the border are deaper, thus causing more water
 	for(int x=0; x<game.map.getW(); ++x)
@@ -203,7 +203,7 @@ GAGCore::CooperativeTask MapGenerator::computeConcreteIslandsTask(Game& game, Ma
 			grid[y * game.map.getW() + x] = 0;
 		}
 	}
-	splitUpArea(game, grid, 0, teamPoints, weights2, areaNumbers, true);
+	co_await splitUpAreaTask(game, grid, 0, teamPoints, weights2, areaNumbers, true);
 	
 	// Fill in the auxilary islands
 	for(int i=0; i<islandsCount; ++i)
@@ -220,7 +220,7 @@ GAGCore::CooperativeTask MapGenerator::computeConcreteIslandsTask(Game& game, Ma
 		}
 		
 		// Divide the area. Its possible the area will be so small it can't be used
-		if(divideUpArea(game, grid, islandAreaNumbers[i], areaWeights, areaNumbers))
+		if(co_await divideUpAreaTask(game, grid, islandAreaNumbers[i], areaWeights, areaNumbers))
 		{
 			// Fill in wheat
 			std::vector<MapGeneratorPoint> points;
@@ -239,7 +239,7 @@ GAGCore::CooperativeTask MapGenerator::computeConcreteIslandsTask(Game& game, Ma
 		}
 	}
 	
-	if(!divideUpPlayerLands(game, descriptor, grid, teamAreaNumbers, areaNumber))
+	if(!co_await divideUpPlayerLandsTask(game, descriptor, grid, teamAreaNumbers, areaNumber))
 		co_return false;
 	
 	// Initialize final team info
@@ -281,7 +281,8 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 		teamAreaNumbers.push_back(areaNumber);
 		areaNumber+=1;
 	}
-	int minDist = splitUpPoints(game, grid, 0, teamPoints, teamWeights);
+	int minDist = 0;
+    co_await splitUpPointsTask(game, grid, 0, teamPoints, teamWeights, &minDist);
 	
 	// Construct the areas for the teams
 	for(int i=0; i<descriptor.nbTeams; ++i)
@@ -297,7 +298,7 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 	std::vector<MapGeneratorPoint> obstacles;
 	
 	std::vector<int> distances;
-	computeDistances(game, teamAreaPoints, obstacles, distances);
+	co_await computeDistancesTask(game, teamAreaPoints, obstacles, distances);
 	
 	// Stamp out the team areas
 	for(int x=0; x<game.map.getW(); ++x)
@@ -374,7 +375,7 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 			}
 		}
 	}
-	computeDistances(game, connectorPoints, obstacles, distances);
+	co_await computeDistancesTask(game, connectorPoints, obstacles, distances);
 
 	// Stamp out the connectors
 	for(int x=0; x<game.map.getW(); ++x)
@@ -392,7 +393,7 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 	
 	
 	// Use the heightmap to put in water, grass, and sand
-	adjustHeightmapFromPerlinNoise(game, heightmap, 45);
+	co_await adjustHeightmapFromPerlinNoiseTask(game, heightmap, 45);
 	for(int x=0; x<game.map.getW(); ++x)
 	{
         if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
@@ -419,7 +420,7 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 				grid[y * game.map.getW() + x] = 0;
 		}
 	}
-	splitUpArea(game, grid, 0, teamPoints, teamWeights, teamAreaNumbers, true);
+	co_await splitUpAreaTask(game, grid, 0, teamPoints, teamWeights, teamAreaNumbers, true);
 	
 	std::vector<int> connectorDistances = distances;
 	
@@ -429,7 +430,7 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
         if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		std::vector<MapGeneratorPoint> sources;
 		getAllPoints(game, grid, teamAreaNumbers[i], sources);
-		computeDistances(game, sources, obstacles, distances);
+		co_await computeDistancesTask(game, sources, obstacles, distances);
 		std::vector<MapGeneratorPoint> possible;
 		for(int x=0; x<game.map.getW(); ++x)
 		{
@@ -459,7 +460,7 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 		}
 	}
 
-	if(!divideUpPlayerLands(game, descriptor, grid, teamAreaNumbers, areaNumber))
+	if(!co_await divideUpPlayerLandsTask(game, descriptor, grid, teamAreaNumbers, areaNumber))
 	{
 		co_return false;
 	}

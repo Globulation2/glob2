@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     }
     {
         const auto rng = getSyncRandState();
-        for (unsigned frames : {1u, 5u, 20u}) {
+        for (unsigned frames : {1u, 2u}) {
             GAGGUI::ScreenStack screens(*globalContainer->gfx);
             screens.push(std::make_unique<EditorGenerateScreen>(MapGenerationDescriptor(), 12345));
             for (unsigned frame = 0; frame < frames; ++frame) screens.frame(frame, {});
@@ -131,6 +131,24 @@ int main(int argc, char** argv)
             screens.frame(frames, {escape}); screens.frame(frames + 1, {});
             require(!screens.running() && screens.result() == 0 && getSyncRandState() == rng,
                     "Cancelled generation must release partial state and restore RNG");
+        }
+        // Concrete-island partitioning awaits distance floods, point searches,
+        // and weighted area expansion. Cancelling deep in this nested chain
+        // must destroy queues/vectors before the partial map and restore RNG.
+        for (unsigned frames : {2u, 8u, 20u}) {
+            MapGenerationDescriptor descriptor;
+            descriptor.method = MapGenerationDescriptor::eCONCRETEISLANDS;
+            descriptor.nbTeams = 2;
+            GAGGUI::ScreenStack screens(*globalContainer->gfx);
+            screens.push(std::make_unique<EditorGenerateScreen>(descriptor, 12345));
+            for (unsigned frame = 0; frame < frames; ++frame) {
+                require(screens.running(), "Partition cancellation fixture finished too early");
+                screens.frame(frame, {});
+            }
+            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+            screens.frame(frames, {escape}); screens.frame(frames + 1, {});
+            require(!screens.running() && screens.result() == 0 && getSyncRandState() == rng,
+                    "Cancelled partitioning must release its partial map and restore RNG");
         }
         GAGGUI::ScreenStack failed(*globalContainer->gfx);
         MapGenerationDescriptor invalid; invalid.wDec = -1;

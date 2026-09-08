@@ -27,31 +27,50 @@ void MapGenerator::adjustHeightmapFromPoints(Game& game, std::vector<MapGenerato
 
 void MapGenerator::adjustHeightmapFromPerlinNoise(Game& game, std::vector<int>& heights, int spread)
 {
+    adjustHeightmapFromPerlinNoiseTask(game, heights, spread).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::adjustHeightmapFromPerlinNoiseTask(Game& game, std::vector<int>& heights, int spread)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	HeightMap noise(game.map.getW(), game.map.getH());
-	noise.makePlain(4);
+	co_await noise.makePlainTask(4);
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
+			if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			heights[y * game.map.getW() + x] += noise.uiLevel(x, y, spread*2) - spread;
 		}
 	}
+    co_return true;
 }
 
 
 
 void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap)
 {
+    computeDistancesTask(game, sources, obstacles, heightmap).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::computeDistancesTask(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	std::queue<int> places;
 	heightmap.clear();
 	heightmap.resize(game.map.getW() * game.map.getH(), 0);
 	for(unsigned int i=0; i<sources.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		heightmap[sources[i].y * game.map.getW() + sources[i].x] = 1;
 		places.push(sources[i].y * game.map.getW() + sources[i].x);
 	}
 	for(unsigned int i=0; i<obstacles.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		heightmap[obstacles[i].y * game.map.getW() + obstacles[i].x] = -1;
 	}
 	
@@ -60,6 +79,7 @@ void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& 
 	Uint32 wMask = game.map.wMask;
 	while (!places.empty())
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		int deltaAddrG = places.front();
 		places.pop();
 		
@@ -96,6 +116,7 @@ void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& 
 			}
 		}
 	}
+    co_return true;
 }
 
 

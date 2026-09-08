@@ -15,11 +15,23 @@
 
 int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights)
 {
+    int result = 0;
+    splitUpPointsTask(game, grid, areaN, points, weights, &result).run();
+    return result;
+}
+
+GAGCore::CooperativeTask MapGenerator::splitUpPointsTask(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, int* minimumDistance)
+{
+    unsigned operations = 0;
+    if (minimumDistance) *minimumDistance = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	std::vector<MapGeneratorPoint> startingPoints;
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
+			if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			if(grid[y * game.map.getW() + x]==areaN)
 			{
 				startingPoints.push_back(MapGeneratorPoint(x, y));
@@ -28,7 +40,7 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 	}
 	
 	if(startingPoints.empty())
-		return 0;
+		co_return false;
 	
 	Uint32 n = syncRand() % startingPoints.size();
 
@@ -37,17 +49,20 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 	std::vector<MapGeneratorPoint> sources;
 	sources.push_back(startingPoints[n]);
 	std::vector<int> heights;
-	computeDistances(game, sources, obstacles, heights);
+	co_await computeDistancesTask(game, sources, obstacles, heights);
 	sources.clear();
 	
 	for(unsigned int i=0; i<points.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		int max = 0;
 		std::vector<MapGeneratorPoint> possible;
 		for(int x=0; x<game.map.getW(); ++x)
 		{
+			if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			for(int y=0; y<game.map.getH(); ++y)
 			{
+				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 				int h = heights[y * game.map.getW() + x];
 				if(h > max)
 				{
@@ -63,7 +78,7 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 		int n = syncRand() % possible.size();
 		points[i] = possible[n];
 		sources.push_back(points[i]);
-		computeDistances(game, sources, obstacles, heights);
+		co_await computeDistancesTask(game, sources, obstacles, heights);
 	}
 	startingPoints.clear();
 	heights.clear();
@@ -74,13 +89,16 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 	int minDist = boost::integer_traits<int>::const_max;
 	while(cont)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		minDist = boost::integer_traits<int>::const_max;
 		bool changed=false;
 		for(unsigned int i=0; i<points.size(); ++i)
 		{
+			if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			int best = boost::integer_traits<int>::const_max;
 			for(unsigned int j=0; j<points.size(); ++j)
 			{
+				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 				if(i == j)
 					continue;
 				int dist=game.map.warpDistSquare(points[i].x, points[i].y, points[j].x, points[j].y) * weights[j];
@@ -92,8 +110,10 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 			int best_y = -1;
 			for(int dx=-3; dx<=3; ++dx)
 			{
+				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 				for(int dy=-3; dy<=3; ++dy)
 				{
+					if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 					if(dx==0 && dy==0)
 						continue;
 					int nx = game.map.normalizeX(points[i].x + dx);
@@ -104,6 +124,7 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 					bool invalid=false;
 					for(unsigned int j=0; j<points.size(); ++j)
 					{
+						if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 						if(i == j)
 							continue;
 						if(nx == points[j].x && ny == points[j].y)
@@ -141,21 +162,26 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 	
 	for(unsigned int i=0; i<points.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(unsigned int j=0; j<points.size(); ++j)
 		{
+			if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			if(i!=j && points[i].x == points[j].x && points[i].y == points[j].y)
-				return 0;
+				co_return false;
 		}
 	}
 	// Fisher-Yates with one draw per element, same as the former
 	// std::random_shuffle + boost::random_number_generator pairing.
 	for (size_t i = 1; i < points.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		size_t j = boost::random::uniform_int_distribution<size_t>(0, i)(randomGenerator);
 		if (i != j)
 			std::swap(points[i], points[j]);
 	}
-	return int(std::sqrt(double(minDist)));
+	const int result = int(std::sqrt(double(minDist)));
+    if (minimumDistance) *minimumDistance = result;
+    co_return result != 0;
 }
 
 
@@ -163,6 +189,13 @@ int MapGenerator::splitUpPoints(Game& game, std::vector<int>& grid, int areaN, s
 
 void MapGenerator::splitUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, std::vector<int>& areaNumbers, bool grassOnly)
 {
+    splitUpAreaTask(game, grid, areaN, points, weights, areaNumbers, grassOnly).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::splitUpAreaTask(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, std::vector<int>& areaNumbers, bool grassOnly)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	std::vector<int> gradient(game.map.getW() * game.map.getH(), 0);
 	
 	Uint32 wDec = game.map.wDec;
@@ -176,6 +209,7 @@ void MapGenerator::splitUpArea(Game& game, std::vector<int>& grid, int areaN, st
 	
 	for(unsigned int i=0; i<points.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		grid[points[i].y * game.map.getW() + points[i].x] = i;
 		gradient[points[i].y << wDec | points[i].x] = 1;
 		squares[i].push_back(points[i].y << wDec | points[i].x);
@@ -188,14 +222,17 @@ void MapGenerator::splitUpArea(Game& game, std::vector<int>& grid, int areaN, st
 	bool cont=true;
 	while(cont)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		bool found=false;
 		for(unsigned int p=0; p<points.size(); ++p)
 		{
+			if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			expansion[p]+=weights[p];
 			if(!squares[p].empty())
 				found=true;
 			while(expansion[p] > 0 && !squares[p].empty())
 			{
+				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 				Uint32 deltaAddrG = squares[p].back();
 				squares[p].erase(--squares[p].end());
 
@@ -247,7 +284,10 @@ void MapGenerator::splitUpArea(Game& game, std::vector<int>& grid, int areaN, st
 						
 						Uint32 randLocation = syncRand() % count[p];
 						std::list<int>::iterator i = squares[p].begin();
-						std::advance(i, randLocation);
+						for (Uint32 step = 0; step < randLocation; ++step) {
+                            ++i;
+                            if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
+                        }
 						squares[p].insert(i, deltaAddrC[ci]);
 					}
 				}
@@ -256,6 +296,7 @@ void MapGenerator::splitUpArea(Game& game, std::vector<int>& grid, int areaN, st
 		if(!found)
 			cont = false;
 	}
+    co_return true;
 }
 
 

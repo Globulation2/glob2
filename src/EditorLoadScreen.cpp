@@ -9,9 +9,10 @@
 #include <iostream>
 EditorLoadScreen::EditorLoadScreen(const std::string& filename)
     : EditorLoadScreen([filename](MapEdit& editor) { return editor.loadTask(filename); }, "[Loading headers]") {}
-EditorLoadScreen::EditorLoadScreen(Initializer initialize, const char* caption)
-    : previousRng(getSyncRandState()), editor(std::make_unique<MapEdit>())
+EditorLoadScreen::EditorLoadScreen(Initializer initialize, const char* caption, unsigned checkpointsPerFrame)
+    : checkpointsPerFrame(checkpointsPerFrame), previousRng(getSyncRandState()), editor(std::make_unique<MapEdit>())
 {
+    if (!checkpointsPerFrame) throw std::invalid_argument("Preparation requires a nonzero work budget");
     auto& strings = *GAGCore::Toolkit::getStringTable();
     status = new GAGGUI::Text(0, 180, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard",
         strings.getString(caption));
@@ -36,7 +37,8 @@ std::unique_ptr<MapEdit> EditorLoadScreen::takeEditor()
 void EditorLoadScreen::onTimer(Uint32)
 {
     try {
-        if (task->advance()) { endExecute(task->result() ? 1 : 2); return; }
+        for (unsigned step = 0; step < checkpointsPerFrame; ++step)
+            if (task->advance()) { endExecute(task->result() ? 1 : 2); return; }
         status->setText(GAGCore::Toolkit::getStringTable()->getString(task->stage()));
     } catch (const std::exception& error) {
         std::cerr << "Editor preparation failed: " << error.what() << '\n';

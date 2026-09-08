@@ -290,7 +290,8 @@ test('cancelling an editor replacement preserves edits and a completed load repl
 });
 
 
-test('map generation can be cancelled before retrying', async ({page}) => {
+for (const terrain of [{name:'swamp', y:140}, {name:'concrete islands', y:235}]) {
+test(`map generation can be cancelled before retrying (${terrain.name})`, async ({page}) => {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   await menu(page, 480, 360);
@@ -299,11 +300,12 @@ test('map generation can be cancelled before retrying', async ({page}) => {
   await screen(page, 'NewMapScreen');
   await menu(page, 110, 60); // 256 columns.
   await menu(page, 110, 85); // 256 rows.
+  await menu(page, 100, 235); // Concrete islands keep substantial work pending.
   await menu(page, 160, 440);
   await screen(page, 'EditorGenerateScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'NewMapScreen');
-  await menu(page, 100, 140); // Swamp: exercises the resumable height-map passes.
+  await menu(page, 100, terrain.y); // Exercise height-map and partition jobs.
   await menu(page, 160, 440);
   await screen(page, 'MapEditorScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
@@ -313,3 +315,5 @@ test('map generation can be cancelled before retrying', async ({page}) => {
   await screen(page, 'EditorMainMenu');
   expect(errors).toEqual([]);
 });
+
+}

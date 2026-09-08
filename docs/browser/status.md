@@ -46,7 +46,9 @@ infrastructure from the supported-release acceptance criteria.
   activity. Editor generation uses an owned cancellable preparation screen with
   RNG restoration and error transitions. Height-map noise, stamps, placement searches,
   and normalization now yield through nested jobs with owned temporary arrays and
-  instance-local stamp state. Other long helper calls still need subdivision;
+  instance-local stamp state. Concrete-islands/isles distance floods, point spacing,
+  weighted area expansion, and player-land partitioning also use nested jobs.
+  Other long helper calls still need subdivision;
   cross-platform generation parity is not yet certified.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
@@ -77,13 +79,14 @@ On macOS arm64, September 2026:
   Failed and cancelled editor replacements preserve map checksums, RNG, and the
   unsaved-edit prompt. Child transitions clear held input without changing focus.
   The coroutine lifecycle tests also pass with AddressSanitizer.
-- Thirty-nine browser checks cover startup, settings/credits/shutdown,
+- Forty-two browser checks cover startup, settings/credits/shutdown,
   editor/campaign-entry navigation and map quit decisions, campaign selector
   cancellation/reopen,
   custom options/AI descriptions and return-to-setup,
   tutorial launch, custom-game pause, save/reload byte
   equality, editor save cancellation and map reload persistence, load continuation,
-  editor load cancellation/restart and staged replacement, generation cancellation/retry,
+  editor load cancellation/restart and staged replacement, generation cancellation/retry
+  with swamp and concrete-island maps,
   game-start cancellation/retry, and
   audio-context activation are exercised
   in Chromium, Firefox, and WebKit using Playwright 1.63.0.

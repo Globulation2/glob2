@@ -13,4 +13,4 @@ GAGCore::CooperativeTask generate(MapEdit& editor, MapGenerationDescriptor descr
 }
 }
 EditorGenerateScreen::EditorGenerateScreen(MapGenerationDescriptor descriptor, Uint32 seed)
-    : EditorLoadScreen([descriptor, seed](MapEdit& editor) { return generate(editor, descriptor, seed); }, "[Generating map]") {}
+    : EditorLoadScreen([descriptor, seed](MapEdit& editor) { return generate(editor, descriptor, seed); }, "[Generating map]", 8) {}

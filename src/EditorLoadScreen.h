@@ -18,8 +18,9 @@ public:
     Uint32 executionDelay(Uint32, Uint32) override { return 1; }
 protected:
     using Initializer = std::function<GAGCore::CooperativeTask(MapEdit&)>;
-    EditorLoadScreen(Initializer initialize, const char* caption);
+    EditorLoadScreen(Initializer initialize, const char* caption, unsigned checkpointsPerFrame = 1);
 private:
+    const unsigned checkpointsPerFrame;
     std::string previousRng;
     std::unique_ptr<MapEdit> editor;
     std::optional<GAGCore::CooperativeTask> task;

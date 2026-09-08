@@ -29,11 +29,13 @@ public:
 
 	///This function divides up the player lands using the standard method
 	bool divideUpPlayerLands(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber);
+    GAGCore::CooperativeTask divideUpPlayerLandsTask(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber);
 
 private:
 	///This is a function that takes an area and divides it up into several smaller areas using the
 	///given area numbers and weights. This is basically a combination of splitUpPoints and splitUpArea
 	bool divideUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<int>& weights, std::vector<int>& areaNumbers);
+    GAGCore::CooperativeTask divideUpAreaTask(Game& game, std::vector<int>& grid, int areaN, std::vector<int>& weights, std::vector<int>& areaNumbers);
 	
 	///This creates an area with the shape of an oval with the given width and height
 	void createOval(Game& game, std::vector<int>& grid, int areaN, int x, int y, int width, int height);
@@ -42,9 +44,13 @@ private:
 	///as far from each other as possible, bearing in mind weights. Returns 0 if failure, otherwise returns 
 	///the minimum distance between points that was accomplished
 	int splitUpPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights);
+    // Optional minimumDistance is borrowed until completion; read it only after
+    // success. The caller retains all referenced inputs through cancellation.
+    GAGCore::CooperativeTask splitUpPointsTask(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, int* minimumDistance=nullptr);
 	
 	///This function takes a grid and an area number, and divides that area into more areas
 	void splitUpArea(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, std::vector<int>& areaNumbers, bool grassOnly=false);
+    GAGCore::CooperativeTask splitUpAreaTask(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points, std::vector<int>& weights, std::vector<int>& areaNumbers, bool grassOnly=false);
 	
 	///This function fills the vector with all of the points in a specific area
 	void getAllPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
@@ -79,11 +85,13 @@ private:
 	
 	///This function adjusts the heightmap values from a standard perlin noise. Spread is how much the value can go up or down
 	void adjustHeightmapFromPerlinNoise(Game& game, std::vector<int>& heights, int spread);
+    GAGCore::CooperativeTask adjustHeightmapFromPerlinNoiseTask(Game& game, std::vector<int>& heights, int spread);
 	
 	///This function computes the distance of every point from the given points, putting these distances
 	///into the given heightmap. The points given as sources are considered to be a distance of 1. The points
 	///given as obstacles are considered to be a distance of -1
 	void computeDistances(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap);
+    GAGCore::CooperativeTask computeDistancesTask(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap);
 	
 	///Computes the average height/distance of a area on a heightmap
 	int computeAverageDistance(Game& game, std::vector<int>& grid, int areaN, const std::vector<int>& heightmap);
