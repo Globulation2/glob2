@@ -12,6 +12,7 @@ namespace GAGGUI
 {
 	class List;
 	class TextInput;
+    class Text;
 }
 
 class LoadSaveScreen:public OverlayScreen
@@ -25,6 +26,7 @@ public:
 	
 private:
 	List *fileList;
+    Text *caption;
 	TextInput *fileNameEntry;
 	bool isLoad;
 	std::string extension;
@@ -49,6 +51,7 @@ public:
 		std::string (*filenameToNameFunc)(const std::string& filename)=NULL,
 		std::string (*nameToFilenameFunc)(const std::string& dir, const std::string& name, const std::string& extension)=NULL);
 	virtual ~LoadSaveScreen();
+    void showSaveFailure();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
 	const char *getFileName(void);

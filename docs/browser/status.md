@@ -87,6 +87,12 @@ infrastructure from the supported-release acceptance criteria.
   ticks, resumption without catch-up, and working input afterward. This does not
   implement coordinated multiplayer suspension.
 
+- In-game manual saves use the shared checked atomic-write helper instead of
+  overwriting the destination directly. A write failure retains the prior file
+  and keeps the save dialog open with an error. Native short-write/flush failure
+  regressions and all three browser save/reload scenarios pass. This protects
+  filesystem replacement; it does not yet acknowledge durable IndexedDB writes.
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),
