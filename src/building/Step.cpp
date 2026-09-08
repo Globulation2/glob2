@@ -299,6 +299,7 @@ bool Building::subscribeToBringResourcesStep()
 		{
 			unitsWorking.push_back(sel.choosen);
 			sel.choosen->subscriptionSuccess(this, false);
+			owner->swapTask(sel.choosen);
 			hired=true;
 		}
 	}

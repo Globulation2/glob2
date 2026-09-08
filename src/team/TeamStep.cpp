@@ -118,6 +118,105 @@ void Team::updateAllBuildingTasks()
 
 
 
+namespace
+{
+	// A swap has to save this many tiles over the two trips to be worth the churn.
+	constexpr int SWAP_MIN_GAIN = 4;
+	// Fetchers checked for a swap per tick; every unit gets its turn every 256 ticks.
+	constexpr int SWAP_CHECKS_PER_TICK = Unit::MAX_COUNT / 256;
+
+	// A unit on its way to fetch, or to deliver, a resource for its building.
+	bool isFetching(const Unit *u)
+	{
+		return u && u->activity == Unit::ACT_FILLING && u->attachedBuilding && u->ownExchangeBuilding == NULL
+			&& u->medical == Unit::MED_FREE && u->destinationPurpose >= 0
+			&& (u->displacement == Unit::DIS_GOING_TO_RESOURCE || u->displacement == Unit::DIS_GOING_TO_BUILDING);
+	}
+
+	// Tiles `u` would walk to do the job (building, resource): deliver what it
+	// carries, or fetch and carry. False when it cannot take the job.
+	bool jobCost(Unit *u, Building *b, int resource, int *cost)
+	{
+		Map *map = b->owner->map;
+		int swimClass = u->swimClass();
+		if (u->carriedResource >= 0)
+			return u->carriedResource == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost);
+		if (map->roundTripDistance(b, resource, swimClass, u->posX, u->posY, cost))
+			return true;
+		int toBuilding, toResource;
+		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding)
+			|| !map->resourceAvailable(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource))
+			return false;
+		*cost = toBuilding + toResource;
+		return true;
+	}
+
+	void assignTask(Unit *u, Building *b, int resource)
+	{
+		u->attachedBuilding->removeUnitFromWorking(u);
+		u->attachedBuilding = b;
+		u->destinationPurpose = resource;
+		b->unitsWorking.push_back(u);
+		b->updateCallLists();
+		if (u->carriedResource == resource)
+		{
+			u->displacement = Unit::DIS_GOING_TO_BUILDING;
+			u->setTargetBuilding(b);
+		}
+		else
+		{
+			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
+			u->setTargetBuilding(NULL);
+			b->owner->map->resourceAvailableUpdate(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL);
+		}
+		u->validTarget = true;
+	}
+}
+
+void Team::swapTask(Unit *unit)
+{
+	if (!isFetching(unit))
+		return;
+	Building *a = unit->attachedBuilding;
+	int r = unit->destinationPurpose;
+	int own;
+	if (!jobCost(unit, a, r, &own))
+		return;
+	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
+	int swimClass = unit->swimClass();
+	Unit *best = NULL;
+	int bestGain = SWAP_MIN_GAIN;
+	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	{
+		Unit *mate = myUnits[i];
+		// Same swim class only: the costs then come from gradients the two
+		// fetchers already keep alive, and none is built for the comparison.
+		if (mate == unit || !isFetching(mate) || mate->swimClass() != swimClass)
+			continue;
+		Building *b = mate->attachedBuilding;
+		int s = mate->destinationPurpose;
+		if ((b == a && s == r) || !b->canUnitWorkHere(unit) || !a->canUnitWorkHere(mate))
+			continue;
+		int mateOwn, mine, theirs;
+		if (!jobCost(mate, b, s, &mateOwn) || !jobCost(unit, b, s, &mine) || !jobCost(mate, a, r, &theirs))
+			continue;
+		if (mine >= timeLeft || theirs >= (mate->hungry - mate->trigHungry) / mate->race->hungriness)
+			continue;
+		int gain = own + mateOwn - mine - theirs;
+		if (gain > bestGain)
+		{
+			bestGain = gain;
+			best = mate;
+		}
+	}
+	if (best == NULL)
+		return;
+	Building *b = best->attachedBuilding;
+	int s = best->destinationPurpose;
+	assignTask(unit, b, s);
+	assignTask(best, a, r);
+}
+
 void Team::syncStep(void)
 {
 	integrity();
@@ -219,6 +318,8 @@ void Team::syncStep(void)
 	}
 
 	updateAllBuildingTasks();
+	for (int k = 0; k < SWAP_CHECKS_PER_TICK; k++)
+		swapTask(myUnits[(game->stepCounter * SWAP_CHECKS_PER_TICK + k) % Unit::MAX_COUNT]);
 
 	bool isEnoughFoodInSwarm=false;
 

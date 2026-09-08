@@ -113,6 +113,9 @@ public:
 	void removeBuildingNeedingWork(Building* b, Sint32 priority);
 	//! Update every building in buildingsNeedingUnits, highest priority first.
 	void updateAllBuildingTasks();
+	//! Give `unit`'s fetching job to a team mate and take the mate's job, when that
+	//! shortens the two trips together by more than a few tiles (see TeamStep.cpp).
+	void swapTask(Unit *unit);
 
 	//! Highest build level any unit of the team has.
 	int maxBuildLevel(void);
