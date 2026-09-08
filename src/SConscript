@@ -73,6 +73,9 @@ if not env['server']:
     portable_game_sources += local.Object('PortableGameHarness.o', '#test/PortableGameHarness.cpp')
     portable_game_test = local.Program('portable-game-test', portable_game_sources)
     local.Alias('portable-game-test', portable_game_test)
+    menu_sources = [source for source in source_files if source != 'Glob2.cpp']
+    menu_sources += local.Object('ResponsiveMenuHarness.o', '#test/ResponsiveMenuHarness.cpp')
+    local.Alias('responsive-menu-test', local.Program('responsive-menu-test', menu_sources))
 
 if not env['server']:
     transport_sources = [source for source in source_files if source != 'Glob2.cpp']

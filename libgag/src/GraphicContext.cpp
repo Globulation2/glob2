@@ -300,7 +300,7 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-        if (renderer) { renderer->outputSize(drawableW, drawableH); return; }
+        if (renderer) { renderer->outputSize(drawableW, drawableH); setResponsiveViewport(responsiveViewport); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
@@ -318,6 +318,36 @@ namespace GAGCore
 			ownsSurface = true;
 		}
 	}
+
+    bool GraphicContext::setResponsiveViewport(bool enabled)
+    {
+        if (!renderer || !sdlsurface) return false;
+#ifndef GLOB2_MOBILE
+        const char* requested = SDL_getenv("GLOB2_RESPONSIVE_UI");
+        enabled = enabled && requested && std::string(requested) == "1";
+#endif
+        int width = fixedLogicalW, height = fixedLogicalH;
+        if (enabled) {
+            float density = 1;
+#ifdef __ANDROID__
+            float dpi = 160;
+            if (SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(window), &dpi, nullptr, nullptr) == 0 && dpi > 0)
+                density = dpi / 160;
+#endif
+            width = std::max(1, static_cast<int>(windowW / density));
+            height = std::max(1, static_cast<int>(windowH / density));
+        }
+        responsiveViewport = enabled;
+        if (getW() == width && getH() == height) return enabled;
+        SDL_Surface* replacement = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, sdlsurface->format->format);
+        if (!replacement) throw std::runtime_error(SDL_GetError());
+        renderer->logicalSize(width, height);
+        freeOwnedSurface();
+        sdlsurface = replacement;
+        ownsSurface = true;
+        setClipRect();
+        return enabled;
+    }
 
 	void GraphicContext::windowToLogical(Sint32 &x, Sint32 &y)
 	{
@@ -434,6 +464,7 @@ namespace GAGCore
 #endif
         if (flags & PORTABLEGPU) flags &= ~USEGPU;
 		optionFlags = flags;
+        fixedLogicalW = w; fixedLogicalH = h; responsiveViewport = false;
 		Uint32 sdlFlags = (flags & PORTABLEGPU) ? SDL_WINDOW_ALLOW_HIGHDPI : 0;
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.

@@ -148,9 +148,11 @@ jobs:
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
-          scons release=1 -j$(nproc) portable-renderer-test mobile-input-test
+          scons release=1 -j$(nproc) portable-renderer-test mobile-input-test responsive-menu-test
           ./build/linux/client/release/libgag/src/MobileInputHarness
           xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
+          mkdir -p build/responsive-menu-profile
+          GLOB2_USER_DATA_DIR="$PWD/build/responsive-menu-profile" xvfb-run -a ./build/linux/client/release/src/responsive-menu-test
 
       - name: Build and run the tests
         working-directory: test

@@ -71,6 +71,8 @@ void ScreenStack::boundary()
     for (auto& entry : additions) {
         if (!screens.empty()) screens.back().screen->cancelExecutionInput();
         screens.push_back(std::move(entry));
+        if (auto* context = dynamic_cast<GAGCore::GraphicContext*>(&surface))
+            context->setResponsiveViewport(screens.back().screen->usesResponsiveViewport());
         screens.back().screen->beginExecution(&surface);
     }
 }
@@ -116,6 +118,8 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event>& events)
     boundary();
     if (screens.empty() || stopped) return;
     Screen& screen = *screens.back().screen;
+    if (auto* context = dynamic_cast<GAGCore::GraphicContext*>(&surface))
+        context->setResponsiveViewport(screen.usesResponsiveViewport());
     // Pending child transitions suspend the parent immediately.
     if (pending.empty()) screen.updateExecution(frameTick);
     for (const auto& event : events) {

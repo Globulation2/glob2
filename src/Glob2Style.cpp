@@ -34,7 +34,9 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 		target->drawSprite(x, y, sprite, 0);
 		
 		target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
-		target->setClipRect(x+20, y, w-40, 40);
+		target->setClipRect(std::max(ocrX, x+20), std::max(ocrY, y),
+            std::max(0, std::min(ocrX+ocrW, x+w-20)-std::max(ocrX, x+20)),
+            std::max(0, std::min(ocrY+ocrH, y+40)-std::max(ocrY, y)));
 		for (int i = 0; i < w-40; i += 40)
 			target->drawSprite(x+20+i, y, sprite, 2);
 		target->setClipRect(ocrX, ocrY, ocrW, ocrH);
@@ -47,7 +49,9 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 			target->drawSprite(x, y, sprite, 1, highlight);
 		
 			target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
-			target->setClipRect(x+20, y, w-40, 40);
+			target->setClipRect(std::max(ocrX, x+20), std::max(ocrY, y),
+            std::max(0, std::min(ocrX+ocrW, x+w-20)-std::max(ocrX, x+20)),
+            std::max(0, std::min(ocrY+ocrH, y+40)-std::max(ocrY, y)));
 			for (int i = 0; i < w-40; i += 40)
 				target->drawSprite(x+20+i, y, sprite, 3, highlight);
 			target->setClipRect(ocrX, ocrY, ocrW, ocrH);
@@ -64,7 +68,9 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 		target->drawSprite(x, y, sprite, 6);
 		
 		target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
-		target->setClipRect(x+10, y, w-20, 20);
+		target->setClipRect(std::max(ocrX, x+10), std::max(ocrY, y),
+            std::max(0, std::min(ocrX+ocrW, x+w-10)-std::max(ocrX, x+10)),
+            std::max(0, std::min(ocrY+ocrH, y+20)-std::max(ocrY, y)));
 		for (int i = 0; i < w-20; i += 20)
 			target->drawSprite(x+10+i, y, sprite, 8);
 		target->setClipRect(ocrX, ocrY, ocrW, ocrH);
@@ -77,7 +83,9 @@ void Glob2Style::drawTextButtonBackground(GAGCore::DrawableSurface *target, int 
 			target->drawSprite(x, y, sprite, 7, highlight);
 		
 			target->getClipRect(&ocrX, &ocrY, &ocrW, &ocrH);
-			target->setClipRect(x+10, y, w-20, 20);
+			target->setClipRect(std::max(ocrX, x+10), std::max(ocrY, y),
+            std::max(0, std::min(ocrX+ocrW, x+w-10)-std::max(ocrX, x+10)),
+            std::max(0, std::min(ocrY+ocrH, y+20)-std::max(ocrY, y)));
 			for (int i = 0; i < w-20; i += 20)
 				target->drawSprite(x+10+i, y, sprite, 9, highlight);
 			target->setClipRect(ocrX, ocrY, ocrW, ocrH);

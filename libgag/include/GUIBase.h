@@ -235,6 +235,7 @@ namespace GAGGUI
 		
 		//! Sets the screen position
 		virtual void setScreenPosition(int nx, int ny) { x = nx; y = ny; }
+        void setScreenRectangle(int nx, int ny, int nw, int nh) { x=nx; y=ny; w=nw; h=nh; hAlignFlag=ALIGN_LEFT; vAlignFlag=ALIGN_TOP; }
 	
 	protected:
 		//! Compute the actual position from the layout informations
@@ -318,13 +319,14 @@ namespace GAGGUI
 		virtual void paint(void);
 		
 		//! Nonblocking lifecycle. The host supplies time and already-polled input.
-		void beginExecution(GAGCore::DrawableSurface *surface);
+		virtual void beginExecution(GAGCore::DrawableSurface *surface);
 		virtual void updateExecution(Uint32 tick);
         virtual void suspendExecution() {}
         virtual void viewportResized(int oldWidth, int oldHeight, int width, int height) {}
 		virtual void handleExecutionEvent(SDL_Event event);
         // Called between frames before host interruption or a child transition.
         // Discard held/queued input without synthesizing release actions.
+        virtual bool usesResponsiveViewport() const { return false; }
         virtual void cancelExecutionInput() {}
 		virtual void drawExecution();
         virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }

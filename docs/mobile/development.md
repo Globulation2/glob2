@@ -238,6 +238,35 @@ bundled resources. Writable data uses SDL's application preference path. Extract
 is currently synchronous at startup. Transactional saves, recovery generations,
 import/export, and bounded asset-loading UI remain outstanding.
 
+## Responsive menus
+
+The native mobile main menu and editor entry menu opt into a logical viewport
+sized to the window, using Android's configured UI density. Buttons use the
+existing artwork with at least 48 logical units of hit height. The layout chooses
+one or two columns from available width and translated label widths; long labels
+wrap. Drag or use the mouse wheel to scroll, with a visible scroll indicator.
+Touch selection waits for release and cancels after an 8-unit drag, focus loss,
+rotation, or a child transition. Synthesized touch mouse events are suppressed
+inside these adapted menus. Hardware mouse and keyboard actions remain available.
+
+Desktop developers can exercise this path using `GLOB2_RENDERER=sdl` and
+`GLOB2_RESPONSIVE_UI=1`. Default desktop and browser rendering retain their current
+layouts. Other screens restore their fixed logical viewport; their responsive
+conversion, mobile-browser activation, iOS safe-area/keyboard metrics, and a
+user-facing UI/text scale control remain pending. Android applies system-bar,
+cutout, and keyboard insets to the SDL surface container, whose resize event
+reaches the shared frame host. This uses the platform's
+[window inset APIs](https://developer.android.com/reference/android/view/WindowInsets).
+The pure menu layout tests also exercise inset, keyboard-occluded, and
+enlarged-scale rectangles. Real cutout devices and keyboard flows still need
+qualification.
+
+```
+scons release=1 -j8 responsive-menu-test mobile-input-test portable-renderer-test
+mkdir -p build/responsive-menu-profile
+GLOB2_USER_DATA_DIR="$PWD/build/responsive-menu-profile" ./build/darwin/client/release/src/responsive-menu-test
+```
+
 ## Foreground and background behavior
 
 The shared screen host consumes lifecycle events between frames. Backgrounding
@@ -251,6 +280,10 @@ This covers incremental application screens. Remaining nested modal loops,
 OS audio interruptions, transactional recovery saves, and multiplayer interruption
 recovery still need implementation. A retained Android activity resuming is not
 process-termination recovery.
+
+The API 35 ARM64 emulator showed a System UI nonresponse dialog while concurrent
+builds were active. It recovered after selecting Wait; this run establishes no
+performance or thermal qualification.
 
 ## Progress and acceptance
 
@@ -267,8 +300,7 @@ process-termination recovery.
   ARM64 release APK packaging, alignment, developer signing, installation, menu
   rotation, first tutorial launch, and retained-activity background/resume on the
   API 35 ARM64 emulator (2 GB, two virtual cores), with the installed package
-  retained across a cold emulator restart. Portrait currently letterboxes
-  the desktop layout: this is launch evidence, not phone usability qualification.
+  retained across a cold emulator restart. Full phone usability remains unqualified.
 - Verified locally: 63 browser single-player/multiplayer checks across
   Chromium/Firefox/WebKit, plus nine targeted browser checks after the final
   modal-clock adjustment; 19 build-system checks; portable renderer restoration,
@@ -278,8 +310,13 @@ process-termination recovery.
 - Unqualified: iOS compilation/launch and device signing (full Xcode is missing),
   ARMv7/x86-64 APK launch, IDE debugging, sanitizers, CI execution, OS-native
   WebSockets, and real devices.
-- Pending: viewport/camera integration, responsive phone layouts, gestures,
-  touch editor, and touch tutorial adaptation.
+- Implemented: responsive native main/editor entry menus, scrolling, wrapped
+  labels, touch selection, mouse-event suppression, and Android surface insets.
+  Menu touch dispatch, canceled drags, child viewport restoration, rotation,
+  label wrapping, and letterbox clearing pass native integration checks. Nine
+  focused browser regressions pass across Chromium, Firefox, and WebKit.
+- Pending: viewport/camera integration, remaining phone layouts, gameplay gestures,
+  touch editor tools, and touch tutorial adaptation.
 - Pending: cooperative modal completion/Asyncify removal, remaining lifecycle
   coverage, durable persistence, rotating recovery saves, import/export, network
   recovery.

@@ -333,6 +333,8 @@ namespace GAGCore
 		int minW, minH;
 		//! window size in window points, as SDL reports mouse coordinates; differs from the logical resolution when fullscreen scaling is active
 		int windowW = 0, windowH = 0;
+        int fixedLogicalW = 0, fixedLogicalH = 0;
+        bool responsiveViewport = false;
 		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
 		int drawableW = 0, drawableH = 0;
 		//! ratio of GL drawable pixels to logical pixels
@@ -363,6 +365,9 @@ namespace GAGCore
 		virtual ~GraphicContext(void);
 		
 		// modifiers
+        bool setResponsiveViewport(bool enabled);
+        bool isResponsiveViewport() const { return responsiveViewport; }
+        Uint32 windowID() const { return SDL_GetWindowID(window); }
 		virtual bool setRes(int w, int h, Uint32 flags);
         // Resize a software render target without replacing its window or assets.
         bool resizeViewport(int w, int h);

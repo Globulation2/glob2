@@ -118,6 +118,21 @@ int main()
             reset.type=SDL_APP_LOWMEMORY;
             stack.frame(100040,{reset});
         }
+        SDL_setenv("GLOB2_RESPONSIVE_UI", "1", 1);
+        context.setResponsiveViewport(true);
+        require(context.getW()==640 && context.getH()==480,"Responsive viewport must fill window points");
+        context.resizeWindow(320,568);
+        require(context.getW()==320 && context.getH()==568,"Portrait resize must update logical dimensions");
+        context.drawFilledRect(0,0,320,568,Color(90,30,150));
+        auto* portrait=context.capture();
+        expect(portrait,portrait->w/2,portrait->h-2,90,30,150);
+        SDL_FreeSurface(portrait);
+        context.setResponsiveViewport(false);
+        require(context.getW()==320 && context.getH()==240,"Legacy logical dimensions must be restored");
+        auto* letterbox=context.capture();
+        expect(letterbox,letterbox->w/2,2,0,0,0);
+        SDL_FreeSurface(letterbox);
+        SDL_setenv("GLOB2_RESPONSIVE_UI", "0", 1);
         std::puts("PASS portable renderer: clipping, texture scaling, alpha, device reset, dirty textures, resized input");
     } catch(const std::exception& error) {
         std::fprintf(stderr,"FAIL: %s\n",error.what()); return 1;
