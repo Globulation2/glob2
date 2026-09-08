@@ -101,6 +101,7 @@ void GameGUITouch::tapBuildingAction(ViewPoint point)
     auto* b=inspectedBuilding(); if (!b) return;
     const auto picked=actionAt(point);
     if (!picked || picked->kind!=heldActionKind || picked->value!=heldActionValue || heldActionConfirmation!=confirmDestroy) return;
+    if (picked->kind==3 && picked->label!=heldActionLabel) return;
     const auto row=*picked;
     const auto content=panelContent(); const double unit=globalContainer->gfx->logicalUnitsPerPoint();
     if (row.kind==0) {

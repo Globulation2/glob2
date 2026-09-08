@@ -45,6 +45,8 @@ private:
     std::vector<std::string> pointLines(const std::string& text, double width) const;
     Building* allocationBuilding() const;
     GAGCore::ViewRect allocationRect() const;
+    GAGCore::ViewRect allocationTabRect(int index) const;
+    double allocationHeaderHeight() const;
     GAGCore::ViewRect panelContent() const;
     void drawAllocation();
     struct BuildingAction { std::string label; int kind, value=0; bool selected=false; };
@@ -54,6 +56,7 @@ private:
     void drawBuildingActions();
     void tapBuildingAction(GAGCore::ViewPoint point);
     int heldActionKind=-1, heldActionValue=0;
+    std::string heldActionLabel;
     bool heldActionConfirmation=false;
     int heldBuildingState=-1, heldConstructionState=-1;
     std::optional<BuildingAction> actionAt(GAGCore::ViewPoint point) const;

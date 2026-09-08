@@ -11,6 +11,9 @@
 #include <StringTable.h>
 #include "GlobalContainer.h"
 #include "Order.h"
+#include "Unit.h"
+#include "ReplayWriter.h"
+#include "ReplayReader.h"
 #include <SDL_net.h>
 #include <cstdio>
 #include <cstring>
@@ -30,6 +33,12 @@ public:
         require(gui.loadFromHeaders(map,players,true,true),"Fixture load failed");
         gui.localTeamNo=0; gui.localPlayer=0; gui.adjustLocalTeam();
         gui.viewportX=gui.viewportY=0;
+        {
+            ReplayWriter writer;writer.init("",gui);
+            for(int i=0;i<100;++i) writer.advanceStep();
+            writer.finish();require(writer.write("replays/touch-preview.replay"),"Replay fixture writes");
+        }
+
         const auto checksum=gui.game.checkSum();
         auto finger=[&](Uint32 type,int id,float x,float y) {
             SDL_Event event{};event.type=type;event.tfinger.touchId=7;event.tfinger.fingerId=id;
@@ -183,7 +192,7 @@ public:
             // Info opens the inspector for the selected entity.
             tap(gfx->getW()*2.5f/6,gfx->getH()-24*unit);
             const auto ui=GAGCore::MobileLayout::calculate(width,height,{},0,1,true);
-            const float plusX=(ui.panel.x+ui.panel.w-24)*unit, rowY=(ui.panel.y+72)*unit;
+            const float plusX=(ui.panel.x+ui.panel.w-24)*unit, rowY=(ui.panel.y+120)*unit;
             const int before=gui.displayedMaxUnitWorking(*building), authoritative=building->maxUnitWorking;
             const auto simulation=gui.game.checkSum();
             tap(plusX,rowY); tap(plusX,rowY);
@@ -203,7 +212,7 @@ public:
             gui.setSelection(GameGUI::BUILDING_SELECTION,building);
             gui.requestWorkerAllocation(*building,0);gui.orderQueue.clear();
             tap((ui.panel.x+24)*unit,rowY);require(gui.orderQueue.empty(),"Allocation at zero must not queue duplicates");
-            tap((ui.panel.x+ui.panel.w*3/8)*unit,(ui.panel.y+24)*unit);
+            tap((ui.panel.x+ui.panel.w/2)*unit,(ui.panel.y+24)*unit);
             for (int priority : {-1,0,1}) {
                 tap((ui.panel.x+ui.panel.w*(priority+1.5f)/3)*unit,rowY);
                 require(gui.orderQueue.size()==1,"Priority tap emits exactly one order");
@@ -215,7 +224,7 @@ public:
             require(gui.game.checkSum()==simulation,"Priority changes stay outside authoritative state");
             gui.drawAll(0);gfx->printScreen(width<height ? "touch-priority-portrait.bmp" : "touch-priority-landscape.bmp");gfx->nextFrame();
             gui.setSelection(GameGUI::BUILDING_SELECTION,rangeFlag);
-            tap((ui.panel.x+ui.panel.w/2)*unit,(ui.panel.y+24)*unit);
+            tap((ui.panel.x+ui.panel.w*5/6)*unit,(ui.panel.y+24)*unit);
             const int rangeBefore=gui.displayedUnitStayRange(*rangeFlag);
             const auto rangeChecksum=gui.game.checkSum();
             tap(plusX,rowY);tap(plusX,rowY);
@@ -262,6 +271,19 @@ public:
             gui.clearSelection();
         }
 
+        int workerSlot=0;
+        while (workerSlot<Unit::MAX_COUNT && gui.localTeam->myUnits[workerSlot]) ++workerSlot;
+        require(workerSlot<Unit::MAX_COUNT,"Repair fixture has a free worker slot");
+        gui.localTeam->myUnits[workerSlot]=new Unit(0,0,workerSlot,WORKER,gui.localTeam,3);
+        bool constructionSpace=false;
+        for (int y=0;y<gui.game.map.getH() && !constructionSpace;++y)
+            for (int x=0;x<gui.game.map.getW() && !constructionSpace;++x) {
+                building->posX=x;building->posY=y;
+                constructionSpace=building->isHardSpaceForBuildingSite(Building::REPAIR) &&
+                    building->isHardSpaceForBuildingSite(Building::UPGRADE);
+            }
+        require(constructionSpace,"Fixture has space for repair and upgrade");
+
         auto fixture=[&](const char* name,int slot) {
             auto* b=new Building(0,0,slot,globalContainer->buildingsTypes.getTypeNum(name,0,false),
                 gui.localTeam,&globalContainer->buildingsTypes,1,1);
@@ -273,10 +295,11 @@ public:
         auto* wall=fixture("stonewall",7);
         auto tab=[&](int id) {
             gui.drawAll(0);gfx->nextFrame();
-            const auto tabs=gui.touch->allocationTabs(); const auto r=gui.touch->allocationRect();
+            const auto tabs=gui.touch->allocationTabs();
             auto i=std::find(tabs.begin(),tabs.end(),id);require(i!=tabs.end(),"Requested inspector tab exists");
-            require(r.w/tabs.size()>=48*gfx->logicalUnitsPerPoint(),"Inspector tabs retain 48-point targets");
-            tap(r.x+(std::distance(tabs.begin(),i)+.5)*r.w/tabs.size(),r.y+24*gfx->logicalUnitsPerPoint());
+            const auto r=gui.touch->allocationTabRect(std::distance(tabs.begin(),i));
+            require(r.w>=48*gfx->logicalUnitsPerPoint(),"Inspector tabs retain 48-point targets");
+            tap(r.x+r.w/2,r.y+r.h/2);
             require(gui.touch->activeAllocationTab()==id,"Visible inspector tab responds to touch");
         };
         auto openActions=[&](Building* b) {
@@ -356,6 +379,22 @@ public:
             pressAction(4);require(gui.orderQueue.size()==1 && std::dynamic_pointer_cast<OrderCancelDelete>(gui.orderQueue.front()),"Pending destruction can be canceled by touch");gui.orderQueue.clear();
             wall->buildingState=Building::ALIVE;
             openActions(building);
+            for(bool repair:{true,false}) {
+                building->hp=building->type->hpMax-(repair ? 1 : 0);
+                const auto stateBefore=gui.game.checkSum();
+                pressAction(3);
+                require(gui.orderQueue.size()==1,"Repair/upgrade starts with exactly one order");
+                auto order=std::dynamic_pointer_cast<OrderConstruction>(gui.orderQueue.front());
+                require(order && order->gid==building->gid,"Repair/upgrade uses shared construction order");
+                gui.orderQueue.clear();
+                require(gui.game.checkSum()==stateBefore,"Construction requests do not mutate simulation");
+            }
+            building->hp=building->type->hpMax-1;
+            auto repairPoint=actionPoint(3,0);
+            finger(SDL_FINGERDOWN,1,repairPoint.x,repairPoint.y);
+            building->hp=building->type->hpMax;
+            finger(SDL_FINGERUP,1,repairPoint.x,repairPoint.y);
+            require(gui.orderQueue.empty(),"Healing must not turn a held Repair into Upgrade");
             for(auto state:{Building::REPAIR,Building::UPGRADE}) {
                 building->constructionResultState=state;
                 pressAction(3);require(gui.orderQueue.size()==1 && std::dynamic_pointer_cast<OrderCancelConstruction>(gui.orderQueue.front()),"Construction cancellation uses shared order");gui.orderQueue.clear();
@@ -411,6 +450,32 @@ public:
             require(!gui.typingInputScreen && gui.orderQueue.size()==1 && std::dynamic_pointer_cast<MessageOrder>(gui.orderQueue.front()),"Chat sends once through shared orders");
             gui.orderQueue.clear();
         }
+
+        gui.clearSelection();gui.touch->panelOpen=false;
+        globalContainer->replayReader=std::make_unique<ReplayReader>();
+        require(globalContainer->replayReader->loadReplay("replays/touch-preview.replay"),"Real replay fixture loads");
+        globalContainer->replaying=true;
+        globalContainer->replayVisibleTeams=0xffffffff;
+        auto replayMap=Engine::loadMapHeader("replays/touch-preview.replay");
+        require(gui.loadFromHeaders(replayMap,players,true,true,false,"replays/touch-preview.replay"),"Replay world loads");
+        gui.localTeamNo=0;gui.localPlayer=0;gui.adjustLocalTeam();
+        for(auto [width,height]:{std::pair{320,568},{568,320}}) {
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            SDL_Event resized{};resized.type=SDL_WINDOWEVENT;resized.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resized);gui.viewportResized(800,600,gfx->getW(),gfx->getH());
+            gui.drawAll(0);gfx->nextFrame();
+            const auto before=gui.game.checkSum();
+            const double unit=gfx->logicalUnitsPerPoint(), y=gfx->getH()-24*unit;
+            gui.gamePaused=false;globalContainer->replayFastForward=false;gui.orderQueue.clear();
+            tap(gfx->getW()/12.0,y);require(gui.gamePaused,"Replay toolbar pauses");
+            tap(gfx->getW()/4.0,y);require(!gui.gamePaused && globalContainer->replayFastForward,"Replay speed resumes fast playback");
+            tap(gfx->getW()/4.0,y);require(!globalContainer->replayFastForward,"Replay speed returns to normal");
+            tap(gfx->getW()*5.5/6,y);pressDialog(tr("[Fast forward]"));
+            require(globalContainer->replayFastForward,"Replay menu speed uses shared playback state");
+            require(gui.orderQueue.empty() && !gui.toolManager.getOrder() && gui.game.checkSum()==before,"Replay controls issue no simulation orders");
+            if(gui.inGameMenu) {gui.inGameMenu=GameGUI::IGM_NONE;gui.gameMenuScreen.reset();}
+        }
+        globalContainer->replaying=false;globalContainer->replayReader.reset();
 
     }
 };
