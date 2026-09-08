@@ -39,7 +39,7 @@ def sheet(items,name):
     out.save(OUT/name)
 
 OUT.mkdir(parents=True,exist_ok=True)
-selected=['swarm0b0','swarm0c0','warflag0','buildingsite3','inn0c0','hosp0b1','pool0b0','school1b0','defencetower1b1','ressource9','ressource13','ressource19','ressource40']
+selected=['swarm0b0','swarm0c0','warflag0','buildingsite3','inn0c0','hosp0b1','pool0b0','school1b0','racetrack0b0','racetrack1b0','defencetower1b1','ressource9','ressource13','ressource19','ressource40']
 for name in selected:
     match=[f for f in frames if f['id']==name]
     if match: sheet(match,name+'.png')

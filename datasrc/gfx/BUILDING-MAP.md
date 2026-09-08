@@ -1,6 +1,6 @@
 # Visually verified building identities
 
-All 16 recovered building XCFs have been compared with current game sprites, including hidden base/team layers. The family and level match is confirmed; exact state, anchor, layer roles and export settings still require validation. Levels in folder names are human-facing (1–3); runtime suffixes use 0–2.
+All 16 recovered building XCFs have been compared with current game sprites, including hidden base/team layers. The family and level match is confirmed. Completed school and first/second racetrack exports are now verified; other state/anchor/layer combinations still require validation. See [runtime recipes](RECOVERED-RUNTIME.md). Levels in folder names are human-facing (1–3); runtime suffixes use 0–2.
 
 ![Original source beside current game sprite](../../docs/original-artwork/building-matches.jpg)
 

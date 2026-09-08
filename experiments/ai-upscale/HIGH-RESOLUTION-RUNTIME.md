@@ -32,7 +32,7 @@ frame-id logical-width logical-height scale base-file-or-dash team-file-or-dash
 
 The runtime validates version, logical size, physical layer dimensions and required layers. Invalid combinations fall back atomically to the original frame. Atlas rejection falls back to all original terrain frames, preserving batching. The exporter/validator verifies hashes; the C++ loader does not perform cryptographic integrity checks.
 
-Pool0b0 and school1b0 retain the selected baseline bytes. Deterministic finishing retains separate base/team layers. Both swarm states now use recovered original renders with separate native green geometry and neutral shadow layers; the previous generated versions remain only as historical candidates. Recoloring uses the engine’s existing hue rotation.
+Pool0b0 retains the selected baseline bytes. School1b0 now uses the recovered original XCF export. Deterministic finishing retains separate base/team layers. Both swarm states now use recovered original renders with separate native green geometry and neutral shadow layers; the previous generated versions remain only as historical candidates. Recoloring uses the engine’s existing hue rotation.
 
 Terrain atlas slots have 64 source pixels of extrusion around each 128-pixel tile. Each of the four levels is downsampled per tile before packing and border extrusion. The renderer clamps the maximum mip level to three, sufficient at 50% zoom. All terrain and the other non-unit world artwork use the pack; unit artwork remains original. The generated water material keeps the existing scrolling presentation.
 
@@ -128,3 +128,10 @@ Eight wheat frames (`ressource10`–`13`, `15`–`18`) now use original 128×128
 GIMP exports and native alpha. Ripe color states `14`/`19` retain existing
 upscales: the supplied larger layers do not include those colors. This brings
 original-source runtime coverage to 28 frames; the pack remains 487 frames total.
+
+
+Three completed layered buildings now use original exports: `school1b0`,
+`racetrack0b0`, and `racetrack1b0`. Total original-source coverage is 31 frames.
+Both layers retain logical registration and saved opacity (school team alpha 64).
+Hospital/tower and damaged-state candidates remain on existing fallbacks because
+no faithful completed export was verified. See RECOVERED-RUNTIME.md for details.

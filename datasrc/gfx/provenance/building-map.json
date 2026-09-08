@@ -113,7 +113,7 @@
     "runtime_level_index": 1,
     "human_level": 2,
     "reference_frame": "racetrack1b0",
-    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "status": "completed frame exported and runtime registration verified; damage/construction states retain fallback",
     "evidence": "Hidden base reveals paired gothic track loops, top-right tower and lower-left enclosure. Green flags/clock match racetrack1, not inn.",
     "preview_layers": [
       0,
@@ -128,7 +128,7 @@
     "runtime_level_index": 0,
     "human_level": 1,
     "reference_frame": "racetrack0b0",
-    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "status": "completed frame exported and runtime registration verified; damage/construction states retain fallback",
     "evidence": "Hidden base and green clock/track markings match earthen racetrack.",
     "preview_layers": [
       0,
@@ -208,7 +208,7 @@
     "runtime_level_index": 1,
     "human_level": 2,
     "reference_frame": "school1b0",
-    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "status": "completed frame exported and runtime registration verified; damage/construction states retain fallback",
     "evidence": "Dark tent-like roof, central sphere and surrounding wooden posts.",
     "preview_layers": [
       0,

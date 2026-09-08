@@ -2,8 +2,8 @@
 
 Ten frames from Stéphane’s second archive now replace experimental upscales.
 Ten tree frames and eight wheat frames from the first archive are also now incorporated. There is no AI
-step in these exports. Layered buildings and the remaining resource exports remain
-pending; other runtime frames keep their reviewed experimental versions for now.
+step in these exports. The school and first two racetracks are now exported too. Other buildings and
+the remaining resource exports remain pending; other runtime frames keep their reviewed experimental versions for now.
 
 | Runtime frame | Historical render | Native canvas | Logical canvas |
 | --- | --- | --- | --- |
@@ -139,3 +139,57 @@ exports and source hashes are under `derived/wheat-v1/`. All eight masks retain
 matching connected components, a center within half a logical pixel, and no more
 than one logical pixel of boundary difference from classic antialiasing. The pack
 validator checks their pixels and all four resource atlas mip levels independently.
+
+
+## Layered buildings
+
+Three completed building frames now use the original XCFs:
+
+| Runtime frame | Source | Native canvas | Logical canvas | Base layers | Team layers |
+| --- | --- | --- | --- | --- | --- |
+| `school1b0` | `science.xcf` | 512 × 562 | 64 × 70 | 1–6, 8–10 | 0 |
+| `racetrack0b0` | `building3r.xcf` | 192 × 192 | 128 × 128 | 1, 2 | 0 |
+| `racetrack1b0` | `building10.xcf` | 256 × 256 | 192 × 192 | 1, 2 | 0 |
+
+Layer indices follow GIMP’s top-to-bottom order. The selected groups preserve
+saved blend modes, opacity and offsets. Each group is composited over an added
+transparent layer so single-layer PNG exports correctly bake layer opacity. In
+particular, the school team overlay remains capped at alpha 64 (25%); Lanczos
+resizing is not allowed to increase that ceiling through ringing. All groups fit
+the existing logical canvas at 4× without changing anchors or simulation geometry.
+The source school has up to 8× native resolution; the racetracks provide only
+1.5× and 1.33× native detail. Enlarging them to the uniform pack canvas adds no
+invented detail. The original school supersedes the previously locked experimental
+school image; the approved pool fallback stays byte-identical.
+
+Reproduction (GIMP 2.10 followed by Python/Pillow):
+
+```sh
+gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
+  -b 'execfile("tools/artwork/export_buildings_gimp.py")' -b 'pdb.gimp_quit(0)'
+python3 tools/artwork/export_buildings.py
+python3 experiments/ai-upscale/export_runtime.py
+python3 tools/artwork/validate_buildings.py
+python3 experiments/ai-upscale/validate_runtime.py
+```
+
+`provenance/building-runtime-recipes.json` specifies the groups. Native composites
+and source layer metadata live under `derived/building-native/`; final layers and
+source/output hashes live under `derived/buildings-v1/`. Both layers must validate
+before replacement. The game loads the committed runtime PNGs without GIMP/Python.
+
+### Candidates retained as fallbacks
+
+- Hospital `hopital1.xcf`: the saved-layer export is much paler than the classic
+  sprite, with different basin/background treatment and no matching finished
+  shadow. This export was not adopted.
+- Defense tower `tower2.xcf`: saved layers reproduce crystal opacity but not the
+  classic crystal color/texture treatment or full shadow. This export was not adopted.
+- Mechanical inn `auberge-steam.xcf` and racetrack `course-steam.xcf`: large source
+  drawings/material masks do not reproduce the complete colored base/team artwork.
+- Damaged and construction variants: no verified matching layer combinations were
+  found in these XCFs. Existing runtime upscales remain for those states.
+
+These are differences observed between our exports and the classic sprites, not
+claims about who edited the artwork or when. All recovered XCFs and classic game
+assets remain byte-for-byte unchanged. No new AI generation or recoloring was used.

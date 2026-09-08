@@ -69,3 +69,12 @@ as references. Walls remain unavailable. These findings supersede the initial
 All ten tree frames now use five native GIMP sources. Saved layer opacity and
 transparency are retained, and the four resource atlas levels use the final
 original-source images. Eight wheat frames also now use native GIMP exports. Final ripe color states 14/19 retain their existing upscales because matching larger sources were not recovered; other resource families still await migration.
+
+## Layered building runtime migration
+
+The completed school (`school1b0`) and first two racetracks now use verified
+original base/team groups. Hospital/tower candidate exports did not faithfully
+match the classic finishing; mechanical inn/racetrack sources were incomplete
+for final colored layers. No matching damage/construction group was verified.
+Those frames keep existing fallbacks. See RECOVERED-RUNTIME.md for exact recipes
+and observed differences; source bytes remain unchanged.

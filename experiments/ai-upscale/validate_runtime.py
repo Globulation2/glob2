@@ -25,7 +25,7 @@ for f in m['frames']:
         if (ROOT/'data/gfx'/(f['id']+suffix)).exists():assert role in layers,f['id']
 for name in ['pool0b0','school1b0']:
     for f in m['frames']:
-        if f['id']==name:
+        if f['id']==name and not f['recipe'].startswith('recovered original building:'):
             for l in f['layers']:assert digest(PACK/l['file'])==digest(ROOT/'experiments/ai-upscale/buildings/corrected'/l['file'])
 for level,l in enumerate(m['terrain_atlas']['levels']):
     p=PACK/l['file'];assert digest(p)==l['sha256']
@@ -37,7 +37,7 @@ for level,l in enumerate(m['terrain_atlas']['levels']):
         for j in range(size):
             assert im.getpixel((x,y+border+j))==im.getpixel((x+border,y+border+j))
             assert im.getpixel((x+slot-1,y+border+j))==im.getpixel((x+border+size-1,y+border+j))
-print(f'PASS: {len(m["frames"])} frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels')
+print(f'PASS: {len(m["frames"])} frames; coverage, layer dimensions, RGBA, hashes, locked pool / unreplaced school, four independently padded atlas levels')
 
 for level,l in enumerate(m['resource_atlas']['levels']):
     p=PACK/l['file'];assert digest(p)==l['sha256']

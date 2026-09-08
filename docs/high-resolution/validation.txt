@@ -202,3 +202,42 @@ All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored
 PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
 
 PASS software: original resources, all logical sizes
+
+
+Original layered building validation (2026-09-08):
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool / unreplaced school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree/wheat alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 18.2105 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 6.44405 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 3.35669 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.92247 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 22.403 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 7.0541 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 4.49166 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 4.14107 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 12.6165 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 2.06773 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 19.1867 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 2.14624 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 6.77755 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 1.54899 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
+school1b0.png: alpha overlap 0.998; ceiling 255
+school1b0r.png: alpha overlap 0.981; ceiling 64
+racetrack0b0.png: alpha overlap 0.994; ceiling 255
+racetrack0b0r.png: alpha overlap 0.966; ceiling 253
+racetrack1b0.png: alpha overlap 0.979; ceiling 255
+racetrack1b0r.png: alpha overlap 0.907; ceiling 255
+PASS: three originals, both layers, source hashes, logical registration, saved translucency and runtime pixels
