@@ -13,7 +13,9 @@ using namespace GAGCore;
 	#include <config.h>
 #endif
 
+#ifndef __EMSCRIPTEN__
 #include <speex/speex.h>
+#endif
 
 #include <SDL_endian.h>
 
@@ -242,6 +244,7 @@ void SoundMixer::openAudio(void)
 		mode = MODE_STOPPED;
 	}
 	
+#ifndef __EMSCRIPTEN__
 	// Open Speex decoder
 #ifdef _MSC_VER
 	// workaround for vcpkg bug #2292 which seems to be broken again.
@@ -252,6 +255,7 @@ void SoundMixer::openAudio(void)
 #endif
 	int tmp = 1;
 	speex_decoder_ctl(speexDecoderState, SPEEX_SET_ENH, &tmp);
+#endif
 	
 }
 
@@ -280,7 +284,9 @@ SoundMixer::~SoundMixer()
 	{
 		SDL_PauseAudio(1);
 		SDL_CloseAudio();
+#ifndef __EMSCRIPTEN__
 		speex_decoder_destroy(speexDecoderState);
+#endif
 	}
 	
 	for (size_t i=0; i<tracks.size(); i++)
@@ -421,6 +427,7 @@ bool SoundMixer::isPlayerTransmittingVoice(int player)
 
 void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 {
+#ifndef __EMSCRIPTEN__
 	if (soundEnabled)
 	{
 		SDL_LockAudio();
@@ -451,4 +458,5 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 		
 		SDL_UnlockAudio();
 	}
+#endif
 }

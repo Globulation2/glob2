@@ -19,3 +19,9 @@ compile_commands.json
 Glob2.app/
 Glob2-*.dmg
 /.tmp
+
+
+/tools/browser-emsdk/
+/build-browser/
+
+/build-browser.log

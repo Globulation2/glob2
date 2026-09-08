@@ -668,5 +668,9 @@ int main(int argc, char *argv[])
 #endif
 
 	Glob2 glob2;
-	return glob2.run(argc, argv);
+	int result = glob2.run(argc, argv);
+#ifdef __EMSCRIPTEN__
+	EM_ASM({ Module['glob2Screen'] = 'exited'; Module['onGameExit']($0); }, result);
+#endif
+	return result;
 }

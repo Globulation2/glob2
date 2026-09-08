@@ -405,6 +405,9 @@ namespace GAGGUI
 	
 	int Screen::execute(DrawableSurface *gfx, int stepLength)
 	{
+#ifdef __EMSCRIPTEN__
+		EM_ASM({ Module['glob2Screen'] = UTF8ToString($0); }, typeid(*this).name());
+#endif
 		Uint64 frameStartTime;
 		Sint64 frameWaitTime;
 		

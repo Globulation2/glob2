@@ -194,6 +194,9 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
+#ifdef __EMSCRIPTEN__
+		EM_ASM({ Module['glob2Tick'] = $0; Module['glob2Screen'] = 'match'; }, gui.game.stepCounter);
+#endif
 	}
 }
 
