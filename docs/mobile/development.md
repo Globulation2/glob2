@@ -55,7 +55,21 @@ build/mobile-tools/android-sdk/cmdline-tools/19.0/bin/sdkmanager \
 python3 mobile/android.py build --arch arm64-v8a --release
 ```
 
-Release APKs are unsigned. For installable developer APKs omit `--release` from
+Release APKs are unsigned. To create an optimized developer APK with a key kept
+inside this worktree:
+
+```
+python3 mobile/android.py sign --arch arm64-v8a --release
+python3 mobile/android.py install --arch arm64-v8a --release --serial DEVICE_SERIAL
+python3 mobile/android.py launch --arch arm64-v8a --release --serial DEVICE_SERIAL
+```
+
+This produces `app-release-development.apk` alongside the unsigned APK. Signing
+checks the signature and ZIP alignment, and records both APK digests. Installation
+rejects changed or stale signed output. The key uses Android's standard developer
+alias/password; it is for developer distribution. Store signing remains separate.
+
+For debug APKs with debugger attachment enabled, omit `--release` from
 **both** dependency and application builds, then use:
 
 ```
@@ -74,6 +88,39 @@ Every dependency archive member is checked for architecture. Staging verifies
 every shared library's LOAD segment alignment (16 KB for 64-bit, 4 KB for ARMv7),
 including SDL and the NDK C++ runtime. Also check completed APK ZIP alignment with
 `zipalign -c -P 16 -v 4 APP.apk`.
+
+## Isolated Android emulator
+
+The tested host is macOS ARM64, using emulator 37.1.11 and the API 35 default ARM64
+system image revision 2. `mobile/emulator.json` records these versions, and the
+runner rejects mismatched SDK packages. Install with the SDK environment above:
+
+```
+build/mobile-tools/android-sdk/cmdline-tools/19.0/bin/sdkmanager \
+  --sdk_root="$PWD/build/mobile-tools/android-sdk" \
+  'emulator' 'system-images;android-35;default;arm64-v8a'
+python3 mobile/emulator.py configure
+```
+
+In separate terminals, run `python3 mobile/emulator.py adb-server` and
+`python3 mobile/emulator.py run` (add `--window` for a visible emulator). The default
+configuration uses 2 GB RAM, two virtual CPU cores, software graphics, emulator
+port 5580 and a separate ADB server on port 15037. The ADB server avoids USB-device
+attachment and discovery of other emulators. AVDs, writable images, discovery
+files, keys, and crash-report paths are directed into `build/mobile-tools`.
+
+```
+python3 mobile/emulator.py status
+python3 mobile/android.py install --release --serial emulator-5580 --adb-port 15037
+python3 mobile/android.py launch --release --serial emulator-5580 --adb-port 15037
+build/mobile-tools/android-sdk/platform-tools/adb -P 15037 -s emulator-5580 \
+  exec-out screencap -p > build/android-screen.png
+python3 mobile/emulator.py stop
+```
+
+Wait for `status` to print `1` with exit status zero before installing. Stop the
+separate ADB server with Ctrl-C in its terminal. On x86-64 hosts select the matching
+x86-64 image and APK; that emulator-host recipe has not been run locally.
 
 ## iOS setup and packaging
 
@@ -191,6 +238,20 @@ bundled resources. Writable data uses SDL's application preference path. Extract
 is currently synchronous at startup. Transactional saves, recovery generations,
 import/export, and bounded asset-loading UI remain outstanding.
 
+## Foreground and background behavior
+
+The shared screen host consumes lifecycle events between frames. Backgrounding
+suspends incremental screen updates, loading, presentation, and audio. Returning
+excludes the background interval from simulation timing. Focus loss, rotation,
+and child-screen admission cancel held gameplay/editor input. Renderer reset and
+memory-pressure notifications invalidate GPU caches before the next foreground
+draw. Browser visibility changes enter this same event path.
+
+This covers incremental application screens. Remaining nested modal loops,
+OS audio interruptions, transactional recovery saves, and multiplayer interruption
+recovery still need implementation. A retained Android activity resuming is not
+process-termination recovery.
+
 ## Progress and acceptance
 
 - Implemented: mobile build identities, SDK diagnostics, target compiler
@@ -200,16 +261,28 @@ import/export, and bounded asset-loading UI remain outstanding.
 - Implemented: pinned dependency bootstrap, Android staging/Gradle recipes,
   iOS Xcode generation, asset/writable roots, install/launch commands, compilation
   databases, and Android ELF architecture/alignment checks.
-- Verified locally: Android ARM64, ARMv7, and x86-64 native libraries/staging,
-  all 42 browser single-player checks across Chromium/Firefox/WebKit, portable renderer
-  primitive harness, full 50-tick game scene (checksum `4056ae4d`), geometry/touch
-  harness, screen lifecycle, and existing engine-session regressions.
-- Unqualified: APK launch, iOS compilation/launch, signing, IDE debugging,
-  sanitizers, CI execution, OS-native WebSockets, and real devices.
+- Implemented: shared foreground/background timing, input cancellation, audio
+  suspension, deferred graphics restoration, and Android orientation changes.
+- Verified locally: Android ARM64, ARMv7, and x86-64 native libraries/staging;
+  ARM64 release APK packaging, alignment, developer signing, installation, menu
+  rotation, first tutorial launch, and retained-activity background/resume on the
+  API 35 ARM64 emulator (2 GB, two virtual cores), with the installed package
+  retained across a cold emulator restart. Portrait currently letterboxes
+  the desktop layout: this is launch evidence, not phone usability qualification.
+- Verified locally: 63 browser single-player/multiplayer checks across
+  Chromium/Firefox/WebKit, plus nine targeted browser checks after the final
+  modal-clock adjustment; 19 build-system checks; portable renderer restoration,
+  clipping, alpha and resize checks; screen lifecycle and engine-session tests.
+  The 50-tick engine fixture retains checksum `4056ae4d` after background and
+  child-screen interruptions. Existing three AI baseline failures remain above.
+- Unqualified: iOS compilation/launch and device signing (full Xcode is missing),
+  ARMv7/x86-64 APK launch, IDE debugging, sanitizers, CI execution, OS-native
+  WebSockets, and real devices.
 - Pending: viewport/camera integration, responsive phone layouts, gestures,
   touch editor, and touch tutorial adaptation.
-- Pending: cooperative modal completion/Asyncify removal, lifecycle and durable
-  persistence, rotating recovery saves, import/export, network recovery.
+- Pending: cooperative modal completion/Asyncify removal, remaining lifecycle
+  coverage, durable persistence, rotating recovery saves, import/export, network
+  recovery.
 - Pending: mobile WebGL2, Safari/Chrome device qualification, cross-architecture
   replay/100,000-tick tests, 30-minute performance qualification.
 

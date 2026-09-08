@@ -10,6 +10,32 @@ from build_layout import build_identity, default_directory, prepare_directory
 from mobile_toolchain import discover
 
 
+class DeveloperSigningTests(unittest.TestCase):
+    def test_install_rejects_stale_or_modified_signed_apk(self):
+        import hashlib
+        import json
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        import developer_apk
+        scratch=Path(__file__).resolve().parents[2]/'build/test-profiles'
+        scratch.mkdir(parents=True,exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            root=Path(temporary)
+            directory=root/'app/build/outputs/apk/release';directory.mkdir(parents=True)
+            unsigned=directory/'app-release-unsigned.apk'
+            signed=directory/'app-release-development.apk'
+            unsigned.write_bytes(b'original');signed.write_bytes(b'signed')
+            signed.with_suffix('.json').write_text(json.dumps({
+                'unsigned_sha256':hashlib.sha256(b'original').hexdigest(),
+                'signed_sha256':hashlib.sha256(b'signed').hexdigest()}))
+            with patch('developer_apk.subprocess.run') as run:
+                for path in (unsigned,signed):
+                    original=path.read_bytes();path.write_bytes(b'changed')
+                    with self.assertRaisesRegex(ValueError,'stale or changed'):
+                        developer_apk.verified(root,root,root)
+                    path.write_bytes(original)
+                run.assert_not_called()
+
+
 class MobileBuildTests(unittest.TestCase):
     def test_each_mobile_configuration_has_its_own_directory(self):
         options = [dict(target='android', arch=arch, api=api, release=release)
