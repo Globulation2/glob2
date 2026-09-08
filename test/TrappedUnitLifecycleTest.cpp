@@ -30,6 +30,7 @@ struct Fixture {
     int id;
     explicit Fixture(int resource = WOOD, int purpose = FEED) {
         setSyncRandSeed(180);
+        game.setWaitingOnMask(0);
         game.map.setSize(6, 6, GRASS);
         game.map.setGame(&game);
         for (int t = 0; t < 2; ++t) {
@@ -133,6 +134,7 @@ Trace starvationAndSave(int resource, int purpose) {
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
     input.seekFromStart(0);
     assert(restored.game.load(&input));
+    restored.game.setWaitingOnMask(0);
     restored.game.map.getResourceGradient(0, WOOD, 0);
     randomGenerator = checkpointRng;
     const auto after = state(restored.game, f.id);
