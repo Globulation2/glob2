@@ -2,12 +2,14 @@
 
 ## Resume here
 
-The user requested a wrap-up, commit/push and documentation to transfer to a
-second ChatGPT subscription. **Work is intentionally paused.** Do not restart
-implementation merely because an older goal or continuation remains recorded.
+The user resumed work after the subscription handoff. The first follow-up
+verified the final click adapter in real-window Chromium with both renderers
+and in software input regressions across three engines. Actual Safari 26.6.2
+also passed a manual gameplay/save/reload/resize smoke check. See the latest
+validation section in [status](status.md) and [Safari evidence](safari-smoke.md).
 
-Latest implementation commit: **`15986f936`**. The next documentation commit
-contains this handoff and the reviewed screenshots. Draft PR:
+Latest implementation commit: **`15986f936`**. Subsequent commits contain
+qualification evidence, this handoff and reviewed screenshots. Draft PR:
 <https://github.com/Globulation2/glob2/pull/203>.
 
 The user has played single-player successfully. They want completion and useful
@@ -101,24 +103,37 @@ The real-window failure capture and DOM input log live under
 `build/browser-closeout-visibility-webgl/`. They show correct DOM click positions,
 a focused visible page, and no selected map. The new test suppresses trusted
 motion delivery while retaining actual button input; it starts a match, resizes
-and quits successfully after the fix. **Rerun the real-window test before saying
-its intermittent failure is resolved.** Broad regressions and software input
-coverage also need a run after the final adapter.
+and quits successfully after the fix. These were the original handoff gaps. The resumed real-window checks now pass
+in both renderers, and software input passes in all three engines. Consult the
+latest status section for the resumed broad regression results. These focused
+passes do not establish that all possible focus/input races are resolved.
 
 Earlier evidence remains in [status](status.md): 114 selected WebGL scenarios
 at `6d1d8bbae`, and scoped multiplayer matrices from earlier commits. Multiplayer
 was not rerun in this session; simulation and protocol code did not change.
 
-## First work after resuming
+## Next work
 
-1. Requalify the final input adapter: real-window visibility in both renderers,
-   input regression in software, then the affected gameplay/resize/storage suite.
-   If a headed miss recurs, inspect its recorded input and screenshot before
-   changing timeouts or adding retries.
-2. Finish single-player release qualification: actual Safari/Edge, controlled
-   renderer performance, remaining interaction coverage and legacy writer audit.
-   Most ordinary single-player scheduling is already migrated. Asyncify remains
-   for legacy flows, especially multiplayer and rare error dialogs.
+The handoff's click-fix requalification is complete: 99 selected WebGL cases,
+three software input cases and two real-window visibility cases pass on the
+final adapter. Eleven browser unit tests, nine build-system tests and the local concurrent/
+incremental coexistence check also pass. The 99-case suite is a current run;
+the broader historical 114-case import/corruption suite remains separate.
+
+1. Resolve and verify hosted CI. The latest older run inspected was
+   `34274132634` at head `47e9e41ed`: Windows used the wrong harness directory,
+   Linux referenced a missing resource-fetch harness under the old build path,
+   and all coexistence jobs failed an opaque no-op-output assertion. Current
+   Windows and Linux aspect-test paths are corrected; coexistence now reports
+   exact changed files and whether bytes or only timestamps changed. The
+   resource-fetch step is not present in this checkout's workflow; inspect the
+   current PR merge/base context when addressing it. Do not claim hosted CI is
+   green from the local results.
+2. Finish single-player release qualification: remaining Safari/Edge matrix,
+   controlled renderer performance, browser shortcut/focus coverage and legacy
+   writer audit. Safari 26.6.2 now has an actual-browser smoke pass; its full
+   details and limits are in `safari-smoke.md`. Ordinary single-player scheduling
+   is already migrated; Asyncify remains in legacy flows and rare error dialogs.
 3. Get maintainer feedback on the PR. Larger original-plan work remains:
    guest/invitation/account migration, stronger simulation/data compatibility,
    room authorization, 120-second checkpoint recovery, all-AI/native-platform

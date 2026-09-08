@@ -464,3 +464,47 @@ passes. The 69/27/5 results above preceded this final adapter; broad regressions
 software input testing and real-window visibility must be rerun on the adapter
 before treating the intermittent headed issue as resolved. Work stopped here
 at the user's request to transfer subscriptions. See [handoff](HANDOFF.md).
+
+
+## Resumed click-fix qualification — 2026-09-08
+
+The user resumed after the subscription handoff. Testing uses implementation
+`15986f936` from checkout `c7c534b8d`, including the final click adapter; no
+production code changed during this follow-up.
+
+- Real-window Chromium visibility passes with WebGL2 (9.5s) and software (8.7s).
+  These checks select a map, start a match, verify hidden-tab pause and resume,
+  and click the in-game Quit control. Logs: `/tmp/glob2-resume-visibility-webgl.log`
+  and `/tmp/glob2-resume-visibility-software.log`.
+- The complete selected WebGL suite passes on the final adapter: 99 cases across
+  Chromium, Firefox and WebKit (13.1m), covering input, gameplay, viewport,
+  rendering, settings, shutdown and campaign authoring. Explicit software
+  fallback cases are included. Log: `/tmp/glob2-resume-webgl.log`.
+- The missing-motion regression passes with software in Chromium, Firefox and
+  WebKit (3 cases, 20.7s). Log: `/tmp/glob2-resume-software-input.log`.
+- Browser unit tests pass (11). Log: `/tmp/glob2-resume-unit.log`.
+- Actual Safari 26.6.2 passes a manual custom-game, save, toolbar reload, restored
+  gameplay and resized-menu smoke check. [Procedure and scope](safari-smoke.md)
+  includes full-window screenshots. This is one installed Safari version and
+  does not replace the supported-browser release matrix.
+
+The real-window results close the specific rerun gap recorded at handoff.
+They do not claim that every focus/input race has been excluded. Multiplayer,
+controlled performance gates, previous-major Safari/Edge qualification and the
+other original supported-release criteria remain outside this follow-up.
+
+
+Hosted CI audit: the latest older run inspected,
+[34274132634](https://github.com/Globulation2/glob2/actions/runs/34274132634),
+failed at head `47e9e41ed`. Windows harness paths used `build/windows` despite
+`mingw=1` selecting `build/mingw`; these paths are now corrected. The current
+Linux aspect-test commands also still used the old unnamespaced output path;
+those are corrected. The old run's resource-fetch step is absent from this
+checkout's workflow and needs examination in the PR merge/base context.
+
+Coexistence assertions now identify changed files and distinguish content from
+mtime-only changes without relaxing the check. The local macOS concurrent-build
+and repeated-no-op coexistence run passes (`/tmp/glob2-resume-coexistence.log`),
+as do all nine build-system unit tests. A native dry run reports the executable
+and library up to date. These results do not resolve or replace Linux/Windows
+hosted CI qualification; a new hosted run is still required.
