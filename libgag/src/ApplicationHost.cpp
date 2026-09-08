@@ -23,6 +23,8 @@ void wait(std::uint32_t milliseconds)
 }
 bool takeVisibilityChange(bool&) { return false; }
 bool takeViewportSize(int&, int&) { return false; }
+bool canImportFiles() { return false; }
+std::unique_ptr<FileSelection> selectFile(const std::string&) { return {}; }
 bool storageRestoreFailed() { return false; }
 bool canExportFiles() { return false; }
 bool exportFile(const std::string&, const std::vector<unsigned char>&) { return false; }

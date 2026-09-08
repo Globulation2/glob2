@@ -5,6 +5,7 @@
 #endif
 #include "GlobalContainer.h"
 #include "Engine.h"
+#include "Version.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <cassert>
@@ -107,6 +108,59 @@ static std::unique_ptr<BinaryInputStream> input(const std::string& bytes, bool f
 	return std::make_unique<BinaryInputStream>(backend);
 }
 
+static std::string headerBytes(const MapHeader& header)
+{
+	auto *backend = new MemoryStreamBackend;
+	BinaryOutputStream output(backend);
+	header.save(&output);
+	backend->seekFromStart(0);
+	std::string bytes;
+	while (!backend->isEndOfStream()) bytes += char(backend->getChar());
+	return bytes;
+}
+
+static void checkMapHeaders()
+{
+	MapHeader source;
+	source.setMapName("Import validation");
+	source.setNumberOfTeams(1);
+	const std::string bytes = headerBytes(source);
+	for (bool file : {false, true})
+	{
+		MapHeader header;
+		header.setMapName("Previous selection");
+		const std::string previous = headerBytes(header);
+		for (size_t cut = 0; cut < bytes.size(); ++cut)
+		{
+			auto stream = input(bytes.substr(0, cut), file);
+			bool rejected = false;
+			try { rejected = !header.load(stream.get()); }
+			catch (const std::ios_base::failure&) { rejected = true; }
+			assert(rejected && headerBytes(header) == previous);
+		}
+		const size_t fields = 4 + source.getMapName().size();
+		const auto replace = [&](size_t offset, Uint32 value) {
+			std::string corrupt = bytes;
+			for (int i = 0; i < 4; ++i) corrupt[offset + i] = char(value >> (24 - i * 8));
+			return corrupt;
+		};
+		for (const auto& corrupt : {replace(fields, VERSION_MAJOR + 1),
+			replace(fields + 4, MINIMUM_VERSION_MINOR - 1), replace(fields + 4, VERSION_MINOR + 1),
+			replace(fields + 8, 0xffffffffu), replace(fields + 8, Team::MAX_COUNT + 1)})
+		{
+			auto stream = input(corrupt, file);
+			assert(!header.load(stream.get()) && headerBytes(header) == previous);
+		}
+		auto corrupt = bytes;
+		corrupt[fields + 16] = 2;
+		auto invalid = input(corrupt, file);
+		assert(!header.load(invalid.get()) && headerBytes(header) == previous);
+		auto valid = input(bytes, file);
+		assert(header.load(valid.get()) && headerBytes(header) == bytes);
+	}
+	std::cout << "PASS every truncated header, invalid versions/team counts/save flags rejected; previous header preserved; valid reload succeeds" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	SDL_SetMainReady();
@@ -120,6 +174,7 @@ int main(int argc, char **argv)
 	globals.load();
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+	checkMapHeaders();
 	for (bool file : {false, true})
 	{
 		const std::string payload("before\0after", 12);

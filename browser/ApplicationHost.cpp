@@ -2,6 +2,7 @@
 #include <ApplicationHost.h>
 #include <GraphicContext.h>
 #include <emscripten.h>
+#include <stdexcept>
 
 namespace GAGCore::ApplicationHost
 {
@@ -87,6 +88,52 @@ bool takeViewportSize(int& width, int& height)
         HEAP32[$1 >> 2] = size.height;
         return 1;
     }, &width, &height);
+}
+namespace {
+class BrowserFileSelection : public FileSelection {
+    int id;
+public:
+    explicit BrowserFileSelection(const std::string& extension) {
+        id = EM_ASM_INT({
+            Module.fileSelections ||= new Map();
+            const id = Module.nextFileSelectionId = (Module.nextFileSelectionId || 0) + 1;
+            const selection = new Glob2FileSelection([UTF8ToString($0)]);
+            Module.fileSelections.set(id, selection);
+            selection.pick(document);
+            return id;
+        }, extension.c_str());
+    }
+    ~BrowserFileSelection() override {
+        EM_ASM({ Module.fileSelections.get($0).dispose(); Module.fileSelections.delete($0); }, id);
+    }
+    FileSelectionState state() const override {
+        return static_cast<FileSelectionState>(EM_ASM_INT({
+            const state = Module.fileSelections.get($0).state;
+            return state === 'selected' ? 1 : state === 'cancelled' ? 2 : state === 'failed' ? 3 : 0;
+        }, id));
+    }
+    SelectedFile takeFile() override {
+        if (state() != FileSelectionState::Selected) throw std::logic_error("No selected file is available");
+        const int nameSize = EM_ASM_INT({ return lengthBytesUTF8(Module.fileSelections.get($0).file.name) + 1; }, id);
+        const int size = EM_ASM_INT({ return Module.fileSelections.get($0).file.bytes.length; }, id);
+        std::vector<char> name(nameSize);
+        SelectedFile file;
+        file.bytes.resize(size);
+        EM_ASM({
+            const selection = Module.fileSelections.get($0);
+            stringToUTF8(selection.file.name, $1, $2);
+            HEAPU8.set(selection.file.bytes, $3);
+            selection.file = null;
+            selection.state = 'cancelled';
+        }, id, name.data(), nameSize, file.bytes.data());
+        file.name = name.data();
+        return file;
+    }
+};
+}
+bool canImportFiles() { return true; }
+std::unique_ptr<FileSelection> selectFile(const std::string& extension) {
+    return std::make_unique<BrowserFileSelection>(extension);
 }
 bool storageRestoreFailed() { return EM_ASM_INT({ return Module.storageRestore === 'failed'; }); }
 bool canExportFiles() { return true; }

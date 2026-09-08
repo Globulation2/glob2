@@ -5,6 +5,16 @@ infrastructure from the supported-release acceptance criteria.
 
 ## Delivered in this branch
 
+- Browser file-selection service owns and cancels native file inputs, limits reads
+  to 64 MiB, rejects path-like names and unsupported extensions, and transfers
+  exact bytes to C++. Seven unit cases and six real file-chooser cases across
+  Chromium, Firefox and WebKit pass. This is the selection boundary; the game's
+  import controls, complete format validation and durable import transaction
+  remain unfinished.
+- Map headers use checked binary reads, reject unsupported versions, negative or
+  excessive team counts and invalid saved-game flags, and retain the previous
+  header if parsing fails. Validation is shared by desktop and browser.
+
 - Shared SCons source manifests and native/web configuration isolation,
   including generated headers, compilation databases, objects, caches,
   signature databases, temporary directories, and build-directory locking.

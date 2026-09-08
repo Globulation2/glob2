@@ -29,6 +29,17 @@ bool takeViewportSize(int& width, int& height);
 // Visibility edges are retained even when no frame ran while hidden.
 bool takeVisibilityChange(bool& hidden);
 
+enum class FileSelectionState { Pending, Selected, Cancelled, Failed };
+struct SelectedFile { std::string name; std::vector<unsigned char> bytes; };
+class FileSelection {
+public:
+    virtual ~FileSelection() = default;
+    virtual FileSelectionState state() const = 0;
+    virtual SelectedFile takeFile() = 0;
+};
+bool canImportFiles();
+std::unique_ptr<FileSelection> selectFile(const std::string& extension);
+
 bool storageRestoreFailed();
 bool canExportFiles();
 bool exportLocalFile(const std::string& path);
