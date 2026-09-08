@@ -90,6 +90,13 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
     const path = '/home/web_user/.glob2/games';
     return FS.analyzePath(path).exists ? FS.readdir(path).filter(n => n.endsWith('.game')).sort() : [];
   },
+  preferences() {
+    const path = '/home/web_user/.glob2/preferences.txt';
+    if (!FS.analyzePath(path).exists) return null;
+    // Expose only graphics flags, never account fields from the same file.
+    const match = FS.readFile(path, {encoding:'utf8'}).match(/^optionFlags=(\d+)$/m);
+    return match ? Object.freeze({optionFlags:Number(match[1])}) : null;
+  },
   saveDigest(name) { return localFileDigest('games', name, 'game'); },
   mapDigest(name) { return localFileDigest('maps', name, 'map'); },
   replayDigest(name) { return localFileDigest('replays', name, 'replay'); },

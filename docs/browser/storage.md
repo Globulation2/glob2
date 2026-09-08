@@ -117,3 +117,21 @@ storage restoration prevents the editor from overwriting stored maps.
 
 The implementation reuses LoadSaveScreen's owned persistence operation and the
 shared FileManager writer. It does not introduce browser APIs into the editor.
+
+## Preferences and keyboard bindings
+
+Settings now checks atomic replacement of `preferences.txt` and both keyboard
+layout files, then waits for the shared storage service before closing. Native
+and browser use the same screen transition. A browser transaction failure or
+quota exhaustion retains Settings with Retry and Continue and a visible failure
+message. Continue retains the live changes without claiming a durable save;
+it does not roll back files already written to the local filesystem, and later
+background persistence may save them. While a flush is pending, Settings ignores
+completion/cancellation actions.
+
+Each local file replacement is atomic; the three local files are not a single
+filesystem transaction. The durable IndexedDB flush uses the existing storage
+transaction. Other callers that save preferences at shutdown still do not wait
+for browser durability. These limitations remain tracked rather than presenting
+this as complete persistence qualification. Diagnostics expose only graphics
+flags from preferences, never saved account fields.

@@ -7,6 +7,7 @@
 #include "GameUtilities.h"
 #include "MapEdit.h"
 #include "YOGLoginScreen.h"
+#include "SettingsScreen.h"
 #include "YOGClient.h"
 #include "YOGClientEvent.h"
 #include <GUITextArea.h>
@@ -103,6 +104,16 @@ int main(int argc, char** argv)
     globalContainer->settings.gameSpeed = 0;
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
+    {
+        SettingsScreen settings;
+        settings.beginExecution(globalContainer->gfx);
+        settings.onAction(nullptr, GAGGUI::BUTTON_RELEASED, SettingsScreen::OK, 0);
+        require(settings.isExecutionRunning(), "Settings must poll persistence before closing");
+        settings.onTimer(SDL_GetTicks());
+        require(!settings.isExecutionRunning(), "Durable native settings should complete");
+        settings.finishExecution();
+        std::cout << "PASS settings close only after persistence completion" << std::endl;
+    }
     {
         struct LoginProbe : YOGLoginScreen {
             using YOGLoginScreen::YOGLoginScreen;

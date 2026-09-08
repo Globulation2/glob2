@@ -7,6 +7,7 @@
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <GAG.h>
+#include <FileManager.h>
 #include <StringTable.h>
 #include <string>
 #include <algorithm>
@@ -160,11 +161,10 @@ void Settings::load(std::string filename)
  *
  * @param filename where the config settings will be saved
  */
-void Settings::save(std::string filename)
+bool Settings::save(std::string filename)
 {
-	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
-	if (!stream->isEndOfStream())
-	{
+	return Toolkit::getFileManager()->writeAtomically(filename, [this](OutputStream& output) {
+		OutputStream* stream = &output;
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
@@ -202,8 +202,7 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
 		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
-	}
-	delete stream;
+	});
 }
 
 

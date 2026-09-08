@@ -647,3 +647,5 @@
 [leave without saving]
 [campaign import failed]
 [network release mismatch]
+[settings continue]
+[settings save failed]

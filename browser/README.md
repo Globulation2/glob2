@@ -45,6 +45,8 @@ and export on failure. Saves belong to this browser profile and origin
 (including the port); clearing site data deletes them. Use the in-game import
 and export controls for backups. See [storage](../docs/browser/storage.md) for
 format validation, campaign backups and remaining legacy-writer limitations.
+Settings also waits for durable preferences/keyboard storage and offers Retry or
+Continue on failure; Continue does not confirm a saved copy.
 
 ## Scope
 

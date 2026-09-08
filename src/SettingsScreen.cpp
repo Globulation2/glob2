@@ -38,6 +38,8 @@ SettingsScreen::SettingsScreen()
 	keyboardGroup = addGroup(Toolkit::getStringTable()->getString("[keyboard settings]"));
 
 	buildOkCancelButtons();
+	saveStatus = new Text(20, 395, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", 600);
+	addWidget(saveStatus);
 	buildLanguageWidgets();
 	buildDisplayWidgets();
 	buildGraphicsToggles();
@@ -68,6 +70,7 @@ void SettingsScreen::setFullscreen()
 
 void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	if (persistence) return;
 	TabScreen::onAction(source, action, par1, par2);
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 		handleButtonAction(par1);
@@ -90,13 +93,13 @@ void SettingsScreen::handleButtonAction(int par1)
 	{
 		globalContainer->settings.setUsername(userName->getText());
 		globalContainer->settings.language = Toolkit::getStringTable()->getStringInLang("[language-code]", Toolkit::getStringTable()->getLang());
-		globalContainer->settings.save();
-		mapeditKeyboardManager.saveKeyboardLayout();
-		guiKeyboardManager.saveKeyboardLayout();
-		endExecute(par1);
+		savePreferences();
 	}
 	else if (par1==CANCEL)
 	{
+		// A failed durable write may still be retried by background persistence.
+		// Continue keeps the live settings and makes no discard/rollback promise.
+		if (saveFailed) { endExecute(OK); return; }
 		globalContainer->settings=old_settings;
 		if (gfxAltered)
 			updateGfxCtx();
@@ -161,6 +164,41 @@ void SettingsScreen::handleButtonAction(int par1)
 	{
 		activateDefaultAssignedGroupNumber(kBuildingGroupFlags);
 	}
+}
+
+void SettingsScreen::showSaveFailure()
+{
+	persistence.reset();
+	saveFailed = true;
+	ok->visible = cancel->visible = true;
+	ok->setText(Toolkit::getStringTable()->getString("[retry save]"));
+	cancel->setText(Toolkit::getStringTable()->getString("[settings continue]"));
+	saveStatus->setText(Toolkit::getStringTable()->getString("[settings save failed]"));
+}
+
+void SettingsScreen::savePreferences()
+{
+	try {
+		if (GAGCore::ApplicationHost::storageRestoreFailed() ||
+			!globalContainer->settings.save() ||
+			!mapeditKeyboardManager.saveKeyboardLayout() ||
+			!guiKeyboardManager.saveKeyboardLayout()) { showSaveFailure(); return; }
+		persistence = GAGCore::ApplicationHost::persistStorage();
+		if (!persistence) { showSaveFailure(); return; }
+		ok->visible = cancel->visible = false;
+		saveStatus->setText(Toolkit::getStringTable()->getString("[saving to storage]"));
+	} catch (const std::exception&) { showSaveFailure(); }
+}
+
+void SettingsScreen::onTimer(Uint32 tick)
+{
+	Glob2TabScreen::onTimer(tick);
+	if (!persistence) return;
+	const auto state = persistence->state();
+	if (state == GAGCore::ApplicationHost::PersistenceState::Pending) return;
+	if (state == GAGCore::ApplicationHost::PersistenceState::Failed) { showSaveFailure(); return; }
+	persistence.reset();
+	endExecute(OK);
 }
 
 
@@ -336,6 +374,7 @@ void SettingsScreen::retranslateUiStrings()
 	pressedUnpressedSelector->clearTexts();
 	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
 	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
+	if (saveFailed) showSaveFailure();
 }
 
 

@@ -14,7 +14,8 @@ class Settings
 public:
 	Settings();
 	void load(const std::string filename="preferences.txt");
-	void save(const std::string filename="preferences.txt");
+	// Checked atomic local replacement; callers separately await host persistence.
+	bool save(const std::string filename="preferences.txt");
 
 	/**
 	 * Returns the username variable in settings.
@@ -109,4 +110,3 @@ public:
 
 //Version 1 - Resets default units assigned and keyboard shortcuts
 #define SETTINGS_VERSION 1
-

@@ -10,6 +10,7 @@
 
 #include "KeyboardManager.h"
 #include "GUIKeySelector.h"
+#include <ApplicationHost.h>
 
 namespace GAGGUI
 {
@@ -63,6 +64,11 @@ public:
 	static constexpr int kBuildingGroupFlags = 4;
 private:
 	Settings old_settings;
+	std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
+	Text* saveStatus;
+	bool saveFailed = false;
+	void savePreferences();
+	void showSaveFailure();
 	List *languageList;
 	List *modeList;
 	Text *modeListNote;
@@ -191,5 +197,5 @@ public:
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
+	void onTimer(Uint32 tick) override;
 };
-

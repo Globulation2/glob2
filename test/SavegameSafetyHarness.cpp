@@ -8,6 +8,9 @@
 #include "Version.h"
 #include "FileImport.h"
 #include "Campaign.h"
+#include "KeyboardManager.h"
+#include "GameGUIKeyActions.h"
+#include "MapEditKeyActions.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -305,6 +308,43 @@ static void checkCampaignProgress(const fs::path& directory)
     std::cout << "PASS campaign progress truncation/version/definition validation, monotonic merge, legacy text round trip and atomic failure preservation" << std::endl;
 }
 
+static void checkPreferences(const fs::path& directory)
+{
+    Settings settings;
+    settings.optionFlags = GlobalContainer::OPTION_LOW_SPEED_GFX;
+    const auto file = directory / "preferences-test.txt";
+    assert(settings.save(file.string()));
+    Settings loaded;
+    loaded.load(file.string());
+    assert(loaded.optionFlags == settings.optionFlags);
+    KeyboardManager game(GameGUIShortcuts), editor(MapEditShortcuts);
+    assert(game.saveKeyboardLayout() && editor.saveKeyboardLayout());
+    const auto gamePath = directory / GameGUIKeyActions::getConfigurationFile();
+    const auto editorPath = directory / MapEditKeyActions::getConfigurationFile();
+    const auto previous = contents(file), gameBytes = contents(gamePath), editorBytes = contents(editorPath);
+    assert(!gameBytes.empty() && !editorBytes.empty());
+    const auto blocked = directory / "blocked-preferences.txt";
+    fs::create_directory(blocked);
+    assert(!settings.save(blocked.string()) && fs::is_directory(blocked));
+#ifndef WIN32
+    const pid_t child = fork(); assert(child >= 0);
+    if (child == 0) {
+        std::signal(SIGXFSZ, SIG_IGN);
+        struct rlimit budget = {0, 0};
+        if (setrlimit(RLIMIT_FSIZE, &budget) != 0) _exit(2);
+        settings.optionFlags = 0;
+        const bool preferencesFailed = !settings.save(file.string());
+        const bool gameFailed = !game.saveKeyboardLayout();
+        const bool editorFailed = !editor.saveKeyboardLayout();
+        _exit(preferencesFailed && gameFailed && editorFailed ? 0 : 3);
+    }
+    int status = 0; assert(waitpid(child, &status, 0) == child);
+    assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+    assert(contents(file) == previous && contents(gamePath) == gameBytes && contents(editorPath) == editorBytes);
+#endif
+    std::cout << "PASS preference/keyboard writes round trip and preserve prior files on failure" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	SDL_SetMainReady();
@@ -318,6 +358,7 @@ int main(int argc, char **argv)
 	globals.load();
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+    checkPreferences(directory);
 	checkMapHeaders();
     checkCampaignProgress(directory);
 	for (bool file : {false, true})
