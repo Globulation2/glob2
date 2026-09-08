@@ -30,10 +30,10 @@ only the committed PNG files and `data/highres/v1/frames.txt`.
 ```sh
 python3 tools/artwork/import_more_originals.py .cache/original-art/glob2-highres-more.zip
 python3 tools/artwork/export_recovered.py
-python3 experiments/ai-upscale/export_runtime.py --from-experiments
+python3 tools/artwork/package_runtime.py
 python3 tools/artwork/validate_recovered.py
-python3 experiments/ai-upscale/validate_runtime.py
-python3 experiments/ai-upscale/pr_comparisons.py
+python3 tools/artwork/validate_runtime.py
+python3 tools/artwork/pr_comparisons.py
 ```
 
 `export_recovered.py` reads unchanged historical renders, writes derived PNGs and
@@ -96,9 +96,9 @@ To reproduce native exports, run from the repository root with GIMP 2.10:
 gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
   -b 'execfile("tools/artwork/export_trees_gimp.py")' -b 'pdb.gimp_quit(0)'
 python3 tools/artwork/export_trees.py
-python3 experiments/ai-upscale/export_runtime.py --from-experiments
+python3 tools/artwork/package_runtime.py
 python3 tools/artwork/validate_trees.py
-python3 experiments/ai-upscale/validate_runtime.py
+python3 tools/artwork/validate_runtime.py
 ```
 
 Normal runtime-pack rebuilding uses the committed derived PNGs and does not
@@ -129,9 +129,9 @@ Reproduce with GIMP 2.10 from the repository root, then the Python export:
 gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
   -b 'execfile("tools/artwork/export_wheat_gimp.py")' -b 'pdb.gimp_quit(0)'
 python3 tools/artwork/export_wheat.py
-python3 experiments/ai-upscale/export_runtime.py --from-experiments
+python3 tools/artwork/package_runtime.py
 python3 tools/artwork/validate_wheat.py
-python3 experiments/ai-upscale/validate_runtime.py
+python3 tools/artwork/validate_runtime.py
 ```
 
 Native files/layer metadata are committed under `derived/wheat-native/`; runtime
@@ -168,9 +168,9 @@ Reproduction (GIMP 2.10 followed by Python/Pillow):
 gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
   -b 'execfile("tools/artwork/export_buildings_gimp.py")' -b 'pdb.gimp_quit(0)'
 python3 tools/artwork/export_buildings.py
-python3 experiments/ai-upscale/export_runtime.py --from-experiments
+python3 tools/artwork/package_runtime.py
 python3 tools/artwork/validate_buildings.py
-python3 experiments/ai-upscale/validate_runtime.py
+python3 tools/artwork/validate_runtime.py
 ```
 
 `provenance/building-runtime-recipes.json` specifies the groups. Native composites
@@ -206,14 +206,14 @@ phase sequence is retained, including repeated/symmetric forbidden pulse frames.
 The forbidden sequence is not reordered by image similarity.
 
 `tools/artwork/export_markers.py` writes `derived/markers-v1/` with source hashes
-and native dimensions. The main pack exporter applies these complete frames.
+and native dimensions. Approved copies are in production/original-derived; package_runtime.py assembles them.
 `tools/artwork/validate_markers.py` verifies every source/runtime pixel, logical
 32 × 32 size, animation-frame coverage and alpha coverage relative to classic.
 Native alpha coverage differs by less than 1.1% after accounting for scale.
 
 ```sh
 python3 tools/artwork/export_markers.py
-python3 experiments/ai-upscale/export_runtime.py --from-experiments
+python3 tools/artwork/package_runtime.py
 python3 tools/artwork/validate_markers.py
 ```
 
@@ -265,5 +265,6 @@ already 32 × 32. They are preserved without changing the current interface.
 The recovered water/cloud raster variants are 512 × 512, equal to classic
 canvas sizes, so they do not add native resolution. Cursor Blender sources
 still need a dedicated render/dependency audit; they have not been declared
-missing. `audit_ui_gimp.py` produces disposable visible-composite previews
-and layer metadata under `.cache/original-art/ui-audit/` without editing sources.
+missing. The UI audit used temporary previews; no preview-generation tooling is retained.
+
+Export scripts write staging files under derived/. They do not automatically replace approved production inputs; review and promote the selected outputs before packaging. Historical experiment tooling is not shipped.

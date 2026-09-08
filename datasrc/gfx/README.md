@@ -42,7 +42,7 @@ provenance/           Source URLs, archive paths, old repository paths and hashe
   building state. See [coverage and open questions](COVERAGE.md).
 
 `data/gfx/` remains the classic runtime artwork. `data/highres/` is the runtime
-pack. `experiments/ai-upscale/` holds the earlier experiment and is not the
+pack. Historical experiments are excluded from Git and are not the
 original-source archive. Fifty-five frames (ten from the second archive, ten trees, eight wheat frames, three layered buildings and five papyrus and 24 area markers from the first) replace
 experimental art in the runtime pack. See [export recipes and coverage](RECOVERED-RUNTIME.md).
 Other layered buildings and remaining resources still need runtime migration; the two final ripe wheat color states still lack larger originals.
@@ -113,5 +113,4 @@ Approved runtime inputs are now physically separated under `production/`:
 `original-derived/`, `ai-upscaled/`, `ai-materials/`, and `resampled-masks/`.
 Prebuilt mixed atlases and runtime metadata have separate directories there.
 `derived/` contains intermediate deterministic exports from originals only.
-Historical trials remain under `experiments/ai-upscale/`; normal packaging no
-longer reads that tree. See [production workflow](production/README.md).
+Historical trials are excluded from Git. Normal packaging uses approved inputs only. See [production workflow](production/README.md).

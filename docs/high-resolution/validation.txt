@@ -340,3 +340,8 @@ PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay dra
 Production folder separation: all 557 assembled runtime files byte-identical to previous pack.
 PASS missing paired layer, corrupt layer hash and original-derived layer placed in AI folder rejected.
 Normal assembler uses Python standard library only; no runtime images or engine code changed.
+
+Final-only cleanup: historical experiments removed from tracked tree.
+PASS all runtime PNGs unchanged; production packaging and independent frame/atlas/terrain/water validation pass.
+Optimized integration harness rebuild passes; runtime checks use .cache/highres-runtime-check.
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release

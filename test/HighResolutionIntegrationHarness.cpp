@@ -32,7 +32,7 @@ class HighResolutionIntegrationHarness
         std::vector<unsigned char>a(w*h*4),b(a.size());glReadPixels(v[0],v[1],w,h,GL_RGBA,GL_UNSIGNED_BYTE,a.data());
         for(int y=0;y<h;++y)std::copy_n(a.data()+y*w*4,w*4,b.data()+(h-1-y)*w*4);
         auto s=SDL_CreateRGBSurfaceWithFormatFrom(b.data(),w,h,32,w*4,SDL_PIXELFORMAT_RGBA32);
-        assert(s&&IMG_SavePNG(s,("experiments/ai-upscale/runtime-check/"+name+".png").c_str())==0);SDL_FreeSurface(s);
+        assert(s&&IMG_SavePNG(s,(".cache/highres-runtime-check/"+name+".png").c_str())==0);SDL_FreeSurface(s);
         assert(glGetError()==GL_NO_ERROR);
     }
     static std::vector<unsigned char> pixels()
@@ -281,7 +281,7 @@ public:
 };
 int main(int argc,char **argv)
 {
-    std::filesystem::create_directories("experiments/ai-upscale/runtime-check");
+    std::filesystem::create_directories(".cache/highres-runtime-check");
     std::filesystem::create_directories(".cache/ai-upscale/replay-fixture/replays");
     std::filesystem::copy_file("tests/baselines/gradient/gd-small-2ai.replay", ".cache/ai-upscale/replay-fixture/replays/gd-small-2ai.replay", std::filesystem::copy_options::overwrite_existing);
     GlobalContainer globals("glob2-hd-integration-test");globalContainer=&globals;

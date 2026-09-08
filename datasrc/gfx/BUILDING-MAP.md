@@ -27,10 +27,4 @@ Each pair shows the recovered source preview on the left and the current classic
 
 The two third-level barracks sources are retained as distinct variants. A hidden team layer is not a missing building. For example, `building10` initially shows only green markings; its hidden base establishes the second racetrack identity.
 
-Recreate with GIMP 2.10 Python support from the repository root, followed by Pillow:
-
-```sh
-gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
-  -b 'execfile("tools/artwork/preview_buildings_gimp.py")' -b 'pdb.gimp_quit(0)'
-python3 tools/artwork/building_comparisons.py
-```
+These identities were established by inspecting visible and hidden layers. Only verified runtime export recipes are retained in [RECOVERED-RUNTIME.md](RECOVERED-RUNTIME.md).
