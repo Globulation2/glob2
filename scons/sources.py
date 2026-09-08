@@ -462,6 +462,7 @@ SERVER_SOURCES = (
 )
 
 GAG_SOURCES = (
+    'ApplicationHost.cpp',
     'BinaryStream.cpp',
     'CursorManager.cpp',
     'FileManager.cpp',
@@ -508,6 +509,7 @@ GAG_SOURCES = (
 )
 
 GAG_SERVER_SOURCES = (
+    'ApplicationHost.cpp',
     'BinaryStream.cpp',
     'Stream.cpp',
     'FileManager.cpp',

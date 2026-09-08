@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <ApplicationHost.h>
 #include "ScriptEditorScreen.h"
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -550,7 +551,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 		Uint64 ntime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
+		GAGCore::ApplicationHost::wait(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
 	}
 
 	if (loadSaveScreen->endValue==0)

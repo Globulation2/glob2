@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <ApplicationHost.h>
 #include <FormatableString.h>
 
 #include "AINames.h"
@@ -195,14 +196,13 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
-#ifdef __EMSCRIPTEN__
-		EM_ASM({ Module['glob2Tick'] = $0; Module['glob2Screen'] = 'match'; }, gui.game.stepCounter);
-#endif
+		GAGCore::ApplicationHost::simulationAdvanced(gui.game.stepCounter);
 	}
 }
 
 void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 {
+    GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
 	const bool renderedFrame = st.nextGuiStep == 0;
 	if (renderedFrame)
 	{
@@ -231,10 +231,7 @@ void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
 	Uint64 delay = std::max<Sint64>(0, st.needToBeTime - currentTime);
-	if (delay > 0)
-		SDL_Delay(delay);
-	else if (!readyNow)
-		SDL_Delay(1);
+	GAGCore::ApplicationHost::wait(delay > 0 ? delay : (!readyNow ? 1 : 0));
 
 	// we set CPU stats
 	// Convert slept time into CPU load for one game tick.

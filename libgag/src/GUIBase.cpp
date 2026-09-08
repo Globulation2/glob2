@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <ApplicationHost.h>
+#include <typeinfo>
 #include <GUIBase.h>
 #include <GUIStyle.h>
 #include <assert.h>
@@ -405,9 +407,7 @@ namespace GAGGUI
 	
 	int Screen::execute(DrawableSurface *gfx, int stepLength)
 	{
-#ifdef __EMSCRIPTEN__
-		EM_ASM({ Module['glob2Screen'] = UTF8ToString($0); }, typeid(*this).name());
-#endif
+		ApplicationHost::screenChanged(typeid(*this).name());
 		Uint64 frameStartTime;
 		Sint64 frameWaitTime;
 		
@@ -500,8 +500,7 @@ namespace GAGGUI
 			// wait timer
 			frameWaitTime=static_cast<Sint64>(SDL_GetTicks64())-static_cast<Sint64>(frameStartTime);
 			frameWaitTime=stepLength-frameWaitTime;
-			if (frameWaitTime>0)
-				SDL_Delay(frameWaitTime);
+			GAGCore::ApplicationHost::wait(std::max<Sint64>(frameWaitTime, 0));
 		}
 		
 		// destroy screen event
@@ -764,7 +763,7 @@ namespace GAGGUI
 
 			const Uint64 frameEnd = SDL_GetTicks64();
 			const Sint64 elapsed = static_cast<Sint64>(frameEnd) - static_cast<Sint64>(frameStart);
-			SDL_Delay(static_cast<Uint32>(std::max<Sint64>(40 - elapsed, 0)));
+			GAGCore::ApplicationHost::wait(static_cast<Uint32>(std::max<Sint64>(40 - elapsed, 0)));
 		}
 
 		delete background;

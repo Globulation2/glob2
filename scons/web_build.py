@@ -45,8 +45,7 @@ def build_web(directory, identity, arguments):
 ''')
     include_paths = [str(output / 'include')] + list(INCLUDE_DIRECTORIES)
     env.Append(CPPPATH=include_paths, CPPDEFINES=['HAVE_CONFIG_H'],
-               CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0',
-                         '-include', str(root / 'browser/BrowserPlatform.h')] + PORTS)
+               CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
         '-sASYNCIFY', '-sASYNCIFY_STACK_SIZE=1048576', '-sALLOW_MEMORY_GROWTH',
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
@@ -63,9 +62,9 @@ def build_web(directory, identity, arguments):
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
     files = ['src/' + s for s in CLIENT_SOURCES if s != 'VoiceRecorder.cpp']
-    files += ['libgag/src/' + s for s in GAG_SOURCES]
+    files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp']
+    files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp']
     objects = [env.Object(str(output / 'obj' / (f + '.o')), f) for f in files]
     env.Requires(objects, ports)
     env.Depends(objects, str(config))

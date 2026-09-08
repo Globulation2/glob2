@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <ApplicationHost.h>
+#include <cstdlib>
 #include "Glob2.h"
 #include "GlobalContainer.h"
 #include "YOGServer.h"
@@ -455,7 +457,8 @@ int Glob2::run(int argc, char *argv[])
 
 
 #ifdef GLOB2_ROUTER_ONLY
-	YOGServerRouter router;
+	const char* lobbyHost = std::getenv("GLOB2_YOG_HOST");
+	YOGServerRouter router(lobbyHost ? lobbyHost : "127.0.0.1");
 	int routerResult = router.run();
 	delete globalContainer;
 	return routerResult;
@@ -679,8 +682,6 @@ int main(int argc, char *argv[])
 
 	Glob2 glob2;
 	int result = glob2.run(argc, argv);
-#ifdef __EMSCRIPTEN__
-	EM_ASM({ Module['glob2Screen'] = 'exited'; Module['onGameExit']($0); }, result);
-#endif
+	GAGCore::ApplicationHost::exited(result);
 	return result;
 }

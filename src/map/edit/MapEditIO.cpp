@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
+#include <ApplicationHost.h>
 #include <BinaryStream.h>
 #include <GAG.h>
 #include "GameGUILoadSave.h"
@@ -225,8 +226,7 @@ int MapEdit::run(void)
 
 		endTick=SDL_GetTicks64();
 		deltaTick=std::max<Sint64>(0, static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick));
-		if (deltaTick<33)
-			SDL_Delay(33-deltaTick);
+		GAGCore::ApplicationHost::wait(deltaTick < 33 ? 33-deltaTick : 0);
 		if (returnCode==-1)
 		{
 			isRunning=false;
@@ -273,5 +273,4 @@ int MapEdit::run(void)
 
 	return returnCode;
 }
-
 

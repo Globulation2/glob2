@@ -36,6 +36,7 @@ var Module = {
     Module.saveMount = FS.mount(IDBFS, {autoPersist:true}, '/home/web_user').mount;
     addRunDependency('browser-saves');
     FS.syncfs(true, err => {
+      Module.storageRestore = err ? 'failed' : 'ready';
       if (err) Module.printErr('Save restore failed: ' + err);
       removeRunDependency('browser-saves');
     });
@@ -52,6 +53,29 @@ var Module = {
   },
   onAbort(reason) { Module.printErr('Game stopped: ' + reason); }
 };
+// Read-only observability shared by developer tools and automated assertions.
+Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
+  snapshot() {
+    return Object.freeze({version:1, screen:Module.glob2Screen || 'loading',
+      tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
+      paused:Boolean(Module.glob2Paused), width:canvas.width, height:canvas.height,
+      restore:Module.storageRestore || 'restoring',
+      persisting:Boolean(Module.saveMount?.idbPersistState),
+      audio:Module.SDL2?.audioContext?.state || 'inactive'});
+  },
+  saves() {
+    const path = '/home/web_user/.glob2/games';
+    return FS.analyzePath(path).exists ? FS.readdir(path).filter(n => n.endsWith('.game')).sort() : [];
+  },
+  async saveDigest(name) {
+    if (!/^[A-Za-z0-9 _.-]+\.game$/.test(name) || name.includes('..')) throw Error('Invalid save name');
+    const path = '/home/web_user/.glob2/games/' + name;
+    if (!FS.analyzePath(path).exists) return null;
+    const data = FS.readFile(path);
+    const bytes = new Uint8Array(await crypto.subtle.digest('SHA-256', data));
+    return Object.freeze({size:data.length, sha256:Array.from(bytes, b => b.toString(16).padStart(2,'0')).join('')});
+  }
+})});
 function focusGame() {
   canvas.focus();
   Module.SDL2?.audioContext?.resume();
