@@ -1,97 +1,75 @@
 # Window resizing
 
-## Layout foundation
+Windowed mode follows the OS window dimensions when `RESIZABLE` is enabled
+(`-r`; `-R` disables it). SDL enforces the minimum 640 x 480 game size. Desktop
+fullscreen retains its selected logical resolution and aspect-preserving scaling.
+Windows requires SDL 2.30 or newer; startup checks the runtime version.
+
+## Event and rendering ownership
+
+SDL window operations, the GL context, simulation, and rendering stay on the main
+thread. All GUI event loops use `GraphicContext::pollEvent`. Only while that method
+is inside SDL's event pump may an exposed-event watcher present a cached frame.
+The watcher checks its thread and window and rejects recursive presentation. It
+never enters screen painting, timers, animation updates, or simulation.
+
+SDL 2.30's [Windows modal resize support](https://raw.githubusercontent.com/libsdl-org/SDL/release-2.30.0/src/video/windows/SDL_windowsevents.c)
+sends exposed events while the OS holds the main thread in a move/resize loop.
+The cached image is scaled during that interaction. Once polling returns, the
+renderer queries the latest OS dimensions and updates the logical surface,
+projection, viewport, and clipping. It does not call `SDL_SetWindowSize`, recreate
+the GL context, or reload sprite textures in response to a size notification.
+
+The GL path copies the completed back buffer into a persistent power-of-two
+texture before swapping. This supports the legacy renderer without requiring an
+FBO extension. Cached presentation saves/restores GL attributes and matrices, so
+the engine's state cache remains valid. If a frame exceeds the device's maximum
+texture size, cached GL presentation is unavailable; normal rendering continues.
+The software path owns its logical drawing surface and caches a completed copy;
+it reacquires SDL's window surface for each presentation. Neither backend depends
+on the default back buffer or SDL-owned surface surviving a resize.
+
+Watchers are removed and frame caches discarded before window/context destruction
+or recreation for explicit settings changes. No presentation resources are created
+in headless or dedicated-server mode.
+
+## Layout
 
 Editor controls retain their distance from the right edge of the logical screen.
-Their shared rectangle is updated before both drawing and hit testing, so input
-received before a repaint uses the same coordinates as the next frame. Generic
-map rectangles remain absolute and keep their half-open edge semantics.
+Their shared rectangle is updated before both drawing and hit testing. Generic map
+rectangles remain absolute and keep their half-open edges. The minimap refreshes
+its geometry before painting, hit testing, and coordinate conversion.
 
-Minimap positioning reads the logical screen width before drawing, hit testing,
-and coordinate conversion. Physical fullscreen or HiDPI scaling does not move
-controls within the logical screen.
+Overlay dialogs are constrained to their parent before painting and input dispatch.
+Modal backdrop images scale to cover the resized parent. A dialog larger than the
+minimum screen can still require a larger window; this change does not redesign
+fixed-size dialog contents.
 
-`MapEdit::draw(frameTick)` assembles one normal editor frame. It includes dialog
-timers and drawing with animation side effects, so it must only be called once
-per normal frame. It is not an expose-event callback.
+`MapEdit::draw(frameTick)` assembles one normal editor frame, including dialog
+timers and drawing with animation side effects. It is called once per normal
+frame and is not an expose callback.
 
-These changes adapt Nathan Mills (@Quipyowert2)'s editor anchoring, minimap
-positioning, and frame extraction work in
-[PR #64](https://github.com/Globulation2/glob2/pull/64). This foundation does not
-enable window resizing or change event-loop or OpenGL-context ownership.
+The editor anchoring, minimap positioning, and frame extraction adapt Nathan Mills
+(@Quipyowert2)'s work in [PR #64](https://github.com/Globulation2/glob2/pull/64).
 
-## Proposed live-resize implementation
+## Timing and validation
 
-Status: design for a follow-up implementation; not implemented by this PR.
+Simulation pauses while Windows holds the main thread in its modal loop. On
+return, the existing engine pacing limits catch-up debt to `MAX_CATCHUP_MS` (500
+ms). Cached presentation does not advance clouds, particles, dialog timers, or
+cursor animation. Continuous simulation during a drag would require a separate
+state-ownership design. Prolonged resizing may stall a network match; multiplayer
+timeout behavior still needs a Windows play test.
 
-### Ownership and presentation
+Build the integration harnesses with `scons resize-test aspect-test`. Run
+`build/libgag/src/WindowResizeHarness` and `FullscreenAspectHarness` with `software`
+and `gl`. The resize harness checks cached pixels after incomplete drawing,
+callback guards, normal-frame counts, GL state restoration, grow/shrink reflow,
+context identity, input coordinates, minimum dimensions, and cache invalidation
+on window recreation. Linux CI runs both backends under Xvfb/Mesa.
 
-Keep SDL window operations, OpenGL context ownership, input dispatch, simulation,
-and normal rendering on the main thread. During a Windows modal move/resize
-loop, present the most recently completed frame through an SDL exposed-event
-watcher. SDL provides this callback opportunity in its
-[Windows modal resize support](https://github.com/libsdl-org/SDL/commit/509c70c6982b6927f5a8d4fb32f9319cbaf0c2ef).
-Pin and validate an SDL2 version with that support before enabling live resize.
-
-Split normal frame completion from presentation. The normal path advances cursor
-and animation state and records a complete frame. A dedicated `presentLastFrame`
-path only queries drawable dimensions, clears exposed borders, presents that
-frame with the existing aspect-preserving scaling, and swaps/updates the window.
-It must not call `nextFrame`, screen painters, timers, input handlers, simulation,
-or texture reload routines.
-
-For OpenGL, keep the last completed image in a persistent texture or render target
-owned by the main context; the contents of the default back buffer after swapping
-are not a cache. Prefer rendering into an offscreen target if supported, with a
-validated copy-before-swap fallback for older GL configurations. For software
-rendering, retain an owned logical surface and reacquire the SDL window surface
-for presentation. Never free an SDL-owned window surface. Preserve and restore GL
-state (including the engine's cached state) around presentation.
-
-Register the watcher after cache initialization and remove it before cache or
-window destruction. Check the event's window ID and current thread ID; callbacks
-on another thread only mark presentation pending. Use a scoped reentrancy guard
-that is restored on every exit. If rendering is already active, defer presentation
-until that frame completes; never recursively enter rendering. Window recreation
-for graphics settings invalidates the cache and watcher binding explicitly.
-
-### Applying a size change
-
-Separate `resizeDrawable` from `setRes`: a notification that the OS has already
-resized a window must not call `SDL_SetWindowSize` or recreate its GL context.
-Coalesce size notifications and apply the latest dimensions at a safe point in
-the normal loop. Update the logical surface, projection, clipping, and layout
-together, then draw one complete frame. Keep explicit fullscreen/backend changes
-on their own lifecycle path.
-
-During the modal interaction, scale the cached frame; once normal dispatch resumes,
-reflow the layout to the new logical dimensions. This deliberately permits a brief
-scaled preview rather than trying to simulate and repaint from the callback.
-Window minimum size must be set through SDL. Use drawable pixels for GL viewports
-and logical coordinates for controls, preserving the existing fullscreen
-letterboxing and mouse conversion behavior. Handle minimization/zero drawable
-sizes by deferring allocation and presentation.
-
-Simulation pauses while the main thread is in the modal loop. The follow-up must
-bound catch-up when it resumes and measure multiplayer timeout/stall behavior.
-Continuous simulation during a drag is a separate requirement needing explicit
-state ownership or immutable render snapshots; a presentation callback does not
-provide it.
-
-### Acceptance checks
-
-- Windows with the supported SDL2 version: drag all edges, hold the mouse still,
-  maximize/restore, and move the window between displays. No texture corruption,
-  border oscillation, deadlock, or accelerated cursor/cloud animation.
-- Linux and macOS: the same resizing sequence in OpenGL and software modes,
-  including HiDPI transitions, minimization, and fullscreen toggling.
-- Main menu, tutorial, existing/new map editor, and nested dialogs: controls and
-  minimap clicks track the displayed layout, including input before repaint.
-- Instrument a resize callback: no simulation ticks, dialog timers, cursor steps,
-  texture uploads, or GL-context transfers; recursive exposes terminate safely.
-- Quit and window recreation during pending exposes: no callback outlives its
-  window/cache. Headless and dedicated-server execution create no presentation
-  resources.
-- Compare a seeded headless run against the base revision; presentation changes
-  must not alter simulation results. Exercise a network match with a prolonged
-  resize to establish the supported stall behavior before shipping.
+Before marking the PR ready, manually exercise Windows modal edge dragging,
+holding the mouse still, maximize/restore, moving across displays, and a network
+match. Also check menu/tutorial/editor dialogs, fullscreen switching, minimization,
+and HiDPI display transitions on supported desktops. Synthetic exposes test the
+callback contract but do not substitute for the Windows modal-loop test.

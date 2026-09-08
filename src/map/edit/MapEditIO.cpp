@@ -139,7 +139,7 @@ int MapEdit::run(void)
 	
 		// we get all pending events but for mousemotion we only keep the last one
 		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		while (GAGCore::GraphicContext::pollEvent(&event))
 		{
 			GAGCore::GraphicContext::translateMouseEvent(&event);
  			processEvent(event);
@@ -226,7 +226,7 @@ int MapEdit::run(void)
 		if(!isRunning)
 		{
 				SDL_Event event;
-			while (SDL_PollEvent(&event));
+			while (GAGCore::GraphicContext::pollEvent(&event));
 		}
 	}
 

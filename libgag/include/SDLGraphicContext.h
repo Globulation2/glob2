@@ -321,7 +321,7 @@ namespace GAGCore
 			DEFAULT = 0,
 			USEGPU = 1,
 			FULLSCREEN = 2,
-			//TODO: either implement "resizable" as a resizable gui or explain what this does
+			//! Allow windowed logical dimensions to follow the window size
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
 		};
@@ -346,6 +346,18 @@ namespace GAGCore
 		//! refresh the window and drawable sizes after the window was resized
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
+		SDL_GLContext context = nullptr;
+		SDL_threadID eventThread = 0;
+		bool pollingEvents = false;
+		bool presenting = false;
+		bool watchingEvents = false;
+		SDL_Surface *lastFrame = nullptr;
+		unsigned frameTexture = 0;
+		int frameW = 0, frameH = 0, textureW = 0, textureH = 0;
+		void releaseFrameCache();
+		void cacheFrame();
+		void presentLastFrame();
+		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -371,6 +383,8 @@ namespace GAGCore
 		static void translateMouseCoordinates(int &x, int &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
 		static void translateMouseEvent(SDL_Event *event);
+		//! Pump events at a frame boundary; modal expose callbacks only present a cached frame.
+		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);

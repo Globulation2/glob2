@@ -165,7 +165,7 @@ namespace GAGCore
 	void DrawableSurface::freeGPUTexture(void)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (_gc && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
 			glState.allocatedTextureCount--;
