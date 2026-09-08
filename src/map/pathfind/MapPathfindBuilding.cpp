@@ -22,7 +22,7 @@ constexpr Uint32 DIRTY_REBUILD_TICKS = 25;
 constexpr Uint32 STUCK_REBUILD_TICKS = 128;
 // A round-trip gradient follows its two parents with at most this delay (the
 // resource gradient stays authoritative for reachability, so staleness only
-// costs a detour). Building::freeIdleRoundTripGradients drops unused ones.
+// costs a detour). Building::freeIdleGradients drops unused ones.
 constexpr Uint32 ROUND_TRIP_REFRESH_TICKS = 120;
 
 bool isClearingFlag(const Building *building)
@@ -38,6 +38,7 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass)
 	Uint16 *&gradient=building->globalGradient[swimClass];
 	Uint32 lastUpdate=building->lastGlobalGradientUpdateStepCounter[swimClass];
 	Uint32 now=game->stepCounter;
+	building->globalGradientUsedStep[swimClass]=now;
 	bool rebuild=false;
 	if (gradient==NULL)
 	{
