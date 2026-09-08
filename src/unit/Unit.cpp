@@ -10,6 +10,7 @@
 #include "Building.h"
 
 #include "EngineTiming.h"
+#include "UnitTiming.h"
 #include "Utilities.h"
 #include "GlobalContainer.h"
 #include <Stream.h>
@@ -281,14 +282,13 @@ void Unit::syncStep(void)
 	if(underAttackTimer > 0)
 		underAttackTimer -= 1;
 
+// Burst mode completes an action every tick and keeps its original unscaled speed.
 //#define BURST_UNIT_MODE
+	int stepSpeed=speed;
 #ifdef BURST_UNIT_MODE
 	delta=0;
 #else
-	// A diagonal step covers sqrt(2) tiles, so it advances delta at speed/sqrt(2) (181/256).
-	int stepSpeed=speed;
-	if (dx!=0 && dy!=0 && (action==WALK || action==SWIM || action==FLY))
-		stepSpeed=(speed*181)>>8;
+	stepSpeed=unitActionStepSpeed(speed, action, dx, dy);
 	if (delta<=UNIT_DELTA_MAX-stepSpeed)
 	{
 		delta+=stepSpeed;

@@ -91,6 +91,8 @@ TurretScanTileTest.cpp
 
 ParticleCrossfadeTest.cpp
 
+UnitTimingTest.cpp
+
 CortexUpgradeTest.cpp
 
 FilenameStripTest.cpp

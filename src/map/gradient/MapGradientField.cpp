@@ -25,6 +25,9 @@ namespace
 	// Costs above this would run into the sentinels; propagation stops there.
 	constexpr int COST_LIMIT = GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1 - MAX_STEP;
 
+	// Shared scratch storage retains capacity between fields. Calls must be serial
+	// and non-reentrant, including calls on different Maps. Before parallelizing
+	// propagation, give each worker its own workspace; these are not cached fields.
 	std::vector<int> buckets[BUCKETS];
 }
 
@@ -63,7 +66,9 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 }
 
 // Seeds are the cells above GRADIENT_UNREACHABLE; each starts at its own cost
-// (0 for GRADIENT_AT_GOAL). GRADIENT_FORBIDDEN cells are obstacles.
+// (0 for GRADIENT_AT_GOAL). Seed costs must be in [0, MAX_STEP], so the initial
+// queue fits one bucket rotation. Reseed before reuse; a propagated field is
+// not a valid seed buffer. GRADIENT_FORBIDDEN cells are obstacles.
 void Map::propagateGradient(Uint16 *gradient, int swimClass)
 {
 	for (int b = 0; b < BUCKETS; b++)
@@ -81,7 +86,7 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass)
 	{
 		std::vector<int> &bucket = buckets[cur % BUCKETS];
 		// Relaxations may append to other buckets but never to this one
-		// (every step costs at least 5), so iterating by index is safe.
+		// (each step is positive and less than BUCKETS), so iteration is safe.
 		for (size_t bi = 0; bi < bucket.size(); bi++)
 		{
 			int i = bucket[bi];

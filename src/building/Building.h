@@ -127,7 +127,7 @@ public:
 	void freeGradients();
 	// Drop the pathfinding gradients (call after the building moves or its range changes).
 	void resetPathfindGradients();
-	// Have the gradients rebuilt on their next use (call when the map changes nearby).
+	// Request a rebuild on use once the refresh throttle permits (map changed nearby).
 	void dirtyGradients();
 
 	void load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
@@ -558,11 +558,15 @@ public:
 
 	//! Full-map pathfinding gradient toward this building (a flag's zone, or a clearing
 	//! flag's resources), one per swim class, NULL until a unit of that class asks for it.
-	//! See Map::buildingGradient.
+	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
+	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
 	Uint16 *globalGradient[SWIM_CLASS_COUNT];
-	//! Set when the map changed nearby; the gradient is rebuilt on its next use.
+	//! Set when the map changed nearby; rebuilt on use once DIRTY_REBUILD_TICKS
+	//! have elapsed since the last rebuild.
 	bool dirtyGradient[SWIM_CLASS_COUNT];
 	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_CLASS_COUNT];
+	// These flags track physical access (cannot swim / can swim), not travel cost.
+	// All swimming classes share passability, but keep separate weighted fields.
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
 
 	// Per-swim-variant tri-state cache of whether a clearing flag has any
