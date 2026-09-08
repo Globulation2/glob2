@@ -64,6 +64,28 @@ bool GameGUI::requestWorkerAllocation(Building& building, int requested)
     return true;
 }
 
+bool GameGUI::requestBuildingPriority(Building& building, int requested)
+{
+    if (globalContainer->replaying || building.owner->teamNumber!=localTeamNo ||
+        !building.type->maxUnitWorking || building.buildingState!=Building::ALIVE) return false;
+    requested=std::clamp(requested,-1,1);
+    if (requested==displayedPriority(building)) return false;
+    pendingFor(building.gid).pendingPriority=requested;
+    orderQueue.push_back(std::make_shared<OrderChangePriority>(building.gid,requested));
+    return true;
+}
+
+bool GameGUI::requestFlagRange(Building& building, int requested)
+{
+    if (globalContainer->replaying || building.owner->teamNumber!=localTeamNo ||
+        !building.type->defaultUnitStayRange) return false;
+    requested=std::clamp(requested,0,building.type->maxUnitStayRange);
+    if (requested==displayedUnitStayRange(building)) return false;
+    pendingFor(building.gid).pendingUnitStayRange=requested;
+    orderQueue.push_back(std::make_shared<OrderModifyFlag>(building.gid,requested));
+    return true;
+}
+
 void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 {
 	Building* selBuild=selectionBuilding();
@@ -105,18 +127,15 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 
 			if(lmx>=0 && lmx<=12)
 			{
-				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, -1)));
-				pendingFor(selBuild->gid).pendingPriority = -1;
+				requestBuildingPriority(*selBuild, -1);
 			}
 			else if(lmx>=(width) && lmx<(width+12))
 			{
-				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 0)));
-				pendingFor(selBuild->gid).pendingPriority = 0;
+				requestBuildingPriority(*selBuild, 0);
 			}
 			else if(lmx>=(width*2) && lmx<=(width*2+12))
 			{
-				orderQueue.push_back(shared_ptr<Order>(new OrderChangePriority(selBuild->gid, 1)));
-				pendingFor(selBuild->gid).pendingPriority = 1;
+				requestBuildingPriority(*selBuild, 1);
 			}
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;
@@ -133,8 +152,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 			const int current = displayedUnitStayRange(*selBuild);
 			if (auto nbReq = interpretScrollBoxClick(lmx, current, selBuild->type->maxUnitStayRange))
 			{
-				pendingFor(selBuild->gid).pendingUnitStayRange = *nbReq;
-				orderQueue.push_back(shared_ptr<Order>(new OrderModifyFlag(selBuild->gid, *nbReq)));
+				requestFlagRange(*selBuild, *nbReq);
 			}
 		}
 		ypos += YOFFSET_BAR+YOFFSET_B_SEP;

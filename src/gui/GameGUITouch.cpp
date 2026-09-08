@@ -91,7 +91,11 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
         const auto allocation=allocationRect();
         if (allocation.contains(point)) {
             const double unit=globalContainer->gfx->logicalUnitsPerPoint();
-            if (point.y<allocation.y+24*unit) return 32;
+            if (point.y<allocation.y+48*unit) {
+                const int count=allocationBuilding()->type->defaultUnitStayRange ? 3 : 2;
+                return 40+std::min(count-1,int((point.x-allocation.x)/(allocation.w/count)));
+            }
+            if (activeAllocationTab()==1) return 50+std::min(2,int((point.x-allocation.x)/(allocation.w/3)));
             if (point.x<allocation.x+48*unit) return 30;
             if (point.x>=allocation.x+allocation.w-48*unit) return 31;
             return 32;
@@ -231,8 +235,13 @@ void GameGUITouch::interfaceTap(ViewPoint point)
     if (usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText && allocationRect().contains(point)) {
         if (auto* building=allocationBuilding()) {
             const int region=interfaceRegion(point);
-            if (region==30 || region==31)
-                gui.requestWorkerAllocation(*building,gui.displayedMaxUnitWorking(*building)+(region==30 ? -1 : 1));
+            if (region>=40 && region<=42) allocationTab=region-40;
+            else if (region>=50 && region<=52) gui.requestBuildingPriority(*building,region-51);
+            else if (region==30 || region==31) {
+                const int delta=region==30 ? -1 : 1;
+                if (activeAllocationTab()==2) gui.requestFlagRange(*building,gui.displayedUnitStayRange(*building)+delta);
+                else gui.requestWorkerAllocation(*building,gui.displayedMaxUnitWorking(*building)+delta);
+            }
         }
         return;
     }
@@ -483,7 +492,7 @@ ViewRect GameGUITouch::allocationRect() const
 {
     auto rect=layout().panel;
     if (!allocationBuilding() || rect.h<=0) return {};
-    rect.h=72*globalContainer->gfx->logicalUnitsPerPoint();
+    rect.h=96*globalContainer->gfx->logicalUnitsPerPoint();
     return rect;
 }
 ViewRect GameGUITouch::panelContent() const
@@ -521,22 +530,44 @@ void GameGUITouch::drawPointLabel(ViewRect rect, const std::string& text)
         gfx->drawString(std::max(4,int((rect.w/unit-font->getStringWidth(lines[i]))/2)),int(i)*height,font,lines[i]);
     gfx->setUITransform();gfx->setClipRect();
 }
+int GameGUITouch::activeAllocationTab() const
+{
+    const auto* building=allocationBuilding();
+    return allocationTab==2 && (!building || !building->type->defaultUnitStayRange) ? 0 : allocationTab;
+}
 void GameGUITouch::drawAllocation()
 {
     auto* building=allocationBuilding(); const auto rect=allocationRect();
     if (!building || rect.h<=0) return;
     auto* gfx=globalContainer->gfx; const double unit=gfx->logicalUnitsPerPoint();
     gfx->drawFilledRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h),Color(24,34,44));
-    drawPointLabel({rect.x,rect.y,rect.w,24*unit},Toolkit::getStringTable()->getString("[working]"));
-    const int value=gui.displayedMaxUnitWorking(*building);
+    const int tab=activeAllocationTab(), count=building->type->defaultUnitStayRange ? 3 : 2;
+    const char* tabs[]={"[working]","[priority]","[range]"};
+    for (int i=0;i<count;++i) {
+        const ViewRect button{rect.x+i*rect.w/count,rect.y,rect.w/count,48*unit};
+        gfx->drawFilledRect(int(button.x),int(button.y),int(button.w),int(button.h),i==tab ? Color(55,90,75) : Color(24,34,44));
+        drawPointLabel(button,Toolkit::getStringTable()->getString(tabs[i]));
+    }
+    if (tab==1) {
+        const char* labels[]={"[low priority]","[medium priority]","[high priority]"};
+        for (int i=0;i<3;++i) {
+            const ViewRect button{rect.x+i*rect.w/3,rect.y+48*unit,rect.w/3,48*unit};
+            const bool selected=gui.displayedPriority(*building)==i-1;
+            gfx->drawFilledRect(int(button.x),int(button.y),int(button.w),int(button.h),selected ? Color(60,110,80) : Color(35,45,52));
+            drawPointLabel(button,Toolkit::getStringTable()->getString(labels[i]));
+        }
+        return;
+    }
+    const int value=tab==2 ? gui.displayedUnitStayRange(*building) : gui.displayedMaxUnitWorking(*building);
+    const int maximum=tab==2 ? building->type->maxUnitStayRange : MAX_UNIT_WORKING;
     for (int side=0;side<2;++side) {
-        const ViewRect button{side ? rect.x+rect.w-48*unit : rect.x,rect.y+24*unit,48*unit,48*unit};
-        const bool enabled=side ? value<MAX_UNIT_WORKING : value>0;
+        const ViewRect button{side ? rect.x+rect.w-48*unit : rect.x,rect.y+48*unit,48*unit,48*unit};
+        const bool enabled=side ? value<maximum : value>0;
         gfx->drawFilledRect(int(button.x),int(button.y),int(button.w),int(button.h),enabled ? Color(45,80,65) : Color(40,45,48));
         drawPointLabel(button,side ? "+" : "−");
     }
-    drawPointLabel({rect.x+48*unit,rect.y+24*unit,rect.w-96*unit,48*unit},
-        std::to_string(building->unitsWorking.size())+" / "+std::to_string(value));
+    drawPointLabel({rect.x+48*unit,rect.y+48*unit,rect.w-96*unit,48*unit},
+        tab==2 ? std::to_string(value) : std::to_string(building->unitsWorking.size())+" / "+std::to_string(value));
 }
 std::vector<ViewRect> GameGUITouch::pauseButtons() const
 {

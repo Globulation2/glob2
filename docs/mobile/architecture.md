@@ -177,8 +177,8 @@ notch/status area and home indicator; the world still fills the window beneath
 those margins. Android cutout-specific inset reporting remains to be added.
 
 This is a first usability pass, not completion of the phone interface. The
-inspector still scales and scrolls the legacy layout: priority, flag-range, and production-ratio controls still need larger dedicated
-controls, and bottom-anchored controls can leave excess scrolling space. In-game
+inspector still scales and scrolls the legacy layout: production-ratio and
+flag-specific resource/level controls still need larger dedicated controls, and bottom-anchored controls can leave excess scrolling space. In-game
 load/save, options, objectives and alliance dialogs, replay controls, chat, some overlays/tutorial
 highlight positions, adjustable UI scale, and tablet layouts need further work.
 Browser rendering preserves its existing interface; the new HUD currently
@@ -187,12 +187,20 @@ requires the native SDL renderer. Pinch zoom remains deferred.
 ### Worker allocation and pause menu
 
 Owned, living buildings that accept workers expose a fixed inspector header with
-48-point minus/plus buttons and the current working/requested count. It stays
+48-point Workers/Priority tabs, plus a Range tab for flags. The header is
+96 points tall: a tab row and one control row. Workers and range use 48-point
+minus/plus buttons; priority uses low/medium/high choices with the pending
+selection highlighted. The worker row shows the current working/requested count. It stays
 visible while the rest of the inspector scrolls. The large controls and desktop
 worker scrollbar call `GameGUI::requestWorkerAllocation`, which validates the
 owner/state, clamps the request, suppresses no-op orders, updates the pending UI
 value, and queues the existing `OrderModifyBuilding`. Rapid taps accumulate
 against the pending count without changing authoritative simulation state.
+Priority and range similarly share `requestBuildingPriority` / `requestFlagRange`
+with desktop controls and queue `OrderChangePriority` / `OrderModifyFlag`.
+Range clamps to the selected flag type’s maximum; repeat selections and limit
+taps emit no order. Switching from a flag to a building without range falls back
+to the Workers tab. Existing translations label the tabs and priority choices.
 
 Touch gestures now also retain the selected building and dialog identities;
 changing the selection or dialog cancels a held action before release. Switching

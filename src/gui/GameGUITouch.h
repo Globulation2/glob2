@@ -32,6 +32,8 @@ private:
     GAGCore::ViewRect panelContent() const;
     std::vector<GAGCore::ViewRect> pauseButtons() const;
     void drawAllocation();
+    int allocationTab=0;
+    int activeAllocationTab() const;
     void drawPointLabel(GAGCore::ViewRect rect, const std::string& text);
     const void* ownerBuilding=nullptr;
     const void* ownerDialog=nullptr;

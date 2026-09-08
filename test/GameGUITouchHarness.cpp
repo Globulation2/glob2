@@ -159,6 +159,10 @@ public:
         auto* building=new Building(0,0,2,type,gui.localTeam,&globalContainer->buildingsTypes,1,1);
         gui.localTeam->myBuildings[2]=building;
         require(building->type->maxUnitWorking>0,"Allocation fixture must accept workers");
+        auto* rangeFlag=new Building(0,0,3,globalContainer->buildingsTypes.getTypeNum("warflag",0,false),
+            gui.localTeam,&globalContainer->buildingsTypes,1,1);
+        gui.localTeam->myBuildings[3]=rangeFlag;
+        require(rangeFlag->type->defaultUnitStayRange && rangeFlag->type->maxUnitWorking,"Flag fixture needs range and workers");
         gui.orderQueue.clear();
         for (auto [width,height] : {std::pair{320,568}, {568,320}}) {
             const int oldW=gfx->getW(),oldH=gfx->getH();
@@ -171,7 +175,7 @@ public:
             // Info opens the inspector for the selected entity.
             tap(gfx->getW()*2.5f/6,gfx->getH()-24*unit);
             const auto ui=GAGCore::MobileLayout::calculate(width,height,{},0,1,true);
-            const float plusX=(ui.panel.x+ui.panel.w-24)*unit, rowY=(ui.panel.y+48)*unit;
+            const float plusX=(ui.panel.x+ui.panel.w-24)*unit, rowY=(ui.panel.y+72)*unit;
             const int before=gui.displayedMaxUnitWorking(*building), authoritative=building->maxUnitWorking;
             const auto simulation=gui.game.checkSum();
             tap(plusX,rowY); tap(plusX,rowY);
@@ -191,6 +195,38 @@ public:
             gui.setSelection(GameGUI::BUILDING_SELECTION,building);
             gui.requestWorkerAllocation(*building,0);gui.orderQueue.clear();
             tap((ui.panel.x+24)*unit,rowY);require(gui.orderQueue.empty(),"Allocation at zero must not queue duplicates");
+            tap((ui.panel.x+ui.panel.w*.75f)*unit,(ui.panel.y+24)*unit);
+            for (int priority : {-1,0,1}) {
+                tap((ui.panel.x+ui.panel.w*(priority+1.5f)/3)*unit,rowY);
+                require(gui.orderQueue.size()==1,"Priority tap emits exactly one order");
+                auto order=std::dynamic_pointer_cast<OrderChangePriority>(gui.orderQueue.front());gui.orderQueue.clear();
+                require(order && order->gid==building->gid && order->priority==priority,"Priority uses the shared order format");
+                tap((ui.panel.x+ui.panel.w*(priority+1.5f)/3)*unit,rowY);
+                require(gui.orderQueue.empty(),"Selected pending priority is a no-op");
+            }
+            require(gui.game.checkSum()==simulation,"Priority changes stay outside authoritative state");
+            gui.drawAll(0);gfx->printScreen(width<height ? "touch-priority-portrait.bmp" : "touch-priority-landscape.bmp");gfx->nextFrame();
+            gui.setSelection(GameGUI::BUILDING_SELECTION,rangeFlag);
+            tap((ui.panel.x+ui.panel.w*5/6)*unit,(ui.panel.y+24)*unit);
+            const int rangeBefore=gui.displayedUnitStayRange(*rangeFlag);
+            const auto rangeChecksum=gui.game.checkSum();
+            tap(plusX,rowY);tap(plusX,rowY);
+            require(gui.orderQueue.size()==2,"Rapid range taps queue two orders");
+            for (int delta : {1,2}) {
+                auto order=std::dynamic_pointer_cast<OrderModifyFlag>(gui.orderQueue.front());gui.orderQueue.pop_front();
+                require(order && order->gid==rangeFlag->gid && order->range==rangeBefore+delta,"Range uses pending values and shared orders");
+            }
+            gui.drawAll(0);gfx->printScreen(width<height ? "touch-range-portrait.bmp" : "touch-range-landscape.bmp");gfx->nextFrame();
+            gui.requestFlagRange(*rangeFlag,rangeFlag->type->maxUnitStayRange);gui.orderQueue.clear();
+            tap(plusX,rowY);require(gui.orderQueue.empty(),"Maximum range is a no-op");
+            gui.requestFlagRange(*rangeFlag,0);gui.orderQueue.clear();
+            tap((ui.panel.x+24)*unit,rowY);require(gui.orderQueue.empty(),"Zero range is a no-op");
+            finger(SDL_FINGERDOWN,1,plusX,rowY);
+            gui.setSelection(GameGUI::BUILDING_SELECTION,building);
+            finger(SDL_FINGERUP,1,plusX,rowY);
+            require(gui.orderQueue.empty(),"Changing selected buildings cancels held range controls");
+            require(gui.game.checkSum()==rangeChecksum,"Range controls preserve authoritative state");
+            tap((ui.panel.x+ui.panel.w*.25f)*unit,(ui.panel.y+24)*unit);
             tap(gfx->getW()*5.5f/6,gfx->getH()-24*unit);
             require(gui.inGameMenu==GameGUI::IGM_MAIN,"Toolbar opens the in-game pause menu");
             gui.drawAll(0);gfx->printScreen(width<height ? "touch-pause-portrait.bmp" : "touch-pause-landscape.bmp");gfx->nextFrame();
