@@ -430,7 +430,9 @@ int Glob2::run(int argc, char *argv[])
 #endif
 	if (globalContainer->hostServer)
 	{
-		YOGServer server(YOGRequirePassword, YOGMultipleGames);
+		const char* externalRouter = std::getenv("GLOB2_EXTERNAL_ROUTER");
+		YOGServer server(YOGRequirePassword, YOGMultipleGames,
+		    !(externalRouter && std::string(externalRouter) == "1"));
 		int rc = server.run();
 		delete globalContainer;
 		return rc;

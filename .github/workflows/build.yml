@@ -271,6 +271,11 @@ jobs:
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium firefox webkit
           npm test
+      - name: Test self-hosting with real TLS and persistent volumes
+        if: matrix.order == 'concurrent'
+        run: |
+          docker compose -f deploy/compose.yaml build lobby
+          python3 -m unittest discover -s tests/deployment -v
       - uses: actions/upload-artifact@v4
         if: failure() && matrix.order == 'concurrent'
         with:

@@ -23,6 +23,10 @@ infrastructure from the supported-release acceptance criteria.
   250 ticks for comparison with browser checksums at command boundaries.
 - A bounded fixed-backend gateway with origin checks, backpressure,
   health/metrics endpoints, and real TCP/WebSocket integration tests.
+- A development Compose deployment with private lobby/router/gateway services,
+  Caddy HTTPS/WSS routing, persistent volumes, and container health checks.
+  The lobby supports explicit external-router mode; desktop/LAN keeps the
+  embedded router default. Empty router pools refuse room creation safely.
 - An explicit native/browser application-host boundary for transitional
   waits and diagnostics. No forced SDL delay macro or sleep inside rendering.
 - Explicit screen begin/update/input/draw/finish phases, with a legacy host-loop
@@ -77,6 +81,10 @@ On macOS arm64, September 2026:
 
 - Native desktop, lobby, router, gateway, and release Wasm builds succeed.
 - Nine build identity/architecture tests and eight gateway integration tests pass.
+- The Linux arm64 Compose image builds and both deployment tests pass: trusted
+  local-CA HTTPS/WSS, private route denial, account persistence across recreation,
+  router-loss room refusal, and successful admission after service recreation.
+  An embedded-router browser match still passes after the server mode change.
 - Fifteen multiplayer checks pass across Chromium, Firefox, and WebKit: login,
   lobby exit, browser/browser matches without AI and with Maxima, and browser/native
   checksum comparisons through a 250-tick native run. Chromium additionally passes
@@ -150,3 +158,11 @@ Next delivery work is the upgraded handshake, native secure WebSocket transport,
 identities/rooms, and coordinated recovery.
 Rendering, lifecycle, durable storage, and removal of Asyncify remain acceptance
 gates for the supported release, not reasons to keep expanding preparatory work.
+
+## Gameplay evidence
+
+Chromium during the browser/native integration match on macOS arm64. This
+screenshot illustrates the full-page client; the automated checksum assertions,
+not the image, establish the short cross-play result above.
+
+![Browser client during native cross-play](screenshots/native-cross-play.png)

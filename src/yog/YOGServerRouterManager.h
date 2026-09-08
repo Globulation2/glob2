@@ -25,6 +25,7 @@ public:
 	
 	///This chooses a new yog router
 	std::shared_ptr<NetConnection> chooseYOGRouter();
+	bool hasRouter() const;
 private:
 	std::vector<std::shared_ptr<NetConnection> > routers;
 	NetListener listener;

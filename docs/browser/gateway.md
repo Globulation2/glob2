@@ -63,7 +63,9 @@ The lobby/router control connection uses the existing internal TCP port 7490.
 
 The listener is plain HTTP/WebSocket on loopback by default. Public deployment
 requires a TLS reverse proxy, private backend ports, and restricted metrics
-routing. A supported Compose distribution has not yet been delivered.
+routing. The [development Compose package](../../deploy/README.md) runs the
+proxy, assets, gateway, lobby, and router together. Release packaging and upgrade
+qualification remain outstanding.
 
 The gateway neither owns rooms nor simulates a match. Losing the gateway
 currently closes the corresponding TCP connections; reconnect semantics must
