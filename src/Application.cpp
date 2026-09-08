@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Application.h"
+#include <Toolkit.h>
+#include <StringTable.h>
 #include "GlobalContainer.h"
 #include "MainMenuScreen.h"
 #include "CampaignMainMenu.h"
@@ -10,6 +12,21 @@
 #include "LANMenuScreen.h"
 #include "YOGLoginScreen.h"
 #include "YOGClient.h"
+
+namespace {
+class MinimumViewportScreen : public GAGGUI::Screen
+{
+public:
+    void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {}
+    void paint() override {
+        GAGGUI::Screen::paint();
+        auto* font = GAGCore::Toolkit::getFont("standard");
+        const auto text = GAGCore::Toolkit::getStringTable()->getString("[browser window too small]");
+        getSurface()->drawString(std::max(8, (getW() - font->getStringWidth(text)) / 2),
+                                std::max(8, getH()/2 - 10), font, text);
+    }
+};
+}
 
 Application::Application() : screens(*globalContainer->gfx), singlePlayer(screens)
 {
@@ -51,6 +68,20 @@ void Application::choose(int choice)
 bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events)
 {
     lastFrame = tick;
+    int width, height;
+    if (GAGCore::ApplicationHost::takeViewportSize(width, height)) {
+        const int oldWidth = globalContainer->gfx->getW(), oldHeight = globalContainer->gfx->getH();
+        if (globalContainer->gfx->resizeViewport(width, height)) {
+            screens.viewportResized(oldWidth, oldHeight, width, height);
+            if ((width < 800 || height < 600) && !minimumNotice) {
+                auto notice = std::make_unique<MinimumViewportScreen>();
+                minimumNotice = notice.get();
+                screens.push(std::move(notice), [this](GAGGUI::Screen&, int) { minimumNotice = nullptr; });
+            } else if (width >= 800 && height >= 600 && minimumNotice) {
+                minimumNotice->endExecute(0);
+            }
+        }
+    }
     screens.frame(tick, events);
     if (!screens.running()) {
         if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION) return false;

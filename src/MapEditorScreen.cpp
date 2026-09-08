@@ -67,3 +67,10 @@ Uint32 MapEditorScreen::executionDelay(Uint32 now, Uint32)
     const Uint32 elapsed = now - lastFrame;
     return elapsed < 33 ? 33 - elapsed : 0;
 }
+
+void MapEditorScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
+{
+    editor->suspendInput();
+    input.clear();
+    editor->viewportResized(oldWidth, oldHeight, width, height);
+}

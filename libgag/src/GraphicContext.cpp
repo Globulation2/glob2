@@ -368,6 +368,25 @@ namespace GAGCore
 		}
 	}
 
+    bool GraphicContext::resizeViewport(int w, int h)
+    {
+        if (!window || !sdlsurface || w <= 0 || h <= 0 || (optionFlags & USEGPU)) return false;
+        if (w == getW() && h == getH()) return true;
+        const auto& format = *sdlsurface->format;
+        SDL_Surface* replacement = SDL_CreateRGBSurface(0, w, h, 32,
+            format.Rmask, format.Gmask, format.Bmask, format.Amask);
+        if (!replacement) return false;
+        // SDL may invalidate its borrowed window surface when changing size.
+        freeOwnedSurface();
+        SDL_SetWindowSize(window, w, h);
+        sdlsurface = replacement;
+        ownsSurface = true;
+        SDL_GetWindowSize(window, &windowW, &windowH);
+        drawableW = windowW; drawableH = windowH;
+        setClipRect();
+        return true;
+    }
+
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
 		// check dimension
@@ -570,7 +589,7 @@ namespace GAGCore
 			else
 			#endif
 			{
-				if (isScalingActive())
+				if (ownsSurface || isScalingActive())
 				{
 					SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
 					if (windowSurface)

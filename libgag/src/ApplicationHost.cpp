@@ -21,6 +21,7 @@ void wait(std::uint32_t milliseconds)
 {
     if (milliseconds) SDL_Delay(milliseconds);
 }
+bool takeViewportSize(int&, int&) { return false; }
 void screenChanged(const char*) {}
 void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}

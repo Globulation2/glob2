@@ -15,6 +15,7 @@ private:
     GAGGUI::ScreenStack screens;
     SinglePlayerFlow singlePlayer;
     std::uint32_t lastFrame = 0;
+    GAGGUI::Screen* minimumNotice = nullptr; // Owned by screens.
     void mainMenu();
     void choose(int choice);
 };

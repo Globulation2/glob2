@@ -97,6 +97,44 @@ int main(int argc, char** argv)
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
     {
+        auto& gfx = *globalContainer->gfx;
+        SDL_Window* window = nullptr;
+        // GlobalContainer can recreate its initial window while applying settings.
+        // This isolated SDL2 fixture owns a single window; IDs need not start at one.
+        for (Uint32 id = 1; id < 100 && !window; ++id) window = SDL_GetWindowFromID(id);
+        require(window != nullptr, "No native test window");
+        const auto windowID = SDL_GetWindowID(window);
+        require(gfx.resizeViewport(1200, 800), "Software viewport resize failed");
+        require(gfx.getW() == 1200 && gfx.getH() == 800, "Logical resolution did not follow viewport");
+        require(SDL_GetWindowFromID(windowID) == window, "Resize replaced the SDL window");
+        gfx.drawFilledRect(0, 0, gfx.getW(), gfx.getH(), GAGCore::Color(255, 0, 0));
+        gfx.nextFrame();
+        auto* presented = SDL_GetWindowSurface(window);
+        require(presented && presented->pixels && presented->format->BytesPerPixel == 4, "No presented test surface");
+        Uint8 red, green, blue;
+        SDL_GetRGB(*static_cast<Uint32*>(presented->pixels), presented->format, &red, &green, &blue);
+        require(red == 255 && green == 0 && blue == 0, "Resized surface was not presented to the window");
+        require(!gfx.resizeViewport(0, 0) && gfx.getW() == 1200, "Zero viewport invalidated the render target");
+        require(gfx.resizeViewport(800, 600), "Could not restore test viewport");
+        GameGUI view;
+        auto map = Engine::loadMapHeader("maps/balanced.map");
+        GameHeader players;
+        players.setNumberOfPlayers(1);
+        players.getBasePlayer(0) = BasePlayer(0, "Viewport", 0, BasePlayer::P_LOCAL);
+        require(view.loadFromHeaders(map, players, true, true), "Viewport fixture failed to load");
+        view.viewportX = 20; view.viewportY = 30;
+        const auto checksum = view.game.checkSum();
+        view.viewportResized(800, 600, 1200, 800);
+        require(((view.viewportX + (1200-160)/64) & view.game.map.wMask) == ((20 + (800-160)/64) & view.game.map.wMask), "Resize changed center tile horizontally");
+        require(((view.viewportY + 800/64) & view.game.map.hMask) == ((30 + 600/64) & view.game.map.hMask), "Resize changed center tile vertically");
+        require(view.game.checkSum() == checksum, "Viewport resize changed simulation state");
+        Minimap minimap(false, 160, 800, 20, 10, 128, 128, Minimap::ShowFOW);
+        minimap.setGame(view.game);
+        minimap.resizeViewport(1200);
+        require(minimap.insideMinimap(1100, 74) && !minimap.insideMinimap(700, 74), "Minimap hit area did not follow the viewport");
+    }
+
+    {
         Map map;
         map.setSize(7, 6);
         const unsigned width = 128, height = 64;

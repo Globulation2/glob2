@@ -75,6 +75,11 @@ infrastructure from the supported-release acceptance criteria.
 - A replay-stall fix: measure the waiting-player mask after local orders are
   inserted, so filtered replay null orders cannot leave a stale waiting flag.
 
+- Frame-boundary software viewport resizing for scheduled single-player menus,
+  matches and the editor, including camera-center tiles, minimap hit regions,
+  centered overlays and an in-game minimum-size notice. See [the contract and
+  remaining limitations](viewport.md).
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),
@@ -105,6 +110,13 @@ on macOS arm64 in September 2026:
 - `screenshots/native-cross-play.png` is refreshed from the post-rebase
   Chromium/native TCP test.
 
+After the subsequent rebase onto `f50ab27ac`, desktop and Wasm builds, all 42
+single-player scenarios, nine build-system checks, native session/resize tests,
+and current/version-88/version-84 team-statistics save fixtures pass. All 15 viewport scenarios also pass across Chromium, Firefox and WebKit, with
+reviewed screenshots in `screenshots/resized-game-menu.png` and
+`screenshots/minimum-viewport.png`. Earlier
+multiplayer and deployment results above have not yet been rerun at this revision.
+
 These are focused regressions, not a complete campaign, AI, deterministic
 cross-platform, or supported-browser certification matrix.
 
@@ -114,8 +126,8 @@ cross-platform, or supported-browser certification matrix.
    on all supported native toolchains.
 2. Complete editor/network/modal transitions, resumable/cancellable loading,
    and removal of Asyncify from the scheduled browser host.
-3. WebGL2 rendering, live logical resize, context restoration, minimum-size
-   UI, focus/visibility behavior, and complete browser interaction handling.
+3. WebGL2 rendering and context restoration, resize in remaining legacy flows,
+   complete gesture/layout qualification, focus/visibility behavior, and browser interaction handling.
 4. Transactional persistence with durable completion and failure states,
    quota handling, and validated import/export for all local data types.
 5. TLS-only internet connection policy, native trust-store qualification, compatible protocol handshake,

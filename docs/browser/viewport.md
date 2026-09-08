@@ -1,0 +1,42 @@
+# Viewport resize contract
+
+The browser host retains the newest viewport dimensions until the application
+consumes them at a frame boundary. The software renderer allocates a replacement
+surface before releasing its previous surface; nonpositive dimensions and failed
+allocations leave the old target intact. Desktop hosts do not request automatic
+resolution changes, preserving their existing video settings.
+
+A successful resize updates the target, clipping and all retained or pending
+screens before processing that frame's input. Overlay screens recenter. Game and
+editor screens move their camera to preserve the center map tile, update minimap
+drawing and hit regions, and clear held gestures. The game session retains its
+simulation and selection. Editor controls anchored to the right or bottom move
+with their respective edges. The session resets its timing baseline so time spent
+behind the minimum-size notice does not become simulation catch-up work.
+
+Rendering uses one pixel per CSS pixel, including displays with a device scale
+factor of two. Below 800 by 600, an in-game notice covers the retained screen;
+restoring a usable size resumes that screen. The page has no permanent wrapper
+controls.
+
+## Verification
+
+`browser/tests/viewport.spec.js` uses real browser resize and mouse/keyboard input
+in Chromium, Firefox and WebKit. It checks canvas dimensions and its page bounds,
+nonblack rendered pixels, menu hit positions, ongoing simulation, the minimum-size
+notice, editor discard dialogs, and high-density displays. Screenshots capture the
+resized game menu and the notice. The native engine-session harness checks actual
+software presentation, rejected zero-sized targets, camera-center and simulation
+checksum preservation, and minimap hit regions after resizing.
+
+## Remaining release work
+
+This implementation covers scheduled application screens and the software
+renderer. Legacy blocking multiplayer flows defer application resize handling;
+those flows must migrate to the screen stack. WebGL2 rendering and context
+restoration remain separate required work. Camera coordinates retain the existing
+whole-tile precision. Broader selection/dragging and nested-dialog coverage is
+still needed, along with browser video-preference policy, hidden-tab lifecycle,
+and coordinated multiplayer suspension. Very narrow notice layouts and allocation
+failure messages need further work. These limitations keep the platform
+experimental; this document does not qualify the full release requirements.

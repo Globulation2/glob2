@@ -20,6 +20,7 @@ void GameSessionScreen::updateExecution(Uint32 tick)
         nextTick = clock;
         started = true;
     } else {
+        if (resetClock) { lastTick = tick; nextTick = clock; resetClock = false; }
         clock += static_cast<Uint32>(tick - lastTick);
         lastTick = tick;
     }
@@ -57,4 +58,11 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 {
     if (!started || finished) return 0;
     return engine->sessionDelay(clock + static_cast<Uint32>(now - lastTick));
+}
+
+void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
+{
+    engine->viewportResized(oldWidth, oldHeight, width, height);
+    input.clear();
+    resetClock = true;
 }

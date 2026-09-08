@@ -625,3 +625,4 @@
 [Loading units]
 [Loading buildings]
 [Resolving team links]
+[browser window too small]

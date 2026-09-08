@@ -42,9 +42,10 @@ var Module = {
     });
   }],
   onRuntimeInitialized() {
-    const scale = Math.max(1, 800 / innerWidth, 600 / innerHeight);
-    const width = Math.round(innerWidth * scale);
-    const height = Math.round(innerHeight * scale);
+    const scale = Math.max(1, 800 / Math.max(1, innerWidth), 600 / Math.max(1, innerHeight));
+    const width = Math.round(Math.max(1, innerWidth) * scale);
+    const height = Math.round(Math.max(1, innerHeight) * scale);
+    Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
     canvas.focus();
     Module.callMain(['-s', width + 'x' + height, '-F', '-G']);
   },
@@ -83,6 +84,9 @@ function focusGame() {
   canvas.focus();
   Module.SDL2?.audioContext?.resume();
 }
+addEventListener('resize', () => {
+  Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
+});
 canvas.addEventListener('pointerdown', focusGame);
 canvas.addEventListener('keydown', () => Module.SDL2?.audioContext?.resume());
 </script>

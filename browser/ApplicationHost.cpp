@@ -35,6 +35,17 @@ void wait(std::uint32_t milliseconds)
 {
     emscripten_sleep(milliseconds ? milliseconds : 1);
 }
+bool takeViewportSize(int& width, int& height)
+{
+    return EM_ASM_INT({
+        const size = Module.pendingViewport;
+        Module.pendingViewport = null;
+        if (!size || size.width <= 0 || size.height <= 0) return 0;
+        HEAP32[$0 >> 2] = size.width;
+        HEAP32[$1 >> 2] = size.height;
+        return 1;
+    }, &width, &height);
+}
 void screenChanged(const char* name)
 {
     EM_ASM({ Module['glob2Screen'] = UTF8ToString($0); }, name);

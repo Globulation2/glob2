@@ -11,6 +11,7 @@ public:
     ~MapEditorScreen() override;
     void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {}
     void updateExecution(Uint32 tick) override;
+    void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
     void handleExecutionEvent(SDL_Event event) override;
     void drawExecution() override;
     Uint32 executionDelay(Uint32 now, Uint32) override;

@@ -23,6 +23,9 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete);
 // through Asyncify until these loops become resumable application screens.
 void wait(std::uint32_t milliseconds);
 
+// Consume the newest host viewport request at an application frame boundary.
+bool takeViewportSize(int& width, int& height);
+
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char* name);
 void simulationAdvanced(std::uint32_t tick);

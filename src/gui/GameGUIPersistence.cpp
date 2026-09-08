@@ -168,3 +168,20 @@ void GameGUI::save(GAGCore::OutputStream *stream, const std::string name)
 	defaultAssign.save(stream);
 	stream->writeLeaveSection();
 }
+
+void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height)
+{
+    if (!game.map.getW() || !game.map.getH()) return;
+    // Cameras use whole map tiles. Keep the tile at the view's center fixed.
+    minimap.resizeViewport(width);
+    inputState.clearHeld();
+    viewportSpeedX = viewportSpeedY = 0;
+    lastMouseButtonState = 0;
+    miniMapPushed = selectionPushed = false;
+    toolManager.cancelDrag(localTeamNo);
+    const int oldX = viewportX, oldY = viewportY;
+    viewportX = (viewportX + (oldWidth - 160) / 64 - (width - 160) / 64) & game.map.wMask;
+    viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
+    moveParticles(oldX, viewportX, oldY, viewportY);
+    if (gameMenuScreen) gameMenuScreen->viewportResized(oldWidth, oldHeight, width, height);
+}
