@@ -200,6 +200,23 @@ replacement tests cover callback/open/rename failures and temporary-file cleanup
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 
+
+## Team statistics save compatibility
+
+```sh
+scons -j8 release=1 server=0 team-stats-save-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
+```
+
+This headless test verifies live statistics and smoothing across all 32 sampling
+positions and repeated binary reloads, with history-ring wrap, named text fields,
+invalid-index and truncated-field controls. It compares version-84 and version-88
+save traces against outputs from the original loader. Linux and Windows CI run
+it in disposable profiles and check that preferences remain unchanged.
+See [fixtures and reproduction steps](fixtures/team-stats/README.md).
+
 ## AI helper gradient regression
 
 `Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
