@@ -111,6 +111,9 @@ private:
 	/// (format version >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR)
 	bool wideStepCounter;
 
+	/// Format version from the replay header, used to decode orders.
+	Uint32 versionMinor;
+
 	/// The game's current checksum (or 0 if it's not given)
 	Uint32 checksum;
 };

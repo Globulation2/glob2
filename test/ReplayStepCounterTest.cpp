@@ -81,8 +81,13 @@ public:
 	Uint8 getOrderType(void) { return ORDER_DELETE; }
 };
 
-std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 /*versionMinor*/)
+// Record the requested version because supported replay versions currently
+// decode identically.
+Uint32 lastDecodeVersionMinor = 0;
+
+std::shared_ptr<Order> Order::getOrder(const Uint8 *netData, int netDataLength, Uint32 versionMinor)
 {
+	lastDecodeVersionMinor = versionMinor;
 	if (netDataLength < 1 || netData == NULL)
 		return std::shared_ptr<Order>();
 	if (netData[0] == ORDER_NULL)
@@ -257,6 +262,37 @@ void testVersionBounds()
 	}
 }
 
+// 4. Both the initial scan and playback use the replay header version.
+void testDecodeVersionPlumbing()
+{
+	const Uint16 oldVersion = REPLAY_MINIMUM_VERSION_MINOR;
+
+	// Require an older version so a hardcoded VERSION_MINOR cannot pass.
+	check(oldVersion != VERSION_MINOR,
+	      "decodeVersion: replay floor is below the current build version");
+
+	ReplayReader reader;
+	const bool wideCounters = oldVersion >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR;
+	lastDecodeVersionMinor = 0;
+	bool loaded = reader.loadReplay(writeReplayBody(oldVersion, wideCounters, 7), false);
+	check(loaded, "decodeVersion: old-but-supported replay loads");
+	if (!loaded)
+		return;
+
+	check(lastDecodeVersionMinor == oldVersion,
+	      "decodeVersion: initial scan uses the replay header version");
+
+	// Reset the recorder to check playback independently of the initial scan.
+	lastDecodeVersionMinor = 0;
+
+	for (Uint32 i = 0; i < 7; i++)
+		reader.advanceStep();
+	std::shared_ptr<Order> order = reader.retrieveOrder();
+	check(order && order->getOrderType() == ORDER_DELETE, "decodeVersion: order read back");
+	check(lastDecodeVersionMinor == oldVersion,
+	      "decodeVersion: order decoded against the replay's version, not VERSION_MINOR");
+}
+
 }  // namespace
 
 int main(int /*argc*/, char* /*argv*/[])
@@ -264,6 +300,7 @@ int main(int /*argc*/, char* /*argv*/[])
 	testWideRoundTrip();
 	testOldFormatUint16();
 	testVersionBounds();
+	testDecodeVersionPlumbing();
 	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);
 	return failures == 0 ? 0 : 1;
 }

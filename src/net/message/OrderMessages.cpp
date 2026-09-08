@@ -11,11 +11,18 @@ using namespace GAGCore;
 
 NetSendOrder::NetSendOrder()
 {
+	decodeVersionMinor=VERSION_MINOR;
 }
 
 NetSendOrder::NetSendOrder(std::shared_ptr<Order> newOrder)
 {
 	order=newOrder;
+	decodeVersionMinor=VERSION_MINOR;
+}
+
+void NetSendOrder::setDecodeVersionMinor(Uint32 newVersionMinor)
+{
+	decodeVersionMinor=newVersionMinor;
 }
 
 void NetSendOrder::changeOrder(std::shared_ptr<Order> newOrder)
@@ -66,7 +73,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 	stream->read(buffer.data(), size, "data");
 	stream->readLeaveSection();
 
-	order = Order::getOrder(buffer.data(), size, VERSION_MINOR);
+	order = Order::getOrder(buffer.data(), size, decodeVersionMinor);
 
 	// If this couldn't be interpreted return it returned a NULL order, so we throw.
 	if (order == std::shared_ptr<Order>())
