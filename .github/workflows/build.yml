@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
-      CCACHE_DIR: ${{ runner.temp }}/ccache
+      CCACHE_DIR: /tmp/glob2-ccache
       # Hash the compiler binary instead of trusting its mtime, so a g++ point
       # release landing inside the base image cannot reuse the old one's
       # entries. CCACHE_SLOPPINESS is deliberately left unset: include_file_mtime
