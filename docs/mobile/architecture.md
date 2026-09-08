@@ -211,3 +211,17 @@ in landscape. Labels wrap at the available width. It dispatches the existing
 load/save/options/quit/return actions rather than adding another game-state path.
 The screens reached from those actions still use their existing layouts.
 System and main menus remain outside this change.
+
+
+### Broader UI checkpoint (not fully qualified)
+
+`f69f21b42` adds `GameGUITouchActions.cpp` and `GameGUITouchDialogs.cpp`. The former
+provides a scrollable Actions tab for production/flag/building commands; the latter
+presents existing dialog widgets as wrapped touch rows with fixed footer actions.
+The initial special-case pause menu has been replaced by this presenter. Save,
+options, alliance, objectives, chat and history retain their original widget
+callbacks and game order paths. Replay HUD selection is enabled but requires replay
+fixture/device verification. Platform keyboard and Android inset integration are
+also new in this checkpoint. See [handoff](HANDOFF.md) for exact tests and remaining
+work; earlier descriptions above record the staged implementation and do not imply
+that all later additions have inherited the earlier qualification.

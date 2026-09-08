@@ -5,6 +5,24 @@ merged into the mobile branch in `b92c89935`. iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 Android evidence below was collected before this browser merge, on `7333e4e8b`.
 
+## Broader UI handoff checkpoint (`f69f21b42`)
+
+Read [HANDOFF.md](HANDOFF.md) before continuing. This expands building Actions,
+in-game dialogs, menu actions, replay controls, and keyboard/inset handling.
+The native gameplay-touch harness builds and passes, including options, objectives,
+filename text entry, save cancellation, and chat in both phone orientations.
+The Wasm release and ARM64 iOS simulator application builds also pass for this
+checkpoint. Browser runtime suites and simulator launch were not repeated.
+Android changes and replay/Actions-sheet behavior still need the targeted tests
+and device runs listed in the handoff. **The in-game UI is not finished.**
+
+![Phone options fixture](screenshots/gameplay-options-portrait.png)
+
+![Landscape save fixture](screenshots/gameplay-save-landscape.png)
+
+These are native regression captures, not emulator/live-match evidence. The
+following older evidence remains scoped to the commits identified in each section.
+
 ## Current evidence
 
 | Area | Evidence | Limit |
