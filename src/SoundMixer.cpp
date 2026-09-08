@@ -13,7 +13,7 @@ using namespace GAGCore;
 	#include <glob2/BuildConfig.h>
 #endif
 
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 #include <speex/speex.h>
 #endif
 
@@ -244,7 +244,7 @@ void SoundMixer::openAudio(void)
 		mode = MODE_STOPPED;
 	}
 	
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 	// Open Speex decoder
 #ifdef _MSC_VER
 	// workaround for vcpkg bug #2292 which seems to be broken again.
@@ -284,7 +284,7 @@ SoundMixer::~SoundMixer()
 	{
 		SDL_PauseAudio(1);
 		SDL_CloseAudio();
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 		speex_decoder_destroy(speexDecoderState);
 #endif
 	}
@@ -427,7 +427,7 @@ bool SoundMixer::isPlayerTransmittingVoice(int player)
 
 void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 {
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 	if (soundEnabled)
 	{
 		SDL_LockAudio();
