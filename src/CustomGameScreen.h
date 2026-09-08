@@ -4,6 +4,7 @@
 #pragma once
 
 #include "AI.h"
+#include <ScreenStack.h>
 #include "ChooseMapScreen.h"
 #include "Team.h"
 #include <GUIBase.h>
@@ -27,7 +28,7 @@ class CustomGameScreen : public ChooseMapScreen
 
 public:
 	//! Constructor, builds a ChooseMapScreen for maps
-	CustomGameScreen();
+	explicit CustomGameScreen(GAGGUI::ScreenStack& screens);
 	//! Destructor
 	virtual ~CustomGameScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
@@ -40,6 +41,7 @@ public:
 	int getSelectedColor(int i);
 
 private:
+    GAGGUI::ScreenStack& screens;
 
 
 	///Updates the gameHeader with the chosen players for the map

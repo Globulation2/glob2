@@ -18,9 +18,9 @@ infrastructure from the supported-release acceptance criteria.
   waits and diagnostics. No forced SDL delay macro or sleep inside rendering.
 - Explicit screen begin/update/input/draw/finish phases, with a legacy host-loop
   wrapper and automated lifecycle/completion tests. An owning screen stack
-  now drives campaign selection, campaign/tutorial sessions, and end-game
-  transitions with retained ownership. Other menus and the top-level host still
-  require migration.
+  now drives campaign selection, custom setup/options, load/replay selection,
+  single-player sessions, and end-game transitions with retained ownership.
+  Editor/network menus and the top-level host still require migration.
 - Incremental engine session phases with host-supplied timing, separate drawing,
   and delay calculation. Gameplay accepts explicit input batches and tracks
   held input from events, clearing it on focus loss. Modal handling, application
@@ -44,7 +44,8 @@ On macOS arm64, September 2026:
   produces matching 50-tick checksums with regular callbacks, delayed callbacks,
   and a stack-driven game session,
   checks lifecycle guards, and verifies repeatable delay queries.
-- Twelve browser checks cover startup, campaign selector cancellation/reopen,
+- Fifteen browser checks cover startup, campaign selector cancellation/reopen,
+  custom options/AI descriptions and return-to-setup,
   tutorial launch, custom-game pause, save/reload byte
   equality, load continuation, and audio-context activation are exercised
   in Chromium, Firefox, and WebKit using Playwright 1.63.0.

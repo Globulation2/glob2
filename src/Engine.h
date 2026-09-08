@@ -48,14 +48,12 @@ public:
 	/// is a lone map that runs with campaign semantics
 	int initCampaign(const std::string &mapName);
 
-	/// Displays the CustomMap dialogue, and initiates a game from the settings it receives
-	int initCustom();
+	/// Initialize a custom game from the selected map, players and local team.
+	int initCustom(MapHeader& map, GameHeader& players, int localTeam);
 
 	/// Initiate a custom game from the provided game, without adjusting settings from the user
 	int initCustom(const std::string &gameName);
 
-	/// Show the load/save dialog, and use initCustom(gameName) to load the game
-	int initLoadGame();
 
 	/// Initiate a game with the given MultiplayerGame
 	int initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);

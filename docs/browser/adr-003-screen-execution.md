@@ -100,3 +100,20 @@ Map initialization, music loading, requested-save loading, and campaign save
 error dialogs are still synchronous. Custom games, replays, editor, and network
 menu flows still need to adopt the same ownership path before the browser host
 can shed Asyncify.
+
+
+## Custom games and load/replay navigation
+
+`SinglePlayerFlow` owns navigation alongside the screen stack. It queues custom
+setup or save/replay selection, initializes an engine from the selection, and
+queues the same `GameSessionScreen` used by campaigns. Finishing a custom game
+returns to fresh custom setup, preserving desktop behavior. Command-line
+replays share this session ownership path. The old blocking no-argument
+`Engine::initCustom` and `initLoadGame` methods are removed; engine initialization
+accepts the selected map/player headers or filename directly.
+
+Custom options and AI descriptions are child screens whose parent remains
+alive, including the game-header references edited by the options screen.
+Actual map/replay loading and in-session load requests remain synchronous and
+must become resumable jobs. Editor/network flows and the outer main-menu loop
+remain migration work; browser support still depends on Asyncify.

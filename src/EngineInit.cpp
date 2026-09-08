@@ -9,7 +9,6 @@
 
 #include "AINames.h"
 #include "ChecksumSidecar.h"
-#include "CustomGameScreen.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
 #include "EngineTiming.h"
@@ -65,28 +64,11 @@ int Engine::initCampaign(const std::string &mapName)
 
 
 
-int Engine::initCustom(void)
+int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam)
 {
-	CustomGameScreen customGameScreen;
-
-	int cgs=customGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
-
-	if (cgs==CustomGameScreen::CANCEL)
-		return EE_CANCEL;
-	if (cgs==-1)
-		return -1;
-
-	int teamColor=customGameScreen.getSelectedColor(0);
-	gui.localPlayer=0;
-	gui.localTeamNo=teamColor;
-
-	int ret = initGame(customGameScreen.getMapHeader(), customGameScreen.getGameHeader());
-	if(ret != EE_NO_ERROR)
-		return EE_CANT_LOAD_MAP;
-	else if(ret == -1)
-		return -1;
-
-	return EE_NO_ERROR;
+    gui.localPlayer = 0;
+    gui.localTeamNo = localTeam;
+    return initGame(map, players);
 }
 
 int Engine::initCustom(const std::string &gameName)
@@ -114,26 +96,6 @@ int Engine::initCustom(const std::string &gameName)
 		return -1;
 
 	return EE_NO_ERROR;
-}
-
-int Engine::initLoadGame()
-{
-	ChooseMapScreen loadGameScreen("games", "game", true, "replays", "replay", false);
-	int lgs = loadGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
-	if (lgs == ChooseMapScreen::CANCEL)
-		return EE_CANCEL;
-	else if(lgs == -1)
-		return -1;
-
-	assert(loadGameScreen.getSelectedType() != ChooseMapScreen::NONE);
-	assert(loadGameScreen.getSelectedType() != ChooseMapScreen::MAP);
-
-	if (loadGameScreen.getSelectedType() == ChooseMapScreen::GAME)
-		return initCustom(loadGameScreen.getMapHeader().getFileName());
-	else if (loadGameScreen.getSelectedType() == ChooseMapScreen::REPLAY)
-		return loadReplay(loadGameScreen.getMapHeader().getFileName(false,true));
-	else
-		assert(false);
 }
 
 int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer)

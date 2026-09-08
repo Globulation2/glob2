@@ -17,6 +17,7 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
+#include "SinglePlayerFlow.h"
 #include "Game.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
@@ -507,20 +508,18 @@ int Glob2::run(int argc, char *argv[])
 
 	isRunning=true;
 
-	// Replay the game specified by the command line
-	if (globalContainer->replaying)
-	{
-		Engine engine;
-		int rc_e = engine.loadReplay(globalContainer->replayFileName);
-		if (rc_e == Engine::EE_NO_ERROR)
-			isRunning = (engine.run() != -1);
-		else if(rc_e == -1)
-			isRunning = false;
-	}
+    // Command-line replays use the same ownership path as menu replays.
+    if (globalContainer->replaying) {
+        ScreenStack screens(*globalContainer->gfx);
+        SinglePlayerFlow flow(screens);
+        flow.replay(globalContainer->replayFileName);
+        isRunning = screens.execute() != Screen::QUIT_APPLICATION;
+    }
  
 	while (isRunning)
 	{
-		switch (MainMenuScreen::menu())
+		const int menuChoice = MainMenuScreen::menu();
+		switch (menuChoice)
 		{
 			case -1:
 			{
@@ -549,38 +548,16 @@ int Glob2::run(int argc, char *argv[])
                 if (screens.execute() == Screen::QUIT_APPLICATION) isRunning = false;
 			}
 			break;
-			case MainMenuScreen::LOAD_GAME:
-			{
-				Engine engine;
-				int rc_e = engine.initLoadGame();
-				if (rc_e == Engine::EE_NO_ERROR)
-					isRunning = (engine.run() != -1);
-				else if(rc_e == -1)
-					isRunning = false;
-			}
-			break;
-			case MainMenuScreen::CUSTOM:
-			{
-				bool cont=true;
-				while(cont && isRunning)
-				{
-					Engine engine;
-					int rc_e = engine.initCustom();
-					if (rc_e ==  Engine::EE_NO_ERROR)
-					{
-						isRunning = (engine.run() != -1);
-					}
-					else if(rc_e == -1)
-					{
-						isRunning = false;
-					}
-					else
-					{
-						cont=false;	
-					}
-				}
-			}
-			break;
+            case MainMenuScreen::LOAD_GAME:
+            case MainMenuScreen::CUSTOM:
+            {
+                ScreenStack screens(*globalContainer->gfx);
+                SinglePlayerFlow flow(screens);
+                if (menuChoice == MainMenuScreen::CUSTOM) flow.custom();
+                else flow.load();
+                if (screens.execute() == Screen::QUIT_APPLICATION) isRunning = false;
+            }
+            break;
 			case MainMenuScreen::MULTIPLAYERS_YOG:
 			{
 				multiplayerYOG();

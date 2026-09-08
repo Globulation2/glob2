@@ -30,6 +30,7 @@ void GameSessionScreen::updateExecution(Uint32 tick)
     if (!running) {
         if (engine->finishSession()) {
             engine->beginSession(clock);
+            nextTick = clock;
             return;
         }
         finished = true;

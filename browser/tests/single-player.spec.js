@@ -46,6 +46,29 @@ test('tutorial sessions quit through the end screen and can restart', async ({pa
   }
 });
 
+test('custom options and AI descriptions return to setup, and a finished game returns there too', async ({page}) => {
+  await menu(page, 480, 200);
+  await screen(page, 'CustomGameScreen');
+  await menu(page, 100, 70);
+  await menu(page, 310, 440);
+  await screen(page, 'CustomGameOtherOptions');
+  await page.locator('#canvas').press('Escape');
+  await screen(page, 'CustomGameScreen');
+  await menu(page, 310, 390);
+  await screen(page, 'AIDescriptionScreen');
+  await page.locator('#canvas').press('Enter');
+  await screen(page, 'CustomGameScreen');
+  await menu(page, 530, 380);
+  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+  await page.locator('#canvas').press('Escape');
+  await click(page, 600, 500);
+  await screen(page, 'EndGameScreen');
+  await page.locator('#canvas').press('Enter');
+  await screen(page, 'CustomGameScreen');
+  await page.locator('#canvas').press('Escape');
+  await screen(page, 'MainMenuScreen');
+});
+
 test('custom match pauses, persists and resumes after reload', async ({page}) => {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));

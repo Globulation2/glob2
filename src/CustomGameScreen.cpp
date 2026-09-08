@@ -15,8 +15,8 @@
 #include <optional>
 #include <vector>
 
-CustomGameScreen::CustomGameScreen() :
-	ChooseMapScreen("maps", "map", true)
+CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack& screens) :
+	ChooseMapScreen("maps", "map", true), screens(screens)
 {
 	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
@@ -144,17 +144,11 @@ void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par
 	{
 		if(source == otherOptions)
 		{
-			CustomGameOtherOptions settings(gameHeader, mapHeader, false);
-			int rc = settings.execute(globalContainer->gfx, 40);
-			if(rc == -1)
-				endExecute(-1);
+            screens.push(std::make_unique<CustomGameOtherOptions>(gameHeader, mapHeader, false));
 		}
 		if(source == aiDescriptions)
 		{
-			AIDescriptionScreen descriptions;
-			int rc = descriptions.execute(globalContainer->gfx, 40);
-			if(rc == -1)
-				endExecute(-1);
+            screens.push(std::make_unique<AIDescriptionScreen>());
 		}
 	}
 }
