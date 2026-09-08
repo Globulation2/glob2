@@ -18,6 +18,9 @@ if not env['server']:
     aspect_test = aspect_env.Program('FullscreenAspectHarness',
         [aspect_env.Object('FullscreenAspectHarness.o', '#test/FullscreenAspectHarness.cpp'), l1])
     env.Alias('aspect-test', aspect_test)
+    screen_test = env.Program('ScreenExecutionHarness',
+        [env.Object('ScreenExecutionHarness.o', '#test/ScreenExecutionHarness.cpp'), l1])
+    env.Alias('screen-test', screen_test)
 else:
     Default(l2)
 

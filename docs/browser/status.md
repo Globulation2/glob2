@@ -16,6 +16,9 @@ infrastructure from the supported-release acceptance criteria.
   health/metrics endpoints, and real TCP/WebSocket integration tests.
 - An explicit native/browser application-host boundary for transitional
   waits and diagnostics. No forced SDL delay macro or sleep inside rendering.
+- Explicit screen begin/update/input/draw/finish phases, with a legacy host-loop
+  wrapper and automated lifecycle/completion tests. The owning screen stack
+  and nonblocking menu transitions are still pending.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are
@@ -27,10 +30,13 @@ On macOS arm64, September 2026:
 
 - Native desktop, lobby, router, gateway, and release Wasm builds succeed.
 - Nine build identity/architecture tests and eight gateway integration tests pass.
-- The native speed regression verifies live speed, pause/hard pause, replay
-  playback, and all seven expected checksum samples. Its wall-clock/camera
-  assertions are sensitive to concurrent CPU/GPU load; run it separately
-  from browser tests and compilation when investigating timing failures.
+- The native speed regression previously passed live speed, pause/hard pause,
+  replay playback, and all seven expected checksum samples. After screen-phase
+  extraction, two runs stopped at the camera-cadence assertion (10/13 cells,
+  tolerance 2) before reaching replay checks. Background CPU load was high;
+  the cause is not established and this rerun remains an open validation item.
+  The new screen lifecycle harness passes, including creation/input/timer
+  completion, reuse, supplied event modifiers, and the compatibility host.
 - Browser startup, tutorial launch, custom-game pause, save/reload byte
   equality, load continuation, and audio-context activation are exercised
   in Chromium, Firefox, and WebKit using Playwright 1.63.0.

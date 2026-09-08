@@ -15,7 +15,7 @@ scons mingwcross=1         # cross-compile for Windows from Linux
 scons BINDIR=/path/bin INSTALLDIR=/path/share
 ```
 
-Options are cached in `options_cache.py`, so `release=1` and `server=1` stick until you pass `release=0` / `server=0`.
+Options are explicit on each invocation. Outputs and generated configuration are isolated under `build/<toolchain>/<role>/<mode>`. Use `scons target=web release=1` for the browser client; see `docs/browser/adr-001-build-isolation.md`.
 
 **Server build gotcha.** Always build the server with `scons server=1`, never a bare `scons build/src/glob2-server`. The flag defines `YOG_SERVER_ONLY` and switches to the stripped `libgag_server.a`. Without it the objects are compiled with GUI code but linked against the stripped library, producing dozens of misleading undefined-symbol errors.
 

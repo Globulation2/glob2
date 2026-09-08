@@ -283,6 +283,7 @@ namespace GAGGUI
 	
 		//! true while execution is running, no need for serialisation
 		bool run;
+		bool executionActive;
 		//! the return code, no need for serialisation
 		Sint32 returnCode;
 		
@@ -316,6 +317,16 @@ namespace GAGGUI
 		//! Full screen paint, call paint(0, 0, gfx->getW(), gfx->getH())
 		virtual void paint(void);
 		
+		//! Nonblocking lifecycle. The host supplies time and already-polled input.
+		void beginExecution(GAGCore::DrawableSurface *surface);
+		void updateExecution(Uint32 tick);
+		void handleExecutionEvent(SDL_Event event);
+		void drawExecution();
+		bool isExecutionRunning() const { return run; }
+		//! Complete once stopped; repeated calls do not repeat destruction callbacks.
+		int finishExecution();
+
+		//! Compatibility host loop for callers not yet migrated to a screen stack.
 		//! Run the screen until someone call endExecute(returnCode). Return returnCode
 		virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);
 		//! Call this method to stop the execution of the screen

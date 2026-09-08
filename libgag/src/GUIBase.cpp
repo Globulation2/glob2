@@ -3,6 +3,7 @@
 
 #include <ApplicationHost.h>
 #include <typeinfo>
+#include <stdexcept>
 #include <GUIBase.h>
 #include <GUIStyle.h>
 #include <assert.h>
@@ -395,6 +396,7 @@ namespace GAGGUI
 		gfx = NULL;
 		returnCode = 0;
 		run = false;
+		executionActive = false;
 	}
 	
 	Screen::~Screen()
@@ -405,110 +407,107 @@ namespace GAGGUI
 		}
 	}
 	
-	int Screen::execute(DrawableSurface *gfx, int stepLength)
+	void Screen::beginExecution(DrawableSurface *surface)
 	{
+		if (executionActive) throw std::logic_error("Screen execution is already active");
+		if (!surface) throw std::invalid_argument("Screen execution requires a surface");
+		gfx = surface;
+		returnCode = 0;
+		run = true;
+		executionActive = true;
 		ApplicationHost::screenChanged(typeid(*this).name());
-		Uint64 frameStartTime;
-		Sint64 frameWaitTime;
-		
-		this->gfx = gfx;
-	
-		// init widgets
 		dispatchInit();
-		
-		// create screen event
 		onAction(NULL, SCREEN_CREATED, 0, 0);
-		
-		// draw screen
-		dispatchPaint();
-		run=true;
-		
-		while (run)
-		{
-			// get first timer
-			frameStartTime=SDL_GetTicks64();
-			
-			// send timer
-			dispatchTimer(frameStartTime);
-	
-			// send events
-			SDL_Event lastMouseMotion, windowEvent, event;
-			bool hadLastMouseMotion=false;
-			bool wasWindowEvent=false;
-			while (SDL_PollEvent(&event))
-			{
-				GAGCore::GraphicContext::translateMouseEvent(&event);
-				switch (event.type)
-				{
-					case SDL_QUIT:
-					{
-						run=false;
-						returnCode=QUIT_APPLICATION;
-						break;
-					}
-					break;
-					case SDL_MOUSEMOTION:
-					{
-						hadLastMouseMotion=true;
-						lastMouseMotion=event;
-					}
-					break;
-					case SDL_WINDOWEVENT:
-					{
-						windowEvent=event;
-						wasWindowEvent=true;
-					}
-					break;
-					case SDL_KEYDOWN:
-					{
-						//Manual integration of cmd+q and alt f4
-#						ifdef USE_OSX
-						if(event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
-						{
-							run=false;
-							returnCode=QUIT_APPLICATION;
-							break;
-						}
-#						endif
-#						ifdef USE_WIN32
-						if(event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
-						{
-							run=false;
-							returnCode=QUIT_APPLICATION;
-							break;
-						}
-#						endif
-						dispatchEvents(&event);
-					}
-					break;
-
-					default:
-					{
-						dispatchEvents(&event);
-					}
-					break;
-				}
-			}
-			if (hadLastMouseMotion)
-				dispatchEvents(&lastMouseMotion);
-			if (wasWindowEvent)
-				dispatchEvents(&windowEvent);
-				
-			// draw
-			dispatchPaint();
-	
-			// wait timer
-			frameWaitTime=static_cast<Sint64>(SDL_GetTicks64())-static_cast<Sint64>(frameStartTime);
-			frameWaitTime=stepLength-frameWaitTime;
-			GAGCore::ApplicationHost::wait(std::max<Sint64>(frameWaitTime, 0));
-		}
-		
-		// destroy screen event
-		onAction(NULL, SCREEN_DESTROYED, 0, 0);
-	
-		return returnCode;
 	}
-	
+
+	void Screen::updateExecution(Uint32 tick)
+	{
+		if (run) dispatchTimer(tick);
+	}
+
+	void Screen::handleExecutionEvent(SDL_Event event)
+	{
+		if (!run) return;
+		GraphicContext::translateMouseEvent(&event);
+		if (event.type == SDL_QUIT)
+		{
+			endExecute(QUIT_APPLICATION);
+			return;
+		}
+		if (event.type == SDL_KEYDOWN)
+		{
+#ifdef USE_OSX
+			if (event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
+			{
+				endExecute(QUIT_APPLICATION);
+				return;
+			}
+#endif
+#ifdef USE_WIN32
+			if (event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
+			{
+				endExecute(QUIT_APPLICATION);
+				return;
+			}
+#endif
+		}
+		dispatchEvents(&event);
+	}
+
+	void Screen::drawExecution()
+	{
+		if (run) dispatchPaint();
+	}
+
+	int Screen::finishExecution()
+	{
+		if (run) throw std::logic_error("Cannot finish a running screen");
+		const int result = returnCode;
+		if (executionActive)
+		{
+			executionActive = false;
+			onAction(NULL, SCREEN_DESTROYED, 0, 0);
+		}
+		return result;
+	}
+
+	int Screen::execute(DrawableSurface *surface, int stepLength)
+	{
+		beginExecution(surface);
+		drawExecution();
+		while (isExecutionRunning())
+		{
+			const Uint64 frameStart = SDL_GetTicks64();
+			updateExecution(static_cast<Uint32>(frameStart));
+			SDL_Event lastMouseMotion{}, windowEvent{}, event{};
+			bool hadLastMouseMotion = false;
+			bool hadWindowEvent = false;
+			while (isExecutionRunning() && SDL_PollEvent(&event))
+			{
+				if (event.type == SDL_MOUSEMOTION)
+				{
+					lastMouseMotion = event;
+					hadLastMouseMotion = true;
+				}
+				else if (event.type == SDL_WINDOWEVENT)
+				{
+					windowEvent = event;
+					hadWindowEvent = true;
+				}
+				else handleExecutionEvent(event);
+			}
+			if (hadLastMouseMotion) handleExecutionEvent(lastMouseMotion);
+			if (hadWindowEvent) handleExecutionEvent(windowEvent);
+			drawExecution();
+			if (isExecutionRunning())
+			{
+				const Sint64 elapsed = static_cast<Sint64>(SDL_GetTicks64() - frameStart);
+				ApplicationHost::wait(std::max<Sint64>(stepLength - elapsed, 0));
+			}
+		}
+		return finishExecution();
+	}
+
 	void Screen::endExecute(int returnCode)
 	{
 		run=false;
@@ -730,14 +729,14 @@ namespace GAGGUI
 				if (event.type == SDL_KEYDOWN)
 				{
 #					ifdef USE_OSX
-					if (event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
+					if (event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
 					{
 						quitApplication = true;
 						break;
 					}
 #					endif
 #					ifdef USE_WIN32
-					if (event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
+					if (event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
 					{
 						quitApplication = true;
 						break;
