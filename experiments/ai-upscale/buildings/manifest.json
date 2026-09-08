@@ -1,0 +1,2020 @@
+{
+  "registry_entries": 51,
+  "unique_frames": 73,
+  "layer_count": 124,
+  "scope": "All map building series from BuildingTypes*.cpp, all loaded states and matching extra source assets; includes virtual flags, excludes miniature UI icons.",
+  "registry": [
+    {
+      "family": "Swarm",
+      "kind": "swarm",
+      "base": "swarm0c",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Swarm",
+      "kind": "swarm",
+      "base": "swarm0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Inn",
+      "kind": "inn",
+      "base": "inn0c",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Inn",
+      "kind": "inn",
+      "base": "inn0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 2,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Inn",
+      "kind": "inn",
+      "base": "inn1c",
+      "level": 2,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Inn",
+      "kind": "inn",
+      "base": "inn1b",
+      "level": 2,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 2,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Inn",
+      "kind": "inn",
+      "base": "inn2c",
+      "level": 3,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Inn",
+      "kind": "inn",
+      "base": "inn2b",
+      "level": 3,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Hospital",
+      "kind": "hospital",
+      "base": "hosp0c",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Hospital",
+      "kind": "hospital",
+      "base": "hosp0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 2,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Hospital",
+      "kind": "hospital",
+      "base": "hosp1c",
+      "level": 2,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Hospital",
+      "kind": "hospital",
+      "base": "hosp1b",
+      "level": 2,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Hospital",
+      "kind": "hospital",
+      "base": "hosp2c",
+      "level": 3,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Hospital",
+      "kind": "hospital",
+      "base": "hosp2b",
+      "level": 3,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Market",
+      "kind": "market",
+      "base": "buildingsite",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 2,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Market",
+      "kind": "market",
+      "base": "market0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesColony.cpp"
+    },
+    {
+      "family": "Defense tower",
+      "kind": "defencetower",
+      "base": "buildingsite",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 1,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesDefence.cpp"
+    },
+    {
+      "family": "Defense tower",
+      "kind": "defencetower",
+      "base": "defencetower0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesDefence.cpp"
+    },
+    {
+      "family": "Defense tower",
+      "kind": "defencetower",
+      "base": "buildingsite",
+      "level": 2,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 1,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesDefence.cpp"
+    },
+    {
+      "family": "Defense tower",
+      "kind": "defencetower",
+      "base": "defencetower1b",
+      "level": 2,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 3,
+      "source": "src/game/entities/BuildingTypesDefence.cpp"
+    },
+    {
+      "family": "Defense tower",
+      "kind": "defencetower",
+      "base": "buildingsite",
+      "level": 3,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 1,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesDefence.cpp"
+    },
+    {
+      "family": "Defense tower",
+      "kind": "defencetower",
+      "base": "defencetower2b",
+      "level": 3,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesDefence.cpp"
+    },
+    {
+      "family": "Stone wall",
+      "kind": "stonewall",
+      "base": "wallc",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesDefence.cpp"
+    },
+    {
+      "family": "Stone wall",
+      "kind": "stonewall",
+      "base": "wall",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": true,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesDefence.cpp"
+    },
+    {
+      "family": "Exploration flag",
+      "kind": "explorationflag",
+      "base": "explorationflag",
+      "level": 1,
+      "construction": false,
+      "virtual": true,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesFlags.cpp"
+    },
+    {
+      "family": "War flag",
+      "kind": "warflag",
+      "base": "warflag",
+      "level": 1,
+      "construction": false,
+      "virtual": true,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesFlags.cpp"
+    },
+    {
+      "family": "Clearing flag",
+      "kind": "clearingflag",
+      "base": "clearingflag",
+      "level": 1,
+      "construction": false,
+      "virtual": true,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesFlags.cpp"
+    },
+    {
+      "family": "Racetrack",
+      "kind": "racetrack",
+      "base": "racetrack0c",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Racetrack",
+      "kind": "racetrack",
+      "base": "racetrack0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 3,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Racetrack",
+      "kind": "racetrack",
+      "base": "buildingsite",
+      "level": 2,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 5,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Racetrack",
+      "kind": "racetrack",
+      "base": "racetrack1b",
+      "level": 2,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 3,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Racetrack",
+      "kind": "racetrack",
+      "base": "buildingsite",
+      "level": 3,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 5,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Racetrack",
+      "kind": "racetrack",
+      "base": "racetrack2b",
+      "level": 3,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Swimming pool",
+      "kind": "swimmingpool",
+      "base": "pool0c",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Swimming pool",
+      "kind": "swimmingpool",
+      "base": "pool0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 2,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Swimming pool",
+      "kind": "swimmingpool",
+      "base": "buildingsite",
+      "level": 2,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 5,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Swimming pool",
+      "kind": "swimmingpool",
+      "base": "pool1b",
+      "level": 2,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Swimming pool",
+      "kind": "swimmingpool",
+      "base": "buildingsite",
+      "level": 3,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 5,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Swimming pool",
+      "kind": "swimmingpool",
+      "base": "pool2b",
+      "level": 3,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Barracks",
+      "kind": "barracks",
+      "base": "buildingsite",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 3,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Barracks",
+      "kind": "barracks",
+      "base": "barracks0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Barracks",
+      "kind": "barracks",
+      "base": "buildingsite",
+      "level": 2,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 3,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Barracks",
+      "kind": "barracks",
+      "base": "barracks1b",
+      "level": 2,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Barracks",
+      "kind": "barracks",
+      "base": "buildingsite",
+      "level": 3,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 3,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "Barracks",
+      "kind": "barracks",
+      "base": "barracks2b",
+      "level": 3,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "School",
+      "kind": "school",
+      "base": "buildingsite",
+      "level": 1,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 1,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "School",
+      "kind": "school",
+      "base": "school0b",
+      "level": 1,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 2,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "School",
+      "kind": "school",
+      "base": "school1c",
+      "level": 2,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "School",
+      "kind": "school",
+      "base": "school1b",
+      "level": 2,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 3,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "School",
+      "kind": "school",
+      "base": "buildingsite",
+      "level": 3,
+      "construction": true,
+      "virtual": false,
+      "connected": false,
+      "start": 1,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    },
+    {
+      "family": "School",
+      "kind": "school",
+      "base": "school2b",
+      "level": 3,
+      "construction": false,
+      "virtual": false,
+      "connected": false,
+      "start": 0,
+      "count": 1,
+      "source": "src/game/entities/BuildingTypesUpgrade.cpp"
+    }
+  ],
+  "frames": [
+    {
+      "id": "swarm0c0",
+      "base": "swarm0c",
+      "index": 0,
+      "layers": [
+        "swarm0c0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Swarm",
+          "level": 1,
+          "state": "Construction",
+          "kind": "swarm"
+        }
+      ],
+      "family": "Swarm",
+      "label": "Swarm L1 \u00b7 Construction"
+    },
+    {
+      "id": "swarm0b0",
+      "base": "swarm0b",
+      "index": 0,
+      "layers": [
+        "swarm0b0.png",
+        "swarm0b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Swarm",
+          "level": 1,
+          "state": "Completed",
+          "kind": "swarm"
+        }
+      ],
+      "family": "Swarm",
+      "label": "Swarm L1 \u00b7 Completed"
+    },
+    {
+      "id": "inn0c0",
+      "base": "inn0c",
+      "index": 0,
+      "layers": [
+        "inn0c0.png"
+      ],
+      "uses": [
+        {
+          "family": "Inn",
+          "level": 1,
+          "state": "Construction",
+          "kind": "inn"
+        }
+      ],
+      "family": "Inn",
+      "label": "Inn L1 \u00b7 Construction"
+    },
+    {
+      "id": "inn0b0",
+      "base": "inn0b",
+      "index": 0,
+      "layers": [
+        "inn0b0.png",
+        "inn0b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Inn",
+          "level": 1,
+          "state": "Completed",
+          "kind": "inn"
+        }
+      ],
+      "family": "Inn",
+      "label": "Inn L1 \u00b7 Completed"
+    },
+    {
+      "id": "inn0b1",
+      "base": "inn0b",
+      "index": 1,
+      "layers": [
+        "inn0b1.png"
+      ],
+      "uses": [
+        {
+          "family": "Inn",
+          "level": 1,
+          "state": "Damage 1/1",
+          "kind": "inn"
+        }
+      ],
+      "family": "Inn",
+      "label": "Inn L1 \u00b7 Damage 1/1"
+    },
+    {
+      "id": "inn1c0",
+      "base": "inn1c",
+      "index": 0,
+      "layers": [
+        "inn1c0.png"
+      ],
+      "uses": [
+        {
+          "family": "Inn",
+          "level": 2,
+          "state": "Construction",
+          "kind": "inn"
+        }
+      ],
+      "family": "Inn",
+      "label": "Inn L2 \u00b7 Construction"
+    },
+    {
+      "id": "inn1b0",
+      "base": "inn1b",
+      "index": 0,
+      "layers": [
+        "inn1b0.png",
+        "inn1b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Inn",
+          "level": 2,
+          "state": "Completed",
+          "kind": "inn"
+        }
+      ],
+      "family": "Inn",
+      "label": "Inn L2 \u00b7 Completed"
+    },
+    {
+      "id": "inn1b1",
+      "base": "inn1b",
+      "index": 1,
+      "layers": [
+        "inn1b1.png",
+        "inn1b1r.png"
+      ],
+      "uses": [
+        {
+          "family": "Inn",
+          "level": 2,
+          "state": "Damage 1/1",
+          "kind": "inn"
+        }
+      ],
+      "family": "Inn",
+      "label": "Inn L2 \u00b7 Damage 1/1"
+    },
+    {
+      "id": "inn2c0",
+      "base": "inn2c",
+      "index": 0,
+      "layers": [
+        "inn2c0.png"
+      ],
+      "uses": [
+        {
+          "family": "Inn",
+          "level": 3,
+          "state": "Construction",
+          "kind": "inn"
+        }
+      ],
+      "family": "Inn",
+      "label": "Inn L3 \u00b7 Construction"
+    },
+    {
+      "id": "inn2b0",
+      "base": "inn2b",
+      "index": 0,
+      "layers": [
+        "inn2b0.png",
+        "inn2b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Inn",
+          "level": 3,
+          "state": "Completed",
+          "kind": "inn"
+        }
+      ],
+      "family": "Inn",
+      "label": "Inn L3 \u00b7 Completed"
+    },
+    {
+      "id": "hosp0c0",
+      "base": "hosp0c",
+      "index": 0,
+      "layers": [
+        "hosp0c0.png"
+      ],
+      "uses": [
+        {
+          "family": "Hospital",
+          "level": 1,
+          "state": "Construction",
+          "kind": "hospital"
+        }
+      ],
+      "family": "Hospital",
+      "label": "Hospital L1 \u00b7 Construction"
+    },
+    {
+      "id": "hosp0b0",
+      "base": "hosp0b",
+      "index": 0,
+      "layers": [
+        "hosp0b0.png",
+        "hosp0b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Hospital",
+          "level": 1,
+          "state": "Completed",
+          "kind": "hospital"
+        }
+      ],
+      "family": "Hospital",
+      "label": "Hospital L1 \u00b7 Completed"
+    },
+    {
+      "id": "hosp0b1",
+      "base": "hosp0b",
+      "index": 1,
+      "layers": [
+        "hosp0b1.png"
+      ],
+      "uses": [
+        {
+          "family": "Hospital",
+          "level": 1,
+          "state": "Damage 1/1",
+          "kind": "hospital"
+        }
+      ],
+      "family": "Hospital",
+      "label": "Hospital L1 \u00b7 Damage 1/1"
+    },
+    {
+      "id": "hosp1c0",
+      "base": "hosp1c",
+      "index": 0,
+      "layers": [
+        "hosp1c0.png"
+      ],
+      "uses": [
+        {
+          "family": "Hospital",
+          "level": 2,
+          "state": "Construction",
+          "kind": "hospital"
+        }
+      ],
+      "family": "Hospital",
+      "label": "Hospital L2 \u00b7 Construction"
+    },
+    {
+      "id": "hosp1b0",
+      "base": "hosp1b",
+      "index": 0,
+      "layers": [
+        "hosp1b0.png",
+        "hosp1b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Hospital",
+          "level": 2,
+          "state": "Completed",
+          "kind": "hospital"
+        }
+      ],
+      "family": "Hospital",
+      "label": "Hospital L2 \u00b7 Completed"
+    },
+    {
+      "id": "hosp2c0",
+      "base": "hosp2c",
+      "index": 0,
+      "layers": [
+        "hosp2c0.png"
+      ],
+      "uses": [
+        {
+          "family": "Hospital",
+          "level": 3,
+          "state": "Construction",
+          "kind": "hospital"
+        }
+      ],
+      "family": "Hospital",
+      "label": "Hospital L3 \u00b7 Construction"
+    },
+    {
+      "id": "hosp2b0",
+      "base": "hosp2b",
+      "index": 0,
+      "layers": [
+        "hosp2b0.png",
+        "hosp2b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Hospital",
+          "level": 3,
+          "state": "Completed",
+          "kind": "hospital"
+        }
+      ],
+      "family": "Hospital",
+      "label": "Hospital L3 \u00b7 Completed"
+    },
+    {
+      "id": "buildingsite0",
+      "base": "buildingsite",
+      "index": 0,
+      "layers": [
+        "buildingsite0.png"
+      ],
+      "uses": [],
+      "family": "Shared construction sites",
+      "label": "Not referenced by current building registry"
+    },
+    {
+      "id": "buildingsite1",
+      "base": "buildingsite",
+      "index": 1,
+      "layers": [
+        "buildingsite1.png"
+      ],
+      "uses": [
+        {
+          "family": "Defense tower",
+          "level": 1,
+          "state": "Construction",
+          "kind": "defencetower"
+        },
+        {
+          "family": "Defense tower",
+          "level": 2,
+          "state": "Construction",
+          "kind": "defencetower"
+        },
+        {
+          "family": "Defense tower",
+          "level": 3,
+          "state": "Construction",
+          "kind": "defencetower"
+        },
+        {
+          "family": "School",
+          "level": 1,
+          "state": "Construction",
+          "kind": "school"
+        },
+        {
+          "family": "School",
+          "level": 3,
+          "state": "Construction",
+          "kind": "school"
+        }
+      ],
+      "family": "Shared construction sites",
+      "label": "Defense tower L1 \u00b7 Construction; Defense tower L2 \u00b7 Construction; Defense tower L3 \u00b7 Construction; School L1 \u00b7 Construction; School L3 \u00b7 Construction"
+    },
+    {
+      "id": "buildingsite2",
+      "base": "buildingsite",
+      "index": 2,
+      "layers": [
+        "buildingsite2.png"
+      ],
+      "uses": [
+        {
+          "family": "Market",
+          "level": 1,
+          "state": "Construction",
+          "kind": "market"
+        }
+      ],
+      "family": "Shared construction sites",
+      "label": "Market L1 \u00b7 Construction"
+    },
+    {
+      "id": "buildingsite3",
+      "base": "buildingsite",
+      "index": 3,
+      "layers": [
+        "buildingsite3.png"
+      ],
+      "uses": [
+        {
+          "family": "Barracks",
+          "level": 1,
+          "state": "Construction",
+          "kind": "barracks"
+        },
+        {
+          "family": "Barracks",
+          "level": 2,
+          "state": "Construction",
+          "kind": "barracks"
+        },
+        {
+          "family": "Barracks",
+          "level": 3,
+          "state": "Construction",
+          "kind": "barracks"
+        }
+      ],
+      "family": "Shared construction sites",
+      "label": "Barracks L1 \u00b7 Construction; Barracks L2 \u00b7 Construction; Barracks L3 \u00b7 Construction"
+    },
+    {
+      "id": "buildingsite4",
+      "base": "buildingsite",
+      "index": 4,
+      "layers": [
+        "buildingsite4.png"
+      ],
+      "uses": [],
+      "family": "Shared construction sites",
+      "label": "Not referenced by current building registry"
+    },
+    {
+      "id": "buildingsite5",
+      "base": "buildingsite",
+      "index": 5,
+      "layers": [
+        "buildingsite5.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 2,
+          "state": "Construction",
+          "kind": "racetrack"
+        },
+        {
+          "family": "Racetrack",
+          "level": 3,
+          "state": "Construction",
+          "kind": "racetrack"
+        },
+        {
+          "family": "Swimming pool",
+          "level": 2,
+          "state": "Construction",
+          "kind": "swimmingpool"
+        },
+        {
+          "family": "Swimming pool",
+          "level": 3,
+          "state": "Construction",
+          "kind": "swimmingpool"
+        }
+      ],
+      "family": "Shared construction sites",
+      "label": "Racetrack L2 \u00b7 Construction; Racetrack L3 \u00b7 Construction; Swimming pool L2 \u00b7 Construction; Swimming pool L3 \u00b7 Construction"
+    },
+    {
+      "id": "market0b0",
+      "base": "market0b",
+      "index": 0,
+      "layers": [
+        "market0b0.png",
+        "market0b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Market",
+          "level": 1,
+          "state": "Completed",
+          "kind": "market"
+        }
+      ],
+      "family": "Market",
+      "label": "Market L1 \u00b7 Completed"
+    },
+    {
+      "id": "defencetower0b0",
+      "base": "defencetower0b",
+      "index": 0,
+      "layers": [
+        "defencetower0b0.png",
+        "defencetower0b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Defense tower",
+          "level": 1,
+          "state": "Completed",
+          "kind": "defencetower"
+        }
+      ],
+      "family": "Defense tower",
+      "label": "Defense tower L1 \u00b7 Completed"
+    },
+    {
+      "id": "defencetower1b0",
+      "base": "defencetower1b",
+      "index": 0,
+      "layers": [
+        "defencetower1b0.png",
+        "defencetower1b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Defense tower",
+          "level": 2,
+          "state": "Completed",
+          "kind": "defencetower"
+        }
+      ],
+      "family": "Defense tower",
+      "label": "Defense tower L2 \u00b7 Completed"
+    },
+    {
+      "id": "defencetower1b1",
+      "base": "defencetower1b",
+      "index": 1,
+      "layers": [
+        "defencetower1b1.png",
+        "defencetower1b1r.png"
+      ],
+      "uses": [
+        {
+          "family": "Defense tower",
+          "level": 2,
+          "state": "Damage 1/2",
+          "kind": "defencetower"
+        }
+      ],
+      "family": "Defense tower",
+      "label": "Defense tower L2 \u00b7 Damage 1/2"
+    },
+    {
+      "id": "defencetower1b2",
+      "base": "defencetower1b",
+      "index": 2,
+      "layers": [
+        "defencetower1b2.png",
+        "defencetower1b2r.png"
+      ],
+      "uses": [
+        {
+          "family": "Defense tower",
+          "level": 2,
+          "state": "Damage 2/2",
+          "kind": "defencetower"
+        }
+      ],
+      "family": "Defense tower",
+      "label": "Defense tower L2 \u00b7 Damage 2/2"
+    },
+    {
+      "id": "defencetower2b0",
+      "base": "defencetower2b",
+      "index": 0,
+      "layers": [
+        "defencetower2b0.png",
+        "defencetower2b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Defense tower",
+          "level": 3,
+          "state": "Completed",
+          "kind": "defencetower"
+        }
+      ],
+      "family": "Defense tower",
+      "label": "Defense tower L3 \u00b7 Completed"
+    },
+    {
+      "id": "wallc0",
+      "base": "wallc",
+      "index": 0,
+      "layers": [
+        "wallc0.png",
+        "wallc0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Construction",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Construction"
+    },
+    {
+      "id": "wall0",
+      "base": "wall",
+      "index": 0,
+      "layers": [
+        "wall0.png",
+        "wall0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections none",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections none"
+    },
+    {
+      "id": "wall1",
+      "base": "wall",
+      "index": 1,
+      "layers": [
+        "wall1.png",
+        "wall1r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections E",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections E"
+    },
+    {
+      "id": "wall10",
+      "base": "wall",
+      "index": 10,
+      "layers": [
+        "wall10.png",
+        "wall10r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections N / W",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections N / W"
+    },
+    {
+      "id": "wall11",
+      "base": "wall",
+      "index": 11,
+      "layers": [
+        "wall11.png",
+        "wall11r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections N / W / E",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections N / W / E"
+    },
+    {
+      "id": "wall12",
+      "base": "wall",
+      "index": 12,
+      "layers": [
+        "wall12.png",
+        "wall12r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections N / S",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections N / S"
+    },
+    {
+      "id": "wall13",
+      "base": "wall",
+      "index": 13,
+      "layers": [
+        "wall13.png",
+        "wall13r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections N / S / E",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections N / S / E"
+    },
+    {
+      "id": "wall14",
+      "base": "wall",
+      "index": 14,
+      "layers": [
+        "wall14.png",
+        "wall14r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections N / S / W",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections N / S / W"
+    },
+    {
+      "id": "wall15",
+      "base": "wall",
+      "index": 15,
+      "layers": [
+        "wall15.png",
+        "wall15r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections N / S / W / E",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections N / S / W / E"
+    },
+    {
+      "id": "wall2",
+      "base": "wall",
+      "index": 2,
+      "layers": [
+        "wall2.png",
+        "wall2r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections W",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections W"
+    },
+    {
+      "id": "wall3",
+      "base": "wall",
+      "index": 3,
+      "layers": [
+        "wall3.png",
+        "wall3r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections W / E",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections W / E"
+    },
+    {
+      "id": "wall4",
+      "base": "wall",
+      "index": 4,
+      "layers": [
+        "wall4.png",
+        "wall4r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections S",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections S"
+    },
+    {
+      "id": "wall5",
+      "base": "wall",
+      "index": 5,
+      "layers": [
+        "wall5.png",
+        "wall5r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections S / E",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections S / E"
+    },
+    {
+      "id": "wall6",
+      "base": "wall",
+      "index": 6,
+      "layers": [
+        "wall6.png",
+        "wall6r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections S / W",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections S / W"
+    },
+    {
+      "id": "wall7",
+      "base": "wall",
+      "index": 7,
+      "layers": [
+        "wall7.png",
+        "wall7r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections S / W / E",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections S / W / E"
+    },
+    {
+      "id": "wall8",
+      "base": "wall",
+      "index": 8,
+      "layers": [
+        "wall8.png",
+        "wall8r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections N",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections N"
+    },
+    {
+      "id": "wall9",
+      "base": "wall",
+      "index": 9,
+      "layers": [
+        "wall9.png",
+        "wall9r.png"
+      ],
+      "uses": [
+        {
+          "family": "Stone wall",
+          "level": 1,
+          "state": "Connections N / E",
+          "kind": "stonewall"
+        }
+      ],
+      "family": "Stone wall",
+      "label": "Stone wall L1 \u00b7 Connections N / E"
+    },
+    {
+      "id": "explorationflag0",
+      "base": "explorationflag",
+      "index": 0,
+      "layers": [
+        "explorationflag0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Exploration flag",
+          "level": 1,
+          "state": "Flag",
+          "kind": "explorationflag"
+        }
+      ],
+      "family": "Exploration flag",
+      "label": "Exploration flag L1 \u00b7 Flag"
+    },
+    {
+      "id": "warflag0",
+      "base": "warflag",
+      "index": 0,
+      "layers": [
+        "warflag0r.png"
+      ],
+      "uses": [
+        {
+          "family": "War flag",
+          "level": 1,
+          "state": "Flag",
+          "kind": "warflag"
+        }
+      ],
+      "family": "War flag",
+      "label": "War flag L1 \u00b7 Flag"
+    },
+    {
+      "id": "clearingflag0",
+      "base": "clearingflag",
+      "index": 0,
+      "layers": [
+        "clearingflag0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Clearing flag",
+          "level": 1,
+          "state": "Flag",
+          "kind": "clearingflag"
+        }
+      ],
+      "family": "Clearing flag",
+      "label": "Clearing flag L1 \u00b7 Flag"
+    },
+    {
+      "id": "racetrack0c0",
+      "base": "racetrack0c",
+      "index": 0,
+      "layers": [
+        "racetrack0c0.png",
+        "racetrack0c0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 1,
+          "state": "Construction",
+          "kind": "racetrack"
+        }
+      ],
+      "family": "Racetrack",
+      "label": "Racetrack L1 \u00b7 Construction"
+    },
+    {
+      "id": "racetrack0b0",
+      "base": "racetrack0b",
+      "index": 0,
+      "layers": [
+        "racetrack0b0.png",
+        "racetrack0b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 1,
+          "state": "Completed",
+          "kind": "racetrack"
+        }
+      ],
+      "family": "Racetrack",
+      "label": "Racetrack L1 \u00b7 Completed"
+    },
+    {
+      "id": "racetrack0b1",
+      "base": "racetrack0b",
+      "index": 1,
+      "layers": [
+        "racetrack0b1.png",
+        "racetrack0b1r.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 1,
+          "state": "Damage 1/2",
+          "kind": "racetrack"
+        }
+      ],
+      "family": "Racetrack",
+      "label": "Racetrack L1 \u00b7 Damage 1/2"
+    },
+    {
+      "id": "racetrack0b2",
+      "base": "racetrack0b",
+      "index": 2,
+      "layers": [
+        "racetrack0b2.png",
+        "racetrack0b2r.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 1,
+          "state": "Damage 2/2",
+          "kind": "racetrack"
+        }
+      ],
+      "family": "Racetrack",
+      "label": "Racetrack L1 \u00b7 Damage 2/2"
+    },
+    {
+      "id": "racetrack1b0",
+      "base": "racetrack1b",
+      "index": 0,
+      "layers": [
+        "racetrack1b0.png",
+        "racetrack1b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 2,
+          "state": "Completed",
+          "kind": "racetrack"
+        }
+      ],
+      "family": "Racetrack",
+      "label": "Racetrack L2 \u00b7 Completed"
+    },
+    {
+      "id": "racetrack1b1",
+      "base": "racetrack1b",
+      "index": 1,
+      "layers": [
+        "racetrack1b1.png",
+        "racetrack1b1r.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 2,
+          "state": "Damage 1/2",
+          "kind": "racetrack"
+        }
+      ],
+      "family": "Racetrack",
+      "label": "Racetrack L2 \u00b7 Damage 1/2"
+    },
+    {
+      "id": "racetrack1b2",
+      "base": "racetrack1b",
+      "index": 2,
+      "layers": [
+        "racetrack1b2.png",
+        "racetrack1b2r.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 2,
+          "state": "Damage 2/2",
+          "kind": "racetrack"
+        }
+      ],
+      "family": "Racetrack",
+      "label": "Racetrack L2 \u00b7 Damage 2/2"
+    },
+    {
+      "id": "racetrack2b0",
+      "base": "racetrack2b",
+      "index": 0,
+      "layers": [
+        "racetrack2b0.png",
+        "racetrack2b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Racetrack",
+          "level": 3,
+          "state": "Completed",
+          "kind": "racetrack"
+        }
+      ],
+      "family": "Racetrack",
+      "label": "Racetrack L3 \u00b7 Completed"
+    },
+    {
+      "id": "pool0c0",
+      "base": "pool0c",
+      "index": 0,
+      "layers": [
+        "pool0c0.png"
+      ],
+      "uses": [
+        {
+          "family": "Swimming pool",
+          "level": 1,
+          "state": "Construction",
+          "kind": "swimmingpool"
+        }
+      ],
+      "family": "Swimming pool",
+      "label": "Swimming pool L1 \u00b7 Construction"
+    },
+    {
+      "id": "pool0b0",
+      "base": "pool0b",
+      "index": 0,
+      "layers": [
+        "pool0b0.png",
+        "pool0b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Swimming pool",
+          "level": 1,
+          "state": "Completed",
+          "kind": "swimmingpool"
+        }
+      ],
+      "family": "Swimming pool",
+      "label": "Swimming pool L1 \u00b7 Completed"
+    },
+    {
+      "id": "pool0b1",
+      "base": "pool0b",
+      "index": 1,
+      "layers": [
+        "pool0b1.png",
+        "pool0b1r.png"
+      ],
+      "uses": [
+        {
+          "family": "Swimming pool",
+          "level": 1,
+          "state": "Damage 1/1",
+          "kind": "swimmingpool"
+        }
+      ],
+      "family": "Swimming pool",
+      "label": "Swimming pool L1 \u00b7 Damage 1/1"
+    },
+    {
+      "id": "pool1b0",
+      "base": "pool1b",
+      "index": 0,
+      "layers": [
+        "pool1b0.png",
+        "pool1b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Swimming pool",
+          "level": 2,
+          "state": "Completed",
+          "kind": "swimmingpool"
+        }
+      ],
+      "family": "Swimming pool",
+      "label": "Swimming pool L2 \u00b7 Completed"
+    },
+    {
+      "id": "pool2b0",
+      "base": "pool2b",
+      "index": 0,
+      "layers": [
+        "pool2b0.png",
+        "pool2b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Swimming pool",
+          "level": 3,
+          "state": "Completed",
+          "kind": "swimmingpool"
+        }
+      ],
+      "family": "Swimming pool",
+      "label": "Swimming pool L3 \u00b7 Completed"
+    },
+    {
+      "id": "barracks0b0",
+      "base": "barracks0b",
+      "index": 0,
+      "layers": [
+        "barracks0b0.png",
+        "barracks0b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Barracks",
+          "level": 1,
+          "state": "Completed",
+          "kind": "barracks"
+        }
+      ],
+      "family": "Barracks",
+      "label": "Barracks L1 \u00b7 Completed"
+    },
+    {
+      "id": "barracks1b0",
+      "base": "barracks1b",
+      "index": 0,
+      "layers": [
+        "barracks1b0.png",
+        "barracks1b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Barracks",
+          "level": 2,
+          "state": "Completed",
+          "kind": "barracks"
+        }
+      ],
+      "family": "Barracks",
+      "label": "Barracks L2 \u00b7 Completed"
+    },
+    {
+      "id": "barracks2b0",
+      "base": "barracks2b",
+      "index": 0,
+      "layers": [
+        "barracks2b0.png",
+        "barracks2b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "Barracks",
+          "level": 3,
+          "state": "Completed",
+          "kind": "barracks"
+        }
+      ],
+      "family": "Barracks",
+      "label": "Barracks L3 \u00b7 Completed"
+    },
+    {
+      "id": "school0b0",
+      "base": "school0b",
+      "index": 0,
+      "layers": [
+        "school0b0.png"
+      ],
+      "uses": [
+        {
+          "family": "School",
+          "level": 1,
+          "state": "Completed",
+          "kind": "school"
+        }
+      ],
+      "family": "School",
+      "label": "School L1 \u00b7 Completed"
+    },
+    {
+      "id": "school0b1",
+      "base": "school0b",
+      "index": 1,
+      "layers": [
+        "school0b1.png"
+      ],
+      "uses": [
+        {
+          "family": "School",
+          "level": 1,
+          "state": "Damage 1/1",
+          "kind": "school"
+        }
+      ],
+      "family": "School",
+      "label": "School L1 \u00b7 Damage 1/1"
+    },
+    {
+      "id": "school1c0",
+      "base": "school1c",
+      "index": 0,
+      "layers": [
+        "school1c0.png",
+        "school1c0r.png"
+      ],
+      "uses": [
+        {
+          "family": "School",
+          "level": 2,
+          "state": "Construction",
+          "kind": "school"
+        }
+      ],
+      "family": "School",
+      "label": "School L2 \u00b7 Construction"
+    },
+    {
+      "id": "school1b0",
+      "base": "school1b",
+      "index": 0,
+      "layers": [
+        "school1b0.png",
+        "school1b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "School",
+          "level": 2,
+          "state": "Completed",
+          "kind": "school"
+        }
+      ],
+      "family": "School",
+      "label": "School L2 \u00b7 Completed"
+    },
+    {
+      "id": "school1b1",
+      "base": "school1b",
+      "index": 1,
+      "layers": [
+        "school1b1.png",
+        "school1b1r.png"
+      ],
+      "uses": [
+        {
+          "family": "School",
+          "level": 2,
+          "state": "Damage 1/2",
+          "kind": "school"
+        }
+      ],
+      "family": "School",
+      "label": "School L2 \u00b7 Damage 1/2"
+    },
+    {
+      "id": "school1b2",
+      "base": "school1b",
+      "index": 2,
+      "layers": [
+        "school1b2.png",
+        "school1b2r.png"
+      ],
+      "uses": [
+        {
+          "family": "School",
+          "level": 2,
+          "state": "Damage 2/2",
+          "kind": "school"
+        }
+      ],
+      "family": "School",
+      "label": "School L2 \u00b7 Damage 2/2"
+    },
+    {
+      "id": "school2b0",
+      "base": "school2b",
+      "index": 0,
+      "layers": [
+        "school2b0.png",
+        "school2b0r.png"
+      ],
+      "uses": [
+        {
+          "family": "School",
+          "level": 3,
+          "state": "Completed",
+          "kind": "school"
+        }
+      ],
+      "family": "School",
+      "label": "School L3 \u00b7 Completed"
+    },
+    {
+      "id": "inn3c0",
+      "base": "inn3c",
+      "index": 0,
+      "layers": [
+        "inn3c0.png"
+      ],
+      "uses": [],
+      "family": "Additional source assets",
+      "label": "Not referenced by current building registry"
+    }
+  ]
+}

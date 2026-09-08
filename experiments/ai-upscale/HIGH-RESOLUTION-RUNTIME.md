@@ -36,9 +36,11 @@ Pool0b0 and school1b0 retain the selected baseline bytes. Deterministic finishin
 
 Terrain atlas slots have 64 source pixels of extrusion around each 128-pixel tile. Each of the four levels is downsampled per tile before packing and border extrusion. The renderer clamps the maximum mip level to three, sufficient at 50% zoom. Other terrain, water, units and effects retain original textures.
 
-Reproduce and validate the export (requires Pillow, NumPy and the experiment sources):
+Reproduce and validate the export (requires Pillow, NumPy and the committed selected experiment sources; create a local virtual environment first):
 
 ```sh
+python3 -m venv .cache/ai-upscale/venv
+.cache/ai-upscale/venv/bin/pip install Pillow numpy
 .cache/ai-upscale/venv/bin/python experiments/ai-upscale/export_runtime.py
 .cache/ai-upscale/venv/bin/python experiments/ai-upscale/validate_runtime.py
 ```

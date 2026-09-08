@@ -25,4 +25,3 @@ Left: original source enlarged 4× with nearest-neighbor sampling. Right: final 
 ![Final comparison sheet all-11](images/all-11.png)
 
 ![Final comparison sheet all-12](images/all-12.png)
-

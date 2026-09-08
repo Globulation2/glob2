@@ -24,7 +24,7 @@ Enable **High-resolution artwork** in General Settings and load a session. It de
 
 The experiments established that one recipe is insufficient: a universal generator repaint worked well for the swarm but failed to preserve the inn construction fragments; a full anime restoration simplified painted textures; unrestrained alpha reconstruction could make translucent overlays too bright. The selected pipeline therefore uses conservative color restoration, per-frame finishing, protected reference outputs and only two generated swarm states. The gallery shows only those final choices.
 
-The committed selected sources support deterministic runtime export. Model binaries and discarded intermediate outputs are intentionally omitted. Recreating upstream inference requires the recorded models and generation tools; exported runtime images do not.
+The committed selected sources support deterministic runtime export. Upstream inference/finishing scripts and model provenance are retained under `experiments/ai-upscale` for auditing and further work. Model binaries and discarded intermediate outputs are intentionally omitted. Recreating upstream inference requires the recorded models and generation tools; exported runtime images do not.
 
 ## Engine changes needed for zoom
 
