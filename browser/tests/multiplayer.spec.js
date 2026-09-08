@@ -161,7 +161,7 @@ function sentChecksums(page) {
   return checksums;
 }
 
-const multiplayerAIs = ['no AI', 'Numbi', 'Castor', 'Warrush', 'ReachToInfinity', 'Nicowar', 'Maxima', 'Cortex']
+const multiplayerAIs = ['no AI', 'Numbi', 'Castor', 'Warrush', 'ReachToInfinity', 'Nicowar', 'Cortex']
   .map((name, id) => ({name, id}))
   .filter(ai => process.env.GLOB2_ALL_AIS === '1' || ai.id === 0 || ai.id === 6);
 for (const ai of multiplayerAIs)

@@ -21,7 +21,7 @@ Glob2-*.dmg
 /.tmp
 
 
-/tools/browser-emsdk/
+/tools/browser-emsdk
 /build-browser/
 
 /build-browser.log
@@ -30,4 +30,4 @@ Glob2-*.dmg
 /test/build/
 
 /build-*.log
-/browser/node_modules/
+/browser/node_modules

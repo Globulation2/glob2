@@ -47,7 +47,7 @@ infrastructure from the supported-release acceptance criteria.
   storage remain transitional.
 - Explicit cooperative game/map loading jobs and a cancellable editor-entry
   loading screen with staged ownership and RNG restoration. Terrain chunks and
-  gradient seeding and propagation sweeps yield; other expensive operations and loading
+  team parsing yield; the shared 8-bit helper gradient sweeps can also yield; other expensive operations and loading
   callers still need migration and latency validation. Single-player startup
   (custom/save/replay/campaign) now owns the engine in a cancellable loading
   screen, including replay cleanup and error transitions. In-editor replacement
@@ -61,8 +61,8 @@ infrastructure from the supported-release acceptance criteria.
   and normalization now yield through nested jobs with owned temporary arrays and
   instance-local stamp state. Concrete-islands/isles distance floods, point spacing,
   weighted area expansion, player-land partitioning, point collection/filtering,
-  resource filling, oval creation, area scoring, and team-gradient setup also
-  use nested jobs.
+  resource filling, oval creation, and area scoring also use nested jobs.
+  Upstream resource and area gradients remain lazily constructed.
   Building-specific gradients and other long terrain operations still need subdivision;
   cross-platform generation parity is not yet certified.
 - Shared measured loading/generation slices with an injectable steady clock,
@@ -77,54 +77,22 @@ infrastructure from the supported-release acceptance criteria.
 
 ## Local validation
 
-On macOS arm64, September 2026:
+After isolating browser work and rebasing onto upstream `master` (`88934ecf`),
+on macOS arm64 in September 2026:
 
-- Native desktop, lobby, router, gateway, and release Wasm builds succeed.
-- Nine build identity/architecture tests and eight gateway integration tests pass.
-- The Linux arm64 Compose image builds and both deployment tests pass: trusted
-  local-CA HTTPS/WSS, private route denial, account persistence across recreation,
-  router-loss room refusal, and successful admission after service recreation.
-  An embedded-router browser match still passes after the server mode change.
-- Fifteen multiplayer checks pass across Chromium, Firefox, and WebKit: login,
-  lobby exit, browser/browser matches without AI and with Maxima, and browser/native
-  checksum comparisons through a 250-tick native run. Chromium additionally passes
-  browser/browser matches with every shipped AI. These use the actual YOG server
-  and gateway; native cross-play was tested on macOS arm64.
-- The native speed regression passes live speed, pause/hard pause, replay
-  playback, and all seven expected checksum samples. The camera test now
-  samples both cadences at the measurement window's end; previously the slower
-  cadence sampled before its final sleep. Tolerances remain unchanged.
-- The screen lifecycle/stack harness passes. The incremental engine harness
-  produces matching 50-tick checksums with regular callbacks, delayed callbacks,
-  and a stack-driven game session,
-  checks lifecycle guards, and verifies repeatable delay queries. The editor
-  harness checks incremental quit, cancellation, and discard, plus fertility
-  equality against the previous algorithm at three work budgets, progress,
-  deferred publication, and cancellation through the real progress screen.
-  Cooperative loading tests cover nested lifetime/exception behavior, partial
-  allocation cleanup, RNG restoration, and matching loaded-game checksums.
-  Global gradients match an independent queue-relaxation oracle for toroidal
-  seams, obstacles, and mixed sources, including interrupted/scheduled sweeps.
-  Scheduled game initialization also matches the 50-tick session checksum;
-  cancelled game/replay starts and missing replay failures release global state.
-  Failed and cancelled editor replacements preserve map checksums, RNG, and the
-  unsaved-edit prompt. Child transitions clear held input without changing focus.
-  The coroutine lifecycle tests also pass with AddressSanitizer.
-- Forty-two browser checks cover startup, settings/credits/shutdown,
-  editor/campaign-entry navigation and map quit decisions, campaign selector
-  cancellation/reopen,
-  custom options/AI descriptions and return-to-setup,
-  tutorial launch, custom-game pause, save/reload byte
-  equality, editor save cancellation and map reload persistence, load continuation,
-  editor load cancellation/restart and staged replacement, generation cancellation/retry
-  with swamp and concrete-island maps,
-  game-start cancellation/retry, and
-  audio-context activation are exercised
-  in Chromium, Firefox, and WebKit using Playwright 1.63.0.
-- Alternating native/browser builds preserve compilation output contents
-  and timestamps and do not change tracked files. CI also defines separate
-  clean native-first, web-first, and concurrent jobs; CI results are not
-  certified by a local run.
+- Desktop and release Wasm builds succeed from the same checkout.
+- Nine build identity/architecture tests, seven native WSS tests, eight gateway
+  tests, and shared framing/native TCP round-trip tests pass.
+- Native session/loading/cancellation tests pass, including matching 50-tick
+  checksums under regular callbacks, delayed callbacks, and the screen stack.
+- Upstream save-safety and weighted-gradient tests pass. Binary-string tests
+  now cover embedded zero bytes, which occur in persisted password hashes.
+- The first post-rebase single-player run passed 40 of 42 browser scenarios.
+  Firefox and WebKit saved-match reload failed; this remains under investigation.
+- Multiplayer and Compose results from before the rebase are historical evidence,
+  not certification of this revision. Post-rebase results are recorded in the PR.
+  The six upstream AIs are retained unchanged; no Maxima or tournament changes
+  are included in this branch.
 
 These are focused regressions, not a complete campaign, AI, deterministic
 cross-platform, or supported-browser certification matrix.
