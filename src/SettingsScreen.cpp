@@ -406,9 +406,3 @@ void SettingsScreen::onGroupActivated(int group_n)
 		updateShortcutInfoFromSelection();
 	}
 }
-
-
-int SettingsScreen::menu(void)
-{
-	return SettingsScreen().execute(globalContainer->gfx, 30);
-}

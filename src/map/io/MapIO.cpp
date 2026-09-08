@@ -156,38 +156,7 @@ try
                    makeDiscoveredAreasExplored uses it). */
 		this->game=game;
 
-		// This is a game, so we do compute gradients
-		for (int t=0; t<header.getNumberOfTeams(); t++)
-			for (int r=0; r<MAX_RESOURCES; r++)
-				for (int s=0; s<2; s++)
-				{
-					assert(resourcesGradient[t][r][s]==NULL);
-					resourcesGradient[t][r][s]=new Uint8[size];
-					updateResourcesGradient(t, r, (bool)s);
-				}
-		for (int t=0; t<Team::MAX_COUNT; t++)
-			for (int r=0; r<MAX_RESOURCES; r++)
-				for (int s=0; s<1; s++)
-					gradientUpdated[t][r][s]=false;
-
-		for (int t=0; t<header.getNumberOfTeams(); t++)
-			for (int s=0; s<2; s++)
-			{
-				assert(forbiddenGradient[t][s] == NULL);
-				forbiddenGradient[t][s] = new Uint8[size];
-				updateForbiddenGradient(t, s);
-
-				assert(guardAreasGradient[t][s] == NULL);
-				guardAreasGradient[t][s] = new Uint8[size];
-				updateGuardAreasGradient(t, s);
-
-				assert(clearAreasGradient[t][s] == NULL);
-				clearAreasGradient[t][s] = new Uint8[size];
-				updateClearAreasGradient(t, s);
-
-				guardGradientUpdated[t][s] = false;
-				clearGradientUpdated[t][s] = false;
-			}
+		// This is a game; the gradients are built when a unit first asks for them.
 		for (int t=0; t<header.getNumberOfTeams(); t++)
 		{
 			if (!restoreExploredArea)
@@ -283,36 +252,10 @@ void Map::addTeam(void)
 	int oldNumberOfTeam=numberOfTeam-1;
 	assert(numberOfTeam>0);
 	
-	for (int t=0; t<oldNumberOfTeam; t++)
-		for (int r=0; r<MAX_RESOURCES; r++)
-			for (int s=0; s<2; s++)
-				assert(resourcesGradient[t][r][s]);
-	for (int t=oldNumberOfTeam; t<Team::MAX_COUNT; t++)
-		for (int r=0; r<MAX_RESOURCES; r++)
-			for (int s=0; s<2; s++)
-				assert(resourcesGradient[t][r][s]==NULL);
-	
 	int t=oldNumberOfTeam;
 	for (int r=0; r<MAX_RESOURCES; r++)
-		for (int s=0; s<2; s++)
-		{
+		for (int s=0; s<SWIM_CLASS_COUNT; s++)
 			assert(resourcesGradient[t][r][s]==NULL);
-			resourcesGradient[t][r][s]=new Uint8[size];
-			updateResourcesGradient(t, r, (bool)s);
-		}
-	
-	for (int s=0; s<2; s++)
-	{
-		assert(forbiddenGradient[t][s] == NULL);
-		forbiddenGradient[t][s] = new Uint8[size];
-		updateForbiddenGradient(t, s);
-		assert(guardAreasGradient[t][s] == NULL);
-		guardAreasGradient[t][s] = new Uint8[size];
-		updateGuardAreasGradient(t, s);
-		assert(clearAreasGradient[t][s] == NULL);
-		clearAreasGradient[t][s] = new Uint8[size];
-		updateClearAreasGradient(t, s);
-	}
 	
 	assert(exploredArea[t] == NULL);
 	exploredArea[t] = new Uint8[size];
@@ -329,23 +272,17 @@ void Map::removeTeam(void)
 	assert(numberOfTeam<Team::MAX_COUNT);
 	
 	int t=numberOfTeam;
-	for (int r=0; r<MAX_RESOURCES; r++)
-		for (int s=0; s<2; s++)
+	for (int s=0; s<SWIM_CLASS_COUNT; s++)
+	{
+		for (int r=0; r<MAX_RESOURCES; r++)
 		{
-			if(resourcesGradient[t][r][s])
-				delete[] resourcesGradient[t][r][s];
+			delete[] resourcesGradient[t][r][s];
 			resourcesGradient[t][r][s]=NULL;
 		}
-
-	for (int s=0; s<2; s++)
-	{
-		assert(forbiddenGradient[t][s] != NULL);
 		delete[] forbiddenGradient[t][s];
 		forbiddenGradient[t][s]=NULL;
-		assert(guardAreasGradient[t][s] != NULL);
 		delete[] guardAreasGradient[t][s];
 		guardAreasGradient[t][s]=NULL;
-		assert(clearAreasGradient[t][s] != NULL);
 		delete[] clearAreasGradient[t][s];
 		clearAreasGradient[t][s]=NULL;
 	}

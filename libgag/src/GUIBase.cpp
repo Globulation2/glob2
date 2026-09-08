@@ -216,17 +216,6 @@ namespace GAGGUI
 		return a * (x * x * x) + b * (x * x) + c * x + d;
 	}
 	
-	//! Interpolate from V0 to V1 on time T for value x, so that f(0) = V0, f(T) = V1, f'(0) = -1, f'(T) = 0
-	float splineInterpolationFastStart(float T, float V0, float V1, float x)
-	{
-		assert(T > 0);
-		float a = (2 * (V0 - V1 - T / 2)) / (T * T * T);
-		float b = (1 / (2 * T)) - (3 * (V0 - V1 - T / 2)) / (T * T);
-		float c = -1;
-		float d = V0;
-		return a * (x * x * x) + b * (x * x) + c * x + d;
-	}
-	
 	void RectangularWidget::getScreenPos(int *sx, int *sy, int *sw, int *sh)
 	{
 		assert(sx);

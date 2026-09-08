@@ -254,6 +254,8 @@ public:
 
 	// quality parameters
 	Sint32 performance[NB_ABILITY];
+	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
+	int swimClass() const;
 	Sint32 level[NB_ABILITY];
 	bool canLearn[NB_ABILITY];
 	Sint32 experience;
@@ -289,14 +291,11 @@ public:
 public:
 	// optimisation cached values
 	int stepsLeftUntilHungry;
-	int minDistToResource[MAX_RESOURCES];
-	bool allResourcesAreTooFar;
 
 public:
 	// computing optimisation cached values
 	int numberOfStepsLeftUntilHungry(void);
-	void computeMinDistToResources(void);
-	
+
 public:
 	bool integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);

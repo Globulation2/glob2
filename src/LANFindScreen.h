@@ -30,9 +30,7 @@ public:
 	enum
 	{
 		CONNECT = 1,
-		QUIT = 5,
-
-		STARTED=11
+		QUIT = 5
 	};
 
 private:

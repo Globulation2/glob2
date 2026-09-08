@@ -104,8 +104,3 @@ void LANMenuScreen::onAction(Widget *source, Action action, int par1, int par2)
 		}
 	}
 }
-
-int LANMenuScreen::menu(void)
-{
-	return LANMenuScreen().execute(globalContainer->gfx, 30);
-}

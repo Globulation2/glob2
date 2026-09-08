@@ -5,6 +5,7 @@ import glob
 from io import StringIO
 sys.path.append( os.path.abspath("scons") )
 import bundle
+import ccache
 import dmg
 import nsis
 
@@ -282,6 +283,11 @@ def main():
             env['CXX'] = 'x86_64-w64-mingw32-g++'
             env['AR']  = 'x86_64-w64-mingw32-ar'
             env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
+
+    # Cache compilation after compiler selection and before configure probes.
+    # Link commands continue to use the original compiler driver.
+    if ccache.enabled():
+        ccache.enable(env)
     
     
     

@@ -121,7 +121,6 @@ public:
 	
 	bool isSpaceSet() { return hasSpaceBeenClicked; }
 	void setIsSpaceSet(bool value) { hasSpaceBeenClicked=value; }
-	bool isSwallowSpaceKey() { return swallowSpaceKey; }
 	void setSwallowSpaceKey(bool value) { swallowSpaceKey=value; }
 	
 	void showScriptText(const std::string &text);
@@ -453,10 +452,6 @@ private:
 	Unit* selectionUnit() const { return std::get<Unit*>(selection); }
 	int selectionResource() const { return std::get<int>(selection); }
 	void checkSelection(void);
-	
-	/// This function causes all information about the selected unit to be dumped
-	void dumpUnitInformation(void);
-	
 
 	// What's visible or hidden on GUI
 	std::vector<std::string> buildingsChoiceName;

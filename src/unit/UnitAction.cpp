@@ -83,7 +83,7 @@ void Unit::handleActionGoingTarget()
 {
 	assert(!performance[FLY]);
 	clearOccupiedMapSlot();
-	owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, &dx, &dy, performance[SWIM] > 0, owner->me, GOING_TARGET_MAX_PATH_LENGTH);
+	owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, &dx, &dy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
 	directionFromDxDy();
 	wrapPosition();
 

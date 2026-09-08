@@ -192,5 +192,4 @@ public:
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
-	static int menu(void);
 };
