@@ -13,10 +13,12 @@ public:
     std::uint32_t delay(std::uint32_t now) override;
 private:
     GAGGUI::ScreenStack screens;
+    GAGGUI::ScreenStack shutdownScreens;
     SinglePlayerFlow singlePlayer;
     std::uint32_t lastFrame = 0;
     GAGGUI::Screen* minimumNotice = nullptr; // Owned by screens.
     bool hidden = false;
+    bool quitting = false;
     void mainMenu();
     void choose(int choice);
 };

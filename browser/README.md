@@ -33,6 +33,12 @@ remaining release gates.
 
 ## Playing and saving
 
+Use the game's Quit button to wait for final storage writes before closing.
+If that write fails, the game offers Retry save or Quit without saving. Closing
+or refreshing the browser tab directly cannot wait for asynchronous saves.
+Campaign creation/editing also waits for durable storage before returning.
+
+
 Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in the migrated flows; some legacy multiplayer flows remain.

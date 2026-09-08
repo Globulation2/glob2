@@ -1302,3 +1302,11 @@ Client and server protocols differ. Install the same Glob2 release as the server
 Continue
 [settings save failed]
 Settings save not confirmed. Retry, or continue.
+[shutdown save failed]
+Final save not confirmed. Retry, or quit without saving.
+[quit without saving]
+Quit without saving
+[game closed]
+Game closed. You can close this window or reload to play again.
+[campaign editor save failed]
+Save not confirmed. OK retries; Cancel returns to the editor menu.

@@ -649,3 +649,7 @@
 [network release mismatch]
 [settings continue]
 [settings save failed]
+[shutdown save failed]
+[quit without saving]
+[game closed]
+[campaign editor save failed]

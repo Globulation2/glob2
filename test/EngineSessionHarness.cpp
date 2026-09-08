@@ -8,6 +8,7 @@
 #include "MapEdit.h"
 #include "YOGLoginScreen.h"
 #include "SettingsScreen.h"
+#include "Application.h"
 #include "YOGClient.h"
 #include "YOGClientEvent.h"
 #include <GUITextArea.h>
@@ -113,6 +114,16 @@ int main(int argc, char** argv)
         require(!settings.isExecutionRunning(), "Durable native settings should complete");
         settings.finishExecution();
         std::cout << "PASS settings close only after persistence completion" << std::endl;
+    }
+    {
+        Application application;
+        SDL_Event quit{};
+        quit.type = SDL_QUIT;
+        require(application.frame(SDL_GetTicks(), {quit}), "Quit must begin final persistence before returning");
+        require(application.frame(SDL_GetTicks(), {quit}), "Repeated close must not bypass final persistence");
+        require(application.frame(SDL_GetTicks(), {}), "Shutdown must present its completion before releasing graphics");
+        require(!application.frame(SDL_GetTicks(), {}), "Native shutdown must complete after persistence");
+        std::cout << "PASS application quit waits for final persistence" << std::endl;
     }
     {
         struct LoginProbe : YOGLoginScreen {
