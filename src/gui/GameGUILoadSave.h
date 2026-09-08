@@ -14,6 +14,7 @@ namespace GAGGUI
 	class List;
 	class TextInput;
     class Text;
+    class TextButton;
 }
 
 class LoadSaveScreen:public OverlayScreen
@@ -22,12 +23,16 @@ public:
 	enum
 	{
 		OK = 0,
-		CANCEL = 1
+		CANCEL = 1,
+        EXPORT = 2
 	};
 	
 private:
 	List *fileList;
     Text *caption;
+    TextButton *exportButton;
+    std::string exportPath;
+    void exportSave();
     std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
 	TextInput *fileNameEntry;
 	bool isLoad;

@@ -1,4 +1,6 @@
 const {test,expect}=require('@playwright/test');
+const fs=require('node:fs/promises');
+const {createHash}=require('node:crypto');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async ()=>(await state(page)).screen).toContain(name);
 const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
@@ -48,6 +50,12 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   await save(page);
   await expect.poll(async ()=>(await state(page)).persistence).toBe('failed');
   const changed=await digest(); expect(changed).not.toEqual(original);
+  const downloadEvent=page.waitForEvent('download');
+  await click(page,600,422);
+  const download=await downloadEvent;
+  expect(download.suggestedFilename()).toBe('Durability_regression.game');
+  const exported=await fs.readFile(await download.path());
+  expect({size:exported.length,sha256:createHash('sha256').update(exported).digest('hex')}).toEqual(changed);
   await page.screenshot({path:info.outputPath('save-persistence-failure.png')});
   const restored=await context.newPage();
   await restored.goto('/'); await screen(restored,'MainMenuScreen');

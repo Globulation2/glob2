@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <cstdint>
+#include <string>
 #include <SDL.h>
 #include <functional>
 #include <memory>
@@ -27,6 +28,9 @@ void wait(std::uint32_t milliseconds);
 bool takeViewportSize(int& width, int& height);
 // Visibility edges are retained even when no frame ran while hidden.
 bool takeVisibilityChange(bool& hidden);
+
+bool canExportFiles();
+bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes);
 
 // Persistence completion is owned by the caller; releasing it is safe while pending.
 enum class PersistenceState { Pending, Succeeded, Failed };

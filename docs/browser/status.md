@@ -113,6 +113,13 @@ infrastructure from the supported-release acceptance criteria.
   `screenshots/save-persistence-failure.png`. These are injected faults, not a
   full browser-profile capacity or interrupted-upgrade qualification.
 
+- Failed browser manual saves offer an in-game download of the retained file.
+  Export reads through the shared filesystem interface, bounds allocation to
+  64 MiB, and passes bytes to the browser host. All six abort/quota scenarios
+  verify the downloaded filename and byte digest, preservation of the old
+  durable save, and successful retry. General import/export for other local
+  data types and explicit messaging for oversized exports remain unfinished.
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),

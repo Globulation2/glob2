@@ -8,6 +8,8 @@
 #include <GUIText.h>
 #include <GUITextInput.h>
 #include <Toolkit.h>
+#include <FileManager.h>
+#include <BinaryStream.h>
 #include <StringTable.h>
 
 class FuncFileList: public FileList
@@ -85,6 +87,10 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	addWidget(new TextButton(10, 225, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
 	addWidget(new TextButton(155, 225, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
+    exportButton = new TextButton(50, 90, 200, 40, ALIGN_LEFT, ALIGN_LEFT, "menu",
+        Toolkit::getStringTable()->getString("[export save]"), EXPORT);
+    exportButton->visible = false;
+    addWidget(exportButton);
 	caption = new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", title);
     addWidget(caption);
 
@@ -102,6 +108,7 @@ void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 	if (persistence) return;
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
+		if (par1 == EXPORT) { exportSave(); return; }
 		if (par1 == OK)
 		{
 			if (fileName.size())
@@ -148,12 +155,16 @@ void LoadSaveScreen::showSaveFailure()
 {
     endValue = -1;
     caption->setText(Toolkit::getStringTable()->getString("[save failed retry]"));
+    exportButton->visible = !exportPath.empty() && GAGCore::ApplicationHost::canExportFiles();
+    if (exportButton->visible) fileList->visible = false;
 }
 
 void LoadSaveScreen::beginPersistence(std::unique_ptr<GAGCore::ApplicationHost::Persistence> operation)
 {
     endValue = -1;
     caption->setText(Toolkit::getStringTable()->getString("[saving to storage]"));
+    exportPath = fileName;
+    exportButton->visible = false;
     persistence = std::move(operation);
 }
 bool LoadSaveScreen::pollPersistence()
@@ -167,4 +178,21 @@ bool LoadSaveScreen::pollPersistence()
         return false;
     }
     return true;
+}
+
+void LoadSaveScreen::exportSave()
+{
+    try {
+        BinaryInputStream stream(Toolkit::getFileManager()->openInputStreamBackend(exportPath));
+        if (!stream.isValid()) throw std::runtime_error("Save unavailable");
+        stream.seekFromEnd(0);
+        const size_t size = stream.getPosition();
+        if (!size || size > 64u * 1024u * 1024u) throw std::runtime_error("Save exceeds export limit");
+        stream.seekFromStart(0);
+        std::vector<unsigned char> bytes(size);
+        stream.read(bytes.data(), size, "export");
+        const auto slash = exportPath.find_last_of("/\\");
+        const auto name = exportPath.substr(slash == std::string::npos ? 0 : slash + 1);
+        if (!GAGCore::ApplicationHost::exportFile(name, bytes)) showSaveFailure();
+    } catch (const std::exception&) { showSaveFailure(); }
 }

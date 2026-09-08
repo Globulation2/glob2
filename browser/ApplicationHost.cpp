@@ -57,6 +57,22 @@ bool takeViewportSize(int& width, int& height)
         return 1;
     }, &width, &height);
 }
+bool canExportFiles() { return true; }
+bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes)
+{
+    return EM_ASM_INT({
+        try {
+            const blob = new Blob([HEAPU8.slice($1, $1 + $2)], {type:'application/octet-stream'});
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = UTF8ToString($0).replace(/[\\/]/g, '_');
+            anchor.click();
+            setTimeout(() => URL.revokeObjectURL(url), 60000);
+            return 1;
+        } catch (_) { return 0; }
+    }, name.c_str(), bytes.data(), bytes.size());
+}
 namespace {
 class BrowserPersistence : public Persistence {
     int id;

@@ -1260,3 +1260,5 @@ Enlarge the window to at least 800 x 600.
 Saving...
 [save failed retry]
 Save failed. Retry.
+[export save]
+Export save
