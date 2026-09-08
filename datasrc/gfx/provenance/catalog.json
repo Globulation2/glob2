@@ -1,0 +1,2824 @@
+[
+  {
+    "path": "datasrc/gfx/originals/buildings/__building12.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 135189,
+    "sha256": "0ea0f6c99bc91a12d178f861843436161ab54f9579a7db63d24001340203b323",
+    "archive_paths": [
+      "glob2-highres/buildings/__building12.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/__building19.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 139730,
+    "sha256": "2daf66c6a0dd15022ec73665aa13eeaa884ea465c7d1b6256c5a148f622b4340",
+    "archive_paths": [
+      "glob2-highres/buildings/__building19.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/__building5.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 81794,
+    "sha256": "2794e12f5ee14ef3456d94c49ddb33251ec0538a7029245ca301a641df96c04f",
+    "archive_paths": [
+      "glob2-highres/buildings/__building5.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/auberge-goth-64.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      64,
+      69
+    ],
+    "bytes": 11883,
+    "sha256": "8d9f87dece342a80972f0a8d00f5f3a2e1140c9612f7f8d15f0df21e435f1893",
+    "archive_paths": [
+      "glob2-highres/buildings/auberge-goth-64.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/auberge-steam.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      384,
+      384
+    ],
+    "bytes": 160084,
+    "sha256": "ede5447f9b3393f07c8c3c9902fea8ddadd2c18c2e90807005015a24b1c65c57",
+    "archive_paths": [
+      "glob2-highres/buildings/auberge-steam.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/building10.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 301984,
+    "sha256": "a2bda89aad23ea91f37d179fb0760e64e11923db6be981649b21185cb4829d9b",
+    "archive_paths": [
+      "glob2-highres/buildings/building10.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/building3r.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      192,
+      192
+    ],
+    "bytes": 80247,
+    "sha256": "dd79392b63b2cf972b5eb1f3aaf4fdcee5da31c3f657d1f04b0ccef27a8cb9b1",
+    "archive_paths": [
+      "glob2-highres/buildings/building3r.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/building8.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      64,
+      69
+    ],
+    "bytes": 29830,
+    "sha256": "be785d989d5a828f7402c4da186041d8107df1ac2d9e5a8781c9758409015280",
+    "archive_paths": [
+      "glob2-highres/buildings/building8.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/catapult-1.blend",
+    "category": "originals/buildings",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 142360,
+    "sha256": "3896bf05f9d92dbce5874c537a56bf621862478857ab7b53c1a93d3f6931f45f",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/buildings/catapult-1.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/course-goth-256.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 33327,
+    "sha256": "1c2a8c1b18e370e9d073a65647dc954c432f4f620abd7e90875dfad47ce1e7c1",
+    "archive_paths": [
+      "glob2-highres/buildings/course-goth-256.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/course-steam.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      1024,
+      1024
+    ],
+    "bytes": 1233875,
+    "sha256": "9bd497e35f07f32312a37533d7a1fb25f3dd1c4a48c3529094be9891c0fb3229",
+    "archive_paths": [
+      "glob2-highres/buildings/course-steam.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/course-terre.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      192,
+      192
+    ],
+    "bytes": 146915,
+    "sha256": "a9a0fc2f2f3a1e947ddad644364100ba1511597894df68072c3c74737d5ab9f0",
+    "archive_paths": [
+      "glob2-highres/buildings/course-terre.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/hopital1.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 284888,
+    "sha256": "58ca0b3e781c6f5dcf0658bc0f82e569183602d039845d9f9a4f0e730791fb9a",
+    "archive_paths": [
+      "glob2-highres/buildings/hopital1.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/pool-1.blend",
+    "category": "originals/buildings",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 118076,
+    "sha256": "de03b606f0c9be1f9d0687cb5f9ae10f08ba0bd700a7176b6bfb24c62a957bc7",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/buildings/pool-1.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/science.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      512,
+      562
+    ],
+    "bytes": 1532558,
+    "sha256": "7670498eae808357f8f430543f9f89cf11a880b602c643b66089eca792306341",
+    "archive_paths": [
+      "glob2-highres/buildings/science.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/science1.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      64,
+      70
+    ],
+    "bytes": 24105,
+    "sha256": "f6f402c1de6c68a7adac21d4793470e819e2513dde275df1e642e679e45e4319",
+    "archive_paths": [
+      "glob2-highres/buildings/science1.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/tower-1.blend",
+    "category": "originals/buildings",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 152348,
+    "sha256": "4c7cc28f5d896b46f735cb43f49f593f9869594e25ca1e9333f8ac45869f6ff6",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/buildings/tower-1.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/tower-2.blend",
+    "category": "originals/buildings",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 135688,
+    "sha256": "066cc62cff7c51d37ac284b700fbe4c4ccb3eccf5352fd21d76d83720022dc77",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/buildings/tower-2.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/tower1.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      64,
+      108
+    ],
+    "bytes": 24367,
+    "sha256": "6c51179ad2ac3dd4e97c1c698e0821de513d526e799d7a24ddad43b516fa74a0",
+    "archive_paths": [
+      "glob2-highres/buildings/tower1.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/buildings/tower2.xcf",
+    "category": "originals/buildings",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      430
+    ],
+    "bytes": 553621,
+    "sha256": "25f741622134cc68e3c9e1355fe86fa953b7ca6ce730bd2e0ad759545ecc5b4a",
+    "archive_paths": [
+      "glob2-highres/buildings/tower2.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_click.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 78992,
+    "sha256": "edf9674662f2557d50cb4aace43724b4a3f6226b6d2f3085c391c144ce130f02",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_click.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_click.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_clicked.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 80432,
+    "sha256": "ccf526525639aed7475b5b9cbd92e77ec29126cbeb85e693956f8e959917a94d",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_clicked.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_clicked.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_direction_d.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 88716,
+    "sha256": "15e88db572e6d51de160d9e75cf680490e9bab680c7a8b9be434e91ebefd8ddf",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_direction_d.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_d.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_direction_l.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 88716,
+    "sha256": "18fb15e3b4d9e86733527a30f25150a943e1d5972e4e3f616cec7dc042add822",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_direction_l.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_l.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_direction_ld.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 84700,
+    "sha256": "c109c6ee177a6f3b66385d56ce01b5336fd3aae81be3f44128923a3407730da8",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_direction_ld.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_ld.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_direction_lu.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 84700,
+    "sha256": "0696ab5b39841d8bd545bd8bd8092ab89def8bf472c8116e8750b58e1ca093e2",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_direction_lu.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_lu.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_direction_r.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 87928,
+    "sha256": "947fd890c5ef81a5f2d6a7864c5bfabb3f5e56433db98c89968eaa7ad65abea1",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_direction_r.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_r.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_direction_rd.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 84700,
+    "sha256": "b2b71f06970cbe1dcb754882e3e00a9d51d299d6c8fe24ecc77ef4b964d58b3c",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_direction_rd.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_rd.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_direction_ru.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 83912,
+    "sha256": "c883f37b873b544c61666547e484a3b5b47e690e3cb379c4c253202808dfa2d5",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_direction_ru.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_ru.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_direction_u.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 88716,
+    "sha256": "b6af253b9698b62f59f9ad18c4423971e3e0bddd3ea7112388afe9baa8aebcad",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_direction_u.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_direction_u.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_mark.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 81080,
+    "sha256": "a8f6c6a115c8854dc75cf419bab34e4218a13090820a10153c3fba5a4fbdb0b2",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_mark.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_mark.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_normal.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 79232,
+    "sha256": "a5211ef6b45ef5a6e40e76152a8d982720083c3f13d1aa839a0246347eb379cd",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_normal.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_normal.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_wait1.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 80248,
+    "sha256": "9f82f350d7c7b200dc670d3e1b5459aedfef9552c7bb94c6593c0e4d9815f7c1",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_wait1.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_wait1.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/cursors/cursor_wait2.blend",
+    "category": "originals/cursors",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 80248,
+    "sha256": "4fd391db0ba25385a730cd7427ed237e31d7f612029226415f0f7ac82eab1240",
+    "archive_paths": [
+      "glob2-highres/cursor/cursor_wait2.blend"
+    ],
+    "previous_repository_path": "datasrc/gfx/cursor/cursor_wait2.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/overlays/forbidden.xcf",
+    "category": "originals/overlays",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 139847,
+    "sha256": "461305ed3ddac02b9d52a45f22c6ff9f3d6a48d239b63f124fe3b7ad7686079d",
+    "archive_paths": [
+      "glob2-highres/areas/forbidden.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/overlays/guard.svg",
+    "category": "originals/overlays",
+    "format": "svg",
+    "dimensions": null,
+    "bytes": 19867,
+    "sha256": "a593a9b7deddfefc5d718f69565307a9362ee6d3e1ef52ba1f80e3ab515639df",
+    "archive_paths": [
+      "glob2-highres/areas/guard.svg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/overlays/guard.xcf",
+    "category": "originals/overlays",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 102095,
+    "sha256": "e376f3f46e9b97375a6fed9fe20e3a4b4e72c4a9aece4ab7b8264314fa293583",
+    "archive_paths": [
+      "glob2-highres/areas/guard.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/overlays/harvest.svg",
+    "category": "originals/overlays",
+    "format": "svg",
+    "dimensions": null,
+    "bytes": 16031,
+    "sha256": "116424d7d32f3dabd0d2c700ef9adb1c8d0eb6173379cff494cf6c96d3567e61",
+    "archive_paths": [
+      "glob2-highres/areas/harvest.svg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/tree/trees_1_1.xcf",
+    "category": "originals/resources/tree",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 16184,
+    "sha256": "36fd3779ad6657efb47d11962cc91c661925607773776831caf844d3a4254898",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/trees_1_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/tree/trees_1_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/tree/trees_1_2.xcf",
+    "category": "originals/resources/tree",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 17556,
+    "sha256": "cb061fb74cc3bd134356e33d10464030666412bdca48036f19e0e4c333a904bc",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/trees_1_2.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/tree/trees_1_2.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/tree/trees_2_1.xcf",
+    "category": "originals/resources/tree",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 25385,
+    "sha256": "7f5b64fe7ff58dbc1b80dc27b9a0865e9f68c1f96b51ab1fbb9ea954985407e9",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/trees_2_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/tree/trees_2_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/tree/trees_3_1.xcf",
+    "category": "originals/resources/tree",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      140
+    ],
+    "bytes": 41178,
+    "sha256": "0902918261c95ecac95c24eb4d2805baff0a074028d8e7e21fa1b1799c1bbd03",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/trees_3_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/tree/trees_3_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf",
+    "category": "originals/resources/tree",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      140
+    ],
+    "bytes": 51317,
+    "sha256": "b893267a7380f6e4e6d67f7acbb8cc361b0d394b856240a949c911e769dd86d9",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/trees_4_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/tree/trees_4_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat/wheat_1_1.xcf",
+    "category": "originals/resources/wheat",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4963,
+    "sha256": "572e7ad44728d1bc5feed04b6de6637db4a83b57659b51be0882fae2b1ae6ca1",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/blé_1_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_1_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat/wheat_1_2.xcf",
+    "category": "originals/resources/wheat",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 6171,
+    "sha256": "97c3cfb79ed04975f5ee1a5ac7600e458084646dc06c6eca221406da2da4136e",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/blé_1_2.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_1_2.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat/wheat_2_1.xcf",
+    "category": "originals/resources/wheat",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 11526,
+    "sha256": "37d6cc368d14788473c9e87e6dc34f7ec5c4ec96a075a8bc22a732c538785324",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/blé_2_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_2_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat/wheat_2_2.xcf",
+    "category": "originals/resources/wheat",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 11885,
+    "sha256": "2bfa2f6b8b109f96f214343b0b1d210f4064ad71f0f906227bb5c2b57620d437",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/blé_2_2.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_2_2.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat/wheat_3_1.xcf",
+    "category": "originals/resources/wheat",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 15977,
+    "sha256": "0f0b20c5dbdc720d899b8c1e1ff74a6236977c0526cf9d7519521c90478f7847",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/blé_3_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_3_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat/wheat_3_2.xcf",
+    "category": "originals/resources/wheat",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 16950,
+    "sha256": "5379a3198612e7c3fae2b42fa6a7523de57a432bfcc064b3bb93a1e3058bb5eb",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/blé_3_2.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_3_2.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat/wheat_4_1.xcf",
+    "category": "originals/resources/wheat",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 17081,
+    "sha256": "89b5d2245973086b4d8cb1dab1ce8d235a5ea31933e2002e105b4b4ec61a21b3",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/blé_4_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_4_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat/wheat_4_2.xcf",
+    "category": "originals/resources/wheat",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 16668,
+    "sha256": "e4b25cad879d00ac53aa1a47659684e7af2423115578f7c6bd498d16193d8dd9",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/blé_4_2.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat/wheat_4_2.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_1.xcf",
+    "category": "originals/resources/wheat-classic",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 9002,
+    "sha256": "aac5f93d24b4f95ae9efa22e4bd136bdc013a74d267e1ef853cdc5a667591afd",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ble_1.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_2.xcf",
+    "category": "originals/resources/wheat-classic",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 30154,
+    "sha256": "6d77eaec1c68e82a7cbc7598bd4261d6fb27db146b74afe93e61267cd273b34d",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ble_2.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_2.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_3.xcf",
+    "category": "originals/resources/wheat-classic",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 34403,
+    "sha256": "e2ed494f6c3f8ccc8fe9e96d150db0a7d8b76b1026393fa84b231fcd1422d274",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ble_3.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_3.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_4.xcf",
+    "category": "originals/resources/wheat-classic",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 41542,
+    "sha256": "690e6c44544cb2190ac328f07db9e9c3feafc238af21d9c394c227dd6abe046c",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ble_4.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_4.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/resources/wheat-classic/ble_5.xcf",
+    "category": "originals/resources/wheat-classic",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 43161,
+    "sha256": "a5d55710a1d2aff286eea2e8450f7a449f7c4c94ab19d340aff3b88a6683b265",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ble_5.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/resources/wheat-classic/ble_5.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+    "category": "originals/terrain",
+    "format": "xcf",
+    "dimensions": [
+      199,
+      199
+    ],
+    "bytes": 160458,
+    "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
+    "archive_paths": [
+      "glob2-highres/terrain/papyrus.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/terrain/water.xcf",
+    "category": "originals/terrain",
+    "format": "xcf",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 6031814,
+    "sha256": "f6c26a46d6258a6332df554d599e3fa11f95da48979e77dfc109292021e26a17",
+    "archive_paths": [
+      "glob2-highres/terrain/water/water.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/terrain/water.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_down.svg",
+    "category": "originals/ui/arrows",
+    "format": "svg",
+    "dimensions": null,
+    "bytes": 7461,
+    "sha256": "f24769839ab2061fe5c4b27cf851c0721b69b32c2f3995cc63175c34ac5b1530",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_down.svg"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_left.svg",
+    "category": "originals/ui/arrows",
+    "format": "svg",
+    "dimensions": null,
+    "bytes": 7479,
+    "sha256": "16960bfb3f81be33a17c0f4f337d072a193e6239cd4cf16e99a880ef5c0fd66f",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_left.svg"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_right.svg",
+    "category": "originals/ui/arrows",
+    "format": "svg",
+    "dimensions": null,
+    "bytes": 7484,
+    "sha256": "abd29ff542922019cab746e0a114e769e5e05e40ebc1d55927ebfb336a0f0525",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_right.svg"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_up.svg",
+    "category": "originals/ui/arrows",
+    "format": "svg",
+    "dimensions": null,
+    "bytes": 8507,
+    "sha256": "d00af9707e3c9e1a22dde7472087fa8ca4476f5619b312391b7df63dcbd97e41",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_up.svg"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/bigbutton.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      1920,
+      256
+    ],
+    "bytes": 242505,
+    "sha256": "a542a6bf30dc7b57e79d12b3e72a76a6661cdb0c07b054f49e3a4979f9e11260",
+    "archive_paths": [
+      "glob2-highres/ui/bigbutton.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/bigbutton.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_add.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 4898,
+    "sha256": "a36c100304798e1968c68ce0324ca21d21868f0441fe57ca8065f84c707ad700",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_add.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_3x3.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1468,
+    "sha256": "b65707e14bcb4fb11eb4a9f03563dff9a181be23606a716cb13759cd0fc879a1",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_circle_3x3.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_5x5.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1516,
+    "sha256": "4a21ba849cf74000df303878292fb73a0d6ad8b4076acedc5606a8b07185b8cd",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_circle_5x5.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_7x7.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1560,
+    "sha256": "80e945a751ef1b821c194ba93c565454216fd1c450a86cc4dc763ac9a143c879",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_circle_7x7.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_1x1.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1420,
+    "sha256": "b6e1f7acbc757d798d37259eee56e2eef35731a5f4415a654e26287b3c27c003",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_square_1x1.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_3x3.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1468,
+    "sha256": "54d1c5ced6f5952901a9502e411d549c844061f6ab1b38cdf9ffebc4cad26c9e",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_square_3x3.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_5x5.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1516,
+    "sha256": "e62e7b21e3f15720ad40c9e2050d5a8d5dc48738710012c5e7581bee49f74727",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_square_5x5.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_7x7.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1560,
+    "sha256": "2f6e21586d6dfc29385a52ed9f077102a32412bb718ed2b7457516c20d577b22",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_brush_square_7x7.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/forbidden_remove.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 5315,
+    "sha256": "fd8c4ee27457996d5d7e65a74aaf7e335a2fa28ed07c57567f443334981e3710",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/forbidden_remove.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/glob2_gold",
+    "category": "originals/ui/controls",
+    "format": "",
+    "dimensions": null,
+    "bytes": 556,
+    "sha256": "f427b36a0f94f13731a6f0d3a07a8f8caad42fe0e5663feb612dacb83ab3f4f0",
+    "archive_paths": [
+      "glob2-highres/ui/glob2_gold"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/glob2_gold"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/minus.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 136001,
+    "sha256": "684a148c850e6c05aca5a730cb6f6956d5f91d8ab93cbbcf963aacada138d485",
+    "archive_paths": [
+      "glob2-highres/ui/minus.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/onoff.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 188345,
+    "sha256": "9c7fd7aebeadfe79f503188e5101669c43b3f473a9038f9f2e40e00cb3f77748",
+    "archive_paths": [
+      "glob2-highres/ui/onoff.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/onoff.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/padlock.svg",
+    "category": "originals/ui/controls",
+    "format": "svg",
+    "dimensions": null,
+    "bytes": 11066,
+    "sha256": "b5a0e9c33415752282c850219137fa00cbf3fae587e0e8982b357b2e5d94e82a",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/game-gui/padlock.svg"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/plus.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 179431,
+    "sha256": "ef16be3f022563e584084d27735280173fcf343e1cdb1f1561bfbd960f1368da",
+    "archive_paths": [
+      "glob2-highres/ui/plus.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/round-base.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 160733,
+    "sha256": "957ae342f365af5ff08f022da294ab436f60e699e8848a9c88c7c2b0de2dc561",
+    "archive_paths": [
+      "glob2-highres/ui/round-base.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/round-base.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/selection32x32.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 15107,
+    "sha256": "b869482fcb501e267443cd72c2f4fe8f35247785db9c6e9f228703290a828095",
+    "archive_paths": [
+      "glob2-highres/ui/selection32x32.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/selection32x32.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/separator.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      256,
+      8
+    ],
+    "bytes": 6687,
+    "sha256": "bfae9a43a385b1703eba6bf38a475bc627b2e8b9a97b78518ce41590b36b8d74",
+    "archive_paths": [
+      "glob2-highres/ui/separator.xcf"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/tab-building.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      64,
+      64
+    ],
+    "bytes": 28863,
+    "sha256": "da4f8047e1a72138228ceac1072433eb6a17b6f1836bbe229e1e1060e587b550",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui.001.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/tab-building.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/tab-info.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      64,
+      64
+    ],
+    "bytes": 21252,
+    "sha256": "4cf526917050c2e00cdcea14994422596d7e43c740e7f1a4361cb31aca6ba12a",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui.023.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/tab-info.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/tab-stat-gfx.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      64,
+      64
+    ],
+    "bytes": 22647,
+    "sha256": "953c75d90ff425eab2bf776f70196bbcf7e7d692d54d83e6658f508563a965e4",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui.045.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/tab-stat-gfx.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/controls/tab-stat-text.xcf",
+    "category": "originals/ui/controls",
+    "format": "xcf",
+    "dimensions": [
+      64,
+      64
+    ],
+    "bytes": 20222,
+    "sha256": "e245bfa0fce2f568183a7cf2c959ccfb89f7fea7eec09f846c6ebe356df56b3b",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui.067.xcf"
+    ],
+    "previous_repository_path": "datasrc/gfx/game-gui/tab-stat-text.xcf"
+  },
+  {
+    "path": "datasrc/gfx/originals/ui/headset/headset.blend",
+    "category": "originals/ui/headset",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 165768,
+    "sha256": "4b780ce7a1c2c988bef83505da51ee5983e9a2b7d1c120196f5f773a860d7290",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/headset/headset.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/explorer.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 89456,
+    "sha256": "4d6913061c1e25861a12d45cea72f14d5c8bd8ab603158a2e1077cff70cd959d",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/explorer.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/glob-warrior-fight.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 177132,
+    "sha256": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/glob-warrior-fight.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/glob-warrior-swim.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 184632,
+    "sha256": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/glob-warrior-swim.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/glob-warrior-walk.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 182352,
+    "sha256": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/glob-warrior-walk.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/glob-warrior.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 150576,
+    "sha256": "19bacb5462998c1260af8252cd1d002b0e18e4192a4806aff42dcd03b5177d1f",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/glob-warrior.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/glob-worker-harvest.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 191700,
+    "sha256": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/glob-worker-harvest.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/glob-worker-swim.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 155904,
+    "sha256": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/glob-worker-swim.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/glob-worker-walk.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 175148,
+    "sha256": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/glob-worker-walk.blend"
+  },
+  {
+    "path": "datasrc/gfx/originals/units/glob-worker-walk2.blend",
+    "category": "originals/units",
+    "format": "blend",
+    "dimensions": null,
+    "bytes": 159496,
+    "sha256": "1666f9454035f1cc43e978462afa3c3b53361c1eb1c784a1d524a2012e954e89",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/glob-worker-walk2.blend"
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/auberge-goth.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      770,
+      854
+    ],
+    "bytes": 116476,
+    "sha256": "bb15f245daa5ea397e684bb2067fb194cc1664613bbfb89bc99c4ea802cd77af",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/auberge-goth.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/auberge-steam.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      1267,
+      1344
+    ],
+    "bytes": 245163,
+    "sha256": "f99c492fd3efb1beb7e6d9d1af1ebd10307538401563431c3941dfe07d025cd5",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/auberge-steam.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/combat-goth.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      1162,
+      1071
+    ],
+    "bytes": 114384,
+    "sha256": "35b4f67b44e94a0be4bdbc81a5055d21bd8c23dabc5396552a31cc26578d45d3",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/combat-goth.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/course-1.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      520,
+      516
+    ],
+    "bytes": 37022,
+    "sha256": "1996248ebe1f7f04d538bfc380b03fc91f7930835ff9b09a781345c92031a3a4",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/course-1.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/course-2.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      607,
+      457
+    ],
+    "bytes": 33252,
+    "sha256": "c10a5d4af4cd44af2897786e1e897ea625bb3756cbec6f8403c862171419d8df",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/course-2.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/course-3.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      497,
+      373
+    ],
+    "bytes": 23322,
+    "sha256": "274f8176d2cdbb2ed904807ba1ba54eec755e9a442143633f5d8ba5870f8aa4a",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/course-3.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/course-goth.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      1960,
+      2058
+    ],
+    "bytes": 495697,
+    "sha256": "4da154c254e7c00b38d878024bb17407daaea145431fad0843a790d5286cfaa4",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/course-goth.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/course-steam.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      1098,
+      1140
+    ],
+    "bytes": 219846,
+    "sha256": "f671e8a8b104493caacc57d5d97b97610ebd2780f6c35926088e918159f57503",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/course-steam.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/course-terre.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      1666,
+      1365
+    ],
+    "bytes": 152899,
+    "sha256": "45100bed4d391dfc1fe846757930d984df4830d541db7d5fd9ac94644ddaa7bc",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/course-terre.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/drawing-science2.jpeg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      1029,
+      985
+    ],
+    "bytes": 385291,
+    "sha256": "0691d6346b1043c6e40e9cd06f36fc8eeab7468fd077b36bad8184d060847cfc",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/drawing-science2.jpeg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/drawing-towers1-2.jpeg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      909,
+      820
+    ],
+    "bytes": 265160,
+    "sha256": "d7a23a57c74dd1257aca00d95ab8b157d1694d2ea0db7b82bb2fe35fd7903559",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/drawing-towers1-2.jpeg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/hopitaux-1-2-3.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      1275,
+      2100
+    ],
+    "bytes": 98918,
+    "sha256": "836274325623197add98862a2d5a7c4c224e72735b2af7e805d0ca44e76643e2",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/hopitaux-1-2-3.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/newmiam.png",
+    "category": "concept-art/buildings",
+    "format": "png",
+    "dimensions": [
+      1040,
+      916
+    ],
+    "bytes": 310429,
+    "sha256": "957e90dedca7cbcb7bec82d05997cb0a6e937f4c41bc0963bb233a8eb2eae3c1",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/newmiam.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/newpiscine-overlay.png",
+    "category": "concept-art/buildings",
+    "format": "png",
+    "dimensions": [
+      2498,
+      2656
+    ],
+    "bytes": 2861678,
+    "sha256": "bc96b01ea0be7d61d7ba3f75de4409442a3f584be2dc0f7bd3a24a408053d741",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/newpiscine-overlay.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/newpiscine.png",
+    "category": "concept-art/buildings",
+    "format": "png",
+    "dimensions": [
+      2498,
+      2656
+    ],
+    "bytes": 2663648,
+    "sha256": "fd54d82ca01f0a69760627d7edcb2085bdd48e4933dbce1e59bec794794f4d12",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/newpiscine.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/science.jpeg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      512,
+      562
+    ],
+    "bytes": 211138,
+    "sha256": "0b9385e65765b98119ef0bbbee9f959b4136e41f70fb956a0bd433ef7ba2b7c8",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/science.jpeg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/science.png",
+    "category": "concept-art/buildings",
+    "format": "png",
+    "dimensions": [
+      1904,
+      1778
+    ],
+    "bytes": 98839,
+    "sha256": "c49c38783afeb98e95b5638d4635621bc2b5291c6713dec413b5777b76b7737d",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/science.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/tourelle-goth.jpg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      1275,
+      2100
+    ],
+    "bytes": 168625,
+    "sha256": "53e3066e290fc27138810477e12d82377a0ffe380902e150a9ab5bd235102e1c",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/tourelle-goth.jpg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/tower0.jpeg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      567,
+      428
+    ],
+    "bytes": 150922,
+    "sha256": "723873f73e5d7239dd630b4e517fcc135c0c03004a7c7f0f1c06cbc0bec0d3dc",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/tower0.jpeg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/concept-art/buildings/tower2.jpeg",
+    "category": "concept-art/buildings",
+    "format": "jpeg",
+    "dimensions": [
+      332,
+      558
+    ],
+    "bytes": 122631,
+    "sha256": "0232bbbb7616ad60c6bcdce0e6b9dc67fb15d51c136375e8bf2fbdefdaec0587",
+    "archive_paths": [
+      "glob2-highres/buildings-concept/tower2.jpeg"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g0-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5988,
+    "sha256": "3307ac804027ad5652b6427b04d527bcf70b0e31007f28699eb060a5f399a64d",
+    "archive_paths": [
+      "glob2-highres/areas/g0.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g0.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4553,
+    "sha256": "7f79a3caa89b6cbba71e82d72888043e3e3e57b41d15c530ff87cb28aa6bb057",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/g0.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g1-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5513,
+    "sha256": "61ca21e960c66fe1948533398e84eed70c652eee3b88d1133821b4074b8c3dc1",
+    "archive_paths": [
+      "glob2-highres/areas/g1.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g1.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3949,
+    "sha256": "72c0be1c43ab4c280b38d9bbdf6eb0e1a4830770c70ee0556b9a08d8f4c2f0ca",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/g1.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g2-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5431,
+    "sha256": "50ecdd801108e931ccbfc751389d9b8ce25c2fe25d180909442fb811c70d909a",
+    "archive_paths": [
+      "glob2-highres/areas/g2.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g2.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4036,
+    "sha256": "39b3e31db40e30e78f6ab4a684f3cf5ac6b22a34acbf6bb641371cd4c0c7176d",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/g2.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g3-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5375,
+    "sha256": "71fcc0a3dd20434cac5855a99832ab6b76c72407b644a4d62e80a6c86f27dc36",
+    "archive_paths": [
+      "glob2-highres/areas/g3.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g3.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4159,
+    "sha256": "86bb7388aaabbbb35f1e9100d96f758addef7a82cf1303e8b49aa7190f91d209",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/g3.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g4-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5238,
+    "sha256": "a3e3049c120fb3758177beaf89ce659f2901e5914f04e14fe80885873b80930b",
+    "archive_paths": [
+      "glob2-highres/areas/g4.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g4.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4181,
+    "sha256": "ce728c6033a5eeee5f0f25e664324c287efeae946fe3eda34b8ed1450a850fc2",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/g4.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g5-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5259,
+    "sha256": "9eb34051ab38294cad261bb05a8797fe944e73a5f0d3cecea0112db8d9f0f76d",
+    "archive_paths": [
+      "glob2-highres/areas/g5.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g5.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3989,
+    "sha256": "4279c0462e9852df9e6c1bd4452bf6ac076a8fa1f2e3b047929c067f5a746dd9",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/g5.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g6-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5350,
+    "sha256": "1c319a0669d0cd041b9e106ba598ed0f3195e15b74e129d1c9ca0dc1f184f575",
+    "archive_paths": [
+      "glob2-highres/areas/g6.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g6.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3988,
+    "sha256": "f6a8ea428e15cbedc6e5e9f1f4b3a3292071ed6bda591f1fa93e881250cb6163",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/g6.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g7-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4782,
+    "sha256": "97bffb76358713883074da9b4052c3773c4dfafd363744b55555670360287982",
+    "archive_paths": [
+      "glob2-highres/areas/g7.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/g7.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3693,
+    "sha256": "189299a0e9b064da9ead894840fceb5434f7104bb1af1a11b516a2a962ddca5b",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/g7.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h1-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 2836,
+    "sha256": "0cec5ec9b8d8a878496c43d93bccececae5057b2fda06d3e53877dbdd6013dfe",
+    "archive_paths": [
+      "glob2-highres/areas/h1.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h1.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 1841,
+    "sha256": "eb4c52227f028ff95b8a0b008d19a6dbdf903de0dc643d54b692c1724d58f272",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/h1.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h2-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4184,
+    "sha256": "d84a5728241759ce3cca2f5949deab46feed98ed59dd6f9906cb406c1ba9ff83",
+    "archive_paths": [
+      "glob2-highres/areas/h2.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h2.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3224,
+    "sha256": "c4ef00df7326e0715fc88b8e4aac6b308659ca6bb6e03a34d60e1ae3b882203e",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/h2.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h3-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4573,
+    "sha256": "dfb60f6b060007538b12d51d063cde033ede80e368cbbfea8a850c1ab646d276",
+    "archive_paths": [
+      "glob2-highres/areas/h3.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h3.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3479,
+    "sha256": "78f96d99b7eba36d4fca7b52f9cf9ea92792d9a38ff36f9784f992b3247e0b0b",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/h3.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h4-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4959,
+    "sha256": "ddbe5c02e5699cb21cf1637dda285cc26bc1d0c0630e5ee87b43fe21684dd624",
+    "archive_paths": [
+      "glob2-highres/areas/h4.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h4.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3995,
+    "sha256": "9a7a9a9a0242ffcfcca39701097046cef41f63a0bf4621b4bf3fd6aa6290b9ea",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/h4.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h5-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5031,
+    "sha256": "155e5b5c4a3dc93bef5eb575d3b53dc6138828ee8b50a58cfe0b36b652b1462b",
+    "archive_paths": [
+      "glob2-highres/areas/h5.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h5.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4143,
+    "sha256": "e821ad9b8160fe734cffe6b1f8017d794f8f930086639be9a99804fc9876fedb",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/h5.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h6-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5264,
+    "sha256": "de6c447820739c36a93f4658cb80ac06b2fe56a93e25fc3cb1e5881320b0700b",
+    "archive_paths": [
+      "glob2-highres/areas/h6.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h6.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4442,
+    "sha256": "212d65fadeeb98c745b2da65da09854f8e65ed33ff0e49a65df84abf256c327f",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/h6.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h7-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5227,
+    "sha256": "b570ff493d232185364f4cba7c58cb0708d38951704ffcad7128f5a5490e9c98",
+    "archive_paths": [
+      "glob2-highres/areas/h7.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h7.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4511,
+    "sha256": "22d3d83c46cc3716a378ada949aac28baa664f2f7b6596cbee013cca6b4730e4",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/h7.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h8-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5456,
+    "sha256": "7f6c61650d662c053a04a1d9f1ed75793d12e7669208487b0ffa45a715088ff8",
+    "archive_paths": [
+      "glob2-highres/areas/h8.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/h8.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4770,
+    "sha256": "4707a78652cb445ce93fe8f604814b387520f18b1b0d953e6e9876545d0117e2",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/h8.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i0-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 1637,
+    "sha256": "3c5c1f4fbf99b8fff4ed9d63cc31622e50ffb0bcd18d620e1577524bb3646a1f",
+    "archive_paths": [
+      "glob2-highres/areas/i0.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i0.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 1204,
+    "sha256": "988bbed0b8c760a7462f61353a42bb5ee8fabb00417a219fb555e4518d3b031e",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/i0.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i1-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3626,
+    "sha256": "61d42f32cd3f3d440c3774d5181d4f02c41cd1b2434bc63dbb07e527251d751c",
+    "archive_paths": [
+      "glob2-highres/areas/i1.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i1.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 2667,
+    "sha256": "d8662a693d5df645825a5fdf10551426284c7e02b5eaa519655d7da6a1f91fdb",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/i1.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i2-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 6100,
+    "sha256": "434f04ee42ee91bb0fe3159406c363e5576c6d38fd7a04c8d943f57e1d7b7308",
+    "archive_paths": [
+      "glob2-highres/areas/i2.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i2.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4323,
+    "sha256": "536dfd32b3d47c396eb43aa5bd13a6a5562c9ae6020df5bd00dac67260bfbd91",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/i2.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i3-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 8201,
+    "sha256": "cf87c0736a49c9ed15c7c7c9796e6270fd68e9eb411124baba43d99a981b46ac",
+    "archive_paths": [
+      "glob2-highres/areas/i3.png",
+      "glob2-highres/areas/i4.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i3.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5634,
+    "sha256": "9ce6acd818f85bdc274d1c96de01392861524003a544331b89c5d58ea442d5b2",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/i3.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i4.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 5634,
+    "sha256": "9ce6acd818f85bdc274d1c96de01392861524003a544331b89c5d58ea442d5b2",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/i4.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i5-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 6100,
+    "sha256": "86d8007f0fd71ab3df664ade3d5685e020442bf486fa1d88fcd43f048eae35fe",
+    "archive_paths": [
+      "glob2-highres/areas/i5.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i5.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 4323,
+    "sha256": "a17b62e2241bf364054c72123b8a981dde4dd257e0b536cd22ed7b1196fb2a1e",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/i5.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i6-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3626,
+    "sha256": "b63ea25bd0fe29dc7e442debb4bf5ec19e2b362f86b6d62f957755a4d13ec60a",
+    "archive_paths": [
+      "glob2-highres/areas/i6.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i6.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 2682,
+    "sha256": "b7a0debd9425e0c3f4c9a2cb557ed8cd3775f3ade4a9561683748d2f67e23cb8",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/i6.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i7-archive-2026.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 3631,
+    "sha256": "35729f1837e68ced59277f257b89b2207d3263424a1bf1750bc96aac4ee7dd2c",
+    "archive_paths": [
+      "glob2-highres/areas/i7.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/overlays/i7.png",
+    "category": "reference-exports/overlays",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 2695,
+    "sha256": "e2cbe42a94396b96dae80eeb74a2bdd1afd450b7f3e35444552e0fe984b05f0a",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/areas/i7.png"
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/tree/ressource0.png",
+    "category": "reference-exports/resources/tree",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1196,
+    "sha256": "1e1209852c667b2c20058865367e87dd6b3d9d736fcec4e1b69db118fa314df5",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/ressource0.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/tree/ressource1.png",
+    "category": "reference-exports/resources/tree",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 2185,
+    "sha256": "1b49a4f962f41177dc114f6e0235828227593484da163a1eec58eb0da2f30e61",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/ressource1.png",
+      "glob2-highres/terrain/Arbres/ressource6.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/tree/ressource2.png",
+    "category": "reference-exports/resources/tree",
+    "format": "png",
+    "dimensions": [
+      36,
+      39
+    ],
+    "bytes": 3433,
+    "sha256": "bdf1af9af64d1934d7f6ac58b0bacf530e251c7eec1b22f2541413efe31c0002",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/ressource2.png",
+      "glob2-highres/terrain/Arbres/ressource7.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/tree/ressource3.png",
+    "category": "reference-exports/resources/tree",
+    "format": "png",
+    "dimensions": [
+      36,
+      39
+    ],
+    "bytes": 3863,
+    "sha256": "b773440382c59d97dfacc94c19607e549359fc347a4c7aca85514b27c334a423",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/ressource3.png",
+      "glob2-highres/terrain/Arbres/ressource8.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/tree/ressource4.png",
+    "category": "reference-exports/resources/tree",
+    "format": "png",
+    "dimensions": [
+      40,
+      44
+    ],
+    "bytes": 4604,
+    "sha256": "f7a5cb56c558cad42b93f963f1a573c350e3acf7747065179640a237f8c29a4e",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/ressource4.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/tree/ressource5.png",
+    "category": "reference-exports/resources/tree",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1219,
+    "sha256": "bf1cac1e5b81a65d6f8687357dcef553cf61170346c71aa373663c5f0d763484",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/ressource5.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/tree/ressource9.png",
+    "category": "reference-exports/resources/tree",
+    "format": "png",
+    "dimensions": [
+      40,
+      44
+    ],
+    "bytes": 4862,
+    "sha256": "dd4b3b6f474541af7d60911c9b648ed8320b8b4872f605b012f5e1b72a841a5d",
+    "archive_paths": [
+      "glob2-highres/terrain/Arbres/ressource9.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource10.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 685,
+    "sha256": "5157e24a4343c4060d383cba5e22bbfc7dc432dbcef999604ff8092f32ce4a00",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource10.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource11.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1405,
+    "sha256": "5a30bba963aa8a541bb5d0925bfcffc5f87e901ea4abb90c3542c5736ef60f00",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource11.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource12.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1864,
+    "sha256": "73ef7ad6b8ab754c7dcae3ce05f5e27f1667cd2bd46c29894989d871c2402627",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource12.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource13.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1915,
+    "sha256": "21a1ce5390c97e7cffd71c27826b0ff2e76acec64482422ee48fbea3b3895309",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource13.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource14.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1850,
+    "sha256": "cb892441ee8712ca0b524bd0e55cb3d4df0e0fe81548f6d6d45c9050aa1ddddc",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource14.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource15.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 715,
+    "sha256": "99922427a26f17852798cd84f0a9baa4dee3691bdad188ecdea425fc631705ec",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource15.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource16.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1402,
+    "sha256": "5aef85c1e01adcd2121e1f88adbf8fd3745608ae932aac724ba827f2c207e121",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource16.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource17.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1814,
+    "sha256": "0eebd34025b00c9d1c29ab3ec091b49c4479f3e2b2b7632bf8fdb2347d1ba460",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource17.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource18.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1832,
+    "sha256": "cc3496fcb013074d605b5fb84d7fbe47aabd5fe021a8ac425b297292d1c232a0",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource18.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat/ressource19.png",
+    "category": "reference-exports/resources/wheat",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1736,
+    "sha256": "4d15987887125520d96cc35ca2ca6f1c83a5eb9d38a367eec34b88ab33061845",
+    "archive_paths": [
+      "glob2-highres/terrain/Blé smarties/ressource19.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource10.png",
+    "category": "reference-exports/resources/wheat-classic",
+    "format": "png",
+    "dimensions": [
+      34,
+      34
+    ],
+    "bytes": 1130,
+    "sha256": "158808b85c13d44ea65d9407ed8bbd74fdb443c2577d64eb3954b6de23c42784",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ressource10.png",
+      "glob2-highres/terrain/Blés/ressource15.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource11.png",
+    "category": "reference-exports/resources/wheat-classic",
+    "format": "png",
+    "dimensions": [
+      36,
+      36
+    ],
+    "bytes": 2593,
+    "sha256": "37d0e4f69b4d31a2317954e98f12f2745c0faeff056fa1ba67ac53f567948b2b",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ressource11.png",
+      "glob2-highres/terrain/Blés/ressource16.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource12.png",
+    "category": "reference-exports/resources/wheat-classic",
+    "format": "png",
+    "dimensions": [
+      36,
+      36
+    ],
+    "bytes": 3117,
+    "sha256": "5c976b8fd772c6f51cc5f3a3d7ee86957cd375c14b243ef50b210ec3254ddc3c",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ressource12.png",
+      "glob2-highres/terrain/Blés/ressource17.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource13.png",
+    "category": "reference-exports/resources/wheat-classic",
+    "format": "png",
+    "dimensions": [
+      38,
+      38
+    ],
+    "bytes": 3859,
+    "sha256": "8be0d1fe02beae932f4ac8332f6ca870dc9c5542e6afce5deeb9eae79b33d5d8",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ressource13.png",
+      "glob2-highres/terrain/Blés/ressource18.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/resources/wheat-classic/ressource14.png",
+    "category": "reference-exports/resources/wheat-classic",
+    "format": "png",
+    "dimensions": [
+      40,
+      40
+    ],
+    "bytes": 3783,
+    "sha256": "6f2fe303d68397cb51c967eb2334fb6506ba41b13747792e33c98fa67bccc0aa",
+    "archive_paths": [
+      "glob2-highres/terrain/Blés/ressource14.png",
+      "glob2-highres/terrain/Blés/ressource19.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/terrain/water/cyrille-cloud.png",
+    "category": "reference-exports/terrain/water",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 233705,
+    "sha256": "d484fb02f48d5f37dffb103eee3a5d3ec8567f20178101460e09932407eb7101",
+    "archive_paths": [
+      "glob2-highres/terrain/water/cyrille-cloud.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/terrain/water/cyrille-steph-modif-water0.png",
+    "category": "reference-exports/terrain/water",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 107332,
+    "sha256": "4a57b82cce2ce3cef0032766ae5c49d8c0bdd56518b8f87b980f92b8d517ec57",
+    "archive_paths": [
+      "glob2-highres/terrain/water/cyrille-steph-modif-water0.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/terrain/water/cyrille-water0.png",
+    "category": "reference-exports/terrain/water",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 259375,
+    "sha256": "8fc6d4e0243df6a11730513e65ebfd6773802efc9296d3b9da3874b0998a562e",
+    "archive_paths": [
+      "glob2-highres/terrain/water/cyrille-water0.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/terrain/water/steph-cloud.png",
+    "category": "reference-exports/terrain/water",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 137146,
+    "sha256": "fc68b9089d5092b9cf014bdbd5c104a17d3eeda9620fe9c19bd232fbd4f410fd",
+    "archive_paths": [
+      "glob2-highres/terrain/water/steph-cloud.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/terrain/water/steph-water0.png",
+    "category": "reference-exports/terrain/water",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 210704,
+    "sha256": "11648647d369993eb4cfd81f7bdc7f4c8468a0ee9ba6285af944907944e2d0ad",
+    "archive_paths": [
+      "glob2-highres/terrain/water/steph-water0.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui0.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1972,
+    "sha256": "bba3d01e18f0822030e9f00f3372c5b7f64cad98d62ad465ce1af429cafc0524",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui0.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui1.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 2214,
+    "sha256": "a42385a03783f70c138ed0197feab9cbc1fb27702710296d520d12ce9ae8a21e",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui1.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui10.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      92,
+      10
+    ],
+    "bytes": 215,
+    "sha256": "cbe4df6da703ea506b1fe98d892fa981e1fff25d8aa11d99efdaf99f70d8c570",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui10.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui11.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      110,
+      7
+    ],
+    "bytes": 216,
+    "sha256": "d594eec31504060cabe9aa57b3070fa4d829815c6720cbb0cd2ec020108ad298",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui11.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui2.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1464,
+    "sha256": "6bd9351a3f49f3bfabee5d7e8b7ab3eda851aaa1bed8919b6cc438c08beafaf3",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui2.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui3.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 2005,
+    "sha256": "1f20b644f077c8939d6ecbbc60240fe7e22625858b5a67cac7e0893e6f11cd54",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui3.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui4.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1292,
+    "sha256": "56e8ba58a2e368928c53cde644fe71bd2be3a8a958a8d4b9082742e117eb59d1",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui4.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui5.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1697,
+    "sha256": "2bf9f2cabe3b9524861310fb5b33dd2f410f776b2d5d0add9728ecb95b7ce783",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui5.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui6.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1325,
+    "sha256": "45d75b8539a239e53eb658c4e18427998d16bec696a1f824a145009d97a686c3",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui6.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/gamegui7.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 1789,
+    "sha256": "7b4d8d5585e4426a20d7991f1c4c1d11f1ec4dfe6cd91defcd3370a4b47b8990",
+    "archive_paths": [
+      "glob2-highres/ui/gamegui7.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/select.minimap.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 628,
+    "sha256": "7f322c3f28e09956355c6e11ba7c7a52ec4ab73c4b49e61f0b89f6e2cba0ab99",
+    "archive_paths": [
+      "glob2-highres/ui/select.minimap.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/select.rect.0.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      64,
+      46
+    ],
+    "bytes": 1115,
+    "sha256": "49664963cc593a6f2d2594749c443b8a0ea7f2168a30eb9fa079b46bb9cc75f1",
+    "archive_paths": [
+      "glob2-highres/ui/select.rect.0.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/ui/controls/select.rect.1.png",
+    "category": "reference-exports/ui/controls",
+    "format": "png",
+    "dimensions": [
+      64,
+      46
+    ],
+    "bytes": 1196,
+    "sha256": "a11a7d67aa46b446a12fd2585a74c65680b2bee24e80f22157fc216326bd6948",
+    "archive_paths": [
+      "glob2-highres/ui/select.rect.1.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/tools/units/rename_globules.py",
+    "category": "tools/units",
+    "format": "py",
+    "dimensions": null,
+    "bytes": 1539,
+    "sha256": "9dcfb783a65b7036ad534d45ed525cb459932b6743948911c0bde339b0f7c3a7",
+    "archive_paths": [],
+    "previous_repository_path": "datasrc/gfx/globules/rename_globules.py"
+  }
+]

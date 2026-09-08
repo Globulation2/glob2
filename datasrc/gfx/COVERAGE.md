@@ -1,0 +1,51 @@
+# Coverage and open questions
+
+This is a source inventory, not a claim of complete runtime coverage. No AI
+generation or runtime frame replacement was performed during this import.
+
+| Family | Available originals | Remaining work / limitations |
+| --- | --- | --- |
+| Buildings | 16 recovered layered XCF files, 4 existing Blender models | Identify historical filenames, match game types/levels and inspect base/team layers, shadows, damage and construction states. |
+| Units | 9 existing Blender files | Keep animation and higher-resolution rendering aligned with PR #201; migration paths are in the provenance manifest. |
+| Resources | Tree and two wheat styles, including layered sources and historical PNGs | Separate styles deliberately; compare source canvas sizes and masks before choosing exports. No complete resource-family coverage claim. |
+| Terrain | Layered water, historical water/cloud images and papyrus | No explicit grass/sand transition source set identified in the supplied archive. Water variants need visual matching and repeat-boundary checks. |
+| Interface and cursor | Layered controls, vector arrows, headset and 14 cursor Blender files | Verify intended UI element and logical size; map zoom must not enlarge UI/cursors. |
+| Area overlays | Guard/harvest vectors, layered guard/forbidden artwork and PNG references | Map historical names to engine frame IDs and preserve translucent layer behavior. |
+| Concepts | 20 building concept images | Reference only; not automatically aligned, team-recolorable or export-ready game sprites. |
+
+## Confirmed resolution limits
+
+Some recovered building canvases are already small:
+
+| Original file | Canvas |
+| --- | --- |
+| `auberge-goth-64.xcf` | 64 × 69 |
+| `building8.xcf` | 64 × 69 |
+| `science1.xcf` | 64 × 70 |
+| `tower1.xcf` | 64 × 108 |
+
+Other originals have substantially larger canvases, for example
+`course-steam.xcf` at 1024 × 1024, `science.xcf` at 512 × 562,
+`auberge-steam.xcf` at 384 × 384 and `tower2.xcf` at 256 × 430.
+Canvas size alone does not establish usable sprite detail: padding, layer
+content and logical frame dimensions still need checking.
+
+## Mapping gaps to report before replacement
+
+- Names such as `building10`, `building3r` and `__building19` have not been
+  conclusively mapped to the modern building/state IDs.
+- Damage/construction, shared construction, swarm, flags and wall coverage is
+  not yet established from the source layers. Do not label these missing solely
+  because their modern runtime filenames are absent.
+- The two wheat folders contain different artwork using the same `ressource`
+  filenames. Those names are candidates for mapping, not authorization to pick
+  one historical style over the other.
+- Existing raster exports can be classic-resolution references. Their presence
+  is not proof of an available high-resolution replacement.
+- Embedded Blender texture dependencies and XCF layer registration still need
+  inspection during export. The import verifies file preservation, not renderer
+  compatibility or completeness of external dependencies.
+
+Where a source is absent or too small, retain the existing experimental HD
+upscale and report the gap. Classic assets remain available for classic/software
+mode and load failures. Prefer a usable original model/vector/layer source over AI enhancement.

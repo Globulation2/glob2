@@ -1,5 +1,7 @@
 # High-resolution artwork and map zoom
 
+Original artwork is now organized in [datasrc/gfx](../../datasrc/gfx/README.md), with a [source catalog](../../datasrc/gfx/CATALOG.md) and [coverage report](../../datasrc/gfx/COVERAGE.md). The current runtime pack below remains experimental. Replace frames with verified deterministic exports from originals as mappings are established; retain existing upscales where usable originals are unavailable.
+
 This experiment upgrades selected map artwork while retaining the original 32-unit grid, sprite geometry, building footprints, simulation and orders. OpenGL draws the extra texture pixels directly into the framebuffer at 50%–300% zoom. Gameplay, replays and the editor use the same presentation camera; sidebar controls, menus and the minimap keep their normal size relative to map zoom.
 
 **High-resolution artwork** defaults on for OpenGL sessions. To use classic artwork, turn it off in General Settings and load a new session. An explicitly saved preference is respected. Alt + wheel zooms about the pointer; the − / 100% / + controls use the map center. In gameplay and replays they sit at the bottom of the right sidebar; in the editor they remain at the bottom left. Software rendering retains original artwork and 100% scale.
