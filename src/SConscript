@@ -62,6 +62,12 @@ if not env['server']:
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
+if not env['server']:
+    session_sources = [source for source in source_files if source != 'Glob2.cpp']
+    session_sources += local.Object('EngineSessionHarness.o', '#test/EngineSessionHarness.cpp')
+    session_test = local.Program('engine-session-test', session_sources)
+    local.Alias('session-test', session_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-router" if env.get("role") == "router" else "glob2-server", server_source_files)

@@ -20,6 +20,8 @@ infrastructure from the supported-release acceptance criteria.
   wrapper and automated lifecycle/completion tests. An owning screen stack
   now drives the campaign new/load selector with deferred transitions. Other
   menus, mission execution, and the top-level host still require migration.
+- Incremental engine session phases with host-supplied timing, separate drawing,
+  and delay calculation. Input/modal handling and loading remain transitional.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are
@@ -31,13 +33,13 @@ On macOS arm64, September 2026:
 
 - Native desktop, lobby, router, gateway, and release Wasm builds succeed.
 - Nine build identity/architecture tests and eight gateway integration tests pass.
-- The native speed regression previously passed live speed, pause/hard pause,
-  replay playback, and all seven expected checksum samples. After screen-phase
-  extraction, two runs stopped at the camera-cadence assertion (10/13 cells,
-  tolerance 2) before reaching replay checks. Background CPU load was high;
-  the cause is not established and this rerun remains an open validation item.
-  The new screen lifecycle harness passes, including creation/input/timer
-  completion, reuse, supplied event modifiers, and the compatibility host.
+- The native speed regression passes live speed, pause/hard pause, replay
+  playback, and all seven expected checksum samples. The camera test now
+  samples both cadences at the measurement window's end; previously the slower
+  cadence sampled before its final sleep. Tolerances remain unchanged.
+- The screen lifecycle/stack harness passes. The incremental engine harness
+  produces matching 50-tick checksums with regular and delayed callbacks,
+  checks lifecycle guards, and verifies repeatable delay queries.
 - Twelve browser checks cover startup, campaign selector cancellation/reopen,
   tutorial launch, custom-game pause, save/reload byte
   equality, load continuation, and audio-context activation are exercised

@@ -76,6 +76,15 @@ public:
 	//! Run game. A valid gui and netGame must exists
 	int run();
 
+    // Incremental session API. Requires an initialized game; the host owns
+    // scheduling. GUI input and modal flows remain transitional legacy code.
+    void beginSession(Uint64 now);
+    bool stepSession(Uint64 now);
+    void drawSession();
+    Uint32 sessionDelay(Uint64 now);
+    bool finishSession();
+
+
 	//! Type of error the engine init function can return
 	enum EngineError
 	{
@@ -150,12 +159,12 @@ private:
 		bool adjustableGameSpeed; ///< Speed presets apply; live network games stay at GAME_TICK_MS
 	};
 
-	void updateTickSpeedAndDrawCadence(MainLoopState& st);
+	void updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now);
 
 	/// Headless / scripted-test polling: under --nox automaticEndingGame, flip
 	/// gui.isRunning=false once a local end condition fires. Records
 	/// automaticGameEndTick.
-	void pollAutomaticEndingConditions();
+	void pollAutomaticEndingConditions(Uint64 now);
 
 	/// Push this tick's local + AI orders into the net layer and (if the
 	/// previous tick committed) call advanceStep + write the checksum sidecar.
@@ -167,7 +176,9 @@ private:
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
 
-	void drawAndPaceFrame(MainLoopState& st, bool readyNow);
+	void drawFrame(MainLoopState& st);
+    std::optional<MainLoopState> session;
+    int sessionEndingTarget = 0;
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.

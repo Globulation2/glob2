@@ -46,3 +46,18 @@ returns to the retained parent; successful selection queues the campaign menu.
 and Asyncify browser callers. Campaign mission execution still uses the legacy
 engine loop, and other menu families have not yet migrated. This change does
 not remove Asyncify or claim callback-safe mission loading.
+
+
+## Incremental engine sessions
+
+The engine exposes begin, step, draw, delay, and finish session operations.
+Hosts supply monotonic millisecond samples and decide when to schedule the next
+step. Delay queries never sleep or advance the simulation. Native `run()` drives
+these same operations. The regression harness compares simulation checksums
+under regular and delayed callback schedules and checks invalid lifecycle calls.
+
+This is a session boundary, not yet the complete application scheduler:
+`GameGUI::step` still polls input and can open legacy modal dialogs. Finishing a
+session can still synchronously load a requested save. Audio initialization and
+the end-game screen remain in `run()`. These remaining call stacks must migrate
+before a callback-only browser host can replace Asyncify.
