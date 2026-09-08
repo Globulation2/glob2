@@ -10,7 +10,7 @@
 // Pattern follows WinningConditionsHarness: deterministic golden text on
 // stdout, cppunit-free, behaviour-preserving cleanups verified by diff.
 //
-// Self-contained: synthesizes its own campaign fixture files in /tmp so the
+// Self-contained: synthesizes its own campaign fixture files under TMPDIR so the
 // run is independent of the real campaigns/ directory.
 
 #include "Campaign.h"
@@ -19,15 +19,22 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <filesystem>
 
 namespace {
 
-const char* kTmpValid     = "/tmp/glob2_campaign_harness_valid.txt";
-const char* kTmpEmpty     = "/tmp/glob2_campaign_harness_empty.txt";
-const char* kTmpGarbage   = "/tmp/glob2_campaign_harness_garbage.txt";
-const char* kTmpVersion0  = "/tmp/glob2_campaign_harness_v0.txt";
-const char* kTmpVersionHi = "/tmp/glob2_campaign_harness_v999.txt";
-const char* kMissing      = "/tmp/glob2_campaign_harness_does_not_exist.txt";
+const std::string kTmpValidStorage = (std::filesystem::temp_directory_path()/"glob2_campaign_harness_valid.txt").string();
+const char* kTmpValid = kTmpValidStorage.c_str();
+const std::string kTmpEmptyStorage = (std::filesystem::temp_directory_path()/"glob2_campaign_harness_empty.txt").string();
+const char* kTmpEmpty = kTmpEmptyStorage.c_str();
+const std::string kTmpGarbageStorage = (std::filesystem::temp_directory_path()/"glob2_campaign_harness_garbage.txt").string();
+const char* kTmpGarbage = kTmpGarbageStorage.c_str();
+const std::string kTmpVersion0Storage = (std::filesystem::temp_directory_path()/"glob2_campaign_harness_v0.txt").string();
+const char* kTmpVersion0 = kTmpVersion0Storage.c_str();
+const std::string kTmpVersionHiStorage = (std::filesystem::temp_directory_path()/"glob2_campaign_harness_v999.txt").string();
+const char* kTmpVersionHi = kTmpVersionHiStorage.c_str();
+const std::string kMissingStorage = (std::filesystem::temp_directory_path()/"glob2_campaign_harness_does_not_exist.txt").string();
+const char* kMissing = kMissingStorage.c_str();
 
 void writeFile(const char* path, const std::string& content)
 {
