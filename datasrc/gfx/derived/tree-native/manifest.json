@@ -3,206 +3,206 @@
     {
       "layers": [
         {
-          "opacity": 100.0, 
-          "index": 0, 
-          "name": "New Layer#1", 
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer#1",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
-        }, 
+        },
         {
-          "opacity": 100.0, 
-          "index": 1, 
-          "name": "New Layer", 
+          "opacity": 100.0,
+          "index": 1,
+          "name": "New Layer",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
-        }, 
+        },
         {
-          "opacity": 63.13725490196078, 
-          "index": 2, 
-          "name": "Background", 
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "Background",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
         }
-      ], 
-      "source": "datasrc/gfx/originals/resources/tree/trees_1_1.xcf", 
-      "file": "trees_1_1.png", 
-      "sha256": "cf5c03acc3a1f032d44986df7788f1118e26b781649f3d88f9b054fbc5a30337", 
+      ],
+      "source": "datasrc/gfx/originals/resources/tree/trees_1_1.xcf",
+      "file": "trees_1_1.png",
+      "sha256": "cf5c03acc3a1f032d44986df7788f1118e26b781649f3d88f9b054fbc5a30337",
       "native_size": [
-        128, 
+        128,
         128
-      ], 
+      ],
       "source_sha256": "36fd3779ad6657efb47d11962cc91c661925607773776831caf844d3a4254898"
-    }, 
+    },
     {
       "layers": [
         {
-          "opacity": 100.0, 
-          "index": 0, 
-          "name": "Background", 
+          "opacity": 100.0,
+          "index": 0,
+          "name": "Background",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
         }
-      ], 
-      "source": "datasrc/gfx/originals/resources/tree/trees_1_2.xcf", 
-      "file": "trees_1_2.png", 
-      "sha256": "68d44b5b84baa44e328bb11e98e5c9d13e2647dc6627b27bdb9924f15023db36", 
+      ],
+      "source": "datasrc/gfx/originals/resources/tree/trees_1_2.xcf",
+      "file": "trees_1_2.png",
+      "sha256": "68d44b5b84baa44e328bb11e98e5c9d13e2647dc6627b27bdb9924f15023db36",
       "native_size": [
-        128, 
+        128,
         128
-      ], 
+      ],
       "source_sha256": "cb061fb74cc3bd134356e33d10464030666412bdca48036f19e0e4c333a904bc"
-    }, 
+    },
     {
       "layers": [
         {
-          "opacity": 100.0, 
-          "index": 0, 
-          "name": "New Layer#1", 
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer#1",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
-        }, 
+        },
         {
-          "opacity": 100.0, 
-          "index": 1, 
-          "name": "New Layer", 
+          "opacity": 100.0,
+          "index": 1,
+          "name": "New Layer",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
-        }, 
+        },
         {
-          "opacity": 63.13725490196078, 
-          "index": 2, 
-          "name": "Background", 
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "Background",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
         }
-      ], 
-      "source": "datasrc/gfx/originals/resources/tree/trees_2_1.xcf", 
-      "file": "trees_2_1.png", 
-      "sha256": "279e08b59ca7cb7bcdf16dc1dba984553fe7d21b3adb4cb9f2cad8880eceb9c5", 
+      ],
+      "source": "datasrc/gfx/originals/resources/tree/trees_2_1.xcf",
+      "file": "trees_2_1.png",
+      "sha256": "279e08b59ca7cb7bcdf16dc1dba984553fe7d21b3adb4cb9f2cad8880eceb9c5",
       "native_size": [
-        128, 
+        128,
         128
-      ], 
+      ],
       "source_sha256": "7f5b64fe7ff58dbc1b80dc27b9a0865e9f68c1f96b51ab1fbb9ea954985407e9"
-    }, 
+    },
     {
       "layers": [
         {
-          "opacity": 100.0, 
-          "index": 0, 
-          "name": "New Layer#1", 
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer#1",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
-        }, 
+        },
         {
-          "opacity": 100.0, 
-          "index": 1, 
-          "name": "New Layer", 
+          "opacity": 100.0,
+          "index": 1,
+          "name": "New Layer",
           "offsets": [
-            0, 
+            0,
             8
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
-        }, 
+        },
         {
-          "opacity": 63.13725490196078, 
-          "index": 2, 
-          "name": "Background", 
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "Background",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
         }
-      ], 
-      "source": "datasrc/gfx/originals/resources/tree/trees_3_1.xcf", 
-      "file": "trees_3_1.png", 
-      "sha256": "3d2c497ef996a8a65766a21d8095e14c484be58f16af37076c38ea2225a87dbb", 
+      ],
+      "source": "datasrc/gfx/originals/resources/tree/trees_3_1.xcf",
+      "file": "trees_3_1.png",
+      "sha256": "3d2c497ef996a8a65766a21d8095e14c484be58f16af37076c38ea2225a87dbb",
       "native_size": [
-        128, 
+        128,
         140
-      ], 
+      ],
       "source_sha256": "0902918261c95ecac95c24eb4d2805baff0a074028d8e7e21fa1b1799c1bbd03"
-    }, 
+    },
     {
       "layers": [
         {
-          "opacity": 100.0, 
-          "index": 0, 
-          "name": "New Layer#1", 
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer#1",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
-        }, 
+        },
         {
-          "opacity": 100.0, 
-          "index": 1, 
-          "name": "New Layer", 
+          "opacity": 100.0,
+          "index": 1,
+          "name": "New Layer",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
-        }, 
+        },
         {
-          "opacity": 63.13725490196078, 
-          "index": 2, 
-          "name": "Background", 
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "Background",
           "offsets": [
-            0, 
+            0,
             0
-          ], 
-          "visible": true, 
+          ],
+          "visible": true,
           "mode": 0
         }
-      ], 
-      "source": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf", 
-      "file": "trees_4_1.png", 
-      "sha256": "eab11eb44d78e87acabdcf4c0f163fa6459098b19ee7f8e4b368cd7643c87b70", 
+      ],
+      "source": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf",
+      "file": "trees_4_1.png",
+      "sha256": "eab11eb44d78e87acabdcf4c0f163fa6459098b19ee7f8e4b368cd7643c87b70",
       "native_size": [
-        128, 
+        128,
         140
-      ], 
+      ],
       "source_sha256": "b893267a7380f6e4e6d67f7acbb8cc361b0d394b856240a949c911e769dd86d9"
     }
-  ], 
+  ],
   "version": 1
 }

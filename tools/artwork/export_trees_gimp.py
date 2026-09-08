@@ -16,4 +16,6 @@ for name in ['trees_1_1','trees_1_2','trees_2_1','trees_3_1','trees_4_1']:
     pdb.file_png_save_defaults(image,merged,export,export,run_mode=RUN_NONINTERACTIVE)
     pdb.gimp_image_delete(image)
     records.append(dict(source=relative,source_sha256=hashlib.sha256(open(path,'rb').read()).hexdigest(),file=name+'.png',sha256=hashlib.sha256(open(export,'rb').read()).hexdigest(),native_size=size,layers=layers))
-with open(os.path.join(out,'manifest.json'),'w') as f: json.dump(dict(version=1,images=records),f,indent=2)
+with open(os.path.join(out,'manifest.json'),'w') as f:
+    json.dump(dict(version=1,images=records),f,indent=2,separators=(',', ': '))
+    f.write('\n')
