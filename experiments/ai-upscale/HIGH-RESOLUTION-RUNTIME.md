@@ -34,13 +34,15 @@ The runtime validates version, logical size, physical layer dimensions and requi
 
 Pool0b0 and school1b0 retain the selected baseline bytes. Deterministic finishing retains separate base/team layers. Both generated swarm states use team pixels extracted from their own green geometry and neutral base/shadow pixels; they never reuse the original, misaligned mask. Recoloring uses the engine’s existing hue rotation.
 
-Terrain atlas slots have 64 source pixels of extrusion around each 128-pixel tile. Each of the four levels is downsampled per tile before packing and border extrusion. The renderer clamps the maximum mip level to three, sufficient at 50% zoom. Other terrain, water, units and effects retain original textures.
+Terrain atlas slots have 64 source pixels of extrusion around each 128-pixel tile. Each of the four levels is downsampled per tile before packing and border extrusion. The renderer clamps the maximum mip level to three, sufficient at 50% zoom. All terrain and the other non-unit world artwork use the pack; unit artwork remains original. The generated water material keeps the existing scrolling presentation.
 
 Reproduce and validate the export (requires Pillow, NumPy and the committed selected experiment sources; create a local virtual environment first):
 
 ```sh
 python3 -m venv .cache/ai-upscale/venv
 .cache/ai-upscale/venv/bin/pip install Pillow numpy
+.cache/ai-upscale/venv/bin/python experiments/ai-upscale/water_material.py
+.cache/ai-upscale/venv/bin/python experiments/ai-upscale/connected_terrain.py
 .cache/ai-upscale/venv/bin/python experiments/ai-upscale/export_runtime.py
 .cache/ai-upscale/venv/bin/python experiments/ai-upscale/validate_runtime.py
 ```
@@ -86,7 +88,7 @@ Captures cover all selected assets, all swarm hues, enlarged damaged/constructio
 
 All 65 resource frames now use the constrained Real-ESRGAN RGB pass, with exactly preserved bilinear source alpha. A separate padded atlas accommodates their different dimensions and builds mip levels independently for each frame. Terrain coverage expands to all 272 frames; shoreline masks now follow shared corner topology, with compatible RGBA edges at every mip. Water, bullets, explosions, magic and particles use constrained finishing. Fog, clouds and area markings use faithful 4× bilinear resampling because they should retain their soft mask structure. Unit sprites and unit death animations remain with the unit animation follow-up.
 
-Regenerate with `upscale_resources.py` and `upscale_world.py` (both accept `--cache`), followed by `export_runtime.py`, `validate_runtime.py` and `pr_comparisons.py`. Selected corrected sources and model provenance are retained; inference inputs, raw trials and model binaries are excluded from the runtime pack.
+Regenerate with `upscale_resources.py` and `upscale_world.py` (both accept `--cache`), followed by `water_material.py`, `connected_terrain.py`, `export_runtime.py`, `validate_runtime.py` and `pr_comparisons.py`. Selected corrected sources and model provenance are retained; inference inputs, raw trials and model binaries are excluded from the runtime pack.
 
 ## Expanded pack validation (September 8)
 
@@ -99,3 +101,5 @@ Pixel checks verify that resource and terrain atlas textures actually produce co
 Terrain is built as a connected tileset. Shared grass and sand textures are made periodic while retaining their grain. Transition masks follow the engine's four-corner grass/sand/water lookup, with shared boundary irregularity and seeded interior variation. Compatible edge profiles and corner pixels are matched in RGBA at every mip level before padding and packing. This changes the shoreline artwork, while tile IDs, simulation terrain and picking remain unchanged. All 91,136 allowed directed joins across four mip levels are checked against the exported atlas, along with every corner class.
 
 Run `connected_terrain.py` before `export_runtime.py`. The connected-terrain manifest records material and topology source hashes. `validate_runtime.py` reads actual atlas pixels to verify legal neighbors and corner junctions independently of generation. Terrain source alpha is intentionally rebuilt from topology; resource and building alpha policies are unchanged.
+
+Gameplay/replay zoom buttons now occupy the bottom of the right sidebar. Building repair/upgrade/demolish controls and their hit targets move up to reserve the footer. Editor zoom controls remain at the bottom left.

@@ -52,3 +52,13 @@ original dense map 300%: 2.27661 ms, 613 calls, 45406016 GPU bytes, 0 HD CPU byt
 HD dense map 50%: 22.1088 ms, 24634 calls, 357720532 GPU bytes, 260363776 HD CPU bytes, 10 colored frames
 HD dense map 300%: 2.39254 ms, 613 calls, 357829756 GPU bytes, 260429312 HD CPU bytes, 11 colored frames
 PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+2026-09-08 — generated grass/water, rugged transitions, sidebar zoom footer
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+PASS software game/editor rendering, original artwork, disabled zoom

@@ -288,7 +288,7 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 {
 	updateCamera();
-    if(mouseEvent.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseEvent.x,mouseEvent.y))
+    if(mouseEvent.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseEvent.x,mouseEvent.y,true))
     {viewportX=camera.tileX();viewportY=camera.tileY();zoomControlPushed=true;return;}
 	int button=mouseEvent.button;
 

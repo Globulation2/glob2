@@ -80,3 +80,11 @@ for level,record in enumerate(m['terrain_atlas']['levels']):
             if (c[2],c[3])==(cb[0],cb[1]):
                 assert np.array_equal(a[-1],b[0]),(level,i,j,'vertical');joins+=1
 print(f'PASS: {joins} exported atlas joins and all corner junctions, RGBA, four mip levels')
+
+water=Image.open(PACK/'water0.png')
+for level in range(4):
+    a=np.asarray(water.resize((water.width>>level,water.height>>level),Image.Resampling.BOX))
+    assert np.array_equal(a[0],a[-1]),('water vertical',level)
+    assert np.array_equal(a[:,0],a[:,-1]),('water horizontal',level)
+assert water.getchannel('A').getextrema()==(255,255)
+print('PASS: periodic opaque water; opposing edges agree through four mip levels')

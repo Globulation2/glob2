@@ -688,7 +688,7 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
 
-	drawMapZoomControls(camera);
+	drawMapZoomControls(camera, true);
 	// draw menu if any
 	if (inGameMenu)
 	{

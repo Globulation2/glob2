@@ -193,9 +193,9 @@ public:
                 gui.ghostManager.removeBuilding(x,y);gui.toolManager.deactivateTool();gui.selectionMode=GameGUI::NO_SELECTION;
             }
             // Reset button must act only on press, and must not place a building on release.
-            const auto orders=gui.orderQueue.size();SDL_MouseButtonEvent button{};button.button=SDL_BUTTON_LEFT;button.x=20;button.y=gfx->getH()-15;
+            const auto orders=gui.orderQueue.size();SDL_MouseButtonEvent button{};button.button=SDL_BUTTON_LEFT;button.x=gfx->getW()-160+8+44;button.y=gfx->getH()-15;
             gui.handleMouseButtonDown(button);double after=gui.camera.zoom;gui.handleMouseButtonUp(button);
-            assert(gui.camera.zoom==after&&gui.orderQueue.size()==orders);
+            assert(after==1&&gui.camera.zoom==after&&gui.orderQueue.size()==orders);
             auto center=gui.camera.screenToWorld(gui.camera.width/2,gui.camera.height/2);
             assert(gfx->toggleFullscreen());gui.updateCamera();gui.drawAll(0);capture(hd?"fullscreen-hd":"fullscreen-original");
             auto fullscreenCenter=gui.camera.screenToWorld(gui.camera.width/2,gui.camera.height/2);

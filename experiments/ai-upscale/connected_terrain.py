@@ -24,15 +24,22 @@ def topology():
     return result
 
 def material(index):
-    source=EXP/('sr/corrected' if index==0 else 'world/corrected')/f'terrain{index}.png'
-    a=np.asarray(Image.open(source).convert('RGB')).astype(float)
+    source=EXP/'materials/grass-blades-v1.png' if index==0 else EXP/'world/corrected'/f'terrain{index}.png'
+    a=np.asarray(Image.open(source).convert('RGB').resize((N,N),Image.Resampling.LANCZOS)).astype(float)
+    if index==0:
+        # Keep the source game's green palette while retaining generated blades.
+        reference=np.asarray(Image.open(EXP/'sr/corrected/terrain0.png').convert('RGB')).astype(float)
+        a=a-a.mean(axis=(0,1))+reference.mean(axis=(0,1))
+    return periodic(a)
+
+def periodic(a):
     # Remove the low-frequency boundary discontinuity with a periodic/smooth
     # decomposition. Retain the original grain instead of mirroring motifs.
     boundary=np.zeros_like(a)
     boundary[0]=a[-1]-a[0];boundary[-1]=-boundary[0]
     jump=a[:,-1]-a[:,0];boundary[:,0]+=jump;boundary[:,-1]-=jump
     yy,xx=np.indices(a.shape[:2])
-    denom=2*np.cos(2*np.pi*xx/N)+2*np.cos(2*np.pi*yy/N)-4
+    denom=2*np.cos(2*np.pi*xx/a.shape[1])+2*np.cos(2*np.pi*yy/a.shape[0])-4
     denom[0,0]=1
     correction=np.fft.fft2(boundary,axes=(0,1))/denom[...,None]
     correction[0,0]=0
@@ -70,7 +77,7 @@ def generate():
     y,x=np.indices((N,N),dtype=float);u=smooth(x/(N-1));v=smooth(y/(N-1))
     edge=np.minimum.reduce([x,y,N-1-x,N-1-y]);interior=smooth((edge-16)/24)
     rng=np.random.default_rng(712)
-    q=gaussian_filter(rng.normal(size=(64,64)),2)
+    q=gaussian_filter(rng.normal(size=(64,64)),2.3)
     q=q/(q.std()+1e-9)
     top=np.concatenate([q,q[:,::-1]],axis=1)
     shared_noise=np.concatenate([top,top[::-1]],axis=0)
@@ -79,12 +86,14 @@ def generate():
         rng=np.random.default_rng(index)
         noise=gaussian_filter(rng.normal(size=(N,N)),5,mode='wrap')
         noise=noise/(noise.std()+1e-9)
+        rough=gaussian_filter(rng.normal(size=(N,N)),2.4,mode='wrap')
+        rough=np.clip(rough/(rough.std()+1e-9),-2,2)
         def mask(symbol):
             tl,tr,bl,br=[float(a==symbol) for a in c]
             field=(1-v)*((1-u)*tl+u*tr)+v*((1-u)*bl+u*br)
-            # Perturb only interiors. Every legal edge has the same profile,
-            # and corner slopes are flat regardless of the adjacent variant.
-            field=field+.035*shared_noise*4*field*(1-field)+.012*noise*interior*4*field*(1-field)
+            # Shared fine edge variation gives every legal join the same rugged
+            # profile; frame-specific roughness fades out before the edges.
+            field=field+.09*np.clip(shared_noise,-2,2)*4*field*(1-field)+.03*rough*interior*4*field*(1-field)
             return smooth((field-.47)/.06)
         if 'H' in c:
             g=mask('H');rgb=grass*g[...,None]+sand*(1-g[...,None]);alpha=np.full((N,N),255.)
@@ -97,7 +106,7 @@ def generate():
     for index,c in sorted(topo.items()):
         Image.fromarray(tiles[index]).save(OUT/f'terrain{index}.png')
         records.append({'id':f'terrain{index}','corners':c,'sha256':hashlib.sha256((OUT/f'terrain{index}.png').read_bytes()).hexdigest()})
-    (OUT/'manifest.json').write_text(json.dumps({'recipe':'shared-material corner masks v1','seed':'frame index','sources':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [EXP/'sr/corrected/terrain0.png',EXP/'world/corrected/terrain128.png',ROOT/'src/map/MapTerrain.cpp']},'frames':records},indent=2)+'\n')
+    (OUT/'manifest.json').write_text(json.dumps({'recipe':'shared-material rugged corner masks v2; generated grass blades','seed':'frame index','sources':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [EXP/'sr/corrected/terrain0.png',EXP/'materials/grass-blades-v1.png',EXP/'materials/grass-blades-v1.txt',EXP/'world/corrected/terrain128.png',ROOT/'src/map/MapTerrain.cpp']},'frames':records},indent=2)+'\n')
     validate(topo)
 
 def validate(topo):
@@ -124,7 +133,8 @@ def preview():
     for i,c in topo.items():groups.setdefault(tuple(c),[]).append(i)
     boundaries=[3,3,4,5,5,4,3,2,2]
     corners=[['H' if x<b else 'S' if x<b+2 else 'E' for x in range(10)] for b in boundaries]
-    panels=[Image.new('RGBA',(9*N,8*N),(57,43,135,255)) for _ in range(2)]
+    water_sources=[ROOT/'data/gfx/water0.png',EXP/'materials/water0.png']
+    panels=[Image.open(p).convert('RGBA').resize((2048,2048),Image.Resampling.NEAREST).crop((0,0,9*N,8*N)) for p in water_sources]
     rng=np.random.default_rng(172)
     for y in range(8):
         for x in range(9):
