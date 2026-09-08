@@ -22,6 +22,7 @@
 #include "GlobalContainer.h"
 #include <SDL_net.h>
 #include <iostream>
+#include <filesystem>
 #include <stdexcept>
 
 GlobalContainer* globalContainer = nullptr;
@@ -391,6 +392,16 @@ int main(int argc, char** argv)
     {
         MapEdit editor;
         require(editor.load("maps/balanced.map"), "Editor fixture load failed");
+        const auto savedMap = std::filesystem::path(globalContainer->fileManager->getDir(0)) / "maps" / "Editor_atomic.map";
+        require(editor.save(savedMap.string(), "Editor atomic"), "Editor atomic save failed");
+        require(editor.game.mapHeader.getMapName() == "Editor atomic", "Saved editor name was not published");
+        const auto invalidDestination = savedMap.parent_path() / "blocked.map";
+        std::filesystem::create_directory(invalidDestination);
+        require(!editor.save(invalidDestination.string(), "Must not publish"), "Editor accepted a directory as a save file");
+        require(editor.game.mapHeader.getMapName() == "Editor atomic", "Failed save changed the editor name");
+        require(editor.load(savedMap.string()), "Atomically saved map did not reload");
+        std::cout << "PASS editor atomic save/reload and failed replacement retains live metadata" << std::endl;
+        require(editor.load("maps/balanced.map"), "Restore the shared editor fixture after save tests");
         // Opening a script file dialog must return to the host without polling
         // input or suspending the C++ stack. Escape closes only that child.
         for (int action : {ScriptEditorScreen::LOAD, ScriptEditorScreen::SAVE}) {

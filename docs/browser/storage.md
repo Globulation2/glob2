@@ -98,3 +98,22 @@ backup, malformed files, persistence failure, retry and discard, including an
 absent previous file. Recovery is verified from another browser page and after
 reload. The native safety harness also checks every truncated backup, version
 and definition mismatches, legacy text round trips and injected write failures.
+
+## Editor saves
+
+Map-editor saves use the same checked atomic file replacement as game saves.
+Serialization, flush, close or replacement failure leaves the previous file
+intact and does not publish a new editor map name. After a local write, the save
+dialog stays open until the storage service confirms durable persistence. This
+also applies to Save before quit: the editor retains its pending quit decision
+and modified state until persistence succeeds.
+
+Quota and transaction failures retain the dialog with retry and file export.
+Cancel returns to the editor with unsaved changes still marked; it does not
+promise to roll back an already written local file. As with game-save retries,
+the local replacement may be persisted by a later successful storage sync.
+Export provides a backup independent of that browser store. Failed initial
+storage restoration prevents the editor from overwriting stored maps.
+
+The implementation reuses LoadSaveScreen's owned persistence operation and the
+shared FileManager writer. It does not introduce browser APIs into the editor.

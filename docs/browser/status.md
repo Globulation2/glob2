@@ -287,3 +287,19 @@ Chromium, Firefox and WebKit. It restores the real context three times and
 verifies the retained controls can still cancel or complete the dialog.
 
 ![Editor confirmation after context restoration](screenshots/webgl2-restored-editor-dialog.png)
+
+## Editor save durability
+
+Map-editor writes now use checked atomic replacement and retain the save dialog
+until durable persistence succeeds, including Save before quit. Quota and
+transaction failures provide retry and export without losing the open editor.
+Six new failure/export/retry scenarios and six existing editor save/cancellation
+scenarios pass across Chromium, Firefox and WebKit. Native client/Wasm builds,
+the native save-safety harness and the expanded native session harness pass.
+The native regression checks save/reload and preservation of live metadata when
+replacement fails. The existing fixture is restored before subsequent
+scheduled-versus-synchronous comparisons.
+
+See [storage behavior and cancellation semantics](storage.md#editor-saves).
+
+![Editor save failure with export and retry](screenshots/editor-save-failure.png)
