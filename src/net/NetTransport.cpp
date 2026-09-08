@@ -6,6 +6,10 @@
 #include <thread>
 #include <array>
 
+#ifndef YOG_SERVER_ONLY
+std::unique_ptr<NetTransport> makeWssTransport();
+#endif
+
 namespace {
 class TcpTransport final : public NetTransport {
     std::atomic<State> status{State::Closed};
@@ -94,4 +98,30 @@ public:
     }
 };
 }
-std::unique_ptr<NetTransport> makeNetTransport() { return std::make_unique<TcpTransport>(); }
+#ifndef YOG_SERVER_ONLY
+namespace {
+class NativeTransport final : public NetTransport {
+    std::unique_ptr<NetTransport> selected;
+public:
+    void open(const std::string& address, uint16_t port) override {
+        close();
+        selected = address.rfind("wss://", 0) == 0 ? makeWssTransport() : std::make_unique<TcpTransport>();
+        selected->open(address, port);
+    }
+    void close() override { selected.reset(); }
+    State state() const override { return selected ? selected->state() : State::Closed; }
+    bool send(std::vector<uint8_t> bytes) override { return selected && selected->send(std::move(bytes)); }
+    bool receive(std::vector<uint8_t>& bytes) override { return selected && selected->receive(bytes); }
+    bool accept(TCPsocket socket) override {
+        close(); selected = std::make_unique<TcpTransport>(); return selected->accept(socket);
+    }
+};
+}
+#endif
+std::unique_ptr<NetTransport> makeNetTransport() {
+#ifdef YOG_SERVER_ONLY
+    return std::make_unique<TcpTransport>();
+#else
+    return std::make_unique<NativeTransport>();
+#endif
+}

@@ -42,7 +42,7 @@ jobs:
             ca-certificates git g++ python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
             libcppunit-dev xvfb xauth libgl1-mesa-dri
@@ -199,6 +199,7 @@ jobs:
             mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi
             mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-openssl
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy
             mingw-w64-x86_64-libsystre
@@ -238,7 +239,7 @@ jobs:
       - name: Install native and build dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y scons libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y scons libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
         run: python3 browser/setup.py
       - name: Test build identities
@@ -262,6 +263,7 @@ jobs:
         run: |
           scons release=1 transport-test -j2
           python3 test/run-network-transport-tests.py
+          python3 -m unittest discover -s tests/transport -v
       - name: Test browser single-player and multiplayer
         if: matrix.order == 'concurrent'
         working-directory: browser

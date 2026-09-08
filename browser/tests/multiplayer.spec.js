@@ -8,7 +8,7 @@ const {randomUUID} = require('node:crypto');
 
 const root = path.resolve(__dirname, '../..');
 const platform = os.platform() === 'win32' ? 'windows' : os.platform();
-let lobby, gateway, work, profile, endpoint;
+let lobby, gateway, tlsForwarder, work, profile, endpoint, secureEndpoint;
 async function start(binary, args, ready) {
   const child = spawn(binary, args, {cwd: work, stdio: ['ignore', 'pipe', 'pipe']});
   try {
@@ -37,10 +37,15 @@ test.beforeAll(async ({baseURL}) => {
   const started = await start(path.join(root, `build/${platform}/gateway/release/glob2-ws-gateway`),
     ['--port', '0', '--origin', new URL(baseURL).origin], line => line.startsWith('gateway listening on '));
   gateway = started.child;
-  endpoint = 'ws://127.0.0.1:' + started.line.split(':').pop().trim();
+  const port = started.line.split(':').pop().trim();
+  endpoint = 'ws://127.0.0.1:' + port;
+  const tls = await start('python3', [path.join(root, 'tests/transport/tls_forwarder.py'), work, port],
+    line => line.startsWith('TLS forwarder listening on '));
+  tlsForwarder = tls.child;
+  secureEndpoint = 'wss://localhost:' + tls.line.split(' ').pop();
 });
 test.afterAll(async () => {
-  await stop(gateway); await stop(lobby);
+  await stop(tlsForwarder); await stop(gateway); await stop(lobby);
   if (work) await rm(work, {recursive: true, force: true});
   if (profile) await rm(path.join(os.homedir(), '.' + profile), {recursive: true, force: true});
 });
@@ -204,7 +209,8 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
 });
 
 
-test('browser and native players complete matching simulation checkpoints', async ({page}, testInfo) => {
+for (const transport of ['TCP', 'WSS'])
+test(`browser and native players complete matching simulation checkpoints (${transport})`, async ({page}, testInfo) => {
   const nativeProfile = 'glob2-native-peer-' + randomUUID();
   let peer;
   const peerLog = [];
@@ -217,7 +223,8 @@ test('browser and native players complete matching simulation checkpoints', asyn
     await click(380, 280); await click(810, 590);
     await expect.poll(hostTypes).toContain(16);
     const started = await start(path.join(root, `build/${platform}/client/release/src/native-multiplayer-peer`),
-      [nativeProfile], line => line.startsWith('native peer joined order-rate='));
+      transport === 'WSS' ? [nativeProfile, secureEndpoint, path.join(work, 'cert.pem')] : [nativeProfile],
+      line => line.startsWith('native peer joined order-rate='));
     peer = started.child;
     peer.stdout.on('data', chunk => peerLog.push(String(chunk)));
     peer.stderr.on('data', chunk => peerLog.push(String(chunk)));

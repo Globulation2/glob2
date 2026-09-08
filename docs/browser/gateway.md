@@ -4,8 +4,7 @@ This is transport infrastructure, not yet a supported multiplayer release.
 The browser YOG entry now uses WebSocket transport and the same message codecs
 as native TCP clients. The legacy YOG handshake, successful account login, and lobby exit are exercised
 against a native server through the gateway. Browser chat stays within YOG;
-the optional native IRC bridge is disabled. Upgraded protocol negotiation, native
-WSS, account migration, invitation rooms and coordinated recovery remain release
+the optional native IRC bridge is disabled. Upgraded protocol negotiation, account migration, invitation rooms and coordinated recovery remain release
 gates; complete cross-play matches are not yet certified.
 
 ## Build and run
@@ -115,5 +114,39 @@ matches do not qualify sustained platform parity, account migration, or recovery
 
 Native TCP currently runs SDL networking on a worker. SDL's connect/send calls
 still need bounded cancellation/deadline handling before release qualification;
-native secure WebSocket transport remains outstanding. The browser transport is
+native WSS is described below. The browser transport is
 callback driven and does not create a worker thread or use Asyncify itself.
+
+## Native secure gateway connections
+
+Desktop client builds now require OpenSSL development headers/libraries alongside
+Boost. Headless lobby/router builds and Emscripten do not use this dependency.
+Set `GLOB2_YOG_URL=wss://games.example.org` when launching the desktop client to
+use that gateway for login, registration, and matches. Supply an origin only,
+with an optional port; paths, query strings, and embedded credentials are rejected.
+The native client uses `/yog` and `/router` and keeps match traffic on the same
+configured gateway even when legacy YOG packets advertise a private router IP.
+
+The WSS transport pumps asynchronous Beast/Asio operations from the application
+thread. It verifies the certificate chain and hostname, supplies SNI, and requires
+TLS 1.2 or later. OpenSSL's default trust paths are used; `SSL_CERT_FILE` can select
+an explicit CA bundle for a private deployment. There is no skip-verification
+switch. Qualification of native OS trust-store packaging, especially Windows,
+remains required before release.
+
+Connection establishment and writes have ten-second deadlines; WebSocket idle
+checking uses a thirty-second timeout with keepalive. Outbound/inbound payload
+queues are bounded by 1 MiB, incoming messages by 64 KiB, and incoming queued
+messages by 256. Outbound WebSocket chunks are at most 16 KiB. Closing cancels
+socket operations; stalled TLS cancellation is tested. System DNS resolver
+cancellation and the older SDL TCP worker still need platform-wide qualification.
+The legacy default YOG endpoint has not yet been migrated to a TLS-only connection
+policy; explicitly configure WSS for the secure self-hosted path.
+
+Run `scons release=1 transport-test`, then
+`python3 -m unittest discover -s tests/transport -v` for actual TLS peers covering
+trusted echo, fixed routes, untrusted certificates, hostname mismatch, text and
+oversized frames, rejected credential/path URLs, cancellation, and timeout.
+Playwright's native cross-play cases run with both TCP and WSS native peers. The
+WSS case uses an isolated test CA and TLS terminator in front of the real gateway;
+production proxy routing is covered separately by the Compose suite.

@@ -12,7 +12,7 @@ infrastructure from the supported-release acceptance criteria.
 - Native desktop, headless lobby, headless router, WebSocket gateway, and
   browser build entry points. The headless router defaults to a local lobby;
   `GLOB2_YOG_HOST` selects another private lobby.
-- Shared injectable byte transports: native TCP and browser WebSocket, with
+- Shared injectable byte transports: native TCP/WSS and browser WebSocket, with
   transport-independent framing, bounded queues, malformed-input rejection, and
   greetings queued during connection establishment. Browser YOG login now reaches
   a native server through the gateway in integration tests. Successful account
@@ -139,7 +139,7 @@ cross-platform, or supported-browser certification matrix.
    UI, focus/visibility behavior, and complete browser interaction handling.
 4. Transactional persistence with durable completion and failure states,
    quota handling, and validated import/export for all local data types.
-5. Injectable TCP/WebSocket/WSS transports, compatible protocol handshake,
+5. TLS-only internet connection policy, native trust-store qualification, compatible protocol handshake,
    bounded protocol parsing, and deterministic browser/native cross-play.
 6. YOG guests/accounts, invitations, room controls, password migration, and
    coordinated 120-second checkpoint-based recovery with fault injection.
@@ -154,7 +154,7 @@ support remain outstanding.
 
 Deliver the missing multiplayer and self-hosting features next. Single-player
 is already playable; further refactoring must resolve a concrete release blocker.
-Next delivery work is the upgraded handshake, native secure WebSocket transport,
+Next delivery work is the upgraded handshake, secure endpoint configuration,
 identities/rooms, and coordinated recovery.
 Rendering, lifecycle, durable storage, and removal of Asyncify remain acceptance
 gates for the supported release, not reasons to keep expanding preparatory work.

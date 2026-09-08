@@ -61,7 +61,7 @@ def build_web(directory, identity, arguments):
             input='', text=True, env=env['ENV']).returncode
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
-    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
+    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
     files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp']

@@ -237,6 +237,7 @@ CLIENT_SOURCES = (
     'net/NetBroadcastListener.cpp',
     'net/NetConnection.cpp',
     'net/NetTransport.cpp',
+    'net/WssTransport.cpp',
     'net/NetEngine.cpp',
     'net/NetGamePlayerManager.cpp',
     'net/NetListener.cpp',

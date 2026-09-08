@@ -22,11 +22,12 @@ public:
     }
 };
 int main(int argc, char** argv) {
-    if (argc != 2) return 2;
+    if (argc != 2 && argc != 4) return 2;
     try {
         SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
         SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
         SDL_setenv("GLOB2_CHECKSUM_SIDECAR", "1", 1);
+        if (argc == 4) SDL_setenv("SSL_CERT_FILE", argv[3], 1);
         globalContainer = new GlobalContainer(argv[1]);
         globalContainer->settings.screenWidth = 800;
         globalContainer->settings.screenHeight = 600;
@@ -39,7 +40,7 @@ int main(int argc, char** argv) {
         if (SDLNet_Init() != 0) throw std::runtime_error("Network initialization failed");
         {
             auto client = std::make_shared<YOGClient>();
-            client->connect("127.0.0.1");
+            client->connect(argc == 4 ? argv[2] : "127.0.0.1");
             std::shared_ptr<MultiplayerGame> game;
             MatchEvents events;
             bool ready = false;
