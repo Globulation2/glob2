@@ -220,3 +220,17 @@ pixels outside text bounds, single-line behavior, and restoration of clipping.
 The normal client and harness build, isolation/determinism checks, and menu
 navigation passed after these changes. The German settings screen was also
 inspected at 640×480. No new OpenGL session or long soak was run for this follow-up.
+
+### Indicators enabled after visual feedback
+
+The menu colony now enables the renderer's existing `DRAW_HEALTH_FOOD_BAR`
+flag alongside `DRAW_WHOLE_MAP`. This shows carried resources, unit health/hunger,
+and the existing building health, worker, occupancy and resource indicators.
+Simulation behavior is unchanged. The normal client/harness build and the
+presentation, bounded-text, isolation/determinism and fallback checks passed.
+
+![Menu with indicators](main-indicators.png)
+
+The same colony renderer without the menu panel or translucent wash:
+
+![Colony indicators](colony-indicators.png)
