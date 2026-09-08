@@ -1322,3 +1322,6 @@ Fast forward
 
 [Hide keyboard]
 Hide keyboard
+
+[Info]
+Info

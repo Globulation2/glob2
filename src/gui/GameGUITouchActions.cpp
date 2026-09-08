@@ -24,6 +24,7 @@ std::vector<int> GameGUITouch::allocationTabs() const
         if (b->type->defaultUnitStayRange) result.push_back(2);
     }
     result.push_back(3);
+    result.push_back(4);
     return result;
 }
 std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
@@ -85,16 +86,23 @@ void GameGUITouch::drawBuildingActions()
     if (extent>content.h) gfx->drawFilledRect(int(content.x+content.w-3*unit),int(content.y+actionScroll*unit*content.h/extent),
         std::max(1,int(2*unit)),std::max(1,int(content.h*content.h/extent)),Color(170,185,190));
 }
-void GameGUITouch::tapBuildingAction(ViewPoint point)
+std::optional<GameGUITouch::BuildingAction> GameGUITouch::actionAt(ViewPoint point) const
 {
-    auto* b=inspectedBuilding(); if (!b) return;
     const auto content=panelContent(); const double unit=globalContainer->gfx->logicalUnitsPerPoint();
     const double y=(point.y-content.y)/unit+actionScroll;
     const auto rows=buildingActions(); const int i=int(y/56);
-    if (!content.contains(point) || y<0 || i>=int(rows.size()) || y-i*56>=48) return;
+    if (!content.contains(point) || y<0 || i>=int(rows.size()) || y-i*56>=48) return std::nullopt;
     // Partially clipped rows are not actionable until scrolled fully into view.
-    if (i*56-actionScroll<0 || (i*56-actionScroll+48)*unit>content.h) return;
-    const auto row=rows[i];
+    if (i*56-actionScroll<0 || (i*56-actionScroll+48)*unit>content.h) return std::nullopt;
+    return rows[i];
+}
+void GameGUITouch::tapBuildingAction(ViewPoint point)
+{
+    auto* b=inspectedBuilding(); if (!b) return;
+    const auto picked=actionAt(point);
+    if (!picked || picked->kind!=heldActionKind || picked->value!=heldActionValue || heldActionConfirmation!=confirmDestroy) return;
+    const auto row=*picked;
+    const auto content=panelContent(); const double unit=globalContainer->gfx->logicalUnitsPerPoint();
     if (row.kind==0) {
         int delta=point.x<content.x+48*unit ? -1 : point.x>=content.x+content.w-48*unit ? 1 : 0;
         auto values=gui.displayedRatio(*b); const int next=std::clamp(values[row.value]+delta,0,int(MAX_RATIO_RANGE));

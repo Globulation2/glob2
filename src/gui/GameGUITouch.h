@@ -53,6 +53,10 @@ private:
     std::vector<BuildingAction> buildingActions() const;
     void drawBuildingActions();
     void tapBuildingAction(GAGCore::ViewPoint point);
+    int heldActionKind=-1, heldActionValue=0;
+    bool heldActionConfirmation=false;
+    int heldBuildingState=-1, heldConstructionState=-1;
+    std::optional<BuildingAction> actionAt(GAGCore::ViewPoint point) const;
     double actionScroll=0;
     bool confirmDestroy=false;
     const void* lastInspectedBuilding=nullptr;

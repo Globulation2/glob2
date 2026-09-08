@@ -160,6 +160,10 @@ bool GameGUITouch::process(SDL_Event& event)
         ownerBuilding!=(gui.selectionMode==GameGUI::BUILDING_SELECTION ? gui.selectionBuilding() : nullptr) ||
         ownerDialog!=activeDialog() ||
         ownerTool!=gui.toolManager.getBuildingName() || ownerOverlay!=bool(gui.typingInputScreen || gui.scrollableText))) { cancel(); return true; }
+    if (!fingers.empty() && inspectedBuilding() &&
+        (heldBuildingState!=inspectedBuilding()->buildingState || heldConstructionState!=inspectedBuilding()->constructionResultState)) {
+        cancel(); return true;
+    }
     ViewPoint point{event.tfinger.x*globalContainer->gfx->getW(),event.tfinger.y*globalContainer->gfx->getH()};
     const auto key=std::make_pair(event.tfinger.touchId,event.tfinger.fingerId);
     if (event.type==SDL_FINGERDOWN) {
@@ -174,6 +178,12 @@ bool GameGUITouch::process(SDL_Event& event)
             gui.lastMouseButtonState=0; gui.selectionPushed=gui.panPushed=gui.miniMapPushed=false;
             scale=globalContainer->gfx->logicalUnitsPerPoint();
             ownerRegion=interfaceRegion(point);
+            heldActionKind=-1; heldActionConfirmation=confirmDestroy;
+            if (auto* building=inspectedBuilding()) {
+                heldBuildingState=building->buildingState; heldConstructionState=building->constructionResultState;
+                if (ownerRegion==3 && activeAllocationTab()==3)
+                    if (const auto row=actionAt(point)) { heldActionKind=row->kind; heldActionValue=row->value; }
+            }
             heldDialogWidget=nullptr;
             if (usesHUD() && activeDialog()) {
                 prepareDialog();
@@ -258,7 +268,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
     if (usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText && allocationRect().contains(point)) {
         if (auto* building=inspectedBuilding()) {
             const int region=interfaceRegion(point);
-            if (region>=40 && region<=43) { allocationTab=region-40; actionScroll=0; confirmDestroy=false; }
+            if (region>=40 && region<=44) { allocationTab=region-40; actionScroll=0; confirmDestroy=false; }
             else if (region>=50 && region<=52) gui.requestBuildingPriority(*building,region-51);
             else if (region==30 || region==31) {
                 const int delta=region==30 ? -1 : 1;
@@ -534,7 +544,7 @@ ViewRect GameGUITouch::allocationRect() const
 {
     auto rect=layout().panel;
     if (!inspectedBuilding() || rect.h<=0) return {};
-    rect.h=(activeAllocationTab()==3 ? 48 : 96)*globalContainer->gfx->logicalUnitsPerPoint();
+    rect.h=(activeAllocationTab()>=3 ? 48 : 96)*globalContainer->gfx->logicalUnitsPerPoint();
     return rect;
 }
 ViewRect GameGUITouch::panelContent() const
@@ -597,13 +607,13 @@ void GameGUITouch::drawAllocation()
     gfx->drawFilledRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h),Color(24,34,44));
     const auto indices=allocationTabs();
     const int tab=activeAllocationTab(), count=indices.size();
-    const char* tabs[]={"[working]","[priority]","[range]","[Actions]"};
+    const char* tabs[]={"[working]","[priority]","[range]","[Actions]","[Info]"};
     for (int i=0;i<count;++i) {
         const ViewRect button{rect.x+i*rect.w/count,rect.y,rect.w/count,48*unit};
         gfx->drawFilledRect(int(button.x),int(button.y),int(button.w),int(button.h),indices[i]==tab ? Color(55,90,75) : Color(24,34,44));
         drawPointLabel(button,Toolkit::getStringTable()->getString(tabs[indices[i]]));
     }
-    if (tab==3) return;
+    if (tab>=3) return;
     if (tab==1) {
         const char* labels[]={"[low priority]","[medium priority]","[high priority]"};
         for (int i=0;i<3;++i) {

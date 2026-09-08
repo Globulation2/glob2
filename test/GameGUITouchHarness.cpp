@@ -3,6 +3,7 @@
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUILoadSave.h"
+#include "GameGUIInternal.h"
 #include "GameUtilities.h"
 #include <GUITextInput.h>
 #include <GUISelector.h>
@@ -202,7 +203,7 @@ public:
             gui.setSelection(GameGUI::BUILDING_SELECTION,building);
             gui.requestWorkerAllocation(*building,0);gui.orderQueue.clear();
             tap((ui.panel.x+24)*unit,rowY);require(gui.orderQueue.empty(),"Allocation at zero must not queue duplicates");
-            tap((ui.panel.x+ui.panel.w*.5f)*unit,(ui.panel.y+24)*unit);
+            tap((ui.panel.x+ui.panel.w*3/8)*unit,(ui.panel.y+24)*unit);
             for (int priority : {-1,0,1}) {
                 tap((ui.panel.x+ui.panel.w*(priority+1.5f)/3)*unit,rowY);
                 require(gui.orderQueue.size()==1,"Priority tap emits exactly one order");
@@ -214,7 +215,7 @@ public:
             require(gui.game.checkSum()==simulation,"Priority changes stay outside authoritative state");
             gui.drawAll(0);gfx->printScreen(width<height ? "touch-priority-portrait.bmp" : "touch-priority-landscape.bmp");gfx->nextFrame();
             gui.setSelection(GameGUI::BUILDING_SELECTION,rangeFlag);
-            tap((ui.panel.x+ui.panel.w*5/8)*unit,(ui.panel.y+24)*unit);
+            tap((ui.panel.x+ui.panel.w/2)*unit,(ui.panel.y+24)*unit);
             const int rangeBefore=gui.displayedUnitStayRange(*rangeFlag);
             const auto rangeChecksum=gui.game.checkSum();
             tap(plusX,rowY);tap(plusX,rowY);
@@ -233,7 +234,7 @@ public:
             finger(SDL_FINGERUP,1,plusX,rowY);
             require(gui.orderQueue.empty(),"Changing selected buildings cancels held range controls");
             require(gui.game.checkSum()==rangeChecksum,"Range controls preserve authoritative state");
-            tap((ui.panel.x+ui.panel.w/6)*unit,(ui.panel.y+24)*unit);
+            tap((ui.panel.x+ui.panel.w/8)*unit,(ui.panel.y+24)*unit);
             tap(gfx->getW()*5.5f/6,gfx->getH()-24*unit);
             require(gui.inGameMenu==GameGUI::IGM_MAIN,"Toolbar opens the in-game pause menu");
             gui.drawAll(0);gfx->printScreen(width<height ? "touch-pause-portrait.bmp" : "touch-pause-landscape.bmp");gfx->nextFrame();
@@ -259,6 +260,108 @@ public:
             require(gui.inGameMenu==GameGUI::IGM_NONE && gui.orderQueue.empty(),"Return resumes without leaking a world order");
             tap(gfx->getW()*2.5f/6,gfx->getH()-24*unit); // Close the inspector before the next orientation.
             gui.clearSelection();
+        }
+
+        auto fixture=[&](const char* name,int slot) {
+            auto* b=new Building(0,0,slot,globalContainer->buildingsTypes.getTypeNum(name,0,false),
+                gui.localTeam,&globalContainer->buildingsTypes,1,1);
+            gui.localTeam->myBuildings[slot]=b;return b;
+        };
+        auto* swarm=fixture("swarm",4);
+        auto* clearing=fixture("clearingflag",5);
+        auto* exploring=fixture("explorationflag",6);
+        auto* wall=fixture("stonewall",7);
+        auto tab=[&](int id) {
+            gui.drawAll(0);gfx->nextFrame();
+            const auto tabs=gui.touch->allocationTabs(); const auto r=gui.touch->allocationRect();
+            auto i=std::find(tabs.begin(),tabs.end(),id);require(i!=tabs.end(),"Requested inspector tab exists");
+            require(r.w/tabs.size()>=48*gfx->logicalUnitsPerPoint(),"Inspector tabs retain 48-point targets");
+            tap(r.x+(std::distance(tabs.begin(),i)+.5)*r.w/tabs.size(),r.y+24*gfx->logicalUnitsPerPoint());
+            require(gui.touch->activeAllocationTab()==id,"Visible inspector tab responds to touch");
+        };
+        auto openActions=[&](Building* b) {
+            gui.setSelection(GameGUI::BUILDING_SELECTION,b);gui.touch->panelOpen=true;tab(3);gui.orderQueue.clear();
+        };
+        auto actionPoint=[&](int kind,int value,int side=0) {
+            for (int attempt=0;attempt<30;++attempt) {
+                gui.drawAll(0);gfx->nextFrame();
+                const auto rows=gui.touch->buildingActions();
+                const auto found=std::find_if(rows.begin(),rows.end(),[&](const auto& row){return row.kind==kind && row.value==value;});
+                require(found!=rows.end(),"Building action must be available");
+                const auto r=gui.touch->panelContent();const double u=gfx->logicalUnitsPerPoint();
+                const double top=r.y+(std::distance(rows.begin(),found)*56-gui.touch->actionScroll)*u;
+                if (top>=r.y && top+48*u<=r.y+r.h)
+                    return GAGCore::ViewPoint{side<0 ? r.x+24*u : side>0 ? r.x+r.w-24*u : r.x+r.w/2,top+24*u};
+                const float x=r.x+r.w/2,y=r.y+r.h/2;
+                const float delta=(top<r.y ? 1 : -1)*std::min(r.h/3,56*u);
+                finger(SDL_FINGERDOWN,1,x,y);finger(SDL_FINGERMOTION,1,x,y+delta);finger(SDL_FINGERUP,1,x,y+delta);
+            }
+            throw std::runtime_error("Building action must be reachable by scrolling");
+        };
+        auto pressAction=[&](int kind,int value=0,int side=0) { auto p=actionPoint(kind,value,side);tap(p.x,p.y); };
+        for (auto [width,height]:{std::pair{320,568},{568,320}}) {
+            const int oldW=gfx->getW(),oldH=gfx->getH();
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            SDL_Event resized{};resized.type=SDL_WINDOWEVENT;resized.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resized);gui.viewportResized(oldW,oldH,gfx->getW(),gfx->getH());
+            openActions(swarm);
+            const auto checksum=gui.game.checkSum();
+            for (int type=0;type<NB_UNIT_TYPE;++type) {
+                const auto before=gui.displayedRatio(*swarm);
+                pressAction(0,type,1);pressAction(0,type,1);
+                require(gui.orderQueue.size()==2,"Rapid production taps queue exactly two orders");
+                for(int delta:{1,2}) {
+                    auto order=std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());gui.orderQueue.pop_front();
+                    require(order && order->gid==swarm->gid,"Production uses the shared order and building");
+                    for(int i=0;i<NB_UNIT_TYPE;++i) require(order->ratio[i]==before[i]+(i==type ? delta : 0),"Ratio edits preserve other pending values");
+                }
+                auto values=gui.displayedRatio(*swarm);values[type]=MAX_RATIO_RANGE;gui.pendingFor(swarm->gid).pendingRatio=values;
+                pressAction(0,type,1);require(gui.orderQueue.empty(),"Maximum ratio tap emits no order");
+                values[type]=0;gui.pendingFor(swarm->gid).pendingRatio=values;
+                pressAction(0,type,-1);require(gui.orderQueue.empty(),"Zero ratio tap emits no order");
+            }
+            require(gui.game.checkSum()==checksum,"Ratio UI does not mutate the simulation");
+            gui.drawAll(0);gfx->printScreen(width<height ? "touch-actions-portrait.bmp" : "touch-actions-landscape.bmp");gfx->nextFrame();
+            openActions(clearing);
+            for(int resource=0;resource<BASIC_COUNT;++resource) if(resource!=STONE) {
+                const bool before=gui.displayedClearingResource(*clearing,resource);
+                pressAction(1,resource);pressAction(1,resource);
+                require(gui.orderQueue.size()==2,"Clearing toggles each queue exactly one order");
+                for(bool value:{!before,before}) {
+                    auto order=std::dynamic_pointer_cast<OrderModifyClearingFlag>(gui.orderQueue.front());gui.orderQueue.pop_front();
+                    require(order && order->gid==clearing->gid && order->clearingResources[resource]==value,"Clearing toggle uses pending state");
+                }
+            }
+            for(auto* flag:{rangeFlag,exploring}) {
+                openActions(flag);
+                const int count=flag==rangeFlag ? NB_UNIT_LEVELS : EXPLORATION_FLAG_OPTION_COUNT;
+                for(int level=0;level<count;++level) {
+                    const int previous=gui.displayedMinLevelToFlag(*flag);pressAction(2,level);
+                    require(gui.orderQueue.size()==size_t(previous!=level),"Requirement changes suppress no-ops");
+                    if(previous!=level) {
+                        auto order=std::dynamic_pointer_cast<OrderModifyMinLevelToFlag>(gui.orderQueue.front());gui.orderQueue.clear();
+                        require(order && order->gid==flag->gid && order->minLevelToFlag==level,"Flag requirement preserves shared order format");
+                    }
+                }
+            }
+            openActions(wall);tab(4);
+            require(gui.touch->allocationRect().h==48*gfx->logicalUnitsPerPoint(),"Info tab leaves room for legacy building details");
+            tab(3);pressAction(4);require(gui.orderQueue.empty() && gui.touch->confirmDestroy,"Destroy first enters confirmation");
+            pressAction(5);require(gui.orderQueue.empty() && !gui.touch->confirmDestroy,"Destruction can be canceled");
+            pressAction(4);pressAction(4);
+            require(gui.orderQueue.size()==1 && std::dynamic_pointer_cast<OrderDelete>(gui.orderQueue.front()),"Confirmed destruction emits one shared order");gui.orderQueue.clear();
+            auto p=actionPoint(4,0);finger(SDL_FINGERDOWN,1,p.x,p.y);
+            wall->buildingState=Building::WAITING_FOR_DESTRUCTION;
+            finger(SDL_FINGERUP,1,p.x,p.y);require(gui.orderQueue.empty(),"A state transition cancels the held action");
+            pressAction(4);require(gui.orderQueue.size()==1 && std::dynamic_pointer_cast<OrderCancelDelete>(gui.orderQueue.front()),"Pending destruction can be canceled by touch");gui.orderQueue.clear();
+            wall->buildingState=Building::ALIVE;
+            openActions(building);
+            for(auto state:{Building::REPAIR,Building::UPGRADE}) {
+                building->constructionResultState=state;
+                pressAction(3);require(gui.orderQueue.size()==1 && std::dynamic_pointer_cast<OrderCancelConstruction>(gui.orderQueue.front()),"Construction cancellation uses shared order");gui.orderQueue.clear();
+            }
+            building->constructionResultState=Building::NO_CONSTRUCTION;
+            gui.clearSelection();gui.touch->panelOpen=false;
         }
 
         auto tr=[](const char* key) { return std::string(GAGCore::Toolkit::getStringTable()->getString(key)); };
