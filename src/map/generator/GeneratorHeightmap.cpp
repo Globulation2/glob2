@@ -17,10 +17,19 @@
 
 void MapGenerator::adjustHeightmapFromPoints(Game& game, std::vector<MapGeneratorPoint>& points, std::vector<int>& heightmap, int value)
 {
+    adjustHeightmapFromPointsTask(game, points, heightmap, value).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::adjustHeightmapFromPointsTask(Game& game, std::vector<MapGeneratorPoint>& points, std::vector<int>& heightmap, int value)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	for(unsigned int i=0; i<points.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		heightmap[points[i].y * game.map.getW() + points[i].x] += value;
 	}
+    co_return true;
 }
 
 
@@ -123,12 +132,22 @@ GAGCore::CooperativeTask MapGenerator::computeDistancesTask(Game& game, std::vec
 
 int MapGenerator::computeAverageDistance(Game& game, std::vector<int>& grid, int areaN, const std::vector<int>& heightmap)
 {
+    int result = 0;
+    computeAverageDistanceTask(game, grid, areaN, heightmap, result).run();
+    return result;
+}
+
+GAGCore::CooperativeTask MapGenerator::computeAverageDistanceTask(Game& game, std::vector<int>& grid, int areaN, const std::vector<int>& heightmap, int& result)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	long total = 0;
 	int count = 0;
 	for(int x=0; x<game.map.getW(); ++x)
 	{
 		for(int y=0; y<game.map.getH(); ++y)
 		{
+            if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			if(grid[y * game.map.getW() + x] == areaN)
 			{
 				total += heightmap[y * game.map.getW() + x];
@@ -136,7 +155,8 @@ int MapGenerator::computeAverageDistance(Game& game, std::vector<int>& grid, int
 			}
 		}
 	}
-	return count > 0 ? total/count : 0;
+	result = count > 0 ? total/count : 0;
+    co_return true;
 }
 
 

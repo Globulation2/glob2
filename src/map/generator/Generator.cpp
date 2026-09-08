@@ -144,7 +144,7 @@ GAGCore::CooperativeTask MapGenerator::computeConcreteIslandsTask(Game& game, Ma
 	
 	// Compute the distance of every square from the border
 	std::vector<MapGeneratorPoint> sources;
-	findBorderPoints(game, grid, sources);
+	co_await findBorderPointsTask(game, grid, sources);
 	std::vector<MapGeneratorPoint> obstacles;
 	std::vector<int> distances;
 	co_await computeDistancesTask(game, sources, obstacles, distances);
@@ -224,14 +224,14 @@ GAGCore::CooperativeTask MapGenerator::computeConcreteIslandsTask(Game& game, Ma
 		{
 			// Fill in wheat
 			std::vector<MapGeneratorPoint> points;
-			getAllPoints(game, grid, areaNumbers[0], points);
-			fillInResource(game, points, CORN, 2);
+			co_await getAllPointsTask(game, grid, areaNumbers[0], points);
+			co_await fillInResourceTask(game, points, CORN, 2);
 			points.clear();
 			
 			// Place some fruit
 			int fruit_n = syncRand()%6+1;
-			getAllPoints(game, grid, areaNumbers[1], points);
-			chooseRandomPoints(game, points, fruit_n);
+			co_await getAllPointsTask(game, grid, areaNumbers[1], points);
+			co_await chooseRandomPointsTask(game, points, fruit_n);
 			for(unsigned int j=0; j<points.size(); ++j)
 			{
 				game.map.setResource(points[j].x, points[j].y, CHERRY + syncRand()%3, 1);
@@ -288,13 +288,13 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
         if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
-		createOval(game, grid, teamAreaNumbers[i], teamPoints[i].x, teamPoints[i].y, minDist/2,minDist/2);
+		co_await createOvalTask(game, grid, teamAreaNumbers[i], teamPoints[i].x, teamPoints[i].y, minDist/2,minDist/2);
 	}
 	
 	// Construct a heightmap
 	std::vector<int> heightmap(game.map.getW() * game.map.getH(), 50);
 	std::vector<MapGeneratorPoint> teamAreaPoints;
-	getAllOtherPoints(game, grid, 0, teamAreaPoints);
+	co_await getAllOtherPointsTask(game, grid, 0, teamAreaPoints);
 	std::vector<MapGeneratorPoint> obstacles;
 	
 	std::vector<int> distances;
@@ -326,14 +326,14 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 			// Choose one random point from each players area
 			std::vector<MapGeneratorPoint> teamI;
 			std::vector<MapGeneratorPoint> teamJ;
-			getAllPoints(game, grid, teamAreaNumbers[i], teamI);
-			getAllPoints(game, grid, teamAreaNumbers[j], teamJ);
-			chooseRandomPoints(game, teamI, 1);
-			chooseRandomPoints(game, teamJ, 1);
+			co_await getAllPointsTask(game, grid, teamAreaNumbers[i], teamI);
+			co_await getAllPointsTask(game, grid, teamAreaNumbers[j], teamJ);
+			co_await chooseRandomPointsTask(game, teamI, 1);
+			co_await chooseRandomPointsTask(game, teamJ, 1);
 			
 			// Traverse between the two points
 			std::vector<MapGeneratorPoint> linePoints;
-			getAllPointsLine(game, teamI[0].x, teamI[0].y, teamJ[0].x, teamJ[0].y, linePoints);
+			co_await getAllPointsLineTask(game, teamI[0].x, teamI[0].y, teamJ[0].x, teamJ[0].y, linePoints);
 			// If a connection can be made without going through another teams area, then do it
 			bool failed=false;
 			for(unsigned int p=0; p<linePoints.size() && !failed; ++p)
@@ -429,7 +429,7 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 	{
         if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		std::vector<MapGeneratorPoint> sources;
-		getAllPoints(game, grid, teamAreaNumbers[i], sources);
+		co_await getAllPointsTask(game, grid, teamAreaNumbers[i], sources);
 		co_await computeDistancesTask(game, sources, obstacles, distances);
 		std::vector<MapGeneratorPoint> possible;
 		for(int x=0; x<game.map.getW(); ++x)

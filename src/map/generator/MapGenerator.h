@@ -39,6 +39,7 @@ private:
 	
 	///This creates an area with the shape of an oval with the given width and height
 	void createOval(Game& game, std::vector<int>& grid, int areaN, int x, int y, int width, int height);
+    GAGCore::CooperativeTask createOvalTask(Game& game, std::vector<int>& grid, int areaN, int x, int y, int width, int height);
 	
 	///This function takes the grid, an area number, and places points in it such that the points are spaced
 	///as far from each other as possible, bearing in mind weights. Returns 0 if failure, otherwise returns 
@@ -54,34 +55,44 @@ private:
 	
 	///This function fills the vector with all of the points in a specific area
 	void getAllPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
+    GAGCore::CooperativeTask getAllPointsTask(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
 	
 	///This function fills the vector with all of points except those in a specific area
 	void getAllOtherPoints(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
+    GAGCore::CooperativeTask getAllOtherPointsTask(Game& game, std::vector<int>& grid, int areaN, std::vector<MapGeneratorPoint>& points);
 	
 	///This function gets all of the points in a straight line from x1,y1 to x2,y2
 	void getAllPointsLine(Game& game, int x1, int y1, int x2, int y2, std::vector<MapGeneratorPoint>& points);
+    GAGCore::CooperativeTask getAllPointsLineTask(Game& game, int x1, int y1, int x2, int y2, std::vector<MapGeneratorPoint>& points);
 
 	///This function computes all of points that are borders
 	void findBorderPoints(Game& game, std::vector<int>& grid, std::vector<MapGeneratorPoint>& points);
+    GAGCore::CooperativeTask findBorderPointsTask(Game& game, std::vector<int>& grid, std::vector<MapGeneratorPoint>& points);
 
 	///This function fills all given points area with a certain resource. It will fill in a randomly sized
 	///square over each grid space no larger than maxFillSize
 	void fillInResource(Game& game, std::vector<MapGeneratorPoint>& points, int resourceType, int maxFillSize);
+    GAGCore::CooperativeTask fillInResourceTask(Game& game, std::vector<MapGeneratorPoint>& points, int resourceType, int maxFillSize);
 	
 	///This chooses n-random squares from a the points vector, and eliminates the rest
 	void chooseRandomPoints(Game& game, std::vector<MapGeneratorPoint>& points, int n);
+    GAGCore::CooperativeTask chooseRandomPointsTask(Game& game, std::vector<MapGeneratorPoint>& points, int n);
 	
 	///This function chooses all points that would be free for the building to build on, eliminates the rest
 	void chooseFreeForBuildingSquares(Game& game, std::vector<MapGeneratorPoint>& points, BuildingType* type, int team);
+    GAGCore::CooperativeTask chooseFreeForBuildingSquaresTask(Game& game, std::vector<MapGeneratorPoint>& points, BuildingType* type, int team);
 	
 	///This function chooses all the points that would be free for ground units
 	void chooseFreeForGroundUnits(Game& game, std::vector<MapGeneratorPoint>& points, int team);
+    GAGCore::CooperativeTask chooseFreeForGroundUnitsTask(Game& game, std::vector<MapGeneratorPoint>& points, int team);
 	
 	///This function chooses all the points that are bordering on the given building
 	void chooseTouchingBuilding(Game& game, std::vector<MapGeneratorPoint>& points, Building* building);
+    GAGCore::CooperativeTask chooseTouchingBuildingTask(Game& game, std::vector<MapGeneratorPoint>& points, Building* building);
 
 	///This function adjusts the heightmap value of point given by the given value
 	void adjustHeightmapFromPoints(Game& game, std::vector<MapGeneratorPoint>& points, std::vector<int>& heightmap, int value);
+    GAGCore::CooperativeTask adjustHeightmapFromPointsTask(Game& game, std::vector<MapGeneratorPoint>& points, std::vector<int>& heightmap, int value);
 	
 	///This function adjusts the heightmap values from a standard perlin noise. Spread is how much the value can go up or down
 	void adjustHeightmapFromPerlinNoise(Game& game, std::vector<int>& heights, int spread);
@@ -95,6 +106,7 @@ private:
 	
 	///Computes the average height/distance of a area on a heightmap
 	int computeAverageDistance(Game& game, std::vector<int>& grid, int areaN, const std::vector<int>& heightmap);
+    GAGCore::CooperativeTask computeAverageDistanceTask(Game& game, std::vector<int>& grid, int areaN, const std::vector<int>& heightmap, int& result);
 
 	///Adds a building to the map with the given typenum, level, under construction, team and location.
 	///Returns the pointer if it could, NULL otherwise

@@ -45,7 +45,7 @@ GAGCore::CooperativeTask MapGenerator::splitUpPointsTask(Game& game, std::vector
 	Uint32 n = syncRand() % startingPoints.size();
 
 	std::vector<MapGeneratorPoint> obstacles;
-	getAllOtherPoints(game, grid, areaN, obstacles);
+	co_await getAllOtherPointsTask(game, grid, areaN, obstacles);
 	std::vector<MapGeneratorPoint> sources;
 	sources.push_back(startingPoints[n]);
 	std::vector<int> heights;

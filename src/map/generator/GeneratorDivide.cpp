@@ -31,7 +31,7 @@ GAGCore::CooperativeTask MapGenerator::divideUpPlayerLandsTask(Game& game, MapGe
 	std::vector<MapGeneratorPoint> obstacles;
 	std::vector<int> distances;
 	obstacles.clear();
-	getAllPoints(game, grid, 0, sources);
+	co_await getAllPointsTask(game, grid, 0, sources);
 	co_await computeDistancesTask(game, sources, obstacles, distances);
 	
 	//Create a new heightmap from noise and distance to water
@@ -71,7 +71,7 @@ GAGCore::CooperativeTask MapGenerator::divideUpPlayerLandsTask(Game& game, MapGe
 			for(unsigned int j=0; j<areaNumbers.size(); ++j)
 			{
 				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
-				areaDistances[j] = computeAverageDistance(game, grid, areaNumbers[j], distances);
+				co_await computeAverageDistanceTask(game, grid, areaNumbers[j], distances, areaDistances[j]);
 				areaIndexes[j] = j;
 			}
 			ListComparator compare(areaDistances);
@@ -86,10 +86,10 @@ GAGCore::CooperativeTask MapGenerator::divideUpPlayerLandsTask(Game& game, MapGe
 			// Place wood
 			std::vector<MapGeneratorPoint> wheatWoodPoints;
 			std::vector<MapGeneratorPoint> wheatPoints;
-			getAllPoints(game, grid, areaNumbers[3], wheatWoodPoints);
-			getAllPoints(game, grid, areaNumbers[4], wheatWoodPoints);
-			getAllPoints(game, grid, areaNumbers[5], wheatWoodPoints);
-			adjustHeightmapFromPoints(game, wheatWoodPoints, heightmap, 10);
+			co_await getAllPointsTask(game, grid, areaNumbers[3], wheatWoodPoints);
+			co_await getAllPointsTask(game, grid, areaNumbers[4], wheatWoodPoints);
+			co_await getAllPointsTask(game, grid, areaNumbers[5], wheatWoodPoints);
+			co_await adjustHeightmapFromPointsTask(game, wheatWoodPoints, heightmap, 10);
 			for(unsigned int j=0; j<wheatWoodPoints.size(); ++j)
 			{
 				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
@@ -102,10 +102,10 @@ GAGCore::CooperativeTask MapGenerator::divideUpPlayerLandsTask(Game& game, MapGe
 			wheatWoodPoints.clear();
 			
 			// Place wheat
-			getAllPoints(game, grid, areaNumbers[0], wheatWoodPoints);
-			getAllPoints(game, grid, areaNumbers[1], wheatWoodPoints);
-			getAllPoints(game, grid, areaNumbers[2], wheatWoodPoints);
-			adjustHeightmapFromPoints(game, wheatWoodPoints, heightmap, 10);
+			co_await getAllPointsTask(game, grid, areaNumbers[0], wheatWoodPoints);
+			co_await getAllPointsTask(game, grid, areaNumbers[1], wheatWoodPoints);
+			co_await getAllPointsTask(game, grid, areaNumbers[2], wheatWoodPoints);
+			co_await adjustHeightmapFromPointsTask(game, wheatWoodPoints, heightmap, 10);
 			for(unsigned int j=0; j<wheatWoodPoints.size(); ++j)
 			{
 				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
@@ -120,17 +120,17 @@ GAGCore::CooperativeTask MapGenerator::divideUpPlayerLandsTask(Game& game, MapGe
 			
 			// These are all points in the base
 			std::vector<MapGeneratorPoint> baseLocations;
-			getAllPoints(game, grid, areaNumbers[6], baseLocations);
-			getAllPoints(game, grid, areaNumbers[7], baseLocations);
-			getAllPoints(game, grid, areaNumbers[8], baseLocations);
-			getAllPoints(game, grid, areaNumbers[9], baseLocations);
-			getAllPoints(game, grid, areaNumbers[10], baseLocations);
-			getAllPoints(game, grid, areaNumbers[11], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[6], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[7], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[8], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[9], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[10], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[11], baseLocations);
 			
 			// Place stone
 			int numberOfStone = 6;
 			std::vector<MapGeneratorPoint> stoneLocations = baseLocations;
-			chooseRandomPoints(game, stoneLocations, numberOfStone);
+			co_await chooseRandomPointsTask(game, stoneLocations, numberOfStone);
 			for(unsigned int j=0; j<stoneLocations.size(); ++j)
 			{
 				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
@@ -139,12 +139,12 @@ GAGCore::CooperativeTask MapGenerator::divideUpPlayerLandsTask(Game& game, MapGe
 			
 			
 			// Concerning starting locations, we also consider points inside the wheat and wood areas
-			getAllPoints(game, grid, areaNumbers[0], baseLocations);
-			getAllPoints(game, grid, areaNumbers[1], baseLocations);
-			getAllPoints(game, grid, areaNumbers[2], baseLocations);
-			getAllPoints(game, grid, areaNumbers[3], baseLocations);
-			getAllPoints(game, grid, areaNumbers[4], baseLocations);
-			getAllPoints(game, grid, areaNumbers[5], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[0], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[1], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[2], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[3], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[4], baseLocations);
+			co_await getAllPointsTask(game, grid, areaNumbers[5], baseLocations);
 			
 			
 			// Compute every points distance from the wheat
@@ -175,7 +175,7 @@ GAGCore::CooperativeTask MapGenerator::divideUpPlayerLandsTask(Game& game, MapGe
 			}
 			
 			// Place swarms
-			chooseFreeForBuildingSquares(game, startingLocations, swarm, i);
+			co_await chooseFreeForBuildingSquaresTask(game, startingLocations, swarm, i);
 			if(startingLocations.size() == 0)
 			{
 				co_return false;
@@ -194,9 +194,9 @@ GAGCore::CooperativeTask MapGenerator::divideUpPlayerLandsTask(Game& game, MapGe
 			
 			// Place units around the swarm
 			std::vector<MapGeneratorPoint> unitLocations = baseLocations;
-			chooseFreeForGroundUnits(game, unitLocations, i);
-			chooseTouchingBuilding(game, unitLocations, b);
-			chooseRandomPoints(game, unitLocations, descriptor.nbWorkers);
+			co_await chooseFreeForGroundUnitsTask(game, unitLocations, i);
+			co_await chooseTouchingBuildingTask(game, unitLocations, b);
+			co_await chooseRandomPointsTask(game, unitLocations, descriptor.nbWorkers);
 			for(unsigned int n=0; n<unitLocations.size(); ++n)
 			{
 				if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
@@ -242,15 +242,24 @@ GAGCore::CooperativeTask MapGenerator::divideUpAreaTask(Game& game, std::vector<
 
 void MapGenerator::createOval(Game& game, std::vector<int>& grid, int areaN, int x, int y, int width, int height)
 {
+    createOvalTask(game, grid, areaN, x, y, width, height).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::createOvalTask(Game& game, std::vector<int>& grid, int areaN, int x, int y, int width, int height)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	int h2 = (height/2) * (height/2);
 	int w2 = (width/2) * (width/2);
 	int t2 = h2 * w2;
 	for(int px = -(width/2); px < (width/2); ++px)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		int nx = game.map.normalizeX(x + px);
 		int px2 = px*px*h2;
 		for(int py = -(height/2); py < (height/2); ++py)
 		{
+			if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			int ny = game.map.normalizeY(y + py);
 			int py2 = py*py*w2;
 			if(px2 + py2 < t2)
@@ -259,6 +268,7 @@ void MapGenerator::createOval(Game& game, std::vector<int>& grid, int areaN, int
 			}
 		}
 	}
+    co_return true;
 }
 
 

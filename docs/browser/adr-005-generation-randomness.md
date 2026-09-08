@@ -94,8 +94,8 @@ concrete-island generation after 2, 8, and 20 callbacks and verify RNG recovery.
 Browser tests exercise retry into both swamp and concrete-island generation.
 This remains local scheduling evidence, not native/Wasm simulation parity.
 
-Point collection/filtering helpers, resource placement, runtime map gradients,
-container allocation, and some terrain operations still contain synchronous work.
+Runtime map gradients, container allocation, and some terrain operations still
+contain synchronous work.
 Full generation latency and cancellation bounds remain open until those paths
 are subdivided and measured against large-map fixtures.
 
@@ -104,3 +104,19 @@ This limits batching while avoiding browser callback clamping on every tiny
 partitioning step. Editor file loading retains its one-checkpoint policy because
 its individual steps have different costs. Neither policy claims a wall-clock
 latency bound for the synchronous helpers still awaiting migration.
+
+## Point and scoring passes
+
+Point collection, wrapped line tracing, border detection, random selection,
+building/unit candidate filters, resource filling, oval creation, and average-area
+distance scoring now expose cooperative tasks. The concrete-island/isles callers
+await these tasks rather than draining their synchronous adapters. Iteration and
+RNG order are retained; candidate filtering swaps its staged vector into the
+result after the pass instead of copying the full vector.
+
+Like the partition jobs, these tasks borrow their game and vector arguments and
+yield within their loops. Average-distance scoring writes a caller-owned result
+only at completion. Pending vectors and outputs belong to the suspended parent
+job and are discarded with the partial editor on cancellation. Full-map seeded
+fixtures and editor cancellation scenarios cover their integration; per-tick
+cross-platform simulation qualification is still separate work.

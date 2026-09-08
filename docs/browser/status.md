@@ -47,8 +47,9 @@ infrastructure from the supported-release acceptance criteria.
   RNG restoration and error transitions. Height-map noise, stamps, placement searches,
   and normalization now yield through nested jobs with owned temporary arrays and
   instance-local stamp state. Concrete-islands/isles distance floods, point spacing,
-  weighted area expansion, and player-land partitioning also use nested jobs.
-  Other long helper calls still need subdivision;
+  weighted area expansion, player-land partitioning, point collection/filtering,
+  resource filling, oval creation, and area scoring also use nested jobs.
+  Runtime gradients and other long terrain operations still need subdivision;
   cross-platform generation parity is not yet certified.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
