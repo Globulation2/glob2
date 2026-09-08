@@ -362,15 +362,16 @@ void GameGUI::drawTopScreenBar(void)
 void GameGUI::drawOverlayInfos(void)
 {
 	globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
+globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
 	if (selectionMode==TOOL_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		toolManager.drawTool(mapMouseX(mouseX), mapMouseY(mouseY), localTeamNo, viewportX, viewportY);
+		toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY);
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		toolManager.drawTool(mapMouseX(mouseX), mapMouseY(mouseY), localTeamNo, viewportX, viewportY);
+		toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY);
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -414,6 +415,7 @@ void GameGUI::drawOverlayInfos(void)
 		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
 	}
 
+});
 	globalContainer->gfx->endMapTransform();
 	// draw message List
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
@@ -647,7 +649,7 @@ void GameGUI::drawAll(int team)
 	}
 
 	///Draw ghost buildings
-	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+	if (!globalContainer->replaying) globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ ghostManager.drawAll(viewportX, viewportY, localTeamNo); });
 
 	globalContainer->gfx->endMapTransform();
 	// if paused, tint the game area

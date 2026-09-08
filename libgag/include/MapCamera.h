@@ -5,7 +5,7 @@
 #include <utility>
 
 // Presentation-only camera. All distances are logical pixels, never map tiles.
-// Origins wrap on the torus; a viewport larger than one period is centered.
+// Origins wrap on the torus; visible bounds may span multiple map periods.
 class MapCamera
 {
 public:
@@ -37,14 +37,12 @@ public:
     {
         originX = wrap(originX, mapWidth);
         originY = wrap(originY, mapHeight);
-        offsetX = std::max(0.0, (width - mapWidth * zoom) / 2);
-        offsetY = std::max(0.0, (height - mapHeight * zoom) / 2);
-        if (offsetX > 0) originX = 0;
-        if (offsetY > 0) originY = 0;
+        offsetX = 0;
+        offsetY = 0;
     }
 
-    double visibleW() const { return std::min(width / zoom, mapWidth); }
-    double visibleH() const { return std::min(height / zoom, mapHeight); }
+    double visibleW() const { return width / zoom; }
+    double visibleH() const { return height / zoom; }
 
     std::pair<double, double> screenToWorld(double x, double y) const
     {
@@ -60,8 +58,8 @@ public:
     {
         auto anchor = screenToWorld(x, y);
         zoom = std::clamp(value, .5, 3.0);
-        offsetX = std::max(0.0, (width - mapWidth * zoom) / 2);
-        offsetY = std::max(0.0, (height - mapHeight * zoom) / 2);
+        offsetX = 0;
+        offsetY = 0;
         originX = anchor.first - (x - offsetX) / zoom;
         originY = anchor.second - (y - offsetY) / zoom;
         normalize();

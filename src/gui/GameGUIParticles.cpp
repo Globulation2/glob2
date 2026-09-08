@@ -75,9 +75,11 @@ void GameGUI::drawParticles(void)
 
 		// crossfade between the current animation frame and the next one
 		const ParticleCrossfade cf = computeParticleCrossfade(p->startImg, p->endImg, p->age, p->lifeSpan);
+globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
 		drawCenteredParticleSprite(MapCamera::wrap(p->x-viewportX*32+64, game.map.getW()*32)-64, MapCamera::wrap(p->y-viewportY*32+64, game.map.getH()*32)-64, cf.frameA, cf.alphaA);
 		if (cf.hasFrameB)
 			drawCenteredParticleSprite(MapCamera::wrap(p->x-viewportX*32+64, game.map.getW()*32)-64, MapCamera::wrap(p->y-viewportY*32+64, game.map.getH()*32)-64, cf.frameB, cf.alphaB);
+});
 
 		++it;
 	}

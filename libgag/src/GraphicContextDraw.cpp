@@ -27,6 +27,23 @@ namespace GAGCore
 #endif
 	}
 
+    void GraphicContext::drawMapCopies(int pw,int ph,int vw,int vh,const std::function<void()> &draw)
+    {
+        draw();
+#ifdef HAVE_OPENGL
+        if(!(optionFlags & USEGPU) || pw<=0 || ph<=0)return;
+        Sprite::flushBatches(this);
+        periodicCopy=true;
+        for(int y=-1;y<=vh/ph+1;++y)for(int x=-1;x<=vw/pw+1;++x)
+        {
+            if(x==0 && y==0)continue;
+            glPushMatrix();glTranslatef(x*pw,y*ph,0);
+            draw();Sprite::flushBatches(this);glPopMatrix();
+        }
+        periodicCopy=false;
+#endif
+    }
+
     void GraphicContext::beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh)
     {
 #ifdef HAVE_OPENGL

@@ -19,3 +19,14 @@ compile_commands.json
 Glob2.app/
 Glob2-*.dmg
 /.tmp
+
+# Local inference intermediates; retain selected sources and provenance.
+/experiments/ai-upscale/resources/*
+!/experiments/ai-upscale/resources/corrected/
+!/experiments/ai-upscale/resources/metrics.json
+!/experiments/ai-upscale/resources/provenance.json
+/experiments/ai-upscale/world/*
+!/experiments/ai-upscale/world/corrected/
+!/experiments/ai-upscale/world/metrics.json
+!/experiments/ai-upscale/world/provenance.json
+/experiments/ai-upscale/runtime-check/

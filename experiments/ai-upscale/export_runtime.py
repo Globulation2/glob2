@@ -41,10 +41,44 @@ def main():
                 shutil.copyfile(source,OUT/name)
                 layers.append(dict(file=name,role='team' if name.endswith('r.png') else 'base',sha256=sha(OUT/name),source_sha256=sha(source)))
         records.append(dict(id=f['id'],width=f['width'],height=f['height'],scale=4,layers=layers,recipe=method))
-    for i in range(16):
-        name=f'terrain{i}.png';source=EXP/'sr/corrected'/name;Image.open(source).convert('RGBA').save(OUT/name)
+    for i in range(272):
+        name=f'terrain{i}.png';source=EXP/('sr/corrected' if i<16 else 'world/corrected')/name;Image.open(source).convert('RGBA').save(OUT/name)
         w,h=Image.open(ROOT/'data/gfx'/name).size
         records.append(dict(id=f'terrain{i}',width=w,height=h,scale=4,recipe='terrain constrained',layers=[dict(file=name,role='base',sha256=sha(OUT/name),source_sha256=sha(source))]))
+    resource_sources=sorted((EXP/'resources/corrected').glob('ressource[0-9]*.png'),key=lambda p:int(p.stem[9:]))
+    assert len(resource_sources)==65, 'Run upscale_resources.py before export'
+    for source in resource_sources:
+        name=source.name
+        shutil.copyfile(source,OUT/name)
+        w,h=Image.open(ROOT/'data/gfx'/name).size
+        records.append(dict(id=source.stem,width=w,height=h,scale=4,recipe='resource constrained',layers=[dict(file=name,role='base',sha256=sha(OUT/name),source_sha256=sha(source))]))
+    resource_levels=[]
+    for level in range(4):
+        slot=256>>level; border=32>>level
+        atlas=Image.new('RGBA',(slot*8,slot*9))
+        for i,source in enumerate(resource_sources):
+            tile=Image.open(source).convert('RGBA')
+            tile=tile.resize((tile.width>>level,tile.height>>level),Image.Resampling.LANCZOS)
+            padded=Image.fromarray(np.pad(np.asarray(tile),((border,border),(border,border),(0,0)),mode='edge'))
+            atlas.paste(padded,((i%8)*slot,(i//8)*slot))
+        name=f'ressource-atlas-mip{level}.png';atlas.save(OUT/name)
+        resource_levels.append(dict(file=name,sha256=sha(OUT/name)))
+    world={}
+    for source in sorted((EXP/'world/corrected').glob('*.png')):
+        if source.stem.startswith('terrain'):continue
+        frame_id=source.stem.removesuffix('r')
+        world.setdefault(frame_id,[]).append(source)
+    for frame_id,sources in world.items():
+        layers=[];w=h=0
+        for source in sources:
+            name=source.name;Image.open(source).convert('RGBA').save(OUT/name)
+            lw,lh=Image.open(ROOT/'data/gfx'/name).size;w=max(w,lw);h=max(h,lh)
+            layers.append(dict(file=name,role='team' if source.stem.endswith('r') else 'base',sha256=sha(OUT/name),source_sha256=sha(source)))
+        logical_source=ROOT/'data/gfx'/(frame_id+'.png')
+        if not logical_source.exists():logical_source=ROOT/'data/gfx'/(frame_id+'r.png')
+        w,h=Image.open(logical_source).size
+        method='world constrained' if frame_id.startswith(('water','bullet','explosion','magiceffect','particle')) else 'soft mask resampling'
+        records.append(dict(id=frame_id,width=w,height=h,scale=4,recipe=method,layers=layers))
     lines=['GLOB2_HIGHRES 1']
     for f in records:
         layer={x['role']:x['file'] for x in f['layers']}
@@ -59,15 +93,15 @@ def main():
     atlas_levels=[]
     for level in range(4):
         slot=256>>level; border=64>>level; size=128>>level
-        atlas=Image.new('RGBA',(slot*4,slot*4))
-        for i in range(16):
+        atlas=Image.new('RGBA',(slot*16,slot*17))
+        for i in range(272):
             tile=Image.open(OUT/f'terrain{i}.png').convert('RGBA').resize((size,size),Image.Resampling.LANCZOS)
             padded=Image.fromarray(np.pad(np.asarray(tile),((border,border),(border,border),(0,0)),mode='edge'))
-            atlas.paste(padded,((i%4)*slot,(i//4)*slot))
+            atlas.paste(padded,((i%16)*slot,(i//16)*slot))
         name=f'terrain-atlas-mip{level}.png';atlas.save(OUT/name)
         atlas_levels.append(dict(file=name,sha256=sha(OUT/name)))
     (OUT/'frames.txt').write_text('\n'.join(lines)+'\n')
-    (OUT/'manifest.json').write_text(json.dumps(dict(version=1,selection_sha256=sha(EXP/'finishing.json'),frames=records,terrain_atlas=dict(slot=256,border=64,levels=atlas_levels)),indent=2)+'\n')
+    (OUT/'manifest.json').write_text(json.dumps(dict(version=1,selection_sha256=sha(EXP/'finishing.json'),frames=records,terrain_atlas=dict(slot=256,border=64,columns=16,rows=17,levels=atlas_levels),resource_atlas=dict(slot=256,border=32,columns=8,rows=9,levels=resource_levels)),indent=2)+'\n')
     print(f'Exported {len(records)} frames, {sum(len(f["layers"]) for f in records)} layers to {OUT}')
 
 if __name__=='__main__':main()

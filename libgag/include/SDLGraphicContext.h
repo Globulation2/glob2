@@ -1,3 +1,4 @@
+#include <functional>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -339,6 +340,7 @@ namespace GAGCore
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
 		bool mapTransformActive=false;
+        bool periodicCopy=false;
 		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
 		float overlayScale=1;
 		unsigned long drawCalls=0;
@@ -374,6 +376,10 @@ namespace GAGCore
 		bool toggleFullscreen();
 		void beginMapTransform(float zoom,float x,float y,int clipX,int clipY,int clipW,int clipH);
 		void endMapTransform();
+        // Repeat a presentation-only pass. Its primary invocation advances visual
+        // state once; subsequent invocations must only draw.
+        void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);
+        bool isPeriodicCopy() const {return periodicCopy;}
 		void beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh);
 		void endScreenOverlay();
 		unsigned long getDrawCallCount() const {return drawCalls;}

@@ -25,9 +25,13 @@ int main()
         c.wheel(100,200,300);assert(c.zoom==3);c.wheel(-100,200,300);assert(c.zoom==.5);
     }
     MapCamera small;small.resize(960,720,512,512);small.setZoom(.5,100,100);
-    assert(small.visibleW()==512&&small.visibleH()==512);
-    assert(small.offsetX==352&&small.offsetY==232);
-    assert(!small.contains(351,240)&&small.contains(352,232));
-    assert(small.localX(352)==0&&small.localY(232)==0);
+    assert(small.visibleW()==1920&&small.visibleH()==1440);
+    assert(small.offsetX==0&&small.offsetY==0&&small.contains(0,0));
+    for(int x=0;x<960;x+=13)for(int y=0;y<720;y+=17)
+    {
+        auto w=small.screenToWorld(x,y);
+        assert((small.tileX()+(small.localX(x)>>5))%16==int(MapCamera::wrap(w.first,512)/32));
+        assert((small.tileY()+(small.localY(y)>>5))%16==int(MapCamera::wrap(w.second,512)/32));
+    }
     std::cout<<"PASS camera conversions, placement/brush tiles, fractional wheel anchors, limits, resize and wrapped/small maps\n";
 }

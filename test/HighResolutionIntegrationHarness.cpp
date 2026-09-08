@@ -70,6 +70,19 @@ class HighResolutionIntegrationHarness
         auto building=editor.game.addBuilding(15,15,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);assert(building);
         editor.regenerateGameHeader();editor.minimap.setGame(editor.game);editor.updateCamera();
         editor.game.map.displayViewportW=editor.game.map.displayViewportH=512;
+        // An incomplete NPOT mip chain samples white without producing a GL
+        // error. Verify that both atlas-backed sprite families produce color.
+        for(auto sprite:{globalContainer->terrain,globalContainer->resources})
+        {
+            gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
+            gfx->drawSprite(100,100,128,128,sprite,sprite==globalContainer->terrain?0:9);
+            gfx->finishDrawingSprite(sprite,255);auto data=pixels();
+            bool colored=false;
+            for(size_t k=0;k<data.size();k+=4)
+                if((data[k]||data[k+1]||data[k+2]) && !(data[k]==data[k+1]&&data[k+1]==data[k+2])){colored=true;break;}
+            assert(colored);
+        }
+
         std::set<Building*> visible;
         for(double zoom:{.5,1.})
         {
@@ -82,6 +95,25 @@ class HighResolutionIntegrationHarness
             for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP);
             gfx->endMapTransform();assert(actual==pixels());
         }
+        // More than one complete period must repeat geometry without duplicating
+        // the visible-building identity used to emit particles.
+        gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
+        gfx->beginMapTransform(.5,100,100,100,100,512,512);
+        editor.game.drawMapGroundBuildings(0,0,32,32,1024,1024,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr);
+        gfx->endMapTransform();auto repeated=pixels();assert(visible.size()==1);
+        gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
+        gfx->beginMapTransform(.5,100,100,100,100,512,512);
+        for(int y:{-32,480,992})for(int x:{-32,480,992})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP);
+        gfx->endMapTransform();assert(repeated==pixels());
+        int advances=0;
+        gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
+        gfx->beginMapTransform(.5,100,100,100,100,512,512);
+        gfx->drawMapCopies(512,512,1024,1024,[&](){
+            if(!gfx->isPeriodicCopy())++advances;
+            gfx->drawFilledRect(80,80,32,32,255,0,0);
+        });
+        gfx->endMapTransform();assert(advances==1);
+        for(int y:{140,396})for(int x:{140,396})assert(coloredRegion(x,y,16,16));
         // A moving unit crossing both seams must leave visible pieces in all four corners.
         Game units(nullptr);units.map.setSize(4,4,GRASS);units.map.setGame(&units);units.addTeam(0);
         auto unit=units.addUnit(0,0,0,0,0,128,1,1);assert(unit);
@@ -207,9 +239,16 @@ public:
             small.regenerateGameHeader();small.minimap.setGame(small.game);
             small.game.addBuilding(5,5,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);
             small.updateCamera();small.camera.setZoom(.5,300,300);small.viewportX=small.camera.tileX();small.viewportY=small.camera.tileY();
-            small.drawMap(0,0,gfx->getW(),gfx->getH());small.drawMenu();small.drawMiniMap();small.drawWidgets();capture("small-map-centered");
-            assert(small.camera.visibleW()==512&&small.camera.visibleH()==512);
-            assert(!small.camera.contains(0,0));
+            small.drawMap(0,0,gfx->getW(),gfx->getH());small.drawMenu();small.drawMiniMap();small.drawWidgets();capture("small-map-repeated");
+            assert(small.camera.visibleW()>512&&small.camera.visibleH()>512);
+            assert(small.camera.contains(0,0));
+            for(int px:{80,336,592})for(int py:{80,336,592})
+            {
+                int tx,ty;small.game.map.displayToMapCaseAligned(small.mapMouseX(px),small.mapMouseY(py),&tx,&ty,small.viewportX,small.viewportY);
+                int firstX,firstY;small.game.map.displayToMapCaseAligned(small.mapMouseX(80),small.mapMouseY(80),&firstX,&firstY,small.viewportX,small.viewportY);
+                assert(tx==firstX&&ty==firstY);
+            }
+
         }
         for(bool hd:{false,true})
         {

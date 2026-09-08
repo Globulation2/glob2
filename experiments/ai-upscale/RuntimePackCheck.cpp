@@ -79,8 +79,12 @@ int main(int argc,char**argv)
                 {
                     gfx->beginMapTransform(zoom,0,0,0,0,1280,960);
                     for(int y=0;y<std::ceil(960/zoom);y+=32)for(int x=0;x<std::ceil(1280/zoom);x+=32)
-                        gfx->drawSprite(x,y,sprites["terrain"].get(),((x/32)+(y/32)*3)%16);
+                        gfx->drawSprite(x,y,sprites["terrain"].get(),((x/32)+(y/32)*3)%272);
                     gfx->finishDrawingSprite(sprites["terrain"].get(),255);
+                    for(int y=0;y<960/zoom;y+=64)for(int x=0;x<1280/zoom;x+=64)
+                        gfx->drawSprite(x,y,sprites["ressource"].get(),((x/64)+(y/64)*3)%65);
+                    gfx->finishDrawingSprite(sprites["ressource"].get(),255);
+
                     for(int y=0;y<960/zoom;y+=96)for(int x=0;x<1280/zoom;x+=96)
                     {auto f=frames[((x/96)+(y/96)*7)%73];gfx->drawSprite(x,y,sprites[f.prefix].get(),f.index);gfx->finishDrawingSprite(sprites[f.prefix].get(),255);}
                     gfx->endMapTransform();glFinish();

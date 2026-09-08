@@ -22,7 +22,7 @@ build/src/glob2 -g
 
 ## Runtime pack
 
-`data/highres/v1` is the standalone pack: 89 frames (73 building/state/wall/flag/shared frames and 16 terrain frames), 141 layer PNGs, four padded terrain atlas levels, and two manifests. No model, Python, or generation dependencies are needed by the game. SCons install/dist includes this directory; the macOS bundle already copies the data directory.
+`data/highres/v1` is the standalone pack: 487 frames (73 building/state/wall/flag/shared frames, 272 terrain frames, 65 resource frames and 77 other world frames), 543 layer PNGs, four padded terrain and four resource atlas levels, and two manifests. No model, Python, or generation dependencies are needed by the game. SCons install/dist includes this directory; the macOS bundle already copies the data directory.
 
 `manifest.json` records logical dimensions, 4× scale, recipe, layer roles and dimensions, original/selected-source/output hashes, and atlas metadata. `frames.txt` is the compact runtime index, starting with `GLOB2_HIGHRES 1`; each following row contains:
 
@@ -49,7 +49,7 @@ python3 -m venv .cache/ai-upscale/venv
 
 Original surfaces remain available for software/CPU operations and logical dimensions. GPU draws select high-resolution surfaces while retaining original destination rectangles, including differing base/team layer sizes. GL uses normalized 2D textures; high-resolution artwork uses linear filtering and mipmaps, while legacy artwork retains its filtering policy.
 
-`MapCamera` supplies fractional world origins, visible bounds, conversions, pointer anchoring and toroidal normalization. Gameplay/replays/editor share this camera and the screen-space zoom controls. The world pass transforms directly into the drawable framebuffer, including on HiDPI displays. Sprite batches flush across transform boundaries; UI renders after restoration. Particles retain world positions. Placement, selection, editor brushes, panning and minimap navigation convert through the camera. Maps smaller than the viewport render one centered period.
+`MapCamera` supplies fractional world origins, visible bounds, conversions, pointer anchoring and toroidal normalization. Gameplay/replays/editor share this camera and the screen-space zoom controls. The world pass transforms directly into the drawable framebuffer, including on HiDPI displays. Sprite batches flush across transform boundaries; UI renders after restoration. Particles retain world positions. Placement, selection, editor brushes, panning and minimap navigation convert through the camera. Maps smaller than the viewport repeat to fill it; repeated appearances retain one game identity and picking wraps to the underlying tile.
 
 Camera state and artwork preference do not enter simulation orders, replay commands, or save state. The preference itself is stored in local settings. Team recoloring is lazy and session caches are released on closing the game/editor.
 
@@ -81,3 +81,15 @@ Measurements are from the development Mac, with other processes active; they are
 - Synthetic HD dense scene: about 6.8 ms at 50% (932 calls), 2.3 ms at 300% (34 calls), in the latest run. See integration.log for real map benchmarks, including the dense four-team fixture.
 
 Captures cover all selected assets, all swarm hues, enlarged damaged/construction states, gameplay/replay/editor, HiDPI/fullscreen, small maps, and terrain adjacency. Collect hands-on play feedback and results on other GPU/OS combinations. The PR asks reviewers whether to retain the user-facing classic-artwork switch; it remains available for now. The minimap viewport indicator remains quantized to tiles. Whole-map clipping is applied during the transformed pass; UI clipping is restored afterward.
+
+## Resources and remaining world artwork
+
+All 65 resource frames now use the constrained Real-ESRGAN RGB pass, with exactly preserved bilinear source alpha. A separate padded atlas accommodates their different dimensions and builds mip levels independently for each frame. Terrain coverage expands to all 272 frames; shoreline alpha and edge bands retain the source geometry. Water, bullets, explosions, magic and particles use constrained finishing. Fog, clouds and area markings use faithful 4× bilinear resampling because they should retain their soft mask structure. Unit sprites and unit death animations remain with the unit animation follow-up.
+
+Regenerate with `upscale_resources.py` and `upscale_world.py` (both accept `--cache`), followed by `export_runtime.py`, `validate_runtime.py` and `pr_comparisons.py`. Selected corrected sources and model provenance are retained; inference inputs, raw trials and model binaries are excluded from the runtime pack.
+
+## Expanded pack validation (September 8)
+
+The final 487-frame pack passes all 16 team hues, logical-size and GL checks, bounded cache reuse and session release. Dense-map frame times (HD/classic): 11.77/8.25 ms at 50%, 1.55/1.71 ms at 300%. GPU allocation: 358/45 MB. Draw calls: 24,634/24,623 at 50%, 613/613 at 300%. The full 16-hue stress test uses 856 MB CPU / 1.50 GB GPU, with 944 cached team frames. These replace the smaller-pack measurements above for this revision.
+
+Pixel checks verify that resource and terrain atlas textures actually produce color; GL error checks alone do not catch an incomplete mip chain. The atlas loader defines level zero and subsequent mips at the same exact dimensions, overriding the legacy power-of-two allocation. Repeated-map tests compare rendered building copies against explicit positions, keep one building identity, check identical wrapped picking in multiple visible periods, and advance visual state only on the primary draw.

@@ -1,0 +1,33 @@
+{
+  "model": "realesrgan-x4plus",
+  "scale": 4,
+  "command": [
+    "/Users/bradley/glob2-ai-upscale-experiment/.cache/ai-upscale/runtime/realesrgan-ncnn-vulkan-v0.2.0-macos/realesrgan-ncnn-vulkan",
+    "-i",
+    "/Users/bradley/glob2-hd-pr/experiments/ai-upscale/world/input",
+    "-o",
+    "/Users/bradley/glob2-hd-pr/experiments/ai-upscale/world/raw",
+    "-m",
+    "/Users/bradley/glob2-ai-upscale-experiment/.cache/ai-upscale/bundle/models",
+    "-n",
+    "realesrgan-x4plus",
+    "-s",
+    "4",
+    "-j",
+    "1:1:1",
+    "-f",
+    "png"
+  ],
+  "runtime_url": "https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/releases/tag/v0.2.0",
+  "models_url": "https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0",
+  "sha256": {
+    "runtime/realesrgan-ncnn-vulkan-v0.2.0-macos/realesrgan-ncnn-vulkan": "c1c35d92079085de96b9d547fd7e4464bc8a2e9ccf28d7b8c712d72ade91b7cc",
+    "bundle/models/realesrgan-x4plus.bin": "713ee713b0353afaa27976f0563a64a5043bd70b9bd8936c2e26e25ebcdbcddf",
+    "bundle/models/realesrgan-x4plus.param": "35330ececcea33b6c397a72548e788d5d53becee4734c50b7fada36e89f10a86"
+  },
+  "postprocessing": {
+    "water": "RGB residual limited to +/-6, mixed at 20%, zero within 4 output pixels of the edge, fading over 32 pixels",
+    "soft_masks": "original RGBA resampled bilinearly at 4x; no model inference",
+    "metrics": "metrics.json describes the constrained inference output before water postprocessing"
+  }
+}

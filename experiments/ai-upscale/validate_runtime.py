@@ -7,9 +7,13 @@ ROOT=Path(__file__).resolve().parents[2]
 PACK=ROOT/'data/highres/v1'
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 m=json.loads((PACK/'manifest.json').read_text())
-assert m['version']==1 and len(m['frames'])==89
-assert len({f['id'] for f in m['frames']})==89
+assert m['version']==1
+assert len(m['frames'])>=410
+assert len({f['id'] for f in m['frames']})==len(m['frames'])
 for f in m['frames']:
+    logical=ROOT/'data/gfx'/(f['id']+'.png')
+    if not logical.exists():logical=ROOT/'data/gfx'/(f['id']+'r.png')
+    assert Image.open(logical).size==(f['width'],f['height']),f['id']
     layers={l['role']:l for l in f['layers']}
     assert layers.keys()<= {'base','team'}
     for l in layers.values():
@@ -25,12 +29,32 @@ for name in ['pool0b0','school1b0']:
             for l in f['layers']:assert digest(PACK/l['file'])==digest(ROOT/'experiments/ai-upscale/buildings/corrected'/l['file'])
 for level,l in enumerate(m['terrain_atlas']['levels']):
     p=PACK/l['file'];assert digest(p)==l['sha256']
-    im=Image.open(p);assert im.size==(1024>>level,1024>>level)
+    im=Image.open(p);assert im.size==(4096>>level,4352>>level)
     # Check extruded tile borders independently at every supported mip level.
     slot=256>>level;border=64>>level;size=128>>level
-    for i in range(16):
-        x=(i%4)*slot;y=(i//4)*slot
+    for i in range(272):
+        x=(i%16)*slot;y=(i//16)*slot
         for j in range(size):
             assert im.getpixel((x,y+border+j))==im.getpixel((x+border,y+border+j))
             assert im.getpixel((x+slot-1,y+border+j))==im.getpixel((x+border+size-1,y+border+j))
-print('PASS: 89 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels')
+print(f'PASS: {len(m["frames"])} frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels')
+
+for level,l in enumerate(m['resource_atlas']['levels']):
+    p=PACK/l['file'];assert digest(p)==l['sha256']
+    atlas=Image.open(p);assert atlas.size==(2048>>level,2304>>level)
+    for i in range(65):
+        tile=Image.open(PACK/f'ressource{i}.png')
+        original=Image.open(ROOT/'data/gfx'/f'ressource{i}.png').convert('RGBA')
+        assert tile.getchannel('A').tobytes()==original.getchannel('A').resize(tile.size,Image.Resampling.BILINEAR).tobytes()
+        tile=tile.resize((tile.width>>level,tile.height>>level),Image.Resampling.LANCZOS)
+        x=(i%8)*(256>>level)+(32>>level);y=(i//8)*(256>>level)+(32>>level)
+        assert atlas.crop((x,y,x+tile.width,y+tile.height)).tobytes()==tile.tobytes()
+        for j in range(tile.height):
+            assert atlas.getpixel((x-1,y+j))==tile.getpixel((0,j))
+            assert atlas.getpixel((x+tile.width,y+j))==tile.getpixel((tile.width-1,j))
+print('PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels')
+
+import re
+expected={p.stem.removesuffix('r') for p in (ROOT/'data/gfx').glob('*.png') if re.fullmatch(r'(terrain|ressource|water|cloud|black|shade|area-clearing|area-forbidden|area-guard|bullet|explosion|magiceffect|particle)\d+r?\.png',p.name)}
+assert expected <= {f['id'] for f in m['frames']}
+print('PASS: complete non-unit world frame coverage')

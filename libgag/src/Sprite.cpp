@@ -244,7 +244,7 @@ namespace GAGCore
                 for(auto entry:r->rotationMap){stats.cpuBytes+=entry.second->getW()*entry.second->getH()*4;++stats.coloredFrames;}
             }
 #ifdef HAVE_OPENGL
-            if(sprite->highResolutionAtlas)stats.cpuBytes+=1024*1024*4;
+            if(sprite->highResolutionAtlas)stats.cpuBytes+=sprite->highResolutionAtlas->atlas->sdlsurface->w*sprite->highResolutionAtlas->atlas->sdlsurface->h*4;
 #endif
         }
         return stats;
@@ -275,50 +275,67 @@ namespace GAGCore
     void Sprite::createHighResolutionAtlas()
     {
 #ifdef HAVE_OPENGL
-        if(fileName!="data/gfx/terrain" || experimentImages.size()<16)return;
-        if(std::none_of(experimentImages.begin(),experimentImages.begin()+16,[](auto p){return p!=nullptr;}))return;
+        const bool resources=fileName=="data/gfx/ressource";
+        if(!resources && fileName!="data/gfx/terrain")return;
+        int count=0;
+        while(count<static_cast<int>(experimentImages.size()) && experimentImages[count])++count;
+        const int columns=resources?8:(count>16?16:4), rows=resources?9:(count>16?17:4);
+        if(count!=(resources?65:16) && !(count==272 && !resources))return;
+        const int border=resources?32:64, atlasW=columns*256, atlasH=rows*256;
+        const std::string prefix=resources?"ressource":"terrain";
+        if(experimentImages.size()<static_cast<size_t>(count))return;
+        if(std::none_of(experimentImages.begin(),experimentImages.begin()+count,[](auto p){return p!=nullptr;}))return;
         auto reject=[&]()
         {
-            for(int i=0;i<16;++i){delete experimentImages[i];experimentImages[i]=nullptr;}
-            std::cerr<<"High-resolution terrain atlas rejected; using original terrain"<<std::endl;
+            for(int i=0;i<count;++i){delete experimentImages[i];experimentImages[i]=nullptr;}
+            std::cerr<<"High-resolution atlas rejected; using original frames"<<std::endl;
         };
-        for(int i=0;i<16;++i)if(!experimentImages[i]){reject();return;}
+        for(int i=0;i<count;++i)if(!experimentImages[i]){reject();return;}
+        GLint maxSize=0;glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxSize);
+        if(atlasW>maxSize || atlasH>maxSize){reject();return;}
         const char *overrideDir=std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
         std::string directory=overrideDir?overrideDir:"data/highres/v1";
         std::vector<std::unique_ptr<DrawableSurface>> levels;
         for(int mip=0;mip<4;++mip)
         {
-            auto rw=Toolkit::getFileManager()->open((directory+"/terrain-atlas-mip"+std::to_string(mip)+".png").c_str(),"rb");
+            auto rw=Toolkit::getFileManager()->open((directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".png").c_str(),"rb");
             if(!rw){reject();return;}
             auto s=IMG_Load_RW(rw,1);if(!s){reject();return;}
-            if(s->w!=(1024>>mip)||s->h!=(1024>>mip)){SDL_FreeSurface(s);reject();return;}
+            if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_FreeSurface(s);reject();return;}
             levels.emplace_back(new DrawableSurface(s));SDL_FreeSurface(s);
         }
         // The atlas must correspond to this pack's validated frame layers.
-        for(int i=0;i<16;++i)for(int y=0;y<128;++y)
+        for(int i=0;i<count;++i)for(int y=0;y<experimentImages[i]->getH();++y)
         {
             auto source=static_cast<unsigned char*>(experimentImages[i]->sdlsurface->pixels)+y*experimentImages[i]->sdlsurface->pitch;
-            auto packed=static_cast<unsigned char*>(levels[0]->sdlsurface->pixels)+((i/4)*256+64+y)*levels[0]->sdlsurface->pitch+((i%4)*256+64)*4;
-            if(std::memcmp(source,packed,128*4)!=0){reject();return;}
+            auto packed=static_cast<unsigned char*>(levels[0]->sdlsurface->pixels)+((i/columns)*256+border+y)*levels[0]->sdlsurface->pitch+((i%columns)*256+border)*4;
+            if(std::memcmp(source,packed,experimentImages[i]->getW()*4)!=0){reject();return;}
         }
         auto batch=std::make_unique<Sprite>();
         auto atlas=std::move(levels[0]);atlas->uploadToTexture();
         glBindTexture(GL_TEXTURE_2D,atlas->texture);
+        // DrawableSurface's legacy allocator rounds up to powers of two. These
+        // prepacked mip levels use exact dimensions, so redefine level zero too.
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,atlasW,atlasH,0,GL_BGRA,GL_UNSIGNED_BYTE,atlas->sdlsurface->pixels);
+        glState.allocatedTextureBytes-=atlas->gpuBytes;
+        atlas->gpuBytes=atlasW*atlasH*4;glState.allocatedTextureBytes+=atlas->gpuBytes;
+        atlas->texMultX=1.f/atlasW;atlas->texMultY=1.f/atlasH;
+
         for(int mip=1;mip<4;++mip)
-            glTexImage2D(GL_TEXTURE_2D,mip,GL_RGBA,1024>>mip,1024>>mip,0,GL_BGRA,GL_UNSIGNED_BYTE,levels[mip]->sdlsurface->pixels);
+            glTexImage2D(GL_TEXTURE_2D,mip,GL_RGBA,atlasW>>mip,atlasH>>mip,0,GL_BGRA,GL_UNSIGNED_BYTE,levels[mip]->sdlsurface->pixels);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,3);
-        const size_t mipBytes=(512*512+256*256+128*128)*4;
+        const size_t mipBytes=((atlasW/2)*(atlasH/2)+(atlasW/4)*(atlasH/4)+(atlasW/8)*(atlasH/8))*4;
         atlas->gpuBytes+=mipBytes;glState.allocatedTextureBytes+=mipBytes;
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
         glGenBuffers(1,&batch->vbo);glGenBuffers(1,&batch->texCoordBuffer);
-        for(int i=0;i<16;++i)
+        for(int i=0;i<count;++i)
         {
             auto surface=experimentImages[i];surface->freeGPUTexture();
-            surface->textureInfo=TextureInfo{batch.get(),(i%4)*256+64,(i/4)*256+64,128,128};
-            surface->texMultX=surface->texMultY=1.f/1024;
+            surface->textureInfo=TextureInfo{batch.get(),(i%columns)*256+border,(i/columns)*256+border,surface->getW(),surface->getH()};
+            surface->texMultX=1.f/atlasW;surface->texMultY=1.f/atlasH;
         }
         batch->atlas=std::move(atlas);highResolutionAtlas=std::move(batch);
 #endif

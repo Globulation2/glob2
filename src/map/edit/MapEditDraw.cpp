@@ -29,6 +29,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 
 	game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, team, view, drawOptions);
 
+globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
 	if(camera.contains(mouseX,mouseY) && mouseY>=16)
 	{
 		// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
@@ -37,13 +38,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
 		if(selectionMode==EditingBuilding)
 		{
 			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
@@ -62,12 +63,13 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		}
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
 		}
 		if(selectionMode==ChangeNoResourceGrowthAreas)
-			brush.drawBrush(mapMouseX(mouseX), mapMouseY(mouseY), viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
 	}
 
+});
 	globalContainer->gfx->endMapTransform();
 	drawMapZoomControls(camera);
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
@@ -230,8 +232,8 @@ void MapEdit::drawPlacingUnitOnMap()
 	int cx=((mapMouseX(mouseX)>>5)+viewportX)&game.map.getMaskW();
 	int cy=((mapMouseY(mouseY)>>5)+viewportY)&game.map.getMaskH();
 
-	int px=mapMouseX(mouseX)&0xFFFFFFE0;
-	int py=mapMouseY(mouseY)&0xFFFFFFE0;
+	int px=int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32))&0xFFFFFFE0;
+	int py=int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32))&0xFFFFFFE0;
 	int pw=32;
 	int ph=32;
 

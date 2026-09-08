@@ -114,7 +114,7 @@ def finish(command, make_preview=True):
                    alpha_matches_baseline=True if source_alpha(src) is not None else None,
                    mean_rgb_shift=(np.array(corrected.convert('RGB')).mean((0,1))-b.mean((0,1))).tolist())
         if name.startswith('terrain'):
-            c=np.array(corrected)
+            c=np.array(corrected.convert('RGB'))
             bb=np.array(base.convert('RGB'))
             assert np.array_equal(c[:SCALE],bb[:SCALE]) and np.array_equal(c[-SCALE:],bb[-SCALE:])
             assert np.array_equal(c[:,:SCALE],bb[:,:SCALE]) and np.array_equal(c[:,-SCALE:],bb[:,-SCALE:])

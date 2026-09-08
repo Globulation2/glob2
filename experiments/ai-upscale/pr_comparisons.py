@@ -8,8 +8,11 @@ PACK=ROOT/'data/highres/v1'
 OUT=ROOT/'docs/high-resolution/images'
 frames=json.loads((PACK/'manifest.json').read_text())['frames']
 
+def display_size(f):
+    return (max(l['logical_width'] for l in f['layers'])*4,max(l['logical_height'] for l in f['layers'])*4)
+
 def composite(f, original):
-    out=Image.new('RGBA',(f['width']*4,f['height']*4))
+    out=Image.new('RGBA',display_size(f))
     for role in ['base','team']:
         for layer in f['layers']:
             if layer['role']!=role: continue
@@ -21,8 +24,8 @@ def composite(f, original):
     return out
 
 def sheet(items,name):
-    width=max(max(f['width']*4 for f in items)+40,350)
-    heights=[f['height']*4+58 for f in items]
+    width=max(max(display_size(f)[0] for f in items)+40,350)
+    heights=[display_size(f)[1]+58 for f in items]
     out=Image.new('RGB',(width*2,sum(heights)+36),'#26362d');d=ImageDraw.Draw(out)
     d.text((16,12),'ORIGINAL - enlarged 4x',fill='white')
     d.text((width+16,12),'FINAL UPSCALE - same dimensions',fill='white')
@@ -36,8 +39,16 @@ def sheet(items,name):
     out.save(OUT/name)
 
 OUT.mkdir(parents=True,exist_ok=True)
-selected=['swarm0b0','inn0c0','hosp0b1','pool0b0','school1b0','defencetower1b1']
+selected=['swarm0b0','inn0c0','hosp0b1','pool0b0','school1b0','defencetower1b1','ressource9','ressource19','ressource40']
 for name in selected:
     match=[f for f in frames if f['id']==name]
     if match: sheet(match,name+'.png')
-for page in range(0,len(frames),8):sheet(frames[page:page+8],f'all-{page//8+1:02}.png')
+pages=[];group=[];height=0
+for f in frames:
+    h=display_size(f)[1]+58
+    if group and (len(group)==8 or height+h>2200):pages.append(group);group=[];height=0
+    group.append(f);height+=h
+if group:pages.append(group)
+for page,items in enumerate(pages):sheet(items,f'all-{page+1:02}.png')
+intro="# Final artwork comparisons\n\nLeft: original enlarged 4× with nearest-neighbor sampling. Right: final runtime artwork at identical pixel dimensions. Each pair uses the same background. Click to inspect at full size. No intermediate candidates are shown. Fog and soft masks use faithful resampling rather than generated detail.\n\n"
+(ROOT/'docs/high-resolution/COMPARISONS.md').write_text(intro+'\n\n'.join(f"![Final comparison sheet {i+1}: {page[0]['id']} through {page[-1]['id']}](images/all-{i+1:02}.png)" for i,page in enumerate(pages))+'\n')
