@@ -127,8 +127,8 @@ infrastructure from the supported-release acceptance criteria.
   Export reads through the shared filesystem interface, bounds allocation to
   64 MiB, and passes bytes to the browser host. All six abort/quota scenarios
   verify the downloaded filename and byte digest, preservation of the old
-  durable save, and successful retry. Campaign-progress import/export and explicit
-  messaging for oversized exports remain unfinished.
+  durable save, and successful retry. Campaign-progress handling is covered below; explicit messaging for
+  oversized simulation-file exports remains unfinished.
 
 - Failed browser storage restoration opens an in-game explanation before the
   menu. Players may continue with persistence disabled and export manual saves,
@@ -140,7 +140,22 @@ infrastructure from the supported-release acceptance criteria.
   replay through the shared bounded file-export helper. Three save/export/load
   scenarios pass across Chromium, Firefox and WebKit, verifying exact downloaded
   bytes. This earlier export coverage is extended by the import flow above.
-  Campaign-progress import/export remains required. Native build and session checks pass.
+  Campaign-progress support is covered below. Native build and session checks pass.
+
+## Campaign-progress support
+
+- Browser campaign/tutorial menus import and export versioned progress backups.
+  Validation matches mission definitions and merges completion/unlock state
+  without removing current progress. Legacy text saves remain compatible.
+- Campaign saves use checked atomic replacement. Menus wait for browser
+  persistence, expose retry and backup export on failure, and restore previous
+  bytes (or remove a newly created file) when the user discards a failed save.
+- Twelve campaign backup/persistence scenarios and nine existing campaign,
+  tutorial and editor-menu scenarios pass across Chromium, Firefox and WebKit.
+  Native client/Wasm builds and the expanded native save-safety harness pass.
+  The format and tradeoffs are documented in [browser files](storage.md).
+  Review screenshots: [restored progress](screenshots/campaign-progress-import.png)
+  and [persistence failure with recovery controls](screenshots/campaign-persistence-failure.png).
 
 ## Import-flow verification (September 2026)
 

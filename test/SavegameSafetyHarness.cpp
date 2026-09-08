@@ -7,6 +7,7 @@
 #include "Engine.h"
 #include "Version.h"
 #include "FileImport.h"
+#include "Campaign.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -250,6 +251,60 @@ static void checkImports(const std::string& bytes, const fs::path& directory)
     std::cout << "PASS imported save full validation, cancellation/RNG restoration, name collision, pending/failure/retry persistence and abandoned-file cleanup" << std::endl;
 }
 
+static void checkCampaignProgress(const fs::path& directory)
+{
+    Campaign base;
+    base.setName("Progress fixture");
+    base.setPlayerName("First player");
+    CampaignMapEntry first("First", "campaigns/first.map"), second("Second", "campaigns/second.map");
+    first.unlockMap(); second.lockMap(); second.getUnlockedByMaps().push_back("First");
+    base.appendMap(first); base.appendMap(second);
+    Campaign source = base;
+    source.setCompleted("First"); source.setPlayerName("Restored player");
+    const auto backup = source.exportProgress();
+    const auto unchanged = base.exportProgress();
+    for (size_t cut = 0; cut < backup.size(); ++cut) {
+        assert(!base.importProgress({backup.begin(), backup.begin()+cut}));
+        assert(base.exportProgress() == unchanged);
+    }
+    auto extra = backup; extra.push_back(0);
+    assert(!base.importProgress(extra));
+    assert(!base.importProgress(std::vector<unsigned char>(1024*1024+1)));
+    auto invalidFlag = backup; invalidFlag.back() = 2;
+    assert(!base.importProgress(invalidFlag));
+    auto future = backup; future[7] = 2;
+    assert(!base.importProgress(future));
+    Campaign changed = base; changed.getMap(0).setMapFileName("../different.map");
+    assert(!changed.importProgress(backup));
+    changed = base; changed.getMap(1).getUnlockedByMaps().clear();
+    assert(!changed.importProgress(backup));
+    changed = base; changed.setName("Different campaign");
+    assert(!changed.importProgress(backup));
+    base.getMap(1).unlockMap(); base.getMap(1).setCompleted(true);
+    assert(base.importProgress(backup));
+    assert(base.getMap(0).isCompleted() && base.getMap(1).isCompleted() && base.getMap(1).isUnlocked());
+    assert(base.getPlayerName() == "Restored player");
+    assert(base.save(true));
+    const auto file = directory / "games/Progress_fixture.txt";
+    const auto previous = contents(file);
+    Campaign restored; assert(restored.load(file.string()));
+    assert(restored.exportProgress() == base.exportProgress());
+#ifndef WIN32
+    const auto child = fork(); assert(child >= 0);
+    if (child == 0) {
+        std::signal(SIGXFSZ, SIG_IGN);
+        struct rlimit budget = {0,0};
+        if (setrlimit(RLIMIT_FSIZE, &budget)) _exit(2);
+        base.setPlayerName("Unwritten");
+        _exit(base.save(true) ? 3 : 0);
+    }
+    int status = 0; assert(waitpid(child, &status, 0) == child);
+    assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+    assert(contents(file) == previous);
+#endif
+    std::cout << "PASS campaign progress truncation/version/definition validation, monotonic merge, legacy text round trip and atomic failure preservation" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	SDL_SetMainReady();
@@ -264,6 +319,7 @@ int main(int argc, char **argv)
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
 	checkMapHeaders();
+    checkCampaignProgress(directory);
 	for (bool file : {false, true})
 	{
 		const std::string payload("before\0after", 12);

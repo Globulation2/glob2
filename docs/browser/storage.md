@@ -39,8 +39,8 @@ abandons and removes the unsuccessful local copy. Validation failures never
 write the selected bytes. An unsuccessful import cannot overwrite an existing
 save. A failed initial storage restore also prevents importing into that store.
 
-Campaign-progress import/export, durable persistence for every legacy writer,
-and wider malformed-file fuzzing remain release work. The current parser checks
+Durable persistence for every legacy writer and wider malformed-file fuzzing
+remain release work. The current parser checks
 and regression fixtures are not a claim that every possible malformed legacy
 file has been qualified.
 
@@ -56,3 +56,45 @@ state and local file digests; tests do not directly write the virtual filesystem
 persistence completion, cancellation at a cooperative checkpoint, invalid names,
 malformed player records, truncated files, duplicate names and abandoned writes.
 It verifies RNG restoration and preservation of previous files.
+
+## Campaign progress
+
+The campaign and tutorial menus provide Import progress and Export progress.
+Imports merge into the current campaign: completed missions remain completed,
+and unlocked missions remain unlocked. The backup's player name is restored.
+Mission names, map paths and prerequisite lists must match the current campaign;
+the import cannot change those definitions. Starting a new campaign still has
+its existing reset behavior; use the loaded campaign to merge with its progress.
+
+On-disk campaign saves retain the existing `.txt` format. Their writes are now
+atomic. The menu waits for browser persistence before completing a save or
+leaving after edits. On failure it offers Retry save, Export progress and Leave
+without saving. Discard restores the previous file's exact bytes, or removes the
+new file if none existed, so a later unrelated storage flush cannot commit the
+abandoned change. Normal application shutdown retains best-effort saving for
+active missions; abrupt browser termination cannot wait for pending I/O.
+
+Progress backups use `.campaign`, a bounded, versioned data-only format. This
+avoids importing a full campaign definition containing new map paths. Native
+and browser builds share the codec and continue reading legacy campaign saves.
+The format is intentionally small and open to revision during review:
+
+| Field | Encoding |
+|---|---|
+| Signature / version | `G2CP`, then big-endian uint32 `1` |
+| Campaign / player name | Length-prefixed byte strings using the game's UTF-8 convention |
+| Mission count | Big-endian uint32, at most 1024 |
+| Each mission | Name, map path, prerequisite count and prerequisite strings, then unlocked and completed uint8 flags |
+
+String lengths are big-endian uint32. Player names are limited to 512 bytes and
+exclude control characters; flags must be 0 or 1. Imports are limited to 1 MiB,
+require the complete format without trailing bytes, and reject mismatched
+versions or definitions before modifying progress. The file-picker basename
+never becomes a save destination. The format is separate from simulation saves
+and does not carry accounts or credentials.
+
+`browser/tests/campaign-progress.spec.js` covers round trips, merging an older
+backup, malformed files, persistence failure, retry and discard, including an
+absent previous file. Recovery is verified from another browser page and after
+reload. The native safety harness also checks every truncated backup, version
+and definition mismatches, legacy text round trips and injected write failures.

@@ -92,7 +92,8 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   },
   saveDigest(name) { return localFileDigest('games', name, 'game'); },
   mapDigest(name) { return localFileDigest('maps', name, 'map'); },
-  replayDigest(name) { return localFileDigest('replays', name, 'replay'); }
+  replayDigest(name) { return localFileDigest('replays', name, 'replay'); },
+  campaignDigest(name) { return localFileDigest('games', name, 'txt'); }
 })});
 function focusGame() {
   canvas.focus();
