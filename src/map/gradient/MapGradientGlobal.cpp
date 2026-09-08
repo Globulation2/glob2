@@ -6,6 +6,8 @@
 #include "Unit.h"
 #include "MapInternal.h"
 
+#include <algorithm>
+
 // Chamfer distance transform with orthogonal=1, diagonal=1 weights (Chebyshev
 // distance) on a toroidal grid. Two sweeps per pass — forward (NW, N, NE, W)
 // then backward (SE, S, SW, E) — repeated until a full pass writes nothing.
@@ -39,57 +41,48 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 	{
 		changed = false;
 
-		// Forward sweep: in-set neighbors are NW, N, NE, W (already visited).
+		// Only the strongest neighbor matters: subtracting one preserves their order.
+		// Keep the in-place sweep order, including reads across the toroidal seams.
 		for (size_t y = 0; y < (size_t)h; y++)
 		{
-			size_t yu = ((y - 1) & hMask);
+			Uint8* row = gradient + (y << wDec);
+			const Uint8* previousRow = gradient + (((y - 1) & hMask) << wDec);
 			for (size_t x = 0; x < (size_t)w; x++)
 			{
-				Uint8 g = gradient[(y << wDec) | x];
-				if (g == 0)
+				const Uint8 g = row[x];
+				// Obstacles stay zero; a goal is already at the maximum possible value.
+				if (g == GRADIENT_FORBIDDEN || g == GRADIENT_AT_GOAL)
 					continue;
-				size_t xl = ((x - 1) & wMask);
-				size_t xr = ((x + 1) & wMask);
-				Uint8 best = g;
-				Uint8 vNW = gradient[(yu << wDec) | xl];
-				Uint8 vN  = gradient[(yu << wDec) | x ];
-				Uint8 vNE = gradient[(yu << wDec) | xr];
-				Uint8 vW  = gradient[(y  << wDec) | xl];
-				if (vNW >= 3 && (Uint8)(vNW - 1) > best) best = vNW - 1;
-				if (vN  >= 3 && (Uint8)(vN  - 1) > best) best = vN  - 1;
-				if (vNE >= 3 && (Uint8)(vNE - 1) > best) best = vNE - 1;
-				if (vW  >= 3 && (Uint8)(vW  - 1) > best) best = vW  - 1;
-				if (best != g)
+				const size_t xl = (x - 1) & wMask;
+				const size_t xr = (x + 1) & wMask;
+				// Forward neighbors: NW, N, NE, W.
+				const Uint8 neighborMax = std::max(std::max(previousRow[xl], previousRow[x]),
+					std::max(previousRow[xr], row[xl]));
+				if (neighborMax >= 3 && neighborMax - 1 > g)
 				{
-					gradient[(y << wDec) | x] = best;
+					row[x] = neighborMax - 1;
 					changed = true;
 				}
 			}
 		}
 
-		// Backward sweep: in-set neighbors are SE, S, SW, E (already visited).
 		for (size_t y = (size_t)h; y-- > 0; )
 		{
-			size_t yd = ((y + 1) & hMask);
+			Uint8* row = gradient + (y << wDec);
+			const Uint8* nextRow = gradient + (((y + 1) & hMask) << wDec);
 			for (size_t x = (size_t)w; x-- > 0; )
 			{
-				Uint8 g = gradient[(y << wDec) | x];
-				if (g == 0)
+				const Uint8 g = row[x];
+				if (g == GRADIENT_FORBIDDEN || g == GRADIENT_AT_GOAL)
 					continue;
-				size_t xl = ((x - 1) & wMask);
-				size_t xr = ((x + 1) & wMask);
-				Uint8 best = g;
-				Uint8 vSE = gradient[(yd << wDec) | xr];
-				Uint8 vS  = gradient[(yd << wDec) | x ];
-				Uint8 vSW = gradient[(yd << wDec) | xl];
-				Uint8 vE  = gradient[(y  << wDec) | xr];
-				if (vSE >= 3 && (Uint8)(vSE - 1) > best) best = vSE - 1;
-				if (vS  >= 3 && (Uint8)(vS  - 1) > best) best = vS  - 1;
-				if (vSW >= 3 && (Uint8)(vSW - 1) > best) best = vSW - 1;
-				if (vE  >= 3 && (Uint8)(vE  - 1) > best) best = vE  - 1;
-				if (best != g)
+				const size_t xl = (x - 1) & wMask;
+				const size_t xr = (x + 1) & wMask;
+				// Backward neighbors: SE, S, SW, E.
+				const Uint8 neighborMax = std::max(std::max(nextRow[xr], nextRow[x]),
+					std::max(nextRow[xl], row[xr]));
+				if (neighborMax >= 3 && neighborMax - 1 > g)
 				{
-					gradient[(y << wDec) | x] = best;
+					row[x] = neighborMax - 1;
 					changed = true;
 				}
 			}

@@ -185,3 +185,18 @@ streams, recovery after failed loads, and oversized map-area strings. Atomic
 replacement tests cover callback/open/rename failures and temporary-file cleanup.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
+
+## Global gradient regression
+
+From the repository root:
+
+```sh
+scons -j8 release=1 server=0 global-gradient-test
+./build/src/GlobalGradientHarness
+```
+
+The harness calls the real `Map::updateGlobalGradient` and compares every output
+byte against an independent priority-frontier solver. It covers toroidal seams,
+diagonals, one-cell dimensions, winding obstacles, mixed seed strengths, the
+byte-distance cutoff, idempotence and 3,000 fixed-seed randomized fields. It runs
+without a window or game assets and is included in the Linux CI jobs.
