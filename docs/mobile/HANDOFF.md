@@ -31,6 +31,17 @@ Suggested first message to the new agent:
 > in-game UI, maintain compatibility with the browser branch, and update draft
 > PR #208 with honest evidence and remaining limitations.
 
+## Latest resumed work: native phone forms
+
+The current pass adds `PhoneForm`, `ResponsiveDialog`, shared safe-area geometry,
+and persisted 100/125/150% dialog text size. Read the **Phone forms and adjustable
+dialog text** section in [status](status.md) and the implementation notes in
+[development](development.md). This supersedes older statements below that setup
+screens have only their original tiny desktop layouts. The map editor workspace,
+global settings tabs and end-of-match statistics still need dedicated adaptation.
+Pinch zoom remains explicitly deferred. Do not import the menu-refresh visual
+identity or zoom PRs as part of this pass.
+
 ## Pixel 6 preview is prepared
 
 The user wants to test soon on a Pixel 6. Code `9a4ad5d4b` reflows tabs and adds

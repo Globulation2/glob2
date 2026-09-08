@@ -166,6 +166,7 @@ CLIENT_SOURCES = (
     'GameUtilities.cpp',
     'Glob2.cpp',
     'Glob2Screen.cpp',
+    'gui/PhoneForm.cpp',
     'Glob2Style.cpp',
     'GlobalContainer.cpp',
     'GlobalContainerArgs.cpp',

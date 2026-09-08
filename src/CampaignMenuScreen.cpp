@@ -16,6 +16,7 @@
 
 CampaignMenuScreen::CampaignMenuScreen(const std::string& name, GAGGUI::ScreenStack& screens) : screens(screens)
 {
+    enablePhoneForm();
 	if (!campaign.load(name))
 		campaign.setName(name);
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", campaign.getName());

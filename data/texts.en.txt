@@ -1320,3 +1320,11 @@ Fast forward
 Hide keyboard
 [Info]
 Info
+[Dialog text size]
+Dialog text size
+[Player slot]
+Player slot
+[Team color]
+Team color
+[Alliance group]
+Alliance group

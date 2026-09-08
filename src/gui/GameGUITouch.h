@@ -35,14 +35,14 @@ private:
     std::vector<DialogRow> dialogRows;
     GAGGUI::OverlayScreen* dialogOwner=nullptr;
     GAGGUI::Widget* heldDialogWidget=nullptr;
-    int heldDialogIndex=0;
+    int heldDialogIndex=0,heldDialogKind=-1;
     double dialogScroll=0, dialogMaximum=0, lastDialogHeight=0;
     GAGGUI::Widget* editingDialogWidget=nullptr;
     GAGCore::ViewRect dialogContent;
     std::optional<GAGCore::ViewRect> labelClip;
     void prepareDialog();
     void tapDialog(GAGCore::ViewPoint point);
-    std::vector<std::string> pointLines(const std::string& text, double width) const;
+    std::vector<std::string> pointLines(const std::string& text, double width, double textScale=1.5) const;
     Building* allocationBuilding() const;
     GAGCore::ViewRect allocationRect() const;
     GAGCore::ViewRect allocationTabRect(int index) const;
@@ -65,7 +65,7 @@ private:
     const void* lastInspectedBuilding=nullptr;
     int allocationTab=0;
     int activeAllocationTab() const;
-    void drawPointLabel(GAGCore::ViewRect rect, const std::string& text);
+    void drawPointLabel(GAGCore::ViewRect rect, const std::string& text, double textScale=1.5);
     const void* ownerBuilding=nullptr;
     const void* ownerDialog=nullptr;
     bool panelOpen=false;

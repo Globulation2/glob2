@@ -38,6 +38,7 @@ Settings::Settings()
 	mute = 0;
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
+    mobileDialogTextPercent = 100;
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;
@@ -115,6 +116,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
 		READ_PARSED_INT(gameSpeed);
+        READ_PARSED_INT(mobileDialogTextPercent);
+        mobileDialogTextPercent=std::clamp(mobileDialogTextPercent,100,150);
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_NORMAL),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 #ifndef YOG_SERVER_ONLY
@@ -178,6 +181,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
+        Utilities::streamprintf(stream,"mobileDialogTextPercent=%d\n",mobileDialogTextPercent);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{

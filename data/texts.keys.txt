@@ -663,3 +663,7 @@
 [Hide keyboard]
 
 [Info]
+[Dialog text size]
+[Player slot]
+[Team color]
+[Alliance group]

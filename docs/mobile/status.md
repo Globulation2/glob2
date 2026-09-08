@@ -5,6 +5,44 @@ merged into the mobile branch in `0b977ab61`. iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 Android evidence below was collected before this browser merge, on `7333e4e8b`.
 
+## Phone forms and adjustable dialog text (current)
+
+- Campaign/tutorial, map choice, custom-game options, map creation, AI description
+  and message screens use a native phone presenter with wrapped, scrollable rows.
+  Buttons and numeric controls retain at least 48-point targets. Existing widgets
+  and callbacks own state; desktop/browser presentation remains unchanged.
+- In-game Dialog text size offers 100%, 125%, 150%; the setting also applies to
+  phone forms. Variable-height dialog rows account for wrapped labels, and large
+  footer groups preserve a reachable final action instead of covering content.
+- Shared safe-area/keyboard geometry is used by native forms, menus and gameplay
+  dialogs. Held form input is canceled on viewport resize. Floating iPad keyboards
+  no longer reserve a full-width bottom strip.
+- Native touch tests pass at 320×568 and 568×320, 100% and 150% form text. Coverage
+  includes campaign cancellation, player toggle rules, AI selection, map dimensions,
+  ratio limits and conditional visibility, and resize cancellation. Shared engine
+  session/editor persistence tests pass.
+- Android ARM64 developer release builds, signs, installs and launches on the
+  isolated API 35 emulator. The tutorial chooser, software keyboard/name editing,
+  Hide keyboard, mission preview, tutorial launch and in-game text-size selection
+  were exercised. This is emulator evidence, not Pixel 6 qualification.
+- iOS ARM64 simulator and Wasm release builds pass. Floating-keyboard behavior
+  remains unqualified on an actual iPad. All 15 browser viewport checks pass
+  across Chromium, Firefox and WebKit before the final native-only footer cleanup.
+- PR #202's visual refresh was inspected but not imported: it does not provide
+  phone form reflow. This pass retains existing game art and styling foundations.
+  Pinch zoom remains deferred to the zoom PRs.
+
+Emulator captures (API 35, 320×640, default dialog text):
+
+![Native tutorial chooser](screenshots/android-phone-tutorial.png)
+![Native player-name entry with software keyboard](screenshots/android-phone-keyboard.png)
+
+Remaining UI scope: the specialized map-editor workspace, global settings tabs,
+end-of-match/statistics presentation, full translation/bidi/accessibility review,
+and physical-device safe-area, keyboard and rotation qualification. This update
+improves the path into gameplay; it does not complete the full mobile UI plan.
+See [implementation notes](development.md#responsive-native-forms-and-dialog-text).
+
 ## Pixel 6 feedback preview (`b8c0a46f6`)
 
 - Inspector tabs reflow into at most three columns, retaining 48-point row targets

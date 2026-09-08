@@ -11,6 +11,8 @@
 #include <GUIText.h>
 #include <GUITextArea.h>
 #include <GUITextInput.h>
+#include <ResponsiveDialog.h>
+#include "MobileSafeArea.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #if defined(__IPHONEOS__)
@@ -75,6 +77,9 @@ void GameGUITouch::prepareDialog()
         const char* labels[]={"[pause game]","[open chat box]","[Minimap]","[Statistics]","[view history]","[mark map]","[toggle draw information]"};
         for (int i=0;i<7;++i) if (!globalContainer->replaying || (i!=1 && i!=5))
             dialogRows.push_back({nullptr,Toolkit::getStringTable()->getString(labels[i]),100,i});
+        for(int i=0;i<3;++i) dialogRows.push_back({nullptr,
+            Toolkit::getStringTable()->getString("[Dialog text size]")+std::string(": ")+std::to_string(100+i*25)+"%",
+            100,90+i,globalContainer->settings.mobileDialogTextPercent==100+i*25});
         const char* overlays[]={"[starving]","[damage]","[Defense Map]","[Fertility Map]"};
         const bool states[]={gui.showStarvingMap,gui.showDamagedMap,gui.showDefenseMap,gui.showFertilityMap};
         for (int i=0;i<4;++i) dialogRows.push_back({nullptr,Toolkit::getStringTable()->getString(overlays[i]),100,20+i,states[i]});
@@ -92,36 +97,28 @@ void GameGUITouch::prepareDialog()
     } else if (gui.scrollableText) dialogRows.push_back({nullptr,Toolkit::getStringTable()->getString("[ok]"),102,0,false,true});
     if (editingDialogWidget) dialogRows.push_back({nullptr,Toolkit::getStringTable()->getString("[Hide keyboard]"),103,0,false,true});
     const double unit=globalContainer->gfx->logicalUnitsPerPoint();
-    auto safe=layout().safe;
-#if defined(__IPHONEOS__)
-    const double bottom=globalContainer->gfx->getH()-iosGameKeyboardInset(SDL_GetWindowFromID(globalContainer->gfx->windowID()))*unit;
-    safe.h=std::max(0.0,std::min(safe.y+safe.h,bottom)-safe.y);
-#endif
-    const double width=std::min(safe.w-16*unit,640*unit),x=safe.x+(safe.w-width)/2;
-    const int footerCount=std::count_if(dialogRows.begin(),dialogRows.end(),[](const auto& row){return row.footer;});
-    const int columns=width>=320*unit ? 2 : 1;
-    const double footerHeight=((footerCount+columns-1)/columns)*56*unit;
-    dialogContent={x,safe.y+8*unit,width,std::max(0.0,safe.h-footerHeight-16*unit)};
-    double y=0;
-    for (auto& row:dialogRows) if (!row.footer) {
-        const double height=std::max(48.0,pointLines(row.text,width).size()*24.0+8);
-        row.rect={x,y,width,height*unit}; y+=(height+8)*unit;
-    }
-    dialogMaximum=std::max(0.0,(y-dialogContent.h)/unit);
-    if (editingDialogWidget && lastDialogHeight!=dialogContent.h)
-        for (const auto& row:dialogRows) if (row.widget==editingDialogWidget) {
-            dialogScroll=std::max(dialogScroll,(row.rect.y+row.rect.h-dialogContent.h)/unit);
-            dialogScroll=std::min(dialogScroll,row.rect.y/unit);
+    const auto safe=mobileDialogSafe(globalContainer->gfx);
+    const double textScale=1.5*globalContainer->settings.mobileDialogTextPercent/100.0;
+    std::vector<bool> footer;for(const auto& row:dialogRows) footer.push_back(row.footer);
+    auto height=[&](size_t index,double width) {
+        const auto& row=dialogRows[index];
+        const double textWidth=std::max(unit,row.kind==3 ? width-96*unit : width);
+        return std::max(48*unit,pointLines((row.kind==2 ? (row.selected ? "[x] " : "[ ] ") : "")+row.text,textWidth,textScale).size()*16*textScale*unit+8*unit);
+    };
+    auto placement=ResponsiveDialog::calculate(safe,footer,height,dialogScroll*unit,unit);
+    if(editingDialogWidget && lastDialogHeight!=placement.content.h)
+        for(size_t i=0;i<dialogRows.size();++i) if(dialogRows[i].widget==editingDialogWidget) {
+            const auto& rect=placement.rows[i].rect;
+            double offset=placement.offset+std::max(0.0,rect.y+rect.h-placement.content.y-placement.content.h);
+            offset=std::min(offset,placement.offset+rect.y-placement.content.y);
+            placement=ResponsiveDialog::calculate(safe,footer,height,offset,unit);break;
         }
-    lastDialogHeight=dialogContent.h;
-    dialogScroll=std::clamp(dialogScroll,0.0,dialogMaximum);
-    int footer=0;
-    for (auto& row:dialogRows) {
-        if (row.footer) {
-            const double w=(width-(columns-1)*8*unit)/columns;
-            row.rect={x+(footer%columns)*(w+8*unit),safe.y+safe.h-footerHeight+(footer/columns)*56*unit,w,48*unit}; ++footer;
-        } else row.rect.y+=dialogContent.y-dialogScroll*unit;
+    dialogContent=placement.content;lastDialogHeight=dialogContent.h;
+    dialogScroll=placement.offset/unit;dialogMaximum=placement.maximum/unit;
+    for(size_t i=0;i<dialogRows.size();++i) {
+        dialogRows[i].rect=placement.rows[i].rect;dialogRows[i].footer=placement.rows[i].footer;
     }
+
 }
 bool GameGUITouch::drawDialog()
 {
@@ -130,6 +127,7 @@ bool GameGUITouch::drawDialog()
     prepareDialog();
     auto* gfx=globalContainer->gfx;
     const double unit=gfx->logicalUnitsPerPoint();
+    const double textScale=1.5*globalContainer->settings.mobileDialogTextPercent/100.0;
     gfx->setClipRect(); gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),Color(10,16,24,245));
     for (const auto& row:dialogRows) {
         labelClip=row.footer ? std::optional<ViewRect>{} : dialogContent;
@@ -139,10 +137,10 @@ bool GameGUITouch::drawDialog()
         if (!row.footer) gfx->setClipRect(clip.x,clip.y,clip.w,clip.h); else gfx->setClipRect();
         if (row.kind) gfx->drawFilledRect(int(r.x),int(r.y),int(r.w),int(r.h),row.selected ? Color(55,100,75) : Color(30,50,60));
         if (row.kind==3) {
-            drawPointLabel({r.x,r.y,48*unit,r.h},"−");
-            drawPointLabel({r.x+48*unit,r.y,r.w-96*unit,r.h},row.text);
-            drawPointLabel({r.x+r.w-48*unit,r.y,48*unit,r.h},"+");
-        } else drawPointLabel(r,(row.kind==2 ? (row.selected ? "[x] " : "[ ] ") : "")+row.text);
+            drawPointLabel({r.x,r.y,48*unit,r.h},"−",textScale);
+            drawPointLabel({r.x+48*unit,r.y,r.w-96*unit,r.h},row.text,textScale);
+            drawPointLabel({r.x+r.w-48*unit,r.y,48*unit,r.h},"+",textScale);
+        } else drawPointLabel(r,(row.kind==2 ? (row.selected ? "[x] " : "[ ] ") : "")+row.text,textScale);
     }
     labelClip.reset(); gfx->setClipRect();
     if (dialogMaximum>0) {
@@ -158,7 +156,7 @@ void GameGUITouch::tapDialog(ViewPoint point)
     auto* screen=activeDialog(); if (!screen) return;
     const double unit=globalContainer->gfx->logicalUnitsPerPoint();
     for (const auto row:dialogRows) {
-        if (row.widget!=heldDialogWidget || row.index!=heldDialogIndex || !row.rect.contains(point) || (!row.footer && !dialogContent.contains(point)) || !row.kind) continue;
+        if (row.widget!=heldDialogWidget || row.index!=heldDialogIndex || row.kind!=heldDialogKind || !row.rect.contains(point) || (!row.footer && !dialogContent.contains(point)) || !row.kind) continue;
         if (row.kind==100) { menuAction(row.index); return; }
         if (row.kind==103) { editingDialogWidget=nullptr; SDL_StopTextInput(); return; }
         if (row.kind==101) {
@@ -192,6 +190,10 @@ void GameGUITouch::tapDialog(ViewPoint point)
 
 void GameGUITouch::menuAction(int action)
 {
+    if(action>=90 && action<=92) {
+        globalContainer->settings.mobileDialogTextPercent=100+(action-90)*25;
+        lastDialogHeight=0;return;
+    }
     gui.inGameMenu=GameGUI::IGM_NONE; gui.gameMenuScreen.reset(); dialogOwner=nullptr;
     if (action>=20 && action<24) {
         gui.displayMode=GameGUI::STAT_GRAPH_VIEW; gui.replayDisplayMode=GameGUI::RDM_STAT_GRAPH_VIEW; gui.clearSelection();

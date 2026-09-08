@@ -73,7 +73,8 @@ preview, and there is no TestFlight/store distribution for this checkpoint.
 3. Change worker allocation, priority and flag range. Open Actions and Info;
    try production ratios and cancel a destruction confirmation.
 4. Place a building/flag using the preview and explicit Confirm/Cancel controls.
-5. Open objectives and options. Open Save, enter a distinctive filename, hide
+5. Try Dialog text size at 100% and 150% in the in-game menu; check objectives
+   and options in both orientations. Open Save, enter a distinctive filename, hide
    the keyboard, save, return to the game, then load that save.
 6. Background briefly and return. Report any jump, stuck input, lost audio,
    missing controls or save issue. Do not assume termination recovery works.

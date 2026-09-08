@@ -28,5 +28,9 @@ double GAGCore::iosGameKeyboardInset(SDL_Window* window)
     UIWindow* native=info.info.uikit.window;
     CGRect frame=[native convertRect:keyboardFrame fromWindow:nil];
     CGRect overlap=CGRectIntersection(native.bounds,frame);
-    return CGRectIsNull(overlap) || CGRectIsEmpty(overlap) ? 0 : CGRectGetHeight(overlap);
+    if (CGRectIsNull(overlap) || CGRectIsEmpty(overlap)) return 0;
+    // Only a bottom-docked keyboard reduces the available viewport. A floating
+    // iPad keyboard is movable and must not remove an unrelated bottom strip.
+    return CGRectGetMaxY(overlap)>=CGRectGetMaxY(native.bounds)-1 &&
+        CGRectGetWidth(overlap)>=CGRectGetWidth(native.bounds)-1 ? CGRectGetHeight(overlap) : 0;
 }

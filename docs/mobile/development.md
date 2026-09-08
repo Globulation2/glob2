@@ -331,3 +331,41 @@ counts, limits, cancellation on selection change, responsive pause hit targets,
 and returning without an unintended world order. Keep sufficient disk headroom
 for archive construction: Apple's archive/index tools can need several copies
 of the roughly 400 MB core archive temporarily, beyond the final output size.
+
+## Responsive native forms and dialog text
+
+`src/gui/PhoneForm.cpp` presents opted-in `Glob2Screen` widgets as scrollable,
+48-point rows on the native portable renderer. Campaign/tutorial choice, map
+selection, custom match options, map creation, AI descriptions and message screens
+use it. Existing widgets still own values, validation and callbacks. Desktop and
+browser retain their existing presentation; the shared source manifest compiles
+both paths. `GLOB2_PHONE_FORMS=1` enables the native desktop test path.
+
+The gameplay dialog presenter and PhoneForm share `ResponsiveDialog.h` for
+variable-height wrapping and fixed footer allocation, and `MobileSafeArea.h` for
+native insets/keyboard geometry. Oversized footer groups move earlier actions
+into scrolling content so the final close/cancel/keyboard action stays reachable.
+Android continues to draw the world edge to edge. iOS only subtracts a docked,
+full-width keyboard from the bottom viewport; a floating iPad keyboard does not
+remove a full-width strip.
+
+The in-game menu offers **Dialog text size: 100%, 125%, 150%**. This preference
+also affects the opted-in setup forms and is stored in platform settings. It does
+not change world zoom, simulation state, saves or replay formats. HUD/inspector
+text keeps its existing sizing. Pinch zoom remains deferred to the zoom PR work.
+
+When opting in another screen, audit every widget type first. PhoneForm supports
+buttons, lists/checklists, single-line input, read-only text, map previews, color
+and AI choices, numbers and ratios. Use `setPhoneLabel` for semantic labels and
+`setPhoneVisible` for presentation-only visibility. Do not enable it blindly for
+editable text areas, tab screens or the editor's specialized tool widgets.
+Unsupported types are not rendered. The map editor workspace and global settings
+still need dedicated phone adaptation; map creation support is not full editor
+qualification. New English labels use the existing translation catalog; complete
+translation, bidi, screen-reader and physical-device accessibility audits remain.
+
+Run `gameplay-touch-test` with the isolated user-data profile to exercise forms
+at 320×568 and 568×320, normal/enlarged text, original setup callbacks, ratio
+limits, hidden controls and resize cancellation. The same harness tests gameplay
+dialogs, filename input, keyboard dismissal and replay actions. Harness captures
+are desktop render evidence, not Android/iOS device qualification.

@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameGUITouch.h"
+#include <TouchText.h>
+#include "MobileSafeArea.h"
 #include "GameGUI.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
@@ -35,28 +37,7 @@ MobileLayout GameGUITouch::layout() const
 {
     auto* gfx=globalContainer->gfx;
     const double unit=gfx->logicalUnitsPerPoint();
-    SafeInsets insets;
-#if defined(__IPHONEOS__)
-    insets=iosGameSafeInsets(SDL_GetWindowFromID(gfx->windowID()));
-#endif
-#ifdef __ANDROID__
-    auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
-    auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
-    auto cls=env->GetObjectClass(activity);
-    auto method=env->GetStaticMethodID(cls,"getUiInsets","()[I");
-    if (method) {
-        auto array=static_cast<jintArray>(env->CallStaticObjectMethod(cls,method));
-        if (array && env->GetArrayLength(array)==4) {
-            jint values[4];env->GetIntArrayRegion(array,0,4,values);
-            int w,h;SDL_GetWindowSize(SDL_GetWindowFromID(gfx->windowID()),&w,&h);
-            const double factor=w>0 ? double(gfx->getW())/w/unit : 1;
-            insets={values[0]*factor,values[1]*factor,values[2]*factor,values[3]*factor};
-        }
-        if (array) env->DeleteLocalRef(array);
-    }
-    if (env->ExceptionCheck()) env->ExceptionClear();
-    env->DeleteLocalRef(cls);env->DeleteLocalRef(activity);
-#endif
+    const auto insets=mobileSafeInsets(gfx);
     auto result=MobileLayout::calculate(gfx->getW()/unit,gfx->getH()/unit,insets,0,1,panelOpen);
     for (auto* rect : {&result.safe,&result.status,&result.world,&result.actions,&result.panel}) {
         rect->x*=unit; rect->y*=unit; rect->w*=unit; rect->h*=unit;
@@ -183,11 +164,11 @@ bool GameGUITouch::process(SDL_Event& event)
                 if (ownerRegion==3 && activeAllocationTab()==3)
                     if (const auto row=actionAt(point)) { heldActionKind=row->kind; heldActionValue=row->value; heldActionLabel=row->label; }
             }
-            heldDialogWidget=nullptr;
+            heldDialogWidget=nullptr; heldDialogKind=-1;
             if (usesHUD() && activeDialog()) {
                 prepareDialog();
                 for (const auto& row:dialogRows) if (row.rect.contains(point) && (row.footer || dialogContent.contains(point))) {
-                    heldDialogWidget=row.widget; heldDialogIndex=row.index; break;
+                    heldDialogWidget=row.widget; heldDialogIndex=row.index;heldDialogKind=row.kind; break;
                 }
             }
             interfaceGesture=ownerRegion!=0;
@@ -565,31 +546,15 @@ ViewRect GameGUITouch::panelContent() const
     rect.y+=header; rect.h=std::max(0.0,rect.h-header);
     return rect;
 }
-std::vector<std::string> GameGUITouch::pointLines(const std::string& text, double width) const
+std::vector<std::string> GameGUITouch::pointLines(const std::string& text, double width, double textScale) const
 {
     auto* font=globalContainer->standardFont;
-    std::vector<std::string> lines;
-    std::string line;
-    width=std::max(1.0,width/(1.5*globalContainer->gfx->logicalUnitsPerPoint())-8);
-    for (size_t at=0;at<text.size();) {
-        size_t end=at+1;
-        while (end<text.size() && (static_cast<unsigned char>(text[end])&0xc0)==0x80) ++end;
-        const auto next=text.substr(at,end-at);
-        if (text[at]=='\n') { lines.push_back(line); line.clear(); at=end; continue; }
-        if (!line.empty() && font->getStringWidth(line+next)>width) {
-            const auto space=line.find_last_of(' ');
-            if (space!=std::string::npos) { lines.push_back(line.substr(0,space));line.erase(0,space+1); }
-            else { lines.push_back(line);line.clear(); }
-        }
-        line+=next;at=end;
-    }
-    if (!line.empty()) lines.push_back(line);
-    return lines;
+    return wrapTouchText(font,text,width/(textScale*globalContainer->gfx->logicalUnitsPerPoint())-8);
 }
-void GameGUITouch::drawPointLabel(ViewRect rect, const std::string& text)
+void GameGUITouch::drawPointLabel(ViewRect rect, const std::string& text, double textScale)
 {
     auto* gfx=globalContainer->gfx;
-    const double unit=1.5*gfx->logicalUnitsPerPoint();
+    const double unit=textScale*gfx->logicalUnitsPerPoint();
     auto clipped=rect;
     if (labelClip) {
         const double right=std::min(rect.x+rect.w,labelClip->x+labelClip->w), bottom=std::min(rect.y+rect.h,labelClip->y+labelClip->h);
@@ -598,7 +563,7 @@ void GameGUITouch::drawPointLabel(ViewRect rect, const std::string& text)
     }
     SDL_Rect clip{int(clipped.x),int(clipped.y),int(clipped.w),int(clipped.h)};
     auto* font=globalContainer->standardFont;
-    const auto lines=pointLines(text,rect.w);
+    const auto lines=pointLines(text,rect.w,textScale);
     const int height=font->getStringHeight("Ag");
     gfx->setUITransform(unit,rect.x,rect.y+std::max(0.0,(rect.h/unit-lines.size()*height)/2)*unit,&clip);
     for (size_t i=0;i<lines.size();++i)

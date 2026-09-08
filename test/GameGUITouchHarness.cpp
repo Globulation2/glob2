@@ -16,6 +16,15 @@
 #include "ReplayReader.h"
 #include "usl.h"
 #include "native.h"
+#include <ResponsiveDialog.h>
+#include "PhoneForm.h"
+#include "CampaignSelectorScreen.h"
+#include "CampaignMenuScreen.h"
+#include "ChooseMapScreen.h"
+#include "CustomGameScreen.h"
+#include "NewMapScreen.h"
+#include <GUIRatio.h>
+#include <ScreenStack.h>
 #include <SDL_net.h>
 #include <cstdio>
 #include <cstring>
@@ -37,6 +46,17 @@ public:
                 require(std::find(interpreter.heap.values.begin(),interpreter.heap.values.end(),constant)!=interpreter.heap.values.end(),
                     "Repeated script collection retains bridge constants");
                 require(interpreter.getConstant("retained")==constant,"Script constant remains accessible");
+            }
+        }
+        for(double width:{320.,568.,768.}) for(double height:{160.,320.,568.}) {
+            std::vector<bool> footers{false,false,true,true,true};
+            auto layout=GAGCore::ResponsiveDialog::calculate({0,24,width,height-24},footers,
+                [](size_t i,double w){return i==2 ? (w<200 ? 96. : 48.) : 48.;},10000);
+            require(layout.offset==layout.maximum,"Dialog scrolling clamps to reachable content");
+            require(layout.content.h>=48,"Short dialog keeps room for scrollable controls");
+            for(const auto& row:layout.rows) if(row.footer) {
+                require(row.rect.y>=24 && row.rect.y+row.rect.h<=height,"Fixed actions respect safe bounds");
+                require(row.rect.h>=48,"Fixed actions preserve minimum touch height");
             }
         }
         GameGUI gui;
@@ -439,6 +459,9 @@ public:
             SDL_Event resized{};resized.type=SDL_WINDOWEVENT;resized.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
             GAGCore::GraphicContext::translateMouseEvent(&resized); gui.viewportResized(800,600,gfx->getW(),gfx->getH());
             gui.inGameMenu=GameGUI::IGM_MAIN;gui.gameMenuScreen=std::make_unique<InGameMainScreen>();
+            pressDialog(tr("[Dialog text size]")+": 150%");
+            require(globalContainer->settings.mobileDialogTextPercent==150,"Text size changes without leaving menu");
+            pressDialog(tr("[Dialog text size]")+": 100%");
             pressDialog(tr("[Options]"));require(gui.inGameMenu==GameGUI::IGM_OPTION,"Phone menu opens options");
             gui.drawAll(0);gfx->printScreen(width<height ? "touch-options-portrait.bmp" : "touch-options-landscape.bmp");gfx->nextFrame();
             pressDialog(tr("[Mute]"));
@@ -464,6 +487,90 @@ public:
             gui.orderQueue.clear();
         }
 
+        SDL_setenv("GLOB2_PHONE_FORMS","1",1);SDL_setenv("GLOB2_RESPONSIVE_UI","1",1);
+        for(int textPercent:{100,150}) for(auto [width,height]:{std::pair{320,568},{568,320}}) {
+            globalContainer->settings.mobileDialogTextPercent=textPercent;
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            SDL_Event resized{};resized.type=SDL_WINDOWEVENT;resized.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resized);
+            GAGGUI::ScreenStack menus(*gfx);
+            auto chooser=std::make_unique<CampaignSelectorScreen>(false);Glob2Screen* current=chooser.get();
+            menus.push(std::move(chooser));menus.frame(SDL_GetTicks(),{});
+            require(current->phoneForm!=nullptr,"Campaign selector uses the phone form");
+            require((gfx->getW()<gfx->getH())==(width<height),"Phone form uses the requested orientation");
+            auto tapForm=[&](int kind,const std::string& caption="",int side=0) {
+                for(int attempt=0;attempt<60;++attempt) {
+                    current->phoneForm->prepare();
+                    auto& form=*current->phoneForm;
+                    auto found=std::find_if(form.rows.begin(),form.rows.end(),[&](const auto& row){return row.kind==kind && (caption.empty() || row.text==caption);});
+                    require(found!=form.rows.end(),"Phone form action exists");
+                    auto r=found->rect;
+                    require(r.h>=48*gfx->logicalUnitsPerPoint(),"Form targets preserve touch height");
+                    if(found->footer || (r.y>=form.placement.content.y && r.y+r.h<=form.placement.content.y+form.placement.content.h)) {
+                        SDL_Event event{};event.type=SDL_FINGERDOWN;event.tfinger.touchId=20;event.tfinger.fingerId=1;
+                        event.tfinger.x=(side<0 ? r.x+24*gfx->logicalUnitsPerPoint() : side>0 ? r.x+r.w-24*gfx->logicalUnitsPerPoint() : r.x+r.w/2)/gfx->getW();event.tfinger.y=(r.y+r.h/2)/gfx->getH();
+                        current->handleExecutionEvent(event);event.type=SDL_FINGERUP;current->handleExecutionEvent(event);return;
+                    }
+                    form.offset+=r.y<form.placement.content.y ? -48 : 48;
+                }
+                require(false,"Phone form action is reachable");
+            };
+            tapForm(2);
+            gfx->printScreen(width<height ? "phone-campaign-portrait.bmp" : "phone-campaign-landscape.bmp");current->drawExecution();
+            current->phoneForm->prepare();
+            auto cancelRow=std::find_if(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[&](const auto& row){return row.kind==1 && row.text==tr("[Cancel]");});
+            require(cancelRow!=current->phoneForm->rows.end(),"Campaign cancel remains visible");
+            SDL_Event held{};held.type=SDL_FINGERDOWN;held.tfinger.touchId=20;held.tfinger.fingerId=1;
+            held.tfinger.x=(cancelRow->rect.x+cancelRow->rect.w/2)/gfx->getW();held.tfinger.y=(cancelRow->rect.y+cancelRow->rect.h/2)/gfx->getH();
+            current->handleExecutionEvent(held);current->viewportResized(gfx->getW(),gfx->getH(),gfx->getH(),gfx->getW());
+            held.type=SDL_FINGERUP;current->handleExecutionEvent(held);
+            require(current->isExecutionRunning(),"Resize cancels held form actions");
+            tapForm(1,tr("[Cancel]"));menus.frame(SDL_GetTicks(),{});
+            require(!menus.running(),"Phone campaign cancel calls the existing screen callback");
+            GAGGUI::ScreenStack setup(*gfx);
+            auto custom=std::make_unique<CustomGameScreen>(setup);auto* customScreen=custom.get();current=custom.get();
+            setup.push(std::move(custom));setup.frame(SDL_GetTicks(),{});
+            current->phoneForm->prepare();
+            auto mapRow=std::find_if(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[](const auto& row){return row.kind==2 && row.text.find("balanced")!=std::string::npos;});
+            require(mapRow!=current->phoneForm->rows.end(),"Custom setup exposes balanced map");
+            tapForm(2,mapRow->text);
+            const auto playersBefore=customScreen->getGameHeader().getNumberOfPlayers();
+            tapForm(7); // The first player checkbox follows the original clickability rules.
+            require(customScreen->getGameHeader().getNumberOfPlayers()==playersBefore,"Local-player toggle keeps original setup rules");
+            current->phoneForm->prepare();
+            auto aiRow=std::find_if(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[](const auto& row){return row.kind==6;});
+            require(aiRow!=current->phoneForm->rows.end(),"AI choices are visible");
+            auto* aiButton=static_cast<GAGGUI::MultiTextButton*>(aiRow->widget);int aiBefore=aiButton->getIndex();
+            tapForm(6,aiRow->text);
+            require(aiButton->getIndex()!=aiBefore,"Phone AI choice cycles the existing widget");
+            tapForm(1,tr("[Cancel]"));setup.frame(SDL_GetTicks(),{});
+            require(!setup.running(),"Custom setup cancel remains reachable");
+            GAGGUI::ScreenStack editorSetup(*gfx);
+            auto create=std::make_unique<NewMapScreen>();auto* newMap=create.get();current=create.get();
+            editorSetup.push(std::move(create));editorSetup.frame(SDL_GetTicks(),{});
+            const int previousWidth=newMap->descriptor.wDec;
+            tapForm(9,"",1);
+            require(newMap->descriptor.wDec==previousWidth+1,"Phone map width updates the shared descriptor");
+            tapForm(9,"",-1);
+            require(newMap->descriptor.wDec==previousWidth,"Phone map width can be restored");
+            current->phoneForm->prepare();
+            require(std::none_of(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[](const auto& row){return row.kind==10;}),"Uniform terrain hides generation ratios");
+            tapForm(2,tr("[swamp terrain]"));
+            current->phoneForm->prepare();
+            auto ratioRow=std::find_if(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[](const auto& row){return row.kind==10;});
+            require(ratioRow!=current->phoneForm->rows.end(),"Generated terrain exposes ratios");
+            auto* ratio=static_cast<GAGGUI::Ratio*>(ratioRow->widget);const int ratioBefore=ratio->get();
+            tapForm(10,"",1);require(ratio->get()==ratioBefore+1,"Phone ratio increases through shared callback");
+            tapForm(10,"",-1);require(ratio->get()==ratioBefore,"Phone ratio decreases");
+            ratio->set(0);tapForm(10,"",-1);require(ratio->get()==0,"Phone ratio clamps at zero");
+            ratio->set(ratio->maximumValue());tapForm(10,"",1);require(ratio->get()==ratio->maximumValue(),"Phone ratio clamps at maximum");
+            tapForm(1,tr("[Cancel]"));editorSetup.frame(SDL_GetTicks(),{});
+            require(!editorSetup.running(),"Map creation cancellation remains reachable");
+
+
+        }
+        globalContainer->settings.mobileDialogTextPercent=100;
+        SDL_setenv("GLOB2_PHONE_FORMS","",1);SDL_setenv("GLOB2_RESPONSIVE_UI","1",1);
         gui.clearSelection();gui.touch->panelOpen=false;
         globalContainer->replayReader=std::make_unique<ReplayReader>();
         require(globalContainer->replayReader->loadReplay("replays/touch-preview.replay"),"Real replay fixture loads");
