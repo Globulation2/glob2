@@ -185,3 +185,18 @@ streams, recovery after failed loads, and oversized map-area strings. Atomic
 replacement tests cover callback/open/rename failures and temporary-file cleanup.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
+
+## AI helper gradient regression
+
+`Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
+Run its independent byte-for-byte oracle from the repository root:
+
+```sh
+scons -j8 release=1 server=0 global-gradient-test
+./build/src/GlobalGradientHarness
+```
+
+The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
+toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
+It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
+coverage in `TestsRunner`.

@@ -483,6 +483,12 @@ if not env['server']:
     local.Alias('terrain-test', terrain_test)
 
 if not env['server']:
+    gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
+    gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
+    gradient_test = local.Program('GlobalGradientHarness', gradient_sources)
+    local.Alias('global-gradient-test', gradient_test)
+
+if not env['server']:
     lan_sources = [source for source in source_files if source != 'Glob2.cpp']
     lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
     lan_test = local.Program('LANSessionHarness', lan_sources)
