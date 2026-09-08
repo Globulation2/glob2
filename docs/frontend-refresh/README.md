@@ -242,6 +242,8 @@ first “o” based on the faceless, four-limbed Glob in the repository's app ic
 and worker sprite. The source was made with the built-in image-generation tool.
 The final edit prompt preserved the rounded lettering and gold “2”, replaced
 the first “o” with the actual Glob silhouette, and kept one opening in its body.
+The approved final revision reduces that opening below the size of the “b”
+opening, giving the Glob more visual weight while retaining the letterform.
 
 The source includes a pale matte. Menu initialization recovers transparency for
 the two flat ink colors once at the fitted display size; this includes openings
