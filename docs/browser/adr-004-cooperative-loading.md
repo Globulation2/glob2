@@ -9,7 +9,7 @@ coroutine frames to retain those objects across deliberate checkpoints. It has
 no browser APIs, threads, wall clock, or Asyncify dependency. Existing native
 callers can drain the same task through a synchronous adapter.
 
-A host advances the root once per callback. Awaited children report checkpoints
+Loading screens advance at most eight root checkpoints per callback. Awaited children report checkpoints
 to that root; completing a child resumes the parent until its next checkpoint.
 Destroying the root destroys all suspended child frames. Exceptions propagate to
 the root result. Job lifetimes must be shorter than the game and stream they
@@ -30,12 +30,12 @@ it cannot assume every gradient array has been constructed. Error messages are
 owned screens rather than modal calls inside the loader.
 
 Current checkpoints cover game stages, teams and players, chunks of 512 terrain
-cells, and individual gradient builds. Legacy fertility loading uses the bounded
+cells, gradient seeding, and individual propagation sweeps. Legacy fertility loading uses the bounded
 fertility job. Remaining work includes subdividing large team/player parsing,
-individual gradient algorithms, stream decompression, scripts, and allocation
+building-specific gradients, stream decompression, scripts, and allocation
 work; a checkpoint count is not evidence of a maximum frame time. In-session game reload callers still drain synchronously and need owned loading
 flows; startup and editor replacement are described below.
-Map generation remains synchronous. Editor sprites remain owned by the toolkit
+Map generation also uses owned cooperative jobs (ADR 005). Editor sprites remain owned by the toolkit
 cache so destroying a staging editor cannot invalidate another editor's sprite.
 
 Tests cover nested suspension/completion, exception propagation, cancellation
@@ -83,3 +83,28 @@ missing-file failure, then use input to verify the unsaved-edit prompt remains.
 Browser tests cancel a replacement, resume the original map, then successfully
 replace it and verify that it is unmodified. In-session game replacement is still
 separate work because engine replay/session globals require different ownership.
+
+## Gradients during loading
+
+Resource, forbidden-area, guard-area, and clear-area seeding now expose tasks,
+with checkpoints every 16,384 cells. Global chamfer propagation yields every
+16 rows of each forward/backward sweep. Map loading awaits these jobs before
+publishing its game. Their algorithm and traversal order are unchanged.
+
+The task APIs borrow a map and its gradient buffers. Neither simulation nor
+another gradient operation may observe/mutate that map while a task is suspended.
+Running games continue using synchronous adapters, which drain the identical
+implementation before returning. Cancellation discards the private loading map;
+there is no partially completed gradient in an active simulation.
+
+An independent priority-queue relaxation oracle verifies exact gradient values
+for an empty source set, toroidal wrapping, barriers with gaps, and multiple
+source strengths. Synchronous and scheduled sweeps match this oracle. Destroying
+an interrupted sweep and restarting from its partial monotonic result converges
+to the same values. Startup tests retain their existing callback completion limit;
+bounded batching avoids a browser callback for every new gradient checkpoint.
+
+Eight checkpoints is a work-count policy, not a measured wall-clock bound. Memory
+allocation, team construction, and remaining parser/terrain operations still need
+latency qualification. Gradient changes also run the native speed/replay suite
+because simulation callers share the synchronous implementation.

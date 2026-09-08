@@ -627,6 +627,7 @@ public:
 	// the pathfinding gradients are built by propagateGradient. Defined in
 	// MapGradientGlobal.cpp.
 	void updateGlobalGradient(Uint8 *gradient);
+    GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	//! Dijkstra on a freshly seeded field (see MapInternal.h). Seed costs must be
 	//! between 0 and the largest terrain step (currently 42); do not pass a completed
 	//! field. Uses shared scratch storage: calls across all Maps must be serial and

@@ -34,7 +34,7 @@ infrastructure from the supported-release acceptance criteria.
   storage remain transitional.
 - Explicit cooperative game/map loading jobs and a cancellable editor-entry
   loading screen with staged ownership and RNG restoration. Terrain chunks and
-  gradient boundaries yield; individual expensive operations and other loading
+  gradient seeding and propagation sweeps yield; other expensive operations and loading
   callers still need migration and latency validation. Single-player startup
   (custom/save/replay/campaign) now owns the engine in a cancellable loading
   screen, including replay cleanup and error transitions. In-editor replacement
@@ -49,7 +49,7 @@ infrastructure from the supported-release acceptance criteria.
   instance-local stamp state. Concrete-islands/isles distance floods, point spacing,
   weighted area expansion, player-land partitioning, point collection/filtering,
   resource filling, oval creation, and area scoring also use nested jobs.
-  Runtime gradients and other long terrain operations still need subdivision;
+  Building-specific gradients and other long terrain operations still need subdivision;
   cross-platform generation parity is not yet certified.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
@@ -75,6 +75,8 @@ On macOS arm64, September 2026:
   deferred publication, and cancellation through the real progress screen.
   Cooperative loading tests cover nested lifetime/exception behavior, partial
   allocation cleanup, RNG restoration, and matching loaded-game checksums.
+  Global gradients match an independent queue-relaxation oracle for toroidal
+  seams, obstacles, and mixed sources, including interrupted/scheduled sweeps.
   Scheduled game initialization also matches the 50-tick session checksum;
   cancelled game/replay starts and missing replay failures release global state.
   Failed and cancelled editor replacements preserve map checksums, RNG, and the

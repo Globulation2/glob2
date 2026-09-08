@@ -12,6 +12,7 @@
 #include "HeightMapGenerator.h"
 #include "PerlinNoise.h"
 #include <cmath>
+#include <queue>
 #include "Utilities.h"
 #include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
@@ -88,6 +89,61 @@ int main(int argc, char** argv)
     globalContainer->settings.gameSpeed = 0;
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
+    {
+        Map map;
+        map.setSize(7, 6);
+        const unsigned width = 128, height = 64;
+        for (unsigned fixture = 0; fixture < 4; ++fixture) {
+            std::vector<Uint8> seed(width * height, 1);
+            if (fixture) seed[0] = 255;
+            if (fixture >= 2) {
+                for (unsigned y = 0; y < height; ++y)
+                    for (unsigned x = 0; x < width; ++x)
+                        if (x % 16 == 7 && y % 13 != 0) seed[y * width + x] = 0;
+            }
+            if (fixture == 3) {
+                seed[32 * width + 64] = 200;
+                seed[16 * width + 32] = 254;
+            }
+            // Independent queue relaxation oracle: unlike the production
+            // forward/backward sweeps it propagates strongest values first.
+            auto expected = seed;
+            std::priority_queue<std::pair<int, unsigned>> pending;
+            for (unsigned i = 0; i < expected.size(); ++i)
+                if (expected[i] >= 3) pending.emplace(expected[i], i);
+            while (!pending.empty()) {
+                const auto [value, index] = pending.top(); pending.pop();
+                if (value != expected[index] || value < 3) continue;
+                for (int dy = -1; dy <= 1; ++dy)
+                    for (int dx = -1; dx <= 1; ++dx) {
+                        const unsigned x = (index % width + dx) & (width - 1);
+                        const unsigned y = (index / width + dy) & (height - 1);
+                        auto& neighbor = expected[y * width + x];
+                        if (neighbor && neighbor < value - 1) {
+                            neighbor = value - 1;
+                            pending.emplace(neighbor, y * width + x);
+                        }
+                    }
+            }
+            auto regular = seed;
+            map.updateGlobalGradient(regular.data());
+            require(regular == expected, "Synchronous gradient differs from queue oracle");
+            auto scheduled = seed;
+            auto task = map.updateGlobalGradientTask(scheduled.data());
+            unsigned slices = 0;
+            while (!task.advance()) require(++slices < 1000, "Gradient did not converge");
+            require(task.result() && slices >= 8 && scheduled == expected,
+                    "Scheduled gradient must yield and match the queue oracle");
+            auto cancelled = seed;
+            {
+                auto partial = map.updateGlobalGradientTask(cancelled.data());
+                require(!partial.advance() && !partial.advance(), "Gradient cancellation must precede completion");
+            }
+            // Monotonic relaxation can resume from an interrupted sweep.
+            map.updateGlobalGradient(cancelled.data());
+            require(cancelled == expected, "Interrupted gradient could not converge on restart");
+        }
+    }
     {
         MapGenerator generator;
         for (auto method : {MapGenerationDescriptor::eUNIFORM, MapGenerationDescriptor::eSWAMP,
