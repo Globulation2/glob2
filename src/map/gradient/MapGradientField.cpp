@@ -90,22 +90,34 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass)
 				continue; // stale entry, a cheaper path was found later
 			size_t x = i & wMask;
 			size_t y = i >> wDec;
-			for (int d = 0; d < 8; d++)
+			const size_t left = (x - 1) & wMask;
+			const size_t right = (x + 1) & wMask;
+			const size_t above = ((y - 1) & hMask) << wDec;
+			const size_t row = y << wDec;
+			const size_t below = ((y + 1) & hMask) << wDec;
+			// All reverse edges enter i, so they share its two terrain costs.
+			const int cardinalCost = cur + stepCost(1, 0, (size_t)i, swimClass);
+			const int diagonalCost = cur + stepCost(1, 1, (size_t)i, swimClass);
+			auto& cardinalBucket = buckets[cardinalCost % BUCKETS];
+			auto& diagonalBucket = buckets[diagonalCost % BUCKETS];
+			auto relax = [&](size_t n, int cost, std::vector<int>& destination)
 			{
-				int dx = tabClose[d][0];
-				int dy = tabClose[d][1];
-				size_t n = (((y + dy) & hMask) << wDec) | ((x + dx) & wMask);
-				if (gradient[n] == GRADIENT_FORBIDDEN)
-					continue;
-				// The step from n to i enters i, so it is charged i's terrain.
-				int cost = cur + stepCost(dx, dy, (size_t)i, swimClass);
-				if (cost < GRADIENT_AT_GOAL - gradient[n])
+				if (gradient[n] != GRADIENT_FORBIDDEN && cost < GRADIENT_AT_GOAL - gradient[n])
 				{
 					gradient[n] = (Uint16)(GRADIENT_AT_GOAL - cost);
-					buckets[cost % BUCKETS].push_back((int)n);
+					destination.push_back((int)n);
 					pending++;
 				}
-			}
+			};
+			// Preserve tabClose order: NW, N, NE, E, SE, S, SW, W.
+			relax(above | left, diagonalCost, diagonalBucket);
+			relax(above | x, cardinalCost, cardinalBucket);
+			relax(above | right, diagonalCost, diagonalBucket);
+			relax(row | right, cardinalCost, cardinalBucket);
+			relax(below | right, diagonalCost, diagonalBucket);
+			relax(below | x, cardinalCost, cardinalBucket);
+			relax(below | left, diagonalCost, diagonalBucket);
+			relax(row | left, cardinalCost, cardinalBucket);
 		}
 		bucket.clear();
 	}
