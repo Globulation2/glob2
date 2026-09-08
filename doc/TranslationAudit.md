@@ -116,13 +116,28 @@ panel at 10 px), unit-level captions with their `3/3` fraction (128 px), action 
 and the separate-islands menu label. Reviewed text was shortened to fit these budgets.
 These are font-metric checks, not screenshots of every screen in every language.
 
+## Chinese font follow-up
+
+The bundled DejaVu Sans 2.26 originally had no Chinese glyph coverage. Upstream
+DejaVu 2.37 also lacks Chinese coverage, so upgrading alone would not resolve it.
+`data/fonts/sans.ttf` is now Glob2 Sans: the original font with 21,900 CJK characters
+appended from Apache-licensed Droid Sans Fallback. See `data/fonts/README.md` for
+provenance, licenses and reproducible generation instructions. No renderer changes
+were needed. The font grows from 611,552 to 6,130,792 bytes.
+
+SDL2_ttf now reports zero missing visible characters across all 28 catalogs, and
+the same native layout checks report zero overflows with the actual bundled font,
+including both Chinese catalogs. Original glyph outlines, hint programs, advances,
+shaping tables and line metrics were compared against the original asset and are
+unchanged. Simplified and Traditional Chinese samples were visually inspected at
+10, 13 and 20 pixels. CI checks catalog glyph coverage through SDL2_ttf.
+
 ## Remaining limitations
 
-The bundled `data/fonts/sans.ttf` has no Chinese glyph coverage. The catalogs are
-complete, but a CJK-capable font is still required to render Chinese in the game;
-this change does not add a font or renderer fallback. Traditional Chinese was also
-measured with the system STHeiti Light CJK font, with no missing glyphs or measured
-overflows. Measurements using the bundled font alone cannot establish Chinese fit.
+The combined font uses one shared Han glyph style for both Chinese locales, and
+the appended glyphs are unhinted. Locale-specific glyph variants and native-speaker
+playtesting remain outside this font fix. Font samples and targeted measurements
+do not establish that every screen is free of clipping.
 
 The JSON audit exposes obsolete keys, English-identical values and residual `??`
 text as review queues. These are not all missing translations: keyboard names and

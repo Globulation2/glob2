@@ -51,6 +51,7 @@ jobs:
         run: |
           python3 data/check_translations.py --strict
           python3 test/test_translations.py
+          python3 test/test_font_coverage.py
 
       - name: Test compiler cache integration
         run: python3 test/test-ccache.py
