@@ -106,6 +106,13 @@ infrastructure from the supported-release acceptance criteria.
   save/reload tests across all three engines pass. Real quota/error injection,
   export recovery, and applying the service to other persistence callers remain.
 
+- Six browser database-boundary fault tests pass across Chromium, Firefox and
+  WebKit: aborted transactions and injected quota errors preserve the previous
+  durable save (verified from another page), then retry persists the replacement
+  across reload. The short failure caption is visually checked in
+  `screenshots/save-persistence-failure.png`. These are injected faults, not a
+  full browser-profile capacity or interrupted-upgrade qualification.
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),

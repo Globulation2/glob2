@@ -147,7 +147,7 @@ const char *LoadSaveScreen::getName(void)
 void LoadSaveScreen::showSaveFailure()
 {
     endValue = -1;
-    caption->setText(Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_MAP]"));
+    caption->setText(Toolkit::getStringTable()->getString("[save failed retry]"));
 }
 
 void LoadSaveScreen::beginPersistence(std::unique_ptr<GAGCore::ApplicationHost::Persistence> operation)
