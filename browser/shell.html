@@ -66,7 +66,7 @@ var Module = {
   onAbort(reason) { Module.printErr('Game stopped: ' + reason); }
 };
 async function localFileDigest(directory, name, extension) {
-  if (!/^[A-Za-z0-9 _.-]+$/.test(name) || name.includes('..') || !name.endsWith('.' + extension))
+  if (!/^[A-Za-z0-9 _().-]+$/.test(name) || name.includes('..') || !name.endsWith('.' + extension))
     throw Error('Invalid local file name');
   const path = '/home/web_user/.glob2/' + directory + '/' + name;
   if (!FS.analyzePath(path).exists) return null;
@@ -81,6 +81,7 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
       tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
       paused:Boolean(Module.glob2Paused), width:canvas.width, height:canvas.height,
       restore:Module.storageRestore || 'restoring',
+      import:Module.importState || 'idle',
       persisting:Module.storage?.state === 'writing',
       persistence:Module.storage?.state || 'restoring',
       audio:Module.SDL2?.audioContext?.state || 'inactive'});
@@ -90,7 +91,8 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
     return FS.analyzePath(path).exists ? FS.readdir(path).filter(n => n.endsWith('.game')).sort() : [];
   },
   saveDigest(name) { return localFileDigest('games', name, 'game'); },
-  mapDigest(name) { return localFileDigest('maps', name, 'map'); }
+  mapDigest(name) { return localFileDigest('maps', name, 'map'); },
+  replayDigest(name) { return localFileDigest('replays', name, 'replay'); }
 })});
 function focusGame() {
   canvas.focus();

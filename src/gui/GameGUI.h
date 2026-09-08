@@ -57,7 +57,7 @@ class GameGUI
 {
 public:
 	///Constructs a GameGUI
-	GameGUI();
+	explicit GameGUI(bool persistPreferences = true);
 	
 	///Destroys the GameGUI
 	~GameGUI();
@@ -225,6 +225,7 @@ public:
 	int anyPlayerWaitedTimeFor;
 private:
 	friend class GameGUISelectionHarness;
+	bool persistPreferences;
 
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);

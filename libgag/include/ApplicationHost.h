@@ -56,6 +56,7 @@ std::unique_ptr<Persistence> persistStorage();
 
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char* name);
+void importChanged(const char* state);
 void simulationAdvanced(std::uint32_t tick);
 void matchFrame(bool paused);
 void exited(int result);

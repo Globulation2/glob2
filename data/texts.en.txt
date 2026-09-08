@@ -1270,3 +1270,17 @@ Continue
 Export file
 [export failed]
 File export failed
+[import file]
+Import
+[select import file]
+Choose a file to import
+[validating import]
+Validating file...
+[import succeeded]
+File imported
+[import cancelled]
+Import cancelled
+[import failed]
+Import failed: invalid or unsupported file
+[import persistence failed]
+Not saved: select Import to retry or Export file

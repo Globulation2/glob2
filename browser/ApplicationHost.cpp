@@ -173,6 +173,7 @@ public:
 };
 }
 std::unique_ptr<Persistence> persistStorage() { return std::make_unique<BrowserPersistence>(); }
+void importChanged(const char* state) { EM_ASM({ Module.importState = UTF8ToString($0); }, state); }
 void screenChanged(const char* name)
 {
     EM_ASM({ Module['glob2Screen'] = UTF8ToString($0); }, name);

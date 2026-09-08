@@ -115,7 +115,9 @@ void CustomGameScreen::validMapSelectedhandler(void)
 void CustomGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	// call parent
+    const bool wasImporting = importBusy();
 	ChooseMapScreen::onAction(source, action, par1, par2);
+    if (wasImporting || importBusy()) return;
 	if (action==BUTTON_STATE_CHANGED)
 	{
 		if (par1==100)

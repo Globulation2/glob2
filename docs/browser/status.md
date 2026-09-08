@@ -5,16 +5,16 @@ infrastructure from the supported-release acceptance criteria.
 
 ## Delivered in this branch
 
-- Browser file-selection service owns and cancels native file inputs, limits reads
-  to 64 MiB, rejects path-like names and unsupported extensions, and transfers
-  exact bytes to C++. Seven unit cases and six real file-chooser cases across
-  Chromium, Firefox and WebKit pass. This is the selection boundary; the game's
-  import controls, complete format validation and durable import transaction
-  remain unfinished.
+- In-game save/map/replay import and export use a browser file-selection
+  adapter and a shared C++ validation/persistence job. Complete input is read
+  before an atomic write; name collisions create numbered copies, preserving
+  existing files. The chooser waits for durable persistence, offers export and
+  retry on failure, and supports cancellation while validating. See
+  [browser files](storage.md) for behavior, boundaries and remaining work.
 - Map headers use checked binary reads, reject unsupported versions, negative or
   excessive team counts and invalid saved-game flags, and retain the previous
-  header if parsing fails. Validation is shared by desktop and browser.
-
+  header if parsing fails. Malformed player records now fail loading instead
+  of invoking a constructor assertion. Validation is shared by desktop/browser.
 - Shared SCons source manifests and native/web configuration isolation,
   including generated headers, compilation databases, objects, caches,
   signature databases, temporary directories, and build-directory locking.
@@ -101,20 +101,20 @@ infrastructure from the supported-release acceptance criteria.
   overwriting the destination directly. A write failure retains the prior file
   and keeps the save dialog open with an error. Native short-write/flush failure
   regressions and all three browser save/reload scenarios pass. This protects
-  filesystem replacement; it does not yet acknowledge durable IndexedDB writes.
+  filesystem replacement; durable completion is covered by the persistence flow below.
 
 - Browser persistence uses a serialized coordinator instead of the SDK queue
   that drops persistence errors. Generation-specific completion promises wait
   for their write callback, failures remain observable, and failed restore
   prevents later writes from replacing unrestored data. Four injected-adapter
   tests and all three browser save/reload tests pass. Completion/failure UI,
-  real quota fault injection, and recovery/export are still required.
+  quota fault injection and recovery/export are covered below.
 
 - Manual in-game save dialogs retain an owned platform persistence operation,
   show a saving caption while pending, close only after success, and remain open
   with an error on failure. Native injected completion-state tests and browser
-  save/reload tests across all three engines pass. Real quota/error injection,
-  export recovery, and applying the service to other persistence callers remain.
+  save/reload tests across all three engines pass. Quota/error injection and
+  export recovery are covered below; other legacy persistence callers remain.
 
 - Six browser database-boundary fault tests pass across Chromium, Firefox and
   WebKit: aborted transactions and injected quota errors preserve the previous
@@ -127,8 +127,8 @@ infrastructure from the supported-release acceptance criteria.
   Export reads through the shared filesystem interface, bounds allocation to
   64 MiB, and passes bytes to the browser host. All six abort/quota scenarios
   verify the downloaded filename and byte digest, preservation of the old
-  durable save, and successful retry. General import/export for other local
-  data types and explicit messaging for oversized exports remain unfinished.
+  durable save, and successful retry. Campaign-progress import/export and explicit
+  messaging for oversized exports remain unfinished.
 
 - Failed browser storage restoration opens an in-game explanation before the
   menu. Players may continue with persistence disabled and export manual saves,
@@ -139,8 +139,27 @@ infrastructure from the supported-release acceptance criteria.
 - The browser load-game chooser offers normal export of its selected save or
   replay through the shared bounded file-export helper. Three save/export/load
   scenarios pass across Chromium, Firefox and WebKit, verifying exact downloaded
-  bytes. Replay-specific export qualification, map/campaign-progress export and
-  import remain required. Native build and session checks pass.
+  bytes. This earlier export coverage is extended by the import flow above.
+  Campaign-progress import/export remains required. Native build and session checks pass.
+
+## Import-flow verification (September 2026)
+
+- Twelve import/export scenarios pass across Chromium, Firefox and WebKit:
+  saved-game round trips and continuation, duplicate-name preservation, malformed
+  input rejection, custom maps, complete replay command streams, and quota
+  failure/export/retry. Save tests explicitly select and verify filenames; an
+  initial test accidentally exported an autosave and was corrected.
+- The existing 75 single-player, storage, viewport and rendering scenarios pass
+  across the three engines. The first run passed 52 before the local HTTP server
+  began returning empty replies; all 25 WebKit scenarios passed after restarting
+  that server. Multiplayer was not rerun for this import change.
+- Native client and release Wasm builds succeed. The native save-safety harness
+  covers complete imports, malformed headers/player records/map offsets,
+  cancellation, RNG and preference preservation, and persistence failure/retry.
+  Eleven browser adapter unit tests and nine build-system tests pass.
+- Review screenshots: [save import](screenshots/imported-save.png),
+  [map import](screenshots/imported-map.png), and
+  [persistence failure](screenshots/import-persistence-failure.png).
 
 ## Local validation
 

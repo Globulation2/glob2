@@ -6,6 +6,8 @@
 #include "GlobalContainer.h"
 #include "Engine.h"
 #include "Version.h"
+#include "FileImport.h"
+#include "Utilities.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <cassert>
@@ -161,6 +163,93 @@ static void checkMapHeaders()
 	std::cout << "PASS every truncated header, invalid versions/team counts/save flags rejected; previous header preserved; valid reload succeeds" << std::endl;
 }
 
+static void checkImports(const std::string& bytes, const fs::path& directory)
+{
+    using namespace ApplicationHost;
+    const auto selected = [&](const std::string& name, const std::string& payload) {
+        return SelectedFile{name, std::vector<unsigned char>(payload.begin(), payload.end())};
+    };
+    const auto validate = [](FileImport& operation) {
+        for (unsigned i = 0; i < 100000 && operation.state() == FileImport::State::Validating; ++i) operation.advance();
+        assert(operation.state() != FileImport::State::Validating);
+    };
+    const auto beforeRng = getSyncRandState();
+    const auto preferences = directory / "preferences.txt";
+    { std::ofstream out(preferences); out << "preserved preferences"; }
+    const auto preferencesTime = fs::last_write_time(preferences);
+    const bool remember = globalContainer->settings.rememberUnit;
+    globalContainer->settings.rememberUnit = true;
+    {
+        FileImport cancelled(selected("cancel.game", bytes), "game", persistStorage,
+            CooperativeSlice(std::chrono::steady_clock::now, std::chrono::milliseconds(4), 1));
+        cancelled.advance();
+        assert(cancelled.state() == FileImport::State::Validating);
+    }
+    assert(getSyncRandState() == beforeRng && !fs::exists(directory / "games/cancel.game"));
+    for (const auto& payload : {bytes.substr(0, 3), bytes.substr(0, bytes.size()-1), bytes + "extra"}) {
+        FileImport invalid(selected("invalid.game", payload), "game");
+        validate(invalid);
+        assert(invalid.state() == FileImport::State::Failed && invalid.path().empty());
+    }
+    {
+        auto stream = input(bytes, false);
+        MapHeader header; assert(header.load(stream.get()));
+        auto badCount = bytes;
+        // GameHeader begins with latency (4), order rate (1), player count (4).
+        std::fill_n(badCount.begin() + stream->getPosition() + 5, 4, char(0xff));
+        auto badOffset = bytes;
+        const auto offsetField = 4 + header.getMapName().size() + 12;
+        const Uint32 offset = header.getMapOffset() + 1;
+        for (int i = 0; i < 4; ++i) badOffset[offsetField+i] = char(offset >> (24-i*8));
+        auto badPlayer = bytes;
+        const auto player = badPlayer.find("PLYb"); assert(player != std::string::npos);
+        badPlayer[player] = '!';
+        for (const auto& corrupt : {badCount, badPlayer, badOffset}) {
+            FileImport invalid(selected("invalid.game", corrupt), "game");
+            validate(invalid); assert(invalid.state() == FileImport::State::Failed);
+        }
+    }
+    for (const auto& name : {"../escape.game", "con.game", "wrong.map"}) {
+        FileImport invalid(selected(name, bytes), "game");
+        validate(invalid); assert(invalid.state() == FileImport::State::Failed);
+    }
+    const auto original = directory / "games/Imported.game";
+    { std::ofstream out(original, std::ios::binary); out << "previous save"; }
+    struct ControlledPersistence : Persistence {
+        std::shared_ptr<PersistenceState> result;
+        explicit ControlledPersistence(std::shared_ptr<PersistenceState> result) : result(std::move(result)) {}
+        PersistenceState state() const override { return *result; }
+    };
+    auto result = std::make_shared<PersistenceState>(PersistenceState::Pending);
+    const auto persist = [result] { return std::make_unique<ControlledPersistence>(result); };
+    std::string imported;
+    {
+        FileImport operation(selected("Imported.game", bytes), "game", persist);
+        validate(operation);
+        assert(operation.state() == FileImport::State::Persisting);
+        imported = operation.path();
+        assert(imported == "games/Imported_(1).game");
+        assert(contents(directory / imported) == bytes && contents(original) == "previous save");
+        operation.advance(); assert(operation.state() == FileImport::State::Persisting);
+        *result = PersistenceState::Failed;
+        operation.advance(); assert(operation.canRetry());
+        operation.retryPersistence();
+        *result = PersistenceState::Succeeded;
+        operation.advance(); assert(operation.state() == FileImport::State::Succeeded);
+    }
+    assert(contents(directory / imported) == bytes && contents(original) == "previous save");
+    {
+        *result = PersistenceState::Failed;
+        FileImport operation(selected("abandoned.game", bytes), "game", persist);
+        validate(operation); operation.advance(); assert(operation.canRetry());
+    }
+    assert(!fs::exists(directory / "games/abandoned.game"));
+    assert(getSyncRandState() == beforeRng);
+    assert(contents(preferences) == "preserved preferences" && fs::last_write_time(preferences) == preferencesTime);
+    globalContainer->settings.rememberUnit = remember;
+    std::cout << "PASS imported save full validation, cancellation/RNG restoration, name collision, pending/failure/retry persistence and abandoned-file cleanup" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	SDL_SetMainReady();
@@ -231,6 +320,7 @@ int main(int argc, char **argv)
 			assert(restored.game.stepCounter == gui.game.stepCounter);
 		}
 		std::cout << "PASS production autosave reloads with unchanged simulation checksum components" << std::endl;
+        checkImports(bytes, directory);
 #ifndef WIN32
 		const pid_t child = fork();
 		assert(child >= 0);
