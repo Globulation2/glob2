@@ -1,3 +1,4 @@
+const {gameURL} = require('./game-url');
 const {test, expect} = require('@playwright/test');
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
@@ -6,7 +7,7 @@ const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, del
 const menu = (page, x, y) => click(page, x + 280, y + 210);
 
 test.beforeEach(async ({page}) => {
-  await page.goto('/');
+  await page.goto(gameURL());
   await screen(page, 'MainMenuScreen');
 });
 
@@ -116,6 +117,16 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   expect(await digest()).toEqual(saved);
   // Each test owns a fresh browser context; only this test's save exists.
   expect(await page.evaluate(() => glob2Diagnostics.saves())).toEqual(['Browser_regression.game']);
+  await menu(page, 160, 200); await screen(page, 'ChooseMapScreen');
+  await menu(page, 100, 70);
+  const downloadEvent = page.waitForEvent('download');
+  await menu(page, 340, 320);
+  const download = await downloadEvent;
+  expect(download.suggestedFilename()).toBe('Browser_regression.game');
+  const bytes = await require('node:fs/promises').readFile(await download.path());
+  expect({size:bytes.length,sha256:require('node:crypto').createHash('sha256').update(bytes).digest('hex')}).toEqual(saved);
+  await menu(page, 530, 440); await screen(page, 'MainMenuScreen');
+
   await menu(page, 160, 200);
   await screen(page, 'ChooseMapScreen');
   await menu(page, 100, 70);

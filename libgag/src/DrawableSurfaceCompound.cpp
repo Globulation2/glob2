@@ -124,11 +124,16 @@ namespace GAGCore
 					glGetIntegerv(GL_VIEWPORT, viewport);
 					const int fbW = viewport[2], fbH = viewport[3];
 					std::valarray<unsigned char> tempPixels(4*fbW*fbH);
-					#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+					#if SDL_BYTEORDER == SDL_BIG_ENDIAN || defined(GLOB2_WEBGL2)
 					glReadPixels(viewport[0], viewport[1], fbW, fbH, GL_RGBA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#else
 					glReadPixels(viewport[0], viewport[1], fbW, fbH, GL_BGRA, GL_UNSIGNED_BYTE, &tempPixels[0]);
 					#endif
+#ifdef GLOB2_WEBGL2
+                    // WebGL readback is RGBA; the retained software surface is BGRA.
+                    for (size_t pixel = 0; pixel < tempPixels.size(); pixel += 4)
+                        std::swap(tempPixels[pixel], tempPixels[pixel + 2]);
+#endif
 					if (fbW == sw && fbH == sh)
 					{
 						// same size: plain row copy, flipping GL's bottom-up rows

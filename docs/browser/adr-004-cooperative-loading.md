@@ -86,16 +86,11 @@ separate work because engine replay/session globals require different ownership.
 
 ## Gradients during loading
 
-Resource, forbidden-area, guard-area, and clear-area seeding now expose tasks,
-with checkpoints every 16,384 cells. Global chamfer propagation yields every
-16 rows of each forward/backward sweep. Map loading awaits these jobs before
-publishing its game. Their algorithm and traversal order are unchanged.
-
-The task APIs borrow a map and its gradient buffers. Neither simulation nor
-another gradient operation may observe/mutate that map while a task is suspended.
-Running games continue using synchronous adapters, which drain the identical
-implementation before returning. Cancellation discards the private loading map;
-there is no partially completed gradient in an active simulation.
+The rebase preserves upstream's lazy weighted resource and area gradients.
+Loading no longer eagerly allocates and propagates those fields. The shared
+8-bit AI helper gradient retains a cooperative adapter with checkpoints every
+16 rows of each forward/backward sweep; simulation callers drain it synchronously.
+The task borrows its map and buffers, which must remain private while suspended.
 
 An independent priority-queue relaxation oracle verifies exact gradient values
 for an empty source set, toroidal wrapping, barriers with gaps, and multiple
@@ -111,19 +106,14 @@ because simulation callers share the synchronous implementation.
 
 ## Team setup during generation
 
-`Game::addTeamTask` awaits `Map::addTeamTask`, which allocates and builds resource
-and area gradients using the loading tasks. Generation callers await this chain;
-existing editor/runtime callers still drain it synchronously through `addTeam`.
-Team masks, colors, header count, prestige limits, and script initialization retain
-their original order.
+`Game::addTeamTask` awaits `Map::addTeamTask`, preserving team masks, colors,
+header count, prestige limits, and script initialization order. Upstream's lazy
+gradients mean this nested task can now finish without suspending.
 
-The asynchronous API is for a privately owned preparation game. A cancelled team
-addition leaves a partial game to discard; it is not a transaction for adding a
-team to a live match. The editor generation screen owns that discard and RNG
-rollback. Tests destroy jobs after the header/Team exist and at several subsequent
-gradient checkpoints, exercising cleanup with both allocated and missing arrays.
-Race loading, object construction, and initial area-array filling still contain
-synchronous work and remain part of loading latency qualification.
+The asynchronous API is for a privately owned preparation game. Cancellation
+discards that game and restores RNG state. Tests exercise partial team parsing
+and editor preparation cancellation; they do not require obsolete eager-gradient
+checkpoints. Construction and allocation still need loading latency qualification.
 
 ## Host work budgets and clock injection
 

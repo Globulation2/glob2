@@ -50,27 +50,15 @@ bool MapEdit::save(const std::string filename, const std::string name)
 	assert(filename.size());
 	assert(name.size());
 
-	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
-	if (stream->isEndOfStream())
-	{
-		std::cerr << "MapEdit::save(\"" << filename << "\",\"" << name << "\") : error, can't open file." << std::endl;
-		delete stream;
-		return false;
-	}
-	else
-	{
-		game.save(stream, true, name);
-		delete stream;
+    if (!Toolkit::getFileManager()->writeAtomically(filename, [&](OutputStream& stream) {
+        game.save(&stream, true, name);
+    })) return false;
 
-		// Game::save() now restores mapHeader.mapName/isSavedGame so that
-		// in-game saves don't permanently clobber the live map name. The
-		// editor relies on the post-save mutation for its "current name"
-		// UI (the LoadSaveScreen default), so re-apply explicitly.
-		hasMapBeenModified = false;
-		game.mapHeader.setMapName(name);
-		game.mapHeader.setIsSavedGame(false);
-		return true;
-	}
+    // Only publish the new editor name after the complete file was replaced.
+    hasMapBeenModified = false;
+    game.mapHeader.setMapName(name);
+    game.mapHeader.setIsSavedGame(false);
+    return true;
 }
 
 
@@ -95,6 +83,10 @@ void MapEdit::beginEditing()
 bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 {
     if (!editing || quitDecision || fertilityRequested || !pendingLoadFilename.empty()) return editing;
+    if (showingSave && loadSaveScreen->pollPersistence()) {
+        hasMapBeenModified = false;
+        performAction("close save screen");
+    }
     for (auto event : events) {
         GAGCore::GraphicContext::translateMouseEvent(&event);
         processEvent(event);
@@ -212,14 +204,41 @@ void MapEdit::resolveQuitDecision(int choice)
 bool MapEdit::finishFertility(bool completed)
 {
     fertilityRequested = false;
-    bool saved = true;
     if (!pendingSaveFilename.empty()) {
-        if (completed) saved = save(pendingSaveFilename, pendingSaveName);
-        if (!completed || !saved) doQuitAfterLoadSave = false;
+        if (completed) {
+            try {
+                if (GAGCore::ApplicationHost::storageRestoreFailed() || !save(pendingSaveFilename, pendingSaveName))
+                    loadSaveScreen->showSaveFailure();
+                else loadSaveScreen->beginPersistence(GAGCore::ApplicationHost::persistStorage());
+            } catch (const std::exception&) { loadSaveScreen->showSaveFailure(); }
+            // A local write is not a durable browser save. Keep the editor and
+            // its quit intent until the shared save dialog acknowledges it.
+            hasMapBeenModified = true;
+        } else {
+            doQuitAfterLoadSave = false;
+            performAction("close save screen");
+        }
         pendingSaveFilename.clear(); pendingSaveName.clear();
     } else if (completed) {
         overlay.forceRecompute();
         overlay.compute(game, OverlayArea::Fertility, team);
     } else isFertilityOn = false;
-    return saved;
+    return true;
+}
+
+void MapEdit::viewportResized(int oldWidth, int oldHeight, int width, int height)
+{
+    minimap.resizeViewport(width);
+    viewportX = (viewportX + (oldWidth - RIGHT_MENU_WIDTH) / 64 - (width - RIGHT_MENU_WIDTH) / 64) & game.map.wMask;
+    viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
+    for (auto* widget : mew) widget->area.x += width - oldWidth;
+    for (MapEditorWidget* widget : std::initializer_list<MapEditorWidget*>{mapCoordinatesLabel, building_view_tcs,
+         building_view_level1, building_view_level2, building_view_level3, flag_view_tcs,
+         flag_view_level1, flag_view_level2, flag_view_level3, flag_view_level4})
+        widget->area.y += height - oldHeight;
+    if (showingMenuScreen) menuScreen->viewportResized(oldWidth, oldHeight, width, height);
+    if (showingLoad || showingSave) loadSaveScreen->viewportResized(oldWidth, oldHeight, width, height);
+    if (showingScriptEditor) scriptEditor->viewportResized(oldWidth, oldHeight, width, height);
+    if (showingTeamsEditor) teamsEditor->viewportResized(oldWidth, oldHeight, width, height);
+    if (isShowingAreaName) areaName->viewportResized(oldWidth, oldHeight, width, height);
 }

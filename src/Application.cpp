@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Application.h"
+#include <Toolkit.h>
+#include <StringTable.h>
 #include "GlobalContainer.h"
 #include "MainMenuScreen.h"
+#include "MessageScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignMenuScreen.h"
 #include "SettingsScreen.h"
@@ -11,9 +14,29 @@
 #include "YOGLoginScreen.h"
 #include "YOGClient.h"
 
+namespace {
+class MinimumViewportScreen : public GAGGUI::Screen
+{
+public:
+    void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {}
+    void paint() override {
+        GAGGUI::Screen::paint();
+        auto* font = GAGCore::Toolkit::getFont("standard");
+        const auto text = GAGCore::Toolkit::getStringTable()->getString("[browser window too small]");
+        getSurface()->drawString(std::max(8, (getW() - font->getStringWidth(text)) / 2),
+                                std::max(8, getH()/2 - 10), font, text);
+    }
+};
+}
+
 Application::Application() : screens(*globalContainer->gfx), singlePlayer(screens)
 {
-    if (globalContainer->replaying) singlePlayer.replay(globalContainer->replayFileName);
+    if (GAGCore::ApplicationHost::storageRestoreFailed()) {
+        auto& strings = *GAGCore::Toolkit::getStringTable();
+        screens.push(std::make_unique<MessageScreen>(strings.getString("[storage restore failed]"),
+            std::vector<std::string>{strings.getString("[continue]")}),
+            [this](GAGGUI::Screen&, int) { mainMenu(); });
+    } else if (globalContainer->replaying) singlePlayer.replay(globalContainer->replayFileName);
     else mainMenu();
 }
 
@@ -51,6 +74,22 @@ void Application::choose(int choice)
 bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events)
 {
     lastFrame = tick;
+    if (GAGCore::ApplicationHost::takeVisibilityChange(hidden)) screens.suspendExecution();
+    if (hidden) return true;
+    int width, height;
+    if (GAGCore::ApplicationHost::takeViewportSize(width, height)) {
+        const int oldWidth = globalContainer->gfx->getW(), oldHeight = globalContainer->gfx->getH();
+        if (globalContainer->gfx->resizeViewport(width, height)) {
+            screens.viewportResized(oldWidth, oldHeight, width, height);
+            if ((width < 800 || height < 600) && !minimumNotice) {
+                auto notice = std::make_unique<MinimumViewportScreen>();
+                minimumNotice = notice.get();
+                screens.push(std::move(notice), [this](GAGGUI::Screen&, int) { minimumNotice = nullptr; });
+            } else if (width >= 800 && height >= 600 && minimumNotice) {
+                minimumNotice->endExecute(0);
+            }
+        }
+    }
     screens.frame(tick, events);
     if (!screens.running()) {
         if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION) return false;
@@ -61,6 +100,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events
 
 std::uint32_t Application::delay(std::uint32_t now)
 {
+    if (hidden) return 100;
     const auto elapsed = static_cast<std::uint32_t>(now - lastFrame);
     return screens.delay(now, elapsed < 40 ? 40 - elapsed : 0);
 }

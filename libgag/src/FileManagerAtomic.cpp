@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FileManager.h>
+#include <ApplicationHost.h>
+#include <Toolkit.h>
 #include <BinaryStream.h>
 #include <BufferedFileStreamBackend.h>
 #include <atomic>
@@ -132,4 +134,21 @@ namespace GAGCore
 		return false;
 	}
 
+}
+
+bool GAGCore::ApplicationHost::exportLocalFile(const std::string& exportPath)
+{
+    try {
+        BinaryInputStream stream(Toolkit::getFileManager()->openInputStreamBackend(exportPath));
+        if (!stream.isValid()) throw std::runtime_error("Save unavailable");
+        stream.seekFromEnd(0);
+        const size_t size = stream.getPosition();
+        if (!size || size > 64u * 1024u * 1024u) throw std::runtime_error("Save exceeds export limit");
+        stream.seekFromStart(0);
+        std::vector<unsigned char> bytes(size);
+        stream.read(bytes.data(), size, "export");
+        const auto slash = exportPath.find_last_of("/\\");
+        const auto name = exportPath.substr(slash == std::string::npos ? 0 : slash + 1);
+        return exportFile(name, bytes);
+    } catch (const std::exception&) { return false; }
 }

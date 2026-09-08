@@ -84,7 +84,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
                 pendingSaveFilename = loadSaveScreen->getFileName();
                 pendingSaveName = loadSaveScreen->getName();
                 fertilityRequested = true;
-                performAction("close save screen");
+                loadSaveScreen->endValue = -1;
             }
             break;
 			case LoadSaveScreen::CANCEL:

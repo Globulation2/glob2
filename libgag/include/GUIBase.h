@@ -329,6 +329,8 @@ namespace GAGGUI
 		//! Nonblocking lifecycle. The host supplies time and already-polled input.
 		void beginExecution(GAGCore::DrawableSurface *surface);
 		virtual void updateExecution(Uint32 tick);
+        virtual void suspendExecution() {}
+        virtual void viewportResized(int oldWidth, int oldHeight, int width, int height) {}
 		virtual void handleExecutionEvent(SDL_Event event);
 		virtual void drawExecution();
         virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }
@@ -379,6 +381,7 @@ namespace GAGGUI
 		//! Destructor
 		virtual ~OverlayScreen();
 		void updateLayout(void) override;
+        void viewportResized(int, int, int width, int height) override { decX = (width - getW()) / 2; decY = (height - getH()) / 2; }
 	
 		//! Run the OverlayScreen, call Screen::execute with the correct DrawableSurface
 		virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);

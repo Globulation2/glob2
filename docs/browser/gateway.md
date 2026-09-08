@@ -107,8 +107,8 @@ at the negotiated command cadence. This uses the native game implementation,
 not a second simulation model.
 
 Run `cd browser && npx playwright test multiplayer.spec.js` for the cross-browser
-multiplayer suite. The default browser/browser cases use no AI and Maxima;
-`GLOB2_ALL_AIS=1` covers all seven shipped AIs and is enabled nightly. Native
+multiplayer suite. The default browser/browser cases use no AI and Cortex;
+`GLOB2_ALL_AIS=1` covers all six shipped AIs and is enabled nightly. Native
 cross-play currently tests a two-human match on the build host. These short
 matches do not qualify sustained platform parity, account migration, or recovery.
 

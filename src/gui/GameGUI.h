@@ -69,7 +69,7 @@ class GameGUI
 public:
     void drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit);
 	///Constructs a GameGUI
-	GameGUI();
+	explicit GameGUI(bool persistPreferences = true);
 	
 	///Destroys the GameGUI
 	~GameGUI();
@@ -88,6 +88,8 @@ public:
 	void configureLiveSpectatorView();
 	//! Return position on x
 	int getViewportX() { return viewportX; }
+    void suspendInput();
+    void viewportResized(int oldWidth, int oldHeight, int width, int height);
 	//! Return position on y
 	int getViewportY() { return viewportY; }
 
@@ -246,6 +248,7 @@ private:
 	friend class GameGUISelectionHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
+	bool persistPreferences;
 
 	//! Serializes the game and hands the bytes to autosaveWriter.
 	void autosave();

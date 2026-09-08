@@ -23,6 +23,8 @@ public:
     // Transitional SDL host. Browser scheduling will call frame directly.
     int execute(unsigned stepLength = 40);
     void stop();
+    void suspendExecution();
+    void viewportResized(int oldWidth, int oldHeight, int width, int height);
 private:
     struct Entry { Completion completed; std::unique_ptr<Screen> screen; Screen* owner; };
     GAGCore::DrawableSurface& surface;

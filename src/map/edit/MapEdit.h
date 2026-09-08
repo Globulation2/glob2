@@ -384,6 +384,7 @@ public:
 	void update();
 
     void beginEditing();
+    void viewportResized(int oldWidth, int oldHeight, int width, int height);
     void requestLoad(std::string filename) { pendingLoadFilename = std::move(filename); }
     std::string takeLoadRequest() { return std::exchange(pendingLoadFilename, {}); }
     void suspendInput();
