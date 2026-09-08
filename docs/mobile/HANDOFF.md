@@ -33,7 +33,7 @@ Suggested first message to the new agent:
 
 ## Latest resumed work: native phone forms
 
-The current pass adds `PhoneForm`, `ResponsiveDialog`, shared safe-area geometry,
+Commit `4345f28e0` adds `PhoneForm`, `ResponsiveDialog`, shared safe-area geometry,
 and persisted 100/125/150% dialog text size. Read the **Phone forms and adjustable
 dialog text** section in [status](status.md) and the implementation notes in
 [development](development.md). This supersedes older statements below that setup

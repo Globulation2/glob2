@@ -5,7 +5,7 @@ merged into the mobile branch in `0b977ab61`. iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 Android evidence below was collected before this browser merge, on `7333e4e8b`.
 
-## Phone forms and adjustable dialog text (current)
+## Phone forms and adjustable dialog text (`4345f28e0`)
 
 - Campaign/tutorial, map choice, custom-game options, map creation, AI description
   and message screens use a native phone presenter with wrapped, scrollable rows.
@@ -27,10 +27,20 @@ Android evidence below was collected before this browser merge, on `7333e4e8b`.
   were exercised. This is emulator evidence, not Pixel 6 qualification.
 - iOS ARM64 simulator and Wasm release builds pass. Floating-keyboard behavior
   remains unqualified on an actual iPad. All 15 browser viewport checks pass
-  across Chromium, Firefox and WebKit before the final native-only footer cleanup.
+  across Chromium, Firefox and WebKit on the final source (1.5 minutes).
 - PR #202's visual refresh was inspected but not imported: it does not provide
   phone form reflow. This pass retains existing game art and styling foundations.
   Pinch zoom remains deferred to the zoom PRs.
+
+Final logs: `build/ui-accessibility-qualified-touch.log`,
+`build/ui-accessibility-qualified-session.log`,
+`build/ui-accessibility-qualified-web.log`,
+`build/ui-accessibility-qualified-browser.log`,
+`build/ui-accessibility-footer-android.log` and
+`build/ui-accessibility-footer-ios.log`. The refreshed `build/mobile-preview`
+APK/symbols/BUILD.json/checksums identify code `4345f28e0`.
+An initial browser run overlapped a build rewriting its served HTML and failed;
+verification was rerun after the build completed. The final run passes all 15.
 
 Emulator captures (API 35, 320×640, default dialog text):
 
