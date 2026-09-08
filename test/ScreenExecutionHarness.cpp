@@ -56,6 +56,15 @@ GAGCore::CooperativeTask parentTask(int& live, bool fail)
 
 int main()
 {
+    {
+        GAGCore::InputState held;
+        SDL_Event key{}; key.type = SDL_KEYDOWN; key.key.keysym.scancode = SDL_SCANCODE_LEFT;
+        key.key.keysym.mod = KMOD_CTRL;
+        held.observe(key); held.clearHeld();
+        require(!held.keyboard()[SDL_SCANCODE_LEFT] && held.modifiers() == KMOD_NONE && held.hasFocus(),
+                "Suspending input clears controls without losing window focus");
+    }
+
     int live = 0;
     {
         auto task = parentTask(live, false);

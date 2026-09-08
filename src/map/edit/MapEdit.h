@@ -4,6 +4,7 @@
 
 #pragma once
 #include <InputState.h>
+#include <utility>
 
 #include "Brush.h"
 #include "GAGSys.h"
@@ -381,7 +382,7 @@ class MapEdit
     int editingResult = 0;
     GAGCore::InputState inputState;
     bool fertilityRequested = false;
-    std::string pendingSaveFilename, pendingSaveName;
+    std::string pendingSaveFilename, pendingSaveName, pendingLoadFilename;
 public:
 	MapEdit();
 	~MapEdit();
@@ -395,6 +396,9 @@ public:
 	void update();
 
     void beginEditing();
+    void requestLoad(std::string filename) { pendingLoadFilename = std::move(filename); }
+    std::string takeLoadRequest() { return std::exchange(pendingLoadFilename, {}); }
+    void suspendInput();
     bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick);
     void drawEditing();
     bool needsFertility() const { return fertilityRequested; }

@@ -13,7 +13,7 @@ public:
     {
         if (event.type == SDL_WINDOWEVENT) {
             if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-                keys.fill(0); mods = KMOD_NONE; focused = false;
+                clearHeld(); focused = false;
             } else if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) focused = true;
         }
         if (focused && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)) {
@@ -24,6 +24,7 @@ public:
             mods = static_cast<SDL_Keymod>(event.key.keysym.mod);
         }
     }
+    void clearHeld() { keys.fill(0); mods = KMOD_NONE; }
     const Uint8* keyboard() const { return keys.data(); }
     SDL_Keymod modifiers() const { return mods; }
     bool hasFocus() const { return focused; }

@@ -3,6 +3,7 @@
 #include "MapEdit.h"
 #include "MessageScreen.h"
 #include "FertilityScreen.h"
+#include "EditorLoadScreen.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <stdexcept>
@@ -21,7 +22,22 @@ void MapEditorScreen::updateExecution(Uint32 tick)
     const bool running = editor->advanceEditing(input, tick);
     input.clear();
     if (!running) { endExecute(editor->editingReturnCode()); return; }
-    if (editor->needsFertility()) {
+    const auto replacement = editor->takeLoadRequest();
+    if (!replacement.empty()) {
+        editor->suspendInput();
+        screens.push(std::make_unique<EditorLoadScreen>(replacement), [this](GAGGUI::Screen& loading, int result) {
+            if (result == 1) {
+                editor = static_cast<EditorLoadScreen&>(loading).takeEditor();
+                started = false;
+                input.clear();
+            } else if (result == 2) {
+                auto& strings = *GAGCore::Toolkit::getStringTable();
+                screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_LOAD_MAP]"),
+                    std::vector<std::string>{strings.getString("[ok]")}));
+            }
+        });
+    } else if (editor->needsFertility()) {
+        editor->suspendInput();
         screens.push(std::make_unique<FertilityScreen>(editor->game.map),
             [this](GAGGUI::Screen&, int result) {
                 if (!editor->finishFertility(result == 1)) {
@@ -31,6 +47,7 @@ void MapEditorScreen::updateExecution(Uint32 tick)
                 }
             });
     } else if (editor->needsQuitDecision()) {
+        editor->suspendInput();
         auto& strings = *GAGCore::Toolkit::getStringTable();
         screens.push(std::make_unique<MessageScreen>(strings.getString("[save before quit?]"),
             std::vector<std::string>{strings.getString("[Yes]"), strings.getString("[No]"), strings.getString("[Cancel]")}),

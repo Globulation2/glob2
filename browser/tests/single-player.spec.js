@@ -260,3 +260,31 @@ test('custom and tutorial startup can be cancelled and retried', async ({page}) 
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   expect(errors).toEqual([]);
 });
+
+test('cancelling an editor replacement preserves edits and a completed load replaces the map', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await menu(page, 480, 360);
+  await screen(page, 'EditorMainMenu');
+  await menu(page, 320, 90);
+  await screen(page, 'NewMapScreen');
+  await menu(page, 160, 440);
+  await screen(page, 'MapEditorScreen');
+  for (const cancel of [true, false]) {
+    await page.locator('#canvas').press('Escape', {delay:80});
+    await click(page, 600, 325); // Load map from inside the editor.
+    await click(page, 500, 365);
+    await click(page, 520, 555);
+    await screen(page, 'EditorLoadScreen');
+    if (cancel) await page.locator('#canvas').press('Escape', {delay:80});
+    await screen(page, 'MapEditorScreen');
+    await page.locator('#canvas').press('Escape', {delay:80});
+    await click(page, 600, 525);
+    if (cancel) {
+      await screen(page, 'MessageScreen'); // The original unsaved map is retained.
+      await page.locator('#canvas').press('Escape', {delay:80});
+      await screen(page, 'MapEditorScreen');
+    } else await screen(page, 'EditorMainMenu'); // Replacement is unmodified.
+  }
+  expect(errors).toEqual([]);
+});

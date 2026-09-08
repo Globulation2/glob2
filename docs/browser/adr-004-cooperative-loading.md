@@ -33,8 +33,8 @@ Current checkpoints cover game stages, teams and players, chunks of 512 terrain
 cells, and individual gradient builds. Legacy fertility loading uses the bounded
 fertility job. Remaining work includes subdividing large team/player parsing,
 individual gradient algorithms, stream decompression, scripts, and allocation
-work; a checkpoint count is not evidence of a maximum frame time. In-editor and in-session reload callers still drain synchronously and need
-owned loading flows; the startup migration is described below.
+work; a checkpoint count is not evidence of a maximum frame time. In-session game reload callers still drain synchronously and need owned loading
+flows; startup and editor replacement are described below.
 Map generation remains synchronous. Editor sprites remain owned by the toolkit
 cache so destroying a staging editor cannot invalidate another editor's sprite.
 
@@ -64,3 +64,22 @@ Synchronous adapters remain for command-line, native network, and in-session
 reload callers. Replay indexing, AI initialization, individual parser stages,
 serialization, and initial music loading are not yet fully subdivided. Passing
 startup cancellation tests does not certify a maximum loading frame duration.
+
+## Replacing a map inside the editor
+
+The editor's load selector now emits a replacement request. `MapEditorScreen`
+keeps the current editor alive while an `EditorLoadScreen` builds a separate one.
+Only successful completion swaps ownership. Cancellation and failure retain the
+old map and its unsaved-edit state; failures display an owned error screen.
+The existing loader's RNG rollback applies to this transaction too.
+
+Opening a child clears held keys, modifiers, active drags, and edge-scroll input
+without changing window focus or the camera. This prevents controls released in
+a child screen from becoming stuck when its parent resumes. Button events still
+supply their own hit-test coordinates.
+
+Native tests compare the retained map checksum/RNG after cancellation and a
+missing-file failure, then use input to verify the unsaved-edit prompt remains.
+Browser tests cancel a replacement, resume the original map, then successfully
+replace it and verify that it is unmodified. In-session game replacement is still
+separate work because engine replay/session globals require different ownership.

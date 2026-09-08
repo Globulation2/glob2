@@ -37,7 +37,9 @@ infrastructure from the supported-release acceptance criteria.
   gradient boundaries yield; individual expensive operations and other loading
   callers still need migration and latency validation. Single-player startup
   (custom/save/replay/campaign) now owns the engine in a cancellable loading
-  screen, including replay cleanup and error transitions.
+  screen, including replay cleanup and error transitions. In-editor replacement
+  retains the current map until a new one loads successfully; cancellation and
+  failure preserve its unsaved edits.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are
@@ -64,14 +66,16 @@ On macOS arm64, September 2026:
   allocation cleanup, RNG restoration, and matching loaded-game checksums.
   Scheduled game initialization also matches the 50-tick session checksum;
   cancelled game/replay starts and missing replay failures release global state.
+  Failed and cancelled editor replacements preserve map checksums, RNG, and the
+  unsaved-edit prompt. Child transitions clear held input without changing focus.
   The coroutine lifecycle tests also pass with AddressSanitizer.
-- Thirty-three browser checks cover startup, settings/credits/shutdown,
+- Thirty-six browser checks cover startup, settings/credits/shutdown,
   editor/campaign-entry navigation and map quit decisions, campaign selector
   cancellation/reopen,
   custom options/AI descriptions and return-to-setup,
   tutorial launch, custom-game pause, save/reload byte
   equality, editor save cancellation and map reload persistence, load continuation,
-  editor load cancellation/restart, game-start cancellation/retry, and
+  editor load cancellation/restart and staged replacement, game-start cancellation/retry, and
   audio-context activation are exercised
   in Chromium, Firefox, and WebKit using Playwright 1.63.0.
 - Alternating native/browser builds preserve compilation output contents

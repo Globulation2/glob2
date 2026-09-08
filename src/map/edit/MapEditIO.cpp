@@ -92,14 +92,14 @@ void MapEdit::beginEditing()
 
 bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 {
-    if (!editing || quitDecision || fertilityRequested) return editing;
+    if (!editing || quitDecision || fertilityRequested || !pendingLoadFilename.empty()) return editing;
     for (auto event : events) {
         GAGCore::GraphicContext::translateMouseEvent(&event);
         processEvent(event);
-        if (doFullQuit || doQuit || fertilityRequested || (doQuitAfterLoadSave && !showingSave)) break;
+        if (doFullQuit || doQuit || fertilityRequested || !pendingLoadFilename.empty() || (doQuitAfterLoadSave && !showingSave)) break;
     }
     if (doFullQuit) { editingResult = -1; editing = false; return false; }
-    if (fertilityRequested) return true;
+    if (fertilityRequested || !pendingLoadFilename.empty()) return true;
 	// While processing events the user could've tried to load a map that failed.
 	// Then we can't go through drawing everything because that would segfault.
 	if(doQuitAfterLoadSave && !showingSave)

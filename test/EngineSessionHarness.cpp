@@ -6,6 +6,7 @@
 #include "FertilityScreen.h"
 #include "EditorLoadScreen.h"
 #include "GameLoadScreen.h"
+#include "MapEditorScreen.h"
 #include "Utilities.h"
 #include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
@@ -105,6 +106,30 @@ int main(int argc, char** argv)
         }
         require(loadingFrames > 20 && frames == loadingFrames + 51 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
                 "Loading must yield before transferring the engine to the 50-tick session");
+    }
+    for (bool cancel : {false, true}) {
+        auto editor = std::make_unique<MapEdit>();
+        require(editor->load("maps/balanced.map"), "Replacement fixture load failed");
+        editor->mapHasBeenModified();
+        MapEdit* original = editor.get();
+        const auto checksum = original->game.checkSum();
+        const auto rng = getSyncRandState();
+        GAGGUI::ScreenStack screens(*globalContainer->gfx);
+        screens.push(std::make_unique<MapEditorScreen>(screens, std::move(editor)));
+        screens.frame(0, {});
+        original->requestLoad(cancel ? "maps/balanced.map" : "maps/missing-replacement-fixture.map");
+        screens.frame(33, {}); screens.frame(66, {});
+        SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+        screens.frame(99, {escape}); screens.frame(132, {});
+        require(screens.running() && original->game.checkSum() == checksum && getSyncRandState() == rng,
+                "Failed or cancelled replacement must preserve the existing map and RNG");
+        screens.frame(165, {escape});
+        SDL_Event down{}; down.type = SDL_MOUSEBUTTONDOWN; down.button.button = SDL_BUTTON_LEFT;
+        down.button.x = 400; down.button.y = 375;
+        SDL_Event up = down; up.type = SDL_MOUSEBUTTONUP;
+        screens.frame(198, {down, up}); screens.frame(231, {});
+        require(original->needsQuitDecision(), "Replacement failure/cancellation must preserve unsaved edits");
+        screens.stop(); screens.frame(264, {});
     }
     {
         MapEdit editor;

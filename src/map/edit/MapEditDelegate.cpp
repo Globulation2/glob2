@@ -63,7 +63,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 		{
 			case LoadSaveScreen::OK:
 			{
-				load(loadSaveScreen->getFileName());
+				requestLoad(loadSaveScreen->getFileName());
 				performAction("close load screen");
 			}
 			break;

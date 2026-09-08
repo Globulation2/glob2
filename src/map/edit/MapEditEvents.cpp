@@ -12,10 +12,7 @@ void MapEdit::processEvent(SDL_Event& event)
 {
     inputState.observe(event);
     if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-        xSpeed = ySpeed = 0;
-        isDraggingMinimap = isScrollDragging = false;
-        isDraggingZone = isDraggingTerrain = isDraggingDelete = false;
-        isDraggingArea = isDraggingNoResourceGrowthArea = false;
+        suspendInput();
     }
     if (!inputState.hasFocus() && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP ||
         event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP ||
@@ -291,3 +288,16 @@ void MapEdit::handleKeyPressed(SDL_Keysym key, bool pressed)
 }
 
 
+
+void MapEdit::suspendInput()
+{
+    inputState.clearHeld();
+    xSpeed = ySpeed = 0;
+    isDraggingMinimap = isScrollDragging = false;
+    isDraggingZone = isDraggingTerrain = isDraggingDelete = false;
+    isDraggingArea = isDraggingNoResourceGrowthArea = false;
+    // The parent will not receive pointer motion while its child is active.
+    // Neutralize edge scrolling until a new motion event arrives.
+    mouseX = globalContainer->gfx->getW() / 2;
+    mouseY = globalContainer->gfx->getH() / 2;
+}
