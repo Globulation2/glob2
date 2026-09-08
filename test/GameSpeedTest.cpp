@@ -161,6 +161,11 @@ int main(int argc, char** argv) {
                 gui.step();
                 SDL_Delay(pass==0?40:1);
             }
+            // Sample both cadences at the end of the measurement window.
+            // Otherwise the 40 ms pass stops with a camera sample from before
+            // its final sleep, while the 1 ms pass samples almost at the end.
+            SDL_PushEvent(&mouse);
+            gui.step();
             distance[pass]=(before-gui.viewportX)&gui.game.map.getMaskW();
         }
         std::cerr<<"Camera distances: "<<distance[0]<<"/"<<distance[1]<<std::endl;
