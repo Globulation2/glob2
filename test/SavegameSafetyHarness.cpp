@@ -120,6 +120,16 @@ int main(int argc, char **argv)
 	globals.load();
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+	for (bool file : {false, true})
+	{
+		const std::string payload("before\0after", 12);
+		const std::string bytes = std::string("\0\0\0\14", 4) + payload
+			+ std::string("\0\0\0\12", 4) + "next field";
+		auto restored = input(bytes, file);
+		assert(restored->readText("binary string") == payload);
+		assert(restored->readText("following string") == "next field");
+	}
+	std::cout << "PASS embedded zero bytes preserved in binary strings" << std::endl;
 	{
 		GameGUI gui;
 		auto map = Engine::loadMapHeader("maps/balanced.map");
