@@ -2,7 +2,7 @@
 
 This experiment upgrades selected map artwork while retaining the original 32-unit grid, sprite geometry, building footprints, simulation and orders. OpenGL draws the extra texture pixels directly into the framebuffer at 50%–300% zoom. Gameplay, replays and the editor use the same presentation camera; sidebar controls, menus and the minimap keep their normal size relative to map zoom.
 
-Enable **High-resolution artwork** in General Settings and load a session. It defaults off. Alt + wheel zooms about the pointer; the bottom-left − / 100% / + controls use the map center. Software rendering retains original artwork and 100% scale.
+**High-resolution artwork** defaults on for OpenGL sessions. To use classic artwork, turn it off in General Settings and load a new session. An explicitly saved preference is respected. Alt + wheel zooms about the pointer; the bottom-left − / 100% / + controls use the map center. Software rendering retains original artwork and 100% scale.
 
 ## Before and after
 
@@ -51,3 +51,7 @@ See [runtime instructions and measured results](../../experiments/ai-upscale/HIG
 On the development Mac, the dense four-team fixture uses about 171 MB GPU memory with HD artwork, versus 42 MB with originals. At 50% zoom, measured frame times were about 16.5/11.3 ms HD/original; at 300%, about 2.1/2.0 ms. HD adds one draw call rather than per-tile calls. The deliberately maximal all-frames/all-16-hues stress test reaches 614 MB CPU and 1.19 GB GPU allocation; cache size stabilizes and releases on session close. These are local measurements against the updated renderer with original art, not a historical renderer benchmark or a cross-platform performance guarantee.
 
 **Unit upscaling can be done alongside [PR #201, increasing core unit animation poses from 8 to 32](https://github.com/Globulation2/glob2/pull/201).** Its added poses should be finished as coherent animation sequences, with consistent silhouettes, team layers, anchoring and frame coverage. This PR already scales unit rendering with the map, but deliberately retains original unit textures; it does not generate the expanded unit atlas.
+
+## Reviewer decision: keep classic artwork selectable?
+
+HD artwork is enabled by default in this PR, with a user-facing switch back to classic artwork. Should the classic option remain available long-term, or should HD become the only selectable OpenGL artwork? The current implementation keeps the switch pending that decision. Original assets remain necessary for software rendering and missing/invalid-pack fallback regardless of the user-facing choice.

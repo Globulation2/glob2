@@ -11,7 +11,7 @@ scons release=1 -j8 build/src/glob2
 build/src/glob2 -g
 ```
 
-In General Settings, enable **High-resolution artwork**, then load a game, replay, or editor map. The setting defaults off and is applied at session load. Original artwork remains installed. OpenGL map zoom works independently of this setting.
+**High-resolution artwork** defaults on and is applied at game/replay/editor session load. Turn it off in General Settings to return to classic artwork on the next load. Explicitly saved preferences are respected. Original artwork remains installed. OpenGL map zoom works independently of this setting.
 
 - Alt + wheel: zoom about the pointer, 50%–300%, including fractional wheel events.
 - Bottom-left − / 100% / +: zoom about the map center. Every session starts at 100%.
@@ -77,7 +77,7 @@ Measurements are from the development Mac, with other processes active; they are
 
 - HiDPI starter gameplay: approximately 41 MB GPU allocation with original artwork and 161 MB with HD artwork. At 50%, HD adds one draw call for the terrain atlas, rather than one call per tile.
 - All 89 frames in all 16 hues: approximately 614 MB CPU and 1.19 GB GPU allocation, 880 colored frames. Repeated drawing does not grow the cache; session close releases HD resources. This deliberately maximal case is much larger than normal session use and matters on low-memory hardware.
-- Dense four-team map with 64 buildings and 192 units: 50% original/HD approximately 11.3/16.5 ms, 300% approximately 2.0/2.1 ms. HD used about 171 MB GPU and 90 MB CPU, with 10–11 lazily created colored frames. The 50% cost increase warrants checking slower hardware before enabling by default.
+- Dense four-team map with 64 buildings and 192 units: 50% original/HD approximately 11.3/16.5 ms, 300% approximately 2.0/2.1 ms. HD used about 171 MB GPU and 90 MB CPU, with 10–11 lazily created colored frames. The 50% cost increase warrants checking slower hardware on slower devices.
 - Synthetic HD dense scene: about 6.8 ms at 50% (932 calls), 2.3 ms at 300% (34 calls), in the latest run. See integration.log for real map benchmarks, including the dense four-team fixture.
 
-Captures cover all selected assets, all swarm hues, enlarged damaged/construction states, gameplay/replay/editor, HiDPI/fullscreen, small maps, and terrain adjacency. Retain opt-in status while collecting hands-on play feedback and results on other GPU/OS combinations. The minimap viewport indicator remains quantized to tiles. Whole-map clipping is applied during the transformed pass; UI clipping is restored afterward.
+Captures cover all selected assets, all swarm hues, enlarged damaged/construction states, gameplay/replay/editor, HiDPI/fullscreen, small maps, and terrain adjacency. Collect hands-on play feedback and results on other GPU/OS combinations. The PR asks reviewers whether to retain the user-facing classic-artwork switch; it remains available for now. The minimap viewport indicator remains quantized to tiles. Whole-map clipping is applied during the transformed pass; UI clipping is restored afterward.

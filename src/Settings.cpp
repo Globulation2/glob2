@@ -42,7 +42,7 @@ Settings::Settings()
 	version = 0;
 	
 	scrollWheelEnabled=true;
-	highResolutionArtwork=false;
+	highResolutionArtwork=true;
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
 	
