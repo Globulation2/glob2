@@ -81,14 +81,14 @@ class GatewayTests(unittest.TestCase):
         cls.backend.server_close()
         cls.thread.join()
 
-    def connect(self, path='/yog', origin='http://127.0.0.1:8765', expected=101):
+    def connect(self, path='/yog', origin='http://127.0.0.1:8765', expected=101, extra=b''):
         sock = socket.create_connection(('127.0.0.1', self.port), timeout=3)
         self.addCleanup(sock.close)
         key = base64.b64encode(os.urandom(16)).decode()
         request = f'GET {path} HTTP/1.1\r\nHost: localhost\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: {key}\r\n'
         if origin is not None:
             request += f'Origin: {origin}\r\n'
-        sock.sendall((request + '\r\n').encode())
+        sock.sendall((request + '\r\n').encode() + extra)
         response = b''
         while not response.endswith(b'\r\n\r\n'):
             response += receive(sock, 1)
@@ -134,6 +134,9 @@ class GatewayTests(unittest.TestCase):
         sock = self.connect()
         send_frame(sock, b'text', opcode=1)
         self.assertEqual(sock.recv(1), b'')
+
+    def test_http_input_cannot_be_forwarded_as_websocket_payload(self):
+        self.connect(extra=b'not a websocket frame', expected=400)
 
     def test_oversized_message(self):
         sock = self.connect()

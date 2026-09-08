@@ -133,6 +133,12 @@ public:
         http::async_read(ws.next_layer(), input, parser, [self=shared_from_this()](Error ec, size_t) {
             if (ec) { self->stop(); return; }
             const auto& request = self->parser.get();
+            // A client must wait for the upgrade response before sending frames.
+            // Never mix unread HTTP bytes into the decoded WebSocket payload buffer.
+            if (self->input.size()) {
+                ++self->metrics->rejected;
+                self->reply(http::status::bad_request,"Pipelined input rejected\n"); return;
+            }
             if (request.method() != http::verb::get) {
                 self->reply(http::status::method_not_allowed,"GET required\n"); return;
             }
