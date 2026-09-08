@@ -180,6 +180,17 @@ that is materially slower than prior local runs. Do not dismiss it or claim
 performance readiness: repeat controlled profiling before merge to distinguish
 machine conditions from renderer cost. No renderer or runtime asset changes
 were made during this resumed inventory batch.
-Cursor render audit remains pending: no Blender executable was found in the
-installed apps or searched project caches. Do not claim cursor dependencies
-or render compatibility are verified. No new PR imagery replies were present.
+Cursor render audit remains pending, but the renderer has now been located:
+Blender 2.34 Linux i386 static lives under
+`/tmp/globule-blender/blender-2.34-linux-glibc2.2.5-i386-static/blender`.
+The running Docker container `glob2-sprite-render` contains `/opt/blender/blender`
+and the legacy libraries; invoke with
+`LD_LIBRARY_PATH=/opt/legacy/usr/lib qemu-i386 /opt/blender/blender`.
+Reproduction/dependency details are in the unit PR worktree:
+`/Users/bradley/glob2-unit-animation-32/tools/unit-animation/README.md`.
+That work used 2.34 deliberately: 2.79 changes projection and surface rendering.
+A 2.79 Mac copy also exists under `/tmp/globule-blender/` but is not the preferred
+renderer. The earlier app/cache search missed this /tmp + Docker setup.
+Do not claim cursor dependencies or render compatibility are verified yet.
+Do not disturb running unit jobs; use separate staging paths and scene copies.
+No new PR imagery replies were present.
