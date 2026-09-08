@@ -154,3 +154,25 @@ test('editor setup and campaign entry dialogs return to their retained parents',
   await screen(page, 'MainMenuScreen');
   expect(errors).toEqual([]);
 });
+
+test('map editor frames resume after cancelling quit and can discard a new map', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await menu(page, 480, 360);
+  await screen(page, 'EditorMainMenu');
+  await menu(page, 320, 90);
+  await screen(page, 'NewMapScreen');
+  await menu(page, 160, 440);
+  await screen(page, 'MapEditorScreen');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await click(page, 600, 525);
+  await screen(page, 'MessageScreen');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await screen(page, 'MapEditorScreen');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await click(page, 600, 525);
+  await screen(page, 'MessageScreen');
+  await menu(page, 320, 360);
+  await screen(page, 'EditorMainMenu');
+  expect(errors).toEqual([]);
+});

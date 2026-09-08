@@ -2,6 +2,8 @@
 
 CLIENT_SOURCES = (
     'Application.cpp',
+    'MapEditorScreen.cpp',
+    'MessageScreen.cpp',
     'ai/castor/Control.cpp',
     'ai/castor/GetOrder.cpp',
     'ai/castor/Lifecycle.cpp',

@@ -10,18 +10,29 @@
 
 void MapEdit::processEvent(SDL_Event& event)
 {
+    inputState.observe(event);
+    if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+        xSpeed = ySpeed = 0;
+        isDraggingMinimap = isScrollDragging = false;
+        isDraggingZone = isDraggingTerrain = isDraggingDelete = false;
+        isDraggingArea = isDraggingNoResourceGrowthArea = false;
+    }
+    if (!inputState.hasFocus() && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP ||
+        event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP ||
+        event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEWHEEL)) return;
+
 	if (event.type==SDL_QUIT)
 	{
 		doFullQuit=true;
 	}
 #	ifdef USE_OSX
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
 	{
 		doFullQuit=true;
 	}
 #	endif
 #	ifdef USE_WIN32
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
 	{
 		doFullQuit=true;
 	}

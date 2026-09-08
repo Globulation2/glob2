@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Engine.h"
 #include "GameSessionScreen.h"
+#include "MapEdit.h"
 #include "GlobalContainer.h"
 #include <SDL_net.h>
 #include <iostream>
@@ -72,6 +73,33 @@ int main(int argc, char** argv)
         }
         require(frames == 51 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
                 "The stack must drive one session step per frame and defer its completion");
+    }
+    {
+        MapEdit editor;
+        require(editor.load("maps/balanced.map"), "Editor fixture load failed");
+        editor.beginEditing();
+        editor.mapHasBeenModified();
+        SDL_Event open{};
+        open.type = SDL_KEYDOWN;
+        open.key.keysym.sym = SDLK_ESCAPE;
+        open.key.keysym.scancode = SDL_SCANCODE_ESCAPE;
+        SDL_Event down{};
+        down.type = SDL_MOUSEBUTTONDOWN;
+        down.button.button = SDL_BUTTON_LEFT;
+        down.button.x = 400; down.button.y = 375;
+        SDL_Event up = down; up.type = SDL_MOUSEBUTTONUP;
+        require(editor.advanceEditing({open}, 1000), "Editor must accept menu input incrementally");
+        require(editor.advanceEditing({down, up}, 1033) && editor.needsQuitDecision(),
+                "Modified editor must request an explicit quit decision");
+        editor.drawEditing();
+        editor.resolveQuitDecision(2);
+        require(editor.advanceEditing({}, 1066) && !editor.needsQuitDecision(), "Cancel must keep editing");
+        editor.advanceEditing({open}, 1099);
+        editor.advanceEditing({down, up}, 1132);
+        require(editor.needsQuitDecision(), "Quit can be requested again");
+        editor.resolveQuitDecision(1);
+        require(!editor.advanceEditing({}, 1165) && editor.editingReturnCode() == 0,
+                "Discard must finish without advancing or drawing another editor frame");
     }
     delete globalContainer;
     SDLNet_Quit();

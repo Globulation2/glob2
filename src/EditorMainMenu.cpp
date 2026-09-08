@@ -10,6 +10,7 @@
 #include <GUIButton.h>
 #include <GUIText.h>
 #include "MapEdit.h"
+#include "MapEditorScreen.h"
 #include "MapGenerator.h"
 #include "NewMapScreen.h"
 #include <StringTable.h>
@@ -34,16 +35,16 @@ void EditorMainMenu::newMap()
 {
     screens.push(std::make_unique<NewMapScreen>(), [this](Screen& screen, int result) {
         if (result != NewMapScreen::OK) return;
-        MapEdit editor;
+        auto editor = std::make_unique<MapEdit>();
         MapGenerator generator;
         setRandomSyncRandSeed();
-        if (!generator.generateMap(editor.game, static_cast<NewMapScreen&>(screen).descriptor)) {
+        if (!generator.generateMap(editor->game, static_cast<NewMapScreen&>(screen).descriptor)) {
             newMap();
             return;
         }
-        editor.mapHasBeenModified();
-        editor.regenerateGameHeader();
-        if (editor.run() == Screen::QUIT_APPLICATION) screens.stop();
+        editor->mapHasBeenModified();
+        editor->regenerateGameHeader();
+        screens.push(std::make_unique<MapEditorScreen>(screens, std::move(editor)));
     });
 }
 
@@ -56,10 +57,10 @@ void EditorMainMenu::onAction(Widget*, Action action, int choice, int)
         screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false, "games", "game", false),
             [this](Screen& screen, int result) {
                 if (result != ChooseMapScreen::OK) return;
-                MapEdit editor;
+                auto editor = std::make_unique<MapEdit>();
                 const auto filename = static_cast<ChooseMapScreen&>(screen).getMapHeader().getFileName();
-                if (!editor.load(filename)) return;
-                if (editor.run() == Screen::QUIT_APPLICATION) screens.stop();
+                if (!editor->load(filename)) return;
+                screens.push(std::make_unique<MapEditorScreen>(screens, std::move(editor)));
             });
         break;
     case NEWCAMPAIGN: screens.push(std::make_unique<CampaignEditor>("", screens)); break;

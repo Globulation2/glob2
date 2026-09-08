@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include <InputState.h>
 
 #include "Brush.h"
 #include "GAGSys.h"
@@ -376,6 +377,9 @@ private:
 ///This is the map editor class in all its glory.
 class MapEdit
 {
+    bool editing = false, quitDecision = false;
+    int editingResult = 0;
+    GAGCore::InputState inputState;
 public:
 	MapEdit();
 	~MapEdit();
@@ -384,11 +388,16 @@ public:
 	///Saves the game to a particular file name
 	bool save(const std::string filename, const std::string name);
 
-	///This function sets the map a particular size and uniform terrain type, then goes into the main loop
-	int run(int sizeX, int sizeY, TerrainType terrainType);
-	///This is the main loop function. It "ticks" every 33 miliseconds, handling events and drawing as it goes.
-	int run(void);
-	
+	///Updates the editor after map generation
+	void update();
+
+    void beginEditing();
+    bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick);
+    void drawEditing();
+    bool needsQuitDecision() const { return quitDecision; }
+    void resolveQuitDecision(int choice);
+    int editingReturnCode() const { return editingResult; }
+
 	void mapHasBeenModified(void) { hasMapBeenModified=true; }
 	
 	///This function regenerates a game header for use in campaigns

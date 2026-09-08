@@ -110,167 +110,129 @@ bool MapEdit::save(const std::string filename, const std::string name)
 
 
 
-int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
-{
-	game.map.setSize(sizeX, sizeY, terrainType);
-	game.map.setGame(&game);
-	return run();
-}
-
-
-
-int MapEdit::run(void)
+void MapEdit::beginEditing()
 {
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
 	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 	drawMiniMap();
 	drawMenu();
-	
-	
+
+
 	if(game.gameHeader.getNumberOfPlayers() == 0)
 		regenerateGameHeader();
 
-	bool isRunning=true;
-	int returnCode=0;
-	Uint64 startTick, endTick, deltaTick;
-	while (isRunning)
-	{
-		startTick=SDL_GetTicks64();
-	
-		// we get all pending events but for mousemotion we only keep the last one
-		SDL_Event event;
-		while (SDL_PollEvent(&event))
-		{
-			GAGCore::GraphicContext::translateMouseEvent(&event);
- 			processEvent(event);
-		}
-
-		// While processing events the user could've tried to load a map that failed.
-		// Then we can't go through drawing everything because that would segfault.
-		if(doQuitAfterLoadSave && !showingSave)
-		{
-			isRunning = false;
-			break;
-		}
-		
-		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
-		{
-			handleMapScroll();
-			viewportX+=xSpeed;
-			viewportY+=ySpeed;
-			viewportX&=game.map.getMaskW();
-			viewportY&=game.map.getMaskH();
-		}
-
-		//special overrides here to allow for scrolling and painting terrain at the same time
-		if(xSpeed!=0 || ySpeed!=0)
-		{
-			if(isDraggingZone)
-				performAction("zone drag motion");
-			else if(isDraggingTerrain)
-				performAction("terrain drag motion");
-			else if(isDraggingDelete)
-				performAction("delete drag motion");
-			else if(isDraggingArea)
-				performAction("area drag motion");
-			else if(isDraggingNoResourceGrowthArea)
-				performAction("no ressource growth area drag motion");
-		}
-		
-		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH());
-		
-		drawMenu();
-		drawMiniMap();
-		wasMinimapRendered=false;
-		drawWidgets();
-		if(showingMenuScreen)
-		{
-			globalContainer->gfx->setClipRect();
-			menuScreen->dispatchTimer(startTick);
-			menuScreen->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
-		}
-		if(showingLoad || showingSave)
-		{
-			globalContainer->gfx->setClipRect();
-			loadSaveScreen->dispatchTimer(startTick);
-			loadSaveScreen->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
-		}
-		if(showingScriptEditor)
-		{
-			globalContainer->gfx->setClipRect();
-			scriptEditor->dispatchTimer(startTick);
-			scriptEditor->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
-		}
-		if(showingTeamsEditor)
-		{
-			globalContainer->gfx->setClipRect();
-			teamsEditor->dispatchTimer(startTick);
-			teamsEditor->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
-		}
-		if(isShowingAreaName)
-		{
-			globalContainer->gfx->setClipRect();
-			areaName->dispatchTimer(startTick);
-			areaName->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
-		}
-		
-		
-		globalContainer->gfx->nextFrame();
-		
-
-		endTick=SDL_GetTicks64();
-		deltaTick=std::max<Sint64>(0, static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick));
-		GAGCore::ApplicationHost::wait(deltaTick < 33 ? 33-deltaTick : 0);
-		if (returnCode==-1)
-		{
-			isRunning=false;
-		}
-		if(doQuitAfterLoadSave && !showingSave)
-		{
-			isRunning=false;
-		}
-		if(doQuit)
-		{
-			if(hasMapBeenModified)
-			{
-				int ret = GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_THREEBUTTONS, Toolkit::getStringTable()->getString("[save before quit?]"), Toolkit::getStringTable()->getString("[Yes]"), Toolkit::getStringTable()->getString("[No]"), Toolkit::getStringTable()->getString("[Cancel]"));
-				if(ret == 0)
-				{
-					doQuit=false;
-					doQuitAfterLoadSave=true;
-					performAction("open save screen");
-				}
-				else if(ret == 1)
-				{
-					isRunning=false;
-				}
-				else
-				{
-					doQuit=false;
-				}
-			}
-			else
-			{
-				isRunning=false;
-			}
-		}
-		if(doFullQuit)
-		{
-			returnCode = -1;
-		}
-		if(!isRunning)
-		{
-				SDL_Event event;
-			while (SDL_PollEvent(&event));
-		}
-	}
-
-	return returnCode;
+    editing = true;
+    editingResult = 0;
 }
 
+bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
+{
+    if (!editing || quitDecision) return editing;
+    for (auto event : events) {
+        GAGCore::GraphicContext::translateMouseEvent(&event);
+        processEvent(event);
+        if (doFullQuit || doQuit || (doQuitAfterLoadSave && !showingSave)) break;
+    }
+    if (doFullQuit) { editingResult = -1; editing = false; return false; }
+	// While processing events the user could've tried to load a map that failed.
+	// Then we can't go through drawing everything because that would segfault.
+	if(doQuitAfterLoadSave && !showingSave)
+	{
+            editing = false;
+            return false;
+	}
+
+	if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
+	{
+		handleMapScroll();
+		viewportX+=xSpeed;
+		viewportY+=ySpeed;
+		viewportX&=game.map.getMaskW();
+		viewportY&=game.map.getMaskH();
+	}
+
+	//special overrides here to allow for scrolling and painting terrain at the same time
+	if(xSpeed!=0 || ySpeed!=0)
+	{
+		if(isDraggingZone)
+			performAction("zone drag motion");
+		else if(isDraggingTerrain)
+			performAction("terrain drag motion");
+		else if(isDraggingDelete)
+			performAction("delete drag motion");
+		else if(isDraggingArea)
+			performAction("area drag motion");
+		else if(isDraggingNoResourceGrowthArea)
+			performAction("no ressource growth area drag motion");
+	}
+
+    if (showingMenuScreen) menuScreen->dispatchTimer(tick);
+    if (showingLoad || showingSave) loadSaveScreen->dispatchTimer(tick);
+    if (showingScriptEditor) scriptEditor->dispatchTimer(tick);
+    if (showingTeamsEditor) teamsEditor->dispatchTimer(tick);
+    if (isShowingAreaName) areaName->dispatchTimer(tick);
+    if (doFullQuit) { editingResult = -1; editing = false; }
+    else if (doQuit) {
+        doQuit = false;
+        if (hasMapBeenModified) quitDecision = true;
+        else editing = false;
+    }
+    return editing;
+}
+
+void MapEdit::drawEditing()
+{
+    if (!editing) return;
+	drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH());
+
+	drawMenu();
+	drawMiniMap();
+	wasMinimapRendered=false;
+	drawWidgets();
+	if(showingMenuScreen)
+	{
+		globalContainer->gfx->setClipRect();
+		menuScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
+	}
+	if(showingLoad || showingSave)
+	{
+		globalContainer->gfx->setClipRect();
+		loadSaveScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
+	}
+	if(showingScriptEditor)
+	{
+		globalContainer->gfx->setClipRect();
+		scriptEditor->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
+	}
+	if(showingTeamsEditor)
+	{
+		globalContainer->gfx->setClipRect();
+		teamsEditor->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
+	}
+	if(isShowingAreaName)
+	{
+		globalContainer->gfx->setClipRect();
+		areaName->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
+	}
+
+
+	globalContainer->gfx->nextFrame();
+
+
+}
+
+void MapEdit::resolveQuitDecision(int choice)
+{
+    if (!quitDecision) return;
+    quitDecision = false;
+    if (choice == 0) {
+        doQuitAfterLoadSave = true;
+        performAction("open save screen");
+    } else if (choice == 1) editing = false;
+}

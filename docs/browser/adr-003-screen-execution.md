@@ -151,7 +151,23 @@ callback, so captured resources outlive any screen that borrows them. The native
 harness checks normal completion, active cancellation, and cancellation before
 admission.
 
-The map editor's own run loop, generation/loading, and save-error message boxes
-remain synchronous. Failed map loading now returns without entering the editor
+At this stage, the map editor's own run loop, generation/loading, and save-error
+message boxes remained synchronous; the next section records the loop migration. Failed map loading now returns without entering the editor
 with invalid map data. The browser regression adds and reopens a campaign entry,
 then cancels back through the owning parents.
+
+## Incremental map editor
+
+`MapEditorScreen` owns a loaded/generated `MapEdit`. The editor accepts supplied
+input, advances editor state/timers, and draws through separate methods; its
+old polling/sleeping run methods are removed. The common host applies its 33 ms
+cadence. Held keys come from processed events, and focus loss clears scrolling
+and active drags.
+
+Quitting a modified map queues `MessageScreen`, an in-game decision with an
+explicit caption-index result. Cancel resumes the retained editor, discard
+finishes it, and save opens its existing save interface. No editor call stack is
+suspended for this decision. The native fixture exercises cancel/discard; browser
+checks generate a uniform map and navigate both decisions through actual input.
+Generation, parsing, save I/O, fertility calculation, and remaining nested error
+or script dialogs still require resumable/asynchronous migration.
