@@ -57,3 +57,19 @@ Chromium regression without Playwright focus overrides; on Linux run it under
 `xvfb-run -a`. Ordinary headless tests do not prove document visibility behavior.
 Firefox/WebKit real-window qualification and coordinated multiplayer suspension
 remain required.
+
+## Button coordinates in the pinned SDL browser backend
+
+SDL 2.32.8's Emscripten mouse-button callback uses SDL's last motion position,
+rather than the button event's coordinates. A missing/coalesced motion can
+therefore make a valid click hit the old position. The browser shell synchronizes
+absolute motion from each button event before SDL's button listener runs. It
+handles releases outside the canvas for a canvas-started press and skips relative
+pointer-lock input. This SDK adaptation stays in the browser platform layer.
+
+`browser/tests/input.spec.js` suppresses trusted motion delivery while keeping
+real button input, then selects a map, starts a match, resizes and quits it.
+The regression fails before the adapter in Chromium and passes afterward in
+Chromium, Firefox and WebKit. The previously intermittent real-window failure
+still needs a repeat run after this fix; do not equate the injected regression
+with complete real-window qualification.

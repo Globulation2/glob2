@@ -21,6 +21,9 @@ late joining, and backend-restart match recovery are excluded.
 
 ## Release gates
 
+These checkboxes track full release qualification, not whether code exists.
+For implemented features and scoped test results, see [current status](status.md).
+
 - [ ] Build coexistence across native client, lobby, router, gateway, and web
 - [ ] Explicit application/screen scheduling without Asyncify
 - [ ] WebGL2 rendering with context restoration and software fallback

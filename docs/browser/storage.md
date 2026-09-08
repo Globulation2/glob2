@@ -131,7 +131,35 @@ completion/cancellation actions.
 
 Each local file replacement is atomic; the three local files are not a single
 filesystem transaction. The durable IndexedDB flush uses the existing storage
-transaction. Other callers that save preferences at shutdown still do not wait
-for browser durability. These limitations remain tracked rather than presenting
-this as complete persistence qualification. Diagnostics expose only graphics
+transaction. Orderly application Quit now performs a checked final preferences write and
+waits for browser durability after the gameplay screens have been destroyed.
+This also flushes their successful destructor writes. Abrupt tab/process closure
+cannot perform that handshake. Diagnostics expose only graphics
 flags from preferences, never saved account fields.
+
+## Orderly Quit and campaign authoring
+
+Quit keeps a shared application screen alive while the final preferences write
+and storage flush complete. Repeated close requests and Escape cannot skip that
+pending operation. A failed write offers Retry save and Quit without saving;
+only that explicit latter choice leaves after failure. The final screen says
+Game closed and does not leave a frozen Saving message. This is shared with the
+native application host; browser persistence requires no gameplay JavaScript.
+
+Closing/reloading the browser tab itself is abrupt and cannot be made to wait
+for asynchronous storage. Use the game's completed save operations before doing
+so. The shutdown flush cannot repair an earlier failed local campaign/replay
+write; it confirms the files successfully present in the local filesystem.
+
+The campaign authoring editor now also waits after its existing atomic campaign
+write. Pending saves hide editing/navigation controls. On failure the editor
+remains open with an error and OK to retry. Cancel returns to the editor menu;
+as with settings, it does not roll back a local replacement already made, and a
+later successful flush may persist it. Campaign-definition backup/import/export
+is still separate release work from the implemented campaign-progress backups.
+
+`shutdown-storage.spec.js` covers delayed completion, resize, Escape, quota
+failure, retry and explicit exit after failure. `campaign-editor-storage.spec.js`
+covers delayed completion, quota failure, retry and durable bytes after reload.
+The native session harness checks orderly application Quit through the same
+application API, including repeated close events.

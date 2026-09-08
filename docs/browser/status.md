@@ -3,6 +3,29 @@
 Browser support remains experimental. This ledger distinguishes delivered
 infrastructure from the supported-release acceptance criteria.
 
+## Current single-player milestone
+
+The browser game is playable end to end. Campaigns/tutorials, custom matches,
+AI, the map editor, full-page resize, WebGL2 and software rendering, context
+restoration, saves/replays/maps import/export, campaign-progress backups and
+settings persistence are implemented. The sections below retain dated evidence;
+an older unchecked release gate does not mean its implementation is missing.
+
+This closeout addresses final persistence on application Quit and campaign
+creation/editing. Both use the shared host persistence interface and keep the
+interface alive until completion. Failed writes remain visible and retryable.
+
+The next single-player release decisions are qualification: actual Safari/Edge,
+controlled GPU performance baselines, and remaining focus/input coverage.
+Asyncify removal still requires migrating legacy dialogs (particularly YOG/LAN
+and rare error paths). It does not require rebuilding the ordinary single-player
+screen flow. Abrupt tab/process termination cannot guarantee a final write.
+
+The original full-platform release also requires substantial multiplayer work:
+guests/invitations, account migration, richer compatibility negotiation and
+120-second checkpoint recovery. Basic cross-play already works. Those features
+and production deployment qualification must not be described as delivered.
+
 ## Delivered in this branch
 
 - In-game save/map/replay import and export use a browser file-selection
@@ -218,33 +241,32 @@ cross-platform, or supported-browser certification matrix.
 
 ## Still required for the supported release
 
-1. Complete dependency archive verification and reproducible release gates
-   on all supported native toolchains.
-2. Complete editor/network/modal transitions, resumable/cancellable loading,
-   and removal of Asyncify from the scheduled browser host.
-3. WebGL2 performance and remaining context-loss qualification, resize in remaining legacy flows,
-   complete gesture/layout qualification, focus/visibility behavior, and browser interaction handling.
-4. Transactional persistence with durable completion and failure states,
-   quota handling, and validated import/export for all local data types.
-5. TLS-only internet connection policy, native trust-store qualification, capability/simulation/data-hash negotiation,
-   bounded protocol parsing, and deterministic browser/native cross-play.
-6. YOG guests/accounts, invitations, room controls, password migration, and
-   coordinated 120-second checkpoint-based recovery with fault injection.
-7. Versioned self-hosting distribution, TLS deployment tests, backup/migration,
-   draining/rollback, operations documentation, and performance/soak gates.
-
-Short cross-play tests do not establish sustained determinism across native
-platforms. Reconnect, complete renderer qualification, persistence coverage for
-all data types, and stable browser support remain outstanding.
+1. Qualify reproducible builds and same-checkout coexistence across supported
+   native toolchains; the isolated build architecture and CI jobs already exist.
+2. Finish legacy modal migration and remove Asyncify. Ordinary single-player
+   uses the shared screen stack and cooperative loading/generation jobs already.
+3. Qualify GPU performance, actual Safari/Edge versions, and remaining focus,
+   audio/clipboard and input cases. WebGL2, live resize and context restoration
+   are implemented and have cross-engine regression coverage.
+4. Complete the persistence audit for legacy writers and destructive operations,
+   malformed-file fuzzing, and backup/export coverage for custom campaign
+   definitions. Game/editor saves, imports, progress, settings, campaign authoring
+   and orderly Quit now wait for durable storage. Failed destructor-only local
+   writes and abrupt browser termination remain limitations.
+5. Add capability/simulation/data-hash negotiation, complete per-room protocol
+   authorization and secure endpoint policy, and qualify sustained all-AI/native
+   platform cross-play. Exact protocol admission and short cross-play are tested.
+6. Implement YOG guests, invitations, account credential migration and coordinated
+   120-second checkpoint recovery with fault injection.
+7. Qualify versioned self-hosting releases, backup/migration, draining/rollback,
+   operational metrics, performance and soak gates. Development Compose exists.
 
 ## Immediate delivery focus
 
-The current milestone adds WebGL2 drawing, live resize, software fallback and
-context restoration together. Next, finish the release gaps recorded in ADR 006
-and the remaining multiplayer/self-hosting work. Single-player is already
-playable; further refactoring must resolve a concrete release blocker. The
-upgraded handshake, secure endpoint policy, identities/rooms and coordinated
-recovery remain required, as do complete persistence and Asyncify removal.
+Close concrete single-player defects and collect release evidence on the
+existing implementation. Keep the PR reviewable and distinguish implemented
+features from qualification gaps. The full multiplayer/recovery release remains
+a separate substantial delivery stage within the original plan.
 
 ## Gameplay evidence
 
@@ -397,3 +419,48 @@ and retains a screenshot, state and delivered-input diagnostics on failure.
 The subsequent passes do not prove every headed input/focus race is resolved;
 that qualification remains open. No production input behavior or deadlines were
 changed to obtain these results.
+
+
+## Single-player persistence closeout
+
+Orderly application Quit and campaign authoring now wait for durable storage.
+Quit waits after gameplay-screen teardown, offers Retry or explicit exit after
+failure, and presents a completed message before releasing graphics. Campaign
+creation/editing retains its screen on failure and no longer opens a blocking
+message-box loop. Both use the shared host interface on desktop and browser.
+
+Focused validation on this implementation:
+
+- Release Wasm and native desktop builds pass from the same checkout; the native
+  session harness also passes, including repeated application-close events.
+- All 27 settings/shutdown/campaign-authoring storage cases pass with WebGL2
+  selected across Chromium, Firefox and WebKit (2.4 minutes). These include real
+  IndexedDB quota/transaction failures, stalled writes and reload verification.
+- Five explicit software-renderer shutdown/campaign-authoring cases pass in
+  Chromium (23 seconds).
+- All 69 existing gameplay/viewport/rendering cases pass across the three
+  engines with WebGL2 selected (5.5 minutes), including explicit fallback checks.
+- Eleven browser unit tests and nine build-system/platform-boundary tests pass.
+- Reviewed failure-screen captures: [Quit](screenshots/shutdown-save-failure.png)
+  and [campaign authoring](screenshots/campaign-editor-save-failure.png).
+
+The SDK, protocol and simulation rules are unchanged by this closeout. Earlier
+multiplayer evidence remains scoped to its recorded revisions; multiplayer was
+not rerun for these UI/storage changes. No stable-release claim is added.
+
+
+### Click-coordinate follow-up and handoff boundary
+
+A real-window WebGL check reproduced the earlier unselected-map failure before
+reaching its background-tab assertions. DOM diagnostics confirmed focused,
+visible button events at the intended coordinates. Inspection of pinned SDL
+2.32.8 found that its button callback takes coordinates from the last motion.
+An injected missing-motion regression reproduced the failure in Chromium.
+
+The browser shell now synchronizes absolute position before SDL handles each
+button event. The new regression passes in all three engines (3 cases, 51.6s),
+including starting a match and clicking after resize. The release Wasm rebuild
+passes. The 69/27/5 results above preceded this final adapter; broad regressions,
+software input testing and real-window visibility must be rerun on the adapter
+before treating the intermittent headed issue as resolved. Work stopped here
+at the user's request to transfer subscriptions. See [handoff](HANDOFF.md).
