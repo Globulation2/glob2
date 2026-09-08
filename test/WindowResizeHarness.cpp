@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GraphicContextPrivate.h"
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
@@ -31,7 +32,14 @@ public:
 	int frames = 0;
 	Context(bool gpu) : GraphicContext(640, 480, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
 	void nextFrame() override { ++frames; GraphicContext::nextFrame(); }
-	void resize(int w, int h) { SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents(); }
+	void resize(int w, int h)
+	{
+		SDL_SetWindowSize(window, w, h); SDL_Delay(60); SDL_PumpEvents();
+		int actualW, actualH;
+		SDL_GetWindowSize(window, &actualW, &actualH);
+		require(actualW == std::max(w, minW) && actualH == std::max(h, minH),
+			"Window manager constrained test dimensions; use a desktop at least 1100x850");
+	}
 	void applyResize() { updateWindowSize(); }
 	void expose(bool otherWindow = false)
 	{
@@ -58,7 +66,10 @@ public:
 		else
 		{
 			auto *surface = SDL_GetWindowSurface(window);
-			Uint32 p; memcpy(&p, static_cast<char*>(surface->pixels)+y*surface->pitch+x*4, 4);
+			require(surface && x >= 0 && x < surface->w && y >= 0 && y < surface->h, "Readback outside software window surface");
+			Uint32 p = 0;
+			const int bytes = surface->format->BytesPerPixel;
+			memcpy(&p, static_cast<char*>(surface->pixels)+y*surface->pitch+x*bytes, bytes);
 			SDL_GetRGBA(p, surface->format, &c.r, &c.g, &c.b, &c.a);
 		}
 		return c;
