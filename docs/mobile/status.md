@@ -28,6 +28,26 @@ cases on the current browser base. One Firefox aborted-save retry timed out whil
 Android compilation ran concurrently; its isolated rerun passed with unchanged
 assertions. Older pre-sync test counts and AI failures do not qualify this base.
 
+## Android emulator screenshots
+
+Captured on the API 35 ARM64 emulator on 2026-09-08, using runtime commit
+`7333e4e8b`. These are existing captures from the touch/viewport smoke test.
+Dark world regions are unexplored terrain; legacy panels and tutorial text still
+need phone reflow. These screenshots establish functional rendering, not device
+performance or iOS support.
+
+Portrait placement preview with the explicit Confirm/Cancel strip:
+
+![Android portrait placement preview](screenshots/android-preview.png)
+
+Portrait after confirming construction through the shared game order:
+
+![Android portrait confirmed construction](screenshots/android-confirmed.png)
+
+Landscape after rotation cleared the placement gesture (confirmation disabled):
+
+![Android landscape after rotation](screenshots/android-landscape.png)
+
 ## Reproduction artifacts
 
 The [developer guide](development.md) contains build and regression commands.
