@@ -143,6 +143,8 @@ void Game::syncStep(Sint32 localTeam)
 
 		Uint64 startTick=SDL_GetTicks64();
 
+		map.stepGradients();
+
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
 

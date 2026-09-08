@@ -111,6 +111,12 @@ void Map::updateForbiddenGradient()
 void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
+	seedGuardAreasGradient(teamNumber, swimClass, gradient);
+	propagateGradient(gradient, swimClass);
+}
+
+void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)
+{
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
@@ -134,7 +140,6 @@ void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
 
-	propagateGradient(gradient, swimClass);
 }
 
 void Map::updateGuardAreasGradient(int teamNumber)
@@ -154,6 +159,12 @@ void Map::updateGuardAreasGradient()
 void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 {
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
+	seedClearAreasGradient(teamNumber, swimClass, gradient);
+	propagateGradient(gradient, swimClass);
+}
+
+void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient)
+{
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
@@ -177,7 +188,6 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
 
-	propagateGradient(gradient, swimClass);
 }
 
 void Map::updateClearAreasGradient(int teamNumber)

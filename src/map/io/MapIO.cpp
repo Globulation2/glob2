@@ -268,6 +268,9 @@ void Map::addTeam(void)
 
 void Map::removeTeam(void)
 {
+#ifndef YOG_SERVER_ONLY
+	finishPendingGradients();
+#endif
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	assert(numberOfTeam<Team::MAX_COUNT);
 	

@@ -5,6 +5,11 @@
 #pragma once
 
 #include <list>
+#include <thread>
+#include <deque>
+#include <memory>
+#include <mutex>
+#include <condition_variable>
 #include <optional>
 #include <assert.h>
 
@@ -130,6 +135,11 @@ public:
 #ifndef YOG_SERVER_ONLY
 	//! Do a step associated with map (grow resources and process bullets)
 	void syncStep(Uint32 stepCounter);
+	//! Refresh the resource and area fields round robin, one per tick: publishes the
+	//! field due this tick, then seeds the next one from the current map and hands it to
+	//! the worker thread, which propagates it while the units step. A field is seeded and
+	//! published at fixed ticks, so its content never depends on thread timing.
+	void stepGradients();
 #endif  // !YOG_SERVER_ONLY
 	//! Switch the Fog of War bufferResourceType
 	void switchFogOfWar(void);
@@ -627,9 +637,15 @@ public:
 	void updateGlobalGradient(Uint8 *gradient);
 	//! Dijkstra on a freshly seeded field (see MapInternal.h). Seed costs must be
 	//! between 0 and the largest terrain step (currently 42); do not pass a completed
-	//! field. Uses shared scratch storage: calls across all Maps must be serial and
-	//! non-reentrant. swimClass must be in [0, SWIM_CLASS_COUNT).
+	//! field. swimClass must be in [0, SWIM_CLASS_COUNT). This overload is for the main
+	//! thread and uses its scratch; the worker thread passes its own scratch below, so
+	//! two fields can propagate concurrently.
 	void propagateGradient(Uint16 *gradient, int swimClass);
+	struct GradientScratch;
+	struct GradientScratchDeleter { void operator()(GradientScratch *scratch) const; };
+	typedef std::unique_ptr<GradientScratch, GradientScratchDeleter> GradientScratchPtr;
+	void propagateGradient(Uint16 *gradient, int swimClass, GradientScratch &scratch);
+	static GradientScratchPtr newGradientScratch();
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict) const;
@@ -729,6 +745,35 @@ protected:
 	// Used to attract idle workers into clearing
 	// areas that aren't clear
 	Uint16 *clearAreasGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
+
+	// Round-robin fields in flight. A job is seeded at tick T into its own buffer,
+	// propagated by the worker thread, and published (buffer swapped into the slot)
+	// at tick T + GRADIENT_PIPELINE_TICKS. The slot keeps its previous buffer
+	// readable until then; afterwards that buffer becomes a spare for a later job.
+	struct GradientJob
+	{
+		Uint16 **slot = NULL;
+		Uint16 *buffer = NULL;
+		int swimClass = 0;
+		Uint32 publishTick = 0;
+		bool done = false;
+	};
+	std::deque<GradientJob> gradientJobs;
+	std::vector<Uint16 *> spareGradients;
+	std::thread gradientWorker;
+	std::mutex gradientMutex;
+	std::condition_variable gradientWake;
+	bool gradientWorkerQuit = false;
+	//! Pick and seed the next field of the round robin into job.buffer; false if none is in use.
+	bool pickRoundRobinField(GradientJob &job);
+	void startGradientWorker();
+	//! Publish every job due at or before tick now, waiting for the worker if needed.
+	void publishGradients(Uint32 now);
+	//! Publish every job in flight and stop the worker (before freeing gradients).
+	void finishPendingGradients();
+	void seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient);
+	void seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient);
+	void seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient);
 	
 public:
 	// Used to guide explorers
