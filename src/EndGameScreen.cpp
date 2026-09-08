@@ -74,7 +74,7 @@ void EndGameStat::paint(void)
 		for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
 			maxValue = std::max(maxValue, game->teams[team]->stats.endOfGameStats[pos].value[type]);
 
-	///You can't draw anything if the game ended so quickly that there wheren't two recorded values to draw a line between
+	///You can't draw anything if the game ended so quickly that there weren't two recorded values to draw a line between
 	if(game->teams[0]->stats.endOfGameStats.size() >= 2)
 	{
 		//Calculate the number of digits used by the max value when rounded up to the nearest 10

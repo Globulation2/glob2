@@ -14,7 +14,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsTryToBuildingSiteRoom.clear();
 
-	// loading baseteam
+	// loading base team
 	if(!BaseTeam::load(stream, versionMinor))
 		return false;
 
@@ -154,7 +154,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 
 void Team::save(GAGCore::OutputStream *stream)
 {
-	// saving baseteam
+	// saving base team
 	BaseTeam::save(stream);
 
 	stream->writeEnterSection("Team");

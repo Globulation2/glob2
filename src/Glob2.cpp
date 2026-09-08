@@ -630,7 +630,7 @@ int Glob2::run(int argc, char *argv[])
 		}
 	}
 
-	// This is for the textshot code
+	// This is for the text shot code
 	GAGCore::DrawableSurface::printFinishingText();
 	delete globalContainer;
 
