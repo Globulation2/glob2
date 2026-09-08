@@ -24,7 +24,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
-#include "config.h"
+#include <glob2/BuildConfig.h>
 #include "Order.h"
 
 

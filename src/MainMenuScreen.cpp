@@ -11,7 +11,7 @@
 #include <cmath>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+	#include <glob2/BuildConfig.h>
 #endif
 #ifndef PACKAGE_VERSION
 #define PACKAGE_VERSION "Globulation 2"

@@ -10,7 +10,7 @@
 #include <SDL.h>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include <glob2/BuildConfig.h>
 #endif
 
 #ifdef HAVE_OPENGL

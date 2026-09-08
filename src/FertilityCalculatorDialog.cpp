@@ -46,6 +46,15 @@ void FertilityCalculatorDialog::onTimer(Uint32)
 
 void FertilityCalculatorDialog::runModal()
 {
+#ifdef __EMSCRIPTEN__
+	FertilityCalculator::compute(map, [this](float p) {
+		progressFraction.store(p, std::memory_order_relaxed);
+		refreshProgressDisplay();
+		dispatchPaint();
+		emscripten_sleep(1);
+	});
+	computeDone.store(true, std::memory_order_release);
+#else
 	computeThread = std::thread([this]() {
 		FertilityCalculator::compute(map, [this](float p) {
 			progressFraction.store(p, std::memory_order_relaxed);
@@ -57,6 +66,7 @@ void FertilityCalculatorDialog::runModal()
 
 	if (computeThread.joinable())
 		computeThread.join();
+#endif
 }
 
 void FertilityCalculatorDialog::refreshProgressDisplay()

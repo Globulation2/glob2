@@ -179,6 +179,9 @@ namespace GAGCore
 	void GraphicContext::applyWindowMinimumSize(void)
 	{
 		if (!window) return;
+		#ifdef GLOB2_WEBGL2
+		return;
+		#endif
 		SDL_SetWindowMinimumSize(window,
 			std::max(1, static_cast<int>(minW * uiScale + 0.5f)),
 			std::max(1, static_cast<int>(minH * uiScale + 0.5f)));
@@ -441,7 +444,7 @@ namespace GAGCore
 			{
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
-				gluOrtho2D(0, getW(), getH(), 0);
+				glOrtho(0, getW(), getH(), 0, -1, 1);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
 			}
@@ -505,8 +508,10 @@ namespace GAGCore
 				_gc->windowToLogical(event->button.x, event->button.y);
 				break;
 			case SDL_WINDOWEVENT:
+				#ifndef GLOB2_WEBGL2
 				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 					_gc->updateWindowSize();
+				#endif
 				break;
 			default:
 				break;
@@ -733,6 +738,9 @@ namespace GAGCore
 
 	void GraphicContext::nextFrame(void)
 	{
+#ifdef __EMSCRIPTEN__
+		emscripten_sleep(1);
+#endif
 		DrawableSurface::nextFrame();
 		if (sdlsurface)
 		{
