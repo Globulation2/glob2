@@ -8,6 +8,7 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include "PerlinNoise.h"
+#include "Utilities.h"
 
 /// these faders are factors to be applicable to heightfields. they map (0,0)-(w,h) to [0..1]
 
@@ -45,7 +46,7 @@ void HeightMap::init(unsigned int width, unsigned int height)
 	_w=width; _h=height;
 	_map=new float[_w*_h];
 	_stamp=NULL;
-	_pn.reseed();
+	_pn.reseed(syncRand());
 }
 
 void HeightMap::makeStamp(unsigned int radius)
@@ -128,14 +129,13 @@ inline void HeightMap::addNoise(float weight, float smoothingFactor)
 void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 {
 	assert (count);
-	PerlinNoise pn;
-	pn.reseed();
+	_pn.reseed(syncRand());
 	int * centerX = new int[count];
 	int * centerY = new int[count];
 	float mindist=sqrt(_w*_h/count)/2.0;
 	assert(mindist>0);
 	makeStamp((unsigned int)(mindist*2));
-	centerX[0]=rand()%_w;centerY[0]=rand()%_h;
+	centerX[0]=syncRand()%_w;centerY[0]=syncRand()%_h;
 	/// find spots with distance>min. distance
 	for (unsigned int i=1; i<count; i++)
 	{
@@ -144,8 +144,8 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 		int newPosX, newPosY;
 		do
 		{
-			newPosX=rand()%_w;
-			newPosY=rand()%_h;
+			newPosX=syncRand()%_w;
+			newPosY=syncRand()%_h;
 			tries++;
 			foundSpot=true;
 			for (unsigned int j=0; j<i; j++) {
@@ -182,26 +182,26 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
 	operator=(1.0);
 	
 	/// find start for a random walk
-	float startingPointX=rand()%_w;
-	float startingPointY=rand()%_h;
+	float startingPointX=syncRand()%_w;
+	float startingPointY=syncRand()%_h;
 	
 	/// the target=start+(w,h) is set now. tmprand(0,1,2)==position(+h,+w,+w+h)
 	float targetPointX;
 	float targetPointY;
 	if(_w==_h)
 	{
-		unsigned int tmprand=rand()%3;
+		unsigned int tmprand=syncRand()%3;
 		targetPointX=startingPointX+(tmprand>0?_w:0);
 		targetPointY=startingPointY+_h-(tmprand%2)*_h;
 	}
 	else if (_w>_h)
 	{
 		targetPointX=startingPointX+_w;
-		targetPointY=startingPointY+(rand()%(_w/_h))*_h;
+		targetPointY=startingPointY+(syncRand()%(_w/_h))*_h;
 	}
 	else
 	{
-		targetPointX=startingPointX+(rand()%(_h/_w))*_w;
+		targetPointX=startingPointX+(syncRand()%(_h/_w))*_w;
 		targetPointY=startingPointY+_h;
 	}
 	float targetDirection=asin((targetPointY-startingPointY)/sqrt(pow(targetPointX-startingPointX,2)+pow(targetPointY-startingPointY,2)));
@@ -255,7 +255,7 @@ void HeightMap::makeCraters(unsigned int craterCount, unsigned int craterRadius,
 	makeStamp(craterRadius);
 	operator=(1.0);
 	for(unsigned int t=0; t<craterCount; t++)
-		lower(rand()%_w,rand()%_h);
+		lower(syncRand()%_w,syncRand()%_h);
 	addNoise(.8,smoothingFactor);
 	normalize();
 }

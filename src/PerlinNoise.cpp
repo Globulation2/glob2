@@ -39,18 +39,10 @@ PerlinNoise::PerlinNoise() {
 PerlinNoise::~PerlinNoise() {
 }
 
-// initialize static variables
-
-unsigned PerlinNoise::initialized = 0;
-unsigned PerlinNoise::permutationTable[ NOISE_WRAP_INDEX*2 + 2 ] = { 0 };
-float PerlinNoise::gradientTable1d[ NOISE_WRAP_INDEX*2 + 2 ] = { 0 };
-float PerlinNoise::gradientTable2d[ NOISE_WRAP_INDEX*2 + 2 ][ 2 ] = { { 0 } };
-float PerlinNoise::gradientTable3d[ NOISE_WRAP_INDEX*2 + 2 ][ 3 ] = { { 0 } };
-
 // return a random float in [-1,1]
 
 inline float PerlinNoise::randNoiseFloat() {
-  return ( float ) ( ( rand() % ( NOISE_WRAP_INDEX + NOISE_WRAP_INDEX ) ) -
+  return ( float ) ( ( int(random() % ( NOISE_WRAP_INDEX + NOISE_WRAP_INDEX )) ) -
                      NOISE_WRAP_INDEX ) / NOISE_WRAP_INDEX;
 };
 
@@ -58,6 +50,7 @@ inline float PerlinNoise::randNoiseFloat() {
 
 void PerlinNoise::normalize2d( float vector[ 2 ] ) {
   float length = sqrt( ( vector[ 0 ] * vector[ 0 ] ) + ( vector[ 1 ] * vector[ 1 ] ) );
+  if (length == 0.f) { vector[0] = 1.f; return; }
   vector[ 0 ] /= length;
   vector[ 1 ] /= length;
 }
@@ -68,6 +61,7 @@ void PerlinNoise::normalize3d( float vector[ 3 ] ) {
   float length = sqrt( ( vector[ 0 ] * vector[ 0 ] ) +
                        ( vector[ 1 ] * vector[ 1 ] ) +
                        ( vector[ 2 ] * vector[ 2 ] ) );
+  if (length == 0.f) { vector[0] = 1.f; return; }
   vector[ 0 ] /= length;
   vector[ 1 ] /= length;
   vector[ 2 ] /= length;
@@ -223,14 +217,14 @@ float PerlinNoise::Noise( float x, float y, float z ) {
 // reinitialize with new, random values.
 
 void PerlinNoise::reseed() {
-  srand( ( unsigned int ) ( time( NULL ) + rand() ) );
+  random.seed(random());
   generateLookupTables();
 }
 
 // reinitialize using a user-specified random seed.
 
 void PerlinNoise::reseed( unsigned int rSeed ) {
-  srand( rSeed );
+  random.seed(rSeed);
   generateLookupTables();
 }
 
@@ -256,7 +250,7 @@ void PerlinNoise::generateLookupTables() {
 
   // Shuffle permutation table up to NOISE_WRAP_INDEX
   for ( i = 0; i < NOISE_WRAP_INDEX; i++ ) {
-    j = rand() & NOISE_MOD_MASK;
+    j = random() & NOISE_MOD_MASK;
     temp = permutationTable[ i ];
     permutationTable[ i ] = permutationTable[ j ];
     permutationTable[ j ] = temp;

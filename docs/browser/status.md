@@ -40,6 +40,10 @@ infrastructure from the supported-release acceptance criteria.
   screen, including replay cleanup and error transitions. In-editor replacement
   retains the current map until a new one loads successfully; cancellation and
   failure preserve its unsaved edits.
+- Explicit generation seeds and per-instance noise state, removing generation's
+  libc RNG/time reseeding and shared-noise interference. Four native generation
+  fixtures repeat after unrelated RNG/noise activity. Generation remains
+  synchronous and cross-platform generation parity is not yet certified.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are

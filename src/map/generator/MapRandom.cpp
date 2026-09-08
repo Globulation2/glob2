@@ -5,11 +5,12 @@
 #include <time.h>
 #include <stdlib.h>
 
-//also the Perlin Noise stuff uses random that is not based on syncRand
+// Generation randomness is drawn from the explicitly seeded synchronized stream.
 #include "Game.h"
 #include "HeightMapGenerator.h"
 #include "MapGenerationDescriptor.h"
 #include "Map.h"
+#include "Utilities.h"
 
 /// This random map generator generates a heightfield and then choses levels at which to draw the line between water, sand, gras and sand again (desert)
 bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
@@ -249,11 +250,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	//TODO: count of groves(=descriptor.fruitRatio) does not scale with mapsize.
 	//so it has to be adjusted higher on bigger maps now.
 
-	// in mapgeneration syncRand is not needed. In earlier versions we assumed
-	// to profit from sharing only the generation seeds for common random maps.
-	// this assumption was dropped in favour of easier code.
+	// Use the generation RNG stream; do not reseed libc global state here.
 
-	srand((unsigned)time(NULL));
 	//fruit-placement:
 	if (descriptor.fruitRatio > 0)
 	{
@@ -261,7 +259,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		{
 			//choose fruit
 			int fruit;
-			switch (rand()%3)
+			switch (syncRand()%3)
 			{
 				case 0: fruit = CHERRY; break;
 				case 1: fruit = ORANGE; break;
@@ -272,11 +270,11 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			int x, y;
 			do
 			{
-				x=(rand()%wHeightMap);
-				y=(rand()%hHeightMap);
+				x=(syncRand()%wHeightMap);
+				y=(syncRand()%hHeightMap);
 			} while (getUMTerrain(x, y)!=GRASS || isResource(x,y));
 			//choose size of grove (tree count)
-			int grovesize=(rand()%10)+1;
+			int grovesize=(syncRand()%10)+1;
 			for (int i=0; i<grovesize; i++)
 			{
 				for (int yRepeat=0; yRepeat<hRepeat; yRepeat++)
@@ -285,8 +283,8 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				//find a valid neighbor of actual coordinate
 				for (int iTry=0; iTry<100; iTry++)
 				{
-					int xNew=x+rand()%3-1;
-					int yNew=y+rand()%3-1;
+					int xNew=x+syncRand()%3-1;
+					int yNew=y+syncRand()%3-1;
 					if(getUMTerrain(xNew, yNew)==GRASS && !isResource(xNew,yNew))
 					{
 						x=xNew;

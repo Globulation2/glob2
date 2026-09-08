@@ -5,7 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-//also the Perlin Noise stuff uses random that is not based on syncRand
+// Generation randomness is drawn from the explicitly seeded synchronized stream.
 #include "Game.h"
 #include "MapGenerationDescriptor.h"
 #include "MapGenerator.h"
@@ -13,13 +13,18 @@
 #include "Unit.h"
 #include "Utilities.h"
 
-bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
+bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor& descriptor)
 {
+    return generateMap(game, descriptor, static_cast<Uint32>(time(nullptr)));
+}
+
+bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor& descriptor, Uint32 seed)
+{
+    setSyncRandSeed(seed);
 	if (verbose)
 		printf("Generating map, please wait ....\n");
 	game.map.setSize(descriptor.wDec, descriptor.hDec);
 	game.map.setGame(&game);
-	setRandomSyncRandSeed();
 	
 	switch (descriptor.method)
 	{

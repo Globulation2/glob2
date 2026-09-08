@@ -7,6 +7,10 @@
 #include "EditorLoadScreen.h"
 #include "GameLoadScreen.h"
 #include "MapEditorScreen.h"
+#include "MapGenerator.h"
+#include "HeightMapGenerator.h"
+#include "PerlinNoise.h"
+#include <cmath>
 #include "Utilities.h"
 #include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
@@ -19,6 +23,21 @@ void require(bool value, const char* message) { if (!value) throw std::runtime_e
 int main(int argc, char** argv)
 {
     require(argc == 2, "A disposable profile is required");
+    {
+        std::srand(17); const int expected = std::rand(); std::srand(17);
+        PerlinNoise first(123), second(987);
+        const float value = first.Noise(.125f, .75f);
+        second.reseed(456);
+        require(value == first.Noise(.125f, .75f), "Reseeding another noise instance changed existing noise");
+        first.reseed(123);
+        require(value == first.Noise(.125f, .75f), "Explicit noise seeds must repeat");
+        require(std::rand() == expected, "Noise must not mutate libc RNG state");
+        for (unsigned seed = 0; seed < 128; ++seed) {
+            first.reseed(seed);
+            require(std::isfinite(first.Noise(.25f, .5f, .75f)), "Seeded noise must remain finite");
+        }
+    }
+
     SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
     SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
     globalContainer = new GlobalContainer(argv[1]);
@@ -29,6 +48,26 @@ int main(int argc, char** argv)
     globalContainer->settings.gameSpeed = 0;
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
+    {
+        MapGenerator generator;
+        for (auto method : {MapGenerationDescriptor::eUNIFORM, MapGenerationDescriptor::eSWAMP,
+                            MapGenerationDescriptor::eISLANDS, MapGenerationDescriptor::eCONCRETEISLANDS}) {
+            Uint32 checksum = 0;
+            std::string rng;
+            for (int repeat = 0; repeat < 2; ++repeat) {
+                MapGenerationDescriptor descriptor;
+                descriptor.method = method;
+                descriptor.nbTeams = 2;
+                Game generated(nullptr);
+                require(generator.generateMap(generated, descriptor, 12345), "Seeded generation fixture failed");
+                if (!repeat) { checksum = generated.checkSum(); rng = getSyncRandState(); }
+                else require(checksum == generated.checkSum() && rng == getSyncRandState(),
+                             "Seeded generation must repeat despite unrelated noise and libc RNG draws");
+                PerlinNoise unrelated(999 + repeat); unrelated.Noise(.25f, .125f);
+                for (int i = 0; i < 100; ++i) std::rand();
+            }
+        }
+    }
     globalContainer->automaticEndingGame = true;
     globalContainer->automaticEndingSteps = 50;
     globalContainer->automaticGameGlobalEndConditions = true;

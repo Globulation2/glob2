@@ -15,6 +15,7 @@ class MapGenerator
 public:
 	///Generates a map from the given generation description
 	bool generateMap(Game& game, MapGenerationDescriptor& descriptor);
+    bool generateMap(Game& game, MapGenerationDescriptor& descriptor, Uint32 seed);
 
 	///This performs the concrete islands generator
 	bool computeConcreteIslands(Game& game, MapGenerationDescriptor& descriptor);
