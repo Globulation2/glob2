@@ -347,3 +347,53 @@ bar and tab visible, running the local WebGL2 build. Gameplay and editor capture
 above show the game surface.
 
 ![Glob2 in a full Firefox window](screenshots/firefox-window-menu.png)
+
+## Full WebGL single-player baseline
+
+At browser-defaults commit `6d1d8bbae`, all 114 selected single-player scenarios
+passed with `GLOB2_TEST_RENDERER=webgl2` across Chromium, Firefox and WebKit on
+macOS arm64 (19.3 minutes). This covers campaigns, editor, import/export,
+persistence failures, gameplay, rendering/context restoration and viewport
+behavior. The explicit software-fallback case remains software by design.
+Command: `GLOB2_TEST_URL=http://127.0.0.1:18770 GLOB2_TEST_RENDERER=webgl2 npx playwright test single-player viewport rendering storage import campaign-progress editor-storage file-selection`.
+
+This closes the previously incomplete full cross-engine single-player GPU test
+pass on this host. It does not establish controlled performance baselines,
+actual Safari/Edge coverage, the supported previous-major matrix, multiplayer
+recovery, or freedom from all audio races. Software remains the default.
+
+## Settings persistence and broader GPU gates
+
+Preferences and both keyboard-layout writers now return checked atomic-write
+results. Settings remains open until host persistence completes; failures offer
+Retry and Continue with no promise that Continue saved or discarded local files.
+The same screen state machine runs on desktop and in the browser. See the
+[preferences contract](storage.md#preferences-and-keyboard-bindings).
+
+At `46a4d56d0`, the new settings cases plus existing rendering/context-restoration cases pass
+all 24 scenarios under WebGL across Chromium, Firefox and WebKit. The new native
+checks verify preference/keyboard round trips, preservation of prior bytes on
+write failure, and that Settings closes only after persistence completion.
+The save-safety/session harnesses, desktop/Wasm builds, 11 browser unit tests and
+nine build-system tests pass. A real headed Chromium WebGL test also verifies
+background-tab suspension and return without advancing overdue ticks.
+
+CI now exercises WebGL gameplay, settings storage, rendering and viewport cases
+in addition to the default suite, and runs real background-tab checks with both
+renderer selections. These CI additions are locally checked coverage changes,
+not a claim that the hosted workflow has already completed.
+
+![Settings failure retains Retry and Continue](screenshots/settings-save-failure.png)
+
+The four settings cases also pass with Chromium's software renderer. Real headed
+visibility checks pass with both renderer selections; software passed once and
+then three consecutive repeats, and the final WebGL fixture passed once.
+
+An initial software visibility run completed its background checks but missed
+the Quit interaction. A diagnostic attempt incorrectly equated menu visibility
+with the explicit pause flag, and another run missed map selection. The final
+fixture waits for the presented Quit label, preserves all timing assertions,
+and retains a screenshot, state and delivered-input diagnostics on failure.
+The subsequent passes do not prove every headed input/focus race is resolved;
+that qualification remains open. No production input behavior or deadlines were
+changed to obtain these results.

@@ -3,16 +3,17 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const {spawn} = require('node:child_process');
+const {gameURL} = require('../tests/game-url');
 
 // Playwright's normal focus override keeps background documents visible.
 // Use a real browser window and the default context without that override.
 // Linux runners require a display (for example xvfb-run).
-test('background single-player suspends and returns without catching up', async ({baseURL}) => {
+test('background single-player suspends and returns without catching up', async ({baseURL}, info) => {
   const profile = await fs.mkdtemp(path.join(os.tmpdir(),'glob2-visibility-'));
   const child = spawn(chromium.executablePath(), ['--remote-debugging-port=0',
     '--user-data-dir='+profile, '--no-first-run', '--no-default-browser-check', 'about:blank'], {stdio:'ignore'});
   const exited = new Promise(resolve => child.once('exit',resolve));
-  let browser;
+  let browser, page;
   try {
     let port;
     await expect.poll(async () => {
@@ -20,7 +21,7 @@ test('background single-player suspends and returns without catching up', async 
       catch { return false; }
     }).toBe(true);
     browser = await chromium.connectOverCDP('http://127.0.0.1:'+port,{noDefaults:true});
-    const context=browser.contexts()[0], page=context.pages()[0];
+    const context=browser.contexts()[0]; page=context.pages()[0];
     await page.setViewportSize({width:1200,height:900});
     const snapshot=()=>page.evaluate(()=>glob2Diagnostics.snapshot());
     const screen=name=>expect.poll(async ()=>(await snapshot()).screen).toContain(name);
@@ -30,7 +31,15 @@ test('background single-player suspends and returns without catching up', async 
         y:(y+(s.height-480)/2)*box.height/s.height},delay:80});
     };
     await page.bringToFront();
-    await page.goto(baseURL); await screen('MainMenuScreen');
+    await page.goto(new URL(gameURL(), baseURL).href); await screen('MainMenuScreen');
+    await page.evaluate(()=>{
+      window.visibilityInputs=[];
+      for (const type of ['mousedown','mouseup','keydown','keyup'])
+        document.addEventListener(type,event=>visibilityInputs.push({type,x:event.clientX,y:event.clientY,key:event.key,
+          hidden:document.hidden,focus:document.hasFocus(),screen:glob2Diagnostics.snapshot().screen}),true);
+    });
+    if (process.env.GLOB2_TEST_RENDERER)
+      expect((await snapshot()).renderer).toBe(process.env.GLOB2_TEST_RENDERER);
     await click(480,200); await screen('CustomGameScreen');
     await click(100,70); await click(530,380);
     await expect.poll(async ()=>(await snapshot()).tick).toBeGreaterThan(25);
@@ -52,9 +61,20 @@ test('background single-player suspends and returns without catching up', async 
     // A 2s hidden interval must not become a burst of 50 overdue simulation ticks.
     expect((await snapshot()).tick-hidden.tick).toBeLessThan(15);
     await page.locator('#canvas').press('Escape',{delay:80});
+    // The menu does not set the explicit simulation-pause flag. Wait for the
+    // presented Quit label instead of treating frame count as menu readiness.
+    await expect.poll(()=>require('../tests/pixels').hasLightText(page,
+      {x:460,y:482,width:280,height:34})).toBe(true);
     const frames=(await snapshot()).frames;
     await expect.poll(async ()=>(await snapshot()).frames).toBeGreaterThan(frames+2);
     await click(320,290); await screen('EndGameScreen');
+  } catch (error) {
+    if (page && !page.isClosed()) {
+      await page.screenshot({path:info.outputPath('visibility-failure.png')}).catch(()=>{});
+      await info.attach('visibility-state', {body:JSON.stringify(await page.evaluate(()=>glob2Diagnostics.snapshot()).catch(()=>null)),contentType:'application/json'});
+      console.log('Visibility input diagnostics:',await page.evaluate(()=>({events:window.visibilityInputs,ratio:devicePixelRatio,inner:[innerWidth,innerHeight]})).catch(()=>null));
+    }
+    throw error;
   } finally {
     if(browser) await browser.close();
     if(child.exitCode===null) child.kill();
