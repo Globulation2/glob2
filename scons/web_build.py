@@ -51,7 +51,7 @@ def build_web(directory, identity, arguments):
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
-        '--shell-file', 'browser/shell.html'] + PORTS)
+        '--shell-file', 'browser/shell.html', '--pre-js', 'browser/storage.js'] + PORTS)
     for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
         env.Append(LINKFLAGS=['--preload-file', asset_directory + '@/' + asset_directory])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
@@ -69,7 +69,7 @@ def build_web(directory, identity, arguments):
     env.Requires(objects, ports)
     env.Depends(objects, str(config))
     program = env.Program(str(output / 'index.html'), objects)
-    env.Depends(program, ['browser/shell.html', 'browser/toolchain.json'])
+    env.Depends(program, ['browser/shell.html', 'browser/storage.js', 'browser/toolchain.json'])
     env.Depends(program, [str(p) for directory in ('data','maps','campaigns','scripts')
                          for p in Path(directory).rglob('*') if p.is_file()])
     env.SideEffect([str(output / ('index.'+ext)) for ext in ('js','wasm','data')], program)

@@ -33,10 +33,13 @@ var Module = {
   preRun: [function() {
     ENV.HOME = '/home/web_user';
     FS.mkdirTree('/home/web_user');
+    Module.storage = new Glob2Storage(callback => FS.syncfs(false, callback));
+    IDBFS.queuePersist = () => Module.storage.changed();
     Module.saveMount = FS.mount(IDBFS, {autoPersist:true}, '/home/web_user').mount;
     addRunDependency('browser-saves');
     FS.syncfs(true, err => {
       Module.storageRestore = err ? 'failed' : 'ready';
+      Module.storage.restored(err);
       if (err) Module.printErr('Save restore failed: ' + err);
       removeRunDependency('browser-saves');
     });
@@ -70,7 +73,8 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
       tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
       paused:Boolean(Module.glob2Paused), width:canvas.width, height:canvas.height,
       restore:Module.storageRestore || 'restoring',
-      persisting:Boolean(Module.saveMount?.idbPersistState),
+      persisting:Module.storage?.state === 'writing',
+      persistence:Module.storage?.state || 'restoring',
       audio:Module.SDL2?.audioContext?.state || 'inactive'});
   },
   saves() {

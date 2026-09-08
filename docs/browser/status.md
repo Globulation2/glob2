@@ -93,6 +93,13 @@ infrastructure from the supported-release acceptance criteria.
   regressions and all three browser save/reload scenarios pass. This protects
   filesystem replacement; it does not yet acknowledge durable IndexedDB writes.
 
+- Browser persistence uses a serialized coordinator instead of the SDK queue
+  that drops persistence errors. Generation-specific completion promises wait
+  for their write callback, failures remain observable, and failed restore
+  prevents later writes from replacing unrestored data. Four injected-adapter
+  tests and all three browser save/reload tests pass. Completion/failure UI,
+  real quota fault injection, and recovery/export are still required.
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),
