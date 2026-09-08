@@ -99,10 +99,10 @@ Usl::~Usl() {
 	collectGarbage();
 }
 
-void Usl::markGarbage() const
+void Usl::markGarbage()
 {
 	root->markForGC();
-//	for_each(threads.begin(), threads.end(), mem_fun_ref(&Thread::markForGC));
+	for (auto& thread : threads) thread.markForGC();
 }
 
 void Usl::collectGarbage()
@@ -112,6 +112,11 @@ void Usl::collectGarbage()
 
 	// sweep
 	heap.collectGarbage();
+	// These two roots are owned outside heap.values, so the heap sweep does not
+	// clear their marks. Without this, later collections skip their children and
+	// reclaim live bridge constants (including gui) and runtime definitions.
+	root->clearGCMark();
+	prototype->clearGCMark();
 }
 
 void Usl::includeScript(const std::string& name, std::istream& stream)

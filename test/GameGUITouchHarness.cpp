@@ -14,6 +14,8 @@
 #include "Unit.h"
 #include "ReplayWriter.h"
 #include "ReplayReader.h"
+#include "usl.h"
+#include "native.h"
 #include <SDL_net.h>
 #include <cstdio>
 #include <cstring>
@@ -26,6 +28,17 @@ class GameGUITouchHarness
 public:
     static void run()
     {
+        {
+            Usl interpreter;
+            auto* constant=new NativeValue<int>(&interpreter.heap,42);
+            interpreter.setConstant("retained",constant);
+            for(int cycle=0;cycle<100;++cycle) {
+                interpreter.run(1);
+                require(std::find(interpreter.heap.values.begin(),interpreter.heap.values.end(),constant)!=interpreter.heap.values.end(),
+                    "Repeated script collection retains bridge constants");
+                require(interpreter.getConstant("retained")==constant,"Script constant remains accessible");
+            }
+        }
         GameGUI gui;
         auto map=Engine::loadMapHeader("maps/balanced.map");
         GameHeader players; players.setNumberOfPlayers(1);

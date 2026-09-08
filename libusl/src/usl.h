@@ -14,7 +14,7 @@ struct Usl
 	Usl();
 	virtual ~Usl();
 	
-	void markGarbage() const;
+	void markGarbage();
 	void collectGarbage();
 	void includeScript(const std::string& name, std::istream& source);
 	void createThread(const std::string& name, std::istream& source);
