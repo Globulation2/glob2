@@ -343,6 +343,29 @@ int main(int argc, char** argv)
     {
         MapEdit editor;
         require(editor.load("maps/balanced.map"), "Editor fixture load failed");
+        // Opening a script file dialog must return to the host without polling
+        // input or suspending the C++ stack. Escape closes only that child.
+        for (int action : {ScriptEditorScreen::LOAD, ScriptEditorScreen::SAVE}) {
+            ScriptEditorScreen script(&editor.game);
+            script.onAction(nullptr, GAGGUI::BUTTON_RELEASED, action, 0);
+            script.dispatchTimer(0);
+            script.dispatchPaint();
+            script.drawFileDialog();
+            SDL_Event escape{};
+            escape.type = SDL_KEYDOWN;
+            escape.key.keysym.sym = SDLK_ESCAPE;
+            script.translateAndProcessEvent(&escape);
+            require(script.endValue < 0, "Cancelling script file dialog must retain its parent");
+            SDL_Event click{};
+            click.type = SDL_MOUSEBUTTONDOWN;
+            click.button.button = SDL_BUTTON_LEFT;
+            click.button.x = script.decX + 170;
+            click.button.y = script.decY + 380;
+            script.translateAndProcessEvent(&click);
+            click.type = SDL_MOUSEBUTTONUP;
+            script.translateAndProcessEvent(&click);
+            require(script.endValue == ScriptEditorScreen::CANCEL, "Script editor must remain usable after child cancellation");
+        }
         const auto originalRng = getSyncRandState();
         for (const char* stage : {"[Loading units]", "[Loading buildings]", "[Resolving team links]"}) {
             for (unsigned extraSteps : {1u, 3u}) {

@@ -172,6 +172,7 @@ void MapEdit::drawEditing()
 		globalContainer->gfx->setClipRect();
 		scriptEditor->dispatchPaint();
 		globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
+        scriptEditor->drawFileDialog();
 	}
 	if(showingTeamsEditor)
 	{

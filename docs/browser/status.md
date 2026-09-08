@@ -130,10 +130,10 @@ browser support is claimed by this implementation slice.
 ## Immediate delivery focus
 
 Complete the single-player milestone before further general-purpose refactoring.
-Confirmed runtime work includes the scenario editor's blocking script load/save
-dialog (`ScriptEditorScreen::loadSave`) and destructive in-session replacement
-(`GameSessionScreen` through `Engine::finishSession`). Migrate these using the
-existing screen and ownership mechanisms. Then exercise single-player flows in
+The scenario editor now owns a nonblocking script load/save dialog and routes
+input exclusively to it until completion. Remaining runtime work includes
+destructive in-session replacement
+(`GameSessionScreen` through `Engine::finishSession`). Migrate replacement using the existing screen and ownership mechanisms. Then exercise single-player flows in
 a build without Asyncify to identify remaining reachable blocking paths.
 Legacy synchronous adapters alone are not a reason for another abstraction.
 Rendering, lifecycle, and durable storage gates above remain required before
