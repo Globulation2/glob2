@@ -336,3 +336,7 @@ original dense map 300%: 7.22115 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU byt
 HD dense map 50%: 97.6923 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
 HD dense map 300%: 4.9351 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
 PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+Production folder separation: all 557 assembled runtime files byte-identical to previous pack.
+PASS missing paired layer, corrupt layer hash and original-derived layer placed in AI folder rejected.
+Normal assembler uses Python standard library only; no runtime images or engine code changed.

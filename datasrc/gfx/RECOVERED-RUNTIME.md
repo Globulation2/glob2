@@ -30,7 +30,7 @@ only the committed PNG files and `data/highres/v1/frames.txt`.
 ```sh
 python3 tools/artwork/import_more_originals.py .cache/original-art/glob2-highres-more.zip
 python3 tools/artwork/export_recovered.py
-python3 experiments/ai-upscale/export_runtime.py
+python3 experiments/ai-upscale/export_runtime.py --from-experiments
 python3 tools/artwork/validate_recovered.py
 python3 experiments/ai-upscale/validate_runtime.py
 python3 experiments/ai-upscale/pr_comparisons.py
@@ -96,7 +96,7 @@ To reproduce native exports, run from the repository root with GIMP 2.10:
 gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
   -b 'execfile("tools/artwork/export_trees_gimp.py")' -b 'pdb.gimp_quit(0)'
 python3 tools/artwork/export_trees.py
-python3 experiments/ai-upscale/export_runtime.py
+python3 experiments/ai-upscale/export_runtime.py --from-experiments
 python3 tools/artwork/validate_trees.py
 python3 experiments/ai-upscale/validate_runtime.py
 ```
@@ -129,7 +129,7 @@ Reproduce with GIMP 2.10 from the repository root, then the Python export:
 gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
   -b 'execfile("tools/artwork/export_wheat_gimp.py")' -b 'pdb.gimp_quit(0)'
 python3 tools/artwork/export_wheat.py
-python3 experiments/ai-upscale/export_runtime.py
+python3 experiments/ai-upscale/export_runtime.py --from-experiments
 python3 tools/artwork/validate_wheat.py
 python3 experiments/ai-upscale/validate_runtime.py
 ```
@@ -168,7 +168,7 @@ Reproduction (GIMP 2.10 followed by Python/Pillow):
 gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
   -b 'execfile("tools/artwork/export_buildings_gimp.py")' -b 'pdb.gimp_quit(0)'
 python3 tools/artwork/export_buildings.py
-python3 experiments/ai-upscale/export_runtime.py
+python3 experiments/ai-upscale/export_runtime.py --from-experiments
 python3 tools/artwork/validate_buildings.py
 python3 experiments/ai-upscale/validate_runtime.py
 ```
@@ -213,7 +213,7 @@ Native alpha coverage differs by less than 1.1% after accounting for scale.
 
 ```sh
 python3 tools/artwork/export_markers.py
-python3 experiments/ai-upscale/export_runtime.py
+python3 experiments/ai-upscale/export_runtime.py --from-experiments
 python3 tools/artwork/validate_markers.py
 ```
 

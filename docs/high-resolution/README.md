@@ -96,3 +96,5 @@ Normal-scale material review (100% map zoom):
 Current project state and resumption instructions: [handoff](HANDOFF.md).
 
 [Current per-frame original/upscaled inventory](ASSET-PROVENANCE.md).
+
+Approved sources are physically separated by origin in [production folders](../../datasrc/gfx/production/README.md); normal packaging is independent of the experiment tree.

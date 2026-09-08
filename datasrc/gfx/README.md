@@ -106,3 +106,12 @@ separate matte files are preserved unchanged. They require transparency extracti
 before runtime use; the 32-pixel direction templates are references, not new HD art.
 
 [Current per-frame original/upscaled inventory](../../docs/high-resolution/ASSET-PROVENANCE.md).
+
+## Production directory separation
+
+Approved runtime inputs are now physically separated under `production/`:
+`original-derived/`, `ai-upscaled/`, `ai-materials/`, and `resampled-masks/`.
+Prebuilt mixed atlases and runtime metadata have separate directories there.
+`derived/` contains intermediate deterministic exports from originals only.
+Historical trials remain under `experiments/ai-upscale/`; normal packaging no
+longer reads that tree. See [production workflow](production/README.md).

@@ -117,7 +117,7 @@ From the PR worktree, papyrus native export:
 gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
   -b 'execfile("tools/artwork/export_papyrus_gimp.py")' -b 'pdb.gimp_quit(0)'
 python3 tools/artwork/export_papyrus.py
-python3 experiments/ai-upscale/export_runtime.py
+python3 experiments/ai-upscale/export_runtime.py --from-experiments
 python3 tools/artwork/validate_papyrus.py
 python3 experiments/ai-upscale/validate_runtime.py
 python3 experiments/ai-upscale/pr_comparisons.py
@@ -196,3 +196,16 @@ renderer. The earlier app/cache search missed this /tmp + Docker setup.
 Do not claim cursor dependencies or render compatibility are verified yet.
 Do not disturb running unit jobs; use separate staging paths and scene copies.
 No new PR imagery replies were present.
+
+## Approved asset folder separation
+
+Production inputs now live in `datasrc/gfx/production/`, separated into
+`original-derived`, `ai-upscaled`, `ai-materials`, and `resampled-masks`, plus
+`atlases` and `pack-metadata`. Originals and historical experiments remain in
+separate existing trees. `data/highres/v1` is the assembled runtime output.
+Normal build: `python3 tools/artwork/package_runtime.py` (standard library only).
+The old export_runtime command delegates to this by default. Use its explicit
+`--from-experiments` option only when regenerating candidates from historical
+recipes, then review and promote with package_runtime.py `--capture-approved`.
+See production/README.md for the complete workflow. Assembly is verified
+byte-identical to the previous runtime pack, including all layers and atlas mips.

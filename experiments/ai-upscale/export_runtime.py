@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 """Export reviewed artwork into a self-contained, versioned runtime pack."""
+# Normal builds assemble approved production inputs. Experimental regeneration
+# is explicit so historical trials cannot silently replace approved artwork.
+import runpy
+import sys
+from pathlib import Path
+if __name__ == '__main__' and '--from-experiments' not in sys.argv:
+    runpy.run_path(str(Path(__file__).resolve().parents[2] / 'tools/artwork/package_runtime.py'), run_name='__main__')
+    raise SystemExit(0)
+if '--from-experiments' in sys.argv:
+    sys.argv.remove('--from-experiments')
+
 import hashlib
 import json
 from pathlib import Path
