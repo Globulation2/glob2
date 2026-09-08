@@ -68,6 +68,12 @@ if not env['server']:
     session_test = local.Program('engine-session-test', session_sources)
     local.Alias('session-test', session_test)
 
+if not env['server']:
+    transport_sources = [source for source in source_files if source != 'Glob2.cpp']
+    transport_sources += local.Object('NetConnectionHarness.o', '#test/NetConnectionHarness.cpp')
+    transport_test = local.Program('net-connection-test', transport_sources)
+    local.Alias('transport-test', transport_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-router" if env.get("role") == "router" else "glob2-server", server_source_files)

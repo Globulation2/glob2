@@ -12,6 +12,12 @@ infrastructure from the supported-release acceptance criteria.
 - Native desktop, headless lobby, headless router, WebSocket gateway, and
   browser build entry points. The headless router defaults to a local lobby;
   `GLOB2_YOG_HOST` selects another private lobby.
+- Shared injectable byte transports: native TCP and browser WebSocket, with
+  transport-independent framing, bounded queues, malformed-input rejection, and
+  greetings queued during connection establishment. Browser YOG login now reaches
+  a native server through the gateway in integration tests. Successful account
+  login and lobby exit are covered; the browser uses YOG chat without the optional
+  native IRC bridge. Passwords are redacted from authentication message formatting.
 - A bounded fixed-backend gateway with origin checks, backpressure,
   health/metrics endpoints, and real TCP/WebSocket integration tests.
 - An explicit native/browser application-host boundary for transitional
@@ -129,12 +135,9 @@ browser support is claimed by this implementation slice.
 
 ## Immediate delivery focus
 
-Complete the single-player milestone before further general-purpose refactoring.
-The scenario editor now owns a nonblocking script load/save dialog and routes
-input exclusively to it until completion. Remaining runtime work includes
-destructive in-session replacement
-(`GameSessionScreen` through `Engine::finishSession`). Migrate replacement using the existing screen and ownership mechanisms. Then exercise single-player flows in
-a build without Asyncify to identify remaining reachable blocking paths.
-Legacy synchronous adapters alone are not a reason for another abstraction.
-Rendering, lifecycle, and durable storage gates above remain required before
-calling single-player supported; multiplayer and distribution follow afterward.
+Deliver the missing multiplayer and self-hosting features next. Single-player
+is already playable; further refactoring must resolve a concrete release blocker.
+Next multiplayer evidence is complete browser/browser and browser/native matches,
+followed by the upgraded handshake, identities/rooms, and coordinated recovery.
+Rendering, lifecycle, durable storage, and removal of Asyncify remain acceptance
+gates for the supported release, not reasons to keep expanding preparatory work.

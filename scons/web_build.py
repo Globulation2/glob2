@@ -49,7 +49,7 @@ def build_web(directory, identity, arguments):
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
         '-sASYNCIFY', '-sASYNCIFY_STACK_SIZE=1048576', '-sALLOW_MEMORY_GROWTH',
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
-        '-sFORCE_FILESYSTEM', '-lidbfs.js',
+        '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
         '--shell-file', 'browser/shell.html'] + PORTS)
     for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
@@ -61,10 +61,10 @@ def build_web(directory, identity, arguments):
             input='', text=True, env=env['ENV']).returncode
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
-    files = ['src/' + s for s in CLIENT_SOURCES if s != 'VoiceRecorder.cpp']
+    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp']
+    files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp']
     objects = [env.Object(str(output / 'obj' / (f + '.o')), f) for f in files]
     env.Requires(objects, ports)
     env.Depends(objects, str(config))

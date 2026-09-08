@@ -1,9 +1,12 @@
 # Development WebSocket gateway
 
 This is transport infrastructure, not yet a supported multiplayer release.
-The browser client still has multiplayer disabled. Protocol negotiation, native
-WSS, browser transport integration, account migration, invitation rooms and
-coordinated recovery remain separate delivery gates.
+The browser YOG entry now uses WebSocket transport and the same message codecs
+as native TCP clients. The legacy YOG handshake, successful account login, and lobby exit are exercised
+against a native server through the gateway. Browser chat stays within YOG;
+the optional native IRC bridge is disabled. Upgraded protocol negotiation, native
+WSS, account migration, invitation rooms and coordinated recovery remain release
+gates; complete cross-play matches are not yet certified.
 
 ## Build and run
 
@@ -65,3 +68,40 @@ routing. A supported Compose distribution has not yet been delivered.
 The gateway neither owns rooms nor simulates a match. Losing the gateway
 currently closes the corresponding TCP connections; reconnect semantics must
 be implemented in YOG and the clients before this is advertised for play.
+
+## Browser client routing
+
+By default the browser connects to `/yog` and `/router` on its own origin, using
+WSS for HTTPS pages and WS for localhost HTTP development. Configure the reverse
+proxy to serve game assets and forward those two paths to the gateway. Internal
+lobby/router TCP addresses sent by the legacy server are not browser destinations.
+
+For a separate gateway origin, set this deployment configuration before the game
+starts (for example in a script loaded by the page):
+
+```js
+globalThis.glob2Config = {websocketBase: 'wss://games.example.org'};
+```
+
+The gateway still requires the page's origin through `--origin`. The setting
+contains no password, session, or invitation credentials.
+
+`NetConnection` owns the shared two-byte big-endian frame prefix and message
+codecs. `NetTransport` implementations exchange bounded byte chunks; WebSocket
+messages may split or combine game frames. Inbound/outbound transport buffering
+is capped at 1 MiB, and the decoded-message queue at 256 messages. Oversized,
+empty, unknown, truncated, or trailing-data messages close the connection. The
+initial greeting is retained while the asynchronous connection opens.
+
+Run `scons release=1 transport-test`, then the `net-connection-test` executable
+with an unused local TCP port to cover framing, rejected packets, queue limits,
+outbound limits, credential-log redaction, and a real TCP round trip. The Playwright multiplayer test uses that executable's
+isolated YOG fixture and the actual gateway, with real login controls and observed
+wire messages. It also enters and leaves the lobby with an isolated fixture
+account and saves a lobby screenshot. It does not claim account migration or
+match recovery coverage.
+
+Native TCP currently runs SDL networking on a worker. SDL's connect/send calls
+still need bounded cancellation/deadline handling before release qualification;
+native secure WebSocket transport remains outstanding. The browser transport is
+callback driven and does not create a worker thread or use Asyncify itself.

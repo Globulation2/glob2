@@ -255,7 +255,12 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: browser/package-lock.json
-      - name: Test browser single-player flow
+      - name: Build transport integration fixture
+        if: matrix.order == 'concurrent'
+        run: |
+          scons release=1 transport-test -j2
+          python3 test/run-network-transport-tests.py
+      - name: Test browser single-player and YOG transport
         if: matrix.order == 'concurrent'
         working-directory: browser
         run: |
