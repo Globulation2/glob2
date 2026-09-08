@@ -81,6 +81,11 @@ void ScreenStack::frame(Uint32 tick, const std::vector<SDL_Event>& events)
     if (stopped) boundary();
 }
 
+Uint32 ScreenStack::delay(Uint32 now, Uint32 fallback)
+{
+    return screens.empty() ? fallback : screens.back().screen->executionDelay(now, fallback);
+}
+
 int ScreenStack::execute(unsigned stepLength)
 {
     while (running()) {
@@ -92,9 +97,7 @@ int ScreenStack::execute(unsigned stepLength)
         if (running()) {
             const Uint64 elapsed = SDL_GetTicks64() - start;
             const Uint32 fallback = elapsed < stepLength ? stepLength - elapsed : 0;
-            const Uint32 delay = screens.empty() ? fallback :
-                screens.back().screen->executionDelay(static_cast<Uint32>(SDL_GetTicks64()), fallback);
-            GAGCore::ApplicationHost::wait(delay);
+            GAGCore::ApplicationHost::wait(delay(static_cast<Uint32>(SDL_GetTicks64()), fallback));
         }
     }
     return result();

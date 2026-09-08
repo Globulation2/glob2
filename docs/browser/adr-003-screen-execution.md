@@ -117,3 +117,25 @@ alive, including the game-header references edited by the options screen.
 Actual map/replay loading and in-session load requests remain synchronous and
 must become resumable jobs. Editor/network flows and the outer main-menu loop
 remain migration work; browser support still depends on Asyncify.
+
+
+## Shared application host loop
+
+`Application` owns the screen stack and navigation across menus and single-player
+flows. Its `frame(tick, events)` and `delay(now)` are the common native/browser
+update interface. Returning from a flow recreates the main menu, including
+translated labels after settings changes. The old outer menu switch loop and
+unused static main-menu execution entry point are removed.
+
+Native `ApplicationHost::run` polls SDL and drives that interface until completion.
+The browser implementation schedules one callback with `emscripten_async_call`
+and queues its successor only when it returns. This also avoids concurrent frames
+while a remaining legacy callback suspends through Asyncify. The host releases
+all application state before its completion callback destroys global resources;
+main does not report a premature browser exit just because scheduling returned.
+
+The native host harness verifies completion/destruction ordering. Browser tests
+cover settings/credits return and application exit, alongside gameplay flows.
+Editor/network internals, loaders, and some dialogs remain blocking. The browser
+build still uses Asyncify for those paths; scheduled outer execution is not a
+claim that the complete runtime migration is finished.

@@ -18,6 +18,7 @@ public:
     void push(std::unique_ptr<Screen> screen, Completion completed = {});
     void frame(Uint32 tick, const std::vector<SDL_Event>& events);
     bool running() const { return !stopped && (!screens.empty() || !pending.empty()); }
+    Uint32 delay(Uint32 now, Uint32 fallback);
     int result() const { return lastResult; }
     // Transitional SDL host. Browser scheduling will call frame directly.
     int execute(unsigned stepLength = 40);

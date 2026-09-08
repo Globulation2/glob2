@@ -4,6 +4,33 @@
 
 namespace GAGCore::ApplicationHost
 {
+namespace
+{
+struct ScheduledLoop { std::unique_ptr<Loop> loop; std::function<void()> complete; };
+void scheduledFrame(void* opaque)
+{
+    auto* state = static_cast<ScheduledLoop*>(opaque);
+    std::vector<SDL_Event> events;
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) events.push_back(event);
+    if (!state->loop->frame(SDL_GetTicks(), events)) {
+        state->loop.reset();
+        auto complete = std::move(state->complete);
+        delete state;
+        complete();
+        return;
+    }
+    // Queue only after the frame returns. During the migration an Asyncify
+    // suspension inside a legacy dialog must not start a second frame.
+    emscripten_async_call(scheduledFrame, state, state->loop->delay(SDL_GetTicks()));
+}
+}
+void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
+{
+    auto* state = new ScheduledLoop{std::move(loop), std::move(complete)};
+    emscripten_async_call(scheduledFrame, state, 0);
+}
+
 void wait(std::uint32_t milliseconds)
 {
     emscripten_sleep(milliseconds ? milliseconds : 1);

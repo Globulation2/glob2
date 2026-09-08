@@ -20,7 +20,8 @@ infrastructure from the supported-release acceptance criteria.
   wrapper and automated lifecycle/completion tests. An owning screen stack
   now drives campaign selection, custom setup/options, load/replay selection,
   single-player sessions, and end-game transitions with retained ownership.
-  Editor/network menus and the top-level host still require migration.
+  The outer application update API is shared by native polling and scheduled
+  browser callbacks. Editor/network internals and loaders still need migration.
 - Incremental engine session phases with host-supplied timing, separate drawing,
   and delay calculation. Gameplay accepts explicit input batches and tracks
   held input from events, clearing it on focus loss. Modal handling, application
@@ -44,7 +45,8 @@ On macOS arm64, September 2026:
   produces matching 50-tick checksums with regular callbacks, delayed callbacks,
   and a stack-driven game session,
   checks lifecycle guards, and verifies repeatable delay queries.
-- Fifteen browser checks cover startup, campaign selector cancellation/reopen,
+- Twenty-one browser checks cover startup, settings/credits/shutdown, legacy
+  editor-dialog suspension, campaign selector cancellation/reopen,
   custom options/AI descriptions and return-to-setup,
   tutorial launch, custom-game pause, save/reload byte
   equality, load continuation, and audio-context activation are exercised
@@ -61,8 +63,8 @@ cross-platform, or supported-browser certification matrix.
 
 1. Complete dependency archive verification and reproducible release gates
    on all supported native toolchains.
-2. Shared application update API, screen stack, explicit modal completion,
-   resumable/cancellable loading, and removal of Asyncify.
+2. Complete editor/network/modal transitions, resumable/cancellable loading,
+   and removal of Asyncify from the scheduled browser host.
 3. WebGL2 rendering, live logical resize, context restoration, minimum-size
    UI, focus/visibility behavior, and complete browser interaction handling.
 4. Transactional persistence with durable completion and failure states,

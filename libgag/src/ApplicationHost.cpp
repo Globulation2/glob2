@@ -4,6 +4,19 @@
 
 namespace GAGCore::ApplicationHost
 {
+void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
+{
+    for (;;) {
+        std::vector<SDL_Event> events;
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) events.push_back(event);
+        if (!loop->frame(SDL_GetTicks(), events)) break;
+        wait(loop->delay(SDL_GetTicks()));
+    }
+    loop.reset();
+    complete();
+}
+
 void wait(std::uint32_t milliseconds)
 {
     if (milliseconds) SDL_Delay(milliseconds);

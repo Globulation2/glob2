@@ -17,6 +17,22 @@ test('starts with a full-page game and restored local storage', async ({page}) =
   expect(await page.locator('#canvas').boundingBox()).toMatchObject({x:0,y:0,width:1200,height:900});
 });
 
+test('application host returns from settings and credits and shuts down cleanly', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await menu(page, 160, 360);
+  await screen(page, 'SettingsScreen');
+  await menu(page, 530, 440);
+  await screen(page, 'MainMenuScreen');
+  await menu(page, 160, 440);
+  await screen(page, 'CreditScreen');
+  await page.locator('#canvas').press('Escape');
+  await screen(page, 'MainMenuScreen');
+  await menu(page, 480, 440);
+  await screen(page, 'exited');
+  expect(errors).toEqual([]);
+});
+
 test('campaign selector returns to its suspended parent and can reopen', async ({page}) => {
   await menu(page, 160, 120);
   await screen(page, 'CampaignMainMenu');
@@ -106,5 +122,18 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   await menu(page, 530, 380);
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThanOrEqual(paused.tick);
   await expect.poll(async () => (await state(page)).audio).toBe('running');
+  expect(errors).toEqual([]);
+});
+
+test('editor setup can return through a legacy modal callback', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await menu(page, 480, 360);
+  await screen(page, 'EditorMainMenu');
+  await menu(page, 320, 90);
+  await screen(page, 'NewMapScreen');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await screen(page, 'MainMenuScreen');
   expect(errors).toEqual([]);
 });

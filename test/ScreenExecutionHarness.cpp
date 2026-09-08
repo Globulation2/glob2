@@ -2,6 +2,7 @@
 #include <GUIBase.h>
 #include <ScreenStack.h>
 #include <InputState.h>
+#include <ApplicationHost.h>
 #include <SDLGraphicContext.h>
 #include <stdexcept>
 #include <iostream>
@@ -186,5 +187,19 @@ int main()
     event.type = SDL_WINDOWEVENT; event.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
     held.observe(event);
     require(held.hasFocus() && !held.keyboard()[SDL_SCANCODE_LEFT], "Focus return starts with released keys");
+    struct HostProbe : GAGCore::ApplicationHost::Loop {
+        int& frames; bool& destroyed;
+        HostProbe(int& frames, bool& destroyed) : frames(frames), destroyed(destroyed) {}
+        ~HostProbe() override { destroyed = true; }
+        bool frame(std::uint32_t, const std::vector<SDL_Event>&) override { return ++frames < 3; }
+        std::uint32_t delay(std::uint32_t) override { return 0; }
+    };
+    int hostFrames = 0;
+    bool hostDestroyed = false, hostCompleted = false;
+    GAGCore::ApplicationHost::run(std::make_unique<HostProbe>(hostFrames, hostDestroyed), [&] {
+        require(hostDestroyed && hostFrames == 3, "Host releases application state before global cleanup");
+        hostCompleted = true;
+    });
+    require(hostCompleted, "Native host completes exactly once before returning");
     std::cout << "PASS: screen phases, completion, reuse, quit and compatibility host\n";
 }

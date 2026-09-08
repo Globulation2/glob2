@@ -17,6 +17,7 @@
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "Engine.h"
+#include "Application.h"
 #include "SinglePlayerFlow.h"
 #include "Game.h"
 #include "LANMenuScreen.h"
@@ -76,43 +77,6 @@ GlobalContainer *globalContainer=NULL;
 
 
 #ifndef YOG_SERVER_ONLY
-
-void Glob2::drawYOGSplashScreen(void)
-{
-	int w, h;
-	w=globalContainer->gfx->getW();
-	h=globalContainer->gfx->getH();
-	globalContainer->gfx->drawFilledRect(0, 0, w, h, 0, 0, 0);
-	std::string text[3];
-	text[0]=Toolkit::getStringTable()->getString("[connecting to]");
-	text[1]=Toolkit::getStringTable()->getString("[yog]");
-	text[2]=Toolkit::getStringTable()->getString("[please wait]");
-	for (int i=0; i<3; ++i)
-	{
-		int size=globalContainer->menuFont->getStringWidth(text[i]);
-		int dec=(w-size)>>1;
-		globalContainer->gfx->drawString(dec, 150+i*50, globalContainer->menuFont, text[i]);
-	}
-	globalContainer->gfx->nextFrame();
-}
-
-void Glob2::multiplayerYOG(void)
-{
-	if (verbose)
-		printf("Glob2:: starting YOGLoginScreen...\n");
-	shared_ptr<YOGClient> client(new YOGClient);
-	YOGLoginScreen yogLoginScreen(client);
-	int yogReturnCode=yogLoginScreen.execute(globalContainer->gfx, 40);
-	if (yogReturnCode==YOGLoginScreen::Cancelled)
-		return;
-	if (yogReturnCode==-1)
-	{
-		isRunning=false;
-		return;
-	}
-	if (verbose)
-		printf("Glob2::YOGLoginScreen has ended ...\n");
-}
 
 int Glob2::runNoX()
 {
@@ -506,111 +470,13 @@ int Glob2::run(int argc, char *argv[])
 		return ret;
 	}
 
-	isRunning=true;
-
-    // Command-line replays use the same ownership path as menu replays.
-    if (globalContainer->replaying) {
-        ScreenStack screens(*globalContainer->gfx);
-        SinglePlayerFlow flow(screens);
-        flow.replay(globalContainer->replayFileName);
-        isRunning = screens.execute() != Screen::QUIT_APPLICATION;
-    }
- 
-	while (isRunning)
-	{
-		const int menuChoice = MainMenuScreen::menu();
-		switch (menuChoice)
-		{
-			case -1:
-			{
-				isRunning = false;
-			}
-			break;
-			case MainMenuScreen::CAMPAIGN:
-			{
-				ScreenStack screens(*globalContainer->gfx);
-				screens.push(std::make_unique<CampaignMainMenu>(screens));
-				int rccs=screens.execute();
-				if(rccs == Screen::QUIT_APPLICATION)
-				{
-					isRunning = false;
-				}
-			}
-			break;
-			case MainMenuScreen::TUTORIAL:
-			{
-                ScreenStack screens(*globalContainer->gfx);
-                Campaign campaign;
-                const bool saved = campaign.load("games/Tutorial_Campaign.txt");
-                auto menu = std::make_unique<CampaignMenuScreen>(saved ? "games/Tutorial_Campaign.txt" : "campaigns/Tutorial_Campaign.txt", screens);
-                if (!saved) menu->setNewCampaign();
-                screens.push(std::move(menu));
-                if (screens.execute() == Screen::QUIT_APPLICATION) isRunning = false;
-			}
-			break;
-            case MainMenuScreen::LOAD_GAME:
-            case MainMenuScreen::CUSTOM:
-            {
-                ScreenStack screens(*globalContainer->gfx);
-                SinglePlayerFlow flow(screens);
-                if (menuChoice == MainMenuScreen::CUSTOM) flow.custom();
-                else flow.load();
-                if (screens.execute() == Screen::QUIT_APPLICATION) isRunning = false;
-            }
-            break;
-			case MainMenuScreen::MULTIPLAYERS_YOG:
-			{
-				multiplayerYOG();
-			}
-			break;
-			case MainMenuScreen::MULTIPLAYERS_LAN:
-			{
-				LANMenuScreen lanms;
-				int rc_lms = lanms.execute(globalContainer->gfx, 40);
-				if(rc_lms == -1)
-					isRunning=false;
-			}
-			break;
-			case MainMenuScreen::GAME_SETUP:
-			{
-				SettingsScreen settingsScreen;
-				int rc_ss = settingsScreen.execute(globalContainer->gfx, 40);
-				if( rc_ss == -1)
-				{
-					isRunning=false;
-				}
-			}
-			break;
-			case MainMenuScreen::EDITOR:
-			{
-				EditorMainMenu editorMainMenu;
-				int rc=editorMainMenu.execute(globalContainer->gfx, 40);
-				if (rc==-1)
-				{
-					isRunning=false;
-				}
-			}
-			break;
-			case MainMenuScreen::CREDITS:
-			{
-				CreditScreen creditScreen;
-				if (creditScreen.execute(globalContainer->gfx, 40)==-1)
-					isRunning=false;
-			}
-			break;
-			case MainMenuScreen::QUIT:
-			{
-				isRunning=false;
-			}
-			break;
-			default:
-			break;
-		}
-	}
-
-	// This is for the textshot code
-	GAGCore::DrawableSurface::printFinishingText();
-	delete globalContainer;
+    GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
+        GAGCore::DrawableSurface::printFinishingText();
+        delete globalContainer;
+        globalContainer = nullptr;
+        GAGCore::ApplicationHost::exited(0);
+    });
+    return HOSTED_RUN;
 
 #endif  // !YOG_SERVER_ONLY
 
@@ -647,6 +513,6 @@ int main(int argc, char *argv[])
 
 	Glob2 glob2;
 	int result = glob2.run(argc, argv);
-	GAGCore::ApplicationHost::exited(result);
-	return result;
+	if (result != Glob2::HOSTED_RUN) GAGCore::ApplicationHost::exited(result);
+	return result == Glob2::HOSTED_RUN ? 0 : result;
 }
