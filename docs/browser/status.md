@@ -95,10 +95,15 @@ on macOS arm64 in September 2026:
 - Both Compose deployment tests pass after the binary-string fix: trusted
   HTTPS/WSS, private routes, account persistence across recreation, router-loss
   refusal, and admission after restart.
-- Multiplayer results from before the rebase remain historical evidence; the
-  isolated branch still needs the full multiplayer matrix rerun.
-  The six upstream AIs are retained unchanged; no Maxima or tournament changes
-  are included in this branch.
+- All 18 default multiplayer scenarios pass across Chromium, Firefox, and
+  WebKit: protocol/login and lobby flows, browser/browser matches without AI
+  and with Cortex, and browser/native 250-tick command-boundary checksum
+  comparisons through both TCP and verified WSS. The native peer ran on macOS
+  arm64; this is not the complete cross-platform per-tick release matrix.
+  The six upstream AIs are retained unchanged. The optional all-AI suite still
+  needs rerunning after isolation; no Maxima or tournament changes are included.
+- `screenshots/native-cross-play.png` is refreshed from the post-rebase
+  Chromium/native TCP test.
 
 These are focused regressions, not a complete campaign, AI, deterministic
 cross-platform, or supported-browser certification matrix.
