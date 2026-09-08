@@ -77,7 +77,5 @@ void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, 
 
 void GameSessionScreen::suspendExecution()
 {
-    engine->suspendInput();
-    input.clear();
-    resetClock = true;
+    cancelExecutionInput();
 }

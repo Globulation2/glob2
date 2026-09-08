@@ -1,9 +1,48 @@
 # Mobile development
 
 All mobile work lives in `codex/mobile-platform`, based on browser commit
-`de12b855c899cf1f50ca308cc6b777cb139fd5f4`. Use the isolated `glob2-mobile`
+`5397fbd41` (synchronized on 2026-09-08). Use the isolated `glob2-mobile`
 worktree. Do not build, install, or run tests in the AI Maxima or browser worktrees.
 Keep test profiles under `build/`; game launches must not write the normal profile.
+
+## Browser branch synchronization
+
+Before each mobile milestone, inspect `codex/browser-experiment` and
+`codex/browser-clean` and record the tested browser commit here. Check ancestry
+with `git merge-base --is-ancestor codex/browser-experiment HEAD` from this
+worktree. Integrate browser changes here; never reset, switch, or build in its
+checkout. Preserve uncommitted mobile work before updating the base, and rerun
+native session/lifecycle tests and browser visibility, viewport, and persistence
+regressions after resolving shared host changes.
+
+The September 8 synchronization replayed the six mobile commits onto `5397fbd41`.
+The browser branch had rebased onto newer upstream simulation code, so replaying
+mobile changes preserved that baseline. The previous mobile tip is retained at
+`codex/mobile-before-browser-sync-20260908`. Browser visibility now enters the
+same queued SDL lifecycle path as native background/foreground events; browser
+resize notifications and save recovery/export behavior remain available.
+
+Synchronization verification (2026-09-08): desktop client, Wasm client, and
+Android ARM64 release APK rebuilds passed, including Android binary/package
+alignment checks. Native engine-session, screen-lifecycle, portable-renderer,
+mobile-input, and responsive-menu harnesses passed. The three 50-tick session
+fixtures agreed on checksum `7e7f31de`; this is not the 100,000-tick cross-platform
+qualification. Build-tool tests (19) and browser storage unit tests (4) passed.
+Across Chromium, Firefox, and WebKit, 24 viewport/storage cases and three
+visibility cases passed. The first concurrent run timed out on Firefox's aborted
+save retry; an isolated rerun passed in 11.6 seconds with unchanged assertions.
+Logs are in `build-browser-sync-*.log`; browser failure traces remain under
+`build/browser-test-results`. iOS and real-device qualification remain pending.
+
+Keep browser runner temporary profiles inside the worktree too, for example:
+
+```sh
+mkdir -p build/browser-test-tmp
+cd browser
+TMPDIR="$PWD/../build/browser-test-tmp" \
+  PLAYWRIGHT_BROWSERS_PATH="$PWD/../build/mobile-tools/playwright" \
+  ./node_modules/.bin/playwright test viewport.spec.js storage.spec.js
+```
 
 ## SDK checks
 
@@ -211,13 +250,11 @@ Build the standalone regressions with SCons in `test/` before running their scri
 They now request C++20, matching the browser branch's coroutine headers. The runner
 keeps profiles and temporary campaign fixtures under `build/test-profiles`.
 
-Known baseline failure: `TestsRunner` runs 194 cases with three Maxima placement
-failures (`testColonyPurposeDistanceCornAndBlockedIndependence`,
-`testColonyThreatAndConqueredScoring`, `testDisconnectedColonyRequiresSwimmingBuilders`).
-All three reproduced on a snapshot of base commit `de12b855`, with only the test
-compiler mode updated to C++20 so the coroutine headers compile. The other 19
-standalone regression binaries pass. Mobile work does not change AI logic to make
-these tests pass; this remains a red baseline gate requiring separate diagnosis.
+Historical pre-sync evidence: the old `de12b855` baseline had three Maxima
+placement failures in its 194-case `TestsRunner`; the other 19 standalone
+regression binaries passed. Those results do not qualify the newer browser
+simulation baseline. Rebuild and rerun the standalone suite before claiming its
+status on the synchronized branch.
 
 ## Debugging and cleanup
 

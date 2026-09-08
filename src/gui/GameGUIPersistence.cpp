@@ -181,12 +181,3 @@ void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height
     moveParticles(oldX, viewportX, oldY, viewportY);
     if (gameMenuScreen) gameMenuScreen->viewportResized(oldWidth, oldHeight, width, height);
 }
-
-void GameGUI::suspendInput()
-{
-    inputState.clearHeld();
-    viewportSpeedX = viewportSpeedY = 0;
-    lastMouseButtonState = 0;
-    miniMapPushed = selectionPushed = false;
-    toolManager.cancelDrag(localTeamNo);
-}

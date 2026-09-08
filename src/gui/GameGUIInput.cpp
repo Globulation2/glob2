@@ -119,7 +119,7 @@ void GameGUI::suspendInput()
     inputState.clearHeld();
     lastMouseButtonState = 0;
     viewportSpeedX = viewportSpeedY = 0;
-    selectionPushed = panPushed = false;
+    miniMapPushed = selectionPushed = panPushed = false;
     scrollWheelWorkingChanges = scrollWheelStayRangeChanges = 0;
     mouseX = globalContainer->gfx->getW() / 2;
     mouseY = globalContainer->gfx->getH() / 2;
