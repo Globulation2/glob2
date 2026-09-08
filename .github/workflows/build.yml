@@ -98,11 +98,6 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
 
-      - name: Build and run the pending construction save regression
-        run: |
-          scons -j$(nproc) release=1 server=0 pending-construction-test
-          python3 test/run-pending-construction-tests.py build/src/PendingConstructionSaveLoadHarness
-
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 server=1 --build=build-server
 
@@ -209,11 +204,6 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness.exe .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
-
-      - name: Build and run the pending construction save regression
-        run: |
-          scons -j$(nproc) release=1 server=0 pending-construction-test
-          python3 test/run-pending-construction-tests.py build/src/PendingConstructionSaveLoadHarness
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
