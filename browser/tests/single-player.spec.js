@@ -6,7 +6,10 @@ const screen = (page, name) => expect.poll(async () => (await state(page)).scree
 const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
 const menu = (page, x, y) => click(page, x + 280, y + 210);
 
-test.beforeEach(async ({page}) => {
+test.beforeEach(async ({page}, info) => {
+  // Pin the editor's wall-time seed before runtime initialization, matching
+  // the native generation fixture. Animation and cooperative timers remain real.
+  if (info.title.startsWith('map generation can')) await page.clock.setFixedTime(12345 * 1000);
   await page.goto(gameURL());
   await screen(page, 'MainMenuScreen');
 });

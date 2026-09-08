@@ -303,3 +303,21 @@ scheduled-versus-synchronous comparisons.
 See [storage behavior and cancellation semantics](storage.md#editor-saves).
 
 ![Editor save failure with export and retry](screenshots/editor-save-failure.png)
+
+## GPU generation fixture correction
+
+The Firefox/WebKit WebGL core run completed with 45 of 46 checks passing. The
+WebKit concrete-islands case timed out waiting for the editor because the game
+had shown its explicit generation-failure dialog; it was not a stalled GPU.
+The editor takes its generation seed from wall time, so the test previously
+requested a different map on every run. The browser generation tests now inject
+a fixed wall clock corresponding to seed 12345, matching the native generation
+fixture, while leaving animation and cooperative timers running normally.
+No production behavior or test deadline was changed.
+
+All six fixed-seed generation/cancellation cases now pass with WebGL across
+Chromium, Firefox and WebKit. The six new editor persistence-failure cases also
+pass with WebGL across those engines. An intermediate test installed the fixed
+clock after startup and reported two WebKit SDL audio-buffer errors; the final
+fixture installs it before runtime initialization and passes. This does not
+establish that all audio activation races are resolved.
