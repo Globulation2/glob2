@@ -183,9 +183,11 @@ were made during this resumed inventory batch.
 Cursor render audit remains pending, but the renderer has now been located:
 Blender 2.34 Linux i386 static lives under
 `/tmp/globule-blender/blender-2.34-linux-glibc2.2.5-i386-static/blender`.
-The running Docker container `glob2-sprite-render` contains `/opt/blender/blender`
-and the legacy libraries; invoke with
-`LD_LIBRARY_PATH=/opt/legacy/usr/lib qemu-i386 /opt/blender/blender`.
+The running Docker container `glob2-sprite-render` mounts that host directory
+at `/work` and has the legacy libraries. Its actual executable is
+`/work/blender-2.34-linux-glibc2.2.5-i386-static/blender`; invoke with
+`LD_LIBRARY_PATH=/opt/legacy/usr/lib qemu-i386` followed by that path.
+The README example path `/opt/blender/blender` is not present in this container.
 Reproduction/dependency details are in the unit PR worktree:
 `/Users/bradley/glob2-unit-animation-32/tools/unit-animation/README.md`.
 That work used 2.34 deliberately: 2.79 changes projection and surface rendering.
