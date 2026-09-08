@@ -576,3 +576,8 @@ if not env['server']:
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
+if not env['server'] and 'menu-colony-harness' in COMMAND_LINE_TARGETS:
+    menu_sources = [source for source in source_files if source != 'Glob2.cpp']
+    menu_sources += local.Object('MenuColonyHarness.o', '#tools/MenuColonyHarness.cpp')
+    menu_test = local.Program('MenuColonyHarness', menu_sources)
+    env.Alias('menu-colony-harness', menu_test)
