@@ -548,3 +548,21 @@ followed by address navigation. A disposable plain-page probe revealed a local
 keyboard-layout mismatch in the earlier automation attempt, which had emitted
 Command-P rather than Command-R. See [Safari evidence](safari-smoke.md). The
 adapter uses logical key values, preserving the browser's keyboard layout.
+
+## Hosted CI and standalone harness fixes — 2026-09-08
+
+Run [34288392154](https://github.com/Globulation2/glob2/actions/runs/34288392154)
+at `ce7e55d2d` passes the Windows/MinGW client, save compatibility and YOG-server
+job. Both Linux jobs pass their earlier native, session, save, LAN and renderer
+steps, then fail while building the standalone `test/` suite: it still selected
+C++17 despite the shared coroutine headers requiring C++20.
+
+The standalone build now uses C++20. Local validation also exposed and fixed its
+missing native application-host and stream-hash archive members and the replay
+fixture's obsolete GameGUI constructor signature. These changes retain the
+existing test assertions and use the production host/hash implementations.
+The complete standalone build and all 20 executables pass on macOS, including
+170 CppUnit cases. Logs: `/tmp/glob2-standalone-tests-{build,run}.log`.
+The new Linux hosted run is still required; local results do not substitute for
+the compiler/platform matrix. The coexistence jobs from the run above were
+still running at this checkpoint.

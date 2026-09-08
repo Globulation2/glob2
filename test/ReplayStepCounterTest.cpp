@@ -48,12 +48,12 @@ using namespace GAGCore;
 class GameGUI
 {
 public:
-	GameGUI();
+	explicit GameGUI(bool persistPreferences = true);
 	~GameGUI();
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const std::string name);
 };
-GameGUI::GameGUI() {}
+GameGUI::GameGUI(bool) {}
 GameGUI::~GameGUI() {}
 bool GameGUI::load(GAGCore::InputStream*, bool) { return false; }
 void GameGUI::save(GAGCore::OutputStream*, const std::string) {}
