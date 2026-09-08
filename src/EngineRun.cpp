@@ -112,8 +112,6 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		}
 	}
 
-	gui.game.setWaitingOnMask(net->getWaitingOnMask());
-
 	if (multiplayer)
 		multiplayer->update();
 
@@ -127,6 +125,9 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		if (checksumSidecar)
 			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game);
 	}
+	// advanceStep inserts the local order. Measuring earlier leaves a stale
+	// waiting flag; replays filter null orders and cannot clear it by executing one.
+	gui.game.setWaitingOnMask(net->getWaitingOnMask());
 }
 
 // Once allOrdersReceived() is true for this tick, commit the tick: validate
@@ -198,6 +199,9 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
+#ifdef __EMSCRIPTEN__
+		EM_ASM({ Module['glob2Tick'] = $0; Module['glob2Screen'] = 'match'; }, gui.game.stepCounter);
+#endif
 	}
 }
 

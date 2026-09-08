@@ -164,7 +164,9 @@ namespace GAGCore
 	{
 		minW = w;
 		minH = h;
+		#ifndef GLOB2_WEBGL2
 		if (window) SDL_SetWindowMinimumSize(window, minW, minH);
+		#endif
 	}
 
 	VideoModes GraphicContext::listVideoModes() const
@@ -327,7 +329,7 @@ namespace GAGCore
 			{
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
-				gluOrtho2D(0, getW(), getH(), 0);
+				glOrtho(0, getW(), getH(), 0, -1, 1);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
 			}
@@ -391,8 +393,10 @@ namespace GAGCore
 				_gc->windowToLogical(event->button.x, event->button.y);
 				break;
 			case SDL_WINDOWEVENT:
+				#ifndef GLOB2_WEBGL2
 				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 					_gc->updateWindowSize();
+				#endif
 				break;
 			default:
 				break;
@@ -470,7 +474,9 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-		SDL_SetWindowMinimumSize(window, std::max(1, minW), std::max(1, minH));
+			#ifndef GLOB2_WEBGL2
+			SDL_SetWindowMinimumSize(window, std::max(1, minW), std::max(1, minH));
+			#endif
 		// Own the drawing surface: SDL invalidates its window surface during resizing.
 		sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
 			0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -596,6 +602,9 @@ namespace GAGCore
 
 	void GraphicContext::nextFrame(void)
 	{
+#ifdef __EMSCRIPTEN__
+		emscripten_sleep(1);
+#endif
 		DrawableSurface::nextFrame();
 		if (sdlsurface)
 		{

@@ -4,6 +4,9 @@
 #include "Glob2.h"
 #include "GlobalContainer.h"
 #include "YOGServer.h"
+#ifdef GLOB2_ROUTER_ONLY
+#include "YOGServerRouter.h"
+#endif
 
 #ifndef YOG_SERVER_ONLY
 
@@ -454,6 +457,13 @@ int Glob2::run(int argc, char *argv[])
 	}
 	atexit(SDLNet_Quit);
 
+
+#ifdef GLOB2_ROUTER_ONLY
+	YOGServerRouter router;
+	int routerResult = router.run();
+	delete globalContainer;
+	return routerResult;
+#endif
 	if (globalContainer->hostServer)
 	{
 		YOGServer server(YOGRequirePassword, YOGMultipleGames);
@@ -674,5 +684,9 @@ int main(int argc, char *argv[])
 #endif
 
 	Glob2 glob2;
-	return glob2.run(argc, argv);
+	int result = glob2.run(argc, argv);
+#ifdef __EMSCRIPTEN__
+	EM_ASM({ Module['glob2Screen'] = 'exited'; Module['onGameExit']($0); }, result);
+#endif
+	return result;
 }

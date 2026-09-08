@@ -82,6 +82,9 @@ jobs:
         id: cache_ready
         run: ccache -z
 
+      - name: Test build identities
+        run: python3 -m unittest discover -s tests/build_system -v
+
       - name: Build glob2
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
 
@@ -119,19 +122,19 @@ jobs:
       - name: Build and run the selection lifetime regression
         run: |
           scons -j$(nproc) release=1 server=0 selection-test
-          ./build/src/GameGUISelectionHarness
+          ./build/linux/client/release/src/GameGUISelectionHarness
 
       - name: Build and run the wrapped building footprint regression
         run: |
           scons -j$(nproc) release=1 server=0 building-footprint-test
-          ./build/src/BuildingFootprintHarness
-          ./build/src/BuildingFootprintHarness --load test/fixtures/wrapped-building/reproducer.game
+          ./build/linux/client/release/src/BuildingFootprintHarness
+          ./build/linux/client/release/src/BuildingFootprintHarness --load test/fixtures/wrapped-building/reproducer.game
 
       - name: Build and run the entering unit save regression
         run: |
           scons -j$(nproc) release=1 server=0 entering-unit-save-test
-          ./build/src/EnteringUnitSaveHarness
-          ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
+          ./build/linux/client/release/src/EnteringUnitSaveHarness
+          ./build/linux/client/release/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
       - name: Test trapped colony elimination
         run: |
@@ -146,7 +149,7 @@ jobs:
       - name: Build and run the immobile unit gradient regression
         run: |
           scons -j$(nproc) release=1 server=0 immobile-unit-gradient-test
-          ./build/src/ImmobileUnitGradientHarness
+          ./build/linux/client/release/src/ImmobileUnitGradientHarness
 
       - name: Build and run the building expulsion regression
         run: |
@@ -166,8 +169,8 @@ jobs:
       - name: Test savegame loading and atomic autosaves
         run: |
           scons -j$(nproc) release=1 server=0 savegame-safety-test buffered-file-test
-          python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness
-          ./build/src/BufferedFileStreamHarness
+          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness
+          ./build/linux/client/release/src/BufferedFileStreamHarness
 
       - name: Test team statistics save compatibility
         run: |
@@ -182,17 +185,17 @@ jobs:
       - name: Build and run the terrain resource regression
         run: |
           scons -j$(nproc) release=1 server=0 terrain-test
-          ./build/src/TerrainResourcesHarness
+          ./build/linux/client/release/src/TerrainResourcesHarness
 
       - name: Build and run the global gradient regression
         run: |
           scons -j$(nproc) release=1 server=0 global-gradient-test
-          ./build/src/GlobalGradientHarness
+          ./build/linux/client/release/src/GlobalGradientHarness
 
       - name: Build and run the LAN session regression
         run: |
           scons -j$(nproc) release=1 server=0 lan-test
-          python3 test/run_lan_session_test.py build/src/LANSessionHarness
+          python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
 
       - name: Build and run the aspect-ratio regression
         env:
@@ -241,7 +244,7 @@ jobs:
       - name: Test game speed controls and playback
         run: |
           scons -j$(nproc) release=1 server=0 speed-tests
-          xvfb-run -a python3 test/run-game-speed-tests.py
+          GLOB2_BUILD_DIR=build/linux/client/release xvfb-run -a python3 test/run-game-speed-tests.py
 
       - name: Build without OpenGL
         run: |
@@ -302,6 +305,9 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      - name: Test build identities
+        run: python3 -m unittest discover -s tests/build_system -v
+
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
 
@@ -337,7 +343,7 @@ jobs:
       - name: Test savegame loading and atomic autosaves
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 savegame-safety-test
-          python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness.exe
+          python3 test/run-savegame-safety-tests.py build/windows/client/release/src/SavegameSafetyHarness.exe
 
       - name: Test team statistics save compatibility
         run: |
@@ -348,3 +354,37 @@ jobs:
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
+
+  web-coexistence:
+    name: browser and native (${{ matrix.order }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        order: [native-first, web-first, concurrent]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native and build dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y scons libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+      - name: Install pinned Emscripten
+        run: python3 browser/setup.py
+      - name: Test build identities
+        run: python3 -m unittest discover -s tests/build_system -v
+      - name: Verify clean builds and incremental isolation
+        run: python3 tests/build_system/coexistence.py --order ${{ matrix.order }}
+      - name: Build and test gateway
+        run: |
+          scons role=gateway release=1 -j2
+          python3 -m unittest discover -s tests/gateway -v
+      - name: Build headless router
+        run: scons role=router release=1 -j2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: glob2-web-development-${{ matrix.order }}
+          path: |
+            build/emscripten/client/release/index.html
+            build/emscripten/client/release/index.js
+            build/emscripten/client/release/index.wasm
+            build/emscripten/client/release/index.data
