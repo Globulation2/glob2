@@ -221,7 +221,7 @@ caps lock
 [control %0]
 control-%0
 [Corn]
-Зерно
+Пшеница
 [crater density]
 число кратеров
 [crater lakes terrain]
@@ -581,7 +581,7 @@ meta-%0
 [No Objectives]
 Нет целей
 [no ressources growth areas]
-Нет зон роста
+Зоны без роста ресурсов
 [No]
 Нет
 [Not Enough Ratings]
@@ -959,17 +959,17 @@ tab
 [the building is under attack]
 Здание атаковано
 [the clearingflag is finished]
-?? Флаг очистки установлен ??
+Флаг очистки установлен
 [the clearingflag is under attack]
-?? Флаг очистки атакован ??
+Флаг очистки атакован
 [the defencetower is finished]
 Оборонительная башня построена
 [the defencetower is under attack]
 Оборонительная башня атакована
 [the explorationflag is finished]
-?? Флаг разведки установлен ??
+Флаг разведки установлен
 [the explorationflag is under attack]
-?? Флаг разведки атакован ??
+Флаг разведки атакован
 [The game has not been finished]
 Игра не была закончена
 [the games]
@@ -1017,9 +1017,9 @@ tab
 [the swimmingpool is under attack]
 Бассейн атакован
 [the warflag is finished]
-?? Флаг войны установлен ??
+Флаг войны установлен
 [the warflag is under attack]
-?? Флаг войны атакован ??
+Флаг войны атакован
 [time]
 Время
 [to:]
@@ -1123,7 +1123,7 @@ up
 [water]
 Вода
 [Wheat]
-Зерно
+Пшеница
 [Won : you defeated your opponents]
 Победа: Вы победили всех соперников.
 [Won : you have the most prestige]
@@ -1201,7 +1201,7 @@ Ysagoon-игра в Интернете
 [Your IP address was temporarily banned]
 Ваш IP-адрес временно запрещён. Вам надо подождать пока он не будет разблокирован или связаться с администраторами.
 [Your unit got converted to %0's team]
-Ваш юнит перешёл к врагу %0
+Ваш юнит перешёл в команду %0
 [Your username was banned]
 Ваше имя пользователя запрещено. Пожалуйста свяжитесь с администраторами, чтобы это изменить.
 [game speed]
@@ -1222,3 +1222,7 @@ Cortex — экспериментальный трёхуровневый ИИ. �
 Не удалось сохранить кампанию. Проверьте, что папка назначения существует, доступна для записи и есть свободное место.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Внутри: %0
+[Units still working: %0]
+Ещё работают: %0

@@ -27,7 +27,7 @@
 [%0's game]
 Gra gracza %0
 [%0's team unit got converted to your team]
-Jednostka wroga %0 została przeciągnięta na Twoją stronę
+Jednostka z drużyny %0 dołączyła do Twojej drużyny
 [abreaviation explanation A]
 A: Sojusznicy
 [abreaviation explanation C]
@@ -221,7 +221,7 @@ Kontynuuj grę
 [control %0]
 control-%0
 [Corn]
-Zboże
+Pszenica
 [crater density]
 ilość kraterów
 [crater lakes terrain]
@@ -579,7 +579,7 @@ brak klawisza
 [No Objectives]
 Brak Celów
 [no ressources growth areas]
-Brak Terenów Wzrostu Zasobów
+Tereny bez wzrostu zasobów
 [No]
 Nie
 [Not Enough Ratings]
@@ -1125,7 +1125,7 @@ Oglądasz:
 [water]
 Woda
 [Wheat]
-Zboże
+Pszenica
 [Won : you defeated your opponents]
 Wygrałeś: pokonałeś swoich przeciwników
 [Won : you have the most prestige]
@@ -1203,7 +1203,7 @@ Twój %0 jest atakowany
 [Your IP address was temporarily banned]
 Twój adres IP został zablokowany. Proszę cierpliwie czekać aż zostanie odblokowany, lub skontaktować się z administratorami.
 [Your unit got converted to %0's team]
-Twoja jednostka została przeciągnięta na stronę wroga %0
+Twoja jednostka dołączyła do drużyny %0
 [Your username was banned]
 Twoja imię gracza zostało zablokowane. Skontaktuj się z administratorami aby to zmienić.
 [game speed]
@@ -1224,3 +1224,7 @@ Cortex - Eksperymentalna trójwarstwowa SI. W trakcie rozwoju.
 Nie można zapisać kampanii. Sprawdź, czy folder docelowy istnieje, jest dostępny do zapisu i ma wolne miejsce.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Wewnątrz: %0
+[Units still working: %0]
+Nadal pracują: %0

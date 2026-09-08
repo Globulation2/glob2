@@ -227,7 +227,7 @@ Speel verder
 [control %0]
 Ctrl-%0
 [Corn]
-Graan
+Tarwe
 [crater density]
 Krater dichtheid
 [crater lakes terrain]
@@ -243,7 +243,7 @@ Ctrl-lijn
 [current speed]
 Huidige snelheid
 [custom game]
-Nieuw Spel
+Aangepast spel
 [customcur]
 Alternatieve cursor
 [damage]
@@ -983,17 +983,17 @@ Het gebouw is voltooid
 [the building is under attack]
 Het gebouw wordt aangevallen
 [the clearingflag is finished]
-?? De ontruimingsvlag is klaar ??
+De ontruimingsvlag is klaar
 [the clearingflag is under attack]
-?? De ontruimingsvlag wordt aangevallen ??
+De ontruimingsvlag wordt aangevallen
 [the defencetower is finished]
 De toren is voltooid
 [the defencetower is under attack]
 Je defensie ligt onder vuur
 [the explorationflag is finished]
-?? De verkenningsvlag is klaar ??
+De verkenningsvlag is klaar
 [the explorationflag is under attack]
-?? De verkenningsvlag wordt aangevallen ??
+De verkenningsvlag wordt aangevallen
 [The game has not been finished]
 Het spel is nog niet afgelopen
 [the games]
@@ -1041,9 +1041,9 @@ Het zwembad is voltooid
 [the swimmingpool is under attack]
 Het zwembad wordt aangevallen
 [the warflag is finished]
-?? De oorlogsvlag is klaar ??
+De oorlogsvlag is klaar
 [the warflag is under attack]
-?? De oorlogsvlag wordt aangevallen ??
+De oorlogsvlag wordt aangevallen
 [time]
 Tijd
 [to:]
@@ -1147,9 +1147,9 @@ Speler:
 [water]
 Water
 [Wheat]
-Graan
+Tarwe
 [wheat]
-graan
+tarwe
 [Won : you defeated your opponents]
 Gewonnen: je hebt je tegenstanders verslagen
 [Won : you have the most prestige]
@@ -1223,7 +1223,7 @@ Je hebt gewonnen!
 [You where kicked from the game]
 Je werd uit het spel geschopt door de host!
 [Your %0 are under attack]
-Je %0 worden aangevallen
+Je %0 wordt aangevallen
 [Your IP address was temporarily banned]
 Dit IP-adres werd tijdelijk verbannen. Gelieve te wachten tot dit IP-adres weer toegestaan is of neem contact op met de beheerders.
 [Your unit got converted to %0's team]
@@ -1248,3 +1248,7 @@ Cortex - Experimentele AI met drie lagen. In ontwikkeling.
 De campagne kon niet worden opgeslagen. Controleer of de doelmap bestaat, beschrijfbaar is en voldoende vrije ruimte heeft.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Nog binnen: %0
+[Units still working: %0]
+Nog aan het werk: %0

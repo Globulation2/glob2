@@ -27,7 +27,7 @@
 [%0's game]
 %0's Game
 [%0's team unit got converted to your team]
-%0's team unit got converted to your team
+A unit from %0's team has joined your team
 [abreaviation explanation A]
 A: Allies
 [abreaviation explanation C]
@@ -971,17 +971,17 @@ The building is finished.
 [the building is under attack]
 The building is under attack.
 [the clearingflag is finished]
-?? clearingflag finished ??
+Clearing flag placed.
 [the clearingflag is under attack]
-?? clearingflag under attack ??
+Clearing flag is under attack.
 [the defencetower is finished]
 The defense tower is finished.
 [the defencetower is under attack]
 The defense tower is under attack.
 [the explorationflag is finished]
-?? explorationflag finished ??
+Exploration flag placed.
 [the explorationflag is under attack]
-?? explorationflag under attack ??
+Exploration flag is under attack.
 [The game has not been finished]
 The game has not been finished.
 [the games]
@@ -1029,9 +1029,9 @@ The swimming pool is finished.
 [the swimmingpool is under attack]
 The swimming pool is under attack.
 [the warflag is finished]
-?? warflag finished ??
+War flag placed.
 [the warflag is under attack]
-?? warflag under attack ??
+War flag is under attack.
 [time]
 Time
 [to:]
@@ -1209,11 +1209,11 @@ You have won!
 [You where kicked from the game]
 You were kicked from the game
 [Your %0 are under attack]
-Your %0 are under attack
+Your %0 is under attack
 [Your IP address was temporarily banned]
 Your IP address was temporarily banned. Please wait patiently until it is unbanned or contact the administrators.
 [Your unit got converted to %0's team]
-Your unit got converted to %0's team
+Your unit has joined %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
 [game speed help]
@@ -1222,3 +1222,7 @@ Single-player and replays only. Multiplayer runs at 1x.
 Maximum
 [multiplayer game speed]
 Game speed: 1x (multiplayer)
+[Units still inside: %0]
+Still inside: %0
+[Units still working: %0]
+Still working: %0

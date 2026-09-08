@@ -27,17 +27,17 @@
 [%0's game]
 Partida de %0
 [%0's team unit got converted to your team]
-Uma unidade de %0 tem se passado a seu bando
+Uma unidade de %0 passou para a tua equipa
 [abreaviation explanation A]
 A: Aliados
 [abreaviation explanation C]
 C: Enviar mensagem de chat a
 [abreaviation explanation fV]
-fV: Mostrar tabernas (para convertir unidades)
+fV: Partilhar a visão das tabernas (para converter unidades)
 [abreaviation explanation mV]
-mV: Mostrar mercados (para intercambiar frutas)
+mV: Partilhar a visão dos mercados (para trocar frutas)
 [abreaviation explanation V]
-V: Mostrar todos os prédios
+V: Partilhar a visão de todos os edifícios
 [add map]
 Adicionar mapa
 [add shortcut]
@@ -61,7 +61,7 @@ Nicowar
 [AINone-Description]
 Nenhuma — não faz nada.
 [AINone]
-IANone
+Nenhuma
 [AINumbi-Description]
 Numbi expande-se pouco, mas depressa. Dificuldade baixa.
 [AINumbi]
@@ -87,7 +87,7 @@ e
 [any explorer]
 qualquer explorador
 [are dying hungry]
-morrendo
+a morrer de fome
 [are hungry]
 famintos
 [are ok]
@@ -101,7 +101,7 @@ Atribuídas
 [At. speed]
 Velocidade at.
 [At. strength]
-Forza at.
+Força at.
 [Attack]
 Ataque
 [audio]
@@ -173,7 +173,7 @@ Impossível unir-se à partida: versão do jogo incorreta
 [cancel destroy]
 Cancelar destruição
 [cancel repair]
-Cancelar arrumação
+Cancelar reparação
 [cancel upgrade]
 Cancelar melhora
 [Cancel]
@@ -187,11 +187,11 @@ Alterar nome da área
 [Cherry]
 Cereja
 [choose campaign]
-Eleger campanha
+Escolher campanha
 [choose game]
-Eleger una partida
+Escolher uma partida
 [choose map]
-Eleger um mapa
+Escolher um mapa
 [clear area]
 Área de limpeza
 [Clearing:]
@@ -247,9 +247,9 @@ Jogo personalizado
 [customcur]
 Cursor personalizado
 [damage]
-Danho
+Dano
 [Damaged Map]
-Mapa de danos
+Mapa de feridos
 [decrease units working]
 Diminuir unidades a trabalhar
 [Defeat Your Oppenents]
@@ -265,7 +265,7 @@ Mapa de defesa
 [Defense]
 Defesa
 [Delete game]
-Borrar a partida selecionada
+Eliminar a partida selecionada
 [delete]
 Eliminar
 [desert]
@@ -275,7 +275,7 @@ Destruir edifício selecionado
 [destroy]
 Destruir
 [display]
-Tela
+Ecrã
 [do nothing]
 Não fazer nada
 [don't carry anything]
@@ -303,7 +303,7 @@ fim
 [Enter your nickname :]
 Introduza o seu apelido:
 [Enter your password :]
-Introduza sua contrasenha:
+Introduza a sua palavra-passe:
 [enter]
 enter
 [equals]
@@ -369,15 +369,15 @@ Comida
 [Free]
 Saudáveis
 [free]
-libres
+livres
 [from:]
 de:
 [fruit]
 fruta
 [fullscreen]
-Tela completa
+Ecrã inteiro
 [game full]
-Partida alotada
+Partida cheia
 [game shortcuts]
 Atalhos do jogo
 [Game]
@@ -395,7 +395,7 @@ Erva
 [ground attack]
 ataque terrestre
 [guard area]
-Área de guardia
+Área de guarda
 [GUIMapPreview text 0]
 Escolha
 [GUIMapPreview text 1]
@@ -447,9 +447,9 @@ inserir
 [inside]
 Dentro
 [islands size]
-Tamanho das ínsulas
+Tamanho das ilhas
 [islands terrain]
-ínsulas
+Ilhas
 [isles terrain]
 Ilhéus
 [iterate selection]
@@ -513,7 +513,7 @@ Você perdeu: Sua colônia foi aniquilada
 [low priority]
 baixa
 [lowquality]
-Calidade baixa
+Qualidade baixa
 [Magic At. Air]
 At. aéreo
 [Magic At. Ground]
@@ -597,9 +597,9 @@ Número de edifícios
 [number of players: %0]
 %0 jogadores presentes.
 [number of teams: %0]
-%0 times.
+%0 equipas
 [number of teams]
-Número de bandos
+Número de equipas
 [Number Of Units]
 Número de unidades
 [numlock]
@@ -695,7 +695,7 @@ Melhora a velocidade de
 [racetrack]
 Pista de corrida
 [range]
-Rango
+Alcance
 [Rated %0]
 Avaliação: %0
 [ratios]
@@ -711,7 +711,7 @@ Registar
 [remember unit]
 Memorizar atribuições
 [Remember YOG password localy]
-Lembrar a contrasenha localmente. (inseguro)
+Memorizar a palavra-passe localmente.
 [remove map]
 Remover mapa
 [remove shortcut]
@@ -721,7 +721,7 @@ Remover
 [repair building]
 Iniciar/parar reparação
 [repair]
-Arrumar
+Reparar
 [repeat area]
 vezes a mesma paisagem
 [Repeat your password :]
@@ -823,7 +823,7 @@ Colocar bandeira de exploração
 [select place forbidden area]
 Colocar área: Área proibida
 [select place guard area]
-Colocar área: Área de guardia
+Colocar área de guarda
 [select place warflag]
 Colocar bandeira de guerra
 [select racetrack building]
@@ -847,7 +847,7 @@ shift-%0
 [shortcut explanation enter]
 Intro: Enviar mensagem de chat
 [shortcut explanation v]
-V: Pedir a palavra
+V: manter premida a tecla para falar
 [show areas]
 Mostrar áreas
 [show flags]
@@ -877,9 +877,9 @@ Começar
 [Starving Map]
 Mapa de fome
 [starving]
-morrendo
+a morrer de fome
 [Statistics]
-Estadísticas
+Estatísticas
 [Still (i)]
 Ainda
 [still (w)]
@@ -955,7 +955,7 @@ Editor de equipas
 [Teams Fixed]
 Equipas fixas
 [teams]
- times
+ equipas
 [the barracks is finished]
 O quartel foi construído
 [the barracks is under attack]
@@ -977,11 +977,11 @@ A torre de defesa está sendo atacada
 [the explorationflag is under attack]
 ?? A bandeira de exploração está sendo atacada ??
 [The game has not been finished]
-A partida não tem terminado
+A partida ainda não terminou
 [the games]
 Jogos
 [the hospital is finished]
-O hospital tem sido construído
+O hospital foi construído
 [the hospital is under attack]
 O hospital está sendo atacado
 [The host has cancelled the game]
@@ -997,7 +997,7 @@ O mercado foi construído
 [the market is under attack]
 O mercado está sendo atacado
 [The player %0 has joined YOG]
-%0 entrou a YOG
+%0 entrou no YOG
 [The player %0 has left YOG]
 %0 foi embora de YOG
 [the racetrack is finished]
@@ -1009,15 +1009,15 @@ Repetições
 [the school is finished]
 A escola foi construída
 [the school is under attack]
-A escuela está sendo atacada
+A escola está a ser atacada
 [the stonewall is finished]
 Uma seção do muro de pedra foi construída
 [the stonewall is under attack]
-O inimigo está a sua muralha
+O inimigo está junto às tuas muralhas
 [the swarm is finished]
 A colmeia foi construída
 [the swarm is under attack]
-A colmeia está siendo atacada
+A colmeia está a ser atacada
 [the swimmingpool is finished]
 A piscina foi construída
 [the swimmingpool is under attack]
@@ -1115,7 +1115,7 @@ Atrai guerreiros
 [warflag]
 Bandeira de guerra
 [Warning, you need to reboot the game for changes to take effect]
-[Aviso: Deve se reiniciar o jogo para que as mudanças surtam efeito]
+Aviso: é necessário reiniciar o jogo para aplicar as alterações
 [Warrior Ratio]
 Proporção de guerreiros
 [Warrior]
@@ -1131,11 +1131,11 @@ A observar:
 [Wheat]
 Trigo
 [Won : you defeated your opponents]
-Você ganhou: Tem destruído seus oponentes
+Ganhaste: derrotaste os teus adversários
 [Won : you have the most prestige]
 Você ganhou: Você é quem mais prestígio tem
 [Won : your ally %0 has the most prestige]
-Você ganhou: seus aliados %0 tem atingido o maior prestígio
+Ganhaste: o teu aliado %0 tem mais prestígio
 [Wood]
 Madeira
 [wood]
@@ -1153,19 +1153,19 @@ feridos
 [Yes]
 Sim
 [YESTS_CONNECTING]
-Conectándo-se o metaservidor YOG...
+A estabelecer ligação ao metasservidor YOG...
 [YESTS_CONNECTION_LOST]
 Conexão ao metaservidor YOG perdida.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-O metaservidor YOG tem rejeitado a conexão porque este usuário já tem sido registrado. Desactive a opção "Registrar um novo usuário de YOG com contrasenha" se este é seu usuário.
+O metasservidor YOG recusou a ligação porque este nome de utilizador já está registado. Se for o teu, desativa a opção de registar um novo utilizador YOG com palavra-passe.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-O metaservidor YOG tem rejeitado a conexão porque a contrasenha fornecida é incorreta.
+O metasservidor YOG recusou a ligação porque a palavra-passe introduzida está incorreta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-O metaservidor YOG tem rejeitado a conexão porque  usuário aínda não tem uma contrasenha. Active por uma vez a opção "Registrar um novo usuário de YOG com contrasenha".
+O metasservidor YOG recusou a ligação porque este nome de utilizador ainda não tem palavra-passe. Para o registar com esta palavra-passe, ativa a opção de registar um novo utilizador YOG com palavra-passe antes de te ligares. Só é necessário ativá-la uma vez.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 O metasservidor YOG recusou a ligação porque este endereço IP está temporariamente banido. Aguarde até o bloqueio terminar ou contacte os administradores.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-O metaservidor YOG tem rejeitado a conexão porque o cliente globulation2 é obsoleto.
+O metasservidor YOG recusou a ligação porque o teu cliente Globulation 2 está desatualizado. Obtém a versão mais recente em www.globulation2.org para jogar em linha.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 O metaservidor YOG tem rejeitado a conexão sem dar uma explicação.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
@@ -1179,7 +1179,7 @@ O sistema de conexão está pronto para contactar-se com o metaservidor YOG.
 [YESTS_PASSWORDS_DONT_MATCH]
 As palavras-passe não coincidem. Volte a escrevê-las.
 [YESTS_UNABLE_TO_CONNECT]
-Imposível conectar-se. Parece que o metaservidor YOG está caido.
+Não é possível ligar. O metasservidor YOG parece estar indisponível.
 [yog block command help]
 /block <jogador>    Bloqueia um jogador; deixarás de ver as suas mensagens.
 [yog block command player %0 already blocked]
@@ -1197,17 +1197,17 @@ Comando desconhecido.
 [yog]
 Jogo em linha com Ysagoon
 [you have lost]
-¡Você perdeu!
+Perdeste!
 [you have won]
-¡Você ganhou!
+Ganhaste!
 [You where kicked from the game]
 Foste expulso da partida
 [Your %0 are under attack]
-Seus %0 estão sendo atacados
+O teu %0 está a ser atacado
 [Your IP address was temporarily banned]
 O teu endereço IP foi temporariamente banido. Aguarda até o bloqueio terminar ou contacta os administradores.
 [Your unit got converted to %0's team]
-Uma unidade tem se passado ao bando de %0
+Uma unidade tua passou para a equipa de %0
 [Your username was banned]
 O teu nome de utilizador foi banido. Contacta os administradores para resolver a situação.
 [game speed]
@@ -1230,3 +1230,7 @@ Não foi possível carregar o mapa: o ficheiro está danificado ou a sua versão
 Não foi possível guardar a campanha. Verifica se a pasta de destino existe, permite escrita e tem espaço livre.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Dentro: %0
+[Units still working: %0]
+Ainda a trabalhar: %0

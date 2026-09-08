@@ -31,7 +31,7 @@ Jednotka tímu %0 prešla na vašu stranu
 [abreaviation explanation A]
 A: Spojenci
 [abreaviation explanation C]
-C: Posielaj správy
+C: Príjemcovia správ chatu
 [abreaviation explanation fV]
 fV: Zdieľať výhľad jedální (na získavanie jednotiek)
 [abreaviation explanation mV]
@@ -61,9 +61,9 @@ Nicowar
 [AINone-Description]
 Žiadna – nerobí nič.
 [AINone]
-UINone
+Žiadna UI
 [AINumbi-Description]
-Numbi sa rozrastá mierne, ale koná rýchlo. Nízka náročnosť.
+Numbi sa rozrastá v malom rozsahu, ale rýchlo. Nízka náročnosť.
 [AINumbi]
 UINumbi
 [AIReachToInfinity-Description]
@@ -87,7 +87,7 @@ a
 [any explorer]
 hociktorý Prieskumník
 [are dying hungry]
-trpia
+umierajú od hladu
 [are hungry]
 sú hladní
 [are ok]
@@ -199,7 +199,7 @@ Vyber si mapu
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Čistí suroviny
+Odstraňuje suroviny
 [clearingflag]
 Vlajka čistenia
 [closed]
@@ -207,7 +207,7 @@ Uzavreté
 [combined vision]
 Zdieľaný výhľad
 [compile]
-Kopilovať skript
+Kompilovať skript
 [compose]
 Compose
 [Computing Fertility]
@@ -237,13 +237,13 @@ Vytvoriť hru
 [create map]
 Vytvor mapu
 [credits]
-Kredity
+Autori
 [ctrl - line]
 Ctrl – čiara
 [current speed]
 Súčasná rýchlosť
 [custom game]
-Voliteľná hra
+Vlastná hra
 [customcur]
 Špeciálny kurzor
 [damage]
@@ -515,9 +515,9 @@ nízka
 [lowquality]
 Znížená kvalita
 [Magic At. Air]
-Vzduch
+Vzdušné pošk.
 [Magic At. Ground]
-Zem
+Pozemné pošk.
 [map description]
 Popis
 [Map Discovered]
@@ -573,7 +573,7 @@ Nová kampaň
 [new map]
 Nová
 [nick taken]
-Je nám ľúdo, ale prezývka, ktorú si si vybral(a) sa na freenode ož používa. Budeš schopný(á) komunikovať len cez YOG
+Zvolená prezývka sa na sieti freenode už používa. Budete môcť komunikovať iba cez YOG.
 [no fullscreen]
 * iba v režime okna
 [No Hints]
@@ -631,7 +631,7 @@ Otvoriť editor scenárov
 [open teams editor]
 Otvoriť editor tímov
 [open]
-otvorené
+Voľné
 [OpenGL]
 OpenGL
 [Options]
@@ -857,7 +857,7 @@ Zobraziť hlavnú ponuku
 [skin]
 Zobrazenie
 [smoothing]
-Vyhľadenie
+Vyhladenie
 [sort by name]
 Názov
 [sort by rating]
@@ -877,7 +877,7 @@ Spustiť novú kampaň
 [Starving Map]
 Mapa hladovania
 [starving]
-trpia
+Hladovanie
 [Statistics]
 Štatistiky
 [Still (i)]
@@ -1133,7 +1133,7 @@ Pšenica
 [wheat]
 pšenica
 [Won : you defeated your opponents]
-Výhra: Porazil si svojích nepriateľov
+Výhra: Porazil si svojich nepriateľov
 [Won : you have the most prestige]
 Výhra: Máš najväčšiu prestíž
 [Won : your ally %0 has the most prestige]
@@ -1149,7 +1149,7 @@ Robotník
 [workers]
 robotníci
 [working]
-Precuje
+V práci
 [wounded]
 zranení
 [Yes]
@@ -1163,7 +1163,7 @@ YOG metaserver odmietol spojenie, pretože toto meno a heslo sú už zaregistrov
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metaserver odmietol spojenie, pretože bolo zadané zlé heslo.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metaserver odmietol spojenie, pretože toto meno ešte nemá nastavené heslo. Najprv je potrebné meno a heslo zaregistrovať. Preto aktivuj možnosť  "Zaregistrovať nové YOG meno s heslom" a až potom sa pokús pripojiť. Toto je potrebné swpraviť len raz.
+YOG metaserver odmietol spojenie, pretože toto meno ešte nemá nastavené heslo. Najprv je potrebné meno a heslo zaregistrovať. Preto aktivuj možnosť "Zaregistrovať nové YOG meno s heslom" a až potom sa pokús pripojiť. Toto je potrebné spraviť len raz.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 Metaserver YOG odmietol spojenie, pretože táto IP adresa je dočasne zablokovaná. Počkajte na odblokovanie alebo kontaktujte správcov.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1205,7 +1205,7 @@ Vyhral(a) si!
 [You where kicked from the game]
 Boli ste vyhodení z hry
 [Your %0 are under attack]
-Tvoji %0 čelia útoku
+Vaša jednotka čelí útoku: %0
 [Your IP address was temporarily banned]
 Vaša IP adresa bola dočasne zablokovaná. Počkajte na odblokovanie alebo kontaktujte správcov.
 [Your unit got converted to %0's team]
@@ -1232,3 +1232,7 @@ Mapu nemožno načítať: súbor je poškodený alebo má nekompatibilnú verziu
 Kampaň nemožno uložiť. Skontrolujte, či cieľový priečinok existuje, je zapisovateľný a je k dispozícii voľné miesto.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Vnútri: %0
+[Units still working: %0]
+Ešte v práci: %0

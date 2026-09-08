@@ -61,7 +61,7 @@ Nicowar
 [AINone-Description]
 Žádná – nedělá nic.
 [AINone]
-AINone
+Žádná AI
 [AINumbi-Description]
 Numbi se rozrůstá v malém rozsahu, ale rychle. Nízká obtížnost.
 [AINumbi]
@@ -89,13 +89,13 @@ libovolný průzkumník
 [are dying hungry]
 umírají hlady
 [are hungry]
-o hladu
+hladoví
 [are ok]
-v pohodě :-)
+v pořádku
 [are wonded]
 je zraněných
 [armor]
-Opevnění
+Brnění
 [assigned]
 Přiřazeno
 [At. speed]
@@ -153,7 +153,7 @@ Střelivo
 [campaign editor]
 Editor kampaní
 [campaign]
-Nová hra
+Kampaň
 [Can't connect, can't find host]
 Nelze se připojit, hostitel nenalezen
 [Can't host game, port %0 in use]
@@ -165,11 +165,11 @@ Nelze se připojit, hra již začala
 [Can't join game, game is full]
 Nelze se připojit, hra je plná
 [cancel destroy]
-Stornuj zničeni
+Zrušit demolici
 [cancel repair]
-Stornuj opravu
+Zrušit opravu
 [cancel upgrade]
-Stornuj vylepšeni
+Zrušit vylepšování
 [Cancel]
 Zrušit
 [caps lock]
@@ -221,7 +221,7 @@ Pokračovat ve hře
 [control %0]
 control-%0
 [Corn]
-Obilí
+Pšenice
 [crater density]
 počet kráterů
 [crater lakes terrain]
@@ -237,7 +237,7 @@ Ctrl – čára
 [current speed]
 Současná rychlost
 [custom game]
-Volitelná hra
+Vlastní hra
 [customcur]
 Vlastní kurzor
 [damage]
@@ -389,7 +389,7 @@ Tráva
 [ground attack]
 pozemní útok
 [guard area]
-Hlídáná oblast
+Hlídaná oblast
 [GUIMapPreview text 0]
 Vyberte prosím
 [GUIMapPreview text 1]
@@ -397,7 +397,7 @@ mapu
 [handmade map]
 Ručně vyrobená mapa
 [Happyness]
-Zadostiučinění
+Spokojenost
 [hard pause]
 Úplně pozastavit
 [Harvest]
@@ -567,7 +567,7 @@ Nová kampaň
 [new map]
 Nová
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Zvolená přezdívka se na síti freenode již používá. Budete moci komunikovat pouze přes YOG.
 [no fullscreen]
 * pouze v režimu okna
 [No Hints]
@@ -593,7 +593,7 @@ Počet hráčů: %0 (z toho %1 AI)
 [number of teams: %0]
 %0 týmů.
 [number of teams]
-Počet hráčů
+Počet týmů
 [Number Of Units]
 Počet jednotek
 [numlock]
@@ -625,7 +625,7 @@ Otevřít editor scénářů
 [open teams editor]
 Otevřít editor týmů
 [open]
-Otevřít
+Volné
 [OpenGL]
 OpenGL
 [Options]
@@ -633,7 +633,7 @@ Nastavení
 [options]
 Nastavení
 [Orange]
-Pomarenče
+Pomeranče
 [Other Options]
 Další možnosti
 [page down]
@@ -689,7 +689,7 @@ Zvyšuje rychlost
 [racetrack]
 Závodní dráha
 [range]
-Rozsah
+Dosah
 [Rated %0]
 Hodnocení: %0
 [ratios]
@@ -699,13 +699,13 @@ připraven?
 [refresh map list]
 Obnovit seznam map
 [Register a new YOG user with password]
-Registrace nového YOG uživatele s heslem. (nejisté)
+Registrace nového YOG uživatele s heslem. (nezabezpečené)
 [Register]
 Zaregistrovat se
 [remember unit]
 Pamatovat počty jednotek
 [Remember YOG password localy]
-Zapamatovat si heslo lokálně? (nejisté)
+Zapamatovat heslo místně. (nezabezpečené)
 [remove map]
 Odebrat mapu
 [remove shortcut]
@@ -949,7 +949,7 @@ Editor týmů
 [Teams Fixed]
 Pevné týmy
 [teams]
- hráčů
+ týmů
 [the barracks is finished]
 Cvičiště postaveno ...
 [the barracks is under attack]
@@ -1123,7 +1123,7 @@ Sledujete:
 [water]
 Voda
 [Wheat]
-Obilí
+Pšenice
 [Won : you defeated your opponents]
 Tvoji nepřátelé byli poraženi ...
 [Won : you have the most prestige]
@@ -1191,17 +1191,17 @@ Neznámý příkaz.
 [yog]
 Ysagoon Online Gaming
 [you have lost]
-Jsi ztracen...
+Prohráli jste!
 [you have won]
 Vyhrál jsi!
 [You where kicked from the game]
 Byli jste vyhozeni ze hry
 [Your %0 are under attack]
-Tvoji %0 jsou pod útokem
+Vaše jednotka je napadena: %0
 [Your IP address was temporarily banned]
 Vaše IP adresa byla dočasně zablokována. Počkejte na odblokování nebo kontaktujte správce.
 [Your unit got converted to %0's team]
-Tva jednotka změnila víru v jiného hráče %0
+Vaše jednotka přešla do týmu hráče %0
 [Your username was banned]
 Vaše uživatelské jméno bylo zablokováno. Pro odblokování kontaktujte správce.
 [game speed]
@@ -1224,3 +1224,7 @@ Mapu nelze načíst: soubor je poškozený nebo má nekompatibilní verzi.
 Kampaň nelze uložit. Zkontrolujte, zda cílová složka existuje, lze do ní zapisovat a je k dispozici volné místo.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Uvnitř: %0
+[Units still working: %0]
+Ještě v práci: %0

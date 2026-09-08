@@ -61,11 +61,11 @@ Nicowar
 [AINone-Description]
 Без ВИ – не ради ништа.
 [AINone]
-НикогоВИћ
+Без ВИ
 [AINumbi-Description]
 Numbi се шири умерено, али брзо. Ниска тежина.
 [AINumbi]
-ГлупаВИ
+Numbi
 [AIReachToInfinity-Description]
 ReachToInfinity не напада, али гради огромне базе и упорно преводи туђе јединице на своју страну. Ниска тежина.
 [AIReachToInfinity]
@@ -135,7 +135,7 @@ Break
 [build %0 level %1]
 Изгради: %0, ниво %1
 [Build]
-Гради
+Градња
 [Building Defaults]
 Подразумевана подешавања зграда
 [building settings]
@@ -165,11 +165,11 @@ Ctrl + превлачење = линија
 [Can't join game, game is full]
 Придруживање није могуће: игра је попуњена
 [cancel destroy]
-Заустави уништење
+Откажи рушење
 [cancel repair]
-Одложи поправку
+Откажи поправку
 [cancel upgrade]
-Одложи дограду
+Откажи надоградњу
 [Cancel]
 Поништи
 [caps lock]
@@ -291,7 +291,7 @@ Delete
 [editor shortcuts]
 За уређивач
 [editor]
-Уредник
+Уређивач
 [end]
 End
 [Enter your nickname :]
@@ -307,7 +307,7 @@ Escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-Привлачи истраживаче
+Привлачи извиђаче
 [explorationflag]
 Истраживачка застава
 [Explorer Ratio]
@@ -371,7 +371,7 @@ f9
 [fullscreen]
 Цео екран
 [game full]
-Потпуна игра
+Игра је попуњена
 [game shortcuts]
 Пречице игре
 [Game]
@@ -401,7 +401,7 @@ f9
 [hard pause]
 Потпуно паузирај
 [Harvest]
-Жањи
+Жетва
 [high priority]
 висок
 [hints]
@@ -415,7 +415,7 @@ Home
 [hospital]
 Болница
 [host]
-Рачунар
+Организуј игру
 [hp]
 Здравље
 [Human]
@@ -427,7 +427,7 @@ Home
 [hungryness]
 Глад
 [In way]
-У путу
+На путу
 [increase units working]
 Повећај број радних јединица
 [inn explanation 2]
@@ -567,7 +567,7 @@ meta-%0
 [new map]
 Нова
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Изабрани надимак је већ у употреби на мрежи freenode. Моћи ћете да разговарате само преко YOG-а.
 [no fullscreen]
 * само у прозорском режиму
 [No Hints]
@@ -625,13 +625,13 @@ Num Lock
 [open teams editor]
 Отвори уређивач тимова
 [open]
-отвори
+Слободно
 [OpenGL]
 OpenGL
 [Options]
-Избори
+Опције
 [options]
-Избори
+Опције
 [Orange]
 Наранџе
 [Other Options]
@@ -879,7 +879,7 @@ V: држите за говор
 [still (w)]
 Чекање
 [still one unit working]
-Једна јединица у послу
+Једна јединица још ради
 [Still one]
 Још једна
 [Stone]
@@ -905,7 +905,7 @@ V: држите за говор
 [swarm]
 Рој
 [Swim]
-Пливај
+Пливање
 [swimmingpool explanation 2]
 пливања јединица
 [swimmingpool explanation]
@@ -1053,7 +1053,7 @@ Tab
 [tutorial text 4]
 Скоро сте завршили. Преостале су само заставе и напад. Затим ћете знати довољно да испробате прилагођене игре, а касније и да играте на мрежи против најбољих играча Globulation 2.
 [tutorial]
-Уџбеник
+Обука
 [Uncontrolled]
 Неконтролисан
 [undo]
@@ -1065,7 +1065,7 @@ Tab
 [unit settings explanation]
 Подразумевани број додељених јединица
 [units working]
- јединица у послу
+ јединица ради
 [Units]
 Јединице
 [unlocked at start]
@@ -1101,7 +1101,7 @@ Tab
 [Waiting]
 Чекање
 [Walk]
-Ходај
+Ходање
 [warflag explanation 2]
 
 [warflag explanation]
@@ -1125,7 +1125,7 @@ Tab
 [Wheat]
 Жито
 [Won : you defeated your opponents]
-Победа : Савладали сте противике.
+Победа: Савладали сте противнике.
 [Won : you have the most prestige]
 Победа: Имате највише престижа.
 [Won : your ally %0 has the most prestige]
@@ -1141,7 +1141,7 @@ Tab
 [workers]
 Радници
 [working]
-Ради се
+Раде
 [wounded]
 рањених
 [Yes]
@@ -1155,7 +1155,7 @@ YOG мета-сервер је одбио везу јер је ово корис
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG мета-сервер је одбио везу јер лозинка коју сте уписали није исправна.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG мета-сервер је одбио везу јер ваше корисничко име нема одређену лозинку. Морате регистровати ваше име и изабрати лозинку.
+Метасервер YOG је одбио везу јер ово корисничко име још нема лозинку. Ако желите да га региструјете са унетом лозинком, пре повезивања укључите опцију "Пријави новог корисника на YOG са лозинком". Ово је потребно урадити само једном.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 Метасервер YOG је одбио везу јер је ова IP адреса привремено блокирана. Сачекајте да забрана истекне или се обратите администраторима.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1201,7 +1201,7 @@ YOG мета-сервер је одбио везу јер корисничко �
 [Your IP address was temporarily banned]
 Ваша IP адреса је привремено блокирана. Сачекајте да забрана истекне или се обратите администраторима.
 [Your unit got converted to %0's team]
-Ваша јединица је пребегла %0
+Ваша јединица је прешла у тим играча %0
 [Your username was banned]
 Ваше корисничко име је блокирано. За укидање забране обратите се администраторима.
 [game speed]
@@ -1224,3 +1224,7 @@ Cortex - Експериментална трослојна вештачка ин
 Кампања се не може сачувати. Проверите да ли одредишна фасцикла постоји, дозвољава упис и има слободног простора.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Унутра: %0
+[Units still working: %0]
+Још раде: %0

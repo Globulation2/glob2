@@ -379,7 +379,7 @@ Fruit
 [fullscreen]
 Plein écran
 [game full]
-Jeu complet
+Partie pleine
 [game shortcuts]
 Jeu
 [Game]
@@ -587,7 +587,7 @@ Aucune touche
 [No Objectives]
 Pas d'objectifs
 [no ressources growth areas]
-Aucune zone de croissance de resources
+Zones sans croissance
 [No]
 Non
 [Not Enough Ratings]
@@ -727,7 +727,7 @@ Réparer la bâtiment
 [repair]
 Réparer
 [repeat area]
-Répéter la zone
+fois le même paysage
 [Repeat your password :]
 Retape ton mot de passe
 [replay ended]
@@ -749,7 +749,7 @@ Super droite
 [right]
 Droite
 [river diameter]
-Diamètre de la rivière
+Largeur de la rivière
 [river terrain]
 Rivière
 [sand]
@@ -771,7 +771,7 @@ construction des ouvrières
 [school explanation]
 Améliore le niveau de
 [school]
-Ecole
+École
 [Script Areas]
 Zones du script
 [scroll lock]
@@ -833,7 +833,7 @@ Choisir placer un drapeau de guerre
 [select racetrack building]
 Choisir une piste de course
 [select school building]
-Selectionner construction d'une école
+Sélectionner l’école
 [select swarm building]
 Selectionner construction d'une ruche
 [select swimmingpool building]
@@ -969,17 +969,17 @@ Le bâtiment est terminé
 [the building is under attack]
 Le bâtiment est attaqué
 [the clearingflag is finished]
-?? Drapeau de défrichage terminé ??
+Drapeau de défrichage terminé
 [the clearingflag is under attack]
-?? Drapeau de défrichage attaqué ??
+Drapeau de défrichage attaqué
 [the defencetower is finished]
 La tour de défense est terminée
 [the defencetower is under attack]
 Vos défenses sont attaquées
 [the explorationflag is finished]
-?? Drapeau d'exploration terminé ??
+Drapeau d'exploration terminé
 [the explorationflag is under attack]
-?? Drapeau d'exploration attaqué ??
+Drapeau d'exploration attaqué
 [The game has not been finished]
 La partie n'a pas été terminée
 [the games]
@@ -1027,9 +1027,9 @@ La piscine est terminée
 [the swimmingpool is under attack]
 La piscine est attaquée
 [the warflag is finished]
-?? Drapeau de guerre terminé ??
+Drapeau de guerre terminé
 [the warflag is under attack]
-?? Drapeau de guerre attaqué ??
+Drapeau de guerre attaqué
 [time]
 temps
 [to:]
@@ -1209,7 +1209,7 @@ Vous avez gagné!
 [You where kicked from the game]
 Vous venez de vous faire ejecter du jeu
 [Your %0 are under attack]
-Vos %0 sont attaquées
+Votre %0 est attaquée
 [Your IP address was temporarily banned]
 Votre adresse IP est temporairement bannis
 [Your unit got converted to %0's team]
@@ -1234,3 +1234,7 @@ Cortex - IA expérimentale à trois couches. En cours de développement.
 Impossible d'enregistrer la campagne. Vérifiez que le dossier de destination existe, est accessible en écriture et dispose d'espace libre.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Dedans : %0
+[Units still working: %0]
+Travaillent encore : %0

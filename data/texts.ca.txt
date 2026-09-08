@@ -29,15 +29,15 @@ Partida de %0
 [%0's team unit got converted to your team]
 Una unitat de %0 s'ha convertit al teu equip
 [abreaviation explanation A]
-A : Alies
+A: Aliats
 [abreaviation explanation C]
 C : Envia un missatge de text a
 [abreaviation explanation fV]
-Vf : Mostra la visio de totes les DESPENSES (per robar unitats)
+fV: Comparteix la visió de les despenses (per atraure unitats)
 [abreaviation explanation mV]
-mV : Mostra la visio de tots els MERCATS (per intercanviar fruita)
+mV: Comparteix la visió dels mercats (per intercanviar fruita)
 [abreaviation explanation V]
-V : Mostra la visio de totes les construccions
+V: Comparteix la visió de tots els edificis
 [add map]
 Afegeix un mapa
 [add shortcut]
@@ -61,7 +61,7 @@ Nicowar
 [AINone-Description]
 Cap: no fa res.
 [AINone]
-IANone
+Cap
 [AINumbi-Description]
 Numbi s'expandeix poc, però de pressa. Dificultat baixa.
 [AINumbi]
@@ -87,21 +87,21 @@ i
 [any explorer]
 Qualsevol Explorador
 [are dying hungry]
-es mor de gana
+es moren de gana
 [are hungry]
-te fam
+tenen gana
 [are ok]
 estan bé
 [are wonded]
-esta ferit
+estan ferits
 [armor]
 Armadura
 [assigned]
 Assignades
 [At. speed]
-At. velocitat
+Vel. d'atac
 [At. strength]
-At. força
+Força d'atac
 [Attack]
 Atac
 [audio]
@@ -125,7 +125,7 @@ Millora el nivell de combat
 [barracks]
 Caserna
 [beach size]
-Tamany de la platja
+Mida de la platja
 [Blocked Players]
 Jugadors blocats
 [break]
@@ -189,7 +189,7 @@ Cirera
 [choose campaign]
 Escull una campanya
 [choose game]
-Escull un juego
+Escull una partida
 [choose map]
 Escull un mapa
 [clear area]
@@ -215,11 +215,11 @@ Calculant la fertilitat
 [concrete islands terrain]
 Illes separades
 [connect]
-Conectat
+Connecta
 [connecting to game]
 Connectant a la partida
 [connecting to]
-Conectant a
+Connectant a
 [Construction Site Defaults]
 Valors per defecte de les obres
 [Continue playing]
@@ -229,9 +229,9 @@ control-%0
 [Corn]
 Blat
 [crater density]
-densitat del cràter
+nombre de cràters
 [crater lakes terrain]
-llac cràter
+Llacs de cràter
 [create game]
 Crear joc
 [create map]
@@ -243,13 +243,13 @@ Ctrl - línia
 [current speed]
 Velocitat actual
 [custom game]
-Joc personalizat
+Joc personalitzat
 [customcur]
-Cursor actual
+Cursor personalitzat
 [damage]
-mal
+Dany
 [Damaged Map]
-Mapa de danys
+Mapa de ferits
 [decrease units working]
 Redueix les unitats assignades
 [Defeat Your Oppenents]
@@ -275,7 +275,7 @@ Destrueix l'edifici seleccionat
 [destroy]
 Destruir
 [display]
-Visualitzador
+Pantalla
 [do nothing]
 No facis res
 [don't carry anything]
@@ -303,7 +303,7 @@ fi
 [Enter your nickname :]
 Introdueix el teu nick :
 [Enter your password :]
-Introdueix la contrassenya :
+Introdueix la contrasenya:
 [enter]
 retorn
 [equals]
@@ -369,7 +369,7 @@ Area Prohibida
 [Free]
 Sanes
 [free]
-desocupat
+desocupats
 [from:]
 de:
 [fruit]
@@ -393,7 +393,7 @@ Tornar al menú principal
 [grass]
 Herba
 [ground attack]
-Attac en terra
+Atac terrestre
 [guard area]
 Area de Guardia
 [GUIMapPreview text 0]
@@ -407,7 +407,7 @@ Felicitat
 [hard pause]
 Pausa total
 [Harvest]
-Recolectar
+Recol·lecta
 [high priority]
 alta
 [hints]
@@ -415,9 +415,9 @@ Pistes
 [home]
 inici
 [hospital explanation 2]
-teus globuls
+unitats
 [hospital explanation]
-Per curar a tots els
+Cura les teves
 [hospital]
 Hospital
 [host]
@@ -447,7 +447,7 @@ inserció
 [inside]
 Dins
 [islands size]
-Tamany de les illes
+Mida de les illes
 [islands terrain]
 Illes
 [isles terrain]
@@ -489,7 +489,7 @@ Nivells
 [load campaign]
 Carrega una campanya
 [load game]
-Cargar partida
+Carrega una partida
 [load map]
 Carrega un mapa
 [load replay]
@@ -503,13 +503,13 @@ Carregant la llista de mapes...
 [Lobby]
 Sala d'espera
 [login]
-Conectar
+Connecta
 [look around]
 Mira al voltant
 [Lost : %0 has more prestige than you]
-Perdedor: %0 te més prestigi que tú
+Has perdut: %0 té més prestigi que tu
 [Lost : your colony is dead]
-Perdedor: La teva colonia ha sigut exterminada
+Has perdut: la teva colònia ha estat exterminada
 [low priority]
 baixa
 [lowquality]
@@ -559,7 +559,7 @@ mitjana
 [meta %0]
 meta-%0
 [Min required level:]
-Nivell Minim Requerit
+Nivell mínim requerit:
 [Minimum Level To Flag]
 Nivell mín. d'unitats
 [Music volume]
@@ -597,7 +597,7 @@ Nombre d'edificis
 [number of players: %0]
 %0 nombre de jugadors
 [number of teams: %0]
-%0 nombre d' equips
+%0 equips
 [number of teams]
 Nombre d' equips
 [Number Of Units]
@@ -611,13 +611,13 @@ dels quals
 [ok]
 OK
 [old islands terrain]
-vell terreny d'illa
+illes aleatòries antigues
 [old random terrain]
 vell terreny aleatori
 [on press]
 En prémer
 [On the spot]
-Aqui
+Aquí
 [on unpress]
 En soltar
 [open chat box]
@@ -695,7 +695,7 @@ Augmenta la velocitat
 [racetrack]
 Poliesportiu
 [range]
-Rang
+Abast
 [Rated %0]
 Valoració: %0
 [ratios]
@@ -749,7 +749,7 @@ ample de riu
 [river terrain]
 riu
 [sand]
-Terra
+Sorra
 [save before quit?]
 Vols desar abans de sortir?
 [save game]
@@ -857,7 +857,7 @@ Mostra el menú principal
 [skin]
 Visualització
 [smoothing]
-Pla
+Suavització
 [sort by name]
 Nom
 [sort by rating]
@@ -879,15 +879,15 @@ Mapa de fam
 [starving]
 morint de fam
 [Statistics]
-Estadistiques
+Estadístiques
 [Still (i)]
-Ara
+Encara
 [still (w)]
-Ara
+Encara
 [still one unit working]
-Una unitat treballant
+Encara hi ha una unitat treballant
 [Still one]
-Ara una
+Encara una
 [Stone]
 Pedra
 [stone]
@@ -963,7 +963,7 @@ Estan atacant la caserna
 [the building is finished]
 Construcció finalitzada
 [the building is under attack]
-La Construcció està sent atacat
+L'edifici està sent atacat
 [the clearingflag is finished]
 ?? Bandera de Neteja finalizada ??
 [the clearingflag is under attack]
@@ -997,7 +997,7 @@ El MERCAT ja està construït
 [the market is under attack]
 El mercat està sent atacat
 [The player %0 has joined YOG]
-El jugador %0 se conectat a YOG
+El jugador %0 s'ha connectat a YOG
 [The player %0 has left YOG]
 El jugador %0 ha abandonat YOG
 [the racetrack is finished]
@@ -1107,7 +1107,7 @@ esperant una tecla...
 [Waiting]
 Esperant
 [Walk]
-Correr
+Caminar
 [warflag explanation 2]
 
 [warflag explanation]
@@ -1115,7 +1115,7 @@ Atrau guerrers
 [warflag]
 Bandera de Guerra
 [Warning, you need to reboot the game for changes to take effect]
-Compte, necesites reiniciar el joc per que els cambis tinguin efecte
+Cal reiniciar el joc perquè els canvis tinguin efecte
 [Warrior Ratio]
 Proporció de guerrers
 [Warrior]
@@ -1137,7 +1137,7 @@ Vencedor: Has destruit als teus enemics
 [Won : you have the most prestige]
 Has guanyat: tens el prestigi més alt
 [Won : your ally %0 has the most prestige]
-Vencedor: el teu aliat %0 ha alcanzat el major prestigi-
+Has guanyat: el teu aliat %0 té més prestigi que ningú
 [Wood]
 Fusta
 [wood]
@@ -1155,33 +1155,33 @@ ferit
 [Yes]
 Sí
 [YESTS_CONNECTING]
-Conectant al metaservidor YOG...
+Connectant amb el metaservidor YOG...
 [YESTS_CONNECTION_LOST]
-Conexió al metaservidor YOG perduda
+S'ha perdut la connexió amb YOG.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Nom d'usuari ja registrat. Proba amb un altre
+El metaservidor YOG ha rebutjat la connexió perquè aquest nom d'usuari ja està registrat. Si és el teu, desactiva l'opció de registrar un nou usuari YOG amb contrasenya.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-No es pot conectar al metaservidor YOG. Contrassenya Incorrecta
+El metaservidor YOG ha rebutjat la connexió perquè la contrasenya és incorrecta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-El metaservidor YOG ha rebutjat la conexió per que  usuari no te contrasenya encara, activa l' opció: Registrar un nou usuari YOG amb contrasenya
+El metaservidor YOG ha rebutjat la connexió perquè aquest nom d'usuari encara no té contrasenya. Per registrar-lo amb aquesta contrasenya, activa l'opció de registrar un nou usuari YOG amb contrasenya abans de connectar-te. Només cal activar-la una vegada.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 El metaservidor YOG ha rebutjat la connexió perquè aquesta adreça IP està vetada temporalment. Espera que s'aixequi el veto o contacta amb els administradors.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-No es pot conectar al metaservidor YOG, el teu client Globulation2 està obsolet
+El metaservidor YOG ha rebutjat la connexió perquè el teu client Globulation 2 està obsolet. Descarrega la versió més recent de www.globulation2.org per jugar en línia.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-El servidor YOG ha rebutjat la conexió inexplicablement.
+El metaservidor YOG ha rebutjat la connexió sense donar cap explicació.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-No es pot conectar al metaservidor YOG. Nom d'usuari en ús
+El metaservidor YOG ha rebutjat la connexió perquè una altra persona ja fa servir el teu nom d'usuari.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 El metaservidor YOG ha rebutjat la connexió perquè aquest nom d'usuari està vetat. Contacta amb els administradors.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
 El metaservidor YOG ha rebutjat la connexió perquè el nom d'usuari no és vàlid. Només pot contenir lletres, xifres i guions baixos.
 [YESTS_CREATED]
-El sistema de conexió està llest per contactar amb el metaservidor YOG
+El sistema de connexió està preparat per contactar amb el metaservidor YOG.
 [YESTS_PASSWORDS_DONT_MATCH]
 Les contrasenyes no coincideixen. Torna-les a escriure.
 [YESTS_UNABLE_TO_CONNECT]
-Imposible conectar. Metaservidor YOG esta caigut
+No es pot connectar. Sembla que el metaservidor YOG no està disponible.
 [yog block command help]
 /block <jugador>    Bloca un jugador; deixaràs de veure els seus missatges.
 [yog block command player %0 already blocked]
@@ -1205,7 +1205,7 @@ Has guanyat
 [You where kicked from the game]
 T'han expulsat de la partida
 [Your %0 are under attack]
-El teu %0  està sent atacat
+El teu %0 està sent atacat
 [Your IP address was temporarily banned]
 La teva adreça IP està vetada temporalment. Espera que s'aixequi el veto o contacta amb els administradors.
 [Your unit got converted to %0's team]
@@ -1232,3 +1232,7 @@ No s'ha pogut carregar el mapa: el fitxer està malmès o té una versió incomp
 No s'ha pogut desar la campanya. Comprova que la carpeta de destinació existeixi, permeti escriure-hi i tingui espai lliure.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Dins: %0
+[Units still working: %0]
+Encara treballant: %0

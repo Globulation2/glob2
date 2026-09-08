@@ -45,7 +45,7 @@ Gehitu laster-tekla
 [Add]
 Gehitu
 [AI Descriptions]
-AA moten deskribapenak
+AI moten deskribapenak
 [AI]
 AI
 [ai]
@@ -61,7 +61,7 @@ Nicowar
 [AINone-Description]
 Bat ere ez: ez du ezer egiten.
 [AINone]
-AINone
+Bat ere ez
 [AINumbi-Description]
 Numbi gutxi hedatzen da, baina azkar. Zailtasun txikia.
 [AINumbi]
@@ -111,7 +111,7 @@ Gordeketa automatikoa
 [available lan games]
 Partida lokal eskuragarriak
 [awaiting players]
-Jokalarien zai
+Jokalarien zain
 [away:]
 kanpoan:
 [Back]
@@ -125,7 +125,7 @@ Soldaduen borroka
 [barracks]
 Barrakoia
 [beach size]
-hondar tamaina
+hondartzaren tamaina
 [Blocked Players]
 Blokeatutako jokalariak
 [break]
@@ -249,15 +249,15 @@ Kurtsore pertsonalizatua
 [damage]
 Kaltea
 [Damaged Map]
-Kalte mapa
+Zaurituen mapa
 [decrease units working]
 Gutxitu lanean ari diren unitateak
 [Defeat Your Oppenents]
 Garaitu aurkariak
 [defencetower explanation 2]
-unitateak edo eraikuntzak
+hurbilak erasotzen ditu
 [defencetower explanation]
-Etsai hurbilak erasotu
+Etsai-unitate eta eraikin
 [defencetower]
 Babes dorrea
 [Defense Map]
@@ -377,7 +377,7 @@ fruta
 [fullscreen]
 Pantaila osoa
 [game full]
-Partida osorik
+Partida beteta
 [game shortcuts]
 Partida teklak
 [Game]
@@ -449,7 +449,7 @@ Barruan
 [islands size]
 irla tamaina
 [islands terrain]
-IrlakYOG
+Uharteak
 [isles terrain]
 Uhartetxoak
 [iterate selection]
@@ -585,17 +585,17 @@ teklarik esleitu gabe
 [No Objectives]
 Helbururik ez
 [no ressources growth areas]
-Ez dago hazkunde zonalderik
+Hazkunderik gabeko eremuak
 [No]
 Ez
 [Not Enough Ratings]
 Ez dago nahikoa balorazio
 [not ready]
-itxaron...
+ez dago prest
 [Number Of Buildings]
 Eraikin kopurua
 [number of players: %0 (%1 AI)]
-%0 jokalari (%1 AA)
+%0 jokalari (%1 AI)
 [number of players: %0]
 %0 jokalari daude bertan.
 [number of teams: %0]
@@ -883,13 +883,13 @@ gosez hiltzen
 [Statistics]
 Estatistikak
 [Still (i)]
-Still
+Oraindik
 [still (w)]
-Still
+Oraindik
 [still one unit working]
 Unitate bat oraindik lanean
 [Still one]
-Still one
+Oraindik bat
 [Stone]
 Harria
 [stone]
@@ -905,7 +905,7 @@ Bidali balorazioa
 [svr hostname]
 Zerbitzari izena
 [swamp terrain]
-Aintzira
+Padura
 [swarm explanation 2]
 
 [swarm explanation]
@@ -973,7 +973,7 @@ Eraikuntza erasopean dago
 [the defencetower is finished]
 Babes dorrea bukatuta dago
 [the defencetower is under attack]
-Zure babesak erasopean daude
+Babes dorrea erasopean dago
 [the explorationflag is finished]
 ?? Exploration flag finished ??
 [the explorationflag is under attack]
@@ -1035,7 +1035,7 @@ nori:
 [toggle draw accessibility aids]
 Erakutsi/ezkutatu talde-zenbakiak
 [toggle draw information]
-Informazio barrak marraztu
+Erakutsi/ezkutatu informazioa
 [toggle draw unit paths]
 Erakutsi/ezkutatu unitateen bideak
 [toggle menu screen]
@@ -1049,7 +1049,7 @@ Defentsa-indar osoa
 [Total Hitpoints]
 Bizi-puntu guztiak
 [Total prestige reached]
-Gehienezko izen ona lortuta
+Lortutako ospe osoa
 [Total]
 Guztira
 [tutorial text 1]
@@ -1081,7 +1081,7 @@ Hasieran desblokeatuta
 [unlocked by]
 Desblokeatzailea:
 [Unnamed Area]
-{Unnamed Area}
+{Izenik gabeko eremua}
 [up]
 gora
 [upgrade building]
@@ -1119,7 +1119,7 @@ Gerra bandera
 [Warning, you need to reboot the game for changes to take effect]
 Oharra, programa berrabiarazi behar duzu aldaketak aplikatzeko
 [Warrior Ratio]
-Soldadu Ratioa
+Soldaduen proportzioa
 [Warrior]
 Soldadua
 [warriors]
@@ -1145,7 +1145,7 @@ Egurra
 [wood]
 egurra
 [Worker Ratio]
-Langile Ratioa
+Langileen proportzioa
 [Worker]
 Langilea
 [workers]
@@ -1165,11 +1165,11 @@ YOG metazerbitzariak estekatzea ukatu du erabiltzaile izen hau jada hartuta dago
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG metazerbitzariak estekatzea ukatu du zure pasahitza gaizki dagoelako.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metazerbitzariak estekatzea ukatu du zerabiltzaile izen honek ez duelako pasahitzik oraindik. Ziur aski izena eman nahi duzu. Kasu hortan, markatu "YOG erabiltzaile gisa izena eman pasahitza barne" konektatu aurretik. Aukera hau behin bakarrik markatu beharko duzu.
+YOG metazerbitzariak konexioa ukatu du, erabiltzaile-izen honek oraindik ez duelako pasahitzik. Izena pasahitz honekin erregistratzeko, aktibatu YOG erabiltzaile berria pasahitzarekin erregistratzeko aukera konektatu aurretik. Aukera hau behin bakarrik aktibatu behar da.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 YOG metazerbitzariak konexioa ukatu du, IP helbide hau aldi baterako debekatuta dagoelako. Itxaron debekua kendu arte edo jarri harremanetan administratzaileekin.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metazerbitzariak estekatzea ukatu du zure globulation2 bezeroa zaharregia delako.
+YOG metazerbitzariak konexioa ukatu du, zure Globulation 2 bezeroa zaharkituta dagoelako. Deskargatu azken bertsioa www.globulation2.org webgunetik sarean jokatzeko.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metazerbitzariak estekatzea ukatu du inolako azalpenik eman gabe!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
@@ -1207,7 +1207,7 @@ Irabazi duzu!
 [You where kicked from the game]
 Partidatik kanporatu zaituzte
 [Your %0 are under attack]
-Zure %0ak erasopean daude
+Zure %0 erasopean dago
 [Your IP address was temporarily banned]
 Zure IP helbidea aldi baterako debekatu dute. Itxaron debekua kendu arte edo jarri harremanetan administratzaileekin.
 [Your unit got converted to %0's team]
@@ -1234,3 +1234,7 @@ Ezin izan da mapa kargatu: fitxategia hondatuta dago edo bertsioa bateraezina da
 Ezin izan da kanpaina gorde. Egiaztatu helburuko karpeta badagoela, bertan idatz daitekeela eta leku librea dagoela.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Barruan: %0
+[Units still working: %0]
+Oraindik lanean: %0

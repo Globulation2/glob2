@@ -27,7 +27,7 @@
 [%0's game]
 Partida de %0
 [%0's team unit got converted to your team]
-La unidad de %0 fué convertida a tu equipo
+Una unidad del equipo de %0 se ha unido a tu equipo
 [abreaviation explanation A]
 A: Aliados
 [abreaviation explanation C]
@@ -627,7 +627,7 @@ Abrir Editor de Escenarios
 [open teams editor]
 Abrir Editor de Equipos
 [open]
-abrir
+abierto
 [OpenGL]
 OpenGL
 [Options]
@@ -719,7 +719,7 @@ Empezar/Parar Reparación
 [repair]
 Reparar
 [repeat area]
-veces el mismo camino
+veces el mismo paisaje
 [Repeat your password :]
 Repite tu contraseña:
 [replay ended]
@@ -961,17 +961,17 @@ La construcción del edificio ha finalizado
 [the building is under attack]
 El edificio está siendo atacado
 [the clearingflag is finished]
-?? bandera de limpieza finalizada ??
+bandera de limpieza finalizada
 [the clearingflag is under attack]
-?? la bandera de limpieza está siendo atacada ??
+la bandera de limpieza está siendo atacada
 [the defencetower is finished]
 La construcción de la torre de defensa ha finalizado
 [the defencetower is under attack]
 Tus defensas están siendo atacadas
 [the explorationflag is finished]
-?? bandera de exploración finalizada ??
+bandera de exploración finalizada
 [the explorationflag is under attack]
-?? la bandera de exploración está siendo atacada ??
+la bandera de exploración está siendo atacada
 [The game has not been finished]
 La partida no ha terminado
 [the games]
@@ -1019,9 +1019,9 @@ La construcción de la piscina ha finalizado
 [the swimmingpool is under attack]
 La piscina está siendo atacada
 [the warflag is finished]
-?? bandera de guerra finalizada ??
+bandera de guerra finalizada
 [the warflag is under attack]
-?? la bandera de guerra está siendo atacada ??
+la bandera de guerra está siendo atacada
 [time]
 Tiempo
 [to:]
@@ -1203,7 +1203,7 @@ Tu %0 está siendo atacado
 [Your IP address was temporarily banned]
 Tu dirección IP está baneada temporalmente. Espere o contacte con los administradores.
 [Your unit got converted to %0's team]
-Tu unidad ha sido convertida por el jugador %0
+Tu unidad se ha unido al equipo de %0
 [Your username was banned]
 Tu nombre de usuario ha sido baneado. Contacte con los administradores.
 [game speed]
@@ -1224,3 +1224,7 @@ Cortex - IA experimental de tres capas. En desarrollo.
 No se pudo guardar la campaña. Comprueba que la carpeta de destino exista, permita escritura y tenga espacio libre.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Dentro: %0
+[Units still working: %0]
+Aún trabajando: %0

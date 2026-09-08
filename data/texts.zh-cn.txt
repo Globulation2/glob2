@@ -27,7 +27,7 @@
 [%0's game]
 %0 的游戏
 [%0's team unit got converted to your team]
-%0 的单位入你麾下
+%0 队伍中的一个单位加入了你的队伍
 [abreaviation explanation A]
 A: 盟友
 [abreaviation explanation C]
@@ -123,7 +123,7 @@ Alt %0
 [barracks explanation]
 提高战士的
 [barracks]
-兵营 lv0
+兵营
 [beach size]
 海滩大小
 [Blocked Players]
@@ -195,7 +195,7 @@ caps lock
 [clearingflag explanation]
 清除资源
 [clearingflag]
-清除令旗 lv0
+清除令旗
 [closed]
 已关闭
 [combined vision]
@@ -223,7 +223,7 @@ caps lock
 [Corn]
 小麦
 [crater density]
-破碎程度
+陨石坑数量
 [crater lakes terrain]
 破碎湖泊
 [create game]
@@ -311,7 +311,7 @@ ESC 退出
 [explorationflag explanation]
 吸引探索者
 [explorationflag]
-探索令旗 lv0
+探索令旗
 [Explorer Ratio]
 探索者比例
 [Explorer]
@@ -415,7 +415,7 @@ home
 [hospital explanation]
 治疗单位
 [hospital]
-医院 lv0
+医院
 [host]
 建立游戏
 [hp]
@@ -437,7 +437,7 @@ HP
 [inn explanation]
 为单位提供食物
 [inn]
-食堂 lv0
+食堂
 [insert]
 插入
 [inside]
@@ -579,7 +579,7 @@ meta %0
 [No Objectives]
 没有游戏目标
 [no ressources growth areas]
-非能源成长地带
+资源禁止生长区
 [No]
 否
 [Not Enough Ratings]
@@ -715,7 +715,7 @@ OpenGL
 [repair]
 修复
 [repeat area]
-在相同地景的时间
+次重复相同地形
 [Repeat your password :]
 重复你的密码：
 [replay ended]
@@ -889,7 +889,7 @@ V: 持键以传送讯息
 [stonewall explanation]
 用于被动防御的
 [stonewall]
-石墙 lv0
+石墙
 [submit rating]
 上传评价
 [svr hostname]
@@ -901,7 +901,7 @@ V: 持键以传送讯息
 [swarm explanation]
 生产新单位
 [swarm]
-孢子堆 lv0
+孢子堆
 [Swim]
 游泳
 [swimmingpool explanation 2]
@@ -1105,7 +1105,7 @@ tab
 [warflag explanation]
 吸引战士
 [warflag]
-战争令旗 lv0
+战争令旗
 [Warning, you need to reboot the game for changes to take effect]
 注意，你需要重新启动游戏以便更改
 [Warrior Ratio]
@@ -1121,7 +1121,7 @@ tab
 [water]
 水
 [Wheat]
-粮
+小麦
 [Won : you defeated your opponents]
 胜: 你打败了对手
 [Won : you have the most prestige]
@@ -1199,7 +1199,7 @@ Ysagoon 线上游戏
 [Your IP address was temporarily banned]
 你的IP地址暂时被屏蔽
 [Your unit got converted to %0's team]
-你的单位被 %0  转化为敌人
+你的单位加入了 %0 的队伍
 [Your username was banned]
 你的用户名被禁用
 [game speed]
@@ -1220,3 +1220,7 @@ Cortex - 实验性的三层人工智能，开发中。
 无法保存战役。请检查目标文件夹是否存在、是否可写，以及是否有可用空间。
 [AICortex]
 Cortex
+[Units still inside: %0]
+仍在里面：%0
+[Units still working: %0]
+仍在工作：%0

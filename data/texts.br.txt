@@ -465,7 +465,7 @@ Português do Brasil - Incompleto
 [language-code]
 br
 [language-tr]
-Linguagem
+Idioma
 [language]
 Português do Brasil
 [Leave Game]
@@ -577,7 +577,7 @@ sem tecla ainda
 [No Objectives]
 Sem objetivos
 [no ressources growth areas]
-Nenhuma área de crescimento
+Áreas sem crescimento
 [No]
 Não
 [Not Enough Ratings]
@@ -623,7 +623,7 @@ Abrir editor de script
 [open teams editor]
 abrir editor de times
 [open]
-Abrir
+Aberto
 [OpenGL]
 OpenGL
 [Options]
@@ -955,17 +955,17 @@ A construção está pronta
 [the building is under attack]
 A contrução está sobre ataque
 [the clearingflag is finished]
-?? Clearing flag finished ??
+Bandeira de limpeza colocada.
 [the clearingflag is under attack]
-?? Clearing flag under attack ??
+Bandeira de limpeza está sob ataque.
 [the defencetower is finished]
 A Torre de defesa está pronta
 [the defencetower is under attack]
 A torre de defesa está sob ataque.
 [the explorationflag is finished]
-?? Exploration flag finished ??
+Bandeira de exploração colocada.
 [the explorationflag is under attack]
-?? Bandeira de exploração sobre ataque ??
+Bandeira de exploração está sob ataque.
 [The game has not been finished]
 O jogo ainda não acabou
 [the games]
@@ -1013,9 +1013,9 @@ A Piscina está pronta
 [the swimmingpool is under attack]
 A Piscina está sendo atacada
 [the warflag is finished]
-?? War flag finished ??
+Bandeira de guerra colocada.
 [the warflag is under attack]
-?? Bandeira de guerra sobre ataque ??
+Bandeira de guerra está sob ataque.
 [time]
 tempo
 [to:]
@@ -1193,11 +1193,11 @@ Você ganhou!
 [You where kicked from the game]
 Você foi expulso do jogo
 [Your %0 are under attack]
-Seus %0 estão sendo atacados
+Seu %0 está sob ataque
 [Your IP address was temporarily banned]
 Seu número ip foi temporariamente banido
 [Your unit got converted to %0's team]
-Sua unidade foi convertido para o time do %0
+Sua unidade passou para a equipe de %0
 [Your username was banned]
 Seu nome de usuário foi banido
 [game speed]
@@ -1220,3 +1220,7 @@ Não foi possível carregar o mapa: o arquivo está danificado ou sua versão é
 Não foi possível salvar a campanha. Verifique se a pasta de destino existe, permite gravação e tem espaço livre.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Dentro: %0
+[Units still working: %0]
+Ainda trabalhando: %0

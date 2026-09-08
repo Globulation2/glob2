@@ -27,7 +27,7 @@
 [%0's game]
 %0 játéka
 [%0's team unit got converted to your team]
-Elfogtad az ellenség egységét %0
+%0 csapatának egy egysége átállt hozzád
 [abreaviation explanation A]
 A: Szövetségesek
 [abreaviation explanation C]
@@ -119,9 +119,9 @@ Vissza
 [backspace]
 Backspace
 [barracks explanation 2]
-fejlesztése
+fejleszti
 [barracks explanation]
-Támadóképesség
+A harcosok harci szintjét
 [barracks]
 Laktanya
 [beach size]
@@ -195,7 +195,7 @@ Tisztítás:
 [clearingflag explanation]
 Eltávolítja az erőforrásokat
 [clearingflag]
-Tisztítás zászló
+Tisztító zászló
 [closed]
 Zárva
 [combined vision]
@@ -363,9 +363,9 @@ Tiltott terület
 [Free]
 Egészséges
 [free]
-szabad
+tétlen
 [from:]
-honnan:
+feladó:
 [fruit]
 gyümölcs
 [fullscreen]
@@ -461,7 +461,7 @@ Eltávolítás
 [lan]
 Játék a helyi hálózaton
 [language incomplete]
-Magyar - Incomplete
+Magyar - Hiányos
 [language-code]
 hu
 [language-tr]
@@ -501,7 +501,7 @@ Bejelentkezés
 [look around]
 Körülnézés
 [Lost : %0 has more prestige than you]
-Veszítettél: %0 -nak nagyobb a presztízse mint neked.
+Veszítettél: %0 presztízse nagyobb a tiédnél.
 [Lost : your colony is dead]
 A kolóniád megsemmisült.
 [low priority]
@@ -567,7 +567,7 @@ némítás
 [new map]
 Új
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Sajnáljuk, de a választott nevet már használják a freenode-on; csak a YOG-on keresztül tudsz beszélgetni.
 [no fullscreen]
 * csak ablakos módban
 [No Hints]
@@ -601,7 +601,7 @@ Num Lock
 [objectives]
 Célok
 [of which]
-amelyik
+ebből
 [ok]
 Rendben
 [old islands terrain]
@@ -705,7 +705,7 @@ Regisztráció
 [remember unit]
 Egységszám tárolása
 [Remember YOG password localy]
-A jleszót helyileg tárolja. (nem biztonságos)
+Jelszó tárolása ezen a gépen.
 [remove map]
 Pálya eltávolítása
 [remove shortcut]
@@ -757,7 +757,7 @@ Szkript mentése
 [Save]
 Mentés
 [school explanation 2]
-sebességének fejlesztése
+szintjét fejleszti
 [school explanation]
 A dolgozók építési
 [school]
@@ -777,7 +777,7 @@ keresés
 [select barracks building]
 Épület kijelölése: Laktanya
 [select clearingflag]
-Zászló kijelölése: Tisztítás zászló
+Zászló kijelölése: Tisztító zászló
 [select construct barracks]
 Építkezés kiválasztása: Laktanya
 [select construct defencetower]
@@ -811,7 +811,7 @@ Zászló kijelölése: Felderítő zászló
 [select place clearing area]
 Terület elhelyezése: Tisztítási terület
 [select place clearingflag]
-Zászló elhelyezése: Tisztítás zászló
+Zászló elhelyezése: Tisztító zászló
 [select place explorationflag]
 Zászló elhelyezése: Felderítő zászló
 [select place forbidden area]
@@ -879,7 +879,7 @@ Még mindig
 [still (w)]
 Még mindig
 [still one unit working]
-Egy egység dolgozik
+Egy egység még dolgozik
 [Still one]
 Még egy
 [Stone]
@@ -959,17 +959,17 @@ Az épület elkészült
 [the building is under attack]
 Megtámadták az épületet
 [the clearingflag is finished]
-?? A tisztító zászló elkészült ??
+A tisztító zászló elkészült
 [the clearingflag is under attack]
-?? Megtámadták a tisztító zászlót ??
+Megtámadták a tisztító zászlót
 [the defencetower is finished]
 A páncéltorony elkészült
 [the defencetower is under attack]
-Megtámadták az erődítményeket
+Megtámadták a páncéltornyot
 [the explorationflag is finished]
-?? A felderítőzászló elkészült ??
+A felderítőzászló elkészült
 [the explorationflag is under attack]
-?? Megtámadták a felderítózászlót ??
+Megtámadták a felderítő zászlót
 [The game has not been finished]
 A játék nem fejeződött be
 [the games]
@@ -1007,23 +1007,23 @@ Megtámadták az iskolát
 [the stonewall is finished]
 A kőfal elkészült
 [the stonewall is under attack]
-Az ellenség a falak előtt áll
+Megtámadták a kőfalat
 [the swarm is finished]
 A raj elkészült
 [the swarm is under attack]
 Megtámadták a rajt
 [the swimmingpool is finished]
-At úszómedence elkészült
+Az úszómedence elkészült
 [the swimmingpool is under attack]
 Megtámadták az úszómedencét
 [the warflag is finished]
-?? A hadizászló elkészült ??
+A hadizászló elkészült
 [the warflag is under attack]
-?? Megtámadták a hadizászlót ??
+Megtámadták a hadizászlót
 [time]
 Idő
 [to:]
-hová:
+címzett:
 [toggle draw accessibility aids]
 Csapatszámok megjelenítése be/ki
 [toggle draw information]
@@ -1041,7 +1041,7 @@ Hangrögzítés be/ki
 [Total Hitpoints]
 Összes életerőpont
 [Total prestige reached]
-Elérted a legmagasabb presztízs szintet
+Az összpresztízs elérte a határértéket
 [Total]
 Összesen
 [tutorial text 1]
@@ -1065,7 +1065,7 @@ Egységszerkesztő
 [unit settings explanation]
 A hozzárendelt egységek alapértelmezett száma
 [units working]
- az egységek dolgoznak
+ egység még dolgozik
 [Units]
 Egységek
 [unlocked at start]
@@ -1129,7 +1129,7 @@ Nyertél: legyőzted az ellenfeleidet.
 [Won : you have the most prestige]
 Nyertél: neked van a legnagyobb presztízsed.
 [Won : your ally %0 has the most prestige]
-Nyertél: a szövetségesed %0 elérte a legnagyobb presztízs szintet.
+Nyertél: %0 szövetségesednek van a legtöbb presztízse.
 [Wood]
 Fa
 [wood]
@@ -1197,11 +1197,11 @@ Megnyerted a játékot!
 [You where kicked from the game]
 Eltávolítottak a játékból
 [Your %0 are under attack]
-Megtámadták a %0 -t
+Támadás alatt álló egységed: %0
 [Your IP address was temporarily banned]
 Az IP-címedet ideiglenesen kitiltották. Várd meg a tiltás feloldását, vagy lépj kapcsolatba az adminisztrátorokkal.
 [Your unit got converted to %0's team]
-Az egységedet az ellenség elfogta %0
+Egy egységed átállt %0 csapatához
 [Your username was banned]
 A felhasználónevedet kitiltották. A tiltás feloldásához lépj kapcsolatba az adminisztrátorokkal.
 [game speed]
@@ -1224,3 +1224,7 @@ A térkép nem tölthető be: a fájl sérült vagy nem kompatibilis verziójú.
 A hadjárat nem menthető. Ellenőrizd, hogy a célmappa létezik, írható, és van elegendő szabad hely.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Bent: %0
+[Units still working: %0]
+Még dolgozó egységek: %0

@@ -61,7 +61,7 @@ Nicowar
 [AINone-Description]
 Brez – ne naredi ničesar.
 [AINone]
-AINone
+Brez UI
 [AINumbi-Description]
 Numbi se širi v manjšem obsegu, a hitro. Nizka težavnost.
 [AINumbi]
@@ -91,11 +91,11 @@ umirajo od lakote
 [are hungry]
 so lačni
 [are ok]
-so vredu
+so v redu
 [are wonded]
 so ranjeni
 [armor]
-Ščit
+Oklep
 [assigned]
 Dodeljene
 [At. speed]
@@ -113,7 +113,7 @@ Razpoložljive omrežne igre
 [awaiting players]
 Čakam igralce
 [away:]
-odsoden:
+odsoten:
 [Back]
 Nazaj
 [backspace]
@@ -135,7 +135,7 @@ Navodila misije
 [build %0 level %1]
 Zgradi: %0, stopnja %1
 [Build]
-Zgradi
+Gradnja
 [Building Defaults]
 Privzete nastavitve zgradb
 [building settings]
@@ -189,7 +189,7 @@ Izberi mapo
 [clear area]
 Območje čiščenja
 [Clearing:]
-Brisanje:
+Čiščenje:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
@@ -201,7 +201,7 @@ Zaprto
 [combined vision]
 Skupni pogled
 [compile]
-Zgradi skripto
+Prevedi skript
 [compose]
 Compose
 [Computing Fertility]
@@ -209,7 +209,7 @@ Računanje rodovitnosti
 [concrete islands terrain]
 Ločeni otoki
 [connect]
-Vspostavi povezavo
+Vzpostavi povezavo
 [connecting to game]
 Povezovanje z igro
 [connecting to]
@@ -237,7 +237,7 @@ Ctrl – črta
 [current speed]
 Trenutna hitrost
 [custom game]
-Naključna igra
+Igra po meri
 [customcur]
 Kazalec po meri
 [damage]
@@ -245,7 +245,7 @@ Kazalec po meri
 [Damaged Map]
 Zemljevid poškodb
 [decrease units working]
-Zmanjšaj število delavcev
+Zmanjšaj število dodeljenih enot
 [Defeat Your Oppenents]
 Premagajte nasprotnike
 [defencetower explanation 2]
@@ -401,7 +401,7 @@ Zadovoljstvo
 [hard pause]
 Povsem začasno ustavi
 [Harvest]
-Poberi
+Žetev
 [high priority]
 visoka
 [hints]
@@ -429,7 +429,7 @@ Lakota
 [In way]
 Na poti
 [increase units working]
-Povečaj število delavcev
+Povečaj število dodeljenih enot
 [inn explanation 2]
 
 [inn explanation]
@@ -503,7 +503,7 @@ Ozri se naokrog
 [Lost : %0 has more prestige than you]
 Izgubil si : %0 ima več ugleda kot ti
 [Lost : your colony is dead]
-Poražen si : tvoja kolonija je premagana
+Poraz: vaša kolonija je izumrla
 [low priority]
 nizka
 [lowquality]
@@ -589,7 +589,7 @@ ni pripravljen
 [number of players: %0 (%1 AI)]
 Število igralcev: %0 (od tega %1 UI)
 [number of players: %0]
-%0 players are present.
+Število igralcev: %0
 [number of teams: %0]
 %0 ekip.
 [number of teams]
@@ -625,7 +625,7 @@ Odpri urejevalnik scenarijev
 [open teams editor]
 Odpri urejevalnik ekip
 [open]
-odpri
+Prosto
 [OpenGL]
 OpenGL
 [Options]
@@ -871,7 +871,7 @@ Začni
 [Starving Map]
 Zemljevid stradanja
 [starving]
-lačen
+Stradanje
 [Statistics]
 Statistika
 [Still (i)]
@@ -905,11 +905,11 @@ Ustvarja nove enote
 [swarm]
 Porodnišnica
 [Swim]
-Plavaj
+Plavanje
 [swimmingpool explanation 2]
-sposobnosti tvojih enot
+tvojih enot
 [swimmingpool explanation]
-Izboljša plavalne
+Poveča hitrost plavanja
 [swimmingpool]
 Bazen
 [switch to adding areas]
@@ -991,7 +991,7 @@ Tržnica je zgrajena
 [the market is under attack]
 Tržnica je napadena
 [The player %0 has joined YOG]
-%0 se je vkljičil na YOG metastrežnik.
+%0 se je pridružil YOG.
 [The player %0 has left YOG]
 %0 je zapustil YOG metastrežnik.
 [the racetrack is finished]
@@ -1041,7 +1041,7 @@ Skupna obrambna moč
 [Total Hitpoints]
 Skupne življenjske točke
 [Total prestige reached]
-Najvišji dosežen ugled
+Skupni doseženi ugled
 [Total]
 Skupaj
 [tutorial text 1]
@@ -1053,13 +1053,13 @@ Dobro vam gre. Zdaj se posvetimo vojakom, vojašnicam in nadgradnjam.
 [tutorial text 4]
 Skoraj ste že končali. Ostanejo le še zastave in napadanje. Nato boste znali dovolj za igre po meri, pozneje pa tudi za spletne spopade z najboljšimi igralci Globulation 2.
 [tutorial]
-Predavanje
+Vadnica
 [Uncontrolled]
 Nenadzirane
 [undo]
 razveljavi
 [uniform terrain]
-Obleči teren?
+Enoten teren
 [Unit editor]
 Urejevalnik enot
 [unit settings explanation]
@@ -1101,7 +1101,7 @@ Glasnost govora
 [Waiting]
 Čakanje
 [Walk]
-Hodi
+Hoja
 [warflag explanation 2]
 
 [warflag explanation]
@@ -1141,13 +1141,13 @@ Delavec
 [workers]
 delavci
 [working]
-Izdelujem
+Delajo
 [wounded]
 ranjen
 [Yes]
 Da
 [YESTS_CONNECTING]
-Vspostavljam povezavo na YOG metastrežnikom...
+Vzpostavljanje povezave z metastrežnikom YOG...
 [YESTS_CONNECTION_LOST]
 Povezava z YOG metastrežnikom je bila izgubljena.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
@@ -1161,7 +1161,7 @@ Metastrežnik YOG je zavrnil povezavo, ker je ta naslov IP začasno blokiran. Po
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Yog metastrežnik je brezobrazložitve zavrnil povezavo!
+Metastrežnik YOG je zavrnil povezavo brez obrazložitve!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
@@ -1197,11 +1197,11 @@ Zmagal si!
 [You where kicked from the game]
 Izključeni ste bili iz igre
 [Your %0 are under attack]
-Tvoji %0 so napadeni
+Napadena je vaša enota: %0
 [Your IP address was temporarily banned]
 Vaš naslov IP je začasno blokiran. Počakajte na odblokiranje ali se obrnite na skrbnike.
 [Your unit got converted to %0's team]
-Tvoje enote so bile spreobrnjene %0
+Vaša enota je prestopila v ekipo igralca %0
 [Your username was banned]
 Vaše uporabniško ime je blokirano. Za odblokiranje se obrnite na skrbnike.
 [game speed]
@@ -1224,3 +1224,7 @@ Zemljevida ni mogoče naložiti: datoteka je poškodovana ali ima nezdružljivo 
 Kampanje ni mogoče shraniti. Preverite, ali ciljna mapa obstaja, omogoča pisanje in ima dovolj prostega prostora.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Znotraj: %0
+[Units still working: %0]
+Še pri delu: %0

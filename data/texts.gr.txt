@@ -25,7 +25,7 @@
 [%0% Uploaded]
 Απεστάλη το %0%
 [%0's game]
-%0 του Παιχνιδιού
+Παιχνίδι του %0
 [%0's team unit got converted to your team]
 Μια μονάδα της ομάδας του %0 προσχώρησε στην ομάδα σας
 [abreaviation explanation A]
@@ -33,11 +33,11 @@ A: Σύμμαχοι
 [abreaviation explanation C]
 C: Στείλτε chat μηνύματα στο
 [abreaviation explanation fV]
-fV: Εμφάνιση όρασης για τα Πανδοχεία (για κλοπή μονάδων)
+fV: Κοινή χρήση ορατότητας πανδοχείων (για προσέλκυση μονάδων)
 [abreaviation explanation mV]
-mV: Εμφάνιση όρασης για τα κτίρια Αγορών (για ανταλλαγές φρούτων)
+mV: Κοινή χρήση ορατότητας αγορών (για ανταλλαγή φρούτων)
 [abreaviation explanation V]
-V: Εμφάνιση όρασης για όλα τα κτίρια
+V: Κοινή χρήση ορατότητας όλων των κτιρίων
 [add map]
 Προσθήκη χάρτη
 [add shortcut]
@@ -75,9 +75,9 @@ AINumbi
 [AIWarrush]
 AIWarrush
 [Alga]
-Algae
+Φύκη
 [algae]
-algae
+φύκη
 [alliances]
 Συμμαχίες
 [alt %0]
@@ -97,7 +97,7 @@ alt-%0
 [armor]
 Θωράκιση
 [assigned]
-Ορισμένος
+Ανατεθειμένες
 [At. speed]
 Ταχύτητα Επ.
 [At. strength]
@@ -125,7 +125,7 @@ backspace
 [barracks]
 Στρατώνες
 [beach size]
-μέγεθως παραλίας
+μέγεθος παραλίας
 [Blocked Players]
 Αποκλεισμένοι παίκτες
 [break]
@@ -199,7 +199,7 @@ Ctrl + σύρσιμο = Γραμμή
 [Bullets]
 Σφαίρες
 [campaign editor]
-Επεξεραστής Εκστραστείας
+Επεξεργαστής εκστρατείας
 [campaign]
 Εκστρατεία
 [Can't connect, can't find host]
@@ -249,7 +249,7 @@ caps lock
 [clearingflag explanation]
 Καθαρισμός Πόρων
 [clearingflag]
-Καθαρισμός Flag
+Σημαία καθαρισμού
 [closed]
 Κλειστό
 [combined vision]
@@ -277,9 +277,9 @@ control-%0
 [Corn]
 Σιτάρι
 [crater density]
-μέτρηση crater
+αριθμός κρατήρων
 [crater lakes terrain]
-Crater Lakes
+Λίμνες κρατήρων
 [create game]
 Δημιουργία παιχνιδιού
 [create map]
@@ -359,7 +359,7 @@ Ctrl - Γραμμή
 [Enter your password :]
 Δώστε τον κωδικό σας:
 [enter]
-είσοδος
+Enter
 [equals]
 ίσον
 [escape]
@@ -371,7 +371,7 @@ Ctrl - Γραμμή
 [explorationflag]
 Σημαία Εξερεύνησης
 [Explorer Ratio]
-Αναλογία Εξερευνητή
+Αναλογία εξερευνητών
 [Explorer]
 Εξερευνητής
 [explorers]
@@ -423,7 +423,7 @@ f9
 [Free]
 Υγιείς
 [free]
-ελεύθερο
+αδρανείς
 [from:]
 από:
 [fruit]
@@ -431,7 +431,7 @@ f9
 [fullscreen]
 Πλήρης Οθόνη
 [game full]
-Πλήρης παιχνίδι
+Το παιχνίδι είναι πλήρες
 [game shortcuts]
 Παιχνίδι
 [Game]
@@ -441,7 +441,7 @@ f9
 [go to event]
 Πήγαινε στο Συμβάν
 [go to home]
-Πήγαινε στο Σπίτι
+Μετάβαση στη βάση
 [goto main menu]
 Πήγαινε πίσω στο κυρίως μενού
 [grass]
@@ -459,7 +459,7 @@ f9
 [Happyness]
 Ευτυχία
 [hard pause]
-Σκληρή Παύση
+Πλήρης παύση
 [Harvest]
 Συγκομιδή
 [high priority]
@@ -467,7 +467,7 @@ f9
 [hints]
 Υποδείξεις
 [home]
-σπίτι
+Home
 [hospital explanation 2]
 
 [hospital explanation]
@@ -485,7 +485,7 @@ HP
 [hungry]
 πείνα
 [hungryness]
-Κορεσμός
+Πείνα
 [In way]
 Στον δρόμο
 [increase units working]
@@ -493,7 +493,7 @@ HP
 [inn explanation 2]
 
 [inn explanation]
-Ταϊζει τις μονάδες σας
+Ταΐζει τις μονάδες σας
 [inn level 0]
 Πανδοχείο 1
 [inn level 1]
@@ -523,15 +523,15 @@ HP
 [keyboard settings]
 Ρυθμίσεις Πληκτρολογίου
 [kick]
-Kick
+Αποβολή
 [lan]
-LAN Game
+Παιχνίδι LAN
 [language incomplete]
-Ελληνικά - Incomplete
+Ελληνικά - Ελλιπή
 [language-code]
 gr
 [language-tr]
-Anastasios M. Pingios
+Γλώσσα
 [language]
 Ελληνικά
 [Leave Game]
@@ -567,17 +567,17 @@ Anastasios M. Pingios
 [look around]
 Περιήγηση
 [Lost : %0 has more prestige than you]
-Χαμένος: %0 έχει περισσότερο κύρος από εσάς
+Ήττα: ο %0 έχει περισσότερο κύρος από εσάς
 [Lost : your colony is dead]
-Χαμμένος: η αποικία σας είναι νεκρή
+Ήττα: η αποικία σας καταστράφηκε
 [low priority]
 χαμηλή
 [lowquality]
 Χαμηλή ποιότητα
 [Magic At. Air]
-Εναέρια dmg.
+Ζημιά αέρα
 [Magic At. Ground]
-Επίγεια dmg.
+Ζημιά εδάφους
 [map description]
 Περιγραφή
 [Map Discovered]
@@ -641,7 +641,7 @@ meta-%0
 [No Hints]
 Δεν υπάρχουν υποδείξεις
 [no key]
-κανένα κλειδί ακόμα
+κανένα πλήκτρο
 [No Objectives]
 Δεν υπάρχουν στόχοι
 [no ressources growth areas]
@@ -693,7 +693,7 @@ Ok
 [open teams editor]
 Άνοιγμα επεξεργαστή ομάδων
 [open]
-άνοιγμα
+Ανοιχτό
 [OpenGL]
 OpenGL
 [Options]
@@ -701,7 +701,7 @@ OpenGL
 [options]
 Επιλογές
 [Orange]
-Πορτοκαλι
+Πορτοκάλι
 [Other Options]
 Άλλες επιλογές
 [page down]
@@ -711,7 +711,7 @@ page up
 [Papyrus]
 Πάπυρος
 [pause game]
-Πάυση παιχνιδιού
+Παύση παιχνιδιού
 [pause]
 παύση
 [Paused]
@@ -725,7 +725,7 @@ page up
 [please wait]
 Παρακαλώ περιμένετε
 [power]
-ενέργεια
+πλήκτρο τροφοδοσίας
 [press space]
 Πατήστε space για να συνεχίσετε.
 [Prestige Score]
@@ -799,7 +799,7 @@ print screen
 [return to replay]
 Επιστροφή στην επανάληψη
 [return]
-enter
+Enter
 [right meta]
 δεξί meta
 [right super]
@@ -831,11 +831,11 @@ enter
 [school]
 Σχολείο
 [Script Areas]
-Χώρος Script
+Περιοχές σεναρίου
 [scroll lock]
 scroll lock
 [scroll wheel enabled]
-Scroll Wheel Ενεργοποιημένο
+Ενεργός τροχός ποντικιού
 [Secondary Objectives]
 Δευτερεύοντες
 [seeking a job]
@@ -843,9 +843,9 @@ Scroll Wheel Ενεργοποιημένο
 [seeking]
 ψάχνοντας
 [select barracks building]
-Επιογή Στρατώνες
+Επιλογή στρατώνων
 [select clearingflag]
-Επιλογή clearingflag
+Επιλογή σημαίας καθαρισμού
 [select construct barracks]
 Επιλογή Κατασκευή Στρατώνων
 [select construct defencetower]
@@ -869,7 +869,7 @@ Scroll Wheel Ενεργοποιημένο
 [select delete tool]
 Επιλογή εργαλείου διαγραφής
 [select explorationflag]
-Επιλογή explorationflag
+Επιλογή σημαίας εξερεύνησης
 [select hospital building]
 Επιλογή Νοσοκομείου
 [select inn building]
@@ -879,7 +879,7 @@ Scroll Wheel Ενεργοποιημένο
 [select place clearing area]
 Τοποθέτηση ζώνης καθαρισμού
 [select place clearingflag]
-Επιλογή Πεδίου Καθαρισμού Σημαίας
+Τοποθέτηση σημαίας καθαρισμού
 [select place explorationflag]
 Σημαία εξερεύνησης: τοποθέτηση
 [select place forbidden area]
@@ -887,7 +887,7 @@ Scroll Wheel Ενεργοποιημένο
 [select place guard area]
 Τοποθέτηση ζώνης φύλαξης
 [select place warflag]
-Επιλογή Πεδίου Σημαίας Μάχης
+Τοποθέτηση σημαίας πολέμου
 [select racetrack building]
 Επιλογή στίβου
 [select school building]
@@ -901,15 +901,15 @@ Scroll Wheel Ενεργοποιημένο
 [select wall building]
 Επιλογή τείχους
 [select warflag]
-Επιλογή warflag
+Επιλογή σημαίας πολέμου
 [settings]
 Ρυθμίσεις
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-Enter: στείλτε ένα chat μύνημα
+Enter: αποστολή μηνύματος συνομιλίας
 [shortcut explanation v]
-V: κρατήστε για να μιλίσετε
+V: κρατήστε πατημένο για να μιλήσετε
 [show areas]
 Εμφάνιση περιοχών
 [show flags]
@@ -1021,25 +1021,25 @@ tab
 [teams]
  ομάδες
 [the barracks is finished]
-Ο χώρος εκπαίδευσης ολοκληρώθηκε
+Οι στρατώνες ολοκληρώθηκαν
 [the barracks is under attack]
-Ο χώρος εκπαίδευσης δέχετε επίθεση
+Οι στρατώνες δέχονται επίθεση
 [the building is finished]
 Το κτίσιμο ολοκληρώθηκε
 [the building is under attack]
-Το κτίριο δέχετε επίθεση
+Το κτίριο δέχεται επίθεση
 [the clearingflag is finished]
-?? clearingflag ολοκληρώθηκε ??
+Η σημαία καθαρισμού είναι έτοιμη
 [the clearingflag is under attack]
-?? clearingflag δέχετε επίθεση ??
+Η σημαία καθαρισμού δέχεται επίθεση
 [the defencetower is finished]
 Ο αμυντικός πύργος ολοκληρώθηκε
 [the defencetower is under attack]
 Ο αμυντικός πύργος δέχεται επίθεση.
 [the explorationflag is finished]
-?? explorationflag ολοκληρώθηκε ??
+Η σημαία εξερεύνησης είναι έτοιμη
 [the explorationflag is under attack]
-?? explorationflag δέχετε επίθεση ??
+Η σημαία εξερεύνησης δέχεται επίθεση
 [The game has not been finished]
 Το παιχνίδι δεν ολοκληρώθηκε
 [the games]
@@ -1047,21 +1047,21 @@ tab
 [the hospital is finished]
 Το νοσοκομείο ολοκληρώθηκε
 [the hospital is under attack]
-Το νοσοκομείο δέχετε επίθεση
+Το νοσοκομείο δέχεται επίθεση
 [The host has cancelled the game]
 Ο διοργανωτής ακύρωσε το παιχνίδι.
 [the inn is finished]
 Το πανδοχείο ολοκληρώθηκε
 [the inn is under attack]
-Το πανδοχείο δέχετε επίθεση
+Το πανδοχείο δέχεται επίθεση
 [the maps]
 Χάρτες
 [the market is finished]
 Η αγορά ολοκληρώθηκε
 [the market is under attack]
-Η αγορά δέχετε επίθεση
+Η αγορά δέχεται επίθεση
 [The player %0 has joined YOG]
-%0 έχουν συνδεθεί στο YOG.
+Ο %0 συνδέθηκε στο YOG.
 [The player %0 has left YOG]
 %0 έφυγε από το YOG.
 [the racetrack is finished]
@@ -1073,23 +1073,23 @@ tab
 [the school is finished]
 Το σχολείο ολοκληρώθηκε
 [the school is under attack]
-Το σχολείο δέχετε επίθεση
+Το σχολείο δέχεται επίθεση
 [the stonewall is finished]
 Το τείχος ολοκληρώθηκε
 [the stonewall is under attack]
-Ο εχθρός είναι στα τείχοι σας
+Το πέτρινο τείχος δέχεται επίθεση
 [the swarm is finished]
 Το σμήνος ολοκληρώθηκε
 [the swarm is under attack]
-Το σμήνος δέχετε επίθεση
+Το σμήνος δέχεται επίθεση
 [the swimmingpool is finished]
 Η πισίνα ολοκληρώθηκε
 [the swimmingpool is under attack]
-Η πισίνα δέχετε επίθεση
+Η πισίνα δέχεται επίθεση
 [the warflag is finished]
-?? warflag ολοκληρώθηκε ??
+Η σημαία πολέμου είναι έτοιμη
 [the warflag is under attack]
-?? warflag δέχετε επίθεση ??
+Η σημαία πολέμου δέχεται επίθεση
 [time]
 Χρόνος
 [to:]
@@ -1111,7 +1111,7 @@ tab
 [Total Hitpoints]
 Συνολικοί πόντοι ζωής
 [Total prestige reached]
-Συνολικό ρεκοπ κύρους
+Επιτεύχθηκε το συνολικό όριο κύρους
 [Total]
 Σύνολο
 [tutorial text 1]
@@ -1129,7 +1129,7 @@ Tutorial
 [undo]
 Αναίρεση
 [uniform terrain]
-Ομαδοποίηση πεδίου
+Ομοιόμορφο έδαφος
 [Unit editor]
 Επεξεργαστής μονάδας
 [unit settings explanation]
@@ -1143,7 +1143,7 @@ Tutorial
 [unlocked by]
 Ξεκλειδώθηκε από
 [Unnamed Area]
-{Ανώμυμη Περιοχή}
+{Ανώνυμη περιοχή}
 [up]
 πάνω
 [upgrade building]
@@ -1181,7 +1181,7 @@ Tutorial
 [Warning, you need to reboot the game for changes to take effect]
 Προσοχή, πρέπει να επανεκκινήσετε το παιχνίδι για να ισχύσουν οι αλλαγές
 [Warrior Ratio]
-Αναλογία Πολεμιστή
+Αναλογία πολεμιστών
 [Warrior]
 Πολεμιστής
 [warriors]
@@ -1205,7 +1205,7 @@ Tutorial
 [wood]
 ξύλο
 [Worker Ratio]
-Αναλογία εργάτη
+Αναλογία εργατών
 [Worker]
 Εργάτης
 [workers]
@@ -1223,7 +1223,7 @@ Tutorial
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί αυτό το όνομα χρήστη είναι ήδη καταχωρημένο.  Εαν είναι δικό σας, απενεργοποιήστε την επιλογή "Καταχωρήστε νέου YOG χρήστη με κωδικό".
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-Ο YOG metaserver αρνήθηκε την σύνδεση γιατί ο κωδικός που δώσατε ήταν λάνθασμενος.
+Ο μεταδιακομιστής YOG απέρριψε τη σύνδεση επειδή ο κωδικός είναι λανθασμένος.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη δεν έχει ακόμα κωδικό. Πιθανόν θέλετε να καταχωρήσετε αυτό το όνομα χρήστη με αυτό τον κωδικό. Γι' αυτό, ενεργοποιήστε την επιλογή "Καταχώρηση νέου YOG χρήστη με κωδικό" πριν συνδεθείτε. Θα πρέπει να ενεργοποιήσετε αυτή την επιλογή μόνο μία φορά.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
@@ -1267,11 +1267,11 @@ Ysagoon Online Gaming
 [You where kicked from the game]
 Αποβληθήκατε από το παιχνίδι
 [Your %0 are under attack]
-Το %0 δέχετε επίθεση
+Η μονάδα σας (%0) δέχεται επίθεση
 [Your IP address was temporarily banned]
 Η διεύθυνση IP σας αποκλείστηκε προσωρινά. Περιμένετε να αρθεί ο αποκλεισμός ή επικοινωνήστε με τους διαχειριστές.
 [Your unit got converted to %0's team]
-Η μονάδα σας άλλαξε σε %0 ομάδα
+Η μονάδα σας προσχώρησε στην ομάδα του %0
 [Your username was banned]
 Το όνομα χρήστη σας αποκλείστηκε. Επικοινωνήστε με τους διαχειριστές για να αρθεί ο αποκλεισμός.
 [game speed]
@@ -1294,3 +1294,7 @@ Cortex - Πειραματική τεχνητή νοημοσύνη τριών ε�
 Δεν ήταν δυνατή η αποθήκευση της εκστρατείας. Ελέγξτε ότι ο φάκελος προορισμού υπάρχει, επιτρέπει εγγραφή και έχει ελεύθερο χώρο.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Μέσα: %0
+[Units still working: %0]
+Εργάζονται: %0

@@ -27,7 +27,7 @@
 [%0's game]
 Jocul lui %0
 [%0's team unit got converted to your team]
-O unitate %0 a trecut de partea voastră
+O unitate din echipa lui %0 a trecut de partea voastră
 [abreaviation explanation A]
 A: Aliați
 [abreaviation explanation C]
@@ -57,7 +57,7 @@ AICastor
 [AINicowar-Description]
 Nicowar joacă agresiv, se dezvoltă rapid și trimite armate uriașe împotriva adversarilor. Dificultate ridicată.
 [AINicowar]
-Nicowar (unstable)
+Nicowar
 [AINone-Description]
 Fără IA — nu face nimic.
 [AINone]
@@ -107,7 +107,7 @@ Atacă
 [audio]
 Audio
 [auto save]
-Salvare automatică
+Salvare automată
 [available lan games]
 Jocuri locale disponibile
 [awaiting players]
@@ -119,9 +119,9 @@ absent:
 [backspace]
 Backspace
 [barracks explanation 2]
-nivelul de luptă
+de luptă al luptătorilor
 [barracks explanation]
-Vă ameliorează
+Îmbunătățește nivelul
 [barracks]
 Câmp de antrenament
 [beach size]
@@ -189,13 +189,13 @@ Alegeţi o hartă
 [clear area]
 Zonă de curățare
 [Clearing:]
-Defrişare de:
+Curățare:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
 Îndepărtează resursele
 [clearingflag]
-Steag de defrişare
+Steag de curățare
 [closed]
 Închis
 [combined vision]
@@ -227,9 +227,9 @@ număr de cratere
 [crater lakes terrain]
 Lacuri de crater
 [create game]
-Crează joc
+Creează joc
 [create map]
-Crează hartă
+Creează hartă
 [credits]
 Credite
 [ctrl - line]
@@ -241,7 +241,7 @@ Joc liber
 [customcur]
 Cursor personalizat
 [damage]
-Lovire
+Daune
 [Damaged Map]
 Harta unităților rănite
 [decrease units working]
@@ -253,7 +253,7 @@ inamice din apropiere
 [defencetower explanation]
 Atacă unități și clădiri
 [defencetower]
-Turn de-apărare
+Turn de apărare
 [Defense Map]
 Harta apărării
 [Defense]
@@ -309,7 +309,7 @@ Escape
 [explorationflag explanation]
 Atrage exploratori
 [explorationflag]
-Steag de apărare
+Steag de explorare
 [Explorer Ratio]
 Proporția exploratorilor
 [Explorer]
@@ -371,7 +371,7 @@ fructe
 [fullscreen]
 Ecran întreg
 [game full]
-Joc complet
+Jocul este plin
 [game shortcuts]
 Joc
 [Game]
@@ -433,7 +433,7 @@ Mai multe unități la lucru
 [inn explanation 2]
 
 [inn explanation]
-Vă hrăneşte unitaţile
+Vă hrănește unitățile
 [inn]
 Popas
 [insert]
@@ -451,9 +451,9 @@ Selectează următorul element
 [jobs]
 sarcini
 [join a game]
-Alăturate unui joc
+Alătură-te unui joc
 [join]
-Alăturăte
+Alătură-te
 [keyboard settings]
 Setări pentru tastatură
 [kick]
@@ -461,13 +461,13 @@ Dă afară
 [lan]
 Joc in reţea locală LAN
 [language incomplete]
-Româneste - Incomplete
+Română - Incompletă
 [language-code]
 ro
 [language-tr]
 Limba
 [language]
-Româneste
+Română
 [Leave Game]
 Părăsește jocul
 [left meta]
@@ -547,7 +547,7 @@ cu ceilalţi
 [market explanation]
 Permite schimbul de fructe
 [market]
-Piată
+Piață
 [medium priority]
 medie
 [meta %0]
@@ -567,7 +567,7 @@ Campanie nouă
 [new map]
 Nou
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Ne pare rău, dar numele ales este deja folosit pe freenode; veți putea vorbi doar prin YOG.
 [no fullscreen]
 * doar în modul fereastră
 [No Hints]
@@ -689,7 +689,7 @@ mers a unităților
 [racetrack]
 Pistă de alergare
 [range]
-Întindere
+Rază de acțiune
 [Rated %0]
 Evaluare: %0
 [ratios]
@@ -705,7 +705,7 @@ Actualizează lista de hărți
 [remember unit]
 Reține numărul de unități
 [Remember YOG password localy]
-Memorează parola local. (nesecurizat)
+Memorează parola pe acest calculator.
 [remove map]
 Elimină harta
 [remove shortcut]
@@ -757,9 +757,9 @@ Salvează scriptul
 [Save]
 Salvează
 [school explanation 2]
-nivelul de construire
+de construcție al lucrătorilor
 [school explanation]
-Vă ameliorează
+Îmbunătățește nivelul
 [school]
 Şcoală
 [Script Areas]
@@ -777,7 +777,7 @@ caută
 [select barracks building]
 Selectează câmpul de antrenament
 [select clearingflag]
-Selectează steagul de defrișare
+Selectează steagul de curățare
 [select construct barracks]
 Construiește câmp de antrenament
 [select construct defencetower]
@@ -787,7 +787,7 @@ Selectează construcția: Spital
 [select construct inn]
 Selectează construcția: Popas
 [select construct market]
-Selectează construcția: Piată
+Selectează construcția: Piață
 [select construct racetrack]
 Construiește pistă de alergare
 [select construct school]
@@ -801,19 +801,19 @@ Selectează construcția: Piscină
 [select delete tool]
 Selectează unealta de ștergere
 [select explorationflag]
-Selectează steagul: Steag de apărare
+Selectează steagul de explorare
 [select hospital building]
 Selectează clădirea: Spital
 [select inn building]
 Selectează clădirea: Popas
 [select market building]
-Selectează clădirea: Piată
+Selectează clădirea: Piață
 [select place clearing area]
 Plasează zona: Zonă de curățare
 [select place clearingflag]
-Plasează steagul: Steag de defrişare
+Plasează steagul de curățare
 [select place explorationflag]
-Plasează steagul: Steag de apărare
+Plasează steagul de explorare
 [select place forbidden area]
 Plasează zona: Zonă interzisă
 [select place guard area]
@@ -829,7 +829,7 @@ Selectează clădirea: Stup
 [select swimmingpool building]
 Selectează clădirea: Piscină
 [select tower building]
-Selectează clădirea: Turn de-apărare
+Selectează turnul de apărare
 [select wall building]
 Selectează clădirea: Zid de piatră
 [select warflag]
@@ -895,7 +895,7 @@ Zid de piatră
 [submit rating]
 Trimite evaluarea
 [svr hostname]
-Numele servărului gazdă
+Numele serverului
 [swamp terrain]
 Mlaștină
 [swarm explanation 2]
@@ -959,17 +959,17 @@ Clădirea este terminată
 [the building is under attack]
 Clădirea este atacată
 [the clearingflag is finished]
-?? Steag de defrişare terminat ??
+Steagul de curățare este pregătit
 [the clearingflag is under attack]
-?? Steagul de defrişare este atacat ??
+Steagul de curățare este atacat
 [the defencetower is finished]
 Turnul de apărare este terminat
 [the defencetower is under attack]
-Apărarea vă este atacată
+Turnul de apărare este atacat
 [the explorationflag is finished]
-?? Steag de explorare terminat ??
+Steag de explorare terminat
 [the explorationflag is under attack]
-?? Steagul de explorare este atacat ??
+Steagul de explorare este atacat
 [The game has not been finished]
 Jocul nu s-a terminat
 [the games]
@@ -987,9 +987,9 @@ Popasul este atacat
 [the maps]
 Hărţi
 [the market is finished]
-Piaţa este terminată
+Piața este terminată
 [the market is under attack]
-Piata este atacată
+Piața este atacată
 [The player %0 has joined YOG]
 Jucătorul %0 a intrat in YOG.
 [The player %0 has left YOG]
@@ -1007,7 +1007,7 @@ Reluări
 [the stonewall is finished]
 Un element de zid este terminat
 [the stonewall is under attack]
-Inamicul este la ziduri
+Zidul de piatră este atacat
 [the swarm is finished]
 Stupul este terminat
 [the swarm is under attack]
@@ -1017,9 +1017,9 @@ Piscina este terminată
 [the swimmingpool is under attack]
 Piscina este atacată
 [the warflag is finished]
-?? Steag de război terminat ??
+Steagul de luptă este pregătit
 [the warflag is under attack]
-?? Steagul de luptă este atacat ??
+Steagul de luptă este atacat
 [time]
 Timp
 [to:]
@@ -1041,7 +1041,7 @@ Putere totală de apărare
 [Total Hitpoints]
 Total puncte de viață
 [Total prestige reached]
-Prestigiul total a fost atins
+S-a atins pragul total de prestigiu
 [Total]
 Total
 [tutorial text 1]
@@ -1151,11 +1151,11 @@ Stabilirea conexiunii cu metaservărul YOG...
 [YESTS_CONNECTION_LOST]
 Conexiunea la YOG s-a pierdut.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Metaserverul YOG a refuzat sa vă conectaţi din motiv că qcest nume de utilizator a fost deja inregistrat cu o parolă. Daca sunteţi cel ce l-aţi înregistrat, dezactivati opţiunea "Înregistraţi utilizatorul YOG cu parola" de langă.
+Metaserverul YOG a refuzat conexiunea deoarece acest nume de utilizator este deja înregistrat. Dacă vă aparține, dezactivați opțiunea de înregistrare a unui utilizator YOG nou cu parolă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-Metaserverul YOG a refuzat sa vă conectaţi din motiv că parola este falsă.
+Metaserverul YOG a refuzat conexiunea deoarece parola este incorectă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Metaserverul YOG a refuzat sa vă conectaţi din motiv că acest utilizator nu are înca o parola in baza de date.
+Metaserverul YOG a refuzat conexiunea deoarece acest nume de utilizator nu are încă o parolă. Pentru a-l înregistra cu parola introdusă, activați opțiunea de înregistrare a unui utilizator YOG nou cu parolă înainte de conectare. Este necesar să activați această opțiune o singură dată.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 Metaserverul YOG a refuzat conexiunea deoarece această adresă IP este blocată temporar. Așteaptă ridicarea restricției sau contactează administratorii.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1169,7 +1169,7 @@ Metaserverul YOG a refuzat conexiunea deoarece acest nume de utilizator este blo
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
 Metaserverul YOG a refuzat conexiunea deoarece numele de utilizator nu este valid. Numele de utilizator pot conține doar litere, cifre și caractere de subliniere.
 [YESTS_CREATED]
-Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
+Sistemul de conectare este pregătit să contacteze metaserverul YOG.
 [YESTS_PASSWORDS_DONT_MATCH]
 Parolele introduse nu coincid. Introdu-le din nou.
 [YESTS_UNABLE_TO_CONNECT]
@@ -1201,7 +1201,7 @@ Ai fost dat afară din joc
 [Your IP address was temporarily banned]
 Adresa ta IP a fost blocată temporar. Așteaptă ridicarea restricției sau contactează administratorii.
 [Your unit got converted to %0's team]
-Unitatea voastră a trecut de partea %0
+O unitate de-a voastră a trecut în echipa lui %0
 [Your username was banned]
 Numele tău de utilizator a fost blocat. Contactează administratorii pentru ridicarea restricției.
 [game speed]
@@ -1224,3 +1224,7 @@ Harta nu a putut fi încărcată: fișierul este deteriorat sau are o versiune i
 Campania nu a putut fi salvată. Verifică dacă dosarul destinație există, permite scrierea și are spațiu liber.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Înăuntru: %0
+[Units still working: %0]
+Încă lucrează: %0

@@ -27,7 +27,7 @@
 [%0's game]
 %0s spel
 [%0's team unit got converted to your team]
-%0s lags enhet blev omvänd till ditt lag
+En enhet från %0s lag gick över till ditt lag
 [abreaviation explanation A]
 A: Allierade
 [abreaviation explanation C]
@@ -61,7 +61,7 @@ Nicowar
 [AINone-Description]
 Ingen – gör ingenting.
 [AINone]
-AIIngen
+Ingen
 [AINumbi-Description]
 Numbi expanderar lite, men snabbt. Lätt.
 [AINumbi]
@@ -151,7 +151,7 @@ Byggnader
 [Bullets]
 Kulor
 [campaign editor]
-Kampanj Editor
+Kampanjredigerare
 [campaign]
 Kampanj
 [Can't connect, can't find host]
@@ -229,7 +229,7 @@ control-%0
 [Corn]
 Vete
 [crater density]
-krater densitet
+antal kratrar
 [crater lakes terrain]
 Kratersjöar
 [create game]
@@ -249,15 +249,15 @@ Egen pekare
 [damage]
 Skada
 [Damaged Map]
-Skadekarta
+Karta över skadade
 [decrease units working]
 Minska antalet arbetande enheter
 [Defeat Your Oppenents]
 Besegra dina motståndare
 [defencetower explanation 2]
-enheter eller byggnader
+fiendeenheter och byggnader
 [defencetower explanation]
-Attackerar fientliga
+Attackerar närliggande
 [defencetower]
 Försvarstorn
 [Defense Map]
@@ -295,7 +295,7 @@ Editera Karta
 [editing map]
 Editerar Karta
 [editor shortcuts]
-Ändra genvägar
+Kartredigerare
 [editor]
 Editor
 [end]
@@ -317,7 +317,7 @@ Attraherar utforskare
 [explorationflag]
 Utforskningsflagga
 [Explorer Ratio]
-Utforskare Proportion
+Andel utforskare
 [Explorer]
 Utforskare
 [explorers]
@@ -425,9 +425,9 @@ Var värd för ett spel
 [hp]
 Hälsopoäng
 [Human]
-mänsklig
+Människa
 [human]
-mänsklig
+människa
 [hungry]
 hungriga
 [hungryness]
@@ -585,7 +585,7 @@ ingen tangent vald
 [No Objectives]
 Inga mål
 [no ressources growth areas]
-Inga Odlingsområden
+Områden utan tillväxt
 [No]
 Nej
 [Not Enough Ratings]
@@ -609,7 +609,7 @@ num lock
 [objectives]
 Mål
 [of which]
-av vilka
+varav
 [ok]
 Ok
 [old islands terrain]
@@ -625,9 +625,9 @@ Vid släpp
 [open chat box]
 Öppna chattruta
 [open load menu]
-Öppna Ladda Meny
+Öppna inläsningsmenyn
 [open save menu]
-Öppna Spara Meny
+Öppna sparmenyn
 [open scenario editor]
 Öppna Skript Editor
 [open teams editor]
@@ -667,7 +667,7 @@ Var god vänta
 [power]
 ström
 [press space]
-Tryck mellanslag för att forsätta.
+Tryck på mellanslag för att fortsätta.
 [Prestige Score]
 Prestigepoäng
 [Prestige Win Enabled]
@@ -973,7 +973,7 @@ Byggnaden är under attack
 [the defencetower is finished]
 Försvarstornet är färdigt
 [the defencetower is under attack]
-Ditt försvar är under attack
+Försvarstornet är under attack
 [the explorationflag is finished]
 ?? Utforskningsflaggan är klar ??
 [the explorationflag is under attack]
@@ -985,7 +985,7 @@ Spel
 [the hospital is finished]
 Sjukhuset är färdigt
 [the hospital is under attack]
-Sjukstugan är under attack
+Sjukhuset är under attack
 [The host has cancelled the game]
 Värden har avbrutit spelet.
 [the inn is finished]
@@ -1119,7 +1119,7 @@ Krigsflagga
 [Warning, you need to reboot the game for changes to take effect]
 Varning, du behöver starta om spelet för att inställningarna ska börja gälla
 [Warrior Ratio]
-Krigare Proportion
+Andel krigare
 [Warrior]
 Krigare
 [warriors]
@@ -1135,7 +1135,7 @@ Vete
 [wheat]
 vete
 [Won : you defeated your opponents]
-Seger: Du besegrade dina motsåtndare
+Seger: Du besegrade dina motståndare
 [Won : you have the most prestige]
 Seger: Du har mest prestige.
 [Won : your ally %0 has the most prestige]
@@ -1145,7 +1145,7 @@ Trä
 [wood]
 trä
 [Worker Ratio]
-Arbetare Proportion
+Andel arbetare
 [Worker]
 Arbetare
 [workers]
@@ -1169,7 +1169,7 @@ YOG metaserver vägrar anslutning därför att det här användarnamnet inte har
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 YOG-metaservern nekade anslutningen eftersom denna IP-adress är tillfälligt avstängd. Vänta tills avstängningen hävs eller kontakta administratörerna.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metaserver vägrar anslutning eftersom din globulation2-klient är för gammal.
+YOG-metaservern nekade anslutningen eftersom din Globulation 2-klient är föråldrad. Hämta den senaste versionen från www.globulation2.org för att spela på nätet.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 YOG metaserver vägrar anslutning utan att lämna förklaring!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
@@ -1234,3 +1234,7 @@ Kartan kunde inte läsas in: filen är skadad eller har en inkompatibel version.
 Kampanjen kunde inte sparas. Kontrollera att målmappen finns, är skrivbar och har ledigt utrymme.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Inne: %0
+[Units still working: %0]
+Arbetar ännu: %0

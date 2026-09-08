@@ -201,7 +201,7 @@ caps lock
 [combined vision]
 ﺭﺅﻳﺔ ﻣﺸﺘﺮﻛﺔ
 [compile]
-ﺍﺟﻤﻊ ﺍﻟﻨﺺ
+ﺗﺮﺟﻤﺔ ﺍﻟﻨﺺ ﺍﻟﺒﺮﻣﺠﻲ
 [compose]
 compose
 [Computing Fertility]
@@ -959,17 +959,17 @@ tab
 [the building is under attack]
 ﻳﺘﻌﺮﺽ ﺑﻨﺎء ﻟﻠﻬﺠﻮﻡ!
 [the clearingflag is finished]
-?? clearingflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ.
 [the clearingflag is under attack]
-?? clearingflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ ﻟﻠﻬﺠﻮﻡ.
 [the defencetower is finished]
 ﺗﻢ ﺑﻨﺎء ﺑﺮﺝ ﺩﻓﺎﻉ
 [the defencetower is under attack]
 ﺗﺘﻌﺮﺽ ﺩﻓﺎﻋﺎﺗﻚ ﻟﻠﻬﺠﻮﻡ!
 [the explorationflag is finished]
-?? explorationflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ.
 [the explorationflag is under attack]
-?? explorationflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ ﻟﻠﻬﺠﻮﻡ.
 [The game has not been finished]
 ﻟﻢ ﺗﻨﺘﻪِ ﺍﻟﻠﻌﺒﺔ
 [the games]
@@ -1017,9 +1017,9 @@ tab
 [the swimmingpool is under attack]
 ﺗﺘﻌﺮﺽ ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ ﻟﻠﻬﺠﻮﻡ!
 [the warflag is finished]
-?? warflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺤﺮﺏ.
 [the warflag is under attack]
-?? warflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻟﺤﺮﺏ ﻟﻠﻬﺠﻮﻡ.
 [time]
 ﺍﻟﻮﻗﺖ
 [to:]
@@ -1222,3 +1222,7 @@ Cortex - ﺫﻛﺎﺀ ﺍﺻﻄﻨﺎﻋﻲ ﺗﺠﺮﻳﺒﻲ ﺑﺜﻼﺙ ﻃ�
 ﺗﻌﺬﺭ ﺣﻔﻆ ﺍﻟﺤﻤﻠﺔ. ﺗﺤﻘﻖ ﻣﻦ ﻭﺟﻮﺩ ﺍﻟﻤﺠﻠﺪ ﺍﻟﻮﺟﻬﺔ ﻭﺇﻣﻜﺎﻧﻴﺔ ﺍﻟﻜﺘﺎﺑﺔ ﻓﻴﻪ ﻭﺗﻮﻓﺮ ﻣﺴﺎﺣﺔ ﺧﺎﻟﻴﺔ.
 [AICortex]
 Cortex
+[Units still inside: %0]
+ﺑﺎﻟﺪﺍﺧﻞ: %0
+[Units still working: %0]
+ﻭﺣﺪﺍﺕ ﻻ ﺗﺰﺍﻝ ﺗﻌﻤﻞ: %0

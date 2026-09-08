@@ -87,15 +87,15 @@ alt-%0
 [any explorer]
 任何探索者
 [are dying hungry]
-飢餓的
+正在挨餓
 [are hungry]
-挨餓的
+肚子餓
 [are ok]
 沒問題的
 [are wonded]
 受傷的
 [armor]
-防禦
+護甲
 [assigned]
 已分配工作
 [At. speed]
@@ -109,11 +109,11 @@ alt-%0
 [auto save]
 自動儲存
 [available lan games]
-可行的LAN遊戲
+可加入的區域網路遊戲
 [awaiting players]
-正等待的玩家
+等待玩家加入
 [away:]
-離至:
+暫離：
 [Back]
 返回
 [backspace]
@@ -255,7 +255,7 @@ Caps Lock 鍵
 [combined vision]
 共享視野
 [compile]
-收集語法
+編譯腳本
 [compose]
 Compose 鍵
 [Computing Fertility]
@@ -277,9 +277,9 @@ control-%0
 [Corn]
 小麥
 [crater density]
-破碎程度
+隕石坑數量
 [crater lakes terrain]
-破碎湖泊
+隕石坑湖泊
 [create game]
 創造遊戲
 [create map]
@@ -319,7 +319,7 @@ Ctrl - 直線
 [Defense]
 防禦
 [Delete game]
-刪除以選擇的遊戲
+刪除已選取的遊戲
 [delete]
 刪除
 [desert]
@@ -423,7 +423,7 @@ f9
 [Free]
 健康
 [free]
-自由
+閒置
 [from:]
 來自:
 [fruit]
@@ -483,7 +483,7 @@ Home 鍵
 [human]
 人類玩家
 [hungry]
-挨餓
+肚子餓
 [hungryness]
 飢餓度
 [In way]
@@ -527,7 +527,7 @@ Insert 鍵
 [lan]
 LAN 遊戲
 [language incomplete]
-繁體中文 - Incomplete
+繁體中文 - 未完成
 [language-code]
 zh-tw
 [language-tr]
@@ -551,7 +551,7 @@ zh-tw
 [load game]
 載入遊戲
 [load map]
-載入遊戲
+載入地圖
 [load replay]
 載入重播
 [load script]
@@ -575,9 +575,9 @@ zh-tw
 [lowquality]
 低畫質
 [Magic At. Air]
-Air dmg.
+對空傷害
 [Magic At. Ground]
-地面攻擊
+對地傷害
 [map description]
 說明
 [Map Discovered]
@@ -627,9 +627,9 @@ meta-%0
 [Music volume]
 音量 (音樂)
 [Mute]
-沉默
+靜音
 [mute]
-沉默
+靜音
 [new campaign]
 新戰役
 [new map]
@@ -645,7 +645,7 @@ meta-%0
 [No Objectives]
 沒有目標
 [no ressources growth areas]
-非成長區域
+資源禁止生長區
 [No]
 否
 [Not Enough Ratings]
@@ -669,13 +669,13 @@ Num Lock 鍵
 [objectives]
 目標
 [of which]
-他們是
+其中
 [ok]
 確定
 [old islands terrain]
-古老隨機島嶼
+隨機島嶼（舊版）
 [old random terrain]
-古老隨機地形
+隨機地形（舊版）
 [on press]
 按下時
 [On the spot]
@@ -689,7 +689,7 @@ Num Lock 鍵
 [open save menu]
 開啟儲存選單
 [open scenario editor]
-開啟語法編輯器
+開啟腳本編輯器
 [open teams editor]
 開啟隊伍編輯器
 [open]
@@ -709,7 +709,7 @@ Page Down 鍵
 [page up]
 Page Up 鍵
 [Papyrus]
-草紙
+紙莎草
 [pause game]
 暫停遊戲
 [pause]
@@ -773,7 +773,7 @@ Print Screen 鍵
 [remember unit]
 記住單位配置數量
 [Remember YOG password localy]
-記住密碼。 (不穩定)
+在本機記住密碼。
 [remove map]
 移除地圖
 [remove shortcut]
@@ -785,7 +785,7 @@ Print Screen 鍵
 [repair]
 修復
 [repeat area]
-在相同地景的時間
+相同地形的重複次數
 [Repeat your password :]
 再次輸入密碼：
 [replay ended]
@@ -831,7 +831,7 @@ Enter 鍵
 [school]
 學校
 [Script Areas]
-語法區域
+腳本區域
 [scroll lock]
 Scroll Lock 鍵
 [scroll wheel enabled]
@@ -841,7 +841,7 @@ Scroll Lock 鍵
 [seeking a job]
 正在找尋工作
 [seeking]
-等待
+尋找工作
 [select barracks building]
 選擇兵營
 [select clearingflag]
@@ -909,7 +909,7 @@ shift-%0
 [shortcut explanation enter]
 Enter: 傳送訊息
 [shortcut explanation v]
-V: 持鍵以傳送訊息
+V: 按住以使用語音交談
 [show areas]
 顯示區域
 [show flags]
@@ -939,7 +939,7 @@ V: 持鍵以傳送訊息
 [Starving Map]
 飢餓地圖
 [starving]
-飢餓
+挨餓
 [Statistics]
 統計
 [Still (i)]
@@ -1021,25 +1021,25 @@ Tab 鍵
 [teams]
 團隊
 [the barracks is finished]
-訓練營已完成
+兵營已完成
 [the barracks is under attack]
-訓練營正遭受攻擊
+兵營正遭受攻擊
 [the building is finished]
 建築物已完成
 [the building is under attack]
 建築物正遭受攻擊
 [the clearingflag is finished]
-?? 清除旗幟已完成 ??
+清除旗幟已完成
 [the clearingflag is under attack]
-?? 清除旗幟正遭受攻擊 ??
+清除旗幟正遭受攻擊
 [the defencetower is finished]
 防禦塔已完成
 [the defencetower is under attack]
-你的防禦正遭受攻擊
+防禦塔正遭受攻擊
 [the explorationflag is finished]
-?? 探索旗幟已完成 ??
+探索旗幟已完成
 [the explorationflag is under attack]
-?? 探索旗幟正遭受攻擊 ??
+探索旗幟正遭受攻擊
 [The game has not been finished]
 遊戲尚未結束
 [the games]
@@ -1077,7 +1077,7 @@ Tab 鍵
 [the stonewall is finished]
 一段石牆已完成
 [the stonewall is under attack]
-敵人已在牆下
+石牆正遭受攻擊
 [the swarm is finished]
 孢子堆已完成
 [the swarm is under attack]
@@ -1087,13 +1087,13 @@ Tab 鍵
 [the swimmingpool is under attack]
 游泳池正遭受攻擊
 [the warflag is finished]
-?? 攻擊旗幟已完成 ??
+攻擊旗幟已完成
 [the warflag is under attack]
-?? 攻擊旗幟正遭受攻擊 ??
+攻擊旗幟正遭受攻擊
 [time]
 時間
 [to:]
-前往:
+傳給：
 [toggle draw accessibility aids]
 切換隊伍編號顯示
 [toggle draw information]
@@ -1111,7 +1111,7 @@ Tab 鍵
 [Total Hitpoints]
 總生命值
 [Total prestige reached]
-聲望總計達到
+總聲望已達門檻
 [Total]
 總共
 [tutorial text 1]
@@ -1141,7 +1141,7 @@ Tab 鍵
 [unlocked at start]
 初始解鎖
 [unlocked by]
-解除由
+完成此任務後解鎖：
 [Unnamed Area]
 {未命名區域}
 [up]
@@ -1179,7 +1179,7 @@ Tab 鍵
 [warflag]
 攻擊旗幟
 [Warning, you need to reboot the game for changes to take effect]
-注意，你需要重新啟動遊戲以見更改
+請重新啟動遊戲，變更才會生效。
 [Warrior Ratio]
 士兵比例
 [Warrior]
@@ -1201,7 +1201,7 @@ Tab 鍵
 [Won : you have the most prestige]
 贏: 你的聲望最高
 [Won : your ally %0 has the most prestige]
-贏: 你的隊伍 %0 得到了最多的聲望
+勝利：你的盟友 %0 擁有最高聲望
 [Wood]
 木材
 [wood]
@@ -1219,15 +1219,15 @@ Tab 鍵
 [Yes]
 是
 [YESTS_CONNECTING]
-確定連接至YOG meta伺服器中 ...
+正在連線至 YOG 中繼伺服器⋯
 [YESTS_CONNECTION_LOST]
-至YOG的連線已消失。
+與 YOG 的連線已中斷。
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG meta伺服器拒絕連線因為你的用戶名已被使用。請重新選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
+YOG 中繼伺服器拒絕連線，因為此使用者名稱已經註冊。若這是你的帳號，請取消勾選「註冊新的 YOG 使用者與密碼」。
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG meta伺服器拒絕連線因為你的密碼錯誤。
+YOG 中繼伺服器拒絕連線，因為密碼錯誤。
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG meta伺服器拒絕連線因為你沒有密碼。請選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
+YOG 中繼伺服器拒絕連線，因為此使用者名稱尚未設定密碼。若要以輸入的密碼註冊，請在連線前勾選「註冊新的 YOG 使用者與密碼」。只需註冊一次。
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 YOG 中繼伺服器拒絕連線，因為此 IP 位址已遭暫時封禁。請等待封禁解除，或聯絡管理員。
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1245,7 +1245,7 @@ YOG 中繼伺服器拒絕連線，因為提供的使用者名稱無效。使用�
 [YESTS_PASSWORDS_DONT_MATCH]
 輸入的密碼不一致。請重新輸入。
 [YESTS_UNABLE_TO_CONNECT]
-無法連接。 YOG meta伺服器已關閉。
+無法連線。YOG 中繼伺服器似乎無法使用。
 [yog block command help]
 /block <playername>    封鎖玩家，之後將不再顯示該玩家的訊息。
 [yog block command player %0 already blocked]
@@ -1296,3 +1296,7 @@ Cortex - 實驗性的三層人工智慧，開發中。
 無法儲存戰役。請檢查目標資料夾是否存在、是否可寫入，以及是否有可用空間。
 [AICortex]
 Cortex
+[Units still inside: %0]
+內部：%0
+[Units still working: %0]
+仍在工作：%0

@@ -6,7 +6,7 @@ Base: `origin/master` commit `88934ecfb`. Initial audit: `8b1eb8a34`.
 ## Completion
 
 All **3,227 remaining required blank entries** have been translated. All 28
-catalogs contain the 611 registered keys and have zero required blank values.
+catalogs contain the 613 registered keys and have zero required blank values.
 Intentionally empty second rows of building descriptions remain where appropriate.
 The initial audit reduced 4,445 missing/blank required entries to 3,227; the team
 pass completed that backlog. No English fallback was copied in to inflate coverage.
@@ -34,6 +34,40 @@ unit and building names, and the meaning of labels where they appear in the game
 The western, Slavic and eastern reviews made 54, 91 and 91 distinct corrections,
 respectively; reviewers also corrected narrow controls and adjacent existing errors.
 These are independent model reviews, not native-speaker playtest certification.
+
+## Second quality pass
+
+A further pass after `82750cb98` corrected **856 existing catalog values** and
+added **56 translated values** for two new complete status messages. Corrections
+include semantics, grammar, spelling, terminology and removal of leftover debug text;
+they are not 856 distinct gameplay bugs.
+
+Reviewers rotated: `translate_west` inspected all active entries in Greek,
+Hungarian, Romanian, Turkish and Traditional Chinese; `translate_east` inspected
+all active entries in Catalan, European Portuguese, Danish, Swedish and Basque.
+`translate_slavic` re-examined the Czech, Slovak, Slovenian and Serbian catalogs
+after their previous independent review. The root agent inspected targeted older
+text in the other 14 languages. Slavic changes then received a fresh independent
+spot-review by `translate_east`; root changes and the source edit received an
+independent review by `translate_slavic`. Root also spot-checked the other groups'
+key-level changes and requested corrections to Greek/Hungarian event agreement.
+
+This broader pass found incorrect or incomplete registration recovery guidance,
+reversed checkbox instructions, an unrelated name used for Greek's Language label,
+wrong menu/action meanings, and significant older spelling issues. It corrected
+attack alerts that wrapped a singular unit-type substitution in a plural sentence,
+misleading no-growth-area labels, and Simplified Chinese building names hardcoded
+with `lv0` even though they apply at every level.
+
+`GameGUIDrawBuildingHelpers.cpp` previously joined localized fragments directly
+to counts, producing missing spaces and constraining word order. It now formats
+`[Units still inside: %0]` and `[Units still working: %0]` as complete localized
+messages. Existing conditions and single-unit messages are preserved; legacy
+fragment keys remain for compatibility. The changed C++ file passes a syntax-only
+compile, and the native catalog smoke test exercises the new placeholders too.
+The two new messages were measured with two-digit counts against their 76 px and
+148 px budgets at 10 px. Both Chinese catalogs also passed the expanded measurements
+using STHeiti Light, with no missing glyphs or measured overflows.
 
 ## Important context corrections
 
@@ -73,8 +107,8 @@ metadata ordering and literal source lookups. Four regression tests pass. The de
 mode can report work in progress; CI uses strict mode and permits no required blanks.
 
 A native smoke test linked the actual `StringTable`, `FormattableString`, `Toolkit`
-and file-loading components. It loaded **17,108 language/key combinations**, checked
-**1,036 formatted strings**, and reported **zero failures**.
+and file-loading components. It loaded **17,164 language/key combinations**, checked
+**1,092 formatted strings**, and reported **zero failures**.
 
 Native SDL_ttf measurements checked building descriptions (152 px in the 160 px
 panel at 10 px), unit-level captions with their `3/3` fraction (128 px), action labels

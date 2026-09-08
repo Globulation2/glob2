@@ -223,7 +223,7 @@ control-%0
 [Corn]
 گندم
 [crater density]
-تعداد دریاچه‌ها
+تعداد دهانه‌ها
 [crater lakes terrain]
 دریاچه
 [create game]
@@ -627,7 +627,7 @@ numlock
 [open teams editor]
 ویرایش تیمها
 [open]
-بازکردن
+باز
 [OpenGL]
 اسفاده از OpenGL
 [Options]
@@ -717,7 +717,7 @@ print screen
 [repair]
 تعمیر
 [repeat area]
-اندازه‌ی چند برابر؟
+بار تکرار همان چشم‌انداز
 [Repeat your password :]
 رمزت را دوباره بنویس:
 [replay ended]
@@ -959,17 +959,17 @@ tab
 [the building is under attack]
 به ساختمان حمله شده!
 [the clearingflag is finished]
-?? پرچم پاکسازی گذاشته شد ??
+پرچم پاکسازی گذاشته شد
 [the clearingflag is under attack]
-?? به پرچم پاکسازی حمله شده! ??
+به پرچم پاکسازی حمله شده!
 [the defencetower is finished]
 ساخت برج مراقبت تمام شد.
 [the defencetower is under attack]
 به برج مراقبت حمله شده!
 [the explorationflag is finished]
-?? پرچم جستجو گذاشته شد. ??
+پرچم جستجو گذاشته شد.
 [the explorationflag is under attack]
-?? به پرچم جستجو حمله شده! ??
+به پرچم جستجو حمله شده!
 [The game has not been finished]
 بازی نیمه‌کاره ماند
 [the games]
@@ -1017,9 +1017,9 @@ tab
 [the swimmingpool is under attack]
 به استخر حمله شده!
 [the warflag is finished]
-?? پرچم جنگ گذاشته شد ??
+پرچم جنگ گذاشته شد
 [the warflag is under attack]
-?? به پرچم جنگ حمله شده! ??
+به پرچم جنگ حمله شده!
 [time]
 زمان
 [to:]
@@ -1123,7 +1123,7 @@ tab
 [water]
 مقدار آب
 [Wheat]
-مقدار گندم
+گندم
 [Won : you defeated your opponents]
 بردی: تو حریفهایت را شکست دادی.
 [Won : you have the most prestige]
@@ -1197,7 +1197,7 @@ tab
 [You where kicked from the game]
 تو از بازی بیرون شدی!
 [Your %0 are under attack]
-به %0های تو حمله شده!
+به %0 تو حمله شده!
 [Your IP address was temporarily banned]
 آدرس اینترنتی (IP) این کامپیوتر موقتا تحریم شده! میتوانی منتظر بمانی تا از تحریم دربیاید یا اینکه با مدیران ایساگون تماس بگیری.
 [Your unit got converted to %0's team]
@@ -1222,3 +1222,7 @@ Cortex - هوش مصنوعی آزمایشی سه‌لایه. در حال توس�
 ذخیرهٔ کارزار ممکن نشد. بررسی کنید که پوشهٔ مقصد وجود داشته باشد، قابل نوشتن باشد و فضای خالی داشته باشید.
 [AICortex]
 Cortex
+[Units still inside: %0]
+درون: %0
+[Units still working: %0]
+هنوز مشغول: %0

@@ -579,7 +579,7 @@ keine Taste
 [No Objectives]
 keine Anweisungen
 [no ressources growth areas]
-vergifteter Boden
+Gebiete ohne Wachstum
 [No]
 Nein
 [Not Enough Ratings]
@@ -717,7 +717,7 @@ Reparieren / Abbrechen
 [repair]
 Reparieren
 [repeat area]
-mal die selbe Landschaft
+mal dieselbe Landschaft
 [Repeat your password :]
 Wiederhole Dein Passwort
 [replay ended]
@@ -959,17 +959,17 @@ Das Gebäude ist fertig
 [the building is under attack]
 Das Gebäude wird angegriffen
 [the clearingflag is finished]
-?? Rodungsflagge fertig ??
+Rodungsflagge fertig
 [the clearingflag is under attack]
-?? Rodungsflagge wird angegriffen ??
+Rodungsflagge wird angegriffen
 [the defencetower is finished]
 Der Panzerturm ist fertig
 [the defencetower is under attack]
 Ihre Befestigungen werden angegriffen
 [the explorationflag is finished]
-?? Entdeckerflagge fertig ??
+Entdeckerflagge fertig
 [the explorationflag is under attack]
-?? Entdeckerflagge wird angegriffen ??
+Entdeckerflagge wird angegriffen
 [The game has not been finished]
 Das Spiel wurde nicht abgeschlossen
 [the games]
@@ -1017,9 +1017,9 @@ Das Schwimmbecken ist fertig
 [the swimmingpool is under attack]
 Das Schwimmbecken wird angegriffen
 [the warflag is finished]
-?? Kriegsflagge fertig ??
+Kriegsflagge fertig
 [the warflag is under attack]
-?? Kriegsflagge wird angegriffen ??
+Kriegsflagge wird angegriffen
 [time]
 Zeit
 [to:]
@@ -1157,7 +1157,7 @@ Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon re
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Der YOG Metaserver hat die Verbindung abgewiesen da Dein Passwort falsch ist.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Der YOG Metaserver hat die Verbindung abgewiesen da Dein Benutzername noch nicht registriert ist. Wenn Du diesen Benutzernamen mit diesem Passwort registrieren willst aktiviere die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden.
+Der YOG-Metaserver hat die Verbindung abgewiesen, weil für diesen Benutzernamen noch kein Passwort festgelegt ist. Um den Namen mit diesem Passwort zu registrieren, aktiviere vor dem Verbinden die Option „Neuen YOG-Benutzer mit Passwort registrieren“. Dies ist nur einmal nötig.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 Der YOG Metaserver hat die Verbindung abgewiesen da diese IP gesperrt wurde. Warte geduldig oder kontaktiere einen Admin um die Sperre aufzuheben.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1199,7 +1199,7 @@ Du hast gewonnen!
 [You where kicked from the game]
 Du wurdest aus dem Spiel geworfen!
 [Your %0 are under attack]
-Deine %0 werden angegriffen
+Dein %0 wird angegriffen
 [Your IP address was temporarily banned]
 Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
 [Your unit got converted to %0's team]
@@ -1224,3 +1224,7 @@ Cortex - Experimentelle KI mit drei Ebenen. In Entwicklung.
 Die Kampagne konnte nicht gespeichert werden. Prüfe, ob der Zielordner existiert, beschreibbar ist und genügend Speicherplatz frei ist.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Noch drin: %0
+[Units still working: %0]
+Arbeiten noch: %0

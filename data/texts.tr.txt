@@ -1,5 +1,5 @@
 [%0 has left the game]
-%0 oyundan cikti.
+%0 oyundan çıktı.
 [%0 level %1]
 %0, seviye %1
 [%0 units can't access building]
@@ -27,7 +27,7 @@
 [%0's game]
 %0 adlı oyuncunun oyunu
 [%0's team unit got converted to your team]
-%0'nin bir birimi sizin tarafiniza gecti
+%0 adlı oyuncunun takımından bir birim takımınıza geçti
 [abreaviation explanation A]
 A: Müttefikler
 [abreaviation explanation C]
@@ -75,35 +75,35 @@ Warrush hızlı ve sert saldırır, savunmadaki oyuncuyu sıklıkla yenilginin e
 [AIWarrush]
 AIWarrush
 [Alga]
-Suyosunu
+Su yosunu
 [algae]
 yosun
 [alliances]
-Ittifaklar
+İttifaklar
 [alt %0]
 alt-%0
 [and]
 ve
 [any explorer]
-herhangi/tum kasif(ler)
+herhangi bir kâşif
 [are dying hungry]
-cok ac
+açlıktan ölüyor
 [are hungry]
-ac
+aç
 [are ok]
 tamam
 [are wonded]
-yarali
+yaralı
 [armor]
-Zirh
+Zırh
 [assigned]
 Atanan
 [At. speed]
-Att. hiz
+Saldırı hızı
 [At. strength]
-Att. guc
+Saldırı gücü
 [Attack]
-Saldiri
+Saldırı
 [audio]
 Ses
 [auto save]
@@ -135,13 +135,13 @@ Görev Bilgisi
 [build %0 level %1]
 %0 inşa et, seviye %1
 [Build]
-Insaa et
+İnşa et
 [Building Defaults]
 Varsayılan Bina Ayarları
 [building settings]
 Bina Ayarları
 [building site]
-insaa alani
+inşaat alanı
 [Building Tool Box Explanation]
 Shift + Sürükle = Dikdörtgen
 [Building Tool Line Explanation]
@@ -153,7 +153,7 @@ Mermiler
 [campaign editor]
 Sefer Düzenleyici
 [campaign]
-Senaryo
+Sefer
 [Can't connect, can't find host]
 Bağlanılamıyor: sunucu bulunamadı
 [Can't host game, port %0 in use]
@@ -171,43 +171,43 @@ Oyuna katilamadiniz: zamanasimi
 [Can't join game, wrong game version]
 Oyuna katilamadiniz: yanlis oyun versiyonu
 [cancel destroy]
-Yikimi iptal et
+Yıkımı iptal et
 [cancel repair]
-Onarmayi iptal et
+Onarmayı iptal et
 [cancel upgrade]
-Gelistirmeyi iptal et
+Geliştirmeyi iptal et
 [Cancel]
-Vazgec
+Vazgeç
 [caps lock]
 Caps Lock
 [carry]
-Tasiyor:
+Taşıyor:
 [Change Area Name]
 Alan Adını Değiştir
 [Cherry]
 Kiraz
 [choose campaign]
-Bir senaryo secin
+Bir sefer seçin
 [choose game]
-Oyun sec
+Oyun seç
 [choose map]
-Harita sec
+Harita seç
 [clear area]
-Temizlik bolgesi
+Temizlik bölgesi
 [Clearing:]
-Aciklik:
+Temizlenen kaynaklar:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
 Kaynakları temizler
 [clearingflag]
-Temizlik bayragi
+Temizlik bayrağı
 [closed]
-Kapali
+Kapalı
 [combined vision]
 Ortak görüş
 [compile]
-Script derle
+Betiği derle
 [compose]
 Compose
 [Computing Fertility]
@@ -215,11 +215,11 @@ Verimlilik Hesaplanıyor
 [concrete islands terrain]
 Ayrı Adalar
 [connect]
-Baglan
+Bağlan
 [connecting to game]
 Oyuna Bağlanılıyor
 [connecting to]
-Suraya baglaniyor:
+Şuraya bağlanıyor:
 [Construction Site Defaults]
 Varsayılan İnşaat Ayarları
 [Continue playing]
@@ -229,23 +229,23 @@ control-%0
 [Corn]
 Buğday
 [crater density]
-krater yogunlugu
+krater sayısı
 [crater lakes terrain]
-Krater Golleri
+Krater Gölleri
 [create game]
 Yeni oyun
 [create map]
 Yeni harita
 [credits]
-Hakkinda
+Hakkında
 [ctrl - line]
 Ctrl - Çizgi
 [current speed]
-Mevcut hiz
+Mevcut hız
 [custom game]
-Ozel oyun
+Özel oyun
 [customcur]
-Ozel imlec
+Özel imleç
 [damage]
 Hasar
 [Damaged Map]
@@ -269,17 +269,17 @@ Secili oyunu sil
 [delete]
 Delete
 [desert]
-col
+çöl
 [destroy building]
 Seçili Binayı Yık
 [destroy]
-Yik
+Yık
 [display]
-Gorunum
+Görünüm
 [do nothing]
 Hiçbir Şey Yapma
 [don't carry anything]
-Hicbirsey tasimiyor
+Hiçbir şey taşımıyor
 [down]
 aşağı
 [Download Map]
@@ -297,13 +297,13 @@ Harita Düzenleniyor
 [editor shortcuts]
 Düzenleyici
 [editor]
-Editor
+Düzenleyici
 [end]
 End
 [Enter your nickname :]
-Takma adinizi girin:
+Takma adınızı girin:
 [Enter your password :]
-Sifrenizi girin:
+Şifrenizi girin:
 [enter]
 Enter
 [equals]
@@ -315,15 +315,15 @@ Escape
 [explorationflag explanation]
 Kâşifleri çeker
 [explorationflag]
-Kesif bayragi
+Keşif bayrağı
 [Explorer Ratio]
-Kaşif Oranı
+Kâşif Oranı
 [Explorer]
-Kasif
+Kâşif
 [explorers]
-kasifler
+kâşifler
 [extra islands]
-bos adalar
+boş adalar
 [f10]
 f10
 [f11]
@@ -365,13 +365,13 @@ Savaş sisi
 [food]
 Besin
 [forbidden area]
-Yasak bolge
+Yasak bölge
 [Free]
 Sağlıklı
 [free]
-tanesi bosta
+tanesi boşta
 [from:]
-surdan:
+kimden:
 [fruit]
 meyve
 [fullscreen]
@@ -389,19 +389,19 @@ Olaya Git
 [go to home]
 Üsse Git
 [goto main menu]
-Ama menuye don
+Ana menüye dön
 [grass]
-Cimen
+Çimen
 [ground attack]
-yer saldirisi
+yer saldırısı
 [guard area]
-Nobet bolgesi
+Nöbet bölgesi
 [GUIMapPreview text 0]
-Lutfen secin
+Lütfen seçin
 [GUIMapPreview text 1]
 bir harita
 [handmade map]
-Elyapimi harita
+El yapımı harita
 [Happyness]
 Mutluluk
 [hard pause]
@@ -429,9 +429,9 @@ Can
 [human]
 insan
 [hungry]
-ac
+aç
 [hungryness]
-Aclik
+Açlık
 [In way]
 Yolda
 [increase units working]
@@ -445,7 +445,7 @@ Otel
 [insert]
 Insert
 [inside]
-Icerde
+İçeride
 [islands size]
 ada boyutu
 [islands terrain]
@@ -457,23 +457,23 @@ Sonraki Öğeyi Seç
 [jobs]
 işler
 [join a game]
-Oyuna katil
+Oyuna katıl
 [join]
-Katil
+Katıl
 [keyboard settings]
 Klavye Ayarları
 [kick]
 Oyundan At
 [lan]
-Agda Oyna
+Yerel ağ oyunu
 [language incomplete]
-Turkce - Incomplete
+Türkçe - Eksik
 [language-code]
 tr
 [language-tr]
 Dil
 [language]
-Turkce
+Türkçe
 [Leave Game]
 Oyundan Ayrıl
 [left meta]
@@ -489,7 +489,7 @@ Seviyeler
 [load campaign]
 Sefer Yükle
 [load game]
-Oyun yukle
+Oyun yükle
 [load map]
 Harita Yükle
 [load replay]
@@ -497,27 +497,27 @@ Tekrar Yükle
 [load script]
 Betik Yükle
 [load]
-Yukle
+Yükle
 [loading map list]
 Harita Listesi Yükleniyor...
 [Lobby]
 Lobi
 [login]
-Giris
+Giriş
 [look around]
 Etrafa bak
 [Lost : %0 has more prestige than you]
-Yenilgi: %0 'nin prestiji sizinkinden daha fazla
+Yenilgi: %0 adlı oyuncunun prestiji sizinkinden daha fazla
 [Lost : your colony is dead]
-Yenilgi: koloniniz oldu
+Yenilgi: koloniniz yok oldu
 [low priority]
 düşük
 [lowquality]
-Dusuk kalite
+Düşük kalite
 [Magic At. Air]
-Hava hasari
+Hava hasarı
 [Magic At. Ground]
-Yer hasari
+Yer hasarı
 [map description]
 Açıklama
 [Map Discovered]
@@ -525,7 +525,7 @@ Harita Keşfedilmiş
 [Map download failure: lost connection]
 Harita indirilemedi: YOG bağlantısı kesildi
 [Map name: %0]
-Harita adi: %0.
+Harita adı: %0.
 [map name]
 Ad
 [map rated]
@@ -533,9 +533,9 @@ Harita Değerlendirildi
 [map script]
 Harita Betiği
 [map size x]
-Harita genisligi
+Harita genişliği
 [map size y]
-Harita yuksekligi
+Harita yüksekliği
 [Map upload failure: connection lost]
 Harita yüklenemedi: YOG bağlantısı kesildi
 [Map upload failure: map name in use]
@@ -559,11 +559,11 @@ orta
 [meta %0]
 meta-%0
 [Min required level:]
-Gerekli en dusuk seviye:
+Gerekli en düşük seviye:
 [Minimum Level To Flag]
 Asgari birim seviyesi
 [Music volume]
-Ses ayari (muzik)
+Ses düzeyi (müzik)
 [Mute]
 sessiz
 [mute]
@@ -573,7 +573,7 @@ Yeni Sefer
 [new map]
 Yeni
 [nick taken]
-Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
+Üzgünüz, seçtiğiniz ad freenode'da zaten kayıtlı. Yalnızca YOG üzerinden konuşabileceksiniz.
 [no fullscreen]
 * yalnızca pencere kipinde
 [No Hints]
@@ -585,11 +585,11 @@ Hedef Yok
 [no ressources growth areas]
 Kaynak Büyümesi Olmayan Alanlar
 [No]
-Hayir
+Hayır
 [Not Enough Ratings]
 Yeterli Değerlendirme Yok
 [not ready]
-hazir degil
+hazır değil
 [Number Of Buildings]
 Bina Sayısı
 [number of players: %0 (%1 AI)]
@@ -597,9 +597,9 @@ Bina Sayısı
 [number of players: %0]
 %0 oyuncu var.
 [number of teams: %0]
-%0 takim var.
+%0 takım
 [number of teams]
-takim sayisi
+takım sayısı
 [Number Of Units]
 Birim Sayısı
 [numlock]
@@ -611,9 +611,9 @@ ayrintilar:
 [ok]
 Tamam
 [old islands terrain]
-eski karisik adalar
+eski rastgele adalar
 [old random terrain]
-eski karisik arazi
+eski rastgele arazi
 [on press]
 Basınca
 [On the spot]
@@ -631,13 +631,13 @@ Senaryo Düzenleyiciyi Aç
 [open teams editor]
 Takım Düzenleyiciyi Aç
 [open]
-Ac
+Açık
 [OpenGL]
 OpenGL
 [Options]
-Secenekler
+Seçenekler
 [options]
-Secenekler
+Seçenekler
 [Orange]
 Portakal
 [Other Options]
@@ -653,19 +653,19 @@ Oyunu Duraklat
 [pause]
 Pause
 [Paused]
-Duraklatildi
+Duraklatıldı
 [player name]
-Oyuncu adi
+Oyuncu adı
 [player rating %0]
 Oyuncu Puanı: %0
 [players]
 Oyuncular
 [please wait]
-Lutfen bekleyin
+Lütfen bekleyin
 [power]
-güç
+güç tuşu
 [press space]
-Devam etmek icin bosluk tusuna basin.
+Devam etmek için boşluk tuşuna basın.
 [Prestige Score]
 Prestij Puanı
 [Prestige Win Enabled]
@@ -683,7 +683,7 @@ Erik
 [quit the editor]
 Düzenleyiciden çık
 [quit the game]
-Oyundan cik
+Oyundan çık
 [quit the replay]
 Tekrardan çık
 [quit]
@@ -711,7 +711,7 @@ Kaydol
 [remember unit]
 Birim Sayılarını Hatırla
 [Remember YOG password localy]
-Parolayi yerel olarak animsa. (guvenli degil)
+Parolayı bu bilgisayarda hatırla.
 [remove map]
 Haritayı Kaldır
 [remove shortcut]
@@ -733,7 +733,7 @@ Varsayılan Kısayolları Geri Yükle
 [return to editor]
 Düzenleyiciye dön
 [return to game]
-Oyuna don
+Oyuna dön
 [return to replay]
 Tekrara dön
 [return]
@@ -745,13 +745,13 @@ sağ Windows tuşu
 [right]
 sağ
 [river diameter]
-nehir genisligi
+nehir genişliği
 [river terrain]
 Nehir
 [sand]
 Kum
 [save before quit?]
-Cikmadan once kaydetmek istiyor musunuz?
+Çıkmadan önce kaydetmek istiyor musunuz?
 [save game]
 Oyun kaydet
 [save map]
@@ -777,13 +777,13 @@ Fare Tekerleği Etkin
 [Secondary Objectives]
 İkincil
 [seeking a job]
-tanesi is ariyor
+tanesi iş arıyor
 [seeking]
-ariyor
+iş arıyor
 [select barracks building]
 Bina seç: Kışla
 [select clearingflag]
-Bayrak seç: Temizlik bayragi
+Bayrak seç: Temizlik bayrağı
 [select construct barracks]
 İnşa seç: Kışla
 [select construct defencetower]
@@ -799,15 +799,15 @@ Bayrak seç: Temizlik bayragi
 [select construct school]
 İnşa seç: Akademi
 [select construct stonewall]
-İnşa seç: Tas duvar
+İnşa seç: Taş duvar
 [select construct swarm]
 İnşa seç: Yuva
 [select construct swimmingpool]
-İnşa seç: Yuzme havuzu
+İnşa seç: Yüzme havuzu
 [select delete tool]
 Silme aracını seç
 [select explorationflag]
-Bayrak seç: Kesif bayragi
+Bayrak seç: Keşif bayrağı
 [select hospital building]
 Bina seç: Hastane
 [select inn building]
@@ -815,17 +815,17 @@ Bina seç: Otel
 [select market building]
 Bina seç: Market
 [select place clearing area]
-Alan yerleştir: Temizlik bolgesi
+Alan yerleştir: Temizlik bölgesi
 [select place clearingflag]
-Bayrak yerleştir: Temizlik bayragi
+Bayrak yerleştir: Temizlik bayrağı
 [select place explorationflag]
-Bayrak yerleştir: Kesif bayragi
+Bayrak yerleştir: Keşif bayrağı
 [select place forbidden area]
-Alan yerleştir: Yasak bolge
+Alan yerleştir: Yasak bölge
 [select place guard area]
-Alan yerleştir: Nobet bolgesi
+Alan yerleştir: Nöbet bölgesi
 [select place warflag]
-Bayrak yerleştir: Savas bayragi
+Bayrak yerleştir: Savaş bayrağı
 [select racetrack building]
 Bina seç: Koşu Yolu
 [select school building]
@@ -833,21 +833,21 @@ Bina seç: Akademi
 [select swarm building]
 Bina seç: Yuva
 [select swimmingpool building]
-Bina seç: Yuzme havuzu
+Bina seç: Yüzme havuzu
 [select tower building]
 Bina seç: Savunma Kulesi
 [select wall building]
-Bina seç: Tas duvar
+Bina seç: Taş duvar
 [select warflag]
-Bayrak seç: Savas bayragi
+Bayrak seç: Savaş bayrağı
 [settings]
 Ayarlar
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-Enter: bir sohbet mesaji gonder
+Enter: bir sohbet mesajı gönder
 [shortcut explanation v]
-V: konusmak icin basili tut
+V: konuşmak için basılı tut
 [show areas]
 Alanları göster
 [show flags]
@@ -855,9 +855,9 @@ Bayrakları göster
 [show main menu]
 Ana Menüyü Göster
 [skin]
-Gorunum
+Görünüm
 [smoothing]
-Duzeltme
+Düzleştirme
 [sort by name]
 Ad
 [sort by rating]
@@ -873,37 +873,37 @@ Görevi Başlat
 [start new campaign]
 Yeni Sefer Başlat
 [Start]
-Basla
+Başla
 [Starving Map]
 Açlık Haritası
 [starving]
-cok ac
+açlıktan ölüyor
 [Statistics]
-Istatistikler
+İstatistikler
 [Still (i)]
 Hala
 [still (w)]
 Hala
 [still one unit working]
-Bir unite hala calisiyor
+Bir birim hâlâ çalışıyor
 [Still one]
 Hala bir
 [Stone]
-Tas
+Taş
 [stone]
-tas
+taş
 [stonewall explanation 2]
 unsuru
 [stonewall explanation]
 Pasif savunma
 [stonewall]
-Tas duvar
+Taş duvar
 [submit rating]
 Değerlendirmeyi Gönder
 [svr hostname]
-Sunucu adi
+Sunucu adı
 [swamp terrain]
-Bataklik
+Bataklık
 [swarm explanation 2]
 
 [swarm explanation]
@@ -911,13 +911,13 @@ Yeni birimler oluşturur
 [swarm]
 Yuva
 [Swim]
-Yuz
+Yüz
 [swimmingpool explanation 2]
 hızını artırır
 [swimmingpool explanation]
 Birimlerin yüzme
 [swimmingpool]
-Yuzme havuzu
+Yüzme havuzu
 [switch to adding areas]
 Alan ekle
 [switch to area brush 1]
@@ -955,51 +955,51 @@ Takım Düzenleyici
 [Teams Fixed]
 Sabit Takımlar
 [teams]
- takimlar
+ takımlar
 [the barracks is finished]
-Egitim kampi tamamlandi
+Kışla tamamlandı
 [the barracks is under attack]
-Egitim kampi saldiri altinda
+Kışla saldırı altında
 [the building is finished]
-Bina tamamlandi
+Bina tamamlandı
 [the building is under attack]
-Bina saldiri altinda
+Bina saldırı altında
 [the clearingflag is finished]
-?? Temizlik bayragi tamamlandi ??
+Temizlik bayrağı tamamlandı
 [the clearingflag is under attack]
-?? Temizlik bayragi saldiri altinda ??
+Temizlik bayrağı saldırı altında
 [the defencetower is finished]
-Savunma kulesi tamamlandi
+Savunma kulesi tamamlandı
 [the defencetower is under attack]
-Savunmaniz saldiri altinda
+Savunma kulesi saldırı altında
 [the explorationflag is finished]
-?? Kesif bayragi tamamlandi ??
+Keşif bayrağı tamamlandı
 [the explorationflag is under attack]
-?? Kesif bayragi saldiri altinda ??
+Keşif bayrağı saldırı altında
 [The game has not been finished]
-Oyun tamamlanmadi
+Oyun tamamlanmadı
 [the games]
 Oyunlar
 [the hospital is finished]
-Hastane tamamlandi
+Hastane tamamlandı
 [the hospital is under attack]
-Hastane saldiri altinda
+Hastane saldırı altında
 [The host has cancelled the game]
 Oyunu kuran kişi oyunu iptal etti.
 [the inn is finished]
-Otel tamamlandi
+Otel tamamlandı
 [the inn is under attack]
-Otel saldiri altinda
+Otel saldırı altında
 [the maps]
 Haritalar
 [the market is finished]
-Market tamamlandi
+Market tamamlandı
 [the market is under attack]
-Market saldiri altinda
+Market saldırı altında
 [The player %0 has joined YOG]
-%0 YOG'a baglandi.
+%0 YOG'a bağlandı.
 [The player %0 has left YOG]
-%0 YOG'dan ayrildi.
+%0 YOG'dan ayrıldı.
 [the racetrack is finished]
 Koşu yolu tamamlandı
 [the racetrack is under attack]
@@ -1007,29 +1007,29 @@ Koşu yolu saldırı altında
 [the replays]
 Tekrarlar
 [the school is finished]
-Akademi tamamlandi
+Akademi tamamlandı
 [the school is under attack]
-Akademi saldiri altinda
+Akademi saldırı altında
 [the stonewall is finished]
-Bir duvar bolumu tamamlandi
+Bir duvar bölümü tamamlandı
 [the stonewall is under attack]
-Dusman duvarlarinizi zorluyor
+Taş duvar saldırı altında
 [the swarm is finished]
-Yuva tamamlandi
+Yuva tamamlandı
 [the swarm is under attack]
-Yuva saldiri altinda
+Yuva saldırı altında
 [the swimmingpool is finished]
-Yuzme havuzu tamamlandi
+Yüzme havuzu tamamlandı
 [the swimmingpool is under attack]
-Yuzme havuzu saldiri altinda
+Yüzme havuzu saldırı altında
 [the warflag is finished]
-?? Savas bayragi tamamlandi ??
+Savaş bayrağı tamamlandı
 [the warflag is under attack]
-?? Savas bayragi saldiri altinda ??
+Savaş bayrağı saldırı altında
 [time]
 Süre
 [to:]
-suraya:
+kime:
 [toggle draw accessibility aids]
 Takım Numaralarını Aç/Kapat
 [toggle draw information]
@@ -1047,7 +1047,7 @@ Toplam Savunma Gücü
 [Total Hitpoints]
 Toplam Can Puanı
 [Total prestige reached]
-Kazanilan toplam prestij
+Toplam prestij eşiğine ulaşıldı
 [Total]
 Toplam
 [tutorial text 1]
@@ -1059,19 +1059,19 @@ Buraya kadar iyi geldiniz. Şimdi savaşçılara, kışlalara ve geliştirmelere
 [tutorial text 4]
 Bitirmek üzeresiniz. Yalnızca bayraklar ve saldırı kaldı. Sonrasında özel oyunları deneyebilecek ve zamanla Globulation 2'nin en iyi oyuncularından bazılarına karşı çevrimiçi oynayabilecek kadar bilgi sahibi olacaksınız.
 [tutorial]
-Egitim
+Eğitim
 [Uncontrolled]
-Kontrolsuz
+Kontrolsüz
 [undo]
 geri al
 [uniform terrain]
-Tekbicimli saha
+Tek biçimli arazi
 [Unit editor]
-Birim editoru
+Birim düzenleyici
 [unit settings explanation]
 Atanan birimlerin varsayılan sayısı
 [units working]
- calisan birimler
+ birim çalışıyor
 [Units]
 Birimler
 [unlocked at start]
@@ -1087,13 +1087,13 @@ Geliştirmeyi Başlat/Durdur
 [Upgrade Defaults]
 Varsayılan Geliştirme Ayarları
 [upgrade]
-Gelistir
+Geliştir
 [Upload Map]
 Harita Yükle
 [upload map]
 Harita Yükle
 [username]
-Kullanici adi
+Kullanıcı adı
 [Version]
 Versiyon
 [view history]
@@ -1107,15 +1107,15 @@ tuş bekleniyor...
 [Waiting]
 Bekleniyor
 [Walk]
-Yuru
+Yürü
 [warflag explanation 2]
 
 [warflag explanation]
 Savaşçıları çeker
 [warflag]
-Savas bayragi
+Savaş bayrağı
 [Warning, you need to reboot the game for changes to take effect]
-Uyari, degisikliklerin etkili olabilmesi icin oyunu yeniden baslatmalisiniz
+Değişikliklerin etkili olması için oyunu yeniden başlatmalısınız.
 [Warrior Ratio]
 Savaşçı Oranı
 [Warrior]
@@ -1135,9 +1135,9 @@ bugday
 [Won : you defeated your opponents]
 Zafer: Rakiplerinizi yendiniz
 [Won : you have the most prestige]
-Zafer: En buyuk prestij sizinki
+Zafer: En yüksek prestij sizinki
 [Won : your ally %0 has the most prestige]
-Zafer: Muttefikiniz %0 en buyuk prestije sahip
+Zafer: Müttefikiniz %0 en yüksek prestije sahip
 [Wood]
 Odun
 [wood]
@@ -1145,43 +1145,43 @@ odun
 [Worker Ratio]
 İşçi Oranı
 [Worker]
-Isci
+İşçi
 [workers]
-isciler
+işçiler
 [working]
-Calisiyor
+Çalışıyor
 [wounded]
-yarali
+yaralı
 [Yes]
 Evet
 [YESTS_CONNECTING]
-YOG onsunucusu ile baglanti kuruluyor...
+YOG ana sunucusuna bağlanılıyor...
 [YESTS_CONNECTION_LOST]
-YOG'la olan baglanti koptu.
+YOG bağlantısı kesildi.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi zaten kayitli.  Eger bu kullanici adi sizinse, "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini pasiflestirin.
+YOG ana sunucusu bağlantıyı reddetti: bu kullanıcı adı zaten kayıtlı. Bu ad size aitse yeni YOG kullanıcısı kaydetme seçeneğini kapatın.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG onsunucusu baglantiyi reddetti. Gerekce: Girdiginiz sifre yanlis.
+YOG ana sunucusu bağlantıyı reddetti: girdiğiniz parola yanlış.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adinin henuz bir parolasi yok. Muhtemelen kullanici adinizi bu parola ile kaydetmek istiyorsunuz. O halde, baglanmadan once "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini aktiflestirin. Bu secenegi yalnizca bir kez aktiflestirmeniz yeterli olacaktir.
+YOG ana sunucusu bağlantıyı reddetti: bu kullanıcı adının henüz parolası yok. Adınızı bu parolayla kaydetmek istiyorsanız bağlanmadan önce yeni YOG kullanıcısı kaydetme seçeneğini açın. Bunu yalnızca bir kez yapmanız gerekir.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 YOG ana sunucusu bu IP adresi geçici olarak yasaklandığı için bağlantıyı reddetti. Yasağın kalkmasını bekleyin veya yöneticilerle iletişime geçin.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG onsunucusu baglantiyi reddetti. Gerekce: Oyun versiyonunuz cok eski.
+YOG ana sunucusu bağlantıyı reddetti: oyun sürümünüz çok eski.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
+YOG ana sunucusu bağlantıyı bilinmeyen bir nedenle reddetti.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
+YOG ana sunucusu bağlantıyı reddetti: bu kullanıcı adı kullanımda.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
 YOG ana sunucusu bu kullanıcı adı yasaklandığı için bağlantıyı reddetti. Lütfen yöneticilerle iletişime geçin.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
 YOG ana sunucusu verilen kullanıcı adı geçersiz olduğu için bağlantıyı reddetti. Kullanıcı adları yalnızca harf, rakam ve alt çizgi içerebilir.
 [YESTS_CREATED]
-Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
+Bağlantı sistemi YOG ana sunucusuyla bağlantı kurmaya hazır.
 [YESTS_PASSWORDS_DONT_MATCH]
 Girilen parolalar eşleşmiyor. Lütfen tekrar girin.
 [YESTS_UNABLE_TO_CONNECT]
-Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
+Bağlanılamadı. YOG ana sunucusu şu anda kullanılamıyor olabilir.
 [yog block command help]
 /block <playername>    Bir oyuncuyu engeller; artık mesajlarını görmezsiniz.
 [yog block command player %0 already blocked]
@@ -1201,15 +1201,15 @@ Ysagoon Online Gaming
 [you have lost]
 Kaybettiniz!
 [you have won]
-Kazandiniz!
+Kazandınız!
 [You where kicked from the game]
 Oyundan atıldınız
 [Your %0 are under attack]
-%0 'leriniz saldiri altinda
+Saldırı altındaki birimleriniz: %0
 [Your IP address was temporarily banned]
 IP adresiniz geçici olarak yasaklandı. Yasağın kalkmasını bekleyin veya yöneticilerle iletişime geçin.
 [Your unit got converted to %0's team]
-Bir biriminiz %0 'nin tarafina gecti
+Bir biriminiz %0 adlı oyuncunun takımına geçti
 [Your username was banned]
 Kullanıcı adınız yasaklandı. Yasağın kaldırılması için yöneticilerle iletişime geçin.
 [game speed]
@@ -1232,3 +1232,7 @@ Harita yüklenemedi: dosya bozuk veya sürümü uyumsuz.
 Sefer kaydedilemedi. Hedef klasörün var olduğunu, yazılabilir olduğunu ve boş alan bulunduğunu kontrol edin.
 [AICortex]
 Cortex
+[Units still inside: %0]
+İçeride: %0
+[Units still working: %0]
+Hâlâ çalışıyor: %0

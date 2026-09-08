@@ -27,7 +27,7 @@
 [%0's game]
 %0:n Peli
 [%0's team unit got converted to your team]
-%0:n joukkueen yksikkö siirtyi sinun joukkueseen
+%0:n joukkueen yksikkö siirtyi sinun joukkueeseesi.
 [abreaviation explanation A]
 A: Liittolaiset
 [abreaviation explanation C]
@@ -201,7 +201,7 @@ Ei käytössä
 [combined vision]
 Yhdistetty näkyvyys
 [compile]
-Kääntämisskripti
+Käännä skripti
 [compose]
 compose
 [Computing Fertility]
@@ -237,7 +237,7 @@ Ctrl - Viiva
 [current speed]
 Nykyinen nopeus
 [custom game]
-Tavallinen peli
+Mukautettu peli
 [customcur]
 Muokattu kursori
 [damage]
@@ -581,7 +581,7 @@ ei näppäintä
 [No Objectives]
 Ei Tavoitteita
 [no ressources growth areas]
-Ei kasvualueita
+Kasvuttomat alueet
 [No]
 Ei
 [Not Enough Ratings]
@@ -627,7 +627,7 @@ Avaa skenaarioeditori
 [open teams editor]
 Avaa joukkue-editori
 [open]
-avaa
+avoin
 [OpenGL]
 OpenGL
 [Options]
@@ -959,17 +959,17 @@ Rakennus on valmis
 [the building is under attack]
 Rakennuksesi kimppuun hyökätään
 [the clearingflag is finished]
-?? keräämislippu on valmis ??
+keräämislippu on valmis
 [the clearingflag is under attack]
-?? keräämislippusi kimppuun hyökätään ??
+keräämislippusi kimppuun hyökätään
 [the defencetower is finished]
 Puolustustorni on valmis
 [the defencetower is under attack]
 Puolustuksesi kimppuun hyökätään.
 [the explorationflag is finished]
-?? tiedustelulippu on valmis ??
+tiedustelulippu on valmis
 [the explorationflag is under attack]
-?? tiedustelulippusi kimppuun hyökätään ??
+tiedustelulippusi kimppuun hyökätään
 [The game has not been finished]
 Peliä ei pelattu loppuun saakka
 [the games]
@@ -1017,9 +1017,9 @@ Uima-allas on valmis
 [the swimmingpool is under attack]
 Uima-altaasi kimppuun hyökätään
 [the warflag is finished]
-?? sotalippu on valmis ??
+sotalippu on valmis
 [the warflag is under attack]
-?? sotalippusi kimppuun hyökätään ??
+sotalippusi kimppuun hyökätään
 [time]
 Aika
 [to:]
@@ -1224,3 +1224,7 @@ Cortex - Kokeellinen kolmikerroksinen tekoäly. Kehitteillä.
 Kampanjaa ei voitu tallentaa. Tarkista, että kohdekansio on olemassa, siihen voi kirjoittaa ja vapaata tilaa on riittävästi.
 [AICortex]
 Cortex
+[Units still inside: %0]
+Sisällä: %0
+[Units still working: %0]
+Yhä töissä: %0

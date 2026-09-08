@@ -609,3 +609,5 @@
 [Your IP address was temporarily banned]
 [Your unit got converted to %0's team]
 [Your username was banned]
+[Units still inside: %0]
+[Units still working: %0]
