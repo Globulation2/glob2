@@ -117,3 +117,65 @@ storage restoration prevents the editor from overwriting stored maps.
 
 The implementation reuses LoadSaveScreen's owned persistence operation and the
 shared FileManager writer. It does not introduce browser APIs into the editor.
+
+## Preferences and keyboard bindings
+
+Settings now checks atomic replacement of `preferences.txt` and both keyboard
+layout files, then waits for the shared storage service before closing. Native
+and browser use the same screen transition. A browser transaction failure or
+quota exhaustion retains Settings with Retry and Continue and a visible failure
+message. Continue retains the live changes without claiming a durable save;
+it does not roll back files already written to the local filesystem, and later
+background persistence may save them. While a flush is pending, Settings ignores
+completion/cancellation actions.
+
+Each local file replacement is atomic; the three local files are not a single
+filesystem transaction. The durable IndexedDB flush uses the existing storage
+transaction. Orderly application Quit now performs a checked final preferences write and
+waits for browser durability after the gameplay screens have been destroyed.
+This also flushes their successful destructor writes. Abrupt tab/process closure
+cannot perform that handshake. Diagnostics expose only graphics
+flags from preferences, never saved account fields.
+
+## Orderly Quit and campaign authoring
+
+Quit keeps a shared application screen alive while the final preferences write
+and storage flush complete. Repeated close requests and Escape cannot skip that
+pending operation. A failed write offers Retry save and Quit without saving;
+only that explicit latter choice leaves after failure. The final screen says
+Game closed and does not leave a frozen Saving message. This is shared with the
+native application host; browser persistence requires no gameplay JavaScript.
+
+Closing/reloading the browser tab itself is abrupt and cannot be made to wait
+for asynchronous storage. Use the game's completed save operations before doing
+so. The shutdown flush cannot repair an earlier failed local campaign/replay
+write; it confirms the files successfully present in the local filesystem.
+
+The campaign authoring editor now also waits after its existing atomic campaign
+write. Pending saves hide editing/navigation controls. On failure the editor
+remains open with an error and OK to retry. Cancel returns to the editor menu;
+as with settings, it does not roll back a local replacement already made, and a
+later successful flush may persist it. Campaign-definition backup/import/export
+is still separate release work from the implemented campaign-progress backups.
+
+`shutdown-storage.spec.js` covers delayed completion, resize, Escape, quota
+failure, retry and explicit exit after failure. `campaign-editor-storage.spec.js`
+covers delayed completion, quota failure, retry and durable bytes after reload.
+The native session harness checks orderly application Quit through the same
+application API, including repeated close events.
+
+## End-game replay export
+
+Save Replay on the end-game screen is an owned, scheduled overlay. It stays
+responsive during resize and waits for durable browser persistence before closing.
+A failed write retains the dialog and offers export/retry using the same controls
+as game saves. Exporting the replay uses the checked atomic writer, retaining the
+previous destination on failure and restoring the live recording's file position
+before a retry. The replay format is unchanged.
+
+`browser/tests/replay-save.spec.js` covers real name entry, resize, delayed
+persistence, ignored cancellation while writing, quota failure, file export,
+retry, refresh and replay playback. The native session harness covers an invalid
+destination and byte-identical retry. Automatic `last_game.replay` recording and
+periodic autosaves remain background writes; abrupt tab/process termination is
+not a successful save acknowledgment. Use explicit saves/exports for backups.

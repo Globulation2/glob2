@@ -9,7 +9,7 @@ import subprocess
 
 
 def run(arguments):
-    subprocess.run(['scons', 'release=1', '-j2', *arguments], check=True)
+    subprocess.run(['scons', 'release=1', '-j2', '--debug=explain', *arguments], check=True)
 
 
 def snapshot(directory):
@@ -43,7 +43,23 @@ def main():
     before = [snapshot(p) for p in directories]
     for target in (native, web, native, web):
         run(target)
-        assert [snapshot(p) for p in directories] == before, 'A no-op build changed compilation outputs'
+        after = [snapshot(p) for p in directories]
+        changes = []
+        for previous, current in zip(before, after):
+            for path in sorted(previous.keys() | current.keys()):
+                if previous.get(path) == current.get(path):
+                    continue
+                if path not in previous:
+                    reason = 'added'
+                elif path not in current:
+                    reason = 'removed'
+                elif previous[path][1] != current[path][1]:
+                    reason = 'content changed'
+                else:
+                    reason = 'timestamp changed (content unchanged)'
+                changes.append(f'{path}: {reason}')
+        assert not changes, ('A no-op build changed compilation outputs after ' +
+                             repr(target or ['target=native']) + ':\n' + '\n'.join(changes))
     assert subprocess.check_output(['git', 'diff', 'HEAD', '--binary']) == tracked, 'Build changed tracked source files'
     for filename in ('config.h', 'options_cache.py', 'compile_commands.json'):
         assert not Path(filename).exists(), f'Global build state created: {filename}'

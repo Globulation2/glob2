@@ -44,10 +44,12 @@ public:
 	YOGLoginPolicy getLoginPolicy() const;
 	YOGGamePolicy getGamePolicy() const;
 	YOGPlayerID getPlayerID() const;
+    Uint16 getNetVersion() const;
 private:
 	YOGLoginPolicy loginPolicy;
 	YOGGamePolicy gamePolicy;
 	YOGPlayerID playerID;
+    Uint16 netVersion;
 };
 
 /// Client -> server login attempt with username and password.

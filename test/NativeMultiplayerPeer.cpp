@@ -36,7 +36,9 @@ int main(int argc, char** argv) {
         globalContainer->runNoX = true;
         globalContainer->load();
         globalContainer->automaticEndingGame = true;
-        globalContainer->automaticEndingSteps = 250;
+        // Safety limit: the browser resigns after 250 ticks; normal victory
+        // must end this session before the fallback limit.
+        globalContainer->automaticEndingSteps = 1000;
         if (SDLNet_Init() != 0) throw std::runtime_error("Network initialization failed");
         {
             auto client = std::make_shared<YOGClient>();
@@ -60,10 +62,11 @@ int main(int argc, char** argv) {
                 }
                 if (game && !events.ended) {
                     game->update();
+                    if (game->takeStartRequest()) game->startEngine();
                     if (game->isFullyInGame() && !ready) {
                         game->setHumanReady(true);
                         ready = true;
-                        std::cout << "native peer joined order-rate=" << int(game->getGameHeader().getOrderRate()) << std::endl;
+                        std::cout << "native peer joined order-rate=" << int(game->getGameHeader().getOrderRate()) << " player-id=" << client->getPlayerID() << std::endl;
                     }
                 }
                 SDL_Delay(1);

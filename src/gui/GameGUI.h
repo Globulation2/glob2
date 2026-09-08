@@ -512,8 +512,6 @@ private:
 	bool panPushed;
 	//! Coordinate of mouse when began panning
 	int panMouseX, panMouseY;
-	int lastMouseX = 0, lastMouseY = 0;
-	Uint16 lastMouseButtonState = 0;
 	//! Coordinate of viewport when began panning
 	int panViewX, panViewY;
 
@@ -699,5 +697,4 @@ private:
 	//! Update overview navigation and particle offsets after viewport movement
 	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
-
 

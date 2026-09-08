@@ -174,7 +174,7 @@ Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtur
 ## Entering unit draw regression
 
 From the repository root, run `scons -j8 release=1 server=0 entering-unit-draw-test`
-and `xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness`.
+and `xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness`.
 
 A unit on its final step into a building keeps its map slot on the tile it is
 leaving (`Unit::handleActionEnteringBuilding`) while `posX`/`posY` already name
@@ -200,7 +200,7 @@ fullscreen aspect harness, so a job step is a two-liner:
       - name: Build and run the entering unit draw regression
         run: |
           scons -j$(nproc) release=1 server=0 entering-unit-draw-test
-          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
 ```
 
 ## Immobile unit gradient regression

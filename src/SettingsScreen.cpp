@@ -97,6 +97,16 @@ bool SettingsScreen::persist()
     if(keyboardDirty[0] && gameKeys.saveKeyboardLayout()) keyboardDirty[0]=false;
     if(keyboardDirty[1] && editorKeys.saveKeyboardLayout()) keyboardDirty[1]=false;
     failed=settingsDirty || keyboardDirty[0] || keyboardDirty[1];
+    // The write above is already durable on native builds. In the browser it
+    // lands in Emscripten's virtual filesystem first and needs this separate
+    // flush to survive a reload; poll it from onTimer rather than block here.
+    if(!failed && !persistence) {
+        if(GAGCore::ApplicationHost::storageRestoreFailed()) failed=true;
+        else {
+            persistence=GAGCore::ApplicationHost::persistStorage();
+            if(!persistence) failed=true;
+        }
+    }
     return !failed;
 }
 void SettingsScreen::finishInteraction() { dragging.clear(); if(settingsDirty || keyboardDirty[0] || keyboardDirty[1]) persist(); }
@@ -127,6 +137,20 @@ void SettingsScreen::onTimer(Uint32 tick)
 {
     if(modal==Modal::Display && Sint32(tick-displayDeadline)>=0) confirmDisplay(false);
     if(saveAt && dragging.empty() && Sint32(tick-saveAt)>=0)persist();
+    if(persistence) {
+        const auto state=persistence->state();
+        if(state!=GAGCore::ApplicationHost::PersistenceState::Pending) {
+            if(state==GAGCore::ApplicationHost::PersistenceState::Failed) {
+                failed=true;
+                // Retry the whole write, not just the flush: the file itself
+                // may also need rewriting if this state was reached because
+                // the browser evicted storage mid-session.
+                settingsDirty=keyboardDirty[0]=keyboardDirty[1]=true;
+                saveAt=tick+300;
+            }
+            persistence.reset();
+        }
+    }
 }
 bool SettingsScreen::displayConfirmationPending() const { return modal==Modal::Display; }
 bool SettingsScreen::restartRequired() const

@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {gameURL}=require('./game-url');
+const {clickMainMenu,gameURL}=require('./main-menu');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
@@ -8,7 +8,7 @@ const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80})
 
 for(const fault of ['quota','aborted transaction']) test(`editor save before quit survives ${fault} with export and retry`,async({page,context},info)=>{
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
-  await click(page,760,570);await screen(page,'EditorMainMenu');
+  await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
   await click(page,600,300);await screen(page,'NewMapScreen');
   await click(page,440,650);await screen(page,'MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});

@@ -101,6 +101,16 @@ public:
 	static constexpr Uint16 ASTAR_COST_INFINITY = static_cast<Uint16>(-1);
 
 public:
+	static constexpr int MIN_SUPPORTED_SIZE_EXPONENT = 4;
+	static constexpr int MAX_SUPPORTED_SIZE_EXPONENT = 9;
+	static constexpr bool supportedDimensions(int widthExponent, int heightExponent)
+	{
+		return widthExponent >= MIN_SUPPORTED_SIZE_EXPONENT &&
+			widthExponent <= MAX_SUPPORTED_SIZE_EXPONENT &&
+			heightExponent >= MIN_SUPPORTED_SIZE_EXPONENT &&
+			heightExponent <= MAX_SUPPORTED_SIZE_EXPONENT;
+	}
+
 	//! Map constructor
 	Map();
 	//! Map destructor
@@ -831,4 +841,3 @@ public:
     GAGCore::CooperativeTask oldMakeIslandsMapTask(MapGenerationDescriptor &descriptor);
 
 };
-

@@ -48,8 +48,7 @@ try
 	// We load and compute size:
 	wDec = stream->readSint32("wDec");
 	hDec = stream->readSint32("hDec");
-	if (wDec < 0 || hDec < 0 || wDec >= std::numeric_limits<int>::digits ||
-		hDec >= std::numeric_limits<int>::digits || wDec + hDec >= std::numeric_limits<int>::digits)
+	if (!supportedDimensions(wDec, hDec))
 		co_return false;
 	w = 1<<wDec;
 	h = 1<<hDec;

@@ -14,6 +14,9 @@
 #include "Version.h"
 #include "FileImport.h"
 #include "Campaign.h"
+#include "KeyboardManager.h"
+#include "GameGUIKeyActions.h"
+#include "MapEditKeyActions.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
@@ -289,6 +292,8 @@ static void checkRandomContinuation(bool text, bool ai)
 		}
 	}
 	std::cout << "PASS " << (text ? "binary + text routing" : "binary") << (ai ? " AI" : " human") << " saved game continues RNG and 300 simulation steps across header replacement" << std::endl;
+}
+
 static std::string headerBytes(const MapHeader& header)
 {
 	auto *backend = new MemoryStreamBackend;
@@ -483,6 +488,43 @@ static void checkCampaignProgress(const fs::path& directory)
     std::cout << "PASS campaign progress truncation/version/definition validation, monotonic merge, legacy text round trip and atomic failure preservation" << std::endl;
 }
 
+static void checkPreferences(const fs::path& directory)
+{
+    Settings settings;
+    settings.optionFlags = GlobalContainer::OPTION_LOW_SPEED_GFX;
+    const auto file = directory / "preferences-test.txt";
+    assert(settings.save(file.string()));
+    Settings loaded;
+    loaded.load(file.string());
+    assert(loaded.optionFlags == settings.optionFlags);
+    KeyboardManager game(GameGUIShortcuts), editor(MapEditShortcuts);
+    assert(game.saveKeyboardLayout() && editor.saveKeyboardLayout());
+    const auto gamePath = directory / GameGUIKeyActions::getConfigurationFile();
+    const auto editorPath = directory / MapEditKeyActions::getConfigurationFile();
+    const auto previous = contents(file), gameBytes = contents(gamePath), editorBytes = contents(editorPath);
+    assert(!gameBytes.empty() && !editorBytes.empty());
+    const auto blocked = directory / "blocked-preferences.txt";
+    fs::create_directory(blocked);
+    assert(!settings.save(blocked.string()) && fs::is_directory(blocked));
+#ifndef WIN32
+    const pid_t child = fork(); assert(child >= 0);
+    if (child == 0) {
+        std::signal(SIGXFSZ, SIG_IGN);
+        struct rlimit budget = {0, 0};
+        if (setrlimit(RLIMIT_FSIZE, &budget) != 0) _exit(2);
+        settings.optionFlags = 0;
+        const bool preferencesFailed = !settings.save(file.string());
+        const bool gameFailed = !game.saveKeyboardLayout();
+        const bool editorFailed = !editor.saveKeyboardLayout();
+        _exit(preferencesFailed && gameFailed && editorFailed ? 0 : 3);
+    }
+    int status = 0; assert(waitpid(child, &status, 0) == child);
+    assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+    assert(contents(file) == previous && contents(gamePath) == gameBytes && contents(editorPath) == editorBytes);
+#endif
+    std::cout << "PASS preference/keyboard writes round trip and preserve prior files on failure" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	SDL_SetMainReady();
@@ -500,6 +542,7 @@ int main(int argc, char **argv)
 		for (bool ai : {false,true}) checkRandomContinuation(text,ai);
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+    checkPreferences(directory);
 	checkMapHeaders();
     checkCampaignProgress(directory);
 	for (bool file : {false, true})
@@ -602,7 +645,27 @@ int main(int argc, char **argv)
 				++count;
 			}
 		std::cout << "PASS " << count << " truncated map loads rejected, followed by successful reuse" << std::endl;
-		for (bool file : {false, true})
+			const auto replaceSint32 = [](std::string& value, size_t offset, Uint32 replacement)
+			{
+				for (int byte = 0; byte < 4; ++byte)
+					value[offset + byte] = char(replacement >> (24 - 8 * byte));
+			};
+			for (const auto [widthExponent, heightExponent] : {
+				std::pair<Uint32, Uint32>{10, 9}, {9, 10}, {3, 9}, {9, 3},
+				{0x7fffffffU, 9}, {9, 0x7fffffffU}})
+			{
+				std::string malformed = mapBytes;
+				replaceSint32(malformed, 4, widthExponent);
+				replaceSint32(malformed, 8, heightExponent);
+				auto invalid = input(malformed, false);
+				Map loaded;
+				assert(!loaded.load(invalid.get(), savedHeader, &gui.game));
+				assert(loaded.getW() == 0 && loaded.getH() == 0);
+			}
+			assert(Map::supportedDimensions(4, 4));
+			assert(Map::supportedDimensions(9, 9));
+			std::cout << "PASS unsupported and extreme map dimensions rejected before allocation" << std::endl;
+			for (bool file : {false, true})
 		{
 			std::string malformed = mapBytes;
 			malformed.replace(cellsEnd, 4, 4, char(0xFF));

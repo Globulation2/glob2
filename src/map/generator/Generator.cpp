@@ -26,7 +26,7 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor& descriptor, 
 GAGCore::CooperativeTask MapGenerator::generateMapTask(Game& game, MapGenerationDescriptor& descriptor, Uint32 seed)
 {
     co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
-    if (descriptor.wDec < 4 || descriptor.wDec >= 16 || descriptor.hDec < 4 || descriptor.hDec >= 16 ||
+    if (!Map::supportedDimensions(descriptor.wDec, descriptor.hDec) ||
         descriptor.method < MapGenerationDescriptor::eUNIFORM || descriptor.method > MapGenerationDescriptor::eOLDISLANDS ||
         (descriptor.method != MapGenerationDescriptor::eUNIFORM &&
          (descriptor.nbTeams < 1 || descriptor.nbTeams > Team::MAX_COUNT))) co_return false;
@@ -473,6 +473,5 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
 	}
 	co_return true;
 }
-
 
 

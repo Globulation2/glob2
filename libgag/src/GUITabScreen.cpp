@@ -131,6 +131,9 @@ namespace GAGGUI
 
 		void TabScreen::removeGroup(int group_n)
 		{
+			// A completed tab's widgets may already have been removed by onTimer
+			// before its owning session destroys the tab object.
+			if(groupButtons.find(group_n) == groupButtons.end()) return;
 			for(std::vector<Widget*>::iterator j = groups[group_n].begin(); j!=groups[group_n].end(); ++j)
 			{
 				removeWidget(*j);

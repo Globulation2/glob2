@@ -1,6 +1,6 @@
-# ADR 005: generation randomness before cooperative scheduling
+# ADR 005: deterministic randomness for cooperative generation
 
-Status: explicit seeds and cooperative editor generation implemented; long helper operations remain.
+Status: accepted.
 
 Generation previously mixed the synchronized generator with libc `rand`,
 time-based reseeding, and shared static Perlin lookup tables. Consequently,
@@ -25,6 +25,12 @@ simulation rules are unchanged. This does not yet establish bit-exact generation
 across native/Wasm platforms; floating-point height-map calculations still need
 cross-platform qualification. Recorded maps remain the simulation fixtures.
 
+YOG matches do not ask each client to generate the selected map. The host sends
+the map header and file ID, and clients that do not already have that exact map
+download the map file before starting. Native/browser players therefore consume
+the same map bytes in one match; the floating-point qualification above applies
+to independently generating a new map from the same seed on different platforms.
+
 Native tests verify noise-instance independence, explicit reseeding, finite
 noise samples, and no libc RNG mutation. All nine generation methods repeat their game checksum and final synchronized RNG
 state when synchronous execution is compared with scheduled execution interleaved
@@ -43,9 +49,8 @@ job before the partial editor and restores the prior RNG state. Generation error
 return to an owned in-game message and the new-map flow.
 
 Checkpoints cover generation stages, selected terrain loops, and terrain sprite
-regeneration columns, preserving traversal and RNG order. Other gradient and allocation helpers still contain synchronous work: this does not
-yet guarantee a maximum callback duration. Further subdivision and measured
-large-map latency gates are required before removing Asyncify.
+regeneration columns, preserving traversal and RNG order. Some gradient and allocation helpers run until the next explicit checkpoint, so
+the scheduling contract does not claim a hard maximum callback duration.
 
 Fruit placement now limits random retries, scans for an eligible tile, and fails
 if none remains, avoiding an endless loop. The expanded fixtures also exposed an
@@ -94,10 +99,9 @@ concrete-island generation after 2, 8, and 20 callbacks and verify RNG recovery.
 Browser tests exercise retry into both swamp and concrete-island generation.
 This remains local scheduling evidence, not native/Wasm simulation parity.
 
-Runtime map gradients, container allocation, and some terrain operations still
-contain synchronous work.
-Full generation latency and cancellation bounds remain open until those paths
-are subdivided and measured against large-map fixtures.
+Runtime map gradients, container allocation, and some terrain operations can run
+until the next explicit checkpoint. Large-map fixtures measure the complete job;
+they do not turn the cooperative budget into preemption.
 
 The editor generation screen shares the four-millisecond/64-checkpoint host
 slice with game and editor loading (ADR 004). Timing controls pacing only and does

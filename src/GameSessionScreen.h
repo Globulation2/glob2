@@ -2,12 +2,13 @@
 #pragma once
 #include <GUIBase.h>
 #include <ScreenStack.h>
+#include "FrontendTheme.h"
 #include <memory>
 #include <vector>
 class Engine;
 
 // Retains the initialized engine through gameplay and the end-game screen.
-// Loading remains a separate migration concern.
+// In-game load/replay requests transfer the finalized engine to a loader child.
 class GameSessionScreen : public GAGGUI::Screen
 {
 public:
@@ -21,6 +22,7 @@ public:
     void drawExecution() override;
     Uint32 executionDelay(Uint32 now, Uint32 fallback) override;
 private:
+    FrontendScope theme{false};
     GAGGUI::ScreenStack& stack;
     std::unique_ptr<Engine> engine;
     std::vector<SDL_Event> input;

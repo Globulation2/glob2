@@ -6,9 +6,11 @@
 #include "Glob2Screen.h"
 #include "Settings.h"
 #include "KeyboardManager.h"
+#include <ApplicationHost.h>
 #include <GUIDropdown.h>
 #include <array>
 #include <functional>
+#include <memory>
 #include <vector>
 
 // Native, settings-local form. A single screen owns layout, clipping and focus,
@@ -76,6 +78,9 @@ private:
     bool failed=false, settingsDirty=false;
     std::array<bool,2> keyboardDirty{};
     Uint32 saveAt=0, displayDeadline=0;
+    // Background flush to durable browser storage; a native build's writes are
+    // already durable, so this stays unset there. See persist() in the .cpp.
+    std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
     bool displayError=false;
     Settings previousDisplay;
     KeyboardManager gameKeys, editorKeys;

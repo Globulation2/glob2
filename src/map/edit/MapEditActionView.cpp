@@ -7,7 +7,6 @@
 #include "MapEdit.h"
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
 bool MapEdit::performViewAction(const std::string& action, int relMouseX, int relMouseY)

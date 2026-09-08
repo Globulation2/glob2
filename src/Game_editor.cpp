@@ -23,7 +23,6 @@
 
 
 #include "Brush.h"
-#include "FertilityCalculatorDialog.h"
 
 
 #define BULLET_IMGID 0

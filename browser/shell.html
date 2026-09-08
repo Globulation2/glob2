@@ -6,15 +6,39 @@
 <link rel="icon" href="data:,">
 <title>Globulation 2</title>
 <style>
-html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#000}
-body{display:flex;align-items:center;justify-content:center}
-canvas{display:block;outline:none;touch-action:none}
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#07110f}
+body{display:flex;align-items:center;justify-content:center;background:
+  radial-gradient(circle at 50% 42%,rgba(83,142,92,.3),transparent 34%),
+  radial-gradient(circle at 18% 16%,rgba(178,143,65,.14),transparent 26%),
+  linear-gradient(145deg,#12251f 0%,#07110f 58%,#020605 100%)}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:
+  linear-gradient(30deg,transparent 48%,rgba(255,255,255,.045) 49%,rgba(255,255,255,.045) 51%,transparent 52%);
+  background-size:28px 28px}
+canvas{display:block;outline:none;touch-action:none;opacity:0;transition:opacity .2s ease}
+body.ready canvas{opacity:1}
+#loading{position:fixed;z-index:1;display:grid;justify-items:center;gap:14px;color:#e8edcf;
+  text-align:center;text-shadow:0 2px 8px #000;transition:opacity .2s ease}
+body.ready #loading{opacity:0;pointer-events:none}
+#loading strong{font:700 clamp(24px,5vw,46px)/1 Georgia,serif;letter-spacing:.04em;color:#f2df94}
+#loading-status{min-height:1.4em;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#c2cba9}
+.loader{width:42px;height:42px;border:4px solid rgba(232,237,207,.2);border-top-color:#e4c969;
+  border-radius:50%;animation:spin .85s linear infinite;box-shadow:0 0 24px rgba(228,201,105,.18)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.loader{animation:none;border-color:#e4c969}canvas,#loading{transition:none}}
 </style>
 </head>
 <body>
+<div id="loading" role="status" aria-live="polite">
+  <strong>Globulation 2</strong>
+  <span class="loader" aria-hidden="true"></span>
+  <span id="loading-status">Loading game…</span>
+</div>
 <canvas id="canvas" width="800" height="600" tabindex="0" aria-label="Globulation 2" oncontextmenu="event.preventDefault()"></canvas>
 <script>
 const canvas = document.getElementById('canvas');
+const loading = document.getElementById('loading');
+const loadingStatus = document.getElementById('loading-status');
 function fitCanvas() {
   if (!canvas.width || !canvas.height) return;
   const scale = Math.min(innerWidth / canvas.width, innerHeight / canvas.height);
@@ -29,6 +53,10 @@ var Module = {
   canvas,
   GL_MAX_TEXTURE_IMAGE_UNITS: 1,
   browserLog: [],
+  setStatus(text) {
+    const message = String(text || '').replace(/\s*\([0-9]+\/[0-9]+\)\s*$/, '');
+    loadingStatus.textContent = message || 'Loading game…';
+  },
   print(text) { Module.browserLog.push(String(text)); console.log(text); },
   printErr(text) { Module.browserLog.push(String(text)); console.error(text); },
   preRun: [function() {
@@ -46,9 +74,8 @@ var Module = {
     });
   }],
   onRuntimeInitialized() {
-    const scale = Math.max(1, 800 / Math.max(1, innerWidth), 600 / Math.max(1, innerHeight));
-    const width = Math.round(Math.max(1, innerWidth) * scale);
-    const height = Math.round(Math.max(1, innerHeight) * scale);
+    const width = Math.max(1, Math.floor(innerWidth));
+    const height = Math.max(1, Math.floor(innerHeight));
     Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
     canvas.focus();
     // Keep the established default until the GPU backend passes performance gates.
@@ -59,6 +86,8 @@ var Module = {
     const gpu = Boolean(context);
     Module.renderer = gpu ? 'webgl2' : 'software';
     Module.callMain(['-s', width + 'x' + height, '-F', gpu ? '-g' : '-G']);
+    document.body.classList.add('ready');
+    loading.setAttribute('aria-hidden','true');
   },
   onGameExit(code) {
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
@@ -78,7 +107,7 @@ async function localFileDigest(directory, name, extension) {
 Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   snapshot() {
     return Object.freeze({version:1, renderer:Module.renderer || 'loading', contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
-      tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
+      screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
       paused:Boolean(Module.glob2Paused), width:canvas.width, height:canvas.height,
       restore:Module.storageRestore || 'restoring',
       import:Module.importState || 'idle',
@@ -90,15 +119,32 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
     const path = '/home/web_user/.glob2/games';
     return FS.analyzePath(path).exists ? FS.readdir(path).filter(n => n.endsWith('.game')).sort() : [];
   },
+  preferences() {
+    const path = '/home/web_user/.glob2/preferences.txt';
+    if (!FS.analyzePath(path).exists) return null;
+    // Expose only graphics and mute settings, never account fields.
+    const preferences = FS.readFile(path, {encoding:'utf8'});
+    const match = preferences.match(/^optionFlags=(\d+)$/m);
+    const mute = preferences.match(/^mute=(\d+)$/m);
+    return match ? Object.freeze({optionFlags:Number(match[1]), mute:mute ? Number(mute[1]) : null}) : null;
+  },
   saveDigest(name) { return localFileDigest('games', name, 'game'); },
   mapDigest(name) { return localFileDigest('maps', name, 'map'); },
   replayDigest(name) { return localFileDigest('replays', name, 'replay'); },
-  campaignDigest(name) { return localFileDigest('games', name, 'txt'); }
+  campaignDigest(name) { return localFileDigest('games', name, 'txt'); },
+  campaignDefinitionDigest(name) { return localFileDigest('campaigns', name, 'txt'); }
 })});
 function focusGame() {
   canvas.focus();
-  Module.SDL2?.audioContext?.resume();
+  activateAudio();
 }
+function activateAudio() {
+  if (!Module.SDL2?.audioContext) return;
+  glob2ActivateAudio(Module.SDL2?.audioContext, error => Module.printErr('Audio activation failed: ' + error));
+}
+addEventListener('unhandledrejection', event => {
+  glob2ActivateAudio.ignoreClosedRejection(event, Module.glob2Screen === 'exited');
+});
 addEventListener('resize', () => {
   Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
 });
@@ -111,7 +157,32 @@ canvas.addEventListener('webglcontextlost', event => {
 canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
 document.addEventListener('visibilitychange', () => { Module.visibilityPending = true; });
 canvas.addEventListener('pointerdown', focusGame);
-canvas.addEventListener('keydown', () => Module.SDL2?.audioContext?.resume());
+canvas.addEventListener('keydown', activateAudio);
+// SDL consumes navigation keys even when the browser needs them. Reserve reload
+// and address-bar shortcuts without cancelling their browser default action.
+// Key releases still reach SDL so a previously held game key cannot stick.
+function preserveBrowserShortcut(event) {
+  if (event.target !== canvas || event.altKey || !(event.ctrlKey || event.metaKey)) return;
+  if (['r', 'l'].includes(event.key.toLowerCase())) event.stopImmediatePropagation();
+}
+document.addEventListener('keydown', preserveBrowserShortcut, true);
+document.addEventListener('keypress', preserveBrowserShortcut, true);
+// SDL 2.32's browser button callback uses the last motion position instead of
+// the button event's coordinates. Synchronize it before SDL sees the button:
+// browsers can omit/coalesce the intervening motion, especially across focus
+// and viewport changes. Keep this SDK adaptation out of gameplay input code.
+let canvasPointerDown = false;
+function syncButtonPosition(event) {
+  if (event.target !== canvas && !canvasPointerDown) return;
+  canvasPointerDown = event.buttons !== 0;
+  if (document.pointerLockElement) return; // Relative motion has different semantics.
+  canvas.dispatchEvent(new MouseEvent('mousemove', {
+    bubbles:true, clientX:event.clientX, clientY:event.clientY, buttons:event.buttons
+  }));
+}
+document.addEventListener('mousedown', syncButtonPosition, true);
+document.addEventListener('mouseup', syncButtonPosition, true);
+addEventListener('blur', () => { canvasPointerDown = false; });
 </script>
 {{{ SCRIPT }}}
 </body>

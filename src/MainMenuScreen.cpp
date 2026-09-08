@@ -96,12 +96,20 @@ public:
 		pressed = false;
 		TextButton::onSDLMouseButtonUp(event);
 	}
+
+	void setGeometry(int nx, int ny, int nw, int nh)
+	{
+		x = nx;
+		y = ny;
+		w = nw;
+		h = nh;
+	}
 };
 
 MainMenuScreen::MainMenuScreen()
 {
 	const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
-	const bool compact = height < 640;
+	compact = height < 640;
 	panelX = std::clamp(width / 20, 20, 72);
 	panelH = std::min(height - 40, 620);
 	panelY = (height - panelH) / 2;
@@ -184,6 +192,45 @@ MainMenuScreen::MainMenuScreen()
 		buttons.push_back(button);
 		addWidget(button);
 	}
+}
+
+void MainMenuScreen::layout(int width, int height)
+{
+	panelX = std::clamp(width / 20, 20, 72);
+	panelH = std::min(height - 40, 620);
+	panelY = (height - panelH) / 2;
+	panelW = compact ? 312 : 368;
+	if (buttons.empty()) return;
+
+	const int x = panelX + 24, w = panelW - 48;
+	int y = panelY + (compact ? 74 : 110);
+	size_t index = 0;
+	auto place = [&](int height) {
+		buttons[index++]->setGeometry(x, y, w, height);
+		y += height;
+	};
+	place(compact ? 38 : 46);
+	y += 8;
+	for (int i = 0; i < 3; ++i) {
+		place(compact ? 30 : 38);
+		y += 6;
+	}
+	y += compact ? 6 : 12;
+	place(compact ? 28 : 34);
+	y += 4;
+#ifndef __EMSCRIPTEN__
+	place(compact ? 28 : 34);
+#endif
+	y += compact ? 12 : 18;
+	const int utilityH = compact ? 28 : 32;
+	for (int i = 0; i < 4; ++i)
+		buttons[index++]->setGeometry(x + (i % 2) * (w / 2 + 4),
+			y + (i / 2) * (utilityH + 4), w / 2 - 4, utilityH);
+}
+
+void MainMenuScreen::viewportResized(int, int, int width, int height)
+{
+	layout(width, height);
 }
 
 MainMenuScreen::~MainMenuScreen()

@@ -131,7 +131,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	bool wasMouseMotion=false;
 
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
-	// Process host-supplied events in their original order; coalesce only mouse motion.
+	// we get all pending events but for mouse motion we only keep the last one
 	for (auto event : events)
 	{
 		GAGCore::GraphicContext::translateMouseEvent(&event);

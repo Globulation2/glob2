@@ -10,10 +10,31 @@
 #include <typeinfo>
 
 
+Heap::~Heap()
+{
+	for (auto* value : values) delete value;
+}
+
+void Value::markForGC()
+{
+	if (marked) return;
+	marked = true;
+	if (prototype) prototype->markForGC();
+	propagateMarkForGC();
+}
+
+void ThunkPrototype::propagateMarkForGC()
+{
+	if (outer) outer->markForGC();
+	Prototype::propagateMarkForGC();
+	for (auto* instruction : body) instruction->markForGC();
+}
+
 void Heap::collectGarbage()
 {
 	using std::for_each;
 	using std::mem_fn;
+	for (const auto& entry : nativePrototypes) entry.second->markForGC();
 
 	// filter copy, delete unrefs
 	Values marked;
@@ -104,4 +125,3 @@ MetaPrototype::MetaPrototype(Heap* heap, Prototype* prototype, Value* outer):
 Function::Function(Heap* heap, Prototype* prototype, Value* outer):
 	MetaPrototype(heap, prototype, outer)
 {}
-

@@ -6,7 +6,6 @@
 #include "ScriptEditorScreen.h"
 #include "Unit.h"
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
 void MapEdit::beginZonePlacement(BrushType type)

@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetTransport.h"
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
 #include <atomic>
 #include <deque>
 #include <mutex>
 #include <thread>
 #include <array>
 
-#ifndef YOG_SERVER_ONLY
+#if !defined(YOG_SERVER_ONLY) && defined(GLOB2_NATIVE_WSS)
 std::unique_ptr<NetTransport> makeWssTransport();
 #endif
 
@@ -105,7 +108,15 @@ class NativeTransport final : public NetTransport {
 public:
     void open(const std::string& address, uint16_t port) override {
         close();
-        selected = address.rfind("wss://", 0) == 0 ? makeWssTransport() : std::make_unique<TcpTransport>();
+        if (address.rfind("wss://", 0) == 0) {
+#ifdef GLOB2_NATIVE_WSS
+            selected = makeWssTransport();
+#else
+            return;
+#endif
+        } else {
+            selected = std::make_unique<TcpTransport>();
+        }
         selected->open(address, port);
     }
     void close() override { selected.reset(); }

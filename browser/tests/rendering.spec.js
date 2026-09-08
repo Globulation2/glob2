@@ -1,4 +1,5 @@
 const {test, expect} = require('@playwright/test');
+const {clickMainMenu}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
 const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
@@ -11,7 +12,7 @@ test('WebGL2 draws a playable match and resizes its drawing buffer', async ({pag
   await screen(page, 'MainMenuScreen');
   expect((await state(page)).renderer).toBe('webgl2');
   expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2') instanceof WebGL2RenderingContext)).toBe(true);
-  await click(page, 760, 410); await screen(page, 'CustomGameScreen');
+  await clickMainMenu(page,'custom'); await screen(page, 'CustomGameScreen');
   await click(page, 380, 280); await click(page, 810, 590);
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.setViewportSize({width:1280,height:720});
@@ -29,7 +30,7 @@ test('software renderer remains available', async ({page}) => {
   await screen(page,'MainMenuScreen');
   expect((await state(page)).renderer).toBe('software');
   expect(await page.evaluate(() => Boolean(document.querySelector('#canvas').getContext('2d')))).toBe(true);
-  await click(page,440,570); await screen(page,'SettingsScreen');
+  await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
 });
 
 
@@ -37,7 +38,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   await page.goto('/?renderer=webgl2'); await screen(page,'MainMenuScreen');
-  await click(page,760,410); await screen(page,'CustomGameScreen');
+  await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
   await click(page,380,280); await click(page,810,590);
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   for (let count=1; count<=2; ++count) {
@@ -81,9 +82,9 @@ test('WebGL context restoration retains settings, editor and confirmation contro
     await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
     expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2').getError())).toBe(0);
   }
-  await click(page,440,570); await recover('SettingsScreen');
+  await clickMainMenu(page,'settings'); await recover('SettingsScreen');
   await click(page,810,650); await screen(page,'MainMenuScreen');
-  await click(page,760,570); await screen(page,'EditorMainMenu');
+  await clickMainMenu(page,'editor'); await screen(page,'EditorMainMenu');
   await click(page,600,300); await screen(page,'NewMapScreen');
   await click(page,440,650); await recover('MapEditorScreen');
   await page.locator('#canvas').press('Escape',{delay:80});

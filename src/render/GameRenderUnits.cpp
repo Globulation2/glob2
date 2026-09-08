@@ -30,7 +30,6 @@
 
 #include "Brush.h"
 #include "UnitSkin.h"
-#include "FertilityCalculatorDialog.h"
 
 
 // Unit rendering. Split from Game_render.cpp.

@@ -1,51 +1,69 @@
-# Browser platform delivery
+# Browser platform implementation
 
-The browser target is under development, not a supported release. The release
-requires desktop browser single-player support, matching-release native
-cross-play, YOG invitation rooms with guests and accounts, 120-second coordinated
-reconnect, and self-hosted distribution. Mobile, voice chat, rankings, cloud saves,
-late joining, and backend-restart match recovery are excluded.
+The browser target provides desktop-browser single-player and existing YOG
+multiplayer: login, lobbies, room setup, joining, browser/browser matches, and
+matching-release browser/native matches. It shares game logic, deterministic
+simulation, save/map formats, and the YOG wire protocol with native builds.
 
-## Architecture contracts
+Guest identities, private invitations, cloud saves, late joining, backend restart
+recovery, mobile UI, voice chat, and rankings are outside this change. Refreshing
+or disconnecting during a match ends that player's participation.
 
-- SCons is the source of truth for every toolchain. Source manifests are plain
-  Python tuples; target/configuration identities own all generated outputs.
-- Game and AI code must not call browser APIs. Platform implementations own
-  scheduling, graphics, storage, audio activation, and transport.
-- YOG owns identities, rooms and match lifecycle. A fixed-backend WebSocket
-  gateway owns transport only. Simulation remains deterministic client lockstep.
-- Durable persistence acknowledgment must follow successful storage completion.
-- Resize is an application event applied between frames, never a reload.
-- A reconnect checkpoint must include simulation and network continuation state,
-  exclude another player's local UI state, and pass checksum verification.
+LAN is compiled out of the WebAssembly client because browser sandboxing cannot
+provide Glob2's direct TCP listener and discovery model. The longer-term browser
+multiplayer direction is a web entry flow over YOG: shareable match links,
+lightweight or guest identity, and instant matchmaking. This PR provides the
+cross-play transport and existing lobby flow; it does not implement that product
+experience or publish a Play button on the project website.
 
-## Release gates
+## Architecture
 
-- [ ] Build coexistence across native client, lobby, router, gateway, and web
-- [ ] Explicit application/screen scheduling without Asyncify
-- [ ] WebGL2 rendering with context restoration and software fallback
-- [ ] Live resize and focus/visibility lifecycle
-- [ ] Transactional browser storage with import/export and failure handling
-- [ ] Browser and native secure transports; compatible protocol handshake
-- [ ] Invitation rooms, guests, optional accounts and credential migration
-- [ ] Pause barriers, checkpoints and refresh recovery
-- [ ] Self-hosting, immutable releases, backups, health checks and metrics
-- [ ] Browser, native, deployment, determinism and fault-injection test gates
+- SCons is the source of truth for every toolchain. Plain Python source manifests
+  are shared by native and web targets; target identities keep generated output
+  isolated.
+- `Application` and `ScreenStack` own interactive navigation. The browser host
+  schedules frames; browser-reachable loading and generation use cooperative
+  jobs rather than suspended C++ stacks.
+- Game and AI code do not call browser APIs. The browser platform owns frame
+  scheduling, viewport and visibility events, file selection, storage, audio
+  activation, transport, and read-only diagnostics.
+- Browser storage acknowledges a write only after `FS.syncfs` succeeds. Import,
+  export, retry, rollback, restore failure, and shutdown use the same durable
+  storage path.
+- WebGL2 and software rendering share the renderer interfaces. Context recovery
+  rebuilds renderer resources while retaining the current application state.
+- YOG continues to own identities, rooms, and match lifecycle. The WebSocket
+  gateway relays framed bytes to a fixed native backend and does not participate
+  in simulation.
 
 ## Build identity
 
 Default outputs are `build/<toolchain>/<role>/<mode>`. `--build=PATH` overrides
-that path, but PATH must belong to the same identity. Mixing identities is an
-error. `identity.json` records ownership; generated configuration is
-`include/glob2/BuildConfig.h`. Options are explicit on every invocation; emitted
-`options.py`/`options.json` records inputs and is not silently loaded.
+that path only when it belongs to the same identity. `identity.json` records
+ownership, and generated configuration is written to
+`include/glob2/BuildConfig.h`.
 
-Existing commands such as `scons release=1`, `scons server=1`, and
-`scons mingwcross=1` keep selecting the same kinds of builds. Their default
-artifact paths are now isolated. For example, the macOS release client is
-`build/darwin/client/release/src/glob2`. Browser output is
-`build/emscripten/client/release/index.html`.
+Existing native commands retain their roles. For example, `scons release=1`
+builds the desktop client, while `scons target=web release=1` writes the browser
+application to `build/emscripten/client/release`. The compatibility command
+`python3 browser/build.py` delegates to SCons.
 
-The experiment compatibility command `python3 browser/build.py` delegates to
-SCons. Emscripten 4.0.15 and its checksum-verified ports (including Boost 1.83)
-are selected independently of installed native development libraries.
+Browser and native multiplayer clients must use the same protocol version.
+Update the client, YOG services, and gateway deployment together. See the
+[protocol contract](protocol.md) and [gateway guide](gateway.md).
+
+## Verification
+
+CI builds native client/server, router, gateway, and browser identities. Native
+harnesses cover screen/session ownership, loading and generation cancellation,
+save safety, transports, and deterministic replay. Chromium runs the complete
+browser behavior suite; Firefox and WebKit run focused startup, gameplay, and
+viewport compatibility checks. Focused Chromium runs cover WebGL2 and real-window
+visibility in addition to the software-renderer suite. Persistence, import/export,
+context recovery, YOG, and browser/native cross-play remain in the complete suite.
+Manual workflow runs accept `browser_only` when a follow-up changes only the web
+host or its tests; ordinary pull requests and pushes still run every platform job.
+
+The operational commands live in [the browser README](../../browser/README.md).
+WebKit automation is not a substitute for manual testing in shipping Safari, and
+Chromium automation is not a substitute for shipping Edge qualification.

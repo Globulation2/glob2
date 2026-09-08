@@ -5,6 +5,7 @@
 #include <Stream.h>
 
 #include "MapGenerationDescriptor.h"
+#include "Map.h"
 #include "Marshaling.h"
 #include "Utilities.h"
 
@@ -128,9 +129,7 @@ bool MapGenerationDescriptor::setData(const Uint8 *data, int dataLength)
 	bool good=true;
 	if (getDataLength()!=dataLength)
 		good=false;
-	if (wDec>=32)
-		good=false;
-	if (hDec>=32)
+	if (!Map::supportedDimensions(wDec, hDec))
 		good=false;
 	if (terrainType>GRASS)
 		good=false;
@@ -216,4 +215,3 @@ Uint32 MapGenerationDescriptor::checkSum()
 	
 	return cs;
 }
-

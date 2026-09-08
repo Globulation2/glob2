@@ -1,11 +1,11 @@
 const {test,expect}=require('@playwright/test');
-const {gameURL}=require('./game-url');
+const {clickMainMenu,gameURL}=require('./main-menu');
 const fs=require('node:fs/promises');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
 const menu=(page,x,y)=>page.locator('#canvas').click({position:{x:x+280,y:y+210},delay:80});
 const stored=page=>page.evaluate(()=>glob2Diagnostics.campaignDigest('Tutorial_Campaign.txt'));
-async function tutorial(page) {await menu(page,480,120);await screen(page,'CampaignMenuScreen');}
+async function tutorial(page) {await clickMainMenu(page,'tutorial');await screen(page,'CampaignMenuScreen');}
 async function backup(page) {
   const downloading=page.waitForEvent('download');await menu(page,230,495);
   const download=await downloading;expect(download.suggestedFilename()).toBe('campaign-progress.campaign');

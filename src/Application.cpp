@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Application.h"
+#include "FrontendTheme.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include "GlobalContainer.h"
@@ -13,23 +14,73 @@
 #include "LANMenuScreen.h"
 #include "YOGLoginScreen.h"
 #include "YOGClient.h"
+#include <GUIText.h>
+#include <GUIButton.h>
 
 namespace {
-class MinimumViewportScreen : public GAGGUI::Screen
+// Keep graphics and the host alive until final writes have reached storage.
+// The gameplay stack is destroyed first, so its destructor writes are included.
+class ShutdownScreen : public Glob2Screen
 {
+    GAGGUI::Text* status;
+    GAGGUI::TextButton* retry;
+    GAGGUI::TextButton* leave;
+    std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
+    bool closing = false;
+    void close() {
+        persistence.reset();
+        closing = true;
+        retry->visible = leave->visible = false;
+        status->setText(GAGCore::Toolkit::getStringTable()->getString("[game closed]"));
+    }
+    void failed() {
+        persistence.reset();
+        status->setText(GAGCore::Toolkit::getStringTable()->getString("[shutdown save failed]"));
+        retry->visible = leave->visible = true;
+    }
+    void save() {
+        retry->visible = leave->visible = false;
+        status->setText(GAGCore::Toolkit::getStringTable()->getString("[saving to storage]"));
+        try {
+            if (GAGCore::ApplicationHost::storageRestoreFailed() || !globalContainer->settings.save()) {
+                failed(); return;
+            }
+            persistence = GAGCore::ApplicationHost::persistStorage();
+            if (!persistence) failed();
+        } catch (const std::exception&) { failed(); }
+    }
 public:
-    void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {}
-    void paint() override {
-        GAGGUI::Screen::paint();
-        auto* font = GAGCore::Toolkit::getFont("standard");
-        const auto text = GAGCore::Toolkit::getStringTable()->getString("[browser window too small]");
-        getSurface()->drawString(std::max(8, (getW() - font->getStringWidth(text)) / 2),
-                                std::max(8, getH()/2 - 10), font, text);
+    ShutdownScreen() {
+        auto& strings = *GAGCore::Toolkit::getStringTable();
+        status = new GAGGUI::Text(20, 230, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+            "standard", strings.getString("[saving to storage]"));
+        retry = new GAGGUI::TextButton(20, 340, 280, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+            "menu", strings.getString("[retry save]"), 0);
+        leave = new GAGGUI::TextButton(330, 340, 280, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+            "menu", strings.getString("[quit without saving]"), 1);
+        addWidget(status); addWidget(retry); addWidget(leave);
+        save();
+    }
+    void onAction(GAGGUI::Widget*, GAGGUI::Action action, int choice, int) override {
+        if (persistence || closing || action != GAGGUI::BUTTON_RELEASED) return;
+        if (choice == 0) save();
+        else if (choice == 1) close();
+    }
+    void onTimer(Uint32) override {
+        // Present the final message for one frame before releasing graphics.
+        if (closing) { endExecute(0); return; }
+        if (!persistence) return;
+        const auto state = persistence->state();
+        if (state == GAGCore::ApplicationHost::PersistenceState::Failed) failed();
+        else if (state == GAGCore::ApplicationHost::PersistenceState::Succeeded) close();
     }
 };
+
 }
 
-Application::Application() : screens(*globalContainer->gfx), singlePlayer(screens)
+Application::Application()
+    : frontend(std::make_unique<FrontendTheme>()), screens(*globalContainer->gfx),
+      shutdownScreens(*globalContainer->gfx), singlePlayer(screens)
 {
     if (GAGCore::ApplicationHost::storageRestoreFailed()) {
         auto& strings = *GAGCore::Toolkit::getStringTable();
@@ -39,6 +90,8 @@ Application::Application() : screens(*globalContainer->gfx), singlePlayer(screen
     } else if (globalContainer->replaying) singlePlayer.replay(globalContainer->replayFileName);
     else mainMenu();
 }
+
+Application::~Application() = default;
 
 void Application::mainMenu()
 {
@@ -64,9 +117,9 @@ void Application::choose(int choice)
     case MainMenuScreen::GAME_SETUP: screens.push(std::make_unique<SettingsScreen>()); break;
     case MainMenuScreen::CREDITS: screens.push(std::make_unique<CreditScreen>()); break;
     case MainMenuScreen::EDITOR: screens.push(std::make_unique<EditorMainMenu>(screens)); break;
-    case MainMenuScreen::MULTIPLAYERS_LAN: screens.push(std::make_unique<LANMenuScreen>()); break;
+    case MainMenuScreen::MULTIPLAYERS_LAN: screens.push(std::make_unique<LANMenuScreen>(screens)); break;
     case MainMenuScreen::MULTIPLAYERS_YOG:
-        screens.push(std::make_unique<YOGLoginScreen>(std::make_shared<YOGClient>())); break;
+        screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>())); break;
     case MainMenuScreen::QUIT: screens.stop(); break;
     }
 }
@@ -81,18 +134,24 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event>& events
         const int oldWidth = globalContainer->gfx->getW(), oldHeight = globalContainer->gfx->getH();
         if (globalContainer->gfx->resizeViewport(width, height)) {
             screens.viewportResized(oldWidth, oldHeight, width, height);
-            if ((width < 800 || height < 600) && !minimumNotice) {
-                auto notice = std::make_unique<MinimumViewportScreen>();
-                minimumNotice = notice.get();
-                screens.push(std::move(notice), [this](GAGGUI::Screen&, int) { minimumNotice = nullptr; });
-            } else if (width >= 800 && height >= 600 && minimumNotice) {
-                minimumNotice->endExecute(0);
-            }
+            shutdownScreens.viewportResized(oldWidth, oldHeight, width, height);
         }
+    }
+    if (quitting) {
+        // Repeated window-close events must not bypass a pending write or its
+        // explicit failure decision. Closing a browser tab remains abrupt.
+        auto input = events;
+        std::erase_if(input, [](const SDL_Event& event) { return event.type == SDL_QUIT; });
+        shutdownScreens.frame(tick, input);
+        return shutdownScreens.running();
     }
     screens.frame(tick, events);
     if (!screens.running()) {
-        if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION) return false;
+        if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION) {
+            quitting = true;
+            shutdownScreens.push(std::make_unique<ShutdownScreen>());
+            return true;
+        }
         mainMenu();
     }
     return true;
@@ -102,5 +161,5 @@ std::uint32_t Application::delay(std::uint32_t now)
 {
     if (hidden) return 100;
     const auto elapsed = static_cast<std::uint32_t>(now - lastFrame);
-    return screens.delay(now, elapsed < 40 ? 40 - elapsed : 0);
+    return (quitting ? shutdownScreens : screens).delay(now, elapsed < 40 ? 40 - elapsed : 0);
 }

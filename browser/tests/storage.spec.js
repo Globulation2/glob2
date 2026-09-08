@@ -1,4 +1,4 @@
-const {gameURL} = require('./game-url');
+const {gameURL,clickMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
@@ -33,7 +33,7 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
     };
   }, fault);
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');
-  await click(page,760,410); await screen(page,'CustomGameScreen');
+  await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
   await click(page,380,280); await click(page,810,590);
   await expect.poll(async ()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('p',{delay:80});
@@ -89,7 +89,7 @@ test('restore failure is explained before entering the game', async ({page},info
   expect((await state(page)).persistence).toBe('restore-failed');
   await page.screenshot({path:info.outputPath('storage-restore-failure.png')});
   await click(page,390,570); await screen(page,'MainMenuScreen');
-  await click(page,440,570); await screen(page,'SettingsScreen');
+  await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   await click(page,810,650); await screen(page,'MainMenuScreen');
   // Startup and settings writes must not retry the database after failed restore.
   expect(await page.evaluate(()=>restoreFault.attempts)).toBe(1);

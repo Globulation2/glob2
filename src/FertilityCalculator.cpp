@@ -66,6 +66,8 @@ namespace FertilityCalculator
         enum Phase { Seed, Reach, Kernel, Ready, Committed } phase = Seed;
         std::size_t cursor = 0, visited = 0;
         int kernelOffset = 0;
+        int kernelX = 0, kernelY = 0;
+        std::size_t kernelIndex = 0;
         Uint16 total = 0, maximum = 0;
         explicit State(Map& map) : map(map), size(static_cast<std::size_t>(map.getW()) * map.getH()),
             distance(size), fertility(size, 0) {}
@@ -99,13 +101,19 @@ namespace FertilityCalculator
                 }
             } else {
                 if (s.cursor == s.size) { s.phase = State::Ready; continue; }
-                const auto [x, y] = s.coordinate();
-                if (!s.map.isGrass(x, y) || !s.distance[s.map.coordToIndex(x, y)]) { ++s.cursor; continue; }
+                if (s.kernelOffset == 0) {
+                    const auto [x, y] = s.coordinate();
+                    const auto index = s.map.coordToIndex(x, y);
+                    if (!s.map.isGrass(x, y) || !s.distance[index]) { ++s.cursor; continue; }
+                    s.kernelX = x;
+                    s.kernelY = y;
+                    s.kernelIndex = index;
+                }
                 const int nx = s.kernelOffset % kKernelSide - kFertilityRadius;
                 const int ny = s.kernelOffset / kKernelSide - kFertilityRadius;
-                if (s.map.isWater(x + nx, y + ny)) s.total += kernel[s.kernelOffset];
+                if (s.map.isWater(s.kernelX + nx, s.kernelY + ny)) s.total += kernel[s.kernelOffset];
                 if (++s.kernelOffset == kKernelSide * kKernelSide) {
-                    s.fertility[s.map.coordToIndex(x, y)] = s.total;
+                    s.fertility[s.kernelIndex] = s.total;
                     s.maximum = std::max(s.maximum, s.total);
                     s.total = 0; s.kernelOffset = 0; ++s.cursor;
                 }
