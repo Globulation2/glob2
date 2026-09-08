@@ -1262,3 +1262,7 @@ Saving...
 Save failed. Retry.
 [export save]
 Export save
+[storage restore failed]
+Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+[continue]
+Continue

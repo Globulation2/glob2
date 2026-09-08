@@ -57,6 +57,7 @@ bool takeViewportSize(int& width, int& height)
         return 1;
     }, &width, &height);
 }
+bool storageRestoreFailed() { return EM_ASM_INT({ return Module.storageRestore === 'failed'; }); }
 bool canExportFiles() { return true; }
 bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes)
 {

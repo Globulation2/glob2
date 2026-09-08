@@ -4,6 +4,7 @@
 #include <StringTable.h>
 #include "GlobalContainer.h"
 #include "MainMenuScreen.h"
+#include "MessageScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignMenuScreen.h"
 #include "SettingsScreen.h"
@@ -30,7 +31,12 @@ public:
 
 Application::Application() : screens(*globalContainer->gfx), singlePlayer(screens)
 {
-    if (globalContainer->replaying) singlePlayer.replay(globalContainer->replayFileName);
+    if (GAGCore::ApplicationHost::storageRestoreFailed()) {
+        auto& strings = *GAGCore::Toolkit::getStringTable();
+        screens.push(std::make_unique<MessageScreen>(strings.getString("[storage restore failed]"),
+            std::vector<std::string>{strings.getString("[continue]")}),
+            [this](GAGGUI::Screen&, int) { mainMenu(); });
+    } else if (globalContainer->replaying) singlePlayer.replay(globalContainer->replayFileName);
     else mainMenu();
 }
 

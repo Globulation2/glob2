@@ -29,6 +29,7 @@ bool takeViewportSize(int& width, int& height);
 // Visibility edges are retained even when no frame ran while hidden.
 bool takeVisibilityChange(bool& hidden);
 
+bool storageRestoreFailed();
 bool canExportFiles();
 bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes);
 

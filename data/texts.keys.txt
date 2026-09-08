@@ -629,3 +629,5 @@
 [saving to storage]
 [save failed retry]
 [export save]
+[storage restore failed]
+[continue]

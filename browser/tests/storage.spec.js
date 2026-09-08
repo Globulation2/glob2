@@ -71,3 +71,29 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   await page.reload(); await screen(page,'MainMenuScreen');
   expect(await digest()).toEqual(retried);
 });
+
+test('restore failure is explained before entering the game', async ({page},info)=>{
+  await page.addInitScript(()=>{
+    const open=IDBFactory.prototype.open;
+    window.restoreFault={attempts:0};
+    IDBFactory.prototype.open=function(...args){
+      ++restoreFault.attempts;
+      if(!sessionStorage.getItem('restoreFaultDisabled'))
+        throw new DOMException('Injected storage refusal','SecurityError');
+      return open.apply(this,args);
+    };
+  });
+  await page.goto('/'); await screen(page,'MessageScreen');
+  expect((await state(page)).restore).toBe('failed');
+  expect((await state(page)).persistence).toBe('restore-failed');
+  await page.screenshot({path:info.outputPath('storage-restore-failure.png')});
+  await click(page,390,570); await screen(page,'MainMenuScreen');
+  await click(page,440,570); await screen(page,'SettingsScreen');
+  await click(page,810,650); await screen(page,'MainMenuScreen');
+  // Startup and settings writes must not retry the database after failed restore.
+  expect(await page.evaluate(()=>restoreFault.attempts)).toBe(1);
+  expect((await state(page)).persistence).toBe('restore-failed');
+  await page.evaluate(()=>sessionStorage.setItem('restoreFaultDisabled','1'));
+  await page.reload(); await screen(page,'MainMenuScreen');
+  expect((await state(page)).restore).toBe('ready');
+});

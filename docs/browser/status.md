@@ -120,6 +120,12 @@ infrastructure from the supported-release acceptance criteria.
   durable save, and successful retry. General import/export for other local
   data types and explicit messaging for oversized exports remain unfinished.
 
+- Failed browser storage restoration opens an in-game explanation before the
+  menu. Players may continue with persistence disabled and export manual saves,
+  then reload to retry restoration. Three database-open failure scenarios pass
+  across Chromium, Firefox and WebKit, including no write retries while restore
+  is failed and a successful fresh restore. The notice screenshot is checked.
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),
