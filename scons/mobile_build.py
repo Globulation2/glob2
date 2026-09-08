@@ -57,7 +57,9 @@ def build_mobile(directory, identity, arguments):
         CPPDEFINES=['HAVE_CONFIG_H'], CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
     files = ['src/' + name for name in CLIENT_SOURCES if name not in ('VoiceRecorder.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
-    if identity['target'] == 'ios': files.remove('src/Glob2.cpp')
+    if identity['target'] == 'ios':
+        files.remove('src/Glob2.cpp')
+        files.append('mobile/ios/SafeArea.mm')
     files += ['libgag/src/' + name for name in GAG_SOURCES]
     files += ['libusl/src/' + name for name in USL_SOURCES]
     files += ['browser/VoiceRecorder.cpp', 'browser/IRCTextMessageHandler.cpp', 'mobile/MobilePaths.cpp']

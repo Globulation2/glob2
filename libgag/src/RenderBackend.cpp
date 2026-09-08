@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <RenderBackend.h>
 #include <limits>
+#include <cmath>
+#include <optional>
+#include <vector>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -15,11 +18,33 @@ void check(int result)
 class SDLRenderBackend final : public RenderBackend
 {
     SDL_Renderer* renderer;
+    float scale=1, offsetX=0, offsetY=0;
+    std::optional<SDL_Rect> bounds;
+    std::vector<SDL_Vertex> transformed;
     std::unordered_map<const void*, SDL_Texture*> textures;
 public:
     explicit SDLRenderBackend(SDL_Renderer* renderer) : renderer(renderer) {}
     ~SDLRenderBackend() override { reset(); SDL_DestroyRenderer(renderer); }
-    void clip(const SDL_Rect* rect) override { check(SDL_RenderSetClipRect(renderer, rect)); }
+    void transform(float factor, float x, float y, const SDL_Rect* output) override
+    {
+        if (!std::isfinite(factor) || factor <= 0 || !std::isfinite(x) || !std::isfinite(y))
+            throw std::invalid_argument("Invalid UI transform");
+        scale=factor; offsetX=x; offsetY=y;
+        bounds=output ? std::optional<SDL_Rect>(*output) : std::nullopt;
+        clip(nullptr);
+    }
+    void clip(const SDL_Rect* rect) override
+    {
+        std::optional<SDL_Rect> result=bounds;
+        if (rect) {
+            const int x=int(std::floor(rect->x*scale+offsetX)), y=int(std::floor(rect->y*scale+offsetY));
+            SDL_Rect mapped{x,y,int(std::ceil((rect->x+rect->w)*scale+offsetX))-x,
+                                  int(std::ceil((rect->y+rect->h)*scale+offsetY))-y};
+            if (bounds) SDL_IntersectRect(&mapped,&*bounds,&mapped);
+            result=mapped;
+        }
+        check(SDL_RenderSetClipRect(renderer,result ? &*result : nullptr));
+    }
     void triangles(std::span<const SDL_Vertex> vertices, const void* key,
                    SDL_Surface* pixels, bool changed) override
     {
@@ -38,6 +63,14 @@ public:
                 check(SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND));
                 check(SDL_SetTextureScaleMode(texture, SDL_ScaleModeNearest));
             } else texture = found->second;
+        }
+        if (scale!=1 || offsetX!=0 || offsetY!=0) {
+            transformed.assign(vertices.begin(),vertices.end());
+            for (auto& vertex : transformed) {
+                vertex.position.x=vertex.position.x*scale+offsetX;
+                vertex.position.y=vertex.position.y*scale+offsetY;
+            }
+            vertices=transformed;
         }
         check(SDL_RenderGeometry(renderer, texture, vertices.data(), static_cast<int>(vertices.size()), nullptr, 0));
     }

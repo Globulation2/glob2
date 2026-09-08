@@ -35,6 +35,20 @@ int main()
 {
     try {
         Context context;
+        {
+            context.drawFilledRect(0,0,320,240,Color(0,0,0));
+            SDL_Rect bounds{100,50,20,20};
+            context.setUITransform(2,100,50,&bounds);
+            context.setClipRect(0,0,8,8);
+            context.drawFilledRect(0,0,30,30,Color(255,0,0));
+            context.setUITransform(); context.setClipRect();
+            context.drawFilledRect(10,10,4,4,Color(0,255,0));
+            auto* pixels=context.capture();
+            const double density=pixels->w/320.0;
+            expect(pixels,int(110*density),int(60*density),255,0,0);
+            expect(pixels,int(118*density),int(60*density),0,0,0);
+            expect(pixels,int(12*density),int(12*density),0,255,0); SDL_FreeSurface(pixels);
+        }
         DrawableSurface sprite(16,16);
         sprite.drawFilledRect(0,0,16,16,Color(0,255,0));
         for(int pass=0;pass<3;++pass) {

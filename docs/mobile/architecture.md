@@ -147,3 +147,39 @@ establish complete phone usability, safe-area handling, or readable typography.
 Gameplay still has an 800×600 minimum logical canvas; the next UI step is to
 separate readable control sizing from that legacy minimum and reflow its panels.
 Pinch zoom remains deferred.
+
+## In-game phone HUD
+
+Native SDL-renderer gameplay now uses a phone HUD when touch is active and the
+shorter window dimension is below 600 points. iOS/Android start with touch active;
+a physical mouse restores the existing desktop controls. Replay UI remains on
+its existing path. System and main menus are intentionally outside this change.
+
+The world retains its existing simulation/picking coordinates and minimum logical
+canvas, while HUD geometry uses `logicalUnitsPerPoint()` to remain readable on a
+phone. An SDL geometry transform scales UI drawing and clipping together; it is
+reset before returning to world rendering. There is no frame readback or extra
+full-screen render target for this scaling. Existing art is retained.
+
+The status strip shows free/total workers, explorers, and warriors. A 48-point
+bottom action bar opens construction, flags, selection/statistics, objectives,
+alliances, and the game menu. A selected building or unit opens the inspector;
+choosing a placement or paint tool closes it. Portrait uses a bottom sheet,
+landscape a side sheet. Dragging the sheet scrolls it, and a scrollbar indicates
+additional content. Panel drawing and inverse hit-testing use the same scale and
+origin, including after scrolling and rotation. Actions remain the shared game
+handlers. Confirm/Cancel retain their dedicated placement strip.
+
+Tutorial text wraps at phone width, scrolls within a bounded card, and exposes an
+acknowledgment button when the script requests Space. Touch acknowledgment calls
+the existing key action. UIKit safe-area insets keep the iOS HUD away from the
+notch/status area and home indicator; the world still fills the window beneath
+those margins. Android cutout-specific inset reporting remains to be added.
+
+This is a first usability pass, not completion of the phone interface. The
+inspector still scales and scrolls the legacy layout: small allocation arrows
+need larger dedicated controls, and bottom-anchored controls can leave excess
+scrolling space. In-game dialogs, replay controls, chat, some overlays/tutorial
+highlight positions, adjustable UI scale, and tablet layouts need further work.
+Browser rendering preserves its existing interface; the new HUD currently
+requires the native SDL renderer. Pinch zoom remains deferred.

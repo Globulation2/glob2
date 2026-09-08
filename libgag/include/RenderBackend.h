@@ -13,6 +13,8 @@ class RenderBackend
 public:
     virtual ~RenderBackend() = default;
     virtual void clip(const SDL_Rect* rect) = 0;
+    // UI-only transform and output clipping; simulation/world coordinates are unchanged.
+    virtual void transform(float scale, float x, float y, const SDL_Rect* bounds) = 0;
     virtual void triangles(std::span<const SDL_Vertex> vertices, const void* key = nullptr,
                            SDL_Surface* pixels = nullptr, bool changed = false) = 0;
     virtual void forget(const void* key) = 0;

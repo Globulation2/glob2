@@ -98,6 +98,62 @@ public:
         SDL_FreeSurface(capture);
         require(g>r+20,"Confirm must be visibly drawn over the world");
         require(gui.game.checkSum()==checksum,"Touch navigation and queued orders must not mutate simulation state");
+        gui.game.map.setMapDiscovered(); // Expose terrain for this rendering fixture only.
+        const auto hudChecksum=gui.game.checkSum();
+        gui.clearSelection(); gui.suspendInput();
+        SDL_setenv("GLOB2_TOUCH_HUD","1",1);
+        auto* gfx=globalContainer->gfx;
+        SDL_setenv("GLOB2_RESPONSIVE_UI","1",1);
+        gfx->setResponsiveViewport(true,800,600);
+        for (auto [width,height] : {std::pair{320,568}, {568,320}}) {
+            const int oldW=gfx->getW(),oldH=gfx->getH();
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            SDL_Event resize{}; resize.type=SDL_WINDOWEVENT; resize.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resize);
+            gui.viewportResized(oldW,oldH,gfx->getW(),gfx->getH());
+            tap(100,200); // Activate touch after the resize cancellation.
+            const float unit=gfx->logicalUnitsPerPoint();
+            gui.clearSelection(); gui.displayMode=GameGUI::FLAG_VIEW;
+            tap(gfx->getW()/12.0f,gfx->getH()-24*unit);
+            require(gui.touch->usesHUD(),"Phone HUD must be active");
+            require(gui.displayMode==GameGUI::CONSTRUCTION_VIEW,"Visible Build control routes to construction");
+            gui.drawAll(0);
+            gfx->printScreen(width<height ? "touch-hud-portrait.bmp" : "touch-hud-landscape.bmp");
+            gfx->nextFrame();
+            int targetX,targetY,centerX,centerY;
+            gui.minimap.convertToMap(gfx->getW()-80,64,targetX,targetY);
+            gui.minimapMouseToPos(gfx->getW()-80,64,&centerX,&centerY,true);
+            const auto world=gui.touch->worldBounds();
+            require(centerX==targetX-int((world.x+world.w/2)/32) &&
+                    centerY==targetY-int((world.y+world.h/2)/32),
+                    "Minimap navigation centers the visible world, excluding HUD margins");
+            auto ui=GAGCore::MobileLayout::calculate(width,height,{},0,1,true);
+            const float panelX=(ui.panel.x+(ui.panel.w-280)/2)*unit;
+            const int cameraX=gui.viewportX,cameraY=gui.viewportY;
+            finger(SDL_FINGERDOWN,1,(ui.panel.x+8)*unit,(ui.panel.y+70)*unit);
+            finger(SDL_FINGERMOTION,1,(ui.panel.x+8)*unit,(ui.panel.y+30)*unit);
+            finger(SDL_FINGERUP,1,(ui.panel.x+8)*unit,(ui.panel.y+30)*unit);
+            require(gui.viewportX==cameraX && gui.viewportY==cameraY,"Panel scrolling must not pan the world"); noOrder();
+            tap(panelX+120*1.75f*unit,(ui.panel.y+(208-144)*1.75f-40)*unit);
+            require(gui.selectionMode==GameGUI::TOOL_SELECTION && gui.toolManager.getBuildingName()=="inn",
+                    "Enlarged panel hit-testing must select the same building after rotation"); noOrder();
+            gui.clearSelection();
+            gui.scriptText="Build an inn to feed your workers. Drag the panel to find more buildings. "
+                "Select a building, choose a location, and confirm when you are ready.\n"
+                "This long instruction remains readable after rotating the phone.";
+            gui.swallowSpaceKey=true; gui.setIsSpaceSet(false);
+            gui.drawAll(0);
+            gfx->printScreen(width<height ? "touch-tutorial-portrait.bmp" : "touch-tutorial-landscape.bmp");
+            gfx->nextFrame();
+            finger(SDL_FINGERDOWN,1,30*unit,80*unit);
+            finger(SDL_FINGERMOTION,1,30*unit,60*unit);
+            finger(SDL_FINGERUP,1,30*unit,60*unit);
+            require(!gui.isSpaceSet(),"Scrolling tutorial text must not acknowledge it");
+            tap(30*unit,80*unit);
+            require(gui.isSpaceSet(),"Tutorial touch acknowledgment uses the shared Space action");
+            gui.scriptText.clear(); gui.swallowSpaceKey=false;
+        }
+        require(gui.game.checkSum()==hudChecksum,"HUD interaction must not mutate the simulation");
     }
 };
 int main()

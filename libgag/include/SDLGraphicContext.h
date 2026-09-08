@@ -370,6 +370,7 @@ namespace GAGCore
         bool isResponsiveViewport() const { return responsiveViewport; }
         bool hasPortableRenderer() const { return bool(renderer); }
         double logicalUnitsPerPoint() const;
+        void setUITransform(float scale=1, float x=0, float y=0, const SDL_Rect* bounds=nullptr);
         Uint32 windowID() const { return SDL_GetWindowID(window); }
 		virtual bool setRes(int w, int h, Uint32 flags);
         // Resize a software render target without replacing its window or assets.

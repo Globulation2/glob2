@@ -7,6 +7,11 @@
 
 namespace GAGCore
 {
+    void GraphicContext::setUITransform(float scale, float x, float y, const SDL_Rect* bounds)
+    {
+        if (renderer) renderer->transform(scale,x,y,bounds);
+    }
+
 	// GL rasterises lines at a width in drawable pixels, which the viewport
 	// transform does not scale the way it scales filled geometry.
 	void GraphicContext::setScaledLineWidth(float width)

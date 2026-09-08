@@ -305,3 +305,16 @@ verify executable/symbol UUIDs with `xcrun dwarfdump --uuid APP/Glob2 APP.dSYM`.
 An unsigned device application is a compilation artifact and cannot be installed.
 Do not interpret simulator smoke tests as iOS 15 hardware, touch-layout, thermal,
 or performance qualification.
+
+## In-game HUD checks
+
+`gameplay-touch-test` captures `touch-hud-portrait.bmp`,
+`touch-hud-landscape.bmp`, and corresponding `touch-tutorial-*.bmp` files inside
+`GLOB2_USER_DATA_DIR`. It tests the actual enlarged panel hit mapping after a
+scroll and rotation, plus tutorial acknowledgment. `portable-renderer-test`
+checks that a scaled UI clip and a subsequent untransformed draw both land on the
+expected pixels, accounting for framebuffer density.
+
+For native SDL-renderer debugging, `GLOB2_TOUCH_HUD=1` enables the phone HUD at
+larger window sizes once touch is active. It does not enable touch emulation or
+change the desktop renderer selection. Main/system menus are unaffected.

@@ -51,6 +51,33 @@ The simulator was not booted again and Android/device builds were not rerun for
 this port. Existing screenshots and device evidence predate these layout changes.
 This does not yet address the legacy gameplay canvas's small phone text.
 
+## In-game HUD verification
+
+Native renderer, screen lifecycle, and gameplay-touch harnesses pass. New checks
+cover UI transform clipping/restoration, enlarged panel selection in 320×568 and
+568×320 windows, scrolling without camera movement or game orders, minimap centering against the
+phone world viewport, and tutorial
+scrolling versus acknowledgment. The retained simulation checksum is unchanged
+by these UI actions. Twelve mobile build-tool tests pass. All 15 browser viewport
+cases pass across Chromium, Firefox, and WebKit; Wasm and iOS simulator release
+builds pass. The simulator app installs and launches on the isolated device.
+Android packaging/device qualification has not been repeated for this change.
+Simulator launch was checked before the final minimap-centering adjustment; the
+final simulator app was rebuilt afterward. The isolated simulator was shut down
+after checking launch as its retained caches left roughly 1 GiB free on the host.
+The separate iPhone 17 simulator session was not changed.
+
+These screenshots are **native regression-harness captures**, not emulator or
+live-match qualification. The fixture reveals terrain explicitly and has no
+initialized colony counters. It exercises real game drawing and touch dispatch.
+They do not demonstrate iOS safe-area behavior or real-device performance.
+
+![Portrait in-game construction sheet](screenshots/gameplay-panel-portrait.png)
+
+![Landscape tutorial card](screenshots/gameplay-tutorial-landscape.png)
+
+See [in-game HUD architecture and limitations](architecture.md#in-game-phone-hud).
+
 ## iOS simulator screenshots
 
 Captured on an isolated iPhone 16 / iOS 26.5 simulator. The game reaches its main

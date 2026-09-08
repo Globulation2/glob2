@@ -18,9 +18,25 @@ public:
     void prepareDraw();
     void drawControls();
     bool active() const { return touchActive; }
+    bool usesHUD() const;
+    GAGCore::ViewRect worldBounds() const { return world(); }
+    void drawHUD();
+    void drawPanel();
     bool hasPreview() const { return preview.has_value(); }
 private:
     GameGUI& gui;
+    bool panelOpen=false;
+    double panelScroll=144;
+    std::string tutorialText;
+    std::vector<std::string> tutorialLines;
+    double tutorialWidth=0, tutorialScroll=0;
+    GAGCore::ViewRect tutorialRect() const;
+    void prepareTutorial();
+    void drawTutorial();
+    GAGCore::MobileLayout layout() const;
+    double panelScale() const;
+    GAGCore::ViewPoint panelOrigin() const;
+    void clampScroll();
     GAGCore::TouchInput gesture;
     std::vector<std::pair<SDL_TouchID, SDL_FingerID>> fingers;
     bool touchActive=false, interfaceGesture=false, dispatching=false;

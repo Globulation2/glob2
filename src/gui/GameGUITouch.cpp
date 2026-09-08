@@ -4,20 +4,60 @@
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
+#include "TeamStat.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
 #include <cmath>
+#if defined(__IPHONEOS__)
+#include "mobile/ios/SafeArea.h"
+#endif
 using namespace GAGCore;
 
-GameGUITouch::GameGUITouch(GameGUI& gui) : gui(gui) {}
+GameGUITouch::GameGUITouch(GameGUI& gui) : gui(gui) {
+#if defined(__ANDROID__) || defined(__IPHONEOS__)
+    touchActive=true;
+#endif
+}
+bool GameGUITouch::usesHUD() const
+{
+    auto* gfx=globalContainer->gfx;
+    return touchActive && gfx->hasPortableRenderer() && !globalContainer->replaying &&
+        (SDL_getenv("GLOB2_TOUCH_HUD") || std::min(gfx->getW(),gfx->getH())/gfx->logicalUnitsPerPoint()<600);
+}
+MobileLayout GameGUITouch::layout() const
+{
+    auto* gfx=globalContainer->gfx;
+    const double unit=gfx->logicalUnitsPerPoint();
+    SafeInsets insets;
+#if defined(__IPHONEOS__)
+    insets=iosGameSafeInsets(SDL_GetWindowFromID(gfx->windowID()));
+#endif
+    auto result=MobileLayout::calculate(gfx->getW()/unit,gfx->getH()/unit,insets,0,1,panelOpen);
+    for (auto* rect : {&result.safe,&result.status,&result.world,&result.actions,&result.panel}) {
+        rect->x*=unit; rect->y*=unit; rect->w*=unit; rect->h*=unit;
+    }
+    return result;
+}
+double GameGUITouch::panelScale() const { return 1.75*globalContainer->gfx->logicalUnitsPerPoint(); }
+ViewPoint GameGUITouch::panelOrigin() const
+{
+    const auto panel=layout().panel;
+    return {panel.x+(panel.w-RIGHT_MENU_WIDTH*panelScale())/2, panel.y-panelScroll*panelScale()};
+}
+void GameGUITouch::clampScroll()
+{
+    panelScroll=std::clamp(panelScroll,0.0,std::max(0.0,globalContainer->gfx->getH()-layout().panel.h/panelScale()));
+}
 GameGUITouch::~GameGUITouch() = default;
 ViewRect GameGUITouch::world() const
 {
+    if (usesHUD()) return layout().world;
     return {0,16,double(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH),double(globalContainer->gfx->getH()-16)};
 }
 ViewRect GameGUITouch::controls() const
 {
+    if (usesHUD()) return layout().actions;
     auto rect=world();
     rect.h=std::min(rect.h,48*globalContainer->gfx->logicalUnitsPerPoint());
     rect.y=globalContainer->gfx->getH()-rect.h;
@@ -39,7 +79,13 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 {
     if (gui.inGameMenu || gui.typingInputScreen || gui.scrollableText) return 4;
     if (gui.selectionMode==GameGUI::TOOL_SELECTION && controls().contains(point))
-        return point.x<controls().w/2 ? 1 : 2;
+        return point.x<controls().x+controls().w/2 ? 1 : 2;
+    if (usesHUD()) {
+        if (layout().actions.contains(point)) return 10+std::min(5,int((point.x-layout().actions.x)/(layout().actions.w/6)));
+        if (layout().panel.contains(point)) return 3;
+        if (tutorialRect().contains(point)) return 7;
+        return world().contains(point) ? 0 : 6;
+    }
     if (point.x>=world().w) return 3;
     if (globalContainer->replaying && point.y>=REPLAY_BAR_Y) return 5;
     return world().contains(point) ? 0 : 6;
@@ -95,6 +141,14 @@ void GameGUITouch::actions(const std::vector<TouchAction>& changes)
             preview.reset(); gui.toolManager.cancelDrag(gui.localTeamNo); continue;
         }
         if (interfaceGesture) {
+            if (usesHUD() && ownerRegion==7 && action.kind==TouchActionKind::Pan) {
+                const double unit=globalContainer->gfx->logicalUnitsPerPoint();
+                tutorialScroll=std::clamp(tutorialScroll-point.y/unit,0.0,
+                    std::max(0.0,tutorialLines.size()*24.0-tutorialRect().h/unit+64));
+            }
+            if (usesHUD() && ownerRegion==3 && action.kind==TouchActionKind::Pan) {
+                panelScroll-=point.y/panelScale(); clampScroll();
+            }
             if (action.kind==TouchActionKind::Select && interfaceRegion(point)==ownerRegion) interfaceTap(point);
             continue;
         }
@@ -126,7 +180,7 @@ void GameGUITouch::actions(const std::vector<TouchAction>& changes)
 void GameGUITouch::interfaceTap(ViewPoint point)
 {
     if (!gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText && gui.selectionMode==GameGUI::TOOL_SELECTION && controls().contains(point)) {
-        if (point.x<controls().w/2) {
+        if (point.x<controls().x+controls().w/2) {
             if (preview && previewType==gui.toolManager.getBuildingName() && !globalContainer->replaying) {
                 const auto cursor=previewCursor();
                 if (gui.toolManager.confirmBuilding(int(cursor.x),int(cursor.y),gui.localTeamNo,gui.viewportX,gui.viewportY)) {
@@ -135,6 +189,36 @@ void GameGUITouch::interfaceTap(ViewPoint point)
             }
         } else { preview.reset(); gui.clearSelection(); }
         return;
+    }
+    if (usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText && tutorialRect().contains(point)
+        && !layout().panel.contains(point)) {
+        if (gui.swallowSpaceKey) { SDL_Keysym key{}; key.sym=SDLK_SPACE; gui.handleKey(key,true); }
+        return;
+    }
+    const bool hudInput=usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText;
+    if (hudInput && layout().actions.contains(point)) {
+        const int button=std::min(5,int((point.x-layout().actions.x)/(layout().actions.w/6)));
+        if (button<3) {
+            if ((button==0 && (gui.hiddenGUIElements & GameGUI::HIDABLE_BUILDINGS_LIST)) ||
+                (button==1 && (gui.hiddenGUIElements & GameGUI::HIDABLE_FLAGS_LIST))) return;
+            if (button<2) {
+                const auto mode=button==0 ? GameGUI::CONSTRUCTION_VIEW : GameGUI::FLAG_VIEW;
+                panelOpen=!(panelOpen && gui.displayMode==mode && gui.selectionMode==GameGUI::NO_SELECTION);
+                gui.clearSelection(); gui.displayMode=mode;
+            } else {
+                panelOpen=!panelOpen || (gui.selectionMode==GameGUI::NO_SELECTION && gui.displayMode!=GameGUI::STAT_TEXT_VIEW);
+                if (gui.selectionMode==GameGUI::NO_SELECTION) gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+            }
+            panelScroll=144; clampScroll(); return;
+        }
+        // Route the visible Menu/Objectives/Alliance buttons through existing actions.
+        point={double(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH),
+               double(button==3 ? IGM_OBJECTIVES_ICON_Y+10 : button==4 ? IGM_ALLIANCE_ICON_Y+10 : 10)};
+    } else if (hudInput && layout().panel.contains(point)) {
+        const auto origin=panelOrigin();
+        point={globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+(point.x-origin.x)/panelScale(),
+               (point.y-origin.y)/panelScale()};
+        if (point.x<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH || point.x>=globalContainer->gfx->getW()) return;
     }
     // Some shared panel hit tests read the current cursor instead of the event.
     gui.mouseX=gui.view.mouseX=gui.lastMouseX=int(point.x);
@@ -145,6 +229,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
     gui.processEvent(&click);
     click.type=SDL_MOUSEBUTTONUP; gui.processEvent(&click);
     dispatching=false;
+    if (usesHUD() && (gui.selectionMode==GameGUI::TOOL_SELECTION || gui.selectionMode==GameGUI::BRUSH_SELECTION)) panelOpen=false;
     gui.lastMouseButtonState=0; gui.selectionPushed=gui.panPushed=gui.miniMapPushed=false;
 }
 
@@ -169,11 +254,13 @@ void GameGUITouch::select(ViewPoint point)
     }
     gui.handleMapClick(int(point.x),int(point.y),SDL_BUTTON_LEFT);
     gui.selectionPushed=false;
+    if (usesHUD() && gui.selectionMode!=GameGUI::NO_SELECTION) { panelOpen=true; panelScroll=144; }
 }
 
 void GameGUITouch::prepareDraw()
 {
     if (!touchActive) return;
+    if (usesHUD()) { clampScroll(); prepareTutorial(); }
     if (gui.selectionMode!=GameGUI::TOOL_SELECTION || previewType!=gui.toolManager.getBuildingName()) preview.reset();
     if (preview) {
         const auto cursor=previewCursor();
@@ -187,8 +274,8 @@ void GameGUITouch::drawControls()
     auto* gfx=globalContainer->gfx;
     auto rect=controls(); const int half=int(rect.w/2);
     gfx->setClipRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h));
-    gfx->drawFilledRect(0,int(rect.y),half,int(rect.h),Color(preview ? 35 : 55,preview ? 90 : 55,45,245));
-    gfx->drawFilledRect(half,int(rect.y),int(rect.w)-half,int(rect.h),Color(100,35,35,245));
+    gfx->drawFilledRect(int(rect.x),int(rect.y),half,int(rect.h),Color(preview ? 35 : 55,preview ? 90 : 55,45,245));
+    gfx->drawFilledRect(int(rect.x)+half,int(rect.y),int(rect.w)-half,int(rect.h),Color(100,35,35,245));
     if (!confirmLabel) {
         auto makeLabel=[](const char* key) {
             const std::string text=Toolkit::getStringTable()->getString(key);
@@ -204,7 +291,123 @@ void GameGUITouch::drawControls()
         auto* label=index ? cancelLabel.get() : confirmLabel.get();
         const double factor=std::min(rect.h*0.45/label->getH(),half*0.8/label->getW());
         const int width=int(label->getW()*factor),height=int(label->getH()*factor);
-        gfx->drawSurface(index*half+(half-width)/2,int(rect.y)+(int(rect.h)-height)/2,width,height,label);
+        gfx->drawSurface(int(rect.x)+index*half+(half-width)/2,int(rect.y)+(int(rect.h)-height)/2,width,height,label);
     }
     gfx->setClipRect();
+}
+
+void GameGUITouch::drawPanel()
+{
+    if (!usesHUD()) return;
+    const auto panel=layout().panel;
+    if (panel.w<=0 || panel.h<=0) return;
+    auto* gfx=globalContainer->gfx;
+    gfx->setClipRect();
+    gfx->drawFilledRect(int(panel.x),int(panel.y),int(panel.w),int(panel.h),Color(12,18,26,245));
+    const auto origin=panelOrigin();
+    SDL_Rect clip{int(panel.x),int(panel.y),int(panel.w),int(panel.h)};
+    gfx->setUITransform(panelScale(),origin.x-(gfx->getW()-RIGHT_MENU_WIDTH)*panelScale(),origin.y,&clip);
+    const size_t arrows=gui.arrowPositions.size();
+    gui.drawPanel(); gfx->setClipRect();
+    for (size_t i=arrows;i<gui.arrowPositions.size();++i) {
+        const auto& arrow=gui.arrowPositions[i];
+        gfx->drawSprite(arrow.x,arrow.y,globalContainer->gamegui,arrow.sprite);
+    }
+    gui.arrowPositions.erase(gui.arrowPositions.begin()+arrows,gui.arrowPositions.end());
+    gui.minimap.draw(gui.localTeamNo,gui.viewportX+int(world().x/32),gui.viewportY+int(world().y/32),int(world().w/32),int(world().h/32));
+    gfx->setUITransform(); gfx->setClipRect();
+    // Visible scrollbar communicates that lower controls remain available.
+    const double content=gfx->getH()*panelScale(), thumb=panel.h*panel.h/content;
+    gfx->drawFilledRect(int(panel.x+panel.w-4),int(panel.y+panelScroll*panelScale()*panel.h/content),3,int(thumb),Color(170,185,190));
+}
+
+void GameGUITouch::drawHUD()
+{
+    if (!usesHUD() || gui.inGameMenu || gui.typingInputScreen || gui.scrollableText) return;
+    auto* gfx=globalContainer->gfx;
+    const auto ui=layout(); const double unit=gfx->logicalUnitsPerPoint();
+    gfx->setClipRect();
+    gfx->drawFilledRect(int(ui.status.x),int(ui.status.y),int(ui.status.w),int(ui.status.h),Color(12,18,26,240));
+    // Existing unit artwork with readable free/total counts, in window-point sizing.
+    globalContainer->unitmini->setBaseColor(gui.localTeam->color);
+    for (int i=0;i<3;++i) {
+        const double x=ui.status.x+i*ui.status.w/3;
+        SDL_Rect clip{int(x),int(ui.status.y),int(ui.status.w/3),int(ui.status.h)};
+        gfx->setUITransform(1.5*unit,x+4*unit,ui.status.y+14*unit,&clip);
+        gfx->drawSprite(0,0,globalContainer->unitmini,i);
+        const int free=gui.teamStats->getFreeUnits(i)-(i==0 ? gui.teamStats->getWorkersNeeded() : 0);
+        gfx->drawString(22,0,globalContainer->littleFont,std::to_string(free)+"/"+std::to_string(gui.teamStats->getTotalUnits(i)));
+        gfx->setUITransform(); gfx->setClipRect();
+    }
+    drawTutorial();
+    drawPanel();
+    if (gui.selectionMode==GameGUI::TOOL_SELECTION) return; // Confirm/Cancel owns this strip.
+    const int icons[]={1,29,3,47,45,6};
+    for (int i=0;i<6;++i) {
+        const double x=ui.actions.x+i*ui.actions.w/6, width=ui.actions.w/6;
+        gfx->drawFilledRect(int(x),int(ui.actions.y),int(width)-1,int(ui.actions.h),Color(24,34,44,245));
+        SDL_Rect clip{int(x),int(ui.actions.y),int(width),int(ui.actions.h)};
+        gfx->setUITransform(unit,x+(width-32*unit)/2,ui.actions.y+8*unit,&clip);
+        gfx->drawSprite(0,0,globalContainer->gamegui,icons[i]);
+        gfx->setUITransform(); gfx->setClipRect();
+    }
+}
+
+ViewRect GameGUITouch::tutorialRect() const
+{
+    if (tutorialLines.empty()) return {};
+    const double unit=globalContainer->gfx->logicalUnitsPerPoint();
+    auto rect=layout().world;
+    rect.x+=8*unit; rect.y+=8*unit; rect.w-=16*unit;
+    rect.h=std::min(rect.h*0.45,(tutorialLines.size()*24+64)*unit);
+    return rect;
+}
+void GameGUITouch::prepareTutorial()
+{
+    std::string text=gui.game.sgslScript.isTextShown ? gui.game.sgslScript.textShown : "";
+    if (!gui.scriptText.empty()) { if (!text.empty()) text+='\n'; text+=gui.scriptText; }
+    const double width=layout().world.w/globalContainer->gfx->logicalUnitsPerPoint()-32;
+    if (text==tutorialText && width==tutorialWidth) return;
+    tutorialText=text; tutorialWidth=width; tutorialLines.clear(); tutorialScroll=0;
+    std::string line;
+    auto* font=globalContainer->standardFont;
+    // Break at whitespace when possible, otherwise at UTF-8 character boundaries.
+    for (size_t at=0;at<text.size();) {
+        size_t end=at+1;
+        while (end<text.size() && (static_cast<unsigned char>(text[end])&0xc0)==0x80) ++end;
+        if (text[at]=='\n') { tutorialLines.push_back(line); line.clear(); at=end; continue; }
+        const std::string next=text.substr(at,end-at);
+        if (!line.empty() && font->getStringWidth(line+next)*1.2>width) {
+            const auto space=line.find_last_of(' ');
+            if (space!=std::string::npos) { tutorialLines.push_back(line.substr(0,space)); line.erase(0,space+1); }
+            else { tutorialLines.push_back(line); line.clear(); }
+        }
+        line+=next; at=end;
+    }
+    if (!line.empty()) tutorialLines.push_back(line);
+}
+void GameGUITouch::drawTutorial()
+{
+    auto rect=tutorialRect(); if (rect.w<=0 || rect.h<=0) return;
+    auto* gfx=globalContainer->gfx; const double unit=gfx->logicalUnitsPerPoint();
+    gfx->drawFilledRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h),Color(12,18,26,240));
+    SDL_Rect clip{int(rect.x),int(rect.y),int(rect.w),int(std::max(0.0,rect.h-48*unit))};
+    const size_t first=std::min(tutorialLines.size(),size_t(tutorialScroll/24));
+    gfx->setUITransform(1.2*unit,rect.x+8*unit,rect.y+(8-tutorialScroll+first*24)*unit,&clip);
+    const size_t end=std::min(tutorialLines.size(),first+size_t(rect.h/unit/24)+1);
+    for (size_t i=first;i<end;++i)
+        gfx->drawString(0,int((i-first)*20),globalContainer->standardFont,tutorialLines[i]);
+    gfx->setUITransform(); gfx->setClipRect();
+    const double textHeight=std::max(1.0,rect.h-48*unit), content=tutorialLines.size()*24*unit;
+    if (content>textHeight) {
+        gfx->drawFilledRect(int(rect.x+rect.w-3*unit),int(rect.y+tutorialScroll*unit*textHeight/content),
+            std::max(1,int(2*unit)),int(textHeight*textHeight/content),Color(170,185,190));
+    }
+    if (gui.swallowSpaceKey) {
+        gfx->drawFilledRect(int(rect.x),int(rect.y+rect.h-48*unit),int(rect.w),int(48*unit),Color(35,70,55));
+        SDL_Rect footer{int(rect.x),int(rect.y+rect.h-48*unit),int(rect.w),int(48*unit)};
+        gfx->setUITransform(1.2*unit,rect.x+12*unit,rect.y+rect.h-32*unit,&footer);
+        gfx->drawString(0,0,globalContainer->standardFont,Toolkit::getStringTable()->getString("[ok]"));
+        gfx->setUITransform(); gfx->setClipRect();
+    }
 }
