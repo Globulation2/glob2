@@ -2,7 +2,14 @@
 // Real-engine regression: a resource-fetch target must track the gradient
 // a walking unit actually follows, not a one-time snapshot from task
 // assignment.
+#define SDL_MAIN_HANDLED
+#ifdef main
+#undef main
+#endif
 #include "GlobalContainer.h"
+#include "FileManager.h"
+#include <SDL.h>
+#include <string>
 #include "Game.h"
 #include "GameGUI.h"
 #include "Unit.h"
@@ -30,17 +37,7 @@ struct TestUnit : Unit
 	void stepGoingToResource() { handleMovementGoingToResource(); }
 };
 
-// targetX/Y are set once, by resourceAvailableUpdate ascending the resource
-// gradient, when a unit is assigned to fetch a resource (Unit.cpp,
-// UnitDisplacement.cpp). The unit's actual per-tick step (pathfindResource,
-// UnitMovement.cpp) re-reads the same gradient fresh every action. Between
-// those two moments the gradient can be rebuilt: Map::syncStep
-// (MapStep.cpp) round-robins one rebuild per tick over every gradient in
-// use, and neither Map::decResource nor Resource::clear() invalidates the
-// cached gradient directly. So a resource depleted or replaced out from
-// under a walking unit leaves the stored target pointing at a stale tile
-// even though pathfindResource has already rerouted correctly.
-static void staleTargetIsRefreshedAfterGradientRebuild()
+static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int swimSpeed)
 {
 	GameGUI gui;
 	Game& game = gui.game;
@@ -63,7 +60,10 @@ static void staleTargetIsRefreshedAfterGradientRebuild()
 	unit->activity = Unit::ACT_FILLING;
 	unit->displacement = Unit::DIS_GOING_TO_RESOURCE;
 	unit->validTarget = true;
+	unit->performance[WALK] = 10;
+	unit->performance[SWIM] = swimSpeed;
 	const int swimClass = unit->swimClass();
+	require(swimClass == expectedClass, "exercise the requested swim class");
 
 	// Task assignment: ascend the resource gradient once, same call as
 	// Unit.cpp/UnitDisplacement.cpp.
@@ -101,16 +101,22 @@ static void staleTargetIsRefreshedAfterGradientRebuild()
 	std::puts("PASS resource-fetch target is refreshed when the gradient it was ascended from is rebuilt");
 }
 
-int main()
+int main(int argc, char** argv)
 {
-	GlobalContainer globals;
+	SDL_SetMainReady();
+	require(argc == 3, "usage: harness PROFILE ROOT");
+	require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
+	GlobalContainer globals(argv[1]);
+	globals.fileManager->addDir(argv[2]);
 	globalContainer = &globals;
 	globals.runNoX = true;
 	globals.settings.rememberUnit = false;
 	globals.buildingsTypes.init();
 	IntBuildingType::init();
 	Race::loadDefault();
-	staleTargetIsRefreshedAfterGradientRebuild();
+	const int swimSpeeds[] = {0, 20, 14, 10, 7, 5, 3};
+	for (int swimClass = 0; swimClass < Map::SWIM_CLASS_COUNT; ++swimClass)
+		staleTargetIsRefreshedAfterGradientRebuild(swimClass, swimSpeeds[swimClass]);
 	std::puts("Resource fetch target regressions passed");
 	return 0;
 }

@@ -465,7 +465,9 @@ source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
 if not env['server']:
-    stats_sources = [source for source in source_files if source != 'Glob2.cpp']
+    # Compile with local, not stats_env, to avoid rebuilding shared objects under a second environment.
+    stats_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    stats_sources += [source for source in source_files if not source.endswith('.cpp')]
     stats_sources += local.Object('TeamStatsSaveHarness.o', '#test/TeamStatsSaveHarness.cpp')
     stats_env = local.Clone()
     stats_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
