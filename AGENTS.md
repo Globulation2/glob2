@@ -7,8 +7,9 @@ agreement or adopt the proposal by merging your own policy PR.
 
 ## Scope and ownership
 
-- Preserve the engine architecture and fundamental gameplay mechanics. Focus on
-  reproducible engine bugs; major architecture and gameplay changes are out of scope.
+- Engine architecture and gameplay changes are welcome for review. Explain the
+  intended behavior, alternatives and tradeoffs, and discuss broad designs early.
+  Do not treat the existing architecture or mechanics as a categorical restriction.
 - Do not relabel a feature, balance change, or compatibility removal as a bug fix.
   Explain expected behavior and flag uncertainty or disagreement for discussion.
 - Keep changes focused. Preserve unrelated work and use an isolated checkout when
@@ -19,7 +20,10 @@ agreement or adopt the proposal by merging your own policy PR.
 
 ## Evidence
 
-- Reproduce the failure on the base revision before claiming it is fixed.
+- For bug fixes, reproduce the failure on the base revision before claiming it is fixed.
+- For features and substantive engine changes, test the intended new behavior and
+  report affected performance, compatibility and determinism. Behavior-preserving
+  changes should retain existing outcomes; intentional gameplay changes need not.
 - Prefer a regression that fails before and passes after the fix. Explain any
   manual-only verification and its limits.
 - Run relevant tests and required CI on the final code. For simulation changes,
@@ -35,8 +39,9 @@ agreement or adopt the proposal by merging your own policy PR.
 - AI reviewers may autonomously merge focused bug fixes only under the independent
   review arrangement agreed by maintainers, after checks pass and objections are
   resolved. The identity/account boundary remains an open question in this draft.
-- New features require explicit approval from a second human and must preserve
-  fundamental gameplay. Policy changes require human maintainer agreement.
+- Features, balance changes and substantive engine/architecture/gameplay changes
+  require explicit approval from a human maintainer other than the author.
+  Policy changes require human maintainer agreement.
 - Read relevant discussions and current reviews before merging. Hold disputed
   changes; passing tests does not settle a design disagreement.
 - Recheck the PR head and checks before merging. Respect repository protections.

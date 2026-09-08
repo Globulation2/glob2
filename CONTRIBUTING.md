@@ -4,12 +4,14 @@
 This proposal needs agreement from the maintainers before it is merged. Its review
 rules apply to this policy PR too. The questions below are deliberately unresolved.
 
-## Scope: preserve the game
+## Scope: fixes, features and engine development
 
-Preserve Globulation 2's existing engine architecture and fundamental gameplay.
-Do not include major architectural changes, engine rewrites, or changes to basic
-gameplay mechanics in this contribution workflow. New features must fit within
-those boundaries.
+Substantive engine, architecture and gameplay changes are welcome for review.
+The existing architecture and mechanics are not a restriction on what contributors
+may propose. Explain the problem, intended player-facing behavior, alternatives,
+and compatibility implications so reviewers can assess the change on its merits.
+For broad changes, discuss the design early and split implementation into coherent,
+reviewable steps where practical. Early discussion is not merge approval.
 
 Fix demonstrably broken engine behavior. A bug fix should identify the intended
 behavior and show how the current code violates it. Crashes, invalid saves, and
@@ -25,8 +27,7 @@ called out explicitly. Do not silently discard compatibility as cleanup.
 | Change | Proposed review requirement |
 | --- | --- |
 | Focused, reproducible bug fix | A separate reviewer; an AI may review and merge autonomously after the evidence and checks pass, with no unresolved objections. |
-| New feature or functionality that preserves the fundamental game | Explicit approval from a second human before merging, plus the relevant checks. |
-| Major architecture or fundamental gameplay change | Outside the accepted scope of this policy. |
+| Feature, balance change, or substantive engine/architecture/gameplay change | Explicit approval from a human maintainer other than the author before merging, plus the relevant checks. |
 | Collaboration policy or review-rule change | Human maintainer agreement before adoption. |
 
 Never merge your own PR. An author running another review pass on their own work
@@ -44,6 +45,20 @@ before merging. Hold a PR with an unresolved technical or design objection. Reso
 the concern in the discussion; a green build or an AI opinion does not overrule it.
 Recheck the current PR head, review state, and checks immediately before merging.
 Do not bypass branch protection or dismiss another person's review to land a PR.
+
+## Evidence for features and engine changes
+
+Describe what changes for players or developers and why the tradeoffs are worth
+it. Identify effects on performance, memory, save/load continuation, replays,
+multiplayer determinism and supported platforms where relevant. Test intended new
+behavior; do not require byte-identical outcomes when changing gameplay on purpose.
+For behavior-preserving refactors or optimizations, compare against the existing
+behavior instead.
+
+Report performance comparisons against a stated base revision under comparable
+conditions, including regressions and workload limits. Keep separate mechanisms
+reviewable independently when they have different benefits or costs. Tests and
+benchmarks support a design decision; they do not replace human approval.
 
 ## Minimum evidence for bug fixes
 
@@ -84,7 +99,8 @@ establish correctness, and agreement among AI reviews is not experimental eviden
 - Which CI jobs and platform checks are mandatory for each category of fix?
 - How should exceptions to automated regression requirements be approved, and
   where should larger reproduction artifacts be retained?
-- Are these scope boundaries and the treatment of disputed bug fixes acceptable?
+- Are the proposed review expectations for substantive engine/gameplay changes
+  and the treatment of disputed bug fixes acceptable?
 
 Once agreed, update this document and AGENTS.md together, remove the draft notices,
 and consider a separate PR for any repository enforcement settings. This proposal
