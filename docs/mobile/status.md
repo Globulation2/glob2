@@ -30,6 +30,27 @@ while iOS compilation and runtime setup were active; both passed unchanged in an
 isolated rerun (30.4 seconds). The earlier browser-base storage evidence is not a
 substitute for full post-merge storage qualification.
 
+## PR #198 layout integration
+
+The layout foundation from #198 (`befa80298`) is selectively ported; see the
+[architecture notes](architecture.md#shared-resizing-foundation-from-pr-198)
+for retained mobile/browser behavior and exclusions. Verification for this port:
+
+- 173 CppUnit tests pass, including editor anchors across phone/tablet widths.
+- Native screen lifecycle, SDL renderer, responsive-menu, and gameplay-touch
+  harnesses pass. Screen checks now cover layout before input/paint and dialog
+  clamping, centering, and oversized origins.
+- Wasm release build passes. All 15 viewport cases pass across Chromium,
+  Firefox, and WebKit (56.1 seconds), covering menus, running matches, editor
+  dialogs, minimum viewports, and high-density displays.
+- ARM64 iOS simulator release app and dSYM rebuild successfully. The first
+  packaging invocation could not find CMake on PATH; selecting the existing
+  task-local CMake with `--cmake` completed the build.
+
+The simulator was not booted again and Android/device builds were not rerun for
+this port. Existing screenshots and device evidence predate these layout changes.
+This does not yet address the legacy gameplay canvas's small phone text.
+
 ## iOS simulator screenshots
 
 Captured on an isolated iPhone 16 / iOS 26.5 simulator. The game reaches its main

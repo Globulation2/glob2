@@ -122,6 +122,61 @@ int main()
     GAGCore::GraphicContext context(800, 600, 0, "Screen lifecycle regression");
     GAGCore::DrawableSurface surface(800, 600);
     {
+        struct LayoutProbe : Screen {
+            int geometry = 0;
+            void onAction(Widget*, Action, int, int) override {}
+            void updateLayout() override { geometry = getW(); }
+            void onSDLEvent(SDL_Event*) override {
+                require(geometry == getW(), "Input uses refreshed layout before paint");
+            }
+            void paint() override {
+                require(geometry == getW(), "Paint uses refreshed layout");
+            }
+        } probe;
+        probe.beginExecution(&surface);
+        SDL_Event tap{}; tap.type = SDL_MOUSEBUTTONDOWN;
+        probe.dispatchEvents(&tap);
+        probe.geometry = 0;
+        probe.dispatchPaint();
+        probe.endExecute(0);
+        probe.finishExecution();
+
+        struct Dialog : OverlayScreen {
+            int inputX = -1, inputY = -1;
+            Dialog(GAGCore::GraphicContext* parent, unsigned w, unsigned h)
+                : OverlayScreen(parent, w, h) {}
+            void onAction(Widget*, Action, int, int) override {}
+            void onSDLEvent(SDL_Event* event) override {
+                if (event->type == SDL_MOUSEBUTTONDOWN) {
+                    inputX = event->button.x; inputY = event->button.y;
+                }
+            }
+            void paint() override {}
+        } dialog(&context, 240, 160);
+        dialog.decX = 900; dialog.decY = 700;
+        tap.button.x = 570; tap.button.y = 450;
+        dialog.translateAndProcessEvent(&tap);
+        require(dialog.decX == 560 && dialog.decY == 440 &&
+                dialog.inputX == 10 && dialog.inputY == 10,
+                "Embedded dialog clamps before translating the first input");
+        dialog.decX = 900; dialog.decY = 700;
+        dialog.dispatchPaint();
+        require(dialog.decX == 560 && dialog.decY == 440,
+                "Embedded dialog paint uses the same bounds as input");
+        for (auto [w, h] : {std::pair{320,568}, {568,320}, {360,640}, {640,360}, {768,1024}}) {
+            dialog.viewportResized(800, 600, w, h);
+            require(dialog.decX == (w-240)/2 && dialog.decY == (h-160)/2,
+                    "Host resize retains centered dialogs in phone and tablet orientations");
+        }
+        Dialog oversized(&context, 900, 700);
+        require(oversized.decX == 0 && oversized.decY == 0,
+                "Oversized dialog construction cannot underflow unsigned coordinates");
+        oversized.viewportResized(800, 600, 320, 568);
+        require(oversized.decX == 0 && oversized.decY == 0,
+                "Oversized dialog keeps its origin reachable after rotation");
+    }
+
+    {
         struct LifecycleScreen : Screen {
             std::vector<Uint32> ticks;
             int draws=0, actions=0, cancellations=0;

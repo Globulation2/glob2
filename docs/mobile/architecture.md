@@ -112,3 +112,38 @@ separate from store submission.
 
 For commands, see the [developer guide](development.md). For tested results and
 next gates, see [verification status](status.md).
+
+## Shared resizing foundation from PR #198
+
+The mobile branch selectively incorporates the layout work from
+[PR #198](https://github.com/Globulation2/glob2/pull/198), source revision
+`befa80298c4733a73151e5fc9b368f651810d4f2`. This is not a merge of that entire
+branch. The shared implementation lives in `GUIBase` and the map editor:
+
+- `Screen::updateLayout()` refreshes geometry before painting and event dispatch.
+  Embedded overlays clamp their origin before translating input, even when input
+  arrives before the next paint. Host resize notifications still recenter dialogs.
+  Oversized dialogs start at a nonnegative origin; this does not make all of their
+  contents fit a phone. Their contents still need responsive layouts.
+- `RightAnchoredWidgetRectangle` retains editor controls' distance from the right
+  edge. Both host resize notifications and draw/hit-test paths synchronize against
+  the current logical width. The update is idempotent so these paths cannot apply
+  the same resize twice. Existing bottom anchors and camera-center preservation
+  remain in `MapEdit::viewportResized`.
+- Legacy modal backdrops scale to the current parent surface. Incremental screen
+  execution remains owned by `ApplicationHost` / `ScreenStack`.
+
+The mobile/browser branch already updates minimap positioning through
+`Minimap::resizeViewport` before subsequent input; the equivalent #198 global
+window-width lookup is not added. Its desktop cached-frame presentation, SDL
+polling wrapper, GL context changes, and legacy loop refactor are not imported.
+Those need separate backend-aware integration if adopted, especially for Windows
+interactive resizing. No additional renderer or event loop is introduced here.
+
+The editor anchor regression cases include 320×568 and 360×640 orientations and
+tablet widths. Screen regressions cover layout-before-input, embedded dialog
+clamping, rotation centering, and oversized origins. These geometry tests do not
+establish complete phone usability, safe-area handling, or readable typography.
+Gameplay still has an 800×600 minimum logical canvas; the next UI step is to
+separate readable control sizing from that legacy minimum and reflow its panels.
+Pinch zoom remains deferred.

@@ -225,7 +225,7 @@ void MapEdit::viewportResized(int oldWidth, int oldHeight, int width, int height
     minimap.resizeViewport(width);
     viewportX = (viewportX + (oldWidth - RIGHT_MENU_WIDTH) / 64 - (width - RIGHT_MENU_WIDTH) / 64) & game.map.wMask;
     viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
-    for (auto* widget : mew) widget->area.x += width - oldWidth;
+    for (auto* widget : mew) widget->area.updateWindowWidth(width);
     for (MapEditorWidget* widget : std::initializer_list<MapEditorWidget*>{mapCoordinatesLabel, building_view_tcs,
          building_view_level1, building_view_level2, building_view_level3, flag_view_tcs,
          flag_view_level1, flag_view_level2, flag_view_level3, flag_view_level4})

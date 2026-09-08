@@ -353,6 +353,8 @@ namespace GAGGUI
 		void dispatchInit(void);
 		//! Call paint on each widget after having called paint on the screen itself. Do a full update after
 		void dispatchPaint(void);
+        //! Refresh geometry before painting or hit-testing, including embedded dialogs.
+        virtual void updateLayout() {}
 		//! Return the associated drawable surface
 		GAGCore::DrawableSurface *getSurface(void) { return gfx; }
 		//! Return the width of the screen
@@ -365,6 +367,7 @@ namespace GAGGUI
 	//! Base class used for screen that don't take full frame and/or are non-blocking
 	class OverlayScreen:public Screen
 	{
+        GAGCore::GraphicContext *parentContext;
 	public:
 		//! Int to say when we have finished
 		int endValue;
@@ -376,7 +379,8 @@ namespace GAGGUI
 		OverlayScreen(GAGCore::GraphicContext *parentCtx, unsigned w, unsigned h);
 		//! Destructor
 		virtual ~OverlayScreen();
-        void viewportResized(int, int, int width, int height) override { decX = (width - getW()) / 2; decY = (height - getH()) / 2; }
+        void updateLayout() override;
+        void viewportResized(int, int, int width, int height) override;
 	
 		//! Run the OverlayScreen, call Screen::execute with the correct DrawableSurface
 		virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);
