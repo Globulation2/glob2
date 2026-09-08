@@ -24,12 +24,12 @@ def topology():
     return result
 
 def material(index):
-    source=EXP/'materials/grass-blades-v3.png' if index==0 else EXP/'world/corrected'/f'terrain{index}.png'
+    source=EXP/'materials/grass-flat-v1.png' if index==0 else EXP/'world/corrected'/f'terrain{index}.png'
     a=np.asarray(Image.open(source).convert('RGB').resize((N,N),Image.Resampling.LANCZOS)).astype(float)
     if index==0:
-        # Keep the source game's green palette while retaining generated blades.
+        # Retain the original mean green while suppressing distracting contrast.
         reference=np.asarray(Image.open(EXP/'sr/corrected/terrain0.png').convert('RGB')).astype(float)
-        a=a-a.mean(axis=(0,1))+reference.mean(axis=(0,1))
+        a=.65*(a-a.mean(axis=(0,1)))+reference.mean(axis=(0,1))
     return periodic(a)
 
 def periodic(a):
@@ -106,7 +106,7 @@ def generate():
     for index,c in sorted(topo.items()):
         Image.fromarray(tiles[index]).save(OUT/f'terrain{index}.png')
         records.append({'id':f'terrain{index}','corners':c,'sha256':hashlib.sha256((OUT/f'terrain{index}.png').read_bytes()).hexdigest()})
-    (OUT/'manifest.json').write_text(json.dumps({'recipe':'shared-material rugged corner masks v4; sparse large grass tufts','seed':'frame index','sources':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [EXP/'sr/corrected/terrain0.png',EXP/'materials/grass-blades-v3.png',EXP/'materials/grass-blades-v3.txt',EXP/'world/corrected/terrain128.png',ROOT/'src/map/MapTerrain.cpp']},'frames':records},indent=2)+'\n')
+    (OUT/'manifest.json').write_text(json.dumps({'recipe':'shared-material rugged corner masks v5; quiet flat grass','seed':'frame index','sources':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [EXP/'sr/corrected/terrain0.png',EXP/'materials/grass-flat-v1.png',EXP/'materials/grass-flat-v1.txt',EXP/'world/corrected/terrain128.png',ROOT/'src/map/MapTerrain.cpp']},'frames':records},indent=2)+'\n')
     validate(topo)
 
 def validate(topo):

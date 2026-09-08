@@ -45,7 +45,7 @@ def main():
     for i in range(272):
         name=f'terrain{i}.png';source=EXP/'connected-terrain'/name;Image.open(source).convert('RGBA').save(OUT/name)
         w,h=Image.open(ROOT/'data/gfx'/name).size
-        records.append(dict(id=f'terrain{i}',width=w,height=h,scale=4,recipe='shared-material rugged corner masks v4; sparse large grass tufts',layers=[dict(file=name,role='base',sha256=sha(OUT/name),source_sha256=sha(source))]))
+        records.append(dict(id=f'terrain{i}',width=w,height=h,scale=4,recipe='shared-material rugged corner masks v5; quiet flat grass',layers=[dict(file=name,role='base',sha256=sha(OUT/name),source_sha256=sha(source))]))
     resource_sources=sorted((EXP/'resources/corrected').glob('ressource[0-9]*.png'),key=lambda p:int(p.stem[9:]))
     assert len(resource_sources)==65, 'Run upscale_resources.py before export'
     for source in resource_sources:
@@ -80,7 +80,7 @@ def main():
         if not logical_source.exists():logical_source=ROOT/'data/gfx'/(frame_id+'r.png')
         w,h=Image.open(logical_source).size
         method='world constrained' if frame_id.startswith(('water','bullet','explosion','magiceffect','particle')) else 'soft mask resampling'
-        if frame_id=='water0':method='generated ripples; periodic material v1'
+        if frame_id=='water0':method='quiet ripples; periodic material v3'
         records.append(dict(id=frame_id,width=w,height=h,scale=4,recipe=method,layers=layers))
     lines=['GLOB2_HIGHRES 1']
     for f in records:

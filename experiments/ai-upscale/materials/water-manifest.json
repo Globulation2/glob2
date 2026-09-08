@@ -1,9 +1,9 @@
 {
-  "recipe": "generated ripples; periodic material v1",
+  "recipe": "quiet ripples; periodic material v3",
   "sources": {
-    "materials/water-ripples-v1.png": "9e3f02778b4b1c450e31797d8d88ad235b96c844bad07d3b76c356b6e8b44d6c",
+    "materials/water-quiet-v1.png": "d7657558ca7fb38de8892ec4fddbb4fcc82b53bd77c50df82059a5bca5e46399",
     "world/corrected/water0.png": "3baa767af70ab8fb4a15c9ce83da89857731cde18f3b95ccc2d393fc087b99dd",
-    "materials/water-ripples-v1.txt": "4ad566b6e6d53861359782ce7a4f1b6c6073f276bed38bf0885110ee93e0793d"
+    "materials/water-quiet-v1.txt": "8558320830ef2ac3d5971312344ed740d3c86539cf84f9900686b5edd621056b"
   },
-  "output_sha256": "dc03c8a27146792e24cb5aef5d1ff20bd6004f228f8a61e48cae8e4c3606be22"
+  "output_sha256": "139a78352e77ba370229e60846dd6215c40daaae15862df67b1f9b2f1fe2972d"
 }
