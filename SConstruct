@@ -280,14 +280,19 @@ def main():
         from gateway_build import build_gateway
         build_gateway(bdir, identity, ARGUMENTS)
         return
-    env = Environment()
+    env = Environment(tools=[])
     # SCons scrubs the shell environment for build commands; without TMPDIR,
     # tools like ar fall back to /tmp, which sandboxed environments may block.
     if 'TMPDIR' in os.environ:
         env['ENV']['TMPDIR'] = os.environ['TMPDIR']
+    # Respect an explicit Apple toolchain selection without changing xcode-select globally.
+    if 'DEVELOPER_DIR' in os.environ:
+        env['ENV']['DEVELOPER_DIR'] = os.environ['DEVELOPER_DIR']
     # Likewise for SOURCE_DATE_EPOCH, needed by build tools for reproducible builds.
     if 'SOURCE_DATE_EPOCH' in os.environ:
         env['ENV']['SOURCE_DATE_EPOCH'] = os.environ['SOURCE_DATE_EPOCH']
+    # Compiler discovery also needs the selected SDK, not just compilation.
+    env.Tool('default')
     env['BUILDDIR'] = bdir
     env.Prepend(CPPPATH=[env.Dir(bdir + '/include')])
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
