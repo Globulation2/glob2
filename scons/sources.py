@@ -105,6 +105,7 @@ CLIENT_SOURCES = (
     'EndGameScreen.cpp',
     'Engine.cpp',
     'GameSessionScreen.cpp',
+    'GameLoadScreen.cpp',
     'SinglePlayerFlow.cpp',
     'EngineInit.cpp',
     'EngineLoaders.cpp',

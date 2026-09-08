@@ -5,6 +5,7 @@
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
 #include "EditorLoadScreen.h"
+#include "GameLoadScreen.h"
 #include "Utilities.h"
 #include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
@@ -67,17 +68,43 @@ int main(int argc, char** argv)
         require(rejected, "A finalized session must reject advancement");
     }
     {
-        auto engine = std::make_unique<Engine>();
-        require(engine->initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR, "Stack fixture load failed");
+        const auto rng = getSyncRandState();
+        for (bool replay : {false, true}) {
+            GAGGUI::ScreenStack cancelled(*globalContainer->gfx);
+            cancelled.push(std::make_unique<GameLoadScreen>([replay](Engine& engine) {
+                return replay ? engine.loadReplayTask("replays/last_game.replay") : engine.initCampaignTask("maps/balanced.map");
+            }));
+            for (unsigned frame = 0; frame < 20; ++frame) cancelled.frame(frame, {});
+            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+            cancelled.frame(20, {escape}); cancelled.frame(21, {});
+            require(!cancelled.running() && cancelled.result() == 0, "Game/replay load must accept cancellation");
+            require(getSyncRandState() == rng && !globalContainer->replaying && !globalContainer->replayReader &&
+                !globalContainer->replayWriter, "Cancelled startup must restore RNG and release replay state");
+        }
+        {
+            GAGGUI::ScreenStack failed(*globalContainer->gfx);
+            failed.push(std::make_unique<GameLoadScreen>([](Engine& engine) {
+                return engine.loadReplayTask("replays/missing-initialization-fixture.replay");
+            }));
+            unsigned attempts = 0;
+            while (failed.running()) { failed.frame(attempts++, {}); require(attempts < 10, "Failed load did not return"); }
+            require(failed.result() == 2 && getSyncRandState() == rng && !globalContainer->replaying,
+                "Failed startup must return an error and restore global state");
+        }
         GAGGUI::ScreenStack screens(*globalContainer->gfx);
-        screens.push(std::make_unique<GameSessionScreen>(screens, std::move(engine)));
-        unsigned frames = 0;
+        unsigned frames = 0, loadingFrames = 0;
+        screens.push(std::make_unique<GameLoadScreen>([](Engine& engine) { return engine.initCampaignTask("maps/balanced.map"); }),
+            [&](GAGGUI::Screen& screen, int result) {
+                require(result == 1, "Scheduled game initialization failed");
+                loadingFrames = frames;
+                screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(screen).takeEngine()));
+            });
         while (screens.running()) {
             screens.frame(1000 + frames * 40, {});
-            require(++frames <= 60, "Stack-driven session failed to finish");
+            require(++frames <= 2000, "Stack-driven loading/session failed to finish");
         }
-        require(frames == 51 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
-                "The stack must drive one session step per frame and defer its completion");
+        require(loadingFrames > 20 && frames == loadingFrames + 51 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
+                "Loading must yield before transferring the engine to the 50-tick session");
     }
     {
         MapEdit editor;

@@ -4,13 +4,24 @@
 #include "CustomGameScreen.h"
 #include "ChooseMapScreen.h"
 #include "GameSessionScreen.h"
+#include "MessageScreen.h"
+#include <Toolkit.h>
+#include <StringTable.h>
 
-void SinglePlayerFlow::launch(std::unique_ptr<Engine> engine, int result, bool repeatCustom)
+void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repeatCustom)
 {
-    if (result == GAGGUI::Screen::QUIT_APPLICATION) { screens.stop(); return; }
-    if (result != Engine::EE_NO_ERROR) return;
-    screens.push(std::make_unique<GameSessionScreen>(screens, std::move(engine)),
-        [this, repeatCustom](GAGGUI::Screen&, int) { if (repeatCustom) custom(); });
+    screens.push(std::make_unique<GameLoadScreen>(std::move(initialize)),
+        [this, repeatCustom](GAGGUI::Screen& screen, int result) {
+            if (result == 1)
+                screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(screen).takeEngine()),
+                    [this, repeatCustom](GAGGUI::Screen&, int) { if (repeatCustom) custom(); });
+            else if (result == 2) {
+                auto& strings = *GAGCore::Toolkit::getStringTable();
+                screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_LOAD_MAP]"),
+                    std::vector<std::string>{strings.getString("[ok]")}),
+                    [this, repeatCustom](GAGGUI::Screen&, int) { if (repeatCustom) custom(); });
+            } else if (repeatCustom) custom();
+        });
 }
 
 void SinglePlayerFlow::custom()
@@ -18,9 +29,9 @@ void SinglePlayerFlow::custom()
     screens.push(std::make_unique<CustomGameScreen>(screens), [this](GAGGUI::Screen& screen, int result) {
         if (result != CustomGameScreen::OK) return;
         auto& selected = static_cast<CustomGameScreen&>(screen);
-        auto engine = std::make_unique<Engine>();
-        const int loaded = engine->initCustom(selected.getMapHeader(), selected.getGameHeader(), selected.getSelectedColor(0));
-        launch(std::move(engine), loaded, true);
+        launch([map = selected.getMapHeader(), players = selected.getGameHeader(), team = selected.getSelectedColor(0)](Engine& engine) {
+            return engine.initCustomTask(map, players, team);
+        }, true);
     });
 }
 
@@ -30,19 +41,15 @@ void SinglePlayerFlow::load()
         [this](GAGGUI::Screen& screen, int result) {
             if (result != ChooseMapScreen::OK) return;
             auto& selected = static_cast<ChooseMapScreen&>(screen);
-            auto engine = std::make_unique<Engine>();
-            int loaded = Engine::EE_CANT_LOAD_MAP;
-            if (selected.getSelectedType() == ChooseMapScreen::GAME)
-                loaded = engine->initCustom(selected.getMapHeader().getFileName());
-            else if (selected.getSelectedType() == ChooseMapScreen::REPLAY)
-                loaded = engine->loadReplay(selected.getMapHeader().getFileName(false, true));
-            launch(std::move(engine), loaded, false);
+            const bool replay = selected.getSelectedType() == ChooseMapScreen::REPLAY;
+            const auto filename = replay ? selected.getMapHeader().getFileName(false, true) : selected.getMapHeader().getFileName();
+            launch([filename, replay](Engine& engine) {
+                return replay ? engine.loadReplayTask(filename) : engine.initCustomTask(filename);
+            }, false);
         });
 }
 
 void SinglePlayerFlow::replay(const std::string& filename)
 {
-    auto engine = std::make_unique<Engine>();
-    const int loaded = engine->loadReplay(filename);
-    launch(std::move(engine), loaded, false);
+    launch([filename](Engine& engine) { return engine.loadReplayTask(filename); }, false);
 }

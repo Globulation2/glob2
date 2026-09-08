@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <ScreenStack.h>
+#include "GameLoadScreen.h"
 #include <memory>
 #include <string>
 class Engine;
@@ -16,5 +17,5 @@ public:
     void replay(const std::string& filename);
 private:
     GAGGUI::ScreenStack& screens;
-    void launch(std::unique_ptr<Engine> engine, int result, bool repeatCustom);
+    void launch(GameLoadScreen::Initializer initialize, bool repeatCustom);
 };

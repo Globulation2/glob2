@@ -33,8 +33,8 @@ Current checkpoints cover game stages, teams and players, chunks of 512 terrain
 cells, and individual gradient builds. Legacy fertility loading uses the bounded
 fertility job. Remaining work includes subdividing large team/player parsing,
 individual gradient algorithms, stream decompression, scripts, and allocation
-work; a checkpoint count is not evidence of a maximum frame time. Engine and
-in-editor load callers still drain synchronously and need owned loading flows.
+work; a checkpoint count is not evidence of a maximum frame time. In-editor and in-session reload callers still drain synchronously and need
+owned loading flows; the startup migration is described below.
 Map generation remains synchronous. Editor sprites remain owned by the toolkit
 cache so destroying a staging editor cannot invalidate another editor's sprite.
 
@@ -43,3 +43,24 @@ cleanup, partial gradient allocation cleanup, RNG restoration, and equality of
 scheduled and synchronous loading. Browser tests exercise cancellation/restart
 with real menu input. The coroutine lifecycle tests also pass under AddressSanitizer. Existing simulation
 checksums remain regression gates.
+
+## Single-player startup ownership
+
+`GameGUI` and `Engine` now expose cooperative startup tasks that await the shared
+parser. Headers and filenames are copied into the job so a completed selection
+screen can be destroyed safely. Stream ownership follows the suspended GUI loader.
+Custom games, saved games, replays, and campaign missions use `GameLoadScreen`,
+which owns the engine until initialization succeeds. The campaign screen remains
+alive while its mission loads and runs.
+
+Cancellation destroys the task before the engine, clears pending replay/network
+initialization, and restores the prior RNG state. This screen is for startup
+only, with no active session; replacing a live session requires a separate
+transaction because the legacy replay globals are shared. Engine file/replay
+writers are initialized at the final step, with no intervening UI checkpoint.
+Loader errors and campaign-save errors return to owned message screens.
+
+Synchronous adapters remain for command-line, native network, and in-session
+reload callers. Replay indexing, AI initialization, individual parser stages,
+serialization, and initial music loading are not yet fully subdivided. Passing
+startup cancellation tests does not certify a maximum loading frame duration.

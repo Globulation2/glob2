@@ -83,9 +83,11 @@ public:
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
-	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
+	GAGCore::CooperativeTask loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, std::string sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const std::string name);
 
 	void processEvent(SDL_Event *event);

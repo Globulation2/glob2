@@ -235,3 +235,28 @@ test('editor map loading can be cancelled and restarted', async ({page}) => {
   }
   expect(errors).toEqual([]);
 });
+
+test('custom and tutorial startup can be cancelled and retried', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await menu(page, 480, 200);
+  await screen(page, 'CustomGameScreen');
+  await menu(page, 100, 70);
+  await menu(page, 530, 380);
+  await screen(page, 'GameLoadScreen');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await screen(page, 'CustomGameScreen');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await screen(page, 'MainMenuScreen');
+  await menu(page, 480, 120);
+  await screen(page, 'CampaignMenuScreen');
+  await menu(page, 100, 60);
+  await menu(page, 160, 450);
+  await screen(page, 'GameLoadScreen');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await screen(page, 'CampaignMenuScreen');
+  await menu(page, 160, 450); // The same selected mission remains available.
+  await screen(page, 'match');
+  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+  expect(errors).toEqual([]);
+});

@@ -53,6 +53,12 @@ public:
 
 	/// Initiate a custom game from the provided game, without adjusting settings from the user
 	int initCustom(const std::string &gameName);
+    GAGCore::CooperativeTask initCustomTask(MapHeader map, GameHeader players, int localTeam);
+    GAGCore::CooperativeTask initCustomTask(std::string filename);
+    GAGCore::CooperativeTask initCampaignTask(std::string filename, Campaign* campaign = nullptr, std::string mission = {});
+    GAGCore::CooperativeTask loadReplayTask(std::string filename);
+    void cancelInitialization();
+
 
 
 	/// Initiate a game with the given MultiplayerGame
@@ -112,7 +118,8 @@ private:
 	/// one loaded with the map. When ignore GUI info is set, the game will ignore
 	/// GameGUI data in the file, such as viewport position and localTeam. This is
 	/// needed for when your loading a save game over the internet
-	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false);
+	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
+	GAGCore::CooperativeTask initGameTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false, std::string sourceFileName=std::string());
 
 	/// Reset globalContainer's replay state (replaying flag, replay file name,
 	/// replay reader) so the next game session starts as a normal game.

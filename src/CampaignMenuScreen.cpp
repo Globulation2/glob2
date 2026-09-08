@@ -6,6 +6,8 @@
 #include "StringTable.h"
 #include "Engine.h"
 #include "GameSessionScreen.h"
+#include "GameLoadScreen.h"
+#include "MessageScreen.h"
 #include "GlobalContainer.h"
 #include "GUIMapPreview.h"
 #include "GUIMessageBox.h"
@@ -57,18 +59,26 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
 			CampaignMapEntry* selected = getSelectedMission();
 			if (selected)
 			{
-                auto engine = std::make_unique<Engine>();
-                int result = engine->initCampaign(selected->getMapFileName(), campaign, selected->getMapName());
-                if (result == Engine::EE_NO_ERROR) {
-                    screens.push(std::make_unique<GameSessionScreen>(screens, std::move(engine)),
-                        [this](Screen&, int) {
-                            repopulateAvailableMissions();
-                            if (!campaign.save(true))
-                                GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON,
-                                    Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
-                                    Toolkit::getStringTable()->getString("[ok]"));
-                        });
-                } else if (result == Screen::QUIT_APPLICATION) endExecute(result);
+                const auto filename = selected->getMapFileName(), mission = selected->getMapName();
+                screens.push(std::make_unique<GameLoadScreen>([this, filename, mission](Engine& engine) {
+                    return engine.initCampaignTask(filename, &campaign, mission);
+                }), [this](Screen& loading, int result) {
+                    if (result == 1) {
+                        screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(loading).takeEngine()),
+                            [this](Screen&, int) {
+                                repopulateAvailableMissions();
+                                if (!campaign.save(true)) {
+                                    auto& strings = *Toolkit::getStringTable();
+                                    screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_SAVE_CAMPAIGN]"),
+                                        std::vector<std::string>{strings.getString("[ok]")}));
+                                }
+                            });
+                    } else if (result == 2) {
+                        auto& strings = *Toolkit::getStringTable();
+                        screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_LOAD_MAP]"),
+                            std::vector<std::string>{strings.getString("[ok]")}));
+                    }
+                });
 			}
 		}
 	}
