@@ -81,7 +81,7 @@ AIWarrush
 [alliances]
 Spojenectví
 [alt %0]
-
+alt-%0
 [and]
 a
 [any explorer]
@@ -119,9 +119,9 @@ pryč:
 [backspace]
 
 [barracks explanation 2]
-
+úroveň válečníků
 [barracks explanation]
-Zlepši bojeschopnost
+Zlepšuje bojovou
 [barracks]
 Cvičiště
 [beach size]
@@ -187,13 +187,13 @@ Výběr hry
 [choose map]
 Výběr mapy
 [clear area]
-
+Oblast čištění
 [Clearing:]
 Vyčištění:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Čistící prostředky
+Odstraňuje suroviny
 [clearingflag]
 Čisticí prapor
 [closed]
@@ -219,7 +219,7 @@ Připojuji se k
 [Continue playing]
 Pokračovat ve hře
 [control %0]
-
+control-%0
 [Corn]
 Obilí
 [crater density]
@@ -249,9 +249,9 @@ Poškození
 [Defeat Your Oppenents]
 
 [defencetower explanation 2]
-
+jednotky a budovy
 [defencetower explanation]
-Zaútoč na blízkého nepřítele
+Útočí na blízké nepřátelské
 [defencetower]
 Obranná věž
 [Defense Map]
@@ -307,7 +307,7 @@ Zadej heslo:
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-Přilákáno průzkumníků
+Přitahuje průzkumníky
 [explorationflag]
 Průzkumný prapor
 [Explorer Ratio]
@@ -319,35 +319,35 @@ průzkumníci
 [extra islands]
 
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -361,9 +361,7 @@ Potrava
 [forbidden area]
 Vstup zakázán
 [Free]
-OK
-[free]
-Volný
+Zdravé
 [free]
 se nudí
 [from:]
@@ -413,13 +411,11 @@ Těžba
 [hospital explanation 2]
 
 [hospital explanation]
-Zdravý tvých jednotek
+Léčí jednotky
 [hospital]
 Nemocnice
 [host]
 Hostuj hru
-[hp]
-Životy
 [hp]
 Životy
 [Human]
@@ -437,7 +433,7 @@ Na cestě
 [inn explanation 2]
 
 [inn explanation]
-Potrava tvých jednotek
+Krmí jednotky
 [inn]
 Hospoda
 [insert]
@@ -547,19 +543,19 @@ Výška mapy
 [mark map]
 
 [market explanation 2]
-
+s ostatními
 [market explanation]
-Povolení vyměnit ovoce
+Umožňuje výměnu ovoce
 [market]
 Tržiště
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Min. úroveň bojovníků:
 [Minimum Level To Flag]
-
+Min. úroveň jednotek
 [Music volume]
 Hlasitost (hudba)
 [Mute]
@@ -633,7 +629,7 @@ Otevřít
 [OpenGL]
 OpenGL
 [Options]
-
+Nastavení
 [options]
 Nastavení
 [Orange]
@@ -687,9 +683,9 @@ Opustit hru
 [quit]
 Konec
 [racetrack explanation 2]
-
+chůze jednotek
 [racetrack explanation]
-Zlepši chůzi
+Zvyšuje rychlost
 [racetrack]
 Závodní dráha
 [range]
@@ -761,9 +757,9 @@ Uložit hru
 [Save]
 Uložit
 [school explanation 2]
-
+úroveň dělníků
 [school explanation]
-Zlepši uroveň stavitelství
+Zlepšuje stavební
 [school]
 Škola
 [Script Areas]
@@ -779,69 +775,69 @@ hledá práci
 [seeking]
 Hledá
 [select barracks building]
-
+Vybrat budovu: Cvičiště
 [select clearingflag]
-
+Vybrat vlajku: Čisticí prapor
 [select construct barracks]
-
+Vybrat stavbu: Cvičiště
 [select construct defencetower]
-
+Vybrat stavbu: Obranná věž
 [select construct hospital]
-
+Vybrat stavbu: Nemocnice
 [select construct inn]
-
+Vybrat stavbu: Hospoda
 [select construct market]
-
+Vybrat stavbu: Tržiště
 [select construct racetrack]
-
+Vybrat stavbu: Závodní dráha
 [select construct school]
-
+Vybrat stavbu: Škola
 [select construct stonewall]
-
+Vybrat stavbu: Kamenná hradba
 [select construct swarm]
-
+Vybrat stavbu: Úl
 [select construct swimmingpool]
-
+Vybrat stavbu: Koupaliště
 [select delete tool]
-
+Vybrat nástroj mazání
 [select explorationflag]
-
+Vybrat vlajku: Průzkumný prapor
 [select hospital building]
-
+Vybrat budovu: Nemocnice
 [select inn building]
-
+Vybrat budovu: Hospoda
 [select market building]
-
+Vybrat budovu: Tržiště
 [select place clearing area]
-
+Umístit oblast: Oblast čištění
 [select place clearingflag]
-
+Umístit vlajku: Čisticí prapor
 [select place explorationflag]
-
+Umístit vlajku: Průzkumný prapor
 [select place forbidden area]
-
+Umístit oblast: Vstup zakázán
 [select place guard area]
-
+Umístit oblast: Hlídáná oblast
 [select place warflag]
-
+Umístit vlajku: Válečný prapor
 [select racetrack building]
-
+Vybrat budovu: Závodní dráha
 [select school building]
-
+Vybrat budovu: Škola
 [select swarm building]
-
+Vybrat budovu: Úl
 [select swimmingpool building]
-
+Vybrat budovu: Koupaliště
 [select tower building]
-
+Vybrat budovu: Obranná věž
 [select wall building]
-
+Vybrat budovu: Kamenná hradba
 [select warflag]
-
+Vybrat vlajku: Válečný prapor
 [settings]
 Nastavení
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 
 [shortcut explanation v]
@@ -891,9 +887,9 @@ Kamení
 [stone]
 
 [stonewall explanation 2]
-
+pasivní obrany
 [stonewall explanation]
-Pasivní ochraná část
+Prvek
 [stonewall]
 Kamenná hradba
 [submit rating]
@@ -905,45 +901,45 @@ Server hostname
 [swarm explanation 2]
 
 [swarm explanation]
-Vytvoř nové jednotky
+Vytváří nové jednotky
 [swarm]
 Úl
 [Swim]
 Plavání
 [swimmingpool explanation 2]
-
+plavání jednotek
 [swimmingpool explanation]
-Zlepši plavání
+Zvyšuje rychlost
 [swimmingpool]
 Koupaliště
 [switch to adding areas]
-
+Přidávat oblasti
 [switch to area brush 1]
-
+Vybrat štětec oblastí: 1
 [switch to area brush 2]
-
+Vybrat štětec oblastí: 2
 [switch to area brush 3]
-
+Vybrat štětec oblastí: 3
 [switch to area brush 4]
-
+Vybrat štětec oblastí: 4
 [switch to area brush 5]
-
+Vybrat štětec oblastí: 5
 [switch to area brush 6]
-
+Vybrat štětec oblastí: 6
 [switch to area brush 7]
-
+Vybrat štětec oblastí: 7
 [switch to area brush 8]
-
+Vybrat štětec oblastí: 8
 [switch to building view]
-
+Zobrazit budovy
 [switch to flag view]
-
+Zobrazit vlajky
 [switch to removing areas]
-
+Odstraňovat oblasti
 [switch to teams view]
-
+Zobrazit týmy
 [switch to terrain view]
-
+Zobrazit terén
 [sys req]
 
 [tab]
@@ -1109,7 +1105,7 @@ Chůze
 [warflag explanation 2]
 
 [warflag explanation]
-Přilákáno válečníků
+Přitahuje válečníky
 [warflag]
 Válečný prapor
 [Warning, you need to reboot the game for changes to take effect]
@@ -1127,7 +1123,7 @@ válečníci
 [water]
 Voda
 [Wheat]
-
+Obilí
 [Won : you defeated your opponents]
 Tvoji nepřátelé byli poraženi ...
 [Won : you have the most prestige]
@@ -1142,8 +1138,6 @@ Dřevo
 
 [Worker]
 Dělník
-[workers]
-Dělníci
 [workers]
 dělníci
 [working]
@@ -1210,3 +1204,23 @@ Tvoji %0 jsou pod útokem
 Tva jednotka změnila víru v jiného hráče %0
 [Your username was banned]
 
+[game speed]
+Rychlost hry
+[decrease game speed]
+Snížit rychlost hry
+[increase game speed]
+Zvýšit rychlost hry
+[maximum game speed]
+Maximální
+[multiplayer game speed]
+Rychlost: 1x (více hráčů)
+[game speed help]
+Pouze pro jednoho hráče a záznamy. Hra více hráčů běží rychlostí 1x.
+[AICortex-Description]
+Cortex - Experimentální třívrstvá AI. Ve vývoji.
+[ERROR_CANT_LOAD_MAP]
+Mapu nelze načíst: soubor je poškozený nebo má nekompatibilní verzi.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Kampaň nelze uložit. Zkontrolujte, zda cílová složka existuje, lze do ní zapisovat a je k dispozici volné místo.
+[AICortex]
+Cortex

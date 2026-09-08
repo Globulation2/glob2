@@ -81,7 +81,7 @@ Alga
 [alliances]
 Zavezništva
 [alt %0]
-
+alt-%0
 [and]
 in
 [any explorer]
@@ -121,7 +121,7 @@ odsoden:
 [barracks explanation 2]
 tvojih vojakov
 [barracks explanation]
-Izboljša stopnjo bojevenja
+Izboljša bojno raven
 [barracks]
 Vojašnica
 [beach size]
@@ -187,13 +187,13 @@ Izberi igro
 [choose map]
 Izberi mapo
 [clear area]
-
+Območje čiščenja
 [Clearing:]
 Brisanje:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Razkreije surovine
+Odstranjuje surovine
 [clearingflag]
 Odstiralna zastava
 [closed]
@@ -219,7 +219,7 @@ Povezujem na
 [Continue playing]
 Nadaljuj z igranjem
 [control %0]
-
+control-%0
 [Corn]
 Pšenica
 [crater density]
@@ -307,7 +307,7 @@ Vnesi svoje geslo :
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-Prevlači raziskovalce
+Privlači raziskovalce
 [explorationflag]
 Raziskovalna zastava
 [Explorer Ratio]
@@ -319,35 +319,35 @@ raziskovalci
 [extra islands]
 
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -361,9 +361,7 @@ Hrana
 [forbidden area]
 Prepovedano področje
 [Free]
-Prost/ih
-[free]
-prost/ih
+Zdrave
 [free]
 prost/ih
 [from:]
@@ -418,8 +416,6 @@ Zdravi tvoje enote
 Bolnišnica
 [host]
 Gostuj igro
-[hp]
-Zd
 [hp]
 Zdravje
 [Human]
@@ -547,19 +543,19 @@ Višina mape
 [mark map]
 
 [market explanation 2]
-
+z drugimi
 [market explanation]
-Omogoča menjavo blaga
+Omogoča menjavo sadja
 [market]
 Tržnica
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Najnižja zahtevana stopnja
 [Minimum Level To Flag]
-
+Najnižja raven enot
 [Music volume]
 Glasnost glasbe
 [Mute]
@@ -633,7 +629,7 @@ odpri
 [OpenGL]
 OpenGL
 [Options]
-
+Možnosti
 [options]
 Možnosti
 [Orange]
@@ -779,69 +775,69 @@ iščejo službo
 [seeking]
 Iščem
 [select barracks building]
-
+Izberi stavbo: Vojašnica
 [select clearingflag]
-
+Izberi zastavo: Odstiralna zastava
 [select construct barracks]
-
+Izberi gradnjo: Vojašnica
 [select construct defencetower]
-
+Izberi gradnjo: Obrambni Stolp
 [select construct hospital]
-
+Izberi gradnjo: Bolnišnica
 [select construct inn]
-
+Izberi gradnjo: Restavracija
 [select construct market]
-
+Izberi gradnjo: Tržnica
 [select construct racetrack]
-
+Izberi gradnjo: Tekaška steza
 [select construct school]
-
+Izberi gradnjo: Šola
 [select construct stonewall]
-
+Izberi gradnjo: Kamniti zid
 [select construct swarm]
-
+Izberi gradnjo: Porodnišnica
 [select construct swimmingpool]
-
+Izberi gradnjo: Bazen
 [select delete tool]
-
+Izberi orodje za brisanje
 [select explorationflag]
-
+Izberi zastavo: Raziskovalna zastava
 [select hospital building]
-
+Izberi stavbo: Bolnišnica
 [select inn building]
-
+Izberi stavbo: Restavracija
 [select market building]
-
+Izberi stavbo: Tržnica
 [select place clearing area]
-
+Postavi območje: Območje čiščenja
 [select place clearingflag]
-
+Postavi zastavo: Odstiralna zastava
 [select place explorationflag]
-
+Postavi zastavo: Raziskovalna zastava
 [select place forbidden area]
-
+Postavi območje: Prepovedano področje
 [select place guard area]
-
+Postavi območje: Nadzorovano področje
 [select place warflag]
-
+Postavi zastavo: Vojaška zastava
 [select racetrack building]
-
+Izberi stavbo: Tekaška steza
 [select school building]
-
+Izberi stavbo: Šola
 [select swarm building]
-
+Izberi stavbo: Porodnišnica
 [select swimmingpool building]
-
+Izberi stavbo: Bazen
 [select tower building]
-
+Izberi stavbo: Obrambni Stolp
 [select wall building]
-
+Izberi stavbo: Kamniti zid
 [select warflag]
-
+Izberi zastavo: Vojaška zastava
 [settings]
 Nastavitve
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 
 [shortcut explanation v]
@@ -891,9 +887,9 @@ Kamenje
 [stone]
 
 [stonewall explanation 2]
-
+obrambni sistem
 [stonewall explanation]
-Pasiven obrambni sistem
+Pasiven
 [stonewall]
 Kamniti zid
 [submit rating]
@@ -917,33 +913,33 @@ Izboljša plavalne
 [swimmingpool]
 Bazen
 [switch to adding areas]
-
+Dodaj območja
 [switch to area brush 1]
-
+Izberi čopič za območja: 1
 [switch to area brush 2]
-
+Izberi čopič za območja: 2
 [switch to area brush 3]
-
+Izberi čopič za območja: 3
 [switch to area brush 4]
-
+Izberi čopič za območja: 4
 [switch to area brush 5]
-
+Izberi čopič za območja: 5
 [switch to area brush 6]
-
+Izberi čopič za območja: 6
 [switch to area brush 7]
-
+Izberi čopič za območja: 7
 [switch to area brush 8]
-
+Izberi čopič za območja: 8
 [switch to building view]
-
+Prikaži stavbe
 [switch to flag view]
-
+Prikaži zastave
 [switch to removing areas]
-
+Odstrani območja
 [switch to teams view]
-
+Prikaži ekipe
 [switch to terrain view]
-
+Prikaži teren
 [sys req]
 
 [tab]
@@ -969,7 +965,7 @@ Odstiralna zastava je napadena
 [the defencetower is finished]
 Obrambni stolp je zgrajen
 [the defencetower is under attack]
-Obrambna je napadena
+Obrambni stolp je napaden.
 [the explorationflag is finished]
 Raziskovalna zastava je zgrajena
 [the explorationflag is under attack]
@@ -1127,7 +1123,7 @@ vojaki
 [water]
 Voda
 [Wheat]
-
+Pšenica
 [Won : you defeated your opponents]
 Zmagal si : premagal si vse nasprotnike
 [Won : you have the most prestige]
@@ -1142,8 +1138,6 @@ Les
 
 [Worker]
 Delavec
-[workers]
-Delavci
 [workers]
 delavci
 [working]
@@ -1210,3 +1204,23 @@ Tvoji %0 so napadeni
 Tvoje enote so bile spreobrnjene %0
 [Your username was banned]
 
+[game speed]
+Hitrost igre
+[decrease game speed]
+Zmanjšaj hitrost igre
+[increase game speed]
+Povečaj hitrost igre
+[maximum game speed]
+Največja
+[multiplayer game speed]
+Hitrost: 1x (več igralcev)
+[game speed help]
+Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
+[AICortex-Description]
+Cortex - Poskusna triplastna umetna inteligenca. V razvoju.
+[ERROR_CANT_LOAD_MAP]
+Zemljevida ni mogoče naložiti: datoteka je poškodovana ali ima nezdružljivo različico.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Kampanje ni mogoče shraniti. Preverite, ali ciljna mapa obstaja, omogoča pisanje in ima dovolj prostega prostora.
+[AICortex]
+Cortex

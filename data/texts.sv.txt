@@ -81,7 +81,7 @@ alger
 [alliances]
 Allianser
 [alt %0]
-
+alt-%0
 [and]
 och
 [any explorer]
@@ -225,7 +225,7 @@ Ansluter till
 [Continue playing]
 Fortsätt spela
 [control %0]
-
+control-%0
 [Corn]
 Vete
 [crater density]
@@ -325,35 +325,35 @@ utforskare
 [extra islands]
 tomma öar
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -367,9 +367,7 @@ Mat
 [forbidden area]
 Förbjudet område
 [Free]
-Ok
-[free]
-är fria
+Friska
 [free]
 är fria
 [from:]
@@ -425,11 +423,9 @@ Sjukhus
 [host]
 Var värd för ett spel
 [hp]
-HP
-[hp]
 Hälsopoäng
 [Human]
-
+mänsklig
 [human]
 mänsklig
 [hungry]
@@ -563,15 +559,15 @@ Marknad
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Lägsta tillåtna nivå:
 [Minimum Level To Flag]
-Lägsta flaggnivå
+Min. enhetsnivå
 [Music volume]
 Volym (musik)
 [Mute]
-
+tyst
 [mute]
 tyst
 [new campaign]
@@ -641,7 +637,7 @@ Här
 [OpenGL]
 OpenGL
 [Options]
-
+Alternativ
 [options]
 Alternativ
 [Orange]
@@ -685,7 +681,7 @@ Prestige
 [priority]
 
 [Prune]
-Sviskon
+Plommon
 [quit the editor]
 Avsluta editorn
 [quit the game]
@@ -791,27 +787,27 @@ Välj Barrack
 [select clearingflag]
 Välj Röjningsflagga
 [select construct barracks]
-
+Välj bygge: Barrack
 [select construct defencetower]
-
+Välj bygge: Försvarstorn
 [select construct hospital]
-
+Välj bygge: Sjukhus
 [select construct inn]
-
+Välj bygge: Värdshus
 [select construct market]
-
+Välj bygge: Marknad
 [select construct racetrack]
-
+Välj bygge: Löparbana
 [select construct school]
-
+Välj bygge: Skola
 [select construct stonewall]
-
+Välj bygge: Stenmur
 [select construct swarm]
-
+Välj bygge: Svärm
 [select construct swimmingpool]
-
+Välj bygge: Simbassäng
 [select delete tool]
-
+Välj raderingsverktyg
 [select explorationflag]
 Välj Utforskningsflagga
 [select hospital building]
@@ -821,17 +817,17 @@ Välj Värdshus
 [select market building]
 Välj Marknad
 [select place clearing area]
-
+Placera område: Röjningsområde
 [select place clearingflag]
-
+Placera flagga: Röjningsflagga
 [select place explorationflag]
-
+Placera flagga: Utforskningsflagga
 [select place forbidden area]
-
+Placera område: Förbjudet område
 [select place guard area]
-
+Placera område: Vaktområde
 [select place warflag]
-
+Placera flagga: Krigsflagga
 [select racetrack building]
 Välj Löparbana
 [select school building]
@@ -849,7 +845,7 @@ Välj Krigsflagga
 [settings]
 Inställningar
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 Enter: skicka ett chattmeddelande
 [shortcut explanation v]
@@ -865,7 +861,7 @@ Display
 [smoothing]
 Uppmjukning
 [sort by name]
-
+Namn
 [sort by rating]
 
 [sort by size]
@@ -899,9 +895,9 @@ Sten
 [stone]
 sten
 [stonewall explanation 2]
-
+försvarselement
 [stonewall explanation]
-Passivt försvarselement
+Passivt
 [stonewall]
 Stenmur
 [submit rating]
@@ -925,29 +921,29 @@ hos dina enheter
 [swimmingpool]
 Simbassäng
 [switch to adding areas]
-
+Lägg till områden
 [switch to area brush 1]
-
+Välj områdespensel: 1
 [switch to area brush 2]
-
+Välj områdespensel: 2
 [switch to area brush 3]
-
+Välj områdespensel: 3
 [switch to area brush 4]
-
+Välj områdespensel: 4
 [switch to area brush 5]
-
+Välj områdespensel: 5
 [switch to area brush 6]
-
+Välj områdespensel: 6
 [switch to area brush 7]
-
+Välj områdespensel: 7
 [switch to area brush 8]
-
+Välj områdespensel: 8
 [switch to building view]
 Byt till Byggnadsvy
 [switch to flag view]
 Byt till Flaggvy
 [switch to removing areas]
-
+Ta bort områden
 [switch to teams view]
 Byt till Lagvy
 [switch to terrain view]
@@ -1135,7 +1131,7 @@ krigare
 [water]
 Vatten
 [Wheat]
-
+Vete
 [wheat]
 vete
 [Won : you defeated your opponents]
@@ -1151,8 +1147,6 @@ trä
 [Worker Ratio]
 Arbetare Proportion
 [Worker]
-Arbetare
-[workers]
 Arbetare
 [workers]
 arbetare
@@ -1220,3 +1214,23 @@ Din %0 är under attack
 Din enhet blev omvänd till %0s lag
 [Your username was banned]
 
+[game speed]
+Spelhastighet
+[decrease game speed]
+Sänk spelhastigheten
+[increase game speed]
+Öka spelhastigheten
+[maximum game speed]
+Maximal
+[multiplayer game speed]
+Hastighet: 1x (flerspelarläge)
+[game speed help]
+Endast för en spelare och repriser. Flerspelarpartier körs med hastigheten 1x.
+[AICortex-Description]
+Cortex - Experimentell AI med tre lager. Under utveckling.
+[ERROR_CANT_LOAD_MAP]
+Kartan kunde inte läsas in: filen är skadad eller har en inkompatibel version.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Kampanjen kunde inte sparas. Kontrollera att målmappen finns, är skrivbar och har ledigt utrymme.
+[AICortex]
+Cortex

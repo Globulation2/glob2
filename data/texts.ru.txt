@@ -249,9 +249,9 @@ Ctrl - Линия
 [Defeat Your Oppenents]
 Победить соперников
 [defencetower explanation 2]
-строения и юниты
+вражеские юниты и здания
 [defencetower explanation]
-Атакует близких врагов
+Атакует ближайшие
 [defencetower]
 Оборонительная башня
 [Defense Map]
@@ -303,7 +303,7 @@ enter
 [equals]
 равно
 [ERROR_CANT_LOAD_MAP]
-Карту не удалось загрузить, так как файл повреждён или имеет несовместимую версию.
+Не удалось загрузить карту: файл повреждён или имеет несовместимую версию.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ f9
 [forbidden area]
 Запретная зона
 [Free]
-Ok
+Здоровы
 [free]
 свободны
 [from:]
@@ -559,7 +559,7 @@ meta-%0
 [Min required level:]
 Мин. необходимый уровень:
 [Minimum Level To Flag]
-Минимальный уровень флага
+Мин. ур. юнитов
 [Music volume]
 Громкость музыки
 [Mute]
@@ -735,7 +735,7 @@ enter
 [right meta]
 right meta
 [right super]
-right windows key
+правая клавиша Windows
 [right]
 right
 [river diameter]
@@ -887,9 +887,9 @@ space
 [stone]
 камень
 [stonewall explanation 2]
-пассивный
+обороны
 [stonewall explanation]
-Пассивная защита
+Элемент пассивной
 [stonewall]
 Каменная стена
 [submit rating]
@@ -1204,3 +1204,21 @@ Ysagoon-игра в Интернете
 Ваш юнит перешёл к врагу %0
 [Your username was banned]
 Ваше имя пользователя запрещено. Пожалуйста свяжитесь с администраторами, чтобы это изменить.
+[game speed]
+Скорость игры
+[decrease game speed]
+Уменьшить скорость игры
+[increase game speed]
+Увеличить скорость игры
+[maximum game speed]
+Максимальная
+[multiplayer game speed]
+Скорость: 1x (сетевая игра)
+[game speed help]
+Только для одиночной игры и повторов. Сетевая игра идёт на скорости 1x.
+[AICortex-Description]
+Cortex — экспериментальный трёхуровневый ИИ. В разработке.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Не удалось сохранить кампанию. Проверьте, что папка назначения существует, доступна для записи и есть свободное место.
+[AICortex]
+Cortex

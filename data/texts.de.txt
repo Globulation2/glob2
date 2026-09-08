@@ -303,7 +303,7 @@ Beitreten
 [equals]
 entspricht
 [ERROR_CANT_LOAD_MAP]
-Die Karte konnte nicht geladen werden, da die Datei entweder beschädigt ist oder eine inkompatible Version hat.
+Die Karte konnte nicht geladen werden. Die Datei ist beschädigt oder hat eine inkompatible Version.
 [escape]
 Verlassen
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ Nahrung
 [forbidden area]
 Verbotener Bereich
 [Free]
-Ok
+Gesund
 [free]
 frei
 [from:]
@@ -557,7 +557,7 @@ ALT-%0
 [Min required level:]
 Mindestlevel:
 [Minimum Level To Flag]
-Mindestlevel:
+Min. Einheitenstufe
 [Music volume]
 Musiklautstärke
 [Mute]
@@ -701,7 +701,7 @@ Kartenliste aktualisieren
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 [Register]
-Register
+Registrieren
 [remember unit]
 Arbeiterzahlen merken
 [Remember YOG password localy]
@@ -945,7 +945,7 @@ sys req
 [tab]
 TAB
 [teams editor]
-Teams Editor
+Teameditor
 [Teams Fixed]
 feste Teams
 [teams]
@@ -1206,3 +1206,21 @@ Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen A
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
+[game speed]
+Spielgeschwindigkeit
+[decrease game speed]
+Spielgeschwindigkeit verringern
+[increase game speed]
+Spielgeschwindigkeit erhöhen
+[maximum game speed]
+Maximum
+[multiplayer game speed]
+Tempo: 1x (Mehrspieler)
+[game speed help]
+Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
+[AICortex-Description]
+Cortex - Experimentelle KI mit drei Ebenen. In Entwicklung.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Die Kampagne konnte nicht gespeichert werden. Prüfe, ob der Zielordner existiert, beschreibbar ist und genügend Speicherplatz frei ist.
+[AICortex]
+Cortex

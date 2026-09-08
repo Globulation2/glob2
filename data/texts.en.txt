@@ -371,9 +371,7 @@ Food
 [forbidden area]
 Forbidden area
 [Free]
-Ok
-[free]
-free
+Healthy
 [free]
 free
 [from:]
@@ -432,8 +430,6 @@ Hospital
 Host a game
 [hp]
 HP
-[hp]
-Hitpoint
 [Human]
 Human
 [human]
@@ -441,7 +437,7 @@ human
 [hungry]
 hungry
 [hungryness]
-Hungriness
+Hunger
 [In way]
 On the way
 [increase game speed]
@@ -575,7 +571,7 @@ meta-%0
 [Min required level:]
 Minimum required level:
 [Minimum Level To Flag]
-Minimum Flag Level
+Min. unit level
 [Music volume]
 Volume (music)
 [Mute]
@@ -631,7 +627,7 @@ On Press
 [On the spot]
 Here
 [on unpress]
-On Unpress
+On Release
 [open chat box]
 Open Chat Box
 [open load menu]
@@ -845,7 +841,7 @@ Select Swarm
 [select swimmingpool building]
 Select Swimming Pool
 [select tower building]
-Select Defence Tower
+Select Defense Tower
 [select wall building]
 Select Wall
 [select warflag]
@@ -967,9 +963,9 @@ Teams Fixed
 [teams]
  teams
 [the barracks is finished]
-The training camp is finished.
+The barracks is finished.
 [the barracks is under attack]
-The training camp is under attack.
+The barracks is under attack.
 [the building is finished]
 The building is finished.
 [the building is under attack]
@@ -981,7 +977,7 @@ The building is under attack.
 [the defencetower is finished]
 The defense tower is finished.
 [the defencetower is under attack]
-Your defenses are under attack.
+The defense tower is under attack.
 [the explorationflag is finished]
 ?? explorationflag finished ??
 [the explorationflag is under attack]
@@ -1049,8 +1045,6 @@ Toggle Draw Unit Paths
 [toggle menu screen]
 Toggle Menu Screen
 [toggle recording voice]
-Initiate Voice Recording
-[toggle recording voice]
 Toggle Recording Voice
 [Total Attack Power]
 Total Attack Power
@@ -1065,11 +1059,11 @@ Total
 [tutorial text 1]
 Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!
 [tutorial text 2]
-Now that you have mastered the basics, its time to get used to other buildings such as Racetracks, Pools, and Schools.
+Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.
 [tutorial text 3]
-You have done well to get this far. Now let's move onto Warriors, Training Camps, and Upgrades.
+You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.
 [tutorial text 4]
-You are almost complete. Just flags, and attacking left. Then you'll know enough to venture forward into Custom Games and eventually play online against some of Globulation 2's finest players.
+You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players.
 [tutorial]
 Tutorial
 [Uncontrolled]
@@ -1145,9 +1139,9 @@ Wheat
 [Won : you defeated your opponents]
 Won: you defeated your opponents
 [Won : you have the most prestige]
-Won: you have the biggest prestige
+Won: you have the most prestige
 [Won : your ally %0 has the most prestige]
-Won: your ally %0 has the biggest prestige
+Won: your ally %0 has the most prestige
 [Wood]
 Wood
 [wood]
@@ -1156,8 +1150,6 @@ wood
 Worker Ratio
 [Worker]
 Worker
-[workers]
-Workers
 [workers]
 workers
 [working]

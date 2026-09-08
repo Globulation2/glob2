@@ -315,7 +315,7 @@ Enter
 [equals]
 is gelijk aan
 [ERROR_CANT_LOAD_MAP]
-De kaart kon niet worden geladen omdat het bestand beschadigd is of een niet-ondersteunde versie heeft.
+De kaart kon niet worden geladen: het bestand is beschadigd of heeft een ongeschikte versie.
 [escape]
 Esc
 [explorationflag explanation 2]
@@ -375,7 +375,7 @@ Voedsel
 [forbidden area]
 Verboden zone
 [Free]
-Ok
+Gezond
 [free]
 vrij
 [from:]
@@ -577,7 +577,7 @@ Meta-%0
 [Min required level:]
 Minimaal vereist niveau:
 [Minimum Level To Flag]
-Minimaal vereist niveau:
+Min. eenheidsniveau
 [Music volume]
 Volume (muziek)
 [Mute]
@@ -1230,3 +1230,21 @@ Dit IP-adres werd tijdelijk verbannen. Gelieve te wachten tot dit IP-adres weer 
 Een van jouw globs is overgelopen naar %0's team
 [Your username was banned]
 Uw username werd verbannen. Neem contact op met de beheerders om dit te veranderen.
+[game speed]
+Spelsnelheid
+[decrease game speed]
+Spelsnelheid verlagen
+[increase game speed]
+Spelsnelheid verhogen
+[maximum game speed]
+Maximaal
+[multiplayer game speed]
+Snelheid: 1x (multiplayer)
+[game speed help]
+Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
+[AICortex-Description]
+Cortex - Experimentele AI met drie lagen. In ontwikkeling.
+[ERROR_CANT_SAVE_CAMPAIGN]
+De campagne kon niet worden opgeslagen. Controleer of de doelmap bestaat, beschrijfbaar is en voldoende vrije ruimte heeft.
+[AICortex]
+Cortex

@@ -81,7 +81,7 @@ algak
 [alliances]
 Aliantzak
 [alt %0]
-
+alt-%0
 [and]
 eta
 [any explorer]
@@ -119,9 +119,9 @@ kanpoan:
 [backspace]
 
 [barracks explanation 2]
-Soldaduen maila
+maila hobetzen du
 [barracks explanation]
-Borroka hobetzeko
+Soldaduen borroka
 [barracks]
 Barrakoia
 [beach size]
@@ -225,7 +225,7 @@ Hona konektatzen:
 [Continue playing]
 Jolasten jarraitu
 [control %0]
-
+control-%0
 [Corn]
 Garia
 [crater density]
@@ -325,35 +325,35 @@ miatzaile
 [extra islands]
 irla hutsak
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -367,9 +367,7 @@ Janaria
 [forbidden area]
 Debekatutako zonaldea
 [Free]
-Ongi
-[free]
-libre
+Osasuntsu
 [free]
 libre
 [from:]
@@ -426,10 +424,8 @@ Hospitala
 Partida bat ostatatu
 [hp]
 Osotasuna
-[hp]
-Osotasuna
 [Human]
-
+gizakia
 [human]
 gizakia
 [hungry]
@@ -555,23 +551,23 @@ Mapa eskuragarriak
 [mark map]
 Markatu mapa aliatuentzat
 [market explanation 2]
-fruta
+trukatzea ahalbidetzen du
 [market explanation]
-Trukea baimentzen du:
+Besteekin fruta
 [market]
 Merkatua
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Gutxienezko maila:
 [Minimum Level To Flag]
-Banderaren gutxienezko maila
+Unitateen min. maila
 [Music volume]
 Bolumena (musika)
 [Mute]
-
+Isilik
 [mute]
 Isilik
 [new campaign]
@@ -639,9 +635,9 @@ Ireki Script editorea
 [open]
 ireki
 [OpenGL]
-
+OpenGL
 [Options]
-
+Aukerak
 [options]
 Aukerak
 [Orange]
@@ -695,9 +691,9 @@ Irten partidatik
 [quit]
 Irten
 [racetrack explanation 2]
-Ibiltze abiadura hobetzeko
+abiadura handitzen du
 [racetrack explanation]
-Ibilera hobetzeko
+Unitateen ibiltzeko
 [racetrack]
 Zirkuitoa
 [range]
@@ -769,9 +765,9 @@ Gorde mapa
 [Save]
 Gorde
 [school explanation 2]
-Langileen maila
+maila hobetzen du
 [school explanation]
-Eraikitzea hobetzeko
+Langileen eraikuntza
 [school]
 Eskola
 [Script Areas]
@@ -791,27 +787,27 @@ Barrakoia aukeratu
 [select clearingflag]
 Garbiketa bandera aukeratu
 [select construct barracks]
-
+Hautatu eraikuntza: Barrakoia
 [select construct defencetower]
-
+Hautatu eraikuntza: Babes dorrea
 [select construct hospital]
-
+Hautatu eraikuntza: Hospitala
 [select construct inn]
-
+Hautatu eraikuntza: Ostatua
 [select construct market]
-
+Hautatu eraikuntza: Merkatua
 [select construct racetrack]
-
+Hautatu eraikuntza: Zirkuitoa
 [select construct school]
-
+Hautatu eraikuntza: Eskola
 [select construct stonewall]
-
+Hautatu eraikuntza: Harrizko orma
 [select construct swarm]
-
+Hautatu eraikuntza: Kofoina
 [select construct swimmingpool]
-
+Hautatu eraikuntza: Igerilekua
 [select delete tool]
-
+Hautatu ezabatzeko tresna
 [select explorationflag]
 Miatze bandera aukeratu
 [select hospital building]
@@ -821,17 +817,17 @@ Ostatua aukeratu
 [select market building]
 Merkatua aukeratu
 [select place clearing area]
-
+Jarri eremua: Garbiketa zonaldea
 [select place clearingflag]
-
+Jarri bandera: Garbiketa bandera
 [select place explorationflag]
-
+Jarri bandera: Miatze bandera
 [select place forbidden area]
-
+Jarri eremua: Debekatutako zonaldea
 [select place guard area]
-
+Jarri eremua: Babes zonaldea
 [select place warflag]
-
+Jarri bandera: Gerra bandera
 [select racetrack building]
 Zirkuitoa aukeratu
 [select school building]
@@ -849,7 +845,7 @@ Gerra bandera aukeratu
 [settings]
 Ezarpenak
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 Enter: Txat mezua bidali
 [shortcut explanation v]
@@ -865,7 +861,7 @@ Itxura
 [smoothing]
 Suabetzea
 [sort by name]
-
+Izena
 [sort by rating]
 
 [sort by size]
@@ -901,7 +897,7 @@ harria
 [stonewall explanation 2]
 elementua
 [stonewall explanation]
-Defentsa pasiboa
+Defentsa pasiboko
 [stonewall]
 Harrizko orma
 [submit rating]
@@ -919,35 +915,35 @@ Kofoina
 [Swim]
 Igeri
 [swimmingpool explanation 2]
-Igeri abiadura hobetzeko
+abiadura handitzen du
 [swimmingpool explanation]
-Igeriketa hobetzeko
+Unitateen igeri egiteko
 [swimmingpool]
 Igerilekua
 [switch to adding areas]
-
+Gehitu eremuak
 [switch to area brush 1]
-
+Hautatu eremu-pintzela: 1
 [switch to area brush 2]
-
+Hautatu eremu-pintzela: 2
 [switch to area brush 3]
-
+Hautatu eremu-pintzela: 3
 [switch to area brush 4]
-
+Hautatu eremu-pintzela: 4
 [switch to area brush 5]
-
+Hautatu eremu-pintzela: 5
 [switch to area brush 6]
-
+Hautatu eremu-pintzela: 6
 [switch to area brush 7]
-
+Hautatu eremu-pintzela: 7
 [switch to area brush 8]
-
+Hautatu eremu-pintzela: 8
 [switch to building view]
 Eraikuntza ikuspegira aldatu
 [switch to flag view]
 Bandera ikuspegira aldatu
 [switch to removing areas]
-
+Kendu eremuak
 [switch to teams view]
 Talde ikuspegira aldatu
 [switch to terrain view]
@@ -1135,7 +1131,7 @@ soldadu
 [water]
 Ura
 [Wheat]
-
+Garia
 [wheat]
 garia
 [Won : you defeated your opponents]
@@ -1152,8 +1148,6 @@ egurra
 Langile Ratioa
 [Worker]
 Langilea
-[workers]
-langile
 [workers]
 langile
 [working]
@@ -1220,3 +1214,23 @@ Zure %0ak erasopean daude
 Zure unitatea %0(r)en taldera pasatu da
 [Your username was banned]
 
+[game speed]
+Jokoaren abiadura
+[decrease game speed]
+Moteldu jokoaren abiadura
+[increase game speed]
+Handitu jokoaren abiadura
+[maximum game speed]
+Handiena
+[multiplayer game speed]
+Abiadura: 1x (hainbat jokalari)
+[game speed help]
+Jokalari bakarreko jokoetarako eta errepikapenetarako soilik. Jokalari anitzeko jokoak 1x abiaduran doaz.
+[AICortex-Description]
+Cortex - Hiru geruzako adimen artifizial esperimentala. Garatzen ari da.
+[ERROR_CANT_LOAD_MAP]
+Ezin izan da mapa kargatu: fitxategia hondatuta dago edo bertsioa bateraezina da.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Ezin izan da kanpaina gorde. Egiaztatu helburuko karpeta badagoela, bertan idatz daitekeela eta leku librea dagoela.
+[AICortex]
+Cortex

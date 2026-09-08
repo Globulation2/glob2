@@ -47,6 +47,11 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      - name: Validate translations
+        run: |
+          python3 data/check_translations.py
+          python3 test/test_translations.py
+
       - name: Test compiler cache integration
         run: python3 test/test-ccache.py
 

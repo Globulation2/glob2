@@ -249,9 +249,9 @@ Disminuir Unidades Trabajando
 [Defeat Your Oppenents]
 Elimina a tus Oponentes
 [defencetower explanation 2]
-o edificios cercanos
+enemigos cercanos
 [defencetower explanation]
-Ataca a las unidades
+Ataca unidades y edificios
 [defencetower]
 Torre de Defensa
 [Defense Map]
@@ -303,7 +303,7 @@ entrar
 [equals]
 iguales
 [ERROR_CANT_LOAD_MAP]
-No se pudo cargar el mapa porque el archivo está dañado o tiene una versión incompatible.
+No se pudo cargar el mapa: el archivo está dañado o su versión es incompatible.
 [escape]
 escapar
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ Alimento
 [forbidden area]
 Área prohibida
 [Free]
-Aceptar
+Sanos
 [free]
 libre
 [from:]
@@ -373,7 +373,7 @@ frutas
 [fullscreen]
 Pantalla completa
 [game full]
-Game full
+Partida llena
 [game shortcuts]
 Atajos
 [Game]
@@ -559,7 +559,7 @@ meta-%0
 [Min required level:]
 Nivel mínimo necesario:
 [Minimum Level To Flag]
-Nivel Mínimo de Bandera
+Nivel mín. unidades
 [Music volume]
 Volumen (música)
 [Mute]
@@ -761,7 +761,7 @@ Guardar
 [school explanation 2]
 de tus trabajadores
 [school explanation]
-Mejora el nivel de construcción
+Mejora la construcción
 [school]
 Escuela
 [Script Areas]
@@ -1206,3 +1206,21 @@ Tu dirección IP está baneada temporalmente. Espere o contacte con los administ
 Tu unidad ha sido convertida por el jugador %0
 [Your username was banned]
 Tu nombre de usuario ha sido baneado. Contacte con los administradores.
+[game speed]
+Velocidad del juego
+[decrease game speed]
+Reducir velocidad del juego
+[increase game speed]
+Aumentar velocidad del juego
+[maximum game speed]
+Máxima
+[multiplayer game speed]
+Velocidad: 1x (multijugador)
+[game speed help]
+Solo para un jugador y repeticiones. Las partidas multijugador van a 1x.
+[AICortex-Description]
+Cortex - IA experimental de tres capas. En desarrollo.
+[ERROR_CANT_SAVE_CAMPAIGN]
+No se pudo guardar la campaña. Comprueba que la carpeta de destino exista, permita escritura y tenga espacio libre.
+[AICortex]
+Cortex

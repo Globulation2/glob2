@@ -193,7 +193,7 @@ caps lock
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-برای پاکسازی منابع طبیعی
+برای پاکسازی منابع
 [clearingflag]
 پرچم پاکسازی
 [closed]
@@ -249,9 +249,9 @@ Ctrl - خط
 [Defeat Your Oppenents]
 حریفت را شکست بده
 [defencetower explanation 2]
-ساختمانهای دشمن در نزدیکی محل
+ساختمان‌های نزدیک دشمن
 [defencetower explanation]
-برای حمله به افراد یا
+برای حمله به افراد و
 [defencetower]
 برج مراقبت
 [Defense Map]
@@ -303,7 +303,7 @@ enter
 [equals]
 equals
 [ERROR_CANT_LOAD_MAP]
-نقشه بارگذاری نشد، زیرا فایل آسیب دیده یا نسخه‌ی آن ناسازگار است.
+بارگذاری نقشه ممکن نشد: پرونده خراب است یا نسخهٔ آن سازگار نیست.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ f9
 [forbidden area]
 منطقه‌ی ممنوعه
 [Free]
-آزاد
+سالم
 [free]
 آزاد
 [from:]
@@ -559,7 +559,7 @@ meta-%0
 [Min required level:]
 حداقل رتبه‌ی لازم:
 [Minimum Level To Flag]
-حداقل رتبه‌ی پرچم
+حداقل رتبهٔ واحدها
 [Music volume]
 بلندی صدای موسیقی
 [Mute]
@@ -849,7 +849,7 @@ shift-%0
 [show main menu]
 نشان‌دادن منوی اصلی
 [skin]
-Display
+نمایش
 [smoothing]
 یکنواختی زمین
 [sort by name]
@@ -1204,3 +1204,21 @@ tab
 یکی از افراد تو جزو تیم %0 شد.
 [Your username was banned]
 این نام‌کاربری تحریم شده! میتوانی با مدیران ایساگون تماس بگیری.
+[game speed]
+سرعت بازی
+[decrease game speed]
+کاهش سرعت بازی
+[increase game speed]
+افزایش سرعت بازی
+[maximum game speed]
+بیشینه
+[multiplayer game speed]
+سرعت: 1x (چندنفره)
+[game speed help]
+فقط برای بازی تک‌نفره و بازپخش‌ها. بازی چندنفره با سرعت 1x اجرا می‌شود.
+[AICortex-Description]
+Cortex - هوش مصنوعی آزمایشی سه‌لایه. در حال توسعه.
+[ERROR_CANT_SAVE_CAMPAIGN]
+ذخیرهٔ کارزار ممکن نشد. بررسی کنید که پوشهٔ مقصد وجود داشته باشد، قابل نوشتن باشد و فضای خالی داشته باشید.
+[AICortex]
+Cortex

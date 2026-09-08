@@ -119,9 +119,9 @@ Alt %0
 [backspace]
 后退
 [barracks explanation 2]
-兵营 lv2
+战斗技能等级
 [barracks explanation]
-兵营 lv1
+提高战士的
 [barracks]
 兵营 lv0
 [beach size]
@@ -191,9 +191,9 @@ caps lock
 [Clearing:]
 清除中:
 [clearingflag explanation 2]
-清除令旗 lv2
+
 [clearingflag explanation]
-清除令旗 lv1
+清除资源
 [clearingflag]
 清除令旗 lv0
 [closed]
@@ -249,9 +249,9 @@ ctrl - line
 [Defeat Your Oppenents]
 消灭对手
 [defencetower explanation 2]
-单位或建筑物
+敌方单位和建筑
 [defencetower explanation]
-攻击附近敌人
+攻击附近的
 [defencetower]
 防御塔
 [Defense Map]
@@ -303,13 +303,13 @@ ctrl - line
 [equals]
 相当于
 [ERROR_CANT_LOAD_MAP]
-无法加载地图，因为文件已损坏或版本不兼容。
+无法载入地图：文件已损坏或版本不兼容。
 [escape]
 ESC 退出
 [explorationflag explanation 2]
-探索令旗 lv2
+
 [explorationflag explanation]
-探索令旗 lv1
+吸引探索者
 [explorationflag]
 探索令旗 lv0
 [Explorer Ratio]
@@ -363,7 +363,7 @@ f9
 [forbidden area]
 禁区
 [Free]
-自由
+健康
 [free]
 自由
 [from:]
@@ -411,9 +411,9 @@ home
 [home]
 家
 [hospital explanation 2]
-医院 lv2
+
 [hospital explanation]
-医院 lv1
+治疗单位
 [hospital]
 医院 lv0
 [host]
@@ -433,9 +433,9 @@ HP
 [increase units working]
 增加工人
 [inn explanation 2]
-食堂 lv2
+
 [inn explanation]
-食堂 lv1
+为单位提供食物
 [inn]
 食堂 lv0
 [insert]
@@ -545,9 +545,9 @@ zh-cn
 [mark map]
 为盟友标示地图
 [market explanation 2]
-和他人交易水果
+交换水果
 [market explanation]
-允许交易的资源
+与其他玩家
 [market]
 市场
 [medium priority]
@@ -557,7 +557,7 @@ meta %0
 [Min required level:]
 最小等级需求:
 [Minimum Level To Flag]
-令旗最小等级(lv)
+单位最低等级
 [Music volume]
 音量 (音乐)
 [Mute]
@@ -673,7 +673,7 @@ OpenGL
 [priority]
 优先
 [Prune]
-梅干
+李子
 [quit the editor]
 离开编辑器
 [quit the game]
@@ -683,9 +683,9 @@ OpenGL
 [quit]
 离开
 [racetrack explanation 2]
-你的单位的速度
+行走速度
 [racetrack explanation]
-增加行走速度
+提高单位的
 [racetrack]
 跑道
 [range]
@@ -755,9 +755,9 @@ OpenGL
 [Save]
 储存
 [school explanation 2]
-你的工人的等级
+建筑技能等级
 [school explanation]
-升级建筑物
+提高工人的
 [school]
 学校
 [Script Areas]
@@ -885,9 +885,9 @@ V: 持键以传送讯息
 [stone]
 石头
 [stonewall explanation 2]
-石墙 lv2
+建筑
 [stonewall explanation]
-石墙 lv1
+用于被动防御的
 [stonewall]
 石墙 lv0
 [submit rating]
@@ -897,17 +897,17 @@ V: 持键以传送讯息
 [swamp terrain]
 沼泽
 [swarm explanation 2]
-孢子堆 lv2
+
 [swarm explanation]
-孢子堆 lv1
+生产新单位
 [swarm]
 孢子堆 lv0
 [Swim]
 游泳
 [swimmingpool explanation 2]
-你的单位的速度
+游泳速度
 [swimmingpool explanation]
-增加游泳速度
+提高单位的
 [swimmingpool]
 游泳池
 [switch to adding areas]
@@ -1101,9 +1101,9 @@ tab
 [Walk]
 行走
 [warflag explanation 2]
-战争令旗 lv2
+
 [warflag explanation]
-战争令旗 lv1
+吸引战士
 [warflag]
 战争令旗 lv0
 [Warning, you need to reboot the game for changes to take effect]
@@ -1202,3 +1202,21 @@ Ysagoon 线上游戏
 你的单位被 %0  转化为敌人
 [Your username was banned]
 你的用户名被禁用
+[game speed]
+游戏速度
+[decrease game speed]
+降低游戏速度
+[increase game speed]
+提高游戏速度
+[maximum game speed]
+最快
+[multiplayer game speed]
+游戏速度：1x（多人游戏）
+[game speed help]
+仅限单人游戏和录像回放。多人游戏固定为1x速度。
+[AICortex-Description]
+Cortex - 实验性的三层人工智能，开发中。
+[ERROR_CANT_SAVE_CAMPAIGN]
+无法保存战役。请检查目标文件夹是否存在、是否可写，以及是否有可用空间。
+[AICortex]
+Cortex

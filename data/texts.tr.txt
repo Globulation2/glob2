@@ -81,7 +81,7 @@ yosun
 [alliances]
 Ittifaklar
 [alt %0]
-
+alt-%0
 [and]
 ve
 [any explorer]
@@ -119,9 +119,9 @@ uzakta:
 [backspace]
 
 [barracks explanation 2]
-savascilarinizin seviyesi
+seviyesini artırır
 [barracks explanation]
-Savasmayi gelistirir
+Savaşçıların dövüş
 [barracks]
 Kisla
 [beach size]
@@ -199,7 +199,7 @@ Aciklik:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Kaynaklari temizler
+Kaynakları temizler
 [clearingflag]
 Temizlik bayragi
 [closed]
@@ -225,9 +225,9 @@ Suraya baglaniyor:
 [Continue playing]
 Oyuna devam et
 [control %0]
-
+control-%0
 [Corn]
-Bugday
+Buğday
 [crater density]
 krater yogunlugu
 [crater lakes terrain]
@@ -255,9 +255,9 @@ Hasar
 [Defeat Your Oppenents]
 
 [defencetower explanation 2]
-birimler yada binalar
+ve binalarına saldırır
 [defencetower explanation]
-Yakindaki dusmana saldirir
+Yakındaki düşman birimlerine
 [defencetower]
 Savunma Kulesi
 [Defense Map]
@@ -313,7 +313,7 @@ Sifrenizi girin:
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-Kasifleri ceker
+Kâşifleri çeker
 [explorationflag]
 Kesif bayragi
 [Explorer Ratio]
@@ -325,35 +325,35 @@ kasifler
 [extra islands]
 bos adalar
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -367,9 +367,7 @@ Besin
 [forbidden area]
 Yasak bolge
 [Free]
-Tamam
-[free]
-serbest
+Sağlıklı
 [free]
 tanesi bosta
 [from:]
@@ -419,13 +417,11 @@ Hasat et
 [hospital explanation 2]
 
 [hospital explanation]
-Birimlerinizi iyilestirir
+Birimlerinizi iyileştirir
 [hospital]
 Hastane
 [host]
 Oyun Sunucusu ol
-[hp]
-CAN
 [hp]
 Can
 [Human]
@@ -553,23 +549,23 @@ Harita yuksekligi
 [mark map]
 
 [market explanation 2]
-baskalariyla alisveris yapar
+takasına olanak sağlar
 [market explanation]
-Sunun takasina izin verir:
+Başkalarıyla meyve
 [market]
 Market
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Gerekli en dusuk seviye:
 [Minimum Level To Flag]
-
+Asgari birim seviyesi
 [Music volume]
 Ses ayari (muzik)
 [Mute]
-
+sessiz
 [mute]
 sessiz
 [new campaign]
@@ -639,7 +635,7 @@ Ac
 [OpenGL]
 OpenGL
 [Options]
-
+Secenekler
 [options]
 Secenekler
 [Orange]
@@ -683,7 +679,7 @@ Prestij
 [priority]
 
 [Prune]
-Cir
+Erik
 [quit the editor]
 
 [quit the game]
@@ -693,9 +689,9 @@ Oyundan cik
 [quit]
 Kapat
 [racetrack explanation 2]
-Birimlerinizin hizi
+hızını artırır
 [racetrack explanation]
-Yurumeyi gelistirir
+Birimlerin yürüme
 [racetrack]
 Kosuyolu
 [range]
@@ -767,9 +763,9 @@ Oyun kaydet
 [Save]
 Kaydet
 [school explanation 2]
-iscilerinizin seviyesi
+seviyesini artırır
 [school explanation]
-Binayi gelistirir
+İşçilerin inşa
 [school]
 Akademi
 [Script Areas]
@@ -785,69 +781,69 @@ tanesi is ariyor
 [seeking]
 ariyor
 [select barracks building]
-
+Bina seç: Kisla
 [select clearingflag]
-
+Bayrak seç: Temizlik bayragi
 [select construct barracks]
-
+İnşa seç: Kisla
 [select construct defencetower]
-
+İnşa seç: Savunma Kulesi
 [select construct hospital]
-
+İnşa seç: Hastane
 [select construct inn]
-
+İnşa seç: Otel
 [select construct market]
-
+İnşa seç: Market
 [select construct racetrack]
-
+İnşa seç: Kosuyolu
 [select construct school]
-
+İnşa seç: Akademi
 [select construct stonewall]
-
+İnşa seç: Tas duvar
 [select construct swarm]
-
+İnşa seç: Yuva
 [select construct swimmingpool]
-
+İnşa seç: Yuzme havuzu
 [select delete tool]
-
+Silme aracını seç
 [select explorationflag]
-
+Bayrak seç: Kesif bayragi
 [select hospital building]
-
+Bina seç: Hastane
 [select inn building]
-
+Bina seç: Otel
 [select market building]
-
+Bina seç: Market
 [select place clearing area]
-
+Alan yerleştir: Temizlik bolgesi
 [select place clearingflag]
-
+Bayrak yerleştir: Temizlik bayragi
 [select place explorationflag]
-
+Bayrak yerleştir: Kesif bayragi
 [select place forbidden area]
-
+Alan yerleştir: Yasak bolge
 [select place guard area]
-
+Alan yerleştir: Nobet bolgesi
 [select place warflag]
-
+Bayrak yerleştir: Savas bayragi
 [select racetrack building]
-
+Bina seç: Kosuyolu
 [select school building]
-
+Bina seç: Akademi
 [select swarm building]
-
+Bina seç: Yuva
 [select swimmingpool building]
-
+Bina seç: Yuzme havuzu
 [select tower building]
-
+Bina seç: Savunma Kulesi
 [select wall building]
-
+Bina seç: Tas duvar
 [select warflag]
-
+Bayrak seç: Savas bayragi
 [settings]
 Ayarlar
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 Enter: bir sohbet mesaji gonder
 [shortcut explanation v]
@@ -897,7 +893,7 @@ Tas
 [stone]
 tas
 [stonewall explanation 2]
-bilesen
+unsuru
 [stonewall explanation]
 Pasif savunma
 [stonewall]
@@ -911,45 +907,45 @@ Bataklik
 [swarm explanation 2]
 
 [swarm explanation]
-Yeni birimler olusturur
+Yeni birimler oluşturur
 [swarm]
 Yuva
 [Swim]
 Yuz
 [swimmingpool explanation 2]
-Birimlerinizin hizi
+hızını artırır
 [swimmingpool explanation]
-Yuzmeyi iyilestirir
+Birimlerin yüzme
 [swimmingpool]
 Yuzme havuzu
 [switch to adding areas]
-
+Alan ekle
 [switch to area brush 1]
-
+Alan fırçası seç: 1
 [switch to area brush 2]
-
+Alan fırçası seç: 2
 [switch to area brush 3]
-
+Alan fırçası seç: 3
 [switch to area brush 4]
-
+Alan fırçası seç: 4
 [switch to area brush 5]
-
+Alan fırçası seç: 5
 [switch to area brush 6]
-
+Alan fırçası seç: 6
 [switch to area brush 7]
-
+Alan fırçası seç: 7
 [switch to area brush 8]
-
+Alan fırçası seç: 8
 [switch to building view]
-
+Binaları göster
 [switch to flag view]
-
+Bayrakları göster
 [switch to removing areas]
-
+Alan kaldır
 [switch to teams view]
-
+Takımları göster
 [switch to terrain view]
-
+Araziyi göster
 [sys req]
 
 [tab]
@@ -1115,7 +1111,7 @@ Yuru
 [warflag explanation 2]
 
 [warflag explanation]
-Savascilari ceker
+Savaşçıları çeker
 [warflag]
 Savas bayragi
 [Warning, you need to reboot the game for changes to take effect]
@@ -1133,7 +1129,7 @@ savascilar
 [water]
 Su
 [Wheat]
-
+Buğday
 [wheat]
 bugday
 [Won : you defeated your opponents]
@@ -1150,8 +1146,6 @@ odun
 
 [Worker]
 Isci
-[workers]
-isciler
 [workers]
 isciler
 [working]
@@ -1218,3 +1212,23 @@ Kazandiniz!
 Bir biriminiz %0 'nin tarafina gecti
 [Your username was banned]
 
+[game speed]
+Oyun hızı
+[decrease game speed]
+Oyun hızını azalt
+[increase game speed]
+Oyun hızını artır
+[maximum game speed]
+En yüksek
+[multiplayer game speed]
+Hız: 1x (çok oyunculu)
+[game speed help]
+Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
+[AICortex-Description]
+Cortex - Deneysel üç katmanlı yapay zekâ. Geliştirme aşamasında.
+[ERROR_CANT_LOAD_MAP]
+Harita yüklenemedi: dosya bozuk veya sürümü uyumsuz.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Sefer kaydedilemedi. Hedef klasörün var olduğunu, yazılabilir olduğunu ve boş alan bulunduğunu kontrol edin.
+[AICortex]
+Cortex

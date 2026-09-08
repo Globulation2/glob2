@@ -81,7 +81,7 @@ Alge
 [alliances]
 Alianţe
 [alt %0]
-
+alt-%0
 [and]
 şi
 [any explorer]
@@ -187,7 +187,7 @@ Alegeţi un joc
 [choose map]
 Alegeţi o hartă
 [clear area]
-
+Zonă de curățare
 [Clearing:]
 Defrişare de:
 [clearingflag explanation 2]
@@ -219,7 +219,7 @@ Conectare la
 [Continue playing]
 Continuă jocul
 [control %0]
-
+control-%0
 [Corn]
 Grâu
 [crater density]
@@ -249,9 +249,9 @@ Lovire
 [Defeat Your Oppenents]
 
 [defencetower explanation 2]
-din vecinătate
+inamice din apropiere
 [defencetower explanation]
-Atacă unitaţile inamice
+Atacă unități și clădiri
 [defencetower]
 Turn de-apărare
 [Defense Map]
@@ -319,35 +319,35 @@ exploratori
 [extra islands]
 
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -361,9 +361,7 @@ Mâncare
 [forbidden area]
 Zonă interzisă
 [Free]
-Liber
-[free]
-libere
+Sănătoase
 [free]
 libere
 [from:]
@@ -391,7 +389,7 @@ Iarbă
 [ground attack]
 
 [guard area]
-
+Zonă de pază
 [GUIMapPreview text 0]
 
 [GUIMapPreview text 1]
@@ -418,8 +416,6 @@ Vă vindecă unităţile
 Spital
 [host]
 Găzduiţi un joc
-[hp]
-Punct de viaţă
 [hp]
 Viata
 [Human]
@@ -555,11 +551,11 @@ Piată
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Nivel minim necesar:
 [Minimum Level To Flag]
-
+Nivel min. al unității
 [Music volume]
 Volum  (muzică)
 [Mute]
@@ -633,7 +629,7 @@ deschis
 [OpenGL]
 OpenGL
 [Options]
-
+Opţiuni
 [options]
 Opţiuni
 [Orange]
@@ -687,9 +683,9 @@ Iesi din joc
 [quit]
 Iesi
 [racetrack explanation 2]
-înot a unitătilor
+mers a unităților
 [racetrack explanation]
-Ameliorează viteza de mers
+Îmbunătățește viteza de
 [racetrack]
 Pistă raliu
 [range]
@@ -779,69 +775,69 @@ caută de lucru
 [seeking]
 caută
 [select barracks building]
-
+Selectează clădirea: Câmp de-antrenament
 [select clearingflag]
-
+Selectează steagul: Steag de defrişare
 [select construct barracks]
-
+Selectează construcția: Câmp de-antrenament
 [select construct defencetower]
-
+Selectează construcția: Turn de-apărare
 [select construct hospital]
-
+Selectează construcția: Spital
 [select construct inn]
-
+Selectează construcția: Popas
 [select construct market]
-
+Selectează construcția: Piată
 [select construct racetrack]
-
+Selectează construcția: Pistă raliu
 [select construct school]
-
+Selectează construcția: Şcoală
 [select construct stonewall]
-
+Selectează construcția: Zid de piatră
 [select construct swarm]
-
+Selectează construcția: Stup
 [select construct swimmingpool]
-
+Selectează construcția: Piscină
 [select delete tool]
-
+Selectează unealta de ștergere
 [select explorationflag]
-
+Selectează steagul: Steag de apărare
 [select hospital building]
-
+Selectează clădirea: Spital
 [select inn building]
-
+Selectează clădirea: Popas
 [select market building]
-
+Selectează clădirea: Piată
 [select place clearing area]
-
+Plasează zona: Zonă de curățare
 [select place clearingflag]
-
+Plasează steagul: Steag de defrişare
 [select place explorationflag]
-
+Plasează steagul: Steag de apărare
 [select place forbidden area]
-
+Plasează zona: Zonă interzisă
 [select place guard area]
-
+Plasează zona: Zonă de pază
 [select place warflag]
-
+Plasează steagul: Steag de luptă
 [select racetrack building]
-
+Selectează clădirea: Pistă raliu
 [select school building]
-
+Selectează clădirea: Şcoală
 [select swarm building]
-
+Selectează clădirea: Stup
 [select swimmingpool building]
-
+Selectează clădirea: Piscină
 [select tower building]
-
+Selectează clădirea: Turn de-apărare
 [select wall building]
-
+Selectează clădirea: Zid de piatră
 [select warflag]
-
+Selectează steagul: Steag de luptă
 [settings]
 Setări
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 
 [shortcut explanation v]
@@ -891,9 +887,9 @@ Piatră
 [stone]
 
 [stonewall explanation 2]
-
+apărare pasivă
 [stonewall explanation]
-Element pasiv de apărare
+Element de
 [stonewall]
 Zid de piatră
 [submit rating]
@@ -905,45 +901,45 @@ Numele servărului gazdă
 [swarm explanation 2]
 
 [swarm explanation]
-Crează unităţi noi
+Creează unități noi
 [swarm]
 Stup
 [Swim]
 Înoată
 [swimmingpool explanation 2]
-nivelul de înot
+înot a unităților
 [swimmingpool explanation]
-Ameliorează viteza de
+Îmbunătățește viteza de
 [swimmingpool]
 Piscină
 [switch to adding areas]
-
+Adaugă zone
 [switch to area brush 1]
-
+Selectează pensula de zone: 1
 [switch to area brush 2]
-
+Selectează pensula de zone: 2
 [switch to area brush 3]
-
+Selectează pensula de zone: 3
 [switch to area brush 4]
-
+Selectează pensula de zone: 4
 [switch to area brush 5]
-
+Selectează pensula de zone: 5
 [switch to area brush 6]
-
+Selectează pensula de zone: 6
 [switch to area brush 7]
-
+Selectează pensula de zone: 7
 [switch to area brush 8]
-
+Selectează pensula de zone: 8
 [switch to building view]
-
+Afișează clădirile
 [switch to flag view]
-
+Afișează steagurile
 [switch to removing areas]
-
+Elimină zone
 [switch to teams view]
-
+Afișează echipele
 [switch to terrain view]
-
+Afișează terenul
 [sys req]
 
 [tab]
@@ -1127,7 +1123,7 @@ luptători
 [water]
 Apă
 [Wheat]
-
+Grâu
 [Won : you defeated your opponents]
 Câştig : aţi învins pe toţi adversarii
 [Won : you have the most prestige]
@@ -1142,8 +1138,6 @@ Lemn
 
 [Worker]
 Lucrător
-[workers]
-Lucrători
 [workers]
 lucrători
 [working]
@@ -1210,3 +1204,23 @@ Aţi câştigat!
 Unitatea voastră a trecut de partea %0
 [Your username was banned]
 
+[game speed]
+Viteza jocului
+[decrease game speed]
+Redu viteza jocului
+[increase game speed]
+Mărește viteza jocului
+[maximum game speed]
+Maximă
+[multiplayer game speed]
+Viteză: 1x (multiplayer)
+[game speed help]
+Doar pentru un singur jucător și reluări. Jocurile multiplayer rulează la 1x.
+[AICortex-Description]
+Cortex - IA experimentală cu trei straturi. În dezvoltare.
+[ERROR_CANT_LOAD_MAP]
+Harta nu a putut fi încărcată: fișierul este deteriorat sau are o versiune incompatibilă.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Campania nu a putut fi salvată. Verifică dacă dosarul destinație există, permite scrierea și are spațiu liber.
+[AICortex]
+Cortex

@@ -81,7 +81,7 @@ riesy
 [alliances]
 Aliancie
 [alt %0]
-
+alt-%0
 [and]
 a
 [any explorer]
@@ -225,7 +225,7 @@ Pripája sa ku
 [Continue playing]
 Pokračovať
 [control %0]
-
+control-%0
 [Corn]
 Pšenica
 [crater density]
@@ -325,35 +325,35 @@ prieskumníci
 [extra islands]
 prázdne ostrovy
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -367,9 +367,7 @@ Jedlo
 [forbidden area]
 Zakázané územie
 [Free]
-Ok
-[free]
-voľní
+Zdravé
 [free]
 voľní
 [from:]
@@ -424,8 +422,6 @@ Lieči jednotky
 Nemocnica
 [host]
 Vytvor hru
-[hp]
-HP
 [hp]
 Zdravie
 [Human]
@@ -555,21 +551,21 @@ Označiť mapu
 [market explanation 2]
 s ostatnými hráčmi
 [market explanation]
-Umožnňuje výmenu ovocia
+Umožňuje výmenu ovocia
 [market]
 Trhovisko
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Najnižšia potrebná úroveň:
 [Minimum Level To Flag]
-
+Min. úr. jednotiek
 [Music volume]
 Hlasitosť (hudba)
 [Mute]
-
+Stlmiť
 [mute]
 Stlmiť
 [new campaign]
@@ -639,7 +635,7 @@ otvorené
 [OpenGL]
 OpenGL
 [Options]
-
+Nastavenia
 [options]
 Nastavenia
 [Orange]
@@ -693,9 +689,9 @@ Ukončiť hru
 [quit]
 Koniec
 [racetrack explanation 2]
-
+kráčania jednotiek
 [racetrack explanation]
-Zvyšuje rýchlosť kráčania
+Zvyšuje rýchlosť
 [racetrack]
 Bežecká dráha
 [range]
@@ -767,9 +763,9 @@ Uložiť hru
 [Save]
 Uložiť
 [school explanation 2]
-
+úroveň robotníkov
 [school explanation]
-Učí lepšie stavať
+Zvyšuje staviteľskú
 [school]
 Škola
 [Script Areas]
@@ -785,69 +781,69 @@ hľadajú prácu
 [seeking]
 hľadajú
 [select barracks building]
-
+Vybrať budovu: Kasárne
 [select clearingflag]
-
+Vybrať vlajku: Vlajka čistenia
 [select construct barracks]
-
+Vybrať stavbu: Kasárne
 [select construct defencetower]
-
+Vybrať stavbu: Obr. veža
 [select construct hospital]
-
+Vybrať stavbu: Nemocnica
 [select construct inn]
-
+Vybrať stavbu: Jedáleň
 [select construct market]
-
+Vybrať stavbu: Trhovisko
 [select construct racetrack]
-
+Vybrať stavbu: Bežecká dráha
 [select construct school]
-
+Vybrať stavbu: Škola
 [select construct stonewall]
-
+Vybrať stavbu: Hradba
 [select construct swarm]
-
+Vybrať stavbu: Hniezdo
 [select construct swimmingpool]
-
+Vybrať stavbu: Bazén
 [select delete tool]
-
+Vybrať nástroj mazania
 [select explorationflag]
-
+Vybrať vlajku: Vlajka prieskumu
 [select hospital building]
-
+Vybrať budovu: Nemocnica
 [select inn building]
-
+Vybrať budovu: Jedáleň
 [select market building]
-
+Vybrať budovu: Trhovisko
 [select place clearing area]
-
+Umiestniť oblasť: Čistenie
 [select place clearingflag]
-
+Umiestniť vlajku: Vlajka čistenia
 [select place explorationflag]
-
+Umiestniť vlajku: Vlajka prieskumu
 [select place forbidden area]
-
+Umiestniť oblasť: Zakázané územie
 [select place guard area]
-
+Umiestniť oblasť: Stráž
 [select place warflag]
-
+Umiestniť vlajku: Vlajka vojny
 [select racetrack building]
-
+Vybrať budovu: Bežecká dráha
 [select school building]
-
+Vybrať budovu: Škola
 [select swarm building]
-
+Vybrať budovu: Hniezdo
 [select swimmingpool building]
-
+Vybrať budovu: Bazén
 [select tower building]
-
+Vybrať budovu: Obr. veža
 [select wall building]
-
+Vybrať budovu: Hradba
 [select warflag]
-
+Vybrať vlajku: Vlajka vojny
 [settings]
 Nastavenia
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 Enter: Pošli správu
 [shortcut explanation v]
@@ -897,9 +893,9 @@ Kameň
 [stone]
 kamene
 [stonewall explanation 2]
-
+obrany
 [stonewall explanation]
-Pasívna obrana
+Prvok pasívnej
 [stonewall]
 Hradba
 [submit rating]
@@ -917,39 +913,39 @@ Hniezdo
 [Swim]
 Plávanie
 [swimmingpool explanation 2]
-
+plávania jednotiek
 [swimmingpool explanation]
-Zvyšuje rýchlosť plávania
+Zvyšuje rýchlosť
 [swimmingpool]
 Bazén
 [switch to adding areas]
-
+Pridávať oblasti
 [switch to area brush 1]
-
+Vybrať štetec oblastí: 1
 [switch to area brush 2]
-
+Vybrať štetec oblastí: 2
 [switch to area brush 3]
-
+Vybrať štetec oblastí: 3
 [switch to area brush 4]
-
+Vybrať štetec oblastí: 4
 [switch to area brush 5]
-
+Vybrať štetec oblastí: 5
 [switch to area brush 6]
-
+Vybrať štetec oblastí: 6
 [switch to area brush 7]
-
+Vybrať štetec oblastí: 7
 [switch to area brush 8]
-
+Vybrať štetec oblastí: 8
 [switch to building view]
-
+Zobraziť budovy
 [switch to flag view]
-
+Zobraziť vlajky
 [switch to removing areas]
-
+Odstraňovať oblasti
 [switch to teams view]
-
+Zobraziť tímy
 [switch to terrain view]
-
+Zobraziť terén
 [sys req]
 
 [tab]
@@ -1133,7 +1129,7 @@ bojovníci
 [water]
 Voda
 [Wheat]
-
+Pšenica
 [wheat]
 pšenica
 [Won : you defeated your opponents]
@@ -1150,8 +1146,6 @@ drevo
 
 [Worker]
 Robotník
-[workers]
-Robotníci
 [workers]
 robotníci
 [working]
@@ -1218,3 +1212,23 @@ Tvoji %0 čelia útoku
 Tvoja jednotka konvertovala k tímu %0
 [Your username was banned]
 
+[game speed]
+Rýchlosť hry
+[decrease game speed]
+Znížiť rýchlosť hry
+[increase game speed]
+Zvýšiť rýchlosť hry
+[maximum game speed]
+Maximálna
+[multiplayer game speed]
+Rýchlosť: 1x (viac hráčov)
+[game speed help]
+Iba pre jedného hráča a záznamy. Hra viacerých hráčov beží rýchlosťou 1x.
+[AICortex-Description]
+Cortex - Experimentálna trojvrstvová AI. Vo vývoji.
+[ERROR_CANT_LOAD_MAP]
+Mapu nemožno načítať: súbor je poškodený alebo má nekompatibilnú verziu.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Kampaň nemožno uložiť. Skontrolujte, či cieľový priečinok existuje, je zapisovateľný a je k dispozícii voľné miesto.
+[AICortex]
+Cortex

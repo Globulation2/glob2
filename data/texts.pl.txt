@@ -303,7 +303,7 @@ wejście
 [equals]
 równa się
 [ERROR_CANT_LOAD_MAP]
-Nie udało się wczytać mapy, ponieważ plik jest uszkodzony lub ma niezgodną wersję.
+Nie można wczytać mapy: plik jest uszkodzony lub ma niezgodną wersję.
 [escape]
 ucieczka
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ Jedzenie
 [forbidden area]
 Zakazany obszar
 [Free]
-Ok
+Zdrowe
 [free]
 wolne
 [from:]
@@ -557,7 +557,7 @@ meta-%0
 [Min required level:]
 Min. wymagany poziom:
 [Minimum Level To Flag]
-Minimalny Poziom Flag
+Min. poz. jednostek
 [Music volume]
 Głośność (muzyka)
 [Mute]
@@ -1206,3 +1206,21 @@ Twój adres IP został zablokowany. Proszę cierpliwie czekać aż zostanie odbl
 Twoja jednostka została przeciągnięta na stronę wroga %0
 [Your username was banned]
 Twoja imię gracza zostało zablokowane. Skontaktuj się z administratorami aby to zmienić.
+[game speed]
+Szybkość gry
+[decrease game speed]
+Zmniejsz szybkość gry
+[increase game speed]
+Zwiększ szybkość gry
+[maximum game speed]
+Maksymalna
+[multiplayer game speed]
+Szybkość: 1x (gra sieciowa)
+[game speed help]
+Tylko gra jednoosobowa i powtórki. Gra wieloosobowa działa z szybkością 1x.
+[AICortex-Description]
+Cortex - Eksperymentalna trójwarstwowa SI. W trakcie rozwoju.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Nie można zapisać kampanii. Sprawdź, czy folder docelowy istnieje, jest dostępny do zapisu i ma wolne miejsce.
+[AICortex]
+Cortex

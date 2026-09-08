@@ -81,7 +81,7 @@ Alga
 [alliances]
 Szövetségek
 [alt %0]
-
+alt-%0
 [and]
 és
 [any explorer]
@@ -187,13 +187,13 @@ Válassz egy játékot
 [choose map]
 Válassz egy térképet
 [clear area]
-
+Tisztítási terület
 [Clearing:]
 Tisztítás:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Erőforrások feltárása
+Eltávolítja az erőforrásokat
 [clearingflag]
 Tisztítás zászló
 [closed]
@@ -219,7 +219,7 @@ Kapcsolódás
 [Continue playing]
 Játék folytatása
 [control %0]
-
+control-%0
 [Corn]
 Búza
 [crater density]
@@ -249,9 +249,9 @@ Kár
 [Defeat Your Oppenents]
 
 [defencetower explanation 2]
-ellenséges egységeket
+és épületeket támad
 [defencetower explanation]
-Megtámadja a közeli
+Közeli ellenséges egységeket
 [defencetower]
 Páncéltorony
 [Defense Map]
@@ -319,35 +319,35 @@ felderítők
 [extra islands]
 
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -359,9 +359,9 @@ felderítők
 [food]
 Élelmiszer
 [forbidden area]
-
+Tiltott terület
 [Free]
-Szabad
+Egészséges
 [free]
 szabad
 [from:]
@@ -389,7 +389,7 @@ Fű
 [ground attack]
 
 [guard area]
-
+Őrzött terület
 [GUIMapPreview text 0]
 
 [GUIMapPreview text 1]
@@ -543,19 +543,19 @@ Térkép hosszúsága
 [mark map]
 
 [market explanation 2]
-gyümölcs árucserét
+gyümölcscserét másokkal
 [market explanation]
-Lehetővé teszi az
+Lehetővé teszi a
 [market]
 Piac
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Minimális szükséges szint:
 [Minimum Level To Flag]
-
+Min. egységszint
 [Music volume]
 Hangerősség (zene)
 [Mute]
@@ -629,7 +629,7 @@ nyitva
 [OpenGL]
 OpenGL
 [Options]
-
+Opciók
 [options]
 Opciók
 [Orange]
@@ -775,69 +775,69 @@ munkát keres
 [seeking]
 keresés
 [select barracks building]
-
+Épület kijelölése: Laktanya
 [select clearingflag]
-
+Zászló kijelölése: Tisztítás zászló
 [select construct barracks]
-
+Építkezés kiválasztása: Laktanya
 [select construct defencetower]
-
+Építkezés kiválasztása: Páncéltorony
 [select construct hospital]
-
+Építkezés kiválasztása: Kórház
 [select construct inn]
-
+Építkezés kiválasztása: Étkezde
 [select construct market]
-
+Építkezés kiválasztása: Piac
 [select construct racetrack]
-
+Építkezés kiválasztása: Versenypálya
 [select construct school]
-
+Építkezés kiválasztása: Iskola
 [select construct stonewall]
-
+Építkezés kiválasztása: Kőfal
 [select construct swarm]
-
+Építkezés kiválasztása: Raj
 [select construct swimmingpool]
-
+Építkezés kiválasztása: Úszómedence
 [select delete tool]
-
+Törlőeszköz kiválasztása
 [select explorationflag]
-
+Zászló kijelölése: Felderítő zászló
 [select hospital building]
-
+Épület kijelölése: Kórház
 [select inn building]
-
+Épület kijelölése: Étkezde
 [select market building]
-
+Épület kijelölése: Piac
 [select place clearing area]
-
+Terület elhelyezése: Tisztítási terület
 [select place clearingflag]
-
+Zászló elhelyezése: Tisztítás zászló
 [select place explorationflag]
-
+Zászló elhelyezése: Felderítő zászló
 [select place forbidden area]
-
+Terület elhelyezése: Tiltott terület
 [select place guard area]
-
+Terület elhelyezése: Őrzött terület
 [select place warflag]
-
+Zászló elhelyezése: Hadizászló
 [select racetrack building]
-
+Épület kijelölése: Versenypálya
 [select school building]
-
+Épület kijelölése: Iskola
 [select swarm building]
-
+Épület kijelölése: Raj
 [select swimmingpool building]
-
+Épület kijelölése: Úszómedence
 [select tower building]
-
+Épület kijelölése: Páncéltorony
 [select wall building]
-
+Épület kijelölése: Kőfal
 [select warflag]
-
+Zászló kijelölése: Hadizászló
 [settings]
 Beállítások
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 
 [shortcut explanation v]
@@ -887,9 +887,9 @@ Kő
 [stone]
 
 [stonewall explanation 2]
-
+elem
 [stonewall explanation]
-Passzív védelmi elem
+Passzív védelmi
 [stonewall]
 Kőfal
 [submit rating]
@@ -913,33 +913,33 @@ fejlesztése
 [swimmingpool]
 Úszómedence
 [switch to adding areas]
-
+Területek hozzáadása
 [switch to area brush 1]
-
+Területecset kiválasztása: 1
 [switch to area brush 2]
-
+Területecset kiválasztása: 2
 [switch to area brush 3]
-
+Területecset kiválasztása: 3
 [switch to area brush 4]
-
+Területecset kiválasztása: 4
 [switch to area brush 5]
-
+Területecset kiválasztása: 5
 [switch to area brush 6]
-
+Területecset kiválasztása: 6
 [switch to area brush 7]
-
+Területecset kiválasztása: 7
 [switch to area brush 8]
-
+Területecset kiválasztása: 8
 [switch to building view]
-
+Épületek nézete
 [switch to flag view]
-
+Zászlók nézete
 [switch to removing areas]
-
+Területek eltávolítása
 [switch to teams view]
-
+Csapatok nézete
 [switch to terrain view]
-
+Terep nézete
 [sys req]
 
 [tab]
@@ -1123,7 +1123,7 @@ harcosok
 [water]
 Víz
 [Wheat]
-
+Búza
 [Won : you defeated your opponents]
 Nyertél: legyőzted az ellenfeleidet.
 [Won : you have the most prestige]
@@ -1204,3 +1204,23 @@ Megtámadták a %0 -t
 Az egységedet az ellenség elfogta %0
 [Your username was banned]
 
+[game speed]
+Játéksebesség
+[decrease game speed]
+Játék lassítása
+[increase game speed]
+Játék gyorsítása
+[maximum game speed]
+Maximális
+[multiplayer game speed]
+Sebesség: 1x (többjátékos)
+[game speed help]
+Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
+[AICortex-Description]
+Cortex - Kísérleti, háromrétegű MI. Fejlesztés alatt.
+[ERROR_CANT_LOAD_MAP]
+A térkép nem tölthető be: a fájl sérült vagy nem kompatibilis verziójú.
+[ERROR_CANT_SAVE_CAMPAIGN]
+A hadjárat nem menthető. Ellenőrizd, hogy a célmappa létezik, írható, és van elegendő szabad hely.
+[AICortex]
+Cortex

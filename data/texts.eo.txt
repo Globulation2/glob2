@@ -249,9 +249,9 @@ Malpliigi je globuloj laborantaj
 [Defeat Your Oppenents]
 Venku via(j)n kontraŭano(j)n
 [defencetower explanation 2]
-globulojn aŭ konstruaĵojn de kontraŭanoj
+globulojn kaj konstruaĵojn
 [defencetower explanation]
-Tiu konstruaĵo atakas proksimajn
+Atakas apudajn malamikajn
 [defencetower]
 Defendturo
 [Defense Map]
@@ -303,7 +303,7 @@ enigklavo de numerklavaro
 [equals]
 egalas je
 [ERROR_CANT_LOAD_MAP]
-La mapo ne povis esti ŝargita, ĉar la dosiero estas difektita aŭ havas malkongruan version.
+Ne eblis ŝargi la mapon: la dosiero estas difektita aŭ havas nekongruan version.
 [escape]
 eskapklavo
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ Nutraĵo
 [forbidden area]
 Malpermesata areo
 [Free]
-sana
+sanaj
 [free]
 libera
 [from:]
@@ -559,7 +559,7 @@ metaklavo-%0
 [Min required level:]
 Minimuma bezonata nivelo:
 [Minimum Level To Flag]
-Minimuma nivelo de markilo
+Min. globulnivelo
 [Music volume]
 Laŭteco de Muziko
 [Mute]
@@ -757,9 +757,9 @@ Konservi Skripton
 [Save]
 Konservi
 [school explanation 2]
-konstrunivelon de viaj laboristoj
+de viaj laboristoj
 [school explanation]
-Tiu konstruaĵo plibonigas la
+Plibonigas la konstrunivelon
 [school]
 Lernejo
 [Script Areas]
@@ -1204,3 +1204,21 @@ Via IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus 
 Teamo %0 konvertigis globulon de vi al sia!
 [Your username was banned]
 Via uzulnomo estas malpermesata. Bv. kontakti la administristojn.
+[game speed]
+Ludrapido
+[decrease game speed]
+Malpliigi la ludrapidon
+[increase game speed]
+Pliigi la ludrapidon
+[maximum game speed]
+Maksimuma
+[multiplayer game speed]
+Rapido: 1x (plurludanta)
+[game speed help]
+Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
+[AICortex-Description]
+Cortex - Eksperimenta tritavola artefarita intelekto. Ankoraŭ evoluigata.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Ne eblis konservi la kampanjon. Kontrolu, ke la cela dosierujo ekzistas, estas skribebla kaj havas liberan spacon.
+[AICortex]
+Cortex

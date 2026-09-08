@@ -85,7 +85,7 @@ alger
 [alliances]
 Alliancer
 [alt %0]
-
+alt-%0
 [and]
 og
 [any explorer]
@@ -123,9 +123,9 @@ er væk:
 [backspace]
 
 [barracks explanation 2]
-Af dine krigere
+kampniveau
 [barracks explanation]
-Forbedre militærenheder
+Forbedrer krigernes
 [barracks]
 Kaserne
 [beach size]
@@ -251,7 +251,7 @@ Rydning:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Fjern ressourcer
+Fjerner ressourcer
 [clearingflag]
 Rydningsflag
 [closed]
@@ -277,7 +277,7 @@ Forbinder til
 [Continue playing]
 Fortsæt spillet
 [control %0]
-
+control-%0
 [Corn]
 Korn
 [crater density]
@@ -307,9 +307,9 @@ Skade-kort
 [Defeat Your Oppenents]
 
 [defencetower explanation 2]
-enheder eller bygninger
+og bygninger i nærheden
 [defencetower explanation]
-Angrib nærmeste fjende
+Angriber fjendtlige enheder
 [defencetower level 0]
 Byg tårn 1
 [defencetower level 1]
@@ -371,7 +371,7 @@ Skriv din adgangskode :
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-Angrib udforskere
+Tiltrækker udforskere
 [explorationflag]
 Udforsknings flag
 [Explorer Ratio]
@@ -383,35 +383,35 @@ udforskere
 [extra islands]
 Tom ø
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -425,9 +425,7 @@ Mad
 [forbidden area]
 Forbudt arial
 [Free]
-Fri
-[free]
-Fri
+Raske
 [free]
 fri
 [from:]
@@ -477,17 +475,15 @@ Høst
 [hospital explanation 2]
 
 [hospital explanation]
-Kurere dine enheder
+Helbreder dine enheder
 [hospital]
 Hospital
 [host]
 Opret et spil
 [hp]
 HP
-[hp]
-Liv point
 [Human]
-
+menneskelig
 [human]
 menneskelig
 [hungry]
@@ -501,7 +497,7 @@ Er på vej
 [inn explanation 2]
 
 [inn explanation]
-Fodre dine enheder
+Giver dine enheder mad
 [inn level 0]
 Kro 1
 [inn level 1]
@@ -619,23 +615,23 @@ Tilgængelige kort
 [mark map]
 Marker kort for allierede
 [market explanation 2]
-Frugt med andre
+frugt med andre
 [market explanation]
-Tillader at bytte frugt
+Gør det muligt at bytte
 [market]
 Market
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Minimum krævede niveau:
 [Minimum Level To Flag]
-Minimum Flag niveau
+Min. enhedsniveau
 [Music volume]
 Lydstyrke (musik)
 [Mute]
-
+Slå lyd fra
 [mute]
 Slå lyd fra
 [new campaign]
@@ -705,7 +701,7 @@ Her
 [OpenGL]
 OpenGL
 [Options]
-
+Indstillinger
 [options]
 Indstillinger
 [Orange]
@@ -749,7 +745,7 @@ Prestige
 [priority]
 
 [Prune]
-Prune
+Blomme
 [quit the editor]
 Afslut editor
 [quit the game]
@@ -759,9 +755,9 @@ Afslut spillet
 [quit]
 Afslut
 [racetrack explanation 2]
-Niveau af dine enheder
+ganghastighed
 [racetrack explanation]
-Forbedre gåhastighed
+Øger enhedernes
 [racetrack]
 Træningsbane
 [range]
@@ -833,9 +829,9 @@ Gem bane
 [Save]
 Gem
 [school explanation 2]
-af dine arbejdere
+byggeniveau
 [school explanation]
-Forbædre bygnings evnen
+Forbedrer arbejdernes
 [school]
 Skole
 [Script Areas]
@@ -855,27 +851,27 @@ Vælg Bar
 [select clearingflag]
 Vælg Rydnings Flag
 [select construct barracks]
-
+Vælg byggeri: Kaserne
 [select construct defencetower]
-
+Vælg byggeri: Forsvars tårn
 [select construct hospital]
-
+Vælg byggeri: Hospital
 [select construct inn]
-
+Vælg byggeri: Kro
 [select construct market]
-
+Vælg byggeri: Market
 [select construct racetrack]
-
+Vælg byggeri: Træningsbane
 [select construct school]
-
+Vælg byggeri: Skole
 [select construct stonewall]
-
+Vælg byggeri: Stenvæg
 [select construct swarm]
-
+Vælg byggeri: Sværm
 [select construct swimmingpool]
-
+Vælg byggeri: Svømmepøl
 [select delete tool]
-
+Vælg sletteværktøj
 [select explorationflag]
 Vælg Udforsknings Flag
 [select hospital building]
@@ -885,17 +881,17 @@ Vælg Kro
 [select market building]
 Vælg Market
 [select place clearing area]
-
+Placér område: Ophæv areal
 [select place clearingflag]
-
+Placér flag: Rydningsflag
 [select place explorationflag]
-
+Placér flag: Udforsknings flag
 [select place forbidden area]
-
+Placér område: Forbudt arial
 [select place guard area]
-
+Placér område: Vagt arial
 [select place warflag]
-
+Placér flag: Krigs flag
 [select racetrack building]
 Vælg Træningsbane
 [select school building]
@@ -913,7 +909,7 @@ Vælg Krigs Flag
 [settings]
 Indstillinger
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 tast enter : send en besked
 [shortcut explanation v]
@@ -929,7 +925,7 @@ Opløsning
 [smoothing]
 Udglatning
 [sort by name]
-
+Navn
 [sort by rating]
 
 [sort by size]
@@ -963,9 +959,9 @@ Sten
 [stone]
 sten
 [stonewall explanation 2]
-element
+forsvarselement
 [stonewall explanation]
-Passivt forsvarselement
+Passivt
 [stonewall]
 Stenvæg
 [submit rating]
@@ -977,7 +973,7 @@ Sump
 [swarm explanation 2]
 
 [swarm explanation]
-Byg en ny enhed
+Skaber nye enheder
 [swarm level 0]
 Sværm
 [swarm]
@@ -985,35 +981,35 @@ Sværm
 [Swim]
 Svøm
 [swimmingpool explanation 2]
-Hastighed af dine enheder
+svømmehastighed
 [swimmingpool explanation]
-Forbedre svømning
+Øger enhedernes
 [swimmingpool]
 Svømmepøl
 [switch to adding areas]
-
+Tilføj områder
 [switch to area brush 1]
-
+Vælg områdepensel: 1
 [switch to area brush 2]
-
+Vælg områdepensel: 2
 [switch to area brush 3]
-
+Vælg områdepensel: 3
 [switch to area brush 4]
-
+Vælg områdepensel: 4
 [switch to area brush 5]
-
+Vælg områdepensel: 5
 [switch to area brush 6]
-
+Vælg områdepensel: 6
 [switch to area brush 7]
-
+Vælg områdepensel: 7
 [switch to area brush 8]
-
+Vælg områdepensel: 8
 [switch to building view]
 Skift til bygningsvisning
 [switch to flag view]
 Skift til flag visning
 [switch to removing areas]
-
+Fjern områder
 [switch to teams view]
 Skift til hold visning
 [switch to terrain view]
@@ -1103,7 +1099,7 @@ Svømme pølen er under angreb
 [to:]
 til:
 [toggle draw accessibility aids]
-Toggle Draw Accessibility Aids
+Vis/skjul tilgængelighedshjælp
 [toggle draw information]
 Vælg tegn information
 [toggle draw unit paths]
@@ -1183,7 +1179,7 @@ Gå
 [warflag explanation 2]
 
 [warflag explanation]
-Angrib krigere
+Tiltrækker krigere
 [warflag]
 Krigs flag
 [Warning, you need to reboot the game for changes to take effect]
@@ -1201,7 +1197,7 @@ krigere
 [water]
 Vand
 [Wheat]
-
+Korn
 [wheat]
 hvede
 [Won : you defeated your opponents]
@@ -1218,8 +1214,6 @@ Træ
 Arbejder Ratio
 [Worker]
 Arbejder
-[workers]
-Arbejdere
 [workers]
 arbejdere
 [working]
@@ -1286,3 +1280,23 @@ Dine %0 er under angreb
 En af dine enheder blev konverteret til et %0 hold
 [Your username was banned]
 
+[game speed]
+Spilhastighed
+[decrease game speed]
+Sænk spilhastigheden
+[increase game speed]
+Øg spilhastigheden
+[maximum game speed]
+Maksimal
+[multiplayer game speed]
+Hastighed: 1x (flerspiller)
+[game speed help]
+Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
+[AICortex-Description]
+Cortex - Eksperimentel AI med tre lag. Under udvikling.
+[ERROR_CANT_LOAD_MAP]
+Kortet kunne ikke indlæses: filen er beskadiget eller har en inkompatibel version.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Kampagnen kunne ikke gemmes. Kontrollér, at destinationsmappen findes, er skrivbar, og at der er ledig plads.
+[AICortex]
+Cortex

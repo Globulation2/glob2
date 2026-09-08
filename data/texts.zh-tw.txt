@@ -81,7 +81,7 @@ AIWarrush
 [alliances]
 聯盟
 [alt %0]
-
+alt-%0
 [and]
 而且
 [any explorer]
@@ -119,9 +119,9 @@ AIWarrush
 [backspace]
 
 [barracks explanation 2]
-你的士兵的等級
+戰鬥技能等級
 [barracks explanation]
-增加戰鬥技巧
+提升士兵的
 [barracks]
 兵營
 [beach size]
@@ -273,7 +273,7 @@ AIWarrush
 [Continue playing]
 繼續遊戲
 [control %0]
-
+control-%0
 [Corn]
 小麥
 [crater density]
@@ -303,9 +303,9 @@ AIWarrush
 [Defeat Your Oppenents]
 
 [defencetower explanation 2]
-單位或建築物
+敵方單位和建築
 [defencetower explanation]
-攻擊附近敵人
+攻擊附近的
 [defencetower level 0]
 防禦塔 1
 [defencetower level 1]
@@ -379,35 +379,35 @@ AIWarrush
 [extra islands]
 空置島嶼
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -421,9 +421,7 @@ AIWarrush
 [forbidden area]
 禁區
 [Free]
-尚可
-[free]
-自由
+健康
 [free]
 自由
 [from:]
@@ -479,11 +477,9 @@ AIWarrush
 [host]
 開始一局新遊戲
 [hp]
-HP
-[hp]
 生命值
 [Human]
-
+人類玩家
 [human]
 人類玩家
 [hungry]
@@ -615,23 +611,23 @@ Air dmg.
 [mark map]
 為盟友標示地圖
 [market explanation 2]
-和他人交易水果
+交換水果
 [market explanation]
-允許交易的資源
+與其他玩家
 [market]
 市場
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 最小等級需求:
 [Minimum Level To Flag]
-旗幟最小等級
+單位最低等級
 [Music volume]
 音量 (音樂)
 [Mute]
-
+沉默
 [mute]
 沉默
 [new campaign]
@@ -699,9 +695,9 @@ Air dmg.
 [open]
 開啟
 [OpenGL]
-
+OpenGL
 [Options]
-
+選項
 [options]
 選項
 [Orange]
@@ -745,7 +741,7 @@ Air dmg.
 [priority]
 
 [Prune]
-梅乾
+李子
 [quit the editor]
 離開編輯器
 [quit the game]
@@ -755,9 +751,9 @@ Air dmg.
 [quit]
 離開
 [racetrack explanation 2]
-你的單位的速度
+行走速度
 [racetrack explanation]
-增加行走速度
+提升單位的
 [racetrack]
 跑道
 [range]
@@ -829,9 +825,9 @@ Air dmg.
 [Save]
 儲存
 [school explanation 2]
-你的工人的等級
+建築技能等級
 [school explanation]
-升級建築物
+提升工人的
 [school]
 學校
 [Script Areas]
@@ -851,27 +847,27 @@ Air dmg.
 [select clearingflag]
 選擇清除旗幟
 [select construct barracks]
-
+選擇建造項目: 兵營
 [select construct defencetower]
-
+選擇建造項目: 防禦塔
 [select construct hospital]
-
+選擇建造項目: 醫院
 [select construct inn]
-
+選擇建造項目: 客棧
 [select construct market]
-
+選擇建造項目: 市場
 [select construct racetrack]
-
+選擇建造項目: 跑道
 [select construct school]
-
+選擇建造項目: 學校
 [select construct stonewall]
-
+選擇建造項目: 石牆
 [select construct swarm]
-
+選擇建造項目: 孢子堆
 [select construct swimmingpool]
-
+選擇建造項目: 游泳池
 [select delete tool]
-
+選擇刪除工具
 [select explorationflag]
 選擇探索旗幟
 [select hospital building]
@@ -881,17 +877,17 @@ Air dmg.
 [select market building]
 選擇市場
 [select place clearing area]
-
+放置區域: 清除區
 [select place clearingflag]
-
+放置旗幟: 清除旗幟
 [select place explorationflag]
-
+放置旗幟: 探索旗幟
 [select place forbidden area]
-
+放置區域: 禁區
 [select place guard area]
-
+放置區域: 守衛區
 [select place warflag]
-
+放置旗幟: 攻擊旗幟
 [select racetrack building]
 選擇跑道
 [select school building]
@@ -909,7 +905,7 @@ Air dmg.
 [settings]
 設定
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 Enter: 傳送訊息
 [shortcut explanation v]
@@ -925,7 +921,7 @@ V: 持鍵以傳送訊息
 [smoothing]
 平整度
 [sort by name]
-
+名稱
 [sort by rating]
 
 [sort by size]
@@ -959,9 +955,9 @@ V: 持鍵以傳送訊息
 [stone]
 石頭
 [stonewall explanation 2]
-元素
+建築
 [stonewall explanation]
-消極防禦
+用於被動防禦的
 [stonewall]
 石牆
 [submit rating]
@@ -981,35 +977,35 @@ V: 持鍵以傳送訊息
 [Swim]
 游泳
 [swimmingpool explanation 2]
-你的單位的速度
+游泳速度
 [swimmingpool explanation]
-增加游泳速度
+提升單位的
 [swimmingpool]
 游泳池
 [switch to adding areas]
-
+新增區域
 [switch to area brush 1]
-
+選擇區域筆刷: 1
 [switch to area brush 2]
-
+選擇區域筆刷: 2
 [switch to area brush 3]
-
+選擇區域筆刷: 3
 [switch to area brush 4]
-
+選擇區域筆刷: 4
 [switch to area brush 5]
-
+選擇區域筆刷: 5
 [switch to area brush 6]
-
+選擇區域筆刷: 6
 [switch to area brush 7]
-
+選擇區域筆刷: 7
 [switch to area brush 8]
-
+選擇區域筆刷: 8
 [switch to building view]
 切換至建築物視野
 [switch to flag view]
 切換至旗幟視野
 [switch to removing areas]
-
+移除區域
 [switch to teams view]
 切換至團隊視野
 [switch to terrain view]
@@ -1197,7 +1193,7 @@ V: 持鍵以傳送訊息
 [water]
 水面
 [Wheat]
-
+小麥
 [wheat]
 小麥
 [Won : you defeated your opponents]
@@ -1213,8 +1209,6 @@ V: 持鍵以傳送訊息
 [Worker Ratio]
 工人比例
 [Worker]
-工人
-[workers]
 工人
 [workers]
 工人
@@ -1282,3 +1276,23 @@ Ysagoon 線上遊戲
 你的單位遭 %0 招降
 [Your username was banned]
 
+[game speed]
+遊戲速度
+[decrease game speed]
+降低遊戲速度
+[increase game speed]
+提高遊戲速度
+[maximum game speed]
+最快
+[multiplayer game speed]
+遊戲速度：1x（多人遊戲）
+[game speed help]
+僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
+[AICortex-Description]
+Cortex - 實驗性的三層人工智慧，開發中。
+[ERROR_CANT_LOAD_MAP]
+無法載入地圖：檔案已損毀或版本不相容。
+[ERROR_CANT_SAVE_CAMPAIGN]
+無法儲存戰役。請檢查目標資料夾是否存在、是否可寫入，以及是否有可用空間。
+[AICortex]
+Cortex

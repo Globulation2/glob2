@@ -69,7 +69,7 @@ IANumbi
 [AIReachToInfinity-Description]
 
 [AIReachToInfinity]
-
+ReachToInfinity
 [AIWarrush-Description]
 
 [AIWarrush]
@@ -81,7 +81,7 @@ Algas
 [alliances]
 Alianças
 [alt %0]
-
+alt-%0
 [and]
 e
 [any explorer]
@@ -225,9 +225,9 @@ Conectando-se a
 [Continue playing]
 Continuar jogando
 [control %0]
-
+control-%0
 [Corn]
-Milho
+Trigo
 [crater density]
 
 [crater lakes terrain]
@@ -255,9 +255,9 @@ Danho
 [Defeat Your Oppenents]
 
 [defencetower explanation 2]
-inimigos na cercania
+inimigos próximos
 [defencetower explanation]
-Ataca prédios/unidades
+Ataca unidades e edifícios
 [defencetower]
 Torre de defesa
 [Defense Map]
@@ -325,35 +325,35 @@ exploradores
 [extra islands]
 
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
 
 [Flag Defaults]
@@ -367,9 +367,7 @@ Comida
 [forbidden area]
 Área proibida
 [Free]
-Bem
-[free]
-libres
+Saudáveis
 [free]
 libres
 [from:]
@@ -419,15 +417,13 @@ Coletar
 [hospital explanation 2]
 
 [hospital explanation]
-Sana as unidades
+Cura as unidades
 [hospital]
 Hospital
 [host]
 Servir uma partida
 [hp]
-Danho
-[hp]
-Danho
+PV
 [Human]
 
 [human]
@@ -561,15 +557,15 @@ Mercado
 [medium priority]
 
 [meta %0]
-
+meta-%0
 [Min required level:]
 Mín. nível requerido:
 [Minimum Level To Flag]
-
+Nível mín. unidades
 [Music volume]
 Volume (música)
 [Mute]
-
+silêncio
 [mute]
 silêncio
 [new campaign]
@@ -639,7 +635,7 @@ aberto
 [OpenGL]
 OpenGL
 [Options]
-
+Opções
 [options]
 Opções
 [Orange]
@@ -683,7 +679,7 @@ Prestigio
 [priority]
 
 [Prune]
-Passa
+Ameixa
 [quit the editor]
 
 [quit the game]
@@ -767,9 +763,9 @@ Salvar partida
 [Save]
 Guardar
 [school explanation 2]
-dos trabalhadores
+construção dos trabalhadores
 [school explanation]
-Melhora as noções
+Melhora o nível de
 [school]
 Escola
 [Script Areas]
@@ -785,69 +781,69 @@ procurando trabalho
 [seeking]
 procurando
 [select barracks building]
-
+Selecionar edifício: Quartel
 [select clearingflag]
-
+Selecionar bandeira: Bandeira de limpeza
 [select construct barracks]
-
+Selecionar construção: Quartel
 [select construct defencetower]
-
+Selecionar construção: Torre de defesa
 [select construct hospital]
-
+Selecionar construção: Hospital
 [select construct inn]
-
+Selecionar construção: Taberna
 [select construct market]
-
+Selecionar construção: Mercado
 [select construct racetrack]
-
+Selecionar construção: Pista de carreiras
 [select construct school]
-
+Selecionar construção: Escola
 [select construct stonewall]
-
+Selecionar construção: Muro de pedra
 [select construct swarm]
-
+Selecionar construção: Colmeia
 [select construct swimmingpool]
-
+Selecionar construção: Piscina
 [select delete tool]
-
+Selecionar ferramenta de eliminação
 [select explorationflag]
-
+Selecionar bandeira: Bandeira de exploração
 [select hospital building]
-
+Selecionar edifício: Hospital
 [select inn building]
-
+Selecionar edifício: Taberna
 [select market building]
-
+Selecionar edifício: Mercado
 [select place clearing area]
-
+Colocar área: Área de limpeza
 [select place clearingflag]
-
+Colocar bandeira: Bandeira de limpeza
 [select place explorationflag]
-
+Colocar bandeira: Bandeira de exploração
 [select place forbidden area]
-
+Colocar área: Área proibida
 [select place guard area]
-
+Colocar área: Área de guardia
 [select place warflag]
-
+Colocar bandeira: Bandeira de guerra
 [select racetrack building]
-
+Selecionar edifício: Pista de carreiras
 [select school building]
-
+Selecionar edifício: Escola
 [select swarm building]
-
+Selecionar edifício: Colmeia
 [select swimmingpool building]
-
+Selecionar edifício: Piscina
 [select tower building]
-
+Selecionar edifício: Torre de defesa
 [select wall building]
-
+Selecionar edifício: Muro de pedra
 [select warflag]
-
+Selecionar bandeira: Bandeira de guerra
 [settings]
 Opções
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 Intro: Enviar mensagem de chat
 [shortcut explanation v]
@@ -917,39 +913,39 @@ Colmeia
 [Swim]
 Nadar
 [swimmingpool explanation 2]
-nado das unidades
+natação das unidades
 [swimmingpool explanation]
 Melhora a velocidade de
 [swimmingpool]
 Piscina
 [switch to adding areas]
-
+Adicionar áreas
 [switch to area brush 1]
-
+Selecionar pincel de áreas: 1
 [switch to area brush 2]
-
+Selecionar pincel de áreas: 2
 [switch to area brush 3]
-
+Selecionar pincel de áreas: 3
 [switch to area brush 4]
-
+Selecionar pincel de áreas: 4
 [switch to area brush 5]
-
+Selecionar pincel de áreas: 5
 [switch to area brush 6]
-
+Selecionar pincel de áreas: 6
 [switch to area brush 7]
-
+Selecionar pincel de áreas: 7
 [switch to area brush 8]
-
+Selecionar pincel de áreas: 8
 [switch to building view]
-
+Mostrar edifícios
 [switch to flag view]
-
+Mostrar bandeiras
 [switch to removing areas]
-
+Remover áreas
 [switch to teams view]
-
+Mostrar equipas
 [switch to terrain view]
-
+Mostrar terreno
 [sys req]
 
 [tab]
@@ -1133,7 +1129,7 @@ guerreiros
 [water]
 Água
 [Wheat]
-
+Trigo
 [Won : you defeated your opponents]
 Você ganhou: Tem destruído seus oponentes
 [Won : you have the most prestige]
@@ -1148,8 +1144,6 @@ Madeira
 
 [Worker]
 Trabalhador
-[workers]
-Trabalhadores
 [workers]
 trabalhadores
 [working]
@@ -1216,3 +1210,23 @@ Seus %0 estão sendo atacados
 Uma unidade tem se passado ao bando de %0
 [Your username was banned]
 
+[game speed]
+Velocidade do jogo
+[decrease game speed]
+Diminuir velocidade do jogo
+[increase game speed]
+Aumentar velocidade do jogo
+[maximum game speed]
+Máxima
+[multiplayer game speed]
+Velocidade: 1x (multijogador)
+[game speed help]
+Apenas para um jogador e repetições. As partidas multijogador decorrem a 1x.
+[AICortex-Description]
+Cortex - IA experimental de três camadas. Em desenvolvimento.
+[ERROR_CANT_LOAD_MAP]
+Não foi possível carregar o mapa: o ficheiro está danificado ou a sua versão é incompatível.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Não foi possível guardar a campanha. Verifica se a pasta de destino existe, permite escrita e tem espaço livre.
+[AICortex]
+Cortex
