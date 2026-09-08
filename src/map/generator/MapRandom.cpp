@@ -15,6 +15,13 @@
 /// This random map generator generates a heightfield and then choses levels at which to draw the line between water, sand, gras and sand again (desert)
 bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
+    return makeRandomMapTask(descriptor).run();
+}
+
+GAGCore::CooperativeTask Map::makeRandomMapTask(MapGenerationDescriptor &descriptor)
+{
+    unsigned work = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above grasslevel is desert
 	float waterLevel, sandLevel, grassLevel, wheatWoodLevel, algaeLevel, stoneLevel;
 	/// to influence the roughness
@@ -79,6 +86,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 
 	for (unsigned i=0; i<wHeightMap*hHeightMap; i++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		histogram[hm.uiLevel(i,2048)]++;
 	}
 	unsigned int accumulatedHistogram=0;
@@ -91,6 +99,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	algaeLevel=0;	
 	while ((waterLevel==0) && (i<2048))
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		accumulatedHistogram+=histogram[i++];
 		if (algaeLevel==0 && accumulatedHistogram >= algaeTiles)
 			algaeLevel = (float)(i-1)/2048.0;
@@ -99,12 +108,14 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	}
 	while ((sandLevel==0) && (i<2048))
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		accumulatedHistogram+=histogram[i++];
 		if (accumulatedHistogram >= waterTiles+sandTiles)
 			sandLevel = (float)(i-1)/2048.0;
 	}
 	while ((grassLevel==0) && (i<2048))
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		accumulatedHistogram+=histogram[i++];
 		if (wheatWoodLevel==0 && accumulatedHistogram >= waterTiles+sandTiles+wheatWoodTiles)
 			wheatWoodLevel = (float)(i-1)/2048.0;		
@@ -136,7 +147,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	int minDistSquare=(int)((double)w*h/(double)nbTeams/5);
 	if (minDistSquare<=0)
 	{
-		return false;
+		co_return false;
 	}
 	assert(minDistSquare>0);
 	int* bootX=descriptor.bootX;
@@ -145,6 +156,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	//TODO: First pass to find the number of available places.
 	for (int team=0; team<nbTeams; team++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		int maxSurface=0;
 		int maxX=0;
 		int maxY=0;
@@ -197,7 +209,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 		
 		if (maxSurface<=0)
 		{
-			return false;
+			co_return false;
 		}
 		assert(maxSurface);
 		bootX[team]=maxX;
@@ -205,10 +217,14 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	}
 	
 	controlSand();
-	regenerateMap(0, 0, w, h);
+    for (int column = 0; column < w; ++column) {
+        regenerateMap(column, 0, 1, h);
+        if (column % 8 == 0) co_await GAGCore::CooperativeTask::checkpoint();
+    }
 	//now to add primary resources for current map generator
 	for (unsigned y=0; y<hHeightMap; y++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for (unsigned x=0; x<wHeightMap; x++)
 		{
 			int tmpResource=NO_RES;
@@ -267,9 +283,21 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 				default: fruit = PRUNE; break;
 			}
 			//choose coordinate where there is grass but no resource yet
-			int x, y;
-			do
-			{
+            int x, y;
+            std::size_t attempts = 0;
+            do
+            {
+                if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
+                if (++attempts > std::size_t(wHeightMap) * hHeightMap * 8) {
+                    bool found = false;
+                    for (unsigned candidateY = 0; candidateY < hHeightMap && !found; ++candidateY)
+                        for (unsigned candidateX = 0; candidateX < wHeightMap && !found; ++candidateX)
+                            if (getUMTerrain(candidateX, candidateY) == GRASS && !isResource(candidateX, candidateY)) {
+                                x = candidateX; y = candidateY; found = true;
+                            }
+                    if (!found) co_return false;
+                    break;
+                }
 				x=(syncRand()%wHeightMap);
 				y=(syncRand()%hHeightMap);
 			} while (getUMTerrain(x, y)!=GRASS || isResource(x,y));
@@ -295,6 +323,6 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			}
 		}
 	}
-	return true;
+	co_return true;
 }
 

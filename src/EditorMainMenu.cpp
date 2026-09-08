@@ -12,6 +12,8 @@
 #include "MapEdit.h"
 #include "MapEditorScreen.h"
 #include "EditorLoadScreen.h"
+#include "EditorGenerateScreen.h"
+#include <ctime>
 #include "MessageScreen.h"
 #include "MapGenerator.h"
 #include "NewMapScreen.h"
@@ -37,16 +39,16 @@ void EditorMainMenu::newMap()
 {
     screens.push(std::make_unique<NewMapScreen>(), [this](Screen& screen, int result) {
         if (result != NewMapScreen::OK) return;
-        auto editor = std::make_unique<MapEdit>();
-        MapGenerator generator;
-        setRandomSyncRandSeed();
-        if (!generator.generateMap(editor->game, static_cast<NewMapScreen&>(screen).descriptor)) {
-            newMap();
-            return;
-        }
-        editor->mapHasBeenModified();
-        editor->regenerateGameHeader();
-        screens.push(std::make_unique<MapEditorScreen>(screens, std::move(editor)));
+        screens.push(std::make_unique<EditorGenerateScreen>(static_cast<NewMapScreen&>(screen).descriptor,
+            static_cast<Uint32>(std::time(nullptr))), [this](Screen& generated, int result) {
+                if (result == 1)
+                    screens.push(std::make_unique<MapEditorScreen>(screens, static_cast<EditorGenerateScreen&>(generated).takeEditor()));
+                else if (result == 2) {
+                    auto& strings = *Toolkit::getStringTable();
+                    screens.push(std::make_unique<MessageScreen>(strings.getString("[ERROR_CANT_GENERATE_MAP]"),
+                        std::vector<std::string>{strings.getString("[ok]")}), [this](Screen&, int) { newMap(); });
+                } else newMap();
+            });
     });
 }
 

@@ -1251,3 +1251,9 @@ Loading players...
 
 [Loading scripts]
 Loading scripts...
+
+[Generating map]
+Generating map...
+
+[ERROR_CANT_GENERATE_MAP]
+The map could not be generated. Try different generation settings.

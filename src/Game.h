@@ -410,7 +410,9 @@ public:
 
 public:
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
+    GAGCore::CooperativeTask oldMakeIslandsMapTask(MapGenerationDescriptor &descriptor);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
+    GAGCore::CooperativeTask makeRandomMapTask(MapGenerationDescriptor &descriptor);
 	bool generateMap(MapGenerationDescriptor &descriptor);
 
 protected:

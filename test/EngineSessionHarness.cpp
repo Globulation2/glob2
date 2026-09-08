@@ -5,6 +5,7 @@
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
 #include "EditorLoadScreen.h"
+#include "EditorGenerateScreen.h"
 #include "GameLoadScreen.h"
 #include "MapEditorScreen.h"
 #include "MapGenerator.h"
@@ -51,7 +52,10 @@ int main(int argc, char** argv)
     {
         MapGenerator generator;
         for (auto method : {MapGenerationDescriptor::eUNIFORM, MapGenerationDescriptor::eSWAMP,
-                            MapGenerationDescriptor::eISLANDS, MapGenerationDescriptor::eCONCRETEISLANDS}) {
+                            MapGenerationDescriptor::eISLANDS, MapGenerationDescriptor::eCONCRETEISLANDS,
+                            MapGenerationDescriptor::eRIVER, MapGenerationDescriptor::eCRATERLAKES,
+                            MapGenerationDescriptor::eISLES, MapGenerationDescriptor::eOLDRANDOM,
+                            MapGenerationDescriptor::eOLDISLANDS}) {
             Uint32 checksum = 0;
             std::string rng;
             for (int repeat = 0; repeat < 2; ++repeat) {
@@ -59,7 +63,17 @@ int main(int argc, char** argv)
                 descriptor.method = method;
                 descriptor.nbTeams = 2;
                 Game generated(nullptr);
-                require(generator.generateMap(generated, descriptor, 12345), "Seeded generation fixture failed");
+                if (!repeat) require(generator.generateMap(generated, descriptor, 12345), "Seeded generation fixture failed");
+                else {
+                    auto job = generator.generateMapTask(generated, descriptor, 12345);
+                    unsigned slices = 0;
+                    while (!job.advance()) {
+                        PerlinNoise interleaved(123 + slices); interleaved.Noise(.125f, .75f);
+                        std::rand();
+                        require(++slices < 10000, "Generation job did not finish");
+                    }
+                    require(slices > 1 && job.result(), "Generation must yield and succeed");
+                }
                 if (!repeat) { checksum = generated.checkSum(); rng = getSyncRandState(); }
                 else require(checksum == generated.checkSum() && rng == getSyncRandState(),
                              "Seeded generation must repeat despite unrelated noise and libc RNG draws");
@@ -67,6 +81,25 @@ int main(int argc, char** argv)
                 for (int i = 0; i < 100; ++i) std::rand();
             }
         }
+    }
+    {
+        const auto rng = getSyncRandState();
+        for (unsigned frames : {1u, 5u, 20u}) {
+            GAGGUI::ScreenStack screens(*globalContainer->gfx);
+            screens.push(std::make_unique<EditorGenerateScreen>(MapGenerationDescriptor(), 12345));
+            for (unsigned frame = 0; frame < frames; ++frame) screens.frame(frame, {});
+            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+            screens.frame(frames, {escape}); screens.frame(frames + 1, {});
+            require(!screens.running() && screens.result() == 0 && getSyncRandState() == rng,
+                    "Cancelled generation must release partial state and restore RNG");
+        }
+        GAGGUI::ScreenStack failed(*globalContainer->gfx);
+        MapGenerationDescriptor invalid; invalid.wDec = -1;
+        failed.push(std::make_unique<EditorGenerateScreen>(invalid, 12345));
+        for (unsigned frame = 0; failed.running(); ++frame) {
+            require(frame < 10, "Invalid generation descriptor did not fail promptly"); failed.frame(frame, {});
+        }
+        require(failed.result() == 2 && getSyncRandState() == rng, "Invalid generation must fail without changing RNG");
     }
     globalContainer->automaticEndingGame = true;
     globalContainer->automaticEndingSteps = 50;

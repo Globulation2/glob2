@@ -30,8 +30,8 @@ infrastructure from the supported-release acceptance criteria.
   visibility, and loading remain transitional.
 - Bounded, cancellable fertility jobs with staged results and an explicit commit.
   Editor overlay/save actions run them through a scheduled progress screen;
-  cancellation preserves unsaved edits. Old-format loading still uses the
-  synchronous adapter, and file serialization/durable storage remain transitional.
+  cancellation preserves unsaved edits. Old-format cooperative loading also uses the job; file serialization and durable
+  storage remain transitional.
 - Explicit cooperative game/map loading jobs and a cancellable editor-entry
   loading screen with staged ownership and RNG restoration. Terrain chunks and
   gradient boundaries yield; individual expensive operations and other loading
@@ -41,9 +41,11 @@ infrastructure from the supported-release acceptance criteria.
   retains the current map until a new one loads successfully; cancellation and
   failure preserve its unsaved edits.
 - Explicit generation seeds and per-instance noise state, removing generation's
-  libc RNG/time reseeding and shared-noise interference. Four native generation
-  fixtures repeat after unrelated RNG/noise activity. Generation remains
-  synchronous and cross-platform generation parity is not yet certified.
+  libc RNG/time reseeding and shared-noise interference. All nine native generation
+  fixtures match synchronous and scheduled execution after unrelated RNG/noise
+  activity. Editor generation uses an owned cancellable preparation screen with
+  RNG restoration and error transitions. Long helper calls still need subdivision;
+  cross-platform generation parity is not yet certified.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are
@@ -73,13 +75,14 @@ On macOS arm64, September 2026:
   Failed and cancelled editor replacements preserve map checksums, RNG, and the
   unsaved-edit prompt. Child transitions clear held input without changing focus.
   The coroutine lifecycle tests also pass with AddressSanitizer.
-- Thirty-six browser checks cover startup, settings/credits/shutdown,
+- Thirty-nine browser checks cover startup, settings/credits/shutdown,
   editor/campaign-entry navigation and map quit decisions, campaign selector
   cancellation/reopen,
   custom options/AI descriptions and return-to-setup,
   tutorial launch, custom-game pause, save/reload byte
   equality, editor save cancellation and map reload persistence, load continuation,
-  editor load cancellation/restart and staged replacement, game-start cancellation/retry, and
+  editor load cancellation/restart and staged replacement, generation cancellation/retry,
+  game-start cancellation/retry, and
   audio-context activation are exercised
   in Chromium, Firefox, and WebKit using Playwright 1.63.0.
 - Alternating native/browser builds preserve compilation output contents

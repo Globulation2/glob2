@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include <CooperativeTask.h>
 
 #include "MapGenerationDescriptor.h"
 
@@ -16,12 +17,15 @@ public:
 	///Generates a map from the given generation description
 	bool generateMap(Game& game, MapGenerationDescriptor& descriptor);
     bool generateMap(Game& game, MapGenerationDescriptor& descriptor, Uint32 seed);
+    GAGCore::CooperativeTask generateMapTask(Game& game, MapGenerationDescriptor& descriptor, Uint32 seed);
 
 	///This performs the concrete islands generator
 	bool computeConcreteIslands(Game& game, MapGenerationDescriptor& descriptor);
+    GAGCore::CooperativeTask computeConcreteIslandsTask(Game& game, MapGenerationDescriptor& descriptor);
 
 	///This performs the isles generator
 	bool computeIsles(Game& game, MapGenerationDescriptor& descriptor);
+    GAGCore::CooperativeTask computeIslesTask(Game& game, MapGenerationDescriptor& descriptor);
 
 	///This function divides up the player lands using the standard method
 	bool divideUpPlayerLands(Game& game, MapGenerationDescriptor& descriptor, std::vector<int>& grid, std::vector<int>& teamAreaNumbers, int& areaNumber);

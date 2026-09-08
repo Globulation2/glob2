@@ -102,6 +102,7 @@ CLIENT_SOURCES = (
     'DynamicClouds.cpp',
     'EditorMainMenu.cpp',
     'EditorLoadScreen.cpp',
+    'EditorGenerateScreen.cpp',
     'EndGameScreen.cpp',
     'Engine.cpp',
     'GameSessionScreen.cpp',

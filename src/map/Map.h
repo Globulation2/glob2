@@ -814,11 +814,15 @@ public:
 
 public:
 	void makeHomogenMap(TerrainType terrainType);
+    GAGCore::CooperativeTask makeHomogenMapTask(TerrainType terrainType);
 	void controlSand(void);
 	void smoothResources(int times);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
+    GAGCore::CooperativeTask makeRandomMapTask(MapGenerationDescriptor &descriptor);
 	bool oldMakeRandomMap(MapGenerationDescriptor &descriptor);
+    GAGCore::CooperativeTask oldMakeRandomMapTask(MapGenerationDescriptor &descriptor);
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
+    GAGCore::CooperativeTask oldMakeIslandsMapTask(MapGenerationDescriptor &descriptor);
 
 };
 

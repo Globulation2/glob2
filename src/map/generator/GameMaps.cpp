@@ -5,7 +5,6 @@
 #include <time.h>
 #include <stdlib.h>
 
-//also the Perlin Noise stuff uses random that is not based on syncRand
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapGenerationDescriptor.h"
@@ -16,8 +15,16 @@
 
 bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 {
+    return oldMakeIslandsMapTask(descriptor).run();
+}
+
+GAGCore::CooperativeTask Game::oldMakeIslandsMapTask(MapGenerationDescriptor &descriptor)
+{
+    unsigned work = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	for (int s=0; s<descriptor.nbTeams; s++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		if (mapHeader.getNumberOfTeams()<=s)
 			addTeam();
 		int squareSize=5+descriptor.oldIslandSize/10;
@@ -25,11 +32,11 @@ bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, squareSize);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
-		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], globalContainer->buildingsTypes.get(typeNum), -1, false))
+		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], globalContainer->buildingsTypes.get(typeNum), s, false))
 		{
 			if (verbose)
 				printf("Failed to add swarm of team %d\n", s);
-			return false;
+			co_return false;
 		}
 		teams[s]->startPosX=descriptor.bootX[s];
 		teams[s]->startPosY=descriptor.bootY[s];
@@ -40,18 +47,26 @@ bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 			{
 				if (verbose)
 					printf("Failed to add unit %d of team %d\n", i, s);
-				return false;
+				co_return false;
 			}
 		teams[s]->createLists();
 	}
 	map.smoothResources(descriptor.oldIslandSize/10);
-	return true;
+	co_return true;
 }
 
 bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
+    return makeRandomMapTask(descriptor).run();
+}
+
+GAGCore::CooperativeTask Game::makeRandomMapTask(MapGenerationDescriptor &descriptor)
+{
+    unsigned work = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	for (int s=0; s<descriptor.nbTeams; s++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		assert(mapHeader.getNumberOfTeams()==s);
 		if (mapHeader.getNumberOfTeams()<=s)
 			addTeam();
@@ -66,7 +81,7 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 		{
 			if (verbose)
 				printf("Failed to add swarm of team %d\n", s);
-			return false;
+			co_return false;
 		}
 		teams[s]->startPosX=descriptor.bootX[s];
 		teams[s]->startPosY=descriptor.bootY[s];
@@ -77,10 +92,10 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 			{
 				if (verbose)
 					printf("Failed to add unit %d of team %d\n", i, s);
-				return false;
+				co_return false;
 			}
 		teams[s]->createLists();
 	}
-	return true;
+	co_return true;
 }
 

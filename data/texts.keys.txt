@@ -619,3 +619,5 @@
 [Building gradients]
 [Loading players]
 [Loading scripts]
+[Generating map]
+[ERROR_CANT_GENERATE_MAP]

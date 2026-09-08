@@ -16,6 +16,13 @@ void simulateRandomMap(int smooth, double baseWater, double baseSand, double bas
 
 bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 {
+    return oldMakeRandomMapTask(descriptor).run();
+}
+
+GAGCore::CooperativeTask Map::oldMakeRandomMapTask(MapGenerationDescriptor &descriptor)
+{
+    unsigned work = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	int waterRatio=descriptor.waterRatio;
 	int sandRatio =descriptor.sandRatio ;
 	int grassRatio=descriptor.grassRatio;
@@ -44,6 +51,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	
 	for (int r=1; r<=smooth; r++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for (int prec=0; prec<3; prec++) 
 		{
 			double finalAlphaWater, finalAlphaSand, finalAlphaGrass;
@@ -200,6 +208,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 
 	for (int i=0; i<smooth; i++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		// What's in now?
 		waterCount=0;
 		sandCount =0;
@@ -367,7 +376,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	int nbTeams=descriptor.nbTeams;
 	int minDistSquare=(int)((double)((double)w*(double)h*(double)grassCount)/(double)((double)nbTeams*(double)totalCount));
 	if (minDistSquare<=0)
-		return false;
+		co_return false;
 	assert(minDistSquare>0);
 	int* bootX=descriptor.bootX;
 	int* bootY=descriptor.bootY;
@@ -375,6 +384,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	//TODO: First pass to find the number of available places.
 	for (int team=0; team<nbTeams; team++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		int maxSurface=0;
 		int maxX=0;
 		int maxY=0;
@@ -426,7 +436,7 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 		}
 		
 		if (maxSurface<=0)
-			return false;
+			co_return false;
 		assert(maxSurface);
 		bootX[team]=maxX;
 		bootY[team]=maxY;
@@ -442,13 +452,17 @@ bool Map::oldMakeRandomMap(MapGenerationDescriptor &descriptor)
 	int squareSize=5+(int)(sqrt((double)minDistSquare)/4.5);
 	for (int team=0; team<nbTeams; team++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+0, GRASS, squareSize);
 		setUMatPos(descriptor.bootX[team]+2, descriptor.bootY[team]+2, GRASS, squareSize);
 	}
 	
 	controlSand();
-	regenerateMap(0, 0, w, h);
+    for (int column = 0; column < w; ++column) {
+        regenerateMap(column, 0, 1, h);
+        if (column % 8 == 0) co_await GAGCore::CooperativeTask::checkpoint();
+    }
 
-	return true;
+	co_return true;
 }
 
