@@ -36,6 +36,26 @@ class DeveloperSigningTests(unittest.TestCase):
                 run.assert_not_called()
 
 
+class IOSCommandTests(unittest.TestCase):
+    def test_incomplete_device_requests_fail_before_sdk_or_build(self):
+        sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'mobile'))
+        import ios
+        cases = [
+            (['build','--environment','device'], 'Device packaging needs'),
+            (['configure','--environment','device'], 'Device packaging needs'),
+            (['install'], '--device is required'),
+            (['launch','--environment','device'], '--device is required'),
+            (['install','--environment','device','--unsigned','--device','example'], 'cannot be installed'),
+        ]
+        with patch('ios.discover') as discover_sdk, patch('ios.subprocess.run') as run:
+            for arguments,message in cases:
+                with self.subTest(arguments=arguments), patch.object(sys,'argv',['ios.py']+arguments):
+                    with self.assertRaisesRegex(ValueError,message):
+                        ios.main()
+            discover_sdk.assert_not_called()
+            run.assert_not_called()
+
+
 class MobileBuildTests(unittest.TestCase):
     def test_each_mobile_configuration_has_its_own_directory(self):
         options = [dict(target='android', arch=arch, api=api, release=release)

@@ -13,7 +13,7 @@ on:
       - '.github/workflows/mobile.yml'
 jobs:
   android-native:
-    name: Android native (${{ matrix.arch }})
+    name: Android APK (${{ matrix.arch }})
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -27,10 +27,24 @@ jobs:
         run: python3 -m unittest discover -s tests/build_system -v
       - name: Install verified NDK
         run: python3 mobile/setup_ndk.py
+      - name: Stage runner SDK packages inside the worktree
+        shell: bash
+        run: |
+          python3 mobile/setup_tools.py
+          sdk="$PWD/build/mobile-tools/android-sdk"
+          mkdir -p "$sdk/platforms" "$sdk/build-tools" "$PWD/build/ci-tmp"
+          cp -R "$ANDROID_HOME/platforms/android-35" "$sdk/platforms/"
+          cp -R "$ANDROID_HOME/build-tools/35.0.0" "$sdk/build-tools/"
+          cp -R "$ANDROID_HOME/platform-tools" "$sdk/"
+          cp -R "$ANDROID_HOME/licenses" "$sdk/"
+          echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+          echo "TMPDIR=$PWD/build/ci-tmp" >> "$GITHUB_ENV"
       - name: Build pinned target dependencies
         run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release
-      - name: Compile and stage native application
-        run: python3 mobile/android.py configure --arch '${{ matrix.arch }}' --release
+      - name: Package and verify APK alignment
+        run: python3 mobile/android.py build --arch '${{ matrix.arch }}' --release
+      - name: Sign developer APK
+        run: python3 mobile/android.py sign --arch '${{ matrix.arch }}' --release
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -40,4 +54,8 @@ jobs:
             build/android/**/compile_commands.json
             build/android/**/vcpkg-buildtrees/**/*.log
             build/android/**/android-project/glob2-build.json
+            build/android/**/android-project/app/build/outputs/apk/release/*.apk
+            build/android/**/android-project/app/build/outputs/apk/release/*.json
+            build/android/**/android-project/app/build/outputs/native-debug-symbols/**
+            build/android/**/lib/*.so
           if-no-files-found: ignore

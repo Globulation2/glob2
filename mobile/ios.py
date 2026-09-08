@@ -31,6 +31,11 @@ def main():
     args=parser.parse_args()
     if args.command=='install' and args.environment=='device' and args.unsigned:
         raise ValueError('An unsigned iOS device app cannot be installed; rebuild with --team and a local signing identity/profile')
+    # Reject incomplete requests before probing SDKs or compiling the core.
+    if args.command in ('configure','build') and args.environment=='device' and not (args.team or args.unsigned):
+        raise ValueError('Device packaging needs --team with a local signing identity/profile, or --unsigned for compilation without credentials')
+    if args.command in ('install','launch') and not args.device:
+        raise ValueError('--device is required; never choose an arbitrary device')
     options={'target':'ios','environment':args.environment,'release':int(args.release)}
     if args.developer_dir: options['developer_dir']=args.developer_dir
     identity=build_identity(options);discover(identity,options)
@@ -41,7 +46,6 @@ def main():
     env=dict(os.environ)
     if args.developer_dir: env['DEVELOPER_DIR']=args.developer_dir
     if args.command in ('install','launch'):
-        if not args.device: raise ValueError('--device is required; never choose an arbitrary device')
         if args.environment=='simulator':
             command=['xcrun','simctl',args.command,args.device,str(app) if args.command=='install' else 'org.globulation.glob2']
         else:

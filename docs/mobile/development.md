@@ -1,48 +1,16 @@
-# Mobile development
+# Mobile developer guide
 
-All mobile work lives in `codex/mobile-platform`, based on browser commit
-`5397fbd41` (synchronized on 2026-09-08). Use the isolated `glob2-mobile`
-worktree. Do not build, install, or run tests in the AI Maxima or browser worktrees.
-Keep test profiles under `build/`; game launches must not write the normal profile.
+See [architecture](architecture.md) for how the ports share desktop/browser code,
+and [verification status](status.md) for the evidence and remaining work.
+Run every command from the mobile worktree root.
 
-## Browser branch synchronization
+## Isolated workspace
 
-Before each mobile milestone, inspect `codex/browser-experiment` and
-`codex/browser-clean` and record the tested browser commit here. Check ancestry
-with `git merge-base --is-ancestor codex/browser-experiment HEAD` from this
-worktree. Integrate browser changes here; never reset, switch, or build in its
-checkout. Preserve uncommitted mobile work before updating the base, and rerun
-native session/lifecycle tests and browser visibility, viewport, and persistence
-regressions after resolving shared host changes.
-
-The September 8 synchronization replayed the six mobile commits onto `5397fbd41`.
-The browser branch had rebased onto newer upstream simulation code, so replaying
-mobile changes preserved that baseline. The previous mobile tip is retained at
-`codex/mobile-before-browser-sync-20260908`. Browser visibility now enters the
-same queued SDL lifecycle path as native background/foreground events; browser
-resize notifications and save recovery/export behavior remain available.
-
-Synchronization verification (2026-09-08): desktop client, Wasm client, and
-Android ARM64 release APK rebuilds passed, including Android binary/package
-alignment checks. Native engine-session, screen-lifecycle, portable-renderer,
-mobile-input, and responsive-menu harnesses passed. The three 50-tick session
-fixtures agreed on checksum `7e7f31de`; this is not the 100,000-tick cross-platform
-qualification. Build-tool tests (19) and browser storage unit tests (4) passed.
-Across Chromium, Firefox, and WebKit, 24 viewport/storage cases and three
-visibility cases passed. The first concurrent run timed out on Firefox's aborted
-save retry; an isolated rerun passed in 11.6 seconds with unchanged assertions.
-Logs are in `build-browser-sync-*.log`; browser failure traces remain under
-`build/browser-test-results`. iOS and real-device qualification remain pending.
-
-Keep browser runner temporary profiles inside the worktree too, for example:
-
-```sh
-mkdir -p build/browser-test-tmp
-cd browser
-TMPDIR="$PWD/../build/browser-test-tmp" \
-  PLAYWRIGHT_BROWSERS_PATH="$PWD/../build/mobile-tools/playwright" \
-  ./node_modules/.bin/playwright test viewport.spec.js storage.spec.js
-```
+The development checkout is `/Users/bradley/glob2-mobile` on
+`codex/mobile-platform`. Do not build or run tests in the AI Maxima or browser
+checkouts. Native desktop and web builds can run here alongside mobile builds.
+Keep SDKs, dependencies, caches, generated projects, test profiles, and artifacts
+inside this worktree. Never invoke a desktop install target.
 
 ## SDK checks
 
@@ -171,8 +139,10 @@ python3 mobile/dependencies.py --target ios --environment simulator --release \
   --developer-dir /Applications/Xcode.app/Contents/Developer
 python3 mobile/ios.py build --environment simulator --release \
   --developer-dir /Applications/Xcode.app/Contents/Developer
-python3 mobile/ios.py install --environment simulator --release --device SIMULATOR_UDID
-python3 mobile/ios.py launch --environment simulator --release --device SIMULATOR_UDID
+python3 mobile/ios.py install --environment simulator --release --device SIMULATOR_UDID \
+  --developer-dir /Applications/Xcode.app/Contents/Developer
+python3 mobile/ios.py launch --environment simulator --release --device SIMULATOR_UDID \
+  --developer-dir /Applications/Xcode.app/Contents/Developer
 ```
 
 Use `--cmake` to select a CMake executable. Device builds use `--environment device`
@@ -214,48 +184,6 @@ incompatible objects. Compiler databases are emitted inside each target output.
 The archive manifest verifies library outputs. The pinned vcpkg baseline supplies
 source checksums; clean-build reproducibility remains to be qualified on CI hosts.
 
-## Portable renderer
-
-```
-scons release=1 -j8 portable-renderer-test
-./build/darwin/client/release/libgag/src/PortableRendererHarness
-```
-
-The SDL triangle renderer is opt-in on desktop using `GLOB2_RENDERER=sdl` and
-selected by mobile compilation. Existing desktop GL/software defaults remain.
-The harness tests real presentation resources, clipping, alpha, scaled textures,
-texture invalidation, and dirty-surface reupload. Run it in a graphical session;
-Linux CI uses Xvfb. Backend performance and complete game visual parity are not
-certified by this primitive-level harness.
-
-```
-scons release=1 -j8 mobile-input-test portable-game-test screen-test session-test
-./build/darwin/client/release/libgag/src/MobileInputHarness
-./build/darwin/client/release/libgag/src/ScreenExecutionHarness
-mkdir -p build/scene-profile
-GLOB2_USER_DATA_DIR="$PWD/build/scene-profile" ./build/darwin/client/release/src/portable-game-test
-python3 test/run-engine-session-test.py
-python3 test/run-standalone-tests.py
-python3 -m unittest discover -s tests/build_system -v
-python3 browser/setup.py
-python3 browser/build.py
-```
-
-Use `build/linux/...` on Linux. The scene harness captures a complete game in its
-isolated profile. Screenshot capture precedes presentation to preserve backbuffer
-contents. The touch harness checks gesture ownership and coordinates; it does not
-prove that gameplay or editor controls are wired to those actions.
-
-Build the standalone regressions with SCons in `test/` before running their script.
-They now request C++20, matching the browser branch's coroutine headers. The runner
-keeps profiles and temporary campaign fixtures under `build/test-profiles`.
-
-Historical pre-sync evidence: the old `de12b855` baseline had three Maxima
-placement failures in its 194-case `TestsRunner`; the other 19 standalone
-regression binaries passed. Those results do not qualify the newer browser
-simulation baseline. Rebuild and rerun the standalone suite before claiming its
-status on the synchronized branch.
-
 ## Debugging and cleanup
 
 Use each target's `compile_commands.json` with clangd. Android libraries retain
@@ -275,139 +203,55 @@ bundled resources. Writable data uses SDL's application preference path. Extract
 is currently synchronous at startup. Transactional saves, recovery generations,
 import/export, and bounded asset-loading UI remain outstanding.
 
-## Responsive menus
-
-The native mobile main menu and editor entry menu opt into a logical viewport
-sized to the window, using Android's configured UI density. Buttons use the
-existing artwork with at least 48 logical units of hit height. The layout chooses
-one or two columns from available width and translated label widths; long labels
-wrap. Drag or use the mouse wheel to scroll, with a visible scroll indicator.
-Touch selection waits for release and cancels after an 8-unit drag, focus loss,
-rotation, or a child transition. Synthesized touch mouse events are suppressed
-inside these adapted menus. Hardware mouse and keyboard actions remain available.
-
-Desktop developers can exercise this path using `GLOB2_RENDERER=sdl` and
-`GLOB2_RESPONSIVE_UI=1`. Default desktop and browser rendering retain their current
-layouts. Other screens restore their fixed logical viewport; their responsive
-conversion, mobile-browser activation, iOS safe-area/keyboard metrics, and a
-user-facing UI/text scale control remain pending. Android applies system-bar,
-cutout, and keyboard insets to the SDL surface container, whose resize event
-reaches the shared frame host. This uses the platform's
-[window inset APIs](https://developer.android.com/reference/android/view/WindowInsets).
-The pure menu layout tests also exercise inset, keyboard-occluded, and
-enlarged-scale rectangles. Real cutout devices and keyboard flows still need
-qualification.
-
-```
-scons release=1 -j8 responsive-menu-test mobile-input-test portable-renderer-test
-mkdir -p build/responsive-menu-profile
-GLOB2_USER_DATA_DIR="$PWD/build/responsive-menu-profile" ./build/darwin/client/release/src/responsive-menu-test
-```
-
-## Foreground and background behavior
-
-The shared screen host consumes lifecycle events between frames. Backgrounding
-suspends incremental screen updates, loading, presentation, and audio. Returning
-excludes the background interval from simulation timing. Focus loss, rotation,
-and child-screen admission cancel held gameplay/editor input. Renderer reset and
-memory-pressure notifications invalidate GPU caches before the next foreground
-draw. Browser visibility changes enter this same event path.
-
-This covers incremental application screens. Remaining nested modal loops,
-OS audio interruptions, transactional recovery saves, and multiplayer interruption
-recovery still need implementation. A retained Android activity resuming is not
-process-termination recovery.
-
-The API 35 ARM64 emulator showed a System UI nonresponse dialog while concurrent
-builds were active. It recovered after selecting Wait; this run establishes no
-performance or thermal qualification.
-
-## Progress and acceptance
-
-- Implemented: mobile build identities, SDK diagnostics, target compiler
-  discovery, verified dependency-prefix input, shared-source C++ build routing.
-- Implemented: experimental SDL geometry renderer with texture lifecycle,
-  primitives, alpha maps, clipping, HiDPI presentation, and capture.
-- Implemented: pinned dependency bootstrap, Android staging/Gradle recipes,
-  iOS Xcode generation, asset/writable roots, install/launch commands, compilation
-  databases, and Android ELF architecture/alignment checks.
-- Implemented: shared foreground/background timing, input cancellation, audio
-  suspension, deferred graphics restoration, and Android orientation changes.
-- Verified locally: Android ARM64, ARMv7, and x86-64 native libraries/staging;
-  ARM64 release APK packaging, alignment, developer signing, installation, menu
-  rotation, first tutorial launch, and retained-activity background/resume on the
-  API 35 ARM64 emulator (2 GB, two virtual cores), with the installed package
-  retained across a cold emulator restart. Full phone usability remains unqualified.
-- Verified locally: 63 browser single-player/multiplayer checks across
-  Chromium/Firefox/WebKit, plus nine targeted browser checks after the final
-  modal-clock adjustment; 19 build-system checks; portable renderer restoration,
-  clipping, alpha and resize checks; screen lifecycle and engine-session tests.
-  The 50-tick engine fixture retains checksum `4056ae4d` after background and
-  child-screen interruptions. Existing three AI baseline failures remain above.
-- Unqualified: iOS compilation/launch and device signing (full Xcode is missing),
-  ARMv7/x86-64 APK launch, IDE debugging, sanitizers, CI execution, OS-native
-  WebSockets, and real devices.
-- Implemented: responsive native main/editor entry menus, scrolling, wrapped
-  labels, touch selection, mouse-event suppression, and Android surface insets.
-  Menu touch dispatch, canceled drags, child viewport restoration, rotation,
-  label wrapping, and letterbox clearing pass native integration checks. Nine
-  focused browser regressions pass across Chromium, Firefox, and WebKit.
-- Pending: viewport/camera integration, remaining phone layouts, gameplay gestures,
-  touch editor tools, and touch tutorial adaptation.
-- Pending: cooperative modal completion/Asyncify removal, remaining lifecycle
-  coverage, durable persistence, rotating recovery saves, import/export, network
-  recovery.
-- Pending: mobile WebGL2, Safari/Chrome device qualification, cross-architecture
-  replay/100,000-tick tests, 30-minute performance qualification.
-
-The requested floor is iOS 15 and Android 8 on 2 GB phones, including ARMv7;
-both orientations and 320x568 logical dimensions are required. Gameplay/editor
-parity is required; voice, cloud saves, and store submission are deferred.
-Keep the browser architecture contracts and all existing desktop checks.
-
-## Gameplay touch controls
-
-The portable SDL renderer enables gameplay touch input on native mobile and on
-opt-in desktop builds (`GLOB2_RENDERER=sdl`). Tap selects, one finger drags the
-camera, and two fingers navigate during building/flag placement or area painting.
-Movement below eight physical UI points remains a tap. Mobile canvases fill the
-available window aspect ratio, including portrait height; the world gains visible
-tiles instead of stretching. Gameplay and legacy dialogs retain an 800×600 minimum
-logical extent while responsive entry menus use device UI points. Camera movement
-currently uses whole tiles. Pinch zoom and the fully reflowed phone gameplay
-panels remain outstanding.
-
-Building/flag taps create a preview. The bottom OK/Cancel strip has 48-point hit
-height even when the game canvas is scaled. OK validates the preview's
-current world tile through the existing tool manager and queues one create order;
-failed validation retains the preview. Cancel exits placement. Crossing from a
-control into the map cannot confirm placement. Painting uses the shared area
-orders, with the existing stroke flushed before two-finger navigation or suspension.
-Touch-generated mouse events are suppressed; hardware mouse controls remain available.
-Rotation, focus loss, suspension, and mode changes invalidate held gestures.
+## Shared regression checks
 
 ```sh
-scons release=1 -j8 gameplay-touch-test session-test portable-game-test
-mkdir -p build/touch-profile
-GLOB2_USER_DATA_DIR="$PWD/build/touch-profile" \
+scons release=1 -j8 portable-renderer-test mobile-input-test screen-test \
+  responsive-menu-test gameplay-touch-test session-test portable-game-test
+./build/darwin/client/release/libgag/src/PortableRendererHarness
+./build/darwin/client/release/libgag/src/MobileInputHarness
+./build/darwin/client/release/libgag/src/ScreenExecutionHarness
+mkdir -p build/mobile-test-profile
+GLOB2_USER_DATA_DIR="$PWD/build/mobile-test-profile" \
+  ./build/darwin/client/release/src/responsive-menu-test
+GLOB2_USER_DATA_DIR="$PWD/build/mobile-test-profile" \
   ./build/darwin/client/release/src/gameplay-touch-test
+GLOB2_USER_DATA_DIR="$PWD/build/mobile-test-profile" \
+  ./build/darwin/client/release/src/portable-game-test
 python3 test/run-engine-session-test.py
+python3 -m unittest discover -s tests/build_system -v
 ```
 
-The integration harness loads the real game and checks its order queue, toroidal
-pan, placement validation, gesture ownership, painting, replay protection,
-interruption, duplicate suppression, and a captured confirmation-bar pixel.
-These controls do not yet provide the complete small-phone gameplay/editor UI.
-The browser software renderer retains its existing input path until the shared
-browser touch/render integration is completed.
+Use `build/linux/` on Linux. Renderer tests need a graphical session (Xvfb on
+Linux). Build the standalone tests in `test/` before using
+`python3 test/run-standalone-tests.py`; its profiles stay under `build/test-profiles`.
+These checks do not qualify real-device performance or cross-architecture determinism.
 
-Verified on 2026-09-08: desktop, Wasm, and Android ARM64 release builds;
-portable-renderer edge checks in portrait/landscape and modal restoration;
-responsive-menu, gameplay-touch, screen-lifecycle, and engine-session harnesses;
-and nine tutorial/visibility/resize browser checks across Chromium, Firefox, and
-WebKit. The Android emulator exercised palette selection without hover, preview,
-confirmation, cancellation on rotation, and camera dragging. Captures are under
-`build/touch-fullscreen-*.png`; logs use `build-touch-fullscreen-*`.
-An emulator System UI unresponsive dialog appeared during concurrent compilation
-and recovered with Wait. This is functional evidence, not device performance
-qualification. iOS and real-device touch qualification remain outstanding.
+Follow the [browser build guide](../browser/implementation.md) for the locked Emscripten
+setup. After a web build, run the focused shared-host regressions:
+
+```sh
+mkdir -p build/browser-test-tmp
+TMPDIR="$PWD/build/browser-test-tmp" \
+  PLAYWRIGHT_BROWSERS_PATH="$PWD/build/mobile-tools/playwright" \
+  browser/node_modules/.bin/playwright test -c browser/playwright.config.js \
+  --grep 'visibility callbacks|a running match survives resize|tutorial sessions quit' \
+  --output=build/mobile-browser-results
+```
+
+## Browser synchronization
+
+Check the latest browser branch before a milestone. The tested base is recorded
+in [status](status.md). Inspect the remote branch without changing another checkout:
+
+```sh
+git fetch origin codex/browser-experiment
+git merge-base --is-ancestor origin/codex/browser-experiment HEAD
+```
+
+If ancestry fails, inspect the divergence before integrating into the mobile
+branch. A rewritten browser branch may require replaying mobile commits rather
+than merging duplicate simulation changes. Preserve work first. After integration,
+rebuild native, Android, and web clients and run lifecycle, session, viewport,
+and browser persistence regressions. Keep the Emscripten lock unchanged unless
+an intentional update passes desktop/browser gates.
