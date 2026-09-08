@@ -14,3 +14,21 @@ async function hasRenderedPixels(page) {
   }, png.toString('base64'));
 }
 module.exports = {hasRenderedPixels};
+
+// Restrict to the inside of a text box, excluding its border and controls.
+async function hasLightText(page, clip) {
+  const png = await page.screenshot({clip});
+  return page.evaluate(async base64 => {
+    const blob = await (await fetch('data:image/png;base64,' + base64)).blob();
+    const bitmap = await createImageBitmap(blob);
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width; canvas.height = bitmap.height;
+    const context = canvas.getContext('2d'); context.drawImage(bitmap, 0, 0); bitmap.close();
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let light = 0;
+    for (let i = 0; i < pixels.length; i += 4)
+      if (pixels[i] > 200 && pixels[i+1] > 200 && pixels[i+2] > 200) ++light;
+    return light > 50;
+  }, png.toString('base64'));
+}
+module.exports.hasLightText = hasLightText;

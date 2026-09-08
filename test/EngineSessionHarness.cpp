@@ -6,6 +6,10 @@
 #include "GameGUILoadSave.h"
 #include "GameUtilities.h"
 #include "MapEdit.h"
+#include "YOGLoginScreen.h"
+#include "YOGClient.h"
+#include "YOGClientEvent.h"
+#include <GUITextArea.h>
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
 #include "EditorLoadScreen.h"
@@ -99,6 +103,21 @@ int main(int argc, char** argv)
     globalContainer->settings.gameSpeed = 0;
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
+    {
+        struct LoginProbe : YOGLoginScreen {
+            using YOGLoginScreen::YOGLoginScreen;
+            std::string status() { return statusText->getText(); }
+        };
+        LoginProbe login(std::make_shared<YOGClient>());
+        login.beginExecution(globalContainer->gfx);
+        static_cast<YOGClientEventListener&>(login).handleYOGClientEvent(std::make_shared<YOGLoginRefusedEvent>(YOGClientVersionTooOld));
+        require(login.status().find("same Glob2 release") != std::string::npos,
+                "Protocol rejection must provide a translated actionable status");
+        login.drawExecution();
+        std::cout << "PASS protocol rejection provides an actionable translated status" << std::endl;
+        login.endExecute(0); login.finishExecution();
+    }
+
     {
         auto& gfx = *globalContainer->gfx;
         SDL_Window* window = nullptr;

@@ -39,6 +39,12 @@ int main(int argc, char** argv) {
             for (const auto* name : {"transportplayer", "transportguest"})
                 require(server.registerInformation(name, "fixture-only", "127.0.0.1", NET_PROTOCOL_VERSION)
                         == YOGLoginSuccessful, "Could not create isolated test account");
+            for (Uint16 version : {Uint16(NET_PROTOCOL_VERSION-1), Uint16(NET_PROTOCOL_VERSION+1)}) {
+                require(server.verifyLoginInformation("transportplayer", "fixture-only", "127.0.0.1", version)
+                        == YOGClientVersionTooOld, "Incompatible version passed account verification");
+                require(server.registerInformation("incompatibleregistration", "fixture-only", "127.0.0.1", version)
+                        == YOGClientVersionTooOld, "Incompatible version created an account");
+            }
             std::cout << "YOG test server ready" << std::endl;
             for (;;) { server.update(); SDL_Delay(10); }
         }
@@ -66,6 +72,14 @@ int main(int argc, char** argv) {
             const auto decoded = connection.getMessage();
             require(decoded && *decoded == *original, "Fragmented frame changed the message");
         }
+        const auto serverInfo = std::make_shared<NetSendServerInformation>(YOGRequirePassword, YOGMultipleGames, 17);
+        connection.sendMessage(serverInfo);
+        wire.input.push_back(wire.output.back());
+        const auto decodedInfo = connection.getMessage();
+        require(decodedInfo && *decodedInfo == *serverInfo, "Server version or player identity lost in greeting");
+        wire.input.push_back({0,5,MNetSendServerInformation,YOGRequirePassword,YOGMultipleGames,0,17});
+        const auto legacyInfo = std::dynamic_pointer_cast<NetSendServerInformation>(connection.getMessage());
+        require(legacyInfo && legacyInfo->getNetVersion() == 0, "Legacy greeting must advertise incompatible version zero");
         auto joined = frame;
         joined.insert(joined.end(), frame.begin(), frame.end());
         wire.input.push_back(joined);
@@ -73,7 +87,8 @@ int main(int argc, char** argv) {
         for (const auto& invalid : std::vector<std::vector<uint8_t>>{
             {0, 0}, {0, 1, 255},
             {0, 5, MNetAttemptLogin, 255, 255, 255, 255}, {0, 1, original->getMessageType()},
-            {0, 4, original->getMessageType(), 0, 1, 0}}) {
+            {0, 4, original->getMessageType(), 0, 1, 0},
+            {0, 6, MNetSendServerInformation, YOGRequirePassword, YOGMultipleGames, 0, 17, 0}}) {
             connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
             wire.input.push_back(invalid); connection.update();
             require(!connection.isConnected(), "Malformed message did not close the connection");

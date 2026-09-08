@@ -277,3 +277,110 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await rm(path.join(os.homedir(), '.' + nativeProfile), {recursive: true, force: true});
   }
 });
+
+test('YOG admission enforces greeting, exact version, authentication and retry order', async ({page}) => {
+  const version = Number((await readFile(path.join(root,'src/Version.h'),'utf8')).match(/^#define NET_PROTOCOL_VERSION (\d+)/m)[1]);
+  await page.goto('/');
+  for (const scenario of ['old version','future version','login before greeting','registration before greeting',
+      'room before greeting','room before login','repeated greeting','repeated login','greeting after login','retry login']) {
+    const result = await page.evaluate(({endpoint,version,scenario}) => new Promise((resolve,reject) => {
+      const socket = new WebSocket(endpoint+'/yog'); socket.binaryType='arraybuffer';
+      let pending = new Uint8Array(), done=false, opened=false;
+      const received=[];
+      const timer=setTimeout(()=>finish(new Error('Admission did not finish: '+scenario)),5000);
+      function finish(error) {
+        if(done)return;done=true;clearTimeout(timer);socket.close();
+        if(error)reject(error);else resolve(received);
+      }
+      const text = value => {const bytes=new TextEncoder().encode(value);return [bytes.length>>>24,(bytes.length>>>16)&255,(bytes.length>>>8)&255,bytes.length&255,...bytes];};
+      const send = body => socket.send(Uint8Array.from([body.length>>>8,body.length&255,...body]));
+      const hello = offset => send([9,(version+offset)>>>8,(version+offset)&255]);
+      const login = password => send([1,...text('transportplayer'),...text(password)]);
+      const room = () => send([15,...text('Must not create')]);
+      socket.onopen=()=>{
+        opened=true;
+        if(scenario==='old version')hello(-1);
+        else if(scenario==='future version')hello(1);
+        else if(scenario==='login before greeting')login('fixture-only');
+        else if(scenario==='registration before greeting')send([2,...text('mustnotregister'),...text('fixture-only')]);
+        else if(scenario==='room before greeting')room();
+        else hello(0);
+      };
+      socket.onmessage=event=>{
+        const incoming=new Uint8Array(event.data),combined=new Uint8Array(pending.length+incoming.length);
+        combined.set(pending);combined.set(incoming,pending.length);pending=combined;
+        while(pending.length>=2){
+          const size=pending[0]*256+pending[1];if(pending.length<size+2)break;
+          const body=Array.from(pending.slice(2,size+2));pending=pending.slice(size+2);received.push(body);
+          if(body[0]===10){
+            if(scenario==='room before login')room();
+            else if(scenario==='repeated greeting')hello(0);
+            else login(scenario==='retry login'?'wrong-password':'fixture-only');
+          }else if(body[0]===7){
+            if(scenario==='old version'||scenario==='future version')finish();
+            else if(scenario==='retry login')login('fixture-only');
+            else finish(new Error('Unexpected login refusal: '+scenario));
+          }else if(body[0]===4){
+            if(scenario==='repeated login')login('fixture-only');
+            else if(scenario==='greeting after login')hello(0);
+            else if(scenario==='retry login')finish();
+            else finish(new Error('Unauthorized login accepted: '+scenario));
+          }
+        }
+      };
+      // WebKit may report error followed by close when the backend rejects a
+      // protocol transition. Failure before opening is a transport failure.
+      socket.onerror=()=>{if(!opened)finish(new Error('WebSocket transport failed: '+scenario));};
+      socket.onclose=()=>finish(opened?null:new Error('WebSocket never opened: '+scenario));
+    }),{endpoint,version,scenario});
+    const types=result.map(body=>body[0]);
+    if(scenario.endsWith('version')) {
+      expect(result).toContainEqual([7,5]);expect(types).not.toContain(10);
+    }else if(['repeated login','greeting after login','retry login'].includes(scenario)) {
+      expect(types.filter(type=>type===4)).toHaveLength(1);
+      if(scenario==='retry login')expect(types).toContain(7);
+    }else {
+      expect(types).not.toContain(4);
+      if(['room before login','repeated greeting'].includes(scenario))expect(types).toContain(10);
+    }
+    expect(types).not.toContain(0); // Invalid registration must not be accepted.
+    expect(types).not.toContain(16); // Invalid room creation must not be accepted.
+  }
+});
+
+for (const mismatch of ['client version','legacy server','server version'])
+test(`browser reports incompatible release before transmitting credentials (${mismatch})`, async ({page}, info) => {
+  await page.addInitScript(base=>{globalThis.glob2Config={websocketBase:base};},endpoint);
+  const sent=[],received=[];
+  await page.routeWebSocket('**/yog', route=>{
+    const server=route.connectToServer();
+    route.onMessage(message=>{
+      const bytes=Buffer.from(message);sent.push(bytes[2]);
+      if(bytes[2]===9 && mismatch==='client version'){
+        // Fault injection at the transport boundary; drive the real login UI.
+        bytes.writeUInt16BE(bytes.readUInt16BE(3)+1,3);
+      }
+      server.send(bytes);
+    });
+    server.onMessage(message=>{
+      let bytes=Buffer.from(message);received.push(bytes[2]);
+      if(bytes[2]===10 && mismatch==='legacy server'){
+        bytes=bytes.subarray(0,bytes.length-2);bytes.writeUInt16BE(bytes.length-2,0);
+      }else if(bytes[2]===10 && mismatch==='server version')bytes.writeUInt16BE(bytes.readUInt16BE(7)+1,7);
+      route.send(bytes);
+    });
+  });
+  const screen=name=>expect.poll(async()=>(await page.evaluate(()=>glob2Diagnostics.snapshot())).screen).toContain(name);
+  const click=(x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
+  await page.goto(gameURL());await screen('MainMenuScreen');
+  await click(440,490);await screen('YOGLoginScreen');
+  await click(420,580);await page.keyboard.type('never-transmit-this');
+  await click(810,590);
+  await expect.poll(()=>received).toContain(mismatch==='client version'?7:10);
+  await expect.poll(()=>sent).toContain(3); // Client processed refusal and disconnected.
+  await screen('YOGLoginScreen');
+  expect(sent).toContain(9);expect(sent).not.toContain(1);expect(sent).not.toContain(2);
+  await expect.poll(()=>require('./pixels').hasLightText(page,{x:305,y:345,width:590,height:110})).toBe(true);
+  await page.screenshot({path:info.outputPath('incompatible-release.png')});
+  await click(810,650);await screen('MainMenuScreen');
+});

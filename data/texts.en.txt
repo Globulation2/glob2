@@ -1296,3 +1296,5 @@ Campaign progress not saved. Retry or export a backup.
 Leave without saving
 [campaign import failed]
 Invalid progress file or different campaign version
+[network release mismatch]
+Client and server protocols differ. Install the same Glob2 release as the server.

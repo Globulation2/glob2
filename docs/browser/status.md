@@ -226,7 +226,7 @@ cross-platform, or supported-browser certification matrix.
    complete gesture/layout qualification, focus/visibility behavior, and browser interaction handling.
 4. Transactional persistence with durable completion and failure states,
    quota handling, and validated import/export for all local data types.
-5. TLS-only internet connection policy, native trust-store qualification, compatible protocol handshake,
+5. TLS-only internet connection policy, native trust-store qualification, capability/simulation/data-hash negotiation,
    bounded protocol parsing, and deterministic browser/native cross-play.
 6. YOG guests/accounts, invitations, room controls, password migration, and
    coordinated 120-second checkpoint-based recovery with fault injection.
@@ -321,3 +321,29 @@ pass with WebGL across those engines. An intermediate test installed the fixed
 clock after startup and reported two WebKit SDL audio-buffer errors; the final
 fixture installs it before runtime initialization and passes. This does not
 establish that all audio activation races are resolved.
+
+## Protocol 29 admission milestone
+
+Browser and native clients now require an exact protocol match in both greeting
+directions before credentials are sent. YOG rejects authentication out of order,
+repeated greetings and attempts to replace an authenticated identity. Update
+browser assets, desktop clients and YOG together: this is a protocol change.
+See [the wire contract and remaining authorization work](protocol.md).
+
+The full multiplayer matrix passed 30 scenarios across Chromium, Firefox and
+WebKit, including browser/browser and browser/native matching-checksum matches.
+A subsequent translation correction passed all nine mismatch UI scenarios with
+visible-text assertions and the native session harness. Native client, headless
+server and Wasm builds and the transport harness passed. Capability/data hashes,
+room-specific authorization and recovery remain open; this is not public-service
+security qualification.
+
+![Actionable protocol mismatch](screenshots/incompatible-release.png)
+
+## Review screenshots
+
+The following is an uncomposited full Firefox window on macOS, with the address
+bar and tab visible, running the local WebGL2 build. Gameplay and editor captures
+above show the game surface.
+
+![Glob2 in a full Firefox window](screenshots/firefox-window-menu.png)
