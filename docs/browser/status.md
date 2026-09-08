@@ -527,3 +527,24 @@ native ticks and shared command-boundary checksums; they do not prove long-run
 all-AI determinism. Logs are `/tmp/glob2-upstream-{native,web,resource,session,
 single-player,crossplay,build-tests}.log`. The earlier 104-case qualification
 preceded this upstream simulation change and remains scoped to its revision.
+
+## Browser navigation shortcut follow-up — 2026-09-08
+
+The shell now preserves Ctrl/Cmd+R and Ctrl/Cmd+L browser default actions while
+the game has focus. A regression against the installed SDL listeners fails
+before the adapter and passes afterward in Chromium, Firefox and WebKit.
+Ordinary menu input and the existing missing-motion click regression also pass:
+six WebGL cases (40.6s) and six software cases (47.1s). Release Wasm rebuild
+passes. Logs: `/tmp/glob2-shortcuts-{before,build,webgl-rerun,software}.log`.
+
+The first WebGL run passed five cases but timed out in Chromium's existing
+click test at tick 20. Its trace shows successful map selection and continuing
+simulation with `paused=false`, but slow frames. The unchanged rerun passes;
+the earlier trace remains under `build/browser-shortcuts-webgl`. No timeout or
+assertion was relaxed, and this is not a controlled performance qualification.
+
+Actual Safari also passed Command-R from the custom-game chooser and Command-L
+followed by address navigation. A disposable plain-page probe revealed a local
+keyboard-layout mismatch in the earlier automation attempt, which had emitted
+Command-P rather than Command-R. See [Safari evidence](safari-smoke.md). The
+adapter uses logical key values, preserving the browser's keyboard layout.

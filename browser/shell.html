@@ -120,6 +120,15 @@ canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending
 document.addEventListener('visibilitychange', () => { Module.visibilityPending = true; });
 canvas.addEventListener('pointerdown', focusGame);
 canvas.addEventListener('keydown', () => Module.SDL2?.audioContext?.resume());
+// SDL consumes navigation keys even when the browser needs them. Reserve reload
+// and address-bar shortcuts without cancelling their browser default action.
+// Key releases still reach SDL so a previously held game key cannot stick.
+function preserveBrowserShortcut(event) {
+  if (event.target !== canvas || event.altKey || !(event.ctrlKey || event.metaKey)) return;
+  if (['r', 'l'].includes(event.key.toLowerCase())) event.stopImmediatePropagation();
+}
+document.addEventListener('keydown', preserveBrowserShortcut, true);
+document.addEventListener('keypress', preserveBrowserShortcut, true);
 // SDL 2.32's browser button callback uses the last motion position instead of
 // the button event's coordinates. Synchronize it before SDL sees the button:
 // browsers can omit/coalesce the intervening motion, especially across focus

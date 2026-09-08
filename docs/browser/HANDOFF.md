@@ -8,8 +8,9 @@ and in software input regressions across three engines. Actual Safari 26.6.2
 also passed a manual gameplay/save/reload/resize smoke check. See the latest
 validation section in [status](status.md) and [Safari evidence](safari-smoke.md).
 
-Latest implementation commit: **`15986f936`**. Subsequent commits contain
-qualification evidence, this handoff and reviewed screenshots. Draft PR:
+The closeout implementation was **`15986f936`**; upstream integration is
+**`ce7e55d2d`**. Follow-up keyboard and CI changes are recorded in the latest
+section of [status](status.md). Draft PR:
 <https://github.com/Globulation2/glob2/pull/203>.
 
 The user has played single-player successfully. They want completion and useful
@@ -39,7 +40,7 @@ On the existing Mac:
 Before editing, check the branch and worktree status. Publishing was authorized:
 verify the publishing checkout is clean, fast-forward it from
 `codex/browser-clean`, then push `origin codex/browser-experiment`. Do not merge
-upstream or force-push. Keep the PR draft until the outstanding gates are met.
+the PR or force-push. Keep the PR draft until the outstanding gates are met.
 No builds or tests from this task should remain running after this handoff.
 
 ## What already works

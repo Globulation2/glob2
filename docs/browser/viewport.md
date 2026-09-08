@@ -70,6 +70,20 @@ pointer-lock input. This SDK adaptation stays in the browser platform layer.
 `browser/tests/input.spec.js` suppresses trusted motion delivery while keeping
 real button input, then selects a map, starts a match, resizes and quits it.
 The regression fails before the adapter in Chromium and passes afterward in
-Chromium, Firefox and WebKit. The previously intermittent real-window failure
-still needs a repeat run after this fix; do not equate the injected regression
-with complete real-window qualification.
+Chromium, Firefox and WebKit. The resumed real-window Chromium checks also pass
+with both renderers; see the dated evidence in [status](status.md).
+
+## Browser navigation shortcuts
+
+The browser shell reserves Ctrl/Cmd+R (including Shift for reload variants) and
+Ctrl/Cmd+L for the browser while the canvas has focus. Capture-phase handlers
+stop these keydown/keypress events before SDL can cancel their default action.
+Key releases still reach SDL, avoiding a stuck game key if it was already held
+before the modifier was pressed. Alt-modified combinations remain game input.
+Desktop input is unchanged.
+
+The input suite checks default-action cancellation against the real SDL
+listeners in each browser engine, then verifies ordinary menu input. Synthetic
+keyboard events cannot trigger browser chrome, so actual shortcut navigation
+also requires manual browser verification. Reload is ordinary page navigation;
+it does not promise to save an unsaved match or finish a pending storage write.

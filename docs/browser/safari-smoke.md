@@ -38,9 +38,21 @@ The automated renderer tests separately assert backend selection in their
 supported engines. No FPS, memory, checksum, audio-output or performance claims
 are inferred from these screenshots.
 
-The toolbar reload path was verified. A keyboard reload attempt while the canvas
-was focused did not reload; browser shortcut handling remains an interaction
-item to investigate, rather than a verified Safari shortcut pass. This run did
-not cover quota exhaustion, context loss, clipboard, export permissions, hidden
+The toolbar reload path was verified. The original automated keyboard reload
+attempt was inconclusive: a subsequent plain-page input probe found that this
+Mac's keyboard layout makes the automation's physical `R` key emit `p` and its
+physical `L` emit `i`. That attempt did not deliver Command-R.
+This run did not cover quota exhaustion, context loss, clipboard, export permissions, hidden
 tabs, long campaigns or multiplayer in Safari. The named test save remains in
 this Safari profile's local store.
+
+## Shortcut follow-up
+
+After the browser shell's reload/address-bar adapter was added, actual Safari
+successfully reloaded from the focused custom-game chooser back to the main
+menu using Command-R. Command-L opened the address field, where entering the
+same local game URL with `&shortcut=verified` navigated successfully. The probe
+established that this machine's physical S/U keys emit the logical r/l needed
+for these checks; no system keyboard setting was changed. The disposable probe
+tab was closed afterward. This verifies actual browser navigation in addition
+to the automated SDL default-cancellation regression.
