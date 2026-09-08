@@ -1,29 +1,29 @@
 [%0 has left the game]
 %0 έχει τερματίσει το παιχνίδι.
 [%0 level %1]
-
+%0 επιπέδου %1
 [%0 units can't access building]
-
+%0 μονάδες δεν έχουν πρόσβαση στο κτίριο
 [%0 units can't access flag]
-
+%0 μονάδες δεν έχουν πρόσβαση στη σημαία
 [%0 units can't access fruit]
-
+%0 μονάδες δεν έχουν πρόσβαση στα φρούτα
 [%0 units can't access resource]
-
+%0 μονάδες δεν έχουν πρόσβαση στον πόρο
 [%0 units not available]
-
+%0 μονάδες δεν είναι διαθέσιμες
 [%0 units too far from building]
-
+%0 μονάδες απέχουν πολύ από το κτίριο
 [%0 units too far from flag]
-
+%0 μονάδες απέχουν πολύ από τη σημαία
 [%0 units too far from fruit]
-
+%0 μονάδες απέχουν πολύ από τα φρούτα
 [%0 units too far from resource]
-
+%0 μονάδες απέχουν πολύ από τον πόρο
 [%0 units too low level]
-
+%0 μονάδες έχουν πολύ χαμηλό επίπεδο
 [%0% Uploaded]
-
+Απεστάλη το %0%
 [%0's game]
 %0 του Παιχνιδιού
 [%0's team unit got converted to your team]
@@ -41,37 +41,37 @@ V: Εμφάνιση όρασης για όλα τα κτίρια
 [add map]
 Προσθήκη χάρτη
 [add shortcut]
-Προσθήκη Συντόμευσης
+Νέα συντόμευση
 [Add]
-
+Προσθήκη
 [AI Descriptions]
-
+Περιγραφές ΤΝ
 [AI]
 AI
 [ai]
 AI
 [AICastor-Description]
-
+Ο Castor παίζει συντηρητικά και τα καταφέρνει πολύ καλά σε χάρτες με λίγους πόρους. Μέτρια δυσκολία.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Ο Nicowar παίζει επιθετικά, αναπτύσσεται γρήγορα και στέλνει τεράστιους στρατούς εναντίον των αντιπάλων του. Υψηλή δυσκολία.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Καμία ΤΝ — δεν κάνει τίποτα.
 [AINone]
-AINone
+Χωρίς ΤΝ
 [AINumbi-Description]
-
+Ο Numbi επεκτείνεται σε μικρή κλίμακα, αλλά γρήγορα. Χαμηλή δυσκολία.
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+Ο ReachToInfinity δεν επιτίθεται, αλλά χτίζει τεράστιες βάσεις και προσηλυτίζει μονάδες μαζικά. Χαμηλή δυσκολία.
 [AIReachToInfinity]
 ΦτάσεΣτοΆπειρο
 [AIWarrush-Description]
-
+Ο Warrush επιτίθεται γρήγορα και σφοδρά, φέρνοντας συχνά τον αμυνόμενο στα όριά του. Μέτρια δυσκολία.
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -115,7 +115,7 @@ alt-%0
 [away:]
 εκτός:
 [Back]
-
+Πίσω
 [backspace]
 backspace
 [barracks explanation 2]
@@ -127,13 +127,13 @@ backspace
 [beach size]
 μέγεθως παραλίας
 [Blocked Players]
-
+Αποκλεισμένοι παίκτες
 [break]
 διακοπή
 [briefing]
-
+Ενημέρωση αποστολής
 [build %0 level %1]
-
+Κατασκευή: %0 επιπέδου %1
 [build barracks level 0]
 Κατασκευή Στρατώνων 1
 [build barracks level 1]
@@ -161,11 +161,11 @@ backspace
 [build market level 0]
 Κατασκευή Αγοράς
 [build racetrack level 0]
-Κατασκευή Ιπποδρόμου 1
+Κατασκευή στίβου 1
 [build racetrack level 1]
-Κατασκευή Ιπποδρόμου 2
+Κατασκευή στίβου 2
 [build racetrack level 2]
-Κατασκευή Ιπποδρόμου 3
+Κατασκευή στίβου 3
 [build school level 0]
 Κατασκευή Σχολείου 1
 [build school level 1]
@@ -185,15 +185,15 @@ backspace
 [Build]
 Κτίσμα
 [Building Defaults]
-
+Προεπιλογές κτιρίων
 [building settings]
-Ρυθμίσεις Μονάδας
+Ρυθμίσεις κτιρίων
 [building site]
 τόπος κατασκευής
 [Building Tool Box Explanation]
-
+Shift + σύρσιμο = Ορθογώνιο
 [Building Tool Line Explanation]
-
+Ctrl + σύρσιμο = Γραμμή
 [Buildings]
 Κτίρια
 [Bullets]
@@ -203,15 +203,15 @@ backspace
 [campaign]
 Εκστρατεία
 [Can't connect, can't find host]
-
+Αδύνατη η σύνδεση: δεν βρέθηκε ο διακομιστής
 [Can't host game, port %0 in use]
-
+Αδύνατη η φιλοξενία παιχνιδιού: η θύρα %0 χρησιμοποιείται
 [Can't join game, game doesn't exist]
-
+Αδύνατη η συμμετοχή: το παιχνίδι δεν υπάρχει
 [Can't join game, game has started]
-
+Αδύνατη η συμμετοχή: το παιχνίδι έχει ξεκινήσει
 [Can't join game, game is full]
-
+Αδύνατη η συμμετοχή: το παιχνίδι είναι πλήρες
 [Can't join game, missmatching game parameters]
 Δεν μπορείτε να συμμετέχετε στο παιχνίδι, κακός συνδιασμός παραμέτρων
 [Can't join game, timeout]
@@ -253,23 +253,23 @@ caps lock
 [closed]
 Κλειστό
 [combined vision]
-
+Κοινή ορατότητα
 [compile]
 Μεταγλώττιση script
 [compose]
-
+Compose
 [Computing Fertility]
-
+Υπολογισμός γονιμότητας
 [concrete islands terrain]
-
+Χωριστά νησιά
 [connect]
 Σύνδεση
 [connecting to game]
-
+Σύνδεση στο παιχνίδι
 [connecting to]
 Σύνδεση στο
 [Construction Site Defaults]
-
+Προεπιλογές εργοταξίων
 [Continue playing]
 Συνέχεια
 [control %0]
@@ -287,7 +287,7 @@ Crater Lakes
 [credits]
 Εύσημα
 [ctrl - line]
-
+Ctrl - Γραμμή
 [current speed]
 Τωρινή ταχύτητα
 [custom game]
@@ -297,11 +297,11 @@ Crater Lakes
 [damage]
 Ζημιά
 [Damaged Map]
-Κατεστραμένος Χάρτης
+Χάρτης τραυματισμένων
 [decrease units working]
 Μείωση Εργαζόμενων Μονάδων
 [Defeat Your Oppenents]
-
+Νικήστε τους αντιπάλους σας
 [defencetower explanation 2]
 εχθρικές μονάδες και κτίρια
 [defencetower explanation]
@@ -337,19 +337,19 @@ Crater Lakes
 [down]
 κάτω
 [Download Map]
-
+Λήψη χάρτη
 [Download Maps]
-
+Λήψη χαρτών
 [downloaded %0]
-
+λήφθηκαν %0
 [downloading map]
-
+Λήψη χάρτη
 [edit map]
 Επεξεργασία Χάρτη
 [editing map]
 Επεξεργασία Χάρτη
 [editor shortcuts]
-Συντομέυσεις Επεξεργαστή
+Επεξεργαστής
 [editor]
 Επεξεργαστής
 [end]
@@ -411,11 +411,11 @@ f9
 [Fertility Map]
 Χάρτης Γονιμότητας
 [Flag Defaults]
-
+Προεπιλογές σημαιών
 [flag settings explanation]
-
+Η προεπιλεγμένη ακτίνα της σημαίας
 [fog of war]
-
+Ομίχλη πολέμου
 [food]
 Τροφή
 [forbidden area]
@@ -433,9 +433,9 @@ f9
 [game full]
 Πλήρης παιχνίδι
 [game shortcuts]
-Συντομεύσεις παιχνιδιού
+Παιχνίδι
 [Game]
-
+Παιχνίδι
 [general settings]
 Γενικές Ρυθμίσεις
 [go to event]
@@ -463,9 +463,9 @@ f9
 [Harvest]
 Συγκομιδή
 [high priority]
-
+υψηλή
 [hints]
-
+Υποδείξεις
 [home]
 σπίτι
 [hospital explanation 2]
@@ -511,7 +511,7 @@ HP
 [islands terrain]
 Νησιά
 [isles terrain]
-
+Νησίδες
 [iterate selection]
 Προχώρησε στην Επόμενη Επιλογή
 [jobs]
@@ -553,25 +553,25 @@ Anastasios M. Pingios
 [load map]
 Φόρτωση χάρτη
 [load replay]
-
+Φόρτωση επανάληψης
 [load script]
-
+Φόρτωση σεναρίου
 [load]
 Φόρτωση
 [loading map list]
-
+Φόρτωση λίστας χαρτών...
 [Lobby]
-
+Προθάλαμος
 [login]
 Σύνδεση
 [look around]
-
+Περιήγηση
 [Lost : %0 has more prestige than you]
 Χαμένος: %0 έχει περισσότερο κύρος από εσάς
 [Lost : your colony is dead]
 Χαμμένος: η αποικία σας είναι νεκρή
 [low priority]
-
+χαμηλή
 [lowquality]
 Χαμηλή ποιότητα
 [Magic At. Air]
@@ -579,33 +579,33 @@ Anastasios M. Pingios
 [Magic At. Ground]
 Επίγεια dmg.
 [map description]
-
+Περιγραφή
 [Map Discovered]
-
+Αποκαλυμμένος χάρτης
 [Map download failure: lost connection]
-
+Αποτυχία λήψης χάρτη: χάθηκε η σύνδεση με το YOG
 [Map name: %0]
 Όνομα χάρτη: %0.
 [map name]
 Όνομα
 [map rated]
-
+Ο χάρτης αξιολογήθηκε
 [map script]
-
+Σενάριο χάρτη
 [map size x]
 Πλάτος χάρτη
 [map size y]
 Μήκος χάρτη
 [Map upload failure: connection lost]
-
+Αποτυχία αποστολής χάρτη: χάθηκε η σύνδεση με το YOG
 [Map upload failure: map name in use]
-
+Αποτυχία αποστολής χάρτη. Το όνομα χάρτη χρησιμοποιείται ήδη.
 [Map upload failure: unknown reason]
-
+Αποτυχία αποστολής χάρτη. Άγνωστη αιτία.
 [Map Upload: Author Name]
-
+Όνομα δημιουργού
 [Map Upload: Waiting for reply]
-
+Αναμονή απάντησης
 [maps available]
 Διαθέσιμοι Χάρτες
 [mark map]
@@ -617,7 +617,7 @@ Anastasios M. Pingios
 [market]
 Αγορά
 [medium priority]
-
+μέτρια
 [meta %0]
 meta-%0
 [Min required level:]
@@ -637,25 +637,25 @@ meta-%0
 [nick taken]
 Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG
 [no fullscreen]
-
+* μόνο σε λειτουργία παραθύρου
 [No Hints]
-
+Δεν υπάρχουν υποδείξεις
 [no key]
 κανένα κλειδί ακόμα
 [No Objectives]
-
+Δεν υπάρχουν στόχοι
 [no ressources growth areas]
 Καμία Περιοχή Ανάπτυξης
 [No]
 Όχι
 [Not Enough Ratings]
-
+Ανεπαρκείς αξιολογήσεις
 [not ready]
 Μη έτοιμος
 [Number Of Buildings]
-
+Αριθμός κτιρίων
 [number of players: %0 (%1 AI)]
-
+%0 παίκτες (%1 ΤΝ)
 [number of players: %0]
 %0 παίκτες είναι παρώντες.
 [number of teams: %0]
@@ -663,11 +663,11 @@ meta-%0
 [number of teams]
 αριθμός των ομάδων
 [Number Of Units]
-
+Αριθμός μονάδων
 [numlock]
 numlock
 [objectives]
-
+Στόχοι
 [of which]
 υπάρχουν
 [ok]
@@ -677,11 +677,11 @@ Ok
 [old random terrain]
 παλιά τυχαία πεδία
 [on press]
-
+Πάτημα
 [On the spot]
 Εδώ
 [on unpress]
-
+Άφημα
 [open chat box]
 Άνοιγμα παραθύρου chat
 [open load menu]
@@ -691,7 +691,7 @@ Ok
 [open scenario editor]
 Άνοιγμα Επεξεργαστή Script
 [open teams editor]
-
+Άνοιγμα επεξεργαστή ομάδων
 [open]
 άνοιγμα
 [OpenGL]
@@ -703,7 +703,7 @@ OpenGL
 [Orange]
 Πορτοκαλι
 [Other Options]
-
+Άλλες επιλογές
 [page down]
 page down
 [page up]
@@ -719,9 +719,9 @@ page up
 [player name]
 Όνομα παίκτη
 [player rating %0]
-
+Αξιολόγηση παίκτη: %0
 [players]
-
+Παίκτες
 [please wait]
 Παρακαλώ περιμένετε
 [power]
@@ -729,17 +729,17 @@ page up
 [press space]
 Πατήστε space για να συνεχίσετε.
 [Prestige Score]
-
+Βαθμοί κύρους
 [Prestige Win Enabled]
-
+Ενεργή νίκη μέσω κύρους
 [Prestige]
 Κύρος
 [Primary Objectives]
-
+Κύριοι
 [print screen]
 print screen
 [priority]
-
+Προτεραιότητα
 [Prune]
 Δαμάσκηνο
 [quit the editor]
@@ -747,7 +747,7 @@ print screen
 [quit the game]
 Τερματισμός παιχνιδιού
 [quit the replay]
-
+Έξοδος από την επανάληψη
 [quit]
 Τερματισμός
 [racetrack explanation 2]
@@ -755,31 +755,31 @@ print screen
 [racetrack explanation]
 Αυξάνει την ταχύτητα
 [racetrack]
-Ιππόδρομος
+Στίβος
 [range]
 Εύρος
 [Rated %0]
-
+Βαθμολογία %0
 [ratios]
 Αναλογίες
 [ready?]
-
+έτοιμος;
 [refresh map list]
-
+Ανανέωση λίστας χαρτών
 [Register a new YOG user with password]
 Καταχωρήστε ένα νέο YOG χρήστη με κωδικό. (μη ασφαλές)
 [Register]
-
+Εγγραφή
 [remember unit]
-Να Θυμάσαι την Μονάδα
+Αποθ. πλήθους μονάδων
 [Remember YOG password localy]
 Αποθήκευση του κωδικού τοπικά. (μη ασφαλές)
 [remove map]
 Αφαίρεση Χάρτη
 [remove shortcut]
-Αφαίρεση Συντόμευσης
+Διαγραφή
 [Remove]
-
+Αφαίρεση
 [repair building]
 Εκκίνηση/Παύση Επιδιόρθωσης
 [repair]
@@ -787,17 +787,17 @@ print screen
 [repeat area]
 φορές το ίδιο περιβάλλον
 [Repeat your password :]
-
+Επαναλάβετε τον κωδικό σας:
 [replay ended]
-
+Η επανάληψη τελείωσε
 [restore default shortcuts]
-Επαναφορά Προκαθορισμένων Συντομεύσεων Πληκτρολογίου
+Επαναφορά συντομεύσεων
 [return to editor]
 Επιστροφή στον Επεξεργαστή
 [return to game]
 Επιστροφή στο παιχνίδι
 [return to replay]
-
+Επιστροφή στην επανάληψη
 [return]
 enter
 [right meta]
@@ -819,9 +819,9 @@ enter
 [save map]
 Αποθήκευση χάρτη
 [save replay]
-
+Αποθήκευση επανάληψης
 [save script]
-
+Αποθήκευση σεναρίου
 [Save]
 Αποθήκευση
 [school explanation 2]
@@ -837,7 +837,7 @@ scroll lock
 [scroll wheel enabled]
 Scroll Wheel Ενεργοποιημένο
 [Secondary Objectives]
-
+Δευτερεύοντες
 [seeking a job]
 ψάχνοντας για εργασία
 [seeking]
@@ -849,7 +849,7 @@ Scroll Wheel Ενεργοποιημένο
 [select construct barracks]
 Επιλογή Κατασκευή Στρατώνων
 [select construct defencetower]
-Επιλογή Κατασκευή Αμυντικού Πύργου
+Κατασκευή αμυντικού πύργου
 [select construct hospital]
 Επιλογή Κατασκευή Νοσοκομείου
 [select construct inn]
@@ -857,11 +857,11 @@ Scroll Wheel Ενεργοποιημένο
 [select construct market]
 Επιλογή Κατασκευή Αγοράς
 [select construct racetrack]
-Επιλογή Κατασκευή Ιπποδρόμου
+Κατασκευή στίβου
 [select construct school]
 Επιλογή Κατασκευή Σχολείου
 [select construct stonewall]
-Επιλογή Κατασκευή Πέτρινου Τείχους
+Κατασκευή πέτρινου τείχους
 [select construct swarm]
 Επιλογή Κατασκευή Σμήνους
 [select construct swimmingpool]
@@ -877,19 +877,19 @@ Scroll Wheel Ενεργοποιημένο
 [select market building]
 Επιλογή Αγοράς
 [select place clearing area]
-Επιλογή Πεδίου Καθαρισμού Περιοχής
+Τοποθέτηση ζώνης καθαρισμού
 [select place clearingflag]
 Επιλογή Πεδίου Καθαρισμού Σημαίας
 [select place explorationflag]
-Επιλογή Πεδίου Σημαίας Εξερεύνησης
+Σημαία εξερεύνησης: τοποθέτηση
 [select place forbidden area]
-Επιλογή Πεδίου Απαγορευμένης Περιοχής
+Τοποθέτηση απαγορευμένης ζώνης
 [select place guard area]
-Επιλογή Πεδίου Φυλασσόμενης Περιοχής
+Τοποθέτηση ζώνης φύλαξης
 [select place warflag]
 Επιλογή Πεδίου Σημαίας Μάχης
 [select racetrack building]
-Επιλογή Ιπποδρόμου
+Επιλογή στίβου
 [select school building]
 Επιλογή Σχολείου
 [select swarm building]
@@ -911,9 +911,9 @@ Enter: στείλτε ένα chat μύνημα
 [shortcut explanation v]
 V: κρατήστε για να μιλίσετε
 [show areas]
-
+Εμφάνιση περιοχών
 [show flags]
-
+Εμφάνιση σημαιών
 [show main menu]
 Εμφάνιση Κυρίως Μενού
 [skin]
@@ -923,11 +923,11 @@ V: κρατήστε για να μιλίσετε
 [sort by name]
 Όνομα
 [sort by rating]
-
+Βαθμολογία
 [sort by size]
-
+Μέγεθος
 [Sort By]
-
+Ταξινόμηση κατά
 [space]
 κενό
 [start mission]
@@ -961,7 +961,7 @@ V: κρατήστε για να μιλίσετε
 [stonewall]
 Πέτρινο Τείχος
 [submit rating]
-
+Υποβολή αξιολόγησης
 [svr hostname]
 Όνομα εξυπηρετητή
 [swamp terrain]
@@ -1015,9 +1015,9 @@ sys req
 [tab]
 tab
 [teams editor]
-
+Επεξεργαστής ομάδων
 [Teams Fixed]
-
+Σταθερές ομάδες
 [teams]
  ομάδες
 [the barracks is finished]
@@ -1049,7 +1049,7 @@ tab
 [the hospital is under attack]
 Το νοσοκομείο δέχετε επίθεση
 [The host has cancelled the game]
-
+Ο διοργανωτής ακύρωσε το παιχνίδι.
 [the inn is finished]
 Το πανδοχείο ολοκληρώθηκε
 [the inn is under attack]
@@ -1065,11 +1065,11 @@ tab
 [The player %0 has left YOG]
 %0 έφυγε από το YOG.
 [the racetrack is finished]
-Ο ιππόδρομος ολοκληρώθηκε
+Ο στίβος ολοκληρώθηκε
 [the racetrack is under attack]
-Ο ιππόδρομος δέχετε επίθεση
+Ο στίβος δέχεται επίθεση
 [the replays]
-
+Επαναλήψεις
 [the school is finished]
 Το σχολείο ολοκληρώθηκε
 [the school is under attack]
@@ -1091,37 +1091,37 @@ tab
 [the warflag is under attack]
 ?? warflag δέχετε επίθεση ??
 [time]
-
+Χρόνος
 [to:]
 στο:
 [toggle draw accessibility aids]
-Εναλλαγή Δημιουργίας Αναγκών Προσιτότητας
+Αριθμοί ομάδων: εμφάνιση/απόκρυψη
 [toggle draw information]
-Εναλλαγή Δημιουργίας Πληροφοριών
+Εμφάνιση/απόκρυψη πληροφοριών
 [toggle draw unit paths]
-Εναλλαγή Δημιουργίας Μονοπατιών Μονάδων
+Εμφάνιση/απόκρυψη διαδρομών
 [toggle menu screen]
 Εναλλαγή Οθόνης Μενού
 [toggle recording voice]
 Εναλλαγή Εγγραφής Φωνής
 [Total Attack Power]
-
+Συνολική ισχύς επίθεσης
 [Total Defence Power]
-
+Συνολική ισχύς άμυνας
 [Total Hitpoints]
-
+Συνολικοί πόντοι ζωής
 [Total prestige reached]
 Συνολικό ρεκοπ κύρους
 [Total]
 Σύνολο
 [tutorial text 1]
-
+Καλώς ήρθατε στη βασική εκπαίδευση του Globulation 2! Εδώ θα μάθετε να χτίζετε πανδοχεία, να εξερευνάτε περιοχές και να καταστρέφετε εχθρούς. Σας περιμένουν πολλές χρήσιμες γνώσεις!
 [tutorial text 2]
-
+Τώρα που μάθατε τα βασικά, ήρθε η ώρα να γνωρίσετε άλλα κτίρια, όπως στίβους, πισίνες και σχολεία.
 [tutorial text 3]
-
+Τα καταφέρατε καλά μέχρι εδώ. Ας περάσουμε τώρα στους πολεμιστές, στους στρατώνες και στις αναβαθμίσεις.
 [tutorial text 4]
-
+Σχεδόν τελειώσατε. Απομένουν μόνο οι σημαίες και οι επιθέσεις. Έπειτα θα ξέρετε αρκετά για να δοκιμάσετε προσαρμοσμένα παιχνίδια και, αργότερα, να παίξετε διαδικτυακά εναντίον μερικών από τους καλύτερους παίκτες του Globulation 2.
 [tutorial]
 Tutorial
 [Uncontrolled]
@@ -1133,13 +1133,13 @@ Tutorial
 [Unit editor]
 Επεξεργαστής μονάδας
 [unit settings explanation]
-
+Ο προεπιλεγμένος αριθμός ανατεθειμένων μονάδων
 [units working]
  εργαζόμενες μονάδες
 [Units]
 Μονάδες
 [unlocked at start]
-
+Ξεκλείδωτη από την αρχή
 [unlocked by]
 Ξεκλειδώθηκε από
 [Unnamed Area]
@@ -1149,13 +1149,13 @@ Tutorial
 [upgrade building]
 Εκκίνηση/Παύση Αναβάθμισης
 [Upgrade Defaults]
-
+Προεπιλογές αναβάθμισης
 [upgrade]
 Αναβάθμιση
 [Upload Map]
-
+Αποστολή χάρτη
 [upload map]
-
+Αποστολή χάρτη
 [username]
 Όνομα Χρήστη
 [Version]
@@ -1163,13 +1163,13 @@ Tutorial
 [view history]
 Εμφάνιση Ιστορικού
 [Voice volume]
-
+Ένταση φωνής
 [waiting for %0]
 Αναμονή για %0
 [waiting for key]
 αναμονή για πλήκτρο...
 [Waiting]
-
+Αναμονή
 [Walk]
 Περπάτα
 [warflag explanation 2]
@@ -1187,9 +1187,9 @@ Tutorial
 [warriors]
 πολεμιστές
 [watch again]
-
+Προβολή ξανά
 [watching:]
-
+Παρακολούθηση:
 [water]
 Νερό
 [Wheat]
@@ -1227,7 +1227,7 @@ Tutorial
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη δεν έχει ακόμα κωδικό. Πιθανόν θέλετε να καταχωρήσετε αυτό το όνομα χρήστη με αυτό τον κωδικό. Γι' αυτό, ενεργοποιήστε την επιλογή "Καταχώρηση νέου YOG χρήστη με κωδικό" πριν συνδεθείτε. Θα πρέπει να ενεργοποιήσετε αυτή την επιλογή μόνο μία φορά.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+Ο μεταδιακομιστής YOG απέρριψε τη σύνδεση επειδή αυτή η διεύθυνση IP έχει αποκλειστεί προσωρινά. Περιμένετε να αρθεί ο αποκλεισμός ή επικοινωνήστε με τους διαχειριστές.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το globulation2 client σας είναι παλιό.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1235,29 +1235,29 @@ Tutorial
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη είναι ήδη σε χρήση από κάποιον άλλον.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+Ο μεταδιακομιστής YOG απέρριψε τη σύνδεση επειδή αυτό το όνομα χρήστη έχει αποκλειστεί. Επικοινωνήστε με τους διαχειριστές.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+Ο μεταδιακομιστής YOG απέρριψε τη σύνδεση επειδή το όνομα χρήστη δεν είναι έγκυρο. Επιτρέπονται μόνο γράμματα, αριθμοί και κάτω παύλες.
 [YESTS_CREATED]
 Το σύστημα σύνδεσης είναι έτοιμο για επαφή με τον YOG metaserver για σύνδεση.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Οι κωδικοί δεν ταιριάζουν. Πληκτρολογήστε τους ξανά.
 [YESTS_UNABLE_TO_CONNECT]
 Αδύνατη η σύνδεση. Προφανώς ο YOG metaserver δεν λειτουργεί.
 [yog block command help]
-
+/block <playername>    Αποκλείει έναν παίκτη· δεν θα βλέπετε πλέον τα μηνύματά του.
 [yog block command player %0 already blocked]
-
+Ο παίκτης %0 είναι ήδη αποκλεισμένος
 [yog block command player %0 blocked]
-
+Ο παίκτης %0 αποκλείστηκε
 [yog block command player %0 not found]
-
+Ο παίκτης %0 δεν βρέθηκε
 [yog command header]
-
+Οι διαθέσιμες εντολές του πελάτη YOG είναι:
 [yog command unknown]
-
+Άγνωστη εντολή.
 [yog help command help]
-
+/help    Εμφανίζει αυτό το μήνυμα βοήθειας
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1265,15 +1265,15 @@ Ysagoon Online Gaming
 [you have won]
 Κερδίσατε!
 [You where kicked from the game]
-
+Αποβληθήκατε από το παιχνίδι
 [Your %0 are under attack]
 Το %0 δέχετε επίθεση
 [Your IP address was temporarily banned]
-
+Η διεύθυνση IP σας αποκλείστηκε προσωρινά. Περιμένετε να αρθεί ο αποκλεισμός ή επικοινωνήστε με τους διαχειριστές.
 [Your unit got converted to %0's team]
 Η μονάδα σας άλλαξε σε %0 ομάδα
 [Your username was banned]
-
+Το όνομα χρήστη σας αποκλείστηκε. Επικοινωνήστε με τους διαχειριστές για να αρθεί ο αποκλεισμός.
 [game speed]
 Ταχύτητα παιχνιδιού
 [decrease game speed]

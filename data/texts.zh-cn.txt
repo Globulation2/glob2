@@ -205,9 +205,9 @@ caps lock
 [compose]
 编写
 [Computing Fertility]
-计算力剩余
+正在计算肥沃度
 [concrete islands terrain]
-接合岛屿地形
+独立岛屿
 [connect]
 连线
 [connecting to game]
@@ -243,7 +243,7 @@ ctrl - line
 [damage]
 伤害
 [Damaged Map]
-伤患地图
+受伤单位分布图
 [decrease units working]
 减少工作单位
 [Defeat Your Oppenents]
@@ -609,11 +609,11 @@ numlock
 [old random terrain]
 古代随机地形
 [on press]
-高压
+按下时
 [On the spot]
 On the spot 焦点
 [on unpress]
-on unpress 松弛
+松开时
 [open chat box]
 打开聊天框
 [open load menu]
@@ -701,7 +701,7 @@ OpenGL
 [Register]
 注册
 [remember unit]
-记录单位
+记住单位分配数量
 [Remember YOG password localy]
 记住密码
 [remove map]
@@ -1023,7 +1023,7 @@ tab
 [to:]
 前往:
 [toggle draw accessibility aids]
-显至最近支援
+显示或隐藏队伍编号
 [toggle draw information]
 显示资讯
 [toggle draw unit paths]

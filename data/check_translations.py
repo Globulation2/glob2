@@ -120,14 +120,6 @@ def audit(root=ROOT):
         for name in incomplete:
             if not name.startswith('*') and languages.get(name, {}).get('untranslated'):
                 errors.append(f'{name}: incomplete language is marked complete')
-    # The explicit historical backlog allows existing unfinished languages in CI,
-    # but never allows a newly blank translation to silently regress coverage.
-    pending_path = root / 'data/translations.pending.json'
-    if pending_path.exists():
-        pending = json.loads(pending_path.read_text(encoding='utf-8'))
-        for name, report in languages.items():
-            for key in sorted(set(report['untranslated']) - set(pending.get(name, []))):
-                errors.append(f'{name}: newly untranslated key {key}')
     # Catch literal lookups; dynamically composed building/event keys need
     # contextual review and are deliberately not guessed by this scanner.
     for directory in ('src', 'libgag'):

@@ -207,7 +207,7 @@ skomponuj
 [Computing Fertility]
 Obliczam Urodzajność
 [concrete islands terrain]
-Betonowe Wyspy
+Oddzielne wyspy
 [connect]
 Połącz
 [connecting to game]
@@ -243,7 +243,7 @@ Własny kursor
 [damage]
 Uszkodzenia
 [Damaged Map]
-Uszkodzona mapa
+Mapa rannych
 [decrease units working]
 Zmniejsz Ilość Pracujących Jednostek
 [Defeat Your Oppenents]
@@ -611,11 +611,11 @@ stare losowe wyspy
 [old random terrain]
 stary losowy teren
 [on press]
-Na Przyciśnięcie
+Wciśnięcie
 [On the spot]
 Na miejscu
 [on unpress]
-Na Puszczenie
+Zwolnienie
 [open chat box]
 Otwórz Okno Rozmowy
 [open load menu]
@@ -705,7 +705,7 @@ Rejestruj nowego użytkownika YOG z hasłem. (niebezpieczne)
 [Register]
 Zarejestruj
 [remember unit]
-Zapamiętaj Jednostkę
+Pamiętaj liczby jednostek
 [Remember YOG password localy]
 Zapamiętaj hasło lokalnie. (niebezpieczne)
 [remove map]
@@ -791,11 +791,11 @@ Wybierz Konstrukcję Gospody
 [select construct market]
 Wybierz Konstrukcję Bazaru
 [select construct racetrack]
-Wybierz Konstrukcję Toru Wyścigowego
+Buduj tor wyścigowy
 [select construct school]
 Wybierz Konstrukcję Szkoły
 [select construct stonewall]
-Wybierz konstrukcję Kamiennego Muru
+Buduj mur kamienny
 [select construct swarm]
 Wybierz Konstrukcję Roju
 [select construct swimmingpool]
@@ -811,17 +811,17 @@ Wybierz Gospodę
 [select market building]
 Wybierz Bazar
 [select place clearing area]
-Wybierz Umiejscowienie Terenu Oczyszczania
+Wyznacz teren oczyszczania
 [select place clearingflag]
-Wybierz Umiejscowienie Flagi Oczyszczania
+Ustaw flagę oczyszczania
 [select place explorationflag]
-Wybierz Umiejscowienie Flagi Eksploracji
+Ustaw flagę eksploracji
 [select place forbidden area]
-Wybierz Umiejscowienie Terenu Zabronionego
+Wyznacz teren zabroniony
 [select place guard area]
-Wybierz Umiejscowienie Terenu Obronnego
+Wyznacz teren obronny
 [select place warflag]
-Wybierz Umiejscowienie Flagi Wojennej
+Ustaw flagę wojenną
 [select racetrack building]
 Wybierz Tor Wyścigowy
 [select school building]
@@ -1027,7 +1027,7 @@ Czas
 [to:]
 do:
 [toggle draw accessibility aids]
-Przełącz Rysowanie Pomocy Dostępności
+Pokaż/ukryj numery drużyn
 [toggle draw information]
 Przełącz Rysowanie Informacji
 [toggle draw unit paths]

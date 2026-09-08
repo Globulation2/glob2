@@ -41,7 +41,7 @@ V: Mostra visuale di tutte le costruzioni
 [add map]
 aggiungi mappa
 [add shortcut]
-aggiungi scorciatoia da tastiera
+Aggiungi scorciatoia
 [Add]
 Aggiungi
 [AI Descriptions]
@@ -255,7 +255,7 @@ componi
 [Computing Fertility]
 Calcolando la fertilità
 [concrete islands terrain]
-Isole di cemento
+Isole separate
 [connect]
 Connesso
 [connecting to game]
@@ -291,7 +291,7 @@ Personalizza cursore
 [damage]
 Danno
 [Damaged Map]
-Mappa danneggiati
+Mappa dei feriti
 [decrease units working]
 Diminuisci unità lavorative
 [Defeat Your Oppenents]
@@ -343,7 +343,7 @@ Modifica mappa
 [editing map]
 Modificando mappa
 [editor shortcuts]
-Editor delle scorciatoie da tastiera
+Editor
 [editor]
 Editor
 [end]
@@ -427,7 +427,7 @@ Schermo intero
 [game full]
 Partita al completo
 [game shortcuts]
-Scorciatoie da tastiera
+Gioco
 [Game]
 Partita
 [general settings]
@@ -669,11 +669,11 @@ Vecchie isole casuali
 [old random terrain]
 Vecchio terreno casuale
 [on press]
-Quando schiacci
+Premuto
 [On the spot]
 Sul posto
 [on unpress]
-Quando lasci il tasto
+Rilasciato
 [open chat box]
 apri chat
 [open load menu]
@@ -763,7 +763,7 @@ Registra un nuovo utente YOG con una passord. (non sicuro)
 [Register]
 Registrati
 [remember unit]
-Ricorda Unità
+Ricorda le assegnazioni
 [Remember YOG password localy]
 Ricordati la password localmente. (non sicuro)
 [remove map]
@@ -783,7 +783,7 @@ Ripeti la password:
 [replay ended]
 Replay terminato
 [restore default shortcuts]
-Ripristina le scorciatoie da tastiera originali
+Ripristina scorciatoie predefinite
 [return to editor]
 Ritorna all'editor
 [return to game]
@@ -871,15 +871,15 @@ Seleziona Mercato
 [select place clearing area]
 Seleziona posiziona area da pulire
 [select place clearingflag]
-Seleziona posiziona bandiera pulitrice
+Posiziona bandiera di raccolta
 [select place explorationflag]
-Seleziona posiziona bandiera esplorazione
+Posiziona bandiera di esplorazione
 [select place forbidden area]
 Seleziona posiziona area vietata
 [select place guard area]
 Seleziona posiziona area pattuglia
 [select place warflag]
-Seleziona posiziona bandiera di guerra
+Posiziona bandiera di attacco
 [select racetrack building]
 Seleziona Circuito
 [select school building]
@@ -993,7 +993,7 @@ Passa a brush area 7
 [switch to area brush 8]
 Passa a brush area 8
 [switch to building view]
-Passa alla Visualizzazione Costruzioni
+Mostra edifici
 [switch to flag view]
 Passa alla Visualizzazione Flag
 [switch to removing areas]
@@ -1087,11 +1087,11 @@ Tempo
 [to:]
 a:
 [toggle draw accessibility aids]
-Toggle Draw Accessibility Aids ???
+Numeri squadre: sì/no
 [toggle draw information]
-Toggle Draw Information ???
+Mostra/nascondi informazioni
 [toggle draw unit paths]
-Toggle Draw Unit Paths ???
+Mostra/nascondi percorsi
 [toggle menu screen]
 Apri menu
 [toggle recording voice]

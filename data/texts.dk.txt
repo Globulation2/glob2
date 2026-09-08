@@ -1,29 +1,29 @@
 [%0 has left the game]
 %0 har forladt spillet
 [%0 level %1]
-
+%0 niveau %1
 [%0 units can't access building]
-
+%0 enheder kan ikke nå bygningen
 [%0 units can't access flag]
-
+%0 enheder kan ikke nå flaget
 [%0 units can't access fruit]
-
+%0 enheder kan ikke nå frugten
 [%0 units can't access resource]
-
+%0 enheder kan ikke nå ressourcen
 [%0 units not available]
-
+%0 enheder er ikke tilgængelige
 [%0 units too far from building]
-
+%0 enheder er for langt fra bygningen
 [%0 units too far from flag]
-
+%0 enheder er for langt fra flaget
 [%0 units too far from fruit]
-
+%0 enheder er for langt fra frugten
 [%0 units too far from resource]
-
+%0 enheder er for langt fra ressourcen
 [%0 units too low level]
-
+%0 enheder har for lavt niveau
 [%0% Uploaded]
-
+%0% uploadet
 [%0's game]
 %0s spil
 [%0's team unit got converted to your team]
@@ -43,31 +43,31 @@ Tilføj kort
 [add shortcut]
 Tilføj genvejstast
 [Add]
-
+Tilføj
 [AI Descriptions]
-
+Beskrivelser af AI
 [AI]
 AI
 [ai]
 AI
 [AICastor-Description]
-
+Castor spiller forsigtigt og klarer sig godt på kort med få ressourcer. Middel sværhedsgrad.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Nicowar spiller aggressivt, vokser hurtigt og sender enorme hære mod sine modstandere. Høj sværhedsgrad.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Ingen – foretager sig intet.
 [AINone]
 AINone
 [AINumbi-Description]
-
+Numbi udvider sig lidt, men hurtigt. Lav sværhedsgrad.
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity angriber ikke, men bygger enorme baser og omvender ihærdigt enheder. Lav sværhedsgrad.
 [AIReachToInfinity]
 ReachToInfinity
 [AIToubib-Description]
@@ -75,7 +75,7 @@ ReachToInfinity
 [AIToubib]
 AIToubib
 [AIWarrush-Description]
-
+Warrush angriber hurtigt og hårdt og presser ofte den forsvarende spiller til det yderste. Middel sværhedsgrad.
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -119,9 +119,9 @@ Venter på spillere
 [away:]
 er væk:
 [Back]
-
+Tilbage
 [backspace]
-
+backspace
 [barracks explanation 2]
 kampniveau
 [barracks explanation]
@@ -131,13 +131,13 @@ Kaserne
 [beach size]
 Strandstørrelse
 [Blocked Players]
-
+Blokerede spillere
 [break]
-
+break
 [briefing]
-
+Missionsbeskrivelse
 [build %0 level %1]
-
+Byg %0 niveau %1
 [build barracks level 0]
 Byg Kaserne niv. 0
 [build barracks level 1]
@@ -181,23 +181,23 @@ Byg Sten væg
 [build swarm level 0]
 Byg Sværm
 [build swimmingpool level 0]
-Byg Svømmepøl 1
+Byg Svømmebassin 1
 [build swimmingpool level 1]
-Byg Svømmepøl 2
+Byg Svømmebassin 2
 [build swimmingpool level 2]
-Byg Svømmepøl 3
+Byg Svømmebassin 3
 [Build]
 Byg
 [Building Defaults]
-
+Standarder for bygninger
 [building settings]
-Enheder
+Bygningsindstillinger
 [building site]
 bygningssted
 [Building Tool Box Explanation]
-
+Shift + træk = rektangel
 [Building Tool Line Explanation]
-
+Ctrl + træk = linje
 [Buildings]
 Bygninger
 [Bullets]
@@ -207,15 +207,15 @@ Kampagne redigator
 [campaign]
 Kampagne
 [Can't connect, can't find host]
-
+Kan ikke forbinde: værten blev ikke fundet
 [Can't host game, port %0 in use]
-
+Kan ikke være vært: port %0 er i brug
 [Can't join game, game doesn't exist]
-
+Kan ikke deltage: spillet findes ikke
 [Can't join game, game has started]
-
+Kan ikke deltage: spillet er startet
 [Can't join game, game is full]
-
+Kan ikke deltage: spillet er fyldt
 [Can't join game, missmatching game parameters]
 Kan ikke forbinde til spillet, spilparametrene stemmer ikke overens
 [Can't join game, timeout]
@@ -231,7 +231,7 @@ Afbryd opgradering
 [Cancel]
 Afbryd
 [caps lock]
-
+caps lock
 [carry]
 Bærer på:
 [Change Area Name]
@@ -257,23 +257,23 @@ Rydningsflag
 [closed]
 Lukket
 [combined vision]
-
+Fælles udsyn
 [compile]
 Kompilere skript
 [compose]
-
+compose
 [Computing Fertility]
-
+Beregner frugtbarhed
 [concrete islands terrain]
-
+Adskilte øer
 [connect]
 Forbinder
 [connecting to game]
-
+Forbinder til spil
 [connecting to]
 Forbinder til
 [Construction Site Defaults]
-
+Standarder for byggepladser
 [Continue playing]
 Fortsæt spillet
 [control %0]
@@ -291,7 +291,7 @@ Lav et kort
 [credits]
 Credit
 [ctrl - line]
-
+Ctrl - linje
 [current speed]
 Nuværende hastighed
 [custom game]
@@ -303,9 +303,9 @@ Skade
 [Damaged Map]
 Skade-kort
 [decrease units working]
-
+Færre arbejdende enheder
 [Defeat Your Oppenents]
-
+Besejr dine modstandere
 [defencetower explanation 2]
 og bygninger i nærheden
 [defencetower explanation]
@@ -335,19 +335,19 @@ Destruktion
 [display]
 Opløsning
 [do nothing]
-
+Gør ingenting
 [don't carry anything]
 Bægere ikke på noget
 [down]
-
+ned
 [Download Map]
-
+Hent kort
 [Download Maps]
-
+Hent kort
 [downloaded %0]
-
+%0 hentet
 [downloading map]
-
+Henter kort
 [edit map]
 Rediger kort
 [editing map]
@@ -357,17 +357,17 @@ Rediger genveje
 [editor]
 Rediger bane
 [end]
-
+end
 [Enter your nickname :]
 Skriv dit brugernavn :
 [Enter your password :]
 Skriv din adgangskode :
 [enter]
-
+enter
 [equals]
-
+lighedstegn
 [escape]
-
+escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -375,7 +375,7 @@ Tiltrækker udforskere
 [explorationflag]
 Udforsknings flag
 [Explorer Ratio]
-Udforsker Ratio
+Andel udforskere
 [Explorer]
 Udforsker
 [explorers]
@@ -413,13 +413,13 @@ f8
 [f9]
 f9
 [Fertility Map]
-
+Frugtbarhedskort
 [Flag Defaults]
-
+Standarder for flag
 [flag settings explanation]
-
+Flagets standardradius
 [fog of war]
-
+Krigståge
 [food]
 Mad
 [forbidden area]
@@ -439,13 +439,13 @@ Spillet er fyldt op.
 [game shortcuts]
 Gem genveje
 [Game]
-
+Spil
 [general settings]
 Generelt
 [go to event]
-
+Gå til hændelse
 [go to home]
-
+Gå til basen
 [goto main menu]
 Tilbage til hovedmenuen
 [grass]
@@ -463,15 +463,15 @@ Hånd lavet kort
 [Happyness]
 Antal lykkelige
 [hard pause]
-
+Fuld pause
 [Harvest]
 Høst
 [high priority]
-
+høj
 [hints]
-
+Tip
 [home]
-
+home
 [hospital explanation 2]
 
 [hospital explanation]
@@ -493,7 +493,7 @@ Sulthed
 [In way]
 Er på vej
 [increase units working]
-
+Flere arbejdende enheder
 [inn explanation 2]
 
 [inn explanation]
@@ -507,7 +507,7 @@ Kro 3
 [inn]
 Kro
 [insert]
-
+insert
 [inside]
 Indenfor
 [islands size]
@@ -515,9 +515,9 @@ Indenfor
 [islands terrain]
 Øer
 [isles terrain]
-
+Småøer
 [iterate selection]
-
+Gå til næste valg
 [jobs]
 jobs
 [join a game]
@@ -527,7 +527,7 @@ Spil med
 [keyboard settings]
 Genvejstaster
 [kick]
-
+Smid ud
 [lan]
 Lokalt netspil
 [language incomplete]
@@ -539,13 +539,13 @@ Sprog
 [language]
 Dansk
 [Leave Game]
-
+Forlad spil
 [left meta]
-
+venstre meta
 [left super]
-
+venstre Windows-tast
 [left]
-
+venstre
 [level]
 niveau
 [levels]
@@ -557,25 +557,25 @@ Hent spil
 [load map]
 Hent bane
 [load replay]
-
+Indlæs genafspilning
 [load script]
-
+Indlæs script
 [load]
 hent
 [loading map list]
-
+Indlæser kortliste...
 [Lobby]
-
+Lobby
 [login]
 Log ind
 [look around]
-
+Se dig omkring
 [Lost : %0 has more prestige than you]
 Tabt : %0 har mere prestige end du har
 [Lost : your colony is dead]
 Tabt : Din koloni er død
 [low priority]
-
+lav
 [lowquality]
 Lav kvalitet
 [Magic At. Air]
@@ -583,33 +583,33 @@ Luft skade.
 [Magic At. Ground]
 Jord skade.
 [map description]
-
+Beskrivelse
 [Map Discovered]
-
+Kort udforsket
 [Map download failure: lost connection]
-
+Kortet kunne ikke hentes: forbindelsen til YOG blev afbrudt
 [Map name: %0]
 Kort navn: %0.
 [map name]
 Navn
 [map rated]
-
+Kort bedømt
 [map script]
-
+Kortscript
 [map size x]
 Kort bredte
 [map size y]
 Kort højde
 [Map upload failure: connection lost]
-
+Kortet kunne ikke uploades: forbindelsen til YOG blev afbrudt
 [Map upload failure: map name in use]
-
+Kortet kunne ikke uploades: navnet er allerede i brug.
 [Map upload failure: unknown reason]
-
+Kortet kunne ikke uploades. Ukendt årsag.
 [Map Upload: Author Name]
-
+Forfatterens navn
 [Map Upload: Waiting for reply]
-
+Venter på svar
 [maps available]
 Tilgængelige kort
 [mark map]
@@ -621,7 +621,7 @@ Gør det muligt at bytte
 [market]
 Market
 [medium priority]
-
+middel
 [meta %0]
 meta-%0
 [Min required level:]
@@ -641,25 +641,25 @@ Ny
 [nick taken]
 Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.
 [no fullscreen]
-
+* kun i vinduestilstand
 [No Hints]
-
+Ingen tip
 [no key]
-
+ingen tast valgt
 [No Objectives]
-
+Ingen mål
 [no ressources growth areas]
 Ingen vækstområde
 [No]
 Nej
 [Not Enough Ratings]
-
+For få bedømmelser
 [not ready]
 ikke klar
 [Number Of Buildings]
-
+Antal bygninger
 [number of players: %0 (%1 AI)]
-
+%0 spillere (%1 AI)
 [number of players: %0]
 %0 antal spillere er tilgængelig
 [number of teams: %0]
@@ -667,11 +667,11 @@ ikke klar
 [number of teams]
 antal af hold
 [Number Of Units]
-
+Antal enheder
 [numlock]
-
+num lock
 [objectives]
-
+Mål
 [of which]
 hvilke af
 [ok]
@@ -681,13 +681,13 @@ Gamle ø terræn
 [old random terrain]
 Gamle tilfældige terræn
 [on press]
-
+Ved tryk
 [On the spot]
 Her
 [on unpress]
-
+Ved slip
 [open chat box]
-
+Åbn chatfelt
 [open load menu]
 Åben lade menu
 [open save menu]
@@ -695,7 +695,7 @@ Her
 [open scenario editor]
 Åben Script Editor
 [open teams editor]
-
+Åbn holdeditor
 [open]
 Åben
 [OpenGL]
@@ -707,43 +707,43 @@ Indstillinger
 [Orange]
 Appelsin
 [Other Options]
-
+Andre indstillinger
 [page down]
-
+page down
 [page up]
-
+page up
 [Papyrus]
 Skrift ruller
 [pause game]
 Pause spillet
 [pause]
-
+pause
 [Paused]
 Pause
 [player name]
 Spillernavn
 [player rating %0]
-
+Spillerbedømmelse: %0
 [players]
-
+Spillere
 [please wait]
 Vent venligst
 [power]
-
+tænd/sluk
 [press space]
 Tryk på mellemrum for at fortsætte
 [Prestige Score]
-
+Prestigepoint
 [Prestige Win Enabled]
-
+Prestigesejr aktiveret
 [Prestige]
 Prestige
 [Primary Objectives]
-
+Primære
 [print screen]
-
+print screen
 [priority]
-
+Prioritet
 [Prune]
 Blomme
 [quit the editor]
@@ -751,7 +751,7 @@ Afslut editor
 [quit the game]
 Afslut spillet
 [quit the replay]
-
+Afslut genafspilning
 [quit]
 Afslut
 [racetrack explanation 2]
@@ -763,27 +763,27 @@ Træningsbane
 [range]
 Afstand
 [Rated %0]
-
+Bedømt til %0
 [ratios]
 Proportioner
 [ready?]
-
+klar?
 [refresh map list]
-
+Opdater kortliste
 [Register a new YOG user with password]
 Register en ny YOG bruger med adgangskode. (usikker)
 [Register]
-
+Registrer
 [remember unit]
-Husk enhed
+Husk enhedstildelinger
 [Remember YOG password localy]
 Husk adgangskoden lokalt. (usikker)
 [remove map]
 Fjern Kort
 [remove shortcut]
-
+Fjern genvej
 [Remove]
-
+Fjern
 [repair building]
 Start/Stop Reparation
 [repair]
@@ -791,9 +791,9 @@ Reparere
 [repeat area]
 antal gange det samme landskab
 [Repeat your password :]
-
+Gentag adgangskoden:
 [replay ended]
-
+Genafspilning afsluttet
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
@@ -801,15 +801,15 @@ Tilbage til editor
 [return to game]
 Vend tilbage til spillet
 [return to replay]
-
+Tilbage til genafspilningen
 [return]
-
+enter
 [right meta]
-
+højre meta
 [right super]
-
+højre Windows-tast
 [right]
-
+højre
 [river diameter]
 Længde af flod
 [river terrain]
@@ -823,9 +823,9 @@ Gemme spil
 [save map]
 Gem bane
 [save replay]
-
+Gem genafspilning
 [save script]
-
+Gem script
 [Save]
 Gem
 [school explanation 2]
@@ -837,11 +837,11 @@ Skole
 [Script Areas]
 Script Områder
 [scroll lock]
-
+scroll lock
 [scroll wheel enabled]
-
+Musehjul aktiveret
 [Secondary Objectives]
-
+Sekundære
 [seeking a job]
 leder efter et job
 [seeking]
@@ -869,7 +869,7 @@ Vælg byggeri: Stenvæg
 [select construct swarm]
 Vælg byggeri: Sværm
 [select construct swimmingpool]
-Vælg byggeri: Svømmepøl
+Vælg byggeri: Svømmebassin
 [select delete tool]
 Vælg sletteværktøj
 [select explorationflag]
@@ -899,7 +899,7 @@ Vælg Skole
 [select swarm building]
 Vælg Sværm
 [select swimmingpool building]
-Vælg Svømmepøl
+Vælg Svømmebassin
 [select tower building]
 Vælg Tårn
 [select wall building]
@@ -915,25 +915,25 @@ tast enter : send en besked
 [shortcut explanation v]
 tast v : hold v nede for at snakke
 [show areas]
-
+Vis områder
 [show flags]
-
+Vis flag
 [show main menu]
-
+Vis hovedmenu
 [skin]
-Opløsning
+Visning
 [smoothing]
 Udglatning
 [sort by name]
 Navn
 [sort by rating]
-
+Bedømmelse
 [sort by size]
-
+Størrelse
 [Sort By]
-
+Sortér efter
 [space]
-
+mellemrum
 [start mission]
 Start Mission
 [start new campaign]
@@ -965,7 +965,7 @@ Passivt
 [stonewall]
 Stenvæg
 [submit rating]
-
+Indsend bedømmelse
 [svr hostname]
 Serverens maskinnavn
 [swamp terrain]
@@ -985,7 +985,7 @@ svømmehastighed
 [swimmingpool explanation]
 Øger enhedernes
 [swimmingpool]
-Svømmepøl
+Svømmebassin
 [switch to adding areas]
 Tilføj områder
 [switch to area brush 1]
@@ -1015,17 +1015,17 @@ Skift til hold visning
 [switch to terrain view]
 Skift til terring visning
 [sys req]
-
+sys req
 [tab]
-
+tabulator
 [teams editor]
-
+Holdeditor
 [Teams Fixed]
-
+Faste hold
 [teams]
  hold
 [the barracks is finished]
-Kasernen er færdig gjort
+Kasernen er færdig
 [the barracks is under attack]
 Kasernen er under angreb
 [the building is finished]
@@ -1053,7 +1053,7 @@ Hospitalet er færdigbygget
 [the hospital is under attack]
 Hospitalet er under angreb
 [The host has cancelled the game]
-
+Værten har aflyst spillet.
 [the inn is finished]
 Kroen er færdig gjordt
 [the inn is under attack]
@@ -1069,11 +1069,11 @@ Market er under angreb
 [The player %0 has left YOG]
 %0 har forladt YOG.
 [the racetrack is finished]
-Raserbanen er fædtig gjort
+Træningsbanen er færdig
 [the racetrack is under attack]
-Raserbanen er under angreb
+Træningsbanen er under angreb
 [the replays]
-
+Genafspilninger
 [the school is finished]
 Skolen er færdig gjort
 [the school is under attack]
@@ -1087,93 +1087,93 @@ Sværmen er færdig gjort
 [the swarm is under attack]
 Sværmen er under angreb
 [the swimmingpool is finished]
-Svømmepølen er færdig gjort
+Svømmebassinet er færdigt
 [the swimmingpool is under attack]
-Svømme pølen er under angreb
+Svømmebassinet er under angreb
 [the warflag is finished]
 ?? Krigs flaget er færdig ??
 [the warflag is under attack]
 ?? Krigs flaget er under angreb ??
 [time]
-
+Tid
 [to:]
 til:
 [toggle draw accessibility aids]
-Vis/skjul tilgængelighedshjælp
+Vis/skjul holdnumre
 [toggle draw information]
-Vælg tegn information
+Vis/skjul oplysninger
 [toggle draw unit paths]
-Vælg tegn endhd router
+Vis/skjul enheders ruter
 [toggle menu screen]
-
+Vis/skjul menuskærm
 [toggle recording voice]
-Start volkal optagelse
+Slå stemmeoptagelse til/fra
 [Total Attack Power]
-
+Samlet angrebsstyrke
 [Total Defence Power]
-
+Samlet forsvarsstyrke
 [Total Hitpoints]
-
+Samlede livspoint
 [Total prestige reached]
 Total prestige opnået
 [Total]
 Total
 [tutorial text 1]
-
+Velkommen til grundvejledningen i Globulation 2! Her lærer du at bygge kroer, udforske områder og besejre fjender. Der er masser af nyttig viden at hente!
 [tutorial text 2]
-
+Nu hvor du har lært det grundlæggende, er det tid til at lære andre bygninger at kende, såsom træningsbaner, svømmebassiner og skoler.
 [tutorial text 3]
-
+Godt klaret indtil nu. Lad os fortsætte med krigere, kaserner og opgraderinger.
 [tutorial text 4]
-
+Du er næsten færdig. Kun flag og angreb mangler. Derefter ved du nok til at prøve tilpassede spil og senere spille på nettet mod nogle af de bedste Globulation 2-spillere.
 [tutorial]
 Lær at spille
 [Uncontrolled]
 Ukontrolleret
 [undo]
-
+fortryd
 [uniform terrain]
 Uniform terraing
 [Unit editor]
 Rediger Enhed
 [unit settings explanation]
-
+Standardantal tildelte enheder
 [units working]
 Enheder der arbejder
 [Units]
 Enheder
 [unlocked at start]
-
+Låst op fra start
 [unlocked by]
 Låst op af
 [Unnamed Area]
 {Unavngivet område}
 [up]
-
+op
 [upgrade building]
 Start/Stop Opgradering
 [Upgrade Defaults]
-
+Standarder for opgraderinger
 [upgrade]
 Opgradere
 [Upload Map]
-
+Upload kort
 [upload map]
-
+Upload kort
 [username]
 Brugernavn
 [Version]
 Version
 [view history]
-
+Vis historik
 [Voice volume]
-
+Lydstyrke (stemme)
 [waiting for %0]
 Vænter på %0
 [waiting for key]
-
+venter på tast...
 [Waiting]
-
+Venter
 [Walk]
 Gå
 [warflag explanation 2]
@@ -1187,13 +1187,13 @@ Advarsel: Du skal genstarte spillet for at ændringerne har nogen virkning
 [Warrior Ratio]
 Kriger Ratio
 [Warrior]
-Krigere
+Kriger
 [warriors]
 krigere
 [watch again]
-
+Se igen
 [watching:]
-
+Ser på:
 [water]
 Vand
 [Wheat]
@@ -1233,7 +1233,7 @@ YOG-metaserveren har afbrudt forbindelsen fordi den indtastede adgangskode er fo
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG-metaserveren har afbrudt forbindelsen fordi dette brugernavn har
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+YOG-metaserveren har afvist forbindelsen, fordi denne IP-adresse er midlertidigt udelukket. Vent, til udelukkelsen ophæves, eller kontakt administratorerne.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG-metaserveren har afbrudt forbindelsen, fordi din Globulation2-klient er forældet.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1241,29 +1241,29 @@ YOG-metaserveren har afbrudt forbindelsen uden en forklaring!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i brug af en anden.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+YOG-metaserveren har afvist forbindelsen, fordi dette brugernavn er udelukket. Kontakt administratorerne.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+YOG-metaserveren har afvist forbindelsen, fordi brugernavnet er ugyldigt. Brugernavne må kun indeholde bogstaver, tal og understregninger.
 [YESTS_CREATED]
 Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Adgangskoderne er ikke ens. Indtast dem igen.
 [YESTS_UNABLE_TO_CONNECT]
 Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
 [yog block command help]
-
+/block <spillernavn>    Blokerer en spiller, så du ikke længere ser deres beskeder.
 [yog block command player %0 already blocked]
-
+Spilleren %0 er allerede blokeret
 [yog block command player %0 blocked]
-
+Spilleren %0 er blokeret
 [yog block command player %0 not found]
-
+Spilleren %0 blev ikke fundet
 [yog command header]
-
+Tilgængelige YOG-klientkommandoer:
 [yog command unknown]
-
+Ukendt kommando.
 [yog help command help]
-
+/help    Viser denne hjælpemeddelelse
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1271,15 +1271,15 @@ Du har tabt!
 [you have won]
 Du har vundet!
 [You where kicked from the game]
-
+Du blev smidt ud af spillet
 [Your %0 are under attack]
 Dine %0 er under angreb
 [Your IP address was temporarily banned]
-
+Din IP-adresse er midlertidigt udelukket. Vent, til udelukkelsen ophæves, eller kontakt administratorerne.
 [Your unit got converted to %0's team]
 En af dine enheder blev konverteret til et %0 hold
 [Your username was banned]
-
+Dit brugernavn er udelukket. Kontakt administratorerne for at få det ændret.
 [game speed]
 Spilhastighed
 [decrease game speed]

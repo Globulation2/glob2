@@ -211,7 +211,7 @@ compose
 [Computing Fertility]
 Computing Fertility
 [concrete islands terrain]
-Concrete Islands
+Separate Islands
 [connect]
 Connect
 [connecting to game]
@@ -247,7 +247,7 @@ Custom cursor
 [damage]
 Damage
 [Damaged Map]
-Damaged Map
+Wounded Units Map
 [decrease game speed]
 Decrease Game Speed
 [decrease units working]
@@ -627,7 +627,7 @@ On Press
 [On the spot]
 Here
 [on unpress]
-On Release
+On release
 [open chat box]
 Open Chat Box
 [open load menu]
@@ -715,7 +715,7 @@ Refresh Map List
 [Register]
 Register
 [remember unit]
-Remember Unit
+Remember unit counts
 [Remember YOG password localy]
 Remember the password locally.
 [remove map]
@@ -1037,7 +1037,7 @@ Time
 [to:]
 to:
 [toggle draw accessibility aids]
-Toggle Draw Accessibility Aids
+Toggle team numbers
 [toggle draw information]
 Toggle Draw Information
 [toggle draw unit paths]

@@ -1,31 +1,31 @@
 [%0 has left the game]
 %0 已離開遊戲
 [%0 level %1]
-
+%0，等級 %1
 [%0 units can't access building]
-
+%0 個單位無法抵達建築物
 [%0 units can't access flag]
-
+%0 個單位無法抵達旗幟
 [%0 units can't access fruit]
-
+%0 個單位無法取得水果
 [%0 units can't access resource]
-
+%0 個單位無法取得資源
 [%0 units not available]
-
+%0 個單位無法指派
 [%0 units too far from building]
-
+%0 個單位離建築物太遠
 [%0 units too far from flag]
-
+%0 個單位離旗幟太遠
 [%0 units too far from fruit]
-
+%0 個單位離水果太遠
 [%0 units too far from resource]
-
+%0 個單位離資源太遠
 [%0 units too low level]
-
+%0 個單位等級不足
 [%0% Uploaded]
-
+已上傳 %0%
 [%0's game]
-
+%0 的遊戲
 [%0's team unit got converted to your team]
 %0 的單位被你招降
 [abreaviation explanation A]
@@ -33,45 +33,45 @@ A: 盟友
 [abreaviation explanation C]
 C: 傳送訊息至
 [abreaviation explanation fV]
-fV: 顯示客棧 (以招降敵人單位)
+fV: 分享客棧視野（以招降單位）
 [abreaviation explanation mV]
-mV: 顯示市場 (以交換水果)
+mV: 分享市場視野（以交換水果）
 [abreaviation explanation V]
-V: 顯示所有建築物
+V: 分享所有建築物的視野
 [add map]
 新增地圖
 [add shortcut]
-
+新增快捷鍵
 [Add]
-
+新增
 [AI Descriptions]
-
+AI 說明
 [AI]
 AI
 [ai]
 AI
 [AICastor-Description]
-
+Castor 採取保守策略，在資源稀少的地圖上表現出色。中等難度。
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Nicowar 積極進攻、快速擴張，並派遣龐大軍隊攻擊對手。高難度。
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+無 AI — 不採取任何行動。
 [AINone]
-AINone
+無 AI
 [AINumbi-Description]
-
+Numbi 會迅速進行小規模擴張。低難度。
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity 不會進攻，但會建造龐大基地，並積極招降單位。低難度。
 [AIReachToInfinity]
 ReachToInfinity
 [AIWarrush-Description]
-
+Warrush 進攻迅速且猛烈，常讓防守的玩家陷入苦戰。中等難度。
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -115,9 +115,9 @@ alt-%0
 [away:]
 離至:
 [Back]
-
+返回
 [backspace]
-
+退格鍵
 [barracks explanation 2]
 戰鬥技能等級
 [barracks explanation]
@@ -127,13 +127,13 @@ alt-%0
 [beach size]
 海灘大小
 [Blocked Players]
-
+已封鎖的玩家
 [break]
-
+Break 鍵
 [briefing]
-
+任務簡報
 [build %0 level %1]
-
+建造 %0，等級 %1
 [build barracks level 0]
 建造兵營 1
 [build barracks level 1]
@@ -185,15 +185,15 @@ alt-%0
 [Build]
 建造
 [Building Defaults]
-
+建築物預設值
 [building settings]
-單位設定
+建築物設定
 [building site]
 建築地點
 [Building Tool Box Explanation]
-
+Shift + 拖曳 = 矩形
 [Building Tool Line Explanation]
-
+Ctrl + 拖曳 = 直線
 [Buildings]
 建築物
 [Bullets]
@@ -203,15 +203,15 @@ alt-%0
 [campaign]
 戰役
 [Can't connect, can't find host]
-
+無法連線：找不到主機
 [Can't host game, port %0 in use]
-
+無法建立遊戲：連接埠 %0 使用中
 [Can't join game, game doesn't exist]
-
+無法加入：遊戲不存在
 [Can't join game, game has started]
-
+無法加入：遊戲已開始
 [Can't join game, game is full]
-
+無法加入：遊戲人數已滿
 [Can't join game, missmatching game parameters]
 無法加入遊戲，遊戲參數失對。
 [Can't join game, timeout]
@@ -227,7 +227,7 @@ alt-%0
 [Cancel]
 取消
 [caps lock]
-
+Caps Lock 鍵
 [carry]
 搬運:
 [Change Area Name]
@@ -253,23 +253,23 @@ alt-%0
 [closed]
 已關閉
 [combined vision]
-
+共享視野
 [compile]
 收集語法
 [compose]
-
+Compose 鍵
 [Computing Fertility]
-
+計算肥沃度
 [concrete islands terrain]
-
+獨立島嶼
 [connect]
 連線
 [connecting to game]
-
+正在連線至遊戲
 [connecting to]
 連線至
 [Construction Site Defaults]
-
+工地預設值
 [Continue playing]
 繼續遊戲
 [control %0]
@@ -287,7 +287,7 @@ control-%0
 [credits]
 幕後人員
 [ctrl - line]
-
+Ctrl - 直線
 [current speed]
 目前速度
 [custom game]
@@ -297,11 +297,11 @@ control-%0
 [damage]
 傷害
 [Damaged Map]
-傷患地圖
+受傷單位分布圖
 [decrease units working]
-
+減少工作單位
 [Defeat Your Oppenents]
-
+擊敗對手
 [defencetower explanation 2]
 敵方單位和建築
 [defencetower explanation]
@@ -331,19 +331,19 @@ control-%0
 [display]
 顯示
 [do nothing]
-
+不執行動作
 [don't carry anything]
 沒有在搬運任何東西
 [down]
-
+下
 [Download Map]
-
+下載地圖
 [Download Maps]
-
+下載地圖
 [downloaded %0]
-
+已下載 %0
 [downloading map]
-
+正在下載地圖
 [edit map]
 編輯地圖
 [editing map]
@@ -353,17 +353,17 @@ control-%0
 [editor]
 編輯器
 [end]
-
+End 鍵
 [Enter your nickname :]
 輸入你的暱稱:
 [Enter your password :]
 輸入你的密碼:
 [enter]
-
+Enter 鍵
 [equals]
-
+等號
 [escape]
-
+Esc 鍵
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -409,13 +409,13 @@ f8
 [f9]
 f9
 [Fertility Map]
-
+肥沃度分布圖
 [Flag Defaults]
-
+旗幟預設值
 [flag settings explanation]
-
+旗幟的預設半徑
 [fog of war]
-
+戰爭迷霧
 [food]
 食物
 [forbidden area]
@@ -435,13 +435,13 @@ f9
 [game shortcuts]
 遊戲快捷鍵
 [Game]
-
+遊戲
 [general settings]
 基本設定
 [go to event]
-
+前往事件位置
 [go to home]
-
+回到基地
 [goto main menu]
 回到主選單
 [grass]
@@ -459,15 +459,15 @@ f9
 [Happyness]
 幸福
 [hard pause]
-
+完全暫停
 [Harvest]
 採收
 [high priority]
-
+高
 [hints]
-
+提示
 [home]
-
+Home 鍵
 [hospital explanation 2]
 
 [hospital explanation]
@@ -489,7 +489,7 @@ f9
 [In way]
 在路上
 [increase units working]
-
+增加工作單位
 [inn explanation 2]
 
 [inn explanation]
@@ -503,7 +503,7 @@ f9
 [inn]
 客棧
 [insert]
-
+Insert 鍵
 [inside]
 內部
 [islands size]
@@ -511,9 +511,9 @@ f9
 [islands terrain]
 島嶼
 [isles terrain]
-
+小島
 [iterate selection]
-
+選取下一個物件
 [jobs]
 工作
 [join a game]
@@ -523,7 +523,7 @@ f9
 [keyboard settings]
 鍵盤設定
 [kick]
-
+踢出
 [lan]
 LAN 遊戲
 [language incomplete]
@@ -535,13 +535,13 @@ zh-tw
 [language]
 繁體中文
 [Leave Game]
-
+離開遊戲
 [left meta]
-
+左 Meta 鍵
 [left super]
-
+左 Windows 鍵
 [left]
-
+左
 [level]
 等級
 [levels]
@@ -553,25 +553,25 @@ zh-tw
 [load map]
 載入遊戲
 [load replay]
-
+載入重播
 [load script]
-
+載入腳本
 [load]
 載入
 [loading map list]
-
+正在載入地圖清單⋯
 [Lobby]
-
+大廳
 [login]
 登入
 [look around]
-
+環顧四周
 [Lost : %0 has more prestige than you]
 輸: %0 的聲望比你還高
 [Lost : your colony is dead]
 輸: 你的殖民地已被摧毀
 [low priority]
-
+低
 [lowquality]
 低畫質
 [Magic At. Air]
@@ -579,33 +579,33 @@ Air dmg.
 [Magic At. Ground]
 地面攻擊
 [map description]
-
+說明
 [Map Discovered]
-
+地圖已探索
 [Map download failure: lost connection]
-
+地圖下載失敗：與 YOG 的連線中斷
 [Map name: %0]
 地圖名稱: %0。
 [map name]
 名稱
 [map rated]
-
+地圖評分完成
 [map script]
-
+地圖腳本
 [map size x]
 地圖寬度
 [map size y]
 地圖高度
 [Map upload failure: connection lost]
-
+地圖上傳失敗：與 YOG 的連線中斷
 [Map upload failure: map name in use]
-
+地圖上傳失敗。地圖名稱已被使用。
 [Map upload failure: unknown reason]
-
+地圖上傳失敗。原因不明。
 [Map Upload: Author Name]
-
+作者名稱
 [Map Upload: Waiting for reply]
-
+等待回覆
 [maps available]
 可用的地圖
 [mark map]
@@ -617,7 +617,7 @@ Air dmg.
 [market]
 市場
 [medium priority]
-
+中
 [meta %0]
 meta-%0
 [Min required level:]
@@ -637,25 +637,25 @@ meta-%0
 [nick taken]
 我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
 [no fullscreen]
-
+* 僅適用於視窗模式
 [No Hints]
-
+沒有提示
 [no key]
-
+尚未指定按鍵
 [No Objectives]
-
+沒有目標
 [no ressources growth areas]
 非成長區域
 [No]
 否
 [Not Enough Ratings]
-
+評分數不足
 [not ready]
 還沒準備好
 [Number Of Buildings]
-
+建築物數量
 [number of players: %0 (%1 AI)]
-
+%0 位玩家（%1 個 AI）
 [number of players: %0]
 %0 玩家再線.
 [number of teams: %0]
@@ -663,11 +663,11 @@ meta-%0
 [number of teams]
 隊伍數量
 [Number Of Units]
-
+單位數量
 [numlock]
-
+Num Lock 鍵
 [objectives]
-
+目標
 [of which]
 他們是
 [ok]
@@ -677,13 +677,13 @@ meta-%0
 [old random terrain]
 古老隨機地形
 [on press]
-
+按下時
 [On the spot]
 在這裡
 [on unpress]
-
+放開時
 [open chat box]
-
+開啟聊天視窗
 [open load menu]
 開啟載入選單
 [open save menu]
@@ -691,7 +691,7 @@ meta-%0
 [open scenario editor]
 開啟語法編輯器
 [open teams editor]
-
+開啟隊伍編輯器
 [open]
 開啟
 [OpenGL]
@@ -703,43 +703,43 @@ OpenGL
 [Orange]
 柳橙
 [Other Options]
-
+其他選項
 [page down]
-
+Page Down 鍵
 [page up]
-
+Page Up 鍵
 [Papyrus]
 草紙
 [pause game]
 暫停遊戲
 [pause]
-
+Pause 鍵
 [Paused]
 暫停
 [player name]
 玩家名稱
 [player rating %0]
-
+玩家評分：%0
 [players]
-
+玩家
 [please wait]
 請稍等
 [power]
-
+電源鍵
 [press space]
 按下空白鍵以繼續
 [Prestige Score]
-
+聲望分數
 [Prestige Win Enabled]
-
+啟用聲望勝利
 [Prestige]
 聲望
 [Primary Objectives]
-
+主要
 [print screen]
-
+Print Screen 鍵
 [priority]
-
+優先順序
 [Prune]
 李子
 [quit the editor]
@@ -747,7 +747,7 @@ OpenGL
 [quit the game]
 離開遊戲
 [quit the replay]
-
+離開重播
 [quit]
 離開
 [racetrack explanation 2]
@@ -759,27 +759,27 @@ OpenGL
 [range]
 射程
 [Rated %0]
-
+評分 %0
 [ratios]
 比例
 [ready?]
-
+準備好了？
 [refresh map list]
-
+重新整理地圖清單
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
 [Register]
-
+註冊
 [remember unit]
-記錄單位
+記住單位配置數量
 [Remember YOG password localy]
 記住密碼。 (不穩定)
 [remove map]
 移除地圖
 [remove shortcut]
-
+移除快捷鍵
 [Remove]
-
+移除
 [repair building]
 開始/停止 修復
 [repair]
@@ -787,9 +787,9 @@ OpenGL
 [repeat area]
 在相同地景的時間
 [Repeat your password :]
-
+再次輸入密碼：
 [replay ended]
-
+重播結束
 [restore default shortcuts]
 還原預設鍵盤快捷鍵
 [return to editor]
@@ -797,15 +797,15 @@ OpenGL
 [return to game]
 返回遊戲
 [return to replay]
-
+返回重播
 [return]
-
+Enter 鍵
 [right meta]
-
+右 Meta 鍵
 [right super]
-
+右 Windows 鍵
 [right]
-
+右
 [river diameter]
 河流寬度
 [river terrain]
@@ -819,9 +819,9 @@ OpenGL
 [save map]
 儲存地圖
 [save replay]
-
+儲存重播
 [save script]
-
+儲存腳本
 [Save]
 儲存
 [school explanation 2]
@@ -833,11 +833,11 @@ OpenGL
 [Script Areas]
 語法區域
 [scroll lock]
-
+Scroll Lock 鍵
 [scroll wheel enabled]
-
+啟用滑鼠滾輪
 [Secondary Objectives]
-
+次要
 [seeking a job]
 正在找尋工作
 [seeking]
@@ -911,11 +911,11 @@ Enter: 傳送訊息
 [shortcut explanation v]
 V: 持鍵以傳送訊息
 [show areas]
-
+顯示區域
 [show flags]
-
+顯示旗幟
 [show main menu]
-
+顯示主選單
 [skin]
 顯示
 [smoothing]
@@ -923,13 +923,13 @@ V: 持鍵以傳送訊息
 [sort by name]
 名稱
 [sort by rating]
-
+評分
 [sort by size]
-
+大小
 [Sort By]
-
+排序依據
 [space]
-
+空白鍵
 [start mission]
 開始任務
 [start new campaign]
@@ -961,7 +961,7 @@ V: 持鍵以傳送訊息
 [stonewall]
 石牆
 [submit rating]
-
+提交評分
 [svr hostname]
 伺服器主機名稱
 [swamp terrain]
@@ -1011,13 +1011,13 @@ V: 持鍵以傳送訊息
 [switch to terrain view]
 切換至地形視野
 [sys req]
-
+Sys Rq 鍵
 [tab]
-
+Tab 鍵
 [teams editor]
-
+隊伍編輯器
 [Teams Fixed]
-
+固定隊伍
 [teams]
 團隊
 [the barracks is finished]
@@ -1049,7 +1049,7 @@ V: 持鍵以傳送訊息
 [the hospital is under attack]
 醫院正遭受攻擊
 [The host has cancelled the game]
-
+主持人已取消遊戲。
 [the inn is finished]
 客棧已完成
 [the inn is under attack]
@@ -1069,7 +1069,7 @@ V: 持鍵以傳送訊息
 [the racetrack is under attack]
 跑道正遭受攻擊
 [the replays]
-
+重播
 [the school is finished]
 學校已完成
 [the school is under attack]
@@ -1091,85 +1091,85 @@ V: 持鍵以傳送訊息
 [the warflag is under attack]
 ?? 攻擊旗幟正遭受攻擊 ??
 [time]
-
+時間
 [to:]
 前往:
 [toggle draw accessibility aids]
-顯至最近支援
+切換隊伍編號顯示
 [toggle draw information]
-顯示資訊
+切換資訊顯示
 [toggle draw unit paths]
-顯示單位動向
+切換單位路徑顯示
 [toggle menu screen]
-
+切換選單畫面
 [toggle recording voice]
-開始錄音
+開啟／關閉語音錄製
 [Total Attack Power]
-
+總攻擊力
 [Total Defence Power]
-
+總防禦力
 [Total Hitpoints]
-
+總生命值
 [Total prestige reached]
 聲望總計達到
 [Total]
 總共
 [tutorial text 1]
-
+歡迎來到 Globulation 2 基礎教學！這裡將教你建造客棧、探索區域及消滅敵人，還有許多實用的遊戲知識！
 [tutorial text 2]
-
+既然你已掌握基本操作，接下來就來認識跑道、游泳池和學校等其他建築物。
 [tutorial text 3]
-
+你做得很好！接下來讓我們了解士兵、兵營與升級。
 [tutorial text 4]
-
+快要完成了，只剩下旗幟與進攻。學完之後，你就能嘗試自訂遊戲，日後還可以上網挑戰 Globulation 2 的頂尖玩家。
 [tutorial]
 教學指導
 [Uncontrolled]
 未控制
 [undo]
-
+復原
 [uniform terrain]
 平整地形
 [Unit editor]
 單位編輯器
 [unit settings explanation]
-
+預設指派的單位數量
 [units working]
 單位工作
 [Units]
 單位
 [unlocked at start]
-
+初始解鎖
 [unlocked by]
 解除由
 [Unnamed Area]
 {未命名區域}
 [up]
-
+上
 [upgrade building]
 開始/停止 升級
 [Upgrade Defaults]
-
+升級預設值
 [upgrade]
 升級
 [Upload Map]
-
+上傳地圖
 [upload map]
-
+上傳地圖
 [username]
 用戶名
 [Version]
 版本
 [view history]
-
+檢視歷程記錄
 [Voice volume]
-
+語音音量
 [waiting for %0]
 等待 %0
 [waiting for key]
-
+等待按鍵⋯
 [Waiting]
-
+等待中
 [Walk]
 行走
 [warflag explanation 2]
@@ -1187,9 +1187,9 @@ V: 持鍵以傳送訊息
 [warriors]
 士兵
 [watch again]
-
+再次觀看
 [watching:]
-
+正在觀看：
 [water]
 水面
 [Wheat]
@@ -1229,7 +1229,7 @@ YOG meta伺服器拒絕連線因為你的密碼錯誤。
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG meta伺服器拒絕連線因為你沒有密碼。請選擇"註冊一個新 YOG 帳號和密碼"以登入，你只需要註冊一次。
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+YOG 中繼伺服器拒絕連線，因為此 IP 位址已遭暫時封禁。請等待封禁解除，或聯絡管理員。
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1237,29 +1237,29 @@ YOG meta伺服器拒絕連線而沒有任何解釋!!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG meta伺服器拒絕連線因為你的用戶名已被使用。
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+YOG 中繼伺服器拒絕連線，因為此使用者名稱已遭封禁。請聯絡管理員。
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+YOG 中繼伺服器拒絕連線，因為提供的使用者名稱無效。使用者名稱只能包含字母、數字及底線。
 [YESTS_CREATED]
 連線系統已準備連接YOG meta伺服器。
 [YESTS_PASSWORDS_DONT_MATCH]
-
+輸入的密碼不一致。請重新輸入。
 [YESTS_UNABLE_TO_CONNECT]
 無法連接。 YOG meta伺服器已關閉。
 [yog block command help]
-
+/block <playername>    封鎖玩家，之後將不再顯示該玩家的訊息。
 [yog block command player %0 already blocked]
-
+玩家 %0 已在封鎖名單中
 [yog block command player %0 blocked]
-
+已封鎖玩家 %0
 [yog block command player %0 not found]
-
+找不到玩家 %0
 [yog command header]
-
+目前可用的 YOG 用戶端指令：
 [yog command unknown]
-
+未知指令。
 [yog help command help]
-
+/help    顯示這則說明訊息
 [yog]
 Ysagoon 線上遊戲
 [you have lost]
@@ -1267,15 +1267,15 @@ Ysagoon 線上遊戲
 [you have won]
 你贏了!!
 [You where kicked from the game]
-
+你已被踢出遊戲
 [Your %0 are under attack]
 你的 %0 正遭受攻擊
 [Your IP address was temporarily banned]
-
+你的 IP 位址已遭暫時封禁。請等待封禁解除，或聯絡管理員。
 [Your unit got converted to %0's team]
 你的單位遭 %0 招降
 [Your username was banned]
-
+你的使用者名稱已遭封禁。請聯絡管理員解除封禁。
 [game speed]
 遊戲速度
 [decrease game speed]

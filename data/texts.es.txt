@@ -207,7 +207,7 @@ componer
 [Computing Fertility]
 Procesando Fertilidad
 [concrete islands terrain]
-Islas en mosaico
+Islas separadas
 [connect]
 Conectar
 [connecting to game]
@@ -243,7 +243,7 @@ Cursor personalizado
 [damage]
 Daño
 [Damaged Map]
-Mapa de Daño
+Mapa de heridos
 [decrease units working]
 Disminuir Unidades Trabajando
 [Defeat Your Oppenents]
@@ -611,11 +611,11 @@ Antiguas islas aleatorias
 [old random terrain]
 Antiguo terreno aleatorio
 [on press]
-Presionando
+Al pulsar
 [On the spot]
 Aquí
 [on unpress]
-Soltando
+Al soltar
 [open chat box]
 Abrir Ventana de Chat
 [open load menu]
@@ -705,7 +705,7 @@ Registrar un nuevo nombre de usuario YOG.
 [Register]
 Registrarse
 [remember unit]
-Recordar unidad
+Recordar asignaciones
 [Remember YOG password localy]
 Recordar contraseña.
 [remove map]
@@ -783,7 +783,7 @@ Seleccionar Bandera de Limpieza
 [select construct barracks]
 Seleccionar Construir Cuarteles
 [select construct defencetower]
-Seleccionar Construir Torre de Defensa
+Construir torre de defensa
 [select construct hospital]
 Seleccionar Construir Hospital
 [select construct inn]
@@ -791,7 +791,7 @@ Seleccionar Construir Posada
 [select construct market]
 Seleccionar Construir Mercado
 [select construct racetrack]
-Seleccionar Construir Circuito de Entrenamiento
+Construir circuito de entrenamiento
 [select construct school]
 Seleccionar Construir Escuela
 [select construct stonewall]
@@ -811,19 +811,19 @@ Seleccionar Posada
 [select market building]
 Seleccionar Mercado
 [select place clearing area]
-Seleccionar Sitio para Área de Limpieza
+Marcar área de limpieza
 [select place clearingflag]
-Seleccionar Sitio para Bandera de Limpieza
+Colocar bandera de limpieza
 [select place explorationflag]
-Seleccionar Sitio para Bandera de Exploración
+Colocar bandera de exploración
 [select place forbidden area]
 Seleccionar Sitio para Área Prohibida
 [select place guard area]
 Seleccionar Sitio para Área Protegida
 [select place warflag]
-Seleccionnar Sitio para Bandera de Guerra
+Colocar bandera de guerra
 [select racetrack building]
-Seleccionar Circuito de Entranamiento
+Elegir circuito de entrenamiento
 [select school building]
 Seleccionar Escuela
 [select swarm building]
@@ -1027,7 +1027,7 @@ Tiempo
 [to:]
 hacia:
 [toggle draw accessibility aids]
-Activar Mostrar Ayuda de Accesibilidad
+Mostrar/ocultar números de equipo
 [toggle draw information]
 Activar Mostrar Información
 [toggle draw unit paths]

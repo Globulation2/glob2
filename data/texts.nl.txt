@@ -213,7 +213,7 @@ stel samen
 [Computing Fertility]
 Vruchtbaarheid berekenen...
 [concrete islands terrain]
-Rivieren
+Afzonderlijke eilanden
 [connect]
 Verbinden
 [connecting to game]
@@ -249,9 +249,9 @@ Alternatieve cursor
 [damage]
 Schade
 [Damaged Map]
-Beschadigd
+Gewondenkaart
 [decrease units working]
-Verminder aantal werkende eenheden
+Minder eenheden laten werken
 [Defeat Your Oppenents]
 Versla je vijanden
 [defencetower explanation 2]
@@ -301,7 +301,7 @@ Bewerken
 [editing map]
 Speelveld bewerken
 [editor shortcuts]
-toets-instellingen
+Kaarteditor
 [editor]
 Bewerk speelvelden
 [end]
@@ -387,7 +387,7 @@ Volledig Scherm
 [game full]
 Spel is vol
 [game shortcuts]
-Speltoetsen
+Spel
 [Game]
 Spel
 [general settings]
@@ -631,11 +631,11 @@ Oude eilanden
 [old random terrain]
 Oud willekeurig terrein
 [on press]
-Bij indrukken
+Indrukken
 [On the spot]
 Hier
 [on unpress]
-Bij opheffen
+Loslaten
 [open chat box]
 Open chatbox
 [open load menu]
@@ -725,7 +725,7 @@ Registreer nieuwe gebruiker met wachtwoord (onveilig)
 [Register]
 Registreer
 [remember unit]
-Onthoud eenheid
+Onthoud eenheidsaantal
 [Remember YOG password localy]
 Onthoud wachtwoord (onveilig)
 [remove map]
@@ -1049,11 +1049,11 @@ Tijd
 [to:]
 aan:
 [toggle draw accessibility aids]
-Tekenhulpmiddelen aan/uitschakelen
+Teamnummers aan/uit
 [toggle draw information]
 Tekeninformatie aan/uitschakelen
 [toggle draw unit paths]
-Paden van eenheden aan/uitschakelen
+Eenheidspaden aan/uit
 [toggle menu screen]
 Menu scherm aan/uitschakelen
 [toggle recording voice]

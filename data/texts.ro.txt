@@ -1,83 +1,83 @@
 [%0 has left the game]
 %0 a părăsit jocul.
 [%0 level %1]
-
+%0 de nivel %1
 [%0 units can't access building]
-
+%0 unități nu pot ajunge la clădire
 [%0 units can't access flag]
-
+%0 unități nu pot ajunge la steag
 [%0 units can't access fruit]
-
+%0 unități nu pot ajunge la fructe
 [%0 units can't access resource]
-
+%0 unități nu pot ajunge la resursă
 [%0 units not available]
-
+%0 unități nu sunt disponibile
 [%0 units too far from building]
-
+%0 unități sunt prea departe de clădire
 [%0 units too far from flag]
-
+%0 unități sunt prea departe de steag
 [%0 units too far from fruit]
-
+%0 unități sunt prea departe de fructe
 [%0 units too far from resource]
-
+%0 unități sunt prea departe de resursă
 [%0 units too low level]
-
+%0 unități au nivelul prea mic
 [%0% Uploaded]
-
+%0% încărcat
 [%0's game]
-
+Jocul lui %0
 [%0's team unit got converted to your team]
 O unitate %0 a trecut de partea voastră
 [abreaviation explanation A]
-
+A: Aliați
 [abreaviation explanation C]
-
+C: Trimite mesaje de chat către
 [abreaviation explanation fV]
-
+fV: Partajează câmpul vizual al popasurilor (pentru atragerea unităților)
 [abreaviation explanation mV]
-
+mV: Partajează câmpul vizual al piețelor (pentru schimbul de fructe)
 [abreaviation explanation V]
-
+V: Partajează câmpul vizual al tuturor clădirilor
 [add map]
-
+Adaugă o hartă
 [add shortcut]
-
+Adaugă scurtătură
 [Add]
-
+Adaugă
 [AI Descriptions]
-
+Descrieri IA
 [AI]
 IA
 [ai]
 IA
 [AICastor-Description]
-
+Castor joacă prudent și se descurcă foarte bine pe hărți cu puține resurse. Dificultate medie.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Nicowar joacă agresiv, se dezvoltă rapid și trimite armate uriașe împotriva adversarilor. Dificultate ridicată.
 [AINicowar]
 Nicowar (unstable)
 [AINone-Description]
-
+Fără IA — nu face nimic.
 [AINone]
-AINone
+Fără IA
 [AINumbi-Description]
-
+Numbi se extinde la scară mică, dar rapid. Dificultate scăzută.
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity nu atacă, dar construiește baze uriașe și convertește unități în număr mare. Dificultate scăzută.
 [AIReachToInfinity]
 ReachToInfinity
 [AIWarrush-Description]
-
+Warrush atacă rapid și necruțător, aducând adesea jucătorul care se apără la limita înfrângerii. Dificultate medie.
 [AIWarrush]
 AIWarrush
 [Alga]
 Alge
 [algae]
-
+alge
 [alliances]
 Alianţe
 [alt %0]
@@ -85,7 +85,7 @@ alt-%0
 [and]
 şi
 [any explorer]
-
+orice explorator
 [are dying hungry]
 mor de foame
 [are hungry]
@@ -97,7 +97,7 @@ sunt rănite
 [armor]
 Armură
 [assigned]
-
+Repartizate
 [At. speed]
 Viteza at.
 [At. strength]
@@ -115,55 +115,55 @@ Jocuri locale disponibile
 [away:]
 absent:
 [Back]
-
+Înapoi
 [backspace]
-
+Backspace
 [barracks explanation 2]
 nivelul de luptă
 [barracks explanation]
 Vă ameliorează
 [barracks]
-Câmp de-antrenament
+Câmp de antrenament
 [beach size]
 mărimea plajei
 [Blocked Players]
-
+Jucători blocați
 [break]
-
+Break
 [briefing]
-
+Prezentarea misiunii
 [build %0 level %1]
-
+Construiește %0 de nivel %1
 [Build]
 Construieşte
 [Building Defaults]
-
+Valori implicite pentru clădiri
 [building settings]
-
+Setări pentru clădiri
 [building site]
 şantier
 [Building Tool Box Explanation]
-
+Shift + tragere = Dreptunghi
 [Building Tool Line Explanation]
-
+Ctrl + tragere = Linie
 [Buildings]
 Clădiri
 [Bullets]
 Gloanţe
 [campaign editor]
-
+Editor de campanii
 [campaign]
 Campanie
 [Can't connect, can't find host]
-
+Conectare imposibilă: gazda nu a fost găsită
 [Can't host game, port %0 in use]
-
+Jocul nu poate fi găzduit: portul %0 este ocupat
 [Can't join game, game doesn't exist]
-
+Nu te poți alătura: jocul nu există
 [Can't join game, game has started]
-
+Nu te poți alătura: jocul a început
 [Can't join game, game is full]
-
+Nu te poți alătura: jocul este plin
 [cancel destroy]
 Anulează distrugerea
 [cancel repair]
@@ -173,15 +173,15 @@ Anulează ameliorarea
 [Cancel]
 Anulează
 [caps lock]
-
+Caps Lock
 [carry]
 Transportă :
 [Change Area Name]
-
+Schimbă numele zonei
 [Cherry]
 Cireaşă
 [choose campaign]
-
+Alege o campanie
 [choose game]
 Alegeţi un joc
 [choose map]
@@ -199,23 +199,23 @@ Steag de defrişare
 [closed]
 Închis
 [combined vision]
-
+Vizibilitate comună
 [compile]
 Compilează scriptul
 [compose]
-
+Compose
 [Computing Fertility]
-
+Se calculează fertilitatea
 [concrete islands terrain]
-
+Insule separate
 [connect]
 Conectează
 [connecting to game]
-
+Conectare la joc
 [connecting to]
 Conectare la
 [Construction Site Defaults]
-
+Valori implicite pentru șantiere
 [Continue playing]
 Continuă jocul
 [control %0]
@@ -223,9 +223,9 @@ control-%0
 [Corn]
 Grâu
 [crater density]
-
+număr de cratere
 [crater lakes terrain]
-
+Lacuri de crater
 [create game]
 Crează joc
 [create map]
@@ -233,21 +233,21 @@ Crează hartă
 [credits]
 Credite
 [ctrl - line]
-
+Ctrl - Linie
 [current speed]
 Viteză actuală
 [custom game]
 Joc liber
 [customcur]
-
+Cursor personalizat
 [damage]
 Lovire
 [Damaged Map]
-
+Harta unităților rănite
 [decrease units working]
-
+Mai puține unități la lucru
 [Defeat Your Oppenents]
-
+Învinge-ți adversarii
 [defencetower explanation 2]
 inamice din apropiere
 [defencetower explanation]
@@ -255,55 +255,55 @@ Atacă unități și clădiri
 [defencetower]
 Turn de-apărare
 [Defense Map]
-
+Harta apărării
 [Defense]
 Apărare
 [Delete game]
-
+Șterge jocul selectat
 [delete]
-
+Delete
 [desert]
-
+deșert
 [destroy building]
-
+Demolează clădirea selectată
 [destroy]
 Distruge
 [display]
 Afişaj
 [do nothing]
-
+Nicio acțiune
 [don't carry anything]
 Nu transportă nimic
 [down]
-
+jos
 [Download Map]
-
+Descarcă harta
 [Download Maps]
-
+Descarcă hărți
 [downloaded %0]
-
+descărcat: %0
 [downloading map]
-
+Se descarcă harta
 [edit map]
-
+Editează harta
 [editing map]
-
+Editarea hărții
 [editor shortcuts]
-
+Editor
 [editor]
 Editor
 [end]
-
+End
 [Enter your nickname :]
 Introduceţi pseudonimul dvstră :
 [Enter your password :]
 Introduceţi parola dvstră :
 [enter]
-
+Enter
 [equals]
-
+egal
 [escape]
-
+Escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -311,13 +311,13 @@ Atrage exploratori
 [explorationflag]
 Steag de apărare
 [Explorer Ratio]
-
+Proporția exploratorilor
 [Explorer]
 Explorator
 [explorers]
 exploratori
 [extra islands]
-
+insule goale
 [f10]
 f10
 [f11]
@@ -349,13 +349,13 @@ f8
 [f9]
 f9
 [Fertility Map]
-
+Harta fertilității
 [Flag Defaults]
-
+Valori implicite pentru steaguri
 [flag settings explanation]
-
+Raza implicită a steagului
 [fog of war]
-
+Ceața războiului
 [food]
 Mâncare
 [forbidden area]
@@ -367,47 +367,47 @@ libere
 [from:]
 de la:
 [fruit]
-
+fructe
 [fullscreen]
 Ecran întreg
 [game full]
 Joc complet
 [game shortcuts]
-
+Joc
 [Game]
-
+Joc
 [general settings]
-
+Setări generale
 [go to event]
-
+Mergi la eveniment
 [go to home]
-
+Mergi la bază
 [goto main menu]
 Întoarceţi-vă la meniul principal
 [grass]
 Iarbă
 [ground attack]
-
+atac terestru
 [guard area]
 Zonă de pază
 [GUIMapPreview text 0]
-
+Alege
 [GUIMapPreview text 1]
-
+o hartă
 [handmade map]
 Hartă făcută de mână
 [Happyness]
 Bucurie
 [hard pause]
-
+Pauză completă
 [Harvest]
 Recoltează
 [high priority]
-
+mare
 [hints]
-
+Indicii
 [home]
-
+Home
 [hospital explanation 2]
 
 [hospital explanation]
@@ -419,17 +419,17 @@ Găzduiţi un joc
 [hp]
 Viata
 [Human]
-
+Om
 [human]
-
+om
 [hungry]
 foame
 [hungryness]
-
+Foame
 [In way]
 Pe drum
 [increase units working]
-
+Mai multe unități la lucru
 [inn explanation 2]
 
 [inn explanation]
@@ -437,7 +437,7 @@ Vă hrăneşte unitaţile
 [inn]
 Popas
 [insert]
-
+Insert
 [inside]
 Înăuntru
 [islands size]
@@ -445,19 +445,19 @@ mărimea insulelor
 [islands terrain]
 Teren cu insule
 [isles terrain]
-
+Insulițe
 [iterate selection]
-
+Selectează următorul element
 [jobs]
-
+sarcini
 [join a game]
 Alăturate unui joc
 [join]
 Alăturăte
 [keyboard settings]
-
+Setări pentru tastatură
 [kick]
-
+Dă afară
 [lan]
 Joc in reţea locală LAN
 [language incomplete]
@@ -469,79 +469,79 @@ Limba
 [language]
 Româneste
 [Leave Game]
-
+Părăsește jocul
 [left meta]
-
+Meta stânga
 [left super]
-
+tasta Windows stânga
 [left]
-
+stânga
 [level]
 Nivel
 [levels]
 Nivele
 [load campaign]
-
+Încarcă o campanie
 [load game]
 Încarcă joc
 [load map]
-
+Încarcă o hartă
 [load replay]
-
+Încarcă reluarea
 [load script]
-
+Încarcă scriptul
 [load]
 Încarcă
 [loading map list]
-
+Se încarcă lista de hărți...
 [Lobby]
-
+Sală de așteptare
 [login]
 Login
 [look around]
-
+Privește în jur
 [Lost : %0 has more prestige than you]
 Pierdut : %0 are un prestigiu mai mare
 [Lost : your colony is dead]
 Pierdut : colonia voastră este moartă
 [low priority]
-
+mică
 [lowquality]
 Calitate scăzută
 [Magic At. Air]
-
+Daune aeriene
 [Magic At. Ground]
-
+Daune terestre
 [map description]
-
+Descriere
 [Map Discovered]
-
+Hartă descoperită
 [Map download failure: lost connection]
-
+Descărcarea hărții a eșuat: conexiunea la YOG s-a pierdut
 [Map name: %0]
 Hartă: %0.
 [map name]
-
+Nume
 [map rated]
-
+Hartă evaluată
 [map script]
-
+Scriptul hărții
 [map size x]
 Lărgimea hărţii
 [map size y]
 Înălţimea hărţii
 [Map upload failure: connection lost]
-
+Încărcarea hărții a eșuat: conexiunea la YOG s-a pierdut
 [Map upload failure: map name in use]
-
+Încărcarea hărții a eșuat. Numele hărții este deja folosit.
 [Map upload failure: unknown reason]
-
+Încărcarea hărții a eșuat. Motiv necunoscut.
 [Map Upload: Author Name]
-
+Numele autorului
 [Map Upload: Waiting for reply]
-
+Se așteaptă răspunsul
 [mark map]
-
+Marchează harta pentru aliați
 [market explanation 2]
 cu ceilalţi
 [market explanation]
@@ -549,7 +549,7 @@ Permite schimbul de fructe
 [market]
 Piată
 [medium priority]
-
+medie
 [meta %0]
 meta-%0
 [Min required level:]
@@ -559,35 +559,35 @@ Nivel min. al unității
 [Music volume]
 Volum  (muzică)
 [Mute]
-
+Dezactivează sunetul
 [mute]
-
+dezactivează sunetul
 [new campaign]
-
+Campanie nouă
 [new map]
 Nou
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [no fullscreen]
-
+* doar în modul fereastră
 [No Hints]
-
+Niciun indiciu
 [no key]
-
+nicio tastă atribuită
 [No Objectives]
-
+Niciun obiectiv
 [no ressources growth areas]
-
+Zone fără regenerare
 [No]
 Nu
 [Not Enough Ratings]
-
+Evaluări insuficiente
 [not ready]
 nu-i gata
 [Number Of Buildings]
-
+Număr de clădiri
 [number of players: %0 (%1 AI)]
-
+%0 jucători (%1 IA)
 [number of players: %0]
 %0 jucători prezenţi.
 [number of teams: %0]
@@ -595,35 +595,35 @@ nu-i gata
 [number of teams]
 numărul echipelor
 [Number Of Units]
-
+Număr de unități
 [numlock]
-
+Num Lock
 [objectives]
-
+Obiective
 [of which]
 dintre care
 [ok]
 Acceptă
 [old islands terrain]
-
+insule aleatorii vechi
 [old random terrain]
-
+teren aleatoriu vechi
 [on press]
-
+La apăsare
 [On the spot]
 Aici
 [on unpress]
-
+La ridicare
 [open chat box]
-
+Deschide fereastra de chat
 [open load menu]
-
+Deschide meniul de încărcare
 [open save menu]
-
+Deschide meniul de salvare
 [open scenario editor]
-
+Deschide editorul de scenarii
 [open teams editor]
-
+Deschide editorul de echipe
 [open]
 deschis
 [OpenGL]
@@ -635,51 +635,51 @@ Opţiuni
 [Orange]
 Portocală
 [Other Options]
-
+Alte opțiuni
 [page down]
-
+Page Down
 [page up]
-
+Page Up
 [Papyrus]
 Papirus
 [pause game]
-
+Pune jocul pe pauză
 [pause]
-
+Pause
 [Paused]
 Pauză
 [player name]
 Numele jucătorului
 [player rating %0]
-
+Evaluarea jucătorului: %0
 [players]
-
+Jucători
 [please wait]
 Vă rugăm aşteptaţi
 [power]
-
+pornire
 [press space]
-
+Apasă spațiu pentru a continua.
 [Prestige Score]
-
+Scor de prestigiu
 [Prestige Win Enabled]
-
+Victorie prin prestigiu activată
 [Prestige]
 Prestigiu
 [Primary Objectives]
-
+Principale
 [print screen]
-
+Print Screen
 [priority]
-
+Prioritate
 [Prune]
 Prună
 [quit the editor]
-
+Ieși din editor
 [quit the game]
 Iesi din joc
 [quit the replay]
-
+Ieși din reluare
 [quit]
 Iesi
 [racetrack explanation 2]
@@ -687,61 +687,61 @@ mers a unităților
 [racetrack explanation]
 Îmbunătățește viteza de
 [racetrack]
-Pistă raliu
+Pistă de alergare
 [range]
 Întindere
 [Rated %0]
-
+Evaluare: %0
 [ratios]
 Proportii
 [ready?]
-
+gata?
 [refresh map list]
-
+Actualizează lista de hărți
 [Register a new YOG user with password]
 Înregistrează noul jucător YOG cu parola. (nesecurizat)
 [Register]
-
+Înregistrare
 [remember unit]
-
+Reține numărul de unități
 [Remember YOG password localy]
 Memorează parola local. (nesecurizat)
 [remove map]
-
+Elimină harta
 [remove shortcut]
-
+Elimină scurtătura
 [Remove]
-
+Elimină
 [repair building]
-
+Pornește/oprește reparația
 [repair]
 Repară
 [repeat area]
-
+repetări ale aceluiași peisaj
 [Repeat your password :]
-
+Repetă parola:
 [replay ended]
-
+Reluarea s-a încheiat
 [restore default shortcuts]
-
+Restabilește scurtăturile implicite
 [return to editor]
-
+Înapoi la editor
 [return to game]
 Înapoi la joc
 [return to replay]
-
+Înapoi la reluare
 [return]
-
+Enter
 [right meta]
-
+Meta dreapta
 [right super]
-
+tasta Windows dreapta
 [right]
-
+dreapta
 [river diameter]
-
+lățimea râului
 [river terrain]
-
+Râu
 [sand]
 Nisip
 [save before quit?]
@@ -749,11 +749,11 @@ Vreţi să salvaţi înainte de a ieşi?
 [save game]
 Salvează joc
 [save map]
-
+Salvează harta
 [save replay]
-
+Salvează reluarea
 [save script]
-
+Salvează scriptul
 [Save]
 Salvează
 [school explanation 2]
@@ -763,25 +763,25 @@ Vă ameliorează
 [school]
 Şcoală
 [Script Areas]
-
+Zone de script
 [scroll lock]
-
+Scroll Lock
 [scroll wheel enabled]
-
+Rotița mouse-ului activată
 [Secondary Objectives]
-
+Secundare
 [seeking a job]
 caută de lucru
 [seeking]
 caută
 [select barracks building]
-Selectează clădirea: Câmp de-antrenament
+Selectează câmpul de antrenament
 [select clearingflag]
-Selectează steagul: Steag de defrişare
+Selectează steagul de defrișare
 [select construct barracks]
-Selectează construcția: Câmp de-antrenament
+Construiește câmp de antrenament
 [select construct defencetower]
-Selectează construcția: Turn de-apărare
+Construiește turn de apărare
 [select construct hospital]
 Selectează construcția: Spital
 [select construct inn]
@@ -789,7 +789,7 @@ Selectează construcția: Popas
 [select construct market]
 Selectează construcția: Piată
 [select construct racetrack]
-Selectează construcția: Pistă raliu
+Construiește pistă de alergare
 [select construct school]
 Selectează construcția: Şcoală
 [select construct stonewall]
@@ -821,7 +821,7 @@ Plasează zona: Zonă de pază
 [select place warflag]
 Plasează steagul: Steag de luptă
 [select racetrack building]
-Selectează clădirea: Pistă raliu
+Selectează clădirea: Pistă de alergare
 [select school building]
 Selectează clădirea: Şcoală
 [select swarm building]
@@ -839,37 +839,37 @@ Setări
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-
+Enter: trimite un mesaj de chat
 [shortcut explanation v]
-
+V: ține apăsat pentru a vorbi
 [show areas]
-
+Arată zonele
 [show flags]
-
+Arată steagurile
 [show main menu]
-
+Arată meniul principal
 [skin]
-
+Afișare
 [smoothing]
 Lisaj
 [sort by name]
-
+Nume
 [sort by rating]
-
+Evaluare
 [sort by size]
-
+Dimensiune
 [Sort By]
-
+Sortează după
 [space]
-
+spațiu
 [start mission]
-
+Începe misiunea
 [start new campaign]
-
+Începe o campanie nouă
 [Start]
 Porneşte
 [Starving Map]
-
+Harta înfometării
 [starving]
 foarte foame
 [Statistics]
@@ -885,7 +885,7 @@ O unitate încă mai lucrează
 [Stone]
 Piatră
 [stone]
-
+piatră
 [stonewall explanation 2]
 apărare pasivă
 [stonewall explanation]
@@ -893,11 +893,11 @@ Element de
 [stonewall]
 Zid de piatră
 [submit rating]
-
+Trimite evaluarea
 [svr hostname]
 Numele servărului gazdă
 [swamp terrain]
-
+Mlaștină
 [swarm explanation 2]
 
 [swarm explanation]
@@ -941,17 +941,17 @@ Afișează echipele
 [switch to terrain view]
 Afișează terenul
 [sys req]
-
+Sys Rq
 [tab]
-
+Tab
 [teams editor]
-
+Editor de echipe
 [Teams Fixed]
-
+Echipe fixe
 [teams]
  echipe
 [the barracks is finished]
-Câmpul de-antrenament este terminat
+Câmpul de antrenament este terminat
 [the barracks is under attack]
 Câmpul de antrenament este atacat
 [the building is finished]
@@ -979,7 +979,7 @@ Spitalul este terminat
 [the hospital is under attack]
 Spitalul este atacat
 [The host has cancelled the game]
-
+Gazda a anulat jocul.
 [the inn is finished]
 Popasul este terminat
 [the inn is under attack]
@@ -995,11 +995,11 @@ Jucătorul %0 a intrat in YOG.
 [The player %0 has left YOG]
 Jucătorul %0 a iesit din YOG.
 [the racetrack is finished]
-Pista de raliu este terminată
+Pista de alergare este terminată
 [the racetrack is under attack]
-Pista de cursă este atacată
+Pista de alergare este atacată
 [the replays]
-
+Reluări
 [the school is finished]
 Şcoala este terminată
 [the school is under attack]
@@ -1021,85 +1021,85 @@ Piscina este atacată
 [the warflag is under attack]
 ?? Steagul de luptă este atacat ??
 [time]
-
+Timp
 [to:]
 către:
 [toggle draw accessibility aids]
-
+Arată/ascunde numerele echipelor
 [toggle draw information]
-
+Comută afișarea informațiilor
 [toggle draw unit paths]
-
+Comută traseele unităților
 [toggle menu screen]
-
+Comută ecranul meniului
 [toggle recording voice]
-
+Comută înregistrarea vocii
 [Total Attack Power]
-
+Putere totală de atac
 [Total Defence Power]
-
+Putere totală de apărare
 [Total Hitpoints]
-
+Total puncte de viață
 [Total prestige reached]
 Prestigiul total a fost atins
 [Total]
 Total
 [tutorial text 1]
-
+Bun venit la tutorialul de bază din Globulation 2! Vei învăța totul, de la construirea popasurilor și explorarea zonelor până la distrugerea inamicilor. Nu vei duce lipsă de informații utile!
 [tutorial text 2]
-
+Acum că stăpânești elementele de bază, e timpul să te familiarizezi cu alte clădiri, precum pistele de alergare, piscinele și școlile.
 [tutorial text 3]
-
+Te-ai descurcat bine până aici. Acum să trecem la luptători, câmpuri de antrenament și modernizări.
 [tutorial text 4]
-
+Aproape ai terminat. Mai rămân doar steagurile și atacul. Apoi vei ști suficient ca să încerci jocuri personalizate și, în cele din urmă, să joci online împotriva unora dintre cei mai buni jucători de Globulation 2.
 [tutorial]
 Tutorial
 [Uncontrolled]
 Necontrolat
 [undo]
-
+anulează
 [uniform terrain]
 Teren uniform
 [Unit editor]
-
+Editor de unități
 [unit settings explanation]
-
+Numărul implicit de unități repartizate
 [units working]
  unităţi lucrează
 [Units]
 Unităţi
 [unlocked at start]
-
+Deblocată de la început
 [unlocked by]
-
+Deblocată de
 [Unnamed Area]
-
+{Zonă fără nume}
 [up]
-
+sus
 [upgrade building]
-
+Pornește/oprește modernizarea
 [Upgrade Defaults]
-
+Valori implicite pentru modernizări
 [upgrade]
 Ameliorează
 [Upload Map]
-
+Încarcă harta
 [upload map]
-
+Încarcă harta
 [username]
 Numele utilizatorului
 [Version]
 Versiune
 [view history]
-
+Vezi istoricul
 [Voice volume]
-
+Volum (voce)
 [waiting for %0]
 Aşteaptă %0
 [waiting for key]
-
+se așteaptă o tastă...
 [Waiting]
-
+În așteptare
 [Walk]
 Merge
 [warflag explanation 2]
@@ -1111,15 +1111,15 @@ Steag de luptă
 [Warning, you need to reboot the game for changes to take effect]
 Atenţie, trebuie să reporniţi jocul pentru ca schimbările sa aibă efect
 [Warrior Ratio]
-
+Proporția luptătorilor
 [Warrior]
 Luptător
 [warriors]
 luptători
 [watch again]
-
+Urmărește din nou
 [watching:]
-
+Urmărești:
 [water]
 Apă
 [Wheat]
@@ -1133,9 +1133,9 @@ Câstig : aliatul vostru %0 are cel mai mare prestigiu.
 [Wood]
 Lemn
 [wood]
-
+lemn
 [Worker Ratio]
-
+Proporția lucrătorilor
 [Worker]
 Lucrător
 [workers]
@@ -1157,7 +1157,7 @@ Metaserverul YOG a refuzat sa vă conectaţi din motiv că parola este falsă.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că acest utilizator nu are înca o parola in baza de date.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+Metaserverul YOG a refuzat conexiunea deoarece această adresă IP este blocată temporar. Așteaptă ridicarea restricției sau contactează administratorii.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că versiunea de globulation2 pe care o folosiţi este prea veche pentru a se putea comunica corect.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1165,29 +1165,29 @@ Metaserverul YOG a refuzat sa vă conectaţi dintr-un motiv necunoscut.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de utilizator este deja utilizat de către o altă persoană.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+Metaserverul YOG a refuzat conexiunea deoarece acest nume de utilizator este blocat. Contactează administratorii.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+Metaserverul YOG a refuzat conexiunea deoarece numele de utilizator nu este valid. Numele de utilizator pot conține doar litere, cifre și caractere de subliniere.
 [YESTS_CREATED]
 Sistemul de conecţie este gata să contacteze metaserverul YOG pentru conectare.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Parolele introduse nu coincid. Introdu-le din nou.
 [YESTS_UNABLE_TO_CONNECT]
 Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
 [yog block command help]
-
+/block <playername>    Blochează un jucător; nu îi vei mai vedea mesajele.
 [yog block command player %0 already blocked]
-
+Jucătorul %0 este deja blocat
 [yog block command player %0 blocked]
-
+Jucătorul %0 a fost blocat
 [yog block command player %0 not found]
-
+Jucătorul %0 nu a fost găsit
 [yog command header]
-
+Comenzile disponibile în clientul YOG sunt:
 [yog command unknown]
-
+Comandă necunoscută.
 [yog help command help]
-
+/help    Afișează acest mesaj de ajutor
 [yog]
 Jocul în retea prin Ysagoon
 [you have lost]
@@ -1195,15 +1195,15 @@ Aţi pierdut!
 [you have won]
 Aţi câştigat!
 [You where kicked from the game]
-
+Ai fost dat afară din joc
 [Your %0 are under attack]
 %0 voastre sunt atacate
 [Your IP address was temporarily banned]
-
+Adresa ta IP a fost blocată temporar. Așteaptă ridicarea restricției sau contactează administratorii.
 [Your unit got converted to %0's team]
 Unitatea voastră a trecut de partea %0
 [Your username was banned]
-
+Numele tău de utilizator a fost blocat. Contactează administratorii pentru ridicarea restricției.
 [game speed]
 Viteza jocului
 [decrease game speed]

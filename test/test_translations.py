@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Regression tests for translation corruption that can break the game loader."""
 import importlib.util
-import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -53,14 +52,9 @@ class TranslationAuditTest(unittest.TestCase):
             result = checker.audit(root)
             self.assertTrue(any('unknown translation key [missing lookup]' in e for e in result['errors']))
             self.assertTrue(any('invalid placeholders' in e for e in result['errors']))
-            self.assertTrue(any('invalid placeholders' in e for e in result['errors']))
             self.assertEqual(result['languages']['data/texts.xx.txt']['untranslated'], ['[absent]', '[new control]'])
             self.assertTrue(any('missing key [absent]' in e for e in result['errors']))
             self.assertTrue(any('would show an English second line' in e for e in result['errors']))
-            (root / 'data/translations.pending.json').write_text('{}', encoding='utf-8')
-            self.assertTrue(any('newly untranslated key [new control]' in e for e in checker.audit(root)['errors']))
-            (root / 'data/translations.pending.json').write_text(json.dumps({'data/texts.xx.txt': ['[absent]', '[new control]']}), encoding='utf-8')
-            self.assertFalse(any('newly untranslated' in e for e in checker.audit(root)['errors']))
             (root / 'data/texts.incomplete.txt').write_text('data/texts.xx.txt\ndata/texts.en.txt\n', encoding='utf-8')
             self.assertTrue(any('must match texts.list.txt in order' in e for e in checker.audit(root)['errors']))
 

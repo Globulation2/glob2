@@ -207,7 +207,7 @@ caps lock
 [Computing Fertility]
 Вычисление плодородия
 [concrete islands terrain]
-Бетонные острова
+Отдельные острова
 [connect]
 Подключиться
 [connecting to game]
@@ -243,9 +243,9 @@ Ctrl - Линия
 [damage]
 Повреждения
 [Damaged Map]
-Карта повреждений
+Карта раненых
 [decrease units working]
-Уменьшить количество работающих
+Уменьшить число работников
 [Defeat Your Oppenents]
 Победить соперников
 [defencetower explanation 2]
@@ -611,11 +611,11 @@ Ok
 [old random terrain]
 старый случайный ландшафт
 [on press]
-По нажатию
+Нажата
 [On the spot]
 На месте
 [on unpress]
-По отжатию
+Отпущена
 [open chat box]
 Открыть чат
 [open load menu]
@@ -703,7 +703,7 @@ print screen
 [Register]
 Регистрация
 [remember unit]
-Запомнить юнит
+Помнить число юнитов
 [Remember YOG password localy]
 Запомнить пароль локально.
 [remove map]
@@ -723,7 +723,7 @@ print screen
 [replay ended]
 Повтор окончен
 [restore default shortcuts]
-Восстановить значения по умолчанию
+Вернуть стандартные клавиши
 [return to editor]
 Вернуться в редактор
 [return to game]
@@ -813,9 +813,9 @@ scroll lock
 [select place clearingflag]
 Выбор размещения флага очистки
 [select place explorationflag]
-Выбор размещения флага разведки
+Разместить флаг разведки
 [select place forbidden area]
-Выбор размещения запретной зоны
+Задать запретную зону
 [select place guard area]
 Выбор размещения охранной зоны
 [select place warflag]
@@ -913,7 +913,7 @@ space
 [swimmingpool]
 Бассейн
 [switch to adding areas]
-Переключиться на добавление областей
+Добавлять области
 [switch to area brush 1]
 Переключится на Кисть 1
 [switch to area brush 2]
@@ -1025,7 +1025,7 @@ tab
 [to:]
 к:
 [toggle draw accessibility aids]
-Включить подсказки
+Показать/скрыть номера команд
 [toggle draw information]
 Показать информацию
 [toggle draw unit paths]

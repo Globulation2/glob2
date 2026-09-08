@@ -1,77 +1,77 @@
 [%0 has left the game]
 %0 oyundan cikti.
 [%0 level %1]
-
+%0, seviye %1
 [%0 units can't access building]
-
+%0 birim binaya ulaşamıyor
 [%0 units can't access flag]
-
+%0 birim bayrağa ulaşamıyor
 [%0 units can't access fruit]
-
+%0 birim meyveye ulaşamıyor
 [%0 units can't access resource]
-
+%0 birim kaynağa ulaşamıyor
 [%0 units not available]
-
+%0 birim uygun değil
 [%0 units too far from building]
-
+%0 birim binadan çok uzakta
 [%0 units too far from flag]
-
+%0 birim bayraktan çok uzakta
 [%0 units too far from fruit]
-
+%0 birim meyveden çok uzakta
 [%0 units too far from resource]
-
+%0 birim kaynaktan çok uzakta
 [%0 units too low level]
-
+%0 birimin seviyesi çok düşük
 [%0% Uploaded]
-
+%0% yüklendi
 [%0's game]
-
+%0 adlı oyuncunun oyunu
 [%0's team unit got converted to your team]
 %0'nin bir birimi sizin tarafiniza gecti
 [abreaviation explanation A]
-A: Muttefikler
+A: Müttefikler
 [abreaviation explanation C]
-C: Suna sohbet mesajlari gonder:
+C: Sohbet mesajlarının alıcıları
 [abreaviation explanation fV]
-fV: Otel binalarini goster (birimleri calmak icin)
+fV: Otellerin görüşünü paylaş (birimleri kendi tarafına çekmek için)
 [abreaviation explanation mV]
-mV: Market binalarini goster (mal takasi icin)
+mV: Marketlerin görüşünü paylaş (meyve takası için)
 [abreaviation explanation V]
-V: Butun binalari goster
+V: Bütün binaların görüşünü paylaş
 [add map]
-
+Harita ekle
 [add shortcut]
-
+Kısayol Ekle
 [Add]
-
+Ekle
 [AI Descriptions]
-
+Yapay Zekâ Açıklamaları
 [AI]
 AI
 [ai]
 AI
 [AICastor-Description]
-
+Castor temkinli oynar ve kaynakları az olan haritalarda çok başarılıdır. Orta zorluk.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Nicowar saldırgan oynar, hızla büyür ve rakiplerine dev ordular gönderir. Zor.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Yapay zekâ yok — hiçbir şey yapmaz.
 [AINone]
-AINone
+Yapay zekâ yok
 [AINumbi-Description]
-
+Numbi küçük adımlarla, hızla genişler. Kolay.
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity saldırmaz, ancak dev üsler kurar ve çok sayıda birimi kendi tarafına çeker. Kolay.
 [AIReachToInfinity]
 ReachToInfinity
 [AIWarrush-Description]
-
+Warrush hızlı ve sert saldırır, savunmadaki oyuncuyu sıklıkla yenilginin eşiğine getirir. Orta zorluk.
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -97,7 +97,7 @@ yarali
 [armor]
 Zirh
 [assigned]
-
+Atanan
 [At. speed]
 Att. hiz
 [At. strength]
@@ -115,55 +115,55 @@ Oyuncular bekleniyor
 [away:]
 uzakta:
 [Back]
-
+Geri
 [backspace]
-
+Backspace
 [barracks explanation 2]
 seviyesini artırır
 [barracks explanation]
 Savaşçıların dövüş
 [barracks]
-Kisla
+Kışla
 [beach size]
 sahil boyutu
 [Blocked Players]
-
+Engellenen Oyuncular
 [break]
-
+Break
 [briefing]
-
+Görev Bilgisi
 [build %0 level %1]
-
+%0 inşa et, seviye %1
 [Build]
 Insaa et
 [Building Defaults]
-
+Varsayılan Bina Ayarları
 [building settings]
-
+Bina Ayarları
 [building site]
 insaa alani
 [Building Tool Box Explanation]
-
+Shift + Sürükle = Dikdörtgen
 [Building Tool Line Explanation]
-
+Ctrl + Sürükle = Çizgi
 [Buildings]
 Binalar
 [Bullets]
 Mermiler
 [campaign editor]
-
+Sefer Düzenleyici
 [campaign]
 Senaryo
 [Can't connect, can't find host]
-
+Bağlanılamıyor: sunucu bulunamadı
 [Can't host game, port %0 in use]
-
+Oyun kurulamıyor: %0 numaralı bağlantı noktası kullanımda
 [Can't join game, game doesn't exist]
-
+Katılınamıyor: oyun mevcut değil
 [Can't join game, game has started]
-
+Katılınamıyor: oyun başlamış
 [Can't join game, game is full]
-
+Katılınamıyor: oyun dolu
 [Can't join game, missmatching game parameters]
 Oyuna katilamadiniz: oyun parametreleri uyusmuyor
 [Can't join game, timeout]
@@ -179,11 +179,11 @@ Gelistirmeyi iptal et
 [Cancel]
 Vazgec
 [caps lock]
-
+Caps Lock
 [carry]
 Tasiyor:
 [Change Area Name]
-
+Alan Adını Değiştir
 [Cherry]
 Kiraz
 [choose campaign]
@@ -205,23 +205,23 @@ Temizlik bayragi
 [closed]
 Kapali
 [combined vision]
-
+Ortak görüş
 [compile]
 Script derle
 [compose]
-
+Compose
 [Computing Fertility]
-
+Verimlilik Hesaplanıyor
 [concrete islands terrain]
-
+Ayrı Adalar
 [connect]
 Baglan
 [connecting to game]
-
+Oyuna Bağlanılıyor
 [connecting to]
 Suraya baglaniyor:
 [Construction Site Defaults]
-
+Varsayılan İnşaat Ayarları
 [Continue playing]
 Oyuna devam et
 [control %0]
@@ -239,7 +239,7 @@ Yeni harita
 [credits]
 Hakkinda
 [ctrl - line]
-
+Ctrl - Çizgi
 [current speed]
 Mevcut hiz
 [custom game]
@@ -249,11 +249,11 @@ Ozel imlec
 [damage]
 Hasar
 [Damaged Map]
-
+Yaralı Birim Haritası
 [decrease units working]
-
+Çalışan Birimleri Azalt
 [Defeat Your Oppenents]
-
+Rakiplerinizi Yenin
 [defencetower explanation 2]
 ve binalarına saldırır
 [defencetower explanation]
@@ -261,55 +261,55 @@ Yakındaki düşman birimlerine
 [defencetower]
 Savunma Kulesi
 [Defense Map]
-
+Savunma Haritası
 [Defense]
 Savunma
 [Delete game]
 Secili oyunu sil
 [delete]
-
+Delete
 [desert]
 col
 [destroy building]
-
+Seçili Binayı Yık
 [destroy]
 Yik
 [display]
 Gorunum
 [do nothing]
-
+Hiçbir Şey Yapma
 [don't carry anything]
 Hicbirsey tasimiyor
 [down]
-
+aşağı
 [Download Map]
-
+Harita İndir
 [Download Maps]
-
+Harita İndir
 [downloaded %0]
-
+%0 indirildi
 [downloading map]
-
+Harita İndiriliyor
 [edit map]
-
+Haritayı Düzenle
 [editing map]
-
+Harita Düzenleniyor
 [editor shortcuts]
-
+Düzenleyici
 [editor]
 Editor
 [end]
-
+End
 [Enter your nickname :]
 Takma adinizi girin:
 [Enter your password :]
 Sifrenizi girin:
 [enter]
-
+Enter
 [equals]
-
+eşittir
 [escape]
-
+Escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -317,7 +317,7 @@ Kâşifleri çeker
 [explorationflag]
 Kesif bayragi
 [Explorer Ratio]
-
+Kaşif Oranı
 [Explorer]
 Kasif
 [explorers]
@@ -355,13 +355,13 @@ f8
 [f9]
 f9
 [Fertility Map]
-
+Verimlilik Haritası
 [Flag Defaults]
-
+Varsayılan Bayrak Ayarları
 [flag settings explanation]
-
+Bayrağın varsayılan yarıçapı
 [fog of war]
-
+Savaş sisi
 [food]
 Besin
 [forbidden area]
@@ -373,21 +373,21 @@ tanesi bosta
 [from:]
 surdan:
 [fruit]
-
+meyve
 [fullscreen]
 Tam ekran
 [game full]
 Oyun dolu
 [game shortcuts]
-
+Oyun Kısayolları
 [Game]
-
+Oyun
 [general settings]
-
+Genel Ayarlar
 [go to event]
-
+Olaya Git
 [go to home]
-
+Üsse Git
 [goto main menu]
 Ama menuye don
 [grass]
@@ -405,15 +405,15 @@ Elyapimi harita
 [Happyness]
 Mutluluk
 [hard pause]
-
+Tam Duraklatma
 [Harvest]
 Hasat et
 [high priority]
-
+yüksek
 [hints]
-
+İpuçları
 [home]
-
+Home
 [hospital explanation 2]
 
 [hospital explanation]
@@ -425,9 +425,9 @@ Oyun Sunucusu ol
 [hp]
 Can
 [Human]
-
+İnsan
 [human]
-
+insan
 [hungry]
 ac
 [hungryness]
@@ -435,7 +435,7 @@ Aclik
 [In way]
 Yolda
 [increase units working]
-
+Çalışan Birimleri Artır
 [inn explanation 2]
 
 [inn explanation]
@@ -443,7 +443,7 @@ Birimlerinizi besler
 [inn]
 Otel
 [insert]
-
+Insert
 [inside]
 Icerde
 [islands size]
@@ -451,19 +451,19 @@ ada boyutu
 [islands terrain]
 Adalar
 [isles terrain]
-
+Adacıklar
 [iterate selection]
-
+Sonraki Öğeyi Seç
 [jobs]
-
+işler
 [join a game]
 Oyuna katil
 [join]
 Katil
 [keyboard settings]
-
+Klavye Ayarları
 [kick]
-
+Oyundan At
 [lan]
 Agda Oyna
 [language incomplete]
@@ -475,43 +475,43 @@ Dil
 [language]
 Turkce
 [Leave Game]
-
+Oyundan Ayrıl
 [left meta]
-
+sol Meta
 [left super]
-
+sol Windows tuşu
 [left]
-
+sol
 [level]
 Seviye
 [levels]
 Seviyeler
 [load campaign]
-
+Sefer Yükle
 [load game]
 Oyun yukle
 [load map]
-
+Harita Yükle
 [load replay]
-
+Tekrar Yükle
 [load script]
-
+Betik Yükle
 [load]
 Yukle
 [loading map list]
-
+Harita Listesi Yükleniyor...
 [Lobby]
-
+Lobi
 [login]
 Giris
 [look around]
-
+Etrafa bak
 [Lost : %0 has more prestige than you]
 Yenilgi: %0 'nin prestiji sizinkinden daha fazla
 [Lost : your colony is dead]
 Yenilgi: koloniniz oldu
 [low priority]
-
+düşük
 [lowquality]
 Dusuk kalite
 [Magic At. Air]
@@ -519,35 +519,35 @@ Hava hasari
 [Magic At. Ground]
 Yer hasari
 [map description]
-
+Açıklama
 [Map Discovered]
-
+Harita Keşfedilmiş
 [Map download failure: lost connection]
-
+Harita indirilemedi: YOG bağlantısı kesildi
 [Map name: %0]
 Harita adi: %0.
 [map name]
-
+Ad
 [map rated]
-
+Harita Değerlendirildi
 [map script]
-
+Harita Betiği
 [map size x]
 Harita genisligi
 [map size y]
 Harita yuksekligi
 [Map upload failure: connection lost]
-
+Harita yüklenemedi: YOG bağlantısı kesildi
 [Map upload failure: map name in use]
-
+Harita yüklenemedi. Harita adı zaten kullanımda.
 [Map upload failure: unknown reason]
-
+Harita yüklenemedi. Nedeni bilinmiyor.
 [Map Upload: Author Name]
-
+Yapımcı Adı
 [Map Upload: Waiting for reply]
-
+Yanıt bekleniyor
 [mark map]
-
+Müttefikler İçin İşaretle
 [market explanation 2]
 takasına olanak sağlar
 [market explanation]
@@ -555,7 +555,7 @@ Başkalarıyla meyve
 [market]
 Market
 [medium priority]
-
+orta
 [meta %0]
 meta-%0
 [Min required level:]
@@ -569,31 +569,31 @@ sessiz
 [mute]
 sessiz
 [new campaign]
-
+Yeni Sefer
 [new map]
 Yeni
 [nick taken]
 Uzgunuz fakat sectiginiz ad freenode'da zaten kayitli. Yalnizca YOG'dan konusabileceksiniz
 [no fullscreen]
-
+* yalnızca pencere kipinde
 [No Hints]
-
+İpucu Yok
 [no key]
-
+henüz tuş yok
 [No Objectives]
-
+Hedef Yok
 [no ressources growth areas]
-
+Kaynak Büyümesi Olmayan Alanlar
 [No]
 Hayir
 [Not Enough Ratings]
-
+Yeterli Değerlendirme Yok
 [not ready]
 hazir degil
 [Number Of Buildings]
-
+Bina Sayısı
 [number of players: %0 (%1 AI)]
-
+%0 oyuncu (%1 yapay zekâ)
 [number of players: %0]
 %0 oyuncu var.
 [number of teams: %0]
@@ -601,11 +601,11 @@ hazir degil
 [number of teams]
 takim sayisi
 [Number Of Units]
-
+Birim Sayısı
 [numlock]
-
+Num Lock
 [objectives]
-
+Hedefler
 [of which]
 ayrintilar:
 [ok]
@@ -615,21 +615,21 @@ eski karisik adalar
 [old random terrain]
 eski karisik arazi
 [on press]
-
+Basınca
 [On the spot]
 Burada
 [on unpress]
-
+Bırakınca
 [open chat box]
-
+Sohbet Kutusunu Aç
 [open load menu]
-
+Yükleme Menüsünü Aç
 [open save menu]
-
+Kaydetme Menüsünü Aç
 [open scenario editor]
-
+Senaryo Düzenleyiciyi Aç
 [open teams editor]
-
+Takım Düzenleyiciyi Aç
 [open]
 Ac
 [OpenGL]
@@ -641,51 +641,51 @@ Secenekler
 [Orange]
 Portakal
 [Other Options]
-
+Diğer Seçenekler
 [page down]
-
+Page Down
 [page up]
-
+Page Up
 [Papyrus]
 Papirus
 [pause game]
-
+Oyunu Duraklat
 [pause]
-
+Pause
 [Paused]
 Duraklatildi
 [player name]
 Oyuncu adi
 [player rating %0]
-
+Oyuncu Puanı: %0
 [players]
-
+Oyuncular
 [please wait]
 Lutfen bekleyin
 [power]
-
+güç
 [press space]
 Devam etmek icin bosluk tusuna basin.
 [Prestige Score]
-
+Prestij Puanı
 [Prestige Win Enabled]
-
+Prestij Zaferi Etkin
 [Prestige]
 Prestij
 [Primary Objectives]
-
+Birincil
 [print screen]
-
+Print Screen
 [priority]
-
+Öncelik
 [Prune]
 Erik
 [quit the editor]
-
+Düzenleyiciden çık
 [quit the game]
 Oyundan cik
 [quit the replay]
-
+Tekrardan çık
 [quit]
 Kapat
 [racetrack explanation 2]
@@ -693,57 +693,57 @@ hızını artırır
 [racetrack explanation]
 Birimlerin yürüme
 [racetrack]
-Kosuyolu
+Koşu Yolu
 [range]
 Menzil
 [Rated %0]
-
+Puan: %0
 [ratios]
 Oranlar
 [ready?]
-
+hazır mı?
 [refresh map list]
-
+Harita Listesini Yenile
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
 [Register]
-
+Kaydol
 [remember unit]
-
+Birim Sayılarını Hatırla
 [Remember YOG password localy]
 Parolayi yerel olarak animsa. (guvenli degil)
 [remove map]
-
+Haritayı Kaldır
 [remove shortcut]
-
+Kısayolu Kaldır
 [Remove]
-
+Kaldır
 [repair building]
-
+Onarımı Başlat/Durdur
 [repair]
 Onar
 [repeat area]
-
+aynı arazinin tekrar sayısı
 [Repeat your password :]
-
+Parolanızı tekrar girin:
 [replay ended]
-
+Tekrar Bitti
 [restore default shortcuts]
-
+Varsayılan Kısayolları Geri Yükle
 [return to editor]
-
+Düzenleyiciye dön
 [return to game]
 Oyuna don
 [return to replay]
-
+Tekrara dön
 [return]
-
+Enter
 [right meta]
-
+sağ Meta
 [right super]
-
+sağ Windows tuşu
 [right]
-
+sağ
 [river diameter]
 nehir genisligi
 [river terrain]
@@ -755,11 +755,11 @@ Cikmadan once kaydetmek istiyor musunuz?
 [save game]
 Oyun kaydet
 [save map]
-
+Haritayı Kaydet
 [save replay]
-
+Tekrarı Kaydet
 [save script]
-
+Betiği Kaydet
 [Save]
 Kaydet
 [school explanation 2]
@@ -769,23 +769,23 @@ seviyesini artırır
 [school]
 Akademi
 [Script Areas]
-
+Betik Alanları
 [scroll lock]
-
+Scroll Lock
 [scroll wheel enabled]
-
+Fare Tekerleği Etkin
 [Secondary Objectives]
-
+İkincil
 [seeking a job]
 tanesi is ariyor
 [seeking]
 ariyor
 [select barracks building]
-Bina seç: Kisla
+Bina seç: Kışla
 [select clearingflag]
 Bayrak seç: Temizlik bayragi
 [select construct barracks]
-İnşa seç: Kisla
+İnşa seç: Kışla
 [select construct defencetower]
 İnşa seç: Savunma Kulesi
 [select construct hospital]
@@ -795,7 +795,7 @@ Bayrak seç: Temizlik bayragi
 [select construct market]
 İnşa seç: Market
 [select construct racetrack]
-İnşa seç: Kosuyolu
+İnşa seç: Koşu Yolu
 [select construct school]
 İnşa seç: Akademi
 [select construct stonewall]
@@ -827,7 +827,7 @@ Alan yerleştir: Nobet bolgesi
 [select place warflag]
 Bayrak yerleştir: Savas bayragi
 [select racetrack building]
-Bina seç: Kosuyolu
+Bina seç: Koşu Yolu
 [select school building]
 Bina seç: Akademi
 [select swarm building]
@@ -849,33 +849,33 @@ Enter: bir sohbet mesaji gonder
 [shortcut explanation v]
 V: konusmak icin basili tut
 [show areas]
-
+Alanları göster
 [show flags]
-
+Bayrakları göster
 [show main menu]
-
+Ana Menüyü Göster
 [skin]
 Gorunum
 [smoothing]
 Duzeltme
 [sort by name]
-
+Ad
 [sort by rating]
-
+Puan
 [sort by size]
-
+Boyut
 [Sort By]
-
+Sıralama Ölçütü
 [space]
-
+boşluk
 [start mission]
-
+Görevi Başlat
 [start new campaign]
-
+Yeni Sefer Başlat
 [Start]
 Basla
 [Starving Map]
-
+Açlık Haritası
 [starving]
 cok ac
 [Statistics]
@@ -899,7 +899,7 @@ Pasif savunma
 [stonewall]
 Tas duvar
 [submit rating]
-
+Değerlendirmeyi Gönder
 [svr hostname]
 Sunucu adi
 [swamp terrain]
@@ -947,13 +947,13 @@ Takımları göster
 [switch to terrain view]
 Araziyi göster
 [sys req]
-
+Sys Rq
 [tab]
-
+Tab
 [teams editor]
-
+Takım Düzenleyici
 [Teams Fixed]
-
+Sabit Takımlar
 [teams]
  takimlar
 [the barracks is finished]
@@ -985,7 +985,7 @@ Hastane tamamlandi
 [the hospital is under attack]
 Hastane saldiri altinda
 [The host has cancelled the game]
-
+Oyunu kuran kişi oyunu iptal etti.
 [the inn is finished]
 Otel tamamlandi
 [the inn is under attack]
@@ -1001,11 +1001,11 @@ Market saldiri altinda
 [The player %0 has left YOG]
 %0 YOG'dan ayrildi.
 [the racetrack is finished]
-Kosuyolu tamamlandi
+Koşu yolu tamamlandı
 [the racetrack is under attack]
-Kosuyolu saldiri altinda
+Koşu yolu saldırı altında
 [the replays]
-
+Tekrarlar
 [the school is finished]
 Akademi tamamlandi
 [the school is under attack]
@@ -1027,85 +1027,85 @@ Yuzme havuzu saldiri altinda
 [the warflag is under attack]
 ?? Savas bayragi saldiri altinda ??
 [time]
-
+Süre
 [to:]
 suraya:
 [toggle draw accessibility aids]
-
+Takım Numaralarını Aç/Kapat
 [toggle draw information]
-
+Bilgileri Göster/Gizle
 [toggle draw unit paths]
-
+Birim Yollarını Göster/Gizle
 [toggle menu screen]
-
+Menü Ekranını Aç/Kapat
 [toggle recording voice]
-
+Ses Kaydını Aç/Kapat
 [Total Attack Power]
-
+Toplam Saldırı Gücü
 [Total Defence Power]
-
+Toplam Savunma Gücü
 [Total Hitpoints]
-
+Toplam Can Puanı
 [Total prestige reached]
 Kazanilan toplam prestij
 [Total]
 Toplam
 [tutorial text 1]
-
+Globulation 2 temel eğitimine hoş geldiniz! Bu eğitimde otel inşa etmekten bölge keşfine ve düşmanları yok etmeye kadar her şeyi öğreneceksiniz. Burada bol bol yararlı bilgi var!
 [tutorial text 2]
-
+Artık temelleri öğrendiğinize göre koşu yolları, yüzme havuzları ve akademiler gibi diğer binaları tanıma zamanı geldi.
 [tutorial text 3]
-
+Buraya kadar iyi geldiniz. Şimdi savaşçılara, kışlalara ve geliştirmelere geçelim.
 [tutorial text 4]
-
+Bitirmek üzeresiniz. Yalnızca bayraklar ve saldırı kaldı. Sonrasında özel oyunları deneyebilecek ve zamanla Globulation 2'nin en iyi oyuncularından bazılarına karşı çevrimiçi oynayabilecek kadar bilgi sahibi olacaksınız.
 [tutorial]
 Egitim
 [Uncontrolled]
 Kontrolsuz
 [undo]
-
+geri al
 [uniform terrain]
 Tekbicimli saha
 [Unit editor]
 Birim editoru
 [unit settings explanation]
-
+Atanan birimlerin varsayılan sayısı
 [units working]
  calisan birimler
 [Units]
 Birimler
 [unlocked at start]
-
+Başlangıçta Açık
 [unlocked by]
-
+Kilidini Açan Görev
 [Unnamed Area]
-
+{Adsız Alan}
 [up]
-
+yukarı
 [upgrade building]
-
+Geliştirmeyi Başlat/Durdur
 [Upgrade Defaults]
-
+Varsayılan Geliştirme Ayarları
 [upgrade]
 Gelistir
 [Upload Map]
-
+Harita Yükle
 [upload map]
-
+Harita Yükle
 [username]
 Kullanici adi
 [Version]
 Versiyon
 [view history]
-
+Geçmişi Görüntüle
 [Voice volume]
-
+Ses düzeyi (konuşma)
 [waiting for %0]
 bekleniyor: %0
 [waiting for key]
-
+tuş bekleniyor...
 [Waiting]
-
+Bekleniyor
 [Walk]
 Yuru
 [warflag explanation 2]
@@ -1117,15 +1117,15 @@ Savas bayragi
 [Warning, you need to reboot the game for changes to take effect]
 Uyari, degisikliklerin etkili olabilmesi icin oyunu yeniden baslatmalisiniz
 [Warrior Ratio]
-
+Savaşçı Oranı
 [Warrior]
-Savasci
+Savaşçı
 [warriors]
-savascilar
+Savaşçılar
 [watch again]
-
+Tekrar izle
 [watching:]
-
+İzlenen:
 [water]
 Su
 [Wheat]
@@ -1143,7 +1143,7 @@ Odun
 [wood]
 odun
 [Worker Ratio]
-
+İşçi Oranı
 [Worker]
 Isci
 [workers]
@@ -1165,7 +1165,7 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Girdiginiz sifre yanlis.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adinin henuz bir parolasi yok. Muhtemelen kullanici adinizi bu parola ile kaydetmek istiyorsunuz. O halde, baglanmadan once "Bu parolayla yeni bir YOG kullanicisi kaydet" secenegini aktiflestirin. Bu secenegi yalnizca bir kez aktiflestirmeniz yeterli olacaktir.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+YOG ana sunucusu bu IP adresi geçici olarak yasaklandığı için bağlantıyı reddetti. Yasağın kalkmasını bekleyin veya yöneticilerle iletişime geçin.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Oyun versiyonunuz cok eski.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1173,29 +1173,29 @@ YOG onsunucusu baglantiyi reddetti. Gerekce: Yok!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG onsunucusu baglantiyi reddetti. Gerekce: Bu kullanici adi kullanimda.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+YOG ana sunucusu bu kullanıcı adı yasaklandığı için bağlantıyı reddetti. Lütfen yöneticilerle iletişime geçin.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+YOG ana sunucusu verilen kullanıcı adı geçersiz olduğu için bağlantıyı reddetti. Kullanıcı adları yalnızca harf, rakam ve alt çizgi içerebilir.
 [YESTS_CREATED]
 Baglanti sistemi baglanti icin YOG onsunucusuna baglanmaya hazir.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Girilen parolalar eşleşmiyor. Lütfen tekrar girin.
 [YESTS_UNABLE_TO_CONNECT]
 Baglanilamadi. Gorunuse gore YOG onsunucusu servis disi.
 [yog block command help]
-
+/block <playername>    Bir oyuncuyu engeller; artık mesajlarını görmezsiniz.
 [yog block command player %0 already blocked]
-
+%0 oyuncusu zaten engellenmiş
 [yog block command player %0 blocked]
-
+%0 oyuncusu engellendi
 [yog block command player %0 not found]
-
+%0 oyuncusu bulunamadı
 [yog command header]
-
+Kullanılabilir YOG istemci komutları:
 [yog command unknown]
-
+Bilinmeyen Komut.
 [yog help command help]
-
+/help    Bu yardım mesajını gösterir
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1203,15 +1203,15 @@ Kaybettiniz!
 [you have won]
 Kazandiniz!
 [You where kicked from the game]
-
+Oyundan atıldınız
 [Your %0 are under attack]
 %0 'leriniz saldiri altinda
 [Your IP address was temporarily banned]
-
+IP adresiniz geçici olarak yasaklandı. Yasağın kalkmasını bekleyin veya yöneticilerle iletişime geçin.
 [Your unit got converted to %0's team]
 Bir biriminiz %0 'nin tarafina gecti
 [Your username was banned]
-
+Kullanıcı adınız yasaklandı. Yasağın kaldırılması için yöneticilerle iletişime geçin.
 [game speed]
 Oyun hızı
 [decrease game speed]

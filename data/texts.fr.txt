@@ -211,9 +211,9 @@ Compiler le script
 [compose]
 composer
 [Computing Fertility]
-Fertilité Informatique
+Calcul de la fertilité
 [concrete islands terrain]
-Iles et rivières
+Îles séparées
 [connect]
 Connecter
 [connecting to game]
@@ -249,9 +249,9 @@ Curseur personalisé
 [damage]
 Dommages
 [Damaged Map]
-Carte endomagée
+Carte des blessés
 [decrease units working]
-Diminuer le nombre d'unité travaillant
+Affecter moins d'unités
 [Defeat Your Oppenents]
 Vainquez vos ennemis
 [defencetower explanation 2]
@@ -295,7 +295,7 @@ Editer la carte
 [editing map]
 Edition de la carte
 [editor shortcuts]
-Raccourcis de l'éditeur
+Éditeur
 [editor]
 Éditeur
 [end]
@@ -381,7 +381,7 @@ Plein écran
 [game full]
 Jeu complet
 [game shortcuts]
-Raccourcis du jeu
+Jeu
 [Game]
 Jeu
 [general settings]
@@ -437,7 +437,7 @@ Conso. nourriture
 [In way]
 En chemin
 [increase units working]
-Augmenter le nombre d'unité travaillant
+Affecter plus d'unités
 [inn explanation 2]
 
 [inn explanation]
@@ -619,11 +619,11 @@ Ancien terrain d'île
 [old random terrain]
 Ancien terrain aléatoire
 [on press]
-sur appuyer
+Appuyer
 [On the spot]
 Sur place
 [on unpress]
-sur relacher
+Relâcher
 [open chat box]
 Ouvrir boîte de discussion
 [open load menu]
@@ -713,7 +713,7 @@ Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 [Register]
 S'enregistrer
 [remember unit]
-Se rappeler l'unité
+Mémoriser les affectations
 [Remember YOG password localy]
 Mémoriser le mot de passe localement. (non sécurisé)
 [remove map]
@@ -789,7 +789,7 @@ Choisir camp d'entraînement
 [select clearingflag]
 Choisir drapeau de défrichage
 [select construct barracks]
-Choisir construire un camp d'entraînement
+Construire un camp d'entraînement
 [select construct defencetower]
 Choisir construire une tourelle
 [select construct hospital]
@@ -821,9 +821,9 @@ Choisir marché
 [select place clearing area]
 Choisir placer une zone de défrichage
 [select place clearingflag]
-Choisir placer un drapeau de défrichage
+Placer un drapeau de défrichage
 [select place explorationflag]
-Choisir placer un drapeau d'exploration
+Placer un drapeau d'exploration
 [select place forbidden area]
 Choisir placer une zone d'interdiction
 [select place guard area]
@@ -831,13 +831,13 @@ Choisir placer une zone de garde
 [select place warflag]
 Choisir placer un drapeau de guerre
 [select racetrack building]
-Choisir placer un camp d'entraînement
+Choisir une piste de course
 [select school building]
 Selectionner construction d'une école
 [select swarm building]
 Selectionner construction d'une ruche
 [select swimmingpool building]
-Selectionner construction d'une piscine
+Choisir une piscine
 [select tower building]
 Selectionner construction d'une tour
 [select wall building]
@@ -1035,11 +1035,11 @@ temps
 [to:]
 à:
 [toggle draw accessibility aids]
-Basculer l'affichage des aides d'accessibilité
+Afficher/masquer n° d'équipe
 [toggle draw information]
 Basculer l'affichage des informations
 [toggle draw unit paths]
-Basculer l'affichage du chemin des unités
+Afficher/masquer les trajets
 [toggle menu screen]
 Basculer l'écran du menu
 [toggle recording voice]
@@ -1219,7 +1219,7 @@ Votre pseudo est bannis
 [game speed]
 Vitesse du jeu
 [maximum game speed]
-Maximum
+Maximale
 [game speed help]
 En solo et dans les rediffusions uniquement. Le multijoueur reste à 1x.
 [multiplayer game speed]

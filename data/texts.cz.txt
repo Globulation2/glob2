@@ -1,83 +1,83 @@
 [%0 has left the game]
 %0 opustil hru.
 [%0 level %1]
-
+%0, úroveň %1
 [%0 units can't access building]
-
+Počet jednotek bez přístupu k budově: %0
 [%0 units can't access flag]
-
+Počet jednotek bez přístupu k praporu: %0
 [%0 units can't access fruit]
-
+Počet jednotek bez přístupu k ovoci: %0
 [%0 units can't access resource]
-
+Počet jednotek bez přístupu ke zdroji: %0
 [%0 units not available]
-
+Počet nedostupných jednotek: %0
 [%0 units too far from building]
-
+Počet jednotek příliš daleko od budovy: %0
 [%0 units too far from flag]
-
+Počet jednotek příliš daleko od praporu: %0
 [%0 units too far from fruit]
-
+Počet jednotek příliš daleko od ovoce: %0
 [%0 units too far from resource]
-
+Počet jednotek příliš daleko od zdroje: %0
 [%0 units too low level]
-
+Počet jednotek s příliš nízkou úrovní: %0
 [%0% Uploaded]
-
+Odesláno %0 %
 [%0's game]
-
+Hra hráče %0
 [%0's team unit got converted to your team]
-Cizí tým změnil víru v Tebe %0
+Jednotka týmu %0 přešla na vaši stranu
 [abreaviation explanation A]
-
+A: Spojenci
 [abreaviation explanation C]
-
+C: Příjemci zpráv chatu
 [abreaviation explanation fV]
-
+fV: Sdílet výhled hospod (pro přetahování jednotek)
 [abreaviation explanation mV]
-
+mV: Sdílet výhled trhů (pro výměnu ovoce)
 [abreaviation explanation V]
-
+V: Sdílet výhled všech budov
 [add map]
-
+Přidat mapu
 [add shortcut]
-
+Přidat zkratku
 [Add]
-
+Přidat
 [AI Descriptions]
-
+Popisy umělé inteligence
 [AI]
 Počítač
 [ai]
 Počítač
 [AICastor-Description]
-
+Castor hraje opatrně a daří se mu na mapách s malým množstvím zdrojů. Střední obtížnost.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Nicowar hraje útočně, rychle se rozrůstá a posílá na soupeře obrovské armády. Vysoká obtížnost.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Žádná – nedělá nic.
 [AINone]
 AINone
 [AINumbi-Description]
-
+Numbi se rozrůstá v malém rozsahu, ale rychle. Nízká obtížnost.
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity neútočí, ale buduje obrovské základny a usilovně přetahuje jednotky na svou stranu. Nízká obtížnost.
 [AIReachToInfinity]
 ReachToInfinity
 [AIWarrush-Description]
-
+Warrush útočí rychle a tvrdě a často zatlačí obránce na hranici jeho možností. Střední obtížnost.
 [AIWarrush]
 AIWarrush
 [Alga]
 Řasy
 [algae]
-
+řasy
 [alliances]
 Spojenectví
 [alt %0]
@@ -85,7 +85,7 @@ alt-%0
 [and]
 a
 [any explorer]
-
+libovolný průzkumník
 [are dying hungry]
 umírají hlady
 [are hungry]
@@ -97,7 +97,7 @@ je zraněných
 [armor]
 Opevnění
 [assigned]
-
+Přiřazeno
 [At. speed]
 Rychlost útoku
 [At. strength]
@@ -107,7 +107,7 @@ Síla útoku
 [audio]
 Audio
 [auto save]
-Auto save
+Automatické ukládání
 [available lan games]
 Dostupné místní hry
 [awaiting players]
@@ -115,9 +115,9 @@ Dostupné místní hry
 [away:]
 pryč:
 [Back]
-
+Zpět
 [backspace]
-
+Backspace
 [barracks explanation 2]
 úroveň válečníků
 [barracks explanation]
@@ -127,43 +127,43 @@ Cvičiště
 [beach size]
 Velikost pláží
 [Blocked Players]
-
+Blokovaní hráči
 [break]
-
+Break
 [briefing]
-
+Zadání mise
 [build %0 level %1]
-
+Postavit: %0, úroveň %1
 [Build]
 Stavba
 [Building Defaults]
-
+Výchozí nastavení budov
 [building settings]
-
+Nastavení budov
 [building site]
 staveniště
 [Building Tool Box Explanation]
-
+Shift + tažení = obdélník
 [Building Tool Line Explanation]
-
+Ctrl + tažení = čára
 [Buildings]
 Budovy
 [Bullets]
 Střelivo
 [campaign editor]
-
+Editor kampaní
 [campaign]
 Nová hra
 [Can't connect, can't find host]
-
+Nelze se připojit, hostitel nenalezen
 [Can't host game, port %0 in use]
-
+Nelze hostit hru, port %0 je obsazen
 [Can't join game, game doesn't exist]
-
+Nelze se připojit, hra neexistuje
 [Can't join game, game has started]
-
+Nelze se připojit, hra již začala
 [Can't join game, game is full]
-
+Nelze se připojit, hra je plná
 [cancel destroy]
 Stornuj zničeni
 [cancel repair]
@@ -173,15 +173,15 @@ Stornuj vylepšeni
 [Cancel]
 Zrušit
 [caps lock]
-
+Caps Lock
 [carry]
 Nesu :
 [Change Area Name]
-
+Změnit název oblasti
 [Cherry]
 Třešně
 [choose campaign]
-
+Vyberte kampaň
 [choose game]
 Výběr hry
 [choose map]
@@ -199,23 +199,23 @@ Odstraňuje suroviny
 [closed]
 Uzavřeno
 [combined vision]
-
+Sdílený výhled
 [compile]
 Sestavit skript
 [compose]
-
+Compose
 [Computing Fertility]
-
+Výpočet úrodnosti
 [concrete islands terrain]
-
+Oddělené ostrovy
 [connect]
 Připojit
 [connecting to game]
-
+Připojování ke hře
 [connecting to]
 Připojuji se k
 [Construction Site Defaults]
-
+Výchozí nastavení stavenišť
 [Continue playing]
 Pokračovat ve hře
 [control %0]
@@ -223,9 +223,9 @@ control-%0
 [Corn]
 Obilí
 [crater density]
-
+počet kráterů
 [crater lakes terrain]
-
+Kráterová jezera
 [create game]
 Vytvoř hru
 [create map]
@@ -233,21 +233,21 @@ Vytvořit mapu
 [credits]
 Poděkování
 [ctrl - line]
-
+Ctrl – čára
 [current speed]
 Současná rychlost
 [custom game]
 Volitelná hra
 [customcur]
-
+Vlastní kurzor
 [damage]
 Poškození
 [Damaged Map]
-
+Mapa zranění
 [decrease units working]
-
+Snížit počet pracujících
 [Defeat Your Oppenents]
-
+Porazte své soupeře
 [defencetower explanation 2]
 jednotky a budovy
 [defencetower explanation]
@@ -255,55 +255,55 @@ jednotky a budovy
 [defencetower]
 Obranná věž
 [Defense Map]
-
+Mapa obrany
 [Defense]
 Obrana
 [Delete game]
-
+Smazat vybranou hru
 [delete]
-
+Delete
 [desert]
-
+poušť
 [destroy building]
-
+Zbourat vybranou budovu
 [destroy]
 Zničit
 [display]
 Rozlišení
 [do nothing]
-
+Nedělat nic
 [don't carry anything]
 Nic nenesu
 [down]
-
+dolů
 [Download Map]
-
+Stáhnout mapu
 [Download Maps]
-
+Stáhnout mapy
 [downloaded %0]
-
+staženo %0
 [downloading map]
-
+Stahování mapy
 [edit map]
-
+Upravit mapu
 [editing map]
-
+Úprava mapy
 [editor shortcuts]
-
+Zkratky editoru
 [editor]
 Editor
 [end]
-
+End
 [Enter your nickname :]
 Zadej přezdívku :
 [Enter your password :]
 Zadej heslo:
 [enter]
-
+Enter
 [equals]
-
+rovnítko
 [escape]
-
+Escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -311,13 +311,13 @@ Přitahuje průzkumníky
 [explorationflag]
 Průzkumný prapor
 [Explorer Ratio]
-
+Podíl průzkumníků
 [Explorer]
 Průzkumník
 [explorers]
 průzkumníci
 [extra islands]
-
+prázdné ostrovy
 [f10]
 f10
 [f11]
@@ -349,13 +349,13 @@ f8
 [f9]
 f9
 [Fertility Map]
-
+Mapa úrodnosti
 [Flag Defaults]
-
+Výchozí nastavení praporů
 [flag settings explanation]
-
+Výchozí poloměr praporu
 [fog of war]
-
+Válečná mlha
 [food]
 Potrava
 [forbidden area]
@@ -367,47 +367,47 @@ se nudí
 [from:]
 od:
 [fruit]
-
+ovoce
 [fullscreen]
-Fullscreen
+Celá obrazovka
 [game full]
 Plně obsazená hra
 [game shortcuts]
-
+Herní zkratky
 [Game]
-
+Hra
 [general settings]
-
+Obecná nastavení
 [go to event]
-
+Přejít k události
 [go to home]
-
+Přejít na základnu
 [goto main menu]
 Zpět do hlavního menu
 [grass]
 Tráva
 [ground attack]
-
+pozemní útok
 [guard area]
 Hlídáná oblast
 [GUIMapPreview text 0]
-
+Vyberte prosím
 [GUIMapPreview text 1]
-
+mapu
 [handmade map]
 Ručně vyrobená mapa
 [Happyness]
 Zadostiučinění
 [hard pause]
-
+Úplně pozastavit
 [Harvest]
 Těžba
 [high priority]
-
+vysoká
 [hints]
-
+Rady
 [home]
-
+Home
 [hospital explanation 2]
 
 [hospital explanation]
@@ -419,17 +419,17 @@ Hostuj hru
 [hp]
 Životy
 [Human]
-
+Člověk
 [human]
-
+člověk
 [hungry]
 Hladový
 [hungryness]
-
+Hlad
 [In way]
 Na cestě
 [increase units working]
-
+Zvýšit počet pracujících
 [inn explanation 2]
 
 [inn explanation]
@@ -437,7 +437,7 @@ Krmí jednotky
 [inn]
 Hospoda
 [insert]
-
+Insert
 [inside]
 Uvnitř
 [islands size]
@@ -445,19 +445,19 @@ Velikost ostrovů
 [islands terrain]
 Ostrovy
 [isles terrain]
-
+Ostrůvky
 [iterate selection]
-
+Vybrat další objekt
 [jobs]
-
+úkoly
 [join a game]
 Připojit se do hry
 [join]
 Připojit se
 [keyboard settings]
-
+Nastavení klávesnice
 [kick]
-
+Vyhodit
 [lan]
 Síťová hra
 [language incomplete]
@@ -469,79 +469,79 @@ Jazyk
 [language]
 Česky
 [Leave Game]
-
+Opustit hru
 [left meta]
-
+levá Meta
 [left super]
-
+levá klávesa Windows
 [left]
-
+vlevo
 [level]
 Úroveň
 [levels]
 Úrovně
 [load campaign]
-
+Načíst kampaň
 [load game]
 Nahrát hru
 [load map]
-
+Načíst mapu
 [load replay]
-
+Načíst záznam hry
 [load script]
-
+Načíst skript
 [load]
 Nahrát
 [loading map list]
-
+Načítání seznamu map...
 [Lobby]
-
+Čekárna
 [login]
 Přihlásit
 [look around]
-
+Rozhlédnout se
 [Lost : %0 has more prestige than you]
 %0 má větší prestiž než Ty ...
 [Lost : your colony is dead]
 Tvoje kolonie je zničená ...
 [low priority]
-
+nízká
 [lowquality]
 Nízká kvalita
 [Magic At. Air]
-
+Vzdušné pošk.
 [Magic At. Ground]
-
+Pozemní pošk.
 [map description]
-
+Popis
 [Map Discovered]
-
+Mapa prozkoumána
 [Map download failure: lost connection]
-
+Stažení mapy selhalo: spojení s YOG bylo ztraceno
 [Map name: %0]
 Jméno mapy: %0.
 [map name]
-
+Název
 [map rated]
-
+Mapa ohodnocena
 [map script]
-
+Skript mapy
 [map size x]
 Šířka mapy
 [map size y]
 Výška mapy
 [Map upload failure: connection lost]
-
+Odeslání mapy selhalo: spojení s YOG bylo ztraceno
 [Map upload failure: map name in use]
-
+Odeslání mapy selhalo. Název mapy se již používá.
 [Map upload failure: unknown reason]
-
+Odeslání mapy selhalo. Neznámá příčina.
 [Map Upload: Author Name]
-
+Jméno autora
 [Map Upload: Waiting for reply]
-
+Čekání na odpověď
 [mark map]
-
+Označit místo pro spojence
 [market explanation 2]
 s ostatními
 [market explanation]
@@ -549,45 +549,45 @@ Umožňuje výměnu ovoce
 [market]
 Tržiště
 [medium priority]
-
+střední
 [meta %0]
 meta-%0
 [Min required level:]
-Min. úroveň bojovníků:
+Min. úroveň jednotek:
 [Minimum Level To Flag]
 Min. úroveň jednotek
 [Music volume]
 Hlasitost (hudba)
 [Mute]
-
+Ztlumit
 [mute]
-
+ztlumit
 [new campaign]
-
+Nová kampaň
 [new map]
 Nová
 [nick taken]
 We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [no fullscreen]
-
+* pouze v režimu okna
 [No Hints]
-
+Žádné rady
 [no key]
-
+žádná klávesa
 [No Objectives]
-
+Žádné cíle
 [no ressources growth areas]
-
+Oblasti bez růstu zdrojů
 [No]
 Ne
 [Not Enough Ratings]
-
+Nedostatek hodnocení
 [not ready]
 nepřipraven
 [Number Of Buildings]
-
+Počet budov
 [number of players: %0 (%1 AI)]
-
+Počet hráčů: %0 (z toho %1 AI)
 [number of players: %0]
 %0 hráčů se připojilo.
 [number of teams: %0]
@@ -595,35 +595,35 @@ nepřipraven
 [number of teams]
 Počet hráčů
 [Number Of Units]
-
+Počet jednotek
 [numlock]
-
+Num Lock
 [objectives]
-
+Cíle
 [of which]
 z toho
 [ok]
 Budiž
 [old islands terrain]
-
+náhodné ostrovy (staré)
 [old random terrain]
-
+náhodný terén (starý)
 [on press]
-
+Stisk
 [On the spot]
 Na místě
 [on unpress]
-
+Uvolnění
 [open chat box]
-
+Otevřít chat
 [open load menu]
-
+Otevřít nabídku načítání
 [open save menu]
-
+Otevřít nabídku ukládání
 [open scenario editor]
-
+Otevřít editor scénářů
 [open teams editor]
-
+Otevřít editor týmů
 [open]
 Otevřít
 [OpenGL]
@@ -635,51 +635,51 @@ Nastavení
 [Orange]
 Pomarenče
 [Other Options]
-
+Další možnosti
 [page down]
-
+Page Down
 [page up]
-
+Page Up
 [Papyrus]
 Papyrus
 [pause game]
-
+Pozastavit hru
 [pause]
-
+Pause
 [Paused]
 Pauza
 [player name]
 Jméno
 [player rating %0]
-
+Hodnocení hráče: %0
 [players]
-
+Hráči
 [please wait]
 Čekej prosím
 [power]
-
+vypínač
 [press space]
-
+Pokračujte stisknutím mezerníku.
 [Prestige Score]
-
+Skóre prestiže
 [Prestige Win Enabled]
-
+Vítězství prestiží povoleno
 [Prestige]
 Prestiž
 [Primary Objectives]
-
+Hlavní
 [print screen]
-
+Print Screen
 [priority]
-
+Priorita
 [Prune]
 Švestky
 [quit the editor]
-
+Ukončit editor
 [quit the game]
 Opustit hru
 [quit the replay]
-
+Ukončit přehrávání
 [quit]
 Konec
 [racetrack explanation 2]
@@ -691,57 +691,57 @@ Závodní dráha
 [range]
 Rozsah
 [Rated %0]
-
+Hodnocení: %0
 [ratios]
 Poměry
 [ready?]
-
+připraven?
 [refresh map list]
-
+Obnovit seznam map
 [Register a new YOG user with password]
 Registrace nového YOG uživatele s heslem. (nejisté)
 [Register]
-
+Zaregistrovat se
 [remember unit]
-
+Pamatovat počty jednotek
 [Remember YOG password localy]
 Zapamatovat si heslo lokálně? (nejisté)
 [remove map]
-
+Odebrat mapu
 [remove shortcut]
-
+Odebrat zkratku
 [Remove]
-
+Odebrat
 [repair building]
-
+Zahájit/zastavit opravu
 [repair]
 Opravit
 [repeat area]
-
+opakování stejné krajiny
 [Repeat your password :]
-
+Zopakujte heslo:
 [replay ended]
-
+Přehrávání skončilo
 [restore default shortcuts]
-
+Obnovit výchozí zkratky
 [return to editor]
-
+Zpět do editoru
 [return to game]
 Zpět do hry
 [return to replay]
-
+Zpět k přehrávání
 [return]
-
+Enter
 [right meta]
-
+pravá Meta
 [right super]
-
+pravá klávesa Windows
 [right]
-
+vpravo
 [river diameter]
-
+šířka řeky
 [river terrain]
-
+Řeka
 [sand]
 Písek
 [save before quit?]
@@ -749,11 +749,11 @@ Chceš uložit před odchodem ?
 [save game]
 Uložit hru
 [save map]
-
+Uložit mapu
 [save replay]
-
+Uložit záznam hry
 [save script]
-
+Uložit skript
 [Save]
 Uložit
 [school explanation 2]
@@ -763,13 +763,13 @@ Zlepšuje stavební
 [school]
 Škola
 [Script Areas]
-
+Oblasti skriptu
 [scroll lock]
-
+Scroll Lock
 [scroll wheel enabled]
-
+Povolit kolečko myši
 [Secondary Objectives]
-
+Vedlejší
 [seeking a job]
 hledá práci
 [seeking]
@@ -817,7 +817,7 @@ Umístit vlajku: Průzkumný prapor
 [select place forbidden area]
 Umístit oblast: Vstup zakázán
 [select place guard area]
-Umístit oblast: Hlídáná oblast
+Umístit hlídanou oblast
 [select place warflag]
 Umístit vlajku: Válečný prapor
 [select racetrack building]
@@ -839,37 +839,37 @@ Nastavení
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-
+Enter: odeslat zprávu do chatu
 [shortcut explanation v]
-
+V: držte pro hlasový chat
 [show areas]
-
+Zobrazit oblasti
 [show flags]
-
+Zobrazit prapory
 [show main menu]
-
+Zobrazit hlavní nabídku
 [skin]
-
+Zobrazení
 [smoothing]
 Vyhlazení
 [sort by name]
-
+Název
 [sort by rating]
-
+Hodnocení
 [sort by size]
-
+Velikost
 [Sort By]
-
+Seřadit podle
 [space]
-
+mezerník
 [start mission]
-
+Spustit misi
 [start new campaign]
-
+Spustit novou kampaň
 [Start]
 Start
 [Starving Map]
-
+Mapa hladovění
 [starving]
 Umírá hlady
 [Statistics]
@@ -885,7 +885,7 @@ Ještě 1
 [Stone]
 Kamení
 [stone]
-
+kámen
 [stonewall explanation 2]
 pasivní obrany
 [stonewall explanation]
@@ -893,11 +893,11 @@ Prvek
 [stonewall]
 Kamenná hradba
 [submit rating]
-
+Odeslat hodnocení
 [svr hostname]
-Server hostname
+Název serveru
 [swamp terrain]
-
+Bažina
 [swarm explanation 2]
 
 [swarm explanation]
@@ -941,13 +941,13 @@ Zobrazit týmy
 [switch to terrain view]
 Zobrazit terén
 [sys req]
-
+Sys Req
 [tab]
-
+Tab
 [teams editor]
-
+Editor týmů
 [Teams Fixed]
-
+Pevné týmy
 [teams]
  hráčů
 [the barracks is finished]
@@ -959,17 +959,17 @@ Budova je postavena ...
 [the building is under attack]
 Budova pod útokem
 [the clearingflag is finished]
-?? Čistící prapor připraven ??
+Čisticí prapor je připraven
 [the clearingflag is under attack]
-?? Čistící prapor v obležení nepřátel ??
+Čisticí prapor je pod útokem
 [the defencetower is finished]
 Obranná věž postavena ...
 [the defencetower is under attack]
 Obranná věž je pod útokem
 [the explorationflag is finished]
-?? Průzkumný prapor připraven ??
+Průzkumný prapor je připraven
 [the explorationflag is under attack]
-?? Průzkumný prapor v obležení nepřátel ??
+Průzkumný prapor je pod útokem
 [The game has not been finished]
 Hra neskončila
 [the games]
@@ -979,7 +979,7 @@ Nemocnice postavena ...
 [the hospital is under attack]
 Nemocnice je pod útokem
 [The host has cancelled the game]
-
+Hostitel zrušil hru.
 [the inn is finished]
 Hospoda postavena ...
 [the inn is under attack]
@@ -995,11 +995,11 @@ Hráč %0 se připojil k YOG.
 [The player %0 has left YOG]
 Hráč %0 se odpojil od YOG.
 [the racetrack is finished]
-Zavodní dráha postavena ...
+Závodní dráha je postavena
 [the racetrack is under attack]
 Závodní dráha pod útokem
 [the replays]
-
+Záznamy her
 [the school is finished]
 Škola postavena ...
 [the school is under attack]
@@ -1007,7 +1007,7 @@ Závodní dráha pod útokem
 [the stonewall is finished]
 Kus hradby hotov ...
 [the stonewall is under attack]
-Nepřítel utočí na hradby
+Nepřítel útočí na hradby
 [the swarm is finished]
 Úl postaven ...
 [the swarm is under attack]
@@ -1017,89 +1017,89 @@ Koupaliště postaveno ...
 [the swimmingpool is under attack]
 Koupaliště je pod útokem
 [the warflag is finished]
-?? Válečná prapor připraven ??
+Válečný prapor je připraven
 [the warflag is under attack]
-?? Válečná prapor v obležení nepřátel ??
+Válečný prapor je pod útokem
 [time]
-
+Čas
 [to:]
 pro:
 [toggle draw accessibility aids]
-
+Zobrazit/skrýt čísla týmů
 [toggle draw information]
-
+Přepnout zobrazení informací
 [toggle draw unit paths]
-
+Přepnout zobrazení cest jednotek
 [toggle menu screen]
-
+Přepnout nabídku
 [toggle recording voice]
-
+Přepnout záznam hlasu
 [Total Attack Power]
-
+Celková útočná síla
 [Total Defence Power]
-
+Celková obranná síla
 [Total Hitpoints]
-
+Celkové zdraví
 [Total prestige reached]
 Dosažená celková prestiž
 [Total]
 Celkem
 [tutorial text 1]
-
+Vítejte v základním výcviku Globulation 2! Naučíte se stavět hospody, prozkoumávat území a ničit nepřátele. Užitečných znalostí tu najdete dostatek!
 [tutorial text 2]
-
+Nyní už ovládáte základy a je čas poznat další budovy, například závodní dráhy, koupaliště a školy.
 [tutorial text 3]
-
+Daří se vám dobře. Nyní se podíváme na válečníky, cvičiště a vylepšování.
 [tutorial text 4]
-
+Už jste téměř u konce. Zbývají jen prapory a útok. Pak budete znát dost na vlastní hry a později i na hraní po síti proti nejlepším hráčům Globulation 2.
 [tutorial]
 Tutoriál
 [Uncontrolled]
 Neovládaný
 [undo]
-
+zpět
 [uniform terrain]
 Jednotná krajina
 [Unit editor]
-
+Editor jednotek
 [unit settings explanation]
-
+Výchozí počet přiřazených jednotek
 [units working]
  jednotek pracuje
 [Units]
 Jednotky
 [unlocked at start]
-
+Odemčeno od začátku
 [unlocked by]
-
+Odemčeno dokončením
 [Unnamed Area]
-
+{Nepojmenovaná oblast}
 [up]
-
+nahoru
 [upgrade building]
-
+Zahájit/zastavit vylepšování
 [Upgrade Defaults]
-
+Výchozí nastavení vylepšování
 [upgrade]
 Vylepšit
 [Upload Map]
-
+Odeslat mapu
 [upload map]
-
+Odeslat mapu
 [username]
 Jméno uživatele
 [Version]
 Verze
 [view history]
-
+Zobrazit historii
 [Voice volume]
-
+Hlasitost hlasu
 [waiting for %0]
 Čeká se na %0
 [waiting for key]
-
+čekání na klávesu...
 [Waiting]
-
+Čekání
 [Walk]
 Chůze
 [warflag explanation 2]
@@ -1109,17 +1109,17 @@ Přitahuje válečníky
 [warflag]
 Válečný prapor
 [Warning, you need to reboot the game for changes to take effect]
-Varovaní, hra potřebuje znova spustit, aby se uplatinily provedené změny.
+Aby se změny projevily, je nutné hru znovu spustit.
 [Warrior Ratio]
-
+Podíl válečníků
 [Warrior]
 Válečník
 [warriors]
 válečníci
 [watch again]
-
+Přehrát znovu
 [watching:]
-
+Sledujete:
 [water]
 Voda
 [Wheat]
@@ -1133,9 +1133,9 @@ Tvůj spojenec %0 má největší prestiž ...
 [Wood]
 Dřevo
 [wood]
-
+dřevo
 [Worker Ratio]
-
+Podíl dělníků
 [Worker]
 Dělník
 [workers]
@@ -1157,7 +1157,7 @@ YOG metaserver odmítnul spojení, protože heslo nebylo zadáno správně.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metaserver odmítnul spojení, protože tato přezdívka ještě nemá přidělené heslo. Pro registraci přezdívky s tímto heslem zaškrtni políčko "Registrace nového YOG uživatele s heslem" před připojením. Budeš potřebovat zaškrtnout toto políčko pouze jednou.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+Metaserver YOG odmítl spojení, protože tato IP adresa je dočasně zablokována. Počkejte na odblokování nebo kontaktujte správce.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metaserver odmítnul spojení, protože máš příliš starou verzi Globulation2.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1165,29 +1165,29 @@ YOG metaserver odmítnul spojení bez udání důvodu.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metaserver odmítnul spojení, protože Tvé jméno je již používáno jiným hráčem.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+Metaserver YOG odmítl spojení, protože toto uživatelské jméno je zablokováno. Kontaktujte správce.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+Metaserver YOG odmítl spojení, protože zadané uživatelské jméno je neplatné. Jméno smí obsahovat pouze písmena, číslice a podtržítka.
 [YESTS_CREATED]
 Systém připojení je připraven na kontakt s YOG metaserverem.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Zadaná hesla se neshodují. Zadejte je znovu.
 [YESTS_UNABLE_TO_CONNECT]
 Nelze se připojit. Zřejmě je YOG metaserver vypnut.
 [yog block command help]
-
+/block <playername>    Zablokuje hráče; jeho zprávy už neuvidíte.
 [yog block command player %0 already blocked]
-
+Hráč %0 je již zablokován
 [yog block command player %0 blocked]
-
+Hráč %0 byl zablokován
 [yog block command player %0 not found]
-
+Hráč %0 nebyl nalezen
 [yog command header]
-
+Seznam příkazů klienta YOG:
 [yog command unknown]
-
+Neznámý příkaz.
 [yog help command help]
-
+/help    Zobrazí tuto nápovědu
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1195,15 +1195,15 @@ Jsi ztracen...
 [you have won]
 Vyhrál jsi!
 [You where kicked from the game]
-
+Byli jste vyhozeni ze hry
 [Your %0 are under attack]
 Tvoji %0 jsou pod útokem
 [Your IP address was temporarily banned]
-
+Vaše IP adresa byla dočasně zablokována. Počkejte na odblokování nebo kontaktujte správce.
 [Your unit got converted to %0's team]
 Tva jednotka změnila víru v jiného hráče %0
 [Your username was banned]
-
+Vaše uživatelské jméno bylo zablokováno. Pro odblokování kontaktujte správce.
 [game speed]
 Rychlost hry
 [decrease game speed]

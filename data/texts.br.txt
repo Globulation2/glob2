@@ -195,7 +195,7 @@ Limpando:
 [clearingflag explanation]
 Limpa os recursos
 [clearingflag]
-Clearing flag
+Bandeira de limpeza
 [closed]
 Fechado
 [combined vision]
@@ -207,7 +207,7 @@ Compôr
 [Computing Fertility]
 Calculando Fertilidade
 [concrete islands terrain]
-Ilhas-concreto ?
+Ilhas separadas
 [connect]
 Conectar
 [connecting to game]
@@ -243,7 +243,7 @@ Cursor customizado
 [damage]
 Dano
 [Damaged Map]
-Mapa de dano
+Mapa de feridos
 [decrease units working]
 Diminuir unidades trabalhando
 [Defeat Your Oppenents]
@@ -607,11 +607,11 @@ velhas ilhas aleatórias
 [old random terrain]
 velho terreno aleatório
 [on press]
-ao pressionar
+Ao apertar
 [On the spot]
 Aqui
 [on unpress]
-ao soltar
+Ao soltar
 [open chat box]
 Abrir janela de chat
 [open load menu]
@@ -699,7 +699,7 @@ Recarregar lista de mapas
 [Register]
 Registro
 [remember unit]
-Lembrar a unidade
+Lembrar atribuições
 [Remember YOG password localy]
 Lembrar a senha localmente. (inseguro)
 [remove map]
@@ -775,9 +775,9 @@ Selecionar Barracks
 [select clearingflag]
 Selecionar Bandeira de limpeza
 [select construct barracks]
-Selecionar construção de Barracks
+Construir quartel
 [select construct defencetower]
-Selecionar construção de Torre de defesa
+Construir torre de defesa
 [select construct hospital]
 Selecionar construção de hospital
 [select construct inn]
@@ -785,13 +785,13 @@ Selecionar construção de Taverna
 [select construct market]
 Selecionar construção de Mercado
 [select construct racetrack]
-Selecionar construção de Pista de Corrida
+Construir pista de corrida
 [select construct school]
 Selecionar construção de Escola
 [select construct stonewall]
-Selecionar construção de Muro de Pedra
+Construir parede de pedra
 [select construct swarm]
-Selecionar construção de Núcleo de Repr.
+Construir núcleo de reprodução
 [select construct swimmingpool]
 Selecioner construção de Piscina
 [select delete tool]
@@ -807,15 +807,15 @@ Selecionar Mercado
 [select place clearing area]
 Selecionar lugar de limpeza de área
 [select place clearingflag]
-Selecionar lugar de bandeira de limpeza
+Colocar bandeira de limpeza
 [select place explorationflag]
-Selecionar lugar de bandeira de exploração
+Colocar bandeira de exploração
 [select place forbidden area]
 Selecionar lugar para área proibida
 [select place guard area]
 Selecionar área para guarda
 [select place warflag]
-Selecionar lugar para bandeira de guerra
+Colocar bandeira de guerra
 [select racetrack building]
 Selecionar Pista de corrida
 [select school building]
@@ -1021,7 +1021,7 @@ tempo
 [to:]
 para:
 [toggle draw accessibility aids]
-Desenhar ajudas de acessibilidade
+Mostrar/ocultar números das equipes
 [toggle draw information]
 Informações
 [toggle draw unit paths]

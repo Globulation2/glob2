@@ -207,7 +207,7 @@ compose
 [Computing Fertility]
 Lasketaan hedelmällisyyttä
 [concrete islands terrain]
-Betonisaaret
+Erilliset saaret
 [connect]
 Yhdistä
 [connecting to game]
@@ -243,7 +243,7 @@ Muokattu kursori
 [damage]
 Vahinko
 [Damaged Map]
-Vahinkokartta
+Haavoittuneiden kartta
 [decrease units working]
 Laske työskentelevien määrää
 [Defeat Your Oppenents]
@@ -611,11 +611,11 @@ vanhat satunnaiset saaret
 [old random terrain]
 vanhat satunnaiset maastot
 [on press]
-Painaessa
+Painallus
 [On the spot]
 Paikalla
 [on unpress]
-Vapauttaessa
+Vapautus
 [open chat box]
 Avaa chat-laatikko
 [open load menu]
@@ -1025,7 +1025,7 @@ Aika
 [to:]
 to:
 [toggle draw accessibility aids]
-Näytä yksiköiden/rakennusten joukkueen numero
+Näytä/piilota joukkuenumerot
 [toggle draw information]
 Näytä yksiköiden status-palkit
 [toggle draw unit paths]

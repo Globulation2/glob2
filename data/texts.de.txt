@@ -207,7 +207,7 @@ schreiben
 [Computing Fertility]
 Berechne Fruchtbarkeit der Böden.
 [concrete islands terrain]
-Befestigte Inseln
+Getrennte Inseln
 [connect]
 Verbinden
 [connecting to game]
@@ -243,7 +243,7 @@ Glob2-Mauszeiger
 [damage]
 Schaden
 [Damaged Map]
-Beschädigte Karte
+Verwundetenkarte
 [decrease units working]
 Arbeiter kündigen
 [Defeat Your Oppenents]
@@ -351,7 +351,7 @@ F8
 [f9]
 F9
 [Fertility Map]
-Karte der Fruchtbarkeit des Bodens
+Fruchtbarkeitskarte
 [Flag Defaults]
 Flaggen Standards
 [flag settings explanation]
@@ -609,11 +609,11 @@ alte Inselzufallskarte
 [old random terrain]
 alte Zufallskarte
 [on press]
-Bei Taste
+Drücken
 [On the spot]
 Vor Ort
 [on unpress]
-Beim Loslassen
+Loslassen
 [open chat box]
 Öffne Chat
 [open load menu]
@@ -703,7 +703,7 @@ Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 [Register]
 Registrieren
 [remember unit]
-Arbeiterzahlen merken
+Einheitenzahlen merken
 [Remember YOG password localy]
 Passwort lokal speichern. (unsicher)
 [remove map]
@@ -723,7 +723,7 @@ Wiederhole Dein Passwort
 [replay ended]
 Replay beendet
 [restore default shortcuts]
-Standardtastenkürzel wiederherstellen
+Standardkürzel wiederherstellen
 [return to editor]
 Zurück zum Editor
 [return to game]
@@ -1025,7 +1025,7 @@ Zeit
 [to:]
 auf:
 [toggle draw accessibility aids]
-Zugänglichkeitshilfen einblenden
+Teamnummern ein-/ausblenden
 [toggle draw information]
 Informationen malen an/aus
 [toggle draw unit paths]

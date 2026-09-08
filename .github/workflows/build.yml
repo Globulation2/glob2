@@ -49,7 +49,7 @@ jobs:
 
       - name: Validate translations
         run: |
-          python3 data/check_translations.py
+          python3 data/check_translations.py --strict
           python3 test/test_translations.py
 
       - name: Test compiler cache integration

@@ -1,121 +1,103 @@
-# Translation audit
+# Translation audit and completion
 
-Audit base: `origin/master`, commit `88934ecfb` (8 September 2026).
 Worktree: `/Users/bradley/glob2-translations`; branch: `codex/translation-audit`.
+Base: `origin/master` commit `88934ecfb`. Initial audit: `8b1eb8a34`.
 
-## Result and limits
+## Completion
 
-All 28 language catalogs have been checked for structural correctness and literal
-translation lookups in the C++ source. Every catalog now contains all 611
-registered keys; 255 missing entries have been added. This change adds
-1242 nonempty translations and corrects 378 existing values.
+All **3,227 remaining required blank entries** have been translated. All 28
+catalogs contain the 611 registered keys and have zero required blank values.
+Intentionally empty second rows of building descriptions remain where appropriate.
+The initial audit reduced 4,445 missing/blank required entries to 3,227; the team
+pass completed that backlog. No English fallback was copied in to inflate coverage.
+Proper names, hardware key names and natural loanwords can legitimately match English.
 
-This is **not a completed translation of every language**. Required blank entries
-fell from 4445 to 3227, across 14 unfinished languages. Their exact keys
-are in `data/translations.pending.json`. These entries still use the existing
-English fallback. Brazilian Portuguese and Italian now have no required blank
-entries, so their incomplete markers have been cleared.
+The incomplete-language flags have been cleared. The historical
+`translations.pending.json` exception list has been deleted, and CI now runs
+`check_translations.py --strict`: any required blank fails validation.
 
-The contextual review covered all building descriptions, resource terminology,
-health status, minimum unit level, speed controls, and the new error/AI strings.
-It also covered missing shortcut labels, replay controls, Italian's remaining
-blank entries, and obvious English text left in otherwise populated catalogs.
-Other existing prose has not received an exhaustive native-speaker review.
-Zero blank entries is a coverage measurement, not a guarantee of linguistic accuracy.
+## Independent team review
 
-## Context corrections
+Each translation group was reviewed and corrected by a different agent after the
+author handed off ownership. Reviewers examined changes against the initial audit,
+English text, neighboring terminology and game source usages, and applied corrections.
 
-- `[Free]` labels healthy units in the statistics panel; `[free]` labels idle
-  units. The keys are case-sensitive and must not be merged.
-- `[Minimum Level To Flag]` selects the minimum **unit** level accepted by a
-  flag, not a level of the flag itself. Its caption must also leave room for
-  the displayed `3/3` fraction.
-- `[Corn]` is wheat and `[Prune]` is a plum in the game's resource vocabulary.
-  Corrected maize, raisins, dried fruit, and the Greek pruning-action translation.
-- Building descriptions are two separate lines. Fixed crossed Italian barracks
-  and tower lines, repeated French sentence fragments, Danish flags described as
-  attacking units, Simplified Chinese level-label placeholders, unfinished Serbian
-  descriptions, and misleading clearing-flag descriptions.
-- An empty translated second line falls back to English when the English second
-  line is nonempty. Descriptions needing two English lines remain split into two
-  localized lines to avoid mixing languages.
-- Duplicate entries were removed using the loader's existing last-value-wins
-  behavior, with explicit corrections to health abbreviations. Legacy key
-  spellings remain stable to preserve source and asset references.
-- The map-download failure screen now requests the registered `lost connection`
-  key, which already has translations, instead of displaying an unknown key.
-- Arabic additions preserve the catalog's presentation-form shaping and logical
-  order for the renderer's FriBidi handling. Other Arabic text was not reshaped.
+| Catalogs | Required entries filled | Author | Independent reviewer |
+| --- | ---: | --- | --- |
+| Catalan, European Portuguese, Danish, Swedish, Basque | 1,065 | translate_west | translate_slavic |
+| Czech, Slovak, Slovenian, Serbian | 1,046 | translate_slavic | translate_west |
+| Greek, Hungarian, Romanian, Turkish, Traditional Chinese | 1,116 | translate_east | translate_slavic |
+| Additional corrections to the other 14 catalogs | — | root | translate_east |
 
-## Coverage by catalog
+Review included AI descriptions, tutorials, network messages, keyboard actions,
+unit and building names, and the meaning of labels where they appear in the game.
+The western, Slavic and eastern reviews made 54, 91 and 91 distinct corrections,
+respectively; reviewers also corrected narrow controls and adjacent existing errors.
+These are independent model reviews, not native-speaker playtest certification.
 
-“Before” and “remaining” count missing or blank required values, excluding optional
-second tooltip lines. “Added” also includes newly supplied optional second lines.
+## Important context corrections
 
-| Catalog | Before | Remaining | Added | Corrected |
-| --- | ---: | ---: | ---: | ---: |
-| ar | 9 | 0 | 9 | 11 |
-| br | 27 | 0 | 27 | 25 |
-| ca | 323 | 246 | 78 | 20 |
-| cz | 351 | 274 | 84 | 14 |
-| de | 9 | 0 | 9 | 5 |
-| dk | 247 | 186 | 61 | 25 |
-| en | 0 | 0 | 0 | 14 |
-| es | 9 | 0 | 9 | 7 |
-| eo | 9 | 0 | 9 | 7 |
-| eu | 250 | 188 | 62 | 13 |
-| fa | 9 | 0 | 9 | 7 |
-| fr | 5 | 0 | 5 | 20 |
-| gr | 159 | 139 | 20 | 20 |
-| hu | 354 | 275 | 80 | 7 |
-| it | 131 | 0 | 131 | 9 |
-| nl | 9 | 0 | 9 | 3 |
-| pl | 9 | 0 | 9 | 3 |
-| pt | 335 | 257 | 78 | 10 |
-| ro | 352 | 274 | 79 | 9 |
-| ru | 9 | 0 | 9 | 8 |
-| si | 349 | 272 | 79 | 7 |
-| sk | 303 | 226 | 81 | 6 |
-| sr | 353 | 274 | 86 | 15 |
-| fi | 9 | 0 | 9 | 41 |
-| sv | 249 | 188 | 62 | 4 |
-| tr | 317 | 240 | 77 | 21 |
-| zh-tw | 250 | 188 | 62 | 17 |
-| zh-cn | 9 | 0 | 9 | 30 |
+- `[Free]` is the health-status label; `[free]` means idle. Keys remain case-sensitive.
+- `[Minimum Level To Flag]` concerns the minimum **unit** level accepted by a flag.
+  `[Min required level:]` can apply to explorers as well as warriors.
+- `[remember unit]` preserves assigned-unit counts for buildings into the next game
+  (`GameGUIDefaultAssignManager.cpp`), not the identity of an individual unit.
+- `[toggle draw accessibility aids]` toggles displayed team numbers on units and
+  buildings. Voice recording and unit-path shortcuts describe toggles, not start-only
+  actions or creating paths.
+- `[Damaged Map]` displays the wounded-unit overlay (`OverlayAreas.cpp`), not a corrupt
+  map-file error. `[concrete islands terrain]` generates separate natural islands
+  (`map/generator/Generator.cpp`), not cement islands.
+- `[Corn]` is wheat and `[Prune]` is a plum. Building names are consistent across
+  selection actions, completion/attack events and tutorial text; Greek and Romanian
+  racetracks describe running training rather than horse racing or rally driving.
+- Vision-sharing descriptions now refer to sharing sight around buildings with other
+  teams, not merely displaying the buildings.
+- Two building-description rows must read together. A blank localized second row
+  falls back to English if the English row is nonempty. The checker rejects that
+  mixed-language case when the first row is translated.
+- Arabic edits preserve presentation-form shaping and logical order for FriBidi.
+  Legacy key spellings remain unchanged to preserve source and asset references.
 
-## Validation and maintenance
-
-Run from any directory:
+## Validation
 
 ```sh
-python3 data/check_translations.py
+python3 data/check_translations.py --strict
 python3 test/test_translations.py
 python3 data/check_translations.py --json
-python3 data/check_translations.py --strict
 ```
 
-The default audit is read-only. It fails on malformed tables, duplicate keys,
-missing registered keys, invalid or mismatched placeholder identities, missing
-English fallback, mixed-language tooltip fallback, mismatched incomplete-language
-ordering, literal source lookups for unknown keys, or newly blank translations
-outside the explicitly recorded historical backlog. CI runs this audit and its
-regression tests. `--strict` also fails on all historical untranslated entries;
-it is expected to fail until the backlog is completed. Do not expand the backlog
-to hide new regressions. Remove entries from it as their translations are completed.
+The read-only validator checks table format, duplicates, missing keys, placeholder
+identities and counts, English fallback, mixed-language tooltip fallback, language
+metadata ordering and literal source lookups. Four regression tests pass. The default
+mode can report work in progress; CI uses strict mode and permits no required blanks.
 
-The JSON audit also reports obsolete keys, English-identical values, and `??`
-placeholder text as review queues. Identical names and keyboard labels can be
-legitimate translations, so these are not automatically rejected or rewritten.
-Old unregistered entries have been retained to avoid discarding translator work.
+A native smoke test linked the actual `StringTable`, `FormattableString`, `Toolkit`
+and file-loading components. It loaded **17,108 language/key combinations**, checked
+**1,036 formatted strings**, and reported **zero failures**.
 
-Building descriptions were measured using the shipped `data/fonts/sans.ttf` at
-10 px against a 152 px text budget inside the 160 px game panel. Minimum-unit-level
-captions were measured with the appended fraction against their 128 px editor
-area. These are static font-metric checks, not screenshots of every language in a
-running game; customized fonts and full RTL rendering still need visual review.
+Native SDL_ttf measurements checked building descriptions (152 px in the 160 px
+panel at 10 px), unit-level captions with their `3/3` fraction (128 px), action labels
+(245 px at 13 px), keyboard buttons/tabs, remembered-count captions, map overlays,
+and the separate-islands menu label. Reviewed text was shortened to fit these budgets.
+These are font-metric checks, not screenshots of every screen in every language.
 
-The source scan covers literal `getString` calls. Dynamic building and AI lookups
-were inspected separately. User-authored map content and embedded scenario scripts
-are not translated by this catalog pass. The bundled tutorial campaign also has
-literal English mission names; localizing those safely needs separate display names
-because mission unlock dependencies currently refer to those names.
+## Remaining limitations
+
+The bundled `data/fonts/sans.ttf` has no Chinese glyph coverage. The catalogs are
+complete, but a CJK-capable font is still required to render Chinese in the game;
+this change does not add a font or renderer fallback. Traditional Chinese was also
+measured with the system STHeiti Light CJK font, with no missing glyphs or measured
+overflows. Measurements using the bundled font alone cannot establish Chinese fit.
+
+The JSON audit exposes obsolete keys, English-identical values and residual `??`
+text as review queues. These are not all missing translations: keyboard names and
+proper names may be identical, and legacy unregistered entries have been retained
+rather than discarding translator work. Older prose outside the reviewed changes
+can still benefit from native-speaker testing.
+
+User-authored map content and embedded scenario scripts are outside this catalog
+pass. Bundled tutorial mission names are still literal English; localizing them safely
+requires separate display names because mission-unlock dependencies refer to the
+stored names. The source scanner covers literal lookups; dynamic building, AI and
+shortcut keys were inspected in context during this work.

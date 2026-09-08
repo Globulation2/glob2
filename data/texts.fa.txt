@@ -207,7 +207,7 @@ caps lock
 [Computing Fertility]
 درحال بررسی محلهای حاصلخیز...
 [concrete islands terrain]
-جزیره‌های نزدیک بهم
+جزیره‌های جدا
 [connect]
 وصل‌شدن
 [connecting to game]
@@ -243,7 +243,7 @@ Ctrl - خط
 [damage]
 خسارت
 [Damaged Map]
-نقشه‌ی خسارتها
+نقشهٔ زخمی‌ها
 [decrease units working]
 کاهش تعداد افراد درحال کار
 [Defeat Your Oppenents]
@@ -289,7 +289,7 @@ Ctrl - خط
 [editing map]
 درحال ویرایش نقشه
 [editor shortcuts]
-دکمه‌ها در ویرایشگر
+ویرایشگر
 [editor]
 ویرایشگر
 [end]
@@ -375,7 +375,7 @@ f9
 [game full]
 بازی پر است!
 [game shortcuts]
-دکمه‌ها در بازی
+بازی
 [Game]
 بازی
 [general settings]
@@ -703,7 +703,7 @@ print screen
 [Register]
 ثبت‌نام در ایساگون
 [remember unit]
-بخاطر‌سپردن افراد
+حفظ تعداد واحدها
 [Remember YOG password localy]
 بخاطر‌سپردن رمز در کامپیوتر
 [remove map]
@@ -809,15 +809,15 @@ scroll lock
 [select market building]
 انتخاب بازار
 [select place clearing area]
-انتخاب ابزار تعیین منطقه‌ی پاکسازی
+تعیین منطقهٔ پاکسازی
 [select place clearingflag]
 انتخاب ابزار پرچم پاکسازی
 [select place explorationflag]
 انتخاب ابزار پرچم جستجو
 [select place forbidden area]
-انتخاب ابزار تعیین منطقه‌ی ممنوعه
+تعیین منطقهٔ ممنوعه
 [select place guard area]
-انتخاب ابزار تعیین منطقه‌ی دفاعی
+تعیین منطقهٔ دفاعی
 [select place warflag]
 انتخاب ابزار پرچم جنگ
 [select racetrack building]
@@ -915,9 +915,9 @@ space
 [switch to adding areas]
 گذاشتن منطقه بندی
 [switch to area brush 1]
-انتخاب ابزار منطقه بندی نقطه‌ای شکل
+قلم ناحیه: نقطه
 [switch to area brush 2]
-انتخاب ابزار منطقه بندی بعلاوه‌ای شکل
+قلم ناحیه: به‌علاوه
 [switch to area brush 3]
 انتخاب ابزار منطقه بندی خطی ۱
 [switch to area brush 4]
@@ -925,11 +925,11 @@ space
 [switch to area brush 5]
 انتخاب ابزار منطقه شطرنجی شکل
 [switch to area brush 6]
-انتخاب ابزار منطقه بندی چهارنقطه‌ای شکل
+قلم ناحیه: چهار نقطه
 [switch to area brush 7]
-انتخاب ابزار منطقه بندی مربعی شکل کوچک
+قلم ناحیه: مربع کوچک
 [switch to area brush 8]
-انتخاب ابزار منطقه بندی مربعی شکل بزرگ
+قلم ناحیه: مربع بزرگ
 [switch to building view]
 رفتن به بخش ساختمانها
 [switch to flag view]
@@ -1025,7 +1025,7 @@ tab
 [to:]
 به:
 [toggle draw accessibility aids]
-نشان‌دادن/مخفی‌کردن کمکهای دسترسی
+نمایش/پنهان‌سازی شمارهٔ تیم‌ها
 [toggle draw information]
 نشان‌دادن/مخفی‌کردن اطلاعات
 [toggle draw unit paths]

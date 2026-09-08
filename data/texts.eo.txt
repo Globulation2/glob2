@@ -207,7 +207,7 @@ Skripton Kompili
 [Computing Fertility]
 Kalkulante la Fekundecon...
 [concrete islands terrain]
-Konkretinsuloj
+Apartaj insuloj
 [connect]
 Kontakti
 [connecting to game]
@@ -243,7 +243,7 @@ Speciala Montrilo
 [damage]
 Difekto
 [Damaged Map]
-Karto de Difekto
+Mapo de vunditoj
 [decrease units working]
 Malpliigi je globuloj laborantaj
 [Defeat Your Oppenents]
@@ -289,7 +289,7 @@ Redakti Karton
 [editing map]
 Redaktante Karton
 [editor shortcuts]
-Taskklavoj en Redaktilo
+Redaktilo
 [editor]
 Redaktilo
 [end]
@@ -375,7 +375,7 @@ Plenekrana
 [game full]
 La ludo jam estas plena!
 [game shortcuts]
-Enludaj Taskklavoj
+Ludo
 [Game]
 Ludo
 [general settings]
@@ -611,11 +611,11 @@ Insuloj, Hazarde
 [old random terrain]
 Tereno, Hazarde
 [on press]
-Kiam Premita
+Premo
 [On the spot]
 Ĉi tie
 [on unpress]
-Kiam Malpremita
+Malpremo
 [open chat box]
 Malfermi Babilkadron
 [open load menu]
@@ -703,7 +703,7 @@ Refreŝigi Kartliston
 [Register]
 Enskribi
 [remember unit]
-Memori Globulojn
+Memori unuokvantojn
 [Remember YOG password localy]
 Memori la pasvorton enloke.
 [remove map]
@@ -815,7 +815,7 @@ Elekti je metado de Viŝmarkilo
 [select place explorationflag]
 Elekti je metado de Esplormarkilo
 [select place forbidden area]
-Elekti je metado de Malpermesata areo
+Meti malpermesatan areon
 [select place guard area]
 Elekti je metado de Defendata areo
 [select place warflag]
@@ -1025,7 +1025,7 @@ Tempo
 [to:]
 al:
 [toggle draw accessibility aids]
-Montri/kaŝi alireblecasistojn
+Montri/kaŝi teamnumerojn
 [toggle draw information]
 Montri/kaŝi informaĵon
 [toggle draw unit paths]

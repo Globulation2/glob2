@@ -207,7 +207,7 @@ compose
 [Computing Fertility]
 ﻳﺤﺴﺐ ﺍﻟﺨﺼﻮﺑﺔ
 [concrete islands terrain]
-ﺟُﺰﺭ ﺻﻠﺒﺔ
+ﺟﺰﺭ ﻣﻨﻔﺼﻠﺔ
 [connect]
 ﺍﺗﺼﻞ
 [connecting to game]
@@ -243,7 +243,7 @@ control-%0
 [damage]
 ﺍﻟﻀﺮﺭ
 [Damaged Map]
-ﺧﺎﺭﻃﺔ ﺍﻟﻀﺮﺭ
+ﺧﺮﻳﻄﺔ ﺍﻟﺠﺮﺣﻰ
 [decrease units working]
 ﻗﻠﻞ ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻌﺎﻣﻠﺔ
 [Defeat Your Oppenents]
@@ -615,7 +615,7 @@ meta-%0
 [On the spot]
 ﻫﻨﺎ
 [on unpress]
-ﻋﻨﺪ ﺭﻓﻊ ﺍﻟﻀﻐﻂ
+ﻋﻨﺪ ﺍﻟﺘﺮﻙ
 [open chat box]
 ﺍﻓﺘﺢ ﺻﻨﺪﻭﻕ ﺍﻟﻤﺤﺎﺩﺛﺔ
 [open load menu]
@@ -703,7 +703,7 @@ print screen
 [Register]
 ﺳﺠِّﻞ
 [remember unit]
-ﺗﺬﻛَّﺮ ﺍﻟﻮﺣﺪﺓ
+ﺣﻔﻆ ﺃﻋﺪﺍﺩ ﺍﻟﻮﺣﺪﺍﺕ
 [Remember YOG password localy]
 ﺗﺬﻛَّﺮ ﻛﻠﻤﺔ ﺍﻟﺴﺮ ﻣﺤﻠﻴًﺎ.
 [remove map]
@@ -1025,7 +1025,7 @@ tab
 [to:]
 ﺇﻟﻰ:
 [toggle draw accessibility aids]
-ﺑﺪِّﻝ ﻭﺿﻊ ﻣﺴﺎﻋِﺪﺍﺕ ﺍﻹﺗﺎﺣﺔ
+ﺇﻇﻬﺎﺭ ﺃﺭﻗﺎﻡ ﺍﻟﻔﺮﻕ ﺃﻭ ﺇﺧﻔﺎﺅﻫﺎ
 [toggle draw information]
 ﺑﺪِّﻝ ﻭﺿﻊ ﺍﻟﻤﻌﻠﻮﻣﺎﺕ
 [toggle draw unit paths]

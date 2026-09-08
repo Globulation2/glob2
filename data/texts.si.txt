@@ -1,83 +1,83 @@
 [%0 has left the game]
 %0 je zapustil igro.
 [%0 level %1]
-
+%0, stopnja %1
 [%0 units can't access building]
-
+Enote brez dostopa do zgradbe: %0
 [%0 units can't access flag]
-
+Enote brez dostopa do zastave: %0
 [%0 units can't access fruit]
-
+Enote brez dostopa do sadja: %0
 [%0 units can't access resource]
-
+Enote brez dostopa do surovine: %0
 [%0 units not available]
-
+Nerazpoložljive enote: %0
 [%0 units too far from building]
-
+Enote predaleč od zgradbe: %0
 [%0 units too far from flag]
-
+Enote predaleč od zastave: %0
 [%0 units too far from fruit]
-
+Enote predaleč od sadja: %0
 [%0 units too far from resource]
-
+Enote predaleč od surovine: %0
 [%0 units too low level]
-
+Enote s prenizko stopnjo: %0
 [%0% Uploaded]
-
+Naloženo: %0 %
 [%0's game]
-
+Igra igralca %0
 [%0's team unit got converted to your team]
-Spreobrnil si enoto druge ekipe %0
+Enota ekipe %0 je prestopila na vašo stran
 [abreaviation explanation A]
-
+A: Zavezniki
 [abreaviation explanation C]
-
+C: Prejemniki sporočil klepeta
 [abreaviation explanation fV]
-
+fV: Deli pogled restavracij (za prevzem enot)
 [abreaviation explanation mV]
-
+mV: Deli pogled tržnic (za izmenjavo sadja)
 [abreaviation explanation V]
-
+V: Deli pogled vseh zgradb
 [add map]
-
+Dodaj zemljevid
 [add shortcut]
-
+Dodaj bližnjico
 [Add]
-
+Dodaj
 [AI Descriptions]
-
+Opisi umetne inteligence
 [AI]
 UI
 [ai]
 UI
 [AICastor-Description]
-
+Castor igra previdno in se dobro obnese na zemljevidih z malo surovin. Srednja težavnost.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Nicowar igra napadalno, se hitro širi in nad nasprotnike pošilja ogromne vojske. Visoka težavnost.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Brez – ne naredi ničesar.
 [AINone]
 AINone
 [AINumbi-Description]
-
+Numbi se širi v manjšem obsegu, a hitro. Nizka težavnost.
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity ne napada, a gradi ogromne baze in vztrajno pridobiva tuje enote na svojo stran. Nizka težavnost.
 [AIReachToInfinity]
 ReachToInfinity
 [AIWarrush-Description]
-
+Warrush napada hitro in silovito ter branilca pogosto potisne do meja njegovih zmožnosti. Srednja težavnost.
 [AIWarrush]
 AIWarrush
 [Alga]
 Alga
 [algae]
-
+alge
 [alliances]
 Zavezništva
 [alt %0]
@@ -85,7 +85,7 @@ alt-%0
 [and]
 in
 [any explorer]
-
+katerikoli raziskovalec
 [are dying hungry]
 umirajo od lakote
 [are hungry]
@@ -97,7 +97,7 @@ so ranjeni
 [armor]
 Ščit
 [assigned]
-
+Dodeljene
 [At. speed]
 Hit. napada
 [At. strength]
@@ -115,9 +115,9 @@ Razpoložljive omrežne igre
 [away:]
 odsoden:
 [Back]
-
+Nazaj
 [backspace]
-
+Backspace
 [barracks explanation 2]
 tvojih vojakov
 [barracks explanation]
@@ -127,43 +127,43 @@ Vojašnica
 [beach size]
 velikost obal
 [Blocked Players]
-
+Blokirani igralci
 [break]
-
+Break
 [briefing]
-
+Navodila misije
 [build %0 level %1]
-
+Zgradi: %0, stopnja %1
 [Build]
 Zgradi
 [Building Defaults]
-
+Privzete nastavitve zgradb
 [building settings]
-
+Nastavitve zgradb
 [building site]
 gradbišče
 [Building Tool Box Explanation]
-
+Shift + vlečenje = pravokotnik
 [Building Tool Line Explanation]
-
+Ctrl + vlečenje = črta
 [Buildings]
 Stavbe
 [Bullets]
 Naboji
 [campaign editor]
-
+Urejevalnik kampanj
 [campaign]
 Kampanja
 [Can't connect, can't find host]
-
+Povezava ni mogoča, gostitelja ni mogoče najti
 [Can't host game, port %0 in use]
-
+Igre ni mogoče gostiti, vrata %0 so zasedena
 [Can't join game, game doesn't exist]
-
+Pridružitev ni mogoča, igra ne obstaja
 [Can't join game, game has started]
-
+Pridružitev ni mogoča, igra se je že začela
 [Can't join game, game is full]
-
+Pridružitev ni mogoča, igra je polna
 [cancel destroy]
 Prekliči uničenje
 [cancel repair]
@@ -173,11 +173,11 @@ Prekliči nadgradnjo
 [Cancel]
 Prekliči
 [caps lock]
-
+Caps Lock
 [carry]
 Nosi :
 [Change Area Name]
-
+Spremeni ime območja
 [Cherry]
 Češnja
 [choose campaign]
@@ -195,27 +195,27 @@ Brisanje:
 [clearingflag explanation]
 Odstranjuje surovine
 [clearingflag]
-Odstiralna zastava
+Zastava čiščenja
 [closed]
 Zaprto
 [combined vision]
-
+Skupni pogled
 [compile]
 Zgradi skripto
 [compose]
-
+Compose
 [Computing Fertility]
-
+Računanje rodovitnosti
 [concrete islands terrain]
-
+Ločeni otoki
 [connect]
 Vspostavi povezavo
 [connecting to game]
-
+Povezovanje z igro
 [connecting to]
 Povezujem na
 [Construction Site Defaults]
-
+Privzete nastavitve gradbišč
 [Continue playing]
 Nadaljuj z igranjem
 [control %0]
@@ -223,9 +223,9 @@ control-%0
 [Corn]
 Pšenica
 [crater density]
-
+število kraterjev
 [crater lakes terrain]
-
+Kraterska jezera
 [create game]
 Ustvari igro
 [create map]
@@ -233,21 +233,21 @@ Ustvari mapo
 [credits]
 Zasluge
 [ctrl - line]
-
+Ctrl – črta
 [current speed]
 Trenutna hitrost
 [custom game]
 Naključna igra
 [customcur]
-Naključni kazalec
+Kazalec po meri
 [damage]
 Škoda
 [Damaged Map]
-
+Zemljevid poškodb
 [decrease units working]
-
+Zmanjšaj število delavcev
 [Defeat Your Oppenents]
-
+Premagajte nasprotnike
 [defencetower explanation 2]
 tako enote kot stavbe
 [defencetower explanation]
@@ -255,55 +255,55 @@ Napada bližnje sovražnike
 [defencetower]
 Obrambni Stolp
 [Defense Map]
-
+Zemljevid obrambe
 [Defense]
 Obramba
 [Delete game]
-
+Izbriši izbrano igro
 [delete]
-
+Delete
 [desert]
-
+puščava
 [destroy building]
-
+Poruši izbrano zgradbo
 [destroy]
 Uniči
 [display]
 Prikaz
 [do nothing]
-
+Ne naredi ničesar
 [don't carry anything]
 Ne nosi ničesar
 [down]
-
+dol
 [Download Map]
-
+Prenesi zemljevid
 [Download Maps]
-
+Prenesi zemljevide
 [downloaded %0]
-
+preneseno: %0
 [downloading map]
-
+Prenašanje zemljevida
 [edit map]
-
+Uredi zemljevid
 [editing map]
-
+Urejanje zemljevida
 [editor shortcuts]
-
+Za urejevalnik
 [editor]
 Urejevalnik
 [end]
-
+End
 [Enter your nickname :]
 Vnesi svoj vzdevek :
 [Enter your password :]
 Vnesi svoje geslo :
 [enter]
-
+Enter
 [equals]
-
+enačaj
 [escape]
-
+Escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -311,13 +311,13 @@ Privlači raziskovalce
 [explorationflag]
 Raziskovalna zastava
 [Explorer Ratio]
-
+Delež raziskovalcev
 [Explorer]
 Raziskovalec
 [explorers]
 raziskovalci
 [extra islands]
-
+prazni otoki
 [f10]
 f10
 [f11]
@@ -349,13 +349,13 @@ f8
 [f9]
 f9
 [Fertility Map]
-
+Zemljevid rodovitnosti
 [Flag Defaults]
-
+Privzete nastavitve zastav
 [flag settings explanation]
-
+Privzeti polmer zastave
 [fog of war]
-
+Megla vojne
 [food]
 Hrana
 [forbidden area]
@@ -367,47 +367,47 @@ prost/ih
 [from:]
 od:
 [fruit]
-
+sadje
 [fullscreen]
 Celotni zaslon
 [game full]
 Igra je polna
 [game shortcuts]
-
+Bližnjice igre
 [Game]
-
+Igra
 [general settings]
-
+Splošne nastavitve
 [go to event]
-
+Pojdi na dogodek
 [go to home]
-
+Pojdi v domačo bazo
 [goto main menu]
 Nazaj v glavni menu
 [grass]
 Trava
 [ground attack]
-
+napad na tleh
 [guard area]
 Nadzorovano področje
 [GUIMapPreview text 0]
-
+Izberite
 [GUIMapPreview text 1]
-
+zemljevid
 [handmade map]
 Ročno izdelana mapa
 [Happyness]
 Zadovoljstvo
 [hard pause]
-
+Povsem začasno ustavi
 [Harvest]
 Poberi
 [high priority]
-
+visoka
 [hints]
-
+Namigi
 [home]
-
+Home
 [hospital explanation 2]
 
 [hospital explanation]
@@ -419,17 +419,17 @@ Gostuj igro
 [hp]
 Zdravje
 [Human]
-
+Človek
 [human]
-
+človek
 [hungry]
 lačen
 [hungryness]
-
+Lakota
 [In way]
 Na poti
 [increase units working]
-
+Povečaj število delavcev
 [inn explanation 2]
 
 [inn explanation]
@@ -437,7 +437,7 @@ Nahranjuje tvoje enote
 [inn]
 Restavracija
 [insert]
-
+Insert
 [inside]
 Znotraj
 [islands size]
@@ -445,19 +445,19 @@ velikost otokov
 [islands terrain]
 Otoki
 [isles terrain]
-
+Otočki
 [iterate selection]
-
+Izberi naslednji predmet
 [jobs]
-
+opravila
 [join a game]
 Vključi se v igro
 [join]
 Vključi se
 [keyboard settings]
-
+Nastavitve tipkovnice
 [kick]
-
+Izključi
 [lan]
 LAN Igra
 [language incomplete]
@@ -469,79 +469,79 @@ Jezik
 [language]
 Slovenščina
 [Leave Game]
-
+Zapusti igro
 [left meta]
-
+levi Meta
 [left super]
-
+leva tipka Windows
 [left]
-
+levo
 [level]
 Stopnja
 [levels]
 Stopnje
 [load campaign]
-
+Naloži kampanjo
 [load game]
 Naloži igro
 [load map]
-
+Naloži zemljevid
 [load replay]
-
+Naloži posnetek igre
 [load script]
-
+Naloži skript
 [load]
 Naloži
 [loading map list]
-
+Nalaganje seznama zemljevidov...
 [Lobby]
-
+Čakalnica
 [login]
 Prijava
 [look around]
-
+Ozri se naokrog
 [Lost : %0 has more prestige than you]
 Izgubil si : %0 ima več ugleda kot ti
 [Lost : your colony is dead]
 Poražen si : tvoja kolonija je premagana
 [low priority]
-
+nizka
 [lowquality]
 Nizka kakovost
 [Magic At. Air]
-
+Škoda v zraku
 [Magic At. Ground]
-
+Škoda na tleh
 [map description]
-
+Opis
 [Map Discovered]
-
+Zemljevid razkrit
 [Map download failure: lost connection]
-
+Prenos zemljevida ni uspel: povezava z YOG je prekinjena
 [Map name: %0]
 Ime mape: %0.
 [map name]
-
+Ime
 [map rated]
-
+Zemljevid ocenjen
 [map script]
-
+Skript zemljevida
 [map size x]
 Širina mape
 [map size y]
 Višina mape
 [Map upload failure: connection lost]
-
+Nalaganje zemljevida ni uspelo: povezava z YOG je prekinjena
 [Map upload failure: map name in use]
-
+Nalaganje zemljevida ni uspelo. Ime zemljevida je že v uporabi.
 [Map upload failure: unknown reason]
-
+Nalaganje zemljevida ni uspelo. Razlog ni znan.
 [Map Upload: Author Name]
-
+Ime avtorja
 [Map Upload: Waiting for reply]
-
+Čakanje na odgovor
 [mark map]
-
+Označi mesto za zaveznike
 [market explanation 2]
 z drugimi
 [market explanation]
@@ -549,7 +549,7 @@ Omogoča menjavo sadja
 [market]
 Tržnica
 [medium priority]
-
+srednja
 [meta %0]
 meta-%0
 [Min required level:]
@@ -559,35 +559,35 @@ Najnižja raven enot
 [Music volume]
 Glasnost glasbe
 [Mute]
-
+Utišaj
 [mute]
-
+utišaj
 [new campaign]
-
+Nova kampanja
 [new map]
 Nova
 [nick taken]
 Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
 [no fullscreen]
-
+* samo v okenskem načinu
 [No Hints]
-
+Ni namigov
 [no key]
-
+še ni tipke
 [No Objectives]
-
+Ni ciljev
 [no ressources growth areas]
-
+Območja brez rasti surovin
 [No]
 Ne
 [Not Enough Ratings]
-
+Premalo ocen
 [not ready]
 ni pripravljen
 [Number Of Buildings]
-
+Število zgradb
 [number of players: %0 (%1 AI)]
-
+Število igralcev: %0 (od tega %1 UI)
 [number of players: %0]
 %0 players are present.
 [number of teams: %0]
@@ -595,35 +595,35 @@ ni pripravljen
 [number of teams]
 Število ekip
 [Number Of Units]
-
+Število enot
 [numlock]
-
+Num Lock
 [objectives]
-
+Cilji
 [of which]
 od katerih
 [ok]
 Potrdi
 [old islands terrain]
-
+naključni otoki (staro)
 [old random terrain]
-
+naključni teren (staro)
 [on press]
-
+Pritisk
 [On the spot]
 Tukaj
 [on unpress]
-
+Sprostitev
 [open chat box]
-
+Odpri klepet
 [open load menu]
-
+Odpri meni za nalaganje
 [open save menu]
-
+Odpri meni za shranjevanje
 [open scenario editor]
-
+Odpri urejevalnik scenarijev
 [open teams editor]
-
+Odpri urejevalnik ekip
 [open]
 odpri
 [OpenGL]
@@ -635,51 +635,51 @@ Možnosti
 [Orange]
 Pomaranča
 [Other Options]
-
+Druge možnosti
 [page down]
-
+Page Down
 [page up]
-
+Page Up
 [Papyrus]
 Papirus
 [pause game]
-
+Začasno ustavi igro
 [pause]
-
+Pause
 [Paused]
 Ustavljeno
 [player name]
 Ime igralca
 [player rating %0]
-
+Ocena igralca: %0
 [players]
-
+Igralci
 [please wait]
 Prosim počakaj
 [power]
-
+vklop
 [press space]
-
+Za nadaljevanje pritisnite preslednico.
 [Prestige Score]
-
+Točke ugleda
 [Prestige Win Enabled]
-
+Zmaga z ugledom omogočena
 [Prestige]
 Ugled
 [Primary Objectives]
-
+Glavni
 [print screen]
-
+Print Screen
 [priority]
-
+Prednost
 [Prune]
 Slive
 [quit the editor]
-
+Zapusti urejevalnik
 [quit the game]
 Izhod iz igre
 [quit the replay]
-
+Končaj predvajanje
 [quit]
 Izhod
 [racetrack explanation 2]
@@ -691,57 +691,57 @@ Tekaška steza
 [range]
 Domet
 [Rated %0]
-
+Ocena: %0
 [ratios]
 Razmerja
 [ready?]
-
+pripravljen?
 [refresh map list]
-
+Osveži seznam zemljevidov
 [Register a new YOG user with password]
 Prijavi novega YOG uporabnika z geslom. (Ni varno!)
 [Register]
-
+Registracija
 [remember unit]
-
+Zapomni si število enot
 [Remember YOG password localy]
 Zapomni si YOG geslo lokalno. (Ni varno)
 [remove map]
-
+Odstrani zemljevid
 [remove shortcut]
-
+Odstrani bližnjico
 [Remove]
-
+Odstrani
 [repair building]
-
+Začni/ustavi popravilo
 [repair]
 Popravi
 [repeat area]
-
+ponovitev iste pokrajine
 [Repeat your password :]
-
+Ponovite geslo:
 [replay ended]
-
+Predvajanje končano
 [restore default shortcuts]
-
+Obnovi privzete bližnjice
 [return to editor]
-
+Vrni se v urejevalnik
 [return to game]
 Vrnitev v igro
 [return to replay]
-
+Vrni se k predvajanju
 [return]
-
+Enter
 [right meta]
-
+desni Meta
 [right super]
-
+desna tipka Windows
 [right]
-
+desno
 [river diameter]
-
+širina reke
 [river terrain]
-
+Reka
 [sand]
 Pesek
 [save before quit?]
@@ -749,11 +749,11 @@ Pesek
 [save game]
 Shrani igro
 [save map]
-
+Shrani zemljevid
 [save replay]
-
+Shrani posnetek igre
 [save script]
-
+Shrani skript
 [Save]
 Shrani
 [school explanation 2]
@@ -763,13 +763,13 @@ Izboljša stopnjo grajenja
 [school]
 Šola
 [Script Areas]
-
+Območja skripta
 [scroll lock]
-
+Scroll Lock
 [scroll wheel enabled]
-
+Omogoči kolešček miške
 [Secondary Objectives]
-
+Stranski
 [seeking a job]
 iščejo službo
 [seeking]
@@ -777,7 +777,7 @@ Iščem
 [select barracks building]
 Izberi stavbo: Vojašnica
 [select clearingflag]
-Izberi zastavo: Odstiralna zastava
+Izberi zastavo čiščenja
 [select construct barracks]
 Izberi gradnjo: Vojašnica
 [select construct defencetower]
@@ -811,13 +811,13 @@ Izberi stavbo: Tržnica
 [select place clearing area]
 Postavi območje: Območje čiščenja
 [select place clearingflag]
-Postavi zastavo: Odstiralna zastava
+Postavi zastavo čiščenja
 [select place explorationflag]
-Postavi zastavo: Raziskovalna zastava
+Postavi raziskovalno zastavo
 [select place forbidden area]
-Postavi območje: Prepovedano področje
+Označi prepovedano območje
 [select place guard area]
-Postavi območje: Nadzorovano področje
+Označi stražno območje
 [select place warflag]
 Postavi zastavo: Vojaška zastava
 [select racetrack building]
@@ -839,37 +839,37 @@ Nastavitve
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-
+Enter: pošlji sporočilo v klepet
 [shortcut explanation v]
-
+V: držite za govor
 [show areas]
-
+Prikaži območja
 [show flags]
-
+Prikaži zastave
 [show main menu]
-
+Prikaži glavni meni
 [skin]
-
+Prikaz
 [smoothing]
 Glajenje
 [sort by name]
-
+Ime
 [sort by rating]
-
+Ocena
 [sort by size]
-
+Velikost
 [Sort By]
-
+Razvrsti po
 [space]
-
+preslednica
 [start mission]
-
+Začni misijo
 [start new campaign]
-
+Začni novo kampanjo
 [Start]
 Začni
 [Starving Map]
-
+Zemljevid stradanja
 [starving]
 lačen
 [Statistics]
@@ -885,7 +885,7 @@ Ena ostaja
 [Stone]
 Kamenje
 [stone]
-
+kamen
 [stonewall explanation 2]
 obrambni sistem
 [stonewall explanation]
@@ -893,11 +893,11 @@ Pasiven
 [stonewall]
 Kamniti zid
 [submit rating]
-
+Pošlji oceno
 [svr hostname]
 Strežnikovo ime
 [swamp terrain]
-
+Močvirje
 [swarm explanation 2]
 
 [swarm explanation]
@@ -941,13 +941,13 @@ Prikaži ekipe
 [switch to terrain view]
 Prikaži teren
 [sys req]
-
+Sys Req
 [tab]
-
+Tab
 [teams editor]
-
+Urejevalnik ekip
 [Teams Fixed]
-
+Nespremenljive ekipe
 [teams]
  ekipe
 [the barracks is finished]
@@ -959,9 +959,9 @@ Stavba je zgrajena
 [the building is under attack]
 Stavba je napadena
 [the clearingflag is finished]
-Odstiralna zastava je zgrajena
+Zastava čiščenja je pripravljena
 [the clearingflag is under attack]
-Odstiralna zastava je napadena
+Zastava čiščenja je napadena
 [the defencetower is finished]
 Obrambni stolp je zgrajen
 [the defencetower is under attack]
@@ -977,15 +977,15 @@ Igre
 [the hospital is finished]
 Bolnišnica je zgrajena
 [the hospital is under attack]
-Bolnišnica je zgrajena
+Bolnišnica je napadena
 [The host has cancelled the game]
-
+Gostitelj je preklical igro.
 [the inn is finished]
-Gostilna je zgrajena
+Restavracija je zgrajena
 [the inn is under attack]
-Gostilna je napadena
+Restavracija je napadena
 [the maps]
-Mape
+Zemljevidi
 [the market is finished]
 Tržnica je zgrajena
 [the market is under attack]
@@ -999,7 +999,7 @@ Tekaška steza je zgrajena
 [the racetrack is under attack]
 Tekaška steza je napadena
 [the replays]
-
+Posnetki iger
 [the school is finished]
 Šola je zgrajena
 [the school is under attack]
@@ -1007,7 +1007,7 @@ Tekaška steza je napadena
 [the stonewall is finished]
 Kamniti zid je zgrajen
 [the stonewall is under attack]
-Sovražnik je pred vrati
+Kamniti zid je napaden
 [the swarm is finished]
 Porodnišnica je zgrajena
 [the swarm is under attack]
@@ -1021,85 +1021,85 @@ Vojaška zastava je zgrajena
 [the warflag is under attack]
 Vojaška zastava je napadena
 [time]
-
+Čas
 [to:]
 za:
 [toggle draw accessibility aids]
-
+Prikaži/skrij številke ekip
 [toggle draw information]
-
+Preklopi prikaz informacij
 [toggle draw unit paths]
-
+Preklopi prikaz poti enot
 [toggle menu screen]
-
+Preklopi meni
 [toggle recording voice]
-
+Preklopi snemanje govora
 [Total Attack Power]
-
+Skupna napadalna moč
 [Total Defence Power]
-
+Skupna obrambna moč
 [Total Hitpoints]
-
+Skupne življenjske točke
 [Total prestige reached]
 Najvišji dosežen ugled
 [Total]
 Skupaj
 [tutorial text 1]
-
+Dobrodošli v osnovni vadnici igre Globulation 2! Naučili se boste graditi restavracije, raziskovati območja in uničevati sovražnike. Uporabnega znanja ne manjka!
 [tutorial text 2]
-
+Zdaj ko obvladate osnove, je čas, da spoznate druge zgradbe, kot so tekaške steze, bazeni in šole.
 [tutorial text 3]
-
+Dobro vam gre. Zdaj se posvetimo vojakom, vojašnicam in nadgradnjam.
 [tutorial text 4]
-
+Skoraj ste že končali. Ostanejo le še zastave in napadanje. Nato boste znali dovolj za igre po meri, pozneje pa tudi za spletne spopade z najboljšimi igralci Globulation 2.
 [tutorial]
 Predavanje
 [Uncontrolled]
 Nenadzirane
 [undo]
-
+razveljavi
 [uniform terrain]
 Obleči teren?
 [Unit editor]
-
+Urejevalnik enot
 [unit settings explanation]
-
+Privzeto število dodeljenih enot
 [units working]
  enot dela
 [Units]
 Enote
 [unlocked at start]
-
+Odklenjeno ob začetku
 [unlocked by]
-
+Odklene dokončanje
 [Unnamed Area]
-
+{Neimenovano območje}
 [up]
-
+gor
 [upgrade building]
-
+Začni/ustavi nadgradnjo
 [Upgrade Defaults]
-
+Privzete nastavitve nadgradenj
 [upgrade]
 Nadgradi
 [Upload Map]
-
+Naloži zemljevid
 [upload map]
-
+Naloži zemljevid
 [username]
 Uporabniško ime
 [Version]
 Različica
 [view history]
-
+Prikaži zgodovino
 [Voice volume]
-
+Glasnost govora
 [waiting for %0]
 Čakam %0
 [waiting for key]
-
+čakanje na tipko...
 [Waiting]
-
+Čakanje
 [Walk]
 Hodi
 [warflag explanation 2]
@@ -1111,15 +1111,15 @@ Vojaška zastava
 [Warning, you need to reboot the game for changes to take effect]
 Pozor, da bi nastavitve stopile v veljavo moraš ponovno zagnati igro
 [Warrior Ratio]
-
+Delež vojakov
 [Warrior]
 Vojak
 [warriors]
 vojaki
 [watch again]
-
+Predvajaj znova
 [watching:]
-
+Ogled:
 [water]
 Voda
 [Wheat]
@@ -1133,9 +1133,9 @@ Zmagal si : tvoj zaveznik %0 ima najvišji ugled
 [Wood]
 Les
 [wood]
-
+les
 [Worker Ratio]
-
+Delež delavcev
 [Worker]
 Delavec
 [workers]
@@ -1157,7 +1157,7 @@ YOG metastrežnik je zavrnil povezavo, ker je vpisano geslo napačno.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metastrežnik je zavrnil povezavo ker tvoje uporabniško ime nima določenega gesla. Gotovo hočeš registrirati to uporabniško ime zato poskusi aktivirati možnost "Registriraj novega YOG uporabnika s tem geslom". To možnost moraš aktivirati le enkrat.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+Metastrežnik YOG je zavrnil povezavo, ker je ta naslov IP začasno blokiran. Počakajte na odblokiranje ali se obrnite na skrbnike.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1165,29 +1165,29 @@ Yog metastrežnik je brezobrazložitve zavrnil povezavo!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+Metastrežnik YOG je zavrnil povezavo, ker je to uporabniško ime blokirano. Obrnite se na skrbnike.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+Metastrežnik YOG je zavrnil povezavo, ker je vneseno uporabniško ime neveljavno. Ime sme vsebovati le črke, številke in podčrtaje.
 [YESTS_CREATED]
 Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Vneseni gesli se ne ujemata. Vnesite ju znova.
 [YESTS_UNABLE_TO_CONNECT]
 Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
 [yog block command help]
-
+/block <playername>    Blokira igralca; njegovih sporočil ne boste več videli.
 [yog block command player %0 already blocked]
-
+Igralec %0 je že blokiran
 [yog block command player %0 blocked]
-
+Igralec %0 je blokiran
 [yog block command player %0 not found]
-
+Igralca %0 ni mogoče najti
 [yog command header]
-
+Seznam ukazov odjemalca YOG:
 [yog command unknown]
-
+Neznan ukaz.
 [yog help command help]
-
+/help    Prikaže to pomoč
 [yog]
 Ysagoon medmrežno igranje
 [you have lost]
@@ -1195,15 +1195,15 @@ Izgubil si!
 [you have won]
 Zmagal si!
 [You where kicked from the game]
-
+Izključeni ste bili iz igre
 [Your %0 are under attack]
 Tvoji %0 so napadeni
 [Your IP address was temporarily banned]
-
+Vaš naslov IP je začasno blokiran. Počakajte na odblokiranje ali se obrnite na skrbnike.
 [Your unit got converted to %0's team]
 Tvoje enote so bile spreobrnjene %0
 [Your username was banned]
-
+Vaše uporabniško ime je blokirano. Za odblokiranje se obrnite na skrbnike.
 [game speed]
 Hitrost igre
 [decrease game speed]

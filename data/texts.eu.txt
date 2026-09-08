@@ -1,31 +1,31 @@
 [%0 has left the game]
 %0(e)k partida utzi du.
 [%0 level %1]
-
+%0, %1. maila
 [%0 units can't access building]
-
+%0 unitate ezin dira eraikinera iritsi
 [%0 units can't access flag]
-
+%0 unitate ezin dira banderara iritsi
 [%0 units can't access fruit]
-
+%0 unitate ezin dira fruituetara iritsi
 [%0 units can't access resource]
-
+%0 unitate ezin dira baliabidera iritsi
 [%0 units not available]
-
+%0 unitate ez daude erabilgarri
 [%0 units too far from building]
-
+%0 unitate eraikinetik urrunegi daude
 [%0 units too far from flag]
-
+%0 unitate banderatik urrunegi daude
 [%0 units too far from fruit]
-
+%0 unitate fruituetatik urrunegi daude
 [%0 units too far from resource]
-
+%0 unitate baliabidetik urrunegi daude
 [%0 units too low level]
-
+%0 unitateren maila baxuegia da
 [%0% Uploaded]
-
+%0% igota
 [%0's game]
-
+%0 jokalariaren partida
 [%0's team unit got converted to your team]
 %0(r)en unitatea zure taldera pasatu da
 [abreaviation explanation A]
@@ -41,37 +41,37 @@ V: Bistaratu eraikuntza guztien ikuspegia
 [add map]
 Gehitu mapa
 [add shortcut]
-
+Gehitu laster-tekla
 [Add]
-
+Gehitu
 [AI Descriptions]
-
+AA moten deskribapenak
 [AI]
 AI
 [ai]
 AI
 [AICastor-Description]
-
+Castorrek zuhur jokatzen du eta oso ondo moldatzen da baliabide gutxiko mapetan. Zailtasun ertaina.
 [AICastor]
 AICastor
 [AINicowar-Description]
-
+Nicowarrek erasokor jokatzen du, azkar hazten da eta armada erraldoiak bidaltzen ditu aurkarien aurka. Zailtasun handia.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Bat ere ez: ez du ezer egiten.
 [AINone]
 AINone
 [AINumbi-Description]
-
+Numbi gutxi hedatzen da, baina azkar. Zailtasun txikia.
 [AINumbi]
 AINumbi
 [AIReachToInfinity-Description]
-
+ReachToInfinityk ez du erasotzen, baina base erraldoiak eraikitzen ditu eta unitate asko bere taldera erakartzen ditu. Zailtasun txikia.
 [AIReachToInfinity]
 ReachToInfinity
 [AIWarrush-Description]
-
+Warrushek azkar eta gogor erasotzen du, eta sarritan mugara eramaten du defendatzailea. Zailtasun ertaina.
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -115,9 +115,9 @@ Jokalarien zai
 [away:]
 kanpoan:
 [Back]
-
+Atzera
 [backspace]
-
+atzera-tekla
 [barracks explanation 2]
 maila hobetzen du
 [barracks explanation]
@@ -127,25 +127,25 @@ Barrakoia
 [beach size]
 hondar tamaina
 [Blocked Players]
-
+Blokeatutako jokalariak
 [break]
-
+eten
 [briefing]
-
+Misioaren azalpena
 [build %0 level %1]
-
+Eraiki %0, %1. mailakoa
 [Build]
 Eraiki
 [Building Defaults]
-
+Eraikinen lehenespenak
 [building settings]
-Unitate ezarpenak
+Eraikinen ezarpenak
 [building site]
 eraikitzen
 [Building Tool Box Explanation]
-
+Maius + arrastatu = laukizuzena
 [Building Tool Line Explanation]
-
+Ktrl + arrastatu = lerroa
 [Buildings]
 Eraikuntzak
 [Bullets]
@@ -155,15 +155,15 @@ Kanpaina editorea
 [campaign]
 Kanpaina
 [Can't connect, can't find host]
-
+Ezin da konektatu: ez da ostalaria aurkitu
 [Can't host game, port %0 in use]
-
+Ezin da partida sortu: %0 ataka erabileran dago
 [Can't join game, game doesn't exist]
-
+Ezin da sartu: partida ez da existitzen
 [Can't join game, game has started]
-
+Ezin da sartu: partida hasi da
 [Can't join game, game is full]
-
+Ezin da sartu: partida beteta dago
 [Can't join game, missmatching game parameters]
 Ezin da partidarekin bat egin, parametroak ez datoz bat
 [Can't join game, timeout]
@@ -179,7 +179,7 @@ Ezeztatu eguneraketa
 [Cancel]
 Utzi
 [caps lock]
-
+maiuskulen blokeoa
 [carry]
 Darama:
 [Change Area Name]
@@ -205,23 +205,23 @@ Garbiketa bandera
 [closed]
 Itxita
 [combined vision]
-
+Ikusmen bateratua
 [compile]
 Konpilatu script-a
 [compose]
-
+konposatu
 [Computing Fertility]
-
+Emankortasuna kalkulatzen
 [concrete islands terrain]
-
+Uharte bereiziak
 [connect]
 Konektatu
 [connecting to game]
-
+Partidara konektatzen
 [connecting to]
 Hona konektatzen:
 [Construction Site Defaults]
-
+Obren lehenespenak
 [Continue playing]
 Jolasten jarraitu
 [control %0]
@@ -239,7 +239,7 @@ Sortu mapa
 [credits]
 Kredituak
 [ctrl - line]
-
+Ktrl - lerroa
 [current speed]
 Oraingo abiadura
 [custom game]
@@ -251,9 +251,9 @@ Kaltea
 [Damaged Map]
 Kalte mapa
 [decrease units working]
-
+Gutxitu lanean ari diren unitateak
 [Defeat Your Oppenents]
-
+Garaitu aurkariak
 [defencetower explanation 2]
 unitateak edo eraikuntzak
 [defencetower explanation]
@@ -277,19 +277,19 @@ Suntsitu
 [display]
 Pantaila
 [do nothing]
-
+Ez egin ezer
 [don't carry anything]
 Ez darama ezer
 [down]
-
+behera
 [Download Map]
-
+Deskargatu mapa
 [Download Maps]
-
+Deskargatu mapak
 [downloaded %0]
-
+%0 deskargatuta
 [downloading map]
-
+Mapa deskargatzen
 [edit map]
 Editatu mapa
 [editing map]
@@ -299,17 +299,17 @@ Editore teklak
 [editor]
 Editorea
 [end]
-
+amaiera
 [Enter your nickname :]
 Ezizena sartu:
 [Enter your password :]
 Pasahitza sartu:
 [enter]
-
+sartu
 [equals]
-
+berdin
 [escape]
-
+ihes
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -317,7 +317,7 @@ Miatzaileak erakartzeko
 [explorationflag]
 Miatze bandera
 [Explorer Ratio]
-Miatzaile Ratioa
+Miatzaileen proportzioa
 [Explorer]
 Miatzailea
 [explorers]
@@ -355,13 +355,13 @@ f8
 [f9]
 f9
 [Fertility Map]
-
+Emankortasun-mapa
 [Flag Defaults]
-
+Banderen lehenespenak
 [flag settings explanation]
-
+Banderaren erradio lehenetsia
 [fog of war]
-
+Gerra-lainoa
 [food]
 Janaria
 [forbidden area]
@@ -381,13 +381,13 @@ Partida osorik
 [game shortcuts]
 Partida teklak
 [Game]
-
+Partida
 [general settings]
 Ezarpen orokorrak
 [go to event]
-
+Joan gertaerara
 [go to home]
-
+Joan basera
 [goto main menu]
 Menu nagusira itzuli
 [grass]
@@ -405,15 +405,15 @@ Eskuz egindako mapa
 [Happyness]
 Poztasuna
 [hard pause]
-
+Erabateko pausa
 [Harvest]
 Uzta bildu
 [high priority]
-
+handia
 [hints]
-
+Aholkuak
 [home]
-
+hasiera
 [hospital explanation 2]
 
 [hospital explanation]
@@ -435,7 +435,7 @@ Gosea
 [In way]
 Bidean
 [increase units working]
-
+Gehitu lanean ari diren unitateak
 [inn explanation 2]
 
 [inn explanation]
@@ -443,7 +443,7 @@ Unitateak elikatzeko
 [inn]
 Ostatua
 [insert]
-
+txertatu
 [inside]
 Barruan
 [islands size]
@@ -451,9 +451,9 @@ irla tamaina
 [islands terrain]
 IrlakYOG
 [isles terrain]
-
+Uhartetxoak
 [iterate selection]
-
+Joan hurrengo hautapenera
 [jobs]
 lanak
 [join a game]
@@ -463,7 +463,7 @@ Bat egin
 [keyboard settings]
 Teklatu ezarpenak
 [kick]
-
+Kanporatu
 [lan]
 LAN partida
 [language incomplete]
@@ -475,13 +475,13 @@ Hizkuntza
 [language]
 Euskara
 [Leave Game]
-
+Utzi partida
 [left meta]
-
+ezkerreko meta
 [left super]
-
+ezkerreko Windows tekla
 [left]
-
+ezkerrera
 [level]
 Maila:
 [levels]
@@ -493,25 +493,25 @@ Kargatu partida
 [load map]
 Kargatu mapa
 [load replay]
-
+Kargatu errepikapena
 [load script]
-
+Kargatu scripta
 [load]
 Kargatu
 [loading map list]
-
+Mapen zerrenda kargatzen...
 [Lobby]
-
+Itxarongela
 [login]
 Saioa hasi
 [look around]
-
+Begiratu ingurura
 [Lost : %0 has more prestige than you]
 Galdu duzu: %0 zuk baino izen on gehiago du
 [Lost : your colony is dead]
 Galdu duzu: zure kolonia hil da
 [low priority]
-
+txikia
 [lowquality]
 Kalitate baxua
 [Magic At. Air]
@@ -519,33 +519,33 @@ Kaltea airean
 [Magic At. Ground]
 Kaltea lurrean
 [map description]
-
+Deskribapena
 [Map Discovered]
-
+Mapa ezagututa
 [Map download failure: lost connection]
-
+Ezin izan da mapa deskargatu: YOG konexioa galdu da
 [Map name: %0]
 Mapa izena: %0.
 [map name]
 Izena
 [map rated]
-
+Mapa baloratuta
 [map script]
-
+Maparen scripta
 [map size x]
 Maparen zabalera
 [map size y]
 Maparen altuera
 [Map upload failure: connection lost]
-
+Ezin izan da mapa igo: YOG konexioa galdu da
 [Map upload failure: map name in use]
-
+Ezin izan da mapa igo: izena erabilita dago.
 [Map upload failure: unknown reason]
-
+Ezin izan da mapa igo. Arrazoi ezezaguna.
 [Map Upload: Author Name]
-
+Egilearen izena
 [Map Upload: Waiting for reply]
-
+Erantzunaren zain
 [maps available]
 Mapa eskuragarriak
 [mark map]
@@ -557,7 +557,7 @@ Besteekin fruta
 [market]
 Merkatua
 [medium priority]
-
+ertaina
 [meta %0]
 meta-%0
 [Min required level:]
@@ -577,25 +577,25 @@ Berria
 [nick taken]
 Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
 [no fullscreen]
-
+* leiho-moduan soilik
 [No Hints]
-
+Aholkurik ez
 [no key]
-
+teklarik esleitu gabe
 [No Objectives]
-
+Helbururik ez
 [no ressources growth areas]
 Ez dago hazkunde zonalderik
 [No]
 Ez
 [Not Enough Ratings]
-
+Ez dago nahikoa balorazio
 [not ready]
 itxaron...
 [Number Of Buildings]
-
+Eraikin kopurua
 [number of players: %0 (%1 AI)]
-
+%0 jokalari (%1 AA)
 [number of players: %0]
 %0 jokalari daude bertan.
 [number of teams: %0]
@@ -603,11 +603,11 @@ itxaron...
 [number of teams]
 talde kopurua
 [Number Of Units]
-
+Unitate kopurua
 [numlock]
-
+zenbakizko blokeoa
 [objectives]
-
+Helburuak
 [of which]
 hauetatik
 [ok]
@@ -617,13 +617,13 @@ ausazko irla lurzoru zaharra
 [old random terrain]
 ausazko lurzoru zaharra
 [on press]
-
+Sakatzean
 [On the spot]
 Bertan
 [on unpress]
-
+Askatzean
 [open chat box]
-
+Ireki txata
 [open load menu]
 Ireki kargatzeko menua
 [open save menu]
@@ -631,7 +631,7 @@ Ireki gordetzeko menua
 [open scenario editor]
 Ireki Script editorea
 [open teams editor]
-
+Ireki talde-editorea
 [open]
 ireki
 [OpenGL]
@@ -643,43 +643,43 @@ Aukerak
 [Orange]
 Laranja
 [Other Options]
-
+Beste aukera batzuk
 [page down]
-
+orria behera
 [page up]
-
+orria gora
 [Papyrus]
 Papiroa
 [pause game]
 Gelditu partida
 [pause]
-
+pausa
 [Paused]
 Geldituta
 [player name]
 Jokalari izena
 [player rating %0]
-
+Jokalariaren balorazioa: %0
 [players]
-
+Jokalariak
 [please wait]
 Mesedez itxaron
 [power]
-
+piztu
 [press space]
 Zanpatu espazio barra jarraitzeko
 [Prestige Score]
-
+Ospe-puntuazioa
 [Prestige Win Enabled]
-
+Ospe bidezko garaipena gaituta
 [Prestige]
-Izen ona
+Ospea
 [Primary Objectives]
-
+Nagusiak
 [print screen]
-
+inprimatu pantaila
 [priority]
-
+Lehentasuna
 [Prune]
 Arana
 [quit the editor]
@@ -687,7 +687,7 @@ Irten editoretik
 [quit the game]
 Irten partidatik
 [quit the replay]
-
+Irten errepikapenetik
 [quit]
 Irten
 [racetrack explanation 2]
@@ -699,27 +699,27 @@ Zirkuitoa
 [range]
 Hedadura
 [Rated %0]
-
+Balorazioa: %0
 [ratios]
 Proportzioak
 [ready?]
-
+prest?
 [refresh map list]
-
+Eguneratu mapen zerrenda
 [Register a new YOG user with password]
 YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
 [Register]
-
+Erregistratu
 [remember unit]
-Gogoratu unitatea
+Gogoratu esleipenak
 [Remember YOG password localy]
 Pasahitza gogoratu ordenagailu honetan. (ez segurua)
 [remove map]
 Ezabatu mapa
 [remove shortcut]
-
+Kendu laster-tekla
 [Remove]
-
+Kendu
 [repair building]
 Konponketa hasi/gelditu
 [repair]
@@ -727,9 +727,9 @@ Konpondu
 [repeat area]
 aldiz lurzoru bera
 [Repeat your password :]
-
+Errepikatu pasahitza:
 [replay ended]
-
+Errepikapena amaituta
 [restore default shortcuts]
 Lehenetsitako teklak berezarri
 [return to editor]
@@ -737,15 +737,15 @@ Itzuli editorera
 [return to game]
 Itzuli partidara
 [return to replay]
-
+Itzuli errepikapenera
 [return]
-
+sartu
 [right meta]
-
+eskuineko meta
 [right super]
-
+eskuineko Windows tekla
 [right]
-
+eskuinera
 [river diameter]
 errekaren zabalera
 [river terrain]
@@ -759,9 +759,9 @@ Gorde partida
 [save map]
 Gorde mapa
 [save replay]
-
+Gorde errepikapena
 [save script]
-
+Gorde scripta
 [Save]
 Gorde
 [school explanation 2]
@@ -773,11 +773,11 @@ Eskola
 [Script Areas]
 Script Zonaldeak
 [scroll lock]
-
+korritze-blokeoa
 [scroll wheel enabled]
-
+Saguaren gurpila gaituta
 [Secondary Objectives]
-
+Bigarren mailakoak
 [seeking a job]
 lan bila
 [seeking]
@@ -851,25 +851,25 @@ Enter: Txat mezua bidali
 [shortcut explanation v]
 V: mantendu hitzegiteko
 [show areas]
-
+Erakutsi eremuak
 [show flags]
-
+Erakutsi banderak
 [show main menu]
-
+Erakutsi menu nagusia
 [skin]
-Itxura
+Bistaratzea
 [smoothing]
 Suabetzea
 [sort by name]
 Izena
 [sort by rating]
-
+Balorazioa
 [sort by size]
-
+Tamaina
 [Sort By]
-
+Ordenatu honen arabera
 [space]
-
+zuriunea
 [start mission]
 Hasi misioa
 [start new campaign]
@@ -901,7 +901,7 @@ Defentsa pasiboko
 [stonewall]
 Harrizko orma
 [submit rating]
-
+Bidali balorazioa
 [svr hostname]
 Zerbitzari izena
 [swamp terrain]
@@ -949,13 +949,13 @@ Talde ikuspegira aldatu
 [switch to terrain view]
 Lurzoru ikuspegira aldatu
 [sys req]
-
+sistema-eskaera
 [tab]
-
+tabuladorea
 [teams editor]
-
+Talde-editorea
 [Teams Fixed]
-
+Talde finkoak
 [teams]
  talde
 [the barracks is finished]
@@ -987,7 +987,7 @@ Hospitala bukatuta dago
 [the hospital is under attack]
 Hospitala erasopean dago
 [The host has cancelled the game]
-
+Ostalariak partida bertan behera utzi du.
 [the inn is finished]
 Ostatua bukatuta dago
 [the inn is under attack]
@@ -1007,7 +1007,7 @@ Zirkuitoa bukatuta dago
 [the racetrack is under attack]
 Zirkuitoa erasopean dago
 [the replays]
-
+Errepikapenak
 [the school is finished]
 Eskola bukatuta dago
 [the school is under attack]
@@ -1029,85 +1029,85 @@ Igerilekua erasopean dago
 [the warflag is under attack]
 ?? War flag under attack ??
 [time]
-
+Denbora
 [to:]
 nori:
 [toggle draw accessibility aids]
-Irisgarritasun laguntzak marraztu
+Erakutsi/ezkutatu talde-zenbakiak
 [toggle draw information]
 Informazio barrak marraztu
 [toggle draw unit paths]
-Unitate ibilibidea marraztu
+Erakutsi/ezkutatu unitateen bideak
 [toggle menu screen]
-
+Erakutsi/ezkutatu menu-pantaila
 [toggle recording voice]
-Hasi ahots grabaketa
+Aktibatu/desaktibatu ahots grabaketa
 [Total Attack Power]
-
+Eraso-indar osoa
 [Total Defence Power]
-
+Defentsa-indar osoa
 [Total Hitpoints]
-
+Bizi-puntu guztiak
 [Total prestige reached]
 Gehienezko izen ona lortuta
 [Total]
 Guztira
 [tutorial text 1]
-
+Ongi etorri Globulation 2ren oinarrizko tutorialera! Ostatuak eraikitzen, eremuak esploratzen eta etsaiak suntsitzen ikasiko duzu. Ez da ezagutza erabilgarririk faltako!
 [tutorial text 2]
-
+Oinarriak menderatu dituzunez, beste eraikin batzuk ezagutzeko garaia da: zirkuituak, igerilekuak eta eskolak.
 [tutorial text 3]
-
+Ongi iritsi zara honaino. Orain soldaduak, barrakoiak eta hobekuntzak landuko ditugu.
 [tutorial text 4]
-
+Ia amaitu duzu. Banderak eta erasoak baino ez dira falta. Ondoren, nahikoa jakingo duzu partida pertsonalizatuak probatzeko eta, geroago, sarean Globulation 2ko jokalari onenetako batzuen aurka jokatzeko.
 [tutorial]
 Tutoriala
 [Uncontrolled]
 Kontrolez kanpo
 [undo]
-
+desegin
 [uniform terrain]
 Lurzoru uniformea
 [Unit editor]
 Unitate editorea
 [unit settings explanation]
-
+Esleitutako unitateen kopuru lehenetsia
 [units working]
  unitate lanean
 [Units]
 Unitateak
 [unlocked at start]
-
+Hasieran desblokeatuta
 [unlocked by]
 Desblokeatzailea:
 [Unnamed Area]
 {Unnamed Area}
 [up]
-
+gora
 [upgrade building]
 Eguneraketa hasi/gelditu
 [Upgrade Defaults]
-
+Hobekuntzen lehenespenak
 [upgrade]
 Eguneratu
 [Upload Map]
-
+Igo mapa
 [upload map]
-
+Igo mapa
 [username]
 Erabiltzaile izena
 [Version]
 Bertsioa
 [view history]
-
+Ikusi historia
 [Voice volume]
-
+Ahotsaren bolumena
 [waiting for %0]
 %0(r)i itxaroten
 [waiting for key]
-
+teklaren zain...
 [Waiting]
-
+Zain
 [Walk]
 Ibili
 [warflag explanation 2]
@@ -1125,9 +1125,9 @@ Soldadua
 [warriors]
 soldadu
 [watch again]
-
+Ikusi berriro
 [watching:]
-
+Ikusten:
 [water]
 Ura
 [Wheat]
@@ -1167,7 +1167,7 @@ YOG metazerbitzariak estekatzea ukatu du zure pasahitza gaizki dagoelako.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
 YOG metazerbitzariak estekatzea ukatu du zerabiltzaile izen honek ez duelako pasahitzik oraindik. Ziur aski izena eman nahi duzu. Kasu hortan, markatu "YOG erabiltzaile gisa izena eman pasahitza barne" konektatu aurretik. Aukera hau behin bakarrik markatu beharko duzu.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+YOG metazerbitzariak konexioa ukatu du, IP helbide hau aldi baterako debekatuta dagoelako. Itxaron debekua kendu arte edo jarri harremanetan administratzaileekin.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metazerbitzariak estekatzea ukatu du zure globulation2 bezeroa zaharregia delako.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1175,29 +1175,29 @@ YOG metazerbitzariak estekatzea ukatu du inolako azalpenik eman gabe!
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek duelako.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+YOG metazerbitzariak konexioa ukatu du, erabiltzaile-izen hau debekatuta dagoelako. Jarri harremanetan administratzaileekin.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+YOG metazerbitzariak konexioa ukatu du, erabiltzaile-izena baliogabea delako. Erabiltzaile-izenek letrak, zenbakiak eta azpimarrak soilik izan ditzakete.
 [YESTS_CREATED]
 Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Pasahitzak ez datoz bat. Idatzi berriro.
 [YESTS_UNABLE_TO_CONNECT]
 Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
 [yog block command help]
-
+/block <jokalariaren_izena>    Jokalaria blokeatzen du; ez dituzu haren mezuak ikusiko.
 [yog block command player %0 already blocked]
-
+%0 jokalaria blokeatuta dago jada
 [yog block command player %0 blocked]
-
+%0 jokalaria blokeatu da
 [yog block command player %0 not found]
-
+Ez da %0 jokalaria aurkitu
 [yog command header]
-
+YOG bezeroaren komando erabilgarriak:
 [yog command unknown]
-
+Komando ezezaguna.
 [yog help command help]
-
+/help    Laguntza-mezu hau erakusten du
 [yog]
 Ysagoon Online Gaming
 [you have lost]
@@ -1205,15 +1205,15 @@ Galdu duzu!
 [you have won]
 Irabazi duzu!
 [You where kicked from the game]
-
+Partidatik kanporatu zaituzte
 [Your %0 are under attack]
 Zure %0ak erasopean daude
 [Your IP address was temporarily banned]
-
+Zure IP helbidea aldi baterako debekatu dute. Itxaron debekua kendu arte edo jarri harremanetan administratzaileekin.
 [Your unit got converted to %0's team]
 Zure unitatea %0(r)en taldera pasatu da
 [Your username was banned]
-
+Zure erabiltzaile-izena debekatu dute. Jarri harremanetan administratzaileekin hori aldatzeko.
 [game speed]
 Jokoaren abiadura
 [decrease game speed]
