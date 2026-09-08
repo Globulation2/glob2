@@ -76,8 +76,14 @@ using both software rendering and OpenGL 1.1 GDI Generic. The same checks pass o
 Linux X11/Mesa llvmpipe and macOS Apple M3 OpenGL. For Windows desktop tests, use
 at least 1100 x 850 pixels and disable automatic remote-desktop size changes.
 
-Before marking the PR ready, manually exercise Windows modal edge dragging,
-holding the mouse still, maximize/restore, moving across displays, and a network
-match. Also check menu/tutorial/editor dialogs, fullscreen switching, minimization,
-and HiDPI display transitions on supported desktops. Synthetic exposes test the
-callback contract but do not substitute for the Windows modal-loop test.
+For a repeatable native modal-loop exercise, run
+`WindowResizeHarness gl interactive` (Escape exits). Drag the window edges and use
+the Windows system menu's Size command to hold the modal loop open. The harness
+logs cached presentations and checks that the normal frame count stays unchanged
+inside the event pump. This passed in the Windows VM: one sustained sizing session
+presented 357 cached frames while normal frame 2351 stayed unchanged. Edge dragging
+and maximize/restore also retained the image and resumed normal drawing.
+
+Before marking the PR ready, exercise a network match, menu/tutorial/editor
+dialogs, fullscreen switching, minimization, and multi-display HiDPI transitions
+on supported desktops. The VM does not validate physical Windows GPU drivers.

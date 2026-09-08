@@ -15,6 +15,7 @@ class Context : public GraphicContext
 	int presentedWidth = 0, presentedHeight = 0;
 	void swapBuffers() override
 	{
+		if (pollingEvents) ++cachedPresentations;
 #ifdef HAVE_OPENGL
 		// Read the exact frame submitted to the window system. Post-swap GL_FRONT
 		// readback is not reliable on Mesa/Xvfb (it can return an all-black image).
@@ -30,6 +31,7 @@ class Context : public GraphicContext
 	}
 public:
 	int frames = 0;
+	int cachedPresentations = 0;
 	Context(bool gpu) : GraphicContext(640, 480, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
 	void nextFrame() override { ++frames; GraphicContext::nextFrame(); }
 	void resize(int w, int h)
@@ -157,6 +159,30 @@ int main(int argc, char **argv)
 		gfx.nextFrame(); gfx.expose();
 		require(gfx.pixel(100, 100).g > 240, "Rendering failed after window recreation");
 		std::printf("PASS %s: cache, callback guards, reflow, context lifetime, input, minimum size, recreation\n", gpu ? "GL" : "software");
+		if (argc > 2 && std::string(argv[2]) == "interactive")
+		{
+			gfx.setRes(800, 600, GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0));
+			std::puts("Drag window edges, maximize/restore, then press Escape to finish.");
+			bool done = false;
+			while (!done)
+			{
+				const int frames = gfx.frames, cached = gfx.cachedPresentations;
+				SDL_Event event;
+				while (GraphicContext::pollEvent(&event))
+					if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) done = true;
+				require(gfx.frames == frames, "Native event pump advanced normal rendering");
+				if (gfx.cachedPresentations != cached)
+					std::printf("Event pump: %d cached presentations, normal frame %d unchanged; logical size %dx%d\n",
+						gfx.cachedPresentations-cached, frames, gfx.getW(), gfx.getH());
+				gfx.setClipRect();
+				gfx.drawFilledRect(0, 0, gfx.getW(), gfx.getH(), Color(160, 20, 20));
+				gfx.drawFilledRect(0, 0, gfx.getW()/2, gfx.getH()/2, Color(20, 180, 20));
+				gfx.drawFilledRect((frames*5) % gfx.getW(), 0, 16, gfx.getH(), Color(255, 255, 255));
+				gfx.nextFrame();
+				std::fflush(stdout);
+				SDL_Delay(30);
+			}
+		}
 	}
 	catch (const std::exception &e) { std::fprintf(stderr, "FAIL: %s\n", e.what()); return 1; }
 	return 0; // SDL renames main to SDL_main on Windows; implicit main return does not apply.
