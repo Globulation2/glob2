@@ -4,6 +4,8 @@
 
 #pragma once
 #include <MapCamera.h>
+#include <InputState.h>
+#include <utility>
 
 #include "Brush.h"
 #include "GAGSys.h"
@@ -364,19 +366,35 @@ private:
 class MapEdit
 {
 	friend class HighResolutionIntegrationHarness;
+    bool editing = false, quitDecision = false;
+    int editingResult = 0;
+    GAGCore::InputState inputState;
+    bool fertilityRequested = false;
+    std::string pendingSaveFilename, pendingSaveName, pendingLoadFilename;
 public:
 	MapEdit();
 	~MapEdit();
 	///Loads the game given by a particular file name
 	bool load(const std::string filename);
-	///Saves the game to a particular file name
+    GAGCore::CooperativeTask loadTask(std::string filename);
+	///Writes a map after the owned fertility job has committed its results
 	bool save(const std::string filename, const std::string name);
 
-	///This function sets the map a particular size and uniform terrain type, then goes into the main loop
-	int run(int sizeX, int sizeY, TerrainType terrainType);
-	///This is the main loop function. It "ticks" every 33 miliseconds, handling events and drawing as it goes.
-	int run(void);
-	
+	///Updates the editor after map generation
+	void update();
+
+    void beginEditing();
+    void requestLoad(std::string filename) { pendingLoadFilename = std::move(filename); }
+    std::string takeLoadRequest() { return std::exchange(pendingLoadFilename, {}); }
+    void suspendInput();
+    bool advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick);
+    void drawEditing();
+    bool needsFertility() const { return fertilityRequested; }
+    bool finishFertility(bool completed);
+    bool needsQuitDecision() const { return quitDecision; }
+    void resolveQuitDecision(int choice);
+    int editingReturnCode() const { return editingResult; }
+
 	void mapHasBeenModified(void) { hasMapBeenModified=true; }
 	
 	///This function regenerates a game header for use in campaigns

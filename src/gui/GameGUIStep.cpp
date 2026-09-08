@@ -111,16 +111,22 @@ void GameGUI::dragStep(int mx, int my, int button)
    information, because we need the information as it was in the
    middle of the event stream.  (There may be many later events we
    have not yet processed.) */
-
-
 void GameGUI::step(void)
 {
-	SDL_Event event, mouseMotionEvent, windowEvent;
+    std::vector<SDL_Event> events;
+    SDL_Event event;
+    while (GAGCore::GraphicContext::pollEvent(&event)) events.push_back(event);
+    step(events, SDL_GetTicks64());
+}
+
+void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
+{
+	SDL_Event mouseMotionEvent;
 	bool wasMouseMotion=false;
-	bool wasWindowEvent=false;
+
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
-	// we get all pending events but for mouse motion we only keep the last one
-	while (GAGCore::GraphicContext::pollEvent(&event))
+	// Process host-supplied events in their original order; coalesce only mouse motion.
+	for (auto event : events)
 	{
 		GAGCore::GraphicContext::translateMouseEvent(&event);
 		if (event.type==SDL_MOUSEMOTION)
@@ -167,14 +173,14 @@ void GameGUI::step(void)
 			wasMouseMotion=true;
 		}
 #		ifdef USE_OSX
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
 		}
 #		endif
 #		ifdef USE_WIN32
-		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
+		else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
 		{
 			isRunning=false;
 			exitGlobCompletely=true;
@@ -182,24 +188,20 @@ void GameGUI::step(void)
 #		endif
 		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
 		{
-			lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
-			/* We ignore what SDL_GetMouseState does to
-				lastMouseX and lastMouseY, because that may
-				reflect many subsequent events that we have not
-				yet processed.  Technically, we shouldn't use
-				SDL_GetMouseState at all but should calculate the
-				button state by keeping track of what has
-				happened.  However, I haven't had the programming
-				energy to do this, so I am cheating in the line
-				above. */
+            if (wasMouseMotion) { processEvent(&mouseMotionEvent); wasMouseMotion = false; }
+            if (event.button.button > 0 && event.button.button <= 32) {
+                const Uint32 mask = SDL_BUTTON(event.button.button);
+                if (event.type == SDL_MOUSEBUTTONDOWN) lastMouseButtonState |= mask;
+                else lastMouseButtonState &= ~mask;
+            }
 			lastMouseX = event.button.x;
 			lastMouseY = event.button.y;
 			processEvent (&event);
 		}
 		else if (event.type==SDL_WINDOWEVENT)
 		{
-			windowEvent=event;
-			wasWindowEvent=true;
+            if (wasMouseMotion) { processEvent(&mouseMotionEvent); wasMouseMotion = false; }
+            processEvent(&event);
 		}
 		else
 		{
@@ -208,8 +210,7 @@ void GameGUI::step(void)
 	}
 	if (wasMouseMotion)
 		processEvent(&mouseMotionEvent);
-	if (wasWindowEvent)
-		processEvent(&windowEvent);
+
 
 	flushScrollWheelOrders();
 
@@ -219,7 +220,8 @@ void GameGUI::step(void)
 	viewportX += game.map.getW();
 	viewportY += game.map.getH();
 	// Continuous scrolling keeps its normal 25 Hz cadence at every game speed.
-	const Uint64 now=SDL_GetTicks64();
+
+	if (now < lastViewportStep) lastViewportStep = now;
 	const unsigned viewportSteps=std::min<Uint64>((now-lastViewportStep)/GAME_TICK_MS, 5);
 	if(viewportSteps)
 		lastViewportStep=now-(now-lastViewportStep)%GAME_TICK_MS;
@@ -237,7 +239,7 @@ void GameGUI::step(void)
 	updateCamera();
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
-		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
+		if (inputState.hasFocus()) dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
 		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 

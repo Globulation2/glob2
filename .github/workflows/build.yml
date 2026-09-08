@@ -119,6 +119,16 @@ jobs:
           cat artifacts/custom-game-ci/ui.log
           ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
 
+      - name: Test nonblocking screen execution
+        run: |
+          scons release=1 -j$(nproc) screen-test
+          ./build/linux/client/release/libgag/src/ScreenExecutionHarness
+
+      - name: Test incremental engine sessions
+        run: |
+          scons release=1 -j$(nproc) session-test
+          python3 test/run-engine-session-test.py
+
       - name: Build and run the selection lifetime regression
         run: |
           scons -j$(nproc) release=1 server=0 selection-test
@@ -380,6 +390,26 @@ jobs:
           python3 -m unittest discover -s tests/gateway -v
       - name: Build headless router
         run: scons role=router release=1 -j2
+      - uses: actions/setup-node@v4
+        if: matrix.order == 'concurrent'
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: browser/package-lock.json
+      - name: Test browser single-player flow
+        if: matrix.order == 'concurrent'
+        working-directory: browser
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install --with-deps chromium firefox webkit
+          npm test
+      - uses: actions/upload-artifact@v4
+        if: failure() && matrix.order == 'concurrent'
+        with:
+          name: browser-failure-traces
+          path: |
+            build/browser-test-results
+            build/browser-test-report
       - uses: actions/upload-artifact@v4
         with:
           name: glob2-web-development-${{ matrix.order }}

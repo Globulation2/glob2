@@ -34,6 +34,10 @@ The test runner starts its own gateway on an ephemeral port and two gateway
 routes backed by an isolated TCP echo service. `GLOB2_GATEWAY` overrides the
 binary location. It does not connect to a public YOG server.
 
+The headless router connects to the lobby on loopback by default. Set
+`GLOB2_YOG_HOST` to the private lobby hostname for a distributed deployment.
+The lobby/router control connection uses the existing internal TCP port 7490.
+
 ## Transport contract
 
 - `/yog` and `/router` upgrade to binary WebSockets. They forward only to the

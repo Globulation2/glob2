@@ -8,12 +8,10 @@ class Glob2
 {
 	static const bool verbose = false;
 public:
-	//! true while the game is running
-	bool isRunning;
+	// Graphical completion is reported by the application host.
+	static constexpr int HOSTED_RUN = -1000;
 
 public:
-	void drawYOGSplashScreen();
-	void multiplayerYOG();
 	int runNoX();
 	///Runs random games non stop until the game crashes
 	int runTestGames();

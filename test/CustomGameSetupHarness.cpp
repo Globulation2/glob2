@@ -2,6 +2,7 @@
 #include "AIImplementation.h"
 #include "AINames.h"
 #include "CustomGameScreen.h"
+#include <ScreenStack.h>
 #include "CustomGameSetup.h"
 #include "CustomGamePreferences.h"
 #include "Engine.h"
@@ -97,7 +98,8 @@ struct CustomGameSetupHarness
 		if (write) files->remove(CustomGamePreferences::filename);
 		if (write)
 		{
-			CustomGameScreen screen;
+			GAGGUI::ScreenStack screens;
+			CustomGameScreen screen(screens);
 			assert(screen.validMap && screen.setup.capacity == 4);
 			assert(screen.setup.setController(2, CustomGameSetup::Shared));
 			screen.setup.colonies[2].ai = AI::CORTEX;
@@ -121,7 +123,8 @@ struct CustomGameSetupHarness
 		{
 			std::string premade;
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens;
+				CustomGameScreen screen(screens);
 				assert(screen.validMap && !screen.setup.random && screen.setup.capacity == 4);
 				assert(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
 				assert(screen.setup.colonies[2].ai == AI::CORTEX);
@@ -140,7 +143,8 @@ struct CustomGameSetupHarness
 				assert(screen.previewPending);
 			}
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens;
+				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap);
 				assert(screen.snapshot.empty() && screen.source.empty());
 				assert(screen.setup.premadeMap == premade);
@@ -150,7 +154,8 @@ struct CustomGameSetupHarness
 				screen.setup.premadeMap = "/missing/saved-map.map";
 			}
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens;
+				CustomGameScreen screen(screens);
 				assert(!screen.validMap && !screen.setup.random && !screen.message.empty());
 				assert(screen.setup.colonies[2].ai == AI::CORTEX && screen.setup.speed == 3);
 				assert(screen.setup.premadeMap == "/missing/saved-map.map");
@@ -160,7 +165,8 @@ struct CustomGameSetupHarness
 				out.write(truncated.data(), truncated.size(), "broken preferences");
 			});
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens;
+				CustomGameScreen screen(screens);
 				assert(screen.validMap && screen.setup.capacity == 4 && screen.setup.speed == 0);
 			}
 			files->remove(CustomGamePreferences::filename);
@@ -340,7 +346,8 @@ struct CustomGameSetupHarness
 			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
 		}
 
-		CustomGameScreen screen;
+		GAGGUI::ScreenStack screens;
+		CustomGameScreen screen(screens);
 		screen.gfx = globalContainer->gfx;
 		screen.dispatchInit();
 		assert(screen.validMap && screen.setup.capacity == 4);

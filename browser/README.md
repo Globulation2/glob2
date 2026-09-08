@@ -64,9 +64,26 @@ Tested in Chromium on 2026-09-07 (America/Toronto):
   runs after interaction. Audible output has not been independently checked.
 - No uncaught JavaScript errors in the final custom-match/save/load smoke test.
 
-`browser/smoke-test.js` is a Playwright Page function exercising the final
-custom-match, pause, persistence, and reload flow. It creates or overwrites
-`Browser_smoke.game` in this local experiment's browser storage.
+## Automated tests
+
+The maintained Playwright suite starts an isolated local HTTP server and uses
+fresh browser profiles for every test. It covers page startup, a custom match,
+pause over multiple observed engine frames, save persistence across reload,
+loading and audio activation. Player actions use real mouse/keyboard input;
+assertions read `glob2Diagnostics` without changing game state.
+
+```sh
+cd browser
+npm ci --ignore-scripts
+npx playwright install chromium firefox webkit
+npm test
+```
+
+Use `npm test -- --project=chromium` for a focused run. The package lock pins the
+test runner and its browser revisions. Failures retain traces and screenshots
+under `build/browser-test-results`. These initial tests do not yet cover the
+complete supported-release matrix. WebKit automation does not substitute for
+release testing in actual Safari, nor Chromium for Edge.
 
 The generated payload is about 26 MiB of assets, 12 MiB of WebAssembly, and
 615 KiB of JavaScript, before HTTP compression. The build and SDK are local

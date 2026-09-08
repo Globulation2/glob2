@@ -81,6 +81,11 @@ int Game::buildingsCount(int team, int type, int level)
 
 void Game::addTeam(int pos)
 {
+    addTeamTask(pos).run();
+}
+
+GAGCore::CooperativeTask Game::addTeamTask(int pos)
+{
 	assert(mapHeader.getNumberOfTeams()<Team::MAX_COUNT);
 	if(pos==TEAM_POS_END)
 		pos=mapHeader.getNumberOfTeams();
@@ -97,9 +102,10 @@ void Game::addTeam(int pos)
 
 	prestigeToReach = std::max(MIN_MAX_PRESTIGE, pos*TEAM_MAX_PRESTIGE);
 
-	map.addTeam();
+	co_await map.addTeamTask();
 
 	sgslScript.addTeam();
+    co_return true;
 }
 
 void Game::removeTeam(int pos)

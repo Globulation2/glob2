@@ -91,6 +91,10 @@ if not env['server']:
     render_test = savegame_env.Program('MapRenderResizeHarness', render_sources)
     local.Alias('map-render-resize-test', render_test)
 
+    session_sources = [source for source in source_files if source != 'Glob2.cpp']
+    session_sources += local.Object('EngineSessionHarness.o', '#test/EngineSessionHarness.cpp')
+    session_test = local.Program('engine-session-test', session_sources)
+    local.Alias('session-test', session_test)
 
 if not env['server']:
     # Compile with local, not trapped_env, to avoid rebuilding shared objects under a second environment.

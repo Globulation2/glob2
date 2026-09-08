@@ -235,8 +235,3 @@ void MainMenuScreen::onAction(Widget* source, Action action, int par1, int par2)
 	if (action == BUTTON_RELEASED || action == BUTTON_SHORTCUT)
 		endExecute(par1);
 }
-
-int MainMenuScreen::menu()
-{
-	return MainMenuScreen().execute(globalContainer->gfx, 40);
-}

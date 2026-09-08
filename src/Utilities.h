@@ -46,6 +46,9 @@ inline Uint32 rotl1(Uint32 x) { return (x << 1) | (x >> 31); }
 void setSyncRandSeed();
 void setSyncRandSeed(Uint32 seed);
 void setRandomSyncRandSeed();
+// Preserve synchronized randomness when a private loading/generation job is cancelled.
+std::string getSyncRandState();
+bool setSyncRandState(const std::string& state);
 
 int distSquare(int x1, int y1, int x2, int y2);
 #define SIGN(s) ((s) == 0 ? 0 : ((s)>0 ? 1 : -1) )

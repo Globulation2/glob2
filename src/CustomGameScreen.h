@@ -3,6 +3,7 @@
 #include "CustomGameSetup.h"
 #include "Glob2Screen.h"
 #include "MapHeader.h"
+#include <ScreenStack.h>
 #include <memory>
 #include <vector>
 class LobbyControls;
@@ -32,7 +33,7 @@ class CustomGameScreen : public Glob2TabScreen
 		OK = 1,
 		CANCEL = 2
 	};
-	CustomGameScreen();
+	explicit CustomGameScreen(GAGGUI::ScreenStack& screens);
 	~CustomGameScreen() override;
 	void onAction(Widget *, Action, int, int) override;
 	void onGroupActivated(int) override;
@@ -51,6 +52,7 @@ class CustomGameScreen : public Glob2TabScreen
 
   private:
 	friend struct CustomGameSetupHarness;
+	GAGGUI::ScreenStack& screens;
 	CustomGameSetup setup;
 	MapHeader mapHeader;
 	GameHeader gameHeader;

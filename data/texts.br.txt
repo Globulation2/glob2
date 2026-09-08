@@ -517,7 +517,7 @@ Descrição do mapa
 [Map Discovered]
 Mapa
 [Map download failure: lost connection]
-<<<<<<< /media/disk-2/attila/glob2/data/texts.br.txt
+Map Download Failed: Connection to YOG lost
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
@@ -1762,3 +1762,27 @@ Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL
 Visão toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a visão geral toroidal enquanto você se desloca pelo mapa (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+The map could not be saved. Check the destination and available space. Your edits are still open.
+[Loading headers]
+Loading headers...
+[Loading teams]
+Loading teams...
+[Loading terrain]
+Loading terrain...
+[Building gradients]
+Building gradients...
+[Loading players]
+Loading players...
+[Loading scripts]
+Loading scripts...
+[Generating map]
+Generating map...
+[ERROR_CANT_GENERATE_MAP]
+The map could not be generated. Try different generation settings.
+[Loading units]
+Loading units...
+[Loading buildings]
+Loading buildings...
+[Resolving team links]
+Resolving team links...

@@ -10,13 +10,18 @@
 
 bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
 {
+    return loadTask(stream, buildingstypes, versionMinor).run();
+}
+
+GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
+{
 	assert(stream);
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsTryToBuildingSiteRoom.clear();
 
 	// loading base team
 	if(!BaseTeam::load(stream, versionMinor))
-		return false;
+		co_return false;
 
 	stream->readEnterSection("Team");
 
@@ -24,8 +29,10 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	stream->readEnterSection("myUnits");
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
+        if ((i & 31) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Loading units]");
 		if (myUnits[i])
 			delete myUnits[i];
+        myUnits[i] = NULL;
 
 		stream->readEnterSection(i);
 		Uint32 isUsed = stream->readUint32("isUsed");
@@ -47,8 +54,10 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	stream->readEnterSection("myBuildings");
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
+        if ((i & 31) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Loading buildings]");
 		if (myBuildings[i])
 			delete myBuildings[i];
+        myBuildings[i] = NULL;
 
 		stream->readEnterSection(i);
 		Uint32 isUsed = stream->readUint32("isUsed");
@@ -76,6 +85,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	stream->readEnterSection("myUnits");
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
+        if ((i & 31) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Resolving team links]");
 		if (myUnits[i])
 		{
 			stream->readEnterSection(i);
@@ -88,6 +98,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	stream->readEnterSection("myBuildings");
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
+        if ((i & 31) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Resolving team links]");
 		if (myBuildings[i])
 		{
 			stream->readEnterSection(i);
@@ -125,7 +136,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	if (!stats.load(stream, versionMinor))
 	{
 		stream->readLeaveSection();
-		return false;
+		co_return false;
 	}
 	if (versionMinor < FILE_FORMAT_VERSION_LIVE_TEAM_STATS)
 		stats.step(this, true);
@@ -135,7 +146,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		if(!race.load(stream, versionMinor))
 		{
 			stream->readLeaveSection();
-			return false;
+			co_return false;
 		}
 	}
 	else
@@ -146,7 +157,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	isAlive = true;
 
 	stream->readLeaveSection();
-	return true;
+	co_return true;
 }
 
 

@@ -5,6 +5,7 @@
 #pragma once
 #include <MapCamera.h>
 
+#include <InputState.h>
 #include <memory>
 #include <optional>
 #include <queue>
@@ -78,6 +79,8 @@ public:
 	void adjustLocalTeam();
 	//! Handle mouse, keyboard and window resize inputs, and stats
 	void step(void);
+    // Host-supplied events and monotonic time; no event polling in this phase.
+    void step(const std::vector<SDL_Event>& events, Uint64 now);
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
 	void configureLiveSpectatorView();
@@ -92,8 +95,10 @@ public:
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
+	GAGCore::CooperativeTask loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, std::string sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const std::string name);
 
 	void processEvent(SDL_Event *event);
@@ -530,6 +535,9 @@ private:
 	//! for mouse motion
 	int viewportSpeedX, viewportSpeedY;
 	Uint64 lastViewportStep;
+    GAGCore::InputState inputState;
+    int lastMouseX = 0, lastMouseY = 0;
+    Uint32 lastMouseButtonState = 0;
 
 	// menu related functions
 	enum InGameMenu

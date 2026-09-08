@@ -21,6 +21,9 @@ if not env['server']:
     resize_test = aspect_env.Program('WindowResizeHarness',
         [aspect_env.Object('WindowResizeHarness.o', '#test/WindowResizeHarness.cpp'), l1])
     env.Alias('resize-test', resize_test)
+    screen_test = env.Program('ScreenExecutionHarness',
+        [env.Object('ScreenExecutionHarness.o', '#test/ScreenExecutionHarness.cpp'), l1])
+    env.Alias('screen-test', screen_test)
 else:
     Default(l2)
 

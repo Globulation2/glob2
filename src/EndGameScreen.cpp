@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
+#include <ApplicationHost.h>
 #include "EndGameScreen.h"
 #include <FormatableString.h>
 #include <GUIStyle.h>
@@ -552,7 +553,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 		Uint64 ntime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
+		GAGCore::ApplicationHost::wait(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
 	}
 
 	if (loadSaveScreen->endValue==0)

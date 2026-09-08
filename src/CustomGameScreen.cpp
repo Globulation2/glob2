@@ -208,7 +208,7 @@ std::string colorName(Color c)
 }
 } // namespace
 
-CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
+CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack& screens) : Glob2TabScreen(false, true), screens(screens)
 {
 	gfx = globalContainer->gfx;
 	username = globalContainer->settings.getUsername();

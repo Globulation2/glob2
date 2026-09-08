@@ -13,6 +13,7 @@
 #include <queue>
 #include <utility>
 #include <vector>
+#include <stdexcept>
 
 namespace
 {
@@ -51,95 +52,92 @@ namespace
 		return kernel;
 	}
 
-	/// 8-connected BFS from every takeable corn/wood tile, traversing only grass
-	/// cells. Cells that are unreachable (or non-grass and not seeded) stay nullopt.
-	DistanceMap computeResourceDistance(const Map& map)
-	{
-		DistanceMap distance(static_cast<size_t>(map.getW()) * map.getH());
-		std::queue<std::pair<int, int>> frontier;
-
-		for (int x = 0; x < map.getW(); ++x)
-		{
-			for (int y = 0; y < map.getH(); ++y)
-			{
-				if (map.isResourceTakeable(x, y, CORN)
-				    || map.isResourceTakeable(x, y, WOOD))
-				{
-					distance[map.coordToIndex(x, y)] = 0;
-					frontier.emplace(x, y);
-				}
-			}
-		}
-
-		while (!frontier.empty())
-		{
-			const auto [px, py] = frontier.front();
-			frontier.pop();
-			const Uint16 nextDepth =
-				static_cast<Uint16>(*distance[map.coordToIndex(px, py)] + 1);
-
-			for (const auto [dx, dy] : kBfsNeighbors)
-			{
-				const int nx = map.normalizeX(px + dx);
-				const int ny = map.normalizeY(py + dy);
-				auto& cell = distance[map.coordToIndex(nx, ny)];
-				if (!cell.has_value() && map.isGrass(nx, ny))
-				{
-					cell = nextDepth;
-					frontier.emplace(nx, ny);
-				}
-			}
-		}
-		return distance;
-	}
 }
 
 namespace FertilityCalculator
 {
-	void compute(Map& map, const ProgressCallback& progress)
-	{
-		// BFS is fast relative to the kernel pass, so it isn't progress-reported.
-		const DistanceMap reachable = computeResourceDistance(map);
-		const auto& kernel = fertilityKernel();
-
-		std::vector<Uint16> fertility(
-			static_cast<size_t>(map.getW()) * map.getH(), 0);
-		Uint16 fertilityMax = 0;
-
-		for (int x = 0; x < map.getW(); ++x)
-		{
-			if (progress)
-				progress(static_cast<float>(x) / static_cast<float>(map.getW()));
-
-			for (int y = 0; y < map.getH(); ++y)
-			{
-				if (!map.isGrass(x, y))
-					continue;
-				if (!reachable[map.coordToIndex(x, y)].has_value())
-					continue;
-
-				Uint16 total = 0;
-				for (int ny = -kFertilityRadius; ny <= kFertilityRadius; ++ny)
-				{
-					for (int nx = -kFertilityRadius; nx <= kFertilityRadius; ++nx)
-					{
-						// Map::isWater wraps coords via coordToIndex; no normalize needed.
-						if (map.isWater(x + nx, y + ny))
-						{
-							const int kIdx = (ny + kFertilityRadius) * kKernelSide
-							                 + (nx + kFertilityRadius);
-							total += kernel[kIdx];
-						}
-					}
-				}
-				fertilityMax = std::max(fertilityMax, total);
-				fertility[map.coordToIndex(x, y)] = total;
-			}
-		}
-
-		for (int x = 0; x < map.getW(); ++x)
-			for (int y = 0; y < map.getH(); ++y)
-				map.getTile(x, y).fertility = fertility[map.coordToIndex(x, y)];
-		map.fertilityMaximum = fertilityMax;
-	}
+    struct Job::State
+    {
+        Map& map;
+        const std::size_t size;
+        DistanceMap distance;
+        std::queue<std::pair<int, int>> frontier;
+        std::vector<Uint16> fertility;
+        enum Phase { Seed, Reach, Kernel, Ready, Committed } phase = Seed;
+        std::size_t cursor = 0, visited = 0;
+        int kernelOffset = 0;
+        Uint16 total = 0, maximum = 0;
+        explicit State(Map& map) : map(map), size(static_cast<std::size_t>(map.getW()) * map.getH()),
+            distance(size), fertility(size, 0) {}
+        std::pair<int, int> coordinate() const
+        { return {static_cast<int>(cursor / map.getH()), static_cast<int>(cursor % map.getH())}; }
+    };
+    Job::Job(Map& map) : state(std::make_unique<State>(map)) {}
+    Job::~Job() = default;
+    bool Job::ready() const { return state->phase >= State::Ready; }
+    bool Job::advance(std::size_t operations)
+    {
+        auto& s = *state;
+        const auto& kernel = fertilityKernel();
+        while (operations-- && !ready()) {
+            if (s.phase == State::Seed) {
+                if (s.cursor == s.size) { s.cursor = 0; s.phase = State::Reach; continue; }
+                const auto [x, y] = s.coordinate();
+                if (s.map.isResourceTakeable(x, y, CORN) || s.map.isResourceTakeable(x, y, WOOD)) {
+                    s.distance[s.map.coordToIndex(x, y)] = 0;
+                    s.frontier.emplace(x, y);
+                }
+                ++s.cursor;
+            } else if (s.phase == State::Reach) {
+                if (s.frontier.empty()) { s.phase = State::Kernel; continue; }
+                const auto [x, y] = s.frontier.front(); s.frontier.pop(); ++s.visited;
+                const Uint16 depth = static_cast<Uint16>(*s.distance[s.map.coordToIndex(x, y)] + 1);
+                for (const auto [dx, dy] : kBfsNeighbors) {
+                    const int nx = s.map.normalizeX(x + dx), ny = s.map.normalizeY(y + dy);
+                    auto& cell = s.distance[s.map.coordToIndex(nx, ny)];
+                    if (!cell && s.map.isGrass(nx, ny)) { cell = depth; s.frontier.emplace(nx, ny); }
+                }
+            } else {
+                if (s.cursor == s.size) { s.phase = State::Ready; continue; }
+                const auto [x, y] = s.coordinate();
+                if (!s.map.isGrass(x, y) || !s.distance[s.map.coordToIndex(x, y)]) { ++s.cursor; continue; }
+                const int nx = s.kernelOffset % kKernelSide - kFertilityRadius;
+                const int ny = s.kernelOffset / kKernelSide - kFertilityRadius;
+                if (s.map.isWater(x + nx, y + ny)) s.total += kernel[s.kernelOffset];
+                if (++s.kernelOffset == kKernelSide * kKernelSide) {
+                    s.fertility[s.map.coordToIndex(x, y)] = s.total;
+                    s.maximum = std::max(s.maximum, s.total);
+                    s.total = 0; s.kernelOffset = 0; ++s.cursor;
+                }
+            }
+        }
+        return ready();
+    }
+    float Job::progress() const
+    {
+        const auto& s = *state;
+        if (ready()) return 1.f;
+        if (!s.size) return 0.f;
+        if (s.phase == State::Seed) return .1f * s.cursor / s.size;
+        if (s.phase == State::Reach) return .1f + .1f * s.visited / s.size;
+        return .2f + .8f * s.cursor / s.size;
+    }
+    void Job::commit()
+    {
+        auto& s = *state;
+        if (!ready()) throw std::logic_error("Cannot commit incomplete fertility");
+        if (s.phase == State::Committed) return;
+        for (int x = 0; x < s.map.getW(); ++x)
+            for (int y = 0; y < s.map.getH(); ++y)
+                s.map.getTile(x, y).fertility = s.fertility[s.map.coordToIndex(x, y)];
+        s.map.fertilityMaximum = s.maximum;
+        s.phase = State::Committed;
+    }
+    void compute(Map& map, const ProgressCallback& progress)
+    {
+        Job job(map);
+        while (!job.advance(16384)) if (progress) progress(job.progress());
+        job.commit();
+        if (progress) progress(1.f);
+    }
 }
