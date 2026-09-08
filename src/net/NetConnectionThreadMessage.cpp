@@ -91,13 +91,6 @@ bool NTCouldNotConnect::operator==(const NetConnectionThreadMessage& rhs) const
 }
 
 
-std::string NTCouldNotConnect::getError() const
-{
-	return error;
-}
-
-
-
 NTConnected::NTConnected(const std::string& ip)
 	: ip(ip)
 {
@@ -132,7 +125,6 @@ bool NTConnected::operator==(const NetConnectionThreadMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NTConnected))
 	{
-		//const NTConnected& r = dynamic_cast<const NTConnected&>(rhs);
 		return true;
 	}
 	return false;
@@ -165,7 +157,6 @@ bool NTCloseConnection::operator==(const NetConnectionThreadMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NTCloseConnection))
 	{
-		//const NTCloseConnection& r = dynamic_cast<const NTCloseConnection&>(rhs);
 		return true;
 	}
 	return false;
@@ -205,13 +196,6 @@ bool NTLostConnection::operator==(const NetConnectionThreadMessage& rhs) const
 	}
 	return false;
 }
-
-
-std::string NTLostConnection::getError() const
-{
-	return error;
-}
-
 
 
 NTReceivedMessage::NTReceivedMessage(std::shared_ptr<NetMessage> message)
@@ -366,7 +350,6 @@ bool NTExitThread::operator==(const NetConnectionThreadMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NTExitThread))
 	{
-		//const NTExitThread& r = dynamic_cast<const NTExitThread&>(rhs);
 		return true;
 	}
 	return false;

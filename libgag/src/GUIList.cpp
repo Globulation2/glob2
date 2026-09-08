@@ -74,15 +74,6 @@ namespace GAGGUI
 			if (disp)
 				disp--;
 			break;
-			/*case UP_ZONE_PRESSED:
-			if (disp < count)
-				disp = 0;
-			else
-				disp -= count;
-			break;
-			case DOWN_ZONE_PRESSED:
-			disp = std::min(disp + count, strings.size() - count);
-			break;*/
 			case DOWN_ARROW_PRESSED:
 			disp = std::min(disp + 1, strings.size() - count);
 			break;

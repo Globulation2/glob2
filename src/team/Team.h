@@ -61,7 +61,6 @@ public:
 
 	virtual ~Team(void);
 
-	void setBaseTeam(const BaseTeam *initial);
 	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 
@@ -81,8 +80,6 @@ public:
 
 	//! Step every unit, building and bullet of the team.
 	void syncStep(void);
-	//! A team with no controlling player left is dead.
-	void checkControllingPlayers(void);
 
 	void pushGameEvent(GameEvent event);
 	//! Pop the oldest event, if any.
@@ -118,7 +115,6 @@ public:
 	int maxBuildLevel(void);
 
 	// Pathfinding
-	void computeForbiddenArea();
 	void dirtyGlobalGradient();
 	void dirtyWarFlagGradient();
 

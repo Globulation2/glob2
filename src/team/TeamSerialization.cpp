@@ -92,8 +92,6 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		{
 			stream->readEnterSection(i);
 			myBuildings[i]->loadCrossRef(stream, buildingstypes, this, versionMinor);
-			if (myBuildings[i]->type->canExchange)
-				canExchange.push_back(myBuildings[i]);
 			stream->readLeaveSection();
 		}
 	}

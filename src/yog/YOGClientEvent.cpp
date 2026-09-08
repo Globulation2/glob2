@@ -32,7 +32,6 @@ bool YOGConnectedEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGConnectedEvent))
 	{
-		//const YOGConnectedEvent& r = dynamic_cast<const YOGConnectedEvent&>(rhs);
 		return true;
 	}
 	return false;
@@ -65,7 +64,6 @@ bool YOGConnectionLostEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGConnectionLostEvent))
 	{
-		//const YOGConnectionLostEvent& r = dynamic_cast<const YOGConnectionLostEvent&>(rhs);
 		return true;
 	}
 	return false;
@@ -98,7 +96,6 @@ bool YOGLoginAcceptedEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGLoginAcceptedEvent))
 	{
-		//const YOGLoginAcceptedEvent& r = dynamic_cast<const YOGLoginAcceptedEvent&>(rhs);
 		return true;
 	}
 	return false;
@@ -171,7 +168,6 @@ bool YOGPlayerBannedEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGPlayerBannedEvent))
 	{
-		//const YOGPlayerBannedEvent& r = dynamic_cast<const YOGPlayerBannedEvent&>(rhs);
 		return true;
 	}
 	return false;
@@ -204,7 +200,6 @@ bool YOGIPBannedEvent::operator==(const YOGClientEvent& rhs) const
 {
 	if(typeid(rhs)==typeid(YOGIPBannedEvent))
 	{
-		//const YOGIPBannedEvent& r = dynamic_cast<const YOGIPBannedEvent&>(rhs);
 		return true;
 	}
 	return false;

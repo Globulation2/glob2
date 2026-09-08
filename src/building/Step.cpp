@@ -62,8 +62,7 @@ bool Building::considerUnitForResources(Unit* unit, int* dist, int* resource)
 	Map* map = owner->map;
 	int distBuilding=0;
 	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
-	bool canSwim=unit->performance[SWIM];
-	if(!map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	if(!map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, &distBuilding))
 	{
 		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
 		return false;
@@ -107,7 +106,7 @@ bool Building::considerUnitForResources(Unit* unit, int* dist, int* resource)
 			else
 				fruitFound=true;
 			int distResource = 0;
-			if (map->resourceAvailable(owner->teamNumber, r, canSwim, x, y, &distResource))
+			if (map->resourceAvailable(owner->teamNumber, r, unit->swimClass(), x, y, &distResource))
 			{
 				if(distResource<timeLeft)
 				{
@@ -346,7 +345,7 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 	// check in subscribeToBringResourcesStep uses the same pairing.
 	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
 	bool canSwim = unit->performance[SWIM];
-	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	if (!owner->map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, &distBuilding))
 	{
 		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
 		return false;
@@ -387,8 +386,7 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist)
 	// linear gradient steps respectively); compare as-is. The corresponding
 	// check in subscribeToBringResourcesStep uses the same pairing.
 	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
-	bool canSwim = unit->performance[SWIM];
-	if (!owner->map->buildingAvailable(this, canSwim, unit->posX, unit->posY, &distBuilding))
+	if (!owner->map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, &distBuilding))
 	{
 		unitsFailingRequirements[UnitCantAccessBuilding] += 1;
 		return false;

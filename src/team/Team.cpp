@@ -80,19 +80,6 @@ void Team::init(void)
 
 
 
-void Team::setBaseTeam(const BaseTeam *initial)
-{
-	teamNumber=initial->teamNumber;
-	numberOfPlayer=initial->numberOfPlayer;
-	playersMask=initial->playersMask;
-
-	setCorrectColor(initial->color);
-	setCorrectMasks();
-}
-
-
-
-
 bool Team::integrity(void)
 {
 	checkInvariant(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
@@ -176,24 +163,6 @@ bool Team::openMarket()
 	return false;
 }
 
-
-
-
-void Team::checkControllingPlayers(void)
-{
-	if (!hasWon)
-	{
-		bool stillInControl = false;
-		for (int i=0; i<game->gameHeader.getNumberOfPlayers(); i++)
-		{
-			if ((game->players[i]->teamNumber == teamNumber) &&
-				game->players[i]->type != Player::P_LOST_DROPPING &&
-				game->players[i]->type != Player::P_LOST_FINAL)
-				stillInControl = true;
-		}
-		isAlive = isAlive && stillInControl;
-	}
-}
 
 
 

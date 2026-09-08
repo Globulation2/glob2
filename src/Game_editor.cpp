@@ -248,7 +248,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 {
 	bool found=false;
-	if (flags & DEL_GROUND_UNIT)
+	if (flags & DEL_AIR_UNIT)
 	{
 		Uint16 gauid=map.getAirUnit(x, y);
 		if (gauid!=NOGUID)
@@ -261,7 +261,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			found=true;
 		}
 	}
-	if (flags & DEL_AIR_UNIT)
+	if (flags & DEL_GROUND_UNIT)
 	{
 		Uint16 gguid=map.getGroundUnit(x, y);
 		if (gguid!=NOGUID)
@@ -317,6 +317,21 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags)
 				somethingInRect = true;
 
 	return somethingInRect;
+}
+
+void Game::removeUnallowedUnitsAndBuildings(int x, int y, int w, int h)
+{
+	for (int dx=x; dx<x+w; dx++)
+		for (int dy=y; dy<y+h; dy++)
+		{
+			int cx=dx&map.getMaskW();
+			int cy=dy&map.getMaskH();
+			if (!map.isGrass(cx, cy))
+				removeUnitAndBuildingAndFlags(cx, cy, 1, DEL_BUILDING);
+			Uint16 guid=map.getGroundUnit(cx, cy);
+			if (guid!=NOGUID && map.isWater(cx, cy) && !getUnit(guid)->performance[SWIM])
+				removeUnitAndBuildingAndFlags(cx, cy, 1, DEL_GROUND_UNIT);
+		}
 }
 
 bool Game::checkRoomForBuilding(int mousePosX, int mousePosY, const BuildingType *bt, int *buildingPosX, int *buildingPosY, int teamNumber, bool checkFow)

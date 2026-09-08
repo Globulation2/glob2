@@ -4,6 +4,7 @@ import os
 import glob
 sys.path.append( os.path.abspath("scons") )
 import bundle
+import ccache
 import dmg
 import nsis
 
@@ -249,6 +250,9 @@ def main():
     # tools like ar fall back to /tmp, which sandboxed environments may block.
     if 'TMPDIR' in os.environ:
         env['ENV']['TMPDIR'] = os.environ['TMPDIR']
+    # Likewise for SOURCE_DATE_EPOCH, needed by build tools for reproducible builds.
+    if 'SOURCE_DATE_EPOCH' in os.environ:
+        env['ENV']['SOURCE_DATE_EPOCH'] = os.environ['SOURCE_DATE_EPOCH']
     env["VERSION"] = "0.9.5.0"
     establish_options(env)
 
@@ -268,6 +272,11 @@ def main():
             env['CXX'] = 'x86_64-w64-mingw32-g++'
             env['AR']  = 'x86_64-w64-mingw32-ar'
             env['RANLIB'] = 'x86_64-w64-mingw32-ranlib'
+
+    # Cache compilation after compiler selection and before configure probes.
+    # Link commands continue to use the original compiler driver.
+    if ccache.enabled():
+        ccache.enable(env)
     
     
     

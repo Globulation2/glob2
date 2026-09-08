@@ -53,7 +53,6 @@ private:
 	{
 		START = 1,
 		CANCEL = 2,
-		STARTED=3,
 		OTHEROPTIONS=4,
 		READY=5,
 		
@@ -94,7 +93,6 @@ private:
 
 	std::shared_ptr<MultiplayerGame> game;
 
-	bool wasSlotUsed[Team::MAX_COUNT];
 	Text *notReadyText;
 	Text *gameStartWaitingText;
 

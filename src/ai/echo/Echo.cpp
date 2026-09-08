@@ -240,21 +240,6 @@ void Echo::check_fruit()
 
 std::shared_ptr<Order> Echo::getOrder(void)
 {
-//	for(int x=0; x<player->map->getW(); ++x)
-//	{
-//		for(int y=0; y<player->map->getH(); ++y)
-//		{
-//			player->map->setMapDiscovered(x, y, player->team->me);
-//		}
-//	}
-/*
-	if(timer%128==0)
-	{
-		OutputStream *stream = new TextOutputStream(Toolkit::getFileManager()->openOutputStreamBackend("glob2.world-desynchronization.dump.txt"));
-		player->game->save(stream, false, "glob2.world-desynchronization.dump.txt");
-		delete stream;
-	}
-*/
 	if(!gm)
 	{
 		gm.reset(new GradientManager(player->map));

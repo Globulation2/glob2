@@ -156,6 +156,35 @@ it on both supported Ubuntu versions.
 
 Saved state and step-by-step before/after reproduction: [PR #165 fixture](fixtures/wrapped-building/README.md).
 
+## Entering unit save regression
+
+From the repository root, run `scons -j8 release=1 server=0 entering-unit-save-test`
+and `./build/src/EnteringUnitSaveHarness`. The harness links the real engine and
+round-trips generated fixtures through binary saved games. It exercises eight
+entry directions at five interior/edge/corner positions, preserves the building
+reference and animation destination, and rejects both a misplaced entering
+explorer and stale occupancy for an ordinary explorer. It protects the runtime
+fix in `4ce1d5bc`; expected negative controls print integrity diagnostics.
+
+It needs no display, AI tournament tooling, or external save files. Linux CI runs
+it on both supported Ubuntu versions.
+
+Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).
+
+## Immobile unit gradient regression
+
+From the repository root, run `scons -j8 release=1 server=0 immobile-unit-gradient-test`
+and `./build/src/ImmobileUnitGradientHarness`. The harness uses a fresh 64x64 map
+and real engine orders to check empty immobile-unit bookkeeping, exact blocked
+cells, and immediate building-route invalidation after painting and erasing a gap.
+It exercises all seven swim classes on weighted full-map gradients. No display or
+external save fixture is needed; normal game data must be available.
+
+Pass `fresh`, `occupancy`, or `forbidden` to run one scenario. The latter two clear
+the initial occupancy explicitly, so failures in painting or occupancy can be
+reproduced independently of the fresh-map initialization bug. Linux CI runs all
+scenarios.
+
 ### Savegame safety
 
 Build `scons release=1 server=0 savegame-safety-test`, then run
@@ -185,3 +214,18 @@ invalid-index and truncated-field controls. It compares version-84 and version-8
 save traces against outputs from the original loader. Linux and Windows CI run
 it in disposable profiles and check that preferences remain unchanged.
 See [fixtures and reproduction steps](fixtures/team-stats/README.md).
+
+## AI helper gradient regression
+
+`Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
+Run its independent byte-for-byte oracle from the repository root:
+
+```sh
+scons -j8 release=1 server=0 global-gradient-test
+./build/src/GlobalGradientHarness
+```
+
+The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
+toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
+It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
+coverage in `TestsRunner`.

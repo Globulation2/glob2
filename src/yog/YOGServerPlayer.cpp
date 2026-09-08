@@ -244,12 +244,6 @@ void YOGServerPlayer::update()
 		shared_ptr<NetChangePlayersTeam> info = static_pointer_cast<NetChangePlayersTeam>(message);
 		ngame->setTeam(info->getPlayer(), info->getTeam());
 	}
-	//This receives a request to change a players team in the game
-	else if(type==MNetRequestGameStart)
-	{
-		shared_ptr<NetRequestGameStart> info = static_pointer_cast<NetRequestGameStart>(message);
-		ngame->receiveGameStartRequest();
-	}
 	//This receives a ping reply
 	else if(type==MNetPingReply)
 	{
