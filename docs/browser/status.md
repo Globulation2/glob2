@@ -589,3 +589,50 @@ fixed-changed-noop,coexistence,build-tests}.log`.
 Coexistence now includes SCons rebuild explanations in CI output and retains
 all byte/timestamp/source-contamination assertions. Hosted cold-build jobs still
 need to confirm this correction on their Linux runners.
+
+
+## Scheduled YOG menus — 2026-09-08
+
+Login/registration, lobby tabs, create-map selection, join progress, map upload
+and download navigation, and their error notices now use the shared screen
+stack. Tabs are owned by the YOG session; the game tab is owned by the lobby.
+Active map transfers are cancelled when their screens are destroyed. The join
+progress screen has an explicit Cancel action. Upload uses Enter, leaving
+Escape exclusively for Cancel.
+
+A first real login test exposed listener invalidation when transitioning inside
+the login-accepted notification. The transition now waits until network update
+returns before replacing listeners. Native coverage caught an empty-tab cleanup
+case; removing an already removed tab is safe without leaving an empty tab's
+listener registered.
+
+The first cross-play rerun exposed a second ownership issue: the legacy join
+overlay deleted the shared drawing surface after screen-stack execution replaced
+its private surface pointer. Join progress is now a regular scheduled screen,
+with centered layout and no privately owned rendering surface. Its real-match
+regression waits for the join screen to finish before clicking room controls.
+
+Native release and Wasm release builds pass. The native engine-session harness
+passes, including owned-tab cleanup and existing save/load/cancellation checks.
+Four navigation scenarios pass across Chromium, Firefox and WebKit (12 checks):
+lobby entry/exit, registration resize/cancel, map selection/upload resize/cancel,
+and disconnect-notice resize/return. Logs: `/tmp/glob2-yog-session-final.log`
+and `/tmp/glob2-yog-cross-platform.log`. These are navigation checks, not proof
+of successful map transfer or reconnect recovery.
+
+Hosted run [34290131165](https://github.com/Globulation2/glob2/actions/runs/34290131165)
+at preceding commit `c2447aec2` now passes Windows and both Linux native jobs.
+The concurrent job passed cold build coexistence and reached browser testing;
+the native-first and web-first jobs also pass. The concurrent job’s browser
+and deployment steps remain pending at this checkpoint.
+
+Multiplayer match execution, multiplayer settings and LAN navigation still have
+blocking calls. This change does not remove Asyncify or complete the larger
+rooms/identity/recovery milestones.
+
+After the join-screen correction, four Chromium/WebGL cross-play checks pass:
+browser/browser with no AI and Cortex, and browser/native over TCP and verified
+WSS. Both native peers complete at least 250 ticks, with command-boundary
+checksums matching the browser. Log: `/tmp/glob2-yog-crossplay-fixed.log` (3.1m).
+The final four Chromium navigation checks also pass; the first failed cross-play
+run and its trace remain in `build/browser-yog-final` for the ownership diagnosis.

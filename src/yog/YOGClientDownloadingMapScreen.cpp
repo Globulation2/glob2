@@ -7,7 +7,6 @@
 #include "GlobalContainer.h"
 #include <GUIButton.h>
 #include "GUIMapPreview.h"
-#include "GUIMessageBox.h"
 #include <GUIText.h>
 #include <GUIProgressBar.h>
 #include "MapHeader.h"
@@ -16,11 +15,13 @@
 #include "YOGClient.h"
 #include "YOGClientDownloadingMapScreen.h"
 #include "YOGClientDownloadableMapList.h"
+#include <ScreenStack.h>
+#include "MessageScreen.h"
 
 using namespace GAGCore;
 
-YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info)
-	: info(info), client(client), downloader(client)
+YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(ScreenStack& screens, std::shared_ptr<YOGClient> client, const YOGDownloadableMapInfo& info)
+	: screens(screens), info(info), client(client), downloader(client)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[downloading map]")));
 	addWidget(new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
@@ -57,6 +58,8 @@ YOGClientDownloadingMapScreen::YOGClientDownloadingMapScreen(std::shared_ptr<YOG
 
 
 
+YOGClientDownloadingMapScreen::~YOGClientDownloadingMapScreen() { downloader.cancelDownload(); }
+
 void YOGClientDownloadingMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
@@ -77,8 +80,10 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 	downloader.update();
 	if(!client->isConnected())
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map download failure: connection lost]"), Toolkit::getStringTable()->getString("[ok]"));
-		endExecute(CONNECTIONLOST);
+		screens.push(std::make_unique<MessageScreen>(Toolkit::getStringTable()->getString("[Map download failure: connection lost]"),
+			std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}),
+			[this](Screen&, int) { endExecute(CONNECTIONLOST); });
+		return;
 	}
 	
 	downloadStatus->visible = false;
@@ -107,4 +112,3 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 		}
 	}
 }
-

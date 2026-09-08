@@ -126,7 +126,7 @@ void Application::choose(int choice)
     case MainMenuScreen::EDITOR: screens.push(std::make_unique<EditorMainMenu>(screens)); break;
     case MainMenuScreen::MULTIPLAYERS_LAN: screens.push(std::make_unique<LANMenuScreen>()); break;
     case MainMenuScreen::MULTIPLAYERS_YOG:
-        screens.push(std::make_unique<YOGLoginScreen>(std::make_shared<YOGClient>())); break;
+        screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>())); break;
     case MainMenuScreen::QUIT: screens.stop(); break;
     }
 }

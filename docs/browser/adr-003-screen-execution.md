@@ -193,3 +193,18 @@ three operation budgets, including single-operation calls. Additional assertions
 cover monotonic progress, rejected premature commit, cancellation, and publication
 only after commit. Browser tests cover save cancellation, completed map writes,
 and reload persistence using real controls and read-only file digests.
+
+### YOG session ownership
+
+YOG login and registration use the application screen stack. The login-accepted
+listener requests a transition; `YOGLoginScreen::onTimer` performs it after the
+client update returns. The existing listener list does not permit removing the
+current listener during notification, so transitions must respect that boundary.
+
+`YOGSessionScreen` owns the lobby/options/maps tabs by value. The lobby owns its
+multiplayer game tab. Child map selectors, join progress, transfer screens and
+notices use stack completions, with their parent kept alive below them. Tab
+cleanup tolerates a group already removed on completion, including empty tabs.
+Transfer screen destruction cancels active transfers. Match execution and the
+multiplayer settings dialog remain legacy calls; this ownership migration does
+not remove their Asyncify dependency.

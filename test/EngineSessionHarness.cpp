@@ -12,6 +12,7 @@
 #include "YOGClient.h"
 #include "YOGClientEvent.h"
 #include <GUITextArea.h>
+#include <GUITabScreenWindow.h>
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
 #include "EditorLoadScreen.h"
@@ -130,7 +131,8 @@ int main(int argc, char** argv)
             using YOGLoginScreen::YOGLoginScreen;
             std::string status() { return statusText->getText(); }
         };
-        LoginProbe login(std::make_shared<YOGClient>());
+        GAGGUI::ScreenStack screens(*globalContainer->gfx);
+        LoginProbe login(screens, std::make_shared<YOGClient>());
         login.beginExecution(globalContainer->gfx);
         static_cast<YOGClientEventListener&>(login).handleYOGClientEvent(std::make_shared<YOGLoginRefusedEvent>(YOGClientVersionTooOld));
         require(login.status().find("same Glob2 release") != std::string::npos,
@@ -138,6 +140,28 @@ int main(int argc, char** argv)
         login.drawExecution();
         std::cout << "PASS protocol rejection provides an actionable translated status" << std::endl;
         login.endExecute(0); login.finishExecution();
+    }
+
+    {
+        struct TabProbe : GAGGUI::TabScreenWindow {
+            using TabScreenWindow::TabScreenWindow;
+            using TabScreenWindow::endExecute;
+        };
+        GAGGUI::TabScreen tabs(true);
+        auto first = std::make_unique<TabProbe>(&tabs, "First");
+        TabProbe remaining(&tabs, "Remaining");
+        tabs.beginExecution(globalContainer->gfx);
+        const int firstID = first->getTabNumber();
+        first->endExecute(7);
+        tabs.onTimer(SDL_GetTicks());
+        require(tabs.getReturnCode(firstID) == 7 && remaining.isActivated(),
+                "Completing an owned tab must activate the remaining tab");
+        first.reset();
+        require(tabs.isExecutionRunning() && remaining.isActivated(),
+                "Destroying a completed tab must preserve the surviving session");
+        tabs.drawExecution();
+        tabs.endExecute(0); tabs.finishExecution();
+        std::cout << "PASS owned tab destruction preserves surviving tabs" << std::endl;
     }
 
     {
