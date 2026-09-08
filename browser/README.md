@@ -40,8 +40,9 @@ the page scales the canvas proportionally and may add black bars.
 ## Scope
 
 This is a desktop-browser experiment with mouse and keyboard controls.
-Networking code remains compiled to satisfy existing dependencies but the
-multiplayer entry points are hidden. Voice chat is a no-op; music uses the
+The YOG entry uses the WebSocket gateway; LAN remains unavailable in browsers.
+The lobby uses YOG chat; the separate native IRC bridge is unavailable.
+See `docs/browser/gateway.md` for routing. Full matches and recovery remain experimental. Voice chat is a no-op; music uses the
 existing Vorbis mixer. Map fertility calculation runs cooperatively on the
 browser thread. There is no WebGL renderer rewrite or mobile UI adaptation.
 

@@ -69,9 +69,14 @@ void YOGServerRouterManager::update()
 
 std::shared_ptr<NetConnection> YOGServerRouterManager::chooseYOGRouter()
 {
-	n+=1;
-	if(n == (int)routers.size())
-		n = 0;
-	return routers[n];
+	if (routers.empty()) return {};
+	n %= routers.size();
+	auto selected = routers[n];
+	n = (n + 1) % routers.size();
+	return selected;
 }
 
+bool YOGServerRouterManager::hasRouter() const
+{
+	return !routers.empty();
+}

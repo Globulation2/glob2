@@ -37,7 +37,7 @@ static constexpr Sint32 ORDER_CREATE_NO_FLAG_RADIUS = -1;
 
 //! Length, in bytes, of the big-endian length prefix that precedes every
 //! framed network message (TCP and UDP alike). See
-//! NetConnectionThread.cpp:111-115, 182, 192-194; NetBroadcaster.cpp:53-55;
+//! NetConnection.cpp; NetBroadcaster.cpp:53-55;
 //! NetBroadcastListener.cpp:38.
 static constexpr int NET_FRAME_LENGTH_PREFIX_BYTES = 2;
 

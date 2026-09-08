@@ -169,7 +169,9 @@ MainMenuScreen::MainMenuScreen()
 	y += compact ? 12 : 18;
 	add("[yog]", MULTIPLAYERS_YOG, compact ? 28 : 34, "front-small");
 	y += 4;
+#ifndef __EMSCRIPTEN__
 	add("[lan]", MULTIPLAYERS_LAN, compact ? 28 : 34, "front-small");
+#endif
 	y += compact ? 12 : 18;
 	const char* keys[] = {"[settings]", "[editor]", "[credits]", "[quit]"};
 	const int actions[] = {GAME_SETUP, EDITOR, CREDITS, QUIT};
