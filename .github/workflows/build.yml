@@ -136,8 +136,8 @@ jobs:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
           scons -j$(nproc) release=1 server=0 aspect-test
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness gl
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness software
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
 
       - name: Build and run the tests
         working-directory: test
@@ -215,14 +215,14 @@ jobs:
       - name: Test savegame loading and atomic autosaves
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 savegame-safety-test
-          python3 test/run-savegame-safety-tests.py build/windows/client/release/src/SavegameSafetyHarness.exe
+          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/SavegameSafetyHarness.exe
 
       - name: Test team statistics save compatibility
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 team-stats-save-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/windows/client/release/src/TeamStatsSaveHarness.exe .
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/windows/client/release/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/windows/client/release/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
+          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TeamStatsSaveHarness.exe .
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
