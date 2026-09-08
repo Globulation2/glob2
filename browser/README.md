@@ -1,9 +1,12 @@
-# Single-player browser experiment
+# Browser platform development
 
-This target compiles Globulation 2 to WebAssembly with Emscripten 4.0.15.
-It uses the SDL2 software renderer, Asyncify for browser event-loop yielding,
-and IndexedDB for local saves. Multiplayer menu entries and voice recording
-are disabled. Native builds keep their normal implementations.
+Globulation 2 runs in a full-page browser client with campaigns, tutorials,
+custom games, map editing, local saves and experimental YOG cross-play.
+WebGL2 is available with `?renderer=webgl2`; software remains the default and
+fallback pending complete GPU qualification. The pinned Emscripten 4.0.15 build
+shares game logic and the GPU renderer with desktop. Asyncify remains during
+lifecycle migration. This is a development target, not a supported stable release.
+See the [status and test evidence](../docs/browser/status.md) for remaining gates.
 
 ## Build
 
@@ -30,12 +33,16 @@ remaining release gates.
 
 ## Playing and saving
 
-Use Tutorial, Campaign, or Custom Game. Clicking the canvas focuses keyboard
-input and enables music. Save through the in-game menu; IndexedDB automatically
-persists files when they close. Saves belong to this browser profile and
-origin (including the port); clearing site data deletes them. Reload after
-choosing Quit to restart. The game starts at the viewport resolution; resizing
-the page scales the canvas proportionally and may add black bars.
+Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
+keyboard input and enables music. Live resize updates the internal resolution
+at frame boundaries in the migrated flows; some legacy multiplayer flows remain.
+Try `http://127.0.0.1:8765/?renderer=webgl2` to select GPU rendering.
+
+Manual game/editor saves wait for durable IndexedDB persistence and offer retry
+and export on failure. Saves belong to this browser profile and origin
+(including the port); clearing site data deletes them. Use the in-game import
+and export controls for backups. See [storage](../docs/browser/storage.md) for
+format validation, campaign backups and remaining legacy-writer limitations.
 
 ## Scope
 
@@ -44,26 +51,12 @@ The YOG entry uses the WebSocket gateway; LAN remains unavailable in browsers.
 The lobby uses YOG chat; the separate native IRC bridge is unavailable.
 See `docs/browser/gateway.md` for routing. Full matches and recovery remain experimental. Voice chat is a no-op; music uses the
 existing Vorbis mixer. Map fertility calculation runs cooperatively on the
-browser thread. There is no WebGL renderer rewrite or mobile UI adaptation.
+browser thread. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
+there is no mobile UI adaptation.
 
-`Module.glob2Tick`, `Module.glob2Screen`, and `Module.browserLog` expose
-simulation and UI diagnostics for smoke checks without adding page controls.
-
-## Verified experiment results
-
-Tested in Chromium on 2026-09-07 (America/Toronto):
-
-- Automatic startup into the native menu, with only a canvas on the page.
-- Canvas and viewport both 1200x900; no HTML buttons or visible wrapper text.
-- Custom match on A big pond with the default AI players: 24.93 simulation
-  ticks/second over a 125-tick sample (normal target: 25 ticks/second).
-- Keyboard pause stops simulation advancement.
-- In-game save writes a 2,593,629-byte `.game` file. Automatic IndexedDB
-  persistence restores identical SHA-256 bytes after page reload, and the
-  saved match loads and resumes.
-- Tutorial Campaign / Introduction and Basics launches; browser audio context
-  runs after interaction. Audible output has not been independently checked.
-- No uncaught JavaScript errors in the final custom-match/save/load smoke test.
+Browser and desktop multiplayer clients and YOG must use the same protocol
+(version 29). Update all components together. See the [admission contract](../docs/browser/protocol.md).
+Guests, invitations and coordinated refresh/reconnect recovery remain unfinished.
 
 ## Automated tests
 
@@ -86,13 +79,11 @@ under `build/browser-test-results`. These initial tests do not yet cover the
 complete supported-release matrix. WebKit automation does not substitute for
 release testing in actual Safari, nor Chromium for Edge.
 
-The generated payload is about 26 MiB of assets, 12 MiB of WebAssembly, and
-615 KiB of JavaScript, before HTTP compression. The build and SDK are local
-outputs, not committed assets. Serve the output directory; opening the HTML
-as a `file:` URL is unsupported.
+Run the suite with `GLOB2_TEST_RENDERER=webgl2` to select GPU rendering throughout.
+Dedicated renderer tests exercise resize and actual context loss/restoration.
+The [status ledger](../docs/browser/status.md) records which suites passed and
+which platform, performance and recovery gates remain open.
 
-This does not establish large-map/late-game performance, full campaign
-completion, Safari/Firefox compatibility, native/browser replay determinism,
-or a production-ready port. Resizing scales the initial game resolution.
-The SDL audio backend emits a ScriptProcessorNode deprecation warning;
-legacy diagnostics also write informational music messages to stderr.
+Build outputs and the SDK are ignored local files. Serve the output directory;
+opening the HTML as a `file:` URL is unsupported. The SDL audio backend still
+uses deprecated ScriptProcessorNode; audio-race qualification remains open.
