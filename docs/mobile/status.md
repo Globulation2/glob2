@@ -1,9 +1,24 @@
 # Mobile verification and remaining work
 
-Recorded 2026-09-08. Browser base: `46a4d56d0200cc1ba55073ce05a3a5202d8f754f`,
-merged into the mobile branch in `b92c89935`. iOS qualification uses Xcode 26.6
+Recorded 2026-09-08. Browser base: `c7c534b8d3af4b07c535d3d780fc5207531a1b6f`,
+merged into the mobile branch in `0b977ab61`. iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 Android evidence below was collected before this browser merge, on `7333e4e8b`.
+
+## Resumed qualification (`89bea4560`)
+
+- Explicit Info tab preserves building details alongside Actions.
+- Held actions are canceled when the building/construction state changes.
+- Native touch tests pass for ratios, clearing/flag controls, destruction and
+  cancellation in both phone orientations; merged engine-session tests pass.
+- New translation captions load correctly after repairing key/value pairing.
+- All 30 browser viewport, shutdown-storage and campaign-editor-storage tests
+  pass across Chromium, Firefox and WebKit after the merge/catalog correction.
+- Wasm release and ARM64 iOS simulator builds pass. The current iOS application
+  was installed and launched in the isolated iPhone 16/iOS 26.5 simulator; a
+  captured main menu confirms startup only, not in-game/keyboard qualification.
+- Visual inspection still finds awkward narrow-tab wrapping. Real keyboard,
+  replay and live mobile qualification remain open.
 
 ## Broader UI handoff checkpoint (`f69f21b42`)
 

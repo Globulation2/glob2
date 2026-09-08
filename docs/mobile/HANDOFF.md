@@ -12,8 +12,8 @@ Never install over the existing desktop executable.
 Repository: https://github.com/Globulation2/glob2
 Draft PR: https://github.com/Globulation2/glob2/pull/208
 PR base: `codex/browser-experiment`.
-Last merged browser head: `46a4d56d0200cc1ba55073ce05a3a5202d8f754f`
-(merge `b92c89935`). Check the remote before the next substantial milestone;
+Last merged browser head: `c7c534b8d3af4b07c535d3d780fc5207531a1b6f`
+(merge `0b977ab61`). Check the remote before the next substantial milestone;
 inspect its changes before merging. Do not chase a moving base during every build.
 
 The user asked to keep going until the in-game UI was finished, then explicitly
@@ -30,6 +30,29 @@ Suggested first message to the new agent:
 > Keep AI Maxima and browser checkouts untouched. Finish and qualify the remaining
 > in-game UI, maintain compatibility with the browser branch, and update draft
 > PR #208 with honest evidence and remaining limitations.
+
+## Resumed Actions qualification
+
+The user resumed implementation after the subscription handoff. Commit
+`8315abc86` adds an explicit Info tab for owned-building details and cancels held
+actions when building/construction state changes. Its expanded native harness
+passes in portrait and landscape: production ratios and limits, clearing toggles,
+flag requirements, destroy confirmation/cancel, cancel-destruction and
+cancel-construction all emit the original orders. Actual repair/upgrade initiation
+and live replay controls still need qualification.
+
+Commit `89bea4560` fixes blank new captions caused by blank lines in the strictly
+paired English translation catalog, with a regression assertion. Native touch
+and merged engine-session tests pass. The merged Wasm and iOS simulator builds
+also pass after the correction. All 30 browser viewport/shutdown/campaign-editor
+storage tests pass across Chromium, Firefox and WebKit. The current iOS app was
+installed/launched and its main menu inspected in the isolated simulator.
+A visual check confirms Actions/Info captions now appear, but narrow tab captions
+still wrap awkwardly. Improve that layout without shrinking essential touch targets.
+
+Android's dependency fingerprint rejected the older local manifest. The pinned
+dependency build is being refreshed; do not bypass that identity check or claim
+current emulator qualification from older screenshots.
 
 ## Checkpoints
 
