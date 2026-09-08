@@ -56,17 +56,6 @@ def main():
         shutil.copyfile(source,OUT/name)
         w,h=Image.open(ROOT/'data/gfx'/name).size
         records.append(dict(id=source.stem,width=w,height=h,scale=4,recipe='resource constrained',layers=[dict(file=name,role='base',sha256=sha(OUT/name),source_sha256=sha(source))]))
-    resource_levels=[]
-    for level in range(4):
-        slot=256>>level; border=32>>level
-        atlas=Image.new('RGBA',(slot*8,slot*9))
-        for i,source in enumerate(resource_sources):
-            tile=Image.open(source).convert('RGBA')
-            tile=tile.resize((tile.width>>level,tile.height>>level),Image.Resampling.LANCZOS)
-            padded=Image.fromarray(np.pad(np.asarray(tile),((border,border),(border,border),(0,0)),mode='edge'))
-            atlas.paste(padded,((i%8)*slot,(i//8)*slot))
-        name=f'ressource-atlas-mip{level}.png';atlas.save(OUT/name)
-        resource_levels.append(dict(file=name,sha256=sha(OUT/name)))
     world={}
     for source in sorted((EXP/'world/corrected').glob('*.png')):
         if source.stem.startswith('terrain'):continue
@@ -86,6 +75,18 @@ def main():
         if frame_id=='water0':method='quiet ripples; periodic material v3'
         records.append(dict(id=frame_id,width=w,height=h,scale=4,recipe=method,layers=layers))
     print('Applied %d recovered original frames' % runtime_overrides.apply(records, OUT))
+    print('Applied %d original tree frames' % runtime_overrides.apply(records, OUT, ROOT/'datasrc/gfx/derived/trees-v1'))
+    resource_levels=[]
+    for level in range(4):
+        slot=256>>level; border=32>>level
+        atlas=Image.new('RGBA',(slot*8,slot*9))
+        for i,source in enumerate(resource_sources):
+            tile=Image.open(OUT/source.name).convert('RGBA')
+            tile=tile.resize((tile.width>>level,tile.height>>level),Image.Resampling.LANCZOS)
+            padded=Image.fromarray(np.pad(np.asarray(tile),((border,border),(border,border),(0,0)),mode='edge'))
+            atlas.paste(padded,((i%8)*slot,(i//8)*slot))
+        name=f'ressource-atlas-mip{level}.png';atlas.save(OUT/name)
+        resource_levels.append(dict(file=name,sha256=sha(OUT/name)))
     lines=['GLOB2_HIGHRES 1']
     for f in records:
         layer={x['role']:x['file'] for x in f['layers']}

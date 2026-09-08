@@ -115,3 +115,10 @@ The pack contains 487 frames and 546 layers after adding neutral flag base layer
 No camera or simulation code changed for this migration. The integration harness
 passes on the replacement pack; dense HD scenes measured 12.36 ms at 50% and
 1.05 ms at 300%, compared with 8.43/1.42 ms using classic artwork on this Mac.
+
+
+All ten tree growth/variant frames now use five recovered XCF originals, retaining
+native alpha and layer opacity. The resource atlas is packed after applying source
+overrides and is checked against the final tiles at every mip level. Original
+source hashes and logical registration pass; tree silhouettes overlap classic
+frames by 99.1%–99.9% after reduction to logical resolution.

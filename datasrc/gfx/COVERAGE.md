@@ -63,3 +63,9 @@ separate from neutral shadows. See [recipes and limitations](RECOVERED-RUNTIME.m
 black-background hive variant and 16 classic-size direction templates are retained
 as references. Walls remain unavailable. These findings supersede the initial
 “not yet established” assessment above for hive/flag/shared construction coverage.
+
+## Tree runtime migration
+
+All ten tree frames now use five native GIMP sources. Saved layer opacity and
+transparency are retained, and the four resource atlas levels use the final
+original-source images. Wheat and other resource families still await migration.

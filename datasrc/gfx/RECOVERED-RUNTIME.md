@@ -1,9 +1,9 @@
 # Recovered artwork in the runtime pack
 
 Ten frames from Stéphane’s second archive now replace experimental upscales.
-There is no AI step in these exports. The first archive’s layered building and
-resource exports are a separate, still-pending migration; other runtime frames
-keep their reviewed experimental versions for now.
+Ten tree frames from the first archive are also now incorporated. There is no AI
+step in these exports. Layered buildings, wheat and other resource exports remain
+pending; other runtime frames keep their reviewed experimental versions for now.
 
 | Runtime frame | Historical render | Native canvas | Logical canvas |
 | --- | --- | --- | --- |
@@ -67,3 +67,41 @@ Validation checks source hashes, logical sizes, native-to-classic silhouette
 registration, transparent backgrounds, subdued shadows and rejection of an
 incomplete base/team pair. The engine pack check renders all 487 frames in all
 16 team hues and checks OpenGL errors, bounded caches and resource release.
+
+
+## Trees from the first archive
+
+All `ressource0`–`ressource9` frames now use the five original tree XCFs:
+
+| Frames | Original | Native canvas |
+| --- | --- | --- |
+| 0 | `trees_1_1.xcf` | 128 × 128 |
+| 5 | `trees_1_2.xcf` | 128 × 128 |
+| 1, 6 | `trees_2_1.xcf` | 128 × 128 |
+| 2, 7 | `trees_3_1.xcf` | 128 × 140 |
+| 3, 4, 8, 9 | `trees_4_1.xcf` | 128 × 140 |
+
+GIMP exports the original visible layers with their saved opacity/modes, including
+translucent shadows. The native RGBA exports and their layer/source hashes are
+committed under `derived/tree-native/`. A premultiplied-alpha Lanczos resize fits
+each existing logical canvas at 4×, under `derived/trees-v1/`. There is no color
+restoration, AI processing or replacement of native alpha with the old pixel mask.
+Native detail is approximately 3.2×–4× the classic canvases. The exporter builds
+resource atlas mip levels from the final overridden files, with independent edge
+padding, so batching and zoom use the same originals as standalone rendering.
+
+To reproduce native exports, run from the repository root with GIMP 2.10:
+
+```sh
+gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
+  -b 'execfile("tools/artwork/export_trees_gimp.py")' -b 'pdb.gimp_quit(0)'
+python3 tools/artwork/export_trees.py
+python3 experiments/ai-upscale/export_runtime.py
+python3 tools/artwork/validate_trees.py
+python3 experiments/ai-upscale/validate_runtime.py
+```
+
+Normal runtime-pack rebuilding uses the committed derived PNGs and does not
+require GIMP. Validation checks all ten growth/variant mappings, original hashes,
+logical canvases and silhouette overlap, and compares each exported atlas level
+against the independently resized final sprite. Classic files remain unchanged.

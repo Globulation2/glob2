@@ -127,3 +127,46 @@ original dense map 300%: 1.42039 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU byt
 HD dense map 50%: 12.3609 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
 HD dense map 300%: 1.05463 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
 PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+
+Recovered tree validation (2026-09-08):
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+swarm0b0: silhouette overlap 0.963; logical canvas (128, 128)
+swarm0c0: silhouette overlap 0.933; logical canvas (128, 128)
+warflag0: silhouette overlap 0.910; logical canvas (32, 32)
+explorationflag0: silhouette overlap 0.927; logical canvas (32, 32)
+clearingflag0: silhouette overlap 0.947; logical canvas (32, 32)
+buildingsite1: silhouette overlap 0.912; logical canvas (64, 64)
+buildingsite2: silhouette overlap 0.871; logical canvas (96, 96)
+buildingsite3: silhouette overlap 0.797; logical canvas (128, 128)
+buildingsite4: silhouette overlap 0.754; logical canvas (192, 192)
+buildingsite5: silhouette overlap 0.827; logical canvas (196, 196)
+PASS: 10 original replacements, source hashes, transparent backgrounds, registration, atomic base/team rejection
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 8.41485 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 3.57508 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 3.02953 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.81495 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 9.95974 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 2.91965 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 1.83564 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 2.23427 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 9.18313 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 1.10109 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 13.0836 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 1.72995 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 6.74155 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 1.41936 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
