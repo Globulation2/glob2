@@ -111,7 +111,6 @@ bool NetRequestDownloadableMapList::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetRequestDownloadableMapList))
 	{
-		//const NetRequestDownloadableMapList& r = dynamic_cast<const NetRequestDownloadableMapList&>(rhs);
 		return true;
 	}
 	return false;

@@ -9,16 +9,16 @@
 
 // Area pathfinding (forbidden, guard, clear, point-to-point)
 
-bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
 {
-	Uint8 *gradient=forbiddenGradient[teamNumber][canSwim];
-	assert(gradient);
+	const Uint16 *gradient=getForbiddenGradient(teamNumber, swimClass);
+	bool canSwim=swimClass>0;
 
 	// Pick the neighbor with the highest (base, option) lexicographically. The base gradient
 	// dominates; the option gradient is used as a tiebreaker. Reject results where the chosen
 	// base is unreachable (i.e. require base > GRADIENT_UNREACHABLE).
-	Uint8 bestBase = 0;
-	Uint8 bestOption = 0;
+	Uint16 bestBase = 0;
+	Uint16 bestOption = 0;
 	int maxd = 0;
 	for (int di=0; di<8; di++)
 	{
@@ -29,8 +29,8 @@ bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool ca
 		if (!isFreeForGroundUnitNoForbidden(xg, yg, canSwim))
 			continue;
 		size_t addr=xg+(yg<<wDec);
-		Uint8 base=gradient[addr];
-		Uint8 option = (optionGradient!=NULL) ? optionGradient[addr] : 0;
+		Uint16 base=gradient[addr];
+		Uint16 option = (optionGradient!=NULL) ? optionGradient[addr] : 0;
 		if (base > bestBase || (base == bestBase && option > bestOption))
 		{
 			bestBase = base;
@@ -47,26 +47,27 @@ bool Map::pathfindForbidden(const Uint8 *optionGradient, int teamNumber, bool ca
 	return false;
 }
 
-bool Map::pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y, int *dx, int *dy)
+bool Map::pathfindArea(AreaKind kind, int teamNumber, int swimClass, int x, int y, int *dx, int *dy)
 {
-	Uint8 *gradient = (kind == AreaKind::Guard)
-		? guardAreasGradient[teamNumber][canSwim]
-		: clearAreasGradient[teamNumber][canSwim];
-	Uint8 max = gradient[x + (y<<wDec)];
-	if (max == GRADIENT_AT_GOAL)
+	const Uint16 *gradient = (kind == AreaKind::Guard)
+		? getGuardAreasGradient(teamNumber, swimClass)
+		: getClearAreasGradient(teamNumber, swimClass);
+	Uint16 here = gradient[coordToIndex(x, y)];
+	if (here == GRADIENT_AT_GOAL)
 		return false; // we already are in an area.
-	if (max < 2)
+	if (here <= GRADIENT_UNREACHABLE)
 		return false; // any existing area is too far away.
 
-	// we look around us, searching for a usable position with a bigger gradient value
-	if (directionByMinigrad(1<<teamNumber, canSwim, x, y, dx, dy, gradient, true))
+	if (directionByGradient(1<<teamNumber, swimClass, x, y, gradient, dx, dy, true))
+		return true;
+	if (directionByGradient(1<<teamNumber, swimClass, x, y, gradient, dx, dy, false))
 		return true;
 
 	// we are in a blocked situation, so we have to regenerate the gradient
 	switch (kind)
 	{
-		case AreaKind::Guard: updateGuardAreasGradient(teamNumber, canSwim); break;
-		case AreaKind::Clear: updateClearAreasGradient(teamNumber, canSwim); break;
+		case AreaKind::Guard: updateGuardAreasGradient(teamNumber, swimClass); break;
+		case AreaKind::Clear: updateClearAreasGradient(teamNumber, swimClass); break;
 	}
 	return false;
 }
@@ -74,7 +75,7 @@ bool Map::pathfindArea(AreaKind kind, int teamNumber, bool canSwim, int x, int y
 
 
 
-bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, bool canSwim, Uint32 teamMask, int maximumLength)
+bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, int *dy, int swimClass, Uint32 teamMask, int maximumLength)
 {
 	//This implements a fairly standard A* algorithm, except that each node does not store the location
 	//of the node that lead to it, thus, you can't trace backwards to the starting point to get the path.
@@ -83,6 +84,10 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 	//the initial node, a small optimization since we don't need the whole path
 	targetX = (targetX + w) & wMask;
 	targetY = (targetY + h) & hMask;
+	const bool canSwim = swimClass > 0;
+	// Step costs and the heuristic are in gradient units (see MapInternal.h).
+	const int heuristicStep = minStepCost(swimClass);
+	const int maximumCost = maximumLength * GRADIENT_STEP;
 
 	AStarComparator compare(aStarPoints);
 
@@ -106,7 +111,7 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 		AStarAlgorithmPoint& pos = aStarPoints[position];
 		pos.isClosed = true;
 
-		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumLength))
+		if((pos.x == targetX && pos.y == targetY) || (pos.moveCost > maximumCost))
 		{
 			break;
 		}
@@ -125,8 +130,8 @@ bool Map::pathfindPointToPoint(int x, int y, int targetX, int targetY, int *dx, 
 				}
 				else
 				{
-					int moveCost = pos.moveCost + 1;
-					int totalCost = moveCost +  warpDistMax(targetX, targetY, nx, ny);
+					int moveCost = pos.moveCost + stepCost(lx, ly, coordToIndex(nx, ny), swimClass);
+					int totalCost = moveCost + heuristicStep * warpDistMax(targetX, targetY, nx, ny);
 
 					//If this cell hasn't been examined at all yet
 					if(npos.x == -1)

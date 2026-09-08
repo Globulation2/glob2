@@ -52,7 +52,6 @@ namespace GAGGUI
 		virtual void paint(void);
 	
 		void set(int newValue) {value=newValue;};
-		int getMax(void);
 		int get(void);
 	
 		void setScale(float start, float ratio);

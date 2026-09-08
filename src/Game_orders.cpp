@@ -219,7 +219,7 @@ void Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 			if (newRange<oldRange)
 			{
 				b->owner->dirtyGlobalGradient();
-				map.dirtyLocalGradient(b->posX-oldRange-GRADIENT_DIRTY_BORDER_TILES, b->posY-oldRange-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, b->owner->teamNumber);
+				map.dirtyBuildingGradients(b->posX-oldRange-GRADIENT_DIRTY_BORDER_TILES, b->posY-oldRange-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, b->owner->teamNumber);
 			}
 		}
 		else
@@ -269,7 +269,7 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		if (drop && b->type->zonableForbidden)
 		{
 			int range=b->unitStayRange;
-			map.dirtyLocalGradient(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, b->owner->teamNumber);
+			map.dirtyBuildingGradients(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, b->owner->teamNumber);
 		}
 
 		b->posX=omf.x;
@@ -307,6 +307,7 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				}
 				orderMaskIndex++;
 			}
+		teams[oaa.teamNumber]->dirtyGlobalGradient();
 	}
 	else if (oaa.type == BrushTool::MODE_DEL)
 	{
@@ -329,7 +330,7 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 
 		// We remove, so we need to refresh the gradients, unfortunately
 		teams[oaa.teamNumber]->dirtyGlobalGradient();
-		map.dirtyLocalGradient(oaa.centerX+oaa.minX-GRADIENT_DIRTY_BORDER_TILES, oaa.centerY+oaa.minY-GRADIENT_DIRTY_BORDER_TILES, oaa.maxX-oaa.minX+2*GRADIENT_DIRTY_BORDER_TILES, oaa.maxY-oaa.minY+2*GRADIENT_DIRTY_BORDER_TILES, oaa.teamNumber);
+		map.dirtyBuildingGradients(oaa.centerX+oaa.minX-GRADIENT_DIRTY_BORDER_TILES, oaa.centerY+oaa.minY-GRADIENT_DIRTY_BORDER_TILES, oaa.maxX-oaa.minX+2*GRADIENT_DIRTY_BORDER_TILES, oaa.maxY-oaa.minY+2*GRADIENT_DIRTY_BORDER_TILES, oaa.teamNumber);
 	}
 	else
 		assert(false);
@@ -452,7 +453,7 @@ void Game::executeDelete(const OrderDelete& od)
 		{
 			b->owner->dirtyGlobalGradient();
 			int range=b->unitStayRange;
-			map.dirtyLocalGradient(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, b->owner->teamNumber);
+			map.dirtyBuildingGradients(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, b->owner->teamNumber);
 		}
 	}
 }

@@ -93,8 +93,6 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<
 		kickButton[i]=new TextButton(220+dx, 112+dy, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[kick]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
 
-		wasSlotUsed[i]=false;
-
 		text[i]->visible=false;
 		color[i]->visible=false;
 		kickButton[i]->visible=false;

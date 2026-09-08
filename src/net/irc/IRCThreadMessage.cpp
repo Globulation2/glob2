@@ -88,7 +88,6 @@ bool ITDisconnect::operator==(const IRCThreadMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(ITDisconnect))
 	{
-		//const ITDisconnect& r = dynamic_cast<const ITDisconnect&>(rhs);
 		return true;
 	}
 	return false;
@@ -135,39 +134,6 @@ std::string ITSendMessage::getText() const
 	return text;
 }
 
-
-
-ITDisconnected::ITDisconnected()
-{
-}
-
-
-
-Uint8 ITDisconnected::getMessageType() const
-{
-	return ITMDisconnected;
-}
-
-
-
-std::string ITDisconnected::format() const
-{
-	std::ostringstream s;
-	s<<"ITDisconnected()";
-	return s.str();
-}
-
-
-
-bool ITDisconnected::operator==(const IRCThreadMessage& rhs) const
-{
-	if(typeid(rhs)==typeid(ITDisconnected))
-	{
-		//const ITDisconnected& r = dynamic_cast<const ITDisconnected&>(rhs);
-		return true;
-	}
-	return false;
-}
 
 
 ITReceiveMessage::ITReceiveMessage(std::string message)
@@ -280,7 +246,6 @@ bool ITExitThread::operator==(const IRCThreadMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(ITExitThread))
 	{
-		//const ITExitThread& r = dynamic_cast<const ITExitThread&>(rhs);
 		return true;
 	}
 	return false;

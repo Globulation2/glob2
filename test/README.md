@@ -171,6 +171,20 @@ it on both supported Ubuntu versions.
 
 Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).
 
+## Immobile unit gradient regression
+
+From the repository root, run `scons -j8 release=1 server=0 immobile-unit-gradient-test`
+and `./build/src/ImmobileUnitGradientHarness`. The harness uses a fresh 64x64 map
+and real engine orders to check empty immobile-unit bookkeeping, exact blocked
+cells, and immediate building-route invalidation after painting and erasing a gap.
+It exercises all seven swim classes on weighted full-map gradients. No display or
+external save fixture is needed; normal game data must be available.
+
+Pass `fresh`, `occupancy`, or `forbidden` to run one scenario. The latter two clear
+the initial occupancy explicitly, so failures in painting or occupancy can be
+reproduced independently of the fresh-map initialization bug. Linux CI runs all
+scenarios.
+
 ### Savegame safety
 
 Build `scons release=1 server=0 savegame-safety-test`, then run
@@ -192,5 +206,20 @@ Build `scons release=1 server=0 clearing-gradient-test` and run
 `python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest`
 (add `.exe` on Windows). The shared runner isolates the working directory and
 profile and verifies that preferences remain unchanged. The regression covers
-local/global gradients, basic-resource switches, fruit, empty tiles, allocation
-padding and both swimming variants. CI executes it on Linux and Windows.
+weighted building gradients, basic-resource switches, fruit, empty tiles,
+allocation padding and every swimming class. CI executes it on Linux and Windows.
+
+## AI helper gradient regression
+
+`Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
+Run its independent byte-for-byte oracle from the repository root:
+
+```sh
+scons -j8 release=1 server=0 global-gradient-test
+./build/src/GlobalGradientHarness
+```
+
+The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
+toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
+It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
+coverage in `TestsRunner`.

@@ -31,7 +31,6 @@ MultiplayerGame::MultiplayerGame(std::shared_ptr<YOGClient> client)
 	chatChannel=0;
 	
 	wasReadyToStart=false;
-	sentReadyToStart=false;
 	humanReadyToStart=false;
 	
 	isStarting=false;
@@ -355,13 +354,6 @@ void MultiplayerGame::changeTeam(int playerNum, int teamNum)
 	
 	shared_ptr<NetChangePlayersTeam> message(new NetChangePlayersTeam(playerNum, teamNum));
 	client->sendNetMessage(message);
-}
-
-
-
-YOGKickReason MultiplayerGame::getKickReason() const
-{
-	return kickReason;
 }
 
 
