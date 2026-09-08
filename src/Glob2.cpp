@@ -8,6 +8,10 @@
 
 #include <ApplicationHost.h>
 #include <cstdlib>
+#ifdef GLOB2_MOBILE
+#include "mobile/MobilePaths.h"
+#include <exception>
+#endif
 #include "Glob2.h"
 #include "GlobalContainer.h"
 #include "YOGServer.h"
@@ -493,6 +497,10 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+#ifdef GLOB2_MOBILE
+    try { initializeMobilePaths(); }
+    catch(const std::exception& error) { fprintf(stderr,"Mobile startup: %s\n",error.what()); return 1; }
+#endif
 	// Line-buffer stderr/stdout so abort() and assert failures don't swallow
 	// the last log line. macOS block-buffers redirected stdio, and abort()
 	// is not required to flush — without this, "fprintf(stderr, ...) ; abort()"
@@ -500,7 +508,7 @@ int main(int argc, char *argv[])
 	setvbuf(stderr, NULL, _IOLBF, 0);
 	setvbuf(stdout, NULL, _IOLBF, 0);
 
-#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY)
+#if defined(__APPLE__) && !defined(YOG_SERVER_ONLY) && !defined(GLOB2_MOBILE)
 	// Map tools resolve input and output paths relative to the caller.
 	if (!(argc > 1 && isMapCommand(argv[1])))
 	{

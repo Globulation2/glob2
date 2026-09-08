@@ -1,0 +1,33 @@
+{
+  "name": "glob2-mobile",
+  "version": "0.9.5",
+  "builtin-baseline": "80d54ff62d528339c626a6fbc3489a7f25956ade",
+  "dependencies": [
+    {
+      "name": "sdl2",
+      "default-features": false
+    },
+    {
+      "name": "sdl2-image",
+      "default-features": false,
+      "features": [
+        "libjpeg-turbo"
+      ]
+    },
+    {
+      "name": "sdl2-ttf",
+      "default-features": false
+    },
+    "sdl2-net",
+    "libvorbis",
+    "zlib",
+    "boost-date-time",
+    "boost-asio",
+    "boost-logic",
+    "boost-lambda",
+    "boost-random",
+    "boost-math",
+    "openssl",
+    "boost-beast"
+  ]
+}

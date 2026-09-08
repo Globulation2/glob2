@@ -1,0 +1,110 @@
+"""Mobile configuration isolation, independent of installed SDKs."""
+import itertools
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
+from build_layout import build_identity, default_directory, prepare_directory
+from mobile_toolchain import discover
+
+
+class MobileBuildTests(unittest.TestCase):
+    def test_each_mobile_configuration_has_its_own_directory(self):
+        options = [dict(target='android', arch=arch, api=api, release=release)
+            for arch, api, release in itertools.product(('arm64-v8a', 'armeabi-v7a', 'x86_64'), ('26','35'), ('0','1'))]
+        options += [dict(target='ios', environment=env, deployment=api, release=release)
+            for env, api, release in itertools.product(('device','simulator'), ('15.0','16.0'), ('0','1'))]
+        paths = [default_directory(build_identity(args)) for args in options]
+        self.assertEqual(len(paths), len(set(paths)))
+
+    def test_wrong_architecture_cannot_reuse_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            prepare_directory(directory, build_identity({'target':'android'}))
+            with self.assertRaises(ValueError):
+                prepare_directory(directory, build_identity({'target':'android', 'arch':'armeabi-v7a'}))
+
+    def test_invalid_targets_fail_without_probing_host(self):
+        invalid = [dict(target='android', role='server'), dict(target='ios', mingw='1'),
+            dict(target='android', arch='arm64'), dict(target='ios', arch='x86_64'),
+            dict(target='android', api='25'), dict(target='android', api='../26'),
+            dict(target='ios', deployment='14.0'), dict(target='ios', deployment='../15.0'),
+            dict(target='android', environment='simulator'), dict(target='ios', profile='1')]
+        for options in invalid:
+            with self.subTest(options=options), self.assertRaises(ValueError):
+                build_identity(options)
+
+    def test_missing_android_sdk_does_not_fall_back_to_host(self):
+        with tempfile.TemporaryDirectory() as directory, patch('mobile_toolchain.run') as run:
+            with self.assertRaisesRegex(ValueError, 'Android NDK .* missing'):
+                discover(build_identity({'target':'android'}), {'android_sdk':directory})
+            run.assert_not_called()
+
+    def test_ios_on_non_apple_host_has_actionable_error(self):
+        with patch('mobile_toolchain.platform.system', return_value='Linux'):
+            with self.assertRaisesRegex(ValueError, 'full Xcode'):
+                discover(build_identity({'target':'ios'}), {})
+
+class MobileArtifactTests(unittest.TestCase):
+    def test_packaged_shared_libraries_require_aligned_load_segments(self):
+        import struct
+        from mobile_artifacts import verify_android_shared_library
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'libmain.so'
+            for architecture,machine,bits in (('arm64-v8a',183,2),('x86_64',62,2),('armeabi-v7a',40,1)):
+                data=bytearray(self.elf(machine,bits))
+                struct.pack_into('<H',data,16,3)
+                if bits==2:
+                    struct.pack_into('<Q',data,32,64)
+                    struct.pack_into('<HH',data,54,56,1)
+                    data.extend(struct.pack('<II6Q',1,5,0,0,0,120,120,16384))
+                    alignment_offset=112
+                else:
+                    struct.pack_into('<I',data,28,64)
+                    struct.pack_into('<HH',data,42,32,1)
+                    data.extend(struct.pack('<8I',1,0,0,0,96,96,5,4096))
+                    alignment_offset=92
+                path.write_bytes(data)
+                verify_android_shared_library(path,architecture)
+                path.write_bytes(data[:-1])
+                with self.assertRaisesRegex(ValueError,'program header'):
+                    verify_android_shared_library(path,architecture)
+                struct.pack_into('<Q' if bits==2 else '<I',data,alignment_offset,4096 if bits==2 else 1024)
+                path.write_bytes(data)
+                with self.assertRaisesRegex(ValueError,'page aligned'):
+                    verify_android_shared_library(path,architecture)
+
+    @staticmethod
+    def elf(machine, bits):
+        import struct
+        data=bytearray(64);data[:4]=b'\x7fELF';data[4]=bits;data[5]=1
+        struct.pack_into('<H',data,18,machine)
+        return bytes(data)
+
+    def test_reject_mislabeled_dependency_before_linking(self):
+        from mobile_artifacts import verify_android_library
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'libSDL2.so';path.write_bytes(self.elf(40,1))
+            verify_android_library(path,'armeabi-v7a')
+            with self.assertRaisesRegex(ValueError,'wrong architecture'):
+                verify_android_library(path,'arm64-v8a')
+
+    def test_checks_every_archive_member(self):
+        from mobile_artifacts import verify_android_library
+        def member(name,data):
+            header=f'{name:<16}{0:<12}{0:<6}{0:<6}{644:<8}{len(data):<10}`\n'.encode()
+            return header+data+(b'\n' if len(data)%2 else b'')
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'libmixed.a'
+            path.write_bytes(b'!<arch>\n'+member('good.o/',self.elf(183,2))+member('bad.o/',self.elf(40,1)))
+            with self.assertRaisesRegex(ValueError,'bad.o'):
+                verify_android_library(path,'arm64-v8a')
+
+    def test_rejects_host_archive_and_empty_archive(self):
+        from mobile_artifacts import verify_android_library
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'libhost.a'
+            for data in (b'!<arch>\n',b'not an archive'):
+                path.write_bytes(data)
+                with self.assertRaises(ValueError): verify_android_library(path,'arm64-v8a')

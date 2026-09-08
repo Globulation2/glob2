@@ -1,0 +1,41 @@
+plugins { id 'com.android.application' }
+def toolchain = new groovy.json.JsonSlurper().parse(rootProject.file('glob2-toolchain.json'))
+def nativeBuild = new groovy.json.JsonSlurper().parse(rootProject.file('glob2-build.json'))
+android {
+    namespace 'org.globulation.glob2'
+    compileSdk toolchain.android.compile_api
+    ndkVersion toolchain.android.ndk
+    buildToolsVersion toolchain.android.build_tools
+    signingConfigs {
+        debug {
+            storeFile new File(nativeBuild.root, 'build/mobile-tools/android-user/debug.keystore')
+        }
+    }
+    defaultConfig {
+        applicationId 'org.globulation.glob2'
+        minSdk toolchain.android.min_api
+        targetSdk toolchain.android.compile_api
+        versionCode 1
+        versionName '0.9.5-mobile-dev'
+    }
+    sourceSets.main {
+        jniLibs.srcDirs = ['generated/jniLibs']
+        assets.srcDirs = ['generated/assets']
+        java.srcDirs += ['generated/java']
+    }
+    buildTypes {
+        debug { jniDebuggable true }
+        release { minifyEnabled false; ndk { debugSymbolLevel 'FULL' } }
+    }
+    packaging { jniLibs { useLegacyPackaging false } }
+}
+
+tasks.register('compileGlob2', Exec) {
+    workingDir nativeBuild.root
+    commandLine nativeBuild.command
+}
+tasks.named('preBuild').configure { dependsOn 'compileGlob2' }
+androidComponents.beforeVariants(androidComponents.selector().all()) { variant ->
+    variant.enable = variant.buildType == (nativeBuild.release ? 'release' : 'debug')
+}
+if (rootProject.file('signing.gradle').exists()) { apply from: rootProject.file('signing.gradle') }
