@@ -484,8 +484,7 @@ static constexpr int AI_CASTOR_GRADIENT_OBSTACLE_NO_OBSTACLE = 16;
 // "Wall" sentinel for the standard updateGlobalGradient propagation: a
 // cell already at this value is a fixed source, propagation stops.
 // Also seeded into enemyRangeMap by computeEnemyRangeMap (Maps.cpp:711)
-// as the "enemy here" gradient source — `GRADIENT_AT_GOAL` (defined in
-// MapInternal.h) is the canonical name and is used at the call site.
+// as the "enemy here" gradient source, and the cap of Castor's 8-bit maps.
 // C++: Placement.cpp:404, 435, 467, 496.
 static constexpr int AI_CASTOR_GRADIENT_WALL = 255;
 

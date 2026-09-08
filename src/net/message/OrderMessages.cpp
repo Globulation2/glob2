@@ -140,7 +140,6 @@ bool NetPing::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetPing))
 	{
-		//const NetPing& r = dynamic_cast<const NetPing&>(rhs);
 		return true;
 	}
 	return false;
@@ -179,7 +178,6 @@ bool NetPingReply::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetPingReply))
 	{
-		//const NetPingReply& r = dynamic_cast<const NetPingReply&>(rhs);
 		return true;
 	}
 	return false;

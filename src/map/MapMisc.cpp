@@ -10,7 +10,7 @@
 
 
 
-// Miscellaneous helpers: checkSum, warpDist*, isInLocalGradient, dumpGradient
+// Miscellaneous helpers: checkSum, warpDist*, dumpGradient
 
 Uint32 Map::checkSum(bool heavy)
 {
@@ -59,46 +59,6 @@ Sint32 Map::warpDistMax(int px, int py, int qx, int qy)
 		return dy;
 }
 
-Sint32 Map::warpDistSum(int px, int py, int qx, int qy)
-{
-	Sint32 dx=warpDist1d(px,qx,w);
-	Sint32 dy=warpDist1d(py,qy,h);
-	return dx + dy;
-}
-
-
-bool Map::isInLocalGradient(int ux, int uy, int bx, int by)
-{
-	Sint32 dx=warpDist1d(ux,bx,w);
-	Sint32 dy=warpDist1d(uy,by,h);
-	if (dx>dy)
-	{
-		if (dx<LOCAL_GRID_CENTER)
-			return true;
-		if (dx>LOCAL_GRID_CENTER)
-			return false;
-
-		return ((bx+LOCAL_GRID_CENTER) & wMask)==(ux & wMask);
-	}
-	else if (dx<dy)
-	{
-		if (dy<LOCAL_GRID_CENTER)
-			return true;
-		if (dy>LOCAL_GRID_CENTER)
-			return false;
-
-		return ((by+LOCAL_GRID_CENTER) & wMask)==(uy & wMask);
-	}
-	else
-	{
-		if (dx<LOCAL_GRID_CENTER)
-			return true;
-		if (dx>LOCAL_GRID_CENTER)
-			return false;
-
-		return (((bx+LOCAL_GRID_CENTER) & wMask)==(ux & wMask)) && (((by+LOCAL_GRID_CENTER) & wMask)==(uy & wMask));
-	}
-}
 
 void Map::dumpGradient(Uint8 *gradient, const std::string filename)
 {

@@ -72,7 +72,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	size_t bestIndex=0;
 	Sint32 bestScore=0;
 	
-	Uint8 *wheatGradientMap=map->resourcesGradient[team->teamNumber][CORN][canSwim];
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
 		{
@@ -96,7 +95,7 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 			if (work<minWork)
 				continue;
 			
-			Uint32 wheatGradient=wheatGradientMap[corner0]+wheatGradientMap[corner1]+wheatGradientMap[corner2]+wheatGradientMap[corner3];
+			Uint32 wheatGradient=wheatGradientAt(corner0)+wheatGradientAt(corner1)+wheatGradientAt(corner2)+wheatGradientAt(corner3);
 			if (!defense)
 			{
 				if (food)
@@ -147,75 +146,6 @@ std::shared_ptr<Order>AICastor::findGoodBuilding(Sint32 typeNum, bool food, bool
 	}
 	
 	return shared_ptr<Order>();
-}
-
-void AICastor::computeResourcesCluster()
-{
-	int w=map->w;
-	int h=map->h;
-	//int wMask=map->wMask;
-	int hMask=map->hMask;
-	size_t size=w*h;
-	
-	memset(resourcesCluster, 0, size*2);
-	
-	Uint8 old=NO_RES_TYPE;
-	Uint16 id=0;
-	bool usedid[AI_CASTOR_CLUSTER_ID_SPACE];
-	memset(usedid, 0, AI_CASTOR_CLUSTER_ID_SPACE*sizeof(bool));
-	for (int y=0; y<h; y++)
-	{
-		for (int x=0; x<w; x++)
-		{
-			const auto& c = map->cases[map->coordToIndex(x, y)]; // case
-			const auto& r=c.resource; // resource
-			Uint8 rt=r.type; // resources type
-			
-			int rci=x+y*w; // resource cluster index
-			Uint16 *rcp=&resourcesCluster[rci]; // resource cluster pointer
-			Uint16 rc=*rcp; // resource cluster
-			
-			if (rt==NO_RES_TYPE)
-			{
-				*rcp=0;
-				old=NO_RES_TYPE;
-			}
-			else
-			{
-				if (rt!=old)
-				{
-					id=AI_CASTOR_CLUSTER_FIRST_ID;
-					while (usedid[id])
-						id++;
-					if (id)
-						usedid[id]=true;
-					old=rt;
-				}
-				if (rc!=id)
-				{
-					if (rc==0)
-					{
-						*rcp=id;
-					}
-					else
-					{
-						Uint16 oldid=id;
-						usedid[oldid]=false;
-						id=rc; // newid
-						// We have to correct last resourcesCluster values:
-						*rcp=id;
-						while (*rcp==oldid)
-						{
-							*rcp=id;
-							rcp--;
-						}
-					}
-				}
-			}
-		}
-		memcpy(resourcesCluster+((y+1)&hMask)*w, resourcesCluster+y*w, w*2);
-	}
-	
 }
 
 void AICastor::updateGlobalGradientNoObstacle(Uint8 *gradient)

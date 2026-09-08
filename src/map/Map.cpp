@@ -36,24 +36,6 @@ const int tabClose[8][2]={
 	{-1,  1},
 	{-1,  0}};
 
-const int tabFar[16][2]={
-	{-2, -2},
-	{-1, -2},
-	{ 0, -2},
-	{ 1, -2},
-	{ 2, -2},
-	{ 2, -1},
-	{ 2,  0},
-	{ 2,  1},
-	{ 2,  2},
-	{ 1,  2},
-	{ 0,  2},
-	{-1,  2},
-	{-2,  2},
-	{-2,  1},
-	{-2,  0},
-	{-2, -1}};
-
 Map::Map()
 {
 	game=NULL;
@@ -63,13 +45,13 @@ Map::Map()
 	aStarPoints = NULL;
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_NB_RESOURCES; r++)
-			for (int s=0; s<2; s++)
+			for (int s=0; s<SWIM_CLASS_COUNT; s++)
 			{
 				resourcesGradient[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
 			}
 	for (int t=0; t<Team::MAX_COUNT; t++)
-		for (int s=0; s<2; s++)
+		for (int s=0; s<SWIM_CLASS_COUNT; s++)
 		{
 			forbiddenGradient[t][s] = NULL;
 			guardAreasGradient[t][s] = NULL;
@@ -115,13 +97,13 @@ void Map::clear()
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
 		for (int r=0; r<MAX_RESOURCES; ++r)
-			for (int swim=0; swim<2; ++swim)
+			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
 			{
 				delete[] resourcesGradient[t][r][swim];
 				resourcesGradient[t][r][swim] = NULL;
 				gradientUpdated[t][r][swim] = false;
 			}
-		for (int swim=0; swim<2; ++swim)
+		for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
 		{
 			delete[] forbiddenGradient[t][swim];
 			forbiddenGradient[t][swim] = NULL;
@@ -159,7 +141,7 @@ void Map::clear()
 
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int r=0; r<MAX_RESOURCES; r++)
-			for (int s=0; s<2; s++)
+			for (int s=0; s<SWIM_CLASS_COUNT; s++)
 				gradientUpdated[t][r][s]=false;
 }
 

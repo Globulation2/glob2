@@ -192,22 +192,6 @@ namespace GAGCore
 		return fopen(filename.c_str(), mode.c_str());
 	}
 	
-	std::ofstream *FileManager::openWithbackupOFS(const std::string filename, std::ofstream::openmode mode)
-	{
-		if (mode & std::ios_base::out)
-		{
-			std::string backupName(filename);
-			backupName += '~';
-			rename(filename.c_str(), backupName.c_str());
-		}
-		std::ofstream *ofs = new std::ofstream(filename.c_str(), mode);
-		if (ofs->is_open())
-			return ofs;
-		
-		delete ofs;
-		return NULL;
-	}
-	
 	StreamBackend *FileManager::openOutputStreamBackend(const std::string filename)
 	{
 		if (isAbsolutePath(filename))
@@ -252,66 +236,6 @@ namespace GAGCore
 		}
 	
 		return new FileStreamBackend(NULL);
-	}
-	
-	StreamBackend *FileManager::openCompressedOutputStreamBackend(const std::string filename)
-	{
-		if (isAbsolutePath(filename))
-		{
-			//Test if it can be opened first
-			FILE *fp = fopen(filename.c_str(), "wb");
-			if (fp)
-			{
-				fclose(fp);
-				return new ZLibStreamBackend(filename, false);
-			}
-			return new ZLibStreamBackend("", false);
-		}
-		for (size_t i = 0; i < dirList.size(); ++i)
-		{
-			std::string path(dirList[i]);
-			path += DIR_SEPARATOR;
-			path += filename;
-			
-			//Test if it can be opened first
-			FILE *fp = fopen(path.c_str(), "wb");
-			if(fp)
-			{
-				fclose(fp);
-				return new ZLibStreamBackend(path, false);
-			}
-		}
-	
-		return new ZLibStreamBackend("", false);
-	}
-	
-	StreamBackend *FileManager::openCompressedInputStreamBackend(const std::string filename)
-	{
-		if (isAbsolutePath(filename))
-		{
-			FILE *fp = fopen(filename.c_str(), "rb");
-			if (fp)
-			{
-				fclose(fp);
-				return new ZLibStreamBackend(filename, true);
-			}
-			return new ZLibStreamBackend("", false);
-		}
-		for (size_t i = 0; i < dirList.size(); ++i)
-		{
-			std::string path(dirList[i]);
-			path += DIR_SEPARATOR;
-			path += filename;
-			
-			FILE *fp = fopen(path.c_str(), "rb");
-			if(fp)
-			{
-				fclose(fp);
-				return new ZLibStreamBackend(path, true);
-			}
-		}
-	
-		return new ZLibStreamBackend("", false);
 	}
 	
 	SDL_RWops *FileManager::open(const std::string filename, const std::string mode)

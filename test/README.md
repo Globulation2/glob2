@@ -174,14 +174,16 @@ Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtur
 ## Immobile unit gradient regression
 
 From the repository root, run `scons -j8 release=1 server=0 immobile-unit-gradient-test`
-and `./build/src/ImmobileUnitGradientHarness`. The harness links the real engine on a
-64x64 map and checks that a freshly built map (`Map::setSize`) carries no immobile
-unit on any tile and that a building's local gradient is reachable, then marks
-immobile units and checks that each blocks exactly its own tile of the local
-gradient and nothing else. A third scenario paints forbidden rows through the
-real order path and checks that closing the last gap cuts units off from the
-building at once, both inside and outside the local window. It needs no display
-or external files.
+and `./build/src/ImmobileUnitGradientHarness`. The harness uses a fresh 64x64 map
+and real engine orders to check empty immobile-unit bookkeeping, exact blocked
+cells, and immediate building-route invalidation after painting and erasing a gap.
+It exercises all seven swim classes on weighted full-map gradients. No display or
+external save fixture is needed; normal game data must be available.
+
+Pass `fresh`, `occupancy`, or `forbidden` to run one scenario. The latter two clear
+the initial occupancy explicitly, so failures in painting or occupancy can be
+reproduced independently of the fresh-map initialization bug. Linux CI runs all
+scenarios.
 
 ### Savegame safety
 
@@ -197,3 +199,18 @@ streams, recovery after failed loads, and oversized map-area strings. Atomic
 replacement tests cover callback/open/rename failures and temporary-file cleanup.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
+
+## AI helper gradient regression
+
+`Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
+Run its independent byte-for-byte oracle from the repository root:
+
+```sh
+scons -j8 release=1 server=0 global-gradient-test
+./build/src/GlobalGradientHarness
+```
+
+The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
+toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
+It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
+coverage in `TestsRunner`.

@@ -74,51 +74,6 @@ void BaseTeam::save(GAGCore::OutputStream *stream) const
 
 
 
-Uint8 *BaseTeam::getData()
-{
-	addSint32(data, teamNumber, 0);
-	addSint32(data, numberOfPlayer, 4);
-	addUint8(data, color.r, 8);
-	addUint8(data, color.g, 9);
-	addUint8(data, color.b, 10);
-	addUint8(data, color.a, 11);
-	addSint32(data, playersMask, 12);
-	// TODO : give race to the network here.
-
-	return data;
-}
-
-
-
-
-bool BaseTeam::setData(const Uint8 *data, int dataLength)
-{
-	if (dataLength!=getDataLength())
-		return false;
-
-	teamNumber=getSint32(data, 0);
-	numberOfPlayer=getSint32(data, 4);
-	color.r=getUint8(data, 8);
-	color.g=getUint8(data, 9);
-	color.b=getUint8(data, 10);
-	color.a=getUint8(data, 11);
-	playersMask=getSint32(data, 12);
-	// TODO : create the race from the network here.
-
-	return true;
-}
-
-
-
-
-int BaseTeam::getDataLength()
-{
-	return 16;
-}
-
-
-
-
 Uint32 BaseTeam::checkSum()
 {
 	Uint32 cs=0;

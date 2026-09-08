@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Immobile units block the right tile of a building's local gradient, and a
-// freshly built map starts without any.
+// Real-engine regression for immobile bookkeeping and weighted building routes.
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -17,6 +16,7 @@
 #include <memory>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 GlobalContainer* globalContainer = nullptr;
 
@@ -31,95 +31,126 @@ struct World
 	Game& game = gui.game;
 	Building* inn = nullptr;
 
-	// 64x64 so a local-window index and a map index never coincide.
-	World(int bx, int by)
+	World()
 	{
 		game.map.setSize(6, 6, GRASS);
 		game.map.setGame(&game);
 		game.addTeam(0);
 		const int typeNum = globalContainer->buildingsTypes.getTypeNum("inn", 0, false);
 		require(typeNum >= 0, "inn type exists");
-		inn = game.addBuilding(bx, by, typeNum, 0);
+		inn = game.addBuilding(20, 20, typeNum, 0);
 		require(inn != nullptr, "inn placed");
-		game.map.setBuilding(bx, by, inn->type->width, inn->type->height, inn->gid);
+		game.map.setBuilding(20, 20, inn->type->width, inn->type->height, inn->gid);
 	}
 
-	// The local gradient value at map tile (x, y), as Map::pathfindBuilding reads it.
-	Uint8 local(int x, int y) const
+	void clearOccupancy()
 	{
-		const int lx = (x - inn->posX + 15 + 32) & 31;
-		const int ly = (y - inn->posY + 15 + 32) & 31;
-		return inn->localGradient[0][lx + (ly << 5)];
+		// Isolate later scenarios from the initialization fix when testing the base.
+		for (int y = 0; y < game.map.getH(); ++y)
+			for (int x = 0; x < game.map.getW(); ++x)
+				game.map.clearImmobileUnit(x, y);
+	}
+
+	Uint16 value(int swimClass, int x, int y)
+	{
+		const Uint16* gradient = game.map.buildingGradient(inn, swimClass);
+		require(gradient != nullptr, "inn has an accessible entrance");
+		return gradient[game.map.coordToIndex(x, y)];
 	}
 };
 
 static void freshMapHasNoImmobileUnits()
 {
-	World world(20, 20);
+	World world;
 	for (int y = 0; y < world.game.map.getH(); ++y)
 		for (int x = 0; x < world.game.map.getW(); ++x)
 			require(!world.game.map.isImmobileUnit(x, y), "a fresh map has no immobile unit anywhere");
-	world.game.map.updateLocalGradient(world.inn, false);
-	require(!world.inn->locked[0], "the inn is reachable on a fresh map");
-	require(world.local(20, 23) > GRADIENT_UNREACHABLE, "open grass near the inn is reachable");
-	require(world.local(7, 7) > GRADIENT_UNREACHABLE, "the corner of the local window is reachable");
-	std::puts("PASS a fresh map has no immobile units and its local gradients are reachable");
+	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	{
+		require(world.value(c, 20, 23) > GRADIENT_UNREACHABLE, "open grass near the inn is reachable");
+		require(world.value(c, 40, 45) > GRADIENT_UNREACHABLE, "distant grass is reachable");
+	}
+	std::puts("PASS fresh map occupancy and weighted routes for every swim class");
 }
 
 static void immobileUnitBlocksItsOwnTile()
 {
-	World world(20, 20);
-	// Map index of (20, 23) is 1492, beyond any local-window index; map index
-	// of (2, 1) is 66, which is local (2, 2) = map (7, 7) if read as a window
-	// index.
+	World world;
+	world.clearOccupancy();
 	world.game.map.markImmobileUnit(20, 23, 0);
 	world.game.map.markImmobileUnit(2, 1, 0);
-	world.game.map.updateLocalGradient(world.inn, false);
-	require(world.local(20, 23) == GRADIENT_FORBIDDEN, "the tile with the immobile unit is blocked");
-	require(world.local(20, 22) > GRADIENT_UNREACHABLE && world.local(20, 24) > GRADIENT_UNREACHABLE, "its neighbours are not");
-	require(world.local(7, 7) > GRADIENT_UNREACHABLE, "a tile whose window index matches a marked map index stays free");
+	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	{
+		require(world.value(c, 20, 23) == GRADIENT_FORBIDDEN, "the immobile unit's tile is blocked");
+		require(world.value(c, 2, 1) == GRADIENT_FORBIDDEN, "the distant immobile unit's tile is blocked");
+		require(world.value(c, 20, 22) > GRADIENT_UNREACHABLE && world.value(c, 20, 24) > GRADIENT_UNREACHABLE, "neighbours remain free");
+		require(world.value(c, 7, 7) > GRADIENT_UNREACHABLE, "unrelated tile remains free");
+	}
 	world.game.map.clearImmobileUnit(20, 23);
-	world.game.map.updateLocalGradient(world.inn, false);
-	require(world.local(20, 23) > GRADIENT_UNREACHABLE, "clearing the unit frees the tile");
-	std::puts("PASS an immobile unit blocks its own tile in the local gradient");
+	world.inn->resetPathfindGradients();
+	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+		require(world.value(c, 20, 23) > GRADIENT_UNREACHABLE, "clearing the unit frees its tile on rebuild");
+	std::puts("PASS immobile units block their own weighted-gradient cells");
 }
 
-// Paints a full-width forbidden row at y, leaving gapX open (gapX < 0: no gap).
+static void alterForbidden(World& world, BrushTool::Mode mode, BrushAccumulator& brush)
+{
+	std::shared_ptr<Order> order(new OrderAlterForbidden(0, mode, &brush, &world.game.map));
+	order->sender = 0;
+	world.game.executeOrder(order, 0);
+}
+
+// Two full-width rows are needed to enclose an area on the toroidal map.
 static void forbidRow(World& world, int y, int gapX)
 {
 	BrushAccumulator row;
 	for (int x = 0; x < world.game.map.getW(); ++x)
 		if (x != gapX)
 			row.applyBrush(BrushApplication(x, y, 0), &world.game.map);
-	std::shared_ptr<Order> order(new OrderAlterForbidden(0, BrushTool::MODE_ADD, &row, &world.game.map));
-	order->sender = 0;
-	world.game.executeOrder(order, 0);
+	alterForbidden(world, BrushTool::MODE_ADD, row);
 }
 
 static void paintingForbiddenAreaRefreshesGradients()
 {
-	World world(20, 20);
+	World world;
+	world.clearOccupancy();
 	Team* team = world.game.teams[0];
 	world.game.players[0] = new Player(0, "harness", team, BasePlayer::P_LOCAL);
 	world.game.gameHeader.setNumberOfPlayers(1);
-	// Two forbidden rows enclose y=24..54; the only way to the inn is the gap at (20, 23).
 	forbidRow(world, 23, 20);
 	forbidRow(world, 55, -1);
-	require(world.game.map.isForbidden(19, 23, team->me) && !world.game.map.isForbidden(20, 23, team->me), "the rows are painted with one gap");
-	// One unit inside the inn's local window, one far outside it.
+	require(world.game.map.isForbidden(19, 23, team->me) && !world.game.map.isForbidden(20, 23, team->me), "painted rows leave one gap");
 	int dist = -1, dx = 0, dy = 0;
-	require(world.game.map.buildingAvailable(world.inn, false, 20, 26, &dist), "near the inn the route runs through the gap");
-	require(world.game.map.buildingAvailable(world.inn, false, 40, 45, &dist), "far from the inn the route runs through the gap");
-	require(world.game.map.pathfindBuilding(world.inn, false, 40, 45, &dx, &dy) && dy == -1, "the far unit heads north");
+	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	{
+		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "near route uses the gap");
+		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "distant route uses the gap");
+		require(world.game.map.pathfindBuilding(world.inn, c, 40, 45, &dx, &dy), "distant unit can advance");
+	}
 	forbidRow(world, 23, -1);
-	require(!world.game.map.buildingAvailable(world.inn, false, 20, 26, &dist), "closing the gap cuts off the near unit at once");
-	require(!world.game.map.buildingAvailable(world.inn, false, 40, 45, &dist), "closing the gap cuts off the far unit at once");
-	require(!world.game.map.pathfindBuilding(world.inn, false, 40, 45, &dx, &dy), "the far unit has no route left");
-	std::puts("PASS painting forbidden area refreshes building gradients");
+	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	{
+		require(world.inn->globalGradient[c] == nullptr, "painting invalidates every cached swim class immediately");
+		require(!world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "closing the gap cuts off the near route");
+		require(!world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "closing the gap cuts off the distant route");
+		require(!world.game.map.pathfindBuilding(world.inn, c, 40, 45, &dx, &dy), "distant unit has no route left");
+	}
+	BrushAccumulator gap;
+	gap.applyBrush(BrushApplication(20, 23, 0), &world.game.map);
+	alterForbidden(world, BrushTool::MODE_DEL, gap);
+	for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
+	{
+		require(world.inn->globalGradient[c] == nullptr, "erasing invalidates every cached swim class immediately");
+		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "erasing restores the near route");
+		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "erasing restores the distant route");
+	}
+	std::puts("PASS painting and erasing refresh all weighted building routes");
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	const char* scenario = argc > 1 ? argv[1] : "all";
+	require(argc <= 2 && (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "fresh") == 0 || std::strcmp(scenario, "occupancy") == 0 || std::strcmp(scenario, "forbidden") == 0), "expected all, fresh, occupancy or forbidden");
 	GlobalContainer globals;
 	globalContainer = &globals;
 	globals.runNoX = true;
@@ -127,9 +158,9 @@ int main()
 	globals.buildingsTypes.init();
 	IntBuildingType::init();
 	Race::loadDefault();
-	freshMapHasNoImmobileUnits();
-	immobileUnitBlocksItsOwnTile();
-	paintingForbiddenAreaRefreshesGradients();
+	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "fresh") == 0) freshMapHasNoImmobileUnits();
+	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "occupancy") == 0) immobileUnitBlocksItsOwnTile();
+	if (std::strcmp(scenario, "all") == 0 || std::strcmp(scenario, "forbidden") == 0) paintingForbiddenAreaRefreshesGradients();
 	std::puts("Immobile unit gradient regressions passed");
 	return 0;
 }

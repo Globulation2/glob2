@@ -169,6 +169,11 @@ void Unit::dxDyFromDirection(void)
 	dxDyFromDirection(direction,&dx,&dy);
 }
 
+int Unit::swimClass() const
+{
+	return Map::swimClass(performance[WALK], performance[SWIM]);
+}
+
 int Unit::directionFromDxDy(int dx, int dy)
 {
 	const int tab[3][3]={	{0, 1, 2},
