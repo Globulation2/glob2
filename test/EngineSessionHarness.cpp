@@ -145,6 +145,23 @@ int main(int argc, char** argv)
         }
     }
     {
+        // Adding a team to a private preparation game must be cancellable
+        // after its header/Team exist but before all map arrays are allocated.
+        for (unsigned extraSteps : {0u, 5u, 20u}) {
+            Game partial(nullptr);
+            MapGenerator generator;
+            MapGenerationDescriptor descriptor;
+            require(generator.generateMap(partial, descriptor, 12345), "Team fixture generation failed");
+            auto task = partial.addTeamTask();
+            while (std::string(task.stage()) != "[Building gradients]")
+                require(!task.advance(), "Team task must yield during gradient construction");
+            require(partial.mapHeader.getNumberOfTeams() == 2, "Team header must precede map preparation");
+            for (unsigned step = 0; step < extraSteps; ++step)
+                require(!task.advance(), "Team cancellation fixture finished too early");
+            // task is destroyed before partial, releasing its nested frame.
+        }
+    }
+    {
         MapGenerator generator;
         for (auto method : {MapGenerationDescriptor::eUNIFORM, MapGenerationDescriptor::eSWAMP,
                             MapGenerationDescriptor::eISLANDS, MapGenerationDescriptor::eCONCRETEISLANDS,

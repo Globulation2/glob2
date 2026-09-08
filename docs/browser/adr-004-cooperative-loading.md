@@ -108,3 +108,19 @@ Eight checkpoints is a work-count policy, not a measured wall-clock bound. Memor
 allocation, team construction, and remaining parser/terrain operations still need
 latency qualification. Gradient changes also run the native speed/replay suite
 because simulation callers share the synchronous implementation.
+
+## Team setup during generation
+
+`Game::addTeamTask` awaits `Map::addTeamTask`, which allocates and builds resource
+and area gradients using the loading tasks. Generation callers await this chain;
+existing editor/runtime callers still drain it synchronously through `addTeam`.
+Team masks, colors, header count, prestige limits, and script initialization retain
+their original order.
+
+The asynchronous API is for a privately owned preparation game. A cancelled team
+addition leaves a partial game to discard; it is not a transaction for adding a
+team to a live match. The editor generation screen owns that discard and RNG
+rollback. Tests destroy jobs after the header/Team exist and at several subsequent
+gradient checkpoints, exercising cleanup with both allocated and missing arrays.
+Race loading, object construction, and initial area-array filling still contain
+synchronous work and remain part of loading latency qualification.

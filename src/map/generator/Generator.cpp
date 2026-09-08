@@ -40,7 +40,7 @@ GAGCore::CooperativeTask MapGenerator::generateMapTask(Game& game, MapGeneration
 	{
 		case MapGenerationDescriptor::eUNIFORM:
 			co_await game.map.makeHomogenMapTask(descriptor.terrainType);
-			game.addTeam();
+			co_await game.addTeamTask();
 		break;
 		case MapGenerationDescriptor::eSWAMP:
 		case MapGenerationDescriptor::eISLANDS:
@@ -96,7 +96,7 @@ GAGCore::CooperativeTask MapGenerator::computeConcreteIslandsTask(Game& game, Ma
     co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	co_await game.map.makeHomogenMapTask(descriptor.terrainType);
 	for(int i=0; i<descriptor.nbTeams; ++i)
-		game.addTeam();
+		co_await game.addTeamTask();
 
 	//This keeps track of the current area number
 	int areaNumber = 1;
@@ -264,7 +264,7 @@ GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGeneratio
     co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	co_await game.map.makeHomogenMapTask(descriptor.terrainType);
 	for(int i=0; i<descriptor.nbTeams; ++i)
-		game.addTeam();
+		co_await game.addTeamTask();
 		
 	int areaNumber = 1;
 	std::vector<int> grid(game.map.getW() * game.map.getH(), 0);

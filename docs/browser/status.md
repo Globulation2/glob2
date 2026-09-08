@@ -48,7 +48,8 @@ infrastructure from the supported-release acceptance criteria.
   and normalization now yield through nested jobs with owned temporary arrays and
   instance-local stamp state. Concrete-islands/isles distance floods, point spacing,
   weighted area expansion, player-land partitioning, point collection/filtering,
-  resource filling, oval creation, and area scoring also use nested jobs.
+  resource filling, oval creation, area scoring, and team-gradient setup also
+  use nested jobs.
   Building-specific gradients and other long terrain operations still need subdivision;
   cross-platform generation parity is not yet certified.
 - A maintained, dependency-locked Playwright suite with real input and

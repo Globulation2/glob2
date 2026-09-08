@@ -256,6 +256,11 @@ void Map::save(GAGCore::OutputStream *stream)
 
 void Map::addTeam(void)
 {
+    addTeamTask().run();
+}
+
+GAGCore::CooperativeTask Map::addTeamTask(void)
+{
 	int numberOfTeam=game->mapHeader.getNumberOfTeams();
 	int oldNumberOfTeam=numberOfTeam-1;
 	assert(numberOfTeam>0);
@@ -272,6 +277,7 @@ void Map::addTeam(void)
 	assert(clearingAreaClaims[t] == NULL);
 	clearingAreaClaims[t] = new Uint16[size];
 	memset(clearingAreaClaims[t], NOGUID, size*sizeof(Uint16));
+    co_return true;
 }
 
 void Map::removeTeam(void)

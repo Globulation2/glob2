@@ -26,7 +26,7 @@ GAGCore::CooperativeTask Game::oldMakeIslandsMapTask(MapGenerationDescriptor &de
 	{
         if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		if (mapHeader.getNumberOfTeams()<=s)
-			addTeam();
+			co_await addTeamTask();
 		int squareSize=5+descriptor.oldIslandSize/10;
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, squareSize);
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, squareSize);
@@ -69,7 +69,7 @@ GAGCore::CooperativeTask Game::makeRandomMapTask(MapGenerationDescriptor &descri
         if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		assert(mapHeader.getNumberOfTeams()==s);
 		if (mapHeader.getNumberOfTeams()<=s)
-			addTeam();
+			co_await addTeamTask();
 		
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+0, GRASS, 5);
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, 5);

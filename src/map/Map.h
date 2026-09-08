@@ -125,6 +125,7 @@ public:
 	// add & remove teams, used by the map editor and the random map generator
 	// Have to be called *after* session.numberOfTeam has been changed.
 	void addTeam(void);
+    GAGCore::CooperativeTask addTeamTask(void);
 	void removeTeam(void);
 
 	//! Grow resources on map
