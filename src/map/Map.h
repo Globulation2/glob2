@@ -617,7 +617,12 @@ public:
 	//! on the AIs' Uint8 maps alike: the goal is the maximum of the element type.
 	template<typename T>
 	bool getGlobalGradientDestination(const T *gradient, int x, int y, Sint32 *targetX, Sint32 *targetY) const;
-	
+	//! Whether (x, y) is a local maximum of gradient: no neighbour holds a strictly higher
+	//! value. True at any tile getGlobalGradientDestination's ascent could end on, including
+	//! gradients like a round-trip field whose seeded goal is a finite cost, not the type's max.
+	template<typename T>
+	bool isGradientPeak(const T *gradient, int x, int y) const;
+
 	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y)
 	{
 		return getResourceGradient(teamNumber, resourceType, swimClass)[coordToIndex(x, y)];
