@@ -30,7 +30,7 @@ namespace AIEcho
 
 	///These are all conditions on a particular Building. They are used in several places, such as when counting numbers of buildings, or
 	///for setting a condition on an order to change the number of units assigned, making them very useful. Its important to note that
-	///none of the conditions work on enemies buildings, they only work on buildings on you're own team.
+	///none of the conditions work on enemy buildings, they only work on buildings on your own team.
 	namespace Conditions
 	{
 		///This is used for loading and saving purposes only.
@@ -238,7 +238,7 @@ namespace AIEcho
 		};
 
 		///Similar to BeingUpgraded, but this also takes a level, in which the building is being upgraded
-		///to a particular level. When possible, use this instead od combining BeingUpgraded and BuildingLevel
+		///to a particular level. When possible, use this instead of combining BeingUpgraded and BuildingLevel
 		class BeingUpgradedTo : public BuildingCondition
 		{
 		public:

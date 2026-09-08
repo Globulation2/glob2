@@ -419,7 +419,7 @@ namespace GAGCore
 		px = x1;
 		py = y1;
 
-		// variable initialisation for bresenham algo
+		// variable initialisation for Bresenham algo
 		if (dx == 0)
 			return;
 		if (dy == 0)

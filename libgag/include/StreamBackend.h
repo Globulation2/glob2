@@ -71,7 +71,7 @@ namespace GAGCore
 	class MemoryStreamBackend : public StreamBackend
 	{
 	private:
-		std::string datas;
+		std::string buffer;
 		size_t index;
 		
 	public:
@@ -90,6 +90,6 @@ namespace GAGCore
 		virtual size_t getPosition(void);
 		virtual bool isEndOfStream(void);
 		virtual bool isValid(void) { return true; }
-		virtual const char* getBuffer() { return datas.c_str(); }
+		virtual const char* getBuffer() { return buffer.c_str(); }
 	};
 }
