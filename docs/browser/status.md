@@ -87,9 +87,11 @@ on macOS arm64 in September 2026:
   checksums under regular callbacks, delayed callbacks, and the screen stack.
 - Upstream save-safety and weighted-gradient tests pass. Binary-string tests
   now cover embedded zero bytes, which occur in persisted password hashes.
-- The first post-rebase single-player run passed 40 of 42 browser scenarios.
-  Firefox and WebKit saved-match reload failed; the focused rerun also failed in
-  Chromium. Saved-match reload remains an explicit merge blocker.
+- All 42 single-player browser scenarios pass across Chromium, Firefox, and
+  WebKit after fixing an empty-gradient refresh loop on the first loaded tick.
+  The native save-safety harness also covers ticks before any lazy gradient
+  has been requested. Loading/error translations use the required paired-line
+  format so the progress screens display their messages.
 - Both Compose deployment tests pass after the binary-string fix: trusted
   HTTPS/WSS, private routes, account persistence across recreation, router-loss
   refusal, and admission after restart.
