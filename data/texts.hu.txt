@@ -577,7 +577,7 @@ még nincs billentyű
 [No Objectives]
 Nincsenek célok
 [no ressources growth areas]
-Növekedést tiltó területek
+Nincs növekedés
 [No]
 Nem
 [Not Enough Ratings]

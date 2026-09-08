@@ -581,7 +581,7 @@ meta-%0
 [No Objectives]
 Нет целей
 [no ressources growth areas]
-Зоны без роста ресурсов
+Без роста
 [No]
 Нет
 [Not Enough Ratings]

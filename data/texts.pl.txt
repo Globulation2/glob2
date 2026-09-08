@@ -579,7 +579,7 @@ brak klawisza
 [No Objectives]
 Brak Celów
 [no ressources growth areas]
-Tereny bez wzrostu zasobów
+Bez wzrostu
 [No]
 Nie
 [Not Enough Ratings]

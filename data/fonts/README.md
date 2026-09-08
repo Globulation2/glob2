@@ -1,16 +1,18 @@
 # Glob2 Sans
 
-`sans.ttf` is the game's original DejaVu Sans 2.26 with 21,900 missing CJK
+`sans.ttf` is the game's original DejaVu Sans 2.26 with 33,199 missing CJK
 characters appended from Droid Sans Fallback. Original outlines, hinting,
 advance widths, kerning, shaping tables and line metrics are preserved.
 The donor outlines are scaled from 256 to 2048 units per em and imported
-without their font-specific hint programs. This supports both Chinese catalogs
+without their font-specific hint programs. This supports the Chinese, Japanese
+and Korean catalogs
 without changing the renderer or replacing glyphs used by existing languages.
 
 Coverage includes the donor's CJK radicals, punctuation, kana, bopomofo,
-ideographs and fullwidth forms, including characters not currently in the
+ideographs, all 11,172 precomposed Hangul syllables, and fullwidth forms,
+including characters not currently in the
 catalogs. It is not complete Unicode coverage. One shared Han glyph style is
-used for both Simplified and Traditional Chinese; locale-specific typeface
+used for Chinese and Japanese; locale-specific typeface
 variants would require separate fonts and renderer support.
 
 The original font's Bitstream/Arev notices are in `LICENSE-DejaVu.txt`.

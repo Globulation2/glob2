@@ -583,7 +583,7 @@ cap tecla assignada
 [No Objectives]
 Sense objectius
 [no ressources growth areas]
-Àrees sense creixement
+Sense creixement
 [No]
 No
 [Not Enough Ratings]

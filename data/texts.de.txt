@@ -579,7 +579,7 @@ keine Taste
 [No Objectives]
 keine Anweisungen
 [no ressources growth areas]
-Gebiete ohne Wachstum
+Kein Wachstum
 [No]
 Nein
 [Not Enough Ratings]

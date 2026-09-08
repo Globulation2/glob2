@@ -577,7 +577,7 @@ Ni namigov
 [No Objectives]
 Ni ciljev
 [no ressources growth areas]
-Območja brez rasti surovin
+Brez rasti
 [No]
 Ne
 [Not Enough Ratings]

@@ -577,7 +577,7 @@ Zvolená přezdívka se na síti freenode již používá. Budete moci komunikov
 [No Objectives]
 Žádné cíle
 [no ressources growth areas]
-Oblasti bez růstu zdrojů
+Bez růstu
 [No]
 Ne
 [Not Enough Ratings]

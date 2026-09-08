@@ -583,7 +583,7 @@ henüz tuş yok
 [No Objectives]
 Hedef Yok
 [no ressources growth areas]
-Kaynak Büyümesi Olmayan Alanlar
+Büyüme yok
 [No]
 Hayır
 [Not Enough Ratings]

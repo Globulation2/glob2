@@ -585,7 +585,7 @@ ingen tangent vald
 [No Objectives]
 Inga mål
 [no ressources growth areas]
-Områden utan tillväxt
+Ingen tillväxt
 [No]
 Nej
 [Not Enough Ratings]

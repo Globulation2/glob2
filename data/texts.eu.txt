@@ -585,7 +585,7 @@ teklarik esleitu gabe
 [No Objectives]
 Helbururik ez
 [no ressources growth areas]
-Hazkunderik gabeko eremuak
+Hazkunderik gabe
 [No]
 Ez
 [Not Enough Ratings]

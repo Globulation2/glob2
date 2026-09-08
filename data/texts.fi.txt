@@ -581,7 +581,7 @@ ei näppäintä
 [No Objectives]
 Ei Tavoitteita
 [no ressources growth areas]
-Kasvuttomat alueet
+Ei kasvua
 [No]
 Ei
 [Not Enough Ratings]

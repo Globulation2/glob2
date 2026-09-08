@@ -583,7 +583,7 @@ sem tecla atribuída
 [No Objectives]
 Sem objetivos
 [no ressources growth areas]
-Áreas sem crescimento de recursos
+Sem crescimento
 [No]
 Não
 [Not Enough Ratings]

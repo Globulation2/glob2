@@ -27,3 +27,8 @@ data/texts.sv.txt
 data/texts.tr.txt
 data/texts.zh-tw.txt
 data/texts.zh-cn.txt
+data/texts.uk.txt
+data/texts.id.txt
+data/texts.vi.txt
+data/texts.ja.txt
+data/texts.ko.txt

@@ -577,7 +577,7 @@ meta-%0
 [No Objectives]
 Нема циљева
 [no ressources growth areas]
-Области без раста сировина
+Без раста
 [No]
 Не
 [Not Enough Ratings]

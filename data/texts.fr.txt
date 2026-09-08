@@ -587,7 +587,7 @@ Aucune touche
 [No Objectives]
 Pas d'objectifs
 [no ressources growth areas]
-Zones sans croissance
+Sans croissance
 [No]
 Non
 [Not Enough Ratings]

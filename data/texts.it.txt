@@ -639,7 +639,7 @@ nessun tasto
 [No Objectives]
 Nessun obiettivo
 [no ressources growth areas]
-Area che non sviluppa risorse
+Nessuna crescita
 [No]
 No
 [Not Enough Ratings]

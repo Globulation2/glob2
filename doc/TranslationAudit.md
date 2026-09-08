@@ -5,8 +5,9 @@ Base: `origin/master` commit `88934ecfb`. Initial audit: `8b1eb8a34`.
 
 ## Completion
 
-All **3,227 remaining required blank entries** have been translated. All 28
+All **3,227 remaining required blank entries** have been translated. All 33
 catalogs contain the 613 registered keys and have zero required blank values.
+This includes five new languages added after completing the original 28 catalogs.
 Intentionally empty second rows of building descriptions remain where appropriate.
 The initial audit reduced 4,445 missing/blank required entries to 3,227; the team
 pass completed that backlog. No English fallback was copied in to inflate coverage.
@@ -132,11 +133,53 @@ shaping tables and line metrics were compared against the original asset and are
 unchanged. Simplified and Traditional Chinese samples were visually inspected at
 10, 13 and 20 pixels. CI checks catalog glyph coverage through SDL2_ttf.
 
+## Five additional languages
+
+Ukrainian (`uk`), Indonesian (`id`), Vietnamese (`vi`), Japanese (`ja`) and Korean
+(`ko`) each add 613 registered entries, for 3,065 new catalog entries. They are
+appended to both language lists, preserving the existing language order. Every
+new catalog was authored, self-reviewed, then read in full by a different reviewer.
+
+| Language | Author | Independent reviewer | Review/integration corrections |
+| --- | --- | --- | ---: |
+| Ukrainian | add_ukrainian | add_vietnamese | 6 |
+| Indonesian | add_indonesian | add_vietnamese, root | 4 |
+| Vietnamese | add_vietnamese | root | 3 |
+| Japanese | add_ukrainian | add_indonesian | 17 |
+| Korean | add_indonesian | add_ukrainian | 10 |
+
+Examples include Japanese away status and building occupancy, Korean full-map
+reveal and ground movement, Ukrainian assigned-unit controls, Indonesian prestige
+comparison grammar, and Vietnamese compact editor labels. The reviewers inspected
+source usages for ambiguous controls. Inherited unregistered test entries were
+omitted or removed; no new catalog contains obsolete keys.
+
+The font now includes all 11,172 precomposed Hangul syllables and available Jamo,
+for 33,199 appended CJK characters in total. The asset is 8,137,448 bytes. Original
+glyphs, advances and line metrics remain unchanged; all catalog glyphs are covered.
+Five-language samples were visually inspected at 10, 13 and 20 pixels.
+
+Japanese text exposed byte-based wrapping in `GUITextAreaLayout.cpp`: long words
+could split UTF-8 characters, and the final long word was not fully wrapped.
+The layout now breaks at codepoint boundaries and wraps final words, while avoiding
+extra blank lines after trailing whitespace before a newline. A different agent
+reviewed the fix and caught the whitespace edge case before completion.
+`test/test_text_area_layout.py` compiles the production layout method against a
+headless font that rejects partial UTF-8, covering 13 cases; CI runs it.
+
+The newly measured 94-pixel map-editor buttons exposed existing no-growth labels
+that were too wide. Twenty older catalogs were shortened and independently reviewed.
+Final SDL2_ttf measurements report zero overflows in all checked controls for all
+33 languages. The actual game string loader exercised 20,229 entries and 1,287
+formatted strings with zero failures. Strict catalog validation, four structural
+regression tests, font coverage, 13 wrapping cases, and syntax compilation of the
+modified C++ file all pass.
+
 ## Remaining limitations
 
-The combined font uses one shared Han glyph style for both Chinese locales, and
+The combined font uses one shared Han glyph style for Chinese and Japanese, and
 the appended glyphs are unhinted. Locale-specific glyph variants and native-speaker
-playtesting remain outside this font fix. Font samples and targeted measurements
+playtesting remain outside this pass. Font samples and targeted measurements
 do not establish that every screen is free of clipping.
 
 The JSON audit exposes obsolete keys, English-identical values and residual `??`

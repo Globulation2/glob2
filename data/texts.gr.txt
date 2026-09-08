@@ -645,7 +645,7 @@ meta-%0
 [No Objectives]
 Δεν υπάρχουν στόχοι
 [no ressources growth areas]
-Καμία Περιοχή Ανάπτυξης
+Χωρίς ανάπτυξη
 [No]
 Όχι
 [Not Enough Ratings]

@@ -577,7 +577,7 @@ nicio tastă atribuită
 [No Objectives]
 Niciun obiectiv
 [no ressources growth areas]
-Zone fără regenerare
+Fără regenerare
 [No]
 Nu
 [Not Enough Ratings]

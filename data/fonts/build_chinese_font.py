@@ -21,12 +21,14 @@ def build(base, donor, output):
     source = TTFont(donor, recalcTimestamp=False)
     existing = font.getBestCmap()
     # CJK radicals, punctuation, kana, bopomofo, unified/compatibility
-    # ideographs, and fullwidth forms. Include all donor coverage in these
+    # ideographs, Hangul, and fullwidth forms. Include all donor coverage in these
     # blocks, not just the characters currently used by the translations.
     additions = {
         cp: name for cp, name in source.getBestCmap().items()
         if cp not in existing and (
-            0x2E80 <= cp <= 0x9FFF or 0xF900 <= cp <= 0xFAFF
+            0x1100 <= cp <= 0x11FF or 0x2E80 <= cp <= 0x9FFF
+            or 0xA960 <= cp <= 0xA97F or 0xAC00 <= cp <= 0xD7FF
+            or 0xF900 <= cp <= 0xFAFF
             or 0xFF00 <= cp <= 0xFFEF or 0x20000 <= cp <= 0x2FA1F
         )
     }
@@ -51,8 +53,8 @@ def build(base, donor, output):
     font.setGlyphOrder(order)
     # Preserve original line metrics and all layout tables. Give the modified
     # font its own family name, and retain both upstream license notices.
-    names = {1: 'Glob2 Sans', 3: 'Glob2 Sans CJK 1.0', 4: 'Glob2 Sans',
-             5: 'Version 1.0; DejaVu 2.26 with Droid CJK outlines',
+    names = {1: 'Glob2 Sans', 3: 'Glob2 Sans CJK 1.1', 4: 'Glob2 Sans',
+             5: 'Version 1.1; DejaVu 2.26 with Droid CJK outlines',
              6: 'Glob2Sans', 16: 'Glob2 Sans'}
     for record in font['name'].names:
         if record.nameID in names:

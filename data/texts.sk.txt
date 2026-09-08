@@ -583,7 +583,7 @@ Zvolená prezývka sa na sieti freenode už používa. Budete môcť komunikova�
 [No Objectives]
 Žiadne ciele
 [no ressources growth areas]
-Oblasti bez rastu zdrojov
+Bez rastu
 [No]
 Nie
 [Not Enough Ratings]

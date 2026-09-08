@@ -649,7 +649,7 @@ ingen tast valgt
 [No Objectives]
 Ingen mål
 [no ressources growth areas]
-Områder uden vækst
+Ingen vækst
 [No]
 Nej
 [Not Enough Ratings]

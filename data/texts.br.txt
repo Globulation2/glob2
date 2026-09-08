@@ -577,7 +577,7 @@ sem tecla ainda
 [No Objectives]
 Sem objetivos
 [no ressources growth areas]
-Áreas sem crescimento
+Sem crescimento
 [No]
 Não
 [Not Enough Ratings]
