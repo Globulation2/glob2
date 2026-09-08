@@ -49,6 +49,10 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
 
+#ifdef __EMSCRIPTEN__
+	// Default to no clouds in browsers; saved preferences still take precedence.
+	settings.optionFlags |= OPTION_LOW_SPEED_GFX;
+#endif
 	// load user preference
 	settings.load();
 

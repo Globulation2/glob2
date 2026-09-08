@@ -37,6 +37,8 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in the migrated flows; some legacy multiplayer flows remain.
 Try `http://127.0.0.1:8765/?renderer=webgl2` to select GPU rendering.
+High-quality graphics (including clouds) default to off for new browser profiles.
+You can enable them in Settings; existing saved preferences are preserved.
 
 Manual game/editor saves wait for durable IndexedDB persistence and offer retry
 and export on failure. Saves belong to this browser profile and origin
