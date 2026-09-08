@@ -147,7 +147,9 @@ jobs:
             speed-tests \
             settings-tests \
             screen-test \
-            session-test
+            session-test \
+            portable-renderer-test \
+            mobile-input-test
 
       - name: Test Maxima food ledger
         run: build/linux/client/release/src/MaximaFoodLedgerStandaloneTest
@@ -266,6 +268,13 @@ jobs:
       - name: Test nonblocking screen execution
         run: |
           ./build/linux/client/release/libgag/src/ScreenExecutionHarness
+
+      - name: Test portable rendering and mobile input
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          ./build/linux/client/release/libgag/src/MobileInputHarness
+          xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
 
       - name: Test incremental engine sessions
         run: |

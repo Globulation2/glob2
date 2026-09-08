@@ -613,6 +613,7 @@ SERVER_SOURCES = (
 GAG_SOURCES = (
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
+    'RenderBackend.cpp',
     'BinaryStream.cpp',
     'CursorManager.cpp',
     'FileManager.cpp',
