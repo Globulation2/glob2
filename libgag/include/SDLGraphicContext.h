@@ -357,6 +357,8 @@ namespace GAGCore
 		void releaseFrameCache();
 		void cacheFrame();
 		void presentLastFrame();
+		// Central presentation boundary, also used by render-validation contexts.
+		virtual void swapBuffers();
 		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
 		friend class DrawableSurface;
 		//! option flags

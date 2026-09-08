@@ -66,7 +66,9 @@ Build the integration harnesses with `scons resize-test aspect-test`. Run
 and `gl`. The resize harness checks cached pixels after incomplete drawing,
 callback guards, normal-frame counts, GL state restoration, grow/shrink reflow,
 context identity, input coordinates, minimum dimensions, and cache invalidation
-on window recreation. Linux CI runs both backends under Xvfb/Mesa.
+on window recreation. OpenGL pixels are captured at the swap boundary rather
+than reading the post-swap front buffer, which is unreliable under Mesa/Xvfb.
+Linux CI runs both backends under Xvfb/Mesa.
 
 Before marking the PR ready, manually exercise Windows modal edge dragging,
 holding the mouse still, maximize/restore, moving across displays, and a network

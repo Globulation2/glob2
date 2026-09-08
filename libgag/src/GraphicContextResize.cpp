@@ -106,6 +106,11 @@ namespace GAGCore
 		}
 	}
 
+	void GraphicContext::swapBuffers()
+	{
+		SDL_GL_SwapWindow(window);
+	}
+
 	void GraphicContext::presentLastFrame()
 	{
 		if (presenting || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
@@ -147,7 +152,7 @@ namespace GAGCore
 			glMatrixMode(GL_MODELVIEW); glPopMatrix();
 			glMatrixMode(GL_PROJECTION); glPopMatrix();
 			glPopAttrib();
-			SDL_GL_SwapWindow(window);
+			swapBuffers();
 			return;
 		}
 		#endif

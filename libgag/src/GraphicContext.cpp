@@ -588,7 +588,7 @@ namespace GAGCore
 			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();
 			#endif
 			cacheFrame();
-			if (optionFlags & USEGPU) SDL_GL_SwapWindow(window);
+			if (optionFlags & USEGPU) swapBuffers();
 			else presentLastFrame();
 		}
 	}

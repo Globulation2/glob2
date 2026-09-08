@@ -4,11 +4,29 @@
 #include <cstring>
 #include <stdexcept>
 #include <thread>
+#include <vector>
 
 using namespace GAGCore;
 static void require(bool ok, const char *why) { if (!ok) throw std::runtime_error(why); }
 class Context : public GraphicContext
 {
+	std::vector<Color> presentedPixels;
+	int presentedWidth = 0, presentedHeight = 0;
+	void swapBuffers() override
+	{
+#ifdef HAVE_OPENGL
+		// Read the exact frame submitted to the window system. Post-swap GL_FRONT
+		// readback is not reliable on Mesa/Xvfb (it can return an all-black image).
+		SDL_GL_GetDrawableSize(window, &presentedWidth, &presentedHeight);
+		presentedPixels.resize(presentedWidth * presentedHeight);
+		GLint previous;
+		glGetIntegerv(GL_READ_BUFFER, &previous);
+		glReadBuffer(GL_BACK);
+		glReadPixels(0, 0, presentedWidth, presentedHeight, GL_RGBA, GL_UNSIGNED_BYTE, presentedPixels.data());
+		glReadBuffer(previous);
+#endif
+		GraphicContext::swapBuffers();
+	}
 public:
 	int frames = 0;
 	Context(bool gpu) : GraphicContext(640, 480, RESIZABLE | (gpu ? USEGPU : 0), "Glob2 resize regression") { setMinRes(640, 480); }
@@ -33,10 +51,8 @@ public:
 		if (getOptionFlags() & USEGPU)
 		{
 #ifdef HAVE_OPENGL
-			int w, h; SDL_GL_GetDrawableSize(window, &w, &h);
-			glReadBuffer(GL_FRONT);
-			glReadPixels(x, h-y-1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &c);
-			glReadBuffer(GL_BACK);
+			require(x >= 0 && x < presentedWidth && y >= 0 && y < presentedHeight, "Readback outside presented frame");
+			c = presentedPixels[(presentedHeight-y-1)*presentedWidth+x];
 #endif
 		}
 		else
@@ -55,6 +71,12 @@ int main(int argc, char **argv)
 	try
 	{
 		Context gfx(gpu);
+		SDL_version version;
+		SDL_GetVersion(&version);
+		std::printf("SDL %d.%d.%d; video driver %s\n", version.major, version.minor, version.patch, SDL_GetCurrentVideoDriver());
+#ifdef HAVE_OPENGL
+		if (gpu) std::printf("OpenGL %s; renderer %s\n", glGetString(GL_VERSION), glGetString(GL_RENDERER));
+#endif
 		const auto originalContext = gfx.current();
 		gfx.expose(); // No complete frame yet.
 		gfx.setClipRect();
