@@ -1,7 +1,7 @@
 # Mobile verification and remaining work
 
-Recorded 2026-09-08. Browser base: `6d1d8bbaece30b547e67855e8180609abaf544f4`,
-merged into the mobile branch in `d6f754dd5`. iOS qualification uses Xcode 26.6
+Recorded 2026-09-08. Browser base: `46a4d56d0200cc1ba55073ce05a3a5202d8f754f`,
+merged into the mobile branch in `b92c89935`. iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 Android evidence below was collected before this browser merge, on `7333e4e8b`.
 
@@ -30,7 +30,7 @@ while iOS compilation and runtime setup were active; both passed unchanged in an
 isolated rerun (30.4 seconds). The earlier browser-base storage evidence is not a
 substitute for full post-merge storage qualification.
 
-## Latest browser synchronization
+## Prior browser synchronization (`6d1d8bbae`)
 
 Merge `d6f754dd5` incorporates browser head `6d1d8bbae`: validated imports,
 campaign backup/recovery, durable editor save completion, and symmetric YOG
@@ -121,6 +121,31 @@ and stale iOS **device** objects/core archive were removed and regenerated as
 needed; source, SDKs, packaged device app, symbols, and captures were preserved.
 The next device rebuild will recompile its core. No simulator boot or Android
 packaging run is claimed for this change.
+
+## Priority and flag range controls
+
+Commit `433a03f08` adds fixed 48-point inspector tabs and controls. Priority
+shows low/medium/high choices with pending selection feedback; flags expose
+range minus/plus controls. The 96-point header stays visible while details scroll.
+The existing game orders, type-specific range limits, and translated labels are
+shared with desktop controls. Production ratios, flag resource/level controls,
+and remaining in-game dialogs still need dedicated phone layouts.
+
+After merging browser settings persistence (`46a4d56d0` in `b92c89935`), native
+phone-touch, engine-session and savegame-safety checks pass, including exact
+priority/range orders, no-ops, selected-building cancellation, settings completion,
+and prior preference/keyboard file preservation on failure. The three session
+checksums remain `7e7f31de`. Desktop, Wasm and ARM64 iOS simulator builds pass;
+all 27 browser viewport/settings-persistence cases pass across Chromium, Firefox
+and WebKit. Logs are `build/priority-merged-*.log`. Android packaging, simulator
+launch and physical-device qualification were not repeated in this pass.
+
+The captures are native phone-size test fixtures, not emulator or live-match
+qualification. They expose terrain and test buildings without live colony counts.
+
+![Portrait priority controls](screenshots/gameplay-priority-portrait.png)
+
+![Landscape flag range controls](screenshots/gameplay-range-landscape.png)
 
 ## iOS simulator screenshots
 

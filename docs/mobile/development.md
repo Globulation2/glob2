@@ -269,6 +269,12 @@ TMPDIR="$PWD/build/browser-test-tmp" \
   --output=build/mobile-browser-results
 ```
 
+The gameplay-touch harness also captures `touch-priority-{portrait,landscape}.bmp`
+and `touch-range-{portrait,landscape}.bmp` in the selected test profile. It exercises
+priority pending selections/no-ops, rapid flag range changes, both range limits,
+and changing the selected building during a held control. These are native
+rendering fixtures, not simulator or live-match evidence.
+
 ## Browser synchronization
 
 Check the latest browser branch before a milestone. The tested base is recorded
