@@ -653,3 +653,11 @@
 [quit without saving]
 [game closed]
 [campaign editor save failed]
+
+[Actions]
+
+[Minimap]
+
+[Fast forward]
+
+[Hide keyboard]

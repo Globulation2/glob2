@@ -2,10 +2,17 @@
 #include "Engine.h"
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
+#include "GameGUILoadSave.h"
+#include "GameUtilities.h"
+#include <GUITextInput.h>
+#include <GUISelector.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 #include "GlobalContainer.h"
 #include "Order.h"
 #include <SDL_net.h>
 #include <cstdio>
+#include <cstring>
 #include <stdexcept>
 
 GlobalContainer* globalContainer=nullptr;
@@ -195,7 +202,7 @@ public:
             gui.setSelection(GameGUI::BUILDING_SELECTION,building);
             gui.requestWorkerAllocation(*building,0);gui.orderQueue.clear();
             tap((ui.panel.x+24)*unit,rowY);require(gui.orderQueue.empty(),"Allocation at zero must not queue duplicates");
-            tap((ui.panel.x+ui.panel.w*.75f)*unit,(ui.panel.y+24)*unit);
+            tap((ui.panel.x+ui.panel.w*.5f)*unit,(ui.panel.y+24)*unit);
             for (int priority : {-1,0,1}) {
                 tap((ui.panel.x+ui.panel.w*(priority+1.5f)/3)*unit,rowY);
                 require(gui.orderQueue.size()==1,"Priority tap emits exactly one order");
@@ -207,7 +214,7 @@ public:
             require(gui.game.checkSum()==simulation,"Priority changes stay outside authoritative state");
             gui.drawAll(0);gfx->printScreen(width<height ? "touch-priority-portrait.bmp" : "touch-priority-landscape.bmp");gfx->nextFrame();
             gui.setSelection(GameGUI::BUILDING_SELECTION,rangeFlag);
-            tap((ui.panel.x+ui.panel.w*5/6)*unit,(ui.panel.y+24)*unit);
+            tap((ui.panel.x+ui.panel.w*5/8)*unit,(ui.panel.y+24)*unit);
             const int rangeBefore=gui.displayedUnitStayRange(*rangeFlag);
             const auto rangeChecksum=gui.game.checkSum();
             tap(plusX,rowY);tap(plusX,rowY);
@@ -226,15 +233,14 @@ public:
             finger(SDL_FINGERUP,1,plusX,rowY);
             require(gui.orderQueue.empty(),"Changing selected buildings cancels held range controls");
             require(gui.game.checkSum()==rangeChecksum,"Range controls preserve authoritative state");
-            tap((ui.panel.x+ui.panel.w*.25f)*unit,(ui.panel.y+24)*unit);
+            tap((ui.panel.x+ui.panel.w/6)*unit,(ui.panel.y+24)*unit);
             tap(gfx->getW()*5.5f/6,gfx->getH()-24*unit);
             require(gui.inGameMenu==GameGUI::IGM_MAIN,"Toolbar opens the in-game pause menu");
             gui.drawAll(0);gfx->printScreen(width<height ? "touch-pause-portrait.bmp" : "touch-pause-landscape.bmp");gfx->nextFrame();
-            const int columns=width>height ? 2 : 1, rows=(5+columns-1)/columns;
-            const float dialogW=std::min(560,width-24), buttonW=(dialogW-(columns-1)*8)/columns;
-            const float startX=(width-dialogW)/2, startY=(height-(rows*56+(rows-1)*8))/2;
-            const float returnX=(startX+(4%columns)*(buttonW+8)+buttonW/2)*unit;
-            const float returnY=(startY+(4/columns)*64+28)*unit;
+            const auto menuRows=gui.touch->dialogRows;
+            const auto back=std::find_if(menuRows.begin(),menuRows.end(),[](const auto& row) { return row.footer; });
+            require(back!=menuRows.end(),"Phone menu keeps Return fixed and reachable");
+            const float returnX=back->rect.x+back->rect.w/2, returnY=back->rect.y+back->rect.h/2;
             finger(SDL_FINGERDOWN,1,returnX,returnY);
             finger(SDL_FINGERMOTION,1,returnX+20*unit,returnY);
             finger(SDL_FINGERUP,1,returnX+20*unit,returnY);
@@ -253,6 +259,51 @@ public:
             require(gui.inGameMenu==GameGUI::IGM_NONE && gui.orderQueue.empty(),"Return resumes without leaking a world order");
             tap(gfx->getW()*2.5f/6,gfx->getH()-24*unit); // Close the inspector before the next orientation.
             gui.clearSelection();
+        }
+
+        auto tr=[](const char* key) { return std::string(GAGCore::Toolkit::getStringTable()->getString(key)); };
+        auto pressDialog=[&](const std::string& text) {
+            for (int attempt=0;attempt<40;++attempt) {
+                gui.drawAll(0);gfx->nextFrame();
+                auto rows=gui.touch->dialogRows;
+                const auto found=std::find_if(rows.begin(),rows.end(),[&](const auto& row) { return row.text==text && row.kind; });
+                require(found!=rows.end(),("Missing phone dialog action: "+text).c_str());
+                const auto r=found->rect, content=gui.touch->dialogContent;
+                if (found->footer || (r.y>=content.y && r.y+r.h<=content.y+content.h)) { tap(r.x+r.w/2,r.y+r.h/2); return; }
+                const float x=content.x+content.w/2,y=content.y+content.h/2;
+                const float move=(r.y<content.y ? 1 : -1)*std::min(content.h/3,80.0*gfx->logicalUnitsPerPoint());
+                finger(SDL_FINGERDOWN,1,x,y);finger(SDL_FINGERMOTION,1,x,y+move);finger(SDL_FINGERUP,1,x,y+move);
+            }
+            require(false,"Dialog action must be reachable by scrolling");
+        };
+        for (auto [width,height]:{std::pair{320,568},{568,320}}) {
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            SDL_Event resized{};resized.type=SDL_WINDOWEVENT;resized.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resized); gui.viewportResized(800,600,gfx->getW(),gfx->getH());
+            gui.inGameMenu=GameGUI::IGM_MAIN;gui.gameMenuScreen=std::make_unique<InGameMainScreen>();
+            pressDialog(tr("[Options]"));require(gui.inGameMenu==GameGUI::IGM_OPTION,"Phone menu opens options");
+            gui.drawAll(0);gfx->printScreen(width<height ? "touch-options-portrait.bmp" : "touch-options-landscape.bmp");gfx->nextFrame();
+            pressDialog(tr("[Mute]"));
+            require(!globalContainer->settings.mute,"Large mute row updates shared options");
+            pressDialog(tr("[ok]"));require(!gui.inGameMenu,"Options footer remains reachable");
+            globalContainer->settings.mute=true;
+            gui.inGameMenu=GameGUI::IGM_OBJECTIVES;gui.gameMenuScreen=std::make_unique<InGameObjectivesScreen>(&gui,false);
+            pressDialog(tr("[hints]"));
+            gui.drawAll(0);gfx->printScreen(width<height ? "touch-objectives-portrait.bmp" : "touch-objectives-landscape.bmp");gfx->nextFrame();
+            pressDialog(tr("[ok]"));require(!gui.inGameMenu,"Objectives tabs and footer work by touch");
+            gui.inGameMenu=GameGUI::IGM_SAVE;gui.gameMenuScreen=std::make_unique<LoadSaveScreen>("games","game",false,tr("[save game]"),"Phone",glob2FilenameToName,glob2NameToFilename);
+            pressDialog("Phone");
+            SDL_Event text{};text.type=SDL_TEXTINPUT;std::strcpy(text.text.text," test");gui.processEvent(&text);
+            require(std::string(static_cast<LoadSaveScreen*>(gui.gameMenuScreen.get())->getName())=="Phone test","Phone filename uses real text input");
+            pressDialog(tr("[Hide keyboard]"));
+            gui.drawAll(0);gfx->printScreen(width<height ? "touch-save-portrait.bmp" : "touch-save-landscape.bmp");gfx->nextFrame();
+            pressDialog(tr("[Cancel]"));require(!gui.inGameMenu,"Save cancellation is always reachable");
+            gui.inGameMenu=GameGUI::IGM_MAIN;gui.gameMenuScreen=std::make_unique<InGameMainScreen>();
+            pressDialog(tr("[open chat box]"));require(gui.typingInputScreen,"Phone menu opens chat");
+            text={};text.type=SDL_TEXTINPUT;std::strcpy(text.text.text,"Hello");gui.processEvent(&text);
+            gui.orderQueue.clear();pressDialog(tr("[ok]"));
+            require(!gui.typingInputScreen && gui.orderQueue.size()==1 && std::dynamic_pointer_cast<MessageOrder>(gui.orderQueue.front()),"Chat sends once through shared orders");
+            gui.orderQueue.clear();
         }
 
     }

@@ -2,4 +2,4 @@
 #pragma once
 #include <SDL.h>
 #include <ViewportTransform.h>
-namespace GAGCore { SafeInsets iosGameSafeInsets(SDL_Window* window); }
+namespace GAGCore { SafeInsets iosGameSafeInsets(SDL_Window* window); double iosGameKeyboardInset(SDL_Window* window); }

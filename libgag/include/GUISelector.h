@@ -36,6 +36,7 @@ namespace GAGGUI
 		virtual void internalInit(void);
 		virtual void paint(void);
 		virtual Uint32 getValue(void) { return value; }
+        Uint32 maximumValue() const { return maxValue; }
 		virtual void setValue(Uint32 v) { clipValue(v); }
 	
 	protected:

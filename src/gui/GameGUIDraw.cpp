@@ -543,7 +543,7 @@ void GameGUI::drawOverlayInfos(void)
 
 void GameGUI::drawInGameMenu(void)
 {
-    if (touch->drawPauseMenu()) return;
+    if (touch->drawDialog()) return;
 	gameMenuScreen->dispatchPaint();
 	globalContainer->gfx->drawSurface((int)gameMenuScreen->decX, (int)gameMenuScreen->decY, gameMenuScreen->getSurface());
 
@@ -573,6 +573,7 @@ void GameGUI::drawInGameMenu(void)
 
 void GameGUI::drawInGameTextInput(void)
 {
+    if (touch->drawDialog()) return;
 	typingInputScreen->decX=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-492)/2;
 	typingInputScreen->decY=globalContainer->gfx->getH()-typingInputScreenPos;
 	typingInputScreen->dispatchPaint();
@@ -602,6 +603,7 @@ void GameGUI::drawInGameTextInput(void)
 
 void GameGUI::drawInGameScrollableText(void)
 {
+    if (touch->drawDialog()) return;
 	scrollableText->decX=28;
 	scrollableText->decY=globalContainer->gfx->getH() - 165;
 	scrollableText->dispatchPaint();

@@ -137,6 +137,12 @@ namespace GAGGUI
 		 * \return true if the point is over the widget, false otherwise.
 		 */
 		virtual bool isOnWidget(int x, int y) = 0;
+        // Accessible presentations activate the original widget, preserving its callbacks.
+        void activateAt(int x, int y) {
+            SDL_Event event{}; event.type=SDL_MOUSEBUTTONDOWN; event.button.button=SDL_BUTTON_LEFT;
+            event.button.x=x; event.button.y=y; onSDLMouseButtonDown(&event);
+            event.type=SDL_MOUSEBUTTONUP; onSDLMouseButtonUp(&event);
+        }
 	protected:
 		friend class Screen;
 		friend class Panel;
@@ -224,6 +230,7 @@ namespace GAGGUI
 		
 		//! Returns width of widget
 		Sint32 getLeft() const { return x; }
+        SDL_Rect screenRectangle() { SDL_Rect r; getScreenPos(&r.x,&r.y,&r.w,&r.h); return r; }
 		
 		//! Returns width of widget
 		Sint32 getTop() const { return y; }
@@ -343,6 +350,7 @@ namespace GAGGUI
 		void endExecute(int returnCode);
 		//! Add widget, added widget are garbage collected
 		void addWidget(Widget* widget);
+        std::vector<Widget*> presentationWidgets() const { return {widgets.begin(),widgets.end()}; }
 		//! Remove widget, note that removed widget are not garbage collected
 		void removeWidget(Widget* widget);
 		//! Call onSDLEvent on each widget after having called onSDLEvent on the screen itself

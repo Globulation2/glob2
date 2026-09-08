@@ -11,3 +11,22 @@ GAGCore::SafeInsets GAGCore::iosGameSafeInsets(SDL_Window* window)
     const UIEdgeInsets insets=info.info.uikit.window.safeAreaInsets;
     return {insets.left,insets.top,insets.right,insets.bottom};
 }
+
+// UIKit notifications publish geometry only; the frame loop consumes it.
+double GAGCore::iosGameKeyboardInset(SDL_Window* window)
+{
+    static CGRect keyboardFrame=CGRectZero;
+    static id changed=[[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillChangeFrameNotification
+        object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification* note) {
+            keyboardFrame=[note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+        }];
+    static id hidden=[[NSNotificationCenter defaultCenter] addObserverForName:UIKeyboardWillHideNotification
+        object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification*) { keyboardFrame=CGRectZero; }];
+    (void)changed; (void)hidden;
+    SDL_SysWMinfo info{};SDL_VERSION(&info.version);
+    if (!SDL_GetWindowWMInfo(window,&info) || info.subsystem!=SDL_SYSWM_UIKIT) return 0;
+    UIWindow* native=info.info.uikit.window;
+    CGRect frame=[native convertRect:keyboardFrame fromWindow:nil];
+    CGRect overlap=CGRectIntersection(native.bounds,frame);
+    return CGRectIsNull(overlap) || CGRectIsEmpty(overlap) ? 0 : CGRectGetHeight(overlap);
+}

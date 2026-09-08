@@ -5,11 +5,16 @@
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
+#include "Order.h"
 #include "TeamStat.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
 #include <cmath>
+#ifdef __ANDROID__
+#include <SDL_system.h>
+#include <jni.h>
+#endif
 #if defined(__IPHONEOS__)
 #include "mobile/ios/SafeArea.h"
 #endif
@@ -23,7 +28,7 @@ GameGUITouch::GameGUITouch(GameGUI& gui) : gui(gui) {
 bool GameGUITouch::usesHUD() const
 {
     auto* gfx=globalContainer->gfx;
-    return touchActive && gfx->hasPortableRenderer() && !globalContainer->replaying &&
+    return touchActive && gfx->hasPortableRenderer() &&
         (SDL_getenv("GLOB2_TOUCH_HUD") || std::min(gfx->getW(),gfx->getH())/gfx->logicalUnitsPerPoint()<600);
 }
 MobileLayout GameGUITouch::layout() const
@@ -33,6 +38,24 @@ MobileLayout GameGUITouch::layout() const
     SafeInsets insets;
 #if defined(__IPHONEOS__)
     insets=iosGameSafeInsets(SDL_GetWindowFromID(gfx->windowID()));
+#endif
+#ifdef __ANDROID__
+    auto* env=static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    auto activity=static_cast<jobject>(SDL_AndroidGetActivity());
+    auto cls=env->GetObjectClass(activity);
+    auto method=env->GetStaticMethodID(cls,"getUiInsets","()[I");
+    if (method) {
+        auto array=static_cast<jintArray>(env->CallStaticObjectMethod(cls,method));
+        if (array && env->GetArrayLength(array)==4) {
+            jint values[4];env->GetIntArrayRegion(array,0,4,values);
+            int w,h;SDL_GetWindowSize(SDL_GetWindowFromID(gfx->windowID()),&w,&h);
+            const double factor=w>0 ? double(gfx->getW())/w/unit : 1;
+            insets={values[0]*factor,values[1]*factor,values[2]*factor,values[3]*factor};
+        }
+        if (array) env->DeleteLocalRef(array);
+    }
+    if (env->ExceptionCheck()) env->ExceptionClear();
+    env->DeleteLocalRef(cls);env->DeleteLocalRef(activity);
 #endif
     auto result=MobileLayout::calculate(gfx->getW()/unit,gfx->getH()/unit,insets,0,1,panelOpen);
     for (auto* rect : {&result.safe,&result.status,&result.world,&result.actions,&result.panel}) {
@@ -48,6 +71,8 @@ ViewPoint GameGUITouch::panelOrigin() const
 }
 void GameGUITouch::clampScroll()
 {
+    const auto content=panelContent();
+    actionScroll=std::clamp(actionScroll,0.0,std::max(0.0,buildingActions().size()*56.0-content.h/globalContainer->gfx->logicalUnitsPerPoint()));
     panelScroll=std::clamp(panelScroll,0.0,std::max(0.0,globalContainer->gfx->getH()-panelContent().h/panelScale()));
 }
 GameGUITouch::~GameGUITouch() = default;
@@ -73,16 +98,11 @@ ViewPoint GameGUITouch::previewCursor() const
 void GameGUITouch::cancel()
 {
     gui.toolManager.cancelDrag(gui.localTeamNo);
-    gesture.cancel(); fingers.clear(); ignoreTouchSequence=false; preview.reset(); previewType.clear(); panX=panY=0;
+    gesture.cancel(); fingers.clear(); ignoreTouchSequence=false; confirmDestroy=false; preview.reset(); previewType.clear(); panX=panY=0;
 }
 
 int GameGUITouch::interfaceRegion(ViewPoint point) const
 {
-    if (usesHUD() && gui.inGameMenu==GameGUI::IGM_MAIN && !gui.typingInputScreen && !gui.scrollableText) {
-        const auto buttons=pauseButtons();
-        for (size_t i=0;i<buttons.size();++i) if (buttons[i].contains(point)) return 20+int(i);
-        return 4;
-    }
     if (gui.inGameMenu || gui.typingInputScreen || gui.scrollableText) return 4;
     if (gui.selectionMode==GameGUI::TOOL_SELECTION && controls().contains(point))
         return point.x<controls().x+controls().w/2 ? 1 : 2;
@@ -92,8 +112,8 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
         if (allocation.contains(point)) {
             const double unit=globalContainer->gfx->logicalUnitsPerPoint();
             if (point.y<allocation.y+48*unit) {
-                const int count=allocationBuilding()->type->defaultUnitStayRange ? 3 : 2;
-                return 40+std::min(count-1,int((point.x-allocation.x)/(allocation.w/count)));
+                const auto tabs=allocationTabs();
+                return 40+tabs[std::min(int(tabs.size())-1,int((point.x-allocation.x)/(allocation.w/tabs.size())))];
             }
             if (activeAllocationTab()==1) return 50+std::min(2,int((point.x-allocation.x)/(allocation.w/3)));
             if (point.x<allocation.x+48*unit) return 30;
@@ -121,7 +141,7 @@ bool GameGUITouch::process(SDL_Event& event)
         if (touchActive) cancel();
         touchActive=false;
         // Until the next paint, the screen still shows touch-menu coordinates.
-        if (event.type==SDL_MOUSEBUTTONDOWN && pauseHUDDrawn && gui.inGameMenu==GameGUI::IGM_MAIN) {
+        if (event.type==SDL_MOUSEBUTTONDOWN && dialogHUDDrawn && gui.inGameMenu) {
             swallowMouseRelease=true; return true;
         }
         return false;
@@ -138,7 +158,7 @@ bool GameGUITouch::process(SDL_Event& event)
     gui.checkSelection();
     if (!fingers.empty() && (ownerSelection!=gui.selectionMode || ownerMenu!=gui.inGameMenu ||
         ownerBuilding!=(gui.selectionMode==GameGUI::BUILDING_SELECTION ? gui.selectionBuilding() : nullptr) ||
-        ownerDialog!=gui.gameMenuScreen.get() ||
+        ownerDialog!=activeDialog() ||
         ownerTool!=gui.toolManager.getBuildingName() || ownerOverlay!=bool(gui.typingInputScreen || gui.scrollableText))) { cancel(); return true; }
     ViewPoint point{event.tfinger.x*globalContainer->gfx->getW(),event.tfinger.y*globalContainer->gfx->getH()};
     const auto key=std::make_pair(event.tfinger.touchId,event.tfinger.fingerId);
@@ -146,7 +166,7 @@ bool GameGUITouch::process(SDL_Event& event)
         if (fingers.empty()) {
             const bool changedDevice=!touchActive;
             touchActive=true;
-            if (changedDevice && usesHUD() && gui.inGameMenu==GameGUI::IGM_MAIN) {
+            if (changedDevice && usesHUD() && gui.inGameMenu) {
                 cancel(); ignoreTouchSequence=true; fingers.push_back(key);
                 return true; // Consume the whole gesture before accepting the new layout.
             }
@@ -154,10 +174,17 @@ bool GameGUITouch::process(SDL_Event& event)
             gui.lastMouseButtonState=0; gui.selectionPushed=gui.panPushed=gui.miniMapPushed=false;
             scale=globalContainer->gfx->logicalUnitsPerPoint();
             ownerRegion=interfaceRegion(point);
+            heldDialogWidget=nullptr;
+            if (usesHUD() && activeDialog()) {
+                prepareDialog();
+                for (const auto& row:dialogRows) if (row.rect.contains(point) && (row.footer || dialogContent.contains(point))) {
+                    heldDialogWidget=row.widget; heldDialogIndex=row.index; break;
+                }
+            }
             interfaceGesture=ownerRegion!=0;
             ownerSelection=gui.selectionMode; ownerMenu=gui.inGameMenu;
             ownerBuilding=gui.selectionMode==GameGUI::BUILDING_SELECTION ? gui.selectionBuilding() : nullptr;
-            ownerDialog=gui.gameMenuScreen.get();
+            ownerDialog=activeDialog();
             ownerOverlay=gui.typingInputScreen || gui.scrollableText;
             ownerTool=gui.toolManager.getBuildingName();
             gesture.setMode(interfaceGesture ? TouchMode::Navigate :
@@ -183,13 +210,19 @@ void GameGUITouch::actions(const std::vector<TouchAction>& changes)
             preview.reset(); gui.toolManager.cancelDrag(gui.localTeamNo); continue;
         }
         if (interfaceGesture) {
+            if (usesHUD() && ownerRegion==4 && activeDialog() && action.kind==TouchActionKind::Pan) {
+                dialogScroll=std::clamp(dialogScroll-point.y/globalContainer->gfx->logicalUnitsPerPoint(),0.0,dialogMaximum);
+                prepareDialog();
+            }
             if (usesHUD() && ownerRegion==7 && action.kind==TouchActionKind::Pan) {
                 const double unit=globalContainer->gfx->logicalUnitsPerPoint();
                 tutorialScroll=std::clamp(tutorialScroll-point.y/unit,0.0,
                     std::max(0.0,tutorialLines.size()*24.0-tutorialRect().h/unit+64));
             }
             if (usesHUD() && ownerRegion==3 && action.kind==TouchActionKind::Pan) {
-                panelScroll-=point.y/panelScale(); clampScroll();
+                if (activeAllocationTab()==3 && inspectedBuilding()) actionScroll-=point.y/globalContainer->gfx->logicalUnitsPerPoint();
+                else panelScroll-=point.y/panelScale();
+                clampScroll();
             }
             if (action.kind==TouchActionKind::Select && interfaceRegion(point)==ownerRegion) interfaceTap(point);
             continue;
@@ -221,21 +254,11 @@ void GameGUITouch::actions(const std::vector<TouchAction>& changes)
 
 void GameGUITouch::interfaceTap(ViewPoint point)
 {
-    if (usesHUD() && gui.inGameMenu==GameGUI::IGM_MAIN && !gui.typingInputScreen && !gui.scrollableText) {
-        const int index=interfaceRegion(point)-20;
-        if (index>=0 && index<5) {
-            const int actions[]={InGameMainScreen::LOAD_GAME,InGameMainScreen::SAVE_GAME,InGameMainScreen::OPTIONS,
-                InGameMainScreen::QUIT_GAME,InGameMainScreen::RETURN_GAME};
-            gui.gameMenuScreen->onAction(nullptr,BUTTON_RELEASED,actions[index],0);
-            SDL_Event event{}; event.type=SDL_USEREVENT;
-            gui.processGameMenu(&event);
-        }
-        return;
-    }
+    if (usesHUD() && activeDialog()) { tapDialog(point); return; }
     if (usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText && allocationRect().contains(point)) {
-        if (auto* building=allocationBuilding()) {
+        if (auto* building=inspectedBuilding()) {
             const int region=interfaceRegion(point);
-            if (region>=40 && region<=42) allocationTab=region-40;
+            if (region>=40 && region<=43) { allocationTab=region-40; actionScroll=0; confirmDestroy=false; }
             else if (region>=50 && region<=52) gui.requestBuildingPriority(*building,region-51);
             else if (region==30 || region==31) {
                 const int delta=region==30 ? -1 : 1;
@@ -264,6 +287,11 @@ void GameGUITouch::interfaceTap(ViewPoint point)
     const bool hudInput=usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText;
     if (hudInput && layout().actions.contains(point)) {
         const int button=std::min(5,int((point.x-layout().actions.x)/(layout().actions.w/6)));
+        if (globalContainer->replaying && button<2) {
+            if (button==0) gui.gamePaused=!gui.gamePaused;
+            else { globalContainer->replayFastForward=!globalContainer->replayFastForward; gui.gamePaused=false; }
+            return;
+        }
         if (button<3) {
             if ((button==0 && (gui.hiddenGUIElements & GameGUI::HIDABLE_BUILDINGS_LIST)) ||
                 (button==1 && (gui.hiddenGUIElements & GameGUI::HIDABLE_FLAGS_LIST))) return;
@@ -273,7 +301,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
                 gui.clearSelection(); gui.displayMode=mode;
             } else {
                 panelOpen=!panelOpen || (gui.selectionMode==GameGUI::NO_SELECTION && gui.displayMode!=GameGUI::STAT_TEXT_VIEW);
-                if (gui.selectionMode==GameGUI::NO_SELECTION) gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+                if (gui.selectionMode==GameGUI::NO_SELECTION) { gui.displayMode=GameGUI::STAT_TEXT_VIEW; gui.replayDisplayMode=GameGUI::RDM_STAT_TEXT_VIEW; }
             }
             panelScroll=144; clampScroll(); return;
         }
@@ -281,6 +309,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
         point={double(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH),
                double(button==3 ? IGM_OBJECTIVES_ICON_Y+10 : button==4 ? IGM_ALLIANCE_ICON_Y+10 : 10)};
     } else if (hudInput && layout().panel.contains(point)) {
+        if (activeAllocationTab()==3 && inspectedBuilding()) { tapBuildingAction(point); return; }
         const auto origin=panelOrigin();
         point={globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+(point.x-origin.x)/panelScale(),
                (point.y-origin.y)/panelScale()};
@@ -301,6 +330,11 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 
 void GameGUITouch::select(ViewPoint point)
 {
+    if (gui.putMark && !globalContainer->replaying) {
+        gui.orderQueue.push_back(std::make_shared<MapMarkOrder>(gui.localTeamNo,
+            (int(point.x)/32+gui.viewportX)&gui.game.map.getMaskW(),(int(point.y)/32+gui.viewportY)&gui.game.map.getMaskH()));
+        gui.putMark=false; return;
+    }
     gui.view.mouseUnit=nullptr;
     const auto& map=gui.game.map;
     const int mx=int(point.x)/32+gui.viewportX, my=int(point.y)/32+gui.viewportY;
@@ -326,7 +360,14 @@ void GameGUITouch::select(ViewPoint point)
 void GameGUITouch::prepareDraw()
 {
     if (!touchActive) return;
+    if (usesHUD() && gui.typingInputScreen && gui.typingInputScreenInc<0) {
+        delete gui.typingInputScreen; gui.typingInputScreen=nullptr;
+    }
+    if (dialogOwner && activeDialog()!=dialogOwner) {
+        dialogOwner=nullptr; editingDialogWidget=nullptr; dialogRows.clear(); SDL_StopTextInput();
+    }
     gui.checkSelection();
+    if (inspectedBuilding()!=lastInspectedBuilding) { confirmDestroy=false; actionScroll=0; lastInspectedBuilding=inspectedBuilding(); }
     if (usesHUD()) { clampScroll(); prepareTutorial(); }
     if (gui.selectionMode!=GameGUI::TOOL_SELECTION || previewType!=gui.toolManager.getBuildingName()) preview.reset();
     if (preview) {
@@ -371,6 +412,7 @@ void GameGUITouch::drawPanel()
     auto* gfx=globalContainer->gfx;
     gfx->setClipRect();
     gfx->drawFilledRect(int(panel.x),int(panel.y),int(panel.w),int(panel.h),Color(12,18,26,245));
+    if (activeAllocationTab()==3 && inspectedBuilding()) { drawBuildingActions(); drawAllocation(); return; }
     const auto origin=panelOrigin();
     const auto content=panelContent();
     SDL_Rect clip{int(content.x),int(content.y),int(content.w),int(content.h)};
@@ -411,7 +453,7 @@ void GameGUITouch::drawHUD()
     drawTutorial();
     drawPanel();
     if (gui.selectionMode==GameGUI::TOOL_SELECTION) return; // Confirm/Cancel owns this strip.
-    const int icons[]={1,29,3,47,45,6};
+    const int icons[]={globalContainer->replaying ? (gui.gamePaused ? 51 : 53) : 1,globalContainer->replaying ? 55 : 29,3,47,45,6};
     for (int i=0;i<6;++i) {
         const double x=ui.actions.x+i*ui.actions.w/6, width=ui.actions.w/6;
         gfx->drawFilledRect(int(x),int(ui.actions.y),int(width)-1,int(ui.actions.h),Color(24,34,44,245));
@@ -491,8 +533,8 @@ Building* GameGUITouch::allocationBuilding() const
 ViewRect GameGUITouch::allocationRect() const
 {
     auto rect=layout().panel;
-    if (!allocationBuilding() || rect.h<=0) return {};
-    rect.h=96*globalContainer->gfx->logicalUnitsPerPoint();
+    if (!inspectedBuilding() || rect.h<=0) return {};
+    rect.h=(activeAllocationTab()==3 ? 48 : 96)*globalContainer->gfx->logicalUnitsPerPoint();
     return rect;
 }
 ViewRect GameGUITouch::panelContent() const
@@ -502,15 +544,12 @@ ViewRect GameGUITouch::panelContent() const
     rect.y+=header; rect.h=std::max(0.0,rect.h-header);
     return rect;
 }
-void GameGUITouch::drawPointLabel(ViewRect rect, const std::string& text)
+std::vector<std::string> GameGUITouch::pointLines(const std::string& text, double width) const
 {
-    auto* gfx=globalContainer->gfx;
-    const double unit=1.5*gfx->logicalUnitsPerPoint();
-    SDL_Rect clip{int(rect.x),int(rect.y),int(rect.w),int(rect.h)};
     auto* font=globalContainer->standardFont;
     std::vector<std::string> lines;
     std::string line;
-    const double width=std::max(1.0,rect.w/unit-8);
+    width=std::max(1.0,width/(1.5*globalContainer->gfx->logicalUnitsPerPoint())-8);
     for (size_t at=0;at<text.size();) {
         size_t end=at+1;
         while (end<text.size() && (static_cast<unsigned char>(text[end])&0xc0)==0x80) ++end;
@@ -524,6 +563,21 @@ void GameGUITouch::drawPointLabel(ViewRect rect, const std::string& text)
         line+=next;at=end;
     }
     if (!line.empty()) lines.push_back(line);
+    return lines;
+}
+void GameGUITouch::drawPointLabel(ViewRect rect, const std::string& text)
+{
+    auto* gfx=globalContainer->gfx;
+    const double unit=1.5*gfx->logicalUnitsPerPoint();
+    auto clipped=rect;
+    if (labelClip) {
+        const double right=std::min(rect.x+rect.w,labelClip->x+labelClip->w), bottom=std::min(rect.y+rect.h,labelClip->y+labelClip->h);
+        clipped.x=std::max(rect.x,labelClip->x); clipped.y=std::max(rect.y,labelClip->y);
+        clipped.w=std::max(0.0,right-clipped.x); clipped.h=std::max(0.0,bottom-clipped.y);
+    }
+    SDL_Rect clip{int(clipped.x),int(clipped.y),int(clipped.w),int(clipped.h)};
+    auto* font=globalContainer->standardFont;
+    const auto lines=pointLines(text,rect.w);
     const int height=font->getStringHeight("Ag");
     gfx->setUITransform(unit,rect.x,rect.y+std::max(0.0,(rect.h/unit-lines.size()*height)/2)*unit,&clip);
     for (size_t i=0;i<lines.size();++i)
@@ -532,22 +586,24 @@ void GameGUITouch::drawPointLabel(ViewRect rect, const std::string& text)
 }
 int GameGUITouch::activeAllocationTab() const
 {
-    const auto* building=allocationBuilding();
-    return allocationTab==2 && (!building || !building->type->defaultUnitStayRange) ? 0 : allocationTab;
+    const auto tabs=allocationTabs();
+    return std::find(tabs.begin(),tabs.end(),allocationTab)!=tabs.end() ? allocationTab : tabs.front();
 }
 void GameGUITouch::drawAllocation()
 {
-    auto* building=allocationBuilding(); const auto rect=allocationRect();
+    auto* building=inspectedBuilding(); const auto rect=allocationRect();
     if (!building || rect.h<=0) return;
     auto* gfx=globalContainer->gfx; const double unit=gfx->logicalUnitsPerPoint();
     gfx->drawFilledRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h),Color(24,34,44));
-    const int tab=activeAllocationTab(), count=building->type->defaultUnitStayRange ? 3 : 2;
-    const char* tabs[]={"[working]","[priority]","[range]"};
+    const auto indices=allocationTabs();
+    const int tab=activeAllocationTab(), count=indices.size();
+    const char* tabs[]={"[working]","[priority]","[range]","[Actions]"};
     for (int i=0;i<count;++i) {
         const ViewRect button{rect.x+i*rect.w/count,rect.y,rect.w/count,48*unit};
-        gfx->drawFilledRect(int(button.x),int(button.y),int(button.w),int(button.h),i==tab ? Color(55,90,75) : Color(24,34,44));
-        drawPointLabel(button,Toolkit::getStringTable()->getString(tabs[i]));
+        gfx->drawFilledRect(int(button.x),int(button.y),int(button.w),int(button.h),indices[i]==tab ? Color(55,90,75) : Color(24,34,44));
+        drawPointLabel(button,Toolkit::getStringTable()->getString(tabs[indices[i]]));
     }
+    if (tab==3) return;
     if (tab==1) {
         const char* labels[]={"[low priority]","[medium priority]","[high priority]"};
         for (int i=0;i<3;++i) {
@@ -568,31 +624,4 @@ void GameGUITouch::drawAllocation()
     }
     drawPointLabel({rect.x+48*unit,rect.y+48*unit,rect.w-96*unit,48*unit},
         tab==2 ? std::to_string(value) : std::to_string(building->unitsWorking.size())+" / "+std::to_string(value));
-}
-std::vector<ViewRect> GameGUITouch::pauseButtons() const
-{
-    const double unit=globalContainer->gfx->logicalUnitsPerPoint();
-    const auto safe=layout().safe;
-    const int columns=safe.w>safe.h ? 2 : 1, rows=(5+columns-1)/columns;
-    const double width=std::min(560*unit,safe.w-24*unit), buttonW=(width-(columns-1)*8*unit)/columns;
-    const double height=rows*56*unit+(rows-1)*8*unit;
-    const double x=safe.x+(safe.w-width)/2,y=safe.y+std::max(0.0,(safe.h-height)/2);
-    std::vector<ViewRect> result;
-    for (int i=0;i<5;++i) result.push_back({x+(i%columns)*(buttonW+8*unit),y+(i/columns)*64*unit,buttonW,56*unit});
-    return result;
-}
-bool GameGUITouch::drawPauseMenu()
-{
-    pauseHUDDrawn=usesHUD() && gui.inGameMenu==GameGUI::IGM_MAIN;
-    if (!pauseHUDDrawn) return false;
-    auto* gfx=globalContainer->gfx; gfx->setClipRect();
-    gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),Color(10,16,24,230));
-    const char* labels[]={"[load game]","[save game]","[Options]","[quit the game]","[return to game]"};
-    const auto buttons=pauseButtons();
-    for (size_t i=0;i<buttons.size();++i) {
-        const auto rect=buttons[i];
-        gfx->drawFilledRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h),i==3 ? Color(90,40,40) : Color(35,65,55));
-        drawPointLabel(rect,Toolkit::getStringTable()->getString(labels[i]));
-    }
-    return true;
 }

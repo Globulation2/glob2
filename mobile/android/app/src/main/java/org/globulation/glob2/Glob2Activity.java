@@ -7,6 +7,8 @@ import android.view.WindowInsets;
 import android.graphics.Insets;
 
 public final class Glob2Activity extends SDLActivity {
+    private static volatile int[] uiInsets = new int[] {0, 0, 0, 0};
+    public static int[] getUiInsets() { return uiInsets; }
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
@@ -27,8 +29,8 @@ public final class Glob2Activity extends SDLActivity {
                     bottom = Math.max(bottom, insets.getDisplayCutout().getSafeInsetBottom());
                 }
             }
-            // SDL reports the resulting surface resize through its event queue.
-            view.setPadding(left, top, right, bottom);
+            // Publish immutable UI geometry; keep the game surface edge to edge.
+            uiInsets = new int[] {left, top, right, bottom};
             return insets;
         });
         mLayout.requestApplyInsets();

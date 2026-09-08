@@ -1310,3 +1310,15 @@ Quit without saving
 Game closed. You can close this window or reload to play again.
 [campaign editor save failed]
 Save not confirmed. OK retries; Cancel returns to the editor menu.
+
+[Actions]
+Actions
+
+[Minimap]
+Minimap
+
+[Fast forward]
+Fast forward
+
+[Hide keyboard]
+Hide keyboard

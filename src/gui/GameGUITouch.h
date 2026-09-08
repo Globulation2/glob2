@@ -6,6 +6,7 @@
 #include <optional>
 #include <memory>
 #include <vector>
+namespace GAGGUI { class Widget; class OverlayScreen; }
 namespace GAGCore { class DrawableSurface; }
 class GameGUI;
 class Building;
@@ -23,22 +24,45 @@ public:
     GAGCore::ViewRect worldBounds() const { return world(); }
     void drawHUD();
     void drawPanel();
-    bool drawPauseMenu();
+    bool drawDialog();
     bool hasPreview() const { return preview.has_value(); }
 private:
+    friend class GameGUITouchHarness;
     GameGUI& gui;
+    GAGGUI::OverlayScreen* activeDialog() const;
+    void menuAction(int action);
+    struct DialogRow { GAGGUI::Widget* widget; std::string text; int kind=0, index=0; bool selected=false, footer=false; GAGCore::ViewRect rect; };
+    std::vector<DialogRow> dialogRows;
+    GAGGUI::OverlayScreen* dialogOwner=nullptr;
+    GAGGUI::Widget* heldDialogWidget=nullptr;
+    int heldDialogIndex=0;
+    double dialogScroll=0, dialogMaximum=0, lastDialogHeight=0;
+    GAGGUI::Widget* editingDialogWidget=nullptr;
+    GAGCore::ViewRect dialogContent;
+    std::optional<GAGCore::ViewRect> labelClip;
+    void prepareDialog();
+    void tapDialog(GAGCore::ViewPoint point);
+    std::vector<std::string> pointLines(const std::string& text, double width) const;
     Building* allocationBuilding() const;
     GAGCore::ViewRect allocationRect() const;
     GAGCore::ViewRect panelContent() const;
-    std::vector<GAGCore::ViewRect> pauseButtons() const;
     void drawAllocation();
+    struct BuildingAction { std::string label; int kind, value=0; bool selected=false; };
+    Building* inspectedBuilding() const;
+    std::vector<int> allocationTabs() const;
+    std::vector<BuildingAction> buildingActions() const;
+    void drawBuildingActions();
+    void tapBuildingAction(GAGCore::ViewPoint point);
+    double actionScroll=0;
+    bool confirmDestroy=false;
+    const void* lastInspectedBuilding=nullptr;
     int allocationTab=0;
     int activeAllocationTab() const;
     void drawPointLabel(GAGCore::ViewRect rect, const std::string& text);
     const void* ownerBuilding=nullptr;
     const void* ownerDialog=nullptr;
     bool panelOpen=false;
-    bool pauseHUDDrawn=false, swallowMouseRelease=false, ignoreTouchSequence=false;
+    bool dialogHUDDrawn=false, swallowMouseRelease=false, ignoreTouchSequence=false;
     double panelScroll=144;
     std::string tutorialText;
     std::vector<std::string> tutorialLines;

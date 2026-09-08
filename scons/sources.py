@@ -145,6 +145,8 @@ CLIENT_SOURCES = (
     'gui/GameGUIInputMenuClickBuilding.cpp',
     'gui/GameGUIInputMouse.cpp',
     'gui/GameGUITouch.cpp',
+    'gui/GameGUITouchActions.cpp',
+    'gui/GameGUITouchDialogs.cpp',
     'gui/GameGUIKeyActions.cpp',
     'gui/GameGUILoadSave.cpp',
     'gui/GameGUIMessageManager.cpp',
