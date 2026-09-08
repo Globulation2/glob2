@@ -10,6 +10,9 @@
 #include <algorithm>
 #include <cstdlib>
 #include <vector>
+#include <queue>
+#include <random>
+#include <functional>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( GradientTest );
 
@@ -21,12 +24,12 @@ namespace
 	// globalContainer link surface is needed.
 	struct GrassMap : Map
 	{
-		GrassMap()
+		GrassMap(int widthDec = kMapDec, int heightDec = kMapDec)
 		{
-			wDec = kMapDec;
-			hDec = kMapDec;
-			w = 1 << kMapDec;
-			h = 1 << kMapDec;
+			wDec = widthDec;
+			hDec = heightDec;
+			w = 1 << wDec;
+			h = 1 << hDec;
 			wMask = w - 1;
 			hMask = h - 1;
 			size = static_cast<size_t>(w * h);
@@ -234,4 +237,60 @@ void GradientTest::testSwimClassFromSpeeds()
 	CPPUNIT_ASSERT(Map::swimClass(16, 30) < Map::SWIM_CLASS_EVEN);
 	CPPUNIT_ASSERT(Map::swimClass(30, 10) > Map::SWIM_CLASS_EVEN);
 	CPPUNIT_ASSERT_EQUAL(SWIM_CLASS_COUNT - 1, Map::swimClass(30, 10));
+}
+
+void GradientTest::testRandomFieldsAgainstReference()
+{
+	std::mt19937 random(184);
+	constexpr int waterCosts[] = {0, 5, 7, 10, 13, 20, 30};
+	for (int trial = 0; trial < 700; ++trial)
+	{
+		// Include one-cell axes, rectangular maps and all movement classes.
+		const int width = 1 << (trial % 6);
+		const int height = 1 << ((trial / 6) % 6);
+		const int swimClass = trial % SWIM_CLASS_COUNT;
+		GrassMap map(trial % 6, (trial / 6) % 6);
+		auto input = blank(map);
+		std::vector<bool> water(map.cells());
+		for (size_t i = 0; i < map.cells(); ++i)
+		{
+			water[i] = random() % 3 == 0;
+			if (water[i]) map.putWater(i % width, i / width);
+			if (random() % 4 == 0 || (water[i] && swimClass == 0))
+				input[i] = GRADIENT_FORBIDDEN;
+			else if (trial % 10 != 0 && random() % 12 == 0)
+				input[i] = GRADIENT_AT_GOAL - random() % 43;
+		}
+
+		// Independent heap-based shortest paths; ordinary modulo handles wrapping.
+		auto expected = input;
+		using Entry = std::pair<int, size_t>;
+		std::priority_queue<Entry, std::vector<Entry>, std::greater<Entry>> queue;
+		for (size_t i = 0; i < expected.size(); ++i)
+			if (expected[i] > GRADIENT_UNREACHABLE)
+				queue.emplace(GRADIENT_AT_GOAL - expected[i], i);
+		while (!queue.empty())
+		{
+			const auto [cost, i] = queue.top();
+			queue.pop();
+			if (cost != GRADIENT_AT_GOAL - expected[i]) continue;
+			const int x = i % width, y = i / width;
+			const int step = water[i] && swimClass > 0 ? waterCosts[swimClass] : 10;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					if (dx == 0 && dy == 0) continue;
+					const size_t n = ((y + dy + height) % height) * width + (x + dx + width) % width;
+					if (expected[n] == GRADIENT_FORBIDDEN) continue;
+					const int candidate = cost + (dx && dy ? step * 14 / 10 : step);
+					if (candidate < GRADIENT_AT_GOAL - expected[n])
+					{
+						expected[n] = GRADIENT_AT_GOAL - candidate;
+						queue.emplace(candidate, n);
+					}
+				}
+		}
+		map.propagateGradient(input.data(), swimClass);
+		CPPUNIT_ASSERT(input == expected);
+	}
 }

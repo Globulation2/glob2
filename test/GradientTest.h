@@ -18,6 +18,7 @@ class GradientTest: public CppUnit::TestFixture
 		CPPUNIT_TEST( testDirectionPrefersCheapestTotal );
 		CPPUNIT_TEST( testDirectionBlockedNeighbour );
 		CPPUNIT_TEST( testSwimClassFromSpeeds );
+		CPPUNIT_TEST( testRandomFieldsAgainstReference );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -29,4 +30,5 @@ public:
 	void testDirectionPrefersCheapestTotal();
 	void testDirectionBlockedNeighbour();
 	void testSwimClassFromSpeeds();
+	void testRandomFieldsAgainstReference();
 };
