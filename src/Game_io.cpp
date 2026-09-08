@@ -253,14 +253,14 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 					checkInvariant(buildings[index]==NOGBID);
 					buildings[index] = gid;
 					// heal missing cells
-					if (map.getCase(xi, yi).building != gid)
+					if (map.getTile(xi, yi).building != gid)
 					{
 						std::cerr << "Missing map cell GBID at " << xi << "," << yi
 							<< " for team " << ti
 							<< " building " << bi
 							<< " (" << building->type->type << "), healing!"
 							<< std::endl;
-						map.getCase(xi, yi).building = gid;
+						map.getTile(xi, yi).building = gid;
 					}
 				}
 		}
@@ -281,7 +281,7 @@ bool Game::integrity(void)
 	for (int y=0; y<map.getH(); y++)
 		for (int x=0; x<map.getW(); x++)
 		{
-			Case& c = map.getCase(x, y);
+			Tile& c = map.getTile(x, y);
 			if (c.building != NOGBID)
 			{
 				int tid = Building::GIDtoTeam(c.building);
@@ -304,7 +304,7 @@ bool Game::integrity(void)
 							<< " with " << coordName
 							<< " span [" << posValue << ":" << endValue << "[, healing!"
 							<< std::endl;
-						map.getCase(x, y).building = NOGBID;
+						map.getTile(x, y).building = NOGBID;
 					}
 				};
 

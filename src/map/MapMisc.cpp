@@ -17,7 +17,7 @@ Uint32 Map::checkSum(bool heavy)
 	Uint32 cs=size;
 	if (heavy)
 	{
-		for (const auto& c: cases)
+		for (const auto& c: tiles)
 		{
 			cs+=
 				c.terrain +

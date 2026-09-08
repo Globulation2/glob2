@@ -156,14 +156,14 @@ void testAllies()
 void testPrestige()
 {
 	constexpr int N = 3;
-	struct Case
+	struct Tile
 	{
 		const char* tag;
 		int totalPrestige;
 		int prestigeToReach;
 		std::array<int, N> teamPrestige;
 	};
-	static const Case cases[] = {
+	static const Tile tiles[] = {
 		{"all-zero-belowGate",   0,   100, {0, 0, 0}},
 		{"all-zero-atGate",      100, 100, {0, 0, 0}},
 		{"belowGate-noTie",      50,  100, {10, 30, 10}},
@@ -174,7 +174,7 @@ void testPrestige()
 		{"aboveGate-tieAtTop",   200, 100, {100, 100, 25}},
 		{"negativePrestige",     100, 100, {-5, 0, -10}},
 	};
-	for (const auto& c : cases)
+	for (const auto& c : tiles)
 	{
 		clearAll();
 		setupTeams(N);

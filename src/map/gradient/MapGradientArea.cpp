@@ -57,7 +57,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	// all other blockers (resources, buildings, water, immobileUnits) are obstacles.
 	for (size_t i=0; i<size; i++)
 	{
-		const Case& c=cases[i];
+		const Tile& c=tiles[i];
 		if (c.resource.type!=NO_RES_TYPE)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building!=NOGBID)
@@ -117,7 +117,7 @@ void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
 	{
-		const Case& c=cases[i];
+		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
@@ -160,7 +160,7 @@ void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
 	{
-		const Case& c=cases[i];
+		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(c.clearArea & teamMask && c.resource.type != NO_RES_TYPE && globalContainer->resourcesTypes.get(c.resource.type)->clearable)
