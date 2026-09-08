@@ -61,3 +61,38 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
   await click(page,600,500); await screen(page,'EndGameScreen');
   expect(errors).toEqual([]);
 });
+
+test('WebGL context restoration retains settings, editor and confirmation controls', async ({page}, info) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await page.goto('/?renderer=webgl2');
+  await screen(page, 'MainMenuScreen');
+  let restores = 0;
+  async function recover(expectedScreen) {
+    await screen(page, expectedScreen);
+    await page.evaluate(() => {
+      window.contextLoss = document.querySelector('#canvas').getContext('webgl2').getExtension('WEBGL_lose_context');
+      contextLoss.loseContext();
+    });
+    await expect.poll(async () => (await state(page)).contextLost).toBe(true);
+    await page.evaluate(() => contextLoss.restoreContext());
+    await expect.poll(async () => (await state(page)).contextRestores).toBe(++restores);
+    await screen(page, expectedScreen);
+    await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
+    expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2').getError())).toBe(0);
+  }
+  await click(page,440,570); await recover('SettingsScreen');
+  await click(page,810,650); await screen(page,'MainMenuScreen');
+  await click(page,760,570); await screen(page,'EditorMainMenu');
+  await click(page,600,300); await screen(page,'NewMapScreen');
+  await click(page,440,650); await recover('MapEditorScreen');
+  await page.locator('#canvas').press('Escape',{delay:80});
+  await click(page,600,525); await recover('MessageScreen');
+  await page.screenshot({path:info.outputPath('webgl2-restored-editor-dialog.png')});
+  await page.locator('#canvas').press('Escape',{delay:80});
+  await screen(page,'MapEditorScreen');
+  await page.locator('#canvas').press('Escape',{delay:80});
+  await click(page,600,525); await screen(page,'MessageScreen');
+  await click(page,600,570); await screen(page,'EditorMainMenu');
+  expect(errors).toEqual([]);
+});

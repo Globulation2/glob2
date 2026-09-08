@@ -273,9 +273,17 @@ scenarios also pass with WebGL selected explicitly; one Chromium cold-start
 timeout passed on a focused rerun. The startup allowance now accommodates cold
 texture creation on headless software GPUs. The assertions remain unchanged.
 Both native and Wasm clients build, all nine build-system tests pass, and the
-native session harness passes. The full WebGL-only suite still has editor-load
-and startup-cancellation deadline failures. Controlled performance baselines and
-actual Safari/Edge release testing remain open.
+native session harness passes. A fresh current-build WebGL run passes all 22
+Chromium single-player, viewport and rendering scenarios, including the earlier
+editor-load and startup-cancellation deadline failures, without changing their
+deadlines. Complete cross-browser GPU qualification, controlled performance
+baselines and actual Safari/Edge release testing remain open.
 
 ![WebGL2 match after viewport resize](screenshots/webgl2-match.png)
 ![Same running session after two graphics-context restorations](screenshots/webgl2-restored.png)
+
+The settings/editor/confirmation context-restoration scenario also passes in
+Chromium, Firefox and WebKit. It restores the real context three times and
+verifies the retained controls can still cancel or complete the dialog.
+
+![Editor confirmation after context restoration](screenshots/webgl2-restored-editor-dialog.png)

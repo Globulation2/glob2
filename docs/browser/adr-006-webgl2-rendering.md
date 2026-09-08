@@ -53,7 +53,9 @@ presentation.
 
 Complete cross-browser single-player and viewport coverage, visual review,
 native regression checks and controlled performance baselines are required.
-Context loss during legacy blocking dialogs/loading, unrecoverable GPU failure
+Context loss during settings, the editor and its confirmation dialog is also
+covered across all three browser engines, with retained controls verified after
+restoration. Context loss during other legacy blocking dialogs/loading, unrecoverable GPU failure
 UI, and fallback after an unexpected context-creation failure still need release
 qualification. This milestone does not make the full platform stable.
 
@@ -68,10 +70,12 @@ checks, not the controlled release benchmark matrix; they demonstrate why the
 reference environment must be controlled. The latest readings are recorded in
 `browser/benchmarks/apple-m3-sanity.json`.
 
-The full WebGL single-player run exceeded existing deadlines in editor-load and
-startup-cancellation scenarios under headless Chromium. Those are unresolved
-qualification gaps, not waived release gates. The software default remains until
-the complete GPU suite and controlled performance fixtures pass.
+An earlier WebGL single-player run exceeded deadlines in editor-load and
+startup-cancellation scenarios under headless Chromium. A fresh run on the
+current build passes all 22 Chromium single-player, viewport and rendering
+scenarios, including those two cases, without changing their deadlines. The
+complete cross-browser GPU suite and controlled performance fixtures remain
+release gates; software remains the default.
 
 Run the complete existing suite against WebGL using
 `GLOB2_TEST_RENDERER=webgl2 npx playwright test` from `browser/`. The dedicated
