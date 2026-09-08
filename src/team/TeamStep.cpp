@@ -134,15 +134,19 @@ namespace
 	}
 
 	// Tiles `u` would walk to do the job (building, resource): deliver what it
-	// carries, or fetch and carry. False when it cannot take the job.
+	// carries, or fetch and carry. Only gradients that already exist are read,
+	// so a comparison never builds one. False when it cannot take the job.
 	bool jobCost(Unit *u, Building *b, int resource, int *cost)
 	{
 		Map *map = b->owner->map;
 		int swimClass = u->swimClass();
+		if (b->globalGradient[swimClass] == NULL)
+			return false;
 		if (u->carriedResource >= 0)
 			return u->carriedResource == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost);
 		if (map->roundTripDistance(b, resource, swimClass, u->posX, u->posY, cost))
 			return true;
+		// No round-trip field for this class yet: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
 		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding)
 			|| !map->resourceAvailable(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource))
@@ -183,15 +187,12 @@ void Team::swapTask(Unit *unit)
 	if (!jobCost(unit, a, r, &own))
 		return;
 	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
-	int swimClass = unit->swimClass();
 	Unit *best = NULL;
 	int bestGain = SWAP_MIN_GAIN;
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		Unit *mate = myUnits[i];
-		// Same swim class only: the costs then come from gradients the two
-		// fetchers already keep alive, and none is built for the comparison.
-		if (mate == unit || !isFetching(mate) || mate->swimClass() != swimClass)
+		if (mate == unit || !isFetching(mate))
 			continue;
 		Building *b = mate->attachedBuilding;
 		int s = mate->destinationPurpose;
