@@ -1,10 +1,10 @@
 {
-  "recipe": "shared-material rugged corner masks v3; larger grass tufts",
+  "recipe": "shared-material rugged corner masks v4; sparse large grass tufts",
   "seed": "frame index",
   "sources": {
     "experiments/ai-upscale/sr/corrected/terrain0.png": "9e42ef284655ef4dacfe888005ea43616805e66e87a51474549e46363f81ff8f",
-    "experiments/ai-upscale/materials/grass-blades-v2.png": "b3ee2bf63b4c0f28b142f14e95631da3cd0f3904da7f4954478352a433c39bbc",
-    "experiments/ai-upscale/materials/grass-blades-v2.txt": "bd88bae9602c3c69e5b56e421b34043ee4b08b40a3e34bc126aa257972061173",
+    "experiments/ai-upscale/materials/grass-blades-v3.png": "eebd1067aac8ec02b4f862c105375cdfdb7a40f2132778d781d4e4f634fd1d4b",
+    "experiments/ai-upscale/materials/grass-blades-v3.txt": "506c115834bd186b22dfd91607bca8948c940b2e9fa7a4a2b678ecc9ccbd26f0",
     "experiments/ai-upscale/world/corrected/terrain128.png": "8cd79c322a3afcb2e294a6d2bd08a10bd819c75dd548b8bfe30c5981a6cfd5af",
     "src/map/MapTerrain.cpp": "2f43bb1effe0216300b3dc4fed31d21d354be2cc1e23b1997a2972c5ec9605b1"
   },
@@ -17,7 +17,7 @@
         "H",
         "H"
       ],
-      "sha256": "28b15cf55c6d1a8b736dbf391c9e2b33c099dc37ffba7691a585097afb95f82c"
+      "sha256": "8e30324df65775f3b04a4ea88b471e9fed9486c0a3d08fdfe10adb596173245d"
     },
     {
       "id": "terrain1",
@@ -27,7 +27,7 @@
         "H",
         "H"
       ],
-      "sha256": "cd2680e0c1ce87622e03e2e9922063542bc838a420a4fe3e04f8bbdd03bacee3"
+      "sha256": "ffcf9eaa340be58b2d29cb321de269626966bccee15113fa784c97b3e30e4ce3"
     },
     {
       "id": "terrain2",
@@ -37,7 +37,7 @@
         "H",
         "H"
       ],
-      "sha256": "d8c6c1b8040f14daab789f6b1ebabd458fa307ec221daa010d5e8adf289e3369"
+      "sha256": "8700e1a2807523e15ce83fd577a9a813834170f45d37c20e5d586df48390ad5d"
     },
     {
       "id": "terrain3",
@@ -47,7 +47,7 @@
         "H",
         "H"
       ],
-      "sha256": "d21b653dbac2a240d14baf1e10f4d0ccd86824f69c5cd41db54efd76da8717e1"
+      "sha256": "1c9dcdd8e9337bd547722100d8ba4c18a7154329a1632553ab7ba2113659d2f8"
     },
     {
       "id": "terrain4",
@@ -57,7 +57,7 @@
         "H",
         "H"
       ],
-      "sha256": "697f7dbfc525fc9dd85a8f3c12477d32790879008a01e9cc41d20fd3d0b0f8d6"
+      "sha256": "d9a6149355aad08543162293714e6a9ba90ebdc09b89165d43fce8862d905f2d"
     },
     {
       "id": "terrain5",
@@ -67,7 +67,7 @@
         "H",
         "H"
       ],
-      "sha256": "d5af6d82821d92374afd9f8356586c5ba405a55af13e34e920487ca37c3638ac"
+      "sha256": "56d80df42d003b1b5089ba3acd3c50bcdd8a35e1204f38c7e6f1e4c6abb9e20f"
     },
     {
       "id": "terrain6",
@@ -77,7 +77,7 @@
         "H",
         "H"
       ],
-      "sha256": "702ce9e3aaa09473f5fdeed4af2b5c84d41e57f3e0511162767a082b14885431"
+      "sha256": "1cd0010974e9bd71278e815b7f65a4f9f79e62109ef180b655275c7e2f548cab"
     },
     {
       "id": "terrain7",
@@ -87,7 +87,7 @@
         "H",
         "H"
       ],
-      "sha256": "ddcc84699c04e1a8a95961bb302157543d9f0eec51ad128c6e2ea0ece8a6151a"
+      "sha256": "792fbf15008a8c1152a2a443b82054ef31ae9e1174026bfc7abdb55e399e40b8"
     },
     {
       "id": "terrain8",
@@ -97,7 +97,7 @@
         "H",
         "H"
       ],
-      "sha256": "ae131b9d6ced46bbbe5fd0814d4773960c8be69e1f90dc8e0a18bcc76f917a3a"
+      "sha256": "74ef0f0254f9cfabaa94191cab07f51b6a46f6eb629e30d9f0293d82743b4580"
     },
     {
       "id": "terrain9",
@@ -107,7 +107,7 @@
         "H",
         "H"
       ],
-      "sha256": "950318c20616cb97630fffbb9248891080b466301b8dde0bb01bd7cc8ad6ab51"
+      "sha256": "db2a36b8821a1d60cc4f1912e2aaabd3c20db16be6d14114046f17efb252e58e"
     },
     {
       "id": "terrain10",
@@ -117,7 +117,7 @@
         "H",
         "H"
       ],
-      "sha256": "d9e0f290140c95daeb410e75e7a64af0f006e12da047900ca39fc0f80f747d80"
+      "sha256": "ab3319c151276bde65065050aa2d3729f3ebfab72596a4ea4f3337126602320c"
     },
     {
       "id": "terrain11",
@@ -127,7 +127,7 @@
         "H",
         "H"
       ],
-      "sha256": "904323f0cd73d947fc17643d113131c3a1e47de6b2ff8cd9eb4d21c1c2fc3317"
+      "sha256": "a26e154054b7155fa33a32cdda1921f7d9d637454f6b875d99f370948361b142"
     },
     {
       "id": "terrain12",
@@ -137,7 +137,7 @@
         "H",
         "H"
       ],
-      "sha256": "c91b3c358ec9e4d7f608fd4c85cc0eb1768e2d2c0939a874b4b1f09ce9829d6e"
+      "sha256": "f68959b3c07c31464c45c53e946d0f0b4d3d5d7a012a35babd5423958e971718"
     },
     {
       "id": "terrain13",
@@ -147,7 +147,7 @@
         "H",
         "H"
       ],
-      "sha256": "0146ba288a280aa94d38301600051e3c00235fe4abafa35e3cc39410eee1e74d"
+      "sha256": "fd7f099fde4d4d2f0e7b5b03b931f1dcf7a9736ac6497e67b98be25239de4b52"
     },
     {
       "id": "terrain14",
@@ -157,7 +157,7 @@
         "H",
         "H"
       ],
-      "sha256": "104d38d02868aeb9c9944999a9708a2283bf61777df1103bae5c6c85eb37d112"
+      "sha256": "3588d980163f2ac58a07232b36f0d06f155f1382b42c6c1423014c2a39673024"
     },
     {
       "id": "terrain15",
@@ -167,7 +167,7 @@
         "H",
         "H"
       ],
-      "sha256": "3568b35b73ef82d5c340fb1800fcbdf84c3655a03a0dced956ac084393e83094"
+      "sha256": "b140630c5197e046edb90edb4f332b861981705daae4113c8e260d273c330d84"
     },
     {
       "id": "terrain16",
@@ -177,7 +177,7 @@
         "S",
         "H"
       ],
-      "sha256": "eec941575a477fae18a1c30f838e0a0ed69d12a07e96fc8cdc57f0daf8d136ec"
+      "sha256": "40c3e085c26d3a4b70aec6d5f96c040aee8aa6d23157c4dbe73e55d14ce32562"
     },
     {
       "id": "terrain17",
@@ -187,7 +187,7 @@
         "S",
         "H"
       ],
-      "sha256": "9c18559a5ce65adc98a18d164e875439094c735c82919dd7e0481c1ec25233e3"
+      "sha256": "25f06e7cd491e9ac302d67aa77a6388909d002ecb026aba14e008f44806058fd"
     },
     {
       "id": "terrain18",
@@ -197,7 +197,7 @@
         "S",
         "H"
       ],
-      "sha256": "5a51078a4a8a7f4bc618655493a325505f05fa09f89cb09e4b272ad0a75685bd"
+      "sha256": "dc172f8710590e00801820ee0a5d80b95885f764133eaa39bb3103a9c06643f0"
     },
     {
       "id": "terrain19",
@@ -207,7 +207,7 @@
         "S",
         "H"
       ],
-      "sha256": "bde147c47d28c8347d2c52cb787cb09a7edc7181a358e2be342ad601c68f9dfb"
+      "sha256": "39bb47180085e499535ab519e4857b78e27adcfbb619580c9b07212a2138942e"
     },
     {
       "id": "terrain20",
@@ -217,7 +217,7 @@
         "S",
         "H"
       ],
-      "sha256": "0b62d0006fbdb5b687dfb608c67379c79f00a3f8702116f2f66e73098b5a02b8"
+      "sha256": "8b0b778ce265b814b70c502ff72ff955040ecd55c3c6bde7ebf5710f4bb441af"
     },
     {
       "id": "terrain21",
@@ -227,7 +227,7 @@
         "S",
         "H"
       ],
-      "sha256": "fa9c765ffca4460a1a90796720c91cb4fce9dcd29447dd402577baa84c229a07"
+      "sha256": "9605d86b9e92170cac9e3bd880c16e22e68d47700d28fbf17562f9cc7629f37a"
     },
     {
       "id": "terrain22",
@@ -237,7 +237,7 @@
         "S",
         "H"
       ],
-      "sha256": "19fe1eeded9d14d99bc530dac6f0bfeacf91833f951ac0bc3bb3fd217ee1a65a"
+      "sha256": "ada6a62c3ce849087c79e71a8abed7f77126d0c47afeea7c5d5d5184e7fafc1a"
     },
     {
       "id": "terrain23",
@@ -247,7 +247,7 @@
         "S",
         "H"
       ],
-      "sha256": "166b92d5295df1bf6d48653afb8a2ccdef1c59d87f3d5acfe6fb0797c2b3e073"
+      "sha256": "165da9a7fc41019c3c32f74fdcf7c62c4f5b3fb93be1080c3b2123eaf0b40895"
     },
     {
       "id": "terrain24",
@@ -257,7 +257,7 @@
         "H",
         "S"
       ],
-      "sha256": "d610c6cf0e565403733a86c8140953c79da5876c0013cf745dc7274c4277af32"
+      "sha256": "c74d116865a5cbd699aa6f3ecb44372ab8385afc445784b6499141e9ce73d198"
     },
     {
       "id": "terrain25",
@@ -267,7 +267,7 @@
         "H",
         "S"
       ],
-      "sha256": "110098d988a6939d1924c2352382c2e1f68ea6496186d122d7dce1510bca1a6a"
+      "sha256": "98cb37946a4fcf55188d0775892eb0ee9fd1cc1a800852741b91c4f29fd8f17c"
     },
     {
       "id": "terrain26",
@@ -277,7 +277,7 @@
         "H",
         "S"
       ],
-      "sha256": "d6b7b39b5808de39378acc65e6eca72d2caccde9d8a45f2f8b670361b10d8016"
+      "sha256": "686b2e48966b12c3aaa0058855abde3c7c08fe351210dc127724443b775b52ce"
     },
     {
       "id": "terrain27",
@@ -287,7 +287,7 @@
         "H",
         "S"
       ],
-      "sha256": "3a3c67069402743f9adbd70a8fe3fa753dabf92ddce317881aec5ae10800e1e1"
+      "sha256": "fc4d9069ed64ca8a9b89da99b43da5b746fda37c274ba201ff14b4af32ec7e62"
     },
     {
       "id": "terrain28",
@@ -297,7 +297,7 @@
         "H",
         "S"
       ],
-      "sha256": "98cdb65119ea63a81e909a1a1d5c88d378498eacc36e2e31e5d246144b88dcbd"
+      "sha256": "e39a66fec816a2e5c7775d24098cb01011b3417d54562181507d35a1190a256f"
     },
     {
       "id": "terrain29",
@@ -307,7 +307,7 @@
         "H",
         "S"
       ],
-      "sha256": "f3b2d0153f7fc66cfc175bd832ee87d0a0e390d4981b36e346dd59840d6a2961"
+      "sha256": "6d6f936de649997c7929059bb1ef9aafb17f7a45123a036972ea0830d4fa8dad"
     },
     {
       "id": "terrain30",
@@ -317,7 +317,7 @@
         "H",
         "S"
       ],
-      "sha256": "2b6a4ce3184819e21d08a3aa437c197a2835ab925c667619f2e62ec42fd41c8a"
+      "sha256": "d55bf9b2151ed4b4b11b9c13289b18706d52ac4190490041fe75d696bcd8b2b2"
     },
     {
       "id": "terrain31",
@@ -327,7 +327,7 @@
         "H",
         "S"
       ],
-      "sha256": "97fcfab80821b7ef7867b3f41025586c1e1177889b110b3777106f04dc67adb4"
+      "sha256": "ac1823b2d3f211840ed659ce99137c3a5b9c25bcd8ae3e8b2fc5bd29cc41629f"
     },
     {
       "id": "terrain32",
@@ -337,7 +337,7 @@
         "S",
         "S"
       ],
-      "sha256": "1e44eda38eaf6d41e31410819f3b41c023090b8c66968463cd994971864bacae"
+      "sha256": "70b082487be78ccbb665c188d6ac74ac8ba6fb35e1ba127913aee55052177b33"
     },
     {
       "id": "terrain33",
@@ -347,7 +347,7 @@
         "S",
         "S"
       ],
-      "sha256": "a017907130c6a2d48ea5502f2248c39dabe12684e370148bc67e5bf934dd0d97"
+      "sha256": "f6d55e916e2bd55347d07fb7072a4bd24e740105d3b437eff9fb7925b284ec21"
     },
     {
       "id": "terrain34",
@@ -357,7 +357,7 @@
         "S",
         "S"
       ],
-      "sha256": "04963addb2aeeb14d42a3ed7ccea3da25949ffddc90e2f4ed4349942394c8aa7"
+      "sha256": "22a63047fc5012c34409a285ae7ab348ddef35c14d239d644893ebe4da95d1be"
     },
     {
       "id": "terrain35",
@@ -367,7 +367,7 @@
         "S",
         "S"
       ],
-      "sha256": "1cd1ff98b8e8d970eb2db3080b42da5f1ced53624c8cbdc6b3be0898e1ad74ed"
+      "sha256": "60145e7d0a402b4f89a9a411ed67083f1a3cfb6f68cf82d94803a62b744927ef"
     },
     {
       "id": "terrain36",
@@ -377,7 +377,7 @@
         "S",
         "S"
       ],
-      "sha256": "1213bc5f26ac420936c39f35c202ea90cc7831c6b65eabd9f119b78b32da5962"
+      "sha256": "82d126dc33746e49141a49afb0ae6d33952bed3996a4dbe110653ed784af5e31"
     },
     {
       "id": "terrain37",
@@ -387,7 +387,7 @@
         "S",
         "S"
       ],
-      "sha256": "4af9a02d4e7bfe892c98fe276c9a9200686c057c8e94ae7901bee5670e295856"
+      "sha256": "333bb4bd897ed9d0f16dfd10947646fb0fbbcf9371d67feb10e2f45cabad16b5"
     },
     {
       "id": "terrain38",
@@ -397,7 +397,7 @@
         "S",
         "S"
       ],
-      "sha256": "ce4b0f1dcd6e73c049184d11472e7827b9909bb0a51e66cf1dc444856c6072e3"
+      "sha256": "3f4d63114a88040b0003f28551f497760e45883b315b3798c213a91c8c1b5aef"
     },
     {
       "id": "terrain39",
@@ -407,7 +407,7 @@
         "S",
         "S"
       ],
-      "sha256": "78c14473b2a52c2310ff3bff4795803d0ee3791577bc9c863fc9f2c662f886cb"
+      "sha256": "4025b765d9d310cabba15c9830d6219d049c86f2857528fe12f5ddacad26783c"
     },
     {
       "id": "terrain40",
@@ -417,7 +417,7 @@
         "S",
         "S"
       ],
-      "sha256": "3fc712310653efd128a7cca6b8f7fbef5f320c8f951e39c95e8ec86567177f4c"
+      "sha256": "443b73afd23a2e30d022dc8ed6fbf805f7cc6fb78376a80c913485e7b2d8557a"
     },
     {
       "id": "terrain41",
@@ -427,7 +427,7 @@
         "S",
         "S"
       ],
-      "sha256": "eec32d77fbafdfc5955ba84f5fdb7d6d6576ec0c852a2ec8b6897db288aaf56d"
+      "sha256": "a6a0b6742d2ff34bad6b2402da26a33ca5be674783eb7f7ef63710914e5a224a"
     },
     {
       "id": "terrain42",
@@ -437,7 +437,7 @@
         "S",
         "S"
       ],
-      "sha256": "425cf83613dfac001a0b1d35fe3ffd4f499e5e9e1cb305c9cada8a9ee70a710e"
+      "sha256": "be8e08dd1bfe8957117790c61ddd58eea00bf2a22b99dbd50b006bdf0619a8ae"
     },
     {
       "id": "terrain43",
@@ -447,7 +447,7 @@
         "S",
         "S"
       ],
-      "sha256": "43e2d288766a2cad0b77e7d633a4f5a8021f0909e29ebdca0b8003f72d2783f9"
+      "sha256": "9b0e6bd227840bd808ff0b839d280fd542a88ee764815bd94a94be4c1bace83c"
     },
     {
       "id": "terrain44",
@@ -457,7 +457,7 @@
         "S",
         "S"
       ],
-      "sha256": "62c172e8ca88c8241939a6ca453fd937f8a836d2c11d9d9e04174aec034a3e25"
+      "sha256": "c339d1d3893530b0a765db6d70e4fa9a767857a6f949b00daf428fd0b1defb57"
     },
     {
       "id": "terrain45",
@@ -467,7 +467,7 @@
         "S",
         "S"
       ],
-      "sha256": "83db344d496a55f6dc266939a5ad22753790b7e145a641d8118fd3dc440ae8da"
+      "sha256": "736ecbeb62812e13d3d3adf66b99f4cbbd71ea4ef8a6f65722753144cbc23ba0"
     },
     {
       "id": "terrain46",
@@ -477,7 +477,7 @@
         "S",
         "S"
       ],
-      "sha256": "19f5b6d1bca958c3c2efdeca271003681adfc1434e3fbfee19bd86f9d8b8a485"
+      "sha256": "8f9f79e1380f2fce1d19f0f3ceb34ff128f61de286e6a008a8a2452e90a09792"
     },
     {
       "id": "terrain47",
@@ -487,7 +487,7 @@
         "S",
         "S"
       ],
-      "sha256": "32b87d6966118789092cca17b3863a5b57777b17a2ab2fab816e4124b5ecd637"
+      "sha256": "831fe0e9d1d03db2ebef7910d10eb554387a11d8091d5f6b43a0f2cf60754e20"
     },
     {
       "id": "terrain48",
@@ -497,7 +497,7 @@
         "S",
         "S"
       ],
-      "sha256": "34dacdebd4c98f2054eed082a7f459c5393095994e6424641aa309340d0909bb"
+      "sha256": "add4da65c92152fe15b4b01d35215aaeaf4a130e3ec4e610ba305f4194a9ae11"
     },
     {
       "id": "terrain49",
@@ -507,7 +507,7 @@
         "S",
         "S"
       ],
-      "sha256": "52c093df5de313a324de78b5306f25a856b29296dcc62b549542940e77c9c623"
+      "sha256": "7c42b43f600d1797bf6b387d5e1fe8c1e4e058368f0d51655555a677e32d9459"
     },
     {
       "id": "terrain50",
@@ -517,7 +517,7 @@
         "S",
         "S"
       ],
-      "sha256": "38a0bafb916540ff49c35c36777adc9f1531e4a67a711d6ad0002ffd10840c3b"
+      "sha256": "1df21c69e0b8100be064f1b760a70d47af9bc39510241e0afbfa7daceb78240e"
     },
     {
       "id": "terrain51",
@@ -527,7 +527,7 @@
         "S",
         "S"
       ],
-      "sha256": "954cc62745313b7e56d0edef9a657406834ba7320b027466cc9e013e9e216265"
+      "sha256": "859b8902290bd7670714189160cae8c8c0ac7096ea65838a37eb42ab045e5191"
     },
     {
       "id": "terrain52",
@@ -537,7 +537,7 @@
         "S",
         "S"
       ],
-      "sha256": "1a20c7569858b519bd50c8baf93d701350772bf18eb8e055435a7094cf596199"
+      "sha256": "417abb81be25aef04d971c9d780463a06d0de79bc72ee6d0f2a74ded64e25ac7"
     },
     {
       "id": "terrain53",
@@ -547,7 +547,7 @@
         "S",
         "S"
       ],
-      "sha256": "e3c95fe1eb9150ad429cb7b6bb42aed43f8d895461e3fb8ab98045b2bdaf11ff"
+      "sha256": "cbf17f2e6fa9a1650fa353e967ec7f006d857fc6dde62db0132dd27c9f5545bd"
     },
     {
       "id": "terrain54",
@@ -557,7 +557,7 @@
         "S",
         "S"
       ],
-      "sha256": "43c091ededcebbcf3391b15659023589b915611804d07a365e1cb08a3688bd22"
+      "sha256": "adce0d3c1839a564e9a3ad69dfa145580a65e1cc70c98b28cdccd59eab9ca452"
     },
     {
       "id": "terrain55",
@@ -567,7 +567,7 @@
         "S",
         "S"
       ],
-      "sha256": "8b91dab28da7db120649f036b4689aa98301024d86533645a887bb70a45eaf50"
+      "sha256": "b358f6df12a6b8c8af7f146b6ddf1d2f4b6ab90f6dfbd94c9ff03b39ba387a0b"
     },
     {
       "id": "terrain56",
@@ -577,7 +577,7 @@
         "H",
         "H"
       ],
-      "sha256": "753a1f120aa3f3989f1d94bd69fe772df202a143c5de97c2c6f88ac6a9d05c33"
+      "sha256": "c7d5018fe9b38d9956b0c777fe0f376dad99fd6bed2a0170694f292de7823019"
     },
     {
       "id": "terrain57",
@@ -587,7 +587,7 @@
         "H",
         "H"
       ],
-      "sha256": "3b542c21db2d716f3721ab5279db230c86aa5f805df59c38acdddf7fef4a5339"
+      "sha256": "48e268d114052973e9c7371a92ee8d0a9f85c3e38dea08da349ae3e57be082c9"
     },
     {
       "id": "terrain58",
@@ -597,7 +597,7 @@
         "H",
         "H"
       ],
-      "sha256": "49882de07867616ea9d168b58e8096811cad0ba9120fd02049b60e358c94b7aa"
+      "sha256": "ce1ce452292b313507c537bad51a65e03056c43d20ba8f2bc70560822fa70eae"
     },
     {
       "id": "terrain59",
@@ -607,7 +607,7 @@
         "H",
         "H"
       ],
-      "sha256": "fc8fa5e135c3c550ca311e7f1de2635bf7a2c355480f9136408b6b9574b3a15c"
+      "sha256": "f0d044a12605cad577514e011fe0d3d1172b4106bcb0677810ff6731432097e7"
     },
     {
       "id": "terrain60",
@@ -617,7 +617,7 @@
         "H",
         "H"
       ],
-      "sha256": "6ec61521bb9033c433f1050bb1af6a304d1eda67c3820c61a4e3f851f1c16326"
+      "sha256": "52e6dcd4e22a8d5f94cdaff47081a0cacea4e38046bc1f185e9a3555cb26120f"
     },
     {
       "id": "terrain61",
@@ -627,7 +627,7 @@
         "H",
         "H"
       ],
-      "sha256": "af1210006fcb241c9bd4528011a4a5ee81a1e88642d5ef6660bb01dd4d72e7bb"
+      "sha256": "a74f6a21c027a9707b4fc8860247d2bfaca6c8a9bf9f9be9a9c20eb743884058"
     },
     {
       "id": "terrain62",
@@ -637,7 +637,7 @@
         "H",
         "H"
       ],
-      "sha256": "abec33725b7db3149c71fabf1003b5d3170b59b626f42784e655f03b2fc21658"
+      "sha256": "bae26fc0e7b21adc9627005c695f54998d8f079885703f67e67c7ac9055198f9"
     },
     {
       "id": "terrain63",
@@ -647,7 +647,7 @@
         "H",
         "H"
       ],
-      "sha256": "12b00353bc483acc4882311862bc173c132521ae6096264573abd1e0371b8103"
+      "sha256": "8de23396d42005e858621383857d5441c0256ed77bce1cebb7035950c41e1c44"
     },
     {
       "id": "terrain64",
@@ -657,7 +657,7 @@
         "H",
         "S"
       ],
-      "sha256": "de43343e89e364ddd0e22c20697ef5df3b2039d3dd9b278d45172d671f1843fc"
+      "sha256": "b58fea113e3b3f617cc5024a393d240e701d6e4246946fcc9c171d6303cd2dba"
     },
     {
       "id": "terrain65",
@@ -667,7 +667,7 @@
         "H",
         "S"
       ],
-      "sha256": "90987c45dba5f17b5ce9e55a5f532de353d5b3151bdd246155bfc8915b7c4b6a"
+      "sha256": "9e571715c0a9c6e9d62e4ffbe8faea67db551874dc79c0b2cd0668740f196524"
     },
     {
       "id": "terrain66",
@@ -677,7 +677,7 @@
         "H",
         "S"
       ],
-      "sha256": "d20286a5dff008219e1b34c14704e259c64bb170648cf4867d04742bb31953b5"
+      "sha256": "ec34ec877d60acbece1a1c80935ba64c77c03024e170bc0644832576fc70e7bd"
     },
     {
       "id": "terrain67",
@@ -687,7 +687,7 @@
         "H",
         "S"
       ],
-      "sha256": "15566e285a9e2823fdb242035c2bdd6245338b8352512797528cdb7b22131f85"
+      "sha256": "7ef2611d5b8a136a674bbbc7007e0b1d8a710cdd16f2a528fd87a8a1a4b1dd4a"
     },
     {
       "id": "terrain68",
@@ -697,7 +697,7 @@
         "H",
         "S"
       ],
-      "sha256": "bd89da7c2c75a2201ebdca763c0a4150ceeae14a21c87f3c89197f51a1c62ae4"
+      "sha256": "bca8857118b9296f8c5411af9e907ae90e2ff07ae0729f6cd731c1a1a677a64d"
     },
     {
       "id": "terrain69",
@@ -707,7 +707,7 @@
         "H",
         "S"
       ],
-      "sha256": "a2b9ea232541e93a372b5d6a3dcaf0ef4c7f95891b37e6c698a77c8ea4889982"
+      "sha256": "13593c552e1ce9d9d1a48b4bb40d74a48c02097db9653be96858069bb5085901"
     },
     {
       "id": "terrain70",
@@ -717,7 +717,7 @@
         "H",
         "S"
       ],
-      "sha256": "c98f370f76c305682a8b29ae1d6dfcaf3d0d00eebc7f885f14c5186699b7e78b"
+      "sha256": "fd149bd7a13ce5a15996ebed3272e3fe85b73b7b0d00ce2fffdacb800b09ef33"
     },
     {
       "id": "terrain71",
@@ -727,7 +727,7 @@
         "H",
         "S"
       ],
-      "sha256": "d5ebf1a58367c0cc76920cd02019da8243e1d720a65fac371471cdd1c18777d3"
+      "sha256": "1be3ec99fd2c7aae7760190d7b77dea5f55c86aaf89d8ffc1b008b2b0cadb730"
     },
     {
       "id": "terrain72",
@@ -737,7 +737,7 @@
         "S",
         "H"
       ],
-      "sha256": "046f57ac58b3fd802042e2b79a2cf8602e9096d176e96f972e6bcff24239e204"
+      "sha256": "55b5f193f48025bb1965bdb83053012ffb77ba25d131d6ecc9728e7f3d37858a"
     },
     {
       "id": "terrain73",
@@ -747,7 +747,7 @@
         "S",
         "H"
       ],
-      "sha256": "5fe01e5aad2b895cb5de557b9b80b6090a8e8ecabc7780327781094f92997689"
+      "sha256": "50761e4b1e90a0f3c680f571645a057838dcb7373dd2afdc231ed5353efbc466"
     },
     {
       "id": "terrain74",
@@ -757,7 +757,7 @@
         "S",
         "H"
       ],
-      "sha256": "8404b07716c9a23a7b7b903ee39523972b6a909ba9f3856a7452b030a185a444"
+      "sha256": "ccf0d058af5d75f9b52122342b0b7f380e277179f8916ab1f905d43f62095d44"
     },
     {
       "id": "terrain75",
@@ -767,7 +767,7 @@
         "S",
         "H"
       ],
-      "sha256": "2bdd13fb7cf6033e7ed9db0b56df88304386a0b459cd9c0cb1e805227ad4aa02"
+      "sha256": "cb02ea6fc5fc46e1cc8806476543fa8ffbf54e1b3e84fb0543c107822737b371"
     },
     {
       "id": "terrain76",
@@ -777,7 +777,7 @@
         "S",
         "H"
       ],
-      "sha256": "d2b278931d669cb1c55a5492790b0d39faa115b9e8fd28fcb3ad0f381c648f02"
+      "sha256": "1f2ce6ebc36d6046cccba3738d2b4b4d15f86d48c81ff932fff1d44211ea1811"
     },
     {
       "id": "terrain77",
@@ -787,7 +787,7 @@
         "S",
         "H"
       ],
-      "sha256": "2a54aad64fd531f48993e68d1dbdbe8bbd135a75fb2d2e599a2e30122df6cf31"
+      "sha256": "ea53bd91756e6fce2382d5e96648584933e43a890dc6959fa1ec039760c12b57"
     },
     {
       "id": "terrain78",
@@ -797,7 +797,7 @@
         "S",
         "H"
       ],
-      "sha256": "592a8c74fdfafd08e1350d80bea6d4c3681d0cae2b464e0de317eb08bf037a54"
+      "sha256": "50a119965a2fd9a98cb92080e879ce9c243217383a2943aa6a17cf20e217ab15"
     },
     {
       "id": "terrain79",
@@ -807,7 +807,7 @@
         "S",
         "H"
       ],
-      "sha256": "9baa02b27b1cba787246a3672d9afff9ea21540902392ee0997af10aae2cc951"
+      "sha256": "b86ee20162abefe22cf19980f415ee0f3989682c57e176983b0964f6dbf40a05"
     },
     {
       "id": "terrain80",
@@ -817,7 +817,7 @@
         "H",
         "S"
       ],
-      "sha256": "aac2d2ff0b135532d5fb75fcaa625bbf1c62fb879b767897363963aff32f5bc2"
+      "sha256": "55bcc7e4b1b992bf77da3b59de4b792080505e73d454e3854ebb91b73e696ca5"
     },
     {
       "id": "terrain81",
@@ -827,7 +827,7 @@
         "H",
         "S"
       ],
-      "sha256": "3da656e2ba3f2cdd11ab1f1af5d6fc6b57743f64d40015647881862ca5d6aa84"
+      "sha256": "350dffdf29627f678f7d3b43523d456f48d0cba75e58eaa539575e36e3d8b03d"
     },
     {
       "id": "terrain82",
@@ -837,7 +837,7 @@
         "H",
         "S"
       ],
-      "sha256": "57a4328d673b3fad7f43b020bd3ae7218c5195256174fc4bbc3ae48e3659ab81"
+      "sha256": "aca105e3991e3639a7dffd4991c8724f382978c1ae614af1058086f6fab227b8"
     },
     {
       "id": "terrain83",
@@ -847,7 +847,7 @@
         "H",
         "S"
       ],
-      "sha256": "6b9fb64552b9823290166d4863c6c3eb290ecf7768d4fc38cc852ae7aff0e5c8"
+      "sha256": "fb9693eb4afb03f7bdf07aca59f03c05e449230e3b0db4aaeb14aaca981f0953"
     },
     {
       "id": "terrain84",
@@ -857,7 +857,7 @@
         "H",
         "S"
       ],
-      "sha256": "35da7c2109ba6f0dbdb3815c9c66eb03d7f26eb2c939b106cc95a3229a0b98b2"
+      "sha256": "5b4d96a3b373d93fc5202176238afd6090c85504c07544e3d595aa5a003f70f4"
     },
     {
       "id": "terrain85",
@@ -867,7 +867,7 @@
         "H",
         "S"
       ],
-      "sha256": "858e66c1ba286219f98be57c10f0e5c215ffc9359167712d705ccefbfcff41df"
+      "sha256": "7bea2f95e2b8748aa165ed6dcf5909e4e71bd63e04e98129286fa36bbe9243bd"
     },
     {
       "id": "terrain86",
@@ -877,7 +877,7 @@
         "H",
         "S"
       ],
-      "sha256": "6a4dc56d643fdfb4fa59118e0cb26ce9d0fcbcca69d2c436d3dbef402cccbc24"
+      "sha256": "ccf8c865806302723a563194e2fe721ce4c07e00e6598704c0cef13afb2b96c5"
     },
     {
       "id": "terrain87",
@@ -887,7 +887,7 @@
         "H",
         "S"
       ],
-      "sha256": "60899bc6eb709fafa83860f225dab465e7a834544d68cd69e30bf734a844586a"
+      "sha256": "b858582ea9fcd228a2d1b2b519ddefdddf313e9a6a1af863f93401afa367af33"
     },
     {
       "id": "terrain88",
@@ -897,7 +897,7 @@
         "S",
         "H"
       ],
-      "sha256": "02ac6edb5350fa0b4084676870a11df213162f447b92ed3dcbf6a00a0f7aa4f6"
+      "sha256": "c98900dec36ee24bf221068026e95f269729bb5b0bb043e708c37beecb04a694"
     },
     {
       "id": "terrain89",
@@ -907,7 +907,7 @@
         "S",
         "H"
       ],
-      "sha256": "c6d84eec0a49cefcd10434a04869fdacc9bc8dc96cd23b7ad8ae48cf50b403ba"
+      "sha256": "a0709bc084c2102314c4d99f26f76d80f273a995654d18110acebbd6ac6194ef"
     },
     {
       "id": "terrain90",
@@ -917,7 +917,7 @@
         "S",
         "H"
       ],
-      "sha256": "724299ac56965dd99ec7c81de9f18f91e61dea842bde6ea3d72173cfc896e1ae"
+      "sha256": "e33eec077108b5440484867a8973f917b11ea94262b2e238737555fb62646580"
     },
     {
       "id": "terrain91",
@@ -927,7 +927,7 @@
         "S",
         "H"
       ],
-      "sha256": "82fa8fd9b2af89ca6cd709acf26764a36eba5a3ec4e77261b8f5b6071d7364a8"
+      "sha256": "f7d61a3e6c4867f4c5dab2bdb068f7a48104ada4cbb9f0d43887e6a86cfce2f7"
     },
     {
       "id": "terrain92",
@@ -937,7 +937,7 @@
         "S",
         "H"
       ],
-      "sha256": "7589a51590cef355398a52016d85c7e41b3347655ec38aecbf76c5b47e3de6b5"
+      "sha256": "9db63f8df282c851fa0442b751274402b96505ed687bfff9ecb58324993ffb1e"
     },
     {
       "id": "terrain93",
@@ -947,7 +947,7 @@
         "S",
         "H"
       ],
-      "sha256": "da1c5992458ff1d5d49aab3800777ee7eb6b30968c5689f7f7d10b5c6feae13a"
+      "sha256": "a467f0dbe4400ca863dcc4bba1cd1442e618a7c16a5939950949536b87358c0d"
     },
     {
       "id": "terrain94",
@@ -957,7 +957,7 @@
         "S",
         "H"
       ],
-      "sha256": "614cc04b424c3720d6637cabcf0c7b0caaeaeb06841d7b01f6402a36c3bf4b52"
+      "sha256": "e446a3b10e2e981e8b3053da23010ef3a9d0f442e06b3bf176fcd3d2494beaf9"
     },
     {
       "id": "terrain95",
@@ -967,7 +967,7 @@
         "S",
         "H"
       ],
-      "sha256": "a3b6c486c8e4bc75262d3f14bc461189a0dd3ca6fb8c186f5bbd95ae7220f0d3"
+      "sha256": "bc1af01014678878f66e80f376835a245d6972b2ba69fa7de51d275f26360049"
     },
     {
       "id": "terrain96",
@@ -977,7 +977,7 @@
         "H",
         "H"
       ],
-      "sha256": "3ca4f2a75e2c2c39827cc782d7b724a9325051b95b1cf4a19eb341ec96e0b753"
+      "sha256": "cfa8de3ae619f1e3d7e59064c1463f935581c7d0e733629e9de6e2acc3b16aa6"
     },
     {
       "id": "terrain97",
@@ -987,7 +987,7 @@
         "H",
         "H"
       ],
-      "sha256": "f6985922047fd5e8a702588488a50f037de952df0b8f9b33e5423b63bd84057d"
+      "sha256": "a7be25efa997d8813031fcddde3eb8a7fa199a40e19914b34d004c8bd1523daa"
     },
     {
       "id": "terrain98",
@@ -997,7 +997,7 @@
         "H",
         "H"
       ],
-      "sha256": "cac0c960f7e9c60c37c7eaa8de25e1aa52be1d45fb631545376cb26ec2a30409"
+      "sha256": "48c04bba57ffbe3f2d4e39f8c4dca44f6db7bc35f20b51aac28d8f52e7ab6ddb"
     },
     {
       "id": "terrain99",
@@ -1007,7 +1007,7 @@
         "H",
         "H"
       ],
-      "sha256": "acf7d9a26bc2163d225347ba6832da32cec36efb52ff735701223da489299ecf"
+      "sha256": "906fb29069c1f3c25eadc37928643536b0beb71b1cefb590da9401a32fa41f61"
     },
     {
       "id": "terrain100",
@@ -1017,7 +1017,7 @@
         "H",
         "H"
       ],
-      "sha256": "5fc11e3a96d76cb8bcc0fb4625df47a93e0e26887456d5d3f2ba0dec55513b2f"
+      "sha256": "620ba363146b878a0734cec063c3bdffd3e89b96561c80d0a37467c6bcadf525"
     },
     {
       "id": "terrain101",
@@ -1027,7 +1027,7 @@
         "H",
         "H"
       ],
-      "sha256": "f6e1817c453952048e250e0e5bcc0f2eeec41eecd5b02974b0f2896215285295"
+      "sha256": "10c6e04321bd47da12124176b21c061e0a655de181bc40e4cb3252bc71ced844"
     },
     {
       "id": "terrain102",
@@ -1037,7 +1037,7 @@
         "H",
         "H"
       ],
-      "sha256": "d4f71cb85745629afe96262b188b203350004bafa019d794a73bbc5b7a138f4b"
+      "sha256": "4c29eb8f897e63a6f16d4b34eea11bdb426d855b2517bb4eecf7dfa810be7890"
     },
     {
       "id": "terrain103",
@@ -1047,7 +1047,7 @@
         "H",
         "H"
       ],
-      "sha256": "a796bdb76669c41fb8c93c35c64bc250963c621244f6abed62dfa9f09b626ae2"
+      "sha256": "d7921b7dc8d716268aab425ea2c8e5e2ebb84b021b833a370b5d04ddaeb39c1f"
     },
     {
       "id": "terrain104",
@@ -1057,7 +1057,7 @@
         "H",
         "H"
       ],
-      "sha256": "52354b113cc85a9b7a4836e81f4bd57601815a23d20ac707ada3fa7498bee55a"
+      "sha256": "d2612cb573e09ce38b999b95c84c927788390847bbaa5f171a90d8adf09b4f1d"
     },
     {
       "id": "terrain105",
@@ -1067,7 +1067,7 @@
         "H",
         "H"
       ],
-      "sha256": "e561f234c53583344261186954f9cbea7de653aefaa4bbb7154670303c0d6ce5"
+      "sha256": "d26aa57eec096f6cb3a431cec0201469a4ccea8a94267a15e071a26d309b02af"
     },
     {
       "id": "terrain106",
@@ -1077,7 +1077,7 @@
         "H",
         "H"
       ],
-      "sha256": "d00ba2ad5a4040db190bb304cf3a0df2bc512a2c288c3e76e33460e01bf0d4b3"
+      "sha256": "e91e97d736155a6b2bb78a0f1de399036e9caed2daebb704367885f05f4e5513"
     },
     {
       "id": "terrain107",
@@ -1087,7 +1087,7 @@
         "H",
         "H"
       ],
-      "sha256": "7529cd1c599e5e6f6fd9a4197c30f378696bec8b58c12c1baf67a7880f037c63"
+      "sha256": "236714fccc205353e8f64b0b4099eec51316a4085df9023caf3a6c431b69ae8e"
     },
     {
       "id": "terrain108",
@@ -1097,7 +1097,7 @@
         "H",
         "H"
       ],
-      "sha256": "a9bf23bfaf3df784fad39ffa505c97026405ee7ae87e8a4c8fb1dfadb3742c92"
+      "sha256": "6cae7defa62bcb3014dcf3cb22f4058bf2dd30a877c1f16fe3e7d08d09abccd8"
     },
     {
       "id": "terrain109",
@@ -1107,7 +1107,7 @@
         "H",
         "H"
       ],
-      "sha256": "b467794171b0ef3793c31b6ef8f6bafa7dc5ca932eec23ccbefd57662e208993"
+      "sha256": "b4c69b9acfb252da55c1f869ccde40e18d089666db20075adae19bde49aec2c7"
     },
     {
       "id": "terrain110",
@@ -1117,7 +1117,7 @@
         "H",
         "H"
       ],
-      "sha256": "e960c62673edee0851f1b79d381b1540156d64f5e1293eaa958162e53b07f9d8"
+      "sha256": "a06d17cbb8c2e01fca6b8b0c8a7cae763042d2549135a6a57cd0e39426840a6f"
     },
     {
       "id": "terrain111",
@@ -1127,7 +1127,7 @@
         "H",
         "H"
       ],
-      "sha256": "2ba18fefdf812c29cb151ad6ff7a73b516b4332b5b3db67484489e60331ff3e2"
+      "sha256": "fbdcb1b59ea240b0421e2e3c39b01304b559040daa5950089ce64fc7786af447"
     },
     {
       "id": "terrain112",
@@ -1137,7 +1137,7 @@
         "H",
         "S"
       ],
-      "sha256": "3287c213f8b92a7f0433cc38957b6c8f4def01adc00329e6cd11f3cdda01336b"
+      "sha256": "e3082369557a541072ee4a418fe8e4984cc97bf1d010e1a66d9422cabcfd91ca"
     },
     {
       "id": "terrain113",
@@ -1147,7 +1147,7 @@
         "H",
         "S"
       ],
-      "sha256": "cbc77611ca7ddf9a82971b13021a2c40540d9ef8277c6f7a728c0f34db102b10"
+      "sha256": "2fbf5e4a1bf5bbe1e7de56d5c92858c8abd45ab3926cf6326d44be590eaa6d6a"
     },
     {
       "id": "terrain114",
@@ -1157,7 +1157,7 @@
         "H",
         "S"
       ],
-      "sha256": "c07f8186c1a07e0c4805bc943e72436e9389cf73f7a292be6943d586678eae72"
+      "sha256": "afa2f43941eea3b38000efb2558bc74f179510198ec1ab5d023a491e330aded4"
     },
     {
       "id": "terrain115",
@@ -1167,7 +1167,7 @@
         "H",
         "S"
       ],
-      "sha256": "85202c5ca5cd6e679fd1891bd1c82cfc17588cb66aef895c96854a00d501efca"
+      "sha256": "6efc961c36c57c10416f0930760ad0d1e5c14dfd3cd51aef400a203791508464"
     },
     {
       "id": "terrain116",
@@ -1177,7 +1177,7 @@
         "H",
         "S"
       ],
-      "sha256": "4d1b1bcc29da39595a5ebbe63245ad85835b48eb9bc6fe50da872b25896838af"
+      "sha256": "68f9159b8c7a6b9c8d711ddc57af07b8b66b099efa56eae8ad840194487d4378"
     },
     {
       "id": "terrain117",
@@ -1187,7 +1187,7 @@
         "H",
         "S"
       ],
-      "sha256": "604659629e160f34e60ad6d69955daa2de87ffce1356137b64fd1dae7ecaed5a"
+      "sha256": "9435db455cd799eae1e210019c18840137351809b98380dfba218873e7c0927b"
     },
     {
       "id": "terrain118",
@@ -1197,7 +1197,7 @@
         "H",
         "S"
       ],
-      "sha256": "4b4fcc8a9a5e72c435066118899c0a2748dda192807f2644e4c410f7a781d407"
+      "sha256": "f6a4840ca1efed14d2fd374ce027f307d1a307e03b355eb74a1e764b1a8a4127"
     },
     {
       "id": "terrain119",
@@ -1207,7 +1207,7 @@
         "H",
         "S"
       ],
-      "sha256": "9818872d523da75a8834c0b08b87ca5be8a358a3f6443ac778121f7746f8d7c1"
+      "sha256": "4e0c4c0c8f6bb2bc33c285ced812318c38e8d2118830b25c43f3f40523acd58a"
     },
     {
       "id": "terrain120",
@@ -1217,7 +1217,7 @@
         "S",
         "H"
       ],
-      "sha256": "093a82b20bf4d1c0265c49754cff3e227a70ee3d541c03d891c455a587f3459f"
+      "sha256": "16d886218338f68cb1003a6d433a4df8ae54701a35bd6034f4128e5015a1be5a"
     },
     {
       "id": "terrain121",
@@ -1227,7 +1227,7 @@
         "S",
         "H"
       ],
-      "sha256": "601d15075e3129f4d4658d4fd0a822c2b9b0087bb42c5338d4643f5ca6885921"
+      "sha256": "b059598f91b7ca506856c6770a38c0d43dc1784ce1edc0f10ec8df6ba4673186"
     },
     {
       "id": "terrain122",
@@ -1237,7 +1237,7 @@
         "S",
         "H"
       ],
-      "sha256": "cb147e1df2333c7d935c71a63be807154598362723338faa8c01c007eaf4415e"
+      "sha256": "f7b3c7c49f758c20642c37b4677fd3b66eb2d5d73870a9ef42f95a05ad72760c"
     },
     {
       "id": "terrain123",
@@ -1247,7 +1247,7 @@
         "S",
         "H"
       ],
-      "sha256": "989a7210585b1980c80d18ab6f9c09e048e0d0603b00b15d24fa96791b3adeb7"
+      "sha256": "79240766683d449c691db7684e381ce8fc66243e7fd1fb4985a17d611dfe7b64"
     },
     {
       "id": "terrain124",
@@ -1257,7 +1257,7 @@
         "S",
         "H"
       ],
-      "sha256": "0d488cf86f47811586398a812e5a9bd81829220ff2d46308c402ca41e96e1f38"
+      "sha256": "b6accbe2b5609ae58a34b032b55135cd385ed78ba4a934199d27d47392ace46b"
     },
     {
       "id": "terrain125",
@@ -1267,7 +1267,7 @@
         "S",
         "H"
       ],
-      "sha256": "402f562070a15315e046cf02557bbf8684f894ab2054e64e88dec4eed927d722"
+      "sha256": "0b9958c7f74049f467aefcb784f6b277bb7dfac8ef78a6a7d235a318cdfdf39f"
     },
     {
       "id": "terrain126",
@@ -1277,7 +1277,7 @@
         "S",
         "H"
       ],
-      "sha256": "44406b8c9f0ce7401e1d024cf29f512818e1badae23d01cc2cec4bc4b7797272"
+      "sha256": "19c7ec18ed02c9b6259ecda3ca4c7017085f5587bf96a2d7b76deeeb4b2151b5"
     },
     {
       "id": "terrain127",
@@ -1287,7 +1287,7 @@
         "S",
         "H"
       ],
-      "sha256": "84302422c4cf9c68ab676e3e66ace4b86153a5a891e3a5200a385a70d5ef0119"
+      "sha256": "86111485512c689f78f8370f9dee8e6e6290b3d472de3fc2dd65ae52beeed266"
     },
     {
       "id": "terrain128",
