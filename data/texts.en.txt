@@ -1230,39 +1230,27 @@ Single-player and replays only. Multiplayer runs at 1x.
 Maximum
 [multiplayer game speed]
 Game speed: 1x (multiplayer)
-
 [ERROR_CANT_SAVE_MAP]
 The map could not be saved. Check the destination and available space. Your edits are still open.
-
 [Loading headers]
 Loading headers...
-
 [Loading teams]
 Loading teams...
-
 [Loading terrain]
 Loading terrain...
-
 [Building gradients]
 Building gradients...
-
 [Loading players]
 Loading players...
-
 [Loading scripts]
 Loading scripts...
-
 [Generating map]
 Generating map...
-
 [ERROR_CANT_GENERATE_MAP]
 The map could not be generated. Try different generation settings.
-
 [Loading units]
 Loading units...
-
 [Loading buildings]
 Loading buildings...
-
 [Resolving team links]
 Resolving team links...
