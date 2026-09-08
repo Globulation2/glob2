@@ -138,6 +138,11 @@ int main(int argc, char **argv)
 		header.setRandomSeed(123456);
 		header.getBasePlayer(0) = BasePlayer(0, "Test", 0, BasePlayer::P_LOCAL);
 		assert(gui.loadFromHeaders(map, header, true, true));
+		// Loading now leaves resource/area gradients unallocated. A simulation
+		// tick must finish even before any unit has requested one of them.
+		gui.game.map.syncStep(0);
+		gui.game.map.syncStep(1);
+		std::cout << "PASS ticks finish before lazy gradients are requested" << std::endl;
 		gui.localPlayer = gui.localTeamNo = 0;
 		gui.adjustLocalTeam();
 		gui.game.stepCounter = 79;
