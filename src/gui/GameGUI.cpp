@@ -46,7 +46,7 @@ void InGameTextInput::onAction(Widget *source, Action action, int par1, int par2
 	}
 }
 
-GameGUI::GameGUI()
+GameGUI::GameGUI(bool persistPreferences)
 	: keyboardManager(GameGUIShortcuts), game(this), toolManager(game, brush, defaultAssign, ghostManager),
 	  minimap(globalContainer->runNoX,
 	         RIGHT_MENU_WIDTH, // width of the menu
@@ -59,6 +59,7 @@ GameGUI::GameGUI()
 
 	  ghostManager(game)
 {
+	this->persistPreferences = persistPreferences;
 }
 
 GameGUI::~GameGUI()
@@ -66,7 +67,7 @@ GameGUI::~GameGUI()
 	if (!globalContainer->runNoX) Sprite::setHighResolution(false);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
-	if (globalContainer->settings.rememberUnit)
+	if (persistPreferences && globalContainer->settings.rememberUnit)
 		globalContainer->settings.save();
 }
 

@@ -33,4 +33,4 @@ Glob2-*.dmg
 /build-*-support.log
 /test/build/
 /build-*.log
-/browser/node_modules/
+/browser/node_modules

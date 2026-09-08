@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "GameGUILoadSave.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -121,6 +122,11 @@ void GameGUI::step(void)
 
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 {
+    if (inGameMenu == IGM_SAVE && gameMenuScreen &&
+        static_cast<LoadSaveScreen*>(gameMenuScreen.get())->pollPersistence()) {
+        gameMenuScreen.reset();
+        inGameMenu = IGM_NONE;
+    }
 	SDL_Event mouseMotionEvent;
 	bool wasMouseMotion=false;
 

@@ -118,6 +118,7 @@ namespace GAGCore
 		read(&buffer[0], len, "");
 		buffer[len] = 0;
 
-		return std::string(&buffer[0]);
+		// Length-prefixed fields can contain zero bytes (for example password hashes).
+		return std::string(&buffer[0], len);
 	}
 }

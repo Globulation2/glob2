@@ -227,7 +227,8 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	{
 		stream->readEnterSection(i);
         co_await GAGCore::CooperativeTask::checkpoint("[Loading players]");
-		players[i]=new Player(stream, teams, versionMinor);
+		players[i]=new Player();
+		if (!players[i]->load(stream, teams, versionMinor)) co_return false;
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();

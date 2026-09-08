@@ -1,0 +1,64 @@
+const {test, expect, chromium} = require('@playwright/test');
+const fs = require('node:fs/promises');
+const os = require('node:os');
+const path = require('node:path');
+const {spawn} = require('node:child_process');
+
+// Playwright's normal focus override keeps background documents visible.
+// Use a real browser window and the default context without that override.
+// Linux runners require a display (for example xvfb-run).
+test('background single-player suspends and returns without catching up', async ({baseURL}) => {
+  const profile = await fs.mkdtemp(path.join(os.tmpdir(),'glob2-visibility-'));
+  const child = spawn(chromium.executablePath(), ['--remote-debugging-port=0',
+    '--user-data-dir='+profile, '--no-first-run', '--no-default-browser-check', 'about:blank'], {stdio:'ignore'});
+  const exited = new Promise(resolve => child.once('exit',resolve));
+  let browser;
+  try {
+    let port;
+    await expect.poll(async () => {
+      try { port=(await fs.readFile(path.join(profile,'DevToolsActivePort'),'utf8')).split('\n')[0]; return true; }
+      catch { return false; }
+    }).toBe(true);
+    browser = await chromium.connectOverCDP('http://127.0.0.1:'+port,{noDefaults:true});
+    const context=browser.contexts()[0], page=context.pages()[0];
+    await page.setViewportSize({width:1200,height:900});
+    const snapshot=()=>page.evaluate(()=>glob2Diagnostics.snapshot());
+    const screen=name=>expect.poll(async ()=>(await snapshot()).screen).toContain(name);
+    const click=async (x,y)=>{
+      const s=await snapshot(), box=await page.locator('#canvas').boundingBox();
+      await page.locator('#canvas').click({position:{x:(x+(s.width-640)/2)*box.width/s.width,
+        y:(y+(s.height-480)/2)*box.height/s.height},delay:80});
+    };
+    await page.bringToFront();
+    await page.goto(baseURL); await screen('MainMenuScreen');
+    await click(480,200); await screen('CustomGameScreen');
+    await click(100,70); await click(530,380);
+    await expect.poll(async ()=>(await snapshot()).tick).toBeGreaterThan(25);
+    const other=await context.newPage();
+    await other.bringToFront();
+    await expect.poll(()=>page.evaluate(()=>document.visibilityState)).toBe('hidden');
+    // Observe a full second after the host has had a callback to suspend.
+    await expect.poll(async () => {
+      const before=await snapshot();
+      await other.evaluate(()=>new Promise(resolve=>setTimeout(resolve,1000)));
+      return (await snapshot()).tick===before.tick;
+    }).toBe(true);
+    const hidden=await snapshot();
+    await other.evaluate(()=>new Promise(resolve=>setTimeout(resolve,2000)));
+    expect((await snapshot()).tick).toBe(hidden.tick);
+    await page.bringToFront();
+    await expect.poll(()=>page.evaluate(()=>document.visibilityState)).toBe('visible');
+    await expect.poll(async ()=>(await snapshot()).tick).toBeGreaterThan(hidden.tick);
+    // A 2s hidden interval must not become a burst of 50 overdue simulation ticks.
+    expect((await snapshot()).tick-hidden.tick).toBeLessThan(15);
+    await page.locator('#canvas').press('Escape',{delay:80});
+    const frames=(await snapshot()).frames;
+    await expect.poll(async ()=>(await snapshot()).frames).toBeGreaterThan(frames+2);
+    await click(320,290); await screen('EndGameScreen');
+  } finally {
+    if(browser) await browser.close();
+    if(child.exitCode===null) child.kill();
+    await exited;
+    await fs.rm(profile,{recursive:true,force:true});
+  }
+});

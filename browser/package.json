@@ -1,6 +1,6 @@
 {
   "name": "glob2-browser-tests",
   "private": true,
-  "scripts": {"test": "playwright test"},
+  "scripts": {"test": "node --test unit/*.test.js && playwright test"},
   "devDependencies": {"@playwright/test": "1.63.0"}
 }

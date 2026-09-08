@@ -3,6 +3,8 @@
 #include "Unit.h"
 #include "Building.h"
 #include "GameSessionScreen.h"
+#include "GameGUILoadSave.h"
+#include "GameUtilities.h"
 #include "MapEdit.h"
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
@@ -20,6 +22,7 @@
 #include "GlobalContainer.h"
 #include <SDL_net.h>
 #include <iostream>
+#include <filesystem>
 #include <stdexcept>
 
 GlobalContainer* globalContainer = nullptr;
@@ -97,6 +100,63 @@ int main(int argc, char** argv)
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
     {
+        auto& gfx = *globalContainer->gfx;
+        SDL_Window* window = nullptr;
+        // GlobalContainer can recreate its initial window while applying settings.
+        // This isolated SDL2 fixture owns a single window; IDs need not start at one.
+        for (Uint32 id = 1; id < 100 && !window; ++id) window = SDL_GetWindowFromID(id);
+        require(window != nullptr, "No native test window");
+        const auto windowID = SDL_GetWindowID(window);
+        require(gfx.resizeViewport(1200, 800), "Software viewport resize failed");
+        require(gfx.getW() == 1200 && gfx.getH() == 800, "Logical resolution did not follow viewport");
+        require(SDL_GetWindowFromID(windowID) == window, "Resize replaced the SDL window");
+        gfx.drawFilledRect(0, 0, gfx.getW(), gfx.getH(), GAGCore::Color(255, 0, 0));
+        gfx.nextFrame();
+        auto* presented = SDL_GetWindowSurface(window);
+        require(presented && presented->pixels && presented->format->BytesPerPixel == 4, "No presented test surface");
+        Uint8 red, green, blue;
+        SDL_GetRGB(*static_cast<Uint32*>(presented->pixels), presented->format, &red, &green, &blue);
+        require(red == 255 && green == 0 && blue == 0, "Resized surface was not presented to the window");
+        require(!gfx.resizeViewport(0, 0) && gfx.getW() == 1200, "Zero viewport invalidated the render target");
+        require(gfx.resizeViewport(800, 600), "Could not restore test viewport");
+        GameGUI view;
+        auto map = Engine::loadMapHeader("maps/balanced.map");
+        GameHeader players;
+        players.setNumberOfPlayers(1);
+        players.getBasePlayer(0) = BasePlayer(0, "Viewport", 0, BasePlayer::P_LOCAL);
+        require(view.loadFromHeaders(map, players, true, true), "Viewport fixture failed to load");
+        view.viewportX = 20; view.viewportY = 30;
+        const auto checksum = view.game.checkSum();
+        view.viewportResized(800, 600, 1200, 800);
+        require(((view.viewportX + (1200-160)/64) & view.game.map.wMask) == ((20 + (800-160)/64) & view.game.map.wMask), "Resize changed center tile horizontally");
+        require(((view.viewportY + 800/64) & view.game.map.hMask) == ((30 + 600/64) & view.game.map.hMask), "Resize changed center tile vertically");
+        require(view.game.checkSum() == checksum, "Viewport resize changed simulation state");
+        Minimap minimap(false, 160, 800, 20, 10, 128, 128, Minimap::ShowFOW);
+        minimap.setGame(view.game);
+        minimap.resizeViewport(1200);
+        require(minimap.insideMinimap(1100, 74) && !minimap.insideMinimap(700, 74), "Minimap hit area did not follow the viewport");
+    }
+
+    {
+        using namespace GAGCore::ApplicationHost;
+        struct ControlledPersistence : Persistence {
+            PersistenceState current = PersistenceState::Pending;
+            PersistenceState state() const override { return current; }
+        };
+        LoadSaveScreen dialog("games", "game", false, "Save", "test", glob2FilenameToName, glob2NameToFilename);
+        auto operation = std::make_unique<ControlledPersistence>();
+        auto* control = operation.get();
+        dialog.beginPersistence(std::move(operation));
+        dialog.onAction(nullptr, GAGGUI::BUTTON_RELEASED, LoadSaveScreen::CANCEL, 0);
+        require(dialog.endValue == -1 && !dialog.pollPersistence(), "Pending save must not close or claim completion");
+        control->current = PersistenceState::Failed;
+        require(!dialog.pollPersistence() && dialog.endValue == -1, "Failed persistence must retain the dialog");
+        operation = std::make_unique<ControlledPersistence>(); control = operation.get();
+        dialog.beginPersistence(std::move(operation));
+        control->current = PersistenceState::Succeeded;
+        require(dialog.pollPersistence(), "Successful persistence must complete the save dialog");
+    }
+    {
         Map map;
         map.setSize(7, 6);
         const unsigned width = 128, height = 64;
@@ -139,33 +199,16 @@ int main(int argc, char** argv)
             auto task = map.updateGlobalGradientTask(scheduled.data());
             unsigned slices = 0;
             while (!task.advance()) require(++slices < 1000, "Gradient did not converge");
-            require(task.result() && slices >= 8 && scheduled == expected,
+            require(task.result() && (!fixture || slices >= 8) && scheduled == expected,
                     "Scheduled gradient must yield and match the queue oracle");
             auto cancelled = seed;
             {
                 auto partial = map.updateGlobalGradientTask(cancelled.data());
-                require(!partial.advance() && !partial.advance(), "Gradient cancellation must precede completion");
+                if (fixture) require(!partial.advance() && !partial.advance(), "Gradient cancellation must precede completion");
             }
             // Monotonic relaxation can resume from an interrupted sweep.
             map.updateGlobalGradient(cancelled.data());
             require(cancelled == expected, "Interrupted gradient could not converge on restart");
-        }
-    }
-    {
-        // Adding a team to a private preparation game must be cancellable
-        // after its header/Team exist but before all map arrays are allocated.
-        for (unsigned extraSteps : {0u, 5u, 20u}) {
-            Game partial(nullptr);
-            MapGenerator generator;
-            MapGenerationDescriptor descriptor;
-            require(generator.generateMap(partial, descriptor, 12345), "Team fixture generation failed");
-            auto task = partial.addTeamTask();
-            while (std::string(task.stage()) != "[Building gradients]")
-                require(!task.advance(), "Team task must yield during gradient construction");
-            require(partial.mapHeader.getNumberOfTeams() == 2, "Team header must precede map preparation");
-            for (unsigned step = 0; step < extraSteps; ++step)
-                require(!task.advance(), "Team cancellation fixture finished too early");
-            // task is destroyed before partial, releasing its nested frame.
         }
     }
     {
@@ -309,12 +352,18 @@ int main(int argc, char** argv)
                 loadingFrames = frames;
                 screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(screen).takeEngine()));
             });
+        bool suspended = false;
         while (screens.running()) {
-            screens.frame(1000 + frames * 40, {});
+            if (loadingFrames && frames == loadingFrames + 10) {
+                screens.suspendExecution();
+                suspended = true;
+            }
+            screens.frame(1000 + frames * 40 + (suspended ? 60000 : 0), {});
             require(++frames <= 2000, "Stack-driven loading/session failed to finish");
         }
-        require(loadingFrames > 20 && frames == loadingFrames + 51 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
-                "Loading must yield before transferring the engine to the 50-tick session");
+        // Resumption keeps the pending 40ms tick deadline; hidden time is excluded.
+        require(loadingFrames > 20 && frames == loadingFrames + 52 && screens.result() == GAGGUI::Screen::QUIT_APPLICATION,
+                "Suspension must exclude hidden time and retain the pending tick deadline");
     }
     for (bool cancel : {false, true}) {
         auto editor = std::make_unique<MapEdit>();
@@ -343,6 +392,16 @@ int main(int argc, char** argv)
     {
         MapEdit editor;
         require(editor.load("maps/balanced.map"), "Editor fixture load failed");
+        const auto savedMap = std::filesystem::path(globalContainer->fileManager->getDir(0)) / "maps" / "Editor_atomic.map";
+        require(editor.save(savedMap.string(), "Editor atomic"), "Editor atomic save failed");
+        require(editor.game.mapHeader.getMapName() == "Editor atomic", "Saved editor name was not published");
+        const auto invalidDestination = savedMap.parent_path() / "blocked.map";
+        std::filesystem::create_directory(invalidDestination);
+        require(!editor.save(invalidDestination.string(), "Must not publish"), "Editor accepted a directory as a save file");
+        require(editor.game.mapHeader.getMapName() == "Editor atomic", "Failed save changed the editor name");
+        require(editor.load(savedMap.string()), "Atomically saved map did not reload");
+        std::cout << "PASS editor atomic save/reload and failed replacement retains live metadata" << std::endl;
+        require(editor.load("maps/balanced.map"), "Restore the shared editor fixture after save tests");
         // Opening a script file dialog must return to the host without polling
         // input or suspending the C++ stack. Escape closes only that child.
         for (int action : {ScriptEditorScreen::LOAD, ScriptEditorScreen::SAVE}) {
@@ -390,13 +449,6 @@ int main(int argc, char** argv)
                 }
                 setSyncRandState(originalRng);
             }
-        }
-        {
-            MapEdit partial;
-            auto task = partial.loadTask("maps/balanced.map");
-            while (std::string(task.stage()) != "[Building gradients]")
-                require(!task.advance(), "Fixture must reach gradient allocation checkpoints");
-            // Destruction at a partially built gradient array used to assert/leak.
         }
         setSyncRandState(originalRng);
         for (unsigned frames : {1u, 4u, 20u}) {

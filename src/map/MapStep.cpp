@@ -94,8 +94,9 @@ void Map::syncStep(Uint32 stepCounter)
 	}
 	
 	// We only update one gradient per step, round robin over the gradients in use:
-	bool updated=false;
-	while (!updated)
+	// A freshly loaded map may have no lazily allocated fields yet. Scan once,
+	// reset the round-robin flags, then scan once more; an empty set is done.
+	for (int pass = 0; pass < 2; ++pass)
 	{
 		int numberOfTeam=game->mapHeader.getNumberOfTeams();
 		for (int t=0; t<numberOfTeam; t++)

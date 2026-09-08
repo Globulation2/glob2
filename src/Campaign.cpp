@@ -3,11 +3,14 @@
 
 #include "Campaign.h"
 #include "TextStream.h"
+#include <BinaryStream.h>
+#include <cstring>
 #include "Version.h"
 #include "Toolkit.h"
 #include "FileManager.h"
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 
 // Defined in map/io/MapHeader.cpp. Forward-declared here to avoid pulling
 // MapHeader.h, which transitively includes Team.h / WinningConditions.h /
@@ -245,22 +248,10 @@ bool Campaign::save(bool isGameSave)
 	else
 		filename = glob2NameToFilename("games", name.c_str(), "txt");
 
-	// openOutputStreamBackend never returns nullptr; on fopen failure it
-	// returns a backend wrapping NULL, which fails isValid() and would crash
-	// (assert(fp) in debug, raw fwrite(NULL) UB in release) on the first
-	// write. Mirrors the pattern in Campaign::load and MapEdit::save.
-	std::unique_ptr<StreamBackend> backend(
-		Toolkit::getFileManager()->openOutputStreamBackend(filename));
-	if (!backend->isValid())
-	{
-		std::cerr << "Campaign::save(\"" << filename << "\") : error, can't open file." << std::endl;
-		return false;
-	}
-
-	// TextOutputStream takes ownership of the backend and frees it in its
-	// destructor, so release() at the point of handoff. unique_ptr on the
-	// stream itself protects against leak-on-throw from any future write.
-	auto stream = std::make_unique<TextOutputStream>(backend.release());
+    // Keep the established text format, but serialize before replacing the
+    // destination. The shared writer checks short writes, flush and close.
+    auto* backend = new MemoryStreamBackend();
+    auto stream = std::make_unique<TextOutputStream>(backend);
 	stream->writeUint32(VERSION_MINOR, "versionMinor");
 	stream->writeText(name, "campaignName");
 	stream->writeText(playerName, "playerName");
@@ -274,10 +265,69 @@ bool Campaign::save(bool isGameSave)
 	}
 	stream->writeLeaveSection();
 	stream->writeText(description, "description");
-	return true;
+    stream->flush();
+    return Toolkit::getFileManager()->writeAtomically(filename, [backend](OutputStream& output) {
+        output.write(backend->getBuffer(), backend->getPosition(), "campaign");
+    });
 }
 
 
+
+std::vector<unsigned char> Campaign::exportProgress()
+{
+    if (maps.size() > 1024 || playerName.size() > 512) throw std::length_error("Campaign progress exceeds format limits");
+    for (unsigned char c : playerName) if (c < 32 || c == 127) throw std::invalid_argument("Invalid player name");
+    auto* backend = new MemoryStreamBackend();
+    BinaryOutputStream output(backend);
+    output.write("G2CP", 4, "signature");
+    output.writeUint32(1, "version");
+    output.writeText(name, "campaign");
+    output.writeText(playerName, "player");
+    output.writeUint32(maps.size(), "missions");
+    for (auto& map : maps) {
+        output.writeText(map.getMapName(), "mission");
+        output.writeText(map.getMapFileName(), "map");
+        const auto& prerequisites = map.getUnlockedByMaps();
+        output.writeUint32(prerequisites.size(), "prerequisites");
+        for (const auto& prerequisite : prerequisites) output.writeText(prerequisite, "prerequisite");
+        output.writeUint8(map.isUnlocked(), "unlocked");
+        output.writeUint8(map.isCompleted(), "completed");
+    }
+    if (backend->getPosition() > 1024*1024) throw std::length_error("Campaign progress exceeds size limit");
+    const auto* begin = reinterpret_cast<const unsigned char*>(backend->getBuffer());
+    return {begin, begin + backend->getPosition()};
+}
+
+bool Campaign::importProgress(const std::vector<unsigned char>& bytes)
+{
+    if (bytes.size() < 8 || bytes.size() > 1024*1024 || maps.size() > 1024) return false;
+    try {
+        BinaryInputStream input(new MemoryStreamBackend(bytes.data(), bytes.size()));
+        input.seekFromStart(0);
+        BinaryInputStream::CheckedReads checked(&input);
+        char signature[4]; input.read(signature, 4, "signature");
+        if (std::memcmp(signature, "G2CP", 4) || input.readUint32("version") != 1 || input.readText("campaign") != name) return false;
+        Campaign candidate = *this;
+        candidate.playerName = input.readText("player");
+        if (candidate.playerName.size() > 512) return false;
+        for (unsigned char c : candidate.playerName) if (c < 32 || c == 127) return false;
+        if (input.readUint32("missions") != maps.size()) return false;
+        for (auto& map : candidate.maps) {
+            if (input.readText("mission") != map.getMapName() || input.readText("map") != map.getMapFileName()) return false;
+            const auto& prerequisites = map.getUnlockedByMaps();
+            if (input.readUint32("prerequisites") != prerequisites.size()) return false;
+            for (const auto& prerequisite : prerequisites)
+                if (input.readText("prerequisite") != prerequisite) return false;
+            const auto unlocked = input.readUint8("unlocked"), completed = input.readUint8("completed");
+            if (unlocked > 1 || completed > 1 || (completed && !unlocked)) return false;
+            if (unlocked) map.unlockMap();
+            if (completed) map.setCompleted(true);
+        }
+        if (input.getPosition() != bytes.size()) return false;
+        *this = std::move(candidate);
+        return true;
+    } catch (const std::exception&) { return false; }
+}
 
 size_t Campaign::getMapCount() const
 {

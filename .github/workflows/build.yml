@@ -187,9 +187,9 @@ jobs:
       - name: Test team statistics save compatibility
         run: |
           scons -j$(nproc) release=1 server=0 team-stats-save-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
 
       - name: Build the YOG server
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
@@ -361,9 +361,9 @@ jobs:
       - name: Test team statistics save compatibility
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 team-stats-save-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness.exe .
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
+          python3 test/run-savegame-safety-tests.py --check-preferences build/windows/client/release/src/TeamStatsSaveHarness.exe .
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/windows/client/release/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/windows/client/release/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
 
       - name: Build the YOG server
         run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
@@ -405,7 +405,7 @@ jobs:
           scons release=1 transport-test -j2
           python3 test/run-network-transport-tests.py
           python3 -m unittest discover -s tests/transport -v
-      - name: Test browser single-player and multiplayer
+      - name: Test browser lifecycle, renderers and multiplayer
         if: matrix.order == 'concurrent'
         working-directory: browser
         env:
@@ -414,6 +414,8 @@ jobs:
           npm ci --ignore-scripts
           npx playwright install --with-deps chromium firefox webkit
           npm test
+          GLOB2_TEST_RENDERER=webgl2 npx playwright test viewport.spec.js
+          xvfb-run -a npx playwright test --config visibility.config.js
       - name: Test self-hosting with real TLS and persistent volumes
         if: matrix.order == 'concurrent'
         run: |

@@ -27,26 +27,38 @@ fitCanvas();
 var Module = {
   noInitialRun: true,
   canvas,
+  GL_MAX_TEXTURE_IMAGE_UNITS: 1,
   browserLog: [],
   print(text) { Module.browserLog.push(String(text)); console.log(text); },
   printErr(text) { Module.browserLog.push(String(text)); console.error(text); },
   preRun: [function() {
     ENV.HOME = '/home/web_user';
     FS.mkdirTree('/home/web_user');
+    Module.storage = new Glob2Storage(callback => FS.syncfs(false, callback));
+    IDBFS.queuePersist = () => Module.storage.changed();
     Module.saveMount = FS.mount(IDBFS, {autoPersist:true}, '/home/web_user').mount;
     addRunDependency('browser-saves');
     FS.syncfs(true, err => {
       Module.storageRestore = err ? 'failed' : 'ready';
+      Module.storage.restored(err);
       if (err) Module.printErr('Save restore failed: ' + err);
       removeRunDependency('browser-saves');
     });
   }],
   onRuntimeInitialized() {
-    const scale = Math.max(1, 800 / innerWidth, 600 / innerHeight);
-    const width = Math.round(innerWidth * scale);
-    const height = Math.round(innerHeight * scale);
+    const scale = Math.max(1, 800 / Math.max(1, innerWidth), 600 / Math.max(1, innerHeight));
+    const width = Math.round(Math.max(1, innerWidth) * scale);
+    const height = Math.round(Math.max(1, innerHeight) * scale);
+    Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
     canvas.focus();
-    Module.callMain(['-s', width + 'x' + height, '-F', '-G']);
+    // Keep the established default until the GPU backend passes performance gates.
+    const software = new URLSearchParams(location.search).get('renderer') !== 'webgl2';
+    const context = software ? null : canvas.getContext('webgl2', {
+      alpha:false, antialias:false, depth:false, stencil:false
+    });
+    const gpu = Boolean(context);
+    Module.renderer = gpu ? 'webgl2' : 'software';
+    Module.callMain(['-s', width + 'x' + height, '-F', gpu ? '-g' : '-G']);
   },
   onGameExit(code) {
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
@@ -54,7 +66,7 @@ var Module = {
   onAbort(reason) { Module.printErr('Game stopped: ' + reason); }
 };
 async function localFileDigest(directory, name, extension) {
-  if (!/^[A-Za-z0-9 _.-]+$/.test(name) || name.includes('..') || !name.endsWith('.' + extension))
+  if (!/^[A-Za-z0-9 _().-]+$/.test(name) || name.includes('..') || !name.endsWith('.' + extension))
     throw Error('Invalid local file name');
   const path = '/home/web_user/.glob2/' + directory + '/' + name;
   if (!FS.analyzePath(path).exists) return null;
@@ -65,11 +77,13 @@ async function localFileDigest(directory, name, extension) {
 // Read-only observability shared by developer tools and automated assertions.
 Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   snapshot() {
-    return Object.freeze({version:1, screen:Module.glob2Screen || 'loading',
+    return Object.freeze({version:1, renderer:Module.renderer || 'loading', contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
       tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
       paused:Boolean(Module.glob2Paused), width:canvas.width, height:canvas.height,
       restore:Module.storageRestore || 'restoring',
-      persisting:Boolean(Module.saveMount?.idbPersistState),
+      import:Module.importState || 'idle',
+      persisting:Module.storage?.state === 'writing',
+      persistence:Module.storage?.state || 'restoring',
       audio:Module.SDL2?.audioContext?.state || 'inactive'});
   },
   saves() {
@@ -77,12 +91,25 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
     return FS.analyzePath(path).exists ? FS.readdir(path).filter(n => n.endsWith('.game')).sort() : [];
   },
   saveDigest(name) { return localFileDigest('games', name, 'game'); },
-  mapDigest(name) { return localFileDigest('maps', name, 'map'); }
+  mapDigest(name) { return localFileDigest('maps', name, 'map'); },
+  replayDigest(name) { return localFileDigest('replays', name, 'replay'); },
+  campaignDigest(name) { return localFileDigest('games', name, 'txt'); }
 })});
 function focusGame() {
   canvas.focus();
   Module.SDL2?.audioContext?.resume();
 }
+addEventListener('resize', () => {
+  Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
+});
+Module.visibilityPending = true;
+canvas.addEventListener('webglcontextlost', event => {
+  event.preventDefault();
+  Module.gpuLost = true;
+  Module.visibilityPending = true;
+});
+canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
+document.addEventListener('visibilitychange', () => { Module.visibilityPending = true; });
 canvas.addEventListener('pointerdown', focusGame);
 canvas.addEventListener('keydown', () => Module.SDL2?.audioContext?.resume());
 </script>

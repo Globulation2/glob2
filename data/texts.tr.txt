@@ -1798,3 +1798,45 @@ Loading units...
 Loading buildings...
 [Resolving team links]
 Resolving team links...
+[browser window too small]
+Enlarge the window to at least 800 x 600.
+[saving to storage]
+Saving...
+[save failed retry]
+Save failed. Retry.
+[export save]
+Export save
+[storage restore failed]
+Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+[continue]
+Continue
+[export file]
+Export file
+[export failed]
+File export failed
+[import file]
+Import
+[select import file]
+Choose a file to import
+[validating import]
+Validating file...
+[import succeeded]
+File imported
+[import cancelled]
+Import cancelled
+[import failed]
+Import failed: invalid or unsupported file
+[import persistence failed]
+Not saved: select Import to retry or Export file
+[import progress]
+Import progress
+[export progress]
+Export progress
+[retry save]
+Retry save
+[campaign save failed]
+Campaign progress not saved. Retry or export a backup.
+[leave without saving]
+Leave without saving
+[campaign import failed]
+Invalid progress file or different campaign version

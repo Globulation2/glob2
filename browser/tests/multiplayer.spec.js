@@ -1,4 +1,8 @@
+const {gameURL} = require('./game-url');
 const {test, expect} = require('@playwright/test');
+// Continuous trace screenshots force readback from both WebGL contexts on each
+// input action. Keep diagnostic traces and capture gameplay explicitly below.
+test.use({trace:{mode:'retain-on-failure', screenshots:false, snapshots:true, sources:true}});
 const {spawn} = require('node:child_process');
 const {createInterface} = require('node:readline');
 const {mkdtemp, rm, readFile} = require('node:fs/promises');
@@ -70,7 +74,7 @@ test('browser YOG login exchanges the native protocol through the real gateway',
   };
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
   const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
-  await page.goto('/'); await screen('MainMenuScreen');
+  await page.goto(gameURL()); await screen('MainMenuScreen');
   await click(440, 490); await screen('YOGLoginScreen');
   await click(420, 510);
   await page.locator('#canvas').press('Home');
@@ -93,7 +97,7 @@ test('registered browser player enters and leaves the native YOG lobby', async (
   page.on('pageerror', error => errors.push(String(error)));
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
   const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
-  await page.goto('/'); await screen('MainMenuScreen');
+  await page.goto(gameURL()); await screen('MainMenuScreen');
   await click(440, 490); await screen('YOGLoginScreen');
   await click(420, 510);
   await page.locator('#canvas').press('Home');
@@ -115,7 +119,7 @@ async function loginPlayer(page, name) {
   await page.addInitScript(base => { globalThis.glob2Config = {websocketBase: base}; }, endpoint);
   const screen = target => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(target);
   const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
-  await page.goto('/'); await screen('MainMenuScreen');
+  await page.goto(gameURL()); await screen('MainMenuScreen');
   await click(440, 490); await screen('YOGLoginScreen');
   for (const [y, value] of [[510, name], [580, 'fixture-only']]) {
     await click(420, y); await page.locator('#canvas').press('Home');
@@ -161,11 +165,14 @@ function sentChecksums(page) {
   return checksums;
 }
 
-const multiplayerAIs = ['no AI', 'Numbi', 'Castor', 'Warrush', 'ReachToInfinity', 'Nicowar', 'Maxima', 'Cortex']
+const multiplayerAIs = ['no AI', 'Numbi', 'Castor', 'Warrush', 'ReachToInfinity', 'Nicowar', 'Cortex']
   .map((name, id) => ({name, id}))
   .filter(ai => process.env.GLOB2_ALL_AIS === '1' || ai.id === 0 || ai.id === 6);
 for (const ai of multiplayerAIs)
 test(`two browser players create, join and start a YOG match (${ai.name})`, async ({page, browser, baseURL}, testInfo) => {
+  // Two WebGL clients share the headless browser's software GPU. This is a
+  // correctness fixture; controlled performance gates use a reference GPU.
+  test.setTimeout(180000);
   const other = await browser.newContext({baseURL, viewport: {width: 1200, height: 900}});
   const guest = await other.newPage();
   try {
@@ -197,7 +204,7 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
     await expect.poll(() => hostTypes().filter(type => type === 26).length).toBeGreaterThan(ready);
     await click(page, 1090, 475);
     for (const target of [page, guest])
-      await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(100);
+      await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).tick, {timeout:60000}).toBeGreaterThan(100);
     await expect.poll(() => Math.min(hostChecksums.length, guestChecksums.length)).toBeGreaterThanOrEqual(25);
     const count = Math.min(hostChecksums.length, guestChecksums.length);
     expect(count).toBeGreaterThanOrEqual(25);

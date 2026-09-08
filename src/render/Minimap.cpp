@@ -51,6 +51,12 @@ void Minimap::setGame(Game& ngame)
 
 
 
+void Minimap::resizeViewport(int width)
+{
+    gameWidth = width;
+    if (!noX && game) computeMinimapPositioning();
+}
+
 void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, int viewportH)
 {
 	if (noX) return;
