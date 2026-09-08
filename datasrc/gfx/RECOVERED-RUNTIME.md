@@ -1,8 +1,8 @@
 # Recovered artwork in the runtime pack
 
 Ten frames from Stéphane’s second archive now replace experimental upscales.
-Ten tree frames from the first archive are also now incorporated. There is no AI
-step in these exports. Layered buildings, wheat and other resource exports remain
+Ten tree frames and eight wheat frames from the first archive are also now incorporated. There is no AI
+step in these exports. Layered buildings and the remaining resource exports remain
 pending; other runtime frames keep their reviewed experimental versions for now.
 
 | Runtime frame | Historical render | Native canvas | Logical canvas |
@@ -105,3 +105,37 @@ Normal runtime-pack rebuilding uses the committed derived PNGs and does not
 require GIMP. Validation checks all ten growth/variant mappings, original hashes,
 logical canvases and silhouette overlap, and compares each exported atlas level
 against the independently resized final sprite. Classic files remain unchanged.
+
+
+## Wheat from the first archive
+
+Eight matching frames use native 128 × 128 GIMP originals (approximately 3.76×
+the classic 34 × 34 canvases): `wheat_1_1` through `wheat_4_1` map to
+`ressource10`–`ressource13`, and `wheat_1_2` through `wheat_4_2` map to
+`ressource15`–`ressource18`. Visible layers retain original opacity, shadows and
+native alpha. Premultiplied-alpha Lanczos resizing fits the existing 136 × 136
+runtime canvases. These are the colorful resource dots currently used by the game;
+the separate historical corn-stalk style is not substituted.
+
+**Missing source variants:** `ressource14` and `ressource19` have different final
+ripe colors. Their historical PNGs are only 34 × 34, and the recovered XCFs have
+no hidden layers for that color state. Those two frames retain their existing
+upscales. We have not invented a recoloring recipe or mistaken the fourth stage
+for the fifth.
+
+Reproduce with GIMP 2.10 from the repository root, then the Python export:
+
+```sh
+gimp-console -n -i -d -f -c --batch-interpreter=python-fu-eval \
+  -b 'execfile("tools/artwork/export_wheat_gimp.py")' -b 'pdb.gimp_quit(0)'
+python3 tools/artwork/export_wheat.py
+python3 experiments/ai-upscale/export_runtime.py
+python3 tools/artwork/validate_wheat.py
+python3 experiments/ai-upscale/validate_runtime.py
+```
+
+Native files/layer metadata are committed under `derived/wheat-native/`; runtime
+exports and source hashes are under `derived/wheat-v1/`. All eight masks retain
+matching connected components, a center within half a logical pixel, and no more
+than one logical pixel of boundary difference from classic antialiasing. The pack
+validator checks their pixels and all four resource atlas mip levels independently.

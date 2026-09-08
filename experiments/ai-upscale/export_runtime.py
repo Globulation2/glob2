@@ -76,6 +76,7 @@ def main():
         records.append(dict(id=frame_id,width=w,height=h,scale=4,recipe=method,layers=layers))
     print('Applied %d recovered original frames' % runtime_overrides.apply(records, OUT))
     print('Applied %d original tree frames' % runtime_overrides.apply(records, OUT, ROOT/'datasrc/gfx/derived/trees-v1'))
+    print('Applied %d original wheat frames' % runtime_overrides.apply(records, OUT, ROOT/'datasrc/gfx/derived/wheat-v1'))
     resource_levels=[]
     for level in range(4):
         slot=256>>level; border=32>>level

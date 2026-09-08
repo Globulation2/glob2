@@ -45,11 +45,11 @@ for level,l in enumerate(m['resource_atlas']['levels']):
     for i in range(65):
         tile=Image.open(PACK/f'ressource{i}.png')
         original=Image.open(ROOT/'data/gfx'/f'ressource{i}.png').convert('RGBA')
-        if i >= 10:
+        if i not in set(range(10)) | {10,11,12,13,15,16,17,18}:
             assert tile.getchannel('A').tobytes()==original.getchannel('A').resize(tile.size,Image.Resampling.BILINEAR).tobytes()
         else:
             record=next(f for f in m['frames'] if f['id']==f'ressource{i}')
-            assert record['recipe'].startswith('recovered original tree:')
+            assert record['recipe'].startswith(('recovered original tree:', 'recovered original wheat:'))
             native=Image.open(ROOT/record['sources'][1]['path']).convert('RGBA')
             assert tile.tobytes()==native.resize(tile.size,Image.Resampling.LANCZOS).tobytes()
         tile=tile.resize((tile.width>>level,tile.height>>level),Image.Resampling.LANCZOS)
@@ -58,7 +58,7 @@ for level,l in enumerate(m['resource_atlas']['levels']):
         for j in range(tile.height):
             assert atlas.getpixel((x-1,y+j))==tile.getpixel((0,j))
             assert atlas.getpixel((x+tile.width,y+j))==tile.getpixel((tile.width-1,j))
-print('PASS: all 65 resource frames, original native tree alpha / constrained other alpha, isolated resource atlas mip levels')
+print('PASS: all 65 resource frames, original native tree/wheat alpha / constrained other alpha, isolated resource atlas mip levels')
 
 import re
 expected={p.stem.removesuffix('r') for p in (ROOT/'data/gfx').glob('*.png') if re.fullmatch(r'(terrain|ressource|water|cloud|black|shade|area-clearing|area-forbidden|area-guard|bullet|explosion|magiceffect|particle)\d+r?\.png',p.name)}

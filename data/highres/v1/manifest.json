@@ -7540,13 +7540,55 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/wheat/wheat_1_1.xcf",
+          "sha256": "572e7ad44728d1bc5feed04b6de6637db4a83b57659b51be0882fae2b1ae6ca1",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/wheat-native/wheat_1_1.png",
+          "sha256": "1db3d3b0a4a9eb015f7a8cc75b7f3a6d28f4648b5b463eaf902bafe62cd9221d",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "ressource10.png",
           "role": "base",
-          "sha256": "bb9bafa3fdc976b85fe4e1df6a5437be8f95c7fc7e4f18948c4fe54564188c3f",
-          "source_sha256": "bb9bafa3fdc976b85fe4e1df6a5437be8f95c7fc7e4f18948c4fe54564188c3f",
+          "sha256": "37e44e649bbb88772db3fff3ade531aa6953feb6132e394da23bf861ae661340",
+          "source_sha256": "37e44e649bbb88772db3fff3ade531aa6953feb6132e394da23bf861ae661340",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "6baced6e26da803b2b4576af501a1646f3b1b9785f7671d34c2c85dad78d1026"
@@ -7558,13 +7600,66 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/wheat/wheat_2_1.xcf",
+          "sha256": "37d6cc368d14788473c9e87e6dc34f7ec5c4ec96a075a8bc22a732c538785324",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/wheat-native/wheat_2_1.png",
+          "sha256": "262c3fb4ebfeb73935b12060d18ca6ebd30f5105853d1647d591f88514da89f6",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "ressource11.png",
           "role": "base",
-          "sha256": "67caa834a0cee418a6f2855943fb768761d120e565b172b46aeb8267adc6f892",
-          "source_sha256": "67caa834a0cee418a6f2855943fb768761d120e565b172b46aeb8267adc6f892",
+          "sha256": "8a9fba9f0bf8f86f57a8e86c6d0693aa12a6302fc148bdd4b41fee07fff0f4c9",
+          "source_sha256": "8a9fba9f0bf8f86f57a8e86c6d0693aa12a6302fc148bdd4b41fee07fff0f4c9",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "6a574bbe7563fe628a742ed2b9e3c8a400ba4f430012db6fc6db0988c4e329c2"
@@ -7576,13 +7671,66 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/wheat/wheat_3_1.xcf",
+          "sha256": "0f0b20c5dbdc720d899b8c1e1ff74a6236977c0526cf9d7519521c90478f7847",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/wheat-native/wheat_3_1.png",
+          "sha256": "864e2054594ddfb240e6a0d0f71fbc09c22a189c353052af300a12fcccb73afd",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "ressource12.png",
           "role": "base",
-          "sha256": "8868f9350514eb77a46f5a7762e1f3178bedb796d96b2ad74b2cb2869ebf8969",
-          "source_sha256": "8868f9350514eb77a46f5a7762e1f3178bedb796d96b2ad74b2cb2869ebf8969",
+          "sha256": "f0dab6ac2b553fb4fed1237394991d70ea5334fdbe67ee15fdfd1d31f405e58d",
+          "source_sha256": "f0dab6ac2b553fb4fed1237394991d70ea5334fdbe67ee15fdfd1d31f405e58d",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "e6377b05c3a4465f3771ecc4db577a9864239995304df4ff9ddcd1ee8739495f"
@@ -7594,13 +7742,66 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/wheat/wheat_4_1.xcf",
+          "sha256": "89b5d2245973086b4d8cb1dab1ce8d235a5ea31933e2002e105b4b4ec61a21b3",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/wheat-native/wheat_4_1.png",
+          "sha256": "8779186a30e68764b90815ad8ae580fffb45e85224fc796439194e31e7ff9c71",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "ressource13.png",
           "role": "base",
-          "sha256": "f60c0f3724ae6fbfd417589e2a53b0c99061eb775535e02e2e6f38507b54de1b",
-          "source_sha256": "f60c0f3724ae6fbfd417589e2a53b0c99061eb775535e02e2e6f38507b54de1b",
+          "sha256": "dd9261e9f4b79fb0175d728ee1da6cd19653d194c83b7bfe31e39d24226c74d9",
+          "source_sha256": "dd9261e9f4b79fb0175d728ee1da6cd19653d194c83b7bfe31e39d24226c74d9",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "dfb2c4fbafb66fd3e09411d7923b0d912ff5aa7ab29cbb6ec716063f8998ee32"
@@ -7630,13 +7831,55 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/wheat/wheat_1_2.xcf",
+          "sha256": "97c3cfb79ed04975f5ee1a5ac7600e458084646dc06c6eca221406da2da4136e",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/wheat-native/wheat_1_2.png",
+          "sha256": "f549a3f77c4d40fd5b996851935a06f8c8620177f1cf53af8cfbb4b634cc17ca",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "ressource15.png",
           "role": "base",
-          "sha256": "2675577addec444c0f0ff4846779f6e509a2a3f0edc4200bf363ae731cdf87e1",
-          "source_sha256": "2675577addec444c0f0ff4846779f6e509a2a3f0edc4200bf363ae731cdf87e1",
+          "sha256": "948a9f768281ba717c5ae80fec223520a60e1f36f4336b05dc27004366b894cc",
+          "source_sha256": "948a9f768281ba717c5ae80fec223520a60e1f36f4336b05dc27004366b894cc",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "b9c8af9eadcddff713fde129d542b5271bcd03bbb2b1dc0387abb87f9b4bba81"
@@ -7648,13 +7891,66 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/wheat/wheat_2_2.xcf",
+          "sha256": "2bfa2f6b8b109f96f214343b0b1d210f4064ad71f0f906227bb5c2b57620d437",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/wheat-native/wheat_2_2.png",
+          "sha256": "ce575514dea13cb76ce934c15b79252b69f0bff8fceeb2e08bfbae80d6f6c663",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "ressource16.png",
           "role": "base",
-          "sha256": "8504e6f950ee6aa423fbe4c33ad587f1bb9a68d38a982f27bdf3b06a9ecd3736",
-          "source_sha256": "8504e6f950ee6aa423fbe4c33ad587f1bb9a68d38a982f27bdf3b06a9ecd3736",
+          "sha256": "40038334a8d486489e8b0d07ae22252b1637d29e5d4353668c00e4867dee1c28",
+          "source_sha256": "40038334a8d486489e8b0d07ae22252b1637d29e5d4353668c00e4867dee1c28",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "7fa48c37f6695d762a3dc3568ee306ec4aebeeb05b684a39e034a9e245161177"
@@ -7666,13 +7962,66 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/wheat/wheat_3_2.xcf",
+          "sha256": "5379a3198612e7c3fae2b42fa6a7523de57a432bfcc064b3bb93a1e3058bb5eb",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/wheat-native/wheat_3_2.png",
+          "sha256": "493707a87f38105cec1c63f91a93ac34085f3f652efbd6a157d00e664c457380",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "ressource17.png",
           "role": "base",
-          "sha256": "cadca0ec4e68331f1106c1ee7cc7f4aabde893418deefc0062ce50508e3fdd60",
-          "source_sha256": "cadca0ec4e68331f1106c1ee7cc7f4aabde893418deefc0062ce50508e3fdd60",
+          "sha256": "30e761c998345e91389480da9067a42a46a7cf98fc62966c6a5789fe5d15463d",
+          "source_sha256": "30e761c998345e91389480da9067a42a46a7cf98fc62966c6a5789fe5d15463d",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "b8a2d29c3f1319e61d6bc32318d4db8a076b6b63a341fdb51df904e5b1a135f7"
@@ -7684,13 +8033,66 @@
       "width": 34,
       "height": 34,
       "scale": 4,
-      "recipe": "resource constrained",
+      "recipe": "recovered original wheat: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/wheat/wheat_4_2.xcf",
+          "sha256": "e4b25cad879d00ac53aa1a47659684e7af2423115578f7c6bd498d16193d8dd9",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/wheat-native/wheat_4_2.png",
+          "sha256": "80f58ec2190c01593154f67241c207874cc867b84df9490fb89e3ca2d0e26f6a",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
       "layers": [
         {
           "file": "ressource18.png",
           "role": "base",
-          "sha256": "e81484a0c5b28a7b0f397be7febe7dca4b5a49ffdba6460f90a28b8a8f1098dd",
-          "source_sha256": "e81484a0c5b28a7b0f397be7febe7dca4b5a49ffdba6460f90a28b8a8f1098dd",
+          "sha256": "c82b9144b8f4602305e22ae1e778a2a476653bd5478c20bb557cf1dbf8f80f28",
+          "source_sha256": "c82b9144b8f4602305e22ae1e778a2a476653bd5478c20bb557cf1dbf8f80f28",
           "logical_width": 34,
           "logical_height": 34,
           "original_sha256": "fbc4fe81136e0c2317424162835c8ae3f6a9427f536c1cd41f04ed6d8d03c4ee"
@@ -9980,19 +10382,19 @@
     "levels": [
       {
         "file": "ressource-atlas-mip0.png",
-        "sha256": "53306d3a090b23411a8e1915be130c9c973267f5db8c85708e70c5d808944bc1"
+        "sha256": "2990ec1d235271b314292da2a43e0046a59e79cd5e9598f4be1b1280a34e6521"
       },
       {
         "file": "ressource-atlas-mip1.png",
-        "sha256": "9234e917858534b7a599308a1e36353fb72327a8de3694b08b5c053dbcc619a9"
+        "sha256": "664fdcaa65fd7dc88dd33addcdf864e4d3ce27f7c3a1f6cae120e0639cf436ad"
       },
       {
         "file": "ressource-atlas-mip2.png",
-        "sha256": "35a4964e2bee0605b3795f0aa3ecc494ecb73a5e5bdca0e96b76299ddf16cc7e"
+        "sha256": "b2381f31ea5890034a5c8a638a7425eabc78c76eb4e7eaeec8b0706aeacfb08c"
       },
       {
         "file": "ressource-atlas-mip3.png",
-        "sha256": "08a3ca4ff93131a3c3ff1aa91cff93c53f8fdba95b2381cc47f1cf456270131b"
+        "sha256": "246c27b3a94c638163a8ce1aba66994859caf00e6f7ba54780be3722855f3290"
       }
     ]
   }

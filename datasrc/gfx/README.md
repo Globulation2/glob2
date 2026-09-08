@@ -43,9 +43,9 @@ provenance/           Source URLs, archive paths, old repository paths and hashe
 
 `data/gfx/` remains the classic runtime artwork. `data/highres/` is the runtime
 pack. `experiments/ai-upscale/` holds the earlier experiment and is not the
-original-source archive. Twenty frames (ten from the second archive and ten trees from the first) replace
+original-source archive. Twenty-eight frames (ten from the second archive, ten trees and eight wheat frames from the first) replace
 experimental art in the runtime pack. See [export recipes and coverage](RECOVERED-RUNTIME.md).
-The first archive’s layered buildings and remaining resources still need runtime migration.
+The first archive’s layered buildings and remaining resources still need runtime migration; the two final ripe wheat color states still lack larger originals.
 
 ## Provenance and preservation
 

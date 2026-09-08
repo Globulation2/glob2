@@ -68,4 +68,4 @@ as references. Walls remain unavailable. These findings supersede the initial
 
 All ten tree frames now use five native GIMP sources. Saved layer opacity and
 transparency are retained, and the four resource atlas levels use the final
-original-source images. Wheat and other resource families still await migration.
+original-source images. Eight wheat frames also now use native GIMP exports. Final ripe color states 14/19 retain their existing upscales because matching larger sources were not recovered; other resource families still await migration.

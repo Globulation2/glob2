@@ -122,3 +122,9 @@ native alpha and layer opacity. The resource atlas is packed after applying sour
 overrides and is checked against the final tiles at every mip level. Original
 source hashes and logical registration pass; tree silhouettes overlap classic
 frames by 99.1%–99.9% after reduction to logical resolution.
+
+
+Eight wheat frames (`ressource10`–`13`, `15`–`18`) now use original 128×128
+GIMP exports and native alpha. Ripe color states `14`/`19` retain existing
+upscales: the supplied larger layers do not include those colors. This brings
+original-source runtime coverage to 28 frames; the pack remains 487 frames total.
