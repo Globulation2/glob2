@@ -55,3 +55,9 @@ On the development Mac, the dense four-team fixture uses about 171 MB GPU memory
 ## Reviewer decision: keep classic artwork selectable?
 
 HD artwork is enabled by default in this PR, with a user-facing switch back to classic artwork. Should the classic option remain available long-term, or should HD become the only selectable OpenGL artwork? The current implementation keeps the switch pending that decision. Original assets remain necessary for software rendering and missing/invalid-pack fallback regardless of the user-facing choice.
+
+## Playtest fixes: full-period seams and Retina cursor
+
+Building rendering now deduplicates by visible wrapped position while the visible-building collection retains one object identity. This preserves both clipped parts of seam-crossing footprints. Units draw at the visited wrapped tile occurrence instead of mapping every occurrence back onto the same position. A viewport spanning the full minimap width or height gets a complete outline, rather than identical wrapped endpoints collapsing to a line.
+
+On the Cocoa backend, native cursor artwork scales in window points, without applying Retina density a second time. Map zoom never changes cursor size. Regression coverage checks four-corner building/unit visibility, exact building compositing, single object identity, a full minimap outline and the native cursor scale.

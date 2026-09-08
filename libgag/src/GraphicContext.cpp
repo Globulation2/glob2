@@ -571,7 +571,13 @@ namespace GAGCore
 				unsigned b = SDL_GetMouseState(&mx, &my);
 				translateMouseCoordinates(mx, my);
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
-				cursorManager.update(drawableScale());
+				// Cocoa cursor images are sized in window points; Retina already
+				// supplies the backing-pixel scale. Applying it here doubles the cursor.
+				float cursorScale = drawableScale();
+				const char *videoDriver = SDL_GetCurrentVideoDriver();
+				if (videoDriver && std::strcmp(videoDriver, "cocoa") == 0 && windowW && windowH)
+					cursorScale = std::min(float(windowW) / getW(), float(windowH) / getH());
+				cursorManager.update(cursorScale);
 			}
 
 

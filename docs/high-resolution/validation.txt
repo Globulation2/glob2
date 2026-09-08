@@ -28,3 +28,23 @@ PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay dra
 Software integration:
 Settings::load("preferences.txt") : error, can't open file.
 PASS software game/editor rendering, original artwork, disabled zoom
+
+Playtest-fix validation:
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 10.7519 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 4.56752 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 3.05676 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.77451 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 12.2587 ms, 24637 calls, 164351120 GPU bytes
+HD gameplay 100%: 4.44811 ms, 6318 calls, 164351120 GPU bytes
+HD gameplay 200%: 3.02855 ms, 1932 calls, 164351120 GPU bytes
+HD gameplay 300%: 2.64559 ms, 926 calls, 164351120 GPU bytes
+original dense map 50%: 10.7791 ms, 24623 calls, 45406016 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 2.01319 ms, 613 calls, 45406016 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 20.3566 ms, 24624 calls, 174402688 GPU bytes, 89681408 HD CPU bytes, 10 colored frames
+HD dense map 300%: 2.59912 ms, 614 calls, 174511912 GPU bytes, 89746944 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS software game/editor rendering, original artwork, disabled zoom

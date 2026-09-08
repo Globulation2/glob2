@@ -4,6 +4,7 @@
 #include "MapEdit.h"
 #include "SettingsScreen.h"
 #include "Order.h"
+#include "Unit.h"
 #include <SDL_image.h>
 #include <FileManager.h>
 #ifdef __APPLE__
@@ -34,6 +35,73 @@ class HighResolutionIntegrationHarness
         assert(s&&IMG_SavePNG(s,("experiments/ai-upscale/runtime-check/"+name+".png").c_str())==0);SDL_FreeSurface(s);
         assert(glGetError()==GL_NO_ERROR);
     }
+    static std::vector<unsigned char> pixels()
+    {
+        Sprite::flushBatches(globalContainer->gfx);glFinish();
+        GLint v[4];glGetIntegerv(GL_VIEWPORT,v);
+        std::vector<unsigned char> result(v[2]*v[3]*4);
+        glReadPixels(v[0],v[1],v[2],v[3],GL_RGBA,GL_UNSIGNED_BYTE,result.data());
+        return result;
+    }
+    static bool coloredRegion(int x,int y,int w,int h)
+    {
+        auto gfx=globalContainer->gfx;auto data=pixels();GLint v[4];glGetIntegerv(GL_VIEWPORT,v);
+        for(int j=y;j<y+h;++j)for(int i=x;i<x+w;++i)
+        {
+            int px=(i+.5)*v[2]/gfx->getW(),py=(gfx->getH()-j-.5)*v[3]/gfx->getH();
+            auto pixel=&data[(py*v[2]+px)*4];
+            if(pixel[0]||pixel[1]||pixel[2])return true;
+        }
+        return false;
+    }
+    static void checkCursor()
+    {
+        auto gfx=globalContainer->gfx;gfx->nextFrame();
+        int w,h;auto window=SDL_GL_GetCurrentWindow();
+        if(std::string(SDL_GetCurrentVideoDriver())=="cocoa")SDL_GetWindowSize(window,&w,&h);
+        else SDL_GL_GetDrawableSize(window,&w,&h);
+        assert(std::abs(gfx->cursorManager.cacheScale-std::min(float(w)/gfx->getW(),float(h)/gfx->getH()))<.001);
+    }
+    static void checkWrappedSprites()
+    {
+        auto gfx=globalContainer->gfx;
+        globalContainer->settings.highResolutionArtwork=true;
+        MapEdit editor;editor.game.map.setSize(4,4,GRASS);editor.game.map.setGame(&editor.game);editor.game.addTeam(0);
+        auto building=editor.game.addBuilding(15,15,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);assert(building);
+        editor.regenerateGameHeader();editor.minimap.setGame(editor.game);editor.updateCamera();
+        editor.game.map.displayViewportW=editor.game.map.displayViewportH=512;
+        std::set<Building*> visible;
+        for(double zoom:{.5,1.})
+        {
+            auto begin=[&](){gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);gfx->beginMapTransform(zoom,100,100,100,100,512*zoom,512*zoom);};
+            begin();
+            editor.game.drawMapGroundBuildings(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,&visible,nullptr);
+            gfx->endMapTransform();auto actual=pixels();assert(visible.size()==1);
+            for(int y:{100,int(100+448*zoom)})for(int x:{100,int(100+448*zoom)})assert(coloredRegion(x,y,64*zoom,64*zoom));
+            begin();
+            for(int y:{-32,480})for(int x:{-32,480})editor.game.drawMapBuilding(x,y,building->gid,0,0,0,Game::DRAW_WHOLE_MAP);
+            gfx->endMapTransform();assert(actual==pixels());
+        }
+        // A moving unit crossing both seams must leave visible pieces in all four corners.
+        Game units(nullptr);units.map.setSize(4,4,GRASS);units.map.setGame(&units);units.addTeam(0);
+        auto unit=units.addUnit(0,0,0,0,0,128,1,1);assert(unit);
+        unit->action=WALK;unit->dx=unit->dy=1;unit->delta=128;
+        gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
+        gfx->beginMapTransform(.5,100,100,100,100,256,256);
+        units.drawMapGroundUnits(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,editor.view);
+        gfx->endMapTransform();
+        for(int y:{100,340})for(int x:{100,340})assert(coloredRegion(x,y,16,16));
+        editor.camera.setZoom(.5,200,200);editor.viewportX=editor.camera.tileX();editor.viewportY=editor.camera.tileY();
+        editor.drawMap(0,0,gfx->getW(),gfx->getH());editor.drawMenu();editor.drawMiniMap();editor.drawWidgets();capture("seam-corners-50");
+        // A full-period minimap viewport must have four edges, not a collapsed line.
+        gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
+        Minimap mini(false,160,gfx->getW(),8,8,128,128,Minimap::ShowFOW);mini.setGame(editor.game);mini.draw(0,0,0,16,16);
+        auto data=pixels();GLint v[4];glGetIntegerv(GL_VIEWPORT,v);
+        auto white=[&](int x,int y){int px=(x+.5)*v[2]/gfx->getW(),py=(gfx->getH()-y-.5)*v[3]/gfx->getH();auto p=&data[(py*v[2]+px)*4];return p[0]==255&&p[1]==255&&p[2]==255;};
+        const int left=gfx->getW()-160+8;
+        assert(white(left+64,8)&&white(left+64,135)&&white(left,72)&&white(left+127,72));
+        std::cout<<"PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale\n";
+    }
 public:
     static void runSoftware()
     {
@@ -56,6 +124,7 @@ public:
     {
         auto gfx=globalContainer->gfx;
         {SettingsPaintHarness settings;settings.draw(gfx);capture("settings");}
+        checkCursor();checkWrappedSprites();
         std::vector<Uint32> simulationChecksums;
         for(bool hd:{false,true})
         {
@@ -177,7 +246,7 @@ int main(int argc,char **argv)
     std::filesystem::create_directories(".cache/ai-upscale/replay-fixture/replays");
     std::filesystem::copy_file("tests/baselines/gradient/gd-small-2ai.replay", ".cache/ai-upscale/replay-fixture/replays/gd-small-2ai.replay", std::filesystem::copy_options::overwrite_existing);
     GlobalContainer globals("glob2-hd-integration-test");globalContainer=&globals;
-    globals.settings.screenWidth=1024;globals.settings.screenHeight=768;globals.settings.screenFlags=GraphicContext::USEGPU;
+    globals.settings.screenWidth=1024;globals.settings.screenHeight=768;globals.settings.screenFlags=GraphicContext::USEGPU|GraphicContext::CUSTOMCURSOR;
     globals.settings.rememberUnit=false;globals.settings.mute=1;
     globals.fileManager->addDir(".cache/ai-upscale/replay-fixture");
     const bool software=argc>1&&std::string(argv[1])=="software";
