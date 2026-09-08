@@ -206,3 +206,17 @@ This is a substantial stylistic proposal. Feedback is especially welcome on the
 sage/gold palette, panel opacity, menu density, readability on smaller displays,
 and whether the live colony is inviting or distracting. The screenshots and
 small shared theme are intended to make that discussion concrete.
+
+### Review follow-up: modal presentation and bounded labels
+
+Replay saving now draws the results screen without presenting it, composites the
+save dialog, and presents once. Ordinary screen dispatch still presents by default.
+Front-end text wrapping is opt-in and constrained to an explicitly sized box;
+overflowing single-line labels are clipped to their existing bounds. The display
+mode note reserves 30 pixels for wrapping, with the restart warning moved below it.
+
+The harness checks presentation counts through `Screen::dispatchPaint`, raster
+pixels outside text bounds, single-line behavior, and restoration of clipping.
+The normal client and harness build, isolation/determinism checks, and menu
+navigation passed after these changes. The German settings screen was also
+inspected at 640×480. No new OpenGL session or long soak was run for this follow-up.

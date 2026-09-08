@@ -82,28 +82,43 @@ namespace GAGGUI
 		else
 			hDec=0;
 	
-		// Wrap overflowing front-end labels at word boundaries. Legacy text
-		// keeps its original drawing path, including explicit chart colors.
-		const int available=std::min(w,parent->getSurface()->getW()-x-10);
-		if (GAGGUI::Style::style->usesThemeTextColor() && hAlignFlag!=ALIGN_FILL &&
-			available>0 && fontPtr->getStringWidth(text)>available)
+		auto* surface = parent->getSurface();
+		const int available = std::min(w, surface->getW() - x - 10);
+		if (GAGGUI::Style::style->usesThemeTextColor() && hAlignFlag != ALIGN_FILL &&
+			available > 0 && fontPtr->getStringWidth(text) > available)
 		{
-			std::istringstream words(text);
-			std::string word,line;
-			int lineY=y+hDec;
-			while(words >> word)
+			// Long single-line labels must not spill into adjacent controls.
+			// Wrapping is opt-in and uses only the height reserved by the caller.
+			SDL_Rect previous;
+			surface->getClipRect(&previous.x, &previous.y, &previous.w, &previous.h);
+			SDL_Rect bounds{x, y, available, h}, clipped;
+			SDL_IntersectRect(&previous, &bounds, &clipped);
+			surface->setClipRect(clipped.x, clipped.y, clipped.w, clipped.h);
+			if (wordWrap && keepW && keepH)
 			{
-				const std::string next=line.empty()?word:line+" "+word;
-				if(!line.empty() && fontPtr->getStringWidth(next)>available)
+				std::istringstream words(text);
+				std::string word, line;
+				int lineY = y;
+				const int lineHeight = std::max(1, fontPtr->getStringHeight(text));
+				while (words >> word)
 				{
-					parent->getSurface()->drawString(x,lineY,fontPtr,line);
-					lineY+=fontPtr->getStringHeight(line); line=word;
+					const std::string next = line.empty() ? word : line + " " + word;
+					if (!line.empty() && fontPtr->getStringWidth(next) > available)
+					{
+						if (lineY + lineHeight > y + h) break;
+						surface->drawString(x, lineY, fontPtr, line);
+						lineY += lineHeight;
+						line = word;
+					}
+					else line = next;
 				}
-				else line=next;
+				if (lineY + lineHeight <= y + h)
+					surface->drawString(x, lineY, fontPtr, line);
 			}
-			parent->getSurface()->drawString(x,lineY,fontPtr,line);
+			else surface->drawString(x + wDec, y + hDec, fontPtr, text);
+			surface->setClipRect(previous.x, previous.y, previous.w, previous.h);
 		}
-		else parent->getSurface()->drawString(x+wDec, y+hDec, fontPtr, text.c_str());
+		else surface->drawString(x + wDec, y + hDec, fontPtr, text);
 		fontPtr->popStyle();
 	}
 	

@@ -547,7 +547,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 		}
 		loadSaveScreen->dispatchPaint();
 		
-		if (Style::style->usesThemeTextColor()) dispatchPaint();
+		if (Style::style->usesThemeTextColor()) dispatchPaint(false);
 		else globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();

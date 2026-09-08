@@ -34,6 +34,7 @@
 #include "DatasetWriter.h"
 #include <GUIButton.h>
 #include <GUITextInput.h>
+#include <GUIText.h>
 #include <GUIList.h>
 #include <filesystem>
 #include <sstream>
@@ -57,6 +58,61 @@ void require(bool condition, const char* message)
 {
 	if (!condition) { std::cerr << "FAIL: " << message << '\n'; std::exit(2); }
 }
+// Exercise presentation through the real dispatch path, and inspect raster
+// output rather than trusting widget bounds to describe wrapped text.
+void checkMenuPainting()
+{
+	class CountingSurface : public DrawableSurface
+	{
+	public:
+		CountingSurface() : DrawableSurface(240, 100) {}
+		int presentations = 0;
+		void nextFrame() override { ++presentations; DrawableSurface::nextFrame(); }
+	} surface;
+	class TestScreen : public GAGGUI::Screen
+	{
+	public:
+		explicit TestScreen(DrawableSurface* target) { gfx = target; }
+		void paint() override {}
+		void onAction(GAGGUI::Widget*, GAGGUI::Action, int, int) override {}
+	} screen(&surface);
+	FrontendScope scope;
+	screen.dispatchPaint(false);
+	require(surface.presentations == 0, "modal background is not presented separately");
+	surface.nextFrame();
+	require(surface.presentations == 1, "composed modal frame presents once");
+	screen.dispatchPaint();
+	require(surface.presentations == 2, "ordinary screen still presents");
+
+	auto* label = new GAGGUI::Text(10, 10, ALIGN_LEFT, ALIGN_TOP,
+		"standard", "A very long map name with enough words to overflow several rows", 80, 35);
+	screen.addWidget(label);
+	screen.dispatchInit();
+	for (bool wrap : {false, true})
+	{
+		surface.setClipRect();
+		surface.drawFilledRect(0, 0, 240, 100, Color(255, 0, 255));
+		label->setWordWrap(wrap);
+		label->paint();
+		auto* raster = surface.getSDLSurface();
+		const Uint32 background = SDL_MapRGBA(raster->format, 255, 0, 255, 255);
+		int ink = 0;
+		for (int y = 0; y < 100; ++y)
+			for (int x = 0; x < 240; ++x)
+			{
+				const auto pixel = reinterpret_cast<Uint32*>(static_cast<Uint8*>(raster->pixels) + y * raster->pitch)[x];
+				if (pixel == background) continue;
+				++ink;
+				require(x >= 10 && x < 90 && y >= 10 && y < 45, "text stays within its allocated box");
+				if (!wrap) require(y < 10 + Toolkit::getFont("standard")->getStringHeight(label->getText()), "single-line labels do not wrap");
+			}
+		require(ink > 0, "bounded labels remain visible");
+		int x, y, w, h;
+		surface.getClipRect(&x, &y, &w, &h);
+		require(x == 0 && y == 0 && w == 240 && h == 100, "text restores clipping for subsequent widgets");
+	}
+}
+
 void generate(const char* path)
 {
 	setSyncRandSeed(481516);
@@ -260,6 +316,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 	}
 	if(mode=="check")
 	{
+		checkMenuPainting();
 		// Team tinting must preserve transparent sprite pixels in software mode.
 		DrawableSurface alpha(2,2);
 		auto* pixels=static_cast<Uint32*>(alpha.getSDLSurface()->pixels);
@@ -369,7 +426,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			custom.clickButton(ChooseMapScreen::CANCEL);
 			require(custom.result()==ChooseMapScreen::CANCEL,"custom game cancellation");
 		}
-		std::cout << "PASS: timing, isolation, determinism, scoped style, fallback\n";
+		std::cout << "PASS: presentation, bounded text, timing, isolation, determinism, scoped style, fallback\n";
 		return 0;
 	}
 	if(mode=="sessions")
