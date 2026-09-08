@@ -22,7 +22,8 @@ the GL context, or reload sprite textures in response to a size notification.
 
 The GL path copies the completed back buffer into a persistent power-of-two
 texture before swapping. This supports the legacy renderer without requiring an
-FBO extension. Cached presentation saves/restores GL attributes and matrices, so
+FBO extension. Its texture wrapping also supports Windows' GL 1.1 GDI renderer.
+Cached presentation saves/restores GL attributes and matrices, so
 the engine's state cache remains valid. If a frame exceeds the device's maximum
 texture size, cached GL presentation is unavailable; normal rendering continues.
 The software path owns its logical drawing surface and caches a completed copy;
@@ -69,6 +70,11 @@ context identity, input coordinates, minimum dimensions, and cache invalidation
 on window recreation. OpenGL pixels are captured at the swap boundary rather
 than reading the post-swap front buffer, which is unreliable under Mesa/Xvfb.
 Linux CI runs both backends under Xvfb/Mesa.
+
+The resize harness passes in a Windows Server 2022 desktop VM with SDL 2.32.10,
+using both software rendering and OpenGL 1.1 GDI Generic. The same checks pass on
+Linux X11/Mesa llvmpipe and macOS Apple M3 OpenGL. For Windows desktop tests, use
+at least 1100 x 850 pixels and disable automatic remote-desktop size changes.
 
 Before marking the PR ready, manually exercise Windows modal edge dragging,
 holding the mouse still, maximize/restore, moving across displays, and a network

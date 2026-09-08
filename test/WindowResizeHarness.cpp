@@ -159,4 +159,5 @@ int main(int argc, char **argv)
 		std::printf("PASS %s: cache, callback guards, reflow, context lifetime, input, minimum size, recreation\n", gpu ? "GL" : "software");
 	}
 	catch (const std::exception &e) { std::fprintf(stderr, "FAIL: %s\n", e.what()); return 1; }
+	return 0; // SDL renames main to SDL_main on Windows; implicit main return does not apply.
 }
