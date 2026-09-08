@@ -55,6 +55,8 @@ infrastructure from the supported-release acceptance criteria.
 - Shared measured loading/generation slices with an injectable steady clock,
   a four-millisecond target, and a 64-checkpoint cap. Deterministic tests cover
   elapsed-time stopping, completion, oversized steps, and a frozen clock.
+- Saved-team parsing yields while loading units, buildings, and their links.
+  The preparation game owns partial teams throughout cancellation and failure.
 - A maintained, dependency-locked Playwright suite with real input and
   read-only diagnostics, plus CI failure traces.
 - A replay-stall fix: measure the waiting-player mask after local orders are
@@ -124,3 +126,15 @@ cross-platform, or supported-browser certification matrix.
 
 No cross-play, reconnect, WebGL2, durable-save failure recovery, or stable
 browser support is claimed by this implementation slice.
+
+## Immediate delivery focus
+
+Complete the single-player milestone before further general-purpose refactoring.
+Confirmed runtime work includes the scenario editor's blocking script load/save
+dialog (`ScriptEditorScreen::loadSave`) and destructive in-session replacement
+(`GameSessionScreen` through `Engine::finishSession`). Migrate these using the
+existing screen and ownership mechanisms. Then exercise single-player flows in
+a build without Asyncify to identify remaining reachable blocking paths.
+Legacy synchronous adapters alone are not a reason for another abstraction.
+Rendering, lifecycle, and durable storage gates above remain required before
+calling single-player supported; multiplayer and distribution follow afterward.

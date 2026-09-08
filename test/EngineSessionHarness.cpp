@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Engine.h"
+#include "Unit.h"
+#include "Building.h"
 #include "GameSessionScreen.h"
 #include "MapEdit.h"
 #include "FertilityCalculator.h"
@@ -342,6 +344,30 @@ int main(int argc, char** argv)
         MapEdit editor;
         require(editor.load("maps/balanced.map"), "Editor fixture load failed");
         const auto originalRng = getSyncRandState();
+        for (const char* stage : {"[Loading units]", "[Loading buildings]", "[Resolving team links]"}) {
+            for (unsigned extraSteps : {1u, 3u}) {
+                {
+                    MapEdit partial;
+                    auto task = partial.loadTask("maps/balanced.map");
+                    unsigned steps = 0;
+                    while (std::string(task.stage()) != stage) {
+                        require(++steps < 5000 && !task.advance(), "Team parser did not reach its checkpoint");
+                    }
+                    for (unsigned step = 0; step < extraSteps; ++step)
+                        require(!task.advance(), "Team parser cancellation fixture completed too early");
+                    if (std::string(stage) == "[Resolving team links]") {
+                        auto& team = *partial.game.teams[0];
+                        bool hasUnit = false, hasBuilding = false;
+                        for (int i = 0; i < Unit::MAX_COUNT; ++i) hasUnit |= team.myUnits[i] != nullptr;
+                        for (int i = 0; i < Building::MAX_COUNT; ++i) hasBuilding |= team.myBuildings[i] != nullptr;
+                        require(hasUnit && hasBuilding, "Cancellation fixture must own real units and buildings");
+                    }
+                    // Destroy the suspended parser before the partially linked
+                    // team's units/buildings and their owning game.
+                }
+                setSyncRandState(originalRng);
+            }
+        }
         {
             MapEdit partial;
             auto task = partial.loadTask("maps/balanced.map");

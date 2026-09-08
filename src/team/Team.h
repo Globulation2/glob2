@@ -4,6 +4,7 @@
 #pragma once
 
 #include <SDL_rwops.h>
+#include <CooperativeTask.h>
 
 #include <climits>
 #include <list>
@@ -57,11 +58,12 @@ public:
 	};
 
 	Team(Game *game);
-	Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 
 	virtual ~Team(void);
 
 	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
+    // Borrows this private preparation team and stream; discard on cancellation.
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 
 	//! Rebuild the per-building lists from myBuildings (map generators, in place of load()).

@@ -621,3 +621,7 @@
 [Loading scripts]
 [Generating map]
 [ERROR_CANT_GENERATE_MAP]
+
+[Loading units]
+[Loading buildings]
+[Resolving team links]

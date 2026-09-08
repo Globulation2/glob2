@@ -145,3 +145,10 @@ parser/constructor operation can exceed the budget, and input/rendering cost is
 outside it. Such operations still require subdivision and measured latency gates.
 The clock controls pacing only; job results, simulation, and synchronous adapters
 remain independent of wall time.
+
+Saved-team parsing now yields between batches of unit slots, building slots, and
+cross-reference resolution. The preparation game owns each team before parsing
+starts, so cancellation destroys partially loaded objects with their owner.
+The synchronous adapter drains the same parser and preserves serialization order.
+Native tests cancel in each stage, including a fixture containing real units and
+buildings, and check scheduled-load continuation against the session checksum.
