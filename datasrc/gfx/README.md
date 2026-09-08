@@ -17,6 +17,7 @@ originals/
 concept-art/
   buildings/          Original design drawings and concept paintings
 reference-exports/    Historical PNG exports; preserve separately from sources
+  buildings/          Recovered hive, flags, construction renders and direction templates
   resources/          Tree and both wheat styles
   terrain/water/      Historical water and cloud variants
   ui/                 Historical interface graphics
@@ -56,11 +57,14 @@ embedded credits and file contents remain unchanged.
 The import accounts for all 158 archive file entries. Exact duplicate bytes
 reuse one source file. The 95 files already tracked in the repository are also
 preserved. Together these form 202 unique source, concept, reference and helper
-files. The ZIP is retained locally in `.cache/original-art/`, outside version
+files from the first import. The second archive adds 34 artwork files, for a
+combined 236 files; its 15 AppleDouble filesystem metadata entries are documented
+but not committed as artwork. The ZIP is retained locally in `.cache/original-art/`, outside version
 control; its URL and SHA-256 are recorded, and all original file contents are
 committed in this tree.
 
 - [Archive path → repository path and source hashes](provenance/stephane-2026-09-08.json)
+- [Second archive provenance and exclusions](provenance/stephane-2026-09-08-more.json)
 - [Previous repository path → new path and hashes](provenance/repository-paths.json)
 - [Machine-readable combined catalog](provenance/catalog.json)
 
@@ -68,6 +72,7 @@ Verify preserved bytes without image tooling:
 
 ```sh
 python3 tools/artwork/import_originals.py
+python3 tools/artwork/import_more_originals.py
 ```
 
 Verify against a downloaded archive, or regenerate the catalog with Pillow:
@@ -89,3 +94,12 @@ Unit rendering work remains coordinated with that PR.
 The old `rename_globules.py` helper lives in `tools/units/` within this tree.
 It operates on its current working directory; run it only in a disposable render
 output directory, not in the source archive. Its historical behavior is unchanged.
+
+## Second recovered archive
+
+Stéphane supplied [glob2-highres-more.zip](https://h.magnenat.net/~steph/glob2-highres-more.zip)
+in [this PR comment](https://github.com/Globulation2/glob2/pull/207#issuecomment-5591064207).
+The historical PNGs are under `reference-exports/buildings/`, grouped as swarm,
+flags, construction and direction templates. White/black-background renders and
+separate matte files are preserved unchanged. They require transparency extraction
+before runtime use; the 32-pixel direction templates are references, not new HD art.

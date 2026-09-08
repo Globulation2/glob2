@@ -28,6 +28,10 @@ Regenerate with `python tools/artwork/catalog_originals.py` (Pillow required for
 | originals/ui/controls | 22 |
 | originals/ui/headset | 1 |
 | originals/units | 9 |
+| reference-exports/buildings/construction | 12 |
+| reference-exports/buildings/direction-templates | 16 |
+| reference-exports/buildings/flags | 3 |
+| reference-exports/buildings/swarm | 3 |
 | reference-exports/overlays | 47 |
 | reference-exports/resources/tree | 7 |
 | reference-exports/resources/wheat | 10 |
@@ -269,6 +273,60 @@ Regenerate with `python tools/artwork/catalog_originals.py` (Pillow required for
 | [tourelle-goth.jpg](concept-art/buildings/tourelle-goth.jpg) | jpeg | 1275 × 2100 | Recovered archive |
 | [tower0.jpeg](concept-art/buildings/tower0.jpeg) | jpeg | 567 × 428 | Recovered archive |
 | [tower2.jpeg](concept-art/buildings/tower2.jpeg) | jpeg | 332 × 558 | Recovered archive |
+
+## reference-exports/buildings/construction
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [Construction128c.png](reference-exports/buildings/construction/Construction128c.png) | png | 512 × 512 | Recovered archive |
+| [Construction128m.png](reference-exports/buildings/construction/Construction128m.png) | png | 512 × 512 | Recovered archive |
+| [Construction160c.png](reference-exports/buildings/construction/Construction160c.png) | png | 320 × 320 | Recovered archive |
+| [Construction160m.png](reference-exports/buildings/construction/Construction160m.png) | png | 320 × 320 | Recovered archive |
+| [Construction192c.png](reference-exports/buildings/construction/Construction192c.png) | png | 384 × 384 | Recovered archive |
+| [Construction192m.png](reference-exports/buildings/construction/Construction192m.png) | png | 384 × 384 | Recovered archive |
+| [Construction256c.png](reference-exports/buildings/construction/Construction256c.png) | png | 512 × 512 | Recovered archive |
+| [Construction256m.png](reference-exports/buildings/construction/Construction256m.png) | png | 512 × 512 | Recovered archive |
+| [Construction64c.png](reference-exports/buildings/construction/Construction64c.png) | png | 256 × 256 | Recovered archive |
+| [Construction64m.png](reference-exports/buildings/construction/Construction64m.png) | png | 256 × 256 | Recovered archive |
+| [Construction96c.png](reference-exports/buildings/construction/Construction96c.png) | png | 384 × 384 | Recovered archive |
+| [Construction96m.png](reference-exports/buildings/construction/Construction96m.png) | png | 384 × 384 | Recovered archive |
+
+## reference-exports/buildings/direction-templates
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [building23.png](reference-exports/buildings/direction-templates/building23.png) | png | 32 × 32 | Recovered archive |
+| [building24.png](reference-exports/buildings/direction-templates/building24.png) | png | 32 × 32 | Recovered archive |
+| [building25.png](reference-exports/buildings/direction-templates/building25.png) | png | 32 × 32 | Recovered archive |
+| [building26.png](reference-exports/buildings/direction-templates/building26.png) | png | 32 × 32 | Recovered archive |
+| [building27.png](reference-exports/buildings/direction-templates/building27.png) | png | 32 × 32 | Recovered archive |
+| [building28.png](reference-exports/buildings/direction-templates/building28.png) | png | 32 × 32 | Recovered archive |
+| [building29.png](reference-exports/buildings/direction-templates/building29.png) | png | 32 × 32 | Recovered archive |
+| [building30.png](reference-exports/buildings/direction-templates/building30.png) | png | 32 × 32 | Recovered archive |
+| [building31.png](reference-exports/buildings/direction-templates/building31.png) | png | 32 × 32 | Recovered archive |
+| [building32.png](reference-exports/buildings/direction-templates/building32.png) | png | 32 × 32 | Recovered archive |
+| [building33.png](reference-exports/buildings/direction-templates/building33.png) | png | 32 × 32 | Recovered archive |
+| [building34.png](reference-exports/buildings/direction-templates/building34.png) | png | 32 × 32 | Recovered archive |
+| [building35.png](reference-exports/buildings/direction-templates/building35.png) | png | 32 × 32 | Recovered archive |
+| [building36.png](reference-exports/buildings/direction-templates/building36.png) | png | 32 × 32 | Recovered archive |
+| [building37.png](reference-exports/buildings/direction-templates/building37.png) | png | 32 × 32 | Recovered archive |
+| [building38.png](reference-exports/buildings/direction-templates/building38.png) | png | 32 × 32 | Recovered archive |
+
+## reference-exports/buildings/flags
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [ExploFlag.png](reference-exports/buildings/flags/ExploFlag.png) | png | 128 × 128 | Recovered archive |
+| [RemoveFlag.png](reference-exports/buildings/flags/RemoveFlag.png) | png | 128 × 128 | Recovered archive |
+| [WarFlag.png](reference-exports/buildings/flags/WarFlag.png) | png | 128 × 128 | Recovered archive |
+
+## reference-exports/buildings/swarm
+
+| File | Format | Source size | Provenance |
+| --- | --- | --- | --- |
+| [Morph128c.png](reference-exports/buildings/swarm/Morph128c.png) | png | 512 × 512 | Recovered archive |
+| [Morph128fn.png](reference-exports/buildings/swarm/Morph128fn.png) | png | 512 × 512 | Recovered archive |
+| [Ruche.png](reference-exports/buildings/swarm/Ruche.png) | png | 256 × 256 | Recovered archive |
 
 ## reference-exports/overlays
 

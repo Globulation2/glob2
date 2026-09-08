@@ -1546,6 +1546,516 @@
     "previous_repository_path": null
   },
   {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128c.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 54268,
+    "sha256": "d30d202c283512e6d23a9db0c6b5940e7345bfaa959925c13e11d4e310ddcd14",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction128c.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128m.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 11092,
+    "sha256": "85be8078274de6720221a66fdc6173f6114607835a58cc19f03db4cdadace089",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction128m.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction160c.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      320,
+      320
+    ],
+    "bytes": 51342,
+    "sha256": "3a5531b2b5c5c4de5b131fd3ecb4a4778d499df3880defd8e118fc813e2167d5",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction160c.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction160m.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      320,
+      320
+    ],
+    "bytes": 7395,
+    "sha256": "fa106229b1dedbe0acb14ed5fd3d39487435e8f48c0fa621bc2d7c63175a3af0",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction160m.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192c.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      384,
+      384
+    ],
+    "bytes": 53916,
+    "sha256": "b15b0425605344f9ba18b6ae6caa707683a726144dc0361a40bd5610a6515c51",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction192c.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192m.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      384,
+      384
+    ],
+    "bytes": 8372,
+    "sha256": "e6edbe00b53a2df228f2baf1e516f76d72b40317684a805ff92aaefabda81cbb",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction192m.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256c.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 68656,
+    "sha256": "f1dba0fce8a9b4ea4a40151258bec18465a031f19a461232e1056f7985a707ae",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction256c.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256m.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 12051,
+    "sha256": "baac33676f1515dade11d177094858a37c6ecdb7f7e90bc582a5e020af3b66aa",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction256m.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64c.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 24994,
+    "sha256": "c69621d051f0634eda3c07bc87e243173e0693b8a97f5a3798ed11388aed9ae9",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction64c.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64m.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 4817,
+    "sha256": "a7b540849cb3f7b0a5d0269b832ca9ffc9545b25fd9940e13c88247a18cb0408",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction64m.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96c.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      384,
+      384
+    ],
+    "bytes": 39448,
+    "sha256": "fbb198ed42d149ef6f66094801a5e6b56b5537dddb52ac3e4276aada74acb323",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction96c.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96m.png",
+    "category": "reference-exports/buildings/construction",
+    "format": "png",
+    "dimensions": [
+      384,
+      384
+    ],
+    "bytes": 7380,
+    "sha256": "2a1e5b5c1fc060176c8a33e4d9f8d5922d540a1ad8f9ee8e77d6b0b8f7ddf355",
+    "archive_paths": [
+      "glob2-highres-more/Constructions/Construction96m.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building23.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 219,
+    "sha256": "dc1fac7bfd21e4b948fb05619b21bf06d41340508391224cb05b11ff578f595e",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building23.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building24.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 214,
+    "sha256": "f740a33daaa34a5a737854f24b7d054ed0e4da3a4c57fb714ed4ba4c62ecdc38",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building24.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building25.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 218,
+    "sha256": "b22e66effb4937885a5a3945bb72bc7a5a4ca2f8ab35e98e0899e61a2e494099",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building25.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building26.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 210,
+    "sha256": "b123a980cece9d5d8d8bea295da4e002f1ab01d0fcbe0f51d267e612439a44b9",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building26.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building27.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 219,
+    "sha256": "cc9ba33aaeaa7d6a899c087eb7809b36c92b13c78f7fcd112fa76e586f297352",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building27.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building28.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 224,
+    "sha256": "1e48da39d7309432fb2dd73f56d03579db9d08d79287d7d5c96b749277865d89",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building28.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building29.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 231,
+    "sha256": "c417ba9816937203d44c15b2cdb98f73c3c7d63e0f5dcc3681a6dcdec6bc033e",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building29.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building30.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 231,
+    "sha256": "c92d611376c48fb647bab792ab76dfbe8c00773eea30d956e1e9b4cfec9f1fdf",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building30.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building31.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 219,
+    "sha256": "d005bfe1147f9cfcfb9564c05220e84f8e9b63ceadba3d0d69cfefe5637ff273",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building31.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building32.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 228,
+    "sha256": "806d3b9d2dfa4a69b39722e7ccc58bda5ccf9211d710369133bc7345aac9f9a1",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building32.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building33.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 227,
+    "sha256": "761f44a96391907a18602de8d71fe2e65657dbc9c1edf9ffab9550ebeebb31b0",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building33.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building34.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 230,
+    "sha256": "334ad8be61752302d5be16ce111f5209d2d5a62add9ee29baa27de17645b3372",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building34.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building35.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 211,
+    "sha256": "3c20721ea70a3b9755f8a0ddce42039b8e92bbe9fd91b7c2ecedb5ffba679dd5",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building35.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building36.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 235,
+    "sha256": "b4bf0a20e5a5224f4086dda82b9a3a5869311f455fcc375a22b3ed3dc4d87458",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building36.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building37.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 238,
+    "sha256": "af34056fbf25934852400b6c57e777a00f0b2bbc5cebf3acbf321194a594f37c",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building37.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building38.png",
+    "category": "reference-exports/buildings/direction-templates",
+    "format": "png",
+    "dimensions": [
+      32,
+      32
+    ],
+    "bytes": 245,
+    "sha256": "46643642d7400a7551a858a7a37a394b8e71a559393faad0e43a4478d7e9618b",
+    "archive_paths": [
+      "glob2-highres-more/direction template/building38.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/flags/ExploFlag.png",
+    "category": "reference-exports/buildings/flags",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 29399,
+    "sha256": "5c772959f73fea52ba87c6e237bfc6c5e3dd0e92c43681a52b75339c420c4709",
+    "archive_paths": [
+      "glob2-highres-more/flags/ExploFlag.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/flags/RemoveFlag.png",
+    "category": "reference-exports/buildings/flags",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 32271,
+    "sha256": "1b8d789fda8099353c2d935e4c1241eb3e1194dbe557626ee7db8be9846ec221",
+    "archive_paths": [
+      "glob2-highres-more/flags/RemoveFlag.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/flags/WarFlag.png",
+    "category": "reference-exports/buildings/flags",
+    "format": "png",
+    "dimensions": [
+      128,
+      128
+    ],
+    "bytes": 20372,
+    "sha256": "ba32b3139ab131456e67ec9c9df89a0477d111a42aaa4b736cac3726cf174160",
+    "archive_paths": [
+      "glob2-highres-more/flags/WarFlag.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128c.png",
+    "category": "reference-exports/buildings/swarm",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 123066,
+    "sha256": "9bcb10af8d512456abd00e3424cb83665c32b598891bb64b355490daa2576a49",
+    "archive_paths": [
+      "glob2-highres-more/hive/Morph128c.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128fn.png",
+    "category": "reference-exports/buildings/swarm",
+    "format": "png",
+    "dimensions": [
+      512,
+      512
+    ],
+    "bytes": 110037,
+    "sha256": "e497380f56209c9e1d85bb5e453c42d942dc1c1e2fb4229c5e800cd9d74cc9b0",
+    "archive_paths": [
+      "glob2-highres-more/hive/Morph128fn.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
+    "path": "datasrc/gfx/reference-exports/buildings/swarm/Ruche.png",
+    "category": "reference-exports/buildings/swarm",
+    "format": "png",
+    "dimensions": [
+      256,
+      256
+    ],
+    "bytes": 86445,
+    "sha256": "88549c047160eb0a883b334eb091cad8adae4a03a2ffe63dc5d90d8b7ad554e8",
+    "archive_paths": [
+      "glob2-highres-more/hive/Ruche.png"
+    ],
+    "previous_repository_path": null
+  },
+  {
     "path": "datasrc/gfx/reference-exports/overlays/g0-archive-2026.png",
     "category": "reference-exports/overlays",
     "format": "png",

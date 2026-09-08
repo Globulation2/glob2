@@ -8,6 +8,11 @@ from import_originals import ROOT, ART, MANIFEST, dimensions, digest, verify
 verify()
 archive = json.loads(MANIFEST.read_text())
 origins = {}
+more = ART/'provenance/stephane-2026-09-08-more.json'
+if more.exists():
+    from import_more_originals import verify as verify_more
+    verify_more()
+    archive['files'] += json.loads(more.read_text())['files']
 for entry in archive['files']:
     origins.setdefault(entry['path'], []).append(entry['archive_path'])
 legacy = {r['path']: r['previous_path'] for r in json.loads((ART/'provenance/repository-paths.json').read_text())['files']}
