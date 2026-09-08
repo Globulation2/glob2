@@ -1789,13 +1789,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain0.png",
           "role": "base",
-          "sha256": "c40c3dc11f1087bb15c7792813d64cff05009e402c88345f8aa2e38f6c6f9af0",
-          "source_sha256": "c40c3dc11f1087bb15c7792813d64cff05009e402c88345f8aa2e38f6c6f9af0",
+          "sha256": "28b15cf55c6d1a8b736dbf391c9e2b33c099dc37ffba7691a585097afb95f82c",
+          "source_sha256": "28b15cf55c6d1a8b736dbf391c9e2b33c099dc37ffba7691a585097afb95f82c",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e09287e14a0919daee3260bf304aac6d2d459d936b6b4a74e21f5fc8a7cc4a41"
@@ -1807,13 +1807,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain1.png",
           "role": "base",
-          "sha256": "d112e0180b34df098f27decf8fd6811038add8fddc102455642db2fd6a38a2d0",
-          "source_sha256": "d112e0180b34df098f27decf8fd6811038add8fddc102455642db2fd6a38a2d0",
+          "sha256": "cd2680e0c1ce87622e03e2e9922063542bc838a420a4fe3e04f8bbdd03bacee3",
+          "source_sha256": "cd2680e0c1ce87622e03e2e9922063542bc838a420a4fe3e04f8bbdd03bacee3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "43b400bee6623afc7330b543e6e2dcfae3ac99296ede2428100aa565c50a0e47"
@@ -1825,13 +1825,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain2.png",
           "role": "base",
-          "sha256": "d7470eb01bb4ef1d45676cfc8cf91a954dc888f2e78c7a7c71704320c405483e",
-          "source_sha256": "d7470eb01bb4ef1d45676cfc8cf91a954dc888f2e78c7a7c71704320c405483e",
+          "sha256": "d8c6c1b8040f14daab789f6b1ebabd458fa307ec221daa010d5e8adf289e3369",
+          "source_sha256": "d8c6c1b8040f14daab789f6b1ebabd458fa307ec221daa010d5e8adf289e3369",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "169b2974dfea611aa1eb2ab6b7b66ff00d2755e2cc9bd5815befeb01d3b8c373"
@@ -1843,13 +1843,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain3.png",
           "role": "base",
-          "sha256": "cdb0fca39963441c58ba8c7c586f1a6fa4a12928e596dc6c564508ae90159f0a",
-          "source_sha256": "cdb0fca39963441c58ba8c7c586f1a6fa4a12928e596dc6c564508ae90159f0a",
+          "sha256": "d21b653dbac2a240d14baf1e10f4d0ccd86824f69c5cd41db54efd76da8717e1",
+          "source_sha256": "d21b653dbac2a240d14baf1e10f4d0ccd86824f69c5cd41db54efd76da8717e1",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "99c3c8a209eae8d6cc989674a8b04f2b3ec0512616b78c571704d6dddf0d8a76"
@@ -1861,13 +1861,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain4.png",
           "role": "base",
-          "sha256": "7a370026f00b1334c3f2a9362ed22bfd983adff59f4d7bfafaf39d0066a75f15",
-          "source_sha256": "7a370026f00b1334c3f2a9362ed22bfd983adff59f4d7bfafaf39d0066a75f15",
+          "sha256": "697f7dbfc525fc9dd85a8f3c12477d32790879008a01e9cc41d20fd3d0b0f8d6",
+          "source_sha256": "697f7dbfc525fc9dd85a8f3c12477d32790879008a01e9cc41d20fd3d0b0f8d6",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "3fe0febf5de914567e2c0aea0e539639c0a92156e4bb1c12d417ea550538a63a"
@@ -1879,13 +1879,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain5.png",
           "role": "base",
-          "sha256": "1219405106b76cb1e94acb229c0a0eebae5456b338132495416161756f8cc4d2",
-          "source_sha256": "1219405106b76cb1e94acb229c0a0eebae5456b338132495416161756f8cc4d2",
+          "sha256": "d5af6d82821d92374afd9f8356586c5ba405a55af13e34e920487ca37c3638ac",
+          "source_sha256": "d5af6d82821d92374afd9f8356586c5ba405a55af13e34e920487ca37c3638ac",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "ce59e9001ba71be0aacab8d46c2a874d1dc8382e5d688137b285b89b44463f63"
@@ -1897,13 +1897,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain6.png",
           "role": "base",
-          "sha256": "6e1fc24cede935a66909b3ba6a96b196014fe23ce41363af0485be6437730ac2",
-          "source_sha256": "6e1fc24cede935a66909b3ba6a96b196014fe23ce41363af0485be6437730ac2",
+          "sha256": "702ce9e3aaa09473f5fdeed4af2b5c84d41e57f3e0511162767a082b14885431",
+          "source_sha256": "702ce9e3aaa09473f5fdeed4af2b5c84d41e57f3e0511162767a082b14885431",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "6f66bca348255177a6ed19a3da12b3493ac90e9d6d390cc82f8d2d358e0ba151"
@@ -1915,13 +1915,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain7.png",
           "role": "base",
-          "sha256": "766b1bf3f67c5e02c7b1a5547a0c21b8e64aae05bbb7fc46f141b50411c7ab3b",
-          "source_sha256": "766b1bf3f67c5e02c7b1a5547a0c21b8e64aae05bbb7fc46f141b50411c7ab3b",
+          "sha256": "ddcc84699c04e1a8a95961bb302157543d9f0eec51ad128c6e2ea0ece8a6151a",
+          "source_sha256": "ddcc84699c04e1a8a95961bb302157543d9f0eec51ad128c6e2ea0ece8a6151a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "0df3c2022bec402d8b7e7745fd5db241201d74b072cc2be789a28a848333bc07"
@@ -1933,13 +1933,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain8.png",
           "role": "base",
-          "sha256": "9a066d89dc282380c60a2ec2b946acfa126a50ff226977e116d7bb013f2e8b4c",
-          "source_sha256": "9a066d89dc282380c60a2ec2b946acfa126a50ff226977e116d7bb013f2e8b4c",
+          "sha256": "ae131b9d6ced46bbbe5fd0814d4773960c8be69e1f90dc8e0a18bcc76f917a3a",
+          "source_sha256": "ae131b9d6ced46bbbe5fd0814d4773960c8be69e1f90dc8e0a18bcc76f917a3a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "1c6d337669b46d780e0c497c6b60861488eaae0d30a46a1cdca845f712f8ae05"
@@ -1951,13 +1951,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain9.png",
           "role": "base",
-          "sha256": "094730385529524193c67bc69425b4091508f1c913adb3ee8c1b8e2dc1541174",
-          "source_sha256": "094730385529524193c67bc69425b4091508f1c913adb3ee8c1b8e2dc1541174",
+          "sha256": "950318c20616cb97630fffbb9248891080b466301b8dde0bb01bd7cc8ad6ab51",
+          "source_sha256": "950318c20616cb97630fffbb9248891080b466301b8dde0bb01bd7cc8ad6ab51",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "271eef96354fe3c33f08c31260942c3c0f52897c64f6f8b02a03e86ebdb1ce0b"
@@ -1969,13 +1969,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain10.png",
           "role": "base",
-          "sha256": "f9cbb3cb3d35a5aba045440460e617e3c19e8ad41068df5aeaac623e7828165e",
-          "source_sha256": "f9cbb3cb3d35a5aba045440460e617e3c19e8ad41068df5aeaac623e7828165e",
+          "sha256": "d9e0f290140c95daeb410e75e7a64af0f006e12da047900ca39fc0f80f747d80",
+          "source_sha256": "d9e0f290140c95daeb410e75e7a64af0f006e12da047900ca39fc0f80f747d80",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "945e3550221c2415b5c5e3712a25e5326023cafcf2a734dda583726809ec7457"
@@ -1987,13 +1987,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain11.png",
           "role": "base",
-          "sha256": "b1ad9070fa297882759105426a1bb458edd7f439f8f39e67a80c73c8065084e4",
-          "source_sha256": "b1ad9070fa297882759105426a1bb458edd7f439f8f39e67a80c73c8065084e4",
+          "sha256": "904323f0cd73d947fc17643d113131c3a1e47de6b2ff8cd9eb4d21c1c2fc3317",
+          "source_sha256": "904323f0cd73d947fc17643d113131c3a1e47de6b2ff8cd9eb4d21c1c2fc3317",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "bd4df70f08bb6e4186993a34492786f4fc3484b551b239c49e9e45d3aa95932c"
@@ -2005,13 +2005,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain12.png",
           "role": "base",
-          "sha256": "6afb92c47ffcc3948ff8ba361a9dfe18b523955dbd71092e42800e1a490038f5",
-          "source_sha256": "6afb92c47ffcc3948ff8ba361a9dfe18b523955dbd71092e42800e1a490038f5",
+          "sha256": "c91b3c358ec9e4d7f608fd4c85cc0eb1768e2d2c0939a874b4b1f09ce9829d6e",
+          "source_sha256": "c91b3c358ec9e4d7f608fd4c85cc0eb1768e2d2c0939a874b4b1f09ce9829d6e",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e7608d17ea6f48bb3fe39e9dba0db6ca148398d9a1e889ef8b139bae1cc71629"
@@ -2023,13 +2023,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain13.png",
           "role": "base",
-          "sha256": "5c435c36e6ce041ea85a030a4bda1ea7cc1f4a94e8539d4edc50c4e9f8242e8d",
-          "source_sha256": "5c435c36e6ce041ea85a030a4bda1ea7cc1f4a94e8539d4edc50c4e9f8242e8d",
+          "sha256": "0146ba288a280aa94d38301600051e3c00235fe4abafa35e3cc39410eee1e74d",
+          "source_sha256": "0146ba288a280aa94d38301600051e3c00235fe4abafa35e3cc39410eee1e74d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fd5fb48dc4515dc2f0d24f0e044b67dc56b4b88b4e801cc0f48898fbeafb9685"
@@ -2041,13 +2041,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain14.png",
           "role": "base",
-          "sha256": "12d7eb60411f59f7b5eef1de0c3faab75e75320df25aa917f1a24841fc8b2a2c",
-          "source_sha256": "12d7eb60411f59f7b5eef1de0c3faab75e75320df25aa917f1a24841fc8b2a2c",
+          "sha256": "104d38d02868aeb9c9944999a9708a2283bf61777df1103bae5c6c85eb37d112",
+          "source_sha256": "104d38d02868aeb9c9944999a9708a2283bf61777df1103bae5c6c85eb37d112",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "00c64e57c8ca91704b75eb7f2d9ddeebaeaae29467376d7e7350835016dc8524"
@@ -2059,13 +2059,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain15.png",
           "role": "base",
-          "sha256": "be98b6d7446cac9a3a70a2a8142136b591ba21612109577f218d84ddda762a90",
-          "source_sha256": "be98b6d7446cac9a3a70a2a8142136b591ba21612109577f218d84ddda762a90",
+          "sha256": "3568b35b73ef82d5c340fb1800fcbdf84c3655a03a0dced956ac084393e83094",
+          "source_sha256": "3568b35b73ef82d5c340fb1800fcbdf84c3655a03a0dced956ac084393e83094",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "13c63e02581ffb901ea103b850b0b905215b33d9a33e2b633008c8cc83ef1b9e"
@@ -2077,13 +2077,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain16.png",
           "role": "base",
-          "sha256": "ddc516e7281477a3128a025ac8e150740c04e2a3fe3e72f8522b15f26a039f81",
-          "source_sha256": "ddc516e7281477a3128a025ac8e150740c04e2a3fe3e72f8522b15f26a039f81",
+          "sha256": "eec941575a477fae18a1c30f838e0a0ed69d12a07e96fc8cdc57f0daf8d136ec",
+          "source_sha256": "eec941575a477fae18a1c30f838e0a0ed69d12a07e96fc8cdc57f0daf8d136ec",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "88508bc3df0279195cb4e28321966dc8ea0922f4d5abcd34f27609caefb3426b"
@@ -2095,13 +2095,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain17.png",
           "role": "base",
-          "sha256": "b705298f772554f1f18634f543cc797c5d95fa5846d24bf5e38e05d2ee8aaeca",
-          "source_sha256": "b705298f772554f1f18634f543cc797c5d95fa5846d24bf5e38e05d2ee8aaeca",
+          "sha256": "9c18559a5ce65adc98a18d164e875439094c735c82919dd7e0481c1ec25233e3",
+          "source_sha256": "9c18559a5ce65adc98a18d164e875439094c735c82919dd7e0481c1ec25233e3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "7bc2d6303c6a3bb0f78429f00a1ae6c69f31c8fd7c375615e05bd805d0c5cb74"
@@ -2113,13 +2113,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain18.png",
           "role": "base",
-          "sha256": "3d34143e11015cca1226d1df9b2ae852c56d42903472939150e38bc9aaaf566d",
-          "source_sha256": "3d34143e11015cca1226d1df9b2ae852c56d42903472939150e38bc9aaaf566d",
+          "sha256": "5a51078a4a8a7f4bc618655493a325505f05fa09f89cb09e4b272ad0a75685bd",
+          "source_sha256": "5a51078a4a8a7f4bc618655493a325505f05fa09f89cb09e4b272ad0a75685bd",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "03d076bba1483cf4058f6133b3eec324852c0993226d962f50bd8ab8b2989b71"
@@ -2131,13 +2131,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain19.png",
           "role": "base",
-          "sha256": "97e8c723395bd5fbb6180e492072c519e3a14bbb6fb06ce8df4520243a8a4de5",
-          "source_sha256": "97e8c723395bd5fbb6180e492072c519e3a14bbb6fb06ce8df4520243a8a4de5",
+          "sha256": "bde147c47d28c8347d2c52cb787cb09a7edc7181a358e2be342ad601c68f9dfb",
+          "source_sha256": "bde147c47d28c8347d2c52cb787cb09a7edc7181a358e2be342ad601c68f9dfb",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "0edf0ccefa016da744a4e72f163b04ce709e465020ab313f054f9a0a4083e1c4"
@@ -2149,13 +2149,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain20.png",
           "role": "base",
-          "sha256": "b905ec13363e011d52aca0f252ae2c897058f0245fb4157c9954616b03923aa5",
-          "source_sha256": "b905ec13363e011d52aca0f252ae2c897058f0245fb4157c9954616b03923aa5",
+          "sha256": "0b62d0006fbdb5b687dfb608c67379c79f00a3f8702116f2f66e73098b5a02b8",
+          "source_sha256": "0b62d0006fbdb5b687dfb608c67379c79f00a3f8702116f2f66e73098b5a02b8",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "9ece6051113440b8c49d74f970d1b7a5b5f888722317930812abc331413aded2"
@@ -2167,13 +2167,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain21.png",
           "role": "base",
-          "sha256": "4faa4caa25ccbbe263ddf05773760dd7abced41b8c7ead01244afad8837e04ca",
-          "source_sha256": "4faa4caa25ccbbe263ddf05773760dd7abced41b8c7ead01244afad8837e04ca",
+          "sha256": "fa9c765ffca4460a1a90796720c91cb4fce9dcd29447dd402577baa84c229a07",
+          "source_sha256": "fa9c765ffca4460a1a90796720c91cb4fce9dcd29447dd402577baa84c229a07",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "17869655a4b784f41ceac91c452f6b7f54c00a2739d6f61e9a4db995fa96f9ed"
@@ -2185,13 +2185,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain22.png",
           "role": "base",
-          "sha256": "958c2a2ba7416988cae2645eb519f83df727076588c3ef95d6d8f6d736cf8fad",
-          "source_sha256": "958c2a2ba7416988cae2645eb519f83df727076588c3ef95d6d8f6d736cf8fad",
+          "sha256": "19fe1eeded9d14d99bc530dac6f0bfeacf91833f951ac0bc3bb3fd217ee1a65a",
+          "source_sha256": "19fe1eeded9d14d99bc530dac6f0bfeacf91833f951ac0bc3bb3fd217ee1a65a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fc2838fe6f92c31624e9dbf2f2a6d576a5a3b2b7a8683b4c83312541154477ea"
@@ -2203,13 +2203,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain23.png",
           "role": "base",
-          "sha256": "4a54b6b5eab65a83ad49381bdfe75309d022b9aa7759e87e80c02ca8a5aa1474",
-          "source_sha256": "4a54b6b5eab65a83ad49381bdfe75309d022b9aa7759e87e80c02ca8a5aa1474",
+          "sha256": "166b92d5295df1bf6d48653afb8a2ccdef1c59d87f3d5acfe6fb0797c2b3e073",
+          "source_sha256": "166b92d5295df1bf6d48653afb8a2ccdef1c59d87f3d5acfe6fb0797c2b3e073",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "ff892000623edb46c95f38d1d8b6e0808d3c9bf106d4a957a9de68c2ddcd2825"
@@ -2221,13 +2221,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain24.png",
           "role": "base",
-          "sha256": "31b77b254ab587296e0ed3296288485c75050cb7fb1bde83b8504743a34336a6",
-          "source_sha256": "31b77b254ab587296e0ed3296288485c75050cb7fb1bde83b8504743a34336a6",
+          "sha256": "d610c6cf0e565403733a86c8140953c79da5876c0013cf745dc7274c4277af32",
+          "source_sha256": "d610c6cf0e565403733a86c8140953c79da5876c0013cf745dc7274c4277af32",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "1e8474e1618882689ccec7f2078446f7cd9d9160254c390a215dadc36141b65d"
@@ -2239,13 +2239,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain25.png",
           "role": "base",
-          "sha256": "1e0b7118fd0615da3ba3acdc54d52f8696d4c9782aa0446eec0404987213dea4",
-          "source_sha256": "1e0b7118fd0615da3ba3acdc54d52f8696d4c9782aa0446eec0404987213dea4",
+          "sha256": "110098d988a6939d1924c2352382c2e1f68ea6496186d122d7dce1510bca1a6a",
+          "source_sha256": "110098d988a6939d1924c2352382c2e1f68ea6496186d122d7dce1510bca1a6a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "1d136283f8e058cccff2725d4251fcce18f6e97f60b7a73e8ab1ba958fcdead9"
@@ -2257,13 +2257,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain26.png",
           "role": "base",
-          "sha256": "fce1cdfff260768d838e822350c5d3ce9d2fcd24aca97cc3259f63b2fc19b7fe",
-          "source_sha256": "fce1cdfff260768d838e822350c5d3ce9d2fcd24aca97cc3259f63b2fc19b7fe",
+          "sha256": "d6b7b39b5808de39378acc65e6eca72d2caccde9d8a45f2f8b670361b10d8016",
+          "source_sha256": "d6b7b39b5808de39378acc65e6eca72d2caccde9d8a45f2f8b670361b10d8016",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "7b6e7cce3dca600e542f77bb425f3332a77960f1da34f6240458acdefca29dbd"
@@ -2275,13 +2275,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain27.png",
           "role": "base",
-          "sha256": "002b653e5872ed53bf9ae18eb41b2fe18ffc509b2cf62ff5c27979d36bece8c9",
-          "source_sha256": "002b653e5872ed53bf9ae18eb41b2fe18ffc509b2cf62ff5c27979d36bece8c9",
+          "sha256": "3a3c67069402743f9adbd70a8fe3fa753dabf92ddce317881aec5ae10800e1e1",
+          "source_sha256": "3a3c67069402743f9adbd70a8fe3fa753dabf92ddce317881aec5ae10800e1e1",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "7d66dc753b3c8fd73f3eeddc78e9a55909feec4d42666b06b3814cfd268c7d38"
@@ -2293,13 +2293,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain28.png",
           "role": "base",
-          "sha256": "7ea767911a3025b1a546d3c1f8e0b097e7ce60a933a598d4fcec6daff9b4e43d",
-          "source_sha256": "7ea767911a3025b1a546d3c1f8e0b097e7ce60a933a598d4fcec6daff9b4e43d",
+          "sha256": "98cdb65119ea63a81e909a1a1d5c88d378498eacc36e2e31e5d246144b88dcbd",
+          "source_sha256": "98cdb65119ea63a81e909a1a1d5c88d378498eacc36e2e31e5d246144b88dcbd",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "a03b003e74747d51699c2a451cea456252a2e349204a18c2f4aadb3bc632e277"
@@ -2311,13 +2311,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain29.png",
           "role": "base",
-          "sha256": "122774e8b4392b6ed795fe4d13fa15fb7554639cb053b11d92c8c9174123e2a2",
-          "source_sha256": "122774e8b4392b6ed795fe4d13fa15fb7554639cb053b11d92c8c9174123e2a2",
+          "sha256": "f3b2d0153f7fc66cfc175bd832ee87d0a0e390d4981b36e346dd59840d6a2961",
+          "source_sha256": "f3b2d0153f7fc66cfc175bd832ee87d0a0e390d4981b36e346dd59840d6a2961",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "949fc9535df4db213885d0a29770377afdbdbf2727c1ed7d711767419a4dd448"
@@ -2329,13 +2329,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain30.png",
           "role": "base",
-          "sha256": "8e3a0e3431c1b074e4220a07f0271225de70e413569d70ad91ee0654e6ecc4c5",
-          "source_sha256": "8e3a0e3431c1b074e4220a07f0271225de70e413569d70ad91ee0654e6ecc4c5",
+          "sha256": "2b6a4ce3184819e21d08a3aa437c197a2835ab925c667619f2e62ec42fd41c8a",
+          "source_sha256": "2b6a4ce3184819e21d08a3aa437c197a2835ab925c667619f2e62ec42fd41c8a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "cbaea4c69c6c00219cedd412a86a0db67e5c17a0fe45ec70369bfd4308faea3e"
@@ -2347,13 +2347,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain31.png",
           "role": "base",
-          "sha256": "da757ea31f3fb46e2b6e3eebd9aae8101c99d0e628456340a42cd09bc63b821c",
-          "source_sha256": "da757ea31f3fb46e2b6e3eebd9aae8101c99d0e628456340a42cd09bc63b821c",
+          "sha256": "97fcfab80821b7ef7867b3f41025586c1e1177889b110b3777106f04dc67adb4",
+          "source_sha256": "97fcfab80821b7ef7867b3f41025586c1e1177889b110b3777106f04dc67adb4",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "c94b36844c1e779e92713567be2cef74bcf5a49007d0f8e47d838d5d47ce7b94"
@@ -2365,13 +2365,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain32.png",
           "role": "base",
-          "sha256": "a204baca7db050307fc74e4c05fc7c9b3a7dc7f3c5824af2fe094e4080c4a625",
-          "source_sha256": "a204baca7db050307fc74e4c05fc7c9b3a7dc7f3c5824af2fe094e4080c4a625",
+          "sha256": "1e44eda38eaf6d41e31410819f3b41c023090b8c66968463cd994971864bacae",
+          "source_sha256": "1e44eda38eaf6d41e31410819f3b41c023090b8c66968463cd994971864bacae",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fedca0180f26a09349d7ea8dd860d6d109674f66c7fe8e617876f17860989f2b"
@@ -2383,13 +2383,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain33.png",
           "role": "base",
-          "sha256": "3f347fb7a9bbe44380a16237d3f20e9a66f235c3eb27585fa30a4898bb020068",
-          "source_sha256": "3f347fb7a9bbe44380a16237d3f20e9a66f235c3eb27585fa30a4898bb020068",
+          "sha256": "a017907130c6a2d48ea5502f2248c39dabe12684e370148bc67e5bf934dd0d97",
+          "source_sha256": "a017907130c6a2d48ea5502f2248c39dabe12684e370148bc67e5bf934dd0d97",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "f2050217d66c358ed014ec0f68ba5eb7883e15de3ee5e5fbb70623494d7b756c"
@@ -2401,13 +2401,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain34.png",
           "role": "base",
-          "sha256": "f5c7a95d39766fee41fc39677d32bc03bf66afb71b9fe359e6f5e59a544bb5ef",
-          "source_sha256": "f5c7a95d39766fee41fc39677d32bc03bf66afb71b9fe359e6f5e59a544bb5ef",
+          "sha256": "04963addb2aeeb14d42a3ed7ccea3da25949ffddc90e2f4ed4349942394c8aa7",
+          "source_sha256": "04963addb2aeeb14d42a3ed7ccea3da25949ffddc90e2f4ed4349942394c8aa7",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "6a31ebac8d70f5202626ca5e771bd0eadf35a4a47dc41aa35231ed9f40f515c3"
@@ -2419,13 +2419,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain35.png",
           "role": "base",
-          "sha256": "b9e2892445f79bd016be4282272e70066b1ebf85f9b8f422e802f1519bff2ee2",
-          "source_sha256": "b9e2892445f79bd016be4282272e70066b1ebf85f9b8f422e802f1519bff2ee2",
+          "sha256": "1cd1ff98b8e8d970eb2db3080b42da5f1ced53624c8cbdc6b3be0898e1ad74ed",
+          "source_sha256": "1cd1ff98b8e8d970eb2db3080b42da5f1ced53624c8cbdc6b3be0898e1ad74ed",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "b62b2c53a15cef3d0cdd2d641ff3c65e811283eeb506cdf70865b494199064dc"
@@ -2437,13 +2437,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain36.png",
           "role": "base",
-          "sha256": "0f8957be442a6a16f8336c32ec3c082f78140e96446c0a6a49dbf4738572a5a8",
-          "source_sha256": "0f8957be442a6a16f8336c32ec3c082f78140e96446c0a6a49dbf4738572a5a8",
+          "sha256": "1213bc5f26ac420936c39f35c202ea90cc7831c6b65eabd9f119b78b32da5962",
+          "source_sha256": "1213bc5f26ac420936c39f35c202ea90cc7831c6b65eabd9f119b78b32da5962",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "6b4552c778344a0c8a1687ee9e3934b866fd782c61f25030119f59fa0fd7caff"
@@ -2455,13 +2455,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain37.png",
           "role": "base",
-          "sha256": "0d9c260fb5c4d74e9df932db2229907b199a3fe4608b3fd078191c6784b59349",
-          "source_sha256": "0d9c260fb5c4d74e9df932db2229907b199a3fe4608b3fd078191c6784b59349",
+          "sha256": "4af9a02d4e7bfe892c98fe276c9a9200686c057c8e94ae7901bee5670e295856",
+          "source_sha256": "4af9a02d4e7bfe892c98fe276c9a9200686c057c8e94ae7901bee5670e295856",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "7d7a4a61b1a26222f17b5df652c390c2c7d5f867dc0e96b1fc66b2209a91804a"
@@ -2473,13 +2473,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain38.png",
           "role": "base",
-          "sha256": "87b7599072180b0f8ecdd1041e44c6c650c3ac11f666770553c8f47ac38d4a4a",
-          "source_sha256": "87b7599072180b0f8ecdd1041e44c6c650c3ac11f666770553c8f47ac38d4a4a",
+          "sha256": "ce4b0f1dcd6e73c049184d11472e7827b9909bb0a51e66cf1dc444856c6072e3",
+          "source_sha256": "ce4b0f1dcd6e73c049184d11472e7827b9909bb0a51e66cf1dc444856c6072e3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "3491b3650bc0829beaa778f09828443e28565251dad5f6b182807eccce7f56eb"
@@ -2491,13 +2491,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain39.png",
           "role": "base",
-          "sha256": "e78d8a37eb3101a3bbda41063ecbf2bfe9e8674d2c2f72483b1279b55b1f7ee9",
-          "source_sha256": "e78d8a37eb3101a3bbda41063ecbf2bfe9e8674d2c2f72483b1279b55b1f7ee9",
+          "sha256": "78c14473b2a52c2310ff3bff4795803d0ee3791577bc9c863fc9f2c662f886cb",
+          "source_sha256": "78c14473b2a52c2310ff3bff4795803d0ee3791577bc9c863fc9f2c662f886cb",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fd524fd8dcfc58489f33edf2f4766281ad6c15bb93e163eee56a2150acc10cc3"
@@ -2509,13 +2509,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain40.png",
           "role": "base",
-          "sha256": "ed2a21b412c9202bf61e9071daa865bd7c85c93514352c247b84f5b94c2dff00",
-          "source_sha256": "ed2a21b412c9202bf61e9071daa865bd7c85c93514352c247b84f5b94c2dff00",
+          "sha256": "3fc712310653efd128a7cca6b8f7fbef5f320c8f951e39c95e8ec86567177f4c",
+          "source_sha256": "3fc712310653efd128a7cca6b8f7fbef5f320c8f951e39c95e8ec86567177f4c",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "73e5752371512038478889a793932728623ba924a77220be0e39203e1df686af"
@@ -2527,13 +2527,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain41.png",
           "role": "base",
-          "sha256": "5746ac44cb23b203f1c3cd81a47e928db08bc16856c7822a9516bdaaa072d126",
-          "source_sha256": "5746ac44cb23b203f1c3cd81a47e928db08bc16856c7822a9516bdaaa072d126",
+          "sha256": "eec32d77fbafdfc5955ba84f5fdb7d6d6576ec0c852a2ec8b6897db288aaf56d",
+          "source_sha256": "eec32d77fbafdfc5955ba84f5fdb7d6d6576ec0c852a2ec8b6897db288aaf56d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "aa34b12600c58ac80c106f16210c7139a5d45f95c215097980023a0045893c23"
@@ -2545,13 +2545,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain42.png",
           "role": "base",
-          "sha256": "3e41a0656f35a9c4b2558254a308946f718a97dbed31fb1b3860383233cd8780",
-          "source_sha256": "3e41a0656f35a9c4b2558254a308946f718a97dbed31fb1b3860383233cd8780",
+          "sha256": "425cf83613dfac001a0b1d35fe3ffd4f499e5e9e1cb305c9cada8a9ee70a710e",
+          "source_sha256": "425cf83613dfac001a0b1d35fe3ffd4f499e5e9e1cb305c9cada8a9ee70a710e",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "2ede5e818f04d9afb2e20631ab7847d287a5e4b25660dc3de75569366e5f7971"
@@ -2563,13 +2563,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain43.png",
           "role": "base",
-          "sha256": "26da0d7915e441bdce9d401fb3c3ff84140f69b5c2e84aef78a53884fe5b2f2a",
-          "source_sha256": "26da0d7915e441bdce9d401fb3c3ff84140f69b5c2e84aef78a53884fe5b2f2a",
+          "sha256": "43e2d288766a2cad0b77e7d633a4f5a8021f0909e29ebdca0b8003f72d2783f9",
+          "source_sha256": "43e2d288766a2cad0b77e7d633a4f5a8021f0909e29ebdca0b8003f72d2783f9",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "343f25a383cb7d1fcc8fcd1af306173cb3c9a2aa9e25bce439931b44e4a998b2"
@@ -2581,13 +2581,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain44.png",
           "role": "base",
-          "sha256": "927837dccebefbc215e6edb54c615d296bf918668dc2557b96503b191163e57a",
-          "source_sha256": "927837dccebefbc215e6edb54c615d296bf918668dc2557b96503b191163e57a",
+          "sha256": "62c172e8ca88c8241939a6ca453fd937f8a836d2c11d9d9e04174aec034a3e25",
+          "source_sha256": "62c172e8ca88c8241939a6ca453fd937f8a836d2c11d9d9e04174aec034a3e25",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "b3d393f9a7e950f8c5500b33c64f960c65344bff00d1a4f189e5dcee7f4e6e4e"
@@ -2599,13 +2599,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain45.png",
           "role": "base",
-          "sha256": "7b8c045583e93eeb30e41f0721d099b6a85d6848e6de9b01dd81160f44549e43",
-          "source_sha256": "7b8c045583e93eeb30e41f0721d099b6a85d6848e6de9b01dd81160f44549e43",
+          "sha256": "83db344d496a55f6dc266939a5ad22753790b7e145a641d8118fd3dc440ae8da",
+          "source_sha256": "83db344d496a55f6dc266939a5ad22753790b7e145a641d8118fd3dc440ae8da",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "8092e0ab300595d05e3c8c96110b412a6f526990cc7a55b96a2f15014a88e043"
@@ -2617,13 +2617,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain46.png",
           "role": "base",
-          "sha256": "c965c86f4fd4eb769af411b6c5d45ae03fcab567b1dd0b393bad1f301be66445",
-          "source_sha256": "c965c86f4fd4eb769af411b6c5d45ae03fcab567b1dd0b393bad1f301be66445",
+          "sha256": "19f5b6d1bca958c3c2efdeca271003681adfc1434e3fbfee19bd86f9d8b8a485",
+          "source_sha256": "19f5b6d1bca958c3c2efdeca271003681adfc1434e3fbfee19bd86f9d8b8a485",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "071728a0af02aea061fb1d4b3777f0f864192f7f90c30d87a28a9950848115ae"
@@ -2635,13 +2635,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain47.png",
           "role": "base",
-          "sha256": "c5eb5cba5915c370a4e364d316e4ee5ac2cd41c49c9221267cb4ef1d2981f8bb",
-          "source_sha256": "c5eb5cba5915c370a4e364d316e4ee5ac2cd41c49c9221267cb4ef1d2981f8bb",
+          "sha256": "32b87d6966118789092cca17b3863a5b57777b17a2ab2fab816e4124b5ecd637",
+          "source_sha256": "32b87d6966118789092cca17b3863a5b57777b17a2ab2fab816e4124b5ecd637",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "9be122578d8a8e33a35ab6bebdd01e9b1c3913013086cf89d9f61f3dda693bf6"
@@ -2653,13 +2653,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain48.png",
           "role": "base",
-          "sha256": "670aaf8ce2f1a92a038b2921062667e8922729147801f3a00ea2bc125d08519f",
-          "source_sha256": "670aaf8ce2f1a92a038b2921062667e8922729147801f3a00ea2bc125d08519f",
+          "sha256": "34dacdebd4c98f2054eed082a7f459c5393095994e6424641aa309340d0909bb",
+          "source_sha256": "34dacdebd4c98f2054eed082a7f459c5393095994e6424641aa309340d0909bb",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "6cc389ec3873bae822003e4714c959aaed83001a845ab9a6b6db04b65cf465f3"
@@ -2671,13 +2671,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain49.png",
           "role": "base",
-          "sha256": "bed401b2a208fe8b0ae0fa702f1e85288f41835911a1c55b67922d1d2dba3a15",
-          "source_sha256": "bed401b2a208fe8b0ae0fa702f1e85288f41835911a1c55b67922d1d2dba3a15",
+          "sha256": "52c093df5de313a324de78b5306f25a856b29296dcc62b549542940e77c9c623",
+          "source_sha256": "52c093df5de313a324de78b5306f25a856b29296dcc62b549542940e77c9c623",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "8152c2ffcb1aee3b90e49b170d9ed4f396f258825230dd1d62d5568cf281c2d5"
@@ -2689,13 +2689,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain50.png",
           "role": "base",
-          "sha256": "db159f6fc6719b2dbd9019757b4e3b7cb265ae786fc400226c52842772609728",
-          "source_sha256": "db159f6fc6719b2dbd9019757b4e3b7cb265ae786fc400226c52842772609728",
+          "sha256": "38a0bafb916540ff49c35c36777adc9f1531e4a67a711d6ad0002ffd10840c3b",
+          "source_sha256": "38a0bafb916540ff49c35c36777adc9f1531e4a67a711d6ad0002ffd10840c3b",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "1ca16653cfd3dd84c5467c768a0aa994cc68df3969c6340454dddf7e2c17d07d"
@@ -2707,13 +2707,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain51.png",
           "role": "base",
-          "sha256": "3ebfa16b5104cc521bcb4d4045c9c220b108dc017887c7c95c466151e00bad0e",
-          "source_sha256": "3ebfa16b5104cc521bcb4d4045c9c220b108dc017887c7c95c466151e00bad0e",
+          "sha256": "954cc62745313b7e56d0edef9a657406834ba7320b027466cc9e013e9e216265",
+          "source_sha256": "954cc62745313b7e56d0edef9a657406834ba7320b027466cc9e013e9e216265",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "78ead0fa506473140e946f036bfffb6283df03af92d6d7d4905d5a91cacca055"
@@ -2725,13 +2725,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain52.png",
           "role": "base",
-          "sha256": "2f826b47305c9f335b7199779103c687e5ee235f395b3f4997a5ef46001a68cd",
-          "source_sha256": "2f826b47305c9f335b7199779103c687e5ee235f395b3f4997a5ef46001a68cd",
+          "sha256": "1a20c7569858b519bd50c8baf93d701350772bf18eb8e055435a7094cf596199",
+          "source_sha256": "1a20c7569858b519bd50c8baf93d701350772bf18eb8e055435a7094cf596199",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "990049491b66561f95a4d776b3882194a754b42e42449c6cacf115bcc5095c5f"
@@ -2743,13 +2743,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain53.png",
           "role": "base",
-          "sha256": "e6b62bec3f1e278a320002d7f40c04e1d7ea06f287055839b746c3c10ea69c3a",
-          "source_sha256": "e6b62bec3f1e278a320002d7f40c04e1d7ea06f287055839b746c3c10ea69c3a",
+          "sha256": "e3c95fe1eb9150ad429cb7b6bb42aed43f8d895461e3fb8ab98045b2bdaf11ff",
+          "source_sha256": "e3c95fe1eb9150ad429cb7b6bb42aed43f8d895461e3fb8ab98045b2bdaf11ff",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "41ab3a913e844139813ba444844b3ba60359d85934c62761e139e4db16624950"
@@ -2761,13 +2761,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain54.png",
           "role": "base",
-          "sha256": "18def0e4625d56aff165319ead23405b2044c81821ae4843d10297a59a646fd5",
-          "source_sha256": "18def0e4625d56aff165319ead23405b2044c81821ae4843d10297a59a646fd5",
+          "sha256": "43c091ededcebbcf3391b15659023589b915611804d07a365e1cb08a3688bd22",
+          "source_sha256": "43c091ededcebbcf3391b15659023589b915611804d07a365e1cb08a3688bd22",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "7924814a47cef4f385dc6e821e9ca7968a50d814817366376f7e52b2acf59f50"
@@ -2779,13 +2779,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain55.png",
           "role": "base",
-          "sha256": "2c2491ee01e989e85600475bce527717d15fc3f8b64b71df746901c08ba0d9cd",
-          "source_sha256": "2c2491ee01e989e85600475bce527717d15fc3f8b64b71df746901c08ba0d9cd",
+          "sha256": "8b91dab28da7db120649f036b4689aa98301024d86533645a887bb70a45eaf50",
+          "source_sha256": "8b91dab28da7db120649f036b4689aa98301024d86533645a887bb70a45eaf50",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fbc25033cc8675484a59f19f4e9cf7374d76aab4c151f6d7cea6b11b7746e024"
@@ -2797,13 +2797,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain56.png",
           "role": "base",
-          "sha256": "f75feedb9e15e077dd8865eb0aeb8d83b82c038c8ee7901c86194da0944c7086",
-          "source_sha256": "f75feedb9e15e077dd8865eb0aeb8d83b82c038c8ee7901c86194da0944c7086",
+          "sha256": "753a1f120aa3f3989f1d94bd69fe772df202a143c5de97c2c6f88ac6a9d05c33",
+          "source_sha256": "753a1f120aa3f3989f1d94bd69fe772df202a143c5de97c2c6f88ac6a9d05c33",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "64a54274af82000c398025e620600c8c1170bff894902c145f96effdff3b9ee9"
@@ -2815,13 +2815,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain57.png",
           "role": "base",
-          "sha256": "003d7c26f2b19f91773342d0bdb1eaf9515b13c4ee4e9d19755ef6d1cde45d39",
-          "source_sha256": "003d7c26f2b19f91773342d0bdb1eaf9515b13c4ee4e9d19755ef6d1cde45d39",
+          "sha256": "3b542c21db2d716f3721ab5279db230c86aa5f805df59c38acdddf7fef4a5339",
+          "source_sha256": "3b542c21db2d716f3721ab5279db230c86aa5f805df59c38acdddf7fef4a5339",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "894ba2350be61821fce10702396c7dea8241847c543f06f4dbdd3b9b9a8a376a"
@@ -2833,13 +2833,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain58.png",
           "role": "base",
-          "sha256": "18cf35d59f3c5c014d5b65f126c361b08f421be9ded087a284e758780cde84c7",
-          "source_sha256": "18cf35d59f3c5c014d5b65f126c361b08f421be9ded087a284e758780cde84c7",
+          "sha256": "49882de07867616ea9d168b58e8096811cad0ba9120fd02049b60e358c94b7aa",
+          "source_sha256": "49882de07867616ea9d168b58e8096811cad0ba9120fd02049b60e358c94b7aa",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e44aa4e7bdefcdc51cc51e071e212d52256b7a57d3751eb7f807d953540d70c4"
@@ -2851,13 +2851,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain59.png",
           "role": "base",
-          "sha256": "ad93d98630ebf0c3bec463dba590656241b500e729e57f5918a49cd85185377d",
-          "source_sha256": "ad93d98630ebf0c3bec463dba590656241b500e729e57f5918a49cd85185377d",
+          "sha256": "fc8fa5e135c3c550ca311e7f1de2635bf7a2c355480f9136408b6b9574b3a15c",
+          "source_sha256": "fc8fa5e135c3c550ca311e7f1de2635bf7a2c355480f9136408b6b9574b3a15c",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "84a90db99c543d3413db939c46a4c5251a8daf69eedabc74bc7beaa036075262"
@@ -2869,13 +2869,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain60.png",
           "role": "base",
-          "sha256": "d30aec9042ac708ebb47c57f4ebce333811f870ba4f08a19bc97ed7df92e6136",
-          "source_sha256": "d30aec9042ac708ebb47c57f4ebce333811f870ba4f08a19bc97ed7df92e6136",
+          "sha256": "6ec61521bb9033c433f1050bb1af6a304d1eda67c3820c61a4e3f851f1c16326",
+          "source_sha256": "6ec61521bb9033c433f1050bb1af6a304d1eda67c3820c61a4e3f851f1c16326",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "aa1bc62b1ba57bedbe87c238cc9d614fee5d4ee38cf8f876acd94efbc93429ef"
@@ -2887,13 +2887,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain61.png",
           "role": "base",
-          "sha256": "10af8080687b63767a9c2c954ea88b09c9c36510156ef589bd5a64ac069003c7",
-          "source_sha256": "10af8080687b63767a9c2c954ea88b09c9c36510156ef589bd5a64ac069003c7",
+          "sha256": "af1210006fcb241c9bd4528011a4a5ee81a1e88642d5ef6660bb01dd4d72e7bb",
+          "source_sha256": "af1210006fcb241c9bd4528011a4a5ee81a1e88642d5ef6660bb01dd4d72e7bb",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "ff220e659e74bc6e3c312f19382fa80b4357febd96b6350679205be69a8c36ab"
@@ -2905,13 +2905,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain62.png",
           "role": "base",
-          "sha256": "863678b59ef291a1afa4a19289b51a7d07243bfc28c21c43e53ee4616b5612ef",
-          "source_sha256": "863678b59ef291a1afa4a19289b51a7d07243bfc28c21c43e53ee4616b5612ef",
+          "sha256": "abec33725b7db3149c71fabf1003b5d3170b59b626f42784e655f03b2fc21658",
+          "source_sha256": "abec33725b7db3149c71fabf1003b5d3170b59b626f42784e655f03b2fc21658",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "cbe82a91f0fe1874a5b2a4357d3ef3f45f5381b148301050eed5ea6487f715f6"
@@ -2923,13 +2923,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain63.png",
           "role": "base",
-          "sha256": "83ee4a1a5aaa11b0506debc16ad0bde569e8a5860ba98b34c6b87d879909ea72",
-          "source_sha256": "83ee4a1a5aaa11b0506debc16ad0bde569e8a5860ba98b34c6b87d879909ea72",
+          "sha256": "12b00353bc483acc4882311862bc173c132521ae6096264573abd1e0371b8103",
+          "source_sha256": "12b00353bc483acc4882311862bc173c132521ae6096264573abd1e0371b8103",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "253ae32d661cc3f85dc3f23a76b8a3e38cd9eb326177d8238e1e64901339a960"
@@ -2941,13 +2941,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain64.png",
           "role": "base",
-          "sha256": "8e5bdd38b9a8044f161bd2314fe39c81fa0f55a2372693fef5b634f9721369ae",
-          "source_sha256": "8e5bdd38b9a8044f161bd2314fe39c81fa0f55a2372693fef5b634f9721369ae",
+          "sha256": "de43343e89e364ddd0e22c20697ef5df3b2039d3dd9b278d45172d671f1843fc",
+          "source_sha256": "de43343e89e364ddd0e22c20697ef5df3b2039d3dd9b278d45172d671f1843fc",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "195fd5741f6324c94e66ea3b113679e1498eec30de36350165d6d72129edd6fc"
@@ -2959,13 +2959,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain65.png",
           "role": "base",
-          "sha256": "dfdd1e216e5c709ef7e49a9e8cf36f375089a865376749b96ebbbb826af1f44b",
-          "source_sha256": "dfdd1e216e5c709ef7e49a9e8cf36f375089a865376749b96ebbbb826af1f44b",
+          "sha256": "90987c45dba5f17b5ce9e55a5f532de353d5b3151bdd246155bfc8915b7c4b6a",
+          "source_sha256": "90987c45dba5f17b5ce9e55a5f532de353d5b3151bdd246155bfc8915b7c4b6a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "41b099ba614ee6d5d1dd117818a6cdcadb2c8aaeb41ad1b3d3914f86edd2f170"
@@ -2977,13 +2977,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain66.png",
           "role": "base",
-          "sha256": "72d8d1cfd816eb5a4f0f2e11bae9e924be2556f83ca1f0f72cb120d9f98ab56e",
-          "source_sha256": "72d8d1cfd816eb5a4f0f2e11bae9e924be2556f83ca1f0f72cb120d9f98ab56e",
+          "sha256": "d20286a5dff008219e1b34c14704e259c64bb170648cf4867d04742bb31953b5",
+          "source_sha256": "d20286a5dff008219e1b34c14704e259c64bb170648cf4867d04742bb31953b5",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e214d07432b801c5b3e8f5b3231026879923fb27e629ed933b10766975c32a80"
@@ -2995,13 +2995,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain67.png",
           "role": "base",
-          "sha256": "0e70d1e0e3dd357125d453728095bea2e1a34eddb7040b78bbb5deaf80252af9",
-          "source_sha256": "0e70d1e0e3dd357125d453728095bea2e1a34eddb7040b78bbb5deaf80252af9",
+          "sha256": "15566e285a9e2823fdb242035c2bdd6245338b8352512797528cdb7b22131f85",
+          "source_sha256": "15566e285a9e2823fdb242035c2bdd6245338b8352512797528cdb7b22131f85",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "bab9b1659c483caae89ad4c68245561927d730598c0261d93acbace561c7e327"
@@ -3013,13 +3013,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain68.png",
           "role": "base",
-          "sha256": "6b80527b3af77cedefe29f04bf6babe24205a363296b41b988d41ab479feebc3",
-          "source_sha256": "6b80527b3af77cedefe29f04bf6babe24205a363296b41b988d41ab479feebc3",
+          "sha256": "bd89da7c2c75a2201ebdca763c0a4150ceeae14a21c87f3c89197f51a1c62ae4",
+          "source_sha256": "bd89da7c2c75a2201ebdca763c0a4150ceeae14a21c87f3c89197f51a1c62ae4",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "bf905c0117a25caaaa7cd29be9be603800efc6a460a2bd32da81bbf2cd08c559"
@@ -3031,13 +3031,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain69.png",
           "role": "base",
-          "sha256": "8ae1c6711cacfcfd6267926a6da3c054bff95e1a4f38763d982813f8c91d27d2",
-          "source_sha256": "8ae1c6711cacfcfd6267926a6da3c054bff95e1a4f38763d982813f8c91d27d2",
+          "sha256": "a2b9ea232541e93a372b5d6a3dcaf0ef4c7f95891b37e6c698a77c8ea4889982",
+          "source_sha256": "a2b9ea232541e93a372b5d6a3dcaf0ef4c7f95891b37e6c698a77c8ea4889982",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "d108684b5d0c55979d05ca680926a0982f686dc21899b077507792f5acd22254"
@@ -3049,13 +3049,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain70.png",
           "role": "base",
-          "sha256": "25fcfaad1b1359d3e0bf3b392f713b275eee1f2c877806a4cf51586bcd7a64aa",
-          "source_sha256": "25fcfaad1b1359d3e0bf3b392f713b275eee1f2c877806a4cf51586bcd7a64aa",
+          "sha256": "c98f370f76c305682a8b29ae1d6dfcaf3d0d00eebc7f885f14c5186699b7e78b",
+          "source_sha256": "c98f370f76c305682a8b29ae1d6dfcaf3d0d00eebc7f885f14c5186699b7e78b",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "9e54e74d588d6307ee19031b1f2991296671cd0613cdf5350549e5d829707d6e"
@@ -3067,13 +3067,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain71.png",
           "role": "base",
-          "sha256": "f3847b7111279a6103bbe746d0b6d719d3f4ab76d4b1228d3e85bbe426fe9f27",
-          "source_sha256": "f3847b7111279a6103bbe746d0b6d719d3f4ab76d4b1228d3e85bbe426fe9f27",
+          "sha256": "d5ebf1a58367c0cc76920cd02019da8243e1d720a65fac371471cdd1c18777d3",
+          "source_sha256": "d5ebf1a58367c0cc76920cd02019da8243e1d720a65fac371471cdd1c18777d3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "42899364f96a92860a2bd5077b9ea00f78b214154b9024fbac893c37015654c8"
@@ -3085,13 +3085,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain72.png",
           "role": "base",
-          "sha256": "4f55a336c648a13efd1e915c887e64bbd555c07112a48510c9ef2d57cab22757",
-          "source_sha256": "4f55a336c648a13efd1e915c887e64bbd555c07112a48510c9ef2d57cab22757",
+          "sha256": "046f57ac58b3fd802042e2b79a2cf8602e9096d176e96f972e6bcff24239e204",
+          "source_sha256": "046f57ac58b3fd802042e2b79a2cf8602e9096d176e96f972e6bcff24239e204",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "ab71dc7cbc4ef3953325d9494f87ed780c891063596eaae77c93386bb2fa7cda"
@@ -3103,13 +3103,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain73.png",
           "role": "base",
-          "sha256": "9cf6fc0b3dbb1e53b91c427a1cc681d942d2fb63bb9d749b2945e8fccaf2308c",
-          "source_sha256": "9cf6fc0b3dbb1e53b91c427a1cc681d942d2fb63bb9d749b2945e8fccaf2308c",
+          "sha256": "5fe01e5aad2b895cb5de557b9b80b6090a8e8ecabc7780327781094f92997689",
+          "source_sha256": "5fe01e5aad2b895cb5de557b9b80b6090a8e8ecabc7780327781094f92997689",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "825d1a6fafa64c33c028331069ccf3b860227cbd99eda466876e2e3647b6aa95"
@@ -3121,13 +3121,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain74.png",
           "role": "base",
-          "sha256": "a454cc3f1e48c399a7a97f864d0da078778223e0a5a092232fca03128cc1585c",
-          "source_sha256": "a454cc3f1e48c399a7a97f864d0da078778223e0a5a092232fca03128cc1585c",
+          "sha256": "8404b07716c9a23a7b7b903ee39523972b6a909ba9f3856a7452b030a185a444",
+          "source_sha256": "8404b07716c9a23a7b7b903ee39523972b6a909ba9f3856a7452b030a185a444",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "46b09f9efd338c4c78b501308870d03a3f65502cb8e1bf5c16a2c357dc495266"
@@ -3139,13 +3139,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain75.png",
           "role": "base",
-          "sha256": "921ddcb191fe991e142947e24df55a1747037ed1c21aef4cef6b5015d0682ee4",
-          "source_sha256": "921ddcb191fe991e142947e24df55a1747037ed1c21aef4cef6b5015d0682ee4",
+          "sha256": "2bdd13fb7cf6033e7ed9db0b56df88304386a0b459cd9c0cb1e805227ad4aa02",
+          "source_sha256": "2bdd13fb7cf6033e7ed9db0b56df88304386a0b459cd9c0cb1e805227ad4aa02",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "4510e92d1de079230845f64359e0ca473301c8f9628d4657479dfb75649a66e8"
@@ -3157,13 +3157,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain76.png",
           "role": "base",
-          "sha256": "2940e805e7bd9b3fa0aee50add7220524c4e1dd6fb2fde22da78873d4c9d456c",
-          "source_sha256": "2940e805e7bd9b3fa0aee50add7220524c4e1dd6fb2fde22da78873d4c9d456c",
+          "sha256": "d2b278931d669cb1c55a5492790b0d39faa115b9e8fd28fcb3ad0f381c648f02",
+          "source_sha256": "d2b278931d669cb1c55a5492790b0d39faa115b9e8fd28fcb3ad0f381c648f02",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "c23567d638b615035b218c262df0b85979939fbc3d193945dcc64f920e58e548"
@@ -3175,13 +3175,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain77.png",
           "role": "base",
-          "sha256": "b11a04c283e38595165e56acd760c1a184d8c17f601cd8db81b48cd7d158bb8b",
-          "source_sha256": "b11a04c283e38595165e56acd760c1a184d8c17f601cd8db81b48cd7d158bb8b",
+          "sha256": "2a54aad64fd531f48993e68d1dbdbe8bbd135a75fb2d2e599a2e30122df6cf31",
+          "source_sha256": "2a54aad64fd531f48993e68d1dbdbe8bbd135a75fb2d2e599a2e30122df6cf31",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "17567e95d683b36007b8a5d30f67718fc4528809cae67b30b1f03857a8343530"
@@ -3193,13 +3193,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain78.png",
           "role": "base",
-          "sha256": "6c96b209a7759cc9a951171c625b74e8de2583424ae4b0616ea4af192ef8e8db",
-          "source_sha256": "6c96b209a7759cc9a951171c625b74e8de2583424ae4b0616ea4af192ef8e8db",
+          "sha256": "592a8c74fdfafd08e1350d80bea6d4c3681d0cae2b464e0de317eb08bf037a54",
+          "source_sha256": "592a8c74fdfafd08e1350d80bea6d4c3681d0cae2b464e0de317eb08bf037a54",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "547b3e2505bb766badd6be2f2a8a5c8ddbf93496d90ef8090e652dc26f1d5adc"
@@ -3211,13 +3211,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain79.png",
           "role": "base",
-          "sha256": "58df7f8ebbd3dc7eba181f5949de37c73bd07d1bcae99ebb942d62a702dc85ab",
-          "source_sha256": "58df7f8ebbd3dc7eba181f5949de37c73bd07d1bcae99ebb942d62a702dc85ab",
+          "sha256": "9baa02b27b1cba787246a3672d9afff9ea21540902392ee0997af10aae2cc951",
+          "source_sha256": "9baa02b27b1cba787246a3672d9afff9ea21540902392ee0997af10aae2cc951",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "c9a6f74aacf60df3e586d54e1bcd4f2f235f9f94bf83809e84c51a157710de99"
@@ -3229,13 +3229,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain80.png",
           "role": "base",
-          "sha256": "40e83788be6e6706476bdacd4e33a9ea17bc2e5aa4f4206138f48677d6b0df30",
-          "source_sha256": "40e83788be6e6706476bdacd4e33a9ea17bc2e5aa4f4206138f48677d6b0df30",
+          "sha256": "aac2d2ff0b135532d5fb75fcaa625bbf1c62fb879b767897363963aff32f5bc2",
+          "source_sha256": "aac2d2ff0b135532d5fb75fcaa625bbf1c62fb879b767897363963aff32f5bc2",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "44299b501a43c3c77e6e0da22111d6b21918268e146bc6053d465945f448e53d"
@@ -3247,13 +3247,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain81.png",
           "role": "base",
-          "sha256": "66fcea0f2536ee59c506fc7615d8d9d83e18418e25359a37b374fef1b97b0938",
-          "source_sha256": "66fcea0f2536ee59c506fc7615d8d9d83e18418e25359a37b374fef1b97b0938",
+          "sha256": "3da656e2ba3f2cdd11ab1f1af5d6fc6b57743f64d40015647881862ca5d6aa84",
+          "source_sha256": "3da656e2ba3f2cdd11ab1f1af5d6fc6b57743f64d40015647881862ca5d6aa84",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "9fb15939797f6f5f92e4d0e44ba88eb30ae223272ae9285b0ba1ea542c027e74"
@@ -3265,13 +3265,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain82.png",
           "role": "base",
-          "sha256": "a24126e8c09a9945e5bfe00c7f9fd7935a0004709e26a02eb0a1e98d80e9b3c1",
-          "source_sha256": "a24126e8c09a9945e5bfe00c7f9fd7935a0004709e26a02eb0a1e98d80e9b3c1",
+          "sha256": "57a4328d673b3fad7f43b020bd3ae7218c5195256174fc4bbc3ae48e3659ab81",
+          "source_sha256": "57a4328d673b3fad7f43b020bd3ae7218c5195256174fc4bbc3ae48e3659ab81",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "d2106107048672bd5474f0dcc1bf959d4f7ef3f15cfb3c96b6435c0d0a0a0b9a"
@@ -3283,13 +3283,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain83.png",
           "role": "base",
-          "sha256": "aec827aacf0d2b2fa2d6edcdefc03810ce1f14eb9c1e1de44ee6e00982269ea2",
-          "source_sha256": "aec827aacf0d2b2fa2d6edcdefc03810ce1f14eb9c1e1de44ee6e00982269ea2",
+          "sha256": "6b9fb64552b9823290166d4863c6c3eb290ecf7768d4fc38cc852ae7aff0e5c8",
+          "source_sha256": "6b9fb64552b9823290166d4863c6c3eb290ecf7768d4fc38cc852ae7aff0e5c8",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e28bed0497ecd8860aeff5e3c74c48efd98b1ebc4ccfa436c3d43a8da366c0b3"
@@ -3301,13 +3301,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain84.png",
           "role": "base",
-          "sha256": "553d00ea85283be074041305909b89607a11335e76e4a0f62364a74d6e89c554",
-          "source_sha256": "553d00ea85283be074041305909b89607a11335e76e4a0f62364a74d6e89c554",
+          "sha256": "35da7c2109ba6f0dbdb3815c9c66eb03d7f26eb2c939b106cc95a3229a0b98b2",
+          "source_sha256": "35da7c2109ba6f0dbdb3815c9c66eb03d7f26eb2c939b106cc95a3229a0b98b2",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "f41690d2a1fd045d3fcc961cb1394920228e29c0aeb0dd50aaa7cd4cafdd5a44"
@@ -3319,13 +3319,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain85.png",
           "role": "base",
-          "sha256": "bc5abfa75f00d0cc81b85931a261ae16d97570f8b7804d93f964545cb3fe6b3f",
-          "source_sha256": "bc5abfa75f00d0cc81b85931a261ae16d97570f8b7804d93f964545cb3fe6b3f",
+          "sha256": "858e66c1ba286219f98be57c10f0e5c215ffc9359167712d705ccefbfcff41df",
+          "source_sha256": "858e66c1ba286219f98be57c10f0e5c215ffc9359167712d705ccefbfcff41df",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "0cffa6ba982a61813f7e9d7c10a937ac630a6e275c787fd7c71912b1fefd81ca"
@@ -3337,13 +3337,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain86.png",
           "role": "base",
-          "sha256": "4656cff43a0a5d02c7f8da9d22785ac21bf8fbab05108a27bf76b8f600434c59",
-          "source_sha256": "4656cff43a0a5d02c7f8da9d22785ac21bf8fbab05108a27bf76b8f600434c59",
+          "sha256": "6a4dc56d643fdfb4fa59118e0cb26ce9d0fcbcca69d2c436d3dbef402cccbc24",
+          "source_sha256": "6a4dc56d643fdfb4fa59118e0cb26ce9d0fcbcca69d2c436d3dbef402cccbc24",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "29f219f9826a401bf6b25733f83f40f0708c8ad21b42d5fbd4e181cd39c6a715"
@@ -3355,13 +3355,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain87.png",
           "role": "base",
-          "sha256": "c397f0fa16d52a78b547d0a6dd375d4f8a68b8974bb97b85da1d7865c43dda3f",
-          "source_sha256": "c397f0fa16d52a78b547d0a6dd375d4f8a68b8974bb97b85da1d7865c43dda3f",
+          "sha256": "60899bc6eb709fafa83860f225dab465e7a834544d68cd69e30bf734a844586a",
+          "source_sha256": "60899bc6eb709fafa83860f225dab465e7a834544d68cd69e30bf734a844586a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "528ae3ec8e4a7a7334998aa1798b3c2768d6731da3ed47441d53cac6b2b448f0"
@@ -3373,13 +3373,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain88.png",
           "role": "base",
-          "sha256": "7ea2552a484537e7e4f9b991c20a34225f4ebb0d6c39be0a560d09ea4644dd69",
-          "source_sha256": "7ea2552a484537e7e4f9b991c20a34225f4ebb0d6c39be0a560d09ea4644dd69",
+          "sha256": "02ac6edb5350fa0b4084676870a11df213162f447b92ed3dcbf6a00a0f7aa4f6",
+          "source_sha256": "02ac6edb5350fa0b4084676870a11df213162f447b92ed3dcbf6a00a0f7aa4f6",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "c06a20cc5f7bdac1c0dc593edc2557882d42f09f1362e0a011ab225939f9f2b4"
@@ -3391,13 +3391,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain89.png",
           "role": "base",
-          "sha256": "b933265be2a7d0e5a94f449c2cbbd304cb0a428bc9abd840890730cf4008f95a",
-          "source_sha256": "b933265be2a7d0e5a94f449c2cbbd304cb0a428bc9abd840890730cf4008f95a",
+          "sha256": "c6d84eec0a49cefcd10434a04869fdacc9bc8dc96cd23b7ad8ae48cf50b403ba",
+          "source_sha256": "c6d84eec0a49cefcd10434a04869fdacc9bc8dc96cd23b7ad8ae48cf50b403ba",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "4aad77b9f9e21f70e6be22ffbc440b7239107328945d5a0d8eb007622eea3a54"
@@ -3409,13 +3409,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain90.png",
           "role": "base",
-          "sha256": "ab83ab6f2bd728ba4b17a252800a700835df294f230944c8ba5e6128017ab8a6",
-          "source_sha256": "ab83ab6f2bd728ba4b17a252800a700835df294f230944c8ba5e6128017ab8a6",
+          "sha256": "724299ac56965dd99ec7c81de9f18f91e61dea842bde6ea3d72173cfc896e1ae",
+          "source_sha256": "724299ac56965dd99ec7c81de9f18f91e61dea842bde6ea3d72173cfc896e1ae",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "81754d6fc9dc7527c9f1efe41fdc965e0ded00c450fc504f8ab64be7dad04292"
@@ -3427,13 +3427,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain91.png",
           "role": "base",
-          "sha256": "be812df5512e143cb5474bfdad05e1ca2165bc5d6029f461ea4bbc5642c4f3cf",
-          "source_sha256": "be812df5512e143cb5474bfdad05e1ca2165bc5d6029f461ea4bbc5642c4f3cf",
+          "sha256": "82fa8fd9b2af89ca6cd709acf26764a36eba5a3ec4e77261b8f5b6071d7364a8",
+          "source_sha256": "82fa8fd9b2af89ca6cd709acf26764a36eba5a3ec4e77261b8f5b6071d7364a8",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "959438f73c3676e2fc071c2ed9998cc3838dc86027af3886f0a9cd4b2f8c603b"
@@ -3445,13 +3445,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain92.png",
           "role": "base",
-          "sha256": "2fdb8d44ae8b2d5c2052238845b321cf6e02452170520a590bde3cc474b5f9b0",
-          "source_sha256": "2fdb8d44ae8b2d5c2052238845b321cf6e02452170520a590bde3cc474b5f9b0",
+          "sha256": "7589a51590cef355398a52016d85c7e41b3347655ec38aecbf76c5b47e3de6b5",
+          "source_sha256": "7589a51590cef355398a52016d85c7e41b3347655ec38aecbf76c5b47e3de6b5",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "68ab0d0cd05e96d2ebffd431e380375ab9f1e16f8bf938e9a00905a6f469b965"
@@ -3463,13 +3463,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain93.png",
           "role": "base",
-          "sha256": "658bf1fe57b51061cf8d7f35ce8d9f431a7fdccdfe04b7080ae8abe305b637c4",
-          "source_sha256": "658bf1fe57b51061cf8d7f35ce8d9f431a7fdccdfe04b7080ae8abe305b637c4",
+          "sha256": "da1c5992458ff1d5d49aab3800777ee7eb6b30968c5689f7f7d10b5c6feae13a",
+          "source_sha256": "da1c5992458ff1d5d49aab3800777ee7eb6b30968c5689f7f7d10b5c6feae13a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "87e6101cf915a83952080d631eece4a3e5117d3e3ead2032c720180cde611454"
@@ -3481,13 +3481,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain94.png",
           "role": "base",
-          "sha256": "09ec12891b159945796b5dbeb4059f3d26327080f30ff54e26d5ebb1c63a9fe3",
-          "source_sha256": "09ec12891b159945796b5dbeb4059f3d26327080f30ff54e26d5ebb1c63a9fe3",
+          "sha256": "614cc04b424c3720d6637cabcf0c7b0caaeaeb06841d7b01f6402a36c3bf4b52",
+          "source_sha256": "614cc04b424c3720d6637cabcf0c7b0caaeaeb06841d7b01f6402a36c3bf4b52",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "905280df8dffac43797a80fd645a5ea55e47c1d3682b4c7e97a1b4db4a8a22f0"
@@ -3499,13 +3499,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain95.png",
           "role": "base",
-          "sha256": "4a3fd900fcd8af954c3f23c271fc9db8eb434532fda0b871e910f61aead82b6f",
-          "source_sha256": "4a3fd900fcd8af954c3f23c271fc9db8eb434532fda0b871e910f61aead82b6f",
+          "sha256": "a3b6c486c8e4bc75262d3f14bc461189a0dd3ca6fb8c186f5bbd95ae7220f0d3",
+          "source_sha256": "a3b6c486c8e4bc75262d3f14bc461189a0dd3ca6fb8c186f5bbd95ae7220f0d3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "487c840850a22de78e55bf908b633dfd28e305f289334124f953167dc8e774b6"
@@ -3517,13 +3517,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain96.png",
           "role": "base",
-          "sha256": "c54adaa8934efea3fecc5694787f2f4e2b83fb358fbd0bd655f4cb71ddb2348e",
-          "source_sha256": "c54adaa8934efea3fecc5694787f2f4e2b83fb358fbd0bd655f4cb71ddb2348e",
+          "sha256": "3ca4f2a75e2c2c39827cc782d7b724a9325051b95b1cf4a19eb341ec96e0b753",
+          "source_sha256": "3ca4f2a75e2c2c39827cc782d7b724a9325051b95b1cf4a19eb341ec96e0b753",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "a792247875d8743ed8a53863f8c63238cb28752af39b36b0c06b5f13b4df28d9"
@@ -3535,13 +3535,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain97.png",
           "role": "base",
-          "sha256": "3b27e31b27894d329d8762aeb7d05e5cafc5f08fddf0c929dff440cfbe3fd6e8",
-          "source_sha256": "3b27e31b27894d329d8762aeb7d05e5cafc5f08fddf0c929dff440cfbe3fd6e8",
+          "sha256": "f6985922047fd5e8a702588488a50f037de952df0b8f9b33e5423b63bd84057d",
+          "source_sha256": "f6985922047fd5e8a702588488a50f037de952df0b8f9b33e5423b63bd84057d",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "1ee7cf12a5216d1582efb9ad87efdf704cab7d12eaa6ebb68bf11000755f61fb"
@@ -3553,13 +3553,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain98.png",
           "role": "base",
-          "sha256": "4e48cad85e4628b4a4f886aa243fc56d7804979a923817d72569345991cc099f",
-          "source_sha256": "4e48cad85e4628b4a4f886aa243fc56d7804979a923817d72569345991cc099f",
+          "sha256": "cac0c960f7e9c60c37c7eaa8de25e1aa52be1d45fb631545376cb26ec2a30409",
+          "source_sha256": "cac0c960f7e9c60c37c7eaa8de25e1aa52be1d45fb631545376cb26ec2a30409",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "0fa14813b9714b2cdc9a32569b0065a53a6945e01f953408dc06ee43200923f2"
@@ -3571,13 +3571,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain99.png",
           "role": "base",
-          "sha256": "eb03431196326e3a081c5f05fe41cf81667dfde1312f79d17f4382c4a861e484",
-          "source_sha256": "eb03431196326e3a081c5f05fe41cf81667dfde1312f79d17f4382c4a861e484",
+          "sha256": "acf7d9a26bc2163d225347ba6832da32cec36efb52ff735701223da489299ecf",
+          "source_sha256": "acf7d9a26bc2163d225347ba6832da32cec36efb52ff735701223da489299ecf",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "d9899180dec87661399a0629cf66da2300244820533a12fe3835bb7110ba4637"
@@ -3589,13 +3589,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain100.png",
           "role": "base",
-          "sha256": "8f3668e5e0938359ffecf1df6733c5948b846b4c811c2134af4a305f1e683def",
-          "source_sha256": "8f3668e5e0938359ffecf1df6733c5948b846b4c811c2134af4a305f1e683def",
+          "sha256": "5fc11e3a96d76cb8bcc0fb4625df47a93e0e26887456d5d3f2ba0dec55513b2f",
+          "source_sha256": "5fc11e3a96d76cb8bcc0fb4625df47a93e0e26887456d5d3f2ba0dec55513b2f",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "4ad7918018c0900672127e14b0ef2e447ae87992860b9d378e320c9954aa2536"
@@ -3607,13 +3607,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain101.png",
           "role": "base",
-          "sha256": "2a08c56bdd8cfa64f700594cb0ad791d7bcf20c51f654014e15d3e4b46fdb12a",
-          "source_sha256": "2a08c56bdd8cfa64f700594cb0ad791d7bcf20c51f654014e15d3e4b46fdb12a",
+          "sha256": "f6e1817c453952048e250e0e5bcc0f2eeec41eecd5b02974b0f2896215285295",
+          "source_sha256": "f6e1817c453952048e250e0e5bcc0f2eeec41eecd5b02974b0f2896215285295",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "9b155fcd54089384da5ce9c555bd568a89606df6a83d274472824f93a4915010"
@@ -3625,13 +3625,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain102.png",
           "role": "base",
-          "sha256": "7ba17097d70cc7c008c79c1280be8612dd1f56c28fb791fafb3f612497db5edf",
-          "source_sha256": "7ba17097d70cc7c008c79c1280be8612dd1f56c28fb791fafb3f612497db5edf",
+          "sha256": "d4f71cb85745629afe96262b188b203350004bafa019d794a73bbc5b7a138f4b",
+          "source_sha256": "d4f71cb85745629afe96262b188b203350004bafa019d794a73bbc5b7a138f4b",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "d16a4050805cd8d91440423059d517f9d7d789c0df8451f08fc762a4ffe8dedb"
@@ -3643,13 +3643,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain103.png",
           "role": "base",
-          "sha256": "d83fc108b3d0697362c4a8815e5241a965e85d56c49fd9b779e838ca5bcf0b9d",
-          "source_sha256": "d83fc108b3d0697362c4a8815e5241a965e85d56c49fd9b779e838ca5bcf0b9d",
+          "sha256": "a796bdb76669c41fb8c93c35c64bc250963c621244f6abed62dfa9f09b626ae2",
+          "source_sha256": "a796bdb76669c41fb8c93c35c64bc250963c621244f6abed62dfa9f09b626ae2",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "867c2c4ade5bbc03ee4790a9e159825ed84807b17773b87a028d3daf147050bc"
@@ -3661,13 +3661,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain104.png",
           "role": "base",
-          "sha256": "7e642ef75e987513ef22624bffd3436d7fb96ddb23aa9e2ba8e8b3b387d0e40c",
-          "source_sha256": "7e642ef75e987513ef22624bffd3436d7fb96ddb23aa9e2ba8e8b3b387d0e40c",
+          "sha256": "52354b113cc85a9b7a4836e81f4bd57601815a23d20ac707ada3fa7498bee55a",
+          "source_sha256": "52354b113cc85a9b7a4836e81f4bd57601815a23d20ac707ada3fa7498bee55a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "bf4c957468e70e394f0c9aff3292325aefcff7ebb7ccf13eae00d14836f268af"
@@ -3679,13 +3679,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain105.png",
           "role": "base",
-          "sha256": "36fe04ffa10050e12e28269bb23f46e4b34a67ad0106b7794b0739d5d30d1d1f",
-          "source_sha256": "36fe04ffa10050e12e28269bb23f46e4b34a67ad0106b7794b0739d5d30d1d1f",
+          "sha256": "e561f234c53583344261186954f9cbea7de653aefaa4bbb7154670303c0d6ce5",
+          "source_sha256": "e561f234c53583344261186954f9cbea7de653aefaa4bbb7154670303c0d6ce5",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "d71bc49ad038b9d51a63a95be4a3356e284f498a7340c603a289fed537e23298"
@@ -3697,13 +3697,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain106.png",
           "role": "base",
-          "sha256": "67f6c7ba06df1d09d225d76c2873456c005abd452ad00f28d00002a7cda3f534",
-          "source_sha256": "67f6c7ba06df1d09d225d76c2873456c005abd452ad00f28d00002a7cda3f534",
+          "sha256": "d00ba2ad5a4040db190bb304cf3a0df2bc512a2c288c3e76e33460e01bf0d4b3",
+          "source_sha256": "d00ba2ad5a4040db190bb304cf3a0df2bc512a2c288c3e76e33460e01bf0d4b3",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "add8ae8c8f429bdf3a4e6163cc272116e9e0a63c7be2db1569c3e003a6556a3f"
@@ -3715,13 +3715,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain107.png",
           "role": "base",
-          "sha256": "e40a2e8e6400d0b56af72d01022b778b149e0c554b6e07de4d0e84a1ba7b4ba7",
-          "source_sha256": "e40a2e8e6400d0b56af72d01022b778b149e0c554b6e07de4d0e84a1ba7b4ba7",
+          "sha256": "7529cd1c599e5e6f6fd9a4197c30f378696bec8b58c12c1baf67a7880f037c63",
+          "source_sha256": "7529cd1c599e5e6f6fd9a4197c30f378696bec8b58c12c1baf67a7880f037c63",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e5edaf4311b5a8b89cb8c6cbfef75e9ab0aaf1117a6c7be88770cc6aa7fda8ad"
@@ -3733,13 +3733,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain108.png",
           "role": "base",
-          "sha256": "6ed24eb36352b998be52f8fadce0746e138d2c5a14c841d1227b3ec7cb3cce06",
-          "source_sha256": "6ed24eb36352b998be52f8fadce0746e138d2c5a14c841d1227b3ec7cb3cce06",
+          "sha256": "a9bf23bfaf3df784fad39ffa505c97026405ee7ae87e8a4c8fb1dfadb3742c92",
+          "source_sha256": "a9bf23bfaf3df784fad39ffa505c97026405ee7ae87e8a4c8fb1dfadb3742c92",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "4cc1d6f2989c437744ad3b86be47aa9cde3b6ceb4416d79ce8e361d7d23cc077"
@@ -3751,13 +3751,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain109.png",
           "role": "base",
-          "sha256": "0c33a76f389a7c75fc5e09cd7e9d59c26d668fbd50210676617c9a07f687d239",
-          "source_sha256": "0c33a76f389a7c75fc5e09cd7e9d59c26d668fbd50210676617c9a07f687d239",
+          "sha256": "b467794171b0ef3793c31b6ef8f6bafa7dc5ca932eec23ccbefd57662e208993",
+          "source_sha256": "b467794171b0ef3793c31b6ef8f6bafa7dc5ca932eec23ccbefd57662e208993",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "b41d9a746e5360c93950f9ed40281911fa44bf4b356f351ee7b3a3a4e1f78004"
@@ -3769,13 +3769,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain110.png",
           "role": "base",
-          "sha256": "240bfca7804aac3364914efeced73718bc1865436f9d2bb140c8fccdb544bcab",
-          "source_sha256": "240bfca7804aac3364914efeced73718bc1865436f9d2bb140c8fccdb544bcab",
+          "sha256": "e960c62673edee0851f1b79d381b1540156d64f5e1293eaa958162e53b07f9d8",
+          "source_sha256": "e960c62673edee0851f1b79d381b1540156d64f5e1293eaa958162e53b07f9d8",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e81d7c9de930e09e85302be7e6c4e4f58d248afa46eec2920fe5f26f5dbee08f"
@@ -3787,13 +3787,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain111.png",
           "role": "base",
-          "sha256": "9d1edc174a093b44f866f4967be43630e5a3915c5260adba20abf01a4e0525af",
-          "source_sha256": "9d1edc174a093b44f866f4967be43630e5a3915c5260adba20abf01a4e0525af",
+          "sha256": "2ba18fefdf812c29cb151ad6ff7a73b516b4332b5b3db67484489e60331ff3e2",
+          "source_sha256": "2ba18fefdf812c29cb151ad6ff7a73b516b4332b5b3db67484489e60331ff3e2",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "47f1637528e88c747051ef3ad5d4fb90b112c59cb1340b5fc69d33cda982ade7"
@@ -3805,13 +3805,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain112.png",
           "role": "base",
-          "sha256": "dadf833acddef6369aaef502aa3c5fcb4717467c02395a81e11e9b9ce4cf4035",
-          "source_sha256": "dadf833acddef6369aaef502aa3c5fcb4717467c02395a81e11e9b9ce4cf4035",
+          "sha256": "3287c213f8b92a7f0433cc38957b6c8f4def01adc00329e6cd11f3cdda01336b",
+          "source_sha256": "3287c213f8b92a7f0433cc38957b6c8f4def01adc00329e6cd11f3cdda01336b",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "fe1427e9b119d3d6a1ef7a294e77a14298c3dabd15e4086537cd3795e24c6ed8"
@@ -3823,13 +3823,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain113.png",
           "role": "base",
-          "sha256": "d778512faf78b73478082c1ed66ad997021d130fd988b5fde1335cd8c29ed9cc",
-          "source_sha256": "d778512faf78b73478082c1ed66ad997021d130fd988b5fde1335cd8c29ed9cc",
+          "sha256": "cbc77611ca7ddf9a82971b13021a2c40540d9ef8277c6f7a728c0f34db102b10",
+          "source_sha256": "cbc77611ca7ddf9a82971b13021a2c40540d9ef8277c6f7a728c0f34db102b10",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "2d0b629b209c243a9fc191bf7199a08ffb1f259a0b3d32a5e29bd8bd27eec22d"
@@ -3841,13 +3841,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain114.png",
           "role": "base",
-          "sha256": "7445954bfc1d2275800562c9e682519afd2928d287e0f18ca0530393d6d6681f",
-          "source_sha256": "7445954bfc1d2275800562c9e682519afd2928d287e0f18ca0530393d6d6681f",
+          "sha256": "c07f8186c1a07e0c4805bc943e72436e9389cf73f7a292be6943d586678eae72",
+          "source_sha256": "c07f8186c1a07e0c4805bc943e72436e9389cf73f7a292be6943d586678eae72",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "db4338a29192cf7025cb3bf0c4658e6d088370212840a5aa77f1bb409e9d1003"
@@ -3859,13 +3859,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain115.png",
           "role": "base",
-          "sha256": "6a7f279561ec6f2c18ef4df33ae29a47df89ba45f4d8c781319c7deb05c57946",
-          "source_sha256": "6a7f279561ec6f2c18ef4df33ae29a47df89ba45f4d8c781319c7deb05c57946",
+          "sha256": "85202c5ca5cd6e679fd1891bd1c82cfc17588cb66aef895c96854a00d501efca",
+          "source_sha256": "85202c5ca5cd6e679fd1891bd1c82cfc17588cb66aef895c96854a00d501efca",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "500754a5fc09dfc0fd80459636316b930c193812b203259ed931825667872cfc"
@@ -3877,13 +3877,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain116.png",
           "role": "base",
-          "sha256": "6c923896059243fa2fb8582a227c39b6d053fe8878037572e278eb333887e1d9",
-          "source_sha256": "6c923896059243fa2fb8582a227c39b6d053fe8878037572e278eb333887e1d9",
+          "sha256": "4d1b1bcc29da39595a5ebbe63245ad85835b48eb9bc6fe50da872b25896838af",
+          "source_sha256": "4d1b1bcc29da39595a5ebbe63245ad85835b48eb9bc6fe50da872b25896838af",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "1e99d03718f4726c2da5aea73f50cb4e3832bd83c5683d0f302121944bda06bf"
@@ -3895,13 +3895,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain117.png",
           "role": "base",
-          "sha256": "456b44c215c9d9484c791ec7fbf144f265a6310ea77dec4d24814a95d5136528",
-          "source_sha256": "456b44c215c9d9484c791ec7fbf144f265a6310ea77dec4d24814a95d5136528",
+          "sha256": "604659629e160f34e60ad6d69955daa2de87ffce1356137b64fd1dae7ecaed5a",
+          "source_sha256": "604659629e160f34e60ad6d69955daa2de87ffce1356137b64fd1dae7ecaed5a",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "10925ff0eeac6fd91165ac416d2948d233dcde70e47246bf31ba5de76264bce8"
@@ -3913,13 +3913,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain118.png",
           "role": "base",
-          "sha256": "694f6a08d90bb29e863d9c3ed1a6b8015c2601640f3614c90565422eb4293184",
-          "source_sha256": "694f6a08d90bb29e863d9c3ed1a6b8015c2601640f3614c90565422eb4293184",
+          "sha256": "4b4fcc8a9a5e72c435066118899c0a2748dda192807f2644e4c410f7a781d407",
+          "source_sha256": "4b4fcc8a9a5e72c435066118899c0a2748dda192807f2644e4c410f7a781d407",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "8a55db5f02cd2b1c0fe2031382a7fc995d0485693b9418f5a4e1e94b52b832fe"
@@ -3931,13 +3931,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain119.png",
           "role": "base",
-          "sha256": "11da56fc3cd2329204a6ec3709408831ac432c66cb23fe1aae98e41f8d640b5c",
-          "source_sha256": "11da56fc3cd2329204a6ec3709408831ac432c66cb23fe1aae98e41f8d640b5c",
+          "sha256": "9818872d523da75a8834c0b08b87ca5be8a358a3f6443ac778121f7746f8d7c1",
+          "source_sha256": "9818872d523da75a8834c0b08b87ca5be8a358a3f6443ac778121f7746f8d7c1",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "8ef9a44891cd7d3e1fa42f8cc5ca05148ecfb5e5f007b7046550cc81f597e9ad"
@@ -3949,13 +3949,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain120.png",
           "role": "base",
-          "sha256": "aff23ac724f51c135e6288669d4add10d16aea66ac5a25f1413b20b8663c53e2",
-          "source_sha256": "aff23ac724f51c135e6288669d4add10d16aea66ac5a25f1413b20b8663c53e2",
+          "sha256": "093a82b20bf4d1c0265c49754cff3e227a70ee3d541c03d891c455a587f3459f",
+          "source_sha256": "093a82b20bf4d1c0265c49754cff3e227a70ee3d541c03d891c455a587f3459f",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "f467c70d40b4c5ec141849672644cfa7f408ed47d08e20b3201aaed1200c0397"
@@ -3967,13 +3967,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain121.png",
           "role": "base",
-          "sha256": "ccb38891ab627212eb0798193b09b25d57abc5a917aea4a4efb0d442ac51f5a0",
-          "source_sha256": "ccb38891ab627212eb0798193b09b25d57abc5a917aea4a4efb0d442ac51f5a0",
+          "sha256": "601d15075e3129f4d4658d4fd0a822c2b9b0087bb42c5338d4643f5ca6885921",
+          "source_sha256": "601d15075e3129f4d4658d4fd0a822c2b9b0087bb42c5338d4643f5ca6885921",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "ff66e1027c2224c1fb9895b2f26ddb83580d44894b9dc6e4b0ed94152ef76109"
@@ -3985,13 +3985,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain122.png",
           "role": "base",
-          "sha256": "ce022a8a0e2a29e01b29c64c5b0fed5b0d1f84d82bbe482b50b12472d56af1de",
-          "source_sha256": "ce022a8a0e2a29e01b29c64c5b0fed5b0d1f84d82bbe482b50b12472d56af1de",
+          "sha256": "cb147e1df2333c7d935c71a63be807154598362723338faa8c01c007eaf4415e",
+          "source_sha256": "cb147e1df2333c7d935c71a63be807154598362723338faa8c01c007eaf4415e",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "0dab5e0ac06253d7ad11daf6209d518819f7dbcd7cf60dac75915367714647a8"
@@ -4003,13 +4003,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain123.png",
           "role": "base",
-          "sha256": "386af706f381755562d1996dfcbcc20c3723b98ded11c8c2b1183ef911197554",
-          "source_sha256": "386af706f381755562d1996dfcbcc20c3723b98ded11c8c2b1183ef911197554",
+          "sha256": "989a7210585b1980c80d18ab6f9c09e048e0d0603b00b15d24fa96791b3adeb7",
+          "source_sha256": "989a7210585b1980c80d18ab6f9c09e048e0d0603b00b15d24fa96791b3adeb7",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "e4e56c734c33c278ecd79a220051f499574f4e0379da210943c1a32bf7a2d01b"
@@ -4021,13 +4021,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain124.png",
           "role": "base",
-          "sha256": "262b89ac244df2c787d1adaf660a107761172ec955617b8a2cab80c249a61c59",
-          "source_sha256": "262b89ac244df2c787d1adaf660a107761172ec955617b8a2cab80c249a61c59",
+          "sha256": "0d488cf86f47811586398a812e5a9bd81829220ff2d46308c402ca41e96e1f38",
+          "source_sha256": "0d488cf86f47811586398a812e5a9bd81829220ff2d46308c402ca41e96e1f38",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "5151b492c39aa336ec04fdfd4dd581545ab44b2c7d2ed65f66d85276f5bd87a8"
@@ -4039,13 +4039,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain125.png",
           "role": "base",
-          "sha256": "15c1e56c77c4a5bfb4646a21c111f6d91fa82716588cfc102035a800c8a4ce28",
-          "source_sha256": "15c1e56c77c4a5bfb4646a21c111f6d91fa82716588cfc102035a800c8a4ce28",
+          "sha256": "402f562070a15315e046cf02557bbf8684f894ab2054e64e88dec4eed927d722",
+          "source_sha256": "402f562070a15315e046cf02557bbf8684f894ab2054e64e88dec4eed927d722",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "318632b378b55e2211b7120834da5891f7f07c7f384c4a4fc5da8c868a6db633"
@@ -4057,13 +4057,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain126.png",
           "role": "base",
-          "sha256": "30c8c0d99d23acf9fe9d81b501caddf38b155885e16c35f209b1318674e51801",
-          "source_sha256": "30c8c0d99d23acf9fe9d81b501caddf38b155885e16c35f209b1318674e51801",
+          "sha256": "44406b8c9f0ce7401e1d024cf29f512818e1badae23d01cc2cec4bc4b7797272",
+          "source_sha256": "44406b8c9f0ce7401e1d024cf29f512818e1badae23d01cc2cec4bc4b7797272",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "0b8cdbc2441b08d79b8845b26037c7faf6a391ff08b1d29bc3c9af2aa4318025"
@@ -4075,13 +4075,13 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain127.png",
           "role": "base",
-          "sha256": "7e6875f34bf2873fc93ef4d78c4e918a78c368c9950c4f873d15e3767144d62c",
-          "source_sha256": "7e6875f34bf2873fc93ef4d78c4e918a78c368c9950c4f873d15e3767144d62c",
+          "sha256": "84302422c4cf9c68ab676e3e66ace4b86153a5a891e3a5200a385a70d5ef0119",
+          "source_sha256": "84302422c4cf9c68ab676e3e66ace4b86153a5a891e3a5200a385a70d5ef0119",
           "logical_width": 32,
           "logical_height": 32,
           "original_sha256": "2133bc7d543b7fea3c30550c35dc3a2082031f2a851cf941cccee866efddb30c"
@@ -4093,7 +4093,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain128.png",
@@ -4111,7 +4111,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain129.png",
@@ -4129,7 +4129,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain130.png",
@@ -4147,7 +4147,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain131.png",
@@ -4165,7 +4165,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain132.png",
@@ -4183,7 +4183,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain133.png",
@@ -4201,7 +4201,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain134.png",
@@ -4219,7 +4219,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain135.png",
@@ -4237,7 +4237,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain136.png",
@@ -4255,7 +4255,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain137.png",
@@ -4273,7 +4273,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain138.png",
@@ -4291,7 +4291,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain139.png",
@@ -4309,7 +4309,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain140.png",
@@ -4327,7 +4327,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain141.png",
@@ -4345,7 +4345,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain142.png",
@@ -4363,7 +4363,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain143.png",
@@ -4381,7 +4381,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain144.png",
@@ -4399,7 +4399,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain145.png",
@@ -4417,7 +4417,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain146.png",
@@ -4435,7 +4435,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain147.png",
@@ -4453,7 +4453,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain148.png",
@@ -4471,7 +4471,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain149.png",
@@ -4489,7 +4489,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain150.png",
@@ -4507,7 +4507,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain151.png",
@@ -4525,7 +4525,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain152.png",
@@ -4543,7 +4543,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain153.png",
@@ -4561,7 +4561,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain154.png",
@@ -4579,7 +4579,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain155.png",
@@ -4597,7 +4597,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain156.png",
@@ -4615,7 +4615,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain157.png",
@@ -4633,7 +4633,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain158.png",
@@ -4651,7 +4651,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain159.png",
@@ -4669,7 +4669,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain160.png",
@@ -4687,7 +4687,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain161.png",
@@ -4705,7 +4705,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain162.png",
@@ -4723,7 +4723,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain163.png",
@@ -4741,7 +4741,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain164.png",
@@ -4759,7 +4759,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain165.png",
@@ -4777,7 +4777,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain166.png",
@@ -4795,7 +4795,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain167.png",
@@ -4813,7 +4813,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain168.png",
@@ -4831,7 +4831,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain169.png",
@@ -4849,7 +4849,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain170.png",
@@ -4867,7 +4867,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain171.png",
@@ -4885,7 +4885,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain172.png",
@@ -4903,7 +4903,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain173.png",
@@ -4921,7 +4921,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain174.png",
@@ -4939,7 +4939,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain175.png",
@@ -4957,7 +4957,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain176.png",
@@ -4975,7 +4975,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain177.png",
@@ -4993,7 +4993,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain178.png",
@@ -5011,7 +5011,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain179.png",
@@ -5029,7 +5029,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain180.png",
@@ -5047,7 +5047,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain181.png",
@@ -5065,7 +5065,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain182.png",
@@ -5083,7 +5083,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain183.png",
@@ -5101,7 +5101,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain184.png",
@@ -5119,7 +5119,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain185.png",
@@ -5137,7 +5137,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain186.png",
@@ -5155,7 +5155,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain187.png",
@@ -5173,7 +5173,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain188.png",
@@ -5191,7 +5191,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain189.png",
@@ -5209,7 +5209,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain190.png",
@@ -5227,7 +5227,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain191.png",
@@ -5245,7 +5245,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain192.png",
@@ -5263,7 +5263,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain193.png",
@@ -5281,7 +5281,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain194.png",
@@ -5299,7 +5299,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain195.png",
@@ -5317,7 +5317,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain196.png",
@@ -5335,7 +5335,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain197.png",
@@ -5353,7 +5353,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain198.png",
@@ -5371,7 +5371,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain199.png",
@@ -5389,7 +5389,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain200.png",
@@ -5407,7 +5407,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain201.png",
@@ -5425,7 +5425,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain202.png",
@@ -5443,7 +5443,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain203.png",
@@ -5461,7 +5461,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain204.png",
@@ -5479,7 +5479,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain205.png",
@@ -5497,7 +5497,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain206.png",
@@ -5515,7 +5515,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain207.png",
@@ -5533,7 +5533,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain208.png",
@@ -5551,7 +5551,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain209.png",
@@ -5569,7 +5569,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain210.png",
@@ -5587,7 +5587,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain211.png",
@@ -5605,7 +5605,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain212.png",
@@ -5623,7 +5623,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain213.png",
@@ -5641,7 +5641,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain214.png",
@@ -5659,7 +5659,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain215.png",
@@ -5677,7 +5677,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain216.png",
@@ -5695,7 +5695,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain217.png",
@@ -5713,7 +5713,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain218.png",
@@ -5731,7 +5731,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain219.png",
@@ -5749,7 +5749,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain220.png",
@@ -5767,7 +5767,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain221.png",
@@ -5785,7 +5785,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain222.png",
@@ -5803,7 +5803,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain223.png",
@@ -5821,7 +5821,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain224.png",
@@ -5839,7 +5839,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain225.png",
@@ -5857,7 +5857,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain226.png",
@@ -5875,7 +5875,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain227.png",
@@ -5893,7 +5893,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain228.png",
@@ -5911,7 +5911,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain229.png",
@@ -5929,7 +5929,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain230.png",
@@ -5947,7 +5947,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain231.png",
@@ -5965,7 +5965,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain232.png",
@@ -5983,7 +5983,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain233.png",
@@ -6001,7 +6001,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain234.png",
@@ -6019,7 +6019,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain235.png",
@@ -6037,7 +6037,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain236.png",
@@ -6055,7 +6055,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain237.png",
@@ -6073,7 +6073,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain238.png",
@@ -6091,7 +6091,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain239.png",
@@ -6109,7 +6109,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain240.png",
@@ -6127,7 +6127,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain241.png",
@@ -6145,7 +6145,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain242.png",
@@ -6163,7 +6163,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain243.png",
@@ -6181,7 +6181,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain244.png",
@@ -6199,7 +6199,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain245.png",
@@ -6217,7 +6217,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain246.png",
@@ -6235,7 +6235,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain247.png",
@@ -6253,7 +6253,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain248.png",
@@ -6271,7 +6271,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain249.png",
@@ -6289,7 +6289,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain250.png",
@@ -6307,7 +6307,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain251.png",
@@ -6325,7 +6325,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain252.png",
@@ -6343,7 +6343,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain253.png",
@@ -6361,7 +6361,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain254.png",
@@ -6379,7 +6379,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain255.png",
@@ -6397,7 +6397,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain256.png",
@@ -6415,7 +6415,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain257.png",
@@ -6433,7 +6433,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain258.png",
@@ -6451,7 +6451,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain259.png",
@@ -6469,7 +6469,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain260.png",
@@ -6487,7 +6487,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain261.png",
@@ -6505,7 +6505,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain262.png",
@@ -6523,7 +6523,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain263.png",
@@ -6541,7 +6541,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain264.png",
@@ -6559,7 +6559,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain265.png",
@@ -6577,7 +6577,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain266.png",
@@ -6595,7 +6595,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain267.png",
@@ -6613,7 +6613,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain268.png",
@@ -6631,7 +6631,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain269.png",
@@ -6649,7 +6649,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain270.png",
@@ -6667,7 +6667,7 @@
       "width": 32,
       "height": 32,
       "scale": 4,
-      "recipe": "shared-material rugged corner masks v2; generated grass blades",
+      "recipe": "shared-material rugged corner masks v3; larger grass tufts",
       "layers": [
         {
           "file": "terrain271.png",
@@ -9241,13 +9241,13 @@
       "width": 512,
       "height": 512,
       "scale": 4,
-      "recipe": "generated ripples; periodic material v1",
+      "recipe": "larger generated ripples; periodic material v2",
       "layers": [
         {
           "file": "water0.png",
           "role": "base",
-          "sha256": "dc03c8a27146792e24cb5aef5d1ff20bd6004f228f8a61e48cae8e4c3606be22",
-          "source_sha256": "dc03c8a27146792e24cb5aef5d1ff20bd6004f228f8a61e48cae8e4c3606be22",
+          "sha256": "238c3dd5678b8aced48214deab4d4173c2f954df9983a14a9b4b42c25554886d",
+          "source_sha256": "238c3dd5678b8aced48214deab4d4173c2f954df9983a14a9b4b42c25554886d",
           "logical_width": 512,
           "logical_height": 512,
           "original_sha256": "e313ca4c0703d1f2f07a206ffa5fc11feb8bd95d7f426d3c8ce767de3b68afdb"
@@ -9281,19 +9281,19 @@
     "levels": [
       {
         "file": "terrain-atlas-mip0.png",
-        "sha256": "60e2c9ca3e49b501128d831af803a8aa5ac4a7b77b7fbb7270bb65a348cefec7"
+        "sha256": "2080e0e57a2672d0b51c6f7d8021e9294c53687c1d6fd51178705a75d294073d"
       },
       {
         "file": "terrain-atlas-mip1.png",
-        "sha256": "311c5966d8b527131d0ba5777fe706422d3f4f53d7a4af811d6c631c04b3f7a8"
+        "sha256": "b90588d846fa40e7b2e87206c716abf49d35e262798b96610b1fd7fbe73109ff"
       },
       {
         "file": "terrain-atlas-mip2.png",
-        "sha256": "4269bb4edb4779bc070ff1e68cda7b985118d7f42a825df38b91c45ff812e253"
+        "sha256": "f10816848f6cbcb443e11717a6a358b73a6e670807a65c8fd491754f63612267"
       },
       {
         "file": "terrain-atlas-mip3.png",
-        "sha256": "330dc8d3b006c0430d1a5fb046906f3643ba5c57ca8f0af2e9a23a2e4e5dff6a"
+        "sha256": "633cdf669101aa288b2a96445307027d8b9489454be5ad34fde6c65f0728cdd9"
       }
     ]
   },

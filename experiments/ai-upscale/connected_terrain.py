@@ -24,7 +24,7 @@ def topology():
     return result
 
 def material(index):
-    source=EXP/'materials/grass-blades-v1.png' if index==0 else EXP/'world/corrected'/f'terrain{index}.png'
+    source=EXP/'materials/grass-blades-v2.png' if index==0 else EXP/'world/corrected'/f'terrain{index}.png'
     a=np.asarray(Image.open(source).convert('RGB').resize((N,N),Image.Resampling.LANCZOS)).astype(float)
     if index==0:
         # Keep the source game's green palette while retaining generated blades.
@@ -106,7 +106,7 @@ def generate():
     for index,c in sorted(topo.items()):
         Image.fromarray(tiles[index]).save(OUT/f'terrain{index}.png')
         records.append({'id':f'terrain{index}','corners':c,'sha256':hashlib.sha256((OUT/f'terrain{index}.png').read_bytes()).hexdigest()})
-    (OUT/'manifest.json').write_text(json.dumps({'recipe':'shared-material rugged corner masks v2; generated grass blades','seed':'frame index','sources':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [EXP/'sr/corrected/terrain0.png',EXP/'materials/grass-blades-v1.png',EXP/'materials/grass-blades-v1.txt',EXP/'world/corrected/terrain128.png',ROOT/'src/map/MapTerrain.cpp']},'frames':records},indent=2)+'\n')
+    (OUT/'manifest.json').write_text(json.dumps({'recipe':'shared-material rugged corner masks v3; larger grass tufts','seed':'frame index','sources':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [EXP/'sr/corrected/terrain0.png',EXP/'materials/grass-blades-v2.png',EXP/'materials/grass-blades-v2.txt',EXP/'world/corrected/terrain128.png',ROOT/'src/map/MapTerrain.cpp']},'frames':records},indent=2)+'\n')
     validate(topo)
 
 def validate(topo):

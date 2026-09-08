@@ -6,7 +6,7 @@ from PIL import Image
 from connected_terrain import EXP,periodic
 
 def generate():
-    source=EXP/'materials/water-ripples-v1.png'
+    source=EXP/'materials/water-ripples-v2.png'
     target=EXP/'world/corrected/water0.png'
     original=Image.open(target).convert('RGBA')
     a=np.asarray(Image.open(source).convert('RGB').resize(original.size,Image.Resampling.LANCZOS)).astype(float)
@@ -26,8 +26,8 @@ def generate():
     output=EXP/'materials/water0.png';result.save(output)
     sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
     (EXP/'materials/water-manifest.json').write_text(json.dumps({
-        'recipe':'generated ripples; periodic material v1',
-        'sources':{str(p.relative_to(EXP)):sha(p) for p in [source,target,EXP/'materials/water-ripples-v1.txt']},
+        'recipe':'larger generated ripples; periodic material v2',
+        'sources':{str(p.relative_to(EXP)):sha(p) for p in [source,target,EXP/'materials/water-ripples-v2.txt']},
         'output_sha256':sha(output)},indent=2)+'\n')
 
 if __name__=='__main__':generate()
