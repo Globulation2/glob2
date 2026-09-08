@@ -234,3 +234,18 @@ presentation, bounded-text, isolation/determinism and fallback checks passed.
 The same colony renderer without the menu panel or translucent wash:
 
 ![Colony indicators](colony-indicators.png)
+
+### Approved wordmark and warmer panels
+
+The main menu uses `data/gfx/menu-wordmark.png`, a generated wordmark with the
+first “o” based on the faceless, four-limbed Glob in the repository's app icon
+and worker sprite. The source was made with the built-in image-generation tool.
+The final edit prompt preserved the rounded lettering and gold “2”, replaced
+the first “o” with the actual Glob silhouette, and kept one opening in its body.
+
+The source includes a pale matte. Menu initialization recovers transparency for
+the two flat ink colors once at the fitted display size; this includes openings
+inside letters. The ordinary surface renderer then composites it over the panel.
+The original text heading remains as a loading fallback. Panels use a warmer
+cream-sage tone. Normal and compact software captures were inspected after
+compositing correction, and the normal client and harness build passed.

@@ -20,7 +20,7 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 	highlightColor = Color(67,116,75);
 	frameColor = Color(137,160,132);
 	listSelectedElementColor = Color(227,192,119);
-	backColor = backOverlayColor = Color(219,231,214);
+	backColor = backOverlayColor = Color(230,231,210);
 	for (int i=0;i<3;++i) originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
 	fallback = std::make_unique<DrawableSurface>(1,1);
 	if (!fallback->loadImage("data/gfx/menu-colony.png")) fallback.reset();
@@ -99,7 +99,7 @@ void FrontendTheme::background(DrawableSurface* s, bool panel, const SDL_Rect* c
 		const int x=std::max(0,area.x-12), y=std::max(0,area.y-12);
 		const int pw=std::min(w,area.x+area.w+12)-x, ph=std::min(h,area.y+area.h+12)-y;
 		rounded(s,x+2,y+3,pw,ph,10,Color(15,39,25,35));
-		rounded(s,x,y,pw,ph,10,Color(219,231,214,248));
+		rounded(s,x,y,pw,ph,10,Color(230,231,210,248));
 	}
 	painted=true;
 }

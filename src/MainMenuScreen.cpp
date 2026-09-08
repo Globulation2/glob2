@@ -112,6 +112,43 @@ MainMenuScreen::MainMenuScreen()
 	Toolkit::loadFont(fontFile, compact ? 14 : 16, "front-small");
 	Toolkit::loadFont(fontFile, 12, "front-caption");
 
+	// Fit the wordmark once using the existing
+	// software blitter. Keep the text heading as a fallback if loading fails.
+	DrawableSurface source(1, 1);
+	if (source.loadImage("data/gfx/menu-wordmark.png"))
+	{
+		SDL_Rect crop{76, 232, 1956, 284};
+		const int logoWidth = panelW - 48;
+		const int logoHeight = logoWidth * crop.h / crop.w;
+		auto* fitted = SDL_CreateRGBSurfaceWithFormat(0, logoWidth, logoHeight, 32, SDL_PIXELFORMAT_RGBA32);
+		if (fitted)
+		{
+			if (SDL_BlitScaled(source.getSDLSurface(), &crop, fitted, nullptr) == 0)
+			{
+				// The source asset has a pale matte. Recover coverage for its two
+				// flat inks before compositing, including the letter openings.
+				for (int row = 0; row < logoHeight; ++row)
+				{
+					auto* pixels = reinterpret_cast<Uint32*>(static_cast<Uint8*>(fitted->pixels) + row * fitted->pitch);
+					for (int col = 0; col < logoWidth; ++col)
+					{
+						Uint8 red, green, blue, alpha;
+						SDL_GetRGBA(pixels[col], fitted->format, &red, &green, &blue, &alpha);
+						const bool goldInk = red > green;
+						double coverage = goldInk ? (int(green) - int(blue) - 20) / 65.0 : (232 - int(red)) / 200.0;
+						coverage = coverage < 0.03 ? 0.0 : std::min(1.0, coverage);
+						pixels[col] = SDL_MapRGBA(fitted->format,
+							goldInk ? 227 : 36, goldInk ? 192 : 69, goldInk ? 119 : 49,
+							static_cast<Uint8>(std::lround(255 * coverage)));
+					}
+				}
+				SDL_SetSurfaceBlendMode(fitted, SDL_BLENDMODE_BLEND);
+				wordmark = std::make_unique<DrawableSurface>(fitted);
+			}
+			SDL_FreeSurface(fitted);
+		}
+	}
+
 
 	const int x = panelX + 24, w = panelW - 48;
 	int y = panelY + (compact ? 74 : 110);
@@ -157,11 +194,15 @@ void MainMenuScreen::paint()
 {
 	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
 	fillRounded(gfx, panelX + 2, panelY + 3, panelW, panelH, 10, Color(15, 39, 25, 35));
-	fillRounded(gfx, panelX, panelY, panelW, panelH, 10, Color(219, 231, 214, 248));
+	fillRounded(gfx, panelX, panelY, panelW, panelH, 10, Color(230, 231, 210, 248));
 	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, gold);
-	auto* title = Toolkit::getFont("front-title");
-	title->setStyle(Font::Style(Font::STYLE_NORMAL, textColor));
-	gfx->drawString(panelX + 24, panelY + 24, title, "Globulation 2");
+	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get());
+	else
+	{
+		auto* title = Toolkit::getFont("front-title");
+		title->setStyle(Font::Style(Font::STYLE_NORMAL, textColor));
+		gfx->drawString(panelX + 24, panelY + 24, title, "Globulation 2");
+	}
 	auto* caption = Toolkit::getFont("front-caption");
 	caption->setStyle(Font::Style(Font::STYLE_NORMAL, muted));
 	gfx->drawString(panelX + 24, panelY + panelH - 30, caption, PACKAGE_VERSION);

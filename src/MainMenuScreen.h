@@ -5,6 +5,7 @@
 
 #include "Glob2Screen.h"
 #include <vector>
+#include <memory>
 
 class MainMenuButton;
 
@@ -35,6 +36,7 @@ public:
 
 private:
 	std::vector<MainMenuButton*> buttons;
+	std::unique_ptr<GAGCore::DrawableSurface> wordmark;
 	int focusedButton = -1;
 	int panelX, panelY, panelW, panelH;
 };
