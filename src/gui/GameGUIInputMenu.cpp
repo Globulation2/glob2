@@ -179,6 +179,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
                             return true;
                         }
                         defaultGameSaveName = name;
+                        static_cast<LoadSaveScreen*>(gameMenuScreen.get())->beginPersistence(GAGCore::ApplicationHost::persistStorage());
+                        return true;
 					}
 				}
 

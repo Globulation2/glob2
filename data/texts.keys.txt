@@ -626,3 +626,4 @@
 [Loading buildings]
 [Resolving team links]
 [browser window too small]
+[saving to storage]

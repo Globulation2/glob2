@@ -99,6 +99,7 @@ LoadSaveScreen::~LoadSaveScreen()
 
 void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	if (persistence) return;
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		if (par1 == OK)
@@ -147,4 +148,23 @@ void LoadSaveScreen::showSaveFailure()
 {
     endValue = -1;
     caption->setText(Toolkit::getStringTable()->getString("[ERROR_CANT_SAVE_MAP]"));
+}
+
+void LoadSaveScreen::beginPersistence(std::unique_ptr<GAGCore::ApplicationHost::Persistence> operation)
+{
+    endValue = -1;
+    caption->setText(Toolkit::getStringTable()->getString("[saving to storage]"));
+    persistence = std::move(operation);
+}
+bool LoadSaveScreen::pollPersistence()
+{
+    if (!persistence) return false;
+    const auto state = persistence->state();
+    if (state == GAGCore::ApplicationHost::PersistenceState::Pending) return false;
+    persistence.reset();
+    if (state == GAGCore::ApplicationHost::PersistenceState::Failed) {
+        showSaveFailure();
+        return false;
+    }
+    return true;
 }

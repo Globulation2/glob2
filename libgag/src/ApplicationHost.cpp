@@ -23,6 +23,12 @@ void wait(std::uint32_t milliseconds)
 }
 bool takeVisibilityChange(bool&) { return false; }
 bool takeViewportSize(int&, int&) { return false; }
+namespace {
+class NativePersistence : public Persistence {
+    PersistenceState state() const override { return PersistenceState::Succeeded; }
+};
+}
+std::unique_ptr<Persistence> persistStorage() { return std::make_unique<NativePersistence>(); }
 void screenChanged(const char*) {}
 void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}

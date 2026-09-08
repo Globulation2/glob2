@@ -3,6 +3,8 @@
 #include "Unit.h"
 #include "Building.h"
 #include "GameSessionScreen.h"
+#include "GameGUILoadSave.h"
+#include "GameUtilities.h"
 #include "MapEdit.h"
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
@@ -134,6 +136,25 @@ int main(int argc, char** argv)
         require(minimap.insideMinimap(1100, 74) && !minimap.insideMinimap(700, 74), "Minimap hit area did not follow the viewport");
     }
 
+    {
+        using namespace GAGCore::ApplicationHost;
+        struct ControlledPersistence : Persistence {
+            PersistenceState current = PersistenceState::Pending;
+            PersistenceState state() const override { return current; }
+        };
+        LoadSaveScreen dialog("games", "game", false, "Save", "test", glob2FilenameToName, glob2NameToFilename);
+        auto operation = std::make_unique<ControlledPersistence>();
+        auto* control = operation.get();
+        dialog.beginPersistence(std::move(operation));
+        dialog.onAction(nullptr, GAGGUI::BUTTON_RELEASED, LoadSaveScreen::CANCEL, 0);
+        require(dialog.endValue == -1 && !dialog.pollPersistence(), "Pending save must not close or claim completion");
+        control->current = PersistenceState::Failed;
+        require(!dialog.pollPersistence() && dialog.endValue == -1, "Failed persistence must retain the dialog");
+        operation = std::make_unique<ControlledPersistence>(); control = operation.get();
+        dialog.beginPersistence(std::move(operation));
+        control->current = PersistenceState::Succeeded;
+        require(dialog.pollPersistence(), "Successful persistence must complete the save dialog");
+    }
     {
         Map map;
         map.setSize(7, 6);

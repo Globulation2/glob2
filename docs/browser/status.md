@@ -100,6 +100,12 @@ infrastructure from the supported-release acceptance criteria.
   tests and all three browser save/reload tests pass. Completion/failure UI,
   real quota fault injection, and recovery/export are still required.
 
+- Manual in-game save dialogs retain an owned platform persistence operation,
+  show a saving caption while pending, close only after success, and remain open
+  with an error on failure. Native injected completion-state tests and browser
+  save/reload tests across all three engines pass. Real quota/error injection,
+  export recovery, and applying the service to other persistence callers remain.
+
 ## Local validation
 
 After isolating browser work and rebasing onto upstream `master` (`88934ecf`),

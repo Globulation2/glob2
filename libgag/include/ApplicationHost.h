@@ -28,6 +28,15 @@ bool takeViewportSize(int& width, int& height);
 // Visibility edges are retained even when no frame ran while hidden.
 bool takeVisibilityChange(bool& hidden);
 
+// Persistence completion is owned by the caller; releasing it is safe while pending.
+enum class PersistenceState { Pending, Succeeded, Failed };
+class Persistence {
+public:
+    virtual ~Persistence() = default;
+    virtual PersistenceState state() const = 0;
+};
+std::unique_ptr<Persistence> persistStorage();
+
 // Read-only diagnostics; hosts decide whether and how to publish them.
 void screenChanged(const char* name);
 void simulationAdvanced(std::uint32_t tick);

@@ -57,6 +57,27 @@ bool takeViewportSize(int& width, int& height)
         return 1;
     }, &width, &height);
 }
+namespace {
+class BrowserPersistence : public Persistence {
+    int id;
+public:
+    BrowserPersistence() {
+        id = EM_ASM_INT({
+            Module.persistenceResults ||= new Map();
+            const id = Module.nextPersistenceId = (Module.nextPersistenceId || 0) + 1;
+            Module.persistenceResults.set(id, 0);
+            const complete = state => { if (Module.persistenceResults.has(id)) Module.persistenceResults.set(id, state); };
+            Module.storage.flush().then(() => complete(1), () => complete(2));
+            return id;
+        });
+    }
+    ~BrowserPersistence() override { EM_ASM({ Module.persistenceResults.delete($0); }, id); }
+    PersistenceState state() const override {
+        return static_cast<PersistenceState>(EM_ASM_INT({ return Module.persistenceResults.get($0); }, id));
+    }
+};
+}
+std::unique_ptr<Persistence> persistStorage() { return std::make_unique<BrowserPersistence>(); }
 void screenChanged(const char* name)
 {
     EM_ASM({ Module['glob2Screen'] = UTF8ToString($0); }, name);
