@@ -4,6 +4,9 @@
 #pragma once
 
 #include "Glob2Screen.h"
+#include <vector>
+
+class MainMenuButton;
 
 class MainMenuScreen:public Glob2Screen
 {
@@ -24,8 +27,14 @@ public:
 	
 public:
 	MainMenuScreen();
-	virtual ~MainMenuScreen();
-	void onAction(Widget *source, Action action, int par1, int par2);
+	~MainMenuScreen() override;
+	void onAction(Widget *source, Action action, int par1, int par2) override;
 	static int menu(void);
-};
+	void paint(void) override;
+	void onSDLEvent(SDL_Event *event) override;
 
+private:
+	std::vector<MainMenuButton*> buttons;
+	int focusedButton = -1;
+	int panelX, panelY, panelW, panelH;
+};

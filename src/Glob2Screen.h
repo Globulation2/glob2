@@ -14,7 +14,8 @@ class Glob2Screen : public Screen
 public:
 	Glob2Screen();
 	virtual ~Glob2Screen();
-	virtual void paint(void);
+	void paint(void) override;
+	int execute(GAGCore::DrawableSurface* gfx, int stepLength) override;
 	
 private:
 	unsigned getNextTerrain(void);
@@ -26,7 +27,8 @@ class Glob2TabScreen : public TabScreen
 public:
 	Glob2TabScreen(bool fullScreen, bool longerButtons=false);
 	virtual ~Glob2TabScreen();
-	virtual void paint(void);
+	void paint(void) override;
+	int execute(GAGCore::DrawableSurface* gfx, int stepLength) override;
 	
 private:
 	unsigned getNextTerrain(void);

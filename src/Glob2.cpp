@@ -51,6 +51,10 @@
 #	include <sys/param.h>
 #endif
 
+#ifndef YOG_SERVER_ONLY
+#include "FrontendTheme.h"
+#endif
+
 using std::shared_ptr;
 
 /*!	\mainpage Globulation 2 Reference documentation
@@ -494,6 +498,7 @@ int Glob2::run(int argc, char *argv[])
 
 	isRunning=true;
 
+	auto frontend = std::make_unique<FrontendTheme>();
 	// Replay the game specified by the command line
 	if (globalContainer->replaying)
 	{
@@ -630,6 +635,7 @@ int Glob2::run(int argc, char *argv[])
 		}
 	}
 
+	frontend.reset();
 	// This is for the text shot code
 	GAGCore::DrawableSurface::printFinishingText();
 	delete globalContainer;
