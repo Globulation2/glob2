@@ -17,6 +17,8 @@ Android evidence below was collected before this browser merge, on `7333e4e8b`.
 - Wasm release and ARM64 iOS simulator builds pass. The current iOS application
   was installed and launched in the isolated iPhone 16/iOS 26.5 simulator; a
   captured main menu confirms startup only, not in-game/keyboard qualification.
+- Android ARM64 release APK builds and passes developer signing with current Java/JNI/manifest changes after
+  refreshing verified dependencies. This does not establish emulator/IME behavior.
 - Visual inspection still finds awkward narrow-tab wrapping. Real keyboard,
   replay and live mobile qualification remain open.
 

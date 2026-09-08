@@ -50,9 +50,10 @@ installed/launched and its main menu inspected in the isolated simulator.
 A visual check confirms Actions/Info captions now appear, but narrow tab captions
 still wrap awkwardly. Improve that layout without shrinking essential touch targets.
 
-Android's dependency fingerprint rejected the older local manifest. The pinned
-dependency build is being refreshed; do not bypass that identity check or claim
-current emulator qualification from older screenshots.
+Android's dependency fingerprint rejected the older local manifest. Refreshing
+the pinned dependencies resolved it; the ARM64 release APK now builds successfully
+with the current Java/JNI/manifest changes. Emulator/keyboard qualification is
+still pending; do not inherit it from older screenshots.
 
 ## Checkpoints
 
