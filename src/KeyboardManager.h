@@ -73,7 +73,7 @@ public:
 	Uint32 getAction(const KeyPress& key);
 	
 	///Saves the keyboard layout
-	void saveKeyboardLayout() const;
+	bool saveKeyboardLayout() const;
 	
 	///Loads the keyboard layout, returns false in unsuccessful
 	bool loadKeyboardLayout(const std::string& file);

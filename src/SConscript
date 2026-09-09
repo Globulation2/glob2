@@ -271,6 +271,8 @@ TorusView.cpp
 TorusViewRender.cpp
 gui/GameGUITorus.cpp
 SettingsScreen.cpp
+SettingsScreenLayout.cpp
+SettingsScreenInput.cpp
 SettingsScreenGeneral.cpp
 SettingsScreenBuildings.cpp
 SettingsScreenKeyboard.cpp
@@ -516,6 +518,12 @@ if not env['server']:
     lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
+
+if not env['server']:
+    settings_sources = [source for source in source_files if source != 'Glob2.cpp']
+    settings_sources += local.Object('SettingsScreenTest.o', '#test/SettingsScreenTest.cpp')
+    settings_test = local.Program('settings-screen-tests', settings_sources)
+    local.Alias('settings-tests', settings_test)
 
 if not env['server']:
     speed_sources = [source for source in source_files if source != 'Glob2.cpp']
