@@ -1,7 +1,7 @@
 Source of files not created by us :
 
 Font :
-sans.ttf : /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf from ubuntu ttf-dejavu package (http://dejavu.sourceforge.net)
+sans.ttf : Glob2 Sans, based on DejaVu Sans 2.26 from Ubuntu, with Droid Sans Fallback CJK outlines. See data/fonts/README.md and accompanying font licenses.
 
 Emoticon for alliance :
 kopete http://kopete.kde.org/
