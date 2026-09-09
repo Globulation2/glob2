@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "FrontendTheme.h"
 #include "ScriptEditorScreen.h"
 #include <Stream.h>
 #include "Unit.h"
@@ -120,6 +121,7 @@ int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 
 int MapEdit::run(void)
 {
+	FrontendScope editor(false);
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
 	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());

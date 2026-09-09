@@ -263,7 +263,8 @@ namespace GAGCore
 			// get values
 			float h, s, v;
 			Color c;
-			c.unpack(*mem);
+			// Sprite surfaces retain alpha even when the software window has none.
+			SDL_GetRGBA(*mem, sdlsurface->format, &c.r, &c.g, &c.b, &c.a);
 			c.getHSV(&h, &s, &v);
 
 			// shift
@@ -283,7 +284,7 @@ namespace GAGCore
 
 			// set values
 			c.setHSV(h, s, v);
-			*mem = c.pack();
+			*mem = SDL_MapRGBA(sdlsurface->format, c.r, c.g, c.b, c.a);
 			mem++;
 		}
 		dirty = true;

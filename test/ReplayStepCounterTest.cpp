@@ -5,17 +5,16 @@
 // writeUint16, so after 65535 order-less ticks (~44 minutes at 25 Hz — routine
 // in sparse AI runs and the 90000-tick trainer games) the counter silently
 // wrapped, corrupting the tick-to-order alignment on read-back. Post-fix the
-// counter is Uint32 on both sides, gated on the replay's VERSION_MINOR:
-// replays written at REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR (87) or later
-// read Uint32, older ones still read Uint16.
+// counter is Uint32 on both sides. (Replays from before that fix are below
+// REPLAY_MINIMUM_VERSION_MINOR and no longer load at all.)
 //
 // Covered here:
 //   1. writer/reader round-trip with >65535 quiet steps between orders — the
 //      read-back step delta is exact (would have wrapped to delta % 65536)
-//   2. a hand-written pre-87 (version 86) stream with Uint16 counters still
-//      parses correctly through the gated read
-//   3. version floor/ceiling: replays older than REPLAY_MINIMUM_VERSION_MINOR
+//   2. version floor/ceiling: replays older than REPLAY_MINIMUM_VERSION_MINOR
 //      or newer than the running build are rejected
+//   3. the replay header version, not VERSION_MINOR, is what orders are
+//      decoded against
 //
 // GameGUI and the Order hierarchy are stubbed (same trick as
 // NetSendOrderDecodeTest.cpp) so only ReplayWriter/ReplayReader plus
@@ -192,11 +191,11 @@ void testWideRoundTrip()
 }
 
 // Hand-write a replay body (no game header) at the given version, with the
-// step counters written at the given width. Returns an input stream over a
+// Uint32 step counters. Returns an input stream over a
 // copy of the written bytes (BinaryOutputStream deletes its backend on
 // destruction, so the copy is taken while it is still alive); the caller
 // passes ownership to ReplayReader::loadReplay.
-BinaryInputStream* writeReplayBody(Uint16 versionMinor, bool wideCounters, Uint32 firstCounter)
+BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter)
 {
 	MemoryStreamBackend* writeBackend = new MemoryStreamBackend;
 	MemoryStreamBackend* readBackend = nullptr;
@@ -204,15 +203,9 @@ BinaryInputStream* writeReplayBody(Uint16 versionMinor, bool wideCounters, Uint3
 		BinaryOutputStream ostream(writeBackend);
 		ostream.writeUint16(VERSION_MAJOR, "versionMajor");
 		ostream.writeUint16(versionMinor, "versionMinor");
-		if (wideCounters)
-			ostream.writeUint32(firstCounter, "replayStepsSinceLastOrder");
-		else
-			ostream.writeUint16(firstCounter, "replayStepsSinceLastOrder");
+		ostream.writeUint32(firstCounter, "replayStepsSinceLastOrder");
 		writeOrderEnvelope(&ostream, std::shared_ptr<Order>(new StepTestOrder()));
-		if (wideCounters)
-			ostream.writeUint32(0, "replayStepsSinceLastOrder");
-		else
-			ostream.writeUint16(0, "replayStepsSinceLastOrder");
+		ostream.writeUint32(0, "replayStepsSinceLastOrder");
 		writeOrderEnvelope(&ostream, std::shared_ptr<Order>(new NullOrder()));
 		readBackend = new MemoryStreamBackend(*writeBackend);
 	}
@@ -221,61 +214,38 @@ BinaryInputStream* writeReplayBody(Uint16 versionMinor, bool wideCounters, Uint3
 	return new BinaryInputStream(readBackend);
 }
 
-// 2. A pre-87 stream with Uint16 counters still parses through the gate.
-void testOldFormatUint16()
-{
-	ReplayReader reader;
-	bool loaded = reader.loadReplay(
-		writeReplayBody(REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR - 1, false, 123), false);
-	check(loaded, "oldFormat: version-86 replay still loads");
-	if (!loaded)
-		return;
-
-	check(reader.getNumStepsTotal() == 123, "oldFormat: Uint16 counter read at the right width");
-
-	for (Uint32 i = 0; i < 123; i++)
-		reader.advanceStep();
-	check(reader.hasMoreOrdersThisStep(), "oldFormat: order due at step 123");
-	std::shared_ptr<Order> order = reader.retrieveOrder();
-	check(order && order->getOrderType() == ORDER_DELETE, "oldFormat: order read back");
-	std::shared_ptr<Order> terminator = reader.retrieveOrder();
-	check(terminator && terminator->getOrderType() == ORDER_NULL, "oldFormat: NullOrder terminator");
-}
-
-// 3. Version floor and ceiling.
+// 2. Version floor and ceiling.
 void testVersionBounds()
 {
 	{
 		ReplayReader reader;
-		check(!reader.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR - 1, false, 1), false),
+		check(!reader.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR - 1, 1), false),
 		      "versionBounds: replay older than the supported floor is rejected");
 	}
 	{
 		ReplayReader reader;
-		check(!reader.loadReplay(writeReplayBody(VERSION_MINOR + 1, true, 1), false),
+		check(!reader.loadReplay(writeReplayBody(VERSION_MINOR + 1, 1), false),
 		      "versionBounds: replay newer than this build is rejected");
 	}
 	{
 		ReplayReader reader;
-		check(reader.loadReplay(writeReplayBody(VERSION_MINOR, true, 1), false),
+		check(reader.loadReplay(writeReplayBody(VERSION_MINOR, 1), false),
 		      "versionBounds: current-version replay accepted");
 	}
 }
 
-// 4. Both the initial scan and playback use the replay header version.
+// 3. Both the initial scan and playback use the replay header version.
 void testDecodeVersionPlumbing()
 {
+	// The oldest version the reader accepts. When the floor equals the current
+	// build (as right after a floor bump) this still checks that the header
+	// value is what reaches the decoder.
 	const Uint16 oldVersion = REPLAY_MINIMUM_VERSION_MINOR;
 
-	// Require an older version so a hardcoded VERSION_MINOR cannot pass.
-	check(oldVersion != VERSION_MINOR,
-	      "decodeVersion: replay floor is below the current build version");
-
 	ReplayReader reader;
-	const bool wideCounters = oldVersion >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR;
 	lastDecodeVersionMinor = 0;
-	bool loaded = reader.loadReplay(writeReplayBody(oldVersion, wideCounters, 7), false);
-	check(loaded, "decodeVersion: old-but-supported replay loads");
+	bool loaded = reader.loadReplay(writeReplayBody(oldVersion, 7), false);
+	check(loaded, "decodeVersion: oldest supported replay loads");
 	if (!loaded)
 		return;
 
@@ -298,7 +268,6 @@ void testDecodeVersionPlumbing()
 int main(int /*argc*/, char* /*argv*/[])
 {
 	testWideRoundTrip();
-	testOldFormatUint16();
 	testVersionBounds();
 	testDecodeVersionPlumbing();
 	std::printf(failures == 0 ? "ALL PASS\n" : "FAILURES: %d\n", failures);

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <FileManager.h>
+#include <BufferedFileStreamBackend.h>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
@@ -198,7 +199,7 @@ namespace GAGCore
 		{
 			FILE *fp = fopen(filename.c_str(), "wb");
 			if (fp)
-				return new FileStreamBackend(fp);
+				return new BufferedFileStreamBackend(fp);
 			return new FileStreamBackend(NULL);
 		}
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -209,7 +210,7 @@ namespace GAGCore
 
 			FILE *fp = fopen(path.c_str(), "wb");
 			if (fp)
-				return new FileStreamBackend(fp);
+				return new BufferedFileStreamBackend(fp);
 		}
 
 		return new FileStreamBackend(NULL);

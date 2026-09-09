@@ -5,7 +5,7 @@
 [%0 units can't access building]
 %0 unidades não conseguem acesso à construção
 [%0 units can't access flag]
-
+%0 unidades não conseguem acessar a bandeira
 [%0 units can't access fruit]
 %0 unidades não conseguem acesso às frutas
 [%0 units can't access resource]
@@ -15,7 +15,7 @@
 [%0 units too far from building]
 %0 unidades muito longes da construção
 [%0 units too far from flag]
-
+%0 unidades estão longe demais da bandeira
 [%0 units too far from fruit]
 %0 unidades muito longe das frutas
 [%0 units too far from resource]
@@ -119,11 +119,11 @@ Volta
 [backspace]
 backspace
 [barracks explanation 2]
-melhore seus guerreiros
+combate dos guerreiros
 [barracks explanation]
-Melhora a capacidade de luta
+Melhora o nível de
 [barracks]
-Barracks
+Quartel
 [beach size]
 Tamanho da praia
 [Blocked Players]
@@ -195,11 +195,11 @@ Limpando:
 [clearingflag explanation]
 Limpa os recursos
 [clearingflag]
-Clearing flag
+Bandeira de limpeza
 [closed]
 Fechado
 [combined vision]
-
+Visão combinada
 [compile]
 Compilar script
 [compose]
@@ -207,7 +207,7 @@ Compôr
 [Computing Fertility]
 Calculando Fertilidade
 [concrete islands terrain]
-Ilhas-concreto ?
+Ilhas separadas
 [connect]
 Conectar
 [connecting to game]
@@ -221,11 +221,11 @@ Continuar jogando
 [control %0]
 ctrl-%0
 [Corn]
-Milho
+Trigo
 [crater density]
 contagem de crateras
 [crater lakes terrain]
-Crater Lakes
+Lagos de cratera
 [create game]
 Criar jogo
 [create map]
@@ -243,15 +243,15 @@ Cursor customizado
 [damage]
 Dano
 [Damaged Map]
-Mapa de dano
+Mapa de feridos
 [decrease units working]
 Diminuir unidades trabalhando
 [Defeat Your Oppenents]
 Derrote seus adversários
 [defencetower explanation 2]
-unidades ou construções
+inimigas próximas
 [defencetower explanation]
-Atacar inimigos próximos
+Ataca unidades e construções
 [defencetower]
 Torre de defesa
 [Defense Map]
@@ -260,8 +260,6 @@ Mapa defensivo
 Defesa
 [Delete game]
 Apagar jogo selecionado
-[delete]
-Apagar
 [delete]
 delete
 [desert]
@@ -357,15 +355,13 @@ Padrões das bandeiras
 [flag settings explanation]
 Raio padrão da bandeira
 [fog of war]
-
+Névoa de guerra
 [food]
 Comida
 [forbidden area]
 Área proibida
 [Free]
-Ok
-[free]
-livre
+Saudáveis
 [free]
 livre
 [from:]
@@ -403,7 +399,7 @@ Mapa feito à mão
 [Happyness]
 Felicidade
 [hard pause]
-Hard Pause
+Pausa total
 [Harvest]
 Coletar
 [high priority]
@@ -420,8 +416,6 @@ Cura as suas unidades
 Hospital
 [host]
 Hospedar um jogo
-[hp]
-Vida
 [hp]
 Vida
 [Human]
@@ -471,7 +465,7 @@ Português do Brasil - Incompleto
 [language-code]
 br
 [language-tr]
-Linguagem
+Idioma
 [language]
 Português do Brasil
 [Leave Game]
@@ -479,7 +473,7 @@ Deixar o jogo
 [left meta]
 left meta
 [left super]
-left windows key
+tecla Windows esquerda
 [left]
 esquerda
 [level]
@@ -493,7 +487,7 @@ Carregar jogo
 [load map]
 Carregar mapa
 [load replay]
-
+Carregar replay
 [load script]
 carregar script
 [load]
@@ -505,7 +499,7 @@ carregando lista de mapas
 [login]
 Login
 [look around]
-
+Olhar ao redor
 [Lost : %0 has more prestige than you]
 Perdeu: %0 tem mais prestígio que você
 [Lost : your colony is dead]
@@ -561,7 +555,7 @@ meta-%0
 [Min required level:]
 Nível mínimo requerido:
 [Minimum Level To Flag]
-Minimum Flag Level
+Nível mín. unidades
 [Music volume]
 Volume (música)
 [Mute]
@@ -575,7 +569,7 @@ Novo
 [nick taken]
 Lamentamos mas o nome que você escolheu já existe na freenode, você poderá falar somente pelo YOG
 [no fullscreen]
-
+* apenas no modo janela
 [No Hints]
 Sem dicas
 [no key]
@@ -583,7 +577,7 @@ sem tecla ainda
 [No Objectives]
 Sem objetivos
 [no ressources growth areas]
-Nenhuma área de crescimento
+Sem crescimento
 [No]
 Não
 [Not Enough Ratings]
@@ -613,11 +607,11 @@ velhas ilhas aleatórias
 [old random terrain]
 velho terreno aleatório
 [on press]
-ao pressionar
+Ao apertar
 [On the spot]
 Aqui
 [on unpress]
-ao soltar
+Ao soltar
 [open chat box]
 Abrir janela de chat
 [open load menu]
@@ -629,7 +623,7 @@ Abrir editor de script
 [open teams editor]
 abrir editor de times
 [open]
-Abrir
+Aberto
 [OpenGL]
 OpenGL
 [Options]
@@ -645,7 +639,7 @@ page down
 [page up]
 page up
 [Papyrus]
-Papyrus
+Papiro
 [pause game]
 Congelar jogo
 [pause]
@@ -657,7 +651,7 @@ Nome do jogador
 [player rating %0]
 Avaliação de jogador %0
 [players]
-
+Jogadores
 [please wait]
 Por favor espere
 [power]
@@ -683,13 +677,13 @@ Sair do editor
 [quit the game]
 Sair do jogo
 [quit the replay]
-
+Sair do replay
 [quit]
 Sair
 [racetrack explanation 2]
-acelere suas unidades
+de caminhada das unidades
 [racetrack explanation]
-Melhora o caminhar
+Aumenta a velocidade
 [racetrack]
 Pista de corrida
 [range]
@@ -705,7 +699,7 @@ Recarregar lista de mapas
 [Register]
 Registro
 [remember unit]
-Lembrar a unidade
+Lembrar atribuições
 [Remember YOG password localy]
 Lembrar a senha localmente. (inseguro)
 [remove map]
@@ -723,7 +717,7 @@ vezes a mesma paisagem
 [Repeat your password :]
 Digite sua senha novamente:
 [replay ended]
-
+Replay encerrado
 [restore default shortcuts]
 Restaurar atalhos de teclado padrões
 [return to editor]
@@ -731,7 +725,7 @@ Retornar ao editor
 [return to game]
 Retornar ao jogo
 [return to replay]
-
+Voltar ao replay
 [return]
 enter
 [right meta]
@@ -753,19 +747,19 @@ Gravar Jogo
 [save map]
 Gravar mapa
 [save replay]
-
+Salvar replay
 [save script]
 Gravar script
 [Save]
 Gravar
 [school explanation 2]
-melhore seus trabs.
+construção dos trabalhadores
 [school explanation]
-Improves the building
+Melhora o nível de
 [school]
 Escola
 [Script Areas]
-Script Areas
+Áreas de script
 [scroll lock]
 scroll lock
 [scroll wheel enabled]
@@ -781,9 +775,9 @@ Selecionar Barracks
 [select clearingflag]
 Selecionar Bandeira de limpeza
 [select construct barracks]
-Selecionar construção de Barracks
+Construir quartel
 [select construct defencetower]
-Selecionar construção de Torre de defesa
+Construir torre de defesa
 [select construct hospital]
 Selecionar construção de hospital
 [select construct inn]
@@ -791,13 +785,13 @@ Selecionar construção de Taverna
 [select construct market]
 Selecionar construção de Mercado
 [select construct racetrack]
-Selecionar construção de Pista de Corrida
+Construir pista de corrida
 [select construct school]
 Selecionar construção de Escola
 [select construct stonewall]
-Selecionar construção de Muro de Pedra
+Construir parede de pedra
 [select construct swarm]
-Selecionar construção de Núcleo de Repr.
+Construir núcleo de reprodução
 [select construct swimmingpool]
 Selecioner construção de Piscina
 [select delete tool]
@@ -813,15 +807,15 @@ Selecionar Mercado
 [select place clearing area]
 Selecionar lugar de limpeza de área
 [select place clearingflag]
-Selecionar lugar de bandeira de limpeza
+Colocar bandeira de limpeza
 [select place explorationflag]
-Selecionar lugar de bandeira de exploração
+Colocar bandeira de exploração
 [select place forbidden area]
 Selecionar lugar para área proibida
 [select place guard area]
 Selecionar área para guarda
 [select place warflag]
-Selecionar lugar para bandeira de guerra
+Colocar bandeira de guerra
 [select racetrack building]
 Selecionar Pista de corrida
 [select school building]
@@ -845,9 +839,9 @@ Enter: manda uma mensagem via chat
 [shortcut explanation v]
 V: pressione para falar
 [show areas]
-
+Mostrar áreas
 [show flags]
-
+Mostrar bandeiras
 [show main menu]
 Mostrar menu principal
 [skin]
@@ -889,9 +883,9 @@ Pedra
 [stone]
 pedra
 [stonewall explanation 2]
-elemento
+passiva
 [stonewall explanation]
-Defesa passiva
+Elemento de defesa
 [stonewall]
 Parede de pedra
 [submit rating]
@@ -903,15 +897,15 @@ Pântano
 [swarm explanation 2]
 
 [swarm explanation]
-Criar novas unidade
+Cria novas unidades
 [swarm]
 Núcleo de reprod.
 [Swim]
 Nadar
 [swimmingpool explanation 2]
-acelere suas unidades
+de natação das unidades
 [swimmingpool explanation]
-Melhora a natação
+Aumenta a velocidade
 [swimmingpool]
 Piscina
 [switch to adding areas]
@@ -961,17 +955,17 @@ A construção está pronta
 [the building is under attack]
 A contrução está sobre ataque
 [the clearingflag is finished]
-?? Clearing flag finished ??
+Bandeira de limpeza colocada.
 [the clearingflag is under attack]
-?? Clearing flag under attack ??
+Bandeira de limpeza está sob ataque.
 [the defencetower is finished]
 A Torre de defesa está pronta
 [the defencetower is under attack]
-Suas defesas estão sobre ataque
+A torre de defesa está sob ataque.
 [the explorationflag is finished]
-?? Exploration flag finished ??
+Bandeira de exploração colocada.
 [the explorationflag is under attack]
-?? Bandeira de exploração sobre ataque ??
+Bandeira de exploração está sob ataque.
 [The game has not been finished]
 O jogo ainda não acabou
 [the games]
@@ -1001,7 +995,7 @@ A Pista de corrida está pronta
 [the racetrack is under attack]
 A Pista de corrida está sendo atacado
 [the replays]
-
+Replays
 [the school is finished]
 A Escola está pronta
 [the school is under attack]
@@ -1019,15 +1013,15 @@ A Piscina está pronta
 [the swimmingpool is under attack]
 A Piscina está sendo atacada
 [the warflag is finished]
-?? War flag finished ??
+Bandeira de guerra colocada.
 [the warflag is under attack]
-?? Bandeira de guerra sobre ataque ??
+Bandeira de guerra está sob ataque.
 [time]
 tempo
 [to:]
 para:
 [toggle draw accessibility aids]
-Desenhar ajudas de acessibilidade
+Mostrar/ocultar números das equipes
 [toggle draw information]
 Informações
 [toggle draw unit paths]
@@ -1075,7 +1069,7 @@ destravados no começo
 [unlocked by]
 Destravado por
 [Unnamed Area]
-{Unnamed Area}
+{Área sem nome}
 [up]
 cima
 [upgrade building]
@@ -1083,7 +1077,7 @@ Começar/Parar Upgrade
 [Upgrade Defaults]
 Padrões de upgrade
 [upgrade]
-Upgrade
+Melhorar
 [Upload Map]
 Enviar mapa
 [upload map]
@@ -1119,9 +1113,9 @@ Guerreiro
 [warriors]
 guerreiros
 [watch again]
-
+Assistir novamente
 [watching:]
-
+Assistindo:
 [water]
 Água
 [Wheat]
@@ -1140,8 +1134,6 @@ madeira
 Proporção de trabalhadores
 [Worker]
 Trabalhador
-[workers]
-Trabalhadores
 [workers]
 trabalhadores
 [working]
@@ -1201,10 +1193,34 @@ Você ganhou!
 [You where kicked from the game]
 Você foi expulso do jogo
 [Your %0 are under attack]
-Seus %0 estão sendo atacados
+Seu %0 está sob ataque
 [Your IP address was temporarily banned]
 Seu número ip foi temporariamente banido
 [Your unit got converted to %0's team]
-Sua unidade foi convertido para o time do %0
+Sua unidade passou para a equipe de %0
 [Your username was banned]
 Seu nome de usuário foi banido
+[game speed]
+Velocidade do jogo
+[decrease game speed]
+Diminuir velocidade do jogo
+[increase game speed]
+Aumentar velocidade do jogo
+[maximum game speed]
+Máxima
+[multiplayer game speed]
+Velocidade: 1x (multijogador)
+[game speed help]
+Apenas para um jogador e replays. Partidas multijogador funcionam a 1x.
+[AICortex-Description]
+Cortex - IA experimental de três camadas. Em desenvolvimento.
+[ERROR_CANT_LOAD_MAP]
+Não foi possível carregar o mapa: o arquivo está danificado ou sua versão é incompatível.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Não foi possível salvar a campanha. Verifique se a pasta de destino existe, permite gravação e tem espaço livre.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Dentro: %0
+[Units still working: %0]
+Ainda trabalhando: %0

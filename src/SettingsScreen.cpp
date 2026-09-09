@@ -13,6 +13,7 @@
 //   - SettingsScreenKeyboard.cpp  ("Keyboard Shortcuts" tab)
 
 #include "SettingsScreen.h"
+#include <GUIStyle.h>
 #include "GlobalContainer.h"
 #include <assert.h>
 #include <sstream>
@@ -181,6 +182,7 @@ void SettingsScreen::handleListSelected(Widget* source, int par1)
 		if (sscanf(modeList->getText(par1).c_str(), "%dx%d", &w, &h) != 2) return;
 		globalContainer->settings.screenWidth=w;
 		globalContainer->settings.screenHeight=h;
+
 	    setFullscreen();
 	}
 	else if (source == shortcut_list)

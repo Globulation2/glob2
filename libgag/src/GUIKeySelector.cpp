@@ -4,6 +4,7 @@
 
 #include "GUIKeySelector.h"
 #include "Toolkit.h"
+#include "GUIStyle.h"
 #include <string>
 #include "StringTable.h"
 
@@ -28,6 +29,8 @@ namespace GAGGUI
 	
 	void KeySelector::paint(void)
 	{
+		int x,y,w,h; getScreenPos(&x,&y,&w,&h);
+		Style::style->drawFieldBackground(parent->getSurface(),x,y,w,h);
 		HighlightableWidget::paint();
 		
 		if(blinkVisible)
@@ -39,7 +42,8 @@ namespace GAGGUI
 			assert(parent);
 			assert(parent->getSurface());
 			
-			fontPtr->pushStyle(style);
+			fontPtr->pushStyle(Style::style->usesThemeTextColor()
+				? Font::Style(Font::STYLE_NORMAL,Style::style->textColor) : style);
 			
 			wDec=(w-fontPtr->getStringWidth(text.c_str()))/2;
 			hDec=(h-fontPtr->getStringHeight(text.c_str()))/2;
