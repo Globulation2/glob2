@@ -78,9 +78,6 @@ public:
 	/// Get the next order on the current step
 	std::shared_ptr<Order> retrieveOrder();
 
-	/// Get the stream that this reader uses, or NULL if there is none
-	GAGCore::InputStream *getStream() const;
-
 private:
 	/// You shouldn't copy-construct this class
 	ReplayReader(const ReplayReader &copy) { assert(false); };
@@ -113,6 +110,9 @@ private:
 	/// True if the loaded replay stores step counters as Uint32
 	/// (format version >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR)
 	bool wideStepCounter;
+
+	/// Format version from the replay header, used to decode orders.
+	Uint32 versionMinor;
 
 	/// The game's current checksum (or 0 if it's not given)
 	Uint32 checksum;

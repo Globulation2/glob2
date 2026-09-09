@@ -14,7 +14,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 	assert(buildingsToBeDestroyed.size()==0);
 	buildingsTryToBuildingSiteRoom.clear();
 
-	// loading baseteam
+	// loading base team
 	if(!BaseTeam::load(stream, versionMinor))
 		return false;
 
@@ -92,8 +92,6 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		{
 			stream->readEnterSection(i);
 			myBuildings[i]->loadCrossRef(stream, buildingstypes, this, versionMinor);
-			if (myBuildings[i]->type->canExchange)
-				canExchange.push_back(myBuildings[i]);
 			stream->readLeaveSection();
 		}
 	}
@@ -129,7 +127,8 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 		stream->readLeaveSection();
 		return false;
 	}
-	stats.step(this, true);
+	if (versionMinor < FILE_FORMAT_VERSION_LIVE_TEAM_STATS)
+		stats.step(this, true);
 
 	if(versionMinor >= FILE_FORMAT_VERSION_RACE_FIELD)
 	{
@@ -155,7 +154,7 @@ bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Si
 
 void Team::save(GAGCore::OutputStream *stream)
 {
-	// saving baseteam
+	// saving base team
 	BaseTeam::save(stream);
 
 	stream->writeEnterSection("Team");

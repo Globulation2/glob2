@@ -384,9 +384,6 @@ public:
 	///Saves the game to a particular file name
 	bool save(const std::string filename, const std::string name);
 
-	///Updates the editor after map generation
-	void update();
-
 	///This function sets the map a particular size and uniform terrain type, then goes into the main loop
 	int run(int sizeX, int sizeY, TerrainType terrainType);
 	///This is the main loop function. It "ticks" every 33 miliseconds, handling events and drawing as it goes.
@@ -733,10 +730,10 @@ private:
 	BrushAccumulator brushAccumulator;
 	///Handles brush click to place a zone
 	void handleBrushClick(int mx, int my);
-	///The pair of map fields a zone brush edits: the per-case team bitmask and the local (display-only) overlay
+	///The pair of map fields a zone brush edits: the per-tile team bitmask and the local (display-only) overlay
 	struct AreaBrushTarget
 	{
-		Uint32 Case::* caseMask;
+		Uint32 Tile::* tileMask;
 		Utilities::BitArray& view;
 	};
 	///Returns the map fields edited by the current brushType

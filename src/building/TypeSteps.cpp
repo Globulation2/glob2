@@ -374,38 +374,4 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 
 
 
-// Per-tick maintenance for a clearing-flag building. While the flag has worker
-// room, each swim variant's `localResourcesCleanTime` is incremented by one
-// tick; once the *prior* value exceeds CLEARING_FLAG_REFRESH_TICKS (~5s), the
-// local-resource gradient is recomputed via Map::updateLocalResources, which
-// resets the timer back to 0. If the recompute reports no reachable resources,
-// every worker is released.
-//
-// PORT: timer is reset inside Map::updateLocalResources (MapGradientBuilding.cpp:197),
-// PORT: not here. It is also bumped by +=16 from MapPathfindResource.cpp:132 when units
-// PORT: find resources unreachable, which short-circuits the wait.
-void Building::clearingFlagStep()
-{
-	const size_t workerCap = static_cast<size_t>(std::max<Sint32>(0, maxUnitWorking));
-	if (unitsWorking.size() >= workerCap)
-		return;
-
-	for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
-	{
-		int& timer = localResourcesCleanTime[canSwim];
-		const bool refreshDue = (timer > CLEARING_FLAG_REFRESH_TICKS);
-		++timer;
-		if (!refreshDue)
-			continue;
-
-		if (!owner->map->updateLocalResources(this, canSwim))
-		{
-			// PORT: verify standardRandomActivity() detaches unit->attachedBuilding and updates call lists.
-			// PORT: if not, the Rust port should call removeUnitFromWorking(unit) per unit instead of clear().
-			releaseAllWorkers();
-		}
-	}
-}
-
-
 

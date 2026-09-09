@@ -11,6 +11,7 @@
 #include "Utilities.h"
 #include "Player.h"
 #include "Integrity.h"
+#include <stdexcept>
 
 Team::Team(Game *game)
 :BaseTeam()
@@ -25,14 +26,10 @@ Team::Team(Game *game)
 
 
 Team::Team(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor)
-:BaseTeam()
+:Team(game)
 {
-	assert(game);
-	this->game=game;
-	this->map=&game->map;
-	init();
-	bool success = load(stream, &(globalContainer->buildingsTypes), versionMinor);
-	assert(success);
+	if (!load(stream, &(globalContainer->buildingsTypes), versionMinor))
+		throw std::runtime_error("Failed to load team");
 }
 
 
@@ -78,19 +75,6 @@ void Team::init(void)
 		eventCooldownTimers[i]=0;
 
 	noMoreBuildingSitesCountdown=0;
-}
-
-
-
-
-void Team::setBaseTeam(const BaseTeam *initial)
-{
-	teamNumber=initial->teamNumber;
-	numberOfPlayer=initial->numberOfPlayer;
-	playersMask=initial->playersMask;
-
-	setCorrectColor(initial->color);
-	setCorrectMasks();
 }
 
 
@@ -179,24 +163,6 @@ bool Team::openMarket()
 	return false;
 }
 
-
-
-
-void Team::checkControllingPlayers(void)
-{
-	if (!hasWon)
-	{
-		bool stillInControl = false;
-		for (int i=0; i<game->gameHeader.getNumberOfPlayers(); i++)
-		{
-			if ((game->players[i]->teamNumber == teamNumber) &&
-				game->players[i]->type != Player::P_LOST_DROPPING &&
-				game->players[i]->type != Player::P_LOST_FINAL)
-				stillInControl = true;
-		}
-		isAlive = isAlive && stillInControl;
-	}
-}
 
 
 

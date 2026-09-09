@@ -64,6 +64,7 @@ namespace GAGCore
 			}
 			void close()
 			{
+				flush();
 				FILE *file = fp;
 				fp = NULL;
 				if (fclose(file) != 0)
@@ -111,7 +112,6 @@ namespace GAGCore
 				owner.release();
 				BinaryOutputStream stream(backend);
 				writer(stream);
-				stream.flush();
 				backend->close();
 #ifdef WIN32
 				if (!MoveFileExA(temporary.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING))

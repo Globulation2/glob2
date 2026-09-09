@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 88
+#define VERSION_MINOR 90
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -90,6 +90,7 @@
 // version 86 widened BasePlayer::playerID from Uint16 to Uint32 in the saved file
 // version 87 widened the replay inter-order step counter from Uint16 to Uint32
 // version 88 added the per-team Map::exploredArea to saved games
+// version 89 preserves live team statistics and their sampling cadence
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

@@ -29,6 +29,8 @@ protected:
     }
 public:
     explicit BufferedFileStreamBackend(FILE* fp) : FileStreamBackend(fp) {}
+    // Destruction drains through the unchecked base implementation; callers
+    // requiring error reporting must explicitly flush or close first.
     ~BufferedFileStreamBackend() override { drain(); }
     BufferedFileStreamBackend(const BufferedFileStreamBackend&) = delete;
     BufferedFileStreamBackend& operator=(const BufferedFileStreamBackend&) = delete;

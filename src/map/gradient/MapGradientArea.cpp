@@ -12,28 +12,62 @@
 
 // Forbidden / Guard area / Clear area gradients
 
-void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
+Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
 {
-	Uint8 *gradient = forbiddenGradient[teamNumber][canSwim];
+	Uint16 *&gradient = forbiddenGradient[teamNumber][swimClass];
+	if (gradient == NULL)
+	{
+		gradient = new Uint16[size];
+		updateForbiddenGradient(teamNumber, swimClass);
+	}
+	return gradient;
+}
+
+Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
+{
+	Uint16 *&gradient = guardAreasGradient[teamNumber][swimClass];
+	if (gradient == NULL)
+	{
+		gradient = new Uint16[size];
+		updateGuardAreasGradient(teamNumber, swimClass);
+	}
+	return gradient;
+}
+
+Uint16 *Map::getClearAreasGradient(int teamNumber, int swimClass)
+{
+	Uint16 *&gradient = clearAreasGradient[teamNumber][swimClass];
+	if (gradient == NULL)
+	{
+		gradient = new Uint16[size];
+		updateClearAreasGradient(teamNumber, swimClass);
+	}
+	return gradient;
+}
+
+void Map::updateForbiddenGradient(int teamNumber, int swimClass)
+{
+	Uint16 *gradient = forbiddenGradient[teamNumber][swimClass];
 	assert(gradient);
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	bool canSwim = swimClass > 0;
 
-	// Seed: free cells are sources (255), forbidden interiors are placeholder 1
-	// (promoted to 254 in the second pass if they border a free cell), all other
-	// blockers (resources, buildings, water, immobileUnits) are obstacles.
+	// Seed: free cells are goals, forbidden interiors are placeholders (promoted
+	// to GRADIENT_FORBIDDEN_BORDER in the second pass if they border a free cell),
+	// all other blockers (resources, buildings, water, immobileUnits) are obstacles.
 	for (size_t i=0; i<size; i++)
 	{
-		const Case& c=cases[i];
+		const Tile& c=tiles[i];
 		if (c.resource.type!=NO_RES_TYPE)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (!canSwim && isWater(i))
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if(immobileUnits[i] != 255)
+		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.forbidden&teamMask)
-			gradient[i] = GRADIENT_UNREACHABLE;  // promoted to GRADIENT_FORBIDDEN_BORDER below if it borders a free cell
+			gradient[i] = GRADIENT_UNREACHABLE;
 		else
 			gradient[i] = GRADIENT_AT_GOAL;
 	}
@@ -46,23 +80,10 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 			continue;
 		size_t y = i >> wDec;
 		size_t x = i & wMask;
-		size_t yu = ((y - 1) & hMask);
-		size_t yd = ((y + 1) & hMask);
-		size_t xl = ((x - 1) & wMask);
-		size_t xr = ((x + 1) & wMask);
-		size_t deltaAddrC[8] = {
-			(yu << wDec) | xl,
-			(yu << wDec) | x ,
-			(yu << wDec) | xr,
-			(y  << wDec) | xr,
-			(yd << wDec) | xr,
-			(yd << wDec) | x ,
-			(yd << wDec) | xl,
-			(y  << wDec) | xl,
-		};
-		for (int ci=0; ci<8; ci++)
+		for (int d=0; d<8; d++)
 		{
-			if (gradient[deltaAddrC[ci]] == GRADIENT_AT_GOAL)
+			size_t n = (((y + tabClose[d][1]) & hMask) << wDec) | ((x + tabClose[d][0]) & wMask);
+			if (gradient[n] == GRADIENT_AT_GOAL)
 			{
 				gradient[i] = GRADIENT_FORBIDDEN_BORDER;
 				break;
@@ -70,13 +91,14 @@ void Map::updateForbiddenGradient(int teamNumber, bool canSwim)
 		}
 	}
 
-	updateGlobalGradient(gradient);
+	propagateGradient(gradient, swimClass);
 }
 
 void Map::updateForbiddenGradient(int teamNumber)
 {
-	for (int i=0; i<2; i++)
-		updateForbiddenGradient(teamNumber, i);
+	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+		if (forbiddenGradient[teamNumber][c])
+			updateForbiddenGradient(teamNumber, c);
 }
 
 void Map::updateForbiddenGradient()
@@ -86,18 +108,19 @@ void Map::updateForbiddenGradient()
 }
 
 
-void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
+void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
-	Uint8 *gradient = guardAreasGradient[teamNumber][canSwim];
+	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
 	assert(gradient);
+	bool canSwim = swimClass > 0;
 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
 	{
-		const Case& c=cases[i];
+		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if(immobileUnits[i] != 255)
+		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.resource.type != NO_RES_TYPE)
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -111,13 +134,14 @@ void Map::updateGuardAreasGradient(int teamNumber, bool canSwim)
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
 
-	updateGlobalGradient(gradient);
+	propagateGradient(gradient, swimClass);
 }
 
 void Map::updateGuardAreasGradient(int teamNumber)
 {
-	for (int i=0; i<2; i++)
-		updateGuardAreasGradient(teamNumber, i);
+	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+		if (guardAreasGradient[teamNumber][c])
+			updateGuardAreasGradient(teamNumber, c);
 }
 
 void Map::updateGuardAreasGradient()
@@ -127,20 +151,21 @@ void Map::updateGuardAreasGradient()
 }
 
 
-void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
+void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 {
-	Uint8 *gradient = clearAreasGradient[teamNumber][canSwim];
+	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
 	assert(gradient);
+	bool canSwim = swimClass > 0;
 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
 	{
-		const Case& c=cases[i];
+		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(c.clearArea & teamMask && c.resource.type != NO_RES_TYPE && globalContainer->resourcesTypes.get(c.resource.type)->clearable)
 			gradient[i] = GRADIENT_AT_GOAL;
-		else if(immobileUnits[i] != 255)
+		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if (c.resource.type != NO_RES_TYPE)
 			gradient[i] = GRADIENT_FORBIDDEN;
@@ -152,13 +177,14 @@ void Map::updateClearAreasGradient(int teamNumber, bool canSwim)
 			gradient[i] = GRADIENT_UNREACHABLE;
 	}
 
-	updateGlobalGradient(gradient);
+	propagateGradient(gradient, swimClass);
 }
 
 void Map::updateClearAreasGradient(int teamNumber)
 {
-	for (int i=0; i<2; i++)
-		updateClearAreasGradient(teamNumber, i);
+	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+		if (clearAreasGradient[teamNumber][c])
+			updateClearAreasGradient(teamNumber, c);
 }
 
 void Map::updateClearAreasGradient()
@@ -166,5 +192,3 @@ void Map::updateClearAreasGradient()
 	for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 		updateClearAreasGradient(i);
 }
-
-

@@ -1,6 +1,15 @@
+import os
 import sys
 
+sys.path.append( os.path.abspath("../scons") )
+import ccache
+
 env = Environment()
+
+# Compiler cache, shared with the top-level build. Set before the Clone()s
+# below so every harness environment inherits it.
+if ccache.enabled():
+    ccache.enable(env)
 
 # Shared include paths so tests can compile against game headers.
 # echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
@@ -45,7 +54,7 @@ gag_server = gag_env.StaticLibrary('gagserver', [
   gag_env.Object('gagserver-' + name + '.o', '../libgag/src/' + name + '.cpp')
   for name in Split("""
     BinaryStream FileManager FileManagerAtomic FormatableString Stream StreamBackend
-    StreamFilter StringTable TextStream Toolkit
+    StringTable TextStream Toolkit
   """)])
 
 sources = Split("""
@@ -66,8 +75,10 @@ GradientBFSTest.cpp
 ../src/ai/echo/GradientBFS.cpp
 
 MapQueryTest.cpp
+GradientTest.cpp
 MapQueryTestStubs.cpp
 ../src/map/Map.cpp
+../src/map/gradient/MapGradientField.cpp
 ../src/map/MapQuery.cpp
 ../src/map/MapTerrain.cpp
 ../src/BitArray.cpp
@@ -88,6 +99,8 @@ BrushToolHitTest.cpp
 TurretScanTileTest.cpp
 
 ParticleCrossfadeTest.cpp
+
+UnitTimingTest.cpp
 
 CortexUpgradeTest.cpp
 

@@ -10,7 +10,6 @@
 
 class MultiplayerGame;
 class YOGClientFileAssembler;
-class P2PConnection;
 class YOGClientGameListManager;
 class YOGClientPlayerListManager;
 class YOGServer;
@@ -130,23 +129,8 @@ public:
 	///This attaches a game server to this client, for client-hosted games (such as LAN)
 	void attachGameServer(std::shared_ptr<YOGServer> server);
 
-	///This retrieves the attached game server
-	std::shared_ptr<YOGServer> getGameServer();
-
-	///This attaches a P2PConnection to this client
-	void setP2PConnection(std::shared_ptr<P2PConnection> connection);
-	
-	///This retrieves the attached P2P connection
-	std::shared_ptr<P2PConnection> getP2PConnection();
-
-	///This attaches a YOGClientGameListManager to this client
-	void setGameListManager(std::shared_ptr<YOGClientGameListManager> gameListManager);
-
 	///This retrieves the YOGClientGameListManager of this client
 	std::shared_ptr<YOGClientGameListManager> getGameListManager();
-
-	///This attaches a YOGClientPlayerListManager to this client
-	void setPlayerListManager(std::shared_ptr<YOGClientPlayerListManager> playerListManager);
 
 	///This retrieves the YOGClientGameListManager of this client
 	std::shared_ptr<YOGClientPlayerListManager> getPlayerListManager();
@@ -175,9 +159,6 @@ public:
 	///This retrieves the YOGClientCommandManager of this client
 	std::shared_ptr<YOGClientCommandManager> getCommandManager();
 
-	///This retrieves the YOGClientMapUploader of this client
-	YOGClientMapUploader* getMapUploader();
-
 	///This sets the YOGClientMapUploader of this client
 	void setMapUploader(YOGClientMapUploader* uploader);
 
@@ -189,14 +170,10 @@ public:
 
 	///This sets the YOGClientMapDownloader of this client
 	void setMapDownloader(YOGClientMapDownloader* downloader);
-	
-	///This returns the YOGClientMapDownloader of this client
-	YOGClientMapDownloader* getMapDownloader();
 
 protected:
     friend class MultiplayerGame;
     friend class YOGClientFileAssembler;
-    friend class P2PConnection;
 	friend class YOGClientChatChannel;
 	friend class MultiplayerGamePlayerManager;
 	friend class NetEngine;
@@ -237,7 +214,6 @@ private:
 	
 	std::shared_ptr<MultiplayerGame> joinedGame;
 	std::map<Uint16, std::shared_ptr<YOGClientFileAssembler> > assembler;
-	std::shared_ptr<P2PConnection> p2pconnection;
 	std::shared_ptr<YOGClientGameListManager> gameListManager;
 	std::shared_ptr<YOGClientPlayerListManager> playerListManager;
 	std::shared_ptr<NetConnection> gameConnection;

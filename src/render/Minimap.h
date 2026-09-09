@@ -81,9 +81,6 @@ private:
 	
 	Game* game;
 
-	///Converts x & y to a position in the color map
-	int position(int x, int y) { return (x * game->map.getH() + y); }
-	
 	DrawableSurface *surface;
 };
 

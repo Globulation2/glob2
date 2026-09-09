@@ -10,18 +10,6 @@
 
 namespace GAGCore
 {
-	// rectangle
-	//! return true if (x,y) is in r
-	bool ptInRect(int x, int y, SDL_Rect *r);
-	//! FIXME : please Luc document this
-	void rectClipRect(int &x, int &y, int &w, int &h, SDL_Rect &r);
-	//! FIXME : please Luc document this
-	void rectExtendRect(SDL_Rect *rs, SDL_Rect *rd);
-	//! FIXME : please Luc document this
-	void rectExtendRect(int xs, int ys, int ws, int hs, int *xd, int *yd, int *wd, int *hd);
-	//! FIXME : please Luc document this
-	void sdcRects(SDL_Rect *source, SDL_Rect *destination, const SDL_Rect &clipping);
-
 	// color space conversion
 	//! do a color space conversion from RGB to HSV
 	void RGBtoHSV( float r, float g, float b, float *h, float *s, float *v );

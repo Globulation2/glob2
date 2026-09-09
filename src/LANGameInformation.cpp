@@ -4,13 +4,6 @@
 #include "LANGameInformation.h"
 #include "Stream.h"
 
-LANGameInformation::LANGameInformation(const YOGGameInfo& information)
-{
-
-}
-
-
-
 LANGameInformation::LANGameInformation()
 {
 

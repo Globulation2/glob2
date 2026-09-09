@@ -171,10 +171,9 @@ map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
 map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientLocal.cpp
+map/gradient/MapGradientField.cpp
 map/io/MapExploredAreaIO.cpp
 map/io/MapIO.cpp
-map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindBuilding.cpp
@@ -210,9 +209,7 @@ map/generator/GeneratorHeightmap.cpp
 map/generator/MapHomogen.cpp
 map/generator/MapOldRandom.cpp
 map/generator/MapRandom.cpp
-map/generator/MapOldRandomRessources.cpp
 map/generator/MapOldIslands.cpp
-map/generator/MapOldIslandsRessources.cpp
 map/generator/GameMaps.cpp
 map/io/MapHeader.cpp
 MapScript.cpp
@@ -293,7 +290,6 @@ unit/Unit.cpp
 unit/UnitAction.cpp
 unit/UnitActivity.cpp
 unit/UnitDisplacement.cpp
-UnitEditorScreen.cpp
 unit/UnitGeometry.cpp
 unit/UnitMedical.cpp
 unit/UnitMovement.cpp
@@ -339,7 +335,6 @@ yog/YOGGameInfo.cpp
 yog/YOGGameResults.cpp
 yog/YOGLoginScreen.cpp
 yog/YOGMessage.cpp
-yog/YOGPlayerPrivateInfo.cpp
 yog/YOGPlayerSessionInfo.cpp
 yog/YOGPlayerStoredInfo.cpp
 yog/YOGRegisterScreen.cpp
@@ -421,10 +416,9 @@ map/Map.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp
 map/gradient/MapGradientGlobal.cpp
-map/gradient/MapGradientLocal.cpp
+map/gradient/MapGradientField.cpp
 map/io/MapExploredAreaIO.cpp
 map/io/MapIO.cpp
-map/gradient/MapMinigrad.cpp
 map/MapMisc.cpp
 map/pathfind/MapPathfindArea.cpp
 map/pathfind/MapPathfindRessource.cpp
@@ -470,6 +464,17 @@ source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+if not env['server']:
+    # Compile with local, not stats_env, to avoid rebuilding shared objects under a second environment.
+    stats_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    stats_sources += [source for source in source_files if not source.endswith('.cpp')]
+    stats_sources += local.Object('TeamStatsSaveHarness.o', '#test/TeamStatsSaveHarness.cpp')
+    stats_env = local.Clone()
+    stats_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    stats_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    stats_test = stats_env.Program('TeamStatsSaveHarness', stats_sources)
+    local.Alias('team-stats-save-test', stats_test)
+
 # Integration harness: reuse the client objects with a test entry point.
 # Explicit target only; the server and normal client build remain unchanged.
 if not env['server']:
@@ -483,6 +488,12 @@ if not env['server']:
     terrain_sources += local.Object('TerrainResourcesHarness.o', '#test/TerrainResourcesHarness.cpp')
     terrain_test = local.Program('TerrainResourcesHarness', terrain_sources)
     local.Alias('terrain-test', terrain_test)
+
+if not env['server']:
+    gradient_sources = [source for source in source_files if source != 'Glob2.cpp']
+    gradient_sources += local.Object('GlobalGradientHarness.o', '#test/GlobalGradientHarness.cpp')
+    gradient_test = local.Program('GlobalGradientHarness', gradient_sources)
+    local.Alias('global-gradient-test', gradient_test)
 
 if not env['server']:
     lan_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -549,3 +560,17 @@ if not env['server']:
     buffer_sources = ['#test/BufferedFileStreamHarness.cpp', '../libgag/src/libgag.a']
     buffer_test = local.Program('BufferedFileStreamHarness', buffer_sources)
     local.Alias('buffered-file-test', buffer_test)
+
+# Real engine regression for immobile units and weighted building gradients, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('ImmobileUnitGradientHarness.o', '#test/ImmobileUnitGradientHarness.cpp')
+    regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
+    local.Alias('immobile-unit-gradient-test', regression_test)
+
+# Real engine regression for resource-fetch target staleness, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
+    regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
+    local.Alias('resource-fetch-target-test', regression_test)

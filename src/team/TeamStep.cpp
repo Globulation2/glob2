@@ -162,7 +162,7 @@ void Team::syncStep(void)
 				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
 					// One tile narrower than the Game_orders.cpp rects; part of the replay-verified behaviour.
-					map->dirtyLocalGradient(building->posX-GRADIENT_DIRTY_BORDER_TILES, building->posY-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->width, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->height, teamNumber);
+					map->dirtyBuildingGradients(building->posX-GRADIENT_DIRTY_BORDER_TILES, building->posY-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->width, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->height, teamNumber);
 					isDirtyGlobalGradient=true;
 				}
 				building->buildingState=Building::DEAD;
@@ -241,9 +241,6 @@ void Team::syncStep(void)
 	for (std::list<Building *>::iterator it=turrets.begin(); it!=turrets.end(); ++it)
 		(*it)->turretStep(game->stepCounter);
 
-	for (std::list<Building *>::iterator it=clearingFlags.begin(); it!=clearingFlags.end(); ++it)
-		(*it)->clearingFlagStep();
-
 	bool isDying= (playersMask==0)
 		|| (!isEnoughFoodInSwarm && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
@@ -265,13 +262,7 @@ void Team::dirtyGlobalGradient()
 	{
 		Building *b=myBuildings[id];
 		if (b)
-			for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
-				if (b->globalGradient[canSwim])
-				{
-					delete[] b->globalGradient[canSwim];
-					b->globalGradient[canSwim]=NULL;
-					b->locked[canSwim]=false;
-				}
+			b->resetPathfindGradients();
 	}
 }
 
@@ -281,12 +272,6 @@ void Team::dirtyWarFlagGradient()
 	{
 		Building *b = *it;
 		if (b->type->zonable[WARRIOR])
-			for (int canSwim=0; canSwim<SWIM_VARIANT_COUNT; canSwim++)
-				if (b->globalGradient[canSwim])
-				{
-					delete[] b->globalGradient[canSwim];
-					b->globalGradient[canSwim]=NULL;
-					b->locked[canSwim]=false;
-				}
+			b->resetPathfindGradients();
 	}
 }

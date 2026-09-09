@@ -112,7 +112,7 @@ static constexpr int SLOT_INDEX_NONE = -1;
 static constexpr float TEAM_COLOR_HUE_DEGREES = 360.0f;
 
 //! Padding (in tiles) added on each side of the rectangle passed to
-//! Map::dirtyLocalGradient when a building/flag changes. The width/height
+//! Map::dirtyBuildingGradients when a building/flag changes. The width/height
 //! of the dirty rect therefore grows by 2 * GRADIENT_DIRTY_BORDER_TILES.
 //! See Game_orders.cpp:193, 279, 360, 496.
 static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
@@ -140,6 +140,8 @@ public:
 
 	///Saves data to a stream
 	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);
+	void saveBuildProjects(GAGCore::OutputStream* stream) const;
+	void loadBuildProjects(GAGCore::InputStream* stream);
 
 	enum FlagForRemoval
 	{

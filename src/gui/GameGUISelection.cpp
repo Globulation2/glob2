@@ -257,20 +257,3 @@ void GameGUI::onBuildingDestroyed(Building *b)
 	buildingGuiState.erase(b->gid);
 }
 
-void GameGUI::dumpUnitInformation(void)
-{
-	if(view.selectedUnit != NULL)
-	{
-		Unit* unit = view.selectedUnit;
-		std::cout<<"unit->posx = "<<unit->posX<<std::endl;
-		std::cout<<"unit->posy = "<<unit->posY<<std::endl;
-		std::cout<<"unit->gid = "<<unit->gid<<std::endl;
-		std::cout<<"unit->medical = "<<unit->medical<<std::endl;
-		std::cout<<"unit->activity = "<<unit->activity<<std::endl;
-		std::cout<<"unit->displacement = "<<unit->displacement<<std::endl;
-		std::cout<<"unit->movement = "<<unit->movement<<std::endl;
-		std::cout<<"unit->action = "<<unit->action<<std::endl;
-		if(unit->targetBuilding)
-			std::cout<<"unit->targetBuilding->gid = "<<unit->targetBuilding->gid<<std::endl;
-	}
-}
