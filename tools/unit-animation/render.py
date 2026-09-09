@@ -189,6 +189,37 @@ def collect(rendered, destination, samples, reference):
     return report
 
 
+COLUMNS = 16
+INDEX_HEADER = """\
+# Sprite sheet index for data/gfx/unit, read by GAGCore::Sprite::load.
+# One line per sheet: <file> <image|rotated> <first frame> <frames> <tile width> <tile height>
+# Tiles are packed row-major; the column count follows from the sheet's width.
+"""
+
+
+def pack(staged, destination, samples):
+    """Combine the staged per-frame PNGs into one sheet per set and layer."""
+    from PIL import Image
+    entries = []
+    for name, source, base, size, shadow in SETS:
+        first, count = base * samples, 64 * samples
+        for suffix in ['r'] + ([''] if shadow else []):
+            rows = -(-count // COLUMNS)
+            sheet = Image.new('RGBA', (COLUMNS * size, rows * size))
+            for index in range(count):
+                with Image.open(staged / ('unit%d%s.png' % (first + index, suffix))) as frame:
+                    # paste without a mask overwrites alpha too, so the tile
+                    # keeps the exact pixels the renderer produced.
+                    sheet.paste(frame, ((index % COLUMNS) * size, (index // COLUMNS) * size))
+            filename = 'unit-%s%s.png' % (name, '-r' if suffix else '')
+            sheet.save(destination / filename, optimize=True)
+            entries.append((filename, 'rotated' if suffix else 'image', first, count, size))
+    lines = ['%s %s %d %d %d %d' % (f, layer, first, count, size, size)
+             for f, layer, first, count, size in entries]
+    (destination / 'unit.sheet').write_text(INDEX_HEADER + '\n'.join(lines) + '\n')
+    return [entry[0] for entry in entries]
+
+
 def install(staged, destination):
     from PIL import Image
     expected = {}
@@ -203,11 +234,12 @@ def install(staged, destination):
         with Image.open(staged / filename) as image:
             if image.mode != 'RGBA' or image.size != (size, size):
                 raise ValueError('Invalid staged image: ' + filename)
-    for filename in expected:
-        (destination / filename).write_bytes((staged / filename).read_bytes())
-    # Remove old optional layers whose indices now belong to other animations.
+    installed = pack(staged, destination, 4)
+    # Remove the per-frame layout and any sheet no longer named in the index.
     for path in destination.glob('unit*.png'):
-        if re.fullmatch(r'unit\d+r?\.png', path.name) and path.name not in expected:
+        if re.fullmatch(r'unit\d+r?\.png', path.name):
+            path.unlink()
+        elif path.name.startswith('unit-') and path.name not in installed:
             path.unlink()
 
 

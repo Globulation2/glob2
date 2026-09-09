@@ -506,7 +506,8 @@ if not env['server']:
 # Explicit sprite checks and benchmark; these are not part of the default build.
 if not env['server']:
     sprite_checks = []
-    for name in ['UnitMotionBlurTest', 'UnitCompositeCacheTest', 'UnitCompositeCacheGPUCheck']:
+    for name in ['UnitMotionBlurTest', 'UnitCompositeCacheTest', 'UnitCompositeCacheGPUCheck',
+                 'UnitSpriteSheetCheck']:
         check = local.Program(name, local.Object(name + '.o', '#test/' + name + '.cpp')
             + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
         sprite_checks += check

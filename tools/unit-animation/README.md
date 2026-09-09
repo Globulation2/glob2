@@ -84,8 +84,8 @@ report and composited direction/phase sheets before installation:
 python3 tools/unit-animation/render.py install --staged /path/to/work/staged
 ```
 
-The installer validates the complete filename set before copying and removes
-obsolete numbered shadow layers. It does not install the JSON report or change
+The installer validates the complete filename set before packing it into sheets
+and removes the per-frame layout. It does not install the JSON report or change
 `unitmini*.png`.
 
 The expanded layout has 1,792 consecutive recolorable frames and 1,024 shadow
@@ -94,10 +94,28 @@ frames. Action bases in unit types and saves keep their existing values;
 retains its eight-direction turning cadence. The credits retain their existing
 walk-cycle duration.
 
+## Sheets
+
+Installation packs the frames into one sheet per set and layer, sixteen tiles to
+a row, and writes `data/gfx/unit.sheet` next to them. Each line of that index
+names a sheet, the layer it fills (`image` for the shadow pass, `rotated` for
+the recolorable one), the first frame, the frame count, and the tile size; the
+column count follows from the sheet's width. `GAGCore::Sprite::load` reads the
+index when it exists and cuts the tiles out itself, and falls back to the
+`<name><i>.png` / `<name><i>r.png` layout when it does not, so sprites that ship
+one file per frame keep working unchanged.
+
+Eleven sheets replace 2,816 files. One deflate window across a whole animation
+compresses about 20% better than the same frames stored separately, and the
+frames stop paying a 4 KB filesystem block each.
+
 ## Checks
 
 Run `python3 tools/unit-animation/test_render.py` with Pillow installed to test
-scene preparation and rejection of an incomplete install. `UnitAnimationTest`
-is included in the C++ TestsRunner and exhaustively checks frame ranges and
-turning cadence. Compare alpha separately from RGB when reviewing the generated
+scene preparation, sheet packing, and rejection of an incomplete install.
+`UnitAnimationTest` is included in the C++ TestsRunner and exhaustively checks
+frame ranges and turning cadence. `scons unit-blur-tests` builds
+`UnitSpriteSheetCheck`, which cuts synthetic sheets of known pixels, exercises
+the per-frame fallback, and checks the shipped unit set's frame count, layers,
+and tile sizes. Compare alpha separately from RGB when reviewing the generated
 report: geometry/coverage matching and subtle shading differences are distinct.
