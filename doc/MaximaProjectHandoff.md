@@ -7,6 +7,22 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT September 9 hourly check: all eight pilots completed (800 pairs/927 games).
+Next fixed confirmation prepared in output/maxima-farming-sub-switches-confirmation:
+1000 pairs for EACH of eight remaining switches, one final look at alpha .04/53.
+Fresh confirmation scenario indices 1000–1999; no pilot or previous confirmation
+outcomes reused. Shared identical ON baseline across switches; correlated estimates.
+Bounded larger-effect confirmation, NOT adequately powered for two-point effects.
+No outcome-dependent extension, defaults unchanged, all switches included.
+Remote root remains glob2-maxima-defense-fix, output/farming-sub-switches-confirmation.
+Read live STATUS/controller/error files to distinguish prepared from active/completed.
+Runtime modules snapshotted locally to protect the controller from branch cleanup.
+Dev tools and new operational records are LOCAL ONLY in glob2-maxima-dev;
+do not push them to master or redeploy the engine during core/dev separation.
+48 slots, devlaptop12 on CPUs0–11, pharaoh-dev-1 quarantined, 100k cap.
+
+Historical states below are superseded.
+
 CURRENT — user authorized independent testing of ALL nine farming sub-switches.
 Eight remaining switches are ACTIVE as separate 100-pair sizing pilots in
 output/maxima-farming-sub-switches-pilot (800 comparisons, 927 unique games).
