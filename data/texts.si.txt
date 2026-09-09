@@ -1512,3 +1512,49 @@ Preview unavailable. Adjust settings or start to retry.
 Samodejni torusni pogled
 [toggle torus view]
 Preklopi med 2D in torusnim pogledom
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 vs 2 needs four open colonies. You vs all needs a human.
+[Alliance]
+Alliance
+[Choose a rule to change it.]
+Choose a rule to change it.
+[Conquest only removes prestige victory; map scripts still apply.]
+Conquest only removes prestige victory; map scripts still apply.
+[Control]
+Control
+[Controller]
+Controller
+[Generate preview]
+Generate preview
+[Generation failed. Adjust settings or try again.]
+Generation failed. Adjust settings or try again.
+[Map settings changed. Generate a new preview or start.]
+Map settings changed. Generate a new preview or start.
+[Map source]
+Map source
+[Map-defined]
+Map-defined
+[Match format]
+Match format
+[No current preview]
+No current preview
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Quick clash: 2x speed; generated maps start with 8 workers.
+[Reroll]
+Reroll
+[Ruleset]
+Ruleset
+[Select a map from the library.]
+Select a map from the library.
+[Starting workers affects generated maps only.]
+Starting workers affects generated maps only.
+[Unavailable]
+Unavailable
+[Use selection]
+Use selection
+[Quick clash on premade maps: only speed changes (2x).]
+Quick clash on premade maps: only speed changes (2x).
+[Generate a preview to explore this world.]
+Generate a preview to explore this world.
+[More workers jump-start colony growth. Changes the generated map.]
+More workers jump-start colony growth. Changes the generated map.

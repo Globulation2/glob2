@@ -110,7 +110,9 @@ jobs:
           scons -j$(nproc) release=1 server=0 custom-setup-test
           timeout 180s ./build/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
-          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci
+          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci > artifacts/custom-game-ci/ui.log 2>&1
+          cat artifacts/custom-game-ci/ui.log
+          ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
 
       - name: Build and run the selection lifetime regression
         run: |
