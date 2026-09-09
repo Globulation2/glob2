@@ -94,8 +94,9 @@
 // version 90 marks the weighted per-swim-class pathfinding and sqrt(2) diagonal timing (#184):
 //            the simulation changed, so replays recorded before it diverge and are refused
 // version 91 apportions fetch jobs across the resources a building wants instead of
-//            letting the nearest one take every slot, and prices a loaded candidate
-//            rather than refusing it: the simulation changed again
+//            letting the nearest one take every slot, prices a loaded candidate rather
+//            than refusing it, and walks the hiring buckets by building rather than by
+//            index: the simulation changed again
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
