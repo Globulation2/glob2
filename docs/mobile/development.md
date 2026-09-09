@@ -359,9 +359,23 @@ buttons, lists/checklists, single-line input, read-only text, map previews, colo
 and AI choices, numbers and ratios. Use `setPhoneLabel` for semantic labels and
 `setPhoneVisible` for presentation-only visibility. Do not enable it blindly for
 editable text areas, tab screens or the editor's specialized tool widgets.
-Unsupported types are not rendered. The map editor workspace and global settings
-still need dedicated phone adaptation; map creation support is not full editor
-qualification. New English labels use the existing translation catalog; complete
+Unsupported types are not rendered. Global settings now opts in through
+`Glob2TabScreen`: explicit label associations follow live translation changes,
+labels that already contain formatted values avoid appending raw slider indexes,
+and only OK/Cancel are fixed footer actions. Desktop display controls are hidden
+in this presentation because the mobile host owns its surface. Selector changes
+notify the existing callback with the actual clamped widget value. Key selectors
+retain SDL key capture; this requires keyboard events and does not establish
+software-keyboard shortcut editing on devices.
+
+End-of-match screens use the same presenter. `PhoneGraphic` lets the existing
+statistics widget render and inspect a graph in local coordinates, while the form
+owns scaling and clipping. Statistic choices scroll with content; Quit and Save
+Replay are footer actions. Long statistic labels use the wrapped form row instead
+of the desktop graph's unwrapped overlay.
+
+The map editor workspace still needs dedicated phone adaptation; map creation
+support is not full editor qualification. New English labels use the existing translation catalog; complete
 translation, bidi, screen-reader and physical-device accessibility audits remain.
 
 Run `gameplay-touch-test` with the isolated user-data profile to exercise forms

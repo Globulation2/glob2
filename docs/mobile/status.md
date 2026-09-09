@@ -1,9 +1,73 @@
 # Mobile verification and remaining work
 
-Recorded 2026-09-08. Browser base: `c7c534b8d3af4b07c535d3d780fc5207531a1b6f`,
-merged into the mobile branch in `0b977ab61`. iOS qualification uses Xcode 26.6
+Recorded 2026-09-08. The working branch is now rebased onto browser `9dc201436`;
+the older sections retain their original checkpoint IDs and evidence. The prior
+browser base was `c7c534b8d3af4b07c535d3d780fc5207531a1b6f`, merged in `0b977ab61`.
+iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
-Android evidence below was collected before this browser merge, on `7333e4e8b`.
+The historical Android screenshots near the end were collected on `7333e4e8b`.
+
+## Resumed global settings and results screens
+
+This working-tree change follows rebased HEAD `4a1b9bea8`. It adapts global
+settings tabs and end-of-match results to the native phone presenter. Settings
+retain the original language, audio, speed, building-default and keyboard
+callbacks, with fixed OK/Cancel actions. The phone host's display configuration
+is not exposed as desktop resolution/fullscreen/backend controls. Slider callbacks
+receive the actual clamped widget value; game speed uses its formatted multiplier.
+Results include a scalable graph, touch inspection, colored team rows, statistic
+choices and fixed Quit/Save Replay actions. Long statistic labels wrap outside the
+graph instead of clipping through its left edge at enlarged text sizes.
+
+Fresh verification on the rebased working tree:
+
+- Native touch harness passes at 320×568 and 568×320 with 100% and 150% text.
+  Settings checks cover mute, speed changes and both limits, building-default
+  controls, tab switching, touch-initiated SDL key capture and cancellation.
+  Results checks cover graph touch, statistic selection, team toggling, unchanged
+  simulation checksum and Quit reachability.
+- Engine-session/editor persistence, screen lifecycle and portable-renderer
+  harnesses pass. The three 50-tick session checksums remain `7e7f31de`.
+- Wasm release builds successfully. Android ARM64 release builds and passes
+  developer signing/alignment verification.
+- The ARM64 iOS simulator release application rebuilds successfully after the
+  browser rebase. This pass does not add iOS simulator launch or device evidence.
+- All 27 browser viewport/settings-storage cases pass across Chromium, Firefox
+  and WebKit when including one unchanged isolated rerun. The first run passed
+  26/27; Firefox's quota-retry case timed out in `loading` while iOS compilation
+  and emulator cold boot were competing for CPU. With compilation paused and the
+  emulator stopped, that case passed in 18.7 seconds (21.4 seconds including
+  startup). This suggests load sensitivity, not a demonstrated functional fix.
+  The occupied default HTTP port was avoided with a task-owned ephemeral server.
+- The signed Android app installs and launches in the isolated API 35 emulator.
+  Settings tabs and scrolling work; two Swarm increment taps change its default
+  from 4 to 6, and Cancel/reopening restores 4. Landscape rotation preserves
+  usable controls and fixed OK/Cancel actions. The emulator's cold boot displayed
+  a System UI ANR; selecting Wait recovered. This is not app-crash evidence.
+  Rotation was restored and the isolated emulator was stopped after checking.
+
+The initial native build exposed a test fixture using newly private TeamStats
+history; it now generates history through the public API. The expanded shortcut
+test needed a larger scroll traversal budget. Test captions are copied before
+the presenter rebuilds its rows, avoiding a dangling reference in the helper.
+
+Logs: `build/mobile-resume-{native-build,touch-rebuild,touch,session,screen,renderer,web,android,android-sign,android-install,browser,browser-rerun,ios}.log`.
+The captures below are native harness renders at 150% dialog text, not real
+matches or device evidence. The statistics fixture has zero building counts.
+
+![Phone settings in landscape](screenshots/phone-settings-landscape.png)
+![Phone results in portrait](screenshots/phone-results-portrait.png)
+
+Fresh API 35 emulator captures (default dialog text):
+
+![Android building defaults](screenshots/android-building-settings.png)
+![Android settings after rotation](screenshots/android-settings-landscape.png)
+
+The existing `build/mobile-preview` APK still identifies pre-rebase source
+`4345f28e0`; it has not been replaced by these working-tree changes. Full editor
+adaptation, physical-device qualification, software-keyboard shortcut editing,
+complete result/replay-save flows, translation/bidi/accessibility review and the
+foundation/device gates below remain open. Pinch zoom remains deferred.
 
 ## Phone forms and adjustable dialog text (`4345f28e0`)
 

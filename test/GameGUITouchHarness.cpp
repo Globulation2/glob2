@@ -23,6 +23,8 @@
 #include "ChooseMapScreen.h"
 #include "CustomGameScreen.h"
 #include "NewMapScreen.h"
+#include "SettingsScreen.h"
+#include "EndGameScreen.h"
 #include <GUIRatio.h>
 #include <ScreenStack.h>
 #include <SDL_net.h>
@@ -494,14 +496,18 @@ public:
             SDL_Event resized{};resized.type=SDL_WINDOWEVENT;resized.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
             GAGCore::GraphicContext::translateMouseEvent(&resized);
             GAGGUI::ScreenStack menus(*gfx);
-            auto chooser=std::make_unique<CampaignSelectorScreen>(false);Glob2Screen* current=chooser.get();
+            auto chooser=std::make_unique<CampaignSelectorScreen>(false);GAGGUI::Screen* current=chooser.get();
+            auto phone=[&]() -> PhoneForm& {
+                if(auto* screen=dynamic_cast<Glob2Screen*>(current)) return *screen->phoneForm;
+                return *static_cast<Glob2TabScreen*>(current)->phoneForm;
+            };
             menus.push(std::move(chooser));menus.frame(SDL_GetTicks(),{});
-            require(current->phoneForm!=nullptr,"Campaign selector uses the phone form");
+            require(dynamic_cast<Glob2Screen*>(current)->phoneForm!=nullptr,"Campaign selector uses the phone form");
             require((gfx->getW()<gfx->getH())==(width<height),"Phone form uses the requested orientation");
-            auto tapForm=[&](int kind,const std::string& caption="",int side=0) {
-                for(int attempt=0;attempt<60;++attempt) {
-                    current->phoneForm->prepare();
-                    auto& form=*current->phoneForm;
+            auto tapForm=[&](int kind,std::string caption="",int side=0) {
+                for(int attempt=0;attempt<240;++attempt) {
+                    phone().prepare();
+                    auto& form=phone();
                     auto found=std::find_if(form.rows.begin(),form.rows.end(),[&](const auto& row){return row.kind==kind && (caption.empty() || row.text==caption);});
                     require(found!=form.rows.end(),"Phone form action exists");
                     auto r=found->rect;
@@ -513,13 +519,13 @@ public:
                     }
                     form.offset+=r.y<form.placement.content.y ? -48 : 48;
                 }
-                require(false,"Phone form action is reachable");
+                require(false,("Phone form action is reachable: "+std::to_string(kind)+" "+caption).c_str());
             };
             tapForm(2);
             gfx->printScreen(width<height ? "phone-campaign-portrait.bmp" : "phone-campaign-landscape.bmp");current->drawExecution();
-            current->phoneForm->prepare();
-            auto cancelRow=std::find_if(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[&](const auto& row){return row.kind==1 && row.text==tr("[Cancel]");});
-            require(cancelRow!=current->phoneForm->rows.end(),"Campaign cancel remains visible");
+            phone().prepare();
+            auto cancelRow=std::find_if(phone().rows.begin(),phone().rows.end(),[&](const auto& row){return row.kind==1 && row.text==tr("[Cancel]");});
+            require(cancelRow!=phone().rows.end(),"Campaign cancel remains visible");
             SDL_Event held{};held.type=SDL_FINGERDOWN;held.tfinger.touchId=20;held.tfinger.fingerId=1;
             held.tfinger.x=(cancelRow->rect.x+cancelRow->rect.w/2)/gfx->getW();held.tfinger.y=(cancelRow->rect.y+cancelRow->rect.h/2)/gfx->getH();
             current->handleExecutionEvent(held);current->viewportResized(gfx->getW(),gfx->getH(),gfx->getH(),gfx->getW());
@@ -530,16 +536,16 @@ public:
             GAGGUI::ScreenStack setup(*gfx);
             auto custom=std::make_unique<CustomGameScreen>(setup);auto* customScreen=custom.get();current=custom.get();
             setup.push(std::move(custom));setup.frame(SDL_GetTicks(),{});
-            current->phoneForm->prepare();
-            auto mapRow=std::find_if(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[](const auto& row){return row.kind==2 && row.text.find("balanced")!=std::string::npos;});
-            require(mapRow!=current->phoneForm->rows.end(),"Custom setup exposes balanced map");
+            phone().prepare();
+            auto mapRow=std::find_if(phone().rows.begin(),phone().rows.end(),[](const auto& row){return row.kind==2 && row.text.find("balanced")!=std::string::npos;});
+            require(mapRow!=phone().rows.end(),"Custom setup exposes balanced map");
             tapForm(2,mapRow->text);
             const auto playersBefore=customScreen->getGameHeader().getNumberOfPlayers();
             tapForm(7); // The first player checkbox follows the original clickability rules.
             require(customScreen->getGameHeader().getNumberOfPlayers()==playersBefore,"Local-player toggle keeps original setup rules");
-            current->phoneForm->prepare();
-            auto aiRow=std::find_if(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[](const auto& row){return row.kind==6;});
-            require(aiRow!=current->phoneForm->rows.end(),"AI choices are visible");
+            phone().prepare();
+            auto aiRow=std::find_if(phone().rows.begin(),phone().rows.end(),[](const auto& row){return row.kind==6;});
+            require(aiRow!=phone().rows.end(),"AI choices are visible");
             auto* aiButton=static_cast<GAGGUI::MultiTextButton*>(aiRow->widget);int aiBefore=aiButton->getIndex();
             tapForm(6,aiRow->text);
             require(aiButton->getIndex()!=aiBefore,"Phone AI choice cycles the existing widget");
@@ -553,12 +559,12 @@ public:
             require(newMap->descriptor.wDec==previousWidth+1,"Phone map width updates the shared descriptor");
             tapForm(9,"",-1);
             require(newMap->descriptor.wDec==previousWidth,"Phone map width can be restored");
-            current->phoneForm->prepare();
-            require(std::none_of(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[](const auto& row){return row.kind==10;}),"Uniform terrain hides generation ratios");
+            phone().prepare();
+            require(std::none_of(phone().rows.begin(),phone().rows.end(),[](const auto& row){return row.kind==10;}),"Uniform terrain hides generation ratios");
             tapForm(2,tr("[swamp terrain]"));
-            current->phoneForm->prepare();
-            auto ratioRow=std::find_if(current->phoneForm->rows.begin(),current->phoneForm->rows.end(),[](const auto& row){return row.kind==10;});
-            require(ratioRow!=current->phoneForm->rows.end(),"Generated terrain exposes ratios");
+            phone().prepare();
+            auto ratioRow=std::find_if(phone().rows.begin(),phone().rows.end(),[](const auto& row){return row.kind==10;});
+            require(ratioRow!=phone().rows.end(),"Generated terrain exposes ratios");
             auto* ratio=static_cast<GAGGUI::Ratio*>(ratioRow->widget);const int ratioBefore=ratio->get();
             tapForm(10,"",1);require(ratio->get()==ratioBefore+1,"Phone ratio increases through shared callback");
             tapForm(10,"",-1);require(ratio->get()==ratioBefore,"Phone ratio decreases");
@@ -566,6 +572,55 @@ public:
             ratio->set(ratio->maximumValue());tapForm(10,"",1);require(ratio->get()==ratio->maximumValue(),"Phone ratio clamps at maximum");
             tapForm(1,tr("[Cancel]"));editorSetup.frame(SDL_GetTicks(),{});
             require(!editorSetup.running(),"Map creation cancellation remains reachable");
+            GAGGUI::ScreenStack preferences(*gfx);
+            auto settings=std::make_unique<SettingsScreen>();current=settings.get();
+            const auto beforeSettings=globalContainer->settings;
+            preferences.push(std::move(settings));preferences.frame(SDL_GetTicks(),{});
+            tapForm(7,tr("[mute]")+": [x]");
+            require(!globalContainer->settings.mute,"Phone settings mute invokes shared settings callback");
+            tapForm(11,"",1);
+            require(globalContainer->settings.gameSpeed==std::min(int(beforeSettings.gameSpeed)+1,int(Settings::GAME_SPEED_MAXIMUM)),"Phone game speed updates the shared preference");
+            for(int i=0;i<=Settings::GAME_SPEED_MAXIMUM;++i) tapForm(11,"",-1);
+            require(globalContainer->settings.gameSpeed==0,"Phone speed clamps at its minimum");
+            for(int i=0;i<=Settings::GAME_SPEED_MAXIMUM;++i) tapForm(11,"",1);
+            require(globalContainer->settings.gameSpeed==Settings::GAME_SPEED_MAXIMUM,"Phone speed clamps at its maximum");
+            for(int i=globalContainer->settings.gameSpeed;i>int(beforeSettings.gameSpeed);--i) tapForm(11,"",-1);
+            gfx->printScreen(width<height ? "phone-settings-portrait.bmp" : "phone-settings-landscape.bmp");current->drawExecution();
+            tapForm(1,tr("[building settings]"));
+            phone().prepare();
+            require(std::any_of(phone().rows.begin(),phone().rows.end(),[](const auto& row){return row.kind==9;}),"Building defaults tab exposes numeric controls");
+            tapForm(9,"",1);
+            tapForm(1,tr("[keyboard settings]"));
+            phone().prepare();
+            const auto keyRow=std::find_if(phone().rows.begin(),phone().rows.end(),[](const auto& row){return row.kind==12;});
+            require(keyRow!=phone().rows.end(),"Phone keyboard tab exposes key binding controls");
+            auto* keyWidget=static_cast<GAGGUI::KeySelector*>(keyRow->widget);
+            tapForm(12);
+            require(keyWidget->caption()==tr("[waiting for key]"),"Touch activates the original key capture widget");
+            SDL_Event keyEvent{};keyEvent.type=SDL_KEYDOWN;keyEvent.key.keysym.sym=SDLK_F12;
+            current->handleExecutionEvent(keyEvent);
+            require(keyWidget->getKey()==KeyPress(keyEvent.key.keysym,true),"Phone shortcut capture uses the original keyboard callback");
+            tapForm(1,tr("[Cancel]"));preferences.frame(SDL_GetTicks(),{});
+            require(!preferences.running() && globalContainer->settings.mute==beforeSettings.mute && globalContainer->settings.gameSpeed==beforeSettings.gameSpeed,"Settings cancel restores preferences");
+            const auto previousTick=gui.game.stepCounter;
+            gui.game.stepCounter=0;
+            for(int team=0;team<gui.game.teamsCount();++team) {
+                auto* owner=gui.game.teams[team];
+                while(owner->stats.getEndOfGameStats().size()<2) owner->stats.step(owner);
+            }
+            gui.game.stepCounter=previousTick;
+            GAGGUI::ScreenStack results(*gfx);
+            auto end=std::make_unique<EndGameScreen>(&gui);current=end.get();
+            results.push(std::move(end));results.frame(SDL_GetTicks(),{});
+            tapForm(13);
+            const auto resultChecksum=gui.game.checkSum();
+            tapForm(1,tr("[Buildings]"));tapForm(7);
+            require(gui.game.checkSum()==resultChecksum,"Result graph controls do not change the game");
+            phone().offset=0;
+            gfx->printScreen(width<height ? "phone-results-portrait.bmp" : "phone-results-landscape.bmp");current->drawExecution();
+            tapForm(1,tr("[quit]"));results.frame(SDL_GetTicks(),{});
+            require(!results.running(),"Phone results quit remains reachable");
+
 
 
         }

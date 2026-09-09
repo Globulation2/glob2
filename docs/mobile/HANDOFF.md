@@ -33,6 +33,28 @@ Suggested first message to the new agent:
 
 ## Latest resumed work: native phone forms
 
+### Resumed settings/results work after the browser rebase
+
+The local branch was rebased onto browser commit `9dc201436`; its current
+committed checkpoint is `4a1b9bea8` (phone forms code `2fa19a408`). The older
+commit IDs in the sections below describe pre-rebase verification and artifacts.
+The remote mobile branch was still at `886822dd1` when checked during this pass;
+do not merge the two equivalent histories just to clear ahead/behind counts.
+
+The working tree extends PhoneForm to global settings tabs and end-of-match
+statistics, retaining the existing widgets, callbacks and save-preferences path.
+It adds slider/key-selector rows, explicit footer selection, colored team rows
+and an interactive statistics graph. The resumed test fixture now uses the public
+TeamStats API after the browser rebase made its history private. Qualification
+for this pass is recorded at the top of [status](status.md). Do not attribute
+these changes to the existing Pixel 6 APK: its BUILD.json still identifies the
+older pre-rebase phone-form source.
+
+Next, qualify the remaining result/replay-save flows and adapt the specialized
+map-editor workspace. Physical-device testing remains a separate gate. The new
+signed working-tree APK is under
+`build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk`.
+
 Commit `4345f28e0` adds `PhoneForm`, `ResponsiveDialog`, shared safe-area geometry,
 and persisted 100/125/150% dialog text size. Read the **Phone forms and adjustable
 dialog text** section in [status](status.md) and the implementation notes in

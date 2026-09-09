@@ -9,11 +9,14 @@
 #include <TouchInput.h>
 #include <GUIButton.h>
 #include <map>
+#include <optional>
+#include <set>
 
 using namespace GAGCore;
 using namespace GAGGUI;
 
 class PhoneForm;
+namespace GAGGUI {class Text;}
 
 class Glob2Screen : public Screen
 {
@@ -33,6 +36,8 @@ public:
 protected:
     void setPhoneVisible(GAGGUI::Widget* widget,bool visible) {phoneVisibility[widget]=visible;}
     void setPhoneLabel(GAGGUI::Widget* widget,const std::string& label) { phoneLabels[widget]=label; }
+    virtual std::optional<GAGCore::Color> phoneColor(Widget*) const {return {};}
+    virtual bool phoneFooter(Widget*) const {return true;}
     void enablePhoneForm(bool enabled=true) { phoneFormEnabled=enabled; }
     void enableResponsiveMenu(const std::string& title = "") { responsiveMenu = true; menuTitle = title; }
 private:
@@ -61,13 +66,34 @@ private:
 class Glob2TabScreen : public TabScreen
 {
 public:
+    bool usesResponsiveViewport() const override;
+    void beginExecution(GAGCore::DrawableSurface* surface) override;
+    void handleExecutionEvent(SDL_Event event) override;
+    void drawExecution() override;
+    void cancelExecutionInput() override;
+    void viewportResized(int,int,int,int) override {cancelExecutionInput();}
 	Glob2TabScreen(bool fullScreen, bool longerButtons=false);
 	virtual ~Glob2TabScreen();
 	virtual void paint(void);
 	
+protected:
+    void enablePhoneForm() {phoneEnabled=true;}
+    void setPhoneLabel(Widget* widget,GAGGUI::Text* text,bool includesValue=false) {
+        phoneLabels[widget]=text;
+        if(includesValue) phoneValueLabels.insert(widget);else phoneValueLabels.erase(widget);
+    }
+    void setPhoneFooter(Widget* widget) {phoneFooters[widget]=true;}
+    void hidePhoneWidget(Widget* widget) {phoneHidden.insert(widget);}
+private:
+    friend class GameGUITouchHarness;
+    bool phoneEnabled=false;
+    std::unique_ptr<PhoneForm> phoneForm;
+    std::map<Widget*,GAGGUI::Text*> phoneLabels;
+    std::map<Widget*,bool> phoneFooters;
+    std::set<Widget*> phoneHidden;
+    std::set<Widget*> phoneValueLabels;
 private:
 	unsigned getNextTerrain(void);
 	Uint32 randomSeed; // Background LCG intentionally wraps modulo 2^32.
 };
-
 

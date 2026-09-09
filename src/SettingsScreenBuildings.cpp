@@ -233,6 +233,7 @@ int SettingsScreen::addDefaultUnitAssignmentWidget(int type, int level, int x, i
 	unitRatioTexts[type][level]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", text);
 
 	addWidgetToGroup(unitRatioTexts[type][level], unitGroup);
+    setPhoneLabel(unitRatios[type][level],unitRatioTexts[type][level]);
 	unitRatioTexts[type][level]->visible=false;
 	unitRatioGroupNumbers[type][level] = group;
 
@@ -259,6 +260,7 @@ int SettingsScreen::addDefaultFlagRadiusWidget(int type, int x, int y, int group
 	flagRadiusTexts[n]=new Text(x, y, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", text);
 
 	addWidgetToGroup(flagRadiusTexts[n], unitGroup);
+    setPhoneLabel(flagRadii[n],flagRadiusTexts[n]);
 	flagRadiusTexts[n]->visible=false;
 	flagRadiusGroupNumbers[n] = group;
 

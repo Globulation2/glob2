@@ -61,7 +61,14 @@ void EndGameStat::paint(void)
 {
 	int x, y, w, h;
 	getScreenPos(&x, &y, &w, &h);
-		
+    paintAt(x,y,w,h);
+}
+void EndGameStat::paintPhone(int width,int height)
+{
+    paintAt(0,0,width,height,true);
+}
+void EndGameStat::paintAt(int x,int y,int w,int h,bool phone)
+{
 	assert(parent);
 	assert(parent->getSurface());
 	
@@ -79,7 +86,7 @@ void EndGameStat::paint(void)
 	if(game->teams[0]->stats.endOfGameStats.size() >= 2)
 	{
 		//Calculate the number of digits used by the max value when rounded up to the nearest 10
-		int num=10;
+		int num=phone ? std::clamp(h/24,2,10) : 10;
 		maxValue+=num-(maxValue%num);
 		std::stringstream maxstr;
 		maxstr<<maxValue<<std::endl;
@@ -124,12 +131,13 @@ void EndGameStat::paint(void)
 		}
 
 		///Draw vertical lines to give the timescale
-		double time_line_separate=double(e_width)/double(15);
-		for(int n=1; n<16; ++n)
+		const int timeTicks=phone ? std::clamp(e_width/60,1,15) : 15;
+        double time_line_separate=double(e_width)/timeTicks;
+		for(int n=1; n<=timeTicks; ++n)
 		{
 			int pos = int(double(x)+time_line_separate*double(n)+0.5);
-			int time = (time_period * n) / 15;
-			if(n!=15)
+			int time = (time_period * n) / timeTicks;
+			if(n!=timeTicks)
 				parent->getSurface()->drawVertLine(pos, y+e_height-5, 10, 255, 255, 255);
 			std::string timeText = getTimeText(time);
 			int width=globalContainer->littleFont->getStringWidth(timeText.c_str());
@@ -164,7 +172,7 @@ void EndGameStat::paint(void)
 					parent->getSurface()->drawLine(x + px, y + previous_y, x + px + 1, y + ny, color);
 					previous_y = ny;
 					int dist = (mouse_y-ny)*(mouse_y-ny) + (mouse_x-px-1)*(mouse_x-px-1);
-					if(dist < closest_position)
+					if(mouse_x>=0 && mouse_y>=0 && dist < closest_position)
 					{
 						circle_position_value = int(std::floor(value+0.5));
 						circle_position_x = x + px;
@@ -179,7 +187,9 @@ void EndGameStat::paint(void)
 			parent->getSurface()->drawCircle(circle_position_x, circle_position_y, 10, Color::white);
 			std::stringstream str;
 			str<<circle_position_value;
-			parent->getSurface()->drawString(circle_position_x+10, circle_position_y+10, globalContainer->littleFont, str.str());
+			const int labelX=phone ? std::clamp(circle_position_x+10,x,std::max(x,x+w-globalContainer->littleFont->getStringWidth(str.str()))) : circle_position_x+10;
+            const int labelY=phone ? std::clamp(circle_position_y+10,y,std::max(y,y+h-globalContainer->littleFont->getStringHeight(str.str()))) : circle_position_y+10;
+            parent->getSurface()->drawString(labelX, labelY, globalContainer->littleFont, str.str());
 		}
 		
 		// Draw labels
@@ -187,9 +197,13 @@ void EndGameStat::paint(void)
 		int textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
 		parent->getSurface()->drawString(x - textwidth/2 + e_width/2, y+e_height-20, globalContainer->standardFont, label);
 		
-		label = getStatLabel();
-		textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
-		parent->getSurface()->drawString(x + e_width - textwidth - 4, y + e_height/2, globalContainer->standardFont, label);
+        // The phone form already presents the selected statistic as a wrapped
+        // row. Its desktop label can be wider than the entire phone graph.
+        if(!phone) {
+			label = getStatLabel();
+			textwidth = globalContainer->standardFont->getStringWidth(label.c_str());
+			parent->getSurface()->drawString(x + e_width - textwidth - 4, y + e_height/2, globalContainer->standardFont, label);
+        }
 	}
 	else
 	{
@@ -333,6 +347,7 @@ EndGameScreen::EndGameScreen(GameGUI *gui)
 	}
 	
 	addWidget(new Text(0, 18, ALIGN_FILL, ALIGN_LEFT, "menu", titleText.c_str()));
+	enablePhoneForm();
 	statWidget=new EndGameStat(20, 80, 180, 120, ALIGN_FILL, ALIGN_FILL, &(gui->game));
 	addWidget(statWidget);
 
@@ -509,6 +524,8 @@ void EndGameScreen::sortAndSet(EndOfGameStat::Type type)
 		{
 			team_enabled_buttons[i]->visible=false;
 		}
+        setPhoneLabel(team_enabled_buttons[i],str.str()+": "+std::to_string(teams[i].endVal[type]));
+        setPhoneVisible(names[i],!team_enabled_buttons[i]->visible);
 	}
 }
 
@@ -568,4 +585,18 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 	
 	// destroy temporary surface
 	delete background;
+}
+
+
+bool EndGameScreen::phoneFooter(Widget* widget) const
+{
+    const auto* button=dynamic_cast<TextButton*>(widget);
+    return button && (button->returnCode==QUIT || button->returnCode==SAVE_REPLAY);
+}
+
+std::optional<GAGCore::Color> EndGameScreen::phoneColor(Widget* widget) const
+{
+    for(size_t i=0;i<team_enabled_buttons.size();++i)
+        if(team_enabled_buttons[i]==widget) return teams[i].color;
+    return {};
 }

@@ -31,6 +31,7 @@
 SettingsScreen::SettingsScreen()
  : Glob2TabScreen(false, true), unitRatioGroupNumbers(), flagRadii(), flagRadiusTexts(), flagRadiusGroupNumbers(), mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
 {
+	enablePhoneForm();
 	old_settings=globalContainer->settings;
 
 	generalGroup = addGroup(Toolkit::getStringTable()->getString("[general settings]"));
@@ -45,6 +46,18 @@ SettingsScreen::SettingsScreen()
 	buildGraphicsToggles();
 	buildUsernameWidgets();
 	buildAudioWidgets();
+    setPhoneFooter(ok);setPhoneFooter(cancel);
+    setPhoneLabel(fullscreen,fullscreenText);setPhoneLabel(usegpu,usegpuText);
+    setPhoneLabel(lowquality,lowqualityText);setPhoneLabel(customcur,customcurText);
+    setPhoneLabel(rememberUnitButton,rememberUnitText);setPhoneLabel(scrollwheel,scrollwheelText);
+    setPhoneLabel(audioMute,audioMuteText);setPhoneLabel(musicVol,musicVolText);
+    setPhoneLabel(voiceVol,voiceVolText);setPhoneLabel(gameSpeed,gameSpeedText,true);
+    setPhoneLabel(userName,usernameText);
+    // Native mobile surfaces follow the host's viewport and renderer. Desktop
+    // resolution/fullscreen/backend preferences cannot reconfigure this surface.
+    for(Widget* widget : std::vector<Widget*>{modeList,modeListNote,fullscreen,usegpu,display,actDisplay,customcur,voiceVol})
+        hidePhoneWidget(widget);
+
 
 	buildBuildingDefaultsTab();
 	buildKeyboardShortcutsTab();

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PhoneForm.h"
+#include "PhoneGraphic.h"
 #include "Glob2Screen.h"
 #include "MobileSafeArea.h"
 #include "GlobalContainer.h"
@@ -13,6 +14,8 @@
 #include <GUITextInput.h>
 #include <GUINumber.h>
 #include <GUIRatio.h>
+#include <GUISelector.h>
+#include <GUIKeySelector.h>
 #include <set>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -33,9 +36,12 @@ void PhoneForm::prepare() {
     });
     std::set<Widget*> pairedLabels;
     for(auto* widget:widgets) {
-        if(!widget->visible || !screen.phoneVisible(widget) || pairedLabels.count(widget)) continue;
+        if(!widget->visible || !visible(widget) || pairedLabels.count(widget)) continue;
         Row row{widget,""};
-        if(auto* number=dynamic_cast<Number*>(widget)) {row.kind=9;row.text=std::to_string(number->get());}
+        if(dynamic_cast<PhoneGraphic*>(widget)) {row.kind=13;}
+        else if(auto* selector=dynamic_cast<Selector*>(widget)) {row.kind=11;row.text=std::to_string(selector->getValue());}
+        else if(auto* key=dynamic_cast<KeySelector*>(widget)) {row.kind=12;row.text=key->caption();}
+        else if(auto* number=dynamic_cast<Number*>(widget)) {row.kind=9;row.text=std::to_string(number->get());}
         else if(auto* ratio=dynamic_cast<Ratio*>(widget)) {row.kind=10;row.text=std::to_string(ratio->get());}
         else if(auto* button=dynamic_cast<MultiTextButton*>(widget)) {
             row.kind=6;row.text=button->getCount() ? button->getText() : button->caption();
@@ -44,7 +50,7 @@ void PhoneForm::prepare() {
         } else if(auto* button=dynamic_cast<ColorButton*>(widget)) {
             row.kind=8;row.text=std::to_string(button->getSelectedColor()+1);
         } else if(auto* button=dynamic_cast<TextButton*>(widget)) {
-            row.text=button->caption();row.kind=1;row.footer=true;
+            row.text=button->caption();row.kind=1;row.footer=footer(widget);
         } else if(auto* list=dynamic_cast<List*>(widget)) {
             for(size_t i=0;i<list->getCount();++i) {
                 std::string text=list->getText(i);
@@ -61,16 +67,16 @@ void PhoneForm::prepare() {
             if(!preview->isThumbnailLoaded()) continue;
             row.kind=4;
         } else continue;
-        auto label=screen.phoneLabel(widget);
-        if(label.empty() && (row.kind==9 || row.kind==10)) {
+        auto caption=label(widget);
+        if(caption.empty() && (row.kind==9 || row.kind==10 || row.kind==7 || row.kind==11)) {
             const auto r=bounds(widget);Text* nearest=nullptr;
             for(auto* other:widgets) if(other->visible) if(auto* text=dynamic_cast<Text*>(other)) {
                 const auto t=bounds(text);
                 if(t.y==r.y && t.x>=r.x+r.w && (!nearest || t.x<bounds(nearest).x)) nearest=text;
             }
-            if(nearest) {label=nearest->getText();pairedLabels.insert(nearest);}
+            if(nearest) {caption=nearest->getText();pairedLabels.insert(nearest);}
         }
-        if(!label.empty()) row.text=label+": "+row.text;
+        if(!caption.empty()) row.text=labelIncludesValue(widget) ? caption : caption+": "+row.text;
         if(row.kind || !row.text.empty()) rows.push_back(row);
     }
     if(editing && (!editing->visible || std::find(widgets.begin(),widgets.end(),editing)==widgets.end())) {
@@ -82,8 +88,9 @@ void PhoneForm::prepare() {
     const auto safe=mobileDialogSafe(gfx);
     std::vector<bool> fixed;for(const auto& row:rows) fixed.push_back(row.footer);
     auto height=[&](size_t i,double width) {
+        if(rows[i].kind==13) return 240*unit;
         if(rows[i].kind==4) return std::min(160*unit,width);
-        return std::max(48*unit,wrapTouchText(globalContainer->standardFont,rows[i].text,(rows[i].kind>=9 ? width-96*unit : rows[i].kind==8 ? width-48*unit : width)/(scale*unit)-8).size()*16*scale*unit+8*unit);
+        return std::max(48*unit,wrapTouchText(globalContainer->standardFont,rows[i].text,((rows[i].kind>=9 && rows[i].kind<=11) ? width-96*unit : rows[i].kind==8 ? width-48*unit : width)/(scale*unit)-8).size()*16*scale*unit+8*unit);
     };
     placement=ResponsiveDialog::calculate(safe,fixed,height,offset,unit);
     if(lastHeight && lastHeight!=placement.content.h) cancel();
@@ -106,18 +113,24 @@ void PhoneForm::draw() {
         SDL_Rect scissor{int(clip.x),int(clip.y),int(clip.w),int(clip.h)};
         gfx->setClipRect(scissor.x,scissor.y,scissor.w,scissor.h);
         gfx->drawFilledRect(int(r.x),int(r.y),int(r.w),int(r.h),row.selected ? Color(55,100,75,245) : Color(24,40,48,245));
+        if(row.kind==13) {
+            gfx->setUITransform(scale,r.x+8*unit,r.y+8*unit,&scissor);
+            dynamic_cast<PhoneGraphic*>(row.widget)->paintPhone(int((r.w-16*unit)/scale),int((r.h-16*unit)/scale));
+            gfx->setUITransform();continue;
+        }
         if(row.kind==4) {
             const auto original=bounds(row.widget);const double factor=r.h/128;
             gfx->setUITransform(factor,r.x+(r.w-r.h)/2-original.x*factor,r.y-original.y*factor,&scissor);
             row.widget->paint();gfx->setUITransform();continue;
         }
+        if(auto tint=color(row.widget)) gfx->drawFilledRect(int(r.x),int(r.y),int(4*unit),int(r.h),*tint);
         double textLeft=r.x,textWidth=r.w;
         if(row.kind==8) {
             const auto original=bounds(row.widget);const double factor=40*unit/std::max(1,original.h);
             gfx->setUITransform(factor,r.x+4*unit-original.x*factor,r.y+(r.h-40*unit)/2-original.y*factor,&scissor);
             row.widget->paint();gfx->setUITransform();textLeft+=48*unit;textWidth-=48*unit;
         }
-        if(row.kind>=9) {
+        if(row.kind>=9 && row.kind<=11) {
             for(int side=0;side<2;++side) {
                 gfx->setUITransform(scale,r.x+(side ? r.w-48*unit : 0),r.y+(r.h-font->getStringHeight("Ag")*scale)/2,&scissor);
                 gfx->drawString(6,0,font,side ? "+" : "−");gfx->setUITransform();
@@ -149,6 +162,10 @@ void PhoneForm::act(const std::vector<TouchAction>& actions) {
         prepare();const double unit=globalContainer->gfx->logicalUnitsPerPoint();
         auto* row=hit({action.point.x*unit,action.point.y*unit});
         if(!row || row->widget!=held || row->kind!=heldKind || row->index!=heldIndex || row->text!=heldText) continue;
+        if(row->kind==13) {
+            const double scale=1.5*globalContainer->settings.mobileDialogTextPercent/100.0*unit;
+            dynamic_cast<PhoneGraphic*>(row->widget)->inspectPhone(int((action.point.x*unit-row->rect.x-8*unit)/scale),int((action.point.y*unit-row->rect.y-8*unit)/scale));return;
+        }
         if(row->kind==5) {editing=nullptr;SDL_StopTextInput();return;}
         if(row->kind==2) {
             auto* list=static_cast<List*>(row->widget);list->setSelectionIndex(row->index);list->selectionChanged();return;
@@ -159,12 +176,19 @@ void PhoneForm::act(const std::vector<TouchAction>& actions) {
             editing=input;lastHeight=0;SDL_StartTextInput();return;
         }
         const auto rect=bounds(row->widget);
-        if(row->kind>=9) {
+        if(row->kind>=9 && row->kind<=11) {
             const double x=action.point.x*unit;
             const int delta=x<row->rect.x+48*unit ? -1 : x>=row->rect.x+row->rect.w-48*unit ? 1 : 0;
             if(!delta) return;
             if(row->kind==9) row->widget->activateAt(rect.x+(delta<0 ? 1 : rect.w-1),rect.y+rect.h/2);
-            else {
+            else if(row->kind==11) {
+                auto* selector=static_cast<Selector*>(row->widget);
+                const int step=std::max(1,int(selector->maximumValue()/16));
+                int value=std::clamp(int(selector->getValue())+delta*step,0,int(selector->maximumValue()));
+                const auto before=selector->getValue();
+                selector->setValue(value);
+                if(selector->getValue()!=before) screen.onAction(selector,VALUE_CHANGED,selector->getValue(),0);
+            } else {
                 auto* ratio=static_cast<Ratio*>(row->widget);int value=std::clamp(ratio->get()+delta,0,ratio->maximumValue());
                 if(value!=ratio->get()) {ratio->set(value);ratio->onTimer(SDL_GetTicks());}
             }
