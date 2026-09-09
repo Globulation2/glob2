@@ -199,7 +199,8 @@ demonstrate a launchable or usable mobile application.
 Dependencies must include SDL2 (with SDL_RenderGeometry), SDL2_image, SDL2_ttf,
 SDL2_net, Vorbis/Ogg, zlib, Boost headers, and the native transport's current
 OpenSSL libraries. Voice recording and the optional IRC bridge are excluded.
-System WebSocket transports will remove mobile OpenSSL linking when integrated.
+Native WSS retains OpenSSL framing/TLS and delegates certificate-chain policy
+to Android and Apple system-trust callbacks.
 
 Each dependency prefix has `include/` and a `manifest.json` containing:
 
@@ -219,7 +220,9 @@ source checksums; clean-build reproducibility remains to be qualified on CI host
 Use each target's `compile_commands.json` with clangd. Android libraries retain
 debug information and release packaging requests full native symbols. Attach
 Android Studio LLDB to debug builds or use the generated Xcode project. IDE
-debugger attachment, sanitizers, and device profiling remain unqualified. Use
+device debugger attachment, full-app sanitizers, and physical profiling remain
+unqualified. Simulator LLDB/symbolicated sampling and host document/cleanup
+harness sanitizers pass; see the current status evidence. Use
 Android Studio CPU/memory profiling and Xcode Instruments Time Profiler/Allocations
 for eventual performance measurements; host tests establish no device performance.
 
@@ -230,8 +233,11 @@ only within `build/mobile-tools`. Never run a desktop install target for this wo
 
 Android assets extract from the package into a versioned private root; iOS reads
 bundled resources. Writable data uses SDL's application preference path. Extraction
-is currently synchronous at startup. Transactional saves, recovery generations,
-import/export, and bounded asset-loading UI remain outstanding.
+runs on SDL's native startup thread in 64 KiB chunks. Android shows a native
+Preparing game view during a new asset-bundle installation and removes it on
+completion or failure; a current installed bundle skips that view. Atomic saves,
+single-player recovery generations, orphan cleanup and native document bridges
+are implemented. Device/provider qualification is tracked in remaining-work.md.
 
 ## Shared regression checks
 
@@ -433,7 +439,7 @@ Its isolated child processes inject file/directory synchronization faults and
 terminate writers before and after commit. These verify error handling and process
 interruption, not sudden power loss. Keep physical storage latency and background
 termination on the device checklist. Recovery generations, orphan cleanup and
-native import/export remain separate work.
+native import/export are implemented; the sections below describe their checks.
 
 
 ## Automated emulator smoke checks

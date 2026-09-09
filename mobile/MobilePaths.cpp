@@ -9,10 +9,35 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+#ifdef __ANDROID__
+#include <SDL_system.h>
+#include <jni.h>
+#endif
 
 namespace
 {
 using Stream=std::unique_ptr<SDL_RWops,decltype(&SDL_RWclose)>;
+#ifdef __ANDROID__
+// SDL performs preparation on its native thread. Post only the two state changes
+// to Android's UI thread, rather than queueing a callback for every copied chunk.
+void preparingAssets(bool preparing) noexcept
+{
+    auto* env = static_cast<JNIEnv*>(SDL_AndroidGetJNIEnv());
+    if (!env) return;
+    auto activity = static_cast<jobject>(SDL_AndroidGetActivity());
+    auto type = activity ? env->GetObjectClass(activity) : nullptr;
+    auto method = type ? env->GetMethodID(type, "setPreparingAssets", "(Z)V") : nullptr;
+    if (method) env->CallVoidMethod(activity, method, preparing ? JNI_TRUE : JNI_FALSE);
+    if (env->ExceptionCheck()) env->ExceptionClear();
+    if (type) env->DeleteLocalRef(type);
+    if (activity) env->DeleteLocalRef(activity);
+}
+struct AssetPreparation {
+    AssetPreparation() { preparingAssets(true); }
+    ~AssetPreparation() { preparingAssets(false); }
+};
+#endif
+
 std::string readAsset(const char* name)
 {
     Stream stream(SDL_RWFromFile(name,"rb"),SDL_RWclose);
@@ -45,6 +70,7 @@ void initializeMobilePaths()
     std::ifstream marker(assets/".complete");
     std::string installedVersion;std::getline(marker,installedVersion);
     if(installedVersion!=version) {
+        AssetPreparation preparing;
         std::filesystem::create_directories(assets);
         std::string name;
         std::vector<char> buffer(64*1024);

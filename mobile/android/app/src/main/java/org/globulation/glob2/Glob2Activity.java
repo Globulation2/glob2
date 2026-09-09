@@ -8,6 +8,42 @@ import android.graphics.Insets;
 
 public final class Glob2Activity extends SDLActivity {
     public static boolean verifyServerCertificates(byte[][] chain, String hostname) { return CertificateTrust.verify(chain, hostname); }
+    private android.widget.LinearLayout assetPreparation;
+
+    // Called by the native startup thread. All view state stays on the UI thread.
+    public void setPreparingAssets(boolean preparing) {
+        runOnUiThread(() -> {
+            if (mLayout == null || isFinishing() || isDestroyed()) return;
+            if (!preparing) {
+                if (assetPreparation != null) mLayout.removeView(assetPreparation);
+                assetPreparation = null;
+                return;
+            }
+            if (assetPreparation != null) return;
+            assetPreparation = new android.widget.LinearLayout(this);
+            assetPreparation.setOrientation(android.widget.LinearLayout.VERTICAL);
+            assetPreparation.setGravity(android.view.Gravity.CENTER);
+            assetPreparation.setBackgroundColor(android.graphics.Color.rgb(16, 31, 34));
+            assetPreparation.setClickable(true);
+            int padding = Math.round(24 * getResources().getDisplayMetrics().density);
+            assetPreparation.setPadding(padding, padding, padding, padding);
+            android.widget.ProgressBar progress = new android.widget.ProgressBar(this);
+            progress.setIndeterminate(true);
+            assetPreparation.addView(progress);
+            android.widget.TextView label = new android.widget.TextView(this);
+            label.setText(R.string.preparing_game);
+            label.setTextColor(android.graphics.Color.WHITE);
+            label.setTextSize(20);
+            label.setGravity(android.view.Gravity.CENTER);
+            label.setPadding(0, padding, 0, 0);
+            label.setAccessibilityLiveRegion(android.view.View.ACCESSIBILITY_LIVE_REGION_POLITE);
+            assetPreparation.addView(label);
+            mLayout.addView(assetPreparation, new android.widget.RelativeLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT));
+        });
+    }
+
     private static volatile int[] uiInsets = new int[] {0, 0, 0, 0};
     public static int[] getUiInsets() { return uiInsets; }
     @Override

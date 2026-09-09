@@ -20,6 +20,8 @@ do not modify the AI or browser checkouts. Commit and push verified checkpoints.
 - Bounded abandoned-write/export cleanup and host sanitizer checks.
 - A repeatable 100,000-step ARM64/Wasm fixture with 101 matching checkpoints.
 - Reconciliation with browser checkpoint 1658ff670 and isolated cross-play ports.
+- Android native asset-preparation feedback, verified in a real emulator cache
+  reinstall and followed by a passing lifecycle/rotation/relaunch smoke.
 
 See the newest status checkpoint for actual test results; CI wiring does not by
 itself mean a hosted CI run passed.

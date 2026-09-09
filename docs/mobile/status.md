@@ -1,5 +1,29 @@
 # Mobile verification and remaining work
 
+## 2026-09-09 — Android asset preparation feedback
+
+A native spinner and localizable **Preparing game…** label now cover Android's
+SDL surface while a new bundled-asset version is installed. File copying stays
+on SDL's native startup thread in 64 KiB chunks. Only the start and finish state
+changes are posted to Android's UI thread; the view is removed on success or
+exception, and an already-installed bundle skips it. The native label exposes
+Android accessibility text; this does not qualify the later SDL game controls.
+
+Android ARM64 release build/sign/install and iOS simulator release build pass.
+An actual asset-cache reinstall was recorded on the owned API 35 emulator,
+preserving saves/recovery data. The recording visibly includes the loading view,
+then the existing recovery prompt. The bundle completion marker is committed.
+The regular smoke also passes startup, retained-process background/resume,
+landscape/portrait rotation and force-stop/fresh-process restart.
+
+![Asset preparation on Android](screenshots/android-asset-preparation.png)
+
+Evidence: `build/mobile-loading-{build,ios-build,smoke}.log`,
+`build/mobile-loading-qualification.mp4` and `build/mobile-loading-video-frames`.
+The release APK/debug-symbol build ID is
+`5c327f60db00dd1b42ed5e28f11db2cd6c5b31be`. Previous hosted CI results below
+precede this Android-only UI change; do not present them as a CI run of it.
+
 ## 2026-09-09 — isolated iOS picker interaction
 
 Hosted mobile run 34315653259 passes at `b9806743d` without retries: all three
