@@ -52,8 +52,11 @@ def main():
         raise RuntimeError('Native main menu did not become ready')
     def screenshot(label): run('io', args.device, 'screenshot', str(output/(label+'.png')))
     try:
-        # Terminating an absent app may fail; the subsequent launch must succeed.
-        subprocess.run(command+['terminate', args.device, PACKAGE], capture_output=True, timeout=30)
+        # Fresh CI simulators have no app process. Avoid asking simctl to
+        # terminate an absent process (some hosted CoreSimulator versions hang).
+        services = run('spawn', args.device, 'launchctl', 'list')
+        if any(PACKAGE in line and line.split()[0].isdigit() for line in services.splitlines()):
+            run('terminate', args.device, PACKAGE)
         first, paths = start('startup'); ready(paths); screenshot('startup')
         summary['checks'].append('native startup and bundled assets')
         run('launch', args.device, 'com.apple.Preferences')
@@ -82,8 +85,13 @@ def main():
             summary['passed'] = False
             summary['error'] = 'Native crash found in simulator output'
         (output/'result.json').write_text(json.dumps(summary, indent=2)+'\n')
-        subprocess.run(command+['terminate', args.device, PACKAGE], capture_output=True, timeout=30)
-        subprocess.run(command+['terminate', args.device, 'com.apple.Preferences'], capture_output=True, timeout=30)
+        for package in (PACKAGE, 'com.apple.Preferences'):
+            try:
+                subprocess.run(command+['terminate', args.device, package], capture_output=True, timeout=args.command_timeout)
+            except subprocess.TimeoutExpired:
+                # Preserve the original failure and diagnostics; CI shuts down
+                # this entire private simulator after the smoke command.
+                pass
     if not summary['passed']: raise RuntimeError(summary.get('error', 'iOS smoke failed'))
     print('PASS ' + ', '.join(summary['checks']))
 

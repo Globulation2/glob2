@@ -91,7 +91,7 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 #else
 	const auto process = getpid();
 #endif
-	const std::string collision = path + ".tmp-" + std::to_string(process) + "-0";
+	const std::string collision = path + ".glob2-tmp-" + std::to_string(process) + "-0";
 	{ std::ofstream existing(collision); existing << "keep"; }
 	const auto write = [](OutputStream& stream) { stream.write("complete", 8, "data"); };
 	assert(files.writeAtomically(path, write));
@@ -136,7 +136,7 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 	}
 #endif
 	for (const auto& entry : fs::directory_iterator(directory))
-		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
+		assert(entry.path().filename().string().find(".glob2-tmp-") == std::string::npos);
 #ifndef WIN32
 	// Inject kernel-level sync failures inside an isolated child. Replacing the
 	// temporary file descriptor with /dev/null allows stdio flush to succeed
@@ -154,7 +154,7 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 				fs::path target = directory;
 				if (!directoryFailure)
 					for (const auto& entry : fs::directory_iterator(directory))
-						if (entry.path().string().find(path + ".tmp-") == 0) target = entry.path();
+						if (entry.path().string().find(path + ".glob2-tmp-") == 0) target = entry.path();
 				struct stat expected;
 				if (stat(target.c_str(), &expected) != 0) _exit(7);
 				for (int fd = 3; fd < 256; ++fd)
@@ -218,7 +218,7 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 		assert(waitpid(reader, &status, 0) == reader && WIFEXITED(status) && WEXITSTATUS(status) == 0);
 		// A killed writer may leave an orphan, never a partially replaced save.
 		for (const auto& entry : fs::directory_iterator(directory))
-			if (entry.path().filename().string().find(".tmp-") != std::string::npos)
+			if (entry.path().filename().string().find(".glob2-tmp-") != std::string::npos)
 				fs::remove(entry.path());
 	}
 	std::cout << "PASS killed partial writer preserves old save; completed save survives writer death and fresh reader" << std::endl;

@@ -3,7 +3,7 @@ from pathlib import Path
 import json
 import os
 import subprocess
-from SCons.Script import Environment, Default, Value, GetOption, Action
+from SCons.Script import Environment, Default, Value, GetOption, Action, COMMAND_LINE_TARGETS
 from build_layout import write_if_changed
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
@@ -77,6 +77,15 @@ def build_web(directory, identity, arguments):
                          for p in Path(directory).rglob('*') if p.is_file()])
     env.SideEffect([str(output / ('index.'+ext)) for ext in ('js','wasm','data')], program)
     env.Clean(program, [str(output / ('index.'+ext)) for ext in ('js','wasm','data')])
+    if 'mobile-determinism-test' in COMMAND_LINE_TARGETS:
+        diagnostic = env.Clone()
+        diagnostic['LINKFLAGS'] = ['test/mobile-determinism.html' if flag == 'browser/shell.html' else flag for flag in env['LINKFLAGS']]
+        diagnostic_objects = [obj for name, obj in zip(files, objects) if name != 'src/Glob2.cpp']
+        diagnostic_objects += diagnostic.Object(str(output / 'obj/test/MobileDeterminismHarness.o'), 'test/MobileDeterminismHarness.cpp')
+        test_program = diagnostic.Program(str(output / 'mobile-determinism.html'), diagnostic_objects)
+        diagnostic.Depends(test_program, 'test/mobile-determinism.html')
+        diagnostic.SideEffect([str(output / ('mobile-determinism.'+ext)) for ext in ('js','wasm','data')], test_program)
+        diagnostic.Alias('mobile-determinism-test', test_program)
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))
     env.Alias('compile_commands.json', database)
     Default(program, database)

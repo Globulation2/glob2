@@ -142,7 +142,7 @@ namespace GAGCore
 			std::string temporary;
 			for (int attempt = 0; attempt < 100; ++attempt)
 			{
-				temporary = path + ".tmp-" + std::to_string(process) + "-" + std::to_string(sequence++);
+				temporary = path + ".glob2-tmp-" + std::to_string(process) + "-" + std::to_string(sequence++);
 				file = openExclusive(temporary);
 				if (file || errno != EEXIST) break;
 			}

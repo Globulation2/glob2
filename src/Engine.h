@@ -28,6 +28,7 @@ using std::shared_ptr;
 /// and its run function is meant to run the game that has been loaded.
 class Engine
 {
+    friend class MobileDeterminismHarness;
 public:
 	//! Constructor
 	Engine();

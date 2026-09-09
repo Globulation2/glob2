@@ -21,6 +21,7 @@ jbyteArray bytes(JNIEnv* env, const void* data, std::size_t size) {
 }
 }
 namespace MobileDocuments {
+void cleanupTemporaryExports() {}
 bool platformOpen(Request request, const std::string& extension) {
     Activity a;
     if (!a.type) return false;

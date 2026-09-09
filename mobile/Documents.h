@@ -14,5 +14,6 @@ bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes
 // Platform implementations own their UI and a copy of export bytes until completion.
 bool platformOpen(Request request, const std::string& extension);
 void platformCancel(Request request);
+void cleanupTemporaryExports();
 bool platformExport(const std::string& name, const std::vector<unsigned char>& bytes, const std::string& error);
 }

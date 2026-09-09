@@ -73,6 +73,19 @@ def main():
         state = run('shell', 'dumpsys', 'activity', 'activities')
         return any(PACKAGE in line and ('mResumedActivity' in line or 'topResumedActivity' in line) for line in state.splitlines())
 
+    # Fresh images apply resource overlays after sys.boot_completed. Wait for
+    # their configuration to settle before launching SDL's native process.
+    stable_since = time.monotonic()
+    previous = None
+    deadline = stable_since + 120
+    while time.monotonic() - stable_since < 20:
+        current = run('shell', 'am', 'get-config')
+        if current != previous:
+            previous, stable_since = current, time.monotonic()
+        if time.monotonic() > deadline:
+            raise RuntimeError('Emulator configuration did not settle after boot')
+        time.sleep(1)
+
     original_rotation = run('shell', 'settings', 'get', 'system', 'user_rotation').strip()
     original_auto = run('shell', 'settings', 'get', 'system', 'accelerometer_rotation').strip()
     summary = {'serial': args.serial, 'avd': args.avd, 'checks': [], 'passed': False}
@@ -112,6 +125,11 @@ def main():
         screenshot('relaunched')
         summary['checks'].append('force-stop and fresh-process relaunch')
         summary['passed'] = True
+    except Exception as failure:
+        summary['error'] = str(failure)
+        try: screenshot('failure')
+        except Exception: pass
+        raise
     finally:
         # Save diagnostics even on failure, and restore emulator settings.
         for key, value in [('user_rotation', original_rotation), ('accelerometer_rotation', original_auto)]:

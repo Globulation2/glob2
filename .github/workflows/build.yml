@@ -84,9 +84,10 @@ jobs:
 
       - name: Test incremental engine sessions
         run: |
-          scons release=1 -j$(nproc) session-test mobile-documents-test mobile-certificate-test
+          scons release=1 -j$(nproc) session-test mobile-documents-test mobile-certificate-test mobile-temporary-files-test
           build/linux/client/release/libgag/src/MobileDocumentsHarness
           python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness
+          python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness
           python3 test/run-engine-session-test.py
 
       - name: Build and run the selection lifetime regression
@@ -299,6 +300,18 @@ jobs:
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js single-player.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js chooser-errors.spec.js settings-storage.spec.js shutdown-storage.spec.js campaign-editor-storage.spec.js
           xvfb-run -a npx playwright test --config visibility.config.js
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
+      - name: Compare 100,000 native and Wasm simulation steps
+        if: matrix.order == 'concurrent'
+        run: |
+          scons release=1 -j2 mobile-determinism-test
+          scons target=web release=1 -j2 mobile-determinism-test
+          python3 test/run-mobile-determinism.py --native build/linux/client/release/src/MobileDeterminismHarness --output build/mobile-determinism/ci
+      - uses: actions/upload-artifact@v4
+        if: always() && matrix.order == 'concurrent'
+        with:
+          name: mobile-determinism
+          path: build/mobile-determinism/ci
+          if-no-files-found: ignore
       - name: Test self-hosting with real TLS and persistent volumes
         if: matrix.order == 'concurrent'
         run: |

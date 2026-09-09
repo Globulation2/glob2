@@ -151,3 +151,14 @@ if not env['server']:
         local.Object('MobileCertificateHarness.o', '#test/MobileCertificateHarness.cpp'),
         local.Object('MobileCertificateTrust.o', '#mobile/CertificateTrust.cpp')])
     local.Alias('mobile-certificate-test', certificate_test)
+
+if not env['server'] and not env.get('mingw'):
+    temporary_test = local.Program('MobileTemporaryFilesHarness', [
+        local.Object('MobileTemporaryFilesHarness.o', '#test/MobileTemporaryFilesHarness.cpp'),
+        local.Object('MobileTemporaryFiles.o', '#mobile/TemporaryFiles.cpp')])
+    local.Alias('mobile-temporary-files-test', temporary_test)
+
+if not env['server'] and not env.get('mingw'):
+    determinism_sources = [source for source in source_files if source != 'Glob2.cpp']
+    determinism_sources += local.Object('MobileDeterminismHarness.o', '#test/MobileDeterminismHarness.cpp')
+    local.Alias('mobile-determinism-test', local.Program('MobileDeterminismHarness', determinism_sources))

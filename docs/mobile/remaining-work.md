@@ -29,13 +29,14 @@ itself mean a hosted CI run passed.
 - Qualify mobile WSS gateway traffic, mixed-platform play and coordinated
   reconnect. Platform certificate trust is integrated; native framing/queues
   continue through the existing bounded Beast transport.
-- Extend ARM/Wasm long-run determinism fixtures and repeatable performance tooling.
+- Extend the passing 100,000-step macOS ARM64/Wasm fixture to physical mobile
+  performance and additional seeds as device coverage becomes available.
 - Qualify debugger attachment, symbols, sanitizer/profiler workflows and clean
   build reproducibility. Audit remaining host tools against pinned versions.
 - Address accessibility/localization gaps supported by automated or simulator
   checks; preserve honest physical assistive-technology qualification gates.
-- Recovery follow-up: stale temporary-file cleanup without touching live writes,
-  plus storage-exhaustion/process-termination checks on mobile hardware. Recovery
+- Recovery follow-up: storage-exhaustion/process-termination checks on mobile
+  hardware. Bounded stale-file and iOS export-staging cleanup is implemented. Recovery
   currently applies to single-player games, not editor drafts or network sessions.
 
 ## Requires devices, credentials or external participation

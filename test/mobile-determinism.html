@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><title>Glob2 deterministic simulation harness</title>
+<canvas id="canvas" hidden></canvas><pre id="status">Running headless simulation…</pre>
+<script>
+var Module = {
+  noInitialRun: true, canvas: document.getElementById('canvas'), results: [],
+  print(text) { Module.results.push(String(text)); },
+  printErr(text) { Module.results.push(String(text)); },
+  preRun: [function() { ENV.HOME='/profile'; FS.mkdirTree('/profile'); }],
+  onRuntimeInitialized() {
+    const query = new URLSearchParams(location.search);
+    const started=performance.now();
+    try { Module.result = Module.callMain([query.get('map') || 'maps/balanced.map', query.get('steps') || '100000']); }
+    catch(error) { Module.results.push(String(error)); Module.result=1; }
+    Module.elapsed=performance.now()-started; Module.done=true;
+    document.getElementById('status').textContent=Module.results.join('\n');
+  },
+  onAbort(error) { Module.results.push(String(error)); Module.result=1; Module.done=true; }
+};
+</script>
+{{{ SCRIPT }}}

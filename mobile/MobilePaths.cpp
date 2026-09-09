@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MobilePaths.h"
+#include "TemporaryFiles.h"
+#include "Documents.h"
 #include <SDL.h>
 #include <filesystem>
 #include <fstream>
@@ -30,6 +32,8 @@ void initializeMobilePaths()
     if(!writable) throw std::runtime_error(SDL_GetError());
     std::filesystem::path root(writable.get());
     std::filesystem::create_directories(root);
+    MobileTemporaryFiles::cleanup(root.string());
+    MobileDocuments::cleanupTemporaryExports();
     SDL_setenv("GLOB2_USER_DATA_DIR",root.string().c_str(),1);
 #ifdef __ANDROID__
     std::istringstream index(readAsset("glob2-bundle/index.list"));

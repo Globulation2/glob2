@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "../Documents.h"
+#include "../TemporaryFiles.h"
+#include <unistd.h>
 #include <UIKit/UIKit.h>
 #include <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #include <atomic>
@@ -109,6 +111,7 @@ static Glob2DocumentPicker* active;
 @end
 
 namespace MobileDocuments {
+void cleanupTemporaryExports() { MobileTemporaryFiles::cleanupExports(NSTemporaryDirectory().fileSystemRepresentation); }
 bool platformOpen(Request request, const std::string&) {
     if (reserved.exchange(true)) return false;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -132,7 +135,7 @@ bool platformExport(const std::string& name, const std::vector<unsigned char>& b
         Glob2DocumentPicker* operation = [Glob2DocumentPicker new];
         active = operation;
         operation.temporaryDirectory = [NSURL fileURLWithPath:[NSTemporaryDirectory()
-            stringByAppendingPathComponent:[@"Glob2-export-" stringByAppendingString:NSUUID.UUID.UUIDString]] isDirectory:YES];
+            stringByAppendingPathComponent:[NSString stringWithFormat:@"Glob2-export-%d-%@", getpid(), NSUUID.UUID.UUIDString]] isDirectory:YES];
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
             NSURL* file = [operation.temporaryDirectory URLByAppendingPathComponent:filename];
             BOOL written = [[NSFileManager defaultManager] createDirectoryAtURL:operation.temporaryDirectory

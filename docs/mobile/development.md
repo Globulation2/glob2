@@ -508,3 +508,28 @@ C++ frames and detach. This was verified with the ARM64 simulator release app.
 Archive member names are unique and the dSYM must have the app's UUID. Release
 optimization limits variable inspection; physical-device signing/debugging is a
 separate gate.
+
+### Long-run simulation comparison and abandoned files
+
+Build `scons release=1 -j4 mobile-determinism-test` and
+`scons target=web release=1 -j4 mobile-determinism-test`, then run:
+
+```sh
+PLAYWRIGHT_BROWSERS_PATH="$PWD/build/mobile-tools/playwright" \
+python3 test/run-mobile-determinism.py \
+  --native build/darwin/client/release/src/MobileDeterminismHarness \
+  --output build/mobile-determinism/qualification
+```
+
+The runner uses a temporary native profile and an ephemeral loopback HTTP port,
+compares every 1,000-step checkpoint including component checksums and synchronized
+RNG state, and saves logs and timing/memory measurements. The default is 100,000
+steps; use the appropriate native executable path on Linux. The test-only HTML
+shell and binary do not change the production browser entry point. Headless
+simulation timing does not measure rendered frame time or thermal behavior.
+
+`mobile-temporary-files-test` and `test/run-mobile-temporary-tests.py` exercise
+startup cleanup against stale/live owners, locks, symlinks and recovery slots.
+Only newly namespaced atomic temporary files and PID-tagged iOS export directories
+are eligible. Old ambiguous temporary names are intentionally retained. Hardware
+storage exhaustion and abrupt device power loss still need device qualification.

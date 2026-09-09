@@ -1,5 +1,34 @@
 # Mobile verification and remaining work
 
+## 2026-09-09 — stale-file cleanup and long simulation checks
+
+Mobile startup now removes abandoned atomic-write files bearing the explicit
+`.glob2-tmp-PID-sequence` suffix only when the owning process is confirmed dead.
+Bounded traversal, no-follow opens, inode checks and cleanup locks preserve live
+writes, symlink targets, legacy ambiguous names and both recovery generations.
+iOS export staging similarly uses PID-tagged directories and bounded cleanup.
+Native cleanup and save fault/process-death suites pass; cleanup/document harnesses
+also pass AddressSanitizer and UndefinedBehaviorSanitizer. Android ARM64, iOS
+simulator and Wasm release builds pass with this cleanup. All 24 browser import
+and campaign-persistence regressions pass across Chromium, Firefox and WebKit.
+
+The new `mobile-determinism-test` target runs the real headless engine with four
+Castor AIs on `maps/balanced.map` (128×128, seed 42). The private-profile comparison
+runner completed 100,000 steps with all 101 component/checksum/RNG checkpoints
+identical between native macOS ARM64 and Chromium Wasm. Native simulation p95 was
+278 microseconds, Wasm p95 400 microseconds; native peak RSS was 36,143,104 bytes,
+Wasm allocated heap 134,217,728 bytes. These are host headless measurements, not
+mobile rendering, device memory or thermal qualification. Automatic match-ending
+is disabled so the fixed-length fixture continues through changing victory flags.
+Evidence: `build/mobile-determinism/long-run/{result.json,native.log,wasm.log}`.
+
+Hosted run 34309372465 packaged all three Android ABIs. Its x86 smoke launched
+while the fresh emulator applied resource overlays; the next driver waits for a
+stable configuration. Its iOS smoke hit an absent-process termination timeout;
+the next driver checks running services first and preserves primary diagnostics
+if final cleanup times out. Hosted lifecycle qualification remains pending rerun.
+
+
 Recorded 2026-09-08. The current continuation merges browser `246a47d50`;
 the preceding mobile checkpoints used browser `9dc201436`.
 The older sections retain their original checkpoint IDs and evidence. The prior
