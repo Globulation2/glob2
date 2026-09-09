@@ -2,6 +2,10 @@
 
 ## Resume here
 
+New browser profiles now default to Mute, alongside disabled clouds. Existing
+saved settings override both defaults; desktop defaults are unchanged. Players
+can enable sound through the existing Settings checkbox.
+
 The latest runtime change moves YOG login/registration, lobby tab ownership,
 map selection, join progress, map transfer navigation and error notices onto
 the shared screen stack. Login transitions are deferred until network listener
@@ -25,8 +29,14 @@ coexistence failure also reproduced locally on a cold configuration: SCons
 only discovered the generated header on the second build. Registering it as a
 generated target fixes the focused cold-build regression and local full
 coexistence check. Hosted native-first and web-first jobs now pass, along with
-Windows and both Linux jobs; concurrent coexistence passed and its browser
-tests remain in progress. See the latest dated status
+Windows and both Linux jobs. Run 34292287930 completed: concurrent coexistence
+passed, but browser qualification failed in Linux Firefox (three WebGL/context
+tests fell back to software, shutdown reported rejected audio-resume promises,
+and post-reload audio stayed suspended). The newer LAN runs are still pending.
+The shell now handles its own audio resume/close race; SDL's pinned audio backend
+also resumes suspended contexts internally, so a hosted pass is still required.
+Investigate Linux graphics/audio availability without weakening the assertions.
+See the latest dated status
 sections rather than treating the older warm-build passes as cold-build proof.
 
 The user resumed work after the subscription handoff. The first follow-up

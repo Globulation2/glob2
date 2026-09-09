@@ -3,6 +3,29 @@
 Browser support remains experimental. This ledger distinguishes delivered
 infrastructure from the supported-release acceptance criteria.
 
+## Browser audio defaults and CI follow-up — 2026-09-08
+
+New browser profiles start muted using the existing game setting. Stored mute
+preferences take precedence and desktop defaults are unchanged. The shell also
+handles rejected audio activation promises when SDL closes a pending context;
+other activation failures are logged and remain retryable on later gestures.
+
+Validation: release Wasm build passed (`/tmp/glob2-muted-browser-build.log`),
+14 JavaScript unit cases and nine build-system tests passed. Six browser cases
+passed across Chromium, Firefox and WebKit: saving the muted default, explicitly
+unmuting, reloading and saving again, plus settings/credits navigation and clean
+shutdown (`/tmp/glob2-muted-browser-tests.log`, `build/browser-muted-default`).
+An earlier WebGL save/reload run timed out during Chromium text editing; its
+Firefox continuation was interrupted to incorporate the mute change. That run
+is not a passing save/reload qualification (`/tmp/glob2-audio-activation-browser.log`).
+
+Hosted run 34292287930 passed native builds and all build coexistence checks,
+but failed five Linux Firefox browser cases: three WebGL/context tests fell
+back to software, shutdown rejected audio-resume promises, and post-reload audio
+remained suspended. Local passes do not close those hosted failures. Investigate
+Linux graphics/audio availability and SDL's own internal resume handling next;
+keep the assertions intact.
+
 ## Current single-player milestone
 
 The browser game is playable end to end. Campaigns/tutorials, custom matches,
