@@ -574,3 +574,8 @@ if not env['server']:
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
+
+if not env['server'] and 'invalidation-review' in COMMAND_LINE_TARGETS:
+    review_sources = [source for source in source_files if source != 'Glob2.cpp']
+    review_sources += local.Object('BuildingInvalidationReview.o', '#test/BuildingInvalidationReview.cpp')
+    local.Alias('invalidation-review', local.Program('BuildingInvalidationReview', review_sources))
