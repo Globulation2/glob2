@@ -6,6 +6,8 @@
 using namespace GAGCore;
 
 #include "MapScriptUSL.h"
+#include "usl.h"
+#include "interpreter.h"
 #include "GameGUI.h"
 
 #include "position.h"
