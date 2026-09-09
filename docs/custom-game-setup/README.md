@@ -6,6 +6,8 @@ keeps the match summary and launch action available while dense content scrolls.
 ## Behavior
 
 - Start with FourSquares1 and four-player FFA: you plus three Numbi AIs.
+- Unix map libraries separate installed and user roots. Windows/shared-root
+  installations show one combined library so shipped maps remain accessible.
 - Select a premade map or generate a random world. Random previews appear
   automatically after a 500 ms edit debounce, with generation deferred during a
   drag or open choice menu. The displayed snapshot is the map that launches.

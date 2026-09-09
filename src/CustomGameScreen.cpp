@@ -211,6 +211,12 @@ CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
 {
 	gfx = globalContainer->gfx;
 	username = globalContainer->settings.getUsername();
+	// Windows uses a shared working-directory map folder. Unix can also lack
+	// a per-user root when HOME is unavailable; do not hide those shipped maps.
+	auto files = Toolkit::getFileManager();
+	const auto firstRoot = files->getDirCount() ? files->getDir(0) : std::string();
+	separateMapLibraries =
+		!firstRoot.empty() && firstRoot != "." && firstRoot != "./Contents/Resources";
 	groups[0] = addGroup(tr("Map"));
 	groups[1] = addGroup(tr("Players & Teams"));
 	groups[2] = addGroup(tr("Game Rules"));
@@ -288,7 +294,7 @@ void CustomGameScreen::listMaps()
 	std::vector<std::filesystem::path> roots;
 	auto fm = Toolkit::getFileManager();
 	for (unsigned d = 0; d < fm->getDirCount(); ++d)
-		if ((d == 0) == userMaps)
+		if (!separateMapLibraries || (d == 0) == userMaps)
 			roots.push_back(std::filesystem::path(fm->getDir(d)) / "maps");
 	mapPaths.clear();
 	mapNames.clear();
@@ -790,19 +796,23 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 	int top = y + 43;
 	if (!setup.random)
 	{
-		ui.segments(
-			"map/library", {x, top, leftW, 27}, localized({"Built-in maps", "Your maps"}), userMaps,
-			[this](int value)
-			{
-				if (userMaps != bool(value))
+		if (separateMapLibraries)
+			ui.segments(
+				"map/library", {x, top, leftW, 27}, localized({"Built-in maps", "Your maps"}),
+				userMaps,
+				[this](int value)
 				{
-					userMaps = value;
-					listMaps();
-					if (!librarySelection[userMaps].empty())
-						loadMap(librarySelection[userMaps]);
-				}
-			},
-			{}, "little");
+					if (userMaps != bool(value))
+					{
+						userMaps = value;
+						listMaps();
+						if (!librarySelection[userMaps].empty())
+							loadMap(librarySelection[userMaps]);
+					}
+				},
+				{}, "little");
+		else
+			ui.text(x + 4, top + 6, tr("Map"), "little", leftW, true);
 		int region = 10 + userMaps, listTop = top + 35, rowH = 28;
 		ui.beginRegion(region, {x, listTop, leftW, h - 78});
 		int yy = listTop - ui.regions[region].offset;

@@ -59,6 +59,7 @@ class CustomGameScreen : public Glob2TabScreen
 	bool previewPending = false;
 	Uint32 previewDue = 0;
 	bool validMap = false, userMaps = false;
+	bool separateMapLibraries = true;
 	int currentTab = 0;
 	int groups[3];
 	LobbyMapPreview *preview;

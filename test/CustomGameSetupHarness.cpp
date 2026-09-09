@@ -213,6 +213,14 @@ struct CustomGameSetupHarness
 		screen.gfx = globalContainer->gfx;
 		screen.dispatchInit();
 		assert(screen.validMap && screen.setup.capacity == 4);
+		screen.separateMapLibraries = false;
+		screen.listMaps();
+		assert(
+			std::any_of(screen.mapPaths.begin(), screen.mapPaths.end(), [](const auto &path)
+						{ return std::filesystem::path(path).filename() == "FourSquares1.map"; }));
+		screen.separateMapLibraries = true;
+		screen.listMaps();
+
 		auto paint = [&] { screen.dispatchPaint(false); };
 		auto keyEvent = [&](SDL_Keycode key)
 		{
