@@ -624,6 +624,13 @@ if not env['server']:
     regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
     local.Alias('immobile-unit-gradient-test', regression_test)
 
+# Real engine regression for building placement and removal refreshing neighbouring route fields, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('BuildingGradientInvalidationHarness.o', '#test/BuildingGradientInvalidationHarness.cpp')
+    regression_test = local.Program('BuildingGradientInvalidationHarness', regression_sources)
+    local.Alias('building-gradient-invalidation-test', regression_test)
+
 # Real engine regression for resource-fetch target staleness, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
