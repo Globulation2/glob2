@@ -24,6 +24,28 @@ The simplest way to compile this package is:
      source code directory by typing `scons -c'.
 
 
+Dependencies
+============
+
+   Glob 2 needs a C++20 compiler, Python 3 and SCons. It builds against SDL 2;
+the SDL 1.2 packages are *not* needed and installing them does not help.
+
+   On Debian and Ubuntu, the build dependencies are:
+
+     apt install g++ python3 scons pkg-config \
+       libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
+       libvorbis-dev libogg-dev libspeex-dev \
+       libboost-date-time-dev libboost-thread-dev libboost-system-dev \
+       zlib1g-dev libfribidi-dev libpcre3-dev \
+       libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+
+   To also build and run the test suite, add `libcppunit-dev', plus `xvfb',
+`xauth' and `libgl1-mesa-dri' for the tests that need a display.
+
+   This list is kept in sync with the dependencies installed by the CI build in
+`.github/workflows/build.yml', which is what the project actually builds against.
+
+
 Compilers and Options
 =====================
 
@@ -57,6 +79,7 @@ Out of source compliation
 Specifying the System Type
 ==========================
 
-   `scons' will work on must Unix/Linux systems. However, to compile on windows,
-the flag `mingw=true' must be called. More information on compiling on Windows can
-be found at http://globulation2.org/wiki/Mingw_compilation
+   `scons' will work on most Unix/Linux systems. However, to compile on Windows,
+the flag `mingw=true' must be called. The MSYS2/MINGW64 package list used by the
+CI build is in `.github/workflows/build.yml'. More information on compiling on
+Windows can be found at https://globulation2.org/wiki/Mingw_compilation
