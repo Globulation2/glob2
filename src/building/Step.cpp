@@ -4,6 +4,7 @@
 #include <list>
 #include <math.h>
 #include <stdlib.h>
+#include <algorithm>
 #include <climits>
 
 #include "Building.h"
@@ -107,20 +108,25 @@ bool Building::considerUnitForResources(Unit* unit, int* dist, int* resource)
 				regularFound=true;
 			else
 				fruitFound=true;
+			// The hunger check and the score want two different lengths: how
+			// far the unit walks before it eats next, and how long the whole
+			// job is. A round-trip field holds only the second, so ask the
+			// resource gradient for the first rather than subtracting one from
+			// the other.
 			int distResource = 0;
-			int roundTrip = 0;
-			bool available = map->roundTripDistance(this, r, unit->swimClass(), x, y, &roundTrip);
-			if (available)
-				distResource = roundTrip - distBuilding;
-			else if (map->resourceAvailable(owner->teamNumber, r, unit->swimClass(), x, y, &distResource))
-			{
-				roundTrip = distBuilding + distResource;
-				available = true;
-			}
-			if (available)
+			if (map->resourceAvailable(owner->teamNumber, r, unit->swimClass(), x, y, &distResource))
 			{
 				if(distResource<timeLeft)
 				{
+					// Without a round-trip field, estimate the carry leg rather
+					// than reach for the building distance alone: a unit standing
+					// at the building carries as far as it walked out, and one
+					// standing at the resource carries the building distance.
+					// Building a field here instead would cost one per resource
+					// of every hiring building, nearly all of them never fetched.
+					int roundTrip = 0;
+					if (!map->roundTripDistance(this, r, unit->swimClass(), x, y, &roundTrip))
+						roundTrip = distResource + std::max(distBuilding, distResource);
 					int dist = roundTrip<<Q8_FIXED_POINT_SHIFT;
 					int value = dist / need;
 					if(value < bestDist)

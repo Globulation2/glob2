@@ -586,3 +586,10 @@ if not env['server'] and 'menu-colony-harness' in COMMAND_LINE_TARGETS:
     menu_sources += local.Object('MenuColonyHarness.o', '#tools/MenuColonyHarness.cpp')
     menu_test = local.Program('MenuColonyHarness', menu_sources)
     env.Alias('menu-colony-harness', menu_test)
+
+# Real engine regression for the resource hunger gate, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('RoundTripHungerGateHarness.o', '#test/RoundTripHungerGateHarness.cpp')
+    regression_test = local.Program('RoundTripHungerGateHarness', regression_sources)
+    local.Alias('round-trip-hunger-gate-test', regression_test)
