@@ -1328,3 +1328,13 @@ Player slot
 Team color
 [Alliance group]
 Alliance group
+[menu]
+Menu
+[Editor tools]
+Tools
+[Pan map]
+Pan map
+[Edit map]
+Edit map
+[Editor map]
+Map

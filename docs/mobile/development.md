@@ -386,8 +386,29 @@ after a persistence failure does not promise rollback of the staged browser file
 Run `browser/tests/replay-storage.spec.js` against a fresh Wasm build for delayed
 persistence, cancellation, quota/transaction failures, retries and reload checks.
 
-The map editor workspace still needs dedicated phone adaptation; map creation
-support is not full editor qualification. New English labels use the existing translation catalog; complete
+`PhoneEditor` presents the specialized map-editor widgets on native phones.
+The map uses the full viewport width. `MapEditorScreen` explicitly requests a
+responsive viewport with a 320×320 minimum on this path; retaining the legacy
+canvas makes the scene too small and wastes rendering work. A safe-area toolbar switches between the
+map and tools and explicitly selects pan/edit mode. Category tabs stay fixed;
+other controls reflow into a scrollable panel. Teams and brush cells keep their
+minimum touch sizes, value controls have wide decrement/increment regions, and
+a larger minimap retains the original coordinate conversion. Original widgets
+and `MapEdit::performAction` still own edits. No simulation or map format changed.
+
+The existing editor menu, map load/save, team/area and scenario dialogs use
+PhoneForm. Nested script file dialogs keep their parent and host scheduling.
+Editable TextArea content becomes UTF-8-aware wrapped rows with touch cursor
+placement, native keyboard input and a fixed Hide keyboard action. Campaign and campaign-map-entry authoring also opt into these controls; only
+OK/Cancel remain fixed in the main campaign editor. Read-only TextArea
+presentation stays unchanged. New editor overlays must reset their phone
+presenter before deleting the underlying widgets. `GLOB2_PHONE_FORMS=1` enables
+this path in the native harness; browser/desktop default presentation is retained.
+
+The native harness covers editor navigation without mutation, terrain painting,
+held-stroke cancellation, team changes, scenario Unicode/newline input and cancel,
+and empty-name map-save rejection in both orientations and text sizes.
+Physical-device testing is still required for release qualification. New English labels use the existing translation catalog; complete
 translation, bidi, screen-reader and physical-device accessibility audits remain.
 
 Run `gameplay-touch-test` with the isolated user-data profile to exercise forms

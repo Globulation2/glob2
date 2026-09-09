@@ -667,3 +667,8 @@
 [Player slot]
 [Team color]
 [Alliance group]
+[menu]
+[Editor tools]
+[Pan map]
+[Edit map]
+[Editor map]

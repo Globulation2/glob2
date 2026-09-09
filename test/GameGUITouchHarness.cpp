@@ -26,6 +26,11 @@
 #include "SettingsScreen.h"
 #include "EndGameScreen.h"
 #include "ReplaySaveScreen.h"
+#include "MapEdit.h"
+#include "MapEditorScreen.h"
+#include "CampaignEditor.h"
+#include "PhoneEditor.h"
+#include <GUITextArea.h>
 #include <GUIRatio.h>
 #include <ScreenStack.h>
 #include <BinaryStream.h>
@@ -458,7 +463,7 @@ public:
             gui.clearSelection();gui.touch->panelOpen=false;
         }
 
-        for (const auto* key:{"[Actions]","[Info]","[Minimap]","[Fast forward]","[Hide keyboard]","[shutdown save failed]"})
+        for (const auto* key:{"[Actions]","[Info]","[Minimap]","[Fast forward]","[Hide keyboard]","[shutdown save failed]","[menu]","[Editor tools]","[Editor map]","[Pan map]","[Edit map]"})
             require(!GAGCore::Toolkit::getStringTable()->getString(key).empty(),"New interface translations must not be blank");
 
         auto tr=[](const char* key) { return std::string(GAGCore::Toolkit::getStringTable()->getString(key)); };
@@ -685,6 +690,104 @@ public:
             require(!replaySave.running() && std::filesystem::is_regular_file(replayPath),"Replay retry closes after successful persistence");
             ReplayReader savedReplay;
             require(savedReplay.loadReplay("replays/"+replayName+".replay"),"Phone-saved replay loads through the original reader");
+            {
+                auto hosted=std::make_unique<MapEdit>();require(hosted->load("maps/balanced.map"),"Hosted phone editor loads");
+                GAGGUI::ScreenStack host(*gfx);auto screen=std::make_unique<MapEditorScreen>(host,std::move(hosted));
+                require(screen->usesResponsiveViewport(),"Editor declares its phone viewport to the screen host");
+                host.push(std::move(screen));host.frame(SDL_GetTicks(),{});
+                require(gfx->getW()<=std::max(width,320)*2 && gfx->getH()<=std::max(height,320)*2,"Editor host does not retain an oversized legacy canvas");
+                host.stop();host.frame(SDL_GetTicks(),{});
+            }
+            {
+                GAGGUI::ScreenStack campaignHost(*gfx);auto campaign=std::make_unique<CampaignEditor>("",campaignHost);
+                auto* campaignScreen=campaign.get();campaignHost.push(std::move(campaign));campaignHost.frame(SDL_GetTicks(),{});
+                require(bool(campaignScreen->phoneForm),"Campaign authoring uses the native phone form");
+                campaignScreen->phoneForm->prepare();require(std::any_of(campaignScreen->phoneForm->rows.begin(),campaignScreen->phoneForm->rows.end(),[](const auto& row){return row.kind==14;}),"Campaign descriptions expose editable phone rows");
+                campaignHost.stop();campaignHost.frame(SDL_GetTicks(),{});
+            }
+            {
+                MapEdit editor;require(editor.load("maps/balanced.map"),"Phone editor fixture loads");editor.beginEditing();
+                require(bool(editor.phone),"Map editor enables native phone workspace");auto& ui=*editor.phone;
+                auto send=[&](Uint32 type,double x,double y,int id=11) {
+                    SDL_Event e{};e.type=type;e.tfinger.touchId=31;e.tfinger.fingerId=id;
+                    e.tfinger.x=x/gfx->getW();e.tfinger.y=y/gfx->getH();editor.advanceEditing({e},SDL_GetTicks());
+                };
+                auto tapEditor=[&](double x,double y){send(SDL_FINGERDOWN,x,y);send(SDL_FINGERUP,x,y);};
+                ui.prepare();double unit=gfx->logicalUnitsPerPoint();
+                const auto before=editor.game.checkSum();int vx=editor.viewportX;
+                send(SDL_FINGERDOWN,100*unit,140*unit);send(SDL_FINGERMOTION,164*unit,140*unit);send(SDL_FINGERUP,164*unit,140*unit);
+                require(editor.viewportX==((vx-int(2*unit))&editor.game.map.wMask) && editor.game.checkSum()==before,"Phone editor pans without changing map data");
+                tapEditor(ui.safe.x+ui.safe.w/2,ui.safe.y+24*unit);require(ui.tools,"Phone tool drawer opens");
+                auto tapTool=[&](MapEditorWidget* widget,double relX=.5,double relY=.5) {
+                    for(int attempt=0;attempt<160;++attempt) {
+                        ui.prepare();auto it=std::find_if(ui.rows.begin(),ui.rows.end(),[&](const auto& row){return row.widget==widget;});
+                        require(it!=ui.rows.end(),"Original editor control is reachable in phone drawer");
+                        const auto r=it->rect;require(r.h>=48*unit,"Editor row has a full touch target");
+                        double y=r.y+r.h*relY;
+                        if(it->fixed || (y>=ui.content.y && y<ui.content.y+ui.content.h)) {tapEditor(r.x+r.w*relX,y);return;}
+                        double x=ui.content.x+ui.content.w-6*unit,mid=ui.content.y+ui.content.h/2;
+                        send(SDL_FINGERDOWN,x,mid);send(SDL_FINGERMOTION,x,mid+(y<ui.content.y ? 80 : -80)*unit);send(SDL_FINGERUP,x,mid+(y<ui.content.y ? 80 : -80)*unit);
+                    }
+                    throw std::runtime_error("Editor scrolling failed to reach a tool");
+                };
+                tapTool(editor.teamsView);const auto count=editor.game.mapHeader.getNumberOfTeams();
+                tapTool(editor.increaseTeams);require(editor.game.mapHeader.getNumberOfTeams()==count+1,"Phone editor adds a team with original action");
+                tapTool(editor.decreaseTeams);require(editor.game.mapHeader.getNumberOfTeams()==count,"Phone editor removes the added team");
+                tapTool(editor.terrainView);require(editor.panelMode==MapEdit::Terrain,"Phone drawer switches terrain category");
+                tapTool(editor.water);require(editor.terrainType==TerrainSelector::Water,"Phone terrain selection uses original action");
+                ui.offset=0;editor.drawEditing();gfx->printScreen(width<height ? "phone-editor-tools-portrait.bmp":"phone-editor-tools-landscape.bmp");editor.drawEditing();
+                tapEditor(ui.safe.x+ui.safe.w*5/6,ui.safe.y+24*unit);require(!ui.pan && !ui.tools,"Edit mode closes drawer and arms map editing");
+                send(SDL_FINGERDOWN,100*unit,140*unit);send(SDL_FINGERMOTION,164*unit,140*unit);send(SDL_FINGERUP,164*unit,140*unit);
+                require(editor.hasMapBeenModified && !editor.isDraggingTerrain,"Phone paint stroke changes map and releases original brush");
+                const auto edited=editor.game.checkSum();
+                send(SDL_FINGERDOWN,100*unit,140*unit);editor.suspendInput();const auto suspended=editor.game.checkSum();
+                send(SDL_FINGERMOTION,220*unit,140*unit);send(SDL_FINGERUP,220*unit,140*unit);
+                require(editor.game.checkSum()==suspended && !editor.isDraggingTerrain,"Suspension cancels held editor painting");
+                (void)edited;
+                tapEditor(ui.safe.x+ui.safe.w/6,ui.safe.y+24*unit);ui.syncOverlay();
+                require(editor.showingMenuScreen && ui.form,"Editor menu uses touch form");
+                editor.performAction("close menu screen");ui.syncOverlay();
+                editor.performAction("open scenario editor");ui.syncOverlay();ui.form->prepare();
+                require(std::any_of(ui.form->rows.begin(),ui.form->rows.end(),[](const auto& row){return row.kind==14;}),"Scenario text offers editable phone rows");
+                auto tapOverlay=[&](int kind,const std::string& caption="") {
+                    for(int attempt=0;attempt<240;++attempt) {
+                        ui.syncOverlay();require(bool(ui.form),"Editor overlay exists");ui.form->prepare();
+                        auto it=std::find_if(ui.form->rows.begin(),ui.form->rows.end(),[&](const auto& row){return row.kind==kind && (caption.empty() || row.text==caption);});
+                        require(it!=ui.form->rows.end(),"Editor overlay control exists");auto r=it->rect;auto c=ui.form->placement.content;
+                        if(it->footer || (r.y>=c.y && r.y+r.h<=c.y+c.h)) {tapEditor(r.x+r.w/2,r.y+r.h/2);return;}
+                        double mid=c.y+c.h/2,x=c.x+c.w-4*unit;
+                        send(SDL_FINGERDOWN,x,mid);send(SDL_FINGERMOTION,x,mid+(r.y<c.y ? 64 : -64)*unit);send(SDL_FINGERUP,x,mid+(r.y<c.y ? 64 : -64)*unit);
+                    }
+                    throw std::runtime_error("Editor overlay scroll exhausted");
+                };
+                tapOverlay(1,tr("[briefing]"));ui.form->prepare();
+                auto textRow=std::find_if(ui.form->rows.begin(),ui.form->rows.end(),[](const auto& row){return row.kind==14;});
+                auto* multiline=static_cast<GAGGUI::TextArea*>(textRow->widget);auto originalText=multiline->getText();
+                tapOverlay(14);SDL_Event typed{};typed.type=SDL_TEXTINPUT;SDL_strlcpy(typed.text.text,"Phone Ω\nsecond",sizeof(typed.text.text));
+                editor.advanceEditing({typed},SDL_GetTicks());
+                require(multiline->getText().find("Phone Ω\nsecond")!=std::string::npos,"Phone scenario input retains Unicode and newlines");
+                tapOverlay(5,tr("[Hide keyboard]"));tapOverlay(1,tr("[Cancel]"));
+                require(!editor.showingScriptEditor && editor.game.missionBriefing==originalText,"Cancel leaves the scenario briefing unchanged");
+                editor.performAction("open save screen");ui.syncOverlay();tapOverlay(3);
+                auto* name=ui.form->editing;require(name!=nullptr,"Map save filename gets text focus");
+                static_cast<GAGGUI::TextInput*>(name)->setText("");tapOverlay(5,tr("[Hide keyboard]"));tapOverlay(1,tr("[ok]"));
+                require(editor.showingSave && !editor.needsFertility(),"Empty map name shows retry without starting fertility or asserting");
+                tapOverlay(1,tr("[Cancel]"));require(!editor.showingSave,"Phone editor save cancellation returns to workspace");
+                editor.performAction("open save screen");ui.syncOverlay();ui.form->prepare();
+                for(const auto& row:ui.form->rows) if(row.kind==3) static_cast<GAGGUI::TextInput*>(row.widget)->setText("Phone event batch");
+                ui.form->offset=ui.form->placement.maximum;ui.form->prepare();
+                std::vector<SDL_Event> batch;
+                for(const auto& caption:{tr("[ok]"),tr("[Cancel]")}) {
+                    auto row=std::find_if(ui.form->rows.begin(),ui.form->rows.end(),[&](const auto& r){return r.kind==1 && r.text==caption;});
+                    require(row!=ui.form->rows.end(),"Save/cancel controls exist for batched input test");
+                    for(Uint32 type:{SDL_FINGERDOWN,SDL_FINGERUP}) {SDL_Event e{};e.type=type;e.tfinger.touchId=31;e.tfinger.fingerId=11;
+                        e.tfinger.x=(row->rect.x+row->rect.w/2)/gfx->getW();e.tfinger.y=(row->rect.y+row->rect.h/2)/gfx->getH();batch.push_back(e);}
+                }
+                editor.advanceEditing(batch,SDL_GetTicks());
+                require(editor.needsFertility() && editor.showingSave,"Save suspends the input batch before a following Cancel can delete its dialog");
+                editor.finishFertility(false);require(!editor.showingSave,"Cancelled fertility releases pending phone save safely");
+            }
+
         }
         globalContainer->settings.mobileDialogTextPercent=100;
         SDL_setenv("GLOB2_PHONE_FORMS","",1);SDL_setenv("GLOB2_RESPONSIVE_UI","1",1);

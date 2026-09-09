@@ -205,6 +205,7 @@ CLIENT_SOURCES = (
     'map/edit/WidgetsUnit.cpp',
     'map/edit/WidgetsBuilding.cpp',
     'map/edit/MapEditCtor.cpp',
+    'map/edit/PhoneEditor.cpp',
     'map/edit/MapEditIO.cpp',
     'map/edit/MapEditDraw.cpp',
     'map/edit/MapEditEvents.cpp',

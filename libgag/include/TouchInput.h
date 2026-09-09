@@ -29,6 +29,7 @@ class TouchInput
         return distance(a,b);
     }
 public:
+    bool hasPointers() const { return !fingers.empty(); }
     std::vector<TouchAction> cancel()
     {
         fingers.clear();dragging=false;suppress=false;painting=false;

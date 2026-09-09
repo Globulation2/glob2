@@ -29,6 +29,7 @@ public:
 		CANCEL,
 	};
 private:
+    bool phoneFooter(Widget* widget) const override {return widget==ok || widget==cancel;}
 	Campaign campaign;
     GAGGUI::ScreenStack& screens;
 	/// Title of the screen, depends on the directory given in parameter

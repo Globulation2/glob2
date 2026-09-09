@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
 #include "FertilityCalculatorDialog.h"
@@ -12,6 +13,7 @@
 
 bool MapEdit::performViewAction(const std::string& action, int relMouseX, int relMouseY)
 {
+    if(phone && action.starts_with("close ")) phone->closeOverlay();
 	if(action=="scroll drag start")
 	{
 		isScrollDragging=true;

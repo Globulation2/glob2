@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include "Utilities.h"
 #include "SDLCompat.h"
@@ -22,6 +23,12 @@ MapEdit::MapEdit()
             128, // height
             Minimap::HideFOW)
 {
+#if defined(GLOB2_MOBILE)
+    const bool usePhone=true;
+#else
+    const bool usePhone=SDL_getenv("GLOB2_PHONE_FORMS") && std::string(SDL_getenv("GLOB2_PHONE_FORMS"))=="1";
+#endif
+    if(usePhone && globalContainer->gfx->hasPortableRenderer()) phone=std::make_unique<PhoneEditor>(*this);
 	doQuit=false;
 	doFullQuit=false;
 	doQuitAfterLoadSave=false;

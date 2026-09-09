@@ -14,6 +14,7 @@ MapEditorScreen::MapEditorScreen(GAGGUI::ScreenStack& screens, std::unique_ptr<M
     if (!this->editor) throw std::invalid_argument("Map editor screen requires an editor");
 }
 MapEditorScreen::~MapEditorScreen() = default;
+bool MapEditorScreen::usesResponsiveViewport() const { return editor->usesPhone(); }
 void MapEditorScreen::updateExecution(Uint32 tick)
 {
     if (!isExecutionRunning()) return;

@@ -62,7 +62,31 @@ void PhoneForm::prepare() {
             row.text=input->getText();row.kind=3;row.selected=input->isActivated();
             if(row.text.empty()) row.text="…";
         } else if(auto* text=dynamic_cast<Text*>(widget)) row.text=text->getText();
-        else if(auto* text=dynamic_cast<TextArea*>(widget)) row.text=text->getText();
+        else if(auto* text=dynamic_cast<TextArea*>(widget)) {
+            if(text->isReadOnly()) row.text=text->getText();
+            else {
+                const auto value=text->getText();unsigned cursor=0;text->getCursorPos(cursor);
+                const double unit=globalContainer->gfx->logicalUnitsPerPoint();
+                const double scale=1.5*globalContainer->settings.mobileDialogTextPercent/100.*unit;
+                const double width=std::min(mobileDialogSafe(globalContainer->gfx).w-16*unit,640*unit)/scale-8;
+                size_t start=0;
+                do {
+                    size_t end=start;
+                    while(end<value.size() && value[end]!='\n') {
+                        size_t next=end+1;while(next<value.size() && (static_cast<unsigned char>(value[next])&0xc0)==0x80) ++next;
+                        if(end>start && globalContainer->standardFont->getStringWidth(value.substr(start,next-start))>width) break;
+                        end=next;
+                    }
+                    std::string line=value.substr(start,end-start);
+                    bool selected=editing==widget && cursor>=start && (cursor<end || (cursor==end && (end==value.size() || value[end]=='\n')));
+                    if(selected) line.insert(cursor-start,"|");
+                    rows.push_back({widget,line.empty()?" ":line,14,int(start),selected});
+                    if(end==value.size()) break;
+                    start=end+(value[end]=='\n');
+                } while(start<=value.size());
+                continue;
+            }
+        }
         else if(auto* preview=dynamic_cast<MapPreview*>(widget)) {
             if(!preview->isThumbnailLoaded()) continue;
             row.kind=4;
@@ -80,6 +104,8 @@ void PhoneForm::prepare() {
         if(row.kind || !row.text.empty()) rows.push_back(row);
     }
     if(editing && (!editing->visible || std::find(widgets.begin(),widgets.end(),editing)==widgets.end())) {
+        if(auto* text=dynamic_cast<TextArea*>(editing)) text->deactivate();
+        if(auto* input=dynamic_cast<TextInput*>(editing)) input->deactivate();
         editing=nullptr;SDL_StopTextInput();
     }
     if(editing) rows.push_back({nullptr,Toolkit::getStringTable()->getString("[Hide keyboard]"),5,0,false,true});
@@ -94,7 +120,7 @@ void PhoneForm::prepare() {
     };
     placement=ResponsiveDialog::calculate(safe,fixed,height,offset,unit);
     if(lastHeight && lastHeight!=placement.content.h) cancel();
-    if(lastHeight!=placement.content.h && editing) for(size_t i=0;i<rows.size();++i) if(rows[i].widget==editing) {
+    if(lastHeight!=placement.content.h && editing) for(size_t i=0;i<rows.size();++i) if(rows[i].widget==editing && (rows[i].kind!=14 || rows[i].selected)) {
         const auto r=placement.rows[i].rect;
         double scroll=placement.offset+std::max(0.0,r.y+r.h-placement.content.y-placement.content.h);
         scroll=std::min(scroll,placement.offset+r.y-placement.content.y);
@@ -137,11 +163,11 @@ void PhoneForm::draw() {
             }
             textLeft+=48*unit;textWidth-=96*unit;
         }
-        const auto lines=wrapTouchText(font,row.text,textWidth/scale-8);
+        const auto lines=row.kind==14 ? std::vector<std::string>{row.text} : wrapTouchText(font,row.text,textWidth/scale-8);
         const double top=r.y+std::max(0.0,(r.h-lines.size()*font->getStringHeight("Ag")*scale)/2);
         gfx->setUITransform(scale,textLeft,top,&scissor);
         for(size_t i=0;i<lines.size();++i)
-            gfx->drawString(std::max(4,int((textWidth/scale-font->getStringWidth(lines[i]))/2)),i*font->getStringHeight("Ag"),font,lines[i]);
+            gfx->drawString(row.kind==14 ? 4 : std::max(4,int((textWidth/scale-font->getStringWidth(lines[i]))/2)),i*font->getStringHeight("Ag"),font,lines[i]);
         gfx->setUITransform();
     }
     gfx->setClipRect();
@@ -166,12 +192,31 @@ void PhoneForm::act(const std::vector<TouchAction>& actions) {
             const double scale=1.5*globalContainer->settings.mobileDialogTextPercent/100.0*unit;
             dynamic_cast<PhoneGraphic*>(row->widget)->inspectPhone(int((action.point.x*unit-row->rect.x-8*unit)/scale),int((action.point.y*unit-row->rect.y-8*unit)/scale));return;
         }
-        if(row->kind==5) {editing=nullptr;SDL_StopTextInput();return;}
+        if(row->kind==5) {
+            if(auto* text=dynamic_cast<TextArea*>(editing)) text->deactivate();
+            if(auto* input=dynamic_cast<TextInput*>(editing)) input->deactivate();
+            editing=nullptr;SDL_StopTextInput();return;
+        }
+        if(row->kind==14) {
+            for(auto* widget:screen.presentationWidgets()) {
+                if(auto* input=dynamic_cast<TextInput*>(widget)) input->deactivate();
+                if(auto* text=dynamic_cast<TextArea*>(widget)) text->deactivate();
+            }
+            auto* text=static_cast<TextArea*>(row->widget);const auto value=text->getText();
+            size_t pos=row->index;const double scale=1.5*globalContainer->settings.mobileDialogTextPercent/100.*unit;
+            const double x=(action.point.x*unit-row->rect.x)/scale-4;
+            while(pos<value.size() && value[pos]!='\n') {
+                size_t next=pos+1;while(next<value.size() && (static_cast<unsigned char>(value[next])&0xc0)==0x80) ++next;
+                if(globalContainer->standardFont->getStringWidth(value.substr(row->index,next-row->index))>x) break;
+                pos=next;
+            }
+            text->activate();text->setCursorPos(pos);editing=text;lastHeight=0;SDL_StartTextInput();return;
+        }
         if(row->kind==2) {
             auto* list=static_cast<List*>(row->widget);list->setSelectionIndex(row->index);list->selectionChanged();return;
         }
         if(row->kind==3) {
-            for(auto* w:screen.presentationWidgets()) if(auto* input=dynamic_cast<TextInput*>(w)) input->deactivate();
+            for(auto* w:screen.presentationWidgets()) {if(auto* input=dynamic_cast<TextInput*>(w)) input->deactivate();if(auto* text=dynamic_cast<TextArea*>(w)) text->deactivate();}
             auto* input=static_cast<TextInput*>(row->widget);input->activate();input->setCursorPos(input->getText().size());
             editing=input;lastHeight=0;SDL_StartTextInput();return;
         }
@@ -211,7 +256,9 @@ bool PhoneForm::event(SDL_Event event) {
         if(event.motion.which==SDL_TOUCH_MOUSEID) return true;
         point={double(event.motion.x),double(event.motion.y)};phase=1;break;
     case SDL_MOUSEWHEEL:cancel();offset-=(event.wheel.direction==SDL_MOUSEWHEEL_FLIPPED ? -event.wheel.y : event.wheel.y)*48*gfx->logicalUnitsPerPoint();prepare();return true;
-    default:return false;
+    default:
+        if((event.type==SDL_TEXTINPUT || event.type==SDL_KEYDOWN) && dynamic_cast<TextArea*>(editing)) lastHeight=0;
+        return false;
     }
     if(phase==0) {
         auto* row=hit(point);held=row ? row->widget : nullptr;heldKind=row ? row->kind : -1;

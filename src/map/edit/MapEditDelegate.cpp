@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include <sstream>
 #include "Utilities.h"
@@ -81,6 +82,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 		{
 			case LoadSaveScreen::OK:
 			{
+                if(!*loadSaveScreen->getName()) {loadSaveScreen->showSaveFailure();if(phone) phone->showFailure();break;}
                 pendingSaveFilename = loadSaveScreen->getFileName();
                 pendingSaveName = loadSaveScreen->getName();
                 fertilityRequested = true;

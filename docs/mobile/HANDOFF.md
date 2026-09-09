@@ -17,12 +17,12 @@ Browser head `4051adb4d` was inspected during the replay-save pass but not merge
 Check the remote before the next substantial milestone;
 inspect its changes before merging. Do not chase a moving base during every build.
 
-The user asked to keep going until the in-game UI was finished, then explicitly
-asked to stop expanding scope, commit/push, and prepare this handoff to transfer
-to a second ChatGPT subscription. **The complete in-game UI is not yet finished
-or device-qualified.** Resume implementation/qualification after reviewing this
-checkpoint. Main/system-menu visual redesign belongs to another PR. Pinch zoom
-is explicitly deferred. Use existing game art and shared simulation/orders.
+The user resumed after the original subscription handoff and asked to finish the
+remaining mobile UI implementation. The latest checkpoint below supersedes older
+lists of unadapted screens. **This is still a development preview, not a
+physical-device-qualified release.** Main/system-menu visual redesign belongs to
+another PR. Pinch zoom is explicitly deferred. Use existing game art and shared
+simulation/orders.
 
 Suggested first message to the new agent:
 
@@ -32,7 +32,34 @@ Suggested first message to the new agent:
 > in-game UI, maintain compatibility with the browser branch, and update draft
 > PR #208 with honest evidence and remaining limitations.
 
-## Latest resumed work: native phone forms
+## Latest work: remaining authoring UI
+
+This checkpoint follows `e1e152ce0` and adapts the specialized map-editor workspace
+and campaign authoring. `PhoneEditor` preserves original edit actions/artwork,
+adds a full-width map with explicit pan/edit mode, fixed category tabs, scrollable
+tools, large brush/team targets and a larger minimap. The editor's screen host
+must explicitly request a 320-point minimum responsive canvas; using the legacy
+canvas made the Android editor too small and expensive to render. The harness
+now exercises entry through ScreenStack as well as direct editor gestures.
+
+Editor menu/load/save/team/area/scenario dialogs use PhoneForm, including nested
+script file dialogs. Editable multiline text is exposed as wrapped UTF-8 rows
+with touch cursor placement and keyboard dismissal. Campaign and map-entry
+editors now opt into the same presenter. Current verification and artifacts are
+recorded at the top of [status](status.md). Native/session and 21 build-system
+checks pass; the browser sweep passed 27/27, followed by 12/12 focused persistence
+checks after the final Save/Cancel event-batch fix. Android, Wasm and iOS simulator
+builds pass. The refreshed `build/mobile-preview` contains the latest signed APK,
+matching symbols and exact commit in BUILD.json; its older version is archived
+under `build/mobile-preview-history`.
+
+Pinch zoom and the separately scoped main-menu visual redesign remain deferred.
+Physical-device, translation/bidi and assistive-technology qualification remain
+release gates; a working native harness or emulator is not a substitute. Keep
+future work focused on concrete device findings rather than repeatedly calling
+already adapted editor screens unimplemented.
+
+## Earlier resumed work: native phone forms
 
 ### Resumable replay saves (latest)
 

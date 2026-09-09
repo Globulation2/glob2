@@ -7,6 +7,80 @@ iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 The historical Android screenshots near the end were collected on `7333e4e8b`.
 
+## Native map and campaign authoring UI
+
+This pass completes the remaining authoring-screen adaptation after `e1e152ce0`.
+The specialized map workspace now uses a full-width map, explicit pan/edit mode,
+fixed category tabs, scrollable tool groups, enlarged team/brush controls,
+wide value adjustments and a larger minimap. The original widgets and actions
+still own terrain, buildings, units, areas and team edits. Map/replay formats and
+simulation orders are unchanged.
+
+Editor menu/load/save, area naming, teams and scenario dialogs use the phone
+presenter. Nested script file dialogs retain their parent. Editable multiline
+text supports wrapped UTF-8 rows, touch cursor placement, keyboard input and
+Hide keyboard. Campaign and campaign-map-entry authoring also use these controls.
+
+The first Android check exposed the editor's retained legacy canvas: the scene
+was too small and an app-not-responding warning appeared under load. The editor
+now explicitly requests a responsive 320×320 minimum through ScreenStack; a new
+host-level regression checks that transition. This is separate from the emulator's
+System UI warning during its first cold boot. Both observations are retained here
+rather than counting that initial run as successful qualification.
+
+Verification:
+
+- Native touch suite passes at 320×568 and 568×320 with 100% and 150% text.
+  Editor tests cover panning without map mutation, terrain selection and strokes,
+  held-stroke suspension, team add/remove, Unicode/newline scenario input,
+  cancellation, empty map-save names and campaign description presentation.
+  A batched Save-then-Cancel regression verifies that the pending fertility/save
+  operation retains its dialog until the host takes over.
+- Shared engine-session/editor checks pass; deterministic session checksums remain
+  `7e7f31de`. Savegame-safety and all 21 build-system tests pass.
+- Android ARM64 release/signing and iOS ARM64 simulator release builds pass.
+  Wasm release builds successfully.
+- The corrected APK installs/launches in the isolated API 35 ARM64 emulator.
+  Loading a map, category switching, terrain painting, scenario keyboard input,
+  Hide keyboard, Cancel and rotation were exercised. The editor stayed usable
+  through those checks after the canvas fix. Rotation was restored and the
+  isolated app/emulator stopped afterward.
+
+- All 27 browser viewport/map-editor/campaign-storage cases pass across Chromium,
+  Firefox and WebKit on the canvas-fix build (2.0 minutes). The preceding run
+  passed 26/27: Firefox remained at the open match menu after the test's quit
+  click while compilation and emulator testing were competing for resources.
+  The second run used the final canvas fix with the emulator stopped and passed
+  without retries. This does not establish a separate fix for that missed click.
+- After the final event-batch guard, all 12 focused map/campaign persistence
+  cases pass on the rebuilt Wasm artifact (1.0 minute), covering quota failure,
+  aborted transactions, retry/export and durable completion.
+
+Final native/build evidence is recorded in `build/mobile-editor-complete-*` logs;
+Android interaction captures and the full browser run use
+`build/mobile-editor-qualified-*`. The final event-batch guard was added after
+those emulator captures. Earlier
+`build/mobile-editor-*` logs include the initial implementation and failure cases.
+Native harness captures below use 150% dialog text and are not device evidence:
+
+![Phone editor in portrait](screenshots/phone-editor-tools-portrait.png)
+![Phone editor in landscape](screenshots/phone-editor-tools-landscape.png)
+
+Corrected Android emulator captures (default text size):
+
+![Android editor tools](screenshots/android-editor-tools.png)
+![Android scenario keyboard](screenshots/android-editor-keyboard.png)
+![Android editor landscape](screenshots/android-editor-landscape.png)
+
+The refreshed `build/mobile-preview` bundle contains the current signed APK,
+matching symbols, commit provenance and SHA-256 checksums. The older preview is
+preserved under `build/mobile-preview-history`.
+
+Physical Pixel 6/iPhone/iPad qualification, translation/bidi and assistive-technology
+review remain release gates. Pinch zoom and main/system-menu visual redesign stay
+outside this implementation scope. The older sections below describe historical
+checkpoints and must not be read as the current list of unimplemented screens.
+
 ## Resumable replay saves
 
 This checkpoint follows committed/pushed settings/results work `f4f397837`.

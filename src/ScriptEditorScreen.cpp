@@ -583,3 +583,5 @@ void ScriptEditorScreen::finishFileDialog()
 	}
 
 }
+
+OverlayScreen* ScriptEditorScreen::phoneDialog() { return fileDialog ? static_cast<OverlayScreen*>(fileDialog.get()) : this; }

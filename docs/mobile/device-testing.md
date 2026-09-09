@@ -7,6 +7,13 @@ shared with desktop/browser; the phone HUD is selected after touch input.
 
 ## Android: install the preview
 
+The refreshed preview includes phone settings/results, resumable replay saving,
+and the native map/campaign authoring UI. `BUILD.json` records its exact source
+commit; earlier preview notes in the verification history refer to older APKs.
+Choose a terrain in Tools, switch the Pan map/Edit map control to Edit map,
+then paint, open a scenario briefing, type, Hide keyboard, Cancel and rotate. Pan map mode should
+move the view without editing terrain.
+
 The prepared ARM64 APK is `build/mobile-preview/glob2-android-arm64-preview.apk`.
 It targets Android 8/API 26 or later on an **ARM64** device. This particular APK
 will not install on an ARMv7-only phone. No store account is required.
