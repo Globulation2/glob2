@@ -556,6 +556,11 @@ if not env['server']:
     regression_test = local.Program('EnteringUnitSaveHarness', regression_sources)
     local.Alias('entering-unit-save-test', regression_test)
 
+if not env['server']:
+    buffer_sources = ['#test/BufferedFileStreamHarness.cpp', '../libgag/src/libgag.a']
+    buffer_test = local.Program('BufferedFileStreamHarness', buffer_sources)
+    local.Alias('buffered-file-test', buffer_test)
+
 # Real engine regression for immobile units and weighted building gradients, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
