@@ -1232,3 +1232,9 @@ Aún trabajando: %0
 Vista toroidal automática
 [toggle torus view]
 Alternar vista 2D / toroidal
+[motion blur]
+Desenfoque de movimiento
+[motion blur enabled]
+Desenfoque de movimiento activado (F8)
+[motion blur disabled]
+Desenfoque de movimiento desactivado (F8)

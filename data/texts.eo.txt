@@ -1230,3 +1230,9 @@ Ankoraŭ laborantaj: %0
 Aŭtomata tora vido
 [toggle torus view]
 Ŝalti inter 2D kaj tora vido
+[motion blur]
+Movmalklarigo
+[motion blur enabled]
+Movmalklarigo aktivigita (F8)
+[motion blur disabled]
+Movmalklarigo malaktivigita (F8)

@@ -1232,3 +1232,9 @@ Még dolgozó egységek: %0
 Automatikus tórusznézet
 [toggle torus view]
 Váltás 2D és tórusznézet között
+[motion blur]
+Mozgáselmosódás
+[motion blur enabled]
+Mozgáselmosódás bekapcsolva (F8)
+[motion blur disabled]
+Mozgáselmosódás kikapcsolva (F8)

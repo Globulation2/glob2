@@ -1228,3 +1228,9 @@ Masih bekerja: %0
 Tampilan torus otomatis
 [toggle torus view]
 Beralih tampilan 2D / torus
+[motion blur]
+Keburaman gerakan
+[motion blur enabled]
+Keburaman gerakan diaktifkan (F8)
+[motion blur disabled]
+Keburaman gerakan dinonaktifkan (F8)

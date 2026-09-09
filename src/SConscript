@@ -517,6 +517,19 @@ if not env['server']:
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
 
+# Explicit sprite checks and benchmark; these are not part of the default build.
+if not env['server']:
+    sprite_checks = []
+    for name in ['UnitMotionBlurTest', 'UnitCompositeCacheTest', 'UnitCompositeCacheGPUCheck']:
+        check = local.Program(name, local.Object(name + '.o', '#test/' + name + '.cpp')
+            + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+        sprite_checks += check
+    local.Alias('unit-blur-tests', sprite_checks)
+    benchmark = local.Program('unit-blur-benchmark',
+        local.Object('UnitBlurBenchmark.o', '#tools/unit-animation/cache-benchmark.cpp')
+        + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+    local.Alias('unit-blur-benchmark', benchmark)
+
 if not env['server']:
     speed_sources = [source for source in source_files if source != 'Glob2.cpp']
     speed_sources += local.Object('GameSpeedTest.o', '#test/GameSpeedTest.cpp')

@@ -1228,3 +1228,9 @@ Ysagoon Online Gaming
 Автоматичний вигляд тора
 [toggle torus view]
 Перемкнути вигляд 2D / тора
+[motion blur]
+Розмиття в русі
+[motion blur enabled]
+Розмиття в русі ввімкнено (F8)
+[motion blur disabled]
+Розмиття в русі вимкнено (F8)

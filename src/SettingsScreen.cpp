@@ -200,7 +200,7 @@ void SettingsScreen::handleValueChanged(Widget* source)
 {
 	if(source==gameSpeed)
 	{
-		globalContainer->settings.gameSpeed=gameSpeed->getValue();
+		globalContainer->settings.gameSpeed=gameSpeed->getValue()+Settings::GAME_SPEED_MINIMUM;
 		updateGameSpeedText();
 		return;
 	}
@@ -223,6 +223,10 @@ void SettingsScreen::handleButtonStateChanged(Widget* source)
 	if (source==highres)
 	{
 		globalContainer->settings.highResolutionArtwork=highres->getState();
+	}
+	else if (source==motionBlurButton)
+	{
+		globalContainer->settings.motionBlur=motionBlurButton->getState();
 	}
 	else if (source==rememberUnitButton)
 	{
@@ -314,6 +318,7 @@ void SettingsScreen::retranslateUiStrings()
 	rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
 	scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
 	automaticTorusText->setText(Toolkit::getStringTable()->getString("[automatic torus view]"));
+	motionBlurText->setText(Toolkit::getStringTable()->getString("[motion blur]"));
 	updateGameSpeedText();
 
 	musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));

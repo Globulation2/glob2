@@ -1232,3 +1232,9 @@ Znotraj: %0
 Samodejni torusni pogled
 [toggle torus view]
 Preklopi med 2D in torusnim pogledom
+[motion blur]
+Zameglitev gibanja
+[motion blur enabled]
+Zameglitev gibanja vključena (F8)
+[motion blur disabled]
+Zameglitev gibanja izključena (F8)

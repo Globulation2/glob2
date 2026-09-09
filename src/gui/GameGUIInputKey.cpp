@@ -104,6 +104,16 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 {
 	if (typingInputScreen == NULL)
 	{
+		if (pressed && key.sym == SDLK_F8)
+		{
+			globalContainer->settings.motionBlur = !globalContainer->settings.motionBlur;
+			globalContainer->settings.save();
+			addMessage(Color(230, 230, 230), globalContainer->settings.motionBlur
+				? Toolkit::getStringTable()->getString("[motion blur enabled]")
+				: Toolkit::getStringTable()->getString("[motion blur disabled]"), false);
+			return;
+		}
+
 		if(key.sym == SDLK_SPACE && pressed && swallowSpaceKey)
 		{
 			setIsSpaceSet(true);

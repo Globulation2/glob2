@@ -1232,3 +1232,9 @@ Cortex
 Аутоматски торусни приказ
 [toggle torus view]
 Промени 2D / торусни приказ
+[motion blur]
+Замућење покрета
+[motion blur enabled]
+Замућење покрета укључено (F8)
+[motion blur disabled]
+Замућење покрета искључено (F8)

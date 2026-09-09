@@ -1232,3 +1232,9 @@ Nadal pracują: %0
 Automatyczny widok torusa
 [toggle torus view]
 Przełącz widok 2D / torusa
+[motion blur]
+Rozmycie ruchu
+[motion blur enabled]
+Rozmycie ruchu włączone (F8)
+[motion blur disabled]
+Rozmycie ruchu wyłączone (F8)

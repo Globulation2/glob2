@@ -1302,3 +1302,9 @@ Cortex
 Αυτόματη τοροειδής προβολή
 [toggle torus view]
 Εναλλαγή 2D / τοροειδούς προβολής
+[motion blur]
+Θόλωση κίνησης
+[motion blur enabled]
+Θόλωση κίνησης ενεργή (F8)
+[motion blur disabled]
+Θόλωση κίνησης ανενεργή (F8)

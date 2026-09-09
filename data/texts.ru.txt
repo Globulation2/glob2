@@ -1230,3 +1230,9 @@ Cortex
 Автоматический вид тора
 [toggle torus view]
 Переключить вид 2D / тора
+[motion blur]
+Размытие в движении
+[motion blur enabled]
+Размытие в движении включено (F8)
+[motion blur disabled]
+Размытие в движении выключено (F8)

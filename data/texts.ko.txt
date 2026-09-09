@@ -1228,3 +1228,9 @@ IP 주소가 일시적으로 차단되었습니다. 차단이 해제될 때까�
 자동 토러스 보기
 [toggle torus view]
 2D / 토러스 보기 전환
+[motion blur]
+모션 블러
+[motion blur enabled]
+모션 블러 켜짐 (F8)
+[motion blur disabled]
+모션 블러 꺼짐 (F8)

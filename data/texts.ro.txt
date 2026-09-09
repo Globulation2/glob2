@@ -1232,3 +1232,9 @@ Cortex
 Vizualizare toroidală automată
 [toggle torus view]
 Comută vizualizarea 2D / toroidală
+[motion blur]
+Estomparea mișcării
+[motion blur enabled]
+Estomparea mișcării activată (F8)
+[motion blur disabled]
+Estomparea mișcării dezactivată (F8)

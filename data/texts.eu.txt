@@ -1242,3 +1242,9 @@ Oraindik lanean: %0
 Toroide-ikuspegi automatikoa
 [toggle torus view]
 Aldatu 2D eta toroide-ikuspegien artean
+[motion blur]
+Mugimendu-lausotzea
+[motion blur enabled]
+Mugimendu-lausotzea gaituta (F8)
+[motion blur disabled]
+Mugimendu-lausotzea desgaituta (F8)

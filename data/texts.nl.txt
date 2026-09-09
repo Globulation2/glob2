@@ -1256,3 +1256,9 @@ Nog aan het werk: %0
 Automatische torusweergave
 [toggle torus view]
 Wissel tussen 2D- en torusweergave
+[motion blur]
+Bewegingsonscherpte
+[motion blur enabled]
+Bewegingsonscherpte ingeschakeld (F8)
+[motion blur disabled]
+Bewegingsonscherpte uitgeschakeld (F8)

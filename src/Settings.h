@@ -67,12 +67,14 @@ public:
 	bool rememberUnit;
 	bool scrollWheelEnabled;
 	bool highResolutionArtwork;
+	bool motionBlur;
 	/// Simulation speed preset. Zero is the original 25 ticks/second;
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;
 
 	enum
 	{
+		GAME_SPEED_MINIMUM = -3,
 		GAME_SPEED_NORMAL = 0,
 		GAME_SPEED_MAXIMUM = 10,
 	};

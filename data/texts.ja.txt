@@ -1228,3 +1228,9 @@ Ysagoon Online Gaming
 自動トーラス表示
 [toggle torus view]
 2D／トーラス表示を切り替え
+[motion blur]
+モーションブラー
+[motion blur enabled]
+モーションブラーを有効にしました (F8)
+[motion blur disabled]
+モーションブラーを無効にしました (F8)

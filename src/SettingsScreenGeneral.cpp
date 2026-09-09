@@ -91,38 +91,44 @@ void SettingsScreen::buildGraphicsToggles()
 	fullscreenText=new Text(260, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 180);
 	addWidgetToGroup(fullscreenText, generalGroup);
 
-	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
+	usegpu=new OnOffButton(230, 90 + 25, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
 	addWidgetToGroup(usegpu, generalGroup);
-	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[OpenGL]"), 180);
+	usegpuText=new Text(260, 90 + 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[OpenGL]"), 180);
 	addWidgetToGroup(usegpuText, generalGroup);
 
-	lowquality=new OnOffButton(230, 90 + 60, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
+	lowquality=new OnOffButton(230, 90 + 50, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
 	addWidgetToGroup(lowquality, generalGroup);
-	lowqualityText=new Text(260, 90 + 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 180);
+	lowqualityText=new Text(260, 90 + 50, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 180);
 	addWidgetToGroup(lowqualityText, generalGroup);
 
-	customcur=new OnOffButton(230, 90 + 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::CUSTOMCURSOR, CUSTOMCUR);
+	customcur=new OnOffButton(230, 90 + 75, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::CUSTOMCURSOR, CUSTOMCUR);
 	addWidgetToGroup(customcur, generalGroup);
-	customcurText=new Text(260, 90 + 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[customcur]"), 180);
+	customcurText=new Text(260, 90 + 75, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[customcur]"), 180);
 	addWidgetToGroup(customcurText, generalGroup);
 
-	rememberUnitButton=new OnOffButton(230, 90 + 120, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.rememberUnit, REMEMBERUNIT);
+	rememberUnitButton=new OnOffButton(230, 90 + 100, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.rememberUnit, REMEMBERUNIT);
 	addWidgetToGroup(rememberUnitButton, generalGroup);
-	rememberUnitText=new Text(260, 90 + 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remember unit]"), 180);
+	rememberUnitText=new Text(260, 90 + 100, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remember unit]"), 180);
 	addWidgetToGroup(rememberUnitText, generalGroup);
 
-	scrollwheel=new OnOffButton(230, 90 + 150, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.scrollWheelEnabled, SCROLLWHEEL);
+	scrollwheel=new OnOffButton(230, 90 + 125, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.scrollWheelEnabled, SCROLLWHEEL);
 	addWidgetToGroup(scrollwheel, generalGroup);
-	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
+	scrollwheelText=new Text(260, 90 + 125, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
 	addWidgetToGroup(scrollwheelText, generalGroup);
 
 	highres=new OnOffButton(230, 300, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.highResolutionArtwork, HIGHRES, "Apply artwork on the next game or editor load (OpenGL)", "standard");
 	addWidgetToGroup(highres,generalGroup);
 	addWidgetToGroup(new Text(260,300,ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED,"standard","High-resolution artwork",180),generalGroup);
+	motionBlurButton=new OnOffButton(230, 240, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.motionBlur, MOTIONBLUR);
+	addWidgetToGroup(motionBlurButton, generalGroup);
+	motionBlurText=new Text(260, 240, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[motion blur]"), 180);
+	addWidgetToGroup(motionBlurText, generalGroup);
+
 	gameSpeedText=new Text(20, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
 	addWidgetToGroup(gameSpeedText, generalGroup);
 	gameSpeed=new Selector(20, 285, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180,
-		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
+		globalContainer->settings.gameSpeed-Settings::GAME_SPEED_MINIMUM,
+		Settings::GAME_SPEED_MAXIMUM-Settings::GAME_SPEED_MINIMUM, true);
 	addWidgetToGroup(gameSpeed, generalGroup);
 	updateGameSpeedText();
 

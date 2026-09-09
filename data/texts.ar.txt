@@ -1230,3 +1230,9 @@ Cortex
 عرض الطارة تلقائيًا
 [toggle torus view]
 التبديل بين العرض ثنائي الأبعاد والطارة
+[motion blur]
+ضبابية الحركة
+[motion blur enabled]
+ضبابية الحركة مفعّلة (F8)
+[motion blur disabled]
+ضبابية الحركة معطّلة (F8)

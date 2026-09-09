@@ -1232,3 +1232,9 @@ Yhä töissä: %0
 Automaattinen torusnäkymä
 [toggle torus view]
 Vaihda 2D- ja torusnäkymän välillä
+[motion blur]
+Liikesumennus
+[motion blur enabled]
+Liikesumennus käytössä (F8)
+[motion blur disabled]
+Liikesumennus poistettu käytöstä (F8)

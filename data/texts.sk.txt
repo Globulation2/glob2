@@ -1240,3 +1240,9 @@ Ešte v práci: %0
 Automatické toroidné zobrazenie
 [toggle torus view]
 Prepnúť 2D / toroidné zobrazenie
+[motion blur]
+Rozmazanie pohybu
+[motion blur enabled]
+Rozmazanie pohybu zapnuté (F8)
+[motion blur disabled]
+Rozmazanie pohybu vypnuté (F8)

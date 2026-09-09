@@ -1228,3 +1228,9 @@ Còn làm việc: %0
 Chế độ xem hình xuyến tự động
 [toggle torus view]
 Chuyển chế độ xem 2D / hình xuyến
+[motion blur]
+Làm mờ chuyển động
+[motion blur enabled]
+Đã bật làm mờ chuyển động (F8)
+[motion blur disabled]
+Đã tắt làm mờ chuyển động (F8)

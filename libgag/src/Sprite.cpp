@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <SDL_image.h>
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
@@ -238,6 +239,16 @@ namespace GAGCore
 
 	DrawableSurface *Sprite::getColoredSurface(RotatedImage *image)
 	{
+		if (compositeOnly)
+		{
+			// Sharp UI draws must not repopulate a second retained team-color cache.
+			float baseHue, hue, sat, lum;
+			Color(51,255,153).getHSV(&baseHue, &sat, &lum);
+			actColor.getHSV(&hue, &sat, &lum);
+			transientColor.reset(image->orig->clone());
+			transientColor->shiftHSV(hue-baseHue, 0, 0);
+			return transientColor.get();
+		}
 		RotatedImage::RotationMap::const_iterator it = image->rotationMap.find(actColor);
 		DrawableSurface *ds;
 		if (it == image->rotationMap.end())
@@ -290,6 +301,10 @@ namespace GAGCore
 
 	void Sprite::reloadHighResolution()
 	{
+		// Entries are unbounded while assets are unchanged; a pack reload invalidates them.
+		compositeCache.clear();
+		transientColor.reset();
+		compositeBytes = compositeHits = compositeMisses = 0;
 		highResolutionAtlas.reset();
 		for (auto p : experimentImages) delete p;
 		for (auto p : experimentRotated) delete p;
@@ -430,6 +445,139 @@ namespace GAGCore
 		return surface;
 	}
 	
+	DrawableSurface *Sprite::getCachedComposite(const std::vector<std::pair<int, int>> &frames)
+	{
+		assert(!frames.empty());
+		// Switch this sprite to final-image caching without keeping source recolors.
+		if (!compositeOnly)
+		{
+			for (const auto *layers : {&rotated, &experimentRotated})
+			for (auto layer : *layers)
+			{
+				if (!layer)
+					continue;
+				for (auto &cached : layer->rotationMap)
+					delete cached.second;
+				layer->rotationMap.clear();
+			}
+			compositeOnly = true;
+		}
+		CompositeKey key{actColor, frames};
+		auto found = compositeCache.find(key);
+		if (found != compositeCache.end())
+		{
+			++compositeHits;
+			return found->second.get();
+		}
+		++compositeMisses;
+		// A shutter uses one resolution throughout, including partial-pack fallback.
+		bool highResolution = true;
+		for (const auto &frame : frames)
+		{
+			assert(checkBound(frame.first));
+			const auto index = frame.first;
+			highResolution = highResolution
+				&& (!images[index] || experimentImages[index])
+				&& (!rotated[index] || experimentRotated[index]);
+		}
+		const int scale = highResolution ? 4 : 1;
+		const int width = getW(frames.front().first) * scale;
+		const int height = getH(frames.front().first) * scale;
+		// Accumulate premultiplied RGBA so the result can be drawn over any background.
+		std::vector<double> pixels(width * height * 4, 0);
+		float baseHue, hue, sat, lum;
+		Color(51, 255, 153).getHSV(&baseHue, &sat, &lum);
+		actColor.getHSV(&hue, &sat, &lum);
+		for (auto frame : frames)
+		{
+			assert(checkBound(frame.first));
+			assert(getW(frame.first) * scale == width && getH(frame.first) * scale == height);
+			assert(frame.second >= 0 && frame.second <= 255);
+			for (int layer = 0; layer < 2; ++layer)
+			{
+				DrawableSurface *source = highResolution ? experimentImages[frame.first] : images[frame.first];
+				if (layer == 1)
+				{
+					if (!rotated[frame.first])
+						continue;
+					source = highResolution ? experimentRotated[frame.first]->orig : rotated[frame.first]->orig;
+				}
+				if (!source)
+					continue;
+				auto raw = source->getSDLSurface();
+				assert(raw->format->BytesPerPixel == 4);
+				SDL_LockSurface(raw);
+				for (int y = 0; y < height; ++y)
+					for (int x = 0; x < width; ++x)
+					{
+						Uint8 r, g, b, a;
+						SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(raw->pixels) +
+						                                       y * raw->pitch)[x],
+						            raw->format, &r, &g, &b, &a);
+						if (layer == 1)
+						{
+							Color color(r, g, b, a);
+							float h, s, v;
+							color.getHSV(&h, &s, &v);
+							h += hue - baseHue;
+							if (h >= 360)
+								h -= 360;
+							if (h < 0)
+								h += 360;
+							color.setHSV(h, s, v);
+							r = color.r;
+							g = color.g;
+							b = color.b;
+						}
+						double alpha = double(a) * frame.second / (255.0 * 255.0);
+						auto dest = &pixels[(y * width + x) * 4];
+						dest[0] = r * alpha + dest[0] * (1 - alpha);
+						dest[1] = g * alpha + dest[1] * (1 - alpha);
+						dest[2] = b * alpha + dest[2] * (1 - alpha);
+						dest[3] = alpha + dest[3] * (1 - alpha);
+					}
+				SDL_UnlockSurface(raw);
+			}
+		}
+		std::unique_ptr<DrawableSurface> result(new DrawableSurface(width, height));
+		auto raw = result->getSDLSurface();
+		SDL_LockSurface(raw);
+		for (int y = 0; y < height; ++y)
+			for (int x = 0; x < width; ++x)
+			{
+				auto pixel = &pixels[(y * width + x) * 4];
+				auto byte = [](double v)
+				{ return static_cast<Uint8>(std::min(255.0, std::max(0.0, std::round(v)))); };
+				double a = pixel[3];
+				reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(raw->pixels) + y * raw->pitch)[x] =
+				    SDL_MapRGBA(raw->format, a ? byte(pixel[0] / a) : 0, a ? byte(pixel[1] / a) : 0,
+					            a ? byte(pixel[2] / a) : 0, byte(a * 255));
+			}
+		SDL_UnlockSurface(raw);
+		result->dirty = true;
+		result->highResolutionSampling = highResolution;
+		// Include CPU pixels and GPU allocation (rectangle or padded power-of-two).
+		int texW = 1, texH = 1;
+		while (texW < width)
+			texW *= 2;
+		while (texH < height)
+			texH *= 2;
+		size_t bytes = raw->pitch * height;
+		if (Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU)
+			{
+			bytes += (result->texMultX == 1.0f ? width * height : texW * texH) * 4;
+			if (highResolution && result->texMultX != 1.0f)
+				while (texW > 1 || texH > 1)
+				{
+					texW = std::max(1, texW / 2); texH = std::max(1, texH / 2);
+					bytes += texW * texH * 4;
+				}
+		}
+		compositeBytes += bytes;
+		auto inserted = compositeCache.emplace(std::move(key), std::move(result));
+		return inserted.first->second.get();
+	}
+
 	Sprite::~Sprite()
 	{
         loadedSprites.erase(this);
