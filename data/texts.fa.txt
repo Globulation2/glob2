@@ -193,7 +193,7 @@ caps lock
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-برای پاکسازی منابع طبیعی
+برای پاکسازی منابع
 [clearingflag]
 پرچم پاکسازی
 [closed]
@@ -207,7 +207,7 @@ caps lock
 [Computing Fertility]
 درحال بررسی محلهای حاصلخیز...
 [concrete islands terrain]
-جزیره‌های نزدیک بهم
+جزیره‌های جدا
 [connect]
 وصل‌شدن
 [connecting to game]
@@ -223,7 +223,7 @@ control-%0
 [Corn]
 گندم
 [crater density]
-تعداد دریاچه‌ها
+تعداد دهانه‌ها
 [crater lakes terrain]
 دریاچه
 [create game]
@@ -243,15 +243,15 @@ Ctrl - خط
 [damage]
 خسارت
 [Damaged Map]
-نقشه‌ی خسارتها
+نقشهٔ زخمی‌ها
 [decrease units working]
 کاهش تعداد افراد درحال کار
 [Defeat Your Oppenents]
 حریفت را شکست بده
 [defencetower explanation 2]
-ساختمانهای دشمن در نزدیکی محل
+ساختمان‌های نزدیک دشمن
 [defencetower explanation]
-برای حمله به افراد یا
+برای حمله به افراد و
 [defencetower]
 برج مراقبت
 [Defense Map]
@@ -289,7 +289,7 @@ Ctrl - خط
 [editing map]
 درحال ویرایش نقشه
 [editor shortcuts]
-دکمه‌ها در ویرایشگر
+ویرایشگر
 [editor]
 ویرایشگر
 [end]
@@ -303,7 +303,7 @@ enter
 [equals]
 equals
 [ERROR_CANT_LOAD_MAP]
-نقشه بارگذاری نشد، زیرا فایل آسیب دیده یا نسخه‌ی آن ناسازگار است.
+بارگذاری نقشه ممکن نشد: پرونده خراب است یا نسخهٔ آن سازگار نیست.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ f9
 [forbidden area]
 منطقه‌ی ممنوعه
 [Free]
-آزاد
+سالم
 [free]
 آزاد
 [from:]
@@ -375,7 +375,7 @@ f9
 [game full]
 بازی پر است!
 [game shortcuts]
-دکمه‌ها در بازی
+بازی
 [Game]
 بازی
 [general settings]
@@ -559,7 +559,7 @@ meta-%0
 [Min required level:]
 حداقل رتبه‌ی لازم:
 [Minimum Level To Flag]
-حداقل رتبه‌ی پرچم
+حداقل رتبهٔ واحدها
 [Music volume]
 بلندی صدای موسیقی
 [Mute]
@@ -627,7 +627,7 @@ numlock
 [open teams editor]
 ویرایش تیمها
 [open]
-بازکردن
+باز
 [OpenGL]
 اسفاده از OpenGL
 [Options]
@@ -703,7 +703,7 @@ print screen
 [Register]
 ثبت‌نام در ایساگون
 [remember unit]
-بخاطر‌سپردن افراد
+حفظ تعداد واحدها
 [Remember YOG password localy]
 بخاطر‌سپردن رمز در کامپیوتر
 [remove map]
@@ -717,7 +717,7 @@ print screen
 [repair]
 تعمیر
 [repeat area]
-اندازه‌ی چند برابر؟
+بار تکرار همان چشم‌انداز
 [Repeat your password :]
 رمزت را دوباره بنویس:
 [replay ended]
@@ -809,15 +809,15 @@ scroll lock
 [select market building]
 انتخاب بازار
 [select place clearing area]
-انتخاب ابزار تعیین منطقه‌ی پاکسازی
+تعیین منطقهٔ پاکسازی
 [select place clearingflag]
 انتخاب ابزار پرچم پاکسازی
 [select place explorationflag]
 انتخاب ابزار پرچم جستجو
 [select place forbidden area]
-انتخاب ابزار تعیین منطقه‌ی ممنوعه
+تعیین منطقهٔ ممنوعه
 [select place guard area]
-انتخاب ابزار تعیین منطقه‌ی دفاعی
+تعیین منطقهٔ دفاعی
 [select place warflag]
 انتخاب ابزار پرچم جنگ
 [select racetrack building]
@@ -849,7 +849,7 @@ shift-%0
 [show main menu]
 نشان‌دادن منوی اصلی
 [skin]
-Display
+نمایش
 [smoothing]
 یکنواختی زمین
 [sort by name]
@@ -915,9 +915,9 @@ space
 [switch to adding areas]
 گذاشتن منطقه بندی
 [switch to area brush 1]
-انتخاب ابزار منطقه بندی نقطه‌ای شکل
+قلم ناحیه: نقطه
 [switch to area brush 2]
-انتخاب ابزار منطقه بندی بعلاوه‌ای شکل
+قلم ناحیه: به‌علاوه
 [switch to area brush 3]
 انتخاب ابزار منطقه بندی خطی ۱
 [switch to area brush 4]
@@ -925,11 +925,11 @@ space
 [switch to area brush 5]
 انتخاب ابزار منطقه شطرنجی شکل
 [switch to area brush 6]
-انتخاب ابزار منطقه بندی چهارنقطه‌ای شکل
+قلم ناحیه: چهار نقطه
 [switch to area brush 7]
-انتخاب ابزار منطقه بندی مربعی شکل کوچک
+قلم ناحیه: مربع کوچک
 [switch to area brush 8]
-انتخاب ابزار منطقه بندی مربعی شکل بزرگ
+قلم ناحیه: مربع بزرگ
 [switch to building view]
 رفتن به بخش ساختمانها
 [switch to flag view]
@@ -959,17 +959,17 @@ tab
 [the building is under attack]
 به ساختمان حمله شده!
 [the clearingflag is finished]
-?? پرچم پاکسازی گذاشته شد ??
+پرچم پاکسازی گذاشته شد
 [the clearingflag is under attack]
-?? به پرچم پاکسازی حمله شده! ??
+به پرچم پاکسازی حمله شده!
 [the defencetower is finished]
 ساخت برج مراقبت تمام شد.
 [the defencetower is under attack]
 به برج مراقبت حمله شده!
 [the explorationflag is finished]
-?? پرچم جستجو گذاشته شد. ??
+پرچم جستجو گذاشته شد.
 [the explorationflag is under attack]
-?? به پرچم جستجو حمله شده! ??
+به پرچم جستجو حمله شده!
 [The game has not been finished]
 بازی نیمه‌کاره ماند
 [the games]
@@ -1017,15 +1017,15 @@ tab
 [the swimmingpool is under attack]
 به استخر حمله شده!
 [the warflag is finished]
-?? پرچم جنگ گذاشته شد ??
+پرچم جنگ گذاشته شد
 [the warflag is under attack]
-?? به پرچم جنگ حمله شده! ??
+به پرچم جنگ حمله شده!
 [time]
 زمان
 [to:]
 به:
 [toggle draw accessibility aids]
-نشان‌دادن/مخفی‌کردن کمکهای دسترسی
+نمایش/پنهان‌سازی شمارهٔ تیم‌ها
 [toggle draw information]
 نشان‌دادن/مخفی‌کردن اطلاعات
 [toggle draw unit paths]
@@ -1123,7 +1123,7 @@ tab
 [water]
 مقدار آب
 [Wheat]
-مقدار گندم
+گندم
 [Won : you defeated your opponents]
 بردی: تو حریفهایت را شکست دادی.
 [Won : you have the most prestige]
@@ -1197,10 +1197,32 @@ tab
 [You where kicked from the game]
 تو از بازی بیرون شدی!
 [Your %0 are under attack]
-به %0های تو حمله شده!
+به %0 تو حمله شده!
 [Your IP address was temporarily banned]
 آدرس اینترنتی (IP) این کامپیوتر موقتا تحریم شده! میتوانی منتظر بمانی تا از تحریم دربیاید یا اینکه با مدیران ایساگون تماس بگیری.
 [Your unit got converted to %0's team]
 یکی از افراد تو جزو تیم %0 شد.
 [Your username was banned]
 این نام‌کاربری تحریم شده! میتوانی با مدیران ایساگون تماس بگیری.
+[game speed]
+سرعت بازی
+[decrease game speed]
+کاهش سرعت بازی
+[increase game speed]
+افزایش سرعت بازی
+[maximum game speed]
+بیشینه
+[multiplayer game speed]
+سرعت: 1x (چندنفره)
+[game speed help]
+فقط برای بازی تک‌نفره و بازپخش‌ها. بازی چندنفره با سرعت 1x اجرا می‌شود.
+[AICortex-Description]
+Cortex - هوش مصنوعی آزمایشی سه‌لایه. در حال توسعه.
+[ERROR_CANT_SAVE_CAMPAIGN]
+ذخیرهٔ کارزار ممکن نشد. بررسی کنید که پوشهٔ مقصد وجود داشته باشد، قابل نوشتن باشد و فضای خالی داشته باشید.
+[AICortex]
+Cortex
+[Units still inside: %0]
+درون: %0
+[Units still working: %0]
+هنوز مشغول: %0

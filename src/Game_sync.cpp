@@ -109,6 +109,9 @@ void Game::wonSyncStep(void)
 
 void Game::scriptSyncStep()
 {
+	// Decorative games have no GUI or mission script context. Normal and
+	// headless Engine sessions both supply a GameGUI, as before.
+	if (!gui) return;
 	// do a script step
 	sgslScript.syncStep(gui);
 	mapscript.syncStep(gui);
