@@ -76,14 +76,11 @@ void SettingsScreen::buildDisplayWidgets()
 		ost << standardResolutions[i][0] << "x" << standardResolutions[i][1];
 		if (!modeList->isText(ost.str().c_str()))
 		{
-			ost << " *";
 			modeList->addText(ost.str().c_str());
 		}
 	}
 	addWidgetToGroup(modeList, generalGroup);
-	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"), 180, 30);
-	modeListNote->setWordWrap(true);
-	addWidgetToGroup(modeListNote, generalGroup);
+
 }
 
 

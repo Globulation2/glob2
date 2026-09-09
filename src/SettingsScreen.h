@@ -66,7 +66,6 @@ private:
 	Settings old_settings;
 	List *languageList;
 	List *modeList;
-	Text *modeListNote;
 	TextInput *userName;
 	
 	TextButton *ok, *cancel;
@@ -192,5 +191,6 @@ public:
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
+	void onSDLEvent(SDL_Event *event) override;
 };
 

@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
+#include "render/MapCopies.h"
+#include "gui/GameGUIViewport.h"
 #include "MarkManager.h"
+#include <MapCamera.h>
 #include "Utilities.h"
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
@@ -67,12 +70,27 @@ void Mark::drawInMinimap(int s, int local, int x, int y, Game& game) const
 
 
 
-void Mark::drawInMainView(int viewportX, int viewportY, Game& game) const
+void Mark::drawInMainView(int viewportX, int viewportY, Game& game, const MapCamera *camera) const
 {
 	int nx, ny;
 	game.map.mapCaseToDisplayable(px, py, &nx, &ny, viewportX, viewportY);
 	
-	draw(nx, ny, 2.0);
+	auto *gfx = globalContainer->gfx;
+	int clipX, clipY, clipW, clipH;
+	gfx->getClipRect(&clipX, &clipY, &clipW, &clipH);
+	const int width = camera ? int(std::ceil(camera->visibleW()+camera->fractionX())) : gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH;
+	const int height = camera ? int(std::ceil(camera->visibleH()+camera->fractionY())) : gfx->getH();
+	if (camera)
+		gfx->beginMapTransform(camera->zoom, camera->offsetX-camera->fractionX()*camera->zoom,
+			camera->offsetY-camera->fractionY()*camera->zoom,0,16,camera->width,camera->height-16);
+	gfx->setClipRect(0, 0, width, gfx->getH());
+	const int radius = totalTime + 2*MARK_LINE_LENGTH_PX;
+	forEachMapCopy(nx-radius, ny-radius, nx+radius, ny+radius,
+		game.map.getW()*32, game.map.getH()*32, width, height, [&](int dx, int dy) {
+			draw(nx+dx, ny+dy, 2.0);
+		});
+	if (camera) gfx->endMapTransform();
+	gfx->setClipRect(clipX, clipY, clipW, clipH);
 }
 
 
@@ -84,7 +102,7 @@ MarkManager::MarkManager()
 
 
 
-void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, Game& game)
+void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, Game& game, const MapCamera *camera)
 {
 	for(std::vector<Mark>::iterator i=marks.begin(); i!=marks.end();)
 	{
@@ -95,7 +113,7 @@ void MarkManager::drawAll(int localTeam, int minimapX, int minimapY, int minimap
 			continue;
 		}
 		i->drawInMinimap(minimapSize, localTeam, minimapX, minimapY, game);
-		i->drawInMainView(viewportX, viewportY, game);
+		i->drawInMainView(viewportX, viewportY, game, camera);
 		++i;
 	}
 }
