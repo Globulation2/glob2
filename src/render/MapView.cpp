@@ -11,9 +11,9 @@ void Map::mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, 
 {
 	int x = (mx - viewportX + w) & wMask;
 	int y = (my - viewportY + h) & hMask;
-	if (x > (w - HALF_TILE_PX))
+	if (x > (w - HALF_TILE_PX) && x*32 >= displayViewportW)
 		x-=w;
-	if (y > (h - HALF_TILE_PX))
+	if (y > (h - HALF_TILE_PX) && y*32 >= displayViewportH)
 		y-=h;
 	*px=x<<TILE_PIXEL_SHIFT;
 	*py=y<<TILE_PIXEL_SHIFT;

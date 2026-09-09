@@ -574,3 +574,8 @@ if not env['server']:
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
+if not env['server']:
+    highres_sources = [source for source in source_files if source != 'Glob2.cpp']
+    highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
+    highres_test = local.Program('HighResolutionIntegrationHarness', highres_sources)
+    local.Alias('highres-integration-test', highres_test)
