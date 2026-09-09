@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 91
+#define VERSION_MINOR 92
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -95,6 +95,8 @@
 //            the simulation changed, so replays recorded before it diverge and are refused
 // version 91 apportions fetch jobs across the resources a building wants instead of
 //            letting the nearest one take every slot: the simulation changed again
+// version 92 prices a loaded fetch candidate instead of refusing it, so hiring order
+//            changed again
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
