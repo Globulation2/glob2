@@ -93,6 +93,11 @@ public:
     bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
+    struct PendingLoad { std::string filename; bool replay; };
+    // Finalize without loading another game or entering a UI loop. The host
+    // schedules a returned request, or presents the end screen when absent.
+    std::optional<PendingLoad> finishSessionForHost();
+    // Synchronous adapter for native command-line/headless hosts.
     bool finishSession();
 
 
@@ -213,13 +218,8 @@ private:
 
 	/// Close cross-replay sinks (sidecar, dataset) and tear down the network
 	/// + multiplayer state. The Engine itself stays alive for a possible
-	/// reload (see prepareNextGameSession).
+	/// reload (see finishSessionForHost).
 	void teardownSession();
-
-	/// Decide whether run() should loop back into runOneGameSession (a
-	/// load-game request was armed in the GUI) or return to the menu. Always
-	/// clears toLoadGameFileName so a follow-up pass doesn't re-trigger it.
-	void prepareNextGameSession(bool& doRunOnceAgain);
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;

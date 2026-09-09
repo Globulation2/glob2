@@ -34,6 +34,9 @@
 #include "Utilities.h"
 #include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
+#include "ReplayWriter.h"
+#include "native.h"
+#include "code.h"
 #include <SDL_net.h>
 #include <iostream>
 #include <filesystem>
@@ -49,6 +52,46 @@ GAGCore::CooperativeSlice fixedSlice()
 int main(int argc, char** argv)
 {
     require(argc == 2, "A disposable profile is required");
+    {
+        struct TrackedValue : Value {
+            bool& destroyed;
+            TrackedValue(Heap* heap, bool& destroyed) : Value(heap, nullptr), destroyed(destroyed) {}
+            ~TrackedValue() override { destroyed = true; }
+        };
+        bool rootDestroyed = false, instructionDestroyed = false, garbageDestroyed = false;
+        {
+            Usl interpreter;
+            interpreter.setConstant("tracked", new TrackedValue(&interpreter.heap, rootDestroyed));
+            auto* number = new NativeValue<int>(&interpreter.heap, 42);
+            interpreter.setConstant("number", number);
+            new TrackedValue(&interpreter.heap, garbageDestroyed);
+            for (int round = 0; round < 5; ++round) {
+                interpreter.run(0);
+                require(!rootDestroyed && garbageDestroyed, "Script GC must retain roots and collect unreachable values on every pass");
+                require(dynamic_cast<NativeValue<int>*>(interpreter.getConstant("number"))->value == 42,
+                    "Repeated script GC lost a native constant");
+                Usl other;
+                auto* otherNumber = new NativeValue<int>(&other.heap, round);
+                other.setConstant("number", otherNumber);
+                other.collectGarbage();
+                require(number->prototype != otherNumber->prototype, "Native method tables must belong to their interpreter");
+            }
+            auto* prototype = new ScopePrototype(&interpreter.heap, interpreter.root->prototype);
+            auto* literal = new TrackedValue(&interpreter.heap, instructionDestroyed);
+            prototype->body.push_back(new ConstCode(literal));
+            prototype->body.push_back(new PopCode());
+            prototype->body.push_back(new ConstCode(literal));
+            interpreter.threads.emplace_back(&interpreter, new Scope(&interpreter.heap, prototype, interpreter.root.get()));
+            interpreter.run(1);
+            require(!instructionDestroyed, "Live thread stack was collected");
+            interpreter.run(1);
+            require(!instructionDestroyed, "Pending bytecode constant was collected after leaving the stack");
+            interpreter.run(1);
+            require(instructionDestroyed && !rootDestroyed, "Completed thread retained dead state or lost the root");
+        }
+        require(rootDestroyed, "Destroying an interpreter must release its retained heap");
+        std::cout << "PASS script GC roots, live frames, bytecode constants and interpreter isolation" << std::endl;
+    }
     {
         std::srand(17); const int expected = std::rand(); std::srand(17);
         PerlinNoise first(123), second(987);
@@ -411,6 +454,39 @@ int main(int argc, char** argv)
         }
         require(failed.result() == 2 && getSyncRandState() == rng, "Invalid generation must fail without changing RNG");
     }
+    for (int outcome : {0, 1, 2}) {
+        auto previous = std::make_unique<Engine>();
+        require(previous->initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR, "Reload ownership fixture initialization failed");
+        Engine* identity = previous.get();
+        // Mirror session finalization before reusing the initialized game.
+        globalContainer->replayWriter.reset();
+        const auto rng = getSyncRandState();
+        std::unique_ptr<Engine> accepted;
+        GAGGUI::ScreenStack reload(*globalContainer->gfx);
+        reload.push(std::make_unique<GameLoadScreen>(std::move(previous), [outcome](Engine& engine) {
+            return engine.initCampaignTask(outcome == 2 ? "maps/missing-reload-fixture.map" : "maps/balanced.map");
+        }, fixedSlice()), [&](GAGGUI::Screen& loading, int result) {
+            require(result == outcome, "Reload returned the wrong completion state");
+            if (result == 1) accepted = static_cast<GameLoadScreen&>(loading).takeEngine();
+        });
+        unsigned frames = 0;
+        while (reload.running()) {
+            std::vector<SDL_Event> events;
+            if (outcome == 0 && frames == 10) {
+                reload.suspendExecution();
+                reload.viewportResized(800,600,800,600);
+                SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+                events.push_back(escape);
+            }
+            reload.frame(frames, events);
+            require(++frames < 2000, "Reused engine load did not complete");
+        }
+        if (outcome == 1) require(accepted.get() == identity && globalContainer->replayWriter && frames > 20,
+            "Successful reload must return the same engine and retain its new replay writer");
+        else require(!accepted && !globalContainer->replayWriter && !globalContainer->replayReader && getSyncRandState() == rng,
+            "Cancelled/failed reused-engine loading leaked replay state or changed RNG");
+    }
+    std::cout << "PASS reused-engine cooperative loading, cancellation and failure ownership" << std::endl;
     globalContainer->automaticEndingGame = true;
     globalContainer->automaticEndingSteps = 50;
     globalContainer->automaticGameGlobalEndConditions = true;

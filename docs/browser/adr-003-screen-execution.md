@@ -259,3 +259,18 @@ The unused `FertilityCalculatorDialog` and its stale includes have been removed.
 Active fertility work already uses the cancellable cooperative `FertilityScreen`.
 This does not yet remove Asyncify: in-game load/replay continuation still reaches
 the synchronous Engine initialization wrappers and their legacy error notice.
+
+### In-game load and replay continuation
+
+The next migration separates session finalization from loading. The shared
+`finishSessionForHost()` returns an optional filename/replay request after ending
+the old session and finalizing its replay writer. `GameSessionScreen` transfers
+its engine to a `GameLoadScreen` child, then resumes with that same engine after
+success. The parent has no engine while loading, so resize/focus propagation must
+not dereference it. Failure presents a scheduled notice; failure/cancellation
+leave the ended game and return to its retained parent screen. Partial state is
+released and RNG restored by the loader. Native synchronous hosts use the
+`finishSession()` adapter; browser screen callbacks do not.
+
+Repeated loading after actual gameplay exposed interpreter GC bugs that initial
+loading did not cover; [ADR 007](adr-007-script-lifetimes.md) records their fix.

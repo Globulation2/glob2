@@ -283,7 +283,7 @@ jobs:
           sudo apt-get install -y pulseaudio
           pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
           xvfb-run -a npm test
-          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test single-player.spec.js viewport.spec.js rendering.spec.js input.spec.js chooser-errors.spec.js settings-storage.spec.js shutdown-storage.spec.js campaign-editor-storage.spec.js
+          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test single-player.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js chooser-errors.spec.js settings-storage.spec.js shutdown-storage.spec.js campaign-editor-storage.spec.js
           xvfb-run -a npx playwright test --config visibility.config.js
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
       - name: Test self-hosting with real TLS and persistent volumes

@@ -11,6 +11,40 @@ complete-match tests and gateway setup documentation remain required. See
 [current delivery scope](implementation.md); older references to the full
 original plan below describe the former scope, not release blockers to reopen.
 
+## Cooperative in-game reloads and script lifetimes — 2026-09-08
+
+In-game save/replay requests now finalize the outgoing session without loading
+inside its callback. A loader child owns the existing engine during cooperative
+initialization and hands it back on success. Failure/cancellation releases partial
+state and returns to the retained parent setup screen; failure uses a scheduled
+notice. Parent resize/focus handling tolerates the temporary absence of an engine.
+Native synchronous hosts retain their explicit adapter.
+
+Actual browser reloads exposed a script-interpreter use-after-free: repeated GC
+skipped externally owned roots, did not trace live thread/code references, and
+native method tables were shared across independent heaps. The collector now
+traces those references, resets external marks and owns method tables per heap.
+Interpreter destruction releases its remaining heap. See
+[script lifetime decision](adr-007-script-lifetimes.md).
+
+Validation: desktop client, Wasm release and native multiplayer peer builds pass.
+The native session harness passes GC reachability/isolation/reclamation and
+reused-engine success/cancellation/failure checks alongside existing simulation,
+editor and fertility regressions. The focused maintained GC test block also passes
+AddressSanitizer and UndefinedBehaviorSanitizer in an isolated native executable.
+Nine WebGL2 cases pass across Chromium/Firefox/WebKit for repeated in-game save
+loading, damaged-load recovery and replay reload. Five Chromium software cases
+pass for those three flows plus TCP and verified WSS native cross-play with
+matching checksums. Logs: `/tmp/glob2-reload-native-build.log`,
+`/tmp/glob2-reload-web-build.log`, `/tmp/glob2-reload-native-test.log`,
+`/tmp/glob2-usl-gc-sanitizer-test.log`, `/tmp/glob2-session-reload-final.log`,
+`/tmp/glob2-reload-crossplay.log`. The final source changes after these builds
+only adjust comments/documentation and the CI test list.
+
+Asyncify is still enabled. Audit browser reachability of the remaining native
+compatibility hosts and remove it with the full runtime regression matrix;
+this milestone does not declare that gate complete.
+
 ## Map chooser and legacy dialog cleanup — 2026-09-08
 
 Map preview/header failures no longer enter a blocking message box. Selection,

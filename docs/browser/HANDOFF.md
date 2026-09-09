@@ -18,11 +18,16 @@ can enable sound through the existing Settings checkbox.
 Map chooser failures now remain within the chooser instead of entering a blocking
 message box. Missing/corrupt files clear the previous selection and preview, and
 thumbnail allocations are released on exceptions. The unused legacy fertility
-dialog has been removed. Next runtime work: `Engine::finishSession()` calls
-`prepareNextGameSession()` for an in-game load/replay request, which still uses
-synchronous initialization and can reach `showMapLoadError()`. Migrate that
-continuation before removing Asyncify; do not mistake the already-cooperative
-initial launch paths for the remaining in-game reload path.
+dialog has been removed. In-game load/replay continuation now finalizes through
+`Engine::finishSessionForHost()` and transfers the existing engine to a cooperative
+`GameLoadScreen` child. Successful loading returns it to `GameSessionScreen`;
+failure uses a scheduled notice, and cancellation/failure return to the retained
+parent setup screen. Native synchronous hosts retain an explicit adapter.
+The browser reload regression also exposed script-GC lifetime bugs, now fixed
+with per-interpreter method tables and complete live-reference marking; see
+[script lifetimes](adr-007-script-lifetimes.md). Next: audit remaining browser
+reachability of native compatibility loops and remove Asyncify with the full
+runtime regression suite. Do not claim Asyncify has already been removed.
 
 The latest runtime change moves YOG login/registration, lobby tab ownership,
 map selection, join progress, map transfer navigation and error notices onto
