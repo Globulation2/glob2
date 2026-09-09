@@ -47,9 +47,9 @@ V: 分享所有建築物的視野
 [AI Descriptions]
 AI 說明
 [AI]
-AI
+人工智慧
 [ai]
-AI
+人工智慧
 [AICastor-Description]
 Castor 採取保守策略，在資源稀少的地圖上表現出色。中等難度。
 [AICastor]
@@ -1289,7 +1289,7 @@ Ysagoon 線上遊戲
 [game speed help]
 僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
 [AICortex-Description]
-Cortex - 實驗性的三層人工智慧，開發中。
+Cortex向新的麥田擴張，利用前線客棧和醫院支援一波又一波的戰士進攻。難度中等，仍處於實驗階段。
 [ERROR_CANT_LOAD_MAP]
 無法載入地圖：檔案已損毀或版本不相容。
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1301,332 +1301,332 @@ Cortex
 [Units still working: %0]
 仍在工作：%0
 [2 vs 2]
-2 vs 2
+2對2
 [AI strategy & counterplay]
-AI strategy & counterplay
+AI策略與對抗
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+核心策略:穩健發展，擅長應對資源稀少的地圖。\n\n優勢:克制的擴張方式適合資源匱乏的對局。\n\n可嘗試的對策:儘早佔領空間，不要以為資源匱乏就能削弱它。
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+謹慎擴張；在稀缺資源下表現良好。
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+核心策略:管理糧食供應，向新的麥田擴張，集結一波又一波的戰士。前線客棧和醫院為遠距離進攻提供支援。\n\n優勢:集中增援、持續施壓，並能應對糧食短缺。\n\n可嘗試的對策:爭奪新的麥田，打擊前線支援設施，在其部隊集結前施加壓力。\n\n實驗階段的人工智慧，難度中等。這些對策建議並非基準測試的評定結果。
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+保障糧食供應，並以支援設施維持多波進攻。
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+策略:迅速擴張，以龐大的軍隊攻擊對手。\n\n優勢:快速擴張支持侵略性的軍事攻擊。\n\n建議對策:防止其擴張。利用地形來減少可以同時作戰的敵軍數量。
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+迅速擴張並建立龐大的軍隊進行侵略性攻擊。
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+核心策略:不發出任何人工智慧命令。\n\n優勢:行為可預測、保持不動的實驗對手。\n\n弱點:不會擴張或適應局勢。
 [AINone-Summary]
-An idle colony for experiments.
+用於實驗的閒置殖民地。
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+核心策略:小規模快速擴張，適合練習殖民地管理。\n\n優勢:讓你有餘地同時學習經濟管理和戰鬥。\n\n可嘗試的對策:先壯大經濟、訓練軍隊，再發動進攻。
 [AINumbi-Summary]
-Light, swift expansion.
+小規模快速擴張。
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+策略:不攻擊，但建立巨大的基地並積極地將敵方部隊轉變為己方。\n\n優點:擴張和單位轉換無需直接攻擊即可威脅對手。\n\n建議的對策:儘早發展你的殖民地，避免將部隊派遣到敵人可以轉換的地方。
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+不主動進攻，以巨大基地和招降敵軍施壓。
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+核心策略:在對手完成建設前，發動迅速而猛烈的進攻。\n\n優勢:善於打擊無防備的擴張和緩慢的備戰。\n\n可嘗試的對策:維持經濟，撐過首輪進攻後再反擊。
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+快速攻擊考驗你的早期防禦能力。
 [Algae]
-Algae
+海藻
 [Alliances]
-Alliances
+聯盟
 [Beach size]
-Beach size
+海灘尺寸
 [Blue]
-Blue
+藍色
 [Brown]
-Brown
+棕色
 [Built-in maps]
-Built-in maps
+內建地圖
 [Can change in game]
-Can change in game
+遊戲中可以改變
 [Closed]
-Closed
+關閉
 [Colonies]
-Colonies
+殖民地
 [Colony]
-Colony
+殖民地
 [Concrete islands]
-Concrete islands
+獨立島嶼
 [Conquest only]
-Conquest only
+只限征服
 [Conquest or prestige]
-Conquest or prestige
+征服或聲望
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+無法啟動此地圖。您的設定將被保留；再試一次。
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+無法載入此地圖。選擇另一張地圖或重試。
 [Crater lakes]
-Crater lakes
+火山口湖
 [Custom]
-Custom
+自訂
 [Custom teams]
-Custom teams
+自訂隊伍
 [Cyan]
-Cyan
+青色
 [Desert weight]
-Desert weight
+沙漠權重
 [Easy]
-Easy
+簡單
 [Explore as you play]
-Explore as you play
+邊玩邊探索
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+多餘的殖民地設定會保留，以便切回更大的地圖時恢復。
 [Extra islands]
-Extra islands
+額外的島嶼
 [FFA]
-FFA
+各自為戰
 [Fruit]
-Fruit
+水果
 [Game Rules]
-Game Rules
+遊戲規則
 [Game speed]
-Game speed
+遊戲速度
 [Generate & play]
-Generate & play
+產生並開始遊戲
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+為至少一種地形類型賦予非零權重。
 [Grass weight]
-Grass weight
+草地權重
 [Gray]
-Gray
+灰色
 [Green]
-Green
+綠色
 [Hard]
-Hard
+困難
 [Height]
-Height
+高度
 [Invalid colony count.]
-Invalid colony count.
+殖民地數量無效。
 [Island size]
-Island size
+島嶼大小
 [Islands]
-Islands
+島嶼
 [Isles]
-Isles
+小島
 [Lake density]
-Lake density
+湖泊密度
 [Landscape]
-Landscape
+地形類型
 [Last colony standing]
-Last colony standing
+最後的殖民地
 [Layout]
-Layout
+佈局
 [Locked teams]
-Locked teams
+鎖定隊伍
 [Magenta]
-Magenta
+洋紅色
 [Map]
-Map
+地圖
 [Map knowledge]
-Map knowledge
+地形可見性
 [Match finished]
-Match finished
+比賽結束
 [Medium]
-Medium
+中等
 [Medium - Experimental]
-Medium - Experimental
+中等 - 實驗性
 [No AI orders]
-No AI orders
+沒有AI命令
 [Old islands]
-Old islands
+舊版島嶼產生器
 [Old random]
-Old random
+舊版隨機產生器
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+至少啟用一個殖民地才能開始對局。
 [Open book]
-Open book
+揭示的世界
 [Pink]
-Pink
+粉紅色
 [Play this map]
-Play this map
+遊玩此地圖
 [Players & Teams]
-Players & Teams
+玩家與隊伍
 [Premade maps]
-Premade maps
+預製地圖
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+預覽準備就緒。開始遊戲時使用這張精確的地圖。
 [Purple]
-Purple
+紫色
 [Quick clash]
-Quick clash
+快速戰鬥
 [Random map]
-Random map
+隨機地圖
 [Red]
-Red
+紅色
 [Repeat landscape]
-Repeat landscape
+重複地形
 [Resources]
-Resources
+資源
 [Restore standard rules]
-Restore standard rules
+恢復標準規則
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+揭示的地形並不能揭示所有敵人的活動。
 [River]
-River
+河流
 [River width]
-River width
+河寬
 [Sand weight]
-Sand weight
+沙地權重
 [Select a valid map.]
-Select a valid map.
+選擇有效的地圖。
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+共同操控需要一個空餘的操控者名額（最多12個）。
 [Smoothing]
-Smoothing
+平滑
 [Standard]
-Standard
+標準
 [Start game]
-Start game
+開始遊戲
 [Starting workers]
-Starting workers
+初始工人
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+初始工人數量：請在遊戲規則頁設定。
 [Swamp]
-Swamp
+沼澤
 [Team]
-Team
+隊伍
 [Terrain]
-Terrain
+地形
 [Terrain revealed]
-Terrain revealed
+地形顯露
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+嘗試一個規則集，然後將其變成你自己的。
 [Victory]
-Victory
+勝利
 [Watch game]
-Watch game
+觀戰
 [Water weight]
-Water weight
+水域權重
 [White]
-White
+白色
 [Width]
-Width
+寬度
 [Yellow]
-Yellow
+黃色
 [You]
-You
+你
 [You + AI]
-You + AI
+你+人工智慧
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+你與人工智慧都可以下達命令，佔用兩個操控者名額。
 [You vs all]
-You vs all
+你對抗所有人
 [Your maps]
-Your maps
+你的地圖
 [colonies]
-colonies
+殖民地
 [* Changed from standard.]
-* Changed from standard.
+* 從標準更改。
 [World & diplomacy]
-World & diplomacy
+世界與外交
 [Starting conditions & pace]
-Starting conditions & pace
+起始條件和速度
 [Inactive]
-Inactive
+不活躍
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 名工人/2 倍速度
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+改變整個模擬的節奏。
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+選擇是否允許在對局中更換隊伍。
 [Classic colony building]
-Classic colony building
+經典殖民地建設
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+請在上方設定尺寸和殖民地數量。
 [Generate & watch]
-Generate & watch
+生成並觀看
 [Info]
-Info
+資訊
 [Map-defined starting units]
-Map-defined starting units
+地圖定義的起始單位
 [No maps in this library.]
-No maps in this library.
+此地圖清單為空。
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+預製地圖保留作者設定的初始單位。
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+預製:僅速度變化 (2x)
 [Start with terrain known]
-Start with terrain known
+從已知地形開始
 [This colony will not join the match.]
-This colony will not join the match.
+該殖民地不會參加比賽。
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+此地形類型使用固定的地形配置。
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+此地形類型使用固定的資源分布。
 [Win through conquest]
-Win through conquest
+透過征服贏得勝利
 [You control this colony.]
-You control this colony.
+你控制著這個殖民地。
 [controllers]
-controllers
+操控者
 [Use]
-Use
+選擇
 [Lime]
-Lime
+檸檬綠
 [Teal]
-Teal
+藍綠色
 [Azure]
-Azure
+天藍色
 [Updating map preview...]
-Updating map preview...
+正在更新地圖預覽...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+地圖產生失敗。請調整設定，或按開始重試。
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+預覽不可用。更改設定或啟動遊戲重試。
 [automatic torus view]
 自動環面視圖
 [toggle torus view]
 切換 2D／環面視圖
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2對2需要4個參與的殖民地。「你對抗所有人」需要一名人類玩家。
 [Alliance]
-Alliance
+聯盟
 [Choose a rule to change it.]
-Choose a rule to change it.
+選擇一條規則來更改它。
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+「只限征服」只停用聲望勝利，地圖腳本仍然生效。
 [Control]
-Control
+操控方式
 [Controller]
-Controller
+操控者
 [Generate preview]
-Generate preview
+生成預覽
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+地圖產生失敗。請調整設定或重試。
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+地圖設定已更改。產生新的預覽或開始。
 [Map source]
-Map source
+地圖來源
 [Map-defined]
-Map-defined
+地圖定義
 [Match format]
-Match format
+遊戲形式
 [No current preview]
-No current preview
+目前沒有預覽
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+快速戰鬥:雙倍速度；生成的地圖以 8 個工人開始。
 [Reroll]
-Reroll
+生成另一張地圖
 [Ruleset]
-Ruleset
+規則集
 [Select a map from the library.]
-Select a map from the library.
+從庫中選擇一張地圖。
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+初始工人數量只影響產生的地圖。
 [Unavailable]
-Unavailable
+不可用
 [Use selection]
-Use selection
+選擇此人工智慧
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+在預製地圖上快速戰鬥:僅速度變化（雙倍速度）。
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+生成預覽來探索這個世界。
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+更多工人能加快殖民地的初期發展。修改此設定會改變產生的地圖。

@@ -499,7 +499,7 @@ Lade Kartenauswahl
 [Lobby]
 Empfang
 [login]
-Login
+Anmelden
 [look around]
 Umsehen
 [Lost : %0 has more prestige than you]
@@ -1219,7 +1219,7 @@ Tempo: 1x (Mehrspieler)
 [game speed help]
 Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
 [AICortex-Description]
-Cortex - Experimentelle KI mit drei Ebenen. In Entwicklung.
+Cortex expandiert in Richtung neuer Weizenfelder und schickt Gruppen von Kriegern in die Schlacht, unterstützt von Gasthöfen und Krankenhäusern in der Nähe der Frontlinie. Mittlerer Schwierigkeitsgrad. Experimentell.
 [ERROR_CANT_SAVE_CAMPAIGN]
 Die Kampagne konnte nicht gespeichert werden. Prüfe, ob der Zielordner existiert, beschreibbar ist und genügend Speicherplatz frei ist.
 [AICortex]
@@ -1229,332 +1229,332 @@ Noch drin: %0
 [Units still working: %0]
 Arbeiten noch: %0
 [2 vs 2]
-2 vs 2
+2 gegen 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+KI-Strategie und Gegenspiel
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+Strategie: Expandiert vorsichtig und kommt auf Karten mit wenigen Ressourcen gut zurecht.\n\nStärken: Maßvolles Wachstum eignet sich für Partien mit knappen Ressourcen.\n\nGegenspiel zum Ausprobieren: Sichere früh Gebiete; verlasse dich nicht darauf, dass Ressourcenknappheit diese KI schwächt.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Vorsichtige Expansion; kommt mit knappen Ressourcen gut zurecht.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+Strategie: Verwaltet die Nahrungsvorräte, expandiert zu frischen Weizenfeldern und sammelt Krieger für aufeinanderfolgende Angriffswellen. Vorgeschobene Gasthöfe und Krankenhäuser unterstützen entfernte Angriffe.\n\nStärken: Gebündelte Verstärkung, anhaltender Druck und Reaktionen auf Nahrungsknappheit.\n\nGegenspiel zum Ausprobieren: Mache ihr Weizenfelder streitig und greife vorgeschobene Versorgungsgebäude an. Übe Druck aus, bevor ihre Angriffswellen bereit sind.\n\nExperimentelle KI. Mittlerer Schwierigkeitsgrad; die Gegenspielvorschläge sind keine gemessenen Leistungsbewertungen.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Nahrungsbewusste Expansion und unterstützte Angriffswellen.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+Strategie: Wächst schnell und schickt riesige Armeen gegen seine Gegner.\n\nStärken: Schnelle Expansion ermöglicht hohen militärischen Druck.\n\nGegenspiel zum Ausprobieren: Behindere seine Expansion und nutze das Gelände, um die Zahl gleichzeitig kämpfender Gegner zu begrenzen.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Erweitert sich schnell und baut große Armeen für aggressive Angriffe auf.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+Strategie: Die KI erteilt keine Befehle.\n\nStärken: Ein berechenbarer, untätiger Gegner für Experimente.\n\nSchwächen: Expandiert nicht und passt sich nicht an.
 [AINone-Summary]
-An idle colony for experiments.
+Eine untätige Kolonie für Experimente.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+Strategie: Expandiert schnell, aber in kleinem Umfang. Ein leichterer Gegner zum Üben des Kolonieaufbaus.\n\nStärken: Lässt Raum, Wirtschaft und Kampf zugleich zu lernen.\n\nGegenspiel zum Ausprobieren: Baue eine stärkere Wirtschaft auf und bilde deine Armee aus, bevor du angreifst.
 [AINumbi-Summary]
-Light, swift expansion.
+Schnelle Expansion in kleinem Umfang.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+Strategie: Greift nicht an, baut aber riesige Basen und bekehrt aktiv gegnerische Einheiten.\n\nStärken: Wachstum und Bekehrung erzeugen Druck ohne herkömmliche Angriffe.\n\nGegenspiel zum Ausprobieren: Nutze die Anfangsphase zum Aufbau und schicke keine Einheiten dorthin, wo sie bekehrt werden können.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+Riesige Stützpunkte und Konvertierung statt Angriffe.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+Strategie: Greift früh und hart an, bevor Gegner ihren Aufbau abgeschlossen haben.\n\nStärken: Nutzt ungeschützte Expansion und langsame militärische Vorbereitung aus.\n\nGegenspiel zum Ausprobieren: Überstehe den ersten Angriff, halte deine Wirtschaft am Laufen und greife dann selbst an.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+Schnelle Angriffe, die deine frühe Verteidigung prüfen.
 [Algae]
-Algae
+Algen
 [Alliances]
-Alliances
+Allianzen
 [Beach size]
-Beach size
+Strandgröße
 [Blue]
-Blue
+Blau
 [Brown]
-Brown
+Braun
 [Built-in maps]
-Built-in maps
+Integrierte Karten
 [Can change in game]
-Can change in game
+Kann sich im Spiel ändern
 [Closed]
-Closed
+Geschlossen
 [Colonies]
-Colonies
+Kolonien
 [Colony]
-Colony
+Kolonie
 [Concrete islands]
-Concrete islands
+Getrennte Inseln
 [Conquest only]
-Conquest only
+Nur Eroberung
 [Conquest or prestige]
-Conquest or prestige
+Eroberung oder Prestige
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+Diese Karte konnte nicht gestartet werden. Ihr Setup bleibt erhalten; versuchen Sie es erneut.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+Diese Karte konnte nicht geladen werden. Wählen Sie eine andere Karte oder versuchen Sie es erneut.
 [Crater lakes]
-Crater lakes
+Kraterseen
 [Custom]
-Custom
+Benutzerdefiniert
 [Custom teams]
-Custom teams
+Benutzerdefinierte Teams
 [Cyan]
 Cyan
 [Desert weight]
-Desert weight
+Wüstenanteil
 [Easy]
-Easy
+Einfach
 [Explore as you play]
-Explore as you play
+Entdecken Sie, während Sie spielen
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+Für größere Karten bleiben zusätzliche Koloniezuweisungen erhalten.
 [Extra islands]
-Extra islands
+Zusätzliche Inseln
 [FFA]
-FFA
+Jeder gegen jeden
 [Fruit]
-Fruit
+Obst
 [Game Rules]
-Game Rules
+Spielregeln
 [Game speed]
-Game speed
+Spielgeschwindigkeit
 [Generate & play]
-Generate & play
+Generieren und spielen
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+Geben Sie mindestens einem Geländetyp eine Gewichtung ungleich Null.
 [Grass weight]
-Grass weight
+Grasanteil
 [Gray]
-Gray
+Grau
 [Green]
-Green
+Grün
 [Hard]
-Hard
+Schwierig
 [Height]
-Height
+Höhe
 [Invalid colony count.]
-Invalid colony count.
+Ungültige Koloniezahl.
 [Island size]
-Island size
+Inselgröße
 [Islands]
-Islands
+Inseln
 [Isles]
-Isles
+Inseln II
 [Lake density]
-Lake density
+Dichte der Seen
 [Landscape]
-Landscape
+Landschaft
 [Last colony standing]
-Last colony standing
+Letzte überlebende Kolonie
 [Layout]
 Layout
 [Locked teams]
-Locked teams
+Gesperrte Teams
 [Magenta]
 Magenta
 [Map]
-Map
+Karte
 [Map knowledge]
-Map knowledge
+Kartenwissen
 [Match finished]
-Match finished
+Spiel beendet
 [Medium]
-Medium
+Mittel
 [Medium - Experimental]
-Medium - Experimental
+Mittel – Experimentell
 [No AI orders]
-No AI orders
+Keine KI-Befehle
 [Old islands]
-Old islands
+Inseln (alter Generator)
 [Old random]
-Old random
+Zufall (alter Generator)
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+Öffnen Sie mindestens eine Kolonie, um ein Match zu starten.
 [Open book]
-Open book
+Offenbarte Welt
 [Pink]
-Pink
+Rosa
 [Play this map]
-Play this map
+Diese Karte spielen
 [Players & Teams]
-Players & Teams
+Spieler & Teams
 [Premade maps]
-Premade maps
+Vorgefertigte Karten
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+Vorschau bereit. Beim Starten des Spiels wird genau diese Karte verwendet.
 [Purple]
-Purple
+Lila
 [Quick clash]
-Quick clash
+Schneller Kampf
 [Random map]
-Random map
+Zufällige Karte
 [Red]
-Red
+Rot
 [Repeat landscape]
-Repeat landscape
+Landschaft wiederholen
 [Resources]
-Resources
+Ressourcen
 [Restore standard rules]
-Restore standard rules
+Standardregeln wiederherstellen
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+Aufgedecktes Gelände verrät nicht alle feindlichen Aktivitäten.
 [River]
-River
+Fluss
 [River width]
-River width
+Flussbreite
 [Sand weight]
-Sand weight
+Sandanteil
 [Select a valid map.]
-Select a valid map.
+Wählen Sie eine gültige Karte aus.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+Gemeinsame Steuerung benötigt einen freien Platz für Mensch oder KI (höchstens 12).
 [Smoothing]
-Smoothing
+Glätten
 [Standard]
 Standard
 [Start game]
-Start game
+Spiel starten
 [Starting workers]
-Starting workers
+Arbeiter zu Beginn
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+Arbeiter zu Beginn: Registerkarte Spielregeln.
 [Swamp]
-Swamp
+Sumpflandschaft
 [Team]
 Team
 [Terrain]
-Terrain
+Gelände
 [Terrain revealed]
-Terrain revealed
+Gelände enthüllt
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+Probieren Sie einen Regelsatz aus und machen Sie ihn dann zu Ihrem eigenen.
 [Victory]
-Victory
+Sieg
 [Watch game]
-Watch game
+Spiel ansehen
 [Water weight]
-Water weight
+Wasseranteil
 [White]
-White
+Weiß
 [Width]
-Width
+Breite
 [Yellow]
-Yellow
+Gelb
 [You]
-You
+Du
 [You + AI]
-You + AI
+Du + KI
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+Du und die KI erteilen beide Befehle. Belegt zwei Spielerplätze.
 [You vs all]
-You vs all
+Du gegen alle
 [Your maps]
-Your maps
+Deine Karten
 [colonies]
-colonies
+Kolonien
 [* Changed from standard.]
-* Changed from standard.
+* Vom Standard geändert.
 [World & diplomacy]
-World & diplomacy
+Welt & Diplomatie
 [Starting conditions & pace]
-Starting conditions & pace
+Startbedingungen & Tempo
 [Inactive]
-Inactive
+Inaktiv
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 Arbeiter / 2x Geschwindigkeit
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+Ändert das Tempo der gesamten Simulation.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+Wählen Sie, ob Teams während des Spiels wechseln können.
 [Classic colony building]
-Classic colony building
+Traditionelle Kolonieentwicklung
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+Abmessungen und Koloniezahl sind oben angegeben.
 [Generate & watch]
-Generate & watch
+Generieren und beobachten
 [Info]
-Info
+Infos
 [Map-defined starting units]
-Map-defined starting units
+Kartendefinierte Starteinheiten
 [No maps in this library.]
-No maps in this library.
+Keine Karten in dieser Bibliothek.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+Vorgefertigte Karten behalten die vom Autor festgelegten Starteinheiten.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+Vorgefertigt: nur Geschwindigkeitsänderungen (2x)
 [Start with terrain known]
-Start with terrain known
+Beginnen Sie mit bekanntem Gelände
 [This colony will not join the match.]
-This colony will not join the match.
+Diese Kolonie wird dem Match nicht beitreten.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+Diese Landschaft verwendet ein festes Geländerezept.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+Diese Landschaft verwendet eine feste Ressourcenplatzierung.
 [Win through conquest]
-Win through conquest
+Gewinnen Sie durch Eroberung
 [You control this colony.]
-You control this colony.
+Sie kontrollieren diese Kolonie.
 [controllers]
-controllers
+Menschen und KIs
 [Use]
-Use
+Auswählen
 [Lime]
-Lime
+Limettengrün
 [Teal]
-Teal
+Blaugrün
 [Azure]
-Azure
+Himmelblau
 [Updating map preview...]
-Updating map preview...
+Kartenvorschau wird aktualisiert...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+Die Generierung ist fehlgeschlagen. Passen Sie die Einstellungen an oder drücken Sie Start, um es erneut zu versuchen.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+Vorschau nicht verfügbar. Ändern Sie die Einstellungen oder starten Sie das Spiel, um es erneut zu versuchen.
 [automatic torus view]
 Automatische Torusansicht
 [toggle torus view]
 2D-/Torusansicht umschalten
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2 gegen 2 benötigt vier offene Kolonien. Du gegen alle benötigt einen menschlichen Spieler.
 [Alliance]
-Alliance
+Allianz
 [Choose a rule to change it.]
-Choose a rule to change it.
+Wählen Sie eine Regel aus, um sie zu ändern.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+Ein reiner Eroberungssieg deaktiviert den Prestige-Sieg; Kartenskripte gelten weiterhin.
 [Control]
-Control
+Koloniekontrolle
 [Controller]
-Controller
+Gesteuert von
 [Generate preview]
-Generate preview
+Vorschau generieren
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+Die Generierung ist fehlgeschlagen. Passen Sie die Einstellungen an oder versuchen Sie es erneut.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+Karteneinstellungen geändert. Erzeugen Sie eine neue Vorschau oder starten Sie.
 [Map source]
-Map source
+Kartenquelle
 [Map-defined]
-Map-defined
+Kartendefiniert
 [Match format]
-Match format
+Spielformat
 [No current preview]
-No current preview
+Keine aktuelle Vorschau
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+Schneller Kampf: doppelte Geschwindigkeit; Generierte Karten beginnen mit 8 Arbeitern.
 [Reroll]
-Reroll
+Erzeugen Sie eine weitere Karte
 [Ruleset]
-Ruleset
+Regelsatz
 [Select a map from the library.]
-Select a map from the library.
+Wählen Sie eine Karte aus der Bibliothek aus.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+Die anfängliche Anzahl an Arbeitern gilt nur für generierte Karten.
 [Unavailable]
-Unavailable
+Nicht verfügbar
 [Use selection]
-Use selection
+Auswahl verwenden
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+Schneller Kampf auf vorgefertigten Karten: Nur die Geschwindigkeit ändert sich (doppelte Geschwindigkeit).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+Erstellen Sie eine Vorschau, um diese Welt zu erkunden.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+Mehr Arbeiter beschleunigen das Koloniewachstum. Diese Einstellung ändert die generierte Karte.

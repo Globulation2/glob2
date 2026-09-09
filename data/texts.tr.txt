@@ -47,9 +47,9 @@ Ekle
 [AI Descriptions]
 Yapay Zekâ Açıklamaları
 [AI]
-AI
+yapay zeka
 [ai]
-AI
+yapay zeka
 [AICastor-Description]
 Castor temkinli oynar ve kaynakları az olan haritalarda çok başarılıdır. Orta zorluk.
 [AICastor]
@@ -267,7 +267,7 @@ Savunma
 [Delete game]
 Secili oyunu sil
 [delete]
-Delete
+Sil
 [desert]
 çöl
 [destroy building]
@@ -553,7 +553,7 @@ takasına olanak sağlar
 [market explanation]
 Başkalarıyla meyve
 [market]
-Market
+Pazar
 [medium priority]
 orta
 [meta %0]
@@ -1225,7 +1225,7 @@ Hız: 1x (çok oyunculu)
 [game speed help]
 Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
 [AICortex-Description]
-Cortex - Deneysel üç katmanlı yapay zekâ. Geliştirme aşamasında.
+Cortex yeni buğday tarlalarına doğru genişliyor ve ön cepheye yakın hanlar ve hastaneler tarafından desteklenen savaşçı gruplarını savaşa gönderiyor. Orta zorluk. Deneysel.
 [ERROR_CANT_LOAD_MAP]
 Harita yüklenemedi: dosya bozuk veya sürümü uyumsuz.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1237,332 +1237,332 @@ Cortex
 [Units still working: %0]
 Hâlâ çalışıyor: %0
 [2 vs 2]
-2 vs 2
+2'ye karşı 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+Yapay zekâ stratejisi ve karşı taktikler
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+Strateji: Dikkatli bir şekilde genişler ve az sayıda kaynağa sahip haritalarda iyi performans gösterir.\n\nGüçlü Yönler: Sınırlı genişleme, kıt kaynaklara sahip oyunlarda etkilidir.\n\nKarşı taktik önerisi: Bölgeyi erken işgal edin. Kaynak eksikliğinin bu yapay zekâyı zayıflatacağını varsaymayın.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Dikkatli genişleme; kıt kaynaklarla iyi performans gösterir.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+Strateji: Yiyecek tedarikini yönetir, yeni buğday tarlalarına doğru genişler ve birbirini izleyen savaşçı gruplarını bir araya getirir. Cephe hattı yakınındaki hanlar ve hastaneler, üsten uzaktaki saldırıları destekliyor.\n\nGüçlü Yönleri: Birlikte takviye gönderir, askeri baskıyı sürdürür ve yiyecek kıtlığına tepki verir.\n\nKarşı taktik önerisi: Yeni buğday tarlalarının kontrolü için savaşın ve ön cephe yakınındaki destek binalarına saldırın. Savaşçı grupları hazır olmadan saldırın.\n\nDeneysel yapay zekâ. Orta zorluk; karşı taktik önerileri kıyaslama puanları değildir.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Gıdayı gözeten büyüme ve destekli saldırı dalgaları.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+Strateji: Hızla genişler ve devasa ordularla rakiplere saldırır.\n\nGüçlü Yönler: Hızlı genişleme agresif askeri saldırıları destekler.\n\nKarşı taktik önerisi: Genişlemesini önleyin. Aynı anda savaşabilecek düşman birliklerinin sayısını azaltmak için araziyi kullanın.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Hızla genişler ve agresif saldırılar için büyük ordular oluşturur.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+Strateji: Yapay zeka hiçbir komut vermez.\n\nGüçlü Yönleri: Deneyler için tahmin edilebilir, aktif olmayan bir rakip.\n\nZayıf Yönler: Genişlemez veya uyum sağlamaz.
 [AINone-Summary]
-An idle colony for experiments.
+Denemeler için hareketsiz bir koloni.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+Strateji: Hızlı ama küçük ölçekte genişler. Koloni yönetimini uygulamak için daha kolay bir rakip.\n\nGüçlü Yönler: Hem ekonomik yönetimi hem de savaşı öğrenmenizi sağlar.\n\nKarşı taktik önerisi: Daha güçlü bir ekonomi geliştirin ve saldırmadan önce ordunuzu eğitin.
 [AINumbi-Summary]
-Light, swift expansion.
+Küçük ölçekte hızlı genişleme.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+Strateji: Saldırmaz ancak devasa üsler inşa eder ve düşman birimlerini aktif olarak kendi tarafına çeker.\n\nGüçlü Yönler: Genişleme ve birim dönüştürme, doğrudan saldırı olmadan rakipleri tehdit eder.\n\nKarşı taktik önerisi: Koloninizi erkenden geliştirin ve düşmanın onları dönüştürebileceği yerlere birimleri göndermekten kaçının.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+Saldırmak yerine dev üsler kurar ve düşman birimlerini tarafına çeker.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+Strateji: Rakipler hazırlıklarını bitirmeden önce erken ve güçlü saldırılar.\n\nGüçlü Yönler: Savunmasız genişlemeden ve yavaş askeri hazırlıktan yararlanır.\n\nKarşı taktik önerisi: İlk saldırıda ekonominizi koruyarak hayatta kalın, ardından karşı saldırı yapın.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+Erken savunmanızı test eden hızlı saldırılar.
 [Algae]
-Algae
+Yosun
 [Alliances]
-Alliances
+İttifaklar
 [Beach size]
-Beach size
+Plaj büyüklüğü
 [Blue]
-Blue
+Mavi
 [Brown]
-Brown
+Kahverengi
 [Built-in maps]
-Built-in maps
+Yerleşik haritalar
 [Can change in game]
-Can change in game
+Oyunda değişebilir
 [Closed]
-Closed
+Kapalı
 [Colonies]
-Colonies
+Koloniler
 [Colony]
-Colony
+Koloni
 [Concrete islands]
-Concrete islands
+Ayrı Adalar
 [Conquest only]
-Conquest only
+Yalnızca fetih
 [Conquest or prestige]
-Conquest or prestige
+Fetih veya prestij
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+Bu harita başlatılamadı. Kurulumunuz korunur; tekrar deneyin.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+Bu harita yüklenemedi. Başka bir harita seçin veya yeniden deneyin.
 [Crater lakes]
-Crater lakes
+Krater gölleri
 [Custom]
-Custom
+Özel
 [Custom teams]
-Custom teams
+Özel takımlar
 [Cyan]
-Cyan
+Camgöbeği
 [Desert weight]
-Desert weight
+Çöl ağırlığı
 [Easy]
-Easy
+Kolay
 [Explore as you play]
-Explore as you play
+Oynarken keşfedin
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+Daha büyük haritalar için ekstra koloni atamaları korunur.
 [Extra islands]
-Extra islands
+Ekstra adalar
 [FFA]
-FFA
+Herkes herkese karşı
 [Fruit]
-Fruit
+Meyve
 [Game Rules]
-Game Rules
+Oyun Kuralları
 [Game speed]
-Game speed
+Oyun hızı
 [Generate & play]
-Generate & play
+Oluştur ve oyna
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+En az bir arazi tipine sıfırdan farklı bir ağırlık verin.
 [Grass weight]
-Grass weight
+Çim ağırlığı
 [Gray]
-Gray
+Gri
 [Green]
-Green
+Yeşil
 [Hard]
-Hard
+Zor
 [Height]
-Height
+Yükseklik
 [Invalid colony count.]
-Invalid colony count.
+Geçersiz koloni sayısı.
 [Island size]
-Island size
+Ada boyutu
 [Islands]
-Islands
+Adalar
 [Isles]
-Isles
+Adacıklar
 [Lake density]
-Lake density
+Göl yoğunluğu
 [Landscape]
-Landscape
+Manzara
 [Last colony standing]
-Last colony standing
+Ayakta kalan son koloni
 [Layout]
-Layout
+Düzen
 [Locked teams]
-Locked teams
+Kilitli takımlar
 [Magenta]
-Magenta
+Macenta
 [Map]
-Map
+Harita
 [Map knowledge]
-Map knowledge
+Harita bilgisi
 [Match finished]
-Match finished
+Maç bitti
 [Medium]
-Medium
+Orta
 [Medium - Experimental]
-Medium - Experimental
+Orta - Deneysel
 [No AI orders]
-No AI orders
+Yapay zekâ emri yok
 [Old islands]
-Old islands
+Eski adalar
 [Old random]
-Old random
+Eski rastgele
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+Bir maça başlamak için en az bir koloni açın.
 [Open book]
-Open book
+Açık dünya
 [Pink]
-Pink
+Pembe
 [Play this map]
-Play this map
+Bu haritada oyna
 [Players & Teams]
-Players & Teams
+Oyuncular ve Takımlar
 [Premade maps]
-Premade maps
+Hazır haritalar
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+Önizleme hazır. Oyunun başlatılması tam olarak bu haritayı kullanır.
 [Purple]
-Purple
+Mor
 [Quick clash]
-Quick clash
+Hızlı savaş
 [Random map]
-Random map
+Rastgele harita
 [Red]
-Red
+Kırmızı
 [Repeat landscape]
-Repeat landscape
+Manzarayı tekrarla
 [Resources]
-Resources
+Kaynaklar
 [Restore standard rules]
-Restore standard rules
+Standart kuralları geri yükleyin
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+Ortaya çıkan arazi, düşmanın tüm faaliyetlerini ortaya çıkarmaz.
 [River]
-River
+Nehir
 [River width]
-River width
+Nehir genişliği
 [Sand weight]
-Sand weight
+Kum ağırlığı
 [Select a valid map.]
-Select a valid map.
+Geçerli bir harita seçin.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+Ortak kontrol için boş bir kontrolcü yeri gerekir (en fazla 12).
 [Smoothing]
-Smoothing
+Pürüzsüzleştirme
 [Standard]
-Standard
+Standart
 [Start game]
-Start game
+Oyunu başlat
 [Starting workers]
-Starting workers
+Başlangıç işçileri
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+Başlangıç işçileri: Oyun Kuralları sekmesi.
 [Swamp]
-Swamp
+Bataklık
 [Team]
-Team
+Takım
 [Terrain]
-Terrain
+Arazi
 [Terrain revealed]
-Terrain revealed
+Arazi açık
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+Bir kural seti deneyin ve ardından onu kendinize ait hale getirin.
 [Victory]
-Victory
+Zafer
 [Watch game]
-Watch game
+Oyunu izle
 [Water weight]
-Water weight
+Su ağırlığı
 [White]
-White
+Beyaz
 [Width]
-Width
+Genişlik
 [Yellow]
-Yellow
+Sarı
 [You]
-You
+Siz
 [You + AI]
-You + AI
+Siz + Yapay zekâ
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+Siz ve yapay zekâ birlikte emir verebilirsiniz. İki kontrolcü yeri kullanılır.
 [You vs all]
-You vs all
+Siz herkese karşı
 [Your maps]
-Your maps
+Haritalarınız
 [colonies]
-colonies
+koloniler
 [* Changed from standard.]
-* Changed from standard.
+* Standarttan değiştirildi.
 [World & diplomacy]
-World & diplomacy
+Dünya ve diplomasi
 [Starting conditions & pace]
-Starting conditions & pace
+Başlangıç koşulları ve tempo
 [Inactive]
-Inactive
+Etkin değil
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 işçi / 2x hız
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+Tüm simülasyonun hızını değiştirir.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+Takımların maç sırasında değişip değişemeyeceğini seçin.
 [Classic colony building]
-Classic colony building
+Geleneksel koloni gelişimi
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+Boyutlar ve koloni sayısı yukarıda ayarlanmıştır.
 [Generate & watch]
-Generate & watch
+Oluştur ve izle
 [Info]
-Info
+Bilgi
 [Map-defined starting units]
-Map-defined starting units
+Harita tanımlı başlangıç birimleri
 [No maps in this library.]
-No maps in this library.
+Bu kütüphanede harita yok.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+Hazır haritalarda, yapımcının belirlediği başlangıç birimleri korunur.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+Önceden hazırlanmış: yalnızca hız değişiklikleri (2x)
 [Start with terrain known]
-Start with terrain known
+Bilinen araziyle başlayın
 [This colony will not join the match.]
-This colony will not join the match.
+Bu koloni maça katılmayacak.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+Bu manzara sabit bir arazi tarifi kullanıyor.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+Bu ortam sabit kaynak yerleşimini kullanır.
 [Win through conquest]
-Win through conquest
+Fetih yoluyla kazan
 [You control this colony.]
-You control this colony.
+Bu koloniyi siz kontrol ediyorsunuz.
 [controllers]
-controllers
+kontrolcüler
 [Use]
-Use
+Seç
 [Lime]
-Lime
+Limon yeşili
 [Teal]
-Teal
+Mavi yeşil
 [Azure]
-Azure
+Gök mavisi
 [Updating map preview...]
-Updating map preview...
+Harita önizlemesi güncelleniyor...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+Harita oluşturulamadı. Ayarları değiştirin veya tekrar denemek için Başlat’a basın.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+Önizleme kullanılamıyor. Tekrar denemek için ayarları değiştirin veya oyunu başlatın.
 [automatic torus view]
 Otomatik torus görünümü
 [toggle torus view]
 2B / torus görünümünü değiştir
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2’ye karşı 2 için dört açık koloni gerekir. Siz herkese karşı için bir insan oyuncu gerekir.
 [Alliance]
-Alliance
+İttifak
 [Choose a rule to change it.]
-Choose a rule to change it.
+Değiştirmek için bir kural seçin.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+Yalnızca fetih zaferi, prestij zaferini devre dışı bırakır; harita komut dosyaları hala geçerlidir.
 [Control]
-Control
+Koloni kontrolü
 [Controller]
-Controller
+Kontrolcü
 [Generate preview]
-Generate preview
+Önizleme oluştur
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+Harita oluşturulamadı. Ayarları değiştirin veya tekrar deneyin.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+Harita ayarları değiştirildi. Yeni bir önizleme oluşturun veya başlayın.
 [Map source]
-Map source
+Harita kaynağı
 [Map-defined]
-Map-defined
+Harita tanımlı
 [Match format]
-Match format
+Oyun formatı
 [No current preview]
-No current preview
+Geçerli önizleme yok
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+Hızlı savaş: iki kat hız; oluşturulan haritalar 8 işçiyle başlar.
 [Reroll]
-Reroll
+Başka bir harita oluştur
 [Ruleset]
-Ruleset
+Kural seti
 [Select a map from the library.]
-Select a map from the library.
+Kütüphaneden bir harita seçin.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+Başlangıç işçisi sayısı yalnızca oluşturulan haritaları etkiler.
 [Unavailable]
-Unavailable
+Kullanılamıyor
 [Use selection]
-Use selection
+Seçimi kullan
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+Önceden hazırlanmış haritalarda hızlı savaş: yalnızca hız değişir (çift hız).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+Bu dünyayı keşfetmek için bir önizleme oluşturun.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+Daha fazla işçi koloni büyümesini hızlandırır. Bu ayar oluşturulan haritayı değiştirir.

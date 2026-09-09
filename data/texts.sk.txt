@@ -267,7 +267,7 @@ Obrana
 [Delete game]
 Zmazať označenú hru
 [delete]
-Delete
+Odstrániť
 [desert]
 púšť
 [destroy building]
@@ -1225,7 +1225,7 @@ Rýchlosť: 1x (viac hráčov)
 [game speed help]
 Iba pre jedného hráča a záznamy. Hra viacerých hráčov beží rýchlosťou 1x.
 [AICortex-Description]
-Cortex - Experimentálna trojvrstvová AI. Vo vývoji.
+Cortex sa rozširuje smerom k novým obilným poliam a posiela do boja skupiny bojovníkov, podporovaných jedálňami a nemocnicami v blízkosti frontovej línie. Stredná náročnosť. Experimentálne.
 [ERROR_CANT_LOAD_MAP]
 Mapu nemožno načítať: súbor je poškodený alebo má nekompatibilnú verziu.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1239,330 +1239,330 @@ Ešte v práci: %0
 [2 vs 2]
 2 vs 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+Stratégia AI a protihra
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+Stratégia: Opatrne sa rozširuje a funguje dobre na mapách s malým množstvom zdrojov.\n\nSilné stránky: Obmedzená expanzia je účinná v hrách s obmedzenými zdrojmi.\n\nOdporúčaná protihra: Obsaďte územie skôr. Nepredpokladajte, že nedostatok zdrojov oslabí túto AI.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Opatrná expanzia; funguje dobre s obmedzenými zdrojmi.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+Stratégia: Riadi zásoby jedla, rozširuje sa smerom k novým pšeničným poliam a zostavuje po sebe nasledujúce skupiny bojovníkov. Jedálne a nemocnice v blízkosti frontovej línie podporujú útoky ďaleko od základne.\n\nSilné stránky: Posiela posily, udržiava vojenský tlak a reaguje na nedostatok potravín.\n\nOdporúčaná protihra: Bojujte o kontrolu nad novými pšeničnými poliami a zaútočte na ich podporné budovy v blízkosti prednej línie. Zaútočte skôr, ako budú jeho skupiny bojovníkov pripravené.\n\nExperimentálna AI. Stredná obtiažnosť; odporúčania k protihre nie sú hodnotením z porovnávacích testov.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Rozširuje sa s ohľadom na zásoby potravín a podporuje svoje útočiace jednotky.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+Stratégia: Rýchlo expanduje a útočí na protivníkov obrovskými armádami.\n\nSilné stránky: Rýchla expanzia podporuje agresívne vojenské útoky.\n\nOdporúčaná protihra: Zabráňte jej rozširovaniu. Použite terén na zníženie počtu nepriateľských jednotiek, ktoré môžu naraz bojovať.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Rýchlo expanduje a buduje veľké armády pre agresívne útoky.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+Stratégia: AI nedáva žiadne príkazy.\n\nSilné stránky: Predvídateľný, neaktívny protivník na experimenty.\n\nSlabé stránky: Nerozširuje sa ani sa neprispôsobuje.
 [AINone-Summary]
-An idle colony for experiments.
+Nečinná kolónia na experimenty.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+Stratégia: Rozširuje sa rýchlo, ale v malom rozsahu. Ľahší súper pre precvičovanie manažmentu kolónií.\n\nSilné stránky: Umožňuje vám naučiť sa ekonomické riadenie aj boj.\n\nOdporúčaná protihra: Pred útokom vyviňte silnejšiu ekonomiku a vycvičte svoju armádu.
 [AINumbi-Summary]
-Light, swift expansion.
+Rýchla expanzia v malom meradle.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+Stratégia: Neútočí, ale buduje obrovské základne a aktívne konvertuje nepriateľské jednotky na svoju stranu.\n\nSilné stránky: Rozšírenie a konverzia jednotiek ohrozujú protivníkov bez priamych útokov.\n\nOdporúčaná protihra: Rozvíjajte svoju kolóniu včas a vyhnite sa posielaniu jednotiek tam, kde ich môže nepriateľ premeniť.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+Obrovské základne a konverzia namiesto útokov.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+Stratégia: Útočí skoro a rázne, skôr ako súper dokončí prípravu.\n\nSilné stránky: Využíva nebránenú expanziu a pomalú vojenskú prípravu.\n\nOdporúčaná protihra: Prežite prvý útok pri zachovaní svojej ekonomiky, potom zaútočte.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+Rýchle útoky, ktoré otestujú vašu skorú obranu.
 [Algae]
-Algae
+Riasy
 [Alliances]
-Alliances
+Aliancie
 [Beach size]
-Beach size
+Veľkosť pláže
 [Blue]
-Blue
+Modrá
 [Brown]
-Brown
+Hnedá
 [Built-in maps]
-Built-in maps
+Vstavané mapy
 [Can change in game]
-Can change in game
+Môže sa zmeniť v hre
 [Closed]
-Closed
+Zatvorené
 [Colonies]
-Colonies
+Kolónie
 [Colony]
-Colony
+Kolónia
 [Concrete islands]
-Concrete islands
+Oddelené ostrovy
 [Conquest only]
-Conquest only
+Iba dobytie
 [Conquest or prestige]
-Conquest or prestige
+Dobytie alebo prestíž
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+Túto mapu sa nepodarilo spustiť. Vaše nastavenie sa zachová; skúste to znova.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+Túto mapu sa nepodarilo načítať. Vyberte inú mapu alebo to skúste znova.
 [Crater lakes]
-Crater lakes
+Kráterové jazerá
 [Custom]
-Custom
+Vlastné
 [Custom teams]
-Custom teams
+Vlastné tímy
 [Cyan]
-Cyan
+Azúrová
 [Desert weight]
-Desert weight
+Váha púšte
 [Easy]
-Easy
+Ľahká
 [Explore as you play]
-Explore as you play
+Preskúmajte počas hry
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+Ďalšie priradenia kolónií sú zachované pre väčšie mapy.
 [Extra islands]
-Extra islands
+Extra ostrovy
 [FFA]
-FFA
+Všetci proti všetkým
 [Fruit]
-Fruit
+Ovocie
 [Game Rules]
-Game Rules
+Pravidlá hry
 [Game speed]
-Game speed
+Rýchlosť hry
 [Generate & play]
-Generate & play
+Generovať a hrať
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+Priraďte aspoň jednému typu terénu nenulovú váhu.
 [Grass weight]
-Grass weight
+Váha trávy
 [Gray]
-Gray
+Šedá
 [Green]
-Green
+Zelená
 [Hard]
-Hard
+Ťažká
 [Height]
-Height
+Výška
 [Invalid colony count.]
-Invalid colony count.
+Neplatný počet kolónií.
 [Island size]
-Island size
+Veľkosť ostrova
 [Islands]
-Islands
+Ostrovy
 [Isles]
-Isles
+Ostrovčeky
 [Lake density]
-Lake density
+Hustota jazier
 [Landscape]
-Landscape
+Krajina
 [Last colony standing]
-Last colony standing
+Posledná preživšia kolónia
 [Layout]
-Layout
+Rozloženie
 [Locked teams]
-Locked teams
+Zamknuté tímy
 [Magenta]
-Magenta
+Purpurová
 [Map]
-Map
+Mapa
 [Map knowledge]
-Map knowledge
+Mapové znalosti
 [Match finished]
-Match finished
+Zápas ukončený
 [Medium]
-Medium
+Stredná
 [Medium - Experimental]
-Medium - Experimental
+Stredná - Experimentálna
 [No AI orders]
-No AI orders
+Žiadne príkazy AI
 [Old islands]
-Old islands
+Staré ostrovy
 [Old random]
-Old random
+Staré náhodné
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+Otvorte aspoň jednu kolóniu a začnite zápas.
 [Open book]
-Open book
+Odhalený svet
 [Pink]
-Pink
+Ružová
 [Play this map]
-Play this map
+Hrať na tejto mape
 [Players & Teams]
-Players & Teams
+Hráči a tímy
 [Premade maps]
-Premade maps
+Predpripravené mapy
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+Ukážka pripravená. Pri spustení hry sa používa presne táto mapa.
 [Purple]
-Purple
+Fialová
 [Quick clash]
-Quick clash
+Rýchla bitka
 [Random map]
-Random map
+Náhodná mapa
 [Red]
-Red
+Červená
 [Repeat landscape]
-Repeat landscape
+Opakovanie krajiny
 [Resources]
-Resources
+Zdroje
 [Restore standard rules]
-Restore standard rules
+Obnoviť štandardné pravidlá
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+Odhalený terén neodhaľuje všetku aktivitu nepriateľa.
 [River]
-River
+Rieka
 [River width]
-River width
+Šírka rieky
 [Sand weight]
-Sand weight
+Váha piesku
 [Select a valid map.]
-Select a valid map.
+Vyberte platnú mapu.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+Zdieľané ovládanie vyžaduje voľné miesto pre hráča alebo AI (najviac 12).
 [Smoothing]
-Smoothing
+Vyhladzovanie
 [Standard]
-Standard
+Štandardné
 [Start game]
-Start game
+Spustiť hru
 [Starting workers]
-Starting workers
+Počiatoční pracovníci
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+Počiatoční pracovníci: karta Pravidlá hry.
 [Swamp]
-Swamp
+Močiar
 [Team]
-Team
+Tím
 [Terrain]
-Terrain
+Terén
 [Terrain revealed]
-Terrain revealed
+Terén odhalený
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+Vyskúšajte súbor pravidiel a potom si ho prispôsobte.
 [Victory]
-Victory
+Víťazstvo
 [Watch game]
-Watch game
+Sledovať hru
 [Water weight]
-Water weight
+Váha vody
 [White]
-White
+Biela
 [Width]
-Width
+Šírka
 [Yellow]
-Yellow
+Žltá
 [You]
-You
+Vy
 [You + AI]
-You + AI
+Vy + AI
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+Vy aj AI môžete vydávať rozkazy. Zaberá dve miesta pre hráčov a AI.
 [You vs all]
-You vs all
+Vy proti všetkým
 [Your maps]
-Your maps
+Vaše mapy
 [colonies]
-colonies
+kolónie
 [* Changed from standard.]
-* Changed from standard.
+* Zmenené oproti štandardu.
 [World & diplomacy]
-World & diplomacy
+Svet a diplomacia
 [Starting conditions & pace]
-Starting conditions & pace
+Štartovacie podmienky a tempo
 [Inactive]
-Inactive
+Neaktívne
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 pracovníkov / 2x rýchlosť
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+Mení tempo celej simulácie.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+Vyberte, či sa tímy môžu počas zápasu meniť.
 [Classic colony building]
-Classic colony building
+Tradičný vývoj kolónií
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+Rozmery a počet kolónií sú nastavené vyššie.
 [Generate & watch]
-Generate & watch
+Generovať a sledovať
 [Info]
 Info
 [Map-defined starting units]
-Map-defined starting units
+Štartovacie jednotky definované mapou
 [No maps in this library.]
-No maps in this library.
+V tejto knižnici nie sú žiadne mapy.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+Predpripravené mapy si zachovávajú svoje pôvodné počiatočné jednotky.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+Hotová mapa: mení sa iba rýchlosť (2x)
 [Start with terrain known]
-Start with terrain known
+Začnite so známym terénom
 [This colony will not join the match.]
-This colony will not join the match.
+Táto kolónia sa nezapojí do zápasu.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+Táto krajina používa pevný recept na terén.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+Táto krajina používa pevné umiestnenie zdrojov.
 [Win through conquest]
-Win through conquest
+Vyhrajte dobývaním
 [You control this colony.]
-You control this colony.
+Ovládate túto kolóniu.
 [controllers]
-controllers
+hráči a AI
 [Use]
-Use
+Vyberte
 [Lime]
-Lime
+Limetkovo zelená
 [Teal]
-Teal
+Modrozelená
 [Azure]
-Azure
+Nebeská modrá
 [Updating map preview...]
-Updating map preview...
+Aktualizuje sa náhľad mapy...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+Generovanie zlyhalo. Upravte nastavenia alebo spustite hru a skúste to znova.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+Ukážka nie je k dispozícii. Zmeňte nastavenia alebo spustite hru a skúste to znova.
 [automatic torus view]
 Automatické toroidné zobrazenie
 [toggle torus view]
 Prepnúť 2D / toroidné zobrazenie
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2 proti 2 vyžaduje štyri otvorené kolónie. Vy proti všetkým vyžaduje ľudského hráča.
 [Alliance]
-Alliance
+Aliancia
 [Choose a rule to change it.]
-Choose a rule to change it.
+Vyberte pravidlo, ktoré chcete zmeniť.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+Víťazstvo založené len na dobytí znemožňuje prestížne víťazstvo; stále platia mapové skripty.
 [Control]
-Control
+Ovládanie
 [Controller]
-Controller
+Ovláda
 [Generate preview]
-Generate preview
+Vygenerovať ukážku
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+Generovanie zlyhalo. Upravte nastavenia alebo to skúste znova.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+Nastavenia mapy sa zmenili. Vygenerujte nový náhľad alebo začnite.
 [Map source]
-Map source
+Zdroj mapy
 [Map-defined]
-Map-defined
+Mapovo definované
 [Match format]
-Match format
+Formát hry
 [No current preview]
-No current preview
+Žiadny aktuálny náhľad
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+Rýchla bitka: dvojnásobná rýchlosť; generované mapy začínajú s 8 pracovníkmi.
 [Reroll]
-Reroll
+Vytvorte ďalšiu mapu
 [Ruleset]
-Ruleset
+Pravidlá
 [Select a map from the library.]
-Select a map from the library.
+Vyberte mapu z knižnice.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+Počiatočný počet pracovníkov sa vzťahuje len na vygenerované mapy.
 [Unavailable]
-Unavailable
+nedostupné
 [Use selection]
-Use selection
+Použiť výber
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+Rýchla bitka na vopred pripravených mapách: mení sa iba rýchlosť (dvojnásobná rýchlosť).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+Vytvorte ukážku na preskúmanie tohto sveta.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+Viac robotníkov urýchľuje rast kolónií. Toto nastavenie zmení vygenerovanú mapu.

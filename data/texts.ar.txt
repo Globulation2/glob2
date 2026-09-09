@@ -113,7 +113,7 @@ alt-%0
 [awaiting players]
 ﺑﺎﻧﺘﻈﺎﺭ ﺍﻟﻼﻋﺒﻴﻦ
 [away:]
-away:
+بعيدا:
 [Back]
 ﻋُﺪ
 [backspace]
@@ -365,7 +365,7 @@ F9
 [Free]
 ﺳﻠﻴﻢ
 [free]
-free
+متاح
 [from:]
 ﻣﻦ:
 [fruit]
@@ -473,13 +473,13 @@ ar
 [Leave Game]
 ﻏﺎﺩﺭ ﺍﻟﻠﻌﺒﺔ
 [left meta]
-left meta
+مفتاح ميتا الأيسر
 [left super]
 ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﺴﺮ
 [left]
 ﻳﺴﺎﺭ
 [Leo: nur ein erster Test]
-test
+اختبار
 [level]
 ﺍﻟﻤﺴﺘﻮﻯ
 [levels]
@@ -733,7 +733,7 @@ print screen
 [return]
 enter
 [right meta]
-right meta
+مفتاح ميتا الأيمن
 [right super]
 ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﻤﻦ
 [right]
@@ -1217,7 +1217,7 @@ tab
 [game speed help]
 ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
 [AICortex-Description]
-Cortex - ﺫﻛﺎﺀ ﺍﺻﻄﻨﺎﻋﻲ ﺗﺠﺮﻳﺒﻲ ﺑﺜﻼﺙ ﻃﺒﻘﺎﺕ. ﻗﻴﺪ ﺍﻟﺘﻄﻮﻳﺮ.
+تتوسع Cortex نحو حقول القمح الجديدة وترسل مجموعات من المحاربين إلى المعركة، مدعومين بالنزل والمستشفيات القريبة من خط المواجهة. صعوبة متوسطة. تجريبي.
 [ERROR_CANT_SAVE_CAMPAIGN]
 ﺗﻌﺬﺭ ﺣﻔﻆ ﺍﻟﺤﻤﻠﺔ. ﺗﺤﻘﻖ ﻣﻦ ﻭﺟﻮﺩ ﺍﻟﻤﺠﻠﺪ ﺍﻟﻮﺟﻬﺔ ﻭﺇﻣﻜﺎﻧﻴﺔ ﺍﻟﻜﺘﺎﺑﺔ ﻓﻴﻪ ﻭﺗﻮﻓﺮ ﻣﺴﺎﺣﺔ ﺧﺎﻟﻴﺔ.
 [AICortex]
@@ -1227,332 +1227,332 @@ Cortex
 [Units still working: %0]
 ﻭﺣﺪﺍﺕ ﻻ ﺗﺰﺍﻝ ﺗﻌﻤﻞ: %0
 [2 vs 2]
-2 vs 2
+2 مقابل 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+استراتيجية الذكاء الاصطناعي وطرق مواجهته
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+الإستراتيجية: تتوسع بحذر وتعمل بشكل جيد على الخرائط بموارد قليلة.\n\nنقاط القوة: التوسع المحدود فعال في الألعاب ذات الموارد النادرة.\n\nاقتراح للمواجهة: احتلال الأراضي مبكرًا. لا تفترض أن نقص الموارد سيضعف هذا الذكاء الاصطناعي.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+توسع حذر وأداء جيد مع ندرة الموارد.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+الإستراتيجية: إدارة الإمدادات الغذائية والتوسع نحو حقول القمح الجديدة وتجميع مجموعات متتالية من المحاربين. تدعم النزل والمستشفيات القريبة من خط المواجهة الهجمات البعيدة عن القاعدة.\n\nنقاط القوة: يرسل التعزيزات معًا ويحافظ على الضغط العسكري ويتفاعل مع نقص الغذاء.\n\nاقتراح للمواجهة: القتال من أجل السيطرة على حقول القمح الجديدة ومهاجمة المباني الداعمة لها بالقرب من خط المواجهة. قم بالهجوم قبل أن تصبح مجموعات المحاربين جاهزة.\n\nذكاء اصطناعي تجريبي بصعوبة متوسطة. اقتراحات المواجهة ليست تقييمات أداء معيارية.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+توسع يراعي الغذاء وموجات هجوم مدعومة.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+الإستراتيجية: تتوسع بسرعة وتهاجم المعارضين بجيوش هائلة.\n\nنقاط القوة: التوسع السريع يدعم الهجمات العسكرية العدوانية.\n\nاقتراح للمواجهة: منع توسعه. استخدم التضاريس لتقليل عدد قوات العدو التي يمكنها القتال في وقت واحد.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+يتوسع بسرعة ويبني جيوشًا كبيرة لشن هجمات عدوانية.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+الاستراتيجية: لا يصدر الذكاء الاصطناعي أي أوامر.\n\nنقاط القوة: خصم خامل يمكن توقع سلوكه لإجراء التجارب.\n\nنقاط الضعف: لا يتوسع ولا يتكيف.
 [AINone-Summary]
-An idle colony for experiments.
+مستعمرة خاملة للتجارب.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+الإستراتيجية: تتوسع بسرعة ولكن على نطاق صغير. خصم أسهل لممارسة إدارة المستعمرة.\n\nنقاط القوة: تتيح لك تعلم الإدارة الاقتصادية والقتال.\n\nاقتراح للمواجهة: قم بتطوير اقتصاد أقوى وقم بتدريب جيشك قبل الهجوم.
 [AINumbi-Summary]
-Light, swift expansion.
+التوسع السريع على نطاق صغير.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+الإستراتيجية: لا تهاجم، ولكنها تبني قواعد هائلة وتحول وحدات العدو بشكل فعال إلى جانبها.\n\nنقاط القوة: التوسع وتحويل الوحدات يهدد الخصوم دون شن هجمات مباشرة.\n\nاقتراح للمواجهة: قم بتطوير مستعمرتك مبكرًا وتجنب إرسال الوحدات حيث يمكن للعدو تحويلها.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+قواعد ضخمة واستمالة وحدات العدو بدلًا من الهجوم.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+الاستراتيجية: يهاجم بسرعة وقوة قبل أن يكمل الخصوم استعداداتهم.\n\nنقاط القوة: يستغل التوسع غير المحمي وبطء الاستعداد العسكري.\n\nاقتراح للمواجهة: اصمد أمام الهجوم الأول مع الحفاظ على اقتصادك، ثم شن هجومًا مضادًا.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+هجمات سريعة تختبر دفاعاتك المبكرة.
 [Algae]
-Algae
+ﻃﺤﺎﻟﺐ
 [Alliances]
-Alliances
+ﺍﻟﺘﺤﺎﻟﻔﺎﺕ
 [Beach size]
-Beach size
+حجم الشاطئ
 [Blue]
-Blue
+أزرق
 [Brown]
-Brown
+بني
 [Built-in maps]
-Built-in maps
+الخرائط المضمنة
 [Can change in game]
-Can change in game
+يمكن أن تتغير في اللعبة
 [Closed]
-Closed
+مغلق
 [Colonies]
-Colonies
+المستعمرات
 [Colony]
-Colony
+مستعمرة
 [Concrete islands]
-Concrete islands
+جزر منفصلة
 [Conquest only]
-Conquest only
+الفتح فقط
 [Conquest or prestige]
-Conquest or prestige
+الفتح أو الهيبة
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+تعذر تشغيل هذه الخريطة. يتم الاحتفاظ بالإعداد الخاص بك؛ حاول ثانية.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+تعذر تحميل هذه الخريطة. اختر خريطة أخرى أو أعد المحاولة.
 [Crater lakes]
-Crater lakes
+بحيرات الحفرة
 [Custom]
-Custom
+مخصص
 [Custom teams]
-Custom teams
+فرق مخصصة
 [Cyan]
-Cyan
+سماوي
 [Desert weight]
-Desert weight
+نسبة الصحراء
 [Easy]
-Easy
+سهل
 [Explore as you play]
-Explore as you play
+استكشف أثناء اللعب
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+تُحفظ إعدادات المستعمرات الزائدة لاستعادتها عند اختيار خريطة أكبر.
 [Extra islands]
-Extra islands
+جزر اضافية
 [FFA]
-FFA
+الجميع ضد الجميع
 [Fruit]
-Fruit
+الفاكهة
 [Game Rules]
-Game Rules
+قواعد اللعبة
 [Game speed]
-Game speed
+سرعة اللعبة
 [Generate & play]
-Generate & play
+إنشاء ولعب
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+قم بإعطاء نوع واحد من التضاريس على الأقل وزنًا غير صفري.
 [Grass weight]
-Grass weight
+نسبة العشب
 [Gray]
-Gray
+رمادي
 [Green]
-Green
+أخضر
 [Hard]
-Hard
+صعب
 [Height]
-Height
+الارتفاع
 [Invalid colony count.]
-Invalid colony count.
+عدد المستعمرات غير صالح.
 [Island size]
-Island size
+حجم الجزيرة
 [Islands]
-Islands
+جزر
 [Isles]
-Isles
+جزر صغيرة
 [Lake density]
-Lake density
+كثافة البحيرة
 [Landscape]
-Landscape
+المناظر الطبيعية
 [Last colony standing]
-Last colony standing
+آخر مستعمرة باقية
 [Layout]
-Layout
+التخطيط
 [Locked teams]
-Locked teams
+فرق مغلقة
 [Magenta]
-Magenta
+أرجواني
 [Map]
-Map
+خريطة
 [Map knowledge]
-Map knowledge
+المعرفة بالخريطة
 [Match finished]
-Match finished
+انتهت المباراة
 [Medium]
-Medium
+متوسط
 [Medium - Experimental]
-Medium - Experimental
+متوسطة - تجريبية
 [No AI orders]
-No AI orders
+لا توجد أوامر الذكاء الاصطناعي
 [Old islands]
-Old islands
+الجزر القديمة
 [Old random]
-Old random
+عشوائية قديمة
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+افتح مستعمرة واحدة على الأقل لبدء المباراة.
 [Open book]
-Open book
+عالم مكشوف
 [Pink]
-Pink
+وردي
 [Play this map]
-Play this map
+العب هذه الخريطة
 [Players & Teams]
-Players & Teams
+اللاعبون والفرق
 [Premade maps]
-Premade maps
+خرائط مسبقة الصنع
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+المعاينة جاهزة. بدء اللعبة يستخدم هذه الخريطة الدقيقة.
 [Purple]
-Purple
+بنفسجي
 [Quick clash]
-Quick clash
+معركة سريعة
 [Random map]
-Random map
+خريطة عشوائية
 [Red]
-Red
+أحمر
 [Repeat landscape]
-Repeat landscape
+كرر المشهد
 [Resources]
-Resources
+الموارد
 [Restore standard rules]
-Restore standard rules
+استعادة القواعد القياسية
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+كشف التضاريس لا يكشف جميع أنشطة العدو.
 [River]
-River
+ﻧﻬﺮ
 [River width]
-River width
+عرض النهر
 [Sand weight]
-Sand weight
+نسبة الرمال
 [Select a valid map.]
-Select a valid map.
+حدد خريطة صالحة.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+يتطلب التحكم المشترك خانة شاغرة لمتحكم إضافي (الحد الأقصى 12).
 [Smoothing]
-Smoothing
+تنعيم
 [Standard]
-Standard
+قياسي
 [Start game]
-Start game
+ابدأ اللعبة
 [Starting workers]
-Starting workers
+عمال البداية
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+عمال البداية: تبويب قواعد اللعبة.
 [Swamp]
-Swamp
+ﻣﺴﺘﻨﻘﻊ
 [Team]
-Team
+فريق
 [Terrain]
-Terrain
+التضاريس
 [Terrain revealed]
-Terrain revealed
+تضاريس مكشوفة
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+جرب مجموعة القواعد، ثم اجعلها خاصة بك.
 [Victory]
-Victory
+النصر
 [Watch game]
-Watch game
+مشاهدة اللعبة
 [Water weight]
-Water weight
+نسبة الماء
 [White]
-White
+أبيض
 [Width]
-Width
+العرض
 [Yellow]
-Yellow
+أصفر
 [You]
-You
+أنت
 [You + AI]
-You + AI
+أنت + الذكاء الاصطناعي
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+يمكنك أنت والذكاء الاصطناعي إصدار الأوامر. يستهلك ذلك خانتين للمتحكمين.
 [You vs all]
-You vs all
+أنت ضد الجميع
 [Your maps]
-Your maps
+خرائطك
 [colonies]
-colonies
+مستعمرات
 [* Changed from standard.]
-* Changed from standard.
+* تم التغيير من المعيار.
 [World & diplomacy]
-World & diplomacy
+العالم والدبلوماسية
 [Starting conditions & pace]
-Starting conditions & pace
+ظروف البداية والسرعة
 [Inactive]
-Inactive
+غير نشط
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 عمال / 2x السرعة
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+يغير وتيرة المحاكاة بأكملها.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+اختر ما إذا كان يمكن للفرق التغيير أثناء المباراة.
 [Classic colony building]
-Classic colony building
+تطوير المستعمرة التقليدية
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+تم تحديد الأبعاد وعدد المستعمرات أعلاه.
 [Generate & watch]
-Generate & watch
+توليد ومشاهدة
 [Info]
-Info
+معلومات
 [Map-defined starting units]
-Map-defined starting units
+وحدات البداية المحددة بالخريطة
 [No maps in this library.]
-No maps in this library.
+لا توجد خرائط في هذه المكتبة.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+تحتفظ الخرائط الجاهزة بوحدات البداية التي حددها مؤلفها.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+خرائط جاهزة: تتغير السرعة فقط (2x)
 [Start with terrain known]
-Start with terrain known
+ابدأ بالتضاريس المعروفة
 [This colony will not join the match.]
-This colony will not join the match.
+هذه المستعمرة لن تنضم إلى المباراة.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+يستخدم هذا المشهد وصفة تضاريس ثابتة.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+يستخدم هذا المشهد وضع الموارد الثابتة.
 [Win through conquest]
-Win through conquest
+الفوز من خلال الفتح
 [You control this colony.]
-You control this colony.
+يمكنك التحكم في هذه المستعمرة.
 [controllers]
-controllers
+متحكمون
 [Use]
-Use
+اختر
 [Lime]
-Lime
+أخضر ليموني
 [Teal]
-Teal
+أزرق مخضر
 [Azure]
-Azure
+أزرق سماوي
 [Updating map preview...]
-Updating map preview...
+جارٍ تحديث معاينة الخريطة...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+فشل إنشاء الخريطة. عدّل الإعدادات أو اضغط على ابدأ للمحاولة مجددًا.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+المعاينة غير متاحة. قم بتغيير الإعدادات أو قم بتشغيل اللعبة للمحاولة مرة أخرى.
 [automatic torus view]
 عرض الطارة تلقائيًا
 [toggle torus view]
 التبديل بين العرض ثنائي الأبعاد والطارة
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+يتطلب نمط 2 مقابل 2 أربع مستعمرات مشاركة. ويتطلب نمط أنت ضد الجميع لاعبًا بشريًا.
 [Alliance]
-Alliance
+التحالف
 [Choose a rule to change it.]
-Choose a rule to change it.
+اختر قاعدة لتغييرها.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+انتصار الغزو فقط يعطل انتصار الهيبة؛ لا تزال البرامج النصية للخريطة مطبقة.
 [Control]
-Control
+السيطرة على المستعمرة
 [Controller]
-Controller
+المتحكم
 [Generate preview]
-Generate preview
+إنشاء المعاينة
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+فشل إنشاء الخريطة. عدّل الإعدادات أو حاول مجددًا.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+تم تغيير إعدادات الخريطة. قم بإنشاء معاينة جديدة أو ابدأ.
 [Map source]
-Map source
+مصدر الخريطة
 [Map-defined]
-Map-defined
+محددة بالخريطة
 [Match format]
-Match format
+شكل اللعبة
 [No current preview]
-No current preview
+لا توجد معاينة حاليًا
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+معركة سريعة: سرعة مضاعفة؛ تبدأ الخرائط التي تم إنشاؤها بـ 8 عمال.
 [Reroll]
-Reroll
+إنشاء خريطة أخرى
 [Ruleset]
-Ruleset
+مجموعة القواعد
 [Select a map from the library.]
-Select a map from the library.
+اختر خريطة من المكتبة.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+ينطبق العدد الأولي للعمال فقط على الخرائط التي تم إنشاؤها.
 [Unavailable]
-Unavailable
+غير متاح
 [Use selection]
-Use selection
+استخدم التحديد
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+معركة سريعة على الخرائط المعدة مسبقًا: تتغير السرعة فقط (سرعة مضاعفة).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+قم بإنشاء معاينة لاستكشاف هذا العالم.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+زيادة العمال تسرّع نمو المستعمرة في البداية. يغيّر هذا الإعداد الخريطة المنشأة.

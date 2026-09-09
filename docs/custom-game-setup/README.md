@@ -29,9 +29,13 @@ keeps the match summary and launch action available while dense content scrolls.
 
 Save/replay encodings are unchanged. Generated maps use owned temporary snapshots
 outside the map library; saves and replays remain self-contained after cleanup.
-New text is initialized in English across the language tables, preserving their
-existing translations and satisfying the repository's complete-table contract.
-Localized wording for these new entries can follow independently.
+All 32 non-English language tables include localized lobby labels, AI profiles,
+and help text. Older English fallback labels were audited as well. Translations
+were machine-assisted, edited in a separate three-agent review, and checked
+for terminology, placeholders, paragraph structure, and bundled-font coverage.
+They have not received human native-speaker review. Standard key legends,
+proper names, and shared vocabulary remain unchanged. A regression test rejects new English
+fallbacks outside the documented shared-vocabulary allowlist.
 
 ## Native screenshots
 

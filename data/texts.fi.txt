@@ -61,7 +61,7 @@ Nicowar
 [AINone-Description]
 None ei tee mitään.
 [AINone]
-None
+Ei mitään
 [AINumbi-Description]
 Numbi laajentaa nopeasti ja sulavasti. Vaikeustaso: aloittelija.
 [AINumbi]
@@ -275,7 +275,7 @@ Näyttö
 [don't carry anything]
 Ei kanna mitään
 [down]
-down
+alas
 [Download Map]
 Lataa kartta
 [Download Maps]
@@ -301,7 +301,7 @@ Salasanasi:
 [enter]
 enter
 [equals]
-equals
+yhtäsuuruusmerkki
 [ERROR_CANT_LOAD_MAP]
 Karttaa ei voitu ladata: tiedosto on vioittunut tai sen versio on yhteensopimaton.
 [escape]
@@ -367,7 +367,7 @@ Terveet
 [free]
 on vapaana
 [from:]
-from:
+alkaen:
 [fruit]
 hedelmä
 [fullscreen]
@@ -421,9 +421,9 @@ Isännöi peli
 [hp]
 HP
 [Human]
-Human
+Ihminen
 [human]
-human
+ihminen
 [hungry]
 nälkäinen
 [hungryness]
@@ -447,7 +447,7 @@ saarien koko
 [islands terrain]
 Saaret
 [isles terrain]
-Isles
+saaret
 [iterate selection]
 Siirrä valinta rakennuksesta toiseen
 [jobs]
@@ -459,7 +459,7 @@ Liity
 [keyboard settings]
 Näppäimistö
 [kick]
-Kick
+Poista pelaaja
 [lan]
 LAN-peli
 [language incomplete]
@@ -861,7 +861,7 @@ Koko
 [Sort By]
 Lajittelu:
 [space]
-space
+välilyönti
 [start mission]
 Aloita tehtävä
 [start new campaign]
@@ -877,7 +877,7 @@ Tilastot
 [Still (i)]
 Vielä
 [still (w)]
-Still
+Paikallaan
 [still one unit working]
 Yksi yksikkö työskentelee yhä
 [Still one]
@@ -1023,7 +1023,7 @@ sotalippusi kimppuun hyökätään
 [time]
 Aika
 [to:]
-to:
+vastaanottajalle:
 [toggle draw accessibility aids]
 Näytä/piilota joukkuenumerot
 [toggle draw information]
@@ -1043,7 +1043,7 @@ Kokonaisosumapisteet
 [Total prestige reached]
 Saavutettu kokonaismaine
 [Total]
-Total
+Yhteensä
 [tutorial text 1]
 Tervetuloa Globulation 2:n tutoriaalin! Tämä tutoriaali kattaa muun muassa majatalojen rakentamisen, alueiden tutkimisen ja vihollisten tuhoamisen. Hyödyllisestä tiedosta ei ole pulaa.
 [tutorial text 2]
@@ -1077,7 +1077,7 @@ Avaava tehtävä
 [Unnamed Area]
 {Nimetön alue}
 [up]
-up
+ylös
 [upgrade building]
 Aloita/Pysäytä Päivitys
 [Upgrade Defaults]
@@ -1219,7 +1219,7 @@ Nopeus: 1x (moninpeli)
 [game speed help]
 Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
 [AICortex-Description]
-Cortex - Kokeellinen kolmikerroksinen tekoäly. Kehitteillä.
+Cortex laajenee kohti uusia vehnäpeltoja ja lähettää soturiryhmiä taisteluun majatalojen ja sairaaloiden tukemana lähellä etulinjaa. Keskivaikeus. Kokeellinen.
 [ERROR_CANT_SAVE_CAMPAIGN]
 Kampanjaa ei voitu tallentaa. Tarkista, että kohdekansio on olemassa, siihen voi kirjoittaa ja vapaata tilaa on riittävästi.
 [AICortex]
@@ -1231,330 +1231,330 @@ Yhä töissä: %0
 [2 vs 2]
 2 vs 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+Tekoälyn strategia ja vastapeli
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+Strategia: Laajentuu varovasti ja toimii hyvin kartoilla, joissa on vähän resursseja.\n\nVahvuudet: Rajoitettu laajennus on tehokas peleissä, joissa on niukkoja resursseja.\n\nEhdotettu vastapeli: Miehitä alue aikaisin. Älä oleta, että resurssien puute heikentää tätä tekoälyä.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Varovainen laajentaminen; toimii hyvin niukoilla resursseilla.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+Strategia: Hallitsee ruokavarastoja, laajenee kohti uusia vehnäpeltoja ja kokoaa peräkkäisiä soturiryhmiä. Majatalot ja sairaalat lähellä etulinjaa tukevat hyökkäyksiä kaukana tukikohdasta.\n\nVahvuudet: Lähettää vahvistuksia yhdessä, ylläpitää sotilaallista painetta ja reagoi ruokapulaan.\n\nEhdotettu vastapeli: Taistele uusien vehnäpeltojen hallinnasta ja hyökkää sen tukirakennuksiin lähellä etulinjaa. Hyökkää ennen kuin sen soturiryhmät ovat valmiita.\n\nKokeellinen tekoäly. Keskitaso; vastapeliehdotukset eivät ole vertailutesteihin perustuvia arvioita.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Laajentuu ruokavarat mielessään ja tukee hyökkääviä joukkojaan.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+Strategia: Laajenee nopeasti ja hyökkää vastustajia vastaan valtavilla armeijoilla.\n\nVahvuudet: Nopea laajeneminen tukee aggressiivisia sotilaallisia hyökkäyksiä.\n\nEhdotettu vastapeli: Estä sen laajeneminen. Käytä maastoa vähentääksesi kerralla taistelevien vihollisjoukkojen määrää.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Laajenee nopeasti ja rakentaa suuria armeijoita aggressiivisia hyökkäyksiä varten.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+Strategia: AI ei anna komentoja.\n\nVahvuudet: Ennustettava, ei-aktiivinen vastustaja kokeissa.\n\nHeikkoudet: Ei laajene tai mukaudu.
 [AINone-Summary]
-An idle colony for experiments.
+Toimeton siirtokunta kokeiluja varten.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+Strategia: Laajenee nopeasti, mutta pienessä mittakaavassa. Helpompi vastustaja siirtokunnan hallinnan harjoitteluun.\n\nVahvuudet: Voit oppia sekä talouden hallintaa että taistelua.\n\nEhdotettu vastapeli: Kehitä vahvempi talous ja kouluta armeijasi ennen hyökkäämistä.
 [AINumbi-Summary]
-Light, swift expansion.
+Nopea laajennus pienessä mittakaavassa.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+Strategia: Ei hyökkää, vaan rakentaa valtavia tukikohtia ja muuntaa aktiivisesti vihollisen yksiköitä omalle puolelleen.\n\nVahvuudet: Laajentuminen ja yksiköiden muuntaminen uhkaavat vastustajia ilman suoria hyökkäyksiä.\n\nEhdotettu vastapeli: Kehitä siirtokuntaasi ajoissa ja vältä yksiköiden lähettämistä sinne, missä vihollinen voi muuttaa ne.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+Valtavat tukikohdat ja muunnos hyökkäysten sijaan.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+Strategia: Hyökkää aikaisin ja voimakkaasti, ennen kuin vastustajat ovat valmistautuneet.\n\nVahvuudet: Käyttää hyväkseen puolustamatonta laajentumista ja hidasta sotilaallista valmistautumista.\n\nEhdotettu vastapeli: Selviydy ensimmäisestä hyökkäyksestä pitäen samalla taloutesi toiminnassa ja aloita vastahyökkäys.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+Nopeat hyökkäykset, jotka testaavat varhaista puolustustasi.
 [Algae]
-Algae
+Levä
 [Alliances]
-Alliances
+Liittoumat
 [Beach size]
-Beach size
+Rantakoko
 [Blue]
-Blue
+Sininen
 [Brown]
-Brown
+Ruskea
 [Built-in maps]
-Built-in maps
+Sisäänrakennetut kartat
 [Can change in game]
-Can change in game
+Voi muuttua pelissä
 [Closed]
-Closed
+Suljettu
 [Colonies]
-Colonies
+Siirtokunnat
 [Colony]
-Colony
+Siirtokunta
 [Concrete islands]
-Concrete islands
+Erilliset saaret
 [Conquest only]
-Conquest only
+Vain valloitus
 [Conquest or prestige]
-Conquest or prestige
+Valloitus tai arvovalta
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+Tätä karttaa ei voitu käynnistää. Asetuksesi säilytetään; yritä uudelleen.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+Tätä karttaa ei voitu ladata. Valitse toinen kartta tai yritä uudelleen.
 [Crater lakes]
-Crater lakes
+Kraatterijärviä
 [Custom]
-Custom
+Mukautettu
 [Custom teams]
-Custom teams
+Mukautetut joukkueet
 [Cyan]
-Cyan
+Syaani
 [Desert weight]
-Desert weight
+Aavikon painotus
 [Easy]
-Easy
+Helppo
 [Explore as you play]
-Explore as you play
+Tutki samalla kun pelaat
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+Ylimääräiset siirtokuntamääräykset säilytetään suurempia karttoja varten.
 [Extra islands]
-Extra islands
+Ylimääräisiä saaria
 [FFA]
-FFA
+Kaikki kaikkia vastaan
 [Fruit]
-Fruit
+Hedelmä
 [Game Rules]
-Game Rules
+Pelin säännöt
 [Game speed]
-Game speed
+Pelin nopeus
 [Generate & play]
-Generate & play
+Luo ja pelaa
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+Anna vähintään yhdelle maastotyypille nollasta poikkeava paino.
 [Grass weight]
-Grass weight
+Ruohon painotus
 [Gray]
-Gray
+Harmaa
 [Green]
-Green
+Vihreä
 [Hard]
-Hard
+Vaikea
 [Height]
-Height
+Korkeus
 [Invalid colony count.]
-Invalid colony count.
+Virheellinen siirtokuntien määrä.
 [Island size]
-Island size
+Saaren koko
 [Islands]
-Islands
+Saaret
 [Isles]
-Isles
+saaret
 [Lake density]
-Lake density
+Järvien tiheys
 [Landscape]
-Landscape
+Maisema
 [Last colony standing]
-Last colony standing
+Viimeinen selviytyvä siirtokunta
 [Layout]
-Layout
+Asettelu
 [Locked teams]
-Locked teams
+Lukitut joukkueet
 [Magenta]
 Magenta
 [Map]
-Map
+Kartta
 [Map knowledge]
-Map knowledge
+Kartan tuntemus
 [Match finished]
-Match finished
+Ottelu päättynyt
 [Medium]
-Medium
+Keskitaso
 [Medium - Experimental]
-Medium - Experimental
+Keskitaso - Kokeellinen
 [No AI orders]
-No AI orders
+Ei tekoälyn käskyjä
 [Old islands]
-Old islands
+Vanhat saaret
 [Old random]
-Old random
+Vanha satunnainen
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+Avaa vähintään yksi siirtokunta aloittaaksesi ottelun.
 [Open book]
-Open book
+Paljastettu maailma
 [Pink]
-Pink
+Vaaleanpunainen
 [Play this map]
-Play this map
+Pelaa tällä kartalla
 [Players & Teams]
-Players & Teams
+Pelaajat & Joukkueet
 [Premade maps]
-Premade maps
+Valmiit kartat
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+Esikatselu valmis. Pelin aloittaminen käyttää tätä tarkkaa karttaa.
 [Purple]
-Purple
+Violetti
 [Quick clash]
-Quick clash
+Nopea taistelu
 [Random map]
-Random map
+Satunnainen kartta
 [Red]
-Red
+Punainen
 [Repeat landscape]
-Repeat landscape
+Maiseman toisto
 [Resources]
-Resources
+Resurssit
 [Restore standard rules]
-Restore standard rules
+Palauta vakiosäännöt
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+Paljastettu maasto ei paljasta kaikkea vihollisen toimintaa.
 [River]
-River
+Joki
 [River width]
-River width
+Joen leveys
 [Sand weight]
-Sand weight
+Hiekan painotus
 [Select a valid map.]
-Select a valid map.
+Valitse kelvollinen kartta.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+Jaettu hallinta vaatii vapaan paikan pelaajalle tai tekoälylle (enintään 12).
 [Smoothing]
-Smoothing
+Tasoitus
 [Standard]
-Standard
+Vakio
 [Start game]
-Start game
+Aloita peli
 [Starting workers]
-Starting workers
+Työläisiä alussa
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+Työläisiä alussa: Pelin säännöt -välilehti.
 [Swamp]
-Swamp
+Suo
 [Team]
-Team
+Joukkue
 [Terrain]
-Terrain
+Maasto
 [Terrain revealed]
-Terrain revealed
+Maasto paljastettu
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+Kokeile sääntökokoelmaa ja muokkaa sitä mielesi mukaan.
 [Victory]
-Victory
+Voitto
 [Watch game]
-Watch game
+Katso peli
 [Water weight]
-Water weight
+Veden painotus
 [White]
-White
+Valkoinen
 [Width]
-Width
+Leveys
 [Yellow]
-Yellow
+Keltainen
 [You]
-You
+Sinä
 [You + AI]
-You + AI
+Sinä + tekoäly
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+Sinä ja tekoäly voitte antaa käskyjä. Vie kaksi pelaaja- tai tekoälypaikkaa.
 [You vs all]
-You vs all
+Sinä kaikkia vastaan
 [Your maps]
-Your maps
+Omat kartat
 [colonies]
-colonies
+siirtokuntia
 [* Changed from standard.]
-* Changed from standard.
+* Muutettu vakiosta.
 [World & diplomacy]
-World & diplomacy
+Maailma ja diplomatia
 [Starting conditions & pace]
-Starting conditions & pace
+Lähtöolosuhteet ja vauhti
 [Inactive]
-Inactive
+Ei-aktiivinen
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 työntekijää / 2x nopeus
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+Muuttaa koko simulaation vauhtia.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+Valitse, voivatko joukkueet vaihtua ottelun aikana.
 [Classic colony building]
-Classic colony building
+Perinteinen siirtokunnan rakentaminen
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+Mitat ja siirtokuntien määrä asetetaan yllä.
 [Generate & watch]
-Generate & watch
+Luo ja katso
 [Info]
-Info
+Tietoja
 [Map-defined starting units]
-Map-defined starting units
+Kartan määritetyt aloitusyksiköt
 [No maps in this library.]
-No maps in this library.
+Tässä kirjastossa ei ole karttoja.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+Valmiit kartat säilyttävät tekijänsä määrittämät aloitusyksiköt.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+Valmis kartta: vain nopeus muuttuu (2x)
 [Start with terrain known]
-Start with terrain known
+Aloita tiedossa olevasta maastosta
 [This colony will not join the match.]
-This colony will not join the match.
+Tämä siirtokunta ei liity otteluun.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+Tämä maisema käyttää kiinteää maastoreseptiä.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+Tämä maisema käyttää kiinteää resurssien sijoittelua.
 [Win through conquest]
-Win through conquest
+Voita valloituksella
 [You control this colony.]
-You control this colony.
+Sinä hallitset tätä siirtokuntaa.
 [controllers]
-controllers
+pelaajat ja tekoälyt
 [Use]
-Use
+Valitse
 [Lime]
-Lime
+Limen vihreä
 [Teal]
-Teal
+Sinivihreä
 [Azure]
-Azure
+Taivaansininen
 [Updating map preview...]
-Updating map preview...
+Päivitetään kartan esikatselua...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+Kartan luonti epäonnistui. Muuta asetuksia tai aloita peli yrittääksesi uudelleen.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+Esikatselu ei ole käytettävissä. Muuta asetuksia tai käynnistä peli ja yritä uudelleen.
 [automatic torus view]
 Automaattinen torusnäkymä
 [toggle torus view]
 Vaihda 2D- ja torusnäkymän välillä
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2 vastaan 2 vaatii neljä avointa siirtokuntaa. Sinä vastaan kaikki vaatii ihmispelaajan.
 [Alliance]
-Alliance
+Liitto
 [Choose a rule to change it.]
-Choose a rule to change it.
+Valitse sääntö muuttaaksesi sitä.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+Vain valloitus poistaa arvovaltavoiton; kartan skriptit ovat edelleen voimassa.
 [Control]
-Control
+Hallinta
 [Controller]
-Controller
+Hallitsee
 [Generate preview]
-Generate preview
+Luo esikatselu
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+Kartan luonti epäonnistui. Muuta asetuksia tai yritä uudelleen.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+Kartta-asetuksia muutettu. Luo uusi esikatselu tai aloita.
 [Map source]
-Map source
+Karttalähde
 [Map-defined]
-Map-defined
+Kartan määrittelemä
 [Match format]
-Match format
+Pelin muoto
 [No current preview]
-No current preview
+Ei nykyistä esikatselua
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+Nopea taistelu: kaksinkertainen nopeus; luodut kartat alkavat 8 työntekijällä.
 [Reroll]
-Reroll
+Luo toinen kartta
 [Ruleset]
-Ruleset
+Säännöstö
 [Select a map from the library.]
-Select a map from the library.
+Valitse kartta kirjastosta.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+Alkuperäinen työntekijöiden lukumäärä koskee vain luotuja karttoja.
 [Unavailable]
-Unavailable
+Ei saatavilla
 [Use selection]
-Use selection
+Käytä valintaa
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+Nopea taistelu valmiilla kartoilla: vain nopeus muuttuu (kaksinkertainen nopeus).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+Luo esikatselu tutustuaksesi tähän maailmaan.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+Lisää työntekijöitä nopeuttaa siirtokuntien kasvua. Tämä asetus muuttaa luotua karttaa.

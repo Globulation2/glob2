@@ -479,7 +479,7 @@ maldekstra vindozklavo
 [left]
 maldekstrenklavo
 [Leo: nur ein erster Test]
-test
+testo
 [level]
 Nivelo
 [levels]
@@ -1217,7 +1217,7 @@ Rapido: 1x (plurludanta)
 [game speed help]
 Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
 [AICortex-Description]
-Cortex - Eksperimenta tritavola artefarita intelekto. Ankoraŭ evoluigata.
+Cortex disetendiĝas direkte al novaj tritikkampoj kaj sendas grupojn de militistoj en batalon, apogita fare de gastejoj kaj hospitaloj proksime de la frontlinio. Meza malfacileco. Eksperimenta.
 [ERROR_CANT_SAVE_CAMPAIGN]
 Ne eblis konservi la kampanjon. Kontrolu, ke la cela dosierujo ekzistas, estas skribebla kaj havas liberan spacon.
 [AICortex]
@@ -1227,332 +1227,332 @@ Interne: %0
 [Units still working: %0]
 Ankoraŭ laborantaj: %0
 [2 vs 2]
-2 vs 2
+2 kontraŭ 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+AI-strategio kaj kontraŭludo
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+Strategio: Vastiĝas singarde kaj funkcias bone sur mapoj kun malmultaj rimedoj.\n\nFortoj: Limigita ekspansio estas efika en ludoj kun malabundaj rimedoj.\n\nProponita kontraŭludo: Okupu teritorion frue. Ne supozu, ke manko de rimedoj malfortigos ĉi tiun AI.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Singarda ekspansio; funkcias bone kun malabundaj rimedoj.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+Strategio: Administras manĝaĵojn, disetendiĝas al novaj tritikaj kampoj kaj kunvenas sinsekvajn grupojn de militistoj. Gastejoj kaj hospitaloj proksime de la frontlinio subtenas atakojn malproksime de la bazo.\n\nFortoj: sendas plifortigojn kune, konservas militan premon kaj reagas al manĝaĵmalabundoj.\n\nProponita kontraŭludo: Batalu por kontrolo de novaj tritikaj kampoj kaj ataku ĝiajn subtenajn konstruaĵojn proksime de la frontlinio. Ataku antaŭ ol ĝiaj grupoj de militistoj estas pretaj.\n\nEksperimenta AI. Meza malfacileco; la taktikaj sugestoj ne estas taksoj bazitaj sur komparaj testoj.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Kresko laŭ manĝaĵprovizo kaj subtenataj atakondoj.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+Strategio: Vastiĝas rapide kaj atakas kontraŭulojn kun grandegaj armeoj.\n\nFortoj: Rapida ekspansio subtenas agresemajn militajn atakojn.\n\nProponita kontraŭludo: Malhelpu ĝian ekspansion. Uzu terenon por redukti la nombron da malamikaj trupoj, kiuj povas batali samtempe.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Vastiĝas rapide kaj konstruas grandajn armeojn por agresemaj atakoj.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+Strategio: La AI donas neniujn ordonojn.\n\nFortoj: Antaŭvidebla, neaktiva kontraŭulo por eksperimentoj.\n\nMalfortoj: Nek vastiĝas nek adaptiĝas.
 [AINone-Summary]
-An idle colony for experiments.
+Neaktiva kolonio por eksperimentoj.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+Strategio: Vastiĝas rapide sed malgrandskale. Pli facila kontraŭulo por praktikado de kolonia administrado.\n\nFortoj: Permesas vin lerni kaj ekonomian administradon kaj batalon.\n\nProponita kontraŭludo: Disvolvu pli fortan ekonomion kaj trejnu vian armeon antaŭ ol ataki.
 [AINumbi-Summary]
-Light, swift expansion.
+Rapida ekspansio en malgranda skalo.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+Strategio: Ne atakas, sed konstruas enormajn bazojn kaj aktive konvertas malamikunuojn al sia propra flanko.\n\nFortoj: Vastiĝo kaj unuokonverto minacas kontraŭulojn sen rektaj atakoj.\n\nProponita kontraŭludo: Disvolvu vian kolonion frue kaj evitu sendi unuojn kie la malamiko povas konverti ilin.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+Grandegaj bazoj kaj konvertiĝo anstataŭ atakoj.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+Strategio: Atakas frue kaj forte, antaŭ ol kontraŭuloj finas prepariĝi.\n\nFortoj: Ekspluatas nedefenditan ekspansion kaj malrapidan armean preparon.\n\nProponita kontraŭludo: Travivu la unuan atakon konservante vian ekonomion, poste kontraŭataku.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+Rapidaj atakoj, kiuj testas viajn fruajn defendojn.
 [Algae]
-Algae
+algo
 [Alliances]
-Alliances
+Aliancoj
 [Beach size]
-Beach size
+Grandeco de la plaĝo
 [Blue]
-Blue
+Blua
 [Brown]
-Brown
+Bruna
 [Built-in maps]
-Built-in maps
+Enkonstruitaj mapoj
 [Can change in game]
-Can change in game
+Povas ŝanĝiĝi en la ludo
 [Closed]
-Closed
+Fermita
 [Colonies]
-Colonies
+Kolonioj
 [Colony]
-Colony
+Kolonio
 [Concrete islands]
-Concrete islands
+Apartaj insuloj
 [Conquest only]
-Conquest only
+Konkero nur
 [Conquest or prestige]
-Conquest or prestige
+Konkero aŭ prestiĝo
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+Ne eblis lanĉi ĉi tiun mapon. Via aranĝo estas konservita; provu denove.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+Ne eblis ŝargi ĉi tiun mapon. Elektu alian mapon aŭ reprovu.
 [Crater lakes]
-Crater lakes
+Krateraj lagoj
 [Custom]
-Custom
+Propra
 [Custom teams]
-Custom teams
+Propraj teamoj
 [Cyan]
-Cyan
+Cejana
 [Desert weight]
-Desert weight
+Dezerta pezo
 [Easy]
-Easy
+Facila
 [Explore as you play]
-Explore as you play
+Esploru dum vi ludas
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+Asignoj de pliaj kolonioj estas konservataj por pli grandaj mapoj.
 [Extra islands]
-Extra islands
+Ekstraj insuloj
 [FFA]
-FFA
+Ĉiuj kontraŭ ĉiuj
 [Fruit]
-Fruit
+Frukto
 [Game Rules]
-Game Rules
+Ludaj Reguloj
 [Game speed]
-Game speed
+Ludrapideco
 [Generate & play]
-Generate & play
+Generu kaj ludu
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+Donu almenaŭ al unu terentipo nenulan pezon.
 [Grass weight]
-Grass weight
+Pezo de herbo
 [Gray]
-Gray
+Griza
 [Green]
-Green
+Verda
 [Hard]
-Hard
+Malfacila
 [Height]
-Height
+Alteco
 [Invalid colony count.]
-Invalid colony count.
+Nevalida nombro de kolonioj.
 [Island size]
-Island size
+Grando de insulo
 [Islands]
-Islands
+Insuloj
 [Isles]
-Isles
+Insuletoj
 [Lake density]
-Lake density
+Laga denseco
 [Landscape]
-Landscape
+Pejzaĝo
 [Last colony standing]
-Last colony standing
+Lasta kolonio staranta
 [Layout]
-Layout
+Aranĝo
 [Locked teams]
-Locked teams
+Ŝlositaj teamoj
 [Magenta]
 Magenta
 [Map]
-Map
+Mapo
 [Map knowledge]
-Map knowledge
+Scio pri la mapo
 [Match finished]
-Match finished
+Matĉo finiĝis
 [Medium]
-Medium
+Meza
 [Medium - Experimental]
-Medium - Experimental
+Meza - Eksperimenta
 [No AI orders]
-No AI orders
+Neniuj AI-komandoj
 [Old islands]
-Old islands
+Insuloj (malnova generatoro)
 [Old random]
-Old random
+Hazarda (malnova generatoro)
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+Malfermu almenaŭ unu kolonion por komenci matĉon.
 [Open book]
-Open book
+Malkaŝita mondo
 [Pink]
-Pink
+Rozkolora
 [Play this map]
-Play this map
+Ludu ĉi tiun mapon
 [Players & Teams]
-Players & Teams
+Ludantoj kaj Teamoj
 [Premade maps]
-Premade maps
+Antaŭfaritaj mapoj
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+Antaŭrigardo preta. Komenci la ludon uzas ĉi tiun precizan mapon.
 [Purple]
-Purple
+Purpura
 [Quick clash]
-Quick clash
+Rapida batalo
 [Random map]
-Random map
+Hazarda mapo
 [Red]
-Red
+Ruĝa
 [Repeat landscape]
-Repeat landscape
+Ripetu pejzaĝon
 [Resources]
-Resources
+Rimedoj
 [Restore standard rules]
-Restore standard rules
+Restarigu normajn regulojn
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+Rivelita tereno ne malkaŝas ĉiun malamikan agadon.
 [River]
-River
+Rivero
 [River width]
-River width
+Rivera larĝo
 [Sand weight]
-Sand weight
+Sablopezo
 [Select a valid map.]
-Select a valid map.
+Elektu validan mapon.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+Komuna regado bezonas liberan lokon por homa aŭ AI-ludanto (maksimume 12).
 [Smoothing]
-Smoothing
+Glatigado
 [Standard]
-Standard
+Norma
 [Start game]
-Start game
+Komencu ludon
 [Starting workers]
-Starting workers
+Komencaj laboristoj
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+Komencaj laboristoj: langeto de Ludaj Reguloj.
 [Swamp]
-Swamp
+Marĉo
 [Team]
-Team
+Teamo
 [Terrain]
-Terrain
+Tereno
 [Terrain revealed]
-Terrain revealed
+Tereno malkaŝita
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+Provu regularon, tiam faru ĝin via.
 [Victory]
-Victory
+Venko
 [Watch game]
-Watch game
+Rigardu ludon
 [Water weight]
-Water weight
+Akva pezo
 [White]
-White
+Blanka
 [Width]
-Width
+Larĝo
 [Yellow]
-Yellow
+Flava
 [You]
-You
+Vi
 [You + AI]
-You + AI
+Vi + AI
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+Vi kaj la AI ambaŭ donas ordonojn. Uzas du ludantlokojn.
 [You vs all]
-You vs all
+Vi kontraŭ ĉiuj
 [Your maps]
-Your maps
+Viaj mapoj
 [colonies]
-colonies
+kolonioj
 [* Changed from standard.]
-* Changed from standard.
+* Ŝanĝita de normo.
 [World & diplomacy]
-World & diplomacy
+Mondo & diplomatio
 [Starting conditions & pace]
-Starting conditions & pace
+Komencaj kondiĉoj kaj ritmo
 [Inactive]
-Inactive
+Neaktiva
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 laboristoj / 2x rapido
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+Ŝanĝas la ritmon de la tuta simulado.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+Elektu ĉu teamoj povas ŝanĝiĝi dum la matĉo.
 [Classic colony building]
-Classic colony building
+Tradicia kolonia evoluo
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+Dimensioj kaj kolonikalkulo estas fiksitaj supre.
 [Generate & watch]
-Generate & watch
+Generu kaj spektu
 [Info]
 Info
 [Map-defined starting units]
-Map-defined starting units
+Map-difinitaj startunuoj
 [No maps in this library.]
-No maps in this library.
+Neniuj mapoj en ĉi tiu biblioteko.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+Antaŭfaritaj mapoj konservas la komencajn unuojn elektitajn de sia aŭtoro.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+Antaŭfarita mapo: nur la rapido ŝanĝiĝas (2x)
 [Start with terrain known]
-Start with terrain known
+Komencu kun tereno konata
 [This colony will not join the match.]
-This colony will not join the match.
+Ĉi tiu kolonio ne aliĝos al la matĉo.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+Ĉi tiu pejzaĝo uzas recepton pri fiksa tereno.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+Ĉi tiu pejzaĝo uzas fiksan rimedlokigon.
 [Win through conquest]
-Win through conquest
+Venki per konkero
 [You control this colony.]
-You control this colony.
+Vi regas ĉi tiun kolonion.
 [controllers]
-controllers
+homaj kaj AI-ludantoj
 [Use]
-Use
+Elektu
 [Lime]
-Lime
+Limetverda
 [Teal]
-Teal
+Bluverda
 [Azure]
-Azure
+Ĉielbluo
 [Updating map preview...]
-Updating map preview...
+Ĝisdatigante mapantaŭprezenton...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+Generado malsukcesis. Ŝanĝu la agordojn aŭ premu Komencu por reprovi.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+Antaŭrigardo nedisponebla. Ŝanĝu la agordojn aŭ lanĉu la ludon por provi denove.
 [automatic torus view]
 Aŭtomata tora vido
 [toggle torus view]
 Ŝalti inter 2D kaj tora vido
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2 kontraŭ 2 bezonas kvar malfermitajn koloniojn. Vi kontraŭ ĉiuj bezonas homan ludanton.
 [Alliance]
-Alliance
+Alianco
 [Choose a rule to change it.]
-Choose a rule to change it.
+Elektu regulon por ŝanĝi ĝin.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+Konker-nur-venko malfunkciigas prestiĝan venkon; mapskriptoj ankoraŭ validas.
 [Control]
-Control
+Kolonia kontrolo
 [Controller]
-Controller
+Regata de
 [Generate preview]
-Generate preview
+Generu antaŭrigardon
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+Generado malsukcesis. Ŝanĝu la agordojn aŭ provu denove.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+Mapo-agordoj ŝanĝitaj. Generu novan antaŭrigardon aŭ komencu.
 [Map source]
-Map source
+Mapfonto
 [Map-defined]
-Map-defined
+Map-difinita
 [Match format]
-Match format
+Ludformato
 [No current preview]
-No current preview
+Neniu aktuala antaŭvido
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+Rapida batalo: duobla rapido; generitaj mapoj komenciĝas per 8 laboristoj.
 [Reroll]
-Reroll
+Generu alian mapon
 [Ruleset]
-Ruleset
+Regularo
 [Select a map from the library.]
-Select a map from the library.
+Elektu mapon el la biblioteko.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+La komenca nombro da laboristoj validas nur por generitaj mapoj.
 [Unavailable]
-Unavailable
+Nedisponebla
 [Use selection]
-Use selection
+Uzu elekton
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+Rapida batalo sur antaŭfaritaj mapoj: nur la rapideco ŝanĝiĝas (duobla rapideco).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+Generu antaŭrigardon por esplori ĉi tiun mondon.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+Pli da laboristoj akcelas kolonian kreskon. Ĉi tiu agordo ŝanĝas la generitan mapon.

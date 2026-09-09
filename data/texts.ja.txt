@@ -55,7 +55,7 @@ Castorは慎重に行動し、資源の少ないマップを得意とします�
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex：実験的な3層構成のAI。開発中です。
+Cortexは新たな小麦畑へ拡張し、前線の食堂や病院で支援しながら戦士の部隊を次々と送り込みます。難易度は普通。実験段階のAIです。
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -1225,332 +1225,332 @@ Ysagoon Online Gaming
 [Units still working: %0]
 作業中：あと%0体
 [2 vs 2]
-2 vs 2
+2対2
 [AI strategy & counterplay]
-AI strategy & counterplay
+AIの戦略と対抗策
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+基本戦略: 慎重に発展し、資源の少ないマップを得意とします。\n\n強み: 拡張を抑える戦略が、資源の乏しい試合に適しています。\n\n対策のヒント: 早めに領土を確保しましょう。資源不足で弱体化するとは限りません。
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+慎重に拡張し、資源の乏しいマップにも対応。
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+基本戦略: 食料供給を管理し、新たな小麦畑へ拡張して、戦士の部隊を次々と編成します。前線の食堂や病院が遠方への攻撃を支えます。\n\n強み: まとまった増援、継続的な圧力、食料不足への対応。\n\n対策のヒント: 新たな小麦畑や前線の支援施設を狙いましょう。攻撃部隊が集まる前に圧力をかけてみてください。\n\n実験段階のAI。難易度は普通です。対策のヒントは性能評価に基づくものではありません。
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+食料を確保し、支援付きの攻撃部隊を次々と投入。
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+基本戦略: 急速に拡張し、大軍で相手を攻撃します。\n\n強み: 素早い拡張によって、激しい軍事的圧力を維持します。\n\n対策のヒント: 拡張を妨害し、地形を利用して一度に戦える敵の数を制限しましょう。
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+急速に拡張し、大軍で積極的に攻撃。
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+基本戦略: AIは命令を出しません。\n\n強み: 行動しないため予測しやすく、実験相手に適しています。\n\n弱点: 拡張も状況への対応もしません。
 [AINone-Summary]
-An idle colony for experiments.
+実験用の、何も行動しないコロニー。
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+基本戦略: 小規模かつ素早く拡張します。コロニー管理を練習しやすい相手です。\n\n強み: 経済と戦闘を一緒に学ぶ余裕を与えてくれます。\n\n対策のヒント: 経済を強化し、軍隊を訓練してから攻撃を仕掛けましょう。
 [AINumbi-Summary]
-Light, swift expansion.
+小規模でも迅速な拡張が可能。
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+基本戦略: 攻撃はせず、巨大な拠点を築いて敵ユニットを積極的に味方へ転向させます。\n\n強み: 拡張と転向によって、通常の攻撃なしで圧力をかけます。\n\n対策のヒント: 序盤の余裕を使って発展し、転向させられる場所へユニットを送り込まないようにしましょう。
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+攻撃せず、巨大な拠点と敵ユニットの転向で対抗。
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+基本戦略: 相手の準備が整う前に、素早く激しい攻撃を仕掛けます。\n\n強み: 無防備な拡張や軍備の遅れを突きます。\n\n対策のヒント: 経済を維持しながら最初の攻撃をしのぎ、その後に反撃しましょう。
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+素早い攻撃で初期の防御力が試されます。
 [Algae]
-Algae
+藻
 [Alliances]
-Alliances
+同盟
 [Beach size]
-Beach size
+砂浜の広さ
 [Blue]
-Blue
+青
 [Brown]
-Brown
+茶色
 [Built-in maps]
-Built-in maps
+内蔵マップ
 [Can change in game]
-Can change in game
+ゲーム内で変更可能
 [Closed]
-Closed
+参加しない
 [Colonies]
-Colonies
+コロニー
 [Colony]
-Colony
+コロニー
 [Concrete islands]
-Concrete islands
+独立した島々
 [Conquest only]
-Conquest only
+征服のみ
 [Conquest or prestige]
-Conquest or prestige
+征服または名声
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+このマップを起動できませんでした。設定は保持されます。もう一度やり直してください。
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+このマップを読み込めませんでした。別のマップを選択するか、再試行してください。
 [Crater lakes]
-Crater lakes
+クレーター湖
 [Custom]
-Custom
+カスタム
 [Custom teams]
-Custom teams
+カスタムチーム
 [Cyan]
-Cyan
+シアン
 [Desert weight]
-Desert weight
+砂漠の割合
 [Easy]
-Easy
+簡単
 [Explore as you play]
-Explore as you play
+探索して地形を発見
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+入りきらないコロニーの設定は、より大きなマップに戻したときのために保持されます。
 [Extra islands]
-Extra islands
+追加の島
 [FFA]
-FFA
+個人戦
 [Fruit]
-Fruit
+フルーツ
 [Game Rules]
-Game Rules
+ゲームルール
 [Game speed]
-Game speed
+ゲームスピード
 [Generate & play]
-Generate & play
+生成して遊ぶ
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+少なくとも 1 つの地形タイプにゼロ以外の重みを与えます。
 [Grass weight]
-Grass weight
+草地の割合
 [Gray]
-Gray
+グレー
 [Green]
-Green
+緑
 [Hard]
-Hard
+難しい
 [Height]
-Height
+高さ
 [Invalid colony count.]
-Invalid colony count.
+コロニー数が無効です。
 [Island size]
-Island size
+島のサイズ
 [Islands]
-Islands
+島々
 [Isles]
-Isles
+小島
 [Lake density]
-Lake density
+湖の密度
 [Landscape]
-Landscape
+地形タイプ
 [Last colony standing]
-Last colony standing
+最後まで生き残るコロニー
 [Layout]
-Layout
+レイアウト
 [Locked teams]
-Locked teams
+チーム固定
 [Magenta]
-Magenta
+マゼンタ
 [Map]
-Map
+マップ
 [Map knowledge]
-Map knowledge
+地形の公開範囲
 [Match finished]
-Match finished
+試合終了
 [Medium]
-Medium
+普通
 [Medium - Experimental]
-Medium - Experimental
+普通 - 実験段階
 [No AI orders]
-No AI orders
+AIの命令なし
 [Old islands]
-Old islands
+旧式の島生成
 [Old random]
-Old random
+旧式のランダム生成
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+試合を始めるには、少なくとも1つのコロニーを参加させてください。
 [Open book]
-Open book
+明らかになった世界
 [Pink]
-Pink
+ピンク
 [Play this map]
-Play this map
+このマップをプレイする
 [Players & Teams]
-Players & Teams
+プレイヤーとチーム
 [Premade maps]
-Premade maps
+既製のマップ
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+プレビューの準備ができました。ゲームを開始すると、この正確なマップが使用されます。
 [Purple]
-Purple
+紫
 [Quick clash]
-Quick clash
+クイックバトル
 [Random map]
-Random map
+ランダムマップ
 [Red]
-Red
+赤
 [Repeat landscape]
-Repeat landscape
+地形の繰り返し
 [Resources]
-Resources
+資源
 [Restore standard rules]
-Restore standard rules
+標準ルールを復元する
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+地形が明らかになったからといって、敵の活動がすべて明らかになるわけではありません。
 [River]
-River
+川
 [River width]
-River width
+川幅
 [Sand weight]
-Sand weight
+砂地の割合
 [Select a valid map.]
-Select a valid map.
+有効なマップを選択してください。
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+共同操作には操作担当の空き枠が必要です（合計12枠まで）。
 [Smoothing]
-Smoothing
+スムージング
 [Standard]
-Standard
+標準
 [Start game]
-Start game
+ゲームを開始する
 [Starting workers]
-Starting workers
+初期ワーカー
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+初期ワーカー: 「ゲーム ルール」タブ。
 [Swamp]
-Swamp
+沼地
 [Team]
-Team
+チーム
 [Terrain]
-Terrain
+地形
 [Terrain revealed]
-Terrain revealed
+地形を最初から公開
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+ルールセットを選び、好みに合わせて変更しましょう。
 [Victory]
-Victory
+勝利
 [Watch game]
-Watch game
+観戦する
 [Water weight]
-Water weight
+水域の割合
 [White]
-White
+白
 [Width]
-Width
+幅
 [Yellow]
-Yellow
+黄色
 [You]
-You
+あなた
 [You + AI]
-You + AI
+あなた + AI
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+あなたとAIの両方が命令を出します。操作担当を2枠使用します。
 [You vs all]
-You vs all
+あなた対全員
 [Your maps]
-Your maps
+自作マップ
 [colonies]
-colonies
+コロニー
 [* Changed from standard.]
-* Changed from standard.
+※標準からの変更となります。
 [World & diplomacy]
-World & diplomacy
+世界と外交
 [Starting conditions & pace]
-Starting conditions & pace
+スタート条件とペース
 [Inactive]
-Inactive
+非アクティブ
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 ワーカー / 2 倍速
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+シミュレーション全体のペースを変更します。
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+試合中にチームを変更できるかどうかを選択します。
 [Classic colony building]
-Classic colony building
+伝統的なコロニー開発
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+寸法とコロニー数は上記で設定されています。
 [Generate & watch]
-Generate & watch
+生成して観戦
 [Info]
-Info
+情報
 [Map-defined starting units]
-Map-defined starting units
+マップで設定された初期ユニット
 [No maps in this library.]
-No maps in this library.
+このライブラリにはマップがありません。
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+既製マップでは、作者が設定した初期ユニットを使用します。
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+既製: 速度のみ変更 (2x)
 [Start with terrain known]
-Start with terrain known
+既知の地形から始める
 [This colony will not join the match.]
-This colony will not join the match.
+このコロニーは試合に参加しません。
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+この地形タイプでは地形の構成が固定されています。
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+この地形タイプでは資源の配置が固定されています。
 [Win through conquest]
-Win through conquest
+征服によって勝利する
 [You control this colony.]
-You control this colony.
+あなたがこのコロニーを操作します。
 [controllers]
-controllers
+操作担当
 [Use]
-Use
+選択
 [Lime]
-Lime
+ライムグリーン
 [Teal]
-Teal
+青緑
 [Azure]
-Azure
+スカイブルー
 [Updating map preview...]
-Updating map preview...
+マップ プレビューを更新しています...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+生成に失敗しました。設定を調整するか、「開始」を押して再試行してください。
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+プレビューは利用できません。設定を変更するか、ゲームを起動してもう一度お試しください。
 [automatic torus view]
 自動トーラス表示
 [toggle torus view]
 2D／トーラス表示を切り替え
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2対2には参加するコロニーが4つ必要です。「あなた対全員」には人間のプレイヤーが必要です。
 [Alliance]
-Alliance
+同盟
 [Choose a rule to change it.]
-Choose a rule to change it.
+変更するルールを選択します。
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+「征服のみ」では名声による勝利を無効にします。マップのスクリプトは引き続き適用されます。
 [Control]
-Control
+操作
 [Controller]
-Controller
+操作担当
 [Generate preview]
-Generate preview
+プレビューの生成
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+生成に失敗しました。設定を調整するか、もう一度試してください。
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+マップの設定が変更されました。新しいプレビューを生成するか開始します。
 [Map source]
-Map source
+マップソース
 [Map-defined]
-Map-defined
+マップの設定に従う
 [Match format]
-Match format
+ゲーム形式
 [No current preview]
-No current preview
+現在のプレビューはありません
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+クイックバトル:2倍速。生成されたマップは 8 人のワーカーから始まります。
 [Reroll]
-Reroll
+別のマップを生成する
 [Ruleset]
-Ruleset
+ルールセット
 [Select a map from the library.]
-Select a map from the library.
+ライブラリからマップを選択してください。
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+ワーカーの初期数は、生成されたマップにのみ適用されます。
 [Unavailable]
-Unavailable
+利用不可
 [Use selection]
-Use selection
+このAIを選択
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+既製マップでのクイックバトル：速度だけが2倍になります。
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+この世界を探索するためのプレビューを生成します。
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+働き手が増えるとコロニーの成長が加速します。この設定により、生成されるマップが変更されます。

@@ -671,7 +671,7 @@ numlock
 [of which]
 υπάρχουν
 [ok]
-Ok
+Εντάξει
 [old islands terrain]
 παλιά τυχαία νησιά
 [old random terrain]
@@ -1123,7 +1123,7 @@ tab
 [tutorial text 4]
 Σχεδόν τελειώσατε. Απομένουν μόνο οι σημαίες και οι επιθέσεις. Έπειτα θα ξέρετε αρκετά για να δοκιμάσετε προσαρμοσμένα παιχνίδια και, αργότερα, να παίξετε διαδικτυακά εναντίον μερικών από τους καλύτερους παίκτες του Globulation 2.
 [tutorial]
-Tutorial
+Εκμάθηση
 [Uncontrolled]
 Εκτός Ελέγχου
 [undo]
@@ -1287,7 +1287,7 @@ Ysagoon Online Gaming
 [game speed help]
 Μόνο για έναν παίκτη και επαναλήψεις. Τα παιχνίδια πολλών παικτών εκτελούνται σε 1x.
 [AICortex-Description]
-Cortex - Πειραματική τεχνητή νοημοσύνη τριών επιπέδων. Υπό ανάπτυξη.
+Το Cortex επεκτείνεται προς νέα χωράφια με σιτάρι και στέλνει ομάδες πολεμιστών στη μάχη, υποστηριζόμενοι από πανδοχεία και νοσοκομεία κοντά στην πρώτη γραμμή. Μέτρια δυσκολία. Πειραματικός.
 [ERROR_CANT_LOAD_MAP]
 Δεν ήταν δυνατή η φόρτωση του χάρτη: το αρχείο είναι κατεστραμμένο ή η έκδοσή του είναι ασύμβατη.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1299,332 +1299,332 @@ Cortex
 [Units still working: %0]
 Εργάζονται: %0
 [2 vs 2]
-2 vs 2
+2 έναντι 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+Στρατηγική AI και αντιμετώπιση
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+Στρατηγική: Επεκτείνεται προσεκτικά και αποδίδει καλά σε χάρτες με λίγους πόρους.\n\nΔυνατά σημεία: Η περιορισμένη επέκταση είναι αποτελεσματική σε παιχνίδια με περιορισμένους πόρους.\n\nΑντιμετώπιση: Καταλάβετε έδαφος νωρίς. Μην υποθέτετε ότι η έλλειψη πόρων θα αποδυναμώσει αυτό το AI.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Προσεκτική επέκταση. αποδίδει καλά με περιορισμένους πόρους.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+Στρατηγική: Διαχειρίζεται τις προμήθειες τροφίμων, επεκτείνεται σε νέα χωράφια με σιτάρι και συγκεντρώνει διαδοχικές ομάδες πολεμιστών. Πανδοχεία και νοσοκομεία κοντά στην πρώτη γραμμή υποστηρίζουν επιθέσεις μακριά από τη βάση.\n\nΔυνατά σημεία: Στέλνει ενισχύσεις μαζί, διατηρεί στρατιωτική πίεση και αντιδρά στις ελλείψεις τροφίμων.\n\nΑντιμετώπιση: Πολεμήστε για τον έλεγχο νέων χωραφιών με σιτάρι και επιτεθείτε στα κτίρια υποστήριξής του κοντά στην πρώτη γραμμή. Επιτεθείτε πριν οι ομάδες των πολεμιστών του είναι έτοιμες.\n\nΠειραματική AI. Μέτρια δυσκολία· οι προτάσεις αντιμετώπισης δεν είναι βαθμολογίες από συγκριτικές δοκιμές.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Επεκτείνεται έχοντας κατά νου τις προμήθειες τροφίμων και υποστηρίζει τα επιτιθέμενα στρατεύματά της.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+Στρατηγική: Επεκτείνεται γρήγορα και επιτίθεται σε αντιπάλους με τεράστιους στρατούς.\n\nΠλεονεκτήματα: Η ταχεία επέκταση υποστηρίζει επιθετικές στρατιωτικές επιθέσεις.\n\nΑντιμετώπιση: Αποτρέψτε την επέκτασή του. Χρησιμοποιήστε το έδαφος για να μειώσετε τον αριθμό των εχθρικών στρατευμάτων που μπορούν να πολεμήσουν ταυτόχρονα.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Επεκτείνεται γρήγορα και χτίζει μεγάλους στρατούς για επιθετικές επιθέσεις.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+Στρατηγική: Το AI δεν δίνει εντολές.\n\nΔυνατά σημεία: Ένας προβλέψιμος, ανενεργός αντίπαλος για πειράματα.\n\nΑδυναμίες: Δεν επεκτείνεται ούτε προσαρμόζεται.
 [AINone-Summary]
-An idle colony for experiments.
+Μια αδρανής αποικία για πειράματα.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+Στρατηγική: Επεκτείνεται γρήγορα αλλά σε μικρή κλίμακα. Ένας ευκολότερος αντίπαλος για την εξάσκηση της διαχείρισης αποικιών.\n\nΠλεονεκτήματα: Σας επιτρέπει να μάθετε τόσο την οικονομική διαχείριση όσο και τη μάχη.\n\nΑντιμετώπιση: Αναπτύξτε μια ισχυρότερη οικονομία και εκπαιδεύστε τον στρατό σας πριν επιτεθείτε.
 [AINumbi-Summary]
-Light, swift expansion.
+Γρήγορη επέκταση σε μικρή κλίμακα.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+Στρατηγική: Δεν επιτίθεται, αλλά χτίζει τεράστιες βάσεις και μετατρέπει ενεργά εχθρικές μονάδες στη δική του πλευρά.\n\nΔυνατά σημεία: Η επέκταση και η μετατροπή μονάδων απειλούν τους αντιπάλους χωρίς άμεσες επιθέσεις.\n\nΑντιμετώπιση: Αναπτύξτε την αποικία σας νωρίς και αποφύγετε την αποστολή μονάδων όπου ο εχθρός μπορεί να τις μετατρέψει.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+Τεράστιες βάσεις και μετατροπές αντί για επιθέσεις.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+Στρατηγική: Επιτίθεται νωρίς και δυνατά, πριν οι αντίπαλοι ολοκληρώσουν την προετοιμασία.\n\nΠλεονεκτήματα: Εκμεταλλεύεται την ανυπεράσπιστη επέκταση και την αργή στρατιωτική προετοιμασία.\n\nΑντιμετώπιση: Επιβιώστε από την πρώτη επίθεση διατηρώντας παράλληλα την οικονομία σας και μετά κάντε αντεπίθεση.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+Γρήγορες επιθέσεις που δοκιμάζουν την πρώιμη άμυνά σας.
 [Algae]
-Algae
+Φύκη
 [Alliances]
-Alliances
+Συμμαχίες
 [Beach size]
-Beach size
+Μέγεθος παραλίας
 [Blue]
-Blue
+Μπλε
 [Brown]
-Brown
+Καφέ
 [Built-in maps]
-Built-in maps
+Ενσωματωμένοι χάρτες
 [Can change in game]
-Can change in game
+Μπορεί να αλλάξει στο παιχνίδι
 [Closed]
-Closed
+Κλειστό
 [Colonies]
-Colonies
+Αποικίες
 [Colony]
-Colony
+Αποικία
 [Concrete islands]
-Concrete islands
+Χωριστά νησιά
 [Conquest only]
-Conquest only
+Μόνο κατάκτηση
 [Conquest or prestige]
-Conquest or prestige
+Κατάκτηση ή κύρος
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+Δεν ήταν δυνατή η εκκίνηση αυτού του χάρτη. Η ρύθμισή σας διατηρείται. δοκιμάστε ξανά.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+Δεν ήταν δυνατή η φόρτωση αυτού του χάρτη. Επιλέξτε άλλο χάρτη ή δοκιμάστε ξανά.
 [Crater lakes]
-Crater lakes
+Λίμνες κρατήρα
 [Custom]
-Custom
+Προσαρμοσμένο
 [Custom teams]
-Custom teams
+Προσαρμοσμένες ομάδες
 [Cyan]
-Cyan
+Κυανό
 [Desert weight]
-Desert weight
+Στάθμιση ερήμου
 [Easy]
-Easy
+Εύκολο
 [Explore as you play]
-Explore as you play
+Εξερευνήστε καθώς παίζετε
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+Οι επιπλέον αναθέσεις αποικιών διατηρούνται για μεγαλύτερους χάρτες.
 [Extra islands]
-Extra islands
+Επιπλέον νησιά
 [FFA]
-FFA
+Όλοι εναντίον όλων
 [Fruit]
-Fruit
+Φρούτα
 [Game Rules]
-Game Rules
+Κανόνες παιχνιδιού
 [Game speed]
-Game speed
+Ταχύτητα παιχνιδιού
 [Generate & play]
-Generate & play
+Δημιουργήστε και παίξτε
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+Δώστε σε τουλάχιστον έναν τύπο εδάφους μη μηδενικό βάρος.
 [Grass weight]
-Grass weight
+Στάθμιση χλόης
 [Gray]
-Gray
+Γκρι
 [Green]
-Green
+Πράσινο
 [Hard]
-Hard
+Δύσκολο
 [Height]
-Height
+Ύψος
 [Invalid colony count.]
-Invalid colony count.
+Μη έγκυρος αριθμός αποικιών.
 [Island size]
-Island size
+Μέγεθος νησιού
 [Islands]
-Islands
+Νησιά
 [Isles]
-Isles
+Νησίδες
 [Lake density]
-Lake density
+Πυκνότητα λιμνών
 [Landscape]
-Landscape
+Τοπίο
 [Last colony standing]
-Last colony standing
+Τελευταία επιζώσα αποικία
 [Layout]
-Layout
+Διάταξη
 [Locked teams]
-Locked teams
+Κλειδωμένες ομάδες
 [Magenta]
-Magenta
+Ματζέντα
 [Map]
-Map
+Χάρτης
 [Map knowledge]
-Map knowledge
+Γνώση χάρτη
 [Match finished]
-Match finished
+Ο αγώνας ολοκληρώθηκε
 [Medium]
-Medium
+Μεσαίο
 [Medium - Experimental]
-Medium - Experimental
+Μεσαίο - Πειραματικό
 [No AI orders]
-No AI orders
+Χωρίς εντολές AI
 [Old islands]
-Old islands
+Παλιά νησιά
 [Old random]
-Old random
+Παλιό τυχαίο
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+Ανοίξτε τουλάχιστον μία αποικία για να ξεκινήσετε έναν αγώνα.
 [Open book]
-Open book
+Αποκαλυφμένος κόσμος
 [Pink]
-Pink
+Ροζ
 [Play this map]
-Play this map
+Παίξτε σε αυτόν τον χάρτη
 [Players & Teams]
-Players & Teams
+Παίκτες & Ομάδες
 [Premade maps]
-Premade maps
+Προκατασκευασμένοι χάρτες
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+Έτοιμη η προεπισκόπηση. Η έναρξη του παιχνιδιού χρησιμοποιεί αυτόν ακριβώς τον χάρτη.
 [Purple]
-Purple
+Μωβ
 [Quick clash]
-Quick clash
+Γρήγορη μάχη
 [Random map]
-Random map
+Τυχαίος χάρτης
 [Red]
-Red
+Κόκκινο
 [Repeat landscape]
-Repeat landscape
+Επανάληψη τοπίου
 [Resources]
-Resources
+Πόροι
 [Restore standard rules]
-Restore standard rules
+Επαναφέρετε τους τυπικούς κανόνες
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+Το αποκαλυπτόμενο έδαφος δεν αποκαλύπτει όλη την εχθρική δραστηριότητα.
 [River]
-River
+Ποτάμι
 [River width]
-River width
+Πλάτος ποταμού
 [Sand weight]
-Sand weight
+Στάθμιση άμμου
 [Select a valid map.]
-Select a valid map.
+Επιλέξτε έναν έγκυρο χάρτη.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+Ο κοινός έλεγχος απαιτεί διαθέσιμη θέση για παίκτη ή AI (έως 12).
 [Smoothing]
-Smoothing
+Εξομάλυνση
 [Standard]
-Standard
+Τυπικό
 [Start game]
-Start game
+Ξεκινήστε το παιχνίδι
 [Starting workers]
-Starting workers
+Αρχικοί εργάτες
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+Αρχικοί εργάτες: καρτέλα Κανόνες παιχνιδιού.
 [Swamp]
-Swamp
+Βάλτος
 [Team]
-Team
+Ομάδα
 [Terrain]
-Terrain
+Έδαφος
 [Terrain revealed]
-Terrain revealed
+Το έδαφος αποκαλύφθηκε
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+Δοκιμάστε ένα σύνολο κανόνων και μετά κάντε το δικό σας.
 [Victory]
-Victory
+Νίκη
 [Watch game]
-Watch game
+Παρακολουθήστε το παιχνίδι
 [Water weight]
-Water weight
+Στάθμιση νερού
 [White]
-White
+Λευκό
 [Width]
-Width
+Πλάτος
 [Yellow]
-Yellow
+Κίτρινο
 [You]
-You
+Εσύ
 [You + AI]
-You + AI
+Εσείς + AI
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+Εσείς και η AI δίνετε εντολές. Καταλαμβάνει δύο θέσεις παικτών και AI.
 [You vs all]
-You vs all
+Εσείς εναντίον όλων
 [Your maps]
-Your maps
+Οι χάρτες σας
 [colonies]
-colonies
+αποικίες
 [* Changed from standard.]
-* Changed from standard.
+* Άλλαξε από το τυπικό.
 [World & diplomacy]
-World & diplomacy
+Κόσμος και διπλωματία
 [Starting conditions & pace]
-Starting conditions & pace
+Συνθήκες και ρυθμός εκκίνησης
 [Inactive]
-Inactive
+Ανενεργό
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 εργάτες / 2x ταχύτητα
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+Αλλάζει το ρυθμό όλης της προσομοίωσης.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+Επιλέξτε εάν οι ομάδες μπορούν να αλλάξουν κατά τη διάρκεια του αγώνα.
 [Classic colony building]
-Classic colony building
+Ανάπτυξη παραδοσιακής αποικίας
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+Οι διαστάσεις και ο αριθμός αποικιών ορίζονται παραπάνω.
 [Generate & watch]
-Generate & watch
+Δημιουργήστε και παρακολουθήστε
 [Info]
-Info
+Πληροφορίες
 [Map-defined starting units]
-Map-defined starting units
+Μονάδες εκκίνησης καθορισμένες από τον χάρτη
 [No maps in this library.]
-No maps in this library.
+Δεν υπάρχουν χάρτες σε αυτήν τη βιβλιοθήκη.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+Οι έτοιμοι χάρτες διατηρούν τις αρχικές μονάδες που όρισε ο δημιουργός τους.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+Έτοιμος χάρτης: αλλάζει μόνο η ταχύτητα (2x)
 [Start with terrain known]
-Start with terrain known
+Ξεκινήστε με γνωστό έδαφος
 [This colony will not join the match.]
-This colony will not join the match.
+Αυτή η αποικία δεν θα συμμετάσχει στον αγώνα.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+Αυτό το τοπίο χρησιμοποιεί μια συνταγή σταθερού εδάφους.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+Αυτό το τοπίο χρησιμοποιεί σταθερή τοποθέτηση πόρων.
 [Win through conquest]
-Win through conquest
+Νίκη μέσω της κατάκτησης
 [You control this colony.]
-You control this colony.
+Εσείς ελέγχετε αυτήν την αποικία.
 [controllers]
-controllers
+παίκτες και AI
 [Use]
-Use
+Επιλέξτε
 [Lime]
-Lime
+Πράσινο λάιμ
 [Teal]
-Teal
+Γαλαζοπράσινο
 [Azure]
-Azure
+Μπλε του ουρανού
 [Updating map preview...]
-Updating map preview...
+Ενημέρωση προεπισκόπησης χάρτη...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+Η δημιουργία απέτυχε. Αλλάξτε τις ρυθμίσεις ή ξεκινήστε το παιχνίδι για νέα προσπάθεια.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+Η προεπισκόπηση δεν είναι διαθέσιμη. Αλλάξτε τις ρυθμίσεις ή ξεκινήστε το παιχνίδι για να προσπαθήσετε ξανά.
 [automatic torus view]
 Αυτόματη τοροειδής προβολή
 [toggle torus view]
 Εναλλαγή 2D / τοροειδούς προβολής
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+Το 2 εναντίον 2 απαιτεί τέσσερις ανοιχτές αποικίες. Το Εσείς εναντίον όλων απαιτεί ανθρώπινο παίκτη.
 [Alliance]
-Alliance
+Συμμαχία
 [Choose a rule to change it.]
-Choose a rule to change it.
+Επιλέξτε έναν κανόνα για να τον αλλάξετε.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+Η νίκη μόνο για κατάκτηση απενεργοποιεί τη νίκη κύρους. Τα σενάρια χαρτών εξακολουθούν να ισχύουν.
 [Control]
-Control
+Έλεγχος
 [Controller]
-Controller
+Ελέγχεται από
 [Generate preview]
-Generate preview
+Δημιουργία προεπισκόπησης
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+Η δημιουργία απέτυχε. Αλλάξτε τις ρυθμίσεις ή δοκιμάστε ξανά.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+Οι ρυθμίσεις χάρτη άλλαξαν. Δημιουργήστε μια νέα προεπισκόπηση ή ξεκινήστε.
 [Map source]
-Map source
+Πηγή χάρτη
 [Map-defined]
-Map-defined
+Καθορισμένο από τον χάρτη
 [Match format]
-Match format
+Μορφή παιχνιδιού
 [No current preview]
-No current preview
+Δεν υπάρχει τρέχουσα προεπισκόπηση
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+Γρήγορη μάχη: διπλή ταχύτητα. οι χάρτες που δημιουργούνται ξεκινούν με 8 εργαζόμενους.
 [Reroll]
-Reroll
+Δημιουργήστε έναν άλλο χάρτη
 [Ruleset]
-Ruleset
+Σύνολο κανόνων
 [Select a map from the library.]
-Select a map from the library.
+Επιλέξτε έναν χάρτη από τη βιβλιοθήκη.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+Ο αρχικός αριθμός εργαζομένων ισχύει μόνο για χάρτες που δημιουργούνται.
 [Unavailable]
-Unavailable
+Μη διαθέσιμο
 [Use selection]
-Use selection
+Χρησιμοποιήστε την επιλογή
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+Γρήγορη μάχη σε προκατασκευασμένους χάρτες: αλλάζει μόνο η ταχύτητα (διπλή ταχύτητα).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+Δημιουργήστε μια προεπισκόπηση για να εξερευνήσετε αυτόν τον κόσμο.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+Περισσότεροι εργαζόμενοι επιταχύνουν την ανάπτυξη των αποικιών. Αυτή η ρύθμιση αλλάζει τον χάρτη που δημιουργείται.

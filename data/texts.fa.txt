@@ -301,7 +301,7 @@ end
 [enter]
 enter
 [equals]
-equals
+برابر است
 [ERROR_CANT_LOAD_MAP]
 بارگذاری نقشه ممکن نشد: پرونده خراب است یا نسخهٔ آن سازگار نیست.
 [escape]
@@ -479,7 +479,7 @@ windows چپ
 [left]
 چپ
 [Leo: nur ein erster Test]
-test
+تست کنید
 [level]
 رتبه:
 [levels]
@@ -861,7 +861,7 @@ shift-%0
 [Sort By]
 مرتب کردن از روی
 [space]
-space
+کلید فاصله
 [start mission]
 شروع مأموریت
 [start new campaign]
@@ -1217,7 +1217,7 @@ tab
 [game speed help]
 فقط برای بازی تک‌نفره و بازپخش‌ها. بازی چندنفره با سرعت 1x اجرا می‌شود.
 [AICortex-Description]
-Cortex - هوش مصنوعی آزمایشی سه‌لایه. در حال توسعه.
+Cortex به سمت مزارع گندم جدید گسترش می یابد و گروه هایی از جنگجویان را با پشتیبانی مسافرخانه ها و بیمارستان های نزدیک خط مقدم به نبرد می فرستد. درجه سختی متوسط. تجربی.
 [ERROR_CANT_SAVE_CAMPAIGN]
 ذخیرهٔ کارزار ممکن نشد. بررسی کنید که پوشهٔ مقصد وجود داشته باشد، قابل نوشتن باشد و فضای خالی داشته باشید.
 [AICortex]
@@ -1227,332 +1227,332 @@ Cortex
 [Units still working: %0]
 هنوز مشغول: %0
 [2 vs 2]
-2 vs 2
+2 در مقابل 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+راهبرد هوش مصنوعی و روش مقابله
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+استراتژی: با احتیاط گسترش می یابد و روی نقشه ها با منابع کم عملکرد خوبی دارد.\n\nنقاط قوت: گسترش محدود در بازی هایی با منابع کمیاب موثر است.\n\nپیشنهاد مقابله: قلمرو را زودتر اشغال کنید. تصور نکنید که کمبود منابع باعث تضعیف این هوش مصنوعی می شود.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+گسترش محتاطانه؛ با منابع کمیاب عملکرد خوبی دارد.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+استراتژی: منابع غذایی را مدیریت می کند، به سمت مزارع گندم جدید گسترش می یابد و گروه های متوالی از جنگجویان را جمع می کند. مسافرخانه ها و بیمارستان های نزدیک خط مقدم از حملات دور از پایگاه پشتیبانی می کنند.\n\nنقاط قوت: نیروهای کمکی را با هم می فرستد، فشار نظامی را حفظ می کند و به کمبود مواد غذایی واکنش نشان می دهد.\n\nپیشنهاد مقابله: برای کنترل مزارع گندم جدید بجنگید و به ساختمان های پشتیبانی آن در نزدیکی خط مقدم حمله کنید. قبل از اینکه گروه های جنگجوی آن آماده شوند، حمله کنید.\n\nهوش مصنوعی آزمایشی با درجه سختی متوسط. پیشنهادهای مقابله، امتیازدهی بر پایه آزمون عملکرد نیستند.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+گسترش با تأمین غذا و موج‌های حمله با پشتیبانی.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+استراتژی: به سرعت گسترش می یابد و با ارتش های عظیم به مخالفان حمله می کند.\n\nنقاط قوت: گسترش سریع از حملات نظامی تهاجمی پشتیبانی می کند.\n\nپیشنهاد مقابله: از گسترش آن جلوگیری کنید. از زمین برای کاهش تعداد نیروهای دشمن که می توانند به یکباره بجنگند، استفاده کنید.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+به سرعت گسترش می یابد و ارتش های بزرگی برای حملات تهاجمی می سازد.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+استراتژی: هوش مصنوعی هیچ فرمانی نمی دهد.\n\nنقاط قوت: یک حریف قابل پیش بینی و غیر فعال برای آزمایش.\n\nنقاط ضعف: گسترش یا تطبیق نمی یابد.
 [AINone-Summary]
-An idle colony for experiments.
+یک مستعمره بیکار برای آزمایش.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+استراتژی: به سرعت اما در مقیاس کوچک گسترش می یابد. حریفی آسان تر برای تمرین مدیریت کلنی.\n\nنقاط قوت: به شما امکان می دهد هم مدیریت اقتصادی و هم مبارزه را یاد بگیرید.\n\nپیشنهاد مقابله: اقتصاد قوی تری ایجاد کنید و ارتش خود را قبل از حمله آموزش دهید.
 [AINumbi-Summary]
-Light, swift expansion.
+گسترش سریع در مقیاس کوچک.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+استراتژی: حمله نمی کند، اما پایگاه های عظیمی را می سازد و به طور فعال واحدهای دشمن را به سمت خود تبدیل می کند.\n\nنقاط قوت: گسترش و تبدیل واحد، مخالفان را بدون حملات مستقیم تهدید می کند.\n\nپیشنهاد مقابله: مستعمره خود را زودتر توسعه دهید و از فرستادن واحدهایی که دشمن می تواند آنها را تبدیل کند، خودداری کنید.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+پایگاه‌های بزرگ و جذب نیروهای دشمن به جای حمله.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+استراتژی: حمله زودهنگام و با قدرت، قبل از اینکه حریف آماده سازی را تمام کند.\n\nنقاط قوت: از گسترش بدون دفاع و آمادگی نظامی کند بهره برداری می کند.\n\nپیشنهاد مقابله: با حفظ اقتصاد خود از اولین حمله جان سالم به در ببرید، سپس ضدحمله کنید.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+حملات سریعی که دفاع اولیه شما را آزمایش می کند.
 [Algae]
-Algae
+مقدار جلبک
 [Alliances]
-Alliances
+اتحادها
 [Beach size]
-Beach size
+اندازه ساحل
 [Blue]
-Blue
+آبی
 [Brown]
-Brown
+قهوه ای
 [Built-in maps]
-Built-in maps
+نقشه های داخلی
 [Can change in game]
-Can change in game
+می تواند در بازی تغییر کند
 [Closed]
-Closed
+بسته
 [Colonies]
-Colonies
+مستعمرات
 [Colony]
-Colony
+مستعمره
 [Concrete islands]
-Concrete islands
+جزیره‌های جدا
 [Conquest only]
-Conquest only
+فقط فتح
 [Conquest or prestige]
-Conquest or prestige
+تسخیر یا پرستیژ
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+این نقشه راه اندازی نشد. تنظیمات شما حفظ می شود. دوباره امتحان کنید
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+این نقشه بارگیری نشد. نقشه دیگری را انتخاب کنید یا دوباره امتحان کنید.
 [Crater lakes]
-Crater lakes
+دریاچه های دهانه
 [Custom]
-Custom
+سفارشی
 [Custom teams]
-Custom teams
+تیم های سفارشی
 [Cyan]
-Cyan
+فیروزه ای
 [Desert weight]
-Desert weight
+سهم بیابان
 [Easy]
-Easy
+آسان
 [Explore as you play]
-Explore as you play
+در حین بازی کاوش کنید
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+تنظیمات مستعمره‌های اضافی برای بازگشت به نقشه‌های بزرگ‌تر حفظ می‌شود.
 [Extra islands]
-Extra islands
+جزایر اضافی
 [FFA]
-FFA
+همه علیه همه
 [Fruit]
-Fruit
+میوه
 [Game Rules]
-Game Rules
+قوانین بازی
 [Game speed]
-Game speed
+سرعت بازی
 [Generate & play]
-Generate & play
+تولید و بازی کنید
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+حداقل به یک نوع زمین وزنی غیر صفر بدهید.
 [Grass weight]
-Grass weight
+سهم چمنزار
 [Gray]
-Gray
+خاکستری
 [Green]
-Green
+سبز
 [Hard]
-Hard
+دشوار
 [Height]
-Height
+ارتفاع
 [Invalid colony count.]
-Invalid colony count.
+تعداد کلنی نامعتبر است.
 [Island size]
-Island size
+اندازه جزیره
 [Islands]
-Islands
+جزایر
 [Isles]
-Isles
+مجمع‌الجزایر
 [Lake density]
-Lake density
+تراکم دریاچه
 [Landscape]
-Landscape
+چشم انداز
 [Last colony standing]
-Last colony standing
+آخرین مستعمره باقی‌مانده
 [Layout]
-Layout
+طرح بندی
 [Locked teams]
-Locked teams
+تیم های قفل شده
 [Magenta]
-Magenta
+سرخابی
 [Map]
-Map
+نقشه
 [Map knowledge]
-Map knowledge
+دانش نقشه
 [Match finished]
-Match finished
+مسابقه تمام شد
 [Medium]
-Medium
+متوسط
 [Medium - Experimental]
-Medium - Experimental
+متوسط - تجربی
 [No AI orders]
-No AI orders
+بدون دستور هوش مصنوعی
 [Old islands]
-Old islands
+جزایر قدیمی
 [Old random]
-Old random
+تصادفی قدیمی
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+حداقل یک کلنی را برای شروع مسابقه باز کنید.
 [Open book]
-Open book
+دنیای آشکار شده
 [Pink]
-Pink
+صورتی
 [Play this map]
-Play this map
+این نقشه را بازی کنید
 [Players & Teams]
-Players & Teams
+بازیکنان و تیم ها
 [Premade maps]
-Premade maps
+نقشه های از پیش ساخته شده
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+پیش نمایش آماده است. شروع بازی دقیقاً از این نقشه استفاده می کند.
 [Purple]
-Purple
+بنفش
 [Quick clash]
-Quick clash
+نبرد سریع
 [Random map]
-Random map
+نقشه تصادفی
 [Red]
-Red
+قرمز
 [Repeat landscape]
-Repeat landscape
+منظره را تکرار کنید
 [Resources]
-Resources
+منابع
 [Restore standard rules]
-Restore standard rules
+قوانین استاندارد را بازیابی کنید
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+زمین آشکار شده همه فعالیت های دشمن را آشکار نمی کند.
 [River]
-River
+رودخانه
 [River width]
-River width
+عرض رودخانه
 [Sand weight]
-Sand weight
+سهم شن
 [Select a valid map.]
-Select a valid map.
+یک نقشه معتبر انتخاب کنید.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+کنترل مشترک به یک جایگاه خالی برای کنترل‌کننده نیاز دارد (حداکثر 12).
 [Smoothing]
-Smoothing
+صاف کردن
 [Standard]
-Standard
+استاندارد
 [Start game]
-Start game
+بازی را شروع کنید
 [Starting workers]
-Starting workers
+کارگران اولیه
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+کارگران اولیه: برگه قوانین بازی.
 [Swamp]
-Swamp
+مرداب
 [Team]
-Team
+تیم
 [Terrain]
-Terrain
+زمین
 [Terrain revealed]
-Terrain revealed
+زمین آشکار شد
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+یک مجموعه قوانین را امتحان کنید، سپس آن را برای خود بسازید.
 [Victory]
-Victory
+پیروزی
 [Watch game]
-Watch game
+تماشای بازی
 [Water weight]
-Water weight
+سهم آب
 [White]
-White
+سفید
 [Width]
-Width
+عرض
 [Yellow]
-Yellow
+زرد
 [You]
-You
+شما
 [You + AI]
-You + AI
+شما + هوش مصنوعی
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+شما و هوش مصنوعی هر دو فرمان می‌دهید. دو جایگاه کنترل‌کننده اشغال می‌شود.
 [You vs all]
-You vs all
+شما علیه همه
 [Your maps]
-Your maps
+نقشه های شما
 [colonies]
-colonies
+مستعمرات
 [* Changed from standard.]
-* Changed from standard.
+* تغییر از استاندارد.
 [World & diplomacy]
-World & diplomacy
+جهان و دیپلماسی
 [Starting conditions & pace]
-Starting conditions & pace
+شرایط شروع و سرعت
 [Inactive]
-Inactive
+غیر فعال
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 کارگر / سرعت 2 برابر
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+سرعت کل شبیه سازی را تغییر می دهد.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+انتخاب کنید که آیا تیم ها می توانند در طول مسابقه تغییر کنند یا خیر.
 [Classic colony building]
-Classic colony building
+توسعه مستعمره های سنتی
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+ابعاد و تعداد کلنی ها در بالا تنظیم شده است.
 [Generate & watch]
-Generate & watch
+تولید و تماشا کنید
 [Info]
-Info
+اطلاعات
 [Map-defined starting units]
-Map-defined starting units
+واحدهای شروع تعریف شده توسط نقشه
 [No maps in this library.]
-No maps in this library.
+هیچ نقشه ای در این کتابخانه وجود ندارد.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+نقشه‌های آماده واحدهای آغازینی را که سازنده تعیین کرده حفظ می‌کنند.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+پیش ساخته: فقط سرعت تغییر می کند (2x)
 [Start with terrain known]
-Start with terrain known
+با زمین شناخته شده شروع کنید
 [This colony will not join the match.]
-This colony will not join the match.
+این کلنی به مسابقه ملحق نخواهد شد.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+این نوع منظره از ترکیب ثابت زمین استفاده می‌کند.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+این منظره از محل منابع ثابت استفاده می کند.
 [Win through conquest]
-Win through conquest
+از طریق فتح پیروز شوید
 [You control this colony.]
-You control this colony.
+شما کنترل این کلنی را دارید.
 [controllers]
-controllers
+کنترل‌کننده‌ها
 [Use]
-Use
+انتخاب کنید
 [Lime]
-Lime
+سبز لیمویی
 [Teal]
-Teal
+آبی سبز
 [Azure]
-Azure
+آبی آسمانی
 [Updating map preview...]
-Updating map preview...
+در حال به روز رسانی پیش نمایش نقشه...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+ساخت نقشه ناموفق بود. تنظیمات را تغییر دهید یا برای تلاش دوباره «شروع» را بزنید.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+پیش نمایش در دسترس نیست. تنظیمات را تغییر دهید یا بازی را اجرا کنید تا دوباره امتحان کنید.
 [automatic torus view]
 نمای خودکار چنبره
 [toggle torus view]
 تغییر بین نمای دوبعدی و چنبره
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2 در مقابل 2 به چهار مستعمره فعال نیاز دارد. شما علیه همه به یک بازیکن انسانی نیاز دارد.
 [Alliance]
-Alliance
+اتحاد
 [Choose a rule to change it.]
-Choose a rule to change it.
+یک قانون برای تغییر آن انتخاب کنید.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+پیروزی فقط فتح، پیروزی پرستیژ را از کار می‌اندازد. اسکریپت های نقشه همچنان اعمال می شوند.
 [Control]
-Control
+کنترل مستعمره
 [Controller]
-Controller
+کنترل کننده کلنی
 [Generate preview]
-Generate preview
+ایجاد پیش نمایش
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+ساخت نقشه ناموفق بود. تنظیمات را تغییر دهید یا دوباره تلاش کنید.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+تنظیمات نقشه تغییر کرد. یک پیش نمایش جدید ایجاد کنید یا شروع کنید.
 [Map source]
-Map source
+منبع نقشه
 [Map-defined]
-Map-defined
+طبق نقشه
 [Match format]
-Match format
+فرمت بازی
 [No current preview]
-No current preview
+پیش نمایش فعلی وجود ندارد
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+نبرد سریع: سرعت دو برابر. نقشه های تولید شده با 8 کارگر شروع می شود.
 [Reroll]
-Reroll
+نقشه دیگری ایجاد کنید
 [Ruleset]
-Ruleset
+مجموعه قوانین
 [Select a map from the library.]
-Select a map from the library.
+نقشه ای را از کتابخانه انتخاب کنید.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+تعداد اولیه کارگران فقط برای نقشه های تولید شده اعمال می شود.
 [Unavailable]
-Unavailable
+در دسترس نیست
 [Use selection]
-Use selection
+از انتخاب استفاده کنید
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+نبرد سریع در نقشه های از پیش ساخته: فقط سرعت تغییر می کند (سرعت دو برابر).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+یک پیش نمایش برای کاوش در این جهان ایجاد کنید.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+کارگران بیشتر رشد مستعمره ها را تسریع می کنند. این تنظیم نقشه تولید شده را تغییر می دهد.

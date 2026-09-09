@@ -261,7 +261,7 @@ Védelem
 [Delete game]
 Kijelölt játék törlése
 [delete]
-Delete
+Törlés
 [desert]
 sivatag
 [destroy building]
@@ -1217,7 +1217,7 @@ Sebesség: 1x (többjátékos)
 [game speed help]
 Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
 [AICortex-Description]
-Cortex - Kísérleti, háromrétegű MI. Fejlesztés alatt.
+A Cortex új búzamezők felé terjeszkedik, és harcba küldi a harcosok csoportjait, akiket étkezdék és kórházak támogatnak a frontvonal közelében. Közepes nehézségű. Kísérleti.
 [ERROR_CANT_LOAD_MAP]
 A térkép nem tölthető be: a fájl sérült vagy nem kompatibilis verziójú.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1231,330 +1231,330 @@ Még dolgozó egységek: %0
 [2 vs 2]
 2 vs 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+MI-stratégia és ellenjáték
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+Stratégia: Óvatosan bővül, és kevés erőforrással rendelkező térképeken jól teljesít.\n\nErősségek: A korlátozott bővítés hatékony a szűkös erőforrásokkal rendelkező játékokban.\n\nJavasolt ellenjáték: Foglald el a területet korán. Ne feltételezd, hogy az erőforrások hiánya gyengíti ezt az AI-t.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Óvatos terjeszkedés; szűkös erőforrásokkal jól teljesít.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+Stratégia: Kezeli az élelmiszerellátást, terjeszkedik új búzaföldek felé, és egymás utáni harcoscsoportokat állít össze. A frontvonal közelében található étkezdék és kórházak támogatják a támadásokat a bázistól távol.\n\nErősségek: Erősítést küld együtt, fenntartja a katonai nyomást, és reagál az élelmiszerhiányra.\n\nJavasolt ellenjáték: Harcolj az új búzatáblák felett, és támadd meg a frontvonal közelében lévő támogató épületeket. Támadj, mielőtt a harcosok csoportjai készen állnak.\n\nKísérleti MI. Közepes nehézség; az ellenjátékra vonatkozó javaslatok nem összehasonlító teszteken alapuló értékelések.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Az élelmiszer-ellátást szem előtt tartva terjeszkedik, és támogatja támadó csapatait.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+Stratégia: Gyorsan terjeszkedik, és hatalmas seregekkel támadja meg az ellenfeleket.\n\nErősségek: A gyors terjeszkedés támogatja az agresszív katonai támadásokat.\n\nJavasolt ellenjáték: Akadályozd a terjeszkedését. Használd a terepet az egyszerre harcra képes ellenséges csapatok számának csökkentésére.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Gyorsan terjeszkedik és nagy hadseregeket épít fel az agresszív támadásokhoz.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+Stratégia: Az AI nem ad parancsokat.\n\nErősségek: Kiszámítható, inaktív ellenfél a kísérletekben.\n\nGyengeségek: Nem terjeszkedik és nem alkalmazkodik.
 [AINone-Summary]
-An idle colony for experiments.
+Tétlen kolónia kísérletekhez.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+Stratégia: Gyorsan, de kis léptékben bővül. Könnyebb ellenfél a telepkezelés gyakorlásához.\n\nErősségek: Lehetővé teszi a gazdaságirányítás és a harc elsajátítását.\n\nJavasolt ellenjáték: Fejlessz erősebb gazdaságot, és képezd ki a hadseregedet, mielőtt támadsz.
 [AINumbi-Summary]
-Light, swift expansion.
+Gyors bővítés kis léptékben.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+Stratégia: Nem támad, hanem hatalmas bázisokat épít fel, és aktívan a saját oldalára fordítja az ellenséges egységeket.\n\nErősségek: A terjeszkedés és az egységátalakítás közvetlen támadások nélkül fenyegeti az ellenfeleket.\n\nJavasolt ellenjáték: Fejleszd korán a kolóniádat, és ne küldj egységeket oda, ahol az ellenség átalakíthatja őket.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+Hatalmas bázisok és átalakítások támadások helyett.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+Stratégia: Korán és erőteljesen támad, mielőtt az ellenfél befejezné a felkészülést.\n\nErősségek: Kiaknázza a védtelen terjeszkedést és a lassú katonai felkészülést.\n\nJavasolt ellenjáték: Vészeld át az első támadást a gazdaságod fenntartásával, majd indíts ellentámadást.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+Gyors támadások, amelyek tesztelik a korai védekezést.
 [Algae]
-Algae
+Alga
 [Alliances]
-Alliances
+Szövetségek
 [Beach size]
-Beach size
+Strand mérete
 [Blue]
-Blue
+Kék
 [Brown]
-Brown
+Barna
 [Built-in maps]
-Built-in maps
+Beépített térképek
 [Can change in game]
-Can change in game
+Változhat a játékban
 [Closed]
-Closed
+Zárva
 [Colonies]
-Colonies
+Kolóniák
 [Colony]
-Colony
+Kolónia
 [Concrete islands]
-Concrete islands
+Különálló szigetek
 [Conquest only]
-Conquest only
+Csak hódítás
 [Conquest or prestige]
-Conquest or prestige
+Hódítás vagy presztízs
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+Nem sikerült elindítani ezt a térképet. A beállítás megmarad; próbáld újra.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+Nem sikerült betölteni ezt a térképet. Válasszon másik térképet, vagy próbálja újra.
 [Crater lakes]
-Crater lakes
+Kráter tavak
 [Custom]
-Custom
+Egyedi
 [Custom teams]
-Custom teams
+Egyedi csapatok
 [Cyan]
-Cyan
+Cián
 [Desert weight]
-Desert weight
+Sivatag súlyozása
 [Easy]
-Easy
+Könnyű
 [Explore as you play]
-Explore as you play
+Fedezze fel játék közben
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+Az extra kolónia-hozzárendelések megmaradnak a nagyobb térképeknél.
 [Extra islands]
-Extra islands
+Extra szigetek
 [FFA]
-FFA
+Mindenki mindenki ellen
 [Fruit]
-Fruit
+Gyümölcs
 [Game Rules]
-Game Rules
+Játékszabályok
 [Game speed]
-Game speed
+A játék sebessége
 [Generate & play]
-Generate & play
+Generálás és játék
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+Legalább egy tereptípusnak adjon nullától eltérő súlyt.
 [Grass weight]
-Grass weight
+Fű súlyozása
 [Gray]
-Gray
+Szürke
 [Green]
-Green
+Zöld
 [Hard]
-Hard
+Nehéz
 [Height]
-Height
+Magasság
 [Invalid colony count.]
-Invalid colony count.
+Érvénytelen kolóniaszám.
 [Island size]
-Island size
+Sziget mérete
 [Islands]
-Islands
+Szigetek
 [Isles]
-Isles
+Kis szigetek
 [Lake density]
-Lake density
+Tavak sűrűsége
 [Landscape]
-Landscape
+Táj
 [Last colony standing]
-Last colony standing
+Utolsó túlélő kolónia
 [Layout]
-Layout
+Elrendezés
 [Locked teams]
-Locked teams
+Lezárt csapatok
 [Magenta]
 Magenta
 [Map]
-Map
+Térkép
 [Map knowledge]
-Map knowledge
+Térképismeret
 [Match finished]
-Match finished
+A mérkőzés befejeződött
 [Medium]
-Medium
+Közepes
 [Medium - Experimental]
-Medium - Experimental
+Közepes – Kísérleti
 [No AI orders]
-No AI orders
+Az MI nem ad parancsokat
 [Old islands]
-Old islands
+Régi szigetek
 [Old random]
-Old random
+Régi véletlen
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+Nyisson meg legalább egy kolóniát a mérkőzés elindításához.
 [Open book]
-Open book
+Felfedett világ
 [Pink]
-Pink
+Rózsaszín
 [Play this map]
-Play this map
+Játék ezen a térképen
 [Players & Teams]
-Players & Teams
+Játékosok és csapatok
 [Premade maps]
-Premade maps
+Előre elkészített térképek
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+Az előnézet készen áll. A játék elindítása pontosan ezt a térképet használja.
 [Purple]
-Purple
+Lila
 [Quick clash]
-Quick clash
+Gyors csata
 [Random map]
-Random map
+Véletlenszerű térkép
 [Red]
-Red
+Piros
 [Repeat landscape]
-Repeat landscape
+Táj ismétlése
 [Resources]
-Resources
+Erőforrások
 [Restore standard rules]
-Restore standard rules
+Alapértelmezett szabályok visszaállítása
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+A feltárt terep nem fedi fel az összes ellenséges tevékenységet.
 [River]
-River
+Folyó
 [River width]
-River width
+Folyó szélessége
 [Sand weight]
-Sand weight
+Homok súlyozása
 [Select a valid map.]
-Select a valid map.
+Válasszon érvényes térképet.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+A közös irányításhoz szabad játékos- vagy MI-hely kell (legfeljebb 12).
 [Smoothing]
-Smoothing
+Simítás
 [Standard]
-Standard
+Alapértelmezett
 [Start game]
-Start game
+Indítsa el a játékot
 [Starting workers]
-Starting workers
+Kezdeti munkások
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+Kezdeti munkások: Játékszabályok lap.
 [Swamp]
-Swamp
+Mocsár
 [Team]
-Team
+Csapat
 [Terrain]
-Terrain
+Terep
 [Terrain revealed]
-Terrain revealed
+Felfedett terep
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+Próbáljon ki egy szabályrendszert, majd tegye a sajátjának.
 [Victory]
-Victory
+Győzelem
 [Watch game]
-Watch game
+Nézd meg a játékot
 [Water weight]
-Water weight
+Víz súlyozása
 [White]
-White
+Fehér
 [Width]
-Width
+Szélesség
 [Yellow]
-Yellow
+Sárga
 [You]
-You
+Te
 [You + AI]
-You + AI
+Te + MI
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+Te és az MI is adhattok parancsokat. Két játékos- vagy MI-helyet foglal.
 [You vs all]
-You vs all
+Te mindenki ellen
 [Your maps]
-Your maps
+A térképeid
 [colonies]
-colonies
+kolóniák
 [* Changed from standard.]
-* Changed from standard.
+* Eltér az alapértelmezettől.
 [World & diplomacy]
-World & diplomacy
+Világ és diplomácia
 [Starting conditions & pace]
-Starting conditions & pace
+Indulási feltételek és tempó
 [Inactive]
-Inactive
+Inaktív
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 munkás / 2x sebesség
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+Módosítja az egész szimuláció ütemét.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+Válassza ki, hogy a csapatok változhatnak-e a mérkőzés során.
 [Classic colony building]
-Classic colony building
+Hagyományos telepfejlesztés
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+A méretek és a telepek száma fent van beállítva.
 [Generate & watch]
-Generate & watch
+Generálás és megtekintés
 [Info]
 Info
 [Map-defined starting units]
-Map-defined starting units
+A térképen meghatározott kezdő egységek
 [No maps in this library.]
-No maps in this library.
+Nincsenek térképek ebben a könyvtárban.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+Az előre elkészített térképek megtartják a kiindulási egységeiket.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+Kész térkép: csak a sebesség változik (2x)
 [Start with terrain known]
-Start with terrain known
+Kezdje ismert tereppel
 [This colony will not join the match.]
-This colony will not join the match.
+Ez a kolónia nem csatlakozik a mérkőzéshez.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+Ez a táj rögzített terepreceptet használ.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+Ez a táj rögzített erőforrás-elhelyezést használ.
 [Win through conquest]
-Win through conquest
+Nyerj hódítással
 [You control this colony.]
-You control this colony.
+Te irányítod ezt a kolóniát.
 [controllers]
-controllers
+játékosok és MI-k
 [Use]
-Use
+Válassza ki
 [Lime]
-Lime
+Lime zöld
 [Teal]
-Teal
+Kékeszöld
 [Azure]
-Azure
+Égszínkék
 [Updating map preview...]
-Updating map preview...
+Térkép előnézetének frissítése...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+A generálás nem sikerült. Módosítsa a beállításokat, vagy nyomja meg a Start gombot az újrapróbálkozáshoz.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+Az előnézet nem érhető el. Módosítsa a beállításokat, vagy indítsa el a játékot, és próbálja újra.
 [automatic torus view]
 Automatikus tórusznézet
 [toggle torus view]
 Váltás 2D és tórusznézet között
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+A 2 a 2 ellen négy nyitott kolóniát igényel. A Te mindenki ellen módhoz emberi játékos kell.
 [Alliance]
-Alliance
+Szövetség
 [Choose a rule to change it.]
-Choose a rule to change it.
+Válasszon egy szabályt a módosításhoz.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+A csak a hódításon alapuló győzelem letiltja a presztízsgyőzelmet; a térképszkriptek továbbra is érvényesek.
 [Control]
-Control
+Irányítás
 [Controller]
-Controller
+Irányító
 [Generate preview]
-Generate preview
+Előnézet generálása
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+A generálás nem sikerült. Módosítsa a beállításokat, vagy próbálja újra.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+A térkép beállításai megváltoztak. Hozzon létre egy új előnézetet vagy kezdje el.
 [Map source]
-Map source
+Térkép forrása
 [Map-defined]
-Map-defined
+Térkép által meghatározott
 [Match format]
-Match format
+Játék formátum
 [No current preview]
-No current preview
+Nincs aktuális előnézet
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+Gyors csata: dupla sebesség; A generált térképek 8 munkással kezdődnek.
 [Reroll]
-Reroll
+Hozzon létre egy másik térképet
 [Ruleset]
-Ruleset
+Szabálykészlet
 [Select a map from the library.]
-Select a map from the library.
+Válasszon térképet a könyvtárból.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+A dolgozók kezdeti száma csak a generált térképekre vonatkozik.
 [Unavailable]
-Unavailable
+Nem elérhető
 [Use selection]
-Use selection
+Használja a kijelölést
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+Gyors csata előre elkészített térképeken: csak a sebesség változik (dupla sebesség).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+Készítsen előnézetet a világ felfedezéséhez.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+Több munkás felgyorsítja a kolóniák növekedését. Ez a beállítás módosítja a generált térképet.

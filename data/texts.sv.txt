@@ -237,7 +237,7 @@ Skapa spel
 [create map]
 Skapa karta
 [credits]
-Credits
+Medverkande
 [ctrl - line]
 Ctrl - linje
 [current speed]
@@ -1227,7 +1227,7 @@ Hastighet: 1x (flerspelarläge)
 [game speed help]
 Endast för en spelare och repriser. Flerspelarpartier körs med hastigheten 1x.
 [AICortex-Description]
-Cortex - Experimentell AI med tre lager. Under utveckling.
+Cortex expanderar mot nya vetefält och skickar grupper av krigare i strid, med stöd av värdshus och sjukhus nära frontlinjen. Medelsvår. Experimentell.
 [ERROR_CANT_LOAD_MAP]
 Kartan kunde inte läsas in: filen är skadad eller har en inkompatibel version.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1239,332 +1239,332 @@ Inne: %0
 [Units still working: %0]
 Arbetar ännu: %0
 [2 vs 2]
-2 vs 2
+2 mot 2
 [AI strategy & counterplay]
-AI strategy & counterplay
+AI-strategi & motspel
 [AICastor-Profile]
-Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+Strategi: Expanderar försiktigt och presterar bra på kartor med få resurser.\n\nStyrkor: Begränsad expansion är effektiv i spel med knappa resurser.\n\nFöreslaget motspel: Ockupera territorium tidigt. Anta inte att brist på resurser kommer att försvaga denna AI.
 [AICastor-Summary]
-Conservative growth; comfortable with scarce resources.
+Försiktig expansion; fungerar bra med knappa resurser.
 [AICortex-Profile]
-Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+Strategi: Hanterar matförråd, expanderar mot nya vetefält och sätter ihop på varandra följande grupper av krigare. Värdshus och sjukhus nära frontlinjen stödjer attacker långt från basen.\n\nStyrkor: Skickar förstärkningar tillsammans, upprätthåller militärt tryck och reagerar på matbrist.\n\nFöreslaget motspel: Kämpa om kontroll över nya vetefält och attackera dess stödbyggnader nära frontlinjen. Attackera innan dess grupper av krigare är redo.\n\nExperimentell AI. Medelsvår; förslagen till motspel är inte betyg från jämförande tester.
 [AICortex-Summary]
-Food-aware growth and supported attack waves.
+Expanderar med matförråd i åtanke och stödjer sina attackerande trupper.
 [AINicowar-Profile]
-Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+Strategi: Expanderar snabbt och attackerar motståndare med enorma arméer.\n\nStyrkor: Snabb expansion stöder aggressiva militära attacker.\n\nFöreslaget motspel: Förhindra dess expansion. Använd terräng för att minska antalet fientliga trupper som kan slåss samtidigt.
 [AINicowar-Summary]
-Rapid expansion into large, aggressive armies.
+Expanderar snabbt och bygger stora arméer för aggressiva attacker.
 [AINone-Profile]
-Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+Strategi: AI ger inga kommandon.\n\nStyrkor: En förutsägbar, inaktiv motståndare för experiment.\n\nSvagheter: expanderar eller anpassar sig inte.
 [AINone-Summary]
-An idle colony for experiments.
+En inaktiv koloni för experiment.
 [AINumbi-Profile]
-Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+Strategi: Expanderar snabbt men i liten skala. En lättare motståndare för att utöva koloniförvaltning.\n\nStyrkor: Låter dig lära dig både ekonomisk förvaltning och strid.\n\nFöreslaget motspel: Utveckla en starkare ekonomi och träna din armé innan du attackerar.
 [AINumbi-Summary]
-Light, swift expansion.
+Snabb expansion i liten skala.
 [AIReachToInfinity-Profile]
-Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+Strategi: Anfaller inte, men bygger enorma baser och konverterar aktivt fiendens enheter till sin egen sida.\n\nStyrkor: Expansion och enhetsomvandling hotar motståndare utan direkta attacker.\n\nFöreslaget motspel: Utveckla din koloni tidigt och undvik att skicka enheter dit fienden kan konvertera dem.
 [AIReachToInfinity-Summary]
-Huge bases and conversion instead of attacks.
+Enorma baser och konvertering istället för attacker.
 [AIWarrush-Profile]
-Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+Strategi: Anfaller tidigt och kraftfullt innan motståndarna är färdiga med sina förberedelser.\n\nStyrkor: Utnyttjar oförsvarad expansion och långsam militär förberedelse.\n\nFöreslaget motspel: Överlev den första attacken samtidigt som du behåller din ekonomi, och gå sedan till motattack.
 [AIWarrush-Summary]
-Fast attacks that test your early defenses.
+Snabba attacker som testar ditt tidiga försvar.
 [Algae]
-Algae
+Alger
 [Alliances]
-Alliances
+Allianser
 [Beach size]
-Beach size
+Strandstorlek
 [Blue]
-Blue
+Blå
 [Brown]
-Brown
+Brun
 [Built-in maps]
-Built-in maps
+Inbyggda kartor
 [Can change in game]
-Can change in game
+Kan förändras i spelet
 [Closed]
-Closed
+Stängt
 [Colonies]
-Colonies
+Kolonier
 [Colony]
-Colony
+Koloni
 [Concrete islands]
-Concrete islands
+Åtskilda öar
 [Conquest only]
-Conquest only
+Endast erövring
 [Conquest or prestige]
-Conquest or prestige
+Erövring eller prestige
 [Could not launch this map. Your setup is retained; try again.]
-Could not launch this map. Your setup is retained; try again.
+Det gick inte att starta den här kartan. Din inställning behålls; försök igen.
 [Could not load this map. Choose another map or retry.]
-Could not load this map. Choose another map or retry.
+Det gick inte att ladda den här kartan. Välj en annan karta eller försök igen.
 [Crater lakes]
-Crater lakes
+Kratersjöar
 [Custom]
-Custom
+Anpassad
 [Custom teams]
-Custom teams
+Egna lag
 [Cyan]
 Cyan
 [Desert weight]
-Desert weight
+Ökenvikt
 [Easy]
-Easy
+Lätt
 [Explore as you play]
-Explore as you play
+Utforska medan du spelar
 [Extra colony assignments are retained for larger maps.]
-Extra colony assignments are retained for larger maps.
+Extra kolonitilldelningar behålls för större kartor.
 [Extra islands]
-Extra islands
+Extra öar
 [FFA]
-FFA
+Alla mot alla
 [Fruit]
-Fruit
+Frukt
 [Game Rules]
-Game Rules
+Spelregler
 [Game speed]
-Game speed
+Spelhastighet
 [Generate & play]
-Generate & play
+Generera och spela
 [Give at least one terrain type a nonzero weight.]
-Give at least one terrain type a nonzero weight.
+Ge minst en terrängtyp en vikt som inte är noll.
 [Grass weight]
-Grass weight
+Gräsvikt
 [Gray]
-Gray
+Grå
 [Green]
-Green
+Grönt
 [Hard]
-Hard
+Svårt
 [Height]
-Height
+Höjd
 [Invalid colony count.]
-Invalid colony count.
+Ogiltigt antal kolonier.
 [Island size]
-Island size
+Östorlek
 [Islands]
-Islands
+Öar
 [Isles]
-Isles
+Småöar
 [Lake density]
-Lake density
+Sjötäthet
 [Landscape]
-Landscape
+Landskap
 [Last colony standing]
-Last colony standing
+Sista överlevande kolonin
 [Layout]
 Layout
 [Locked teams]
-Locked teams
+Låsta lag
 [Magenta]
 Magenta
 [Map]
-Map
+Karta
 [Map knowledge]
-Map knowledge
+Kartkunskap
 [Match finished]
-Match finished
+Matchen avslutad
 [Medium]
 Medium
 [Medium - Experimental]
-Medium - Experimental
+Medium - Experimentell
 [No AI orders]
-No AI orders
+Inga AI-kommandon
 [Old islands]
-Old islands
+Gamla öar
 [Old random]
-Old random
+Äldre slumpgenerator
 [Open at least one colony to start a match.]
-Open at least one colony to start a match.
+Öppna minst en koloni för att starta en match.
 [Open book]
-Open book
+Avslöjad värld
 [Pink]
-Pink
+Rosa
 [Play this map]
-Play this map
+Spela på den här kartan
 [Players & Teams]
-Players & Teams
+Spelare och lag
 [Premade maps]
-Premade maps
+Färdiga kartor
 [Preview ready. Start plays this exact map.]
-Preview ready. Start plays this exact map.
+Förhandsvisning klar. Starta spelet använder denna exakta karta.
 [Purple]
-Purple
+Lila
 [Quick clash]
-Quick clash
+Snabb strid
 [Random map]
-Random map
+Slumpmässig karta
 [Red]
-Red
+Röd
 [Repeat landscape]
-Repeat landscape
+Upprepning av landskap
 [Resources]
-Resources
+Resurser
 [Restore standard rules]
-Restore standard rules
+Återställ standardregler
 [Revealed terrain does not reveal all enemy activity.]
-Revealed terrain does not reveal all enemy activity.
+Avslöjad terräng avslöjar inte all fiendeaktivitet.
 [River]
-River
+Flod
 [River width]
-River width
+Flodens bredd
 [Sand weight]
-Sand weight
+Sandvikt
 [Select a valid map.]
-Select a valid map.
+Välj en giltig karta.
 [Shared control needs a free controller slot (maximum 12).]
-Shared control needs a free controller slot (maximum 12).
+Delad styrning kräver en ledig plats för en spelare eller AI (högst 12).
 [Smoothing]
-Smoothing
+Utjämning
 [Standard]
 Standard
 [Start game]
-Start game
+Starta spelet
 [Starting workers]
-Starting workers
+Inledande arbetare
 [Starting workers: Game Rules tab.]
-Starting workers: Game Rules tab.
+Initiala arbetare: Fliken Spelregler.
 [Swamp]
-Swamp
+Träsk
 [Team]
-Team
+Lag
 [Terrain]
-Terrain
+Terräng
 [Terrain revealed]
-Terrain revealed
+Terräng avslöjad
 [Try a ruleset, then make it your own.]
-Try a ruleset, then make it your own.
+Prova en regeluppsättning och anpassa den sedan.
 [Victory]
-Victory
+Seger
 [Watch game]
-Watch game
+Titta på spelet
 [Water weight]
-Water weight
+Vattenvikt
 [White]
-White
+Vit
 [Width]
-Width
+Bredd
 [Yellow]
-Yellow
+Gul
 [You]
-You
+Du
 [You + AI]
-You + AI
+Du + AI
 [You and the AI both issue orders. Uses two controller slots.]
-You and the AI both issue orders. Uses two controller slots.
+Både du och AI kan ge order. Tar två platser för spelare och AI.
 [You vs all]
-You vs all
+Du mot alla
 [Your maps]
-Your maps
+Dina kartor
 [colonies]
-colonies
+kolonier
 [* Changed from standard.]
-* Changed from standard.
+* Ändrad från standard.
 [World & diplomacy]
-World & diplomacy
+Världen & diplomati
 [Starting conditions & pace]
-Starting conditions & pace
+Startförhållanden & tempo
 [Inactive]
-Inactive
+Inaktiv
 [8 workers / 2x speed]
-8 workers / 2x speed
+8 arbetare / 2x hastighet
 [Changes the pace of the whole simulation.]
-Changes the pace of the whole simulation.
+Ändrar takten i hela simuleringen.
 [Choose whether teams can change during the match.]
-Choose whether teams can change during the match.
+Välj om lag kan ändras under matchen.
 [Classic colony building]
-Classic colony building
+Traditionell koloniutveckling
 [Dimensions and colony count are set above.]
-Dimensions and colony count are set above.
+Mått och koloniantal anges ovan.
 [Generate & watch]
-Generate & watch
+Generera & titta
 [Info]
 Info
 [Map-defined starting units]
-Map-defined starting units
+Kartdefinierade startenheter
 [No maps in this library.]
-No maps in this library.
+Inga kartor i det här biblioteket.
 [Premade maps retain their authored starting units.]
-Premade maps retain their authored starting units.
+Färdiga kartor behåller de startenheter som skaparen har valt.
 [Premade: only speed changes (2x)]
-Premade: only speed changes (2x)
+Färdig karta: endast hastigheten ändras (2x)
 [Start with terrain known]
-Start with terrain known
+Börja med känd terräng
 [This colony will not join the match.]
-This colony will not join the match.
+Denna koloni kommer inte att gå med i matchen.
 [This landscape uses a fixed terrain recipe.]
-This landscape uses a fixed terrain recipe.
+Detta landskap använder ett fast terrängrecept.
 [This landscape uses fixed resource placement.]
-This landscape uses fixed resource placement.
+Detta landskap använder fast resursplacering.
 [Win through conquest]
-Win through conquest
+Vinn genom erövring
 [You control this colony.]
-You control this colony.
+Du kontrollerar den här kolonin.
 [controllers]
-controllers
+spelare och AI
 [Use]
-Use
+Välj
 [Lime]
-Lime
+Limegrön
 [Teal]
-Teal
+Blågrön
 [Azure]
-Azure
+Himmelsblå
 [Updating map preview...]
-Updating map preview...
+Uppdaterar förhandsvisning av kartan...
 [Generation failed. Adjust settings or press Start to retry.]
-Generation failed. Adjust settings or press Start to retry.
+Generering misslyckades. Justera inställningarna eller tryck på Start för att försöka igen.
 [Preview unavailable. Adjust settings or start to retry.]
-Preview unavailable. Adjust settings or start to retry.
+Förhandsgranskning inte tillgänglig. Ändra inställningarna eller starta spelet för att försöka igen.
 [automatic torus view]
 Automatisk torusvy
 [toggle torus view]
 Växla mellan 2D- och torusvy
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
+2 mot 2 kräver fyra öppna kolonier. Du mot alla kräver en mänsklig spelare.
 [Alliance]
-Alliance
+Allians
 [Choose a rule to change it.]
-Choose a rule to change it.
+Välj en regel för att ändra den.
 [Conquest only removes prestige victory; map scripts still apply.]
-Conquest only removes prestige victory; map scripts still apply.
+Endast erövring stänger av prestigeseger; kartskript gäller fortfarande.
 [Control]
-Control
+Styrning
 [Controller]
-Controller
+Styrs av
 [Generate preview]
-Generate preview
+Skapa förhandsvisning
 [Generation failed. Adjust settings or try again.]
-Generation failed. Adjust settings or try again.
+Generering misslyckades. Justera inställningarna eller försök igen.
 [Map settings changed. Generate a new preview or start.]
-Map settings changed. Generate a new preview or start.
+Kartinställningar ändrade. Skapa en ny förhandsvisning eller börja.
 [Map source]
-Map source
+Kartkälla
 [Map-defined]
-Map-defined
+Kartdefinierad
 [Match format]
-Match format
+Spelformat
 [No current preview]
-No current preview
+Ingen aktuell förhandsvisning
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Quick clash: 2x speed; generated maps start with 8 workers.
+Snabb strid: dubbel hastighet; genererade kartor börjar med 8 arbetare.
 [Reroll]
-Reroll
+Skapa en annan karta
 [Ruleset]
-Ruleset
+Regeluppsättning
 [Select a map from the library.]
-Select a map from the library.
+Välj en karta från biblioteket.
 [Starting workers affects generated maps only.]
-Starting workers affects generated maps only.
+Det initiala antalet arbetare gäller endast genererade kartor.
 [Unavailable]
-Unavailable
+Ej tillgänglig
 [Use selection]
-Use selection
+Använd valet
 [Quick clash on premade maps: only speed changes (2x).]
-Quick clash on premade maps: only speed changes (2x).
+Snabb strid på färdiga kartor: endast hastigheten ändras (dubbel hastighet).
 [Generate a preview to explore this world.]
-Generate a preview to explore this world.
+Skapa en förhandsvisning för att utforska den här världen.
 [More workers jump-start colony growth. Changes the generated map.]
-More workers jump-start colony growth. Changes the generated map.
+Fler arbetare påskyndar kolonitillväxten. Den här inställningen ändrar den genererade kartan.
