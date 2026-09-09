@@ -37,6 +37,8 @@ public:
 		NICOWAR=5,
 		///Reference to AICortex (direct AIImplementation binding)
 		CORTEX=6,
+		///Standalone Maxima strategy AI.
+		MAXIMA=7,
 
 		SIZE
 	};

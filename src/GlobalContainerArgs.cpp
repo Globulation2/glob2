@@ -119,7 +119,25 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	for (int  i=1; i<argc; i++)
 	{
 #ifndef YOG_SERVER_ONLY
-		if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
+		if(strcmp(argv[i], "--maxima-base")==0)
+		{
+			if(i+1>=argc)
+			{
+				fprintf(stderr, "--maxima-base requires a file\n");
+				exit(2);
+			}
+			maximaStrategyOptions.baseFile=argv[++i];
+		}
+		else if(strcmp(argv[i], "--maxima-layer")==0)
+		{
+			if(i+1>=argc)
+			{
+				fprintf(stderr, "--maxima-layer requires a file\n");
+				exit(2);
+			}
+			maximaStrategyOptions.layerFiles.push_back(argv[++i]);
+		}
+		else if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
 		{
 			bool good=true;
 			if (i + 3 < argc)
@@ -387,6 +405,8 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-textshot <directory>\t takes pictures of various translation texts as they are drawn on the screen, requires the convert command\n");
 			printf("-test-games\tCreates random games with AI and tests them\n");
 			printf("-test-games-nox\tCreates random games with AI and tests them, without gui\n");
+			printf("--maxima-base <file>\tcomplete Maxima strategy file\n");
+			printf("--maxima-layer <file>\tadditional Maxima strategy layer (repeatable)\n");
 			printf("--ai-types <list>\tcomma-separated AI names to draw from in -test-games* (default: all)\n");
 			printf("\t\tvalid: %s\n", AINames::validAINames().c_str());
 			printf("--map <name>\tpin the map for -test-games* (resolved as maps/<name>.map)\n");

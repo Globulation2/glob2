@@ -56,6 +56,10 @@ Castor plays a conservative game and does very well on maps with few resources. 
 Castor
 [AICortex-Description]
 Cortex - Experimental three-layer AI. Work in progress.
+[AIMaxima-Description]
+An adaptive AI that balances colony growth, food supply, reconnaissance, and coordinated attacks.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]

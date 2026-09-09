@@ -27,6 +27,8 @@
 [AICastor-Description]
 [AICastor]
 [AICortex-Description]
+[AIMaxima-Description]
+[AIMaxima]
 [AICortex]
 [AINicowar-Description]
 [AINicowar]

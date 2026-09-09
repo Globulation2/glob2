@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 91
+#define VERSION_MINOR 92
+// version 92 adds the standalone Maxima AI and its saved execution state.
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -97,9 +98,9 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 29
+#define NET_PROTOCOL_VERSION 30
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 29
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 30
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
@@ -110,3 +111,4 @@
 // version 28 Nicowar's behavior was changed
 // version 29 the pathfinding simulation changed (#184); older clients would desync, so they are refused
 
+// version 30 adds Maxima to the player roster; older clients cannot simulate it.

@@ -15,6 +15,8 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "AIMaximaStrategy.h"
+#include <stdexcept>
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -82,6 +84,8 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 /** Reset player and team lists, game end stuff and selection stuff. */
 void Game::clearGame()
 {
+	resolvedMaximaStrategies.clear();
+	maximaPendingHeader=nullptr;
 	hasSavedRandomState = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
@@ -126,6 +130,8 @@ void Game::clearGame()
 // header paired with a smaller-team map.
 void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 {
+	resolvedMaximaStrategies.clear();
+	maximaPendingHeader=&newGameHeader;
 	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
 	{
 		teams[i]->playersMask=0;
@@ -158,6 +164,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		map.setMapDiscovered();
 
 	gameHeader = newGameHeader;
+	maximaPendingHeader=nullptr;
 	anyPlayerWaited=false;
 }
 
@@ -235,4 +242,20 @@ bool Game::isPrestigeWinCondition(void)
 			return true;
 	}
 	return false;
+}
+
+const AIMaxima::ResolvedStrategy& Game::resolveMaximaStrategy(int playerNumber)
+{
+    auto& resolved=resolvedMaximaStrategies[playerNumber];
+    if(!resolved)
+    {
+        resolved=std::make_shared<AIMaxima::ResolvedStrategy>();
+        const auto options=globalContainer ? globalContainer->maximaStrategyOptions
+            : AIMaxima::StrategyConfigOptions();
+        std::string error;
+        if(!AIMaxima::StrategyResolver::resolve(options,
+            maximaPendingHeader ? maximaPendingHeader : &gameHeader, *resolved, error))
+            throw std::runtime_error("Maxima strategy: "+error);
+    }
+    return *resolved;
 }

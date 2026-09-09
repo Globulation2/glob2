@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "AI.h"
+#include "AIMaxima.h"
 #include "Player.h"
 #include "Utilities.h"
 #include "Game.h"
@@ -43,6 +44,9 @@ AI::AI(ImplementationID implementationID, Player *player)
 		break;
 		case REACHTOINFINITY:
 			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
+		break;
+		case MAXIMA:
+			aiImplementation=new AIMaxima::Maxima(player);
 		break;
 		case CORTEX:
 			aiImplementation=new AICortex(player);
@@ -129,6 +133,9 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		break;
 		case WARRUSH:
 			aiImplementation=new AIWarrush(stream, player, versionMinor);
+		break;
+		case MAXIMA:
+			aiImplementation=new AIMaxima::Maxima(stream,player,versionMinor);
 		break;
 		case CORTEX:
 			aiImplementation=new AICortex(stream, player, versionMinor);

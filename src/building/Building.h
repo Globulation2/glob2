@@ -54,6 +54,8 @@ class Building : public BuildingUtils
 {
 public:
 	static const int MAX_COUNT=1024;
+	static constexpr int MAX_UNIT_WORKING=20;
+	Uint64 getRuntimeIdentity() const;
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
 	/// not fired yet this game; the field is `Uint32` step counter.

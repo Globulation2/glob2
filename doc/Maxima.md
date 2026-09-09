@@ -1,0 +1,43 @@
+# Maxima
+
+Maxima is a standalone AI available in the normal player-selection menu and
+through the AI name `maxima`. It uses the same order interface as other AIs.
+Existing AI identifiers remain unchanged.
+
+## Strategy and decisions
+
+A strategy director observes the economy, available forces, enemy sightings,
+and terrain. It allocates budgets for development, food production, defense,
+reconnaissance, and attacks. Policy modules execute those budgets through a
+private runtime that tracks buildings, gradients, queued orders, and lifecycle
+conditions. Building lifetime identities prevent stale work from attaching to a
+new building that reuses a previous building's slot or address.
+
+The farming module protects sustainable food sources and reserves access routes.
+The placement planner evaluates construction and upgrades incrementally, then
+revalidates the selected action against the live world. Combat policy considers
+reachable trained forces, defending reserves, and remembered enemy activity.
+
+## Configuration
+
+`data/maxima/base.strategy` supplies every parameter. Match format selects one
+additional file: `duel`, `ffa3`, `ffa4`, `ffa5plus`, or allied `2v2`. Files use
+`key = value` assignments, with integer or boolean values and `#` comments.
+The base must be complete; format files and additional layers can be partial.
+Unknown keys, duplicate assignments within a file, invalid values, and inconsistent
+related bounds are rejected with a source location.
+
+`--maxima-base FILE` chooses another complete base. Repeat `--maxima-layer FILE`
+to apply additional layers in order after the match-format file. All clients
+simulating a new multiplayer match must use the same strategy files and options.
+Saved games include the resolved strategy and Maxima execution state, so changing
+a local file does not change the strategy of a resumed game.
+
+## Validation
+
+Build the game with `scons --build=build release=1 -j4 build/src/glob2`, then run
+`python3 test/run_maxima_implementation_regressions.py --build-dir build`.
+The runner covers standalone policy modules, engine order integration, building
+identity reuse, configuration errors, and deterministic saved-game continuation.
+Use `--test NAME` to select one regression program. Tests create temporary binaries;
+they need no external services or tournament tooling.

@@ -9,6 +9,7 @@
 #include "BuildingType.h"
 #include "RessourceType.h"
 #include "Settings.h"
+#include "AIMaximaStrategy.h"
 
 namespace GAGCore
 {
@@ -97,6 +98,7 @@ public:
 	int automaticEndingSteps;
 	bool automaticGameGlobalEndConditions; //! Set false if the automatic game will end if the local team wins/loses, true to wait for the entire game to finish
 	
+	AIMaxima::StrategyConfigOptions maximaStrategyOptions;
 	bool runTestGames; //! runs test games
 	int runTestGamesCount; //! number of test games to run (0 = infinite)
 	//! AI implementation IDs (AI::ImplementationID values) eligible for random

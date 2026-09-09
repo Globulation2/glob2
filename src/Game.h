@@ -28,6 +28,7 @@ using namespace GAGCore;
 class MapGenerationDescriptor;
 class GameGUI;
 class MapEdit;
+namespace AIMaxima { struct ResolvedStrategy; }
 
 class OrderCreate;
 class OrderModifyBuilding;
@@ -352,6 +353,9 @@ public:
 	MapHeader mapHeader;
 	///This is a game header. It contains all the settings for a particular game, from AI's to Alliances to victory conditions.
 	GameHeader gameHeader;
+	std::map<int, std::shared_ptr<AIMaxima::ResolvedStrategy>> resolvedMaximaStrategies;
+	const GameHeader* maximaPendingHeader=nullptr;
+	const AIMaxima::ResolvedStrategy& resolveMaximaStrategy(int playerNumber);
 
 	Team * teams[Team::MAX_COUNT];
 	Player * players[Team::MAX_COUNT];
