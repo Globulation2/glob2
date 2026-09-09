@@ -25,7 +25,7 @@ MELODY=[
  [(.5,76,.25),(1,72,.35),(2,67,.25),(2.75,72,.80)]]
 
 
-def compose(level):
+def building_arrangement(level):
     notes={p[0]:[] for p in CFG['parts']}
     def add(part,b,p,d,v):notes[part].append((b,p,d,v))
     for bar in range(32):
@@ -61,6 +61,46 @@ def compose(level):
             for off in (.5,1.5,2.5,3.5):add('percussion',b+off,42,.07,49)
             if k==7:
                 for j,p in enumerate((45,41)):add('percussion',b+3.25+j*.5,p,.18,70)
+    return notes
+
+
+def compose(level):
+    if level == 1:
+        return building_arrangement(level)
+    notes={p[0]:[] for p in CFG['parts']}
+    def add(part,b,p,d,v):notes[part].append((b,p,d,v))
+    for bar in range(32):
+        b=bar*4;k=bar%8;root,chord=CHORDS[k]
+        if level == 0:
+            # The opening half of each phrase carries the hook; its answer breathes.
+            for j,(off,p,d) in enumerate(MELODY[k]):
+                if bar%2 == 0 or j in (0,3):
+                    add('pan',b+off,p,d*1.15,52+j%2*5)
+            for off in (1.5,3.5):
+                for j,p in enumerate(chord):add('chop',b+off+j*.012,p,.13,27)
+            add('bass',b,root,1.5,60)
+            add('bass',b+2.5,root,.85,53)
+            if k%2==0:
+                for p in chord[::2]:add('air',b+.25,p,6.9,19)
+            for off in (.5,1.5,2.5,3.5):add('percussion',b+off,70,.07,18)
+            if bar%2==1:add('percussion',b+2,37,.12,27)
+        else:
+            # The hook moves down an octave, with dry wooden attack on every note.
+            for j,(off,p,d) in enumerate(MELODY[k]):
+                add('pan',b+off,p-12,d*.8,83+j%2*7)
+                add('wood',b+off,p-12,d*.65,112)
+            for off in (.5,2.5,3.5):
+                for j,p in enumerate(chord):add('chop',b+off+j*.012,p,.10,82)
+            for off,interval,d in ((0,0,.38),(.75,0,.24),(1.5,7,.30),(2,0,.38),(2.75,0,.24),(3.5,7,.30)):
+                add('bass',b+off,root+interval,d,113 if interval==0 else 98)
+            for off in (0,.75,2,2.75):add('percussion',b+off,36,.24,120 if off in (0,2) else 98)
+            for off in (1,3):add('percussion',b+off,38,.20,112)
+            for off,p in ((.5,64),(1.75,62),(2.5,64),(3.75,62)):
+                add('percussion',b+off,p,.16,79)
+            for j in range(8):add('percussion',b+j*.5,42,.07,58 if j%2 else 38)
+            if k in (3,7):
+                for off,p in ((3.25,47),(3.5,45),(3.75,41)):
+                    add('percussion',b+off,p,.15,95)
     return notes
 
 

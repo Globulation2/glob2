@@ -1,20 +1,20 @@
-"""Render MIDI trios with Apple's stock sampler and General MIDI sound bank.
+"""Render MIDI trios with FluidSynth and the pinned GeneralUser GS sound bank.
 
 Usage: python3 music/render.py [set-id ...] [--directory PATH] [--sound-bank PATH]
-Requires macOS, Xcode command-line tools, and NumPy. No custom instrument synthesis.
+Requires FluidSynth and NumPy. Run fetch_soundfont.py to obtain the pinned bank.
 """
 from pathlib import Path
 import argparse
 import json
 import struct
-import subprocess
-import tempfile
+import hashlib
 import numpy as np
 from midi_tools import wav
 from install_sets import SETS
+from fluid_renderer import FluidRenderer, SETTINGS
 
 ROOT = Path(__file__).resolve().parent
-BANK = Path('/System/Library/Components/CoreAudio.component/Contents/Resources/gs_instruments.dls')
+BANK = ROOT/'soundfonts/GeneralUser-GS.sf2'
 RATE = 44100
 
 
@@ -81,54 +81,55 @@ def main():
     parser.add_argument('--directory', type=Path, help='Render a standalone directory containing calm/building/combat.mid')
     parser.add_argument('--sound-bank', type=Path, default=BANK)
     args = parser.parse_args()
-    if not args.sound_bank.is_file(): parser.error('Sound bank not found; pass --sound-bank with a DLS/SF2 file')
+    if not args.sound_bank.is_file(): parser.error('Sound bank not found; run music/fetch_soundfont.py or pass --sound-bank with an SF2 file')
     selected = args.sets or ([] if args.directory else list(SETS))
     if set(selected)-set(SETS): parser.error('Unknown set: '+', '.join(sorted(set(selected)-set(SETS))))
     groups = [(key, ROOT/SETS[key][2], SETS[key][3]) for key in selected]
     if args.directory: groups.append((args.directory.name, args.directory.resolve(), ('calm','building','combat')))
-    with tempfile.TemporaryDirectory(prefix='glob2-midi-') as temporary:
-        temp = Path(temporary); binary = temp/'render-midi'
-        subprocess.run(['xcrun','swiftc',str(ROOT/'RenderMIDI.swift'),'-o',str(binary)], check=True)
-        jobs = []; descriptions = []
-        for key, folder, names in groups:
-            frames_list = []
-            for name in names:
-                frames, events = read_midi(folder/f'{name}.mid'); frames_list.append(frames)
-                output = temp/f'{len(jobs)}.raw'
-                jobs.append(dict(frames=frames, events=events, output=str(output)))
-            if len(set(frames_list)) != 1: raise ValueError(f'{key}: mismatched MIDI loop lengths')
-            descriptions.append((key, folder, names))
-        request = temp/'request.json'
-        request.write_text(json.dumps(dict(soundBank=str(args.sound_bank.resolve()), jobs=jobs)))
-        subprocess.run([str(binary),str(request)], check=True)
-        for group_index, (key, folder, names) in enumerate(descriptions):
-            group_jobs = jobs[group_index*3:group_index*3+3]
-            mixes = [np.fromfile(job['output'],dtype='<f4').reshape(-1,2) for job in group_jobs]
-            for job, mix in zip(group_jobs,mixes):
-                if len(mix) != job['frames'] or not np.isfinite(mix).all(): raise ValueError('Invalid renderer output')
-            peak = max(float(np.max(np.abs(a))) for a in mixes)
-            if peak <= 0: raise ValueError('Silent sound bank output')
-            # One gain for the entire trio preserves arrangement dynamics.
-            gain = .90/peak
-            mixes = [a*gain for a in mixes]
-            report = dict(renderer='Apple AVAudioUnitSampler', sound_bank=args.sound_bank.name,
-                          sample_rate=RATE, shared_gain=gain, warmup_loops=2, tracks={})
-            for name, mix in zip(names,mixes):
-                wav(folder/f'{name}.wav',mix)
-                report['tracks'][name] = dict(frames=len(mix), seconds=len(mix)/RATE,
-                    peak=float(np.max(np.abs(mix))),rms=float(np.sqrt(np.mean(mix*mix))),
-                    boundary_step=float(np.max(np.abs(mix[0]-mix[-1]))))
-            span = len(mixes[0])//8; n = span*4; demo = mixes[0][:n].copy()
-            for index,src,dst in ((1,0,1),(2,1,2),(3,2,0)):
-                start = index*span; end = start+RATE
-                alpha = np.linspace(0,1,RATE)[:,None]; alpha = alpha*alpha*(3-2*alpha)
-                demo[start:end] = (1-alpha)*mixes[src][start:end]+alpha*mixes[dst][start:end]
-                demo[end:] = mixes[dst][end:n]
-            demo[-4410:] *= np.linspace(1,0,4410)[:,None]
-            wav(folder/f'{key}-demo.wav',demo)
-            report['preview_switch_seconds'] = [span/RATE*i for i in (1,2,3)]
-            (folder/'render-info.json').write_text(json.dumps(report,indent=2)+'\n')
-            print(key, 'rendered and verified', flush=True)
-
+    renderer = FluidRenderer()
+    bank_hash = hashlib.sha256(args.sound_bank.read_bytes()).hexdigest()
+    lock = json.loads((ROOT/'soundfonts/manifest.json').read_text())
+    if args.sound_bank.resolve() == BANK.resolve() and bank_hash != lock['sha256']:
+        raise ValueError('Default sound bank checksum mismatch; run fetch_soundfont.py')
+    if renderer.version != lock['fluidsynth_version']:
+        raise ValueError(f"Use FluidSynth {lock['fluidsynth_version']} for this score; found {renderer.version}")
+    balances = json.loads((ROOT/'mix.json').read_text())
+    for key, folder, names in groups:
+        mixes = []
+        for name in names:
+            frames, events = read_midi(folder/f'{name}.mid')
+            mix = renderer.render(frames,events,args.sound_bank)
+            if len(mix) != frames or not np.isfinite(mix).all(): raise ValueError('Invalid renderer output')
+            mixes.append(mix)
+            print(key, name, "rendered", flush=True)
+        if len({len(a) for a in mixes}) != 1: raise ValueError(f'{key}: mismatched MIDI loop lengths')
+        for name,mix in zip(names,mixes):
+            rms = float(np.sqrt(np.mean(mix*mix)))
+            if rms <= 0: raise ValueError('Silent sound bank output')
+            if key in balances: mix *= balances[key][name]/rms
+        peak = max(float(np.max(np.abs(a))) for a in mixes)
+        if peak <= 0: raise ValueError('Silent sound bank output')
+        # One gain for the entire trio preserves arrangement dynamics.
+        gain = .90/peak
+        mixes = [a*gain for a in mixes]
+        report = dict(renderer='FluidSynth', renderer_version=renderer.version, sound_bank=args.sound_bank.name,
+                      sound_bank_sha256=bank_hash, settings=SETTINGS, interpolation=4,
+                      sample_rate=RATE, shared_gain=gain, warmup_loops=2, target_rms=balances.get(key,{}), tracks={})
+        for name, mix in zip(names,mixes):
+            wav(folder/f'{name}.wav',mix)
+            report['tracks'][name] = dict(frames=len(mix), seconds=len(mix)/RATE,
+                peak=float(np.max(np.abs(mix))),rms=float(np.sqrt(np.mean(mix*mix))),
+                boundary_step=float(np.max(np.abs(mix[0]-mix[-1]))))
+        span = len(mixes[0])//8; n = span*4; demo = mixes[0][:n].copy()
+        for index,src,dst in ((1,0,1),(2,1,2),(3,2,0)):
+            start = index*span; end = start+RATE
+            alpha = np.linspace(0,1,RATE)[:,None]; alpha = alpha*alpha*(3-2*alpha)
+            demo[start:end] = (1-alpha)*mixes[src][start:end]+alpha*mixes[dst][start:end]
+            demo[end:] = mixes[dst][end:n]
+        demo[-4410:] *= np.linspace(1,0,4410)[:,None]
+        wav(folder/f'{key}-demo.wav',demo)
+        report['preview_switch_seconds'] = [span/RATE*i for i in (1,2,3)]
+        (folder/'render-info.json').write_text(json.dumps(report,indent=2)+'\n')
+        print(key, 'rendered and verified', flush=True)
 
 if __name__ == '__main__': main()

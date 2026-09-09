@@ -44,4 +44,22 @@ class MIDIClockTest(unittest.TestCase):
             self.read([track([(10,b'\xc0\x0c'),(470,b'\xff\x2f\x00')])])
 
 
+class FluidPlaybackTest(unittest.TestCase):
+    def test_expired_one_shot_and_repeat_render(self):
+        from fluid_renderer import FluidRenderer
+        import numpy as np
+        bank = Path(__file__).resolve().parent/'soundfonts/GeneralUser-GS.sf2'
+        if not bank.exists(): self.skipTest('Sound bank not downloaded')
+        try: renderer = FluidRenderer()
+        except (RuntimeError, OSError) as error: self.skipTest(str(error))
+        events = [dict(frame=0,status=0xc9,data1=0,data2=0),
+                  dict(frame=0,status=0x99,data1=42,data2=100),
+                  dict(frame=20000,status=0x89,data1=42,data2=0)]
+        first = renderer.render(22050,events,bank)
+        second = renderer.render(22050,events,bank)
+        self.assertTrue(np.isfinite(first).all())
+        self.assertGreater(float(np.max(np.abs(first))),0)
+        self.assertTrue(np.array_equal(first,second))
+
+
 if __name__ == '__main__': unittest.main()
