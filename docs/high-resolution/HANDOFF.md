@@ -1,3 +1,21 @@
+# Superseded combined PR
+
+The work is now split into three stacked draft PRs based on current master:
+
+1. [#218 renderer and zoom](https://github.com/Globulation2/glob2/pull/218)
+   Worktree `/Users/bradley/glob2-hd-foundation`, branch `codex/hd-renderer-zoom`.
+2. [#219 original artwork](https://github.com/Globulation2/glob2/pull/219)
+   Worktree `/Users/bradley/glob2-hd-originals`, branch `codex/hd-original-artwork`.
+3. [#220 AI artwork](https://github.com/Globulation2/glob2/pull/220)
+   Worktree `/Users/bradley/glob2-hd-ai`, branch `codex/hd-ai-artwork`.
+
+Continue work in the appropriate split branch. This combined branch/PR #207 is
+retained for the earlier discussion and comparisons, not further implementation.
+The final combined runtime PNGs remain unchanged. Historical experiments remain
+excluded. See the split PRs for validation and remaining limitations.
+
+---
+
 # Project handoff
 
 ## Current branch and decisions
