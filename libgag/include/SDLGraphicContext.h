@@ -504,6 +504,8 @@ namespace GAGCore
 		};
 
 		friend class GraphicContext;
+		friend class Toolkit;
+		static void resetHighResolutionState();
 	
 		std::string fileName;
 //#define DEBUG_SPRITE_NOT_DRAWN
@@ -544,9 +546,15 @@ namespace GAGCore
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
 		bool createTextureAtlas(bool allowVariableSizes = false);
-		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
+		struct HighResolutionStats
+		{
+			size_t cpuBytes = 0, coloredFrames = 0;
+			// Cumulative load work for this Toolkit session, including failed pack reads.
+			size_t manifestParses = 0, imageLoads = 0, packReloads = 0;
+		};
 		static HighResolutionStats highResolutionStats();
 		static void setHighResolution(bool enabled);
+		static void reloadHighResolutionPack();
 		static void flushBatches(GraphicContext *gc);
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }

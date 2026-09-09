@@ -33,6 +33,9 @@ if not env['server']:
     aspect_test = aspect_env.Program('FullscreenAspectHarness',
         [aspect_env.Object('FullscreenAspectHarness.o', '#test/FullscreenAspectHarness.cpp'), l1])
     env.Alias('aspect-test', aspect_test)
+    artwork_test = aspect_env.Program('ArtworkPackLifecycleHarness',
+        [aspect_env.Object('ArtworkPackLifecycleHarness.o', '#test/ArtworkPackLifecycleHarness.cpp'), l1])
+    env.Alias('artwork-pack-test', artwork_test)
     resize_test = aspect_env.Program('WindowResizeHarness',
         [aspect_env.Object('WindowResizeHarness.o', '#test/WindowResizeHarness.cpp'), l1])
     env.Alias('resize-test', resize_test)

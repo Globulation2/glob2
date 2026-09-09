@@ -158,6 +158,7 @@ void GlobalContainer::loadClient(void)
 		// create graphic context
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
 		gfx->setMinRes(640, 480);
+		Sprite::setHighResolution(settings.highResolutionArtwork);
 		
 		// load data required for drawing progress screen
 		title = std::make_unique<DrawableSurface>("data/gfx/title.png");

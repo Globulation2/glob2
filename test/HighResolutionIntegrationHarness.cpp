@@ -6,6 +6,9 @@
 #include "SettingsScreen.h"
 #include "Order.h"
 #include "Unit.h"
+#include "Player.h"
+#include "FrontendTheme.h"
+#include <GUIButton.h>
 #include <SDL_image.h>
 #include <FileManager.h>
 #ifdef __APPLE__
@@ -23,6 +26,19 @@ GlobalContainer* globalContainer=nullptr;
 class SettingsPaintHarness:public SettingsScreen
 {
 public:
+    void chooseArtwork(bool enabled)
+    {
+        for (auto widget : widgets)
+            if (auto button = dynamic_cast<GAGGUI::OnOffButton*>(widget); button && button->returnCode == HIGHRES)
+            {
+                button->setState(enabled);
+                onAction(button, BUTTON_STATE_CHANGED, HIGHRES, 0);
+                return;
+            }
+        assert(false);
+    }
+    void confirm() { onAction(nullptr, BUTTON_RELEASED, OK, 0); }
+    void cancel() { onAction(nullptr, BUTTON_RELEASED, CANCEL, 0); }
     void draw(GraphicContext *surface){gfx=surface;dispatchInit();paint();for(auto widget:widgets)if(widget->visible)widget->paint();}
 };
 class HighResolutionIntegrationHarness
@@ -67,6 +83,7 @@ class HighResolutionIntegrationHarness
     {
         auto gfx=globalContainer->gfx;
         globalContainer->settings.highResolutionArtwork=true;
+        Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
         MapEdit editor;editor.game.map.setSize(4,4,GRASS);editor.game.map.setGame(&editor.game);editor.game.addTeam(0);
         auto building=editor.game.addBuilding(15,15,globalContainer->buildingsTypes.getFinishedTypeNum("swarm"),0);assert(building);
         editor.regenerateGameHeader();editor.minimap.setGame(editor.game);editor.updateCamera();
@@ -136,9 +153,122 @@ class HighResolutionIntegrationHarness
         std::cout<<"PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale\n";
     }
 public:
+    static void unchangedArtwork(const Sprite::HighResolutionStats& before)
+    {
+        const auto after = Sprite::highResolutionStats();
+        assert(before.imageLoads == after.imageLoads);
+        assert(before.manifestParses == after.manifestParses);
+        assert(before.packReloads == after.packReloads);
+    }
+    static void lifecycle()
+    {
+        FrontendTheme frontend;
+        FrontendScope menus;
+        auto drawMenu = [&]() {
+            frontend.onFrame();
+            frontend.background(globalContainer->gfx, false);
+            globalContainer->gfx->nextFrame();
+        };
+        drawMenu();
+        const bool originalSetting = globalContainer->settings.highResolutionArtwork;
+        const bool gpu = globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU;
+        const auto startup = Sprite::highResolutionStats();
+        assert(startup.manifestParses == (originalSetting && gpu ? 1u : 0u));
+        assert((startup.cpuBytes > 0) == (originalSetting && gpu));
+        {
+            SettingsPaintHarness screen;
+            auto before = Sprite::highResolutionStats();
+            screen.chooseArtwork(!originalSetting);
+            unchangedArtwork(before);
+            screen.cancel();
+            unchangedArtwork(before);
+            assert(globalContainer->settings.highResolutionArtwork == originalSetting);
+        }
+        {
+            SettingsPaintHarness screen;
+            auto before = Sprite::highResolutionStats();
+            screen.chooseArtwork(!originalSetting);
+            screen.chooseArtwork(originalSetting);
+            screen.confirm();
+            unchangedArtwork(before);
+        }
+        for (const bool hd : { !originalSetting, originalSetting })
+        {
+            SettingsPaintHarness screen;
+            const auto before = Sprite::highResolutionStats();
+            screen.chooseArtwork(hd);
+            unchangedArtwork(before);
+            const auto start = std::chrono::steady_clock::now();
+            screen.confirm();
+            const double ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
+            const auto after = Sprite::highResolutionStats();
+            assert(after.packReloads == before.packReloads + (gpu ? 1 : 0));
+            assert((after.cpuBytes > 0) == (hd && gpu));
+            std::cout << "ARTWORK_SETTINGS hd=" << hd << " ms=" << ms << " cpu_bytes=" << after.cpuBytes << '\n';
+        }
+        drawMenu();
+        // Editor-only UI sprites can be loaded lazily, but subsequent visits reuse them.
+        { MapEdit editor; assert(editor.load("maps/SmallForTwo.map")); }
+        auto before = Sprite::highResolutionStats();
+        for (int repeat = 0; repeat < 3; ++repeat)
+        {
+            { MapEdit editor; assert(editor.load("maps/SmallForTwo.map")); }
+            unchangedArtwork(before);
+        }
+        globalContainer->automaticEndingGame = true;
+        globalContainer->automaticEndingSteps = 1;
+        for (const std::string mapName : {"SmallForTwo", "Oazis"})
+        {
+            size_t warmBytes = 0;
+            for (int repeat = 0; repeat < 3; ++repeat)
+            {
+                {
+                    Engine engine;
+                    auto map = Engine::loadMapHeader("maps/" + mapName + ".map");
+                    GameHeader header;
+                    std::vector<int> aiTeams;
+                    const auto ai = mapName == "SmallForTwo" ? AI::NUMBI : AI::CORTEX;
+                    for (int team = 0; team < map.getNumberOfTeams(); ++team)
+                    {
+                        header.getBasePlayer(team) = BasePlayer(team, team == 0 ? "Human" : "AI", team,
+                            team == 0 ? BasePlayer::P_LOCAL : Player::playerTypeFromImplementationID(ai));
+                        if (team) aiTeams.push_back(team);
+                    }
+                    header.setNumberOfPlayers(map.getNumberOfTeams());
+                    header.setDefaultAlliances(0, aiTeams);
+                    header.setRandomSeed(42);
+                    engine.gui.localPlayer = engine.gui.localTeamNo = 0;
+                    const auto loads = Sprite::highResolutionStats();
+                    const auto start = std::chrono::steady_clock::now();
+                    assert(engine.initGame(map, header) == Engine::EE_NO_ERROR);
+                    engine.run(); // One tick, including the first presented frame and session teardown.
+                    const double ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
+                    unchangedArtwork(loads);
+                    assert(engine.gui.game.stepCounter == 1);
+                    const auto resident = Sprite::highResolutionStats();
+                    if (repeat) assert(resident.cpuBytes == warmBytes);
+                    warmBytes = resident.cpuBytes;
+                    std::cout << "ARTWORK_MATCH map=" << mapName << " repeat=" << repeat << " ms=" << ms
+                        << " cpu_bytes=" << resident.cpuBytes << " gpu_bytes=" << DrawableSurface::allocatedTextureBytes()
+                        << " image_loads=0 manifest_parses=0 pack_reloads=0\n";
+                }
+                drawMenu();
+                unchangedArtwork(before);
+            }
+        }
+        if (gpu)
+        {
+            frontend.background(globalContainer->gfx, false);
+            capture("lifecycle-menu");
+            unchangedArtwork(before);
+        }
+        globalContainer->automaticEndingGame = false;
+        std::cout << "PASS startup, settings confirmation/cancel, repeated matches/editor visits, and stable retained artwork\n";
+    }
     static void runSoftware()
     {
         globalContainer->settings.highResolutionArtwork=true;
+        Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
         {
             Engine engine;assert(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
             auto &gui=engine.gui;gui.updateCamera();gui.zoomMap(10,300,300);gui.drawAll(0);
@@ -162,6 +292,7 @@ public:
         for(bool hd:{false,true})
         {
             globalContainer->settings.highResolutionArtwork=hd;
+            Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
             Engine engine;assert(engine.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
             auto &gui=engine.gui;gui.updateCamera();
             const auto checksum=gui.game.checkSum(nullptr,nullptr,nullptr,true);
@@ -208,6 +339,7 @@ public:
             }
         }
         globalContainer->settings.highResolutionArtwork=true;
+        Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
         {
             // Record with this build's version: master intentionally rejects
             // historical replays after simulation/pathfinding changes.
@@ -262,6 +394,7 @@ public:
         for(bool hd:{false,true})
         {
             globalContainer->settings.highResolutionArtwork=hd;
+            Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
             MapEdit dense;dense.game.map.setSize(6,6,GRASS);dense.game.map.setGame(&dense.game);
             for(int team=0;team<4;++team)dense.game.addTeam(team);
             const char *types[]={"swarm","inn","hospital","school","swimmingpool","barracks"};
@@ -284,6 +417,7 @@ public:
                 dense.drawMenu();dense.drawMiniMap();dense.drawWidgets();capture(std::string(hd?"dense-hd-":"dense-original-")+std::to_string(int(zoom*100)));
             }
         }
+        Sprite::setHighResolution(false);
         assert(Sprite::highResolutionStats().cpuBytes==0);
         std::cout<<"PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release\n";
     }
@@ -296,8 +430,15 @@ int main(int argc,char **argv)
     globals.settings.screenWidth=1024;globals.settings.screenHeight=768;globals.settings.screenFlags=GraphicContext::USEGPU|GraphicContext::CUSTOMCURSOR;
     globals.settings.rememberUnit=false;globals.settings.mute=1;
     globals.fileManager->addDir(".cache/highres-replay-fixture");
-    const bool software=argc>1&&std::string(argv[1])=="software";
+    const std::string mode = argc > 1 ? argv[1] : "";
+    const bool lifecycle = mode.starts_with("lifecycle");
+    const bool software = mode == "software" || mode == "lifecycle-software";
+    globals.settings.highResolutionArtwork = mode != "lifecycle-original";
     if(software)globals.settings.screenFlags=0;
+    const auto start = std::chrono::steady_clock::now();
     globals.load();
-    if(software)HighResolutionIntegrationHarness::runSoftware();else HighResolutionIntegrationHarness::run();
+    std::cout << "ARTWORK_STARTUP ms=" << std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count()
+        << " cpu_bytes=" << Sprite::highResolutionStats().cpuBytes << " gpu_bytes=" << DrawableSurface::allocatedTextureBytes() << '\n';
+    if (lifecycle) HighResolutionIntegrationHarness::lifecycle();
+    else if(software)HighResolutionIntegrationHarness::runSoftware();else HighResolutionIntegrationHarness::run();
 }

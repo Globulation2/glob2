@@ -12,6 +12,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
+#include <unordered_map>
 
 #if __cplusplus >= 201402L
 #include <memory>
@@ -50,24 +51,70 @@ using boost::make_unique;
 namespace GAGCore
 {
 	static std::set<Sprite*> loadedSprites;
-	static bool highResolutionEnabled = false;
-    static std::string packDirectory, packText;
-    static bool packRead=false;
-    static bool readPack(const std::string &directory)
-    {
-        if(packRead && packDirectory==directory)return !packText.empty();
-        packRead=true;packDirectory=directory;packText.clear();
-        auto input=Toolkit::getFileManager()->open((directory+"/frames.txt").c_str(),"rb");
-        if(!input){std::cerr<<"High-resolution pack unavailable: "<<directory<<std::endl;return false;}
-        const auto size=SDL_RWsize(input);
-        if(size<=0||size>1024*1024){SDL_RWclose(input);std::cerr<<"Invalid high-resolution manifest size"<<std::endl;return false;}
-        std::string text(static_cast<size_t>(size),'\0');
-        const auto count=SDL_RWread(input,text.data(),1,text.size());SDL_RWclose(input);
-        if(count!=text.size())return false;
-        std::istringstream header(text);std::string magic;int version=0;header>>magic>>version;
-        if(magic!="GLOB2_HIGHRES"||version!=1){std::cerr<<"Unsupported high-resolution pack"<<std::endl;return false;}
-        packText=std::move(text);return true;
-    }
+	namespace
+	{
+		struct PackFrame
+		{
+			int width, height, scale;
+			std::string base, team;
+		};
+		struct ArtworkSelection
+		{
+			bool enabled = false;
+			bool gpu = false;
+			std::string directory;
+			bool operator==(const ArtworkSelection&) const = default;
+		};
+		ArtworkSelection artwork;
+		bool artworkSelected = false;
+		bool highResolutionRequested = false;
+		bool packRead = false;
+		std::unordered_map<std::string, PackFrame> packFrames;
+		Sprite::HighResolutionStats loadStats;
+
+		ArtworkSelection selectedArtwork(bool requested, GraphicContext* gc)
+		{
+			const char* overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+			const bool gpu = gc && (gc->getOptionFlags() & GraphicContext::USEGPU);
+			return {(requested || overrideDir) && gpu, gpu, overrideDir ? overrideDir : "data/highres/v1"};
+		}
+
+		void readPack()
+		{
+			if (packRead) return;
+			packRead = true;
+			++loadStats.manifestParses;
+			auto input = Toolkit::getFileManager()->open((artwork.directory + "/frames.txt").c_str(), "rb");
+			if (!input)
+			{
+				std::cerr << "High-resolution pack unavailable: " << artwork.directory << std::endl;
+				return;
+			}
+			const auto size = SDL_RWsize(input);
+			if (size <= 0 || size > 1024 * 1024)
+			{
+				SDL_RWclose(input);
+				std::cerr << "Invalid high-resolution manifest size" << std::endl;
+				return;
+			}
+			std::string text(static_cast<size_t>(size), '\0');
+			const auto count = SDL_RWread(input, text.data(), 1, text.size());
+			SDL_RWclose(input);
+			if (count != text.size()) return;
+			std::istringstream stream(text);
+			std::string magic, id;
+			int version = 0;
+			stream >> magic >> version;
+			if (magic != "GLOB2_HIGHRES" || version != 1)
+			{
+				std::cerr << "Unsupported high-resolution pack" << std::endl;
+				return;
+			}
+			PackFrame frame;
+			while (stream >> id >> frame.width >> frame.height >> frame.scale >> frame.base >> frame.team)
+				packFrames.emplace(id, frame);
+		}
+	}
 
 	Sprite::RotatedImage::~RotatedImage()
 	{
@@ -84,6 +131,7 @@ namespace GAGCore
 		SDL_RWops *rotatedStream;
 		unsigned i = 0;
 		
+		if (!artworkSelected) setHighResolution(highResolutionRequested);
 		this->fileName = filename;
 		loadedSprites.insert(this);
 		
@@ -265,7 +313,7 @@ namespace GAGCore
 
     Sprite::HighResolutionStats Sprite::highResolutionStats()
     {
-        HighResolutionStats stats;
+        HighResolutionStats stats = loadStats;
         for(auto sprite:loadedSprites)
         {
             for(auto s:sprite->experimentImages)if(s)stats.cpuBytes+=s->getW()*s->getH()*4;
@@ -283,9 +331,29 @@ namespace GAGCore
 
 	void Sprite::setHighResolution(bool enabled)
 	{
-		highResolutionEnabled = enabled;
-		packRead=false;packText.clear();
+		highResolutionRequested = enabled;
+		const auto selection = selectedArtwork(enabled, Toolkit::gc);
+		if (artworkSelected && artwork == selection) return;
+		reloadHighResolutionPack();
+	}
+
+	void Sprite::reloadHighResolutionPack()
+	{
+		if (Toolkit::gc) flushBatches(Toolkit::gc);
+		artwork = selectedArtwork(highResolutionRequested, Toolkit::gc);
+		artworkSelected = true;
+		packRead = false;
+		packFrames.clear();
+		++loadStats.packReloads;
 		for (auto sprite : loadedSprites) sprite->reloadHighResolution();
+	}
+
+	void Sprite::resetHighResolutionState()
+	{
+		artwork = {};
+		artworkSelected = highResolutionRequested = packRead = false;
+		packFrames.clear();
+		loadStats = {};
 	}
 
 	void Sprite::reloadHighResolution()
@@ -324,13 +392,13 @@ namespace GAGCore
         for(int i=0;i<count;++i)if(!experimentImages[i]){reject();return;}
         GLint maxSize=0;glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxSize);
         if(atlasW>maxSize || atlasH>maxSize){reject();return;}
-        const char *overrideDir=std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
-        std::string directory=overrideDir?overrideDir:"data/highres/v1";
+        const auto& directory = artwork.directory;
         std::vector<std::unique_ptr<DrawableSurface>> levels;
         for(int mip=0;mip<4;++mip)
         {
             auto rw=Toolkit::getFileManager()->open((directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".png").c_str(),"rb");
             if(!rw){reject();return;}
+            ++loadStats.imageLoads;
             auto s=IMG_Load_RW(rw,1);if(!s){reject();return;}
             if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_FreeSurface(s);reject();return;}
             levels.emplace_back(new DrawableSurface(s));SDL_FreeSurface(s);
@@ -376,36 +444,38 @@ namespace GAGCore
 	{
 		const size_t index=experimentImages.size();
 		experimentImages.push_back(nullptr); experimentRotated.push_back(nullptr);
-		const char *overrideDir=std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
-		if ((!highResolutionEnabled && !overrideDir) || !Toolkit::gc || !(Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU)) return;
-		std::string directory=overrideDir ? overrideDir : "data/highres/v1";
-        if(!readPack(directory))return;
-        std::istringstream stream(packText);std::string magic,id,base,team;int version,w,h,scale;
-        stream>>magic>>version;
-		std::string wanted=frameName.substr(frameName.find_last_of('/')+1);wanted.resize(wanted.size()-4);
-		while(stream>>id>>w>>h>>scale>>base>>team)
+		if (!artwork.enabled) return;
+		readPack();
+		std::string wanted = frameName.substr(frameName.find_last_of('/') + 1);
+		wanted.resize(wanted.size() - 4);
+		const auto found = packFrames.find(wanted);
+		if (found == packFrames.end()) return;
+		const auto& [w, h, scale, base, team] = found->second;
+		const auto& id = found->first;
+		const auto& directory = artwork.directory;
+		if (w != getW(index) || h != getH(index) || scale != 4)
 		{
-			if(id!=wanted)continue;
-			if(w!=getW(index)||h!=getH(index)||scale!=4){std::cerr<<"High-resolution dimensions rejected: "<<id<<std::endl;return;}
-			auto load=[&](const std::string &name,DrawableSurface *original)->DrawableSurface*
-			{
-				if(name=="-")return nullptr;
-				if(name.find_first_of("/\\:")!=std::string::npos || name.find("..")!=std::string::npos)return nullptr;
-				SDL_RWops *rw=Toolkit::getFileManager()->open((directory+"/"+name).c_str(),"rb");
-				if(!rw)return nullptr;
-				SDL_Surface *surface=IMG_Load_RW(rw,1);if(!surface)return nullptr;
-				int lw=original?original->getW():w,lh=original?original->getH():h;
-				if(surface->w!=lw*scale||surface->h!=lh*scale){SDL_FreeSurface(surface);return nullptr;}
-				auto result=new DrawableSurface(surface);result->highResolutionSampling=true;SDL_FreeSurface(surface);return result;
-			};
-			auto normal=load(base,images[index]);
-			auto colored=load(team,rotated[index]?rotated[index]->orig:nullptr);
-			if((base!="-"&&!normal)||(team!="-"&&!colored)||(images[index]&&base=="-")||(rotated[index]&&team=="-"))
-			{delete normal;delete colored;std::cerr<<"High-resolution frame rejected: "<<id<<std::endl;return;}
-			experimentImages.back()=normal;
-			if(colored)experimentRotated.back()=new RotatedImage(colored);
+			std::cerr << "High-resolution dimensions rejected: " << id << std::endl;
 			return;
 		}
+		auto load=[&](const std::string &name,DrawableSurface *original)->DrawableSurface*
+		{
+			if(name=="-")return nullptr;
+			if(name.find_first_of("/\\:")!=std::string::npos || name.find("..")!=std::string::npos)return nullptr;
+			SDL_RWops *rw=Toolkit::getFileManager()->open((directory+"/"+name).c_str(),"rb");
+			if(!rw)return nullptr;
+			++loadStats.imageLoads;
+			SDL_Surface *surface=IMG_Load_RW(rw,1);if(!surface)return nullptr;
+			int lw=original?original->getW():w,lh=original?original->getH():h;
+			if(surface->w!=lw*scale||surface->h!=lh*scale){SDL_FreeSurface(surface);return nullptr;}
+			auto result=new DrawableSurface(surface);result->highResolutionSampling=true;SDL_FreeSurface(surface);return result;
+		};
+		auto normal=load(base,images[index]);
+		auto colored=load(team,rotated[index]?rotated[index]->orig:nullptr);
+		if((base!="-"&&!normal)||(team!="-"&&!colored)||(images[index]&&base=="-")||(rotated[index]&&team=="-"))
+		{delete normal;delete colored;std::cerr<<"High-resolution frame rejected: "<<id<<std::endl;return;}
+		experimentImages.back()=normal;
+		if(colored)experimentRotated.back()=new RotatedImage(colored);
 	}
 
 	DrawableSurface *Sprite::prepareDrawSurface(unsigned index, bool teamColor, bool experiment)
@@ -457,6 +527,7 @@ namespace GAGCore
 	{
 		if (frameStream)
 		{
+			++loadStats.imageLoads;
 			SDL_Surface *sprite = IMG_Load_RW(frameStream, 0);
 			assert(sprite);
 			images.push_back(new DrawableSurface(sprite));
@@ -467,6 +538,7 @@ namespace GAGCore
 	
 		if (rotatedStream)
 		{
+			++loadStats.imageLoads;
 			SDL_Surface *sprite = IMG_Load_RW(rotatedStream, 0);
 			assert(sprite);
 			rotated.push_back(new RotatedImage(new DrawableSurface(sprite)));

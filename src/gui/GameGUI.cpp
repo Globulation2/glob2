@@ -63,7 +63,6 @@ GameGUI::GameGUI()
 
 GameGUI::~GameGUI()
 {
-	if (!globalContainer->runNoX) Sprite::setHighResolution(false);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 	if (globalContainer->settings.rememberUnit)
@@ -84,7 +83,6 @@ void GameGUI::init()
 	torusView.reset();
 	torusPointerDown = false;
 	camera=MapCamera();zoomControlPushed=false;
-	if (!globalContainer->runNoX) Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;

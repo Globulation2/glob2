@@ -345,3 +345,19 @@ keyboard file formats remain unchanged.
 settings, language, persistence, keyboard, multiplayer eligibility and camera
 cadence regressions without starting the unrelated engine/replay scenarios.
 The full invocation remains available and reports buffered diagnostics on timeout.
+
+## Artwork lifecycle
+
+Build with `scons release=1 server=0 -j8 artwork-pack-test highres-integration-test`
+from the repository root. Run `build/libgag/src/ArtworkPackLifecycleHarness` and
+repeat with `software` to check pack caching, validation, explicit reload, late
+sprites, and toolkit reinitialization.
+
+Run `build/src/HighResolutionIntegrationHarness lifecycle`, `lifecycle-original`,
+and `lifecycle-software` to check startup selection, settings confirmation/cancel,
+and repeated game/editor transitions. The harness reports startup, settings and
+one-tick game timings, retained artwork bytes, and asserts zero sprite image
+loads, manifest parses or pack reloads during matches. Its normal invocation and
+`software` mode additionally check rendering, replay loading and simulation
+checksums. Test settings and replays use a separate profile. On macOS, prefix
+these commands with `DYLD_LIBRARY_PATH=/opt/homebrew/lib` if SDL requires it.

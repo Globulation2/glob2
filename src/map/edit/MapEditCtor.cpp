@@ -22,7 +22,6 @@ MapEdit::MapEdit()
             128, // height
             Minimap::HideFOW)
 {
-	Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
 	doQuit=false;
 	doFullQuit=false;
 	doQuitAfterLoadSave=false;
@@ -307,8 +306,6 @@ MapEdit::MapEdit()
 
 MapEdit::~MapEdit()
 {
-	Sprite::setHighResolution(false);
-	Toolkit::releaseSprite("data/gui/editor");
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
 		delete *i;

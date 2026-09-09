@@ -51,7 +51,7 @@ void SettingsScreen::buildGeneral()
                 auto& flags=globalContainer->settings.optionFlags;
                 if(v)flags|=GlobalContainer::OPTION_LOW_SPEED_GFX;else flags&=~GlobalContainer::OPTION_LOW_SPEED_GFX;commit();
             });
-        toggle("graphics.artwork","High-resolution artwork","Apply artwork on the next game or editor load (OpenGL).",s.highResolutionArtwork,[this](int v){globalContainer->settings.highResolutionArtwork=v;commit();});
+        toggle("graphics.artwork","High-resolution artwork","Applies immediately (OpenGL).",s.highResolutionArtwork,[this](int v){globalContainer->settings.highResolutionArtwork=v;Sprite::setHighResolution(v);commit();});
         toggle("graphics.torus","Automatic torus view","Automatically show the torus overview while moving around the map (OpenGL).",s.automaticTorus,[this](int v){globalContainer->settings.automaticTorus=v;commit();});
         choice("graphics.renderer","Renderer","Changing the renderer requires a restart.",bool(s.screenFlags & GraphicContext::USEGPU),
             {tr("Software"),"OpenGL"},[this](int v){changeDisplay([v](Settings& s){if(v)s.screenFlags|=GraphicContext::USEGPU;else s.screenFlags&=~GraphicContext::USEGPU;});});

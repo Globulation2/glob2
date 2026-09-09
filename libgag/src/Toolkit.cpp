@@ -44,9 +44,11 @@ namespace GAGCore
 	void Toolkit::close(void)
 	{
 		#ifndef YOG_SERVER_ONLY
+		if (gc) Sprite::flushBatches(gc);
 		for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
 			delete (*it).second;
 		spriteMap.clear();
+		Sprite::resetHighResolutionState();
 		for (FontMap::iterator it=fontMap.begin(); it!=fontMap.end(); ++it)
 			delete (*it).second;
 		fontMap.clear();
