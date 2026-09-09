@@ -22,6 +22,7 @@ common_cpppath = ['..', '../src', '../src/ai',
                   '../src/yog', '../src/sgsl',
                   '../src/map', '../src/map/edit', '../src/map/generator',
                   '../src/map/gradient', '../src/map/io', '../src/map/pathfind',
+                  '../src/render',
                   '../libgag/include', '../libusl/src']
 common_defines = ['HAVE_CONFIG_H', '_THREAD_SAFE']
 
@@ -101,6 +102,8 @@ TurretScanTileTest.cpp
 ParticleCrossfadeTest.cpp
 
 UnitTimingTest.cpp
+
+UnitDrawGeometryTest.cpp
 
 CortexUpgradeTest.cpp
 

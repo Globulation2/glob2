@@ -20,6 +20,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
+#include "UnitDrawGeometry.h"
 #include "UnitSkin.h"
 #include "Utilities.h"
 #include "GameGUI.h"
@@ -60,9 +61,12 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action<NB_MOVE);
 	const UnitSkin &skin = g_unitSkins[unit->typeNum];
 	imgid=skin.startImage[unit->action];
-	// x/y identify this visible occurrence of the wrapped tile. Re-converting
-	// the canonical unit position loses the opposite-edge part at a full period.
-	int px = x * 32, py = y * 32;
+	// Anchor on the visible occurrence x/y rather than on unit->posX/posY, so a
+	// unit on a map seam keeps its opposite-edge copy, and recover the unit's
+	// own tile from it: while entering a building the map slot lags one square
+	// behind the position (see UnitDrawGeometry.h).
+	int px = unitDrawTile(x, viewportX, unit->posX, map.getW()) * Map::TILE_PX;
+	int py = unitDrawTile(y, viewportY, unit->posY, map.getH()) * Map::TILE_PX;
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
