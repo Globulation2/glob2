@@ -435,6 +435,10 @@ private:
 		Unit* choosen;
 	};
 
+	/// Lets test/RoundTripHungerGateHarness.cpp reach considerUnitForResources
+	/// without exposing it to game callers, as GameGUI does for its own harness.
+	friend class RoundTripHungerGateHarness;
+
 	/// Per-unit predicate for subscribeToBringResourcesStep, mirroring the
 	/// considerUnitFor*Flag helpers: tests one harvest-capable unit against
 	/// availability, level, and building/resource reachability. On success it
