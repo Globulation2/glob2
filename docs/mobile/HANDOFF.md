@@ -32,7 +32,21 @@ Suggested first message to the new agent:
 > in-game UI, maintain compatibility with the browser branch, and update draft
 > PR #208 with honest evidence and remaining limitations.
 
-## Latest work: remaining authoring UI
+## Latest work: native save synchronization
+
+The user is unavailable for Pixel 6 testing until morning and authorized other
+implementation work. Atomic native writes now sync file contents before rename
+and the parent directory afterward, with Apple full sync and Windows write-through.
+The native harness injects sync failures and kills writers at controlled boundaries.
+See the newest [status checkpoint](status.md) for validation and limitations.
+The preview will identify this checkpoint in BUILD.json; the previous UI preview
+at `8b8f0390d` is preserved under `build/mobile-preview-history`.
+
+Next independent storage work is recovery generations/startup recovery and native
+import/export. Do not claim automatic recovery of unsaved game progress, orphan
+cleanup, device power-loss safety or storage latency qualification is complete.
+
+## Previous work: remaining authoring UI
 
 This checkpoint follows `e1e152ce0` and adapts the specialized map-editor workspace
 and campaign authoring. `PhoneEditor` preserves original edit actions/artwork,

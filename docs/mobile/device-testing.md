@@ -83,9 +83,12 @@ preview, and there is no TestFlight/store distribution for this checkpoint.
 5. Try Dialog text size at 100% and 150% in the in-game menu; check objectives
    and options in both orientations. Open Save, enter a distinctive filename, hide
    the keyboard, save, return to the game, then load that save.
-6. Background briefly and return. Report any jump, stuck input, lost audio,
+6. After a completed save, force-stop the app, reopen it and load that save;
+   record any error and noticeable save delay. This checks completed-save
+   persistence, not recovery of progress since the last save.
+7. Background briefly and return. Report any jump, stuck input, lost audio,
    missing controls or save issue. Do not assume termination recovery works.
-7. If convenient, try replay playback and its pause/speed controls; this is an
+8. If convenient, try replay playback and its pause/speed controls; this is an
    area still needing qualification.
 
 For each issue, provide a screenshot or short recording, orientation, reproduction

@@ -23,7 +23,9 @@
 #ifdef WIN32
 #include <process.h>
 #else
+#include <fcntl.h>
 #include <sys/resource.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <csignal>
@@ -94,6 +96,92 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 #endif
 	for (const auto& entry : fs::directory_iterator(directory))
 		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
+#ifndef WIN32
+	// Inject kernel-level sync failures inside an isolated child. Replacing the
+	// temporary file descriptor with /dev/null allows stdio flush to succeed
+	// but makes file sync fail; closing the directory descriptor fails the
+	// post-rename sync. Match inode/device rather than assuming descriptor IDs.
+	for (bool directoryFailure : {false, true})
+	{
+		const pid_t child = fork();
+		assert(child >= 0);
+		if (child == 0)
+		{
+			const bool saved = files.writeAtomically(path, [&](OutputStream& stream) {
+				stream.write("sync-test", 9, "data");
+				stream.flush();
+				fs::path target = directory;
+				if (!directoryFailure)
+					for (const auto& entry : fs::directory_iterator(directory))
+						if (entry.path().string().find(path + ".tmp-") == 0) target = entry.path();
+				struct stat expected;
+				if (stat(target.c_str(), &expected) != 0) _exit(7);
+				for (int fd = 3; fd < 256; ++fd)
+				{
+					struct stat actual;
+					if (fstat(fd, &actual) != 0 || actual.st_dev != expected.st_dev || actual.st_ino != expected.st_ino) continue;
+					if (directoryFailure) close(fd);
+					else
+					{
+						const int sink = open("/dev/null", O_WRONLY);
+						if (sink < 0 || dup2(sink, fd) != fd) _exit(8);
+						close(sink);
+					}
+					return;
+				}
+				_exit(9);
+			});
+			_exit(saved ? 10 : 0);
+		}
+		int status = 0;
+		assert(waitpid(child, &status, 0) == child && WIFEXITED(status) && WEXITSTATUS(status) == 0);
+		assert(contents(path) == (directoryFailure ? "sync-test" : "replacement"));
+	}
+	assert(files.writeAtomically(path, [](OutputStream& stream) { stream.write("replacement", 11, "data"); }));
+	std::cout << "PASS file sync failure preserves old bytes; directory sync failure reports uncertainty without deleting new bytes" << std::endl;
+
+	// Terminate a writer at a known boundary, then read from a fresh process.
+	// This checks process death, not physical power-loss behavior.
+	for (bool completed : {false, true})
+	{
+		int ready[2];
+		assert(pipe(ready) == 0);
+		const pid_t child = fork();
+		assert(child >= 0);
+		if (child == 0)
+		{
+			close(ready[0]);
+			const auto stop = [&]() {
+				const char signal = 'r';
+				if (::write(ready[1], &signal, 1) != 1) _exit(4);
+				for (;;) pause();
+			};
+			const bool saved = files.writeAtomically(path, [&](OutputStream& stream) {
+				stream.write("committed", 9, "data");
+				stream.flush();
+				if (!completed) stop();
+			});
+			if (!saved) _exit(5);
+			stop();
+		}
+		close(ready[1]);
+		char signal = 0;
+		assert(::read(ready[0], &signal, 1) == 1 && signal == 'r');
+		close(ready[0]);
+		assert(kill(child, SIGKILL) == 0);
+		int status = 0;
+		assert(waitpid(child, &status, 0) == child && WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL);
+		const pid_t reader = fork();
+		assert(reader >= 0);
+		if (reader == 0) _exit(contents(path) == (completed ? "committed" : "replacement") ? 0 : 6);
+		assert(waitpid(reader, &status, 0) == reader && WIFEXITED(status) && WEXITSTATUS(status) == 0);
+		// A killed writer may leave an orphan, never a partially replaced save.
+		for (const auto& entry : fs::directory_iterator(directory))
+			if (entry.path().filename().string().find(".tmp-") != std::string::npos)
+				fs::remove(entry.path());
+	}
+	std::cout << "PASS killed partial writer preserves old save; completed save survives writer death and fresh reader" << std::endl;
+#endif
 	std::cout << "PASS atomic creation/replacement, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup" << std::endl;
 #ifndef WIN32
 	std::cout << "PASS injected short write and buffered flush failure preserve previous bytes" << std::endl;

@@ -416,3 +416,21 @@ at 320×568 and 568×320, normal/enlarged text, original setup callbacks, ratio
 limits, hidden controls and resize cancellation. The same harness tests gameplay
 dialogs, filename input, keyboard dismissal and replay actions. Harness captures
 are desktop render evidence, not Android/iOS device qualification.
+
+## Native atomic-save synchronization
+
+`FileManager::writeAtomically` now checks file synchronization before replacement
+and directory synchronization after replacement on native POSIX targets. Apple
+also uses full sync; Windows commits the file and requests write-through rename.
+Emscripten still requires the caller's asynchronous `persistStorage()` completion.
+A failure after rename means the new file is complete but durability is uncertain;
+callers must not assume every false result leaves the previous bytes in place.
+Do not delete the destination to handle this error.
+
+Run `scons release=1 -j4 savegame-safety-test`, then the existing
+`test/run-savegame-safety-tests.py` runner against `SavegameSafetyHarness`.
+Its isolated child processes inject file/directory synchronization faults and
+terminate writers before and after commit. These verify error handling and process
+interruption, not sudden power loss. Keep physical storage latency and background
+termination on the device checklist. Recovery generations, orphan cleanup and
+native import/export remain separate work.

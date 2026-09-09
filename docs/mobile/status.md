@@ -7,6 +7,36 @@ iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 The historical Android screenshots near the end were collected on `7333e4e8b`.
 
+## Native storage synchronization checkpoint
+
+While physical Pixel 6 testing is pending, atomic saves now synchronize native
+file contents before replacement and the parent directory after replacement.
+Apple builds also request `F_FULLFSYNC`; Windows uses `_commit` and write-through
+replacement. Interrupted system calls are retried on POSIX. Browser saves retain
+the existing asynchronous IDBFS persistence step. Save formats are unchanged.
+This covers the existing atomic callers: games/autosaves, maps, campaigns and
+progress, replays, settings, key bindings and imported files.
+
+A file-sync failure preserves the old destination. A directory-sync failure after
+rename reports failure but keeps the complete new destination: its durability is
+uncertain. A killed partial writer may leave an ignored `.tmp-*` file; automatic
+orphan cleanup and recovery generations are not implemented in this checkpoint.
+Newly created ancestor directories are not recursively synchronized.
+
+Native savegame-safety checks pass, including injected file/directory sync faults,
+SIGKILL before replacement, and SIGKILL after successful completion followed by a
+fresh reader. Android ARM64 release/signing, iOS ARM64 simulator release and Wasm
+release builds pass. All 21 browser map/campaign/replay persistence cases pass
+across Chromium, Firefox and WebKit (1.9 minutes, no retries). Logs use
+`build/mobile-storage-*.log`. These tests do not
+simulate power loss or qualify mobile hardware; Windows was not runtime-tested.
+Physical save latency, background termination/recovery and storage exhaustion
+remain device gates. Apple documents full sync as a best-effort persistence
+request, with performance costs, rather than a power-loss guarantee:
+[Apple storage guidance](https://developer.apple.com/documentation/xcode/reducing-disk-writes).
+Parent-directory synchronization follows the
+[fsync contract](https://www.man7.org/linux/man-pages/man2/fsync.2.html).
+
 ## Native map and campaign authoring UI
 
 This pass completes the remaining authoring-screen adaptation after `e1e152ce0`.

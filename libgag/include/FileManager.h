@@ -74,7 +74,11 @@ namespace GAGCore
 		//! Open an output stream backend, use it to construct specific output streams
 		StreamBackend *openOutputStreamBackend(const std::string filename);
 		
-		//! Replace a file only after the writer, flush, and close all succeed.
+		//! Replace after serialization, flush, native file sync and close succeed.
+		//! Native success also requires synchronizing the replacement metadata.
+		//! A failure after replacement may leave complete new bytes visible with
+		//! uncertain durability; earlier failures preserve the old destination.
+		//! Browser callers must additionally await persistStorage() for IDBFS.
 		bool writeAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer);
 
 		//! Open an input stream backend, use it to construct specific input streams
