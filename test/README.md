@@ -278,3 +278,17 @@ target remains unchanged, and a depleted target is refreshed after its resource
 gradient is rebuilt. It invokes the movement method directly, rather than running
 an entire match. The shared runner isolates the profile and working directory and
 checks that preferences remain unchanged. Linux CI runs this regression.
+
+## Hiring bucket iteration
+
+`HiringBucketHarness` uses the real engine to check that two competing inns
+receive one worker each before either retries. Hiring the first worker reorders
+the live bucket; iteration must keep following building identity. The old loop
+fails this fixture with two workers at the first inn and zero at the second. Run with:
+
+```sh
+scons -j6 release=1 server=0 hiring-bucket-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness .
+```
+
+The harness runs headlessly in disposable profile directories in Linux and Windows CI.

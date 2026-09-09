@@ -91,26 +91,24 @@ void Team::updateAllBuildingTasks()
 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
 		std::sort(i->second.begin(), i->second.end(), Team::buildingHasHigherPriority);
-		bool cont=true;
-		std::vector<bool> foundPer(i->second.size(), true);
-		while(cont)
+		// Every subscribe* call re-registers its own building, and one that moves
+		// a unit between buildings re-registers those too, so this bucket is
+		// reordered and resized while it is being walked. Keep "hired last round,
+		// so ask again" attached to the building instead of to a position in a
+		// vector that does not hold still.
+		std::vector<Building*> pending(i->second.begin(), i->second.end());
+		while(!pending.empty())
 		{
-			bool found=false;
-			for(unsigned j=0; j<(i->second.size()); ++j)
+			std::vector<Building*> hiring;
+			for(std::vector<Building*>::iterator b=pending.begin(); b!=pending.end(); ++b)
 			{
-				if(foundPer[j])
-				{
-					bool thisFound=false;
-					if(i->second[j]->type->isVirtual)
-						thisFound |= (i->second)[j]->subscribeForFlagingStep();
-					else
-						thisFound |= (i->second)[j]->subscribeToBringResourcesStep();
-					found |= thisFound;
-					foundPer[j] = thisFound;
-				}
+				bool thisFound = (*b)->type->isVirtual
+					? (*b)->subscribeForFlagingStep()
+					: (*b)->subscribeToBringResourcesStep();
+				if(thisFound)
+					hiring.push_back(*b);
 			}
-			if(!found)
-				cont = false;
+			pending.swap(hiring);
 		}
 	}
 }

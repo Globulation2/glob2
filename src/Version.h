@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 91
+#define VERSION_MINOR 92
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -94,6 +94,8 @@
 // version 89 preserves live team statistics and their sampling cadence
 // version 90 marks the weighted per-swim-class pathfinding and sqrt(2) diagonal timing (#184):
 //            the simulation changed, so replays recorded before it diverge and are refused
+// version 92 walks the hiring buckets by building instead of by index, so a bucket
+//            resized mid-pass no longer skips or repeats a building
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
