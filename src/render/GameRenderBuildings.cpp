@@ -195,7 +195,8 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 				assert(building);
 				const int originX = x - ((x + viewportX - building->posX) & map.getMaskW());
 				const int originY = y - ((y + viewportY - building->posY) & map.getMaskH());
-				if(drawnCopies.emplace(gid, originX, originY).second)
+				const auto copy = std::make_tuple(gid, originX, originY);
+				if(drawnCopies.find(copy) == drawnCopies.end())
 				{
 					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
@@ -209,6 +210,7 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 						px = originX * 32 + (dispX - building->posX) * 32;
 						py = originY * 32 + (dispY - building->posY) * 32;
 					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						drawnCopies.insert(copy);
 						drawnBuildings.insert(building);
 					}
 				}
