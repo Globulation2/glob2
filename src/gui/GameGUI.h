@@ -275,7 +275,7 @@ private:
 	//! Draw the infos that are over the others, like the message, the waiting players, ...
 	void drawOverlayInfos(void);
 	//! Draw the particles (eye-candy). @p advance steps their age and physics.
-	//! Emission is already gated on game.stepCounter, which stops while paused.
+	//! Emission is suppressed separately while the game is paused.
 	void drawParticles(bool advance);
 	//! Draw the panel: clip rect, background, tutorial highlight, panel buttons,
 	//! then defers to dispatchSelectionPanel for the body.

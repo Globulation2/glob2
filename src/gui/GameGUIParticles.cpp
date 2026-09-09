@@ -98,6 +98,9 @@ void GameGUI::drawParticles(bool advance)
 
 void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 {
+	if (gamePaused)
+		return;
+
 	for (std::set<Building*>::iterator it = visibleBuildings->begin(); it != visibleBuildings->end(); ++it)
 	{
 		Building* building = *it;
