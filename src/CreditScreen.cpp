@@ -117,7 +117,7 @@ void ScrollingText::internalInit(void)
 				s.erase(f, l-f+1);
 			}
 		}
-		lineWidths.push_back(fontPtr->getStringWidth(s.c_str()));	
+		lineWidths.push_back(fontPtr->getStringWidth(s.c_str()));
 	}
 }
 
