@@ -60,8 +60,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action<NB_MOVE);
 	const UnitSkin &skin = g_unitSkins[unit->typeNum];
 	imgid=skin.startImage[unit->action];
-	int px, py;
-	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+	// Draw the map copy being visited, including repeated copies in wide views.
+	int px = x * 32;
+	int py = y * 32;
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
