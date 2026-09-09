@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "../render/MapCopies.h"
 #include <math.h>
 #include <stdlib.h>
 
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUIViewport.h"
 #include "GlobalContainer.h"
 #include "ParticleCrossfade.h"
 
@@ -75,9 +77,16 @@ void GameGUI::drawParticles(void)
 
 		// crossfade between the current animation frame and the next one
 		const ParticleCrossfade cf = computeParticleCrossfade(p->startImg, p->endImg, p->age, p->lifeSpan);
-		drawCenteredParticleSprite(p->x, p->y, cf.frameA, cf.alphaA);
+		int radius = std::max(globalContainer->particles->getW(cf.frameA), globalContainer->particles->getH(cf.frameA));
 		if (cf.hasFrameB)
-			drawCenteredParticleSprite(p->x, p->y, cf.frameB, cf.alphaB);
+			radius = std::max({radius, globalContainer->particles->getW(cf.frameB), globalContainer->particles->getH(cf.frameB)});
+		forEachMapCopy(int(p->x)-radius, int(p->y)-radius, int(p->x)+radius, int(p->y)+radius,
+			game.map.getW()*32, game.map.getH()*32, globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
+			globalContainer->gfx->getH(), [&](int dx, int dy) {
+				drawCenteredParticleSprite(p->x+dx, p->y+dy, cf.frameA, cf.alphaA);
+				if (cf.hasFrameB)
+					drawCenteredParticleSprite(p->x+dx, p->y+dy, cf.frameB, cf.alphaB);
+			});
 
 		++it;
 	}

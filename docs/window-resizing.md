@@ -162,3 +162,54 @@ maximum-texture-size fallback and Windows simulation pause are intentional
 limits described above. Broader campaign play and Internet multiplayer testing
 can extend this coverage without representing the current acceptance checks as
 an exhaustive proof of correctness.
+
+## Repeated-map rendering audit
+
+A viewport can show several copies of a small toroidal map. Sprite visibility
+alone is insufficient: every map-space annotation must use the same periodic
+copies. `forEachMapCopy` enumerates translations whose primitive bounds intersect
+the viewport, including negative origins and sprite/radius overhang. Path-line
+endpoints retain their shortest toroidal displacement and move together.
+
+The follow-up audit covers these drawing paths:
+
+| Path | Treatment |
+| --- | --- |
+| Terrain, resources, ground/air units, buildings, fog, area/gradient overlays | Existing viewport tile scan repeats map contents; building identity remains separate from displayed-copy identity. The optional debug-gradient lookup now wraps both indices. |
+| Selected buildings in game/editor, assigned-worker circles, resource selection | Repeat selection geometry for all visible copies; clip to the map panel. |
+| Unit target/debug lines | Repeat entire segments, preserving the short route through a map seam. |
+| Virtual flags and their ranges/bars | Repeat the complete flag drawing pass. |
+| Bullets/shadows, explosions and death animations | Repeat sprite placements, including overhang; retain existing visibility decisions. |
+| Pending-building ghosts and building particles | Repeat drawing; particle age/physics and particle generation still run once. |
+| Main-view map markers | Repeat the marker and preserve clipping; minimap markers and lifetime updates remain single. |
+| Minimap, offscreen arrows, mouse placement previews, screen-space messages and clouds | Keep their existing view-specific behavior; these are not duplicated as map objects. |
+
+Resolution presets now appear only when fullscreen is selected, including after
+switching settings tabs. Desktop fullscreen scales the selected logical resolution,
+so standard logical sizes no longer need the old “no fullscreen” marker. Windowed
+mode follows the OS dimensions and ignores resolution-list selection events.
+
+### Permanent regression coverage
+
+Build `scons map-render-resize-test`, then run:
+
+```sh
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness
+SDL_VIDEODRIVER=x11 SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness --gl
+```
+
+The harness links production rendering and settings code, checks pixels across six
+map copies, crosses a path seam, pans the view, shrinks/grows the window, checks
+sidebar clipping, and exercises settings toggles and tab changes. It also retains
+the previously temporary credits-centering regression. The GL mode reads the
+rendered back buffer before swap. Only the test translation unit relaxes C++ access
+control; no test visibility changes are compiled into production objects. Credits'
+implementation is compiled directly into that translation unit instead of linking
+its normal object, allowing its internal scrolling widget to be exercised.
+
+Both modes are wired into Linux CI, using disposable profiles and preference
+preservation checks. Negative controls substituting the previous production
+selection, path-line, effect, flag, ghost, particle and marker implementations each
+fail the corresponding pixel checks. Restoring the old settings visibility policy
+also fails. These checks cover rendering and UI behavior; they do not replace the
+separate Windows modal-resize and multiplayer acceptance tests.

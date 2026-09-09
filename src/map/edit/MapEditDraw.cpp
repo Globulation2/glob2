@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "../../render/MapCopies.h"
 #include <FormatableString.h>
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -94,12 +95,17 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 			// Map editor mutates buildings directly — no orderQueue, no pending shadow.
 			// Use the authoritative position straight from the Building.
 			game.map.buildingPosToCursor(selBuild->posX, selBuild->posY,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
-			if (selBuild->owner->teamNumber==team)
-				globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 0, 0, 190);
-			else if ((game.teams[team]->allies) & (selBuild->owner->me))
-				globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 255, 196, 0);
-			else if (!selBuild->type->isVirtual)
-				globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
+			const int radius = selBuild->type->width*16;
+			forEachMapCopy(centerX-radius, centerY-radius, centerX+radius, centerY+radius,
+				game.map.getW()*32, game.map.getH()*32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,
+				globalContainer->gfx->getH(), [&](int dx, int dy) {
+				if (selBuild->owner->teamNumber==team)
+					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 0, 0, 190);
+				else if ((game.teams[team]->allies) & (selBuild->owner->me))
+					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 255, 196, 0);
+				else if (!selBuild->type->isVirtual)
+					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 190, 0, 0);
+			});
 			globalContainer->gfx->setClipRect();
 		}
 		if(selectionMode==ChangeAreas)

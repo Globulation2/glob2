@@ -519,6 +519,18 @@ if not env['server']:
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
+    # Use the real renderer and settings handlers. Access relaxation is confined
+    # to the test translation unit; production objects retain their normal flags.
+    render_env = savegame_env.Clone()
+    render_env.Append(CPPPATH=['#libgag/src'])
+    render_env['CXXFLAGS'] = local.Split(local['CXXFLAGS']) + ['-fno-access-control']
+    render_sources = [obj for obj in savegame_sources
+                      if str(obj).split('/')[-1] not in ('SavegameSafetyHarness.o', 'CreditScreen.o')]
+    render_sources += render_env.Object('MapRenderResizeHarness.o', '#test/MapRenderResizeHarness.cpp')
+    render_test = savegame_env.Program('MapRenderResizeHarness', render_sources)
+    local.Alias('map-render-resize-test', render_test)
+
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)

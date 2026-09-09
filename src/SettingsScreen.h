@@ -65,7 +65,6 @@ private:
 	Settings old_settings;
 	List *languageList;
 	List *modeList;
-	Text *modeListNote;
 	TextInput *userName;
 	
 	TextButton *ok, *cancel;

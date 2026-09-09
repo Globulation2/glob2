@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 
+#include "render/MapCopies.h"
+#include "gui/GameGUIViewport.h"
 #include "MarkManager.h"
 #include "Utilities.h"
 #include "GameUtilities.h"
@@ -72,7 +74,17 @@ void Mark::drawInMainView(int viewportX, int viewportY, Game& game) const
 	int nx, ny;
 	game.map.mapCaseToDisplayable(px, py, &nx, &ny, viewportX, viewportY);
 	
-	draw(nx, ny, 2.0);
+	auto *gfx = globalContainer->gfx;
+	int clipX, clipY, clipW, clipH;
+	gfx->getClipRect(&clipX, &clipY, &clipW, &clipH);
+	const int width = gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH;
+	gfx->setClipRect(0, 0, width, gfx->getH());
+	const int radius = totalTime + 2*MARK_LINE_LENGTH_PX;
+	forEachMapCopy(nx-radius, ny-radius, nx+radius, ny+radius,
+		game.map.getW()*32, game.map.getH()*32, width, gfx->getH(), [&](int dx, int dy) {
+			draw(nx+dx, ny+dy, 2.0);
+		});
+	gfx->setClipRect(clipX, clipY, clipW, clipH);
 }
 
 
