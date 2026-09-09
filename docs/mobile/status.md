@@ -1,5 +1,34 @@
 # Mobile verification and remaining work
 
+## 2026-09-09 — isolated iOS picker interaction
+
+Hosted mobile run 34315653259 passes at `b9806743d` without retries: all three
+Android ABI packages and symbol IDs, x86-64 lifecycle/trust and iOS lifecycle.
+The general browser/desktop run 34315653163 is still in progress.
+
+The unsigned ARM64 device release app also rebuilds successfully with iOS 15.0
+minimum / SDK 26.5. Its binary and dSYM both report UUID
+`B0E2D375-F419-309E-A162-C99C104B74AF`. This verifies device compilation and
+symbols, not installation without an Apple signing identity/profile. A second
+100,000-step run on `maps/Isles.map` (128×128, four Castor AIs, seed 42) also
+passes all 101 native ARM64/Wasm component/checksum/RNG checkpoints. The local
+runner used the existing map query and corresponding native map argument;
+results are in `build/mobile-determinism/isles/result.json`. These host runs
+do not qualify mobile frame-time or thermal budgets. Device-build logs:
+`build/mobile-final-ios-device-build.log` and `build/mobile-final-ios-device-uuids.log`.
+
+Task-local idb 1.5.4 now provides HID input on the owned iPhone 16 simulator
+without opening another thread's Simulator window. Native import presentation,
+local folder browsing, visible cancellation and reopening pass. Export presents
+the selected autosave name and releases the operation when dismissed.
+
+Selection remains blocked inside the simulator LocalStorage provider: valid game,
+invalid game and plain text fixtures all fail to resolve an FPItem, and export
+Save stays disabled. Reboot and a fixture in provider storage did not help.
+The idb xctrace wrapper also crashes in its own NIO implementation; it does not
+close the Instruments gate. [Reproduction and screenshots](simulator-interaction.md)
+record these limits. No app code was changed on the basis of these tool failures.
+
 ## 2026-09-09 — final browser CI follow-up
 
 Mobile run 34312370889 passes at `530b7b74b`, including every Android ABI,

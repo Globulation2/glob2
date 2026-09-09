@@ -40,8 +40,8 @@ morning. Read [remaining-work](remaining-work.md) and the newest
 cleanup, platform certificate trust, phone editor/results/settings, simulator
 lifecycle drivers, symbol validation and long-run determinism tooling are implemented.
 Android document round trips pass. Both local mobile lifecycle smokes pass, as does
-hosted mobile run 34310898922 (all Android ABIs and iOS simulator). Later CI reruns
-cover the last fixture/include and Android build-ID checks.
+hosted mobile run 34315653259 at `b9806743d` (all Android ABIs, build-ID checks,
+x86-64 lifecycle/trust and iOS simulator, without retries).
 
 Browser base `1658ff670` is reconciled. The native/Wasm 100,000-step fixture has
 101 identical checkpoints, all 54 replay/single-player browser cases pass, and all
@@ -53,8 +53,11 @@ The refreshed preview and exact source revision live in `build/mobile-preview`;
 older packages are archived in `build/mobile-preview-history`. Remaining gates
 include Pixel 6 and signed Apple devices, iOS/provider interaction, physical
 accessibility/performance, a trusted mobile gateway and coordinated participants.
-The private iOS simulator is invisible to this host's Simulator/Instruments UI
-inventory; do not reconfigure or close another thread's simulator to work around it.
+Task-local idb input now verifies native picker presentation/browsing/cancellation
+and reopening on the private iOS simulator. Its local provider cannot resolve
+selected files and disables export Save; Instruments remains unqualified. See
+[simulator interaction](simulator-interaction.md). Do not reconfigure or close
+another thread's simulator to work around these limitations.
 
 ## Previous work: native save synchronization
 

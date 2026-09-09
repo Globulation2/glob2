@@ -560,3 +560,9 @@ Android links `libmain.so` with a SHA-1 ELF build ID. After Gradle packaging,
 library and retained symbols and rejects missing, ambiguous or mismatched IDs.
 The APK's `.symbols.json` records the verified ID. Archive that metadata alongside
 the exact APK and `libmain.so` for future crash symbolication.
+
+### Optional isolated simulator input
+
+The [simulator interaction guide](simulator-interaction.md) records the tested
+idb companion version/hash, private socket and state setup, picker cancellation
+evidence, and the unresolved local-provider/Instruments limitations.

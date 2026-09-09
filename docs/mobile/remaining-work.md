@@ -26,13 +26,16 @@ itself mean a hosted CI run passed.
 
 ## Continue without physical devices
 
-- Hosted mobile run 34310898922 is fully green: all Android ABIs package,
-  hosted x86-64 lifecycle/trust and iOS lifecycle checks pass. Monitor subsequent
-  runs for the last test-fixture and build-ID packaging changes from PR #208.
-- iOS picker interaction needs an accessible dedicated simulator/device surface;
-  the current isolated set is unavailable to Simulator/Instruments UI discovery.
-  Third-party/cloud provider testing also needs those providers/accounts. Android
-  local-provider round trips pass and both bridges are implemented.
+- Hosted mobile run 34315653259 is fully green: all Android ABIs package,
+  hosted x86-64 lifecycle/trust and iOS lifecycle checks pass at `b9806743d`
+  without retries. Build-ID packaging checks pass on all three Android ABIs.
+  The general browser/desktop workflow is still running for that commit.
+- iOS picker presentation, browsing, cancellation and reopening now pass through
+  task-local idb input on the isolated simulator. Its local File Provider cannot
+  resolve selected files (including plain text) and disables export Save, even
+  after reboot. Import/export round trips remain unqualified; see
+  [simulator interaction](simulator-interaction.md). Third-party/cloud provider
+  testing also needs providers/accounts. Android local-provider round trips pass.
 - Mobile WSS end-to-end qualification needs a trusted gateway endpoint and
   mobile participants. Native/Wasm TCP and WSS cross-play is covered locally;
   mobile certificate trust passes separately. Coordinated device reconnect stays open.
