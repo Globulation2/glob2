@@ -47,7 +47,7 @@ bool allRemainingUnitsTrapped(Team& team)
 	{
 		Team* ally = team.game->teams[i];
 		if (ally && ally != &team && (team.allies & ally->me)
-			&& ally->isAlive && ally->playersMask != 0)
+			&& ally->isAlive && !ally->hasLost && ally->playersMask != 0)
 			return false;
 	}
 

@@ -163,12 +163,14 @@ void rescue() {
     assert(f.unit->movement == Unit::MOV_EXITING_BUILDING);
     assert(f.game.teams[0]->isAlive);
 }
-void allyProtection() {
+void allyProtection(int inactiveReason) {
     Fixture f;
     f.game.teams[0]->allies |= f.game.teams[1]->me;
     for (int i = 0; i < 32; ++i) f.game.syncStep(0);
     assert(f.game.teams[0]->isAlive && f.unit->hungry == 10);
-    f.game.teams[1]->isAlive = false;
+    if (inactiveReason == 0) f.game.teams[1]->isAlive = false;
+    if (inactiveReason == 1) f.game.teams[1]->playersMask = 0;
+    if (inactiveReason == 2) f.game.teams[1]->hasLost = true;
     f.game.syncStep(0);
     assert(!f.game.teams[0]->isAlive);
 }
@@ -247,7 +249,7 @@ int main(int argc, char** argv) {
     rescue();
     activeService(FEED);
     activeService(WALK);
-    allyProtection();
+    for (int reason = 0; reason < 3; ++reason) allyProtection(reason);
     freeUnitProtection();
     openExitProtection();
     productionRecovery(true, false);
