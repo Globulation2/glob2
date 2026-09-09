@@ -340,6 +340,7 @@ namespace GAGGUI
 		void dispatchInit(void);
 		//! Paint the screen and widgets; defer presentation when composing a modal overlay.
 		void dispatchPaint(bool present = true);
+		virtual void updateLayout(void) {}
 		//! Return the associated drawable surface
 		GAGCore::DrawableSurface *getSurface(void) { return gfx; }
 		//! Return the width of the screen
@@ -352,6 +353,7 @@ namespace GAGGUI
 	//! Base class used for screen that don't take full frame and/or are non-blocking
 	class OverlayScreen:public Screen
 	{
+		GAGCore::GraphicContext *parentContext;
 	public:
 		//! Int to say when we have finished
 		int endValue;
@@ -363,6 +365,7 @@ namespace GAGGUI
 		OverlayScreen(GAGCore::GraphicContext *parentCtx, unsigned w, unsigned h);
 		//! Destructor
 		virtual ~OverlayScreen();
+		void updateLayout(void) override;
 	
 		//! Run the OverlayScreen, call Screen::execute with the correct DrawableSurface
 		virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);

@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "../render/MapCopies.h"
 #include <math.h>
 #include <stdlib.h>
 
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUIViewport.h"
 #include "GlobalContainer.h"
 #include "ParticleCrossfade.h"
 
@@ -77,11 +79,18 @@ void GameGUI::drawParticles(bool advance)
 
 		// crossfade between the current animation frame and the next one
 		const ParticleCrossfade cf = computeParticleCrossfade(p->startImg, p->endImg, p->age, p->lifeSpan);
-globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
-		drawCenteredParticleSprite(MapCamera::wrap(p->x-viewportX*32+64, game.map.getW()*32)-64, MapCamera::wrap(p->y-viewportY*32+64, game.map.getH()*32)-64, cf.frameA, cf.alphaA);
+		int radius = std::max(globalContainer->particles->getW(cf.frameA), globalContainer->particles->getH(cf.frameA));
 		if (cf.hasFrameB)
-			drawCenteredParticleSprite(MapCamera::wrap(p->x-viewportX*32+64, game.map.getW()*32)-64, MapCamera::wrap(p->y-viewportY*32+64, game.map.getH()*32)-64, cf.frameB, cf.alphaB);
-});
+			radius = std::max({radius, globalContainer->particles->getW(cf.frameB), globalContainer->particles->getH(cf.frameB)});
+		const float x=MapCamera::wrap(p->x-viewportX*32,game.map.getW()*32);
+		const float y=MapCamera::wrap(p->y-viewportY*32,game.map.getH()*32);
+		forEachMapCopy(int(x)-radius, int(y)-radius, int(x)+radius, int(y)+radius,
+			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW ? game.map.displayViewportW : globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
+			game.map.displayViewportH ? game.map.displayViewportH : globalContainer->gfx->getH(), [&](int dx, int dy) {
+				drawCenteredParticleSprite(x+dx, y+dy, cf.frameA, cf.alphaA);
+				if (cf.hasFrameB)
+					drawCenteredParticleSprite(x+dx, y+dy, cf.frameB, cf.alphaB);
+			});
 
 		++it;
 	}

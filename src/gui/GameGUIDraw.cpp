@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "../render/MapCopies.h"
 #include <iostream>
 
 #include <FormatableString.h>
@@ -361,17 +362,18 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
+	updateCamera();
 	globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
-globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
+
 	if (selectionMode==TOOL_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY);
+		globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
 	}
 	else if (selectionMode==BRUSH_SELECTION)
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY);
+		globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
 	}
 	else if (selectionMode==BUILDING_SELECTION)
 	{
@@ -379,12 +381,17 @@ globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.m
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 		int centerX, centerY;
 		game.map.buildingPosToCursor(displayedPosX(*selBuild), displayedPosY(*selBuild),  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
-		if (selBuild->owner->teamNumber==localTeamNo)
-			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 0, 0, 190);
-		else if ((localTeam->allies) & (selBuild->owner->me))
-			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 255, 196, 0);
-		else if (!selBuild->type->isVirtual)
-			globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
+		const int radius = selBuild->type->width*16;
+		forEachMapCopy(centerX-radius, centerY-radius, centerX+radius, centerY+radius,
+			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW,
+			game.map.displayViewportH, [&](int dx, int dy) {
+			if (selBuild->owner->teamNumber==localTeamNo)
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 0, 0, 190);
+			else if ((localTeam->allies) & (selBuild->owner->me))
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 255, 196, 0);
+			else if (!selBuild->type->isVirtual)
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 190, 0, 0);
+		});
 
 		// draw a white circle around units that are working at building
 		if ((showUnitWorkingToBuilding)
@@ -401,7 +408,10 @@ globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.m
 					px-=(unit->dx*deltaLeft)>>3;
 					py-=(unit->dy*deltaLeft)>>3;
 				}
-				globalContainer->gfx->drawCircle(px+16, py+16, 16, 255, 255, 255, 180);
+				forEachMapCopy(px, py, px+32, py+32, game.map.getW()*32, game.map.getH()*32,
+					game.map.displayViewportW, game.map.displayViewportH, [&](int dx, int dy) {
+						globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 255, 255, 255, 180);
+					});
 			}
 		}
 	}
@@ -412,10 +422,14 @@ globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.m
 		int ry = resource >> game.map.getShiftW();
 		int px, py;
 		game.map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
-		globalContainer->gfx->drawCircle(px+16, py+16, 16, 0, 0, 190);
+		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+		forEachMapCopy(px, py, px+32, py+32, game.map.getW()*32, game.map.getH()*32,
+			game.map.displayViewportW, game.map.displayViewportH, [&](int dx, int dy) {
+				globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 0, 0, 190);
+			});
 	}
 
-});
+
 	globalContainer->gfx->endMapTransform();
 	// draw message List
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
@@ -501,7 +515,7 @@ globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.m
 
 	// display map mark
 	globalContainer->gfx->setClipRect();
-	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, game);
+	markManager.drawAll(localTeamNo, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+20, 10, 128, viewportX, viewportY, game, &camera);
 
 	// display text if placing a building
 	if(selectionMode == TOOL_SELECTION && toolManager.getBuildingName() != "")
@@ -649,7 +663,7 @@ void GameGUI::drawAll(int team)
 	}
 
 	///Draw ghost buildings
-	if (!globalContainer->replaying) globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ ghostManager.drawAll(viewportX, viewportY, localTeamNo); });
+	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 
 	globalContainer->gfx->endMapTransform();
 	// if paused, tint the game area
