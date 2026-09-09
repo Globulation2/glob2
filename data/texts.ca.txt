@@ -1,77 +1,77 @@
 [%0 has left the game]
 %0 ha marxat
 [%0 level %1]
-
+%0 de nivell %1
 [%0 units can't access building]
-
+%0 unitats no poden accedir a l'edifici
 [%0 units can't access flag]
-
+%0 unitats no poden accedir a la bandera
 [%0 units can't access fruit]
-
+%0 unitats no poden accedir a la fruita
 [%0 units can't access resource]
-
+%0 unitats no poden accedir al recurs
 [%0 units not available]
-
+%0 unitats no disponibles
 [%0 units too far from building]
-
+%0 unitats són massa lluny de l'edifici
 [%0 units too far from flag]
-
+%0 unitats són massa lluny de la bandera
 [%0 units too far from fruit]
-
+%0 unitats són massa lluny de la fruita
 [%0 units too far from resource]
-
+%0 unitats són massa lluny del recurs
 [%0 units too low level]
-
+%0 unitats tenen un nivell massa baix
 [%0% Uploaded]
-
+%0% pujat
 [%0's game]
-
+Partida de %0
 [%0's team unit got converted to your team]
 Una unitat de %0 s'ha convertit al teu equip
 [abreaviation explanation A]
-A : Alies
+A: Aliats
 [abreaviation explanation C]
 C : Envia un missatge de text a
 [abreaviation explanation fV]
-Vf : Mostra la visio de totes les DESPENSES (per robar unitats)
+fV: Comparteix la visió de les despenses (per atraure unitats)
 [abreaviation explanation mV]
-mV : Mostra la visio de tots els MERCATS (per intercanviar fruita)
+mV: Comparteix la visió dels mercats (per intercanviar fruita)
 [abreaviation explanation V]
-V : Mostra la visio de totes les construccions
+V: Comparteix la visió de tots els edificis
 [add map]
-
+Afegeix un mapa
 [add shortcut]
-
+Afegeix una drecera
 [Add]
-
+Afegeix
 [AI Descriptions]
-
+Descripcions de les IA
 [AI]
 IA
 [ai]
 IA
 [AICastor-Description]
-
+Castor juga de manera conservadora i se'n surt molt bé en mapes amb pocs recursos. Dificultat mitjana.
 [AICastor]
 IACastor
 [AINicowar-Description]
-
+Nicowar juga agressivament, creix de pressa i envia exèrcits enormes contra els rivals. Dificultat alta.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Cap: no fa res.
 [AINone]
-IANone
+Cap
 [AINumbi-Description]
-
+Numbi s'expandeix poc, però de pressa. Dificultat baixa.
 [AINumbi]
 IANumbi
 [AIReachToInfinity-Description]
-
+ReachToInfinity no ataca, però construeix bases enormes i intenta fer passar moltes unitats al seu bàndol. Dificultat baixa.
 [AIReachToInfinity]
 ReachToInfinity
 [AIWarrush-Description]
-
+Warrush ataca de pressa i amb duresa, sovint portant el defensor al límit. Dificultat mitjana.
 [AIWarrush]
 AIWarrush
 [Alga]
@@ -81,27 +81,27 @@ algues
 [alliances]
 Aliances
 [alt %0]
-
+alt-%0
 [and]
 i
 [any explorer]
 Qualsevol Explorador
 [are dying hungry]
-es mor de gana
+es moren de gana
 [are hungry]
-te fam
+tenen gana
 [are ok]
 estan bé
 [are wonded]
-esta ferit
+estan ferits
 [armor]
 Armadura
 [assigned]
-
+Assignades
 [At. speed]
-At. velocitat
+Vel. d'atac
 [At. strength]
-At. força
+Força d'atac
 [Attack]
 Atac
 [audio]
@@ -115,55 +115,55 @@ Esperant als jugadors
 [away:]
 ausent:
 [Back]
-
+Enrere
 [backspace]
-
+retrocés
 [barracks explanation 2]
-dels teus globuls en aigua
+dels teus guerrers
 [barracks explanation]
-Per augmentar el poder d' atac
+Millora el nivell de combat
 [barracks]
-Cuartell
+Caserna
 [beach size]
-Tamany de la platja
+Mida de la platja
 [Blocked Players]
-
+Jugadors blocats
 [break]
-
+Break
 [briefing]
-
+Instruccions de la missió
 [build %0 level %1]
-
+Construeix %0 de nivell %1
 [Build]
 Construir
 [Building Defaults]
-
+Valors per defecte dels edificis
 [building settings]
-
+Configuració dels edificis
 [building site]
 Construint
 [Building Tool Box Explanation]
-
+Maj + arrossegar = rectangle
 [Building Tool Line Explanation]
-
+Ctrl + arrossegar = línia
 [Buildings]
 Edificis
 [Bullets]
 Bales
 [campaign editor]
-
+Editor de campanyes
 [campaign]
 Campanya
 [Can't connect, can't find host]
-
+No es pot connectar: no s'ha trobat l'amfitrió
 [Can't host game, port %0 in use]
-
+No es pot crear la partida: el port %0 està ocupat
 [Can't join game, game doesn't exist]
-
+No es pot entrar: la partida no existeix
 [Can't join game, game has started]
-
+No es pot entrar: la partida ja ha començat
 [Can't join game, game is full]
-
+No es pot entrar: la partida és plena
 [Can't join game, missmatching game parameters]
 No pots unirte a la partida, falten parametres
 [Can't join game, timeout]
@@ -179,17 +179,17 @@ Cancelar Millora
 [Cancel]
 Cancelar
 [caps lock]
-
+bloq maj
 [carry]
 Transport :
 [Change Area Name]
-
+Canvia el nom de l'àrea
 [Cherry]
 Cirera
 [choose campaign]
 Escull una campanya
 [choose game]
-Escull un juego
+Escull una partida
 [choose map]
 Escull un mapa
 [clear area]
@@ -199,39 +199,39 @@ Netejant
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Atrau als teus globuls treballadors
+Elimina recursos
 [clearingflag]
 Bandera de Neteja
 [closed]
 Tancat
 [combined vision]
-
+Visió combinada
 [compile]
 Compilar el script
 [compose]
-
+Compose
 [Computing Fertility]
-
+Calculant la fertilitat
 [concrete islands terrain]
-
+Illes separades
 [connect]
-Conectat
+Connecta
 [connecting to game]
-
+Connectant a la partida
 [connecting to]
-Conectant a
+Connectant a
 [Construction Site Defaults]
-
+Valors per defecte de les obres
 [Continue playing]
 Continuar jugant
 [control %0]
-
+control-%0
 [Corn]
 Blat
 [crater density]
-densitat del cràter
+nombre de cràters
 [crater lakes terrain]
-llac cràter
+Llacs de cràter
 [create game]
 Crear joc
 [create map]
@@ -239,85 +239,85 @@ Crear mapa
 [credits]
 Crèdits
 [ctrl - line]
-
+Ctrl - línia
 [current speed]
 Velocitat actual
 [custom game]
-Joc personalizat
+Joc personalitzat
 [customcur]
-Cursor actual
+Cursor personalitzat
 [damage]
-mal
+Dany
 [Damaged Map]
-
+Mapa de ferits
 [decrease units working]
-
+Redueix les unitats assignades
 [Defeat Your Oppenents]
-
+Derrota els rivals
 [defencetower explanation 2]
-
+enemics propers
 [defencetower explanation]
-Ataca els globuls enemics
+Ataca unitats i edificis
 [defencetower]
 Torre
 [Defense Map]
-
+Mapa de defensa
 [Defense]
 Defensa
 [Delete game]
 Esborra la partida seleccionada
 [delete]
-
+Suprimeix
 [desert]
 desert
 [destroy building]
-
+Destrueix l'edifici seleccionat
 [destroy]
 Destruir
 [display]
-Visualitzador
+Pantalla
 [do nothing]
-
+No facis res
 [don't carry anything]
 No Transporta res
 [down]
-
+avall
 [Download Map]
-
+Baixa el mapa
 [Download Maps]
-
+Baixa mapes
 [downloaded %0]
-
+%0 baixat
 [downloading map]
-
+Baixant el mapa
 [edit map]
-
+Edita el mapa
 [editing map]
-
+Editant el mapa
 [editor shortcuts]
-
+Editor
 [editor]
 Editor
 [end]
-
+fi
 [Enter your nickname :]
 Introdueix el teu nick :
 [Enter your password :]
-Introdueix la contrassenya :
+Introdueix la contrasenya:
 [enter]
-
+retorn
 [equals]
-
+igual
 [escape]
-
+Esc
 [explorationflag explanation 2]
-exploradors a l'area seleccionada
+a la zona seleccionada
 [explorationflag explanation]
-Atrau als teus globuls
+Atrau exploradors
 [explorationflag]
-Bandera d' Exploració
+Bandera d'exploració
 [Explorer Ratio]
-
+Proporció d'exploradors
 [Explorer]
 Explorador
 [explorers]
@@ -325,149 +325,145 @@ Exploradors
 [extra islands]
 illes buides
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
-
+Mapa de fertilitat
 [Flag Defaults]
-
+Valors per defecte de les banderes
 [flag settings explanation]
-
+Radi per defecte de la bandera
 [fog of war]
-
+Boira de guerra
 [food]
 Menjar
 [forbidden area]
 Area Prohibida
 [Free]
-lliures
+Sanes
 [free]
-desocupat
-[free]
-desocupat
+desocupats
 [from:]
 de:
 [fruit]
-
+fruita
 [fullscreen]
 Pantalla Completa
 [game full]
 Partida Completa
 [game shortcuts]
-
+Dreceres del joc
 [Game]
-
+Partida
 [general settings]
-
+Configuració general
 [go to event]
-
+Vés a l'esdeveniment
 [go to home]
-
+Vés a la base
 [goto main menu]
 Tornar al menú principal
 [grass]
 Herba
 [ground attack]
-Attac en terra
+Atac terrestre
 [guard area]
 Area de Guardia
 [GUIMapPreview text 0]
-
+Tria
 [GUIMapPreview text 1]
-
+un mapa
 [handmade map]
 Mapa Fet a Mà
 [Happyness]
 Felicitat
 [hard pause]
-
+Pausa total
 [Harvest]
-Recolectar
+Recol·lecta
 [high priority]
-
+alta
 [hints]
-
+Pistes
 [home]
-
+inici
 [hospital explanation 2]
-teus globuls
+unitats
 [hospital explanation]
-Per curar a tots els
+Cura les teves
 [hospital]
 Hospital
 [host]
 Servir una partida
 [hp]
 Vida
-[hp]
-Vida
 [Human]
-
+Humà
 [human]
-
+humà
 [hungry]
 afamat
 [hungryness]
-
+Fam
 [In way]
 en camí
 [increase units working]
-
+Augmenta les unitats assignades
 [inn explanation 2]
-teus globuls
+
 [inn explanation]
-Per alimentar a tots els
+Alimenta els teus glòbuls
 [inn]
 Despensa
 [insert]
-
+inserció
 [inside]
 Dins
 [islands size]
-Tamany de les illes
+Mida de les illes
 [islands terrain]
 Illes
 [isles terrain]
-
+Illots
 [iterate selection]
-
+Passa a la selecció següent
 [jobs]
-
+feines
 [join a game]
 Unir-se a una partida
 [join]
 Unir-se
 [keyboard settings]
-
+Configuració del teclat
 [kick]
-
+Expulsa
 [lan]
 Joc en LAN
 [language incomplete]
@@ -479,43 +475,43 @@ Llengua
 [language]
 Català
 [Leave Game]
-
+Surt de la partida
 [left meta]
-
+meta esquerra
 [left super]
-
+tecla Windows esquerra
 [left]
-
+esquerra
 [level]
 Nivell
 [levels]
 Nivells
 [load campaign]
-
+Carrega una campanya
 [load game]
-Cargar partida
+Carrega una partida
 [load map]
-
+Carrega un mapa
 [load replay]
-
+Carrega una repetició
 [load script]
-
+Carrega un script
 [load]
 Carregar
 [loading map list]
-
+Carregant la llista de mapes...
 [Lobby]
-
+Sala d'espera
 [login]
-Conectar
+Connecta
 [look around]
-
+Mira al voltant
 [Lost : %0 has more prestige than you]
-Perdedor: %0 te més prestigi que tú
+Has perdut: %0 té més prestigi que tu
 [Lost : your colony is dead]
-Perdedor: La teva colonia ha sigut exterminada
+Has perdut: la teva colònia ha estat exterminada
 [low priority]
-
+baixa
 [lowquality]
 Qualitat Baixa
 [Magic At. Air]
@@ -523,387 +519,387 @@ dany aeri
 [Magic At. Ground]
 dany terrestre
 [map description]
-
+Descripció
 [Map Discovered]
-
+Mapa descobert
 [Map download failure: lost connection]
-
+Ha fallat la baixada del mapa: s'ha perdut la connexió amb YOG
 [Map name: %0]
 Nom del mapa: %0.
 [map name]
-
+Nom
 [map rated]
-
+Mapa valorat
 [map script]
-
+Script del mapa
 [map size x]
 Amplada del mapa
 [map size y]
 Altura del mapa
 [Map upload failure: connection lost]
-
+Ha fallat la pujada del mapa: s'ha perdut la connexió amb YOG
 [Map upload failure: map name in use]
-
+Ha fallat la pujada del mapa: el nom ja està en ús.
 [Map upload failure: unknown reason]
-
+Ha fallat la pujada del mapa per un motiu desconegut.
 [Map Upload: Author Name]
-
+Nom de l'autor
 [Map Upload: Waiting for reply]
-
+Esperant resposta
 [mark map]
-
+Marca el mapa per als aliats
 [market explanation 2]
-fruits amb altres
+fruita amb altres jugadors
 [market explanation]
-Per intercambiar fruita amb
+Permet intercanviar
 [market]
 Mercat
 [medium priority]
-
+mitjana
 [meta %0]
-
+meta-%0
 [Min required level:]
-Nivell Minim Requerit
+Nivell mínim requerit:
 [Minimum Level To Flag]
-
+Nivell mín. d'unitats
 [Music volume]
 Volum (música)
 [Mute]
-
+Silenci
 [mute]
 Silenci
 [new campaign]
-
+Campanya nova
 [new map]
 Nou
 [nick taken]
 Ho sentim molt però el teu nick ja està agafat en altre banda, només pots parlar a YOG
 [no fullscreen]
-
+* només en mode finestra
 [No Hints]
-
+Sense pistes
 [no key]
-
+cap tecla assignada
 [No Objectives]
-
+Sense objectius
 [no ressources growth areas]
-
+Sense creixement
 [No]
 No
 [Not Enough Ratings]
-
+No hi ha prou valoracions
 [not ready]
 sense preparar
 [Number Of Buildings]
-
+Nombre d'edificis
 [number of players: %0 (%1 AI)]
-
+%0 jugadors (%1 IA)
 [number of players: %0]
 %0 nombre de jugadors
 [number of teams: %0]
-%0 nombre d' equips
+%0 equips
 [number of teams]
 Nombre d' equips
 [Number Of Units]
-
+Nombre d'unitats
 [numlock]
-
+bloq num
 [objectives]
-
+Objectius
 [of which]
 dels quals
 [ok]
 OK
 [old islands terrain]
-vell terreny d'illa
+illes aleatòries antigues
 [old random terrain]
 vell terreny aleatori
 [on press]
-
+En prémer
 [On the spot]
-Aqui
+Aquí
 [on unpress]
-
+En soltar
 [open chat box]
-
+Obre el xat
 [open load menu]
-
+Obre el menú de càrrega
 [open save menu]
-
+Obre el menú de desament
 [open scenario editor]
-
+Obre l'editor d'escenaris
 [open teams editor]
-
+Obre l'editor d'equips
 [open]
 Obrir
 [OpenGL]
 OpenGL
 [Options]
-
+Opcions
 [options]
 Opcions
 [Orange]
 Taronja
 [Other Options]
-
+Altres opcions
 [page down]
-
+av pàg
 [page up]
-
+re pàg
 [Papyrus]
 Papir
 [pause game]
-
+Pausa la partida
 [pause]
-
+pausa
 [Paused]
 Pausat
 [player name]
 Nom del jugador
 [player rating %0]
-
+Valoració del jugador: %0
 [players]
-
+Jugadors
 [please wait]
 Esperi un moment
 [power]
-
+engegada
 [press space]
-
+Prem espai per continuar.
 [Prestige Score]
-
+Puntuació de prestigi
 [Prestige Win Enabled]
-
+Victòria per prestigi activada
 [Prestige]
 Prestigi
 [Primary Objectives]
-
+Principals
 [print screen]
-
+impr pant
 [priority]
-
+Prioritat
 [Prune]
-Passes
+Pruna
 [quit the editor]
-
+Surt de l'editor
 [quit the game]
 Sortir del joc
 [quit the replay]
-
+Surt de la repetició
 [quit]
 Sortir
 [racetrack explanation 2]
-teus globuls en terra
+de marxa dels teus glòbuls
 [racetrack explanation]
-Per augmentar la velocitat dels
+Augmenta la velocitat
 [racetrack]
 Poliesportiu
 [range]
-Rang
+Abast
 [Rated %0]
-
+Valoració: %0
 [ratios]
 Proporció
 [ready?]
-
+a punt?
 [refresh map list]
-
+Actualitza la llista de mapes
 [Register a new YOG user with password]
 Registrar un nou jugador YOG amb contrasenya (insegur)
 [Register]
-
+Registra't
 [remember unit]
-
+Recorda les assignacions
 [Remember YOG password localy]
 Recordar la contrasenya (insegur)
 [remove map]
-
+Suprimeix el mapa
 [remove shortcut]
-
+Suprimeix la drecera
 [Remove]
-
+Suprimeix
 [repair building]
-
+Inicia/atura la reparació
 [repair]
 Reparar
 [repeat area]
-
+vegades el mateix paisatge
 [Repeat your password :]
-
+Repeteix la contrasenya:
 [replay ended]
-
+Repetició acabada
 [restore default shortcuts]
-
+Restaura les dreceres per defecte
 [return to editor]
-
+Torna a l'editor
 [return to game]
 Tornar al joc
 [return to replay]
-
+Torna a la repetició
 [return]
-
+retorn
 [right meta]
-
+meta dreta
 [right super]
-
+tecla Windows dreta
 [right]
-
+dreta
 [river diameter]
 ample de riu
 [river terrain]
 riu
 [sand]
-Terra
+Sorra
 [save before quit?]
 Vols desar abans de sortir?
 [save game]
 Desar partida
 [save map]
-
+Desa el mapa
 [save replay]
-
+Desa la repetició
 [save script]
-
+Desa l'script
 [Save]
 Desar
 [school explanation 2]
-dels teus globuls
+construcció dels treballadors
 [school explanation]
-Per mijorar les construccions
+Millora el nivell de
 [school]
 Escola
 [Script Areas]
-
+Àrees de l'script
 [scroll lock]
-
+bloq desplaçament
 [scroll wheel enabled]
-
+Roda del ratolí activada
 [Secondary Objectives]
-
+Secundaris
 [seeking a job]
 buscant feina
 [seeking]
 Buscant
 [select barracks building]
-
+Selecciona edifici: Caserna
 [select clearingflag]
-
+Selecciona bandera de neteja
 [select construct barracks]
-
+Selecciona construcció: Caserna
 [select construct defencetower]
-
+Selecciona construcció: Torre
 [select construct hospital]
-
+Selecciona construcció: Hospital
 [select construct inn]
-
+Selecciona construcció: Despensa
 [select construct market]
-
+Selecciona construcció: Mercat
 [select construct racetrack]
-
+Selecciona construcció: Poliesportiu
 [select construct school]
-
+Selecciona construcció: Escola
 [select construct stonewall]
-
+Selecciona construcció: Mur de pedra
 [select construct swarm]
-
+Selecciona construcció: Granja
 [select construct swimmingpool]
-
+Selecciona construcció: Piscina
 [select delete tool]
-
+Selecciona l'eina d'eliminació
 [select explorationflag]
-
+Selecciona bandera d'exploració
 [select hospital building]
-
+Selecciona edifici: Hospital
 [select inn building]
-
+Selecciona edifici: Despensa
 [select market building]
-
+Selecciona edifici: Mercat
 [select place clearing area]
-
+Col·loca zona de neteja
 [select place clearingflag]
-
+Col·loca bandera de neteja
 [select place explorationflag]
-
+Col·loca bandera d'exploració
 [select place forbidden area]
-
+Col·loca zona prohibida
 [select place guard area]
-
+Col·loca zona de guàrdia
 [select place warflag]
-
+Col·loca bandera de guerra
 [select racetrack building]
-
+Selecciona edifici: Poliesportiu
 [select school building]
-
+Selecciona edifici: Escola
 [select swarm building]
-
+Selecciona edifici: Granja
 [select swimmingpool building]
-
+Selecciona edifici: Piscina
 [select tower building]
-
+Selecciona edifici: Torre
 [select wall building]
-
+Selecciona edifici: Mur de pedra
 [select warflag]
-
+Selecciona bandera de guerra
 [settings]
 Opcions
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
-key enter : Envia un missatge de text
+Retorn: envia un missatge de xat
 [shortcut explanation v]
-key v : Presiona per parlar
+V: mantén premuda la tecla per parlar
 [show areas]
-
+Mostra les àrees
 [show flags]
-
+Mostra les banderes
 [show main menu]
-
+Mostra el menú principal
 [skin]
-
+Visualització
 [smoothing]
-Pla
+Suavització
 [sort by name]
-
+Nom
 [sort by rating]
-
+Valoració
 [sort by size]
-
+Mida
 [Sort By]
-
+Ordena per
 [space]
-
+espai
 [start mission]
-
+Inicia la missió
 [start new campaign]
-
+Inicia una campanya nova
 [Start]
 Començar
 [Starving Map]
-
+Mapa de fam
 [starving]
-anèmic
+morint de fam
 [Statistics]
-Estadistiques
+Estadístiques
 [Still (i)]
-Ara
+Encara
 [still (w)]
-Ara
+Encara
 [still one unit working]
-Una unitat treballant
+Encara hi ha una unitat treballant
 [Still one]
-Ara una
+Encara una
 [Stone]
 Pedra
 [stone]
 pedra
 [stonewall explanation 2]
-element
+passiva
 [stonewall explanation]
-Bloqueja els globuls enemics
+Element de defensa
 [stonewall]
 Mur de pedra
 [submit rating]
-
+Envia la valoració
 [svr hostname]
 Nom del servidor
 [swamp terrain]
@@ -917,57 +913,57 @@ Granja
 [Swim]
 Nedar
 [swimmingpool explanation 2]
-teus globuls en aigua
+de natació dels teus glòbuls
 [swimmingpool explanation]
-Per augmentar la velocitat dels
+Augmenta la velocitat
 [swimmingpool]
 Piscina
 [switch to adding areas]
-
+Afegeix zones
 [switch to area brush 1]
-
+Selecciona pinzell de zones: 1
 [switch to area brush 2]
-
+Selecciona pinzell de zones: 2
 [switch to area brush 3]
-
+Selecciona pinzell de zones: 3
 [switch to area brush 4]
-
+Selecciona pinzell de zones: 4
 [switch to area brush 5]
-
+Selecciona pinzell de zones: 5
 [switch to area brush 6]
-
+Selecciona pinzell de zones: 6
 [switch to area brush 7]
-
+Selecciona pinzell de zones: 7
 [switch to area brush 8]
-
+Selecciona pinzell de zones: 8
 [switch to building view]
-
+Mostra edificis
 [switch to flag view]
-
+Mostra banderes
 [switch to removing areas]
-
+Elimina zones
 [switch to teams view]
-
+Mostra equips
 [switch to terrain view]
-
+Mostra terreny
 [sys req]
-
+petició del sistema
 [tab]
-
+tabulador
 [teams editor]
-
+Editor d'equips
 [Teams Fixed]
-
+Equips fixos
 [teams]
  Equips
 [the barracks is finished]
-El CUARTELL ja està construida
+La caserna ja està construïda
 [the barracks is under attack]
-El Cuartell  està sent atacada
+Estan atacant la caserna
 [the building is finished]
 Construcció finalitzada
 [the building is under attack]
-La Construcció està sent atacat
+L'edifici està sent atacat
 [the clearingflag is finished]
 ?? Bandera de Neteja finalizada ??
 [the clearingflag is under attack]
@@ -989,9 +985,9 @@ L' HOSPITAL ja està construït
 [the hospital is under attack]
 L' Hospital està sent atacat
 [The host has cancelled the game]
-
+L'amfitrió ha cancel·lat la partida.
 [the inn is finished]
-La DESPENSA ja està construida
+La despensa ja està construïda
 [the inn is under attack]
 La Despensa està sent atacada
 [the maps]
@@ -1001,17 +997,17 @@ El MERCAT ja està construït
 [the market is under attack]
 El mercat està sent atacat
 [The player %0 has joined YOG]
-El jugador %0 se conectat a YOG
+El jugador %0 s'ha connectat a YOG
 [The player %0 has left YOG]
 El jugador %0 ha abandonat YOG
 [the racetrack is finished]
-El POLIESPORTIU ja està construida
+El poliesportiu ja està construït
 [the racetrack is under attack]
 El Poliesportiu està sent atacat
 [the replays]
-
+Repeticions
 [the school is finished]
-L' ESCOLA ja està construid
+L'escola ja està construïda
 [the school is under attack]
 L' Escola està sent atacada
 [the stonewall is finished]
@@ -1031,127 +1027,125 @@ La Piscina està sent atacada
 [the warflag is under attack]
 ?? La bandera de Guerra està sent atacada ??
 [time]
-
+Temps
 [to:]
 a:
 [toggle draw accessibility aids]
-
+Mostra/amaga números d'equip
 [toggle draw information]
-
+Mostra/amaga la informació
 [toggle draw unit paths]
-
+Mostra/amaga rutes d'unitats
 [toggle menu screen]
-
+Mostra/amaga el menú
 [toggle recording voice]
-
+Activa/desactiva la gravació de veu
 [Total Attack Power]
-
+Poder d'atac total
 [Total Defence Power]
-
+Poder de defensa total
 [Total Hitpoints]
-
+Punts de vida totals
 [Total prestige reached]
-Prestigi total alcanzat
+Prestigi total assolit
 [Total]
 Total
 [tutorial text 1]
-
+Benvingut al tutorial bàsic de Globulation 2! Aprendràs a construir despenses, explorar zones i destruir enemics. Aquí hi trobaràs molts coneixements útils!
 [tutorial text 2]
-
+Ara que domines els fonaments, és hora de conèixer altres edificis, com ara poliesportius, piscines i escoles.
 [tutorial text 3]
-
+Ho has fet bé per arribar fins aquí. Ara passarem als guerrers, les casernes i les millores.
 [tutorial text 4]
-
+Ja gairebé has acabat. Només queden les banderes i els atacs. Després en sabràs prou per provar partides personalitzades i, més endavant, jugar en línia contra alguns dels millors jugadors de Globulation 2.
 [tutorial]
 Tutorial
 [Uncontrolled]
 No Controlat
 [undo]
-
+desfés
 [uniform terrain]
 Terreny uniforme
 [Unit editor]
-
+Editor d'unitats
 [unit settings explanation]
-
+Nombre d'unitats assignades per defecte
 [units working]
  Unitats treballant
 [Units]
 Unitats
 [unlocked at start]
-
+Disponible des del principi
 [unlocked by]
-
+Desbloquejat per
 [Unnamed Area]
-
+{Àrea sense nom}
 [up]
-
+amunt
 [upgrade building]
-
+Inicia/atura la millora
 [Upgrade Defaults]
-
+Valors per defecte de les millores
 [upgrade]
 Millorar
 [Upload Map]
-
+Puja el mapa
 [upload map]
-
+Puja el mapa
 [username]
 Nom d' usuari
 [Version]
 Versió
 [view history]
-
+Mostra l'historial
 [Voice volume]
-
+Volum de la veu
 [waiting for %0]
 Esperant a %0
 [waiting for key]
-
+esperant una tecla...
 [Waiting]
-
+Esperant
 [Walk]
-Correr
+Caminar
 [warflag explanation 2]
 
 [warflag explanation]
-Atrau als teus globuls
+Atrau guerrers
 [warflag]
 Bandera de Guerra
 [Warning, you need to reboot the game for changes to take effect]
-Compte, necesites reiniciar el joc per que els cambis tinguin efecte
+Cal reiniciar el joc perquè els canvis tinguin efecte
 [Warrior Ratio]
-
+Proporció de guerrers
 [Warrior]
 Guerrer
 [warriors]
 Guerrers
 [watch again]
-
+Torna a veure
 [watching:]
-
+Observant:
 [water]
 Aigua
 [Wheat]
-
+Blat
 [wheat]
 blat
 [Won : you defeated your opponents]
 Vencedor: Has destruit als teus enemics
 [Won : you have the most prestige]
-Guuanyador: Tu ets el que més prestigi té
+Has guanyat: tens el prestigi més alt
 [Won : your ally %0 has the most prestige]
-Vencedor: el teu aliat %0 ha alcanzat el major prestigi-
+Has guanyat: el teu aliat %0 té més prestigi que ningú
 [Wood]
 Fusta
 [wood]
 fusta
 [Worker Ratio]
-
+Proporció de treballadors
 [Worker]
 Treballador
-[workers]
-Treballadors
 [workers]
 Treballadors
 [working]
@@ -1161,47 +1155,47 @@ ferit
 [Yes]
 Sí
 [YESTS_CONNECTING]
-Conectant al metaservidor YOG...
+Connectant amb el metaservidor YOG...
 [YESTS_CONNECTION_LOST]
-Conexió al metaservidor YOG perduda
+S'ha perdut la connexió amb YOG.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Nom d'usuari ja registrat. Proba amb un altre
+El metaservidor YOG ha rebutjat la connexió perquè aquest nom d'usuari ja està registrat. Si és el teu, desactiva l'opció de registrar un nou usuari YOG amb contrasenya.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-No es pot conectar al metaservidor YOG. Contrassenya Incorrecta
+El metaservidor YOG ha rebutjat la connexió perquè la contrasenya és incorrecta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-El metaservidor YOG ha rebutjat la conexió per que  usuari no te contrasenya encara, activa l' opció: Registrar un nou usuari YOG amb contrasenya
+El metaservidor YOG ha rebutjat la connexió perquè aquest nom d'usuari encara no té contrasenya. Per registrar-lo amb aquesta contrasenya, activa l'opció de registrar un nou usuari YOG amb contrasenya abans de connectar-te. Només cal activar-la una vegada.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+El metaservidor YOG ha rebutjat la connexió perquè aquesta adreça IP està vetada temporalment. Espera que s'aixequi el veto o contacta amb els administradors.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-No es pot conectar al metaservidor YOG, el teu client Globulation2 està obsolet
+El metaservidor YOG ha rebutjat la connexió perquè el teu client Globulation 2 està obsolet. Descarrega la versió més recent de www.globulation2.org per jugar en línia.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-El servidor YOG ha rebutjat la conexió inexplicablement.
+El metaservidor YOG ha rebutjat la connexió sense donar cap explicació.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-No es pot conectar al metaservidor YOG. Nom d'usuari en ús
+El metaservidor YOG ha rebutjat la connexió perquè una altra persona ja fa servir el teu nom d'usuari.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+El metaservidor YOG ha rebutjat la connexió perquè aquest nom d'usuari està vetat. Contacta amb els administradors.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+El metaservidor YOG ha rebutjat la connexió perquè el nom d'usuari no és vàlid. Només pot contenir lletres, xifres i guions baixos.
 [YESTS_CREATED]
-El sistema de conexió està llest per contactar amb el metaservidor YOG
+El sistema de connexió està preparat per contactar amb el metaservidor YOG.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Les contrasenyes no coincideixen. Torna-les a escriure.
 [YESTS_UNABLE_TO_CONNECT]
-Imposible conectar. Metaservidor YOG esta caigut
+No es pot connectar. Sembla que el metaservidor YOG no està disponible.
 [yog block command help]
-
+/block <jugador>    Bloca un jugador; deixaràs de veure els seus missatges.
 [yog block command player %0 already blocked]
-
+El jugador %0 ja està blocat
 [yog block command player %0 blocked]
-
+S'ha blocat el jugador %0
 [yog block command player %0 not found]
-
+No s'ha trobat el jugador %0
 [yog command header]
-
+Les ordres disponibles del client YOG són:
 [yog command unknown]
-
+Ordre desconeguda.
 [yog help command help]
-
+/help    Mostra aquest missatge d'ajuda
 [yog]
 Joc en linea amb Ysagoon
 [you have lost]
@@ -1209,12 +1203,36 @@ Has Perdut
 [you have won]
 Has guanyat
 [You where kicked from the game]
-
+T'han expulsat de la partida
 [Your %0 are under attack]
-El teu %0  està sent atacat
+El teu %0 està sent atacat
 [Your IP address was temporarily banned]
-
+La teva adreça IP està vetada temporalment. Espera que s'aixequi el veto o contacta amb els administradors.
 [Your unit got converted to %0's team]
 Una unitat teva s'ha convertit a l'equip de %0
 [Your username was banned]
-
+El teu nom d'usuari està vetat. Contacta amb els administradors per resoldre-ho.
+[game speed]
+Velocitat del joc
+[decrease game speed]
+Redueix la velocitat del joc
+[increase game speed]
+Augmenta la velocitat del joc
+[maximum game speed]
+Màxima
+[multiplayer game speed]
+Velocitat: 1x (multijugador)
+[game speed help]
+Només per a un jugador i repeticions. Les partides multijugador van a 1x.
+[AICortex-Description]
+Cortex - IA experimental de tres capes. En desenvolupament.
+[ERROR_CANT_LOAD_MAP]
+No s'ha pogut carregar el mapa: el fitxer està malmès o té una versió incompatible.
+[ERROR_CANT_SAVE_CAMPAIGN]
+No s'ha pogut desar la campanya. Comprova que la carpeta de destinació existeixi, permeti escriure-hi i tingui espai lliure.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Dins: %0
+[Units still working: %0]
+Encara treballant: %0

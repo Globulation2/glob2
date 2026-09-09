@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "MultiplayerGameScreen.h"
+#include <GUIStyle.h>
 #include "AI.h"
 #include "AINames.h"
 #include "YOGClientLobbyScreen.h"
@@ -276,7 +277,7 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(std::shared_ptr<Multiplay
 				}
 				else
 				{
-					text[i]->setStyle(Font::Style());
+					text[i]->setStyle(Font::Style(Font::STYLE_NORMAL, Style::style->textColor));
 				}
 			}
 		}
@@ -320,14 +321,14 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 			}
 			else
 			{
-				text[i]->setStyle(Font::Style());
+				text[i]->setStyle(Font::Style(Font::STYLE_NORMAL, Style::style->textColor));
 			}
 		}
 		else if(i < mh.getNumberOfTeams())
 		{
 			text[i]->visible=isActivated();
 			text[i]->setText(Toolkit::getStringTable()->getString("[open]"));
-			text[i]->setStyle(Font::Style());
+			text[i]->setStyle(Font::Style(Font::STYLE_NORMAL, Style::style->textColor));
 			color[i]->visible=false;
 			kickButton[i]->visible=false;
 		}

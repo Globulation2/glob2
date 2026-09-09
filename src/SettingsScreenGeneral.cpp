@@ -81,7 +81,8 @@ void SettingsScreen::buildDisplayWidgets()
 		}
 	}
 	addWidgetToGroup(modeList, generalGroup);
-	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"));
+	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"), 180, 30);
+	modeListNote->setWordWrap(true);
 	addWidgetToGroup(modeListNote, generalGroup);
 }
 
@@ -128,7 +129,7 @@ void SettingsScreen::buildGraphicsToggles()
 	addWidgetToGroup(gameSpeed, generalGroup);
 	updateGameSpeedText();
 
-	rebootWarning=new Text(0, 400, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
+	rebootWarning=new Text(0, 340, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	//TODO: warning style should be defined centrally.
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
 	addWidget(rebootWarning);

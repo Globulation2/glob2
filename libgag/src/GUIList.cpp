@@ -263,6 +263,7 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
+		Style::style->drawFieldBackground(parent->getSurface(), x, y, w, h);
 		const int scrollBarW = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
 		const int scrollBarX = x + w - scrollBarW;
 		const int scrollBarTopH = Style::style->getStyleMetric(Style::STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
@@ -309,6 +310,8 @@ namespace GAGGUI
 		
 		while ((nextSize < elementsHeight) && (i+disp < strings.size()))
 		{
+			if (static_cast<int>(i + disp) == nth)
+				Style::style->drawSelectionBackground(parent->getSurface(), x + frameLeftWidth, yPos, elementLength, textHeight);
 			drawItem(x + frameLeftWidth * 2, yPos, static_cast<size_t>(i+disp));
 			if (static_cast<int>(i + disp) == nth)
 				Style::style->drawFrame(parent->getSurface(), x + frameLeftWidth, yPos, elementLength, textHeight, Color::ALPHA_TRANSPARENT);

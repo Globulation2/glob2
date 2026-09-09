@@ -34,6 +34,14 @@ namespace GAGGUI
 	public:
 		Style();
 		virtual ~Style() { }
+		// Optional presentation tick; default styles have no background work.
+		virtual void onFrame() { }
+		virtual void drawButtonSelection(GAGCore::DrawableSurface*, int, int, int, int) { }
+		virtual bool usesThemeTextColor() const { return false; }
+		virtual void drawFieldBackground(GAGCore::DrawableSurface*, int, int, int, int) { }
+		virtual void drawSelectionBackground(GAGCore::DrawableSurface*, int, int, int, int) { }
+		// Return false to retain the original sprite-based selector.
+		virtual bool drawSelector(GAGCore::DrawableSurface*, int, int, int, int, unsigned, unsigned) { return false; }
 		virtual void drawOnOffButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, bool state);
 		virtual void drawTriButton(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight, Uint8 state);
 		virtual void drawTextButtonBackground(GAGCore::DrawableSurface *target, int x, int y, int w, int h, unsigned highlight);
