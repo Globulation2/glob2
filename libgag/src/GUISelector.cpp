@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <GUISelector.h>
+#include <GUIStyle.h>
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <assert.h>
@@ -139,6 +140,7 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 	
+		if (Style::style->drawSelector(parent->getSurface(), x, y, w, h, value, maxValue)) return;
 		///Taper the line to show a definitive larger end on the right
 		if(taper)
 		{

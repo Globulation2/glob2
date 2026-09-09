@@ -171,6 +171,38 @@ it on both supported Ubuntu versions.
 
 Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).
 
+## Entering unit draw regression
+
+From the repository root, run `scons -j8 release=1 server=0 entering-unit-draw-test`
+and `xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness`.
+
+A unit on its final step into a building keeps its map slot on the tile it is
+leaving (`Unit::handleActionEnteringBuilding`) while `posX`/`posY` already name
+the building tile, so `Game::drawMapGroundUnits` visits it one square behind
+itself. Nothing in `Game::drawUnit` reads `displacement`, so at equal `delta`
+that state must render pixel-for-pixel like the same step expressed as an
+ordinary walk onto the destination tile. The harness renders both and compares
+framebuffers over five points of one step; a mismatch is reported in pixels
+against the 32 px tile size. It protects the fix in `src/render/UnitDrawGeometry.h`
+for issue #230, where the sprite was anchored on the stale map slot and the glob
+walked backwards into the square it came from.
+
+Frames land in `.cache/entering-unit-draw-check/`: `entering-delta<N>.png` and,
+on failure, `walking-delta<N>.png` for the unit-only comparison, plus
+`scene-delta<N>.png` with terrain and the inn for looking at by eye. The
+comparison itself stays on the unit-only render, which has no animated water or
+clouds to make two frames differ by themselves.
+
+It needs a display and a GL context. CI already installs `xvfb` and mesa for the
+fullscreen aspect harness, so a job step is a two-liner:
+
+```yaml
+      - name: Build and run the entering unit draw regression
+        run: |
+          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness
+```
+
 ## Immobile unit gradient regression
 
 From the repository root, run `scons -j8 release=1 server=0 immobile-unit-gradient-test`
@@ -200,19 +232,38 @@ replacement tests cover callback/open/rename failures and temporary-file cleanup
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 
-### Trapped worker lifecycle
+### Trapped colony elimination
 
 Build `scons release=1 server=0 trapped-unit-test`, then run
 `python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest`
-(use `.exe` on Windows). The shared runner isolates the profile and checks that
-preferences remain unchanged. No display or external save is needed.
+(use `.exe` on Windows). The shared runner uses a disposable profile and checks
+that the normal preferences remain unchanged; Linux and Windows CI run it.
 
-Normal game ticks exercise completed feeding and training behind wood/wheat,
-starvation and removal, team loss and the surviving team's win, rescue after an
-exit opens, and hunger protection during active service. Repeated seeded runs
-and save/load continuations compare per-tick unit state and win/loss results;
-the harness restores the same RNG checkpoint for both continuations. This is a
-focused lifecycle regression, not a whole-game replay compatibility test.
+Normal simulation ticks exercise completed feeding/training behind wood or
+wheat, elimination without indoor starvation, active service, open exits,
+free units, allied rescue, and hatchery recovery. A stocked hatchery protects
+the colony even with production sliders at zero, since the player can change
+them; both food and an available exit are required. Repeated seeded runs and
+save/load continuations compare per-tick unit state and win/loss results with
+an explicit RNG checkpoint. This is a focused regression, not whole-game replay
+compatibility. Version 93 rejects older replays because elimination timing changed;
+older saves remain loadable.
+
+## Team statistics save compatibility
+
+```sh
+scons -j8 release=1 server=0 team-stats-save-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
+```
+
+This headless test verifies live statistics and smoothing across all 32 sampling
+positions and repeated binary reloads, with history-ring wrap, named text fields,
+invalid-index and truncated-field controls. It compares version-84 and version-88
+save traces against outputs from the original loader. Linux and Windows CI run
+it in disposable profiles and check that preferences remain unchanged.
+See [fixtures and reproduction steps](fixtures/team-stats/README.md).
 
 ## AI helper gradient regression
 
@@ -228,3 +279,32 @@ The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
 toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
 It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
 coverage in `TestsRunner`.
+
+## Resource-fetch target regression
+
+From the repository root:
+
+```sh
+scons -j8 release=1 server=0 resource-fetch-target-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/ResourceFetchTargetHarness .
+```
+
+The real-engine movement-method fixture checks every swim class: a valid resource
+target remains unchanged, and a depleted target is refreshed after its resource
+gradient is rebuilt. It invokes the movement method directly, rather than running
+an entire match. The shared runner isolates the profile and working directory and
+checks that preferences remain unchanged. Linux CI runs this regression.
+
+## Hiring bucket iteration
+
+`HiringBucketHarness` uses the real engine to check that two competing inns
+receive one worker each before either retries. Hiring the first worker reorders
+the live bucket; iteration must keep following building identity. The old loop
+fails this fixture with two workers at the first inn and zero at the second. Run with:
+
+```sh
+scons -j6 release=1 server=0 hiring-bucket-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness .
+```
+
+The harness runs headlessly in disposable profile directories in Linux and Windows CI.

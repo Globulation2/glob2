@@ -1,0 +1,343 @@
+{
+  "images": [
+    {
+      "layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "name": "Background",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        }
+      ],
+      "source": "datasrc/gfx/originals/resources/wheat/wheat_1_1.xcf",
+      "file": "wheat_1_1.png",
+      "sha256": "1db3d3b0a4a9eb015f7a8cc75b7f3a6d28f4648b5b463eaf902bafe62cd9221d",
+      "native_size": [
+        128,
+        128
+      ],
+      "source_sha256": "572e7ad44728d1bc5feed04b6de6637db4a83b57659b51be0882fae2b1ae6ca1"
+    },
+    {
+      "layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "name": "Background",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "New Layer#1",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        }
+      ],
+      "source": "datasrc/gfx/originals/resources/wheat/wheat_2_1.xcf",
+      "file": "wheat_2_1.png",
+      "sha256": "262c3fb4ebfeb73935b12060d18ca6ebd30f5105853d1647d591f88514da89f6",
+      "native_size": [
+        128,
+        128
+      ],
+      "source_sha256": "37d6cc368d14788473c9e87e6dc34f7ec5c4ec96a075a8bc22a732c538785324"
+    },
+    {
+      "layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "name": "Background",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "New Layer#1",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        }
+      ],
+      "source": "datasrc/gfx/originals/resources/wheat/wheat_3_1.xcf",
+      "file": "wheat_3_1.png",
+      "sha256": "864e2054594ddfb240e6a0d0f71fbc09c22a189c353052af300a12fcccb73afd",
+      "native_size": [
+        128,
+        128
+      ],
+      "source_sha256": "0f0b20c5dbdc720d899b8c1e1ff74a6236977c0526cf9d7519521c90478f7847"
+    },
+    {
+      "layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "name": "Background",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "New Layer#1",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        }
+      ],
+      "source": "datasrc/gfx/originals/resources/wheat/wheat_4_1.xcf",
+      "file": "wheat_4_1.png",
+      "sha256": "8779186a30e68764b90815ad8ae580fffb45e85224fc796439194e31e7ff9c71",
+      "native_size": [
+        128,
+        128
+      ],
+      "source_sha256": "89b5d2245973086b4d8cb1dab1ce8d235a5ea31933e2002e105b4b4ec61a21b3"
+    },
+    {
+      "layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "name": "Background",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        }
+      ],
+      "source": "datasrc/gfx/originals/resources/wheat/wheat_1_2.xcf",
+      "file": "wheat_1_2.png",
+      "sha256": "f549a3f77c4d40fd5b996851935a06f8c8620177f1cf53af8cfbb4b634cc17ca",
+      "native_size": [
+        128,
+        128
+      ],
+      "source_sha256": "97c3cfb79ed04975f5ee1a5ac7600e458084646dc06c6eca221406da2da4136e"
+    },
+    {
+      "layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "name": "Background",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "New Layer#1",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        }
+      ],
+      "source": "datasrc/gfx/originals/resources/wheat/wheat_2_2.xcf",
+      "file": "wheat_2_2.png",
+      "sha256": "ce575514dea13cb76ce934c15b79252b69f0bff8fceeb2e08bfbae80d6f6c663",
+      "native_size": [
+        128,
+        128
+      ],
+      "source_sha256": "2bfa2f6b8b109f96f214343b0b1d210f4064ad71f0f906227bb5c2b57620d437"
+    },
+    {
+      "layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "name": "Background",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "New Layer#1",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        }
+      ],
+      "source": "datasrc/gfx/originals/resources/wheat/wheat_3_2.xcf",
+      "file": "wheat_3_2.png",
+      "sha256": "493707a87f38105cec1c63f91a93ac34085f3f652efbd6a157d00e664c457380",
+      "native_size": [
+        128,
+        128
+      ],
+      "source_sha256": "5379a3198612e7c3fae2b42fa6a7523de57a432bfcc064b3bb93a1e3058bb5eb"
+    },
+    {
+      "layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "name": "New Layer",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "name": "Background",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        },
+        {
+          "opacity": 63.13725490196078,
+          "index": 2,
+          "name": "New Layer#1",
+          "offsets": [
+            0,
+            0
+          ],
+          "visible": true,
+          "mode": 0
+        }
+      ],
+      "source": "datasrc/gfx/originals/resources/wheat/wheat_4_2.xcf",
+      "file": "wheat_4_2.png",
+      "sha256": "80f58ec2190c01593154f67241c207874cc867b84df9490fb89e3ca2d0e26f6a",
+      "native_size": [
+        128,
+        128
+      ],
+      "source_sha256": "e4b25cad879d00ac53aa1a47659684e7af2423115578f7c6bd498d16193d8dd9"
+    }
+  ],
+  "version": 1
+}

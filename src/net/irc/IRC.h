@@ -105,7 +105,7 @@ public:
 	// CONNECTION
 	//! Connect to YOG server (IRC network), return true on success
 	bool connect(const std::string &serverName, int serverPort, const std::string &nick);
-	//! Try to disconnect from server in a cleany way
+	//! Try to disconnect from the server cleanly
 	bool disconnect(void);
 
 	// RUN

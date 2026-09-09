@@ -7,6 +7,7 @@
 <->=decrease units working
 <=>=increase units working
 <d>=destroy building
+<g>=toggle torus view
 <h>=view history
 <i>=toggle draw information
 <m>=mark map

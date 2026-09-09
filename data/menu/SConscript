@@ -1,0 +1,6 @@
+Import('env', 'PackTar')
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
+    for name in ['colony.bin', 'SConscript']:
+        PackTar(env['TARFILE'], name)
+    env.Install(env['INSTALLDIR'] + '/glob2/data/menu', 'colony.bin')
+    env.Alias('install', env['INSTALLDIR'] + '/glob2/data/menu')

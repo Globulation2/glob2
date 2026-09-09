@@ -1,0 +1,1230 @@
+[%0 has left the game]
+%0がゲームから退出しました。
+[%0 level %1]
+%0 レベル%1
+[%0 units can't access building]
+建物に到達できないユニット：%0
+[%0 units can't access flag]
+旗に到達できないユニット：%0
+[%0 units can't access fruit]
+果物に到達できないユニット：%0
+[%0 units can't access resource]
+資源に到達できないユニット：%0
+[%0 units not available]
+割り当てできないユニット：%0
+[%0 units too far from building]
+建物から遠すぎるユニット：%0
+[%0 units too far from flag]
+旗から遠すぎるユニット：%0
+[%0 units too far from fruit]
+果物から遠すぎるユニット：%0
+[%0 units too far from resource]
+資源から遠すぎるユニット：%0
+[%0 units too low level]
+レベルが足りないユニット：%0
+[%0% Uploaded]
+%0% アップロード済み
+[%0's game]
+%0のゲーム
+[%0's team unit got converted to your team]
+%0のチームのユニットが自チームに加わりました
+[abreaviation explanation A]
+A：同盟
+[abreaviation explanation C]
+C：チャットの送信先
+[abreaviation explanation fV]
+fV：食堂周辺の視界を共有（ユニットの引き抜き用）
+[abreaviation explanation mV]
+mV：市場周辺の視界を共有（果物の交換用）
+[abreaviation explanation V]
+V：すべての建物周辺の視界を共有
+[add map]
+マップを追加
+[add shortcut]
+キーを追加
+[Add]
+追加
+[AI Descriptions]
+AIの説明
+[AI]
+AI
+[ai]
+AI
+[AICastor-Description]
+Castorは慎重に行動し、資源の少ないマップを得意とします。難易度：普通。
+[AICastor]
+Castor
+[AICortex-Description]
+Cortex：実験的な3層構成のAI。開発中です。
+[AICortex]
+Cortex
+[AINicowar-Description]
+Nicowarは積極的に行動し、急速に勢力を拡大して大軍で敵に襲いかかります。難易度：難しい。
+[AINicowar]
+Nicowar
+[AINone-Description]
+AIなし：何もしません。
+[AINone]
+なし
+[AINumbi-Description]
+Numbi：小規模ながら素早く拡大します。難易度：簡単。
+[AINumbi]
+Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity：攻撃はしませんが、巨大な拠点を築き、積極的にユニットを引き抜きます。難易度：簡単。
+[AIReachToInfinity]
+ReachToInfinity
+[AIWarrush-Description]
+Warrush：早い段階から激しく攻撃し、防御側を限界まで追い詰めます。難易度：普通。
+[AIWarrush]
+Warrush
+[Alga]
+藻
+[algae]
+藻
+[alliances]
+同盟
+[alt %0]
+Alt-%0
+[and]
+と
+[any explorer]
+どの偵察兵でも
+[are dying hungry]
+飢餓
+[are hungry]
+空腹
+[are ok]
+健康
+[are wonded]
+負傷
+[armor]
+装甲
+[assigned]
+割り当て済み
+[At. speed]
+攻撃速度
+[At. strength]
+攻撃力
+[Attack]
+攻撃
+[audio]
+音声
+[auto save]
+自動保存
+[available lan games]
+参加可能なLANゲーム
+[awaiting players]
+プレイヤーを待っています
+[away:]
+離席中：
+[Back]
+戻る
+[backspace]
+Backspace
+[barracks explanation 2]
+向上させます
+[barracks explanation]
+戦士の戦闘能力を
+[barracks]
+兵舎
+[beach size]
+浜辺の広さ
+[Blocked Players]
+ブロック中のプレイヤー
+[break]
+Break
+[briefing]
+作戦説明
+[build %0 level %1]
+%0（レベル%1）を建設
+[Build]
+建設
+[Building Defaults]
+建物の既定値
+[building settings]
+建物の設定
+[building site]
+建設現場
+[Building Tool Box Explanation]
+Shift＋ドラッグ：四角形
+[Building Tool Line Explanation]
+Ctrl＋ドラッグ：直線
+[Buildings]
+建物
+[Bullets]
+弾薬
+[campaign editor]
+キャンペーンエディター
+[campaign]
+キャンペーン
+[Can't connect, can't find host]
+接続できません。ホストが見つかりません
+[Can't host game, port %0 in use]
+ゲームを作成できません。ポート%0は使用中です
+[Can't join game, game doesn't exist]
+参加できません。ゲームが存在しません
+[Can't join game, game has started]
+参加できません。ゲームはすでに始まっています
+[Can't join game, game is full]
+参加できません。ゲームは満員です
+[cancel destroy]
+解体を中止
+[cancel repair]
+修理を中止
+[cancel upgrade]
+改良を中止
+[Cancel]
+キャンセル
+[caps lock]
+Caps Lock
+[carry]
+運搬中：
+[Change Area Name]
+領域名を変更
+[Cherry]
+サクランボ
+[choose campaign]
+キャンペーンを選択
+[choose game]
+ゲームを選択
+[choose map]
+マップを選択
+[clear area]
+資源除去領域
+[Clearing:]
+除去対象：
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+資源を取り除きます
+[clearingflag]
+資源除去の旗
+[closed]
+閉鎖
+[combined vision]
+視界の共有
+[compile]
+スクリプトをコンパイル
+[compose]
+Compose
+[Computing Fertility]
+肥沃度を計算中
+[concrete islands terrain]
+独立した島々
+[connect]
+接続
+[connecting to game]
+ゲームに接続中
+[connecting to]
+接続先：
+[Construction Site Defaults]
+建設現場の既定値
+[Continue playing]
+ゲームを続ける
+[control %0]
+Ctrl-%0
+[Corn]
+小麦
+[crater density]
+クレーターの数
+[crater lakes terrain]
+火口湖
+[create game]
+ゲームを作成
+[create map]
+マップを作成
+[credits]
+クレジット
+[ctrl - line]
+Ctrl：直線
+[current speed]
+現在の速度
+[custom game]
+カスタムゲーム
+[customcur]
+独自のカーソル
+[damage]
+ダメージ
+[Damaged Map]
+負傷ユニット分布
+[decrease game speed]
+ゲーム速度を下げる
+[decrease units working]
+作業ユニット数を減らす
+[Defeat Your Oppenents]
+敵を倒せ
+[defencetower explanation 2]
+建物を攻撃します
+[defencetower explanation]
+近くの敵ユニットや
+[defencetower]
+防衛塔
+[Defense Map]
+防衛分布
+[Defense]
+防衛
+[Delete game]
+選択したゲームを削除
+[delete]
+削除
+[desert]
+砂漠
+[destroy building]
+選択中の建物を解体
+[destroy]
+解体
+[display]
+画面
+[do nothing]
+何もしない
+[don't carry anything]
+何も運んでいません
+[down]
+下
+[Download Map]
+マップをダウンロード
+[Download Maps]
+マップをダウンロード
+[downloaded %0]
+%0 をダウンロード済み
+[downloading map]
+マップをダウンロード中
+[edit map]
+マップを編集
+[editing map]
+マップを編集中
+[editor shortcuts]
+エディター
+[editor]
+エディター
+[end]
+End
+[Enter your nickname :]
+ニックネーム：
+[Enter your password :]
+パスワード：
+[enter]
+Enter
+[equals]
+イコール
+[ERROR_CANT_LOAD_MAP]
+マップを読み込めませんでした。ファイルが破損しているか、互換性のないバージョンです。
+[ERROR_CANT_SAVE_CAMPAIGN]
+キャンペーンを保存できませんでした。保存先フォルダーが存在し、書き込み権限と空き容量があることを確認してください。
+[escape]
+Esc
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+偵察兵を集めます
+[explorationflag]
+偵察の旗
+[Explorer Ratio]
+偵察兵の割合
+[Explorer]
+偵察兵
+[explorers]
+偵察兵
+[extra islands]
+無人島
+[f10]
+F10
+[f11]
+F11
+[f12]
+F12
+[f13]
+F13
+[f14]
+F14
+[f15]
+F15
+[f1]
+F1
+[f2]
+F2
+[f3]
+F3
+[f4]
+F4
+[f5]
+F5
+[f6]
+F6
+[f7]
+F7
+[f8]
+F8
+[f9]
+F9
+[Fertility Map]
+肥沃度分布
+[Flag Defaults]
+旗の既定値
+[flag settings explanation]
+旗の既定の有効半径
+[fog of war]
+戦場の霧
+[food]
+食料
+[forbidden area]
+立入禁止領域
+[Free]
+健康
+[free]
+待機中
+[from:]
+差出人：
+[fruit]
+果物
+[fullscreen]
+全画面
+[game full]
+ゲームは満員です
+[game shortcuts]
+ゲーム
+[game speed help]
+1人プレイとリプレイのみ。マルチプレイは1倍速です。
+[game speed]
+ゲーム速度
+[Game]
+ゲーム
+[general settings]
+一般設定
+[go to event]
+イベントの場所へ移動
+[go to home]
+拠点へ移動
+[goto main menu]
+メインメニューに戻る
+[grass]
+草地
+[ground attack]
+対地攻撃
+[guard area]
+警備領域
+[GUIMapPreview text 0]
+マップを
+[GUIMapPreview text 1]
+選択してください
+[handmade map]
+手作りマップ
+[Happyness]
+幸福度
+[hard pause]
+完全停止
+[Harvest]
+収穫
+[high priority]
+高
+[hints]
+ヒント
+[home]
+Home
+[hospital explanation 2]
+
+[hospital explanation]
+ユニットを治療します
+[hospital]
+病院
+[host]
+ゲームを主催
+[hp]
+体力
+[Human]
+人間
+[human]
+人間
+[hungry]
+空腹
+[hungryness]
+空腹度
+[In way]
+移動中
+[increase game speed]
+ゲーム速度を上げる
+[increase units working]
+作業ユニット数を増やす
+[inn explanation 2]
+
+[inn explanation]
+ユニットに食事を提供
+[inn]
+食堂
+[insert]
+Insert
+[inside]
+建物内
+[islands size]
+島の大きさ
+[islands terrain]
+島々
+[isles terrain]
+小島
+[iterate selection]
+次の対象を選択
+[jobs]
+仕事
+[join a game]
+ゲームに参加
+[join]
+参加
+[keyboard settings]
+キーボード設定
+[kick]
+追放
+[lan]
+LANゲーム
+[language incomplete]
+日本語（未完成）
+[language-code]
+ja
+[language-tr]
+言語
+[language]
+日本語
+[Leave Game]
+ゲームから退出
+[left meta]
+左Meta
+[left super]
+左Windows
+[left]
+左
+[level]
+レベル
+[levels]
+レベル
+[load campaign]
+キャンペーンを読み込む
+[load game]
+ゲームを読み込む
+[load map]
+マップを読み込む
+[load replay]
+リプレイを読み込む
+[load script]
+スクリプトを読み込む
+[load]
+読み込む
+[loading map list]
+マップ一覧を読み込み中...
+[Lobby]
+ロビー
+[login]
+ログイン
+[look around]
+見回す
+[Lost : %0 has more prestige than you]
+敗北：%0の名声があなたの名声を上回りました
+[Lost : your colony is dead]
+敗北：コロニーが全滅しました
+[low priority]
+低
+[lowquality]
+低画質
+[Magic At. Air]
+対空ダメージ
+[Magic At. Ground]
+対地ダメージ
+[map description]
+説明
+[Map Discovered]
+マップ全体を公開
+[Map download failure: lost connection]
+マップのダウンロード失敗：YOGとの接続が切れました
+[Map name: %0]
+マップ名：%0
+[map name]
+名前
+[map rated]
+マップを評価しました
+[map script]
+マップスクリプト
+[map size x]
+マップの幅
+[map size y]
+マップの高さ
+[Map upload failure: connection lost]
+マップのアップロード失敗：YOGとの接続が切れました
+[Map upload failure: map name in use]
+マップのアップロード失敗：その名前はすでに使われています。
+[Map upload failure: unknown reason]
+マップのアップロード失敗：原因不明。
+[Map Upload: Author Name]
+作者名
+[Map Upload: Waiting for reply]
+応答を待っています
+[mark map]
+味方に場所を知らせる
+[market explanation 2]
+果物を交換できます
+[market explanation]
+他のチームと
+[market]
+市場
+[maximum game speed]
+最大
+[medium priority]
+中
+[meta %0]
+Meta-%0
+[Min required level:]
+最低必要レベル：
+[Minimum Level To Flag]
+最低ユニットレベル
+[multiplayer game speed]
+ゲーム速度：1倍（マルチプレイ）
+[Music volume]
+音楽の音量
+[Mute]
+消音
+[mute]
+消音
+[new campaign]
+新しいキャンペーン
+[new map]
+新しいマップ
+[nick taken]
+申し訳ありませんが、その名前はfreenodeですでに使われています。YOG経由でのみ会話できます。
+[no fullscreen]
+* ウィンドウモードのみ
+[No Hints]
+ヒントなし
+[no key]
+未設定
+[No Objectives]
+目標なし
+[no ressources growth areas]
+資源成長禁止
+[No]
+いいえ
+[Not Enough Ratings]
+評価数が不足しています
+[not ready]
+準備中
+[Number Of Buildings]
+建物数
+[number of players: %0 (%1 AI)]
+プレイヤー数：%0（AI：%1）
+[number of teams: %0]
+チーム数：%0
+[number of teams]
+チーム数
+[Number Of Units]
+ユニット数
+[numlock]
+Num Lock
+[objectives]
+目標
+[of which]
+内訳
+[ok]
+OK
+[old islands terrain]
+旧式のランダムな島々
+[old random terrain]
+旧式のランダム地形
+[on press]
+押した時
+[On the spot]
+現地
+[on unpress]
+離した時
+[open chat box]
+チャットを開く
+[open load menu]
+読み込みメニューを開く
+[open save menu]
+保存メニューを開く
+[open scenario editor]
+シナリオエディターを開く
+[open teams editor]
+チームエディターを開く
+[open]
+空き
+[OpenGL]
+OpenGL
+[Options]
+設定
+[options]
+設定
+[Orange]
+オレンジ
+[Other Options]
+その他の設定
+[page down]
+Page Down
+[page up]
+Page Up
+[Papyrus]
+パピルス
+[pause game]
+ゲームを一時停止
+[pause]
+Pause
+[Paused]
+一時停止中
+[player name]
+プレイヤー名
+[player rating %0]
+プレイヤー評価：%0
+[players]
+プレイヤー
+[please wait]
+お待ちください
+[power]
+Power
+[press space]
+スペースキーで続行します。
+[Prestige Score]
+名声得点
+[Prestige Win Enabled]
+名声による勝利を有効化
+[Prestige]
+名声
+[Primary Objectives]
+主要目標
+[print screen]
+Print Screen
+[priority]
+優先度
+[Prune]
+プラム
+[quit the editor]
+エディターを終了
+[quit the game]
+ゲームを終了
+[quit the replay]
+リプレイを終了
+[quit]
+終了
+[racetrack explanation 2]
+速くします
+[racetrack explanation]
+ユニットの歩行を
+[racetrack]
+走路
+[range]
+射程
+[Rated %0]
+評価：%0
+[ratios]
+割合
+[ready?]
+準備完了？
+[refresh map list]
+マップ一覧を更新
+[Register]
+登録
+[remember unit]
+割り当て数を記憶
+[Remember YOG password localy]
+この端末にパスワードを保存する。
+[remove map]
+マップを削除
+[remove shortcut]
+キーを削除
+[Remove]
+削除
+[repair building]
+修理を開始・中止
+[repair]
+修理
+[repeat area]
+地形の繰り返し回数
+[Repeat your password :]
+パスワードを再入力：
+[replay ended]
+リプレイ終了
+[restore default shortcuts]
+キー設定を初期化
+[return to editor]
+エディターに戻る
+[return to game]
+ゲームに戻る
+[return to replay]
+リプレイに戻る
+[return]
+Enter
+[right meta]
+右Meta
+[right super]
+右Windows
+[right]
+右
+[river diameter]
+川幅
+[river terrain]
+川
+[sand]
+砂
+[save before quit?]
+終了前に保存しますか？
+[save game]
+ゲームを保存
+[save map]
+マップを保存
+[save replay]
+リプレイを保存
+[save script]
+スクリプトを保存
+[Save]
+保存
+[school explanation 2]
+向上させます
+[school explanation]
+労働者の建築技能を
+[school]
+学校
+[Script Areas]
+スクリプト領域
+[scroll lock]
+Scroll Lock
+[scroll wheel enabled]
+ホイール操作を有効化
+[Secondary Objectives]
+副次目標
+[seeking a job]
+仕事を探しています
+[seeking]
+探索中
+[select barracks building]
+兵舎を選択
+[select clearingflag]
+資源除去の旗を選択
+[select construct barracks]
+兵舎の建設を選択
+[select construct defencetower]
+防衛塔の建設を選択
+[select construct hospital]
+病院の建設を選択
+[select construct inn]
+食堂の建設を選択
+[select construct market]
+市場の建設を選択
+[select construct racetrack]
+走路の建設を選択
+[select construct school]
+学校の建設を選択
+[select construct stonewall]
+石壁の建設を選択
+[select construct swarm]
+巣の建設を選択
+[select construct swimmingpool]
+プールの建設を選択
+[select delete tool]
+削除ツールを選択
+[select explorationflag]
+偵察の旗を選択
+[select hospital building]
+病院を選択
+[select inn building]
+食堂を選択
+[select market building]
+市場を選択
+[select place clearing area]
+資源除去領域の配置を選択
+[select place clearingflag]
+資源除去の旗の配置を選択
+[select place explorationflag]
+偵察の旗の配置を選択
+[select place forbidden area]
+立入禁止領域の配置を選択
+[select place guard area]
+警備領域の配置を選択
+[select place warflag]
+戦闘の旗の配置を選択
+[select racetrack building]
+走路を選択
+[select school building]
+学校を選択
+[select swarm building]
+巣を選択
+[select swimmingpool building]
+プールを選択
+[select tower building]
+防衛塔を選択
+[select wall building]
+石壁を選択
+[select warflag]
+戦闘の旗を選択
+[settings]
+設定
+[shift %0]
+Shift-%0
+[shortcut explanation enter]
+Enter：チャットを送信
+[shortcut explanation v]
+V：押している間は音声送信
+[show areas]
+領域を表示
+[show flags]
+旗を表示
+[show main menu]
+メインメニューを表示
+[skin]
+画面
+[smoothing]
+平滑化
+[sort by name]
+名前
+[sort by rating]
+評価
+[sort by size]
+大きさ
+[Sort By]
+並べ替え
+[space]
+スペース
+[start mission]
+ミッション開始
+[start new campaign]
+新しいキャンペーンを開始
+[Start]
+開始
+[Starving Map]
+飢餓ユニット分布
+[starving]
+飢餓
+[Statistics]
+統計
+[Still (i)]
+残り
+[still (w)]
+残り
+[still one unit working]
+あと1体が作業中
+[Still one]
+残り1体
+[Stone]
+石
+[stone]
+石
+[stonewall explanation 2]
+ふさぎます
+[stonewall explanation]
+敵の進路を
+[stonewall]
+石壁
+[submit rating]
+評価を送信
+[svr hostname]
+サーバーのホスト名
+[swamp terrain]
+沼地
+[swarm explanation 2]
+
+[swarm explanation]
+ユニットを生み出します
+[swarm]
+巣
+[Swim]
+泳ぎ
+[swimmingpool explanation 2]
+速くします
+[swimmingpool explanation]
+ユニットの泳ぎを
+[swimmingpool]
+プール
+[switch to adding areas]
+領域の追加に切り替え
+[switch to area brush 1]
+領域ブラシ1に切り替え
+[switch to area brush 2]
+領域ブラシ2に切り替え
+[switch to area brush 3]
+領域ブラシ3に切り替え
+[switch to area brush 4]
+領域ブラシ4に切り替え
+[switch to area brush 5]
+領域ブラシ5に切り替え
+[switch to area brush 6]
+領域ブラシ6に切り替え
+[switch to area brush 7]
+領域ブラシ7に切り替え
+[switch to area brush 8]
+領域ブラシ8に切り替え
+[switch to building view]
+建物パネルに切り替え
+[switch to flag view]
+旗パネルに切り替え
+[switch to removing areas]
+領域の削除に切り替え
+[switch to teams view]
+チームパネルに切り替え
+[switch to terrain view]
+地形パネルに切り替え
+[sys req]
+SysRq
+[tab]
+Tab
+[teams editor]
+チームエディター
+[Teams Fixed]
+チーム固定
+[teams]
+チーム
+[the barracks is finished]
+兵舎が完成しました。
+[the barracks is under attack]
+兵舎が攻撃されています。
+[the building is finished]
+建物が完成しました。
+[the building is under attack]
+建物が攻撃されています。
+[the clearingflag is finished]
+資源除去の旗を設置しました。
+[the clearingflag is under attack]
+資源除去の旗が攻撃されています。
+[the defencetower is finished]
+防衛塔が完成しました。
+[the defencetower is under attack]
+防衛塔が攻撃されています。
+[the explorationflag is finished]
+偵察の旗を設置しました。
+[the explorationflag is under attack]
+偵察の旗が攻撃されています。
+[The game has not been finished]
+ゲームはまだ終了していません。
+[the games]
+ゲーム
+[the hospital is finished]
+病院が完成しました。
+[the hospital is under attack]
+病院が攻撃されています。
+[The host has cancelled the game]
+ホストがゲームを中止しました。
+[the inn is finished]
+食堂が完成しました。
+[the inn is under attack]
+食堂が攻撃されています。
+[the maps]
+マップ
+[the market is finished]
+市場が完成しました。
+[the market is under attack]
+市場が攻撃されています。
+[The player %0 has joined YOG]
+%0がYOGに参加しました。
+[The player %0 has left YOG]
+%0がYOGから退出しました。
+[the racetrack is finished]
+走路が完成しました。
+[the racetrack is under attack]
+走路が攻撃されています。
+[the replays]
+リプレイ
+[the school is finished]
+学校が完成しました。
+[the school is under attack]
+学校が攻撃されています。
+[the stonewall is finished]
+石壁の一部が完成しました。
+[the stonewall is under attack]
+敵が石壁に迫っています。
+[the swarm is finished]
+巣が完成しました。
+[the swarm is under attack]
+巣が攻撃されています。
+[the swimmingpool is finished]
+プールが完成しました。
+[the swimmingpool is under attack]
+プールが攻撃されています。
+[the warflag is finished]
+戦闘の旗を設置しました。
+[the warflag is under attack]
+戦闘の旗が攻撃されています。
+[time]
+時間
+[to:]
+宛先：
+[toggle draw accessibility aids]
+チーム番号の表示を切り替え
+[toggle draw information]
+情報表示を切り替え
+[toggle draw unit paths]
+ユニット経路の表示を切り替え
+[toggle menu screen]
+メニュー表示を切り替え
+[toggle recording voice]
+音声録音を切り替え
+[Total Attack Power]
+総攻撃力
+[Total Defence Power]
+総防御力
+[Total Hitpoints]
+総体力
+[Total prestige reached]
+獲得した名声の合計
+[Total]
+合計
+[tutorial]
+チュートリアル
+[tutorial text 1]
+Globulation 2の基本チュートリアルへようこそ！食堂の建設から、探索、敵の撃破まで学べます。役立つ知識が満載です！
+[tutorial text 2]
+基本を身につけたら、走路、プール、学校など、ほかの建物の使い方を学びましょう。
+[tutorial text 3]
+ここまでよく頑張りました。次は戦士、兵舎、改良について学びましょう。
+[tutorial text 4]
+あと少しです。残るのは旗と攻撃だけ。これを学べばカスタムゲームに挑戦できます。いずれはオンラインでGlobulation 2の熟練プレイヤーたちと対戦しましょう。
+[Uncontrolled]
+操作者なし
+[undo]
+元に戻す
+[uniform terrain]
+均一な地形
+[Unit editor]
+ユニットエディター
+[unit settings explanation]
+既定の割り当てユニット数
+[units working]
+体が作業中
+[Units]
+ユニット
+[unlocked at start]
+最初から解放
+[unlocked by]
+解放条件
+[Unnamed Area]
+{名前のない領域}
+[up]
+上
+[upgrade building]
+改良を開始・中止
+[Upgrade Defaults]
+改良の既定値
+[upgrade]
+改良
+[Upload Map]
+マップをアップロード
+[upload map]
+マップをアップロード
+[username]
+ユーザー名
+[Version]
+バージョン
+[view history]
+履歴を表示
+[Voice volume]
+音声の音量
+[waiting for %0]
+%0を待っています
+[waiting for key]
+キーを押してください...
+[Waiting]
+待機中
+[Walk]
+歩行
+[warflag explanation 2]
+
+[warflag explanation]
+戦士を集めます
+[warflag]
+戦闘の旗
+[Warning, you need to reboot the game for changes to take effect]
+変更を反映するにはゲームを再起動してください
+[Warrior Ratio]
+戦士の割合
+[Warrior]
+戦士
+[warriors]
+戦士
+[watch again]
+もう一度見る
+[watching:]
+観戦中：
+[water]
+水
+[Wheat]
+小麦
+[Won : you defeated your opponents]
+勝利：敵を倒しました
+[Won : you have the most prestige]
+勝利：あなたの名声が最も高くなりました
+[Won : your ally %0 has the most prestige]
+勝利：味方の%0の名声が最も高くなりました
+[Wood]
+木材
+[wood]
+木材
+[Worker Ratio]
+労働者の割合
+[Worker]
+労働者
+[workers]
+労働者
+[working]
+作業中
+[wounded]
+負傷
+[Yes]
+はい
+[YESTS_CONNECTING]
+YOGメタサーバーに接続中...
+[YESTS_CONNECTION_LOST]
+YOGとの接続が切れました。
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+このユーザー名はすでに登録されているため、YOGメタサーバーが接続を拒否しました。ご自分のユーザー名であれば、「パスワード付きの新規YOGユーザーを登録」の設定を無効にしてください。
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+パスワードが正しくないため、YOGメタサーバーが接続を拒否しました。
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+このユーザー名にはまだパスワードがないため、YOGメタサーバーが接続を拒否しました。このパスワードで登録する場合は、接続前に「パスワード付きの新規YOGユーザーを登録」の設定を有効にしてください。この操作は一度だけ必要です。
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+このIPアドレスからの接続が一時的に禁止されているため、YOGメタサーバーが接続を拒否しました。解除されるまで待つか、管理者に連絡してください。
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Globulation 2のバージョンが古いため、YOGメタサーバーが接続を拒否しました。オンラインで遊ぶには、www.globulation2.orgから最新版を入手してください。
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+YOGメタサーバーが理由を示さずに接続を拒否しました！
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+このユーザー名はほかの人が使用中のため、YOGメタサーバーが接続を拒否しました。
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+このアカウントは利用停止中のため、YOGメタサーバーが接続を拒否しました。管理者に連絡してください。
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+ユーザー名が無効なため、YOGメタサーバーが接続を拒否しました。ユーザー名には文字、数字、アンダースコアのみ使用できます。
+[YESTS_CREATED]
+接続システムはYOGメタサーバーに接続する準備ができました。
+[YESTS_PASSWORDS_DONT_MATCH]
+入力したパスワードが一致しません。もう一度入力してください。
+[YESTS_UNABLE_TO_CONNECT]
+接続できません。YOGメタサーバーが停止しているようです。
+[yog block command help]
+/block <プレイヤー名>    プレイヤーをブロックし、その人のメッセージを非表示にします。
+[yog block command player %0 already blocked]
+%0はすでにブロックされています
+[yog block command player %0 blocked]
+%0をブロックしました
+[yog block command player %0 not found]
+%0が見つかりません
+[yog command header]
+利用可能なYOGクライアントコマンド：
+[yog command unknown]
+不明なコマンドです。
+[yog help command help]
+/help    このヘルプを表示します
+[yog]
+Ysagoon Online Gaming
+[you have lost]
+敗北しました！
+[you have won]
+勝利しました！
+[You where kicked from the game]
+ゲームから追放されました
+[Your %0 are under attack]
+味方の%0が攻撃されています
+[Your IP address was temporarily banned]
+あなたのIPアドレスからの接続は一時的に禁止されました。解除されるまで待つか、管理者に連絡してください。
+[Your unit got converted to %0's team]
+味方のユニットが%0のチームに移りました
+[Your username was banned]
+あなたのアカウントは利用停止になりました。解除を希望する場合は管理者に連絡してください。
+[Units still inside: %0]
+建物内：%0体
+[Units still working: %0]
+作業中：あと%0体
+[automatic torus view]
+自動トーラス表示
+[toggle torus view]
+2D／トーラス表示を切り替え

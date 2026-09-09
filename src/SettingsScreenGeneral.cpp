@@ -36,7 +36,7 @@ void SettingsScreen::buildLanguageWidgets()
 {
 	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
 	addWidgetToGroup(language, generalGroup);
-	languageList=new List(20, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
+	languageList=new List(20, 90, 180, 170, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
 	Font *listFont = Toolkit::getFont("standard");
 	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
 	{
@@ -76,13 +76,11 @@ void SettingsScreen::buildDisplayWidgets()
 		ost << standardResolutions[i][0] << "x" << standardResolutions[i][1];
 		if (!modeList->isText(ost.str().c_str()))
 		{
-			ost << " *";
 			modeList->addText(ost.str().c_str());
 		}
 	}
 	addWidgetToGroup(modeList, generalGroup);
-	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"));
-	addWidgetToGroup(modeListNote, generalGroup);
+
 }
 
 
@@ -118,14 +116,23 @@ void SettingsScreen::buildGraphicsToggles()
 	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
 	addWidgetToGroup(scrollwheelText, generalGroup);
 
-	gameSpeedText=new Text(230, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
+	highres=new OnOffButton(230, 300, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.highResolutionArtwork, HIGHRES, "Apply artwork on the next game or editor load (OpenGL)", "standard");
+	addWidgetToGroup(highres,generalGroup);
+	addWidgetToGroup(new Text(260,300,ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED,"standard","High-resolution artwork",180),generalGroup);
+	gameSpeedText=new Text(20, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
 	addWidgetToGroup(gameSpeedText, generalGroup);
-	gameSpeed=new Selector(230, 285, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180,
+	gameSpeed=new Selector(20, 285, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180,
 		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
 	addWidgetToGroup(gameSpeed, generalGroup);
 	updateGameSpeedText();
 
-	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
+	automaticTorus=new OnOffButton(230, 270, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.automaticTorus, AUTOMATIC_TORUS);
+	addWidgetToGroup(automaticTorus, generalGroup);
+	automaticTorusText=new Text(260, 270, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[automatic torus view]"), 180);
+	addWidgetToGroup(automaticTorusText, generalGroup);
+
+
+	rebootWarning=new Text(0, 340, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	//TODO: warning style should be defined centrally.
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
 	addWidget(rebootWarning);

@@ -1,0 +1,1230 @@
+[%0 has left the game]
+%0 telah keluar dari permainan.
+[%0 level %1]
+%0 Tingkat %1
+[%0 units can't access building]
+%0 unit tidak dapat mencapai bangunan
+[%0 units can't access flag]
+%0 unit tidak dapat mencapai bendera
+[%0 units can't access fruit]
+%0 unit tidak dapat mencapai buah
+[%0 units can't access resource]
+%0 unit tidak dapat mencapai sumber daya
+[%0 units not available]
+%0 unit tidak tersedia
+[%0 units too far from building]
+%0 unit terlalu jauh dari bangunan
+[%0 units too far from flag]
+%0 unit terlalu jauh dari bendera
+[%0 units too far from fruit]
+%0 unit terlalu jauh dari buah
+[%0 units too far from resource]
+%0 unit terlalu jauh dari sumber daya
+[%0 units too low level]
+Tingkat %0 unit terlalu rendah
+[%0% Uploaded]
+%0% diunggah
+[%0's game]
+Permainan %0
+[%0's team unit got converted to your team]
+Satu unit dari tim %0 telah bergabung dengan tim Anda
+[abreaviation explanation A]
+A: Sekutu
+[abreaviation explanation C]
+C: Kirim pesan obrolan ke
+[abreaviation explanation fV]
+fV: Bagikan penglihatan di sekitar penginapan (untuk merebut unit)
+[abreaviation explanation mV]
+mV: Bagikan penglihatan di sekitar pasar (untuk bertukar buah)
+[abreaviation explanation V]
+V: Bagikan penglihatan di sekitar semua bangunan
+[add map]
+Tambah peta
+[add shortcut]
+Tambah Pintasan
+[Add]
+Tambah
+[AI Descriptions]
+Deskripsi AI
+[AI]
+AI
+[ai]
+AI
+[AICastor-Description]
+Castor bermain dengan hati-hati dan sangat tangguh di peta dengan sedikit sumber daya. Tingkat kesulitan sedang.
+[AICastor]
+Castor
+[AICortex-Description]
+Cortex - AI eksperimental dengan tiga lapisan. Masih dalam pengembangan.
+[AICortex]
+Cortex
+[AINicowar-Description]
+Nicowar bermain agresif, berkembang pesat, dan mengerahkan pasukan besar untuk menyerang lawan. Tingkat kesulitan sulit.
+[AINicowar]
+Nicowar
+[AINone-Description]
+Tidak ada - Tidak melakukan apa pun.
+[AINone]
+Tidak ada
+[AINumbi-Description]
+Numbi - Berkembang secara terbatas dan cepat. Tingkat kesulitan mudah.
+[AINumbi]
+Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
+[AIReachToInfinity]
+ReachToInfinity
+[AIWarrush-Description]
+Warrush - Menyerang dengan cepat dan keras, sering kali membuat pemain yang bertahan kewalahan. Tingkat kesulitan sedang.
+[AIWarrush]
+Warrush
+[Alga]
+Ganggang
+[algae]
+ganggang
+[alliances]
+Aliansi
+[alt %0]
+Alt-%0
+[and]
+dan
+[any explorer]
+penjelajah mana pun
+[are dying hungry]
+kelaparan parah
+[are hungry]
+lapar
+[are ok]
+sehat
+[are wonded]
+terluka
+[armor]
+Zirah
+[assigned]
+Ditugaskan
+[At. speed]
+Kec. serang
+[At. strength]
+Daya serang
+[Attack]
+Serang
+[audio]
+Audio
+[auto save]
+Simpan otomatis
+[available lan games]
+Permainan lokal tersedia
+[awaiting players]
+Menunggu pemain
+[away:]
+tidak di tempat:
+[Back]
+Kembali
+[backspace]
+Backspace
+[barracks explanation 2]
+tempur prajurit
+[barracks explanation]
+Meningkatkan kemampuan
+[barracks]
+Barak
+[beach size]
+ukuran pantai
+[Blocked Players]
+Pemain Diblokir
+[break]
+Break
+[briefing]
+Pengarahan
+[build %0 level %1]
+Bangun %0 Tingkat %1
+[Build]
+Bangun
+[Building Defaults]
+Setelan Baku Bangunan
+[building settings]
+Pengaturan Bangunan
+[building site]
+lokasi pembangunan
+[Building Tool Box Explanation]
+Shift + Seret = Kotak
+[Building Tool Line Explanation]
+Ctrl + Seret = Garis
+[Buildings]
+Bangunan
+[Bullets]
+Peluru
+[campaign editor]
+Editor Kampanye
+[campaign]
+Kampanye
+[Can't connect, can't find host]
+Tidak dapat terhubung, hos tidak ditemukan
+[Can't host game, port %0 in use]
+Tidak dapat menjadi hos, porta %0 sedang digunakan
+[Can't join game, game doesn't exist]
+Tidak dapat bergabung, permainan tidak ada
+[Can't join game, game has started]
+Tidak dapat bergabung, permainan sudah dimulai
+[Can't join game, game is full]
+Tidak dapat bergabung, permainan sudah penuh
+[cancel destroy]
+Batal bongkar
+[cancel repair]
+Batal perbaiki
+[cancel upgrade]
+Batal tingkatkan
+[Cancel]
+Batal
+[caps lock]
+Caps Lock
+[carry]
+Membawa:
+[Change Area Name]
+Ubah Nama Area
+[Cherry]
+Ceri
+[choose campaign]
+Pilih kampanye
+[choose game]
+Pilih permainan
+[choose map]
+Pilih peta
+[clear area]
+Area pembersihan
+[Clearing:]
+Membersihkan:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+Membersihkan sumber daya
+[clearingflag]
+Bendera Pembersihan
+[closed]
+Tertutup
+[combined vision]
+Penglihatan gabungan
+[compile]
+Kompilasi skrip
+[compose]
+Compose
+[Computing Fertility]
+Menghitung Kesuburan
+[concrete islands terrain]
+Pulau Terpisah
+[connect]
+Hubungkan
+[connecting to game]
+Menghubungkan ke Permainan
+[connecting to]
+Menghubungkan ke
+[Construction Site Defaults]
+Setelan Baku Lokasi Pembangunan
+[Continue playing]
+Lanjut bermain
+[control %0]
+Ctrl-%0
+[Corn]
+Gandum
+[crater density]
+jumlah kawah
+[crater lakes terrain]
+Danau Kawah
+[create game]
+Buat permainan
+[create map]
+Buat peta
+[credits]
+Kredit
+[ctrl - line]
+Ctrl - Garis
+[current speed]
+Kecepatan saat ini
+[custom game]
+Permainan kustom
+[customcur]
+Kursor kustom
+[damage]
+Kerusakan
+[Damaged Map]
+Peta Unit Terluka
+[decrease game speed]
+Perlambat Permainan
+[decrease units working]
+Kurangi Unit Bekerja
+[Defeat Your Oppenents]
+Kalahkan Lawan Anda
+[defencetower explanation 2]
+musuh di dekatnya
+[defencetower explanation]
+Menyerang unit dan bangunan
+[defencetower]
+Menara Pertahanan
+[Defense Map]
+Peta Pertahanan
+[Defense]
+Pertahanan
+[Delete game]
+Hapus permainan yang dipilih
+[delete]
+Hapus
+[desert]
+gurun
+[destroy building]
+Bongkar Bangunan Terpilih
+[destroy]
+Bongkar
+[display]
+Tampilan
+[do nothing]
+Tidak Melakukan Apa Pun
+[don't carry anything]
+Tidak membawa apa pun
+[down]
+bawah
+[Download Map]
+Unduh Peta
+[Download Maps]
+Unduh Peta
+[downloaded %0]
+%0 telah diunduh
+[downloading map]
+Mengunduh Peta
+[edit map]
+Edit Peta
+[editing map]
+Mengedit Peta
+[editor shortcuts]
+Pintasan Editor
+[editor]
+Editor
+[end]
+End
+[Enter your nickname :]
+Masukkan nama panggilan Anda:
+[Enter your password :]
+Masukkan kata sandi Anda:
+[enter]
+Enter
+[equals]
+sama dengan
+[ERROR_CANT_LOAD_MAP]
+Peta tidak dapat dimuat karena berkas rusak atau versinya tidak kompatibel.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Kampanye tidak dapat disimpan. Pastikan direktori tujuan ada, dapat ditulisi, dan memiliki ruang kosong.
+[escape]
+Esc
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+Menarik penjelajah
+[explorationflag]
+Bendera Penjelajahan
+[Explorer Ratio]
+Proporsi Penjelajah
+[Explorer]
+Penjelajah
+[explorers]
+penjelajah
+[extra islands]
+pulau kosong
+[f10]
+F10
+[f11]
+F11
+[f12]
+F12
+[f13]
+F13
+[f14]
+F14
+[f15]
+F15
+[f1]
+F1
+[f2]
+F2
+[f3]
+F3
+[f4]
+F4
+[f5]
+F5
+[f6]
+F6
+[f7]
+F7
+[f8]
+F8
+[f9]
+F9
+[Fertility Map]
+Peta Kesuburan
+[Flag Defaults]
+Setelan Baku Bendera
+[flag settings explanation]
+Radius baku bendera
+[fog of war]
+Kabut perang
+[food]
+Makanan
+[forbidden area]
+Area terlarang
+[Free]
+Sehat
+[free]
+menganggur
+[from:]
+dari:
+[fruit]
+buah
+[fullscreen]
+Layar penuh
+[game full]
+Permainan penuh
+[game shortcuts]
+Pintasan Gim
+[game speed]
+Kecepatan permainan
+[Game]
+Permainan
+[general settings]
+Pengaturan Umum
+[go to event]
+Lihat Lokasi Kejadian
+[go to home]
+Lihat Markas
+[goto main menu]
+Kembali ke menu utama
+[grass]
+Rumput
+[ground attack]
+serangan darat
+[guard area]
+Area penjagaan
+[GUIMapPreview text 0]
+Silakan pilih
+[GUIMapPreview text 1]
+sebuah peta
+[handmade map]
+Peta buatan tangan
+[Happyness]
+Kebahagiaan
+[hard pause]
+Jeda Total
+[Harvest]
+Panen
+[high priority]
+tinggi
+[hints]
+Petunjuk
+[home]
+Home
+[hospital explanation 2]
+
+[hospital explanation]
+Menyembuhkan unit
+[hospital]
+Rumah Sakit
+[host]
+Jadi hos permainan
+[hp]
+HP
+[Human]
+Manusia
+[human]
+manusia
+[hungry]
+lapar
+[hungryness]
+Rasa lapar
+[In way]
+Dalam perjalanan
+[increase game speed]
+Percepat Permainan
+[increase units working]
+Tambah Unit Bekerja
+[inn explanation 2]
+
+[inn explanation]
+Memberi makan unit
+[inn]
+Penginapan
+[insert]
+Insert
+[inside]
+Di dalam
+[islands size]
+ukuran pulau
+[islands terrain]
+Kepulauan
+[isles terrain]
+Pulau Kecil
+[iterate selection]
+Pilih Objek Berikutnya
+[jobs]
+pekerjaan
+[join a game]
+Gabung permainan
+[join]
+Gabung
+[keyboard settings]
+Pengaturan Papan Ketik
+[kick]
+Keluarkan
+[lan]
+Permainan LAN
+[language incomplete]
+Bahasa Indonesia - Belum Lengkap
+[language-code]
+id
+[language-tr]
+Bahasa
+[language]
+Bahasa Indonesia
+[Leave Game]
+Keluar dari Permainan
+[left meta]
+Meta kiri
+[left super]
+tombol Windows kiri
+[left]
+kiri
+[level]
+Tingkat
+[levels]
+Tingkat
+[load campaign]
+Muat Kampanye
+[load game]
+Muat permainan
+[load map]
+Muat Peta
+[load replay]
+Muat Rekaman
+[load script]
+Muat Skrip
+[load]
+Muat
+[loading map list]
+Memuat Daftar Peta...
+[Lobby]
+Lobi
+[login]
+Masuk
+[look around]
+Lihat sekitar
+[Lost : %0 has more prestige than you]
+Kalah: prestise %0 lebih tinggi daripada milik Anda
+[Lost : your colony is dead]
+Kalah: koloni Anda telah musnah
+[low priority]
+rendah
+[lowquality]
+Kualitas rendah
+[Magic At. Air]
+Dmg. udara
+[Magic At. Ground]
+Dmg. darat
+[map description]
+Deskripsi
+[Map Discovered]
+Buka Seluruh Peta
+[Map download failure: lost connection]
+Gagal Mengunduh Peta: Koneksi ke YOG terputus
+[Map name: %0]
+Nama peta: %0.
+[map name]
+Nama
+[map rated]
+Peta Dinilai
+[map script]
+Skrip Peta
+[map size x]
+Lebar peta
+[map size y]
+Tinggi peta
+[Map upload failure: connection lost]
+Gagal mengunggah peta: Koneksi ke YOG terputus
+[Map upload failure: map name in use]
+Gagal mengunggah peta. Nama peta sudah digunakan.
+[Map upload failure: unknown reason]
+Gagal mengunggah peta. Penyebab tidak diketahui.
+[Map Upload: Author Name]
+Nama Pembuat
+[Map Upload: Waiting for reply]
+Menunggu balasan
+[mark map]
+Tandai Peta untuk Sekutu
+[market explanation 2]
+dengan pemain lain
+[market explanation]
+Untuk bertukar buah
+[market]
+Pasar
+[medium priority]
+sedang
+[meta %0]
+Meta-%0
+[Min required level:]
+Tingkat minimum:
+[Minimum Level To Flag]
+Tingkat min. unit
+[Music volume]
+Volume (musik)
+[Mute]
+Bisukan
+[mute]
+bisukan
+[new campaign]
+Kampanye Baru
+[new map]
+Peta Baru
+[nick taken]
+Maaf, nama yang Anda pilih sudah digunakan di freenode; Anda hanya dapat mengobrol melalui YOG.
+[no fullscreen]
+* hanya dalam mode jendela
+[No Hints]
+Tidak Ada Petunjuk
+[no key]
+belum ada tombol
+[No Objectives]
+Tidak Ada Sasaran
+[no ressources growth areas]
+Cegah tumbuh
+[No]
+Tidak
+[Not Enough Ratings]
+Penilaian Belum Cukup
+[not ready]
+belum siap
+[Number Of Buildings]
+Jumlah Bangunan
+[number of players: %0 (%1 AI)]
+%0 pemain (%1 AI)
+[number of teams: %0]
+%0 tim
+[number of teams]
+jumlah tim
+[Number Of Units]
+Jumlah Unit
+[numlock]
+Num Lock
+[objectives]
+Sasaran
+[of which]
+di antaranya
+[ok]
+Oke
+[old islands terrain]
+pulau acak lama
+[old random terrain]
+medan acak lama
+[on press]
+Ditekan
+[On the spot]
+Di sini
+[on unpress]
+Dilepas
+[open chat box]
+Buka Kotak Obrolan
+[open load menu]
+Buka Menu Muat
+[open save menu]
+Buka Menu Simpan
+[open scenario editor]
+Buka Editor Skenario
+[open teams editor]
+Buka Editor Tim
+[open]
+terbuka
+[OpenGL]
+OpenGL
+[Options]
+Opsi
+[options]
+opsi
+[Orange]
+Jeruk
+[Other Options]
+Opsi Lain
+[page down]
+Page Down
+[page up]
+Page Up
+[Papyrus]
+Papirus
+[pause game]
+Jeda Permainan
+[pause]
+Pause
+[Paused]
+Dijeda
+[player name]
+Nama pemain
+[player rating %0]
+Peringkat Pemain: %0
+[players]
+Pemain
+[please wait]
+Harap tunggu
+[power]
+Power
+[press space]
+Tekan spasi untuk melanjutkan.
+[Prestige Score]
+Skor Prestise
+[Prestige Win Enabled]
+Kemenangan Prestise Aktif
+[Prestige]
+Prestise
+[Primary Objectives]
+Utama
+[print screen]
+Print Screen
+[priority]
+Prioritas
+[Prune]
+Prem
+[quit the editor]
+Keluar dari editor
+[quit the game]
+Keluar dari permainan
+[quit the replay]
+Keluar dari rekaman
+[quit]
+Keluar
+[racetrack explanation 2]
+berjalan unit
+[racetrack explanation]
+Meningkatkan kecepatan
+[racetrack]
+Lintasan Lari
+[range]
+Jangkauan
+[Rated %0]
+Nilai %0
+[ratios]
+Proporsi
+[ready?]
+siap?
+[refresh map list]
+Segarkan Daftar Peta
+[Register]
+Daftar
+[remember unit]
+Ingat jumlah unit
+[Remember YOG password localy]
+Simpan kata sandi di komputer ini.
+[remove map]
+Hapus Peta
+[remove shortcut]
+Hapus Pintasan
+[Remove]
+Hapus
+[repair building]
+Mulai/Hentikan Perbaikan
+[repair]
+Perbaiki
+[repeat area]
+kali pengulangan medan
+[Repeat your password :]
+Ulangi kata sandi Anda:
+[replay ended]
+Rekaman Selesai
+[restore default shortcuts]
+Pulihkan Pintasan Baku
+[return to editor]
+Kembali ke editor
+[return to game]
+Kembali ke permainan
+[return to replay]
+Kembali ke rekaman
+[return]
+Enter
+[right meta]
+Meta kanan
+[right super]
+tombol Windows kanan
+[right]
+kanan
+[river diameter]
+lebar sungai
+[river terrain]
+Sungai
+[sand]
+Pasir
+[save before quit?]
+Simpan sebelum keluar?
+[save game]
+Simpan permainan
+[save map]
+Simpan Peta
+[save replay]
+Simpan Rekaman
+[save script]
+Simpan Skrip
+[Save]
+Simpan
+[school explanation 2]
+membangun para pekerja
+[school explanation]
+Meningkatkan kemampuan
+[school]
+Sekolah
+[Script Areas]
+Area Skrip
+[scroll lock]
+Scroll Lock
+[scroll wheel enabled]
+Roda Gulir Aktif
+[Secondary Objectives]
+Tambahan
+[seeking a job]
+mencari pekerjaan
+[seeking]
+mencari
+[select barracks building]
+Pilih Barak
+[select clearingflag]
+Pilih Bendera Pembersihan
+[select construct barracks]
+Pilih Bangun Barak
+[select construct defencetower]
+Pilih Bangun Menara Pertahanan
+[select construct hospital]
+Pilih Bangun Rumah Sakit
+[select construct inn]
+Pilih Bangun Penginapan
+[select construct market]
+Pilih Bangun Pasar
+[select construct racetrack]
+Pilih Bangun Lintasan Lari
+[select construct school]
+Pilih Bangun Sekolah
+[select construct stonewall]
+Pilih Bangun Tembok Batu
+[select construct swarm]
+Pilih Bangun Sarang
+[select construct swimmingpool]
+Pilih Bangun Kolam Renang
+[select delete tool]
+Pilih Alat Hapus
+[select explorationflag]
+Pilih Bendera Penjelajahan
+[select hospital building]
+Pilih Rumah Sakit
+[select inn building]
+Pilih Penginapan
+[select market building]
+Pilih Pasar
+[select place clearing area]
+Pilih Pasang Area Pembersihan
+[select place clearingflag]
+Pilih Pasang Bendera Pembersihan
+[select place explorationflag]
+Pilih Pasang Bendera Penjelajahan
+[select place forbidden area]
+Pilih Pasang Area Terlarang
+[select place guard area]
+Pilih Pasang Area Penjagaan
+[select place warflag]
+Pilih Pasang Bendera Perang
+[select racetrack building]
+Pilih Lintasan Lari
+[select school building]
+Pilih Sekolah
+[select swarm building]
+Pilih Sarang
+[select swimmingpool building]
+Pilih Kolam Renang
+[select tower building]
+Pilih Menara Pertahanan
+[select wall building]
+Pilih Tembok Batu
+[select warflag]
+Pilih Bendera Perang
+[settings]
+Pengaturan
+[shift %0]
+Shift-%0
+[shortcut explanation enter]
+Enter: kirim pesan obrolan
+[shortcut explanation v]
+V: tahan untuk berbicara
+[show areas]
+Tampilkan area
+[show flags]
+Tampilkan bendera
+[show main menu]
+Tampilkan Menu Utama
+[skin]
+Tampilan
+[smoothing]
+Penghalusan
+[sort by name]
+Nama
+[sort by rating]
+Penilaian
+[sort by size]
+Ukuran
+[Sort By]
+Urutkan Menurut
+[space]
+spasi
+[start mission]
+Mulai Misi
+[start new campaign]
+Mulai Kampanye Baru
+[Start]
+Mulai
+[Starving Map]
+Peta Kelaparan
+[starving]
+kelaparan parah
+[Statistics]
+Statistik
+[Still (i)]
+Masih
+[still (w)]
+Masih
+[still one unit working]
+Satu unit masih bekerja
+[Still one]
+Masih satu
+[Stone]
+Batu
+[stone]
+batu
+[stonewall explanation 2]
+pasif
+[stonewall explanation]
+Unsur pertahanan
+[stonewall]
+Tembok Batu
+[submit rating]
+Kirim Penilaian
+[svr hostname]
+Nama hos server
+[swamp terrain]
+Rawa
+[swarm explanation 2]
+
+[swarm explanation]
+Menghasilkan unit baru
+[swarm]
+Sarang
+[Swim]
+Berenang
+[swimmingpool explanation 2]
+berenang unit
+[swimmingpool explanation]
+Meningkatkan kecepatan
+[swimmingpool]
+Kolam Renang
+[switch to adding areas]
+Beralih ke Penambahan Area
+[switch to area brush 1]
+Pilih Kuas Area 1
+[switch to area brush 2]
+Pilih Kuas Area 2
+[switch to area brush 3]
+Pilih Kuas Area 3
+[switch to area brush 4]
+Pilih Kuas Area 4
+[switch to area brush 5]
+Pilih Kuas Area 5
+[switch to area brush 6]
+Pilih Kuas Area 6
+[switch to area brush 7]
+Pilih Kuas Area 7
+[switch to area brush 8]
+Pilih Kuas Area 8
+[switch to building view]
+Beralih ke Tampilan Bangunan
+[switch to flag view]
+Beralih ke Tampilan Bendera
+[switch to removing areas]
+Beralih ke Penghapusan Area
+[switch to teams view]
+Beralih ke Tampilan Tim
+[switch to terrain view]
+Beralih ke Tampilan Medan
+[sys req]
+SysRq
+[tab]
+Tab
+[teams editor]
+Editor Tim
+[Teams Fixed]
+Tim Tetap
+[teams]
+ tim
+[the barracks is finished]
+Barak selesai dibangun.
+[the barracks is under attack]
+Barak sedang diserang.
+[the building is finished]
+Bangunan selesai dibangun.
+[the building is under attack]
+Bangunan sedang diserang.
+[the clearingflag is finished]
+Bendera Pembersihan telah ditempatkan.
+[the clearingflag is under attack]
+Bendera Pembersihan sedang diserang.
+[the defencetower is finished]
+Menara Pertahanan selesai dibangun.
+[the defencetower is under attack]
+Menara Pertahanan sedang diserang.
+[the explorationflag is finished]
+Bendera Penjelajahan telah ditempatkan.
+[the explorationflag is under attack]
+Bendera Penjelajahan sedang diserang.
+[The game has not been finished]
+Permainan belum selesai.
+[the games]
+Permainan
+[the hospital is finished]
+Rumah Sakit selesai dibangun.
+[the hospital is under attack]
+Rumah Sakit sedang diserang.
+[The host has cancelled the game]
+Hos telah membatalkan permainan.
+[the inn is finished]
+Penginapan selesai dibangun.
+[the inn is under attack]
+Penginapan sedang diserang.
+[the maps]
+Peta
+[the market is finished]
+Pasar selesai dibangun.
+[the market is under attack]
+Pasar sedang diserang.
+[The player %0 has joined YOG]
+%0 telah bergabung dengan YOG.
+[The player %0 has left YOG]
+%0 telah keluar dari YOG.
+[the racetrack is finished]
+Lintasan Lari selesai dibangun.
+[the racetrack is under attack]
+Lintasan Lari sedang diserang.
+[the replays]
+Rekaman
+[the school is finished]
+Sekolah selesai dibangun.
+[the school is under attack]
+Sekolah sedang diserang.
+[the stonewall is finished]
+Satu bagian tembok selesai dibangun.
+[the stonewall is under attack]
+Musuh menyerang tembok Anda.
+[the swarm is finished]
+Sarang selesai dibangun.
+[the swarm is under attack]
+Sarang sedang diserang.
+[the swimmingpool is finished]
+Kolam Renang selesai dibangun.
+[the swimmingpool is under attack]
+Kolam Renang sedang diserang.
+[the warflag is finished]
+Bendera Perang telah ditempatkan.
+[the warflag is under attack]
+Bendera Perang sedang diserang.
+[time]
+Waktu
+[to:]
+ke:
+[toggle draw accessibility aids]
+Tampilkan/Sembunyikan Nomor Tim
+[toggle draw information]
+Tampilkan/Sembunyikan Informasi
+[toggle draw unit paths]
+Tampilkan/Sembunyikan Jalur Unit
+[toggle menu screen]
+Tampilkan/Sembunyikan Menu
+[toggle recording voice]
+Mulai/Hentikan Rekaman Suara
+[Total Attack Power]
+Total Daya Serang
+[Total Defence Power]
+Total Daya Pertahanan
+[Total Hitpoints]
+Total HP
+[Total prestige reached]
+Total prestise yang dicapai
+[Total]
+Total
+[tutorial text 1]
+Selamat datang di tutorial dasar Globulation 2! Tutorial ini membahas pembangunan penginapan, penjelajahan wilayah, hingga pemusnahan musuh! Banyak pengetahuan berguna yang bisa Anda pelajari di sini!
+[tutorial text 2]
+Kini setelah menguasai dasar-dasarnya, saatnya mengenal bangunan lain seperti Lintasan Lari, Kolam Renang, dan Sekolah.
+[tutorial text 3]
+Anda sudah berhasil sampai sejauh ini. Sekarang mari kita pelajari Prajurit, Barak, dan Peningkatan.
+[tutorial text 4]
+Anda hampir selesai. Tinggal bendera dan serangan yang perlu dipelajari. Setelah itu, Anda siap mencoba Permainan Kustom dan akhirnya bermain daring melawan para pemain terbaik Globulation 2.
+[tutorial]
+Tutorial
+[Uncontrolled]
+Tak Terkendali
+[undo]
+batalkan
+[uniform terrain]
+Medan Seragam
+[Unit editor]
+Editor Unit
+[unit settings explanation]
+Jumlah baku unit yang ditugaskan
+[units working]
+ unit bekerja
+[Units]
+Unit
+[unlocked at start]
+Terbuka Sejak Awal
+[unlocked by]
+Dibuka Oleh
+[Unnamed Area]
+{Area Tanpa Nama}
+[up]
+atas
+[upgrade building]
+Mulai/Hentikan Peningkatan
+[Upgrade Defaults]
+Setelan Baku Peningkatan
+[upgrade]
+Tingkatkan
+[Upload Map]
+Unggah Peta
+[upload map]
+Unggah Peta
+[username]
+Nama pengguna
+[Version]
+Versi
+[view history]
+Lihat Riwayat
+[Voice volume]
+Volume (suara)
+[waiting for %0]
+Menunggu %0
+[waiting for key]
+menunggu tombol...
+[Waiting]
+Menunggu
+[Walk]
+Berjalan
+[warflag explanation 2]
+
+[warflag explanation]
+Menarik prajurit
+[warflag]
+Bendera Perang
+[Warning, you need to reboot the game for changes to take effect]
+Peringatan, mulai ulang permainan agar perubahan diterapkan
+[Warrior Ratio]
+Proporsi Prajurit
+[Warrior]
+Prajurit
+[warriors]
+prajurit
+[watch again]
+Tonton lagi
+[watching:]
+Menonton:
+[water]
+Air
+[Wheat]
+Gandum
+[Won : you defeated your opponents]
+Menang: Anda mengalahkan semua lawan
+[Won : you have the most prestige]
+Menang: Anda memiliki prestise tertinggi
+[Won : your ally %0 has the most prestige]
+Menang: sekutu Anda, %0, memiliki prestise tertinggi
+[Wood]
+Kayu
+[wood]
+kayu
+[Worker Ratio]
+Proporsi Pekerja
+[Worker]
+Pekerja
+[workers]
+pekerja
+[working]
+Bekerja
+[wounded]
+terluka
+[Yes]
+Ya
+[YESTS_CONNECTING]
+Menghubungkan ke metaserver YOG...
+[YESTS_CONNECTION_LOST]
+Koneksi ke YOG terputus.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Metaserver YOG menolak koneksi karena nama pengguna ini sudah terdaftar. Jika nama ini milik Anda, nonaktifkan opsi "Daftarkan pengguna YOG baru dengan kata sandi".
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+Metaserver YOG menolak koneksi karena kata sandi yang dimasukkan salah.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+Metaserver YOG menolak koneksi karena nama pengguna ini belum memiliki kata sandi. Jika Anda ingin mendaftarkannya dengan kata sandi ini, aktifkan opsi "Daftarkan pengguna YOG baru dengan kata sandi" sebelum menghubungkan. Anda hanya perlu mengaktifkan opsi ini sekali.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+Metaserver YOG menolak koneksi karena alamat IP ini diblokir sementara. Tunggu hingga pemblokiran dicabut atau hubungi administrator.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Metaserver YOG menolak koneksi karena versi Globulation 2 Anda sudah usang. Unduh versi terbaru dari www.globulation2.org untuk bermain daring.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+Metaserver YOG menolak koneksi tanpa penjelasan!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+Metaserver YOG menolak koneksi karena nama pengguna Anda sedang digunakan orang lain.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+Metaserver YOG menolak koneksi karena nama pengguna ini diblokir. Hubungi administrator.
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+Metaserver YOG menolak koneksi karena nama pengguna tidak valid. Nama pengguna hanya boleh berisi huruf, angka, dan garis bawah.
+[YESTS_CREATED]
+Sistem koneksi siap menghubungi metaserver YOG.
+[YESTS_PASSWORDS_DONT_MATCH]
+Kata sandi yang dimasukkan tidak cocok. Ketik ulang keduanya.
+[YESTS_UNABLE_TO_CONNECT]
+Tidak dapat terhubung. Tampaknya metaserver YOG sedang tidak beroperasi.
+[yog block command help]
+/block <namapemain>    Memblokir pemain; pesan mereka tidak akan ditampilkan lagi.
+[yog block command player %0 already blocked]
+Pemain %0 sudah diblokir
+[yog block command player %0 blocked]
+Pemain %0 diblokir
+[yog block command player %0 not found]
+Pemain %0 tidak ditemukan
+[yog command header]
+Daftar perintah klien YOG saat ini:
+[yog command unknown]
+Perintah tidak dikenal.
+[yog help command help]
+/help    Menampilkan pesan bantuan ini
+[yog]
+Ysagoon Online Gaming
+[you have lost]
+Anda kalah!
+[you have won]
+Anda menang!
+[You where kicked from the game]
+Anda dikeluarkan dari permainan
+[Your %0 are under attack]
+%0 Anda sedang diserang
+[Your IP address was temporarily banned]
+Alamat IP Anda diblokir sementara. Tunggu hingga pemblokiran dicabut atau hubungi administrator.
+[Your unit got converted to %0's team]
+Unit Anda telah bergabung dengan tim %0
+[Your username was banned]
+Nama pengguna Anda diblokir. Hubungi administrator untuk mencabut pemblokiran.
+[game speed help]
+Hanya untuk pemain tunggal dan rekaman. Multipemain berjalan pada 1x.
+[maximum game speed]
+Maksimum
+[multiplayer game speed]
+Kecepatan: 1x (multipemain)
+[Units still inside: %0]
+Di dalam: %0
+[Units still working: %0]
+Masih bekerja: %0
+[automatic torus view]
+Tampilan torus otomatis
+[toggle torus view]
+Beralih tampilan 2D / torus

@@ -72,8 +72,8 @@ struct Fixture {
                 r.type = resource;
                 r.amount = 1;
             }
-        // Keep the team viable under the existing feeding-availability rule until
-        // its last worker dies. Training fixtures have a separate stocked inn.
+        // Keep the existing feeding-availability rule satisfied.
+        // Training fixtures have a separate stocked inn.
         Building* food = purpose == FEED ? building : game.addBuilding(30, 30,
             globalContainer->buildingsTypes.getTypeNum("inn", 0, false), 0);
         assert(food);
@@ -110,16 +110,18 @@ Trace finish(Game& game, int id) {
         game.syncStep(0);
         trace.push_back(state(game, id));
     }
-    assert(game.teams[0]->myUnits[id] == nullptr);
-    assert(game.teams[0]->myBuildings[0]->unitsInside.empty());
+    assert(game.teams[0]->myUnits[id] != nullptr);
+    assert(!game.teams[0]->myUnits[id]->isDead);
+    assert(game.teams[0]->myUnits[id]->hungry == 10);
+    assert(game.teams[0]->myUnits[id]->hp == 2);
+    assert(game.teams[0]->myBuildings[0]->unitsInside.size() == 1);
     assert(!game.teams[0]->isAlive && game.teams[0]->hasLost);
     assert(game.teams[1]->hasWon);
     return trace;
 }
-Trace starvationAndSave(int resource, int purpose) {
+Trace eliminationAndSave(int resource, int purpose) {
     Fixture f(resource, purpose);
-    f.game.syncStep(0);
-    assert(f.unit->hungry == 8 && !f.unit->isDead);
+    assert(f.unit->hungry == 10 && !f.unit->isDead);
     assert(f.game.teams[0]->isAlive && !f.game.teams[0]->hasLost);
     assert(!f.game.teams[1]->hasWon);
     assert(f.unit->attachedBuilding == f.building && !f.building->unitsInside.empty());
@@ -151,22 +153,81 @@ Trace starvationAndSave(int resource, int purpose) {
 }
 void rescue() {
     Fixture f;
+    f.game.teams[0]->allies |= f.game.teams[1]->me;
     f.game.syncStep(0);
-    assert(f.unit->hungry == 8);
+    assert(f.unit->hungry == 10 && f.game.teams[0]->isAlive);
     f.game.map.getResource(20, 19).clear();
     for (int i = 0; i < 16 && f.unit->attachedBuilding; ++i) f.game.syncStep(0);
     assert(f.game.teams[0]->myUnits[f.id] == f.unit && !f.unit->isDead);
     assert(f.unit->attachedBuilding == nullptr && f.building->unitsInside.empty());
     assert(f.unit->movement == Unit::MOV_EXITING_BUILDING);
+    assert(f.game.teams[0]->isAlive);
 }
-void activeService() {
+void allyProtection() {
     Fixture f;
+    f.game.teams[0]->allies |= f.game.teams[1]->me;
+    for (int i = 0; i < 32; ++i) f.game.syncStep(0);
+    assert(f.game.teams[0]->isAlive && f.unit->hungry == 10);
+    f.game.teams[1]->isAlive = false;
+    f.game.syncStep(0);
+    assert(!f.game.teams[0]->isAlive);
+}
+void freeUnitProtection() {
+    Fixture f;
+    assert(f.game.addUnit(10, 10, 0, WORKER, 0, 0, 0, 0));
+    for (int i = 0; i < 16; ++i) f.game.syncStep(0);
+    assert(f.game.teams[0]->isAlive && f.unit->hungry == 10);
+}
+void openExitProtection() {
+    Fixture f;
+    f.game.map.getResource(20, 19).clear();
+    // Even before its movement update, an available exit must protect the unit.
+    f.unit->delta = 0;
+    f.game.syncStep(0);
+    assert(f.game.teams[0]->isAlive);
+}
+void productionRecovery(bool stocked, bool blocked) {
+    Fixture f;
+    Building* swarm = f.game.addBuilding(5, 5,
+        globalContainer->buildingsTypes.getTypeNum("swarm", 0, false), 0);
+    assert(swarm);
+    f.game.teams[0]->addToStaticAbilitiesLists(swarm);
+    swarm->resources[CORN] = stocked ? swarm->type->resourceForOneUnit : 0;
+    swarm->productionTimeout = 100;
+    // A player can enable production even when all sliders are at zero.
+    for (int t = 0; t < NB_UNIT_TYPE; ++t) swarm->ratio[t] = 0;
+    if (blocked) {
+        for (int y = 4; y <= 5 + swarm->type->height; ++y)
+            for (int x = 4; x <= 5 + swarm->type->width; ++x) {
+                if (x >= 5 && x < 5 + swarm->type->width && y >= 5 && y < 5 + swarm->type->height) {
+                    f.game.map.setAirUnit(x, y, 0);
+                } else {
+                    auto& r = f.game.map.getResource(x, y);
+                    r.type = WOOD;
+                    r.amount = 1;
+                }
+            }
+    }
+    f.game.syncStep(0);
+    assert(f.game.teams[0]->isAlive == (stocked && !blocked));
+    assert(f.unit->hungry == 10);
+    if (stocked && !blocked) {
+        swarm->ratio[WORKER] = 1;
+        swarm->productionTimeout = 0;
+        f.game.syncStep(0);
+        assert(f.game.teams[0]->myUnits[1]);
+        assert(f.game.teams[0]->isAlive);
+    }
+}
+void activeService(int purpose) {
+    Fixture f(WOOD, purpose);
     f.unit->displacement = Unit::DIS_INSIDE;
     f.unit->insideTimeout = -100;
     for (int i = 0; i < 16; ++i) f.game.syncStep(0);
     assert(f.game.teams[0]->myUnits[f.id] == f.unit);
     assert(f.unit->hungry == 10 && f.unit->hp == 2);
     assert(f.unit->insideTimeout < 0 && f.unit->attachedBuilding == f.building);
+    assert(f.game.teams[0]->isAlive);
 }
 }
 int main(int argc, char** argv) {
@@ -180,11 +241,18 @@ int main(int argc, char** argv) {
     IntBuildingType::init();
     for (int resource : {WOOD, CORN})
         for (int purpose : {FEED, WALK}) {
-            const auto first = starvationAndSave(resource, purpose);
-            assert(starvationAndSave(resource, purpose) == first);
+            const auto first = eliminationAndSave(resource, purpose);
+            assert(eliminationAndSave(resource, purpose) == first);
         }
     rescue();
-    activeService();
-    std::cout << "PASS: trapped lifecycle, elimination, rescue, active service, repeated seeds and save continuation\n";
+    activeService(FEED);
+    activeService(WALK);
+    allyProtection();
+    freeUnitProtection();
+    openExitProtection();
+    productionRecovery(true, false);
+    productionRecovery(false, false);
+    productionRecovery(true, true);
+    std::cout << "PASS: trapped elimination, indoor survival, rescue, service, hatchery recovery, repeated seeds and save continuation\n";
     return 0;
 }

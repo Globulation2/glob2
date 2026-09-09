@@ -23,7 +23,7 @@
 [%0 units too low level]
 %0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﻣﺴﺘﻮﻳﺎﺗﻬﺎ ﻣﻨﺨﻔﻀﺔ
 [%0% Uploaded]
-%0% uploaded
+ﺗﻢ ﺭﻓﻊ %0%
 [%0's game]
 ﻟﻌﺒﺔ %0
 [%0's team unit got converted to your team]
@@ -199,15 +199,15 @@ caps lock
 [closed]
 ﻣﻐﻠﻖ
 [combined vision]
-Combined vision
+ﺭﺅﻳﺔ ﻣﺸﺘﺮﻛﺔ
 [compile]
-ﺍﺟﻤﻊ ﺍﻟﻨﺺ
+ﺗﺮﺟﻤﺔ ﺍﻟﻨﺺ ﺍﻟﺒﺮﻣﺠﻲ
 [compose]
 compose
 [Computing Fertility]
 ﻳﺤﺴﺐ ﺍﻟﺨﺼﻮﺑﺔ
 [concrete islands terrain]
-ﺟُﺰﺭ ﺻﻠﺒﺔ
+ﺟﺰﺭ ﻣﻨﻔﺼﻠﺔ
 [connect]
 ﺍﺗﺼﻞ
 [connecting to game]
@@ -243,7 +243,7 @@ control-%0
 [damage]
 ﺍﻟﻀﺮﺭ
 [Damaged Map]
-ﺧﺎﺭﻃﺔ ﺍﻟﻀﺮﺭ
+ﺧﺮﻳﻄﺔ ﺍﻟﺠﺮﺣﻰ
 [decrease units working]
 ﻗﻠﻞ ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻌﺎﻣﻠﺔ
 [Defeat Your Oppenents]
@@ -303,7 +303,7 @@ end
 [equals]
 ﻳﺴﺎﻭﻱ
 [ERROR_CANT_LOAD_MAP]
-تعذّر تحميل الخريطة لأن الملف تالف أو من إصدار غير متوافق.
+ﺗﻌﺬﺭ ﺗﺤﻤﻴﻞ ﺍﻟﺨﺮﻳﻄﺔ: ﺍﻟﻤﻠﻒ ﺗﺎﻟﻒ ﺃﻭ ﺇﺻﺪﺍﺭﻩ ﻏﻴﺮ ﻣﺘﻮﺍﻓﻖ.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -401,7 +401,7 @@ free
 [Happyness]
 ﺍﻟﺴﻌﺎﺩﺓ
 [hard pause]
-Hard Pause
+ﺇﻳﻘﺎﻑ ﻣﺆﻗﺖ ﺗﺎﻡ
 [Harvest]
 ﺍﻟﺤﺼﺎﺩ
 [high priority]
@@ -545,7 +545,7 @@ test
 [Map Upload: Waiting for reply]
 ﺑﺎﻧﺘﻈﺎﺭ ﺭﺩ
 [mark map]
-Mark Map For Allies
+ﻭﺿﻊ ﻋﻼﻣﺔ ﻋﻠﻰ ﺍﻟﺨﺮﻳﻄﺔ ﻟﻠﺤﻠﻔﺎﺀ
 [market explanation 2]
 ﻣﻊ ﺍﻵﺧﺮﻳﻦ
 [market explanation]
@@ -559,7 +559,7 @@ meta-%0
 [Min required level:]
 ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ:
 [Minimum Level To Flag]
-ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﻟﻠﻌَﻠﻢ
+ﺃﺩﻧﻰ ﻣﺴﺘﻮﻯ ﻟﻠﻮﺣﺪﺍﺕ
 [Music volume]
 ﻣﺴﺘﻮﻯ ﺍﻟﻤﻮﺳﻴﻘﻰ
 [Mute]
@@ -615,7 +615,7 @@ meta-%0
 [On the spot]
 ﻫﻨﺎ
 [on unpress]
-ﻋﻨﺪ ﺭﻓﻊ ﺍﻟﻀﻐﻂ
+ﻋﻨﺪ ﺍﻟﺘﺮﻙ
 [open chat box]
 ﺍﻓﺘﺢ ﺻﻨﺪﻭﻕ ﺍﻟﻤﺤﺎﺩﺛﺔ
 [open load menu]
@@ -675,7 +675,7 @@ print screen
 [priority]
 ﺍﻷﻭﻟﻮﻳﺔ
 [Prune]
-ﺃﺟﺎﺹ
+ﺑﺮﻗﻮﻕ
 [quit the editor]
 ﺍﺧﺮﺝ ﻣﻦ ﺍﻟﻤﺤﺮﺭ
 [quit the game]
@@ -703,7 +703,7 @@ print screen
 [Register]
 ﺳﺠِّﻞ
 [remember unit]
-ﺗﺬﻛَّﺮ ﺍﻟﻮﺣﺪﺓ
+ﺣﻔﻆ ﺃﻋﺪﺍﺩ ﺍﻟﻮﺣﺪﺍﺕ
 [Remember YOG password localy]
 ﺗﺬﻛَّﺮ ﻛﻠﻤﺔ ﺍﻟﺴﺮ ﻣﺤﻠﻴًﺎ.
 [remove map]
@@ -849,7 +849,7 @@ shift-%0
 [show main menu]
 ﺃﻇﻬﺮ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﺮﺋﻴﺴﻴﺔ
 [skin]
-Display
+ﺍﻟﻌﺮﺽ
 [smoothing]
 ﺍﻟﺘﻨﻌﻴﻢ
 [sort by name]
@@ -887,7 +887,7 @@ Display
 [stone]
 ﺣﺠﺮ
 [stonewall explanation 2]
-ﻣﻨﻔﺬ
+ﺳﻠﺒﻲ
 [stonewall explanation]
 ﻋﻨﺼﺮ ﺩﻓﺎﻋﻲ
 [stonewall]
@@ -959,17 +959,17 @@ tab
 [the building is under attack]
 ﻳﺘﻌﺮﺽ ﺑﻨﺎء ﻟﻠﻬﺠﻮﻡ!
 [the clearingflag is finished]
-?? clearingflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ.
 [the clearingflag is under attack]
-?? clearingflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ ﻟﻠﻬﺠﻮﻡ.
 [the defencetower is finished]
 ﺗﻢ ﺑﻨﺎء ﺑﺮﺝ ﺩﻓﺎﻉ
 [the defencetower is under attack]
 ﺗﺘﻌﺮﺽ ﺩﻓﺎﻋﺎﺗﻚ ﻟﻠﻬﺠﻮﻡ!
 [the explorationflag is finished]
-?? explorationflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ.
 [the explorationflag is under attack]
-?? explorationflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ ﻟﻠﻬﺠﻮﻡ.
 [The game has not been finished]
 ﻟﻢ ﺗﻨﺘﻪِ ﺍﻟﻠﻌﺒﺔ
 [the games]
@@ -1017,15 +1017,15 @@ tab
 [the swimmingpool is under attack]
 ﺗﺘﻌﺮﺽ ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ ﻟﻠﻬﺠﻮﻡ!
 [the warflag is finished]
-?? warflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺤﺮﺏ.
 [the warflag is under attack]
-?? warflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻟﺤﺮﺏ ﻟﻠﻬﺠﻮﻡ.
 [time]
 ﺍﻟﻮﻗﺖ
 [to:]
 ﺇﻟﻰ:
 [toggle draw accessibility aids]
-ﺑﺪِّﻝ ﻭﺿﻊ ﻣﺴﺎﻋِﺪﺍﺕ ﺍﻹﺗﺎﺣﺔ
+ﺇﻇﻬﺎﺭ ﺃﺭﻗﺎﻡ ﺍﻟﻔﺮﻕ ﺃﻭ ﺇﺧﻔﺎﺅﻫﺎ
 [toggle draw information]
 ﺑﺪِّﻝ ﻭﺿﻊ ﺍﻟﻤﻌﻠﻮﻣﺎﺕ
 [toggle draw unit paths]
@@ -1055,7 +1055,7 @@ tab
 [tutorial]
 ﺍﻟﺘﺪﺭﻳﺐ
 [Uncontrolled]
-Uncontrolled
+ﺑﻼ ﺗﺤﻜﻢ
 [undo]
 ﺗﺮﺍﺟﻊ
 [uniform terrain]
@@ -1091,7 +1091,7 @@ Uncontrolled
 [Version]
 ﺍﻟﻨﺴﺨﺔ
 [view history]
-View History
+ﻋﺮﺽ ﺍﻟﺴﺠﻞ
 [Voice volume]
 ﻣﺴﺘﻮﻯ ﺍﻟﺼﻮﺕ
 [waiting for %0]
@@ -1204,3 +1204,29 @@ View History
 ﺗﺤﻮﻟﺖ ﻭﺣﺪﺗﻚ ﺇﻟﻰ ﻓﺮﻳﻖ %0
 [Your username was banned]
 ﺣُﻈﺮ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺍﻟﺨﺎﺹ ﺑﻚ. ﻳُﺮﺟﻰ ﺍﻟﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء ﻟﺘﻐﻴﻴﺮ ﻫﺬﺍ.
+[game speed]
+ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+[decrease game speed]
+ﺧﻔﺾ ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+[increase game speed]
+ﺯﻳﺎﺩﺓ ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+[maximum game speed]
+ﺍﻟﻘﺼﻮﻯ
+[multiplayer game speed]
+ﺍﻟﺴﺮﻋﺔ: 1x (ﻟﻌﺐ ﺟﻤﺎﻋﻲ)
+[game speed help]
+ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
+[AICortex-Description]
+Cortex - ﺫﻛﺎﺀ ﺍﺻﻄﻨﺎﻋﻲ ﺗﺠﺮﻳﺒﻲ ﺑﺜﻼﺙ ﻃﺒﻘﺎﺕ. ﻗﻴﺪ ﺍﻟﺘﻄﻮﻳﺮ.
+[ERROR_CANT_SAVE_CAMPAIGN]
+ﺗﻌﺬﺭ ﺣﻔﻆ ﺍﻟﺤﻤﻠﺔ. ﺗﺤﻘﻖ ﻣﻦ ﻭﺟﻮﺩ ﺍﻟﻤﺠﻠﺪ ﺍﻟﻮﺟﻬﺔ ﻭﺇﻣﻜﺎﻧﻴﺔ ﺍﻟﻜﺘﺎﺑﺔ ﻓﻴﻪ ﻭﺗﻮﻓﺮ ﻣﺴﺎﺣﺔ ﺧﺎﻟﻴﺔ.
+[AICortex]
+Cortex
+[Units still inside: %0]
+ﺑﺎﻟﺪﺍﺧﻞ: %0
+[Units still working: %0]
+ﻭﺣﺪﺍﺕ ﻻ ﺗﺰﺍﻝ ﺗﻌﻤﻞ: %0
+[automatic torus view]
+عرض الطارة تلقائيًا
+[toggle torus view]
+التبديل بين العرض ثنائي الأبعاد والطارة

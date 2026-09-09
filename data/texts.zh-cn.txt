@@ -27,7 +27,7 @@
 [%0's game]
 %0 的游戏
 [%0's team unit got converted to your team]
-%0 的单位入你麾下
+%0 队伍中的一个单位加入了你的队伍
 [abreaviation explanation A]
 A: 盟友
 [abreaviation explanation C]
@@ -119,11 +119,11 @@ Alt %0
 [backspace]
 后退
 [barracks explanation 2]
-兵营 lv2
+战斗技能等级
 [barracks explanation]
-兵营 lv1
+提高战士的
 [barracks]
-兵营 lv0
+兵营
 [beach size]
 海滩大小
 [Blocked Players]
@@ -191,11 +191,11 @@ caps lock
 [Clearing:]
 清除中:
 [clearingflag explanation 2]
-清除令旗 lv2
+
 [clearingflag explanation]
-清除令旗 lv1
+清除资源
 [clearingflag]
-清除令旗 lv0
+清除令旗
 [closed]
 已关闭
 [combined vision]
@@ -205,9 +205,9 @@ caps lock
 [compose]
 编写
 [Computing Fertility]
-计算力剩余
+正在计算肥沃度
 [concrete islands terrain]
-接合岛屿地形
+独立岛屿
 [connect]
 连线
 [connecting to game]
@@ -223,7 +223,7 @@ caps lock
 [Corn]
 小麦
 [crater density]
-破碎程度
+陨石坑数量
 [crater lakes terrain]
 破碎湖泊
 [create game]
@@ -243,15 +243,15 @@ ctrl - line
 [damage]
 伤害
 [Damaged Map]
-伤患地图
+受伤单位分布图
 [decrease units working]
 减少工作单位
 [Defeat Your Oppenents]
 消灭对手
 [defencetower explanation 2]
-单位或建筑物
+敌方单位和建筑
 [defencetower explanation]
-攻击附近敌人
+攻击附近的
 [defencetower]
 防御塔
 [Defense Map]
@@ -303,15 +303,15 @@ ctrl - line
 [equals]
 相当于
 [ERROR_CANT_LOAD_MAP]
-无法加载地图，因为文件已损坏或版本不兼容。
+无法载入地图：文件已损坏或版本不兼容。
 [escape]
 ESC 退出
 [explorationflag explanation 2]
-探索令旗 lv2
+
 [explorationflag explanation]
-探索令旗 lv1
+吸引探索者
 [explorationflag]
-探索令旗 lv0
+探索令旗
 [Explorer Ratio]
 探索者比例
 [Explorer]
@@ -363,7 +363,7 @@ f9
 [forbidden area]
 禁区
 [Free]
-自由
+健康
 [free]
 自由
 [from:]
@@ -411,11 +411,11 @@ home
 [home]
 家
 [hospital explanation 2]
-医院 lv2
+
 [hospital explanation]
-医院 lv1
+治疗单位
 [hospital]
-医院 lv0
+医院
 [host]
 建立游戏
 [hp]
@@ -433,11 +433,11 @@ HP
 [increase units working]
 增加工人
 [inn explanation 2]
-食堂 lv2
+
 [inn explanation]
-食堂 lv1
+为单位提供食物
 [inn]
-食堂 lv0
+食堂
 [insert]
 插入
 [inside]
@@ -545,9 +545,9 @@ zh-cn
 [mark map]
 为盟友标示地图
 [market explanation 2]
-和他人交易水果
+交换水果
 [market explanation]
-允许交易的资源
+与其他玩家
 [market]
 市场
 [medium priority]
@@ -557,7 +557,7 @@ meta %0
 [Min required level:]
 最小等级需求:
 [Minimum Level To Flag]
-令旗最小等级(lv)
+单位最低等级
 [Music volume]
 音量 (音乐)
 [Mute]
@@ -579,7 +579,7 @@ meta %0
 [No Objectives]
 没有游戏目标
 [no ressources growth areas]
-非能源成长地带
+资源禁止生长区
 [No]
 否
 [Not Enough Ratings]
@@ -609,11 +609,11 @@ numlock
 [old random terrain]
 古代随机地形
 [on press]
-高压
+按下时
 [On the spot]
 On the spot 焦点
 [on unpress]
-on unpress 松弛
+松开时
 [open chat box]
 打开聊天框
 [open load menu]
@@ -673,7 +673,7 @@ OpenGL
 [priority]
 优先
 [Prune]
-梅干
+李子
 [quit the editor]
 离开编辑器
 [quit the game]
@@ -683,9 +683,9 @@ OpenGL
 [quit]
 离开
 [racetrack explanation 2]
-你的单位的速度
+行走速度
 [racetrack explanation]
-增加行走速度
+提高单位的
 [racetrack]
 跑道
 [range]
@@ -701,7 +701,7 @@ OpenGL
 [Register]
 注册
 [remember unit]
-记录单位
+记住单位分配数量
 [Remember YOG password localy]
 记住密码
 [remove map]
@@ -715,7 +715,7 @@ OpenGL
 [repair]
 修复
 [repeat area]
-在相同地景的时间
+次重复相同地形
 [Repeat your password :]
 重复你的密码：
 [replay ended]
@@ -755,9 +755,9 @@ OpenGL
 [Save]
 储存
 [school explanation 2]
-你的工人的等级
+建筑技能等级
 [school explanation]
-升级建筑物
+提高工人的
 [school]
 学校
 [Script Areas]
@@ -885,11 +885,11 @@ V: 持键以传送讯息
 [stone]
 石头
 [stonewall explanation 2]
-石墙 lv2
+建筑
 [stonewall explanation]
-石墙 lv1
+用于被动防御的
 [stonewall]
-石墙 lv0
+石墙
 [submit rating]
 上传评价
 [svr hostname]
@@ -897,17 +897,17 @@ V: 持键以传送讯息
 [swamp terrain]
 沼泽
 [swarm explanation 2]
-孢子堆 lv2
+
 [swarm explanation]
-孢子堆 lv1
+生产新单位
 [swarm]
-孢子堆 lv0
+孢子堆
 [Swim]
 游泳
 [swimmingpool explanation 2]
-你的单位的速度
+游泳速度
 [swimmingpool explanation]
-增加游泳速度
+提高单位的
 [swimmingpool]
 游泳池
 [switch to adding areas]
@@ -1023,7 +1023,7 @@ tab
 [to:]
 前往:
 [toggle draw accessibility aids]
-显至最近支援
+显示或隐藏队伍编号
 [toggle draw information]
 显示资讯
 [toggle draw unit paths]
@@ -1101,11 +1101,11 @@ tab
 [Walk]
 行走
 [warflag explanation 2]
-战争令旗 lv2
+
 [warflag explanation]
-战争令旗 lv1
+吸引战士
 [warflag]
-战争令旗 lv0
+战争令旗
 [Warning, you need to reboot the game for changes to take effect]
 注意，你需要重新启动游戏以便更改
 [Warrior Ratio]
@@ -1121,7 +1121,7 @@ tab
 [water]
 水
 [Wheat]
-粮
+小麦
 [Won : you defeated your opponents]
 胜: 你打败了对手
 [Won : you have the most prestige]
@@ -1199,6 +1199,32 @@ Ysagoon 线上游戏
 [Your IP address was temporarily banned]
 你的IP地址暂时被屏蔽
 [Your unit got converted to %0's team]
-你的单位被 %0  转化为敌人
+你的单位加入了 %0 的队伍
 [Your username was banned]
 你的用户名被禁用
+[game speed]
+游戏速度
+[decrease game speed]
+降低游戏速度
+[increase game speed]
+提高游戏速度
+[maximum game speed]
+最快
+[multiplayer game speed]
+游戏速度：1x（多人游戏）
+[game speed help]
+仅限单人游戏和录像回放。多人游戏固定为1x速度。
+[AICortex-Description]
+Cortex - 实验性的三层人工智能，开发中。
+[ERROR_CANT_SAVE_CAMPAIGN]
+无法保存战役。请检查目标文件夹是否存在、是否可写，以及是否有可用空间。
+[AICortex]
+Cortex
+[Units still inside: %0]
+仍在里面：%0
+[Units still working: %0]
+仍在工作：%0
+[automatic torus view]
+自动环面视图
+[toggle torus view]
+切换 2D／环面视图

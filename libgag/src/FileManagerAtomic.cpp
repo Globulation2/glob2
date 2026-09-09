@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <FileManager.h>
 #include <BinaryStream.h>
+#include <BufferedFileStreamBackend.h>
 #include <atomic>
 #include <cerrno>
 #include <memory>
@@ -37,17 +38,18 @@ namespace GAGCore
 #endif
 		}
 
-		class CheckedFileBackend : public FileStreamBackend
+		class CheckedFileBackend : public BufferedFileStreamBackend
 		{
 		public:
-			explicit CheckedFileBackend(FILE *file) : FileStreamBackend(file) {}
-			void write(const void *data, size_t size) override
+			explicit CheckedFileBackend(FILE *file) : BufferedFileStreamBackend(file) {}
+			void writeBufferedData(const void *data, size_t size) override
 			{
 				if (fwrite(data, 1, size, fp) != size)
 					throw std::ios_base::failure("File write failed");
 			}
 			void flush() override
 			{
+				drain();
 				if (fflush(fp) != 0 || ferror(fp))
 					throw std::ios_base::failure("File flush failed");
 			}
@@ -58,10 +60,11 @@ namespace GAGCore
 			{
 				const long position = ftell(fp);
 				if (position < 0) throw std::ios_base::failure("File position failed");
-				return static_cast<size_t>(position);
+				return static_cast<size_t>(position) + bufferedSize();
 			}
 			void close()
 			{
+				flush();
 				FILE *file = fp;
 				fp = NULL;
 				if (fclose(file) != 0)
@@ -70,6 +73,7 @@ namespace GAGCore
 		private:
 			void seek(int offset, int origin)
 			{
+				drain();
 				if (fseek(fp, offset, origin) != 0)
 					throw std::ios_base::failure("File seek failed");
 			}
@@ -108,7 +112,6 @@ namespace GAGCore
 				owner.release();
 				BinaryOutputStream stream(backend);
 				writer(stream);
-				stream.flush();
 				backend->close();
 #ifdef WIN32
 				if (!MoveFileExA(temporary.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING))

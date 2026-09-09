@@ -59,7 +59,7 @@ namespace AIEcho
 			///checks for the conditions for the management order to execute at all. indeterminate means
 			///that its impossible to execute, false means wait some more and true means ready to execute
 			///For example, the ChangeFlagSize order requires that the building be in existence, and
-			///that its a flag.
+			///that it's a flag.
 			virtual boost::logic::tribool wait(Echo& echo)=0;
 
 			virtual bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);

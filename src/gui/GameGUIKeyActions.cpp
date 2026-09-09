@@ -12,6 +12,7 @@ namespace GameGUIKeyActions
 	void init()
 	{
 		table.add(DoNothing, "do nothing");
+		table.add(ToggleTorusView, "toggle torus view");
 		table.add(UpgradeBuilding, "upgrade building");
 		table.add(ShowMainMenu, "show main menu");
 		table.add(IncreaseUnitsWorking, "increase units working");

@@ -207,7 +207,7 @@ schreiben
 [Computing Fertility]
 Berechne Fruchtbarkeit der Böden.
 [concrete islands terrain]
-Befestigte Inseln
+Getrennte Inseln
 [connect]
 Verbinden
 [connecting to game]
@@ -243,7 +243,7 @@ Glob2-Mauszeiger
 [damage]
 Schaden
 [Damaged Map]
-Beschädigte Karte
+Verwundetenkarte
 [decrease units working]
 Arbeiter kündigen
 [Defeat Your Oppenents]
@@ -303,7 +303,7 @@ Beitreten
 [equals]
 entspricht
 [ERROR_CANT_LOAD_MAP]
-Die Karte konnte nicht geladen werden, da die Datei entweder beschädigt ist oder eine inkompatible Version hat.
+Die Karte konnte nicht geladen werden. Die Datei ist beschädigt oder hat eine inkompatible Version.
 [escape]
 Verlassen
 [explorationflag explanation 2]
@@ -351,7 +351,7 @@ F8
 [f9]
 F9
 [Fertility Map]
-Karte der Fruchtbarkeit des Bodens
+Fruchtbarkeitskarte
 [Flag Defaults]
 Flaggen Standards
 [flag settings explanation]
@@ -363,7 +363,7 @@ Nahrung
 [forbidden area]
 Verbotener Bereich
 [Free]
-Ok
+Gesund
 [free]
 frei
 [from:]
@@ -557,7 +557,7 @@ ALT-%0
 [Min required level:]
 Mindestlevel:
 [Minimum Level To Flag]
-Mindestlevel:
+Min. Einheitenstufe
 [Music volume]
 Musiklautstärke
 [Mute]
@@ -579,7 +579,7 @@ keine Taste
 [No Objectives]
 keine Anweisungen
 [no ressources growth areas]
-vergifteter Boden
+Kein Wachstum
 [No]
 Nein
 [Not Enough Ratings]
@@ -609,11 +609,11 @@ alte Inselzufallskarte
 [old random terrain]
 alte Zufallskarte
 [on press]
-Bei Taste
+Drücken
 [On the spot]
 Vor Ort
 [on unpress]
-Beim Loslassen
+Loslassen
 [open chat box]
 Öffne Chat
 [open load menu]
@@ -701,9 +701,9 @@ Kartenliste aktualisieren
 [Register a new YOG user with password]
 Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 [Register]
-Register
+Registrieren
 [remember unit]
-Arbeiterzahlen merken
+Einheitenzahlen merken
 [Remember YOG password localy]
 Passwort lokal speichern. (unsicher)
 [remove map]
@@ -717,13 +717,13 @@ Reparieren / Abbrechen
 [repair]
 Reparieren
 [repeat area]
-mal die selbe Landschaft
+mal dieselbe Landschaft
 [Repeat your password :]
 Wiederhole Dein Passwort
 [replay ended]
 Replay beendet
 [restore default shortcuts]
-Standardtastenkürzel wiederherstellen
+Standardkürzel wiederherstellen
 [return to editor]
 Zurück zum Editor
 [return to game]
@@ -945,7 +945,7 @@ sys req
 [tab]
 TAB
 [teams editor]
-Teams Editor
+Teameditor
 [Teams Fixed]
 feste Teams
 [teams]
@@ -959,17 +959,17 @@ Das Gebäude ist fertig
 [the building is under attack]
 Das Gebäude wird angegriffen
 [the clearingflag is finished]
-?? Rodungsflagge fertig ??
+Rodungsflagge fertig
 [the clearingflag is under attack]
-?? Rodungsflagge wird angegriffen ??
+Rodungsflagge wird angegriffen
 [the defencetower is finished]
 Der Panzerturm ist fertig
 [the defencetower is under attack]
 Ihre Befestigungen werden angegriffen
 [the explorationflag is finished]
-?? Entdeckerflagge fertig ??
+Entdeckerflagge fertig
 [the explorationflag is under attack]
-?? Entdeckerflagge wird angegriffen ??
+Entdeckerflagge wird angegriffen
 [The game has not been finished]
 Das Spiel wurde nicht abgeschlossen
 [the games]
@@ -1017,15 +1017,15 @@ Das Schwimmbecken ist fertig
 [the swimmingpool is under attack]
 Das Schwimmbecken wird angegriffen
 [the warflag is finished]
-?? Kriegsflagge fertig ??
+Kriegsflagge fertig
 [the warflag is under attack]
-?? Kriegsflagge wird angegriffen ??
+Kriegsflagge wird angegriffen
 [time]
 Zeit
 [to:]
 auf:
 [toggle draw accessibility aids]
-Zugänglichkeitshilfen einblenden
+Teamnummern ein-/ausblenden
 [toggle draw information]
 Informationen malen an/aus
 [toggle draw unit paths]
@@ -1157,7 +1157,7 @@ Der YOG Metaserver hat die Verbindung abgewiesen da dieser Benutzername schon re
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 Der YOG Metaserver hat die Verbindung abgewiesen da Dein Passwort falsch ist.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Der YOG Metaserver hat die Verbindung abgewiesen da Dein Benutzername noch nicht registriert ist. Wenn Du diesen Benutzernamen mit diesem Passwort registrieren willst aktiviere die Option "Neuen YOG Benutzer mit Passwort registrieren". Diese Option muss nur einmal aktiviert werden.
+Der YOG-Metaserver hat die Verbindung abgewiesen, weil für diesen Benutzernamen noch kein Passwort festgelegt ist. Um den Namen mit diesem Passwort zu registrieren, aktiviere vor dem Verbinden die Option „Neuen YOG-Benutzer mit Passwort registrieren“. Dies ist nur einmal nötig.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 Der YOG Metaserver hat die Verbindung abgewiesen da diese IP gesperrt wurde. Warte geduldig oder kontaktiere einen Admin um die Sperre aufzuheben.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1199,10 +1199,36 @@ Du hast gewonnen!
 [You where kicked from the game]
 Du wurdest aus dem Spiel geworfen!
 [Your %0 are under attack]
-Deine %0 werden angegriffen
+Dein %0 wird angegriffen
 [Your IP address was temporarily banned]
 Deine IP-Adresse wurde gesperrt. Sitze die sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
 [Your unit got converted to %0's team]
 Eine Deiner Einheiten wurde von %0 übernommen.
 [Your username was banned]
 Dein Benutzername wurde gesperrt. Sitze die Sperre aus oder wende Dich an einen Admin, wenn die Sperre unberechtigt war.
+[game speed]
+Spielgeschwindigkeit
+[decrease game speed]
+Spielgeschwindigkeit verringern
+[increase game speed]
+Spielgeschwindigkeit erhöhen
+[maximum game speed]
+Maximum
+[multiplayer game speed]
+Tempo: 1x (Mehrspieler)
+[game speed help]
+Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
+[AICortex-Description]
+Cortex - Experimentelle KI mit drei Ebenen. In Entwicklung.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Die Kampagne konnte nicht gespeichert werden. Prüfe, ob der Zielordner existiert, beschreibbar ist und genügend Speicherplatz frei ist.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Noch drin: %0
+[Units still working: %0]
+Arbeiten noch: %0
+[automatic torus view]
+Automatische Torusansicht
+[toggle torus view]
+2D-/Torusansicht umschalten

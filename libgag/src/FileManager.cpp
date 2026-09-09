@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <FileManager.h>
+#include <BufferedFileStreamBackend.h>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
@@ -69,12 +70,14 @@ namespace GAGCore
 	FileManager::FileManager(const std::string gameName)
 	{
 		#ifndef WIN32
-		const char* homeDir = getenv("HOME");
-		if (homeDir && *homeDir)
+		const char *experimentDir = getenv("GLOB2_USER_DIR");
+		const char *home = getenv("HOME");
+		const std::string homeDir = home ? home : "";
+		if ((experimentDir && *experimentDir) || !homeDir.empty())
 		{
 			std::string gameLocal(homeDir);
-			gameLocal += "/.";
-			gameLocal += gameName;
+			if (experimentDir && *experimentDir) gameLocal = experimentDir;
+			else { gameLocal += "/."; gameLocal += gameName; }
 			mkdir(gameLocal.c_str(), S_IRWXU);
 			addDir(gameLocal.c_str());
 		}
@@ -198,7 +201,7 @@ namespace GAGCore
 		{
 			FILE *fp = fopen(filename.c_str(), "wb");
 			if (fp)
-				return new FileStreamBackend(fp);
+				return new BufferedFileStreamBackend(fp);
 			return new FileStreamBackend(NULL);
 		}
 		for (size_t i = 0; i < dirList.size(); ++i)
@@ -209,7 +212,7 @@ namespace GAGCore
 
 			FILE *fp = fopen(path.c_str(), "wb");
 			if (fp)
-				return new FileStreamBackend(fp);
+				return new BufferedFileStreamBackend(fp);
 		}
 
 		return new FileStreamBackend(NULL);

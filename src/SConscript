@@ -152,6 +152,8 @@ GameUtilities.cpp
 Glob2.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
+FrontendTheme.cpp
+MenuColony.cpp
 GlobalContainer.cpp
 GlobalContainerArgs.cpp
 GUIGlob2FileList.cpp
@@ -265,6 +267,9 @@ game/entities/Resources.cpp
 ScriptEditorScreen.cpp
 Sector.cpp
 Settings.cpp
+TorusView.cpp
+TorusViewRender.cpp
+gui/GameGUITorus.cpp
 SettingsScreen.cpp
 SettingsScreenGeneral.cpp
 SettingsScreenBuildings.cpp
@@ -464,6 +469,28 @@ source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+# Optional integration executable; normal game/server builds do not build it.
+if not env['server']:
+    render_test = local.Program("torus-render-test",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("TorusRenderIntegrationTest", "#test/TorusRenderIntegrationTest.cpp")])
+    local.Alias("torus-render-test", render_test)
+    render_benchmark = local.Program("torus-render-benchmark",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("TorusRenderBenchmark", "#test/TorusRenderBenchmark.cpp")])
+    local.Alias("torus-render-benchmark", render_benchmark)
+
+if not env['server']:
+    # Compile with local, not stats_env, to avoid rebuilding shared objects under a second environment.
+    stats_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    stats_sources += [source for source in source_files if not source.endswith('.cpp')]
+    stats_sources += local.Object('TeamStatsSaveHarness.o', '#test/TeamStatsSaveHarness.cpp')
+    stats_env = local.Clone()
+    stats_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    stats_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    stats_test = stats_env.Program('TeamStatsSaveHarness', stats_sources)
+    local.Alias('team-stats-save-test', stats_test)
+
 # Integration harness: reuse the client objects with a test entry point.
 # Explicit target only; the server and normal client build remain unchanged.
 if not env['server']:
@@ -507,6 +534,17 @@ if not env['server']:
     savegame_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
+
+    # Use the real renderer and settings handlers. Access relaxation is confined
+    # to the test translation unit; production objects retain their normal flags.
+    render_env = savegame_env.Clone()
+    render_env['CXXFLAGS'] = local.Split(local['CXXFLAGS']) + ['-fno-access-control']
+    render_sources = [obj for obj in savegame_sources
+                      if str(obj).split('/')[-1] not in ('SavegameSafetyHarness.o', 'CreditScreen.o')]
+    render_sources += render_env.Object('MapRenderResizeHarness.o', '#test/MapRenderResizeHarness.cpp')
+    render_test = savegame_env.Program('MapRenderResizeHarness', render_sources)
+    local.Alias('map-render-resize-test', render_test)
+
 
 if not env['server']:
     # Compile with local, not trapped_env, to avoid rebuilding shared objects under a second environment.
@@ -557,9 +595,42 @@ if not env['server']:
     regression_test = local.Program('EnteringUnitSaveHarness', regression_sources)
     local.Alias('entering-unit-save-test', regression_test)
 
+if not env['server']:
+    buffer_sources = ['#test/BufferedFileStreamHarness.cpp', '../libgag/src/libgag.a']
+    buffer_test = local.Program('BufferedFileStreamHarness', buffer_sources)
+    local.Alias('buffered-file-test', buffer_test)
+
 # Real engine regression for immobile units and weighted building gradients, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
     regression_sources += local.Object('ImmobileUnitGradientHarness.o', '#test/ImmobileUnitGradientHarness.cpp')
     regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
     local.Alias('immobile-unit-gradient-test', regression_test)
+
+# Real engine regression for resource-fetch target staleness, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
+    regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
+    local.Alias('resource-fetch-target-test', regression_test)
+if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
+    entering_draw_sources = [source for source in source_files if source != 'Glob2.cpp']
+    entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')
+    entering_draw_test = local.Program('EnteringUnitDrawHarness', entering_draw_sources)
+    local.Alias('entering-unit-draw-test', entering_draw_test)
+if not env['server']:
+    highres_sources = [source for source in source_files if source != 'Glob2.cpp']
+    highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
+    highres_test = local.Program('HighResolutionIntegrationHarness', highres_sources)
+    local.Alias('highres-integration-test', highres_test)
+if not env['server'] and 'menu-colony-harness' in COMMAND_LINE_TARGETS:
+    menu_sources = [source for source in source_files if source != 'Glob2.cpp']
+    menu_sources += local.Object('MenuColonyHarness.o', '#tools/MenuColonyHarness.cpp')
+    menu_test = local.Program('MenuColonyHarness', menu_sources)
+    env.Alias('menu-colony-harness', menu_test)
+
+# Exercise production hiring against a bucket that reorders during subscription.
+if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
+    hiring_sources = [source for source in source_files if source != 'Glob2.cpp']
+    hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
+    local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))

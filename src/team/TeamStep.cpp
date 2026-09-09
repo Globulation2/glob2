@@ -10,6 +10,62 @@
 #include "Team.h"
 #include "Unit.h"
 
+namespace
+{
+// Use the same exit rules as movement, without moving or unsubscribing a unit.
+bool hasExit(Building* building, const UnitType* type)
+{
+	int x, y, dx, dy;
+	return type->performance[FLY]
+		? building->findAirExit(&x, &y, &dx, &dy)
+		: building->findGroundExit(&x, &y, &dx, &dy, type->performance[SWIM]);
+}
+
+bool allRemainingUnitsTrapped(Team& team)
+{
+	bool foundUnit = false;
+	bool freeUnitSlot = false;
+	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+	{
+		Unit* unit = team.myUnits[i];
+		if (!unit) { freeUnitSlot = true; continue; }
+		foundUnit = true;
+		// Active service and normal entry/exit are not a loss of agency.
+		if (unit->displacement != Unit::DIS_EXITING_BUILDING
+			|| unit->movement != Unit::MOV_INSIDE || !unit->attachedBuilding)
+			return false;
+		int x, y, dx, dy;
+		if (unit->performance[FLY]
+			? unit->attachedBuilding->findAirExit(&x, &y, &dx, &dy)
+			: unit->attachedBuilding->findGroundExit(&x, &y, &dx, &dy, unit->performance[SWIM]))
+			return false;
+	}
+	if (!foundUnit) return false; // Keep the existing zero-unit rule.
+
+	// An active ally may clear an exit. Do not attempt a reachability proof.
+	for (int i = 0; i < Team::MAX_COUNT; ++i)
+	{
+		Team* ally = team.game->teams[i];
+		if (ally && ally != &team && (team.allies & ally->me)
+			&& ally->isAlive && ally->playersMask != 0)
+			return false;
+	}
+
+	if (freeUnitSlot)
+		for (Building* swarm : team.swarms)
+		{
+			if (swarm->resources[CORN] < swarm->type->resourceForOneUnit
+				&& swarm->productionTimeout >= 0)
+				continue;
+			// Ratios can still be changed by the player, including from zero.
+			for (int type = 0; type < NB_UNIT_TYPE; ++type)
+				if (hasExit(swarm, team.race.getUnitType(type, 0)))
+					return false;
+		}
+	return true;
+}
+}
+
 bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 {
 	if(lhs->priority != rhs->priority)
@@ -91,26 +147,24 @@ void Team::updateAllBuildingTasks()
 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
 	{
 		std::sort(i->second.begin(), i->second.end(), Team::buildingHasHigherPriority);
-		bool cont=true;
-		std::vector<bool> foundPer(i->second.size(), true);
-		while(cont)
+		// Every subscribe* call re-registers its own building, and one that moves
+		// a unit between buildings re-registers those too, so this bucket is
+		// reordered and resized while it is being walked. Keep "hired last round,
+		// so ask again" attached to the building instead of to a position in a
+		// vector that does not hold still.
+		std::vector<Building*> pending(i->second.begin(), i->second.end());
+		while(!pending.empty())
 		{
-			bool found=false;
-			for(unsigned j=0; j<(i->second.size()); ++j)
+			std::vector<Building*> hiring;
+			for(std::vector<Building*>::iterator b=pending.begin(); b!=pending.end(); ++b)
 			{
-				if(foundPer[j])
-				{
-					bool thisFound=false;
-					if(i->second[j]->type->isVirtual)
-						thisFound |= (i->second)[j]->subscribeForFlagingStep();
-					else
-						thisFound |= (i->second)[j]->subscribeToBringResourcesStep();
-					found |= thisFound;
-					foundPer[j] = thisFound;
-				}
+				bool thisFound = (*b)->type->isVirtual
+					? (*b)->subscribeForFlagingStep()
+					: (*b)->subscribeToBringResourcesStep();
+				if(thisFound)
+					hiring.push_back(*b);
 			}
-			if(!found)
-				cont = false;
+			pending.swap(hiring);
 		}
 	}
 }
@@ -143,7 +197,7 @@ void Team::syncStep(void)
 			{
 				// Sim must not read GameGUI state. Route the selection
 				// clear through a GUI hook (see GameGUI::onUnitDestroyed).
-				game->gui->onUnitDestroyed(u);
+				if (game->gui) game->gui->onUnitDestroyed(u);
 				delete u;
 				myUnits[i] = NULL;
 			}
@@ -198,7 +252,7 @@ void Team::syncStep(void)
 
 		// Sim must not read GameGUI state. Route the selection
 		// clear through a GUI hook (see GameGUI::onBuildingDestroyed).
-		game->gui->onBuildingDestroyed(building);
+		if (game->gui) game->gui->onBuildingDestroyed(building);
 
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 		delete building;
@@ -242,6 +296,7 @@ void Team::syncStep(void)
 		(*it)->turretStep(game->stepCounter);
 
 	bool isDying= (playersMask==0)
+		|| allRemainingUnitsTrapped(*this)
 		|| (!isEnoughFoodInSwarm && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
 	{

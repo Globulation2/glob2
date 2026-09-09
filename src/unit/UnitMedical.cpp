@@ -183,12 +183,7 @@ void Unit::handleMedical(void)
 		}
 	}
 
-	// Indoor services suspend hunger only while they are actually in progress.
-	// A unit whose exit is blocked must not remain immortal after service ends.
-	const bool waitingInside = displacement==DIS_EXITING_BUILDING
-		&& movement==MOV_INSIDE && attachedBuilding;
-	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE)
-		|| (displacement==DIS_EXITING_BUILDING && !waitingInside))
+	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE) || (displacement==DIS_EXITING_BUILDING))
 		return;
 
 	if (verbose)
@@ -197,15 +192,11 @@ void Unit::handleMedical(void)
 	if (hungry<=0)
 		hp--;
 
-	// Keep the current indoor subscription until exit succeeds or the unit dies.
-	if (!waitingInside)
-	{
-		medical=MED_FREE;
-		if (isUnitHungry())
-			medical=MED_HUNGRY;
-		else if (hp<=trigHP)
-			medical=MED_DAMAGED;
-	}
+	medical=MED_FREE;
+	if (isUnitHungry())
+		medical=MED_HUNGRY;
+	else if (hp<=trigHP)
+		medical=MED_DAMAGED;
 
 	if (hp<UNIT_HP_DEATH_THRESHOLD)
 	{
@@ -214,10 +205,9 @@ void Unit::handleMedical(void)
 			// disconnect from building
 			if (attachedBuilding)
 			{
-				assert(waitingInside || ((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING)));
+				assert((displacement!=DIS_ENTERING_BUILDING) && (displacement!=DIS_INSIDE) && (displacement!=DIS_EXITING_BUILDING));
 				attachedBuilding->removeUnitFromWorking(this);
 				attachedBuilding->removeUnitFromInside(this);
-				if (waitingInside) attachedBuilding->updateConstructionState();
 				attachedBuilding=NULL;
 				ownExchangeBuilding=NULL;
 			}
@@ -227,22 +217,19 @@ void Unit::handleMedical(void)
 			validTarget=false;
 
 			// remove from map
-			if (!waitingInside)
-			{
-				if (performance[FLY])
-					owner->map->setAirUnit(posX, posY, NOGUID);
-				else
-					owner->map->setGroundUnit(posX, posY, NOGUID);
-			}
+			if (performance[FLY])
+				owner->map->setAirUnit(posX, posY, NOGUID);
+			else
+				owner->map->setGroundUnit(posX, posY, NOGUID);
 
 			if (previousClearingArea)
 			{
 				owner->map->setClearingAreaUnclaimed(previousClearingArea->x, previousClearingArea->y, owner->teamNumber);
 			}
-			if (!waitingInside) owner->map->clearImmobileUnit(posX, posY);
+			owner->map->clearImmobileUnit(posX, posY);
 
 			// generate death animation (no-op in headless mode)
-			if (!waitingInside) owner->game->animations->onUnitDeath(*owner->map, posX, posY, owner);
+			owner->game->animations->onUnitDeath(*owner->map, posX, posY, owner);
 		}
 		isDead = true;
 	}

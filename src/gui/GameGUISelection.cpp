@@ -220,12 +220,12 @@ void GameGUI::centerViewportOnSelection(void)
 		int oldViewportX = viewportX;
 		int oldViewportY = viewportY;
 
-		viewportX = posX - ((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
-		viewportY = posY - ((globalContainer->gfx->getH())>>6);
+		viewportX = posX - int(camera.visibleW()/64);
+		viewportY = posY - int(camera.visibleH()/64);
 		viewportX = viewportX & game.map.getMaskW();
 		viewportY = viewportY & game.map.getMaskH();
 
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 }
 

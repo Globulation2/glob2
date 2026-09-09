@@ -213,7 +213,7 @@ stel samen
 [Computing Fertility]
 Vruchtbaarheid berekenen...
 [concrete islands terrain]
-Rivieren
+Afzonderlijke eilanden
 [connect]
 Verbinden
 [connecting to game]
@@ -227,7 +227,7 @@ Speel verder
 [control %0]
 Ctrl-%0
 [Corn]
-Graan
+Tarwe
 [crater density]
 Krater dichtheid
 [crater lakes terrain]
@@ -243,15 +243,15 @@ Ctrl-lijn
 [current speed]
 Huidige snelheid
 [custom game]
-Nieuw Spel
+Aangepast spel
 [customcur]
 Alternatieve cursor
 [damage]
 Schade
 [Damaged Map]
-Beschadigd
+Gewondenkaart
 [decrease units working]
-Verminder aantal werkende eenheden
+Minder eenheden laten werken
 [Defeat Your Oppenents]
 Versla je vijanden
 [defencetower explanation 2]
@@ -301,7 +301,7 @@ Bewerken
 [editing map]
 Speelveld bewerken
 [editor shortcuts]
-toets-instellingen
+Kaarteditor
 [editor]
 Bewerk speelvelden
 [end]
@@ -315,7 +315,7 @@ Enter
 [equals]
 is gelijk aan
 [ERROR_CANT_LOAD_MAP]
-De kaart kon niet worden geladen omdat het bestand beschadigd is of een niet-ondersteunde versie heeft.
+De kaart kon niet worden geladen: het bestand is beschadigd of heeft een ongeschikte versie.
 [escape]
 Esc
 [explorationflag explanation 2]
@@ -375,7 +375,7 @@ Voedsel
 [forbidden area]
 Verboden zone
 [Free]
-Ok
+Gezond
 [free]
 vrij
 [from:]
@@ -387,7 +387,7 @@ Volledig Scherm
 [game full]
 Spel is vol
 [game shortcuts]
-Speltoetsen
+Spel
 [Game]
 Spel
 [general settings]
@@ -577,7 +577,7 @@ Meta-%0
 [Min required level:]
 Minimaal vereist niveau:
 [Minimum Level To Flag]
-Minimaal vereist niveau:
+Min. eenheidsniveau
 [Music volume]
 Volume (muziek)
 [Mute]
@@ -631,11 +631,11 @@ Oude eilanden
 [old random terrain]
 Oud willekeurig terrein
 [on press]
-Bij indrukken
+Indrukken
 [On the spot]
 Hier
 [on unpress]
-Bij opheffen
+Loslaten
 [open chat box]
 Open chatbox
 [open load menu]
@@ -725,7 +725,7 @@ Registreer nieuwe gebruiker met wachtwoord (onveilig)
 [Register]
 Registreer
 [remember unit]
-Onthoud eenheid
+Onthoud eenheidsaantal
 [Remember YOG password localy]
 Onthoud wachtwoord (onveilig)
 [remove map]
@@ -983,17 +983,17 @@ Het gebouw is voltooid
 [the building is under attack]
 Het gebouw wordt aangevallen
 [the clearingflag is finished]
-?? De ontruimingsvlag is klaar ??
+De ontruimingsvlag is klaar
 [the clearingflag is under attack]
-?? De ontruimingsvlag wordt aangevallen ??
+De ontruimingsvlag wordt aangevallen
 [the defencetower is finished]
 De toren is voltooid
 [the defencetower is under attack]
 Je defensie ligt onder vuur
 [the explorationflag is finished]
-?? De verkenningsvlag is klaar ??
+De verkenningsvlag is klaar
 [the explorationflag is under attack]
-?? De verkenningsvlag wordt aangevallen ??
+De verkenningsvlag wordt aangevallen
 [The game has not been finished]
 Het spel is nog niet afgelopen
 [the games]
@@ -1041,19 +1041,19 @@ Het zwembad is voltooid
 [the swimmingpool is under attack]
 Het zwembad wordt aangevallen
 [the warflag is finished]
-?? De oorlogsvlag is klaar ??
+De oorlogsvlag is klaar
 [the warflag is under attack]
-?? De oorlogsvlag wordt aangevallen ??
+De oorlogsvlag wordt aangevallen
 [time]
 Tijd
 [to:]
 aan:
 [toggle draw accessibility aids]
-Tekenhulpmiddelen aan/uitschakelen
+Teamnummers aan/uit
 [toggle draw information]
 Tekeninformatie aan/uitschakelen
 [toggle draw unit paths]
-Paden van eenheden aan/uitschakelen
+Eenheidspaden aan/uit
 [toggle menu screen]
 Menu scherm aan/uitschakelen
 [toggle recording voice]
@@ -1147,9 +1147,9 @@ Speler:
 [water]
 Water
 [Wheat]
-Graan
+Tarwe
 [wheat]
-graan
+tarwe
 [Won : you defeated your opponents]
 Gewonnen: je hebt je tegenstanders verslagen
 [Won : you have the most prestige]
@@ -1223,10 +1223,36 @@ Je hebt gewonnen!
 [You where kicked from the game]
 Je werd uit het spel geschopt door de host!
 [Your %0 are under attack]
-Je %0 worden aangevallen
+Je %0 wordt aangevallen
 [Your IP address was temporarily banned]
 Dit IP-adres werd tijdelijk verbannen. Gelieve te wachten tot dit IP-adres weer toegestaan is of neem contact op met de beheerders.
 [Your unit got converted to %0's team]
 Een van jouw globs is overgelopen naar %0's team
 [Your username was banned]
 Uw username werd verbannen. Neem contact op met de beheerders om dit te veranderen.
+[game speed]
+Spelsnelheid
+[decrease game speed]
+Spelsnelheid verlagen
+[increase game speed]
+Spelsnelheid verhogen
+[maximum game speed]
+Maximaal
+[multiplayer game speed]
+Snelheid: 1x (multiplayer)
+[game speed help]
+Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
+[AICortex-Description]
+Cortex - Experimentele AI met drie lagen. In ontwikkeling.
+[ERROR_CANT_SAVE_CAMPAIGN]
+De campagne kon niet worden opgeslagen. Controleer of de doelmap bestaat, beschrijfbaar is en voldoende vrije ruimte heeft.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Nog binnen: %0
+[Units still working: %0]
+Nog aan het werk: %0
+[automatic torus view]
+Automatische torusweergave
+[toggle torus view]
+Wissel tussen 2D- en torusweergave

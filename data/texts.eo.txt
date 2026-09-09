@@ -207,7 +207,7 @@ Skripton Kompili
 [Computing Fertility]
 Kalkulante la Fekundecon...
 [concrete islands terrain]
-Konkretinsuloj
+Apartaj insuloj
 [connect]
 Kontakti
 [connecting to game]
@@ -243,15 +243,15 @@ Speciala Montrilo
 [damage]
 Difekto
 [Damaged Map]
-Karto de Difekto
+Mapo de vunditoj
 [decrease units working]
 Malpliigi je globuloj laborantaj
 [Defeat Your Oppenents]
 Venku via(j)n kontraŭano(j)n
 [defencetower explanation 2]
-globulojn aŭ konstruaĵojn de kontraŭanoj
+globulojn kaj konstruaĵojn
 [defencetower explanation]
-Tiu konstruaĵo atakas proksimajn
+Atakas apudajn malamikajn
 [defencetower]
 Defendturo
 [Defense Map]
@@ -289,7 +289,7 @@ Redakti Karton
 [editing map]
 Redaktante Karton
 [editor shortcuts]
-Taskklavoj en Redaktilo
+Redaktilo
 [editor]
 Redaktilo
 [end]
@@ -303,7 +303,7 @@ enigklavo de numerklavaro
 [equals]
 egalas je
 [ERROR_CANT_LOAD_MAP]
-La mapo ne povis esti ŝargita, ĉar la dosiero estas difektita aŭ havas malkongruan version.
+Ne eblis ŝargi la mapon: la dosiero estas difektita aŭ havas nekongruan version.
 [escape]
 eskapklavo
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ Nutraĵo
 [forbidden area]
 Malpermesata areo
 [Free]
-sana
+sanaj
 [free]
 libera
 [from:]
@@ -375,7 +375,7 @@ Plenekrana
 [game full]
 La ludo jam estas plena!
 [game shortcuts]
-Enludaj Taskklavoj
+Ludo
 [Game]
 Ludo
 [general settings]
@@ -559,7 +559,7 @@ metaklavo-%0
 [Min required level:]
 Minimuma bezonata nivelo:
 [Minimum Level To Flag]
-Minimuma nivelo de markilo
+Min. globulnivelo
 [Music volume]
 Laŭteco de Muziko
 [Mute]
@@ -611,11 +611,11 @@ Insuloj, Hazarde
 [old random terrain]
 Tereno, Hazarde
 [on press]
-Kiam Premita
+Premo
 [On the spot]
 Ĉi tie
 [on unpress]
-Kiam Malpremita
+Malpremo
 [open chat box]
 Malfermi Babilkadron
 [open load menu]
@@ -703,7 +703,7 @@ Refreŝigi Kartliston
 [Register]
 Enskribi
 [remember unit]
-Memori Globulojn
+Memori unuokvantojn
 [Remember YOG password localy]
 Memori la pasvorton enloke.
 [remove map]
@@ -757,9 +757,9 @@ Konservi Skripton
 [Save]
 Konservi
 [school explanation 2]
-konstrunivelon de viaj laboristoj
+de viaj laboristoj
 [school explanation]
-Tiu konstruaĵo plibonigas la
+Plibonigas la konstrunivelon
 [school]
 Lernejo
 [Script Areas]
@@ -815,7 +815,7 @@ Elekti je metado de Viŝmarkilo
 [select place explorationflag]
 Elekti je metado de Esplormarkilo
 [select place forbidden area]
-Elekti je metado de Malpermesata areo
+Meti malpermesatan areon
 [select place guard area]
 Elekti je metado de Defendata areo
 [select place warflag]
@@ -959,17 +959,17 @@ La konstruaĵo ĵus finiĝis.
 [the building is under attack]
 La konstruaĵo estas atakata!
 [the clearingflag is finished]
-La viŝmarkilo ĵus finiĝis.
+La viŝmarkilo estas starigita.
 [the clearingflag is under attack]
-?? La viŝmarkilo estas atakata! ??
+La viŝmarkilo estas atakata!
 [the defencetower is finished]
 La defendturo ĵus finiĝis.
 [the defencetower is under attack]
 La defendturo estas atakata!
 [the explorationflag is finished]
-?? La esplormarkilo ĵus finiĝis. ??
+La esplormarkilo estas starigita.
 [the explorationflag is under attack]
-?? La esplormarkilo estas atakata! ??
+La esplormarkilo estas atakata!
 [The game has not been finished]
 La ludo jam ne finiĝis.
 [the games]
@@ -1017,15 +1017,15 @@ La naĝejo ĵus finiĝis.
 [the swimmingpool is under attack]
 La naĝejo estas atakata!
 [the warflag is finished]
-?? La militmarkilo ĵus finiĝis. ??
+La militmarkilo estas starigita.
 [the warflag is under attack]
-?? La militmarkilo estas atakata! ??
+La militmarkilo estas atakata!
 [time]
 Tempo
 [to:]
 al:
 [toggle draw accessibility aids]
-Montri/kaŝi alireblecasistojn
+Montri/kaŝi teamnumerojn
 [toggle draw information]
 Montri/kaŝi informaĵon
 [toggle draw unit paths]
@@ -1155,7 +1155,7 @@ La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo jam estas enskrib
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 La YOG-superservilo malakceptis la konekton, ĉar la pasvorto enigita estis malĝusta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo jam ne havas pasvorton. Vi eble volus enskribi vian uzulnomon kun tiun pasvorton. Do, antaŭ rekontakti, aktivigu la elektaĵon na "Enskribi" (aŭ na "Enskribi novan YOG-uzulon kun pasvorton"). Vi nur unufoje bezonas aktivigi ĝin.
+La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo ankoraŭ ne havas pasvorton. Por registri la uzulnomon kun ĉi tiu pasvorto, aktivigu la elekton „Registri novan YOG-uzulon kun pasvorto“ antaŭ ol konektiĝi. Necesas fari tion nur unufoje.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
 La YOG-superservilo malakceptis la konekton, ĉar tiu IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus aŭ kontakti la administristojn.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1197,10 +1197,36 @@ Vi gajnis!
 [You where kicked from the game]
 Vi ĵetiĝis el la ludo.
 [Your %0 are under attack]
-Viaj %0 estas atakataj!
+Via %0 estas atakata!
 [Your IP address was temporarily banned]
 Via IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus aŭ kontakti la administristojn.
 [Your unit got converted to %0's team]
 Teamo %0 konvertigis globulon de vi al sia!
 [Your username was banned]
 Via uzulnomo estas malpermesata. Bv. kontakti la administristojn.
+[game speed]
+Ludrapido
+[decrease game speed]
+Malpliigi la ludrapidon
+[increase game speed]
+Pliigi la ludrapidon
+[maximum game speed]
+Maksimuma
+[multiplayer game speed]
+Rapido: 1x (plurludanta)
+[game speed help]
+Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
+[AICortex-Description]
+Cortex - Eksperimenta tritavola artefarita intelekto. Ankoraŭ evoluigata.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Ne eblis konservi la kampanjon. Kontrolu, ke la cela dosierujo ekzistas, estas skribebla kaj havas liberan spacon.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Interne: %0
+[Units still working: %0]
+Ankoraŭ laborantaj: %0
+[automatic torus view]
+Aŭtomata tora vido
+[toggle torus view]
+Ŝalti inter 2D kaj tora vido
