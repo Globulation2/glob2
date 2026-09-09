@@ -121,6 +121,114 @@ int main()
     SDL_setenv("SDL_AUDIODRIVER", "dummy", 1);
     GAGCore::GraphicContext context(800, 600, 0, "Screen lifecycle regression");
     GAGCore::DrawableSurface surface(800, 600);
+    {
+        struct LayoutProbe : Screen {
+            int geometry = 0;
+            void onAction(Widget*, Action, int, int) override {}
+            void updateLayout() override { geometry = getW(); }
+            void onSDLEvent(SDL_Event*) override {
+                require(geometry == getW(), "Input uses refreshed layout before paint");
+            }
+            void paint() override {
+                require(geometry == getW(), "Paint uses refreshed layout");
+            }
+        } probe;
+        probe.beginExecution(&surface);
+        SDL_Event tap{}; tap.type = SDL_MOUSEBUTTONDOWN;
+        probe.dispatchEvents(&tap);
+        probe.geometry = 0;
+        probe.dispatchPaint();
+        probe.endExecute(0);
+        probe.finishExecution();
+
+        struct Dialog : OverlayScreen {
+            int inputX = -1, inputY = -1;
+            Dialog(GAGCore::GraphicContext* parent, unsigned w, unsigned h)
+                : OverlayScreen(parent, w, h) {}
+            void onAction(Widget*, Action, int, int) override {}
+            void onSDLEvent(SDL_Event* event) override {
+                if (event->type == SDL_MOUSEBUTTONDOWN) {
+                    inputX = event->button.x; inputY = event->button.y;
+                }
+            }
+            void paint() override {}
+        } dialog(&context, 240, 160);
+        dialog.decX = 900; dialog.decY = 700;
+        tap.button.x = 570; tap.button.y = 450;
+        dialog.translateAndProcessEvent(&tap);
+        require(dialog.decX == 560 && dialog.decY == 440 &&
+                dialog.inputX == 10 && dialog.inputY == 10,
+                "Embedded dialog clamps before translating the first input");
+        dialog.decX = 900; dialog.decY = 700;
+        dialog.dispatchPaint();
+        require(dialog.decX == 560 && dialog.decY == 440,
+                "Embedded dialog paint uses the same bounds as input");
+        for (auto [w, h] : {std::pair{320,568}, {568,320}, {360,640}, {640,360}, {768,1024}}) {
+            dialog.viewportResized(800, 600, w, h);
+            require(dialog.decX == (w-240)/2 && dialog.decY == (h-160)/2,
+                    "Host resize retains centered dialogs in phone and tablet orientations");
+        }
+        Dialog oversized(&context, 900, 700);
+        require(oversized.decX == 0 && oversized.decY == 0,
+                "Oversized dialog construction cannot underflow unsigned coordinates");
+        oversized.viewportResized(800, 600, 320, 568);
+        require(oversized.decX == 0 && oversized.decY == 0,
+                "Oversized dialog keeps its origin reachable after rotation");
+    }
+
+    {
+        struct LifecycleScreen : Screen {
+            std::vector<Uint32> ticks;
+            int draws=0, actions=0, cancellations=0;
+            bool held=false;
+            void onAction(Widget*,Action,int,int) override {}
+            void updateExecution(Uint32 tick) override { ticks.push_back(tick); if(held) ++actions; }
+            void drawExecution() override { ++draws; }
+            void handleExecutionEvent(SDL_Event event) override { if(event.type==SDL_KEYDOWN) held=true; }
+            void cancelExecutionInput() override { held=false; ++cancellations; }
+            Uint32 executionDelay(Uint32 now,Uint32) override { return now-ticks.back(); }
+        };
+        ScreenStack lifecycle(surface);
+        auto owned=std::make_unique<LifecycleScreen>();auto* probe=owned.get();
+        lifecycle.push(std::move(owned));
+        SDL_Event key{};key.type=SDL_KEYDOWN;
+        SDL_Event background{};background.type=SDL_APP_WILLENTERBACKGROUND;
+        SDL_Event foreground{};foreground.type=SDL_APP_DIDENTERFOREGROUND;
+        lifecycle.frame(1000,{key});
+        lifecycle.frame(1040,{background});
+        lifecycle.frame(90000,{key});
+        require(probe->ticks.size()==1 && probe->draws==1 && probe->actions==0 && !probe->held,
+                "Backgrounding clears queued input before simulation and suppresses updates/presentation");
+        require(lifecycle.delay(90020,0)==100,"Background host does not busy-spin");
+        lifecycle.frame(120000,{key,foreground,key});
+        require(probe->ticks.back()==1000 && !probe->held && probe->actions==0,
+                "Resume excludes elapsed time and ignores input from the interrupted batch");
+        require(lifecycle.delay(120010,0)==10,"Pacing uses the same resumed clock as updates");
+        lifecycle.frame(120040,{});
+        require(probe->ticks.back()==1040,"Normal frame timing resumes without accumulated background lag");
+        lifecycle.frame(300000,{background,foreground});
+        require(probe->ticks.back()==1040,"Background and foreground in one batch also exclude the gap");
+        lifecycle.frame(300040,{key});
+        SDL_Event resize{};resize.type=SDL_WINDOWEVENT;resize.window.event=SDL_WINDOWEVENT_SIZE_CHANGED;
+        lifecycle.frame(300080,{resize,key});
+        require(!probe->held && probe->actions==0,"Rotation clears queued controls before the next update");
+        lifecycle.frame(300120,{key});
+        lifecycle.push(std::make_unique<LifecycleScreen>());
+        lifecycle.frame(300160,{});
+        require(!probe->held,"Opening a child clears parent held input");
+        lifecycle.frame(300200,{background});
+        SDL_Event quit{};quit.type=SDL_QUIT;
+        lifecycle.frame(300240,{quit});
+        require(!lifecycle.running(),"Quit is processed while backgrounded");
+
+        ScreenStack hiddenStartup(surface);
+        auto initial=std::make_unique<LifecycleScreen>();auto* initialProbe=initial.get();
+        hiddenStartup.push(std::move(initial));
+        hiddenStartup.frame(400000,{background});
+        require(!initialProbe->isExecutionRunning(),"Background startup defers screen admission");
+        hiddenStartup.frame(500000,{foreground});
+        require(initialProbe->ticks.back()==400000,"Deferred startup uses the suspended host clock");
+    }
     Probe screen;
     screen.beginExecution(&surface);
     require(screen.created == 1 && screen.paints == 0, "Begin must not draw");

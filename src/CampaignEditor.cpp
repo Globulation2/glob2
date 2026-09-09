@@ -13,6 +13,7 @@
 
 CampaignEditor::CampaignEditor(const std::string& name, GAGGUI::ScreenStack& screens) : screens(screens)
 {
+    enablePhoneForm();
 	if (name != "" && !campaign.load(name))
 		campaign.setName(name);
 	StringTable& table=*Toolkit::getStringTable();
@@ -162,6 +163,7 @@ void CampaignEditor::syncMapList()
 
 CampaignMapEntryEditor::CampaignMapEntryEditor(Campaign& campaign, CampaignMapEntry& mapEntry) : entry(mapEntry), campaign(campaign)
 {
+    enablePhoneForm();
 	StringTable& table=*Toolkit::getStringTable();
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", table.getString("[editing map]"));
 	mapsUnlockedBy = new CheckList(10, 80, 150, 300, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", false);

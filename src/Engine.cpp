@@ -72,13 +72,13 @@ void Engine::prepareRun()
 
 }
 
-std::unique_ptr<GAGGUI::Screen> Engine::endRunScreen()
+std::unique_ptr<GAGGUI::Screen> Engine::endRunScreen(GAGGUI::ScreenStack& screens)
 {
     if (gui.exitGlobCompletely || globalContainer->runNoX || globalContainer->automaticEndingGame)
         return {};
     assert(globalContainer->mix);
     globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
-    return std::make_unique<EndGameScreen>(&gui);
+    return std::make_unique<EndGameScreen>(&gui, screens);
 }
 
 void Engine::restoreCursor()
@@ -91,8 +91,12 @@ int Engine::run(void)
     prepareRun();
     bool doRunOnceAgain = true;
     while (doRunOnceAgain) runOneGameSession(doRunOnceAgain);
-    auto endScreen = endRunScreen();
-    const int result = endScreen ? endScreen->execute(globalContainer->gfx, GAME_TICK_MS) : -1;
+    int result = -1;
+    if (globalContainer->gfx) {
+        GAGGUI::ScreenStack screens(*globalContainer->gfx);
+        auto endScreen = endRunScreen(screens);
+        if (endScreen) { screens.push(std::move(endScreen)); result = screens.execute(GAME_TICK_MS); }
+    }
     restoreCursor();
     return result == -1 ? -1 : EE_NO_ERROR;
 }

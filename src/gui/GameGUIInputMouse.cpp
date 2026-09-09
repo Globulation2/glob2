@@ -13,6 +13,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
@@ -31,8 +32,14 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 	///when for the screen viewport, center
 	if (forScreenViewport)
 	{
-		*cx-=((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
-		*cy-=((globalContainer->gfx->getH())>>6);
+        if (touch->usesHUD()) {
+            const auto world=touch->worldBounds();
+            *cx-=int((world.x+world.w/2)/32);
+            *cy-=int((world.y+world.h/2)/32);
+        } else {
+            *cx-=((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
+            *cy-=((globalContainer->gfx->getH())>>6);
+        }
 	}
 
 }

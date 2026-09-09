@@ -285,6 +285,10 @@ def main():
         from web_build import build_web
         build_web(bdir, identity, ARGUMENTS)
         return
+    if identity['target'] in ('android', 'ios'):
+        from mobile_build import build_mobile
+        build_mobile(bdir, identity, ARGUMENTS)
+        return
     if identity['role'] == 'gateway':
         from gateway_build import build_gateway
         build_gateway(bdir, identity, ARGUMENTS)

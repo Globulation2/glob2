@@ -53,6 +53,11 @@ namespace GAGGUI
 		virtual void paint(void);
 	
 		void setText(const std::string text);
+        const std::string& caption() const { return text; }
+        int textWidth() const;
+        std::vector<std::string> wrappedLines(int width) const;
+        int wrappedHeight(int width) const;
+        void paintResponsive();
 	};
 	
 	class OnOffButton:public HighlightableWidget

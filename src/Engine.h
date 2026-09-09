@@ -15,10 +15,12 @@
 #include "NetEngine.h"
 #include "MultiplayerGame.h"
 #include "ChecksumSidecar.h"
+#include "RecoveryStore.h"
 
 
 class MultiplayersJoin;
 class NetGame;
+namespace GAGGUI { class ScreenStack; }
 
 using std::shared_ptr;
 
@@ -26,6 +28,7 @@ using std::shared_ptr;
 /// and its run function is meant to run the game that has been loaded.
 class Engine
 {
+    friend class MobileDeterminismHarness;
 public:
 	//! Constructor
 	Engine();
@@ -58,6 +61,9 @@ public:
     GAGCore::CooperativeTask initCampaignTask(std::string filename, Campaign* campaign = nullptr, std::string mission = {});
     GAGCore::CooperativeTask loadReplayTask(std::string filename);
     void cancelInitialization();
+    void checkpointRecovery(bool force = false);
+    bool recoveryCompletionFailed() const { return recoveryFinishFailed; }
+    GAGCore::CooperativeTask initRecoveryTask(RecoveryStore::Record record);
     void suspendInput() { gui.suspendInput(); }
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
 
@@ -83,7 +89,7 @@ public:
 	//! Run game. A valid gui and netGame must exists
 	int run();
     void prepareRun();
-    std::unique_ptr<GAGGUI::Screen> endRunScreen();
+    std::unique_ptr<GAGGUI::Screen> endRunScreen(GAGGUI::ScreenStack& screens);
     void restoreCursor();
 
     // Incremental session API. Requires an initialized game; the host owns
@@ -91,6 +97,7 @@ public:
     void beginSession(Uint64 now);
     bool stepSession(Uint64 now);
     bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
+    void cancelSessionInput();
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
     struct PendingLoad { std::string filename; bool replay; };
@@ -196,6 +203,12 @@ private:
 	void drawFrame(MainLoopState& st);
     std::optional<MainLoopState> session;
     int sessionEndingTarget = 0;
+    std::unique_ptr<RecoveryStore> recovery;
+    std::unique_ptr<Campaign> recoveredCampaign;
+    Uint32 recoveryStep = 0;
+    Uint64 recoveryTime = 0;
+    bool recoveryAttempted = false;
+    bool recoveryFinishFailed = false;
     std::vector<SDL_Event> sessionInput;
 
 	/// If the GUI requested a clean exit, drain remaining local orders and

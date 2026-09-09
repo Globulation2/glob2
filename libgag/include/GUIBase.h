@@ -6,6 +6,7 @@
 #include "GAGSys.h"
 #include "GraphicContext.h"
 #include <vector>
+#include <utility>
 #include <set>
 #include <cassert>
 
@@ -136,6 +137,12 @@ namespace GAGGUI
 		 * \return true if the point is over the widget, false otherwise.
 		 */
 		virtual bool isOnWidget(int x, int y) = 0;
+        // Accessible presentations activate the original widget, preserving its callbacks.
+        void activateAt(int x, int y) {
+            SDL_Event event{}; event.type=SDL_MOUSEBUTTONDOWN; event.button.button=SDL_BUTTON_LEFT;
+            event.button.x=x; event.button.y=y; onSDLMouseButtonDown(&event);
+            event.type=SDL_MOUSEBUTTONUP; onSDLMouseButtonUp(&event);
+        }
 	protected:
 		friend class Screen;
 		friend class Panel;
@@ -223,6 +230,7 @@ namespace GAGGUI
 		
 		//! Returns width of widget
 		Sint32 getLeft() const { return x; }
+        SDL_Rect screenRectangle() { SDL_Rect r; getScreenPos(&r.x,&r.y,&r.w,&r.h); return r; }
 		
 		//! Returns width of widget
 		Sint32 getTop() const { return y; }
@@ -235,6 +243,7 @@ namespace GAGGUI
 		
 		//! Sets the screen position
 		virtual void setScreenPosition(int nx, int ny) { x = nx; y = ny; }
+        void setScreenRectangle(int nx, int ny, int nw, int nh) { x=nx; y=ny; w=nw; h=nh; hAlignFlag=ALIGN_LEFT; vAlignFlag=ALIGN_TOP; }
 	
 	protected:
 		//! Compute the actual position from the layout informations
@@ -318,11 +327,16 @@ namespace GAGGUI
 		virtual void paint(void);
 		
 		//! Nonblocking lifecycle. The host supplies time and already-polled input.
-		void beginExecution(GAGCore::DrawableSurface *surface);
+		virtual void beginExecution(GAGCore::DrawableSurface *surface);
 		virtual void updateExecution(Uint32 tick);
         virtual void suspendExecution() {}
         virtual void viewportResized(int oldWidth, int oldHeight, int width, int height) {}
 		virtual void handleExecutionEvent(SDL_Event event);
+        // Called between frames before host interruption or a child transition.
+        // Discard held/queued input without synthesizing release actions.
+        virtual bool usesResponsiveViewport() const { return false; }
+        virtual std::pair<int,int> minimumViewportSize() const { return {0,0}; }
+        virtual void cancelExecutionInput() {}
 		virtual void drawExecution();
         virtual Uint32 executionDelay(Uint32 now, Uint32 fallback) { return fallback; }
 		bool isExecutionRunning() const { return run; }
@@ -336,6 +350,7 @@ namespace GAGGUI
 		void endExecute(int returnCode);
 		//! Add widget, added widget are garbage collected
 		void addWidget(Widget* widget);
+        std::vector<Widget*> presentationWidgets() const { return {widgets.begin(),widgets.end()}; }
 		//! Remove widget, note that removed widget are not garbage collected
 		void removeWidget(Widget* widget);
 		//! Call onSDLEvent on each widget after having called onSDLEvent on the screen itself
@@ -346,6 +361,8 @@ namespace GAGGUI
 		void dispatchInit(void);
 		//! Call paint on each widget after having called paint on the screen itself. Do a full update after
 		void dispatchPaint(void);
+        //! Refresh geometry before painting or hit-testing, including embedded dialogs.
+        virtual void updateLayout() {}
 		//! Return the associated drawable surface
 		GAGCore::DrawableSurface *getSurface(void) { return gfx; }
 		//! Return the width of the screen
@@ -358,6 +375,7 @@ namespace GAGGUI
 	//! Base class used for screen that don't take full frame and/or are non-blocking
 	class OverlayScreen:public Screen
 	{
+        GAGCore::GraphicContext *parentContext;
 	public:
 		//! Int to say when we have finished
 		int endValue;
@@ -369,7 +387,8 @@ namespace GAGGUI
 		OverlayScreen(GAGCore::GraphicContext *parentCtx, unsigned w, unsigned h);
 		//! Destructor
 		virtual ~OverlayScreen();
-        void viewportResized(int, int, int width, int height) override { decX = (width - getW()) / 2; decY = (height - getH()) / 2; }
+        void updateLayout() override;
+        void viewportResized(int, int, int width, int height) override;
 	
 		//! Run the OverlayScreen, call Screen::execute with the correct DrawableSurface
 		virtual int execute(GAGCore::DrawableSurface *gfx, int stepLength);

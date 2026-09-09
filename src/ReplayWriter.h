@@ -49,7 +49,9 @@ public:
 	void finish();
 
 	/// Write this replay to the given file
-	/// Returns true if successful
+	/// Atomically replaces the destination; failure preserves the existing file
+    /// and writer position so the same replay can be retried.
+	/// Returns true if successful (browser durability requires persistStorage).
 	bool write(const std::string &filename) const;
 
 	/// Get the buffer, if for any reason you would need it
@@ -83,4 +85,3 @@ private:
 	/// null orders (matching the early-return in pushOrder).
 	Uint32 ordersWritten;
 };
-

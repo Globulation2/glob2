@@ -9,6 +9,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "PanelButtonHit.h"
@@ -229,6 +230,7 @@ void GameGUI::dispatchReplayDisplayModePanel(void)
 
 void GameGUI::drawTopScreenBar(void)
 {
+    if (touch->usesHUD()) return;
 	// bar background
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 0);
@@ -360,7 +362,7 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
-	if (selectionMode==TOOL_SELECTION)
+	if (selectionMode==TOOL_SELECTION && (!touch->active() || touch->hasPreview()))
 	{
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 		toolManager.drawTool(mouseX, mouseY, localTeamNo, viewportX, viewportY, inputState.modifiers());
@@ -449,7 +451,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		// TODO: die with SGSL
 		// show script text
-		if (game.sgslScript.isTextShown)
+		if (game.sgslScript.isTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
 			setMultiLine(game.sgslScript.textShown, &lines);
@@ -470,7 +472,7 @@ void GameGUI::drawOverlayInfos(void)
 		}
 
 		// show script text
-		if (!scriptText.empty())
+		if (!scriptText.empty() && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
 			setMultiLine(scriptText, &lines);
@@ -541,6 +543,7 @@ void GameGUI::drawOverlayInfos(void)
 
 void GameGUI::drawInGameMenu(void)
 {
+    if (touch->drawDialog()) return;
 	gameMenuScreen->dispatchPaint();
 	globalContainer->gfx->drawSurface((int)gameMenuScreen->decX, (int)gameMenuScreen->decY, gameMenuScreen->getSurface());
 
@@ -570,6 +573,7 @@ void GameGUI::drawInGameMenu(void)
 
 void GameGUI::drawInGameTextInput(void)
 {
+    if (touch->drawDialog()) return;
 	typingInputScreen->decX=(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-492)/2;
 	typingInputScreen->decY=globalContainer->gfx->getH()-typingInputScreenPos;
 	typingInputScreen->dispatchPaint();
@@ -599,6 +603,7 @@ void GameGUI::drawInGameTextInput(void)
 
 void GameGUI::drawInGameScrollableText(void)
 {
+    if (touch->drawDialog()) return;
 	scrollableText->decX=28;
 	scrollableText->decY=globalContainer->gfx->getH() - 165;
 	scrollableText->dispatchPaint();
@@ -607,6 +612,8 @@ void GameGUI::drawInGameScrollableText(void)
 
 void GameGUI::drawAll(int team)
 {
+    if (touch) touch->prepareDraw();
+    const int sidebar=touch->usesHUD() ? 0 : RIGHT_MENU_WIDTH;
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
@@ -623,8 +630,8 @@ void GameGUI::drawAll(int team)
 	arrowPositions.clear();
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
-		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState);
+		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-sidebar, globalContainer->gfx->getH()-16);
+		game.drawMap(0, 0, globalContainer->gfx->getW()-sidebar, globalContainer->gfx->getH(), 0, 16, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState);
 	}
 	else
 	{
@@ -632,7 +639,7 @@ void GameGUI::drawAll(int team)
 
 		globalContainer->gfx->setClipRect();
 
-		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), RIGHT_MENU_WIDTH, 16, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState);
+		game.drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH(), sidebar, 16, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState);
 
 		// generate and draw particles
 		generateNewParticles(&visibleBuildings);
@@ -653,23 +660,23 @@ void GameGUI::drawAll(int team)
 		}
 		else
 		{
-			globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(), 0, 0, 0, 20);
+			globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-sidebar, globalContainer->gfx->getH(), 0, 0, 0, 20);
 			s = Toolkit::getStringTable()->getString("[Paused]");
 		}
 
-		int x = (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-globalContainer->menuFont->getStringWidth(s))/2;
+		int x = (globalContainer->gfx->getW()-sidebar-globalContainer->menuFont->getStringWidth(s))/2;
 		globalContainer->gfx->drawString(x, globalContainer->gfx->getH()-80, globalContainer->menuFont, s);
 	}
 
 	// draw the panel
 	globalContainer->gfx->setClipRect();
-	drawPanel();
+	if (!touch->usesHUD()) drawPanel();
 
 	// draw the minimap
 	drawOptions = 0;
 
 	globalContainer->gfx->setClipRect();
-	minimap.draw(localTeamNo, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );
+	if (!touch->usesHUD()) minimap.draw(localTeamNo, viewportX, viewportY, (globalContainer->gfx->getW()-sidebar)/32, globalContainer->gfx->getH()/32 );
 
 	// draw the progress bar if this is a replay
 	if (globalContainer->replaying) drawReplayProgressBar();
@@ -677,6 +684,7 @@ void GameGUI::drawAll(int team)
 	// draw the top bar and other infos
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
+    touch->drawHUD();
 
 	// draw menu if any
 	if (inGameMenu)
@@ -700,6 +708,7 @@ void GameGUI::drawAll(int team)
 		globalContainer->gfx->drawSprite(arrowPositions[i].x, arrowPositions[i].y, globalContainer->gamegui, arrowPositions[i].sprite);
 
 	}
+    if (touch) touch->drawControls();
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

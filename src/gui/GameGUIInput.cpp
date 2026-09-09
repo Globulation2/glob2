@@ -15,6 +15,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
@@ -114,14 +115,25 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 	return false;
 }
 
+void GameGUI::suspendInput()
+{
+    if (touch) touch->cancel();
+    inputState.clearHeld();
+    lastMouseButtonState = 0;
+    viewportSpeedX = viewportSpeedY = 0;
+    miniMapPushed = selectionPushed = panPushed = false;
+    scrollWheelWorkingChanges = scrollWheelStayRangeChanges = 0;
+    mouseX = globalContainer->gfx->getW() / 2;
+    mouseY = globalContainer->gfx->getH() / 2;
+    toolManager.cancelDrag(localTeamNo);
+}
+
 void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
+    if (touch && touch->process(*event)) return;
     if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-        lastMouseButtonState = 0;
-        viewportSpeedX = viewportSpeedY = 0;
-        selectionPushed = false;
-        toolManager.cancelDrag(localTeamNo);
+        suspendInput();
     }
     if (!inputState.hasFocus() && (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP ||
         event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP ||

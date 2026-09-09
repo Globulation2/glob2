@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "KeyboardManager.h"
 #include "MapEditDialog.h"
+#include "WidgetRectangle.h"
 #include <optional>
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
@@ -22,23 +23,8 @@
 #define RIGHT_MENU_WIDTH 160
 #define RIGHT_MENU_OFFSET (160-128)/2
 
-///A generic rectangle structure used for a variety of purposes, but mainly for the convience of the widget system
-struct widgetRectangle
-{
-	widgetRectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
-	widgetRectangle() : x(0), y(0), width(0), height(0) {}
-	//! Half-open on both axes: the top and left edges are inside, the bottom and
-	//! right edges are not. This makes abutting rectangles tile without either
-	//! overlapping or leaving a dead pixel line between them.
-	bool is_in(int posx, int posy) { return posx>=x && posx<(x+width) && posy>=y && posy<(y+height); }
-
-	int x;
-	int y;
-	int width;
-	int height;
-};
-
 class MapEdit;
+class PhoneEditor;
 
 ///This is a map editor widget, which is a widget that works within the map editor. Now to answer the crucial question, why not
 ///use libgag? Indeed, I had pondered on the use of libgag for quite some time, considering all of the odds and ends that would
@@ -61,7 +47,7 @@ public:
 	///This enables the widget.
 	void enable();
 	///This tests whether the x,y coordinates are within this particular widgets area.
-	bool is_in(int x, int y) { return area.is_in(x, y); }
+	bool is_in(int x, int y);
 	///This function handles a click with mouse positions relative to the widget. It can be overridden, but derived classes
 	///should be careful to call the base class version after there customized code
 	virtual void handleClick(int relMouseX, int relMouseY);
@@ -69,9 +55,10 @@ public:
 	///and area.y to get the coordinates.
 	virtual void draw()=0;
 	friend class MapEdit;
+    friend class PhoneEditor;
 protected:
 	MapEdit& me;
-	widgetRectangle area;
+	RightAnchoredWidgetRectangle area;
 	std::string group;
 	std::string name;
 	std::string action;
@@ -378,6 +365,10 @@ private:
 ///This is the map editor class in all its glory.
 class MapEdit
 {
+    friend class PhoneEditor;
+    friend class GameGUITouchHarness;
+    std::unique_ptr<PhoneEditor> phone;
+    int menuWidth() const { return phone ? 0 : RIGHT_MENU_WIDTH; }
     bool editing = false, quitDecision = false;
     int editingResult = 0;
     GAGCore::InputState inputState;
@@ -395,6 +386,7 @@ public:
 	///Updates the editor after map generation
 	void update();
 
+    bool usesPhone() const { return bool(phone); }
     void beginEditing();
     void viewportResized(int oldWidth, int oldHeight, int width, int height);
     void requestLoad(std::string filename) { pendingLoadFilename = std::move(filename); }

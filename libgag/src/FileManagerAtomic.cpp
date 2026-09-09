@@ -12,6 +12,7 @@
 #include <io.h>
 #include <sys/stat.h>
 #else
+#include <fcntl.h>
 #include <unistd.h>
 #endif
 
@@ -19,6 +20,35 @@ namespace GAGCore
 {
 	namespace
 	{
+#if !defined(WIN32) && !defined(__EMSCRIPTEN__)
+		void synchronize(int descriptor)
+		{
+			int result;
+			do { result = fsync(descriptor); } while (result != 0 && errno == EINTR);
+			if (result != 0) throw std::ios_base::failure("Storage synchronization failed");
+		}
+
+		class ParentDirectory
+		{
+		public:
+			explicit ParentDirectory(const std::string& path)
+			{
+				const auto slash = path.find_last_of('/');
+				const std::string parent = slash == std::string::npos ? "." :
+					(slash == 0 ? "/" : path.substr(0, slash));
+				do { descriptor = open(parent.c_str(), O_RDONLY | O_DIRECTORY | O_CLOEXEC); }
+				while (descriptor < 0 && errno == EINTR);
+				if (descriptor < 0) throw std::ios_base::failure("Cannot open save directory for synchronization");
+			}
+			~ParentDirectory() { ::close(descriptor); }
+			void sync() { synchronize(descriptor); }
+			ParentDirectory(const ParentDirectory&) = delete;
+			ParentDirectory& operator=(const ParentDirectory&) = delete;
+		private:
+			int descriptor;
+		};
+#endif
+
 		FILE *openExclusive(const std::string& path)
 		{
 #ifdef WIN32
@@ -69,6 +99,21 @@ namespace GAGCore
 				if (fclose(file) != 0)
 					throw std::ios_base::failure("File close failed");
 			}
+			void sync()
+			{
+#ifdef WIN32
+				if (_commit(_fileno(fp)) != 0)
+					throw std::ios_base::failure("Storage synchronization failed");
+#elif !defined(__EMSCRIPTEN__)
+				synchronize(fileno(fp));
+#ifdef __APPLE__
+				int result;
+				do { result = fcntl(fileno(fp), F_FULLFSYNC); } while (result != 0 && errno == EINTR);
+				if (result != 0) throw std::ios_base::failure("Storage full synchronization failed");
+#endif
+#endif
+				// Emscripten persistence is completed separately by IDBFS syncfs.
+			}
 		private:
 			void seek(int offset, int origin)
 			{
@@ -97,7 +142,7 @@ namespace GAGCore
 			std::string temporary;
 			for (int attempt = 0; attempt < 100; ++attempt)
 			{
-				temporary = path + ".tmp-" + std::to_string(process) + "-" + std::to_string(sequence++);
+				temporary = path + ".glob2-tmp-" + std::to_string(process) + "-" + std::to_string(sequence++);
 				file = openExclusive(temporary);
 				if (file || errno != EEXIST) break;
 			}
@@ -106,18 +151,27 @@ namespace GAGCore
 			try
 			{
 				std::unique_ptr<FILE, decltype(&std::fclose)> owner(file, &std::fclose);
+#if !defined(WIN32) && !defined(__EMSCRIPTEN__)
+				ParentDirectory directory(path);
+#endif
 				auto *backend = new CheckedFileBackend(file);
 				owner.release();
 				BinaryOutputStream stream(backend);
 				writer(stream);
 				stream.flush();
+				backend->sync();
 				backend->close();
 #ifdef WIN32
-				if (!MoveFileExA(temporary.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING))
+				if (!MoveFileExA(temporary.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
 #else
 				if (std::rename(temporary.c_str(), path.c_str()) != 0)
 #endif
 					throw std::ios_base::failure("File replacement failed");
+#if !defined(WIN32) && !defined(__EMSCRIPTEN__)
+				// Failure here means complete new bytes are visible, but durability
+				// is uncertain. Never remove the destination or retry another root.
+				directory.sync();
+#endif
 				return true;
 			}
 			catch (const std::exception& error)

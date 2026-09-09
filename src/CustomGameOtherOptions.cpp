@@ -14,6 +14,7 @@
 CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader& mapHeader, bool readOnly)
 	:	gameHeader(gameHeader), oldGameHeader(gameHeader)
 {
+    enablePhoneForm();
 	ok = new TextButton(440, (readOnly ? 420 : 360), 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13);
 	addWidget(ok);
 	
@@ -51,6 +52,8 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 			allyTeamNumbers[i]->setClickable(false);
 		}
 		
+        setPhoneLabel(color[i],gameHeader.getBasePlayer(i).name+" / "+Toolkit::getStringTable()->getString("[Team color]"));
+        setPhoneLabel(allyTeamNumbers[i],gameHeader.getBasePlayer(i).name+" / "+Toolkit::getStringTable()->getString("[Alliance group]"));
 		addWidget(playerNames[i]);
 		addWidget(color[i]);
 		addWidget(allyTeamNumbers[i]);
@@ -79,6 +82,11 @@ CustomGameOtherOptions::CustomGameOtherOptions(GameHeader& gameHeader, MapHeader
 	addWidget(mapDiscoveredText);
 	if(readOnly)
 		mapDiscovered->setClickable(false);
+    setPhoneLabel(teamsFixed,teamsFixedText->getText());
+    setPhoneLabel(prestigeWinEnabled,prestigeWinEnabledText->getText());
+    setPhoneLabel(mapDiscovered,mapDiscoveredText->getText());
+    for(Widget* label:{teamsFixedText,prestigeWinEnabledText,mapDiscoveredText}) setPhoneVisible(label,false);
+
 }
 
 

@@ -41,7 +41,8 @@ if not env['server']:
     local.Alias('global-gradient-test', gradient_test)
 
 if not env['server']:
-    lan_sources = [source for source in source_files if source != 'Glob2.cpp']
+    lan_sources = [source for source in source_files if source not in ('Glob2.cpp', 'yog/YOGConsts.cpp')]
+    lan_sources += local.Object('LANTestPorts.o', '#test/LANTestPorts.cpp')
     lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
@@ -69,18 +70,30 @@ if not env['server']:
     session_sources += local.Object('EngineSessionHarness.o', '#test/EngineSessionHarness.cpp')
     session_test = local.Program('engine-session-test', session_sources)
     local.Alias('session-test', session_test)
+    portable_game_sources = [source for source in source_files if source != 'Glob2.cpp']
+    portable_game_sources += local.Object('PortableGameHarness.o', '#test/PortableGameHarness.cpp')
+    portable_game_test = local.Program('portable-game-test', portable_game_sources)
+    local.Alias('portable-game-test', portable_game_test)
+    menu_sources = [source for source in source_files if source != 'Glob2.cpp']
+    menu_sources += local.Object('ResponsiveMenuHarness.o', '#test/ResponsiveMenuHarness.cpp')
+    local.Alias('responsive-menu-test', local.Program('responsive-menu-test', menu_sources))
+    touch_sources = [source for source in source_files if source != 'Glob2.cpp']
+    touch_sources += local.Object('GameGUITouchHarness.o', '#test/GameGUITouchHarness.cpp')
+    local.Alias('gameplay-touch-test', local.Program('gameplay-touch-test', touch_sources))
 
 if not env['server']:
-    transport_sources = [source for source in source_files if source != 'Glob2.cpp']
+    transport_sources = [source for source in source_files if source not in ('Glob2.cpp', 'yog/YOGConsts.cpp')]
+    transport_sources += local.Object('NetworkTestPorts.o', '#test/NetworkTestPorts.cpp')
     transport_sources += local.Object('NetConnectionHarness.o', '#test/NetConnectionHarness.cpp')
     transport_test = local.Program('net-connection-test', transport_sources)
     local.Alias('transport-test', transport_test)
-    peer_sources = [source for source in source_files if source != 'Glob2.cpp']
+    peer_sources = [source for source in source_files if source not in ('Glob2.cpp', 'yog/YOGConsts.cpp')]
+    peer_sources += local.Object('NetworkTestPorts.o', '#test/NetworkTestPorts.cpp')
     peer_sources += local.Object('NativeMultiplayerPeer.o', '#test/NativeMultiplayerPeer.cpp')
     peer_test = local.Program('native-multiplayer-peer', peer_sources)
     local.Alias('transport-test', peer_test)
     wss_test = local.Program('wss-transport-test', [
-        'net/NetTransport.cpp', 'net/WssTransport.cpp',
+        'net/NetTransport.cpp', 'net/WssTransport.cpp', 'yog/YOGConsts.cpp',
         local.Object('WssTransportHarness.o', '#test/WssTransportHarness.cpp')])
     local.Alias('transport-test', wss_test)
 
@@ -134,3 +147,20 @@ if not env['server']:
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
+
+if not env['server']:
+    certificate_test = local.Program('MobileCertificateHarness', [
+        local.Object('MobileCertificateHarness.o', '#test/MobileCertificateHarness.cpp'),
+        local.Object('MobileCertificateTrust.o', '#mobile/CertificateTrust.cpp')])
+    local.Alias('mobile-certificate-test', certificate_test)
+
+if not env['server'] and not env.get('mingw'):
+    temporary_test = local.Program('MobileTemporaryFilesHarness', [
+        local.Object('MobileTemporaryFilesHarness.o', '#test/MobileTemporaryFilesHarness.cpp'),
+        local.Object('MobileTemporaryFiles.o', '#mobile/TemporaryFiles.cpp')])
+    local.Alias('mobile-temporary-files-test', temporary_test)
+
+if not env['server'] and not env.get('mingw'):
+    determinism_sources = [source for source in source_files if source != 'Glob2.cpp']
+    determinism_sources += local.Object('MobileDeterminismHarness.o', '#test/MobileDeterminismHarness.cpp')
+    local.Alias('mobile-determinism-test', local.Program('MobileDeterminismHarness', determinism_sources))

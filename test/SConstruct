@@ -66,6 +66,7 @@ PerlinNoiseTest.cpp
 ../src/PerlinNoise.cpp
 
 HelloWorldTest.cpp
+EditorWidgetLayoutTest.cpp
 
 BitArrayTest.cpp
 

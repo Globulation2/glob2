@@ -67,6 +67,7 @@ public:
 	~ScriptEditorScreen() override;
     void translateAndProcessEvent(SDL_Event *event) override;
     void drawFileDialog();
+    OverlayScreen* phoneDialog();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	virtual void onSDLEvent(SDL_Event *event);
 	virtual void onTimer(Uint32 tick);

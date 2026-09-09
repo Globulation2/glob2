@@ -20,6 +20,7 @@
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
@@ -126,7 +127,10 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mouse motion we only keep the last one
 	for (auto event : events)
-	{
+    {
+        if (globalContainer->gfx->hasPortableRenderer() &&
+            ((event.type==SDL_MOUSEMOTION && event.motion.which==SDL_TOUCH_MOUSEID) ||
+             ((event.type==SDL_MOUSEBUTTONDOWN || event.type==SDL_MOUSEBUTTONUP) && event.button.which==SDL_TOUCH_MOUSEID))) continue;
 		GAGCore::GraphicContext::translateMouseEvent(&event);
 		if (event.type==SDL_MOUSEMOTION)
 		{
@@ -204,6 +208,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 		}
 		else
 		{
+            if (wasMouseMotion) { processEvent(&mouseMotionEvent); wasMouseMotion=false; }
 			processEvent(&event);
 		}
 	}
@@ -331,7 +336,7 @@ void GameGUI::syncStep(void)
 		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");
 		if (!Toolkit::getFileManager()->writeAtomically(fileName, [&](OutputStream& stream) { save(&stream, name); }))
-			std::cerr << "GameGUI::syncStep: autosave failed; previous save retained" << std::endl;
+			std::cerr << "GameGUI::syncStep: autosave failed; save durability uncertain" << std::endl;
 	}
 }
 

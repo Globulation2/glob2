@@ -242,3 +242,16 @@ void TeamsEditor::generateGameHeader()
 	gameHeader.setNumberOfPlayers(count);
 	game->setGameHeader(gameHeader);
 }
+
+std::string TeamsEditor::phoneLabel(Widget* widget) const
+{
+    for(int slot=0;slot<Team::MAX_COUNT;++slot) {
+        const char* key=nullptr;
+        if(widget==isPlayerActive[slot]) key="[Player slot]";
+        else if(widget==color[slot]) key="[Team color]";
+        else if(widget==allyTeamNumbers[slot]) key="[Alliance group]";
+        else if(widget==aiSelector[slot]) key="[AI]";
+        if(key) return std::string(Toolkit::getStringTable()->getString(key))+" "+std::to_string(slot+1);
+    }
+    return {};
+}

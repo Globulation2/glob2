@@ -92,6 +92,32 @@ test('tutorial sessions quit through the end screen and can restart', async ({pa
   }
 });
 
+test('visibility callbacks suspend game frames and discard background input', async ({page}) => {
+  await menu(page, 480, 120);
+  await screen(page, 'CampaignMenuScreen');
+  await menu(page, 100, 60);
+  await menu(page, 160, 450);
+  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(10);
+  // Drive the DOM visibility callback deterministically. Native tab eviction and
+  // OS backgrounding require separate real-device qualification.
+  const before = await page.evaluate(() => {
+    Object.defineProperty(document, 'hidden', {configurable:true, value:true});
+    Object.defineProperty(document, 'visibilityState', {configurable:true, value:'hidden'});
+    document.dispatchEvent(new Event('visibilitychange'));
+    return glob2Diagnostics.snapshot();
+  });
+  await page.keyboard.press('p');
+  await page.waitForTimeout(300);
+  expect(await state(page)).toMatchObject({tick:before.tick, frames:before.frames});
+  await page.evaluate(() => {
+    delete document.hidden;
+    delete document.visibilityState;
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(before.tick);
+  expect((await state(page)).paused).toBe(false);
+});
+
 test('custom options and AI descriptions return to setup, and a finished game returns there too', async ({page}) => {
   await menu(page, 480, 200);
   await screen(page, 'CustomGameScreen');

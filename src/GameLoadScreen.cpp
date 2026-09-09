@@ -12,6 +12,7 @@ GameLoadScreen::GameLoadScreen(Initializer initialize, GAGCore::CooperativeSlice
 GameLoadScreen::GameLoadScreen(std::unique_ptr<Engine> engine, Initializer initialize, GAGCore::CooperativeSlice slice)
     : slice(std::move(slice)), previousRng(getSyncRandState()), engine(std::move(engine))
 {
+    enablePhoneForm();
     if (!this->engine) throw std::invalid_argument("A loader requires an engine");
     auto& strings = *GAGCore::Toolkit::getStringTable();
     status = new GAGGUI::Text(0, 180, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", strings.getString("[Loading headers]"));

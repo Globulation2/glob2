@@ -13,7 +13,7 @@ using namespace GAGCore;
 	#include <glob2/BuildConfig.h>
 #endif
 
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 #include <speex/speex.h>
 #endif
 
@@ -244,7 +244,7 @@ void SoundMixer::openAudio(void)
 		mode = MODE_STOPPED;
 	}
 	
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 	// Open Speex decoder
 #ifdef _MSC_VER
 	// workaround for vcpkg bug #2292 which seems to be broken again.
@@ -284,7 +284,7 @@ SoundMixer::~SoundMixer()
 	{
 		SDL_PauseAudio(1);
 		SDL_CloseAudio();
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 		speex_decoder_destroy(speexDecoderState);
 #endif
 	}
@@ -353,7 +353,7 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		// Select mode
 		if (mode == MODE_STOPPED)
 		{
-			SDL_PauseAudio(0);
+			if (!suspended) SDL_PauseAudio(0);
 			mode = MODE_START;
 		}
 		else if (earlyChange)
@@ -373,6 +373,17 @@ int SoundMixer::loadTrack(const std::string name, MusicTrack track)
 void SoundMixer::setNextTrack(MusicTrack track, bool earlyChange)
 {
 	setNextTrack(static_cast<unsigned>(track), earlyChange);
+}
+
+void SoundMixer::setSuspended(bool value)
+{
+    if (suspended == value) return;
+    suspended = value;
+    if (!soundEnabled) return;
+    SDL_LockAudio();
+    const bool pause = suspended || mode == MODE_STOPPED;
+    SDL_UnlockAudio();
+    SDL_PauseAudio(pause ? 1 : 0);
 }
 
 // All writes to musicVolume/voiceVolume must hold SDL_LockAudio — mixaudio()
@@ -427,7 +438,7 @@ bool SoundMixer::isPlayerTransmittingVoice(int player)
 
 void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 {
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 	if (soundEnabled)
 	{
 		SDL_LockAudio();

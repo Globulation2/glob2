@@ -16,6 +16,7 @@
 
 CampaignMenuScreen::CampaignMenuScreen(const std::string& name, GAGGUI::ScreenStack& screens) : screens(screens)
 {
+    enablePhoneForm();
 	if (!campaign.load(name))
 		campaign.setName(name);
 	title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", campaign.getName());
@@ -66,7 +67,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
         if (action == TEXT_MODIFIED && source == playerName) playerName->setText(campaign.getPlayerName());
         if ((action == BUTTON_RELEASED || action == BUTTON_SHORTCUT) && source == exitButton) {
             fileSelection.reset();
-            title->setText(campaign.getName());
+            showPhoneStatus(title, campaign.getName());
             GAGCore::ApplicationHost::importChanged("cancelled");
         }
         return;
@@ -74,7 +75,7 @@ void CampaignMenuScreen::onAction(Widget *source, Action action, int par1, int p
     if (action == BUTTON_RELEASED || action == BUTTON_SHORTCUT) {
         if (importButton && source == importButton) {
             fileSelection = GAGCore::ApplicationHost::selectFile("campaign");
-            title->setText(Toolkit::getStringTable()->getString("[select import file]"));
+            showPhoneStatus(title, Toolkit::getStringTable()->getString("[select import file]"));
             GAGCore::ApplicationHost::importChanged("selecting");
             return;
         }
@@ -174,7 +175,7 @@ void CampaignMenuScreen::saveFailure()
 {
     persistence.reset(); saveFailed = true;
     retryButton->visible = true;
-    title->setText(Toolkit::getStringTable()->getString("[campaign save failed]"));
+    showPhoneStatus(title, Toolkit::getStringTable()->getString("[campaign save failed]"));
     exitButton->setText(Toolkit::getStringTable()->getString("[leave without saving]"));
     GAGCore::ApplicationHost::importChanged("failed");
 }
@@ -188,7 +189,7 @@ void CampaignMenuScreen::saveProgress(bool leave)
         persistence = GAGCore::ApplicationHost::persistStorage();
         if (!persistence) { saveFailure(); return; }
         saveFailed = false; retryButton->visible = false;
-        title->setText(Toolkit::getStringTable()->getString("[saving to storage]"));
+        showPhoneStatus(title, Toolkit::getStringTable()->getString("[saving to storage]"));
         GAGCore::ApplicationHost::importChanged("persisting");
     } catch (const std::exception&) { saveFailure(); }
 }
@@ -197,7 +198,7 @@ void CampaignMenuScreen::exportProgress()
     try {
         if (GAGCore::ApplicationHost::exportFile("campaign-progress.campaign", campaign.exportProgress())) return;
     } catch (const std::exception&) {}
-    title->setText(Toolkit::getStringTable()->getString("[export failed]"));
+    showPhoneStatus(title, Toolkit::getStringTable()->getString("[export failed]"));
 }
 void CampaignMenuScreen::onTimer(Uint32)
 {
@@ -211,7 +212,7 @@ void CampaignMenuScreen::onTimer(Uint32)
             dirty = true;
             saveProgress();
         } else {
-            title->setText(Toolkit::getStringTable()->getString(state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "[import cancelled]" : "[campaign import failed]"));
+            showPhoneStatus(title, Toolkit::getStringTable()->getString(state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "[import cancelled]" : "[campaign import failed]"));
             GAGCore::ApplicationHost::importChanged(state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "cancelled" : "invalid");
             fileSelection.reset();
         }
@@ -222,7 +223,7 @@ void CampaignMenuScreen::onTimer(Uint32)
         if (state == GAGCore::ApplicationHost::PersistenceState::Failed) { saveFailure(); return; }
         persistence.reset(); dirty = false; saveFailed = false;
         previousCaptured = false; previousFile.clear();
-        title->setText(campaign.getName());
+        showPhoneStatus(title, campaign.getName());
         exitButton->setText(Toolkit::getStringTable()->getString("[goto main menu]"));
         GAGCore::ApplicationHost::importChanged("succeeded");
         if (leaveAfterSave) endExecute(EXIT);

@@ -1,5 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetTransport.h"
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#include "YOGConsts.h"
+#endif
+#ifdef GLOB2_MOBILE
+#include "mobile/CertificateTrust.h"
+#endif
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/beast/core.hpp>
@@ -58,11 +65,15 @@ class WssTransport final : public NetTransport {
             if (host.empty() || service.empty() || service.find_first_not_of("0123456789") != std::string::npos
                 || std::stoul(service) == 0 || std::stoul(service) > 65535)
                 throw std::invalid_argument("Invalid origin host or port");
-            route = port == 7491 ? "/router" : "/yog";
+            route = port == YOG_ROUTER_PORT ? "/router" : "/yog";
             SSL_set_min_proto_version(socket.next_layer().native_handle(), TLS1_2_VERSION);
-            tls.set_default_verify_paths();
             socket.next_layer().set_verify_mode(ssl::verify_peer);
+#ifdef GLOB2_MOBILE
+            SSL_CTX_set_cert_verify_callback(tls.native_handle(), MobileCertificateTrust::verify, &host);
+#else
+            tls.set_default_verify_paths();
             socket.next_layer().set_verify_callback(ssl::host_name_verification(host));
+#endif
             if (!SSL_set_tlsext_host_name(socket.next_layer().native_handle(), host.c_str()))
                 throw std::runtime_error("Could not set TLS server name");
             socket.read_message_max(64 * 1024);

@@ -15,7 +15,7 @@
 #include "portaudio.h"
 #endif
 
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 #include <speex/speex.h>
 #endif
 
@@ -29,7 +29,7 @@ public:
 	//! pointer to the structure holding the speex encoder
 	void *speexEncoderState;
 	// Bits for speex encoding
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 	SpeexBits bits;
 #endif
 	//! Size of one frame of encoding

@@ -168,7 +168,7 @@ bool connectionFailureChecks()
     // Accept the TCP handshake at the OS level but never pump YOG, so the
     // client really remains connected without receiving a protocol greeting.
     YOGServer stalled(YOGAnonymousLogin, YOGSingleGame);
-    if (!stalled.isListening()) return false;
+    if (!stalled.isListening()) { std::puts("LAN progress FAIL: probe port in use"); return false; }
     for (bool cancel : {true, false}) {
         auto client = std::make_shared<YOGClient>();
         client->connect("127.0.0.1");
@@ -176,7 +176,7 @@ bool connectionFailureChecks()
         while (!client->isConnected() && SDL_GetTicks64() < deadline) {
             client->update(); SDL_Delay(1);
         }
-        if (!client->isConnected()) return false;
+        if (!client->isConnected()) { std::puts("LAN progress FAIL: probe TCP connection timed out"); return false; }
         ScreenStack screens(*globalContainer->gfx);
         screens.push(std::make_unique<LANSessionScreen>(screens, client, "timeout probe"));
         screens.frame(0, {});
@@ -190,7 +190,11 @@ bool connectionFailureChecks()
             screens.frame(10000, {}); screens.frame(10001, {});
             screens.frame(10002, {escape}); screens.frame(10003, {}); screens.frame(10004, {});
         }
-        if (screens.running() || screens.result() != (cancel ? 0 : 1) || client->isConnected()) return false;
+        if (screens.running() || screens.result() != (cancel ? 0 : 1) || client->isConnected()) {
+            std::printf("LAN progress FAIL: cancel=%d running=%d result=%d connected=%d\n",
+                int(cancel), int(screens.running()), screens.result(), int(client->isConnected()));
+            return false;
+        }
     }
     std::puts("LAN progress PASS: cancellation and greeting timeout release the connection");
     return true;
@@ -201,7 +205,8 @@ int host(int cycles, const std::string& capture)
 	auto client = std::make_shared<YOGClient>();
 	auto server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame);
 	if (!server->isListening()) { std::puts("HOST FAIL: port in use"); return 1; }
-	server->enableLANBroadcasting();
+	// The fixture joins by explicit loopback address; do not advertise its
+	// temporary diagnostic ports to other machines on the user's network.
 	client->attachGameServer(server);
 	client->connect("127.0.0.1");
 	// A private map name forces a real transfer without touching user maps.

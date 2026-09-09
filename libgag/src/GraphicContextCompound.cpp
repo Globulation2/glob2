@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <valarray>
 #include <vector>
+#include <algorithm>
 
 namespace GAGCore
 {
@@ -30,6 +31,7 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(int x, int y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+        if (renderer) { drawSurface(float(x),float(y),float(sw),float(sh),surface,sx,sy,sw,sh,alpha); return; }
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 			drawSurface(x, y, sw, sh, surface, sx, sy, sw, sh, alpha);
@@ -40,6 +42,7 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(float x, float y, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+        if (renderer) { drawSurface(float(x),float(y),float(sw),float(sh),surface,sx,sy,sw,sh,alpha); return; }
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 			drawSurface(x, y, static_cast<float>(sw), static_cast<float>(sh), surface, sx, sy, sw, sh, alpha);
@@ -50,6 +53,7 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha)
 	{
+        if (renderer) { drawSurface(float(x),float(y),float(w),float(h),surface,sx,sy,sw,sh,alpha); return; }
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawSurface(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h), surface, sx, sy, sw, sh, alpha);
@@ -60,6 +64,19 @@ namespace GAGCore
 
 	void GraphicContext::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
 	{
+        if (renderer) {
+            if (w <= 0 || h <= 0 || sw <= 0 || sh <= 0) return;
+            auto* pixels=surface->getSDLSurface();
+            if (!pixels || pixels->w <= 0 || pixels->h <= 0) return;
+            float u0=float(sx)/pixels->w, v0=float(sy)/pixels->h;
+            float u1=float(sx+sw)/pixels->w, v1=float(sy+sh)/pixels->h;
+            SDL_Color c{255,255,255,alpha};
+            SDL_Vertex a{{x,y},c,{u0,v0}}, b{{x+w,y},c,{u1,v0}}, d{{x,y+h},c,{u0,v1}}, e{{x+w,y+h},c,{u1,v1}};
+            const SDL_Vertex vertices[]={a,b,e,a,e,d};
+            renderer->triangles(vertices,surface,pixels,surface->dirty);
+            surface->dirty=false;
+            return;
+        }
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
@@ -185,6 +202,22 @@ namespace GAGCore
 
 	void GraphicContext::drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
+        if (renderer) {
+            if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
+            for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
+                auto vertex = [&](float px,float py,float alpha) {
+                    return SDL_Vertex{{px,py},{color.r,color.g,color.b,Uint8(std::clamp(alpha,0.0f,1.0f)*255)}, {0,0}};
+                };
+                float a=map[j*mapW+i]/1.0f, b=map[j*mapW+i+1]/1.0f;
+                float c=map[(j+1)*mapW+i+1]/1.0f, d=map[(j+1)*mapW+i]/1.0f;
+                float left=x+i*cellW, top=y+j*cellH, right=left+cellW, bottom=top+cellH;
+                auto va=vertex(left,top,a), vb=vertex(right,top,b), vc=vertex(right,bottom,c), vd=vertex(left,bottom,d);
+                auto center=vertex((left+right)/2,(top+bottom)/2,(a+b+c+d)/4);
+                const SDL_Vertex vertices[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
+                renderer->triangles(vertices);
+            }
+            return;
+        }
 	#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
@@ -261,6 +294,22 @@ namespace GAGCore
 
 	void GraphicContext::drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color)
 	{
+        if (renderer) {
+            if (mapW < 2 || mapH < 2 || size_t(mapW)*size_t(mapH) > map.size()) return;
+            for(int j=0;j<mapH-1;++j) for(int i=0;i<mapW-1;++i) {
+                auto vertex = [&](float px,float py,float alpha) {
+                    return SDL_Vertex{{px,py},{color.r,color.g,color.b,Uint8(std::clamp(alpha,0.0f,1.0f)*255)}, {0,0}};
+                };
+                float a=map[j*mapW+i]/255.0f, b=map[j*mapW+i+1]/255.0f;
+                float c=map[(j+1)*mapW+i+1]/255.0f, d=map[(j+1)*mapW+i]/255.0f;
+                float left=x+i*cellW, top=y+j*cellH, right=left+cellW, bottom=top+cellH;
+                auto va=vertex(left,top,a), vb=vertex(right,top,b), vc=vertex(right,bottom,c), vd=vertex(left,bottom,d);
+                auto center=vertex((left+right)/2,(top+bottom)/2,(a+b+c+d)/4);
+                const SDL_Vertex vertices[]={center,va,vb,center,vb,vc,center,vc,vd,center,vd,va};
+                renderer->triangles(vertices);
+            }
+            return;
+        }
 	#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{

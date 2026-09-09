@@ -84,7 +84,10 @@ jobs:
 
       - name: Test incremental engine sessions
         run: |
-          scons release=1 -j$(nproc) session-test
+          scons release=1 -j$(nproc) session-test mobile-documents-test mobile-certificate-test mobile-temporary-files-test
+          build/linux/client/release/libgag/src/MobileDocumentsHarness
+          python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness
+          python3 test/run-mobile-temporary-tests.py build/linux/client/release/src/MobileTemporaryFilesHarness
           python3 test/run-engine-session-test.py
 
       - name: Build and run the selection lifetime regression
@@ -149,15 +152,21 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
 
+      - name: Test portable rendering and mobile input
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          scons release=1 -j$(nproc) portable-renderer-test mobile-input-test responsive-menu-test
+          ./build/linux/client/release/libgag/src/MobileInputHarness
+          xvfb-run -a ./build/linux/client/release/libgag/src/PortableRendererHarness
+          mkdir -p build/responsive-menu-profile
+          GLOB2_USER_DATA_DIR="$PWD/build/responsive-menu-profile" xvfb-run -a ./build/linux/client/release/src/responsive-menu-test
+
       - name: Build and run the tests
         working-directory: test
         run: |
           scons -j$(nproc)
-          ./TestsRunner
-          for harness in ./*Harness ./*Test; do
-            echo "== $harness"
-            "$harness"
-          done
+          python3 run-standalone-tests.py
 
       - name: Test game speed controls and playback
         run: |
@@ -274,23 +283,49 @@ jobs:
           scons release=1 transport-test -j2
           python3 test/run-network-transport-tests.py
           python3 -m unittest discover -s tests/transport -v
-      - name: Test browser lifecycle, renderers and multiplayer
+      - name: Install browser test runtimes
+        if: matrix.order == 'concurrent'
+        working-directory: browser
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install --with-deps chromium firefox webkit
+          # Firefox needs an X display and an audio service for resume().
+          sudo apt-get install -y pulseaudio
+          pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
+      - name: Test browser lifecycle and multiplayer
         if: matrix.order == 'concurrent'
         working-directory: browser
         env:
           GLOB2_ALL_AIS: ${{ github.event_name == 'schedule' && '1' || '0' }}
           GLOB2_FIREFOX_HEADED: '1'
+        run: xvfb-run -a npm test
+      - name: Test browser WebGL rendering
+        if: matrix.order == 'concurrent'
+        working-directory: browser
+        env:
+          GLOB2_FIREFOX_HEADED: '1'
+          GLOB2_TEST_RENDERER: webgl2
+        run: xvfb-run -a npx playwright test runtime-build.spec.js replay-save.spec.js single-player.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js chooser-errors.spec.js settings-storage.spec.js shutdown-storage.spec.js campaign-editor-storage.spec.js
+      - name: Test browser visibility transitions
+        if: matrix.order == 'concurrent'
+        working-directory: browser
+        env:
+          GLOB2_FIREFOX_HEADED: '1'
         run: |
-          npm ci --ignore-scripts
-          npx playwright install --with-deps chromium firefox webkit
-          # Firefox needs an X display for WebGL2 and a real audio service to
-          # complete AudioContext.resume(). A null sink keeps CI silent.
-          sudo apt-get install -y pulseaudio
-          pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
-          xvfb-run -a npm test
-          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js replay-save.spec.js single-player.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js chooser-errors.spec.js settings-storage.spec.js shutdown-storage.spec.js campaign-editor-storage.spec.js
           xvfb-run -a npx playwright test --config visibility.config.js
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
+      - name: Compare 100,000 native and Wasm simulation steps
+        if: matrix.order == 'concurrent'
+        run: |
+          scons release=1 -j2 mobile-determinism-test
+          scons target=web release=1 -j2 mobile-determinism-test
+          python3 test/run-mobile-determinism.py --native build/linux/client/release/src/MobileDeterminismHarness --output build/mobile-determinism/ci
+      - uses: actions/upload-artifact@v4
+        if: always() && matrix.order == 'concurrent'
+        with:
+          name: mobile-determinism
+          path: build/mobile-determinism/ci
+          if-no-files-found: ignore
       - name: Test self-hosting with real TLS and persistent volumes
         if: matrix.order == 'concurrent'
         run: |

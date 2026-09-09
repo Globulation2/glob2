@@ -531,6 +531,7 @@ namespace GAGGUI
 	
 	void Screen::dispatchEvents(SDL_Event *event)
 	{
+        updateLayout();
 		onSDLEvent(event);
 		// We put the switch here in order to avoid
 		// a switch in each specific onSDLEvent method
@@ -632,6 +633,7 @@ namespace GAGGUI
 	
 	void Screen::dispatchPaint(void)
 	{
+        updateLayout();
 		assert(gfx);
 		gfx->setClipRect();
 		paint();
@@ -677,13 +679,27 @@ namespace GAGGUI
 	// Overlay screen, used for non full frame dialog
 	
 	OverlayScreen::OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h)
+        : parentContext(parentCtx)
 	{
 		gfx = new DrawableSurface(w, h);
-		decX = (parentCtx->getW()-w)>>1;
-		decY = (parentCtx->getH()-h)>>1;
+		decX = std::max(0, (parentCtx->getW()-static_cast<int>(w))/2);
+		decY = std::max(0, (parentCtx->getH()-static_cast<int>(h))/2);
 		endValue = -1;
 	}
 	
+    void OverlayScreen::updateLayout()
+    {
+        decX = std::max(0, std::min(decX, parentContext->getW() - getW()));
+        decY = std::max(0, std::min(decY, parentContext->getH() - getH()));
+    }
+
+    void OverlayScreen::viewportResized(int, int, int width, int height)
+    {
+        // Preserve the mobile/browser host's recenter-on-rotation policy.
+        decX = std::max(0, (width - getW()) / 2);
+        decY = std::max(0, (height - getH()) / 2);
+    }
+
 	OverlayScreen::~OverlayScreen()
 	{
 		delete gfx;
@@ -756,7 +772,8 @@ namespace GAGGUI
 			dispatchTimer(frameStart);
 
 			dispatchPaint();
-			parentCtx->drawSurface(0, 0, background);
+			parentCtx->setClipRect();
+			parentCtx->drawSurface(0, 0, parentCtx->getW(), parentCtx->getH(), background);
 			parentCtx->drawSurface(decX, decY, getSurface());
 			parentCtx->nextFrame();
 
@@ -776,6 +793,7 @@ namespace GAGGUI
 
 	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 	{
+        updateLayout();
 		int newX, newY;
 		SDL_Event ev=*event;
 		switch (ev.type)

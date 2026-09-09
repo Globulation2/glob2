@@ -482,3 +482,24 @@ void Engine::cancelInitialization()
     teardownSession();
     clearReplayState();
 }
+
+
+GAGCore::CooperativeTask Engine::initRecoveryTask(RecoveryStore::Record record)
+{
+    std::unique_ptr<Campaign> campaign;
+    if (!record.campaign.empty()) {
+        if (record.campaign.find_first_of("/\\") != std::string::npos || record.campaign == "." || record.campaign == "..") co_return false;
+        campaign = std::make_unique<Campaign>();
+        if (!campaign->load(glob2NameToFilename("games", record.campaign, "txt"))) co_return false;
+        bool found = false;
+        for (unsigned i = 0; i < campaign->getMapCount(); ++i)
+            if (campaign->getMap(i).getMapName() == record.mission) found = true;
+        if (!found) co_return false;
+    } else if (!record.mission.empty()) co_return false;
+    RecoveryStore store(*GAGCore::Toolkit::getFileManager());
+    const auto path = store.materialize(record);
+    if (path.empty() || !(co_await initCustomTask(path))) co_return false;
+    recoveredCampaign = std::move(campaign);
+    if (recoveredCampaign) gui.setCampaignGame(*recoveredCampaign, record.mission);
+    co_return true;
+}

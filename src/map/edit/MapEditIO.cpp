@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "PhoneEditor.h"
 #include "ScriptEditorScreen.h"
 #include <Stream.h>
 #include "Unit.h"
@@ -80,13 +81,17 @@ void MapEdit::beginEditing()
 bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 {
     if (!editing || quitDecision || fertilityRequested || !pendingLoadFilename.empty()) return editing;
+    const bool wasPersisting=showingSave && loadSaveScreen->isPersisting();
     if (showingSave && loadSaveScreen->pollPersistence()) {
         hasMapBeenModified = false;
         performAction("close save screen");
     }
+    if(wasPersisting && showingSave && !loadSaveScreen->isPersisting() && phone) phone->showFailure();
     for (auto event : events) {
-        GAGCore::GraphicContext::translateMouseEvent(&event);
-        processEvent(event);
+        if(!(phone && phone->event(event))) {
+            GAGCore::GraphicContext::translateMouseEvent(&event);
+            processEvent(event);
+        }
         if (doFullQuit || doQuit || fertilityRequested || !pendingLoadFilename.empty() || (doQuitAfterLoadSave && !showingSave)) break;
     }
     if (doFullQuit) { editingResult = -1; editing = false; return false; }
@@ -101,7 +106,7 @@ bool MapEdit::advanceEditing(const std::vector<SDL_Event>& events, Uint32 tick)
 
 	if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
 	{
-		handleMapScroll();
+		if(!phone) handleMapScroll();
 		viewportX+=xSpeed;
 		viewportY+=ySpeed;
 		viewportX&=game.map.getMaskW();
@@ -142,9 +147,9 @@ void MapEdit::drawEditing()
     if (!editing) return;
 	drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH());
 
-	drawMenu();
-	drawMiniMap();
+	if(!phone) {drawMenu();drawMiniMap();}
 	wasMinimapRendered=false;
+	if(phone) {phone->draw();globalContainer->gfx->nextFrame();return;}
 	drawWidgets();
 	if(showingMenuScreen)
 	{
@@ -207,6 +212,7 @@ bool MapEdit::finishFertility(bool completed)
             // A local write is not a durable browser save. Keep the editor and
             // its quit intent until the shared save dialog acknowledges it.
             hasMapBeenModified = true;
+            if(phone && !loadSaveScreen->isPersisting()) phone->showFailure();
         } else {
             doQuitAfterLoadSave = false;
             performAction("close save screen");
@@ -224,7 +230,7 @@ void MapEdit::viewportResized(int oldWidth, int oldHeight, int width, int height
     minimap.resizeViewport(width);
     viewportX = (viewportX + (oldWidth - RIGHT_MENU_WIDTH) / 64 - (width - RIGHT_MENU_WIDTH) / 64) & game.map.wMask;
     viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
-    for (auto* widget : mew) widget->area.x += width - oldWidth;
+    for (auto* widget : mew) widget->area.updateWindowWidth(width);
     for (MapEditorWidget* widget : std::initializer_list<MapEditorWidget*>{mapCoordinatesLabel, building_view_tcs,
          building_view_level1, building_view_level2, building_view_level3, flag_view_tcs,
          flag_view_level1, flag_view_level2, flag_view_level3, flag_view_level4})

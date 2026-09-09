@@ -27,6 +27,7 @@ using namespace GAGGUI;
 
 EditorMainMenu::EditorMainMenu(GAGGUI::ScreenStack& screens) : screens(screens)
 {
+    enableResponsiveMenu(Toolkit::getStringTable()->getString("[editor]"));
 	addWidget(new TextButton(0,  70, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new map]"), NEWMAP, 13));
 	addWidget(new TextButton(0,  130, 300, 40, ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[load map]"), LOADMAP));
 	addWidget(new TextButton(0, 190, 300, 40,  ALIGN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[new campaign]"), NEWCAMPAIGN));

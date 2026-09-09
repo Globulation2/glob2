@@ -26,16 +26,17 @@ void GameSessionScreen::updateExecution(Uint32 tick)
         nextTick = clock;
         started = true;
     } else {
-        if (resetClock) { lastTick = tick; nextTick = clock; resetClock = false; }
-        clock += static_cast<Uint32>(tick - lastTick);
+        if (!resetClock) clock += static_cast<Uint32>(tick - lastTick);
         lastTick = tick;
     }
+    resetClock = false;
     if (clock < nextTick) return;
     const bool running = engine->stepSession(clock, input);
     input.clear();
     nextTick = clock + engine->sessionDelay(clock);
     if (!running) {
         if (auto request = engine->finishSessionForHost()) {
+            const bool recoveryFailed = engine->recoveryCompletionFailed();
             engine->restoreCursor();
             started = false;
             finished = true;
@@ -57,12 +58,24 @@ void GameSessionScreen::updateExecution(Uint32 tick)
                     } else endExecute(result);
                 }
             });
+            if (recoveryFailed) {
+                auto& strings = *GAGCore::Toolkit::getStringTable();
+                stack.push(std::make_unique<MessageScreen>(strings.getString("[recovery finish failed]"),
+                    std::vector<std::string>{strings.getString("[ok]")}));
+            }
             return;
         }
         finished = true;
-        auto endScreen = engine->endRunScreen();
+        auto endScreen = engine->endRunScreen(stack);
         if (!endScreen) endExecute(QUIT_APPLICATION);
-        else stack.push(std::move(endScreen), [this](GAGGUI::Screen&, int result) { endExecute(result); });
+        else {
+            stack.push(std::move(endScreen), [this](GAGGUI::Screen&, int result) { endExecute(result); });
+            if (engine->recoveryCompletionFailed()) {
+                auto& strings = *GAGCore::Toolkit::getStringTable();
+                stack.push(std::make_unique<MessageScreen>(strings.getString("[recovery finish failed]"),
+                    std::vector<std::string>{strings.getString("[ok]")}));
+            }
+        }
     }
 }
 
@@ -70,6 +83,17 @@ void GameSessionScreen::handleExecutionEvent(SDL_Event event)
 {
     // Engine/GameGUI translates native coordinates once, at consumption.
     if (isExecutionRunning() && !finished) input.push_back(event);
+}
+
+void GameSessionScreen::cancelExecutionInput()
+{
+    input.clear();
+    if (engine) {
+        engine->checkpointRecovery(true);
+        engine->cancelSessionInput();
+    }
+    // Time spent under a child screen must not become simulation catch-up lag.
+    resetClock = true;
 }
 
 void GameSessionScreen::drawExecution()
@@ -94,7 +118,5 @@ void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, 
 
 void GameSessionScreen::suspendExecution()
 {
-    if (engine) engine->suspendInput();
-    input.clear();
-    resetClock = true;
+    cancelExecutionInput();
 }

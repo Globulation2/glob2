@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "PhoneEditor.h"
 #include "MapEditKeyActions.h"
 #include "SDLCompat.h"
 
@@ -55,12 +56,12 @@ void MapEdit::processEvent(SDL_Event& event)
 		}
 		else if(isDraggingZone)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("zone drag motion", relMouseX, relMouseY);
 		}
 		else if(isDraggingTerrain)
 		{
-			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
+			if(widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()-16).is_in(mouseX, mouseY))
 				performAction("terrain drag motion", relMouseX, relMouseY);
 		}
 		else if(isScrollDragging)
@@ -108,7 +109,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 {
 	if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
-		if(!findAction(event.button.x, event.button.y) && widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
+		if((phone || !findAction(event.button.x, event.button.y)) && widgetRectangle(0, 16, globalContainer->gfx->getW()-menuWidth(), globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
 			//The button wasn't clicked in any registered area
 			if(selectionMode==PlaceBuilding)
@@ -131,7 +132,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 				performAction("select map building");
 			}
 		}
-		else if(widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
+		else if(widgetRectangle(globalContainer->gfx->getW()-menuWidth()+RIGHT_MENU_OFFSET+14, 14, 100, 100).is_in(mouseX, mouseY))
 			performAction("minimap drag start");
 	}
 	else if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_RIGHT)
@@ -291,6 +292,7 @@ void MapEdit::handleKeyPressed(SDL_Keysym key, bool pressed)
 
 void MapEdit::suspendInput()
 {
+    if(phone) phone->cancel();
     inputState.clearHeld();
     xSpeed = ySpeed = 0;
     isDraggingMinimap = isScrollDragging = false;

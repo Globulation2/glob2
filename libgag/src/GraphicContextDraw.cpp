@@ -7,6 +7,11 @@
 
 namespace GAGCore
 {
+    void GraphicContext::setUITransform(float scale, float x, float y, const SDL_Rect* bounds)
+    {
+        if (renderer) renderer->transform(scale,x,y,bounds);
+    }
+
 	// GL rasterises lines at a width in drawable pixels, which the viewport
 	// transform does not scale the way it scales filled geometry.
 	void GraphicContext::setScaledLineWidth(float width)
@@ -18,7 +23,9 @@ namespace GAGCore
 
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
+
 		DrawableSurface::setClipRect(x, y, w, h);
+        if (renderer) renderer->clip(&clipRect);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
@@ -44,6 +51,7 @@ namespace GAGCore
 	void GraphicContext::setClipRect(void)
 	{
 		DrawableSurface::setClipRect();
+        if (renderer) renderer->clip(nullptr);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 			glState.doScissor(false);
@@ -54,6 +62,7 @@ namespace GAGCore
 
 	void GraphicContext::drawPixel(int x, int y, const Color& color)
 	{
+        if (renderer) { drawPixel(float(x), float(y), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawPixel(static_cast<float>(x), static_cast<float>(y), color);
@@ -64,6 +73,7 @@ namespace GAGCore
 
 	void GraphicContext::drawPixel(float x, float y, const Color& color)
 	{
+        if (renderer) { drawFilledRect(x, y, 1.0f, 1.0f, color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, 1.0f, 1.0f, color);
@@ -75,6 +85,7 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(int x, int y, int w, int h, const Color& color)
 	{
+        if (renderer) { drawRect(float(x), float(y), float(w), float(h), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawRect(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h), color);
@@ -85,6 +96,13 @@ namespace GAGCore
 
 	void GraphicContext::drawRect(float x, float y, float w, float h, const Color& color)
 	{
+        if (renderer) {
+            if (w <= 0 || h <= 0) return;
+            drawFilledRect(x,y,w,1.0f,color);
+            if (h > 1) drawFilledRect(x,y+h-1,w,1.0f,color);
+            if (h > 2) { drawFilledRect(x,y+1,1.0f,h-2,color); if(w > 1) drawFilledRect(x+w-1,y+1,1.0f,h-2,color); }
+            return;
+        }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
@@ -114,6 +132,7 @@ namespace GAGCore
 
 	void GraphicContext::drawFilledRect(int x, int y, int w, int h, const Color& color)
 	{
+        if (renderer) { drawFilledRect(float(x), float(y), float(w), float(h), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawFilledRect(static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h), color);
@@ -124,6 +143,13 @@ namespace GAGCore
 
 	void GraphicContext::drawFilledRect(float x, float y, float w, float h, const Color& color)
 	{
+        if (renderer) {
+            if (w <= 0 || h <= 0) return;
+            SDL_Color c{color.r,color.g,color.b,color.a};
+            SDL_Vertex a{{x,y},c,{0,0}}, b{{x+w,y},c,{0,0}}, d{{x,y+h},c,{0,0}}, e{{x+w,y+h},c,{0,0}};
+            const SDL_Vertex vertices[] = {a,b,e,a,e,d};
+            renderer->triangles(vertices); return;
+        }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
@@ -154,6 +180,7 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(int x1, int y1, int x2, int y2, const Color& color)
 	{
+        if (renderer) { drawLine(float(x1), float(y1), float(x2), float(y2), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			GraphicContext::drawLine(static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2), static_cast<float>(y2), color);
@@ -164,6 +191,15 @@ namespace GAGCore
 
 	void GraphicContext::drawLine(float x1, float y1, float x2, float y2, const Color& color)
 	{
+        if (renderer) {
+            float dx=x2-x1, dy=y2-y1, length=std::hypot(dx,dy);
+            if (length == 0) { drawPixel(x1,y1,color); return; }
+            float nx=-dy/(2*length), ny=dx/(2*length);
+            SDL_Color c{color.r,color.g,color.b,color.a};
+            SDL_Vertex a{{x1+nx,y1+ny},c,{0,0}}, b{{x2+nx,y2+ny},c,{0,0}}, d{{x1-nx,y1-ny},c,{0,0}}, e{{x2-nx,y2-ny},c,{0,0}};
+            const SDL_Vertex vertices[] = {a,b,e,a,e,d};
+            renderer->triangles(vertices); return;
+        }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
@@ -216,6 +252,7 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(int x, int y, int radius, const Color& color)
 	{
+        if (renderer) { drawCircle(float(x), float(y), float(radius), color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawCircle(static_cast<float>(x), static_cast<float>(y), static_cast<float>(radius), color);
@@ -226,6 +263,15 @@ namespace GAGCore
 
 	void GraphicContext::drawCircle(float x, float y, float radius, const Color& color)
 	{
+        if (renderer) {
+            if (radius <= 0) return;
+            int segments=std::max(12, int(std::ceil(radius*2)));
+            for(int i=0;i<segments;++i) {
+                float a=2*M_PI*i/segments, b=2*M_PI*(i+1)/segments;
+                drawLine(x+radius*std::cos(a),y+radius*std::sin(a),x+radius*std::cos(b),y+radius*std::sin(b),color);
+            }
+            return;
+        }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 		{
@@ -284,6 +330,7 @@ namespace GAGCore
 	// adjacent lines (charts, sliders, training bars) leave gaps between them.
 	void GraphicContext::drawVertLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+        if (renderer) { drawFilledRect(x,y,1, l,Color(r,g,b,a)); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, 1, l, Color(r, g, b, a));
@@ -294,6 +341,7 @@ namespace GAGCore
 
 	void GraphicContext::drawVertLine(int x, int y, int l, const Color& color)
 	{
+        if (renderer) { drawFilledRect(x,y,1, l,color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, 1, l, color);
@@ -304,6 +352,7 @@ namespace GAGCore
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
+        if (renderer) { drawFilledRect(x,y,l, 1,Color(r,g,b,a)); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, l, 1, Color(r, g, b, a));
@@ -314,6 +363,7 @@ namespace GAGCore
 
 	void GraphicContext::drawHorzLine(int x, int y, int l, const Color& color)
 	{
+        if (renderer) { drawFilledRect(x,y,l, 1,color); return; }
 		#ifdef HAVE_OPENGL
 		if (optionFlags & GraphicContext::USEGPU)
 			drawFilledRect(x, y, l, 1, color);

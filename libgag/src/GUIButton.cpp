@@ -109,6 +109,52 @@ namespace GAGGUI
 		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, text.c_str());
 	}
 	
+    std::vector<std::string> TextButton::wrappedLines(int width) const
+    {
+        if (fontPtr->getStringWidth(text) <= width) return {text};
+        std::vector<std::string> lines;
+        size_t start = 0;
+        while (start < text.size()) {
+            size_t end = start, lastSpace = std::string::npos;
+            while (end < text.size()) {
+                size_t next = end + 1;
+                while (next < text.size() && (static_cast<unsigned char>(text[next]) & 0xc0) == 0x80) ++next;
+                if (end > start && fontPtr->getStringWidth(text.substr(start, next - start)) > width) break;
+                if (text[end] == ' ') lastSpace = end;
+                end = next;
+            }
+            if (end < text.size() && lastSpace != std::string::npos && lastSpace > start) end = lastSpace;
+            lines.push_back(text.substr(start, end - start));
+            start = end;
+            while (start < text.size() && text[start] == ' ') ++start;
+        }
+        return lines;
+    }
+
+    int TextButton::wrappedHeight(int width) const
+    {
+        return int(wrappedLines(std::max(1, width - 24)).size()) * fontPtr->getStringHeight(text) + 16;
+    }
+
+    void TextButton::paintResponsive()
+    {
+        int x, y, w, h;
+        getScreenPos(&x, &y, &w, &h);
+        auto* surface = parent->getSurface();
+        const auto lines = wrappedLines(std::max(1, w - 24));
+        const int lineHeight = fontPtr->getStringHeight(text);
+        // The shipped button artwork has a 40-unit cap height.
+        Style::style->drawTextButtonBackground(surface, x, y + (h - 40) / 2, w, 40, getNextHighlightValue());
+        if (lines.size() > 1) surface->drawFilledRect(x + 12, y + 4, w - 24, h - 8, GAGCore::Color(45, 62, 24, 230));
+        int lineY = y + (h - int(lines.size()) * lineHeight) / 2;
+        for (const auto& line : lines) {
+            surface->drawString(x + (w - fontPtr->getStringWidth(line)) / 2, lineY, fontPtr, line);
+            lineY += lineHeight;
+        }
+    }
+
+    int TextButton::textWidth() const { return fontPtr ? fontPtr->getStringWidth(text) : 0; }
+
 	void TextButton::setText(const std::string text)
 	{
 		assert(text.size());

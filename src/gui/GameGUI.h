@@ -53,9 +53,12 @@ class MapMarkOrder;
 /*!
 	Handle all user input during game, draw & handle menu.
 */
+class GameGUITouch;
 class GameGUI
 {
 public:
+    bool saveRecovery(class RecoveryStore& store);
+
 	///Constructs a GameGUI
 	explicit GameGUI(bool persistPreferences = true);
 	
@@ -71,11 +74,11 @@ public:
 	void step(void);
     // Host-supplied events and monotonic time; no event polling in this phase.
     void step(const std::vector<SDL_Event>& events, Uint64 now);
+    void suspendInput();
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
 	//! Return position on x
 	int getViewportX() { return viewportX; }
-    void suspendInput();
     void viewportResized(int oldWidth, int oldHeight, int width, int height);
 	//! Return position on y
 	int getViewportY() { return viewportY; }
@@ -226,6 +229,9 @@ public:
 private:
 	friend class GameGUISelectionHarness;
 	bool persistPreferences;
+    friend class GameGUITouch;
+    friend class GameGUITouchHarness;
+    std::unique_ptr<GameGUITouch> touch;
 
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
@@ -640,6 +646,9 @@ private:
 	Sint32 displayedPosX(const Building& b) const;
 	Sint32 displayedPosY(const Building& b) const;
 	Sint32 displayedMaxUnitWorking(const Building& b) const;
+    bool requestWorkerAllocation(Building& building, int requested);
+    bool requestBuildingPriority(Building& building, int requested);
+    bool requestFlagRange(Building& building, int requested);
 	Sint32 displayedUnitStayRange(const Building& b) const;
 	Sint32 displayedPriority(const Building& b) const;
 	bool displayedClearingResource(const Building& b, int i) const;

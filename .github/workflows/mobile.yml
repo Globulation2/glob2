@@ -1,0 +1,135 @@
+name: mobile foundations
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - 'scons/**'
+      - 'SConstruct'
+      - 'libgag/**'
+      - 'src/**'
+      - 'test/**'
+      - 'tests/build_system/**'
+      - '.github/workflows/mobile.yml'
+jobs:
+  android-native:
+    name: Android APK (${{ matrix.arch }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64-v8a, armeabi-v7a, x86_64]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build utilities
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y pkg-config unzip zip autoconf automake libtool
+          python3 -m venv build/mobile-tools/build-venv
+          build/mobile-tools/build-venv/bin/pip install -r mobile/build-requirements.txt
+          echo "$PWD/build/mobile-tools/build-venv/bin" >> "$GITHUB_PATH"
+      - name: Check build isolation and artifact validation
+        run: python3 -m unittest discover -s tests/build_system -v
+      - name: Install verified NDK
+        run: python3 mobile/setup_ndk.py
+      - name: Stage runner SDK packages inside the worktree
+        shell: bash
+        run: |
+          python3 mobile/setup_tools.py
+          sdk="$PWD/build/mobile-tools/android-sdk"
+          mkdir -p "$sdk/platforms" "$sdk/build-tools" "$PWD/build/ci-tmp"
+          cp -R "$ANDROID_HOME/platforms/android-35" "$sdk/platforms/"
+          cp -R "$ANDROID_HOME/build-tools/35.0.0" "$sdk/build-tools/"
+          cp -R "$ANDROID_HOME/platform-tools" "$sdk/"
+          cp -R "$ANDROID_HOME/licenses" "$sdk/"
+          echo "JAVA_HOME=$PWD/build/mobile-tools/jdk-17.0.20.1+1" >> "$GITHUB_ENV"
+          echo "TMPDIR=$PWD/build/ci-tmp" >> "$GITHUB_ENV"
+      - name: Build pinned target dependencies
+        run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release
+      - name: Package and verify APK alignment
+        run: python3 mobile/android.py build --arch '${{ matrix.arch }}' --release
+      - name: Sign developer APK
+        run: python3 mobile/android.py sign --arch '${{ matrix.arch }}' --release
+      - name: Install pinned emulator and image
+        if: matrix.arch == 'x86_64'
+        run: |
+          python3 mobile/setup_tools.py --emulator
+          sudo chmod 666 /dev/kvm
+          python3 mobile/emulator.py configure --arch x86_64
+      - name: Boot isolated emulator
+        if: matrix.arch == 'x86_64'
+        shell: bash
+        run: |
+          mkdir -p build/mobile-smoke
+          nohup python3 mobile/emulator.py adb-server --arch x86_64 > build/mobile-smoke/adb-server.log 2>&1 &
+          nohup python3 mobile/emulator.py run --arch x86_64 > build/mobile-smoke/emulator.log 2>&1 &
+          for attempt in $(seq 1 120); do
+            if python3 mobile/emulator.py status --arch x86_64; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Exercise native startup and lifecycle
+        if: matrix.arch == 'x86_64'
+        run: |
+          python3 mobile/android.py install --arch x86_64 --release --serial emulator-5580 --adb-port 15037
+          python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64
+          python3 mobile/android_trust_test.py --arch x86_64 --serial emulator-5580 --avd glob2-api35-x64
+      - name: Stop isolated emulator
+        if: always() && matrix.arch == 'x86_64'
+        run: python3 mobile/emulator.py stop --arch x86_64 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-${{ matrix.arch }}-diagnostics
+          path: |
+            build/android/**/toolchain.json
+            build/android/**/compile_commands.json
+            build/android/**/vcpkg-buildtrees/**/*.log
+            build/android/**/android-project/glob2-build.json
+            build/android/**/android-project/app/build/outputs/apk/release/*.apk
+            build/android/**/android-project/app/build/outputs/apk/release/*.json
+            build/android/**/android-project/app/build/outputs/native-debug-symbols/**
+            build/android/**/lib/*.so
+            build/mobile-smoke/**
+            build/mobile-trust-android/**
+          if-no-files-found: ignore
+  ios-simulator:
+    name: iOS ARM64 simulator
+    runs-on: macos-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build drivers
+        run: |
+          brew install autoconf automake libtool pkg-config
+          python3 -m venv build/mobile-tools/build-venv
+          build/mobile-tools/build-venv/bin/pip install -r mobile/build-requirements.txt
+          echo "$PWD/build/mobile-tools/build-venv/bin" >> "$GITHUB_PATH"
+      - name: Build pinned dependencies and app
+        run: |
+          python3 mobile/dependencies.py --target ios --environment simulator --release
+          python3 mobile/ios.py build --environment simulator --release
+      - name: Boot isolated iOS simulator
+        run: |
+          mkdir -p build/mobile-smoke-ios build/mobile-tools/ios-simulators
+          device=$(xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" create Glob2-Mobile com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-26-5)
+          echo "GLOB2_SIMULATOR=$device" >> "$GITHUB_ENV"
+          xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" boot "$device"
+          xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" bootstatus "$device" -b
+      - name: Exercise iOS startup and lifecycle
+        run: |
+          python3 mobile/ios.py install --release --device "$GLOB2_SIMULATOR"
+          python3 mobile/ios_smoke.py --device "$GLOB2_SIMULATOR"
+      - name: Shut down isolated simulator
+        if: always() && env.GLOB2_SIMULATOR != ''
+        run: xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" shutdown "$GLOB2_SIMULATOR"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-simulator-diagnostics
+          path: |
+            build/mobile-smoke-ios/**
+            build/ios/**/toolchain.json
+            build/ios/**/vcpkg-buildtrees/**/*.log
+            build/ios/**/xcode-project/build/Release-iphonesimulator/*.dSYM/**
+          if-no-files-found: ignore

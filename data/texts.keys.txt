@@ -653,3 +653,30 @@
 [quit without saving]
 [game closed]
 [campaign editor save failed]
+
+[Actions]
+
+[Minimap]
+
+[Fast forward]
+
+[Hide keyboard]
+
+[Info]
+[Dialog text size]
+[Player slot]
+[Team color]
+[Alliance group]
+[menu]
+[Editor tools]
+[Pan map]
+[Edit map]
+[Editor map]
+[recovery available]
+[recover game]
+[discard recovery]
+[later]
+[recovery unavailable]
+[recovery save failed]
+[recovery discard failed]
+[recovery finish failed]

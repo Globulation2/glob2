@@ -1,3 +1,4 @@
+const {resizeAndWait}=require('./viewport-ready');
 const {gameURL} = require('./game-url');
 const {test, expect} = require('@playwright/test');
 // Continuous trace screenshots force readback from both WebGL contexts on each
@@ -5,16 +6,34 @@ const {test, expect} = require('@playwright/test');
 test.use({trace:{mode:'retain-on-failure', screenshots:false, snapshots:true, sources:true}});
 const {spawn} = require('node:child_process');
 const {createInterface} = require('node:readline');
-const {mkdtemp, rm, readFile} = require('node:fs/promises');
+const {mkdir, mkdtemp, rm, readFile} = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const {randomUUID} = require('node:crypto');
+const {createServer} = require('node:net');
+let testPortBase;
+async function chooseTestPorts() {
+  for (let attempt=0;attempt<50;++attempt) {
+    const sockets=[];
+    try {
+      let base;
+      for(let offset=0;offset<3;++offset) {
+        const server=createServer(); sockets.push(server);
+        await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(offset ? base+offset : 0,'127.0.0.1',resolve);});
+        if(!offset) {base=server.address().port;if(base>65533)throw new Error('Port range exhausted');}
+      }
+      return base;
+    } catch(error) {if(attempt===49)throw error;}
+    finally {await Promise.all(sockets.map(server=>new Promise(resolve=>server.close(resolve))));}
+  }
+}
 
 const root = path.resolve(__dirname, '../..');
 const platform = os.platform() === 'win32' ? 'windows' : os.platform();
 let lobby, gateway, tlsForwarder, work, profile, endpoint, secureEndpoint;
-async function start(binary, args, ready) {
-  const child = spawn(binary, args, {cwd: work, stdio: ['ignore', 'pipe', 'pipe']});
+async function start(binary, args, ready, profileName = 'service-' + randomUUID()) {
+  const child = spawn(binary, args, {cwd: work, stdio: ['ignore', 'pipe', 'pipe'],
+    env: {...process.env, GLOB2_TEST_PORT_BASE:String(testPortBase), GLOB2_USER_DATA_DIR:path.join(work, profileName)}});
   try {
     const line = await new Promise((resolve, reject) => {
       const lines = createInterface({input: child.stdout});
@@ -34,12 +53,15 @@ async function stop(child) {
 }
 
 test.beforeAll(async ({baseURL}) => {
-  work = await mkdtemp(path.join(os.tmpdir(), 'glob2-yog-'));
+  const profiles = path.join(root, 'build/test-profiles');
+  await mkdir(profiles, {recursive:true});
+  work = await mkdtemp(path.join(profiles, 'glob2-yog-'));
   profile = 'glob2-yog-test-' + randomUUID();
+  testPortBase = await chooseTestPorts();
   lobby = (await start(path.join(root, `build/${platform}/client/release/src/net-connection-test`),
-    ['--serve', profile], line => line === 'YOG test server ready')).child;
+    ['--serve', profile], line => line === 'YOG test server ready', profile)).child;
   const started = await start(path.join(root, `build/${platform}/gateway/release/glob2-ws-gateway`),
-    ['--port', '0', '--origin', new URL(baseURL).origin], line => line.startsWith('gateway listening on '));
+    ['--port', '0', '--origin', new URL(baseURL).origin, '--lobby-port', String(testPortBase), '--router-port', String(testPortBase+2)], line => line.startsWith('gateway listening on '));
   gateway = started.child;
   const port = started.line.split(':').pop().trim();
   endpoint = 'ws://127.0.0.1:' + port;
@@ -51,7 +73,6 @@ test.beforeAll(async ({baseURL}) => {
 test.afterAll(async () => {
   await stop(tlsForwarder); await stop(gateway); await stop(lobby);
   if (work) await rm(work, {recursive: true, force: true});
-  if (profile) await rm(path.join(os.homedir(), '.' + profile), {recursive: true, force: true});
 });
 
 test('browser YOG login exchanges the native protocol through the real gateway', async ({page}) => {
@@ -137,7 +158,7 @@ test('YOG registration remains scheduled through resize and cancellation', async
     const previous = page.viewportSize();
     await click(previous.width/2+210,previous.height/2+80);
     await screen('YOGRegisterScreen');
-    await page.setViewportSize(viewport);
+    await resizeAndWait(page, viewport);
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(viewport.width);
     await click(viewport.width/2+210,viewport.height/2+200);
     await screen('YOGLoginScreen');
@@ -150,13 +171,13 @@ test('YOG map selection and upload screens resize and return to their owning tab
   const click = (x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
   await loginPlayer(page,'transportplayer');
   await click(1090,815); await screen('ChooseMapScreen');
-  await page.setViewportSize({width:1000,height:700});
+  await resizeAndWait(page, {width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   // The Maps tab and its Upload action use the same scheduled child ownership.
   await click(480,90); await click(890,615); await screen('ChooseMapScreen');
   await click(280,180); await click(710,490); await screen('YOGClientMapUploadScreen');
-  await page.setViewportSize({width:1200,height:900});
+  await resizeAndWait(page, {width:1200,height:900});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1200);
   await click(810,650); await screen('YOGSessionScreen');
   await page.locator('#canvas').press('Escape'); await screen('MainMenuScreen');
@@ -171,7 +192,7 @@ test('YOG match settings resize and return to their room', async ({page}) => {
   await click(380,280); await click(810,590);
   await expect.poll(types).toContain(16);
   await click(1090,435); await screen('CustomGameOtherOptions');
-  await page.setViewportSize({width:1000,height:700});
+  await resizeAndWait(page, {width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   const lists = types().filter(type => type === 50).length;
@@ -187,7 +208,7 @@ test('YOG disconnect message remains scheduled and returns cleanly after resize'
   await connection.close(); await backend.close();
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
   await screen('MessageScreen');
-  await page.setViewportSize({width:1000,height:700});
+  await resizeAndWait(page, {width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('MainMenuScreen');
 });
@@ -310,7 +331,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await expect.poll(hostTypes).toContain(16);
     const started = await start(path.join(root, `build/${platform}/client/release/src/native-multiplayer-peer`),
       transport === 'WSS' ? [nativeProfile, secureEndpoint, path.join(work, 'cert.pem')] : [nativeProfile],
-      line => line.startsWith('native peer joined order-rate='));
+      line => line.startsWith('native peer joined order-rate='), nativeProfile);
     peer = started.child;
     peer.stdout.on('data', chunk => peerLog.push(String(chunk)));
     peer.stderr.on('data', chunk => peerLog.push(String(chunk)));
@@ -333,7 +354,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await expect.poll(() => peer.exitCode !== null || peer.signalCode !== null, {timeout:45000}).toBe(true);
     expect(peer.signalCode).toBeNull();
     expect(peer.exitCode).toBe(0);
-    const bytes = await readFile(path.join(os.homedir(), '.' + nativeProfile, 'replays/last_game.replay.checksums'));
+    const bytes = await readFile(path.join(work, nativeProfile, 'replays/last_game.replay.checksums'));
     const teams = bytes.readUInt32LE(4), count = bytes.readUInt32LE(12);
     expect(count).toBeGreaterThanOrEqual(250);
     expect(count).toBeLessThan(1000); // Victory, not the native safety timeout.
@@ -370,7 +391,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
   } finally {
     await stop(peer);
     await testInfo.attach('native-peer-log', {body: peerLog.join(''), contentType: 'text/plain'});
-    await rm(path.join(os.homedir(), '.' + nativeProfile), {recursive: true, force: true});
+    await rm(path.join(work, nativeProfile), {recursive: true, force: true});
   }
 });
 

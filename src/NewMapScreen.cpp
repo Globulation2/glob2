@@ -16,6 +16,7 @@ using namespace GAGGUI;
 
 NewMapScreen::NewMapScreen()
 {
+    enablePhoneForm();
 	mapSizeX=new Number(20, 50, 100, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 20, "menu");
 	mapSizeX->add(64);
 	mapSizeX->add(128);

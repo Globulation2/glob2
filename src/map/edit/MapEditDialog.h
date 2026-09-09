@@ -76,6 +76,7 @@ private:
 class TeamsEditor : public OverlayScreen
 {
 public:
+    std::string phoneLabel(Widget* widget) const;
 	TeamsEditor(Game* game);
 	virtual ~TeamsEditor() { }
 	void onAction(Widget *source, Action action, int par1, int par2);

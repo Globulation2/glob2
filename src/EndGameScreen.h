@@ -6,8 +6,8 @@
 
 #include "GameGUI.h"
 #include "Glob2Screen.h"
-
-class LoadSaveScreen;
+#include "gui/PhoneGraphic.h"
+#include <ScreenStack.h>
 
 namespace GAGGUI
 {
@@ -16,7 +16,7 @@ namespace GAGGUI
 }
 
 //! Widget to display stats at end of game
-class EndGameStat: public RectangularWidget
+class EndGameStat: public RectangularWidget, public PhoneGraphic
 {
 public:
 	//! Constructor, takes position and initial map name
@@ -29,6 +29,9 @@ public:
 	void setEnabledState(int teamNum, bool isEnabled);
 	//! paint routine
 	virtual void paint(void);
+    void paintPhone(int width,int height) override;
+    void inspectPhone(int x,int y) override {mouse_x=x;mouse_y=y;}
+    void paintAt(int x,int y,int width,int height,bool phone=false);
 
 protected:
 	//! Returns the value at the given point, by interpolating
@@ -85,6 +88,8 @@ protected:
 	Text* graphLabel;
 
 protected:
+	bool phoneFooter(Widget* widget) const override;
+    std::optional<GAGCore::Color> phoneColor(Widget* widget) const override;
 	//! resort players
 	void sortAndSet(EndOfGameStat::Type type);
 
@@ -95,16 +100,10 @@ protected:
 	Game *game;
 	
 public:
-	EndGameScreen(GameGUI *gui);
-	~EndGameScreen() override;
-    void updateExecution(Uint32 tick) override;
-    void handleExecutionEvent(SDL_Event event) override;
-    void drawExecution() override;
-    void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
+	EndGameScreen(GameGUI *gui, GAGGUI::ScreenStack& screens);
+	virtual ~EndGameScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 
 private:
-    std::unique_ptr<LoadSaveScreen> replaySave;
-	void saveReplay(const char *dir, const char *ext);
+    GAGGUI::ScreenStack& screens;
 };
-

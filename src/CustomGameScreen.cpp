@@ -18,6 +18,8 @@
 CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack& screens) :
 	ChooseMapScreen("maps", "map", true), screens(screens)
 {
+    enablePhoneForm();
+
 	for (int i=0; i<Team::MAX_COUNT; i++)
 	{
 		isPlayerActive[i]=new OnOffButton(230, 60+i*25, 21, 21, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, i == 0, 100+i);
@@ -46,6 +48,14 @@ CustomGameScreen::CustomGameScreen(GAGGUI::ScreenStack& screens) :
 			aiSelector[i]->setIndex(AI::NUMBI);
 		}
 	}
+    for(int i=0;i<Team::MAX_COUNT;++i) {
+        for(Widget* widget:std::initializer_list<Widget*>{isPlayerActive[i],color[i],closedText[i],aiSelector[i]})
+            if(widget) setPhoneVisible(widget,false);
+        const auto slot=std::string(Toolkit::getStringTable()->getString("[Player slot]"))+" "+std::to_string(i+1);
+        setPhoneLabel(isPlayerActive[i],slot);
+        setPhoneLabel(color[i],slot+" / "+Toolkit::getStringTable()->getString("[Team color]"));
+        if(aiSelector[i]) setPhoneLabel(aiSelector[i],slot+" / "+Toolkit::getStringTable()->getString("[AI]"));
+    }
 	otherOptions = new TextButton(230, 420, 170, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Other Options]"), 0);
 	addWidget(otherOptions);
 	aiDescriptions = new TextButton(230, 370, 170, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[AI Descriptions]"), 0);
@@ -69,6 +79,10 @@ CustomGameScreen::~CustomGameScreen()
 // index past array end.
 void CustomGameScreen::validMapSelectedhandler(void)
 {
+    for(int i=0;i<Team::MAX_COUNT;++i)
+        for(Widget* widget:std::initializer_list<Widget*>{isPlayerActive[i],color[i],closedText[i],aiSelector[i]})
+            if(widget) setPhoneVisible(widget,i<mapHeader.getNumberOfTeams());
+
 	int i;
 	// set the correct number of colors
 	for (i = 0; i<Team::MAX_COUNT; i++)

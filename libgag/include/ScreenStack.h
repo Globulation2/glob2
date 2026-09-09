@@ -31,6 +31,10 @@ private:
     std::vector<Entry> screens, pending;
     int lastResult = 0;
     bool stopped = false, dispatching = false;
+    bool suspended = false, clockStarted = false;
+    bool resetGraphics = false, resizeGraphics = false;
+    Uint32 hostTick = 0, frameTick = 0;
     void boundary();
+    void configureViewport(Screen& screen);
 };
 }

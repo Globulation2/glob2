@@ -15,6 +15,8 @@
 #include "GameGUIKeyActions.h"
 #include "MapEditKeyActions.h"
 #include "Utilities.h"
+#include "RecoveryStore.h"
+#include <cstring>
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
@@ -27,7 +29,9 @@
 #ifdef WIN32
 #include <process.h>
 #else
+#include <fcntl.h>
 #include <sys/resource.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <csignal>
@@ -44,6 +48,46 @@ static std::string contents(const fs::path& path)
 	return std::string(std::istreambuf_iterator<char>(file), {});
 }
 
+static void checkRecovery(FileManager& files, const fs::path& directory)
+{
+    RecoveryStore store(files, "recovery-test");
+    const auto write = [](const char* text) {
+        return [text](OutputStream& output) { output.write(text, std::strlen(text), "game"); };
+    };
+    const auto bytes = [](const RecoveryStore::Record& record) { return std::string(record.game.begin(), record.game.end()); };
+    assert(!store.pending() && store.candidates().empty());
+    assert(store.checkpoint(write("first"), "Campaign", "Mission"));
+    assert(store.pending() && store.candidates().size() == 1);
+    assert(store.checkpoint(write("second"), "Campaign", "Mission"));
+    auto records = store.candidates();
+    assert(records.size() == 2 && bytes(records[0]) == "second" && bytes(records[1]) == "first");
+    assert(records[0].campaign == "Campaign" && records[0].mission == "Mission");
+    assert(!store.checkpoint([](OutputStream&) { throw std::runtime_error("interrupted recovery serialization"); }));
+    assert(bytes(store.candidates()[0]) == "second");
+    const auto latest = directory / "recovery-test/slot0";
+    const auto complete = contents(latest);
+    // Every possible truncation and a checksum-breaking bit flip must fall
+    // back to the intact generation from the same game session.
+    for (size_t cut = 0; cut < complete.size(); ++cut) {
+        { std::ofstream file(latest, std::ios::binary); file.write(complete.data(), cut); }
+        records = store.candidates();
+        assert(records.size() == 1 && bytes(records[0]) == "first");
+    }
+    auto corrupt = complete; corrupt[corrupt.size()/2] ^= 1;
+    { std::ofstream file(latest, std::ios::binary); file.write(corrupt.data(), corrupt.size()); }
+    assert(store.candidates().size() == 1 && bytes(store.candidates()[0]) == "first");
+    { std::ofstream file(latest, std::ios::binary); file.write(complete.data(), complete.size()); }
+    const auto restored = store.materialize(store.candidates()[0]);
+    assert(!restored.empty() && contents(directory / restored) == "second");
+    RecoveryStore nextGame(files, "recovery-test");
+    assert(nextGame.checkpoint(write("new game")));
+    records = nextGame.candidates();
+    assert(records.size() == 1 && bytes(records[0]) == "new game");
+    assert(nextGame.dismiss() && !nextGame.pending() && nextGame.candidates().empty());
+    assert(fs::exists(latest)); // Dismissal never deletes manually useful data.
+    std::cout << "PASS recovery generations, metadata, serialization failure, all truncations, checksum corruption, session isolation and dismissal" << std::endl;
+}
+
 static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 {
 	const std::string path = (directory / "atomic.game").string();
@@ -52,7 +96,7 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 #else
 	const auto process = getpid();
 #endif
-	const std::string collision = path + ".tmp-" + std::to_string(process) + "-0";
+	const std::string collision = path + ".glob2-tmp-" + std::to_string(process) + "-0";
 	{ std::ofstream existing(collision); existing << "keep"; }
 	const auto write = [](OutputStream& stream) { stream.write("complete", 8, "data"); };
 	assert(files.writeAtomically(path, write));
@@ -97,7 +141,93 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 	}
 #endif
 	for (const auto& entry : fs::directory_iterator(directory))
-		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
+		assert(entry.path().filename().string().find(".glob2-tmp-") == std::string::npos);
+#ifndef WIN32
+	// Inject kernel-level sync failures inside an isolated child. Replacing the
+	// temporary file descriptor with /dev/null allows stdio flush to succeed
+	// but makes file sync fail; closing the directory descriptor fails the
+	// post-rename sync. Match inode/device rather than assuming descriptor IDs.
+	for (bool directoryFailure : {false, true})
+	{
+		const pid_t child = fork();
+		assert(child >= 0);
+		if (child == 0)
+		{
+			const bool saved = files.writeAtomically(path, [&](OutputStream& stream) {
+				stream.write("sync-test", 9, "data");
+				stream.flush();
+				fs::path target = directory;
+				if (!directoryFailure)
+					for (const auto& entry : fs::directory_iterator(directory))
+						if (entry.path().string().find(path + ".glob2-tmp-") == 0) target = entry.path();
+				struct stat expected;
+				if (stat(target.c_str(), &expected) != 0) _exit(7);
+				for (int fd = 3; fd < 256; ++fd)
+				{
+					struct stat actual;
+					if (fstat(fd, &actual) != 0 || actual.st_dev != expected.st_dev || actual.st_ino != expected.st_ino) continue;
+					if (directoryFailure) close(fd);
+					else
+					{
+						const int sink = open("/dev/null", O_WRONLY);
+						if (sink < 0 || dup2(sink, fd) != fd) _exit(8);
+						close(sink);
+					}
+					return;
+				}
+				_exit(9);
+			});
+			_exit(saved ? 10 : 0);
+		}
+		int status = 0;
+		assert(waitpid(child, &status, 0) == child && WIFEXITED(status) && WEXITSTATUS(status) == 0);
+		assert(contents(path) == (directoryFailure ? "sync-test" : "replacement"));
+	}
+	assert(files.writeAtomically(path, [](OutputStream& stream) { stream.write("replacement", 11, "data"); }));
+	std::cout << "PASS file sync failure preserves old bytes; directory sync failure reports uncertainty without deleting new bytes" << std::endl;
+
+	// Terminate a writer at a known boundary, then read from a fresh process.
+	// This checks process death, not physical power-loss behavior.
+	for (bool completed : {false, true})
+	{
+		int ready[2];
+		assert(pipe(ready) == 0);
+		const pid_t child = fork();
+		assert(child >= 0);
+		if (child == 0)
+		{
+			close(ready[0]);
+			const auto stop = [&]() {
+				const char signal = 'r';
+				if (::write(ready[1], &signal, 1) != 1) _exit(4);
+				for (;;) pause();
+			};
+			const bool saved = files.writeAtomically(path, [&](OutputStream& stream) {
+				stream.write("committed", 9, "data");
+				stream.flush();
+				if (!completed) stop();
+			});
+			if (!saved) _exit(5);
+			stop();
+		}
+		close(ready[1]);
+		char signal = 0;
+		assert(::read(ready[0], &signal, 1) == 1 && signal == 'r');
+		close(ready[0]);
+		assert(kill(child, SIGKILL) == 0);
+		int status = 0;
+		assert(waitpid(child, &status, 0) == child && WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL);
+		const pid_t reader = fork();
+		assert(reader >= 0);
+		if (reader == 0) _exit(contents(path) == (completed ? "committed" : "replacement") ? 0 : 6);
+		assert(waitpid(reader, &status, 0) == reader && WIFEXITED(status) && WEXITSTATUS(status) == 0);
+		// A killed writer may leave an orphan, never a partially replaced save.
+		for (const auto& entry : fs::directory_iterator(directory))
+			if (entry.path().filename().string().find(".glob2-tmp-") != std::string::npos)
+				fs::remove(entry.path());
+	}
+	std::cout << "PASS killed partial writer preserves old save; completed save survives writer death and fresh reader" << std::endl;
+#endif
 	std::cout << "PASS atomic creation/replacement, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup" << std::endl;
 #ifndef WIN32
 	std::cout << "PASS injected short write and buffered flush failure preserve previous bytes" << std::endl;
@@ -427,6 +557,7 @@ int main(int argc, char **argv)
 	checkPendingConstruction();
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+    checkRecovery(*globals.fileManager, directory);
     checkPreferences(directory);
 	checkMapHeaders();
     checkCampaignProgress(directory);
@@ -472,6 +603,33 @@ int main(int argc, char **argv)
 			assert(bytes == expected);
 		}
 		std::cout << "PASS atomic autosave bytes match direct serialization" << std::endl;
+        {
+            RecoveryStore store(*globals.fileManager);
+            assert(gui.saveRecovery(store));
+            auto records = store.candidates();
+            assert(records.size() == 1);
+            GameGUI recovered;
+            BinaryInputStream input(new MemoryStreamBackend(records[0].game.data(), records[0].game.size()));
+            input.seekFromStart(0);
+            assert(recovered.load(&input));
+            // Ordinary saving upgrades the legacy fixture's format version,
+            // which participates in the header checksum. Compare with the
+            // same game's ordinary save, and all non-header live components.
+            GameGUI ordinary;
+            auto ordinaryInput = ::input(bytes, false);
+            assert(ordinary.load(ordinaryInput.get()));
+            assert(recovered.game.checkSum() == ordinary.game.checkSum());
+            std::vector<Uint32> live, loaded;
+            gui.game.checkSum(&live); recovered.game.checkSum(&loaded);
+            assert(live.size() == loaded.size());
+            assert(std::equal(live.begin() + 1, live.end(), loaded.begin() + 1));
+            assert(recovered.game.stepCounter == gui.game.stepCounter);
+            assert(recovered.localPlayer == gui.localPlayer && recovered.localTeamNo == gui.localTeamNo);
+            Engine engine;
+            assert(engine.initRecoveryTask(records[0]).run());
+            assert(store.dismiss());
+            std::cout << "PASS recovery restores game checksum, tick, local player and incremental Engine initialization" << std::endl;
+        }
 
 		{
 			GameGUI restored;

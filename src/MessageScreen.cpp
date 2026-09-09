@@ -6,6 +6,7 @@
 
 MessageScreen::MessageScreen(const std::string& message, const std::vector<std::string>& captions)
 {
+    enablePhoneForm();
     if (captions.empty() || captions.size() > 3) throw std::invalid_argument("Messages need one to three choices");
     addWidget(new GAGGUI::TextArea(20, 100, 600, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", true, message.c_str()));
     for (unsigned i = 0; i < captions.size(); ++i)

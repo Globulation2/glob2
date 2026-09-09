@@ -53,3 +53,28 @@ void SinglePlayerFlow::replay(const std::string& filename)
 {
     launch([filename](Engine& engine) { return engine.loadReplayTask(filename); }, false);
 }
+
+
+void SinglePlayerFlow::recover()
+{
+    RecoveryStore store(*GAGCore::Toolkit::getFileManager());
+    recoverCandidate(std::make_shared<std::vector<RecoveryStore::Record>>(store.candidates()), 0);
+}
+
+void SinglePlayerFlow::recoverCandidate(std::shared_ptr<std::vector<RecoveryStore::Record>> records, size_t index)
+{
+    if (index >= records->size()) {
+        auto& strings = *GAGCore::Toolkit::getStringTable();
+        screens.push(std::make_unique<MessageScreen>(strings.getString("[recovery unavailable]"),
+            std::vector<std::string>{strings.getString("[ok]")}));
+        return;
+    }
+    screens.push(std::make_unique<GameLoadScreen>([records, index](Engine& engine) {
+        return engine.initRecoveryTask(std::move(records->at(index)));
+    }), [this, records, index](GAGGUI::Screen& screen, int result) {
+        if (result == 1)
+            screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(screen).takeEngine()));
+        else if (result == 2) recoverCandidate(records, index + 1);
+        // Cancel leaves both committed generations available for the next launch.
+    });
+}
