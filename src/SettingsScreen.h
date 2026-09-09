@@ -51,6 +51,7 @@ public:
 		UPGRADES=21,
 		FLAGSETTINGS=22,
 		PRESSEDSELECTOR=23,
+		MOTIONBLUR=24,
 	};
 
 	// IDs for the four sub-groups inside the "Building Defaults" tab. Stored in
@@ -75,7 +76,7 @@ private:
 	Selector *voiceVol;
 	Selector *gameSpeed;
 	Text *gameSpeedText;
-	OnOffButton *audioMute, *rememberUnitButton;
+	OnOffButton *audioMute, *rememberUnitButton, *motionBlurButton;
 	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
 	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
 	int unitRatioGroupNumbers[IntBuildingType::NB_BUILDING][6];
@@ -87,7 +88,7 @@ private:
 	int flagRadiusGroupNumbers[3];
 	Text *language, *display, *usernameText, *audio;
 	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
-	Text *actDisplay;
+	Text *actDisplay, *motionBlurText;
 	Text *rebootWarning;
 
 	void addNumbersFor(int low, int high, Number* widget);

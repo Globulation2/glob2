@@ -37,6 +37,7 @@ Settings::Settings()
 	mute = 0;
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
+	motionBlur = true;
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;
@@ -114,7 +115,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
 		READ_PARSED_INT(gameSpeed);
-		gameSpeed=std::max(static_cast<int>(GAME_SPEED_NORMAL),
+		READ_PARSED_INT(motionBlur);
+		gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 #ifndef YOG_SERVER_ONLY
 		GAGGUI::Screen::scrollWheelEnabled = scrollWheelEnabled;
@@ -178,6 +180,7 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
+		Utilities::streamprintf(stream, "motionBlur=%d\n", motionBlur);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
@@ -210,25 +213,26 @@ void Settings::save(std::string filename)
 
 int Settings::getGameSpeedStepDuration(void) const
 {
-	// The first five presets increase both simulation and rendering frequency.
+	// Sub-normal presets only lengthen the tick. From normal, the first five
+	// presets increase both simulation and rendering frequency.
 	// Beyond that, rendering is capped near 60-100 fps while simulation keeps
 	// accelerating. The final preset is deliberately uncapped.
-	static const int durations[GAME_SPEED_MAXIMUM+1] =
-		{40, 32, 25, 20, 16, 10, 8, 5, 3, 1, 0};
-	const int level=std::max(static_cast<int>(GAME_SPEED_NORMAL),
+	static const int durations[GAME_SPEED_MAXIMUM-GAME_SPEED_MINIMUM+1] =
+		{160, 80, 53, 40, 32, 25, 20, 16, 10, 8, 5, 3, 1, 0};
+	const int level=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 		std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
-	return durations[level];
+	return durations[level-GAME_SPEED_MINIMUM];
 }
 
 
 
 int Settings::getGameSpeedRenderInterval(void) const
 {
-	static const int intervals[GAME_SPEED_MAXIMUM+1] =
-		{1, 1, 1, 1, 1, 2, 2, 4, 5, 16, 16};
-	const int level=std::max(static_cast<int>(GAME_SPEED_NORMAL),
+	static const int intervals[GAME_SPEED_MAXIMUM-GAME_SPEED_MINIMUM+1] =
+		{1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 4, 5, 16, 16};
+	const int level=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 		std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
-	return intervals[level];
+	return intervals[level-GAME_SPEED_MINIMUM];
 }
 
 
@@ -238,18 +242,18 @@ std::string Settings::getGameSpeedText(void) const
 	if(gameSpeed>=GAME_SPEED_MAXIMUM)
 		return Toolkit::getStringTable()->getString("[maximum game speed]");
 
-	static const char *multipliers[GAME_SPEED_MAXIMUM] =
-		{"1x", "1.25x", "1.6x", "2x", "2.5x", "4x", "5x", "8x", "13x", "40x"};
-	const int level=std::max(static_cast<int>(GAME_SPEED_NORMAL),
+	static const char *multipliers[GAME_SPEED_MAXIMUM-GAME_SPEED_MINIMUM] =
+		{"0.25x", "0.5x", "0.75x", "1x", "1.25x", "1.6x", "2x", "2.5x", "4x", "5x", "8x", "13x", "40x"};
+	const int level=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 		std::min(static_cast<int>(GAME_SPEED_MAXIMUM-1), gameSpeed));
-	return multipliers[level];
+	return multipliers[level-GAME_SPEED_MINIMUM];
 }
 
 
 
 void Settings::changeGameSpeed(int amount)
 {
-	gameSpeed=std::max(static_cast<int>(GAME_SPEED_NORMAL),
+	gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 		std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed+amount));
 }
 

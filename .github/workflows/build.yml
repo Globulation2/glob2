@@ -132,6 +132,13 @@ jobs:
           scons -j$(nproc) release=1 server=0 speed-tests
           xvfb-run -a python3 test/run-game-speed-tests.py
 
+      - name: Test unit motion blur and composite cache
+        run: |
+          scons -j$(nproc) release=1 server=0 unit-blur-tests
+          ./build/src/UnitMotionBlurTest
+          xvfb-run -a ./build/src/UnitCompositeCacheTest
+          xvfb-run -a ./build/src/UnitCompositeCacheGPUCheck
+
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
       - name: Report the cache statistics

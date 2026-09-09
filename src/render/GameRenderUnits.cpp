@@ -21,6 +21,8 @@
 #include "Order.h"
 #include "Unit.h"
 #include "UnitAnimation.h"
+#include "UnitTiming.h"
+#include <algorithm>
 #include "UnitSkin.h"
 #include "Utilities.h"
 #include "GameGUI.h"
@@ -80,6 +82,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(dir<9);
 	assert(delta>=0);
 	assert(delta<256);
+	const int actionBase = imgid;
 	imgid=unitAnimationFrame(imgid, dir, delta);
 
 	// draw unit
@@ -87,7 +90,18 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	unitSprite->setBaseColor(teams[team]->color);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
-	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+	if (globalContainer->settings.motionBlur && dir != 8)
+	{
+		const int step = unitActionStepSpeed(unit->speed, unit->action, unit->dx, unit->dy);
+		const int span = std::max(1, step * globalContainer->settings.getGameSpeedRenderInterval());
+		std::vector<std::pair<int,int>> frames;
+		drawUnitMotionBlur(actionBase, dir, delta, span, [&](int frame, int alpha) {
+			frames.emplace_back(frame,alpha);
+		});
+		globalContainer->gfx->drawSurface(px-decX, py-decY, unitSprite->getCachedComposite(frames));
+	}
+	else
+		globalContainer->gfx->drawSurface(px-decX, py-decY, unitSprite->getCachedComposite({{imgid,255}}));
 
 	// draw selection
 	if (unit==view.selectedUnit)

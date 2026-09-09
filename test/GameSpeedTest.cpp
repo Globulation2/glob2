@@ -7,6 +7,7 @@
 #include "KeyboardManager.h"
 #include "GameGUIKeyActions.h"
 #include <GUISelector.h>
+#include <GUIButton.h>
 #include <GUIText.h>
 #include <GUIList.h>
 #include <StringTable.h>
@@ -24,6 +25,11 @@ struct TestSettingsScreen : SettingsScreen {
         for(auto w:widgets) if(auto s=dynamic_cast<Selector*>(w)) if(s->getTop()==285) return s;
         assert(false); return NULL;
     }
+    OnOffButton* blur() {
+        for(auto w:widgets) if(auto b=dynamic_cast<OnOffButton*>(w)) if(b->getTop()==240) return b;
+        assert(false);return nullptr;
+    }
+    void setBlur(bool enabled) { blur()->setState(enabled);onAction(blur(),BUTTON_STATE_CHANGED,0,0); }
     Text* speedLabel() {
         for(auto w:widgets) if(auto t=dynamic_cast<Text*>(w)) if(t->getTop()==265) return t;
         assert(false); return NULL;
@@ -32,7 +38,7 @@ struct TestSettingsScreen : SettingsScreen {
         for(auto w:widgets) if(auto l=dynamic_cast<List*>(w)) if(l->getLeft()==20 && l->getTop()==90) return l;
         assert(false); return NULL;
     }
-    void select(int value) { speed()->setValue(value); onAction(speed(), VALUE_CHANGED, value, 0); }
+    void select(int value) { speed()->setValue(value-Settings::GAME_SPEED_MINIMUM); onAction(speed(), VALUE_CHANGED, value, 0); }
 };
 
 static Uint32 resumeGame(Uint32, void* data) {
@@ -50,10 +56,14 @@ int main(int argc, char** argv) {
     settings=Settings();
     assert(settings.gameSpeed==Settings::GAME_SPEED_NORMAL);
     assert(settings.getGameSpeedStepDuration()==40);
+    assert(settings.motionBlur);
+    settings.motionBlur=false;settings.save("blur-roundtrip.txt");
+    {Settings loaded;loaded.load("blur-roundtrip.txt");assert(!loaded.motionBlur);}
+    settings.motionBlur=true;
     assert(settings.getGameSpeedRenderInterval()==1);
     assert(settings.getGameSpeedText()=="1x");
-    int previous=41;
-    for(int i=0;i<=Settings::GAME_SPEED_MAXIMUM;++i) {
+    int previous=161;
+    for(int i=Settings::GAME_SPEED_MINIMUM;i<=Settings::GAME_SPEED_MAXIMUM;++i) {
         settings.gameSpeed=i;
         assert(settings.getGameSpeedStepDuration()<previous);
         assert(settings.getGameSpeedRenderInterval()>=1);
@@ -63,17 +73,26 @@ int main(int argc, char** argv) {
         assert(loaded.gameSpeed==i);
     }
     assert(previous==0);
+    for(int i=0;i<3;++i) {
+        settings.gameSpeed=i-3;
+        const int durations[]={160,80,53};
+        const char* labels[]={"0.25x","0.5x","0.75x"};
+        assert(settings.getGameSpeedStepDuration()==durations[i]);
+        assert(settings.getGameSpeedRenderInterval()==1);
+        assert(settings.getGameSpeedText()==labels[i]);
+    }
+    settings.gameSpeed=10;
     settings.changeGameSpeed(1); assert(settings.gameSpeed==10);
-    settings.changeGameSpeed(-100); assert(settings.gameSpeed==0);
-    settings.changeGameSpeed(-1); assert(settings.gameSpeed==0);
+    settings.changeGameSpeed(-100); assert(settings.gameSpeed==-3);
+    settings.changeGameSpeed(-1); assert(settings.gameSpeed==-3);
     const std::string profile=globalContainer->fileManager->getDir(0);
     for(int invalid:{-99,999}) {
         { std::ofstream f(profile+"/speed-invalid.txt"); f<<"gameSpeed="<<invalid<<"\n"; }
         Settings loaded; loaded.load("speed-invalid.txt");
-        assert(loaded.gameSpeed==(invalid<0?0:10));
+        assert(loaded.gameSpeed==(invalid<0?-3:10));
     }
     { std::ofstream f(profile+"/speed-legacy.txt"); f<<"musicVolume=70\n"; }
-    Settings legacy; legacy.load("speed-legacy.txt"); assert(legacy.gameSpeed==0);
+    Settings legacy; legacy.load("speed-legacy.txt"); assert(legacy.gameSpeed==0); assert(legacy.motionBlur);
     std::cout<<"PASS: all presets, bounds, legacy settings, persistence\n";
 
     settings.screenWidth=640; settings.screenHeight=480;
@@ -82,7 +101,14 @@ int main(int argc, char** argv) {
     assert(SDLNet_Init()==0);
     {
         TestSettingsScreen screen;
-        assert(screen.speed()->getValue()==0);
+        assert(screen.speed()->getValue()==3);
+        assert(screen.blur()->getState());
+        screen.setBlur(false);assert(!settings.motionBlur);
+        for(int speed=-3;speed<0;++speed) {
+            screen.select(speed);
+            assert(settings.gameSpeed==speed);
+            assert(screen.speedLabel()->getText()=="Game speed: "+settings.getGameSpeedText());
+        }
         const int music=settings.musicVolume, voice=settings.voiceVolume;
         screen.select(10);
         assert(settings.gameSpeed==10);
@@ -95,23 +121,26 @@ int main(int argc, char** argv) {
         assert(screen.speedLabel()->getText()=="Vitesse du jeu: Maximale");
         screen.onAction(NULL, BUTTON_RELEASED, SettingsScreen::CANCEL, 0);
         assert(settings.gameSpeed==0);
+        assert(settings.motionBlur);
     }
     {
         TestSettingsScreen screen;
         screen.select(7);
+        screen.setBlur(false);
         screen.onAction(NULL, BUTTON_RELEASED, SettingsScreen::OK, 0);
-        Settings loaded; loaded.load(); assert(loaded.gameSpeed==7);
+        Settings loaded; loaded.load(); assert(loaded.gameSpeed==7);assert(!loaded.motionBlur);
     }
     {
         TestSettingsScreen screen;
-        assert(screen.speed()->getValue()==7);
+        assert(screen.speed()->getValue()==10);
+        assert(!screen.blur()->getState());
         assert(screen.speedLabel()->getText()=="Game speed: 8x");
     }
     {
         GameGUI gui;
         InGameOptionScreen screen(&gui);
-        assert(screen.gameSpeed->getValue()==7);
-        screen.gameSpeed->setValue(10);
+        assert(screen.gameSpeed->getValue()==10);
+        screen.gameSpeed->setValue(13);
         screen.onAction(screen.gameSpeed, VALUE_CHANGED, 10, 0);
         assert(settings.gameSpeed==10);
         assert(screen.gameSpeedText->getText()=="Game speed: Maximum");
@@ -129,6 +158,12 @@ int main(int argc, char** argv) {
         gui.adjustLocalTeam();
         gui.adjustInitialViewport();
         assert(gui.canChangeGameSpeed());
+        SDL_Event blurKey={};blurKey.type=SDL_KEYDOWN;blurKey.key.keysym.sym=SDLK_F8;
+        const bool beforeBlur=settings.motionBlur;
+        gui.processEvent(&blurKey);assert(settings.motionBlur!=beforeBlur);
+        {Settings loaded;loaded.load();assert(loaded.motionBlur==settings.motionBlur);}
+        gui.processEvent(&blurKey);assert(settings.motionBlur==beforeBlur);
+
         SDL_Event key={}; key.type=SDL_KEYDOWN;
         key.key.keysym.sym=SDLK_MINUS; key.key.keysym.mod=KMOD_CTRL;
         gui.processEvent(&key); assert(settings.gameSpeed==9);

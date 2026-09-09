@@ -473,6 +473,11 @@ namespace GAGCore
 		std::unique_ptr<const DrawableSurface> atlas = nullptr;
 #endif
 		static void checkAllSpritesDrawn();
+		using CompositeKey = std::pair<Color, std::vector<std::pair<int, int>>>;
+		std::map<CompositeKey, std::unique_ptr<DrawableSurface>> compositeCache;
+		std::unique_ptr<DrawableSurface> transientColor;
+		bool compositeOnly = false;
+		size_t compositeBytes = 0, compositeHits = 0, compositeMisses = 0;
 		Color actColor;
 	
 		friend class DrawableSurface;
@@ -499,6 +504,12 @@ namespace GAGCore
 		//! Set the color to a sprite's base color
 		virtual void setBaseColor(const Color& color) { actColor = color; }
 		
+		// Cache final alpha-over composites; retain entries for this sprite's lifetime.
+		DrawableSurface *getCachedComposite(const std::vector<std::pair<int, int>>& frames);
+		size_t getCompositeBytes() const { return compositeBytes; }
+		size_t getCompositeHits() const { return compositeHits; }
+		size_t getCompositeMisses() const { return compositeMisses; }
+		size_t getCompositeEntries() const { return compositeCache.size(); }
 		//! Return the width of index frame of the sprite
 		virtual int getW(int index);
 		//! Return the height of index frame of the sprite

@@ -207,7 +207,7 @@ void SettingsScreen::handleValueChanged(Widget* source)
 {
 	if(source==gameSpeed)
 	{
-		globalContainer->settings.gameSpeed=gameSpeed->getValue();
+		globalContainer->settings.gameSpeed=gameSpeed->getValue()+Settings::GAME_SPEED_MINIMUM;
 		updateGameSpeedText();
 		return;
 	}
@@ -227,7 +227,11 @@ void SettingsScreen::updateGameSpeedText(void)
 
 void SettingsScreen::handleButtonStateChanged(Widget* source)
 {
-	if (source==rememberUnitButton)
+	if (source==motionBlurButton)
+	{
+		globalContainer->settings.motionBlur=motionBlurButton->getState();
+	}
+	else if (source==rememberUnitButton)
 	{
 		globalContainer->settings.rememberUnit=rememberUnitButton->getState();
 	}
@@ -313,6 +317,7 @@ void SettingsScreen::retranslateUiStrings()
 
 	rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
 	scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
+	motionBlurText->setText(Toolkit::getStringTable()->getString("[motion blur]"));
 	updateGameSpeedText();
 
 	musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
