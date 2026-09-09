@@ -6,9 +6,9 @@ Sampling wraps within the current action and direction; it does not retain prior
 actions or directions. Standing/turning (direction 8), portraits, editor previews,
 offscreen indicators, and credits remain sharp.
 
-The effect defaults on. The main General Settings screen's **Motion blur** checkbox
+The effect defaults off. The main General Settings screen's **Motion blur** checkbox
 saves with OK and restores the previous value with Cancel. F8 during gameplay
-toggles and saves the same setting. Old preferences without the setting default on.
+toggles and saves the same setting. Old preferences without the setting default off. Explicit saved choices are preserved.
 
 The existing game-speed controls include 0.25x (160 ms/tick), 0.5x (80 ms), and
 0.75x (53 ms, approximately 0.755x). Each draws once per tick. Normal remains

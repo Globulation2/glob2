@@ -38,7 +38,7 @@ Settings::Settings()
 	mute = 0;
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
-	motionBlur = true;
+	motionBlur = false;
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;

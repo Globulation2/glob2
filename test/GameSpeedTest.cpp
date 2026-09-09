@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     settings=Settings();
     assert(settings.gameSpeed==Settings::GAME_SPEED_NORMAL);
     assert(settings.getGameSpeedStepDuration()==40);
-    assert(settings.motionBlur);
+    assert(!settings.motionBlur);
     settings.motionBlur=false;settings.save("blur-roundtrip.txt");
     {Settings loaded;loaded.load("blur-roundtrip.txt");assert(!loaded.motionBlur);}
     settings.motionBlur=true;
@@ -71,6 +71,7 @@ int main(int argc, char** argv) {
         settings.save("speed-roundtrip.txt");
         Settings loaded; loaded.load("speed-roundtrip.txt");
         assert(loaded.gameSpeed==i);
+        assert(loaded.motionBlur); // An explicit opt-in survives save/load.
     }
     assert(previous==0);
     for(int i=0;i<3;++i) {
@@ -92,7 +93,7 @@ int main(int argc, char** argv) {
         assert(loaded.gameSpeed==(invalid<0?-3:10));
     }
     { std::ofstream f(profile+"/speed-legacy.txt"); f<<"musicVolume=70\n"; }
-    Settings legacy; legacy.load("speed-legacy.txt"); assert(legacy.gameSpeed==0); assert(legacy.motionBlur);
+    Settings legacy; legacy.load("speed-legacy.txt"); assert(legacy.gameSpeed==0); assert(!legacy.motionBlur);
     std::cout<<"PASS: all presets, bounds, legacy settings, persistence\n";
 
     settings.screenWidth=640; settings.screenHeight=480;
