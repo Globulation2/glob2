@@ -147,6 +147,15 @@ jobs:
             "$harness"
           done
 
+      - name: Test front-end colony isolation and menu navigation
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          scons -j$(nproc) release=1 server=0 menu-colony-harness
+          ./build/src/MenuColonyHarness check data/menu/colony.bin
+          ./build/src/MenuColonyHarness navigation unused
+
       - name: Test game speed controls and playback
         run: |
           scons -j$(nproc) release=1 server=0 speed-tests

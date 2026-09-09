@@ -18,6 +18,8 @@ namespace GAGGUI
 		bool keepW;
 		bool keepH;
 		GAGCore::Font::Style style;
+		bool customStyle = false;
+		bool wordWrap = false;
 	
 		// cache, recomputed at least on paint
 		GAGCore::Font *fontPtr;
@@ -38,6 +40,8 @@ namespace GAGGUI
 		virtual const std::string getText() const { return text; }
 		virtual void setText(const std::string newText);
 		virtual void setStyle(GAGCore::Font::Style style);
+		//! Enable front-end wrapping within an explicitly sized text box.
+		void setWordWrap(bool enabled) { wordWrap = enabled; }
 		
 	protected:
 		void constructor(int x, int y, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int w, int h);
