@@ -7,7 +7,7 @@
 
 #define INT_ROUND_RSHIFT(x,places)  ( ((x)+(1<<((places)-1))) >> (places) )
 
-void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time)
+void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time, const bool advanceWind)
 {
 	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 	{
@@ -20,8 +20,11 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
 
 		static float offsetX=0, offsetY=0;
 		//TODO: magic numbers!!!
-		offsetX+=pn.Noise((float)time/windStability+0.7f)*windStability*maxCloudSpeed/1000.0f;
-		offsetY+=pn.Noise((float)time/windStability+1.6f)*windStability*maxCloudSpeed/1000.0f;
+		if (advanceWind)
+		{
+			offsetX+=pn.Noise((float)time/windStability+0.7f)*windStability*maxCloudSpeed/1000.0f;
+			offsetY+=pn.Noise((float)time/windStability+1.6f)*windStability*maxCloudSpeed/1000.0f;
+		}
 
 		vpX += (viewPortX-vpX%64+96)%64-32;
 		vpY += (viewPortY-vpY%64+96)%64-32;

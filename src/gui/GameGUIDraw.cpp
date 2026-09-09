@@ -647,7 +647,7 @@ void GameGUI::drawAll(int team)
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 	{
 		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState);
+		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState, gamePaused);
 	}
 	else
 	{
@@ -655,11 +655,11 @@ void GameGUI::drawAll(int team)
 
 		globalContainer->gfx->setClipRect();
 
-		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState);
+		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState, gamePaused);
 
 		// generate and draw particles
 		generateNewParticles(&visibleBuildings);
-		drawParticles();
+		drawParticles(!gamePaused);
 	}
 
 	///Draw ghost buildings

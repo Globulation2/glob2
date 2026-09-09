@@ -274,8 +274,9 @@ private:
 	void drawTopScreenBar(void);
 	//! Draw the infos that are over the others, like the message, the waiting players, ...
 	void drawOverlayInfos(void);
-	//! Draw the particles (eye-candy)
-	void drawParticles(void);
+	//! Draw the particles (eye-candy). @p advance steps their age and physics.
+	//! Emission is suppressed separately while the game is paused.
+	void drawParticles(bool advance);
 	//! Draw the panel: clip rect, background, tutorial highlight, panel buttons,
 	//! then defers to dispatchSelectionPanel for the body.
 	void drawPanel(void);

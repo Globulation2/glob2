@@ -232,10 +232,29 @@ int main(int argc, char **argv)
 	particle->x=112; particle->y=112; particle->lifeSpan=50;
 	particle->startImg=0; particle->endImg=2; particle->color=Color(255,255,255);
 	gui.particles.insert(particle);
-	gui.drawParticles();
+	gui.drawParticles(true);
 	copies(80,80,64,64);
 	assert(particle->age==1); // One update despite six displayed copies.
-	gui.particles.clear(); delete particle;
+	particle->vx=1; particle->vy=-2;
+	for (int frame=0; frame<100; ++frame)
+		gui.drawParticles(false);
+	assert(particle->age==1 && particle->x==112 && particle->y==112);
+	gui.drawParticles(true);
+	assert(particle->age==2 && particle->x==113 && particle->y==110);
+	std::set<Building*> smokeBuildings{building};
+	building->hp=1;
+	game.stepCounter=4; // An emission tick remains fixed during pause.
+	gui.gamePaused=true;
+	for (int frame=0; frame<100; ++frame)
+		gui.generateNewParticles(&smokeBuildings);
+	assert(gui.particles.size()==1);
+	gui.gamePaused=false;
+	gui.generateNewParticles(&smokeBuildings);
+	assert(gui.particles.size()==2);
+	for (auto *p : gui.particles) delete p;
+	gui.particles.clear();
+	building->hp=building->type->hpMax;
+	std::cout << "PASS pause freezes particle emission and physics; resume restarts both\n";
 	std::cout << "PASS ghosts, map markers and particles; one particle update\n";
 
 	if (gpu)
