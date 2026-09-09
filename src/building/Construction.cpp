@@ -190,7 +190,10 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	constructionResultState=NO_CONSTRUCTION;
 
 	if (!type->isVirtual)
+	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
+		owner->map->dirtyBuildingGradientsAround(posX, posY, type->width, type->height);
+	}
 	int midPosX=posX-type->decLeft;
 	int midPosY=posY-type->decTop;
 	owner->removeFromAbilitiesLists(this);
@@ -207,7 +210,10 @@ void Building::cancelConstruction(Sint32 unitWorking)
 	posY=midPosY+type->decTop;
 
 	if (!type->isVirtual)
+	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, gid);
+		owner->map->dirtyBuildingGradientsAround(posX, posY, type->width, type->height);
+	}
 
 	maxUnitWorking=maxUnitWorkingPrevious;
 	maxUnitInside=type->maxUnitInside;

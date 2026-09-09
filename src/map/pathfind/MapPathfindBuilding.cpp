@@ -56,8 +56,9 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 	const Uint16 *gradient=buildingGradient(building, swimClass);
 	if (gradient==NULL)
 		return false;
-	// Probe the cell and its 8 neighbours: the unit may stand on a cell the
-	// gradient treats as an obstacle.
+	// The unit's own cell can be an obstacle in this building's field - it may be
+	// standing on another building, or in a forbidden area - while a cell next to
+	// it is on a route. Take the first of the nine that carries a distance.
 	Uint16 g=gradient[coordToIndex(x, y)];
 	for (int d=0; d<8 && g<=GRADIENT_UNREACHABLE; d++)
 		g=gradient[coordToIndex(x+tabClose[d][0], y+tabClose[d][1])];
@@ -100,6 +101,18 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
 }
 
+
+void Map::dirtyBuildingGradientsAround(int x, int y, int w, int h)
+{
+	if (game==NULL)
+		return;
+	// A building's field records which cells were obstacles when it was computed.
+	// These cells have just stopped matching that, for every team's buildings
+	// within reach of them, so every such field has to be recomputed.
+	int border=GRADIENT_DIRTY_BORDER_TILES;
+	for (int t=0; t<game->mapHeader.getNumberOfTeams(); t++)
+		dirtyBuildingGradients(x-border, y-border, w+2*border, h+2*border, t);
+}
 
 void Map::dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber)
 {
