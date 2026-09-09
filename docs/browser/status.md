@@ -692,3 +692,28 @@ Scheduled execution is asserted through `screenClass`. Final rerun log:
 `/tmp/glob2-scheduled-match-controls.log`; final native session log:
 `/tmp/glob2-scheduled-match-session-controls.log`. The complete original browser
 release scope remains open; these results qualify this YOG scheduling change.
+
+## Shared LAN screen cleanup — 2026-09-08
+
+Desktop LAN host/join navigation, connection progress, lobby ownership and errors
+now use the shared screen stack. Connection/login/list waits advance once per
+frame with cancellation and a 10-second deadline per stage. The multiplayer tab
+requires a stack reference; its blocking fallback and the now-unused blocking
+LAN bring-up helper are removed. Browser networking still uses WebSockets.
+
+The native regression drives the production scheduled host and join paths. It
+passes cancellation and greeting-timeout cleanup against an unresponsive server,
+using supplied frame ticks for the deadline, followed by two real
+host/join/ready/leave/rejoin cycles and exact 616,018-byte map downloads. The
+native engine-session harness also passes. Evidence:
+`/tmp/glob2-lan-cleanup-final.log`, `build/lan-cleanup-final/host.log`, and
+`/tmp/glob2-lan-cleanup-session.log`. Release Wasm and native harness builds pass.
+
+This closes the LAN UI migration; the headless simulation driver remains an
+explicit native host loop. Remaining Asyncify callers, persistence/performance
+qualification, protocol/identity/recovery and distribution gates still need work.
+
+The full native desktop executable also builds successfully. Three Chromium/WebGL
+regressions pass: settings resize/return and browser/native TCP and verified-WSS
+matches, with matching checksums through at least 250 native ticks. Logs:
+`/tmp/glob2-lan-cleanup-desktop.log` and `/tmp/glob2-lan-cleanup-browser.log`.

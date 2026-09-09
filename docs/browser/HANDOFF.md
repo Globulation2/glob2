@@ -8,9 +8,12 @@ the shared screen stack. Login transitions are deferred until network listener
 dispatch returns. The native regression also covers destroying a completed tab,
 including an empty tab. See the latest status section for validation.
 The following change schedules YOG match loading/execution and settings too;
-its validation is recorded in the latest status section. LAN and headless hosts
-still have explicit synchronous paths, so Asyncify remains required. Do not conflate
-this menu migration with completed reconnect, identity or protocol work.
+its validation is recorded in the latest status section. LAN hosting/joining now
+use the same scheduled screens too, including cancellation and timeout handling.
+The multiplayer tab no longer has a blocking fallback, and the unused blocking
+LAN bring-up helper has been removed. The headless simulation driver retains its
+explicit host loop; other legacy dialogs still require Asyncify. Do not conflate
+these runtime changes with completed reconnect, identity or protocol work.
 
 Latest follow-up: browser reload/address-bar shortcuts pass automated checks
 with both renderers and actual Safari. The user uses **Colemak**: this Mac's UI

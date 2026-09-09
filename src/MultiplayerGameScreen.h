@@ -36,7 +36,7 @@ class MultiplayerGameScreen : public TabScreenWindow, public YOGClientChatListen
 {
 public:
 	///The screen must be provided with the client, the irc connection and the multiplayer game
-	MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat = std::shared_ptr<IRCTextMessageHandler>(), ScreenStack* screens = nullptr);
+	MultiplayerGameScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat = std::shared_ptr<IRCTextMessageHandler>());
 	virtual ~MultiplayerGameScreen();
 
 	enum
@@ -50,7 +50,7 @@ public:
 	};
 
 private:
-    ScreenStack* screens;
+    ScreenStack& screens;
     std::shared_ptr<YOGClient> client;
     void launchScheduledGame();
 	enum

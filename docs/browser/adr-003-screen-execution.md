@@ -230,3 +230,18 @@ YOG match settings also use a stack child and completion. LAN setup and the
 headless peer retain explicit synchronous hosts during migration; they consume
 pending launches after network update too. The optional stack argument on the
 shared multiplayer tab is transitional, not the supported platform end state.
+
+
+### LAN cleanup
+
+Desktop LAN hosting and discovery/join navigation now share the application
+screen stack. `LANSessionScreen` advances connection, login and room admission
+on timer updates, with a 10-second deadline per handshake stage. Cancel and failed
+admission close the connection; errors use scheduled notices. The lobby owns its
+multiplayer tab and breaks client/game ownership cycles when it closes. Discovery
+listening resumes when a join session returns.
+
+`MultiplayerGameScreen` now requires a stack reference for every caller. Its
+blocking settings/game fallback and the unused `YOGClientBringup` polling helper
+are removed. Browser networking remains WebSocket-based; this cleanup does not
+add UDP discovery or raw TCP capability to browsers.

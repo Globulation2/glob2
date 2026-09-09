@@ -175,7 +175,7 @@ public:
     int getLocalPlayer();
     void sessionStarted();
     void sessionEnded(bool quitApplication);
-    // Transitional host for LAN and headless callers pending scheduled migration.
+    // Explicit synchronous host for native headless callers.
     void startEngine();
 protected:
 	friend class YOGClient;

@@ -6,12 +6,14 @@
 
 #include "Glob2Screen.h"
 
+namespace GAGGUI { class ScreenStack; }
+
 class LANMenuScreen : public Glob2Screen
 {
 public:
 
 	///Constructs a LAN menu screen
-	LANMenuScreen();
+	LANMenuScreen(GAGGUI::ScreenStack& screens);
 	virtual ~LANMenuScreen();
 	void onAction(Widget *source, Action action, int par1, int par2);
 
@@ -21,8 +23,9 @@ public:
 		JoinedGame,
 		QuitMenu
 	};
-	
-	
+
+private:
+    GAGGUI::ScreenStack& screens;
 public:
 
 	enum
