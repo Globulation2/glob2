@@ -11,6 +11,31 @@ complete-match tests and gateway setup documentation remain required. See
 [current delivery scope](implementation.md); older references to the full
 original plan below describe the former scope, not release blockers to reopen.
 
+## Map chooser and legacy dialog cleanup — 2026-09-08
+
+Map preview/header failures no longer enter a blocking message box. Selection,
+metadata and preview are invalidated before another file is opened, preventing
+Enter from accepting the previous valid map after a failed read. Errors use the
+existing short localized title so the notice fits the minimum viewport. Thumbnail
+streams/temporaries release resources on exceptions and are marked loaded only
+on success. The unused blocking fertility dialog and stale includes are removed;
+active cooperative fertility calculations remain covered by the session harness.
+
+Desktop client and Wasm release builds pass, as does the native session harness
+including valid → missing/corrupt → valid selection recovery. Browser corruption,
+Enter rejection, 800×600 resize and return-to-menu checks pass across Chromium,
+Firefox and WebKit with both renderers (six cases). Logs:
+`/tmp/glob2-map-error-native-build.log`, `/tmp/glob2-map-error-web-build.log`,
+`/tmp/glob2-map-error-native-test.log`, `/tmp/glob2-map-error-browser-final.log`,
+`/tmp/glob2-map-error-browser-software.log`. CI includes the new chooser regression
+in both renderer passes. An initial browser test incorrectly used the gameplay
+frame counter for a menu; the corrected test verifies viewport application and
+navigation, and the native regression verifies selection state directly.
+
+Asyncify is still required by in-game load/replay continuation through
+`Engine::finishSession()` and the synchronous initialization error path. That is
+the next runtime migration; this change does not claim Asyncify removal.
+
 ## Browser audio defaults and CI follow-up — 2026-09-08
 
 Linux follow-up: reproduced the graphics/audio failures independently of Glob2

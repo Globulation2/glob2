@@ -15,6 +15,15 @@ New browser profiles now default to Mute, alongside disabled clouds. Existing
 saved settings override both defaults; desktop defaults are unchanged. Players
 can enable sound through the existing Settings checkbox.
 
+Map chooser failures now remain within the chooser instead of entering a blocking
+message box. Missing/corrupt files clear the previous selection and preview, and
+thumbnail allocations are released on exceptions. The unused legacy fertility
+dialog has been removed. Next runtime work: `Engine::finishSession()` calls
+`prepareNextGameSession()` for an in-game load/replay request, which still uses
+synchronous initialization and can reach `showMapLoadError()`. Migrate that
+continuation before removing Asyncify; do not mistake the already-cooperative
+initial launch paths for the remaining in-game reload path.
+
 The latest runtime change moves YOG login/registration, lobby tab ownership,
 map selection, join progress, map transfer navigation and error notices onto
 the shared screen stack. Login transitions are deferred until network listener

@@ -114,7 +114,6 @@ CLIENT_SOURCES = (
     'EngineRun.cpp',
     'FertilityCalculator.cpp',
     'FertilityScreen.cpp',
-    'FertilityCalculatorDialog.cpp',
     'Game.cpp',
     'Game_orders.cpp',
     'Game_io.cpp',

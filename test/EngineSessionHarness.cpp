@@ -8,6 +8,12 @@
 #include "MapEdit.h"
 #include "YOGLoginScreen.h"
 #include "SettingsScreen.h"
+#include "ChooseMapScreen.h"
+#include "GUIGlob2FileList.h"
+#include "GUIMapPreview.h"
+#include <BinaryStream.h>
+#include <FileManager.h>
+#include <Toolkit.h>
 #include "Application.h"
 #include "YOGClient.h"
 #include "YOGClientEvent.h"
@@ -107,6 +113,44 @@ int main(int argc, char** argv)
     globalContainer->settings.gameSpeed = 0;
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
+    {
+        struct SelectionProbe : ChooseMapScreen {
+            SelectionProbe() : ChooseMapScreen("maps", "map", false) {}
+            void select(const std::string& filename) {
+                for (auto* widget : widgets) if (auto* list = dynamic_cast<Glob2FileList*>(widget)) {
+                    list->addText(list->fileToList(filename));
+                    list->setSelection(list->getCount() - 1);
+                    list->selectionChanged();
+                    return;
+                }
+                require(false, "Map chooser has no file list");
+            }
+            bool hasPreview() {
+                for (auto* widget : widgets) if (auto* preview = dynamic_cast<MapPreview*>(widget))
+                    return preview->isThumbnailLoaded();
+                throw std::runtime_error("Map chooser has no preview");
+            }
+        } chooser;
+        chooser.beginExecution(globalContainer->gfx);
+        for (const char* invalid : {"browser_missing_fixture.map", "browser_corrupt_fixture.map"}) {
+            if (std::string(invalid).find("corrupt") != std::string::npos) {
+                GAGCore::BinaryOutputStream output(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(std::string("maps/") + invalid));
+                output.write("bad", 3, "truncated header");
+            }
+            chooser.select("balanced.map");
+            require(chooser.getSelectedType() == ChooseMapScreen::MAP && chooser.hasPreview(), "Valid map must be selectable");
+            chooser.select(invalid);
+            require(chooser.getSelectedType() == ChooseMapScreen::NONE && !chooser.hasPreview(), "Failed map read retained the previous selection or preview");
+            SDL_Event enter{}; enter.type = SDL_KEYDOWN; enter.key.keysym.sym = SDLK_RETURN;
+            chooser.handleExecutionEvent(enter);
+            require(chooser.isExecutionRunning(), "Invalid map was accepted by Enter");
+            chooser.drawExecution();
+        }
+        chooser.select("balanced.map");
+        require(chooser.getSelectedType() == ChooseMapScreen::MAP, "Chooser did not recover after invalid files");
+        chooser.endExecute(ChooseMapScreen::CANCEL); chooser.finishExecution();
+        std::cout << "PASS map selection clears stale data and recovers from missing/corrupt files without a modal loop" << std::endl;
+    }
     {
         SettingsScreen settings;
         settings.beginExecution(globalContainer->gfx);

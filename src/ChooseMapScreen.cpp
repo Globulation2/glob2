@@ -9,7 +9,6 @@
 #include "GlobalContainer.h"
 #include <FormatableString.h>
 #include <GUIButton.h>
-#include <GUIMessageBox.h>
 #include <GUIText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -138,6 +137,16 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 	if (action == LIST_ELEMENT_SELECTED)
 	{
 		Glob2FileList* active = activeFileList();
+		// Invalidate the old selection before attempting any fallible file reads.
+		validMapSelected = false;
+		selectedType = NONE;
+		mapDate->setText("");
+		mapVersion->setText("");
+		mapInfo->setText("");
+		mapSize->setText("");
+		mapName->setText("");
+		mapPreview->setMapThumbnail(MapThumbnail());
+		title->setText(Toolkit::getStringTable()->getString(type1 == MAP ? "[choose map]" : "[choose game]"));
 		if (active->selection())
 		{
 			std::string mapFileName = active->listToFile(active->getText(par1).c_str());
@@ -175,21 +184,15 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			}
 			catch (std::exception &e)
 			{
-				// Show error message
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
-
+				std::cerr << "ChooseMapScreen: " << e.what() << std::endl;
 				validMapSelected = false;
+				selectedType = NONE;
 			}
-		}
-		else 
-		{
-			mapDate->setText("");
-			mapVersion->setText("");
-			mapInfo->setText("");
-			mapSize->setText("");
-			mapName->setText("");
-			mapPreview->setMapThumbnail("");
-			validMapSelected = false;
+			if (!validMapSelected)
+			{
+				mapPreview->setMapThumbnail(MapThumbnail());
+				title->setText(Toolkit::getStringTable()->getString("[Damaged Map]"));
+			}
 		}
 	}
 	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))

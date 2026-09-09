@@ -245,3 +245,17 @@ listening resumes when a join session returns.
 blocking settings/game fallback and the unused `YOGClientBringup` polling helper
 are removed. Browser networking remains WebSocket-based; this cleanup does not
 add UDP discovery or raw TCP capability to browsers.
+
+### Map selection error cleanup
+
+Map selection clears its previous admission state and preview before opening
+another file. Missing/corrupt files show the existing localized "Damaged Map"
+title in the chooser; no nested message-box loop is entered. The short title
+fits the supported minimum viewport. Selecting another valid file restores the
+normal title and selection. Thumbnail input streams and temporary previews use
+automatic ownership, and a thumbnail is marked loaded only after decoding.
+
+The unused `FertilityCalculatorDialog` and its stale includes have been removed.
+Active fertility work already uses the cancellable cooperative `FertilityScreen`.
+This does not yet remove Asyncify: in-game load/replay continuation still reaches
+the synchronous Engine initialization wrappers and their legacy error notice.

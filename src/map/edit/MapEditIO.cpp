@@ -14,7 +14,6 @@
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "GUIMessageBox.h"
 #include "SDLCompat.h"
 
