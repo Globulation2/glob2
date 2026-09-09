@@ -1,7 +1,6 @@
 """Standard MIDI export and PCM WAV writing; no instrument synthesis."""
 import struct
 import wave
-import numpy as np
 SR, PPQ = 44100, 480
 
 def vlq(n):
@@ -35,7 +34,10 @@ def midi(c,notes,path):
 
 
 def wav(path,a):
-    assert np.isfinite(a).all() and np.max(np.abs(a))<1
+    import numpy as np
+
+    if not np.isfinite(a).all() or np.max(np.abs(a)) >= 1:
+        raise ValueError('PCM samples must be finite and below full scale')
     with wave.open(str(path),'wb') as f:
         f.setparams((2,2,SR,0,'NONE','not compressed'))
         f.writeframes((a*32767).astype('<i2').tobytes())

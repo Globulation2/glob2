@@ -17,12 +17,12 @@ The Python generators compose original notes and export editable Type-1 MIDI.
 All audio is rendered by FluidSynth 2.6.0 using GeneralUser GS 2.0.3. The bank's
 source revision and SHA-256 are pinned in `soundfonts/manifest.json`; its license
 is included alongside that manifest. `render.py` is the shared rendering entry
-point. There are no hand-written instrument or drum synthesizers.
+point.
 
 Install FluidSynth 2.6.0, Python 3, NumPy, and libsndfile with Ogg/Vorbis support.
 On macOS the Homebrew formula is `fluid-synth`; Linux and Windows use the same
 FluidSynth library and SoundFont. Set `FLUIDSYNTH_LIBRARY` to the shared library
-path if it is not discovered automatically. No Apple framework is required.
+path if it is not discovered automatically.
 The game plays pre-rendered Ogg files and needs no MIDI synth at runtime.
 
 From the repository root:
@@ -36,10 +36,9 @@ python3 music/render.py
 python3 music/install_sets.py
 ```
 
-Pass set IDs to render or install only selected sets, e.g. `python3 music/fetch_soundfont.py
-python3 music/render.py
-tidepool`. Pass `--sound-bank /path/to/bank.sf2` to audition another compatible
-premade bank. MIDI program numbers and pan settings select each instrument;
+Pass set IDs to render or install only selected sets, for example
+`python3 music/render.py tidepool`. Pass `--sound-bank /path/to/bank.sf2` to audition
+another compatible premade bank. MIDI program numbers and pan settings select each instrument;
 percussion uses the GM drum bank on channel 10. Program changes must be at tick zero.
 Save DAW edits separately before regenerating MIDI files.
 
