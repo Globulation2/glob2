@@ -431,6 +431,10 @@ private:
 		int maxLevel;
 		int minValue;
 		Unit* choosen;
+		//! The resource `choosen` is being hired for. Held here rather than written
+		//! onto each candidate, so a unit that is considered and passed over keeps
+		//! the job it already had.
+		int resource;
 	};
 
 	/// Whether a unit is a possible hire at all: harvest-capable, idle, healthy,

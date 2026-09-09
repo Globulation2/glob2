@@ -227,14 +227,12 @@ void Building::selectUnitCarryingWantedResource(const int* targets, const int* s
 		int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 		int value=distBuilding-(timeLeft>>1);
 		int level = bringResourcesLevel(unit);
-		// Every carrying candidate has its destinationPurpose set to the
-		// resource it carries, not only the one finally chosen.
-		unit->destinationPurpose=r;
 		if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
 		{
 			sel.minValue=value;
 			sel.maxLevel=level;
 			sel.choosen=unit;
+			sel.resource=r;
 		}
 	}
 }
@@ -260,7 +258,7 @@ void Building::selectFetcher(const BringResourcesCandidate* candidates, int want
 			sel.minValue=value;
 			sel.maxLevel=level;
 			sel.choosen=unit;
-			unit->destinationPurpose=wantedResource;
+			sel.resource=wantedResource;
 		}
 	}
 }
@@ -288,6 +286,7 @@ bool Building::subscribeToBringResourcesStep()
 		sel.maxLevel = -1;
 		sel.minValue = INT_MAX;
 		sel.choosen = NULL;
+		sel.resource = -1;
 
 		// A unit already holding something we want delivers without a fetch trip,
 		// so it is taken ahead of the apportionment, which only directs the units
@@ -315,6 +314,7 @@ bool Building::subscribeToBringResourcesStep()
 
 		if (sel.choosen)
 		{
+			sel.choosen->destinationPurpose = sel.resource;
 			if (sel.choosen->attachedBuilding != NULL)
 				sel.choosen->attachedBuilding->removeUnitFromWorking(sel.choosen);
 			unitsWorking.push_back(sel.choosen);
