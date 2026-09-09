@@ -85,8 +85,11 @@ public:
 	 * @param w width of the alphaMap
 	 * @param h height of the alphaMap
 	 * @param time time
+	 * @param advanceWind whether the wind offset may accumulate this frame.
+	 *        The offset is an accumulator, so freezing @p time alone does not
+	 *        hold the clouds still.
 	 */
-	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time);
+	void compute(const int viewPortX, const int viewPortY, const int viewPortWidth, const int viewPortHeight, const int time, const bool advanceWind = true);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
 };
 

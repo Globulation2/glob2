@@ -45,7 +45,7 @@ namespace
 	}
 }
 
-void GameGUI::drawParticles(void)
+void GameGUI::drawParticles(bool advance)
 {
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); )
 	{
@@ -62,14 +62,16 @@ void GameGUI::drawParticles(void)
 
 			continue;
 		}
-		else
+		else if (advance)
+		{
 			p->age++;
 
-		// do stupid physics
-		p->x += p->vx;
-		p->y += p->vy;
-		p->vx += p->ax;
-		p->vy += p->ay;
+			// do stupid physics
+			p->x += p->vx;
+			p->y += p->vy;
+			p->vx += p->ax;
+			p->vy += p->ay;
+		}
 
 		globalContainer->particles->setBaseColor(p->color);
 
