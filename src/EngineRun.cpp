@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <Toolkit.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
 
@@ -514,6 +515,12 @@ void Engine::beginSession(Uint64 now)
     st.startTime = now;
     session = st;
     automaticGameStartTick = now;
+    recoveryFinishFailed = false;
+    if (RecoveryStore::enabled() && !multiplayer && !globalContainer->replaying) {
+        recovery = std::make_unique<RecoveryStore>(*GAGCore::Toolkit::getFileManager());
+        recoveryAttempted = false;
+        checkpointRecovery(true);
+    }
 }
 
 bool Engine::stepSession(Uint64 now)
@@ -555,6 +562,7 @@ bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
     st.wasReadyLastTick = readyNow;
     if (!globalContainer->runNoX) st.needToBeTime += st.speed;
     handleExitRequest();
+    if (gui.isRunning) checkpointRecovery();
     return gui.isRunning;
 }
 
@@ -570,6 +578,13 @@ bool Engine::finishSession()
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
     if (multiplayer) reportMultiplayerResult();
+    // Publish final game/campaign progress before marking this session closed.
+    // On failure retain the previous checkpoint for a later recovery attempt.
+    if (recovery && (!gui.saveRecovery(*recovery) || !recovery->dismiss())) {
+        recoveryFinishFailed = true;
+        std::cerr << "Final recovery/campaign save failed" << std::endl;
+    }
+    recovery.reset();
     teardownSession();
     session.reset();
     sessionInput.clear();
@@ -588,4 +603,18 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
             GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks64()));
     }
     doRunOnceAgain = finishSession();
+}
+
+
+void Engine::checkpointRecovery(bool force)
+{
+    if (!recovery || !session || !gui.isRunning) return;
+    const auto step = gui.game.stepCounter;
+    const auto now = SDL_GetTicks64();
+    if (recoveryAttempted && (step == recoveryStep || (!force && now - recoveryTime < 30000))) return;
+    // Rate-limit failed writes as well, rather than stalling every frame.
+    recoveryAttempted = true;
+    recoveryStep = step;
+    recoveryTime = now;
+    gui.saveRecovery(*recovery);
 }

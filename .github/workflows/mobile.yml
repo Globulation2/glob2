@@ -22,7 +22,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install build utilities
-        run: sudo apt-get update -qq && sudo apt-get install -y scons pkg-config unzip zip autoconf automake libtool
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y pkg-config unzip zip autoconf automake libtool
+          python3 -m venv build/mobile-tools/build-venv
+          build/mobile-tools/build-venv/bin/pip install -r mobile/build-requirements.txt
+          echo "$PWD/build/mobile-tools/build-venv/bin" >> "$GITHUB_PATH"
       - name: Check build isolation and artifact validation
         run: python3 -m unittest discover -s tests/build_system -v
       - name: Install verified NDK
@@ -45,6 +49,32 @@ jobs:
         run: python3 mobile/android.py build --arch '${{ matrix.arch }}' --release
       - name: Sign developer APK
         run: python3 mobile/android.py sign --arch '${{ matrix.arch }}' --release
+      - name: Install pinned emulator and image
+        if: matrix.arch == 'x86_64'
+        run: |
+          python3 mobile/setup_tools.py --emulator
+          sudo chmod 666 /dev/kvm
+          python3 mobile/emulator.py configure --arch x86_64
+      - name: Boot isolated emulator
+        if: matrix.arch == 'x86_64'
+        shell: bash
+        run: |
+          mkdir -p build/mobile-smoke
+          nohup python3 mobile/emulator.py adb-server --arch x86_64 > build/mobile-smoke/adb-server.log 2>&1 &
+          nohup python3 mobile/emulator.py run --arch x86_64 > build/mobile-smoke/emulator.log 2>&1 &
+          for attempt in $(seq 1 120); do
+            if python3 mobile/emulator.py status --arch x86_64; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Exercise native startup and lifecycle
+        if: matrix.arch == 'x86_64'
+        run: |
+          python3 mobile/android.py install --arch x86_64 --release --serial emulator-5580 --adb-port 15037
+          python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64
+      - name: Stop isolated emulator
+        if: always() && matrix.arch == 'x86_64'
+        run: python3 mobile/emulator.py stop --arch x86_64 || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -58,4 +88,46 @@ jobs:
             build/android/**/android-project/app/build/outputs/apk/release/*.json
             build/android/**/android-project/app/build/outputs/native-debug-symbols/**
             build/android/**/lib/*.so
+            build/mobile-smoke/**
+          if-no-files-found: ignore
+  ios-simulator:
+    name: iOS ARM64 simulator
+    runs-on: macos-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build drivers
+        run: |
+          brew install autoconf automake libtool pkg-config
+          python3 -m venv build/mobile-tools/build-venv
+          build/mobile-tools/build-venv/bin/pip install -r mobile/build-requirements.txt
+          echo "$PWD/build/mobile-tools/build-venv/bin" >> "$GITHUB_PATH"
+      - name: Build pinned dependencies and app
+        run: |
+          python3 mobile/dependencies.py --target ios --environment simulator --release
+          python3 mobile/ios.py build --environment simulator --release
+      - name: Boot isolated iOS simulator
+        run: |
+          mkdir -p build/mobile-smoke-ios build/mobile-tools/ios-simulators
+          device=$(xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" create Glob2-Mobile com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-26-5)
+          echo "GLOB2_SIMULATOR=$device" >> "$GITHUB_ENV"
+          xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" boot "$device"
+          xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" bootstatus "$device" -b
+      - name: Exercise iOS startup and lifecycle
+        run: |
+          python3 mobile/ios.py install --release --device "$GLOB2_SIMULATOR"
+          python3 mobile/ios_smoke.py --device "$GLOB2_SIMULATOR"
+      - name: Shut down isolated simulator
+        if: always() && env.GLOB2_SIMULATOR != ''
+        run: xcrun simctl --set "$PWD/build/mobile-tools/ios-simulators" shutdown "$GLOB2_SIMULATOR"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-simulator-diagnostics
+          path: |
+            build/mobile-smoke-ios/**
+            build/ios/**/toolchain.json
+            build/ios/**/vcpkg-buildtrees/**/*.log
+            build/ios/**/xcode-project/build/Release-iphonesimulator/*.dSYM/**
           if-no-files-found: ignore

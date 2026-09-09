@@ -12,6 +12,7 @@
 #include "GameGUIKeyActions.h"
 #include "MapEditKeyActions.h"
 #include "Utilities.h"
+#include "RecoveryStore.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <cassert>
@@ -40,6 +41,46 @@ static std::string contents(const fs::path& path)
 	std::ifstream file(path, std::ios::binary);
 	assert(file);
 	return std::string(std::istreambuf_iterator<char>(file), {});
+}
+
+static void checkRecovery(FileManager& files, const fs::path& directory)
+{
+    RecoveryStore store(files, "recovery-test");
+    const auto write = [](const char* text) {
+        return [text](OutputStream& output) { output.write(text, std::strlen(text), "game"); };
+    };
+    const auto bytes = [](const RecoveryStore::Record& record) { return std::string(record.game.begin(), record.game.end()); };
+    assert(!store.pending() && store.candidates().empty());
+    assert(store.checkpoint(write("first"), "Campaign", "Mission"));
+    assert(store.pending() && store.candidates().size() == 1);
+    assert(store.checkpoint(write("second"), "Campaign", "Mission"));
+    auto records = store.candidates();
+    assert(records.size() == 2 && bytes(records[0]) == "second" && bytes(records[1]) == "first");
+    assert(records[0].campaign == "Campaign" && records[0].mission == "Mission");
+    assert(!store.checkpoint([](OutputStream&) { throw std::runtime_error("interrupted recovery serialization"); }));
+    assert(bytes(store.candidates()[0]) == "second");
+    const auto latest = directory / "recovery-test/slot0";
+    const auto complete = contents(latest);
+    // Every possible truncation and a checksum-breaking bit flip must fall
+    // back to the intact generation from the same game session.
+    for (size_t cut = 0; cut < complete.size(); ++cut) {
+        { std::ofstream file(latest, std::ios::binary); file.write(complete.data(), cut); }
+        records = store.candidates();
+        assert(records.size() == 1 && bytes(records[0]) == "first");
+    }
+    auto corrupt = complete; corrupt[corrupt.size()/2] ^= 1;
+    { std::ofstream file(latest, std::ios::binary); file.write(corrupt.data(), corrupt.size()); }
+    assert(store.candidates().size() == 1 && bytes(store.candidates()[0]) == "first");
+    { std::ofstream file(latest, std::ios::binary); file.write(complete.data(), complete.size()); }
+    const auto restored = store.materialize(store.candidates()[0]);
+    assert(!restored.empty() && contents(directory / restored) == "second");
+    RecoveryStore nextGame(files, "recovery-test");
+    assert(nextGame.checkpoint(write("new game")));
+    records = nextGame.candidates();
+    assert(records.size() == 1 && bytes(records[0]) == "new game");
+    assert(nextGame.dismiss() && !nextGame.pending() && nextGame.candidates().empty());
+    assert(fs::exists(latest)); // Dismissal never deletes manually useful data.
+    std::cout << "PASS recovery generations, metadata, serialization failure, all truncations, checksum corruption, session isolation and dismissal" << std::endl;
 }
 
 static void checkAtomicWrites(FileManager& files, const fs::path& directory)
@@ -446,6 +487,7 @@ int main(int argc, char **argv)
 	globals.load();
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+    checkRecovery(*globals.fileManager, directory);
     checkPreferences(directory);
 	checkMapHeaders();
     checkCampaignProgress(directory);
@@ -491,6 +533,33 @@ int main(int argc, char **argv)
 			assert(bytes == expected);
 		}
 		std::cout << "PASS atomic autosave bytes match direct serialization" << std::endl;
+        {
+            RecoveryStore store(*globals.fileManager);
+            assert(gui.saveRecovery(store));
+            auto records = store.candidates();
+            assert(records.size() == 1);
+            GameGUI recovered;
+            BinaryInputStream input(new MemoryStreamBackend(records[0].game.data(), records[0].game.size()));
+            input.seekFromStart(0);
+            assert(recovered.load(&input));
+            // Ordinary saving upgrades the legacy fixture's format version,
+            // which participates in the header checksum. Compare with the
+            // same game's ordinary save, and all non-header live components.
+            GameGUI ordinary;
+            auto ordinaryInput = ::input(bytes, false);
+            assert(ordinary.load(ordinaryInput.get()));
+            assert(recovered.game.checkSum() == ordinary.game.checkSum());
+            std::vector<Uint32> live, loaded;
+            gui.game.checkSum(&live); recovered.game.checkSum(&loaded);
+            assert(live.size() == loaded.size());
+            assert(std::equal(live.begin() + 1, live.end(), loaded.begin() + 1));
+            assert(recovered.game.stepCounter == gui.game.stepCounter);
+            assert(recovered.localPlayer == gui.localPlayer && recovered.localTeamNo == gui.localTeamNo);
+            Engine engine;
+            assert(engine.initRecoveryTask(records[0]).run());
+            assert(store.dismiss());
+            std::cout << "PASS recovery restores game checksum, tick, local player and incremental Engine initialization" << std::endl;
+        }
 
 		{
 			GameGUI restored;

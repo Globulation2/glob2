@@ -32,7 +32,23 @@ Suggested first message to the new agent:
 > in-game UI, maintain compatibility with the browser branch, and update draft
 > PR #208 with honest evidence and remaining limitations.
 
-## Latest work: native save synchronization
+## Current continuation: finish remaining mobile work
+
+The user said to keep going until the remaining items are complete. Follow
+[remaining-work](remaining-work.md) for the active implementation and qualification
+list. Recovery and emulator/CI automation are the current checkpoint; native
+import/export, platform transports, longer validation and external device gates
+remain. Do not stop after a status report when independent implementation work is
+available. The user is unavailable for Pixel 6 testing until morning.
+
+Current recovery and smoke validation is recorded at the top of status.md.
+The browser base has advanced to `246a47d50`; its nine new commits include scheduled
+LAN/YOG startup, cooperative in-game reload, removal of Asyncify, live interpreter
+lifetime fixes and headless map-header isolation. Reconcile these in this worktree
+once the current checkpoint is committed. Preserve phone controls/recovery when
+resolving Engine/GameSessionScreen changes. PR #208 currently reports conflicts.
+
+## Previous work: native save synchronization
 
 The user is unavailable for Pixel 6 testing until morning and authorized other
 implementation work. Atomic native writes now sync file contents before rename

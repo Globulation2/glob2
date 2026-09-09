@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Install checksum-pinned Gradle and optional JDK in the isolated build tree."""
+import argparse
 import json
 from pathlib import Path
 import platform
@@ -13,10 +14,19 @@ from setup_ndk import digest, ROOT, BuildLock
 
 
 def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--emulator',action='store_true',help='Also install the pinned host emulator and matching API 35 image')
+    args=parser.parse_args()
     lock=json.loads((ROOT/'mobile/android-tools.json').read_text())
     tools=ROOT/'build/mobile-tools';tools.mkdir(parents=True,exist_ok=True)
     with BuildLock(tools):
         selected=[lock['gradle']]
+        if args.emulator:
+            emulators=json.loads((ROOT/'mobile/emulator.json').read_text())['archives']
+            host=platform.system()+'-'+platform.machine()
+            if host not in emulators: raise ValueError('No pinned emulator for '+host)
+            arch='arm64-v8a' if platform.machine() in ('arm64','aarch64') else 'x86_64'
+            selected.extend([emulators[host],emulators[arch]])
         sdk=lock.get('sdk-tools-'+platform.system())
         if sdk: selected.append(sdk)
         jdk=lock.get('jdk-'+platform.system()+'-'+platform.machine())

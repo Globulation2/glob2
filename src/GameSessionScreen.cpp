@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameSessionScreen.h"
 #include "Engine.h"
+#include "MessageScreen.h"
+#include <Toolkit.h>
+#include <StringTable.h>
 #include <stdexcept>
 
 GameSessionScreen::GameSessionScreen(GAGGUI::ScreenStack& stack, std::unique_ptr<Engine> engine)
@@ -37,7 +40,14 @@ void GameSessionScreen::updateExecution(Uint32 tick)
         finished = true;
         auto endScreen = engine->endRunScreen(stack);
         if (!endScreen) endExecute(QUIT_APPLICATION);
-        else stack.push(std::move(endScreen), [this](GAGGUI::Screen&, int result) { endExecute(result); });
+        else {
+            stack.push(std::move(endScreen), [this](GAGGUI::Screen&, int result) { endExecute(result); });
+            if (engine->recoveryCompletionFailed()) {
+                auto& strings = *GAGCore::Toolkit::getStringTable();
+                stack.push(std::make_unique<MessageScreen>(strings.getString("[recovery finish failed]"),
+                    std::vector<std::string>{strings.getString("[ok]")}));
+            }
+        }
     }
 }
 
@@ -50,6 +60,7 @@ void GameSessionScreen::handleExecutionEvent(SDL_Event event)
 void GameSessionScreen::cancelExecutionInput()
 {
     input.clear();
+    engine->checkpointRecovery(true);
     engine->cancelSessionInput();
     // Time spent under a child screen must not become simulation catch-up lag.
     resetClock = true;

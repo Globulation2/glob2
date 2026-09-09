@@ -86,9 +86,12 @@ preview, and there is no TestFlight/store distribution for this checkpoint.
 6. After a completed save, force-stop the app, reopen it and load that save;
    record any error and noticeable save delay. This checks completed-save
    persistence, not recovery of progress since the last save.
-7. Background briefly and return. Report any jump, stuck input, lost audio,
+7. With the updated recovery build, background a single-player game, force-stop
+   it, reopen and choose Recover game. Check the restored mission and local team;
+   Later must keep the checkpoint, while Discard recovery must clear the prompt.
+8. Background briefly and return. Report any jump, stuck input, lost audio,
    missing controls or save issue. Do not assume termination recovery works.
-8. If convenient, try replay playback and its pause/speed controls; this is an
+9. If convenient, try replay playback and its pause/speed controls; this is an
    area still needing qualification.
 
 For each issue, provide a screenshot or short recording, orientation, reproduction

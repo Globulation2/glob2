@@ -336,7 +336,7 @@ void GameGUI::syncStep(void)
 		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");
 		if (!Toolkit::getFileManager()->writeAtomically(fileName, [&](OutputStream& stream) { save(&stream, name); }))
-			std::cerr << "GameGUI::syncStep: autosave failed; previous save retained" << std::endl;
+			std::cerr << "GameGUI::syncStep: autosave failed; save durability uncertain" << std::endl;
 	}
 }
 

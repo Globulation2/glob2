@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <ApplicationHost.h>
 #include <SDL.h>
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
 
 namespace GAGCore::ApplicationHost
 {
@@ -35,7 +38,11 @@ class NativePersistence : public Persistence {
 }
 std::unique_ptr<Persistence> persistStorage() { return std::make_unique<NativePersistence>(); }
 void importChanged(const char*) {}
-void screenChanged(const char*) {}
+void screenChanged(const char* name) {
+#ifdef GLOB2_MOBILE
+    SDL_Log("Glob2 screen ready: %s", name);
+#endif
+}
 void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}
 void exited(int) {}

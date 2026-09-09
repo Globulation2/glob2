@@ -29,6 +29,9 @@
 #include "GlobalContainer.h"
 #include "SoundMixer.h"
 #include <SDL_net.h>
+#include <FileManager.h>
+#include <BinaryStream.h>
+#include <fstream>
 #include <iostream>
 #include <filesystem>
 #include <stdexcept>
@@ -126,6 +129,60 @@ int main(int argc, char** argv)
         require(application.frame(SDL_GetTicks(), {}), "Shutdown must present its completion before releasing graphics");
         require(!application.frame(SDL_GetTicks(), {}), "Native shutdown must complete after persistence");
         std::cout << "PASS application quit waits for final persistence" << std::endl;
+    }
+    {
+        SDL_setenv("GLOB2_RECOVERY_TEST", "1", 1);
+        auto& files = *globalContainer->fileManager;
+        RecoveryStore store(files);
+        require(store.dismiss(), "Recovery fixture cleanup failed");
+        {
+            auto engine = std::make_unique<Engine>();
+            require(engine->initCampaignTask("maps/balanced.map").run(), "Recovery fixture load failed");
+            GAGGUI::ScreenStack screens(*globalContainer->gfx);
+            screens.push(std::make_unique<GameSessionScreen>(screens, std::move(engine)));
+            for (unsigned i = 0; i < 10; ++i) screens.frame(i * 40, {});
+            require(store.pending() && store.candidates().size() == 1, "Session entry must publish initial recovery");
+            SDL_Event background{}; background.type = SDL_APP_WILLENTERBACKGROUND;
+            screens.frame(400, {background});
+            require(store.candidates().size() == 2, "Background must checkpoint the advanced game");
+            screens.stop();
+        }
+        const auto valid = store.candidates().front().game;
+        Campaign campaign;
+        campaign.setName("Recovery fixture");
+        CampaignMapEntry mission("Recovery mission", "maps/balanced.map");
+        mission.unlockMap(); campaign.appendMap(mission);
+        require(campaign.save(true), "Recovery campaign save failed");
+        require(store.checkpoint([&](GAGCore::OutputStream& output) { output.write(valid.data(), valid.size(), "game"); },
+                                 campaign.getName(), mission.getMapName()), "Recovery seed failed");
+        require(store.checkpoint([](GAGCore::OutputStream& output) { output.write("broken", 6, "game"); },
+                                 campaign.getName(), mission.getMapName()), "Invalid game envelope seed failed");
+        {
+            GAGGUI::ScreenStack screens(*globalContainer->gfx);
+            SinglePlayerFlow flow(screens);
+            flow.recover();
+            unsigned frames = 0;
+            // Successful session entry publishes a fresh identity, leaving only
+            // its new generation. A failed first candidate must use a new Engine.
+            while (store.candidates().size() != 1) {
+                screens.frame(frames * 40, {});
+                require(++frames < 2000, "Recovery fallback did not enter gameplay");
+            }
+            const auto restored = store.candidates().front();
+            require(restored.game.size() > 6 && restored.campaign == campaign.getName() && restored.mission == mission.getMapName(),
+                    "Recovery must preserve campaign ownership and mission context");
+            screens.stop();
+        }
+        {
+            Application application;
+            application.frame(0, {});
+            SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+            application.frame(40, {escape}); application.frame(80, {});
+            require(store.pending(), "Later must preserve the recovery record");
+        }
+        require(store.dismiss() && !store.pending(), "Explicit recovery dismissal failed");
+        SDL_setenv("GLOB2_RECOVERY_TEST", "0", 1);
+        std::cout << "PASS initial/background recovery, invalid-game fallback, campaign restoration and Later retention" << std::endl;
     }
     {
         struct LoginProbe : YOGLoginScreen {

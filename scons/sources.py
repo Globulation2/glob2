@@ -109,6 +109,7 @@ CLIENT_SOURCES = (
     'GameSessionScreen.cpp',
     'GameLoadScreen.cpp',
     'FileImport.cpp',
+    'RecoveryStore.cpp',
     'SinglePlayerFlow.cpp',
     'EngineInit.cpp',
     'EngineLoaders.cpp',

@@ -1338,3 +1338,19 @@ Pan map
 Edit map
 [Editor map]
 Map
+[recovery available]
+A previous game did not finish normally. Recover the latest available checkpoint? Progress after that checkpoint may be lost.
+[recover game]
+Recover game
+[discard recovery]
+Discard recovery
+[later]
+Later
+[recovery unavailable]
+The recovery checkpoints could not be loaded. Your manually saved games are still available from Load game.
+[recovery save failed]
+Recovery checkpoint failed. Save your game manually before leaving.
+[recovery discard failed]
+The recovery record could not be cleared. You can try again after restarting.
+[recovery finish failed]
+Final game or campaign progress could not be saved. The previous recovery checkpoint has been kept when available.

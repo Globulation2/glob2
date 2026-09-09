@@ -2,5 +2,31 @@
   "emulator_revision": "37.1.11",
   "api": 35,
   "tag": "default",
-  "image_revision": "2"
+  "image_revision": "2",
+  "archives": {
+    "Linux-x86_64": {
+      "url": "https://dl.google.com/android/repository/emulator-linux_x64-15917651.zip",
+      "sha1": "1b1f78891abf8ec268264356e1365c25519e8379",
+      "directory": "android-sdk/emulator",
+      "archive_directory": "emulator"
+    },
+    "Darwin-arm64": {
+      "url": "https://dl.google.com/android/repository/emulator-darwin_aarch64-15917651.zip",
+      "sha1": "f22f44948a2b7f0a0103645b9a639290eef92426",
+      "directory": "android-sdk/emulator",
+      "archive_directory": "emulator"
+    },
+    "x86_64": {
+      "url": "https://dl.google.com/android/repository/sys-img/android/x86_64-35_r02.zip",
+      "sha1": "2d857d170c0d1b827149565da34b3383e5306f7f",
+      "directory": "android-sdk/system-images/android-35/default/x86_64",
+      "archive_directory": "x86_64"
+    },
+    "arm64-v8a": {
+      "url": "https://dl.google.com/android/repository/sys-img/android/arm64-v8a-35_r02.zip",
+      "sha1": "2026a06409db630b56711afdbffb457c1dbaed49",
+      "directory": "android-sdk/system-images/android-35/default/arm64-v8a",
+      "archive_directory": "arm64-v8a"
+    }
+  }
 }

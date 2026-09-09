@@ -10,6 +10,7 @@
 GameLoadScreen::GameLoadScreen(Initializer initialize, GAGCore::CooperativeSlice slice)
     : slice(std::move(slice)), previousRng(getSyncRandState()), engine(std::make_unique<Engine>())
 {
+    enablePhoneForm();
     auto& strings = *GAGCore::Toolkit::getStringTable();
     status = new GAGGUI::Text(0, 180, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", strings.getString("[Loading headers]"));
     addWidget(status);

@@ -10,6 +10,28 @@ from build_layout import build_identity, default_directory, prepare_directory
 from mobile_toolchain import discover
 
 
+class EmulatorSmokeTests(unittest.TestCase):
+    def test_smoke_rejects_physical_devices_and_shared_servers(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import smoke
+        for serial, port, avd in [('USB-device', 15037, 'glob2-api35-arm64'),
+                                   ('emulator-5580', 5037, 'glob2-api35-arm64'),
+                                   ('emulator-5580', 15037, 'personal-avd')]:
+            with self.subTest(serial=serial, port=port, avd=avd), self.assertRaises(ValueError):
+                smoke.validate_target(serial, port, avd)
+        smoke.validate_target('emulator-5580', 15037, 'glob2-api35-x64')
+
+    def test_emulator_archives_match_configured_package_versions(self):
+        import json
+        root = Path(__file__).resolve().parents[2]
+        lock = json.loads((root / 'mobile/emulator.json').read_text())
+        for arch in ('arm64-v8a', 'x86_64'):
+            artifact = lock['archives'][arch]
+            self.assertEqual(artifact['directory'], f"android-sdk/system-images/android-{lock['api']}/{lock['tag']}/{arch}")
+            self.assertIn(f"-{lock['api']}_r{int(lock['image_revision']):02}.zip", artifact['url'])
+            self.assertEqual(len(artifact['sha1']), 40)
+
+
 class DeveloperSigningTests(unittest.TestCase):
     def test_install_rejects_stale_or_modified_signed_apk(self):
         import hashlib

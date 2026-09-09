@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "RecoveryStore.h"
+#include "Campaign.h"
+#include <StringTable.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -180,4 +183,15 @@ void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height
     viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
     moveParticles(oldX, viewportX, oldY, viewportY);
     if (gameMenuScreen) gameMenuScreen->viewportResized(oldWidth, oldHeight, width, height);
+}
+
+
+bool GameGUI::saveRecovery(RecoveryStore& store)
+{
+    const bool saved = (!campaign || campaign->save(true)) &&
+        store.checkpoint([&](GAGCore::OutputStream& output) { save(&output, "Recovery"); },
+                         campaign ? campaign->getName() : "", missionName);
+    if (!saved) addMessage(GAGCore::Color(255, 180, 80),
+        GAGCore::Toolkit::getStringTable()->getString("[recovery save failed]"), false);
+    return saved;
 }

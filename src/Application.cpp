@@ -98,7 +98,26 @@ Application::Application() : screens(*globalContainer->gfx), shutdownScreens(*gl
             std::vector<std::string>{strings.getString("[continue]")}),
             [this](GAGGUI::Screen&, int) { mainMenu(); });
     } else if (globalContainer->replaying) singlePlayer.replay(globalContainer->replayFileName);
-    else mainMenu();
+    else {
+        mainMenu();
+        RecoveryStore store(*GAGCore::Toolkit::getFileManager());
+        if (RecoveryStore::enabled() && store.pending()) {
+            auto& strings = *GAGCore::Toolkit::getStringTable();
+            screens.push(std::make_unique<MessageScreen>(strings.getString("[recovery available]"),
+                std::vector<std::string>{strings.getString("[recover game]"), strings.getString("[discard recovery]"), strings.getString("[later]")}),
+                [this](GAGGUI::Screen&, int choice) {
+                    if (choice == 0) singlePlayer.recover();
+                    else if (choice == 1) {
+                        RecoveryStore store(*GAGCore::Toolkit::getFileManager());
+                        if (!store.dismiss()) {
+                            auto& strings = *GAGCore::Toolkit::getStringTable();
+                            screens.push(std::make_unique<MessageScreen>(strings.getString("[recovery discard failed]"),
+                                std::vector<std::string>{strings.getString("[ok]")}));
+                        }
+                    }
+                });
+        }
+    }
 }
 
 void Application::mainMenu()

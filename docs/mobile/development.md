@@ -434,3 +434,26 @@ terminate writers before and after commit. These verify error handling and proce
 interruption, not sudden power loss. Keep physical storage latency and background
 termination on the device checklist. Recovery generations, orphan cleanup and
 native import/export remain separate work.
+
+
+## Automated emulator smoke checks
+
+Install optional pinned emulator packages with `python3 mobile/setup_tools.py
+--emulator`, configure/boot through `mobile/emulator.py`, then install the signed
+APK using its exact serial and isolated ADB port. Run:
+
+```
+python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-arm64
+```
+
+Linux CI uses `glob2-api35-x64`. The runner validates AVD ownership, excludes physical
+serials/default ADB, captures native-ready logs and screenshots, restores rotation
+settings, and force-stops the app afterward. It does not erase app data.
+
+For the named Glob2-Mobile iOS simulator in the task device set, install with
+`mobile/ios.py install --release --device <UDID>`, then run
+`python3 mobile/ios_smoke.py --device <UDID>`. It checks startup, background/resume
+and fresh-process relaunch, retains output under `build/mobile-smoke-ios`, and
+terminates the apps it launched. Shutdown of the simulator is owned by the caller.
+Neither runner substitutes for physical-device graphics, thermal or accessibility
+qualification. CI uses Xcode 26.6 and the iOS 26.5 runtime explicitly.

@@ -7,7 +7,61 @@ iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 The historical Android screenshots near the end were collected on `7333e4e8b`.
 
-## Native storage synchronization checkpoint
+## Single-player recovery and automated mobile smoke checks
+
+Recovery retains two CRC-checked generations inside a bounded 64 MiB envelope
+and publishes them through an atomic commit record. Native single-player sessions
+checkpoint at entry, every 30 seconds of wall time when the game has advanced,
+and when screen execution is interrupted (including backgrounding). Campaign
+identity/mission context is retained and campaign progress is saved before closing
+recovery. A failed final save keeps recovery available and shows an error.
+
+Startup offers Recover game, Discard recovery and Later. Loading validates the
+whole game cooperatively and falls back to the older generation using a fresh
+Engine if necessary. Generations from another game session are excluded. Existing
+`.game` bytes remain unchanged inside the envelope; editor drafts, replay playback
+and network sessions are not automatically recovered. The existing periodic
+ordinary autosave remains available. Recovery is native-mobile only, with
+`GLOB2_RECOVERY_TEST=1` enabling it for desktop harnesses.
+
+Verified before the next browser-base reconciliation:
+
+- Savegame-safety tests pass: every truncation of a recovery fixture, checksum
+  corruption, serialization failure, generation/session isolation, dismissal,
+  materialization and ordinary-save equivalence. The legacy map fixture's version
+  upgrade changes its header checksum during any save/load; all other live
+  checksum components match, and the full checksum matches an ordinary reload.
+- Engine-session tests pass: initial/background checkpoints, full-game load
+  failure fallback, campaign restoration and Later retention. Existing deterministic
+  session checksums remain `7e7f31de`. The native touch suite passes.
+- Android ARM64 release/signing, iOS ARM64 simulator release and Wasm builds pass.
+  All 23 build-system checks pass. All 36 browser viewport/map/campaign/replay
+  checks pass across Chromium, Firefox and WebKit (2.6 minutes, no retries).
+- Automated Android API 35 smoke passes native startup/assets, same-process
+  background/resume, landscape/portrait rotation and a fresh-process relaunch.
+  A tutorial was then backgrounded/force-stopped, and the recovery prompt restored
+  the mission in the new process. Screenshots are retained below.
+- Automated iOS 26.5 simulator smoke passes native startup/assets, same-process
+  background/resume via Settings, and termination/relaunch. This is simulator
+  evidence, not signed physical-device installation.
+
+`mobile/smoke.py` and `mobile/ios_smoke.py` require explicit task-owned targets and
+write screenshots/logs/results under `build/mobile-smoke*`. CI now runs Android
+x86-64 emulator smoke and iOS ARM64 simulator smoke in addition to three Android
+ABI packaging jobs. Emulator/image archives, Linux command-line tools and Python
+build-driver versions are pinned. Hosted execution of this updated workflow is
+pending reconciliation with browser `246a47d50`: PR #208 is currently conflicting,
+which prevents new pull-request checks. The older hosted mobile run at `e1e152ce0`
+passed ARM64, ARMv7 and x86-64 APK jobs; that is not evidence for this new code.
+
+Logs use `build/mobile-recovery-*.log` and `build/mobile-continuation-build-tests.log`.
+Physical storage latency, sudden power loss, low-storage behavior and extended
+mobile sessions still need qualification. See [remaining-work](remaining-work.md).
+
+![Recovery after Android process termination](screenshots/android-recovery-prompt.png)
+![Restored tutorial](screenshots/android-recovery-restored.png)
+
+## Previous: native storage synchronization checkpoint
 
 While physical Pixel 6 testing is pending, atomic saves now synchronize native
 file contents before replacement and the parent directory after replacement.

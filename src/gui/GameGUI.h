@@ -57,6 +57,8 @@ class GameGUITouch;
 class GameGUI
 {
 public:
+    bool saveRecovery(class RecoveryStore& store);
+
 	///Constructs a GameGUI
 	explicit GameGUI(bool persistPreferences = true);
 	

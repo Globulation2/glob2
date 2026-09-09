@@ -15,6 +15,7 @@
 #include "NetEngine.h"
 #include "MultiplayerGame.h"
 #include "ChecksumSidecar.h"
+#include "RecoveryStore.h"
 
 
 class MultiplayersJoin;
@@ -59,6 +60,9 @@ public:
     GAGCore::CooperativeTask initCampaignTask(std::string filename, Campaign* campaign = nullptr, std::string mission = {});
     GAGCore::CooperativeTask loadReplayTask(std::string filename);
     void cancelInitialization();
+    void checkpointRecovery(bool force = false);
+    bool recoveryCompletionFailed() const { return recoveryFinishFailed; }
+    GAGCore::CooperativeTask initRecoveryTask(RecoveryStore::Record record);
     void suspendInput() { gui.suspendInput(); }
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
 
@@ -192,6 +196,12 @@ private:
 	void drawFrame(MainLoopState& st);
     std::optional<MainLoopState> session;
     int sessionEndingTarget = 0;
+    std::unique_ptr<RecoveryStore> recovery;
+    std::unique_ptr<Campaign> recoveredCampaign;
+    Uint32 recoveryStep = 0;
+    Uint64 recoveryTime = 0;
+    bool recoveryAttempted = false;
+    bool recoveryFinishFailed = false;
     std::vector<SDL_Event> sessionInput;
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
