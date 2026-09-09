@@ -65,7 +65,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 				if (yi2+(xi*xi)<=r2)
 				{
 					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-					if(cases[addr].resource.type!=NO_RES_TYPE && building->clearingResources[cases[addr].resource.type])
+					if(tiles[addr].resource.type!=NO_RES_TYPE && building->clearingResources[tiles[addr].resource.type])
 					{
 						if(gradient[addr] == GRADIENT_UNREACHABLE)
 							gradient[addr] = GRADIENT_AT_GOAL;
@@ -82,7 +82,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 		for (int x=0; x<w; x++)
 		{
 			int wyx=wy+x;
-			const Case& c=cases[wyx];
+			const Tile& c=tiles[wyx];
 			if (c.building==NOGBID)
 			{
 				if (c.forbidden&teamMask)
@@ -100,7 +100,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 			{
 				if (c.building==bgid)
 					gradient[wyx] = GRADIENT_AT_GOAL;
-				//Warflags don't consider enemy buildings an obstacle
+				//War flags don't consider enemy buildings an obstacle
 				else if(!isWarFlag || (1<<Building::GIDtoTeam(c.building)) & (building->owner->allies))
 					gradient[wyx] = GRADIENT_FORBIDDEN;
 				else if(gradient[wyx]!=GRADIENT_AT_GOAL)

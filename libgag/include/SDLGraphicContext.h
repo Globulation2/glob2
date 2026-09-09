@@ -180,7 +180,7 @@ namespace GAGCore
 		void _drawHorzLine(int x, int y, int l, const Color& color);
 		
 	protected:
-		//! Protectedconstructor, only called by GraphicContext
+		//! Protected constructor, only called by GraphicContext
 		DrawableSurface() { sdlsurface = NULL; }
 		//! allocate texture in GPU for this surface
 		void allocateTexture(void);
@@ -278,7 +278,7 @@ namespace GAGCore
 		virtual void drawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = Color::ALPHA_OPAQUE);
 		virtual void drawString(int x, int y, Font *font, int i);
 		
-		// This is for translation textshot code, it works by trapping calls to the getString function in the translation StringTables,
+		// This is for translation text shot code, it works by trapping calls to the getString function in the translation StringTables,
 		// then later in drawString, if we are drawing one of the found strings returned by StringTable, it will add it to the list of
 		// rectangles that represent found texts. Just before the next frame begins to draw, all of the rectangle pictures are flushed
 		// into bmp's. This is done because we want the translation pictures to be done when *all* of the screen is already drawn (when

@@ -49,7 +49,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 				{
 					size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.cases[index].forbidden&=notTeamMask;
+					map.tiles[index].forbidden&=notTeamMask;
 					// Update local map
 					if (teamNumber == localTeam)
 						map.displayedForbiddenView.set(index, false);
@@ -71,7 +71,7 @@ void Game::buildProjectSyncStep(Sint32 localTeam)
 					{
 						size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
 						// Update real map
-						map.cases[index].forbidden&=notTeamMask;
+						map.tiles[index].forbidden&=notTeamMask;
 						// Update local map
 						if (teamNumber == localTeam)
 							map.displayedForbiddenView.set(index, false);
@@ -109,6 +109,9 @@ void Game::wonSyncStep(void)
 
 void Game::scriptSyncStep()
 {
+	// Decorative games have no GUI or mission script context. Normal and
+	// headless Engine sessions both supply a GameGUI, as before.
+	if (!gui) return;
 	// do a script step
 	sgslScript.syncStep(gui);
 	mapscript.syncStep(gui);

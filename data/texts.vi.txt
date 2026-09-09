@@ -1,0 +1,1232 @@
+[%0 has left the game]
+%0 đã rời trận đấu.
+[%0 level %1]
+%0 cấp %1
+[%0 units can't access building]
+%0 đơn vị không đến được công trình
+[%0 units can't access flag]
+%0 đơn vị không đến được cờ
+[%0 units can't access fruit]
+%0 đơn vị không đến được trái cây
+[%0 units can't access resource]
+%0 đơn vị không đến được tài nguyên
+[%0 units not available]
+%0 đơn vị không sẵn sàng
+[%0 units too far from building]
+%0 đơn vị ở quá xa công trình
+[%0 units too far from flag]
+%0 đơn vị ở quá xa cờ
+[%0 units too far from fruit]
+%0 đơn vị ở quá xa trái cây
+[%0 units too far from resource]
+%0 đơn vị ở quá xa tài nguyên
+[%0 units too low level]
+%0 đơn vị có cấp quá thấp
+[%0% Uploaded]
+Đã tải lên %0%
+[%0's game]
+Trận đấu của %0
+[%0's team unit got converted to your team]
+Một đơn vị của đội %0 đã gia nhập đội bạn
+[abreaviation explanation A]
+A: Đồng minh
+[abreaviation explanation C]
+C: Gửi tin nhắn trò chuyện đến
+[abreaviation explanation fV]
+fV: Chia sẻ tầm nhìn quanh quán trọ (để thu phục đơn vị)
+[abreaviation explanation mV]
+mV: Chia sẻ tầm nhìn quanh chợ (để trao đổi trái cây)
+[abreaviation explanation V]
+V: Chia sẻ tầm nhìn quanh mọi công trình
+[add map]
+Thêm bản đồ
+[add shortcut]
+Thêm phím tắt
+[Add]
+Thêm
+[AI Descriptions]
+Mô tả AI
+[AI]
+AI
+[ai]
+AI
+[AICastor-Description]
+Castor chơi thận trọng và rất giỏi trên các bản đồ ít tài nguyên. Độ khó trung bình.
+[AICastor]
+Castor
+[AICortex-Description]
+Cortex - AI thử nghiệm gồm ba tầng. Đang được phát triển.
+[AICortex]
+Cortex
+[AINicowar-Description]
+Nicowar chơi quyết liệt, phát triển nhanh và tung những đạo quân lớn vào đối thủ. Độ khó cao.
+[AINicowar]
+Nicowar
+[AINone-Description]
+Không - Không thực hiện hành động nào.
+[AINone]
+Không
+[AINumbi-Description]
+Numbi - Mở rộng vừa phải và nhanh chóng. Độ khó thấp.
+[AINumbi]
+Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity - Không tấn công, nhưng xây căn cứ khổng lồ và ra sức thu phục đơn vị. Độ khó thấp.
+[AIReachToInfinity]
+ReachToInfinity
+[AIWarrush-Description]
+Warrush - Tấn công nhanh và dữ dội, thường khiến người phòng thủ phải chống đỡ hết sức. Độ khó trung bình.
+[AIWarrush]
+Warrush
+[Alga]
+Tảo
+[algae]
+tảo
+[alliances]
+Liên minh
+[alt %0]
+Alt-%0
+[and]
+và
+[any explorer]
+bất kỳ trinh sát nào
+[are dying hungry]
+sắp chết đói
+[are hungry]
+đang đói
+[are ok]
+ổn
+[are wonded]
+bị thương
+[armor]
+Giáp
+[assigned]
+Đã phân công
+[At. speed]
+Tốc độ đánh
+[At. strength]
+Lực đánh
+[Attack]
+Tấn công
+[audio]
+Âm thanh
+[auto save]
+Tự động lưu
+[available lan games]
+Trận đấu trong mạng nội bộ
+[awaiting players]
+Đang chờ người chơi
+[away:]
+vắng mặt:
+[Back]
+Quay lại
+[backspace]
+Backspace
+[barracks explanation 2]
+cho chiến binh
+[barracks explanation]
+Rèn kỹ năng chiến đấu
+[barracks]
+Doanh trại
+[beach size]
+kích thước bãi biển
+[Blocked Players]
+Người chơi đã chặn
+[break]
+Break
+[briefing]
+Tóm tắt nhiệm vụ
+[build %0 level %1]
+Xây %0 cấp %1
+[Build]
+Xây dựng
+[Building Defaults]
+Mặc định công trình
+[building settings]
+Thiết lập công trình
+[building site]
+công trường
+[Building Tool Box Explanation]
+Shift + kéo = Hình chữ nhật
+[Building Tool Line Explanation]
+Ctrl + kéo = Đường thẳng
+[Buildings]
+Công trình
+[Bullets]
+Đạn
+[campaign editor]
+Biên tập chiến dịch
+[campaign]
+Chiến dịch
+[Can't connect, can't find host]
+Không thể kết nối: không tìm thấy máy chủ
+[Can't host game, port %0 in use]
+Không thể tạo trận: cổng %0 đang được dùng
+[Can't join game, game doesn't exist]
+Không thể tham gia: trận đấu không tồn tại
+[Can't join game, game has started]
+Không thể tham gia: trận đấu đã bắt đầu
+[Can't join game, game is full]
+Không thể tham gia: trận đấu đã đủ người
+[cancel destroy]
+Hủy phá hủy
+[cancel repair]
+Hủy sửa chữa
+[cancel upgrade]
+Hủy nâng cấp
+[Cancel]
+Hủy
+[caps lock]
+Caps Lock
+[carry]
+Đang mang:
+[Change Area Name]
+Đổi tên vùng
+[Cherry]
+Anh đào
+[choose campaign]
+Chọn chiến dịch
+[choose game]
+Chọn trận đấu
+[choose map]
+Chọn bản đồ
+[clear area]
+Vùng khai quang
+[Clearing:]
+Đang khai quang:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+Dọn tài nguyên
+[clearingflag]
+Cờ khai quang
+[closed]
+Đóng
+[combined vision]
+Tầm nhìn chung
+[compile]
+Biên dịch kịch bản
+[compose]
+Compose
+[Computing Fertility]
+Đang tính độ phì nhiêu
+[concrete islands terrain]
+Các đảo riêng biệt
+[connect]
+Kết nối
+[connecting to game]
+Đang kết nối vào trận
+[connecting to]
+Đang kết nối đến
+[Construction Site Defaults]
+Mặc định công trường
+[Continue playing]
+Tiếp tục chơi
+[control %0]
+Ctrl-%0
+[Corn]
+Lúa mì
+[crater density]
+số miệng núi lửa
+[crater lakes terrain]
+Hồ miệng núi lửa
+[create game]
+Tạo trận đấu
+[create map]
+Tạo bản đồ
+[credits]
+Những người đóng góp
+[ctrl - line]
+Ctrl - Đường thẳng
+[current speed]
+Tốc độ hiện tại
+[custom game]
+Trận đấu tùy chỉnh
+[customcur]
+Con trỏ tùy chỉnh
+[damage]
+Sát thương
+[Damaged Map]
+Đơn vị bị thương
+[decrease game speed]
+Giảm tốc độ trò chơi
+[decrease units working]
+Giảm số đơn vị làm việc
+[Defeat Your Oppenents]
+Đánh bại đối thủ
+[defencetower explanation 2]
+và công trình địch ở gần
+[defencetower explanation]
+Tấn công đơn vị
+[defencetower]
+Tháp phòng thủ
+[Defense Map]
+Bản đồ phòng thủ
+[Defense]
+Phòng thủ
+[Delete game]
+Xóa trận đã chọn
+[delete]
+Xóa
+[desert]
+sa mạc
+[destroy building]
+Phá công trình đã chọn
+[destroy]
+Phá hủy
+[display]
+Hiển thị
+[do nothing]
+Không làm gì
+[don't carry anything]
+Không mang gì
+[down]
+xuống
+[Download Map]
+Tải bản đồ
+[Download Maps]
+Tải các bản đồ
+[downloaded %0]
+đã tải %0
+[downloading map]
+Đang tải bản đồ
+[edit map]
+Sửa bản đồ
+[editing map]
+Đang sửa bản đồ
+[editor shortcuts]
+Phím tắt biên tập
+[editor]
+Trình biên tập
+[end]
+End
+[Enter your nickname :]
+Nhập biệt danh:
+[Enter your password :]
+Nhập mật khẩu:
+[enter]
+Enter
+[equals]
+dấu bằng
+[ERROR_CANT_LOAD_MAP]
+Không thể tải bản đồ vì tệp bị hỏng hoặc có phiên bản không tương thích.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Không thể lưu chiến dịch. Hãy kiểm tra xem thư mục đích có tồn tại, có quyền ghi và còn dung lượng trống hay không.
+[escape]
+Esc
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+Thu hút trinh sát
+[explorationflag]
+Cờ thám hiểm
+[Explorer Ratio]
+Tỷ lệ trinh sát
+[Explorer]
+Trinh sát
+[explorers]
+trinh sát
+[extra islands]
+đảo trống
+[f10]
+F10
+[f11]
+F11
+[f12]
+F12
+[f13]
+F13
+[f14]
+F14
+[f15]
+F15
+[f1]
+F1
+[f2]
+F2
+[f3]
+F3
+[f4]
+F4
+[f5]
+F5
+[f6]
+F6
+[f7]
+F7
+[f8]
+F8
+[f9]
+F9
+[Fertility Map]
+Bản đồ độ phì nhiêu
+[Flag Defaults]
+Mặc định cờ
+[flag settings explanation]
+Bán kính mặc định của cờ
+[fog of war]
+Sương mù chiến tranh
+[food]
+Thức ăn
+[forbidden area]
+Vùng cấm
+[Free]
+Khỏe mạnh
+[free]
+nhàn rỗi
+[from:]
+từ:
+[fruit]
+trái cây
+[fullscreen]
+Toàn màn hình
+[game full]
+Trận đấu đã đủ người
+[game shortcuts]
+Phím tắt trò chơi
+[game speed]
+Tốc độ trò chơi
+[Game]
+Trò chơi
+[general settings]
+Thiết lập chung
+[go to event]
+Đến vị trí sự kiện
+[go to home]
+Về căn cứ
+[goto main menu]
+Về trình đơn chính
+[grass]
+Cỏ
+[ground attack]
+tấn công mặt đất
+[guard area]
+Vùng canh gác
+[GUIMapPreview text 0]
+Vui lòng chọn
+[GUIMapPreview text 1]
+một bản đồ
+[handmade map]
+Bản đồ tạo thủ công
+[Happyness]
+Hạnh phúc
+[hard pause]
+Tạm dừng hoàn toàn
+[Harvest]
+Thu hoạch
+[high priority]
+cao
+[hints]
+Gợi ý
+[home]
+Home
+[hospital explanation 2]
+
+[hospital explanation]
+Chữa trị đơn vị
+[hospital]
+Bệnh viện
+[host]
+Tạo trận đấu
+[hp]
+Máu
+[Human]
+Người chơi
+[human]
+người chơi
+[hungry]
+đói
+[hungryness]
+Mức đói
+[In way]
+Đang trên đường
+[increase game speed]
+Tăng tốc độ trò chơi
+[increase units working]
+Tăng số đơn vị làm việc
+[inn explanation 2]
+
+[inn explanation]
+Cung cấp thức ăn cho đơn vị
+[inn]
+Quán trọ
+[insert]
+Insert
+[inside]
+Bên trong
+[islands size]
+kích thước đảo
+[islands terrain]
+Các đảo
+[isles terrain]
+Đảo nhỏ
+[iterate selection]
+Chuyển sang lựa chọn kế tiếp
+[jobs]
+việc làm
+[join a game]
+Tham gia trận đấu
+[join]
+Tham gia
+[keyboard settings]
+Thiết lập bàn phím
+[kick]
+Đuổi
+[lan]
+Chơi qua mạng LAN
+[language incomplete]
+Tiếng Việt - Chưa hoàn chỉnh
+[language-code]
+vi
+[language-tr]
+Ngôn ngữ
+[language]
+Tiếng Việt
+[Leave Game]
+Rời trận đấu
+[left meta]
+Meta trái
+[left super]
+Windows trái
+[left]
+trái
+[level]
+Cấp
+[levels]
+Các cấp
+[load campaign]
+Tải chiến dịch
+[load game]
+Tải trận đấu
+[load map]
+Tải bản đồ
+[load replay]
+Tải bản ghi trận đấu
+[load script]
+Tải kịch bản
+[load]
+Tải
+[loading map list]
+Đang tải danh sách bản đồ...
+[Lobby]
+Phòng chờ
+[login]
+Đăng nhập
+[look around]
+Quan sát xung quanh
+[Lost : %0 has more prestige than you]
+Thua: %0 có uy danh cao hơn bạn
+[Lost : your colony is dead]
+Thua: thuộc địa của bạn đã bị diệt
+[low priority]
+thấp
+[lowquality]
+Chất lượng thấp
+[Magic At. Air]
+ST trên không
+[Magic At. Ground]
+ST mặt đất
+[map description]
+Mô tả
+[Map Discovered]
+Hiện toàn bản đồ
+[Map download failure: lost connection]
+Tải bản đồ thất bại: mất kết nối với YOG
+[Map name: %0]
+Tên bản đồ: %0.
+[map name]
+Tên
+[map rated]
+Đã đánh giá bản đồ
+[map script]
+Kịch bản bản đồ
+[map size x]
+Chiều rộng bản đồ
+[map size y]
+Chiều cao bản đồ
+[Map upload failure: connection lost]
+Tải bản đồ lên thất bại: mất kết nối với YOG
+[Map upload failure: map name in use]
+Tải bản đồ lên thất bại. Tên bản đồ đã được dùng.
+[Map upload failure: unknown reason]
+Tải bản đồ lên thất bại. Không rõ nguyên nhân.
+[Map Upload: Author Name]
+Tên tác giả
+[Map Upload: Waiting for reply]
+Đang chờ phản hồi
+[mark map]
+Đánh dấu bản đồ cho đồng minh
+[market explanation 2]
+với người khác
+[market explanation]
+Cho phép trao đổi trái cây
+[market]
+Chợ
+[medium priority]
+vừa
+[meta %0]
+Meta-%0
+[Min required level:]
+Cấp tối thiểu:
+[Minimum Level To Flag]
+Cấp đơn vị tối thiểu
+[Music volume]
+Âm lượng nhạc
+[Mute]
+Tắt tiếng
+[mute]
+tắt tiếng
+[new campaign]
+Chiến dịch mới
+[new map]
+Bản đồ mới
+[nick taken]
+Rất tiếc, tên bạn chọn đã được dùng trên freenode; bạn chỉ có thể trò chuyện qua YOG.
+[no fullscreen]
+* chỉ ở chế độ cửa sổ
+[No Hints]
+Không có gợi ý
+[no key]
+chưa gán phím
+[No Objectives]
+Không có mục tiêu
+[no ressources growth areas]
+Vùng cấm mọc
+[No]
+Không
+[Not Enough Ratings]
+Chưa đủ lượt đánh giá
+[not ready]
+chưa sẵn sàng
+[Number Of Buildings]
+Số công trình
+[number of players: %0 (%1 AI)]
+%0 người chơi (%1 AI)
+[number of teams: %0]
+%0 đội
+[number of teams]
+số đội
+[Number Of Units]
+Số đơn vị
+[numlock]
+Num Lock
+[objectives]
+Mục tiêu
+[of which]
+trong đó có
+[ok]
+Đồng ý
+[old islands terrain]
+đảo ngẫu nhiên kiểu cũ
+[old random terrain]
+địa hình ngẫu nhiên kiểu cũ
+[on press]
+Khi nhấn
+[On the spot]
+Tại đây
+[on unpress]
+Khi thả
+[open chat box]
+Mở khung trò chuyện
+[open load menu]
+Mở trình đơn tải
+[open save menu]
+Mở trình đơn lưu
+[open scenario editor]
+Mở biên tập kịch bản
+[open teams editor]
+Mở biên tập đội
+[open]
+còn trống
+[OpenGL]
+OpenGL
+[Options]
+Tùy chọn
+[options]
+tùy chọn
+[Orange]
+Cam
+[Other Options]
+Tùy chọn khác
+[page down]
+Page Down
+[page up]
+Page Up
+[Papyrus]
+Cói giấy
+[pause game]
+Tạm dừng trò chơi
+[pause]
+Pause
+[Paused]
+Đã tạm dừng
+[player name]
+Tên người chơi
+[player rating %0]
+Điểm người chơi: %0
+[players]
+Người chơi
+[please wait]
+Vui lòng chờ
+[power]
+Power
+[press space]
+Nhấn phím cách để tiếp tục.
+[Prestige Score]
+Điểm uy danh
+[Prestige Win Enabled]
+Cho phép thắng bằng uy danh
+[Prestige]
+Uy danh
+[Primary Objectives]
+Chính
+[print screen]
+Print Screen
+[priority]
+Ưu tiên
+[Prune]
+Mận
+[quit the editor]
+Thoát trình biên tập
+[quit the game]
+Thoát trò chơi
+[quit the replay]
+Thoát xem lại
+[quit]
+Thoát
+[racetrack explanation 2]
+cho đơn vị
+[racetrack explanation]
+Tăng tốc độ đi bộ
+[racetrack]
+Đường chạy
+[range]
+Tầm
+[Rated %0]
+Đánh giá %0
+[ratios]
+Tỷ lệ
+[ready?]
+sẵn sàng?
+[refresh map list]
+Làm mới danh sách bản đồ
+[Register]
+Đăng ký
+[remember unit]
+Nhớ số đơn vị phân công
+[Remember YOG password localy]
+Lưu mật khẩu trên máy này.
+[remove map]
+Xóa bản đồ
+[remove shortcut]
+Xóa phím tắt
+[Remove]
+Xóa
+[repair building]
+Bật/tắt sửa chữa
+[repair]
+Sửa chữa
+[repeat area]
+lần lặp lại cảnh quan
+[Repeat your password :]
+Nhập lại mật khẩu:
+[replay ended]
+Bản ghi đã kết thúc
+[restore default shortcuts]
+Khôi phục phím tắt mặc định
+[return to editor]
+Về trình biên tập
+[return to game]
+Quay lại trận đấu
+[return to replay]
+Quay lại bản ghi
+[return]
+Enter
+[right meta]
+Meta phải
+[right super]
+Windows phải
+[right]
+phải
+[river diameter]
+chiều rộng sông
+[river terrain]
+Sông
+[sand]
+Cát
+[save before quit?]
+Bạn có muốn lưu trước khi thoát không?
+[save game]
+Lưu trận đấu
+[save map]
+Lưu bản đồ
+[save replay]
+Lưu bản ghi trận đấu
+[save script]
+Lưu kịch bản
+[Save]
+Lưu
+[school explanation 2]
+cho công nhân
+[school explanation]
+Rèn kỹ năng xây dựng
+[school]
+Trường học
+[Script Areas]
+Vùng kịch bản
+[scroll lock]
+Scroll Lock
+[scroll wheel enabled]
+Bật con lăn chuột
+[Secondary Objectives]
+Phụ
+[seeking a job]
+đang tìm việc
+[seeking]
+đang tìm
+[select barracks building]
+Chọn doanh trại
+[select clearingflag]
+Chọn cờ khai quang
+[select construct barracks]
+Chọn xây doanh trại
+[select construct defencetower]
+Chọn xây tháp phòng thủ
+[select construct hospital]
+Chọn xây bệnh viện
+[select construct inn]
+Chọn xây quán trọ
+[select construct market]
+Chọn xây chợ
+[select construct racetrack]
+Chọn xây đường chạy
+[select construct school]
+Chọn xây trường học
+[select construct stonewall]
+Chọn xây tường đá
+[select construct swarm]
+Chọn xây tổ
+[select construct swimmingpool]
+Chọn xây hồ bơi
+[select delete tool]
+Chọn công cụ xóa
+[select explorationflag]
+Chọn cờ thám hiểm
+[select hospital building]
+Chọn bệnh viện
+[select inn building]
+Chọn quán trọ
+[select market building]
+Chọn chợ
+[select place clearing area]
+Chọn tạo vùng khai quang
+[select place clearingflag]
+Chọn đặt cờ khai quang
+[select place explorationflag]
+Chọn đặt cờ thám hiểm
+[select place forbidden area]
+Chọn tạo vùng cấm
+[select place guard area]
+Chọn tạo vùng canh gác
+[select place warflag]
+Chọn đặt cờ chiến đấu
+[select racetrack building]
+Chọn đường chạy
+[select school building]
+Chọn trường học
+[select swarm building]
+Chọn tổ
+[select swimmingpool building]
+Chọn hồ bơi
+[select tower building]
+Chọn tháp phòng thủ
+[select wall building]
+Chọn tường
+[select warflag]
+Chọn cờ chiến đấu
+[settings]
+Thiết lập
+[shift %0]
+Shift-%0
+[shortcut explanation enter]
+Enter: gửi tin nhắn trò chuyện
+[shortcut explanation v]
+V: giữ để nói
+[show areas]
+Hiện các vùng
+[show flags]
+Hiện cờ
+[show main menu]
+Hiện trình đơn chính
+[skin]
+Hiển thị
+[smoothing]
+Làm mượt
+[sort by name]
+Tên
+[sort by rating]
+Điểm đánh giá
+[sort by size]
+Kích thước
+[Sort By]
+Sắp xếp theo
+[space]
+phím cách
+[start mission]
+Bắt đầu nhiệm vụ
+[start new campaign]
+Bắt đầu chiến dịch mới
+[Start]
+Bắt đầu
+[Starving Map]
+Đơn vị sắp chết đói
+[starving]
+sắp chết đói
+[Statistics]
+Thống kê
+[Still (i)]
+Còn
+[still (w)]
+Còn
+[still one unit working]
+Còn một đơn vị làm việc
+[Still one]
+Còn một
+[Stone]
+Đá
+[stone]
+đá
+[stonewall explanation 2]
+thụ động
+[stonewall explanation]
+Công trình phòng thủ
+[stonewall]
+Tường đá
+[submit rating]
+Gửi đánh giá
+[svr hostname]
+Tên máy chủ
+[swamp terrain]
+Đầm lầy
+[swarm explanation 2]
+
+[swarm explanation]
+Tạo đơn vị mới
+[swarm]
+Tổ
+[Swim]
+Bơi
+[swimmingpool explanation 2]
+cho đơn vị
+[swimmingpool explanation]
+Tăng tốc độ bơi
+[swimmingpool]
+Hồ bơi
+[switch to adding areas]
+Chuyển sang thêm vùng
+[switch to area brush 1]
+Chọn cọ vẽ vùng 1
+[switch to area brush 2]
+Chọn cọ vẽ vùng 2
+[switch to area brush 3]
+Chọn cọ vẽ vùng 3
+[switch to area brush 4]
+Chọn cọ vẽ vùng 4
+[switch to area brush 5]
+Chọn cọ vẽ vùng 5
+[switch to area brush 6]
+Chọn cọ vẽ vùng 6
+[switch to area brush 7]
+Chọn cọ vẽ vùng 7
+[switch to area brush 8]
+Chọn cọ vẽ vùng 8
+[switch to building view]
+Chuyển sang xem công trình
+[switch to flag view]
+Chuyển sang xem cờ
+[switch to removing areas]
+Chuyển sang xóa vùng
+[switch to teams view]
+Chuyển sang xem đội
+[switch to terrain view]
+Chuyển sang xem địa hình
+[sys req]
+SysRq
+[tab]
+Tab
+[teams editor]
+Biên tập đội
+[Teams Fixed]
+Cố định đội
+[teams]
+ đội
+[the barracks is finished]
+Doanh trại đã xây xong.
+[the barracks is under attack]
+Doanh trại đang bị tấn công.
+[the building is finished]
+Công trình đã xây xong.
+[the building is under attack]
+Công trình đang bị tấn công.
+[the clearingflag is finished]
+Đã đặt cờ khai quang.
+[the clearingflag is under attack]
+Cờ khai quang đang bị tấn công.
+[the defencetower is finished]
+Tháp phòng thủ đã xây xong.
+[the defencetower is under attack]
+Tháp phòng thủ đang bị tấn công.
+[the explorationflag is finished]
+Đã đặt cờ thám hiểm.
+[the explorationflag is under attack]
+Cờ thám hiểm đang bị tấn công.
+[The game has not been finished]
+Trận đấu chưa kết thúc.
+[the games]
+Trận đấu
+[the hospital is finished]
+Bệnh viện đã xây xong.
+[the hospital is under attack]
+Bệnh viện đang bị tấn công.
+[The host has cancelled the game]
+Chủ phòng đã hủy trận đấu.
+[the inn is finished]
+Quán trọ đã xây xong.
+[the inn is under attack]
+Quán trọ đang bị tấn công.
+[the maps]
+Bản đồ
+[the market is finished]
+Chợ đã xây xong.
+[the market is under attack]
+Chợ đang bị tấn công.
+[The player %0 has joined YOG]
+%0 đã vào YOG.
+[The player %0 has left YOG]
+%0 đã rời YOG.
+[the racetrack is finished]
+Đường chạy đã xây xong.
+[the racetrack is under attack]
+Đường chạy đang bị tấn công.
+[the replays]
+Bản ghi trận đấu
+[the school is finished]
+Trường học đã xây xong.
+[the school is under attack]
+Trường học đang bị tấn công.
+[the stonewall is finished]
+Một đoạn tường đã xây xong.
+[the stonewall is under attack]
+Quân địch đang tấn công tường của bạn.
+[the swarm is finished]
+Tổ đã xây xong.
+[the swarm is under attack]
+Tổ đang bị tấn công.
+[the swimmingpool is finished]
+Hồ bơi đã xây xong.
+[the swimmingpool is under attack]
+Hồ bơi đang bị tấn công.
+[the warflag is finished]
+Đã đặt cờ chiến đấu.
+[the warflag is under attack]
+Cờ chiến đấu đang bị tấn công.
+[time]
+Thời gian
+[to:]
+đến:
+[toggle draw accessibility aids]
+Bật/tắt số hiệu đội
+[toggle draw information]
+Bật/tắt thông tin
+[toggle draw unit paths]
+Bật/tắt đường đi đơn vị
+[toggle menu screen]
+Bật/tắt trình đơn
+[toggle recording voice]
+Bật/tắt ghi âm giọng nói
+[Total Attack Power]
+Tổng sức tấn công
+[Total Defence Power]
+Tổng sức phòng thủ
+[Total Hitpoints]
+Tổng lượng máu
+[Total prestige reached]
+Tổng uy danh đạt được
+[Total]
+Tổng
+[tutorial text 1]
+Chào mừng đến với hướng dẫn cơ bản của Globulation 2! Bạn sẽ học mọi thứ, từ xây quán trọ, khám phá các vùng cho đến tiêu diệt kẻ thù. Có rất nhiều kiến thức hữu ích đang chờ bạn!
+[tutorial text 2]
+Giờ bạn đã nắm vững những điều cơ bản, hãy làm quen với các công trình khác như đường chạy, hồ bơi và trường học.
+[tutorial text 3]
+Bạn đã làm rất tốt để đến được đây. Giờ hãy tìm hiểu về chiến binh, doanh trại và việc nâng cấp.
+[tutorial text 4]
+Bạn sắp hoàn thành rồi. Chỉ còn cờ và cách tấn công. Sau đó bạn sẽ biết đủ để thử các trận đấu tùy chỉnh, rồi chơi trực tuyến với những người chơi giỏi nhất của Globulation 2.
+[tutorial]
+Hướng dẫn
+[Uncontrolled]
+Không được điều khiển
+[undo]
+hoàn tác
+[uniform terrain]
+Địa hình đồng nhất
+[Unit editor]
+Biên tập đơn vị
+[unit settings explanation]
+Số đơn vị được phân công mặc định
+[units working]
+ đơn vị đang làm việc
+[Units]
+Đơn vị
+[unlocked at start]
+Mở khóa từ đầu
+[unlocked by]
+Mở khóa bởi
+[Unnamed Area]
+{Vùng chưa đặt tên}
+[up]
+lên
+[upgrade building]
+Bật/tắt nâng cấp
+[Upgrade Defaults]
+Mặc định nâng cấp
+[upgrade]
+Nâng cấp
+[Upload Map]
+Tải bản đồ lên
+[upload map]
+Tải bản đồ lên
+[username]
+Tên đăng nhập
+[Version]
+Phiên bản
+[view history]
+Xem lịch sử
+[Voice volume]
+Âm lượng giọng nói
+[waiting for %0]
+Đang chờ %0
+[waiting for key]
+đang chờ nhấn phím...
+[Waiting]
+Đang chờ
+[Walk]
+Đi bộ
+[warflag explanation 2]
+
+[warflag explanation]
+Thu hút chiến binh
+[warflag]
+Cờ chiến đấu
+[Warning, you need to reboot the game for changes to take effect]
+Lưu ý: cần khởi động lại trò chơi để áp dụng các thay đổi
+[Warrior Ratio]
+Tỷ lệ chiến binh
+[Warrior]
+Chiến binh
+[warriors]
+chiến binh
+[watch again]
+Xem lại
+[watching:]
+Đang theo dõi:
+[water]
+Nước
+[Wheat]
+Lúa mì
+[Won : you defeated your opponents]
+Thắng: bạn đã đánh bại các đối thủ
+[Won : you have the most prestige]
+Thắng: bạn có uy danh cao nhất
+[Won : your ally %0 has the most prestige]
+Thắng: đồng minh %0 của bạn có uy danh cao nhất
+[Wood]
+Gỗ
+[wood]
+gỗ
+[Worker Ratio]
+Tỷ lệ công nhân
+[Worker]
+Công nhân
+[workers]
+công nhân
+[working]
+Đang làm việc
+[wounded]
+bị thương
+[Yes]
+Có
+[YESTS_CONNECTING]
+Đang thiết lập kết nối với máy chủ YOG...
+[YESTS_CONNECTION_LOST]
+Đã mất kết nối với YOG.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Máy chủ YOG từ chối kết nối vì tên đăng nhập này đã được đăng ký. Nếu đây là tên của bạn, hãy bỏ chọn tùy chọn "Đăng ký người dùng YOG mới bằng mật khẩu".
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+Máy chủ YOG từ chối kết nối vì mật khẩu không đúng.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+Máy chủ YOG từ chối kết nối vì tên đăng nhập này chưa có mật khẩu. Nếu muốn đăng ký tên này với mật khẩu vừa nhập, hãy chọn "Đăng ký người dùng YOG mới bằng mật khẩu" trước khi kết nối. Bạn chỉ cần chọn tùy chọn này một lần.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+Máy chủ YOG từ chối kết nối vì địa chỉ IP này bị cấm tạm thời. Hãy đợi đến khi hết lệnh cấm hoặc liên hệ quản trị viên.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Máy chủ YOG từ chối kết nối vì phiên bản Globulation 2 của bạn đã cũ. Hãy tải phiên bản mới nhất từ www.globulation2.org để chơi trực tuyến.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+Máy chủ YOG từ chối kết nối mà không nêu lý do!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+Máy chủ YOG từ chối kết nối vì người khác đang dùng tên đăng nhập của bạn.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+Máy chủ YOG từ chối kết nối vì tên đăng nhập này bị cấm. Hãy liên hệ quản trị viên.
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+Máy chủ YOG từ chối kết nối vì tên đăng nhập không hợp lệ. Tên đăng nhập chỉ được chứa chữ cái, chữ số và dấu gạch dưới.
+[YESTS_CREATED]
+Hệ thống kết nối đã sẵn sàng liên lạc với máy chủ YOG.
+[YESTS_PASSWORDS_DONT_MATCH]
+Hai mật khẩu không khớp. Vui lòng nhập lại.
+[YESTS_UNABLE_TO_CONNECT]
+Không thể kết nối. Có vẻ máy chủ YOG đang ngừng hoạt động.
+[yog block command help]
+/block <tên_người_chơi>    Chặn người chơi; bạn sẽ không còn thấy tin nhắn của họ.
+[yog block command player %0 already blocked]
+Người chơi %0 đã bị chặn từ trước
+[yog block command player %0 blocked]
+Đã chặn người chơi %0
+[yog block command player %0 not found]
+Không tìm thấy người chơi %0
+[yog command header]
+Các lệnh hiện có của ứng dụng YOG:
+[yog command unknown]
+Lệnh không xác định.
+[yog help command help]
+/help    Hiện hướng dẫn này
+[yog]
+Ysagoon Online Gaming
+[you have lost]
+Bạn đã thua!
+[you have won]
+Bạn đã thắng!
+[You where kicked from the game]
+Bạn đã bị đuổi khỏi trận đấu
+[Your %0 are under attack]
+%0 của bạn đang bị tấn công
+[Your IP address was temporarily banned]
+Địa chỉ IP của bạn bị cấm tạm thời. Hãy đợi đến khi hết lệnh cấm hoặc liên hệ quản trị viên.
+[Your unit got converted to %0's team]
+Đơn vị của bạn đã gia nhập đội %0
+[Your username was banned]
+Tên đăng nhập của bạn bị cấm. Hãy liên hệ quản trị viên để được xem xét gỡ cấm.
+[game speed help]
+Chỉ cho chơi đơn và bản ghi. Chơi mạng dùng tốc độ 1x.
+[maximum game speed]
+Tối đa
+[multiplayer game speed]
+Tốc độ: 1x (chơi mạng)
+[Units still inside: %0]
+Còn trong: %0
+[Units still working: %0]
+Còn làm việc: %0
+[motion blur]
+Làm mờ chuyển động
+[motion blur enabled]
+Đã bật làm mờ chuyển động (F8)
+[motion blur disabled]
+Đã tắt làm mờ chuyển động (F8)

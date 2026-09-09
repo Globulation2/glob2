@@ -140,29 +140,29 @@ public:
 	int upgrading_phase_1_inn_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an hospital
 	int upgrading_phase_1_hospital_chance = 0;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an racetrack
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a racetrack
 	int upgrading_phase_1_racetrack_chance = 0;
 	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an swimming pool
 	int upgrading_phase_1_swimmingpool_chance = 0;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an barracks
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a barracks
 	int upgrading_phase_1_barracks_chance = 0;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an school
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a school
 	int upgrading_phase_1_school_chance = 0;
-	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose an tower
+	///The random chance that, when selecting the type of level 1 building to upgrade, it will choose a tower
 	int upgrading_phase_1_tower_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an inn
 	int upgrading_phase_2_inn_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an hospital
 	int upgrading_phase_2_hospital_chance = 0;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an racetrack
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a racetrack
 	int upgrading_phase_2_racetrack_chance = 0;
 	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an swimming pool
 	int upgrading_phase_2_swimmingpool_chance = 0;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an barracks
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a barracks
 	int upgrading_phase_2_barracks_chance = 0;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an school
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a school
 	int upgrading_phase_2_school_chance = 0;
-	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose an tower
+	///The random chance that, when selecting the type of level 2 building to upgrade, it will choose a tower
 	int upgrading_phase_2_tower_chance = 0;
 	///The number of units to assign to an upgrade for upgrading phase level 1
 	int upgrading_phase_1_units_assigned = 0;

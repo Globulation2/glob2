@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
+#include "FrontendTheme.h"
 #include "ScriptEditorScreen.h"
 #include <Stream.h>
 #include "Unit.h"
@@ -120,6 +121,7 @@ int MapEdit::run(int sizeX, int sizeY, TerrainType terrainType)
 
 int MapEdit::run(void)
 {
+	FrontendScope editor(false);
 	minimap.setGame(game);
 	globalContainer->gfx->setClipRect();
 	drawMap(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
@@ -137,7 +139,7 @@ int MapEdit::run(void)
 	{
 		startTick=SDL_GetTicks64();
 	
-		// we get all pending events but for mousemotion we only keep the last one
+		// we get all pending events but for mouse motion we only keep the last one
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{

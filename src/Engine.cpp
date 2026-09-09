@@ -6,6 +6,7 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "FrontendTheme.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
@@ -28,6 +29,7 @@ Engine::~Engine()
 
 int Engine::run(void)
 {
+	FrontendScope gameplay(false);
 	bool doRunOnceAgain=true;
 	if (globalContainer->runNoX)
 	{
@@ -91,6 +93,7 @@ int Engine::run(void)
 		globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
 
 		// Display End Game Screen
+		FrontendScope results(true);
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
 

@@ -200,6 +200,23 @@ replacement tests cover callback/open/rename failures and temporary-file cleanup
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 
+
+## Team statistics save compatibility
+
+```sh
+scons -j8 release=1 server=0 team-stats-save-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
+python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
+```
+
+This headless test verifies live statistics and smoothing across all 32 sampling
+positions and repeated binary reloads, with history-ring wrap, named text fields,
+invalid-index and truncated-field controls. It compares version-84 and version-88
+save traces against outputs from the original loader. Linux and Windows CI run
+it in disposable profiles and check that preferences remain unchanged.
+See [fixtures and reproduction steps](fixtures/team-stats/README.md).
+
 ## AI helper gradient regression
 
 `Map::updateGlobalGradient(Uint8*)` supplies the Castor/Warrush helper maps.
@@ -214,3 +231,18 @@ The harness covers 3,000 random fields, mixed seed strengths, inert inputs,
 toroidal seams, thin dimensions, obstacles, distance cutoff and idempotence.
 It runs in the Linux CI jobs; the weighted pathfinder has separate `GradientTest`
 coverage in `TestsRunner`.
+
+## Resource-fetch target regression
+
+From the repository root:
+
+```sh
+scons -j8 release=1 server=0 resource-fetch-target-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/ResourceFetchTargetHarness .
+```
+
+The real-engine movement-method fixture checks every swim class: a valid resource
+target remains unchanged, and a depleted target is refreshed after its resource
+gradient is rebuilt. It invokes the movement method directly, rather than running
+an entire match. The shared runner isolates the profile and working directory and
+checks that preferences remain unchanged. Linux CI runs this regression.

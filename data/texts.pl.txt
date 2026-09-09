@@ -27,7 +27,7 @@
 [%0's game]
 Gra gracza %0
 [%0's team unit got converted to your team]
-Jednostka wroga %0 została przeciągnięta na Twoją stronę
+Jednostka z drużyny %0 dołączyła do Twojej drużyny
 [abreaviation explanation A]
 A: Sojusznicy
 [abreaviation explanation C]
@@ -207,7 +207,7 @@ skomponuj
 [Computing Fertility]
 Obliczam Urodzajność
 [concrete islands terrain]
-Betonowe Wyspy
+Oddzielne wyspy
 [connect]
 Połącz
 [connecting to game]
@@ -221,7 +221,7 @@ Kontynuuj grę
 [control %0]
 control-%0
 [Corn]
-Zboże
+Pszenica
 [crater density]
 ilość kraterów
 [crater lakes terrain]
@@ -243,7 +243,7 @@ Własny kursor
 [damage]
 Uszkodzenia
 [Damaged Map]
-Uszkodzona mapa
+Mapa rannych
 [decrease units working]
 Zmniejsz Ilość Pracujących Jednostek
 [Defeat Your Oppenents]
@@ -303,7 +303,7 @@ wejście
 [equals]
 równa się
 [ERROR_CANT_LOAD_MAP]
-Nie udało się wczytać mapy, ponieważ plik jest uszkodzony lub ma niezgodną wersję.
+Nie można wczytać mapy: plik jest uszkodzony lub ma niezgodną wersję.
 [escape]
 ucieczka
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ Jedzenie
 [forbidden area]
 Zakazany obszar
 [Free]
-Ok
+Zdrowe
 [free]
 wolne
 [from:]
@@ -557,7 +557,7 @@ meta-%0
 [Min required level:]
 Min. wymagany poziom:
 [Minimum Level To Flag]
-Minimalny Poziom Flag
+Min. poz. jednostek
 [Music volume]
 Głośność (muzyka)
 [Mute]
@@ -579,7 +579,7 @@ brak klawisza
 [No Objectives]
 Brak Celów
 [no ressources growth areas]
-Brak Terenów Wzrostu Zasobów
+Bez wzrostu
 [No]
 Nie
 [Not Enough Ratings]
@@ -611,11 +611,11 @@ stare losowe wyspy
 [old random terrain]
 stary losowy teren
 [on press]
-Na Przyciśnięcie
+Wciśnięcie
 [On the spot]
 Na miejscu
 [on unpress]
-Na Puszczenie
+Zwolnienie
 [open chat box]
 Otwórz Okno Rozmowy
 [open load menu]
@@ -705,7 +705,7 @@ Rejestruj nowego użytkownika YOG z hasłem. (niebezpieczne)
 [Register]
 Zarejestruj
 [remember unit]
-Zapamiętaj Jednostkę
+Pamiętaj liczby jednostek
 [Remember YOG password localy]
 Zapamiętaj hasło lokalnie. (niebezpieczne)
 [remove map]
@@ -791,11 +791,11 @@ Wybierz Konstrukcję Gospody
 [select construct market]
 Wybierz Konstrukcję Bazaru
 [select construct racetrack]
-Wybierz Konstrukcję Toru Wyścigowego
+Buduj tor wyścigowy
 [select construct school]
 Wybierz Konstrukcję Szkoły
 [select construct stonewall]
-Wybierz konstrukcję Kamiennego Muru
+Buduj mur kamienny
 [select construct swarm]
 Wybierz Konstrukcję Roju
 [select construct swimmingpool]
@@ -811,17 +811,17 @@ Wybierz Gospodę
 [select market building]
 Wybierz Bazar
 [select place clearing area]
-Wybierz Umiejscowienie Terenu Oczyszczania
+Wyznacz teren oczyszczania
 [select place clearingflag]
-Wybierz Umiejscowienie Flagi Oczyszczania
+Ustaw flagę oczyszczania
 [select place explorationflag]
-Wybierz Umiejscowienie Flagi Eksploracji
+Ustaw flagę eksploracji
 [select place forbidden area]
-Wybierz Umiejscowienie Terenu Zabronionego
+Wyznacz teren zabroniony
 [select place guard area]
-Wybierz Umiejscowienie Terenu Obronnego
+Wyznacz teren obronny
 [select place warflag]
-Wybierz Umiejscowienie Flagi Wojennej
+Ustaw flagę wojenną
 [select racetrack building]
 Wybierz Tor Wyścigowy
 [select school building]
@@ -1027,7 +1027,7 @@ Czas
 [to:]
 do:
 [toggle draw accessibility aids]
-Przełącz Rysowanie Pomocy Dostępności
+Pokaż/ukryj numery drużyn
 [toggle draw information]
 Przełącz Rysowanie Informacji
 [toggle draw unit paths]
@@ -1125,7 +1125,7 @@ Oglądasz:
 [water]
 Woda
 [Wheat]
-Zboże
+Pszenica
 [Won : you defeated your opponents]
 Wygrałeś: pokonałeś swoich przeciwników
 [Won : you have the most prestige]
@@ -1203,6 +1203,34 @@ Twój %0 jest atakowany
 [Your IP address was temporarily banned]
 Twój adres IP został zablokowany. Proszę cierpliwie czekać aż zostanie odblokowany, lub skontaktować się z administratorami.
 [Your unit got converted to %0's team]
-Twoja jednostka została przeciągnięta na stronę wroga %0
+Twoja jednostka dołączyła do drużyny %0
 [Your username was banned]
 Twoja imię gracza zostało zablokowane. Skontaktuj się z administratorami aby to zmienić.
+[game speed]
+Szybkość gry
+[decrease game speed]
+Zmniejsz szybkość gry
+[increase game speed]
+Zwiększ szybkość gry
+[maximum game speed]
+Maksymalna
+[multiplayer game speed]
+Szybkość: 1x (gra sieciowa)
+[game speed help]
+Tylko gra jednoosobowa i powtórki. Gra wieloosobowa działa z szybkością 1x.
+[AICortex-Description]
+Cortex - Eksperymentalna trójwarstwowa SI. W trakcie rozwoju.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Nie można zapisać kampanii. Sprawdź, czy folder docelowy istnieje, jest dostępny do zapisu i ma wolne miejsce.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Wewnątrz: %0
+[Units still working: %0]
+Nadal pracują: %0
+[motion blur]
+Rozmycie ruchu
+[motion blur enabled]
+Rozmycie ruchu włączone (F8)
+[motion blur disabled]
+Rozmycie ruchu wyłączone (F8)

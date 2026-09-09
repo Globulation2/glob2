@@ -92,7 +92,7 @@ void BrushTool::drawBrush(int x, int y, GAGCore::Color c, int viewportX, int vie
 	{
 		for (int cy = 0; cy < h; cy++)
 		{
-			// TODO: the brush is wrong, but without lookuping viewport in game gui, there is no way to know this
+			// TODO: the brush is wrong, but without looking up viewport in game gui, there is no way to know this
 			if (getBrushValue(figure, cx, cy, viewportX + (x / cell_size), viewportY + (y / cell_size), originalX, originalY))
 			{
 				globalContainer->gfx->drawRect(x + (cell_size * cx) + inset, y + (cell_size * cy) + inset, cell_size - inset, cell_size - inset, c);

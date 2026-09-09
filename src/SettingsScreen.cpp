@@ -13,6 +13,7 @@
 //   - SettingsScreenKeyboard.cpp  ("Keyboard Shortcuts" tab)
 
 #include "SettingsScreen.h"
+#include <GUIStyle.h>
 #include "GlobalContainer.h"
 #include <assert.h>
 #include <sstream>
@@ -188,7 +189,7 @@ void SettingsScreen::handleListSelected(Widget* source, int par1)
 		else
 		{
 			fullscreen->setClickable(true);
-			modeListNote->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 255, 255));
+			modeListNote->setStyle(Font::Style(Font::STYLE_NORMAL, Style::style->textColor));
 		}
 	    setFullscreen();
 	}

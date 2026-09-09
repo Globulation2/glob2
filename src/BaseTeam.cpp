@@ -25,7 +25,7 @@ BaseTeam::BaseTeam()
 
 bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	// loading baseteam
+	// loading base team
 	stream->readEnterSection("BaseTeam");
 	type = (TeamType)stream->readUint32("type");
 	teamNumber = stream->readSint32("teamNumber");
@@ -55,7 +55,7 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 
 void BaseTeam::save(GAGCore::OutputStream *stream) const
 {
-	// saving baseteam
+	// saving base team
 	stream->writeEnterSection("BaseTeam");
 	stream->writeUint32((Uint32)type, "type");
 	stream->writeSint32(teamNumber, "teamNumber");

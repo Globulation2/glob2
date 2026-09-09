@@ -77,7 +77,7 @@ void YOGClientDownloadingMapScreen::onTimer(Uint32 tick)
 	downloader.update();
 	if(!client->isConnected())
 	{
-		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map download failure: connection lost]"), Toolkit::getStringTable()->getString("[ok]"));
+		GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[Map download failure: lost connection]"), Toolkit::getStringTable()->getString("[ok]"));
 		endExecute(CONNECTIONLOST);
 	}
 	

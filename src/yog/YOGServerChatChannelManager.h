@@ -9,7 +9,7 @@
 
 class YOGServerChatChannel;
 
-///This does serverside management of YOG chat channels
+///This does server-side management of YOG chat channels
 class YOGServerChatChannelManager
 {
 public:

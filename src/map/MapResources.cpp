@@ -14,7 +14,7 @@
 
 void Map::decResource(int x, int y)
 {
-	Resource &r = getCase(x, y).resource;
+	Resource &r = getTile(x, y).resource;
 	
 	if (r.type == NO_RES_TYPE || r.amount == 0)
 		return;
@@ -45,7 +45,7 @@ void Map::decResource(int x, int y, int resourceType)
 
 bool Map::incResource(int x, int y, int resourceType, int variety)
 {
-	Resource &r = getCase(x, y).resource;
+	Resource &r = getTile(x, y).resource;
 	const ResourceType *fulltype;
 	if (r.type == NO_RES_TYPE)
 	{
@@ -97,7 +97,7 @@ void Map::setNoResource(int x, int y, int l)
 	assert(l<h);
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
-			cases[coordToIndex(dx, dy)].resource.clear();
+			tiles[coordToIndex(dx, dy)].resource.clear();
 }
 
 void Map::removeUnallowedResources(int x, int y, int w, int h)
@@ -105,7 +105,7 @@ void Map::removeUnallowedResources(int x, int y, int w, int h)
 	for (int dx=x; dx<x+w; dx++)
 		for (int dy=y; dy<y+h; dy++)
 		{
-			Resource& r=cases[coordToIndex(dx, dy)].resource;
+			Resource& r=tiles[coordToIndex(dx, dy)].resource;
 			if (r.type!=NO_RES_TYPE && getTerrainType(dx, dy)!=globalContainer->resourcesTypes.get(r.type)->terrain)
 				r.clear();
 		}
@@ -120,7 +120,7 @@ void Map::setResource(int x, int y, int type, int l)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 			if (isResourceAllowed(dx, dy, type))
 			{
-				Resource& rp=cases[coordToIndex(dx, dy)].resource;
+				Resource& rp=tiles[coordToIndex(dx, dy)].resource;
 				rp.type=type;
 				const ResourceType *rt=globalContainer->resourcesTypes.get(type);
 				rp.variety=syncRand()%rt->varietiesCount;
@@ -137,17 +137,17 @@ bool Map::isResourceAllowed(int x, int y, int type)
 
 bool Map::isPointSet(int n, int x, int y) const
 {
-	return getCase(x, y).scriptAreas & 1<<n;
+	return getTile(x, y).scriptAreas & 1<<n;
 }
 
 void Map::setPoint(int n, int x, int y)
 {
-	getCase(x, y).scriptAreas |= 1<<n;
+	getTile(x, y).scriptAreas |= 1<<n;
 }
 
 void Map::unsetPoint(int n, int x, int y)
 {
-	getCase(x, y).scriptAreas ^= getCase(x, y).scriptAreas & (1<<n);
+	getTile(x, y).scriptAreas ^= getTile(x, y).scriptAreas & (1<<n);
 }
 
 std::string Map::getAreaName(int n) const
