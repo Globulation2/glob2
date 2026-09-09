@@ -152,6 +152,8 @@ GameUtilities.cpp
 Glob2.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
+FrontendTheme.cpp
+MenuColony.cpp
 GlobalContainer.cpp
 GlobalContainerArgs.cpp
 GUIGlob2FileList.cpp
@@ -581,3 +583,13 @@ if not env['server']:
     regression_sources += local.Object('FetchApportionmentHarness.o', '#test/FetchApportionmentHarness.cpp')
     regression_test = local.Program('FetchApportionmentHarness', regression_sources)
     local.Alias('fetch-apportionment-test', regression_test)
+if not env['server']:
+    highres_sources = [source for source in source_files if source != 'Glob2.cpp']
+    highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
+    highres_test = local.Program('HighResolutionIntegrationHarness', highres_sources)
+    local.Alias('highres-integration-test', highres_test)
+if not env['server'] and 'menu-colony-harness' in COMMAND_LINE_TARGETS:
+    menu_sources = [source for source in source_files if source != 'Glob2.cpp']
+    menu_sources += local.Object('MenuColonyHarness.o', '#tools/MenuColonyHarness.cpp')
+    menu_test = local.Program('MenuColonyHarness', menu_sources)
+    env.Alias('menu-colony-harness', menu_test)

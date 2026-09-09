@@ -44,6 +44,7 @@ namespace GAGGUI
 		GAGCore::Font *fontPtr;
 	
 	public:
+		bool selected = false; //!< Presentation state for tab buttons.
 		TextButton() { fontPtr=NULL; }
 		TextButton(int x, int y, int w, int h, Uint32 hAlign, Uint32 vAlign, const std::string font, const std::string text, int returnCode,
 		const std::string& tooltip, const std::string &tooltipFont, Uint16 unicode=0);

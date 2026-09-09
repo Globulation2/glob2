@@ -4,5 +4,9 @@ Import("PackTar")
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "sans.ttf")
     env.Install(env["INSTALLDIR"]+"/glob2/data/fonts", "sans.ttf")
+    for notice in ["LICENSE-DejaVu.txt", "LICENSE-Droid.txt", "README.md"]:
+        PackTar(env["TARFILE"], notice)
+        env.Install(env["INSTALLDIR"]+"/glob2/data/fonts", notice)
     env.Alias("install", env["INSTALLDIR"]+"/glob2/data/fonts")
     PackTar(env["TARFILE"], "SConscript")
+    PackTar(env["TARFILE"], "build_chinese_font.py")

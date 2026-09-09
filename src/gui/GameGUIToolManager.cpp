@@ -381,10 +381,12 @@ void GameGUIToolManager::drawBuildingAt(int mapX, int mapY, int localteam, int v
 		isRoom = false;
 	
 	// Increase/Decrease highlight strength, given whether there is room or not
+	if (!globalContainer->gfx->isPeriodicCopy()) {
 	if (isRoom)
 		highlightStrength = std::min(highlightStrength + 0.1f, 1.0f);
 	else
 		highlightStrength = std::max(highlightStrength - 0.1f, 0.0f);
+    }
 		
 	// we get the screen dimensions of the building
 	int rectW = (bt->width) * 32;

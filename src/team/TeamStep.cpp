@@ -141,7 +141,7 @@ void Team::syncStep(void)
 			{
 				// Sim must not read GameGUI state. Route the selection
 				// clear through a GUI hook (see GameGUI::onUnitDestroyed).
-				game->gui->onUnitDestroyed(u);
+				if (game->gui) game->gui->onUnitDestroyed(u);
 				delete u;
 				myUnits[i] = NULL;
 			}
@@ -196,7 +196,7 @@ void Team::syncStep(void)
 
 		// Sim must not read GameGUI state. Route the selection
 		// clear through a GUI hook (see GameGUI::onBuildingDestroyed).
-		game->gui->onBuildingDestroyed(building);
+		if (game->gui) game->gui->onBuildingDestroyed(building);
 
 		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 		delete building;

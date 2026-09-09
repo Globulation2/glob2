@@ -51,6 +51,7 @@ public:
 		UPGRADES=21,
 		FLAGSETTINGS=22,
 		PRESSEDSELECTOR=23,
+		HIGHRES=24,
 	};
 
 	// IDs for the four sub-groups inside the "Building Defaults" tab. Stored in
@@ -70,7 +71,7 @@ private:
 	
 	TextButton *ok, *cancel;
 	TextButton *buildings, *flags, *constructionsites, *upgrades;
-	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
+	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel, *highres;
 	Selector *musicVol;
 	Selector *voiceVol;
 	Selector *gameSpeed;

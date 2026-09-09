@@ -121,22 +121,23 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	convertToScreen(viewportX, viewportY, startx, starty);
 	convertToScreen(viewportX + viewportW, viewportY + viewportH, endx, endy);
 
-	for (int n=startx; n!=endx;)
+	// Wrapped endpoints coincide for a complete period. Use the extent to
+	// distinguish a full-width/height viewport from an empty one.
+	if (viewportW >= game->map.getW()) { startx = mini_x; endx = mini_x + mini_w - 1; }
+	if (viewportH >= game->map.getH()) { starty = mini_y; endy = mini_y + mini_h - 1; }
+	const int spanX = (endx - startx + mini_w) % mini_w;
+	const int spanY = (endy - starty + mini_h) % mini_h;
+	for (int i=0; i<spanX; ++i)
 	{
+		const int n = mini_x + (startx - mini_x + i) % mini_w;
 		globalContainer->gfx->drawPixel(n, starty, 255, 255, 255);
 		globalContainer->gfx->drawPixel(n, endy, 255, 255, 255);
-		
-		n+=1;
-		if(n == (mini_x + mini_w))
-			n = mini_x;
 	}
-	for (int n=starty; n!=endy;)
+	for (int i=0; i<spanY; ++i)
 	{
+		const int n = mini_y + (starty - mini_y + i) % mini_h;
 		globalContainer->gfx->drawPixel(startx, n, 255, 255, 255);
 		globalContainer->gfx->drawPixel(endx, n, 255, 255, 255);
-		n+=1;
-		if(n == (mini_y + mini_h))
-			n = mini_y;
 	}
 	///The lines are out of alignment, so a single pixel in the bottom right hand of the square
 	///is never drawn

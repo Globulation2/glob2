@@ -53,7 +53,7 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 			typeNum = globalContainer->buildingsTypes.getTypeNum(selectionName, 0, false);
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		int tempX, tempY, x, y;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
+		game.map.cursorToBuildingPos(mapMouseX(mouseX), mapMouseY(mouseY), bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 
 		if (game.checkRoomForBuilding(tempX, tempY, bt, &x, &y, team, false))
 		{
@@ -119,12 +119,12 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="zone drag start")
 	{
 		isDraggingZone=true;
-		handleBrushClick(mouseX, mouseY);
+		handleBrushClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="zone drag motion")
 	{
-		handleBrushClick(mouseX, mouseY);
+		handleBrushClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="zone drag end")
@@ -203,12 +203,12 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="terrain drag start")
 	{
 		isDraggingTerrain=true;
-		handleTerrainClick(mouseX, mouseY);
+		handleTerrainClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="terrain drag motion")
 	{
-		handleTerrainClick(mouseX, mouseY);
+		handleTerrainClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="terrain drag end")
@@ -219,12 +219,12 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="delete drag start")
 	{
 		isDraggingDelete=true;
-		handleDeleteClick(mouseX, mouseY);
+		handleDeleteClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="delete drag motion")
 	{
-		handleDeleteClick(mouseX, mouseY);
+		handleDeleteClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="delete drag end")
@@ -244,12 +244,12 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="area drag start")
 	{
 		isDraggingArea=true;
-		handleAreaClick(mouseX, mouseY);
+		handleAreaClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="area drag motion")
 	{
-		handleAreaClick(mouseX, mouseY);
+		handleAreaClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="area drag end")
@@ -260,12 +260,12 @@ bool MapEdit::performTerrainAction(const std::string& action, int relMouseX, int
 	else if(action=="no ressource growth area drag start")
 	{
 		isDraggingNoResourceGrowthArea=true;
-		handleNoResourceGrowthClick(mouseX, mouseY);
+		handleNoResourceGrowthClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="no ressource growth area drag motion")
 	{
-		handleNoResourceGrowthClick(mouseX, mouseY);
+		handleNoResourceGrowthClick(mapMouseX(mouseX), mapMouseY(mouseY));
 		hasMapBeenModified = true;
 	}
 	else if(action=="no ressource growth area drag end")
