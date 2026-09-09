@@ -19,6 +19,8 @@ do not modify the AI or browser checkouts. Commit and push verified checkpoints.
   unique iOS archive symbols, simulator LLDB attachment and symbolicated sampling.
 - Bounded abandoned-write/export cleanup and host sanitizer checks.
 - A repeatable 100,000-step ARM64/Wasm fixture with 101 matching checkpoints.
+- Checksum-pinned JDK parity on macOS ARM64/Linux x86-64 and shared Java-home
+  selection; explicit local overrides remain supported.
 - Reconciliation with browser checkpoint 1658ff670 and isolated cross-play ports.
 - Android native asset-preparation feedback, verified in a real emulator cache
   reinstall and followed by a passing lifecycle/rotation/relaunch smoke.

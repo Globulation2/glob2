@@ -11,6 +11,29 @@ from mobile_toolchain import discover
 
 
 class EmulatorSmokeTests(unittest.TestCase):
+    def test_pinned_java_home_is_host_specific_and_preserves_override(self):
+        import json
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import developer_apk
+        root = Path(__file__).resolve().parents[2]
+        lock = json.loads((root/'mobile/android-tools.json').read_text())
+        scratch = root/'build/test-profiles'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            task = Path(temporary)
+            (task/'mobile').mkdir()
+            (task/'mobile/android-tools.json').write_text(json.dumps(lock))
+            for system, machine in [('Darwin', 'arm64'), ('Linux', 'x86_64')]:
+                artifact = lock['jdk-' + system + '-' + machine]
+                home = task/'build/mobile-tools'/artifact['directory']/artifact['java_home']
+                (home/'bin').mkdir(parents=True, exist_ok=True)
+                (home/'bin/java').touch()
+                with self.subTest(system=system), patch('developer_apk.platform.system', return_value=system), patch('developer_apk.platform.machine', return_value=machine):
+                    with patch.dict('developer_apk.os.environ', {}, clear=True):
+                        self.assertEqual(developer_apk.java_environment(task)['JAVA_HOME'], str(home))
+                    with patch.dict('developer_apk.os.environ', {'JAVA_HOME': '/explicit/jdk'}, clear=True):
+                        self.assertEqual(developer_apk.java_environment(task)['JAVA_HOME'], '/explicit/jdk')
+
     def test_smoke_rejects_physical_devices_and_shared_servers(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
         import smoke
@@ -236,6 +259,7 @@ class EmulatorEnvironmentTests(unittest.TestCase):
             task = Path(temporary)
             (task/'mobile').mkdir()
             shutil.copyfile(root/'mobile/emulator.json', task/'mobile/emulator.json')
+            shutil.copyfile(root/'mobile/android-tools.json', task/'mobile/android-tools.json')
             lock = json.loads((task/'mobile/emulator.json').read_text())
             sdk = task/'build/mobile-tools/android-sdk'
             for path, version in [('emulator', lock['emulator_revision']), ('system-images/android-35/default/x86_64', lock['image_revision'])]:

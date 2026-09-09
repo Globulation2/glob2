@@ -86,10 +86,9 @@ def main():
     if args.command=='build':
         android_user=ROOT/'build/mobile-tools/android-user'
         android_user.mkdir(parents=True,exist_ok=True)
-        env=dict(os.environ,GRADLE_USER_HOME=str(ROOT/'build/mobile-tools/gradle-home'),
-                 ANDROID_USER_HOME=str(android_user),TMPDIR=str(output/'tmp'))
-        bundled_java=ROOT/'build/mobile-tools/jdk-17.0.20.1+1/Contents/Home'
-        if bundled_java.is_dir() and 'JAVA_HOME' not in env: env['JAVA_HOME']=str(bundled_java)
+        env=developer_apk.java_environment(ROOT)
+        env.update(GRADLE_USER_HOME=str(ROOT/'build/mobile-tools/gradle-home'),
+                   ANDROID_USER_HOME=str(android_user),TMPDIR=str(output/'tmp'))
         gradle=args.gradle or str(ROOT/'build/mobile-tools/gradle-8.13/bin/gradle')
         subprocess.run([gradle,'--no-daemon','--project-dir',str(project),'assembleRelease' if args.release else 'assembleDebug'],env=env,check=True)
         apk=project/('app/build/outputs/apk/release/app-release-unsigned.apk' if args.release else 'app/build/outputs/apk/debug/app-debug.apk')

@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import platform
 from pathlib import Path
 import subprocess
 
@@ -12,9 +13,13 @@ def digest(path):
 
 def java_environment(root):
     env=dict(os.environ)
-    bundled=root/'build/mobile-tools/jdk-17.0.20.1+1/Contents/Home'
-    if bundled.is_dir() and 'JAVA_HOME' not in env:
-        env['JAVA_HOME']=str(bundled)
+    if 'JAVA_HOME' not in env:
+        lock = json.loads((root/'mobile/android-tools.json').read_text())
+        artifact = lock.get('jdk-' + platform.system() + '-' + platform.machine())
+        if artifact:
+            bundled = root/'build/mobile-tools'/artifact['directory']/artifact.get('java_home', '.')
+            if (bundled/'bin/java').is_file(): env['JAVA_HOME'] = str(bundled)
+
     return env
 
 

@@ -1,5 +1,16 @@
 # Mobile verification and remaining work
 
+## 2026-09-09 — Linux JDK pin
+
+Android CI now installs the same checksum-pinned Temurin 17.0.20.1+1 release used
+on macOS ARM64 instead of inheriting a mutable runner JDK. Packaging and signing
+share manifest-based Java-home selection; local explicit JAVA_HOME overrides
+remain supported. The Linux archive's complete SHA-256, directory layout and
+release metadata were verified. All 28 build-driver tests and a local Android
+release rebuild pass. Actual Linux execution is left to the next hosted run.
+This closes one host-tool version gap; it does not establish byte-identical
+builds across different operating systems or lock every CI image package.
+
 ## 2026-09-09 — Android asset preparation feedback
 
 A native spinner and localizable **Preparing game…** label now cover Android's

@@ -7,7 +7,8 @@
   "jdk-Darwin-arm64": {
     "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.20.1_1.tar.gz",
     "sha256": "196d13ba5f10414bef7f6a05a9b3f00edacb18ebacef2b99485db9e2ee18f0e8",
-    "directory": "jdk-17.0.20.1+1"
+    "directory": "jdk-17.0.20.1+1",
+    "java_home": "Contents/Home"
   },
   "sdk-tools-Darwin": {
     "url": "https://dl.google.com/android/repository/commandlinetools-mac-13114758_latest.zip",
@@ -20,5 +21,11 @@
     "sha1": "5fdcc763663eefb86a5b8879697aa6088b041e70",
     "directory": "android-sdk/cmdline-tools/19.0",
     "archive_directory": "cmdline-tools"
+  },
+  "jdk-Linux-x86_64": {
+    "url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.20.1%2B1/OpenJDK17U-jdk_x64_linux_hotspot_17.0.20.1_1.tar.gz",
+    "sha256": "3808d1d15e3ec6bd5b84057fb5d84c33d8a1536a258146bcea2e603fc726e08e",
+    "directory": "jdk-17.0.20.1+1",
+    "java_home": "."
   }
 }

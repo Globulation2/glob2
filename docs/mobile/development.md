@@ -23,6 +23,12 @@ python3 mobile/doctor.py android arch=armeabi-v7a android_sdk=/path/to/sdk
 python3 mobile/doctor.py ios environment=simulator developer_dir=/Applications/Xcode.app/Contents/Developer
 ```
 
+The optional task-local JDK is checksum-pinned to Temurin 17.0.20.1+1 on
+macOS ARM64 and Linux x86-64 in `mobile/android-tools.json`. Android CI uses
+that JDK rather than the runner's changing JDK 17. Local commands preserve an
+explicit `JAVA_HOME`; otherwise packaging/signing use the installed host-specific
+JDK path from the same manifest.
+
 SDK versions are recorded in `mobile/toolchain.json`. Android uses NDK
 28.2.13676358, API 26 minimum, and separate arm64-v8a, armeabi-v7a, and x86_64
 outputs. iOS uses Xcode 26.6, deployment 15.0, and separate ARM64 device/simulator

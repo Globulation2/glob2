@@ -41,7 +41,7 @@ jobs:
           cp -R "$ANDROID_HOME/build-tools/35.0.0" "$sdk/build-tools/"
           cp -R "$ANDROID_HOME/platform-tools" "$sdk/"
           cp -R "$ANDROID_HOME/licenses" "$sdk/"
-          echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+          echo "JAVA_HOME=$PWD/build/mobile-tools/jdk-17.0.20.1+1" >> "$GITHUB_ENV"
           echo "TMPDIR=$PWD/build/ci-tmp" >> "$GITHUB_ENV"
       - name: Build pinned target dependencies
         run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release
