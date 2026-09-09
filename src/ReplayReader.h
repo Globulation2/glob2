@@ -22,10 +22,11 @@ class Order;
 static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Replays older than this are rejected: version 90
-//! changed the simulation (weighted pathfinding, diagonal timing), so earlier
-//! replays would diverge from what happened.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 90;
+//! the reader still accepts. Replays older than this are rejected: version 91
+//! changed the simulation (fetch-job apportionment), as version 90 did before
+//! it (weighted pathfinding, diagonal timing), so earlier replays would diverge
+//! from what happened.
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 91;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
