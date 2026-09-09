@@ -39,13 +39,22 @@ morning. Read [remaining-work](remaining-work.md) and the newest
 [status checkpoint](status.md). Recovery, native document bridges, abandoned-file
 cleanup, platform certificate trust, phone editor/results/settings, simulator
 lifecycle drivers, symbol validation and long-run determinism tooling are implemented.
+Android also has verified native asset-preparation feedback. macOS/Linux JDK
+selection is checksum-pinned, and iOS smoke failures retain bounded diagnostics
+without trying to terminate never-started apps. The updated driver passes local
+lifecycle testing and all 29 build-driver tests.
 Android document round trips pass. Both local mobile lifecycle smokes pass, as does
 hosted mobile run 34315653259 at `b9806743d` (all Android ABIs, build-ID checks,
 x86-64 lifecycle/trust and iOS simulator, without retries).
 
 Browser base `1658ff670` is reconciled. The native/Wasm 100,000-step fixture has
 101 identical checkpoints, all 54 replay/single-player browser cases pass, and all
-six TCP/WSS cross-play cases pass on Chromium, Firefox and WebKit. Network fixtures
+six TCP/WSS cross-play cases pass on Chromium, Firefox and WebKit. General run
+34315653163 is fully green at `b9806743d`, including 225 runtime, 129 WebGL, both
+visibility runs, Linux/Wasm 100,000-step comparison and deployment tests. Consult
+PR #208 for subsequent mobile validation, including the recorded iOS launcher
+timeout and requested retry; do not confuse a launcher timeout with a proven
+native application crash. Network fixtures
 use private ports/profiles and await their embedded router. Android APK/symbol IDs
 are checked during packaging; iOS symbols and simulator LLDB/sampling are verified.
 

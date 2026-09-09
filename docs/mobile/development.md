@@ -578,3 +578,8 @@ the exact APK and `libmain.so` for future crash symbolication.
 The [simulator interaction guide](simulator-interaction.md) records the tested
 idb companion version/hash, private socket and state setup, picker cancellation
 evidence, and the unresolved local-provider/Instruments limitations.
+
+The iOS smoke output also includes `commands.json` with per-command timings. On
+failure it attempts bounded service/system-log capture before cleanup; cleanup
+only targets apps the test confirmed started. Diagnostic or cleanup failures do
+not replace the original startup/lifecycle error.

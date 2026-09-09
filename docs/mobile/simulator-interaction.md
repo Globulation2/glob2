@@ -62,7 +62,9 @@ can open again.
 The local provider did **not** complete selection of a valid `.game`, invalid
 `.game`, or ordinary `.txt` file seeded in the app Documents folder. A valid save
 seeded directly in the owned simulator's LocalStorage provider also failed.
-Rebooting the owned simulator did not resolve this. The system DocumentManager
+Rebooting the owned simulator did not resolve this. Opening the standalone
+Files app and browsing the local provider before retrying also did not resolve
+it (`build/mobile-ios-files-retry.log`). The system DocumentManager
 log reports `Couldn't get FPItem from node` / `NSCocoaErrorDomain Code=256` before
 any app import callback. The export sheet disables Save in the app Documents
 folder. This evidence points to a provider/runtime problem but does not establish

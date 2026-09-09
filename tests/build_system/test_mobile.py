@@ -277,6 +277,41 @@ class EmulatorEnvironmentTests(unittest.TestCase):
             self.assertIn('hw.lcd.width=320', config.read_text())
 
 
+class IOSSmokeFailureTests(unittest.TestCase):
+    def test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps(self):
+        import json
+        import subprocess
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import ios_smoke
+        root = Path(__file__).resolve().parents[2]
+        scratch = root/'build/test-profiles'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            output = Path(temporary)/'diagnostics'
+            calls = []
+            def command(argv, **kwargs):
+                arguments = argv[4:]
+                calls.append((arguments, kwargs['timeout']))
+                if arguments[:2] == ['list', 'devices']:
+                    return json.dumps({'devices': {'runtime': [{'udid': 'owned-test', 'name': 'Glob2-Mobile', 'state': 'Booted'}]}})
+                if len(calls) == 2: return ''  # No app is running before launch.
+                if arguments[0] == 'launch': raise subprocess.TimeoutExpired(argv, 180)
+                raise subprocess.CalledProcessError(1, argv, output='Simulator diagnostic unavailable')
+            with patch.object(sys, 'argv', ['ios_smoke.py', '--device', 'owned-test', '--output', str(output)]), patch.object(ios_smoke.subprocess, 'check_output', side_effect=command):
+                with self.assertRaises(subprocess.TimeoutExpired) as failure:
+                    ios_smoke.main()
+            self.assertIn('launch', failure.exception.cmd)
+            self.assertFalse(any(arguments[0] == 'terminate' for arguments, unused in calls))
+            self.assertTrue(all(timeout == 30 for unused, timeout in calls[3:]))
+            result = json.loads((output/'result.json').read_text())
+            self.assertFalse(result['passed'])
+            self.assertEqual(result['checks'], [])
+            self.assertEqual(len(result['diagnostic_errors']), 2)
+            history = json.loads((output/'commands.json').read_text())
+            self.assertEqual(history[2]['arguments'][0], 'launch')
+            self.assertFalse(history[2]['success'])
+
+
 class AndroidSymbolTests(unittest.TestCase):
     def test_packaged_symbols_require_matching_unambiguous_build_ids(self):
         import zipfile

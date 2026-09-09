@@ -33,7 +33,9 @@ itself mean a hosted CI run passed.
 - Hosted mobile run 34315653259 is fully green: all Android ABIs package,
   hosted x86-64 lifecycle/trust and iOS lifecycle checks pass at `b9806743d`
   without retries. Build-ID packaging checks pass on all three Android ABIs.
-  The general browser/desktop workflow is still running for that commit.
+  General run 34315653163 also passes at that commit: all desktop/build-isolation
+  jobs, 225 runtime, 129 WebGL, both visibility runs, 100,000-step Linux/Wasm
+  determinism and deployment tests. Newer mobile validation is linked from PR #208.
 - iOS picker presentation, browsing, cancellation and reopening now pass through
   task-local idb input on the isolated simulator. Its local File Provider cannot
   resolve selected files (including plain text) and disables export Save, even

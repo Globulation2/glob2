@@ -1,5 +1,30 @@
 # Mobile verification and remaining work
 
+## 2026-09-09 — complete browser regression and iOS failure diagnostics
+
+General run 34315653163 passes at `b9806743d`: Windows, both Linux builds,
+all browser/native build-isolation orders, 225 browser runtime/multiplayer cases,
+129 WebGL cases, both visibility runs and both deployment/TLS/persistence tests.
+The hosted Linux x86-64/Wasm 100,000-step comparison also passes all 101
+component/checksum/RNG checkpoints. Its artifact is retained locally in
+`build/mobile-ci-linux-determinism-b980`. The subsequent application changes are
+confined to Android loading feedback and mobile build-tool selection.
+
+At `402e871dd`, all three Android CI jobs pass, including the pinned Linux JDK,
+APK/symbol IDs and x86-64 lifecycle/trust. The first iOS attempt timed out in
+`simctl launch` before any native output; its screenshot remained on the home
+screen. Only that job was requested for retry in run 34318772859. Current
+hosted results are linked from PR #208. The first failure is retained in
+`build/mobile-ios-ci-402e` and is not reported as a successful startup.
+
+The smoke driver now records command timings and, on failure, bounded service
+and relevant system-log snapshots. Cleanup only targets apps confirmed started
+by the test and uses 30-second deadlines. It preserves the original failure and
+all startup, PID-retention and fresh-process assertions. A regression test proves
+that a launch timeout remains a failure even when diagnostics fail, without
+trying to terminate never-started apps. All 29 build-driver tests and a real
+local iOS startup/background/resume/relaunch smoke pass with this driver.
+
 ## 2026-09-09 — Linux JDK pin
 
 Android CI now installs the same checksum-pinned Temurin 17.0.20.1+1 release used
