@@ -116,9 +116,20 @@ int main(int argc, char **argv)
 		for(int row=0;row<2;++row) for(int col=0;col<3;++col)
 		{
 			assert(colored(surface,x+col*512,y+row*512,w,h)==expected);
-			for(int yy=0;yy<h;++yy)
-				assert(memcmp(static_cast<char*>(surface->pixels)+(y+yy)*surface->pitch+x*4,
-					static_cast<char*>(surface->pixels)+(y+yy+row*512)*surface->pitch+(x+col*512)*4,w*4)==0);
+			int maximumDifference=0;
+			for(int yy=0;yy<h;++yy) for(int xx=0;xx<w;++xx)
+			{
+				Uint32 first,copy;
+				memcpy(&first,static_cast<char*>(surface->pixels)+(y+yy)*surface->pitch+(x+xx)*4,4);
+				memcpy(&copy,static_cast<char*>(surface->pixels)+(y+yy+row*512)*surface->pitch+(x+xx+col*512)*4,4);
+				Uint8 r,g,b,cr,cg,cb;
+				SDL_GetRGB(first,surface->format,&r,&g,&b);
+				SDL_GetRGB(copy,surface->format,&cr,&cg,&cb);
+				maximumDifference=std::max({maximumDifference,std::abs(r-cr),std::abs(g-cg),std::abs(b-cb)});
+			}
+			// Compare visible RGB, not framebuffer alpha. GL line antialiasing
+			// can round translated copies one channel level apart on llvmpipe.
+			assert(maximumDifference <= (gpu ? 1 : 0));
 		}
 	};
 	Game::ViewState view;

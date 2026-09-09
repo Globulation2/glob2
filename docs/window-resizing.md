@@ -202,7 +202,9 @@ The harness links production rendering and settings code, checks pixels across s
 map copies, crosses a path seam, pans the view, shrinks/grows the window, checks
 sidebar clipping, and exercises settings toggles and tab changes. It also retains
 the previously temporary credits-centering regression. The GL mode reads the
-rendered back buffer before swap. Only the test translation unit relaxes C++ access
+rendered back buffer before swap. Visible pixel occupancy must match exactly;
+software RGB values match exactly, while GL RGB comparison allows one channel
+level of antialiasing roundoff observed on llvmpipe. Only the test translation unit relaxes C++ access
 control; no test visibility changes are compiled into production objects. Credits'
 implementation is compiled directly into that translation unit instead of linking
 its normal object, allowing its internal scrolling widget to be exercised.
