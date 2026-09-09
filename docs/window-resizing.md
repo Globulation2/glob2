@@ -204,9 +204,13 @@ pans corner selections into view, shrinks/grows the window, checks
 sidebar clipping, and exercises settings toggles, tab changes, and the live
 resolution label after native window events. It also retains
 the previously temporary credits-centering regression. The GL mode reads the
-rendered back buffer before swap. Visible pixel occupancy must match exactly;
-software RGB values match exactly, while GL RGB comparison allows one channel
-level of antialiasing roundoff observed on llvmpipe. Only the test translation unit relaxes C++ access
+rendered back buffer before swap. Every pixel must agree on whether it is colored
+or black, and software RGB values match exactly. GL permits a mean absolute RGB
+error of at most one channel level over colored pixels, excluding black padding.
+Windows llvmpipe differed by 17 levels in one of 880 marker pixels (mean error
+0.0194); directly drawing the marker without map-copy enumeration reproduced the
+same difference. This accommodates line antialiasing without tolerating missing
+or displaced geometry. Only the test translation unit relaxes C++ access
 control; no test visibility changes are compiled into production objects. Credits'
 implementation is compiled directly into that translation unit instead of linking
 its normal object, allowing its internal scrolling widget to be exercised.

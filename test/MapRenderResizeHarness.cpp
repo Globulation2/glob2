@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 		for(int row=0;row<2;++row) for(int col=0;col<3;++col)
 		{
 			assert(colored(surface,x+col*512,y+row*512,w,h)==expected);
-			int maximumDifference=0;
+			int totalDifference=0;
 			for(int yy=0;yy<h;++yy) for(int xx=0;xx<w;++xx)
 			{
 				Uint32 first,copy;
@@ -142,11 +142,13 @@ int main(int argc, char **argv)
 				Uint8 r,g,b,cr,cg,cb;
 				SDL_GetRGB(first,surface->format,&r,&g,&b);
 				SDL_GetRGB(copy,surface->format,&cr,&cg,&cb);
-				maximumDifference=std::max({maximumDifference,std::abs(r-cr),std::abs(g-cg),std::abs(b-cb)});
+				assert((r || g || b) == (cr || cg || cb));
+				totalDifference += std::abs(r-cr)+std::abs(g-cg)+std::abs(b-cb);
 			}
-			// Compare visible RGB, not framebuffer alpha. GL line antialiasing
-			// can round translated copies one channel level apart on llvmpipe.
-			assert(maximumDifference <= (gpu ? 1 : 0));
+			// Require identical geometry. GL line antialiasing can change a
+			// single edge pixel substantially when translated, so bound mean
+			// RGB error over colored pixels (never dilute it with black padding).
+			assert(totalDifference <= (gpu ? expected*3 : 0));
 		}
 	};
 	Game::ViewState view;
