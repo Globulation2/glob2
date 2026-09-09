@@ -1,25 +1,35 @@
 {
-  "bpm": 100,
-  "bars": 32,
-  "seconds": 76.8,
+  "renderer": "Apple AVAudioUnitSampler",
+  "sound_bank": "gs_instruments.dls",
+  "sample_rate": 44100,
+  "shared_gain": 1.9028841758792658,
+  "warmup_loops": 2,
   "tracks": {
     "calm": {
       "frames": 3386880,
-      "peak": 0.5537039041519165,
-      "rms": 0.13676214218139648,
-      "boundary_step": 0.00038738027797080576
+      "seconds": 76.8,
+      "peak": 0.3110726773738861,
+      "rms": 0.05587353557348251,
+      "boundary_step": 0.0025959787890315056
     },
     "building": {
       "frames": 3386880,
-      "peak": 0.6696206331253052,
-      "rms": 0.17321451008319855,
-      "boundary_step": 0.000472965301014483
+      "seconds": 76.8,
+      "peak": 0.41388946771621704,
+      "rms": 0.07668086886405945,
+      "boundary_step": 0.004353855736553669
     },
     "combat": {
       "frames": 3386880,
-      "peak": 0.8539211750030518,
-      "rms": 0.23072350025177002,
-      "boundary_step": 0.0025425762869417667
+      "seconds": 76.8,
+      "peak": 0.8999999761581421,
+      "rms": 0.12531334161758423,
+      "boundary_step": 0.008908743038773537
     }
-  }
+  },
+  "preview_switch_seconds": [
+    9.6,
+    19.2,
+    28.799999999999997
+  ]
 }
