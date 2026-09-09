@@ -31,7 +31,7 @@ namespace
 			wMask = w - 1;
 			hMask = h - 1;
 			size = static_cast<size_t>(w * h);
-			cases.assign(size, Case());   // Case() defaults: terrain=0 (grass), no building, no unit
+			tiles.assign(size, Tile());   // Tile() defaults: terrain=0 (grass), no building, no unit
 		}
 		~GrassMap()
 		{
@@ -43,15 +43,15 @@ namespace
 
 		void putBuilding(int x, int y, Uint16 gbid = 0)
 		{
-			cases[coordToIndex(x, y)].building = gbid;
+			tiles[coordToIndex(x, y)].building = gbid;
 		}
 		void putGroundUnit(int x, int y, Uint16 guid = 0)
 		{
-			cases[coordToIndex(x, y)].groundUnit = guid;
+			tiles[coordToIndex(x, y)].groundUnit = guid;
 		}
 		void putResource(int x, int y, int type = 0)
 		{
-			Resource &r = cases[coordToIndex(x, y)].resource;
+			Resource &r = tiles[coordToIndex(x, y)].resource;
 			r.type = type;
 			r.amount = 1;
 			r.variety = 0;
@@ -59,7 +59,7 @@ namespace
 		}
 		void setForbidden(int x, int y, Uint32 mask)
 		{
-			cases[coordToIndex(x, y)].forbidden = mask;
+			tiles[coordToIndex(x, y)].forbidden = mask;
 		}
 		// Terrain encoding (see Map.h:336-361):
 		//   grass : terrain <  16
@@ -67,11 +67,11 @@ namespace
 		//   water : 256..271
 		void makeWater(int x, int y)
 		{
-			cases[coordToIndex(x, y)].terrain = 256;
+			tiles[coordToIndex(x, y)].terrain = 256;
 		}
 		void makeSand(int x, int y)
 		{
-			cases[coordToIndex(x, y)].terrain = 128;
+			tiles[coordToIndex(x, y)].terrain = 128;
 		}
 	};
 

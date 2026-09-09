@@ -1,4 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
 #define SDL_MAIN_HANDLED
 #ifdef main
 #undef main
@@ -13,6 +16,7 @@
 #include "MapEditKeyActions.h"
 #include "Utilities.h"
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <FileManager.h>
 #include <cassert>
 #include <filesystem>
@@ -345,6 +349,69 @@ static void checkPreferences(const fs::path& directory)
     std::cout << "PASS preference/keyboard writes round trip and preserve prior files on failure" << std::endl;
 }
 
+static void checkPendingConstruction()
+{
+	const int type = globalContainer->buildingsTypes.getTypeNum("inn", 0, true);
+	for (bool text : {false, true})
+	{
+		GameGUI source, target;
+		for (Game* game : {&source.game, &target.game})
+		{
+			game->map.setSize(5, 5, GRASS);
+			game->map.setGame(game);
+			game->addTeam(0);
+			game->teams[0]->race.loadDefault();
+			game->map.setMapDiscovered();
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x) game->map.clearImmobileUnit(x, y);
+		}
+		const auto roundTrip = [&] {
+			auto* backend = new MemoryStreamBackend;
+			std::unique_ptr<OutputStream> writer;
+			if (text) writer = std::make_unique<TextOutputStream>(backend);
+			else writer = std::make_unique<BinaryOutputStream>(backend);
+			source.game.saveBuildProjects(writer.get());
+			writer->flush();
+			MemoryStreamBackend bytes(*backend);
+			bytes.seekFromStart(0);
+			if (text)
+			{
+				TextInputStream reader(&bytes);
+				target.game.loadBuildProjects(&reader);
+			}
+			else
+			{
+				BinaryInputStream reader(new MemoryStreamBackend(bytes));
+				target.game.loadBuildProjects(&reader);
+			}
+		};
+		source.game.buildProjects = {{8, 8, 0, type, 2, 3}, {16, 16, 0, type, 4, 5}};
+		roundTrip();
+		assert(target.game.buildProjects.size() == 2);
+		auto first = target.game.buildProjects.begin(), second = std::next(first);
+		assert(first->posX == 8 && first->posY == 8 && first->teamNumber == 0 && first->typeNum == type
+			&& first->unitWorking == 2 && first->unitWorkingFuture == 3
+			&& second->posX == 16 && second->posY == 16 && second->teamNumber == 0 && second->typeNum == type
+			&& second->unitWorking == 4 && second->unitWorkingFuture == 5);
+		target.game.map.setGroundUnit(8, 8, 0);
+		target.game.buildProjectSyncStep(0);
+		assert(target.game.buildProjects.size() == 1);
+		target.game.map.setGroundUnit(8, 8, NOGUID);
+		target.game.buildProjectSyncStep(0);
+		assert(target.game.buildProjects.empty());
+		assert(target.game.map.getBuilding(8, 8) != NOGBID);
+		source.game.buildProjects.clear();
+		roundTrip();
+		assert(target.game.buildProjects.empty());
+		source.game.buildProjects = {{8, 8, 99, type, 2, 3}};
+		bool rejected = false;
+		try { roundTrip(); }
+		catch (const std::runtime_error&) { rejected = true; }
+		assert(rejected && target.game.buildProjects.empty());
+	}
+	std::cout << "PASS pending construction binary/text round trips, queue order, staffing, delayed placement, empty queue and invalid reference" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	SDL_SetMainReady();
@@ -356,6 +423,8 @@ int main(int argc, char **argv)
 	globalContainer = &globals;
 	globals.runNoX = true;
 	globals.load();
+	globals.settings.rememberUnit = false;
+	checkPendingConstruction();
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
     checkPreferences(directory);

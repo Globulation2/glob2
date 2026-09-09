@@ -135,7 +135,7 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 	assert(globalContainer);
 	for (size_t i=0; i<size; i++)
 	{
-		const Case& c=cases[i];
+		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
 			gradient[i]=GRADIENT_FORBIDDEN;
 		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)

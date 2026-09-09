@@ -77,7 +77,7 @@ void OverlayArea::compute(Game& game, OverlayType ntype, int localteam)
 		{
 			for(int y=0; y<game.map.getH(); ++y)
 			{
-				overlay[x * height + y] = game.map.getCase(x, y).fertility;
+				overlay[x * height + y] = game.map.getTile(x, y).fertility;
 				overlaymax = game.map.fertilityMaximum;
 			}
 		}

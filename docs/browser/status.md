@@ -11,6 +11,16 @@ complete-match tests and gateway setup documentation remain required. See
 [current delivery scope](implementation.md); older references to the full
 original plan below describe the former scope, not release blockers to reopen.
 
+## Current master integration — 2026-09-08
+
+Integrated upstream through `d3ac1ed3f`, including pending-construction save/load
+and the map-cell `Tile` rename. Conflicts preserve resumable browser map loading
+and fertility computation, update the added harnesses to `getTile`, and retain
+both upstream construction and browser persistence regressions. The earlier PR
+API base SHA lagged the actual master ref; comparison with the live ref identified
+these conflicts. Run `34306750831` was superseded before completion. Fresh CI and
+the affected local regressions must qualify this merged revision.
+
 ## Replay-save closeout and interpreter header isolation — 2026-09-08
 
 The final writer audit found a missed browser entry point: EndGameScreen's Save

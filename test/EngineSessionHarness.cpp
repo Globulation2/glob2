@@ -705,7 +705,7 @@ int main(int argc, char** argv)
             std::vector<Uint16> values;
             for (int x = 0; x < editor.game.map.getW(); ++x)
                 for (int y = 0; y < editor.game.map.getH(); ++y)
-                    values.push_back(editor.game.map.getCase(x, y).fertility);
+                    values.push_back(editor.game.map.getTile(x, y).fertility);
             values.push_back(editor.game.map.fertilityMaximum);
             return values;
         };
@@ -725,7 +725,7 @@ int main(int argc, char** argv)
         for (const std::size_t budget : {1u, 7919u, 65536u}) {
             for (int x = 0; x < editor.game.map.getW(); ++x)
                 for (int y = 0; y < editor.game.map.getH(); ++y)
-                    editor.game.map.getCase(x, y).fertility = 42;
+                    editor.game.map.getTile(x, y).fertility = 42;
             editor.game.map.fertilityMaximum = 42;
             const auto untouched = snapshot();
             FertilityCalculator::Job job(editor.game.map);
