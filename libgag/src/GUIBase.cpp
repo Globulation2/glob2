@@ -432,7 +432,7 @@ namespace GAGGUI
 			SDL_Event lastMouseMotion, windowEvent, event;
 			bool hadLastMouseMotion=false;
 			bool wasWindowEvent=false;
-			while (SDL_PollEvent(&event))
+			while (GAGCore::GraphicContext::pollEvent(&event))
 			{
 				GAGCore::GraphicContext::translateMouseEvent(&event);
 				switch (event.type)
@@ -631,6 +631,7 @@ namespace GAGGUI
 	
 	void Screen::dispatchPaint(bool present)
 	{
+		updateLayout();
 		Style::style->onFrame();
 		assert(gfx);
 		gfx->setClipRect();
@@ -677,6 +678,7 @@ namespace GAGGUI
 	// Overlay screen, used for non full frame dialog
 	
 	OverlayScreen::OverlayScreen(GraphicContext *parentCtx, unsigned w, unsigned h)
+		: parentContext(parentCtx)
 	{
 		gfx = new DrawableSurface(w, h);
 		decX = (parentCtx->getW()-w)>>1;
@@ -684,6 +686,12 @@ namespace GAGGUI
 		endValue = -1;
 	}
 	
+	void OverlayScreen::updateLayout(void)
+	{
+		decX = std::max(0, std::min(decX, parentContext->getW() - getW()));
+		decY = std::max(0, std::min(decY, parentContext->getH() - getH()));
+	}
+
 	OverlayScreen::~OverlayScreen()
 	{
 		delete gfx;
@@ -718,7 +726,7 @@ namespace GAGGUI
 			const Uint64 frameStart = SDL_GetTicks64();
 
 			SDL_Event event;
-			while (SDL_PollEvent(&event))
+			while (GAGCore::GraphicContext::pollEvent(&event))
 			{
 				GAGCore::GraphicContext::translateMouseEvent(&event);
 				if (event.type == SDL_QUIT)
@@ -756,7 +764,8 @@ namespace GAGGUI
 			dispatchTimer(frameStart);
 
 			dispatchPaint();
-			parentCtx->drawSurface(0, 0, background);
+			parentCtx->setClipRect();
+			parentCtx->drawSurface(0, 0, parentCtx->getW(), parentCtx->getH(), background);
 			parentCtx->drawSurface(decX, decY, getSurface());
 			parentCtx->nextFrame();
 
@@ -776,6 +785,7 @@ namespace GAGGUI
 
 	void OverlayScreen::translateAndProcessEvent(SDL_Event *event)
 	{
+		updateLayout();
 		int newX, newY;
 		SDL_Event ev=*event;
 		switch (ev.type)

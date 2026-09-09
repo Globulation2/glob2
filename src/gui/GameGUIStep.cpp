@@ -117,7 +117,7 @@ void GameGUI::step(void)
 	bool wasWindowEvent=false;
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mouse motion we only keep the last one
-	while (SDL_PollEvent(&event))
+	while (GAGCore::GraphicContext::pollEvent(&event))
 	{
 		GAGCore::GraphicContext::translateMouseEvent(&event);
 		if (event.type==SDL_MOUSEMOTION)

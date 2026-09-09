@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2022-2023 Nathan Mills
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -159,6 +160,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 bool Minimap::insideMinimap(int x, int y)
 {
 	if (noX) return false;
+	computeMinimapPositioning();
 
 	if(x > (mini_x) && x < (mini_x + mini_w)
 			&& y > (mini_y) && y < (mini_y + mini_h))
@@ -171,6 +173,7 @@ bool Minimap::insideMinimap(int x, int y)
 void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 {
 	if (noX) return;
+	computeMinimapPositioning();
 
 	int xpos = nx - mini_x;
 	int ypos = ny - mini_y;
@@ -183,6 +186,7 @@ void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 {
 	if (noX) return;
+	computeMinimapPositioning();
 
 	int xpos = game->map.normalizeX(nx - offset_x);
 	int ypos = game->map.normalizeY(ny - offset_y);
@@ -210,6 +214,7 @@ void Minimap::setMinimapMode(MinimapMode mode)
 void Minimap::computeMinimapPositioning()
 {
 	if (noX) return;
+	gameWidth = globalContainer->gfx->getW();
 	
 	if(game->map.getW() > game->map.getH())
 	{

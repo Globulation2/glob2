@@ -119,6 +119,7 @@ static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
 
 class Game
 {
+	bool hasSavedRandomState = false;
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
 	static const bool verbose = false;

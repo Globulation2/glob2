@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "MapCopies.h"
 #include <iostream>
 
 #include "AICastor.h"
@@ -237,27 +238,26 @@ void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int s
 	{
 		if (unit->validTarget)
 		{
-			if(isOnScreen(left,top,right,bot,viewportX,viewportY,unit->posX,unit->posY) || isOnScreen(left,top,right,bot,viewportX,viewportY,unit->targetX,unit->targetY))
+			int px = ((unit->posX - viewportX) & map.getMaskW()) * 32;
+			int py = ((unit->posY - viewportY) & map.getMaskH()) * 32;
+			// Keep the shortest toroidal displacement even when the viewport spans
+			// several map copies. Mapping endpoints independently breaks seam crossings.
+			const int dx = ((unit->targetX-unit->posX+map.getW()/2) & map.getMaskW())-map.getW()/2;
+			const int dy = ((unit->targetY-unit->posY+map.getH()/2) & map.getMaskH())-map.getH()/2;
+			const int targetX = px + dx*32 + 16;
+			const int targetY = py + dy*32 + 16;
+			if (unit->action < BUILD)
 			{
-				int px, py;
-				map.mapCaseToDisplayableVector(unit->posX, unit->posY, &px, &py, viewportX, viewportY, sw, sh);
-				int deltaLeft=255-unit->delta;
-				if (unit->action<BUILD)
-				{
-					px-=(unit->dx*deltaLeft)>>3;
-					py-=(unit->dy*deltaLeft)>>3;
-				}
-
-
-				int lsx, lsy, ldx, ldy;
-				map.mapCaseToDisplayableVector(unit->targetX, unit->targetY, &ldx, &ldy, viewportX, viewportY, sw, sh);
-				lsx=px+16;
-				lsy=py+16;
-				if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
-					globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250);
-				else
-					globalContainer->gfx->drawLine(lsx, lsy, ldx+16, ldy+16, 250, 250, 250, 128);
+				px -= (unit->dx*(255-unit->delta)) >> 3;
+				py -= (unit->dy*(255-unit->delta)) >> 3;
 			}
+			px += 16;
+			py += 16;
+			forEachMapCopy(std::min(px,targetX), std::min(py,targetY), std::max(px,targetX), std::max(py,targetY),
+				map.getW()*32, map.getH()*32, sw, sh, [&](int offsetX, int offsetY) {
+					const Uint8 alpha = (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) ? 255 : 128;
+					globalContainer->gfx->drawLine(px+offsetX, py+offsetY, targetX+offsetX, targetY+offsetY, 250, 250, 250, alpha);
+				});
 		}
 	}
 }
