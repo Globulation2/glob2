@@ -1,0 +1,14 @@
+# Sprite sheet index for data/gfx/unit, read by GAGCore::Sprite::load.
+# One line per sheet: <file> <image|rotated> <first frame> <frames> <tile width> <tile height>
+# Tiles are packed row-major; the column count follows from the sheet's width.
+unit-explorer-r.png rotated 0 256 32 32
+unit-worker-walk-r.png rotated 256 256 38 38
+unit-worker-walk.png image 256 256 38 38
+unit-worker-swim-r.png rotated 512 256 38 38
+unit-worker-harvest-r.png rotated 768 256 38 38
+unit-worker-harvest.png image 768 256 38 38
+unit-warrior-walk-r.png rotated 1024 256 40 40
+unit-warrior-walk.png image 1024 256 40 40
+unit-warrior-swim-r.png rotated 1280 256 40 40
+unit-warrior-fight-r.png rotated 1536 256 40 40
+unit-warrior-fight.png image 1536 256 40 40

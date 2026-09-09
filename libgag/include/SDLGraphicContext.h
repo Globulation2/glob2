@@ -482,8 +482,12 @@ namespace GAGCore
 	
 		friend class DrawableSurface;
 		// Support functions
+		//! Load every frame from the sheets listed in <filename>.sheet, return false if there is no usable index
+		bool loadSheets(const std::string &filename);
 		//! Load a frame from two file pointers
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
+		//! Delete every loaded frame
+		void clearFrames();
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		bool createTextureAtlas();

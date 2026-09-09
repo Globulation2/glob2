@@ -57,34 +57,142 @@ namespace GAGCore
 		}
 	}
 	
+	namespace
+	{
+		//! One sheet of a sprite's sheet index: a grid of equally sized tiles
+		//! holding a contiguous run of frames of one layer.
+		struct SheetEntry
+		{
+			std::string file;
+			bool rotatedLayer;
+			unsigned first;
+			unsigned count;
+			int tileW;
+			int tileH;
+		};
+		
+		//! Read <filename>.sheet, return false if it is absent or unusable
+		bool readSheetIndex(const std::string &filename, std::vector<SheetEntry> &entries)
+		{
+			std::unique_ptr<std::ifstream> index(Toolkit::getFileManager()->openIFStream(filename + ".sheet"));
+			if (!index)
+				return false;
+			std::string line;
+			while (std::getline(*index, line))
+			{
+				if (line.empty() || line[0] == '#')
+					continue;
+				SheetEntry entry;
+				std::string layer;
+				std::istringstream fields(line);
+				fields >> entry.file >> layer >> entry.first >> entry.count >> entry.tileW >> entry.tileH;
+				if (!fields || (layer != "image" && layer != "rotated")
+					|| !entry.count || entry.count > 65536 || entry.tileW <= 0 || entry.tileH <= 0)
+				{
+					std::cerr << "Sprite " << filename << ": bad sheet index line \"" << line << "\"" << std::endl;
+					return false;
+				}
+				entry.rotatedLayer = layer == "rotated";
+				entries.push_back(entry);
+			}
+			return !entries.empty();
+		}
+		
+		//! Copy one tile out of a RGBA32 sheet
+		DrawableSurface *cutTile(const SDL_Surface *sheet, int x, int y, int w, int h)
+		{
+			SDL_Surface *tile = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
+			assert(tile);
+			for (int row = 0; row < h; ++row)
+				memcpy(static_cast<Uint8 *>(tile->pixels) + row * tile->pitch,
+					static_cast<const Uint8 *>(sheet->pixels) + (y + row) * sheet->pitch + x * 4,
+					w * 4);
+			DrawableSurface *surface = new DrawableSurface(tile);
+			SDL_FreeSurface(tile);
+			return surface;
+		}
+	}
+	
+	bool Sprite::loadSheets(const std::string &filename)
+	{
+		std::vector<SheetEntry> entries;
+		if (!readSheetIndex(filename, entries))
+			return false;
+		
+		size_t frameCount = 0;
+		for (const SheetEntry &entry : entries)
+			frameCount = std::max(frameCount, static_cast<size_t>(entry.first) + entry.count);
+		images.assign(frameCount, NULL);
+		rotated.assign(frameCount, NULL);
+		
+		const std::string directory = filename.substr(0, filename.rfind('/') + 1);
+		for (const SheetEntry &entry : entries)
+		{
+			SDL_RWops *stream = Toolkit::getFileManager()->open((directory + entry.file).c_str(), "rb");
+			SDL_Surface *loaded = stream ? IMG_Load_RW(stream, 0) : NULL;
+			if (stream)
+				SDL_RWclose(stream);
+			SDL_Surface *sheet = loaded ? SDL_ConvertSurfaceFormat(loaded, SDL_PIXELFORMAT_RGBA32, 0) : NULL;
+			if (loaded)
+				SDL_FreeSurface(loaded);
+			
+			const bool gridded = sheet && sheet->w >= entry.tileW && sheet->w % entry.tileW == 0;
+			const int columns = gridded ? sheet->w / entry.tileW : 0;
+			const int rows = gridded ? (entry.count + columns - 1) / columns : 0;
+			if (!gridded || rows * entry.tileH > sheet->h)
+			{
+				std::cerr << "Sprite " << filename << ": cannot cut " << entry.count << " "
+					<< entry.tileW << "x" << entry.tileH << " tiles out of " << entry.file << std::endl;
+				if (sheet)
+					SDL_FreeSurface(sheet);
+				clearFrames();
+				return false;
+			}
+			for (unsigned i = 0; i < entry.count; ++i)
+			{
+				DrawableSurface *tile = cutTile(sheet, (i % columns) * entry.tileW,
+					(i / columns) * entry.tileH, entry.tileW, entry.tileH);
+				if (entry.rotatedLayer)
+					rotated[entry.first + i] = new RotatedImage(tile);
+				else
+					images[entry.first + i] = tile;
+			}
+			SDL_FreeSurface(sheet);
+		}
+		return true;
+	}
+	
 	bool Sprite::load(const std::string filename)
 	{
-		SDL_RWops *frameStream;
-		SDL_RWops *rotatedStream;
-		unsigned i = 0;
-		
 		this->fileName = filename;
 		
-		while (true)
+		if (!loadSheets(filename))
 		{
-			std::ostringstream frameName;
-			frameName << filename << i << ".png";
-			frameStream = Toolkit::getFileManager()->open(frameName.str().c_str(), "rb");
-	
-			std::ostringstream frameNameRot;
-			frameNameRot << filename << i << "r.png";
-			rotatedStream = Toolkit::getFileManager()->open(frameNameRot.str().c_str(), "rb");
-	
-			if (!((frameStream) || (rotatedStream)))
-				break;
-	
-			loadFrame(frameStream, rotatedStream);
-	
-			if (frameStream)
-				SDL_RWclose(frameStream);
-			if (rotatedStream)
-				SDL_RWclose(rotatedStream);
-			i++;
+			SDL_RWops *frameStream;
+			SDL_RWops *rotatedStream;
+			unsigned i = 0;
+			
+			while (true)
+			{
+				std::ostringstream frameName;
+				frameName << filename << i << ".png";
+				frameStream = Toolkit::getFileManager()->open(frameName.str().c_str(), "rb");
+		
+				std::ostringstream frameNameRot;
+				frameNameRot << filename << i << "r.png";
+				rotatedStream = Toolkit::getFileManager()->open(frameNameRot.str().c_str(), "rb");
+		
+				if (!((frameStream) || (rotatedStream)))
+					break;
+		
+				loadFrame(frameStream, rotatedStream);
+		
+				if (frameStream)
+					SDL_RWclose(frameStream);
+				if (rotatedStream)
+					SDL_RWclose(rotatedStream);
+				i++;
+			}
 		}
 		// TODO: How to cache rotated images?
 		if (std::any_of(images.begin(), images.end(), [](DrawableSurface *s) {return s != nullptr; }) &&
@@ -324,18 +432,19 @@ namespace GAGCore
 		return inserted.first->second.get();
 	}
 
+	void Sprite::clearFrames()
+	{
+		for (DrawableSurface *image : images)
+			delete image;
+		for (RotatedImage *image : rotated)
+			delete image;
+		images.clear();
+		rotated.clear();
+	}
+	
 	Sprite::~Sprite()
 	{
-		for (std::vector <DrawableSurface *>::iterator imagesIt = images.begin(); imagesIt != images.end(); ++imagesIt)
-		{
-			if (*imagesIt)
-				delete (*imagesIt);
-		}
-		for (std::vector <RotatedImage *>::iterator rotatedIt=rotated.begin(); rotatedIt!=rotated.end(); ++rotatedIt)
-		{
-			if (*rotatedIt)
-				delete (*rotatedIt);
-		}
+		clearFrames();
 	}
 	
 	void Sprite::loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream)
