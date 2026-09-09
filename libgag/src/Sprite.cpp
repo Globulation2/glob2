@@ -408,15 +408,26 @@ namespace GAGCore
 		}
 	}
 
-	DrawableSurface *Sprite::getDrawSurface(unsigned index, bool teamColor, bool experiment)
+	DrawableSurface *Sprite::prepareDrawSurface(unsigned index, bool teamColor, bool experiment)
 	{
+		DrawableSurface *surface;
 		if (teamColor)
+			surface = experiment && experimentRotated[index] ? getColoredSurface(experimentRotated[index])
+				: (rotated[index] ? getRotatedSurface(index) : nullptr);
+		else
+			surface = experiment && experimentImages[index] ? experimentImages[index] : images[index];
+#ifdef HAVE_OPENGL
+		if (surface && experiment)
 		{
-			if (experiment && experimentRotated[index])
-				return getColoredSurface(experimentRotated[index]);
-			return rotated[index] ? getRotatedSurface(index) : nullptr;
+			// Preserve painter order when a pack mixes HD frames and original artwork.
+			const Sprite *batch = surface->textureInfo ? surface->textureInfo->sprite : nullptr;
+			if (batch != this && !vertices.empty())
+				Toolkit::gc->finishDrawingSprite(this, 255);
+			if (highResolutionAtlas && batch != highResolutionAtlas.get())
+				Toolkit::gc->finishDrawingSprite(highResolutionAtlas.get(), 255);
 		}
-		return experiment && experimentImages[index] ? experimentImages[index] : images[index];
+#endif
+		return surface;
 	}
 	
 	Sprite::~Sprite()

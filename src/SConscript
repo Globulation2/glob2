@@ -601,6 +601,11 @@ if not env['server']:
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
+if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
+    entering_draw_sources = [source for source in source_files if source != 'Glob2.cpp']
+    entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')
+    entering_draw_test = local.Program('EnteringUnitDrawHarness', entering_draw_sources)
+    local.Alias('entering-unit-draw-test', entering_draw_test)
 if not env['server']:
     highres_sources = [source for source in source_files if source != 'Glob2.cpp']
     highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
@@ -611,3 +616,9 @@ if not env['server'] and 'menu-colony-harness' in COMMAND_LINE_TARGETS:
     menu_sources += local.Object('MenuColonyHarness.o', '#tools/MenuColonyHarness.cpp')
     menu_test = local.Program('MenuColonyHarness', menu_sources)
     env.Alias('menu-colony-harness', menu_test)
+
+# Exercise production hiring against a bucket that reorders during subscription.
+if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
+    hiring_sources = [source for source in source_files if source != 'Glob2.cpp']
+    hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
+    local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))

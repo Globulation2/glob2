@@ -255,11 +255,11 @@ bool TorusView::prepareRenderTarget()
 
 // The cloud layer lives on its own ring above the ground, sampled from the
 // same world-anchored field as the shadows the atlas already carries.
-void TorusView::updateClouds()
+void TorusView::updateClouds(int time)
 {
 #ifdef HAVE_OPENGL
     int gridW, gridH;
-    clouds.computeWorld(worldW, worldH, SDL_GetTicks64() / 40, cloudPixels, gridW, gridH, cloudGridLimit);
+    clouds.computeWorld(worldW, worldH, time, cloudPixels, gridW, gridH, cloudGridLimit);
     glPushAttrib(GL_TEXTURE_BIT);
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
     if (!cloudTexture || gridW != cloudW || gridH != cloudH)
@@ -404,7 +404,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
             Game::ViewState mapView;
             game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
                          originX, originY, team, mapView, options | Game::DRAW_NO_CLOUD_LAYER,
-                         nullptr, nullptr, cloudGridLimit);
+                         nullptr, nullptr, false, cloudGridLimit);
         }
         Sprite::flushBatches(gfx);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -412,7 +412,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     const bool drawClouds =
         (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0;
     if (drawClouds)
-        updateClouds();
+        updateClouds(game.mapAnimationTime);
 
     // Save GL state AFTER the game renderer: its state cache must still match
     // the restored state when the ordinary HUD resumes drawing.

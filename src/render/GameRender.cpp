@@ -147,16 +147,18 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 
 
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, int cloudGridLimit)
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
 {
-	static int time = 0;
+	// Frozen while paused, so the water and the clouds hold still with the rest.
+	int &time = mapAnimationTime;
 	static DynamicClouds ds(&globalContainer->settings);
 	int left=(sx>>5);
 	int top=(sy>>5);
 	int right=((sx+sw+31)>>5);
 	int bot=((sy+sh+31)>>5);
 
-	time++;
+	if (!animationsPaused)
+		time++;
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapResources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
@@ -173,7 +175,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	// compute and draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		ds.compute(viewportX, viewportY, sw, sh, SDL_GetTicks64()/40, map.getW(), map.getH(),
+		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
 		           !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}

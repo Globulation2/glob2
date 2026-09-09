@@ -35,7 +35,7 @@ class TorusView
   private:
     void releaseResources();
     bool prepareRenderTarget();
-    void updateClouds();
+    void updateClouds(int time);
     static constexpr int meshColumns = 160, meshRows = 160;
     std::vector<TorusPicking::Vertex> vertices, cloudVertices;
     mutable int cachedPickX = -1, cachedPickY = -1;

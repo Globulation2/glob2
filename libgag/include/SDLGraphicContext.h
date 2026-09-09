@@ -538,7 +538,7 @@ namespace GAGCore
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
 		DrawableSurface *getColoredSurface(RotatedImage *image);
-		DrawableSurface *getDrawSurface(unsigned index, bool teamColor, bool experiment);
+		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
 		void loadExperimentFrame(const std::string &frameName, const std::string &rotatedName);
 	
 	public:

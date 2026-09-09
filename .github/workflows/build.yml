@@ -122,10 +122,20 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Build and run the entering unit draw regression
+        run: |
+          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness
+
       - name: Build and run the immobile unit gradient regression
         run: |
           scons -j$(nproc) release=1 server=0 immobile-unit-gradient-test
           ./build/src/ImmobileUnitGradientHarness
+
+      - name: Build and run the hiring bucket regression
+        run: |
+          scons -j$(nproc) release=1 server=0 hiring-bucket-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness .
 
       - name: Build and run the resource-fetch target regression
         run: |
@@ -284,6 +294,11 @@ jobs:
           /tmp/cloud-field
           g++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
           /tmp/map-render-geometry
+
+      - name: Build and run the hiring bucket regression
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 hiring-bucket-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness.exe .
 
       - name: Check game rendering across repeated map copies
         env:

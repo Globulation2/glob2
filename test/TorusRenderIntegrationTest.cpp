@@ -149,46 +149,58 @@ static int run(int argc, char **argv)
 #ifdef HAVE_OPENGL
             // Variable-size resource batching must preserve pixels, frame bounds,
             // transparency and ordering at native and overview scales.
-            Sprite::setHighResolution(false);
-            Sprite resources;
-            assert(resources.load("data/gfx/ressource"));
-            GLint viewport[4];
-            glGetIntegerv(GL_VIEWPORT, viewport);
-            auto captureResources = [&](float scale, Uint8 alpha)
+            for (bool highResolution : {false, true})
             {
-                globalContainer->gfx->setClipRect();
-                glClearColor(.17f, .29f, .43f, 1);
-                glClear(GL_COLOR_BUFFER_BIT);
-                for (int i = 0; i < resources.getFrameCount(); ++i)
-                    globalContainer->gfx->drawSprite(30.f + (i % 8) * 52, 30.f + (i / 8) * 52,
-                        resources.getW(i) * scale, resources.getH(i) * scale, &resources, i, alpha);
-                globalContainer->gfx->finishDrawingSprite(&resources, alpha);
-                std::vector<unsigned char> pixels(viewport[2] * viewport[3] * 4);
-                glReadPixels(0, 0, viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
-                return pixels;
-            };
-            std::vector<std::vector<unsigned char>> reference;
-            for (float scale : {1.f, .5f, .75f, 2.f})
-                for (Uint8 alpha : {Uint8(255), Uint8(127)})
-                    reference.push_back(captureResources(scale, alpha));
-            std::vector<std::pair<int, int>> sizes;
-            for (int i = 0; i < resources.getFrameCount(); ++i)
-                sizes.emplace_back(resources.getW(i), resources.getH(i));
-            assert(resources.createTextureAtlas(true));
-            int sample = 0, maximumDifference = 0;
-            for (float scale : {1.f, .5f, .75f, 2.f})
-                for (Uint8 alpha : {Uint8(255), Uint8(127)})
+                Sprite::setHighResolution(highResolution);
+                Sprite resources;
+                assert(resources.load("data/gfx/ressource"));
+                GLint viewport[4];
+                glGetIntegerv(GL_VIEWPORT, viewport);
+                auto captureResources = [&](float scale, Uint8 alpha, bool immediate)
                 {
-                    auto actual = captureResources(scale, alpha);
-                    for (size_t i = 0; i < actual.size(); ++i)
-                        maximumDifference = std::max(maximumDifference,
-                            std::abs(int(actual[i]) - reference[sample][i]));
-                    ++sample;
-                }
-            for (int i = 0; i < resources.getFrameCount(); ++i)
-                assert(sizes[i] == std::make_pair(resources.getW(i), resources.getH(i)));
-            std::cout << "Resource atlas maximum pixel difference: " << maximumDifference << "/255\n";
-            assert(maximumDifference <= 1);
+                    globalContainer->gfx->setClipRect();
+                    glClearColor(.17f, .29f, .43f, 1);
+                    glClear(GL_COLOR_BUFFER_BIT);
+                    for (int i = 0; i < resources.getFrameCount(); ++i)
+                    {
+                        const int frame = i % 2 ? resources.getFrameCount() - 1 - i / 2 : i / 2;
+                        const int x = 30 + (i % 8) * 52, y = 30 + (i / 8) * 52;
+                        if (scale == 1.f)
+                            globalContainer->gfx->drawSprite(x, y, &resources, frame, alpha);
+                        else
+                            globalContainer->gfx->drawSprite(float(x), float(y), resources.getW(frame) * scale,
+                                resources.getH(frame) * scale, &resources, frame, alpha);
+                        if (immediate)
+                            globalContainer->gfx->finishDrawingSprite(&resources, alpha);
+                    }
+                    globalContainer->gfx->finishDrawingSprite(&resources, alpha);
+                    std::vector<unsigned char> pixels(viewport[2] * viewport[3] * 4);
+                    glReadPixels(0, 0, viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+                    return pixels;
+                };
+                std::vector<std::vector<unsigned char>> reference;
+                for (float scale : {1.f, .5f, .75f, 2.f})
+                    for (Uint8 alpha : {Uint8(255), Uint8(127)})
+                        reference.push_back(captureResources(scale, alpha, true));
+                std::vector<std::pair<int, int>> sizes;
+                for (int i = 0; i < resources.getFrameCount(); ++i)
+                    sizes.emplace_back(resources.getW(i), resources.getH(i));
+                assert(resources.createTextureAtlas(true));
+                int sample = 0, maximumDifference = 0;
+                for (float scale : {1.f, .5f, .75f, 2.f})
+                    for (Uint8 alpha : {Uint8(255), Uint8(127)})
+                    {
+                        auto actual = captureResources(scale, alpha, false);
+                        for (size_t i = 0; i < actual.size(); ++i)
+                            maximumDifference = std::max(maximumDifference,
+                                std::abs(int(actual[i]) - reference[sample][i]));
+                        ++sample;
+                    }
+                for (int i = 0; i < resources.getFrameCount(); ++i)
+                    assert(sizes[i] == std::make_pair(resources.getW(i), resources.getH(i)));
+                std::cout << (highResolution ? "HD" : "Original") << " resource atlas maximum pixel difference: " << maximumDifference << "/255\n";
+                assert(maximumDifference <= 1);
+            }
             Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
             DynamicClouds clouds(&globalContainer->settings);
             std::valarray<unsigned char> pixels;
@@ -215,6 +227,18 @@ static int run(int argc, char **argv)
             draw(0);
             for (float phase : {.01f, .25f, .5f, .75f, 1.f})
                 draw(phase);
+            gui.gamePaused = true;
+            const int pausedTime = gui.game.mapAnimationTime;
+            draw(1);
+            const auto pausedClouds = view.cloudPixels;
+            draw(1);
+            assert(gui.game.mapAnimationTime == pausedTime);
+            assert(pausedClouds.size() == view.cloudPixels.size());
+            for (size_t i = 0; i < pausedClouds.size(); ++i)
+                assert(pausedClouds[i] == view.cloudPixels[i]);
+            gui.gamePaused = false;
+            draw(1);
+            assert(gui.game.mapAnimationTime > pausedTime);
             // Test navigation separately from the expensive cloud layer.
             globalContainer->settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
             for (int i = 0; i < 20; ++i)
