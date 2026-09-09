@@ -2,6 +2,15 @@
 
 ## Resume here
 
+**Scope changed September 8:** the user requested reducing the remaining
+multiplayer work. Finish existing YOG login/lobbies/rooms and browser/native
+cross-play, including compatibility, safe handling, complete-match tests and
+gateway setup documentation. Defer guests/invitations, account modernization,
+checkpoint/reconnect recovery, host migration and production hosting/operations.
+Refresh/disconnect can end participation. See [delivery scope](implementation.md).
+Older original-plan checklists below are historical; do not restart deferred
+features merely because an automatic goal reminder repeats the original plan.
+
 New browser profiles now default to Mute, alongside disabled clouds. Existing
 saved settings override both defaults; desktop defaults are unchanged. Players
 can enable sound through the existing Settings checkbox.

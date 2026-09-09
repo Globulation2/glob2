@@ -3,6 +3,14 @@
 Browser support remains experimental. This ledger distinguishes delivered
 infrastructure from the supported-release acceptance criteria.
 
+**September 8 scope revision:** the user requested reducing the remaining
+multiplayer work. Existing YOG multiplayer and matching-release cross-play stay
+in scope; guests/invitations, account modernization, recovery/host migration and
+production hosting/operations are deferred. Compatibility and safe handling,
+complete-match tests and gateway setup documentation remain required. See
+[current delivery scope](implementation.md); older references to the full
+original plan below describe the former scope, not release blockers to reopen.
+
 ## Browser audio defaults and CI follow-up — 2026-09-08
 
 New browser profiles start muted using the existing game setting. Stored mute
