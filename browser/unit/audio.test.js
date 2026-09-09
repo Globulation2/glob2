@@ -30,3 +30,21 @@ test('activation failures are reported and the next gesture can retry', async ()
   assert.equal(context.state, 'running');
   await pending;
 });
+
+
+test('SDL-owned resume promises remain observable and shutdown rejections are handled', async () => {
+  const sdl = {}, errors = [];
+  activate.observeSDL(sdl, error => errors.push(error));
+  let reject;
+  const original = new Promise((_, fail) => { reject=fail; });
+  sdl.audioContext={state:'suspended', resume:() => original};
+  const returned=sdl.audioContext.resume();
+  assert.equal(returned,original);
+  sdl.audioContext.state='closed'; reject(new Error('Closed before resume completed'));
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(errors,[]);
+  const failure=new Error('Device refused activation');
+  sdl.audioContext={state:'suspended', resume:() => Promise.reject(failure)};
+  await assert.rejects(sdl.audioContext.resume(),error => error===failure);
+  assert.deepEqual(errors,[failure]);
+});

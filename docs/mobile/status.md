@@ -1,5 +1,28 @@
 # Mobile verification and remaining work
 
+## 2026-09-09 — final browser CI follow-up
+
+Mobile run 34312370889 passes at `530b7b74b`, including every Android ABI,
+APK/debug-symbol build-ID matching, x86-64 lifecycle/trust and iOS lifecycle.
+The x86 job passed on retry after a transient emulator DNS failure before TLS.
+Both Linux jobs, Windows and all build-isolation orders also pass at that commit.
+
+The broad browser run passed 213 cases and found 12 failures. Six expected the
+browser branch's old LoadSaveScreen name instead of the integrated ReplaySaveScreen.
+Resize cases sent keys while the shared host was deliberately cancelling the
+resize event batch; they now wait for two completed host frames after dimensions
+change. The lifecycle cancellation policy is unchanged. A Firefox shutdown race
+also exposed ignored resume promises inside SDL itself: only SDL-owned audio
+contexts are now observed, with original promise results preserved and late
+closed-context rejections handled. No global AudioContext API is replaced.
+
+All 18 targeted browser regressions now pass across Chromium, Firefox and WebKit
+in both default and WebGL modes (36 executions), and all 15 browser unit tests pass. CI separates default runtime, WebGL and
+visibility stages so subsequent failures are visible without waiting for every
+renderer invocation. Full CI reruns remain linked from PR #208; do not equate
+these targeted results with a full release qualification.
+
+
 ## 2026-09-09 — browser reconciliation and final integration checks
 
 Merged browser checkpoint `1658ff670`, including upstream map/AI save changes and

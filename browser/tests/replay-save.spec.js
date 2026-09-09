@@ -1,3 +1,4 @@
+const {resizeAndWait}=require('./viewport-ready');
 const {test,expect}=require('@playwright/test');
 const {gameURL}=require('./game-url');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
@@ -12,14 +13,14 @@ async function endMatch(page) {
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(50);
   await page.locator('#canvas').press('Escape');await click(page,600,500);
   await screen(page,'EndGameScreen');
-  await click(page,1060,815);await screen(page,'LoadSaveScreen');
+  await click(page,1060,815);await screen(page,'ReplaySaveScreen');
   await click(page,600,515);await page.locator('#canvas').pressSequentially('AAA review replay',{delay:20});
 }
 
 test('end-game replay save remains scheduled during resize and durable persistence',async({page})=>{
   const errors=[];page.on('pageerror',e=>errors.push(String(e)));
   await endMatch(page);
-  await page.setViewportSize({width:800,height:600});
+  await resizeAndWait(page, {width:800,height:600});
   await page.evaluate(()=>{
     const sync=FS.syncfs;
     FS.syncfs=function(populate,callback){
@@ -29,13 +30,13 @@ test('end-game replay save remains scheduled during resize and durable persisten
   });
   await click(page,320,405);
   await expect.poll(async()=>(await state(page)).persistence).toBe('writing');
-  await screen(page,'LoadSaveScreen');
-  await page.locator('#canvas').press('Escape');await screen(page,'LoadSaveScreen');
+  await screen(page,'ReplaySaveScreen');
+  await page.locator('#canvas').press('Escape');await screen(page,'ReplaySaveScreen');
   await page.evaluate(()=>releaseReplaySave());await screen(page,'EndGameScreen');
   const saved=await digest(page);expect(saved).not.toBeNull();
   await page.reload();await screen(page,'MainMenuScreen');expect(await digest(page)).toEqual(saved);
   // Load the file through the real replay chooser after a fresh browser startup.
-  await page.setViewportSize({width:1200,height:900});
+  await resizeAndWait(page, {width:1200,height:900});
   await click(page,440,410);await screen(page,'ChooseMapScreen');
   await click(page,620,650); // Switch the chooser from saved games to replays.
   await click(page,370,290);await click(page,810,590);
@@ -55,7 +56,7 @@ test('end-game replay save offers export and retry after quota failure',async({p
     };
   });
   await click(page,520,555);
-  await expect.poll(async()=>(await state(page)).persistence).toBe('failed');await screen(page,'LoadSaveScreen');
+  await expect.poll(async()=>(await state(page)).persistence).toBe('failed');await screen(page,'ReplaySaveScreen');
   const download=page.waitForEvent('download');await click(page,600,420);
   expect((await download).suggestedFilename()).toBe('AAA_review_replay.replay');
   await page.evaluate(()=>window.replayQuota=false);

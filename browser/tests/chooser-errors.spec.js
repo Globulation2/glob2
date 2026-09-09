@@ -1,3 +1,4 @@
+const {resizeAndWait}=require('./viewport-ready');
 const {test, expect} = require('@playwright/test');
 const {gameURL} = require('./game-url');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
@@ -19,7 +20,7 @@ test('corrupt local files leave the chooser responsive and cannot accept an old 
   await click(page,380,300);
   await page.locator('#canvas').press('Enter', {delay:80});
   await screen(page,'ChooseMapScreen');
-  await page.setViewportSize({width:800,height:600});
+  await resizeAndWait(page, {width:800,height:600});
   await expect.poll(async () => (await state(page)).width).toBe(800);
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page,'MainMenuScreen');

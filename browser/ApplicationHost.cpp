@@ -53,6 +53,7 @@ void scheduledFrame(void* opaque)
         complete();
         return;
     }
+    EM_ASM({ Module['glob2HostFrames'] = (Module['glob2HostFrames'] || 0) + 1; });
     // Each callback completes before the next frame is scheduled. Browser UI
     // transitions and loading jobs must return control to this host.
     emscripten_async_call(scheduledFrame, state, state->loop->delay(SDL_GetTicks()));

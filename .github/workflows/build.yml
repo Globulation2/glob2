@@ -283,21 +283,35 @@ jobs:
           scons release=1 transport-test -j2
           python3 test/run-network-transport-tests.py
           python3 -m unittest discover -s tests/transport -v
-      - name: Test browser lifecycle, renderers and multiplayer
+      - name: Install browser test runtimes
+        if: matrix.order == 'concurrent'
+        working-directory: browser
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install --with-deps chromium firefox webkit
+          # Firefox needs an X display and an audio service for resume().
+          sudo apt-get install -y pulseaudio
+          pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
+      - name: Test browser lifecycle and multiplayer
         if: matrix.order == 'concurrent'
         working-directory: browser
         env:
           GLOB2_ALL_AIS: ${{ github.event_name == 'schedule' && '1' || '0' }}
           GLOB2_FIREFOX_HEADED: '1'
+        run: xvfb-run -a npm test
+      - name: Test browser WebGL rendering
+        if: matrix.order == 'concurrent'
+        working-directory: browser
+        env:
+          GLOB2_FIREFOX_HEADED: '1'
+          GLOB2_TEST_RENDERER: webgl2
+        run: xvfb-run -a npx playwright test runtime-build.spec.js replay-save.spec.js single-player.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js chooser-errors.spec.js settings-storage.spec.js shutdown-storage.spec.js campaign-editor-storage.spec.js
+      - name: Test browser visibility transitions
+        if: matrix.order == 'concurrent'
+        working-directory: browser
+        env:
+          GLOB2_FIREFOX_HEADED: '1'
         run: |
-          npm ci --ignore-scripts
-          npx playwright install --with-deps chromium firefox webkit
-          # Firefox needs an X display for WebGL2 and a real audio service to
-          # complete AudioContext.resume(). A null sink keeps CI silent.
-          sudo apt-get install -y pulseaudio
-          pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
-          xvfb-run -a npm test
-          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js replay-save.spec.js single-player.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js chooser-errors.spec.js settings-storage.spec.js shutdown-storage.spec.js campaign-editor-storage.spec.js
           xvfb-run -a npx playwright test --config visibility.config.js
           GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
       - name: Compare 100,000 native and Wasm simulation steps

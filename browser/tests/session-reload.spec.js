@@ -1,3 +1,4 @@
+const {resizeAndWait}=require('./viewport-ready');
 const {test,expect}=require('@playwright/test');
 const path=require('node:path');
 const {gameURL}=require('./game-url');
@@ -47,10 +48,10 @@ test('a damaged in-game load returns through a scheduled error notice and permit
   // Damage the stored bytes at the filesystem boundary; all loading uses UI input.
   await page.evaluate(name=>FS.writeFile('/home/web_user/.glob2/games/'+name,new Uint8Array([1,2,3])),name);
   await loadFirst(page,false,false);await screen(page,'MessageScreen');
-  await page.setViewportSize({width:800,height:600});
+  await resizeAndWait(page, {width:800,height:600});
   await expect.poll(async()=>(await state(page)).width).toBe(800);
   await page.locator('#canvas').press('Escape',{delay:80});await screen(page,'CustomGameScreen');
-  await page.setViewportSize({width:1200,height:900});
+  await resizeAndWait(page, {width:1200,height:900});
   await expect.poll(async()=>(await state(page)).width).toBe(1200);
   await click(page,380,280);await click(page,810,590);
   await screen(page,'match');

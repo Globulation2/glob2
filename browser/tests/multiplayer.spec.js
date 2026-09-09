@@ -1,3 +1,4 @@
+const {resizeAndWait}=require('./viewport-ready');
 const {gameURL} = require('./game-url');
 const {test, expect} = require('@playwright/test');
 // Continuous trace screenshots force readback from both WebGL contexts on each
@@ -157,7 +158,7 @@ test('YOG registration remains scheduled through resize and cancellation', async
     const previous = page.viewportSize();
     await click(previous.width/2+210,previous.height/2+80);
     await screen('YOGRegisterScreen');
-    await page.setViewportSize(viewport);
+    await resizeAndWait(page, viewport);
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(viewport.width);
     await click(viewport.width/2+210,viewport.height/2+200);
     await screen('YOGLoginScreen');
@@ -170,13 +171,13 @@ test('YOG map selection and upload screens resize and return to their owning tab
   const click = (x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
   await loginPlayer(page,'transportplayer');
   await click(1090,815); await screen('ChooseMapScreen');
-  await page.setViewportSize({width:1000,height:700});
+  await resizeAndWait(page, {width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   // The Maps tab and its Upload action use the same scheduled child ownership.
   await click(480,90); await click(890,615); await screen('ChooseMapScreen');
   await click(280,180); await click(710,490); await screen('YOGClientMapUploadScreen');
-  await page.setViewportSize({width:1200,height:900});
+  await resizeAndWait(page, {width:1200,height:900});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1200);
   await click(810,650); await screen('YOGSessionScreen');
   await page.locator('#canvas').press('Escape'); await screen('MainMenuScreen');
@@ -191,7 +192,7 @@ test('YOG match settings resize and return to their room', async ({page}) => {
   await click(380,280); await click(810,590);
   await expect.poll(types).toContain(16);
   await click(1090,435); await screen('CustomGameOtherOptions');
-  await page.setViewportSize({width:1000,height:700});
+  await resizeAndWait(page, {width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
   const lists = types().filter(type => type === 50).length;
@@ -207,7 +208,7 @@ test('YOG disconnect message remains scheduled and returns cleanly after resize'
   await connection.close(); await backend.close();
   const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
   await screen('MessageScreen');
-  await page.setViewportSize({width:1000,height:700});
+  await resizeAndWait(page, {width:1000,height:700});
   await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
   await page.locator('#canvas').press('Escape'); await screen('MainMenuScreen');
 });
