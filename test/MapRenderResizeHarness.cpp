@@ -14,6 +14,7 @@
 #include "Bullet.h"
 #include "render/GameAnimations.h"
 #include "SettingsScreen.h"
+#include "FrontendTheme.h"
 #include "MapEdit.h"
 #include "gui/GameGUIViewport.h"
 #include <GUIList.h>
@@ -395,5 +396,23 @@ int main(int argc, char **argv)
 		assert(hi>lo && std::abs((lo+hi)-width)<12);
 	}
 	std::cout << "PASS credits centered after resizing\n";
+	{
+		FrontendTheme theme;
+		gfx->setClipRect();
+		theme.background(gfx, false);
+		gfx->nextFrame();
+		gfx->presentLastFrame();
+		// Menu fallback textures and cached expose presentation must not
+		// affect the color/opacity of subsequent untextured gameplay drawing.
+		gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
+		capturePixels(gfx);
+		assert(colored(gfx->getSDLSurface(),0,0,gfx->getW(),gfx->getH())==0);
+		gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),255,255,255);
+		std::valarray<unsigned char> opaque(static_cast<unsigned char>(255),4);
+		gfx->drawAlphaMap(opaque,2,2,0,0,gfx->getW(),gfx->getH(),Color(0,0,0));
+		capturePixels(gfx);
+		assert(colored(gfx->getSDLSurface(),0,0,gfx->getW(),gfx->getH())==0);
+	}
+	std::cout << "PASS menu-to-game opaque drawing after cached presentation\n";
 	return 0;
 }
