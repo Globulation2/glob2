@@ -44,7 +44,7 @@ MobileLayout GameGUITouch::layout() const
     }
     return result;
 }
-double GameGUITouch::panelScale() const { return 1.75*globalContainer->gfx->logicalUnitsPerPoint(); }
+double GameGUITouch::panelScale() const { return 1.25*globalContainer->gfx->logicalUnitsPerPoint(); }
 ViewPoint GameGUITouch::panelOrigin() const
 {
     const auto panel=panelContent();
@@ -434,7 +434,7 @@ void GameGUITouch::drawHUD()
     for (int i=0;i<3;++i) {
         const double x=ui.status.x+i*ui.status.w/3;
         SDL_Rect clip{int(x),int(ui.status.y),int(ui.status.w/3),int(ui.status.h)};
-        gfx->setUITransform(1.5*unit,x+4*unit,ui.status.y+14*unit,&clip);
+        gfx->setUITransform(1.2*unit,x+4*unit,ui.status.y+14*unit,&clip);
         gfx->drawSprite(0,0,globalContainer->unitmini,i);
         const int free=gui.teamStats->getFreeUnits(i)-(i==0 ? gui.teamStats->getWorkersNeeded() : 0);
         gfx->drawString(22,0,globalContainer->littleFont,std::to_string(free)+"/"+std::to_string(gui.teamStats->getTotalUnits(i)));

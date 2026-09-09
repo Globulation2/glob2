@@ -14,7 +14,7 @@ struct ResponsiveMenu
                                     double requestedOffset = 0, double scale = 1, double minimumHeight = 48)
     {
         ResponsiveMenu result;
-        const double gap = 8 * scale, rowHeight = std::max(48.0, minimumHeight) * scale;
+        const double gap = 8 * scale, rowHeight = std::max(44.0, minimumHeight) * scale;
         const double width = std::max(0.0, safe.w - 2 * gap);
         result.content = {safe.x + gap, safe.y + 56 * scale, width,
                           std::max(0.0, safe.h - 64 * scale)};

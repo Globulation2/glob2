@@ -206,15 +206,15 @@ public:
                     centerY==targetY-int((world.y+world.h/2)/32),
                     "Minimap navigation centers the visible world, excluding HUD margins");
             auto ui=GAGCore::MobileLayout::calculate(width,height,{},0,1,true);
-            const float panelX=(ui.panel.x+(ui.panel.w-280)/2)*unit;
+            const float panelX=gui.touch->panelOrigin().x;
             const int cameraX=gui.viewportX,cameraY=gui.viewportY;
             finger(SDL_FINGERDOWN,1,(ui.panel.x+8)*unit,(ui.panel.y+70)*unit);
             finger(SDL_FINGERMOTION,1,(ui.panel.x+8)*unit,(ui.panel.y+30)*unit);
             finger(SDL_FINGERUP,1,(ui.panel.x+8)*unit,(ui.panel.y+30)*unit);
             require(gui.viewportX==cameraX && gui.viewportY==cameraY,"Panel scrolling must not pan the world"); noOrder();
-            tap(panelX+120*1.75f*unit,(ui.panel.y+(208-144)*1.75f-40)*unit);
+            tap(panelX+120*gui.touch->panelScale(),gui.touch->panelOrigin().y+208*gui.touch->panelScale());
             require(gui.selectionMode==GameGUI::TOOL_SELECTION && gui.toolManager.getBuildingName()=="inn",
-                    "Enlarged panel hit-testing must select the same building after rotation"); noOrder();
+                    "Scaled panel hit-testing must select the same building after rotation"); noOrder();
             gui.clearSelection();
             gui.scriptText="Build an inn to feed your workers. Drag the panel to find more buildings. "
                 "Select a building, choose a location, and confirm when you are ready.\n"

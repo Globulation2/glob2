@@ -121,11 +121,17 @@ void Glob2Screen::beginExecution(DrawableSurface* surface)
 
 void Glob2Screen::layoutMenu(double offset)
 {
-    const auto safe=mobileDialogSafe(globalContainer->gfx);
+    auto safe=mobileDialogSafe(globalContainer->gfx);
+    double minimumHeight = 48;
+#ifdef GLOB2_MOBILE
+    // Keep phone menus compact instead of stretching across the landscape display.
+    const double width=std::min(safe.w,640.0);
+    safe.x+=(safe.w-width)/2;safe.w=width;
+    minimumHeight=44;
+#endif
     double minimumWidth = 224;
     for (auto* button : menuButtons) minimumWidth = std::max(minimumWidth, button->textWidth() + 32.0);
-    menuLayout = ResponsiveMenu::calculate(safe, menuButtons.size(), minimumWidth, offset);
-    double minimumHeight = 48;
+    menuLayout = ResponsiveMenu::calculate(safe, menuButtons.size(), minimumWidth, offset, 1, minimumHeight);
     for (size_t i = 0; i < menuButtons.size(); ++i)
         minimumHeight = std::max(minimumHeight, double(menuButtons[i]->wrappedHeight(int(menuLayout.buttons[i].w))));
     menuLayout = ResponsiveMenu::calculate(safe, menuButtons.size(), minimumWidth, offset, 1, minimumHeight);

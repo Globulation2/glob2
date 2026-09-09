@@ -916,3 +916,19 @@ remain unqualified. Larger maps must load or fail clearly without changing rules
 The emulator displayed a System UI nonresponse dialog during concurrent compilation
 and recovered with Wait. No device performance conclusion follows from that run.
 Voice chat, cloud saves, store submission, and new visual identity remain deferred.
+
+## Samsung feedback: compact mobile UI (2026-09-09)
+
+The preview installed and reached the main menu on a Samsung SM-A065M. Initial
+play feedback found fonts/buttons and the landscape right panel oversized.
+Mobile menu fonts are now 16 instead of 20, menu width is capped at 640 logical
+units, and menu rows have a 44-unit minimum. Form/dialog and HUD label text uses
+1.2 instead of 1.5 scaling. The gameplay side panel is 216 instead of 288 points,
+with its legacy contents scaled at 1.25 instead of 1.75. Gameplay action targets
+and form controls keep their 48-point hit areas, and the text-size preference
+still enlarges form text. Button artwork retains its supported 40-unit geometry.
+
+Android release build/signing and native mobile geometry, responsive-menu and
+actual gameplay-touch harnesses pass, including panel picking after rotation
+and scrolling. The Samsung disconnected before the revised build could be
+installed; final physical readability and control-density feedback remain open.

@@ -71,7 +71,7 @@ struct MobileLayout {
         double actionsHeight=std::min(control,area.h);
         out.actions={area.x,area.y+area.h-actionsHeight,area.w,actionsHeight};
         area.h-=actionsHeight;
-        double panelWidth=288*scale;
+        double panelWidth=216*scale;
         out.persistentPanel=area.w-panelWidth>=480;
         out.world=area;
         if(out.persistentPanel) {

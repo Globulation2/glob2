@@ -219,7 +219,11 @@ void GlobalContainer::loadClient(void)
 		// load fonts
 		std::string fontfile = "data/fonts/";
 		fontfile+=+PRIMARY_FONT;
-		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
+		#ifdef GLOB2_MOBILE
+        Toolkit::loadFont(fontfile.c_str(), 16, "menu");
+#else
+        Toolkit::loadFont(fontfile.c_str(), 20, "menu");
+#endif
 		Toolkit::loadFont(fontfile.c_str(), 13, "standard");
 		Toolkit::loadFont(fontfile.c_str(), 10, "little");
 		menuFont = Toolkit::getFont("menu");
