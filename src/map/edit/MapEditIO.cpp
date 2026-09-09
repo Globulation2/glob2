@@ -57,6 +57,7 @@ bool MapEdit::load(const std::string filename)
 		if (!rv)
 			return false;
 		
+		camera=MapCamera();viewportX=viewportY=0;
 		// set the editor default values
 		team = 0;
 	
@@ -158,8 +159,10 @@ int MapEdit::run(void)
 		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
 		{
 			handleMapScroll();
-			viewportX+=xSpeed;
-			viewportY+=ySpeed;
+			updateCamera();
+			camera.originX+=xSpeed*32/camera.zoom;
+			camera.originY+=ySpeed*32/camera.zoom;
+			camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 			viewportX&=game.map.getMaskW();
 			viewportY&=game.map.getMaskH();
 		}

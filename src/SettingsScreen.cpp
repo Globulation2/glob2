@@ -228,7 +228,11 @@ void SettingsScreen::updateGameSpeedText(void)
 
 void SettingsScreen::handleButtonStateChanged(Widget* source)
 {
-	if (source==rememberUnitButton)
+	if (source==highres)
+	{
+		globalContainer->settings.highResolutionArtwork=highres->getState();
+	}
+	else if (source==rememberUnitButton)
 	{
 		globalContainer->settings.rememberUnit=rememberUnitButton->getState();
 	}

@@ -165,7 +165,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
 	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
+	globalContainer->gfx->drawMapCopies(map.getW()*32,map.getH()*32,sw,sh,[&](){
 	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	});
 
 	// compute and draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
@@ -177,7 +179,9 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
+	globalContainer->gfx->drawMapCopies(map.getW()*32,map.getH()*32,sw,sh,[&](){
 	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
+	});
 
 	// draw cloud overlay if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
@@ -200,6 +204,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		}
 	}
 
+	globalContainer->gfx->drawMapCopies(map.getW()*32,map.getH()*32,sw,sh,[&](){
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
 	if (!globalContainer->replaying || globalContainer->replayShowFlags)
@@ -271,6 +276,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 			}
 		}
 	}
+
+	});
 
 	if (DEBUG_RENDER_GRADIENTS)
 		for (int y=top-1; y<=bot; y++)
