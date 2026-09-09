@@ -34,3 +34,9 @@ native method tables, and final heap cleanup. The focused GC block also passed
 AddressSanitizer and UndefinedBehaviorSanitizer. Browser tests exercise repeated
 in-game save loads, replay reloads and failure recovery after real simulation.
 Native/browser matches check that the shared runtime still agrees on checksums.
+
+The public MapScriptUSL header now forward-declares its owned interpreter. USL and
+interpreter definitions are included only by MapScriptUSL.cpp. This prevents
+unrelated game-header consumers in headless servers from instantiating prototype
+code or acquiring a link dependency on the script engine. GCC exposed this
+boundary issue where the macOS compiler had discarded unused definitions.

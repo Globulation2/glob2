@@ -129,7 +129,7 @@ namespace FertilityCalculator
         if (s.phase == State::Committed) return;
         for (int x = 0; x < s.map.getW(); ++x)
             for (int y = 0; y < s.map.getH(); ++y)
-                s.map.getCase(x, y).fertility = s.fertility[s.map.coordToIndex(x, y)];
+                s.map.getTile(x, y).fertility = s.fertility[s.map.coordToIndex(x, y)];
         s.map.fertilityMaximum = s.maximum;
         s.phase = State::Committed;
     }

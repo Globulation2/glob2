@@ -105,8 +105,11 @@ wire messages. It also enters and leaves the lobby with an isolated fixture
 account and saves a lobby screenshot. Match tests create a room through the
 actual controls, join from a second browser, ready both players, and compare
 checksums from their outgoing orders. A native headless peer also joins through
-YOG and records 250 simulation ticks; its checksums are compared with the browser
-at the negotiated command cadence. This uses the native game implementation,
+YOG and records at least 250 simulation ticks; its checksums are compared with the browser
+at the negotiated command cadence. The browser then resigns through the game
+menu, the native player finishes through victory, and the browser returns to YOG.
+Browser/browser fixtures also exercise the end-game screens and return to YOG
+instead of stopping by closing live browser contexts. This uses the native game implementation,
 not a second simulation model.
 
 Run `cd browser && npx playwright test multiplayer.spec.js` for the cross-browser

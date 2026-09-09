@@ -118,11 +118,11 @@ void MapEdit::handleBrushClick(int mx, int my)
 			for (int x=startX; x<startX+width; x++)
 				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
 				{
-					Uint32& caseMask = game.map.getCase(x, y).*target.caseMask;
+					Uint32& tileMask = game.map.getTile(x, y).*target.tileMask;
 					if (add)
-						caseMask |= teamBit;
+						tileMask |= teamBit;
 					else
-						caseMask &= ~teamBit; // clears the team bit, same as the old `mask ^= mask & teamBit`
+						tileMask &= ~teamBit; // clears the team bit, same as the old `mask ^= mask & teamBit`
 					target.view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), add);
 				}
 	}
@@ -139,14 +139,14 @@ MapEdit::AreaBrushTarget MapEdit::areaBrushTarget()
 	switch (brushType)
 	{
 	case ForbiddenBrush:
-		return {&Case::forbidden, game.map.displayedForbiddenView};
+		return {&Tile::forbidden, game.map.displayedForbiddenView};
 	case GuardAreaBrush:
-		return {&Case::guardArea, game.map.displayedGuardAreaView};
+		return {&Tile::guardArea, game.map.displayedGuardAreaView};
 	case ClearAreaBrush:
-		return {&Case::clearArea, game.map.displayedClearAreaView};
+		return {&Tile::clearArea, game.map.displayedClearAreaView};
 	default:
 		assert(false);
-		return {&Case::forbidden, game.map.displayedForbiddenView};
+		return {&Tile::forbidden, game.map.displayedForbiddenView};
 	}
 }
 
@@ -340,7 +340,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 						game.map.setPoint(areaNumber->getIndex(), x, y);
 						break;
 					case BrushTool::CT_NO_RESOURCE_GROWTH:
-						game.map.getCase(x, y).canResourcesGrow=false;
+						game.map.getTile(x, y).canResourcesGrow=false;
 						break;
 					}
 				}
@@ -357,7 +357,7 @@ void MapEdit::handleClick(int mx, int my, BrushTool::ClickType clickType)
 						game.map.unsetPoint(areaNumber->getIndex(), x, y);
 						break;
 					case BrushTool::CT_NO_RESOURCE_GROWTH:
-						game.map.getCase(x, y).canResourcesGrow=true;
+						game.map.getTile(x, y).canResourcesGrow=true;
 						break;
 					default:break;
 					}

@@ -653,7 +653,7 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			Case c=map->getCase(x,y);
+			Tile c=map->getTile(x,y);
 			if (c.resource.type==resource_type)
 			{
 				gradient(x, y) = AI_WARRUSH_GRADIENT_MAX;
@@ -713,7 +713,7 @@ std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 	{
 		for(int y=0;y<map->h;y++)
 		{
-			Case c=map->getCase(x,y);
+			Tile c=map->getTile(x,y);
 			if (c.resource.type!=NO_RES_TYPE)
 			{
 				availability_gradient(x, y) = 0;

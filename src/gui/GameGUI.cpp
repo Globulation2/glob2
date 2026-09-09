@@ -289,6 +289,8 @@ void GameGUI::publishMessageHistoryLines(const std::string& text, HistoryList ta
 
 void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText, bool chat)
 {
+    // Headless simulations execute the order but have no font or message UI.
+    if (globalContainer->runNoX) return;
 	// Wrap-measure the text in bold so the line breaks match the bold
 	// rendering used by InGameMessage::draw. The font color pushed here is
 	// irrelevant to glyph widths but matches the historical call site.

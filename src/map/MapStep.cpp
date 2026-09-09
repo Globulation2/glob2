@@ -166,7 +166,7 @@ void Map::setMapDiscovered(int x, int y, int w, int h,  Uint32 sharedVision)
 
 void Map::setMapBuildingsDiscovered(int x, int y, Uint32 sharedVision, Team *teams[Team::MAX_COUNT])
 {
-	Uint16 bgid = cases[coordToIndex(x, y)].building;
+	Uint16 bgid = tiles[coordToIndex(x, y)].building;
 	if (bgid != NOGBID)
 	{
 		int id = Building::GIDtoID(bgid);
@@ -231,21 +231,21 @@ void Map::computeDisplayedForbidden(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedForbiddenView.set(i, (cases[i].forbidden & teamMask) != 0);
+		displayedForbiddenView.set(i, (tiles[i].forbidden & teamMask) != 0);
 }
 
 void Map::computeDisplayedGuardArea(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedGuardAreaView.set(i, (cases[i].guardArea & teamMask) != 0);
+		displayedGuardAreaView.set(i, (tiles[i].guardArea & teamMask) != 0);
 }
 
 void Map::computeDisplayedClearArea(int teamNumber)
 {
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
 	for (size_t i=0; i<size; i++)
-		displayedClearAreaView.set(i, (cases[i].clearArea & teamMask) != 0);
+		displayedClearAreaView.set(i, (tiles[i].clearArea & teamMask) != 0);
 }
 
 

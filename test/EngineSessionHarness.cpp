@@ -44,6 +44,7 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 #include <stdexcept>
 
 GlobalContainer* globalContainer = nullptr;
@@ -525,6 +526,28 @@ int main(int argc, char** argv)
         }
         require(failed.result() == 2 && getSyncRandState() == rng, "Invalid generation must fail without changing RNG");
     }
+    {
+        Engine engine;
+        require(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR, "Replay save fixture failed");
+        auto& writer = *globalContainer->replayWriter;
+        const auto directory = std::filesystem::path(globalContainer->fileManager->getDir(0)) / "replays";
+        const auto destination = directory / "Atomic.replay";
+        const auto blocked = directory / "Blocked.replay";
+        const auto position = writer.getBuffer()->getPosition();
+        require(writer.write(destination.string()), "Initial replay save failed");
+        const auto read = [](const std::filesystem::path& path) {
+            std::ifstream input(path, std::ios::binary);
+            return std::string(std::istreambuf_iterator<char>(input), {});
+        };
+        const auto bytes = read(destination);
+        std::filesystem::create_directory(blocked);
+        require(!writer.write(blocked.string()), "Replay save accepted a directory");
+        require(writer.getBuffer()->getPosition() == position, "Failed replay save moved the recording cursor");
+        require(writer.write(destination.string()) && read(destination) == bytes && !bytes.empty(),
+            "Replay retry did not preserve the complete recording");
+        globalContainer->replayWriter.reset();
+        std::cout << "PASS atomic replay save, failed destination and retry" << std::endl;
+    }
     for (int outcome : {0, 1, 2}) {
         auto previous = std::make_unique<Engine>();
         require(previous->initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR, "Reload ownership fixture initialization failed");
@@ -776,7 +799,7 @@ int main(int argc, char** argv)
             std::vector<Uint16> values;
             for (int x = 0; x < editor.game.map.getW(); ++x)
                 for (int y = 0; y < editor.game.map.getH(); ++y)
-                    values.push_back(editor.game.map.getCase(x, y).fertility);
+                    values.push_back(editor.game.map.getTile(x, y).fertility);
             values.push_back(editor.game.map.fertilityMaximum);
             return values;
         };
@@ -796,7 +819,7 @@ int main(int argc, char** argv)
         for (const std::size_t budget : {1u, 7919u, 65536u}) {
             for (int x = 0; x < editor.game.map.getW(); ++x)
                 for (int y = 0; y < editor.game.map.getH(); ++y)
-                    editor.game.map.getCase(x, y).fertility = 42;
+                    editor.game.map.getTile(x, y).fertility = 42;
             editor.game.map.fertilityMaximum = 42;
             const auto untouched = snapshot();
             FertilityCalculator::Job job(editor.game.map);

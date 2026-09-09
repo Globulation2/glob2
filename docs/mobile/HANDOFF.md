@@ -12,7 +12,7 @@ Never install over the existing desktop executable.
 Repository: https://github.com/Globulation2/glob2
 Draft PR: https://github.com/Globulation2/glob2/pull/208
 PR base: `codex/browser-experiment`.
-Current browser base: `246a47d50` after the latest merge.
+Current browser base: `1658ff670` after the latest merge.
 The preceding mobile checkpoints used `9dc201436`.
 Check the remote before the next substantial milestone;
 inspect its changes before merging. Do not chase a moving base during every build.
