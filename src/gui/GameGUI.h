@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include <MapCamera.h>
 
 #include <memory>
 #include <optional>
@@ -54,6 +55,7 @@ class MapMarkOrder;
 */
 class GameGUI
 {
+	friend class HighResolutionIntegrationHarness;
 public:
 	///Constructs a GameGUI
 	GameGUI();
@@ -210,6 +212,12 @@ public:
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer, localTeamNo;
 	int viewportX, viewportY;
+	MapCamera camera;
+	bool zoomControlPushed=false;
+	void updateCamera();
+	bool zoomMap(double steps,int x,int y);
+	int mapMouseX(int x)const {return camera.localX(x);}
+	int mapMouseY(int y)const {return camera.localY(y);}
 	/// Number of consecutive GUI steps the local view has been blocked waiting
 	/// on an away/late player (i.e. game.anyPlayerWaited has stayed true). Reset
 	/// to 0 as soon as the wait clears. Used only to debounce the on-screen
@@ -266,8 +274,9 @@ private:
 	void drawTopScreenBar(void);
 	//! Draw the infos that are over the others, like the message, the waiting players, ...
 	void drawOverlayInfos(void);
-	//! Draw the particles (eye-candy)
-	void drawParticles(void);
+	//! Draw the particles (eye-candy). @p advance steps their age and physics.
+	//! Emission is suppressed separately while the game is paused.
+	void drawParticles(bool advance);
 	//! Draw the panel: clip rect, background, tutorial highlight, panel buttons,
 	//! then defers to dispatchSelectionPanel for the body.
 	void drawPanel(void);

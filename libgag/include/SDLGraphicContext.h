@@ -1,3 +1,4 @@
+#include <functional>
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -168,8 +169,10 @@ namespace GAGCore
 		SDL_Rect clipRect;
 		//! this surface has been modified since latest blit
 		bool dirty;
+		bool highResolutionSampling=false;
 		//! texture index if GPU (GL) is used
-		unsigned int texture;
+		unsigned int texture=0;
+		size_t gpuBytes=0;
 		//! texture divisor
 		float texMultX, texMultY;
 		
@@ -217,6 +220,7 @@ namespace GAGCore
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
 		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+		static size_t allocatedTextureBytes();
 
 		virtual int getTexX(void) { if (textureInfo) { return textureInfo->texX; } return 0; }
 		virtual int getTexY(void) { if (textureInfo) { return textureInfo->texY; } return 0; }
@@ -321,7 +325,7 @@ namespace GAGCore
 			DEFAULT = 0,
 			USEGPU = 1,
 			FULLSCREEN = 2,
-			//TODO: either implement "resizable" as a resizable gui or explain what this does
+			//! Allow windowed logical dimensions to follow the window size
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
 		};
@@ -335,6 +339,12 @@ namespace GAGCore
 		int drawableW = 0, drawableH = 0;
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
+		bool mapTransformActive=false;
+        bool periodicCopy=false;
+		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
+		float overlayScale=1;
+		unsigned long drawCalls=0;
+		int mapClipX=0,mapClipY=0,mapClipW=0,mapClipH=0;
 		//! the GL viewport that fits the logical resolution into the drawable without distorting its aspect ratio, letterboxed/pillarboxed as needed
 		void glLetterbox(float &scale, int &offX, int &offY);
 		//! apply glLetterbox() as the current GL viewport
@@ -346,6 +356,29 @@ namespace GAGCore
 		//! refresh the window and drawable sizes after the window was resized
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
+		SDL_GLContext context = nullptr;
+		SDL_threadID eventThread = 0;
+		bool pollingEvents = false;
+		bool presenting = false;
+		bool watchingEvents = false;
+		// Owned here and released explicitly while the GL context is still current.
+		struct FrameCache
+		{
+			SDL_Surface *surface = nullptr;
+			unsigned texture = 0;
+			int width = 0, height = 0;
+			int textureWidth = 0, textureHeight = 0;
+			int maximumTextureSize = 0;
+			bool valid = false;
+			bool failureReported = false;
+		} frameCache;
+		void reportFrameCacheFailure(const char *reason);
+		void releaseFrameCache();
+		void cacheFrame();
+		void presentLastFrame();
+		// Central presentation boundary, also used by render-validation contexts.
+		virtual void swapBuffers();
+		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -363,6 +396,17 @@ namespace GAGCore
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
 		//! true when the window pixel size differs from the logical resolution, so output is scaled
 		bool isScalingActive(void);
+		bool toggleFullscreen();
+		void beginMapTransform(float zoom,float x,float y,int clipX,int clipY,int clipW,int clipH);
+		void endMapTransform();
+        // Repeat a presentation-only pass. Its primary invocation advances visual
+        // state once; subsequent invocations must only draw.
+        void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);
+        bool isPeriodicCopy() const {return periodicCopy;}
+		void beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh);
+		void endScreenOverlay();
+		unsigned long getDrawCallCount() const {return drawCalls;}
+		void resetDrawCallCount(){drawCalls=0;}
 		//! convert window pixel coordinates (as delivered by SDL) to logical coordinates
 		void windowToLogical(Sint32 &x, Sint32 &y);
 		//! set a GL line width in logical pixels; GL rasterises lines in window pixels, which the viewport does not scale
@@ -371,6 +415,8 @@ namespace GAGCore
 		static void translateMouseCoordinates(int &x, int &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
 		static void translateMouseEvent(SDL_Event *event);
+		//! Pump events at a frame boundary; modal expose callbacks only present a cached frame.
+		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);
@@ -463,6 +509,10 @@ namespace GAGCore
 #endif
 		std::vector <DrawableSurface *> images;
 		std::vector <RotatedImage *> rotated;
+		std::unique_ptr<Sprite> highResolutionAtlas;
+		void createHighResolutionAtlas();
+		std::vector <DrawableSurface *> experimentImages;
+		std::vector <RotatedImage *> experimentRotated;
 
 		// Sprite sheet stuff to efficiently draw terrain/water/units.
 #ifdef HAVE_OPENGL
@@ -484,8 +534,16 @@ namespace GAGCore
 		bool createTextureAtlas();
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
+		void reloadHighResolution();
+		DrawableSurface *getColoredSurface(RotatedImage *image);
+		DrawableSurface *getDrawSurface(unsigned index, bool teamColor, bool experiment);
+		void loadExperimentFrame(const std::string &frameName, const std::string &rotatedName);
 	
 	public:
+		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
+		static HighResolutionStats highResolutionStats();
+		static void setHighResolution(bool enabled);
+		static void flushBatches(GraphicContext *gc);
 		//! Constructor
 		Sprite() : fileName("not loaded yet") { }
 		//! Destructor

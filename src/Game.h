@@ -119,6 +119,9 @@ static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
 
 class Game
 {
+	bool hasSavedRandomState = false;
+	friend class HighResolutionIntegrationHarness;
+	friend class EnteringUnitDrawHarness;
 	static const bool verbose = false;
 public:
 	/// Per-client viewer state (selection + mouse). Defined below; forward-
@@ -229,7 +232,7 @@ public:
 	/// move-flag order has executed. The map editor passes nullptr for it — it
 	/// mutates buildings directly without an orderQueue, so there is no pending
 	/// shadow to consult.
-	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr);
+	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false);
 
 	///Sets the mask representing which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);

@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "../render/MapCopies.h"
 #include <math.h>
 #include <stdlib.h>
 
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "GameGUIViewport.h"
 #include "GlobalContainer.h"
 #include "ParticleCrossfade.h"
 
@@ -45,7 +47,7 @@ namespace
 	}
 }
 
-void GameGUI::drawParticles(void)
+void GameGUI::drawParticles(bool advance)
 {
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); )
 	{
@@ -62,22 +64,33 @@ void GameGUI::drawParticles(void)
 
 			continue;
 		}
-		else
+		else if (advance)
+		{
 			p->age++;
 
-		// do stupid physics
-		p->x += p->vx;
-		p->y += p->vy;
-		p->vx += p->ax;
-		p->vy += p->ay;
+			// do stupid physics
+			p->x += p->vx;
+			p->y += p->vy;
+			p->vx += p->ax;
+			p->vy += p->ay;
+		}
 
 		globalContainer->particles->setBaseColor(p->color);
 
 		// crossfade between the current animation frame and the next one
 		const ParticleCrossfade cf = computeParticleCrossfade(p->startImg, p->endImg, p->age, p->lifeSpan);
-		drawCenteredParticleSprite(p->x, p->y, cf.frameA, cf.alphaA);
+		int radius = std::max(globalContainer->particles->getW(cf.frameA), globalContainer->particles->getH(cf.frameA));
 		if (cf.hasFrameB)
-			drawCenteredParticleSprite(p->x, p->y, cf.frameB, cf.alphaB);
+			radius = std::max({radius, globalContainer->particles->getW(cf.frameB), globalContainer->particles->getH(cf.frameB)});
+		const float x=MapCamera::wrap(p->x-viewportX*32,game.map.getW()*32);
+		const float y=MapCamera::wrap(p->y-viewportY*32,game.map.getH()*32);
+		forEachMapCopy(int(x)-radius, int(y)-radius, int(x)+radius, int(y)+radius,
+			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW ? game.map.displayViewportW : globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
+			game.map.displayViewportH ? game.map.displayViewportH : globalContainer->gfx->getH(), [&](int dx, int dy) {
+				drawCenteredParticleSprite(x+dx, y+dy, cf.frameA, cf.alphaA);
+				if (cf.hasFrameB)
+					drawCenteredParticleSprite(x+dx, y+dy, cf.frameB, cf.alphaB);
+			});
 
 		++it;
 	}
@@ -85,12 +98,15 @@ void GameGUI::drawParticles(void)
 
 void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 {
+	if (gamePaused)
+		return;
+
 	for (std::set<Building*>::iterator it = visibleBuildings->begin(); it != visibleBuildings->end(); ++it)
 	{
 		Building* building = *it;
 		BuildingType* type = building->type;
 		int x, y;
-		game.map.mapCaseToDisplayable(displayedPosX(*building), displayedPosY(*building), &x, &y, viewportX, viewportY);
+		x=displayedPosX(*building)*32;y=displayedPosY(*building)*32;
 
 		if (!type->isBuildingSite)
 		{
@@ -155,25 +171,5 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 
 void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
 {
-	if ((viewportX==oldViewportX) && (viewportY==oldViewportY))
-		return;
-
-	int dx = viewportX - oldViewportX;
-	if (dx > game.map.getW() / 2)
-		dx -= game.map.getW();
-	else if (dx < -game.map.getW() / 2)
-		dx += game.map.getW();
-
-	int dy = viewportY - oldViewportY;
-	if (dy > game.map.getH() / 2)
-		dy -= game.map.getH();
-	else if (dy < -game.map.getH() / 2)
-		dy += game.map.getH();
-
-	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
-	{
-		Particle* p = *it;
-		p->x -= dx * TILE_PX;
-		p->y -= dy * TILE_PX;
-	}
+	// Particles now retain world positions; camera changes need no compensation.
 }

@@ -76,14 +76,11 @@ void SettingsScreen::buildDisplayWidgets()
 		ost << standardResolutions[i][0] << "x" << standardResolutions[i][1];
 		if (!modeList->isText(ost.str().c_str()))
 		{
-			ost << " *";
 			modeList->addText(ost.str().c_str());
 		}
 	}
 	addWidgetToGroup(modeList, generalGroup);
-	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"), 180, 30);
-	modeListNote->setWordWrap(true);
-	addWidgetToGroup(modeListNote, generalGroup);
+
 }
 
 
@@ -119,6 +116,9 @@ void SettingsScreen::buildGraphicsToggles()
 	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
 	addWidgetToGroup(scrollwheelText, generalGroup);
 
+	highres=new OnOffButton(20, 300, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.highResolutionArtwork, HIGHRES, "Apply artwork on the next game or editor load (OpenGL)", "standard");
+	addWidgetToGroup(highres,generalGroup);
+	addWidgetToGroup(new Text(50,300,ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED,"standard","High-resolution artwork",180),generalGroup);
 	gameSpeedText=new Text(230, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
 	addWidgetToGroup(gameSpeedText, generalGroup);
 	gameSpeed=new Selector(230, 285, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180,
@@ -126,7 +126,7 @@ void SettingsScreen::buildGraphicsToggles()
 	addWidgetToGroup(gameSpeed, generalGroup);
 	updateGameSpeedText();
 
-	rebootWarning=new Text(0, 310, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
+	rebootWarning=new Text(0, 340, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
 	//TODO: warning style should be defined centrally.
 	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
 	addWidget(rebootWarning);

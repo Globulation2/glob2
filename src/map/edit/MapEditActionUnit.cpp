@@ -63,7 +63,7 @@ bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int re
 
 		int x;
 		int y;
-		game.map.displayToMapCaseAligned(mouseX, mouseY, &x, &y, viewportX, viewportY);
+		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 
 		Unit *unit=game.addUnit(x, y, team, type, level, rand()%256, 0, 0);
 		if (unit)
@@ -83,7 +83,7 @@ bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int re
 		int x;
 		int y;
 		int gid=NOGUID;
-		game.map.displayToMapCaseAligned(mouseX, mouseY, &x, &y, viewportX, viewportY);
+		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 		if(game.map.getAirUnit(x, y)!=NOGUID)
 		{
 			gid=game.map.getAirUnit(x, y);

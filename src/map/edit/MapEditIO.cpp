@@ -57,6 +57,7 @@ bool MapEdit::load(const std::string filename)
 		if (!rv)
 			return false;
 		
+		camera=MapCamera();viewportX=viewportY=0;
 		// set the editor default values
 		team = 0;
 	
@@ -141,7 +142,7 @@ int MapEdit::run(void)
 	
 		// we get all pending events but for mouse motion we only keep the last one
 		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		while (GAGCore::GraphicContext::pollEvent(&event))
 		{
 			GAGCore::GraphicContext::translateMouseEvent(&event);
  			processEvent(event);
@@ -158,8 +159,10 @@ int MapEdit::run(void)
 		if(!showingMenuScreen && !showingLoad && !showingSave && !showingScriptEditor && !showingTeamsEditor)
 		{
 			handleMapScroll();
-			viewportX+=xSpeed;
-			viewportY+=ySpeed;
+			updateCamera();
+			camera.originX+=xSpeed*32/camera.zoom;
+			camera.originY+=ySpeed*32/camera.zoom;
+			camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 			viewportX&=game.map.getMaskW();
 			viewportY&=game.map.getMaskH();
 		}
@@ -179,49 +182,8 @@ int MapEdit::run(void)
 				performAction("no ressource growth area drag motion");
 		}
 		
-		drawMap(0, 0, globalContainer->gfx->getW()-0, globalContainer->gfx->getH());
-		
-		drawMenu();
-		drawMiniMap();
-		wasMinimapRendered=false;
-		drawWidgets();
-		if(showingMenuScreen)
-		{
-			globalContainer->gfx->setClipRect();
-			menuScreen->dispatchTimer(startTick);
-			menuScreen->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
-		}
-		if(showingLoad || showingSave)
-		{
-			globalContainer->gfx->setClipRect();
-			loadSaveScreen->dispatchTimer(startTick);
-			loadSaveScreen->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
-		}
-		if(showingScriptEditor)
-		{
-			globalContainer->gfx->setClipRect();
-			scriptEditor->dispatchTimer(startTick);
-			scriptEditor->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
-		}
-		if(showingTeamsEditor)
-		{
-			globalContainer->gfx->setClipRect();
-			teamsEditor->dispatchTimer(startTick);
-			teamsEditor->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
-		}
-		if(isShowingAreaName)
-		{
-			globalContainer->gfx->setClipRect();
-			areaName->dispatchTimer(startTick);
-			areaName->dispatchPaint();
-			globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
-		}
-		
-		
+		draw(startTick);
+
 		globalContainer->gfx->nextFrame();
 		
 
@@ -269,7 +231,7 @@ int MapEdit::run(void)
 		if(!isRunning)
 		{
 				SDL_Event event;
-			while (SDL_PollEvent(&event));
+			while (GAGCore::GraphicContext::pollEvent(&event));
 		}
 	}
 

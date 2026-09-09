@@ -521,6 +521,17 @@ if not env['server']:
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
+    # Use the real renderer and settings handlers. Access relaxation is confined
+    # to the test translation unit; production objects retain their normal flags.
+    render_env = savegame_env.Clone()
+    render_env['CXXFLAGS'] = local.Split(local['CXXFLAGS']) + ['-fno-access-control']
+    render_sources = [obj for obj in savegame_sources
+                      if str(obj).split('/')[-1] not in ('SavegameSafetyHarness.o', 'CreditScreen.o')]
+    render_sources += render_env.Object('MapRenderResizeHarness.o', '#test/MapRenderResizeHarness.cpp')
+    render_test = savegame_env.Program('MapRenderResizeHarness', render_sources)
+    local.Alias('map-render-resize-test', render_test)
+
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)
@@ -576,6 +587,16 @@ if not env['server']:
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
+if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
+    entering_draw_sources = [source for source in source_files if source != 'Glob2.cpp']
+    entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')
+    entering_draw_test = local.Program('EnteringUnitDrawHarness', entering_draw_sources)
+    local.Alias('entering-unit-draw-test', entering_draw_test)
+if not env['server']:
+    highres_sources = [source for source in source_files if source != 'Glob2.cpp']
+    highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
+    highres_test = local.Program('HighResolutionIntegrationHarness', highres_sources)
+    local.Alias('highres-integration-test', highres_test)
 if not env['server'] and 'menu-colony-harness' in COMMAND_LINE_TARGETS:
     menu_sources = [source for source in source_files if source != 'Glob2.cpp']
     menu_sources += local.Object('MenuColonyHarness.o', '#tools/MenuColonyHarness.cpp')

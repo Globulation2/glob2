@@ -6,6 +6,8 @@
 #include <vector>
 #include "SDL.h"
 
+class HighResolutionIntegrationHarness;
+
 namespace GAGCore
 {
 	class Sprite;
@@ -15,6 +17,7 @@ namespace GAGCore
 	//! A support class to manage cursors
 	class CursorManager
 	{
+		friend class ::HighResolutionIntegrationHarness;
 	public:
 		//! A cursor type, i.e. a sprite that represent an action
 		enum CursorType
@@ -77,8 +80,8 @@ namespace GAGCore
 		//! Advance the cursor animation and, if the type or frame changed,
 		//! install the native cursor for it via SDL_SetCursor. The OS then
 		//! moves and composites it independent of our own render/tick rate.
-		//! scale is GraphicContext::drawableScale(), so the cursor matches
-		//! the rest of a scaled-up window instead of rendering at 1x.
+		//! scale follows the native cursor coordinate space: window points on
+		//! Cocoa, drawable pixels elsewhere. It never includes map zoom.
 		void update(float scale);
 	};
 }
