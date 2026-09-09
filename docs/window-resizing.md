@@ -199,8 +199,10 @@ SDL_VIDEODRIVER=x11 SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s
 ```
 
 The harness links production rendering and settings code, checks pixels across six
-map copies, crosses a path seam, pans the view, shrinks/grows the window, checks
-sidebar clipping, and exercises settings toggles and tab changes. It also retains
+map copies, crosses path seams in both directions on square and rectangular maps,
+pans corner selections into view, shrinks/grows the window, checks
+sidebar clipping, and exercises settings toggles, tab changes, and the live
+resolution label after native window events. It also retains
 the previously temporary credits-centering regression. The GL mode reads the
 rendered back buffer before swap. Visible pixel occupancy must match exactly;
 software RGB values match exactly, while GL RGB comparison allows one channel
@@ -209,7 +211,12 @@ control; no test visibility changes are compiled into production objects. Credit
 implementation is compiled directly into that translation unit instead of linking
 its normal object, allowing its internal scrolling widget to be exercised.
 
-Both modes are wired into Linux CI, using disposable profiles and preference
+The GL fixture requires an unscaled 1800x1100 drawable; use a sufficiently large
+desktop or the Xvfb command above. A desktop that constrains the window does not
+satisfy the pixel-comparison fixture.
+
+Both modes are wired into Linux CI, and software rendering also runs in Windows
+CI. The harness uses a console entry point on MinGW. Both use disposable profiles and preference
 preservation checks. Negative controls substituting the previous production
 selection, path-line, effect, flag, ghost, particle and marker implementations each
 fail the corresponding pixel checks. Restoring the old settings visibility policy

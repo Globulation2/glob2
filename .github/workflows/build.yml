@@ -232,6 +232,14 @@ jobs:
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
 
+      - name: Check game rendering across repeated map copies
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 map-render-resize-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness.exe
+
       - name: Test savegame loading and atomic autosaves
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 savegame-safety-test

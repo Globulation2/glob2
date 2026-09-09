@@ -2,6 +2,9 @@
 // Link the production game renderer; expose internals only in this test TU.
 #undef NDEBUG
 #define SDL_MAIN_HANDLED
+#ifdef main
+#undef main
+#endif
 #include "GlobalContainer.h"
 #ifdef HAVE_OPENGL
 #include <SDL_opengl.h>
@@ -14,6 +17,7 @@
 #include "MapEdit.h"
 #include "gui/GameGUIViewport.h"
 #include <GUIList.h>
+#include <GUIText.h>
 #include "CreditScreen.cpp"
 #include <cassert>
 #include <iostream>
@@ -71,6 +75,7 @@ static void capturePixels(GraphicContext *gfx)
 
 int main(int argc, char **argv)
 {
+	std::cout << std::unitbuf;
 	SDL_SetMainReady();
 	assert(argc == 2 || (argc == 3 && std::string(argv[2]) == "--gl"));
 	const bool gpu=argc==3;
@@ -97,11 +102,23 @@ int main(int argc, char **argv)
 	auto *building=game.addBuilding(7,7,globals.buildingsTypes.getTypeNum("inn",0,false),0);
 	assert(unit && building);
 	auto *gfx=globals.gfx;
-	const auto resize = [&](int width) {
+	if (gpu)
+	{
+		int drawableW,drawableH;
+		SDL_GL_GetDrawableSize(gfx->window,&drawableW,&drawableH);
+		if (drawableW!=gfx->getW() || drawableH!=gfx->getH())
+		{
+			std::cerr << "Rendering fixture requires an unscaled 1800x1100 drawable; got "
+				<< drawableW << "x" << drawableH << ". Use a sufficiently large desktop or Xvfb.\n";
+			return 1;
+		}
+	}
+	const auto resize = [&](int width, Screen *screen = nullptr) {
 		SDL_SetWindowSize(gfx->window,width,1100);
 		SDL_Delay(60);
 		SDL_Event event;
-		while (GraphicContext::pollEvent(&event)) {}
+		while (GraphicContext::pollEvent(&event))
+			if (screen) screen->dispatchEvents(&event);
 		gfx->updateWindowSize();
 		assert(gfx->getW()==width && gfx->getH()==1100);
 	};
@@ -281,7 +298,63 @@ int main(int argc, char **argv)
 	}
 	std::cout << "PASS editor building selection in complete map frames\n";
 
+	// Unequal horizontal/vertical periods catch accidental use of the width
+	// mask or period for both axes. Cross both seams, in both directions.
+	for (const auto dimensions : {std::pair<int,int>{4,5}, {5,4}})
+	{
+		GameGUI rectangular;
+		auto &world=rectangular.game;
+		world.map.setSize(dimensions.first,dimensions.second,GRASS);
+		world.map.setGame(&world);
+		world.addTeam(0); world.teams[0]->race.loadDefault();
+		rectangular.localTeamNo=0; rectangular.localTeam=world.teams[0];
+		rectangular.teamStats=&world.teams[0]->stats;
+		const int mapW=world.map.getW(), mapH=world.map.getH();
+		for(int y=0;y<mapH;++y) for(int x=0;x<mapW;++x) world.map.clearImmobileUnit(x,y);
+		auto *walker=world.addUnit(1,1,0,WORKER,0,255,0,0);
+		assert(walker); walker->validTarget=true;
+		for(int width : {640,1200,1800}) for(int reverse : {0,1})
+		{
+			resize(width);
+			walker->posX=reverse ? 1 : mapW-1;
+			walker->posY=reverse ? 1 : mapH-1;
+			walker->targetX=reverse ? mapW-1 : 1;
+			walker->targetY=reverse ? mapH-1 : 1;
+			clear();
+			gfx->setClipRect(0,0,width-GAME_GUI_RIGHT_MENU_WIDTH,1100);
+			world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0,walker);
+			capturePixels(gfx);
+			assert(colored(gfx->getSDLSurface(),0,0,50,50)>0);
+			assert(colored(gfx->getSDLSurface(),100,100,250,250)==0);
+			// The short diagonal continues through each visible map corner.
+			for(int y=0;y+50<1100;y+=mapH*32)
+				for(int x=0;x+50<width-GAME_GUI_RIGHT_MENU_WIDTH;x+=mapW*32)
+					assert(colored(gfx->getSDLSurface(),x,y,50,50)>0);
+			assert(colored(gfx->getSDLSurface(),width-GAME_GUI_RIGHT_MENU_WIDTH,0,GAME_GUI_RIGHT_MENU_WIDTH,1100)==0);
+			// Pan the far corner into view, below the top status bar.
+			rectangular.viewportX=mapW-3; rectangular.viewportY=mapH-3;
+			rectangular.setSelection(GameGUI::RESOURCE_SELECTION,static_cast<unsigned>(mapW*mapH-1));
+			clear(); rectangular.drawOverlayInfos(); capturePixels(gfx);
+			const int selectionPixels=colored(gfx->getSDLSurface(),64,64,34,34);
+			assert(selectionPixels>0);
+			for(int y=64;y+34<1100;y+=mapH*32)
+				for(int x=64;x+34<width-GAME_GUI_RIGHT_MENU_WIDTH-32;x+=mapW*32)
+					assert(colored(gfx->getSDLSurface(),x,y,34,34)==selectionPixels);
+			assert(colored(gfx->getSDLSurface(),width-128,80,128,600)==0);
+		}
+	}
+	resize(1800);
+	std::cout << "PASS rectangular maps, bidirectional corner crossings and narrow viewports\n";
+
 	SettingsScreen settings;
+	settings.gfx=gfx;
+	settings.dispatchInit();
+	for(int width : {640,1200,1800})
+	{
+		resize(width, &settings);
+		assert(settings.actDisplay->getText()==settings.actDisplayModeToString());
+	}
+	std::cout << "PASS Settings display label follows native window resizing\n";
 	assert(!settings.modeList->visible);
 	settings.activateGroup(settings.keyboardGroup);
 	settings.activateGroup(settings.generalGroup);

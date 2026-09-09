@@ -370,6 +370,14 @@ std::string SettingsScreen::actDisplayModeToString(void)
 	return oss.str();
 }
 
+void SettingsScreen::onSDLEvent(SDL_Event *event)
+{
+	Glob2TabScreen::onSDLEvent(event);
+	// The event pump may coalesce resizing with a later expose/focus event.
+	if (event->type == SDL_WINDOWEVENT)
+		actDisplay->setText(actDisplayModeToString());
+}
+
 
 void SettingsScreen::onGroupActivated(int group_n)
 {
