@@ -40,6 +40,7 @@
 #include <SDL_net.h>
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 #include <stdexcept>
 
 GlobalContainer* globalContainer = nullptr;
@@ -453,6 +454,28 @@ int main(int argc, char** argv)
             require(frame < 10, "Invalid generation descriptor did not fail promptly"); failed.frame(frame, {});
         }
         require(failed.result() == 2 && getSyncRandState() == rng, "Invalid generation must fail without changing RNG");
+    }
+    {
+        Engine engine;
+        require(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR, "Replay save fixture failed");
+        auto& writer = *globalContainer->replayWriter;
+        const auto directory = std::filesystem::path(globalContainer->fileManager->getDir(0)) / "replays";
+        const auto destination = directory / "Atomic.replay";
+        const auto blocked = directory / "Blocked.replay";
+        const auto position = writer.getBuffer()->getPosition();
+        require(writer.write(destination.string()), "Initial replay save failed");
+        const auto read = [](const std::filesystem::path& path) {
+            std::ifstream input(path, std::ios::binary);
+            return std::string(std::istreambuf_iterator<char>(input), {});
+        };
+        const auto bytes = read(destination);
+        std::filesystem::create_directory(blocked);
+        require(!writer.write(blocked.string()), "Replay save accepted a directory");
+        require(writer.getBuffer()->getPosition() == position, "Failed replay save moved the recording cursor");
+        require(writer.write(destination.string()) && read(destination) == bytes && !bytes.empty(),
+            "Replay retry did not preserve the complete recording");
+        globalContainer->replayWriter.reset();
+        std::cout << "PASS atomic replay save, failed destination and retry" << std::endl;
     }
     for (int outcome : {0, 1, 2}) {
         auto previous = std::make_unique<Engine>();

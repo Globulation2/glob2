@@ -290,3 +290,13 @@ not call them. The shell supplies only viewport/full-page/renderer arguments,
 not native server/admin/headless modes. The browser IRC handler never starts
 the native IRC worker/parser; YOG chat remains available. Adding browser entry
 points must preserve these boundaries. Previous migration notes above are history.
+
+### End-game replay dialog audit correction
+
+The final writer audit found that EndGameScreen's Save Replay button still called
+its own polling loop; this was missed by the earlier Asyncify reachability audit.
+EndGameScreen now owns the existing LoadSaveScreen overlay and drives its input,
+timers, drawing and persistence completion from the shared update API. The overlay
+retains its own drawing surface (it is not admitted to ScreenStack with a borrowed
+global surface), and its offsets update on resize. There is no nested event loop
+or saved background image. The same implementation serves native and web hosts.

@@ -163,3 +163,19 @@ failure, retry and explicit exit after failure. `campaign-editor-storage.spec.js
 covers delayed completion, quota failure, retry and durable bytes after reload.
 The native session harness checks orderly application Quit through the same
 application API, including repeated close events.
+
+## End-game replay export
+
+Save Replay on the end-game screen is an owned, scheduled overlay. It stays
+responsive during resize and waits for durable browser persistence before closing.
+A failed write retains the dialog and offers export/retry using the same controls
+as game saves. Exporting the replay uses the checked atomic writer, retaining the
+previous destination on failure and restoring the live recording's file position
+before a retry. The replay format is unchanged.
+
+`browser/tests/replay-save.spec.js` covers real name entry, resize, delayed
+persistence, ignored cancellation while writing, quota failure, file export,
+retry, refresh and replay playback. The native session harness covers an invalid
+destination and byte-identical retry. Automatic `last_game.replay` recording and
+periodic autosaves remain background writes; abrupt tab/process termination is
+not a successful save acknowledgment. Use explicit saves/exports for backups.
