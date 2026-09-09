@@ -436,6 +436,10 @@ private:
 		Unit* choosen;
 	};
 
+	/// Lets test/RoundTripHungerGateHarness.cpp reach considerUnitForResource
+	/// without exposing it to game callers, as GameGUI does for its own harness.
+	friend class RoundTripHungerGateHarness;
+
 	/// Whether a unit is a possible hire at all: harvest-capable, idle, healthy,
 	/// high enough level, and close enough to reach this building before going
 	/// hungry. Fills *distBuilding on success; on failure tallies the rejection
