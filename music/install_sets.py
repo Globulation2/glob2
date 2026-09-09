@@ -13,7 +13,7 @@ import sys
 ROOT=Path(__file__).resolve().parent
 SETS={
  'seedling': ('Seedling', 'Organic electronic', 'seedling', ('a1-calm','a2-building','a3-combat')),
- 'bramble-dance': ('Bramble Dance', 'Plucked folk strings and hand drums', 'contrasts/bramble-dance', ('calm','building','combat')),
+ 'bramble-dance': ('Bramble Dance', 'Marimba, bamboo flute and hand drums', 'contrasts/bramble-dance', ('calm','building','combat')),
  'velvet-orbit': ('Velvet Orbit', 'Spacious electric piano and broken beats', 'contrasts/velvet-orbit', ('calm','building','combat')),
  'tidepool': ('Tidepool', 'Caribbean-inspired organic electronic', 'tidepool', ('calm','building','combat')),
 }

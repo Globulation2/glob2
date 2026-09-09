@@ -28,28 +28,28 @@
   },
   "bramble-dance": {
     "title": "Bramble Dance",
-    "style": "Plucked folk strings and hand drums",
+    "style": "Marimba, bamboo flute and hand drums",
     "tracks": [
       {
         "file": "data/zik/bramble-dance/a1.ogg",
         "source": "music/contrasts/bramble-dance/calm.wav",
         "frames": 2940000,
         "seconds": 66.66666666666667,
-        "decoded_peak": 0.53887939453125
+        "decoded_peak": 0.518310546875
       },
       {
         "file": "data/zik/bramble-dance/a2.ogg",
         "source": "music/contrasts/bramble-dance/building.wav",
         "frames": 2940000,
         "seconds": 66.66666666666667,
-        "decoded_peak": 0.75372314453125
+        "decoded_peak": 0.703369140625
       },
       {
         "file": "data/zik/bramble-dance/a3.ogg",
         "source": "music/contrasts/bramble-dance/combat.wav",
         "frames": 2940000,
         "seconds": 66.66666666666667,
-        "decoded_peak": 0.8994140625
+        "decoded_peak": 0.8985595703125
       }
     ]
   },

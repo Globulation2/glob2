@@ -9,7 +9,7 @@ mood crossfades.
 | Set | Character | Loop |
 | --- | --- | --- |
 | Seedling | Organic electronic, woody melody, heavy combat bass | 80 seconds |
-| Bramble Dance | Plucked folk strings, flute and hand drums in 6/8 | 66.67 seconds |
+| Bramble Dance | Marimba, bamboo flute and hand drums in 6/8 | 66.67 seconds |
 | Velvet Orbit | Spacious electric piano and broken beats | 80 seconds |
 | Tidepool | Caribbean-inspired steelpan, offbeat organ and syncopated bass | 76.8 seconds |
 

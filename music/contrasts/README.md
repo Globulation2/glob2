@@ -5,7 +5,7 @@ original programmatic compositions with custom synthesis and editable Type-1 MID
 
 | Set | Tempo/meter | Character |
 | --- | --- | --- |
-| Bramble Dance | 108 quarter-note BPM, 6/8 (72 dotted-quarter beats/minute) | Bright plucked-string folk dance and flute; combat brings bowed-string runs and pounding hand drums. |
+| Bramble Dance | 108 quarter-note BPM, 6/8 (72 dotted-quarter beats/minute) | Wooden marimba and bamboo flute with round bass; combat brings low marimba runs and stronger hand drums. |
 | Velvet Orbit | 72 BPM, 4/4 | Spacious electric-piano extended chords, glass tones and swung percussion; combat becomes a heavy broken beat with saturated sub-bass. |
 
 Within each set, calm/building/combat have exactly the same tempo, harmonic

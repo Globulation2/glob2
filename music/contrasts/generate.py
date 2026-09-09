@@ -15,8 +15,8 @@ SR, PPQ = 44100, 480
 STATES = ('calm', 'building', 'combat')
 SETS = {
  'bramble-dance': dict(bpm=108, bars=40, beats=3, meter=(6, 3),
-   parts=[('lute',24,0,-.3),('flute',73,1,.25),('fiddle',48,2,.1),('upright',43,3,0),('hand',0,9,0)],
-   description='Acoustic folk dance in 6/8: plucked strings, breathy flute, bowed strings and hand drums.'),
+   parts=[('marimba',12,0,-.3),('bamboo',75,1,.25),('low-marimba',12,2,.1),('round-bass',38,3,0),('hand',0,9,0)],
+   description='Wooden marimba and bamboo flute in 6/8, with round bass and hand drums.'),
  'velvet-orbit': dict(bpm=72, bars=24, beats=4, meter=(4, 2),
    parts=[('piano',4,0,-.15),('glass',98,1,.35),('air',91,2,-.2),('sub',38,3,0),('breaks',0,9,0)],
    description='Slow, spacious electric-piano harmony and glass tones; combat is a heavy broken-beat arrangement.')}
@@ -30,27 +30,27 @@ def compose(key, c, level):
         b = bar * c['beats']
         if key == 'bramble-dance':
             root, chord = [(38,[62,66,69]),(43,[62,67,71]),(47,[62,66,71]),(45,[61,64,69])][(bar//2)%4]
-            # Six eighth-notes, grouped 3+3. No synth pad or electronic bass.
+            # Six eighth-notes, grouped 3+3.
             pattern = [0,1,2,1,2,1] if bar%2==0 else [2,1,0,1,2,0]
             for j,k in enumerate(pattern):
-                add('lute',b+j*.5,chord[k],.43,65 if j%3==0 else 49)
-            for off in (0,1.5): add('upright',b+off,root,1.2,65+level*9)
+                add('marimba',b+j*.5,chord[k],.43,65 if j%3==0 else 49)
+            for off in (0,1.5): add('round-bass',b+off,root,1.2,65+level*9)
             melody = ([74,76,78,81,78,76] if bar%2==0 else [78,76,74,73,74,69])
             # Four-bar melodic answers are transposed down rather than repeated.
             shift = -5 if (bar//4)%2 else 0
             if bar%8 != 7:
                 for j,p in enumerate(melody):
-                    if level<2 and j in (0,2,3,5): add('flute',b+j*.5,p+shift,.42,51)
-                    if level==2: add('fiddle',b+j*.5,p+shift-12,.36,84)
+                    if level<2 and j in (0,2,3,5): add('bamboo',b+j*.5,p+shift,.42,51)
+                    if level==2: add('low-marimba',b+j*.5,p+shift-12,.36,84)
             if level>=1:
                 for off,p in ((0,41),(1,60),(1.5,41),(2.5,62)):
                     add('hand',b+off,p,.22,65+level*12)
                 for j in range(6): add('hand',b+j*.5,70,.08,29+level*8)
             if level==2:
                 for off in (0,.75,1.5,2.25): add('hand',b+off,36,.25,105)
-                # Low plucked accents support the urgent bowed-string reel.
+                # Low mallet accents support the combat melody.
                 for off in (0,1.5):
-                    add('lute',b+off,root+12,.24,85)
+                    add('marimba',b+off,root+12,.24,85)
         elif key == 'velvet-orbit':
             root, chord = [(39,[58,62,65,69]),(36,[58,62,63,67]),(44,[55,60,63,67]),(46,[56,60,62,65])][(bar//2)%4]
             # Long jazz voicings and deliberate empty space.
@@ -66,7 +66,7 @@ def compose(key, c, level):
             if level>=1:
                 for off in (0,2.5): add('breaks',b+off,36,.26,68+level*12)
                 for off in (1,3): add('breaks',b+off,38,.23,57+level*17)
-                # Laid-back swung hats, unlike the straight folk and machine sets.
+                # Laid-back swung hats, against the straight mallet pattern.
                 for off in (0,.66,1,1.66,2,2.66,3,3.66): add('breaks',b+off,42,.07,32+level*5)
             if level==2:
                 for off in (.75,1.75,2.25,3.5): add('breaks',b+off,36,.22,101)
@@ -76,6 +76,21 @@ def compose(key, c, level):
 
 
 def tone(part,p,d,sr,rng,level):
+    if part in ('marimba', 'low-marimba', 'bamboo', 'round-bass'):
+        t = np.arange(round((d + .16) * sr)) / sr
+        ph = 2 * np.pi * (440 * 2 ** ((p - 69) / 12)) * t
+        gate = np.exp(-np.maximum(t - d, 0) * 32)
+        attack = 1 - np.exp(-t * 350)
+        if part in ('marimba', 'low-marimba'):
+            y = np.sin(ph) * np.exp(-t*6) + .35*np.sin(ph*4)*np.exp(-t*22) + .12*np.sin(ph*10)*np.exp(-t*50)
+            env = attack * gate; gain = .42
+        elif part == 'bamboo':
+            y = np.sin(ph + .013*np.sin(2*np.pi*4.6*t)) + .055*np.sin(ph*2)
+            env = (1-np.exp(-t*65))*gate; gain = .22
+        else:
+            y = np.sin(ph) + .12*np.sin(ph*2)*np.exp(-t*9)
+            env = (1-np.exp(-t*140))*np.exp(-t*2)*gate; gain = .43
+        return y*env*gain
     tail = .9 if part in ('piano','glass','air') else .16
     t=np.arange(round((d+tail)*sr))/sr
     f=440*2**((p-69)/12); ph=2*np.pi*f*t
