@@ -186,6 +186,8 @@ int main(int argc, char** argv) {
         // Same wall time with very different GUI call rates should scroll equally.
         int distance[2];
         for(int pass=0;pass<2;++pass) {
+            // Drain startup/window events and the preceding pass before measuring.
+            gui.step();
             SDL_Event mouse={}; mouse.type=SDL_MOUSEMOTION;
             mouse.motion.x=0; mouse.motion.y=200;
             gui.processEvent(&mouse);
@@ -196,6 +198,9 @@ int main(int argc, char** argv) {
                 gui.step();
                 SDL_Delay(pass==0?40:1);
             }
+            // Account for the final sleep in both cadence measurements.
+            SDL_PushEvent(&mouse);
+            gui.step();
             distance[pass]=(before-gui.viewportX)&gui.game.map.getMaskW();
         }
         std::cerr<<"Camera distances: "<<distance[0]<<"/"<<distance[1]<<std::endl;

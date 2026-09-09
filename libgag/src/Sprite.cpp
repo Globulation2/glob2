@@ -452,14 +452,14 @@ namespace GAGCore
 		if (!compositeOnly)
 		{
 			for (const auto *layers : {&rotated, &experimentRotated})
-			for (auto layer : *layers)
-			{
-				if (!layer)
-					continue;
-				for (auto &cached : layer->rotationMap)
-					delete cached.second;
-				layer->rotationMap.clear();
-			}
+				for (auto layer : *layers)
+				{
+					if (!layer)
+						continue;
+					for (auto &cached : layer->rotationMap)
+						delete cached.second;
+					layer->rotationMap.clear();
+				}
 			compositeOnly = true;
 		}
 		CompositeKey key{actColor, frames};
@@ -564,7 +564,7 @@ namespace GAGCore
 			texH *= 2;
 		size_t bytes = raw->pitch * height;
 		if (Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU)
-			{
+		{
 			bytes += (result->texMultX == 1.0f ? width * height : texW * texH) * 4;
 			if (highResolution && result->texMultX != 1.0f)
 				while (texW > 1 || texH > 1)

@@ -231,10 +231,12 @@ jobs:
             build-software/src/torus-render-test -g -F -m -s 1120x720
       - name: Test unit motion blur and composite cache
         run: |
-          scons -j$(nproc) release=1 server=0 unit-blur-tests
+          scons -j$(nproc) release=1 server=0 unit-blur-tests unit-hd-cache-test
           ./build/src/UnitMotionBlurTest
           xvfb-run -a ./build/src/UnitCompositeCacheTest
           xvfb-run -a ./build/src/UnitCompositeCacheGPUCheck
+          xvfb-run -a ./build/src/UnitHighResolutionCacheTest
+          xvfb-run -a ./build/src/UnitHighResolutionCacheTest software
 
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.

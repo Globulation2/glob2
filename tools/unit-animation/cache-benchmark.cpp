@@ -16,6 +16,7 @@ int main(int argc, char **argv)
 {
 	bool gpu = argc > 1 && std::string(argv[1]) == "gpu";
 	GAGCore::Toolkit::init("codex-glob2-blur-benchmark");
+	GAGCore::Sprite::setHighResolution(argc > 2 && std::string(argv[2]) == "hd");
 	auto *gfx = GAGCore::Toolkit::initGraphic(1280, 480, gpu ? GAGCore::GraphicContext::USEGPU : 0,
 	                                          "Unit blur benchmark");
 	auto *sprites = GAGCore::Toolkit::getSprite("data/gfx/unit");
@@ -39,7 +40,8 @@ int main(int argc, char **argv)
 				std::vector<std::pair<int, int>> frames;
 				drawUnitMotionBlur(64, dir, delta, step,
 				                   [&](int f, int a) { frames.emplace_back(f, a); });
-				gfx->drawSurface((u % 32) * 40, (u / 32) * 44, sprites->getCachedComposite(frames));
+				gfx->drawSurface((u % 32) * 40, (u / 32) * 44, 38, 38,
+				                 sprites->getCachedComposite(frames));
 			}
 			else if (blur)
 				drawUnitMotionBlur(64, dir, delta, step, draw);

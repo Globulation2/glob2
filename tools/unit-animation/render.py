@@ -87,13 +87,13 @@ def schema_and_scene(data):
     return structures, blocks, scenes[0] + structures['Scene']['r'][0]
 
 
-def prepare(out, render_root, samples):
-    if out.resolve() == (ROOT / 'datasrc/gfx/globules').resolve():
+def prepare(out, render_root, samples, resolution_scale=1):
+    if out.resolve() == (ROOT / 'datasrc/gfx/originals/units').resolve():
         raise ValueError('Prepared scenes must not overwrite the original Blender sources')
     out.mkdir(parents=True, exist_ok=True)
     manifest = []
     for name, source, base, size, shadow in SETS:
-        source_path = ROOT / 'datasrc/gfx/globules' / source
+        source_path = ROOT / 'datasrc/gfx/originals/units' / source
         data = bytearray(source_path.read_bytes())
         original = bytes(data)
         structures, blocks, render_offset = schema_and_scene(data)
@@ -106,6 +106,8 @@ def prepare(out, render_root, samples):
             struct.pack_into('<' + fmt, data, render_offset + fields[field][0], value)
 
         assert get('xsch', 'h') == size and get('ysch', 'h') == size
+        put('xsch', 'h', size * resolution_scale)
+        put('ysch', 'h', size * resolution_scale)
         assert get('framapto', 'h') % samples == 0
         put('framapto', 'h', get('framapto', 'h') // samples)
         put('framelen', 'f', get('framelen', 'f') / samples)
@@ -121,7 +123,7 @@ def prepare(out, render_root, samples):
             raise ValueError('Render output path exceeds the Blender field length')
         data[render_offset+offset:render_offset+offset+length] = output.ljust(length, b'\0')
         permitted = set()
-        for field in ['framapto', 'framelen', 'sfra', 'efra', 'pic']:
+        for field in ['xsch', 'ysch', 'framapto', 'framelen', 'sfra', 'efra', 'pic']:
             offset, length = fields[field]
             permitted.update(range(render_offset+offset, render_offset+offset+length))
         # The explorer's shipped sprite is half a pixel left/down from the
@@ -149,7 +151,7 @@ def prepare(out, render_root, samples):
         assert all(a == b or i in permitted for i, (a, b) in enumerate(zip(original, data)))
         (out / (name + '.blend')).write_bytes(data)
         manifest.append(dict(name=name, source=source, source_sha256=hashlib.sha256(original).hexdigest(),
-                             legacy_base=base, size=size, shadow=shadow,
+                             legacy_base=base, size=size, resolution_scale=resolution_scale, shadow=shadow,
                              first=first, last=last, samples_per_original_frame=samples,
                              camera_pixel_offset=[-0.5, 0.5] if name == 'explorer' else [0, 0]))
     (out / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
@@ -211,12 +213,151 @@ def install(staged, destination):
             path.unlink()
 
 
+def highres_layout():
+    """Logical frame geometry stays native; texture dimensions are fourfold."""
+    files, rows = {}, []
+    for name, source, base, size, shadow in SETS:
+        for index in range(256):
+            frame = base * 4 + index
+            regular = 'unit%d.png' % frame if shadow else '-'
+            colored = 'unit%dr.png' % frame
+            rows.append('unit%d %d %d 4 %s %s' % (frame, size, size, regular, colored))
+            files[colored] = size * 4
+            if shadow:
+                files[regular] = size * 4
+    return files, rows
+
+
+def collect_highres(rendered, destination, reference):
+    from PIL import Image
+    import numpy as np
+    if destination.resolve() == reference.resolve():
+        raise ValueError('Collect HD frames separately from the native reference')
+    destination.mkdir(parents=True, exist_ok=True)
+    comparisons, metadata = [], []
+    for name, source, base, size, shadow in SETS:
+        source_path = ROOT / 'datasrc/gfx/originals/units' / source
+        source_hash = hashlib.sha256(source_path.read_bytes()).hexdigest()
+        for index in range(256):
+            layers = []
+            for suffix, offset in [('r', 0)] + ([('', 256)] if shadow else []):
+                src = rendered / name / ('%04d.png' % (4 + index + offset))
+                filename = 'unit%d%s.png' % (base * 4 + index, suffix)
+                with Image.open(src) as image:
+                    if image.mode != 'RGBA' or image.size != (size * 4, size * 4):
+                        raise ValueError('Invalid HD render: ' + str(src))
+                    # Compare at native size only for validation; install original PNG bytes.
+                    reduced = np.asarray(image.resize((size, size), Image.Resampling.BOX)).astype(float)
+                with Image.open(reference / filename) as image:
+                    if image.mode != 'RGBA' or image.size != (size, size):
+                        raise ValueError('Expected the native 32-pose reference: ' + filename)
+                    old = np.asarray(image).astype(float)
+                error = np.abs(reduced - old)
+                comparisons.append(dict(animation=name, file=filename,
+                    mean_error=float(error.mean()), alpha_mean_error=float(error[:, :, 3].mean()),
+                    alpha_max_error=float(error[:, :, 3].max())))
+                png = src.read_bytes()
+                (destination / filename).write_bytes(png)
+                layers.append(dict(file=filename, role='team' if suffix else 'base',
+                    sha256=hashlib.sha256(png).hexdigest(), source_sha256=source_hash,
+                    logical_width=size, logical_height=size,
+                    original_sha256=hashlib.sha256((reference / filename).read_bytes()).hexdigest()))
+            metadata.append(dict(id='unit%d' % (base * 4 + index), width=size, height=size, scale=4,
+                recipe='recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction',
+                layers=layers, sources=[dict(path=str(source_path.relative_to(ROOT)), sha256=source_hash)],
+                animation=name, direction=index // 32, pose=index % 32,
+                render_settings=dict(samples_per_original_frame=4, resolution_scale=4,
+                    team_frame=4 + index, shadow_frame=260 + index if shadow else None,
+                    camera_pixel_offset=[-0.5, 0.5] if name == 'explorer' else [0, 0])))
+    files, rows = highres_layout()
+    (destination / 'frames.txt').write_text('GLOB2_HIGHRES 1\n' + '\n'.join(rows) + '\n')
+    (destination / 'comparison-report.json').write_text(json.dumps(comparisons, indent=2) + '\n')
+    (destination / 'manifest.json').write_text(json.dumps(dict(version=1, frames=metadata), indent=2) + '\n')
+    return comparisons
+
+
+def install_highres(staged, destination):
+    from PIL import Image
+    import shutil
+    files, rows = highres_layout()
+    supplied = {p.name for p in staged.glob('unit*.png')}
+    if supplied != set(files):
+        raise ValueError('HD staging must contain all 2816 unit image layers')
+    if (staged / 'frames.txt').read_text() != 'GLOB2_HIGHRES 1\n' + '\n'.join(rows) + '\n':
+        raise ValueError('HD staging manifest does not match the 1792-frame layout')
+    staged_metadata = json.loads((staged / 'manifest.json').read_text())
+    if staged_metadata['version'] != 1 or len(staged_metadata['frames']) != 1792 or {f['id'] for f in staged_metadata['frames']} != {'unit%d' % i for i in range(1792)}:
+        raise ValueError('Invalid HD provenance frame coverage')
+    expected_frames = {row.split()[0]: row.split()[1:] for row in rows}
+    for frame in staged_metadata['frames']:
+        width, height, scale, regular, colored = expected_frames[frame['id']]
+        expected_layers = {'team': colored}
+        if regular != '-':
+            expected_layers['base'] = regular
+        if ((frame['width'], frame['height'], frame['scale']) != (int(width), int(height), int(scale))
+                or len(frame['layers']) != len(expected_layers)
+                or {layer['role']: layer['file'] for layer in frame['layers']} != expected_layers):
+            raise ValueError('HD provenance layout mismatch: ' + frame['id'])
+    hashes = {layer['file']: layer['sha256'] for frame in staged_metadata['frames'] for layer in frame['layers']}
+    if set(hashes) != set(files):
+        raise ValueError('Invalid HD provenance layer coverage')
+    for name, size in files.items():
+        if hashlib.sha256((staged / name).read_bytes()).hexdigest() != hashes[name]:
+            raise ValueError('HD provenance hash mismatch: ' + name)
+        with Image.open(staged / name) as image:
+            if image.mode != 'RGBA' or image.size != (size, size):
+                raise ValueError('Invalid HD texture: ' + name)
+    # Preserve any building, terrain, resource or icon entries in an existing pack.
+    manifest = destination / 'frames.txt'
+    other_rows = []
+    if manifest.exists():
+        lines = manifest.read_text().splitlines()
+        if not lines or lines[0] != 'GLOB2_HIGHRES 1':
+            raise ValueError('Unsupported destination pack')
+        other_rows = [line for line in lines[1:]
+                      if line.strip() and not re.fullmatch(r'unit\d+', line.split()[0])]
+    metadata_path = destination / 'manifest.json'
+    metadata = json.loads(metadata_path.read_text()) if metadata_path.exists() else dict(version=1, frames=[])
+    if metadata['version'] != 1:
+        raise ValueError('Unsupported destination provenance')
+    metadata['frames'] = [f for f in metadata['frames'] if not re.fullmatch(r'unit\d+', f['id'])] + staged_metadata['frames']
+    destination.mkdir(parents=True, exist_ok=True)
+    for name in sorted(files):
+        temp = destination / (name + '.tmp')
+        shutil.copyfile(staged / name, temp)
+        temp.replace(destination / name)
+    metadata_path.write_text(json.dumps(metadata, indent=2) + '\n')
+    temporary = destination / 'frames.txt.tmp'
+    temporary.write_text('GLOB2_HIGHRES 1\n' + '\n'.join(other_rows + rows) + '\n')
+    temporary.replace(manifest)
+    for path in destination.glob('unit*.png'):
+        if re.fullmatch(r'unit\d+r?\.png', path.name) and path.name not in files:
+            path.unlink()
+    if destination.resolve() == (ROOT / 'data/highres/v1').resolve():
+        (destination / 'README.md').write_text(
+            '# High-resolution runtime pack\n\n'
+            + str(len(metadata['frames'])) + ' registered frames, including 1,792 unit poses across seven animation sets.\n'
+            'Unit textures are rendered at 4× width and height from the preserved Blender originals, without AI.\n'
+            'Native-resolution sprites remain in `data/gfx`; logical geometry, team colors and animation timing are preserved.\n\n'
+            'Approved inputs live in `datasrc/gfx/production`; package them with `tools/artwork/package_runtime.py`.\n'
+            'See `manifest.json` for all frame/layer/source hashes, `tools/unit-animation/README.md` for unit render recipes,\n'
+            'and `datasrc/gfx/RECOVERED-RUNTIME.md` for world-art exports.\n')
+        # The established packaging pipeline owns production categories and hashes.
+        import importlib.util
+        specification = importlib.util.spec_from_file_location('package_runtime', ROOT / 'tools/artwork/package_runtime.py')
+        package = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(package)
+        package.capture()
+
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     prep = sub.add_parser('prepare')
     prep.add_argument('--output', type=Path, required=True)
     prep.add_argument('--render-root', required=True, help='Output path as seen by Blender')
+    prep.add_argument('--resolution-scale', type=int, choices=[1, 4], default=1)
     prep.add_argument('--samples', type=int, choices=[1, 4], default=4)
     coll = sub.add_parser('collect')
     coll.add_argument('--rendered', type=Path, required=True)
@@ -226,9 +367,20 @@ def main():
     inst = sub.add_parser('install')
     inst.add_argument('--staged', type=Path, required=True)
     inst.add_argument('--destination', type=Path, default=ROOT / 'data/gfx')
+    hd = sub.add_parser('collect-highres')
+    hd.add_argument('--rendered', type=Path, required=True)
+    hd.add_argument('--output', type=Path, required=True)
+    hd.add_argument('--reference', type=Path, default=ROOT / 'data/gfx')
+    hi = sub.add_parser('install-highres')
+    hi.add_argument('--staged', type=Path, required=True)
+    hi.add_argument('--destination', type=Path, default=ROOT / 'data/highres/v1')
     args = parser.parse_args()
     if args.command == 'prepare':
-        prepare(args.output, args.render_root, args.samples)
+        prepare(args.output, args.render_root, args.samples, args.resolution_scale)
+    elif args.command == 'collect-highres':
+        collect_highres(args.rendered, args.output, args.reference)
+    elif args.command == 'install-highres':
+        install_highres(args.staged, args.destination)
     elif args.command == 'collect':
         collect(args.rendered, args.output, args.samples, args.reference)
     else:

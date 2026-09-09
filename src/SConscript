@@ -525,6 +525,10 @@ if not env['server']:
             + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
         sprite_checks += check
     local.Alias('unit-blur-tests', sprite_checks)
+    hd_unit_check = local.Program('UnitHighResolutionCacheTest',
+        local.Object('UnitHighResolutionCacheTest.o', '#test/UnitHighResolutionCacheTest.cpp')
+        + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+    local.Alias('unit-hd-cache-test', hd_unit_check)
     benchmark = local.Program('unit-blur-benchmark',
         local.Object('UnitBlurBenchmark.o', '#tools/unit-animation/cache-benchmark.cpp')
         + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])

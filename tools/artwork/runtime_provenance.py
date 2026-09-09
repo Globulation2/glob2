@@ -49,9 +49,9 @@ def render():
              'This inventory describes the active pack, not every historical experiment. '
              'All frames use 4× runtime canvases; that does not imply 4× native detail. '
              'Native canvas dimensions include transparent padding. '
-             '“Recovered original” includes deterministic resizing, matte extraction and layer separation, without AI.', '',
+             '“Recovered original” includes deterministic resizing, matte extraction, layer separation and renders from original Blender rigs, without AI.', '',
              'Generated terrain combines selected generated materials with deterministic masks and edge correction. '
-             'Mask resampling adds no invented texture detail. Units remain outside this pack.', '',
+             'Mask resampling adds no invented texture detail. Unit animation textures are rendered from the original Blender rigs.', '',
              '| Source category | Frames |', '| --- | ---: |']
     lines += ['| %s | %d |' % item for item in sorted(counts.items())]
     lines += ['', f'Total: **{len(rows)} frames**. Source/output SHA-256 hashes, native sizes and selected layers are retained in '

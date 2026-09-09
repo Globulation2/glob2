@@ -101,3 +101,52 @@ scene preparation and rejection of an incomplete install. `UnitAnimationTest`
 is included in the C++ TestsRunner and exhaustively checks frame ranges and
 turning cadence. Compare alpha separately from RGB when reviewing the generated
 report: geometry/coverage matching and subtle shading differences are distinct.
+
+## Fourfold-resolution textures
+
+Native 32-pose sprites remain in `data/gfx`. The Blender originals live in
+`datasrc/gfx/originals/units`. Approved high-resolution layers use the existing
+`datasrc/gfx/production/original-derived` category and are packaged into
+`data/highres/v1` alongside the other artwork. Unit icons are not changed.
+The runtime keeps the native logical dimensions (32, 38 or 40 pixels) and uses
+128, 152 or 160 pixel textures. This is 4× per axis, with the same 32 poses and
+normal 25 FPS cadence. Software and the classic-artwork option use native sprites.
+
+Prepare scenes into an external work directory mounted at the matching container
+path, then run four independent Blender processes under a combined four-CPU cap:
+
+```sh
+python3 tools/unit-animation/render.py prepare \
+  --output /path/to/work/scenes --render-root /work/job/rendered --resolution-scale 4
+python3 tools/unit-animation/render-jobs.py \
+  --work /path/to/work --container-work /work/job --workers 4
+python3 tools/unit-animation/render.py collect-highres \
+  --rendered /path/to/work/rendered --output /path/to/work/staged
+```
+
+Four workers were used on the eight-logical-CPU Mac. The runner defaults to half
+of the host's logical CPUs, caps the dedicated container to that many CPU cores,
+and retains per-chunk logs, completion markers and progress. Temporary prepared
+Blender scenes, raw renders and comparison reports stay outside production folders.
+
+Review the downsampled alpha comparisons and actual runtime rendering, then:
+
+```sh
+python3 tools/unit-animation/render.py install-highres --staged /path/to/work/staged
+python3 tools/artwork/package_runtime.py --check
+python3 tools/artwork/validate_runtime.py
+python3 tools/artwork/runtime_provenance.py
+```
+
+The HD installer verifies every image and SHA-256 before copying, merges the
+1,792 unit records into the existing frame/provenance manifests, and uses the
+established pack capture operation to retain approved inputs under
+`production/original-derived`. Other frame families, icons and all native sprites
+are preserved. Later packaging needs only `tools/artwork/package_runtime.py`.
+
+Build `unit-hd-cache-test`, then run `build/src/UnitHighResolutionCacheTest` and
+its `software` mode after installing the pack. These cover every unit layer's
+resolution mapping, all action/direction/team-color combinations, cached versus
+repeated HD compositing, sharp fallback, texture invalidation on artwork changes,
+and map zoom. `highres-integration-test` exercises the game's camera/editor/replay
+integration; the existing blur and speed tests remain applicable.
