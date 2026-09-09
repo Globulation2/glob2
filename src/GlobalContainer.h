@@ -10,6 +10,7 @@
 #include "RessourceType.h"
 #include "Settings.h"
 #include "AIMaximaStrategy.h"
+#include <map>
 
 namespace GAGCore
 {
@@ -98,7 +99,46 @@ public:
 	int automaticEndingSteps;
 	bool automaticGameGlobalEndConditions; //! Set false if the automatic game will end if the local team wins/loses, true to wait for the entire game to finish
 	
+	bool runNicowarVersionTestGames; //! runs four-player Nicowar version test games
+	bool runNicowarTournamentMatch; //! runs one deterministic Nicowar tournament match
+	bool runNicowar2v2TournamentMatch; //! runs one shared-vision, independent-agent allied 2v2 match
+	bool runNicowarScenarioMatch; //! runs one variable-player focal Nicowar match
+	bool runMaximaCastorMatch; //! runs one isolated Maxima versus Castor smoke match
+	bool listNicowarTournamentMaps; //! lists maps eligible for Nicowar tournaments
+	bool listNicowarScenarioMaps; //! lists maps and their supported team counts
+	std::string nicowarTournamentMap;
+	Uint32 nicowarTournamentSeed;
+	int nicowarTournamentRotation;
+	int nicowar2v2AiA;
+	int nicowar2v2AiB;
+	int nicowar2v2Partition;
+	int nicowar2v2Swap;
+	std::string nicowarScenarioMap;
+	Uint32 nicowarScenarioSeed;
+	int nicowarScenarioPlayers;
+	int nicowarScenarioCandidateAi;
+	int nicowarScenarioOpponentAi;
+	int nicowarScenarioCandidateSeat;
+	int nicowarScenarioPositionOffset;
+	bool nicowarTournamentRevealMap; //! fully discovered map for visible tournament inspection
+	std::string maximaCastorMap;
+	Uint32 maximaCastorSeed;
+	int maximaCastorTeam;
+	int castorTeam;
+	bool disableReplayRecording; //! avoids parallel tournament workers writing the same replay
+	bool nicowarTelemetry; //! emits structured Maxima and observer telemetry
+	bool runMaximaCheckpoint;
+	std::string maximaCheckpointOutput;
+	int maximaCheckpointTick;
+	std::string maximaCheckpointHarvestDirectory;
+	int maximaCheckpointHarvestInterval;
 	AIMaxima::StrategyConfigOptions maximaStrategyOptions;
+	std::map<int, std::string> maximaPlayerOverrides;
+	std::map<int, std::string> maximaTeamOverrides;
+	bool dumpMaximaSchema;
+	bool dumpMaximaStrategy;
+
+	bool automaticEndingStepsRelative=false;
 	bool runTestGames; //! runs test games
 	int runTestGamesCount; //! number of test games to run (0 = infinite)
 	//! AI implementation IDs (AI::ImplementationID values) eligible for random
@@ -162,4 +202,3 @@ public:
 };
 
 extern GlobalContainer *globalContainer;
-

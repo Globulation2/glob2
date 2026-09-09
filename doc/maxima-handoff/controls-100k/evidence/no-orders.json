@@ -1,0 +1,795 @@
+{
+  "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
+  "passed": true,
+  "cases": [
+    {
+      "format": "duel",
+      "opponent": 1,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 226,
+      "opponent_orders": 40,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "51638dcb88bde0fcbb5d6e7721d5d8cab0473e411d186bde1c6a9bc227218ebc",
+        "disabled": "e254dee35ef18bf7c8083a92883bcca5679dc565ece9b9ec534f82497d46fb77",
+        "loaded": "0e2a36fbd466f3ae38078829d64801bba70bbf87a547dccb5eeadea34151eeee"
+      }
+    },
+    {
+      "format": "ffa3",
+      "opponent": 1,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 240,
+      "opponent_orders": 72,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "109eb07f713f40ac9fa0a573fc3db07d8a2a13d953187ef35f36b1095308d056",
+        "disabled": "3a6c4a026acd34be032bb82aece960f5c6247d5cb2800b8eaa9763d5dad82197",
+        "loaded": "77d738ceb7acb4d7d0fc64b1a33f4900e9ad34bb3995b057759f8c6535fdd27c"
+      }
+    },
+    {
+      "format": "ffa4",
+      "opponent": 1,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 256,
+      "opponent_orders": 78,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "774bb1680e5546f4a7285c56b5ffe2044d83ee0cdf48d8709dcc0b33532231f9",
+        "disabled": "3c5317de2936833cc9e02f6ce71da6681d95b5f7d1387c0a80efe4378db38df2",
+        "loaded": "1b6086b49f8b975a813e37ccb90c1ec330015ffb74b09008269605a861ed61d6"
+      }
+    },
+    {
+      "format": "ffa5",
+      "opponent": 1,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 260,
+      "opponent_orders": 98,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "8fe7e3fa33419fb86d841798d108bddbcc505e065e1d4adbd729dd1fcad8222f",
+        "disabled": "deae2d79eeef82ae1a9ffe8bd43a80938be71ce5a6e067101f2ee6021c522b6a",
+        "loaded": "9b8e506925488e73dd901b19cfc512adba76705d9677c4a2552d81c894c52a17"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 1,
+      "arrangement": 0,
+      "focal": [
+        0,
+        1
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 932,
+      "opponent_orders": 78,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "9a01f9c2f1e21a767ca357e9d1e94cd1901d2c16740f4120d5a2e7094ac91e51",
+        "disabled": "eac3a74e5658fa0379fdbeeec84b6c925a5e3325df8242319199e69bd6d21ca9",
+        "loaded": "53c4bfadba55894c0c851d484b2f1b5c69fa0b2fe0912d3555e02018917a79bb"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 1,
+      "arrangement": 1,
+      "focal": [
+        0,
+        2
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 722,
+      "opponent_orders": 84,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "539d311fd0f2c08efb4ea83b8340a46864fd3cc5755d83344d51b16b98da5cc9",
+        "disabled": "67f8b1df5a030a1e75ea2f7a16e22be882c52efdf3c362e7b996e4cedc0d4896",
+        "loaded": "2b496859bb212629e54d7cbe4a4ecbed8cdba16e0003a4444da64cdcec40d0ac"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 1,
+      "arrangement": 2,
+      "focal": [
+        0,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 764,
+      "opponent_orders": 90,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "e1f04813ec1ba61864d8034db4940564e5a068c2a8f1f7cf2d08543e6a99bb92",
+        "disabled": "ed644b4aaa0cb011295d7bf74fcbdca3607490077c42a182261262d3305ed18b",
+        "loaded": "a5fc1927240fa150e6935bb6ded9e22d7dcf0cc5b28db3b22f2fc40d7c9d64c4"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 1,
+      "arrangement": 3,
+      "focal": [
+        2,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 958,
+      "opponent_orders": 78,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "45e1bdb40ea3cf256e8a6a42135ea01e073b0f1cec8c6ef3dc033018589c0179",
+        "disabled": "fc087fc679dc2d65eb495fefa992e7db30e5a06fdadb184b3da26b8810ad2c4e",
+        "loaded": "61a2bfb8df2930a90a25fb1b0a259632b4147d2bd8980a1a93070cbcc21cbe45"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 1,
+      "arrangement": 4,
+      "focal": [
+        1,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 676,
+      "opponent_orders": 88,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "a1966a41c62cbae5c5dadd45ed9e442068a7661eec798e6a7d75e46e08a33a0c",
+        "disabled": "6d8c46977cf2d620d9ba2197dde350b7243032a4b370aef6c47b00a60c42f547",
+        "loaded": "e517f92875e0d49d8336e5c959953b2858dfc1cb7af79bcda4be57f06dfb681f"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 1,
+      "arrangement": 5,
+      "focal": [
+        1,
+        2
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 610,
+      "opponent_orders": 90,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "5b9e4b743f6bd98a11ab50b0417826c36143e00ced030e6a73c074dc993ee45a",
+        "disabled": "ae574ed69256a3c90bdefc3340cf0b12cda89a02a3feee2f74a200f8f76dbc28",
+        "loaded": "a389ad266966cc91730493a90954e8d5d02f878be4693019fd2ad8cfac61cc62"
+      }
+    },
+    {
+      "format": "duel",
+      "opponent": 2,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 238,
+      "opponent_orders": 456,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "46f605c614dd2f314b606e5a3a9e2050cfb7cd6da35e7489a5ae23e6483a74f5",
+        "disabled": "21800ead13407e94bcf9b6bb5729e27572fe7281cbaa7b0cfa15b53b4ed3d41c",
+        "loaded": "aa851fbffa9ba95363ef8a22d966b49bb7080fceee9e2f2ae6f64b4f733ba90c"
+      }
+    },
+    {
+      "format": "ffa3",
+      "opponent": 2,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 234,
+      "opponent_orders": 978,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "288d6e308971a4880fc818669d6b514acf838071a568405a04a5e59503ecbbe2",
+        "disabled": "b3cdbad9e487b6ff2969274ced91dbb598824f0cdaffb02a646e5e8545d47c2d",
+        "loaded": "bb1574b6484ea873662b3a8c9427923bf5587c3d898b058c83d9a5ffc4b78126"
+      }
+    },
+    {
+      "format": "ffa4",
+      "opponent": 2,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 256,
+      "opponent_orders": 424,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "1641d9446493add8660e02b29b1de3f8adf855870af406efaf47ae5eda6bb9e3",
+        "disabled": "4c3570c929bfc18baaf016f3e3039de3929413072991197fb40bc686a644d9e2",
+        "loaded": "8de6a66f3e73df8d9819700e9a25d8f480bdab363e18f51ab61a0c8a2ed04100"
+      }
+    },
+    {
+      "format": "ffa5",
+      "opponent": 2,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 266,
+      "opponent_orders": 564,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "cd05f2c46d0fdcaf942b99a21255d0ccada93b1692da5cabbb52ab42f0704219",
+        "disabled": "080282099269e0b2b68257e9c6cdbe12d213f19a2abf69e024525e3e43917d4f",
+        "loaded": "c7317fa89921907dda657e045c325d3d336437c2ec8c95ac409b4ebe1ede26a4"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 2,
+      "arrangement": 0,
+      "focal": [
+        0,
+        1
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 772,
+      "opponent_orders": 884,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "d9179cbc1a75d6a33224ab27d3dd75234a56f612f6dc681f77ce342cce479589",
+        "disabled": "8a13b9c5fb10976725beff2699b59e3621e53581b72db27e2aaa4b23919ab7b6",
+        "loaded": "27797033cceebce99baa6aa0f2d844e1c5e06a11637f1036e844acbc9765eb4f"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 2,
+      "arrangement": 1,
+      "focal": [
+        0,
+        2
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 696,
+      "opponent_orders": 1094,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "ae411bc92725097ae30649fc2fd9be69638ede86d71549d85bd769052fac4354",
+        "disabled": "f094b2610788eb77bbb98b7617a820329fce611fc9534b22052f5cdd3a97e135",
+        "loaded": "375501a03b253dece62b93c7e186346fff69901142bd2fdb0e1b7c016a72312f"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 2,
+      "arrangement": 2,
+      "focal": [
+        0,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 946,
+      "opponent_orders": 1006,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "7c1c4305c0a47497387b7d25bc97ab6e3031890074c1209c1b13a89e24939558",
+        "disabled": "f59921e54b7370db03b2167141b36301589fa95b88831297fab5f7dbd3b7b50c",
+        "loaded": "e213113b478fb692b77bb9b6a12b4e6e074758b467289b1d7feea80e5c6ca351"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 2,
+      "arrangement": 3,
+      "focal": [
+        2,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 854,
+      "opponent_orders": 940,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "73e2474e522443445a2fdacd2ee732681b554571a01095624340c6dd1dfa0c9c",
+        "disabled": "280530fe7acd7cf85799ec0422d5cbbca7595cd4a7bc60e3871a8e023199675f",
+        "loaded": "482d8cb14f1b1bcf05c63c9a9dde0ea97061b2f42be93948b9c4132b6e4d1748"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 2,
+      "arrangement": 4,
+      "focal": [
+        1,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 864,
+      "opponent_orders": 942,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "6433021ab6015d9d60332a4e9c38356f92fc07a48b23f9196f910ca7a0eee6f6",
+        "disabled": "fbea93ff2e7babb31e69a93afbd2ee3325c1720d9c988c23ddff3002dadbb574",
+        "loaded": "cfbec0251cc45da9f1c2d10b2c130cf38b2be14c87e2d1fbb46561f14cea4f03"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 2,
+      "arrangement": 5,
+      "focal": [
+        1,
+        2
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 828,
+      "opponent_orders": 1004,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "03daf58aca267d42da86d399d0d35933df121717252b33e665d785a6f1a623e6",
+        "disabled": "211dc5ab2ae0b4e465f01741e2fb29f013a2ae0c14d3d91dd71cf332d713b083",
+        "loaded": "675336b5785b1772b6569ccca89645ac47490c975e2db2dca4d099e1c9d6a3b5"
+      }
+    },
+    {
+      "format": "duel",
+      "opponent": 5,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 250,
+      "opponent_orders": 304,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "2f748021a10381c603cea077e631ef1fadbc37fe59daeb5fef8b76f92dba33b0",
+        "disabled": "4e0840af2bb5f17f85cf09ada12bb2ee2cbf119a6333c28a275e8af304f3d083",
+        "loaded": "93be2bd896acd25557ce1d84f31b6eee11d639613badeffa737d14694cb78436"
+      }
+    },
+    {
+      "format": "ffa3",
+      "opponent": 5,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 256,
+      "opponent_orders": 600,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "04c395d3a9206eb918117c48560fedb52012bf383a50bd1001c4709fb3e871ec",
+        "disabled": "1247441c680ccc4cc597a5147850e9b15fcd403dde34a3b4f67d1a498f09037b",
+        "loaded": "97028fafc9b24ec99e676e17f9e26c23699420abb1abda5281e670173bba16cf"
+      }
+    },
+    {
+      "format": "ffa4",
+      "opponent": 5,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 264,
+      "opponent_orders": 934,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "05a065886663a8094cdcbfe74e9331a6d368cd36e89033536ef4b2d6163f166e",
+        "disabled": "70119eba4b53587f9be809465ad60f5e56911c310184c7a42d8199bfe598a1f1",
+        "loaded": "2992d9bdf8ac318fe2146fbce6e63b11cd12299c5719ffcbfbcdcd22fc71ecb0"
+      }
+    },
+    {
+      "format": "ffa5",
+      "opponent": 5,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 264,
+      "opponent_orders": 1220,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "2b8cb12da68628ebc450acd245e7fc50ee1b4a7b3eafeedb80ab9b13e675a00c",
+        "disabled": "abdec518b7d279d5c102355116df0ef5e0f032aa76b56eb503ba2fd862fee39e",
+        "loaded": "642e48d2471b7bf4d88f28cb0fcfb0bf7dd38025263afdc2c6bedd72a328d60c"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 5,
+      "arrangement": 0,
+      "focal": [
+        0,
+        1
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 700,
+      "opponent_orders": 638,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "c2c8da2f9e70f23d09f1d2de9076158c3b9e773c107d9014469cccb3736c989f",
+        "disabled": "a9f9e0b18d8d52af8a583347d46413a300b18e310d0c83e7cde0c85de8fe6c63",
+        "loaded": "f28f1a576767ed20f917c6793374c02c5a60566ca81c69c4cee127a0a71038a0"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 5,
+      "arrangement": 1,
+      "focal": [
+        0,
+        2
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 758,
+      "opponent_orders": 656,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "903bd364eadda5adc073a8c4c481789c5437a5845184d7260490272ab0ac7a6c",
+        "disabled": "b7e633c54a43f8a9741ef6872cba816816438e099de591f5ba3052f62597d672",
+        "loaded": "ce0cc7c655cede67edec5598dd56955d6e8b95d071a74323164186d8a9136940"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 5,
+      "arrangement": 2,
+      "focal": [
+        0,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 810,
+      "opponent_orders": 620,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "038251968864a548302006bcc4a6633f7345385a91ce9f7fc8cb66eae41c0b25",
+        "disabled": "27340e5f87750f9cfa6f4ac5bf5d7a1c8b8e2a39582b25f196eb4d04f66dd77c",
+        "loaded": "f6f3084de0ed5487f8d0365b368bc9885458bd414214223beb1bdfb70a73ace8"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 5,
+      "arrangement": 3,
+      "focal": [
+        2,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 974,
+      "opponent_orders": 624,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "5a24fef99a15d6f4f448b25dbdc2e92ebc79cf76796ce519e12ce530d598a2d9",
+        "disabled": "c0c51e3dc3651e80b70ba69b8834e8b2bfe675696f83cee0c4607e79c74f261e",
+        "loaded": "2e9ba4beb37916fb4dbe9afe6e3d498b8c477a83afca2e94afc44ac171af71cf"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 5,
+      "arrangement": 4,
+      "focal": [
+        1,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 978,
+      "opponent_orders": 656,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "ff1388d38494658db589e03ac52895de2ed460ff9c469ba7e823acc951d321c5",
+        "disabled": "e98389344ffa51c9cc9d9c5e65e4d7da5b3ca60935858ff19612bb2b25b44188",
+        "loaded": "6d32dc7a09255ec88fd63c9d463abe746755191afc3316f83af1527f7e853120"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 5,
+      "arrangement": 5,
+      "focal": [
+        1,
+        2
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 732,
+      "opponent_orders": 664,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "46f66d35742d2f2ab6c4b46ba62031bfa1ac38efae7a5a363b1b3f091e3fdf14",
+        "disabled": "2093a1735a97863ee3c258c275669bb00b3bc373ae8c469e81173c88b91af960",
+        "loaded": "58a72f82f0a90d67a6ff3d18c8388a8481745456119ffc373c959bd80bfbe329"
+      }
+    },
+    {
+      "format": "duel",
+      "opponent": 6,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 238,
+      "opponent_orders": 944,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "601d961f4fbcd2d7e1dfbb1138c131d44afb3411d048ac0c7d7a83a4ada92d0d",
+        "disabled": "b4b69a4dbd68b42a0d49652e33623325b7e877a9534626fe8a189edfddecdc64",
+        "loaded": "a9733f398d1a7493c69b4fb73643600ebd44b2291a3f6dbb042c674472df9678"
+      }
+    },
+    {
+      "format": "ffa3",
+      "opponent": 6,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 222,
+      "opponent_orders": 1166,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "c4383b1d27119e5073119156db0631a4f7d89614fa62dbaeba7a8c79ada866e0",
+        "disabled": "263a3378d1e07417606cb54d0ba01f524c7dabf152ba9e5fd2550c6be99663ee",
+        "loaded": "ae948cb4f36bf9bc31c052bd85764bcd5d987b1aa2fde2e7e152bf488b05119a"
+      }
+    },
+    {
+      "format": "ffa4",
+      "opponent": 6,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 274,
+      "opponent_orders": 778,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "2977fc7ef7fe59cebf31150e24d7137d4a8769e94d019a0ba53214d866abb63c",
+        "disabled": "311a00ca6435ff4d35181f12c9ba57176811d91aefd94247b75f4904045ed830",
+        "loaded": "7eb77c36b22d559bf9e9f50cecef613353db95386f821c68e23075a4580d2907"
+      }
+    },
+    {
+      "format": "ffa5",
+      "opponent": 6,
+      "arrangement": 0,
+      "focal": [
+        0
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 262,
+      "opponent_orders": 1034,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "64689bda460c7d22408f5f193f27e48a70667d8420596e0c185577cffbcd1b3d",
+        "disabled": "1faca8e8fd8c408554b2277d8cfde65dab7310444abf8be2caabb491b9a12537",
+        "loaded": "c56f56afc8603bd8c123ebadd3ae110e145f22931c5c000d75ece09914c3300e"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 6,
+      "arrangement": 0,
+      "focal": [
+        0,
+        1
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 542,
+      "opponent_orders": 844,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "3eb151de0ab071d49a6dd117df464a8cee4fa074909b9776c4fc829015c81ad4",
+        "disabled": "fc4c4dce762aea15791d22be3eb2dcc9a473bf6dad969e6300b3b24408610b5e",
+        "loaded": "9b0702d5b3482a5c7f2814eafc369573973df5c9350a4524b17e44e2a69f0a57"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 6,
+      "arrangement": 1,
+      "focal": [
+        0,
+        2
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 732,
+      "opponent_orders": 734,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "77f5d7e58fdee3a2a1633b117963e08a538326a1d7b0a18898b830d6cf717b42",
+        "disabled": "c8756f89dc4cd019b15d5d25edd409f42a7e722433306378137c6c49da6f2965",
+        "loaded": "abb3041818f89814f6a4b15a9570c8ffe8d750fdf0bfd45d674ff425c771fb02"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 6,
+      "arrangement": 2,
+      "focal": [
+        0,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 918,
+      "opponent_orders": 674,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "abac2255cf7ed1faa65b3acded791d5c8fa8c6e86850317df49b120cfb1cc692",
+        "disabled": "cc69235f49293c4fe5f19837c9a0c9361b106badcf5e77dde4d46f64574b6f13",
+        "loaded": "224dd46390d98b8f56ec9d1cea2ca358427bcccbbf69071c24fb9c4dcf6910b9"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 6,
+      "arrangement": 3,
+      "focal": [
+        2,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 854,
+      "opponent_orders": 714,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "4db75c36baedf98b23286d5ef50489524c063919cf05f76b18360f2db8e958ff",
+        "disabled": "adc174429386fde652db0ad9fce059e73d91db6e163362a2c6f287e358612e6a",
+        "loaded": "f5b010ff250fb6a30d6c604fbc1a5d9ac158597b85f63988ff9349805bd75854"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 6,
+      "arrangement": 4,
+      "focal": [
+        1,
+        3
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 916,
+      "opponent_orders": 888,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "257419fcb8505b96c528b2f45106a397416794f72d612185154229a391c94940",
+        "disabled": "185bef708776598dee5b67f47a6a3aef6f77554063906c07d7036e4c3ea58019",
+        "loaded": "2223a1e896d3c64cfa8ee32e4c4b4fa49622c25bccaa8041ee71fdabd1ca196b"
+      }
+    },
+    {
+      "format": "2v2",
+      "opponent": 6,
+      "arrangement": 5,
+      "focal": [
+        1,
+        2
+      ],
+      "focal_orders": 0,
+      "baseline_focal_orders": 864,
+      "opponent_orders": 838,
+      "boundary_equal": true,
+      "terminal_equal": true,
+      "orders_equal": true,
+      "receipts": {
+        "normal": "af4edd8325720d97267721802387fb30c8fffcb124d1348819d10c71f767acbf",
+        "disabled": "5eb3b9a22d5b6ecf1dc471e6188f2209d0df072354f9db56cb5da2a611d8ff34",
+        "loaded": "8841ca31b9583b45ee401a366f3c1ddc4ee1efd868f5803a1c5e5e917d89ed8e"
+      }
+    }
+  ],
+  "control_settings": {
+    "_experiment.no_orders": true
+  },
+  "scope": "no AI ticks or non-null orders from any focal player; opponents active; world continues",
+  "script_sha256": "48baa0697901a426b0ff952242fce0c1f9c817eafde4d399ca03eb6cb7a61c08"
+}

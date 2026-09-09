@@ -1,0 +1,18 @@
+{
+  "protocol_id": "ecadf1aa37469c333300a06b11d3a8b01a37f0f85bd4af941db1e9782e3c3dbb",
+  "prior_protocol_id": "b16d7e093c2be03ea77a06b793989f872862c2b421bad3b644648f7419d266cf",
+  "changed_files": [
+    "src/FileFormatVersions.h",
+    "src/Game.h",
+    "test/run-pending-construction-tests.py",
+    "test/PendingConstructionSaveLoadHarness.cpp",
+    "src/Version.h",
+    "src/Game_io.cpp"
+  ],
+  "engine_change": "Preserve pending construction queue on top of PR174 defeat fix",
+  "branch_commit": "d14bdeb8f",
+  "pr_port_commit": "6d3e9230d",
+  "save_version": 102,
+  "continuation_required": true,
+  "unchanged_maps_defaults_registry": true
+}

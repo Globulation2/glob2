@@ -1,0 +1,8 @@
+........................................./Users/bradley/glob2/test/MaximaSequentialConfirmationTest.py:33: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x10ce5db70>
+  reverse = [dict(r, on=r['off'], off=r['on']) for r in rows]
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+....
+----------------------------------------------------------------------
+Ran 45 tests in 0.562s
+
+OK

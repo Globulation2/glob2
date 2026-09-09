@@ -1,0 +1,8 @@
+{
+  "resolved": true,
+  "cause": "confirmation routed to pilot_budget after all executions completed",
+  "rerun_games": 0,
+  "source_fix": "65a4383e8",
+  "tests": "MaximaFleetTest.py: 6 passed",
+  "final_report": "CONFIRMATION_RESULT.json"
+}

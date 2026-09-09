@@ -1,0 +1,10 @@
+{
+  "protocol_id": "ecadf1aa37469c333300a06b11d3a8b01a37f0f85bd4af941db1e9782e3c3dbb",
+  "switch": "repairs.enabled",
+  "maximum_pairs": 21000,
+  "scenario_index_offset": 100000,
+  "controls_namespace": 9,
+  "old_data_excluded": true,
+  "sequential_policy": "SEQUENTIAL_AMENDMENT.json",
+  "no_default_changes": true
+}

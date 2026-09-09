@@ -1,0 +1,7 @@
+{
+  "pid": 59275,
+  "started": 1788954659.097325,
+  "known_failed_job": "77cfd89e3edcc3d22814278348dae0c4d1b9d398a2cc493872c2b652672c296e",
+  "policy": "continue untouched pending jobs; quarantine known failure; no final inference",
+  "caffeinate_pid": 59711
+}

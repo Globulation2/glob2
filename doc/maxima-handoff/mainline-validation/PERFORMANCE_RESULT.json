@@ -1,0 +1,227 @@
+{
+  "scope": "10 scenarios, alternating engine order, same host/CPU31, same maps/seeds/settings, 20000 tick cap; engine behavior may differ; not whole-game throughput or outcome inference",
+  "cases": [
+    {
+      "case": 0,
+      "format": "duel",
+      "opponent": 1,
+      "timings": {
+        "old": {
+          "seconds": 14.3908192999952,
+          "cpu_seconds": 14.374733,
+          "ticks": 20000,
+          "ticks_per_second": 1389.7749379708123,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        },
+        "mainline": {
+          "seconds": 16.744686372985598,
+          "cpu_seconds": 16.718618000000003,
+          "ticks": 20000,
+          "ticks_per_second": 1194.4087547836214,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        }
+      },
+      "speedup": 0.8594260280211687
+    },
+    {
+      "case": 1,
+      "format": "duel",
+      "opponent": 2,
+      "timings": {
+        "mainline": {
+          "seconds": 11.034648081986234,
+          "cpu_seconds": 10.995633999999999,
+          "ticks": 20000,
+          "ticks_per_second": 1812.4728447524722,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        },
+        "old": {
+          "seconds": 15.491706206987146,
+          "cpu_seconds": 15.466076000000003,
+          "ticks": 20000,
+          "ticks_per_second": 1291.013380500303,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        }
+      },
+      "speedup": 1.403914840952376
+    },
+    {
+      "case": 2,
+      "format": "ffa3",
+      "opponent": 5,
+      "timings": {
+        "old": {
+          "seconds": 24.006554311985383,
+          "cpu_seconds": 23.967023000000008,
+          "ticks": 20000,
+          "ticks_per_second": 833.1058151904335,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        },
+        "mainline": {
+          "seconds": 15.942860748997191,
+          "cpu_seconds": 15.915612999999997,
+          "ticks": 20000,
+          "ticks_per_second": 1254.480002985537,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        }
+      },
+      "speedup": 1.505787116248594
+    },
+    {
+      "case": 3,
+      "format": "ffa3",
+      "opponent": 6,
+      "timings": {
+        "mainline": {
+          "seconds": 29.11975211300887,
+          "cpu_seconds": 29.108661999999995,
+          "ticks": 20000,
+          "ticks_per_second": 686.8190334307571,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        },
+        "old": {
+          "seconds": 33.35171566301142,
+          "cpu_seconds": 33.35067600000002,
+          "ticks": 20000,
+          "ticks_per_second": 599.6693004366464,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        }
+      },
+      "speedup": 1.1453296557463473
+    },
+    {
+      "case": 4,
+      "format": "ffa4",
+      "opponent": 1,
+      "timings": {
+        "old": {
+          "seconds": 12.126207937981235,
+          "cpu_seconds": 12.108937999999972,
+          "ticks": 20000,
+          "ticks_per_second": 1649.320224615049,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        },
+        "mainline": {
+          "seconds": 7.773305527982302,
+          "cpu_seconds": 7.738530000000019,
+          "ticks": 20000,
+          "ticks_per_second": 2572.908002651396,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        }
+      },
+      "speedup": 1.55998087227234
+    },
+    {
+      "case": 5,
+      "format": "ffa4",
+      "opponent": 2,
+      "timings": {
+        "mainline": {
+          "seconds": 6.7227011309878435,
+          "cpu_seconds": 6.706355999999969,
+          "ticks": 20000,
+          "ticks_per_second": 2974.9946651371024,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        },
+        "old": {
+          "seconds": 10.676502985996194,
+          "cpu_seconds": 10.65088700000003,
+          "ticks": 20000,
+          "ticks_per_second": 1873.2725524671275,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        }
+      },
+      "speedup": 1.588126971282951
+    },
+    {
+      "case": 6,
+      "format": "ffa5",
+      "opponent": 5,
+      "timings": {
+        "old": {
+          "seconds": 12.426222863985458,
+          "cpu_seconds": 12.415131000000015,
+          "ticks": 20000,
+          "ticks_per_second": 1609.4995413260604,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        },
+        "mainline": {
+          "seconds": 8.773685955995461,
+          "cpu_seconds": 8.724610999999992,
+          "ticks": 20000,
+          "ticks_per_second": 2279.543637680932,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        }
+      },
+      "speedup": 1.416305863500169
+    },
+    {
+      "case": 7,
+      "format": "ffa5",
+      "opponent": 6,
+      "timings": {
+        "mainline": {
+          "seconds": 11.026715351996245,
+          "cpu_seconds": 11.013342999999999,
+          "ticks": 20000,
+          "ticks_per_second": 1813.7767559565466,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        },
+        "old": {
+          "seconds": 17.28377375297714,
+          "cpu_seconds": 17.262277999999988,
+          "ticks": 20000,
+          "ticks_per_second": 1157.1546981488916,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        }
+      },
+      "speedup": 1.5674453544180893
+    },
+    {
+      "case": 8,
+      "format": "2v2",
+      "opponent": 1,
+      "timings": {
+        "old": {
+          "seconds": 15.332214043999556,
+          "cpu_seconds": 15.286717000000028,
+          "ticks": 20000,
+          "ticks_per_second": 1304.443046686218,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        },
+        "mainline": {
+          "seconds": 14.079389535996597,
+          "cpu_seconds": 14.032516000000008,
+          "ticks": 20000,
+          "ticks_per_second": 1420.5161345146573,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        }
+      },
+      "speedup": 1.0889828713666796
+    },
+    {
+      "case": 9,
+      "format": "2v2",
+      "opponent": 2,
+      "timings": {
+        "mainline": {
+          "seconds": 13.48483576902072,
+          "cpu_seconds": 13.476686999999977,
+          "ticks": 20000,
+          "ticks_per_second": 1483.147465981517,
+          "binary_sha256": "6bd8aece1ed85e20cb2b18248fb2d402ba4bdce39398959f54845f536735d8fb"
+        },
+        "old": {
+          "seconds": 19.70004448798136,
+          "cpu_seconds": 19.661468999999983,
+          "ticks": 20000,
+          "ticks_per_second": 1015.2261337380045,
+          "binary_sha256": "55472c7bb4d920d507458c62f45e6352fab9e94d42f5887500d17acf448fae16"
+        }
+      },
+      "speedup": 1.460903553103635
+    }
+  ],
+  "median_ticks_per_second_speedup": 1.438604708301902,
+  "passed": true
+}

@@ -1,0 +1,12 @@
+{
+  "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
+  "stage": "pilot",
+  "switch": "farming.farm_protection_enabled",
+  "pairs": 100,
+  "hard_tick_limit": 100000,
+  "purpose": "fresh exploratory effect and compute sizing before confirmation",
+  "analysis": "analyze only after all 100 pairs and repeats complete; no significance-based early stop",
+  "automatic_default_changes": false,
+  "old_outcomes_pooled": false,
+  "automatic_next_stage": false
+}

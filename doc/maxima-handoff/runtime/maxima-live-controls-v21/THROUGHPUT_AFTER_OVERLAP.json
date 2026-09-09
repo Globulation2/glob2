@@ -1,0 +1,90 @@
+{
+  "time": 1788904124.540745,
+  "fix_time": 1788897069.757749,
+  "elapsed_minutes": 117.57971659898757,
+  "since_fix_completions": 1047,
+  "since_fix_gpm": 8.904597070690807,
+  "first_hour_gpm": 11.866666666666667,
+  "last_hour_gpm": 5.9,
+  "last_15m_gpm": 0.13333333333333333,
+  "bins_15m": [
+    {
+      "minutes_after_fix": 0,
+      "duration_min": 15.0,
+      "games": 222,
+      "gpm": 14.8,
+      "average_running": 45.5
+    },
+    {
+      "minutes_after_fix": 15,
+      "duration_min": 15.0,
+      "games": 195,
+      "gpm": 13.0,
+      "average_running": 48.0
+    },
+    {
+      "minutes_after_fix": 30,
+      "duration_min": 15.0,
+      "games": 153,
+      "gpm": 10.2,
+      "average_running": 48.0
+    },
+    {
+      "minutes_after_fix": 45,
+      "duration_min": 15.0,
+      "games": 142,
+      "gpm": 9.47,
+      "average_running": 48.0
+    },
+    {
+      "minutes_after_fix": 60,
+      "duration_min": 15.0,
+      "games": 143,
+      "gpm": 9.53,
+      "average_running": 46.8
+    },
+    {
+      "minutes_after_fix": 75,
+      "duration_min": 15.0,
+      "games": 141,
+      "gpm": 9.4,
+      "average_running": 40.7
+    },
+    {
+      "minutes_after_fix": 90,
+      "duration_min": 15.0,
+      "games": 49,
+      "gpm": 3.27,
+      "average_running": 17.1
+    },
+    {
+      "minutes_after_fix": 105,
+      "duration_min": 12.6,
+      "games": 2,
+      "gpm": 0.16,
+      "average_running": 4.7
+    }
+  ],
+  "hosts": {
+    "devlaptop.local": {
+      "games": 261,
+      "gpm": 2.22,
+      "running": 0
+    },
+    "pharaoh-dev-2.local": {
+      "games": 66,
+      "gpm": 0.56,
+      "running": 0
+    },
+    "pharaoh-dev-3.local": {
+      "games": 66,
+      "gpm": 0.56,
+      "running": 0
+    },
+    "therig.local": {
+      "games": 654,
+      "gpm": 5.56,
+      "running": 4
+    }
+  }
+}

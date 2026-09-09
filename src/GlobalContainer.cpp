@@ -64,6 +64,37 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	adminRouter = false;
 	
 	runTestGames=false;
+	runNicowarVersionTestGames=false;
+	runNicowarTournamentMatch=false;
+	runNicowar2v2TournamentMatch=false;
+	runNicowarScenarioMatch=false;
+	runMaximaCastorMatch=false;
+	listNicowarTournamentMaps=false;
+	listNicowarScenarioMaps=false;
+	nicowarTournamentSeed=0;
+	nicowarTournamentRotation=0;
+	nicowar2v2AiA=AI::MAXIMA;
+	nicowar2v2AiB=AI::NICOWAR;
+	nicowar2v2Partition=0;
+	nicowar2v2Swap=0;
+	nicowarScenarioSeed=0;
+	nicowarScenarioPlayers=2;
+	nicowarScenarioCandidateAi=AI::MAXIMA;
+	nicowarScenarioOpponentAi=AI::NICOWAR;
+	nicowarScenarioCandidateSeat=0;
+	nicowarScenarioPositionOffset=0;
+	nicowarTournamentRevealMap=false;
+	maximaCastorSeed=0;
+	maximaCastorTeam=0;
+	castorTeam=1;
+	disableReplayRecording=false;
+	nicowarTelemetry=false;
+	runMaximaCheckpoint=false;
+	maximaCheckpointTick=-1;
+	maximaCheckpointHarvestInterval=0;
+	dumpMaximaSchema=false;
+	dumpMaximaStrategy=false;
+
 	runTestGamesCount=0;
 	testGamesAIPool.clear();
 	testGamesMap.clear();

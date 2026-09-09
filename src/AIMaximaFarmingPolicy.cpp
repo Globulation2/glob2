@@ -7,6 +7,7 @@
 #include "boost/lexical_cast.hpp"
 
 #include <algorithm>
+#include <chrono>
 #include <climits>
 #include <deque>
 #include <map>
@@ -881,7 +882,9 @@ void Maxima::retire_clearing_campaign(Context& echo, const char* reason,
 	const std::string& details)
 {
 	echo.add_management_order(new DestroyBuilding(proactive_clearing_flag));
-
+	emit_telemetry(echo, "land_clearing_finished",
+		"\tflag="+boost::lexical_cast<std::string>(proactive_clearing_flag)
+		+details+"\treason="+reason);
 	proactive_clearing_flag=-1;
 }
 
@@ -1019,7 +1022,8 @@ void Maxima::manage_land_clearing(Context& echo)
 	TeamStat* stat=echo.player->team->stats.getLatestStat();
 	const GateClearingIntent gate_intent=select_gate_clearing_intent(echo);
 	const std::vector<int>& gate_target=gate_intent.target;
-
+	const bool boxed_in=gate_intent.emergency;
+	const bool routine_gate_deferred=gate_intent.deferred;
 	if(continue_clearing_campaign(echo, gate_intent)) return;
 
 	if(!gate_target.empty())
@@ -1041,11 +1045,29 @@ void Maxima::manage_land_clearing(Context& echo)
 		for(size_t cell=0; cell<gate_target.size(); ++cell)
 			release->add_location(gate_target[cell]%w, gate_target[cell]/w);
 		echo.add_management_order(release);
-
+		emit_telemetry(echo, "land_clearing_started",
+			"\tflag="+boost::lexical_cast<std::string>(proactive_clearing_flag)
+			+"\tx="+boost::lexical_cast<std::string>(position%w)
+			+"\ty="+boost::lexical_cast<std::string>(position/w)
+			+"\tworkers="+boost::lexical_cast<std::string>(
+				(boxed_in ? std::max(strategy.staffing.clearing_workers,
+					std::min(STRATEGIC_GATE_WIDTH,std::max(1,snapshot.workers/8)))
+					: strategy.staffing.clearing_workers))
+			+"\treason="+(boxed_in ? "boxed_in_gate"
+				: (gate_intent.costly_resource
+					? "mature_costly_gate" : "wood_gate")));
 		farming_urgent=true;
 		director.invalidate();
 		return;
 	}
+	if(routine_gate_deferred && timer%1000<budget.farming_normal_interval)
+		emit_telemetry(echo, "gate_clearing_deferred",
+			"\tworkers="+boost::lexical_cast<std::string>(
+				stat->numberUnitPerType[WORKER])
+			+"\tfree_workers="+boost::lexical_cast<std::string>(snapshot.free_workers)
+			+"\thospitals="+boost::lexical_cast<std::string>(snapshot.hospitals)
+			+"\tfood_headroom="+boost::lexical_cast<std::string>(
+				environment.food_headroom));
 
 	int maintenance_wood_tiles=0;
 	for(int index=0; index<w*map->getH(); ++index)
@@ -1073,10 +1095,11 @@ void Maxima::manage_land_clearing(Context& echo)
 	const int best_x=target.x;
 	const int best_y=target.y;
 	const int best_wood=target.wood;
-
+	const int best_maintenance_wood=target.maintenance_wood;
 	if(best_x==-1)
 		return;
 
+	const int clearing_workers=strategy.staffing.clearing_workers;
 	// Start unstaffed so the WOOD-only selector is installed before a worker can
 	// touch an overlapping wheat farm.
 	BuildingOrder* flag_order=new BuildingOrder(
@@ -1085,6 +1108,7 @@ void Maxima::manage_land_clearing(Context& echo)
 	proactive_clearing_flag=echo.add_building_order(flag_order);
 	proactive_clearing_started_tick=timer;
 	proactive_clearing_initial_wood=best_wood;
+	proactive_clearing_campaigns+=1;
 	RemoveArea* release_wood=new RemoveArea(ForbiddenArea);
 	for(int dx=-4; dx<=4; ++dx)
 	{
@@ -1097,7 +1121,15 @@ void Maxima::manage_land_clearing(Context& echo)
 	}
 	echo.add_management_order(release_wood);
 	echo.add_management_order(new ChangeFlagSize(4, proactive_clearing_flag));
-
+	emit_telemetry(echo, "land_clearing_started",
+		"\tflag="+boost::lexical_cast<std::string>(proactive_clearing_flag)
+		+"\tx="+boost::lexical_cast<std::string>(best_x)
+		+"\ty="+boost::lexical_cast<std::string>(best_y)
+		+"\twood="+boost::lexical_cast<std::string>(best_wood)
+		+"\tworkers="+boost::lexical_cast<std::string>(clearing_workers)
+		+"\treason="+(best_maintenance_wood>0 ? "maintenance_overgrowth"
+			: (budget.farming_clearing_for_placement
+				? "construction_pressure" : "wood_pressure")));
 	farming_urgent=true;
 	director.invalidate();
 }
@@ -1378,7 +1410,7 @@ void Maxima::apply_maintenance_clearing_plan(Context& echo,
 	int added=0;
 	int removed=0;
 	int released=0;
-
+	int retained=0;
 	for(int index=0; index<size; ++index)
 	{
 		const int x=index%w;
@@ -1393,7 +1425,7 @@ void Maxima::apply_maintenance_clearing_plan(Context& echo,
 		const bool actual=map->isClearArea(x, y, echo.player->team->me);
 		if(desired)
 		{
-
+			++retained;
 			if(!actual)
 			{
 				additions->add_location(x, y);
@@ -1419,7 +1451,23 @@ void Maxima::apply_maintenance_clearing_plan(Context& echo,
 	if(removed) echo.add_management_order(removals); else delete removals;
 	if(released) echo.add_management_order(forbidden_releases);
 	else delete forbidden_releases;
-
+	if(added || removed || released || timer%1000<budget.farming_normal_interval)
+		emit_telemetry(echo, "maintenance_clearing",
+			"\tretained="+boost::lexical_cast<std::string>(retained)
+			+"\tadded="+boost::lexical_cast<std::string>(added)
+			+"\tremoved="+boost::lexical_cast<std::string>(removed)
+			+"\tfirebreak="+boost::lexical_cast<std::string>(plan.firebreak_tiles)
+			+"\tfirebreak_wood="+boost::lexical_cast<std::string>(plan.firebreak_wood)
+			+"\twheat_invasion_wood="+boost::lexical_cast<std::string>(
+				plan.wheat_invasion_wood)
+			+"\treservation_resources_preserved="
+				+boost::lexical_cast<std::string>(
+					plan.reservation_resources_preserved)
+			+"\treservation_fallback_entrances="
+				+boost::lexical_cast<std::string>(
+					plan.reservation_fallback_entrances)
+			+"\tforbidden_released="
+				+boost::lexical_cast<std::string>(released));
 }
 
 void Maxima::update_maintenance_clearing_areas(Context& echo)
@@ -1441,7 +1489,8 @@ void Maxima::initialize_farming_cache(Context& echo)
 	   && wood_firebreak_mask.size()==size_t(w*h)
 	   && wheat_farm_protection_mask.size()==size_t(w*h))
 		return;
-
+	const std::chrono::steady_clock::time_point started=
+		std::chrono::steady_clock::now();
 	std::vector<Uint8> water(w*h, 0);
 	std::vector<Uint8> sand(w*h, 0);
 	for(int y=0; y<h; ++y)
@@ -1485,7 +1534,14 @@ void Maxima::initialize_farming_cache(Context& echo)
 			   && map->isClearArea(x, y, echo.player->team->me))
 				applied_maintenance_clearing_mask[y*w+x]=1;
 		}
-
+	const long long elapsed=std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::steady_clock::now()-started).count();
+	emit_telemetry(echo, "farming_fertility_cache",
+		"\tmicroseconds="+boost::lexical_cast<std::string>(elapsed)
+		+"\tpath="+(fertility_cache.pathUsed()==Farming::SandCorrectionFertilityPath
+			? "sand_correction" : "water_splat")
+		+"\twater="+boost::lexical_cast<std::string>(fertility_cache.waterCount())
+		+"\tsand="+boost::lexical_cast<std::string>(fertility_cache.sandCount()));
 }
 
 Uint32 Maxima::compute_farming_topology_signature(Context& echo) const
@@ -1604,7 +1660,9 @@ void Maxima::update_barrier_topology(Context& echo)
 		}
 	}
 	std::vector<Uint8> candidates(size, 0);
-
+	int candidate_count=0;
+	int reachable_grass=0;
+	int coastal_grass=0;
 	for(int y=0; y<h; ++y)
 		for(int x=0; x<w; ++x)
 		{
@@ -1612,7 +1670,7 @@ void Maxima::update_barrier_topology(Context& echo)
 			if(!walkable[index] || home_distance[index]<0
 			   || home_distance[index]>budget.farming_economic_envelope_radius)
 				continue;
-
+			reachable_grass+=1;
 			bool coast=false;
 			for(int dy=-1; dy<=1 && !coast; ++dy)
 				for(int dx=-1; dx<=1; ++dx)
@@ -1622,13 +1680,19 @@ void Maxima::update_barrier_topology(Context& echo)
 						coast=true;
 						break;
 					}
-
+			coastal_grass+=coast;
 			candidates[index]=coast;
-
+			candidate_count+=candidates[index]!=0;
 		}
 
 	std::vector<Uint8> visited(size, 0);
+	int accepted_components=0;
+	int valid_components=0;
+	int rejected_small=0;
+	int rejected_gates=0;
+	int rejected_routes=0;
 
+	int primary_gate_resource_burden=0;
 	std::vector<int> settlement_weight(settlement_count,0),starts(settlement_count,-1);
 	for(int tile:home_sources)if(settlement[tile]>=0)++settlement_weight[settlement[tile]];
 	for(int tile=0;tile<size;++tile)if(candidates[tile]&&starts[settlement[tile]]<0)
@@ -1647,7 +1711,7 @@ void Maxima::update_barrier_topology(Context& echo)
 			{component.push_back(tile);visited[tile]=1;}
 		if(component.size()<size_t(STRATEGIC_GATE_COUNT*STRATEGIC_GATE_WIDTH))
 		{
-
+			rejected_small+=1;
 			continue;
 		}
 
@@ -1655,7 +1719,7 @@ void Maxima::update_barrier_topology(Context& echo)
 			component, candidates, w, h);
 		if(gate_tiles.size()<2)
 		{
-
+			rejected_gates+=1;
 			continue;
 		}
 		// Associate history with this perimeter, never with a distant colony.
@@ -1794,10 +1858,10 @@ void Maxima::update_barrier_topology(Context& echo)
 		}
 		if(best_first<0)
 		{
-
+			rejected_routes+=1;
 			continue;
 		}
-
+		++valid_components;
 		// A standing passage is an infrastructure contract. Resource growth
 		// alone cannot move it and expose a different set of permanent seeds.
 		if(retain_previous_gates)
@@ -1810,7 +1874,7 @@ void Maxima::update_barrier_topology(Context& echo)
 			if(retained[0]>=0 && retained[1]>=0)
 			{best_first=retained[0];best_second=retained[1];}
 		}
-
+		++accepted_components;
 		for(int tile:component)strategic_barrier_mask[tile]=1;
 		const std::vector<int> selected[STRATEGIC_GATE_COUNT]={
 			gate_options[best_first].tiles,gate_options[best_second].tiles};
@@ -1858,14 +1922,33 @@ void Maxima::update_barrier_topology(Context& echo)
 			for(int tile:channel.clearing_tiles)emergency_escape_mask[tile]=1;
 			barrier_defense_points.insert(barrier_defense_points.end(),
 				channel.defense_points.begin(),channel.defense_points.end());
-
+			primary_gate_resource_burden+=gate_resource_burden(map,w,channel);
 		}
 	}
 
 	std::sort(barrier_defense_points.begin(), barrier_defense_points.end());
 	barrier_defense_points.erase(std::unique(barrier_defense_points.begin(),
 		barrier_defense_points.end()), barrier_defense_points.end());
-
+	// This is a diagnostic snapshot, not a lifecycle event. Discovery can change
+	// the topology signature every few ticks, so sample it at the same cadence as
+	// the strategic snapshot instead of flooding tournament logs.
+	if(timer%1000<budget.farming_normal_interval)
+		emit_telemetry(echo, "farming_barrier_topology",
+		"\tcandidates="+boost::lexical_cast<std::string>(candidate_count)
+		+"\thome_sources="+boost::lexical_cast<std::string>(home_sources.size())
+		+"\treachable_grass="+boost::lexical_cast<std::string>(reachable_grass)
+		+"\tcoastal_grass="+boost::lexical_cast<std::string>(coastal_grass)
+			+"\tcomponents="+boost::lexical_cast<std::string>(accepted_components)
+			+"\tvalid_components="+boost::lexical_cast<std::string>(valid_components)
+		+"\trejected_small="+boost::lexical_cast<std::string>(rejected_small)
+		+"\trejected_gates="+boost::lexical_cast<std::string>(rejected_gates)
+		+"\trejected_routes="+boost::lexical_cast<std::string>(rejected_routes)
+		+"\tbarrier_tiles="+boost::lexical_cast<std::string>(std::count(
+			strategic_barrier_mask.begin(), strategic_barrier_mask.end(), Uint8(1)))
+			+"\tgates="+boost::lexical_cast<std::string>(strategic_gates.size())
+			+"\tgate_resource_burden="+boost::lexical_cast<std::string>(
+				primary_gate_resource_burden)
+			+"\tdefense_points="+boost::lexical_cast<std::string>(barrier_defense_points.size()));
 }
 
 const std::vector<int>& Maxima::barrier_gate_route(const std::vector<int>& gate) const
@@ -2577,7 +2660,7 @@ void Maxima::apply_farming_protection(Context& echo,
 	RemoveArea* removals=new RemoveArea(ForbiddenArea);
 	added=0;
 	removed=0;
-
+	int seed_revocations=0;
 	for(int index=0; index<size; ++index)
 	{
 		const int x=index%w;
@@ -2585,7 +2668,9 @@ void Maxima::apply_farming_protection(Context& echo,
 		if(!map_info.is_discovered(x, y)) continue;
 		// Audit the temporal contract as well as today's mask. Building/path
 		// contracts are explicit overrides; harvesting a neighbor is not.
-		{}
+		if(Farming::isInteriorSeed(x,y) && farm_protection_mask[index]
+		   && !plan.forbidden[index] && map->isResourceTakeable(x,y,CORN)
+		   && !has_hard_farming_contract(index)) ++seed_revocations;
 		const bool actual=map_info.is_forbidden_area(x, y);
 		if(plan.forbidden[index] && !actual)
 		{
@@ -2601,14 +2686,17 @@ void Maxima::apply_farming_protection(Context& echo,
 	}
 	if(added) echo.add_management_order(additions); else delete additions;
 	if(removed) echo.add_management_order(removals); else delete removals;
-
+	if(seed_revocations)
+		emit_telemetry(echo,"farming_seed_stability_violation",
+			"\tcount="+boost::lexical_cast<std::string>(seed_revocations));
 	farm_protection_mask=plan.forbidden;
 	wheat_farm_protection_mask=plan.protected_wheat;
 }
 
 void Maxima::update_farming(Context& echo)
 {
-
+	const std::chrono::steady_clock::time_point started=
+		std::chrono::steady_clock::now();
 	initialize_farming_cache(echo);
 	if(!budget.farming_enabled || !budget.farming_protection_enabled)
 	{
@@ -2653,7 +2741,7 @@ void Maxima::update_farming(Context& echo)
 	// starting mainland and does not promise resource clearing. Audit building
 	// access after that pass, then expose the same durable routes to defence and
 	// placement. Reversing this order can re-forbid an exit we just reserved.
-	connect_settlements_to_gates(echo, plan);
+	const int unresolved_access=connect_settlements_to_gates(echo, plan);
 	refresh_gate_defense(echo);
 	resolve_wheat_invasion_clearing(echo, plan);
 	int added=0;
@@ -2672,8 +2760,45 @@ void Maxima::update_farming(Context& echo)
 		farming_urgent=constraint_urgent;
 		director.invalidate();
 	}
-
-
+	const long long elapsed=std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::steady_clock::now()-started).count();
+	// Preserve every applied-area change and one idle sample per strategic
+	// interval; unchanged urgent evaluations add no diagnostic information.
+	if(added || removed || timer%1000<budget.farming_normal_interval)
+		emit_telemetry(echo, "farming_policy",
+		"\tmicroseconds="+boost::lexical_cast<std::string>(elapsed)
+		+"\tprotected_seeds="+boost::lexical_cast<std::string>(plan.protected_seeds)
+		+"\tprotected_frontier="+boost::lexical_cast<std::string>(plan.protected_frontier)
+		+"\tprotected_wheat_edges="+boost::lexical_cast<std::string>(plan.protected_wheat_edges)
+		+"\tprotected_wheat_bootstraps="+boost::lexical_cast<std::string>(plan.protected_wheat_bootstraps)
+		+"\tprotected_wood_edges="+boost::lexical_cast<std::string>(plan.protected_wood_edges)
+		+"\tprotected_wood_bootstraps="+boost::lexical_cast<std::string>(plan.protected_wood_bootstraps)
+		+"\tprotected_outer_frontier="+boost::lexical_cast<std::string>(plan.protected_outer_frontier)
+		+"\tprotected_outer_edges="+boost::lexical_cast<std::string>(plan.protected_outer_edges)
+		+"\tprotected_interior_seeds="+boost::lexical_cast<std::string>(plan.protected_interior_seeds)
+		+"\texpected_capacity="+boost::lexical_cast<std::string>(plan.expected_capacity)
+		+"\tblocked_directions="+boost::lexical_cast<std::string>(plan.blocked_directions)
+		+"\tbarriers="+boost::lexical_cast<std::string>(std::count(
+			strategic_barrier_mask.begin(), strategic_barrier_mask.end(), Uint8(1)))
+		+"\tgates="+boost::lexical_cast<std::string>(strategic_gates.size())
+		+"\tblocked_gates="+boost::lexical_cast<std::string>(blocked_gates)
+		+"\taccess_routes="+boost::lexical_cast<std::string>(settlement_access_routes.size())
+		+"\tblocked_access="+boost::lexical_cast<std::string>(blocked_access)
+		+"\tunresolved_access="+boost::lexical_cast<std::string>(unresolved_access)
+		+"\tdefendable_gates="+boost::lexical_cast<std::string>(gate_defense_demand)
+		+"\tporous_components="+boost::lexical_cast<std::string>(
+			plan.porosity.sealedComponents)
+		+"\tporous_routes="+boost::lexical_cast<std::string>(
+			plan.porosity.restoredComponents)
+		+"\tporous_tiles="+boost::lexical_cast<std::string>(
+			plan.porosity.openedTiles)
+		+"\tporous_infrastructure_overlap="
+			+boost::lexical_cast<std::string>(
+				plan.passive_opening_infrastructure_overlap)
+		+"\twood_pressure="+boost::lexical_cast<std::string>(plan.wood_pressure)
+		+"\twood_fertility="+boost::lexical_cast<std::string>(plan.wood_fertility)
+		+"\tadded="+boost::lexical_cast<std::string>(added)
+		+"\tremoved="+boost::lexical_cast<std::string>(removed));
 }
 
 }

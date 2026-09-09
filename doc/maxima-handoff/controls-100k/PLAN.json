@@ -1,0 +1,12 @@
+{
+  "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
+  "stage": "controls",
+  "pairs": 200,
+  "hard_tick_limit": 100000,
+  "treatment": "full focal AI off versus baseline",
+  "no_inference_about_switches": true,
+  "acceptance": "all receipts/repeats valid and baseline-minus-disabled 95% lower bound > 0",
+  "next_switch_candidate": "farming.farm_protection_enabled",
+  "automatic_next_stage": false,
+  "old_outcomes_pooled": false
+}

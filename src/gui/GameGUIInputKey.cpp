@@ -92,6 +92,27 @@ void GameGUI::changeGameSpeed(int amount)
 
 void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 {
+	// Maxima's diagnostic HUD is deliberately independent of configurable game
+	// actions so it remains available in old shortcut configurations.
+	if(key.sym==SDLK_F10 && pressed && typingInputScreen==NULL)
+	{
+		showMaximaDiagnostics=!showMaximaDiagnostics;
+		return;
+	}
+	const bool maximaTopologyKey=key.sym==SDLK_F9
+		|| (key.sym==SDLK_9 && (key.mod&KMOD_CTRL));
+	if(maximaTopologyKey && pressed && typingInputScreen==NULL)
+	{
+		if(key.mod&KMOD_SHIFT)
+		{
+			showMaximaTopologyDiagnostics=true;
+			++maximaTopologyDiagnosticPage;
+		}
+		else
+			showMaximaTopologyDiagnostics=!showMaximaTopologyDiagnostics;
+		return;
+	}
+
 	if (typingInputScreen == NULL)
 	{
 		if(key.sym == SDLK_SPACE && pressed && swallowSpaceKey)

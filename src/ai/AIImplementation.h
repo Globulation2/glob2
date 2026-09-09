@@ -11,6 +11,8 @@ The main method is std::shared_ptr<Order> getOrder() which return the order to b
 
 #include "BuildingType.h"
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace GAGCore
 {
@@ -53,6 +55,104 @@ Player and AI may play together, in the same team.
 Think if your AI is able to play with a human player?
 */
 
+struct AIDiagnosticRow
+{
+	AIDiagnosticRow(const std::string& label, const std::string& value)
+		: label(label), value(value) {}
+	std::string label;
+	std::string value;
+};
+
+struct AIDiagnosticSection
+{
+	explicit AIDiagnosticSection(const std::string& title=std::string())
+		: title(title) {}
+	std::string title;
+	std::vector<AIDiagnosticRow> rows;
+};
+
+enum AITopologyMovementMode
+{
+	AITopologyLand=0,
+	AITopologyAmphibious=1
+};
+
+enum AITopologyCandidateState
+{
+	AITopologyCandidateUnselected=0,
+	AITopologyCandidateSelected=1,
+	AITopologyCandidateRejectedOverlap=2,
+	AITopologyCandidateRejectedCap=3
+};
+
+struct AITopologyDiagnosticTeam
+{
+	AITopologyDiagnosticTeam() : team(-1), shortestDistance(-1) {}
+	int team;
+	int shortestDistance;
+	std::vector<int> enemyDistance;
+	std::vector<unsigned char> corridor;
+	std::vector<int> corridorWidth;
+	std::vector<int> terrainWidth;
+};
+
+struct AITopologyDiagnosticMode
+{
+	AITopologyDiagnosticMode()
+		: mode(AITopologyLand), enabled(false), candidateCount(0),
+		  selectedCount(0) {}
+	AITopologyMovementMode mode;
+	bool enabled;
+	int candidateCount;
+	int selectedCount;
+	std::vector<unsigned char> walkable;
+	std::vector<int> homeDistance;
+	std::vector<AITopologyDiagnosticTeam> teams;
+	std::vector<int> memberships;
+	std::vector<int> minimumCrossSection;
+	std::vector<int> minimumTerrainCrossSection;
+	std::vector<unsigned char> qualified;
+};
+
+struct AITopologyDiagnosticCandidate
+{
+	AITopologyDiagnosticCandidate()
+		: mode(AITopologyLand), index(-1), memberships(0), crossSection(-1),
+		  terrainCrossSection(-1), homeDistance(-1),
+		  state(AITopologyCandidateUnselected) {}
+	AITopologyMovementMode mode;
+	int index;
+	int memberships;
+	int crossSection;
+	int terrainCrossSection;
+	int homeDistance;
+	AITopologyCandidateState state;
+};
+
+struct AITopologyDiagnosticSnapshot
+{
+	AITopologyDiagnosticSnapshot()
+		: width(0), height(0), tick(-1), active(false), trainedWarriors(0),
+		  swimmingWarriors(0), effectiveZoneCap(0), selectedCount(0),
+		  innerDistance(0), bandMaximum(0), pathSlack(0),
+		  maximumCrossSection(0) {}
+	int width;
+	int height;
+	int tick;
+	bool active;
+	int trainedWarriors;
+	int swimmingWarriors;
+	int effectiveZoneCap;
+	int selectedCount;
+	int innerDistance;
+	int bandMaximum;
+	int pathSlack;
+	int maximumCrossSection;
+	std::vector<AITopologyDiagnosticMode> modes;
+	std::vector<AITopologyDiagnosticCandidate> candidates;
+	std::vector<unsigned char> desired;
+};
+
 class AIImplementation
 {
 public:
@@ -63,6 +163,9 @@ public:
 	virtual void save(GAGCore::OutputStream *stream)=0;
 	
 	virtual std::shared_ptr<Order> getOrder(void)=0;
+
+    virtual void getDiagnosticSections(std::vector<AIDiagnosticSection>& sections) const { sections.clear(); }
+    virtual const AITopologyDiagnosticSnapshot* getTopologyDiagnosticSnapshot() const { return nullptr; }
 };
 
 

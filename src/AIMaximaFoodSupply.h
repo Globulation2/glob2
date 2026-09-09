@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace AIMaxima {
-// Shared food-supply queries for Maxima policies. Corn is the engine's
+// Shared by policy and read-only tournament observations. Corn is the engine's
 // resource name for wheat; fertility measures its recurring growing capacity.
 inline long long reachableFoodCapacity(Map* map, Building* building,
     Uint32 teamMask, bool canSwim, int radius,
@@ -17,7 +17,7 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
     const std::vector<Uint8>* protectedTiles, std::set<int>* shared_tiles)
 {
 	const int width=map->getW();
-
+	
 	// Empty ground remains traversable, but only existing corn contributes
 	// food capacity. Fertility alone does not imply a food supply.
 	const auto accessible=[&](int x, int y) {

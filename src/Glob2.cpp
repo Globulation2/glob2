@@ -160,6 +160,121 @@ int Glob2::runTestGames()
 
 
 
+int Glob2::runNicowarVersionTestGames()
+{
+	globalContainer->automaticEndingSteps=90000;
+	unsigned int matchNumber=0;
+	while(true)
+	{
+		long seed = time(NULL) + matchNumber;
+		setSyncRandSeed(seed);
+		std::cout<<"Nicowar version test match "<<matchNumber+1<<", random seed: "<<seed<<std::endl;
+		Engine engine;
+		engine.createNicowarVersionTestGame();
+		engine.run();
+		matchNumber++;
+	}
+	return 0;
+}
+
+
+
+int Glob2::runNicowarTournamentMatch()
+{
+	setSyncRandSeed(globalContainer->nicowarTournamentSeed);
+	Engine engine;
+	int result=engine.createNicowarVersionTournamentGame(
+		globalContainer->nicowarTournamentMap,
+		globalContainer->nicowarTournamentSeed,
+		globalContainer->nicowarTournamentRotation);
+	if(result!=Engine::EE_NO_ERROR)
+		return 1;
+	engine.run();
+	engine.printNicowarVersionTournamentResult(globalContainer->nicowarTournamentRotation);
+	return 0;
+}
+
+
+int Glob2::runNicowar2v2TournamentMatch()
+{
+	setSyncRandSeed(globalContainer->nicowarTournamentSeed);
+	Engine engine;
+	int result=engine.createNicowar2v2TournamentGame(
+		globalContainer->nicowarTournamentMap,
+		globalContainer->nicowarTournamentSeed,
+		globalContainer->nicowar2v2AiA,
+		globalContainer->nicowar2v2AiB,
+		globalContainer->nicowar2v2Partition,
+		globalContainer->nicowar2v2Swap);
+	if(result!=Engine::EE_NO_ERROR)
+		return 1;
+	engine.run();
+	engine.printNicowar2v2TournamentResult(
+		globalContainer->nicowar2v2AiA,
+		globalContainer->nicowar2v2AiB,
+		globalContainer->nicowar2v2Partition,
+		globalContainer->nicowar2v2Swap);
+	return 0;
+}
+
+
+int Glob2::runNicowarScenarioMatch()
+{
+	setSyncRandSeed(globalContainer->nicowarScenarioSeed);
+	Engine engine;
+	int result=engine.createNicowarScenarioGame(
+		globalContainer->nicowarScenarioMap,
+		globalContainer->nicowarScenarioSeed,
+		globalContainer->nicowarScenarioPlayers,
+		globalContainer->nicowarScenarioCandidateAi,
+		globalContainer->nicowarScenarioOpponentAi,
+		globalContainer->nicowarScenarioCandidateSeat,
+		globalContainer->nicowarScenarioPositionOffset);
+	if(result!=Engine::EE_NO_ERROR)
+		return 1;
+	engine.run();
+	engine.printNicowarScenarioResult(
+		globalContainer->nicowarScenarioCandidateAi,
+		globalContainer->nicowarScenarioOpponentAi,
+		globalContainer->nicowarScenarioCandidateSeat,
+		globalContainer->nicowarScenarioPositionOffset);
+	return 0;
+}
+
+
+int Glob2::runMaximaCastorMatch()
+{
+	setSyncRandSeed(globalContainer->maximaCastorSeed);
+	Engine engine;
+	int result=engine.createMaximaCastorGame(
+		globalContainer->maximaCastorMap,
+		globalContainer->maximaCastorSeed,
+		globalContainer->maximaCastorTeam,
+		globalContainer->castorTeam);
+	if(result!=Engine::EE_NO_ERROR)
+		return 1;
+	engine.run();
+	engine.printMaximaCastorResult();
+	return 0;
+}
+
+
+
+int Glob2::listNicowarTournamentMaps()
+{
+	Engine::printNicowarTournamentMaps(std::cout);
+	return 0;
+}
+
+
+int Glob2::listNicowarScenarioMaps()
+{
+	Engine::printNicowarScenarioMaps(std::cout);
+	return 0;
+}
+
+
+
 int Glob2::runTestMapGeneration()
 {
 	long t = time(NULL);
@@ -424,6 +539,32 @@ int Glob2::run(int argc, char *argv[])
 
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
+	if(globalContainer->dumpMaximaSchema)
+	{
+		std::cout<<AIMaxima::StrategyResolver::schemaJson()<<std::endl;
+		return 0;
+	}
+	if(globalContainer->dumpMaximaStrategy)
+	{
+		AIMaxima::MatchFormat format;
+		if(!AIMaxima::StrategyResolver::parseFormat(
+			globalContainer->maximaStrategyOptions.explicitFormat, format))
+		{
+			std::cerr<<"--dump-maxima-strategy requires a valid "
+				"--maxima-format"<<std::endl;
+			return 2;
+		}
+		AIMaxima::ResolvedStrategy strategy;
+		std::string error;
+		if(!AIMaxima::StrategyResolver::resolveForFormat(
+			globalContainer->maximaStrategyOptions, format, strategy, error))
+		{
+			std::cerr<<"Maxima strategy error: "<<error<<std::endl;
+			return 2;
+		}
+		std::cout<<AIMaxima::StrategyResolver::resolvedJson(strategy)<<std::endl;
+		return 0;
+	}
 	globalContainer->load();
 
 #ifndef YOG_SERVER_ONLY
@@ -480,6 +621,55 @@ int Glob2::run(int argc, char *argv[])
 	if (globalContainer->runTestGames)
 	{
 		int ret=runTestGames();
+		delete globalContainer;
+		return ret;
+	}
+
+	if (globalContainer->runNicowarVersionTestGames)
+	{
+		int ret=runNicowarVersionTestGames();
+		delete globalContainer;
+		return ret;
+	}
+
+	if (globalContainer->runNicowarTournamentMatch)
+	{
+		int ret=runNicowarTournamentMatch();
+		delete globalContainer;
+		return ret;
+	}
+
+	if (globalContainer->runNicowar2v2TournamentMatch)
+	{
+		int ret=runNicowar2v2TournamentMatch();
+		delete globalContainer;
+		return ret;
+	}
+
+	if (globalContainer->runNicowarScenarioMatch)
+	{
+		int ret=runNicowarScenarioMatch();
+		delete globalContainer;
+		return ret;
+	}
+
+	if (globalContainer->runMaximaCastorMatch)
+	{
+		int ret=runMaximaCastorMatch();
+		delete globalContainer;
+		return ret;
+	}
+
+	if (globalContainer->listNicowarTournamentMaps)
+	{
+		int ret=listNicowarTournamentMaps();
+		delete globalContainer;
+		return ret;
+	}
+
+	if (globalContainer->listNicowarScenarioMaps)
+	{
+		int ret=listNicowarScenarioMaps();
 		delete globalContainer;
 		return ret;
 	}

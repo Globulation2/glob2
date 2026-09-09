@@ -1,4 +1,5 @@
 #include "AIMaximaContinuation.h"
+#include "MaximaExperimentAudit.h"
 /*
   Copyright (C) 2006 Bradley Arsenault
 
@@ -28,6 +29,7 @@
 #include "Game.h"
 #include "Unit.h"
 #include <algorithm>
+#include <chrono>
 #include <climits>
 #include <cstdlib>
 #include <deque>
@@ -64,6 +66,19 @@ namespace
 		// collapsing onto a small common divisor of those intervals.
 		const int value=(configuredPhase+team*37)%interval;
 		return value<0 ? value+interval : value;
+	}
+
+	template<typename T>
+	std::string diagnostic_value(const T& value)
+	{
+		std::ostringstream stream;
+		stream<<value;
+		return stream.str();
+	}
+
+	std::string diagnostic_score(int value)
+	{
+		return value==INT_MIN ? "-" : diagnostic_value(value);
 	}
 
 	bool building_currently_visible(Player* player, const Building* building)
@@ -147,18 +162,28 @@ namespace
 	public:
 		explicit TacticalReachability(Map* map) : map(map) {}
 		std::vector<int> powersAt(Team* team, const Building* continuingFlag,
-			int x, int y, int cap, bool swimmersOnly=false)
+			int x, int y, int cap, bool swimmersOnly=false,
+			std::map<std::string, int>* diagnostics=NULL)
 		{
 			std::vector<int> powers;
 			const int target=map->normalizeY(y)*map->getW()+map->normalizeX(x);
 			for(int id=0; id<Unit::MAX_COUNT; ++id)
 			{
 				const Unit* warrior=team->myUnits[id];
-
+				if(diagnostics && warrior && warrior->typeNum==WARRIOR && !warrior->isDead)
+				{
+					if(std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<1)
+						++(*diagnostics)["untrained"];
+					else if(warrior->medical!=Unit::MED_FREE)
+						++(*diagnostics)["medical"];
+					else if(!tactical_warrior_available(warrior,continuingFlag))
+						++(*diagnostics)["busy"];
+				}
 				if(!tactical_warrior_available(warrior,continuingFlag)) continue;
 				const bool swimming=warrior->performance[SWIM]>0;
 				if(swimmersOnly && !swimming)
 				{
+					if(diagnostics) ++(*diagnostics)["no_swim"];
 					continue;
 				}
 				if(components[swimming].empty()) label(swimming);
@@ -167,8 +192,10 @@ namespace
 					+map->normalizeX(warrior->posX);
 				if(field[target]>=0 && field[origin]==field[target])
 					powers.push_back(warrior_power(warrior));
+				else if(diagnostics) ++(*diagnostics)["disconnected"];
 
 			}
+			if(diagnostics) (*diagnostics)["reachable_before_reserve_cap"]=int(powers.size());
 			std::sort(powers.begin(),powers.end(),std::greater<int>());
 			if(int(powers.size())>cap) powers.resize(std::max(0,cap));
 			return powers;
@@ -214,7 +241,8 @@ namespace
 		ReliefCandidate()
 			: team(-1), x(0), y(0), score(INT_MIN), requested(0),
 			  enemies(0), enemyPower(0), allies(0), alliedPower(0), route(-1)
-		{}
+		{
+		}
 		int team;
 		int x;
 		int y;
@@ -302,7 +330,8 @@ namespace
 			: team(team), x(building->posX), y(building->posY),
 			  width(building->type->width), height(building->type->height),
 			  gid(building->gid)
-		{}
+		{
+		}
 
 		int team;
 		int x;
@@ -393,7 +422,8 @@ namespace
 			: knownAlgaeUnits(0), walkingAlgaeUnits(0), swimmingAlgaeUnits(0),
 			  accessibleAlgaeTiles(0), accessibleAlgaeUnits(0),
 			  accessibleCornTiles(0), accessibleWoodTiles(0), accessibleStoneTiles(0)
-		{}
+		{
+		}
 
 		int knownAlgaeUnits;
 		int walkingAlgaeUnits;
@@ -539,19 +569,27 @@ Maxima::StrategicSnapshot::StrategicSnapshot()
 	  visible_colony_explorer_threat(0), visible_colony_threat(0), alive_enemies(0),
 	  total_hp(0), attack_power(0), prestige(0), enemy_prestige(0),
 	  tower_stone(0), tower_bullets(0)
-{}
+{
+}
+
 
 Maxima::StrategicTrends::StrategicTrends()
 	: population(0), workers(0), warriors(0), food_pressure(0), colony_pressure(0)
-{}
+{
+}
+
 
 Maxima::ClearedEnemySite::ClearedEnemySite()
 	: x(0), y(0), confirmedTick(0)
-{}
+{
+}
+
 
 Maxima::ClearedEnemySite::ClearedEnemySite(int siteX, int siteY, int tick)
 	: x(siteX), y(siteY), confirmedTick(tick)
-{}
+{
+}
+
 
 Maxima::DirectorPlan::DirectorPlan()
 	: construction_sites(1), desired_inns(2), desired_swarms(1),
@@ -644,6 +682,7 @@ Maxima::DirectorPlan::DirectorPlan()
 	}
 }
 
+
 Maxima::PolicyBid::PolicyBid()
 	: utility(0), construction_sites(0), desired_inns(0), desired_swarms(0),
 	  desired_barracks(0), desired_schools(0), desired_pools(0),
@@ -651,7 +690,9 @@ Maxima::PolicyBid::PolicyBid()
 	  swarm_workers(0), worker_ratio(0), explorer_ratio(0), warrior_ratio(0),
 	  desired_explorers(0), desired_warriors(0), defense_reserve(0),
 	  attack_flags(0), attack_units(0), request_upgrades(false)
-{}
+{
+}
+
 
 Maxima::EnvironmentModel::EnvironmentModel()
 	: known_tiles(0), accessible_corn(0), accessible_wood(0),
@@ -661,12 +702,16 @@ Maxima::EnvironmentModel::EnvironmentModel()
 	  connected_abundance(50), mobility_opportunity(0),
 	  economic_momentum(50), mobility_constraint(0),
 	  topology_complexity(0), threat_pressure(0), confidence(0)
-{}
+{
+}
+
 
 Maxima::StrategicDemands::StrategicDemands()
 	: survival(0), food(30), growth(50), expansion(50), access(20), technology(30),
 	  mobility(0), military(20), aggression(0)
-{}
+{
+}
+
 
  Maxima::OpponentAssessment::OpponentAssessment()
 	: alive(false), visible_warriors(0), estimated_warriors(0),
@@ -675,13 +720,77 @@ Maxima::StrategicDemands::StrategicDemands()
 	  nearest_building(INT_MAX), score(INT_MIN), last_seen_tick(-1000000),
 	  last_force_seen_tick(-1000000), last_building_seen_tick(-1000000),
 	  intel_confidence(0)
-{}
+{
+}
+
 
 Maxima::CampaignPlan::CampaignPlan()
 	: state(CampaignIdle), target_team(-1), started_tick(0),
 	  last_progress_tick(0), last_target_buildings(0), buildings_destroyed(0),
 	  cooldown_until(0)
-{}
+{
+}
+
+
+Maxima::TacticalDecisionDiagnostics::TacticalDecisionDiagnostics()
+{
+	reset(0);
+}
+
+
+void Maxima::TacticalDecisionDiagnostics::reset(int currentTick)
+{
+	tick=currentTick;
+	authorization="evaluating";
+	decision="none";
+	trainedWarriors=0;
+	defenseReserve=0;
+	deployableWarriors=0;
+
+	raidGate="not evaluated";
+	raidCandidates=0;
+	viableRaids=0;
+	raidScore=INT_MIN;
+	raidRawScore=0;
+	raidRoute=-1;
+	raidRoutePenalty=0;
+	raidOutskirtsBonus=0;
+	raidAlliedBonus=0;
+	raidFfaPenalty=0;
+	raidWorkers=0;
+	raidDefenders=0;
+
+	siegeGate="not evaluated";
+	siegeCandidates=0;
+	viableSieges=0;
+	siegeRejections.clear();
+	siegeCandidateDetails.clear();
+	siegeScore=INT_MIN;
+	siegeTargetValue=0;
+	siegeOpponentScore=0;
+	siegeAlliedPlayerBonus=0;
+	siegeAlliedTargetBonus=0;
+	siegeTowerPenalty=0;
+	siegeRoutePenalty=0;
+	siegeLocalPower=0;
+	siegeUncertainty=0;
+	siegeNearbyTowers=0;
+	siegeRequiredPower=0;
+
+	reliefGate="not evaluated";
+	reliefCandidates=0;
+	viableReliefs=0;
+	reliefScore=INT_MIN;
+	reliefBaseScore=0;
+	reliefAssetValue=0;
+	reliefThreatBonus=0;
+	reliefUnderAttackBonus=0;
+	reliefRoutePenalty=0;
+	reliefEnemyPower=0;
+	reliefAlliedPower=0;
+	reliefRequiredPower=0;
+}
+
 
 void Maxima::StrategyDirector::evaluate(Maxima& owner, Context& echo)
 {
@@ -692,6 +801,630 @@ void Maxima::StrategyDirector::evaluate(Maxima& owner, Context& echo)
 	committed();
 }
 
+
+const char* Maxima::posture_name(StrategicPosture selected) const
+{
+	static const char* names[PostureCount]={
+		"expand", "develop", "mobilize", "campaign", "finish", "defend", "recover"
+	};
+	return names[int(selected)];
+}
+
+
+void Maxima::getDiagnosticSections(
+	std::vector<AIDiagnosticSection>& sections) const
+{
+	sections.clear();
+	if(!director.initialized || !context.player || !context.player->team)
+	{
+		AIDiagnosticSection waiting("MAXIMA");
+		waiting.rows.push_back(AIDiagnosticRow("Status",
+			"Waiting for first strategy update"));
+		sections.push_back(waiting);
+		return;
+	}
+
+	static const char* campaign_names[]={
+		"idle", "preparing", "active", "paused", "retreating"
+	};
+	const char* campaign_name=(campaign.state>=CampaignIdle
+		&& campaign.state<=CampaignRetreating)
+		? campaign_names[int(campaign.state)] : "unknown";
+	TeamStat* stat=context.player->team->stats.getLatestStat();
+	const Recon::ReconReport& recon=reconnaissance.report();
+
+#define MAXIMA_DIAGNOSTIC_ROW(label, value) \
+	section.rows.push_back(AIDiagnosticRow(label, diagnostic_value(value)))
+
+	{
+		AIDiagnosticSection section("DIRECTOR");
+		MAXIMA_DIAGNOSTIC_ROW("Tick", snapshot.tick);
+		MAXIMA_DIAGNOSTIC_ROW("Posture", posture_name(posture));
+		MAXIMA_DIAGNOSTIC_ROW("Posture age", timer-posture_since);
+		MAXIMA_DIAGNOSTIC_ROW("Campaign", campaign_name);
+		MAXIMA_DIAGNOSTIC_ROW("Campaign target", campaign.target_team);
+		MAXIMA_DIAGNOSTIC_ROW("Campaign cooldown",
+			std::max(0, campaign.cooldown_until-timer));
+		MAXIMA_DIAGNOSTIC_ROW("Tactical mission",
+			std::string(Tactics::missionKindName(tactical_mission.kind))+" / "+
+			Tactics::missionPhaseName(tactical_mission.phase));
+		{
+			std::ostringstream value;
+			value<<tactical_mission.targetTeam<<" / "<<tactical_mission.targetGid
+				<<" @ "<<tactical_mission.targetX<<","<<tactical_mission.targetY;
+			section.rows.push_back(AIDiagnosticRow("Tactical target", value.str()));
+		}
+		{
+			std::ostringstream value;
+			value<<tactical_mission.requestedForce<<" / "
+				<<tactical_mission.minimumForce<<" / "
+				<<tactical_mission.launchedForce;
+			section.rows.push_back(AIDiagnosticRow("Force req/min/live", value.str()));
+		}
+		{
+			std::ostringstream value;
+			value<<budget.attack_flags<<" / "<<budget.attack_units;
+			section.rows.push_back(AIDiagnosticRow("Attack flags/units", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Defense reserve", budget.defense_reserve);
+		MAXIMA_DIAGNOSTIC_ROW("Food emergency",
+			budget.food_emergency ? "YES" : "no");
+		MAXIMA_DIAGNOSTIC_ROW("Colony emergency",
+			budget.colony_emergency ? "YES" : "no");
+		MAXIMA_DIAGNOSTIC_ROW("Colonization",
+			budget.colony_swarm_requested ? "eligible" : colony_gate_reason);
+		MAXIMA_DIAGNOSTIC_ROW("Active colonial swarm",
+			development_planner.activeBuildCount(
+				IntBuildingType::SWARM_BUILDING,
+				AIMaximaPlacement::ColonySeed));
+		MAXIMA_DIAGNOSTIC_ROW("Established colonies", established_colonies);
+		MAXIMA_DIAGNOSTIC_ROW("Cleared hotspots", cleared_enemy_sites.size());
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("PLACEMENT");
+		const AIMaximaPlacement::PlacementDiagnostics& placement=
+			development_planner.diagnostics();
+		const std::map<int,AIMaximaPlacement::DevelopmentAction>& actions=
+			development_planner.actions();
+		std::map<int,AIMaximaPlacement::DevelopmentAction>::const_iterator selected=
+			actions.find(placement.selectedActionId);
+		const AIMaximaPlacement::DevelopmentAction* action=
+			selected==actions.end() ? NULL : &selected->second;
+		MAXIMA_DIAGNOSTIC_ROW("Intent purpose", action
+			? (action->purpose==AIMaximaPlacement::ColonySeed
+				? "colony seed" : "core capacity") : "none");
+		MAXIMA_DIAGNOSTIC_ROW("Colony gate", colony_gate_reason);
+		MAXIMA_DIAGNOSTIC_ROW("Colony eligible",
+			budget.colony_swarm_requested ? "YES" : "no");
+		MAXIMA_DIAGNOSTIC_ROW("Active colonial action",
+			development_planner.activeBuildCount(
+				IntBuildingType::SWARM_BUILDING,
+				AIMaximaPlacement::ColonySeed));
+		MAXIMA_DIAGNOSTIC_ROW("Friendly distance",
+			action ? action->utility.friendlyDistance : -1);
+		MAXIMA_DIAGNOSTIC_ROW("Corn distance",
+			action ? action->utility.cornDistance : -1);
+		MAXIMA_DIAGNOSTIC_ROW("New colony food",
+			action ? action->utility.frontierGain : 0);
+		MAXIMA_DIAGNOSTIC_ROW("Colony value",
+			action ? action->utility.conqueredGain : 0);
+		MAXIMA_DIAGNOSTIC_ROW("Hotspots", cleared_enemy_sites.size());
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("TACTICAL CHOICE");
+		MAXIMA_DIAGNOSTIC_ROW("Review tick", tactical_diagnostics.tick);
+		MAXIMA_DIAGNOSTIC_ROW("Authorization",
+			tactical_diagnostics.authorization);
+		{
+			std::ostringstream value;
+			value<<tactical_diagnostics.trainedWarriors<<" - "
+				<<tactical_diagnostics.defenseReserve<<" = "
+				<<tactical_diagnostics.deployableWarriors;
+			section.rows.push_back(AIDiagnosticRow(
+				"Warriors trained-reserved=free", value.str()));
+		}
+		{
+			std::ostringstream value;
+			value<<"R "<<tactical_diagnostics.raidCandidates
+				<<" | S "<<tactical_diagnostics.siegeCandidates
+				<<" | A "<<tactical_diagnostics.reliefCandidates;
+			section.rows.push_back(AIDiagnosticRow("Candidates seen R/S/A",
+				value.str()));
+		}
+		{
+			std::ostringstream value;
+			value<<"R "<<tactical_diagnostics.viableRaids
+				<<" | S "<<tactical_diagnostics.viableSieges
+				<<" | A "<<tactical_diagnostics.viableReliefs;
+			section.rows.push_back(AIDiagnosticRow("Candidates viable R/S/A",
+				value.str()));
+		}
+		{
+			std::ostringstream value;
+			value<<"R "<<diagnostic_score(tactical_diagnostics.raidScore)
+				<<" | S "<<diagnostic_score(tactical_diagnostics.siegeScore)
+				<<" | A "<<diagnostic_score(tactical_diagnostics.reliefScore);
+			section.rows.push_back(AIDiagnosticRow("Best scores R/S/A", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Authorized tactic",
+			Tactics::missionKindName(budget.tactical_kind));
+		MAXIMA_DIAGNOSTIC_ROW("Why", tactical_diagnostics.decision);
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("TACTICAL EVIDENCE");
+		MAXIMA_DIAGNOSTIC_ROW("Raid gate", tactical_diagnostics.raidGate);
+		if(tactical_diagnostics.raidScore!=INT_MIN)
+		{
+			std::ostringstream target;
+			target<<tactical_diagnostics.raidWorkers<<" / "
+				<<tactical_diagnostics.raidDefenders;
+			section.rows.push_back(AIDiagnosticRow("Raid workers/guards", target.str()));
+			std::ostringstream score;
+			score<<tactical_diagnostics.raidRawScore<<" - "
+				<<tactical_diagnostics.raidRoutePenalty<<" + "
+				<<tactical_diagnostics.raidOutskirtsBonus<<" + "
+				<<tactical_diagnostics.raidAlliedBonus<<" - "
+				<<tactical_diagnostics.raidFfaPenalty<<" = "
+				<<tactical_diagnostics.raidScore;
+			section.rows.push_back(AIDiagnosticRow(
+				"Raid raw-route+edge+ally-FFA", score.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Siege gate", tactical_diagnostics.siegeGate);
+		if(tactical_diagnostics.siegeScore!=INT_MIN)
+		{
+			std::ostringstream value;
+			value<<tactical_diagnostics.siegeTargetValue<<" + "
+				<<tactical_diagnostics.siegeOpponentScore;
+			section.rows.push_back(AIDiagnosticRow("Siege target+opponent", value.str()));
+			value.str(""); value.clear();
+			value<<tactical_diagnostics.siegeAlliedPlayerBonus<<" + "
+				<<tactical_diagnostics.siegeAlliedTargetBonus<<" - "
+				<<tactical_diagnostics.siegeTowerPenalty<<" - "
+				<<tactical_diagnostics.siegeRoutePenalty;
+			section.rows.push_back(AIDiagnosticRow(
+				"Siege ally P/T-tower-route", value.str()));
+			MAXIMA_DIAGNOSTIC_ROW("Siege final score",
+				tactical_diagnostics.siegeScore);
+			value.str(""); value.clear();
+			value<<tactical_diagnostics.siegeLocalPower<<" + uncertainty "
+				<<tactical_diagnostics.siegeUncertainty<<" + towers "
+				<<tactical_diagnostics.siegeNearbyTowers<<" -> "
+				<<tactical_diagnostics.siegeRequiredPower;
+			section.rows.push_back(AIDiagnosticRow("Siege opposition -> required",
+				value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Ally-defense gate", tactical_diagnostics.reliefGate);
+		if(tactical_diagnostics.reliefScore!=INT_MIN)
+		{
+			std::ostringstream value;
+			value<<tactical_diagnostics.reliefEnemyPower<<" / "
+				<<tactical_diagnostics.reliefAlliedPower<<" / "
+				<<tactical_diagnostics.reliefRequiredPower;
+			section.rows.push_back(AIDiagnosticRow(
+				"Enemy/allied/needed power", value.str()));
+			value.str(""); value.clear();
+			value<<tactical_diagnostics.reliefBaseScore<<" + "
+				<<tactical_diagnostics.reliefAssetValue<<" + "
+				<<tactical_diagnostics.reliefThreatBonus<<" + "
+				<<tactical_diagnostics.reliefUnderAttackBonus<<" - "
+				<<tactical_diagnostics.reliefRoutePenalty<<" = "
+				<<tactical_diagnostics.reliefScore;
+			section.rows.push_back(AIDiagnosticRow(
+				"Defense base+asset+threat+hit-route", value.str()));
+		}
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("STRATEGY SCORES");
+		for(int candidate=0; candidate<PostureCount; ++candidate)
+			section.rows.push_back(AIDiagnosticRow(
+				std::string("Posture: ")+posture_name(StrategicPosture(candidate)),
+				diagnostic_value(posture_utilities[candidate])));
+		MAXIMA_DIAGNOSTIC_ROW("Demand: survival", demands.survival);
+		MAXIMA_DIAGNOSTIC_ROW("Demand: food", demands.food);
+		MAXIMA_DIAGNOSTIC_ROW("Demand: growth", demands.growth);
+		MAXIMA_DIAGNOSTIC_ROW("Demand: expansion", demands.expansion);
+		MAXIMA_DIAGNOSTIC_ROW("Demand: access", demands.access);
+		MAXIMA_DIAGNOSTIC_ROW("Demand: technology", demands.technology);
+		MAXIMA_DIAGNOSTIC_ROW("Demand: mobility", demands.mobility);
+		MAXIMA_DIAGNOSTIC_ROW("Demand: military", demands.military);
+		MAXIMA_DIAGNOSTIC_ROW("Demand: aggression", demands.aggression);
+		for(int policy=0; policy<PolicyCount; ++policy)
+			section.rows.push_back(AIDiagnosticRow(
+				std::string("Bid: ")+policy_name(PolicyKind(policy)),
+				diagnostic_value(policy_bids[policy].utility)));
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("COLONY");
+		{
+			std::ostringstream value; value<<snapshot.population<<"  ("<<trends.population<<")";
+			section.rows.push_back(AIDiagnosticRow("Population (trend)", value.str()));
+		}
+		{
+			std::ostringstream value; value<<snapshot.workers<<" / "<<snapshot.free_workers
+				<<" / "<<snapshot.trained_workers;
+			section.rows.push_back(AIDiagnosticRow("Workers total/free/trained", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Workers L2+", snapshot.trained_workers_level2);
+		MAXIMA_DIAGNOSTIC_ROW("Worker trend", trends.workers);
+		{
+			std::ostringstream value; value<<snapshot.explorers<<" / "<<snapshot.trained_explorers;
+			section.rows.push_back(AIDiagnosticRow("Explorers total/trained", value.str()));
+		}
+		{
+			std::ostringstream value; value<<snapshot.warriors<<" / "<<snapshot.free_warriors
+				<<" / "<<snapshot.trained_warriors;
+			section.rows.push_back(AIDiagnosticRow("Warriors total/free/trained", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Warrior trend", trends.warriors);
+		{
+			std::ostringstream value; value<<snapshot.swimming_workers<<" / "
+				<<snapshot.swimming_explorers<<" / "<<snapshot.swimming_warriors;
+			section.rows.push_back(AIDiagnosticRow("Swimming W/E/R", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Amphibious attackers",
+			snapshot.amphibious_attack_explorers);
+		MAXIMA_DIAGNOSTIC_ROW("Total HP", snapshot.total_hp);
+		MAXIMA_DIAGNOSTIC_ROW("Attack power", snapshot.attack_power);
+		{
+			std::ostringstream value; value<<snapshot.prestige<<" / "<<snapshot.enemy_prestige;
+			section.rows.push_back(AIDiagnosticRow("Prestige us/enemies", value.str()));
+		}
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("ECONOMY");
+		{
+			std::ostringstream value; value<<stat->totalFood<<" / "<<stat->totalFoodCapacity;
+			section.rows.push_back(AIDiagnosticRow("Food stored/capacity", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Feeding capacity", environment.feeding_capacity);
+		MAXIMA_DIAGNOSTIC_ROW("Hungry", snapshot.hungry);
+		MAXIMA_DIAGNOSTIC_ROW("Critical food", snapshot.critical_food);
+		MAXIMA_DIAGNOSTIC_ROW("Unserved food", snapshot.unserved_food);
+		MAXIMA_DIAGNOSTIC_ROW("Need healing", snapshot.need_heal);
+		MAXIMA_DIAGNOSTIC_ROW("Open jobs", snapshot.worker_jobs_open);
+		MAXIMA_DIAGNOSTIC_ROW("Food security", environment.food_security);
+		MAXIMA_DIAGNOSTIC_ROW("Food headroom", environment.food_headroom);
+		MAXIMA_DIAGNOSTIC_ROW("Food pressure trend", trends.food_pressure);
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("BUILDINGS  ACTUAL -> TARGET");
+		const int actual[]={snapshot.inns, snapshot.swarms, snapshot.barracks,
+			snapshot.schools, snapshot.pools, snapshot.hospitals,
+			snapshot.racetracks, snapshot.towers};
+		const int desired[]={budget.desired_inns, budget.desired_swarms,
+			budget.desired_barracks, budget.desired_schools, budget.desired_pools,
+			budget.desired_hospitals, budget.desired_racetracks,
+			budget.desired_towers};
+		const char* labels[]={"Inns", "Swarms", "Barracks", "Schools",
+			"Pools", "Hospitals", "Racetracks", "Towers"};
+		for(int building=0; building<8; ++building)
+		{
+			std::ostringstream value; value<<actual[building]<<" -> "<<desired[building];
+			section.rows.push_back(AIDiagnosticRow(labels[building], value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Total buildings", snapshot.buildings);
+		MAXIMA_DIAGNOSTIC_ROW("Active sites", snapshot.building_sites);
+		MAXIMA_DIAGNOSTIC_ROW("Construction slots", budget.construction_sites);
+		{
+			std::ostringstream value; value<<snapshot.inn_level1<<" / "
+				<<snapshot.inn_level2<<" / "<<snapshot.inn_level3;
+			section.rows.push_back(AIDiagnosticRow("Inn levels 1/2/3", value.str()));
+		}
+		{
+			std::ostringstream value; value<<snapshot.school_level1<<" / "
+				<<snapshot.school_level2<<" / "<<snapshot.school_level3;
+			section.rows.push_back(AIDiagnosticRow("School levels 1/2/3", value.str()));
+		}
+		{
+			std::ostringstream value; value<<snapshot.tower_stone<<" / "<<snapshot.tower_bullets;
+			section.rows.push_back(AIDiagnosticRow("Tower stone/bullets", value.str()));
+		}
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("ALLOCATION");
+		{
+			std::ostringstream value; value<<budget.worker_ratio<<" / "
+				<<budget.explorer_ratio<<" / "<<budget.warrior_ratio;
+			section.rows.push_back(AIDiagnosticRow("Birth ratio W/E/R", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Swarm worker budget", budget.swarm_workers);
+		{
+			std::ostringstream value; value<<budget.desired_explorers<<" / "
+				<<budget.desired_warriors;
+			section.rows.push_back(AIDiagnosticRow("Target explorers/warriors", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Upgrade level 1", budget.allow_upgrades ? "allowed" : "held");
+		MAXIMA_DIAGNOSTIC_ROW("Upgrade level 2", budget.allow_level2_upgrades ? "allowed" : "held");
+		{
+			std::ostringstream value; value<<budget.priority_inns<<" / "<<budget.priority_swarms;
+			section.rows.push_back(AIDiagnosticRow("Priority inn/swarm", value.str()));
+		}
+		{
+			std::ostringstream value; value<<budget.priority_barracks<<" / "<<budget.priority_schools;
+			section.rows.push_back(AIDiagnosticRow("Priority barracks/school", value.str()));
+		}
+		{
+			std::ostringstream value; value<<budget.priority_pools<<" / "<<budget.priority_hospitals;
+			section.rows.push_back(AIDiagnosticRow("Priority pool/hospital", value.str()));
+		}
+		{
+			std::ostringstream value; value<<budget.priority_racetracks<<" / "<<budget.priority_towers;
+			section.rows.push_back(AIDiagnosticRow("Priority track/tower", value.str()));
+		}
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("WORLD MODEL");
+		MAXIMA_DIAGNOSTIC_ROW("Known local tiles", environment.known_tiles);
+		MAXIMA_DIAGNOSTIC_ROW("Buildable / water",
+			diagnostic_value(environment.buildable_tiles)+" / "+diagnostic_value(environment.water_tiles));
+		{
+			std::ostringstream value; value<<environment.accessible_corn<<" / "
+				<<environment.accessible_wood<<" / "<<environment.accessible_stone
+				<<" / "<<environment.accessible_algae;
+			section.rows.push_back(AIDiagnosticRow("Corn/wood/stone/algae", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Resource capacity", environment.resource_capacity);
+		MAXIMA_DIAGNOSTIC_ROW("Space capacity", environment.space_capacity);
+		MAXIMA_DIAGNOSTIC_ROW("Abundance", environment.abundance);
+		MAXIMA_DIAGNOSTIC_ROW("Terrain abundance", environment.terrain_abundance);
+		MAXIMA_DIAGNOSTIC_ROW("Connected abundance", environment.connected_abundance);
+		MAXIMA_DIAGNOSTIC_ROW("Economic momentum", environment.economic_momentum);
+		MAXIMA_DIAGNOSTIC_ROW("Mobility constraint", environment.mobility_constraint);
+		MAXIMA_DIAGNOSTIC_ROW("Mobility opportunity", environment.mobility_opportunity);
+		MAXIMA_DIAGNOSTIC_ROW("Topology complexity", environment.topology_complexity);
+		MAXIMA_DIAGNOSTIC_ROW("Threat pressure", environment.threat_pressure);
+		MAXIMA_DIAGNOSTIC_ROW("Model confidence", environment.confidence);
+		{
+			std::ostringstream value; value<<global_water_percent<<" / "
+				<<global_shoreline_density<<" / "<<global_land_components;
+			section.rows.push_back(AIDiagnosticRow("Water/shore/components", value.str()));
+		}
+		{
+			std::ostringstream value; value<<global_largest_land_percent<<" / "
+				<<global_start_land_percent<<" / "<<global_chokepoint_density;
+			section.rows.push_back(AIDiagnosticRow("Largest/start/chokepoint", value.str()));
+		}
+		sections.push_back(section);
+	}
+
+	{
+		AIDiagnosticSection section("INTEL & OPERATIONS");
+		MAXIMA_DIAGNOSTIC_ROW("Alive enemies", snapshot.alive_enemies);
+		{
+			std::ostringstream value; value<<snapshot.visible_enemy_warriors<<" / "
+				<<snapshot.visible_enemy_explorers<<" / "
+				<<snapshot.visible_enemy_attack_explorers;
+			section.rows.push_back(AIDiagnosticRow("Visible W/E/bombers", value.str()));
+		}
+		{
+			std::ostringstream value; value<<snapshot.visible_colony_threat<<" / "
+				<<snapshot.visible_colony_explorer_threat;
+			section.rows.push_back(AIDiagnosticRow("Colony threats W/E", value.str()));
+		}
+		{
+			std::ostringstream value; value<<snapshot.own_units_under_attack<<" / "
+				<<snapshot.own_buildings_under_attack;
+			section.rows.push_back(AIDiagnosticRow("Units/buildings attacked", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Recon explored", diagnostic_value(recon.exploredPercent)+"%");
+		{
+			std::ostringstream value; value<<recon.missions.size()<<" / "<<recon.desiredMissions;
+			section.rows.push_back(AIDiagnosticRow("Recon missions live/wanted", value.str()));
+		}
+		for(int team=0; team<Team::MAX_COUNT; ++team)
+		{
+			if(!opponents[team].alive)
+				continue;
+			std::ostringstream label, value;
+			label<<"Team "<<team<<" warriors seen/est";
+			value<<opponents[team].visible_warriors<<" / "
+				<<opponents[team].estimated_warriors;
+			section.rows.push_back(AIDiagnosticRow(label.str(), value.str()));
+			label.str(""); label.clear(); value.str(""); value.clear();
+			label<<"Team "<<team<<" buildings K/R";
+			value<<opponents[team].known_buildings<<" / "
+				<<opponents[team].reachable_buildings;
+			section.rows.push_back(AIDiagnosticRow(label.str(), value.str()));
+			label.str(""); label.clear();
+			label<<"Team "<<team<<" value/confidence";
+			value.str(""); value.clear();
+			value<<opponents[team].strategic_value<<" / "
+				<<opponents[team].intel_confidence;
+			section.rows.push_back(AIDiagnosticRow(label.str(), value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Recon", budget.reconnaissance_suspended ? "SUSPENDED" : "active");
+		MAXIMA_DIAGNOSTIC_ROW("Preemptive defense", budget.preemptive_defense_active ? "ACTIVE" : "inactive");
+		{
+			int landCandidates=0, amphibiousCandidates=0;
+			int landSelected=0, amphibiousSelected=0;
+			for(size_t mode=0; mode<preemptive_diagnostics.modes.size(); ++mode)
+			{
+				const AITopologyDiagnosticMode& value=preemptive_diagnostics.modes[mode];
+				if(value.mode==AITopologyLand)
+				{
+					landCandidates=value.candidateCount;
+					landSelected=value.selectedCount;
+				}
+				else
+				{
+					amphibiousCandidates=value.candidateCount;
+					amphibiousSelected=value.selectedCount;
+				}
+			}
+			std::ostringstream value;
+			value<<landCandidates<<" / "<<amphibiousCandidates;
+			section.rows.push_back(AIDiagnosticRow("Chokes land/amph", value.str()));
+			value.str(""); value.clear();
+			value<<landSelected<<" / "<<amphibiousSelected<<" / "
+				<<budget.preemptive_effective_zone_max;
+			section.rows.push_back(AIDiagnosticRow("Zones L/A/cap", value.str()));
+			section.rows.push_back(AIDiagnosticRow("Topology age",
+				preemptive_diagnostics.tick>=0
+					? diagnostic_value(timer-preemptive_diagnostics.tick)
+					: std::string("not computed")));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Farming pace", budget.farming_urgent ? "URGENT" : "normal");
+		MAXIMA_DIAGNOSTIC_ROW("Wood pressure", budget.farming_wood_pressure);
+		MAXIMA_DIAGNOSTIC_ROW("Proactive clearing", budget.farming_allow_proactive_clearing ? "allowed" : "blocked");
+		MAXIMA_DIAGNOSTIC_ROW("Gate clearing", "automatic when boxed in");
+		sections.push_back(section);
+	}
+
+#undef MAXIMA_DIAGNOSTIC_ROW
+}
+
+
+const AITopologyDiagnosticSnapshot*
+Maxima::getTopologyDiagnosticSnapshot() const
+{
+	return &preemptive_diagnostics;
+}
+
+
+void Maxima::emit_telemetry(Context& echo, const std::string& event,
+	const std::string& fields) const
+{
+	if(MaximaExperimentAudit::enabled())
+	{
+		std::ostringstream record;
+		record<<",\"tick\":"<<echo.player->game->stepCounter
+			<<",\"player\":"<<echo.player->number
+			<<",\"team\":"<<echo.player->team->teamNumber
+			<<",\"event\":"<<MaximaExperimentAudit::quote(event)
+			<<",\"fields\":"<<MaximaExperimentAudit::quote(fields);
+		MaximaExperimentAudit::write(MaximaExperimentAudit::started() ? "decision" : "initialization",record.str());
+	}
+	if(!globalContainer || !globalContainer->nicowarTelemetry)
+		return;
+	std::cout<<"MAXIMA_TELEMETRY\t"<<timer<<"\t"
+		<<echo.player->team->teamNumber<<"\t"<<event<<fields
+		<<"\tgame_tick="<<echo.player->game->stepCounter<<std::endl;
+}
+
+
+void Maxima::emit_ablation_opportunities(Context& echo) const
+{
+	if(!globalContainer || !globalContainer->nicowarTelemetry)
+		return;
+	Uint32 context=2166136261u;
+	const int values[]={snapshot.population, snapshot.workers,
+		snapshot.trained_warriors, snapshot.visible_colony_threat,
+		snapshot.visible_enemy_attack_explorers,
+		snapshot.visible_colony_explorer_threat, snapshot.unserved_food,
+		snapshot.critical_food, int(posture)};
+	for(size_t i=0; i<sizeof(values)/sizeof(values[0]); ++i)
+	{
+		context^=static_cast<Uint32>(values[i]);
+		context*=16777619u;
+	}
+	const int player=echo.player ? echo.player->number : -1;
+	const int team=echo.player && echo.player->team
+		? echo.player->team->teamNumber : -1;
+	const Uint32 eventTick=echo.player && echo.player->game
+		? echo.player->game->stepCounter : static_cast<Uint32>(timer);
+	const int population=std::max(1, snapshot.population);
+	const bool rawFood=snapshot.population>1 && (
+		snapshot.unserved_food*100
+			>=snapshot.population*strategy.emergencies.food_unserved_percent
+		|| snapshot.critical_food*100
+			>=snapshot.population*strategy.emergencies.food_critical_percent
+		|| std::max(snapshot.unserved_food,snapshot.critical_food)*100
+			>=snapshot.population*strategy.emergencies.food_combined_percent);
+	const bool rawExplorer=
+		snapshot.visible_enemy_attack_explorers
+			>=strategy.reconnaissance.explorer_attack_warning_threshold
+		|| snapshot.visible_colony_explorer_threat
+			>=strategy.reconnaissance.explorer_colony_warning_threshold;
+	const bool rawColony=rawExplorer
+		|| snapshot.visible_colony_threat
+			>=strategy.emergencies.colony_threat_threshold
+		|| snapshot.own_buildings_under_attack
+			>=strategy.emergencies.buildings_under_attack_threshold
+		|| snapshot.own_units_under_attack
+			>=strategy.emergencies.units_under_attack_threshold;
+	const int foodSeverity=100*std::max(snapshot.unserved_food,
+		snapshot.critical_food)/population;
+	const int colonySeverity=std::max(snapshot.visible_colony_threat,
+		snapshot.own_units_under_attack);
+	const int tacticalSeverity=std::max(budget.tactical_requested_force,
+		budget.attack_units);
+	auto emit=[&](const std::string& key, bool enabled, int severity)
+	{
+		std::cout<<"MAXIMA_ABLATION_OPPORTUNITY"
+			<<"\ttick="<<eventTick<<"\tteam="<<team<<"\tplayer="<<player
+			<<"\tswitch="<<key<<"\tenabled="<<(enabled ? 1 : 0)
+			<<"\tseverity="<<severity<<"\tcontext_hash="
+			<<std::hex<<context<<std::dec<<std::endl;
+	};
+	if(timer==1)
+	{
+		emit("farming.enabled", strategy.farming.enabled,
+			environment.food_security);
+		emit("recon.enabled", strategy.reconnaissance.enabled,
+			reconnaissance.report().exploredPercent);
+		emit("economy.food_service_safeguards_enabled",
+			strategy.economy.food_service_safeguards_enabled, foodSeverity);
+		emit("economy.large_economy_adaptation_enabled",
+			strategy.economy.large_economy_adaptation_enabled,
+			snapshot.population);
+		emit("upgrades.enabled", strategy.upgrades.enabled, snapshot.population);
+		if(echo.player && echo.player->team
+		   && (echo.player->team->allies & ~echo.player->team->me))
+			emit("teamplay.enabled", strategy.teamplay.enabled, 1);
+	}
+	const bool postureEnabled=posture==PostureExpand
+		? strategy.postures.expand_enabled : posture==PostureDevelop
+		? strategy.postures.develop_enabled : posture==PostureMobilize
+		? strategy.postures.mobilize_enabled : posture==PostureCampaign
+		? strategy.postures.campaign_enabled : posture==PostureFinish
+		? strategy.postures.finish_enabled : posture==PostureDefend
+		? strategy.postures.defend_enabled : strategy.postures.recover_enabled;
+	emit(std::string("postures.")+posture_name(posture)+"_enabled",
+		postureEnabled, posture_utilities[posture]);
+	if(budget.colony_swarm_requested)
+		emit("colonization.enabled", strategy.colonization.enabled,
+			budget.colony_swarm_priority);
+	if(budget.tactical_kind!=Tactics::MissionNone
+		|| budget.tactical_dig_out_team>=0)
+		emit("tactics.enabled", strategy.tactics.enabled, tacticalSeverity);
+	if(snapshot.visible_colony_threat>0 || snapshot.own_buildings_under_attack>0
+		|| snapshot.own_units_under_attack>0)
+		emit("defense.reactive.enabled", strategy.reactive_defense.enabled,
+			colonySeverity);
+	if(budget.preemptive_defense_active)
+		emit("military.preemptive_defense_enabled",
+			strategy.military.preemptive_defense_enabled,
+			budget.preemptive_effective_zone_max);
+	if(rawExplorer)
+		emit("military.explorer_defense_enabled",
+			strategy.military.explorer_defense_enabled,
+			std::max(snapshot.visible_enemy_attack_explorers,
+				snapshot.visible_colony_explorer_threat));
+	if(rawFood)
+		emit("emergencies.food_enabled", strategy.emergencies.food_enabled,
+			foodSeverity);
+	if(rawColony)
+		emit("emergencies.colony_enabled", strategy.emergencies.colony_enabled,
+			colonySeverity);
+}
 
 
 Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& echo)
@@ -794,6 +1527,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& echo)
 	return state;
 }
 
+
 void Maxima::update_trends()
 {
 	// Unserved hunger includes critically hungry units that cannot currently eat.
@@ -818,6 +1552,7 @@ void Maxima::update_trends()
 		+(snapshot.visible_colony_threat-previous_snapshot.visible_colony_threat)
 			*policy.observation_scale)/policy.total_weight;
 }
+
 
 void Maxima::initialize_topology_profile(Context& echo)
 {
@@ -1053,6 +1788,7 @@ void Maxima::initialize_topology_profile(Context& echo)
 	topology_initialized=true;
 }
 
+
 void Maxima::update_environment_model(Context& echo)
 {
 	initialize_topology_profile(echo);
@@ -1217,7 +1953,7 @@ void Maxima::update_environment_model(Context& echo)
 		environment=observed;
 		return;
 	}
-	// Counts are current observations.  Strategic axes are
+	// Counts are current observations for telemetry.  Strategic axes are
 	// smoothed to prevent one unlucky harvest or sighting from thrashing policy.
 	environment.known_tiles=observed.known_tiles;
 	environment.accessible_corn=observed.accessible_corn;
@@ -1266,6 +2002,7 @@ void Maxima::update_environment_model(Context& echo)
 			   && observed.resource_capacity>=policy.large_economy_resource_min)))
 		large_economy_committed=true;
 }
+
 
 void Maxima::score_demands()
 {
@@ -1352,6 +2089,7 @@ void Maxima::score_demands()
 		+(known_target ? policy.aggression_target_bonus : 0)-demands.survival);
 }
 
+
 std::vector<unsigned char> Maxima::reconnaissance_discovery_map(
 	Context& echo) const
 {
@@ -1365,6 +2103,7 @@ std::vector<unsigned char> Maxima::reconnaissance_discovery_map(
 				x, y, echo.player->team->me) ? 1 : 0;
 	return discovered;
 }
+
 
 void Maxima::remember_cleared_enemy_site(Context& echo,
 	const Recon::BuildingSighting& sighting)
@@ -1395,8 +2134,13 @@ void Maxima::remember_cleared_enemy_site(Context& echo,
 	}
 	if(!merged)
 		cleared_enemy_sites.push_back(ClearedEnemySite(x, y, timer));
-
+	std::ostringstream fields;
+	fields<<"\tx="<<x<<"\ty="<<y<<"\tteam="<<sighting.team
+		<<"\tbuilding_type="<<sighting.type<<"\tmerged="<<(merged ? 1 : 0)
+		<<"\thotspot_count="<<cleared_enemy_sites.size();
+	emit_telemetry(echo, "colony_site_remembered", fields.str());
 }
+
 
 void Maxima::prune_cleared_enemy_sites()
 {
@@ -1409,6 +2153,7 @@ void Maxima::prune_cleared_enemy_sites()
 			++site;
 	}
 }
+
 
 void Maxima::sample_reconnaissance_forces(Context& echo)
 {
@@ -1474,6 +2219,7 @@ void Maxima::sample_reconnaissance_forces(Context& echo)
 	reconnaissance.finishForceObservation();
 	tactics.replaceThreats(timer, threats);
 }
+
 
 void Maxima::update_reconnaissance(Context& echo)
 {
@@ -1618,6 +2364,7 @@ void Maxima::update_reconnaissance(Context& echo)
 		? 0 : explored*100/int(discovered.size()));
 }
 
+
 void Maxima::update_opponent_models(Context& echo)
 {
 	AIMaximaRuntime::Gradients::GradientInfo home_info;
@@ -1690,6 +2437,7 @@ void Maxima::update_opponent_models(Context& echo)
 	}
 }
 
+
 void Maxima::remove_reconnaissance_missions(Context& echo,
 	const char* reason)
 {
@@ -1701,10 +2449,14 @@ void Maxima::remove_reconnaissance_missions(Context& echo,
 		if(echo.get_building_register().is_building_found(mission->flagId)
 		   || echo.get_building_register().is_building_pending(mission->flagId))
 			echo.add_management_order(new DestroyBuilding(mission->flagId));
-
+		emit_telemetry(echo, "recon_mission_removed",
+			"\tflag="+boost::lexical_cast<std::string>(mission->flagId)
+			+"\ttarget_team="+boost::lexical_cast<std::string>(mission->targetTeam)
+			+"\treason="+reason);
 	}
 	reconnaissance.clearMissions();
 }
+
 
 void Maxima::update_reconnaissance_missions(Context& echo)
 {
@@ -1718,13 +2470,17 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 			++mission;
 			continue;
 		}
-
+		emit_telemetry(echo, "recon_mission_removed",
+			"\tflag="+boost::lexical_cast<std::string>(mission->flagId)
+			+"\ttarget_team="+boost::lexical_cast<std::string>(mission->targetTeam)
+			+"\treason=flag_missing");
 		mission=report.missions.erase(mission);
 	}
 
 	if(budget.reconnaissance_suspended || report.exploredPercent<ACTIVE_RECON_MIN_EXPLORED_PERCENT)
 	{
-
+		if(!reconnaissance_suspended)
+			emit_telemetry(echo, "recon_suspended");
 		reconnaissance_suspended=true;
 		if(!report.missions.empty())
 			remove_reconnaissance_missions(echo,
@@ -1736,7 +2492,7 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 	{
 		reconnaissance_suspended=false;
 		last_recon_mission_tick=-1000000;
-
+		emit_telemetry(echo, "recon_resumed");
 	}
 	if(budget.reconnaissance_objectives.empty())
 	{
@@ -1791,7 +2547,14 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 			missions.push_back(Recon::ReconMission(flag, objective.targetTeam,
 				objective.frontier, objective.x, objective.y, timer,
 				objective.economicWatch));
-
+			emit_telemetry(echo, "recon_mission_created",
+				"\tflag="+boost::lexical_cast<std::string>(flag)
+				+"\ttarget_team="+boost::lexical_cast<std::string>(objective.targetTeam)
+				+"\tfrontier="+boost::lexical_cast<std::string>(objective.frontier ? 1 : 0)
+				+"\teconomic_watch="+boost::lexical_cast<std::string>(
+					objective.economicWatch ? 1 : 0)
+				+"\tx="+boost::lexical_cast<std::string>(objective.x)
+				+"\ty="+boost::lexical_cast<std::string>(objective.y));
 			continue;
 		}
 
@@ -1827,7 +2590,12 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 		{
 			echo.add_management_order(new ChangeFlagPosition(
 				objective.x, objective.y, mission.flagId));
-
+			emit_telemetry(echo, "recon_mission_moved",
+				"\tflag="+boost::lexical_cast<std::string>(mission.flagId)
+				+"\tprevious_team="+boost::lexical_cast<std::string>(mission.targetTeam)
+				+"\ttarget_team="+boost::lexical_cast<std::string>(objective.targetTeam)
+				+"\tx="+boost::lexical_cast<std::string>(objective.x)
+				+"\ty="+boost::lexical_cast<std::string>(objective.y));
 			mission.x=objective.x;
 			mission.y=objective.y;
 			mission.lastRetaskTick=timer;
@@ -1843,10 +2611,14 @@ void Maxima::update_reconnaissance_missions(Context& echo)
 		if(echo.get_building_register().is_building_found(mission.flagId)
 		   || echo.get_building_register().is_building_pending(mission.flagId))
 			echo.add_management_order(new DestroyBuilding(mission.flagId));
-
+		emit_telemetry(echo, "recon_mission_removed",
+			"\tflag="+boost::lexical_cast<std::string>(mission.flagId)
+			+"\ttarget_team="+boost::lexical_cast<std::string>(mission.targetTeam)
+			+"\treason=capacity_reduced");
 		missions.pop_back();
 	}
 }
+
 
 void Maxima::plan_reconnaissance_objectives(Context& echo)
 {
@@ -1996,6 +2768,7 @@ void Maxima::plan_reconnaissance_objectives(Context& echo)
 	budget.desired_explorers=std::max(budget.desired_explorers, desired);
 }
 
+
 bool Maxima::severe_food_emergency() const
 {
 	if(!strategy.emergencies.food_enabled)
@@ -2009,6 +2782,7 @@ bool Maxima::severe_food_emergency() const
 		|| std::max(snapshot.unserved_food,snapshot.critical_food)*100
 			>=snapshot.population*strategy.emergencies.food_combined_percent;
 }
+
 
 bool Maxima::severe_colony_emergency() const
 {
@@ -2033,6 +2807,7 @@ bool Maxima::severe_colony_emergency() const
 				<strategy.emergencies.proportional_population_trend_threshold);
 }
 
+
 bool Maxima::explorer_defense_active() const
 {
 	if(!strategy.military.explorer_defense_enabled)
@@ -2047,6 +2822,7 @@ bool Maxima::explorer_defense_active() const
 		|| timer<explorer_threat_until;
 }
 
+
 bool Maxima::explorer_defense_emergency() const
 {
 	if(!strategy.military.explorer_defense_enabled)
@@ -2055,6 +2831,7 @@ bool Maxima::explorer_defense_emergency() const
 			>=strategy.reconnaissance.explorer_colony_warning_threshold
 		|| timer<explorer_colony_threat_until;
 }
+
 
 bool Maxima::abundance_surge_active() const
 {
@@ -2070,11 +2847,13 @@ bool Maxima::abundance_surge_active() const
 			|| snapshot.swimming_workers>0);
 }
 
+
 bool Maxima::large_economy_established() const
 {
 	return strategy.economy.large_economy_adaptation_enabled
 		&& large_economy_committed;
 }
+
 
 void Maxima::score_postures()
 {
@@ -2225,6 +3004,7 @@ void Maxima::score_postures()
 	if(!policy.finish_enabled) posture_utilities[PostureFinish]=INT_MIN;
 }
 
+
 void Maxima::select_posture()
 {
 	const bool enabled[PostureCount]={
@@ -2285,6 +3065,7 @@ void Maxima::select_posture()
 	}
 }
 
+
 void Maxima::allocate_resources()
 {
 	budget=DirectorPlan();
@@ -2342,6 +3123,20 @@ void Maxima::allocate_resources()
 	arbitrate_policy_bids();
 }
 
+
+const char* Maxima::policy_name(PolicyKind policy) const
+{
+	switch(policy)
+	{
+		case PolicySurvival: return "survival";
+		case PolicyGrowth: return "growth";
+		case PolicyAccess: return "access";
+		case PolicyTechnology: return "technology";
+		case PolicyDefense: return "defense";
+		case PolicyOffense: return "offense";
+		default: return "unknown";
+	}
+}
 
 
 void Maxima::build_policy_bids()
@@ -2648,6 +3443,7 @@ void Maxima::build_policy_bids()
 	offense.construction_sites=strategy.construction.policy_low_sites;
 }
 
+
 void Maxima::arbitrate_policy_bids()
 {
 	DirectorPlan result;
@@ -2760,6 +3556,7 @@ void Maxima::arbitrate_policy_bids()
 	budget=result;
 }
 
+
 void Maxima::finalize_director_plan(Context& echo)
 {
 	// Copy every executor-facing threshold into the immutable plan. From this
@@ -2859,15 +3656,24 @@ void Maxima::finalize_director_plan(Context& echo)
 			   && building->resources[CORN]>=building->type->resourceForOneUnit)
 			{
 				operating_colonies.insert(action.id);
-
+				emit_telemetry(echo,"colony_swarm_operating",
+					"\tbuilding_id="+boost::lexical_cast<std::string>(action.buildingId));
 			}
 			else colony_starting=true;
 		}
 	}
-	budget.colony_swarm_requested=strategy.colonization.enabled
-        && !colony_active && !colony_starting
-        && snapshot.free_workers-snapshot.worker_jobs_open
-            >=strategy.staffing.construction_swarm_workers;
+	budget.colony_swarm_requested=false;
+	if(!strategy.colonization.enabled) colony_gate_reason="disabled";
+	else if(colony_active) colony_gate_reason="colonial construction active";
+	else if(colony_starting) colony_gate_reason="colony awaiting workers and food";
+	else if(snapshot.free_workers-snapshot.worker_jobs_open
+		<strategy.staffing.construction_swarm_workers)
+		colony_gate_reason="insufficient free builders";
+	else
+	{
+		budget.colony_swarm_requested=true;
+		colony_gate_reason="eligible";
+	}
 	budget.can_swim=snapshot.swimming_workers>0;
 	if(strategy.economy.worker_birth_throttle_enabled && snapshot.workers>0
 	   && snapshot.population>=strategy.economy.worker_birth_stop_population_min
@@ -3054,6 +3860,7 @@ void Maxima::finalize_director_plan(Context& echo)
 		|| recent_construction_failures>=strategy.farming.proactive_failure_threshold;
 }
 
+
 bool Maxima::raid_candidate_safe(Context& echo,
 	const Tactics::RaidCandidate& candidate, int raidForce, int& routeDistance,
 	int& nearestBuildingDistance) const
@@ -3130,6 +3937,7 @@ bool Maxima::raid_candidate_safe(Context& echo,
 	routeDistance=swim.get_height(candidate.x, candidate.y);
 	return routeDistance>=0;
 }
+
 
 bool Maxima::choose_tactical_rally(Context& echo, int targetX, int targetY,
 	int& rallyX, int& rallyY) const
@@ -3232,7 +4040,12 @@ bool Maxima::choose_tactical_rally(Context& echo, int targetX, int targetY,
 
 void Maxima::plan_tactical_authorization(Context& echo)
 {
-
+	const TacticalDecisionDiagnostics previous_diagnostics=tactical_diagnostics;
+	tactical_diagnostics.reset(timer);
+	tactical_diagnostics.trainedWarriors=snapshot.trained_warriors;
+	tactical_diagnostics.defenseReserve=budget.defense_reserve;
+	tactical_diagnostics.deployableWarriors=std::max(0,
+		snapshot.trained_warriors-budget.defense_reserve);
 	budget.tactical_kind=Tactics::MissionNone;
 	budget.tactical_target_team=-1;
 	budget.tactical_dig_out_team=-1;
@@ -3250,12 +4063,14 @@ void Maxima::plan_tactical_authorization(Context& echo)
 	budget.tactical_route_distance=-1;
 	if(!strategy.tactics.enabled)
 	{
-
+		tactical_diagnostics.authorization="blocked";
+		tactical_diagnostics.decision="warrior tactics disabled";
 		return;
 	}
 	if(budget.colony_emergency)
 	{
-
+		tactical_diagnostics.authorization="blocked";
+		tactical_diagnostics.decision="colony emergency protects the army";
 		return;
 	}
 	int replacement_siege_team=-1;
@@ -3273,7 +4088,13 @@ void Maxima::plan_tactical_authorization(Context& echo)
 		budget.tactical_minimum_force=tactical_mission.minimumForce;
 		if(tactical_mission.kind==Tactics::MissionRaid)
 		{
-
+			tactical_diagnostics=previous_diagnostics;
+			tactical_diagnostics.authorization="mission locked";
+			if(tactical_diagnostics.decision=="none")
+			{
+				tactical_diagnostics.tick=timer;
+				tactical_diagnostics.decision="continuing loaded raid lifecycle";
+			}
 			return;
 		}
 		if(tactical_mission.kind==Tactics::MissionRelief)
@@ -3285,7 +4106,13 @@ void Maxima::plan_tactical_authorization(Context& echo)
 			if(active_intel && active_intel->buildings.find(tactical_mission.targetGid)
 				!=active_intel->buildings.end())
 			{
-
+				tactical_diagnostics=previous_diagnostics;
+				tactical_diagnostics.authorization="mission locked";
+				if(tactical_diagnostics.decision=="none")
+				{
+					tactical_diagnostics.tick=timer;
+					tactical_diagnostics.decision="continuing loaded siege lifecycle";
+				}
 				return;
 			}
 			replacement_siege_team=tactical_mission.targetTeam;
@@ -3296,17 +4123,29 @@ void Maxima::plan_tactical_authorization(Context& echo)
 	}
 	if(timer<tactical_mission.cooldownUntil)
 	{
-
+		tactical_diagnostics.authorization="cooldown";
+		tactical_diagnostics.decision="waiting "+diagnostic_value(
+			tactical_mission.cooldownUntil-timer)+" ticks";
 		return;
 	}
 
-	const int deployable=std::max(0, snapshot.trained_warriors-budget.defense_reserve);
+	tactical_diagnostics.authorization="open";
+	const int deployable=tactical_diagnostics.deployableWarriors;
 	int raid_score=INT_MIN;
 	Tactics::RaidCandidate raid;
 	const bool can_raid=strategy.raiding.enabled
 		&& !active_relief && replacement_siege_team<0
 		&& deployable>=strategy.raiding.min_force;
-
+	if(active_relief)
+		tactical_diagnostics.raidGate="blocked: active ally defense";
+	else if(replacement_siege_team>=0)
+		tactical_diagnostics.raidGate="blocked: replacing siege target";
+	else if(deployable<strategy.raiding.min_force)
+		tactical_diagnostics.raidGate="blocked: too few free warriors";
+	else
+		tactical_diagnostics.raidGate="open";
+	tactical_diagnostics.raidCandidates=
+		static_cast<int>(tactics.raidCandidates().size());
 	if(can_raid)
 	{
 		for(std::vector<Tactics::RaidCandidate>::const_iterator candidate=
@@ -3322,7 +4161,7 @@ void Maxima::plan_tactical_authorization(Context& echo)
 				continue;
 			if(requested<strategy.raiding.min_force)
 				continue;
-
+			++tactical_diagnostics.viableRaids;
 			const int route_penalty=route*strategy.raiding.route_distance_weight;
 			int outskirts_bonus=0;
 			int allied_bonus=0;
@@ -3351,10 +4190,19 @@ void Maxima::plan_tactical_authorization(Context& echo)
 			{
 				raid_score=score;
 				raid=*candidate;
-
+				tactical_diagnostics.raidScore=score;
+				tactical_diagnostics.raidRawScore=candidate->score;
+				tactical_diagnostics.raidRoute=route;
+				tactical_diagnostics.raidRoutePenalty=route_penalty;
+				tactical_diagnostics.raidOutskirtsBonus=outskirts_bonus;
+				tactical_diagnostics.raidAlliedBonus=allied_bonus;
+				tactical_diagnostics.raidFfaPenalty=ffa_penalty;
+				tactical_diagnostics.raidWorkers=candidate->workers;
+				tactical_diagnostics.raidDefenders=candidate->defenders;
 			}
 		}
-
+		if(tactical_diagnostics.viableRaids==0)
+			tactical_diagnostics.raidGate="open, but no safe reachable cluster";
 	}
 
 	int siege_score=INT_MIN;
@@ -3400,7 +4248,16 @@ void Maxima::plan_tactical_authorization(Context& echo)
 		&& has_living_ally
 		&& replacement_siege_team<0
 		&& deployable>=strategy.teamplay.defense_min_force;
-
+	if(!strategy.teamplay.defense_enabled)
+		tactical_diagnostics.reliefGate="blocked: ally defense disabled";
+	else if(!has_living_ally)
+		tactical_diagnostics.reliefGate="blocked: no living ally";
+	else if(replacement_siege_team>=0)
+		tactical_diagnostics.reliefGate="blocked: replacing siege target";
+	else if(deployable<strategy.teamplay.defense_min_force)
+		tactical_diagnostics.reliefGate="blocked: too few free warriors";
+	else
+		tactical_diagnostics.reliefGate="open";
 	if(can_relieve)
 	{
 		GradientInfo land_route_info;
@@ -3420,7 +4277,7 @@ void Maxima::plan_tactical_authorization(Context& echo)
 		const auto consider_relief=[&](int team, int x, int y, int asset_value,
 			bool under_attack)
 		{
-
+			++tactical_diagnostics.reliefCandidates;
 			int enemies=0;
 			int enemy_power=0;
 			for(std::vector<Tactics::ThreatSighting>::const_iterator threat=
@@ -3461,7 +4318,7 @@ void Maxima::plan_tactical_authorization(Context& echo)
 				-route*strategy.teamplay.defense_route_distance_weight;
 			if(score<=0)
 				return;
-
+			++tactical_diagnostics.viableReliefs;
 			if(score<=relief.score)
 				return;
 			relief.team=team;
@@ -3474,7 +4331,19 @@ void Maxima::plan_tactical_authorization(Context& echo)
 			relief.allies=pressure.warriors;
 			relief.alliedPower=pressure.power;
 			relief.route=route;
-
+			tactical_diagnostics.reliefScore=score;
+			tactical_diagnostics.reliefBaseScore=
+				strategy.teamplay.defense_base_score;
+			tactical_diagnostics.reliefAssetValue=asset_value;
+			tactical_diagnostics.reliefThreatBonus=
+				enemies*strategy.teamplay.defense_threat_weight;
+			tactical_diagnostics.reliefUnderAttackBonus=under_attack
+				? strategy.teamplay.defense_under_attack_bonus : 0;
+			tactical_diagnostics.reliefRoutePenalty=
+				route*strategy.teamplay.defense_route_distance_weight;
+			tactical_diagnostics.reliefEnemyPower=enemy_power;
+			tactical_diagnostics.reliefAlliedPower=pressure.power;
+			tactical_diagnostics.reliefRequiredPower=required_power;
 		};
 
 		for(int team=0; team<Team::MAX_COUNT; ++team)
@@ -3506,7 +4375,9 @@ void Maxima::plan_tactical_authorization(Context& echo)
 					strategy.teamplay.defense_unit_value, true);
 			}
 		}
-
+		if(tactical_diagnostics.viableReliefs==0)
+			tactical_diagnostics.reliefGate=
+				"open, but no threatened reachable ally";
 	}
 
 	// Progress commits us to a living opponent, never an eliminated one.
@@ -3520,7 +4391,14 @@ void Maxima::plan_tactical_authorization(Context& echo)
 		&& timer-campaign.last_progress_tick<=strategy.tactics.siege_target_lock_ticks;
 	const bool can_siege=strategy.tactics.siege_enabled && !active_relief
 		&& deployable>=strategy.tactics.siege_min_force;
-
+	if(active_relief)
+		tactical_diagnostics.siegeGate="blocked: active ally defense";
+	else if(!strategy.tactics.siege_enabled)
+		tactical_diagnostics.siegeGate="blocked: sieges disabled";
+	else if(deployable<strategy.tactics.siege_min_force)
+		tactical_diagnostics.siegeGate="blocked: too few free warriors";
+	else
+		tactical_diagnostics.siegeGate="open";
 	if(can_siege)
 	{
 		const Recon::ReconReport& report=reconnaissance.report();
@@ -3531,16 +4409,17 @@ void Maxima::plan_tactical_authorization(Context& echo)
 				continue;
 			if(progress_lock && opponent->first!=campaign.target_team)
 			{
-
+				tactical_diagnostics.siegeRejections["progress_lock"]+=opponent->second.buildings.size();
 				continue;
 			}
 			if(replacement_siege_team>=0
 			   && opponent->first!=replacement_siege_team)
 			{
-
+				tactical_diagnostics.siegeRejections["replacement_lock"]+=opponent->second.buildings.size();
 				continue;
 			}
-
+			if(opponent->second.buildings.empty())
+				++tactical_diagnostics.siegeRejections["opponent_without_known_buildings"];
 			const int unseen=std::max(0, opponent->second.estimatedWarriors
 				-opponent->second.visibleWarriors);
 			const int uncertainty=unseen*(100-opponent->second.confidence)
@@ -3572,12 +4451,12 @@ void Maxima::plan_tactical_authorization(Context& echo)
 				building!=opponent->second.buildings.end(); ++building)
 			{
 				const Recon::BuildingSighting& sighting=building->second;
-
+				++tactical_diagnostics.siegeCandidates;
 				if(Tactics::Program::targetQuarantined(sighting.gid, timer,
 					strategy.tactics.failed_target_quarantine_enabled,
 					attack_target_quarantine_until))
 				{
-
+					++tactical_diagnostics.siegeRejections["quarantined"];
 					continue;
 				}
 				int local_power=0;
@@ -3611,17 +4490,47 @@ void Maxima::plan_tactical_authorization(Context& echo)
 				int distance=land_route.get_height(sighting.x, sighting.y);
 				const bool amphibious=distance<0;
 				if(amphibious) distance=swim_route.get_height(sighting.x,sighting.y);
+				std::map<std::string, int> eligibility;
+				const bool diagnostic_logging=globalContainer && globalContainer->nicowarTelemetry;
 				const std::vector<int> reachable_powers=reachability.powersAt(
 					echo.player->team,continuing_flag,
-					sighting.x,sighting.y,deployable,amphibious);
+					sighting.x,sighting.y,deployable,amphibious,
+					diagnostic_logging ? &eligibility : NULL);
 				const int required=Tactics::Program::forceForPower(
 					reachable_powers,
 					required_power,strategy.tactics.siege_min_force,
 					strategy.military.attack_unit_cap);
-
-
+				int capped_power=0, total_power=0;
+				for(size_t i=0; i<reachable_powers.size(); ++i)
+				{
+					total_power+=reachable_powers[i];
+					if(int(i)<strategy.military.attack_unit_cap) capped_power+=reachable_powers[i];
+				}
+				const char* rejection=distance<0 ? "no_base_route"
+					: int(reachable_powers.size())<strategy.tactics.siege_min_force ? "too_few_eligible"
+					: strategy.military.attack_unit_cap<strategy.tactics.siege_min_force ? "cap_below_minimum"
+					: required==0 ? (total_power>=required_power ? "attack_cap_power" : "insufficient_power")
+					: "viable";
+				if(distance<0 || required==0) ++tactical_diagnostics.siegeRejections[rejection];
+				if(diagnostic_logging)
+				{
+					std::ostringstream detail;
+					detail<<"\ttactical_review_tick="<<timer
+						<<"\ttarget_team="<<opponent->first<<"\ttarget_gid="<<sighting.gid
+						<<"\treason="<<rejection<<"\tdistance="<<distance<<"\tamphibious="<<amphibious
+						<<"\teligible="<<reachable_powers.size()<<"\tdeployable="<<deployable
+						<<"\tminimum="<<strategy.tactics.siege_min_force<<"\tcap="<<strategy.military.attack_unit_cap
+						<<"\tavailable_power="<<capped_power<<"\tuncapped_power="<<total_power
+						<<"\trequired_power="<<required_power<<"\tlocal_enemy_power="<<local_power
+						<<"\tunseen_allowance="<<uncertainty<<"\tnearby_towers="<<nearby_towers
+						<<"\trepresentative_power="<<representative_power
+						<<"\tstrength_percent="<<strategy.tactics.siege_strength_percent;
+					for(std::map<std::string,int>::const_iterator e=eligibility.begin(); e!=eligibility.end(); ++e)
+						detail<<"\tunits_"<<e->first<<"="<<e->second;
+					tactical_diagnostics.siegeCandidateDetails.push_back(detail.str());
+				}
 				if(distance<0 || required==0) continue;
-
+				++tactical_diagnostics.viableSieges;
 				int value=tactical_building_value(sighting.type, strategy.tactics);
 				if(sighting.construction)
 					value+=strategy.tactics.target_construction_bonus;
@@ -3649,11 +4558,30 @@ void Maxima::plan_tactical_authorization(Context& echo)
 						std::max(required, strategy.tactics.siege_min_force));
 					siege_player_pressure=allied_player_pressure;
 					siege_target_pressure=allied_target_pressure;
-
+					tactical_diagnostics.siegeScore=score;
+					tactical_diagnostics.siegeTargetValue=value;
+					tactical_diagnostics.siegeOpponentScore=
+						opponents[opponent->first].score;
+					tactical_diagnostics.siegeAlliedPlayerBonus=
+						allied_player_pressure
+						? strategy.teamplay.siege_player_pressure_bonus : 0;
+					tactical_diagnostics.siegeAlliedTargetBonus=
+						allied_target_pressure
+						? strategy.teamplay.siege_building_pressure_bonus : 0;
+					tactical_diagnostics.siegeTowerPenalty=nearby_towers
+						*strategy.tactics.target_tower_penalty;
+					tactical_diagnostics.siegeRoutePenalty=distance
+						*strategy.tactics.route_distance_weight;
+					tactical_diagnostics.siegeLocalPower=local_power;
+					tactical_diagnostics.siegeUncertainty=uncertainty;
+					tactical_diagnostics.siegeNearbyTowers=nearby_towers;
+					tactical_diagnostics.siegeRequiredPower=required_power;
 				}
 			}
 		}
-
+		if(tactical_diagnostics.viableSieges==0)
+			tactical_diagnostics.siegeGate=
+				"open, but no reachable beatable target";
 	}
 
 	const bool choose_siege=siege_gid!=-1
@@ -3678,14 +4606,20 @@ void Maxima::plan_tactical_authorization(Context& echo)
 		budget.tactical_allied_warriors=relief.allies;
 		budget.tactical_allied_power=relief.alliedPower;
 		budget.tactical_route_distance=relief.route;
-
+		if(active_relief)
+			tactical_diagnostics.decision=
+				"active ally defense keeps priority";
+		else
+			tactical_diagnostics.decision="ally defense "+
+				diagnostic_value(relief.score)+" > offense "+
+				diagnostic_score(offense_score);
 	}
 	else if(active_relief)
 	{
 		// Preserve the active mission while its short contact TTL expires. The
 		// executor owns withdrawal and cooldown transitions.
-		{}
-
+		tactical_diagnostics.authorization="mission grace";
+		tactical_diagnostics.decision="holding ally defense during contact TTL";
 		return;
 	}
 	else if(choose_siege)
@@ -3700,7 +4634,13 @@ void Maxima::plan_tactical_authorization(Context& echo)
 		budget.tactical_minimum_force=strategy.tactics.siege_min_force;
 		budget.tactical_allied_player_pressure=siege_player_pressure;
 		budget.tactical_allied_target_pressure=siege_target_pressure;
-
+		if(replacement_siege_team>=0)
+			tactical_diagnostics.decision="replacing lost siege target";
+		else if(raid_score==INT_MIN)
+			tactical_diagnostics.decision="siege viable; no viable raid";
+		else
+			tactical_diagnostics.decision="siege "+diagnostic_value(siege_score)
+				+" >= raid "+diagnostic_value(raid_score);
 	}
 	else if(raid_score!=INT_MIN)
 	{
@@ -3716,7 +4656,11 @@ void Maxima::plan_tactical_authorization(Context& echo)
 			raid.workers, strategy.raiding.force_bonus, strategy.raiding.min_force,
 			std::min(strategy.raiding.max_force, deployable));
 		budget.tactical_minimum_force=strategy.raiding.min_force;
-
+		if(siege_score==INT_MIN)
+			tactical_diagnostics.decision="raid viable; no viable siege";
+		else
+			tactical_diagnostics.decision="raid "+diagnostic_value(raid_score)
+				+" > siege "+diagnostic_value(siege_score);
 	}
 	else
 	{
@@ -3744,11 +4688,299 @@ void Maxima::plan_tactical_authorization(Context& echo)
 		if(dig_out_team>=0)
 		{
 			budget.tactical_dig_out_team=dig_out_team;
-
+			tactical_diagnostics.decision="opening route to sealed team "+
+				diagnostic_value(dig_out_team);
 		}
-
+		else
+			tactical_diagnostics.decision=
+				"no viable raid, siege, ally defense, or dig-out target";
 	}
 }
+
+
+void Maxima::emit_director_snapshot(Context& echo) const
+{
+	MapInfo world(echo);
+	int estimated_enemy_warriors=0;
+	for(int team=0; team<Team::MAX_COUNT; ++team)
+		if(opponents[team].alive)
+			estimated_enemy_warriors=std::max(estimated_enemy_warriors,
+				opponents[team].estimated_warriors);
+	int assigned_building_workers=0;
+	int inn_workers=0;
+	int swarm_workers=0;
+	int technology_workers=0;
+	int military_workers=0;
+	for(int i=0; i<Building::MAX_COUNT; ++i)
+	{
+		Building* building=echo.player->team->myBuildings[i];
+		if(!building || building->type->isBuildingSite)
+			continue;
+		const int assigned=building->maxUnitWorking;
+		assigned_building_workers+=assigned;
+		switch(building->type->shortTypeNum)
+		{
+			case IntBuildingType::FOOD_BUILDING: inn_workers+=assigned; break;
+			case IntBuildingType::SWARM_BUILDING: swarm_workers+=assigned; break;
+			case IntBuildingType::WALKSPEED_BUILDING:
+			case IntBuildingType::SWIMSPEED_BUILDING:
+			case IntBuildingType::SCIENCE_BUILDING:
+				technology_workers+=assigned; break;
+			case IntBuildingType::HEAL_BUILDING:
+			case IntBuildingType::ATTACK_BUILDING:
+			case IntBuildingType::DEFENSE_BUILDING:
+				military_workers+=assigned; break;
+			default: break;
+		}
+	}
+	TeamStat* stat=echo.player->team->stats.getLatestStat();
+	const bool endgame=snapshot.alive_enemies<=2;
+	const int campaign_population_required=std::max(endgame ? 45 : 50,
+		(endgame ? 55 : 70)-demands.aggression/5);
+	const int campaign_warriors_required=endgame
+		? std::max(24, estimated_enemy_warriors+budget.defense_reserve+3)
+		: std::max(28, estimated_enemy_warriors+budget.defense_reserve+4);
+	const bool campaign_safe=!severe_food_emergency()
+		&& !severe_colony_emergency();
+	const int campaign_worker_floor=std::max(38, 55-demands.growth/5);
+	const bool campaign_economy_ready=snapshot.population>0
+		&& std::max(snapshot.unserved_food,snapshot.critical_food)*100
+			<=snapshot.population*12
+		&& snapshot.workers>=campaign_worker_floor
+		&& snapshot.workers*2>=snapshot.population;
+	const int connected_boom=std::max(0,
+		environment.connected_abundance-50);
+	const int access_barrier=environment.mobility_opportunity
+		*(100-environment.connected_abundance)/100;
+	const int effective_growth_site_mid=clamp_score(
+		strategy.economy.growth_site_utility_mid-connected_boom/2
+			+access_barrier/2);
+	const int effective_growth_site_high=clamp_score(
+		strategy.economy.growth_site_utility_high-connected_boom
+			+access_barrier/2);
+	const int effective_school_population=std::max(0,
+		strategy.economy.school_population_min-connected_boom/3
+			+access_barrier);
+	const int effective_second_school_utility=clamp_score(
+		strategy.economy.second_school_utility_min-connected_boom/3
+			+access_barrier/2);
+	const int effective_pool_population=std::max(0,
+		strategy.economy.pool_population_min-access_barrier/4);
+	const int effective_pool_utility=std::max(10,
+		strategy.economy.pool_utility_min-access_barrier/3);
+	std::ostringstream fields;
+	fields<<"\tposture="<<posture_name(posture)
+		<<"\tmap_width="<<world.get_width()
+		<<"\tmap_height="<<world.get_height()
+		<<"\tglobal_water_tiles="<<global_water_tiles
+		<<"\tglobal_grass_tiles="<<global_grass_tiles
+		<<"\tglobal_land_tiles="<<global_land_tiles
+		<<"\tglobal_buildable_tiles="<<global_buildable_tiles
+		<<"\tglobal_corn_tiles="<<global_corn_tiles
+		<<"\tglobal_wood_tiles="<<global_wood_tiles
+		<<"\tglobal_stone_tiles="<<global_stone_tiles
+		<<"\tglobal_algae_tiles="<<global_algae_tiles
+		<<"\tknown_algae_units="<<known_algae_units
+		<<"\twalk_accessible_algae_units="<<walk_accessible_algae_units
+		<<"\tswim_accessible_algae_units="<<swim_accessible_algae_units
+		<<"\taccessible_algae_units="<<accessible_algae_units
+		<<"\tglobal_fruit_tiles="<<global_fruit_tiles
+		<<"\tglobal_water_percent="<<global_water_percent
+		<<"\tglobal_shoreline_density="<<global_shoreline_density
+		<<"\tglobal_land_components="<<global_land_components
+		<<"\tglobal_largest_land_percent="<<global_largest_land_percent
+		<<"\tglobal_start_land_percent="<<global_start_land_percent
+		<<"\tglobal_chokepoint_density="<<global_chokepoint_density
+		<<"\tterrain_abundance="<<environment.terrain_abundance
+		<<"\tconnected_abundance="<<environment.connected_abundance
+		<<"\tmobility_opportunity="<<environment.mobility_opportunity
+		<<"\tterrain_connected_boom="<<connected_boom
+		<<"\tterrain_access_barrier="<<access_barrier
+		<<"\teffective_growth_site_mid="<<effective_growth_site_mid
+		<<"\teffective_growth_site_high="<<effective_growth_site_high
+		<<"\teffective_school_population="<<effective_school_population
+		<<"\teffective_second_school_utility="<<effective_second_school_utility
+		<<"\teffective_pool_population="<<effective_pool_population
+		<<"\teffective_pool_utility="<<effective_pool_utility
+		<<"\ttopology_complexity="<<environment.topology_complexity
+		<<"\tposture_age="<<(timer-posture_since)
+		<<"\tenvironment_confidence="<<environment.confidence
+		<<"\tresource_capacity="<<environment.resource_capacity
+		<<"\tspace_capacity="<<environment.space_capacity
+		<<"\tfood_security="<<environment.food_security
+		<<"\tfood_headroom="<<environment.food_headroom
+		<<"\tabundance="<<environment.abundance
+		<<"\tabundance_surge="<<(abundance_surge_active() ? 1 : 0)
+		<<"\teconomic_momentum="<<environment.economic_momentum
+		<<"\tmobility_constraint="<<environment.mobility_constraint
+		<<"\tthreat_pressure="<<environment.threat_pressure
+		<<"\tknown_local_tiles="<<environment.known_tiles
+		<<"\taccessible_corn="<<environment.accessible_corn
+		<<"\taccessible_wood="<<environment.accessible_wood
+		<<"\taccessible_stone="<<environment.accessible_stone
+		<<"\taccessible_algae="<<environment.accessible_algae
+		<<"\tbuildable_tiles="<<environment.buildable_tiles
+		<<"\twater_tiles="<<environment.water_tiles
+		<<"\tfeeding_capacity="<<environment.feeding_capacity
+		<<"\tdemand_survival="<<demands.survival
+		<<"\tdemand_food="<<demands.food
+		<<"\tdemand_growth="<<demands.growth
+		<<"\tdemand_expansion="<<demands.expansion
+		<<"\tdemand_access="<<demands.access
+		<<"\tdemand_technology="<<demands.technology
+		<<"\tdemand_mobility="<<demands.mobility
+		<<"\tdemand_military="<<demands.military
+		<<"\tdemand_aggression="<<demands.aggression
+		<<"\tpopulation="<<snapshot.population
+		<<"\tpopulation_trend="<<trends.population
+		<<"\tworkers="<<snapshot.workers
+		<<"\ttrained_workers="<<snapshot.trained_workers
+		<<"\texplorers="<<snapshot.explorers
+		<<"\ttrained_explorers="<<snapshot.trained_explorers
+		<<"\tprestige="<<snapshot.prestige
+		<<"\tenemy_prestige="<<snapshot.enemy_prestige
+		<<"\tworker_trend="<<trends.workers
+		<<"\tfree_workers="<<snapshot.free_workers
+		<<"\tworker_jobs_open="<<snapshot.worker_jobs_open
+		<<"\tassigned_building_workers="<<assigned_building_workers
+		<<"\tinn_workers="<<inn_workers
+		<<"\tswarm_workers="<<swarm_workers
+		<<"\ttechnology_workers="<<technology_workers
+		<<"\tmilitary_workers="<<military_workers
+		<<"\tworker_ratio="<<budget.worker_ratio
+		<<"\texplorer_ratio="<<budget.explorer_ratio
+		<<"\twarrior_ratio="<<budget.warrior_ratio
+		<<"\tswarm_worker_budget="<<budget.swarm_workers
+		<<"\twarriors="<<snapshot.warriors
+		<<"\ttrained_warriors="<<snapshot.trained_warriors
+		<<"\tswimming_workers="<<snapshot.swimming_workers
+		<<"\tswimming_explorers="<<snapshot.swimming_explorers
+		<<"\tswimming_warriors="<<snapshot.swimming_warriors
+		<<"\tamphibious_attack_explorers="
+			<<snapshot.amphibious_attack_explorers
+		<<"\tdefense_reserve="<<budget.defense_reserve
+		<<"\twarrior_trend="<<trends.warriors
+		<<"\tunserved_food="<<snapshot.unserved_food
+		<<"\tcritical_food="<<snapshot.critical_food
+		<<"\tfood="<<stat->totalFood
+		<<"\tfood_capacity="<<stat->totalFoodCapacity
+		<<"\tfood_trend="<<trends.food_pressure
+		<<"\tvisible_enemy_warriors="<<snapshot.visible_enemy_warriors
+		<<"\tvisible_enemy_explorers="<<snapshot.visible_enemy_explorers
+		<<"\tvisible_enemy_attack_explorers="
+			<<snapshot.visible_enemy_attack_explorers
+		<<"\tvisible_colony_explorer_threat="
+			<<snapshot.visible_colony_explorer_threat
+		<<"\texplorer_defense_active="<<(explorer_defense_active() ? 1 : 0)
+		<<"\texplorer_defense_emergency="
+			<<(explorer_defense_emergency() ? 1 : 0)
+		<<"\testimated_enemy_warriors="<<estimated_enemy_warriors
+		<<"\talive_enemies="<<snapshot.alive_enemies
+		<<"\tvisible_colony_threat="<<snapshot.visible_colony_threat
+		<<"\tthreatened_units="<<snapshot.own_units_under_attack
+		<<"\tthreatened_buildings="<<snapshot.own_buildings_under_attack
+		<<"\tneed_heal="<<snapshot.need_heal
+		<<"\tbuildings="<<snapshot.buildings
+		<<"\tbuilding_sites="<<snapshot.building_sites
+		<<"\tinns="<<snapshot.inns
+		<<"\tswarms="<<snapshot.swarms
+		<<"\tbarracks="<<snapshot.barracks
+		<<"\thospitals="<<snapshot.hospitals
+		<<"\tschools="<<snapshot.schools
+		<<"\tschool_level1="<<snapshot.school_level1
+		<<"\tschool_level2="<<snapshot.school_level2
+		<<"\tschool_level3="<<snapshot.school_level3
+		<<"\tpools="<<snapshot.pools
+		<<"\tracetracks="<<snapshot.racetracks
+		<<"\tallow_upgrades="<<(budget.allow_upgrades ? 1 : 0)
+		<<"\tupgrading_phase_1="<<(budget.allow_upgrades ? 1 : 0)
+		<<"\tupgrading_phase_2="<<(budget.allow_level2_upgrades ? 1 : 0)
+		<<"\tconstruction_budget="<<budget.construction_sites
+		<<"\tpriority_inns="<<budget.priority_inns
+		<<"\tpriority_swarms="<<budget.priority_swarms
+		<<"\tpriority_pools="<<budget.priority_pools
+		<<"\tpriority_schools="<<budget.priority_schools
+		<<"\tpriority_barracks="<<budget.priority_barracks
+		<<"\tpriority_hospitals="<<budget.priority_hospitals
+		<<"\tpriority_towers="<<budget.priority_towers
+		<<"\tdesired_inns="<<budget.desired_inns
+		<<"\tinn_level1="<<snapshot.inn_level1
+		<<"\tinn_level2="<<snapshot.inn_level2
+		<<"\tinn_level3="<<snapshot.inn_level3
+		<<"\tdesired_swarms="<<budget.desired_swarms
+		<<"\tcolonization_eligible="<<(budget.colony_swarm_requested ? 1 : 0)
+		<<"\tcolonization_gate="<<colony_gate_reason
+		<<"\tactive_colonial_action="<<development_planner.activeBuildCount(
+			IntBuildingType::SWARM_BUILDING, AIMaximaPlacement::ColonySeed)
+		<<"\testablished_colonies="<<established_colonies
+		<<"\tcleared_hotspots="<<cleared_enemy_sites.size()
+		<<"\tdesired_barracks="<<budget.desired_barracks
+		<<"\tdesired_hospitals="<<budget.desired_hospitals
+		<<"\tdesired_schools="<<budget.desired_schools
+		<<"\tdesired_towers="<<budget.desired_towers
+		<<"\ttowers="<<snapshot.towers
+		<<"\ttower_stone="<<snapshot.tower_stone
+		<<"\ttower_bullets="<<snapshot.tower_bullets
+		<<"\tdesired_explorers="<<budget.desired_explorers
+		<<"\tdesired_warriors="<<budget.desired_warriors
+		<<"\tspace_constrained="<<(opening_space_constrained ? 1 : 0)
+		<<"\tconstruction_failures="<<recent_construction_failures
+		<<"\tclearing_active="<<(proactive_clearing_flag!=-1 ? 1 : 0)
+		<<"\tattack_budget="<<budget.attack_flags
+		<<"\tcampaign_population_required="<<campaign_population_required
+		<<"\tcampaign_worker_floor="<<campaign_worker_floor
+		<<"\tcampaign_warriors_required="<<campaign_warriors_required
+		<<"\tcampaign_population_ready="
+			<<(snapshot.population>=campaign_population_required ? 1 : 0)
+		<<"\tcampaign_force_ready="
+			<<(snapshot.trained_warriors>=campaign_warriors_required ? 1 : 0)
+		<<"\tcampaign_safe="<<(campaign_safe ? 1 : 0)
+		<<"\tcampaign_economy_ready="<<(campaign_economy_ready ? 1 : 0)
+		<<"\tcombat_ready_idle="
+			<<(snapshot.trained_warriors>=campaign_warriors_required
+				&& budget.attack_flags==0 ? 1 : 0)
+		<<"\tcampaign_ready_idle="
+			<<(snapshot.population>=campaign_population_required
+				&& snapshot.trained_warriors>=campaign_warriors_required
+				&& campaign_safe && campaign_economy_ready
+				&& timer>=campaign.cooldown_until
+				&& budget.attack_flags==0 ? 1 : 0)
+		<<"\tcampaign_state="<<int(campaign.state)
+		<<"\tcampaign_cooldown="<<std::max(0, campaign.cooldown_until-timer)
+		<<"\ttarget="<<target
+		<<"\ttactical_review_tick="<<tactical_diagnostics.tick
+		<<"\ttactical_authorization="<<tactical_diagnostics.authorization
+		<<"\ttactical_decision="<<tactical_diagnostics.decision
+		<<"\ttactical_deployable="<<tactical_diagnostics.deployableWarriors
+		<<"\traid_gate="<<tactical_diagnostics.raidGate
+		<<"\tsiege_gate="<<tactical_diagnostics.siegeGate
+		<<"\traid_candidates="<<tactical_diagnostics.raidCandidates
+		<<"\tviable_raids="<<tactical_diagnostics.viableRaids
+		<<"\tsiege_candidates="<<tactical_diagnostics.siegeCandidates
+		<<"\tviable_sieges="<<tactical_diagnostics.viableSieges
+		<<"\tmission_kind="<<Tactics::missionKindName(tactical_mission.kind)
+		<<"\tmission_phase="<<Tactics::missionPhaseName(tactical_mission.phase)
+		<<"\tmission_requested="<<tactical_mission.requestedForce
+		<<"\tconfigured_campaign_worker_floor="<<std::max(
+			strategy.military.campaign_worker_floor,
+			strategy.military.campaign_worker_floor_base
+				-demands.growth/strategy.military.readiness_demand_divisor)
+		<<"\tconfigured_attack_unit_cap="<<strategy.military.attack_unit_cap;
+	for(int candidate=0; candidate<PostureCount; ++candidate)
+		fields<<"\tutility_"<<posture_name(StrategicPosture(candidate))
+			<<"="<<posture_utilities[candidate];
+	for(int policy=0; policy<PolicyCount; ++policy)
+		fields<<"\tbid_"<<policy_name(PolicyKind(policy))
+			<<"="<<policy_bids[policy].utility;
+	for(std::map<std::string,int>::const_iterator r=tactical_diagnostics.siegeRejections.begin();
+		r!=tactical_diagnostics.siegeRejections.end(); ++r)
+		fields<<"\tsiege_reject_"<<r->first<<"="<<r->second;
+	emit_telemetry(echo, "director_snapshot", fields.str());
+	for(std::vector<std::string>::const_iterator detail=tactical_diagnostics.siegeCandidateDetails.begin();
+		detail!=tactical_diagnostics.siegeCandidateDetails.end(); ++detail)
+		emit_telemetry(echo, "siege_candidate_evaluated", *detail);
+}
+
 
 void Maxima::evaluate_strategy(Context& echo)
 {
@@ -3783,18 +5015,26 @@ void Maxima::evaluate_strategy(Context& echo)
 	const bool bomb_at_colony=strategy.military.explorer_defense_enabled
 		&& snapshot.visible_colony_explorer_threat
 			>=strategy.reconnaissance.explorer_colony_warning_threshold;
-
+	const bool new_explorer_alert=bomb_visible
+		&& timer>=explorer_threat_until;
+	const bool new_colony_alert=bomb_at_colony
+		&& timer>=explorer_colony_threat_until;
 	if(bomb_visible)
 		explorer_threat_until=timer
 			+strategy.scheduling.explorer_warning_duration_ticks;
 	if(bomb_at_colony)
 		explorer_colony_threat_until=timer
 			+strategy.scheduling.explorer_colony_warning_duration_ticks;
-
+	if(new_explorer_alert || new_colony_alert)
+		emit_telemetry(echo, "explorer_defense_alert",
+			"\tattack_explorers="
+				+boost::lexical_cast<std::string>(snapshot.visible_enemy_attack_explorers)
+			+"\tnear_colony="
+				+boost::lexical_cast<std::string>(snapshot.visible_colony_explorer_threat));
 	update_opponent_models(echo);
 	score_demands();
 	score_postures();
-
+	const StrategicPosture previous_posture=posture;
 	select_posture();
 	allocate_resources();
 	finalize_director_plan(echo);
@@ -3807,8 +5047,43 @@ void Maxima::evaluate_strategy(Context& echo)
 	else
 		choose_enemy_target(echo);
 	plan_reconnaissance_objectives(echo);
-
+	emit_ablation_opportunities(echo);
+	if(!director.initialized || posture!=previous_posture)
+		emit_telemetry(echo, "posture_changed",
+			"\tprevious="+std::string(director.initialized
+				? posture_name(previous_posture) : "none")
+			+"\tposture="+posture_name(posture));
+	if(timer-last_director_telemetry_tick>=1000)
+	{
+		emit_director_snapshot(echo);
+		std::ostringstream recon_fields;
+		const Recon::ReconReport& recon=reconnaissance.report();
+		recon_fields<<"\texplored_percent="<<recon.exploredPercent
+			<<"\tdesired_missions="<<recon.desiredMissions
+			<<"\tactive_missions="<<recon.missions.size();
+		for(std::map<int, Recon::OpponentIntel>::const_iterator opponent=
+			recon.opponents.begin(); opponent!=recon.opponents.end(); ++opponent)
+		{
+			if(!opponent->second.alive)
+				continue;
+			recon_fields<<"\tteam_"<<opponent->first<<"_visible_warriors="
+				<<opponent->second.visibleWarriors
+				<<"\tteam_"<<opponent->first<<"_estimated_warriors="
+				<<opponent->second.estimatedWarriors
+				<<"\tteam_"<<opponent->first<<"_visible_explorers="
+				<<opponent->second.visibleExplorers
+				<<"\tteam_"<<opponent->first<<"_known_buildings="
+				<<opponent->second.knownBuildings
+				<<"\tteam_"<<opponent->first<<"_confidence="
+				<<opponent->second.confidence
+				<<"\tteam_"<<opponent->first<<"_contact_age="
+				<<std::max(0, timer-opponent->second.lastSeenTick);
+		}
+		emit_telemetry(echo, "recon_snapshot", recon_fields.str());
+		last_director_telemetry_tick=timer;
+	}
 }
+
 
 Maxima::Maxima(Player *player)
 	: context(player)
@@ -3829,6 +5104,7 @@ Maxima::Maxima(Player *player)
 	posture=PostureExpand;
 	posture_since=0;
 	director=StrategyDirector();
+	last_director_telemetry_tick=-1000000;
 	explorer_threat_until=-1000000;
 	explorer_colony_threat_until=-1000000;
 	large_economy_committed=false;
@@ -3888,7 +5164,7 @@ Maxima::Maxima(Player *player)
 	proactive_clearing_flag=-1;
 	proactive_clearing_started_tick=-1000000;
 	proactive_clearing_initial_wood=0;
-
+	proactive_clearing_campaigns=0;
 	last_proactive_clearing_tick=-1000000;
 	exploration_on_fruit=false;
 	target=-1;
@@ -3899,6 +5175,7 @@ Maxima::Maxima(Player *player)
 	preemptive_building_signature=0;
 	last_preemptive_effective_zone_max=-1;
 	last_preemptive_amphibious_active=false;
+	preemptive_diagnostics=AITopologyDiagnosticSnapshot();
 	farming_topology_signature=0;
 	applied_maintenance_clearing_mask.clear();
 	maintenance_circulation_mask.clear();
@@ -3918,10 +5195,10 @@ Maxima::Maxima(Player *player)
 	reconnaissance_suspended=false;
 	cleared_enemy_sites.clear();
 	operating_colonies.clear();
-
+	last_colony_completed_tick=-1000000;
 	last_colony_accounted_action_id=0;
-
-
+	established_colonies=0;
+	colony_gate_reason="not evaluated";
 }
 
 Maxima::Maxima(GAGCore::InputStream *stream, Player *player,
@@ -4188,10 +5465,18 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
 
 }
 
+std::string Maxima::auditStrategyJson() const
+{
+    ResolvedStrategy actual=context.player->game->resolveMaximaStrategy(context.player->number);
+    actual.values=strategy;
+    return StrategyResolver::resolvedJson(actual);
+}
+
 std::shared_ptr<Order> Maxima::getOrder()
 {
 	return context.getOrder(*this);
 }
+
 
 void Maxima::saveDirector(GAGCore::OutputStream* stream) const
 {
@@ -4252,6 +5537,7 @@ void Maxima::saveDirector(GAGCore::OutputStream* stream) const
 #undef V3_ENV_FIELDS
 #undef V3_SNAPSHOT_FIELDS
 }
+
 
 bool Maxima::loadDirector(GAGCore::InputStream* stream,
 	Sint32 versionMinor)
@@ -4324,6 +5610,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 	return true;
 }
 
+
 bool Maxima::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("AIMaxima");
@@ -4331,6 +5618,221 @@ bool Maxima::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMi
 	const bool loaded=loadState(stream, player, versionMinor);
 	stream->readLeaveSection();
 	return loaded;
+}
+
+bool Maxima::loadLegacyState(GAGCore::InputStream *stream, Player *player,
+	Sint32 versionMinor)
+{
+	director_initialized=false;
+	environment=EnvironmentModel();
+	demands=StrategicDemands();
+	last_director_telemetry_tick=-1000000;
+	explorer_threat_until=-1000000;
+	explorer_colony_threat_until=-1000000;
+	large_economy_committed=false;
+	topology_initialized=false;
+	global_water_percent=0;
+	global_shoreline_density=0;
+	global_land_components=0;
+	global_largest_land_percent=100;
+	global_start_land_percent=100;
+	global_chokepoint_density=0;
+	global_water_tiles=0;
+	global_grass_tiles=0;
+	global_land_tiles=0;
+	global_buildable_tiles=0;
+	global_corn_tiles=0;
+	global_wood_tiles=0;
+	global_stone_tiles=0;
+	global_algae_tiles=0;
+	global_fruit_tiles=0;
+	global_terrain_abundance=50;
+	global_connected_abundance=50;
+	global_mobility_opportunity=0;
+	dynamic_plan_weight=0;
+	target_dynamic_plan_weight=0;
+	recent_construction_failures=0;
+	last_construction_failure_tick=-1000000;
+	opening_space_constrained=false;
+	proactive_clearing_flag=-1;
+	proactive_clearing_started_tick=-1000000;
+	proactive_clearing_initial_wood=0;
+	proactive_clearing_campaigns=0;
+	last_proactive_clearing_tick=-1000000;
+	attack_flag_targets.clear();
+	attack_flag_started_ticks.clear();
+	attack_flag_last_hp.clear();
+	attack_flag_last_progress.clear();
+	attack_flag_end_reasons.clear();
+	attack_target_quarantine_until.clear();
+	campaign=CampaignPlan();
+	preemptive_guard_tiles.clear();
+	last_preemptive_defense_tick=-1000000;
+	preemptive_building_signature=0;
+	last_preemptive_effective_zone_max=-1;
+	last_preemptive_amphibious_active=false;
+	preemptive_diagnostics=AITopologyDiagnosticSnapshot();
+	applied_farm_protection_mask.clear();
+	applied_maintenance_clearing_mask.clear();
+	maintenance_circulation_mask.clear();
+	wood_firebreak_mask.clear();
+	strategic_barrier_mask.clear();
+	strategic_gate_mask.clear();
+	emergency_escape_mask.clear();
+	farm_protection_mask.clear();
+	wheat_farm_protection_mask.clear();
+	farming_shoreline_mask.clear();
+	farming_cardinal_shoreline_mask.clear();
+	strategic_gates.clear();
+	strategic_gate_routes.clear();
+	strategic_gate_approaches.clear();
+	settlement_access_routes.clear();
+	barrier_tower_quality.clear();
+	barrier_geometry_signature=0;
+	gate_defense_demand=0;
+	barrier_defense_points.clear();
+	farming_topology_signature=0;
+	last_farming_tick=-1000000;
+	last_barrier_topology_tick=-1000000;
+	farming_urgent=false;
+	land_clearing_pending=false;
+	maintenance_clearing_pending=false;
+	development_cycle_pending=false;
+	preemptive_defense_pending=false;
+	reactive_defense_pending=false;
+	reconnaissance.reset();
+	last_recon_mission_tick=-1000000;
+	reconnaissance_suspended=false;
+	cleared_enemy_sites.clear();
+	operating_colonies.clear();
+	last_colony_completed_tick=-1000000;
+	last_colony_accounted_action_id=0;
+	established_colonies=0;
+	colony_gate_reason="legacy save: immediately eligible";
+	development_planner.reset();
+	configure_development_planner();
+	development_planner_initialized=true;
+	development_reported_states.clear();
+
+	stream->readEnterSection("NewNicowar");
+	timer=stream->readUint32("timer");
+	if(versionMinor>=59)
+	{
+		if(versionMinor>=60 && versionMinor<=87)
+			stream->readText("strategy_name");
+		growth_phase=stream->readUint8("growth_phase");
+		skilled_work_phase=stream->readUint8("skilled_work_phase");
+		upgrading_phase_1=stream->readUint8("upgrading_phase_1");
+		upgrading_phase_2=stream->readUint8("upgrading_phase_2");
+		war_preperation=stream->readUint8("war_preperation");
+		war=stream->readUint8("war");
+		fruit_phase=stream->readUint8("fruit_phase");
+		starving_recovery=stream->readUint8("starving_recovery");
+		no_workers_phase=stream->readUint8("no_workers_phase");
+		if(versionMinor>=60)
+			can_swim=stream->readUint8("can_swim");
+		if(versionMinor>=86)
+		{
+			defend_explorers=stream->readUint8("defend_explorers");
+			explorer_attack_preperation_phase=
+				stream->readUint8("explorer_attack_preperation_phase");
+			explorer_attack_phase=stream->readUint8("explorer_attack_phase");
+		}
+		starving_recovery_inns=stream->readUint8("starving_recovery_inns");
+		buildings_under_construction=
+			stream->readUint32("buildings_under_construction");
+		for(int n=0; n<LegacyPlacementSize; ++n)
+		{
+			buildings_under_construction_per_type[n]=stream->readUint8(
+				FormattableString("buildings_under_construction_per_type[%0]")
+					.arg(n).c_str());
+		}
+
+		placement_queue.clear();
+		stream->readEnterSection("placement_queue");
+		size_t size=stream->readUint16("size");
+		for(size_t n=0; n<size; ++n)
+		{
+			stream->readEnterSection(n);
+			placement_queue.push_back(static_cast<LegacyBuildingPlacement>(
+				stream->readUint8("placement")));
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+
+		construction_queue.clear();
+		stream->readEnterSection("construction_queue");
+		size=stream->readUint16("size");
+		for(size_t n=0; n<size; ++n)
+		{
+			stream->readEnterSection(n);
+			construction_queue.push_back(static_cast<LegacyBuildingPlacement>(
+				stream->readUint8("placement")));
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+
+		target=stream->readSint8("target");
+		is_digging_out=stream->readUint8("is_digging_out");
+		stream->readEnterSection("attack_flags");
+		size=stream->readUint16("size");
+		for(size_t n=0; n<size; ++n)
+		{
+			stream->readEnterSection(n);
+			attack_flags.push_back(stream->readUint32("flag"));
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+
+		if(versionMinor>=66)
+		{
+			stream->readEnterSection("defense_flags");
+			size=stream->readUint16("size");
+			for(size_t n=0; n<size; ++n)
+			{
+				stream->readEnterSection(n);
+				defense_flags.push_back(stream->readUint32("flag"));
+				stream->readLeaveSection();
+			}
+			stream->readLeaveSection();
+			stream->readEnterSection("explorer_attack_flags");
+			size=stream->readUint16("size");
+			for(size_t n=0; n<size; ++n)
+			{
+				stream->readEnterSection(n);
+				explorer_attack_flags.push_back(stream->readUint32("flag"));
+				stream->readLeaveSection();
+			}
+			stream->readLeaveSection();
+			if(versionMinor>=84)
+			{
+				stream->readEnterSection("preemptive_guard_tiles");
+				size=stream->readUint32("size");
+				const int map_size=player->map->getW()*player->map->getH();
+				for(size_t n=0; n<size; ++n)
+				{
+					stream->readEnterSection(n);
+					const int index=stream->readUint32("index");
+					if(index>=0 && index<map_size)
+						preemptive_guard_tiles.insert(index);
+					stream->readLeaveSection();
+				}
+				stream->readLeaveSection();
+			}
+			exploration_on_fruit=stream->readUint8("exploration_on_fruit");
+			if(versionMinor>=86)
+				loadDirector(stream, versionMinor);
+		}
+	}
+	stream->readLeaveSection();
+	// Legacy queues have been consumed so the new planner can derive legal
+	// actions from the loaded world without replaying obsolete placement work.
+	placement_queue.clear();
+	construction_queue.clear();
+	buildings_under_construction=0;
+	if(player && player->map)
+		initialize_farming_cache(context);
+	return true;
 }
 
 bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
@@ -4371,7 +5873,7 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	proactive_clearing_flag=-1;
 	proactive_clearing_started_tick=-1000000;
 	proactive_clearing_initial_wood=0;
-
+	proactive_clearing_campaigns=0;
 	last_proactive_clearing_tick=-1000000;
 	attack_flag_targets.clear();
 	attack_flag_started_ticks.clear();
@@ -4418,10 +5920,10 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	reconnaissance_suspended=false;
 	cleared_enemy_sites.clear();
 	operating_colonies.clear();
-
+	last_colony_completed_tick=-1000000;
 	last_colony_accounted_action_id=0;
-
-
+	established_colonies=0;
+	colony_gate_reason="save default: immediately eligible";
 	stream->readEnterSection("MaximaState");
 	timer=stream->readUint32("timer");
 		target = stream->readSint8("target");
@@ -4485,6 +5987,7 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	return true;
 }
 
+
 void Maxima::save(GAGCore::OutputStream *stream)
 {
 	stream->writeEnterSection("AIMaxima");
@@ -4545,6 +6048,7 @@ void Maxima::save(GAGCore::OutputStream *stream)
 	stream->writeLeaveSection();
 }
 
+
 void Maxima::tick(Context& echo)
 {
 	timer++;
@@ -4560,7 +6064,8 @@ void Maxima::tick(Context& echo)
 	if(timer==1)
 	{
 		initialize(echo);
-
+		emit_telemetry(echo, "strategy_loaded", "\tsettings="
+			+StrategyResolver::canonicalValues(strategy));
 	}
 	if(strategy.reconnaissance.enabled && timer>1
 	   && timer%strategy.reconnaissance.force_sample_interval_ticks
@@ -4616,7 +6121,7 @@ void Maxima::tick(Context& echo)
 	{
 		compute_explorer_flag_attack_positioning(echo);
 	}
-
+	
 	// Placement plans operate on strategic state and construction lifecycles, not
 	// unit-frame movement. The configured cadence bounds response latency while
 	// avoiding a complete placement-world rebuild at frame rate.
@@ -4671,6 +6176,7 @@ void Maxima::tick(Context& echo)
 	}
 }
 
+
 void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 {
 	if(event.type==RuntimeEvent::BuildingResolved
@@ -4705,13 +6211,13 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 			reason=recorded->second;
 		std::map<int, int>::const_iterator target_it=attack_flag_targets.find(id);
 		int finished_target=-1;
-
+		int finished_team=-1;
 		if(target_it!=attack_flag_targets.end())
 		{
 			const int gid=target_it->second;
 			finished_target=gid;
 			const int team=Building::GIDtoTeam(gid);
-
+			finished_team=team;
 			const int local=Building::GIDtoID(gid);
 			if(team>=0 && team<Team::MAX_COUNT && echo.player->game->teams[team]
 			   && local>=0 && local<Building::MAX_COUNT
@@ -4736,9 +6242,20 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 			attack_target_quarantine_until[finished_target]=quarantine_until;
 			campaign.cooldown_until=std::max(campaign.cooldown_until,
 				timer+budget.campaign_retreat_cooldown_ticks);
-
+			emit_telemetry(echo, "target_quarantined",
+				"\tbuilding="+boost::lexical_cast<std::string>(finished_target)
+				+"\treason="+reason
+				+"\tcooldown="+boost::lexical_cast<std::string>(
+					strategy.tactics.failed_target_quarantine_ticks));
 		}
-
+		emit_telemetry(echo, "attack_finished",
+			"\tflag="+boost::lexical_cast<std::string>(id)
+			+"\ttarget_building="+boost::lexical_cast<std::string>(finished_target)
+			+"\ttarget_team="+boost::lexical_cast<std::string>(finished_team)
+			+"\treason="+reason
+			+"\tduration="+boost::lexical_cast<std::string>(duration)
+			+"\tcampaign_destroyed="
+				+boost::lexical_cast<std::string>(campaign.buildings_destroyed));
 		attack_flag_targets.erase(id);
 		attack_flag_started_ticks.erase(id);
 		attack_flag_last_hp.erase(id);
@@ -4785,12 +6302,14 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 	}
 }
 
+
+
 void Maxima::initialize(Context& echo)
 {
 	initialize_farming_cache(echo);
 	BuildingSearch bs(echo);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
-	{
+	{	
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
 			ManagementOrder* mo_tracker=new AddResourceTracker(
@@ -4806,14 +6325,16 @@ void Maxima::initialize(Context& echo)
 			echo.add_management_order(mo_tracker);
 		}
 	}
-
+	
 	manage_buildings(echo);
 }
+
 
 void Maxima::check_phases(Context& echo)
 {
 	director.evaluate(*this, echo);
 }
+
 
 const std::vector<AIMaximaPlacement::BuildingProfile>&
 Maxima::collect_building_profiles() const
@@ -4872,6 +6393,7 @@ Maxima::collect_building_profiles() const
 	return development_building_profiles;
 }
 
+
 int Maxima::school_algae_requirement() const
 {
 	const std::vector<AIMaximaPlacement::BuildingProfile>& profiles=
@@ -4885,6 +6407,7 @@ int Maxima::school_algae_requirement() const
 		}
 	return INT_MAX;
 }
+
 
 void Maxima::configure_development_planner()
 {
@@ -4963,6 +6486,7 @@ void Maxima::configure_development_planner()
 	policy.colonyMinimumValue=strategy.colonization.minimum_value;
 	policy.colonyMaximumThreat=strategy.colonization.maximum_threat;
 }
+
 
 AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	Context& echo, uint32_t* signature) const
@@ -5107,6 +6631,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	return world;
 }
 
+
 std::vector<AIMaximaPlacement::DevelopmentIntent>
 Maxima::collect_development_intents(
 	const AIMaximaPlacement::WorldState& world) const
@@ -5172,6 +6697,7 @@ Maxima::collect_development_intents(
 	return result;
 }
 
+
 AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 	Context& echo) const
 {
@@ -5235,6 +6761,7 @@ AIMaximaPlacement::DevelopmentLimits Maxima::collect_development_limits(
 		snapshot.building_sites);
 	return limits;
 }
+
 
 bool Maxima::issue_development_action(Context& echo,
 	AIMaximaPlacement::DevelopmentAction& action)
@@ -5301,9 +6828,60 @@ bool Maxima::issue_development_action(Context& echo,
 	return true;
 }
 
+
+void Maxima::emit_placement_diagnostics(Context& echo,const char* outcome,
+	const AIMaximaPlacement::DevelopmentAction* action) const
+{
+	using namespace AIMaximaPlacement;
+	const PlacementDiagnostics& d=development_planner.diagnostics();std::ostringstream fields;
+	fields<<"\toutcome="<<outcome<<"\tcandidates="<<d.candidateCount
+		<<"\tstrict_candidates="<<d.strictCandidateCount
+		<<"\tfallback_candidates="<<d.fallbackCandidateCount
+		<<"\twater_tier="<<d.waterTier<<"\treservation="<<d.reservationId;
+	for(int r=0;r<RejectionReasonCount;++r)if(d.rejected[r])
+		fields<<"\trejected_"<<rejectionName(static_cast<RejectionReason>(r))<<"="<<d.rejected[r];
+	if(action)fields<<"\taction="<<action->id<<"\taction_type="<<action->type
+		<<"\tbuilding_type="<<action->buildingType
+		<<"\tpurpose="<<(action->purpose==ColonySeed ? "colony_seed" : "core_capacity")
+		<<"\ttemplate="<<action->templateId<<"\tcampus="<<action->campusId
+		<<"\tslot="<<action->slotId<<"\tbuilding="<<action->buildingId
+		<<"\tx="<<action->centerX<<"\ty="<<action->centerY
+		<<"\tutility="<<action->utility.total
+		<<"\tu_demand="<<action->utility.unmetDemand
+		<<"\tu_service="<<action->utility.serviceGain
+		<<"\tu_unlock="<<action->utility.capabilityGain
+		<<"\tu_parallelism="<<action->utility.parallelismGain
+		<<"\tu_redundancy="<<action->utility.redundancyGain
+		<<"\tu_role="<<action->utility.roleLocationQuality
+		<<"\tu_defended="<<action->utility.defendedness
+		<<"\tu_compact="<<action->utility.compactness
+		<<"\tu_farm_loss="<<action->utility.projectedFarmLoss
+		<<"\tu_food_zone="<<action->utility.foodZonePressure
+		<<"\tu_land="<<action->utility.newlyReservedLand
+		<<"\tu_scarcity="<<action->utility.resourceScarcity
+		<<"\tu_labor="<<action->utility.constructionLabor
+		<<"\tu_downtime="<<action->utility.serviceDowntime
+		<<"\tu_threat="<<action->utility.threatExposure
+		<<"\tu_artery="<<action->utility.newArteryLength
+		<<"\tfriendly_distance="<<action->utility.friendlyDistance
+		<<"\tcorn_distance="<<action->utility.cornDistance
+		<<"\tcolony_new_food="<<action->utility.frontierGain
+		<<"\tcolony_value="<<action->utility.conqueredGain;
+	fields<<"\tcolonization_eligible="<<(budget.colony_swarm_requested ? 1 : 0)
+		<<"\tcolonization_gate="<<colony_gate_reason
+		<<"\tactive_colonial_action="<<development_planner.activeBuildCount(
+			IntBuildingType::SWARM_BUILDING, ColonySeed)
+		<<"\thotspot_count="<<cleared_enemy_sites.size();
+	emit_telemetry(echo,"placement_planner",fields.str());
+}
+
+
 void Maxima::development_cycle(Context& echo)
 {
 	using namespace AIMaximaPlacement;
+	const bool profile=globalContainer&&globalContainer->nicowarTelemetry;
+	const std::chrono::steady_clock::time_point profileStarted=profile
+		?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point();
 	const bool continuingSelection=development_planner.selectionPending();
 	uint32_t worldSignature=0;
 	WorldState refreshedWorld;
@@ -5342,20 +6920,29 @@ void Maxima::development_cycle(Context& echo)
 		RuntimeEvent::Type event=RuntimeEvent::DevelopmentParcelReserved;
 		switch(i->second.state){case ParcelReserved:event=RuntimeEvent::DevelopmentParcelReserved;break;case CreateIssued:event=RuntimeEvent::DevelopmentCreateIssued;break;case SiteObserved:event=RuntimeEvent::DevelopmentSiteObserved;break;case Completed:event=RuntimeEvent::DevelopmentCompleted;break;case InvalidatedBeforeIssue:event=RuntimeEvent::DevelopmentInvalidatedBeforeIssue;break;case CreateTimedOut:event=RuntimeEvent::DevelopmentCreateTimedOut;break;case DestroyedDuringConstruction:event=RuntimeEvent::DevelopmentDestroyedDuringConstruction;break;case UpgradeBlocked:event=RuntimeEvent::DevelopmentUpgradeBlocked;break;case RequiredSourceMissing:event=RuntimeEvent::DevelopmentRequiredSourceMissing;break;case EngineRejected:event=RuntimeEvent::DevelopmentEngineRejected;break;default:break;}
 		echo.dispatch_event(RuntimeEvent(event,i->second.id,i->second.buildingId));
-
+		emit_placement_diagnostics(echo,lifecycleName(i->second.state),&i->second);
 		if(i->second.purpose==ColonySeed)
 		{
-
+			std::ostringstream fields;
+			fields<<"\taction_id="<<i->second.id
+				<<"\tbuilding_id="<<i->second.buildingId
+				<<"\tx="<<i->second.centerX<<"\ty="<<i->second.centerY;
 			if(i->second.state==Completed
 			   && i->second.id>last_colony_accounted_action_id)
 			{
 				last_colony_accounted_action_id=i->second.id;
-
-
+				last_colony_completed_tick=timer;
+				++established_colonies;
 				director.invalidate();
-
+				fields<<"\testablished_colonies="<<established_colonies;
+				emit_telemetry(echo,"colony_swarm_completed",fields.str());
 			}
-
+			else if(i->second.state==InvalidatedBeforeIssue
+				||i->second.state==CreateTimedOut
+				||i->second.state==DestroyedDuringConstruction
+				||i->second.state==RequiredSourceMissing
+				||i->second.state==EngineRejected)
+				emit_telemetry(echo,"colony_swarm_failed",fields.str());
 		}
 		}
 
@@ -5455,12 +7042,28 @@ void Maxima::development_cycle(Context& echo)
 		if(selection==SelectionEmpty)
 		{
 			selectionExhausted=true;
-			const SelectionSummary& summary=
-				development_planner.selectionSummary();
-			if(summary.rejected[RejectedClearableResource])
+			const PlacementDiagnostics& diagnostics=
+				development_planner.diagnostics();
+			if(diagnostics.rejected[RejectedClearableResource])
 				record_construction_space_failure();
-
-
+			if(development_planner.diagnostics().candidateCount
+			   ||development_planner.diagnostics().rejected[RejectedNegativeUtility])
+				emit_placement_diagnostics(echo,"waiting",NULL);
+			if(budget.colony_swarm_requested)
+			{
+				const PlacementDiagnostics& diagnostics=
+					development_planner.diagnostics();
+				int rejected=0;
+				for(int reason=0; reason<RejectionReasonCount; ++reason)
+					rejected+=diagnostics.rejected[reason];
+				if(diagnostics.candidateCount || rejected)
+				{
+					std::ostringstream fields;
+					fields<<"\tstage=placement\tcandidates="
+						<<diagnostics.candidateCount<<"\trejected="<<rejected;
+					emit_telemetry(echo,"colony_swarm_failed",fields.str());
+				}
+			}
 			break;
 		}
 		// Keep selection scores snapshot-stable, but never execute stale authority
@@ -5476,13 +7079,13 @@ void Maxima::development_cycle(Context& echo)
 			issueLimits,action,&issueReason))
 		{
 			action.state=InvalidatedBeforeIssue;
-
+			emit_placement_diagnostics(echo,"selection_became_invalid",&action);
 			// A changed world is not a permanently broken coordinate.
 			development_cycle_pending=true;
 			break;
 		}
 		if(!development_planner.reserve(issueWorld,action))
-		{;continue;}
+		{emit_placement_diagnostics(echo,"invalidated_before_issue",&action);continue;}
 		development_reported_states[action.id]=ParcelReserved;
 		echo.dispatch_event(RuntimeEvent(RuntimeEvent::DevelopmentParcelReserved,
 			action.id,action.buildingId));
@@ -5511,7 +7114,7 @@ void Maxima::development_cycle(Context& echo)
 				issueSignature,
 				action.type==BuildCampusMember||action.type==BuildStandalone
 					? issueWorld.index(action.centerX,action.centerY) : -1);
-			;continue;
+			emit_placement_diagnostics(echo,"revalidation_failed",&action);continue;
 		}
 		if(!issue_development_action(echo,action))
 		{
@@ -5519,7 +7122,7 @@ void Maxima::development_cycle(Context& echo)
 				action.type==UpgradeBuilding||action.type==RepairBuilding
 				?UpgradeBlocked:EngineRejected,
 				issueSignature,issueWorld.index(action.centerX,action.centerY));
-			;continue;
+			emit_placement_diagnostics(echo,"engine_rejected",&action);continue;
 		}
 		development_reported_states[action.id]=CreateIssued;
 		std::map<int,DevelopmentAction>::const_iterator issuedAction=
@@ -5527,13 +7130,28 @@ void Maxima::development_cycle(Context& echo)
 		echo.dispatch_event(RuntimeEvent(RuntimeEvent::DevelopmentCreateIssued,
 			action.id,issuedAction==development_planner.actions().end()
 			? action.buildingId:issuedAction->second.buildingId));
-
+		emit_placement_diagnostics(echo,"selected",&action);
+		if(action.purpose==ColonySeed)
+		{
+			std::ostringstream fields;
+			fields<<"\taction_id="<<action.id<<"\tx="<<action.centerX
+				<<"\ty="<<action.centerY
+				<<"\tfriendly_distance="<<action.utility.friendlyDistance
+				<<"\tcorn_distance="<<action.utility.cornDistance
+				<<"\tcolony_new_food="<<action.utility.frontierGain
+				<<"\tcolony_value="<<action.utility.conqueredGain;
+			emit_telemetry(echo,"colony_swarm_selected",fields.str());
+		}
 		// Reservations immediately affect subsequent candidates even though the
 		// engine has not observed the queued OrderCreate yet.
 	}
 	if(!selectionExhausted&&selectionLimit<totalLimit)
 		development_cycle_pending=true;
-
+	if(profile)
+		emit_telemetry(echo,"placement_cycle_performance",
+			"\tmicroseconds="+boost::lexical_cast<std::string>(
+				std::chrono::duration_cast<std::chrono::microseconds>(
+					std::chrono::steady_clock::now()-profileStarted).count()));
 }
 void Maxima::update_swarm_retirement(Context& echo)
 {
@@ -5567,7 +7185,14 @@ void Maxima::update_swarm_retirement(Context& echo)
 		if(!remote_swarm_since.count(id))remote_swarm_since[id]=timer;
 		if(timer-remote_swarm_since[id]>=probation_ticks)
 			remote_swarms_ready.insert(id);
-
+		if(timer%1000<budget.farming_normal_interval)
+		{
+			std::ostringstream fields;
+			fields<<"\tbuilding_id="<<id<<"\tfarm_capacity="<<nearby_farm_capacity(echo,id)
+				<<"\tremote_age="<<(timer-remote_swarm_since[id])
+				<<"\tready="<<(remote_swarms_ready.count(id)?1:0);
+			emit_telemetry(echo,"swarm_retirement",fields.str());
+		}
 	}
 	for(std::map<int,int>::iterator i=remote_swarm_since.begin();
 		i!=remote_swarm_since.end();)
@@ -5578,7 +7203,18 @@ void Maxima::update_swarm_retirement(Context& echo)
 
 	const bool safe=!budget.recovery_active&&snapshot.critical_food==0
 		&&snapshot.own_buildings_under_attack==0&&snapshot.own_units_under_attack==0;
-
+	if(timer%1000<budget.farming_normal_interval)
+	{
+		std::ostringstream fields;fields<<"\tuseful_swarms="<<useful
+			<<"\tdesired_swarms="<<budget.desired_swarms
+			<<"\tready="<<remote_swarms_ready.size()
+			<<"\tsafe="<<(safe?1:0)
+			<<"\tcritical_food="<<snapshot.critical_food
+			<<"\trecovery="<<(budget.recovery_active?1:0)
+			<<"\tbuildings_attacked="<<snapshot.own_buildings_under_attack
+			<<"\tunits_attacked="<<snapshot.own_units_under_attack;
+		emit_telemetry(echo,"swarm_retirement_summary",fields.str());
+	}
 	if(!safe||useful<budget.desired_swarms)return;
 	for(std::set<int>::const_iterator i=remote_swarms_ready.begin();
 		i!=remote_swarms_ready.end();++i)
@@ -5586,18 +7222,21 @@ void Maxima::update_swarm_retirement(Context& echo)
 		{
 			echo.add_management_order(new DestroyBuilding(*i));
 			remote_swarm_deletion_issued.insert(*i);
-			;;
-
+			std::ostringstream fields;fields<<"\tbuilding_id="<<*i
+				<<"\tuseful_swarms="<<useful
+				<<"\tdesired_swarms="<<budget.desired_swarms;
+			emit_telemetry(echo,"swarm_retirement_issued",fields.str());
 			break;
 		}
 }
+
 
 void Maxima::manage_buildings(Context& echo)
 {
 	BuildingSearch bs(echo);
 	bs.add_condition(new NotUnderConstruction);
 	for(building_search_iterator i = bs.begin(); i!=bs.end(); ++i)
-	{
+	{	
 		if(echo.get_building_register().get_type(*i)==IntBuildingType::SWARM_BUILDING)
 		{
 			manage_swarm(echo, *i);
@@ -5622,6 +7261,7 @@ void Maxima::manage_buildings(Context& echo)
 	}
 }
 
+
 void Maxima::manage_inn(Context& echo, int id)
 {
 	int level=echo.get_building_register().get_level(id);
@@ -5642,7 +7282,7 @@ void Maxima::manage_inn(Context& echo, int id)
 			? budget.inn_normal_workers[index]
 			: int((maximum*capacity+capacity+scale-1)/(capacity+scale));
 	}
-
+	
 	///The number of units assigned to an Inn depends entirely on its level
 	if(to_assign != assigned)
 	{
@@ -5650,6 +7290,7 @@ void Maxima::manage_inn(Context& echo, int id)
 		echo.add_management_order(mo_assign);
 	}
 }
+
 
 long long Maxima::nearby_farm_capacity(Context& echo, int id,
 	std::set<int>* shared_tiles)
@@ -5662,6 +7303,7 @@ long long Maxima::nearby_farm_capacity(Context& echo, int id,
 		budget.can_swim, budget.swarm_supply_radius, fertility_cache,
 		&applied_farm_protection_mask, shared_tiles);
 }
+
 
 void Maxima::manage_swarm(Context& echo, int id)
 {
@@ -5690,12 +7332,13 @@ void Maxima::manage_swarm(Context& echo, int id)
 		completed_swarms.push_back(*swarm);
 	std::sort(completed_swarms.begin(), completed_swarms.end());
 	std::vector<SwarmStaffing::Candidate> staffing_candidates;
-
+	long long local_supply=0;
 	for(std::vector<int>::const_iterator swarm=completed_swarms.begin();
 		swarm!=completed_swarms.end(); ++swarm)
 	{
 		const long long supply=nearby_farm_capacity(echo,*swarm);
 		staffing_candidates.push_back(SwarmStaffing::Candidate(*swarm,supply));
+		if(*swarm==id) local_supply=supply;
 
 	}
 	int total_to_assign=budget.swarm_workers;
@@ -5710,6 +7353,7 @@ void Maxima::manage_swarm(Context& echo, int id)
 		if(assignment->id==id)
 			to_assign=assignment->workers;
 	}
+
 
 	worker_ratio=budget.worker_ratio;
 
@@ -5731,13 +7375,22 @@ void Maxima::manage_swarm(Context& echo, int id)
 	{
 		ManagementOrder* mo_assign=new AssignWorkers(to_assign, id);
 		echo.add_management_order(mo_assign);
-
+		Building* building=echo.get_building_register().get_building(id);
+		std::ostringstream fields;
+		fields<<"\tbuilding_id="<<id<<"\tx="<<building->posX
+			<<"\ty="<<building->posY<<"\tworkers="<<to_assign
+			<<"\tcolony_budget="<<total_to_assign<<"\tfarm_capacity="<<local_supply;
+		emit_telemetry(echo,"swarm_staffing",fields.str());
 	}
 
 	//Change the ratio of the swarm when its finished
 	ManagementOrder* mo_ratios=new ChangeSwarm(worker_ratio, explorer_ratio, warrior_ratio, id);
 	echo.add_management_order(mo_ratios);
 }
+
+
+
+
 
 int Maxima::choose_building_to_attack(Context& echo)
 {
@@ -5790,6 +7443,7 @@ int Maxima::choose_building_to_attack(Context& echo)
 	return best_building;
 }
 
+
 void Maxima::attack_building(Context& echo)
 {
 	int building=choose_building_to_attack(echo);
@@ -5824,7 +7478,7 @@ void Maxima::attack_building(Context& echo)
 	ManagementOrder* mo_destroyed_2=new Notify(RuntimeEvent(RuntimeEvent::AttackFinished, id));
 	mo_destroyed_2->add_condition(new BuildingDestroyed(id));
 	echo.add_management_order(mo_destroyed_2);
-
+	
 	attack_flags.push_back(id);
 	attack_flag_targets[id]=building;
 	attack_flag_started_ticks[id]=timer;
@@ -5844,13 +7498,29 @@ void Maxima::attack_building(Context& echo)
 		campaign.last_progress_tick=timer;
 		campaign.last_target_buildings=opponents[target].known_buildings;
 	}
-
+	emit_telemetry(echo, "attack_launched",
+		"\ttarget="+boost::lexical_cast<std::string>(target)
+		+"\tbuilding="+boost::lexical_cast<std::string>(building)
+		+"\tflag="+boost::lexical_cast<std::string>(id)
+		+"\tassigned="+boost::lexical_cast<std::string>(budget.attack_units)
+		+"\tdefense_reserve="+boost::lexical_cast<std::string>(budget.defense_reserve)
+		+"\ttarget_score="+boost::lexical_cast<std::string>(opponents[target].score)
+		+"\ttarget_buildings="
+			+boost::lexical_cast<std::string>(opponents[target].known_buildings)
+		+"\ttarget_warriors="
+			+boost::lexical_cast<std::string>(opponents[target].estimated_warriors)
+		+"\ttarget_reachable="
+			+boost::lexical_cast<std::string>(opponents[target].reachable_buildings)
+		+"\tcampaign_destroyed="
+			+boost::lexical_cast<std::string>(campaign.buildings_destroyed)
+		+"\tposture="+posture_name(posture));
 }
+
 
 void Maxima::transition_tactical_mission(Context& echo,
 	Tactics::MissionPhase phase, const char* reason)
 {
-
+	const Tactics::MissionPhase previous=tactical_mission.phase;
 	tactical_mission.phase=phase;
 	tactical_mission.phaseSinceTick=timer;
 	if(tactical_mission.kind==Tactics::MissionSiege)
@@ -5860,15 +7530,29 @@ void Maxima::transition_tactical_mission(Context& echo,
 		else if(phase==Tactics::PhaseWithdraw)
 			campaign.state=CampaignRetreating;
 	}
-
+	emit_telemetry(echo, "mission_phase_changed",
+		"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
+		+"\tprevious="+Tactics::missionPhaseName(previous)
+		+"\tphase="+Tactics::missionPhaseName(phase)
+		+"\treason="+reason
+		+"\tflag="+boost::lexical_cast<std::string>(tactical_mission.flagId));
 }
+
 
 void Maxima::finish_tactical_mission(Context& echo, const char* reason)
 {
 	const int flag=tactical_mission.flagId;
-
+	const int enrolled=flag>=0 ? echo.get_building_register().get_enrolled(flag) : 0;
+	const int launched=tactical_mission.launchedForce;
 	const Tactics::MissionKind completed_kind=tactical_mission.kind;
-
+	emit_telemetry(echo, "mission_finished",
+		"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
+		+"\ttarget_team="+boost::lexical_cast<std::string>(tactical_mission.targetTeam)
+		+"\ttarget_gid="+boost::lexical_cast<std::string>(tactical_mission.targetGid)
+		+"\treason="+reason
+		+"\tduration="+boost::lexical_cast<std::string>(timer-tactical_mission.startedTick)
+		+"\tlaunched="+boost::lexical_cast<std::string>(launched)
+		+"\tsurvivors="+boost::lexical_cast<std::string>(enrolled));
 	if(flag>=0)
 	{
 		attack_flag_end_reasons[flag]=reason;
@@ -5891,6 +7575,7 @@ void Maxima::finish_tactical_mission(Context& echo, const char* reason)
 	director.invalidate();
 }
 
+
 void Maxima::withdraw_tactical_mission(Context& echo, const char* reason,
 	bool immediate)
 {
@@ -5910,6 +7595,7 @@ void Maxima::withdraw_tactical_mission(Context& echo, const char* reason,
 	transition_tactical_mission(echo, Tactics::PhaseWithdraw, reason);
 }
 
+
 void Maxima::begin_tactical_mission(Context& echo)
 {
 	if(budget.tactical_kind==Tactics::MissionNone)
@@ -5919,7 +7605,9 @@ void Maxima::begin_tactical_mission(Context& echo)
 	if(!choose_tactical_rally(echo, budget.tactical_target_x,
 		budget.tactical_target_y, rally_x, rally_y))
 	{
-
+		emit_telemetry(echo, "mission_finished", "\tkind="
+			+std::string(Tactics::missionKindName(budget.tactical_kind))
+			+"\treason=no_safe_rally");
 		return;
 	}
 	BuildingOrder* flag_order=new BuildingOrder(IntBuildingType::WAR_FLAG,
@@ -5971,8 +7659,30 @@ void Maxima::begin_tactical_mission(Context& echo)
 	}
 	transition_tactical_mission(echo, Tactics::PhaseMuster,
 		"mission_selected");
-
+	emit_telemetry(echo, "mission_selected",
+		"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
+		+"\ttarget_team="+boost::lexical_cast<std::string>(tactical_mission.targetTeam)
+		+"\ttarget_gid="+boost::lexical_cast<std::string>(tactical_mission.targetGid)
+		+"\tflag="+boost::lexical_cast<std::string>(flag)
+		+"\trequested="+boost::lexical_cast<std::string>(tactical_mission.requestedForce)
+		+"\tminimum="+boost::lexical_cast<std::string>(tactical_mission.minimumForce)
+		+"\trally_x="+boost::lexical_cast<std::string>(rally_x)
+		+"\trally_y="+boost::lexical_cast<std::string>(rally_y)
+		+"\tvisible_enemies="
+			+boost::lexical_cast<std::string>(budget.tactical_visible_enemy_warriors)
+		+"\tenemy_power="
+			+boost::lexical_cast<std::string>(budget.tactical_visible_enemy_power)
+		+"\tallied_warriors="
+			+boost::lexical_cast<std::string>(budget.tactical_allied_warriors)
+		+"\tallied_power="
+			+boost::lexical_cast<std::string>(budget.tactical_allied_power)
+		+"\troute="+boost::lexical_cast<std::string>(budget.tactical_route_distance)
+		+"\tallied_player_pressure="
+			+boost::lexical_cast<std::string>(budget.tactical_allied_player_pressure ? 1 : 0)
+		+"\tallied_target_pressure="
+			+boost::lexical_cast<std::string>(budget.tactical_allied_target_pressure ? 1 : 0));
 }
+
 
 bool Maxima::retarget_tactical_siege(Context& echo)
 {
@@ -6034,6 +7744,7 @@ bool Maxima::retarget_tactical_siege(Context& echo)
 		tactical_mission.targetY, flag));
 	return false;
 }
+
 
 void Maxima::control_attacks(Context& echo)
 {
@@ -6181,7 +7892,13 @@ void Maxima::control_attacks(Context& echo)
 				if(tactical_mission.phase!=Tactics::PhaseMuster)
 					echo.add_management_order(new ChangeFlagPosition(
 						tactical_mission.targetX, tactical_mission.targetY, flag));
-
+				emit_telemetry(echo, "mission_retargeted",
+					"\tkind=relief\ttarget_team="
+					+boost::lexical_cast<std::string>(tactical_mission.targetTeam)
+					+"\tx="+boost::lexical_cast<std::string>(tactical_mission.targetX)
+					+"\ty="+boost::lexical_cast<std::string>(tactical_mission.targetY)
+					+"\tvisible_enemies="+boost::lexical_cast<std::string>(
+						budget.tactical_visible_enemy_warriors));
 			}
 		}
 		if(!contact_refreshed && timer-tactical_mission.lastContactTick
@@ -6201,7 +7918,52 @@ void Maxima::control_attacks(Context& echo)
 	}
 	if(tactical_mission.phase==Tactics::PhaseMuster)
 	{
-
+		if(globalContainer && globalContainer->nicowarTelemetry
+		   && timer>tactical_mission.phaseSinceTick
+		   && (timer-tactical_mission.phaseSinceTick)%500==0)
+		{
+			Building* rally=echo.get_building_register().get_building(flag);
+			int swimmers=0, fighting=0, farthest=0;
+			for(std::list<Unit*>::const_iterator member=rally->unitsWorking.begin();
+				member!=rally->unitsWorking.end(); ++member)
+			{
+				const Unit* unit=*member;
+				swimmers+=unit->performance[SWIM]>0;
+				fighting+=unit->movement==Unit::MOV_ATTACKING_TARGET;
+				farthest=std::max(farthest,echo.player->map->warpDistSquare(
+					rally->posX,rally->posY,unit->posX,unit->posY));
+			}
+			int open_tiles=0;
+			const int radius=rally->unitStayRange;
+			for(int dy=-radius; dy<=radius; ++dy)
+				for(int dx=-radius; dx<=radius; ++dx)
+				{
+					const int x=echo.player->map->normalizeX(rally->posX+dx);
+					const int y=echo.player->map->normalizeY(rally->posY+dy);
+					if(dx*dx+dy*dy<=radius*radius
+					   && echo.player->map->getBuilding(x,y)==NOGBID
+					   && echo.player->map->getResource(x,y).type==NO_RES_TYPE
+					   && !echo.player->map->isForbidden(x,y,echo.player->team->me))
+						++open_tiles;
+				}
+			emit_telemetry(echo, "mission_muster_progress",
+				"\tkind="+std::string(Tactics::missionKindName(tactical_mission.kind))
+				+"\tflag="+boost::lexical_cast<std::string>(flag)
+				+"\tenrolled="+boost::lexical_cast<std::string>(enrolled)
+				+"\ton_site="+boost::lexical_cast<std::string>(on_site)
+				+"\trequested="+boost::lexical_cast<std::string>(tactical_mission.requestedForce)
+				+"\tminimum="+boost::lexical_cast<std::string>(tactical_mission.minimumForce)
+				+"\tmuster_percent="+boost::lexical_cast<std::string>(
+					tactical_mission.kind==Tactics::MissionRaid
+						? budget.raid_muster_percent : budget.tactical_siege_muster_percent)
+				+"\trally_open_tiles="+boost::lexical_cast<std::string>(open_tiles)
+				+"\trally_radius="+boost::lexical_cast<std::string>(radius)
+				+"\trally_x="+boost::lexical_cast<std::string>(rally->posX)
+				+"\trally_y="+boost::lexical_cast<std::string>(rally->posY)
+				+"\tenrolled_swimmers="+boost::lexical_cast<std::string>(swimmers)
+				+"\tfighting_before_launch="+boost::lexical_cast<std::string>(fighting)
+				+"\tfarthest_distance_squared="+boost::lexical_cast<std::string>(farthest));
+		}
 		if(tactical_mission.kind==Tactics::MissionSiege)
 		{
 			const Recon::OpponentIntel* intel=
@@ -6263,13 +8025,21 @@ void Maxima::control_attacks(Context& echo)
 				}
 			if(current)
 			{
-
+				const bool changed=current->team!=tactical_mission.targetTeam
+					|| current->x!=tactical_mission.targetX
+					|| current->y!=tactical_mission.targetY;
 				tactical_mission.targetTeam=current->team;
 				tactical_mission.lastContactTick=timer;
 				tactical_mission.targetX=current->x;
 				tactical_mission.targetY=current->y;
 				tactical_mission.candidateScore=current->score;
-
+				if(changed)
+					emit_telemetry(echo, "mission_retargeted",
+						"\tkind=raid\tphase=muster\ttarget_team="
+						+boost::lexical_cast<std::string>(current->team)
+						+"\tx="+boost::lexical_cast<std::string>(current->x)
+						+"\ty="+boost::lexical_cast<std::string>(current->y)
+						+"\tworkers="+boost::lexical_cast<std::string>(current->workers));
 			}
 			else
 			{
@@ -6370,7 +8140,11 @@ void Maxima::control_attacks(Context& echo)
 			{
 				echo.add_management_order(new ChangeFlagPosition(current->x,
 					current->y, flag));
-
+				emit_telemetry(echo, "mission_retargeted",
+					"\tkind=raid\tx="+boost::lexical_cast<std::string>(current->x)
+					+"\ty="+boost::lexical_cast<std::string>(current->y)
+					+"\ttarget_team="+boost::lexical_cast<std::string>(current->team)
+					+"\tworkers="+boost::lexical_cast<std::string>(current->workers));
 			}
 		}
 		else if(saw_cluster && !saw_safe_cluster)
@@ -6408,7 +8182,9 @@ void Maxima::control_attacks(Context& echo)
 		   && budget.tactical_target_gid!=tactical_mission.targetGid)
 		{
 			if(retarget_tactical_siege(echo)) return;
-
+			emit_telemetry(echo, "mission_retargeted",
+				"\tkind=siege\ttarget_gid="
+				+boost::lexical_cast<std::string>(tactical_mission.targetGid));
 		}
 		const int local=Building::GIDtoID(tactical_mission.targetGid);
 		Building* target_building=team>=0 && team<Team::MAX_COUNT
@@ -6452,6 +8228,7 @@ void Maxima::control_attacks(Context& echo)
 			tactical_mission.requestedForce,arrival_percent)))
 		transition_tactical_mission(echo, Tactics::PhaseEngage, "force_arrived");
 }
+
 
 void Maxima::control_legacy_attacks(Context& echo)
 {
@@ -6511,7 +8288,11 @@ void Maxima::control_legacy_attacks(Context& echo)
 				if(echo.get_building_register().is_building_found(*flag))
 					echo.add_management_order(new DestroyBuilding(*flag));
 			}
-
+			emit_telemetry(echo, "campaign_retreat",
+				"\ttarget="+boost::lexical_cast<std::string>(target)
+				+"\tflags="+boost::lexical_cast<std::string>(attack_flags.size())
+				+"\tcooldown="+boost::lexical_cast<std::string>(
+					budget.campaign_retreat_cooldown_ticks));
 		}
 	}
 	else if(!attack_flags.empty())
@@ -6531,6 +8312,8 @@ void Maxima::control_legacy_attacks(Context& echo)
 	// and recreated their flag. The stalled-progress watchdog above remains the
 	// fallback for genuinely bad paths.
 }
+
+
 
 void Maxima::choose_enemy_target(Context& echo)
 {
@@ -6575,11 +8358,17 @@ void Maxima::choose_enemy_target(Context& echo)
 	if(!current_valid || (progress_target_valid && target!=best_target)
 		|| (!campaign_committed && materially_better))
 	{
-
+		const int previous=target;
 		target=best_target;
-
+		if(target!=previous)
+			emit_telemetry(echo, "target_changed",
+				"\tprevious="+boost::lexical_cast<std::string>(previous)
+				+"\ttarget="+boost::lexical_cast<std::string>(target)
+				+"\tscore="+boost::lexical_cast<std::string>(best_score));
 	}
 }
+
+
 
 bool Maxima::dig_out_enemy(Context& echo)
 {
@@ -6598,7 +8387,7 @@ bool Maxima::dig_out_enemy(Context& echo)
 	{
 		Building* b=echo.player->game->teams[target]->myBuildings[Building::GIDtoID(*ebi)];
 		int bx = (b->posX + mi.get_width()) % mi.get_width();
-		int by = (b->posY + mi.get_height()) % mi.get_height();
+		int by = (b->posY + mi.get_height()) % mi.get_height(); 
 		if(gradient.get_height(bx, by) == -2)
 			buildings_to_attack.push_back(*ebi);
 	}
@@ -6607,6 +8396,7 @@ bool Maxima::dig_out_enemy(Context& echo)
 		return false;
 
 	int num=syncRand() % buildings_to_attack.size();
+
 
 	int building=buildings_to_attack[num];
 	const int bx=(echo.player->game->teams[target]->myBuildings[Building::GIDtoID(building)]->posX) % mi.get_width();
@@ -6640,7 +8430,7 @@ bool Maxima::dig_out_enemy(Context& echo)
 	if(closest_x<0 || closest_y<0)
 		return false;
 
-	///Next, follow a path arround stone between the closest point and the buildings position,
+	///Next, follow a path arround stone between the closest point and the buildings position, 
 	///placing Clearing flags as you go
 
 	int xpos=closest_x;
@@ -6717,10 +8507,12 @@ bool Maxima::dig_out_enemy(Context& echo)
 			nypos=dy;
 		}
 
+
 		if(nxpos==xpos && nypos==ypos)
 			break;
 
 		flag_dist_count+=1;
+
 
 		if(flag_dist_count>3)
 		{
@@ -6737,6 +8529,7 @@ bool Maxima::dig_out_enemy(Context& echo)
 			ManagementOrder* mo_destroyed=new DestroyBuilding(id_flag);
 			mo_destroyed->add_condition(new EnemyBuildingDestroyed(echo, building));
 			echo.add_management_order(mo_destroyed);
+
 
 			ManagementOrder* mo_completion=new ChangeFlagSize(3, id_flag);
 			echo.add_management_order(mo_completion);
@@ -6758,9 +8551,17 @@ bool Maxima::dig_out_enemy(Context& echo)
 	campaign.target_team=target;
 	campaign.started_tick=timer;
 	campaign.last_progress_tick=timer;
-
+	emit_telemetry(echo, "dig_out_started",
+		"\ttarget_team="+boost::lexical_cast<std::string>(target)
+		+"\ttarget_building="+boost::lexical_cast<std::string>(building)
+		+"\tflags="+boost::lexical_cast<std::string>(flags_created)
+		+"\tworkers_per_flag="+boost::lexical_cast<std::string>(
+			budget.attack_clearing_workers));
+	
 	return true;
 }
+
+
 
 Uint32 Maxima::compute_preemptive_building_signature(Context& echo) const
 {
@@ -6803,6 +8604,7 @@ Uint32 Maxima::compute_preemptive_building_signature(Context& echo) const
 	return signature;
 }
 
+
 void Maxima::clear_preemptive_defense(Context& echo)
 {
 	if(preemptive_guard_tiles.empty())
@@ -6827,8 +8629,10 @@ void Maxima::clear_preemptive_defense(Context& echo)
 	else
 		delete remove;
 	preemptive_guard_tiles.clear();
-
+	emit_telemetry(echo, "preemptive_defense_cleared",
+		"\ttiles="+boost::lexical_cast<std::string>(removed));
 }
+
 
 void Maxima::update_preemptive_defense(Context& echo)
 {
@@ -6838,6 +8642,16 @@ void Maxima::update_preemptive_defense(Context& echo)
 		last_preemptive_defense_tick=-1000000;
 		last_preemptive_effective_zone_max=-1;
 		last_preemptive_amphibious_active=false;
+		preemptive_diagnostics=AITopologyDiagnosticSnapshot();
+		preemptive_diagnostics.active=false;
+		preemptive_diagnostics.tick=timer;
+		preemptive_diagnostics.trainedWarriors=snapshot.trained_warriors;
+		preemptive_diagnostics.swimmingWarriors=snapshot.swimming_warriors;
+		if(echo.player && echo.player->map)
+		{
+			preemptive_diagnostics.width=echo.player->map->getW();
+			preemptive_diagnostics.height=echo.player->map->getH();
+		}
 		return;
 	}
 
@@ -6966,6 +8780,7 @@ void Maxima::update_preemptive_defense(Context& echo)
 	const AIMaxima::Defense::PlanResult plan=AIMaxima::Defense::combineModes(
 		modes, budget.preemptive_effective_zone_max,
 		budget.preemptive_zone_radius);
+	refresh_preemptive_diagnostics(plan);
 
 	std::set<int> desired;
 	for(int index=0; index<map_size; ++index)
@@ -7021,8 +8836,89 @@ void Maxima::update_preemptive_defense(Context& echo)
 		echo.add_management_order(add);
 	}
 	preemptive_guard_tiles.swap(next_owned);
-
+	if(!additions.empty() || !removals.empty())
+		emit_telemetry(echo, "preemptive_defense_updated",
+			"\tchokes="+boost::lexical_cast<std::string>(plan.selectedCount)
+			+"\tdesired_tiles="+boost::lexical_cast<std::string>(desired.size())
+			+"\tadded="+boost::lexical_cast<std::string>(additions.size())
+			+"\tremoved="+boost::lexical_cast<std::string>(removals.size()));
 }
+
+
+void Maxima::refresh_preemptive_diagnostics(
+	const AIMaxima::Defense::PlanResult& plan)
+{
+	preemptive_diagnostics=AITopologyDiagnosticSnapshot();
+	preemptive_diagnostics.width=plan.width;
+	preemptive_diagnostics.height=plan.height;
+	preemptive_diagnostics.tick=timer;
+	preemptive_diagnostics.active=budget.preemptive_defense_active;
+	preemptive_diagnostics.trainedWarriors=snapshot.trained_warriors;
+	preemptive_diagnostics.swimmingWarriors=snapshot.swimming_warriors;
+	preemptive_diagnostics.effectiveZoneCap=plan.effectiveZoneCap;
+	preemptive_diagnostics.selectedCount=plan.selectedCount;
+	preemptive_diagnostics.innerDistance=budget.preemptive_inner_distance;
+	preemptive_diagnostics.bandMaximum=budget.preemptive_inner_distance
+		+budget.preemptive_band_width;
+	preemptive_diagnostics.pathSlack=budget.preemptive_path_slack;
+	preemptive_diagnostics.maximumCrossSection=
+		budget.preemptive_cross_section_max;
+	preemptive_diagnostics.desired=plan.desired;
+	for(size_t modeIndex=0; modeIndex<plan.modes.size(); ++modeIndex)
+	{
+		const AIMaxima::Defense::ModeResult& source=plan.modes[modeIndex];
+		AITopologyDiagnosticMode mode;
+		mode.mode=source.mode==AIMaxima::Defense::LandMode
+			? AITopologyLand : AITopologyAmphibious;
+		mode.enabled=true;
+		mode.candidateCount=static_cast<int>(source.candidates.size());
+		for(size_t candidateIndex=0; candidateIndex<plan.candidates.size();
+			++candidateIndex)
+			if(plan.candidates[candidateIndex].mode==source.mode
+			   && plan.candidates[candidateIndex].state
+				==AIMaxima::Defense::CandidateSelected)
+				++mode.selectedCount;
+		mode.walkable=source.walkable;
+		mode.homeDistance=source.homeDistance;
+		mode.memberships=source.memberships;
+		mode.minimumCrossSection=source.minimumCrossSection;
+		mode.minimumTerrainCrossSection=source.minimumTerrainCrossSection;
+		mode.qualified=source.qualified;
+		for(size_t teamIndex=0; teamIndex<source.teams.size(); ++teamIndex)
+		{
+			const AIMaxima::Defense::TeamField& sourceTeam=source.teams[teamIndex];
+			AITopologyDiagnosticTeam team;
+			team.team=sourceTeam.team;
+			team.shortestDistance=sourceTeam.shortestDistance;
+			team.enemyDistance=sourceTeam.enemyDistance;
+			team.corridor=sourceTeam.corridor;
+			team.corridorWidth=sourceTeam.corridorWidth;
+			team.terrainWidth=sourceTeam.terrainWidth;
+			mode.teams.push_back(team);
+		}
+		preemptive_diagnostics.modes.push_back(mode);
+	}
+	for(size_t index=0; index<plan.candidates.size(); ++index)
+	{
+		const AIMaxima::Defense::Candidate& source=plan.candidates[index];
+		AITopologyDiagnosticCandidate candidate;
+		candidate.mode=source.mode==AIMaxima::Defense::LandMode
+			? AITopologyLand : AITopologyAmphibious;
+		candidate.index=source.index;
+		candidate.memberships=source.memberships;
+		candidate.crossSection=source.crossSection;
+		candidate.terrainCrossSection=source.terrainCrossSection;
+		candidate.homeDistance=source.homeDistance;
+		candidate.state=static_cast<AITopologyCandidateState>(source.state);
+		preemptive_diagnostics.candidates.push_back(candidate);
+		if(candidate.state==AITopologyCandidateSelected)
+			for(size_t modeIndex=0;
+				modeIndex<preemptive_diagnostics.modes.size(); ++modeIndex)
+				if(preemptive_diagnostics.modes[modeIndex].mode==candidate.mode)
+					++preemptive_diagnostics.modes[modeIndex].selectedCount;
+	}
+}
+
 
 void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 {
@@ -7042,7 +8938,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 	//defending within range. A flag is put onto the highest square, and the same concept is repeated,
 	//except that all under-attack units or buildings that are within range of a placed defense flag
 	//are ignored.
-
+	
 	//This algorithm does that, except optimized. A list is maintained to keep track of squares
 	//that have a value other than 0 as these are the only ones we want to place a flag on, and
 	//when a defense flag position is chosen, all units or buildings within range of the flag
@@ -7053,7 +8949,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 	const int   h      = mi.get_height();
 	const int   RADIUS = budget.reactive_defense_flag_radius;
 	int remaining_defense_allocation=std::max(0, budget.defense_reserve);
-
+	
 	Uint16* counts = new Uint16[w * h];
 	Uint16* buildingGID = new Uint16[w * h];
 	Uint16* unitGID = new Uint16[w * h];
@@ -7063,7 +8959,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 	memset(unitGID, NOGUID, sizeof(Uint16) * w * h);
 	memset(enemyGID, NOGUID, sizeof(Uint16) * w * h);
 	std::list<int> locations;
-
+	
 	//For every unit thats under attack, increment in the squares surrounding it.
 	//Use the 'locations' list to keep track of non-zero squares
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
@@ -7130,7 +9026,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 			}
 		}
 	}
-
+	
 	///Choose the highest location, remove all units and buildings within a flags radius of that location,
 	///and add that location to the list
 	std::vector<int> flagLocations;
@@ -7168,13 +9064,13 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 			break;
 		flagLocations.push_back(maxPos);
 		std::vector<position>& covered_points=flagCoverage[maxPos];
-
+		
 		int max_x = maxPos / h;
 		int max_y = maxPos % h;
 
 		//test(echo, counts, w, h, squareProtected, locations);
-
-		//For all units and buildings that are under attack and within the radius of the flag,
+		
+		//For all units and buildings that are under attack and within the radius of the flag, 
 		//decrement the values surrounding them. At the same time, count the number of enemy
 		//warriors in this zone
 		int enemy_count = 0;
@@ -7248,7 +9144,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 		enemyUnits.push_back(allocated);
 		remaining_defense_allocation-=allocated;
 	}
-
+	
 	//Remove all flags with an enemy_count of 0
 	for(std::vector<int>::iterator i=flagLocations.begin(); i!=flagLocations.end();)
 	{
@@ -7265,8 +9161,12 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 	}
 
 	//Take all existing defense flags, and move them to the nearest new flag position
-	{}
-
+	int moved_flags=0;
+	int deadband_flags=0;
+	int locally_retained_flags=0;
+	int reassigned_flags=0;
+	int destroyed_flags=0;
+	int created_flags=0;
 	std::vector<int> existing_defense_flags(defense_flags);
 	while(!existing_defense_flags.empty())
 	{
@@ -7318,7 +9218,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 			existing_defense_flags.erase(existing_defense_flags.begin() + min_flag);
 			flagLocations.erase(flagLocations.begin() + min_pos);
 			enemyUnits.erase(enemyUnits.begin() + min_pos);
-
+			
 			const int deadband=budget.reactive_defense_move_deadband;
 			// Suppress jitter only while the unchanged flag covers every point
 			// this cluster was selected to defend.
@@ -7326,16 +9226,17 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 			{
 				ManagementOrder* mo_move=new ChangeFlagPosition(min_pos_x, min_pos_y, id_flag);
 				echo.add_management_order(mo_move);
-
+				moved_flags+=1;
 			}
-
+			else if(min_dist>0)
+				deadband_flags+=1;
 			if(flag->unitStayRange!=RADIUS)
 				echo.add_management_order(new ChangeFlagSize(RADIUS, id_flag));
 			if(min_enemy != echo.get_building_register().get_assigned(id_flag))
 			{
 				ManagementOrder* mo_assign=new AssignWorkers(min_enemy, id_flag);
 				echo.add_management_order(mo_assign);
-
+				reassigned_flags+=1;
 			}
 		}
 		else
@@ -7383,18 +9284,18 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 				if(desired!=echo.get_building_register().get_assigned(*i))
 				{
 					echo.add_management_order(new AssignWorkers(desired, *i));
-
+					reassigned_flags+=1;
 				}
-
+				locally_retained_flags+=1;
 			}
 			else
 			{
 				echo.add_management_order(new DestroyBuilding(*i));
-
+				destroyed_flags+=1;
 			}
 		}
 	}
-
+	
 	//If there are remaining positions on the map, it is because we didn't have enough existing
 	//flags to cover them, so create new ones
 	for(std::vector<int>::iterator i = flagLocations.begin(); i!=flagLocations.end(); ++i)
@@ -7408,23 +9309,35 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 		bo_flag->add_constraint(new Construction::SinglePosition(flag_x, flag_y));
 		unsigned int id_flag=echo.add_building_order(bo_flag);
 		defense_flags.push_back(id_flag);
+		created_flags+=1;
 
 		ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(1, id_flag);
 		echo.add_management_order(mo_minimum);
 		ManagementOrder* mo_completion=new ChangeFlagSize(
 			budget.reactive_defense_flag_radius, id_flag);
 		echo.add_management_order(mo_completion);
-
+		
 		ManagementOrder* mo_destroyed=new Notify(RuntimeEvent(RuntimeEvent::GuardFlagDeleted, id_flag));
 		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
 		echo.add_management_order(mo_destroyed);
 	}
-
+	if(moved_flags || deadband_flags || locally_retained_flags
+	   || reassigned_flags || destroyed_flags || created_flags)
+		emit_telemetry(echo, "reactive_defense_updated",
+			"\tmoved="+boost::lexical_cast<std::string>(moved_flags)
+			+"\tdeadband="+boost::lexical_cast<std::string>(deadband_flags)
+			+"\tretained="+boost::lexical_cast<std::string>(locally_retained_flags)
+			+"\treassigned="+boost::lexical_cast<std::string>(reassigned_flags)
+			+"\tdestroyed="+boost::lexical_cast<std::string>(destroyed_flags)
+			+"\tcreated="+boost::lexical_cast<std::string>(created_flags));
+	
 	delete[] counts;
 	delete[] unitGID;
 	delete[] buildingGID;
 	delete[] enemyGID;
 }
+
+
 
 void Maxima::modify_points(Uint16* counts, int w, int h, int x, int y, int dist, int value, std::list<int>& locations)
 {
@@ -7453,6 +9366,8 @@ void Maxima::modify_points(Uint16* counts, int w, int h, int x, int y, int dist,
 	}
 }
 
+
+
 void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& echo)
 {
 	//The algorithm here is interesting. Bassically, an enemy unit is selected. Every enemy unit within 4 squares of this unit
@@ -7472,7 +9387,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 		&& tactical_mission.phase!=Tactics::PhaseCooldown
 		&& tactical_mission.phase!=Tactics::PhaseWithdraw;
 	const int strike_target=following_offense ? tactical_mission.targetTeam : target;
-
+	
 	if(budget.explorer_campaign_active && strike_target>=0
 	   && strike_target<Team::MAX_COUNT && echo.player->game->teams[strike_target]
 	   && echo.player->game->teams[strike_target]->isAlive
@@ -7496,13 +9411,13 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 				units[i] = NULL;
 			}
 		}
-
+		
 		while(true)
 		{
 			int group_x = 0;
 			int group_y = 0;
 			int group_size = 0;
-
+		
 			std::queue<Unit*> proccess;
 			std::queue<int> xposs;
 			std::queue<int> yposs;
@@ -7520,10 +9435,10 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 					break;
 				}
 			}
-
+			
 			if(group_size == 0)
 				break;
-
+			
 			while(!proccess.empty())
 			{
 				Unit* top = proccess.front();
@@ -7561,17 +9476,18 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			}
 			group_x = (group_x / group_size + w)%w;
 			group_y = (group_y / group_size + h)%h;
-
+			
 			groups.push_back(boost::make_tuple(group_size, group_x, group_y));
 		}
 		delete[] units;
 
 	}
-
+	
 	std::sort(groups.begin(), groups.end(), std::greater<boost::tuple<int, int, int> >());
-
+	const int trained_explorers=echo.player->team->stats.getLatestStat()
+		->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][3];
 	int total_attacks=budget.explorer_campaign_flags;
-
+	
 	//Go through existing flags and see if they can be moved to be on top of new groups
 	std::vector<int> existing_explorer_attack_flags(explorer_attack_flags);
 	while(total_attacks && !existing_explorer_attack_flags.empty())
@@ -7603,7 +9519,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 				}
 			}
 		}
-
+		
 		if(min_dist != INT_MAX)
 		{
 			total_attacks-=1;
@@ -7611,7 +9527,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 			existing_explorer_attack_flags.erase(existing_explorer_attack_flags.begin() + min_flag);
 			groups.erase(groups.begin() + min_pos);
-
+			
 			if(min_dist != 0)
 			{
 				ManagementOrder* mo_move=new ChangeFlagPosition(min_pos_x, min_pos_y, id_flag);
@@ -7623,7 +9539,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			break;
 		}
 	}
-
+	
 	//If there are remaining flags, its because these flags don't have a new position
 	//on the map to go to, so delete them
 	for(std::vector<int>::iterator i = existing_explorer_attack_flags.begin(); i!=existing_explorer_attack_flags.end(); ++i)
@@ -7634,13 +9550,13 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			echo.add_management_order(mo_destroyed);
 		}
 	}
-
+	
 	while(total_attacks && !groups.empty())
 	{
 		boost::tuple<int, int, int> groupInfo = *groups.begin();
 		groups.erase(groups.begin());
 		total_attacks -= 1;
-
+			
 		BuildingOrder* bo_flag = new BuildingOrder(IntBuildingType::EXPLORATION_FLAG,
 			budget.explorer_campaign_units_per_flag);
 		bo_flag->add_constraint(new Construction::SinglePosition(groupInfo.get<1>(), groupInfo.get<2>()));
@@ -7651,15 +9567,26 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 		ManagementOrder* mo_level=new ChangeFlagMinimumLevel(4, id_flag);
 		echo.add_management_order(mo_level);
-
+		
 		explorer_attack_flags.push_back(id_flag);
-
+		emit_telemetry(echo, "explorer_strike_launched",
+			"\tflag="+boost::lexical_cast<std::string>(id_flag)
+			+"\ttarget_team="+boost::lexical_cast<std::string>(strike_target)
+			+"\ttarget_score="+boost::lexical_cast<std::string>(groupInfo.get<0>())
+			+"\tx="+boost::lexical_cast<std::string>(groupInfo.get<1>())
+			+"\ty="+boost::lexical_cast<std::string>(groupInfo.get<2>())
+			+"\tassigned="+boost::lexical_cast<std::string>(
+				budget.explorer_campaign_units_per_flag)
+			+"\ttrained_explorers="+boost::lexical_cast<std::string>(trained_explorers));
+		
 		ManagementOrder* mo_destroyed=new Notify(
 			RuntimeEvent(RuntimeEvent::ExplorerAttackFlagDeleted, id_flag));
 		mo_destroyed->add_condition(new BuildingDestroyed(id_flag));
 		echo.add_management_order(mo_destroyed);
 	}
 }
+
+
 
 void Maxima::update_fruit_flags(AIMaximaRuntime::Context& echo)
 {
@@ -7703,6 +9630,7 @@ void Maxima::update_fruit_flags(AIMaximaRuntime::Context& echo)
 	}
 	update_fruit_alliances(echo);
 }
+
 
 void Maxima::update_fruit_alliances(AIMaximaRuntime::Context& echo)
 {

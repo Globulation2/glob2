@@ -1,0 +1,16 @@
+{
+  "protocol_id": "bc000de389d2bd2bffbe509d62433c0f9e5dcd19df2343ce9de603490fec96ee",
+  "stage": "confirmation",
+  "switch": "farming.farm_protection_enabled",
+  "fixed_pairs": 1000,
+  "looks": [
+    1000
+  ],
+  "alpha": 0.0007547169811320754,
+  "hard_tick_limit": 100000,
+  "decision": "single final exact paired interval; no outcome-based extension",
+  "old_or_pilot_results_pooled": false,
+  "automatic_default_changes": false,
+  "qualification": "wait for corrected-engine controls accepted before dispatch",
+  "rationale": "Restart registered bounded confirmation after verified engine memory fix; interrupted old-engine results preserved but excluded"
+}

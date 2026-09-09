@@ -32,16 +32,22 @@
 namespace AIMaxima
 {
 
-///Standalone adaptive colony and combat AI for Globulation 2.
+///Nicowar is a new powerhouse AI for Globulation 2
 class Maxima : public AIImplementation, private AIMaximaRuntime::RuntimeAI
 {
 public:
 	explicit Maxima(Player *player);
 	Maxima(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
+	/// Consume versions 84-88 using their original serialized field layout.
+	bool loadLegacyState(GAGCore::InputStream *stream, Player *player,
+		Sint32 versionMinor);
 	bool loadState(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 	std::shared_ptr<Order> getOrder();
+	std::string auditStrategyJson() const;
+	void getDiagnosticSections(std::vector<AIDiagnosticSection>& sections) const;
+	const AITopologyDiagnosticSnapshot* getTopologyDiagnosticSnapshot() const;
 	void tick(AIMaximaRuntime::Context& echo);
 	void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event);
 private:
@@ -450,7 +456,60 @@ private:
 	/// Ephemeral explanation of the most recent tactical authorization pass.
 	/// This is deliberately not serialized: it is derived from the same fog-safe
 	/// observations as DirectorPlan and exists only for the in-game debug HUD.
+	struct TacticalDecisionDiagnostics
+	{
+		TacticalDecisionDiagnostics();
+		void reset(int currentTick);
+		int tick;
+		std::string authorization;
+		std::string decision;
+		int trainedWarriors;
+		int defenseReserve;
+		int deployableWarriors;
 
+		std::string raidGate;
+		int raidCandidates;
+		int viableRaids;
+		int raidScore;
+		int raidRawScore;
+		int raidRoute;
+		int raidRoutePenalty;
+		int raidOutskirtsBonus;
+		int raidAlliedBonus;
+		int raidFfaPenalty;
+		int raidWorkers;
+		int raidDefenders;
+
+		std::string siegeGate;
+		int siegeCandidates;
+		int viableSieges;
+		std::map<std::string, int> siegeRejections;
+		std::vector<std::string> siegeCandidateDetails;
+		int siegeScore;
+		int siegeTargetValue;
+		int siegeOpponentScore;
+		int siegeAlliedPlayerBonus;
+		int siegeAlliedTargetBonus;
+		int siegeTowerPenalty;
+		int siegeRoutePenalty;
+		int siegeLocalPower;
+		int siegeUncertainty;
+		int siegeNearbyTowers;
+		int siegeRequiredPower;
+
+		std::string reliefGate;
+		int reliefCandidates;
+		int viableReliefs;
+		int reliefScore;
+		int reliefBaseScore;
+		int reliefAssetValue;
+		int reliefThreatBonus;
+		int reliefUnderAttackBonus;
+		int reliefRoutePenalty;
+		int reliefEnemyPower;
+		int reliefAlliedPower;
+		int reliefRequiredPower;
+	};
 
 	struct ClearedEnemySite
 	{
@@ -484,8 +543,14 @@ private:
 	void allocate_resources();
 	void build_policy_bids();
 	void arbitrate_policy_bids();
+	const char* policy_name(PolicyKind policy) const;
 	void finalize_director_plan(AIMaximaRuntime::Context& echo);
 	void plan_tactical_authorization(AIMaximaRuntime::Context& echo);
+	void emit_telemetry(AIMaximaRuntime::Context& echo, const std::string& event,
+		const std::string& fields=std::string()) const;
+	void emit_ablation_opportunities(AIMaximaRuntime::Context& echo) const;
+	void emit_director_snapshot(AIMaximaRuntime::Context& echo) const;
+	const char* posture_name(StrategicPosture posture) const;
 	bool severe_food_emergency() const;
 	bool severe_colony_emergency() const;
 	bool explorer_defense_active() const;
@@ -515,15 +580,20 @@ private:
 	CampaignPlan campaign;
 	Tactics::Program tactics;
 	Tactics::Mission tactical_mission;
+	TacticalDecisionDiagnostics tactical_diagnostics;
 	std::vector<ClearedEnemySite> cleared_enemy_sites;
-	// Runtime startup latch; tracks worker and food initialization.
+	// Runtime startup latch; saves before version 95 recheck workers and food.
 	std::set<int> operating_colonies;
+	int last_colony_completed_tick;
 	int last_colony_accounted_action_id;
+	int established_colonies;
+	std::string colony_gate_reason;
 	StrategicPosture posture;
 	int posture_utilities[PostureCount];
 	int posture_since;
 	bool director_initialized;
 	StrategyDirector director;
+	int last_director_telemetry_tick;
 	int explorer_threat_until;
 	int explorer_colony_threat_until;
 	bool large_economy_committed;
@@ -619,6 +689,9 @@ private:
 		AIMaximaRuntime::Context& echo) const;
 	bool issue_development_action(AIMaximaRuntime::Context& echo,
 		AIMaximaPlacement::DevelopmentAction& action);
+	void emit_placement_diagnostics(AIMaximaRuntime::Context& echo,
+		const char* outcome,
+		const AIMaximaPlacement::DevelopmentAction* action) const;
 	mutable std::vector<AIMaximaPlacement::BuildingProfile>
 		development_building_profiles;
 	AIMaximaPlacement::Planner development_planner;
@@ -638,6 +711,7 @@ private:
 	int proactive_clearing_flag;
 	int proactive_clearing_started_tick;
 	int proactive_clearing_initial_wood;
+	int proactive_clearing_campaigns;
 	int last_proactive_clearing_tick;
 	struct GateClearingIntent;
 	GateClearingIntent select_gate_clearing_intent(
@@ -729,8 +803,8 @@ private:
 	bool is_digging_out;
 	///This vector stores the ID's for all current war flags
 	std::vector<int> attack_flags;
-
-
+	
+	
 	///This function calculates the positions of defense flags
 	void compute_defense_flag_positioning(AIMaximaRuntime::Context& echo);
 	///This function adds the specific value to the counts arround the given pos, used in compute_defense_flag_positioning
@@ -742,12 +816,14 @@ private:
 	void update_preemptive_defense(AIMaximaRuntime::Context& echo);
 	void clear_preemptive_defense(AIMaximaRuntime::Context& echo);
 	Uint32 compute_preemptive_building_signature(AIMaximaRuntime::Context& echo) const;
+	void refresh_preemptive_diagnostics(const AIMaxima::Defense::PlanResult& plan);
 	///Only cells added by this subsystem are owned and therefore removable.
 	std::set<int> preemptive_guard_tiles;
 	int last_preemptive_defense_tick;
 	Uint32 preemptive_building_signature;
 	int last_preemptive_effective_zone_max;
 	bool last_preemptive_amphibious_active;
+	AITopologyDiagnosticSnapshot preemptive_diagnostics;
 
 	///This function calculates the positions of explorer flags for explorer flag attacks
 	void compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& echo);
@@ -799,7 +875,7 @@ private:
 	int gate_defense_demand=0;
 	void refresh_gate_defense(AIMaximaRuntime::Context& echo);
 	/// Interior connections to the gate network are standing obligations too.
-	/// Saved games preserve these paths and their scheduled refresh.
+	/// Version 95 preserves these paths and their scheduled refresh.
 	std::vector<std::vector<int> > settlement_access_routes;
 	/// Returns the number of buildings for which no legal access repair exists.
 	int connect_settlements_to_gates(AIMaximaRuntime::Context& echo,
@@ -810,7 +886,7 @@ private:
 	bool farming_urgent;
 	///Map-area orders produced by farming and placement are intentionally applied
 	///on later ticks so their scans cannot extend the calculation that created
-	///them. Saved games preserve pending work to retain exact order timing.
+	///them. Version 95 preserves pending work to retain exact order timing.
 	bool land_clearing_pending;
 	bool maintenance_clearing_pending;
 	bool development_cycle_pending;

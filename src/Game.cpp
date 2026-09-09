@@ -17,6 +17,8 @@
 #include "Game.h"
 #include "AIMaximaStrategy.h"
 #include <stdexcept>
+#include <sstream>
+#include <algorithm>
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -244,18 +246,93 @@ bool Game::isPrestigeWinCondition(void)
 	return false;
 }
 
+namespace
+{
+	std::string mergedMaximaOverrides(const std::string& base,
+		const std::string& team, const std::string& player)
+	{
+		std::map<std::string, std::string> assignments;
+		const std::string sources[3]={base, team, player};
+		for(int source=0; source<3; ++source)
+		{
+			std::string normalized=sources[source];
+			std::replace(normalized.begin(), normalized.end(), ';', ',');
+			std::istringstream entries(normalized);
+			std::string entry;
+			while(std::getline(entries, entry, ','))
+			{
+				const size_t equals=entry.find('=');
+				if(equals==std::string::npos)
+				{
+					if(!entry.empty()) assignments[entry]=entry;
+					continue;
+				}
+				std::string key=entry.substr(0, equals);
+				key.erase(0, key.find_first_not_of(" \t\r\n"));
+				const size_t end=key.find_last_not_of(" \t\r\n");
+				if(end!=std::string::npos) key.erase(end+1);
+				assignments[key]=entry;
+			}
+		}
+		std::ostringstream result;
+		for(std::map<std::string, std::string>::const_iterator setting=
+			assignments.begin(); setting!=assignments.end(); ++setting)
+		{
+			if(setting!=assignments.begin()) result<<",";
+			result<<setting->second;
+		}
+		return result.str();
+	}
+}
+
 const AIMaxima::ResolvedStrategy& Game::resolveMaximaStrategy(int playerNumber)
 {
-    auto& resolved=resolvedMaximaStrategies[playerNumber];
-    if(!resolved)
-    {
-        resolved=std::make_shared<AIMaxima::ResolvedStrategy>();
-        const auto options=globalContainer ? globalContainer->maximaStrategyOptions
-            : AIMaxima::StrategyConfigOptions();
-        std::string error;
-        if(!AIMaxima::StrategyResolver::resolve(options,
-            maximaPendingHeader ? maximaPendingHeader : &gameHeader, *resolved, error))
-            throw std::runtime_error("Maxima strategy: "+error);
-    }
-    return *resolved;
+	std::map<int, std::shared_ptr<AIMaxima::ResolvedStrategy> >::const_iterator
+		cached=resolvedMaximaStrategies.find(playerNumber);
+	if(cached!=resolvedMaximaStrategies.end())
+		return *cached->second;
+	std::shared_ptr<AIMaxima::ResolvedStrategy> resolved(
+		new AIMaxima::ResolvedStrategy);
+	AIMaxima::StrategyConfigOptions options=globalContainer
+		? globalContainer->maximaStrategyOptions
+		: AIMaxima::StrategyConfigOptions();
+	std::string error;
+	const GameHeader* strategyHeader=maximaPendingHeader
+		? maximaPendingHeader : &gameHeader;
+	int teamNumber=-1;
+	if(playerNumber>=0 && playerNumber<strategyHeader->getNumberOfPlayers())
+		teamNumber=strategyHeader->getBasePlayer(playerNumber).teamNumber;
+	std::string teamOverrides;
+	std::string playerOverrides;
+	if(globalContainer)
+	{
+		std::map<int, std::string>::const_iterator team=
+			globalContainer->maximaTeamOverrides.find(teamNumber);
+		if(team!=globalContainer->maximaTeamOverrides.end())
+			teamOverrides=team->second;
+		std::map<int, std::string>::const_iterator player=
+			globalContainer->maximaPlayerOverrides.find(playerNumber);
+		if(player!=globalContainer->maximaPlayerOverrides.end())
+			playerOverrides=player->second;
+	}
+	options.inlineOverrides=mergedMaximaOverrides(options.inlineOverrides,
+		teamOverrides, playerOverrides);
+	if(!AIMaxima::StrategyResolver::resolve(options, strategyHeader,
+		*resolved, error))
+	{
+		std::cerr<<"Maxima strategy error: "<<error<<std::endl;
+		std::abort();
+	}
+	resolvedMaximaStrategies[playerNumber]=resolved;
+	std::cerr<<"Maxima strategy: format="
+		<<AIMaxima::StrategyResolver::formatName(resolved->format)
+		<<" player="<<playerNumber<<" team="<<teamNumber<<" sources=";
+	for(size_t source=0; source<resolved->sources.size(); ++source)
+	{
+		if(source) std::cerr<<",";
+		std::cerr<<resolved->sources[source];
+	}
+	std::cerr<<" values="<<AIMaxima::StrategyResolver::canonicalValues(
+		resolved->values)<<std::endl;
+	return *resolved;
 }

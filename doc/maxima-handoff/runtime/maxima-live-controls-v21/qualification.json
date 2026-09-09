@@ -1,0 +1,53 @@
+{
+  "protocol_id": "ecadf1aa37469c333300a06b11d3a8b01a37f0f85bd4af941db1e9782e3c3dbb",
+  "routing": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "opponent_identity": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "player_isolation": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "save_load": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "behavioral": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "reproducibility_across_hosts": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "statistical_sensitivity": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "no_orders": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "population_scoring": {
+    "status": "passed",
+    "path": "evidence/qualification-provenance.json",
+    "sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535"
+  },
+  "positive_control": {
+    "status": "passed",
+    "path": "controls-acceptance.json",
+    "sha256": "f225cce72a7d3ac571f372e2345ba86d423c1d609f93016d06399f84b747a5de"
+  }
+}

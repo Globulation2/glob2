@@ -1,7 +1,7 @@
 #ifndef AI_MAXIMA_CONTINUATION_H
 #define AI_MAXIMA_CONTINUATION_H
 
-// Portable field-wise serialization for Maxima execution state.
+// Portable field-wise serialization for execution state added in save version 95.
 // Never serialize object layouts, pointers, padding, or host-sized containers.
 #include <Stream.h>
 #include <cstdint>

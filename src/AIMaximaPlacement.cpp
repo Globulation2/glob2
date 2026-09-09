@@ -99,6 +99,7 @@ namespace
 		READ_UTILITY(resourceScarcity); READ_UTILITY(constructionLabor);
 		READ_UTILITY(serviceDowntime); READ_UTILITY(threatExposure);
 		READ_UTILITY(newArteryLength);
+		if(versionMinor>=92)
 		{
 			READ_UTILITY(frontierGain); READ_UTILITY(conqueredGain);
 			READ_UTILITY(friendlyDistance); READ_UTILITY(cornDistance);
@@ -290,8 +291,8 @@ DevelopmentAction::DevelopmentAction()
 	  campusId(-1), slotId(-1), buildingId(-1), buildingType(-1), fromLevel(0),
 	  targetLevel(1), centerX(0), centerY(0), workers(1), fallbackWaterTier(false),
 	  requiresSwimmingBuilders(false), reservationId(-1), issuedTick(-1), worldSignature(0) {}
-SelectionSummary::SelectionSummary() { clear(); }
-void SelectionSummary::clear()
+PlacementDiagnostics::PlacementDiagnostics() { clear(); }
+void PlacementDiagnostics::clear()
 {
 	candidateCount=0; strictCandidateCount=0; fallbackCandidateCount=0;
 	waterTier=0; reservationId=-1; selectedActionId=-1;
@@ -336,7 +337,7 @@ void Planner::clearIncrementalSelection()
 void Planner::reset()
 {
 	clearIncrementalSelection();
-	lastSelectionSummary.clear(); configuredProfiles.clear(); templateList.clear();
+	lastDiagnostics.clear(); configuredProfiles.clear(); templateList.clear();
 	campusList.clear(); standaloneList.clear(); reservationMap.clear(); actionMap.clear();
 	blockedIntentSignatures.clear(); coordinateQuarantines.clear();
 	retryInputSignature=0;
@@ -1240,7 +1241,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 	{ originCursor=totalOrigins; return true; }
 	if(originCursor==0&&!requiredSourcePresent(world,intent))
 	{
-		lastSelectionSummary.rejected[RejectedRequiredSource]++;
+		lastDiagnostics.rejected[RejectedRequiredSource]++;
 		blockedIntentSignatures[key]=retrySignature(intent,signature);
 		DevelopmentAction missing;missing.id=nextActionId++;
 		missing.state=RequiredSourceMissing;missing.buildingType=intent.buildingType;
@@ -1293,7 +1294,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				candidate.action.centerY,slot.terminalFootprint);
 			RejectionReason reason=RejectedTerrain;
 			if(!colonyCandidatePasses(world,intent,candidate.action,reason))
-			{lastSelectionSummary.rejected[reason]++;continue;}
+			{lastDiagnostics.rejected[reason]++;continue;}
 			const std::vector<int> initialTiles=footprintTiles(world,
 				candidate.action.centerX,candidate.action.centerY,
 				slot.initialFootprint);
@@ -1305,7 +1306,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 			// resource changes elsewhere continually alter the world signature, so
 			// do not let those changes reactivate the same broken campus slot.
 			if(quarantine!=coordinateQuarantines.end())
-			{lastSelectionSummary.rejected[RejectedQuarantine]++;continue;}
+			{lastDiagnostics.rejected[RejectedQuarantine]++;continue;}
 			reason=RejectedTerrain; bool legal=true;
 			for(size_t i=0;i<candidate.action.parcelTiles.size();++i)
 			{
@@ -1329,7 +1330,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 			for(size_t i=0;i<initialTiles.size()&&legal;++i)
 				if(world.tiles[initialTiles[i]].clearableResource)
 				{reason=RejectedClearableResource;legal=false;}
-			if(!legal){lastSelectionSummary.rejected[reason]++;continue;}
+			if(!legal){lastDiagnostics.rejected[reason]++;continue;}
 			candidate.action.fallbackWaterTier=campus.fallbackWaterTier;
 			candidate.action.utility=scoreCandidate(world,&intent,candidate);
 			retainCandidate(candidate,campus.fallbackWaterTier);
@@ -1387,10 +1388,10 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 						{reason=RejectedCirculation;parcelLegal=false;break;}
 					}
 				if(!parcelLegal)
-				{lastSelectionSummary.rejected[reason]++;continue;}
+				{lastDiagnostics.rejected[reason]++;continue;}
 				candidate.action.parcelTiles=parcelTiles(world,originX,originY,t);
 				if(!colonyCandidatePasses(world,intent,candidate.action,reason))
-				{lastSelectionSummary.rejected[reason]++;continue;}
+				{lastDiagnostics.rejected[reason]++;continue;}
 				const std::vector<int> initialTiles=footprintTiles(world,
 					candidate.action.centerX,candidate.action.centerY,
 					candidate.action.initialFootprint);
@@ -1399,7 +1400,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 					if(world.tiles[initialTiles[i]].clearableResource)
 					{initialClear=false;break;}
 				if(!initialClear)
-				{lastSelectionSummary.rejected[RejectedClearableResource]++;continue;}
+				{lastDiagnostics.rejected[RejectedClearableResource]++;continue;}
 				candidate.action.accessTiles=parcelRingTiles(world,originX,originY,t);
 				bool ringLegal=true;
 				for(size_t i=0;i<candidate.action.accessTiles.size();++i)
@@ -1409,11 +1410,11 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 					if(!tile.grass||tile.occupied||tile.permanentResource
 					   ||isFootprintReserved(index)){reason=RejectedAccess;ringLegal=false;break;}
 				}
-				if(!ringLegal){lastSelectionSummary.rejected[reason]++;continue;}
+				if(!ringLegal){lastDiagnostics.rejected[reason]++;continue;}
 				if(placementPolicy.arteryRoutingEnabled
 				   && !routeArtery(world,candidate.action.accessTiles,intent.workers,
 					hasNetwork,signature,candidate.action.arteryTiles,reason))
-				{lastSelectionSummary.rejected[reason]++;continue;}
+				{lastDiagnostics.rejected[reason]++;continue;}
 				// Origins rejected by the rectangle checks are cheap; origins reaching
 				// routing and scoring are not. Charge a deterministic extra weight so
 				// the per-update budget tracks CPU work without using wall-clock timing,
@@ -1435,11 +1436,11 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				for(size_t r=0;r<candidate.action.arteryTiles.size();++r)
 					if(contains(candidate.action.parcelTiles,candidate.action.arteryTiles[r]))
 					{routeCrossesParcel=true;break;}
-				if(routeCrossesParcel){lastSelectionSummary.rejected[RejectedCirculation]++;continue;}
+				if(routeCrossesParcel){lastDiagnostics.rejected[RejectedCirculation]++;continue;}
 				const int coordinateKey=world.index(candidate.action.centerX,candidate.action.centerY);
 				std::map<int,uint32_t>::const_iterator quarantine=coordinateQuarantines.find(coordinateKey);
 				if(quarantine!=coordinateQuarantines.end())
-				{lastSelectionSummary.rejected[RejectedQuarantine]++;continue;}
+				{lastDiagnostics.rejected[RejectedQuarantine]++;continue;}
 				if(waterTierPasses(world,candidate.action.parcelTiles,6))
 				{
 					candidate.action.fallbackWaterTier=false;
@@ -1452,24 +1453,24 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 					candidate.action.utility=scoreCandidate(world,&intent,candidate);
 					retainCandidate(candidate,true);
 				}
-				else lastSelectionSummary.rejected[RejectedWaterTier]++;
+				else lastDiagnostics.rejected[RejectedWaterTier]++;
 		}
 	}
 	bestStrictAction=bestStrict.action;
 	bestFallbackAction=bestFallback.action;
 	if(originCursor<totalOrigins)return false;
-	lastSelectionSummary.strictCandidateCount+=strictCount;
-	lastSelectionSummary.fallbackCandidateCount+=fallbackCount;
+	lastDiagnostics.strictCandidateCount+=strictCount;
+	lastDiagnostics.fallbackCandidateCount+=fallbackCount;
 	// The fallback tier is searched only when no strict legal candidate exists.
 	if(hasStrict)
 	{
 		candidates.push_back(bestStrict);
-		lastSelectionSummary.candidateCount+=strictCount;
+		lastDiagnostics.candidateCount+=strictCount;
 	}
 	else if(hasFallback)
 	{
 		candidates.push_back(bestFallback);
-		lastSelectionSummary.candidateCount+=fallbackCount;
+		lastDiagnostics.candidateCount+=fallbackCount;
 	}
 	return true;
 }
@@ -1544,7 +1545,7 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 			candidate.action.centerX=building.centerX;candidate.action.centerY=building.centerY;
 			candidate.action.workers=1;RejectionReason reason=RejectedUpgradeContract;
 			if(!revalidate(world,candidate.action,&reason))
-			{lastSelectionSummary.rejected[reason]++;continue;}
+			{lastDiagnostics.rejected[reason]++;continue;}
 			candidate.action.utility=scoreCandidate(world,NULL,candidate);
 			candidates.push_back(candidate);
 			continue;
@@ -1557,7 +1558,7 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 		   ||limits.activeLevel2Upgrades>=limits.level2Upgrades))continue;
 		if(building.level<1||building.level>=profile->maximumLevel())continue;
 		const int maximum=contractMaximumLevel(building.id,building.buildingType);
-		if(maximum<=building.level){lastSelectionSummary.rejected[RejectedUpgradeContract]++;continue;}
+		if(maximum<=building.level){lastDiagnostics.rejected[RejectedUpgradeContract]++;continue;}
 		if(building.buildingType==configuredSchoolType&&building.level==2)
 		{
 			bool specialistActive=false;
@@ -1577,7 +1578,7 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 			: placementPolicy.upgradeLevel2Workers;
 		RejectionReason reason=RejectedUpgradeContract;
 		if(!revalidate(world,candidate.action,&reason))
-		{lastSelectionSummary.rejected[reason]++;continue;}
+		{lastDiagnostics.rejected[reason]++;continue;}
 		candidate.action.utility=scoreCandidate(world,NULL,candidate);
 		if(priority>0)
 		{
@@ -2048,7 +2049,7 @@ bool Planner::selectAction(const WorldState& world,
 	DevelopmentAction& selected,uint32_t occupancySignature)
 {
 	clearIncrementalSelection();
-	lastSelectionSummary.clear();ensureMaskSize(world.width*world.height);
+	lastDiagnostics.clear();ensureMaskSize(world.width*world.height);
 	prepareScoringCaches(world);
 	prepareRetrySignature(world);
 	const uint32_t signature=stateSignature(occupancySignature);
@@ -2062,7 +2063,7 @@ bool Planner::selectAction(const WorldState& world,
 	}
 	const size_t buildWinners=candidates.size();
 	addUpgradeAndRepairCandidates(world,limits,candidates);
-	lastSelectionSummary.candidateCount+=candidates.size()-buildWinners;
+	lastDiagnostics.candidateCount+=candidates.size()-buildWinners;
 	if(candidates.empty())
 	{
 		if(limits.activeNewConstruction<limits.newConstruction)
@@ -2073,14 +2074,14 @@ bool Planner::selectAction(const WorldState& world,
 	for(size_t i=1;i<candidates.size();++i)if(candidateBetter(candidates[i],best))best=candidates[i];
 	if(best.action.utility.total<0)
 	{
-		lastSelectionSummary.rejected[RejectedNegativeUtility]++;
+		lastDiagnostics.rejected[RejectedNegativeUtility]++;
 		if(limits.activeNewConstruction<limits.newConstruction)
 			recordBlocked(intents,signature);
 		return false;
 	}
 	selected=best.action; selected.id=nextActionId++;selected.worldSignature=signature;
-	lastSelectionSummary.waterTier=selected.fallbackWaterTier?5:6;
-	lastSelectionSummary.selectedActionId=selected.id;lastSelectionSummary.selectedUtility=selected.utility;
+	lastDiagnostics.waterTier=selected.fallbackWaterTier?5:6;
+	lastDiagnostics.selectedActionId=selected.id;lastDiagnostics.selectedUtility=selected.utility;
 	return true;
 }
 
@@ -2090,7 +2091,7 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 {
 	if(!incrementalSelectionActive)
 	{
-		lastSelectionSummary.clear();ensureMaskSize(world.width*world.height);
+		lastDiagnostics.clear();ensureMaskSize(world.width*world.height);
 		// Snapshotting is intentional: spreading a selector over several engine
 		// updates must not mix candidate scores from different world states.
 		incrementalWorld=world;
@@ -2175,7 +2176,7 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 	}
 	const size_t buildWinners=candidates.size();
 	addUpgradeAndRepairCandidates(incrementalWorld,incrementalLimits,candidates);
-	lastSelectionSummary.candidateCount+=candidates.size()-buildWinners;
+	lastDiagnostics.candidateCount+=candidates.size()-buildWinners;
 	if(candidates.empty())
 	{
 		if(incrementalLimits.activeNewConstruction<incrementalLimits.newConstruction)
@@ -2191,7 +2192,7 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 		if(candidateBetter(candidates[i],best))best=candidates[i];
 	if(best.action.utility.total<0)
 	{
-		lastSelectionSummary.rejected[RejectedNegativeUtility]++;
+		lastDiagnostics.rejected[RejectedNegativeUtility]++;
 		if(incrementalLimits.activeNewConstruction<incrementalLimits.newConstruction)
 			recordBlocked(incrementalIntents,incrementalSignature);
 		incrementalSelectionActive=false;
@@ -2199,9 +2200,9 @@ SelectionProgress Planner::selectActionIncremental(const WorldState& world,
 	}
 	selected=best.action;selected.id=nextActionId++;
 	selected.worldSignature=incrementalSignature;
-	lastSelectionSummary.waterTier=selected.fallbackWaterTier?5:6;
-	lastSelectionSummary.selectedActionId=selected.id;
-	lastSelectionSummary.selectedUtility=selected.utility;
+	lastDiagnostics.waterTier=selected.fallbackWaterTier?5:6;
+	lastDiagnostics.selectedActionId=selected.id;
+	lastDiagnostics.selectedUtility=selected.utility;
 	incrementalSelectionActive=false;
 	incrementalCandidates.clear();return SelectionFound;
 }
@@ -2338,7 +2339,7 @@ bool Planner::reserve(const WorldState& world, DevelopmentAction& action)
 	 if(action.type==BuildCampusMember||action.type==BuildStandalone)
 		blockedIntentSignatures[std::make_pair(action.buildingType,
 			int(action.purpose))]=stateSignature(world);
-	 lastSelectionSummary.rejected[reason]++;return false;}
+	 lastDiagnostics.rejected[reason]++;return false;}
 	Reservation reservation;reservation.id=nextReservationId++;reservation.actionId=action.id;
 	reservation.footprintTiles=action.parcelTiles;
 	if(action.type==UpgradeBuilding)
@@ -2372,7 +2373,7 @@ bool Planner::reserve(const WorldState& world, DevelopmentAction& action)
 	else if(action.type==BuildStandalone) reservation.permanent=true;
 	action.reservationId=reservation.id;action.state=ParcelReserved;
 	reservationMap[reservation.id]=reservation;addReservationReferences(reservation);
-	actionMap[action.id]=action;lastSelectionSummary.reservationId=reservation.id;return true;
+	actionMap[action.id]=action;lastDiagnostics.reservationId=reservation.id;return true;
 }
 
 bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action,
@@ -2804,7 +2805,7 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("incrementalHasFallback",incrementalHasFallback);
 	a.index("incrementalStrictCount",incrementalStrictCount);
 	a.index("incrementalFallbackCount",incrementalFallbackCount);
-	a("lastSelectionSummary",lastSelectionSummary);
+	a("lastDiagnostics",lastDiagnostics);
 	a("circulationReservedTileCount",circulationReservedTileCount);
 	a("routeCacheSignature",routeCacheSignature);
 	a("routeDistanceCache",routeDistanceCache);
@@ -2892,9 +2893,9 @@ bool Planner::load(GAGCore::InputStream* stream,int versionMinor)
 	stream->readEnterSection("standalone");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);StandaloneContract c;c.buildingId=stream->readSint32("building_id");c.buildingType=stream->readSint32("building_type");c.centerX=stream->readSint32("x");c.centerY=stream->readSint32("y");c.maximumLevel=stream->readSint32("maximum_level");c.reservationId=stream->readSint32("reservation_id");c.preexisting=stream->readUint8("preexisting");standaloneList.push_back(c);stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("reservations");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);Reservation r;r.id=stream->readSint32("id");r.campusId=stream->readSint32("campus_id");r.buildingId=stream->readSint32("building_id");r.actionId=stream->readSint32("action_id");r.permanent=stream->readUint8("permanent");readIntVector(stream,"footprint",r.footprintTiles);readIntVector(stream,"circulation",r.circulationTiles);reservationMap[r.id]=r;stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("reference_masks");size=stream->readUint32("size");footprintRefs.resize(size);circulationRefs.resize(size);for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);footprintRefs[i]=stream->readUint16("footprint");circulationRefs[i]=stream->readUint16("circulation");if(circulationRefs[i])++circulationReservedTileCount;stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("blocked");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int type=stream->readSint32("type");int purpose=stream->readSint32("purpose");blockedIntentSignatures[std::make_pair(type,purpose)]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
+	stream->readEnterSection("blocked");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int type=stream->readSint32("type");int purpose=versionMinor>=92?stream->readSint32("purpose"):int(CoreCapacity);blockedIntentSignatures[std::make_pair(type,purpose)]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("quarantines");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);int coordinate=stream->readSint32("coordinate");coordinateQuarantines[coordinate]=stream->readUint32("signature");stream->readLeaveSection();}stream->readLeaveSection();
-	stream->readEnterSection("actions");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);DevelopmentAction a;a.id=stream->readSint32("id");a.type=static_cast<DevelopmentActionType>(stream->readSint32("type"));a.purpose=static_cast<DevelopmentPurpose>(stream->readSint32("purpose"));a.state=static_cast<ActionLifecycleState>(stream->readSint32("state"));a.templateId=static_cast<TemplateId>(stream->readSint32("template_id"));a.campusId=stream->readSint32("campus_id");a.slotId=stream->readSint32("slot_id");a.buildingId=stream->readSint32("building_id");a.buildingType=stream->readSint32("building_type");a.fromLevel=stream->readSint32("from_level");a.targetLevel=stream->readSint32("target_level");a.centerX=stream->readSint32("x");a.centerY=stream->readSint32("y");a.workers=stream->readSint32("workers");a.fallbackWaterTier=stream->readUint8("fallback");a.requiresSwimmingBuilders=stream->readUint8("requires_swimming_builders");a.reservationId=stream->readSint32("reservation_id");a.issuedTick=stream->readSint32("issued_tick");a.worldSignature=stream->readUint32("signature");a.initialFootprint.left=stream->readSint32("initial_left");a.initialFootprint.top=stream->readSint32("initial_top");a.initialFootprint.width=stream->readSint32("initial_width");a.initialFootprint.height=stream->readSint32("initial_height");a.terminalFootprint.left=stream->readSint32("terminal_left");a.terminalFootprint.top=stream->readSint32("terminal_top");a.terminalFootprint.width=stream->readSint32("terminal_width");a.terminalFootprint.height=stream->readSint32("terminal_height");readIntVector(stream,"parcel",a.parcelTiles);readIntVector(stream,"access",a.accessTiles);readIntVector(stream,"artery",a.arteryTiles);stream->readEnterSection("utility");readUtility(stream,a.utility,versionMinor);stream->readLeaveSection();actionMap[a.id]=a;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();return true;
+	stream->readEnterSection("actions");size=stream->readUint32("size");for(uint32_t i=0;i<size;++i){stream->readEnterSection(i);DevelopmentAction a;a.id=stream->readSint32("id");a.type=static_cast<DevelopmentActionType>(stream->readSint32("type"));a.purpose=versionMinor>=92?static_cast<DevelopmentPurpose>(stream->readSint32("purpose")):CoreCapacity;a.state=static_cast<ActionLifecycleState>(stream->readSint32("state"));a.templateId=static_cast<TemplateId>(stream->readSint32("template_id"));a.campusId=stream->readSint32("campus_id");a.slotId=stream->readSint32("slot_id");a.buildingId=stream->readSint32("building_id");a.buildingType=stream->readSint32("building_type");a.fromLevel=stream->readSint32("from_level");a.targetLevel=stream->readSint32("target_level");a.centerX=stream->readSint32("x");a.centerY=stream->readSint32("y");a.workers=stream->readSint32("workers");a.fallbackWaterTier=stream->readUint8("fallback");a.requiresSwimmingBuilders=stream->readUint8("requires_swimming_builders");a.reservationId=stream->readSint32("reservation_id");a.issuedTick=stream->readSint32("issued_tick");a.worldSignature=stream->readUint32("signature");a.initialFootprint.left=stream->readSint32("initial_left");a.initialFootprint.top=stream->readSint32("initial_top");a.initialFootprint.width=stream->readSint32("initial_width");a.initialFootprint.height=stream->readSint32("initial_height");a.terminalFootprint.left=stream->readSint32("terminal_left");a.terminalFootprint.top=stream->readSint32("terminal_top");a.terminalFootprint.width=stream->readSint32("terminal_width");a.terminalFootprint.height=stream->readSint32("terminal_height");readIntVector(stream,"parcel",a.parcelTiles);readIntVector(stream,"access",a.accessTiles);readIntVector(stream,"artery",a.arteryTiles);stream->readEnterSection("utility");readUtility(stream,a.utility,versionMinor);stream->readLeaveSection();actionMap[a.id]=a;stream->readLeaveSection();}stream->readLeaveSection();stream->readLeaveSection();return true;
 }
 
 const char* lifecycleName(ActionLifecycleState state)

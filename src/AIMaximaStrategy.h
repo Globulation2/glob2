@@ -28,6 +28,8 @@ struct StrategyConfigOptions
 	StrategyConfigOptions();
 	std::string baseFile;
 	std::vector<std::string> layerFiles;
+	std::string inlineOverrides;
+	std::string explicitFormat;
 };
 
 /// Every member below is immutable after resolution. Integer units are used so
@@ -821,6 +823,14 @@ struct MaximaStrategy
 	} emergencies;
 };
 
+enum StrategyParameterImpact
+{
+	StrategyImpactLow=1,
+	StrategyImpactMedium=2,
+	StrategyImpactHigh=3,
+	StrategyImpactCritical=4
+};
+
 struct StrategyParameterInfo
 {
 	std::string key;
@@ -828,8 +838,11 @@ struct StrategyParameterInfo
 	std::string unit;
 	std::string group;
 	std::string description;
+	StrategyParameterImpact impact;
 	int hardMinimum;
 	int hardMaximum;
+	int searchMinimum;
+	int searchMaximum;
 };
 
 struct ResolvedStrategy
@@ -852,6 +865,8 @@ public:
 	static bool parseFormat(const std::string& name, MatchFormat& format);
 	static MatchFormat inferFormat(const GameHeader& gameHeader);
 	static const char* formatName(MatchFormat format);
+	static std::string schemaJson();
+	static std::string resolvedJson(const ResolvedStrategy& strategy);
 	static bool restoreValues(const std::string& text, MaximaStrategy& values, std::string& error);
 	static std::string canonicalValues(const MaximaStrategy& strategy);
 };

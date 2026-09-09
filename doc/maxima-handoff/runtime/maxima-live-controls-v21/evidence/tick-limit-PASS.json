@@ -1,0 +1,33 @@
+{
+  "protocol_id": "ecadf1aa37469c333300a06b11d3a8b01a37f0f85bd4af941db1e9782e3c3dbb",
+  "passed": true,
+  "cases": [
+    {
+      "disabled": false,
+      "tick": 183170,
+      "outcome": 1,
+      "audit_sha256": "4ce98b7e409630f3afd6bbbfb14bea6f7e930c416a2a5a7b5f9840e317ee0f77"
+    },
+    {
+      "disabled": true,
+      "tick": 22082,
+      "outcome": 0,
+      "audit_sha256": "35eed67674844ce837c71eb8c177e540b28fd58727835ef6884942a172227abc"
+    },
+    {
+      "known_long_qualification_only": true,
+      "tick": 200000,
+      "outcome": 0,
+      "decision_reason": "population_loss",
+      "population_by_side": {
+        "1": 34,
+        "0": 48
+      },
+      "audit_sha256": "57b16106ed86f9a495ee91f2afc4ebd2f33c3e1d1b363cc8698f3bc16e9c5cb6"
+    }
+  ],
+  "limit": 200000,
+  "single_engine_per_case": true,
+  "unfinished": "population_v1",
+  "script_sha256": "264cae448e8982519c0e104bd743222d1a8482fbc8eff3eb7ac1d918c8db4274"
+}

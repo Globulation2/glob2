@@ -1,0 +1,32 @@
+{
+  "time": 1788921876.3107169,
+  "stage": "controls",
+  "cohort": "weak",
+  "completed_pairs": 200,
+  "scheduled_pairs": 200,
+  "completed_executions": 418,
+  "scheduled_executions": 418,
+  "pairs_per_hour": 499.4799178931984,
+  "unresolved_executions": 0,
+  "hosts": {
+    "pharaoh-dev-2.local": {
+      "complete": 25,
+      "pending_transfers": 25
+    },
+    "pharaoh-dev-3.local": {
+      "complete": 27,
+      "pending_transfers": 27
+    },
+    "therig.local": {
+      "complete": 259,
+      "pending_transfers": 259
+    },
+    "devlaptop.local": {
+      "complete": 107,
+      "pending_transfers": 107
+    }
+  },
+  "failures": {},
+  "eta_seconds": 0.0,
+  "status": "stage_complete"
+}

@@ -6,6 +6,7 @@
 #include <SDL_rwops.h>
 
 #include <memory>
+#include <string>
 namespace GAGCore
 {
 	class InputStream;
@@ -54,6 +55,7 @@ public:
 
 	Player *player;
 
+	std::string implementationIdentity() const;
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 

@@ -157,7 +157,7 @@ template<class A> void fields(A& a, DevelopmentAction& value)
 	a("utility",value.utility);
 }
 
-template<class A> void fields(A& a, SelectionSummary& value)
+template<class A> void fields(A& a, PlacementDiagnostics& value)
 {
 	a("candidateCount",value.candidateCount);
 	a("strictCandidateCount",value.strictCandidateCount);

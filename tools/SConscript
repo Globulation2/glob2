@@ -11,7 +11,6 @@ Import("PackTar")
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "mksprite.cpp")
-    PackTar(env["TARFILE"], "MenuColonyHarness.cpp")
     PackTar(env["TARFILE"], "README")
     
     PackTar(env["TARFILE"], "SConscript")

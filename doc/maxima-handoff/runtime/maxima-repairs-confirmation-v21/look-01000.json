@@ -1,0 +1,43 @@
+{
+  "overall": {
+    "independent_pairs": 1000,
+    "on_only": 65,
+    "off_only": 62,
+    "missing_pairs": 0,
+    "on_observed_wins": 504,
+    "off_observed_wins": 501,
+    "delta": 0.003,
+    "outcome_bounds": [
+      0.003,
+      0.003
+    ],
+    "q": 0.127,
+    "r": 0.5118110236220472,
+    "alpha": 1.509433962264151e-05,
+    "ci": [
+      -0.06599297479932503,
+      0.07358765163229865
+    ],
+    "direction": null,
+    "practically_equivalent": false,
+    "magnitude_above_two_points": false,
+    "status": "unresolved"
+  },
+  "look_pairs": 1000,
+  "hypothesis_alpha": 0.0007547169811320754,
+  "look_alpha": 1.509433962264151e-05,
+  "stop": false,
+  "reason": "continue",
+  "interval_scope": "simultaneous across predeclared looks by union bound",
+  "effect_estimate_note": "Raw estimate at stopping can exaggerate magnitude; use adjusted interval.",
+  "default_change_permitted": false,
+  "combination_check_required": true,
+  "protocol_id": "ecadf1aa37469c333300a06b11d3a8b01a37f0f85bd4af941db1e9782e3c3dbb",
+  "switch": "repairs.enabled",
+  "confirmatory": true,
+  "amendment_sha256": "828d55cc00131cf1b788fd167359969ef1f567a4a1a81b210bfe07ee711f757c",
+  "validated_input_hashes": {
+    "batch-00000": "28f9ab2611c1a10914c34b8233a497380e4531266871281807d6ebf1975f9d8b",
+    "batch-00500": "19289b9ab59446e264551d64afb7b2e2f35c98aba06f61460cbb149cff2420b6"
+  }
+}

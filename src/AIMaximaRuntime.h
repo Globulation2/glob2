@@ -25,7 +25,7 @@
 #include <vector>
 
 class Building;
-struct BuildingType;
+class BuildingType;
 
 namespace AIMaximaRuntime
 {
@@ -456,7 +456,7 @@ namespace Construction
 		void queue_gradients(Gradients::GradientManager&);
 		int type, workers, id;
 		// Full-map searches are resumed in the original x-major order.  These
-		// fields resume through the saved execution section; loaded games
+		// fields resume through the version 95 execution section; older saves
 		// restart their pending search.
 		int searchCursor, searchWidth, searchHeight, searchBestScore;
 		position searchBest;
@@ -645,6 +645,14 @@ private:
 	int previousBuildingId;
 	bool initialized;
 	bool fruitOnMap;
+	std::vector<long long> profileTickMicros;
+	long long profileAiMicros;
+	long long profileHousekeepingMicros;
+	long long profileBuildingSearchMicros;
+	long long profileBuildingSearchMaxMicros;
+	int profileBuildingSearchCalls;
+	void record_profile(long long totalMicros, long long aiMicros,
+		long long housekeepingMicros, long long buildingSearchMicros);
 };
 
 }

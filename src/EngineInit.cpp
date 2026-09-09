@@ -12,6 +12,7 @@
 #include "CustomGameScreen.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "MaximaExperimentAudit.h"
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -107,7 +108,7 @@ int Engine::initCustom(const std::string &gameName)
 		}
 	}
 
-	int ret = initGame(mapHeader, gameHeader, true, false, true);
+	int ret = initGame(mapHeader, gameHeader, !globalContainer->runMaximaCheckpoint, false, true, gameName);
 	if(ret != EE_NO_ERROR)
 		return EE_CANT_LOAD_MAP;
 	else if(ret == -1)
@@ -312,16 +313,16 @@ bool Engine::haveMap(const MapHeader& mapHeader)
 
 
 
-int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
+int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, const std::string& sourceFileName)
 {
 	bool error = false;
 	try
 	{
-		error = !gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI);
+		error = !gui.loadFromHeaders(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI, sourceFileName);
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Failed to load the map: exception received." << std::endl;
+		std::cerr << "Failed to load the map: " << e.what() << std::endl;
 		error = true;
 	}
 	if (error) {
@@ -329,6 +330,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		return EE_CANT_LOAD_MAP;
 	}
 
+	MaximaExperimentAudit::state(gui.game,"initialization");
 	gui.game.clearingUncontrolledTeams();
 	finalAdjustments();
 
@@ -340,7 +342,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// and to allow concurrent headless instances to write to distinct files).
 	const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
 	std::string replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
-	if (!globalContainer->replaying)
+	if (!globalContainer->replaying && !globalContainer->disableReplayRecording)
 	{
 		assert(globalContainer->replayWriter == nullptr);
 		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
@@ -515,5 +517,5 @@ void Engine::finalAdjustments(void)
 	{
 		gui.adjustInitialViewport();
 	}
-	gui.game.setAlliances();
+	if(!globalContainer->runMaximaCheckpoint) gui.game.setAlliances();
 }

@@ -1,0 +1,9 @@
+{
+  "time": 1788907119.360613,
+  "reason": "User retired repairs for low priority and requested mainline performance improvements before further switches",
+  "restart_allowed": false,
+  "statistical_conclusion": "inconclusive; not proven equivalent",
+  "default_changes": false,
+  "active_games": "finish and preserve; no new assignments",
+  "next": "Update and qualify mainline candidate, measure performance, then choose next consequential switch"
+}

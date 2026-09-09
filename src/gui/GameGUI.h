@@ -82,7 +82,7 @@ public:
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
-	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const std::string name);
@@ -501,6 +501,12 @@ private:
 	OverlayArea overlay;
 
 	bool showUnitWorkingToBuilding;
+	bool showMaximaDiagnostics=false;
+	bool showMaximaTopologyDiagnostics=false;
+	int maximaTopologyDiagnosticPage=0;
+	void drawMaximaDiagnostics();
+	void drawMaximaTopologyDiagnostics();
+	Player* findSameTeamMaximaPlayer() const;
 
 	TeamStats *teamStats;
 	Team *localTeam;
@@ -673,5 +679,3 @@ private:
 	//! Move all particles by a certain amount of pixels
 	void moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
-
-

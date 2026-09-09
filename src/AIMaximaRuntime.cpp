@@ -10,6 +10,7 @@
 #include <Stream.h>
 
 #include <algorithm>
+#include <chrono>
 #include <climits>
 #include <iostream>
 #include <sstream>
@@ -972,7 +973,7 @@ int MapInfo::get_ammount_resource(int x,int y)const{return context.player->map->
 }
 
 Context::Context(Player* player)
-	:player(player),allies(0),enemies(0),inn_view(0),market_view(0),other_view(0),activeAI(NULL),buildings(player),gradients(player),nullOrder(new NullOrder()),timer(0),previousBuildingId(-1),initialized(false),fruitOnMap(false){}
+	:player(player),allies(0),enemies(0),inn_view(0),market_view(0),other_view(0),activeAI(NULL),buildings(player),gradients(player),nullOrder(new NullOrder()),timer(0),previousBuildingId(-1),initialized(false),fruitOnMap(false),profileAiMicros(0),profileHousekeepingMicros(0),profileBuildingSearchMicros(0),profileBuildingSearchMaxMicros(0),profileBuildingSearchCalls(0){}
 
 void Context::initialize()
 {
@@ -1150,32 +1151,95 @@ void Context::update_building_orders()
 	}
 }
 
-
+void Context::record_profile(long long totalMicros,long long aiMicros,
+	long long housekeepingMicros,long long buildingSearchMicros)
+{
+	profileTickMicros.push_back(totalMicros);profileAiMicros+=aiMicros;
+	profileHousekeepingMicros+=housekeepingMicros;
+	if(buildingSearchMicros>=0)
+	{
+		profileBuildingSearchMicros+=buildingSearchMicros;
+		profileBuildingSearchMaxMicros=std::max(profileBuildingSearchMaxMicros,
+			buildingSearchMicros);
+		++profileBuildingSearchCalls;
+	}
+	if(profileTickMicros.size()<1000)return;
+	std::vector<long long> sorted=profileTickMicros;
+	std::sort(sorted.begin(),sorted.end());
+	const size_t n=sorted.size();
+	std::cout<<"MAXIMA_TELEMETRY\t"<<timer<<"\t"
+		<<player->team->teamNumber<<"\truntime_performance"
+		<<"\tsamples="<<n
+		<<"\ttick_p50_us="<<sorted[(n*50)/100]
+		<<"\ttick_p95_us="<<sorted[(n*95)/100]
+		<<"\ttick_p99_us="<<sorted[(n*99)/100]
+		<<"\ttick_max_us="<<sorted[n-1]
+		<<"\tai_total_us="<<profileAiMicros
+		<<"\thousekeeping_total_us="<<profileHousekeepingMicros
+		<<"\tbuilding_search_total_us="<<profileBuildingSearchMicros
+		<<"\tbuilding_search_max_us="<<profileBuildingSearchMaxMicros
+		<<"\tbuilding_search_calls="<<profileBuildingSearchCalls<<std::endl;
+	profileTickMicros.clear();profileAiMicros=profileHousekeepingMicros=0;
+	profileBuildingSearchMicros=profileBuildingSearchMaxMicros=0;
+	profileBuildingSearchCalls=0;
+}
 
 shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 {
-    activeAI=&ai;
-    if(!initialized) initialize();
-    gradients.update(player->game->stepCounter);
-    if(!orders.empty())
-    {
-        shared_ptr<Order> order=orders.front();
-        orders.pop_front();
-        return order;
-    }
-    // Batch discovery and management every four logical ticks, staggered by team.
-    const bool housekeepingDue=((timer+player->team->teamNumber)&3)==0;
-    if(housekeepingDue) buildings.tick();
-    update_trackers();
-    if(housekeepingDue) update_management_orders();
-    ai.tick(*this);
-    if(housekeepingDue)
-    {
-        update_management_orders();
-        update_building_orders();
-    }
-    ++timer;
-    return nullOrder;
+	const bool profiling=globalContainer&&globalContainer->nicowarTelemetry;
+	const std::chrono::steady_clock::time_point totalStarted=profiling
+		?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point();
+	activeAI=&ai;if(!initialized)initialize();gradients.update(player->game->stepCounter);
+	if(!orders.empty())
+	{
+		shared_ptr<Order> order=orders.front();orders.pop_front();
+		if(profiling)record_profile(std::chrono::duration_cast<std::chrono::microseconds>(
+			std::chrono::steady_clock::now()-totalStarted).count(),0,0,-1);
+		return order;
+	}
+	// Building discovery and declarative management conditions change much more
+	// slowly than unit simulation.  Batch that housekeeping while leaving the AI
+	// tick and already-issued engine orders responsive; newly queued management
+	// work waits at most three logical ticks.
+	// A stable team phase prevents several Maxima instances from doing their
+	// housekeeping on the same simulation update. Team zero retains the legacy
+	// phase; the remaining teams occupy the other three slots.
+	const bool housekeepingDue=((timer+player->team->teamNumber)&3)==0;
+	long long housekeepingMicros=0,buildingSearchMicros=-1;
+	std::chrono::steady_clock::time_point phaseStarted;
+	if(profiling)phaseStarted=std::chrono::steady_clock::now();
+	if(housekeepingDue)
+		buildings.tick();
+	// Tracker ages and their ten-tick sample period use the AI's logical clock,
+	// independently of the slower building-discovery/management cadence.
+	update_trackers();
+	if(housekeepingDue)
+		update_management_orders();
+	if(profiling)housekeepingMicros+=std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::steady_clock::now()-phaseStarted).count();
+	if(profiling)phaseStarted=std::chrono::steady_clock::now();
+	ai.tick(*this);
+	const long long aiMicros=profiling
+		?std::chrono::duration_cast<std::chrono::microseconds>(
+			std::chrono::steady_clock::now()-phaseStarted).count():0;
+	if(housekeepingDue)
+	{
+		if(profiling)phaseStarted=std::chrono::steady_clock::now();
+		update_management_orders();
+		if(profiling)
+			housekeepingMicros+=std::chrono::duration_cast<std::chrono::microseconds>(
+				std::chrono::steady_clock::now()-phaseStarted).count();
+		if(profiling)phaseStarted=std::chrono::steady_clock::now();
+		update_building_orders();
+		if(profiling)buildingSearchMicros=
+			std::chrono::duration_cast<std::chrono::microseconds>(
+				std::chrono::steady_clock::now()-phaseStarted).count();
+	}
+	++timer;
+	if(profiling)record_profile(std::chrono::duration_cast<std::chrono::microseconds>(
+		std::chrono::steady_clock::now()-totalStarted).count(),aiMicros,
+		housekeepingMicros,buildingSearchMicros);
+	return nullOrder;
 }
 
 void Context::save(GAGCore::OutputStream* stream) const
@@ -1237,6 +1301,7 @@ void Context::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMin
         stream->readLeaveSection();
     }
     gradients.loadExecutionState(stream);
+    if(versionMinor>=92)
     {
         stream->readEnterSection("FoundBuildingExecution96");
         for(auto& entry:buildings.foundBuildings)

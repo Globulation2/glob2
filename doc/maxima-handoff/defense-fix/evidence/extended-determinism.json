@@ -1,0 +1,34 @@
+[
+  {
+    "opponent": 1,
+    "boundary_equal": true,
+    "terminal_equal": true,
+    "world_equal": true,
+    "rng_equal": true,
+    "orders_equal": true
+  },
+  {
+    "opponent": 2,
+    "boundary_equal": true,
+    "terminal_equal": true,
+    "world_equal": true,
+    "rng_equal": true,
+    "orders_equal": true
+  },
+  {
+    "opponent": 5,
+    "boundary_equal": true,
+    "terminal_equal": true,
+    "world_equal": true,
+    "rng_equal": true,
+    "orders_equal": true
+  },
+  {
+    "opponent": 6,
+    "boundary_equal": true,
+    "terminal_equal": true,
+    "world_equal": true,
+    "rng_equal": true,
+    "orders_equal": true
+  }
+]

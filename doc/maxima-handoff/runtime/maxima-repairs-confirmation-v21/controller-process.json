@@ -1,0 +1,19 @@
+{
+  "pid": 8389,
+  "caffeinate_pid": 8390,
+  "started": 1788897069.723899,
+  "protocol_id": "ecadf1aa37469c333300a06b11d3a8b01a37f0f85bd4af941db1e9782e3c3dbb",
+  "controller": "/Users/bradley/glob2/output/maxima-repairs-confirmation-v21/controller.py",
+  "slots": 48,
+  "remote_root": "/home/bradley/glob2-win-continuation-20260908",
+  "remote_output": "/home/bradley/glob2-win-continuation-20260908/output/repairs-confirmation-v21",
+  "quarantined": [
+    "pharaoh-dev-1.local"
+  ],
+  "current_controls_slots": 36,
+  "devlaptop_slots": 12,
+  "cap_effective": "next newly prepared batch",
+  "controller_sha256": "a0ea0da90a56a57f5c51ffb3c8c0fdbf40d27e9095ea40d0b0108eb9ef4116e8",
+  "runtime_policy_sha256": "afc1b835b6478d27073cadcb2bd525f431e42d84897d0d6df42ce91df6802c37",
+  "scheduling": "Idle hosts may start the next 500-pair batch only within a registered look; no overlapping simulation slots per host"
+}

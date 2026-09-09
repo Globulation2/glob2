@@ -394,9 +394,9 @@ struct DevelopmentAction
 	UtilityComponents utility;
 };
 
-struct SelectionSummary
+struct PlacementDiagnostics
 {
-	SelectionSummary();
+	PlacementDiagnostics();
 	void clear();
 	int candidateCount;
 	int strictCandidateCount;
@@ -491,7 +491,7 @@ public:
 
 	const PlacementPolicy& policy() const { return placementPolicy; }
 	PlacementPolicy& mutablePolicy() { return placementPolicy; }
-	const SelectionSummary& selectionSummary() const { return lastSelectionSummary; }
+	const PlacementDiagnostics& diagnostics() const { return lastDiagnostics; }
 	uint32_t spatialRevision() const { return footprintReferenceRevision; }
 	const std::vector<Campus>& campuses() const { return campusList; }
 	const std::vector<StandaloneContract>& standaloneContracts() const { return standaloneList; }
@@ -604,7 +604,7 @@ private:
 	uint32_t stateSignature(uint32_t worldSignature) const;
 
 	PlacementPolicy placementPolicy;
-	SelectionSummary lastSelectionSummary;
+	PlacementDiagnostics lastDiagnostics;
 	std::vector<BuildingProfile> configuredProfiles;
 	std::vector<DevelopmentTemplate> templateList;
 	std::vector<Campus> campusList;

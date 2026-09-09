@@ -1,0 +1,17 @@
+{
+  "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
+  "switch": "farming.farm_protection_enabled",
+  "stage": "confirmation",
+  "fixed_pairs": 1000,
+  "looks": [
+    1000
+  ],
+  "alpha": 0.0007547169811320754,
+  "decision": "single final paired exact interval using existing report statistics; no additional looks or outcome-based extension",
+  "purpose": "independent confirmation of large pilot benefit; not powered guarantee for 2 percentage points",
+  "hard_tick_limit": 100000,
+  "old_or_pilot_results_pooled": false,
+  "automatic_default_changes": false,
+  "automatic_next_stage": false,
+  "allocation_rationale": "user authorized continuing consequential switches; bounded 1000-pair confirmation on existing 48 slots"
+}

@@ -1,0 +1,30 @@
+{
+  "time": 1788908859.163678,
+  "passed": true,
+  "hosts": {
+    "devlaptop.local": {
+      "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
+      "passed": true,
+      "cases": 40,
+      "signature_sha256": "d367f3e313659be9fea36fd27bad9784bd5baab44b96c3f7cbe842a7a555353b"
+    },
+    "pharaoh-dev-2.local": {
+      "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
+      "passed": true,
+      "cases": 40,
+      "signature_sha256": "d367f3e313659be9fea36fd27bad9784bd5baab44b96c3f7cbe842a7a555353b"
+    },
+    "pharaoh-dev-3.local": {
+      "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
+      "passed": true,
+      "cases": 40,
+      "signature_sha256": "d367f3e313659be9fea36fd27bad9784bd5baab44b96c3f7cbe842a7a555353b"
+    },
+    "therig.local": {
+      "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
+      "passed": true,
+      "cases": 40,
+      "signature_sha256": "d367f3e313659be9fea36fd27bad9784bd5baab44b96c3f7cbe842a7a555353b"
+    }
+  }
+}

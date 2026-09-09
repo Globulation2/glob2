@@ -1,0 +1,100 @@
+{
+  "pharaoh-dev-2.local": {
+    "reserved_core": [
+      0,
+      3
+    ],
+    "reserved_cpus": [
+      3
+    ],
+    "simulation_cpus": [
+      0,
+      1,
+      2
+    ],
+    "jobs": 3
+  },
+  "pharaoh-dev-3.local": {
+    "reserved_core": [
+      0,
+      3
+    ],
+    "reserved_cpus": [
+      3
+    ],
+    "simulation_cpus": [
+      0,
+      1,
+      2
+    ],
+    "jobs": 3
+  },
+  "therig.local": {
+    "reserved_core": [
+      0,
+      15
+    ],
+    "reserved_cpus": [
+      15,
+      31
+    ],
+    "simulation_cpus": [
+      0,
+      16,
+      1,
+      17,
+      2,
+      18,
+      3,
+      19,
+      4,
+      20,
+      5,
+      21,
+      6,
+      22,
+      7,
+      23,
+      8,
+      24,
+      9,
+      25,
+      10,
+      26,
+      11,
+      27,
+      12,
+      28,
+      13,
+      29,
+      14,
+      30
+    ],
+    "jobs": 30
+  },
+  "devlaptop.local": {
+    "reserved_core": [
+      0,
+      7
+    ],
+    "reserved_cpus": [
+      14,
+      15
+    ],
+    "simulation_cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "jobs": 12
+  }
+}

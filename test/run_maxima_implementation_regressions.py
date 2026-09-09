@@ -28,7 +28,7 @@ def main():
         "MaximaFarmingIntegrationTest", "MaximaBarrierScenarioTest",
         "MaximaEconomyRegressionTest", "MaximaDirectorRegressionTest",
         "MaximaTacticsStandaloneTest", "MaximaPlacementStandaloneTest",
-        "MaximaFarmingStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStaffingStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest"], help="Run only the named test (repeatable)")
+        "MaximaFarmingStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStaffingStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest"], help="Run only the named test (repeatable)")
     parser.add_argument("--placement-only", action="store_true",
                         help="Run placement/farming units and placement engine integration")
     parser.add_argument("--production-only", action="store_true",
@@ -87,6 +87,7 @@ def main():
             ("MaximaStaffingStandaloneTest", []),
             ("MaximaStrategyTest", objects),
             ("MaximaLifecycleTest", objects),
+            ("MaximaDiagnosticsTest", objects),
             ("MaximaTacticsStandaloneTest", [temporary / "AIMaximaTactics.o"]),
             ("MaximaFarmingStandaloneTest", [temporary / "AIMaximaFarming.o"]),
             ("MaximaPlacementStandaloneTest", [temporary / "AIMaximaPlacement.o", sha1,

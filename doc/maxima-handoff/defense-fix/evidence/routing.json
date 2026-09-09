@@ -1,0 +1,282 @@
+[
+  {
+    "opponent": 1,
+    "format": "duel",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "e2c0bc45d0acadc3ed9f75d802dd55749cf6fe0b683a3d7c2719f7294464111d"
+  },
+  {
+    "opponent": 1,
+    "format": "ffa3",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "7bee6b9b044369c4a2d93eed7511b8f44663f66a8718f343963084675a30c745"
+  },
+  {
+    "opponent": 1,
+    "format": "ffa4",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "6e4c8fa116933f2b010ea99bc4d7fec19ebe71b04cf32992f886a4bdaf34223f"
+  },
+  {
+    "opponent": 1,
+    "format": "ffa5",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "cfe9fef21428fafe219f0a752792a53a41e9f818e475a05db18b660c35f9bec2"
+  },
+  {
+    "opponent": 1,
+    "format": "2v2",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "82ef13f11bcd4a973d1f1cd0bb114378099d079710df947e9439caca70aee2a1"
+  },
+  {
+    "opponent": 1,
+    "format": "2v2",
+    "arrangement": 1,
+    "status": "passed",
+    "receipt": "3b345b9be6de31479abbe387b0241da052b57622539eda5112ce76a33b1fb9c4"
+  },
+  {
+    "opponent": 1,
+    "format": "2v2",
+    "arrangement": 2,
+    "status": "passed",
+    "receipt": "9a6899f4c3f88eef40305a8dff4829de281fb1ea3f58d31245bcecaf850b4058"
+  },
+  {
+    "opponent": 1,
+    "format": "2v2",
+    "arrangement": 3,
+    "status": "passed",
+    "receipt": "16596743fbb94e43cafb5d5d4723118d1c4543474d254a9184bc81d391106ba0"
+  },
+  {
+    "opponent": 1,
+    "format": "2v2",
+    "arrangement": 4,
+    "status": "passed",
+    "receipt": "8c2fb57aa5523839600a1d67c6d6d2f150d790046ede64c2c60e4a244c667730"
+  },
+  {
+    "opponent": 1,
+    "format": "2v2",
+    "arrangement": 5,
+    "status": "passed",
+    "receipt": "565ec84bc2aa3514cc04087f9d561e4ad763453a2acf398e0401bcc7c7389882"
+  },
+  {
+    "opponent": 2,
+    "format": "duel",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "bcba03992ae2e816860aec548da43f480acbc66bcb6eb357905a62a329a25678"
+  },
+  {
+    "opponent": 2,
+    "format": "ffa3",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "3ede7c12318f06ac1fe722a4bf95d60935143003008f234e5c263d6e33c88628"
+  },
+  {
+    "opponent": 2,
+    "format": "ffa4",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "54a9f0501ec82fc19e176eb57ae5ae0d03c7da0d0f7b3e4ccb137214150cba6a"
+  },
+  {
+    "opponent": 2,
+    "format": "ffa5",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "86aed75f3b79dbf6a0918ba0b77f822914e278e2d40b8aba95510c0314846e05"
+  },
+  {
+    "opponent": 2,
+    "format": "2v2",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "5c9d53c2ec77be09f7785f90259543a2056334632ac47fe898009b84b84c383f"
+  },
+  {
+    "opponent": 2,
+    "format": "2v2",
+    "arrangement": 1,
+    "status": "passed",
+    "receipt": "89b319646ce859e32b5233c21951e5d748efab4a66d478dc81bf99f4b8abf94d"
+  },
+  {
+    "opponent": 2,
+    "format": "2v2",
+    "arrangement": 2,
+    "status": "passed",
+    "receipt": "6a84a56778663e2d4ca4b8af6e3ac492222ca1ba5028f1cfddcf60f0e603c7e2"
+  },
+  {
+    "opponent": 2,
+    "format": "2v2",
+    "arrangement": 3,
+    "status": "passed",
+    "receipt": "70850fa8b18ca328c12bfee53f5c3d5f3107c30ba046e4ec7d206add8232b486"
+  },
+  {
+    "opponent": 2,
+    "format": "2v2",
+    "arrangement": 4,
+    "status": "passed",
+    "receipt": "e52dc0ef979bac21ed9793385d154606d42316d04f70ab863056750ce8b3ac8c"
+  },
+  {
+    "opponent": 2,
+    "format": "2v2",
+    "arrangement": 5,
+    "status": "passed",
+    "receipt": "2201d52ae8d8613a5c7ec13572bbc8a964e091c59c74c01b7837108cce1a3cb9"
+  },
+  {
+    "opponent": 5,
+    "format": "duel",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "236590b74add4eeeb54f10a1fb0a4ab87ffe1e975178d4be8aa282610cdf9d8c"
+  },
+  {
+    "opponent": 5,
+    "format": "ffa3",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "c50b63aba7ee333b1f9e059d47939f4571dca3243264758299f39517b325ecd4"
+  },
+  {
+    "opponent": 5,
+    "format": "ffa4",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "160a3232631ae649eedfab92a2b5d0f7a7f199ca2be5abcfca65d1aaecffcd25"
+  },
+  {
+    "opponent": 5,
+    "format": "ffa5",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "d20be6c5a3d65dbd6bfed92d2d6ce1d02b529b38b4b6aef86e90ca275386c1e6"
+  },
+  {
+    "opponent": 5,
+    "format": "2v2",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "56701c807a6dbe019f15235625e908e2b258c89c58862b2343f93109a4ba5eb0"
+  },
+  {
+    "opponent": 5,
+    "format": "2v2",
+    "arrangement": 1,
+    "status": "passed",
+    "receipt": "74fe13e9f3ab5c72f038a93f8b6f02903a7ef69b8fdd46b30261a5bb363978e1"
+  },
+  {
+    "opponent": 5,
+    "format": "2v2",
+    "arrangement": 2,
+    "status": "passed",
+    "receipt": "6dca1228aef2a644d90ff604d87be1de648b6654443a05abf3632af3a460a889"
+  },
+  {
+    "opponent": 5,
+    "format": "2v2",
+    "arrangement": 3,
+    "status": "passed",
+    "receipt": "663a64dc91104abeaad5a50d9ed4299958617315233100e6acde5b630b9d2afd"
+  },
+  {
+    "opponent": 5,
+    "format": "2v2",
+    "arrangement": 4,
+    "status": "passed",
+    "receipt": "06547bf961c6b76c1deb4ef1fdd5565b8dcac5513e2d45b5d2bcfa31cdfd10e5"
+  },
+  {
+    "opponent": 5,
+    "format": "2v2",
+    "arrangement": 5,
+    "status": "passed",
+    "receipt": "f08ff330279e0eaa6b1cd4f6ec8d9a5b195a2b5a7541caa703b307394f0474f9"
+  },
+  {
+    "opponent": 6,
+    "format": "duel",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "066dc541c7c7850f7156afdbaf31b5268d09156bfcdac8d615e0d85ea9b5f054"
+  },
+  {
+    "opponent": 6,
+    "format": "ffa3",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "a4bb4f69ac548bab80cdb5ae2aed8eab6a03991361aa1365fddd43c8cb7157bc"
+  },
+  {
+    "opponent": 6,
+    "format": "ffa4",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "bf23ef393c34ff10e6e963e036ebe650e7141f1e3addd424423620e21c0bef27"
+  },
+  {
+    "opponent": 6,
+    "format": "ffa5",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "3590524f8931215f060a47ff89c97d17ad9c3217e96eaf6e5295a89df6a06340"
+  },
+  {
+    "opponent": 6,
+    "format": "2v2",
+    "arrangement": 0,
+    "status": "passed",
+    "receipt": "0708656468453a8148d1f8e4f765d55ddc48b1cd5acd93c6ab51c43a09dea8fd"
+  },
+  {
+    "opponent": 6,
+    "format": "2v2",
+    "arrangement": 1,
+    "status": "passed",
+    "receipt": "6f151405c9df33a3168e8d765ccc3009cb18532b89a8fd94b0142b78e4259738"
+  },
+  {
+    "opponent": 6,
+    "format": "2v2",
+    "arrangement": 2,
+    "status": "passed",
+    "receipt": "74b3a64b9a92978b24c86bcb0275d330b529ec4edd62b9e2988b3bd9777f01cf"
+  },
+  {
+    "opponent": 6,
+    "format": "2v2",
+    "arrangement": 3,
+    "status": "passed",
+    "receipt": "a85772959d8852cb549fe678962095d6267e5d49cc377fe8adfc9c3b56ea1deb"
+  },
+  {
+    "opponent": 6,
+    "format": "2v2",
+    "arrangement": 4,
+    "status": "passed",
+    "receipt": "9e3cddf2c4f7d4b640722e26e7081330db2c3ce9430f3d4ced8d082a252b6543"
+  },
+  {
+    "opponent": 6,
+    "format": "2v2",
+    "arrangement": 5,
+    "status": "passed",
+    "receipt": "c4d63180793c782aa089c1d285f763bd8a2341f10927db7e5d6970519756fe16"
+  }
+]
