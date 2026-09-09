@@ -1,52 +1,61 @@
 # Adaptive soundtrack sets
 
-The in-game Options menu lets you cycle through Original, Seedling, Bramble Dance,
-Velvet Orbit and Tidepool, or choose **Random each match**. The choice is saved.
-Selecting a different set starts the current mood from the beginning. Within a
-set, calm, building and combat share timing and harmony for the game's existing
-mood crossfades.
+In-game Options lets you choose Original, Seedling, Bramble Dance, Velvet Orbit,
+Tidepool, or Random each match. The choice is saved. Switching sets starts the
+current mood from the beginning; moods within each set share timing for crossfades.
 
-| Set | Character | Loop |
+| Set | Instruments | Loop |
 | --- | --- | --- |
-| Seedling | Organic electronic, woody melody, heavy combat bass | 80 seconds |
-| Bramble Dance | Marimba, bamboo flute and hand drums in 6/8 | 66.67 seconds |
-| Velvet Orbit | Spacious electric piano and broken beats | 80 seconds |
-| Tidepool | Caribbean-inspired steelpan, offbeat organ and syncopated bass | 76.8 seconds |
+| Seedling | Pads, synth bass, wood and bells; guitar and brass combat accents | 80 seconds |
+| Bramble Dance | Marimba, bamboo flute, round bass and hand drums in 6/8 | 66.67 seconds |
+| Velvet Orbit | Electric piano, glass tones, pads and broken beats | 80 seconds |
+| Tidepool | Steel drums, offbeat organ, electric bass and hand percussion | 76.8 seconds |
 
-The four new sets are original programmatic compositions with custom synthesis;
-no external samples or existing recordings are used. Each includes editable
-Type-1 MIDI originals and its Python composition/rendering source. MIDI instrument
-assignments are GM suggestions; a DAW's instruments will sound different from the
-custom renders. Save DAW edits separately before regenerating.
+## MIDI and rendering
 
-## Regeneration
+The Python generators compose original notes and export editable Type-1 MIDI.
+All audio is rendered by Apple's premade AVAudioUnitSampler using the macOS General
+MIDI DLS sound bank. `render.py` is the shared rendering entry point; there are no
+hand-written instrument oscillators or drum synthesizers. NumPy only handles PCM
+validation, gain and preview crossfades. The system sound bank is not bundled.
 
-Requires Python 3, NumPy, and libsndfile with Ogg/Vorbis support. From the repository
-root, run:
+Rendering requires macOS, Xcode command-line tools, Python 3 and NumPy. Installation
+also requires libsndfile with Ogg/Vorbis support. The game plays the resulting Oggs
+on all supported platforms and does not need Apple's audio framework at runtime.
+
+From the repository root:
 
 ```sh
 python3 music/seedling/generate.py
 python3 music/contrasts/generate.py
 python3 music/tidepool/generate.py
+python3 music/render.py
 python3 music/install_sets.py
 ```
 
-The generators create stereo 44.1 kHz WAV loops and previews. The installer encodes
-and verifies the runtime Ogg trios in `data/zik/`, recording decoded lengths and
-peaks in `installed-sets.json`. To install one regenerated set, pass its directory
-name, for example `python3 music/install_sets.py tidepool`.
+Pass set IDs to render or install only selected sets, e.g. `python3 music/render.py
+tidepool`. Pass `--sound-bank /path/to/bank.sf2` to audition another compatible
+premade bank. MIDI program numbers and pan settings select each instrument;
+percussion uses the GM drum bank on channel 10. Program changes must be at tick zero.
+Save DAW edits separately before regenerating MIDI files.
 
-Runtime Oggs, MIDI originals and source are tracked. Generated WAV previews and
-ZIP bundles are ignored. Release tails wrap around loop boundaries. Different
-sets have different tempos and lengths, so only moods within a set are aligned.
+The renderer runs two warm-up loops and captures the third for release continuity.
+It renders stereo 44.1 kHz audio and applies one shared gain per trio, preserving
+relative dynamics. A preview cycles calm → building → combat → calm; transition
+times are recorded in `render-info.json`. MIDI's integer tempo precision determines
+the exact frame count. WAV previews and compiled renderers are not committed.
 
-## Integration checks
+`installed-sets.json` records the decoded Ogg frame counts and peaks. Different
+sets have independent tempos; only moods within a set are position-aligned.
+
+## Checks
 
 ```sh
+python3 -m unittest discover -s music -p 'test_*.py'
 scons --build=build-validation release=1 -j16 music-set-tests
 python3 test/run-music-set-tests.py
 ```
 
-The harness uses a disposable profile and SDL dummy audio, and requires a graphical
-display to construct the Options screen. It checks set discovery, decoder rollback,
-mood preservation, selector behavior, mute state and saved preferences.
+The game harness uses a disposable profile and dummy audio, and needs a graphical
+display to construct Options. It checks discovery, decoder rollback, mood changes,
+selector actions, mute state and saved preferences.

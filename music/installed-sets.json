@@ -8,21 +8,21 @@
         "source": "music/seedling/a1-calm.wav",
         "frames": 3528000,
         "seconds": 80.0,
-        "decoded_peak": 0.65667724609375
+        "decoded_peak": 0.189239501953125
       },
       {
         "file": "data/zik/seedling/a2.ogg",
         "source": "music/seedling/a2-building.wav",
         "frames": 3528000,
         "seconds": 80.0,
-        "decoded_peak": 0.71453857421875
+        "decoded_peak": 0.19287109375
       },
       {
         "file": "data/zik/seedling/a3.ogg",
         "source": "music/seedling/a3-combat.wav",
         "frames": 3528000,
         "seconds": 80.0,
-        "decoded_peak": 0.97149658203125
+        "decoded_peak": 0.905670166015625
       }
     ]
   },
@@ -33,23 +33,23 @@
       {
         "file": "data/zik/bramble-dance/a1.ogg",
         "source": "music/contrasts/bramble-dance/calm.wav",
-        "frames": 2940000,
-        "seconds": 66.66666666666667,
-        "decoded_peak": 0.518310546875
+        "frames": 2940002,
+        "seconds": 66.66671201814059,
+        "decoded_peak": 0.1846923828125
       },
       {
         "file": "data/zik/bramble-dance/a2.ogg",
         "source": "music/contrasts/bramble-dance/building.wav",
-        "frames": 2940000,
-        "seconds": 66.66666666666667,
-        "decoded_peak": 0.703369140625
+        "frames": 2940002,
+        "seconds": 66.66671201814059,
+        "decoded_peak": 0.418426513671875
       },
       {
         "file": "data/zik/bramble-dance/a3.ogg",
         "source": "music/contrasts/bramble-dance/combat.wav",
-        "frames": 2940000,
-        "seconds": 66.66666666666667,
-        "decoded_peak": 0.8985595703125
+        "frames": 2940002,
+        "seconds": 66.66671201814059,
+        "decoded_peak": 0.93035888671875
       }
     ]
   },
@@ -60,23 +60,23 @@
       {
         "file": "data/zik/velvet-orbit/a1.ogg",
         "source": "music/contrasts/velvet-orbit/calm.wav",
-        "frames": 3528000,
-        "seconds": 80.0,
-        "decoded_peak": 0.582794189453125
+        "frames": 3527999,
+        "seconds": 79.99997732426304,
+        "decoded_peak": 0.495147705078125
       },
       {
         "file": "data/zik/velvet-orbit/a2.ogg",
         "source": "music/contrasts/velvet-orbit/building.wav",
-        "frames": 3528000,
-        "seconds": 80.0,
-        "decoded_peak": 0.70269775390625
+        "frames": 3527999,
+        "seconds": 79.99997732426304,
+        "decoded_peak": 0.726715087890625
       },
       {
         "file": "data/zik/velvet-orbit/a3.ogg",
         "source": "music/contrasts/velvet-orbit/combat.wav",
-        "frames": 3528000,
-        "seconds": 80.0,
-        "decoded_peak": 0.77978515625
+        "frames": 3527999,
+        "seconds": 79.99997732426304,
+        "decoded_peak": 0.893829345703125
       }
     ]
   },
@@ -89,21 +89,21 @@
         "source": "music/tidepool/calm.wav",
         "frames": 3386880,
         "seconds": 76.8,
-        "decoded_peak": 0.562286376953125
+        "decoded_peak": 0.31256103515625
       },
       {
         "file": "data/zik/tidepool/a2.ogg",
         "source": "music/tidepool/building.wav",
         "frames": 3386880,
         "seconds": 76.8,
-        "decoded_peak": 0.67303466796875
+        "decoded_peak": 0.4224853515625
       },
       {
         "file": "data/zik/tidepool/a3.ogg",
         "source": "music/tidepool/combat.wav",
         "frames": 3386880,
         "seconds": 76.8,
-        "decoded_peak": 0.904296875
+        "decoded_peak": 0.916046142578125
       }
     ]
   }
