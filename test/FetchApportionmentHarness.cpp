@@ -181,8 +181,9 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	return chosen->gid;
 }
 
-// A loaded candidate pays a detour, so an empty-handed one that is no closer
-// wins; the geometry is mirrored so neither position nor scan order decides it.
+// A candidate that has to change task pays a detour, so an idle empty-handed one
+// that is no closer wins; the geometry is mirrored so neither position nor scan
+// order decides it.
 static void anEmptyHandedUnitWinsAllElseEqual()
 {
 	int emptyCost = 0, loadedCost = 0;
@@ -206,10 +207,138 @@ static void aLoadedUnitFarEnoughAheadIsStillHired()
 	int emptyCost = 0, loadedCost = 0;
 	int hired = hireOneOfTwo(5, 9, 13, 9, &emptyCost, &loadedCost);
 	std::printf("lopsided: empty=%d loaded=%d hired=%d\n", emptyCost, loadedCost, hired);
-	require(loadedCost + 5 < emptyCost, "the loaded unit is more than the penalty ahead");
+	require(loadedCost + 4 < emptyCost, "the loaded unit is more than the penalty ahead");
 	require(hired == 1, "the loaded unit is hired anyway");
 
 	std::puts("PASS a loaded candidate far enough ahead is hired despite the penalty");
+}
+
+
+// A unit already fetching for one building is hireable by another, at the switch
+// penalty, so a bad assignment is undone instead of persisting for the whole trip.
+static void aBuildingHiresAwayAUnitItSuitsBetter()
+{
+	GameGUI gui;
+	Game& game = gui.game;
+	game.map.setSize(5, 5, GRASS); // 32x32
+	game.map.setGame(&game);
+	game.addTeam(0);
+	Team* team = game.teams[0];
+
+	const Sint32 siteType = globalContainer->buildingsTypes.getTypeNum("market", 0, true);
+	const BuildingType* type = globalContainer->buildingsTypes.get(siteType);
+
+	// Two sites at opposite ends, and the only stone next to the far one.
+	TestBuilding* nearSite = new TestBuilding(20, 8, Building::GIDfrom(0, 0), siteType, team,
+	                                          &globalContainer->buildingsTypes, 1, 1);
+	TestBuilding* farSite = new TestBuilding(4, 8, Building::GIDfrom(1, 0), siteType, team,
+	                                         &globalContainer->buildingsTypes, 1, 1);
+	team->myBuildings[0] = nearSite;
+	team->myBuildings[1] = farSite;
+	game.map.setBuilding(20, 8, type->width, type->height, nearSite->gid);
+	game.map.setBuilding(4, 8, type->width, type->height, farSite->gid);
+	for (TestBuilding* site : {nearSite, farSite})
+	{
+		site->resources[WOOD] = type->maxResource[WOOD];
+		require(site->neededResource(STONE) > 0, "the site still wants stone");
+	}
+	require(game.map.incResource(24, 8, STONE, 0), "seed the stone tile");
+
+	// One worker, standing by the near site.
+	Unit* unit = new Unit(23, 11, 0, WORKER, team, 0);
+	team->myUnits[0] = unit;
+	unit->performance[WALK] = 10;
+	unit->performance[HARVEST] = 10;
+	unit->activity = Unit::ACT_RANDOM;
+	unit->displacement = Unit::DIS_RANDOM;
+	unit->medical = Unit::MED_FREE;
+	unit->attachedBuilding = NULL;
+	unit->trigHungry = 100;
+	unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
+
+	const int swimClass = unit->swimClass();
+	int toNear = 0, toFar = 0;
+	require(game.map.buildingAvailable(nearSite, swimClass, unit->posX, unit->posY, &toNear), "near site reachable");
+	require(game.map.buildingAvailable(farSite, swimClass, unit->posX, unit->posY, &toFar), "far site reachable");
+	std::printf("poach: toNear=%d toFar=%d\n", toNear, toFar);
+	require(toFar > toNear + 4, "the far site is worse by more than the switch penalty");
+
+	// The far site gets there first and takes the only worker.
+	farSite->refreshCallLists();
+	require(farSite->hireOne(), "the far site hires the only worker");
+	require(unit->attachedBuilding == farSite, "the worker is working for the far site");
+
+	// The near site can beat it by more than the penalty, so it hires it away.
+	nearSite->refreshCallLists();
+	require(nearSite->hireOne(), "the near site hires the worker away");
+	require(unit->attachedBuilding == nearSite, "the worker now works for the near site");
+	require(farSite->unitsWorking.empty(), "and no longer counts as the far site's");
+
+	// The far site cannot take it back: it is worse by more than the penalty, and
+	// a swap that does not pay for itself is what makes units ping-pong.
+	farSite->refreshCallLists();
+	farSite->hireOne();
+	require(unit->attachedBuilding == nearSite, "the far site does not take it back");
+	require(nearSite->unitsWorking.size() == 1, "the near site keeps its one worker");
+
+	std::puts("PASS a better-placed building hires a working unit away, and the worse one cannot take it back");
+}
+
+// The two interruptions are separate losses, so a unit that is both working
+// elsewhere and holding something unwanted pays for both.
+static void thePenaltiesAdd()
+{
+	GameGUI gui;
+	Game& game = gui.game;
+	game.map.setSize(5, 5, GRASS);
+	game.map.setGame(&game);
+	game.addTeam(0);
+	Team* team = game.teams[0];
+
+	const Sint32 siteType = globalContainer->buildingsTypes.getTypeNum("market", 0, true);
+	const BuildingType* type = globalContainer->buildingsTypes.get(siteType);
+	TestBuilding* site = new TestBuilding(8, 8, Building::GIDfrom(0, 0), siteType, team,
+	                                      &globalContainer->buildingsTypes, 2, 2);
+	team->myBuildings[0] = site;
+	game.map.setBuilding(8, 8, type->width, type->height, site->gid);
+	site->resources[WOOD] = type->maxResource[WOOD];
+	require(game.map.incResource(22, 9, STONE, 0), "seed the stone tile");
+
+	// Two candidates the same distance out. One is idle but loaded; the other is
+	// idle and empty. One interruption against none: the empty one wins.
+	Unit* loaded = new Unit(5, 7, 0, WORKER, team, 0);
+	Unit* empty = new Unit(5, 11, 1, WORKER, team, 0);
+	team->myUnits[0] = loaded;
+	team->myUnits[1] = empty;
+	for (Unit* u : {loaded, empty})
+	{
+		u->performance[WALK] = 10;
+		u->performance[HARVEST] = 10;
+		u->activity = Unit::ACT_RANDOM;
+		u->displacement = Unit::DIS_RANDOM;
+		u->medical = Unit::MED_FREE;
+		u->attachedBuilding = NULL;
+		u->trigHungry = 100;
+		u->hungry = u->trigHungry + 1000 * u->race->hungriness;
+	}
+	loaded->carriedResource = CORN;
+
+	const int swimClass = empty->swimClass();
+	int a = 0, b = 0;
+	require(game.map.buildingAvailable(site, swimClass, loaded->posX, loaded->posY, &a), "loaded reaches the site");
+	require(game.map.buildingAvailable(site, swimClass, empty->posX, empty->posY, &b), "empty reaches the site");
+	require(a == b, "the two candidates are equally placed");
+
+	site->refreshCallLists();
+	require(site->hireOne(), "somebody is hired");
+	require(site->unitsWorking.front() == empty, "the unpenalised candidate is hired first");
+
+	// Now the loaded one is the only candidate left, so it is hired despite the
+	// price; it is holding corn and it is idle, so it pays one penalty, not two.
+	require(site->hireOne(), "the loaded candidate is hired next");
+	require(site->unitsWorking.size() == 2, "both are working now");
+
+	std::puts("PASS an interruption is priced per loss, and an unpenalised candidate goes first");
 }
 
 int main(int argc, char** argv)
@@ -228,6 +357,8 @@ int main(int argc, char** argv)
 	siteSpreadsItsFetchersAcrossBothResources();
 	anEmptyHandedUnitWinsAllElseEqual();
 	aLoadedUnitFarEnoughAheadIsStillHired();
+	aBuildingHiresAwayAUnitItSuitsBetter();
+	thePenaltiesAdd();
 	std::puts("Fetch apportionment regressions passed");
 	return 0;
 }

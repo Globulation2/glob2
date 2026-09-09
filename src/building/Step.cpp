@@ -21,18 +21,43 @@ namespace
 	/// harvest level dominates the comparison; the walk level breaks ties.
 	constexpr int HARVEST_LEVEL_WEIGHT = 10;
 
-	/// Tiles of detour a candidate pays for turning up with a resource this
-	/// building cannot take. Whatever it carries is lost the moment it harvests
-	/// again, so an empty-handed unit this much further away is the better hire,
-	/// and a building that does want the cargo gets its chance at the unit. A
-	/// price, not a veto: past this margin the loaded unit is still hired.
-	constexpr int CARRIED_RESOURCE_PENALTY_TILES = 5;
+	/// Tiles of detour a candidate pays for changing task: dropping a job it is
+	/// already doing for another building, or turning up with a resource this
+	/// building cannot take and will lose the moment it harvests again. Only a
+	/// unit that is idle and empty-handed is free. A price, not a veto: past
+	/// this margin the switch is worth making, and a mis-hire is undone by
+	/// whichever building can beat the incumbent by more than this.
+	constexpr int TASK_SWITCH_PENALTY_TILES = 4;
 
 	/// Composite "experience" key used to rank resource-carrying candidates;
 	/// higher is preferred.
 	int bringResourcesLevel(const Unit* unit)
 	{
 		return unit->level[HARVEST] * HARVEST_LEVEL_WEIGHT + unit->level[WALK];
+	}
+
+	/// Idle units, and units fetching for some other building. The latter are
+	/// hired away only when they beat the alternatives by more than the switch
+	/// penalty, which is what lets a bad assignment be undone.
+	bool unitIsAvailableToHire(const Unit* unit)
+	{
+		return unit->activity == Unit::ACT_RANDOM
+			|| (unit->activity == Unit::ACT_FILLING && unit->attachedBuilding != NULL
+				&& unit->ownExchangeBuilding == NULL);
+	}
+
+	/// What hiring this unit for `wantedResource` costs in interruptions. The two
+	/// are separate losses and a unit can suffer both, so they add: a unit
+	/// fetching for another building abandons that trip, and a unit holding
+	/// something else loses the load at its next harvest.
+	int taskSwitchPenaltyTiles(const Unit* unit, int wantedResource)
+	{
+		int tiles = 0;
+		if (unit->activity != Unit::ACT_RANDOM)
+			tiles += TASK_SWITCH_PENALTY_TILES;
+		if (unit->carriedResource >= 0 && unit->carriedResource != wantedResource)
+			tiles += TASK_SWITCH_PENALTY_TILES;
+		return tiles;
 	}
 }
 
@@ -51,7 +76,7 @@ void Building::step(void)
 
 bool Building::considerUnitForBuilding(Unit* unit, int* distBuilding)
 {
-	if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
+	if(unit->medical != Unit::MED_FREE || !unitIsAvailableToHire(unit))
 	{
 		unitsFailingRequirements[UnitNotAvailable] += 1;
 		return false;
@@ -72,6 +97,22 @@ bool Building::considerUnitForBuilding(Unit* unit, int* distBuilding)
 	{
 		unitsFailingRequirements[UnitTooFarFromBuilding] += 1;
 		return false;
+	}
+	// Taking a unit off another building's job has to pay for itself against that
+	// building, not merely against this one's other candidates. Requiring a strict
+	// gain of more than the penalty also makes the move one-way: if here beat
+	// there by more than the penalty, there cannot beat here by more than it too,
+	// so the two cannot trade the unit back and forth.
+	if(unit->attachedBuilding != NULL && unit->attachedBuilding != this)
+	{
+		int incumbent=0;
+		if(!owner->map->buildingAvailable(unit->attachedBuilding, unit->swimClass(),
+		                                  unit->posX, unit->posY, &incumbent)
+			|| *distBuilding + TASK_SWITCH_PENALTY_TILES >= incumbent)
+		{
+			unitsFailingRequirements[UnitNotAvailable] += 1;
+			return false;
+		}
 	}
 	return true;
 }
@@ -174,6 +215,8 @@ void Building::selectUnitCarryingWantedResource(const int* targets, const int* s
 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
 			continue;
 
+		if(unit->activity != Unit::ACT_RANDOM)
+			continue;
 		int r=unit->carriedResource;
 		if(r<0 || !wantsAnotherDelivery(r, targets, served))
 			continue;
@@ -206,13 +249,11 @@ void Building::selectFetcher(const BringResourcesCandidate* candidates, int want
 
 		// A unit already carrying what is wanted is a delivery, not a fetch, and
 		// selectUnitCarryingWantedResource has first refusal on it.
-		int carried=unit->carriedResource;
-		if(carried==wantedResource)
+		if(unit->carriedResource==wantedResource && unit->activity==Unit::ACT_RANDOM)
 			continue;
 
-		int value=candidates[n].distance;
-		if(carried>=0)
-			value += CARRIED_RESOURCE_PENALTY_TILES<<Q8_FIXED_POINT_SHIFT;
+		int value=candidates[n].distance
+			+ (taskSwitchPenaltyTiles(unit, wantedResource)<<Q8_FIXED_POINT_SHIFT);
 		int level = bringResourcesLevel(unit);
 		if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
 		{
@@ -274,6 +315,8 @@ bool Building::subscribeToBringResourcesStep()
 
 		if (sel.choosen)
 		{
+			if (sel.choosen->attachedBuilding != NULL)
+				sel.choosen->attachedBuilding->removeUnitFromWorking(sel.choosen);
 			unitsWorking.push_back(sel.choosen);
 			sel.choosen->subscriptionSuccess(this, false);
 			hired=true;
