@@ -116,6 +116,102 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 	std::puts("PASS a market site spreads its fetchers over wood and stone");
 }
 
+
+// One hiring pass on a site that wants stone, with two candidates at the given
+// positions, the second holding corn the site cannot take. Returns the
+// gid of the unit hired, and reports each candidate's scored distance.
+static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* emptyCost, int* loadedCost)
+{
+	GameGUI gui;
+	Game& game = gui.game;
+	game.map.setSize(5, 5, GRASS); // 32x32
+	game.map.setGame(&game);
+	game.addTeam(0);
+	Team* team = game.teams[0];
+
+	const Sint32 siteType = globalContainer->buildingsTypes.getTypeNum("market", 0, true);
+	const BuildingType* type = globalContainer->buildingsTypes.get(siteType);
+	const int siteX = 8, siteY = 8;
+	TestBuilding* site = new TestBuilding(siteX, siteY, Building::GIDfrom(0, 0), siteType, team,
+	                                      &globalContainer->buildingsTypes, 1, 1);
+	team->myBuildings[0] = site;
+	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
+
+	// Stone only, so the apportionment has exactly one job to staff.
+	site->resources[WOOD] = type->maxResource[WOOD];
+	require(site->neededResource(WOOD) == 0, "the site wants no more wood");
+	require(site->neededResource(STONE) > 0, "the site still wants stone");
+	require(game.map.incResource(22, 9, STONE, 0), "seed the stone tile");
+
+	const int positions[2][2] = {{emptyX, emptyY}, {loadedX, loadedY}};
+	for (int n = 0; n < 2; ++n)
+	{
+		Unit* unit = new Unit(positions[n][0], positions[n][1], n, WORKER, team, 0);
+		team->myUnits[n] = unit;
+		unit->performance[WALK] = 10;
+		unit->performance[HARVEST] = 10;
+		unit->activity = Unit::ACT_RANDOM;
+		unit->displacement = Unit::DIS_RANDOM;
+		unit->medical = Unit::MED_FREE;
+		unit->attachedBuilding = NULL;
+		unit->trigHungry = 100;
+		unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
+	}
+	// Unit 1 turns up holding corn, which this site has no use for at all.
+	team->myUnits[1]->carriedResource = CORN;
+	require(site->neededResource(CORN) == 0, "the corn is of no use here");
+
+	const int swimClass = team->myUnits[0]->swimClass();
+	for (int n = 0; n < 2; ++n)
+	{
+		Unit* unit = team->myUnits[n];
+		int distBuilding = 0, distResource = 0;
+		require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
+			"the site is reachable from the candidate");
+		require(game.map.resourceAvailable(0, STONE, swimClass, unit->posX, unit->posY, &distResource),
+			"the stone is reachable from the candidate");
+		*(n == 0 ? emptyCost : loadedCost) = distBuilding + distResource;
+	}
+
+	site->refreshCallLists();
+	require(site->hireOne(), "somebody is hired");
+	require(site->unitsWorking.size() == 1, "exactly one unit is hired");
+	Unit* chosen = site->unitsWorking.front();
+	require(chosen->destinationPurpose == STONE, "hired for the stone");
+	return chosen->gid;
+}
+
+// A loaded candidate pays a detour, so an empty-handed one that is no closer
+// wins; the geometry is mirrored so neither position nor scan order decides it.
+static void anEmptyHandedUnitWinsAllElseEqual()
+{
+	int emptyCost = 0, loadedCost = 0;
+	int hired = hireOneOfTwo(5, 7, 5, 11, &emptyCost, &loadedCost);
+	std::printf("mirrored: empty=%d loaded=%d hired=%d\n", emptyCost, loadedCost, hired);
+	require(emptyCost == loadedCost, "the two candidates really are equally placed");
+	require(hired == 0, "the empty-handed unit is hired");
+
+	// Same geometry with the cargo on the other unit: the empty one wins again.
+	int mirroredEmpty = 0, mirroredLoaded = 0;
+	int hiredMirrored = hireOneOfTwo(5, 11, 5, 7, &mirroredEmpty, &mirroredLoaded);
+	require(hiredMirrored == 0, "still the empty-handed unit, whichever position it holds");
+
+	std::puts("PASS a loaded candidate loses to an equally placed empty-handed one");
+}
+
+// But the detour is a price, not a veto: far enough ahead and the loaded unit
+// is still the better hire.
+static void aLoadedUnitFarEnoughAheadIsStillHired()
+{
+	int emptyCost = 0, loadedCost = 0;
+	int hired = hireOneOfTwo(5, 9, 13, 9, &emptyCost, &loadedCost);
+	std::printf("lopsided: empty=%d loaded=%d hired=%d\n", emptyCost, loadedCost, hired);
+	require(loadedCost + 5 < emptyCost, "the loaded unit is more than the penalty ahead");
+	require(hired == 1, "the loaded unit is hired anyway");
+
+	std::puts("PASS a loaded candidate far enough ahead is hired despite the penalty");
+}
+
 int main(int argc, char** argv)
 {
 	SDL_SetMainReady();
@@ -130,6 +226,8 @@ int main(int argc, char** argv)
 	IntBuildingType::init();
 	Race::loadDefault();
 	siteSpreadsItsFetchersAcrossBothResources();
+	anEmptyHandedUnitWinsAllElseEqual();
+	aLoadedUnitFarEnoughAheadIsStillHired();
 	std::puts("Fetch apportionment regressions passed");
 	return 0;
 }

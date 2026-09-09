@@ -21,6 +21,13 @@ namespace
 	/// harvest level dominates the comparison; the walk level breaks ties.
 	constexpr int HARVEST_LEVEL_WEIGHT = 10;
 
+	/// Tiles of detour a candidate pays for turning up with a resource this
+	/// building cannot take. Whatever it carries is lost the moment it harvests
+	/// again, so an empty-handed unit this much further away is the better hire,
+	/// and a building that does want the cargo gets its chance at the unit. A
+	/// price, not a veto: past this margin the loaded unit is still hired.
+	constexpr int CARRIED_RESOURCE_PENALTY_TILES = 5;
+
 	/// Composite "experience" key used to rank resource-carrying candidates;
 	/// higher is preferred.
 	int bringResourcesLevel(const Unit* unit)
@@ -189,7 +196,7 @@ void Building::selectUnitCarryingWantedResource(const int* targets, const int* s
 	}
 }
 
-void Building::selectEmptyHandedUnit(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel)
+void Building::selectFetcher(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel)
 {
 	for(int n=0; n<Unit::MAX_COUNT; ++n)
 	{
@@ -197,44 +204,26 @@ void Building::selectEmptyHandedUnit(const BringResourcesCandidate* candidates, 
 		if(unit==NULL)
 			continue;
 
-		if (unit->carriedResource<0)
-		{
-			int value=candidates[n].distance;
-			int level = bringResourcesLevel(unit);
-			if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
-			{
-				sel.minValue=value;
-				sel.maxLevel=level;
-				sel.choosen=unit;
-				unit->destinationPurpose=wantedResource;
-			}
-		}
-	}
-}
-
-void Building::selectUnitCarryingUnwantedResource(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel)
-{
-	for(int n=0; n<Unit::MAX_COUNT; ++n)
-	{
-		Unit* unit=candidates[n].unit;
-		if(unit==NULL)
+		// A unit already carrying what is wanted is a delivery, not a fetch, and
+		// selectUnitCarryingWantedResource has first refusal on it.
+		int carried=unit->carriedResource;
+		if(carried==wantedResource)
 			continue;
 
-		int r2=unit->carriedResource;
-		if ((r2>=0) && !neededResource(r2))
+		int value=candidates[n].distance;
+		if(carried>=0)
+			value += CARRIED_RESOURCE_PENALTY_TILES<<Q8_FIXED_POINT_SHIFT;
+		int level = bringResourcesLevel(unit);
+		if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
 		{
-			int value=candidates[n].distance;
-			int level = bringResourcesLevel(unit);
-			if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
-			{
-				sel.minValue=value;
-				sel.maxLevel=level;
-				sel.choosen=unit;
-				unit->destinationPurpose=wantedResource;
-			}
+			sel.minValue=value;
+			sel.maxLevel=level;
+			sel.choosen=unit;
+			unit->destinationPurpose=wantedResource;
 		}
 	}
 }
+
 
 bool Building::subscribeToBringResourcesStep()
 {
@@ -279,9 +268,7 @@ bool Building::subscribeToBringResourcesStep()
 					continue;
 				BringResourcesCandidate candidates[Unit::MAX_COUNT];
 				gatherBringResourcesCandidates(candidates, r);
-				selectEmptyHandedUnit(candidates, r, sel);
-				if (sel.choosen==NULL)
-					selectUnitCarryingUnwantedResource(candidates, r, sel);
+				selectFetcher(candidates, r, sel);
 			}
 		}
 

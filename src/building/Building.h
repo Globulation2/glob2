@@ -472,12 +472,12 @@ private:
 	/// Both are deliberate and must be preserved.
 	void selectUnitCarryingWantedResource(const int* targets, const int* served, BringResourcesSelection& sel);
 
-	/// The two fetch-out selection passes, in priority order, for one resource:
-	/// an empty-handed unit first, then one carrying something this building
-	/// does not want. Each scans all candidates and updates `sel` with the best
-	/// match, assigning destinationPurpose only to the unit it chooses.
-	void selectEmptyHandedUnit(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel);
-	void selectUnitCarryingUnwantedResource(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel);
+	/// The fetch-out selection pass for one resource. Scans all candidates and
+	/// updates `sel` with the best match, assigning destinationPurpose only to
+	/// the unit it chooses. A candidate holding something else is charged
+	/// CARRIED_RESOURCE_PENALTY_TILES of detour rather than excluded, so it is
+	/// hired when it is enough closer to be worth the loss.
+	void selectFetcher(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel);
 
 	/// This function updates the resources pointer. The variable resources can either point to local resources
 	/// or team resources, depending on the BuildingType.
