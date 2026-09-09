@@ -93,31 +93,25 @@ static int run(int argc, char **argv)
             SettingsScreen options;
             const int oldMute = globalContainer->settings.mute;
             const bool oldHighResolution = globalContainer->settings.highResolutionArtwork;
-            assert(!options.automaticTorus->getState());
-            options.automaticTorus->setState(true);
-            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, SettingsScreen::AUTOMATIC_TORUS, 0);
+            assert(options.changeSetting("graphics.torus",1));
             assert(globalContainer->settings.automaticTorus);
             assert(globalContainer->settings.mute == oldMute);
             assert(globalContainer->settings.highResolutionArtwork == oldHighResolution);
-            options.onAction(nullptr, BUTTON_RELEASED, SettingsScreen::OK, 0);
+            options.done();
         }
         Settings restored;
         restored.load();
         assert(restored.automaticTorus);
         {
             SettingsScreen options;
-            assert(options.automaticTorus->getState());
-            options.automaticTorus->setState(false);
-            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, SettingsScreen::AUTOMATIC_TORUS, 0);
+            // Discrete settings save immediately, including when the screen
+            // closes without a separate Save action.
+            assert(options.changeSetting("graphics.torus",0));
             assert(!globalContainer->settings.automaticTorus);
-            options.onAction(nullptr, BUTTON_RELEASED, SettingsScreen::CANCEL, 0);
-            assert(globalContainer->settings.automaticTorus);
-        }
-        {
-            SettingsScreen options;
-            options.automaticTorus->setState(false);
-            options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, SettingsScreen::AUTOMATIC_TORUS, 0);
-            options.onAction(nullptr, BUTTON_RELEASED, SettingsScreen::OK, 0);
+            restored.load();
+            assert(!restored.automaticTorus);
+            options.done();
+            assert(!globalContainer->settings.automaticTorus);
         }
         restored.load();
         assert(!restored.automaticTorus);
