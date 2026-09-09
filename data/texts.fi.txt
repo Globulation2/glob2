@@ -27,17 +27,17 @@
 [%0's game]
 %0:n Peli
 [%0's team unit got converted to your team]
-%0:n joukkueen yksikkö siirtyi sinun joukkueseen
+%0:n joukkueen yksikkö siirtyi sinun joukkueeseesi.
 [abreaviation explanation A]
-A: Allies
+A: Liittolaiset
 [abreaviation explanation C]
-C: Send chat messages to
+C: Lähetä chat-viestit näille pelaajille
 [abreaviation explanation fV]
-fV: Show vision for Inn buildings (to steal units)
+fV: Näytä majatalot (yksiköiden käännyttämistä varten)
 [abreaviation explanation mV]
-mV: Show vision for Markets buildings (to exchange fruits)
+mV: Näytä torit (hedelmien vaihtamista varten)
 [abreaviation explanation V]
-V: Show vision for all buildings
+V: Näytä kaikki rakennukset
 [add map]
 Lisää kartta
 [add shortcut]
@@ -85,7 +85,7 @@ alt-%0
 [and]
 ja
 [any explorer]
-any explorer
+mikä tahansa tiedustelija
 [are dying hungry]
 nääntyvää
 [are hungry]
@@ -121,7 +121,7 @@ askelpalautin
 [barracks explanation 2]
 taistelukykyä
 [barracks explanation]
-Parantaa sotureitesi
+Parantaa sotureittesi
 [barracks]
 Parakki
 [beach size]
@@ -191,9 +191,9 @@ Keräämisalue
 [Clearing:]
 Keräämässä:
 [clearingflag explanation 2]
-resurssien keräyspaikan
+valitulta alueelta
 [clearingflag explanation]
-Asettaa pääasiallisen
+Poistaa resursseja
 [clearingflag]
 Keräämislippu
 [closed]
@@ -201,13 +201,13 @@ Ei käytössä
 [combined vision]
 Yhdistetty näkyvyys
 [compile]
-Kääntämisskripti
+Käännä skripti
 [compose]
 compose
 [Computing Fertility]
 Lasketaan hedelmällisyyttä
 [concrete islands terrain]
-Betonisaaret
+Erilliset saaret
 [connect]
 Yhdistä
 [connecting to game]
@@ -217,7 +217,7 @@ Otetaan yhteyttä:
 [Construction Site Defaults]
 Rakentamisasetukset
 [Continue playing]
-Continue playing
+Jatka pelaamista
 [control %0]
 control-%0
 [Corn]
@@ -237,21 +237,21 @@ Ctrl - Viiva
 [current speed]
 Nykyinen nopeus
 [custom game]
-Tavallinen peli
+Mukautettu peli
 [customcur]
 Muokattu kursori
 [damage]
 Vahinko
 [Damaged Map]
-Vahinkokartta
+Haavoittuneiden kartta
 [decrease units working]
 Laske työskentelevien määrää
 [Defeat Your Oppenents]
 Kukista vastustajasi.
 [defencetower explanation 2]
-vihollisrakennuksia tai -yksiköitä
+yksiköitä ja rakennuksia
 [defencetower explanation]
-Hyökkää lähellä olevia
+Tulittaa vihollisen
 [defencetower]
 Puolustustorni
 [Defense Map]
@@ -271,7 +271,7 @@ Tuhoa
 [display]
 Näyttö
 [do nothing]
-Do Nothing
+Älä tee mitään
 [don't carry anything]
 Ei kanna mitään
 [down]
@@ -303,7 +303,7 @@ enter
 [equals]
 equals
 [ERROR_CANT_LOAD_MAP]
-Karttaa ei voitu ladata, koska tiedosto on vioittunut tai sen versio ei ole yhteensopiva.
+Karttaa ei voitu ladata: tiedosto on vioittunut tai sen versio on yhteensopimaton.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -317,7 +317,7 @@ Tiedustelijoiden suhde
 [Explorer]
 Tiedustelija
 [explorers]
-explorers
+tiedustelijat
 [extra islands]
 tyhjää saarta
 [f10]
@@ -363,7 +363,7 @@ Ruoka
 [forbidden area]
 Kielletty alue
 [Free]
-Ok
+Terveet
 [free]
 on vapaana
 [from:]
@@ -373,7 +373,7 @@ hedelmä
 [fullscreen]
 Koko näyttö
 [game full]
-Game full
+Peli on täynnä
 [game shortcuts]
 Peli
 [Game]
@@ -393,11 +393,11 @@ maahyökkäys
 [guard area]
 Vartioitava alue
 [GUIMapPreview text 0]
-Please choose
+Valitse
 [GUIMapPreview text 1]
-a map
+kartta
 [handmade map]
-Handmade map
+Käsin tehty kartta
 [Happyness]
 Onnellisuus
 [hard pause]
@@ -527,7 +527,7 @@ Kartan nimi: %0.
 [map name]
 Nimi
 [map rated]
-Map Rated
+Kartta arvioitu
 [map script]
 Karttaskripti
 [map size x]
@@ -545,7 +545,7 @@ Julkaisijan Nimi
 [Map Upload: Waiting for reply]
 Odotetaan vastausta
 [mark map]
-Mark Map For Allies
+Merkitse kartta liittolaisille
 [market explanation 2]
 vaihdon muiden kanssa.
 [market explanation]
@@ -559,7 +559,7 @@ meta-%0
 [Min required level:]
 Alin vaadittu taso:
 [Minimum Level To Flag]
-Alin Lipun taso
+Yksikön min. taso
 [Music volume]
 musiikin voimakkuus
 [Mute]
@@ -577,11 +577,11 @@ Olemme pahoillamme, mutta valitsemasi nimi on jo varattu Freenode-verkossa. Pyst
 [No Hints]
 Ei Vihjeitä
 [no key]
-no key yet
+ei näppäintä
 [No Objectives]
 Ei Tavoitteita
 [no ressources growth areas]
-Ei kasvualueita
+Ei kasvua
 [No]
 Ei
 [Not Enough Ratings]
@@ -611,23 +611,23 @@ vanhat satunnaiset saaret
 [old random terrain]
 vanhat satunnaiset maastot
 [on press]
-Painaessa
+Painallus
 [On the spot]
 Paikalla
 [on unpress]
-Vapauttaessa
+Vapautus
 [open chat box]
 Avaa chat-laatikko
 [open load menu]
-Open Load Menu
+Avaa latausvalikko
 [open save menu]
-Open Save Menu
+Avaa tallennusvalikko
 [open scenario editor]
 Avaa skenaarioeditori
 [open teams editor]
 Avaa joukkue-editori
 [open]
-avaa
+avoin
 [OpenGL]
 OpenGL
 [Options]
@@ -649,9 +649,9 @@ Pelin pysäytys
 [pause]
 pause
 [Paused]
-Paused
+Pysäytetty
 [player name]
-Player name
+Pelaajan nimi
 [player rating %0]
 Pelaajan Sijoitus: %0
 [players]
@@ -693,7 +693,7 @@ Kilparata
 [range]
 Kantama
 [Rated %0]
-Rated %0
+Arvio: %0
 [ratios]
 Mittasuhteet
 [ready?]
@@ -715,7 +715,7 @@ Poista
 [repair building]
 Aloita/Lopeta korjaaminen
 [repair]
-Repair
+Korjaa
 [repeat area]
 kertaa sama maisema
 [Repeat your password :]
@@ -895,7 +895,7 @@ Kivimuuri
 [submit rating]
 Lähetä arvio
 [svr hostname]
-Server hostname
+Palvelimen osoite
 [swamp terrain]
 Suo
 [swarm explanation 2]
@@ -947,7 +947,7 @@ tab
 [teams editor]
 Joukkue-editori
 [Teams Fixed]
-Teams Fixed
+Kiinteät joukkueet
 [teams]
  joukkuetta
 [the barracks is finished]
@@ -959,17 +959,17 @@ Rakennus on valmis
 [the building is under attack]
 Rakennuksesi kimppuun hyökätään
 [the clearingflag is finished]
-?? keräämislippu on valmis ??
+keräämislippu on valmis
 [the clearingflag is under attack]
-?? keräämislippusi kimppuun hyökätään ??
+keräämislippusi kimppuun hyökätään
 [the defencetower is finished]
 Puolustustorni on valmis
 [the defencetower is under attack]
 Puolustuksesi kimppuun hyökätään.
 [the explorationflag is finished]
-?? tiedustelulippu on valmis ??
+tiedustelulippu on valmis
 [the explorationflag is under attack]
-?? tiedustelulippusi kimppuun hyökätään ??
+tiedustelulippusi kimppuun hyökätään
 [The game has not been finished]
 Peliä ei pelattu loppuun saakka
 [the games]
@@ -1017,31 +1017,31 @@ Uima-allas on valmis
 [the swimmingpool is under attack]
 Uima-altaasi kimppuun hyökätään
 [the warflag is finished]
-?? sotalippu on valmis ??
+sotalippu on valmis
 [the warflag is under attack]
-?? sotalippusi kimppuun hyökätään ??
+sotalippusi kimppuun hyökätään
 [time]
 Aika
 [to:]
 to:
 [toggle draw accessibility aids]
-Näytä yksiköiden/rakennusten joukkueen numero
+Näytä/piilota joukkuenumerot
 [toggle draw information]
 Näytä yksiköiden status-palkit
 [toggle draw unit paths]
 Piirrä yksiköiden polut
 [toggle menu screen]
-Toggle Menu Screen
+Näytä/piilota valikko
 [toggle recording voice]
 Initiate Voice Recording
 [Total Attack Power]
-Total Attack Power
+Kokonaishyökkäysvoima
 [Total Defence Power]
-Total Defence Power
+Kokonaispuolustusvoima
 [Total Hitpoints]
-Total Hitpoints
+Kokonaisosumapisteet
 [Total prestige reached]
-Total prestige reached
+Saavutettu kokonaismaine
 [Total]
 Total
 [tutorial text 1]
@@ -1055,7 +1055,7 @@ Olet melkein valmis. Vain Liput ja hyökkääminen jäljellä. Sitten tiedät ta
 [tutorial]
 Tutoriaali
 [Uncontrolled]
-Uncontrolled
+Ohjaamaton
 [undo]
 peru
 [uniform terrain]
@@ -1071,11 +1071,11 @@ yksiköitä tehtävissä
 [Units]
 Yksiköt
 [unlocked at start]
-Unlocked At Start
+Avoinna alussa
 [unlocked by]
-Unlocked By
+Avaava tehtävä
 [Unnamed Area]
-{Unnamed Area}
+{Nimetön alue}
 [up]
 up
 [upgrade building]
@@ -1206,3 +1206,25 @@ IP-osoitteesi on väliaikisesti estetty. Odottakaa kärsivällisesti, kunnes est
 Yksikkösi siirtyi %0:n joukkueeseen.
 [Your username was banned]
 Käyttäjänimesi on estetty. Ota yhteys ylläpitäjiin.
+[game speed]
+Pelinopeus
+[decrease game speed]
+Hidasta peliä
+[increase game speed]
+Nopeuta peliä
+[maximum game speed]
+Suurin
+[multiplayer game speed]
+Nopeus: 1x (moninpeli)
+[game speed help]
+Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
+[AICortex-Description]
+Cortex - Kokeellinen kolmikerroksinen tekoäly. Kehitteillä.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Kampanjaa ei voitu tallentaa. Tarkista, että kohdekansio on olemassa, siihen voi kirjoittaa ja vapaata tilaa on riittävästi.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Sisällä: %0
+[Units still working: %0]
+Yhä töissä: %0

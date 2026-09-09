@@ -77,9 +77,11 @@ void GameGUI::drawParticles(bool advance)
 
 		// crossfade between the current animation frame and the next one
 		const ParticleCrossfade cf = computeParticleCrossfade(p->startImg, p->endImg, p->age, p->lifeSpan);
-		drawCenteredParticleSprite(p->x, p->y, cf.frameA, cf.alphaA);
+globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
+		drawCenteredParticleSprite(MapCamera::wrap(p->x-viewportX*32+64, game.map.getW()*32)-64, MapCamera::wrap(p->y-viewportY*32+64, game.map.getH()*32)-64, cf.frameA, cf.alphaA);
 		if (cf.hasFrameB)
-			drawCenteredParticleSprite(p->x, p->y, cf.frameB, cf.alphaB);
+			drawCenteredParticleSprite(MapCamera::wrap(p->x-viewportX*32+64, game.map.getW()*32)-64, MapCamera::wrap(p->y-viewportY*32+64, game.map.getH()*32)-64, cf.frameB, cf.alphaB);
+});
 
 		++it;
 	}
@@ -92,7 +94,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 		Building* building = *it;
 		BuildingType* type = building->type;
 		int x, y;
-		game.map.mapCaseToDisplayable(displayedPosX(*building), displayedPosY(*building), &x, &y, viewportX, viewportY);
+		x=displayedPosX(*building)*32;y=displayedPosY(*building)*32;
 
 		if (!type->isBuildingSite)
 		{
@@ -157,25 +159,5 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 
 void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
 {
-	if ((viewportX==oldViewportX) && (viewportY==oldViewportY))
-		return;
-
-	int dx = viewportX - oldViewportX;
-	if (dx > game.map.getW() / 2)
-		dx -= game.map.getW();
-	else if (dx < -game.map.getW() / 2)
-		dx += game.map.getW();
-
-	int dy = viewportY - oldViewportY;
-	if (dy > game.map.getH() / 2)
-		dy -= game.map.getH();
-	else if (dy < -game.map.getH() / 2)
-		dy += game.map.getH();
-
-	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
-	{
-		Particle* p = *it;
-		p->x -= dx * TILE_PX;
-		p->y -= dy * TILE_PX;
-	}
+	// Particles now retain world positions; camera changes need no compensation.
 }

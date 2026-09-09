@@ -233,6 +233,14 @@ namespace GAGGUI
 		//! Returns width of widget
 		Sint32 getHeight() const { return h; }
 		
+		//! Actual bounds after alignment, for enclosing panels and layout checks.
+		SDL_Rect getScreenRect()
+		{
+			SDL_Rect bounds;
+			getScreenPos(&bounds.x, &bounds.y, &bounds.w, &bounds.h);
+			return bounds;
+		}
+
 		//! Sets the screen position
 		virtual void setScreenPosition(int nx, int ny) { x = nx; y = ny; }
 	
@@ -330,8 +338,8 @@ namespace GAGGUI
 		void dispatchTimer(Uint32 tick);
 		//! Call init on each widget before the first call
 		void dispatchInit(void);
-		//! Call paint on each widget after having called paint on the screen itself. Do a full update after
-		void dispatchPaint(void);
+		//! Paint the screen and widgets; defer presentation when composing a modal overlay.
+		void dispatchPaint(bool present = true);
 		//! Return the associated drawable surface
 		GAGCore::DrawableSurface *getSurface(void) { return gfx; }
 		//! Return the width of the screen

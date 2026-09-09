@@ -1,0 +1,60 @@
+{
+  "method": "GIMP 2.10 saved layer settings: direct visible composite versus separately composited base/team groups",
+  "direct_vs_split": [
+    {
+      "id": "hosp0b0",
+      "max_rgba_delta": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "mean_rgba_delta": [
+        0.0007811113083614415,
+        0.01139712409018285,
+        0.0021658086277294513,
+        0.0
+      ],
+      "pixels_over_one_code_value": 0
+    },
+    {
+      "id": "defencetower1b0",
+      "max_rgba_delta": [
+        3.0,
+        3.0,
+        2.0,
+        1.0
+      ],
+      "mean_rgba_delta": [
+        0.06307330609727896,
+        0.04228012024974948,
+        0.05257072381099206,
+        0.029792646265320282
+      ],
+      "pixels_over_one_code_value": 5
+    }
+  ],
+  "low_resolution_tower_team_equals_classic_visible_pixels": true,
+  "low_resolution_tower_size": [
+    64,
+    108
+  ],
+  "sources": [
+    {
+      "path": "datasrc/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
+      "sha256": "58ca0b3e781c6f5dcf0658bc0f82e569183602d039845d9f9a4f0e730791fb9a"
+    },
+    {
+      "path": "datasrc/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
+      "sha256": "25f741622134cc68e3c9e1355fe86fa953b7ca6ce730bd2e0ad759545ecc5b4a"
+    },
+    {
+      "path": "datasrc/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
+      "sha256": "6c51179ad2ac3dd4e97c1c698e0821de513d526e799d7a24ddad43b516fa74a0"
+    },
+    {
+      "path": "data/gfx/defencetower1b0r.png",
+      "sha256": "de7126e39c9fc952c341e485262efb58f06185bed3d6ffeecc8ed8c4885e3620"
+    }
+  ]
+}
