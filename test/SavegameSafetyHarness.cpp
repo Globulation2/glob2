@@ -16,6 +16,7 @@
 #include "MapEditKeyActions.h"
 #include "Utilities.h"
 #include "RecoveryStore.h"
+#include <cstring>
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>

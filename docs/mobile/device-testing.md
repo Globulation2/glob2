@@ -91,8 +91,11 @@ preview, and there is no TestFlight/store distribution for this checkpoint.
    Later must keep the checkpoint, while Discard recovery must clear the prompt.
 8. Background briefly and return. Report any jump, stuck input, lost audio,
    missing controls or save issue. Do not assume termination recovery works.
-9. If convenient, try replay playback and its pause/speed controls; this is an
-   area still needing qualification.
+9. Export a saved game through the Android document picker, then import it under
+   a new name and load it. Cancel a picker once and check that the chooser remains
+   usable. Keep the original until the imported copy loads successfully.
+10. If convenient, try replay playback, pause/speed controls and saving a replay
+    from the results screen; full device sessions still need qualification.
 
 For each issue, provide a screenshot or short recording, orientation, reproduction
 steps, expected behavior, and whether rotating/reopening the panel fixes it.

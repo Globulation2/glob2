@@ -533,3 +533,24 @@ startup cleanup against stale/live owners, locks, symlinks and recovery slots.
 Only newly namespaced atomic temporary files and PID-tagged iOS export directories
 are eligible. Old ambiguous temporary names are intentionally retained. Hardware
 storage exhaustion and abrupt device power loss still need device qualification.
+
+### Isolated cross-play and simulator profiling
+
+The browser multiplayer fixture reserves three adjacent loopback ports and passes
+`GLOB2_TEST_PORT_BASE` only to its native test processes. `NetworkTestPorts.cpp`
+replaces protocol constants only when linking the native connection/peer harnesses;
+normal executables keep the production constants. The gateway receives explicit
+lobby/router ports. Fixture readiness includes the embedded router connection.
+
+For an already running app in the private simulator set, `sample PID 10 -file
+build/owned-simulator-sample.txt` records a symbolicated host-side stack sample.
+Validate the PID belongs to the app under this worktree before attaching. Xcode's
+`xctrace` device inventory does not currently expose this private set on the tested
+host; do not switch or reconfigure another thread's Simulator to work around it.
+This sample is a debugger/profiler workflow check, not a physical performance test.
+
+For the explicitly selected task emulator, a short Android trace can be captured
+with `adb -P 15037 -s emulator-5580 exec-out atrace -b 4096 -t 10 sched gfx view freq`.
+Redirect output under `build/`; it records only that isolated emulator. The tested
+capture contains scheduler and graphics events. Frame-time interpretation and
+30-minute physical thermal qualification remain separate tasks.

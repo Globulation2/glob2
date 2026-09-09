@@ -9,13 +9,30 @@ const {mkdir, mkdtemp, rm, readFile} = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const {randomUUID} = require('node:crypto');
+const {createServer} = require('node:net');
+let testPortBase;
+async function chooseTestPorts() {
+  for (let attempt=0;attempt<50;++attempt) {
+    const sockets=[];
+    try {
+      let base;
+      for(let offset=0;offset<3;++offset) {
+        const server=createServer(); sockets.push(server);
+        await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(offset ? base+offset : 0,'127.0.0.1',resolve);});
+        if(!offset) {base=server.address().port;if(base>65533)throw new Error('Port range exhausted');}
+      }
+      return base;
+    } catch(error) {if(attempt===49)throw error;}
+    finally {await Promise.all(sockets.map(server=>new Promise(resolve=>server.close(resolve))));}
+  }
+}
 
 const root = path.resolve(__dirname, '../..');
 const platform = os.platform() === 'win32' ? 'windows' : os.platform();
 let lobby, gateway, tlsForwarder, work, profile, endpoint, secureEndpoint;
 async function start(binary, args, ready, profileName = 'service-' + randomUUID()) {
   const child = spawn(binary, args, {cwd: work, stdio: ['ignore', 'pipe', 'pipe'],
-    env: {...process.env, GLOB2_USER_DATA_DIR:path.join(work, profileName)}});
+    env: {...process.env, GLOB2_TEST_PORT_BASE:String(testPortBase), GLOB2_USER_DATA_DIR:path.join(work, profileName)}});
   try {
     const line = await new Promise((resolve, reject) => {
       const lines = createInterface({input: child.stdout});
@@ -39,10 +56,11 @@ test.beforeAll(async ({baseURL}) => {
   await mkdir(profiles, {recursive:true});
   work = await mkdtemp(path.join(profiles, 'glob2-yog-'));
   profile = 'glob2-yog-test-' + randomUUID();
+  testPortBase = await chooseTestPorts();
   lobby = (await start(path.join(root, `build/${platform}/client/release/src/net-connection-test`),
     ['--serve', profile], line => line === 'YOG test server ready', profile)).child;
   const started = await start(path.join(root, `build/${platform}/gateway/release/glob2-ws-gateway`),
-    ['--port', '0', '--origin', new URL(baseURL).origin], line => line.startsWith('gateway listening on '));
+    ['--port', '0', '--origin', new URL(baseURL).origin, '--lobby-port', String(testPortBase), '--router-port', String(testPortBase+2)], line => line.startsWith('gateway listening on '));
   gateway = started.child;
   const port = started.line.split(':').pop().trim();
   endpoint = 'ws://127.0.0.1:' + port;

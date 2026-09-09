@@ -2,6 +2,7 @@
 #include "NetTransport.h"
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
+#include "YOGConsts.h"
 #endif
 #ifdef GLOB2_MOBILE
 #include "mobile/CertificateTrust.h"
@@ -64,7 +65,7 @@ class WssTransport final : public NetTransport {
             if (host.empty() || service.empty() || service.find_first_not_of("0123456789") != std::string::npos
                 || std::stoul(service) == 0 || std::stoul(service) > 65535)
                 throw std::invalid_argument("Invalid origin host or port");
-            route = port == 7491 ? "/router" : "/yog";
+            route = port == YOG_ROUTER_PORT ? "/router" : "/yog";
             SSL_set_min_proto_version(socket.next_layer().native_handle(), TLS1_2_VERSION);
             socket.next_layer().set_verify_mode(ssl::verify_peer);
 #ifdef GLOB2_MOBILE

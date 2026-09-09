@@ -16,23 +16,30 @@ do not modify the AI or browser checkouts. Commit and push verified checkpoints.
 - Native document bridges, Android picker round-trip/cancel/error verification,
   and SDK metadata registration for directly extracted emulator archives.
 - Platform certificate trust in bounded native WSS, Android trust instrumentation,
-  unique iOS archive symbols and successful simulator LLDB attachment.
+  unique iOS archive symbols, simulator LLDB attachment and symbolicated sampling.
+- Bounded abandoned-write/export cleanup and host sanitizer checks.
+- A repeatable 100,000-step ARM64/Wasm fixture with 101 matching checkpoints.
+- Reconciliation with browser checkpoint 1658ff670 and isolated cross-play ports.
 
 See the newest status checkpoint for actual test results; CI wiring does not by
 itself mean a hosted CI run passed.
 
 ## Continue without physical devices
 
-- Run and fix hosted Android ARM64/ARMv7/x86-64 packaging and iOS simulator CI.
-- Qualify iOS picker interaction and third-party/cloud providers. Both native
-  document bridges are implemented; Android local-provider round trips pass.
-- Qualify mobile WSS gateway traffic, mixed-platform play and coordinated
-  reconnect. Platform certificate trust is integrated; native framing/queues
-  continue through the existing bounded Beast transport.
+- Finish monitoring hosted CI. All Android ABIs package and hosted x86-64
+  lifecycle/trust checks pass; iOS is still running in the latest recorded run.
+- iOS picker interaction needs an accessible dedicated simulator/device surface;
+  the current isolated set is unavailable to Simulator/Instruments UI discovery.
+  Third-party/cloud provider testing also needs those providers/accounts. Android
+  local-provider round trips pass and both bridges are implemented.
+- Mobile WSS end-to-end qualification needs a trusted gateway endpoint and
+  mobile participants. Native/Wasm TCP and WSS cross-play is covered locally;
+  mobile certificate trust passes separately. Coordinated device reconnect stays open.
 - Extend the passing 100,000-step macOS ARM64/Wasm fixture to physical mobile
   performance and additional seeds as device coverage becomes available.
-- Qualify debugger attachment, symbols, sanitizer/profiler workflows and clean
-  build reproducibility. Audit remaining host tools against pinned versions.
+- Physical debugger/sanitizer/Instruments workflows and a complete host-tool
+  lock remain. Simulator LLDB/symbols/sampling, host harness sanitizers and clean
+  hosted packaging are verified; byte-identical distribution archives are not.
 - Address accessibility/localization gaps supported by automated or simulator
   checks; preserve honest physical assistive-technology qualification gates.
 - Recovery follow-up: storage-exhaustion/process-termination checks on mobile

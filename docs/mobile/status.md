@@ -1,5 +1,46 @@
 # Mobile verification and remaining work
 
+## 2026-09-09 — browser reconciliation and final integration checks
+
+Merged browser checkpoint `1658ff670`, including upstream map/AI save changes and
+normal cross-play match endings. Mobile retains its scheduled ReplaySaveScreen
+and checked buffered atomic writer. The draft PR is mergeable after this merge.
+
+Post-merge verification passes:
+
+- Android ARM64 and iOS ARM64 simulator release builds; both local lifecycle
+  smokes, including Android rotation; Android system-trust instrumentation.
+- Native save fault/process-death and touch/session suites, 26 build-driver tests,
+  14 browser unit tests, eight gateway tests and seven native WSS tests.
+- 54 replay-storage and single-player browser cases across all three browsers.
+- All six native/Wasm TCP and WSS cross-play cases, including normal match
+  endings and checksum agreement, on Chromium, Firefox and WebKit.
+- Another 100,000-step ARM64/Wasm run with all 101 checkpoints matching. Timing
+  during concurrent test work is recorded separately and is not a device budget.
+
+Native cross-play fixtures now reserve private ports, matching the existing
+private profiles, and wait for their embedded router before announcing readiness.
+Native WSS route selection uses the shared protocol port constant so the same
+transport also works with those test-only port assignments. Production ports are
+unchanged. A missing explicit `<cstring>` include caught by Ubuntu 22.04 CI is
+fixed in the save harness.
+
+Hosted mobile run `34310898922` successfully packaged ARM64, ARMv7 and x86-64 and
+passed x86-64 startup/lifecycle/rotation and trust instrumentation. Its iOS job was
+still running at this checkpoint; subsequent runs are linked from PR #208.
+Clean hosted packaging plus local rebuilds provide functional reproduction, not
+byte-identical signed-archive qualification or a complete host-toolchain lock.
+
+A ten-second stack sample of the isolated iOS app contains symbolicated
+`Application::frame` and `Glob2.cpp` source locations
+(`build/mobile-final-ios-sample.txt`). Instruments cannot discover this custom
+simulator set (`build/mobile-final-profiler-isolated.log`); its qualification stays
+open. LLDB attachment and matching app/dSYM identities were verified previously.
+A ten-second scheduler/graphics/view/frequency atrace capture also succeeds on the
+private Android emulator (`build/mobile-final-android-systrace.txt`); this validates
+trace collection, not physical frame-time or thermal budgets.
+
+
 ## 2026-09-09 — stale-file cleanup and long simulation checks
 
 Mobile startup now removes abandoned atomic-write files bearing the explicit

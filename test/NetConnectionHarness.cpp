@@ -45,6 +45,11 @@ int main(int argc, char** argv) {
                 require(server.registerInformation("incompatibleregistration", "fixture-only", "127.0.0.1", version)
                         == YOGClientVersionTooOld, "Incompatible version created an account");
             }
+            const auto routerDeadline = SDL_GetTicks64() + 5000;
+            while (server.canCreateNewGame("") == YOGCreateRefusalNoRouter && SDL_GetTicks64() < routerDeadline) {
+                server.update(); SDL_Delay(10);
+            }
+            require(server.canCreateNewGame("") != YOGCreateRefusalNoRouter, "Embedded test router did not become ready");
             std::cout << "YOG test server ready" << std::endl;
             for (;;) { server.update(); SDL_Delay(10); }
         }
