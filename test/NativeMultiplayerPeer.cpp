@@ -36,7 +36,9 @@ int main(int argc, char** argv) {
         globalContainer->runNoX = true;
         globalContainer->load();
         globalContainer->automaticEndingGame = true;
-        globalContainer->automaticEndingSteps = 250;
+        // Safety limit: the browser resigns after 250 ticks; normal victory
+        // must end this session before the fallback limit.
+        globalContainer->automaticEndingSteps = 1000;
         if (SDLNet_Init() != 0) throw std::runtime_error("Network initialization failed");
         {
             auto client = std::make_shared<YOGClient>();

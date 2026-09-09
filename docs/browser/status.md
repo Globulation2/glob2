@@ -11,6 +11,51 @@ complete-match tests and gateway setup documentation remain required. See
 [current delivery scope](implementation.md); older references to the full
 original plan below describe the former scope, not release blockers to reopen.
 
+## Replay-save closeout and interpreter header isolation — 2026-09-08
+
+The final writer audit found a missed browser entry point: EndGameScreen's Save
+Replay button still ran a private blocking loop. It now owns the existing save
+overlay and advances it through the shared host callbacks, including resize and
+persistence completion. Replay export uses checked atomic replacement instead of
+asserting after opening/truncating the destination. Failed writes retain the live
+recording's position so retry produces the same replay bytes. The file format and
+native UI are preserved. See [replay persistence](storage.md).
+
+Hosted run `34303365019` showed the earlier Game.h removal was insufficient:
+GCC also instantiated script prototypes through other game-header consumers.
+MapScriptUSL now forward-declares its private interpreter and includes its
+implementation headers only in the .cpp file. The real Ubuntu 24.04 container
+build now passes for lobby, router and gateway, and the native client/session
+harness also builds and passes with GCC. The latter check adds OpenSSL development
+headers to the headless build image, as required for the native WSS client.
+macOS native/session and Wasm release builds pass too.
+
+Complete-match coverage now resigns through the actual game menu and returns to
+YOG. The native peer must finish through normal victory before its safety tick
+limit. This exposed a real headless null-font crash in the player-left message;
+headless execution now skips that presentation-only message while applying the
+order normally. Command-boundary checksum comparisons remain unchanged.
+
+Validation:
+
+- 27 WebGL2 multiplayer cases pass across Chromium, Firefox and WebKit: every
+  shipped AI, browser/browser, native TCP and native WSS, including normal endings.
+- 18 WebGL2 replay-save, session-reload and callback-runtime cases pass across
+  the three engines; six software replay-save cases pass too. These cover pending
+  persistence, resize, quota failure, export/retry, refresh and replay playback.
+- Nine build-system and 14 JavaScript unit tests pass; native session regression
+  covers failed replay destinations, preserved recording position and identical
+  retry bytes. Native session tests pass on macOS and Ubuntu 24.04.
+- Hosted CI must still pass on the committed revision. The previous failing run
+  was cancelled after collecting its diagnostics; it is not passing evidence.
+
+Local logs: `/tmp/glob2-final-multiplayer-all-ai.log`,
+`/tmp/glob2-replay-save-final.log`, `/tmp/glob2-replay-save-software.log`,
+`/tmp/glob2-finish-native-session.log`, `/tmp/glob2-finish-linux-build.log`,
+`/tmp/glob2-finish-linux-runtime-final.log`, `/tmp/glob2-finish-unit.log` and
+`/tmp/glob2-finish-js-unit.log`. Stable-release browser/version and controlled
+performance qualification remain separate from these regression results.
+
 ## Headless dependency and CI cleanup — 2026-09-08
 
 Hosted run `34302157222` exposed the same YOG server link failure on Ubuntu

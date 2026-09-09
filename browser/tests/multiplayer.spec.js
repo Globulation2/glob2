@@ -279,6 +279,17 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
     expect(errors).toEqual([]);
     await testInfo.attach('matching-order-checksums', {body: JSON.stringify({count, checksums: hostChecksums.slice(0, count)}), contentType: 'application/json'});
     await page.screenshot({path: testInfo.outputPath('multiplayer-match.png')});
+    // Complete both clients' normal end-game flow instead of ending the fixture
+    // by closing browser contexts while the match is still running.
+    for (const target of [page, guest]) {
+      await target.locator('#canvas').press('Escape',{delay:80});
+      await expect.poll(() => require('./pixels').hasLightText(target, {x:460,y:482,width:280,height:34})).toBe(true);
+      await click(target, 600, 500);
+      await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('EndGameScreen');
+      await target.locator('#canvas').press('Enter');
+      await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('YOGSessionScreen');
+    }
+    expect(errors).toEqual([]);
   } finally { await other.close(); }
 });
 
@@ -314,10 +325,18 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(125);
     expect((await page.evaluate(() => glob2Diagnostics.snapshot())).screenClass).toContain('GameSessionScreen');
     await page.screenshot({path: testInfo.outputPath('native-cross-play.png')});
-    await expect.poll(() => peer.exitCode ?? peer.signalCode, {timeout: 45000}).toBe(0);
+    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(250);
+    await page.locator('#canvas').press('Escape',{delay:80});
+    await expect.poll(() => require('./pixels').hasLightText(page, {x:460,y:482,width:280,height:34})).toBe(true);
+    await click(600, 500);
+    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('EndGameScreen');
+    await expect.poll(() => peer.exitCode !== null || peer.signalCode !== null, {timeout:45000}).toBe(true);
+    expect(peer.signalCode).toBeNull();
+    expect(peer.exitCode).toBe(0);
     const bytes = await readFile(path.join(os.homedir(), '.' + nativeProfile, 'replays/last_game.replay.checksums'));
     const teams = bytes.readUInt32LE(4), count = bytes.readUInt32LE(12);
     expect(count).toBeGreaterThanOrEqual(250);
+    expect(count).toBeLessThan(1000); // Victory, not the native safety timeout.
     const native = new Map();
     let offset = 20;
     const u32 = () => { const value = bytes.readUInt32LE(offset); offset += 4; return value; };
@@ -345,6 +364,8 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     // Align command-boundary checksums using the negotiated order rate.
     const compared = Math.min(checksums.length, Math.ceil(count / orderRate));
     for (let i = 0; i < compared; ++i) expect(checksums[i]).toBe(native.get(i * orderRate));
+    await page.locator('#canvas').press('Enter');
+    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain('YOGSessionScreen');
 
   } finally {
     await stop(peer);
