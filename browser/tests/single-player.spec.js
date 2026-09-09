@@ -6,6 +6,32 @@ const screen = (page, name) => expect.poll(async () => (await state(page)).scree
 const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
 const menu = (page, x, y) => click(page, x + 280, y + 210);
 
+// Hold the first scheduled turn after entering a loader. The real Escape event
+// can then reach a pending job without racing a fast machine's completed load.
+// This injects the browser timer boundary; gameplay and diagnostics stay unchanged.
+async function holdLoader(page, name) {
+  await page.evaluate(name => {
+    const schedule = window.setTimeout;
+    window.setTimeout = function(callback, delay, ...args) {
+      if (glob2Diagnostics.snapshot().screen.includes(name)) {
+        window.setTimeout = schedule;
+        window.releaseLoaderTurn = () => {
+          delete window.releaseLoaderTurn;
+          schedule(callback, delay, ...args);
+        };
+        return 0;
+      }
+      return schedule(callback, delay, ...args);
+    };
+  }, name);
+}
+async function cancelHeldLoader(page, name) {
+  await screen(page, name);
+  await expect.poll(() => page.evaluate(() => typeof releaseLoaderTurn)).toBe('function');
+  await page.locator('#canvas').press('Escape', {delay:80});
+  await page.evaluate(() => releaseLoaderTurn());
+}
+
 test.beforeEach(async ({page}, info) => {
   // Pin the editor's wall-time seed before runtime initialization, matching
   // the native generation fixture. Animation and cooperative timers remain real.
@@ -236,10 +262,10 @@ test('editor map loading can be cancelled and restarted', async ({page}) => {
     await menu(page, 320, 150);
     await screen(page, 'ChooseMapScreen');
     await menu(page, 100, 70);
+    if (cancel) await holdLoader(page, 'EditorLoadScreen');
     await menu(page, 530, 380);
     if (cancel) {
-      await screen(page, 'EditorLoadScreen');
-      await page.locator('#canvas').press('Escape', {delay:80});
+      await cancelHeldLoader(page, 'EditorLoadScreen');
     } else {
       await screen(page, 'MapEditorScreen');
       await page.locator('#canvas').press('Escape', {delay:80});
@@ -256,18 +282,18 @@ test('custom and tutorial startup can be cancelled and retried', async ({page}) 
   await menu(page, 480, 200);
   await screen(page, 'CustomGameScreen');
   await menu(page, 100, 70);
+  await holdLoader(page, 'GameLoadScreen');
   await menu(page, 530, 380);
-  await screen(page, 'GameLoadScreen');
-  await page.locator('#canvas').press('Escape', {delay:80});
+  await cancelHeldLoader(page, 'GameLoadScreen');
   await screen(page, 'CustomGameScreen');
   await page.locator('#canvas').press('Escape', {delay:80});
   await screen(page, 'MainMenuScreen');
   await menu(page, 480, 120);
   await screen(page, 'CampaignMenuScreen');
   await menu(page, 100, 60);
+  await holdLoader(page, 'GameLoadScreen');
   await menu(page, 160, 450);
-  await screen(page, 'GameLoadScreen');
-  await page.locator('#canvas').press('Escape', {delay:80});
+  await cancelHeldLoader(page, 'GameLoadScreen');
   await screen(page, 'CampaignMenuScreen');
   await menu(page, 160, 450); // The same selected mission remains available.
   await screen(page, 'match');
@@ -288,9 +314,13 @@ test('cancelling an editor replacement preserves edits and a completed load repl
     await page.locator('#canvas').press('Escape', {delay:80});
     await click(page, 600, 325); // Load map from inside the editor.
     await click(page, 500, 365);
+    await holdLoader(page, 'EditorLoadScreen');
     await click(page, 520, 555);
-    await screen(page, 'EditorLoadScreen');
-    if (cancel) await page.locator('#canvas').press('Escape', {delay:80});
+    if (cancel) await cancelHeldLoader(page, 'EditorLoadScreen');
+    else {
+      await screen(page, 'EditorLoadScreen');
+      await page.evaluate(() => releaseLoaderTurn());
+    }
     await screen(page, 'MapEditorScreen');
     await page.locator('#canvas').press('Escape', {delay:80});
     await click(page, 600, 525);
