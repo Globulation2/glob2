@@ -1236,3 +1236,7 @@ Cortex
 Dins: %0
 [Units still working: %0]
 Encara treballant: %0
+[automatic torus view]
+Vista toroidal automàtica
+[toggle torus view]
+Alterna entre vista 2D i toroidal

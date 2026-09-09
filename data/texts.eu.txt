@@ -1238,3 +1238,7 @@ Cortex
 Barruan: %0
 [Units still working: %0]
 Oraindik lanean: %0
+[automatic torus view]
+Toroide-ikuspegi automatikoa
+[toggle torus view]
+Aldatu 2D eta toroide-ikuspegien artean

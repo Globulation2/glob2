@@ -611,3 +611,5 @@
 [Your username was banned]
 [Units still inside: %0]
 [Units still working: %0]
+[automatic torus view]
+[toggle torus view]

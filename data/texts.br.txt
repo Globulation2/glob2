@@ -1224,3 +1224,7 @@ Cortex
 Dentro: %0
 [Units still working: %0]
 Ainda trabalhando: %0
+[automatic torus view]
+Gwel toreek emgefre
+[toggle torus view]
+Trec’haoliñ etre gwel 2M ha toreek

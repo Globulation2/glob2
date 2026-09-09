@@ -1234,3 +1234,7 @@ Cortex
 Dentro: %0
 [Units still working: %0]
 Ainda a trabalhar: %0
+[automatic torus view]
+Vista toroidal automática
+[toggle torus view]
+Alternar vista 2D / toroidal

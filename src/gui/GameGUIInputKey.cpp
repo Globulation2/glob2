@@ -72,6 +72,16 @@ void GameGUI::handleKeySelectPlaceArea(GameGUIToolManager::ZoneType zone)
 	toolManager.activateZoneTool(zone);
 }
 
+void GameGUI::toggleTorusView()
+{
+    if (!torusView.available() || typingInputScreen || inGameMenu != IGM_NONE || scrollableText) return;
+    if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
+    torusPointerDown=false;
+    torusView.toggle();
+    selectionPushed = panPushed = miniMapPushed = false;
+    viewportSpeedX = viewportSpeedY = 0;
+}
+
 bool GameGUI::canChangeGameSpeed() const
 {
 	return globalContainer->replaying || !game.gameHeader.hasNetworkPlayer();
@@ -90,7 +100,7 @@ void GameGUI::changeGameSpeed(int amount)
 		.arg(globalContainer->settings.getGameSpeedText()), false);
 }
 
-void GameGUI::handleKey(SDL_Keysym key, bool pressed)
+void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 {
 	if (typingInputScreen == NULL)
 	{
@@ -119,6 +129,9 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				{
 				}
 				break;
+				case GameGUIKeyActions::ToggleTorusView:
+					if (!repeat) toggleTorusView();
+					break;
 				case GameGUIKeyActions::ShowMainMenu:
 				{
 					if (inGameMenu==IGM_NONE)
@@ -200,7 +213,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					viewportX = evX-int(camera.visibleW()/64);
 					viewportY = evY-int(camera.visibleH()/64);
 
-					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+					viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::GoToHome:
@@ -216,7 +229,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					viewportX = evX-int(camera.visibleW()/64);
 					viewportY = evY-int(camera.visibleH()/64);
 
-					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+					viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::PauseGame:

@@ -70,12 +70,14 @@ namespace GAGCore
 	FileManager::FileManager(const std::string gameName)
 	{
 		#ifndef WIN32
-		const char* homeDir = getenv("HOME");
-		if (homeDir && *homeDir)
+		const char *experimentDir = getenv("GLOB2_USER_DIR");
+		const char *home = getenv("HOME");
+		const std::string homeDir = home ? home : "";
+		if ((experimentDir && *experimentDir) || !homeDir.empty())
 		{
 			std::string gameLocal(homeDir);
-			gameLocal += "/.";
-			gameLocal += gameName;
+			if (experimentDir && *experimentDir) gameLocal = experimentDir;
+			else { gameLocal += "/."; gameLocal += gameName; }
 			mkdir(gameLocal.c_str(), S_IRWXU);
 			addDir(gameLocal.c_str());
 		}

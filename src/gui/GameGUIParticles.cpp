@@ -169,7 +169,14 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 	}
 }
 
-void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
+void GameGUI::viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
 {
-	// Particles now retain world positions; camera changes need no compensation.
+	if ((viewportX==oldViewportX) && (viewportY==oldViewportY))
+		return;
+
+    if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText &&
+        !(lastMouseButtonState & SDL_BUTTON(SDL_BUTTON_LEFT)))
+        torusView.notifyMove();
+    torusView.setViewport(viewportX, viewportY);
+
 }

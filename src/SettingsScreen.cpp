@@ -233,6 +233,10 @@ void SettingsScreen::handleButtonStateChanged(Widget* source)
 		globalContainer->settings.scrollWheelEnabled=scrollwheel->getState();
 		scrollWheelEnabled=scrollwheel->getState();
 	}
+	else if (source==automaticTorus)
+	{
+		globalContainer->settings.automaticTorus=automaticTorus->getState();
+	}
 	else if (source==lowquality)
 	{
 		globalContainer->settings.optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
@@ -309,6 +313,7 @@ void SettingsScreen::retranslateUiStrings()
 
 	rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
 	scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
+	automaticTorusText->setText(Toolkit::getStringTable()->getString("[automatic torus view]"));
 	updateGameSpeedText();
 
 	musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));

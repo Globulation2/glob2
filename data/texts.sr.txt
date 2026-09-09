@@ -1228,3 +1228,7 @@ Cortex
 Унутра: %0
 [Units still working: %0]
 Још раде: %0
+[automatic torus view]
+Аутоматски торусни приказ
+[toggle torus view]
+Промени 2D / торусни приказ

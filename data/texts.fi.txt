@@ -1228,3 +1228,7 @@ Cortex
 Sisällä: %0
 [Units still working: %0]
 Yhä töissä: %0
+[automatic torus view]
+Automaattinen torusnäkymä
+[toggle torus view]
+Vaihda 2D- ja torusnäkymän välillä

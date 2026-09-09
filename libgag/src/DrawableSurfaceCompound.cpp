@@ -295,7 +295,7 @@ namespace GAGCore
 		if (!sprite->checkBound(index))
 			return;
 		if (this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU)
-			&& (sprite->experimentImages[index] || sprite->experimentRotated[index]))
+			&& (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
 		{
 			drawSprite(x, y, sprite->getW(index), sprite->getH(index), sprite, index, alpha);
 			return;
@@ -317,7 +317,7 @@ namespace GAGCore
 		if (!sprite->checkBound(index))
 			return;
 		if (this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU)
-			&& (sprite->experimentImages[index] || sprite->experimentRotated[index]))
+			&& (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
 		{
 			drawSprite(x, y, static_cast<float>(sprite->getW(index)), static_cast<float>(sprite->getH(index)), sprite, index, alpha);
 			return;
@@ -340,9 +340,9 @@ namespace GAGCore
 			return;
 
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
-		if (auto surface = sprite->getDrawSurface(index, false, experiment))
+		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
-		if (auto surface = sprite->getDrawSurface(index, true, experiment))
+		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
 		{
 			float scale = experiment && sprite->experimentRotated[index] ? 4.0f : 1.0f;
 			drawSurface(static_cast<float>(x), static_cast<float>(y), w * surface->getW() / (scale * sprite->getW(index)), h * surface->getH() / (scale * sprite->getH(index)), surface, alpha);
@@ -357,9 +357,9 @@ namespace GAGCore
 			return;
 
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
-		if (auto surface = sprite->getDrawSurface(index, false, experiment))
+		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
-		if (auto surface = sprite->getDrawSurface(index, true, experiment))
+		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
 		{
 			float scale = experiment && sprite->experimentRotated[index] ? 4.0f : 1.0f;
 			drawSurface(static_cast<float>(x), static_cast<float>(y), w * surface->getW() / (scale * sprite->getW(index)), h * surface->getH() / (scale * sprite->getH(index)), surface, alpha);

@@ -1304,3 +1304,7 @@ Cortex
 Inde: %0
 [Units still working: %0]
 Arbejder stadig: %0
+[automatic torus view]
+Automatisk torusvisning
+[toggle torus view]
+Skift mellem 2D- og torusvisning

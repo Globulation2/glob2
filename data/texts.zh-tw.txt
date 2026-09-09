@@ -1300,3 +1300,7 @@ Cortex
 內部：%0
 [Units still working: %0]
 仍在工作：%0
+[automatic torus view]
+自動環面視圖
+[toggle torus view]
+切換 2D／環面視圖

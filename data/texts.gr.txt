@@ -1298,3 +1298,7 @@ Cortex
 Μέσα: %0
 [Units still working: %0]
 Εργάζονται: %0
+[automatic torus view]
+Αυτόματη τοροειδής προβολή
+[toggle torus view]
+Εναλλαγή 2D / τοροειδούς προβολής

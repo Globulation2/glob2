@@ -1224,3 +1224,7 @@ Ysagoon Online Gaming
 建物内：%0体
 [Units still working: %0]
 作業中：あと%0体
+[automatic torus view]
+自動トーラス表示
+[toggle torus view]
+2D／トーラス表示を切り替え

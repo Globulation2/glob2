@@ -356,6 +356,7 @@ namespace GAGCore
 		//! refresh the window and drawable sizes after the window was resized
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
+		unsigned glContextGeneration = 0;
 		SDL_GLContext context = nullptr;
 		SDL_threadID eventThread = 0;
 		bool pollingEvents = false;
@@ -391,6 +392,8 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+		unsigned getGLContextGeneration() const { return glContextGeneration; }
+
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
@@ -531,15 +534,16 @@ namespace GAGCore
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
-		bool createTextureAtlas();
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
 		DrawableSurface *getColoredSurface(RotatedImage *image);
-		DrawableSurface *getDrawSurface(unsigned index, bool teamColor, bool experiment);
+		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
 		void loadExperimentFrame(const std::string &frameName, const std::string &rotatedName);
 	
 	public:
+		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
+		bool createTextureAtlas(bool allowVariableSizes = false);
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
 		static void setHighResolution(bool enabled);

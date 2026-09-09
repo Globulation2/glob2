@@ -75,6 +75,10 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
+    if (torusView.active()) {
+        if (!torusPointerDown || !torusMapPointer(mx, my, mx, my)) return;
+    }
+
 	if(zoomControlPushed)return;
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
@@ -83,10 +87,10 @@ void GameGUI::dragStep(int mx, int my, int button)
 		it was at the time in the middle of the event stream, not
 		as it is now.  So instead we make sure the correct data is
 		passed to us as a parameter. */
-	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
-		if (!camera.contains(mx,my) || my<16) return;
-		mx=mapMouseX(mx);my=mapMouseY(my);
+		if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
+		if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
 		{
@@ -107,8 +111,7 @@ void GameGUI::dragStep(int mx, int my, int button)
    information, because we need the information as it was in the
    middle of the event stream.  (There may be many later events we
    have not yet processed.) */
-int lastMouseX = 0, lastMouseY = 0; // can't make these Uint16 because of SDL_GetMouseState
-Uint16 lastMouseButtonState = 0;
+
 
 void GameGUI::step(void)
 {
@@ -235,7 +238,7 @@ void GameGUI::step(void)
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 
 	assert(localTeam);

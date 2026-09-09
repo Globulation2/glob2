@@ -52,6 +52,7 @@ public:
 		FLAGSETTINGS=22,
 		PRESSEDSELECTOR=23,
 		HIGHRES=24,
+		AUTOMATIC_TORUS=25,
 	};
 
 	// IDs for the four sub-groups inside the "Building Defaults" tab. Stored in
@@ -70,7 +71,7 @@ private:
 	
 	TextButton *ok, *cancel;
 	TextButton *buildings, *flags, *constructionsites, *upgrades;
-	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel, *highres;
+	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel, *automaticTorus, *highres;
 	Selector *musicVol;
 	Selector *voiceVol;
 	Selector *gameSpeed;
@@ -86,7 +87,7 @@ private:
 	Text* flagRadiusTexts[3];
 	int flagRadiusGroupNumbers[3];
 	Text *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
+	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText, *automaticTorusText;
 	Text *actDisplay;
 	Text *rebootWarning;
 
@@ -193,4 +194,3 @@ public:
 	void onAction(Widget *source, Action action, int par1, int par2);
 	void onSDLEvent(SDL_Event *event) override;
 };
-

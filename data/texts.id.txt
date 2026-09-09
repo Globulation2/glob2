@@ -1224,3 +1224,7 @@ Kecepatan: 1x (multipemain)
 Di dalam: %0
 [Units still working: %0]
 Masih bekerja: %0
+[automatic torus view]
+Tampilan torus otomatis
+[toggle torus view]
+Beralih tampilan 2D / torus

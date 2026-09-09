@@ -1236,3 +1236,7 @@ Cortex
 İçeride: %0
 [Units still working: %0]
 Hâlâ çalışıyor: %0
+[automatic torus view]
+Otomatik torus görünümü
+[toggle torus view]
+2B / torus görünümünü değiştir

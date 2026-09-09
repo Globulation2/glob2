@@ -1238,3 +1238,7 @@ Cortex
 Dedans : %0
 [Units still working: %0]
 Travaillent encore : %0
+[automatic torus view]
+Vue torique automatique
+[toggle torus view]
+Basculer entre les vues 2D et torique
