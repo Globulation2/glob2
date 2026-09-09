@@ -1,0 +1,110 @@
+{
+  "seedling": {
+    "title": "Seedling",
+    "style": "Organic electronic",
+    "tracks": [
+      {
+        "file": "data/zik/seedling/a1.ogg",
+        "source": "music/seedling/a1-calm.wav",
+        "frames": 3528000,
+        "seconds": 80.0,
+        "decoded_peak": 0.65667724609375
+      },
+      {
+        "file": "data/zik/seedling/a2.ogg",
+        "source": "music/seedling/a2-building.wav",
+        "frames": 3528000,
+        "seconds": 80.0,
+        "decoded_peak": 0.71453857421875
+      },
+      {
+        "file": "data/zik/seedling/a3.ogg",
+        "source": "music/seedling/a3-combat.wav",
+        "frames": 3528000,
+        "seconds": 80.0,
+        "decoded_peak": 0.97149658203125
+      }
+    ]
+  },
+  "bramble-dance": {
+    "title": "Bramble Dance",
+    "style": "Plucked folk strings and hand drums",
+    "tracks": [
+      {
+        "file": "data/zik/bramble-dance/a1.ogg",
+        "source": "music/contrasts/bramble-dance/calm.wav",
+        "frames": 2940000,
+        "seconds": 66.66666666666667,
+        "decoded_peak": 0.53887939453125
+      },
+      {
+        "file": "data/zik/bramble-dance/a2.ogg",
+        "source": "music/contrasts/bramble-dance/building.wav",
+        "frames": 2940000,
+        "seconds": 66.66666666666667,
+        "decoded_peak": 0.75372314453125
+      },
+      {
+        "file": "data/zik/bramble-dance/a3.ogg",
+        "source": "music/contrasts/bramble-dance/combat.wav",
+        "frames": 2940000,
+        "seconds": 66.66666666666667,
+        "decoded_peak": 0.8994140625
+      }
+    ]
+  },
+  "velvet-orbit": {
+    "title": "Velvet Orbit",
+    "style": "Spacious electric piano and broken beats",
+    "tracks": [
+      {
+        "file": "data/zik/velvet-orbit/a1.ogg",
+        "source": "music/contrasts/velvet-orbit/calm.wav",
+        "frames": 3528000,
+        "seconds": 80.0,
+        "decoded_peak": 0.582794189453125
+      },
+      {
+        "file": "data/zik/velvet-orbit/a2.ogg",
+        "source": "music/contrasts/velvet-orbit/building.wav",
+        "frames": 3528000,
+        "seconds": 80.0,
+        "decoded_peak": 0.70269775390625
+      },
+      {
+        "file": "data/zik/velvet-orbit/a3.ogg",
+        "source": "music/contrasts/velvet-orbit/combat.wav",
+        "frames": 3528000,
+        "seconds": 80.0,
+        "decoded_peak": 0.77978515625
+      }
+    ]
+  },
+  "tidepool": {
+    "title": "Tidepool",
+    "style": "Caribbean-inspired organic electronic",
+    "tracks": [
+      {
+        "file": "data/zik/tidepool/a1.ogg",
+        "source": "music/tidepool/calm.wav",
+        "frames": 3386880,
+        "seconds": 76.8,
+        "decoded_peak": 0.562286376953125
+      },
+      {
+        "file": "data/zik/tidepool/a2.ogg",
+        "source": "music/tidepool/building.wav",
+        "frames": 3386880,
+        "seconds": 76.8,
+        "decoded_peak": 0.67303466796875
+      },
+      {
+        "file": "data/zik/tidepool/a3.ogg",
+        "source": "music/tidepool/combat.wav",
+        "frames": 3386880,
+        "seconds": 76.8,
+        "decoded_peak": 0.904296875
+      }
+    ]
+  }
+}

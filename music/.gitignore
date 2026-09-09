@@ -1,0 +1,4 @@
+*.wav
+*.zip
+__pycache__/
+archive/
