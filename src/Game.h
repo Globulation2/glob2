@@ -121,6 +121,7 @@ class Game
 {
 	bool hasSavedRandomState = false;
 	friend class HighResolutionIntegrationHarness;
+	friend class EnteringUnitDrawHarness;
 	static const bool verbose = false;
 public:
 	/// Per-client viewer state (selection + mouse). Defined below; forward-
