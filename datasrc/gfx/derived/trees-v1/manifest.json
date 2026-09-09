@@ -1,0 +1,653 @@
+{
+  "version": 1,
+  "frames": [
+    {
+      "id": "ressource0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_1_1.xcf",
+          "sha256": "36fd3779ad6657efb47d11962cc91c661925607773776831caf844d3a4254898",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_1_1.png",
+          "sha256": "cf5c03acc3a1f032d44986df7788f1118e26b781649f3d88f9b054fbc5a30337",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource0.png",
+          "role": "base",
+          "sha256": "fb40c2575d99a9dea62c628cf3fb24b3ad1480125da6958512f66e232404a29d"
+        }
+      ]
+    },
+    {
+      "id": "ressource1",
+      "width": 34,
+      "height": 34,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_2_1.xcf",
+          "sha256": "7f5b64fe7ff58dbc1b80dc27b9a0865e9f68c1f96b51ab1fbb9ea954985407e9",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_2_1.png",
+          "sha256": "279e08b59ca7cb7bcdf16dc1dba984553fe7d21b3adb4cb9f2cad8880eceb9c5",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource1.png",
+          "role": "base",
+          "sha256": "c7fd2975f8a524ebf9d7318f39d14f958ebebbc7c0a214ae8a0e272e743beb3a"
+        }
+      ]
+    },
+    {
+      "id": "ressource2",
+      "width": 36,
+      "height": 39,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_3_1.xcf",
+          "sha256": "0902918261c95ecac95c24eb4d2805baff0a074028d8e7e21fa1b1799c1bbd03",
+          "native_size": [
+            128,
+            140
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                8
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_3_1.png",
+          "sha256": "3d2c497ef996a8a65766a21d8095e14c484be58f16af37076c38ea2225a87dbb",
+          "native_size": [
+            128,
+            140
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource2.png",
+          "role": "base",
+          "sha256": "539973e090057f59487c1eabbbc5fd6fe23a032650ae0d27823a0f8160f3ef4e"
+        }
+      ]
+    },
+    {
+      "id": "ressource3",
+      "width": 36,
+      "height": 39,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf",
+          "sha256": "b893267a7380f6e4e6d67f7acbb8cc361b0d394b856240a949c911e769dd86d9",
+          "native_size": [
+            128,
+            140
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_4_1.png",
+          "sha256": "eab11eb44d78e87acabdcf4c0f163fa6459098b19ee7f8e4b368cd7643c87b70",
+          "native_size": [
+            128,
+            140
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource3.png",
+          "role": "base",
+          "sha256": "5c4ba2c41b605fc79bb949f8c3a1d7ee79e187f64f51e1f82c3a82daf9dd9fc3"
+        }
+      ]
+    },
+    {
+      "id": "ressource4",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf",
+          "sha256": "b893267a7380f6e4e6d67f7acbb8cc361b0d394b856240a949c911e769dd86d9",
+          "native_size": [
+            128,
+            140
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_4_1.png",
+          "sha256": "eab11eb44d78e87acabdcf4c0f163fa6459098b19ee7f8e4b368cd7643c87b70",
+          "native_size": [
+            128,
+            140
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource4.png",
+          "role": "base",
+          "sha256": "6c94e30e9289afd1583f324103a2d5206205e09ac76606a52382b0f2a389f33b"
+        }
+      ]
+    },
+    {
+      "id": "ressource5",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_1_2.xcf",
+          "sha256": "cb061fb74cc3bd134356e33d10464030666412bdca48036f19e0e4c333a904bc",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_1_2.png",
+          "sha256": "68d44b5b84baa44e328bb11e98e5c9d13e2647dc6627b27bdb9924f15023db36",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource5.png",
+          "role": "base",
+          "sha256": "d81fd1f956a7f4fd31751c3e2857305910fab909e33382bb852d0cc68fe4a045"
+        }
+      ]
+    },
+    {
+      "id": "ressource6",
+      "width": 34,
+      "height": 34,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_2_1.xcf",
+          "sha256": "7f5b64fe7ff58dbc1b80dc27b9a0865e9f68c1f96b51ab1fbb9ea954985407e9",
+          "native_size": [
+            128,
+            128
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_2_1.png",
+          "sha256": "279e08b59ca7cb7bcdf16dc1dba984553fe7d21b3adb4cb9f2cad8880eceb9c5",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource6.png",
+          "role": "base",
+          "sha256": "c7fd2975f8a524ebf9d7318f39d14f958ebebbc7c0a214ae8a0e272e743beb3a"
+        }
+      ]
+    },
+    {
+      "id": "ressource7",
+      "width": 36,
+      "height": 39,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_3_1.xcf",
+          "sha256": "0902918261c95ecac95c24eb4d2805baff0a074028d8e7e21fa1b1799c1bbd03",
+          "native_size": [
+            128,
+            140
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                8
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_3_1.png",
+          "sha256": "3d2c497ef996a8a65766a21d8095e14c484be58f16af37076c38ea2225a87dbb",
+          "native_size": [
+            128,
+            140
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource7.png",
+          "role": "base",
+          "sha256": "539973e090057f59487c1eabbbc5fd6fe23a032650ae0d27823a0f8160f3ef4e"
+        }
+      ]
+    },
+    {
+      "id": "ressource8",
+      "width": 36,
+      "height": 39,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf",
+          "sha256": "b893267a7380f6e4e6d67f7acbb8cc361b0d394b856240a949c911e769dd86d9",
+          "native_size": [
+            128,
+            140
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_4_1.png",
+          "sha256": "eab11eb44d78e87acabdcf4c0f163fa6459098b19ee7f8e4b368cd7643c87b70",
+          "native_size": [
+            128,
+            140
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource8.png",
+          "role": "base",
+          "sha256": "5c4ba2c41b605fc79bb949f8c3a1d7ee79e187f64f51e1f82c3a82daf9dd9fc3"
+        }
+      ]
+    },
+    {
+      "id": "ressource9",
+      "width": 40,
+      "height": 44,
+      "scale": 4,
+      "recipe": "recovered original tree: GIMP visible layers and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf",
+          "sha256": "b893267a7380f6e4e6d67f7acbb8cc361b0d394b856240a949c911e769dd86d9",
+          "native_size": [
+            128,
+            140
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "New Layer#1",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "New Layer",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 63.13725490196078,
+              "index": 2,
+              "name": "Background",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": true,
+              "mode": 0
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/derived/tree-native/trees_4_1.png",
+          "sha256": "eab11eb44d78e87acabdcf4c0f163fa6459098b19ee7f8e4b368cd7643c87b70",
+          "native_size": [
+            128,
+            140
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource9.png",
+          "role": "base",
+          "sha256": "6c94e30e9289afd1583f324103a2d5206205e09ac76606a52382b0f2a389f33b"
+        }
+      ]
+    }
+  ]
+}
