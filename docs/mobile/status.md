@@ -932,3 +932,14 @@ Android release build/signing and native mobile geometry, responsive-menu and
 actual gameplay-touch harnesses pass, including panel picking after rotation
 and scrolling. The Samsung disconnected before the revised build could be
 installed; final physical readability and control-density feedback remain open.
+
+### Stronger font reduction following Samsung feedback
+
+The follow-up asks for fonts near half the original preview size. Mobile menu
+fonts are now 10 (originally 20); form/HUD label scaling is 0.75 (originally 1.5),
+and panel content scaling is 0.875 (originally 1.75). Tutorial text/line spacing,
+confirmation text, and editor text also shrink. Form/dialog rows retain a
+40-point minimum, while gameplay action hit areas remain unchanged. Text-size
+preferences still apply. The native gameplay-touch harness passes with the
+compact form target requirement, including rotation, scrolling, forms and editor
+interactions. Physical readability awaits reconnection of the Samsung.

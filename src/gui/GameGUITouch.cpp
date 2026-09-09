@@ -44,7 +44,7 @@ MobileLayout GameGUITouch::layout() const
     }
     return result;
 }
-double GameGUITouch::panelScale() const { return 1.25*globalContainer->gfx->logicalUnitsPerPoint(); }
+double GameGUITouch::panelScale() const { return 0.875*globalContainer->gfx->logicalUnitsPerPoint(); }
 ViewPoint GameGUITouch::panelOrigin() const
 {
     const auto panel=panelContent();
@@ -207,7 +207,7 @@ void GameGUITouch::actions(const std::vector<TouchAction>& changes)
             if (usesHUD() && ownerRegion==7 && action.kind==TouchActionKind::Pan) {
                 const double unit=globalContainer->gfx->logicalUnitsPerPoint();
                 tutorialScroll=std::clamp(tutorialScroll-point.y/unit,0.0,
-                    std::max(0.0,tutorialLines.size()*24.0-tutorialRect().h/unit+64));
+                    std::max(0.0,tutorialLines.size()*12.0-tutorialRect().h/unit+64));
             }
             if (usesHUD() && ownerRegion==3 && action.kind==TouchActionKind::Pan) {
                 if (activeAllocationTab()==3 && inspectedBuilding()) actionScroll-=point.y/globalContainer->gfx->logicalUnitsPerPoint();
@@ -387,7 +387,7 @@ void GameGUITouch::drawControls()
     }
     for (int index=0;index<2;++index) {
         auto* label=index ? cancelLabel.get() : confirmLabel.get();
-        const double factor=std::min(rect.h*0.45/label->getH(),half*0.8/label->getW());
+        const double factor=std::min(rect.h*0.225/label->getH(),half*0.8/label->getW());
         const int width=int(label->getW()*factor),height=int(label->getH()*factor);
         gfx->drawSurface(int(rect.x)+index*half+(half-width)/2,int(rect.y)+(int(rect.h)-height)/2,width,height,label);
     }
@@ -434,7 +434,7 @@ void GameGUITouch::drawHUD()
     for (int i=0;i<3;++i) {
         const double x=ui.status.x+i*ui.status.w/3;
         SDL_Rect clip{int(x),int(ui.status.y),int(ui.status.w/3),int(ui.status.h)};
-        gfx->setUITransform(1.2*unit,x+4*unit,ui.status.y+14*unit,&clip);
+        gfx->setUITransform(0.75*unit,x+4*unit,ui.status.y+14*unit,&clip);
         gfx->drawSprite(0,0,globalContainer->unitmini,i);
         const int free=gui.teamStats->getFreeUnits(i)-(i==0 ? gui.teamStats->getWorkersNeeded() : 0);
         gfx->drawString(22,0,globalContainer->littleFont,std::to_string(free)+"/"+std::to_string(gui.teamStats->getTotalUnits(i)));
@@ -460,7 +460,7 @@ ViewRect GameGUITouch::tutorialRect() const
     const double unit=globalContainer->gfx->logicalUnitsPerPoint();
     auto rect=layout().world;
     rect.x+=8*unit; rect.y+=8*unit; rect.w-=16*unit;
-    rect.h=std::min(rect.h*0.45,(tutorialLines.size()*24+64)*unit);
+    rect.h=std::min(rect.h*0.45,(tutorialLines.size()*12+64)*unit);
     return rect;
 }
 void GameGUITouch::prepareTutorial()
@@ -478,7 +478,7 @@ void GameGUITouch::prepareTutorial()
         while (end<text.size() && (static_cast<unsigned char>(text[end])&0xc0)==0x80) ++end;
         if (text[at]=='\n') { tutorialLines.push_back(line); line.clear(); at=end; continue; }
         const std::string next=text.substr(at,end-at);
-        if (!line.empty() && font->getStringWidth(line+next)*1.2>width) {
+        if (!line.empty() && font->getStringWidth(line+next)*0.6>width) {
             const auto space=line.find_last_of(' ');
             if (space!=std::string::npos) { tutorialLines.push_back(line.substr(0,space)); line.erase(0,space+1); }
             else { tutorialLines.push_back(line); line.clear(); }
@@ -493,13 +493,13 @@ void GameGUITouch::drawTutorial()
     auto* gfx=globalContainer->gfx; const double unit=gfx->logicalUnitsPerPoint();
     gfx->drawFilledRect(int(rect.x),int(rect.y),int(rect.w),int(rect.h),Color(12,18,26,240));
     SDL_Rect clip{int(rect.x),int(rect.y),int(rect.w),int(std::max(0.0,rect.h-48*unit))};
-    const size_t first=std::min(tutorialLines.size(),size_t(tutorialScroll/24));
-    gfx->setUITransform(1.2*unit,rect.x+8*unit,rect.y+(8-tutorialScroll+first*24)*unit,&clip);
-    const size_t end=std::min(tutorialLines.size(),first+size_t(rect.h/unit/24)+1);
+    const size_t first=std::min(tutorialLines.size(),size_t(tutorialScroll/12));
+    gfx->setUITransform(0.6*unit,rect.x+8*unit,rect.y+(8-tutorialScroll+first*12)*unit,&clip);
+    const size_t end=std::min(tutorialLines.size(),first+size_t(rect.h/unit/12)+1);
     for (size_t i=first;i<end;++i)
         gfx->drawString(0,int((i-first)*20),globalContainer->standardFont,tutorialLines[i]);
     gfx->setUITransform(); gfx->setClipRect();
-    const double textHeight=std::max(1.0,rect.h-48*unit), content=tutorialLines.size()*24*unit;
+    const double textHeight=std::max(1.0,rect.h-48*unit), content=tutorialLines.size()*12*unit;
     if (content>textHeight) {
         gfx->drawFilledRect(int(rect.x+rect.w-3*unit),int(rect.y+tutorialScroll*unit*textHeight/content),
             std::max(1,int(2*unit)),int(textHeight*textHeight/content),Color(170,185,190));
@@ -507,7 +507,7 @@ void GameGUITouch::drawTutorial()
     if (gui.swallowSpaceKey) {
         gfx->drawFilledRect(int(rect.x),int(rect.y+rect.h-48*unit),int(rect.w),int(48*unit),Color(35,70,55));
         SDL_Rect footer{int(rect.x),int(rect.y+rect.h-48*unit),int(rect.w),int(48*unit)};
-        gfx->setUITransform(1.2*unit,rect.x+12*unit,rect.y+rect.h-32*unit,&footer);
+        gfx->setUITransform(0.6*unit,rect.x+12*unit,rect.y+rect.h-32*unit,&footer);
         gfx->drawString(0,0,globalContainer->standardFont,Toolkit::getStringTable()->getString("[ok]"));
         gfx->setUITransform(); gfx->setClipRect();
     }

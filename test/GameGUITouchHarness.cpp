@@ -546,7 +546,7 @@ public:
                     auto found=std::find_if(form.rows.begin(),form.rows.end(),[&](const auto& row){return row.kind==kind && (caption.empty() || row.text==caption);});
                     require(found!=form.rows.end(),"Phone form action exists");
                     auto r=found->rect;
-                    require(r.h>=48*gfx->logicalUnitsPerPoint(),"Form targets preserve touch height");
+                    require(r.h>=40*gfx->logicalUnitsPerPoint(),"Compact form targets preserve 40-point touch height");
                     if(found->footer || (r.y>=form.placement.content.y && r.y+r.h<=form.placement.content.y+form.placement.content.h)) {
                         SDL_Event event{};event.type=SDL_FINGERDOWN;event.tfinger.touchId=20;event.tfinger.fingerId=1;
                         event.tfinger.x=(side<0 ? r.x+24*gfx->logicalUnitsPerPoint() : side>0 ? r.x+r.w-24*gfx->logicalUnitsPerPoint() : r.x+r.w/2)/gfx->getW();event.tfinger.y=(r.y+r.h/2)/gfx->getH();

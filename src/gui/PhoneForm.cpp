@@ -67,7 +67,7 @@ void PhoneForm::prepare() {
             else {
                 const auto value=text->getText();unsigned cursor=0;text->getCursorPos(cursor);
                 const double unit=globalContainer->gfx->logicalUnitsPerPoint();
-                const double scale=1.2*globalContainer->settings.mobileDialogTextPercent/100.*unit;
+                const double scale=0.75*globalContainer->settings.mobileDialogTextPercent/100.*unit;
                 const double width=std::min(mobileDialogSafe(globalContainer->gfx).w-16*unit,640*unit)/scale-8;
                 size_t start=0;
                 do {
@@ -110,13 +110,13 @@ void PhoneForm::prepare() {
     }
     if(editing) rows.push_back({nullptr,Toolkit::getStringTable()->getString("[Hide keyboard]"),5,0,false,true});
     auto* gfx=globalContainer->gfx;const double unit=gfx->logicalUnitsPerPoint();
-    const double scale=1.2*globalContainer->settings.mobileDialogTextPercent/100.0;
+    const double scale=0.75*globalContainer->settings.mobileDialogTextPercent/100.0;
     const auto safe=mobileDialogSafe(gfx);
     std::vector<bool> fixed;for(const auto& row:rows) fixed.push_back(row.footer);
     auto height=[&](size_t i,double width) {
         if(rows[i].kind==13) return 240*unit;
         if(rows[i].kind==4) return std::min(160*unit,width);
-        return std::max(48*unit,wrapTouchText(globalContainer->standardFont,rows[i].text,((rows[i].kind>=9 && rows[i].kind<=11) ? width-96*unit : rows[i].kind==8 ? width-48*unit : width)/(scale*unit)-8).size()*16*scale*unit+8*unit);
+        return std::max(40*unit,wrapTouchText(globalContainer->standardFont,rows[i].text,((rows[i].kind>=9 && rows[i].kind<=11) ? width-96*unit : rows[i].kind==8 ? width-48*unit : width)/(scale*unit)-8).size()*16*scale*unit+8*unit);
     };
     placement=ResponsiveDialog::calculate(safe,fixed,height,offset,unit);
     if(lastHeight && lastHeight!=placement.content.h) cancel();
@@ -131,7 +131,7 @@ void PhoneForm::prepare() {
 }
 void PhoneForm::draw() {
     prepare();auto* gfx=globalContainer->gfx;const double unit=gfx->logicalUnitsPerPoint();
-    const double scale=1.2*globalContainer->settings.mobileDialogTextPercent/100.0*unit;
+    const double scale=0.75*globalContainer->settings.mobileDialogTextPercent/100.0*unit;
     auto* font=globalContainer->standardFont;
     for(const auto& row:rows) {
         const auto r=row.rect;auto clip=row.footer ? r : placement.content;
@@ -189,7 +189,7 @@ void PhoneForm::act(const std::vector<TouchAction>& actions) {
         auto* row=hit({action.point.x*unit,action.point.y*unit});
         if(!row || row->widget!=held || row->kind!=heldKind || row->index!=heldIndex || row->text!=heldText) continue;
         if(row->kind==13) {
-            const double scale=1.2*globalContainer->settings.mobileDialogTextPercent/100.0*unit;
+            const double scale=0.75*globalContainer->settings.mobileDialogTextPercent/100.0*unit;
             dynamic_cast<PhoneGraphic*>(row->widget)->inspectPhone(int((action.point.x*unit-row->rect.x-8*unit)/scale),int((action.point.y*unit-row->rect.y-8*unit)/scale));return;
         }
         if(row->kind==5) {
@@ -203,7 +203,7 @@ void PhoneForm::act(const std::vector<TouchAction>& actions) {
                 if(auto* text=dynamic_cast<TextArea*>(widget)) text->deactivate();
             }
             auto* text=static_cast<TextArea*>(row->widget);const auto value=text->getText();
-            size_t pos=row->index;const double scale=1.2*globalContainer->settings.mobileDialogTextPercent/100.*unit;
+            size_t pos=row->index;const double scale=0.75*globalContainer->settings.mobileDialogTextPercent/100.*unit;
             const double x=(action.point.x*unit-row->rect.x)/scale-4;
             while(pos<value.size() && value[pos]!='\n') {
                 size_t next=pos+1;while(next<value.size() && (static_cast<unsigned char>(value[next])&0xc0)==0x80) ++next;

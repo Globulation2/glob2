@@ -220,7 +220,7 @@ void GlobalContainer::loadClient(void)
 		std::string fontfile = "data/fonts/";
 		fontfile+=+PRIMARY_FONT;
 		#ifdef GLOB2_MOBILE
-        Toolkit::loadFont(fontfile.c_str(), 16, "menu");
+        Toolkit::loadFont(fontfile.c_str(), 10, "menu");
 #else
         Toolkit::loadFont(fontfile.c_str(), 20, "menu");
 #endif

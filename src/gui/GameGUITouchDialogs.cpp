@@ -98,12 +98,12 @@ void GameGUITouch::prepareDialog()
     if (editingDialogWidget) dialogRows.push_back({nullptr,Toolkit::getStringTable()->getString("[Hide keyboard]"),103,0,false,true});
     const double unit=globalContainer->gfx->logicalUnitsPerPoint();
     const auto safe=mobileDialogSafe(globalContainer->gfx);
-    const double textScale=1.2*globalContainer->settings.mobileDialogTextPercent/100.0;
+    const double textScale=0.75*globalContainer->settings.mobileDialogTextPercent/100.0;
     std::vector<bool> footer;for(const auto& row:dialogRows) footer.push_back(row.footer);
     auto height=[&](size_t index,double width) {
         const auto& row=dialogRows[index];
         const double textWidth=std::max(unit,row.kind==3 ? width-96*unit : width);
-        return std::max(48*unit,pointLines((row.kind==2 ? (row.selected ? "[x] " : "[ ] ") : "")+row.text,textWidth,textScale).size()*16*textScale*unit+8*unit);
+        return std::max(40*unit,pointLines((row.kind==2 ? (row.selected ? "[x] " : "[ ] ") : "")+row.text,textWidth,textScale).size()*16*textScale*unit+8*unit);
     };
     auto placement=ResponsiveDialog::calculate(safe,footer,height,dialogScroll*unit,unit);
     if(editingDialogWidget && lastDialogHeight!=placement.content.h)
@@ -127,7 +127,7 @@ bool GameGUITouch::drawDialog()
     prepareDialog();
     auto* gfx=globalContainer->gfx;
     const double unit=gfx->logicalUnitsPerPoint();
-    const double textScale=1.2*globalContainer->settings.mobileDialogTextPercent/100.0;
+    const double textScale=0.75*globalContainer->settings.mobileDialogTextPercent/100.0;
     gfx->setClipRect(); gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),Color(10,16,24,245));
     for (const auto& row:dialogRows) {
         labelClip=row.footer ? std::optional<ViewRect>{} : dialogContent;

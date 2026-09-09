@@ -61,7 +61,7 @@ void PhoneEditor::prepare() {
         const bool tile=a.width<=56 && a.height<=48;
         if(!tile && column) {y+=lineHeight+8*unit;column=0;lineHeight=0;}
         const double width=tile ? cell : content.w;
-        double scale=std::min((tile?1.5:2.*globalContainer->settings.mobileDialogTextPercent/100.)*unit,(width-16*unit)/std::max(1,a.width));
+        double scale=std::min((tile?1.5:1.*globalContainer->settings.mobileDialogTextPercent/100.)*unit,(width-16*unit)/std::max(1,a.width));
         if(dynamic_cast<TeamColorSelector*>(widget)) scale=3*unit;
         if(dynamic_cast<BrushSelector*>(widget)) scale=std::max(1.5*unit,scale);
         const double h=std::max(48*unit,a.height*scale+16*unit);
@@ -196,7 +196,7 @@ void PhoneEditor::draw() {
     for(int i=0;i<3;++i) {
         ViewRect r{safe.x+i*safe.w/3,safe.y,safe.w/3-4*unit,56*unit};
         gfx->drawFilledRect(r.x,r.y,r.w,r.h,24,48,55,245);
-        double scale=1.5*unit;auto lines=wrapTouchText(font,Toolkit::getStringTable()->getString(labels[i]),(r.w-8*unit)/scale);
+        double scale=0.75*unit;auto lines=wrapTouchText(font,Toolkit::getStringTable()->getString(labels[i]),(r.w-8*unit)/scale);
         SDL_Rect clip{int(r.x),int(r.y),int(r.w),int(r.h)};
         gfx->setUITransform(scale,r.x+4*unit,r.y+4*unit,&clip);
         int y=0;for(const auto& line:lines) {gfx->drawString(0,y,font,line);y+=font->getStringHeight("Ag");}gfx->setUITransform();
