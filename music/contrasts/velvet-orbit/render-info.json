@@ -1,30 +1,52 @@
 {
-  "renderer": "Apple AVAudioUnitSampler",
-  "sound_bank": "gs_instruments.dls",
+  "renderer": "FluidSynth",
+  "renderer_version": "2.6.0",
+  "sound_bank": "GeneralUser-GS.sf2",
+  "sound_bank_sha256": "9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe",
+  "settings": {
+    "synth.sample-rate": 44100.0,
+    "synth.gain": 0.2,
+    "synth.polyphony": 256,
+    "synth.cpu-cores": 1,
+    "synth.reverb.active": 1,
+    "synth.chorus.active": 0,
+    "synth.reverb.room-size": 0.35,
+    "synth.reverb.damp": 0.4,
+    "synth.reverb.width": 0.5,
+    "synth.reverb.level": 0.15,
+    "synth.min-note-length": 0,
+    "synth.midi-bank-select": "gm"
+  },
+  "interpolation": 4,
   "sample_rate": 44100,
-  "shared_gain": 2.3960039029195572,
+  "shared_gain": 1.0347934140526636,
   "warmup_loops": 2,
+  "target_rms": {
+    "calm": 0.056020740419626236,
+    "building": 0.07195349037647247,
+    "combat": 0.12936314940452576
+  },
   "tracks": {
     "calm": {
       "frames": 3527999,
       "seconds": 79.99997732426304,
-      "peak": 0.5015021562576294,
-      "rms": 0.056020740419626236,
-      "boundary_step": 7.425213698297739e-05
+      "peak": 0.34480491280555725,
+      "rms": 0.05796989053487778,
+      "boundary_step": 0.0005332599976100028
     },
     "building": {
       "frames": 3527999,
       "seconds": 79.99997732426304,
-      "peak": 0.7340717911720276,
-      "rms": 0.07195349037647247,
-      "boundary_step": 6.935745477676392e-05
+      "peak": 0.5156509876251221,
+      "rms": 0.07445698976516724,
+      "boundary_step": 0.0005381121300160885
     },
     "combat": {
       "frames": 3527999,
       "seconds": 79.99997732426304,
-      "peak": 0.9000000357627869,
-      "rms": 0.12936314940452576,
-      "boundary_step": 7.496250327676535e-05
+      "peak": 0.8999999761581421,
+      "rms": 0.1338641345500946,
+      "boundary_step": 0.0003754403442144394
     }
   },
   "preview_switch_seconds": [

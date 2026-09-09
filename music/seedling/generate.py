@@ -1,7 +1,7 @@
 """Generate Seedling editable MIDI arrangements.
 
 Run: python3 music/seedling/generate.py
-Render with music/render.py using the Apple General MIDI sound bank.
+Render with music/render.py using the FluidSynth and GeneralUser GS.
 """
 from pathlib import Path
 import struct

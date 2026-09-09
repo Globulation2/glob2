@@ -14,14 +14,16 @@ current mood from the beginning; moods within each set share timing for crossfad
 ## MIDI and rendering
 
 The Python generators compose original notes and export editable Type-1 MIDI.
-All audio is rendered by Apple's premade AVAudioUnitSampler using the macOS General
-MIDI DLS sound bank. `render.py` is the shared rendering entry point; there are no
-hand-written instrument oscillators or drum synthesizers. NumPy only handles PCM
-validation, gain and preview crossfades. The system sound bank is not bundled.
+All audio is rendered by FluidSynth 2.6.0 using GeneralUser GS 2.0.3. The bank's
+source revision and SHA-256 are pinned in `soundfonts/manifest.json`; its license
+is included alongside that manifest. `render.py` is the shared rendering entry
+point. There are no hand-written instrument or drum synthesizers.
 
-Rendering requires macOS, Xcode command-line tools, Python 3 and NumPy. Installation
-also requires libsndfile with Ogg/Vorbis support. The game plays the resulting Oggs
-on all supported platforms and does not need Apple's audio framework at runtime.
+Install FluidSynth 2.6.0, Python 3, NumPy, and libsndfile with Ogg/Vorbis support.
+On macOS the Homebrew formula is `fluid-synth`; Linux and Windows use the same
+FluidSynth library and SoundFont. Set `FLUIDSYNTH_LIBRARY` to the shared library
+path if it is not discovered automatically. No Apple framework is required.
+The game plays pre-rendered Ogg files and needs no MIDI synth at runtime.
 
 From the repository root:
 
@@ -29,21 +31,29 @@ From the repository root:
 python3 music/seedling/generate.py
 python3 music/contrasts/generate.py
 python3 music/tidepool/generate.py
+python3 music/fetch_soundfont.py
 python3 music/render.py
 python3 music/install_sets.py
 ```
 
-Pass set IDs to render or install only selected sets, e.g. `python3 music/render.py
+Pass set IDs to render or install only selected sets, e.g. `python3 music/fetch_soundfont.py
+python3 music/render.py
 tidepool`. Pass `--sound-bank /path/to/bank.sf2` to audition another compatible
 premade bank. MIDI program numbers and pan settings select each instrument;
 percussion uses the GM drum bank on channel 10. Program changes must be at tick zero.
 Save DAW edits separately before regenerating MIDI files.
 
-The renderer runs two warm-up loops and captures the third for release continuity.
-It renders stereo 44.1 kHz audio and applies one shared gain per trio, preserving
-relative dynamics. A preview cycles calm → building → combat → calm; transition
-times are recorded in `render-info.json`. MIDI's integer tempo precision determines
-the exact frame count. WAV previews and compiled renderers are not committed.
+The renderer uses 44.1 kHz stereo output, one synthesis thread, fourth-order
+interpolation, fixed reverb settings and disabled chorus. Two warm-up loops precede
+the captured loop. `mix.json` sets each arrangement's RMS balance, followed by a
+shared peak gain for its trio. MIDI's integer tempo precision determines frame counts.
+These settings and the bank checksum are recorded in `render-info.json`. The pinned
+version and bank control rendering inputs; cross-platform floating-point calculations
+may still differ slightly. Shipping the same Ogg assets avoids platform-specific
+instrument differences during gameplay.
+
+A preview cycles calm → building → combat → calm, with transition times recorded
+in `render-info.json`. Generated WAVs and downloaded sound banks are ignored by Git.
 
 `installed-sets.json` records the decoded Ogg frame counts and peaks. Different
 sets have independent tempos; only moods within a set are position-aligned.
