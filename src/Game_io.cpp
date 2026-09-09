@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <iostream>
+#include <stdexcept>
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -37,6 +38,61 @@
 #define BULLET_IMGID 0
 
 // Save/load, integrity, checksum. Split out of Game.cpp.
+
+// Pending sites have already reserved their footprint but are waiting for units
+// to move. Preserve their order and staffing requests across a saved-game load.
+void Game::saveBuildProjects(GAGCore::OutputStream* stream) const
+{
+    stream->writeEnterSection("buildProjects");
+    stream->writeUint32(buildProjects.size(), "count");
+    unsigned index = 0;
+    for (const auto& project : buildProjects)
+    {
+        stream->writeEnterSection(index++);
+        stream->writeSint32(project.posX, "posX");
+        stream->writeSint32(project.posY, "posY");
+        stream->writeSint32(project.teamNumber, "teamNumber");
+        stream->writeSint32(project.typeNum, "typeNum");
+        stream->writeSint32(project.unitWorking, "unitWorking");
+        stream->writeSint32(project.unitWorkingFuture, "unitWorkingFuture");
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+}
+
+void Game::loadBuildProjects(GAGCore::InputStream* stream)
+{
+    stream->readEnterSection("buildProjects");
+    const Uint32 count = stream->readUint32("count");
+    // Bound allocation and reject corrupt references before the scheduler uses them.
+    if (count > 65536) throw std::runtime_error("Invalid pending construction count");
+    std::list<BuildProject> restored;
+    for (Uint32 index = 0; index < count; ++index)
+    {
+        stream->readEnterSection(index);
+        BuildProject project;
+        project.posX = stream->readSint32("posX");
+        project.posY = stream->readSint32("posY");
+        project.teamNumber = stream->readSint32("teamNumber");
+        project.typeNum = stream->readSint32("typeNum");
+        project.unitWorking = stream->readSint32("unitWorking");
+        project.unitWorkingFuture = stream->readSint32("unitWorkingFuture");
+        if (project.posX < 0 || project.posX >= map.getW()
+            || project.posY < 0 || project.posY >= map.getH()
+            || project.teamNumber < 0 || project.teamNumber >= mapHeader.getNumberOfTeams()
+            || project.typeNum < 0 || static_cast<size_t>(project.typeNum) >= globalContainer->buildingsTypes.size()
+            || project.unitWorking < 0 || project.unitWorking > Unit::MAX_COUNT
+            || project.unitWorkingFuture < 0 || project.unitWorkingFuture > Unit::MAX_COUNT)
+            throw std::runtime_error("Invalid pending construction project");
+        restored.push_back(project);
+        stream->readLeaveSection();
+    }
+    stream->readLeaveSection();
+    buildProjects.swap(restored);
+}
+
+
+
 
 namespace
 {
@@ -206,6 +262,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		gameHints.decodeData(stream, mapHeader.getVersionMinor());
 	}
 
+	if (versionMinor >= FILE_FORMAT_VERSION_PENDING_CONSTRUCTION) loadBuildProjects(stream);
 	gameSection.commit();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
@@ -446,6 +503,8 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	objectives.encodeData(stream);
 	stream->writeText(missionBriefing, "missionBriefing");
 	gameHints.encodeData(stream);
+
+	saveBuildProjects(stream);
 
 	Uint8 sha1[SHA1_BYTE_LEN];
 	for(int i=0; i<SHA1_BYTE_LEN; ++i)
