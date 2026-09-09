@@ -1662,3 +1662,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Automatisk torusvisning
+[toggle torus view]
+Skift mellem 2D- og torusvisning

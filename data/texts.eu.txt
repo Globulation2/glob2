@@ -1596,3 +1596,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Toroide-ikuspegi automatikoa
+[toggle torus view]
+Aldatu 2D eta toroide-ikuspegien artean

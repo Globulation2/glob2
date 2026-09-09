@@ -39,7 +39,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int oldViewportX = viewportX;
 			int oldViewportY = viewportY;
 			minimapMouseToPos(globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + mx, my, &viewportX, &viewportY, true);
-			moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+			viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 		}
 	}
 	// Check if one of the panel buttons has been clicked

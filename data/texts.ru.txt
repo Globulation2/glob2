@@ -1584,3 +1584,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Автоматический вид тора
+[toggle torus view]
+Переключить вид 2D / тора

@@ -1586,3 +1586,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Vista toroidal automática
+[toggle torus view]
+Alternar vista 2D / toroidal

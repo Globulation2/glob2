@@ -1610,3 +1610,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Automatische torusweergave
+[toggle torus view]
+Wissel tussen 2D- en torusweergave

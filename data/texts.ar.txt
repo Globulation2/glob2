@@ -1584,3 +1584,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+عرض الطارة تلقائيًا
+[toggle torus view]
+التبديل بين العرض ثنائي الأبعاد والطارة

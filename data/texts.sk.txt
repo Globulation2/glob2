@@ -1594,3 +1594,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Automatické toroidné zobrazenie
+[toggle torus view]
+Prepnúť 2D / toroidné zobrazenie

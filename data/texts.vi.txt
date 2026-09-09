@@ -1582,3 +1582,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Chế độ xem hình xuyến tự động
+[toggle torus view]
+Chuyển chế độ xem 2D / hình xuyến

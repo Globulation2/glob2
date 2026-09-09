@@ -1582,3 +1582,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Tampilan torus otomatis
+[toggle torus view]
+Beralih tampilan 2D / torus

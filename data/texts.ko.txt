@@ -1582,3 +1582,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+자동 토러스 보기
+[toggle torus view]
+2D / 토러스 보기 전환

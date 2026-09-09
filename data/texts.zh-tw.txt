@@ -1658,3 +1658,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+自動環面視圖
+[toggle torus view]
+切換 2D／環面視圖

@@ -1596,3 +1596,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Automatisk torusvy
+[toggle torus view]
+Växla mellan 2D- och torusvy

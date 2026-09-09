@@ -1582,3 +1582,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+自動トーラス表示
+[toggle torus view]
+2D／トーラス表示を切り替え

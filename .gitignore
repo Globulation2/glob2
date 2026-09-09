@@ -12,7 +12,10 @@ testResults.xml
 .directory
 __pycache__/
 build/
+build-software/
 vcpkg_installed/
+
+experiment/
 .DS_Store
 compile_commands.json
 .cache/

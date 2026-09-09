@@ -362,75 +362,78 @@ void GameGUI::drawTopScreenBar(void)
 
 void GameGUI::drawOverlayInfos(void)
 {
-	updateCamera();
-	globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
+	if (!torusView.active())
+	{
+		updateCamera();
+		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
 
-	if (selectionMode==TOOL_SELECTION)
-	{
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
-	}
-	else if (selectionMode==BRUSH_SELECTION)
-	{
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
-	}
-	else if (selectionMode==BUILDING_SELECTION)
-	{
-		Building* selBuild=selectionBuilding();
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		int centerX, centerY;
-		game.map.buildingPosToCursor(displayedPosX(*selBuild), displayedPosY(*selBuild),  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
-		const int radius = selBuild->type->width*16;
-		forEachMapCopy(centerX-radius, centerY-radius, centerX+radius, centerY+radius,
-			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW,
-			game.map.displayViewportH, [&](int dx, int dy) {
-			if (selBuild->owner->teamNumber==localTeamNo)
-				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 0, 0, 190);
-			else if ((localTeam->allies) & (selBuild->owner->me))
-				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 255, 196, 0);
-			else if (!selBuild->type->isVirtual)
-				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 190, 0, 0);
-		});
-
-		// draw a white circle around units that are working at building
-		if ((showUnitWorkingToBuilding)
-			&& ((selBuild->owner->allies) &(1<<localTeamNo)))
+		if (selectionMode==TOOL_SELECTION)
 		{
-			for (std::list<Unit *>::iterator unitsWorkingIt=selBuild->unitsWorking.begin(); unitsWorkingIt!=selBuild->unitsWorking.end(); ++unitsWorkingIt)
+			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
+		}
+		else if (selectionMode==BRUSH_SELECTION)
+		{
+			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+			globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){ toolManager.drawTool(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), localTeamNo, viewportX, viewportY); });
+		}
+		else if (selectionMode==BUILDING_SELECTION)
+		{
+			Building* selBuild=selectionBuilding();
+			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+			int centerX, centerY;
+			game.map.buildingPosToCursor(displayedPosX(*selBuild), displayedPosY(*selBuild),  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
+			const int radius = selBuild->type->width*16;
+			forEachMapCopy(centerX-radius, centerY-radius, centerX+radius, centerY+radius,
+				game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW,
+				game.map.displayViewportH, [&](int dx, int dy) {
+				if (selBuild->owner->teamNumber==localTeamNo)
+					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 0, 0, 190);
+				else if ((localTeam->allies) & (selBuild->owner->me))
+					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 255, 196, 0);
+				else if (!selBuild->type->isVirtual)
+					globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 190, 0, 0);
+			});
+
+			// draw a white circle around units that are working at building
+			if ((showUnitWorkingToBuilding)
+				&& ((selBuild->owner->allies) &(1<<localTeamNo)))
 			{
-				Unit *unit=*unitsWorkingIt;
-				int px, py;
-				game.map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
-				int deltaLeft=255-unit->delta;
-				if (unit->action<BUILD)
+				for (std::list<Unit *>::iterator unitsWorkingIt=selBuild->unitsWorking.begin(); unitsWorkingIt!=selBuild->unitsWorking.end(); ++unitsWorkingIt)
 				{
-					px-=(unit->dx*deltaLeft)>>3;
-					py-=(unit->dy*deltaLeft)>>3;
+					Unit *unit=*unitsWorkingIt;
+					int px, py;
+					game.map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+					int deltaLeft=255-unit->delta;
+					if (unit->action<BUILD)
+					{
+						px-=(unit->dx*deltaLeft)>>3;
+						py-=(unit->dy*deltaLeft)>>3;
+					}
+					forEachMapCopy(px, py, px+32, py+32, game.map.getW()*32, game.map.getH()*32,
+						game.map.displayViewportW, game.map.displayViewportH, [&](int dx, int dy) {
+							globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 255, 255, 255, 180);
+						});
 				}
-				forEachMapCopy(px, py, px+32, py+32, game.map.getW()*32, game.map.getH()*32,
-					game.map.displayViewportW, game.map.displayViewportH, [&](int dx, int dy) {
-						globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 255, 255, 255, 180);
-					});
 			}
 		}
-	}
-	else if (selectionMode==RESOURCE_SELECTION)
-	{
-		int resource = selectionResource();
-		int rx = resource & game.map.getMaskW();
-		int ry = resource >> game.map.getShiftW();
-		int px, py;
-		game.map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
-		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-		forEachMapCopy(px, py, px+32, py+32, game.map.getW()*32, game.map.getH()*32,
-			game.map.displayViewportW, game.map.displayViewportH, [&](int dx, int dy) {
-				globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 0, 0, 190);
-			});
-	}
+		else if (selectionMode==RESOURCE_SELECTION)
+		{
+			int resource = selectionResource();
+			int rx = resource & game.map.getMaskW();
+			int ry = resource >> game.map.getShiftW();
+			int px, py;
+			game.map.mapCaseToDisplayable(rx, ry, &px, &py, viewportX, viewportY);
+			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+			forEachMapCopy(px, py, px+32, py+32, game.map.getW()*32, game.map.getH()*32,
+				game.map.displayViewportW, game.map.displayViewportH, [&](int dx, int dy) {
+					globalContainer->gfx->drawCircle(px+16+dx, py+16+dy, 16, 0, 0, 190);
+				});
+		}
 
 
-	globalContainer->gfx->endMapTransform();
+		globalContainer->gfx->endMapTransform();
+	}
 	// draw message List
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
 	// than this many GUI steps, so brief network hiccups don't flash the box.
@@ -629,7 +632,6 @@ void GameGUI::drawAll(int team)
 	updateCamera();
 	globalContainer->gfx->setClipRect();
 	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
-	globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
 	// draw the map
 	Uint32 drawOptions =	(drawHealthFoodBar ? Game::DRAW_HEALTH_FOOD_BAR : 0) |
 								(drawPathLines ?  Game::DRAW_PATH_LINE : 0) |
@@ -644,28 +646,36 @@ void GameGUI::drawAll(int team)
 
 	updateHighlightInGame();
 	arrowPositions.clear();
-	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+	const bool drewTorus = torusView.active() &&
+		torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
+			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(),
+			camera.zoom, camera.fractionX(), camera.fractionY());
+	if (!drewTorus)
 	{
-		globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
-		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState, gamePaused);
+		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
+		if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
+		{
+			globalContainer->gfx->setClipRect(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16);
+			game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, nullptr, &buildingGuiState, gamePaused);
+		}
+		else
+		{
+			std::set<Building*> visibleBuildings;
+
+			globalContainer->gfx->setClipRect();
+
+			game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState, gamePaused);
+
+			// generate and draw particles
+			generateNewParticles(&visibleBuildings);
+			drawParticles(!gamePaused);
+		}
+
+		///Draw ghost buildings
+		if (!globalContainer->isViewingGame()) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+
+		globalContainer->gfx->endMapTransform();
 	}
-	else
-	{
-		std::set<Building*> visibleBuildings;
-
-		globalContainer->gfx->setClipRect();
-
-		game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, localTeamNo, view, drawOptions, &visibleBuildings, &buildingGuiState, gamePaused);
-
-		// generate and draw particles
-		generateNewParticles(&visibleBuildings);
-		drawParticles(!gamePaused);
-	}
-
-	///Draw ghost buildings
-	if (!globalContainer->isViewingGame()) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
-
-	globalContainer->gfx->endMapTransform();
 	// if paused, tint the game area
 	if (gamePaused)
 	{
@@ -702,7 +712,7 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
 
-	drawMapZoomControls(camera, true);
+	if (!torusView.active()) drawMapZoomControls(camera, true);
 	// draw menu if any
 	if (inGameMenu)
 	{

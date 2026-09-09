@@ -438,6 +438,7 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 			sdlFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
 		}
 		#else
@@ -482,12 +483,18 @@ namespace GAGCore
 		}
 		{
 			_gc = this;
-			// enable GL context
+			// Use the effective flags: software-only builds clear USEGPU above.
 			if (optionFlags & USEGPU)
 			{
 				context = SDL_GL_CreateContext(window);
-				if (!context) return false;
-				SDL_GL_MakeCurrent(window, context);
+				if (!context || SDL_GL_MakeCurrent(window, context) != 0)
+				{
+					fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
+					if (context) SDL_GL_DeleteContext(context);
+					context = nullptr;
+					return false;
+				}
+				++glContextGeneration;
 				#ifdef HAVE_OPENGL
 				// Map the logical projection onto a centered, aspect-correct sub-rect of the
 				// drawable so fullscreen scales without distorting circles into ellipses.

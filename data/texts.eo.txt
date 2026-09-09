@@ -1584,3 +1584,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Aŭtomata tora vido
+[toggle torus view]
+Ŝalti inter 2D kaj tora vido

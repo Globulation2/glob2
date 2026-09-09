@@ -1656,3 +1656,7 @@ Updating map preview...
 Generation failed. Adjust settings or press Start to retry.
 [Preview unavailable. Adjust settings or start to retry.]
 Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Αυτόματη τοροειδής προβολή
+[toggle torus view]
+Εναλλαγή 2D / τοροειδούς προβολής
