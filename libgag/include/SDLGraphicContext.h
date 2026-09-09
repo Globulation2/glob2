@@ -567,7 +567,12 @@ namespace GAGCore
 		virtual void setBaseColor(const Color& color) { actColor = color; }
 		
 		// Cache final alpha-over composites; retain entries for this sprite's lifetime.
-		DrawableSurface *getCachedComposite(const std::vector<std::pair<int, int>>& frames);
+		DrawableSurface *getCachedComposite(const std::vector<std::pair<int, int>>& frames,
+		                                    bool budgeted = false);
+		// Shared per-present budget; cache hits are always available.
+		static void beginCompositeFrame(unsigned microseconds = 2000);
+		void drawCachedComposite(DrawableSurface *dest, int x, int y, int sharpFrame,
+		                         const std::vector<std::pair<int, int>>& frames);
 		size_t getCompositeBytes() const { return compositeBytes; }
 		size_t getCompositeHits() const { return compositeHits; }
 		size_t getCompositeMisses() const { return compositeMisses; }

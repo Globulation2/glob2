@@ -70,6 +70,21 @@ int main(int argc, char **argv)
 		InspectUnitSprite sprite;
 		assert(sprite.load("data/gfx/unit"));
 		sprite.checkLayers(!software);
+		// A spent budget defers misses, but never hides an existing composite.
+		Sprite::beginCompositeFrame(0);
+		assert(sprite.getCachedComposite({{256,255}}, true) == nullptr);
+		const auto entries = sprite.getCompositeEntries();
+		sprite.drawCachedComposite(gfx, 0, 0, 256, {{256,255}});
+		assert(sprite.getCompositeEntries() == entries && sprite.coloredEntries() == 0);
+		Sprite::beginCompositeFrame();
+		auto ready = sprite.getCachedComposite({{256,255}}, true);
+		assert(ready);
+		Sprite::beginCompositeFrame(0);
+		assert(sprite.getCachedComposite({{256,255}}, true) == ready);
+		assert(sprite.getCachedComposite({{257,255}}, true) == nullptr);
+		gfx->nextFrame(); // Presentation replenishes the budget on either backend.
+		assert(sprite.getCachedComposite({{257,255}}, true));
+
 		GLint viewport[4] = {0, 0, 640, 480};
 		if (!software)
 			glGetIntegerv(GL_VIEWPORT, viewport);

@@ -25,6 +25,14 @@ recolor surface instead of retaining a second cache. Original source layers rema
 
 Entries are generated on demand and retained until Sprite destruction, with no
 size limit or eviction. Memory grows with distinct combinations actually used.
+World drawing shares a soft 2 ms generation budget per presented frame. Once spent,
+cache misses draw the current sharp native pose with transient team coloring;
+cache hits still draw normally. Subsequent frames fill requested entries gradually,
+including their initial GPU upload. One in-progress composite can exceed the budget;
+this is not a hard frame-time limit. The fallback keeps the same pose, position and
+logical dimensions, and retains no extra cache. Transparent texels are skipped when
+building composites. This limits first-use work without capping retained memory.
+
 Byte counters include CPU pixels and estimated GPU pixel allocation, excluding
 container/driver overhead. First-use generation still has a cost; warmed-cache
 benchmarks do not measure it.
@@ -90,3 +98,31 @@ mipmaps and excluding source textures. First-use generation is not measured.
 On the same rebased renderer, the native GPU benchmark measured 1.58 / 5.37 /
 1.17 ms for 300 fast workers, with 3,456 composites using 76,584,960 estimated
 CPU/GPU bytes (73.0 MiB). Both native and HD runs had zero measured misses.
+
+Cold-cache comparison (includes generation and initial uploads, 300 fast workers):
+
+```sh
+build/src/unit-blur-benchmark gpu hd cold
+build/src/unit-blur-benchmark gpu hd cold budgeted
+```
+
+The synthetic scene isolates sprite cost. It does not reproduce a particular saved
+game or measure source-pack loading. PR #234 separately retains artwork across
+matches and avoids redundant loading/invalidation; the generation budget also
+applies to previously unseen composites during a match.
+
+Review follow-up measurement on macOS (2026-09-09), 128 cold frames, 300 fast
+workers with HD textures: unlimited generation first/p95/max =
+260.7/680.8/1117.8 ms; budgeted generation = 47.1/41.3/47.7 ms. The respective
+caches contained 3,072 and 128 composites at the end: the improvement comes from
+spreading work across frames, not completing all the same work sooner. These
+sprite-only measurements include GPU completion and are machine/load dependent.
+They do not establish that a busy saved game meets its simulation deadline.
+
+Follow-up validation passed the optimized client build, shutter bounds, native
+unbounded cache checks, GPU comparisons, HD/software fallback and budget checks,
+settings/speed/replay assertions, game/editor integration on both backends, and
+translation audit/regressions. The settings harness exceeded its normal 60-second
+local timeout while repeatedly decoding HD images; all assertions passed when rerun
+with a 180-second limit. A process sample identified the artwork reload path that
+PR #234 addresses. That PR is not included in these follow-up measurements.

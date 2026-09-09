@@ -13,6 +13,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
+#include <chrono>
 
 #if __cplusplus >= 201402L
 #include <memory>
@@ -52,6 +53,28 @@ namespace GAGCore
 {
 	static std::set<Sprite*> loadedSprites;
 	static bool highResolutionEnabled = false;
+	static std::chrono::steady_clock::duration compositeTime{};
+	static unsigned compositeBudgetUs = 2000;
+
+	void Sprite::beginCompositeFrame(unsigned microseconds)
+	{
+		compositeTime = {};
+		compositeBudgetUs = microseconds;
+	}
+
+	void Sprite::drawCachedComposite(DrawableSurface *dest, int x, int y, int sharpFrame,
+	                                 const std::vector<std::pair<int, int>>& frames)
+	{
+		if (auto composite = getCachedComposite(frames, true))
+			dest->drawSurface(x, y, getW(sharpFrame), getH(sharpFrame), composite);
+		else
+		{
+			// Use the sharp native source while expensive HD/blur entries warm up.
+			// Recoloring is transient: do not retain a second fallback cache.
+			if (images[sharpFrame]) dest->drawSurface(x, y, images[sharpFrame]);
+			if (rotated[sharpFrame]) dest->drawSurface(x, y, getRotatedSurface(sharpFrame));
+		}
+	}
     static std::string packDirectory, packText;
     static bool packRead=false;
     static bool readPack(const std::string &directory)
@@ -445,7 +468,7 @@ namespace GAGCore
 		return surface;
 	}
 	
-	DrawableSurface *Sprite::getCachedComposite(const std::vector<std::pair<int, int>> &frames)
+	DrawableSurface *Sprite::getCachedComposite(const std::vector<std::pair<int, int>> &frames, bool budgeted)
 	{
 		assert(!frames.empty());
 		// Switch this sprite to final-image caching without keeping source recolors.
@@ -469,6 +492,9 @@ namespace GAGCore
 			++compositeHits;
 			return found->second.get();
 		}
+		if (budgeted && compositeTime >= std::chrono::microseconds(compositeBudgetUs))
+			return nullptr;
+		const auto generationStart = std::chrono::steady_clock::now();
 		++compositeMisses;
 		// A shutter uses one resolution throughout, including partial-pack fallback.
 		bool highResolution = true;
@@ -514,6 +540,8 @@ namespace GAGCore
 						SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(raw->pixels) +
 						                                       y * raw->pitch)[x],
 						            raw->format, &r, &g, &b, &a);
+						// Transparent texels contribute nothing to the composite.
+						if (!a || !frame.second) continue;
 						if (layer == 1)
 						{
 							Color color(r, g, b, a);
@@ -572,6 +600,13 @@ namespace GAGCore
 					texW = std::max(1, texW / 2); texH = std::max(1, texH / 2);
 					bytes += texW * texH * 4;
 				}
+		}
+		if (budgeted)
+		{
+			// Include the first GPU upload in the budget, not just CPU blending.
+			if (Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU)
+				result->uploadToTexture();
+			compositeTime += std::chrono::steady_clock::now() - generationStart;
 		}
 		compositeBytes += bytes;
 		auto inserted = compositeCache.emplace(std::move(key), std::move(result));

@@ -104,10 +104,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		drawUnitMotionBlur(actionBase, dir, delta, span, [&](int frame, int alpha) {
 			frames.emplace_back(frame,alpha);
 		});
-		globalContainer->gfx->drawSurface(px-decX, py-decY, unitSprite->getW(imgid), unitSprite->getH(imgid), unitSprite->getCachedComposite(frames));
+		unitSprite->drawCachedComposite(globalContainer->gfx, px-decX, py-decY, imgid, frames);
 	}
 	else
-		globalContainer->gfx->drawSurface(px-decX, py-decY, unitSprite->getW(imgid), unitSprite->getH(imgid), unitSprite->getCachedComposite({{imgid,255}}));
+		unitSprite->drawCachedComposite(globalContainer->gfx, px-decX, py-decY, imgid, {{imgid,255}});
 
 	// draw selection
 	if (unit==view.selectedUnit)

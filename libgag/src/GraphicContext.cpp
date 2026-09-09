@@ -597,6 +597,7 @@ namespace GAGCore
 	void GraphicContext::nextFrame(void)
 	{
 		DrawableSurface::nextFrame();
+		Sprite::beginCompositeFrame();
 		if (sdlsurface)
 		{
 			if (optionFlags & CUSTOMCURSOR)

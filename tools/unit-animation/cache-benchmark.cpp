@@ -23,11 +23,13 @@ int main(int argc, char **argv)
 	auto *original = new GAGCore::Sprite();
 	original->load("data/gfx/unit");
 	auto *cachedSprite = sprites;
+	const bool budgeted = argc > 4 && std::string(argv[4]) == "budgeted";
 	GAGCore::Color colors[] = {GAGCore::Color(255, 60, 40), GAGCore::Color(0, 255, 128),
 	                           GAGCore::Color(70, 110, 255)};
 	auto render = [&](int blur, int step, int tick, int count)
 	{
 		auto *sprites = blur == 2 ? cachedSprite : original;
+		GAGCore::Sprite::beginCompositeFrame();
 		gfx->drawFilledRect(0, 0, 1280, 480, 24, 31, 40);
 		for (int u = 0; u < count; ++u)
 		{
@@ -40,8 +42,12 @@ int main(int argc, char **argv)
 				std::vector<std::pair<int, int>> frames;
 				drawUnitMotionBlur(64, dir, delta, step,
 				                   [&](int f, int a) { frames.emplace_back(f, a); });
-				gfx->drawSurface((u % 32) * 40, (u / 32) * 44, 38, 38,
-				                 sprites->getCachedComposite(frames));
+				if (budgeted)
+					sprites->drawCachedComposite(gfx, (u % 32) * 40, (u / 32) * 44,
+					                             unitAnimationFrame(64, dir, delta), frames);
+				else
+					gfx->drawSurface((u % 32) * 40, (u / 32) * 44, 38, 38,
+					                 sprites->getCachedComposite(frames));
 			}
 			else if (blur)
 				drawUnitMotionBlur(64, dir, delta, step, draw);
@@ -51,6 +57,26 @@ int main(int argc, char **argv)
 		if (gpu)
 			glFinish();
 	};
+	// Cold-cache measurement includes generation and first texture uploads.
+	if (argc > 3 && std::string(argv[3]) == "cold")
+	{
+		std::vector<double> times;
+		for (int tick = 0; tick < 128; ++tick)
+		{
+			auto start = std::chrono::steady_clock::now();
+			render(2, 30, tick, 300);
+			times.push_back(std::chrono::duration<double, std::milli>(
+			    std::chrono::steady_clock::now() - start).count());
+		}
+		const double first = times.front();
+		std::sort(times.begin(), times.end());
+		std::cout << "cold_cache units=300 first_ms=" << first
+		          << " p95_ms=" << times[121] << " max_ms=" << times.back()
+		          << " entries=" << sprites->getCompositeEntries() << std::endl;
+		delete original;
+		GAGCore::Toolkit::close();
+		return 0;
+	}
 	for (int count : {10, 300})
 		for (int step : {16, 30})
 		{
