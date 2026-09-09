@@ -80,8 +80,8 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int loca
 
 		//Draw
 		forEachMapCopy(rectX, rectY, rectX+sprite->getW(bt->gameSpriteImage)-1, rectY+spriteH-1,
-			game.map.getW()*32, game.map.getH()*32, globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
-			globalContainer->gfx->getH(), [&](int dx, int dy) {
+			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW ? game.map.displayViewportW : globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
+			game.map.displayViewportH ? game.map.displayViewportH : globalContainer->gfx->getH(), [&](int dx, int dy) {
 				globalContainer->gfx->drawSprite(rectX+dx, rectY+dy, sprite, bt->gameSpriteImage, GHOST_SPRITE_ALPHA);
 			});
 	}

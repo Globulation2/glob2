@@ -198,7 +198,6 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 				const auto copy = std::make_tuple(gid, originX, originY);
 				if(drawnCopies.find(copy) == drawnCopies.end())
 				{
-					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
 						|| Building::GIDtoTeam(gid)==localTeam
 						|| (building->seenByMask & visibleTeams)

@@ -30,6 +30,8 @@ namespace GAGCore
 		isTextureSRectangle = isTextureSRectangle || (strstr(glExtensions, "GL_EXT_texture_rectangle") != NULL);
 		isTextureSRectangle = isTextureSRectangle || (strstr(glExtensions, "GL_ARB_texture_rectangle") != NULL);
 
+		// A single normalized texture target supports both legacy atlases and HD mipmaps.
+		isTextureSRectangle = false;
 		const char *glVendor = (const char *)glGetString(GL_VENDOR);
 		if (strstr(glVendor, "ATI"))
 			useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
@@ -362,12 +364,25 @@ namespace GAGCore
 			y = sdlsurface->h - 1;
 	}
 
+    bool GraphicContext::toggleFullscreen()
+    {
+        if(!window)return false;
+        const bool fullscreen=(optionFlags & FULLSCREEN)==0;
+        if(SDL_SetWindowFullscreen(window,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0)!=0)return false;
+        if(fullscreen)optionFlags|=FULLSCREEN;else optionFlags&=~FULLSCREEN;
+        updateWindowSize();
+        return true;
+    }
+
 	void GraphicContext::translateMouseEvent(SDL_Event *event)
 	{
 		if (!_gc)
 			return;
 		switch (event->type)
 		{
+            case SDL_KEYDOWN:
+                if(event->key.keysym.sym==SDLK_F11 && !event->key.repeat)_gc->toggleFullscreen();
+                break;
 			case SDL_MOUSEMOTION:
 				_gc->windowToLogical(event->motion.x, event->motion.y);
 				break;
@@ -423,7 +438,7 @@ namespace GAGCore
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-			sdlFlags |= SDL_WINDOW_OPENGL;
+			sdlFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
 		}
 		#else
 		// remove GL from options
@@ -583,7 +598,13 @@ namespace GAGCore
 				unsigned b = SDL_GetMouseState(&mx, &my);
 				translateMouseCoordinates(mx, my);
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
-				cursorManager.update(drawableScale());
+				// Cocoa cursor images are sized in window points; Retina already
+				// supplies the backing-pixel scale. Applying it here doubles the cursor.
+				float cursorScale = drawableScale();
+				const char *videoDriver = SDL_GetCurrentVideoDriver();
+				if (videoDriver && std::strcmp(videoDriver, "cocoa") == 0 && windowW && windowH)
+					cursorScale = std::min(float(windowW) / getW(), float(windowH) / getH());
+				cursorManager.update(cursorScale);
 			}
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();

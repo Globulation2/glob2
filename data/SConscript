@@ -23,4 +23,5 @@ SConscript("icons/SConscript")
 SConscript("zik/SConscript")
     
 
+SConscript("highres/SConscript")
 SConscript("menu/SConscript")

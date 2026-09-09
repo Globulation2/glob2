@@ -197,8 +197,8 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 
 					int sw = globalContainer->gfx->getW();
 					int sh = globalContainer->gfx->getH();
-					viewportX = evX-((sw-RIGHT_MENU_WIDTH)>>6);
-					viewportY = evY-(sh>>6);
+					viewportX = evX-int(camera.visibleW()/64);
+					viewportY = evY-int(camera.visibleH()/64);
 
 					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
@@ -213,8 +213,8 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 
 				    int sw = globalContainer->gfx->getW();
 					int sh = globalContainer->gfx->getH();
-					viewportX = evX-((sw-RIGHT_MENU_WIDTH)>>6);
-					viewportY = evY-(sh>>6);
+					viewportX = evX-int(camera.visibleW()/64);
+					viewportY = evY-int(camera.visibleH()/64);
 
 					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
@@ -403,8 +403,9 @@ void GameGUI::handleKeyAlways(void)
 	if (notmenu == false)
 	{
 		SDL_Keymod modState = SDL_GetModState();
-		int xMotion = 1;
-		int yMotion = 1;
+		updateCamera();
+		double xMotion = 1/camera.zoom;
+		double yMotion = 1/camera.zoom;
 		/* We check that only Control is held to avoid accidentally
 			matching window manager bindings for switching windows
 			and/or desktops. */
@@ -422,15 +423,15 @@ void GameGUI::handleKeyAlways(void)
 					good to subtract 1 so that there would be a small
 					overlap between what is viewable both before and
 					after the motion.) */
-				xMotion = ((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
-				yMotion = ((globalContainer->gfx->getH())>>6);
+				xMotion = int(camera.visibleW()/64);
+				yMotion = int(camera.visibleH()/64);
 			}
 			else
 			{
 				/* We move the screen by one square at a time if CTRL key
 					is not being help */
-				xMotion = 1;
-				yMotion = 1;
+				xMotion = 1/camera.zoom;
+				yMotion = 1/camera.zoom;
 			}
 		}
 		else if (modState)
@@ -442,40 +443,41 @@ void GameGUI::handleKeyAlways(void)
 		}
 
 		if (keystate[SDL_SCANCODE_UP])
-			viewportY -= yMotion;
+			camera.originY -= yMotion*32;
 		if (keystate[SDL_SCANCODE_KP_8])
-			viewportY -= yMotion;
+			camera.originY -= yMotion*32;
 		if (keystate[SDL_SCANCODE_DOWN])
-			viewportY += yMotion;
+			camera.originY += yMotion*32;
 		if (keystate[SDL_SCANCODE_KP_2])
-			viewportY += yMotion;
+			camera.originY += yMotion*32;
 		if ((keystate[SDL_SCANCODE_LEFT]) && (typingInputScreen == NULL)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
-			viewportX -= xMotion;
+			camera.originX -= xMotion*32;
 		if (keystate[SDL_SCANCODE_KP_4])
-			viewportX -= xMotion;
+			camera.originX -= xMotion*32;
 		if ((keystate[SDL_SCANCODE_RIGHT]) && (typingInputScreen == NULL)) // we have a test in handleKeyAlways, that's not very clean, but as every key check based on key states and not key events are here, it is much simpler and thus easier to understand and thus cleaner ;-)
-			viewportX += xMotion;
+			camera.originX += xMotion*32;
 		if (keystate[SDL_SCANCODE_KP_6])
-			viewportX += xMotion;
+			camera.originX += xMotion*32;
 		if (keystate[SDL_SCANCODE_KP_7])
 		{
-			viewportX -= xMotion;
-			viewportY -= yMotion;
+			camera.originX -= xMotion*32;
+			camera.originY -= yMotion*32;
 		}
 		if (keystate[SDL_SCANCODE_KP_9])
 		{
-			viewportX += xMotion;
-			viewportY -= yMotion;
+			camera.originX += xMotion*32;
+			camera.originY -= yMotion*32;
 		}
 		if (keystate[SDL_SCANCODE_KP_1])
 		{
-			viewportX -= xMotion;
-			viewportY += yMotion;
+			camera.originX -= xMotion*32;
+			camera.originY += yMotion*32;
 		}
 		if (keystate[SDL_SCANCODE_KP_3])
 		{
-			viewportX += xMotion;
-			viewportY += yMotion;
+			camera.originX += xMotion*32;
+			camera.originY += yMotion*32;
 		}
+		camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 	}
 }

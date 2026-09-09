@@ -80,12 +80,14 @@ void GameGUI::drawParticles(void)
 		int radius = std::max(globalContainer->particles->getW(cf.frameA), globalContainer->particles->getH(cf.frameA));
 		if (cf.hasFrameB)
 			radius = std::max({radius, globalContainer->particles->getW(cf.frameB), globalContainer->particles->getH(cf.frameB)});
-		forEachMapCopy(int(p->x)-radius, int(p->y)-radius, int(p->x)+radius, int(p->y)+radius,
-			game.map.getW()*32, game.map.getH()*32, globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
-			globalContainer->gfx->getH(), [&](int dx, int dy) {
-				drawCenteredParticleSprite(p->x+dx, p->y+dy, cf.frameA, cf.alphaA);
+		const float x=MapCamera::wrap(p->x-viewportX*32,game.map.getW()*32);
+		const float y=MapCamera::wrap(p->y-viewportY*32,game.map.getH()*32);
+		forEachMapCopy(int(x)-radius, int(y)-radius, int(x)+radius, int(y)+radius,
+			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW ? game.map.displayViewportW : globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
+			game.map.displayViewportH ? game.map.displayViewportH : globalContainer->gfx->getH(), [&](int dx, int dy) {
+				drawCenteredParticleSprite(x+dx, y+dy, cf.frameA, cf.alphaA);
 				if (cf.hasFrameB)
-					drawCenteredParticleSprite(p->x+dx, p->y+dy, cf.frameB, cf.alphaB);
+					drawCenteredParticleSprite(x+dx, y+dy, cf.frameB, cf.alphaB);
 			});
 
 		++it;
@@ -99,7 +101,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 		Building* building = *it;
 		BuildingType* type = building->type;
 		int x, y;
-		game.map.mapCaseToDisplayable(displayedPosX(*building), displayedPosY(*building), &x, &y, viewportX, viewportY);
+		x=displayedPosX(*building)*32;y=displayedPosY(*building)*32;
 
 		if (!type->isBuildingSite)
 		{
@@ -164,25 +166,5 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 
 void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
 {
-	if ((viewportX==oldViewportX) && (viewportY==oldViewportY))
-		return;
-
-	int dx = viewportX - oldViewportX;
-	if (dx > game.map.getW() / 2)
-		dx -= game.map.getW();
-	else if (dx < -game.map.getW() / 2)
-		dx += game.map.getW();
-
-	int dy = viewportY - oldViewportY;
-	if (dy > game.map.getH() / 2)
-		dy -= game.map.getH();
-	else if (dy < -game.map.getH() / 2)
-		dy += game.map.getH();
-
-	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
-	{
-		Particle* p = *it;
-		p->x -= dx * TILE_PX;
-		p->y -= dy * TILE_PX;
-	}
+	// Particles now retain world positions; camera changes need no compensation.
 }

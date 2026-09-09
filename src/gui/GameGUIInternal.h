@@ -67,8 +67,8 @@ constexpr int ZONE_STRIP_HEIGHT = 40;
 // Y-offsets (measured from the bottom of the screen) of the repair/upgrade
 // and destroy action buttons in the building info panel, and the button height
 // used for hit-testing the upgrade-preview tooltip hover.
-#define BOTTOM_BUTTON_PRIMARY_YOFFSET 48
-#define BOTTOM_BUTTON_SECONDARY_YOFFSET 24
+#define BOTTOM_BUTTON_PRIMARY_YOFFSET 76
+#define BOTTOM_BUTTON_SECONDARY_YOFFSET 52
 #define BOTTOM_BUTTON_HEIGHT 16
 
 // The sidebar on the right

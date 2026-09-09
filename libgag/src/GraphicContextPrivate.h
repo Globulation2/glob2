@@ -69,6 +69,7 @@ namespace GAGCore
 		bool isTextureSRectangle;
 		bool useATIWorkaround;
 		unsigned allocatedTextureCount;
+		size_t allocatedTextureBytes=0;
 
 		GLState(void)
 		{

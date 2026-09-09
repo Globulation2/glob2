@@ -1,0 +1,455 @@
+{
+  "version": 1,
+  "frames": [
+    {
+      "id": "ressource20",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
+          "native_size": [
+            199,
+            199
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "0.4",
+              "offsets": [
+                57,
+                98
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "0.55",
+              "offsets": [
+                43,
+                74
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 2,
+              "name": "0.7",
+              "offsets": [
+                29,
+                51
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 3,
+              "name": "0.85",
+              "offsets": [
+                14,
+                26
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 4,
+              "name": "full",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": false,
+              "mode": 0
+            }
+          ],
+          "selected_layer": 0
+        },
+        {
+          "path": "datasrc/gfx/derived/papyrus-native/ressource20.png",
+          "sha256": "595cce81a1f1c094cdabc150ecc0c4b0fd89f9b09d82e1de7cd298390f7b5aa0",
+          "native_size": [
+            199,
+            199
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource20.png",
+          "role": "base",
+          "sha256": "d571ae392bba119cbd1a09cac0ed47854d89778cdc086ef96d652e23103c0ff6"
+        }
+      ]
+    },
+    {
+      "id": "ressource21",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
+          "native_size": [
+            199,
+            199
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "0.4",
+              "offsets": [
+                57,
+                98
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "0.55",
+              "offsets": [
+                43,
+                74
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 2,
+              "name": "0.7",
+              "offsets": [
+                29,
+                51
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 3,
+              "name": "0.85",
+              "offsets": [
+                14,
+                26
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 4,
+              "name": "full",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": false,
+              "mode": 0
+            }
+          ],
+          "selected_layer": 1
+        },
+        {
+          "path": "datasrc/gfx/derived/papyrus-native/ressource21.png",
+          "sha256": "935534435a09045ca768795fd9417a8e022f81d4f9e7358daebce6c0ad2b5b90",
+          "native_size": [
+            199,
+            199
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource21.png",
+          "role": "base",
+          "sha256": "f84d8c18925ce108666ef05c2d1147f3e7a7323fda03a90c932748d8d5f3c18b"
+        }
+      ]
+    },
+    {
+      "id": "ressource22",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
+          "native_size": [
+            199,
+            199
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "0.4",
+              "offsets": [
+                57,
+                98
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "0.55",
+              "offsets": [
+                43,
+                74
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 2,
+              "name": "0.7",
+              "offsets": [
+                29,
+                51
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 3,
+              "name": "0.85",
+              "offsets": [
+                14,
+                26
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 4,
+              "name": "full",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": false,
+              "mode": 0
+            }
+          ],
+          "selected_layer": 2
+        },
+        {
+          "path": "datasrc/gfx/derived/papyrus-native/ressource22.png",
+          "sha256": "3462a6df7a2120ff80bc8a7ea35dc9634fa999786266bfbafa47afeace63552b",
+          "native_size": [
+            199,
+            199
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource22.png",
+          "role": "base",
+          "sha256": "3baa5ec052d4797a7c399c232d133ecef9c77db48d5a68c86b1a2be84e34a569"
+        }
+      ]
+    },
+    {
+      "id": "ressource23",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
+          "native_size": [
+            199,
+            199
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "0.4",
+              "offsets": [
+                57,
+                98
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "0.55",
+              "offsets": [
+                43,
+                74
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 2,
+              "name": "0.7",
+              "offsets": [
+                29,
+                51
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 3,
+              "name": "0.85",
+              "offsets": [
+                14,
+                26
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 4,
+              "name": "full",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": false,
+              "mode": 0
+            }
+          ],
+          "selected_layer": 3
+        },
+        {
+          "path": "datasrc/gfx/derived/papyrus-native/ressource23.png",
+          "sha256": "d0bfc6baf11f61bf08c50c826e786f32e5583312cf50212b028d4e2726093ca2",
+          "native_size": [
+            199,
+            199
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource23.png",
+          "role": "base",
+          "sha256": "3d7950d886733cd398dc9d3309c2172fb75bd0ed6cf3c0225997819bc38b87e1"
+        }
+      ]
+    },
+    {
+      "id": "ressource24",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original papyrus: GIMP growth layer and native alpha; premultiplied Lanczos resize",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/terrain/papyrus.xcf",
+          "sha256": "e6eb3012fbedc155cdf241eecbf3b5e7ba17be0015559d157af9c918e6fd61b6",
+          "native_size": [
+            199,
+            199
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "name": "0.4",
+              "offsets": [
+                57,
+                98
+              ],
+              "visible": true,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "name": "0.55",
+              "offsets": [
+                43,
+                74
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 2,
+              "name": "0.7",
+              "offsets": [
+                29,
+                51
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 3,
+              "name": "0.85",
+              "offsets": [
+                14,
+                26
+              ],
+              "visible": false,
+              "mode": 0
+            },
+            {
+              "opacity": 100.0,
+              "index": 4,
+              "name": "full",
+              "offsets": [
+                0,
+                0
+              ],
+              "visible": false,
+              "mode": 0
+            }
+          ],
+          "selected_layer": 4
+        },
+        {
+          "path": "datasrc/gfx/derived/papyrus-native/ressource24.png",
+          "sha256": "8f1f17539a04dcb81e8d009ee46a562487e660d1061a61411ffadd606465b89c",
+          "native_size": [
+            199,
+            199
+          ]
+        }
+      ],
+      "layers": [
+        {
+          "file": "ressource24.png",
+          "role": "base",
+          "sha256": "b04bd75fdc180908ea141bdb9a36df050b04dab15b1b099356113f1e27eb1df1"
+        }
+      ]
+    }
+  ]
+}

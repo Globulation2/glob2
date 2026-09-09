@@ -122,6 +122,10 @@ int main(int argc, char **argv)
 			if (screen) screen->dispatchEvents(&event);
 		gfx->updateWindowSize();
 		assert(gfx->getW()==width && gfx->getH()==1100);
+		// Keep a fixed test origin when changing size; camera centering itself
+		// is covered by the high-resolution integration harness.
+		gui.camera.width=gui.camera.height=0;
+		gui.camera.originX=gui.camera.originY=0;
 	};
 	const auto clear = [&] { gfx->setClipRect(); gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0); };
 	// Six displayed copies: three across and two down. Compare exact pixel counts,
@@ -234,6 +238,26 @@ int main(int argc, char **argv)
 	gui.particles.clear(); delete particle;
 	std::cout << "PASS ghosts, map markers and particles; one particle update\n";
 
+	if (gpu)
+	{
+		gui.setSelection(GameGUI::RESOURCE_SELECTION,static_cast<unsigned>(3+3*16));
+		for (double zoom : {0.5,2.0})
+		{
+			gui.camera=MapCamera{}; gui.camera.zoom=zoom;
+			gui.viewportX=gui.viewportY=0;
+			clear(); gui.drawOverlayInfos(); capturePixels(gfx);
+			const int start=int(96*zoom), diameter=int(32*zoom), period=int(512*zoom);
+			const int expected=colored(gfx->getSDLSurface(),start,start,diameter+1,diameter+1);
+			assert(expected>0);
+			for (int y=start;y+diameter<1100;y+=period)
+				for (int x=start;x+diameter<gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH-32;x+=period)
+					assert(colored(gfx->getSDLSurface(),x,y,diameter+1,diameter+1)==expected);
+		}
+		gui.camera=MapCamera{}; gui.viewportX=gui.viewportY=0;
+		gui.clearSelection();
+		std::cout << "PASS repeated selections at half and double map zoom\n";
+	}
+
 	// A complete production map frame catches the separate virtual-flag pass.
 	unit->validTarget=false;
 	globals.settings.optionFlags |= GlobalContainer::OPTION_LOW_SPEED_GFX;
@@ -335,6 +359,7 @@ int main(int argc, char **argv)
 					assert(colored(gfx->getSDLSurface(),x,y,50,50)>0);
 			assert(colored(gfx->getSDLSurface(),width-GAME_GUI_RIGHT_MENU_WIDTH,0,GAME_GUI_RIGHT_MENU_WIDTH,1100)==0);
 			// Pan the far corner into view, below the top status bar.
+			rectangular.camera=MapCamera{};
 			rectangular.viewportX=mapW-3; rectangular.viewportY=mapH-3;
 			rectangular.setSelection(GameGUI::RESOURCE_SELECTION,static_cast<unsigned>(mapW*mapH-1));
 			clear(); rectangular.drawOverlayInfos(); capturePixels(gfx);

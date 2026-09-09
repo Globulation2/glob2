@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include <MapCamera.h>
 
 #include "Brush.h"
 #include "GAGSys.h"
@@ -362,6 +363,7 @@ private:
 ///This is the map editor class in all its glory.
 class MapEdit
 {
+	friend class HighResolutionIntegrationHarness;
 public:
 	MapEdit();
 	~MapEdit();
@@ -476,6 +478,11 @@ private:
 	int viewportX;
 	///This is the y position of the map that is being painted on the screen
 	int viewportY;
+	MapCamera camera;
+	void updateCamera();
+	bool zoomMap(double steps, int x, int y);
+	int mapMouseX(int x) const { return camera.localX(x); }
+	int mapMouseY(int y) const { return camera.localY(y); }
 	///This is the x-scrolling speed
 	int xSpeed;
 	///This is the y-scrolling speed
