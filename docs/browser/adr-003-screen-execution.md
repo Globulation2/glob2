@@ -208,3 +208,25 @@ cleanup tolerates a group already removed on completion, including empty tabs.
 Transfer screen destruction cancels active transfers. Match execution and the
 multiplayer settings dialog remain legacy calls; this ownership migration does
 not remove their Asyncify dependency.
+
+### Scheduled YOG matches
+
+A server start message records a pending launch; it does not run a simulation
+inside socket dispatch. After the client update returns, the YOG game tab queues
+`GameLoadScreen` with `Engine::initMultiplayerTask`, then `GameSessionScreen`.
+The same task backs the synchronous initialization wrapper. Initialization rejects
+an absent local player before indexing the game header, and map-load failure
+returns through an in-game notice. Cancelled loading leaves the match.
+
+Router orders stay in the connection queue from start admission until the engine
+is attached. This preserves orders from a faster peer while cooperative loading
+is incomplete. Engine teardown detaches the borrowed network-engine pointer.
+The read-only browser diagnostic exposes `screenClass` separately from its
+human-readable `screen` state so scheduled execution can be verified during play. `roomCanStart` reports the
+room Start control’s readiness; observing a network frame alone does not prove
+that the UI has consumed it.
+
+YOG match settings also use a stack child and completion. LAN setup and the
+headless peer retain explicit synchronous hosts during migration; they consume
+pending launches after network update too. The optional stack argument on the
+shared multiplayer tab is transitional, not the supported platform end state.

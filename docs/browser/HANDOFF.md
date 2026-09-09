@@ -7,8 +7,9 @@ map selection, join progress, map transfer navigation and error notices onto
 the shared screen stack. Login transitions are deferred until network listener
 dispatch returns. The native regression also covers destroying a completed tab,
 including an empty tab. See the latest status section for validation.
-Next runtime work is multiplayer match launch/execution and its settings dialogs;
-these still use blocking calls, so Asyncify remains required. Do not conflate
+The following change schedules YOG match loading/execution and settings too;
+its validation is recorded in the latest status section. LAN and headless hosts
+still have explicit synchronous paths, so Asyncify remains required. Do not conflate
 this menu migration with completed reconnect, identity or protocol work.
 
 Latest follow-up: browser reload/address-bar shortcuts pass automated checks

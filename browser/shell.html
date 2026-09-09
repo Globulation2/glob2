@@ -78,7 +78,7 @@ async function localFileDigest(directory, name, extension) {
 Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   snapshot() {
     return Object.freeze({version:1, renderer:Module.renderer || 'loading', contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
-      tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
+      screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
       paused:Boolean(Module.glob2Paused), width:canvas.width, height:canvas.height,
       restore:Module.storageRestore || 'restoring',
       import:Module.importState || 'idle',

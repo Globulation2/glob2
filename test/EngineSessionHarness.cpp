@@ -11,6 +11,7 @@
 #include "Application.h"
 #include "YOGClient.h"
 #include "YOGClientEvent.h"
+#include "GameLaunchMessages.h"
 #include <GUITextArea.h>
 #include <GUITabScreenWindow.h>
 #include "FertilityCalculator.h"
@@ -140,6 +141,26 @@ int main(int argc, char** argv)
         login.drawExecution();
         std::cout << "PASS protocol rejection provides an actionable translated status" << std::endl;
         login.endExecute(0); login.finishExecution();
+    }
+
+    {
+        struct StartProbe : MultiplayerGame {
+            using MultiplayerGame::MultiplayerGame;
+            using MultiplayerGame::receiveMessage;
+        };
+        auto client = std::make_shared<YOGClient>();
+        auto game = std::make_shared<StartProbe>(client);
+        require(!game->takeStartRequest(), "A room cannot start before the server request");
+        game->receiveMessage(std::make_shared<NetStartGame>());
+        require(game->takeStartRequest() && !game->takeStartRequest(),
+                "Network dispatch must defer launch and the host must consume it once");
+        require(game->isWaitingForEngine(), "Router orders must remain queued after the host consumes launch");
+        game->sessionEnded(false);
+        require(!game->isWaitingForEngine(), "Cancelled initialization must release the router queue hold");
+        Engine engine;
+        require(!engine.initMultiplayerTask(game, client, -1).run(),
+                "Multiplayer initialization must reject a missing local player");
+        std::cout << "PASS deferred multiplayer launch and invalid local-player rejection" << std::endl;
     }
 
     {

@@ -448,6 +448,7 @@ void Engine::teardownSession()
 		globalContainer->datasetWriter.reset();
 	}
 
+	if (multiplayer) multiplayer->setNetEngine(nullptr);
 	net.reset();
 	multiplayer.reset();
 }

@@ -65,6 +65,7 @@ public:
 
 	/// Initiate a game with the given MultiplayerGame
 	int initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
+	GAGCore::CooperativeTask initMultiplayerTask(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();

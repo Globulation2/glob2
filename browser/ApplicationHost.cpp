@@ -176,7 +176,7 @@ std::unique_ptr<Persistence> persistStorage() { return std::make_unique<BrowserP
 void importChanged(const char* state) { EM_ASM({ Module.importState = UTF8ToString($0); }, state); }
 void screenChanged(const char* name)
 {
-    EM_ASM({ Module['glob2Screen'] = UTF8ToString($0); }, name);
+    EM_ASM({ Module['glob2Screen'] = Module['glob2ScreenClass'] = UTF8ToString($0); }, name);
 }
 void simulationAdvanced(std::uint32_t tick)
 {
@@ -189,6 +189,7 @@ void exited(int result)
         if (Module['onGameExit']) Module['onGameExit']($0);
     }, result);
 }
+void roomReady(bool canStart) { EM_ASM({ Module.glob2RoomCanStart = Boolean($0); }, canStart); }
 void matchFrame(bool paused)
 {
     EM_ASM({

@@ -169,14 +169,20 @@ public:
 	
 	///This is true if the map and game headers have been received and the game is connected to the game router
 	bool isFullyInGame();
+    // Network dispatch only records a start request. Hosts consume it after update.
+    bool takeStartRequest();
+    bool isWaitingForEngine() const { return waitingForEngine; }
+    int getLocalPlayer();
+    void sessionStarted();
+    void sessionEnded(bool quitApplication);
+    // Transitional host for LAN and headless callers pending scheduled migration.
+    void startEngine();
 protected:
 	friend class YOGClient;
 
 	///This receives a message that is sent to the game
 	void receiveMessage(std::shared_ptr<NetMessage> message);
 	
-	///This will start the game
-	void startEngine();
 	
 	///Sets the default values for latency and order frame rate in the game header for a YOG game
 	void setDefaultGameHeaderValues();
@@ -187,7 +193,6 @@ protected:
 	///Puts together reteaming information from the game header in the file
 	NetReteamingInformation constructReteamingInformation(const std::string& file);
 	
-	int getLocalPlayer();
 private:
 	std::shared_ptr<YOGClient> client;
 	
@@ -215,6 +220,8 @@ private:
 	
 	//Miscellaneous
 	bool isStarting;
+	bool startRequested = false;
+	bool waitingForEngine = false;
 	bool needToSendMapHeader;
 	Uint8 previousPercentage;
 	Uint8 numberOfConnectionAttempts;

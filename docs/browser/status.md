@@ -636,3 +636,59 @@ WSS. Both native peers complete at least 250 ticks, with command-boundary
 checksums matching the browser. Log: `/tmp/glob2-yog-crossplay-fixed.log` (3.1m).
 The final four Chromium navigation checks also pass; the first failed cross-play
 run and its trace remain in `build/browser-yog-final` for the ownership diagnosis.
+
+## Scheduled YOG match execution — 2026-09-08
+
+YOG start admission now records a launch request. The host consumes it after
+network update; browser and desktop YOG tabs queue cooperative multiplayer
+loading, then the same `GameSessionScreen` used by single-player. Match settings
+are also screen-stack children. Invalid local-player IDs fail before header
+indexing, failed loading displays a scheduled notice, and cancelled loading
+leaves the room. This does not implement coordinated reconnect recovery.
+
+Router orders remain queued while initialization waits for its engine, including
+after the host consumes the pending launch request. Both session teardown and
+engine destruction clear the borrowed network-engine pointer. Browser diagnostics
+now expose the screen class separately from the `match` display state.
+
+Release native and Wasm builds pass. The native engine-session harness passes
+with new deferred-launch/queue-hold/invalid-player coverage and existing fixed-seed
+session, editor and cancellation checks. The real native LAN harness passes two
+host/join/ready/leave/rejoin cycles with exact 616,018-byte map downloads. Logs:
+`/tmp/glob2-scheduled-match-session-final.log` and
+`/tmp/glob2-scheduled-match-lan.log`.
+
+LAN screens and the native headless peer still use explicit synchronous execution
+hosts, now outside network-message dispatch. The optional stack argument on the
+multiplayer tab is a migration bridge; it must disappear with the remaining LAN
+screen migration before claiming the fully callback-based platform. Asyncify,
+legacy UI/storage qualification and the larger protocol/identity/recovery and
+release-distribution milestones remain open.
+
+
+The first final browser matrix passed 14 of 15 cases. WebKit/WSS reached a
+ready room but the fixture waited for two Ready messages, although the protocol
+only requires the native player's Ready message. The fixture now obtains the
+native player's server-issued ID from its startup log and checks that specific
+Ready message. It no longer relies on timing-dependent repeated readiness.
+The initial trace remains in `build/browser-scheduled-match-final`; the log is
+`/tmp/glob2-scheduled-match-final.log`. No production assertion or timeout was
+relaxed. The earlier settings-test cleanup also now waits for the room-list
+update before clicking Quit, and `screenClass` assertions use the separate
+class diagnostic instead of the human-readable `match` state.
+
+The targeted readiness rerun then exposed the complementary UI race: a raw
+WebSocket Ready frame can arrive before SDL consumes it. A read-only
+`roomCanStart` presentation diagnostic now reports the room Start control state;
+the fixture waits for both the native player's Ready message and that state.
+The failed targeted trace remains in `build/browser-scheduled-match-ready`.
+
+
+The corrected final rerun passes all nine settings/native cross-play cases across
+Chromium, Firefox and WebKit (3.7m), including TCP and verified WSS, at least 250
+native ticks and matching command-boundary checksums. The earlier matrix also
+passed all six browser/browser matches (no AI and Cortex across three engines).
+Scheduled execution is asserted through `screenClass`. Final rerun log:
+`/tmp/glob2-scheduled-match-controls.log`; final native session log:
+`/tmp/glob2-scheduled-match-session-controls.log`. The complete original browser
+release scope remains open; these results qualify this YOG scheduling change.
