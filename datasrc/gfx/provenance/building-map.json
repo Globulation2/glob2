@@ -1,0 +1,276 @@
+[
+  {
+    "source": "datasrc/gfx/originals/buildings/barracks/level-1/__building5.xcf",
+    "historical_name": "__building5.xcf",
+    "runtime_family": "barracks",
+    "runtime_level_index": 0,
+    "human_level": 1,
+    "reference_frame": "barracks0b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Terracotta arena, circular court and detached upper-left details.",
+    "preview_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/barracks/level-3/__building12.xcf",
+    "historical_name": "__building12.xcf",
+    "runtime_family": "barracks",
+    "runtime_level_index": 2,
+    "human_level": 3,
+    "reference_frame": "barracks2b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Stone arena, perimeter machinery and rear tower; variant A.",
+    "preview_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/barracks/level-3/__building19.xcf",
+    "historical_name": "__building19.xcf",
+    "runtime_family": "barracks",
+    "runtime_level_index": 2,
+    "human_level": 3,
+    "reference_frame": "barracks2b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Same third-level stone arena and rear tower; variant B. Keep both until registration/state differences are checked.",
+    "preview_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/inn/level-2/auberge-goth-64.xcf",
+    "historical_name": "auberge-goth-64.xcf",
+    "runtime_family": "inn",
+    "runtime_level_index": 1,
+    "human_level": 2,
+    "reference_frame": "inn1b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Gothic circular enclosure and pointed roof towers.",
+    "preview_layers": [
+      0
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/inn/level-3/auberge-steam.xcf",
+    "historical_name": "auberge-steam.xcf",
+    "runtime_family": "inn",
+    "runtime_level_index": 2,
+    "human_level": 3,
+    "reference_frame": "inn2b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Three circular vessels linked by pipes and tall rear chimney.",
+    "preview_layers": [
+      0
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/inn/level-2/building8.xcf",
+    "historical_name": "building8.xcf",
+    "runtime_family": "inn",
+    "runtime_level_index": 1,
+    "human_level": 2,
+    "reference_frame": "inn1b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Hidden base shows gothic inn; visible green flags and lower-right markings match its team layer.",
+    "preview_layers": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
+    "historical_name": "building10.xcf",
+    "runtime_family": "racetrack",
+    "runtime_level_index": 1,
+    "human_level": 2,
+    "reference_frame": "racetrack1b0",
+    "status": "completed frame exported and runtime registration verified; damage/construction states retain fallback",
+    "evidence": "Hidden base reveals paired gothic track loops, top-right tower and lower-left enclosure. Green flags/clock match racetrack1, not inn.",
+    "preview_layers": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
+    "historical_name": "building3r.xcf",
+    "runtime_family": "racetrack",
+    "runtime_level_index": 0,
+    "human_level": 1,
+    "reference_frame": "racetrack0b0",
+    "status": "completed frame exported and runtime registration verified; damage/construction states retain fallback",
+    "evidence": "Hidden base and green clock/track markings match earthen racetrack.",
+    "preview_layers": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/racetrack/level-1/course-terre.xcf",
+    "historical_name": "course-terre.xcf",
+    "runtime_family": "racetrack",
+    "runtime_level_index": 0,
+    "human_level": 1,
+    "reference_frame": "racetrack0b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Earthen looping track, banked upper-left ramp and lower-right clock.",
+    "preview_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/racetrack/level-2/course-goth-256.xcf",
+    "historical_name": "course-goth-256.xcf",
+    "runtime_family": "racetrack",
+    "runtime_level_index": 1,
+    "human_level": 2,
+    "reference_frame": "racetrack1b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Paired gothic track loops, tower and lower-left enclosure.",
+    "preview_layers": [
+      0
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/racetrack/level-3/course-steam.xcf",
+    "historical_name": "course-steam.xcf",
+    "runtime_family": "racetrack",
+    "runtime_level_index": 2,
+    "human_level": 3,
+    "reference_frame": "racetrack2b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Mechanical track, overhead pipe and round machinery.",
+    "preview_layers": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/hosp/level-1/hopital1.xcf",
+    "historical_name": "hopital1.xcf",
+    "runtime_family": "hosp",
+    "runtime_level_index": 0,
+    "human_level": 1,
+    "reference_frame": "hosp0b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Earthen hollow hospital with front ladder and pointed top.",
+    "preview_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
+    "historical_name": "science.xcf",
+    "runtime_family": "school",
+    "runtime_level_index": 1,
+    "human_level": 2,
+    "reference_frame": "school1b0",
+    "status": "completed frame exported and runtime registration verified; damage/construction states retain fallback",
+    "evidence": "Dark tent-like roof, central sphere and surrounding wooden posts.",
+    "preview_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/school/level-2/science1.xcf",
+    "historical_name": "science1.xcf",
+    "runtime_family": "school",
+    "runtime_level_index": 1,
+    "human_level": 2,
+    "reference_frame": "school1b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Small counterpart of tent-like school with sphere and team roof.",
+    "preview_layers": [
+      0,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/defencetower/level-2/tower1.xcf",
+    "historical_name": "tower1.xcf",
+    "runtime_family": "defencetower",
+    "runtime_level_index": 1,
+    "human_level": 2,
+    "reference_frame": "defencetower1b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Hidden round platform and green upright crystal shapes match second-level defence tower.",
+    "preview_layers": [
+      0,
+      1,
+      2
+    ]
+  },
+  {
+    "source": "datasrc/gfx/originals/buildings/defencetower/level-2/tower2.xcf",
+    "historical_name": "tower2.xcf",
+    "runtime_family": "defencetower",
+    "runtime_level_index": 1,
+    "human_level": 2,
+    "reference_frame": "defencetower1b0",
+    "status": "building identity visually confirmed; runtime export/state registration pending",
+    "evidence": "Higher-resolution round platform and hidden green crystal layer match the same second-level defence tower.",
+    "preview_layers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  }
+]

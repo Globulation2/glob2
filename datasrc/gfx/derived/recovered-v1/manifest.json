@@ -1,0 +1,310 @@
+{
+  "version": 1,
+  "frames": [
+    {
+      "id": "swarm0b0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
+      "layers": [
+        {
+          "file": "swarm0b0.png",
+          "role": "base",
+          "sha256": "8586b89b95f5feb84520fd48b3ce5c6ef3f696758eba8c8b8ed973deb03a2ce9"
+        },
+        {
+          "file": "swarm0b0r.png",
+          "role": "team",
+          "sha256": "7fddfffbe675b7b2b7fdaf87e78f6b8ca52f83ca3ac07e2c2b07724829beed92"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/swarm/Ruche.png",
+          "sha256": "88549c047160eb0a883b334eb091cad8adae4a03a2ffe63dc5d90d8b7ad554e8",
+          "native_size": [
+            256,
+            256
+          ]
+        }
+      ]
+    },
+    {
+      "id": "swarm0c0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
+      "layers": [
+        {
+          "file": "swarm0c0.png",
+          "role": "base",
+          "sha256": "7535de51a77fd4e4415e9a45a30cbfdaf61157ed9ad42b5ee6b486cbf047bbe0"
+        },
+        {
+          "file": "swarm0c0r.png",
+          "role": "team",
+          "sha256": "35379ff139ab075a00d6348e7af14316ed7b8e342300737275e8d6738be81414"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128c.png",
+          "sha256": "9bcb10af8d512456abd00e3424cb83665c32b598891bb64b355490daa2576a49",
+          "native_size": [
+            512,
+            512
+          ]
+        }
+      ]
+    },
+    {
+      "id": "warflag0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
+      "layers": [
+        {
+          "file": "warflag0.png",
+          "role": "base",
+          "sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee"
+        },
+        {
+          "file": "warflag0r.png",
+          "role": "team",
+          "sha256": "2f7ab6fe190662a4dcd2e0acd21f423a50c8faf635aa2e89579784d8ed937cd0"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/flags/WarFlag.png",
+          "sha256": "ba32b3139ab131456e67ec9c9df89a0477d111a42aaa4b736cac3726cf174160",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "id": "explorationflag0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
+      "layers": [
+        {
+          "file": "explorationflag0.png",
+          "role": "base",
+          "sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee"
+        },
+        {
+          "file": "explorationflag0r.png",
+          "role": "team",
+          "sha256": "1eb3f170e7455f8621e15f6637a01383c1ff18a3b87b380ae9aebac5e12b4ffc"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/flags/ExploFlag.png",
+          "sha256": "5c772959f73fea52ba87c6e237bfc6c5e3dd0e92c43681a52b75339c420c4709",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clearingflag0",
+      "width": 32,
+      "height": 32,
+      "scale": 4,
+      "recipe": "recovered original: native white-matte removal; green team / neutral shadow separation",
+      "layers": [
+        {
+          "file": "clearingflag0.png",
+          "role": "base",
+          "sha256": "cd8968966745ded953dd027154adc39ef3bcd5995a05969acf866e7df057799e"
+        },
+        {
+          "file": "clearingflag0r.png",
+          "role": "team",
+          "sha256": "59b0d491345cd52279daf8052b3f8b59a35b7af21750355151e1d175fa7772a6"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/flags/RemoveFlag.png",
+          "sha256": "1b8d789fda8099353c2d935e4c1241eb3e1194dbe557626ee7db8be9846ec221",
+          "native_size": [
+            128,
+            128
+          ]
+        }
+      ]
+    },
+    {
+      "id": "buildingsite1",
+      "width": 64,
+      "height": 64,
+      "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
+      "layers": [
+        {
+          "file": "buildingsite1.png",
+          "role": "base",
+          "sha256": "d3e049adf14663bad2d3a4bf1070f583a4c9cb6e7b78ff4510688cb65faf1456"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64c.png",
+          "sha256": "c69621d051f0634eda3c07bc87e243173e0693b8a97f5a3798ed11388aed9ae9",
+          "native_size": [
+            256,
+            256
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64m.png",
+          "sha256": "a7b540849cb3f7b0a5d0269b832ca9ffc9545b25fd9940e13c88247a18cb0408",
+          "native_size": [
+            256,
+            256
+          ]
+        }
+      ]
+    },
+    {
+      "id": "buildingsite2",
+      "width": 96,
+      "height": 96,
+      "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
+      "layers": [
+        {
+          "file": "buildingsite2.png",
+          "role": "base",
+          "sha256": "49c3afd3f3110e42b60598a829ebe61dc3e402b2572063a8bcaaa4b3d6ecfbaa"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96c.png",
+          "sha256": "fbb198ed42d149ef6f66094801a5e6b56b5537dddb52ac3e4276aada74acb323",
+          "native_size": [
+            384,
+            384
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96m.png",
+          "sha256": "2a1e5b5c1fc060176c8a33e4d9f8d5922d540a1ad8f9ee8e77d6b0b8f7ddf355",
+          "native_size": [
+            384,
+            384
+          ]
+        }
+      ]
+    },
+    {
+      "id": "buildingsite3",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
+      "layers": [
+        {
+          "file": "buildingsite3.png",
+          "role": "base",
+          "sha256": "74f4f6860ee9d7048efd56a074b2780b6b1de8792d39253177f1f4fbe6a7b922"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128c.png",
+          "sha256": "d30d202c283512e6d23a9db0c6b5940e7345bfaa959925c13e11d4e310ddcd14",
+          "native_size": [
+            512,
+            512
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128m.png",
+          "sha256": "85be8078274de6720221a66fdc6173f6114607835a58cc19f03db4cdadace089",
+          "native_size": [
+            512,
+            512
+          ]
+        }
+      ]
+    },
+    {
+      "id": "buildingsite4",
+      "width": 192,
+      "height": 192,
+      "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
+      "layers": [
+        {
+          "file": "buildingsite4.png",
+          "role": "base",
+          "sha256": "a244364f290a6778de96eeadbab62a2bf87cb79006f4dc9ef2a62cdc257864fb"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192c.png",
+          "sha256": "b15b0425605344f9ba18b6ae6caa707683a726144dc0361a40bd5610a6515c51",
+          "native_size": [
+            384,
+            384
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192m.png",
+          "sha256": "e6edbe00b53a2df228f2baf1e516f76d72b40317684a805ff92aaefabda81cbb",
+          "native_size": [
+            384,
+            384
+          ]
+        }
+      ]
+    },
+    {
+      "id": "buildingsite5",
+      "width": 196,
+      "height": 196,
+      "scale": 4,
+      "recipe": "recovered original: native matching construction matte; white-background unpremultiplication",
+      "layers": [
+        {
+          "file": "buildingsite5.png",
+          "role": "base",
+          "sha256": "1a44c7438560f608c933f20308ec2ef6fce6c6ab7a6479f3e4d82fc188ba8bb2"
+        }
+      ],
+      "sources": [
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256c.png",
+          "sha256": "f1dba0fce8a9b4ea4a40151258bec18465a031f19a461232e1056f7985a707ae",
+          "native_size": [
+            512,
+            512
+          ]
+        },
+        {
+          "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256m.png",
+          "sha256": "baac33676f1515dade11d177094858a37c6ecdb7f7e90bc582a5e020af3b66aa",
+          "native_size": [
+            512,
+            512
+          ]
+        }
+      ]
+    }
+  ]
+}
