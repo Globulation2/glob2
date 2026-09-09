@@ -36,7 +36,7 @@ These checkboxes track full release qualification, not whether code exists.
 For implemented features and scoped test results, see [current status](status.md).
 
 - [ ] Build coexistence across native client, lobby, router, gateway, and web
-- [ ] Explicit application/screen scheduling without Asyncify
+- [x] Explicit application/screen scheduling without Asyncify
 - [ ] WebGL2 rendering with context restoration and software fallback
 - [ ] Live resize and focus/visibility lifecycle
 - [ ] Transactional browser storage with import/export and failure handling

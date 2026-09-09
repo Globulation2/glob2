@@ -274,3 +274,19 @@ released and RNG restored by the loader. Native synchronous hosts use the
 
 Repeated loading after actual gameplay exposed interpreter GC bugs that initial
 loading did not cover; [ADR 007](adr-007-script-lifetimes.md) records their fix.
+
+## Callback-only browser host — 2026-09-08
+
+The browser link no longer enables Asyncify. Each scheduled frame returns before
+the host queues its successor; menus, YOG navigation, match execution, in-game
+reloads and their error notices use the shared screen stack and cooperative jobs.
+`ApplicationHost::wait` rejects blocking browser calls with a logic error instead
+of yielding an arbitrary C++ stack or silently spinning. Native waits are unchanged.
+
+Reachability audit: `Engine::run` and its synchronous initialization/reload
+adapters serve native command-line/headless drivers. Legacy Screen/Overlay and
+MessageBox execution remain compatibility APIs; interactive browser screens do
+not call them. The shell supplies only viewport/full-page/renderer arguments,
+not native server/admin/headless modes. The browser IRC handler never starts
+the native IRC worker/parser; YOG chat remains available. Adding browser entry
+points must preserve these boundaries. Previous migration notes above are history.

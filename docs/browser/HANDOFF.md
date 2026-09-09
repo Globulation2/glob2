@@ -25,9 +25,12 @@ failure uses a scheduled notice, and cancellation/failure return to the retained
 parent setup screen. Native synchronous hosts retain an explicit adapter.
 The browser reload regression also exposed script-GC lifetime bugs, now fixed
 with per-interpreter method tables and complete live-reference marking; see
-[script lifetimes](adr-007-script-lifetimes.md). Next: audit remaining browser
-reachability of native compatibility loops and remove Asyncify with the full
-runtime regression suite. Do not claim Asyncify has already been removed.
+[script lifetimes](adr-007-script-lifetimes.md). The browser now builds without
+Asyncify; legacy blocking waits explicitly reject browser use. See the latest
+status entry for callback-only runtime qualification: 204 software and 120
+WebGL2 cases pass across three engines, plus native/session and visibility checks.
+The Linux real-window launcher now reports early exits and explicitly configures
+its test-only sandbox/software GPU; confirm the next hosted run.
 
 The latest runtime change moves YOG login/registration, lobby tab ownership,
 map selection, join progress, map transfer navigation and error notices onto
@@ -39,7 +42,7 @@ its validation is recorded in the latest status section. LAN hosting/joining now
 use the same scheduled screens too, including cancellation and timeout handling.
 The multiplayer tab no longer has a blocking fallback, and the unused blocking
 LAN bring-up helper has been removed. The headless simulation driver retains its
-explicit host loop; other legacy dialogs still require Asyncify. Do not conflate
+explicit native host loop. Interactive browser flows use scheduled screens. Do not conflate
 these runtime changes with completed reconnect, identity or protocol work.
 
 Latest follow-up: browser reload/address-bar shortcuts pass automated checks
@@ -179,32 +182,19 @@ was not rerun in this session; simulation and protocol code did not change.
 
 ## Next work
 
-The handoff's click-fix requalification is complete: 99 selected WebGL cases,
-three software input cases and two real-window visibility cases pass on the
-final adapter. Eleven browser unit tests, nine build-system tests and the local concurrent/
-incremental coexistence check also pass. The 99-case suite is a current run;
-the broader historical 114-case import/corruption suite remains separate.
-
-1. Verify hosted CI after upstream integration. Upstream `master` at
-   `753531310` is now integrated, including the resource-fetch regression. Its
-   workflow path is corrected to the isolated Linux directory. The older run
-   inspected was
-   `34274132634` at head `47e9e41ed`: Windows used the wrong harness directory,
-   Linux referenced a missing resource-fetch harness under the old build path,
-   and all coexistence jobs failed an opaque no-op-output assertion. Current
-   Windows and Linux aspect-test paths are corrected; coexistence now reports
-   exact changed files and whether bytes or only timestamps changed. The
-   resource-fetch step is now present after integration. Do not claim hosted CI
-   is green from the local results.
-2. Finish single-player release qualification: remaining Safari/Edge matrix,
-   controlled renderer performance, browser shortcut/focus coverage and legacy
-   writer audit. Safari 26.6.2 now has an actual-browser smoke pass; its full
-   details and limits are in `safari-smoke.md`. Ordinary single-player scheduling
-   is already migrated; Asyncify remains in legacy flows and rare error dialogs.
-3. Get maintainer feedback on the PR. Larger original-plan work remains:
-   guest/invitation/account migration, stronger simulation/data compatibility,
-   room authorization, 120-second checkpoint recovery, all-AI/native-platform
-   determinism and production self-hosting/upgrade/rollback qualification.
+1. Verify the latest hosted CI. Windows, both Linux native jobs and both sequential
+   build orders pass on recent runs; concurrent browser qualification still needs
+   a completed green result. Do not equate local passes with a hosted pass.
+2. Finish release qualification: actual Safari/Edge matrix, controlled renderer
+   performance, and the remaining persistence/input audit. Safari 26.6.2 has a
+   manual smoke pass; see `safari-smoke.md` for its limits. Browser scheduling is
+   callback-only and no longer requires Asyncify.
+3. Close the existing YOG gates: complete browser/browser and browser/native
+   matches, compatibility/safe message handling, native-platform determinism and
+   gateway setup documentation. Guests, invitations, account modernization,
+   recovery and production hosting remain deferred under the amended scope.
+4. Get maintainer feedback and finish review qualification. Keep the PR draft
+   while the supported-release gates above remain unresolved.
 
 Do not turn these qualification items into claims that WebGL, persistence,
 cooperative loading or cross-play still need to be implemented from scratch.

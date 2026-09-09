@@ -50,7 +50,7 @@ def build_web(directory, identity, arguments):
                CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
         '-sLEGACY_GL_EMULATION=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
-        '-sASYNCIFY', '-sASYNCIFY_STACK_SIZE=1048576', '-sALLOW_MEMORY_GROWTH',
+        '-sALLOW_MEMORY_GROWTH',
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",

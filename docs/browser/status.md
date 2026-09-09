@@ -11,6 +11,42 @@ complete-match tests and gateway setup documentation remain required. See
 [current delivery scope](implementation.md); older references to the full
 original plan below describe the former scope, not release blockers to reopen.
 
+## Callback-only browser runtime — 2026-09-08
+
+The Emscripten target no longer enables Asyncify or reserves an Asyncify stack.
+The browser host schedules frames and cooperative jobs normally; its legacy
+blocking wait throws an explicit logic error. Desktop waits are unchanged.
+The reachability audit covers native command-line engine adapters, compatibility
+Screen/Overlay/MessageBox loops, and the inactive browser IRC bridge; the shipped
+shell does not enter those native modes. See [lifecycle decision](adr-003-screen-execution.md).
+
+A maintained Playwright check inspects the served Wasm exports and rejects
+Asyncify instrumentation. It detects the five Asyncify exports in the previous
+instrumented artifact and passes on the new release. The current artifact is
+6,189,296 bytes before compression; this is not a controlled performance baseline.
+
+Validation: release Wasm build, all nine build-system tests, all 14 browser unit
+cases and the native session harness pass. The full software suite passes all
+204 cases across Chromium, Firefox and WebKit; the selected WebGL2 runtime suite
+passes all 120 cases, including the artifact guard. The artifact-only three-project
+run passes too. Real-window visibility tests pass with both renderers on macOS.
+Logs: `/tmp/glob2-no-asyncify-build.log`, `/tmp/glob2-no-asyncify-unit.log`,
+`/tmp/glob2-no-asyncify-native.log`, `/tmp/glob2-no-asyncify-software.log`,
+`/tmp/glob2-no-asyncify-webgl.log`, `/tmp/glob2-no-asyncify-artifact.log`, and
+`/tmp/glob2-no-asyncify-visibility-{software,webgl,final}.log`.
+
+Hosted run `34297421407` now confirms the earlier Linux Firefox setup fix: its
+browser suites passed, but the separate visibility browser did not open its debug
+port. That launcher previously discarded stderr. It now reports early launch
+failure, and Linux CI uses an unsandboxed test window with explicit SwiftShader,
+matching the test environment's lack of user namespaces/hardware GPU. These flags
+apply only to the test process, never player browsers. A Playwright 1.63 Linux
+container reproduced the root/sandbox startup failure and then software-GPU
+fallback; the corrected real-window tests pass with both renderers against the
+new Wasm artifact. Logs: `/tmp/glob2-no-asyncify-linux-visibility-{software,webgl}-final.log`.
+This is functional CI coverage, not hardware GPU/performance qualification.
+A green hosted run of the new head is still required.
+
 ## Cooperative in-game reloads and script lifetimes — 2026-09-08
 
 In-game save/replay requests now finalize the outgoing session without loading
@@ -41,9 +77,8 @@ matching checksums. Logs: `/tmp/glob2-reload-native-build.log`,
 `/tmp/glob2-reload-crossplay.log`. The final source changes after these builds
 only adjust comments/documentation and the CI test list.
 
-Asyncify is still enabled. Audit browser reachability of the remaining native
-compatibility hosts and remove it with the full runtime regression matrix;
-this milestone does not declare that gate complete.
+At this earlier milestone Asyncify remained enabled; the callback-only runtime
+entry above records its subsequent removal and qualification.
 
 ## Map chooser and legacy dialog cleanup — 2026-09-08
 

@@ -1,6 +1,7 @@
 # ADR 002: explicit host calls during lifecycle migration
 
-Status: transitional implementation; Asyncify removal is not complete.
+Status: historical migration record. The callback-only host supersedes the
+transitional wait implementation below; see [ADR 003](adr-003-screen-execution.md).
 
 The browser experiment forcibly redefined `SDL_Delay` in every translation unit
 and slept inside `GraphicContext::nextFrame`. This changed unrelated networking

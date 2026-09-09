@@ -52,8 +52,8 @@ void scheduledFrame(void* opaque)
         complete();
         return;
     }
-    // Queue only after the frame returns. During the migration an Asyncify
-    // suspension inside a legacy dialog must not start a second frame.
+    // Each callback completes before the next frame is scheduled. Browser UI
+    // transitions and loading jobs must return control to this host.
     emscripten_async_call(scheduledFrame, state, state->loop->delay(SDL_GetTicks()));
 }
 }
@@ -63,9 +63,9 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
     emscripten_async_call(scheduledFrame, state, 0);
 }
 
-void wait(std::uint32_t milliseconds)
+void wait(std::uint32_t)
 {
-    emscripten_sleep(milliseconds ? milliseconds : 1);
+    throw std::logic_error("Blocking application loops are unavailable in the browser; use scheduled screens or jobs");
 }
 bool takeVisibilityChange(bool& hidden)
 {
