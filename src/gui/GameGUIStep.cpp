@@ -79,6 +79,7 @@ void GameGUI::dragStep(int mx, int my, int button)
         if (!torusPointerDown || !torusMapPointer(mx, my, mx, my)) return;
     }
 
+	if(zoomControlPushed)return;
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
 		dragging from correctly going through intermediate cells.
@@ -88,6 +89,8 @@ void GameGUI::dragStep(int mx, int my, int button)
 		passed to us as a parameter. */
 	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
+		if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
+		if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
 		{
@@ -116,8 +119,8 @@ void GameGUI::step(void)
 	bool wasMouseMotion=false;
 	bool wasWindowEvent=false;
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
-	// we get all pending events but for mousemotion we only keep the last one
-	while (SDL_PollEvent(&event))
+	// we get all pending events but for mouse motion we only keep the last one
+	while (GAGCore::GraphicContext::pollEvent(&event))
 	{
 		GAGCore::GraphicContext::translateMouseEvent(&event);
 		if (event.type==SDL_MOUSEMOTION)
@@ -137,7 +140,7 @@ void GameGUI::step(void)
 				when drawing areas with the brush. */
 			if (onViewport)
 			{
-				game.map.cursorToBuildingPos (lastMouseX, lastMouseY, 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
+				game.map.cursorToBuildingPos (mapMouseX(lastMouseX), mapMouseY(lastMouseY), 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
 			}
 			else
 			{
@@ -223,12 +226,15 @@ void GameGUI::step(void)
 	for(unsigned i=0; i<viewportSteps; ++i)
 	{
 		handleKeyAlways();
-		viewportX += viewportSpeedX;
-		viewportY += viewportSpeedY;
+        updateCamera();
+        camera.originX+=viewportSpeedX*32/camera.zoom;
+        camera.originY+=viewportSpeedY*32/camera.zoom;
+        camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 	}
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 
+	updateCamera();
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
@@ -248,7 +254,7 @@ void GameGUI::step(void)
 	std::shared_ptr<OrderVoiceData> orderVoiceData;
 	while ((orderVoiceData = globalContainer->voiceRecorder->getNextOrder()) != NULL)
 	{
-		orderVoiceData->recepientsMask = chatMask ^ (chatMask & (1<<localPlayer));
+		orderVoiceData->recipientsMask = chatMask ^ (chatMask & (1<<localPlayer));
 		orderQueue.push_back(orderVoiceData);
 	}
 

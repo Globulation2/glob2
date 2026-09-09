@@ -18,23 +18,23 @@ namespace GAGCore
 	void MemoryStreamBackend::write(const void *data, const size_t size)
 	{
 		const char *_data = static_cast<const char *>(data);
-		if ((index + size) > datas.size())
-			datas.resize(index + size);
-		std::copy(_data, _data+size, datas.begin()+index);
+		if ((index + size) > buffer.size())
+			buffer.resize(index + size);
+		std::copy(_data, _data+size, buffer.begin()+index);
 		index += size;
 	}
 	
 	void MemoryStreamBackend::read(void *data, size_t size)
 	{
 		char *_data = static_cast<char *>(data);
-		if (index+size > datas.size())
+		if (index+size > buffer.size())
 		{
 			// overread, read 0
 			std::fill(_data, _data+size, 0);
 		}
 		else
 		{
-			std::copy(datas.data() + index, datas.data() + index + size, _data);
+			std::copy(buffer.data() + index, buffer.data() + index + size, _data);
 			index += size;
 		}
 	}
@@ -55,19 +55,19 @@ namespace GAGCore
 	
 	void MemoryStreamBackend::seekFromStart(int displacement)
 	{
-		index = std::min(static_cast<size_t>(displacement), datas.size());
+		index = std::min(static_cast<size_t>(displacement), buffer.size());
 	}
 	
 	void MemoryStreamBackend::seekFromEnd(int displacement)
 	{
-		index = static_cast<size_t>(std::max(0, static_cast<int>(datas.size()) - displacement));
+		index = static_cast<size_t>(std::max(0, static_cast<int>(buffer.size()) - displacement));
 	}
 	
 	void MemoryStreamBackend::seekRelative(int displacement)
 	{
 		int newIndex = static_cast<int>(index) + displacement;
 		newIndex = std::max(newIndex, 0);
-		newIndex = std::min(newIndex, static_cast<int>(datas.size()));
+		newIndex = std::min(newIndex, static_cast<int>(buffer.size()));
 		index = static_cast<size_t>(newIndex);
 	}
 	
@@ -78,6 +78,6 @@ namespace GAGCore
 	
 	bool MemoryStreamBackend::isEndOfStream(void)
 	{
-		return index >= datas.size();
+		return index >= buffer.size();
 	}
 }

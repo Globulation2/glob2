@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 89
+#define VERSION_MINOR 91
+// version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
 // version 12 saves map name into SessionGame instead of BaseMap.
@@ -91,12 +92,14 @@
 // version 87 widened the replay inter-order step counter from Uint16 to Uint32
 // version 88 added the per-team Map::exploredArea to saved games
 // version 89 preserves live team statistics and their sampling cadence
+// version 90 marks the weighted per-swim-class pathfinding and sqrt(2) diagonal timing (#184):
+//            the simulation changed, so replays recorded before it diverge and are refused
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 28
+#define NET_PROTOCOL_VERSION 29
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 27
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 29
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
@@ -105,4 +108,5 @@
 // version 26 changed heavy updates to YOG in general
 // version 27 reordered the NetMessages so that reverse compatibility with future game versions can be done, added random seed in GameHeader
 // version 28 Nicowar's behavior was changed
+// version 29 the pathfinding simulation changed (#184); older clients would desync, so they are refused
 

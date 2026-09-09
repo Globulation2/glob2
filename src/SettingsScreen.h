@@ -51,7 +51,8 @@ public:
 		UPGRADES=21,
 		FLAGSETTINGS=22,
 		PRESSEDSELECTOR=23,
-		AUTOMATIC_TORUS=24,
+		HIGHRES=24,
+		AUTOMATIC_TORUS=25,
 	};
 
 	// IDs for the four sub-groups inside the "Building Defaults" tab. Stored in
@@ -66,12 +67,11 @@ private:
 	Settings old_settings;
 	List *languageList;
 	List *modeList;
-	Text *modeListNote;
 	TextInput *userName;
 	
 	TextButton *ok, *cancel;
 	TextButton *buildings, *flags, *constructionsites, *upgrades;
-	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel, *automaticTorus;
+	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel, *automaticTorus, *highres;
 	Selector *musicVol;
 	Selector *voiceVol;
 	Selector *gameSpeed;
@@ -192,4 +192,5 @@ public:
 	SettingsScreen();
 	virtual ~SettingsScreen() { }
 	void onAction(Widget *source, Action action, int par1, int par2);
+	void onSDLEvent(SDL_Event *event) override;
 };

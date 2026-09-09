@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include <MapCamera.h>
 
 #include "Brush.h"
 #include "GAGSys.h"
@@ -10,6 +11,7 @@
 #include "Game.h"
 #include "KeyboardManager.h"
 #include "MapEditDialog.h"
+#include "WidgetRectangle.h"
 #include <optional>
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
@@ -20,21 +22,6 @@
 #define RIGHT_MENU_WIDTH 160
 #define RIGHT_MENU_OFFSET (160-128)/2
 
-///A generic rectangle structure used for a variety of purposes, but mainly for the convience of the widget system
-struct widgetRectangle
-{
-	widgetRectangle(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
-	widgetRectangle() : x(0), y(0), width(0), height(0) {}
-	//! Half-open on both axes: the top and left edges are inside, the bottom and
-	//! right edges are not. This makes abutting rectangles tile without either
-	//! overlapping or leaving a dead pixel line between them.
-	bool is_in(int posx, int posy) { return posx>=x && posx<(x+width) && posy>=y && posy<(y+height); }
-
-	int x;
-	int y;
-	int width;
-	int height;
-};
 
 class MapEdit;
 
@@ -59,7 +46,7 @@ public:
 	///This enables the widget.
 	void enable();
 	///This tests whether the x,y coordinates are within this particular widgets area.
-	bool is_in(int x, int y) { return area.is_in(x, y); }
+	bool is_in(int x, int y);
 	///This function handles a click with mouse positions relative to the widget. It can be overridden, but derived classes
 	///should be careful to call the base class version after there customized code
 	virtual void handleClick(int relMouseX, int relMouseY);
@@ -69,7 +56,7 @@ public:
 	friend class MapEdit;
 protected:
 	MapEdit& me;
-	widgetRectangle area;
+	RightAnchoredWidgetRectangle area;
 	std::string group;
 	std::string name;
 	std::string action;
@@ -376,6 +363,7 @@ private:
 ///This is the map editor class in all its glory.
 class MapEdit
 {
+	friend class HighResolutionIntegrationHarness;
 public:
 	MapEdit();
 	~MapEdit();
@@ -422,6 +410,8 @@ public:
 	///Tells whether the fertility overlay is set or not
 	bool isFertilityOn;
 private:
+	void draw(Uint64 frameTick);
+
 	///If this is set, the map editor will exit as soon as it finishes drawing and processing events
 	bool doQuit;
 	///If this is set, the map editor will do a full quit, from glob2 entirely
@@ -488,6 +478,11 @@ private:
 	int viewportX;
 	///This is the y position of the map that is being painted on the screen
 	int viewportY;
+	MapCamera camera;
+	void updateCamera();
+	bool zoomMap(double steps, int x, int y);
+	int mapMouseX(int x) const { return camera.localX(x); }
+	int mapMouseY(int y) const { return camera.localY(y); }
 	///This is the x-scrolling speed
 	int xSpeed;
 	///This is the y-scrolling speed
@@ -730,10 +725,10 @@ private:
 	BrushAccumulator brushAccumulator;
 	///Handles brush click to place a zone
 	void handleBrushClick(int mx, int my);
-	///The pair of map fields a zone brush edits: the per-case team bitmask and the local (display-only) overlay
+	///The pair of map fields a zone brush edits: the per-tile team bitmask and the local (display-only) overlay
 	struct AreaBrushTarget
 	{
-		Uint32 Case::* caseMask;
+		Uint32 Tile::* tileMask;
 		Utilities::BitArray& view;
 	};
 	///Returns the map fields edited by the current brushType

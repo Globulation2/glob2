@@ -32,7 +32,7 @@ public:
 
 	/**
 	 * Sets the password in the Settings object.
-	 * Provided an arbitrary string the password in the settingsobject is set
+	 * Provided an arbitrary string the password in the settings object is set
 	 * to the given value.
 	 * @param s The new password to use.
 	 */
@@ -66,6 +66,7 @@ public:
 	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
+	bool highResolutionArtwork;
 	/// Simulation speed preset. Zero is the original 25 ticks/second;
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;

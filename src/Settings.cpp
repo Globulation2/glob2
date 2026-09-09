@@ -43,6 +43,7 @@ Settings::Settings()
 	version = 0;
 	
 	scrollWheelEnabled=true;
+	highResolutionArtwork=true;
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
 	
@@ -115,6 +116,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
+		READ_PARSED_INT(highResolutionArtwork);
 		READ_PARSED_INT(gameSpeed);
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_NORMAL),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
@@ -180,6 +182,7 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
+		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)

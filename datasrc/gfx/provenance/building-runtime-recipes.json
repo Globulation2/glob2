@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "frames": [
+    {
+      "id": "school1b0",
+      "source": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
+      "layers": {
+        "base": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9,
+          10
+        ],
+        "team": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "racetrack0b0",
+      "source": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
+      "layers": {
+        "base": [
+          1,
+          2
+        ],
+        "team": [
+          0
+        ]
+      }
+    },
+    {
+      "id": "racetrack1b0",
+      "source": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
+      "layers": {
+        "base": [
+          1,
+          2
+        ],
+        "team": [
+          0
+        ]
+      }
+    }
+  ]
+}

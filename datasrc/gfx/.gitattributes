@@ -1,0 +1,5 @@
+# Preserve source/reference bytes, including historical text line endings.
+originals/** -text
+concept-art/** -text
+reference-exports/** -text
+tools/** -text

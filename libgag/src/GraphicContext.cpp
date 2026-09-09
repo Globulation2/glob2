@@ -30,6 +30,8 @@ namespace GAGCore
 		isTextureSRectangle = isTextureSRectangle || (strstr(glExtensions, "GL_EXT_texture_rectangle") != NULL);
 		isTextureSRectangle = isTextureSRectangle || (strstr(glExtensions, "GL_ARB_texture_rectangle") != NULL);
 
+		// A single normalized texture target supports both legacy atlases and HD mipmaps.
+		isTextureSRectangle = false;
 		const char *glVendor = (const char *)glGetString(GL_VENDOR);
 		if (strstr(glVendor, "ATI"))
 			useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
@@ -162,6 +164,7 @@ namespace GAGCore
 	{
 		minW = w;
 		minH = h;
+		if (window) SDL_SetWindowMinimumSize(window, minW, minH);
 	}
 
 	VideoModes GraphicContext::listVideoModes() const
@@ -226,6 +229,15 @@ namespace GAGCore
 				fprintf(stderr, "Toolkit : Initialized : Graphic Context created\n");
 		}
 
+		#ifdef _WIN32
+		SDL_version version;
+		SDL_GetVersion(&version);
+		if (SDL_VERSIONNUM(version.major, version.minor, version.patch) < SDL_VERSIONNUM(2, 30, 0))
+		{
+			fprintf(stderr, "Glob2 requires SDL 2.30 or newer for window resizing on Windows.\n");
+			exit(1);
+		}
+		#endif
 		TTF_Init();
 
 		///If setting the given resolution fails, default to 800x600
@@ -244,8 +256,12 @@ namespace GAGCore
 		// must run before SDL_Quit(): ~CursorManager() runs too late, after this
 		// destructor's body, and SDL_FreeCursor() after SDL_Quit() is undefined
 		cursorManager.releaseNativeCursor();
+		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
+		releaseFrameCache();
 		freeOwnedSurface();
-		if (glContext) SDL_GL_DeleteContext(glContext);
+		if (context) SDL_GL_DeleteContext(context);
+		if (window) SDL_DestroyWindow(window);
+		_gc = nullptr;
 		TTF_Quit();
 		SDL_Quit();
 
@@ -292,27 +308,39 @@ namespace GAGCore
 
 	void GraphicContext::updateWindowSize(void)
 	{
-		if (!window)
-			return;
+		if (!window || !sdlsurface) return;
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
+		if (windowW <= 0 || windowH <= 0 || (SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED)) return;
+		if ((optionFlags & RESIZABLE) && !(optionFlags & FULLSCREEN)
+			&& (getW() != windowW || getH() != windowH))
+		{
+			SDL_Surface *resized = SDL_CreateRGBSurface(0, windowW, windowH, 32,
+				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+			if (!resized) return;
+			freeOwnedSurface();
+			sdlsurface = resized;
+			ownsSurface = true;
+			#ifdef HAVE_OPENGL
+			if (optionFlags & USEGPU)
+			{
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				gluOrtho2D(0, getW(), getH(), 0);
+				glMatrixMode(GL_MODELVIEW);
+				glLoadIdentity();
+			}
+			#endif
+			setClipRect();
+		}
 		#ifdef HAVE_OPENGL
 		if (optionFlags & USEGPU)
 		{
 			SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
 			applyGLViewport();
 		}
-		else
 		#endif
-		if (!ownsSurface && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h))
-		{
-			// the window surface no longer matches the logical size: render offscreen and scale on nextFrame
-			const int w = sdlsurface->w, h = sdlsurface->h;
-			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
-				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-			ownsSurface = true;
-		}
 	}
 
 	void GraphicContext::windowToLogical(Sint32 &x, Sint32 &y)
@@ -336,12 +364,25 @@ namespace GAGCore
 			y = sdlsurface->h - 1;
 	}
 
+    bool GraphicContext::toggleFullscreen()
+    {
+        if(!window)return false;
+        const bool fullscreen=(optionFlags & FULLSCREEN)==0;
+        if(SDL_SetWindowFullscreen(window,fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0)!=0)return false;
+        if(fullscreen)optionFlags|=FULLSCREEN;else optionFlags&=~FULLSCREEN;
+        updateWindowSize();
+        return true;
+    }
+
 	void GraphicContext::translateMouseEvent(SDL_Event *event)
 	{
 		if (!_gc)
 			return;
 		switch (event->type)
 		{
+            case SDL_KEYDOWN:
+                if(event->key.keysym.sym==SDLK_F11 && !event->key.repeat)_gc->toggleFullscreen();
+                break;
 			case SDL_MOUSEMOTION:
 				_gc->windowToLogical(event->motion.x, event->motion.y);
 				break;
@@ -391,28 +432,26 @@ namespace GAGCore
 		if (flags & FULLSCREEN)
 			// Desktop fullscreen, not exclusive: Wayland can't modeswitch to a non-native mode.
 			sdlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-		// FIXME: window resize is broken
-		// if (flags & RESIZABLE)
-		// 	sdlFlags |= SDL_WINDOW_RESIZABLE;
+		if ((flags & RESIZABLE) && !(flags & FULLSCREEN))
+			sdlFlags |= SDL_WINDOW_RESIZABLE;
 		#ifdef HAVE_OPENGL
 		if (flags & USEGPU)
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-			sdlFlags |= SDL_WINDOW_OPENGL;
+			sdlFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
 		}
 		#else
 		// remove GL from options
 		optionFlags &= ~USEGPU;
 		#endif
 
-		// SDL windows do not own their GL contexts. Release the old context
-		// explicitly, including all renderer resources attached to it.
-		if (glContext) {
-			SDL_GL_DeleteContext(glContext);
-			glContext = nullptr;
-		}
 		// if window exists, delete it
+		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
+		watchingEvents = false;
+		releaseFrameCache();
+		if (context) SDL_GL_DeleteContext(context);
+		context = nullptr;
 		freeOwnedSurface();
 		if (window) {
 			SDL_DestroyWindow(window);
@@ -431,25 +470,11 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-		// SDL_GetWindowSurface is incompatible with SDL_WINDOW_OPENGL;
-		// in GPU mode, create a small dummy surface so format-dependent code works.
-		if (optionFlags & USEGPU)
-		{
-			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
-				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-			ownsSurface = true;
-		}
-		else if (windowW != w || windowH != h)
-		{
-			// Render to a logical-size offscreen surface; nextFrame scales it to the window.
-			sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
-				0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-			ownsSurface = true;
-		}
-		else
-		{
-			sdlsurface = SDL_GetWindowSurface(window);
-		}
+		SDL_SetWindowMinimumSize(window, std::max(1, minW), std::max(1, minH));
+		// Own the drawing surface: SDL invalidates its window surface during resizing.
+		sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
+			0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		ownsSurface = true;
 		if (!sdlsurface)
 		{
 			fprintf(stderr, "Toolkit : can't get surface for %dx%d at 32 bpp\n", w, h);
@@ -461,12 +486,12 @@ namespace GAGCore
 			// Use the effective flags: software-only builds clear USEGPU above.
 			if (optionFlags & USEGPU)
 			{
-				glContext = SDL_GL_CreateContext(window);
-				if (!glContext || SDL_GL_MakeCurrent(window, glContext) != 0)
+				context = SDL_GL_CreateContext(window);
+				if (!context || SDL_GL_MakeCurrent(window, context) != 0)
 				{
 					fprintf(stderr, "OpenGL context failed: %s\n", SDL_GetError());
-					if (glContext) SDL_GL_DeleteContext(glContext);
-					glContext = nullptr;
+					if (context) SDL_GL_DeleteContext(context);
+					context = nullptr;
 					return false;
 				}
 				++glContextGeneration;
@@ -549,7 +574,12 @@ namespace GAGCore
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
 			{
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
 				gluOrtho2D(0, w, h, 0);
+				glMatrixMode(GL_MODELVIEW);
+				glLoadIdentity();
+				glGetIntegerv(GL_MAX_TEXTURE_SIZE, &frameCache.maximumTextureSize);
 				glEnable(GL_LINE_SMOOTH);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 				glState.doTexture(true);
@@ -557,6 +587,9 @@ namespace GAGCore
 			}
 			#endif
 
+			eventThread = SDL_ThreadID();
+			SDL_AddEventWatch(watchWindow, this);
+			watchingEvents = true;
 			return true;
 		}
 	}
@@ -572,40 +605,20 @@ namespace GAGCore
 				unsigned b = SDL_GetMouseState(&mx, &my);
 				translateMouseCoordinates(mx, my);
 				cursorManager.nextTypeFromMouse(this, mx, my, b != 0);
-				cursorManager.update(drawableScale());
+				// Cocoa cursor images are sized in window points; Retina already
+				// supplies the backing-pixel scale. Applying it here doubles the cursor.
+				float cursorScale = drawableScale();
+				const char *videoDriver = SDL_GetCurrentVideoDriver();
+				if (videoDriver && std::strcmp(videoDriver, "cocoa") == 0 && windowW && windowH)
+					cursorScale = std::min(float(windowW) / getW(), float(windowH) / getH());
+				cursorManager.update(cursorScale);
 			}
-
-
 			#ifdef HAVE_OPENGL
-			if (optionFlags & GraphicContext::USEGPU)
-			{
-				Sprite::checkAllSpritesDrawn();
-				SDL_GL_SwapWindow(window);
-			}
-			else
+			if (optionFlags & USEGPU) Sprite::checkAllSpritesDrawn();
 			#endif
-			{
-				if (isScalingActive())
-				{
-					SDL_Surface *windowSurface = SDL_GetWindowSurface(window);
-					if (windowSurface)
-					{
-						// Letterbox instead of stretching to fill, so a mismatched aspect
-						// ratio doesn't squash circles into ellipses (see applyGLViewport()
-						// for the equivalent GL-mode fix).
-						float scale = std::min(static_cast<float>(windowSurface->w) / sdlsurface->w, static_cast<float>(windowSurface->h) / sdlsurface->h);
-						SDL_Rect dst;
-						dst.w = static_cast<int>(sdlsurface->w * scale + 0.5f);
-						dst.h = static_cast<int>(sdlsurface->h * scale + 0.5f);
-						dst.x = (windowSurface->w - dst.w) / 2;
-						dst.y = (windowSurface->h - dst.h) / 2;
-						if (dst.x || dst.y)
-							SDL_FillRect(windowSurface, NULL, SDL_MapRGB(windowSurface->format, 0, 0, 0));
-						SDL_BlitScaled(sdlsurface, NULL, windowSurface, &dst);
-					}
-				}
-				SDL_UpdateWindowSurface(window);
-			}
+			cacheFrame();
+			if (optionFlags & USEGPU) swapBuffers();
+			else presentLastFrame();
 		}
 	}
 

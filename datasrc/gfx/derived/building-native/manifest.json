@@ -1,0 +1,283 @@
+{
+  "frames": [
+    {
+      "source": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
+      "exports": [
+        {
+          "sha256": "b10cb4f7fc43a9d40e5b798cec6048481fa4f1f37450007ed50299309fdc4f48",
+          "role": "base",
+          "selected_layers": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            8,
+            9,
+            10
+          ],
+          "file": "school1b0.png"
+        },
+        {
+          "sha256": "ad793d3cf395b42a9707f7adb05dc5371f4e91eaf31c12d053a25d4a7fc9136c",
+          "role": "team",
+          "selected_layers": [
+            0
+          ],
+          "file": "school1b0r.png"
+        }
+      ],
+      "native_size": [
+        512,
+        562
+      ],
+      "source_layers": [
+        {
+          "opacity": 25.098039215686274,
+          "index": 0,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#5"
+        },
+        {
+          "opacity": 30.58823529411765,
+          "index": 1,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "Background copy"
+        },
+        {
+          "opacity": 100.0,
+          "index": 2,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#7"
+        },
+        {
+          "opacity": 100.0,
+          "index": 3,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 3,
+          "name": "New Layer#4"
+        },
+        {
+          "opacity": 100.0,
+          "index": 4,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#3"
+        },
+        {
+          "opacity": 100.0,
+          "index": 5,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 3,
+          "name": "New Layer copy"
+        },
+        {
+          "opacity": 78.82352941176471,
+          "index": 6,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#2"
+        },
+        {
+          "opacity": 58.43137254901961,
+          "index": 7,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer"
+        },
+        {
+          "opacity": 100.0,
+          "index": 8,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#6"
+        },
+        {
+          "opacity": 100.0,
+          "index": 9,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "Background"
+        },
+        {
+          "opacity": 60.78431372549019,
+          "index": 10,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#8"
+        }
+      ],
+      "source_sha256": "7670498eae808357f8f430543f9f89cf11a880b602c643b66089eca792306341",
+      "id": "school1b0"
+    },
+    {
+      "source": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
+      "exports": [
+        {
+          "sha256": "f890146efb57ef9ab29a73bf746517576e2a74e17b7a4bdd2188ad875b19946d",
+          "role": "base",
+          "selected_layers": [
+            1,
+            2
+          ],
+          "file": "racetrack0b0.png"
+        },
+        {
+          "sha256": "3d2350323d5b501df821348c3b41c356c05f915c6c71600fc4fa59bbe6ed0ee3",
+          "role": "team",
+          "selected_layers": [
+            0
+          ],
+          "file": "racetrack0b0r.png"
+        }
+      ],
+      "native_size": [
+        192,
+        192
+      ],
+      "source_layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#4"
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "Background"
+        },
+        {
+          "opacity": 52.54901960784314,
+          "index": 2,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#6"
+        }
+      ],
+      "source_sha256": "dd79392b63b2cf972b5eb1f3aaf4fdcee5da31c3f657d1f04b0ccef27a8cb9b1",
+      "id": "racetrack0b0"
+    },
+    {
+      "source": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
+      "exports": [
+        {
+          "sha256": "30163c7bc7285faace682b9c13c10064514ed91f9cedf8dd461fdcd717490547",
+          "role": "base",
+          "selected_layers": [
+            1,
+            2
+          ],
+          "file": "racetrack1b0.png"
+        },
+        {
+          "sha256": "830795a7662804d991b19e016a07b70e2552ec714561c040c4ca68a1fbf56112",
+          "role": "team",
+          "selected_layers": [
+            0
+          ],
+          "file": "racetrack1b0r.png"
+        }
+      ],
+      "native_size": [
+        256,
+        256
+      ],
+      "source_layers": [
+        {
+          "opacity": 100.0,
+          "index": 0,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#1"
+        },
+        {
+          "opacity": 100.0,
+          "index": 1,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "Background"
+        },
+        {
+          "opacity": 58.03921568627452,
+          "index": 2,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer#2"
+        },
+        {
+          "opacity": 100.0,
+          "index": 3,
+          "offsets": [
+            0,
+            0
+          ],
+          "mode": 0,
+          "name": "New Layer"
+        }
+      ],
+      "source_sha256": "a2bda89aad23ea91f37d179fb0760e64e11923db6be981649b21185cb4829d9b",
+      "id": "racetrack1b0"
+    }
+  ],
+  "recipe_sha256": "97231cc74d4a374db79e88ce9819edbf3eff71db47b83f6528fed05468212363",
+  "version": 1
+}

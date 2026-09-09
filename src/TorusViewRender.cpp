@@ -289,7 +289,7 @@ void TorusView::updateClouds()
 #endif
 }
 
-bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height)
+bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, int width, int height, float flatZoom, float fractionX, float fractionY)
 {
 #ifdef HAVE_OPENGL
     if (!active() || !available())
@@ -320,8 +320,8 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
             originX = focus.originX;
             originY = focus.originY;
         }
-        focusU = (((vx - originX) & game.map.getMaskW()) + width / 64.0f) / game.map.getW();
-        focusV = (((vy - originY) & game.map.getMaskH()) + (height + 16) / 64.0f) / game.map.getH();
+        focusU = (((vx - originX) & game.map.getMaskW()) + fractionX / 32.0f + width / (64.0f * flatZoom)) / game.map.getW();
+        focusV = (((vy - originY) & game.map.getMaskH()) + fractionY / 32.0f + (height + 16) / (64.0f * flatZoom)) / game.map.getH();
         baseViewportX = vx;
         baseViewportY = vy;
         worldW = game.map.getW();
@@ -356,6 +356,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     vx = destination.x;
     vy = destination.y;
     auto gfx = globalContainer->gfx;
+    Sprite::flushBatches(gfx);
     gfx->setClipRect();
     GLint oldViewport[4], oldMatrixMode, oldProgram;
     glGetIntegerv(GL_CURRENT_PROGRAM, &oldProgram);
@@ -405,6 +406,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                          originX, originY, team, mapView, options | Game::DRAW_NO_CLOUD_LAYER,
                          nullptr, nullptr, cloudGridLimit);
         }
+        Sprite::flushBatches(gfx);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
     const bool drawClouds =
@@ -472,7 +474,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         ringMapAspect = aspect;
     }
     float scale = 0.9f * std::min(width / ringWidth, (height - 16) / ringHeight) * mix(1, cameraZoom, roll);
-    float sx = std::exp(mix(std::log(game.map.getW() * 32 / (8 * pi)), std::log(scale), pull));
+    float sx = std::exp(mix(std::log(game.map.getW() * 32 * flatZoom / (8 * pi)), std::log(scale), pull));
     float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
     float cx = width * 0.5f;
     float cy = (height + 16) * 0.5f;

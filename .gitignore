@@ -22,3 +22,6 @@ compile_commands.json
 Glob2.app/
 Glob2-*.dmg
 /.tmp
+
+/output/frontend/
+/build-server/

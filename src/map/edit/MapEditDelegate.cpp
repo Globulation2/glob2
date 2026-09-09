@@ -221,7 +221,7 @@ void MapEdit::updateCoordinatesLabel()
 	if (panelMode==Terrain) //terrain has a slightly different coordinates system
 		game.map.displayToMapCaseAligned(mouseX+(terrainType>TerrainSelector::Water ? 0 : 16), mouseY+(terrainType>TerrainSelector::Water ? 0 : 16), &x, &y,  viewportX, viewportY);
 	else
-		game.map.displayToMapCaseAligned(mouseX, mouseY, &x, &y, viewportX, viewportY);
+		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 	s << "X: " << x << " Y: " << y;
 	mapCoordinatesLabel->setLabel(s.str());
 }

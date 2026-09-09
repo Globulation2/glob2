@@ -13,6 +13,7 @@
 //   - SettingsScreenKeyboard.cpp  ("Keyboard Shortcuts" tab)
 
 #include "SettingsScreen.h"
+#include <GUIStyle.h>
 #include "GlobalContainer.h"
 #include <assert.h>
 #include <sstream>
@@ -63,6 +64,7 @@ void SettingsScreen::setFullscreen()
         globalContainer->settings.screenFlags &= ~(GraphicContext::FULLSCREEN);
         globalContainer->settings.screenFlags |= GraphicContext::RESIZABLE;
     }
+    modeList->setVisible(fullscreen->getState());
     updateGfxCtx();
 }
 
@@ -173,23 +175,14 @@ void SettingsScreen::handleListSelected(Widget* source, int par1)
 	}
 	else if (source==modeList)
 	{
-		int w, h, res;
-		char fso = 0; //full screen only
-		res = sscanf(modeList->getText(par1).c_str(), "%dx%d %c", &w, &h, &fso);
-		assert(res >= 2);
+		// Windowed dimensions follow the OS window; presets select fullscreen's
+		// logical rendering resolution only.
+		if (!fullscreen->getState()) return;
+		int w, h;
+		if (sscanf(modeList->getText(par1).c_str(), "%dx%d", &w, &h) != 2) return;
 		globalContainer->settings.screenWidth=w;
 		globalContainer->settings.screenHeight=h;
-		if(fso=='*')
-		{
-			fullscreen->setState(false);
-			fullscreen->setClickable(false);
-			modeListNote->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
-		}
-		else
-		{
-			fullscreen->setClickable(true);
-			modeListNote->setStyle(Font::Style(Font::STYLE_NORMAL, 255, 255, 255));
-		}
+
 	    setFullscreen();
 	}
 	else if (source == shortcut_list)
@@ -227,7 +220,11 @@ void SettingsScreen::updateGameSpeedText(void)
 
 void SettingsScreen::handleButtonStateChanged(Widget* source)
 {
-	if (source==rememberUnitButton)
+	if (source==highres)
+	{
+		globalContainer->settings.highResolutionArtwork=highres->getState();
+	}
+	else if (source==rememberUnitButton)
 	{
 		globalContainer->settings.rememberUnit=rememberUnitButton->getState();
 	}
@@ -303,7 +300,6 @@ void SettingsScreen::retranslateUiStrings()
 	modifyTitle(unitGroup, Toolkit::getStringTable()->getString("[building settings]"));
 	modifyTitle(keyboardGroup, Toolkit::getStringTable()->getString("[keyboard settings]"));
 
-	modeListNote->setText(Toolkit::getStringTable()->getString("[no fullscreen]"));
 	language->setText(Toolkit::getStringTable()->getString("[language-tr]"));
 	display->setText(Toolkit::getStringTable()->getString("[display]"));
 	usernameText->setText(Toolkit::getStringTable()->getString("[username]"));
@@ -383,12 +379,21 @@ std::string SettingsScreen::actDisplayModeToString(void)
 	return oss.str();
 }
 
+void SettingsScreen::onSDLEvent(SDL_Event *event)
+{
+	Glob2TabScreen::onSDLEvent(event);
+	// The event pump may coalesce resizing with a later expose/focus event.
+	if (event->type == SDL_WINDOWEVENT)
+		actDisplay->setText(actDisplayModeToString());
+}
+
 
 void SettingsScreen::onGroupActivated(int group_n)
 {
 	if(group_n == generalGroup)
 	{
 		setVisibilityFromAudioSettings();
+		modeList->setVisible(fullscreen->getState());
 	}
 	else if(group_n == unitGroup)
 	{

@@ -2,22 +2,79 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <cmath>
+#include <cassert>
 #include <algorithm>
 #include "GraphicContextPrivate.h"
 
 namespace GAGCore
 {
+	void GraphicContext::beginMapTransform(float zoom,float x,float y,int cx,int cy,int cw,int ch)
+	{
+#ifdef HAVE_OPENGL
+		if(!(optionFlags & USEGPU))return;
+		assert(!mapTransformActive);
+		Sprite::flushBatches(this);
+		mapTranslateX=x;mapTranslateY=y;mapTransformActive=true;mapScale=zoom;mapClipX=cx;mapClipY=cy;mapClipW=cw;mapClipH=ch;
+		glPushMatrix();glTranslatef(x,y,0);glScalef(zoom,zoom,1);setClipRect(cx,cy,cw,ch);
+#endif
+	}
+	void GraphicContext::endMapTransform()
+	{
+#ifdef HAVE_OPENGL
+		if(!mapTransformActive)return;
+		Sprite::flushBatches(this);
+		glPopMatrix();mapTransformActive=false;mapScale=1;setClipRect();
+#endif
+	}
+
+    void GraphicContext::drawMapCopies(int pw,int ph,int vw,int vh,const std::function<void()> &draw)
+    {
+        draw();
+#ifdef HAVE_OPENGL
+        if(!(optionFlags & USEGPU) || pw<=0 || ph<=0)return;
+        Sprite::flushBatches(this);
+        periodicCopy=true;
+        for(int y=-1;y<=vh/ph+1;++y)for(int x=-1;x<=vw/pw+1;++x)
+        {
+            if(x==0 && y==0)continue;
+            glPushMatrix();glTranslatef(x*pw,y*ph,0);
+            draw();Sprite::flushBatches(this);glPopMatrix();
+        }
+        periodicCopy=false;
+#endif
+    }
+
+    void GraphicContext::beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh)
+    {
+#ifdef HAVE_OPENGL
+        if(!mapTransformActive)return;
+        Sprite::flushBatches(this);
+        x=x*mapScale+mapTranslateX;y=y*mapScale+mapTranslateY;
+        sx=mapClipX;sy=mapClipY;sw=mapClipW;sh=mapClipH;
+        glPushMatrix();glScalef(1/mapScale,1/mapScale,1);glTranslatef(-mapTranslateX,-mapTranslateY,0);
+        overlayScale=mapScale;mapScale=1;
+#endif
+    }
+    void GraphicContext::endScreenOverlay()
+    {
+#ifdef HAVE_OPENGL
+        if(!mapTransformActive)return;
+        Sprite::flushBatches(this);glPopMatrix();mapScale=overlayScale;
+#endif
+    }
+
 	// GL rasterises lines at a width in drawable pixels, which the viewport
 	// transform does not scale the way it scales filled geometry.
 	void GraphicContext::setScaledLineWidth(float width)
 	{
 		#ifdef HAVE_OPENGL
-		glLineWidth(width * drawableScale());
+		glLineWidth(width * drawableScale() * mapScale);
 		#endif
 	}
 
 	void GraphicContext::setClipRect(int x, int y, int w, int h)
 	{
+		if(mapTransformActive){x=mapClipX;y=mapClipY;w=mapClipW;h=mapClipH;}
 		DrawableSurface::setClipRect(x, y, w, h);
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
@@ -43,6 +100,7 @@ namespace GAGCore
 
 	void GraphicContext::setClipRect(void)
 	{
+		if(mapTransformActive){setClipRect(mapClipX,mapClipY,mapClipW,mapClipH);return;}
 		DrawableSurface::setClipRect();
 		#ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
@@ -95,7 +153,7 @@ namespace GAGCore
 			setScaledLineWidth(1.0f);
 
 			// draw
-			glBegin(GL_LINES);
+			++drawCalls;glBegin(GL_LINES);
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
@@ -135,7 +193,7 @@ namespace GAGCore
 			glState.doTexture(false);
 
 			// draw
-			glBegin(GL_QUADS);
+			++drawCalls;glBegin(GL_QUADS);
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else
@@ -190,7 +248,7 @@ namespace GAGCore
 			glLineWidth(1.0f);
 
 			// draw
-			glBegin(GL_LINES);
+			++drawCalls;glBegin(GL_LINES);
 			if (color.a < 255)
 			{
 				// the passes overlap, so each carries the alpha that composes back to the requested one
@@ -238,7 +296,7 @@ namespace GAGCore
 			double fy = y;
 			double fray = radius;
 
-			glBegin(GL_LINES);
+			++drawCalls;glBegin(GL_LINES);
 			if (color.a < 255)
 				glColor4ub(color.r, color.g, color.b, color.a);
 			else

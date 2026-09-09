@@ -30,7 +30,7 @@ class TorusView
     void setPointerHeld(bool held) { pointerHeld = held; }
     // False requests the ordinary 2D renderer on this same frame.
     bool draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width,
-              int height);
+              int height, float flatZoom = 1, float fractionX = 0, float fractionY = 0);
 
   private:
     void releaseResources();

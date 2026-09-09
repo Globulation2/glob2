@@ -73,8 +73,9 @@ namespace GAGCore
 			// Bias nearest-neighbour ties toward the same texel for standalone
 			// sprites and atlas frames. A symmetric inset crosses texel boundaries
 			// in opposite directions depending on floating-point atlas offsets.
-			const float biasX = (1.0f / 64.0f) * surface->texMultX;
-			const float biasY = (1.0f / 64.0f) * surface->texMultY;
+			// sqrt(2)/1000 texels avoids alignment with common fractional HiDPI scales.
+			const float biasX = 0.00141421356f * surface->texMultX;
+			const float biasY = 0.00141421356f * surface->texMultY;
 			const float u0 = static_cast<float>(sx) * surface->texMultX + biasX;
 			const float u1 = static_cast<float>(sx + sw) * surface->texMultX + biasX;
 			const float v0 = static_cast<float>(sy) * surface->texMultY + biasY;
@@ -118,6 +119,7 @@ namespace GAGCore
 				glColor4ub(255, 255, 255, alpha);
 
 				glState.setTexture(surface->texture);
+				++drawCalls;
 				glBegin(GL_QUADS);
 				glTexCoord2f(u0, v0);
 				glVertex2f(x, y);
@@ -141,6 +143,7 @@ namespace GAGCore
 #ifdef HAVE_OPENGL
 		if (_gc->optionFlags & GraphicContext::USEGPU)
 		{
+			if(sprite->highResolutionAtlas)finishDrawingSprite(sprite->highResolutionAtlas.get(),alpha);
 			if (!sprite->atlas)
 			{
 				// No sprite sheet, so we have nothing to draw.
@@ -167,7 +170,7 @@ namespace GAGCore
 			glBindBuffer(GL_ARRAY_BUFFER, sprite->texCoordBuffer);
 			glBufferData(GL_ARRAY_BUFFER, sprite->texCoords.size() * sizeof(float), sprite->texCoords.data(), GL_STREAM_DRAW);
 			glTexCoordPointer(2, GL_FLOAT, 0, 0);
-			glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 2);
+			++drawCalls;glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 2);
 
 			sprite->vertices.clear();
 			sprite->texCoords.clear();
@@ -207,7 +210,7 @@ namespace GAGCore
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, &image[0]);
 				glBindTexture( GL_TEXTURE_2D, texture[0] );
-				glBegin(GL_QUADS);
+				++drawCalls;glBegin(GL_QUADS);
 				glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+0);
 				glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+0         ,y+0);
 				glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+0         ,y+mapH*cellH);
@@ -225,7 +228,7 @@ namespace GAGCore
 					int midy = y + dy * cellH + cellH/2;
 					for (int dx=0; dx < mapW-1; dx++)
 					{
-						glBegin(GL_TRIANGLE_FAN);
+						++drawCalls;glBegin(GL_TRIANGLE_FAN);
 						//This interpolates to find the center color, then fans out to the four corners.
 						int midx = x + dx * cellW + cellW/2;
 						float mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
@@ -281,7 +284,7 @@ namespace GAGCore
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
 				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA,mapW,mapH, 0, GL_ALPHA, GL_UNSIGNED_BYTE, &image[0]);
-				glBegin(GL_QUADS);
+				++drawCalls;glBegin(GL_QUADS);
 					glTexCoord2f( 1.0f, 0.0f ); glVertex2f(x+mapW*cellW,y+0);
 					glTexCoord2f( 0.0f, 0.0f ); glVertex2f(x+0         ,y+0);
 					glTexCoord2f( 0.0f, 1.0f ); glVertex2f(x+0         ,y+mapH*cellH);
@@ -294,6 +297,7 @@ namespace GAGCore
 			} else {
 				glState.doBlend(true);
 				glState.doTexture(false);
+				++drawCalls;
 				drawAlphaMapBatched(map, mapW, mapH, x, y, cellW, cellH, color.r, color.g, color.b);
 			}
 		}

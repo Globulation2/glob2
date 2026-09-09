@@ -12,6 +12,7 @@
 #include "SettingsScreen.h"
 #undef private
 #include "GameGUI.h"
+#include "GameGUIInternal.h"
 #include "Engine.h"
 #include "Team.h"
 #include "TorusMapFixture.h"
@@ -91,11 +92,13 @@ static int run(int argc, char **argv)
         {
             SettingsScreen options;
             const int oldMute = globalContainer->settings.mute;
+            const bool oldHighResolution = globalContainer->settings.highResolutionArtwork;
             assert(!options.automaticTorus->getState());
             options.automaticTorus->setState(true);
             options.onAction(options.automaticTorus, BUTTON_STATE_CHANGED, SettingsScreen::AUTOMATIC_TORUS, 0);
             assert(globalContainer->settings.automaticTorus);
             assert(globalContainer->settings.mute == oldMute);
+            assert(globalContainer->settings.highResolutionArtwork == oldHighResolution);
             options.onAction(nullptr, BUTTON_RELEASED, SettingsScreen::OK, 0);
         }
         Settings restored;
@@ -146,6 +149,7 @@ static int run(int argc, char **argv)
 #ifdef HAVE_OPENGL
             // Variable-size resource batching must preserve pixels, frame bounds,
             // transparency and ordering at native and overview scales.
+            Sprite::setHighResolution(false);
             Sprite resources;
             assert(resources.load("data/gfx/ressource"));
             GLint viewport[4];
@@ -185,6 +189,7 @@ static int run(int argc, char **argv)
                 assert(sizes[i] == std::make_pair(resources.getW(i), resources.getH(i)));
             std::cout << "Resource atlas maximum pixel difference: " << maximumDifference << "/255\n";
             assert(maximumDifference <= 1);
+            Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
             DynamicClouds clouds(&globalContainer->settings);
             std::valarray<unsigned char> pixels;
             int gridW, gridH;
@@ -277,6 +282,32 @@ static int run(int argc, char **argv)
             assert(!view.active());
             globalContainer->gfx->setClipRect();
             gui.drawAll(0);
+            // Preserve the map focus when entering from shared 2D zoom.
+            for (double flatZoom : {.5, 1.0, 2.0})
+            {
+                gui.camera.zoom = flatZoom;
+                gui.camera.originX = gui.viewportX * 32.0 + 7;
+                gui.camera.originY = gui.viewportY * 32.0 + 11;
+                gui.updateCamera();
+                const int cx = (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
+                const int cy = (globalContainer->gfx->getH()+16)/2;
+                const auto center = gui.camera.screenToWorld(cx, cy);
+                gui.torusView.reset();
+                gui.torusView.toggle();
+                for (float phase : {0.f, .5f, 1.f})
+                {
+                    gui.torusView.amount = phase;
+                    gui.torusView.lastFrame = SDL_GetTicks();
+                    gui.drawAll(0);
+                    int px, py;
+                    assert(gui.torusView.pick(cx, cy, px, py));
+                    assert(std::abs(TorusGeometry::wrappedDelta(px, int(center.first), gui.game.map.getW()*32)) <= 2);
+                    assert(std::abs(TorusGeometry::wrappedDelta(py, int(center.second), gui.game.map.getH()*32)) <= 2);
+                    assert(glGetError() == GL_NO_ERROR);
+                }
+                gui.torusView.reset();
+                gui.drawAll(0);
+            }
             std::cout << "Manual/automatic modes, saved option and pointer hold passed\n";
             std::cout << "Navigation, GL state, picking and reload lifecycle passed\n";
             // Reuse the renderer across changing map shapes at one window size.

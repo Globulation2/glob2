@@ -27,7 +27,7 @@
 [%0's game]
 %0's Game
 [%0's team unit got converted to your team]
-%0's team unit got converted to your team
+A unit from %0's team has joined your team
 [abreaviation explanation A]
 A: Allies
 [abreaviation explanation C]
@@ -211,7 +211,7 @@ compose
 [Computing Fertility]
 Computing Fertility
 [concrete islands terrain]
-Concrete Islands
+Separate Islands
 [connect]
 Connect
 [connecting to game]
@@ -247,7 +247,7 @@ Custom cursor
 [damage]
 Damage
 [Damaged Map]
-Damaged Map
+Wounded Units Map
 [decrease game speed]
 Decrease Game Speed
 [decrease units working]
@@ -371,9 +371,7 @@ Food
 [forbidden area]
 Forbidden area
 [Free]
-Ok
-[free]
-free
+Healthy
 [free]
 free
 [from:]
@@ -432,8 +430,6 @@ Hospital
 Host a game
 [hp]
 HP
-[hp]
-Hitpoint
 [Human]
 Human
 [human]
@@ -441,7 +437,7 @@ human
 [hungry]
 hungry
 [hungryness]
-Hungriness
+Hunger
 [In way]
 On the way
 [increase game speed]
@@ -575,7 +571,7 @@ meta-%0
 [Min required level:]
 Minimum required level:
 [Minimum Level To Flag]
-Minimum Flag Level
+Min. unit level
 [Music volume]
 Volume (music)
 [Mute]
@@ -631,7 +627,7 @@ On Press
 [On the spot]
 Here
 [on unpress]
-On Unpress
+On release
 [open chat box]
 Open Chat Box
 [open load menu]
@@ -719,7 +715,7 @@ Refresh Map List
 [Register]
 Register
 [remember unit]
-Remember Unit
+Remember unit counts
 [Remember YOG password localy]
 Remember the password locally.
 [remove map]
@@ -845,7 +841,7 @@ Select Swarm
 [select swimmingpool building]
 Select Swimming Pool
 [select tower building]
-Select Defence Tower
+Select Defense Tower
 [select wall building]
 Select Wall
 [select warflag]
@@ -967,25 +963,25 @@ Teams Fixed
 [teams]
  teams
 [the barracks is finished]
-The training camp is finished.
+The barracks is finished.
 [the barracks is under attack]
-The training camp is under attack.
+The barracks is under attack.
 [the building is finished]
 The building is finished.
 [the building is under attack]
 The building is under attack.
 [the clearingflag is finished]
-?? clearingflag finished ??
+Clearing flag placed.
 [the clearingflag is under attack]
-?? clearingflag under attack ??
+Clearing flag is under attack.
 [the defencetower is finished]
 The defense tower is finished.
 [the defencetower is under attack]
-Your defenses are under attack.
+The defense tower is under attack.
 [the explorationflag is finished]
-?? explorationflag finished ??
+Exploration flag placed.
 [the explorationflag is under attack]
-?? explorationflag under attack ??
+Exploration flag is under attack.
 [The game has not been finished]
 The game has not been finished.
 [the games]
@@ -1033,23 +1029,21 @@ The swimming pool is finished.
 [the swimmingpool is under attack]
 The swimming pool is under attack.
 [the warflag is finished]
-?? warflag finished ??
+War flag placed.
 [the warflag is under attack]
-?? warflag under attack ??
+War flag is under attack.
 [time]
 Time
 [to:]
 to:
 [toggle draw accessibility aids]
-Toggle Draw Accessibility Aids
+Toggle team numbers
 [toggle draw information]
 Toggle Draw Information
 [toggle draw unit paths]
 Toggle Draw Unit Paths
 [toggle menu screen]
 Toggle Menu Screen
-[toggle recording voice]
-Initiate Voice Recording
 [toggle recording voice]
 Toggle Recording Voice
 [Total Attack Power]
@@ -1065,11 +1059,11 @@ Total
 [tutorial text 1]
 Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!
 [tutorial text 2]
-Now that you have mastered the basics, its time to get used to other buildings such as Racetracks, Pools, and Schools.
+Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.
 [tutorial text 3]
-You have done well to get this far. Now let's move onto Warriors, Training Camps, and Upgrades.
+You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.
 [tutorial text 4]
-You are almost complete. Just flags, and attacking left. Then you'll know enough to venture forward into Custom Games and eventually play online against some of Globulation 2's finest players.
+You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players.
 [tutorial]
 Tutorial
 [Uncontrolled]
@@ -1145,9 +1139,9 @@ Wheat
 [Won : you defeated your opponents]
 Won: you defeated your opponents
 [Won : you have the most prestige]
-Won: you have the biggest prestige
+Won: you have the most prestige
 [Won : your ally %0 has the most prestige]
-Won: your ally %0 has the biggest prestige
+Won: your ally %0 has the most prestige
 [Wood]
 Wood
 [wood]
@@ -1156,8 +1150,6 @@ wood
 Worker Ratio
 [Worker]
 Worker
-[workers]
-Workers
 [workers]
 workers
 [working]
@@ -1217,17 +1209,13 @@ You have won!
 [You where kicked from the game]
 You were kicked from the game
 [Your %0 are under attack]
-Your %0 are under attack
+Your %0 is under attack
 [Your IP address was temporarily banned]
 Your IP address was temporarily banned. Please wait patiently until it is unbanned or contact the administrators.
 [Your unit got converted to %0's team]
-Your unit got converted to %0's team
+Your unit has joined %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
-
-[toggle torus view]
-Toggle 2D / torus view
-
 [automatic torus view]
 Automatic torus view
 [game speed help]
@@ -1236,3 +1224,9 @@ Single-player and replays only. Multiplayer runs at 1x.
 Maximum
 [multiplayer game speed]
 Game speed: 1x (multiplayer)
+[Units still inside: %0]
+Still inside: %0
+[Units still working: %0]
+Still working: %0
+[toggle torus view]
+Toggle 2D / torus view

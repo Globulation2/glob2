@@ -8,6 +8,7 @@
 #include <assert.h>
 
 #include <set>
+#include <tuple>
 #include <string>
 #include <sstream>
 
@@ -16,7 +17,6 @@
 #include "DatasetWriter.h"
 #include "Game.h"
 #include "GameUtilities.h"
-#include "MapRenderGeometry.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
@@ -181,6 +181,7 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
 
 	std::set<Building*> drawnBuildings;
+	std::set<std::tuple<Uint16, int, int>> drawnCopies;
 	for (int y=top-1; y<=bot; y++)
 		for (int x=left-1; x<=right; x++)
 		{
@@ -191,27 +192,24 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 				int team = Building::GIDtoTeam(gid);
 
 				Building *building=teams[team]->myBuildings[id];
-				if(drawnBuildings.find(building)==drawnBuildings.end())
+				assert(building);
+				const int originX = x - ((x + viewportX - building->posX) & map.getMaskW());
+				const int originY = y - ((y + viewportY - building->posY) & map.getMaskH());
+				const auto copy = std::make_tuple(gid, originX, originY);
+				if(drawnCopies.find(copy) == drawnCopies.end())
 				{
-					assert(building); // if this fails, and unwanted garbage-UID is on the ground.
 					if (((drawOptions & DRAW_WHOLE_MAP) != 0)
 						|| Building::GIDtoTeam(gid)==localTeam
 						|| (building->seenByMask & visibleTeams)
 						|| map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))
 					{
+						int px,py;
 						const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, *building) : building->posX;
 						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, *building) : building->posY;
-						const BuildingType *type = building->type;
-						const int frame = type->gameSpriteImage;
-						const int spriteW = type->gameSpritePtr->getW(frame);
-						const int spriteH = type->gameSpritePtr->getH(frame);
-						const int width = type->width * 32, height = type->height * 32;
-						MapRenderGeometry::wrappedCopies(
-						    (dispX - viewportX) * 32,
-						    (dispY - viewportY) * 32,
-						    std::min(0, width - spriteW) - 64, std::min(0, height - spriteH) - 64,
-						    width + 64, height + 64, map.getW() * 32, map.getH() * 32, sw, sh,
-						    [&](int px, int py) { drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions); });
+						px = originX * 32 + (dispX - building->posX) * 32;
+						py = originY * 32 + (dispY - building->posY) * 32;
+					 	drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions);
+						drawnCopies.insert(copy);
 						drawnBuildings.insert(building);
 					}
 				}

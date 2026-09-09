@@ -1,0 +1,1230 @@
+[%0 has left the game]
+%0 님이 게임을 나갔습니다.
+[%0 level %1]
+%0 레벨 %1
+[%0 units can't access building]
+유닛 %0기가 건물에 접근할 수 없습니다
+[%0 units can't access flag]
+유닛 %0기가 깃발에 접근할 수 없습니다
+[%0 units can't access fruit]
+유닛 %0기가 과일에 접근할 수 없습니다
+[%0 units can't access resource]
+유닛 %0기가 자원에 접근할 수 없습니다
+[%0 units not available]
+유닛 %0기를 배정할 수 없습니다
+[%0 units too far from building]
+유닛 %0기가 건물에서 너무 멀리 있습니다
+[%0 units too far from flag]
+유닛 %0기가 깃발에서 너무 멀리 있습니다
+[%0 units too far from fruit]
+유닛 %0기가 과일에서 너무 멀리 있습니다
+[%0 units too far from resource]
+유닛 %0기가 자원에서 너무 멀리 있습니다
+[%0 units too low level]
+유닛 %0기의 레벨이 너무 낮습니다
+[%0% Uploaded]
+%0% 업로드됨
+[%0's game]
+%0 님의 게임
+[%0's team unit got converted to your team]
+%0 님의 팀에 있던 유닛 하나가 우리 팀에 합류했습니다
+[abreaviation explanation A]
+A: 동맹
+[abreaviation explanation C]
+C: 채팅 메시지를 보낼 대상
+[abreaviation explanation fV]
+fV: 여관 주변 시야 공유 (유닛 전향용)
+[abreaviation explanation mV]
+mV: 시장 주변 시야 공유 (과일 교환용)
+[abreaviation explanation V]
+V: 모든 건물 주변 시야 공유
+[add map]
+지도 추가
+[add shortcut]
+단축키 추가
+[Add]
+추가
+[AI Descriptions]
+AI 설명
+[AI]
+AI
+[ai]
+AI
+[AICastor-Description]
+Castor는 신중하게 플레이하며 자원이 적은 지도에서 특히 강합니다. 난이도: 보통.
+[AICastor]
+Castor
+[AICortex-Description]
+Cortex - 개발 중인 실험적 3계층 AI입니다.
+[AICortex]
+Cortex
+[AINicowar-Description]
+Nicowar는 공격적으로 플레이하며 빠르게 성장하여 대규모 군대로 상대를 공격합니다. 난이도: 어려움.
+[AINicowar]
+Nicowar
+[AINone-Description]
+없음 - 아무 행동도 하지 않습니다.
+[AINone]
+없음
+[AINumbi-Description]
+Numbi - 소규모로 빠르게 확장합니다. 난이도: 쉬움.
+[AINumbi]
+Numbi
+[AIReachToInfinity-Description]
+ReachToInfinity - 공격하지 않지만 거대한 기지를 건설하고 적극적으로 유닛을 전향시킵니다. 난이도: 쉬움.
+[AIReachToInfinity]
+ReachToInfinity
+[AIWarrush-Description]
+Warrush - 빠르고 강력한 공격으로 방어하는 플레이어를 극한까지 몰아붙입니다. 난이도: 보통.
+[AIWarrush]
+Warrush
+[Alga]
+해조류
+[algae]
+해조류
+[alliances]
+동맹
+[alt %0]
+Alt-%0
+[and]
+및
+[any explorer]
+모든 탐험가
+[are dying hungry]
+굶주림
+[are hungry]
+배고픔
+[are ok]
+건강함
+[are wonded]
+부상
+[armor]
+방어력
+[assigned]
+배정됨
+[At. speed]
+공격 속도
+[At. strength]
+공격력
+[Attack]
+공격
+[audio]
+오디오
+[auto save]
+자동 저장
+[available lan games]
+참가 가능한 로컬 게임
+[awaiting players]
+플레이어 기다리는 중
+[away:]
+자리 비움:
+[Back]
+뒤로
+[backspace]
+Backspace
+[barracks explanation 2]
+향상시킵니다
+[barracks explanation]
+전사의 전투 능력을
+[barracks]
+병영
+[beach size]
+해변 크기
+[Blocked Players]
+차단한 플레이어
+[break]
+Break
+[briefing]
+임무 설명
+[build %0 level %1]
+%0 레벨 %1 건설
+[Build]
+건설
+[Building Defaults]
+건물 기본 설정
+[building settings]
+건물 설정
+[building site]
+건설 현장
+[Building Tool Box Explanation]
+Shift + 드래그 = 사각형
+[Building Tool Line Explanation]
+Ctrl + 드래그 = 직선
+[Buildings]
+건물
+[Bullets]
+탄환
+[campaign editor]
+캠페인 편집기
+[campaign]
+캠페인
+[Can't connect, can't find host]
+호스트를 찾을 수 없어 연결할 수 없습니다
+[Can't host game, port %0 in use]
+%0 포트가 사용 중이어서 게임을 만들 수 없습니다
+[Can't join game, game doesn't exist]
+게임이 존재하지 않아 참가할 수 없습니다
+[Can't join game, game has started]
+게임이 이미 시작되어 참가할 수 없습니다
+[Can't join game, game is full]
+게임이 가득 차서 참가할 수 없습니다
+[cancel destroy]
+철거 취소
+[cancel repair]
+수리 취소
+[cancel upgrade]
+업그레이드 취소
+[Cancel]
+취소
+[caps lock]
+Caps Lock
+[carry]
+운반 중:
+[Change Area Name]
+구역 이름 변경
+[Cherry]
+체리
+[choose campaign]
+캠페인 선택
+[choose game]
+게임 선택
+[choose map]
+지도 선택
+[clear area]
+정리 구역
+[Clearing:]
+제거 대상:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+자원을 제거합니다
+[clearingflag]
+정리 깃발
+[closed]
+닫힘
+[combined vision]
+시야 통합
+[compile]
+스크립트 컴파일
+[compose]
+Compose
+[Computing Fertility]
+비옥도 계산 중
+[concrete islands terrain]
+분리된 섬
+[connect]
+연결
+[connecting to game]
+게임에 연결 중
+[connecting to]
+연결 중:
+[Construction Site Defaults]
+건설 현장 기본 설정
+[Continue playing]
+계속 플레이
+[control %0]
+Ctrl-%0
+[Corn]
+밀
+[crater density]
+분화구 수
+[crater lakes terrain]
+화구호
+[create game]
+게임 만들기
+[create map]
+지도 만들기
+[credits]
+제작진
+[ctrl - line]
+Ctrl - 직선
+[current speed]
+현재 속도
+[custom game]
+사용자 지정 게임
+[customcur]
+사용자 지정 커서
+[damage]
+피해량
+[Damaged Map]
+부상 유닛 지도
+[decrease game speed]
+게임 속도 낮추기
+[decrease units working]
+작업 유닛 수 줄이기
+[Defeat Your Oppenents]
+상대를 물리치세요
+[defencetower explanation 2]
+건물을 공격합니다
+[defencetower explanation]
+주변의 적 유닛과
+[defencetower]
+방어탑
+[Defense Map]
+방어 지도
+[Defense]
+방어
+[Delete game]
+선택한 게임 삭제
+[delete]
+삭제
+[desert]
+사막
+[destroy building]
+선택한 건물 철거
+[destroy]
+철거
+[display]
+화면
+[do nothing]
+아무것도 하지 않음
+[don't carry anything]
+운반 중인 물건 없음
+[down]
+아래
+[Download Map]
+지도 다운로드
+[Download Maps]
+지도 다운로드
+[downloaded %0]
+%0 다운로드됨
+[downloading map]
+지도 다운로드 중
+[edit map]
+지도 편집
+[editing map]
+지도 편집 중
+[editor shortcuts]
+편집기 단축키
+[editor]
+편집기
+[end]
+End
+[Enter your nickname :]
+별명을 입력하세요:
+[Enter your password :]
+비밀번호를 입력하세요:
+[enter]
+Enter
+[equals]
+등호
+[ERROR_CANT_LOAD_MAP]
+파일이 손상되었거나 호환되지 않는 버전이어서 지도를 불러올 수 없습니다.
+[ERROR_CANT_SAVE_CAMPAIGN]
+캠페인을 저장할 수 없습니다. 대상 폴더가 존재하고 쓰기 권한과 여유 공간이 있는지 확인하세요.
+[escape]
+Esc
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+탐험가를 모읍니다
+[explorationflag]
+탐험 깃발
+[Explorer Ratio]
+탐험가 비율
+[Explorer]
+탐험가
+[explorers]
+탐험가
+[extra islands]
+빈 섬
+[f10]
+F10
+[f11]
+F11
+[f12]
+F12
+[f13]
+F13
+[f14]
+F14
+[f15]
+F15
+[f1]
+F1
+[f2]
+F2
+[f3]
+F3
+[f4]
+F4
+[f5]
+F5
+[f6]
+F6
+[f7]
+F7
+[f8]
+F8
+[f9]
+F9
+[Fertility Map]
+비옥도 지도
+[Flag Defaults]
+깃발 기본 설정
+[flag settings explanation]
+깃발의 기본 반경
+[fog of war]
+전장의 안개
+[food]
+식량
+[forbidden area]
+금지 구역
+[Free]
+건강
+[free]
+대기 중
+[from:]
+보낸 이:
+[fruit]
+과일
+[fullscreen]
+전체 화면
+[game full]
+게임 정원 초과
+[game shortcuts]
+게임 단축키
+[game speed]
+게임 속도
+[Game]
+게임
+[general settings]
+일반 설정
+[go to event]
+사건 위치로 이동
+[go to home]
+기지로 이동
+[goto main menu]
+주 메뉴로 돌아가기
+[grass]
+풀
+[ground attack]
+지상 공격
+[guard area]
+경계 구역
+[GUIMapPreview text 0]
+지도를
+[GUIMapPreview text 1]
+선택하세요
+[handmade map]
+직접 만든 지도
+[Happyness]
+행복도
+[hard pause]
+완전 일시 정지
+[Harvest]
+채집
+[high priority]
+높음
+[hints]
+힌트
+[home]
+Home
+[hospital explanation 2]
+
+[hospital explanation]
+유닛을 치료합니다
+[hospital]
+병원
+[host]
+게임 만들기
+[hp]
+체력
+[Human]
+사람
+[human]
+사람
+[hungry]
+배고픔
+[hungryness]
+배고픔
+[In way]
+이동 중
+[increase game speed]
+게임 속도 높이기
+[increase units working]
+작업 유닛 수 늘리기
+[inn explanation 2]
+
+[inn explanation]
+유닛에게 음식을 줍니다
+[inn]
+여관
+[insert]
+Insert
+[inside]
+내부
+[islands size]
+섬 크기
+[islands terrain]
+섬
+[isles terrain]
+작은 섬
+[iterate selection]
+다음 대상으로 선택 전환
+[jobs]
+작업
+[join a game]
+게임 참가
+[join]
+참가
+[keyboard settings]
+키보드 설정
+[kick]
+강퇴
+[lan]
+LAN 게임
+[language incomplete]
+한국어 - 미완성
+[language-code]
+ko
+[language-tr]
+언어
+[language]
+한국어
+[Leave Game]
+게임 나가기
+[left meta]
+왼쪽 Meta
+[left super]
+왼쪽 Windows 키
+[left]
+왼쪽
+[level]
+레벨
+[levels]
+레벨
+[load campaign]
+캠페인 불러오기
+[load game]
+게임 불러오기
+[load map]
+지도 불러오기
+[load replay]
+리플레이 불러오기
+[load script]
+스크립트 불러오기
+[load]
+불러오기
+[loading map list]
+지도 목록 불러오는 중...
+[Lobby]
+대기실
+[login]
+로그인
+[look around]
+둘러보기
+[Lost : %0 has more prestige than you]
+패배: %0 님의 명성이 더 높습니다
+[Lost : your colony is dead]
+패배: 식민지가 전멸했습니다
+[low priority]
+낮음
+[lowquality]
+낮은 품질
+[Magic At. Air]
+공중 피해
+[Magic At. Ground]
+지상 피해
+[map description]
+설명
+[Map Discovered]
+지도 전체 공개
+[Map download failure: lost connection]
+지도 다운로드 실패: YOG 연결이 끊어졌습니다
+[Map name: %0]
+지도 이름: %0.
+[map name]
+이름
+[map rated]
+지도 평가 완료
+[map script]
+지도 스크립트
+[map size x]
+지도 너비
+[map size y]
+지도 높이
+[Map upload failure: connection lost]
+지도 업로드 실패: YOG 연결이 끊어졌습니다
+[Map upload failure: map name in use]
+지도 업로드 실패: 이미 사용 중인 지도 이름입니다.
+[Map upload failure: unknown reason]
+지도 업로드 실패: 원인을 알 수 없습니다.
+[Map Upload: Author Name]
+제작자 이름
+[Map Upload: Waiting for reply]
+응답 기다리는 중
+[mark map]
+동맹에게 위치 표시
+[market explanation 2]
+교환할 수 있습니다
+[market explanation]
+다른 플레이어와 과일을
+[market]
+시장
+[medium priority]
+보통
+[meta %0]
+Meta-%0
+[Min required level:]
+최소 레벨:
+[Minimum Level To Flag]
+최소 유닛 레벨
+[Music volume]
+음악 음량
+[Mute]
+음소거
+[mute]
+음소거
+[new campaign]
+새 캠페인
+[new map]
+새 지도
+[nick taken]
+죄송하지만 선택한 이름은 freenode에서 이미 사용 중입니다. YOG에서만 채팅할 수 있습니다.
+[no fullscreen]
+* 창 모드에서만 적용
+[No Hints]
+힌트 없음
+[no key]
+키 미지정
+[No Objectives]
+목표 없음
+[no ressources growth areas]
+자원 성장 금지 구역
+[No]
+아니요
+[Not Enough Ratings]
+평가 수 부족
+[not ready]
+준비 안 됨
+[Number Of Buildings]
+건물 수
+[number of players: %0 (%1 AI)]
+플레이어 %0명 (AI %1명)
+[number of teams: %0]
+%0개 팀
+[number of teams]
+팀 수
+[Number Of Units]
+유닛 수
+[numlock]
+Num Lock
+[objectives]
+목표
+[of which]
+그중
+[ok]
+확인
+[old islands terrain]
+기존 무작위 섬
+[old random terrain]
+기존 무작위 지형
+[on press]
+누를 때
+[On the spot]
+현재 위치
+[on unpress]
+뗄 때
+[open chat box]
+채팅창 열기
+[open load menu]
+불러오기 메뉴 열기
+[open save menu]
+저장 메뉴 열기
+[open scenario editor]
+시나리오 편집기 열기
+[open teams editor]
+팀 편집기 열기
+[open]
+열림
+[OpenGL]
+OpenGL
+[Options]
+옵션
+[options]
+옵션
+[Orange]
+오렌지
+[Other Options]
+기타 옵션
+[page down]
+Page Down
+[page up]
+Page Up
+[Papyrus]
+파피루스
+[pause game]
+게임 일시 정지
+[pause]
+Pause
+[Paused]
+일시 정지됨
+[player name]
+플레이어 이름
+[player rating %0]
+플레이어 평점: %0
+[players]
+플레이어
+[please wait]
+잠시 기다려 주세요
+[power]
+Power
+[press space]
+계속하려면 스페이스 키를 누르세요.
+[Prestige Score]
+명성 점수
+[Prestige Win Enabled]
+명성 승리 활성화
+[Prestige]
+명성
+[Primary Objectives]
+주 목표
+[print screen]
+Print Screen
+[priority]
+우선순위
+[Prune]
+자두
+[quit the editor]
+편집기 나가기
+[quit the game]
+게임 나가기
+[quit the replay]
+리플레이 나가기
+[quit]
+종료
+[racetrack explanation 2]
+향상시킵니다
+[racetrack explanation]
+유닛의 지상 이동 속도를
+[racetrack]
+달리기 훈련장
+[range]
+사거리
+[Rated %0]
+평점 %0
+[ratios]
+비율
+[ready?]
+준비됐나요?
+[refresh map list]
+지도 목록 새로 고침
+[Register]
+등록
+[remember unit]
+배정 유닛 수 기억
+[Remember YOG password localy]
+이 컴퓨터에 비밀번호 저장
+[remove map]
+지도 삭제
+[remove shortcut]
+단축키 삭제
+[Remove]
+삭제
+[repair building]
+수리 시작/중지
+[repair]
+수리
+[repeat area]
+지형 반복 횟수
+[Repeat your password :]
+비밀번호를 다시 입력하세요:
+[replay ended]
+리플레이 종료
+[restore default shortcuts]
+기본 단축키 복원
+[return to editor]
+편집기로 돌아가기
+[return to game]
+게임으로 돌아가기
+[return to replay]
+리플레이로 돌아가기
+[return]
+Enter
+[right meta]
+오른쪽 Meta
+[right super]
+오른쪽 Windows 키
+[right]
+오른쪽
+[river diameter]
+강 너비
+[river terrain]
+강
+[sand]
+모래
+[save before quit?]
+종료하기 전에 저장할까요?
+[save game]
+게임 저장
+[save map]
+지도 저장
+[save replay]
+리플레이 저장
+[save script]
+스크립트 저장
+[Save]
+저장
+[school explanation 2]
+향상시킵니다
+[school explanation]
+일꾼의 건설 능력을
+[school]
+학교
+[Script Areas]
+스크립트 구역
+[scroll lock]
+Scroll Lock
+[scroll wheel enabled]
+스크롤 휠 사용
+[Secondary Objectives]
+보조 목표
+[seeking a job]
+작업 찾는 중
+[seeking]
+찾는 중
+[select barracks building]
+병영 선택
+[select clearingflag]
+정리 깃발 선택
+[select construct barracks]
+병영 건설 선택
+[select construct defencetower]
+방어탑 건설 선택
+[select construct hospital]
+병원 건설 선택
+[select construct inn]
+여관 건설 선택
+[select construct market]
+시장 건설 선택
+[select construct racetrack]
+달리기 훈련장 건설 선택
+[select construct school]
+학교 건설 선택
+[select construct stonewall]
+돌벽 건설 선택
+[select construct swarm]
+둥지 건설 선택
+[select construct swimmingpool]
+수영장 건설 선택
+[select delete tool]
+삭제 도구 선택
+[select explorationflag]
+탐험 깃발 선택
+[select hospital building]
+병원 선택
+[select inn building]
+여관 선택
+[select market building]
+시장 선택
+[select place clearing area]
+정리 구역 배치 선택
+[select place clearingflag]
+정리 깃발 배치 선택
+[select place explorationflag]
+탐험 깃발 배치 선택
+[select place forbidden area]
+금지 구역 배치 선택
+[select place guard area]
+경계 구역 배치 선택
+[select place warflag]
+전투 깃발 배치 선택
+[select racetrack building]
+달리기 훈련장 선택
+[select school building]
+학교 선택
+[select swarm building]
+둥지 선택
+[select swimmingpool building]
+수영장 선택
+[select tower building]
+방어탑 선택
+[select wall building]
+돌벽 선택
+[select warflag]
+전투 깃발 선택
+[settings]
+설정
+[shift %0]
+Shift-%0
+[shortcut explanation enter]
+Enter: 채팅 메시지 보내기
+[shortcut explanation v]
+V: 누른 채로 말하기
+[show areas]
+구역 표시
+[show flags]
+깃발 표시
+[show main menu]
+주 메뉴 표시
+[skin]
+화면
+[smoothing]
+평활화
+[sort by name]
+이름
+[sort by rating]
+평점
+[sort by size]
+크기
+[Sort By]
+정렬 기준
+[space]
+스페이스
+[start mission]
+임무 시작
+[start new campaign]
+새 캠페인 시작
+[Start]
+시작
+[Starving Map]
+굶주린 유닛 지도
+[starving]
+굶주림
+[Statistics]
+통계
+[Still (i)]
+남은 수
+[still (w)]
+남은 수
+[still one unit working]
+유닛 1기가 아직 작업 중
+[Still one]
+1기 남음
+[Stone]
+돌
+[stone]
+돌
+[stonewall explanation 2]
+시설입니다
+[stonewall explanation]
+수동적인 방어
+[stonewall]
+돌벽
+[submit rating]
+평가 제출
+[svr hostname]
+서버 호스트 이름
+[swamp terrain]
+늪
+[swarm explanation 2]
+
+[swarm explanation]
+새 유닛을 생산합니다
+[swarm]
+둥지
+[Swim]
+수영
+[swimmingpool explanation 2]
+향상시킵니다
+[swimmingpool explanation]
+유닛의 수영 속도를
+[swimmingpool]
+수영장
+[switch to adding areas]
+구역 추가로 전환
+[switch to area brush 1]
+구역 브러시 1 선택
+[switch to area brush 2]
+구역 브러시 2 선택
+[switch to area brush 3]
+구역 브러시 3 선택
+[switch to area brush 4]
+구역 브러시 4 선택
+[switch to area brush 5]
+구역 브러시 5 선택
+[switch to area brush 6]
+구역 브러시 6 선택
+[switch to area brush 7]
+구역 브러시 7 선택
+[switch to area brush 8]
+구역 브러시 8 선택
+[switch to building view]
+건물 보기로 전환
+[switch to flag view]
+깃발 보기로 전환
+[switch to removing areas]
+구역 제거로 전환
+[switch to teams view]
+팀 보기로 전환
+[switch to terrain view]
+지형 보기로 전환
+[sys req]
+SysRq
+[tab]
+Tab
+[teams editor]
+팀 편집기
+[Teams Fixed]
+팀 고정
+[teams]
+ 팀
+[the barracks is finished]
+병영 건설 완료.
+[the barracks is under attack]
+병영 공격받는 중.
+[the building is finished]
+건물 건설 완료.
+[the building is under attack]
+건물 공격받는 중.
+[the clearingflag is finished]
+정리 깃발 배치 완료.
+[the clearingflag is under attack]
+정리 깃발 공격받는 중.
+[the defencetower is finished]
+방어탑 건설 완료.
+[the defencetower is under attack]
+방어탑 공격받는 중.
+[the explorationflag is finished]
+탐험 깃발 배치 완료.
+[the explorationflag is under attack]
+탐험 깃발 공격받는 중.
+[The game has not been finished]
+게임이 아직 끝나지 않았습니다.
+[the games]
+게임
+[the hospital is finished]
+병원 건설 완료.
+[the hospital is under attack]
+병원 공격받는 중.
+[The host has cancelled the game]
+호스트가 게임을 취소했습니다.
+[the inn is finished]
+여관 건설 완료.
+[the inn is under attack]
+여관 공격받는 중.
+[the maps]
+지도
+[the market is finished]
+시장 건설 완료.
+[the market is under attack]
+시장 공격받는 중.
+[The player %0 has joined YOG]
+%0 님이 YOG에 접속했습니다.
+[The player %0 has left YOG]
+%0 님이 YOG에서 나갔습니다.
+[the racetrack is finished]
+달리기 훈련장 건설 완료.
+[the racetrack is under attack]
+달리기 훈련장 공격받는 중.
+[the replays]
+리플레이
+[the school is finished]
+학교 건설 완료.
+[the school is under attack]
+학교 공격받는 중.
+[the stonewall is finished]
+돌벽 한 구간이 완성되었습니다.
+[the stonewall is under attack]
+적이 돌벽을 공격하고 있습니다.
+[the swarm is finished]
+둥지 건설 완료.
+[the swarm is under attack]
+둥지 공격받는 중.
+[the swimmingpool is finished]
+수영장 건설 완료.
+[the swimmingpool is under attack]
+수영장 공격받는 중.
+[the warflag is finished]
+전투 깃발 배치 완료.
+[the warflag is under attack]
+전투 깃발 공격받는 중.
+[time]
+시간
+[to:]
+받는 이:
+[toggle draw accessibility aids]
+팀 번호 표시 전환
+[toggle draw information]
+정보 표시 전환
+[toggle draw unit paths]
+유닛 경로 표시 전환
+[toggle menu screen]
+메뉴 화면 표시 전환
+[toggle recording voice]
+음성 녹음 시작/중지
+[Total Attack Power]
+총 공격력
+[Total Defence Power]
+총 방어력
+[Total Hitpoints]
+총 체력
+[Total prestige reached]
+획득한 총 명성
+[Total]
+합계
+[tutorial text 1]
+Globulation 2의 기초 튜토리얼에 오신 것을 환영합니다! 여관 건설부터 지역 탐험, 적 섬멸까지 모두 다룹니다. 유용한 지식을 많이 배울 수 있습니다!
+[tutorial text 2]
+기본을 익혔으니 이제 달리기 훈련장, 수영장, 학교 같은 다른 건물에 익숙해질 차례입니다.
+[tutorial text 3]
+여기까지 잘 따라오셨습니다. 이제 전사, 병영, 업그레이드를 알아봅시다.
+[tutorial text 4]
+거의 다 끝났습니다. 깃발과 공격만 남았습니다. 이를 배우면 사용자 지정 게임을 시작할 수 있고, 나중에는 온라인에서 Globulation 2의 뛰어난 플레이어들과 겨룰 수도 있습니다.
+[tutorial]
+튜토리얼
+[Uncontrolled]
+제어 안 됨
+[undo]
+실행 취소
+[uniform terrain]
+균일한 지형
+[Unit editor]
+유닛 편집기
+[unit settings explanation]
+기본 배정 유닛 수
+[units working]
+기 작업 중
+[Units]
+유닛
+[unlocked at start]
+시작 시 잠금 해제
+[unlocked by]
+잠금 해제 조건
+[Unnamed Area]
+{이름 없는 구역}
+[up]
+위
+[upgrade building]
+업그레이드 시작/중지
+[Upgrade Defaults]
+업그레이드 기본 설정
+[upgrade]
+업그레이드
+[Upload Map]
+지도 업로드
+[upload map]
+지도 업로드
+[username]
+사용자 이름
+[Version]
+버전
+[view history]
+기록 보기
+[Voice volume]
+음성 음량
+[waiting for %0]
+대기 중: %0
+[waiting for key]
+키 입력 기다리는 중...
+[Waiting]
+대기 중
+[Walk]
+걷기
+[warflag explanation 2]
+
+[warflag explanation]
+전사를 모읍니다
+[warflag]
+전투 깃발
+[Warning, you need to reboot the game for changes to take effect]
+주의: 변경 사항을 적용하려면 게임을 다시 시작해야 합니다
+[Warrior Ratio]
+전사 비율
+[Warrior]
+전사
+[warriors]
+전사
+[watch again]
+다시 보기
+[watching:]
+관전 중:
+[water]
+물
+[Wheat]
+밀
+[Won : you defeated your opponents]
+승리: 모든 상대를 물리쳤습니다
+[Won : you have the most prestige]
+승리: 명성이 가장 높습니다
+[Won : your ally %0 has the most prestige]
+승리: 동맹인 %0 님의 명성이 가장 높습니다
+[Wood]
+나무
+[wood]
+나무
+[Worker Ratio]
+일꾼 비율
+[Worker]
+일꾼
+[workers]
+일꾼
+[working]
+작업 중
+[wounded]
+부상
+[Yes]
+예
+[YESTS_CONNECTING]
+YOG 메타서버에 연결하는 중...
+[YESTS_CONNECTION_LOST]
+YOG 연결이 끊어졌습니다.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+이미 등록된 사용자 이름이어서 YOG 메타서버가 연결을 거부했습니다. 본인의 이름이라면 "비밀번호로 새 YOG 사용자 등록" 옵션을 끄세요.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+비밀번호가 틀려서 YOG 메타서버가 연결을 거부했습니다.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+이 사용자 이름에 아직 비밀번호가 없어 YOG 메타서버가 연결을 거부했습니다. 이 비밀번호로 사용자 이름을 등록하려면 연결 전에 "비밀번호로 새 YOG 사용자 등록" 옵션을 켜세요. 이 옵션은 한 번만 켜면 됩니다.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+이 IP 주소가 일시적으로 차단되어 YOG 메타서버가 연결을 거부했습니다. 차단이 해제될 때까지 기다리거나 관리자에게 문의하세요.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Globulation 2 버전이 오래되어 YOG 메타서버가 연결을 거부했습니다. 온라인으로 플레이하려면 www.globulation2.org에서 최신 버전을 받으세요.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+YOG 메타서버가 이유를 알리지 않고 연결을 거부했습니다!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+다른 사람이 이 사용자 이름을 사용 중이어서 YOG 메타서버가 연결을 거부했습니다.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+이 사용자 이름이 차단되어 YOG 메타서버가 연결을 거부했습니다. 관리자에게 문의하세요.
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+사용자 이름이 유효하지 않아 YOG 메타서버가 연결을 거부했습니다. 사용자 이름에는 문자, 숫자, 밑줄만 사용할 수 있습니다.
+[YESTS_CREATED]
+YOG 메타서버에 연결할 준비가 되었습니다.
+[YESTS_PASSWORDS_DONT_MATCH]
+입력한 비밀번호가 일치하지 않습니다. 다시 입력하세요.
+[YESTS_UNABLE_TO_CONNECT]
+연결할 수 없습니다. YOG 메타서버가 작동하지 않는 것 같습니다.
+[yog block command help]
+/block <플레이어이름>    플레이어를 차단하여 해당 플레이어의 메시지를 숨깁니다.
+[yog block command player %0 already blocked]
+%0 님은 이미 차단되어 있습니다
+[yog block command player %0 blocked]
+%0 님을 차단했습니다
+[yog block command player %0 not found]
+%0 님을 찾을 수 없습니다
+[yog command header]
+현재 YOG 클라이언트 명령어 목록:
+[yog command unknown]
+알 수 없는 명령어입니다.
+[yog help command help]
+/help    이 도움말을 표시합니다
+[yog]
+Ysagoon Online Gaming
+[you have lost]
+패배했습니다!
+[you have won]
+승리했습니다!
+[You where kicked from the game]
+게임에서 강퇴되었습니다
+[Your %0 are under attack]
+아군 %0 유닛이 공격받고 있습니다
+[Your IP address was temporarily banned]
+IP 주소가 일시적으로 차단되었습니다. 차단이 해제될 때까지 기다리거나 관리자에게 문의하세요.
+[Your unit got converted to %0's team]
+아군 유닛이 %0 님의 팀에 합류했습니다
+[Your username was banned]
+사용자 이름이 차단되었습니다. 차단 해제를 원하면 관리자에게 문의하세요.
+[game speed help]
+싱글플레이와 리플레이 전용. 멀티플레이는 1배속입니다.
+[maximum game speed]
+최대
+[multiplayer game speed]
+게임 속도: 1배속 (멀티플레이)
+[Units still inside: %0]
+내부: %0
+[Units still working: %0]
+작업 중: %0
+[automatic torus view]
+자동 토러스 보기
+[toggle torus view]
+2D / 토러스 보기 전환
