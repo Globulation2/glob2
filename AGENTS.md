@@ -28,10 +28,13 @@ when changing described behavior, commands, paths or policies.
 
 ## Compatibility reminders
 
-- Multiplayer peers must compute the same simulation from the same initial state
-  and orders across supported platforms. Check determinism and save/load continuity
-  when changing simulation state, caches or scheduling. CI builds and matching replay
-  orders alone do not establish equivalent simulation state.
+- Preserve engine compatibility and identical simulation execution across supported
+  platforms. For changes that can affect simulation results or portability, run the
+  same initial state, seed and orders on affected platforms and compare per-tick
+  simulation checksums; they must match. See [replay verification](docs/headless-replays.md).
+  Check save/load continuity when changing simulation state, caches or scheduling.
+  CI builds and matching replay orders alone do not establish equivalent execution;
+  report any platform coverage that could not be verified.
 - Save-format changes must bump `VERSION_MINOR` in `src/Version.h`, with version-gated
   loading for older saves or an explicitly approved compatibility break.
 - Simulation changes can invalidate replays and mixed-client games without changing
