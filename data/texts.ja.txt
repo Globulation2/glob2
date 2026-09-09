@@ -1228,3 +1228,209 @@ Ysagoon Online Gaming
 自動トーラス表示
 [toggle torus view]
 2D／トーラス表示を切り替え
+[settings Add key to sequence]
+キーをシーケンスに追加
+[settings Add shortcut]
+ショートカットを追加
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+マウスホイールで割り当てるユニット数を変更します。オフの場合は Ctrl キーを押しながら操作します。Shift キーを押しながら操作すると旗の半径を調整できます。他のメニューでのホイール操作にも適用されます。
+[settings Adjust music and voice volume.]
+音楽や音声の音量を調整します。
+[settings Adjust the pace of play.]
+ゲームの速度を調整します。
+[settings Advanced binding]
+高度なショートカット編集
+[settings Artwork & effects]
+アートワークとエフェクト
+[settings Audio]
+サウンド
+[settings Bind Escape]
+Escキーを割り当てる
+[settings Building]
+建物
+[settings Building defaults]
+建物の既定値
+[settings Cancel]
+キャンセル
+[settings Changes saved automatically]
+変更は自動的に保存されます
+[settings Changes you make during play update these defaults for future games.]
+プレイ中に変更を加えると、今後のゲームのデフォルトが更新されます。
+[settings Changing the renderer requires a restart.]
+レンダラを変更するには再起動が必要です。
+[settings Choose a binding to change it, or add another shortcut for an action.]
+キーボード ショートカットを選択して編集するか、アクションに別のショートカットを追加します。
+[settings Choose a window or fill the screen.]
+ウィンドウ表示か全画面表示を選択します。
+[settings Choose how the game looks on your screen.]
+ゲームが画面上でどのように見えるかを選択します。
+[settings Completed]
+完成した建物
+[settings Construction]
+建設中
+[settings Controls]
+ゲームコントロール
+[settings Could not change display mode. The previous mode was restored.]
+表示モードを変更できませんでした。以前のモードが復元されました。
+[settings Could not save]
+保存できませんでした
+[settings Current display]
+現在の表示設定
+[settings Default]
+デフォルト
+[settings Display]
+画面
+[settings Display & graphics]
+ディスプレイとグラフィックス
+[settings Display the Globulation 2 cursor.]
+Globulation 2 のカーソルを表示します。
+[settings Done]
+完了
+[settings Edit shortcut]
+キーボードショートカットを編集する
+[settings Flags]
+旗
+[settings Full]
+高詳細
+[settings Fullscreen]
+全画面
+[settings Game]
+ゲーム
+[settings Game speed]
+ゲーム速度
+[settings Gameplay]
+ゲームプレイ
+[settings Graphics detail]
+グラフィックの詳細度
+[settings Keep]
+変更を保持する
+[settings Keep this display mode?]
+この表示モードを維持しますか?
+[settings Keep your volume levels while silencing audio.]
+保存された音量レベルを変更せずに、すべてのサウンドをミュートします。
+[settings Key]
+キー
+[settings Keyboard shortcuts]
+キーボードショートカット
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+キーを順番に並べてシーケンスを作成します。各ステップは、対応するキーを押したときか離したときに反応するよう設定できます。
+[settings Language]
+言語
+[settings Language & player]
+言語とプレイヤー
+[settings Language used throughout the interface.]
+インターフェース全体で使用される言語。
+[settings Level]
+レベル
+[settings Map editor]
+マップエディター
+[settings Missing font]
+フォントがありません
+[settings Music volume]
+音楽の音量
+[settings Mute audio]
+すべての音をミュート
+[settings Name shown to other players.]
+他のプレイヤーに表示される名前です。
+[settings Off]
+オフ
+[settings On]
+オン
+[settings OpenGL is not available in this build.]
+このビルドでは OpenGL は利用できません。
+[settings Player name]
+プレイヤー名
+[settings Press]
+押したとき
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+キーボードのキーを押します。 Esc キーを押すと入力キャプチャがキャンセルされます。 Esc キーを割り当てるには、「Escキーを割り当てる」を選択します。
+[settings Radius]
+半径
+[settings Reduced]
+簡略化
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+ディテールを減らすと、雲とその影が無効になり、魔法の効果が簡素化され、透明度が低下します。
+[settings Release]
+離したとき
+[settings Remember assignments between games]
+ゲーム間でユニットの割り当てを記憶する
+[settings Remove key]
+キーを削除
+[settings Remove shortcut]
+ショートカットを削除
+[settings Renderer]
+グラフィックスレンダラー
+[settings Replace conflicting bindings]
+競合するキーボード ショートカットを置き換える
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+この操作対象のショートカットを既定値に戻しますか？変更はすぐに保存されます。
+[settings Resolution]
+画面解像度
+[settings Restore default shortcuts]
+キー設定を初期化
+[settings Retry]
+再試行
+[settings Revert]
+変更を元に戻す
+[settings Reverting in]
+元に戻すまで
+[settings Save shortcut]
+キーボードショートカットを保存
+[settings Saved — restart required]
+保存済み — 再起動が必要です
+[settings Saving…]
+保存中…
+[settings Scroll wheel enabled]
+ホイール操作を有効化
+[settings Set starting unit assignments by building type and level.]
+建物の種類とレベルごとに、最初に割り当てるユニット数を設定します。
+[settings Set your language and player name.]
+言語とプレイヤー名を設定します。
+[settings Settings]
+設定
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+1人プレイとリプレイのみ。マルチプレイは1倍速です。
+[settings Software]
+ソフトウェアレンダリング
+[settings Starting unit counts and radius for newly placed flags.]
+新しく配置する旗に最初に割り当てるユニット数と半径。
+[settings This shortcut conflicts with existing bindings:]
+このキーボード ショートカットは既存のショートカットと競合します。
+[settings Trigger]
+反応するタイミング
+[settings Unbound]
+ショートカットが割り当てられていません
+[settings Unit counts assigned to new construction sites.]
+新しい建設現場に割り当てられたユニット数。
+[settings Unit counts for completed buildings.]
+完成した建物に割り当てるユニット数。
+[settings Unit counts while a building is being upgraded.]
+建物のアップグレード中に割り当てるユニット数。
+[settings Units]
+ユニット
+[settings Upgrades]
+建物のアップグレード
+[settings Use game cursor]
+ゲームカーソルを使用する
+[settings Voice volume]
+音声の音量
+[settings Window mode]
+ウィンドウモード
+[settings Window-only sizes also switch the game to windowed mode.]
+ウィンドウ モードのみをサポートする解像度を選択すると、ゲームもウィンドウ モードに切り替わります。
+[settings Windowed]
+ウィンドウ表示
+[settings Windowed only]
+ウィンドウ表示のみ
+[settings seconds]
+秒
+[settings Flag]
+旗
+[settings High-resolution artwork]
+高解像度のアートワーク
+[settings Apply artwork on the next game or editor load (OpenGL).]
+アートワークは次回ゲームまたはマップエディターを読み込む際に適用されます (OpenGL)。
+[settings Automatic torus view]
+自動トーラス表示
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+マップ内を移動するときに、トーラス（ドーナツ）形状のマップ全体図を自動的に表示します (OpenGL)。

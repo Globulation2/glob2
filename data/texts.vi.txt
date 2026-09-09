@@ -1228,3 +1228,209 @@ Còn làm việc: %0
 Chế độ xem hình xuyến tự động
 [toggle torus view]
 Chuyển chế độ xem 2D / hình xuyến
+[settings Add key to sequence]
+Thêm phím vào chuỗi
+[settings Add shortcut]
+Thêm phím tắt
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Dùng con lăn chuột để điều chỉnh số đơn vị được phân bổ. Khi tùy chọn này tắt, hãy giữ Ctrl. Giữ Shift để điều chỉnh bán kính cờ. Tùy chọn này cũng điều khiển việc dùng con lăn trong các menu khác.
+[settings Adjust music and voice volume.]
+Điều chỉnh âm lượng nhạc và giọng nói.
+[settings Adjust the pace of play.]
+Điều chỉnh tốc độ của trò chơi.
+[settings Advanced binding]
+Chỉnh sửa phím tắt nâng cao
+[settings Artwork & effects]
+Hình ảnh & hiệu ứng
+[settings Audio]
+Âm thanh
+[settings Bind Escape]
+Gán phím Escape
+[settings Building]
+Công trình
+[settings Building defaults]
+Mặc định công trình
+[settings Cancel]
+Hủy
+[settings Changes saved automatically]
+Các thay đổi được lưu tự động
+[settings Changes you make during play update these defaults for future games.]
+Các thay đổi trong khi chơi sẽ cập nhật những giá trị mặc định này cho các ván sau.
+[settings Changing the renderer requires a restart.]
+Việc thay đổi trình kết xuất yêu cầu khởi động lại.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Chọn một phím tắt để chỉnh sửa hoặc thêm một phím tắt khác cho một hành động.
+[settings Choose a window or fill the screen.]
+Chọn chế độ cửa sổ hoặc toàn màn hình.
+[settings Choose how the game looks on your screen.]
+Chọn giao diện của trò chơi trên màn hình của bạn.
+[settings Completed]
+Công trình đã hoàn thành
+[settings Construction]
+Đang xây dựng
+[settings Controls]
+Điều khiển trò chơi
+[settings Could not change display mode. The previous mode was restored.]
+Không thể thay đổi chế độ hiển thị. Chế độ trước đó đã được khôi phục.
+[settings Could not save]
+Không thể lưu
+[settings Current display]
+Thiết lập hiển thị hiện tại
+[settings Default]
+Mặc định
+[settings Display]
+Hiển thị
+[settings Display & graphics]
+Hiển thị & đồ họa
+[settings Display the Globulation 2 cursor.]
+Hiển thị con trỏ Globulation 2.
+[settings Done]
+Xong
+[settings Edit shortcut]
+Chỉnh sửa phím tắt
+[settings Flags]
+Cờ
+[settings Full]
+Đầy đủ chi tiết
+[settings Fullscreen]
+Toàn màn hình
+[settings Game]
+Trò chơi
+[settings Game speed]
+Tốc độ trò chơi
+[settings Gameplay]
+Lối chơi
+[settings Graphics detail]
+Chi tiết đồ họa
+[settings Keep]
+Giữ các thay đổi
+[settings Keep this display mode?]
+Giữ chế độ hiển thị này?
+[settings Keep your volume levels while silencing audio.]
+Tắt tiếng tất cả âm thanh mà không thay đổi mức âm lượng đã lưu.
+[settings Key]
+Phím
+[settings Keyboard shortcuts]
+Phím tắt
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Các phím tạo thành một chuỗi theo thứ tự. Mỗi bước có thể được kích hoạt khi nhấn hoặc thả phím tương ứng.
+[settings Language]
+Ngôn ngữ
+[settings Language & player]
+Ngôn ngữ & người chơi
+[settings Language used throughout the interface.]
+Ngôn ngữ được sử dụng xuyên suốt giao diện.
+[settings Level]
+Cấp
+[settings Map editor]
+Trình chỉnh sửa bản đồ
+[settings Missing font]
+Thiếu phông chữ
+[settings Music volume]
+Âm lượng nhạc
+[settings Mute audio]
+Tắt tiếng
+[settings Name shown to other players.]
+Tên được hiển thị cho người chơi khác.
+[settings Off]
+Tắt
+[settings On]
+Bật
+[settings OpenGL is not available in this build.]
+OpenGL không có sẵn trong bản dựng này.
+[settings Player name]
+Tên người chơi
+[settings Press]
+Khi nhấn
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Nhấn một phím. Escape hủy việc ghi nhận phím. Để gán Escape, chọn “Gán phím Escape”.
+[settings Radius]
+Bán kính
+[settings Reduced]
+Giảm chi tiết
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Giảm chi tiết sẽ vô hiệu hóa các đám mây và bóng của chúng, đơn giản hóa các hiệu ứng ma thuật và giảm độ trong suốt.
+[settings Release]
+Khi thả
+[settings Remember assignments between games]
+Ghi nhớ phân bổ đơn vị giữa các ván
+[settings Remove key]
+Xóa phím
+[settings Remove shortcut]
+Xóa phím tắt
+[settings Renderer]
+Trình kết xuất đồ họa
+[settings Replace conflicting bindings]
+Thay thế các phím tắt xung đột
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Khôi phục phím tắt mặc định cho ngữ cảnh này? Thay đổi sẽ được lưu ngay lập tức.
+[settings Resolution]
+Độ phân giải màn hình
+[settings Restore default shortcuts]
+Khôi phục phím tắt mặc định
+[settings Retry]
+Thử lại
+[settings Revert]
+Hoàn nguyên các thay đổi
+[settings Reverting in]
+Khôi phục sau
+[settings Save shortcut]
+Lưu phím tắt
+[settings Saved — restart required]
+Đã lưu - cần khởi động lại
+[settings Saving…]
+Đang lưu…
+[settings Scroll wheel enabled]
+Bật con lăn chuột
+[settings Set starting unit assignments by building type and level.]
+Đặt số đơn vị được phân bổ ban đầu theo loại và cấp công trình.
+[settings Set your language and player name.]
+Đặt ngôn ngữ và tên người chơi của bạn.
+[settings Settings]
+Thiết lập
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Chỉ cho chơi đơn và bản ghi. Chơi mạng dùng tốc độ 1x.
+[settings Software]
+Kết xuất phần mềm
+[settings Starting unit counts and radius for newly placed flags.]
+Số đơn vị ban đầu và bán kính cho cờ mới đặt.
+[settings This shortcut conflicts with existing bindings:]
+Phím tắt này xung đột với các phím tắt hiện có:
+[settings Trigger]
+Sự kiện kích hoạt
+[settings Unbound]
+Chưa gán
+[settings Unit counts assigned to new construction sites.]
+Số đơn vị được phân bổ cho các công trường mới.
+[settings Unit counts for completed buildings.]
+Số đơn vị được phân bổ cho công trình đã hoàn thành.
+[settings Unit counts while a building is being upgraded.]
+Số đơn vị được phân bổ trong khi công trình đang nâng cấp.
+[settings Units]
+Đơn vị
+[settings Upgrades]
+Nâng cấp công trình
+[settings Use game cursor]
+Sử dụng con trỏ trò chơi
+[settings Voice volume]
+Âm lượng giọng nói
+[settings Window mode]
+Chế độ cửa sổ
+[settings Window-only sizes also switch the game to windowed mode.]
+Việc chọn độ phân giải chỉ hỗ trợ chế độ cửa sổ cũng sẽ chuyển trò chơi sang chế độ cửa sổ.
+[settings Windowed]
+Cửa sổ
+[settings Windowed only]
+Chỉ chế độ cửa sổ
+[settings seconds]
+giây
+[settings Flag]
+Cờ
+[settings High-resolution artwork]
+Hình ảnh độ phân giải cao
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Hình ảnh được áp dụng khi tải ván chơi hoặc trình chỉnh sửa bản đồ lần tiếp theo (OpenGL).
+[settings Automatic torus view]
+Chế độ xem hình xuyến tự động
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển xung quanh bản đồ (OpenGL).

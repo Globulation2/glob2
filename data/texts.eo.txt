@@ -1230,3 +1230,209 @@ Ankoraŭ laborantaj: %0
 Aŭtomata tora vido
 [toggle torus view]
 Ŝalti inter 2D kaj tora vido
+[settings Add key to sequence]
+Aldoni klavon al la sinsekvo
+[settings Add shortcut]
+Aldoni ŝparvojon
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Alĝustigu la nombron de asignitaj unuoj per la musrado. Kiam la opcio estas malŝaltita, tenu Ctrl. Tenu Shift por alĝustigi la flagradiuson. Ĉi tiu opcio ankaŭ regas la musradon en aliaj menuoj.
+[settings Adjust music and voice volume.]
+Alĝustigu la laŭtecon de muziko kaj voĉo.
+[settings Adjust the pace of play.]
+Alĝustigu la rapidon de la ludo.
+[settings Advanced binding]
+Altnivela klavagordo
+[settings Artwork & effects]
+Artaĵoj kaj efikoj
+[settings Audio]
+Sono
+[settings Bind Escape]
+Asigni Escape
+[settings Building]
+Konstruaĵo
+[settings Building defaults]
+Defaŭltoj de konstruaĵoj
+[settings Cancel]
+Nuligi
+[settings Changes saved automatically]
+Ŝanĝoj estas aŭtomate konservataj
+[settings Changes you make during play update these defaults for future games.]
+Ŝanĝoj faritaj dum ludado ĝisdatigas ĉi tiujn defaŭltajn agordojn por estontaj ludoj.
+[settings Changing the renderer requires a restart.]
+Ŝanĝi la bildilon postulas rekomencon.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Elektu klavaran ŝparvojon por redakti ĝin, aŭ aldonu alian ŝparvojon por ago.
+[settings Choose a window or fill the screen.]
+Elektu fenestran aŭ plenekranan reĝimon.
+[settings Choose how the game looks on your screen.]
+Elektu kiel la ludo aspektas sur via ekrano.
+[settings Completed]
+Finitaj konstruaĵoj
+[settings Construction]
+Konstruado
+[settings Controls]
+Ludaj kontroloj
+[settings Could not change display mode. The previous mode was restored.]
+Ne eblis ŝanĝi ekranreĝimon. La antaŭa reĝimo estis restarigita.
+[settings Could not save]
+Ne eblis konservi
+[settings Current display]
+Nunaj ekranagordoj
+[settings Default]
+Defaŭlte
+[settings Display]
+Vidaĵo
+[settings Display & graphics]
+Montriĝo kaj grafikaĵoj
+[settings Display the Globulation 2 cursor.]
+Montru la kursoron de Globulation 2.
+[settings Done]
+Farita
+[settings Edit shortcut]
+Redakti klavaran ŝparvojon
+[settings Flags]
+Flagoj
+[settings Full]
+Plenaj detaloj
+[settings Fullscreen]
+Plenekrana
+[settings Game]
+Ludo
+[settings Game speed]
+Ludrapido
+[settings Gameplay]
+Ludado
+[settings Graphics detail]
+Grafikaj detaloj
+[settings Keep]
+Konservi ŝanĝojn
+[settings Keep this display mode?]
+Ĉu konservi ĉi tiun ekranreĝimon?
+[settings Keep your volume levels while silencing audio.]
+Silentigu la tutan sonon sen ŝanĝi la konservitajn volumnivelojn.
+[settings Key]
+Klavo
+[settings Keyboard shortcuts]
+Klavaj ŝparvojoj
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+La klavoj formas sinsekvon laŭ sia ordo. Ĉiu paŝo povas aktiviĝi ĉe premo aŭ malpremo de sia klavo.
+[settings Language]
+Lingvo
+[settings Language & player]
+Lingvo kaj ludanto
+[settings Language used throughout the interface.]
+Lingvo uzata tra la interfaco.
+[settings Level]
+Nivelo
+[settings Map editor]
+Mapredaktilo
+[settings Missing font]
+Mankas tiparo
+[settings Music volume]
+Laŭteco de Muziko
+[settings Mute audio]
+Silentigi sonon
+[settings Name shown to other players.]
+Nomo montrita al aliaj ludantoj.
+[settings Off]
+Malŝaltita
+[settings On]
+Ŝaltita
+[settings OpenGL is not available in this build.]
+OpenGL ne disponeblas en ĉi tiu versio.
+[settings Player name]
+Ludantnomo
+[settings Press]
+Ĉe premo
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Premu klavon. Escape nuligas la klavregistradon. Por asigni Escape, elektu «Asigni Escape».
+[settings Radius]
+Radiuso
+[settings Reduced]
+Reduktitaj detaloj
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Reduktitaj detaloj malŝaltas nubojn kaj iliajn ombrojn, simpligas magiajn efikojn kaj reduktas travideblecon.
+[settings Release]
+Ĉe malpremo
+[settings Remember assignments between games]
+Memori asignojn de unuoj inter ludoj
+[settings Remove key]
+Forigi klavon
+[settings Remove shortcut]
+Forigi ŝparvojon
+[settings Renderer]
+Grafika bildilo
+[settings Replace conflicting bindings]
+Anstataŭigi konfliktajn klavarajn ŝparvojojn
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Ĉu anstataŭigi la ŝparvojojn en ĉi tiu kunteksto per la defaŭltaj? La ŝanĝoj estos tuj konservitaj.
+[settings Resolution]
+Ekrana rezolucio
+[settings Restore default shortcuts]
+Restarigi defaŭltajn ŝparvojojn
+[settings Retry]
+Reprovi
+[settings Revert]
+Malfari ŝanĝojn
+[settings Reverting in]
+Restarigo post
+[settings Save shortcut]
+Konservi klavaran ŝparvojon
+[settings Saved — restart required]
+Konservite — necesas rekomenco
+[settings Saving…]
+Konservante…
+[settings Scroll wheel enabled]
+Ebligi Musradon
+[settings Set starting unit assignments by building type and level.]
+Agordu la komencan nombron de asignitaj unuoj laŭ konstruaĵa tipo kaj nivelo.
+[settings Set your language and player name.]
+Agordu vian lingvon kaj ludantonomon.
+[settings Settings]
+Elektaĵoj
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
+[settings Software]
+Programara bildigo
+[settings Starting unit counts and radius for newly placed flags.]
+Komenca nombro de unuoj kaj radiuso por nove metitaj flagoj.
+[settings This shortcut conflicts with existing bindings:]
+Ĉi tiu klavara ŝparvojo konfliktas kun ekzistantaj ŝparvojoj:
+[settings Trigger]
+Aktiviga evento
+[settings Unbound]
+Neniu ŝparvojo asignita
+[settings Unit counts assigned to new construction sites.]
+Nombro de unuoj asignitaj al novaj konstruejoj.
+[settings Unit counts for completed buildings.]
+Nombro de unuoj asignitaj al finitaj konstruaĵoj.
+[settings Unit counts while a building is being upgraded.]
+Nombro de unuoj asignitaj al konstruaĵo dum ĝia plibonigo.
+[settings Units]
+Globuloj
+[settings Upgrades]
+Plibonigoj de konstruaĵoj
+[settings Use game cursor]
+Uzi ludkursoron
+[settings Voice volume]
+Laŭteco de Voĉo
+[settings Window mode]
+Fenestra reĝimo
+[settings Window-only sizes also switch the game to windowed mode.]
+Elekto de rezolucio uzebla nur en fenestra reĝimo ankaŭ ŝanĝas la ludon al fenestra reĝimo.
+[settings Windowed]
+Fenestra
+[settings Windowed only]
+Nur fenestra
+[settings seconds]
+sekundoj
+[settings Flag]
+Flago
+[settings High-resolution artwork]
+Alt-rezoluciaj bildoj
+[settings Apply artwork on the next game or editor load (OpenGL).]
+La bildoj estos aplikitaj ĉe la sekva ŝargo de ludo aŭ mapredaktilo (OpenGL).
+[settings Automatic torus view]
+Aŭtomata tora vido
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Aŭtomate montru la torforman superrigardon de la mapo dum moviĝado tra la mapo (OpenGL).

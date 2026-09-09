@@ -1294,3 +1294,209 @@ Ancora al lavoro: %0
 Vista toroidale automatica
 [toggle torus view]
 Alterna vista 2D / toroidale
+[settings Add key to sequence]
+Aggiungi tasto alla sequenza
+[settings Add shortcut]
+Aggiungi scorciatoia
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Usa la rotella del mouse per modificare il numero di unità assegnate. Se l’opzione è disattivata, tieni premuto Ctrl. Maiusc regola il raggio della bandiera. Questa opzione controlla anche l’uso della rotella negli altri menu.
+[settings Adjust music and voice volume.]
+Regola il volume della musica e della voce.
+[settings Adjust the pace of play.]
+Regola la velocità del gioco.
+[settings Advanced binding]
+Modifica avanzata delle scorciatoie
+[settings Artwork & effects]
+Grafica ed effetti
+[settings Audio]
+Audio
+[settings Bind Escape]
+Assegna il tasto Esc
+[settings Building]
+Edificio
+[settings Building defaults]
+Impostazioni predefinite edifici
+[settings Cancel]
+Annulla
+[settings Changes saved automatically]
+Modifiche salvate automaticamente
+[settings Changes you make during play update these defaults for future games.]
+Le modifiche apportate durante una partita aggiornano queste impostazioni predefinite per le partite future.
+[settings Changing the renderer requires a restart.]
+La modifica del renderer richiede un riavvio.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Seleziona una scorciatoia da tastiera per modificarla o aggiungi un'altra scorciatoia per un'azione.
+[settings Choose a window or fill the screen.]
+Scegli tra la modalità finestra e lo schermo intero.
+[settings Choose how the game looks on your screen.]
+Scegli l'aspetto del gioco sullo schermo.
+[settings Completed]
+Edifici completati
+[settings Construction]
+Costruzione
+[settings Controls]
+Controlli di gioco
+[settings Could not change display mode. The previous mode was restored.]
+Impossibile modificare la modalità di visualizzazione. È stata ripristinata la modalità precedente.
+[settings Could not save]
+Impossibile salvare
+[settings Current display]
+Impostazioni video attuali
+[settings Default]
+Predefinito
+[settings Display]
+Schermo
+[settings Display & graphics]
+Visualizzazione e grafica
+[settings Display the Globulation 2 cursor.]
+Mostra il cursore di Globulation 2.
+[settings Done]
+Fatto
+[settings Edit shortcut]
+Modifica la scorciatoia da tastiera
+[settings Flags]
+Bandiere
+[settings Full]
+Dettagli completi
+[settings Fullscreen]
+Schermo intero
+[settings Game]
+Partita
+[settings Game speed]
+Velocità di gioco
+[settings Gameplay]
+Gioco
+[settings Graphics detail]
+Dettaglio grafico
+[settings Keep]
+Mantieni le modifiche
+[settings Keep this display mode?]
+Mantenere questa modalità di visualizzazione?
+[settings Keep your volume levels while silencing audio.]
+Disattiva tutti i suoni senza modificare i livelli di volume salvati.
+[settings Key]
+Tasto
+[settings Keyboard shortcuts]
+Scorciatoie da tastiera
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+I tasti formano una sequenza ordinata. Ogni tasto può attivare l’azione alla pressione o al rilascio.
+[settings Language]
+Lingua
+[settings Language & player]
+Lingua e giocatore
+[settings Language used throughout the interface.]
+Lingua utilizzata in tutta l'interfaccia.
+[settings Level]
+Livello
+[settings Map editor]
+Editor di mappe
+[settings Missing font]
+Carattere mancante
+[settings Music volume]
+Volume (musica)
+[settings Mute audio]
+Disattiva l'audio
+[settings Name shown to other players.]
+Nome mostrato agli altri giocatori.
+[settings Off]
+Disattivato
+[settings On]
+Attivato
+[settings OpenGL is not available in this build.]
+OpenGL non è disponibile in questa build.
+[settings Player name]
+Nome del giocatore
+[settings Press]
+Alla pressione
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Premi un tasto. Esc annulla l’acquisizione. Per assegnare Esc, seleziona "Assegna il tasto Esc".
+[settings Radius]
+Raggio
+[settings Reduced]
+Dettaglio ridotto
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+La riduzione dei dettagli disabilita le nuvole e le relative ombre, semplifica gli effetti magici e riduce la trasparenza.
+[settings Release]
+Al rilascio
+[settings Remember assignments between games]
+Ricorda le assegnazioni tra le partite
+[settings Remove key]
+Rimuovi tasto
+[settings Remove shortcut]
+Rimuovi scorciatoia
+[settings Renderer]
+Motore di rendering
+[settings Replace conflicting bindings]
+Sostituisci le scorciatoie da tastiera in conflitto
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Sostituire le scorciatoie di questo contesto con quelle predefinite? Le modifiche vengono salvate immediatamente.
+[settings Resolution]
+Risoluzione dello schermo
+[settings Restore default shortcuts]
+Ripristina scorciatoie predefinite
+[settings Retry]
+Riprova
+[settings Revert]
+Annulla le modifiche
+[settings Reverting in]
+Ripristino tra
+[settings Save shortcut]
+Salva la scorciatoia da tastiera
+[settings Saved — restart required]
+Salvato: è necessario riavviare
+[settings Saving…]
+Salvataggio…
+[settings Scroll wheel enabled]
+Rotella del mouse attiva
+[settings Set starting unit assignments by building type and level.]
+Imposta il numero iniziale di unità assegnate per tipo e livello di edificio.
+[settings Set your language and player name.]
+Imposta la lingua e il nome del giocatore.
+[settings Settings]
+Impostazioni
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Solo per giocatore singolo e replay. Le partite multigiocatore si svolgono a 1x.
+[settings Software]
+Rendering software
+[settings Starting unit counts and radius for newly placed flags.]
+Numero iniziale di unità e raggio delle nuove bandiere.
+[settings This shortcut conflicts with existing bindings:]
+Questa scorciatoia da tastiera è in conflitto con le scorciatoie esistenti:
+[settings Trigger]
+Evento di attivazione
+[settings Unbound]
+Nessuna scorciatoia assegnata
+[settings Unit counts assigned to new construction sites.]
+Numero di unità assegnate ai nuovi cantieri.
+[settings Unit counts for completed buildings.]
+Numero di unità per gli edifici completati.
+[settings Unit counts while a building is being upgraded.]
+Numero di unità durante il miglioramento di un edificio.
+[settings Units]
+Unità
+[settings Upgrades]
+Miglioramenti
+[settings Use game cursor]
+Usa il cursore del gioco
+[settings Voice volume]
+Volume (voce)
+[settings Window mode]
+Modalità finestra
+[settings Window-only sizes also switch the game to windowed mode.]
+Selezionando una risoluzione che supporta solo la modalità a finestra, il gioco passa anche alla modalità a finestra.
+[settings Windowed]
+In finestra
+[settings Windowed only]
+Solo in finestra
+[settings seconds]
+secondi
+[settings Flag]
+Bandiera
+[settings High-resolution artwork]
+Grafica ad alta risoluzione
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Applica la grafica al prossimo caricamento di una partita o dell’editor di mappe (OpenGL).
+[settings Automatic torus view]
+Vista toroidale automatica
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Mostra automaticamente la panoramica toroidale mentre ti sposti sulla mappa (OpenGL).

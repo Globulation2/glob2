@@ -1232,3 +1232,209 @@ Znotraj: %0
 Samodejni torusni pogled
 [toggle torus view]
 Preklopi med 2D in torusnim pogledom
+[settings Add key to sequence]
+Dodaj tipko v zaporedje
+[settings Add shortcut]
+Dodaj bližnjico
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+S kolescem spreminjajte število dodeljenih enot. Če je možnost izklopljena, držite Ctrl. S tipko Shift spreminjate polmer zastave. Možnost vpliva tudi na uporabo kolesca v drugih menijih.
+[settings Adjust music and voice volume.]
+Prilagodite glasnost glasbe in govora.
+[settings Adjust the pace of play.]
+Prilagodite hitrost igre.
+[settings Advanced binding]
+Napredno urejanje bližnjic
+[settings Artwork & effects]
+Grafika in učinki
+[settings Audio]
+Zvok
+[settings Bind Escape]
+Dodeli Escape
+[settings Building]
+Zgradba
+[settings Building defaults]
+Privzete nastavitve zgradb
+[settings Cancel]
+Prekliči
+[settings Changes saved automatically]
+Spremembe se samodejno shranjujejo
+[settings Changes you make during play update these defaults for future games.]
+Spremembe, ki jih naredite med igranjem, posodobijo te privzete nastavitve za prihodnje igre.
+[settings Changing the renderer requires a restart.]
+Spreminjanje upodabljalnika zahteva ponovni zagon.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Izberite bližnjico na tipkovnici, da jo uredite, ali dodajte drugo bližnjico za dejanje.
+[settings Choose a window or fill the screen.]
+Izberite prikaz v oknu ali čez celoten zaslon.
+[settings Choose how the game looks on your screen.]
+Izberite, kako bo igra videti na vašem zaslonu.
+[settings Completed]
+Dokončane zgradbe
+[settings Construction]
+Gradnja
+[settings Controls]
+Upravljanje igre
+[settings Could not change display mode. The previous mode was restored.]
+Ni bilo mogoče spremeniti načina prikaza. Prejšnji način je bil obnovljen.
+[settings Could not save]
+Ni bilo mogoče shraniti
+[settings Current display]
+Trenutni način prikaza
+[settings Default]
+Privzeto
+[settings Display]
+Prikaz
+[settings Display & graphics]
+Zaslon in grafika
+[settings Display the Globulation 2 cursor.]
+Prikaži kazalec igre Globulation 2.
+[settings Done]
+Končano
+[settings Edit shortcut]
+Uredi bližnjico na tipkovnici
+[settings Flags]
+Zastave
+[settings Full]
+Vse podrobnosti
+[settings Fullscreen]
+Celotni zaslon
+[settings Game]
+Igra
+[settings Game speed]
+Hitrost igre
+[settings Gameplay]
+Potek igre
+[settings Graphics detail]
+Podrobnosti grafike
+[settings Keep]
+Obdrži spremembe
+[settings Keep this display mode?]
+Obdržim ta način prikaza?
+[settings Keep your volume levels while silencing audio.]
+Izklopite ves zvok, ne da bi spremenili shranjene ravni glasnosti.
+[settings Key]
+Tipka
+[settings Keyboard shortcuts]
+Bližnjice na tipkovnici
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tipke tvorijo zaporedje v določenem vrstnem redu. Vsak korak se lahko sproži ob pritisku ali izpustu ustrezne tipke.
+[settings Language]
+Jezik
+[settings Language & player]
+Jezik in igralec
+[settings Language used throughout the interface.]
+Jezik, ki se uporablja v celotnem vmesniku.
+[settings Level]
+Stopnja
+[settings Map editor]
+Urejevalnik zemljevidov
+[settings Missing font]
+Manjka pisava
+[settings Music volume]
+Glasnost glasbe
+[settings Mute audio]
+Izklop zvoka
+[settings Name shown to other players.]
+Ime, prikazano drugim igralcem.
+[settings Off]
+Izklopljeno
+[settings On]
+Vklopljeno
+[settings OpenGL is not available in this build.]
+OpenGL ni na voljo v tej različici.
+[settings Player name]
+Ime igralca
+[settings Press]
+Ob pritisku
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Pritisnite tipko. Escape prekliče zajem vnosa. Za dodelitev tipke Escape izberite »Dodeli Escape«.
+[settings Radius]
+Polmer
+[settings Reduced]
+Manj podrobnosti
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Zmanjšane podrobnosti onemogočijo oblake in njihove sence, poenostavijo čarobne učinke in zmanjšajo prosojnost.
+[settings Release]
+Ob izpustu
+[settings Remember assignments between games]
+Zapomni si dodelitve enot med igrami
+[settings Remove key]
+Odstrani tipko
+[settings Remove shortcut]
+Odstrani bližnjico
+[settings Renderer]
+Upodabljalnik grafike
+[settings Replace conflicting bindings]
+Zamenjaj nasprotujoče si bližnjice
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Želite zamenjati bližnjice v tem kontekstu s privzetimi? Spremembe se takoj shranijo.
+[settings Resolution]
+Ločljivost zaslona
+[settings Restore default shortcuts]
+Obnovi privzete bližnjice
+[settings Retry]
+Poskusi znova
+[settings Revert]
+Razveljavi spremembe
+[settings Reverting in]
+Povrnitev čez
+[settings Save shortcut]
+Shrani bližnjico na tipkovnici
+[settings Saved — restart required]
+Shranjeno — potreben ponovni zagon
+[settings Saving…]
+Shranjevanje…
+[settings Scroll wheel enabled]
+Miškino kolesce omogočeno
+[settings Set starting unit assignments by building type and level.]
+Nastavite začetno število dodeljenih enot glede na vrsto in stopnjo zgradbe.
+[settings Set your language and player name.]
+Nastavite jezik in ime igralca.
+[settings Settings]
+Nastavitve
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
+[settings Software]
+Programsko upodabljanje
+[settings Starting unit counts and radius for newly placed flags.]
+Začetno število enot in polmer za novo postavljene zastave.
+[settings This shortcut conflicts with existing bindings:]
+Ta bližnjica na tipkovnici je v nasprotju z obstoječimi bližnjicami:
+[settings Trigger]
+Aktivacijski dogodek
+[settings Unbound]
+Bližnjica ni dodeljena
+[settings Unit counts assigned to new construction sites.]
+Število enot, dodeljenih novim gradbiščem.
+[settings Unit counts for completed buildings.]
+Število enot, dodeljenih dokončanim zgradbam.
+[settings Unit counts while a building is being upgraded.]
+Število dodeljenih enot med nadgradnjo zgradbe.
+[settings Units]
+Enote
+[settings Upgrades]
+Nadgradnje zgradb
+[settings Use game cursor]
+Uporabi kazalec igre
+[settings Voice volume]
+Glasnost govora
+[settings Window mode]
+Okenski način
+[settings Window-only sizes also switch the game to windowed mode.]
+Izbira ločljivosti, ki podpira samo okenski način, tudi preklopi igro na okenski način.
+[settings Windowed]
+V oknu
+[settings Windowed only]
+Samo v oknu
+[settings seconds]
+sekund
+[settings Flag]
+Zastava
+[settings High-resolution artwork]
+Grafika visoke ločljivosti
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Izbrana grafika se uporabi ob naslednjem nalaganju igre ali urejevalnika zemljevidov (OpenGL).
+[settings Automatic torus view]
+Samodejni torusni pogled
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljevidu (OpenGL).

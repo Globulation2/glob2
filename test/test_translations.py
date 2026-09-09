@@ -58,38 +58,6 @@ class TranslationAuditTest(unittest.TestCase):
             (root / 'data/texts.incomplete.txt').write_text('data/texts.xx.txt\ndata/texts.en.txt\n', encoding='utf-8')
             self.assertTrue(any('must match texts.list.txt in order' in e for e in checker.audit(root)['errors']))
 
-    def test_explicit_settings_fallbacks_do_not_hide_other_errors(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            (root / 'data').mkdir()
-            metadata = ['[language-code]', '[language]', '[language incomplete]', '[language-tr]']
-            keys = metadata + ['[settings New control]', '[existing control]']
-            (root / 'data/texts.list.txt').write_text('data/texts.keys.txt\ndata/texts.en.txt\ndata/texts.xx.txt\n')
-            (root / 'data/texts.keys.txt').write_text('\n'.join(keys)+'\n')
-            english = dict(zip(keys, ['en', 'English', 'English incomplete', 'Language', 'New control', 'Existing']))
-            other = dict(zip(metadata, ['xx', 'Example', 'Example incomplete', 'Language']))
-            other['[existing control]'] = 'Localized'
-            def write(code, entries):
-                (root / f'data/texts.{code}.txt').write_text(''.join(k+'\n'+v+'\n' for k,v in entries.items()))
-            write('en', english)
-            write('xx', other)
-            allowlist = root / 'data/settings-english-fallbacks.txt'
-            allowlist.write_text('[settings New control]\n')
-            report = checker.audit(root)
-            self.assertEqual(report['errors'], [])
-            self.assertEqual(report['languages']['data/texts.xx.txt']['english_fallbacks'], ['[settings New control]'])
-            # The untranslated count still honestly reports work for translators.
-            self.assertEqual(report['languages']['data/texts.xx.txt']['untranslated'], ['[settings New control]'])
-            del other['[existing control]']
-            write('xx', other)
-            self.assertTrue(any('missing key [existing control]' in e for e in checker.audit(root)['errors']))
-            allowlist.write_text('[existing control]\n')
-            self.assertTrue(any('invalid fallback key' in e for e in checker.audit(root)['errors']))
-            allowlist.write_text('[settings New control]\n')
-            english['[settings New control]'] = ''
-            write('en', english)
-            self.assertTrue(any('missing English fallback' in e for e in checker.audit(root)['errors']))
-
 
 if __name__ == '__main__':
     unittest.main()

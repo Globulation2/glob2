@@ -1232,3 +1232,209 @@ Arbeiten noch: %0
 Automatische Torusansicht
 [toggle torus view]
 2D-/Torusansicht umschalten
+[settings Add key to sequence]
+Taste zur Sequenz hinzufügen
+[settings Add shortcut]
+Tastaturkürzel hinzufügen
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Mit dem Mausrad können Sie die Anzahl der zugewiesenen Einheiten ändern. Wenn diese Option deaktiviert ist, halten Sie die Strg-Taste gedrückt, um das Rad zu verwenden. Halten Sie die Umschalttaste gedrückt, um den Flaggenradius anzupassen. Diese Option steuert auch die Mausradeingabe in anderen Menüs.
+[settings Adjust music and voice volume.]
+Passen Sie die Musik- und Sprachlautstärke an.
+[settings Adjust the pace of play.]
+Passen Sie die Geschwindigkeit des Spiels an.
+[settings Advanced binding]
+Erweiterte Tastenbelegung
+[settings Artwork & effects]
+Grafik und Effekte
+[settings Audio]
+Audio
+[settings Bind Escape]
+Escape-Taste zuweisen
+[settings Building]
+Gebäude
+[settings Building defaults]
+Gebäudestandards
+[settings Cancel]
+Abbrechen
+[settings Changes saved automatically]
+Änderungen werden automatisch gespeichert
+[settings Changes you make during play update these defaults for future games.]
+Durch Änderungen, die Sie während des Spiels vornehmen, werden diese Standardeinstellungen für zukünftige Spiele aktualisiert.
+[settings Changing the renderer requires a restart.]
+Das Ändern des Renderers erfordert einen Neustart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Wählen Sie eine Tastenkombination aus, um sie zu bearbeiten, oder fügen Sie eine weitere Tastenkombination für eine Aktion hinzu.
+[settings Choose a window or fill the screen.]
+Wählen Sie zwischen Fenster- und Vollbildmodus.
+[settings Choose how the game looks on your screen.]
+Wählen Sie, wie das Spiel auf Ihrem Bildschirm aussieht.
+[settings Completed]
+Fertiggestellte Gebäude
+[settings Construction]
+Bau
+[settings Controls]
+Spielsteuerung
+[settings Could not change display mode. The previous mode was restored.]
+Der Anzeigemodus konnte nicht geändert werden. Der vorherige Modus wurde wiederhergestellt.
+[settings Could not save]
+Konnte nicht gespeichert werden
+[settings Current display]
+Aktuelle Anzeigeeinstellungen
+[settings Default]
+Standard
+[settings Display]
+Anzeige
+[settings Display & graphics]
+Anzeige und Grafik
+[settings Display the Globulation 2 cursor.]
+Zeigen Sie den Globulation 2-Cursor an.
+[settings Done]
+Fertig
+[settings Edit shortcut]
+Tastaturkürzel bearbeiten
+[settings Flags]
+Flaggen
+[settings Full]
+Alle Details
+[settings Fullscreen]
+Vollbild
+[settings Game]
+Spiel
+[settings Game speed]
+Spielgeschwindigkeit
+[settings Gameplay]
+Spielablauf
+[settings Graphics detail]
+Grafikdetails
+[settings Keep]
+Änderungen beibehalten
+[settings Keep this display mode?]
+Diesen Anzeigemodus beibehalten?
+[settings Keep your volume levels while silencing audio.]
+Schalten Sie den gesamten Ton stumm, ohne die gespeicherten Lautstärkepegel zu ändern.
+[settings Key]
+Taste
+[settings Keyboard shortcuts]
+Tastaturkürzel
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Die Tasten bilden eine geordnete Sequenz. Jede Taste kann beim Drücken oder Loslassen auslösen.
+[settings Language]
+Sprache
+[settings Language & player]
+Sprache & Spieler
+[settings Language used throughout the interface.]
+Sprache, die in der gesamten Benutzeroberfläche verwendet wird.
+[settings Level]
+Stufe
+[settings Map editor]
+Karteneditor
+[settings Missing font]
+Fehlende Schriftart
+[settings Music volume]
+Musiklautstärke
+[settings Mute audio]
+Audio stumm schalten
+[settings Name shown to other players.]
+Name, der anderen Spielern angezeigt wird.
+[settings Off]
+Aus
+[settings On]
+Ein
+[settings OpenGL is not available in this build.]
+OpenGL ist in diesem Build nicht verfügbar.
+[settings Player name]
+Spielername
+[settings Press]
+Beim Drücken
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Drücken Sie eine Taste. Escape bricht die Erfassung ab. Wählen Sie „Escape-Taste zuweisen“, um Escape zu belegen.
+[settings Radius]
+Radius
+[settings Reduced]
+Reduzierte Details
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Reduzierte Details deaktivieren Wolken und ihre Schatten, vereinfachen magische Effekte und verringern die Transparenz.
+[settings Release]
+Beim Loslassen
+[settings Remember assignments between games]
+Einheitenzuweisungen zwischen Partien merken
+[settings Remove key]
+Taste entfernen
+[settings Remove shortcut]
+Tastaturkürzel entfernen
+[settings Renderer]
+Grafik-Renderer
+[settings Replace conflicting bindings]
+Konfliktbelegungen ersetzen
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Tastaturkürzel in diesem Kontext durch die Standardbelegung ersetzen? Die Änderung wird sofort gespeichert.
+[settings Resolution]
+Bildschirmauflösung
+[settings Restore default shortcuts]
+Standardkürzel wiederherstellen
+[settings Retry]
+Erneut versuchen
+[settings Revert]
+Änderungen rückgängig machen
+[settings Reverting in]
+Zurücksetzen in
+[settings Save shortcut]
+Tastaturkürzel speichern
+[settings Saved — restart required]
+Gespeichert – Neustart erforderlich
+[settings Saving…]
+Speichern…
+[settings Scroll wheel enabled]
+Mausrad aktiviert
+[settings Set starting unit assignments by building type and level.]
+Legen Sie die anfängliche Anzahl zugewiesener Einheiten nach Gebäudetyp und Stufe fest.
+[settings Set your language and player name.]
+Legen Sie Ihre Sprache und Ihren Spielernamen fest.
+[settings Settings]
+Einstellungen
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
+[settings Software]
+Software-Rendering
+[settings Starting unit counts and radius for newly placed flags.]
+Anfängliche Einheitenanzahl und Radius für neu platzierte Flaggen.
+[settings This shortcut conflicts with existing bindings:]
+Diese Tastenkombination steht im Konflikt mit vorhandenen Tastenkombinationen:
+[settings Trigger]
+Aktivierungsereignis
+[settings Unbound]
+Nicht belegt
+[settings Unit counts assigned to new construction sites.]
+Anzahl der Einheiten, die neuen Baustellen zugewiesen werden.
+[settings Unit counts for completed buildings.]
+Anzahl der Einheiten für fertiggestellte Gebäude.
+[settings Unit counts while a building is being upgraded.]
+Anzahl der Einheiten während der Verbesserung eines Gebäudes.
+[settings Units]
+Einheiten
+[settings Upgrades]
+Verbesserungen
+[settings Use game cursor]
+Spielcursor verwenden
+[settings Voice volume]
+Sprachlautstärke
+[settings Window mode]
+Fenstermodus
+[settings Window-only sizes also switch the game to windowed mode.]
+Wenn Sie eine Auflösung auswählen, die nur den Fenstermodus unterstützt, wechselt das Spiel auch in den Fenstermodus.
+[settings Windowed]
+Im Fenster
+[settings Windowed only]
+Nur im Fenster
+[settings seconds]
+Sekunden
+[settings Flag]
+Flagge
+[settings High-resolution artwork]
+Hochauflösende Grafik
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Grafik beim nächsten Laden einer Partie oder des Karteneditors anwenden (OpenGL).
+[settings Automatic torus view]
+Automatische Torusansicht
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Zeigt automatisch die torusförmige Kartenübersicht an, während Sie sich auf der Karte bewegen (OpenGL).

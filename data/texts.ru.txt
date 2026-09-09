@@ -1230,3 +1230,209 @@ Cortex
 Автоматический вид тора
 [toggle torus view]
 Переключить вид 2D / тора
+[settings Add key to sequence]
+Добавить клавишу в последовательность
+[settings Add shortcut]
+Добавить сочетание
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Используйте колесо мыши, чтобы изменить количество назначенных юнитов. Если эта опция отключена, удерживайте клавишу Ctrl, чтобы использовать колесо. Удерживайте клавишу Shift, чтобы отрегулировать радиус флага. Эта опция также управляет вводом с помощью колеса мыши в других меню.
+[settings Adjust music and voice volume.]
+Отрегулируйте громкость музыки и голоса.
+[settings Adjust the pace of play.]
+Настройте скорость игры.
+[settings Advanced binding]
+Расширенная настройка сочетания
+[settings Artwork & effects]
+Оформление и эффекты
+[settings Audio]
+Звук
+[settings Bind Escape]
+Назначить Escape
+[settings Building]
+Здание
+[settings Building defaults]
+Настройки зданий по умолчанию
+[settings Cancel]
+Отмена
+[settings Changes saved automatically]
+Изменения сохраняются автоматически
+[settings Changes you make during play update these defaults for future games.]
+Изменения, которые вы делаете во время игры, обновляют эти настройки по умолчанию для будущих игр.
+[settings Changing the renderer requires a restart.]
+Смена рендерера требует перезапуска игры.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Выберите сочетание клавиш, чтобы отредактировать его, или добавьте другое сочетание клавиш для действия.
+[settings Choose a window or fill the screen.]
+Выберите оконный или полноэкранный режим.
+[settings Choose how the game looks on your screen.]
+Выберите, как игра будет выглядеть на вашем экране.
+[settings Completed]
+Завершенные здания
+[settings Construction]
+Строительство
+[settings Controls]
+Управление игрой
+[settings Could not change display mode. The previous mode was restored.]
+Не удалось изменить режим отображения. Прежний режим восстановлен.
+[settings Could not save]
+Не удалось сохранить
+[settings Current display]
+Текущий режим экрана
+[settings Default]
+По умолчанию
+[settings Display]
+Экран
+[settings Display & graphics]
+Дисплей и графика
+[settings Display the Globulation 2 cursor.]
+Показывать курсор игры Globulation 2.
+[settings Done]
+Готово
+[settings Edit shortcut]
+Изменить сочетание клавиш
+[settings Flags]
+Флаги
+[settings Full]
+Полная
+[settings Fullscreen]
+Полный экран
+[settings Game]
+Игра
+[settings Game speed]
+Скорость игры
+[settings Gameplay]
+Игровой процесс
+[settings Graphics detail]
+Детализация графики
+[settings Keep]
+Сохранить изменения
+[settings Keep this display mode?]
+Сохранить этот режим отображения?
+[settings Keep your volume levels while silencing audio.]
+Отключите весь звук без изменения сохраненных уровней громкости.
+[settings Key]
+Клавиша
+[settings Keyboard shortcuts]
+Сочетания клавиш
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Клавиши образуют последовательность в заданном порядке. Каждый шаг может срабатывать при нажатии или отпускании соответствующей клавиши.
+[settings Language]
+Язык
+[settings Language & player]
+Язык и игрок
+[settings Language used throughout the interface.]
+Язык, используемый во всем интерфейсе.
+[settings Level]
+Уровень
+[settings Map editor]
+Редактор карт
+[settings Missing font]
+Отсутствует шрифт
+[settings Music volume]
+Громкость музыки
+[settings Mute audio]
+Отключить звук
+[settings Name shown to other players.]
+Имя, которое видят другие игроки.
+[settings Off]
+Выкл.
+[settings On]
+Вкл.
+[settings OpenGL is not available in this build.]
+OpenGL недоступен в этой сборке.
+[settings Player name]
+Имя игрока
+[settings Press]
+При нажатии
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Нажмите клавишу. Escape отменяет ввод сочетания. Чтобы назначить Escape, выберите «Назначить Escape».
+[settings Radius]
+Радиус
+[settings Reduced]
+Сниженная
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Сниженная детализация отключает облака и их тени, упрощает магические эффекты и снижает прозрачность.
+[settings Release]
+При отпускании
+[settings Remember assignments between games]
+Запоминать назначения юнитов между играми
+[settings Remove key]
+Удалить клавишу
+[settings Remove shortcut]
+Удалить сочетание
+[settings Renderer]
+Графический рендерер
+[settings Replace conflicting bindings]
+Заменить конфликтующие сочетания
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Заменить сочетания клавиш в этом контексте стандартными? Изменения сохранятся сразу.
+[settings Resolution]
+Разрешение экрана
+[settings Restore default shortcuts]
+Восстановить стандартные сочетания
+[settings Retry]
+Повторить
+[settings Revert]
+Отменить изменения
+[settings Reverting in]
+Возврат через
+[settings Save shortcut]
+Сохранить сочетание клавиш
+[settings Saved — restart required]
+Сохранено — требуется перезапуск
+[settings Saving…]
+Сохранение…
+[settings Scroll wheel enabled]
+Колесо мыши включено
+[settings Set starting unit assignments by building type and level.]
+Задайте начальное количество назначенных юнитов по типу и уровню здания.
+[settings Set your language and player name.]
+Установите свой язык и имя игрока.
+[settings Settings]
+Настройки
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Только для одиночной игры и повторов. Сетевая игра идёт на скорости 1x.
+[settings Software]
+Программный рендеринг
+[settings Starting unit counts and radius for newly placed flags.]
+Начальное количество юнитов и радиус для вновь размещенных флагов.
+[settings This shortcut conflicts with existing bindings:]
+Это сочетание клавиш конфликтует с существующими сочетаниями клавиш:
+[settings Trigger]
+Событие активации
+[settings Unbound]
+Не назначено
+[settings Unit counts assigned to new construction sites.]
+Количество юнитов, назначенных на новые стройплощадки.
+[settings Unit counts for completed buildings.]
+Количество юнитов, назначенных в готовые здания.
+[settings Unit counts while a building is being upgraded.]
+Количество назначенных юнитов во время улучшения здания.
+[settings Units]
+Юниты
+[settings Upgrades]
+Улучшения зданий
+[settings Use game cursor]
+Использовать игровой курсор
+[settings Voice volume]
+Громкость голоса
+[settings Window mode]
+Оконный режим
+[settings Window-only sizes also switch the game to windowed mode.]
+Выбор разрешения, поддерживающего только оконный режим, также переключает игру в оконный режим.
+[settings Windowed]
+В окне
+[settings Windowed only]
+Только в оконном режиме
+[settings seconds]
+секунд
+[settings Flag]
+Флаг
+[settings High-resolution artwork]
+Графика высокого разрешения
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Выбранная графика применяется при следующей загрузке игры или редактора карт (OpenGL).
+[settings Automatic torus view]
+Автоматический вид тора
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Автоматически отображать обзор карты в форме тора при перемещении по карте (OpenGL).

@@ -1232,3 +1232,209 @@ Cortex
 Vizualizare toroidală automată
 [toggle torus view]
 Comută vizualizarea 2D / toroidală
+[settings Add key to sequence]
+Adaugă tastă la secvență
+[settings Add shortcut]
+Adaugă scurtătură
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Modificați numărul de unități alocate cu rotița mouse-ului. Când opțiunea este dezactivată, țineți apăsat Ctrl. Cu Shift modificați raza steagului. Opțiunea controlează și utilizarea rotiței în alte meniuri.
+[settings Adjust music and voice volume.]
+Reglați volumul muzicii și al vocii.
+[settings Adjust the pace of play.]
+Reglați viteza jocului.
+[settings Advanced binding]
+Editare avansată a comenzilor rapide
+[settings Artwork & effects]
+Grafică și efecte
+[settings Audio]
+Audio
+[settings Bind Escape]
+Atribuie Escape
+[settings Building]
+Clădire
+[settings Building defaults]
+Valori implicite pentru clădiri
+[settings Cancel]
+Anulează
+[settings Changes saved automatically]
+Modificările se salvează automat
+[settings Changes you make during play update these defaults for future games.]
+Modificările pe care le faci în timpul jocului actualizează aceste valori implicite pentru jocurile viitoare.
+[settings Changing the renderer requires a restart.]
+Schimbarea motorului de randare necesită repornirea jocului.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Selectați o comandă rapidă de la tastatură pentru a o edita sau adăugați o altă comandă rapidă pentru o acțiune.
+[settings Choose a window or fill the screen.]
+Alegeți modul fereastră sau ecran întreg.
+[settings Choose how the game looks on your screen.]
+Alegeți cum arată jocul pe ecran.
+[settings Completed]
+Clădiri finalizate
+[settings Construction]
+Construcție
+[settings Controls]
+Comenzi de joc
+[settings Could not change display mode. The previous mode was restored.]
+Nu s-a putut schimba modul de afișare. Modul anterior a fost restabilit.
+[settings Could not save]
+Nu s-a putut salva
+[settings Current display]
+Modul de afișare curent
+[settings Default]
+Implicit
+[settings Display]
+Afişaj
+[settings Display & graphics]
+Afișaj și grafică
+[settings Display the Globulation 2 cursor.]
+Afișați cursorul Globulation 2.
+[settings Done]
+Gata
+[settings Edit shortcut]
+Editează scurtătura
+[settings Flags]
+Steaguri
+[settings Full]
+Complete
+[settings Fullscreen]
+Ecran întreg
+[settings Game]
+Joc
+[settings Game speed]
+Viteza jocului
+[settings Gameplay]
+Mod de joc
+[settings Graphics detail]
+Detalii grafice
+[settings Keep]
+Păstrează modificările
+[settings Keep this display mode?]
+Păstrați acest mod de afișare?
+[settings Keep your volume levels while silencing audio.]
+Dezactivați sunetul fără a modifica nivelurile de volum salvate.
+[settings Key]
+Tastă
+[settings Keyboard shortcuts]
+Comenzi rapide de la tastatură
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tastele formează o secvență în ordinea indicată. Fiecare pas se poate activa la apăsarea sau eliberarea tastei respective.
+[settings Language]
+Limba
+[settings Language & player]
+Limbă și jucător
+[settings Language used throughout the interface.]
+Limba folosită în întreaga interfață.
+[settings Level]
+Nivel
+[settings Map editor]
+Editor de hărți
+[settings Missing font]
+Lipsește fontul
+[settings Music volume]
+Volumul muzicii
+[settings Mute audio]
+Dezactivează sunetul
+[settings Name shown to other players.]
+Numele afișat celorlalți jucători.
+[settings Off]
+Dezactivat
+[settings On]
+Activat
+[settings OpenGL is not available in this build.]
+OpenGL nu este disponibil în această versiune.
+[settings Player name]
+Numele jucătorului
+[settings Press]
+La apăsare
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Apăsați o tastă. Escape anulează capturarea tastelor. Pentru a atribui Escape, selectați „Atribuie Escape”.
+[settings Radius]
+Rază
+[settings Reduced]
+Reduse
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Nivelul redus de detalii dezactivează norii și umbrele acestora, simplifică efectele magice și reduce transparența.
+[settings Release]
+La eliberare
+[settings Remember assignments between games]
+Păstrează alocările de unități între jocuri
+[settings Remove key]
+Elimină tasta
+[settings Remove shortcut]
+Elimină scurtătura
+[settings Renderer]
+Motor de randare
+[settings Replace conflicting bindings]
+Înlocuiește scurtăturile în conflict
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Înlocuiți scurtăturile din acest context cu cele implicite? Modificările se salvează imediat.
+[settings Resolution]
+Rezoluția ecranului
+[settings Restore default shortcuts]
+Restabilește scurtăturile implicite
+[settings Retry]
+Încearcă din nou
+[settings Revert]
+Anulează modificările
+[settings Reverting in]
+Revenire în
+[settings Save shortcut]
+Salvează scurtătura
+[settings Saved — restart required]
+Salvat — este necesară repornirea
+[settings Saving…]
+Se salvează…
+[settings Scroll wheel enabled]
+Rotița mouse-ului activată
+[settings Set starting unit assignments by building type and level.]
+Setați numărul inițial de unități alocate în funcție de tipul și nivelul clădirii.
+[settings Set your language and player name.]
+Setează-ți limba și numele jucătorului.
+[settings Settings]
+Setări
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Doar pentru un singur jucător și reluări. Jocurile multiplayer rulează la 1x.
+[settings Software]
+Randare software
+[settings Starting unit counts and radius for newly placed flags.]
+Numărul inițial de unități și raza pentru steagurile nou plasate.
+[settings This shortcut conflicts with existing bindings:]
+Această comandă rapidă de la tastatură intră în conflict cu comenzile rapide existente:
+[settings Trigger]
+Eveniment de activare
+[settings Unbound]
+Nu a fost atribuită nicio comandă rapidă
+[settings Unit counts assigned to new construction sites.]
+Numărul de unități alocate șantierelor noi.
+[settings Unit counts for completed buildings.]
+Numărul de unități alocate clădirilor finalizate.
+[settings Unit counts while a building is being upgraded.]
+Numărul de unități alocate în timpul îmbunătățirii unei clădiri.
+[settings Units]
+Unităţi
+[settings Upgrades]
+Îmbunătățiri ale clădirilor
+[settings Use game cursor]
+Folosește cursorul jocului
+[settings Voice volume]
+Volumul vocii
+[settings Window mode]
+Mod de afișare
+[settings Window-only sizes also switch the game to windowed mode.]
+Selectarea unei rezoluții disponibile doar în modul fereastră trece jocul în acest mod.
+[settings Windowed]
+În fereastră
+[settings Windowed only]
+Doar în fereastră
+[settings seconds]
+secunde
+[settings Flag]
+Steag
+[settings High-resolution artwork]
+Grafică de înaltă rezoluție
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Grafica selectată se aplică la următoarea încărcare a jocului sau a editorului de hărți (OpenGL).
+[settings Automatic torus view]
+Vizualizare toroidală automată
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Afișați automat prezentarea generală a hărții în formă de torus în timp ce vă deplasați pe hartă (OpenGL).

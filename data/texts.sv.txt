@@ -1242,3 +1242,209 @@ Arbetar ännu: %0
 Automatisk torusvy
 [toggle torus view]
 Växla mellan 2D- och torusvy
+[settings Add key to sequence]
+Lägg till tangent i sekvensen
+[settings Add shortcut]
+Lägg till kortkommando
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Använd mushjulet för att ändra antalet tilldelade enheter. Om det här alternativet är avstängt håller du ned Ctrl-tangenten för att använda hjulet. Håll ned Skift-tangenten för att justera flaggradien. Det här alternativet styr även mushjulsinmatning i andra menyer.
+[settings Adjust music and voice volume.]
+Justera musik- och röstvolymen.
+[settings Adjust the pace of play.]
+Justera hastigheten på spelet.
+[settings Advanced binding]
+Avancerad tangentbindning
+[settings Artwork & effects]
+Grafik och effekter
+[settings Audio]
+Ljud
+[settings Bind Escape]
+Tilldela Escape-tangenten
+[settings Building]
+Byggnad
+[settings Building defaults]
+Standardinställningar för byggnader
+[settings Cancel]
+Avbryt
+[settings Changes saved automatically]
+Ändringar sparas automatiskt
+[settings Changes you make during play update these defaults for future games.]
+Ändringar du gör under spelet uppdaterar dessa standardinställningar för framtida spel.
+[settings Changing the renderer requires a restart.]
+Att ändra renderaren kräver omstart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Välj ett kortkommando för att ändra det, eller lägg till ett nytt kortkommando för en åtgärd.
+[settings Choose a window or fill the screen.]
+Välj mellan fönsterläge och helskärm.
+[settings Choose how the game looks on your screen.]
+Välj hur spelet ser ut på din skärm.
+[settings Completed]
+Färdigställda byggnader
+[settings Construction]
+Byggande
+[settings Controls]
+Spelkontroller
+[settings Could not change display mode. The previous mode was restored.]
+Kunde inte ändra visningsläge. Det tidigare läget återställdes.
+[settings Could not save]
+Kunde inte spara
+[settings Current display]
+Aktuella visningsinställningar
+[settings Default]
+Standard
+[settings Display]
+Bildskärm
+[settings Display & graphics]
+Bildskärm och grafik
+[settings Display the Globulation 2 cursor.]
+Visa Globulation 2-markören.
+[settings Done]
+Klart
+[settings Edit shortcut]
+Redigera kortkommando
+[settings Flags]
+Flaggor
+[settings Full]
+Alla detaljer
+[settings Fullscreen]
+Fullskärm
+[settings Game]
+Spel
+[settings Game speed]
+Spelhastighet
+[settings Gameplay]
+Spelförlopp
+[settings Graphics detail]
+Grafikdetaljer
+[settings Keep]
+Behåll ändringar
+[settings Keep this display mode?]
+Vill du behålla detta visningsläge?
+[settings Keep your volume levels while silencing audio.]
+Stäng av allt ljud utan att ändra de sparade volymnivåerna.
+[settings Key]
+Tangent
+[settings Keyboard shortcuts]
+Kortkommandon
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tangenterna bildar en ordnad sekvens. Varje tangent kan aktivera handlingen när den trycks ned eller släpps.
+[settings Language]
+Språk
+[settings Language & player]
+Språk & spelare
+[settings Language used throughout the interface.]
+Språk som används i hela gränssnittet.
+[settings Level]
+Nivå
+[settings Map editor]
+Kartredigerare
+[settings Missing font]
+Saknar typsnitt
+[settings Music volume]
+Volym (musik)
+[settings Mute audio]
+Stäng av ljudet
+[settings Name shown to other players.]
+Namnet visas för andra spelare.
+[settings Off]
+Av
+[settings On]
+På
+[settings OpenGL is not available in this build.]
+OpenGL är inte tillgängligt i den här versionen.
+[settings Player name]
+Spelarnamn
+[settings Press]
+Vid nedtryckning
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Tryck på en tangent på tangentbordet. Genom att trycka på Escape-tangenten avbryts inmatning. För att tilldela Escape-tangenten, välj "Tilldela Escape-tangenten".
+[settings Radius]
+Radie
+[settings Reduced]
+Färre detaljer
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Färre detaljer stänger av moln och deras skuggor, förenklar magiska effekter och minskar transparensen.
+[settings Release]
+Vid uppsläpp
+[settings Remember assignments between games]
+Kom ihåg enhetstilldelningar mellan spelen
+[settings Remove key]
+Ta bort tangent
+[settings Remove shortcut]
+Ta bort kortkommando
+[settings Renderer]
+Grafikrenderare
+[settings Replace conflicting bindings]
+Byt ut motstridiga kortkommandon
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Ersätta kortkommandona i detta sammanhang med standardinställningarna? Ändringen sparas omedelbart.
+[settings Resolution]
+Skärmupplösning
+[settings Restore default shortcuts]
+Återställ standardkommandon
+[settings Retry]
+Försök igen
+[settings Revert]
+Återställ ändringar
+[settings Reverting in]
+Återställer om
+[settings Save shortcut]
+Spara kortkommando
+[settings Saved — restart required]
+Sparad – omstart krävs
+[settings Saving…]
+Sparar...
+[settings Scroll wheel enabled]
+Mushjul aktiverat
+[settings Set starting unit assignments by building type and level.]
+Ställ in det ursprungliga antalet tilldelade enheter efter byggnadstyp och nivå.
+[settings Set your language and player name.]
+Ställ in ditt språk och spelarnamn.
+[settings Settings]
+Inställningar
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Endast för en spelare och repriser. Flerspelarpartier körs med hastigheten 1x.
+[settings Software]
+Programvarurendering
+[settings Starting unit counts and radius for newly placed flags.]
+Ursprungligt antal enheter och radie för nya flaggor.
+[settings This shortcut conflicts with existing bindings:]
+Detta kortkommando står i konflikt med befintliga kortkommandon:
+[settings Trigger]
+Aktiveringshändelse
+[settings Unbound]
+Inget kortkommando tilldelat
+[settings Unit counts assigned to new construction sites.]
+Antal enheter som tilldelas nya byggarbetsplatser.
+[settings Unit counts for completed buildings.]
+Antal enheter för färdigställda byggnader.
+[settings Unit counts while a building is being upgraded.]
+Antal enheter medan en byggnad uppgraderas.
+[settings Units]
+Enheter
+[settings Upgrades]
+Byggnadsuppgraderingar
+[settings Use game cursor]
+Använd spelmarkören
+[settings Voice volume]
+Volym (röst)
+[settings Window mode]
+Fönsterläge
+[settings Window-only sizes also switch the game to windowed mode.]
+Om du väljer en upplösning som bara stöder fönsterläge växlar spelet också till fönsterläge.
+[settings Windowed]
+Fönster
+[settings Windowed only]
+Endast fönster
+[settings seconds]
+sekunder
+[settings Flag]
+Flagga
+[settings High-resolution artwork]
+Högupplöst grafik
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Använd grafiken nästa gång ett spel eller kartredigeraren laddas (OpenGL).
+[settings Automatic torus view]
+Automatisk torusvy
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Visa automatiskt den torusformade kartöversikten medan du flyttar runt på kartan (OpenGL).

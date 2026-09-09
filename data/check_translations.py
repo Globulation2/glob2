@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Read-only validation and coverage reporting for the runtime string tables.
 
-Run from any directory. --strict also fails on untranslated text outside the
-explicit settings-english-fallbacks.txt list; --json emits per-key findings for
-translators, including intentional fallbacks. No mode rewrites translation files.
+Run from any directory. --strict also fails on untranslated text; --json emits
+per-key findings for translators. No mode rewrites the translation files.
 """
 import argparse
 from collections import Counter
@@ -81,22 +80,11 @@ def audit(root=ROOT):
         errors.extend(table_errors)
         tables[name] = table
     english = tables.get('data/texts.en.txt', {})
-    # Explicitly scoped English-first UI additions. Keep structural validation
-    # and strict completeness for every other key; never waive English itself.
-    fallback_path = root / 'data/settings-english-fallbacks.txt'
-    fallback_keys = read_lines(fallback_path) if fallback_path.exists() else []
-    for key, count in Counter(fallback_keys).items():
-        if count > 1 or key not in key_set or not key.startswith('[settings ') or not english.get(key, '').strip():
-            errors.append(f'settings-english-fallbacks.txt: invalid fallback key {key}')
-    fallback_keys = set(fallback_keys)
     languages = {}
     codes = set()
     for name, table in tables.items():
         missing = sorted(key_set - table.keys())
-        allowed_fallbacks = fallback_keys if name != 'data/texts.en.txt' else set()
         for key in missing:
-            if key in allowed_fallbacks:
-                continue
             errors.append(f'{name}: missing key {key}')
         for key, value in table.items():
             if key in OPTIONAL_BLANKS and not value and english.get(key):
@@ -118,7 +106,6 @@ def audit(root=ROOT):
         languages[name] = {
             'missing': missing,
             'untranslated': untranslated,
-            'english_fallbacks': sorted(set(untranslated) & allowed_fallbacks),
             'extra': sorted(table.keys() - key_set),
             # This is a review queue, NOT an automatic mistranslation test:
             # names, key labels and loanwords legitimately match English.
@@ -131,7 +118,7 @@ def audit(root=ROOT):
         if [name.removeprefix('*') for name in incomplete] != listing[1:]:
             errors.append('texts.incomplete.txt: languages must match texts.list.txt in order')
         for name in incomplete:
-            if not name.startswith('*') and set(languages.get(name, {}).get('untranslated', [])) - fallback_keys:
+            if not name.startswith('*') and languages.get(name, {}).get('untranslated'):
                 errors.append(f'{name}: incomplete language is marked complete')
     # Catch literal lookups; dynamically composed building/event keys need
     # contextual review and are deliberately not guessed by this scanner.
@@ -162,12 +149,11 @@ def main():
     else:
         for name, report in result['languages'].items():
             print(f"{name}: {len(report['untranslated'])} untranslated, "
-                  f"{len(report['missing'])} missing keys, {len(report['extra'])} obsolete keys, "
-                  f"{len(report['english_fallbacks'])} intentional English fallbacks")
+                  f"{len(report['missing'])} missing keys, {len(report['extra'])} obsolete keys")
         for error in result['errors']:
             print(f'ERROR: {error}')
         print(f"{len(result['errors'])} structural errors")
-    incomplete = any(set(r['untranslated']) - set(r['english_fallbacks']) for r in result['languages'].values())
+    incomplete = any(r['untranslated'] for r in result['languages'].values())
     return int(bool(result['errors']) or (args.strict and incomplete))
 
 
