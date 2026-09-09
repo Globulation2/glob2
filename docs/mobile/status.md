@@ -18,6 +18,12 @@ Post-merge verification passes:
 - Another 100,000-step ARM64/Wasm run with all 101 checkpoints matching. Timing
   during concurrent test work is recorded separately and is not a device budget.
 
+Android linking now emits a SHA-1 ELF build ID. Packaging rejects a missing,
+ambiguous or mismatched ID between the APK's stripped main library and retained
+debug symbols. The previous preview had no GNU build ID; this is corrected in the
+refreshed package. All 27 build-driver/symbol checks pass. The current iOS app and
+dSYM both have UUID `F9240C11-8DB8-3809-9F7D-C298E070EDA0`.
+
 Native cross-play fixtures now reserve private ports, matching the existing
 private profiles, and wait for their embedded router before announcing readiness.
 Native WSS route selection uses the shared protocol port constant so the same
@@ -26,8 +32,9 @@ unchanged. A missing explicit `<cstring>` include caught by Ubuntu 22.04 CI is
 fixed in the save harness.
 
 Hosted mobile run `34310898922` successfully packaged ARM64, ARMv7 and x86-64 and
-passed x86-64 startup/lifecycle/rotation and trust instrumentation. Its iOS job was
-still running at this checkpoint; subsequent runs are linked from PR #208.
+passed x86-64 startup/lifecycle/rotation and trust instrumentation. Its iOS
+startup/lifecycle job also passed: the mobile run is fully green. Subsequent runs
+for the last fixture and packaging checks are linked from PR #208.
 Clean hosted packaging plus local rebuilds provide functional reproduction, not
 byte-identical signed-archive qualification or a complete host-toolchain lock.
 

@@ -79,3 +79,28 @@ def archive_object_name(source):
         raise ValueError('Archive source must be relative to the repository')
     digest = hashlib.sha256(path.as_posix().encode()).hexdigest()[:16]
     return path.with_name(path.name + '_' + digest + '.o')
+
+
+def verify_android_symbols(apk, library, architecture, readelf):
+    """Require the packaged main library and retained symbols to share a build ID."""
+    import re
+    import subprocess
+    import tempfile
+    import zipfile
+    apk, library = Path(apk), Path(library)
+    member = 'lib/' + architecture + '/libmain.so'
+    with zipfile.ZipFile(apk) as archive, tempfile.TemporaryDirectory(prefix='symbol-check-', dir=apk.parent) as temporary:
+        if archive.namelist().count(member) != 1:
+            raise ValueError('APK must contain exactly one main library for ' + architecture)
+        packaged = Path(temporary) / 'libmain.so'
+        packaged.write_bytes(archive.read(member))
+        identifiers = []
+        for candidate in (packaged, library):
+            notes = subprocess.check_output([str(readelf), '-n', str(candidate)], text=True)
+            matches = re.findall(r'Build ID: ([0-9a-fA-F]{40})(?![0-9a-fA-F])', notes)
+            if len(matches) != 1:
+                raise ValueError(str(candidate) + ': missing or ambiguous SHA-1 ELF build ID')
+            identifiers.append(matches[0].lower())
+        if identifiers[0] != identifiers[1]:
+            raise ValueError('Packaged Android library and retained debug symbols have different build IDs')
+        return identifiers[0]

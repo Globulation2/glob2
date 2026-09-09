@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scons'))
 from build_layout import build_identity, default_directory, BuildLock
 from mobile_toolchain import ROOT, LOCK
-from mobile_artifacts import verify_android_shared_library
+from mobile_artifacts import verify_android_shared_library, verify_android_symbols
 import developer_apk
 
 
@@ -94,6 +94,10 @@ def main():
         subprocess.run([gradle,'--no-daemon','--project-dir',str(project),'assembleRelease' if args.release else 'assembleDebug'],env=env,check=True)
         apk=project/('app/build/outputs/apk/release/app-release-unsigned.apk' if args.release else 'app/build/outputs/apk/debug/app-debug.apk')
         developer_apk.verify_alignment(ROOT,sdk,apk)
+        readelf = prebuilt / 'bin' / ('llvm-readelf.exe' if os.name == 'nt' else 'llvm-readelf')
+        build_id = verify_android_symbols(apk, output/'lib/libmain.so', args.arch, readelf)
+        apk.with_suffix('.symbols.json').write_text(json.dumps({'build_id':build_id, 'architecture':args.arch}, indent=2)+'\n')
+        print('Verified Android symbol build ID:', build_id)
 
 if __name__=='__main__':
     try: main()

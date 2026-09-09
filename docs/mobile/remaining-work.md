@@ -26,8 +26,9 @@ itself mean a hosted CI run passed.
 
 ## Continue without physical devices
 
-- Finish monitoring hosted CI. All Android ABIs package and hosted x86-64
-  lifecycle/trust checks pass; iOS is still running in the latest recorded run.
+- Hosted mobile run 34310898922 is fully green: all Android ABIs package,
+  hosted x86-64 lifecycle/trust and iOS lifecycle checks pass. Monitor subsequent
+  runs for the last test-fixture and build-ID packaging changes from PR #208.
 - iOS picker interaction needs an accessible dedicated simulator/device surface;
   the current isolated set is unavailable to Simulator/Instruments UI discovery.
   Third-party/cloud provider testing also needs those providers/accounts. Android

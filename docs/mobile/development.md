@@ -554,3 +554,9 @@ with `adb -P 15037 -s emulator-5580 exec-out atrace -b 4096 -t 10 sched gfx view
 Redirect output under `build/`; it records only that isolated emulator. The tested
 capture contains scheduler and graphics events. Frame-time interpretation and
 30-minute physical thermal qualification remain separate tasks.
+
+Android links `libmain.so` with a SHA-1 ELF build ID. After Gradle packaging,
+`mobile/android.py build` runs the pinned NDK's `llvm-readelf` against the packaged
+library and retained symbols and rejects missing, ambiguous or mismatched IDs.
+The APK's `.symbols.json` records the verified ID. Archive that metadata alongside
+the exact APK and `libmain.so` for future crash symbolication.

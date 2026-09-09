@@ -1,4 +1,4 @@
-# Mobile project handoff — 2026-09-08
+# Mobile project handoff — 2026-09-09
 
 ## Start here in the next chat
 
@@ -34,21 +34,27 @@ Suggested first message to the new agent:
 
 ## Current continuation: finish remaining mobile work
 
-The user said to keep going until the remaining items are complete. Follow
-[remaining-work](remaining-work.md) for the active implementation and qualification
-list. Recovery, native document bridges and emulator/CI automation are implemented.
-Android document round trips pass; iOS picker interaction, platform transports,
-longer validation and external device gates remain. Do not stop after a status report when independent implementation work is
-available. The user is unavailable for Pixel 6 testing until morning.
+The user authorized completing remaining work while Pixel 6 testing waits until
+morning. Read [remaining-work](remaining-work.md) and the newest
+[status checkpoint](status.md). Recovery, native document bridges, abandoned-file
+cleanup, platform certificate trust, phone editor/results/settings, simulator
+lifecycle drivers, symbol validation and long-run determinism tooling are implemented.
+Android document round trips pass. Both local mobile lifecycle smokes pass, as does
+hosted mobile run 34310898922 (all Android ABIs and iOS simulator). Later CI reruns
+cover the last fixture/include and Android build-ID checks.
 
-Current recovery and smoke validation is recorded at the top of status.md.
-The browser base has advanced to `246a47d50`; its nine new commits include scheduled
-LAN/YOG startup, cooperative in-game reload, removal of Asyncify, live interpreter
-lifetime fixes and headless map-header isolation. These are reconciled in this
-worktree. Phone controls/recovery are retained alongside
-scheduled reloads, with an engine-ownership null guard. Hosted checks resume after
-pushing the reconciled branch. The recovery checkpoint before this merge is
-`bbab36afb`; consult status.md for the validation recorded at each revision.
+Browser base `1658ff670` is reconciled. The native/Wasm 100,000-step fixture has
+101 identical checkpoints, all 54 replay/single-player browser cases pass, and all
+six TCP/WSS cross-play cases pass on Chromium, Firefox and WebKit. Network fixtures
+use private ports/profiles and await their embedded router. Android APK/symbol IDs
+are checked during packaging; iOS symbols and simulator LLDB/sampling are verified.
+
+The refreshed preview and exact source revision live in `build/mobile-preview`;
+older packages are archived in `build/mobile-preview-history`. Remaining gates
+include Pixel 6 and signed Apple devices, iOS/provider interaction, physical
+accessibility/performance, a trusted mobile gateway and coordinated participants.
+The private iOS simulator is invisible to this host's Simulator/Instruments UI
+inventory; do not reconfigure or close another thread's simulator to work around it.
 
 ## Previous work: native save synchronization
 

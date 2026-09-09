@@ -251,3 +251,22 @@ class EmulatorEnvironmentTests(unittest.TestCase):
             with patch.object(emulator, 'ROOT', task), patch.dict(os.environ, {'ANDROID_HOME': '/runner/shared/sdk'}), patch.object(sys, 'argv', ['emulator.py','configure','--arch','x86_64']), patch.object(emulator.subprocess, 'run', side_effect=create):
                 emulator.main()
             self.assertIn('hw.lcd.width=320', config.read_text())
+
+
+class AndroidSymbolTests(unittest.TestCase):
+    def test_packaged_symbols_require_matching_unambiguous_build_ids(self):
+        import zipfile
+        from mobile_artifacts import verify_android_symbols
+        with tempfile.TemporaryDirectory() as directory:
+            apk=Path(directory)/'app.apk'
+            with zipfile.ZipFile(apk,'w') as archive:
+                archive.writestr('lib/arm64-v8a/libmain.so',b'packaged library')
+            library=Path(directory)/'libmain.so'
+            library.write_bytes(b'debug library')
+            valid='Build ID: '+('a'*40)+'\n'
+            with patch('subprocess.check_output',side_effect=[valid,valid]):
+                self.assertEqual(verify_android_symbols(apk,library,'arm64-v8a','readelf'),'a'*40)
+            for notes in ('',valid+valid,'Build ID: '+('b'*40)+'\n'):
+                with patch('subprocess.check_output',side_effect=[valid,notes]):
+                    with self.assertRaises(ValueError):
+                        verify_android_symbols(apk,library,'arm64-v8a','readelf')
