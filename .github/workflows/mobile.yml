@@ -72,6 +72,7 @@ jobs:
         run: |
           python3 mobile/android.py install --arch x86_64 --release --serial emulator-5580 --adb-port 15037
           python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64
+          python3 mobile/android_trust_test.py --arch x86_64 --serial emulator-5580 --avd glob2-api35-x64
       - name: Stop isolated emulator
         if: always() && matrix.arch == 'x86_64'
         run: python3 mobile/emulator.py stop --arch x86_64 || true
@@ -89,6 +90,7 @@ jobs:
             build/android/**/android-project/app/build/outputs/native-debug-symbols/**
             build/android/**/lib/*.so
             build/mobile-smoke/**
+            build/mobile-trust-android/**
           if-no-files-found: ignore
   ios-simulator:
     name: iOS ARM64 simulator

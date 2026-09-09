@@ -7,6 +7,7 @@ import android.view.WindowInsets;
 import android.graphics.Insets;
 
 public final class Glob2Activity extends SDLActivity {
+    public static boolean verifyServerCertificates(byte[][] chain, String hostname) { return CertificateTrust.verify(chain, hostname); }
     private static volatile int[] uiInsets = new int[] {0, 0, 0, 0};
     public static int[] getUiInsets() { return uiInsets; }
     @Override

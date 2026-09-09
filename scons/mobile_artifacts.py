@@ -69,3 +69,13 @@ def verify_android_library(path, architecture):
                 check_header(source.read(min(20,size)),architecture,f'{path}({name})');objects+=1
             source.seek(start+size+(size%2))
         if not objects: raise ValueError(f'{path}: archive contains no ELF objects')
+
+
+def archive_object_name(source):
+    """Archive members need unique basenames for complete Apple debug maps."""
+    import hashlib
+    path = Path(source)
+    if path.is_absolute() or '..' in path.parts:
+        raise ValueError('Archive source must be relative to the repository')
+    digest = hashlib.sha256(path.as_posix().encode()).hexdigest()[:16]
+    return path.with_name(path.name + '_' + digest + '.o')

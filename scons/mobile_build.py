@@ -3,10 +3,10 @@ import hashlib
 import json
 import os
 from pathlib import Path
-from SCons.Script import Environment, Default
+from SCons.Script import Environment, Default, Delete
 from build_layout import write_if_changed, prepare_directory
 from mobile_toolchain import discover, LOCK
-from mobile_artifacts import verify_android_library
+from mobile_artifacts import verify_android_library, archive_object_name
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 
 
@@ -59,12 +59,12 @@ def build_mobile(directory, identity, arguments):
     files = ['src/' + name for name in CLIENT_SOURCES if name not in ('VoiceRecorder.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
     if identity['target'] == 'ios':
         files.remove('src/Glob2.cpp')
-        files += ['mobile/ios/SafeArea.mm', 'mobile/ios/Documents.mm']
+        files += ['mobile/ios/SafeArea.mm', 'mobile/ios/Documents.mm', 'mobile/ios/CertificateTrust.cpp']
     files += ['libgag/src/' + name for name in GAG_SOURCES]
     files += ['libusl/src/' + name for name in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp', 'browser/IRCTextMessageHandler.cpp', 'mobile/MobilePaths.cpp', 'mobile/Documents.cpp']
+    files += ['browser/VoiceRecorder.cpp', 'browser/IRCTextMessageHandler.cpp', 'mobile/MobilePaths.cpp', 'mobile/Documents.cpp', 'mobile/CertificateTrust.cpp']
     if identity['target'] == 'android':
-        files.append('mobile/android/Documents.cpp')
+        files += ['mobile/android/Documents.cpp', 'mobile/android/CertificateTrust.cpp']
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         env.Append(CPPDEFINES=['main=SDL_main'])
@@ -74,7 +74,10 @@ def build_mobile(directory, identity, arguments):
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
-        objects = [(objc if name == 'mobile/ios/Documents.mm' else env).Object(str(object_root / (name + '.o')), name) for name in files]
+        objects = [(objc if name == 'mobile/ios/Documents.mm' else env).Object(str(object_root / archive_object_name(name)), name) for name in files]
+        # ar replaces matching members but otherwise retains obsolete names.
+        # Recreate this owned output so renamed/removed sources cannot survive.
+        env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]
         program = env.StaticLibrary(str(output / 'lib/glob2'), objects)
     env.Depends(objects, [str(config), str(LOCK), str(manifest)])
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))

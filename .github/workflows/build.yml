@@ -84,8 +84,9 @@ jobs:
 
       - name: Test incremental engine sessions
         run: |
-          scons release=1 -j$(nproc) session-test mobile-documents-test
+          scons release=1 -j$(nproc) session-test mobile-documents-test mobile-certificate-test
           build/linux/client/release/libgag/src/MobileDocumentsHarness
+          python3 test/run-mobile-certificate-tests.py build/linux/client/release/src/MobileCertificateHarness
           python3 test/run-engine-session-test.py
 
       - name: Build and run the selection lifetime regression

@@ -15,6 +15,8 @@ do not modify the AI or browser checkouts. Commit and push verified checkpoints.
 - iOS simulator smoke runner and CI wiring using Xcode 26.6/iOS 26.5.
 - Native document bridges, Android picker round-trip/cancel/error verification,
   and SDK metadata registration for directly extracted emulator archives.
+- Platform certificate trust in bounded native WSS, Android trust instrumentation,
+  unique iOS archive symbols and successful simulator LLDB attachment.
 
 See the newest status checkpoint for actual test results; CI wiring does not by
 itself mean a hosted CI run passed.
@@ -24,8 +26,9 @@ itself mean a hosted CI run passed.
 - Run and fix hosted Android ARM64/ARMv7/x86-64 packaging and iOS simulator CI.
 - Qualify iOS picker interaction and third-party/cloud providers. Both native
   document bridges are implemented; Android local-provider round trips pass.
-- Integrate platform WebSockets/certificate handling and qualify the shared
-  transport contract; then mixed-platform play and coordinated reconnect.
+- Qualify mobile WSS gateway traffic, mixed-platform play and coordinated
+  reconnect. Platform certificate trust is integrated; native framing/queues
+  continue through the existing bounded Beast transport.
 - Extend ARM/Wasm long-run determinism fixtures and repeatable performance tooling.
 - Qualify debugger attachment, symbols, sanitizer/profiler workflows and clean
   build reproducibility. Audit remaining host tools against pinned versions.

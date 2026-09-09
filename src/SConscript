@@ -145,3 +145,9 @@ if not env['server']:
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
+
+if not env['server']:
+    certificate_test = local.Program('MobileCertificateHarness', [
+        local.Object('MobileCertificateHarness.o', '#test/MobileCertificateHarness.cpp'),
+        local.Object('MobileCertificateTrust.o', '#mobile/CertificateTrust.cpp')])
+    local.Alias('mobile-certificate-test', certificate_test)

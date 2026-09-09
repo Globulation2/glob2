@@ -34,7 +34,7 @@ def main():
     env.pop('ADB_SERVER_SOCKET',None)
     env.pop('ANDROID_SERIAL',None)
     env.update(ANDROID_USER_HOME=str(tools/'android-user'),ANDROID_EMULATOR_HOME=str(tools/'android-user'),
-        ANDROID_AVD_HOME=str(tools/'avd'),ANDROID_SDK_ROOT=str(sdk),ANDROID_ADB_SERVER_PORT=str(args.adb_port),
+        ANDROID_AVD_HOME=str(tools/'avd'),ANDROID_HOME=str(sdk),ANDROID_SDK_ROOT=str(sdk),ANDROID_ADB_SERVER_PORT=str(args.adb_port),
         ANDROID_EMU_CRASH_REPORTING_DATABASE=str(tools/'emulator-crash.db'),
         ANDROID_EMULATOR_DISCOVERY_DIR=str(tools/'emulator-discovery'),
         ADB_MDNS_AUTO_CONNECT='',ADB_LOCAL_TRANSPORT_MAX_PORT='0',TMPDIR=str(tools/'tmp'))
@@ -66,6 +66,14 @@ def main():
         package='system-images;android-'+str(lock['api'])+';'+lock['tag']+';'+args.arch
         subprocess.run([str(sdk/'cmdline-tools/19.0/bin/avdmanager'),'create','avd','--name',name,
             '--package',package,'--path',str(avd)],input='no\n',text=True,env=env,check=True)
+        # A small deterministic surface avoids spending hosted CPU rendering a
+        # default high-density handset before the startup checks can run.
+        config = avd/'config.ini'
+        settings = properties(config)
+        settings.update({'hw.lcd.width': '320', 'hw.lcd.height': '640',
+                         'hw.lcd.density': '160', 'skin.name': '320x640',
+                         'hw.keyboard': 'yes'})
+        config.write_text(''.join(key+'='+value+'\n' for key,value in settings.items()))
         return
     if not (avd/'config.ini').is_file(): raise ValueError('Run mobile/emulator.py configure first')
     emulator=str(sdk/'emulator/emulator')

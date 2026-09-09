@@ -208,3 +208,46 @@ class MobileArtifactTests(unittest.TestCase):
             for data in (b'!<arch>\n',b'not an archive'):
                 path.write_bytes(data)
                 with self.assertRaises(ValueError): verify_android_library(path,'arm64-v8a')
+
+
+class ArchiveSymbolTests(unittest.TestCase):
+    def test_archive_member_names_distinguish_same_basename_sources(self):
+        from mobile_artifacts import archive_object_name
+        from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES
+        sources = ['src/' + name for name in CLIENT_SOURCES] + ['libgag/src/' + name for name in GAG_SOURCES] + ['libusl/src/' + name for name in USL_SOURCES]
+        names = [archive_object_name(source).name for source in sources]
+        self.assertEqual(len(names), len(set(names)))
+        self.assertEqual(archive_object_name('src/ai/castor/Lifecycle.cpp'), archive_object_name('src/ai/castor/Lifecycle.cpp'))
+        self.assertNotEqual(archive_object_name('src/ai/castor/Lifecycle.cpp').name, archive_object_name('src/ai/nicowar/Lifecycle.cpp').name)
+        with self.assertRaises(ValueError): archive_object_name('../outside.cpp')
+
+
+class EmulatorEnvironmentTests(unittest.TestCase):
+    def test_runner_sdk_cannot_override_the_isolated_emulator_sdk(self):
+        import json
+        import os
+        import shutil
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import emulator
+        root = Path(__file__).resolve().parents[2]
+        scratch = root / 'build/test-profiles'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            task = Path(temporary)
+            (task/'mobile').mkdir()
+            shutil.copyfile(root/'mobile/emulator.json', task/'mobile/emulator.json')
+            lock = json.loads((task/'mobile/emulator.json').read_text())
+            sdk = task/'build/mobile-tools/android-sdk'
+            for path, version in [('emulator', lock['emulator_revision']), ('system-images/android-35/default/x86_64', lock['image_revision'])]:
+                directory = sdk/path
+                directory.mkdir(parents=True)
+                (directory/'source.properties').write_text('Pkg.Revision='+version+'\n')
+            config = task/'build/mobile-tools/avd/glob2-api35-x64.avd/config.ini'
+            def create(*args, **kwargs):
+                self.assertEqual(kwargs['env']['ANDROID_HOME'], str(sdk))
+                self.assertEqual(kwargs['env']['ANDROID_SDK_ROOT'], str(sdk))
+                config.parent.mkdir(parents=True)
+                config.write_text('image.sysdir.1=system-images/android-35/default/x86_64/\n')
+            with patch.object(emulator, 'ROOT', task), patch.dict(os.environ, {'ANDROID_HOME': '/runner/shared/sdk'}), patch.object(sys, 'argv', ['emulator.py','configure','--arch','x86_64']), patch.object(emulator.subprocess, 'run', side_effect=create):
+                emulator.main()
+            self.assertIn('hw.lcd.width=320', config.read_text())

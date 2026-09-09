@@ -1,5 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "NetTransport.h"
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
+#ifdef GLOB2_MOBILE
+#include "mobile/CertificateTrust.h"
+#endif
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/beast/core.hpp>
@@ -60,9 +66,13 @@ class WssTransport final : public NetTransport {
                 throw std::invalid_argument("Invalid origin host or port");
             route = port == 7491 ? "/router" : "/yog";
             SSL_set_min_proto_version(socket.next_layer().native_handle(), TLS1_2_VERSION);
-            tls.set_default_verify_paths();
             socket.next_layer().set_verify_mode(ssl::verify_peer);
+#ifdef GLOB2_MOBILE
+            SSL_CTX_set_cert_verify_callback(tls.native_handle(), MobileCertificateTrust::verify, &host);
+#else
+            tls.set_default_verify_paths();
             socket.next_layer().set_verify_callback(ssl::host_name_verification(host));
+#endif
             if (!SSL_set_tlsext_host_name(socket.next_layer().native_handle(), host.c_str()))
                 throw std::runtime_error("Could not set TLS server name");
             socket.read_message_max(64 * 1024);

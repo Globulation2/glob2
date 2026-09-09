@@ -487,3 +487,24 @@ provider errors remain platform-visible and the original local save is retained.
 The SDK setup script supplies pinned emulator `package.xml` metadata after direct
 archive extraction. This registers the existing package with `avdmanager`; it does
 not run SDK license acceptance or replace the configured archive with a newer one.
+
+### Trust and debugger checks
+
+`python3 mobile/android_trust_test.py --serial emulator-5580 --avd glob2-api35-arm64`
+builds/signs a separate test APK using the existing development key and runs it on
+the explicit isolated emulator. Use `--arch x86_64 --avd glob2-api35-x64` for CI.
+The release app must already be built, signed and installed. The test requires
+outbound TLS to GitHub and does not change trusted certificates. Gradle, Android
+preferences and temporary files are explicitly kept in the worktree.
+
+`scons release=1 mobile-certificate-test` and
+`python3 test/run-mobile-certificate-tests.py build/darwin/client/release/src/MobileCertificateHarness`
+exercise the shared certificate boundary with a disposable local fixture.
+
+For the task-owned iOS simulator, `simctl --set <worktree-device-set> launch
+--wait-for-debugger <UDID> org.globulation.glob2` returns the process ID. LLDB can
+attach to that PID, set a breakpoint on `Application::mainMenu`, continue, inspect
+C++ frames and detach. This was verified with the ARM64 simulator release app.
+Archive member names are unique and the dSYM must have the app's UUID. Release
+optimization limits variable inspection; physical-device signing/debugging is a
+separate gate.

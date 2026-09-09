@@ -8,6 +8,52 @@ iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 The historical Android screenshots near the end were collected on `7333e4e8b`.
 
+## Platform certificate trust, iOS symbols and hosted-run fixes
+
+Native mobile WSS now delegates certificate-chain policy to Android's default
+X509TrustManagerExtensions and Apple's SecTrust SSL policy. The common boundary
+also requires a matching DNS/IP certificate identity, bounds the supplied DER
+chain and fails closed on platform errors. Existing Beast/OpenSSL WebSocket
+framing, TLS encryption, deadlines and queue limits remain shared with desktop;
+this is not a URLSession/Java WebSocket rewrite. Apple intermediate discovery is
+offline so it cannot introduce a network fetch into a game frame. A gateway must
+serve its intermediate certificates.
+
+The native certificate harness passes identity mismatch, rejected trust, malformed
+request and chain-count checks. The Apple backend accepts GitHub's currently valid
+public chain and rejects the same chain for a different host and an unknown issuer.
+Android API 35 instrumentation independently performs a normally validated TLS
+handshake to GitHub, then tests the bridge against that chain, unknown/malformed
+certificates, trailing data, empty input and excess chain length. All pass. The
+instrumentation is a separate developer APK; it does not run during normal startup
+or alter the device trust store. Mobile gateway traffic and mixed-platform play
+still need end-to-end qualification.
+
+Apple archive members now have stable unique names. This fixes dsymutil dropping
+source files with identical basenames, and recreating the archive removes obsolete
+members after source renames. All three `Lifecycle.cpp` compilation units now
+appear in the dSYM; app/dSYM UUIDs match. LLDB attached to the task-owned iOS
+simulator, hit `Application::mainMenu`, produced source-level C++ backtraces and
+detached successfully. Optimized release variables may still be unavailable.
+Android Studio/device attachment and Instruments/sanitizer qualification remain.
+
+All 26 build-system checks pass. Android ARM64 and iOS simulator release builds
+pass. The updated iOS smoke runner passes locally; retained-process activation
+keeps the existing output streams and has a bounded, configurable simctl timeout.
+The preceding document checkpoint also passed all 24 browser import/campaign tests
+plus three chooser-error tests across Chromium, Firefox and WebKit.
+
+Hosted run `34306967935` reached the iOS native main menu but timed out activating
+the retained process with new output redirects. Run `34308016912` passed all three
+Android APK builds and emulator registration, then exposed inherited
+`ANDROID_HOME` pointing at the runner SDK. The emulator wrapper now explicitly sets
+both SDK variables to its worktree and configures a small deterministic screen for
+new AVDs. A regression test supplies a conflicting runner SDK and verifies the
+isolated environment. Updated hosted launch qualification is still pending.
+
+Evidence: `build/mobile-trust-*`, `build/mobile-symbol-*`,
+`build/mobile-debug-lldb.log`, and `build/mobile-ci-*`.
+
 ## Native document import/export and SDK registration
 
 Android uses the system document picker for imports and exports. iOS uses

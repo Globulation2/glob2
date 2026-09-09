@@ -51,10 +51,9 @@ child-screen transitions cancel held input. Graphics resets and memory pressure
 invalidate expendable GPU resources for recreation on the next foreground draw.
 Browser visibility uses this same event path.
 
-Some legacy nested modal loops still use the transitional wait API. Asyncify
-removal, full audio interruption handling, process recovery, and coordinated
-multiplayer suspension are unfinished. Retained-activity resume is not recovery
-from a killed process.
+Scheduled browser sessions no longer require Asyncify. Native single-player
+recovery retains checked checkpoints across process termination. Audio interruption
+and coordinated multiplayer suspension still need physical-device qualification.
 
 ## Rendering and input
 
@@ -225,3 +224,17 @@ fixture/device verification. Platform keyboard and Android inset integration are
 also new in this checkpoint. See [handoff](HANDOFF.md) for exact tests and remaining
 work; earlier descriptions above record the staged implementation and do not imply
 that all later additions have inherited the earlier qualification.
+
+## Native secure transport policy
+
+Mobile keeps the shared bounded Beast WebSocket engine and OpenSSL TLS encryption.
+The certificate-verification boundary delegates trust decisions to the operating
+system, then also requires a matching DNS/IP identity. Android uses its default
+app/system trust manager through X509TrustManagerExtensions; iOS uses SecTrust with
+an SSL hostname policy. No certificate-validation bypass or custom trust store is
+provided by the application. This preserves the existing framing, cancellation,
+message and queue limits while using current platform certificate policy.
+
+Platform references: [Android trust-manager extensions](https://developer.android.com/reference/android/net/http/X509TrustManagerExtensions),
+[Apple trust evaluation](https://developer.apple.com/documentation/security/trust),
+and [OpenSSL certificate-verification callbacks](https://docs.openssl.org/3.4/man3/SSL_CTX_set_cert_verify_callback/).

@@ -11,7 +11,9 @@ android {
             storeFile new File(nativeBuild.root, 'build/mobile-tools/android-user/debug.keystore')
         }
     }
+    testBuildType nativeBuild.release ? 'release' : 'debug'
     defaultConfig {
+        testInstrumentationRunner 'org.globulation.glob2.TrustInstrumentation'
         applicationId 'org.globulation.glob2'
         minSdk toolchain.android.min_api
         targetSdk toolchain.android.compile_api
