@@ -20,6 +20,8 @@
 #include "Race.h"
 #include "Ressource.h"
 #include "IntBuildingType.h"
+#include "FixedPoint.h"
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 
@@ -105,6 +107,65 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	std::puts("PASS the hunger check measures the walk to the resource, not the whole trip");
 }
 
+// Without a round-trip field the score still has to be a round trip, or a
+// resource that has one is ranked against a resource that does not on two
+// different scales.
+static void theFallbackScoresAWholeRoundTrip()
+{
+	GameGUI gui;
+	Game& game = gui.game;
+	game.map.setSize(5, 5, GRASS); // 32x32
+	game.map.setGame(&game);
+	game.addTeam(0);
+	Team* team = game.teams[0];
+
+	const Sint32 siteType = globalContainer->buildingsTypes.getTypeNum("market", 0, true);
+	const BuildingType* type = globalContainer->buildingsTypes.get(siteType);
+	const int siteX = 8, siteY = 8;
+	Building* site = new Building(siteX, siteY, Building::GIDfrom(0, 0), siteType, team,
+	                              &globalContainer->buildingsTypes, 4, 4);
+	team->myBuildings[0] = site;
+	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
+
+	require(game.map.incResource(siteX + 9, siteY, WOOD, 0), "seed the wood tile");
+
+	// Standing at the building, so the walk out and the carry home are close to
+	// the same length and the whole job is close to twice the walk.
+	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
+	team->myUnits[0] = unit;
+	unit->performance[WALK] = 10;
+	unit->performance[HARVEST] = 10;
+	unit->activity = Unit::ACT_RANDOM;
+	unit->displacement = Unit::DIS_RANDOM;
+	unit->medical = Unit::MED_FREE;
+	unit->attachedBuilding = NULL;
+	unit->trigHungry = 100;
+	unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
+
+	const int swimClass = unit->swimClass();
+	int distBuilding = 0, distResource = 0, unused = 0;
+	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
+		"the site is reachable");
+	require(game.map.resourceAvailable(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
+		"the wood is reachable");
+	require(!game.map.roundTripDistance(site, WOOD, swimClass, unit->posX, unit->posY, &unused),
+		"no round-trip field exists for a building nothing has fetched for");
+	require(distBuilding < distResource, "the unit is nearer the site than the wood");
+
+	int dist = 0, resource = -1;
+	require(RoundTripHungerGateHarness::consider(site, unit, &dist, &resource), "the unit is hireable");
+	require(resource == WOOD, "for the wood");
+
+	const int need = site->neededResource(WOOD);
+	const int wholeTrip = distResource + std::max(distBuilding, distResource);
+	std::printf("fallback: distBuilding=%d distResource=%d scored=%d expected=%d\n",
+		distBuilding, distResource, dist, (wholeTrip<<Q8_FIXED_POINT_SHIFT)/need);
+	require(dist == (wholeTrip<<Q8_FIXED_POINT_SHIFT)/need,
+		"the fallback scores the walk out plus the carry home");
+
+	std::puts("PASS the fallback score is a whole round trip, not a one-way walk");
+}
+
 int main(int argc, char** argv)
 {
 	SDL_SetMainReady();
@@ -119,6 +180,7 @@ int main(int argc, char** argv)
 	IntBuildingType::init();
 	Race::loadDefault();
 	aUnitIsJudgedOnTheWalkToTheResource();
+	theFallbackScoresAWholeRoundTrip();
 	std::puts("Round-trip hunger gate regressions passed");
 	return 0;
 }
