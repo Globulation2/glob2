@@ -18,6 +18,7 @@
 #include "TeamDisplay.h"
 #include "GameGUILoadSave.h"
 #include "ReplayWriter.h"
+#include "ReplaySaveScreen.h"
 #include "SDLCompat.h"
 #include "Utilities.h"
 
@@ -305,7 +306,7 @@ struct MoreScore
 };
 
 
-EndGameScreen::EndGameScreen(GameGUI *gui)
+EndGameScreen::EndGameScreen(GameGUI *gui, GAGGUI::ScreenStack& screens) : screens(screens)
 {
 	// We're no longer replaying a game
 	globalContainer->replaying = false;
@@ -456,7 +457,8 @@ void EndGameScreen::onAction(Widget *source, Action action, int par1, int par2)
 		/// The "Save Replay" button was pressed
 		else if (par1 == SAVE_REPLAY)
 		{
-			saveReplay("replays","replay");
+            if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
+                screens.push(std::make_unique<ReplaySaveScreen>(*globalContainer->replayWriter));
 		}
 		else assert(false);
 	}
@@ -541,52 +543,6 @@ std::string replayFilenameToName(const std::string& fullfilename)
 	std::replace(filename.begin(), filename.end(), '_', ' ');
 	return filename;
 }
-
-void EndGameScreen::saveReplay(const char *dir, const char *ext)
-{
-	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, false, std::string(Toolkit::getStringTable()->getString("[save replay]")), "", replayFilenameToName, glob2NameToFilename);
-	loadSaveScreen->dispatchPaint();
-
-	// save screen
-	globalContainer->gfx->setClipRect();
-	
-	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
-	background->drawSurface(0, 0, globalContainer->gfx);
-
-	SDL_Event event;
-	while(loadSaveScreen->endValue<0)
-	{
-		Uint64 time = SDL_GetTicks64();
-		while (SDL_PollEvent(&event))
-		{
-			GAGCore::GraphicContext::translateMouseEvent(&event);
-			loadSaveScreen->translateAndProcessEvent(&event);
-		}
-		loadSaveScreen->dispatchPaint();
-		
-		globalContainer->gfx->drawSurface(0, 0, background);
-		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
-		globalContainer->gfx->nextFrame();
-		Uint64 ntime = SDL_GetTicks64();
-		GAGCore::ApplicationHost::wait(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
-	}
-
-	if (loadSaveScreen->endValue==0)
-	{
-		// Write the replay to the file
-		assert(globalContainer->replayWriter);
-		assert(globalContainer->replayWriter->isValid());
-		globalContainer->replayWriter->write(loadSaveScreen->getFileName());
-	}
-
-	// clean up
-	delete loadSaveScreen;
-	
-	// destroy temporary surface
-	delete background;
-}
-
 
 bool EndGameScreen::phoneFooter(Widget* widget) const
 {

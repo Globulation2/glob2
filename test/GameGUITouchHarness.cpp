@@ -25,8 +25,12 @@
 #include "NewMapScreen.h"
 #include "SettingsScreen.h"
 #include "EndGameScreen.h"
+#include "ReplaySaveScreen.h"
 #include <GUIRatio.h>
 #include <ScreenStack.h>
+#include <BinaryStream.h>
+#include <filesystem>
+#include <fstream>
 #include <SDL_net.h>
 #include <cstdio>
 #include <cstring>
@@ -69,9 +73,25 @@ public:
         gui.localTeamNo=0; gui.localPlayer=0; gui.adjustLocalTeam();
         gui.viewportX=gui.viewportY=0;
         {
-            ReplayWriter writer;writer.init("",gui);
+            globalContainer->replayWriter=std::make_unique<ReplayWriter>();
+            auto& writer=*globalContainer->replayWriter;writer.init("",gui);
+            require(writer.write("replays/touch-empty.replay"),"An unfinished in-memory replay can be exported");
+            {ReplayReader empty;require(empty.loadReplay("replays/touch-empty.replay"),"Replay export retains the final buffered header byte");}
             for(int i=0;i<100;++i) writer.advanceStep();
             writer.finish();require(writer.write("replays/touch-preview.replay"),"Replay fixture writes");
+            const auto position=writer.getBuffer()->getPosition();
+            const auto blocked=std::filesystem::path(SDL_getenv("GLOB2_USER_DATA_DIR"))/"replays/blocked.replay";
+            std::filesystem::create_directories(blocked);
+            {std::ofstream marker(blocked/"keep");marker<<"preserve";}
+            require(!writer.write(blocked.string()),"Replay replacement failure returns false without asserting");
+            require(std::filesystem::exists(blocked/"keep") && writer.getBuffer()->getPosition()==position,"Failed replay write preserves destination and live buffer position");
+            std::filesystem::remove(blocked/"keep");std::filesystem::remove(blocked);
+            require(writer.write(blocked.string()) && writer.getBuffer()->getPosition()==position,"Replay retries after a failed replacement");
+            std::ifstream original(std::filesystem::path(SDL_getenv("GLOB2_USER_DATA_DIR"))/"replays/touch-preview.replay",std::ios::binary);
+            std::ifstream retried(blocked,std::ios::binary);
+            require(std::string(std::istreambuf_iterator<char>(original),{})==std::string(std::istreambuf_iterator<char>(retried),{}),"Replay retry produces identical bytes");
+            original.close();retried.close();
+            std::filesystem::remove(blocked);
         }
 
         const auto checksum=gui.game.checkSum();
@@ -498,6 +518,7 @@ public:
             GAGGUI::ScreenStack menus(*gfx);
             auto chooser=std::make_unique<CampaignSelectorScreen>(false);GAGGUI::Screen* current=chooser.get();
             auto phone=[&]() -> PhoneForm& {
+                if(auto* screen=dynamic_cast<ReplaySaveScreen*>(current)) return *screen->form;
                 if(auto* screen=dynamic_cast<Glob2Screen*>(current)) return *screen->phoneForm;
                 return *static_cast<Glob2TabScreen*>(current)->phoneForm;
             };
@@ -610,7 +631,7 @@ public:
             }
             gui.game.stepCounter=previousTick;
             GAGGUI::ScreenStack results(*gfx);
-            auto end=std::make_unique<EndGameScreen>(&gui);current=end.get();
+            auto end=std::make_unique<EndGameScreen>(&gui,results);current=end.get();
             results.push(std::move(end));results.frame(SDL_GetTicks(),{});
             tapForm(13);
             const auto resultChecksum=gui.game.checkSum();
@@ -618,11 +639,52 @@ public:
             require(gui.game.checkSum()==resultChecksum,"Result graph controls do not change the game");
             phone().offset=0;
             gfx->printScreen(width<height ? "phone-results-portrait.bmp" : "phone-results-landscape.bmp");current->drawExecution();
+            tapForm(1,tr("[save replay]"));
+            results.frame(SDL_GetTicks(),{}); // Opening returns to the host instead of polling SDL recursively.
+            SDL_Event cancelReplay{};cancelReplay.type=SDL_KEYDOWN;cancelReplay.key.keysym.sym=SDLK_ESCAPE;
+            results.frame(SDL_GetTicks(),{cancelReplay});results.frame(SDL_GetTicks(),{});results.frame(SDL_GetTicks(),{});
+            require(current->isExecutionRunning(),"Cancelling replay child returns to results");
             tapForm(1,tr("[quit]"));results.frame(SDL_GetTicks(),{});
             require(!results.running(),"Phone results quit remains reachable");
-
-
-
+            GAGGUI::ScreenStack replaySave(*gfx);
+            auto save=std::make_unique<ReplaySaveScreen>(*globalContainer->replayWriter);
+            auto* saveScreen=save.get();current=save.get();
+            const std::string replayName="phone-replay-"+std::to_string(width)+"-"+std::to_string(textPercent);
+            const auto replayPath=std::filesystem::path(SDL_getenv("GLOB2_USER_DATA_DIR"))/"replays"/(replayName+".replay");
+            if(std::filesystem::is_regular_file(replayPath)) std::filesystem::remove(replayPath);
+            std::filesystem::create_directories(replayPath);
+            {std::ofstream marker(replayPath/"keep");marker<<"preserve";}
+            replaySave.push(std::move(save));replaySave.frame(SDL_GetTicks(),{});
+            tapForm(1,tr("[ok]"));replaySave.frame(SDL_GetTicks(),{});
+            require(saveScreen->isExecutionRunning() && saveScreen->dialog.endValue<0,"An empty replay name cannot complete a save");
+            phone().prepare();
+            const auto closeRow=std::find_if(phone().rows.begin(),phone().rows.end(),[&](const auto& row){return row.kind==1 && row.text==tr("[Cancel]");});
+            require(closeRow!=phone().rows.end(),"Replay cancellation remains reachable");
+            SDL_Event heldCancel{};heldCancel.type=SDL_FINGERDOWN;heldCancel.tfinger.touchId=20;heldCancel.tfinger.fingerId=1;
+            heldCancel.tfinger.x=(closeRow->rect.x+closeRow->rect.w/2)/gfx->getW();heldCancel.tfinger.y=(closeRow->rect.y+closeRow->rect.h/2)/gfx->getH();
+            current->handleExecutionEvent(heldCancel);
+            SDL_Event background{};background.type=SDL_APP_WILLENTERBACKGROUND;
+            replaySave.frame(SDL_GetTicks(),{background});
+            SDL_Event foreground{};foreground.type=SDL_APP_DIDENTERFOREGROUND;
+            heldCancel.type=SDL_FINGERUP;
+            replaySave.frame(SDL_GetTicks(),{foreground,heldCancel});
+            require(saveScreen->dialog.endValue<0,"Backgrounding discards held replay actions");
+            tapForm(3);
+            SDL_Event nameInput{};nameInput.type=SDL_TEXTINPUT;
+            std::strncpy(nameInput.text.text,replayName.c_str(),sizeof(nameInput.text.text)-1);
+            current->handleExecutionEvent(nameInput);
+            tapForm(5);tapForm(1,tr("[ok]"));replaySave.frame(SDL_GetTicks(),{});
+            require(replaySave.running() && saveScreen->dialog.endValue<0 && std::filesystem::exists(replayPath/"keep"),"Replay save failure keeps dialog and prior destination");
+            phone().prepare();
+            require(std::any_of(phone().rows.begin(),phone().rows.end(),[&](const auto& row){return row.text==tr("[save failed retry]") && row.rect.y>=phone().placement.content.y && row.rect.y+row.rect.h<=phone().placement.content.y+phone().placement.content.h;}),"Replay save failure is visible without scrolling on phone");
+            gfx->printScreen(width<height ? "phone-replay-failure-portrait.bmp" : "phone-replay-failure-landscape.bmp");current->drawExecution();
+            std::filesystem::remove(replayPath/"keep");std::filesystem::remove(replayPath);
+            tapForm(1,tr("[ok]"));replaySave.frame(SDL_GetTicks(),{});
+            require(replaySave.running(),"Replay save waits for persistence completion");
+            replaySave.frame(SDL_GetTicks(),{});replaySave.frame(SDL_GetTicks(),{});
+            require(!replaySave.running() && std::filesystem::is_regular_file(replayPath),"Replay retry closes after successful persistence");
+            ReplayReader savedReplay;
+            require(savedReplay.loadReplay("replays/"+replayName+".replay"),"Phone-saved replay loads through the original reader");
         }
         globalContainer->settings.mobileDialogTextPercent=100;
         SDL_setenv("GLOB2_PHONE_FORMS","",1);SDL_setenv("GLOB2_RESPONSIVE_UI","1",1);

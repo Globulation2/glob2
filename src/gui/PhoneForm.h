@@ -17,6 +17,7 @@ public:
     void draw();
     bool event(SDL_Event event);
     void cancel();
+    void scrollToTop() { offset=0; cancel(); }
 private:
     friend class GameGUITouchHarness;
     struct Row { GAGGUI::Widget* widget; std::string text; int kind=0,index=0;bool selected=false,footer=false; GAGCore::ViewRect rect; };

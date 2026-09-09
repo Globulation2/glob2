@@ -7,6 +7,7 @@
 #include "GameGUI.h"
 #include "Glob2Screen.h"
 #include "gui/PhoneGraphic.h"
+#include <ScreenStack.h>
 
 namespace GAGGUI
 {
@@ -99,11 +100,10 @@ protected:
 	Game *game;
 	
 public:
-	EndGameScreen(GameGUI *gui);
+	EndGameScreen(GameGUI *gui, GAGGUI::ScreenStack& screens);
 	virtual ~EndGameScreen() { }
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 
 private:
-	void saveReplay(const char *dir, const char *ext);
+    GAGGUI::ScreenStack& screens;
 };
-

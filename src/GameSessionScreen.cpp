@@ -35,7 +35,7 @@ void GameSessionScreen::updateExecution(Uint32 tick)
             return;
         }
         finished = true;
-        auto endScreen = engine->endRunScreen();
+        auto endScreen = engine->endRunScreen(stack);
         if (!endScreen) endExecute(QUIT_APPLICATION);
         else stack.push(std::move(endScreen), [this](GAGGUI::Screen&, int result) { endExecute(result); });
     }

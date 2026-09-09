@@ -12,8 +12,9 @@ Never install over the existing desktop executable.
 Repository: https://github.com/Globulation2/glob2
 Draft PR: https://github.com/Globulation2/glob2/pull/208
 PR base: `codex/browser-experiment`.
-Last merged browser head: `c7c534b8d3af4b07c535d3d780fc5207531a1b6f`
-(merge `0b977ab61`). Check the remote before the next substantial milestone;
+Current browser base: `9dc201436` after rebasing the mobile commits.
+Browser head `4051adb4d` was inspected during the replay-save pass but not merged.
+Check the remote before the next substantial milestone;
 inspect its changes before merging. Do not chase a moving base during every build.
 
 The user asked to keep going until the in-game UI was finished, then explicitly
@@ -33,15 +34,36 @@ Suggested first message to the new agent:
 
 ## Latest resumed work: native phone forms
 
+### Resumable replay saves (latest)
+
+The settings/results checkpoint is committed and pushed as `f4f397837`.
+The following replay-save checkpoint replaces the results screen's nested event
+loop with a `ReplaySaveScreen` child on the shared screen stack. Native phones
+use PhoneForm; desktop/browser retain the existing dialog. Failed writes remain
+open for retry, errors scroll into view, and browser saves wait for durable
+storage. Replay output uses checked atomic replacement and restores the live
+buffer position after failure. The format version is unchanged.
+
+Native touch, engine-session and savegame-safety checks pass. Wasm, signed Android
+ARM64 and iOS ARM64 simulator release builds pass. The initial browser replay and
+viewport run passed 24/24; the final replay-only run passed 9/9 across Chromium,
+Firefox and WebKit. See [status](status.md) for evidence and limitations.
+
+Next: adapt the specialized map-editor workspace, then continue device and
+remaining results-flow qualification. This pass adds no replay-specific emulator
+or physical-device evidence. The current signed APK is in the build path below;
+`build/mobile-preview` still contains the older pre-rebase artifact. Pinch zoom
+and main-menu visual redesign remain deferred.
+
 ### Resumed settings/results work after the browser rebase
 
-The local branch was rebased onto browser commit `9dc201436`; its current
-committed checkpoint is `4a1b9bea8` (phone forms code `2fa19a408`). The older
+The local branch was rebased onto browser commit `9dc201436`; the settings/results
+checkpoint is `f4f397837` (phone forms code `2fa19a408`). The older
 commit IDs in the sections below describe pre-rebase verification and artifacts.
-The remote mobile branch was still at `886822dd1` when checked during this pass;
-do not merge the two equivalent histories just to clear ahead/behind counts.
+The equivalent older remote history was replaced with an exact lease when
+pushing `f4f397837`; do not merge the pre-rebase history back into this branch.
 
-The working tree extends PhoneForm to global settings tabs and end-of-match
+That checkpoint extends PhoneForm to global settings tabs and end-of-match
 statistics, retaining the existing widgets, callbacks and save-preferences path.
 It adds slider/key-selector rows, explicit footer selection, colored team rows
 and an interactive statistics graph. The resumed test fixture now uses the public
@@ -50,7 +72,7 @@ for this pass is recorded at the top of [status](status.md). Do not attribute
 these changes to the existing Pixel 6 APK: its BUILD.json still identifies the
 older pre-rebase phone-form source.
 
-Next, qualify the remaining result/replay-save flows and adapt the specialized
+Continue qualifying the remaining results flows and adapt the specialized
 map-editor workspace. Physical-device testing remains a separate gate. The new
 signed working-tree APK is under
 `build/android/device/arm64-v8a/26/client/release/android-project/app/build/outputs/apk/release/app-release-development.apk`.

@@ -7,9 +7,51 @@ iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 The historical Android screenshots near the end were collected on `7333e4e8b`.
 
+## Resumable replay saves
+
+This checkpoint follows committed/pushed settings/results work `f4f397837`.
+Save Replay now opens a child screen on the shared host stack, so the results
+session survives cancellation, resize and asynchronous browser persistence.
+Native phones use the existing form presenter, including filename input and
+keyboard dismissal. Write and persistence failures stay visible for retry;
+errors scroll to the top while OK/Cancel remain reachable.
+
+Replay writes use checked atomic replacement, preserving the existing destination
+on failure and restoring the live buffer position for retry. Exact-length copying
+also fixes a dropped final byte when exporting an unfinished in-memory replay.
+The replay format version is unchanged; reader regression checks pass.
+
+Fresh verification:
+
+- Native touch harness passes at 320×568 and 568×320, 100% and 150% text:
+  results-to-save navigation, cancellation, empty names, backgrounded held input,
+  failed writes, visible error rows, retry and readable saved replays.
+- Engine-session checks pass with all three checksums still `7e7f31de`.
+  Savegame-safety checks pass, including malformed/truncated input rejection.
+- Wasm release, Android ARM64 release/developer signing, and iOS ARM64 simulator
+  release builds pass.
+- Browser replay/viewport tests passed 24/24 across Chromium, Firefox and WebKit.
+  The final replay-only run passed 9/9 on the final Wasm build: cancellation,
+  delayed persistence with resize, quota/aborted-transaction failures, retry and
+  replay digest verification after reload.
+
+Logs: `build/mobile-replay-final-{touch-build,touch,session,web,browser}.log`,
+`build/mobile-replay-save-safety.log`, `build/mobile-replay-browser.log`, and
+`build/mobile-replay-{android,android-sign,ios}.log`.
+These failure captures are native harness fixtures at 150% text, not device tests:
+
+![Replay save failure in landscape](screenshots/phone-replay-failure-landscape.png)
+![Replay save failure in portrait](screenshots/phone-replay-failure-portrait.png)
+
+No new replay-specific emulator or physical-device qualification was performed.
+The signed APK is rebuilt in the Android output directory; `build/mobile-preview`
+is unchanged. Specialized editor touch UI, broader results/device qualification
+and accessibility review remain open. Browser head `4051adb4d` was inspected but
+not merged; the tested base remains `9dc201436`.
+
 ## Resumed global settings and results screens
 
-This working-tree change follows rebased HEAD `4a1b9bea8`. It adapts global
+Committed checkpoint `f4f397837` follows rebased HEAD `4a1b9bea8`. It adapts global
 settings tabs and end-of-match results to the native phone presenter. Settings
 retain the original language, audio, speed, building-default and keyboard
 callbacks, with fixed OK/Cancel actions. The phone host's display configuration

@@ -13,6 +13,10 @@
 #include "FileManager.h"
 
 #include <stdio.h>
+#include <algorithm>
+#include <array>
+#include <limits>
+#include <stdexcept>
 
 // Write an Order to the stream, with the given checksum
 inline void writeOrder(GAGCore::OutputStream *stream, std::shared_ptr<Order> order, Uint32 checksum = 0)
@@ -131,47 +135,34 @@ void ReplayWriter::finish()
 
 bool ReplayWriter::write(const std::string &filename) const
 {
-	if (!isValid()) return false;
-	if (filename == "") return false;
-	
-	// Make sure the buffer is flushed
-	buffer->flush();
+    if (!isValid() || filename.empty()) return false;
+    const size_t position = bufferBackend->getPosition();
+    if (position > static_cast<size_t>(std::numeric_limits<int>::max())) return false;
+    struct RestorePosition {
+        StreamBackend& backend;
+        int position;
+        ~RestorePosition() { backend.seekFromStart(position); }
+    } restore{*bufferBackend, static_cast<int>(position)};
 
-	// Open the file as a backend
-	StreamBackend* fileBackend = Toolkit::getFileManager()->openOutputStreamBackend(filename);
-	assert(fileBackend->isValid());
-
-	// Open the file as an OutputStream
-	OutputStream* file = new BinaryOutputStream(fileBackend);
-
-	// Save the current position in the buffer
-	size_t pos = bufferBackend->getPosition();
-
-	// Go back to the beginning of the buffer
-	bufferBackend->seekFromStart(0);
-
-	// Copy the buffer to the file
-	while (!bufferBackend->isEndOfStream())
-	{
-		int c = bufferBackend->getChar();
-		if (bufferBackend->isEndOfStream()) break;
-		fileBackend->putc(c);
-	}
-
-	// Write the number of steps since last order to the end of the replay
-	file->writeUint32(0, "replayStepsSinceLastOrder");
-
-	// Write a NullOrder to the file to make sure it's a NullOrder-terminated replay
-	writeOrder(file, std::shared_ptr<Order>(new NullOrder()), 0);
-
-	// Flush the file
-	file->flush();
-	delete file;
-
-	// Go back to the right position in the buffer
-	buffer->seekFromStart(pos);
-
-	return true;
+    // Use the shared checked temporary-file/replace path. Failed output must
+    // preserve both an existing replay and the live writer's position for retry.
+    return Toolkit::getFileManager()->writeAtomically(filename, [this](OutputStream& file) {
+        buffer->flush();
+        bufferBackend->seekFromEnd(0);
+        size_t remaining = bufferBackend->getPosition();
+        bufferBackend->seekFromStart(0);
+        std::array<unsigned char, 64 * 1024> bytes;
+        while (remaining) {
+            const size_t count = std::min(remaining, bytes.size());
+            if (!bufferBackend->readExact(bytes.data(), count))
+                throw std::ios_base::failure("Replay buffer read failed");
+            file.write(bytes.data(), count, "replayBuffer");
+            remaining -= count;
+        }
+        // Preserve the existing on-disk format and its final NullOrder marker.
+        file.writeUint32(0, "replayStepsSinceLastOrder");
+        writeOrder(&file, std::make_shared<NullOrder>(), 0);
+    });
 }
 
 GAGCore::OutputStream* ReplayWriter::getBuffer() const

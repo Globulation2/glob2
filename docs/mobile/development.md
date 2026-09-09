@@ -374,6 +374,18 @@ owns scaling and clipping. Statistic choices scroll with content; Quit and Save
 Replay are footer actions. Long statistic labels use the wrapped form row instead
 of the desktop graph's unwrapped overlay.
 
+`ReplaySaveScreen` is a child of the results screen on `ScreenStack`; it must
+return to the host each frame rather than polling its own SDL event loop. It
+wraps the shared `LoadSaveScreen`, renders through PhoneForm only on native phone
+viewports, and waits for `ApplicationHost::persistStorage()` before reporting
+success. Write and persistence failures reset the dialog for retry and scroll
+phone errors into view. `ReplayWriter::write` uses checked atomic replacement,
+copies the complete buffer and restores its position, including failed attempts.
+Cancellation before submission returns to results without writing; cancellation
+after a persistence failure does not promise rollback of the staged browser file.
+Run `browser/tests/replay-storage.spec.js` against a fresh Wasm build for delayed
+persistence, cancellation, quota/transaction failures, retries and reload checks.
+
 The map editor workspace still needs dedicated phone adaptation; map creation
 support is not full editor qualification. New English labels use the existing translation catalog; complete
 translation, bidi, screen-reader and physical-device accessibility audits remain.

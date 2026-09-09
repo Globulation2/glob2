@@ -104,6 +104,7 @@ CLIENT_SOURCES = (
     'EditorLoadScreen.cpp',
     'EditorGenerateScreen.cpp',
     'EndGameScreen.cpp',
+    'ReplaySaveScreen.cpp',
     'Engine.cpp',
     'GameSessionScreen.cpp',
     'GameLoadScreen.cpp',

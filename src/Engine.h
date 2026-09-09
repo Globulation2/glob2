@@ -19,6 +19,7 @@
 
 class MultiplayersJoin;
 class NetGame;
+namespace GAGGUI { class ScreenStack; }
 
 using std::shared_ptr;
 
@@ -82,7 +83,7 @@ public:
 	//! Run game. A valid gui and netGame must exists
 	int run();
     void prepareRun();
-    std::unique_ptr<GAGGUI::Screen> endRunScreen();
+    std::unique_ptr<GAGGUI::Screen> endRunScreen(GAGGUI::ScreenStack& screens);
     void restoreCursor();
 
     // Incremental session API. Requires an initialized game; the host owns
