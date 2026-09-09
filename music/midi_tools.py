@@ -39,5 +39,3 @@ def wav(path,a):
     with wave.open(str(path),'wb') as f:
         f.setparams((2,2,SR,0,'NONE','not compressed'))
         f.writeframes((a*32767).astype('<i2').tobytes())
-
-
