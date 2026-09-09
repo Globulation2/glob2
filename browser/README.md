@@ -112,7 +112,8 @@ release testing in actual Safari, nor Chromium for Edge.
 Run the suite with `GLOB2_TEST_RENDERER=webgl2` to select GPU rendering throughout.
 Dedicated renderer tests exercise resize and actual context loss/restoration.
 The [status ledger](../docs/browser/status.md) records which suites passed and
-which platform, performance and recovery gates remain open.
+which platform, performance and existing-multiplayer gates remain open. New
+multiplayer features, including reconnect recovery, are deferred.
 
 Build outputs and the SDK are ignored local files. Serve the output directory;
 opening the HTML as a `file:` URL is unsupported. The SDL audio backend still

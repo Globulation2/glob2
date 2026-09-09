@@ -11,6 +11,13 @@ Refresh/disconnect can end participation. See [delivery scope](implementation.md
 Older original-plan checklists below are historical; do not restart deferred
 features merely because an automatic goal reminder repeats the original plan.
 
+Latest cleanup: CI run `34302157222` exposed a server-only link failure on both
+Linux versions and Windows. An unused `Game.h` include in `MapHeader.cpp` pulled
+script prototypes into the headless parser; it is removed. Local server/router/web
+builds, nine browser map-load/cross-play cases and seven TLS tests pass. CI now
+builds servers earlier and cancels superseded development-branch runs. Confirm
+the next hosted result before declaring the build matrix green.
+
 New browser profiles now default to Mute, alongside disabled clouds. Existing
 saved settings override both defaults; desktop defaults are unchanged. Players
 can enable sound through the existing Settings checkbox.

@@ -11,6 +11,31 @@ complete-match tests and gateway setup documentation remain required. See
 [current delivery scope](implementation.md); older references to the full
 original plan below describe the former scope, not release blockers to reopen.
 
+## Headless dependency and CI cleanup — 2026-09-08
+
+Hosted run `34302157222` exposed the same YOG server link failure on Ubuntu
+22.04, Ubuntu 24.04 and Windows: `MapHeader.cpp` unnecessarily included `Game.h`,
+which instantiated script prototype code after the interpreter's GC methods moved
+out of line. The map-header parser does not use Game. Removing that include and
+including its C assertion/string dependencies directly restores the headless
+boundary without linking the simulation/interpreter into the server.
+
+Local server, router, browser and native transport builds pass. The server's
+map-header object has no script-interpreter symbol references. All nine build
+identity tests and seven TLS transport tests pass. Nine WebGL2 browser cases pass
+across Chromium/Firefox/WebKit: damaged map selection and native TCP/WSS matches
+with matching checksums. Logs: `/tmp/glob2-server-cleanup-build.log`,
+`/tmp/glob2-server-cleanup-web.log`, `/tmp/glob2-ci-cleanup-router.log`,
+`/tmp/glob2-ci-cleanup-transport-build.log`, `/tmp/glob2-ci-cleanup-unit.log`,
+`/tmp/glob2-ci-cleanup-wss.log`, `/tmp/glob2-ci-cleanup-browser.log`.
+
+CI now builds the headless server immediately after the desktop client, before
+longer regression suites. New development-branch runs cancel obsolete runs of the
+same branch; master runs are not cancelled. The workflow parses successfully and
+retains all regression/coexistence tests. Gateway/README scope notes now agree with
+the explicit deferral of accounts/invitations/recovery. Hosted confirmation of the
+new head remains required; the failing parent run is not a passing release gate.
+
 ## Callback-only browser runtime — 2026-09-08
 
 The Emscripten target no longer enables Asyncify or reserves an Asyncify stack.

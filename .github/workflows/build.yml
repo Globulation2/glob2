@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: '19 4 * * *'
 
+# Keep a newer PR/manual run from competing with obsolete builds of its branch.
+concurrency:
+  group: build-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
 jobs:
   linux:
     name: linux (${{ matrix.image }})
@@ -69,6 +74,9 @@ jobs:
       - name: Build glob2
         run: scons -j$(nproc) release=1
 
+      - name: Build the YOG server
+        run: scons -j$(nproc) release=1 server=1 --build=build-server
+
       - name: Test nonblocking screen execution
         run: |
           scons release=1 -j$(nproc) screen-test
@@ -117,9 +125,6 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
-
-      - name: Build the YOG server
-        run: scons -j$(nproc) release=1 server=1 --build=build-server
 
       - name: Build and run the terrain resource regression
         run: |
@@ -217,6 +222,9 @@ jobs:
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
 
+      - name: Build the YOG server
+        run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
+
       - name: Test savegame loading and atomic autosaves
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 savegame-safety-test
@@ -228,9 +236,6 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TeamStatsSaveHarness.exe .
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
-
-      - name: Build the YOG server
-        run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
 
   web-coexistence:
     name: browser and native (${{ matrix.order }})

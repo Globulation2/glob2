@@ -4,8 +4,11 @@ This is transport infrastructure, not yet a supported multiplayer release.
 The browser YOG entry now uses WebSocket transport and the same message codecs
 as native TCP clients. The legacy YOG handshake, successful account login, and lobby exit are exercised
 against a native server through the gateway. Browser chat stays within YOG;
-the optional native IRC bridge is disabled. Upgraded protocol negotiation, account migration, invitation rooms and coordinated recovery remain release
-gates; complete cross-play matches are not yet certified.
+the optional native IRC bridge is disabled. Exact protocol-version admission and
+short matching-checksum browser/browser and browser/native matches are tested.
+Complete-match qualification and safe handling remain release gates. Account
+modernization, invitation rooms and coordinated recovery are deferred under the
+[amended delivery scope](implementation.md); refresh/disconnect can end participation.
 
 ## Build and run
 
