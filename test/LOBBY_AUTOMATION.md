@@ -47,3 +47,21 @@ Random previews now run automatically after a 500 ms edit debounce. The UI drive
 allows the timer to run after selecting Random; it must not click a Generate
 button. The control tests also drive the timer before/after its deadline and
 while a slider is held, and check that a failed attempt is consumed.
+
+## Localized lobby captures
+
+The menu harness can render the three lobby tabs using the actual string table.
+Use the catalog's legacy language code (`br` for Brazilian Portuguese, `si` for
+Slovenian, `cz` for Czech, and `dk` for Danish):
+
+```sh
+scons -j8 release=1 server=0 menu-colony-harness
+mkdir -p artifacts/localized-lobby
+GLOB2_PREVIEW_LANGUAGE=fr build/src/MenuColonyHarness capture custom-rules artifacts/localized-lobby/fr-rules.png 1000 700
+GLOB2_PREVIEW_LANGUAGE=ko build/src/MenuColonyHarness capture custom-players artifacts/localized-lobby/ko-players.png 1000 700
+GLOB2_PREVIEW_LANGUAGE=ar build/src/MenuColonyHarness capture custom artifacts/localized-lobby/ar-map.png 640 480
+```
+
+These are static rendering checks. Use the custom setup harness above for
+interaction coverage. Font coverage and placeholder checks do not establish
+linguistic accuracy; translation changes also need a wording review.
