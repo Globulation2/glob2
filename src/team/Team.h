@@ -92,7 +92,7 @@ public:
 	void setCorrectMasks(void);
 	void setCorrectColor(const GAGCore::Color& color);
 	void setCorrectColor(float value);
-	/// Bit for `team` in team-mask bitfields (allies, sharedVision*, Case::forbidden, ...).
+	/// Bit for `team` in team-mask bitfields (allies, sharedVision*, Tile::forbidden, ...).
 	/// Masks have MAX_COUNT_ON_DISK bits; `1<<31` on a signed int would be UB.
 	inline static Uint32 teamNumberToMask(int team) { return Uint32(1)<<team; }
 

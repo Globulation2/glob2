@@ -1,3 +1,4 @@
+#include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
@@ -10,6 +11,7 @@
 
 void MapEdit::processEvent(SDL_Event& event)
 {
+	updateCamera();
 	if (event.type==SDL_QUIT)
 	{
 		doFullQuit=true;
@@ -32,6 +34,14 @@ void MapEdit::processEvent(SDL_Event& event)
 		delegateMenu(event);
 		return;
 	}
+    else if(event.type==SDL_MOUSEWHEEL && (SDL_GetModState() & KMOD_ALT))
+    {
+        double delta=event.wheel.y;
+#if SDL_VERSION_ATLEAST(2,0,18)
+        delta=event.wheel.preciseY;
+#endif
+        zoomMap(delta*(event.wheel.direction==SDL_MOUSEWHEEL_FLIPPED?-1:1),mouseX,mouseY);
+    }
 	else if(event.type==SDL_MOUSEMOTION)
 	{
 		mouseX=event.motion.x;
@@ -82,6 +92,8 @@ void MapEdit::processEvent(SDL_Event& event)
 		// where the click landed.
 		mouseX=event.button.x;
 		mouseY=event.button.y;
+        if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseX,mouseY))
+        {viewportX=camera.tileX();viewportY=camera.tileY();return;}
 		handleMouseButtonEvent(event);
 	}
 	else if(event.type==SDL_KEYDOWN)
@@ -100,7 +112,7 @@ void MapEdit::handleMouseButtonEvent(SDL_Event& event)
 {
 	if(event.type==SDL_MOUSEBUTTONDOWN && event.button.button==SDL_BUTTON_LEFT)
 	{
-		if(!findAction(event.button.x, event.button.y) && widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
+		if(!findAction(event.button.x, event.button.y) && camera.contains(mouseX,mouseY) && widgetRectangle(0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()).is_in(mouseX, mouseY))
 		{
 			//The button wasn't clicked in any registered area
 			if(selectionMode==PlaceBuilding)

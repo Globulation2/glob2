@@ -163,14 +163,14 @@ namespace GAGCore
 		for (std::map<std::string, size_t>::iterator it=stringAccess.begin(); it!=stringAccess.end(); ++it)
 		{
 			// For each entry...
-			bool lcwp=false;
+			bool lastCharWasPct=false;
 			int baseCount=0;
 			const std::string &s = it->first;
 			// we check that we only have valid format (from a FormattableString point of view)...
 			for (size_t j=0; j<s.length(); j++)
 			{
 				char c = s[j];
-				if (lcwp && c!=' ' && c!='%')
+				if (lastCharWasPct && c!=' ' && c!='%')
 				{
 					if (isdigit(c))
 						baseCount++;
@@ -181,18 +181,18 @@ namespace GAGCore
 						return false;
 					}
 				}
-				lcwp=(c=='%');
+				lastCharWasPct=(c=='%');
 			}
 			// then we are sure that format are correct in all translation
 			for (size_t i=0; i<strings[it->second]->data.size(); i++)
 			{
 				const std::string &s = strings[it->second]->data[i];
-				bool lcwp=false;
+				bool lastCharWasPct=false;
 				int count=0;
 				for (size_t j=0; j<s.length(); j++)
 				{
 					char c=s[j];
-					if (lcwp && c!=' ' && c!='%')
+					if (lastCharWasPct && c!=' ' && c!='%')
 					{
 						if (isdigit(c))
 							count++;
@@ -203,7 +203,7 @@ namespace GAGCore
 							return false;
 						}
 					}
-					lcwp=(c=='%');
+					lastCharWasPct=(c=='%');
 				}
 				// if not, issue an error message
 				if (baseCount!=count && s!="")

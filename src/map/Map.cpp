@@ -168,7 +168,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
 	
-	cases.assign(size, Case());
+	tiles.assign(size, Tile());
 
 	mapDiscovered.assign(size, 0);
 	

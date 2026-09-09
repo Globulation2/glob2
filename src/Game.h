@@ -119,6 +119,7 @@ static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
 
 class Game
 {
+	friend class HighResolutionIntegrationHarness;
 	static const bool verbose = false;
 public:
 	/// Per-client viewer state (selection + mouse). Defined below; forward-
@@ -140,6 +141,8 @@ public:
 
 	///Saves data to a stream
 	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);
+	void saveBuildProjects(GAGCore::OutputStream* stream) const;
+	void loadBuildProjects(GAGCore::InputStream* stream);
 
 	enum FlagForRemoval
 	{

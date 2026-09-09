@@ -60,8 +60,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action<NB_MOVE);
 	const UnitSkin &skin = g_unitSkins[unit->typeNum];
 	imgid=skin.startImage[unit->action];
-	int px, py;
-	map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+	// x/y identify this visible occurrence of the wrapped tile. Re-converting
+	// the canonical unit position loses the opposite-edge part at a full period.
+	int px = x * 32, py = y * 32;
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
@@ -275,6 +276,7 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	px+=16;
 	py+=16;
 
+	globalContainer->gfx->beginScreenOverlay(px,py,sx,sy,sw,sh);
 	// Place the internal box dimensions
 	int i_sx = sx + 20;
 	int i_sy = sy + 20;
@@ -370,4 +372,5 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 		by+20+sinf(angle+M_PI/6)*10,
 		Color::white);
 	globalContainer->gfx->drawSprite(bx+decX+4, by+decY+4, unitSprite, imgid, 160);
+	globalContainer->gfx->endScreenOverlay();
 }

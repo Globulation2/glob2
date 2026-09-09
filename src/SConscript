@@ -152,6 +152,8 @@ GameUtilities.cpp
 Glob2.cpp
 Glob2Screen.cpp
 Glob2Style.cpp
+FrontendTheme.cpp
+MenuColony.cpp
 GlobalContainer.cpp
 GlobalContainerArgs.cpp
 GUIGlob2FileList.cpp
@@ -465,7 +467,9 @@ source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
 if not env['server']:
-    stats_sources = [source for source in source_files if source != 'Glob2.cpp']
+    # Compile with local, not stats_env, to avoid rebuilding shared objects under a second environment.
+    stats_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    stats_sources += [source for source in source_files if not source.endswith('.cpp')]
     stats_sources += local.Object('TeamStatsSaveHarness.o', '#test/TeamStatsSaveHarness.cpp')
     stats_env = local.Clone()
     stats_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
@@ -554,6 +558,11 @@ if not env['server']:
     regression_test = local.Program('EnteringUnitSaveHarness', regression_sources)
     local.Alias('entering-unit-save-test', regression_test)
 
+if not env['server']:
+    buffer_sources = ['#test/BufferedFileStreamHarness.cpp', '../libgag/src/libgag.a']
+    buffer_test = local.Program('BufferedFileStreamHarness', buffer_sources)
+    local.Alias('buffered-file-test', buffer_test)
+
 # Real engine regression for immobile units and weighted building gradients, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -567,3 +576,19 @@ if not env['server']:
     regression_sources += local.Object('RoundTripHungerGateHarness.o', '#test/RoundTripHungerGateHarness.cpp')
     regression_test = local.Program('RoundTripHungerGateHarness', regression_sources)
     local.Alias('round-trip-hunger-gate-test', regression_test)
+# Real engine regression for resource-fetch target staleness, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
+    regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
+    local.Alias('resource-fetch-target-test', regression_test)
+if not env['server']:
+    highres_sources = [source for source in source_files if source != 'Glob2.cpp']
+    highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
+    highres_test = local.Program('HighResolutionIntegrationHarness', highres_sources)
+    local.Alias('highres-integration-test', highres_test)
+if not env['server'] and 'menu-colony-harness' in COMMAND_LINE_TARGETS:
+    menu_sources = [source for source in source_files if source != 'Glob2.cpp']
+    menu_sources += local.Object('MenuColonyHarness.o', '#tools/MenuColonyHarness.cpp')
+    menu_test = local.Program('MenuColonyHarness', menu_sources)
+    env.Alias('menu-colony-harness', menu_test)

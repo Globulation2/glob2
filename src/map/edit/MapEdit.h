@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include <MapCamera.h>
 
 #include "Brush.h"
 #include "GAGSys.h"
@@ -376,6 +377,7 @@ private:
 ///This is the map editor class in all its glory.
 class MapEdit
 {
+	friend class HighResolutionIntegrationHarness;
 public:
 	MapEdit();
 	~MapEdit();
@@ -488,6 +490,11 @@ private:
 	int viewportX;
 	///This is the y position of the map that is being painted on the screen
 	int viewportY;
+	MapCamera camera;
+	void updateCamera();
+	bool zoomMap(double steps, int x, int y);
+	int mapMouseX(int x) const { return camera.localX(x); }
+	int mapMouseY(int y) const { return camera.localY(y); }
 	///This is the x-scrolling speed
 	int xSpeed;
 	///This is the y-scrolling speed
@@ -730,10 +737,10 @@ private:
 	BrushAccumulator brushAccumulator;
 	///Handles brush click to place a zone
 	void handleBrushClick(int mx, int my);
-	///The pair of map fields a zone brush edits: the per-case team bitmask and the local (display-only) overlay
+	///The pair of map fields a zone brush edits: the per-tile team bitmask and the local (display-only) overlay
 	struct AreaBrushTarget
 	{
-		Uint32 Case::* caseMask;
+		Uint32 Tile::* tileMask;
 		Utilities::BitArray& view;
 	};
 	///Returns the map fields edited by the current brushType

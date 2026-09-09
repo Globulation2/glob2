@@ -258,7 +258,7 @@ namespace AIEcho
 
 		///A generic, all purpose gradient. The gradient is referenced by its GradientInfo, which it uses continually in its computation.
 		///Echo gradients are probably the slowest gradients in the game. However, they have one key difference compared to other gradients,
-		///they can be shared, and they are generic, even more so than Nicowar gradients (which where decently generic, but not entirely).
+		///they can be shared, and they are generic, even more so than Nicowar gradients (which were decently generic, but not entirely).
 		class Gradient
 		{
 		public:

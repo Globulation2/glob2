@@ -115,7 +115,7 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	assert(x>=0);
 	assert(y>=0);
 	Uint32 teamMask=building->owner->me;
-	if (((cases[coordToIndex(x, y)].forbidden) & teamMask)!=0)
+	if (((tiles[coordToIndex(x, y)].forbidden) & teamMask)!=0)
 		return pathfindForbidden(building->globalGradient[swimClass], building->owner->teamNumber, swimClass, x, y, dx, dy);
 
 	const Uint16 *gradient=buildingGradient(building, swimClass);
@@ -150,7 +150,7 @@ void Map::dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber)
 	{
 		for (int wi=0; wi<wl; wi++)
 		{
-			int bgid=cases[coordToIndex(x + wi, y + hi)].building;
+			int bgid=tiles[coordToIndex(x + wi, y + hi)].building;
 			if (bgid!=NOGBID)
 				if (Building::GIDtoTeam(bgid)==teamNumber)
 				{

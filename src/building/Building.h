@@ -169,7 +169,7 @@ public:
 	///of buildings in Team that need units for work, or can have units "inside"
 	void updateCallLists(void);
 	///When a building is waiting for room, this will make sure that the building is in the
-	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hardspace, etc if
+	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hard space, etc if
 	///resources grow into the space or a building is placed, it becomes impossible
 	///to upgrade and the construction is cancelled.
 	void updateConstructionState(void);
@@ -206,7 +206,7 @@ public:
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
 	bool subscribeToBringResourcesStep(void);
-	///This function subscribes any flag that needs units for a with units.
+	///This function subscribes any flag that needs units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
 	bool subscribeForFlagingStep();

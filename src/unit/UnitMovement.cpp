@@ -93,7 +93,7 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 			{
 				int x = (posX + tdx) & map->wMask;
 				int y = (posY + tdy) & map->hMask;
-				Case mapCase = map->cases[(y << map->wDec) + x];
+				Tile mapCase = map->tiles[(y << map->wDec) + x];
 				if ((mapCase.clearArea & owner->me)
 					&& (mapCase.resource.type != NO_RES_TYPE)
 					&& globalContainer->resourcesTypes.get(mapCase.resource.type)->clearable
@@ -562,6 +562,10 @@ void Unit::handleMovementGoingToResource()
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
+		// Routing can follow a rebuilt gradient while the stored target is stale.
+		// Recompute the target only when it no longer marks a resource goal.
+		if (map->getGradient(teamNumber, destinationPurpose, swimClass(), targetX, targetY)!=GRADIENT_AT_GOAL)
+			map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
 	}
 	else
 	{

@@ -72,7 +72,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 				ballisticShift = static_cast<int>(K * ((-1.0f * time * time) / duration + time));
 			}
 
-			if ( (x<=sw) && (y<=sh) )
+			// Translated copies may be visible outside the canonical viewport.
 			{
 				globalContainer->gfx->drawSprite(x, y-ballisticShift, bulletSprite, BULLET_IMGID);
 				globalContainer->gfx->drawSprite(x+(ballisticShift/2), y, bulletSprite, BULLET_IMGID+1);
@@ -117,7 +117,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 {
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
-		// we have decrease on because we do unalign lookup
+		// we have decrease on because we do unaligned lookup
 		for (int y=top-1; y<=bot; y++)
 			for (int x=left-1; x<=right; x++)
 			{
