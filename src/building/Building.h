@@ -125,10 +125,10 @@ public:
 	Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, BuildingsTypes *types, Sint32 unitWorking, Sint32 unitWorkingFuture);
 	virtual ~Building(void);
 	void freeGradients();
-	// Drop both pathfinding buffers (call after the building moves or its range changes).
+	// Drop the pathfinding gradients (call after the building moves or its range changes).
 	void resetPathfindGradients();
-	// Drop only the local-resources buffer (call when a tile inside the footprint changes).
-	void resetLocalResources();
+	// Request a rebuild on use once the refresh throttle permits (map changed nearby).
+	void dirtyGradients();
 
 	void load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
@@ -169,7 +169,7 @@ public:
 	///of buildings in Team that need units for work, or can have units "inside"
 	void updateCallLists(void);
 	///When a building is waiting for room, this will make sure that the building is in the
-	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hardspace, etc if
+	///Team::buildingsTryToBuildingSiteRoom list. It will also check for hard space, etc if
 	///resources grow into the space or a building is placed, it becomes impossible
 	///to upgrade and the construction is cancelled.
 	void updateConstructionState(void);
@@ -206,7 +206,7 @@ public:
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
 	bool subscribeToBringResourcesStep(void);
-	///This function subscribes any flag that needs units for a with units.
+	///This function subscribes any flag that needs units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
 	bool subscribeForFlagingStep();
@@ -216,9 +216,6 @@ public:
 	void swarmStep(void);
 	/// This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(Uint32 stepCounter);
-	/// This step updates clearing flag gradients. When there are no more resources remaining, units are to
-	/// be fired. When resources grow back, units have to be rehired.=
-	void clearingFlagStep();
 	/// Kills the building, removing all units that are working or inside the building,
 	/// changing the state and adding it to the list of buildings to be deleted
 	void kill(void);
@@ -480,8 +477,6 @@ private:
 		int & oldQuality,
 		bool canSwim);
 
-	static std::string getBuildingName(int type);
-
 public:
 	// ─── Public data ────────────────────────────────────────────────
 
@@ -559,17 +554,22 @@ public:
 	// A true bit meant that the corresponding team can see this building, under FOW or not.
 	Uint32 seenByMask;
 
-	bool dirtyLocalGradient[SWIM_VARIANT_COUNT];
-	Uint8 localGradient[SWIM_VARIANT_COUNT][LOCAL_GRID_AREA];
-	Uint8 *globalGradient[SWIM_VARIANT_COUNT];
+	//! Full-map pathfinding gradient toward this building (a flag's zone, or a clearing
+	//! flag's resources), one per swim class, NULL until a unit of that class asks for it.
+	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
+	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
+	Uint16 *globalGradient[SWIM_CLASS_COUNT];
+	//! Set when the map changed nearby; rebuilt on use once DIRTY_REBUILD_TICKS
+	//! have elapsed since the last rebuild.
+	bool dirtyGradient[SWIM_CLASS_COUNT];
+	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_CLASS_COUNT];
+	// These flags track physical access (cannot swim / can swim), not travel cost.
+	// All swimming classes share passability, but keep separate weighted fields.
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
-	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_VARIANT_COUNT];
 
-	Uint8 *localResources[SWIM_VARIANT_COUNT];
-	int localResourcesCleanTime[SWIM_VARIANT_COUNT]; // The time since the localResources[x] has not been updated.
-	// Per-swim-variant tri-state cache of whether `localResources[canSwim]`
-	// currently has any resource. Stored value at each slot: 0 = unknown
-	// (not yet computed), 1 = true (has at least one), 2 = false (none).
+	// Per-swim-variant tri-state cache of whether a clearing flag has any
+	// resource in range (set when its gradient is built). Stored value at each
+	// slot: 0 = unknown (not yet computed), 1 = true (has at least one), 2 = false (none).
 	int anyResourceToClear[SWIM_VARIANT_COUNT];
 
 	// shooting eye-candy data, not net synchronised

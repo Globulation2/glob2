@@ -37,6 +37,11 @@ public:
 
 	void changeOrder(std::shared_ptr<Order> newOrder);
 
+	/// Sets the version used by subsequent decodeData() calls.
+	/// Defaults to VERSION_MINOR; replay readers supply their header version.
+	/// Does not affect encoding.
+	void setDecodeVersionMinor(Uint32 newVersionMinor);
+
 	Uint8 getMessageType() const;
 	void encodeData(GAGCore::OutputStream* stream) const;
 	/// Wire format: Uint32 size | size bytes payload | Uint8 sender | Uint32 checksum.
@@ -49,6 +54,8 @@ public:
 	bool operator==(const NetMessage& rhs) const;
 private:
 	std::shared_ptr<Order> order;
+
+	Uint32 decodeVersionMinor;
 };
 
 /// Latency probe sent periodically to measure round-trip time.

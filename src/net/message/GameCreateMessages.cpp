@@ -226,7 +226,6 @@ bool NetLeaveGame::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetLeaveGame))
 	{
-		//const NetLeaveGame& r = dynamic_cast<const NetLeaveGame&>(rhs);
 		return true;
 	}
 	return false;

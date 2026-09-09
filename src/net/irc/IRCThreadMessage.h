@@ -12,7 +12,6 @@ enum IRCThreadMessageType
 	ITMConnect,
 	ITMDisconnect,
 	ITMSendMessage,
-	ITMDisconnected,
 	ITMReceiveMessage,
 	ITMJoinChannel,
 	ITMExitThread,
@@ -112,26 +111,6 @@ public:
 	std::string getText() const;
 private:
 	std::string text;
-};
-
-
-
-
-///ITDisconnected
-class ITDisconnected : public IRCThreadMessage
-{
-public:
-	///Creates a ITDisconnected event
-	ITDisconnected();
-
-	///Returns ITMDisconnected
-	Uint8 getMessageType() const;
-
-	///Returns a formatted version of the event
-	std::string format() const;
-	
-	///Compares two IRCThreadMessage
-	bool operator==(const IRCThreadMessage& rhs) const;
 };
 
 

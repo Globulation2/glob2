@@ -157,11 +157,6 @@ namespace GAGGUI
 		parent->getSurface()->drawString(x+value+1+(size-2-tw)/2, y+1+(h-2-textHeight)/2, fontPtr, g.str().c_str());
 	}
 	
-	int Ratio::getMax(void)
-	{
-		return (int)(max+ratio*(float)value);
-	}
-	
 	int Ratio::get(void)
 	{
 		return (int)(start+ratio*(float)value);

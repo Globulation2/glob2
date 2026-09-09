@@ -128,8 +128,6 @@ namespace GAGGUI
 		virtual void setSelectedColor(int c=0) { selColor=c; }
 		//! Return the color sel
 		virtual int getSelectedColor(void) { return selColor; }
-		//! Return the number of possible colors
-		virtual size_t getNumberOfColors(void) { return v.size(); }
 		//! Makes it so that nothing occurs on click
 		virtual void setClickable(bool enabled) { isClickable = enabled; }
 	protected:
@@ -155,7 +153,6 @@ namespace GAGGUI
 		const std::string &getText(void) const { return texts.at(textIndex); }
 		void clearTexts(void);
 		void setIndex(int i);
-		void setIndexFromText(const std::string &s);
 		int getIndex(void) const { return textIndex; }
 		size_t getCount(void) const { return texts.size(); }
 	protected:

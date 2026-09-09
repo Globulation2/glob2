@@ -29,7 +29,7 @@ protected:
 	std::string filename;
 	std::string font;
 	std::vector<std::string> text;
-	std::vector<int> xPos; // Pre-calculated positions for text centering
+	std::vector<int> lineWidths;
 	int offset;
 	// whether the units sprite contains the worker walk frames; when false,
 	// the '*' decoration is skipped instead of indexing the sprite out of range
@@ -102,7 +102,7 @@ void ScrollingText::internalInit(void)
 	getScreenPos(&x, &y, &w, &h);
 	offset = -h + 25;
 	
-	// Measures all the length of all the lines of the file (useful for centering)
+	lineWidths.clear();
 	for (size_t i = 0; i < text.size(); i++)
 	{
 		std::string &s = text[i];
@@ -117,7 +117,7 @@ void ScrollingText::internalInit(void)
 				s.erase(f, l-f+1);
 			}
 		}
-		xPos.push_back((w-fontPtr->getStringWidth(s.c_str()))>>1);	
+		lineWidths.push_back(fontPtr->getStringWidth(s.c_str()));	
 	}
 }
 
@@ -160,7 +160,7 @@ void ScrollingText::paint()
 				yPos += 20;
 			}
 			else
-				parent->getSurface()->drawString(xPos[i], yPos-offset, fontPtr, s.c_str());
+				parent->getSurface()->drawString(x + ((w-lineWidths[i])>>1), yPos-offset, fontPtr, s.c_str());
 			yPos += 20;
 		}
 		else

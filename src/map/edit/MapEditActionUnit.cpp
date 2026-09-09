@@ -2,7 +2,6 @@
 
 #include "Game.h"
 #include "MapEdit.h"
-#include "UnitEditorScreen.h"
 #include "Unit.h"
 #include "UnitType.h"
 #include "Utilities.h"

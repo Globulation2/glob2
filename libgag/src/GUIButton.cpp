@@ -392,12 +392,4 @@ namespace GAGGUI
 		setText(texts.at(textIndex));
 	}
 	
-	void MultiTextButton::setIndexFromText(const std::string &s)
-	{
-		for (size_t i = 0; i < texts.size(); i++)
-		{
-			if (texts[i] == s)
-				setIndex(i);
-		}
-	}
 }

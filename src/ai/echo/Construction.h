@@ -202,7 +202,7 @@ namespace AIEcho
 		};
 
 
-		///This constraint, againt unlike the others, does not use gradients. It only allows the given
+		///This constraint, again unlike the others, does not use gradients. It only allows the given
 		///position to be allowed. The resulting building will *not* be centered on it except if it is
 		///a 1x1 building
 		class SinglePosition : public Constraint

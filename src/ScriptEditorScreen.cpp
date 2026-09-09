@@ -482,18 +482,6 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			changeTabAgain=false;
 		}
 	}
-	// else if(action == TEXT_MODIFIED)
-	// {
-	// 	// on typing compilation
-	// 	if (source == scriptEditor)
-	// 	{
-	// 		testCompile();
-	// 		unsigned line;
-	// 		unsigned column;
-	// 		scriptEditor->getCursorPos(line, column);
-	// 		cursorPosition->setText(FormattableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
-	// 	}
-	// }
 	else if ((action == TEXT_CURSOR_MOVED) || (action == TEXT_MODIFIED))
 	{
 		if (source == scriptEditor)

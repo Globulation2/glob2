@@ -137,7 +137,7 @@ int MapEdit::run(void)
 	{
 		startTick=SDL_GetTicks64();
 	
-		// we get all pending events but for mousemotion we only keep the last one
+		// we get all pending events but for mouse motion we only keep the last one
 		SDL_Event event;
 		while (GAGCore::GraphicContext::pollEvent(&event))
 		{

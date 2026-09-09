@@ -174,7 +174,7 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 			for (int x=posX; x<posX+w; x++)
 			{
 				size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
-				map.cases[index].forbidden|=teamMask;
+				map.tiles[index].forbidden|=teamMask;
 				if (oc.teamNumber == players[localPlayer]->teamNumber)
 					map.displayedForbiddenView.set(index, true);
 			}
@@ -219,7 +219,7 @@ void Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 			if (newRange<oldRange)
 			{
 				b->owner->dirtyGlobalGradient();
-				map.dirtyLocalGradient(b->posX-oldRange-GRADIENT_DIRTY_BORDER_TILES, b->posY-oldRange-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, b->owner->teamNumber);
+				map.dirtyBuildingGradients(b->posX-oldRange-GRADIENT_DIRTY_BORDER_TILES, b->posY-oldRange-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, 2*GRADIENT_DIRTY_BORDER_TILES+oldRange*2, b->owner->teamNumber);
 			}
 		}
 		else
@@ -269,7 +269,7 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		if (drop && b->type->zonableForbidden)
 		{
 			int range=b->unitStayRange;
-			map.dirtyLocalGradient(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, b->owner->teamNumber);
+			map.dirtyBuildingGradients(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, b->owner->teamNumber);
 		}
 
 		b->posX=omf.x;
@@ -300,13 +300,14 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				{
 					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.cases[index].forbidden |= teamMask;
+					map.tiles[index].forbidden |= teamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
 						map.displayedForbiddenView.set(index, true);
 				}
 				orderMaskIndex++;
 			}
+		teams[oaa.teamNumber]->dirtyGlobalGradient();
 	}
 	else if (oaa.type == BrushTool::MODE_DEL)
 	{
@@ -319,7 +320,7 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				{
 					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.cases[index].forbidden &= notTeamMask;
+					map.tiles[index].forbidden &= notTeamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
 						map.displayedForbiddenView.set(index, false);
@@ -329,7 +330,7 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 
 		// We remove, so we need to refresh the gradients, unfortunately
 		teams[oaa.teamNumber]->dirtyGlobalGradient();
-		map.dirtyLocalGradient(oaa.centerX+oaa.minX-GRADIENT_DIRTY_BORDER_TILES, oaa.centerY+oaa.minY-GRADIENT_DIRTY_BORDER_TILES, oaa.maxX-oaa.minX+2*GRADIENT_DIRTY_BORDER_TILES, oaa.maxY-oaa.minY+2*GRADIENT_DIRTY_BORDER_TILES, oaa.teamNumber);
+		map.dirtyBuildingGradients(oaa.centerX+oaa.minX-GRADIENT_DIRTY_BORDER_TILES, oaa.centerY+oaa.minY-GRADIENT_DIRTY_BORDER_TILES, oaa.maxX-oaa.minX+2*GRADIENT_DIRTY_BORDER_TILES, oaa.maxY-oaa.minY+2*GRADIENT_DIRTY_BORDER_TILES, oaa.teamNumber);
 	}
 	else
 		assert(false);
@@ -351,7 +352,7 @@ void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer
 				{
 					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.cases[index].guardArea |= teamMask;
+					map.tiles[index].guardArea |= teamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
 						map.displayedGuardAreaView.set(index, true);
@@ -370,7 +371,7 @@ void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer
 				{
 					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.cases[index].guardArea &= notTeamMask;
+					map.tiles[index].guardArea &= notTeamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
 						map.displayedGuardAreaView.set(index, false);
@@ -396,7 +397,7 @@ void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 				{
 					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.cases[index].clearArea |= teamMask;
+					map.tiles[index].clearArea |= teamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
 						map.displayedClearAreaView.set(index, true);
@@ -415,7 +416,7 @@ void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 				{
 					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.cases[index].clearArea &= notTeamMask;
+					map.tiles[index].clearArea &= notTeamMask;
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
 						map.displayedClearAreaView.set(index, false);
@@ -452,7 +453,7 @@ void Game::executeDelete(const OrderDelete& od)
 		{
 			b->owner->dirtyGlobalGradient();
 			int range=b->unitStayRange;
-			map.dirtyLocalGradient(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, b->owner->teamNumber);
+			map.dirtyBuildingGradients(b->posX-range-GRADIENT_DIRTY_BORDER_TILES, b->posY-range-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, 2*GRADIENT_DIRTY_BORDER_TILES+range*2, b->owner->teamNumber);
 		}
 	}
 }
