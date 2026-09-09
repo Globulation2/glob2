@@ -1,4 +1,4 @@
-"""Create level-matched Apple/reference vs FluidSynth A/B clips and audio metrics.
+"""Create level-matched reference vs FluidSynth A/B clips and audio metrics.
 
 Usage: python3 music/compare.py REFERENCE_DIRECTORY OUTPUT_DIRECTORY
 Reference directory contains one subfolder per installed set, with its three WAVs.

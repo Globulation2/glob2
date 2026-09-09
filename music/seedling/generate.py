@@ -7,9 +7,8 @@ from pathlib import Path
 import struct
 
 OUT = Path(__file__).resolve().parent
-BPM, BARS, PPQ, RATE = 96, 32, 480, 44100
+BPM, BARS, PPQ = 96, 32, 480
 BEAT = 60 / BPM
-FRAMES = round(BARS * 4 * BEAT * RATE)
 # name, GM program (zero-based), channel, pan
 PARTS = [('pad', 89, 0, -.25), ('bass', 38, 1, 0),
          ('wood', 12, 2, -.35), ('bell', 10, 3, .35),
@@ -70,8 +69,8 @@ def compose(level):
             continue
         for pitch in chord:
             add('pad', start, pitch, 3.8, 35)
-        add('bass', start, root - 12, .8 if level == 2 else 1.45, 65)
-        add('bass', start + 2.5, root - 12, .4 if level == 2 else .8, 49)
+        add('bass', start, root - 12, 1.45, 65)
+        add('bass', start + 2.5, root - 12, .8, 49)
         # Small call-and-response figures leave room for game sounds.
         motif = [0, 2, 1, 4] if bar % 2 == 0 else [3, 2, 1]
         times = [0.5, 1.25, 2.5, 3.25] if bar % 2 == 0 else [.75, 1.5, 3]
