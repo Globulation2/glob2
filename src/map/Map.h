@@ -676,6 +676,10 @@ public:
 	
 	//! Mark the gradients of this team's buildings in the area for a rebuild. Wrap-safe on x,y
 	void dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber);
+	//! Mark the gradient of every building of every team that could route through
+	//! this rectangle, widened by GRADIENT_DIRTY_BORDER_TILES, as needing a rebuild.
+	//! Call it whenever the rectangle stops being walkable, or starts.
+	void dirtyBuildingGradientsAround(int x, int y, int w, int h);
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.

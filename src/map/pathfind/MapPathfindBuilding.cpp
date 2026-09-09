@@ -57,41 +57,19 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass)
 	return gradient;
 }
 
-namespace {
-
-// Probe the cell and its 8 neighbours: the unit may stand on a cell the
-// gradient treats as an obstacle.
-Uint16 probeAround(const Uint16 *gradient, const Map *map, int x, int y)
-{
-	Uint16 g=gradient[map->coordToIndex(x, y)];
-	for (int d=0; d<8 && g<=GRADIENT_UNREACHABLE; d++)
-		g=gradient[map->coordToIndex(x+tabClose[d][0], y+tabClose[d][1])];
-	return g;
-}
-
-} // namespace
-
 bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int *dist)
 {
 	const Uint16 *gradient=buildingGradient(building, swimClass);
 	if (gradient==NULL)
 		return false;
-	Uint16 g=probeAround(gradient, this, x, y);
+	// The unit's own cell can be an obstacle in this building's field - it may be
+	// standing on another building, or in a forbidden area - while a cell next to
+	// it is on a route. Take the first of the nine that carries a distance.
+	Uint16 g=gradient[coordToIndex(x, y)];
+	for (int d=0; d<8 && g<=GRADIENT_UNREACHABLE; d++)
+		g=gradient[coordToIndex(x+tabClose[d][0], y+tabClose[d][1])];
 	if (g<=GRADIENT_UNREACHABLE)
-	{
-		// A building nobody can reach is offered no worker, and with no worker on
-		// its way there is no stuck unit to make pathfindBuilding rebuild the
-		// gradient. Rebuild here as well, at the same rate, so a field computed
-		// while the site was walled off cannot outlive the wall.
-		if (building->lastGlobalGradientUpdateStepCounter[swimClass]+STUCK_REBUILD_TICKS>game->stepCounter)
-			return false;
-		updateGlobalGradient(building, swimClass);
-		if (building->locked[swimClass>0])
-			return false;
-		g=probeAround(gradient, this, x, y);
-		if (g<=GRADIENT_UNREACHABLE)
-			return false;
-	}
+		return false;
 	*dist=gradientTiles(g);
 	return true;
 }
@@ -164,6 +142,18 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
 }
 
+
+void Map::dirtyBuildingGradientsAround(int x, int y, int w, int h)
+{
+	if (game==NULL)
+		return;
+	// A building's field records which cells were obstacles when it was computed.
+	// These cells have just stopped matching that, for every team's buildings
+	// within reach of them, so every such field has to be recomputed.
+	int border=GRADIENT_DIRTY_BORDER_TILES;
+	for (int t=0; t<game->mapHeader.getNumberOfTeams(); t++)
+		dirtyBuildingGradients(x-border, y-border, w+2*border, h+2*border, t);
+}
 
 void Map::dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber)
 {
