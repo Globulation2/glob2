@@ -33,3 +33,15 @@ in-game options, multiplayer/replay eligibility, default shortcuts, and camera c
 The full engine/replay runner previously hung during playback (also reproduced
 with the original settings implementation). Its passing settings-focused subset
 is reported separately; a complete engine/replay pass is not claimed here.
+
+## English fallback policy
+
+`data/settings-english-fallbacks.txt` explicitly lists the Settings additions
+that use the existing English fallback until translations are supplied. The
+translation audit still reports these as untranslated, validates their English
+values, and rejects missing/untranslated keys outside this list under `--strict`.
+It never substitutes English text into a language file or marks it translated.
+
+The existing `MapRenderResizeHarness` uses semantic Settings rows and a separate
+nested profile for its autosave checks. The renderer fixture's original
+preferences remain unchanged.
