@@ -298,7 +298,7 @@ void Minimap::computeColors(int row, int localTeam)
 	bool useMapDiscovered = (minimapMode == HideFOW);
 
 	Uint32 visibleTeams = game->teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	const int dy = row;
 	for (int dx=0; dx<szX; dx++)

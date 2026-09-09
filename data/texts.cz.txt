@@ -1228,3 +1228,361 @@ Cortex
 Uvnitř: %0
 [Units still working: %0]
 Ještě v práci: %0
+[2 vs 2]
+2 vs 2
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 vs 2 needs four open colonies. You vs all needs a human.
+[AI strategy & counterplay]
+AI strategy & counterplay
+[AICastor-Profile]
+Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+[AICastor-Summary]
+Conservative growth; comfortable with scarce resources.
+[AICortex-Profile]
+Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+[AICortex-Summary]
+Food-aware growth and supported attack waves.
+[AINicowar-Profile]
+Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+[AINicowar-Summary]
+Rapid expansion into large, aggressive armies.
+[AINone-Profile]
+Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+[AINone-Summary]
+An idle colony for experiments.
+[AINumbi-Profile]
+Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+[AINumbi-Summary]
+Light, swift expansion.
+[AIReachToInfinity-Profile]
+Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+[AIReachToInfinity-Summary]
+Huge bases and conversion instead of attacks.
+[AIWarrush-Profile]
+Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+[AIWarrush-Summary]
+Fast attacks that test your early defenses.
+[Algae]
+Algae
+[Alliance]
+Alliance
+[Alliances]
+Alliances
+[Beach size]
+Beach size
+[Blue]
+Blue
+[Brown]
+Brown
+[Built-in maps]
+Built-in maps
+[Can change in game]
+Can change in game
+[Choose a rule to change it.]
+Choose a rule to change it.
+[Closed]
+Closed
+[Colonies]
+Colonies
+[Colony]
+Colony
+[Concrete islands]
+Concrete islands
+[Conquest only]
+Conquest only
+[Conquest only removes prestige victory; map scripts still apply.]
+Conquest only removes prestige victory; map scripts still apply.
+[Conquest or prestige]
+Conquest or prestige
+[Control]
+Control
+[Controller]
+Controller
+[Could not launch this map. Your setup is retained; try again.]
+Could not launch this map. Your setup is retained; try again.
+[Could not load this map. Choose another map or retry.]
+Could not load this map. Choose another map or retry.
+[Crater lakes]
+Crater lakes
+[Custom]
+Custom
+[Custom teams]
+Custom teams
+[Cyan]
+Cyan
+[Desert weight]
+Desert weight
+[Easy]
+Easy
+[Explore as you play]
+Explore as you play
+[Extra colony assignments are retained for larger maps.]
+Extra colony assignments are retained for larger maps.
+[Extra islands]
+Extra islands
+[FFA]
+FFA
+[FourSquares1.map]
+FourSquares1.map
+[Fruit]
+Fruit
+[Game Rules]
+Game Rules
+[Game speed]
+Game speed
+[Generate & play]
+Generate & play
+[Generate preview]
+Generate preview
+[Generation failed. Adjust settings or try again.]
+Generation failed. Adjust settings or try again.
+[Give at least one terrain type a nonzero weight.]
+Give at least one terrain type a nonzero weight.
+[Grass weight]
+Grass weight
+[Gray]
+Gray
+[Green]
+Green
+[Hard]
+Hard
+[Height]
+Height
+[Invalid colony count.]
+Invalid colony count.
+[Island size]
+Island size
+[Islands]
+Islands
+[Isles]
+Isles
+[Lake density]
+Lake density
+[Landscape]
+Landscape
+[Last colony standing]
+Last colony standing
+[Layout]
+Layout
+[Locked teams]
+Locked teams
+[Magenta]
+Magenta
+[Map]
+Map
+[Map knowledge]
+Map knowledge
+[Map settings changed. Generate a new preview or start.]
+Map settings changed. Generate a new preview or start.
+[Map source]
+Map source
+[Map-defined]
+Map-defined
+[Match finished]
+Match finished
+[Match format]
+Match format
+[Medium]
+Medium
+[Medium - Experimental]
+Medium - Experimental
+[No AI orders]
+No AI orders
+[No current preview]
+No current preview
+[Old islands]
+Old islands
+[Old random]
+Old random
+[Open at least one colony to start a match.]
+Open at least one colony to start a match.
+[Open book]
+Open book
+[Pink]
+Pink
+[Play this map]
+Play this map
+[Players & Teams]
+Players & Teams
+[Premade maps]
+Premade maps
+[Preview ready. Start plays this exact map.]
+Preview ready. Start plays this exact map.
+[Purple]
+Purple
+[Quick clash]
+Quick clash
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Quick clash: 2x speed; generated maps start with 8 workers.
+[Random map]
+Random map
+[Red]
+Red
+[Repeat landscape]
+Repeat landscape
+[Reroll]
+Reroll
+[Resources]
+Resources
+[Restore standard rules]
+Restore standard rules
+[Revealed terrain does not reveal all enemy activity.]
+Revealed terrain does not reveal all enemy activity.
+[River]
+River
+[River width]
+River width
+[Ruleset]
+Ruleset
+[Sand weight]
+Sand weight
+[Select a map from the library.]
+Select a map from the library.
+[Select a valid map.]
+Select a valid map.
+[Shared control needs a free controller slot (maximum 12).]
+Shared control needs a free controller slot (maximum 12).
+[Smoothing]
+Smoothing
+[Standard]
+Standard
+[Start game]
+Start game
+[Starting workers]
+Starting workers
+[Starting workers affects generated maps only.]
+Starting workers affects generated maps only.
+[Starting workers: Game Rules tab.]
+Starting workers: Game Rules tab.
+[Swamp]
+Swamp
+[Team]
+Team
+[Terrain]
+Terrain
+[Terrain revealed]
+Terrain revealed
+[Try a ruleset, then make it your own.]
+Try a ruleset, then make it your own.
+[Unavailable]
+Unavailable
+[Use selection]
+Use selection
+[Victory]
+Victory
+[Watch game]
+Watch game
+[Water weight]
+Water weight
+[White]
+White
+[Width]
+Width
+[Yellow]
+Yellow
+[You]
+You
+[You + AI]
+You + AI
+[You and the AI both issue orders. Uses two controller slots.]
+You and the AI both issue orders. Uses two controller slots.
+[You vs all]
+You vs all
+[Your maps]
+Your maps
+[castor]
+castor
+[colonies]
+colonies
+[cortex]
+cortex
+[generation]
+generation
+[glob2-custom-]
+glob2-custom-
+[map body]
+map body
+[map header]
+map header
+[nicowar]
+nicowar
+[numbi]
+numbi
+[preview.map]
+preview.map
+[reachtoinfinity]
+reachtoinfinity
+[snapshot]
+snapshot
+[snapshot directory]
+snapshot directory
+[snapshot load]
+snapshot load
+[unknown AI]
+unknown AI
+[warrush]
+warrush
+[Quick clash on premade maps: only speed changes (2x).]
+Quick clash on premade maps: only speed changes (2x).
+[* Changed from standard.]
+* Changed from standard.
+[World & diplomacy]
+World & diplomacy
+[Starting conditions & pace]
+Starting conditions & pace
+[Inactive]
+Inactive
+[8 workers / 2x speed]
+8 workers / 2x speed
+[Changes the pace of the whole simulation.]
+Changes the pace of the whole simulation.
+[Choose whether teams can change during the match.]
+Choose whether teams can change during the match.
+[Classic colony building]
+Classic colony building
+[Dimensions and colony count are set above.]
+Dimensions and colony count are set above.
+[Generate & watch]
+Generate & watch
+[Generate a preview to explore this world.]
+Generate a preview to explore this world.
+[Info]
+Info
+[Map-defined starting units]
+Map-defined starting units
+[More workers jump-start colony growth. Changes the generated map.]
+More workers jump-start colony growth. Changes the generated map.
+[No maps in this library.]
+No maps in this library.
+[Premade maps retain their authored starting units.]
+Premade maps retain their authored starting units.
+[Premade: only speed changes (2x)]
+Premade: only speed changes (2x)
+[Start with terrain known]
+Start with terrain known
+[This colony will not join the match.]
+This colony will not join the match.
+[This landscape uses a fixed terrain recipe.]
+This landscape uses a fixed terrain recipe.
+[This landscape uses fixed resource placement.]
+This landscape uses fixed resource placement.
+[Win through conquest]
+Win through conquest
+[You control this colony.]
+You control this colony.
+[controllers]
+controllers
+[Use]
+Use
+[Lime]
+Lime
+[Teal]
+Teal
+[Azure]
+Azure
+[Updating map preview...]
+Updating map preview...
+[Generation failed. Adjust settings or press Start to retry.]
+Generation failed. Adjust settings or press Start to retry.
+[Preview unavailable. Adjust settings or start to retry.]
+Preview unavailable. Adjust settings or start to retry.

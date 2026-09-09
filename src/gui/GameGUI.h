@@ -55,6 +55,7 @@ class MapMarkOrder;
 */
 class GameGUI
 {
+	friend struct CustomGameSetupHarness;
 	friend class HighResolutionIntegrationHarness;
 public:
 	///Constructs a GameGUI
@@ -72,6 +73,7 @@ public:
 	void step(void);
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
+	void configureLiveSpectatorView();
 	//! Return position on x
 	int getViewportX() { return viewportX; }
 	//! Return position on y
@@ -82,7 +84,7 @@ public:
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
-	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const std::string name);

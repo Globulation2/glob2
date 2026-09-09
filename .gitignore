@@ -22,3 +22,5 @@ Glob2-*.dmg
 
 /output/frontend/
 /build-server/
+
+/artifacts/

@@ -23,14 +23,14 @@ namespace AINames
 		//               nullptr when the AI can't be picked from the CLI (NONE).
 		//   stringKey — StringTable base key: the display name is "[<key>]"
 		//               and the description "[<key>-Description]".
-		const struct { int id; const char* cliName; const char* stringKey; } aiTable[] = {
-			{AI::NONE,            nullptr,           "AINone"},
-			{AI::NUMBI,           "numbi",           "AINumbi"},
-			{AI::CASTOR,          "castor",          "AICastor"},
-			{AI::WARRUSH,         "warrush",         "AIWarrush"},
-			{AI::REACHTOINFINITY, "reachtoinfinity", "AIReachToInfinity"},
-			{AI::NICOWAR,         "nicowar",         "AINicowar"},
-			{AI::CORTEX,          "cortex",          "AICortex"},
+		const struct { int id; const char* cliName; const char* stringKey; const char* difficulty; } aiTable[] = {
+			{AI::NONE,            nullptr,           "AINone", "No AI orders"},
+			{AI::NUMBI,           "numbi",           "AINumbi", "Easy"},
+			{AI::CASTOR,          "castor",          "AICastor", "Medium"},
+			{AI::WARRUSH,         "warrush",         "AIWarrush", "Medium"},
+			{AI::REACHTOINFINITY, "reachtoinfinity", "AIReachToInfinity", "Easy"},
+			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard"},
+			{AI::CORTEX,          "cortex",          "AICortex", "Medium - Experimental"},
 		};
 	}
 
@@ -49,6 +49,33 @@ namespace AINames
 				return Toolkit::getStringTable()->getString("[" + std::string(entry.stringKey) + "-Description]");
 		return "unknown AI";
 	}
+
+    std::string getAISelectorText(int id)
+    {
+        for (const auto& entry : aiTable)
+            if (entry.id == id)
+                return (id == AI::NONE ? Toolkit::getStringTable()->getString("[Inactive]") : getAIText(id))
+                    + std::string(" - ") + Toolkit::getStringTable()->getString("[" + std::string(entry.difficulty) + "]");
+        return "unknown AI";
+    }
+    std::string getAISummary(int id)
+    {
+        for (const auto& entry : aiTable)
+            if (entry.id == id)
+                return Toolkit::getStringTable()->getString("[" + std::string(entry.stringKey) + "-Summary]");
+        return "unknown AI";
+    }
+    std::string getAIProfile(int id)
+    {
+        for (const auto& entry : aiTable)
+            if (entry.id == id)
+                {
+                    std::string profile=Toolkit::getStringTable()->getString("[" + std::string(entry.stringKey) + "-Profile]");
+                    for(size_t p=0;(p=profile.find("\\n",p))!=std::string::npos;++p)profile.replace(p,2,"\n");
+                    return getAISelectorText(id)+"\n\n"+getAISummary(id)+"\n\n"+profile;
+                }
+        return "unknown AI";
+    }
 
 	int parseAIName(const std::string& name)
 	{

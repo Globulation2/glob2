@@ -19,6 +19,12 @@ Engine::Engine() = default;
 
 Engine::~Engine()
 {
+	globalContainer->liveSpectating=false;
+	if(previousCustomSpeed>=0) {
+        globalContainer->settings.gameSpeed=previousCustomSpeed;
+        // In-game options may have persisted the temporary match speed.
+        globalContainer->settings.save();
+    }
 	// Finalize the replay of the session this Engine ran, if any.
 	// initGame allocated the writer; destroying it (ReplayWriter::finish)
 	// writes the NullOrder terminator and flushes the replay file. This must

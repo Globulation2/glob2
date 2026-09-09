@@ -162,7 +162,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				if ((buildingTeam==localTeamNo)
 					|| game.map.isFOWDiscovered(mapX, mapY, localTeam->me)
 					|| (game.map.isMapDiscovered(mapX, mapY, localTeam->me) && (game.teams[buildingTeam]->allies&(1<<localTeamNo)))
-					|| globalContainer->replaying )
+					|| globalContainer->isViewingGame() )
 				{
 					setSelection(BUILDING_SELECTION, gbid);
 					selectionPushed=true;

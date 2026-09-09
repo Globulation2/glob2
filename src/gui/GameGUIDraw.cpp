@@ -23,7 +23,7 @@
 
 void GameGUI::drawPanelButtons(int y)
 {
-	if (!globalContainer->replaying)
+	if (!globalContainer->isViewingGame())
 	{
 		if (!(hiddenGUIElements & HIDABLE_BUILDINGS_LIST))
 		{
@@ -170,7 +170,7 @@ void GameGUI::dispatchSelectionPanel(void)
 		drawResourceInfos();
 		break;
 	default:
-		if (!globalContainer->replaying)
+		if (!globalContainer->isViewingGame())
 			dispatchDisplayModePanel();
 		else
 			dispatchReplayDisplayModePanel();
@@ -639,7 +639,7 @@ void GameGUI::drawAll(int team)
 								((showDamagedMap) ? Game::DRAW_OVERLAY : 0) |
 								((showDefenseMap) ? Game::DRAW_OVERLAY : 0) |
 								((showFertilityMap) ? Game::DRAW_OVERLAY : 0) |
-								((globalContainer->replaying && !globalContainer->replayShowFog) ? Game::DRAW_WHOLE_MAP : 0) |
+								((globalContainer->isViewingGame() && !globalContainer->replayShowFog) ? Game::DRAW_WHOLE_MAP : 0) |
 								Game::DRAW_AREA;
 
 	updateHighlightInGame();
@@ -663,7 +663,7 @@ void GameGUI::drawAll(int team)
 	}
 
 	///Draw ghost buildings
-	if (!globalContainer->replaying) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
+	if (!globalContainer->isViewingGame()) ghostManager.drawAll(viewportX, viewportY, localTeamNo);
 
 	globalContainer->gfx->endMapTransform();
 	// if paused, tint the game area

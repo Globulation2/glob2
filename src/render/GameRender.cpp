@@ -193,7 +193,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	// Draw units that are off the screen for the selected building
 
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	if(view.selectedBuilding != NULL && (view.selectedBuilding->owner->sharedVisionOther & visibleTeams))
 	{
@@ -210,12 +210,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
-	if (!globalContainer->replaying || globalContainer->replayShowFlags)
+	if (!globalContainer->isViewingGame() || globalContainer->replayShowFlags)
 	{
 		// In replays we want to show the flags of all players, so we build a list of whose buildings to show
 		std::list<Team *> teamsToShow;
 
-		if (!globalContainer->replaying)
+		if (!globalContainer->isViewingGame())
 		{
 			// Only add the local team
 			teamsToShow.push_back(teams[localTeam]);

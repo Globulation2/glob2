@@ -207,6 +207,7 @@ void GameGUI::processEvent(SDL_Event *event)
 // to flush time.
 void GameGUI::accumulateScrollWheelDelta(int delta)
 {
+	if(globalContainer->liveSpectating) return;
 	SDL_Keymod mod = SDL_GetModState();
 	switch (scrollWheelTarget(mod & KMOD_SHIFT, mod & KMOD_CTRL,
 	                          globalContainer->settings.scrollWheelEnabled, mod & KMOD_ALT))
@@ -423,7 +424,7 @@ void GameGUI::handleRightClick(void)
 
 void GameGUI::nextDisplayMode(void)
 {
-	if (globalContainer->replaying)
+	if (globalContainer->isViewingGame())
 	{
 		replayDisplayMode=ReplayDisplayMode((replayDisplayMode + 1) % RDM_NB_VIEWS);
 		return;

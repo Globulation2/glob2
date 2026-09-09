@@ -608,3 +608,9 @@ if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
     hiring_sources = [source for source in source_files if source != 'Glob2.cpp']
     hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
     local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))
+
+if not env['server']:
+    custom_sources = [source for source in source_files if source != 'Glob2.cpp']
+    custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')
+    custom_test = local.Program('CustomGameSetupHarness', custom_sources)
+    local.Alias('custom-setup-test', custom_test)
