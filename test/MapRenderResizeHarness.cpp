@@ -3,7 +3,9 @@
 #undef NDEBUG
 #define SDL_MAIN_HANDLED
 #include "GlobalContainer.h"
-#include "GraphicContextPrivate.h"
+#ifdef HAVE_OPENGL
+#include <SDL_opengl.h>
+#endif
 #include "Engine.h"
 #include "Unit.h"
 #include "Bullet.h"
