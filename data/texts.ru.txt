@@ -207,7 +207,7 @@ caps lock
 [Computing Fertility]
 Вычисление плодородия
 [concrete islands terrain]
-Бетонные острова
+Отдельные острова
 [connect]
 Подключиться
 [connecting to game]
@@ -221,7 +221,7 @@ caps lock
 [control %0]
 control-%0
 [Corn]
-Зерно
+Пшеница
 [crater density]
 число кратеров
 [crater lakes terrain]
@@ -243,15 +243,15 @@ Ctrl - Линия
 [damage]
 Повреждения
 [Damaged Map]
-Карта повреждений
+Карта раненых
 [decrease units working]
-Уменьшить количество работающих
+Уменьшить число работников
 [Defeat Your Oppenents]
 Победить соперников
 [defencetower explanation 2]
-строения и юниты
+вражеские юниты и здания
 [defencetower explanation]
-Атакует близких врагов
+Атакует ближайшие
 [defencetower]
 Оборонительная башня
 [Defense Map]
@@ -303,7 +303,7 @@ enter
 [equals]
 равно
 [ERROR_CANT_LOAD_MAP]
-Карту не удалось загрузить, так как файл повреждён или имеет несовместимую версию.
+Не удалось загрузить карту: файл повреждён или имеет несовместимую версию.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -363,7 +363,7 @@ f9
 [forbidden area]
 Запретная зона
 [Free]
-Ok
+Здоровы
 [free]
 свободны
 [from:]
@@ -559,7 +559,7 @@ meta-%0
 [Min required level:]
 Мин. необходимый уровень:
 [Minimum Level To Flag]
-Минимальный уровень флага
+Мин. ур. юнитов
 [Music volume]
 Громкость музыки
 [Mute]
@@ -581,7 +581,7 @@ meta-%0
 [No Objectives]
 Нет целей
 [no ressources growth areas]
-Нет зон роста
+Без роста
 [No]
 Нет
 [Not Enough Ratings]
@@ -611,11 +611,11 @@ Ok
 [old random terrain]
 старый случайный ландшафт
 [on press]
-По нажатию
+Нажата
 [On the spot]
 На месте
 [on unpress]
-По отжатию
+Отпущена
 [open chat box]
 Открыть чат
 [open load menu]
@@ -703,7 +703,7 @@ print screen
 [Register]
 Регистрация
 [remember unit]
-Запомнить юнит
+Помнить число юнитов
 [Remember YOG password localy]
 Запомнить пароль локально.
 [remove map]
@@ -723,7 +723,7 @@ print screen
 [replay ended]
 Повтор окончен
 [restore default shortcuts]
-Восстановить значения по умолчанию
+Вернуть стандартные клавиши
 [return to editor]
 Вернуться в редактор
 [return to game]
@@ -735,7 +735,7 @@ enter
 [right meta]
 right meta
 [right super]
-right windows key
+правая клавиша Windows
 [right]
 right
 [river diameter]
@@ -813,9 +813,9 @@ scroll lock
 [select place clearingflag]
 Выбор размещения флага очистки
 [select place explorationflag]
-Выбор размещения флага разведки
+Разместить флаг разведки
 [select place forbidden area]
-Выбор размещения запретной зоны
+Задать запретную зону
 [select place guard area]
 Выбор размещения охранной зоны
 [select place warflag]
@@ -887,9 +887,9 @@ space
 [stone]
 камень
 [stonewall explanation 2]
-пассивный
+обороны
 [stonewall explanation]
-Пассивная защита
+Элемент пассивной
 [stonewall]
 Каменная стена
 [submit rating]
@@ -913,7 +913,7 @@ space
 [swimmingpool]
 Бассейн
 [switch to adding areas]
-Переключиться на добавление областей
+Добавлять области
 [switch to area brush 1]
 Переключится на Кисть 1
 [switch to area brush 2]
@@ -959,17 +959,17 @@ tab
 [the building is under attack]
 Здание атаковано
 [the clearingflag is finished]
-?? Флаг очистки установлен ??
+Флаг очистки установлен
 [the clearingflag is under attack]
-?? Флаг очистки атакован ??
+Флаг очистки атакован
 [the defencetower is finished]
 Оборонительная башня построена
 [the defencetower is under attack]
 Оборонительная башня атакована
 [the explorationflag is finished]
-?? Флаг разведки установлен ??
+Флаг разведки установлен
 [the explorationflag is under attack]
-?? Флаг разведки атакован ??
+Флаг разведки атакован
 [The game has not been finished]
 Игра не была закончена
 [the games]
@@ -1017,15 +1017,15 @@ tab
 [the swimmingpool is under attack]
 Бассейн атакован
 [the warflag is finished]
-?? Флаг войны установлен ??
+Флаг войны установлен
 [the warflag is under attack]
-?? Флаг войны атакован ??
+Флаг войны атакован
 [time]
 Время
 [to:]
 к:
 [toggle draw accessibility aids]
-Включить подсказки
+Показать/скрыть номера команд
 [toggle draw information]
 Показать информацию
 [toggle draw unit paths]
@@ -1123,7 +1123,7 @@ up
 [water]
 Вода
 [Wheat]
-Зерно
+Пшеница
 [Won : you defeated your opponents]
 Победа: Вы победили всех соперников.
 [Won : you have the most prestige]
@@ -1201,6 +1201,28 @@ Ysagoon-игра в Интернете
 [Your IP address was temporarily banned]
 Ваш IP-адрес временно запрещён. Вам надо подождать пока он не будет разблокирован или связаться с администраторами.
 [Your unit got converted to %0's team]
-Ваш юнит перешёл к врагу %0
+Ваш юнит перешёл в команду %0
 [Your username was banned]
 Ваше имя пользователя запрещено. Пожалуйста свяжитесь с администраторами, чтобы это изменить.
+[game speed]
+Скорость игры
+[decrease game speed]
+Уменьшить скорость игры
+[increase game speed]
+Увеличить скорость игры
+[maximum game speed]
+Максимальная
+[multiplayer game speed]
+Скорость: 1x (сетевая игра)
+[game speed help]
+Только для одиночной игры и повторов. Сетевая игра идёт на скорости 1x.
+[AICortex-Description]
+Cortex — экспериментальный трёхуровневый ИИ. В разработке.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Не удалось сохранить кампанию. Проверьте, что папка назначения существует, доступна для записи и есть свободное место.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Внутри: %0
+[Units still working: %0]
+Ещё работают: %0
