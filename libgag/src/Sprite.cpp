@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include <GraphicContext.h>
+#include "GraphicContextPrivate.h"
 #include <math.h>
 #include <Toolkit.h>
 #include <FileManager.h>
@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
+#include <cstring>
 
 #if __cplusplus >= 201402L
 #include <memory>
@@ -47,6 +49,26 @@ using boost::make_unique;
 
 namespace GAGCore
 {
+	static std::set<Sprite*> loadedSprites;
+	static bool highResolutionEnabled = false;
+    static std::string packDirectory, packText;
+    static bool packRead=false;
+    static bool readPack(const std::string &directory)
+    {
+        if(packRead && packDirectory==directory)return !packText.empty();
+        packRead=true;packDirectory=directory;packText.clear();
+        auto input=Toolkit::getFileManager()->open((directory+"/frames.txt").c_str(),"rb");
+        if(!input){std::cerr<<"High-resolution pack unavailable: "<<directory<<std::endl;return false;}
+        const auto size=SDL_RWsize(input);
+        if(size<=0||size>1024*1024){SDL_RWclose(input);std::cerr<<"Invalid high-resolution manifest size"<<std::endl;return false;}
+        std::string text(static_cast<size_t>(size),'\0');
+        const auto count=SDL_RWread(input,text.data(),1,text.size());SDL_RWclose(input);
+        if(count!=text.size())return false;
+        std::istringstream header(text);std::string magic;int version=0;header>>magic>>version;
+        if(magic!="GLOB2_HIGHRES"||version!=1){std::cerr<<"Unsupported high-resolution pack"<<std::endl;return false;}
+        packText=std::move(text);return true;
+    }
+
 	Sprite::RotatedImage::~RotatedImage()
 	{
 		delete orig;
@@ -63,6 +85,7 @@ namespace GAGCore
 		unsigned i = 0;
 		
 		this->fileName = filename;
+		loadedSprites.insert(this);
 		
 		while (true)
 		{
@@ -78,6 +101,7 @@ namespace GAGCore
 				break;
 	
 			loadFrame(frameStream, rotatedStream);
+			loadExperimentFrame(frameName.str(), frameNameRot.str());
 	
 			if (frameStream)
 				SDL_RWclose(frameStream);
@@ -92,6 +116,7 @@ namespace GAGCore
 			createTextureAtlas();
 		}
 		
+		createHighResolutionAtlas();
 		return getFrameCount() > 0;
 	}
 
@@ -157,8 +182,8 @@ namespace GAGCore
 			atlas->drawSurface(x, y, image);
 			TextureInfo info = { this, x, y, tileWidth, tileHeight };
 			image->textureInfo = info;
-			image->texMultX = 1.f;
-			image->texMultY = 1.f;
+			image->texMultX = atlas->texMultX;
+			image->texMultY = atlas->texMultY;
 			x += tileWidth;
 			if (tileWidth + x > sheetWidth) {
 				x = 0;
@@ -177,9 +202,14 @@ namespace GAGCore
 	
 	DrawableSurface *Sprite::getRotatedSurface(int index)
 	{
-		RotatedImage::RotationMap::const_iterator it = rotated[index]->rotationMap.find(actColor);
+		return getColoredSurface(rotated[index]);
+	}
+
+	DrawableSurface *Sprite::getColoredSurface(RotatedImage *image)
+	{
+		RotatedImage::RotationMap::const_iterator it = image->rotationMap.find(actColor);
 		DrawableSurface *ds;
-		if (it == rotated[index]->rotationMap.end())
+		if (it == image->rotationMap.end())
 		{
 			// compute hue shift
 			float baseHue, actHue, lum, sat;
@@ -189,11 +219,11 @@ namespace GAGCore
 			hueShift = actHue - baseHue;
 			
 			// rotate image
-			ds = rotated[index]->orig->clone();
+			ds = image->orig->clone();
 			ds->shiftHSV(hueShift, 0.0f, 0.0f);
 			
 			// write back
-			rotated[index]->rotationMap[actColor] = ds;
+			image->rotationMap[actColor] = ds;
 		}
 		else
 		{
@@ -201,9 +231,174 @@ namespace GAGCore
 		}
 		return ds;
 	}
+
+    Sprite::HighResolutionStats Sprite::highResolutionStats()
+    {
+        HighResolutionStats stats;
+        for(auto sprite:loadedSprites)
+        {
+            for(auto s:sprite->experimentImages)if(s)stats.cpuBytes+=s->getW()*s->getH()*4;
+            for(auto r:sprite->experimentRotated)if(r)
+            {
+                stats.cpuBytes+=r->orig->getW()*r->orig->getH()*4;
+                for(auto entry:r->rotationMap){stats.cpuBytes+=entry.second->getW()*entry.second->getH()*4;++stats.coloredFrames;}
+            }
+#ifdef HAVE_OPENGL
+            if(sprite->highResolutionAtlas)stats.cpuBytes+=sprite->highResolutionAtlas->atlas->sdlsurface->w*sprite->highResolutionAtlas->atlas->sdlsurface->h*4;
+#endif
+        }
+        return stats;
+    }
+
+	void Sprite::setHighResolution(bool enabled)
+	{
+		highResolutionEnabled = enabled;
+		packRead=false;packText.clear();
+		for (auto sprite : loadedSprites) sprite->reloadHighResolution();
+	}
+
+	void Sprite::reloadHighResolution()
+	{
+		highResolutionAtlas.reset();
+		for (auto p : experimentImages) delete p;
+		for (auto p : experimentRotated) delete p;
+		experimentImages.clear(); experimentRotated.clear();
+		for (size_t i=0;i<images.size();++i)
+			loadExperimentFrame(fileName+std::to_string(i)+".png",fileName+std::to_string(i)+"r.png");
+		createHighResolutionAtlas();
+	}
+
+    void Sprite::flushBatches(GraphicContext *gc)
+    {
+        for(auto sprite:loadedSprites)gc->finishDrawingSprite(sprite,255);
+    }
+    void Sprite::createHighResolutionAtlas()
+    {
+#ifdef HAVE_OPENGL
+        const bool resources=fileName=="data/gfx/ressource";
+        if(!resources && fileName!="data/gfx/terrain")return;
+        int count=0;
+        while(count<static_cast<int>(experimentImages.size()) && experimentImages[count])++count;
+        const int columns=resources?8:(count>16?16:4), rows=resources?9:(count>16?17:4);
+        if(count!=(resources?65:16) && !(count==272 && !resources))return;
+        const int border=resources?32:64, atlasW=columns*256, atlasH=rows*256;
+        const std::string prefix=resources?"ressource":"terrain";
+        if(experimentImages.size()<static_cast<size_t>(count))return;
+        if(std::none_of(experimentImages.begin(),experimentImages.begin()+count,[](auto p){return p!=nullptr;}))return;
+        auto reject=[&]()
+        {
+            for(int i=0;i<count;++i){delete experimentImages[i];experimentImages[i]=nullptr;}
+            std::cerr<<"High-resolution atlas rejected; using original frames"<<std::endl;
+        };
+        for(int i=0;i<count;++i)if(!experimentImages[i]){reject();return;}
+        GLint maxSize=0;glGetIntegerv(GL_MAX_TEXTURE_SIZE,&maxSize);
+        if(atlasW>maxSize || atlasH>maxSize){reject();return;}
+        const char *overrideDir=std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        std::string directory=overrideDir?overrideDir:"data/highres/v1";
+        std::vector<std::unique_ptr<DrawableSurface>> levels;
+        for(int mip=0;mip<4;++mip)
+        {
+            auto rw=Toolkit::getFileManager()->open((directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".png").c_str(),"rb");
+            if(!rw){reject();return;}
+            auto s=IMG_Load_RW(rw,1);if(!s){reject();return;}
+            if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_FreeSurface(s);reject();return;}
+            levels.emplace_back(new DrawableSurface(s));SDL_FreeSurface(s);
+        }
+        // The atlas must correspond to this pack's validated frame layers.
+        for(int i=0;i<count;++i)for(int y=0;y<experimentImages[i]->getH();++y)
+        {
+            auto source=static_cast<unsigned char*>(experimentImages[i]->sdlsurface->pixels)+y*experimentImages[i]->sdlsurface->pitch;
+            auto packed=static_cast<unsigned char*>(levels[0]->sdlsurface->pixels)+((i/columns)*256+border+y)*levels[0]->sdlsurface->pitch+((i%columns)*256+border)*4;
+            if(std::memcmp(source,packed,experimentImages[i]->getW()*4)!=0){reject();return;}
+        }
+        auto batch=std::make_unique<Sprite>();
+        auto atlas=std::move(levels[0]);atlas->uploadToTexture();
+        glBindTexture(GL_TEXTURE_2D,atlas->texture);
+        // DrawableSurface's legacy allocator rounds up to powers of two. These
+        // prepacked mip levels use exact dimensions, so redefine level zero too.
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,atlasW,atlasH,0,GL_BGRA,GL_UNSIGNED_BYTE,atlas->sdlsurface->pixels);
+        glState.allocatedTextureBytes-=atlas->gpuBytes;
+        atlas->gpuBytes=atlasW*atlasH*4;glState.allocatedTextureBytes+=atlas->gpuBytes;
+        atlas->texMultX=1.f/atlasW;atlas->texMultY=1.f/atlasH;
+
+        for(int mip=1;mip<4;++mip)
+            glTexImage2D(GL_TEXTURE_2D,mip,GL_RGBA,atlasW>>mip,atlasH>>mip,0,GL_BGRA,GL_UNSIGNED_BYTE,levels[mip]->sdlsurface->pixels);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAX_LEVEL,3);
+        const size_t mipBytes=((atlasW/2)*(atlasH/2)+(atlasW/4)*(atlasH/4)+(atlasW/8)*(atlasH/8))*4;
+        atlas->gpuBytes+=mipBytes;glState.allocatedTextureBytes+=mipBytes;
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+        glGenBuffers(1,&batch->vbo);glGenBuffers(1,&batch->texCoordBuffer);
+        for(int i=0;i<count;++i)
+        {
+            auto surface=experimentImages[i];surface->freeGPUTexture();
+            surface->textureInfo=TextureInfo{batch.get(),(i%columns)*256+border,(i/columns)*256+border,surface->getW(),surface->getH()};
+            surface->texMultX=1.f/atlasW;surface->texMultY=1.f/atlasH;
+        }
+        batch->atlas=std::move(atlas);highResolutionAtlas=std::move(batch);
+#endif
+    }
+
+	void Sprite::loadExperimentFrame(const std::string &frameName, const std::string &rotatedName)
+	{
+		const size_t index=experimentImages.size();
+		experimentImages.push_back(nullptr); experimentRotated.push_back(nullptr);
+		const char *overrideDir=std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+		if ((!highResolutionEnabled && !overrideDir) || !Toolkit::gc || !(Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU)) return;
+		std::string directory=overrideDir ? overrideDir : "data/highres/v1";
+        if(!readPack(directory))return;
+        std::istringstream stream(packText);std::string magic,id,base,team;int version,w,h,scale;
+        stream>>magic>>version;
+		std::string wanted=frameName.substr(frameName.find_last_of('/')+1);wanted.resize(wanted.size()-4);
+		while(stream>>id>>w>>h>>scale>>base>>team)
+		{
+			if(id!=wanted)continue;
+			if(w!=getW(index)||h!=getH(index)||scale!=4){std::cerr<<"High-resolution dimensions rejected: "<<id<<std::endl;return;}
+			auto load=[&](const std::string &name,DrawableSurface *original)->DrawableSurface*
+			{
+				if(name=="-")return nullptr;
+				if(name.find_first_of("/\\:")!=std::string::npos || name.find("..")!=std::string::npos)return nullptr;
+				SDL_RWops *rw=Toolkit::getFileManager()->open((directory+"/"+name).c_str(),"rb");
+				if(!rw)return nullptr;
+				SDL_Surface *surface=IMG_Load_RW(rw,1);if(!surface)return nullptr;
+				int lw=original?original->getW():w,lh=original?original->getH():h;
+				if(surface->w!=lw*scale||surface->h!=lh*scale){SDL_FreeSurface(surface);return nullptr;}
+				auto result=new DrawableSurface(surface);result->highResolutionSampling=true;SDL_FreeSurface(surface);return result;
+			};
+			auto normal=load(base,images[index]);
+			auto colored=load(team,rotated[index]?rotated[index]->orig:nullptr);
+			if((base!="-"&&!normal)||(team!="-"&&!colored)||(images[index]&&base=="-")||(rotated[index]&&team=="-"))
+			{delete normal;delete colored;std::cerr<<"High-resolution frame rejected: "<<id<<std::endl;return;}
+			experimentImages.back()=normal;
+			if(colored)experimentRotated.back()=new RotatedImage(colored);
+			return;
+		}
+	}
+
+	DrawableSurface *Sprite::getDrawSurface(unsigned index, bool teamColor, bool experiment)
+	{
+		if (teamColor)
+		{
+			if (experiment && experimentRotated[index])
+				return getColoredSurface(experimentRotated[index]);
+			return rotated[index] ? getRotatedSurface(index) : nullptr;
+		}
+		return experiment && experimentImages[index] ? experimentImages[index] : images[index];
+	}
 	
 	Sprite::~Sprite()
 	{
+        loadedSprites.erase(this);
+#ifdef HAVE_OPENGL
+        if(vbo)glDeleteBuffers(1,&vbo);
+        if(texCoordBuffer)glDeleteBuffers(1,&texCoordBuffer);
+#endif
+		for (auto image : experimentImages)
+			delete image;
+		for (auto image : experimentRotated)
+			delete image;
 		for (std::vector <DrawableSurface *>::iterator imagesIt = images.begin(); imagesIt != images.end(); ++imagesIt)
 		{
 			if (*imagesIt)

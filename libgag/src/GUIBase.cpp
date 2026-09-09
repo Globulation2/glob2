@@ -629,8 +629,9 @@ namespace GAGGUI
 		}
 	}
 	
-	void Screen::dispatchPaint(void)
+	void Screen::dispatchPaint(bool present)
 	{
+		Style::style->onFrame();
 		assert(gfx);
 		gfx->setClipRect();
 		paint();
@@ -645,7 +646,7 @@ namespace GAGGUI
 			if ((*it)->visible)
 				(*it)->displayTooltip();
 		}
-		gfx->nextFrame();
+		if (present) gfx->nextFrame();
 		
 		if (animationFrame < SCREEN_ANIMATION_FRAME_COUNT)
 			animationFrame++;

@@ -6,6 +6,7 @@
 #include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
 #include "EditorMainMenu.h"
+#include "FrontendTheme.h"
 #include "GlobalContainer.h"
 #include <GUIButton.h>
 #include <GUIText.h>
@@ -88,6 +89,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 		}
 		else if (par1==NEWCAMPAIGN)
 		{
+			FrontendScope editor(false);
 			CampaignEditor ce("");
 			int rc=ce.execute(globalContainer->gfx, 40);
 			if(rc == -1)
@@ -100,6 +102,7 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 			int rc_css=css.execute(globalContainer->gfx, 40);
 			if(rc_css==CampaignSelectorScreen::OK)
 			{
+				FrontendScope editor(false);
 				CampaignEditor ce(css.getCampaignName());
 				int rc_ce=ce.execute(globalContainer->gfx, 40);
 				if(rc_ce == -1)

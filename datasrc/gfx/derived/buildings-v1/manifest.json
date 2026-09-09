@@ -1,0 +1,384 @@
+{
+  "version": 1,
+  "frames": [
+    {
+      "id": "school1b0",
+      "width": 64,
+      "height": 70,
+      "scale": 4,
+      "recipe": "recovered original building: selected GIMP base/team groups; saved opacity and native alpha",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/buildings/school/level-2/science.xcf",
+          "sha256": "7670498eae808357f8f430543f9f89cf11a880b602c643b66089eca792306341",
+          "native_size": [
+            512,
+            562
+          ],
+          "layers": [
+            {
+              "opacity": 25.098039215686274,
+              "index": 0,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#5"
+            },
+            {
+              "opacity": 30.58823529411765,
+              "index": 1,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "Background copy"
+            },
+            {
+              "opacity": 100.0,
+              "index": 2,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#7"
+            },
+            {
+              "opacity": 100.0,
+              "index": 3,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 3,
+              "name": "New Layer#4"
+            },
+            {
+              "opacity": 100.0,
+              "index": 4,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#3"
+            },
+            {
+              "opacity": 100.0,
+              "index": 5,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 3,
+              "name": "New Layer copy"
+            },
+            {
+              "opacity": 78.82352941176471,
+              "index": 6,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#2"
+            },
+            {
+              "opacity": 58.43137254901961,
+              "index": 7,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer"
+            },
+            {
+              "opacity": 100.0,
+              "index": 8,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#6"
+            },
+            {
+              "opacity": 100.0,
+              "index": 9,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "Background"
+            },
+            {
+              "opacity": 60.78431372549019,
+              "index": 10,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#8"
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/provenance/building-runtime-recipes.json",
+          "sha256": "97231cc74d4a374db79e88ce9819edbf3eff71db47b83f6528fed05468212363"
+        },
+        {
+          "path": "datasrc/gfx/derived/building-native/school1b0.png",
+          "sha256": "b10cb4f7fc43a9d40e5b798cec6048481fa4f1f37450007ed50299309fdc4f48",
+          "native_size": [
+            512,
+            562
+          ],
+          "role": "base"
+        },
+        {
+          "path": "datasrc/gfx/derived/building-native/school1b0r.png",
+          "sha256": "ad793d3cf395b42a9707f7adb05dc5371f4e91eaf31c12d053a25d4a7fc9136c",
+          "native_size": [
+            512,
+            562
+          ],
+          "role": "team"
+        }
+      ],
+      "layers": [
+        {
+          "file": "school1b0.png",
+          "role": "base",
+          "sha256": "29a78342d0b3a891ff957beeaf7d8de181f35200f9a62d4479fd4bb71b16a74c",
+          "native_file": "datasrc/gfx/derived/building-native/school1b0.png",
+          "alpha_ceiling": 255,
+          "selected_layers": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            8,
+            9,
+            10
+          ]
+        },
+        {
+          "file": "school1b0r.png",
+          "role": "team",
+          "sha256": "d978527455833be9650b77d63fa0df0dba3ca131c8e26401567bbe4968c5af6c",
+          "native_file": "datasrc/gfx/derived/building-native/school1b0r.png",
+          "alpha_ceiling": 64,
+          "selected_layers": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "racetrack0b0",
+      "width": 128,
+      "height": 128,
+      "scale": 4,
+      "recipe": "recovered original building: selected GIMP base/team groups; saved opacity and native alpha",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/buildings/racetrack/level-1/building3r.xcf",
+          "sha256": "dd79392b63b2cf972b5eb1f3aaf4fdcee5da31c3f657d1f04b0ccef27a8cb9b1",
+          "native_size": [
+            192,
+            192
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#4"
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "Background"
+            },
+            {
+              "opacity": 52.54901960784314,
+              "index": 2,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#6"
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/provenance/building-runtime-recipes.json",
+          "sha256": "97231cc74d4a374db79e88ce9819edbf3eff71db47b83f6528fed05468212363"
+        },
+        {
+          "path": "datasrc/gfx/derived/building-native/racetrack0b0.png",
+          "sha256": "f890146efb57ef9ab29a73bf746517576e2a74e17b7a4bdd2188ad875b19946d",
+          "native_size": [
+            192,
+            192
+          ],
+          "role": "base"
+        },
+        {
+          "path": "datasrc/gfx/derived/building-native/racetrack0b0r.png",
+          "sha256": "3d2350323d5b501df821348c3b41c356c05f915c6c71600fc4fa59bbe6ed0ee3",
+          "native_size": [
+            192,
+            192
+          ],
+          "role": "team"
+        }
+      ],
+      "layers": [
+        {
+          "file": "racetrack0b0.png",
+          "role": "base",
+          "sha256": "d28f474c2b9e1f599e2050c28ced0aed60aef43d907db8ab98109c71e45db1ac",
+          "native_file": "datasrc/gfx/derived/building-native/racetrack0b0.png",
+          "alpha_ceiling": 255,
+          "selected_layers": [
+            1,
+            2
+          ]
+        },
+        {
+          "file": "racetrack0b0r.png",
+          "role": "team",
+          "sha256": "3bcc0ad016827484e3c3804e303f19b3672dcf202ef3a883d6d05fac765bafd5",
+          "native_file": "datasrc/gfx/derived/building-native/racetrack0b0r.png",
+          "alpha_ceiling": 253,
+          "selected_layers": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "racetrack1b0",
+      "width": 192,
+      "height": 192,
+      "scale": 4,
+      "recipe": "recovered original building: selected GIMP base/team groups; saved opacity and native alpha",
+      "sources": [
+        {
+          "path": "datasrc/gfx/originals/buildings/racetrack/level-2/building10.xcf",
+          "sha256": "a2bda89aad23ea91f37d179fb0760e64e11923db6be981649b21185cb4829d9b",
+          "native_size": [
+            256,
+            256
+          ],
+          "layers": [
+            {
+              "opacity": 100.0,
+              "index": 0,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#1"
+            },
+            {
+              "opacity": 100.0,
+              "index": 1,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "Background"
+            },
+            {
+              "opacity": 58.03921568627452,
+              "index": 2,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer#2"
+            },
+            {
+              "opacity": 100.0,
+              "index": 3,
+              "offsets": [
+                0,
+                0
+              ],
+              "mode": 0,
+              "name": "New Layer"
+            }
+          ]
+        },
+        {
+          "path": "datasrc/gfx/provenance/building-runtime-recipes.json",
+          "sha256": "97231cc74d4a374db79e88ce9819edbf3eff71db47b83f6528fed05468212363"
+        },
+        {
+          "path": "datasrc/gfx/derived/building-native/racetrack1b0.png",
+          "sha256": "30163c7bc7285faace682b9c13c10064514ed91f9cedf8dd461fdcd717490547",
+          "native_size": [
+            256,
+            256
+          ],
+          "role": "base"
+        },
+        {
+          "path": "datasrc/gfx/derived/building-native/racetrack1b0r.png",
+          "sha256": "830795a7662804d991b19e016a07b70e2552ec714561c040c4ca68a1fbf56112",
+          "native_size": [
+            256,
+            256
+          ],
+          "role": "team"
+        }
+      ],
+      "layers": [
+        {
+          "file": "racetrack1b0.png",
+          "role": "base",
+          "sha256": "789d7acdeb9b15891171473edb2432cb51415af0a68178a17d3698d1aa89fdb3",
+          "native_file": "datasrc/gfx/derived/building-native/racetrack1b0.png",
+          "alpha_ceiling": 255,
+          "selected_layers": [
+            1,
+            2
+          ]
+        },
+        {
+          "file": "racetrack1b0r.png",
+          "role": "team",
+          "sha256": "fba51bf7fa56d305c537a3620a47364c7008060eb20e53beed1b4d1c91150be3",
+          "native_file": "datasrc/gfx/derived/building-native/racetrack1b0r.png",
+          "alpha_ceiling": 255,
+          "selected_layers": [
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

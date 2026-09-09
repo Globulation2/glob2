@@ -54,9 +54,20 @@ namespace GAGCore
 		dirty = true;
 	}
 
+    size_t DrawableSurface::allocatedTextureBytes()
+    {
+#ifdef HAVE_OPENGL
+        return glState.allocatedTextureBytes;
+#else
+        return 0;
+#endif
+    }
+
 	DrawableSurface *DrawableSurface::clone(void)
 	{
-		return new DrawableSurface(sdlsurface);
+		auto copy=new DrawableSurface(sdlsurface);
+		copy->highResolutionSampling=highResolutionSampling;
+		return copy;
 	}
 
 	DrawableSurface::~DrawableSurface(void)
@@ -99,10 +110,11 @@ namespace GAGCore
 				// TODO : if anyone has a better way to do it, please tell :-)
 				glState.setTexture(texture);
 				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
 
 				int w = getMinPowerOfTwo(sdlsurface->w);
 				int h = getMinPowerOfTwo(sdlsurface->h);
+				glState.allocatedTextureBytes-=gpuBytes;gpuBytes=w*h*4;glState.allocatedTextureBytes+=gpuBytes;
 				std::valarray<char> zeroBuffer((char)0, w * h * 4);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_BGRA, GL_UNSIGNED_BYTE, &zeroBuffer[0]);
 
@@ -156,6 +168,39 @@ namespace GAGCore
 			else
 			{
 				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sdlsurface->w, sdlsurface->h, pixelFormat, GL_UNSIGNED_BYTE, pixelsPtr);
+                if(highResolutionSampling)
+                {
+                    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+                    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
+                    int w=getMinPowerOfTwo(sdlsurface->w),h=getMinPowerOfTwo(sdlsurface->h);
+                    std::vector<unsigned char> level(w*h*4);
+                    auto source=static_cast<unsigned char*>(pixelsPtr);
+                    for(int y=0;y<h;++y)for(int x=0;x<w;++x)
+                        for(int c=0;c<4;++c)level[(y*w+x)*4+c]=source[(std::min(y,sdlsurface->h-1)*sdlsurface->w+std::min(x,sdlsurface->w-1))*4+c];
+                    glState.allocatedTextureBytes-=gpuBytes;gpuBytes=0;
+                    for(int mip=0;;++mip)
+                    {
+                        glTexImage2D(GL_TEXTURE_2D,mip,GL_RGBA,w,h,0,pixelFormat,GL_UNSIGNED_BYTE,level.data());
+                        gpuBytes+=w*h*4;glState.allocatedTextureBytes+=w*h*4;
+                        if(w==1&&h==1)break;
+                        int nw=std::max(1,w/2),nh=std::max(1,h/2);
+                        std::vector<unsigned char> next(nw*nh*4);
+                        for(int y=0;y<nh;++y)for(int x=0;x<nw;++x)
+                        {
+                            unsigned sum[4]={0,0,0,0};
+                            for(int j=0;j<2;++j)for(int i=0;i<2;++i)
+                            {
+                                auto p=&level[(std::min(h-1,y*2+j)*w+std::min(w-1,x*2+i))*4];
+                                sum[3]+=p[3];for(int c=0;c<3;++c)sum[c]+=p[c]*p[3];
+                            }
+                            auto p=&next[(y*nw+x)*4];p[3]=(sum[3]+2)/4;
+                            for(int c=0;c<3;++c)p[c]=sum[3]?(sum[c]+sum[3]/2)/sum[3]:0;
+                        }
+                        level.swap(next);w=nw;h=nh;
+                    }
+                }
 			}
 		}
 		#endif
@@ -165,10 +210,13 @@ namespace GAGCore
 	void DrawableSurface::freeGPUTexture(void)
 	{
 		#ifdef HAVE_OPENGL
-		if (_gc->optionFlags & GraphicContext::USEGPU)
+		if (texture && (_gc->optionFlags & GraphicContext::USEGPU))
 		{
 			glDeleteTextures(1, reinterpret_cast<const GLuint*>(&texture));
 			glState.allocatedTextureCount--;
+			glState.allocatedTextureBytes-=gpuBytes;gpuBytes=0;
+			if(glState._texture==static_cast<GLint>(texture))glState._texture=-1;
+			texture=0;
 
 			// The next line causes a desynchronization between _doScissors and glIsEnabled(GL_SCISSOR_TEST),
 			// which causes the setClipRect() functions to not reset the clipping the way it should,  so many
@@ -263,7 +311,8 @@ namespace GAGCore
 			// get values
 			float h, s, v;
 			Color c;
-			c.unpack(*mem);
+			// Sprite surfaces retain alpha even when the software window has none.
+			SDL_GetRGBA(*mem, sdlsurface->format, &c.r, &c.g, &c.b, &c.a);
 			c.getHSV(&h, &s, &v);
 
 			// shift
@@ -283,7 +332,7 @@ namespace GAGCore
 
 			// set values
 			c.setHSV(h, s, v);
-			*mem = c.pack();
+			*mem = SDL_MapRGBA(sdlsurface->format, c.r, c.g, c.b, c.a);
 			mem++;
 		}
 		dirty = true;

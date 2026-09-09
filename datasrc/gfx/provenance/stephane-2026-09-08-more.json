@@ -1,0 +1,303 @@
+{
+  "url": "https://h.magnenat.net/~steph/glob2-highres-more.zip",
+  "comment": "https://github.com/Globulation2/glob2/pull/207#issuecomment-5591064207",
+  "archive_sha256": "0cbaecceb26daf3c3f6b338b60e70ac8019c6c56876eaf669c40c31541ef52a5",
+  "files": [
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction128c.png",
+      "sha256": "d30d202c283512e6d23a9db0c6b5940e7345bfaa959925c13e11d4e310ddcd14",
+      "bytes": 54268,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128c.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction128m.png",
+      "sha256": "85be8078274de6720221a66fdc6173f6114607835a58cc19f03db4cdadace089",
+      "bytes": 11092,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction128m.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction160c.png",
+      "sha256": "3a5531b2b5c5c4de5b131fd3ecb4a4778d499df3880defd8e118fc813e2167d5",
+      "bytes": 51342,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction160c.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction160m.png",
+      "sha256": "fa106229b1dedbe0acb14ed5fd3d39487435e8f48c0fa621bc2d7c63175a3af0",
+      "bytes": 7395,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction160m.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction192c.png",
+      "sha256": "b15b0425605344f9ba18b6ae6caa707683a726144dc0361a40bd5610a6515c51",
+      "bytes": 53916,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192c.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction192m.png",
+      "sha256": "e6edbe00b53a2df228f2baf1e516f76d72b40317684a805ff92aaefabda81cbb",
+      "bytes": 8372,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction192m.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction256c.png",
+      "sha256": "f1dba0fce8a9b4ea4a40151258bec18465a031f19a461232e1056f7985a707ae",
+      "bytes": 68656,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256c.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction256m.png",
+      "sha256": "baac33676f1515dade11d177094858a37c6ecdb7f7e90bc582a5e020af3b66aa",
+      "bytes": 12051,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction256m.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction64c.png",
+      "sha256": "c69621d051f0634eda3c07bc87e243173e0693b8a97f5a3798ed11388aed9ae9",
+      "bytes": 24994,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64c.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction64m.png",
+      "sha256": "a7b540849cb3f7b0a5d0269b832ca9ffc9545b25fd9940e13c88247a18cb0408",
+      "bytes": 4817,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction64m.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction96c.png",
+      "sha256": "fbb198ed42d149ef6f66094801a5e6b56b5537dddb52ac3e4276aada74acb323",
+      "bytes": 39448,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96c.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/Construction96m.png",
+      "sha256": "2a1e5b5c1fc060176c8a33e4d9f8d5922d540a1ad8f9ee8e77d6b0b8f7ddf355",
+      "bytes": 7380,
+      "path": "datasrc/gfx/reference-exports/buildings/construction/Construction96m.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building23.png",
+      "sha256": "dc1fac7bfd21e4b948fb05619b21bf06d41340508391224cb05b11ff578f595e",
+      "bytes": 219,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building23.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building24.png",
+      "sha256": "f740a33daaa34a5a737854f24b7d054ed0e4da3a4c57fb714ed4ba4c62ecdc38",
+      "bytes": 214,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building24.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building25.png",
+      "sha256": "b22e66effb4937885a5a3945bb72bc7a5a4ca2f8ab35e98e0899e61a2e494099",
+      "bytes": 218,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building25.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building26.png",
+      "sha256": "b123a980cece9d5d8d8bea295da4e002f1ab01d0fcbe0f51d267e612439a44b9",
+      "bytes": 210,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building26.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building27.png",
+      "sha256": "cc9ba33aaeaa7d6a899c087eb7809b36c92b13c78f7fcd112fa76e586f297352",
+      "bytes": 219,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building27.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building28.png",
+      "sha256": "1e48da39d7309432fb2dd73f56d03579db9d08d79287d7d5c96b749277865d89",
+      "bytes": 224,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building28.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building29.png",
+      "sha256": "c417ba9816937203d44c15b2cdb98f73c3c7d63e0f5dcc3681a6dcdec6bc033e",
+      "bytes": 231,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building29.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building30.png",
+      "sha256": "c92d611376c48fb647bab792ab76dfbe8c00773eea30d956e1e9b4cfec9f1fdf",
+      "bytes": 231,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building30.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building31.png",
+      "sha256": "d005bfe1147f9cfcfb9564c05220e84f8e9b63ceadba3d0d69cfefe5637ff273",
+      "bytes": 219,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building31.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building32.png",
+      "sha256": "806d3b9d2dfa4a69b39722e7ccc58bda5ccf9211d710369133bc7345aac9f9a1",
+      "bytes": 228,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building32.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building33.png",
+      "sha256": "761f44a96391907a18602de8d71fe2e65657dbc9c1edf9ffab9550ebeebb31b0",
+      "bytes": 227,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building33.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building34.png",
+      "sha256": "334ad8be61752302d5be16ce111f5209d2d5a62add9ee29baa27de17645b3372",
+      "bytes": 230,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building34.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building35.png",
+      "sha256": "3c20721ea70a3b9755f8a0ddce42039b8e92bbe9fd91b7c2ecedb5ffba679dd5",
+      "bytes": 211,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building35.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building36.png",
+      "sha256": "b4bf0a20e5a5224f4086dda82b9a3a5869311f455fcc375a22b3ed3dc4d87458",
+      "bytes": 235,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building36.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building37.png",
+      "sha256": "af34056fbf25934852400b6c57e777a00f0b2bbc5cebf3acbf321194a594f37c",
+      "bytes": 238,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building37.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/direction template/building38.png",
+      "sha256": "46643642d7400a7551a858a7a37a394b8e71a559393faad0e43a4478d7e9618b",
+      "bytes": 245,
+      "path": "datasrc/gfx/reference-exports/buildings/direction-templates/building38.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/flags/ExploFlag.png",
+      "sha256": "5c772959f73fea52ba87c6e237bfc6c5e3dd0e92c43681a52b75339c420c4709",
+      "bytes": 29399,
+      "path": "datasrc/gfx/reference-exports/buildings/flags/ExploFlag.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/flags/RemoveFlag.png",
+      "sha256": "1b8d789fda8099353c2d935e4c1241eb3e1194dbe557626ee7db8be9846ec221",
+      "bytes": 32271,
+      "path": "datasrc/gfx/reference-exports/buildings/flags/RemoveFlag.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/flags/WarFlag.png",
+      "sha256": "ba32b3139ab131456e67ec9c9df89a0477d111a42aaa4b736cac3726cf174160",
+      "bytes": 20372,
+      "path": "datasrc/gfx/reference-exports/buildings/flags/WarFlag.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/hive/Morph128c.png",
+      "sha256": "9bcb10af8d512456abd00e3424cb83665c32b598891bb64b355490daa2576a49",
+      "bytes": 123066,
+      "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128c.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/hive/Morph128fn.png",
+      "sha256": "e497380f56209c9e1d85bb5e453c42d942dc1c1e2fb4229c5e800cd9d74cc9b0",
+      "bytes": 110037,
+      "path": "datasrc/gfx/reference-exports/buildings/swarm/Morph128fn.png"
+    },
+    {
+      "archive_path": "glob2-highres-more/hive/Ruche.png",
+      "sha256": "88549c047160eb0a883b334eb091cad8adae4a03a2ffe63dc5d90d8b7ad554e8",
+      "bytes": 86445,
+      "path": "datasrc/gfx/reference-exports/buildings/swarm/Ruche.png"
+    }
+  ],
+  "excluded": [
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/.Parent",
+      "sha256": "c183bf1d6811227b66c2030ef71fcb63529cc2ef40d870e55e0e661e4e011ae6",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction128c.png",
+      "sha256": "de5a4ccd554f562a46a0aa4dab98b852b2bac0f4e6d0ffa7d33a6174aabbd251",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction128m.png",
+      "sha256": "3b80cc094c67374fda8e0b81e5664dd79d582a562a3b7d6636745871b7c7fa71",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction160c.png",
+      "sha256": "a9ea1f558aca1bc99dbae80d32c1a69d44f033a51de95afbdd534ee8f5fc542c",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction160m.png",
+      "sha256": "1190b083f42e5b55a2135f3f891aa6b3dc6c299df6cd7404b9829f4d4efe3258",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction192c.png",
+      "sha256": "7ca4f03ab71592035cf9d9b646e6172b80dfcd5e540f8765bacc6bba9c5f994c",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction192m.png",
+      "sha256": "514f07504b9b07ea672eb271f68818b20b3c31d8e5b9c6a241fd13d542cc0385",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction256c.png",
+      "sha256": "982161723ffbb23c79d9e6eca5a97acfff35e6060855e490030c9005555ad7af",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction256m.png",
+      "sha256": "8ba0bb2c6aea6d49c6e080446151d74dee24f76b518f9f7588a0eff033436cb7",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction64c.png",
+      "sha256": "3223ae3396214cc830faad5446d4a700e2e02fc24bff731a95ff84b66823cc6f",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction64m.png",
+      "sha256": "ae4ca31bf98e33bef6a673187f7466475596edb813666ed960f91f35f4059819",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction96c.png",
+      "sha256": "f82cf501b284acb8fc999f4dd863a85ce942e39140dc5a05751b4a66f80fd3ef",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Construction96m.png",
+      "sha256": "ced20bcdb69eef4a9a1ec5592b9afe405c5066da14d8d88cf3c190da1a1a5449",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Morph128c.png",
+      "sha256": "cc351e40aebb5bab8ebd01cb175ecdb0e54b25bbe2e680f23bf996dab85df98b",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    },
+    {
+      "archive_path": "glob2-highres-more/Constructions/.AppleDouble/Morph128fn.png",
+      "sha256": "4de35968f10bb0c5e4dce159c43cc9362baa0b0d432b8dc0d22edd58fbdd87c2",
+      "bytes": 589,
+      "reason": "Mac filesystem metadata, not artwork; original ZIP hash retained"
+    }
+  ]
+}
