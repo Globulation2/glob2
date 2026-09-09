@@ -10,8 +10,30 @@ import sys
 import tarfile
 import tempfile
 import urllib.request
+import xml.etree.ElementTree as ET
 from setup_ndk import digest, ROOT, BuildLock
 
+
+def ensure_sdk_metadata(destination, artifact):
+    """Register directly extracted SDK archives without changing license acceptance."""
+    metadata = artifact.get('sdk_metadata')
+    if not metadata: return
+    template = ROOT / metadata
+    package = ET.parse(template).getroot().find('localPackage')
+    expected = '.'.join(package.findtext('revision/' + part, '0') for part in ('major', 'minor', 'micro'))
+    properties = dict(line.split('=', 1) for line in (destination / 'source.properties').read_text().splitlines() if '=' in line and not line.startswith('#'))
+    if properties.get('Pkg.Revision') != expected:
+        raise ValueError('SDK archive revision differs from package metadata: ' + str(destination))
+    target = destination / 'package.xml'
+    if target.exists():
+        installed = ET.parse(target).getroot().find('localPackage')
+        revision = '.'.join(installed.findtext('revision/' + part, '0') for part in ('major', 'minor', 'micro'))
+        if installed.get('path') != package.get('path') or revision != expected:
+            raise ValueError('Installed SDK package metadata does not match the pinned archive')
+    else:
+        temporary = target.with_suffix('.xml.tmp')
+        shutil.copyfile(template, temporary)
+        temporary.replace(target)
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
@@ -34,7 +56,9 @@ def main():
         else: print('Install JDK 17 for this host and set JAVA_HOME when running Gradle.')
         for artifact in selected:
             destination=tools/artifact['directory']
-            if destination.exists(): continue
+            if destination.exists():
+                ensure_sdk_metadata(destination, artifact)
+                continue
             downloads=tools/'downloads';downloads.mkdir(exist_ok=True)
             archive=downloads/artifact['url'].rsplit('/',1)[-1]
             algorithm='sha256' if 'sha256' in artifact else 'sha1'
@@ -53,6 +77,7 @@ def main():
                     with tarfile.open(archive) as source: source.extractall(staging,filter='data')
                 destination.parent.mkdir(parents=True,exist_ok=True)
                 (Path(staging)/artifact.get('archive_directory',artifact['directory'])).rename(destination)
+            ensure_sdk_metadata(destination, artifact)
             print('Installed',destination)
 
 if __name__=='__main__':

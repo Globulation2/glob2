@@ -263,3 +263,9 @@ void Glob2TabScreen::cancelExecutionInput()
 {
     if(phoneForm) phoneForm->cancel();
 }
+
+void Glob2Screen::showPhoneStatus(GAGGUI::Text* title, const std::string& text) {
+    if (title->getText() == text) return;
+    title->setText(text);
+    if (phoneForm) phoneForm->scrollToTop();
+}

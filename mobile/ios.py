@@ -76,7 +76,7 @@ def main():
         'target_link_options(Glob2 PRIVATE -ObjC)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(ROOT/'mobile/ios/Info.plist.in')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
-    for framework in ('UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
+    for framework in ('UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
     for folder in ('data','maps','campaigns','scripts'):
         for resource in sorted((ROOT/folder).rglob('*')):

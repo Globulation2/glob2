@@ -21,6 +21,29 @@ class EmulatorSmokeTests(unittest.TestCase):
                 smoke.validate_target(serial, port, avd)
         smoke.validate_target('emulator-5580', 15037, 'glob2-api35-x64')
 
+    def test_extracted_emulator_is_registered_without_changing_licenses(self):
+        import json
+        import xml.etree.ElementTree as ET
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'mobile'))
+        import setup_tools
+        root = Path(__file__).resolve().parents[2]
+        lock = json.loads((root / 'mobile/emulator.json').read_text())
+        scratch = root / 'build/test-profiles'
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch) as temporary:
+            destination = Path(temporary)
+            properties = destination / 'source.properties'
+            properties.write_text('Pkg.Revision=' + lock['emulator_revision'] + '\n')
+            artifact = lock['archives']['Linux-x86_64']
+            setup_tools.ensure_sdk_metadata(destination, artifact)
+            package = ET.parse(destination / 'package.xml').getroot().find('localPackage')
+            self.assertEqual(package.get('path'), 'emulator')
+            self.assertFalse((destination / 'licenses').exists())
+            setup_tools.ensure_sdk_metadata(destination, artifact)
+            properties.write_text('Pkg.Revision=0.0.0\n')
+            with self.assertRaisesRegex(ValueError, 'revision differs'):
+                setup_tools.ensure_sdk_metadata(destination, artifact)
+
     def test_emulator_archives_match_configured_package_versions(self):
         import json
         root = Path(__file__).resolve().parents[2]

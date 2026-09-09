@@ -1,14 +1,48 @@
-<!-- Latest reconciliation validation: 51/51 targeted browser cases passed across
-Chromium, Firefox and WebKit; isolated LAN harness passed two complete cycles. -->
 # Mobile verification and remaining work
 
 Recorded 2026-09-08. The current continuation merges browser `246a47d50`;
 the preceding mobile checkpoints used browser `9dc201436`.
-the older sections retain their original checkpoint IDs and evidence. The prior
+The older sections retain their original checkpoint IDs and evidence. The prior
 browser base was `c7c534b8d3af4b07c535d3d780fc5207531a1b6f`, merged in `0b977ab61`.
 iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 The historical Android screenshots near the end were collected on `7333e4e8b`.
+
+## Native document import/export and SDK registration
+
+Android uses the system document picker for imports and exports. iOS uses
+UIDocumentPicker with copied imports and exports staged in a private temporary
+file. Platform callbacks are detached from screen lifetimes through request IDs;
+reads are capped at 64 MiB, duplicate callbacks are ignored, and filenames/complete
+formats are validated before existing atomic import code creates a new save.
+Exports retain their own bytes until the provider finishes or the user cancels.
+Platform export errors use the existing localized game error string. Provider
+completion is not a guarantee against device power loss or remote-cloud failure.
+
+Android API 35 verification includes picker cancellation, invalid-game rejection,
+and export/import/re-export of a real tutorial save. Both exports are byte-identical:
+1,078,903 bytes, SHA-256
+`e6168d53458f4d978a866c873901c0f7341f8bbabf19d5d1cf2b2120374ddf3a`.
+The imported save receives a new name, preserving the original. New status text
+now scrolls into view on phone forms; unchanged status does not disrupt scrolling.
+
+Native callback/size/name tests, touch, savegame safety and engine-session tests
+pass. All 24 build-system checks pass. Android ARM64, iOS ARM64 simulator and Wasm
+release builds pass. Final Android and iOS lifecycle smoke runs pass. iOS picker
+interaction itself and third-party/cloud document providers still need qualification;
+the available Simulator UI is attached to a separate device set, which was left
+untouched. Logs are under `build/mobile-documents-*`.
+
+Hosted run `34306967935` at browser-merge checkpoint `47725148f` packages ARM64 and
+ARMv7 successfully. x86-64 packaging succeeds, but AVD creation finds no registered
+emulator package after direct archive extraction. Setup now installs the matching
+SDK metadata (without changing license acceptance). A fresh task-local SDK test
+reproduces the failure before metadata and passes afterward. The checked-in
+metadata comes from the pinned Android Emulator 37.1.11 package. Hosted verification
+of the fix is pending; this run does not yet qualify emulator startup.
+
+![Invalid document is reported visibly](screenshots/android-document-invalid.png)
+![Picker cancellation retains the chooser](screenshots/android-document-cancel.png)
 
 ## Browser-base reconciliation and isolated LAN validation
 
@@ -19,6 +53,7 @@ recovery checkpoints/final-save errors and input cancellation. A game screen now
 checks whether it still owns its engine while a scheduled loader holds it.
 The browser collector supersedes the older mobile root-mark workaround.
 
+All 51 targeted browser regressions pass across Chromium, Firefox and WebKit.
 Native savegame-safety, engine/session/reload/interpreter and touch suites pass.
 All 23 build-system checks and 14 browser JavaScript unit tests pass. Android ARM64,
 iOS ARM64 simulator and the non-Asyncify Wasm release compile successfully.

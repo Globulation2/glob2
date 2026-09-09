@@ -529,6 +529,15 @@ public:
             };
             menus.push(std::move(chooser));menus.frame(SDL_GetTicks(),{});
             require(dynamic_cast<Glob2Screen*>(current)->phoneForm!=nullptr,"Campaign selector uses the phone form");
+            auto* statusScreen=dynamic_cast<Glob2Screen*>(current);
+            auto* notice=new GAGGUI::Text(0,0,ALIGN_FILL,ALIGN_TOP,"menu","Initial notice");
+            statusScreen->addWidget(notice);
+            phone().offset=200;
+            statusScreen->showPhoneStatus(notice,"Import failed");
+            require(phone().offset==0,"A new import status is revealed above a scrolled phone form");
+            phone().offset=120;
+            statusScreen->showPhoneStatus(notice,"Import failed");
+            require(phone().offset==120,"An unchanged import status does not interrupt scrolling");
             require((gfx->getW()<gfx->getH())==(width<height),"Phone form uses the requested orientation");
             auto tapForm=[&](int kind,std::string caption="",int side=0) {
                 for(int attempt=0;attempt<240;++attempt) {

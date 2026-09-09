@@ -36,9 +36,9 @@ Suggested first message to the new agent:
 
 The user said to keep going until the remaining items are complete. Follow
 [remaining-work](remaining-work.md) for the active implementation and qualification
-list. Recovery and emulator/CI automation are the current checkpoint; native
-import/export, platform transports, longer validation and external device gates
-remain. Do not stop after a status report when independent implementation work is
+list. Recovery, native document bridges and emulator/CI automation are implemented.
+Android document round trips pass; iOS picker interaction, platform transports,
+longer validation and external device gates remain. Do not stop after a status report when independent implementation work is
 available. The user is unavailable for Pixel 6 testing until morning.
 
 Current recovery and smoke validation is recorded at the top of status.md.

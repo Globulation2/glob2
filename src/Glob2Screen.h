@@ -38,6 +38,7 @@ protected:
     void setPhoneLabel(GAGGUI::Widget* widget,const std::string& label) { phoneLabels[widget]=label; }
     virtual std::optional<GAGCore::Color> phoneColor(Widget*) const {return {};}
     virtual bool phoneFooter(Widget*) const {return true;}
+    void showPhoneStatus(GAGGUI::Text* title, const std::string& text);
     void enablePhoneForm(bool enabled=true) { phoneFormEnabled=enabled; }
     void enableResponsiveMenu(const std::string& title = "") { responsiveMenu = true; menuTitle = title; }
 private:

@@ -8,13 +8,15 @@
       "url": "https://dl.google.com/android/repository/emulator-linux_x64-15917651.zip",
       "sha1": "1b1f78891abf8ec268264356e1365c25519e8379",
       "directory": "android-sdk/emulator",
-      "archive_directory": "emulator"
+      "archive_directory": "emulator",
+      "sdk_metadata": "mobile/sdk-packages/emulator.xml"
     },
     "Darwin-arm64": {
       "url": "https://dl.google.com/android/repository/emulator-darwin_aarch64-15917651.zip",
       "sha1": "f22f44948a2b7f0a0103645b9a639290eef92426",
       "directory": "android-sdk/emulator",
-      "archive_directory": "emulator"
+      "archive_directory": "emulator",
+      "sdk_metadata": "mobile/sdk-packages/emulator.xml"
     },
     "x86_64": {
       "url": "https://dl.google.com/android/repository/sys-img/android/x86_64-35_r02.zip",

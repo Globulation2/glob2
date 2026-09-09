@@ -5,6 +5,12 @@
 #include <glob2/BuildConfig.h>
 #endif
 
+#ifdef GLOB2_MOBILE
+#include "../../mobile/Documents.h"
+#include <Toolkit.h>
+#include <StringTable.h>
+#endif
+
 namespace GAGCore::ApplicationHost
 {
 void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
@@ -26,11 +32,18 @@ void wait(std::uint32_t milliseconds)
 }
 bool takeVisibilityChange(bool&) { return false; }
 bool takeViewportSize(int&, int&) { return false; }
+#ifdef GLOB2_MOBILE
+bool canImportFiles() { return true; }
+std::unique_ptr<FileSelection> selectFile(const std::string& extension) { return MobileDocuments::select(extension); }
+bool canExportFiles() { return true; }
+bool exportFile(const std::string& name, const std::vector<unsigned char>& bytes) { return MobileDocuments::exportFile(name, bytes, Toolkit::getStringTable()->getString("[export failed]")); }
+#else
 bool canImportFiles() { return false; }
 std::unique_ptr<FileSelection> selectFile(const std::string&) { return {}; }
-bool storageRestoreFailed() { return false; }
 bool canExportFiles() { return false; }
 bool exportFile(const std::string&, const std::vector<unsigned char>&) { return false; }
+#endif
+bool storageRestoreFailed() { return false; }
 namespace {
 class NativePersistence : public Persistence {
     PersistenceState state() const override { return PersistenceState::Succeeded; }

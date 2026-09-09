@@ -59,11 +59,12 @@ def build_mobile(directory, identity, arguments):
     files = ['src/' + name for name in CLIENT_SOURCES if name not in ('VoiceRecorder.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
     if identity['target'] == 'ios':
         files.remove('src/Glob2.cpp')
-        files.append('mobile/ios/SafeArea.mm')
+        files += ['mobile/ios/SafeArea.mm', 'mobile/ios/Documents.mm']
     files += ['libgag/src/' + name for name in GAG_SOURCES]
     files += ['libusl/src/' + name for name in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp', 'browser/IRCTextMessageHandler.cpp', 'mobile/MobilePaths.cpp']
+    files += ['browser/VoiceRecorder.cpp', 'browser/IRCTextMessageHandler.cpp', 'mobile/MobilePaths.cpp', 'mobile/Documents.cpp']
     if identity['target'] == 'android':
+        files.append('mobile/android/Documents.cpp')
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         env.Append(CPPDEFINES=['main=SDL_main'])
@@ -71,7 +72,9 @@ def build_mobile(directory, identity, arguments):
         program = env.SharedLibrary(str(output / 'lib/main'), objects)
     else:
         # Xcode links the archive with the SDL startup and system frameworks.
-        objects = [env.Object(str(object_root / (name + '.o')), name) for name in files]
+        objc = env.Clone()
+        objc.Append(CCFLAGS=['-fobjc-arc'])
+        objects = [(objc if name == 'mobile/ios/Documents.mm' else env).Object(str(object_root / (name + '.o')), name) for name in files]
         program = env.StaticLibrary(str(output / 'lib/glob2'), objects)
     env.Depends(objects, [str(config), str(LOCK), str(manifest)])
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))

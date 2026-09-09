@@ -118,7 +118,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
         if (button && source == cancel && (!fileImport || fileImport->state() != FileImport::State::Persisting)) {
             fileSelection.reset(); fileImport.reset();
             GAGCore::ApplicationHost::importChanged("cancelled");
-            title->setText(Toolkit::getStringTable()->getString("[import cancelled]"));
+            showPhoneStatus(title, Toolkit::getStringTable()->getString("[import cancelled]"));
         }
         return;
     }
@@ -128,11 +128,11 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
         importExtension = activeType() == MAP ? "map" : activeType() == REPLAY ? "replay" : "game";
         fileSelection = GAGCore::ApplicationHost::selectFile(importExtension);
         GAGCore::ApplicationHost::importChanged("selecting");
-        title->setText(Toolkit::getStringTable()->getString("[select import file]"));
+        showPhoneStatus(title, Toolkit::getStringTable()->getString("[select import file]"));
         return;
     }
     if (button && source == exportButton && fileImport && fileImport->canRetry()) {
-        if (!fileImport->exportFile()) title->setText(Toolkit::getStringTable()->getString("[export failed]"));
+        if (!fileImport->exportFile()) showPhoneStatus(title, Toolkit::getStringTable()->getString("[export failed]"));
         return;
     }
 	if (action == LIST_ELEMENT_SELECTED)
@@ -147,7 +147,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 		mapSize->setText("");
 		mapName->setText("");
 		mapPreview->setMapThumbnail(MapThumbnail());
-		title->setText(Toolkit::getStringTable()->getString(type1 == MAP ? "[choose map]" : "[choose game]"));
+		showPhoneStatus(title, Toolkit::getStringTable()->getString(type1 == MAP ? "[choose map]" : "[choose game]"));
 		if (active->selection())
 		{
 			std::string mapFileName = active->listToFile(active->getText(par1).c_str());
@@ -192,7 +192,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			if (!validMapSelected)
 			{
 				mapPreview->setMapThumbnail(MapThumbnail());
-				title->setText(Toolkit::getStringTable()->getString("[Damaged Map]"));
+				showPhoneStatus(title, Toolkit::getStringTable()->getString("[Damaged Map]"));
 			}
 		}
 	}
@@ -201,7 +201,7 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
         if (exportButton && source == exportButton) {
             auto* active = activeFileList();
             if (active->selection() && !GAGCore::ApplicationHost::exportLocalFile(active->listToFile(active->get())))
-                title->setText(Toolkit::getStringTable()->getString("[export failed]"));
+                showPhoneStatus(title, Toolkit::getStringTable()->getString("[export failed]"));
         }
         else if (source == ok)
 		{
@@ -247,7 +247,7 @@ void ChooseMapScreen::updateImportStatus()
         state == FileImport::State::Persisting ? "[saving to storage]" :
         state == FileImport::State::Succeeded ? "[import succeeded]" :
         fileImport->canRetry() ? "[import persistence failed]" : "[import failed]";
-    title->setText(Toolkit::getStringTable()->getString(message));
+    showPhoneStatus(title, Toolkit::getStringTable()->getString(message));
 }
 
 void ChooseMapScreen::onTimer(Uint32)
@@ -257,10 +257,10 @@ void ChooseMapScreen::onTimer(Uint32)
         if (state == GAGCore::ApplicationHost::FileSelectionState::Pending) return;
         if (state == GAGCore::ApplicationHost::FileSelectionState::Selected) {
             try { fileImport = std::make_unique<FileImport>(fileSelection->takeFile(), importExtension); }
-            catch (const std::exception&) { title->setText(Toolkit::getStringTable()->getString("[import failed]")); }
+            catch (const std::exception&) { showPhoneStatus(title, Toolkit::getStringTable()->getString("[import failed]")); }
         } else {
             GAGCore::ApplicationHost::importChanged(state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "cancelled" : "invalid");
-            title->setText(Toolkit::getStringTable()->getString(state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "[import cancelled]" : "[import failed]"));
+            showPhoneStatus(title, Toolkit::getStringTable()->getString(state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "[import cancelled]" : "[import failed]"));
         }
         fileSelection.reset();
     }

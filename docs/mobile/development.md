@@ -471,3 +471,19 @@ diagnostic override unset for ordinary clients, servers and browser gateways.
 The diagnostic port override is linked only into `LANSessionHarness`; production
 executables retain constant protocol ports. Run the harness through its Python
 runner, which supplies an isolated port set and worktree-local profiles.
+
+### Native document verification
+
+Build and run `scons release=1 mobile-documents-test` followed by
+`build/darwin/client/release/libgag/src/MobileDocumentsHarness` on macOS (replace
+`darwin` with `linux` on Linux). The test exercises callback ownership, cancellation,
+duplicate results, filename checks, the 64 MiB bound and rejected platform launches.
+Native phone file/campaign choosers expose the existing Import and Export actions.
+Android uses Storage Access Framework; iOS uses UIDocumentPicker. No broad storage
+permission is requested. Imports pass through the same full-format validation and
+atomic new-name writes as the browser. Export launch acceptance is asynchronous;
+provider errors remain platform-visible and the original local save is retained.
+
+The SDK setup script supplies pinned emulator `package.xml` metadata after direct
+archive extraction. This registers the existing package with `avdmanager`; it does
+not run SDK license acceptance or replace the configured archive with a newer one.

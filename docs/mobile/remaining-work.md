@@ -13,6 +13,8 @@ do not modify the AI or browser checkouts. Commit and push verified checkpoints.
 - Android emulator smoke runner and CI wiring, pinned emulator/image downloads,
   Linux SDK tools and versioned Python build drivers.
 - iOS simulator smoke runner and CI wiring using Xcode 26.6/iOS 26.5.
+- Native document bridges, Android picker round-trip/cancel/error verification,
+  and SDK metadata registration for directly extracted emulator archives.
 
 See the newest status checkpoint for actual test results; CI wiring does not by
 itself mean a hosted CI run passed.
@@ -20,8 +22,8 @@ itself mean a hosted CI run passed.
 ## Continue without physical devices
 
 - Run and fix hosted Android ARM64/ARMv7/x86-64 packaging and iOS simulator CI.
-- Implement native document import/export with cancellation, bounded reads and
-  retained save/import state across platform callbacks.
+- Qualify iOS picker interaction and third-party/cloud providers. Both native
+  document bridges are implemented; Android local-provider round trips pass.
 - Integrate platform WebSockets/certificate handling and qualify the shared
   transport contract; then mixed-platform play and coordinated reconnect.
 - Extend ARM/Wasm long-run determinism fixtures and repeatable performance tooling.
