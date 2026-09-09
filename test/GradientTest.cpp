@@ -33,7 +33,7 @@ namespace
 			wMask = w - 1;
 			hMask = h - 1;
 			size = static_cast<size_t>(w * h);
-			cases.assign(size, Case());
+			tiles.assign(size, Tile());
 		}
 		~GrassMap()
 		{
@@ -43,8 +43,8 @@ namespace
 			size = 0;
 		}
 		size_t cells() const { return size; }
-		void putWater(int x, int y) { cases[coordToIndex(x, y)].terrain = 256; }
-		void putGroundUnit(int x, int y) { cases[coordToIndex(x, y)].groundUnit = 0; }
+		void putWater(int x, int y) { tiles[coordToIndex(x, y)].terrain = 256; }
+		void putGroundUnit(int x, int y) { tiles[coordToIndex(x, y)].groundUnit = 0; }
 	};
 
 	// Shortest wrapped axis distance on a torus of extent n.

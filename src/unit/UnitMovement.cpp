@@ -93,7 +93,7 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 			{
 				int x = (posX + tdx) & map->wMask;
 				int y = (posY + tdy) & map->hMask;
-				Case mapCase = map->cases[(y << map->wDec) + x];
+				Tile mapCase = map->tiles[(y << map->wDec) + x];
 				if ((mapCase.clearArea & owner->me)
 					&& (mapCase.resource.type != NO_RES_TYPE)
 					&& globalContainer->resourcesTypes.get(mapCase.resource.type)->clearable

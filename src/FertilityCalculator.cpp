@@ -139,7 +139,7 @@ namespace FertilityCalculator
 
 		for (int x = 0; x < map.getW(); ++x)
 			for (int y = 0; y < map.getH(); ++y)
-				map.getCase(x, y).fertility = fertility[map.coordToIndex(x, y)];
+				map.getTile(x, y).fertility = fertility[map.coordToIndex(x, y)];
 		map.fertilityMaximum = fertilityMax;
 	}
 }

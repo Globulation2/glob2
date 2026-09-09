@@ -17,10 +17,10 @@
 
 class Unit;
 
-//! No global unit identifier. This value means there is no unit. Used at Case::groundUnit or Case::airUnit.
+//! No global unit identifier. This value means there is no unit. Used at Tile::groundUnit or Tile::airUnit.
 #define NOGUID 0xFFFF
 
-//! No global building identifier. This value means there is no building. Used at Case::building.
+//! No global building identifier. This value means there is no building. Used at Tile::building.
 #define NOGBID 0xFFFF
 
 class Map;
@@ -38,7 +38,7 @@ struct Offset
 };
 
 // a 1x1 piece of map
-struct Case
+struct Tile
 {
 	Uint16 terrain = 0; // default, not really meaningful.
 	Uint16 building = NOGBID;
@@ -220,7 +220,7 @@ public:
 	//! Returns true if the position(x, y) is a forbidden area for the given team
 	bool isForbidden(int x, int y, Uint32 teamMask) const
 	{
-		return cases[coordToIndex(x, y)].forbidden&teamMask;
+		return tiles[coordToIndex(x, y)].forbidden&teamMask;
 	}
 
 	//! Return true if (x,y) is a guard area in the locally-displayed team's overlay cache
@@ -233,7 +233,7 @@ public:
 	//! Returns true if the position(x, y) is a guard area for the given team
 	bool isGuardArea(int x, int y, Uint32 teamMask) const
 	{
-		return cases[coordToIndex(x, y)].guardArea&teamMask;
+		return tiles[coordToIndex(x, y)].guardArea&teamMask;
 	}
 
 	//! Return true if (x,y) is a clear area in the locally-displayed team's overlay cache
@@ -246,17 +246,17 @@ public:
 	//! Returns true if the position(x, y) is a clear area for the given team
 	bool isClearArea(int x, int y, Uint32 teamMask) const
 	{
-		return cases[coordToIndex(x, y)].clearArea&teamMask;
+		return tiles[coordToIndex(x, y)].clearArea&teamMask;
 	}
 	
 	// These rebuild the render-only displayed*View caches from the authoritative
-	// cases[] bits, and are only meaningful for the locally-displayed team (the one
+	// tiles[] bits, and are only meaningful for the locally-displayed team (the one
 	// whose areas are drawn on screen). They do not touch checkSum() state.
-	//! Rebuild displayedForbiddenView from cases[].forbidden for the given team.
+	//! Rebuild displayedForbiddenView from tiles[].forbidden for the given team.
 	void computeDisplayedForbidden(int teamNumber);
-	//! Rebuild displayedGuardAreaView from cases[].guardArea for the given team.
+	//! Rebuild displayedGuardAreaView from tiles[].guardArea for the given team.
 	void computeDisplayedGuardArea(int teamNumber);
-	//! Rebuild displayedClearAreaView from cases[].clearArea for the given team.
+	//! Rebuild displayedClearAreaView from tiles[].clearArea for the given team.
 	void computeDisplayedClearArea(int teamNumber);
 
 	//! Sentinel for "no displayed team yet" — used before GameGUI::adjustLocalTeam has run.
@@ -268,28 +268,28 @@ public:
 	void setDisplayedTeam(Sint32 teamNo) { displayedTeam = teamNo; }
 	Sint32 getDisplayedTeam() const { return displayedTeam; }
 	
-	//! Return the case at a given position
-	inline Case &getCase(int x, int y)
+	//! Return the tile at a given position
+	inline Tile &getTile(int x, int y)
 	{
-		return cases[coordToIndex(x, y)];
+		return tiles[coordToIndex(x, y)];
 	}
 
-	//! Return the const case at a given position
-	inline const Case &getCase(int x, int y) const
+	//! Return the const tile at a given position
+	inline const Tile &getTile(int x, int y) const
 	{
-		return cases[coordToIndex(x, y)];
+		return tiles[coordToIndex(x, y)];
 	}
 
 	//! Return the terrain for a given coordinate
 	inline Uint16 getTerrain(int x, int y) const
 	{
-		return cases[coordToIndex(x, y)].terrain;
+		return tiles[coordToIndex(x, y)].terrain;
 	}
 	
-	//! Return the terrain for a given position in case array
+	//! Return the terrain for a given position in tile array
 	inline Uint16 getTerrain(size_t pos) const
 	{
-		return cases[pos].terrain;
+		return tiles[pos].terrain;
 	}
 
 	//! Return the typeof terrain. If type is unregistered, returns unknown (-1).
@@ -308,28 +308,28 @@ public:
 
 	const Resource& getResource(int x, int y) const
 	{
-		return cases[coordToIndex(x, y)].resource;
+		return tiles[coordToIndex(x, y)].resource;
 	}
 
 	const Resource& getResource(size_t pos) const
 	{
-		return cases[pos].resource;
+		return tiles[pos].resource;
 	}
 
 	Resource& getResource(int x, int y)
 	{
-		return cases[coordToIndex(x, y)].resource;
+		return tiles[coordToIndex(x, y)].resource;
 	}
 	
 	Resource& getResource(size_t pos)
 	{
-		return cases[pos].resource;
+		return tiles[pos].resource;
 	}
 	
 	//Returns the combined forbidden and hidden forbidden masks
 	Uint32 getForbidden(int x, int y) const
 	{
-		return cases[coordToIndex(x, y)].forbidden;
+		return tiles[coordToIndex(x, y)].forbidden;
 	}
 	
 	Uint8 getExplored(int x, int y, int team) const
@@ -339,33 +339,33 @@ public:
 	
 	void setTerrain(int x, int y, Uint16 terrain)
 	{
-		cases[coordToIndex(x, y)].terrain = terrain;
+		tiles[coordToIndex(x, y)].terrain = terrain;
 	}
 	
 	void setForbidden(int x, int y, Uint32 forbidden)
 	{
-		cases[coordToIndex(x, y)].forbidden = forbidden;
+		tiles[coordToIndex(x, y)].forbidden = forbidden;
 	}
 	
 	void addForbidden(int x, int y, Uint32 teamNum)
 	{
-		cases[coordToIndex(x, y)].forbidden |=  Team::teamNumberToMask(teamNum);
+		tiles[coordToIndex(x, y)].forbidden |=  Team::teamNumberToMask(teamNum);
 	}
 
 	void removeForbidden(int x, int y, Uint32 teamNum)
 	{
-		Case& c=cases[coordToIndex(x, y)];
+		Tile& c=tiles[coordToIndex(x, y)];
 		c.forbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
 	}
 	
 	void addClearArea(int x, int y, Uint32 teamNum)
 	{
-		cases[coordToIndex(x, y)].clearArea |=  Team::teamNumberToMask(teamNum);
+		tiles[coordToIndex(x, y)].clearArea |=  Team::teamNumberToMask(teamNum);
 	}
 	
 	void addGuardArea(int x, int y, Uint32 teamNum)
 	{
-		cases[coordToIndex(x, y)].guardArea |=  Team::teamNumberToMask(teamNum);
+		tiles[coordToIndex(x, y)].guardArea |=  Team::teamNumberToMask(teamNum);
 	}
 
 	
@@ -405,18 +405,18 @@ public:
 
 	bool isResource(int x, int y) const
 	{
-		return getCase(x, y).resource.type != NO_RES_TYPE;
+		return getTile(x, y).resource.type != NO_RES_TYPE;
 	}
 
 	bool isResourceTakeable(int x, int y, int resourceType) const
 	{
-		const Resource &resource = getCase(x, y).resource;
+		const Resource &resource = getTile(x, y).resource;
 		return (resource.type == resourceType && resource.amount > 0);
 	}
 
 	bool isResourceTakeable(int x, int y, bool resourceTypes[BASIC_COUNT]) const
 	{
-		const Resource &resource = getCase(x, y).resource;
+		const Resource &resource = getTile(x, y).resource;
 		return (resource.type != NO_RES_TYPE
 			&& resource.amount > 0
 			&& resource.type < BASIC_COUNT
@@ -425,7 +425,7 @@ public:
 
 	bool isResource(int x, int y, int *resourceType) const
 	{
-		const Resource &resource = getCase(x, y).resource;
+		const Resource &resource = getTile(x, y).resource;
 		if (resource.type == NO_RES_TYPE)
 			return false;
 		*resourceType = resource.type;
@@ -434,7 +434,7 @@ public:
 
 	bool canResourcesGrow(int x, int y) const
 	{
-		return getCase(x, y).canResourcesGrow;
+		return getTile(x, y).canResourcesGrow;
 	}
 
 	//! Decrement resource at position (x,y). Return true on success, false otherwise.
@@ -505,17 +505,17 @@ public:
 	Uint8 getImmobileUnit(int x, int y) const;
 
 	//! Return GID
-	Uint16 getGroundUnit(int x, int y) const { return cases[coordToIndex(x, y)].groundUnit; }
-	Uint16 getAirUnit(int x, int y) const { return cases[coordToIndex(x, y)].airUnit; }
-	Uint16 getBuilding(int x, int y) const { return cases[coordToIndex(x, y)].building; }
+	Uint16 getGroundUnit(int x, int y) const { return tiles[coordToIndex(x, y)].groundUnit; }
+	Uint16 getAirUnit(int x, int y) const { return tiles[coordToIndex(x, y)].airUnit; }
+	Uint16 getBuilding(int x, int y) const { return tiles[coordToIndex(x, y)].building; }
 	
-	void setGroundUnit(int x, int y, Uint16 guid) { cases[coordToIndex(x, y)].groundUnit = guid; }
-	void setAirUnit(int x, int y, Uint16 guid) { cases[coordToIndex(x, y)].airUnit = guid; }
+	void setGroundUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].groundUnit = guid; }
+	void setAirUnit(int x, int y, Uint16 guid) { tiles[coordToIndex(x, y)].airUnit = guid; }
 	void setBuilding(int x, int y, int w, int h, Uint16 gbid)
 	{
 		for (int yi=y; yi<y+h; yi++)
 			for (int xi=x; xi<x+w; xi++)
-				cases[coordToIndex(xi, yi)].building = gbid;
+				tiles[coordToIndex(xi, yi)].building = gbid;
 	}
 	
 	//! Return the sector index of the sector containing tile (x,y). The
@@ -541,7 +541,7 @@ public:
 	//! Removes every resource in the w by h area at (x, y) whose terrain no longer allows it,
 	//! used after the terrain under it changed
 	void removeUnallowedResources(int x, int y, int w, int h);
-	//! With l==0, it will add resource only on one case. (Aligned coordinates)
+	//! With l==0, it will add resource only on one tile. (Aligned coordinates)
 	void setResource(int x, int y, int type, int l);
 	bool isResourceAllowed(int x, int y, int type);
 	
@@ -676,7 +676,7 @@ public:
 public:
 	Game *game;
 public:
-	std::vector<Case> cases;
+	std::vector<Tile> tiles;
 	Sint32 w, h;
 	Sint32 wMask, hMask;
 	Sint32 wDec, hDec;
@@ -697,7 +697,7 @@ public:
 	std::vector<Uint32> fogOfWarB;
 	Uint32* fogOfWar = nullptr; // if valid, either points to &fogOfWarA[0] or &fogOfWarB[0]
 	//! Render-only overlay caches for the locally-displayed team's areas (forbidden /
-	//! guard / clear). These mirror the per-team bits in cases[].{forbidden,guardArea,
+	//! guard / clear). These mirror the per-team bits in tiles[].{forbidden,guardArea,
 	//! clearArea} but only for displayedTeam, so the renderer can query one tile cheaply.
 	//! They are NOT in checkSum() and must never be read from a sim path — doing so would
 	//! desync, because displayedTeam differs per client. true = bit set.
