@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Engine.h"
+#include "ReplayWriter.h"
 #include "GlobalContainer.h"
 #include "MapEdit.h"
 #include "SettingsScreen.h"
@@ -208,7 +209,15 @@ public:
         }
         globalContainer->settings.highResolutionArtwork=true;
         {
-            Engine replay;assert(replay.loadReplay("replays/gd-small-2ai.replay")==Engine::EE_NO_ERROR);
+            // Record with this build's version: master intentionally rejects
+            // historical replays after simulation/pathfinding changes.
+            Engine fixture;assert(fixture.initCustom("games/gd-small-2ai.game")==Engine::EE_NO_ERROR);
+            ReplayWriter writer;
+            writer.init(std::filesystem::absolute(".cache/highres-replay-fixture/replays/current.replay").string(),fixture.gui);
+            writer.advanceStep();
+        }
+        {
+            Engine replay;assert(replay.loadReplay("replays/current.replay")==Engine::EE_NO_ERROR);
             auto &gui=replay.gui;gui.updateCamera();gui.zoomMap(5,300,300);gui.drawAll(0);capture("replay-hd");
         }
         globalContainer->replaying=false;
@@ -282,12 +291,11 @@ public:
 int main(int argc,char **argv)
 {
     std::filesystem::create_directories(".cache/highres-runtime-check");
-    std::filesystem::create_directories(".cache/ai-upscale/replay-fixture/replays");
-    std::filesystem::copy_file("tests/baselines/gradient/gd-small-2ai.replay", ".cache/ai-upscale/replay-fixture/replays/gd-small-2ai.replay", std::filesystem::copy_options::overwrite_existing);
+    std::filesystem::create_directories(".cache/highres-replay-fixture/replays");
     GlobalContainer globals("glob2-hd-integration-test");globalContainer=&globals;
     globals.settings.screenWidth=1024;globals.settings.screenHeight=768;globals.settings.screenFlags=GraphicContext::USEGPU|GraphicContext::CUSTOMCURSOR;
     globals.settings.rememberUnit=false;globals.settings.mute=1;
-    globals.fileManager->addDir(".cache/ai-upscale/replay-fixture");
+    globals.fileManager->addDir(".cache/highres-replay-fixture");
     const bool software=argc>1&&std::string(argv[1])=="software";
     if(software)globals.settings.screenFlags=0;
     globals.load();
