@@ -45,32 +45,11 @@ int Engine::run(void)
 	}
 	else
 	{
-		// look for all available musics
-		globalContainer->fileManager->initDirectoryListing("data/zik/", "", true);
-		std::string filename;
-		std::vector<std::string> musicDirs;
-		while (!(filename = globalContainer->fileManager->getNextDirectoryEntry()).empty())
+		if (!globalContainer->mix->selectMusicSet(globalContainer->settings.musicSet))
 		{
-			if (globalContainer->fileManager->isDir(FormattableString("%0/%1").arg("data/zik/").arg(filename)))
-			{
-				std::cerr << "music dir found: " << filename << std::endl;
-				musicDirs.push_back(filename);
-			}
-		}
-
-		// select a music randomly
-		if (!musicDirs.empty())
-		{
-			size_t musicIndex(rand() % musicDirs.size());
-			const std::string& musicDir(musicDirs[musicIndex]);
-			std::cerr << "selecting music dir " << musicDir << std::endl;
-			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a1.ogg").arg(musicDir), MusicTrack::InGameDefault);
-			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a2.ogg").arg(musicDir), MusicTrack::BuildingEvent);
-			globalContainer->mix->loadTrack(FormattableString("data/zik/%0/a3.ogg").arg(musicDir), MusicTrack::WarEvent);
-		}
-		else
-		{
-			std::cerr << "Warning, no music found!" << std::endl;
+			std::cerr << "Music set unavailable; trying random selection." << std::endl;
+			globalContainer->settings.musicSet.clear();
+			globalContainer->mix->selectMusicSet("");
 		}
 
 		// Stop menu music, load game music

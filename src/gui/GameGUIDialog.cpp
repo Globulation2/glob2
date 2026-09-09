@@ -3,6 +3,7 @@
 
 #include <string>
 #include <sstream>
+#include <algorithm>
 #include "GameGUIDialog.h"
 #include "GameGUI.h"
 #include "GlobalContainer.h"
@@ -347,7 +348,7 @@ Uint32 InGameAllianceScreen::getChatMask(void)
 
 //! Option Screen
 InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
-:OverlayScreen(globalContainer->gfx, 320, 360)
+:OverlayScreen(globalContainer->gfx, 320, 440)
 {
 	adjustableGameSpeed=gameGUI->canChangeGameSpeed();
 	Text *audioMuteText=new Text(10, 20, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[Mute]"), 200);
@@ -368,9 +369,24 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	voiceVol=new Selector(19, 160, ALIGN_LEFT, ALIGN_TOP, 256, globalContainer->settings.voiceVolume, 256, true);
 	addWidget(voiceVol);
 
-	gameSpeedText=new Text(10, 195, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+	addWidget(new Text(10, 190, ALIGN_LEFT, ALIGN_TOP, "standard", Toolkit::getStringTable()->getString("[music set]")));
+	musicSets = SoundMixer::getMusicSets();
+	musicSets.insert(musicSets.begin(), "");
+	musicSet = new MultiTextButton(10, 215, 300, 32, ALIGN_LEFT, ALIGN_TOP, "standard", "", MUSIC_SET);
+	musicSet->addText(Toolkit::getStringTable()->getString("[random music set]"));
+	for (size_t i = 1; i < musicSets.size(); ++i)
+		musicSet->addText(SoundMixer::musicSetLabel(musicSets[i]));
+	const auto selected = std::find(musicSets.begin(), musicSets.end(), globalContainer->settings.musicSet);
+	musicSet->setIndex(selected == musicSets.end() ? 0 : static_cast<int>(selected - musicSets.begin()));
+	musicSet->setClickable(musicSets.size() > 1);
+	addWidget(musicSet);
+	musicSetStatus = new Text(10, 255, ALIGN_LEFT, ALIGN_TOP, "standard", "");
+	addWidget(musicSetStatus);
+	updateMusicSetText();
+
+	gameSpeedText=new Text(10, 290, ALIGN_LEFT, ALIGN_TOP, "standard", "");
 	addWidget(gameSpeedText);
-	gameSpeed=new Selector(19, 225, ALIGN_LEFT, ALIGN_TOP, 256,
+	gameSpeed=new Selector(19, 320, ALIGN_LEFT, ALIGN_TOP, 256,
 		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
 	addWidget(gameSpeed);
 	gameSpeed->visible=adjustableGameSpeed;
@@ -384,7 +400,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 		voiceVolText->visible=false;
 	}
 
-	addWidget(new TextButton(0, 310, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
+	addWidget(new TextButton(0, 390, 300, 40, ALIGN_CENTERED, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 27));
 	
 	std::ostringstream oss;
 	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
@@ -393,7 +409,7 @@ InGameOptionScreen::InGameOptionScreen(GameGUI *gameGUI)
 	else
 		oss << " SDL";
 		
-	addWidget(new Text(0, 260, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
+	addWidget(new Text(0, 350, ALIGN_FILL, ALIGN_TOP, "standard", oss.str().c_str()));
 	dispatchInit();
 }
 
@@ -408,6 +424,25 @@ InGameOptionScreen::~InGameOptionScreen()
 
 void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	if (source == musicSet)
+	{
+		if (action == BUTTON_STATE_CHANGED)
+		{
+			const std::string choice = musicSets.at(musicSet->getIndex());
+			if (globalContainer->mix->selectMusicSet(choice))
+			{
+				globalContainer->settings.musicSet = choice;
+				updateMusicSetText();
+			}
+			else
+			{
+				const auto previous = std::find(musicSets.begin(), musicSets.end(), globalContainer->settings.musicSet);
+				musicSet->setIndex(previous == musicSets.end() ? 0 : static_cast<int>(previous - musicSets.begin()));
+				musicSetStatus->setText(Toolkit::getStringTable()->getString("[music set failed]"));
+			}
+		}
+		return;
+	}
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
 		endValue=par1;
@@ -437,6 +472,12 @@ void InGameOptionScreen::onAction(Widget *source, Action action, int par1, int p
 		voiceVolText->visible = ! globalContainer->settings.mute;
 		globalContainer->mix->setVolume(musicVol->getValue(), voiceVol->getValue(), mute->getState());
 	}
+}
+
+void InGameOptionScreen::updateMusicSetText()
+{
+	musicSetStatus->setText(FormattableString(Toolkit::getStringTable()->getString("[playing music set %0]"))
+		.arg(SoundMixer::musicSetLabel(globalContainer->mix->getMusicSet())));
 }
 
 

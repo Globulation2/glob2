@@ -13,4 +13,5 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     PackTar(env["TARFILE"], "SConscript")
     env.Alias("install", env["INSTALLDIR"]+"/glob2/data/zik")
 
-SConscript("original/SConscript")
+for music_set in ("original", "seedling", "bramble-dance", "velvet-orbit", "tidepool"):
+    SConscript(music_set + "/SConscript")

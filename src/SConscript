@@ -566,6 +566,12 @@ if not env['server']:
     trapped_test = trapped_env.Program('TrappedUnitLifecycleTest', trapped_sources)
     local.Alias('trapped-unit-test', trapped_test)
 
+if not env['server']:
+    music_sources = [source for source in source_files if source != 'Glob2.cpp']
+    music_sources += local.Object('MusicSetTest.o', '#test/MusicSetTest.cpp')
+    music_test = local.Program('music-set-tests', music_sources)
+    local.Alias('music-set-tests', music_test)
+
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
 p2 = local.Program("glob2-server", server_source_files)

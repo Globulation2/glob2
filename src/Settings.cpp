@@ -101,6 +101,8 @@ void Settings::load(std::string filename)
 			token = strtok(NULL,"\t\n\r=");
 			if (token)
 				parsed[varname] = token;
+			else if (strcmp(varname, "musicSet") == 0)
+				parsed[varname] = "";
 		}
 
 		// read values
@@ -113,6 +115,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
 		READ_PARSED_INT(musicVolume);
+		READ_PARSED_STRING(musicSet);
 		READ_PARSED_INT(voiceVolume);
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
@@ -180,6 +183,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
+		Utilities::streamprintf(stream, "musicSet=%s\n", musicSet.c_str());
 		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);

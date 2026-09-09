@@ -61,6 +61,7 @@ public:
 	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.
 	std::string language;
 	Uint32 musicVolume;
+	std::string musicSet; // Empty means random selection at match start.
 	Uint32 voiceVolume;
 	int mute;
 	int version;

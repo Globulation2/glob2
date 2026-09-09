@@ -4,6 +4,8 @@
 #pragma once
 
 #include <GUIBase.h>
+#include <string>
+#include <vector>
 
 
 using namespace GAGGUI;
@@ -13,6 +15,7 @@ namespace GAGGUI
 	class TriButton;
 	class Selector;
 	class Text;
+	class MultiTextButton;
 }
 class GameGUI;
 class GameHeader;
@@ -96,12 +99,16 @@ public:
 	{
 		OK = 0,
 		MUTE = 1,
+		MUSIC_SET = 2,
 	};
 
 public:
 	Selector *musicVol;
 	Selector *voiceVol;
 	Selector *gameSpeed;
+	MultiTextButton *musicSet;
+	Text *musicSetStatus;
+	std::vector<std::string> musicSets;
 	OnOffButton* mute;
 	Text *musicVolText;
 	Text *voiceVolText;
@@ -112,6 +119,7 @@ public:
 	~InGameOptionScreen();
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 	void updateGameSpeedText(void);
+	void updateMusicSetText();
 };
 
 
