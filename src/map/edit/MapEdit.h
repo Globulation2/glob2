@@ -730,10 +730,10 @@ private:
 	BrushAccumulator brushAccumulator;
 	///Handles brush click to place a zone
 	void handleBrushClick(int mx, int my);
-	///The pair of map fields a zone brush edits: the per-case team bitmask and the local (display-only) overlay
+	///The pair of map fields a zone brush edits: the per-tile team bitmask and the local (display-only) overlay
 	struct AreaBrushTarget
 	{
-		Uint32 Case::* caseMask;
+		Uint32 Tile::* tileMask;
 		Utilities::BitArray& view;
 	};
 	///Returns the map fields edited by the current brushType

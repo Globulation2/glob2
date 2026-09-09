@@ -464,6 +464,17 @@ source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+if not env['server']:
+    # Compile with local, not stats_env, to avoid rebuilding shared objects under a second environment.
+    stats_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    stats_sources += [source for source in source_files if not source.endswith('.cpp')]
+    stats_sources += local.Object('TeamStatsSaveHarness.o', '#test/TeamStatsSaveHarness.cpp')
+    stats_env = local.Clone()
+    stats_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    stats_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    stats_test = stats_env.Program('TeamStatsSaveHarness', stats_sources)
+    local.Alias('team-stats-save-test', stats_test)
+
 # Integration harness: reuse the client objects with a test entry point.
 # Explicit target only; the server and normal client build remain unchanged.
 if not env['server']:
@@ -563,3 +574,10 @@ if not env['server']:
     regression_sources += local.Object('ImmobileUnitGradientHarness.o', '#test/ImmobileUnitGradientHarness.cpp')
     regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
     local.Alias('immobile-unit-gradient-test', regression_test)
+
+# Real engine regression for resource-fetch target staleness, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
+    regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
+    local.Alias('resource-fetch-target-test', regression_test)

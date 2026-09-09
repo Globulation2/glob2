@@ -11,7 +11,7 @@
 #include "MapGenerationDescriptor.h"
 #include "Map.h"
 
-/// This random map generator generates a heightfield and then choses levels at which to draw the line between water, sand, gras and sand again (desert)
+/// This random map generator generates a height field and then chooses levels separating water, sand, grass, and desert.
 bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 {
 	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above grasslevel is desert
@@ -249,7 +249,7 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	//TODO: count of groves(=descriptor.fruitRatio) does not scale with mapsize.
 	//so it has to be adjusted higher on bigger maps now.
 
-	// in mapgeneration syncRand is not needed. In earlier versions we assumed
+	// in map generation syncRand is not needed. In earlier versions we assumed
 	// to profit from sharing only the generation seeds for common random maps.
 	// this assumption was dropped in favour of easier code.
 

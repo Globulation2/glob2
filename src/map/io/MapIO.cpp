@@ -57,7 +57,7 @@ try
 	displayedForbiddenView.resize(size, false);
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
-	cases.resize(size);
+	tiles.resize(size);
 	undermap = new Uint8[size];
 	listedAddr = new Uint8*[size];
 	aStarPoints=new AStarAlgorithmPoint[size];
@@ -72,24 +72,24 @@ try
 		stream->readEnterSection(i);
 		mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
-		cases[i].terrain = stream->readUint16("terrain");
-		cases[i].building = stream->readUint16("building");
-		if (cases[i].building != NOGBID && cases[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
+		tiles[i].terrain = stream->readUint16("terrain");
+		tiles[i].building = stream->readUint16("building");
+		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
 			return false;
 
-		stream->read(&(cases[i].resource), 4, "ressource");
-		cases[i].groundUnit = stream->readUint16("groundUnit");
-		cases[i].airUnit = stream->readUint16("airUnit");
-		cases[i].forbidden = stream->readUint32("forbidden");
+		stream->read(&(tiles[i].resource), 4, "ressource");
+		tiles[i].groundUnit = stream->readUint16("groundUnit");
+		tiles[i].airUnit = stream->readUint16("airUnit");
+		tiles[i].forbidden = stream->readUint32("forbidden");
 		if(versionMinor < 62)
 			stream->readUint32("hiddenForbidden");
-		cases[i].guardArea = stream->readUint32("guardArea");
-		cases[i].clearArea = stream->readUint32("clearArea");
-		cases[i].scriptAreas = stream->readUint16("scriptAreas");
-		cases[i].canResourcesGrow = stream->readUint8("canRessourcesGrow");
+		tiles[i].guardArea = stream->readUint32("guardArea");
+		tiles[i].clearArea = stream->readUint32("clearArea");
+		tiles[i].scriptAreas = stream->readUint16("scriptAreas");
+		tiles[i].canResourcesGrow = stream->readUint8("canRessourcesGrow");
 		if(versionMinor >= 63)
-			cases[i].fertility = stream->readUint16("fertility");
-		fertilityMaximum = std::max(fertilityMaximum, cases[i].fertility);
+			tiles[i].fertility = stream->readUint16("fertility");
+		fertilityMaximum = std::max(fertilityMaximum, tiles[i].fertility);
 
 		stream->readLeaveSection();
 	}
@@ -200,19 +200,19 @@ void Map::save(GAGCore::OutputStream *stream)
 		stream->writeEnterSection(i);
 		stream->writeUint32(mapDiscovered[i], "mapDiscovered");
 
-		stream->writeUint16(cases[i].terrain, "terrain");
-		stream->writeUint16(cases[i].building, "building");
+		stream->writeUint16(tiles[i].terrain, "terrain");
+		stream->writeUint16(tiles[i].building, "building");
 		
-		stream->write(&(cases[i].resource), 4, "ressource");
+		stream->write(&(tiles[i].resource), 4, "ressource");
 		
-		stream->writeUint16(cases[i].groundUnit, "groundUnit");
-		stream->writeUint16(cases[i].airUnit, "airUnit");
-		stream->writeUint32(cases[i].forbidden, "forbidden");
-		stream->writeUint32(cases[i].guardArea, "guardArea");
-		stream->writeUint32(cases[i].clearArea, "clearArea");
-		stream->writeUint16(cases[i].scriptAreas, "scriptAreas");
-		stream->writeUint8(cases[i].canResourcesGrow, "canRessourcesGrow");
-		stream->writeUint16(cases[i].fertility, "fertility");
+		stream->writeUint16(tiles[i].groundUnit, "groundUnit");
+		stream->writeUint16(tiles[i].airUnit, "airUnit");
+		stream->writeUint32(tiles[i].forbidden, "forbidden");
+		stream->writeUint32(tiles[i].guardArea, "guardArea");
+		stream->writeUint32(tiles[i].clearArea, "clearArea");
+		stream->writeUint16(tiles[i].scriptAreas, "scriptAreas");
+		stream->writeUint8(tiles[i].canResourcesGrow, "canRessourcesGrow");
+		stream->writeUint16(tiles[i].fertility, "fertility");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();

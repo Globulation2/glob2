@@ -40,7 +40,7 @@ void Map::pathfindRandom(Unit *unit)
 {
 	int x=unit->posX;
 	int y=unit->posY;
-	if ((cases[x+(y<<wDec)].forbidden)&unit->owner->me)
+	if ((tiles[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
 		if (pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, &unit->dx, &unit->dy))
 		{

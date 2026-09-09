@@ -11,7 +11,7 @@
 #include "AIImplementation.h"
 #include "AICastorTuning.h"
 
-struct Case;
+struct Tile;
 class Game;
 class Map;
 class Order;
