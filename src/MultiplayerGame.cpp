@@ -162,7 +162,9 @@ void MultiplayerGame::joinGame(Uint16 ngameID)
 
 
 void MultiplayerGame::leaveGame()
-{	
+{
+    startRequested = false;
+    waitingForEngine = false;
 	shared_ptr<NetLeaveGame> message(new NetLeaveGame);
 	client->sendNetMessage(message);
 
@@ -251,6 +253,7 @@ void MultiplayerGame::updatePlayerChanges()
 void MultiplayerGame::setNetEngine(NetEngine* nnetEngine)
 {
 	netEngine = nnetEngine;
+    if (netEngine) waitingForEngine = false;
 }
 
 
@@ -484,7 +487,8 @@ void MultiplayerGame::receiveMessage(std::shared_ptr<NetMessage> message)
 	}
 	if(type==MNetStartGame)
 	{
-		startEngine();
+		startRequested = true;
+        waitingForEngine = true;
 	}
 	if(type==MNetRefuseGameStart)
 	{
@@ -602,33 +606,34 @@ void MultiplayerGame::receiveMessage(std::shared_ptr<NetMessage> message)
 
 
 
-void MultiplayerGame::startEngine()
+bool MultiplayerGame::takeStartRequest()
 {
-	Engine engine;
-	// host game and wait for players. This clever trick is meant to get a proper shared_ptr
-	// to (this), because shared_ptr's must be copied from the original
-	int rc=engine.initMultiplayer(client->getMultiplayerGame(), client, getLocalPlayer());
-	// execute game
-	if (rc==Engine::EE_NO_ERROR)
-	{
-		shared_ptr<MGGameStarted> event(new MGGameStarted);
-		sendToListeners(event);
-
-		if (engine.run()==-1)
-		{
-			shared_ptr<MGGameExitEvent> event(new MGGameExitEvent);
-			sendToListeners(event);	
-		}
-		else
-		{
-			shared_ptr<MGGameEndedNormallyEvent> event(new MGGameEndedNormallyEvent);
-			sendToListeners(event);	
-		}
-	}
-	// redraw all stuff
-	netEngine = NULL;
+    const bool requested = startRequested;
+    startRequested = false;
+    return requested;
 }
 
+void MultiplayerGame::sessionStarted()
+{
+    sendToListeners(std::make_shared<MGGameStarted>());
+}
+
+void MultiplayerGame::sessionEnded(bool quitApplication)
+{
+    waitingForEngine = false;
+    netEngine = nullptr;
+    if (quitApplication) sendToListeners(std::make_shared<MGGameExitEvent>());
+    else sendToListeners(std::make_shared<MGGameEndedNormallyEvent>());
+}
+
+void MultiplayerGame::startEngine()
+{
+    Engine engine;
+    if (engine.initMultiplayer(client->getMultiplayerGame(), client, getLocalPlayer()) == Engine::EE_NO_ERROR) {
+        sessionStarted();
+        sessionEnded(engine.run() == -1);
+    } else sessionEnded(false);
+}
 
 
 void MultiplayerGame::setDefaultGameHeaderValues()

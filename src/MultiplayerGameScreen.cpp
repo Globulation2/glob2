@@ -19,11 +19,17 @@
 
 #include "YOGMessage.h"
 #include "CustomGameOtherOptions.h"
+#include "GameLoadScreen.h"
+#include "GameSessionScreen.h"
+#include "MessageScreen.h"
+#include "Engine.h"
+#include <ScreenStack.h>
+#include <ApplicationHost.h>
 
 using std::static_pointer_cast;
 
-MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat)
-	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), game(game), gameChat(new YOGClientChatChannel(YOG_CHAT_CHANNEL_NONE, client)), ircChat(ircChat)
+MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<MultiplayerGame> game, std::shared_ptr<YOGClient> client, std::shared_ptr<IRCTextMessageHandler> ircChat)
+	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Game]")), screens(screens), client(client), game(game), gameChat(new YOGClientChatChannel(YOG_CHAT_CHANNEL_NONE, client)), ircChat(ircChat)
 {
 	// we don't want to add AI_NONE
 	for (size_t i=1; i<AI::SIZE; i++)
@@ -118,6 +124,7 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<
 
 MultiplayerGameScreen::~MultiplayerGameScreen()
 {
+    GAGCore::ApplicationHost::roomReady(false);
 	game->removeEventListener(this);
 	gameChat->removeListener(this);
 }
@@ -126,6 +133,7 @@ void MultiplayerGameScreen::onTimer(Uint32 tick)
 {
 	TabScreenWindow::onTimer(tick);
 	game->update();
+    if (game->takeStartRequest()) launchScheduledGame();
 	if(ircChat)
 		ircChat->update();
 }
@@ -161,9 +169,8 @@ void MultiplayerGameScreen::onAction(Widget *source, Action action, int par1, in
 			bool readOnly = true;
 			if(game->getMultiplayerMode() == MultiplayerGame::HostingGame)
 				readOnly = false;
-			CustomGameOtherOptions settings(game->getGameHeader(), game->getMapHeader(), readOnly);
-			settings.execute(globalContainer->gfx, 40);
-			game->updateGameHeader();
+            screens.push(std::make_unique<CustomGameOtherOptions>(game->getGameHeader(), game->getMapHeader(), readOnly),
+                [this](Screen&, int) { game->updateGameHeader(); });
 		}
 	}
 	else if (action==BUTTON_STATE_CHANGED)
@@ -416,6 +423,7 @@ void MultiplayerGameScreen::updateVisibleButtons()
 			percentDownloaded->visible=false;
 		}
 	}
+    GAGCore::ApplicationHost::roomReady(startButton->visible);
 }
 
 
@@ -425,3 +433,23 @@ void MultiplayerGameScreen::onActivated()
 	updateVisibleButtons();
 }
 
+
+void MultiplayerGameScreen::launchScheduledGame()
+{
+    GAGCore::ApplicationHost::roomReady(false);
+    screens.push(std::make_unique<GameLoadScreen>([game = game, client = client](Engine& engine) {
+        return engine.initMultiplayerTask(game, client, game->getLocalPlayer());
+    }), [this](Screen& load, int result) {
+        if (result != 1) {
+            game->sessionEnded(false);
+            if (result == 2) screens.push(std::make_unique<MessageScreen>(
+                Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"),
+                std::vector<std::string>{Toolkit::getStringTable()->getString("[ok]")}));
+            return;
+        }
+        auto engine = static_cast<GameLoadScreen&>(load).takeEngine();
+        game->sessionStarted();
+        screens.push(std::make_unique<GameSessionScreen>(screens, std::move(engine)),
+            [this](Screen&, int result) { game->sessionEnded(result == Screen::QUIT_APPLICATION); });
+    });
+}

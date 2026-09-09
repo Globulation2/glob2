@@ -3,8 +3,9 @@
 
 #include "Version.h"
 #include "MapHeader.h"
-#include "Game.h"
 #include <algorithm>
+#include <cassert>
+#include <cstring>
 #include "FileManager.h"
 #include <BinaryStream.h>
 

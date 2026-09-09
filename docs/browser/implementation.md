@@ -1,10 +1,21 @@
 # Browser platform delivery
 
-The browser target is under development, not a supported release. The release
-requires desktop browser single-player support, matching-release native
-cross-play, YOG invitation rooms with guests and accounts, 120-second coordinated
-reconnect, and self-hosted distribution. Mobile, voice chat, rankings, cloud saves,
-late joining, and backend-restart match recovery are excluded.
+The browser target is under development, not a supported release. Following the
+user's September 8 scope reduction, the release targets desktop browser
+single-player and existing YOG multiplayer: login, lobbies, room setup, joining,
+browser/browser and matching-release browser/native matches. Include gateway
+setup documentation and tests of complete matches. Compatibility checks and safe
+message handling remain required for the multiplayer that ships.
+
+Guest identities, private invitations, account-system modernization, coordinated
+120-second recovery/checkpoints, host migration, and production hosting automation
+and operational tooling are deferred. Refreshes and disconnections may end a
+player's participation; this release must not advertise seamless recovery or
+modernized account security. Existing development deployment files remain useful
+but are not proof of production qualification. Single-player, architecture,
+build coexistence, testing, screenshots and review requirements are unchanged.
+Mobile, voice chat, rankings, cloud saves, late joining, and backend-restart
+match recovery remain excluded.
 
 ## Architecture contracts
 
@@ -16,7 +27,7 @@ late joining, and backend-restart match recovery are excluded.
   gateway owns transport only. Simulation remains deterministic client lockstep.
 - Durable persistence acknowledgment must follow successful storage completion.
 - Resize is an application event applied between frames, never a reload.
-- A reconnect checkpoint must include simulation and network continuation state,
+- If implemented later, a reconnect checkpoint must include simulation and network continuation state,
   exclude another player's local UI state, and pass checksum verification.
 
 ## Release gates
@@ -25,15 +36,18 @@ These checkboxes track full release qualification, not whether code exists.
 For implemented features and scoped test results, see [current status](status.md).
 
 - [ ] Build coexistence across native client, lobby, router, gateway, and web
-- [ ] Explicit application/screen scheduling without Asyncify
+- [x] Explicit application/screen scheduling without Asyncify
 - [ ] WebGL2 rendering with context restoration and software fallback
 - [ ] Live resize and focus/visibility lifecycle
 - [ ] Transactional browser storage with import/export and failure handling
 - [ ] Browser and native secure transports; compatible protocol handshake
-- [ ] Invitation rooms, guests, optional accounts and credential migration
-- [ ] Pause barriers, checkpoints and refresh recovery
-- [ ] Self-hosting, immutable releases, backups, health checks and metrics
-- [ ] Browser, native, deployment, determinism and fault-injection test gates
+- [ ] Existing YOG rooms and complete browser/browser and browser/native matches
+- [ ] Documented gateway setup and explicit disconnect/refresh limitations
+- [ ] Browser, native, gateway, determinism and applicable fault-injection test gates
+
+Deferred original-plan gates: invitation rooms, guests, account migration,
+pause barriers/checkpoint recovery, and production deployment/operations.
+Deferral is a scope decision, not a claim these features are implemented.
 
 ## Build identity
 

@@ -53,8 +53,8 @@ void scheduledFrame(void* opaque)
         complete();
         return;
     }
-    // Queue only after the frame returns. During the migration an Asyncify
-    // suspension inside a legacy dialog must not start a second frame.
+    // Each callback completes before the next frame is scheduled. Browser UI
+    // transitions and loading jobs must return control to this host.
     emscripten_async_call(scheduledFrame, state, state->loop->delay(SDL_GetTicks()));
 }
 }
@@ -64,9 +64,9 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
     emscripten_async_call(scheduledFrame, state, 0);
 }
 
-void wait(std::uint32_t milliseconds)
+void wait(std::uint32_t)
 {
-    emscripten_sleep(milliseconds ? milliseconds : 1);
+    throw std::logic_error("Blocking application loops are unavailable in the browser; use scheduled screens or jobs");
 }
 bool takeVisibilityChange(bool& hidden)
 {
@@ -177,7 +177,7 @@ std::unique_ptr<Persistence> persistStorage() { return std::make_unique<BrowserP
 void importChanged(const char* state) { EM_ASM({ Module.importState = UTF8ToString($0); }, state); }
 void screenChanged(const char* name)
 {
-    EM_ASM({ Module['glob2Screen'] = UTF8ToString($0); }, name);
+    EM_ASM({ Module['glob2Screen'] = Module['glob2ScreenClass'] = UTF8ToString($0); }, name);
 }
 void simulationAdvanced(std::uint32_t tick)
 {
@@ -190,6 +190,7 @@ void exited(int result)
         if (Module['onGameExit']) Module['onGameExit']($0);
     }, result);
 }
+void roomReady(bool canStart) { EM_ASM({ Module.glob2RoomCanStart = Boolean($0); }, canStart); }
 void matchFrame(bool paused)
 {
     EM_ASM({

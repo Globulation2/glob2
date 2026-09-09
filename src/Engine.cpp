@@ -18,6 +18,7 @@ Engine::Engine() = default;
 
 Engine::~Engine()
 {
+    if (multiplayer) multiplayer->setNetEngine(nullptr);
 	// Finalize the replay of the session this Engine ran, if any.
 	// initGame allocated the writer; destroying it (ReplayWriter::finish)
 	// writes the NullOrder terminator and flushes the replay file. This must

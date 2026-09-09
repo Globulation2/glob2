@@ -7,7 +7,7 @@
 class Engine;
 
 // Retains the initialized engine through gameplay and the end-game screen.
-// Loading remains a separate migration concern.
+// In-game load/replay requests transfer the finalized engine to a loader child.
 class GameSessionScreen : public GAGGUI::Screen
 {
 public:

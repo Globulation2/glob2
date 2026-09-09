@@ -2,14 +2,55 @@
 
 ## Resume here
 
+**Scope changed September 8:** the user requested reducing the remaining
+multiplayer work. Finish existing YOG login/lobbies/rooms and browser/native
+cross-play, including compatibility, safe handling, complete-match tests and
+gateway setup documentation. Defer guests/invitations, account modernization,
+checkpoint/reconnect recovery, host migration and production hosting/operations.
+Refresh/disconnect can end participation. See [delivery scope](implementation.md).
+Older original-plan checklists below are historical; do not restart deferred
+features merely because an automatic goal reminder repeats the original plan.
+
+Latest cleanup: CI run `34302157222` exposed a server-only link failure on both
+Linux versions and Windows. An unused `Game.h` include in `MapHeader.cpp` pulled
+script prototypes into the headless parser; it is removed. Local server/router/web
+builds, nine browser map-load/cross-play cases and seven TLS tests pass. CI now
+builds servers earlier and cancels superseded development-branch runs. Confirm
+the next hosted result before declaring the build matrix green.
+
+New browser profiles now default to Mute, alongside disabled clouds. Existing
+saved settings override both defaults; desktop defaults are unchanged. Players
+can enable sound through the existing Settings checkbox.
+
+Map chooser failures now remain within the chooser instead of entering a blocking
+message box. Missing/corrupt files clear the previous selection and preview, and
+thumbnail allocations are released on exceptions. The unused legacy fertility
+dialog has been removed. In-game load/replay continuation now finalizes through
+`Engine::finishSessionForHost()` and transfers the existing engine to a cooperative
+`GameLoadScreen` child. Successful loading returns it to `GameSessionScreen`;
+failure uses a scheduled notice, and cancellation/failure return to the retained
+parent setup screen. Native synchronous hosts retain an explicit adapter.
+The browser reload regression also exposed script-GC lifetime bugs, now fixed
+with per-interpreter method tables and complete live-reference marking; see
+[script lifetimes](adr-007-script-lifetimes.md). The browser now builds without
+Asyncify; legacy blocking waits explicitly reject browser use. See the latest
+status entry for callback-only runtime qualification: 204 software and 120
+WebGL2 cases pass across three engines, plus native/session and visibility checks.
+The Linux real-window launcher now reports early exits and explicitly configures
+its test-only sandbox/software GPU; confirm the next hosted run.
+
 The latest runtime change moves YOG login/registration, lobby tab ownership,
 map selection, join progress, map transfer navigation and error notices onto
 the shared screen stack. Login transitions are deferred until network listener
 dispatch returns. The native regression also covers destroying a completed tab,
 including an empty tab. See the latest status section for validation.
-Next runtime work is multiplayer match launch/execution and its settings dialogs;
-these still use blocking calls, so Asyncify remains required. Do not conflate
-this menu migration with completed reconnect, identity or protocol work.
+The following change schedules YOG match loading/execution and settings too;
+its validation is recorded in the latest status section. LAN hosting/joining now
+use the same scheduled screens too, including cancellation and timeout handling.
+The multiplayer tab no longer has a blocking fallback, and the unused blocking
+LAN bring-up helper has been removed. The headless simulation driver retains its
+explicit native host loop. Interactive browser flows use scheduled screens. Do not conflate
+these runtime changes with completed reconnect, identity or protocol work.
 
 Latest follow-up: browser reload/address-bar shortcuts pass automated checks
 with both renderers and actual Safari. The user uses **Colemak**: this Mac's UI
@@ -21,8 +62,18 @@ coexistence failure also reproduced locally on a cold configuration: SCons
 only discovered the generated header on the second build. Registering it as a
 generated target fixes the focused cold-build regression and local full
 coexistence check. Hosted native-first and web-first jobs now pass, along with
-Windows and both Linux jobs; concurrent coexistence passed and its browser
-tests remain in progress. See the latest dated status
+Windows and both Linux jobs. Run 34292287930 completed: concurrent coexistence
+passed, but browser qualification failed in Linux Firefox (three WebGL/context
+tests fell back to software, shutdown reported rejected audio-resume promises,
+and post-reload audio stayed suspended). The newer LAN runs are still pending.
+The shell now handles its own audio resume/close race; SDL's pinned audio backend
+also resumes suspended contexts internally, so a hosted pass is still required.
+Follow-up reproduces both problems outside the game in the pinned Playwright
+1.63.0 Linux container: headless Firefox cannot create WebGL2; Xvfb fixes that,
+and a PulseAudio null sink lets audio resume. All five previously failing game
+scenarios pass locally on Linux with this setup. CI now runs Firefox headed
+under Xvfb with the silent audio service; hosted completion is still required.
+See the latest dated status
 sections rather than treating the older warm-build passes as cold-build proof.
 
 The user resumed work after the subscription handoff. The first follow-up
@@ -138,32 +189,19 @@ was not rerun in this session; simulation and protocol code did not change.
 
 ## Next work
 
-The handoff's click-fix requalification is complete: 99 selected WebGL cases,
-three software input cases and two real-window visibility cases pass on the
-final adapter. Eleven browser unit tests, nine build-system tests and the local concurrent/
-incremental coexistence check also pass. The 99-case suite is a current run;
-the broader historical 114-case import/corruption suite remains separate.
-
-1. Verify hosted CI after upstream integration. Upstream `master` at
-   `753531310` is now integrated, including the resource-fetch regression. Its
-   workflow path is corrected to the isolated Linux directory. The older run
-   inspected was
-   `34274132634` at head `47e9e41ed`: Windows used the wrong harness directory,
-   Linux referenced a missing resource-fetch harness under the old build path,
-   and all coexistence jobs failed an opaque no-op-output assertion. Current
-   Windows and Linux aspect-test paths are corrected; coexistence now reports
-   exact changed files and whether bytes or only timestamps changed. The
-   resource-fetch step is now present after integration. Do not claim hosted CI
-   is green from the local results.
-2. Finish single-player release qualification: remaining Safari/Edge matrix,
-   controlled renderer performance, browser shortcut/focus coverage and legacy
-   writer audit. Safari 26.6.2 now has an actual-browser smoke pass; its full
-   details and limits are in `safari-smoke.md`. Ordinary single-player scheduling
-   is already migrated; Asyncify remains in legacy flows and rare error dialogs.
-3. Get maintainer feedback on the PR. Larger original-plan work remains:
-   guest/invitation/account migration, stronger simulation/data compatibility,
-   room authorization, 120-second checkpoint recovery, all-AI/native-platform
-   determinism and production self-hosting/upgrade/rollback qualification.
+1. Verify the latest hosted CI. Windows, both Linux native jobs and both sequential
+   build orders pass on recent runs; concurrent browser qualification still needs
+   a completed green result. Do not equate local passes with a hosted pass.
+2. Finish release qualification: actual Safari/Edge matrix, controlled renderer
+   performance, and the remaining persistence/input audit. Safari 26.6.2 has a
+   manual smoke pass; see `safari-smoke.md` for its limits. Browser scheduling is
+   callback-only and no longer requires Asyncify.
+3. Close the existing YOG gates: complete browser/browser and browser/native
+   matches, compatibility/safe message handling, native-platform determinism and
+   gateway setup documentation. Guests, invitations, account modernization,
+   recovery and production hosting remain deferred under the amended scope.
+4. Get maintainer feedback and finish review qualification. Keep the PR draft
+   while the supported-release gates above remain unresolved.
 
 Do not turn these qualification items into claims that WebGL, persistence,
 cooperative loading or cross-play still need to be implemented from scratch.

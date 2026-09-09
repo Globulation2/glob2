@@ -28,7 +28,6 @@
 #include "Brush.h"
 #include "Bullet.h"
 #include "TextStream.h"
-#include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"
 

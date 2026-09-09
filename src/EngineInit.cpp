@@ -77,15 +77,22 @@ GAGCore::CooperativeTask Engine::initCustomTask(std::string filename)
 
 int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer)
 {
+    const bool loaded = initMultiplayerTask(multiplayerGame, client, localPlayer).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
+}
+
+GAGCore::CooperativeTask Engine::initMultiplayerTask(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer)
+{
+    if (localPlayer < 0 || localPlayer >= multiplayerGame->getGameHeader().getNumberOfPlayers()) co_return false;
 	gui.localPlayer = localPlayer;
 	gui.localTeamNo = multiplayerGame->getGameHeader().getBasePlayer(localPlayer).teamNumber;
 
 	// On failure, initGame has not created `net`; propagate the error before
 	// touching it, and leave `multiplayer` unset so the engine is not left
 	// half-initialised (mirrors the clean state teardownSession leaves).
-	int ret = initGame(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
-	if (ret != EE_NO_ERROR)
-		return ret;
+	const bool loaded = co_await initGameTask(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
+	if (!loaded) co_return false;
 
 	multiplayer = multiplayerGame;
 	multiplayer->setNetEngine(net.get());
@@ -100,7 +107,7 @@ int Engine::initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, st
 
 	net->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client->getGameConnection());
 
-	return Engine::EE_NO_ERROR;
+	co_return true;
 }
 
 

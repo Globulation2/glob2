@@ -4,8 +4,7 @@ Globulation 2 runs in a full-page browser client with campaigns, tutorials,
 custom games, map editing, local saves and experimental YOG cross-play.
 WebGL2 is available with `?renderer=webgl2`; software remains the default and
 fallback pending complete GPU qualification. The pinned Emscripten 4.0.15 build
-shares game logic and the GPU renderer with desktop. Asyncify remains during
-lifecycle migration. This is a development target, not a supported stable release.
+shares game logic and the GPU renderer with desktop. The browser host schedules frames and cooperative jobs without Asyncify. This is a development target, not a supported stable release.
 See the [status and test evidence](../docs/browser/status.md) for remaining gates.
 
 ## Build
@@ -83,6 +82,27 @@ npx playwright install chromium firefox webkit
 npm test
 ```
 
+On Linux CI or a container without a desktop session, Firefox needs Xvfb for
+WebGL2 and an audio service for `AudioContext.resume()` to complete. After
+installing the Playwright browser dependencies, use:
+
+```sh
+sudo apt-get install -y pulseaudio
+pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
+GLOB2_FIREFOX_HEADED=1 xvfb-run -a npm test
+```
+
+The null sink processes audio silently. On a workstation with an existing sound
+server, use that server instead. `GLOB2_FIREFOX_HEADED=1` affects Firefox only;
+the tests still require actual WebGL2 and audio activation. It does not bypass
+assertions or select the software game renderer. Other environments retain the
+default headless browser configuration.
+
+For the separate real-window visibility suite in a Linux container, set `CI=1`
+and run `xvfb-run -a npx playwright test --config visibility.config.js`. Its local
+test browser then uses `--no-sandbox` and SwiftShader; these settings affect only
+the test process and do not establish hardware GPU performance.
+
 Use `npm test -- --project=chromium` for a focused run. The package lock pins the
 test runner and its browser revisions. Failures retain traces and screenshots
 under `build/browser-test-results`. These initial tests do not yet cover the
@@ -92,7 +112,8 @@ release testing in actual Safari, nor Chromium for Edge.
 Run the suite with `GLOB2_TEST_RENDERER=webgl2` to select GPU rendering throughout.
 Dedicated renderer tests exercise resize and actual context loss/restoration.
 The [status ledger](../docs/browser/status.md) records which suites passed and
-which platform, performance and recovery gates remain open.
+which platform, performance and existing-multiplayer gates remain open. New
+multiplayer features, including reconnect recovery, are deferred.
 
 Build outputs and the SDK are ignored local files. Serve the output directory;
 opening the HTML as a `file:` URL is unsupported. The SDL audio backend still

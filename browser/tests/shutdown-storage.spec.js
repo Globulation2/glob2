@@ -39,7 +39,7 @@ test('quit waits for final persistence through resize and escape',async({page})=
   await screen(page,'exited');
   expect((await state(page)).persistence).toBe('persisted');
   await page.reload(); await screen(page,'MainMenuScreen');
-  expect(await page.evaluate(()=>glob2Diagnostics.preferences())).toEqual({optionFlags:1});
+  expect(await page.evaluate(()=>glob2Diagnostics.preferences())).toEqual({optionFlags:1,mute:1});
 });
 
 test('quit offers visible retry after a failed final save',async({page},info)=>{

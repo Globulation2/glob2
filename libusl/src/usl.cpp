@@ -95,28 +95,25 @@ Usl::Usl()
 	}
 }
 
-Usl::~Usl() {
-	collectGarbage();
-}
+Usl::~Usl() = default;
 
-void Usl::markGarbage()
+void Usl::markGarbage() const
 {
 	root->markForGC();
-	for (auto& thread : threads) thread.markForGC();
+	for (const auto& thread : threads) thread.markForGC();
 }
 
 void Usl::collectGarbage()
 {
 	// mark
+	// These two objects are uniquely owned, outside heap.values. The sweep
+	// cannot reset their marks, so reset them before each root traversal.
+	root->clearGCMark();
+	prototype->clearGCMark();
 	markGarbage();
 
 	// sweep
 	heap.collectGarbage();
-	// These two roots are owned outside heap.values, so the heap sweep does not
-	// clear their marks. Without this, later collections skip their children and
-	// reclaim live bridge constants (including gui) and runtime definitions.
-	root->clearGCMark();
-	prototype->clearGCMark();
 }
 
 void Usl::includeScript(const std::string& name, std::istream& stream)

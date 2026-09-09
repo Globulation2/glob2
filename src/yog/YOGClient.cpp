@@ -379,7 +379,9 @@ void YOGClient::update()
 		message = nc.getMessage();
 	}
 
-	if(gameConnection)
+    // Keep router orders queued while the host cooperatively initializes its
+    // engine. Dropping them here would desynchronize peers with different load times.
+	if(gameConnection && (!joinedGame || !joinedGame->isWaitingForEngine()))
 	{		
 		shared_ptr<NetMessage> message = gameConnection->getMessage();
 		while(message)

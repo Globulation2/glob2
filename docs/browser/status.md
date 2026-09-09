@@ -3,6 +3,170 @@
 Browser support remains experimental. This ledger distinguishes delivered
 infrastructure from the supported-release acceptance criteria.
 
+**September 8 scope revision:** the user requested reducing the remaining
+multiplayer work. Existing YOG multiplayer and matching-release cross-play stay
+in scope; guests/invitations, account modernization, recovery/host migration and
+production hosting/operations are deferred. Compatibility and safe handling,
+complete-match tests and gateway setup documentation remain required. See
+[current delivery scope](implementation.md); older references to the full
+original plan below describe the former scope, not release blockers to reopen.
+
+## Headless dependency and CI cleanup — 2026-09-08
+
+Hosted run `34302157222` exposed the same YOG server link failure on Ubuntu
+22.04, Ubuntu 24.04 and Windows: `MapHeader.cpp` unnecessarily included `Game.h`,
+which instantiated script prototype code after the interpreter's GC methods moved
+out of line. The map-header parser does not use Game. Removing that include and
+including its C assertion/string dependencies directly restores the headless
+boundary without linking the simulation/interpreter into the server.
+
+Local server, router, browser and native transport builds pass. The server's
+map-header object has no script-interpreter symbol references. All nine build
+identity tests and seven TLS transport tests pass. Nine WebGL2 browser cases pass
+across Chromium/Firefox/WebKit: damaged map selection and native TCP/WSS matches
+with matching checksums. Logs: `/tmp/glob2-server-cleanup-build.log`,
+`/tmp/glob2-server-cleanup-web.log`, `/tmp/glob2-ci-cleanup-router.log`,
+`/tmp/glob2-ci-cleanup-transport-build.log`, `/tmp/glob2-ci-cleanup-unit.log`,
+`/tmp/glob2-ci-cleanup-wss.log`, `/tmp/glob2-ci-cleanup-browser.log`.
+
+CI now builds the headless server immediately after the desktop client, before
+longer regression suites. New development-branch runs cancel obsolete runs of the
+same branch; master runs are not cancelled. The workflow parses successfully and
+retains all regression/coexistence tests. Gateway/README scope notes now agree with
+the explicit deferral of accounts/invitations/recovery. Hosted confirmation of the
+new head remains required; the failing parent run is not a passing release gate.
+
+## Callback-only browser runtime — 2026-09-08
+
+The Emscripten target no longer enables Asyncify or reserves an Asyncify stack.
+The browser host schedules frames and cooperative jobs normally; its legacy
+blocking wait throws an explicit logic error. Desktop waits are unchanged.
+The reachability audit covers native command-line engine adapters, compatibility
+Screen/Overlay/MessageBox loops, and the inactive browser IRC bridge; the shipped
+shell does not enter those native modes. See [lifecycle decision](adr-003-screen-execution.md).
+
+A maintained Playwright check inspects the served Wasm exports and rejects
+Asyncify instrumentation. It detects the five Asyncify exports in the previous
+instrumented artifact and passes on the new release. The current artifact is
+6,189,296 bytes before compression; this is not a controlled performance baseline.
+
+Validation: release Wasm build, all nine build-system tests, all 14 browser unit
+cases and the native session harness pass. The full software suite passes all
+204 cases across Chromium, Firefox and WebKit; the selected WebGL2 runtime suite
+passes all 120 cases, including the artifact guard. The artifact-only three-project
+run passes too. Real-window visibility tests pass with both renderers on macOS.
+Logs: `/tmp/glob2-no-asyncify-build.log`, `/tmp/glob2-no-asyncify-unit.log`,
+`/tmp/glob2-no-asyncify-native.log`, `/tmp/glob2-no-asyncify-software.log`,
+`/tmp/glob2-no-asyncify-webgl.log`, `/tmp/glob2-no-asyncify-artifact.log`, and
+`/tmp/glob2-no-asyncify-visibility-{software,webgl,final}.log`.
+
+Hosted run `34297421407` now confirms the earlier Linux Firefox setup fix: its
+browser suites passed, but the separate visibility browser did not open its debug
+port. That launcher previously discarded stderr. It now reports early launch
+failure, and Linux CI uses an unsandboxed test window with explicit SwiftShader,
+matching the test environment's lack of user namespaces/hardware GPU. These flags
+apply only to the test process, never player browsers. A Playwright 1.63 Linux
+container reproduced the root/sandbox startup failure and then software-GPU
+fallback; the corrected real-window tests pass with both renderers against the
+new Wasm artifact. Logs: `/tmp/glob2-no-asyncify-linux-visibility-{software,webgl}-final.log`.
+This is functional CI coverage, not hardware GPU/performance qualification.
+A green hosted run of the new head is still required.
+
+## Cooperative in-game reloads and script lifetimes — 2026-09-08
+
+In-game save/replay requests now finalize the outgoing session without loading
+inside its callback. A loader child owns the existing engine during cooperative
+initialization and hands it back on success. Failure/cancellation releases partial
+state and returns to the retained parent setup screen; failure uses a scheduled
+notice. Parent resize/focus handling tolerates the temporary absence of an engine.
+Native synchronous hosts retain their explicit adapter.
+
+Actual browser reloads exposed a script-interpreter use-after-free: repeated GC
+skipped externally owned roots, did not trace live thread/code references, and
+native method tables were shared across independent heaps. The collector now
+traces those references, resets external marks and owns method tables per heap.
+Interpreter destruction releases its remaining heap. See
+[script lifetime decision](adr-007-script-lifetimes.md).
+
+Validation: desktop client, Wasm release and native multiplayer peer builds pass.
+The native session harness passes GC reachability/isolation/reclamation and
+reused-engine success/cancellation/failure checks alongside existing simulation,
+editor and fertility regressions. The focused maintained GC test block also passes
+AddressSanitizer and UndefinedBehaviorSanitizer in an isolated native executable.
+Nine WebGL2 cases pass across Chromium/Firefox/WebKit for repeated in-game save
+loading, damaged-load recovery and replay reload. Five Chromium software cases
+pass for those three flows plus TCP and verified WSS native cross-play with
+matching checksums. Logs: `/tmp/glob2-reload-native-build.log`,
+`/tmp/glob2-reload-web-build.log`, `/tmp/glob2-reload-native-test.log`,
+`/tmp/glob2-usl-gc-sanitizer-test.log`, `/tmp/glob2-session-reload-final.log`,
+`/tmp/glob2-reload-crossplay.log`. The final source changes after these builds
+only adjust comments/documentation and the CI test list.
+
+At this earlier milestone Asyncify remained enabled; the callback-only runtime
+entry above records its subsequent removal and qualification.
+
+## Map chooser and legacy dialog cleanup — 2026-09-08
+
+Map preview/header failures no longer enter a blocking message box. Selection,
+metadata and preview are invalidated before another file is opened, preventing
+Enter from accepting the previous valid map after a failed read. Errors use the
+existing short localized title so the notice fits the minimum viewport. Thumbnail
+streams/temporaries release resources on exceptions and are marked loaded only
+on success. The unused blocking fertility dialog and stale includes are removed;
+active cooperative fertility calculations remain covered by the session harness.
+
+Desktop client and Wasm release builds pass, as does the native session harness
+including valid → missing/corrupt → valid selection recovery. Browser corruption,
+Enter rejection, 800×600 resize and return-to-menu checks pass across Chromium,
+Firefox and WebKit with both renderers (six cases). Logs:
+`/tmp/glob2-map-error-native-build.log`, `/tmp/glob2-map-error-web-build.log`,
+`/tmp/glob2-map-error-native-test.log`, `/tmp/glob2-map-error-browser-final.log`,
+`/tmp/glob2-map-error-browser-software.log`. CI includes the new chooser regression
+in both renderer passes. An initial browser test incorrectly used the gameplay
+frame counter for a menu; the corrected test verifies viewport application and
+navigation, and the native regression verifies selection state directly.
+
+Asyncify is still required by in-game load/replay continuation through
+`Engine::finishSession()` and the synchronous initialization error path. That is
+the next runtime migration; this change does not claim Asyncify removal.
+
+## Browser audio defaults and CI follow-up — 2026-09-08
+
+Linux follow-up: reproduced the graphics/audio failures independently of Glob2
+using Playwright 1.63.0 in its Noble arm64 container (image digest
+`sha256:5536bbbd0ffc106a9fdab13fbff6b3abab01418cceff67ff246552b64cf5623d`). Headless Firefox
+could not create WebGL2; headed Firefox under Xvfb created a llvmpipe context.
+Audio stayed suspended in both until a PulseAudio null sink was started. Then
+all five formerly failing game scenarios passed in 1.2 minutes, including
+context restoration, shutdown and save/reload/audio (`/tmp/glob2-linux-firefox-regressions.log`).
+Seven additional input/settings cases passed with WebGL2, including durable
+muting preferences, quota failures and interrupted writes
+(`/tmp/glob2-linux-firefox-input-settings.log`).
+CI now uses that display/audio setup, without changing renderer/audio assertions.
+This is local Linux arm64 evidence; GitHub's full Linux x86 matrix still needs
+to complete successfully. Setup is documented in `browser/README.md`.
+
+New browser profiles start muted using the existing game setting. Stored mute
+preferences take precedence and desktop defaults are unchanged. The shell also
+handles rejected audio activation promises when SDL closes a pending context;
+other activation failures are logged and remain retryable on later gestures.
+
+Validation: release Wasm build passed (`/tmp/glob2-muted-browser-build.log`),
+14 JavaScript unit cases and nine build-system tests passed. Six browser cases
+passed across Chromium, Firefox and WebKit: saving the muted default, explicitly
+unmuting, reloading and saving again, plus settings/credits navigation and clean
+shutdown (`/tmp/glob2-muted-browser-tests.log`, `build/browser-muted-default`).
+An earlier WebGL save/reload run timed out during Chromium text editing; its
+Firefox continuation was interrupted to incorporate the mute change. That run
+is not a passing save/reload qualification (`/tmp/glob2-audio-activation-browser.log`).
+
+Hosted run 34292287930 passed native builds and all build coexistence checks,
+but failed five Linux Firefox browser cases: three WebGL/context tests fell
+back to software, shutdown rejected audio-resume promises, and post-reload audio
+remained suspended. Local passes do not close those hosted failures. Investigate
+Linux graphics/audio availability and SDL's own internal resume handling next;
+keep the assertions intact.
+
 ## Current single-player milestone
 
 The browser game is playable end to end. Campaigns/tutorials, custom matches,
@@ -636,3 +800,84 @@ WSS. Both native peers complete at least 250 ticks, with command-boundary
 checksums matching the browser. Log: `/tmp/glob2-yog-crossplay-fixed.log` (3.1m).
 The final four Chromium navigation checks also pass; the first failed cross-play
 run and its trace remain in `build/browser-yog-final` for the ownership diagnosis.
+
+## Scheduled YOG match execution — 2026-09-08
+
+YOG start admission now records a launch request. The host consumes it after
+network update; browser and desktop YOG tabs queue cooperative multiplayer
+loading, then the same `GameSessionScreen` used by single-player. Match settings
+are also screen-stack children. Invalid local-player IDs fail before header
+indexing, failed loading displays a scheduled notice, and cancelled loading
+leaves the room. This does not implement coordinated reconnect recovery.
+
+Router orders remain queued while initialization waits for its engine, including
+after the host consumes the pending launch request. Both session teardown and
+engine destruction clear the borrowed network-engine pointer. Browser diagnostics
+now expose the screen class separately from the `match` display state.
+
+Release native and Wasm builds pass. The native engine-session harness passes
+with new deferred-launch/queue-hold/invalid-player coverage and existing fixed-seed
+session, editor and cancellation checks. The real native LAN harness passes two
+host/join/ready/leave/rejoin cycles with exact 616,018-byte map downloads. Logs:
+`/tmp/glob2-scheduled-match-session-final.log` and
+`/tmp/glob2-scheduled-match-lan.log`.
+
+LAN screens and the native headless peer still use explicit synchronous execution
+hosts, now outside network-message dispatch. The optional stack argument on the
+multiplayer tab is a migration bridge; it must disappear with the remaining LAN
+screen migration before claiming the fully callback-based platform. Asyncify,
+legacy UI/storage qualification and the larger protocol/identity/recovery and
+release-distribution milestones remain open.
+
+
+The first final browser matrix passed 14 of 15 cases. WebKit/WSS reached a
+ready room but the fixture waited for two Ready messages, although the protocol
+only requires the native player's Ready message. The fixture now obtains the
+native player's server-issued ID from its startup log and checks that specific
+Ready message. It no longer relies on timing-dependent repeated readiness.
+The initial trace remains in `build/browser-scheduled-match-final`; the log is
+`/tmp/glob2-scheduled-match-final.log`. No production assertion or timeout was
+relaxed. The earlier settings-test cleanup also now waits for the room-list
+update before clicking Quit, and `screenClass` assertions use the separate
+class diagnostic instead of the human-readable `match` state.
+
+The targeted readiness rerun then exposed the complementary UI race: a raw
+WebSocket Ready frame can arrive before SDL consumes it. A read-only
+`roomCanStart` presentation diagnostic now reports the room Start control state;
+the fixture waits for both the native player's Ready message and that state.
+The failed targeted trace remains in `build/browser-scheduled-match-ready`.
+
+
+The corrected final rerun passes all nine settings/native cross-play cases across
+Chromium, Firefox and WebKit (3.7m), including TCP and verified WSS, at least 250
+native ticks and matching command-boundary checksums. The earlier matrix also
+passed all six browser/browser matches (no AI and Cortex across three engines).
+Scheduled execution is asserted through `screenClass`. Final rerun log:
+`/tmp/glob2-scheduled-match-controls.log`; final native session log:
+`/tmp/glob2-scheduled-match-session-controls.log`. The complete original browser
+release scope remains open; these results qualify this YOG scheduling change.
+
+## Shared LAN screen cleanup — 2026-09-08
+
+Desktop LAN host/join navigation, connection progress, lobby ownership and errors
+now use the shared screen stack. Connection/login/list waits advance once per
+frame with cancellation and a 10-second deadline per stage. The multiplayer tab
+requires a stack reference; its blocking fallback and the now-unused blocking
+LAN bring-up helper are removed. Browser networking still uses WebSockets.
+
+The native regression drives the production scheduled host and join paths. It
+passes cancellation and greeting-timeout cleanup against an unresponsive server,
+using supplied frame ticks for the deadline, followed by two real
+host/join/ready/leave/rejoin cycles and exact 616,018-byte map downloads. The
+native engine-session harness also passes. Evidence:
+`/tmp/glob2-lan-cleanup-final.log`, `build/lan-cleanup-final/host.log`, and
+`/tmp/glob2-lan-cleanup-session.log`. Release Wasm and native harness builds pass.
+
+This closes the LAN UI migration; the headless simulation driver remains an
+explicit native host loop. Remaining Asyncify callers, persistence/performance
+qualification, protocol/identity/recovery and distribution gates still need work.
+
+The full native desktop executable also builds successfully. Three Chromium/WebGL
+regressions pass: settings resize/return and browser/native TCP and verified-WSS
+matches, with matching checksums through at least 250 native ticks. Logs:
+`/tmp/glob2-lan-cleanup-desktop.log` and `/tmp/glob2-lan-cleanup-browser.log`.

@@ -328,7 +328,7 @@ void YOGClientLobbyScreen::hostGame()
 
 void YOGClientLobbyScreen::showGame(std::shared_ptr<MultiplayerGame> game)
 {
-	ownedGameScreen = std::make_unique<MultiplayerGameScreen>(parent, game, client, ircChat);
+	ownedGameScreen = std::make_unique<MultiplayerGameScreen>(parent, screens, game, client, ircChat);
 	gameScreen = ownedGameScreen->getTabNumber();
 	updateButtonVisibility();
 	parent->activateGroup(gameScreen);

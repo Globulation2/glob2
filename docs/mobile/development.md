@@ -457,3 +457,17 @@ and fresh-process relaunch, retains output under `build/mobile-smoke-ios`, and
 terminates the apps it launched. Shutdown of the simulator is owned by the caller.
 Neither runner substitutes for physical-device graphics, thermal or accessibility
 qualification. CI uses Xcode 26.6 and the iOS 26.5 runtime explicitly.
+
+The LAN regression runner now uses private profiles under its output directory and
+a temporary three-port range. Run it as:
+
+```
+python3 test/run_lan_session_test.py build/darwin/client/release/src/LANSessionHarness --output build/lan-session-test
+```
+
+It rejects stale binaries that do not support `GLOB2_TEST_PORT_BASE`. Leave the
+diagnostic override unset for ordinary clients, servers and browser gateways.
+
+The diagnostic port override is linked only into `LANSessionHarness`; production
+executables retain constant protocol ports. Run the harness through its Python
+runner, which supplies an isolated port set and worktree-local profiles.

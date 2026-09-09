@@ -1,11 +1,36 @@
+<!-- Latest reconciliation validation: 51/51 targeted browser cases passed across
+Chromium, Firefox and WebKit; isolated LAN harness passed two complete cycles. -->
 # Mobile verification and remaining work
 
-Recorded 2026-09-08. The working branch is now rebased onto browser `9dc201436`;
+Recorded 2026-09-08. The current continuation merges browser `246a47d50`;
+the preceding mobile checkpoints used browser `9dc201436`.
 the older sections retain their original checkpoint IDs and evidence. The prior
 browser base was `c7c534b8d3af4b07c535d3d780fc5207531a1b6f`, merged in `0b977ab61`.
 iOS qualification uses Xcode 26.6
 (17F113), SDK 26.5, and the iOS 26.5 ARM64 simulator runtime (23F77).
 The historical Android screenshots near the end were collected on `7333e4e8b`.
+
+## Browser-base reconciliation and isolated LAN validation
+
+The mobile branch incorporates browser `246a47d50`: scheduled LAN/YOG startup,
+cooperative in-game reloads, removal of Asyncify, interpreter lifetime fixes and
+headless map-header isolation. Merge resolution retains phone loading forms,
+recovery checkpoints/final-save errors and input cancellation. A game screen now
+checks whether it still owns its engine while a scheduled loader holds it.
+The browser collector supersedes the older mobile root-mark workaround.
+
+Native savegame-safety, engine/session/reload/interpreter and touch suites pass.
+All 23 build-system checks and 14 browser JavaScript unit tests pass. Android ARM64,
+iOS ARM64 simulator and the non-Asyncify Wasm release compile successfully.
+
+The first LAN run could not bind port 7489 because the separate browser checkout
+was running its own qualification server. That process was left alone. The runner
+now reserves a temporary three-port range via `GLOB2_TEST_PORT_BASE`, validates
+that the binary supports isolation, uses separate profiles under its output path,
+and does not broadcast its diagnostic lobby onto the LAN. Normal protocol ports
+remain 7489/7490/7491. Both real join/ready/leave cycles and byte-identical map
+transfers pass using the isolated ports; cancellation and greeting-timeout checks
+also pass. Logs use `build/mobile-browser-merge-*`.
 
 ## Single-player recovery and automated mobile smoke checks
 

@@ -78,7 +78,7 @@ async function localFileDigest(directory, name, extension) {
 Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   snapshot() {
     return Object.freeze({version:1, renderer:Module.renderer || 'loading', contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
-      tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
+      screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0,
       paused:Boolean(Module.glob2Paused), width:canvas.width, height:canvas.height,
       restore:Module.storageRestore || 'restoring',
       import:Module.importState || 'idle',
@@ -93,9 +93,11 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   preferences() {
     const path = '/home/web_user/.glob2/preferences.txt';
     if (!FS.analyzePath(path).exists) return null;
-    // Expose only graphics flags, never account fields from the same file.
-    const match = FS.readFile(path, {encoding:'utf8'}).match(/^optionFlags=(\d+)$/m);
-    return match ? Object.freeze({optionFlags:Number(match[1])}) : null;
+    // Expose only graphics and mute settings, never account fields.
+    const preferences = FS.readFile(path, {encoding:'utf8'});
+    const match = preferences.match(/^optionFlags=(\d+)$/m);
+    const mute = preferences.match(/^mute=(\d+)$/m);
+    return match ? Object.freeze({optionFlags:Number(match[1]), mute:mute ? Number(mute[1]) : null}) : null;
   },
   saveDigest(name) { return localFileDigest('games', name, 'game'); },
   mapDigest(name) { return localFileDigest('maps', name, 'map'); },
@@ -105,7 +107,11 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
 })});
 function focusGame() {
   canvas.focus();
-  Module.SDL2?.audioContext?.resume();
+  activateAudio();
+}
+function activateAudio() {
+  if (!Module.SDL2?.audioContext) return;
+  glob2ActivateAudio(Module.SDL2?.audioContext, error => Module.printErr('Audio activation failed: ' + error));
 }
 addEventListener('resize', () => {
   Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
@@ -119,7 +125,7 @@ canvas.addEventListener('webglcontextlost', event => {
 canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
 document.addEventListener('visibilitychange', () => { Module.visibilityPending = true; });
 canvas.addEventListener('pointerdown', focusGame);
-canvas.addEventListener('keydown', () => Module.SDL2?.audioContext?.resume());
+canvas.addEventListener('keydown', activateAudio);
 // SDL consumes navigation keys even when the browser needs them. Reserve reload
 // and address-bar shortcuts without cancelling their browser default action.
 // Key releases still reach SDL so a previously held game key cannot stick.

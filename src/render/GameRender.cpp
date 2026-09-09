@@ -24,7 +24,6 @@
 
 #include "Brush.h"
 #include "DynamicClouds.h"
-#include "FertilityCalculatorDialog.h"
 
 
 #include "GameRenderInternal.h"

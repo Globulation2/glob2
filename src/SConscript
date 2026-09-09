@@ -41,7 +41,8 @@ if not env['server']:
     local.Alias('global-gradient-test', gradient_test)
 
 if not env['server']:
-    lan_sources = [source for source in source_files if source != 'Glob2.cpp']
+    lan_sources = [source for source in source_files if source not in ('Glob2.cpp', 'yog/YOGConsts.cpp')]
+    lan_sources += local.Object('LANTestPorts.o', '#test/LANTestPorts.cpp')
     lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)

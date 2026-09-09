@@ -10,13 +10,27 @@ const {gameURL} = require('../tests/game-url');
 // Linux runners require a display (for example xvfb-run).
 test('background single-player suspends and returns without catching up', async ({baseURL}, info) => {
   const profile = await fs.mkdtemp(path.join(os.tmpdir(),'glob2-visibility-'));
+  // Linux CI lacks user namespaces and a hardware GPU. Give this local test
+  // window the same sandbox policy as Playwright and an explicit software GPU;
+  // these flags are never supplied to players' browsers.
+  const ciArgs = process.env.CI && process.platform === 'linux'
+    ? ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [];
   const child = spawn(chromium.executablePath(), ['--remote-debugging-port=0',
-    '--user-data-dir='+profile, '--no-first-run', '--no-default-browser-check', 'about:blank'], {stdio:'ignore'});
-  const exited = new Promise(resolve => child.once('exit',resolve));
+    '--user-data-dir='+profile, '--no-first-run', '--no-default-browser-check', ...ciArgs, 'about:blank'],
+    {stdio:['ignore','ignore','pipe']});
+  let launchError, launchLog = '';
+  child.stderr.on('data', chunk => { launchLog = (launchLog + chunk).slice(-4000); });
+  const exited = new Promise(resolve => {
+    child.once('exit',resolve);
+    child.once('error',error => { launchError = error; resolve(); });
+  });
   let browser, page;
   try {
     let port;
     await expect.poll(async () => {
+      if (launchError) throw launchError;
+      if (child.exitCode !== null || child.signalCode !== null)
+        throw new Error('Chromium exited before its debug port opened: ' + launchLog);
       try { port=(await fs.readFile(path.join(profile,'DevToolsActivePort'),'utf8')).split('\n')[0]; return true; }
       catch { return false; }
     }).toBe(true);

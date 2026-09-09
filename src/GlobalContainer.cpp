@@ -50,8 +50,9 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	fileManager->addWriteSubdir("videoshots");
 
 #ifdef __EMSCRIPTEN__
-	// Default to no clouds in browsers; saved preferences still take precedence.
+	// Start browser profiles quietly and without clouds. Saved preferences win.
 	settings.optionFlags |= OPTION_LOW_SPEED_GFX;
+	settings.mute = 1;
 #endif
 	// load user preference
 	settings.load();

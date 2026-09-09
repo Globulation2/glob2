@@ -59,5 +59,7 @@ void screenChanged(const char* name);
 void importChanged(const char* state);
 void simulationAdvanced(std::uint32_t tick);
 void matchFrame(bool paused);
+// Read-only presentation diagnostic for the active multiplayer room.
+void roomReady(bool canStart);
 void exited(int result);
 }

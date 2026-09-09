@@ -208,3 +208,85 @@ cleanup tolerates a group already removed on completion, including empty tabs.
 Transfer screen destruction cancels active transfers. Match execution and the
 multiplayer settings dialog remain legacy calls; this ownership migration does
 not remove their Asyncify dependency.
+
+### Scheduled YOG matches
+
+A server start message records a pending launch; it does not run a simulation
+inside socket dispatch. After the client update returns, the YOG game tab queues
+`GameLoadScreen` with `Engine::initMultiplayerTask`, then `GameSessionScreen`.
+The same task backs the synchronous initialization wrapper. Initialization rejects
+an absent local player before indexing the game header, and map-load failure
+returns through an in-game notice. Cancelled loading leaves the match.
+
+Router orders stay in the connection queue from start admission until the engine
+is attached. This preserves orders from a faster peer while cooperative loading
+is incomplete. Engine teardown detaches the borrowed network-engine pointer.
+The read-only browser diagnostic exposes `screenClass` separately from its
+human-readable `screen` state so scheduled execution can be verified during play. `roomCanStart` reports the
+room Start control’s readiness; observing a network frame alone does not prove
+that the UI has consumed it.
+
+YOG match settings also use a stack child and completion. LAN setup and the
+headless peer retain explicit synchronous hosts during migration; they consume
+pending launches after network update too. The optional stack argument on the
+shared multiplayer tab is transitional, not the supported platform end state.
+
+
+### LAN cleanup
+
+Desktop LAN hosting and discovery/join navigation now share the application
+screen stack. `LANSessionScreen` advances connection, login and room admission
+on timer updates, with a 10-second deadline per handshake stage. Cancel and failed
+admission close the connection; errors use scheduled notices. The lobby owns its
+multiplayer tab and breaks client/game ownership cycles when it closes. Discovery
+listening resumes when a join session returns.
+
+`MultiplayerGameScreen` now requires a stack reference for every caller. Its
+blocking settings/game fallback and the unused `YOGClientBringup` polling helper
+are removed. Browser networking remains WebSocket-based; this cleanup does not
+add UDP discovery or raw TCP capability to browsers.
+
+### Map selection error cleanup
+
+Map selection clears its previous admission state and preview before opening
+another file. Missing/corrupt files show the existing localized "Damaged Map"
+title in the chooser; no nested message-box loop is entered. The short title
+fits the supported minimum viewport. Selecting another valid file restores the
+normal title and selection. Thumbnail input streams and temporary previews use
+automatic ownership, and a thumbnail is marked loaded only after decoding.
+
+The unused `FertilityCalculatorDialog` and its stale includes have been removed.
+Active fertility work already uses the cancellable cooperative `FertilityScreen`.
+This does not yet remove Asyncify: in-game load/replay continuation still reaches
+the synchronous Engine initialization wrappers and their legacy error notice.
+
+### In-game load and replay continuation
+
+The next migration separates session finalization from loading. The shared
+`finishSessionForHost()` returns an optional filename/replay request after ending
+the old session and finalizing its replay writer. `GameSessionScreen` transfers
+its engine to a `GameLoadScreen` child, then resumes with that same engine after
+success. The parent has no engine while loading, so resize/focus propagation must
+not dereference it. Failure presents a scheduled notice; failure/cancellation
+leave the ended game and return to its retained parent screen. Partial state is
+released and RNG restored by the loader. Native synchronous hosts use the
+`finishSession()` adapter; browser screen callbacks do not.
+
+Repeated loading after actual gameplay exposed interpreter GC bugs that initial
+loading did not cover; [ADR 007](adr-007-script-lifetimes.md) records their fix.
+
+## Callback-only browser host — 2026-09-08
+
+The browser link no longer enables Asyncify. Each scheduled frame returns before
+the host queues its successor; menus, YOG navigation, match execution, in-game
+reloads and their error notices use the shared screen stack and cooperative jobs.
+`ApplicationHost::wait` rejects blocking browser calls with a logic error instead
+of yielding an arbitrary C++ stack or silently spinning. Native waits are unchanged.
+
+Reachability audit: `Engine::run` and its synchronous initialization/reload
+adapters serve native command-line/headless drivers. Legacy Screen/Overlay and
+MessageBox execution remain compatibility APIs; interactive browser screens do
+not call them. The shell supplies only viewport/full-page/renderer arguments,
+not native server/admin/headless modes. The browser IRC handler never starts
+the native IRC worker/parser; YOG chat remains available. Adding browser entry
+points must preserve these boundaries. Previous migration notes above are history.

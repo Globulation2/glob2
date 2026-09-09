@@ -9,6 +9,7 @@
 #include "ChecksumSidecar.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -449,40 +450,9 @@ void Engine::teardownSession()
 		globalContainer->datasetWriter.reset();
 	}
 
+	if (multiplayer) multiplayer->setNetEngine(nullptr);
 	net.reset();
 	multiplayer.reset();
-}
-
-// Decide whether run() should loop back into runOneGameSession (e.g. the GUI
-// armed a load-game request) or return to the menu. Always clears
-// toLoadGameFileName afterwards so the next pass doesn't re-trigger it.
-void Engine::prepareNextGameSession(bool& doRunOnceAgain)
-{
-	if (gui.exitGlobCompletely)
-	{
-		doRunOnceAgain = false;
-		return; // There is no bypass for the "close window button"
-	}
-
-	doRunOnceAgain = false;
-
-	if (!gui.toLoadGameFileName.empty())
-	{
-		int rv;
-
-		// A new game session is starting, so no EndGameScreen will be shown
-		// for the finished one: finalize its replay now (ReplayWriter::finish
-		// writes the NullOrder terminator and flushes). initGame requires the
-		// writer slot to be empty before it allocates the next session's.
-		globalContainer->replayWriter.reset();
-
-		if (globalContainer->replaying) rv = loadReplay(gui.toLoadGameFileName);
-		else rv = initCustom(gui.toLoadGameFileName);
-
-		if (rv == EE_NO_ERROR)
-			doRunOnceAgain = true;
-		gui.toLoadGameFileName.clear(); // Avoid the communication system between GameGUI and Engine to loop.
-	}
 }
 
 // Body of the outer "play one game and possibly load another" loop in run().
@@ -572,7 +542,7 @@ void Engine::cancelSessionInput()
     gui.suspendInput();
 }
 
-bool Engine::finishSession()
+std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 {
     if (!session) throw std::logic_error("No active engine session");
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
@@ -588,9 +558,19 @@ bool Engine::finishSession()
     teardownSession();
     session.reset();
     sessionInput.clear();
-    bool restart = false;
-    prepareNextGameSession(restart);
-    return restart;
+    const auto filename = std::exchange(gui.toLoadGameFileName, {});
+    if (gui.exitGlobCompletely || filename.empty()) return std::nullopt;
+    // The outgoing end screen will not be shown; finalize its replay before
+    // a cooperative initializer creates the next session's writer.
+    globalContainer->replayWriter.reset();
+    return PendingLoad{filename, globalContainer->replaying};
+}
+
+bool Engine::finishSession()
+{
+    const auto request = finishSessionForHost();
+    if (!request) return false;
+    return (request->replay ? loadReplay(request->filename) : initCustom(request->filename)) == EE_NO_ERROR;
 }
 
 void Engine::runOneGameSession(bool& doRunOnceAgain)

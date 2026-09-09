@@ -45,5 +45,6 @@ void screenChanged(const char* name) {
 }
 void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}
+void roomReady(bool) {}
 void exited(int) {}
 }

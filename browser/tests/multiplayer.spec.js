@@ -164,6 +164,24 @@ test('YOG map selection and upload screens resize and return to their owning tab
   await page.locator('#canvas').press('Escape'); await screen('MainMenuScreen');
 });
 
+test('YOG match settings resize and return to their room', async ({page}) => {
+  const types = receivedTypes(page);
+  const screen = name => expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).screen).toContain(name);
+  const click = (x,y) => page.locator('#canvas').click({position:{x,y},delay:80});
+  await loginPlayer(page,'transportplayer');
+  await click(1090,815); await screen('ChooseMapScreen');
+  await click(380,280); await click(810,590);
+  await expect.poll(types).toContain(16);
+  await click(1090,435); await screen('CustomGameOtherOptions');
+  await page.setViewportSize({width:1000,height:700});
+  await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).width).toBe(1000);
+  await page.locator('#canvas').press('Escape'); await screen('YOGSessionScreen');
+  const lists = types().filter(type => type === 50).length;
+  await click(890,525);
+  await expect.poll(() => types().filter(type => type === 50).length).toBeGreaterThan(lists);
+  await click(890,665); await screen('MainMenuScreen');
+});
+
 test('YOG disconnect message remains scheduled and returns cleanly after resize', async ({page}) => {
   let connection, backend;
   await page.routeWebSocket('**/yog', route => { connection=route; backend=route.connectToServer(); });
@@ -176,7 +194,7 @@ test('YOG disconnect message remains scheduled and returns cleanly after resize'
   await page.locator('#canvas').press('Escape'); await screen('MainMenuScreen');
 });
 
-function receivedTypes(page, direction = 'framereceived') {
+function receivedTypes(page, direction = 'framereceived', decode = body => body[0]) {
   const result = [];
   page.on('websocket', socket => {
     let bytes = Buffer.alloc(0);
@@ -185,7 +203,7 @@ function receivedTypes(page, direction = 'framereceived') {
       while (bytes.length >= 2) {
         const size = bytes.readUInt16BE(0);
         if (!size || bytes.length < size + 2) break;
-        result.push(bytes[2]); bytes = bytes.subarray(size + 2);
+        result.push(decode(bytes.subarray(2, size + 2))); bytes = bytes.subarray(size + 2);
       }
     });
   });
@@ -254,6 +272,8 @@ test(`two browser players create, join and start a YOG match (${ai.name})`, asyn
     await click(page, 1090, 475);
     for (const target of [page, guest])
       await expect.poll(async () => (await target.evaluate(() => glob2Diagnostics.snapshot())).tick, {timeout:60000}).toBeGreaterThan(100);
+    for (const target of [page, guest])
+      expect((await target.evaluate(() => glob2Diagnostics.snapshot())).screenClass).toContain('GameSessionScreen');
     await expect.poll(() => Math.min(hostChecksums.length, guestChecksums.length)).toBeGreaterThanOrEqual(25);
     const count = Math.min(hostChecksums.length, guestChecksums.length);
     expect(count).toBeGreaterThanOrEqual(25);
@@ -272,6 +292,7 @@ test(`browser and native players complete matching simulation checkpoints (${tra
   const peerLog = [];
   try {
     const hostTypes = receivedTypes(page), checksums = sentChecksums(page);
+    const readyPlayers = receivedTypes(page, 'framereceived', body => body[0] === 26 ? body.readUInt16BE(1) : null);
     const click = (x, y) => page.locator('#canvas').click({position: {x, y}, delay: 80});
     await loginPlayer(page, 'transportplayer');
     await click(1090, 815);
@@ -284,9 +305,16 @@ test(`browser and native players complete matching simulation checkpoints (${tra
     peer = started.child;
     peer.stdout.on('data', chunk => peerLog.push(String(chunk)));
     peer.stderr.on('data', chunk => peerLog.push(String(chunk)));
-    await expect.poll(() => hostTypes().filter(type => type === 26).length).toBeGreaterThanOrEqual(2);
+    const nativePlayerID = Number(/player-id=(\d+)/.exec(started.line)?.[1]);
+    expect(nativePlayerID).toBeGreaterThan(0);
+    // A single native Ready message is sufficient; repeated host readiness
+    // transitions depend on timing and are not part of the admission contract.
+    await expect.poll(readyPlayers).toContain(nativePlayerID);
+    // Wire observation precedes the next SDL frame; wait for the actual control.
+    await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).roomCanStart).toBe(true);
     await click(1090, 475);
     await expect.poll(async () => (await page.evaluate(() => glob2Diagnostics.snapshot())).tick).toBeGreaterThan(125);
+    expect((await page.evaluate(() => glob2Diagnostics.snapshot())).screenClass).toContain('GameSessionScreen');
     await page.screenshot({path: testInfo.outputPath('native-cross-play.png')});
     await expect.poll(() => peer.exitCode ?? peer.signalCode, {timeout: 45000}).toBe(0);
     const bytes = await readFile(path.join(work, nativeProfile, 'replays/last_game.replay.checksums'));

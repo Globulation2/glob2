@@ -24,7 +24,6 @@
 
 #include "Brush.h"
 #include "Bullet.h"
-#include "FertilityCalculatorDialog.h"
 
 #include "ReplayWriter.h"
 

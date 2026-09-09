@@ -8,15 +8,18 @@
 #include <StringTable.h>
 #include <iostream>
 GameLoadScreen::GameLoadScreen(Initializer initialize, GAGCore::CooperativeSlice slice)
-    : slice(std::move(slice)), previousRng(getSyncRandState()), engine(std::make_unique<Engine>())
+    : GameLoadScreen(std::make_unique<Engine>(), std::move(initialize), std::move(slice)) {}
+GameLoadScreen::GameLoadScreen(std::unique_ptr<Engine> engine, Initializer initialize, GAGCore::CooperativeSlice slice)
+    : slice(std::move(slice)), previousRng(getSyncRandState()), engine(std::move(engine))
 {
     enablePhoneForm();
+    if (!this->engine) throw std::invalid_argument("A loader requires an engine");
     auto& strings = *GAGCore::Toolkit::getStringTable();
     status = new GAGGUI::Text(0, 180, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", strings.getString("[Loading headers]"));
     addWidget(status);
     addWidget(new GAGGUI::TextButton(230, 340, 180, 40, ALIGN_SCREEN_CENTERED,
         ALIGN_SCREEN_CENTERED, "menu", strings.getString("[Cancel]"), 0, 27));
-    task.emplace(initialize(*engine));
+    task.emplace(initialize(*this->engine));
 }
 GameLoadScreen::~GameLoadScreen()
 {

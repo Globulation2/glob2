@@ -60,10 +60,11 @@ int main(int argc, char** argv) {
                 }
                 if (game && !events.ended) {
                     game->update();
+                    if (game->takeStartRequest()) game->startEngine();
                     if (game->isFullyInGame() && !ready) {
                         game->setHumanReady(true);
                         ready = true;
-                        std::cout << "native peer joined order-rate=" << int(game->getGameHeader().getOrderRate()) << std::endl;
+                        std::cout << "native peer joined order-rate=" << int(game->getGameHeader().getOrderRate()) << " player-id=" << client->getPlayerID() << std::endl;
                     }
                 }
                 SDL_Delay(1);

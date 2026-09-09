@@ -12,8 +12,8 @@ Never install over the existing desktop executable.
 Repository: https://github.com/Globulation2/glob2
 Draft PR: https://github.com/Globulation2/glob2/pull/208
 PR base: `codex/browser-experiment`.
-Current browser base: `9dc201436` after rebasing the mobile commits.
-Browser head `4051adb4d` was inspected during the replay-save pass but not merged.
+Current browser base: `246a47d50` after the latest merge.
+The preceding mobile checkpoints used `9dc201436`.
 Check the remote before the next substantial milestone;
 inspect its changes before merging. Do not chase a moving base during every build.
 
@@ -44,9 +44,11 @@ available. The user is unavailable for Pixel 6 testing until morning.
 Current recovery and smoke validation is recorded at the top of status.md.
 The browser base has advanced to `246a47d50`; its nine new commits include scheduled
 LAN/YOG startup, cooperative in-game reload, removal of Asyncify, live interpreter
-lifetime fixes and headless map-header isolation. Reconcile these in this worktree
-once the current checkpoint is committed. Preserve phone controls/recovery when
-resolving Engine/GameSessionScreen changes. PR #208 currently reports conflicts.
+lifetime fixes and headless map-header isolation. These are reconciled in this
+worktree. Phone controls/recovery are retained alongside
+scheduled reloads, with an engine-ownership null guard. Hosted checks resume after
+pushing the reconciled branch. The recovery checkpoint before this merge is
+`bbab36afb`; consult status.md for the validation recorded at each revision.
 
 ## Previous work: native save synchronization
 

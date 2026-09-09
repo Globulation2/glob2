@@ -8,9 +8,16 @@
 #include "MapEdit.h"
 #include "YOGLoginScreen.h"
 #include "SettingsScreen.h"
+#include "ChooseMapScreen.h"
+#include "GUIGlob2FileList.h"
+#include "GUIMapPreview.h"
+#include <BinaryStream.h>
+#include <FileManager.h>
+#include <Toolkit.h>
 #include "Application.h"
 #include "YOGClient.h"
 #include "YOGClientEvent.h"
+#include "GameLaunchMessages.h"
 #include <GUITextArea.h>
 #include <GUITabScreenWindow.h>
 #include "FertilityCalculator.h"
@@ -28,6 +35,9 @@
 #include "LegacyFertilityReference.h"
 #include "GlobalContainer.h"
 #include "SoundMixer.h"
+#include "ReplayWriter.h"
+#include "native.h"
+#include "code.h"
 #include <SDL_net.h>
 #include <FileManager.h>
 #include <BinaryStream.h>
@@ -46,6 +56,46 @@ GAGCore::CooperativeSlice fixedSlice()
 int main(int argc, char** argv)
 {
     require(argc == 2, "A disposable profile is required");
+    {
+        struct TrackedValue : Value {
+            bool& destroyed;
+            TrackedValue(Heap* heap, bool& destroyed) : Value(heap, nullptr), destroyed(destroyed) {}
+            ~TrackedValue() override { destroyed = true; }
+        };
+        bool rootDestroyed = false, instructionDestroyed = false, garbageDestroyed = false;
+        {
+            Usl interpreter;
+            interpreter.setConstant("tracked", new TrackedValue(&interpreter.heap, rootDestroyed));
+            auto* number = new NativeValue<int>(&interpreter.heap, 42);
+            interpreter.setConstant("number", number);
+            new TrackedValue(&interpreter.heap, garbageDestroyed);
+            for (int round = 0; round < 5; ++round) {
+                interpreter.run(0);
+                require(!rootDestroyed && garbageDestroyed, "Script GC must retain roots and collect unreachable values on every pass");
+                require(dynamic_cast<NativeValue<int>*>(interpreter.getConstant("number"))->value == 42,
+                    "Repeated script GC lost a native constant");
+                Usl other;
+                auto* otherNumber = new NativeValue<int>(&other.heap, round);
+                other.setConstant("number", otherNumber);
+                other.collectGarbage();
+                require(number->prototype != otherNumber->prototype, "Native method tables must belong to their interpreter");
+            }
+            auto* prototype = new ScopePrototype(&interpreter.heap, interpreter.root->prototype);
+            auto* literal = new TrackedValue(&interpreter.heap, instructionDestroyed);
+            prototype->body.push_back(new ConstCode(literal));
+            prototype->body.push_back(new PopCode());
+            prototype->body.push_back(new ConstCode(literal));
+            interpreter.threads.emplace_back(&interpreter, new Scope(&interpreter.heap, prototype, interpreter.root.get()));
+            interpreter.run(1);
+            require(!instructionDestroyed, "Live thread stack was collected");
+            interpreter.run(1);
+            require(!instructionDestroyed, "Pending bytecode constant was collected after leaving the stack");
+            interpreter.run(1);
+            require(instructionDestroyed && !rootDestroyed, "Completed thread retained dead state or lost the root");
+        }
+        require(rootDestroyed, "Destroying an interpreter must release its retained heap");
+        std::cout << "PASS script GC roots, live frames, bytecode constants and interpreter isolation" << std::endl;
+    }
     {
         std::srand(17); const int expected = std::rand(); std::srand(17);
         PerlinNoise first(123), second(987);
@@ -110,6 +160,44 @@ int main(int argc, char** argv)
     globalContainer->settings.gameSpeed = 0;
     globalContainer->load();
     require(SDLNet_Init() == 0, "SDL networking init failed");
+    {
+        struct SelectionProbe : ChooseMapScreen {
+            SelectionProbe() : ChooseMapScreen("maps", "map", false) {}
+            void select(const std::string& filename) {
+                for (auto* widget : widgets) if (auto* list = dynamic_cast<Glob2FileList*>(widget)) {
+                    list->addText(list->fileToList(filename));
+                    list->setSelection(list->getCount() - 1);
+                    list->selectionChanged();
+                    return;
+                }
+                require(false, "Map chooser has no file list");
+            }
+            bool hasPreview() {
+                for (auto* widget : widgets) if (auto* preview = dynamic_cast<MapPreview*>(widget))
+                    return preview->isThumbnailLoaded();
+                throw std::runtime_error("Map chooser has no preview");
+            }
+        } chooser;
+        chooser.beginExecution(globalContainer->gfx);
+        for (const char* invalid : {"browser_missing_fixture.map", "browser_corrupt_fixture.map"}) {
+            if (std::string(invalid).find("corrupt") != std::string::npos) {
+                GAGCore::BinaryOutputStream output(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(std::string("maps/") + invalid));
+                output.write("bad", 3, "truncated header");
+            }
+            chooser.select("balanced.map");
+            require(chooser.getSelectedType() == ChooseMapScreen::MAP && chooser.hasPreview(), "Valid map must be selectable");
+            chooser.select(invalid);
+            require(chooser.getSelectedType() == ChooseMapScreen::NONE && !chooser.hasPreview(), "Failed map read retained the previous selection or preview");
+            SDL_Event enter{}; enter.type = SDL_KEYDOWN; enter.key.keysym.sym = SDLK_RETURN;
+            chooser.handleExecutionEvent(enter);
+            require(chooser.isExecutionRunning(), "Invalid map was accepted by Enter");
+            chooser.drawExecution();
+        }
+        chooser.select("balanced.map");
+        require(chooser.getSelectedType() == ChooseMapScreen::MAP, "Chooser did not recover after invalid files");
+        chooser.endExecute(ChooseMapScreen::CANCEL); chooser.finishExecution();
+        std::cout << "PASS map selection clears stale data and recovers from missing/corrupt files without a modal loop" << std::endl;
+    }
     {
         SettingsScreen settings;
         settings.beginExecution(globalContainer->gfx);
@@ -198,6 +286,26 @@ int main(int argc, char** argv)
         login.drawExecution();
         std::cout << "PASS protocol rejection provides an actionable translated status" << std::endl;
         login.endExecute(0); login.finishExecution();
+    }
+
+    {
+        struct StartProbe : MultiplayerGame {
+            using MultiplayerGame::MultiplayerGame;
+            using MultiplayerGame::receiveMessage;
+        };
+        auto client = std::make_shared<YOGClient>();
+        auto game = std::make_shared<StartProbe>(client);
+        require(!game->takeStartRequest(), "A room cannot start before the server request");
+        game->receiveMessage(std::make_shared<NetStartGame>());
+        require(game->takeStartRequest() && !game->takeStartRequest(),
+                "Network dispatch must defer launch and the host must consume it once");
+        require(game->isWaitingForEngine(), "Router orders must remain queued after the host consumes launch");
+        game->sessionEnded(false);
+        require(!game->isWaitingForEngine(), "Cancelled initialization must release the router queue hold");
+        Engine engine;
+        require(!engine.initMultiplayerTask(game, client, -1).run(),
+                "Multiplayer initialization must reject a missing local player");
+        std::cout << "PASS deferred multiplayer launch and invalid local-player rejection" << std::endl;
     }
 
     {
@@ -417,6 +525,39 @@ int main(int argc, char** argv)
         }
         require(failed.result() == 2 && getSyncRandState() == rng, "Invalid generation must fail without changing RNG");
     }
+    for (int outcome : {0, 1, 2}) {
+        auto previous = std::make_unique<Engine>();
+        require(previous->initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR, "Reload ownership fixture initialization failed");
+        Engine* identity = previous.get();
+        // Mirror session finalization before reusing the initialized game.
+        globalContainer->replayWriter.reset();
+        const auto rng = getSyncRandState();
+        std::unique_ptr<Engine> accepted;
+        GAGGUI::ScreenStack reload(*globalContainer->gfx);
+        reload.push(std::make_unique<GameLoadScreen>(std::move(previous), [outcome](Engine& engine) {
+            return engine.initCampaignTask(outcome == 2 ? "maps/missing-reload-fixture.map" : "maps/balanced.map");
+        }, fixedSlice()), [&](GAGGUI::Screen& loading, int result) {
+            require(result == outcome, "Reload returned the wrong completion state");
+            if (result == 1) accepted = static_cast<GameLoadScreen&>(loading).takeEngine();
+        });
+        unsigned frames = 0;
+        while (reload.running()) {
+            std::vector<SDL_Event> events;
+            if (outcome == 0 && frames == 10) {
+                reload.suspendExecution();
+                reload.viewportResized(800,600,800,600);
+                SDL_Event escape{}; escape.type = SDL_KEYDOWN; escape.key.keysym.sym = SDLK_ESCAPE;
+                events.push_back(escape);
+            }
+            reload.frame(frames, events);
+            require(++frames < 2000, "Reused engine load did not complete");
+        }
+        if (outcome == 1) require(accepted.get() == identity && globalContainer->replayWriter && frames > 20,
+            "Successful reload must return the same engine and retain its new replay writer");
+        else require(!accepted && !globalContainer->replayWriter && !globalContainer->replayReader && getSyncRandState() == rng,
+            "Cancelled/failed reused-engine loading leaked replay state or changed RNG");
+    }
+    std::cout << "PASS reused-engine cooperative loading, cancellation and failure ownership" << std::endl;
     globalContainer->automaticEndingGame = true;
     globalContainer->automaticEndingSteps = 50;
     globalContainer->automaticGameGlobalEndConditions = true;

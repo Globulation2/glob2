@@ -24,7 +24,7 @@ struct Thread
 			nextInstr = 0;
 		}
 		
-		void markForGC();
+		void markForGC() const;
 	};
 	
 	enum State {
@@ -49,6 +49,5 @@ struct Thread
 	size_t run(size_t steps);
 	bool step();
 	
-	void markForGC();
+	void markForGC() const;
 };
-
