@@ -44,7 +44,11 @@ tests fell back to software, shutdown reported rejected audio-resume promises,
 and post-reload audio stayed suspended). The newer LAN runs are still pending.
 The shell now handles its own audio resume/close race; SDL's pinned audio backend
 also resumes suspended contexts internally, so a hosted pass is still required.
-Investigate Linux graphics/audio availability without weakening the assertions.
+Follow-up reproduces both problems outside the game in the pinned Playwright
+1.63.0 Linux container: headless Firefox cannot create WebGL2; Xvfb fixes that,
+and a PulseAudio null sink lets audio resume. All five previously failing game
+scenarios pass locally on Linux with this setup. CI now runs Firefox headed
+under Xvfb with the silent audio service; hosted completion is still required.
 See the latest dated status
 sections rather than treating the older warm-build passes as cold-build proof.
 

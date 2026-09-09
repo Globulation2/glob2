@@ -83,6 +83,22 @@ npx playwright install chromium firefox webkit
 npm test
 ```
 
+On Linux CI or a container without a desktop session, Firefox needs Xvfb for
+WebGL2 and an audio service for `AudioContext.resume()` to complete. After
+installing the Playwright browser dependencies, use:
+
+```sh
+sudo apt-get install -y pulseaudio
+pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
+GLOB2_FIREFOX_HEADED=1 xvfb-run -a npm test
+```
+
+The null sink processes audio silently. On a workstation with an existing sound
+server, use that server instead. `GLOB2_FIREFOX_HEADED=1` affects Firefox only;
+the tests still require actual WebGL2 and audio activation. It does not bypass
+assertions or select the software game renderer. Other environments retain the
+default headless browser configuration.
+
 Use `npm test -- --project=chromium` for a focused run. The package lock pins the
 test runner and its browser revisions. Failures retain traces and screenshots
 under `build/browser-test-results`. These initial tests do not yet cover the

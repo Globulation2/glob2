@@ -13,6 +13,20 @@ original plan below describe the former scope, not release blockers to reopen.
 
 ## Browser audio defaults and CI follow-up — 2026-09-08
 
+Linux follow-up: reproduced the graphics/audio failures independently of Glob2
+using Playwright 1.63.0 in its Noble arm64 container (image digest
+`sha256:5536bbbd0ffc106a9fdab13fbff6b3abab01418cceff67ff246552b64cf5623d`). Headless Firefox
+could not create WebGL2; headed Firefox under Xvfb created a llvmpipe context.
+Audio stayed suspended in both until a PulseAudio null sink was started. Then
+all five formerly failing game scenarios passed in 1.2 minutes, including
+context restoration, shutdown and save/reload/audio (`/tmp/glob2-linux-firefox-regressions.log`).
+Seven additional input/settings cases passed with WebGL2, including durable
+muting preferences, quota failures and interrupted writes
+(`/tmp/glob2-linux-firefox-input-settings.log`).
+CI now uses that display/audio setup, without changing renderer/audio assertions.
+This is local Linux arm64 evidence; GitHub's full Linux x86 matrix still needs
+to complete successfully. Setup is documented in `browser/README.md`.
+
 New browser profiles start muted using the existing game setting. Stored mute
 preferences take precedence and desktop defaults are unchanged. The shell also
 handles rejected audio activation promises when SDL closes a pending context;

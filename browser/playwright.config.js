@@ -15,7 +15,10 @@ module.exports = defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
-  projects: ['chromium','firefox','webkit'].map(browserName => ({name:browserName, use:{browserName}})),
+  projects: ['chromium','firefox','webkit'].map(browserName => ({
+    name:browserName,
+    use:{browserName, ...(browserName === 'firefox' && process.env.GLOB2_FIREFOX_HEADED === '1' ? {headless:false} : {})},
+  })),
   webServer: process.env.GLOB2_TEST_URL ? undefined : {
     command: 'python3 -m http.server 8770 --bind 127.0.0.1 --directory build/emscripten/client/release',
     cwd: path.resolve(__dirname, '..'),
