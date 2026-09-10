@@ -1772,3 +1772,81 @@ Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL
 Vista toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a vista geral toroidal enquanto se desloca pelo mapa (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Não foi possível gravar o mapa. Verifique o destino e o espaço disponível. As suas edições continuam abertas.
+[Loading headers]
+A carregar cabeçalhos...
+[Loading teams]
+A carregar equipas...
+[Loading terrain]
+A carregar o terreno...
+[Building gradients]
+A gerar gradientes...
+[Loading players]
+A carregar jogadores...
+[Loading scripts]
+A carregar scripts...
+[Generating map]
+A gerar o mapa...
+[ERROR_CANT_GENERATE_MAP]
+Não foi possível gerar o mapa. Experimente outras definições de geração.
+[Loading units]
+A carregar unidades...
+[Loading buildings]
+A carregar construções...
+[Resolving team links]
+A resolver ligações de equipa...
+[saving to storage]
+A gravar...
+[save failed retry]
+Falha ao gravar. Tente novamente.
+[export save]
+Exportar jogo gravado
+[storage restore failed]
+Não foi possível restaurar o armazenamento do navegador. Os dados gravados existentes não foram alterados. Pode continuar esta sessão, mas as alterações locais não poderão ser mantidas. Exporte os jogos importantes a partir da caixa de diálogo de falha de gravação. Recarregue para tentar restaurar o armazenamento novamente.
+[continue]
+Continuar
+[export file]
+Exportar ficheiro
+[export failed]
+Falha ao exportar o ficheiro
+[import file]
+Importar
+[select import file]
+Escolha um ficheiro para importar
+[validating import]
+A validar o ficheiro...
+[import succeeded]
+Ficheiro importado
+[import cancelled]
+Importação cancelada
+[import failed]
+Falha na importação: ficheiro inválido ou não suportado
+[import persistence failed]
+Não gravado: escolha Importar para tentar novamente ou Exportar ficheiro
+[import progress]
+Progresso da importação
+[export progress]
+Progresso da exportação
+[retry save]
+Tentar gravar novamente
+[campaign save failed]
+Progresso da campanha não gravado. Tente novamente ou exporte uma cópia de segurança.
+[leave without saving]
+Sair sem gravar
+[campaign import failed]
+Ficheiro de progresso inválido ou versão de campanha diferente
+[network release mismatch]
+Os protocolos do cliente e do servidor são diferentes. Instale a mesma versão do Glob2 que o servidor.
+[settings continue]
+Continuar
+[settings save failed]
+Gravação das definições não confirmada. Tente novamente, ou continue.
+[shutdown save failed]
+Gravação final não confirmada. Tente novamente, ou saia sem gravar.
+[quit without saving]
+Sair sem gravar
+[game closed]
+Jogo fechado. Pode fechar esta janela ou recarregar para jogar novamente.
+[campaign editor save failed]
+Gravação não confirmada. OK repete a tentativa; Cancelar volta ao menu do editor.

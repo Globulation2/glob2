@@ -1764,3 +1764,81 @@ La bildoj estos aplikitaj ĉe la sekva ŝargo de ludo aŭ mapredaktilo (OpenGL).
 Aŭtomata tora vido
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Aŭtomate montru la torforman superrigardon de la mapo dum moviĝado tra la mapo (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+La mapo ne povis esti konservita. Kontrolu la celon kaj la disponeblan spacon. Viaj redaktoj ankoraŭ estas malfermitaj.
+[Loading headers]
+Ŝargante kapojn...
+[Loading teams]
+Ŝargante teamojn...
+[Loading terrain]
+Ŝargante terenon...
+[Building gradients]
+Konstruante gradientojn...
+[Loading players]
+Ŝargante ludantojn...
+[Loading scripts]
+Ŝargante skriptojn...
+[Generating map]
+Generante mapon...
+[ERROR_CANT_GENERATE_MAP]
+La mapo ne povis esti generita. Provu aliajn generajn agordojn.
+[Loading units]
+Ŝargante unuojn...
+[Loading buildings]
+Ŝargante konstruaĵojn...
+[Resolving team links]
+Solvante teamajn ligilojn...
+[saving to storage]
+Konservante...
+[save failed retry]
+Konservado malsukcesis. Reprovu.
+[export save]
+Eksporti konservaĵon
+[storage restore failed]
+La retumila konservejo ne povis esti restarigita. Ekzistantaj konservitaj datumoj ne ŝanĝiĝis. Vi povas daŭrigi ĉi tiun seancon, sed lokaj ŝanĝoj ne povos esti konservitaj. Eksportu gravajn konservaĵojn el la dialogo pri konserva malsukceso. Reŝargu por reprovi restarigi la konservejon.
+[continue]
+Daŭrigi
+[export file]
+Eksporti dosieron
+[export failed]
+Eksportado de dosiero malsukcesis
+[import file]
+Importi
+[select import file]
+Elektu dosieron por importi
+[validating import]
+Kontrolante dosieron...
+[import succeeded]
+Dosiero importita
+[import cancelled]
+Importado nuligita
+[import failed]
+Importado malsukcesis: nevalida aŭ nesubtenata dosiero
+[import persistence failed]
+Ne konservita: elektu Importi por reprovi, aŭ Eksporti dosieron
+[import progress]
+Importa progreso
+[export progress]
+Eksporta progreso
+[retry save]
+Reprovi konservadon
+[campaign save failed]
+Kampanja progreso ne konservita. Reprovu aŭ eksportu sekurkopion.
+[leave without saving]
+Eliri sen konservi
+[campaign import failed]
+Nevalida progresa dosiero aŭ malsama kampanja versio
+[network release mismatch]
+La protokoloj de kliento kaj servilo malsamas. Instalu la saman version de Glob2 kiel la servilo.
+[settings continue]
+Daŭrigi
+[settings save failed]
+Konservado de agordoj ne konfirmita. Reprovu, aŭ daŭrigu.
+[shutdown save failed]
+Fina konservado ne konfirmita. Reprovu, aŭ eliru sen konservi.
+[quit without saving]
+Eliri sen konservi
+[game closed]
+La ludo fermiĝis. Vi povas fermi ĉi tiun fenestron aŭ reŝargi por denove ludi.
+[campaign editor save failed]
+Konservado ne konfirmita. Bone reprovas; Nuligi revenas al la redaktila menuo.

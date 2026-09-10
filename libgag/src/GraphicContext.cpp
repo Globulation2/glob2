@@ -164,7 +164,9 @@ namespace GAGCore
 	{
 		minW = w;
 		minH = h;
+		#ifndef GLOB2_WEBGL2
 		if (window) SDL_SetWindowMinimumSize(window, minW, minH);
+		#endif
 	}
 
 	VideoModes GraphicContext::listVideoModes() const
@@ -327,7 +329,7 @@ namespace GAGCore
 			{
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
-				gluOrtho2D(0, getW(), getH(), 0);
+				glOrtho(0, getW(), getH(), 0, -1, 1);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
 			}
@@ -391,8 +393,10 @@ namespace GAGCore
 				_gc->windowToLogical(event->button.x, event->button.y);
 				break;
 			case SDL_WINDOWEVENT:
+				#ifndef GLOB2_WEBGL2
 				if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
 					_gc->updateWindowSize();
+				#endif
 				break;
 			default:
 				break;
@@ -409,6 +413,36 @@ namespace GAGCore
 			y = sy;
 		}
 	}
+
+    bool GraphicContext::resizeViewport(int w, int h)
+    {
+        if (!window || !sdlsurface || w <= 0 || h <= 0) return false;
+        if (w == getW() && h == getH()) return true;
+        const auto& format = *sdlsurface->format;
+        SDL_Surface* replacement = SDL_CreateRGBSurface(0, w, h, 32,
+            format.Rmask, format.Gmask, format.Bmask, format.Amask);
+        if (!replacement) return false;
+        // SDL may invalidate its borrowed window surface when changing size.
+        freeOwnedSurface();
+        SDL_SetWindowSize(window, w, h);
+        sdlsurface = replacement;
+        ownsSurface = true;
+        SDL_GetWindowSize(window, &windowW, &windowH);
+        drawableW = windowW; drawableH = windowH;
+#ifdef HAVE_OPENGL
+        if (optionFlags & USEGPU) {
+            SDL_GL_GetDrawableSize(window, &drawableW, &drawableH);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0, w, h, 0, -1, 1);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            applyGLViewport();
+        }
+#endif
+        setClipRect();
+        return true;
+    }
 
 	bool GraphicContext::setRes(int w, int h, Uint32 flags)
 	{
@@ -439,6 +473,11 @@ namespace GAGCore
 		{
 			SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 			SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+#ifdef GLOB2_WEBGL2
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
 			sdlFlags |= SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
 		}
 		#else
@@ -470,7 +509,9 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-		SDL_SetWindowMinimumSize(window, std::max(1, minW), std::max(1, minH));
+			#ifndef GLOB2_WEBGL2
+			SDL_SetWindowMinimumSize(window, std::max(1, minW), std::max(1, minH));
+			#endif
 		// Own the drawing surface: SDL invalidates its window surface during resizing.
 		sdlsurface = SDL_CreateRGBSurface(0, w, h, 32,
 			0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -576,7 +617,7 @@ namespace GAGCore
 			{
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
-				gluOrtho2D(0, w, h, 0);
+				glOrtho(0, w, h, 0, -1, 1);
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
 				glGetIntegerv(GL_MAX_TEXTURE_SIZE, &frameCache.maximumTextureSize);

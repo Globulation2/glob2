@@ -22,35 +22,40 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
-#include "config.h"
+#include <glob2/BuildConfig.h>
 
 
 bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, const std::string& sourceFileName)
 {
+    return loadFromHeadersTask(mapHeader, gameHeader, setGameHeader, ignoreGUIData, saveAI, sourceFileName).run();
+}
+bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
+{
+    return loadTask(stream, ignoreGUIData).run();
+}
+
+GAGCore::CooperativeTask GameGUI::loadFromHeadersTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, std::string sourceFileName)
+{
 	init();
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
-	if (stream->isEndOfStream() && !sourceFileName.empty()) { delete stream; return false; }
+	auto stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
 	if (stream->isEndOfStream())
 	{
-		delete stream;
-		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(true)));
+		if(!sourceFileName.empty()) co_return false;
+		stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(true)));
 		if(stream->isEndOfStream())
 		{
-			delete stream;
-			stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(false,true)));
+			stream = std::make_unique<BinaryInputStream>(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(false,true)));
 			if(stream->isEndOfStream())
 			{
 				std::cerr << "GameGUI::loadFromHeaders() : error, can't open file " << mapHeader.getFileName() << ", " << mapHeader.getFileName(true) << " or " << mapHeader.getFileName(false,true) << std::endl;
-				delete stream;
-				return false;
+				co_return false;
 			}
 		}
 	}
 
-	bool res = load(stream, ignoreGUIData);
-	delete stream;
+	bool res = co_await loadTask(stream.get(), ignoreGUIData);
 	if (!res)
-		return false;
+		co_return false;
 
 	// Intentionally keep the map header loaded from the file rather than the
 	// one sent across the network: the network header is in the latest format
@@ -58,19 +63,19 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 	if(setGameHeader)
 		game.setGameHeader(gameHeader, saveAI);
 
-	return true;
+	co_return true;
 }
 
-bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
+GAGCore::CooperativeTask GameGUI::loadTask(GAGCore::InputStream *stream, bool ignoreGUIData)
 {
 	init();
 
-	bool result = game.load(stream);
+	bool result = co_await game.loadTask(stream);
 
 	if (result == false)
 	{
 		std::cerr << "GameGUI::load : can't load game" << std::endl;
-		return false;
+		co_return false;
 	}
 	defaultGameSaveName = game.mapHeader.getMapName();
 	if (game.mapHeader.getIsSavedGame())
@@ -124,7 +129,7 @@ bool GameGUI::load(GAGCore::InputStream *stream, bool ignoreGUIData)
 
 	minimap.setGame(game);
 
-	return true;
+	co_return true;
 }
 
 void GameGUI::save(GAGCore::OutputStream *stream, const std::string name)
@@ -162,4 +167,26 @@ void GameGUI::save(GAGCore::OutputStream *stream, const std::string name)
 	stream->writeUint32(flagsChoiceMask, "flagsChoiceMask");
 	defaultAssign.save(stream);
 	stream->writeLeaveSection();
+}
+
+void GameGUI::viewportResized(int oldWidth, int oldHeight, int width, int height)
+{
+    if (!game.map.getW() || !game.map.getH()) return;
+    // Cameras use whole map tiles. Keep the tile at the view's center fixed.
+    minimap.resizeViewport(width);
+    suspendInput();
+    const int oldX = viewportX, oldY = viewportY;
+    viewportX = (viewportX + (oldWidth - 160) / 64 - (width - 160) / 64) & game.map.wMask;
+    viewportY = (viewportY + oldHeight / 64 - height / 64) & game.map.hMask;
+    viewportChanged(oldX, viewportX, oldY, viewportY);
+    if (gameMenuScreen) gameMenuScreen->viewportResized(oldWidth, oldHeight, width, height);
+}
+
+void GameGUI::suspendInput()
+{
+    inputState.clearHeld();
+    viewportSpeedX = viewportSpeedY = 0;
+    lastMouseButtonState = 0;
+    miniMapPushed = selectionPushed = false;
+    toolManager.cancelDrag(localTeamNo);
 }

@@ -9,7 +9,6 @@
 #include "ScriptEditorScreen.h"
 #include <sstream>
 #include "Utilities.h"
-#include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
 void MapEdit::delegateMenu(SDL_Event& event)
@@ -63,7 +62,7 @@ void MapEdit::delegateMenu(SDL_Event& event)
 		{
 			case LoadSaveScreen::OK:
 			{
-				load(loadSaveScreen->getFileName());
+				requestLoad(loadSaveScreen->getFileName());
 				performAction("close load screen");
 			}
 			break;
@@ -81,11 +80,15 @@ void MapEdit::delegateMenu(SDL_Event& event)
 		{
 			case LoadSaveScreen::OK:
 			{
-				save(loadSaveScreen->getFileName(), loadSaveScreen->getName());
-				performAction("close save screen");
-			}
+                pendingSaveFilename = loadSaveScreen->getFileName();
+                pendingSaveName = loadSaveScreen->getName();
+                fertilityRequested = true;
+                loadSaveScreen->endValue = -1;
+            }
+            break;
 			case LoadSaveScreen::CANCEL:
 			{
+                doQuitAfterLoadSave = false;
 				performAction("close save screen");
 			}
 		}
@@ -134,9 +137,9 @@ void MapEdit::handleMapScroll()
 	ySpeed = 0;
 	int scrollAreaWidth=10; // if the cursor is that close to the border the viewport will scroll
 
-	SDL_PumpEvents();
-	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
-	SDL_Keymod modState = SDL_GetModState();
+	if (!inputState.hasFocus()) return;
+	const Uint8 *keystate = inputState.keyboard();
+	SDL_Keymod modState = inputState.modifiers();
 	int xMotion = 1;
 	int yMotion = 1;
 	/* We check that only Control is held to avoid accidentally

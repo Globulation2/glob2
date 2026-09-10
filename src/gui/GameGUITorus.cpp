@@ -61,7 +61,7 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
             else if (selectionMode == BRUSH_SELECTION || selectionMode == TOOL_SELECTION)
             {
                 if (hit)
-                    toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY);
+                    toolManager.handleMouseUp(mx, my, localTeamNo, viewportX, viewportY, inputState.modifiers());
                 else
                     toolManager.finishPointerGesture(localTeamNo);
             }
@@ -85,7 +85,7 @@ void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options,
     {
         int mx = (px - originX * 32) & (game.map.getW() * 32 - 1);
         int my = (py - originY * 32) & (game.map.getH() * 32 - 1);
-        toolManager.drawTool(mx, my, localTeamNo, originX, originY);
+        toolManager.drawTool(mx, my, localTeamNo, originX, originY, inputState.modifiers());
     }
     if (selectionMode == BUILDING_SELECTION && view.selectedBuilding)
     {

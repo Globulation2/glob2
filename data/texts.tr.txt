@@ -1774,3 +1774,81 @@ Seçilen grafikler, oyun veya harita düzenleyici bir sonraki yüklendiğinde uy
 Otomatik torus görünümü
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Haritada dolaşırken torus şeklindeki haritaya genel bakışı otomatik olarak gösterin (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Harita kaydedilemedi. Hedefi ve kullanılabilir alanı kontrol edin. Düzenlemeleriniz hâlâ açık.
+[Loading headers]
+Başlıklar yükleniyor...
+[Loading teams]
+Takımlar yükleniyor...
+[Loading terrain]
+Arazi yükleniyor...
+[Building gradients]
+Gradyanlar oluşturuluyor...
+[Loading players]
+Oyuncular yükleniyor...
+[Loading scripts]
+Betikler yükleniyor...
+[Generating map]
+Harita oluşturuluyor...
+[ERROR_CANT_GENERATE_MAP]
+Harita oluşturulamadı. Farklı oluşturma ayarları deneyin.
+[Loading units]
+Birimler yükleniyor...
+[Loading buildings]
+Binalar yükleniyor...
+[Resolving team links]
+Takım bağlantıları çözümleniyor...
+[saving to storage]
+Kaydediliyor...
+[save failed retry]
+Kayıt başarısız oldu. Yeniden deneyin.
+[export save]
+Kaydı dışa aktar
+[storage restore failed]
+Tarayıcı depolaması geri yüklenemedi. Mevcut kayıtlı veriler değiştirilmedi. Bu oturuma devam edebilirsiniz, ancak yerel değişiklikler kalıcı olamaz. Önemli kayıtları, kayıt hatası penceresinden dışa aktarın. Depolamayı yeniden geri yüklemeyi denemek için sayfayı yenileyin.
+[continue]
+Devam et
+[export file]
+Dosyayı dışa aktar
+[export failed]
+Dosya dışa aktarma başarısız oldu
+[import file]
+İçe aktar
+[select import file]
+İçe aktarılacak bir dosya seçin
+[validating import]
+Dosya doğrulanıyor...
+[import succeeded]
+Dosya içe aktarıldı
+[import cancelled]
+İçe aktarma iptal edildi
+[import failed]
+İçe aktarma başarısız: geçersiz veya desteklenmeyen dosya
+[import persistence failed]
+Kaydedilmedi: yeniden denemek için İçe Aktar veya Dosyayı Dışa Aktar'ı seçin
+[import progress]
+İçe aktarma ilerlemesi
+[export progress]
+Dışa aktarma ilerlemesi
+[retry save]
+Kaydetmeyi yeniden dene
+[campaign save failed]
+Kampanya ilerlemesi kaydedilmedi. Yeniden deneyin veya bir yedek dışa aktarın.
+[leave without saving]
+Kaydetmeden çık
+[campaign import failed]
+Geçersiz ilerleme dosyası veya farklı kampanya sürümü
+[network release mismatch]
+İstemci ve sunucu protokolleri farklı. Sunucuyla aynı Glob2 sürümünü yükleyin.
+[settings continue]
+Devam et
+[settings save failed]
+Ayar kaydı onaylanmadı. Yeniden deneyin veya devam edin.
+[shutdown save failed]
+Son kayıt onaylanmadı. Yeniden deneyin veya kaydetmeden çıkın.
+[quit without saving]
+Kaydetmeden çık
+[game closed]
+Oyun kapatıldı. Bu pencereyi kapatabilir veya yeniden oynamak için sayfayı yenileyebilirsiniz.
+[campaign editor save failed]
+Kayıt onaylanmadı. Tamam yeniden dener; İptal düzenleyici menüsüne döner.

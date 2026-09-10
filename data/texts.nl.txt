@@ -1790,3 +1790,81 @@ Pas de grafische beelden toe wanneer een volgende partij of de kaarteditor wordt
 Automatische torusweergave
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Toon automatisch het torusvormige kaartoverzicht terwijl u over de kaart beweegt (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+De kaart kon niet worden opgeslagen. Controleer de bestemming en beschikbare ruimte. Uw wijzigingen staan nog open.
+[Loading headers]
+Kopgegevens worden geladen...
+[Loading teams]
+Teams worden geladen...
+[Loading terrain]
+Terrein wordt geladen...
+[Building gradients]
+Gradiënten worden opgebouwd...
+[Loading players]
+Spelers worden geladen...
+[Loading scripts]
+Scripts worden geladen...
+[Generating map]
+Kaart wordt gegenereerd...
+[ERROR_CANT_GENERATE_MAP]
+De kaart kon niet worden gegenereerd. Probeer andere generatie-instellingen.
+[Loading units]
+Eenheden worden geladen...
+[Loading buildings]
+Gebouwen worden geladen...
+[Resolving team links]
+Teamkoppelingen worden herleid...
+[saving to storage]
+Bezig met opslaan...
+[save failed retry]
+Opslaan mislukt. Probeer opnieuw.
+[export save]
+Opgeslagen spel exporteren
+[storage restore failed]
+De browseropslag kon niet worden hersteld. Bestaande opgeslagen gegevens zijn niet gewijzigd. U kunt deze sessie voortzetten, maar lokale wijzigingen kunnen niet worden bewaard. Exporteer belangrijke opgeslagen spellen via het opslagfout-dialoogvenster. Herlaad om het herstellen van de opslag opnieuw te proberen.
+[continue]
+Doorgaan
+[export file]
+Bestand exporteren
+[export failed]
+Bestand exporteren mislukt
+[import file]
+Importeren
+[select import file]
+Kies een bestand om te importeren
+[validating import]
+Bestand wordt gecontroleerd...
+[import succeeded]
+Bestand geïmporteerd
+[import cancelled]
+Importeren geannuleerd
+[import failed]
+Importeren mislukt: ongeldig of niet-ondersteund bestand
+[import persistence failed]
+Niet opgeslagen: kies Importeren om opnieuw te proberen of Bestand exporteren
+[import progress]
+Voortgang van import
+[export progress]
+Voortgang van export
+[retry save]
+Opslaan opnieuw proberen
+[campaign save failed]
+Campagnevoortgang niet opgeslagen. Probeer opnieuw of exporteer een back-up.
+[leave without saving]
+Afsluiten zonder op te slaan
+[campaign import failed]
+Ongeldig voortgangsbestand of andere campagneversie
+[network release mismatch]
+Client- en serverprotocol verschillen. Installeer dezelfde Glob2-versie als de server.
+[settings continue]
+Doorgaan
+[settings save failed]
+Opslaan van instellingen niet bevestigd. Probeer opnieuw, of ga door.
+[shutdown save failed]
+Laatste keer opslaan niet bevestigd. Probeer opnieuw, of sluit af zonder op te slaan.
+[quit without saving]
+Afsluiten zonder op te slaan
+[game closed]
+Spel gesloten. U kunt dit venster sluiten of herladen om opnieuw te spelen.
+[campaign editor save failed]
+Opslaan niet bevestigd. OK probeert opnieuw; Annuleren gaat terug naar het editormenu.

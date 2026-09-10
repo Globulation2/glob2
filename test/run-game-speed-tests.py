@@ -6,6 +6,7 @@ All preferences, saves and replays go into a disposable profile.
 """
 import argparse
 import os
+import platform
 from pathlib import Path
 import re
 import shutil
@@ -20,9 +21,10 @@ args = parser.parse_args()
 profile = 'glob2-speed-test-' + uuid.uuid4().hex
 try:
     with tempfile.TemporaryDirectory(prefix=profile) as work:
+        binary = root / os.environ.get('GLOB2_BUILD_DIR', 'build/' + platform.system().lower() + '/client/release') / 'src/game-speed-tests'
         try:
             result = subprocess.run(
-                [str(root / 'build/src/game-speed-tests'), profile] + (['--settings-only'] if args.settings_only else []), cwd=work,
+                [str(binary), profile] + (['--settings-only'] if args.settings_only else []), cwd=work,
                 env=dict(os.environ, SDL_AUDIODRIVER='dummy'), timeout=60,
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
             )

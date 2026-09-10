@@ -5,6 +5,9 @@
 
 #include "Glob2Screen.h"
 #include "Campaign.h"
+#include "FrontendTheme.h"
+#include <ScreenStack.h>
+#include <ApplicationHost.h>
 #include "GUIText.h"
 #include "GUIButton.h"
 #include "GUIList.h"
@@ -15,8 +18,9 @@
 class CampaignEditor : public Glob2Screen
 {
 public:
-	CampaignEditor(const std::string& name);
+	CampaignEditor(const std::string& name, GAGGUI::ScreenStack& screens);
 	void onAction(Widget *source, Action action, int par1, int par2);
+	void onTimer(Uint32 tick) override;
 	enum
 	{
 		ADDMAP,
@@ -26,7 +30,9 @@ public:
 		CANCEL,
 	};
 private:
+	FrontendScope theme{false};
 	Campaign campaign;
+    GAGGUI::ScreenStack& screens;
 	/// Title of the screen, depends on the directory given in parameter
 	Text *title;
 	/// The ok button
@@ -45,6 +51,10 @@ private:
 	TextInput* nameEditor;
 	/// Text editor for description
 	TextArea* description;
+	TextArea* saveStatus;
+	std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
+	void saveCampaign();
+	void saveFailed();
 
 	///Adds all of the maps in the campaign to the mapList
 	void syncMapList();
@@ -88,4 +98,3 @@ private:
 	/// The label for isUnlocked
 	Text *isUnlockedLabel;
 };
-

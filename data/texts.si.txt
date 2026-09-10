@@ -1766,3 +1766,81 @@ Izbrana grafika se uporabi ob naslednjem nalaganju igre ali urejevalnika zemljev
 Samodejni torusni pogled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljevidu (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Zemljevida ni bilo mogoče shraniti. Preverite cilj in razpoložljiv prostor. Vaše spremembe so še vedno odprte.
+[Loading headers]
+Nalaganje glav...
+[Loading teams]
+Nalaganje ekip...
+[Loading terrain]
+Nalaganje terena...
+[Building gradients]
+Ustvarjanje gradientov...
+[Loading players]
+Nalaganje igralcev...
+[Loading scripts]
+Nalaganje skriptov...
+[Generating map]
+Ustvarjanje zemljevida...
+[ERROR_CANT_GENERATE_MAP]
+Zemljevida ni bilo mogoče ustvariti. Poskusite druge nastavitve ustvarjanja.
+[Loading units]
+Nalaganje enot...
+[Loading buildings]
+Nalaganje stavb...
+[Resolving team links]
+Razreševanje povezav ekip...
+[saving to storage]
+Shranjevanje...
+[save failed retry]
+Shranjevanje ni uspelo. Poskusite znova.
+[export save]
+Izvozi shranjeno igro
+[storage restore failed]
+Shrambe brskalnika ni bilo mogoče obnoviti. Obstoječi shranjeni podatki niso bili spremenjeni. To sejo lahko nadaljujete, vendar lokalnih sprememb ne bo mogoče ohraniti. Pomembne shranjene igre izvozite iz pogovornega okna napake shranjevanja. Za nov poskus obnovitve shrambe stran znova naložite.
+[continue]
+Nadaljuj
+[export file]
+Izvozi datoteko
+[export failed]
+Izvoz datoteke ni uspel
+[import file]
+Uvozi
+[select import file]
+Izberite datoteko za uvoz
+[validating import]
+Preverjanje datoteke...
+[import succeeded]
+Datoteka uvožena
+[import cancelled]
+Uvoz preklican
+[import failed]
+Uvoz ni uspel: neveljavna ali nepodprta datoteka
+[import persistence failed]
+Ni shranjeno: izberite Uvozi za nov poskus, ali Izvozi datoteko
+[import progress]
+Napredek uvoza
+[export progress]
+Napredek izvoza
+[retry save]
+Poskusi znova shraniti
+[campaign save failed]
+Napredek pohoda ni bil shranjen. Poskusite znova ali izvozite varnostno kopijo.
+[leave without saving]
+Izhod brez shranjevanja
+[campaign import failed]
+Neveljavna datoteka napredka ali druga različica pohoda
+[network release mismatch]
+Protokola odjemalca in strežnika se razlikujeta. Namestite enako različico Glob2 kot strežnik.
+[settings continue]
+Nadaljuj
+[settings save failed]
+Shranjevanje nastavitev ni potrjeno. Poskusite znova ali nadaljujte.
+[shutdown save failed]
+Končno shranjevanje ni potrjeno. Poskusite znova ali izstopite brez shranjevanja.
+[quit without saving]
+Izhod brez shranjevanja
+[game closed]
+Igra je zaprta. To okno lahko zaprete ali stran znova naložite, da igrate še enkrat.
+[campaign editor save failed]
+Shranjevanje ni potrjeno. V redu poskusi znova; Prekliči se vrne v meni urejevalnika.

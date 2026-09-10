@@ -1,0 +1,92 @@
+name: glob2
+x-server: &server
+  image: ${GLOB2_SERVER_IMAGE:-glob2-server:development}
+  build:
+    context: ..
+    dockerfile: deploy/Dockerfile
+  restart: unless-stopped
+  init: true
+  networks: [backend]
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  healthcheck:
+    interval: 10s
+    timeout: 5s
+    retries: 6
+    start_period: 10s
+services:
+  lobby:
+    <<: *server
+    command: [glob2-server]
+    environment:
+      GLOB2_EXTERNAL_ROUTER: '1'
+    volumes: [lobby-data:/home/glob2]
+    healthcheck:
+      test: [CMD, python3, /usr/local/bin/glob2-healthcheck, lobby]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  router:
+    <<: *server
+    command: [glob2-router]
+    environment:
+      GLOB2_YOG_HOST: lobby
+    volumes: [router-data:/home/glob2]
+    depends_on:
+      lobby: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python3, /usr/local/bin/glob2-healthcheck, router]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  gateway:
+    <<: *server
+    command:
+      - glob2-ws-gateway
+      - --listen
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --origin
+      - ${GLOB2_ORIGIN:-http://localhost:8080}
+      - --lobby-host
+      - lobby
+      - --router-host
+      - router
+    depends_on:
+      lobby: {condition: service_healthy}
+      router: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, python3, /usr/local/bin/glob2-healthcheck, gateway]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+  web:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    environment:
+      GLOB2_SITE: ${GLOB2_SITE:-http://localhost}
+    ports:
+      - '${GLOB2_BIND:-127.0.0.1}:${GLOB2_HTTP_PORT:-8080}:80'
+      - '${GLOB2_BIND:-127.0.0.1}:${GLOB2_HTTPS_PORT:-8443}:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${GLOB2_ASSETS:-../build/emscripten/client/release}:/srv:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [backend, public]
+    depends_on:
+      gateway: {condition: service_healthy}
+    healthcheck:
+      test: [CMD, wget, -q, -O, /dev/null, 'http://127.0.0.1:2015/healthz']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+networks:
+  backend: {internal: true}
+  public: {}
+volumes:
+  lobby-data: {}
+  router-data: {}
+  caddy-data: {}
+  caddy-config: {}

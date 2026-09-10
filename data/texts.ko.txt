@@ -1762,3 +1762,81 @@ Globulation 2 커서를 표시합니다.
 자동 토러스 보기
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 지도 안에서 이동할 때 토러스(도넛) 모양의 지도 전체 보기를 자동으로 표시합니다(OpenGL).
+[ERROR_CANT_SAVE_MAP]
+맵을 저장할 수 없습니다. 저장 위치와 사용 가능한 공간을 확인하세요. 편집 내용은 아직 열려 있습니다.
+[Loading headers]
+헤더 불러오는 중...
+[Loading teams]
+팀 불러오는 중...
+[Loading terrain]
+지형 불러오는 중...
+[Building gradients]
+그라디언트 생성 중...
+[Loading players]
+플레이어 불러오는 중...
+[Loading scripts]
+스크립트 불러오는 중...
+[Generating map]
+맵 생성 중...
+[ERROR_CANT_GENERATE_MAP]
+맵을 생성할 수 없습니다. 다른 생성 설정을 시도해 보세요.
+[Loading units]
+유닛 불러오는 중...
+[Loading buildings]
+건물 불러오는 중...
+[Resolving team links]
+팀 연결 해석 중...
+[saving to storage]
+저장 중...
+[save failed retry]
+저장에 실패했습니다. 다시 시도하세요.
+[export save]
+저장 게임 내보내기
+[storage restore failed]
+브라우저 저장소를 복원할 수 없습니다. 기존에 저장된 데이터는 변경되지 않았습니다. 이 세션을 계속할 수 있지만 로컬 변경 사항은 유지되지 않습니다. 저장 실패 대화상자에서 중요한 저장 파일을 내보내세요. 저장소 복원을 다시 시도하려면 새로고침하세요.
+[continue]
+계속
+[export file]
+파일 내보내기
+[export failed]
+파일 내보내기에 실패했습니다
+[import file]
+가져오기
+[select import file]
+가져올 파일을 선택하세요
+[validating import]
+파일 확인 중...
+[import succeeded]
+파일을 가져왔습니다
+[import cancelled]
+가져오기가 취소되었습니다
+[import failed]
+가져오기 실패: 잘못되었거나 지원되지 않는 파일입니다
+[import persistence failed]
+저장되지 않음: 다시 시도하려면 가져오기, 또는 파일 내보내기를 선택하세요
+[import progress]
+가져오기 진행 상황
+[export progress]
+내보내기 진행 상황
+[retry save]
+저장 다시 시도
+[campaign save failed]
+캠페인 진행 상황이 저장되지 않았습니다. 다시 시도하거나 백업을 내보내세요.
+[leave without saving]
+저장하지 않고 나가기
+[campaign import failed]
+진행 파일이 잘못되었거나 캠페인 버전이 다릅니다
+[network release mismatch]
+클라이언트와 서버의 프로토콜이 다릅니다. 서버와 동일한 Glob2 버전을 설치하세요.
+[settings continue]
+계속
+[settings save failed]
+설정 저장이 확인되지 않았습니다. 다시 시도하거나 계속하세요.
+[shutdown save failed]
+최종 저장이 확인되지 않았습니다. 다시 시도하거나 저장하지 않고 나가세요.
+[quit without saving]
+저장하지 않고 나가기
+[game closed]
+게임이 종료되었습니다. 이 창을 닫거나 새로고침하여 다시 플레이할 수 있습니다.
+[campaign editor save failed]
+저장이 확인되지 않았습니다. 확인은 다시 시도하고, 취소는 편집기 메뉴로 돌아갑니다.

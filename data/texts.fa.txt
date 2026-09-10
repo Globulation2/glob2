@@ -1764,3 +1764,81 @@ OpenGL در این بیلد موجود نیست.
 نمای خودکار چنبره
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 هنگام حرکت در نقشه (OpenGL) نمای کلی نقشه به شکل چنبره را به صورت خودکار نشان دهید.
+[ERROR_CANT_SAVE_MAP]
+نقشه ذخیره نشد. مقصد و فضای موجود را بررسی کنید. ویرایش‌های شما هنوز باز است.
+[Loading headers]
+در حال بارگذاری سرآیندها...
+[Loading teams]
+در حال بارگذاری تیم‌ها...
+[Loading terrain]
+در حال بارگذاری زمین...
+[Building gradients]
+در حال ساخت گرادیان‌ها...
+[Loading players]
+در حال بارگذاری بازیکنان...
+[Loading scripts]
+در حال بارگذاری اسکریپت‌ها...
+[Generating map]
+در حال ساخت نقشه...
+[ERROR_CANT_GENERATE_MAP]
+نقشه ساخته نشد. تنظیمات ساخت دیگری را امتحان کنید.
+[Loading units]
+در حال بارگذاری واحدها...
+[Loading buildings]
+در حال بارگذاری ساختمان‌ها...
+[Resolving team links]
+در حال حل پیوندهای تیم...
+[saving to storage]
+در حال ذخیره...
+[save failed retry]
+ذخیره ناموفق بود. دوباره تلاش کنید.
+[export save]
+صدور بازی ذخیره‌شده
+[storage restore failed]
+فضای ذخیره‌سازی مرورگر بازیابی نشد. داده‌های ذخیره‌شده موجود تغییر نکرده‌اند. می‌توانید این جلسه را ادامه دهید، اما تغییرات محلی ماندگار نخواهند شد. بازی‌های مهم را از کادر خطای ذخیره صادر کنید. برای تلاش دوباره برای بازیابی فضای ذخیره‌سازی، صفحه را دوباره بارگذاری کنید.
+[continue]
+ادامه
+[export file]
+صدور فایل
+[export failed]
+صدور فایل ناموفق بود
+[import file]
+درون‌ریزی
+[select import file]
+فایلی برای درون‌ریزی انتخاب کنید
+[validating import]
+در حال بررسی فایل...
+[import succeeded]
+فایل درون‌ریزی شد
+[import cancelled]
+درون‌ریزی لغو شد
+[import failed]
+درون‌ریزی ناموفق بود: فایل نامعتبر یا پشتیبانی‌نشده
+[import persistence failed]
+ذخیره نشد: درون‌ریزی را برای تلاش دوباره یا صدور فایل را انتخاب کنید
+[import progress]
+پیشرفت درون‌ریزی
+[export progress]
+پیشرفت صدور
+[retry save]
+تلاش دوباره برای ذخیره
+[campaign save failed]
+پیشرفت کمپین ذخیره نشد. دوباره تلاش کنید یا یک نسخه پشتیبان صادر کنید.
+[leave without saving]
+خروج بدون ذخیره
+[campaign import failed]
+فایل پیشرفت نامعتبر یا نسخه کمپین متفاوت است
+[network release mismatch]
+پروتکل‌های کلاینت و سرور متفاوت است. همان نسخه Glob2 سرور را نصب کنید.
+[settings continue]
+ادامه
+[settings save failed]
+ذخیره تنظیمات تأیید نشد. دوباره تلاش کنید یا ادامه دهید.
+[shutdown save failed]
+ذخیره نهایی تأیید نشد. دوباره تلاش کنید یا بدون ذخیره خارج شوید.
+[quit without saving]
+خروج بدون ذخیره
+[game closed]
+بازی بسته شد. می‌توانید این پنجره را ببندید یا صفحه را دوباره بارگذاری کنید تا دوباره بازی کنید.
+[campaign editor save failed]
+ذخیره تأیید نشد. تأیید دوباره تلاش می‌کند؛ لغو به منوی ویرایشگر بازمی‌گردد.

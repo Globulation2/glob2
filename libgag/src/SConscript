@@ -1,23 +1,8 @@
-libgag_sources = Split("""
-BinaryStream.cpp    CursorManager.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
-GraphicContext.cpp GraphicContextResize.cpp GraphicContextDraw.cpp GraphicContextCompound.cpp
-DrawableSurface.cpp DrawableSurfaceDraw.cpp DrawableSurfaceCompound.cpp
-GUIDropdown.cpp     GUIAnimation.cpp    GUIBase.cpp           GUIButton.cpp
-GUIFileList.cpp     GUIKeySelector.cpp    GUIList.cpp       GUIMessageBox.cpp
-GUINumber.cpp       GUIRatio.cpp          GUISelector.cpp   GUIStyle.cpp
-GUITextArea.cpp     GUITextAreaLayout.cpp GUITextAreaInput.cpp
-GUIText.cpp         GUITextInput.cpp      GUIImage.cpp
-GUIProgressBar.cpp  KeyPress.cpp          Sprite.cpp        StreamBackend.cpp
-Stream.cpp          StringTable.cpp       SupportFunctions.cpp
-TextStream.cpp      Toolkit.cpp           TrueTypeFont.cpp  win32_dirent.cpp
-GUITabScreen.cpp    GUITabScreenWindow.cpp  TextSort.cpp    GUICheckList.cpp
-""")
+from sources import GAG_SOURCES
+libgag_sources = list(GAG_SOURCES)
 
-libgag_just_server = Split("""
-
-BinaryStream.cpp     Stream.cpp     FileManager.cpp FileManagerAtomic.cpp   FormatableString.cpp
-TextStream.cpp      StreamBackend.cpp StringTable.cpp  Toolkit.cpp
-""")
+from sources import GAG_SERVER_SOURCES
+libgag_just_server = list(GAG_SERVER_SOURCES)
 
     
 Import("env")
@@ -36,6 +21,9 @@ if not env['server']:
     resize_test = aspect_env.Program('WindowResizeHarness',
         [aspect_env.Object('WindowResizeHarness.o', '#test/WindowResizeHarness.cpp'), l1])
     env.Alias('resize-test', resize_test)
+    screen_test = env.Program('ScreenExecutionHarness',
+        [env.Object('ScreenExecutionHarness.o', '#test/ScreenExecutionHarness.cpp'), l1])
+    env.Alias('screen-test', screen_test)
 else:
     Default(l2)
 

@@ -1774,3 +1774,81 @@ Aplica els gràfics quan es carregui la propera partida o l’editor de mapes (O
 Vista toroidal automàtica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostra automàticament la vista general toroidal mentre us desplaceu pel mapa (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+No s'ha pogut desar el mapa. Comproveu la destinació i l'espai disponible. Les vostres edicions encara estan obertes.
+[Loading headers]
+Carregant capçaleres...
+[Loading teams]
+Carregant equips...
+[Loading terrain]
+Carregant el terreny...
+[Building gradients]
+Generant gradients...
+[Loading players]
+Carregant jugadors...
+[Loading scripts]
+Carregant scripts...
+[Generating map]
+Generant el mapa...
+[ERROR_CANT_GENERATE_MAP]
+No s'ha pogut generar el mapa. Proveu altres paràmetres de generació.
+[Loading units]
+Carregant unitats...
+[Loading buildings]
+Carregant construccions...
+[Resolving team links]
+Resolent enllaços d'equip...
+[saving to storage]
+Desant...
+[save failed retry]
+Ha fallat el desat. Torneu-ho a provar.
+[export save]
+Exporta la partida desada
+[storage restore failed]
+No s'ha pogut restaurar l'emmagatzematge del navegador. Les dades desades existents no s'han modificat. Podeu continuar aquesta sessió, però els canvis locals no es podran conservar. Exporteu les partides importants des del diàleg d'error de desat. Torneu a carregar per reintentar la restauració de l'emmagatzematge.
+[continue]
+Continua
+[export file]
+Exporta el fitxer
+[export failed]
+Ha fallat l'exportació del fitxer
+[import file]
+Importa
+[select import file]
+Trieu un fitxer per importar
+[validating import]
+Validant el fitxer...
+[import succeeded]
+Fitxer importat
+[import cancelled]
+Importació cancel·lada
+[import failed]
+Ha fallat la importació: fitxer no vàlid o no compatible
+[import persistence failed]
+No desat: trieu Importa per reintentar-ho, o Exporta el fitxer
+[import progress]
+Progrés de la importació
+[export progress]
+Progrés de l'exportació
+[retry save]
+Reintenta el desat
+[campaign save failed]
+El progrés de la campanya no s'ha desat. Torneu-ho a provar o exporteu una còpia de seguretat.
+[leave without saving]
+Surt sense desar
+[campaign import failed]
+Fitxer de progrés no vàlid o versió de campanya diferent
+[network release mismatch]
+Els protocols del client i del servidor difereixen. Instal·leu la mateixa versió de Glob2 que el servidor.
+[settings continue]
+Continua
+[settings save failed]
+Desat dels ajustos no confirmat. Torneu-ho a provar, o continueu.
+[shutdown save failed]
+Desat final no confirmat. Torneu-ho a provar, o sortiu sense desar.
+[quit without saving]
+Surt sense desar
+[game closed]
+Partida tancada. Podeu tancar aquesta finestra o tornar a carregar per jugar de nou.
+[campaign editor save failed]
+Desat no confirmat. D'acord ho reintenta; Cancel·la torna al menú de l'editor.

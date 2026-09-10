@@ -8,6 +8,8 @@
 #include <GUIText.h>
 #include <GUITextInput.h>
 #include <Toolkit.h>
+#include <FileManager.h>
+#include <BinaryStream.h>
 #include <StringTable.h>
 
 class FuncFileList: public FileList
@@ -85,7 +87,12 @@ LoadSaveScreen::LoadSaveScreen(const char *directory, const char *extension, boo
 	addWidget(new TextButton(10, 225, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[ok]"), OK, 13));
 	addWidget(new TextButton(155, 225, 135, 40, ALIGN_LEFT, ALIGN_LEFT, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL, 27));
 
-	addWidget(new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", title));
+    exportButton = new TextButton(50, 90, 200, 40, ALIGN_LEFT, ALIGN_LEFT, "menu",
+        Toolkit::getStringTable()->getString("[export save]"), EXPORT);
+    exportButton->visible = false;
+    addWidget(exportButton);
+	caption = new Text(0, 5, ALIGN_FILL, ALIGN_LEFT, "menu", title);
+    addWidget(caption);
 
 	generateFileName();
 	dispatchInit();
@@ -98,8 +105,10 @@ LoadSaveScreen::~LoadSaveScreen()
 
 void LoadSaveScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+	if (persistence) return;
 	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
 	{
+		if (par1 == EXPORT) { exportSave(); return; }
 		if (par1 == OK)
 		{
 			if (fileName.size())
@@ -140,4 +149,38 @@ const char *LoadSaveScreen::getFileName(void)
 const char *LoadSaveScreen::getName(void)
 {
 	return fileNameEntry->getText().c_str();
+}
+
+void LoadSaveScreen::showSaveFailure()
+{
+    endValue = -1;
+    caption->setText(Toolkit::getStringTable()->getString("[save failed retry]"));
+    exportButton->visible = !exportPath.empty() && GAGCore::ApplicationHost::canExportFiles();
+    if (exportButton->visible) fileList->visible = false;
+}
+
+void LoadSaveScreen::beginPersistence(std::unique_ptr<GAGCore::ApplicationHost::Persistence> operation)
+{
+    endValue = -1;
+    caption->setText(Toolkit::getStringTable()->getString("[saving to storage]"));
+    exportPath = fileName;
+    exportButton->visible = false;
+    persistence = std::move(operation);
+}
+bool LoadSaveScreen::pollPersistence()
+{
+    if (!persistence) return false;
+    const auto state = persistence->state();
+    if (state == GAGCore::ApplicationHost::PersistenceState::Pending) return false;
+    persistence.reset();
+    if (state == GAGCore::ApplicationHost::PersistenceState::Failed) {
+        showSaveFailure();
+        return false;
+    }
+    return true;
+}
+
+void LoadSaveScreen::exportSave()
+{
+    if (!GAGCore::ApplicationHost::exportLocalFile(exportPath)) showSaveFailure();
 }

@@ -1842,3 +1842,81 @@ Anvend grafikken, næste gang et spil eller korteditoren indlæses (OpenGL).
 Automatisk torusvisning
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Vis automatisk den torusformede kortoversigt, mens du bevæger dig rundt på kortet (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Kortet kunne ikke gemmes. Tjek destinationen og den tilgængelige plads. Dine ændringer er stadig åbne.
+[Loading headers]
+Indlæser headere...
+[Loading teams]
+Indlæser hold...
+[Loading terrain]
+Indlæser terræn...
+[Building gradients]
+Bygger gradienter...
+[Loading players]
+Indlæser spillere...
+[Loading scripts]
+Indlæser scripts...
+[Generating map]
+Genererer kort...
+[ERROR_CANT_GENERATE_MAP]
+Kortet kunne ikke genereres. Prøv andre genereringsindstillinger.
+[Loading units]
+Indlæser enheder...
+[Loading buildings]
+Indlæser bygninger...
+[Resolving team links]
+Løser holdforbindelser...
+[saving to storage]
+Gemmer...
+[save failed retry]
+Lagring mislykkedes. Prøv igen.
+[export save]
+Eksportér gemt spil
+[storage restore failed]
+Browserens lager kunne ikke gendannes. Eksisterende gemte data er ikke ændret. Du kan fortsætte denne session, men lokale ændringer kan ikke bevares. Eksportér vigtige gemte spil fra fejldialogen for lagring. Genindlæs for at prøve at gendanne lageret igen.
+[continue]
+Fortsæt
+[export file]
+Eksportér fil
+[export failed]
+Eksport af fil mislykkedes
+[import file]
+Importér
+[select import file]
+Vælg en fil at importere
+[validating import]
+Validerer fil...
+[import succeeded]
+Fil importeret
+[import cancelled]
+Import annulleret
+[import failed]
+Import mislykkedes: ugyldig eller ikke-understøttet fil
+[import persistence failed]
+Ikke gemt: vælg Importér for at prøve igen, eller Eksportér fil
+[import progress]
+Importfremskridt
+[export progress]
+Eksportfremskridt
+[retry save]
+Prøv at gemme igen
+[campaign save failed]
+Kampagnens fremskridt blev ikke gemt. Prøv igen, eller eksportér en sikkerhedskopi.
+[leave without saving]
+Afslut uden at gemme
+[campaign import failed]
+Ugyldig fremskridtsfil eller anden kampagneversion
+[network release mismatch]
+Klient- og serverprotokoller er forskellige. Installér samme Glob2-version som serveren.
+[settings continue]
+Fortsæt
+[settings save failed]
+Lagring af indstillinger ikke bekræftet. Prøv igen, eller fortsæt.
+[shutdown save failed]
+Endelig lagring ikke bekræftet. Prøv igen, eller afslut uden at gemme.
+[quit without saving]
+Afslut uden at gemme
+[game closed]
+Spillet er lukket. Du kan lukke dette vindue eller genindlæse for at spille igen.
+[campaign editor save failed]
+Lagring ikke bekræftet. OK prøver igen; Annuller går tilbage til editormenuen.

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
+#include <ApplicationHost.h>
 #include "EndGameScreen.h"
 #include <FormatableString.h>
 #include <GUIStyle.h>
@@ -12,6 +13,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
+#include <typeinfo>
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "TeamDisplay.h"
@@ -524,48 +526,49 @@ std::string replayFilenameToName(const std::string& fullfilename)
 	return filename;
 }
 
+EndGameScreen::~EndGameScreen() = default;
+
 void EndGameScreen::saveReplay(const char *dir, const char *ext)
 {
-	// create dialog box
-	LoadSaveScreen *loadSaveScreen=new LoadSaveScreen(dir, ext, false, std::string(Toolkit::getStringTable()->getString("[save replay]")), "", replayFilenameToName, glob2NameToFilename);
-	loadSaveScreen->dispatchPaint();
+    replaySave = std::make_unique<LoadSaveScreen>(dir, ext, false,
+        Toolkit::getStringTable()->getString("[save replay]"), "",
+        replayFilenameToName, glob2NameToFilename);
+    GAGCore::ApplicationHost::screenChanged(typeid(*replaySave).name());
+}
 
-	// save screen
-	globalContainer->gfx->setClipRect();
-	
-	DrawableSurface *background = new DrawableSurface(globalContainer->gfx->getW(), globalContainer->gfx->getH());
-	background->drawSurface(0, 0, globalContainer->gfx);
+void EndGameScreen::updateExecution(Uint32 tick)
+{
+    if (!replaySave) { Glob2Screen::updateExecution(tick); return; }
+    replaySave->dispatchTimer(tick);
+    if (replaySave->pollPersistence() || replaySave->endValue == LoadSaveScreen::CANCEL) {
+        replaySave.reset();
+        GAGCore::ApplicationHost::screenChanged(typeid(*this).name());
+    } else if (replaySave->endValue == LoadSaveScreen::OK) {
+        if (!globalContainer->replayWriter ||
+            !globalContainer->replayWriter->write(replaySave->getFileName())) {
+            replaySave->showSaveFailure();
+        } else replaySave->beginPersistence(GAGCore::ApplicationHost::persistStorage());
+    }
+}
 
-	SDL_Event event;
-	while(loadSaveScreen->endValue<0)
-	{
-		Uint64 time = SDL_GetTicks64();
-		while (GAGCore::GraphicContext::pollEvent(&event))
-		{
-			GAGCore::GraphicContext::translateMouseEvent(&event);
-			loadSaveScreen->translateAndProcessEvent(&event);
-		}
-		loadSaveScreen->dispatchPaint();
-		
-		if (Style::style->usesThemeTextColor()) dispatchPaint(false);
-		else globalContainer->gfx->drawSurface(0, 0, background);
-		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
-		globalContainer->gfx->nextFrame();
-		Uint64 ntime = SDL_GetTicks64();
-		SDL_Delay(std::max<Sint64>(0, 40ll - static_cast<Sint64>(ntime) + static_cast<Sint64>(time)));
-	}
+void EndGameScreen::handleExecutionEvent(SDL_Event event)
+{
+    if (!replaySave) { Glob2Screen::handleExecutionEvent(event); return; }
+    GAGCore::GraphicContext::translateMouseEvent(&event);
+    replaySave->translateAndProcessEvent(&event);
+}
 
-	if (loadSaveScreen->endValue==0)
-	{
-		// Write the replay to the file
-		assert(globalContainer->replayWriter);
-		assert(globalContainer->replayWriter->isValid());
-		globalContainer->replayWriter->write(loadSaveScreen->getFileName());
-	}
+void EndGameScreen::drawExecution()
+{
+    Glob2Screen::drawExecution();
+    if (replaySave) {
+        replaySave->dispatchPaint();
+        gfx->drawSurface(replaySave->decX, replaySave->decY, replaySave->getSurface());
+    }
+}
 
-	// clean up
-	delete loadSaveScreen;
-	
-	// destroy temporary surface
-	delete background;
+void EndGameScreen::viewportResized(int oldWidth, int oldHeight, int width, int height)
+{
+    Glob2Screen::viewportResized(oldWidth, oldHeight, width, height);
+    if (replaySave) replaySave->viewportResized(oldWidth, oldHeight, width, height);
 }

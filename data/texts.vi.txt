@@ -1762,3 +1762,81 @@ Hình ảnh được áp dụng khi tải ván chơi hoặc trình chỉnh sửa
 Chế độ xem hình xuyến tự động
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển xung quanh bản đồ (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Không thể lưu bản đồ. Hãy kiểm tra đích lưu và dung lượng trống. Các chỉnh sửa của bạn vẫn còn mở.
+[Loading headers]
+Đang tải phần đầu...
+[Loading teams]
+Đang tải đội...
+[Loading terrain]
+Đang tải địa hình...
+[Building gradients]
+Đang dựng gradient...
+[Loading players]
+Đang tải người chơi...
+[Loading scripts]
+Đang tải kịch bản...
+[Generating map]
+Đang tạo bản đồ...
+[ERROR_CANT_GENERATE_MAP]
+Không thể tạo bản đồ. Hãy thử các thiết lập tạo khác.
+[Loading units]
+Đang tải đơn vị...
+[Loading buildings]
+Đang tải công trình...
+[Resolving team links]
+Đang phân giải liên kết đội...
+[saving to storage]
+Đang lưu...
+[save failed retry]
+Lưu thất bại. Hãy thử lại.
+[export save]
+Xuất bản lưu
+[storage restore failed]
+Không thể khôi phục bộ nhớ trình duyệt. Dữ liệu đã lưu hiện có không thay đổi. Bạn có thể tiếp tục phiên này, nhưng các thay đổi cục bộ sẽ không được lưu giữ. Hãy xuất các bản lưu quan trọng từ hộp thoại lỗi lưu. Tải lại trang để thử khôi phục bộ nhớ lần nữa.
+[continue]
+Tiếp tục
+[export file]
+Xuất tệp
+[export failed]
+Xuất tệp thất bại
+[import file]
+Nhập
+[select import file]
+Chọn tệp để nhập
+[validating import]
+Đang kiểm tra tệp...
+[import succeeded]
+Đã nhập tệp
+[import cancelled]
+Đã hủy nhập
+[import failed]
+Nhập thất bại: tệp không hợp lệ hoặc không được hỗ trợ
+[import persistence failed]
+Chưa lưu: chọn Nhập để thử lại, hoặc Xuất tệp
+[import progress]
+Tiến trình nhập
+[export progress]
+Tiến trình xuất
+[retry save]
+Thử lưu lại
+[campaign save failed]
+Tiến trình chiến dịch chưa được lưu. Hãy thử lại hoặc xuất bản sao lưu.
+[leave without saving]
+Thoát mà không lưu
+[campaign import failed]
+Tệp tiến trình không hợp lệ hoặc khác phiên bản chiến dịch
+[network release mismatch]
+Giao thức máy khách và máy chủ khác nhau. Hãy cài phiên bản Glob2 giống với máy chủ.
+[settings continue]
+Tiếp tục
+[settings save failed]
+Chưa xác nhận lưu thiết lập. Hãy thử lại, hoặc tiếp tục.
+[shutdown save failed]
+Chưa xác nhận lưu lần cuối. Hãy thử lại, hoặc thoát mà không lưu.
+[quit without saving]
+Thoát mà không lưu
+[game closed]
+Trò chơi đã đóng. Bạn có thể đóng cửa sổ này hoặc tải lại để chơi tiếp.
+[campaign editor save failed]
+Chưa xác nhận lưu. Đồng ý sẽ thử lại; Hủy sẽ quay về menu trình chỉnh sửa.

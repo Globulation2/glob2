@@ -1766,3 +1766,81 @@ A kiválasztott grafika a játék vagy a térképszerkesztő következő betölt
 Automatikus tórusznézet
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 A tórusz alakú térkép áttekintésének automatikus megjelenítése a térképen való mozgás közben (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+A térképet nem sikerült menteni. Ellenőrizze a célt és a rendelkezésre álló helyet. A szerkesztések továbbra is nyitva vannak.
+[Loading headers]
+Fejlécek betöltése...
+[Loading teams]
+Csapatok betöltése...
+[Loading terrain]
+Terep betöltése...
+[Building gradients]
+Színátmenetek építése...
+[Loading players]
+Játékosok betöltése...
+[Loading scripts]
+Szkriptek betöltése...
+[Generating map]
+Térkép generálása...
+[ERROR_CANT_GENERATE_MAP]
+A térképet nem sikerült legenerálni. Próbáljon más generálási beállításokat.
+[Loading units]
+Egységek betöltése...
+[Loading buildings]
+Épületek betöltése...
+[Resolving team links]
+Csapatkapcsolatok feloldása...
+[saving to storage]
+Mentés...
+[save failed retry]
+A mentés sikertelen. Próbálja újra.
+[export save]
+Mentés exportálása
+[storage restore failed]
+A böngésző tárolóját nem sikerült helyreállítani. A meglévő mentett adatok nem változtak. Folytathatja ezt a munkamenetet, de a helyi változtatások nem menthetők meg tartósan. Exportálja a fontos mentéseket a mentési hiba párbeszédpaneléből. Töltse újra az oldalt, hogy újra megpróbálja helyreállítani a tárolót.
+[continue]
+Folytatás
+[export file]
+Fájl exportálása
+[export failed]
+A fájl exportálása sikertelen
+[import file]
+Importálás
+[select import file]
+Válasszon importálandó fájlt
+[validating import]
+Fájl ellenőrzése...
+[import succeeded]
+Fájl importálva
+[import cancelled]
+Az importálás megszakítva
+[import failed]
+Az importálás sikertelen: érvénytelen vagy nem támogatott fájl
+[import persistence failed]
+Nincs mentve: válassza az Importálás lehetőséget az újrapróbálkozáshoz, vagy a Fájl exportálását
+[import progress]
+Importálás folyamata
+[export progress]
+Exportálás folyamata
+[retry save]
+Mentés újrapróbálása
+[campaign save failed]
+A hadjárat haladása nem mentődött. Próbálja újra, vagy exportáljon biztonsági mentést.
+[leave without saving]
+Kilépés mentés nélkül
+[campaign import failed]
+Érvénytelen haladásfájl vagy eltérő hadjáratverzió
+[network release mismatch]
+A kliens és a szerver protokollja eltér. Telepítse a szerverrel megegyező Glob2-verziót.
+[settings continue]
+Folytatás
+[settings save failed]
+A beállítások mentése nincs megerősítve. Próbálja újra, vagy folytassa.
+[shutdown save failed]
+A végső mentés nincs megerősítve. Próbálja újra, vagy lépjen ki mentés nélkül.
+[quit without saving]
+Kilépés mentés nélkül
+[game closed]
+A játék bezárult. Bezárhatja ezt az ablakot, vagy újratöltheti az oldalt az ismételt játékhoz.
+[campaign editor save failed]
+A mentés nincs megerősítve. Az OK újra próbálkozik; a Mégse visszatér a szerkesztő menüjébe.

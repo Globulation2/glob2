@@ -73,6 +73,11 @@ public:
 	///(read-only directory, full disk, missing path); callers should react instead
 	///of silently dropping the user's progress / edits.
 	bool save(bool isGameSave=false);
+    /// Versioned progress backup; contains mission identity and progress only.
+    std::vector<unsigned char> exportProgress();
+    /// Validate against this campaign, then merge progress without relocking
+    /// missions or removing completions. Invalid input leaves this unchanged.
+    bool importProgress(const std::vector<unsigned char>& bytes);
 	///Gets the number of maps in this campaign
 	size_t getMapCount() const;
 	///Returns the entry for map n. Precondition: n < getMapCount(); violating

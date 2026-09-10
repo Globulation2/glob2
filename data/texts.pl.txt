@@ -1766,3 +1766,81 @@ Wybrana grafika zostanie zastosowana przy następnym załadowaniu gry lub edytor
 Automatyczny widok torusa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatycznie pokazuj przegląd mapy w kształcie torusa podczas poruszania się po mapie (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Nie udało się zapisać mapy. Sprawdź miejsce docelowe i dostępną przestrzeń. Twoje zmiany wciąż są otwarte.
+[Loading headers]
+Wczytywanie nagłówków...
+[Loading teams]
+Wczytywanie drużyn...
+[Loading terrain]
+Wczytywanie terenu...
+[Building gradients]
+Tworzenie gradientów...
+[Loading players]
+Wczytywanie graczy...
+[Loading scripts]
+Wczytywanie skryptów...
+[Generating map]
+Generowanie mapy...
+[ERROR_CANT_GENERATE_MAP]
+Nie udało się wygenerować mapy. Spróbuj innych ustawień generowania.
+[Loading units]
+Wczytywanie jednostek...
+[Loading buildings]
+Wczytywanie budynków...
+[Resolving team links]
+Rozwiązywanie powiązań drużyn...
+[saving to storage]
+Zapisywanie...
+[save failed retry]
+Zapis nieudany. Spróbuj ponownie.
+[export save]
+Eksportuj zapis
+[storage restore failed]
+Nie udało się przywrócić pamięci przeglądarki. Istniejące zapisane dane nie zostały zmienione. Możesz kontynuować tę sesję, ale zmiany lokalne nie zostaną zachowane. Wyeksportuj ważne zapisy z okna błędu zapisu. Przeładuj stronę, aby ponowić przywracanie pamięci.
+[continue]
+Kontynuuj
+[export file]
+Eksportuj plik
+[export failed]
+Eksport pliku nie powiódł się
+[import file]
+Importuj
+[select import file]
+Wybierz plik do zaimportowania
+[validating import]
+Sprawdzanie pliku...
+[import succeeded]
+Plik zaimportowany
+[import cancelled]
+Import anulowany
+[import failed]
+Import nie powiódł się: nieprawidłowy lub nieobsługiwany plik
+[import persistence failed]
+Niezapisane: wybierz Importuj, aby spróbować ponownie, lub Eksportuj plik
+[import progress]
+Postęp importu
+[export progress]
+Postęp eksportu
+[retry save]
+Ponów zapis
+[campaign save failed]
+Postęp kampanii nie został zapisany. Spróbuj ponownie lub wyeksportuj kopię zapasową.
+[leave without saving]
+Wyjdź bez zapisywania
+[campaign import failed]
+Nieprawidłowy plik postępu lub inna wersja kampanii
+[network release mismatch]
+Protokoły klienta i serwera się różnią. Zainstaluj taką samą wersję Glob2 jak na serwerze.
+[settings continue]
+Kontynuuj
+[settings save failed]
+Zapis ustawień niepotwierdzony. Spróbuj ponownie lub kontynuuj.
+[shutdown save failed]
+Zapis końcowy niepotwierdzony. Spróbuj ponownie lub wyjdź bez zapisywania.
+[quit without saving]
+Wyjdź bez zapisywania
+[game closed]
+Gra zamknięta. Możesz zamknąć to okno lub przeładować stronę, aby zagrać ponownie.
+[campaign editor save failed]
+Zapis niepotwierdzony. OK ponawia próbę; Anuluj wraca do menu edytora.

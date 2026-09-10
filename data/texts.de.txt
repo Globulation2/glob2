@@ -1766,3 +1766,81 @@ Grafik beim nächsten Laden einer Partie oder des Karteneditors anwenden (OpenGL
 Automatische Torusansicht
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Zeigt automatisch die torusförmige Kartenübersicht an, während Sie sich auf der Karte bewegen (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Die Karte konnte nicht gespeichert werden. Prüfen Sie Ziel und verfügbaren Speicherplatz. Ihre Änderungen sind weiterhin offen.
+[Loading headers]
+Kopfdaten werden geladen...
+[Loading teams]
+Teams werden geladen...
+[Loading terrain]
+Gelände wird geladen...
+[Building gradients]
+Verlaufsfelder werden erstellt...
+[Loading players]
+Spieler werden geladen...
+[Loading scripts]
+Skripte werden geladen...
+[Generating map]
+Karte wird generiert...
+[ERROR_CANT_GENERATE_MAP]
+Die Karte konnte nicht generiert werden. Versuchen Sie andere Generierungseinstellungen.
+[Loading units]
+Einheiten werden geladen...
+[Loading buildings]
+Gebäude werden geladen...
+[Resolving team links]
+Team-Verknüpfungen werden aufgelöst...
+[saving to storage]
+Wird gespeichert...
+[save failed retry]
+Speichern fehlgeschlagen. Erneut versuchen.
+[export save]
+Speicherstand exportieren
+[storage restore failed]
+Der Browser-Speicher konnte nicht wiederhergestellt werden. Vorhandene gespeicherte Daten wurden nicht verändert. Sie können diese Sitzung fortsetzen, aber lokale Änderungen können nicht dauerhaft gespeichert werden. Exportieren Sie wichtige Spielstände über den Speicherfehler-Dialog. Laden Sie neu, um die Wiederherstellung erneut zu versuchen.
+[continue]
+Weiter
+[export file]
+Datei exportieren
+[export failed]
+Dateiexport fehlgeschlagen
+[import file]
+Importieren
+[select import file]
+Datei zum Importieren auswählen
+[validating import]
+Datei wird überprüft...
+[import succeeded]
+Datei importiert
+[import cancelled]
+Import abgebrochen
+[import failed]
+Import fehlgeschlagen: ungültige oder nicht unterstützte Datei
+[import persistence failed]
+Nicht gespeichert: Importieren zum erneuten Versuch oder Datei exportieren wählen
+[import progress]
+Importfortschritt
+[export progress]
+Exportfortschritt
+[retry save]
+Speichern erneut versuchen
+[campaign save failed]
+Kampagnenfortschritt nicht gespeichert. Erneut versuchen oder eine Sicherung exportieren.
+[leave without saving]
+Beenden ohne zu speichern
+[campaign import failed]
+Ungültige Fortschrittsdatei oder abweichende Kampagnenversion
+[network release mismatch]
+Client- und Serverprotokoll stimmen nicht überein. Installieren Sie dieselbe Glob2-Version wie der Server.
+[settings continue]
+Weiter
+[settings save failed]
+Einstellungen speichern nicht bestätigt. Erneut versuchen oder fortfahren.
+[shutdown save failed]
+Letztes Speichern nicht bestätigt. Erneut versuchen oder ohne Speichern beenden.
+[quit without saving]
+Beenden ohne zu speichern
+[game closed]
+Spiel beendet. Sie können dieses Fenster schließen oder neu laden, um erneut zu spielen.
+[campaign editor save failed]
+Speichern nicht bestätigt. OK versucht es erneut; Abbrechen kehrt zum Editor-Menü zurück.

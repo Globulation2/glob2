@@ -2,6 +2,7 @@
 #include "AIImplementation.h"
 #include "AINames.h"
 #include "CustomGameScreen.h"
+#include <ScreenStack.h>
 #include "CustomGameSetup.h"
 #include "CustomGamePreferences.h"
 #include "Engine.h"
@@ -97,7 +98,8 @@ struct CustomGameSetupHarness
 		if (write) files->remove(CustomGamePreferences::filename);
 		if (write)
 		{
-			CustomGameScreen screen;
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
+			CustomGameScreen screen(screens);
 			assert(screen.validMap && screen.setup.capacity == 4);
 			assert(screen.setup.setController(2, CustomGameSetup::Shared));
 			screen.setup.colonies[2].ai = AI::CORTEX;
@@ -121,7 +123,8 @@ struct CustomGameSetupHarness
 		{
 			std::string premade;
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.validMap && !screen.setup.random && screen.setup.capacity == 4);
 				assert(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
 				assert(screen.setup.colonies[2].ai == AI::CORTEX);
@@ -140,7 +143,8 @@ struct CustomGameSetupHarness
 				assert(screen.previewPending);
 			}
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap);
 				assert(screen.snapshot.empty() && screen.source.empty());
 				assert(screen.setup.premadeMap == premade);
@@ -150,7 +154,8 @@ struct CustomGameSetupHarness
 				screen.setup.premadeMap = "/missing/saved-map.map";
 			}
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(!screen.validMap && !screen.setup.random && !screen.message.empty());
 				assert(screen.setup.colonies[2].ai == AI::CORTEX && screen.setup.speed == 3);
 				assert(screen.setup.premadeMap == "/missing/saved-map.map");
@@ -160,7 +165,8 @@ struct CustomGameSetupHarness
 				out.write(truncated.data(), truncated.size(), "broken preferences");
 			});
 			{
-				CustomGameScreen screen;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.validMap && screen.setup.capacity == 4 && screen.setup.speed == 0);
 			}
 			files->remove(CustomGamePreferences::filename);
@@ -264,6 +270,16 @@ struct CustomGameSetupHarness
 		globalContainer->settings.gameSpeed = 7;
 		{
 			Engine engine;
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
+			bool loaded = false;
+			screens.push(std::make_unique<CustomGameScreen>(screens),
+				[&](GAGGUI::Screen &screen, int result)
+				{
+					if (result != CustomGameScreen::OK) return;
+					auto &selected = static_cast<CustomGameScreen &>(screen);
+					loaded = engine.initCustomTask(selected.getMapHeader(), selected.getGameHeader(),
+						selected.getSelectedColor(0), selected.selectedSpeed()).run();
+				});
 			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
 			assert(timer);
 			auto watchdog = SDL_AddTimer(
@@ -276,10 +292,10 @@ struct CustomGameSetupHarness
 					return 0;
 				},
 				nullptr);
-			int result = engine.initCustom();
+			screens.execute();
 			SDL_RemoveTimer(timer);
 			SDL_RemoveTimer(watchdog);
-			assert(result == Engine::EE_NO_ERROR);
+			assert(loaded);
 			assert(driver.next == driver.steps.size());
 			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
 			assert(globalContainer->settings.gameSpeed == 3);
@@ -340,7 +356,8 @@ struct CustomGameSetupHarness
 			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
 		}
 
-		CustomGameScreen screen;
+		GAGGUI::ScreenStack screens(*globalContainer->gfx);
+		CustomGameScreen screen(screens);
 		screen.gfx = globalContainer->gfx;
 		screen.dispatchInit();
 		assert(screen.validMap && screen.setup.capacity == 4);

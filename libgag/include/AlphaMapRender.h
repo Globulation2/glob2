@@ -27,7 +27,9 @@ inline void drawAlphaMapBatched(const std::valarray<unsigned char> &map, int map
     std::vector<Vertex> row((mapW - 1) * 12 * rowsPerBatch);
     GLint oldBuffer;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldBuffer);
+#ifndef GLOB2_WEBGL2
     glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+#endif
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
@@ -60,7 +62,14 @@ inline void drawAlphaMapBatched(const std::valarray<unsigned char> &map, int map
         if ((dy + 1) % rowsPerBatch == 0 || dy == mapH - 2)
             glDrawArrays(GL_TRIANGLES, 0, ((dy % rowsPerBatch) + 1) * (mapW - 1) * 12);
     }
+#ifdef GLOB2_WEBGL2
+    // Emscripten's legacy-GL bridge does not provide client attribute stacks.
+    // Glob2's other batched paths also leave client arrays disabled.
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+#else
     glPopClientAttrib();
+#endif
     glBindBuffer(GL_ARRAY_BUFFER, oldBuffer);
 }
 } // namespace GAGCore

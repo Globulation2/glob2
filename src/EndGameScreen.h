@@ -6,6 +6,9 @@
 
 #include "GameGUI.h"
 #include "Glob2Screen.h"
+#include "FrontendTheme.h"
+
+class LoadSaveScreen;
 
 namespace GAGGUI
 {
@@ -94,10 +97,15 @@ protected:
 	
 public:
 	EndGameScreen(GameGUI *gui);
-	virtual ~EndGameScreen() { }
+	~EndGameScreen() override;
+    void updateExecution(Uint32 tick) override;
+    void handleExecutionEvent(SDL_Event event) override;
+    void drawExecution() override;
+    void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
 	virtual void onAction(Widget *source, Action action, int par1, int par2);
 
 private:
+    FrontendScope theme{true};
+    std::unique_ptr<LoadSaveScreen> replaySave;
 	void saveReplay(const char *dir, const char *ext);
 };
-

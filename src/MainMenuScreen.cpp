@@ -11,7 +11,7 @@
 #include <cmath>
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+	#include <glob2/BuildConfig.h>
 #endif
 #ifndef PACKAGE_VERSION
 #define PACKAGE_VERSION "Globulation 2"
@@ -96,12 +96,20 @@ public:
 		pressed = false;
 		TextButton::onSDLMouseButtonUp(event);
 	}
+
+	void setGeometry(int nx, int ny, int nw, int nh)
+	{
+		x = nx;
+		y = ny;
+		w = nw;
+		h = nh;
+	}
 };
 
 MainMenuScreen::MainMenuScreen()
 {
 	const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
-	const bool compact = height < 640;
+	compact = height < 640;
 	panelX = std::clamp(width / 20, 20, 72);
 	panelH = std::min(height - 40, 620);
 	panelY = (height - panelH) / 2;
@@ -169,7 +177,9 @@ MainMenuScreen::MainMenuScreen()
 	y += compact ? 12 : 18;
 	add("[yog]", MULTIPLAYERS_YOG, compact ? 28 : 34, "front-small");
 	y += 4;
+#ifndef __EMSCRIPTEN__
 	add("[lan]", MULTIPLAYERS_LAN, compact ? 28 : 34, "front-small");
+#endif
 	y += compact ? 12 : 18;
 	const char* keys[] = {"[settings]", "[editor]", "[credits]", "[quit]"};
 	const int actions[] = {GAME_SETUP, EDITOR, CREDITS, QUIT};
@@ -182,6 +192,45 @@ MainMenuScreen::MainMenuScreen()
 		buttons.push_back(button);
 		addWidget(button);
 	}
+}
+
+void MainMenuScreen::layout(int width, int height)
+{
+	panelX = std::clamp(width / 20, 20, 72);
+	panelH = std::min(height - 40, 620);
+	panelY = (height - panelH) / 2;
+	panelW = compact ? 312 : 368;
+	if (buttons.empty()) return;
+
+	const int x = panelX + 24, w = panelW - 48;
+	int y = panelY + (compact ? 74 : 110);
+	size_t index = 0;
+	auto place = [&](int height) {
+		buttons[index++]->setGeometry(x, y, w, height);
+		y += height;
+	};
+	place(compact ? 38 : 46);
+	y += 8;
+	for (int i = 0; i < 3; ++i) {
+		place(compact ? 30 : 38);
+		y += 6;
+	}
+	y += compact ? 6 : 12;
+	place(compact ? 28 : 34);
+	y += 4;
+#ifndef __EMSCRIPTEN__
+	place(compact ? 28 : 34);
+#endif
+	y += compact ? 12 : 18;
+	const int utilityH = compact ? 28 : 32;
+	for (int i = 0; i < 4; ++i)
+		buttons[index++]->setGeometry(x + (i % 2) * (w / 2 + 4),
+			y + (i / 2) * (utilityH + 4), w / 2 - 4, utilityH);
+}
+
+void MainMenuScreen::viewportResized(int, int, int width, int height)
+{
+	layout(width, height);
 }
 
 MainMenuScreen::~MainMenuScreen()
@@ -234,9 +283,4 @@ void MainMenuScreen::onAction(Widget* source, Action action, int par1, int par2)
 {
 	if (action == BUTTON_RELEASED || action == BUTTON_SHORTCUT)
 		endExecute(par1);
-}
-
-int MainMenuScreen::menu()
-{
-	return MainMenuScreen().execute(globalContainer->gfx, 40);
 }

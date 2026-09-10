@@ -82,6 +82,7 @@ namespace GAGCore
 			const float v1 = static_cast<float>(sy + sh) * surface->texMultY + biasY;
 
 			// draw
+			if (!surface->textureInfo) glState.setTexture(surface->texture);
 			if (surface->textureInfo && surface->textureInfo->sprite)
 			{
 				Sprite* sprite = surface->textureInfo->sprite;
@@ -164,13 +165,20 @@ namespace GAGCore
 			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			glColor4ub(255, 255, 255, alpha);
 			glState.setTexture(sprite->atlas->texture);
+#ifdef GLOB2_WEBGL2
+            // The compatibility renderer packs client arrays into its own GPU buffer.
+            glVertexPointer(2, GL_FLOAT, 0, sprite->vertices.data());
+            glTexCoordPointer(2, GL_FLOAT, 0, sprite->texCoords.data());
+#else
 			glBindBuffer(GL_ARRAY_BUFFER, sprite->vbo);
 			glBufferData(GL_ARRAY_BUFFER, sprite->vertices.size() * sizeof(float), sprite->vertices.data(), GL_STREAM_DRAW);
 			glVertexPointer(2, GL_FLOAT, 0, 0);
 			glBindBuffer(GL_ARRAY_BUFFER, sprite->texCoordBuffer);
 			glBufferData(GL_ARRAY_BUFFER, sprite->texCoords.size() * sizeof(float), sprite->texCoords.data(), GL_STREAM_DRAW);
 			glTexCoordPointer(2, GL_FLOAT, 0, 0);
-			++drawCalls;glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 2);
+#endif
+			++drawCalls;
+			glDrawArrays(GL_QUADS, 0, sprite->vertices.size() / 2);
 
 			sprite->vertices.clear();
 			sprite->texCoords.clear();

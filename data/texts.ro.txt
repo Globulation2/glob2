@@ -1766,3 +1766,81 @@ Grafica selectată se aplică la următoarea încărcare a jocului sau a editoru
 Vizualizare toroidală automată
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Afișați automat prezentarea generală a hărții în formă de torus în timp ce vă deplasați pe hartă (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Harta nu a putut fi salvată. Verificați destinația și spațiul disponibil. Modificările dvs. sunt încă deschise.
+[Loading headers]
+Se încarcă anteturile...
+[Loading teams]
+Se încarcă echipele...
+[Loading terrain]
+Se încarcă terenul...
+[Building gradients]
+Se generează gradienții...
+[Loading players]
+Se încarcă jucătorii...
+[Loading scripts]
+Se încarcă scripturile...
+[Generating map]
+Se generează harta...
+[ERROR_CANT_GENERATE_MAP]
+Harta nu a putut fi generată. Încercați alte setări de generare.
+[Loading units]
+Se încarcă unitățile...
+[Loading buildings]
+Se încarcă construcțiile...
+[Resolving team links]
+Se rezolvă legăturile dintre echipe...
+[saving to storage]
+Se salvează...
+[save failed retry]
+Salvare eșuată. Reîncercați.
+[export save]
+Exportă jocul salvat
+[storage restore failed]
+Stocarea din browser nu a putut fi restaurată. Datele salvate existente nu au fost modificate. Puteți continua această sesiune, dar modificările locale nu vor putea fi păstrate. Exportați salvările importante din fereastra de eroare de salvare. Reîncărcați pentru a reîncerca restaurarea stocării.
+[continue]
+Continuă
+[export file]
+Exportă fișierul
+[export failed]
+Exportul fișierului a eșuat
+[import file]
+Importă
+[select import file]
+Alegeți un fișier de importat
+[validating import]
+Se validează fișierul...
+[import succeeded]
+Fișier importat
+[import cancelled]
+Import anulat
+[import failed]
+Import eșuat: fișier nevalid sau neacceptat
+[import persistence failed]
+Nesalvat: alegeți Importă pentru a reîncerca sau Exportă fișierul
+[import progress]
+Progres import
+[export progress]
+Progres export
+[retry save]
+Reîncearcă salvarea
+[campaign save failed]
+Progresul campaniei nu a fost salvat. Reîncercați sau exportați o copie de rezervă.
+[leave without saving]
+Ieși fără a salva
+[campaign import failed]
+Fișier de progres nevalid sau versiune de campanie diferită
+[network release mismatch]
+Protocoalele clientului și serverului diferă. Instalați aceeași versiune Glob2 ca serverul.
+[settings continue]
+Continuă
+[settings save failed]
+Salvarea setărilor neconfirmată. Reîncercați sau continuați.
+[shutdown save failed]
+Salvarea finală neconfirmată. Reîncercați sau ieșiți fără a salva.
+[quit without saving]
+Ieși fără a salva
+[game closed]
+Joc închis. Puteți închide această fereastră sau reîncărca pentru a juca din nou.
+[campaign editor save failed]
+Salvare neconfirmată. OK reîncearcă; Anulare revine la meniul editorului.

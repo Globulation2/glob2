@@ -13,6 +13,13 @@
 
 bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 {
+    return oldMakeIslandsMapTask(descriptor).run();
+}
+
+GAGCore::CooperativeTask Map::oldMakeIslandsMapTask(MapGenerationDescriptor &descriptor)
+{
+    unsigned work = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	// First, fill with water:
 	for (int y=0; y<h; y++)
 		for (int x=0; x<w; x++)
@@ -31,6 +38,7 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 	int c=0;
 	for (int i=0; i<nbIslands; i++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		int x=syncRand()%w;
 		int y=syncRand()%h;
 		bool failed=false;
@@ -69,6 +77,7 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 	// Three, expands islands
 	for (int s=0; s<islandsSize; s++)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for (int oddEven=0; oddEven<2; oddEven++)
 		{
 			for (int y=oddEven; y<h; y+=2)
@@ -281,7 +290,10 @@ bool Map::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 	
 	
 	//controlSand();
-	regenerateMap(0, 0, w, h);
-	return true;
+    for (int column = 0; column < w; ++column) {
+        regenerateMap(column, 0, 1, h);
+        if (column % 8 == 0) co_await GAGCore::CooperativeTask::checkpoint();
+    }
+	co_return true;
 }
 

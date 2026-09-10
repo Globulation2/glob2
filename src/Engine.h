@@ -51,17 +51,24 @@ public:
 	/// is a lone map that runs with campaign semantics
 	int initCampaign(const std::string &mapName);
 
-	/// Displays the CustomMap dialogue, and initiates a game from the settings it receives
-	int initCustom();
+	/// Initialize a custom game from the selected map, players and local team.
+	int initCustom(MapHeader& map, GameHeader& players, int localTeam);
 
 	/// Initiate a custom game from the provided game, without adjusting settings from the user
 	int initCustom(const std::string &gameName);
+    GAGCore::CooperativeTask initCustomTask(MapHeader map, GameHeader players, int localTeam, int speed = -1);
+    GAGCore::CooperativeTask initCustomTask(std::string filename);
+    GAGCore::CooperativeTask initCampaignTask(std::string filename, Campaign* campaign = nullptr, std::string mission = {});
+    GAGCore::CooperativeTask loadReplayTask(std::string filename);
+    void cancelInitialization();
+    void suspendInput() { gui.suspendInput(); }
+    void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
 
-	/// Show the load/save dialog, and use initCustom(gameName) to load the game
-	int initLoadGame();
+
 
 	/// Initiate a game with the given MultiplayerGame
 	int initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
+	GAGCore::CooperativeTask initMultiplayerTask(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
@@ -78,6 +85,24 @@ public:
 
 	//! Run game. A valid gui and netGame must exists
 	int run();
+    void prepareRun();
+    std::unique_ptr<GAGGUI::Screen> endRunScreen();
+    void restoreCursor();
+
+    // Incremental session API. Requires an initialized game; the host owns
+    // scheduling. GUI input and modal flows remain transitional legacy code.
+    void beginSession(Uint64 now);
+    bool stepSession(Uint64 now);
+    bool stepSession(Uint64 now, const std::vector<SDL_Event>& events);
+    void drawSession();
+    Uint32 sessionDelay(Uint64 now);
+    struct PendingLoad { std::string filename; bool replay; };
+    // Finalize without loading another game or entering a UI loop. The host
+    // schedules a returned request, or presents the end screen when absent.
+    std::optional<PendingLoad> finishSessionForHost();
+    // Synchronous adapter for native command-line/headless hosts.
+    bool finishSession();
+
 
 	//! Type of error the engine init function can return
 	enum EngineError
@@ -105,6 +130,7 @@ private:
 	/// GameGUI data in the file, such as viewport position and localTeam. This is
 	/// needed for when your loading a save game over the internet
 	int initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
+	GAGCore::CooperativeTask initGameTask(MapHeader mapHeader, GameHeader gameHeader, bool setGameHeader=true, bool ignoreGUIData=false, bool saveAI=false, std::string sourceFileName=std::string());
 
 	/// Reset globalContainer's replay state (replaying flag, replay file name,
 	/// replay reader) so the next game session starts as a normal game.
@@ -153,12 +179,12 @@ private:
 		bool adjustableGameSpeed; ///< Speed presets apply; live network games stay at GAME_TICK_MS
 	};
 
-	void updateTickSpeedAndDrawCadence(MainLoopState& st);
+	void updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now);
 
 	/// Headless / scripted-test polling: under --nox automaticEndingGame, flip
 	/// gui.isRunning=false once a local end condition fires. Records
 	/// automaticGameEndTick.
-	void pollAutomaticEndingConditions();
+	void pollAutomaticEndingConditions(Uint64 now);
 
 	/// Push this tick's local + AI orders into the net layer and (if the
 	/// previous tick committed) call advanceStep + write the checksum sidecar.
@@ -170,7 +196,10 @@ private:
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
 
-	void drawAndPaceFrame(MainLoopState& st, bool readyNow);
+	void drawFrame(MainLoopState& st);
+    std::optional<MainLoopState> session;
+    int sessionEndingTarget = 0;
+    std::vector<SDL_Event> sessionInput;
 
 	/// If the GUI requested a clean exit, drain remaining local orders and
 	/// flush the net layer. Returns true if the engine loop should break.
@@ -192,13 +221,8 @@ private:
 
 	/// Close cross-replay sinks (sidecar, dataset) and tear down the network
 	/// + multiplayer state. The Engine itself stays alive for a possible
-	/// reload (see prepareNextGameSession).
+	/// reload (see finishSessionForHost).
 	void teardownSession();
-
-	/// Decide whether run() should loop back into runOneGameSession (a
-	/// load-game request was armed in the GUI) or return to the menu. Always
-	/// clears toLoadGameFileName so a follow-up pass doesn't re-trigger it.
-	void prepareNextGameSession(bool& doRunOnceAgain);
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;

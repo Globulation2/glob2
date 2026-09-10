@@ -5,7 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-//also the Perlin Noise stuff uses random that is not based on syncRand
+// Generation randomness is drawn from the explicitly seeded synchronized stream.
 #include "Game.h"
 #include "MapGenerationDescriptor.h"
 #include "MapGenerator.h"
@@ -13,48 +13,63 @@
 #include "Unit.h"
 #include "Utilities.h"
 
-bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
+bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor& descriptor)
 {
+    return generateMap(game, descriptor, static_cast<Uint32>(time(nullptr)));
+}
+
+bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor& descriptor, Uint32 seed)
+{
+    return generateMapTask(game, descriptor, seed).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::generateMapTask(Game& game, MapGenerationDescriptor& descriptor, Uint32 seed)
+{
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
+    if (!Map::supportedDimensions(descriptor.wDec, descriptor.hDec) ||
+        descriptor.method < MapGenerationDescriptor::eUNIFORM || descriptor.method > MapGenerationDescriptor::eOLDISLANDS ||
+        (descriptor.method != MapGenerationDescriptor::eUNIFORM &&
+         (descriptor.nbTeams < 1 || descriptor.nbTeams > Team::MAX_COUNT))) co_return false;
+    setSyncRandSeed(seed);
 	if (verbose)
 		printf("Generating map, please wait ....\n");
 	game.map.setSize(descriptor.wDec, descriptor.hDec);
 	game.map.setGame(&game);
-	setRandomSyncRandSeed();
 	
 	switch (descriptor.method)
 	{
 		case MapGenerationDescriptor::eUNIFORM:
-			game.map.makeHomogenMap(descriptor.terrainType);
-			game.addTeam();
+			co_await game.map.makeHomogenMapTask(descriptor.terrainType);
+			co_await game.addTeamTask();
 		break;
 		case MapGenerationDescriptor::eSWAMP:
 		case MapGenerationDescriptor::eISLANDS:
 		case MapGenerationDescriptor::eRIVER:
 		case MapGenerationDescriptor::eCRATERLAKES:
-			if (!game.map.makeRandomMap(descriptor))
-				return false;
-			if (!game.makeRandomMap(descriptor))
-				return false;
+			if (!(co_await game.map.makeRandomMapTask(descriptor)))
+				co_return false;
+			if (!(co_await game.makeRandomMapTask(descriptor)))
+				co_return false;
 			break;
 		case MapGenerationDescriptor::eCONCRETEISLANDS:
-			if (!computeConcreteIslands(game, descriptor))
-				return false;
+			if (!(co_await computeConcreteIslandsTask(game, descriptor)))
+				co_return false;
 			break;
 		case MapGenerationDescriptor::eISLES:
-			if (!computeIsles(game, descriptor))
-				return false;
+			if (!(co_await computeIslesTask(game, descriptor)))
+				co_return false;
 			break;
 		case MapGenerationDescriptor::eOLDRANDOM:
-			if (!game.map.oldMakeRandomMap(descriptor))
-				return false;
-			if (!game.makeRandomMap(descriptor))
-				return false;
+			if (!(co_await game.map.oldMakeRandomMapTask(descriptor)))
+				co_return false;
+			if (!(co_await game.makeRandomMapTask(descriptor)))
+				co_return false;
 			break;
 		case MapGenerationDescriptor::eOLDISLANDS:
-			if (!game.map.oldMakeIslandsMap(descriptor))
-				return false;
-			if (!game.oldMakeIslandsMap(descriptor))
-				return false;
+			if (!(co_await game.map.oldMakeIslandsMapTask(descriptor)))
+				co_return false;
+			if (!(co_await game.oldMakeIslandsMapTask(descriptor)))
+				co_return false;
 			break;
 						
 		default:
@@ -66,15 +81,22 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
 	
 	if (verbose)
 		printf(".... map generated.\n");
-	return true;
+	co_return true;
 }
 
 
 bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& descriptor)
 {
-	game.map.makeHomogenMap(descriptor.terrainType);
+    return computeConcreteIslandsTask(game, descriptor).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::computeConcreteIslandsTask(Game& game, MapGenerationDescriptor& descriptor)
+{
+    unsigned work = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
+	co_await game.map.makeHomogenMapTask(descriptor.terrainType);
 	for(int i=0; i<descriptor.nbTeams; ++i)
-		game.addTeam();
+		co_await game.addTeamTask();
 
 	//This keeps track of the current area number
 	int areaNumber = 1;
@@ -89,6 +111,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 	//Add in team bases
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		teamPoints.push_back(MapGeneratorPoint(0,0));
 		weights1.push_back(1);
 		weights2.push_back(10);
@@ -100,6 +123,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 	int islandsCount = syncRand() % (descriptor.nbTeams*2);
 	for(int i=0; i<islandsCount; ++i)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		teamPoints.push_back(MapGeneratorPoint(0,0));
 		weights1.push_back(1);
 		weights2.push_back(1+syncRand()%3);
@@ -111,23 +135,24 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 	areaNumbers.insert(areaNumbers.end(), islandAreaNumbers.begin(), islandAreaNumbers.end());
 	
 	// Initially divide up the land
-	splitUpPoints(game, grid, 0, teamPoints, weights1);
-	splitUpArea(game, grid, 0, teamPoints, weights2, areaNumbers);
+	co_await splitUpPointsTask(game, grid, 0, teamPoints, weights1);
+	co_await splitUpAreaTask(game, grid, 0, teamPoints, weights2, areaNumbers);
 	
 	// Create a heightmap that will be used to give the map a rough edge
 	std::vector<int> heights(game.map.getW() * game.map.getH(), 75);
-	adjustHeightmapFromPerlinNoise(game, heights, 15);
+	co_await adjustHeightmapFromPerlinNoiseTask(game, heights, 15);
 	
 	// Compute the distance of every square from the border
 	std::vector<MapGeneratorPoint> sources;
-	findBorderPoints(game, grid, sources);
+	co_await findBorderPointsTask(game, grid, sources);
 	std::vector<MapGeneratorPoint> obstacles;
 	std::vector<int> distances;
-	computeDistances(game, sources, obstacles, distances);
+	co_await computeDistancesTask(game, sources, obstacles, distances);
 	
 	// Locations near the border are deaper, thus causing more water
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			int d = distances[y * game.map.getW() + x] - 1;
@@ -141,6 +166,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 	// Use the heightmap to put in water, grass, and sand
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			int total_height = heights[y * game.map.getW() + x];
@@ -157,6 +183,7 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 	// Go through the map again and place alga
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			int total_height = heights[y * game.map.getW() + x];
@@ -170,16 +197,18 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 	// Reset the grid, and recompute within the boundaries of the various islands
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			grid[y * game.map.getW() + x] = 0;
 		}
 	}
-	splitUpArea(game, grid, 0, teamPoints, weights2, areaNumbers, true);
+	co_await splitUpAreaTask(game, grid, 0, teamPoints, weights2, areaNumbers, true);
 	
 	// Fill in the auxilary islands
 	for(int i=0; i<islandsCount; ++i)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		// Initialize
 		std::vector<int> areaWeights;
 		std::vector<int> areaNumbers;
@@ -191,18 +220,18 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 		}
 		
 		// Divide the area. Its possible the area will be so small it can't be used
-		if(divideUpArea(game, grid, islandAreaNumbers[i], areaWeights, areaNumbers))
+		if(co_await divideUpAreaTask(game, grid, islandAreaNumbers[i], areaWeights, areaNumbers))
 		{
 			// Fill in wheat
 			std::vector<MapGeneratorPoint> points;
-			getAllPoints(game, grid, areaNumbers[0], points);
-			fillInResource(game, points, CORN, 2);
+			co_await getAllPointsTask(game, grid, areaNumbers[0], points);
+			co_await fillInResourceTask(game, points, CORN, 2);
 			points.clear();
 			
 			// Place some fruit
 			int fruit_n = syncRand()%6+1;
-			getAllPoints(game, grid, areaNumbers[1], points);
-			chooseRandomPoints(game, points, fruit_n);
+			co_await getAllPointsTask(game, grid, areaNumbers[1], points);
+			co_await chooseRandomPointsTask(game, points, fruit_n);
 			for(unsigned int j=0; j<points.size(); ++j)
 			{
 				game.map.setResource(points[j].x, points[j].y, CHERRY + syncRand()%3, 1);
@@ -210,24 +239,32 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 		}
 	}
 	
-	if(!divideUpPlayerLands(game, descriptor, grid, teamAreaNumbers, areaNumber))
-		return false;
+	if(!co_await divideUpPlayerLandsTask(game, descriptor, grid, teamAreaNumbers, areaNumber))
+		co_return false;
 	
 	// Initialize final team info
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		game.teams[i]->createLists();
 	}
-	return true;
+	co_return true;
 }
 
 
 
 bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 {
-	game.map.makeHomogenMap(descriptor.terrainType);
+    return computeIslesTask(game, descriptor).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::computeIslesTask(Game& game, MapGenerationDescriptor& descriptor)
+{
+    unsigned work = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
+	co_await game.map.makeHomogenMapTask(descriptor.terrainType);
 	for(int i=0; i<descriptor.nbTeams; ++i)
-		game.addTeam();
+		co_await game.addTeamTask();
 		
 	int areaNumber = 1;
 	std::vector<int> grid(game.map.getW() * game.map.getH(), 0);
@@ -238,31 +275,35 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	std::vector<int> teamAreaNumbers;
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		teamPoints.push_back(MapGeneratorPoint(0, 0));
 		teamWeights.push_back(1);
 		teamAreaNumbers.push_back(areaNumber);
 		areaNumber+=1;
 	}
-	int minDist = splitUpPoints(game, grid, 0, teamPoints, teamWeights);
+	int minDist = 0;
+    co_await splitUpPointsTask(game, grid, 0, teamPoints, teamWeights, &minDist);
 	
 	// Construct the areas for the teams
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
-		createOval(game, grid, teamAreaNumbers[i], teamPoints[i].x, teamPoints[i].y, minDist/2,minDist/2);
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
+		co_await createOvalTask(game, grid, teamAreaNumbers[i], teamPoints[i].x, teamPoints[i].y, minDist/2,minDist/2);
 	}
 	
 	// Construct a heightmap
 	std::vector<int> heightmap(game.map.getW() * game.map.getH(), 50);
 	std::vector<MapGeneratorPoint> teamAreaPoints;
-	getAllOtherPoints(game, grid, 0, teamAreaPoints);
+	co_await getAllOtherPointsTask(game, grid, 0, teamAreaPoints);
 	std::vector<MapGeneratorPoint> obstacles;
 	
 	std::vector<int> distances;
-	computeDistances(game, teamAreaPoints, obstacles, distances);
+	co_await computeDistancesTask(game, teamAreaPoints, obstacles, distances);
 	
 	// Stamp out the team areas
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			int d = distances[y * game.map.getW() + x];
@@ -279,19 +320,20 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	areaNumber+=1;
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int j=i+1; j<descriptor.nbTeams; ++j)
 		{
 			// Choose one random point from each players area
 			std::vector<MapGeneratorPoint> teamI;
 			std::vector<MapGeneratorPoint> teamJ;
-			getAllPoints(game, grid, teamAreaNumbers[i], teamI);
-			getAllPoints(game, grid, teamAreaNumbers[j], teamJ);
-			chooseRandomPoints(game, teamI, 1);
-			chooseRandomPoints(game, teamJ, 1);
+			co_await getAllPointsTask(game, grid, teamAreaNumbers[i], teamI);
+			co_await getAllPointsTask(game, grid, teamAreaNumbers[j], teamJ);
+			co_await chooseRandomPointsTask(game, teamI, 1);
+			co_await chooseRandomPointsTask(game, teamJ, 1);
 			
 			// Traverse between the two points
 			std::vector<MapGeneratorPoint> linePoints;
-			getAllPointsLine(game, teamI[0].x, teamI[0].y, teamJ[0].x, teamJ[0].y, linePoints);
+			co_await getAllPointsLineTask(game, teamI[0].x, teamI[0].y, teamJ[0].x, teamJ[0].y, linePoints);
 			// If a connection can be made without going through another teams area, then do it
 			bool failed=false;
 			for(unsigned int p=0; p<linePoints.size() && !failed; ++p)
@@ -333,11 +375,12 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 			}
 		}
 	}
-	computeDistances(game, connectorPoints, obstacles, distances);
+	co_await computeDistancesTask(game, connectorPoints, obstacles, distances);
 
 	// Stamp out the connectors
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			int d = distances[y * game.map.getW() + x];
@@ -350,9 +393,10 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	
 	
 	// Use the heightmap to put in water, grass, and sand
-	adjustHeightmapFromPerlinNoise(game, heightmap, 45);
+	co_await adjustHeightmapFromPerlinNoiseTask(game, heightmap, 45);
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			int total_height = heightmap[y * game.map.getW() + x];
@@ -369,22 +413,24 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	// Reset the grid, and recompute within the boundaries of the various islands
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			if(grid[y * game.map.getW() + x] != connectorArea)
 				grid[y * game.map.getW() + x] = 0;
 		}
 	}
-	splitUpArea(game, grid, 0, teamPoints, teamWeights, teamAreaNumbers, true);
+	co_await splitUpAreaTask(game, grid, 0, teamPoints, teamWeights, teamAreaNumbers, true);
 	
 	std::vector<int> connectorDistances = distances;
 	
 	// For each team, find a point just off the coast and place algae there
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		std::vector<MapGeneratorPoint> sources;
-		getAllPoints(game, grid, teamAreaNumbers[i], sources);
-		computeDistances(game, sources, obstacles, distances);
+		co_await getAllPointsTask(game, grid, teamAreaNumbers[i], sources);
+		co_await computeDistancesTask(game, sources, obstacles, distances);
 		std::vector<MapGeneratorPoint> possible;
 		for(int x=0; x<game.map.getW(); ++x)
 		{
@@ -400,7 +446,7 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 		}
 		if(possible.size() == 0)
 		{
-			return false;
+			co_return false;
 		}
 		int r = syncRand() % possible.size();
 		for(int x=-2; x<=2; ++x)
@@ -414,18 +460,18 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 		}
 	}
 
-	if(!divideUpPlayerLands(game, descriptor, grid, teamAreaNumbers, areaNumber))
+	if(!co_await divideUpPlayerLandsTask(game, descriptor, grid, teamAreaNumbers, areaNumber))
 	{
-		return false;
+		co_return false;
 	}
 	
 	// Initialize final team info
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
+        if (++work % 64 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		game.teams[i]->createLists();
 	}
-	return true;
+	co_return true;
 }
-
 
 

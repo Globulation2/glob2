@@ -1828,3 +1828,81 @@ Applica la grafica al prossimo caricamento di una partita o dell’editor di map
 Vista toroidale automatica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostra automaticamente la panoramica toroidale mentre ti sposti sulla mappa (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Impossibile salvare la mappa. Controlla la destinazione e lo spazio disponibile. Le modifiche sono ancora aperte.
+[Loading headers]
+Caricamento intestazioni...
+[Loading teams]
+Caricamento squadre...
+[Loading terrain]
+Caricamento terreno...
+[Building gradients]
+Generazione dei gradienti...
+[Loading players]
+Caricamento giocatori...
+[Loading scripts]
+Caricamento script...
+[Generating map]
+Generazione della mappa...
+[ERROR_CANT_GENERATE_MAP]
+Impossibile generare la mappa. Prova altre impostazioni di generazione.
+[Loading units]
+Caricamento unità...
+[Loading buildings]
+Caricamento edifici...
+[Resolving team links]
+Risoluzione dei collegamenti tra squadre...
+[saving to storage]
+Salvataggio...
+[save failed retry]
+Salvataggio non riuscito. Riprova.
+[export save]
+Esporta salvataggio
+[storage restore failed]
+Impossibile ripristinare l'archiviazione del browser. I dati salvati esistenti non sono stati modificati. Puoi continuare questa sessione, ma le modifiche locali non potranno essere mantenute. Esporta i salvataggi importanti dalla finestra di errore di salvataggio. Ricarica per tentare di nuovo il ripristino dell'archiviazione.
+[continue]
+Continua
+[export file]
+Esporta file
+[export failed]
+Esportazione del file non riuscita
+[import file]
+Importa
+[select import file]
+Scegli un file da importare
+[validating import]
+Verifica del file...
+[import succeeded]
+File importato
+[import cancelled]
+Importazione annullata
+[import failed]
+Importazione non riuscita: file non valido o non supportato
+[import persistence failed]
+Non salvato: scegli Importa per riprovare o Esporta file
+[import progress]
+Avanzamento importazione
+[export progress]
+Avanzamento esportazione
+[retry save]
+Riprova il salvataggio
+[campaign save failed]
+Progresso della campagna non salvato. Riprova o esporta un backup.
+[leave without saving]
+Esci senza salvare
+[campaign import failed]
+File di progresso non valido o versione della campagna diversa
+[network release mismatch]
+I protocolli client e server differiscono. Installa la stessa versione di Glob2 del server.
+[settings continue]
+Continua
+[settings save failed]
+Salvataggio delle impostazioni non confermato. Riprova, oppure continua.
+[shutdown save failed]
+Salvataggio finale non confermato. Riprova, oppure esci senza salvare.
+[quit without saving]
+Esci senza salvare
+[game closed]
+Partita chiusa. Puoi chiudere questa finestra o ricaricare per giocare di nuovo.
+[campaign editor save failed]
+Salvataggio non confermato. Ok riprova; Annulla torna al menu dell'editor.

@@ -58,13 +58,13 @@ Uint16 NetSendClientInformation::getNetVersion() const
 }
 
 NetSendServerInformation::NetSendServerInformation(YOGLoginPolicy loginPolicy, YOGGamePolicy gamePolicy, YOGPlayerID playerID)
-	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), playerID(playerID)
+	: loginPolicy(loginPolicy), gamePolicy(gamePolicy), playerID(playerID), netVersion(NET_PROTOCOL_VERSION)
 {
 
 }
 
 NetSendServerInformation::NetSendServerInformation()
-	: loginPolicy(YOGRequirePassword), gamePolicy(YOGSingleGame), playerID(0)
+	: loginPolicy(YOGRequirePassword), gamePolicy(YOGSingleGame), playerID(0), netVersion(NET_PROTOCOL_VERSION)
 {
 
 }
@@ -80,6 +80,7 @@ void NetSendServerInformation::encodeData(GAGCore::OutputStream* stream) const
 	stream->writeUint8(loginPolicy, "loginPolicy ");
 	stream->writeUint8(gamePolicy, "gamePolicy ");
 	stream->writeUint16(playerID, "playerID ");
+    stream->writeUint16(netVersion, "netVersion");
 	stream->writeLeaveSection();
 }
 
@@ -89,6 +90,9 @@ void NetSendServerInformation::decodeData(GAGCore::InputStream* stream)
 	loginPolicy=static_cast<YOGLoginPolicy>(stream->readUint8("loginPolicy"));
 	gamePolicy=static_cast<YOGGamePolicy>(stream->readUint8("gamePolicy"));
 	playerID=stream->readUint16("playerID");
+    // Legacy servers omit this field. Decode their greeting only so the client
+    // can explain incompatibility before sending any credentials.
+    netVersion = stream->isEndOfStream() ? 0 : stream->readUint16("netVersion");
 	stream->readLeaveSection();
 }
 
@@ -106,7 +110,7 @@ std::string NetSendServerInformation::format() const
 	else if(gamePolicy == YOGMultipleGames)
 		s<<"gamePolicy=YOGMultipleGames; ";
 
-	s<<"playerID="<<playerID<<"; ";
+	s<<"playerID="<<playerID<<"; netVersion="<<netVersion<<"; ";
 	s<<")";
 	return s.str();
 }
@@ -116,7 +120,7 @@ bool NetSendServerInformation::operator==(const NetMessage& rhs) const
 	if(typeid(rhs)==typeid(NetSendServerInformation))
 	{
 		const NetSendServerInformation& r = dynamic_cast<const NetSendServerInformation&>(rhs);
-		if(r.loginPolicy == loginPolicy && r.gamePolicy == gamePolicy)
+		if(r.loginPolicy == loginPolicy && r.gamePolicy == gamePolicy && r.playerID == playerID && r.netVersion == netVersion)
 		{
 			return true;
 		}
@@ -138,6 +142,8 @@ YOGPlayerID NetSendServerInformation::getPlayerID() const
 {
 	return playerID;
 }
+
+Uint16 NetSendServerInformation::getNetVersion() const { return netVersion; }
 
 NetAttemptLogin::NetAttemptLogin(const std::string& username, const std::string& password)
 	: username(username), password(password)
@@ -174,7 +180,7 @@ void NetAttemptLogin::decodeData(GAGCore::InputStream* stream)
 std::string NetAttemptLogin::format() const
 {
 	std::ostringstream s;
-	s<<"NetAttemptLogin("<<"username=\""<<username<<"\"; password=\""<<password<<"\")";
+	s<<"NetAttemptLogin("<<"username=\""<<username<<"\"; password=\""<<"[redacted]"<<"\")";
 	return s.str();
 }
 

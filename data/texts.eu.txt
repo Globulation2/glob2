@@ -1776,3 +1776,81 @@ Erabili hautatutako artelana joko bat edo mapa-editorea kargatzen den hurrengoan
 Toroide-ikuspegi automatikoa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Erakutsi automatikoki toroide formako maparen ikuspegi orokorra mapan mugitzen zaren bitartean (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Mapa ezin izan da gorde. Egiaztatu helmuga eta erabilgarri dagoen lekua. Zure edizioak oraindik irekita daude.
+[Loading headers]
+Goiburuak kargatzen...
+[Loading teams]
+Taldeak kargatzen...
+[Loading terrain]
+Lurraldea kargatzen...
+[Building gradients]
+Gradienteak eraikitzen...
+[Loading players]
+Jokalariak kargatzen...
+[Loading scripts]
+Script-ak kargatzen...
+[Generating map]
+Mapa sortzen...
+[ERROR_CANT_GENERATE_MAP]
+Mapa ezin izan da sortu. Probatu sortze-ezarpen desberdinak.
+[Loading units]
+Unitateak kargatzen...
+[Loading buildings]
+Eraikinak kargatzen...
+[Resolving team links]
+Taldeen loturak ebazten...
+[saving to storage]
+Gordetzen...
+[save failed retry]
+Gordetzeak huts egin du. Saiatu berriro.
+[export save]
+Esportatu gordetako jokoa
+[storage restore failed]
+Nabigatzailearen biltegia ezin izan da leheneratu. Lehendik gordetako datuak ez dira aldatu. Saio honekin jarraitu dezakezu, baina tokiko aldaketak ezin izango dira mantendu. Esportatu joko garrantzitsuak gordetze-errorearen elkarrizketa-koadrotik. Berritu orria biltegia berriro leheneratzen saiatzeko.
+[continue]
+Jarraitu
+[export file]
+Esportatu fitxategia
+[export failed]
+Fitxategia esportatzeak huts egin du
+[import file]
+Inportatu
+[select import file]
+Aukeratu inportatzeko fitxategi bat
+[validating import]
+Fitxategia balioztatzen...
+[import succeeded]
+Fitxategia inportatu da
+[import cancelled]
+Inportazioa bertan behera utzi da
+[import failed]
+Inportazioak huts egin du: fitxategi baliogabea edo onartu gabea
+[import persistence failed]
+Gorde gabe: aukeratu Inportatu berriro saiatzeko, edo Esportatu fitxategia
+[import progress]
+Inportazioaren aurrerapena
+[export progress]
+Esportazioaren aurrerapena
+[retry save]
+Saiatu berriro gordetzen
+[campaign save failed]
+Kanpainaren aurrerapena ez da gorde. Saiatu berriro edo esportatu babeskopia bat.
+[leave without saving]
+Irten gorde gabe
+[campaign import failed]
+Aurrerapen fitxategi baliogabea edo kanpaina bertsio desberdina
+[network release mismatch]
+Bezeroaren eta zerbitzariaren protokoloak desberdinak dira. Instalatu zerbitzariak duen Glob2 bertsio bera.
+[settings continue]
+Jarraitu
+[settings save failed]
+Ezarpenak gordetzea ez da berretsi. Saiatu berriro, edo jarraitu.
+[shutdown save failed]
+Azken gordetzea ez da berretsi. Saiatu berriro, edo irten gorde gabe.
+[quit without saving]
+Irten gorde gabe
+[game closed]
+Jokoa itxi da. Leiho hau itxi dezakezu edo orria berritu berriro jolasteko.
+[campaign editor save failed]
+Gordetzea ez da berretsi. Ados-ek berriro saiatzen du; Utzi-k editorearen menura itzultzen du.

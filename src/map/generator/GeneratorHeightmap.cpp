@@ -17,41 +17,69 @@
 
 void MapGenerator::adjustHeightmapFromPoints(Game& game, std::vector<MapGeneratorPoint>& points, std::vector<int>& heightmap, int value)
 {
+    adjustHeightmapFromPointsTask(game, points, heightmap, value).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::adjustHeightmapFromPointsTask(Game& game, std::vector<MapGeneratorPoint>& points, std::vector<int>& heightmap, int value)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	for(unsigned int i=0; i<points.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		heightmap[points[i].y * game.map.getW() + points[i].x] += value;
 	}
+    co_return true;
 }
 
 
 
 void MapGenerator::adjustHeightmapFromPerlinNoise(Game& game, std::vector<int>& heights, int spread)
 {
+    adjustHeightmapFromPerlinNoiseTask(game, heights, spread).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::adjustHeightmapFromPerlinNoiseTask(Game& game, std::vector<int>& heights, int spread)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	HeightMap noise(game.map.getW(), game.map.getH());
-	noise.makePlain(4);
+	co_await noise.makePlainTask(4);
 	for(int x=0; x<game.map.getW(); ++x)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		for(int y=0; y<game.map.getH(); ++y)
 		{
+			if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			heights[y * game.map.getW() + x] += noise.uiLevel(x, y, spread*2) - spread;
 		}
 	}
+    co_return true;
 }
 
 
 
 void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap)
 {
+    computeDistancesTask(game, sources, obstacles, heightmap).run();
+}
+
+GAGCore::CooperativeTask MapGenerator::computeDistancesTask(Game& game, std::vector<MapGeneratorPoint>& sources, std::vector<MapGeneratorPoint>& obstacles, std::vector<int>& heightmap)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	std::queue<int> places;
 	heightmap.clear();
 	heightmap.resize(game.map.getW() * game.map.getH(), 0);
 	for(unsigned int i=0; i<sources.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		heightmap[sources[i].y * game.map.getW() + sources[i].x] = 1;
 		places.push(sources[i].y * game.map.getW() + sources[i].x);
 	}
 	for(unsigned int i=0; i<obstacles.size(); ++i)
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		heightmap[obstacles[i].y * game.map.getW() + obstacles[i].x] = -1;
 	}
 	
@@ -60,6 +88,7 @@ void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& 
 	Uint32 wMask = game.map.wMask;
 	while (!places.empty())
 	{
+		if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		int deltaAddrG = places.front();
 		places.pop();
 		
@@ -96,18 +125,29 @@ void MapGenerator::computeDistances(Game& game, std::vector<MapGeneratorPoint>& 
 			}
 		}
 	}
+    co_return true;
 }
 
 
 
 int MapGenerator::computeAverageDistance(Game& game, std::vector<int>& grid, int areaN, const std::vector<int>& heightmap)
 {
+    int result = 0;
+    computeAverageDistanceTask(game, grid, areaN, heightmap, result).run();
+    return result;
+}
+
+GAGCore::CooperativeTask MapGenerator::computeAverageDistanceTask(Game& game, std::vector<int>& grid, int areaN, const std::vector<int>& heightmap, int& result)
+{
+    unsigned operations = 0;
+    co_await GAGCore::CooperativeTask::checkpoint("[Generating map]");
 	long total = 0;
 	int count = 0;
 	for(int x=0; x<game.map.getW(); ++x)
 	{
 		for(int y=0; y<game.map.getH(); ++y)
 		{
+            if (++operations % 1024 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 			if(grid[y * game.map.getW() + x] == areaN)
 			{
 				total += heightmap[y * game.map.getW() + x];
@@ -115,7 +155,8 @@ int MapGenerator::computeAverageDistance(Game& game, std::vector<int>& grid, int
 			}
 		}
 	}
-	return count > 0 ? total/count : 0;
+	result = count > 0 ? total/count : 0;
+    co_return true;
 }
 
 

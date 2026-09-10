@@ -517,7 +517,7 @@ Descrição do mapa
 [Map Discovered]
 Mapa
 [Map download failure: lost connection]
-<<<<<<< /media/disk-2/attila/glob2/data/texts.br.txt
+Falha no download do mapa: conexão perdida
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
@@ -1762,3 +1762,81 @@ Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL
 Visão toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a visão geral toroidal enquanto você se desloca pelo mapa (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Não foi possível salvar o mapa. Verifique o destino e o espaço disponível. Suas edições continuam abertas.
+[Loading headers]
+Carregando cabeçalhos...
+[Loading teams]
+Carregando equipes...
+[Loading terrain]
+Carregando o terreno...
+[Building gradients]
+Gerando gradientes...
+[Loading players]
+Carregando jogadores...
+[Loading scripts]
+Carregando scripts...
+[Generating map]
+Gerando o mapa...
+[ERROR_CANT_GENERATE_MAP]
+Não foi possível gerar o mapa. Tente outras configurações de geração.
+[Loading units]
+Carregando unidades...
+[Loading buildings]
+Carregando construções...
+[Resolving team links]
+Resolvendo vínculos de equipe...
+[saving to storage]
+Salvando...
+[save failed retry]
+Falha ao salvar. Tente de novo.
+[export save]
+Exportar jogo salvo
+[storage restore failed]
+Não foi possível restaurar o armazenamento do navegador. Os dados salvos existentes não foram alterados. Você pode continuar esta sessão, mas as alterações locais não poderão ser mantidas. Exporte os jogos importantes na caixa de falha de salvamento. Recarregue para tentar restaurar o armazenamento de novo.
+[continue]
+Continuar
+[export file]
+Exportar arquivo
+[export failed]
+Falha ao exportar o arquivo
+[import file]
+Importar
+[select import file]
+Escolha um arquivo para importar
+[validating import]
+Validando o arquivo...
+[import succeeded]
+Arquivo importado
+[import cancelled]
+Importação cancelada
+[import failed]
+Falha na importação: arquivo inválido ou não suportado
+[import persistence failed]
+Não salvo: escolha Importar para tentar de novo ou Exportar arquivo
+[import progress]
+Progresso da importação
+[export progress]
+Progresso da exportação
+[retry save]
+Tentar salvar de novo
+[campaign save failed]
+Progresso da campanha não salvo. Tente novamente ou exporte um backup.
+[leave without saving]
+Sair sem salvar
+[campaign import failed]
+Arquivo de progresso inválido ou versão de campanha diferente
+[network release mismatch]
+Os protocolos do cliente e do servidor são diferentes. Instale a mesma versão do Glob2 do servidor.
+[settings continue]
+Continuar
+[settings save failed]
+Salvamento das configurações não confirmado. Tente de novo, ou continue.
+[shutdown save failed]
+Salvamento final não confirmado. Tente de novo, ou saia sem salvar.
+[quit without saving]
+Sair sem salvar
+[game closed]
+Jogo encerrado. Você pode fechar esta janela ou recarregar para jogar de novo.
+[campaign editor save failed]
+Salvamento não confirmado. OK tenta de novo; Cancelar volta ao menu do editor.

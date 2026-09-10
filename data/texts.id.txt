@@ -1762,3 +1762,81 @@ Grafis diterapkan saat permainan atau editor peta dimuat berikutnya (OpenGL).
 Tampilan torus otomatis
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Secara otomatis menampilkan ikhtisar peta berbentuk torus saat bergerak di sekitar peta (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Peta tidak dapat disimpan. Periksa tujuan dan ruang yang tersedia. Perubahan Anda masih terbuka.
+[Loading headers]
+Memuat header...
+[Loading teams]
+Memuat tim...
+[Loading terrain]
+Memuat medan...
+[Building gradients]
+Membangun gradien...
+[Loading players]
+Memuat pemain...
+[Loading scripts]
+Memuat skrip...
+[Generating map]
+Membuat peta...
+[ERROR_CANT_GENERATE_MAP]
+Peta tidak dapat dibuat. Coba pengaturan pembuatan yang lain.
+[Loading units]
+Memuat unit...
+[Loading buildings]
+Memuat bangunan...
+[Resolving team links]
+Menyelesaikan tautan tim...
+[saving to storage]
+Menyimpan...
+[save failed retry]
+Penyimpanan gagal. Coba lagi.
+[export save]
+Ekspor simpanan
+[storage restore failed]
+Penyimpanan peramban tidak dapat dipulihkan. Data tersimpan yang ada tidak berubah. Anda dapat melanjutkan sesi ini, tetapi perubahan lokal tidak akan tersimpan. Ekspor simpanan penting dari dialog kegagalan penyimpanan. Muat ulang untuk mencoba memulihkan penyimpanan lagi.
+[continue]
+Lanjutkan
+[export file]
+Ekspor berkas
+[export failed]
+Ekspor berkas gagal
+[import file]
+Impor
+[select import file]
+Pilih berkas untuk diimpor
+[validating import]
+Memvalidasi berkas...
+[import succeeded]
+Berkas diimpor
+[import cancelled]
+Impor dibatalkan
+[import failed]
+Impor gagal: berkas tidak valid atau tidak didukung
+[import persistence failed]
+Belum tersimpan: pilih Impor untuk mencoba lagi, atau Ekspor berkas
+[import progress]
+Progres impor
+[export progress]
+Progres ekspor
+[retry save]
+Coba simpan lagi
+[campaign save failed]
+Progres kampanye tidak tersimpan. Coba lagi atau ekspor cadangan.
+[leave without saving]
+Keluar tanpa menyimpan
+[campaign import failed]
+Berkas progres tidak valid atau versi kampanye berbeda
+[network release mismatch]
+Protokol klien dan server berbeda. Pasang versi Glob2 yang sama dengan server.
+[settings continue]
+Lanjutkan
+[settings save failed]
+Penyimpanan pengaturan belum dikonfirmasi. Coba lagi, atau lanjutkan.
+[shutdown save failed]
+Penyimpanan akhir belum dikonfirmasi. Coba lagi, atau keluar tanpa menyimpan.
+[quit without saving]
+Keluar tanpa menyimpan
+[game closed]
+Permainan ditutup. Anda dapat menutup jendela ini atau memuat ulang untuk bermain lagi.
+[campaign editor save failed]
+Penyimpanan belum dikonfirmasi. OK akan mencoba lagi; Batal kembali ke menu editor.

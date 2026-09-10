@@ -19,11 +19,12 @@
 #include "YOGClientDownloadableMapList.h"
 #include "YOGClientDownloadingMapScreen.h"
 #include "YOGClientRatedMapList.h"
+#include <ScreenStack.h>
 
 using namespace GAGCore;
 
-YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, std::shared_ptr<YOGClient> client)
-	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Download Maps]")), client(client)
+YOGClientMapDownloadScreen::YOGClientMapDownloadScreen(TabScreen* parent, ScreenStack& screens, std::shared_ptr<YOGClient> client)
+	: TabScreenWindow(parent, Toolkit::getStringTable()->getString("[Download Maps]")), client(client), screens(screens)
 {
 	addWidget(new Text(0, 10, ALIGN_FILL, ALIGN_TOP, "menu", Toolkit::getStringTable()->getString("[Download Maps]")));
 
@@ -111,19 +112,13 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 		}
 		else if(par1==ADDMAP)
 		{
-			ChooseMapScreen cms("maps", "map", false);
-			int rc = cms.execute(globalContainer->gfx, 40);
-			if(rc == -1)
-			{
-				endExecute(-1);
-				parent->completeEndExecute(-1);
-			}
-			else if(rc == ChooseMapScreen::OK)
-			{
-				YOGClientMapUploadScreen upload(client, cms.getMapHeader().getFileName());
-				upload.execute(globalContainer->gfx, 40);
-				requestMaps();
-			}
+			screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false),
+				[this](Screen& selection, int rc) {
+					if(rc != ChooseMapScreen::OK) return;
+					const auto file = static_cast<ChooseMapScreen&>(selection).getMapHeader().getFileName();
+					screens.push(std::make_unique<YOGClientMapUploadScreen>(screens, client, file),
+						[this](Screen&, int) { requestMaps(); });
+				});
 		}
 		else if (par1==REFRESHMAPLIST)
 		{
@@ -133,17 +128,8 @@ void YOGClientMapDownloadScreen::onAction(Widget *source, Action action, int par
 		{
 			if(mapValid)
 			{
-				YOGClientDownloadingMapScreen screen(client, client->getDownloadableMapList()->getMap(mapList->get()));
-				int rc = screen.execute(globalContainer->gfx, 40);
-				if(rc == -1)
-				{
-					endExecute(-1);
-					parent->completeEndExecute(-1);
-				}
-				else if(rc == YOGClientDownloadingMapScreen::FINISHED)
-				{
-				
-				}
+				screens.push(std::make_unique<YOGClientDownloadingMapScreen>(screens, client,
+					client->getDownloadableMapList()->getMap(mapList->get())));
 			}
 		}
 		else if (par1==SUBMITRATING)

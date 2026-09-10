@@ -1762,3 +1762,81 @@ Globulation 2 のカーソルを表示します。
 自動トーラス表示
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 マップ内を移動するときに、トーラス（ドーナツ）形状のマップ全体図を自動的に表示します (OpenGL)。
+[ERROR_CANT_SAVE_MAP]
+マップを保存できませんでした。保存先と空き容量を確認してください。編集内容はまだ開いています。
+[Loading headers]
+ヘッダーを読み込んでいます...
+[Loading teams]
+チームを読み込んでいます...
+[Loading terrain]
+地形を読み込んでいます...
+[Building gradients]
+勾配を構築しています...
+[Loading players]
+プレイヤーを読み込んでいます...
+[Loading scripts]
+スクリプトを読み込んでいます...
+[Generating map]
+マップを生成しています...
+[ERROR_CANT_GENERATE_MAP]
+マップを生成できませんでした。別の生成設定を試してください。
+[Loading units]
+ユニットを読み込んでいます...
+[Loading buildings]
+建物を読み込んでいます...
+[Resolving team links]
+チームのリンクを解決しています...
+[saving to storage]
+保存しています...
+[save failed retry]
+保存に失敗しました。再試行してください。
+[export save]
+セーブデータをエクスポート
+[storage restore failed]
+ブラウザのストレージを復元できませんでした。既存の保存データは変更されていません。このセッションは続行できますが、ローカルの変更は保存できません。保存失敗ダイアログから重要なセーブデータをエクスポートしてください。再読み込みしてストレージの復元を再試行してください。
+[continue]
+続ける
+[export file]
+ファイルをエクスポート
+[export failed]
+ファイルのエクスポートに失敗しました
+[import file]
+インポート
+[select import file]
+インポートするファイルを選択してください
+[validating import]
+ファイルを検証しています...
+[import succeeded]
+ファイルをインポートしました
+[import cancelled]
+インポートをキャンセルしました
+[import failed]
+インポートに失敗しました: 無効またはサポートされていないファイルです
+[import persistence failed]
+未保存: 再試行するには「インポート」、またはファイルをエクスポートしてください
+[import progress]
+インポートの進行状況
+[export progress]
+エクスポートの進行状況
+[retry save]
+保存を再試行
+[campaign save failed]
+キャンペーンの進行状況が保存されていません。再試行するか、バックアップをエクスポートしてください。
+[leave without saving]
+保存せずに終了
+[campaign import failed]
+進行データが無効か、キャンペーンのバージョンが異なります
+[network release mismatch]
+クライアントとサーバーのプロトコルが異なります。サーバーと同じGlob2のバージョンをインストールしてください。
+[settings continue]
+続ける
+[settings save failed]
+設定の保存が確認されていません。再試行するか、続けてください。
+[shutdown save failed]
+最終保存が確認されていません。再試行するか、保存せずに終了してください。
+[quit without saving]
+保存せずに終了
+[game closed]
+ゲームが終了しました。このウィンドウを閉じるか、再読み込みして再度プレイできます。
+[campaign editor save failed]
+保存が確認されていません。OKで再試行、キャンセルでエディタメニューに戻ります。

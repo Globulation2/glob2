@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #pragma once
+#include <CooperativeTask.h>
 
 #include <list>
 #include <optional>
@@ -100,6 +101,16 @@ public:
 	static constexpr Uint16 ASTAR_COST_INFINITY = static_cast<Uint16>(-1);
 
 public:
+	static constexpr int MIN_SUPPORTED_SIZE_EXPONENT = 4;
+	static constexpr int MAX_SUPPORTED_SIZE_EXPONENT = 9;
+	static constexpr bool supportedDimensions(int widthExponent, int heightExponent)
+	{
+		return widthExponent >= MIN_SUPPORTED_SIZE_EXPONENT &&
+			widthExponent <= MAX_SUPPORTED_SIZE_EXPONENT &&
+			heightExponent >= MIN_SUPPORTED_SIZE_EXPONENT &&
+			heightExponent <= MAX_SUPPORTED_SIZE_EXPONENT;
+	}
+
 	//! Map constructor
 	Map();
 	//! Map destructor
@@ -113,6 +124,7 @@ public:
 	void setGame(Game *game);
 	//! Load a map from a stream and relink with associated game
 	bool load(GAGCore::InputStream *stream, MapHeader& header, Game *game=NULL);
+    GAGCore::CooperativeTask loadTask(GAGCore::InputStream *stream, MapHeader& header, Game *game);
 	//! Save a map
 	void save(GAGCore::OutputStream *stream);
 	//! Write the per-team explored area. Saved games only; save() decides.
@@ -125,6 +137,7 @@ public:
 	// add & remove teams, used by the map editor and the random map generator
 	// Have to be called *after* session.numberOfTeam has been changed.
 	void addTeam(void);
+    GAGCore::CooperativeTask addTeamTask(void);
 	void removeTeam(void);
 
 	//! Grow resources on map
@@ -629,6 +642,7 @@ public:
 	// the pathfinding gradients are built by propagateGradient. Defined in
 	// MapGradientGlobal.cpp.
 	void updateGlobalGradient(Uint8 *gradient);
+    GAGCore::CooperativeTask updateGlobalGradientTask(Uint8 *gradient);
 	//! Dijkstra on a freshly seeded field (see MapInternal.h). Seed costs must be
 	//! between 0 and the largest terrain step (currently 42); do not pass a completed
 	//! field. Uses shared scratch storage: calls across all Maps must be serial and
@@ -816,11 +830,14 @@ public:
 
 public:
 	void makeHomogenMap(TerrainType terrainType);
+    GAGCore::CooperativeTask makeHomogenMapTask(TerrainType terrainType);
 	void controlSand(void);
 	void smoothResources(int times);
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
+    GAGCore::CooperativeTask makeRandomMapTask(MapGenerationDescriptor &descriptor);
 	bool oldMakeRandomMap(MapGenerationDescriptor &descriptor);
+    GAGCore::CooperativeTask oldMakeRandomMapTask(MapGenerationDescriptor &descriptor);
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
+    GAGCore::CooperativeTask oldMakeIslandsMapTask(MapGenerationDescriptor &descriptor);
 
 };
-

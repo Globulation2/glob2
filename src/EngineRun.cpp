@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <ApplicationHost.h>
 #include <FormatableString.h>
 
 #include "AINames.h"
 #include "ChecksumSidecar.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -20,11 +22,12 @@
 #include "unit/UnitConsts.h"
 
 #include <iostream>
+#include <stdexcept>
 
 using std::shared_ptr;
 
 
-void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st)
+void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 {
 	const int previousSpeed = st.speed;
 	int renderInterval = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedRenderInterval() : 1;
@@ -50,21 +53,21 @@ void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st)
 
 	// A preset change or pause starts a fresh timing budget.
 	if (st.speed != previousSpeed)
-		st.needToBeTime = static_cast<Sint64>(SDL_GetTicks64() - st.startTime);
+		st.needToBeTime = static_cast<Sint64>(now - st.startTime);
 }
 
 // Headless / scripted-test polling: under --nox automaticEndingGame, flip
 // gui.isRunning=false once a local end condition fires (local team dead, local
 // team won, total-prestige reached, game ended). Records automaticGameEndTick.
-void Engine::pollAutomaticEndingConditions()
+void Engine::pollAutomaticEndingConditions(Uint64 now)
 {
 	if (!globalContainer->automaticEndingGame)
 		return;
 
-	auto endGame = [this](const char* reason) {
+	auto endGame = [this, now](const char* reason) {
 		printf("nox::%s\n", reason);
 		gui.isRunning = false;
-		automaticGameEndTick = SDL_GetTicks64();
+		automaticGameEndTick = now;
 	};
 
 	if (!gui.getLocalTeam()->isAlive && !globalContainer->automaticGameGlobalEndConditions)
@@ -112,8 +115,6 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		}
 	}
 
-	gui.game.setWaitingOnMask(net->getWaitingOnMask());
-
 	if (multiplayer)
 		multiplayer->update();
 
@@ -127,6 +128,9 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		if (checksumSidecar)
 			checksumSidecar->writeTick(gui.game.stepCounter, checksum, gui.game);
 	}
+	// advanceStep inserts the local order. Measuring earlier leaves a stale
+	// waiting flag; replays filter null orders and cannot clear it by executing one.
+	gui.game.setWaitingOnMask(net->getWaitingOnMask());
 }
 
 // Once allOrdersReceived() is true for this tick, commit the tick: validate
@@ -198,11 +202,13 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
+		GAGCore::ApplicationHost::simulationAdvanced(gui.game.stepCounter);
 	}
 }
 
-void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
+void Engine::drawFrame(MainLoopState& st)
 {
+    GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
 	const bool renderedFrame = st.nextGuiStep == 0;
 	if (renderedFrame)
 	{
@@ -220,9 +226,22 @@ void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 		globalContainer->gfx->printScreen(fileName.c_str());
 	}
 
+}
+
+void Engine::drawSession()
+{
+    if (!session) throw std::logic_error("No active engine session");
+    if (!globalContainer->runNoX) drawFrame(*session);
+}
+
+Uint32 Engine::sessionDelay(Uint64 now)
+{
+    if (!session) throw std::logic_error("No active engine session");
+    if (globalContainer->runNoX) return 0;
+    auto& st = *session;
 	// we compute timing
-	st.needToBeTime += st.speed;
-	Sint64 currentTime = static_cast<Sint64>(SDL_GetTicks64()) - static_cast<Sint64>(st.startTime);
+
+	Sint64 currentTime = static_cast<Sint64>(now) - static_cast<Sint64>(st.startTime);
 	//if we are more than MAX_CATCHUP_MS milliseconds behind where we should be,
 	//then truncate it. This is to avoid playing "catchup" for long
 	//periods of time if Glob2 received allmost no cpu time
@@ -231,10 +250,7 @@ void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
 	Uint64 delay = std::max<Sint64>(0, st.needToBeTime - currentTime);
-	if (delay > 0)
-		SDL_Delay(delay);
-	else if (!readyNow)
-		SDL_Delay(1);
+
 
 	// we set CPU stats
 	// Convert slept time into CPU load for one game tick.
@@ -242,6 +258,7 @@ void Engine::drawAndPaceFrame(MainLoopState& st, bool readyNow)
 		? static_cast<int>((std::max<Sint64>(0, static_cast<Sint64>(st.speed) - static_cast<Sint64>(delay)) * 100) / st.speed)
 		: 100;
 	gui.setCpuLoad(loadPercent);
+    return delay > 0 ? delay : (!st.wasReadyLastTick ? 1 : 0);
 }
 
 // If the GUI requested a clean exit, drain remaining local orders into the
@@ -436,40 +453,9 @@ void Engine::teardownSession()
 		globalContainer->datasetWriter.reset();
 	}
 
+	if (multiplayer) multiplayer->setNetEngine(nullptr);
 	net.reset();
 	multiplayer.reset();
-}
-
-// Decide whether run() should loop back into runOneGameSession (e.g. the GUI
-// armed a load-game request) or return to the menu. Always clears
-// toLoadGameFileName afterwards so the next pass doesn't re-trigger it.
-void Engine::prepareNextGameSession(bool& doRunOnceAgain)
-{
-	if (gui.exitGlobCompletely)
-	{
-		doRunOnceAgain = false;
-		return; // There is no bypass for the "close window button"
-	}
-
-	doRunOnceAgain = false;
-
-	if (!gui.toLoadGameFileName.empty())
-	{
-		int rv;
-
-		// A new game session is starting, so no EndGameScreen will be shown
-		// for the finished one: finalize its replay now (ReplayWriter::finish
-		// writes the NullOrder terminator and flushes). initGame requires the
-		// writer slot to be empty before it allocates the next session's.
-		globalContainer->replayWriter.reset();
-
-		if (globalContainer->replaying) rv = loadReplay(gui.toLoadGameFileName);
-		else rv = initCustom(gui.toLoadGameFileName);
-
-		if (rv == EE_NO_ERROR)
-			doRunOnceAgain = true;
-		gui.toLoadGameFileName.clear(); // Avoid the communication system between GameGUI and Engine to loop.
-	}
 }
 
 // Body of the outer "play one game and possibly load another" loop in run().
@@ -485,77 +471,99 @@ void Engine::prepareNextGameSession(bool& doRunOnceAgain)
 //   5. (gate flip) readyNow = net->allOrdersReceived()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
-//   8. drawAndPaceFrame            - draw, videoshot, sleep
+//   8. drawSession / sessionDelay  - draw, videoshot, host pacing
 //   9. handleExitRequest           - drain on exit request
 //
 // Track order readiness separately for the previous and current ticks.
+void Engine::beginSession(Uint64 now)
+{
+    if (session) throw std::logic_error("Engine session is already active");
+    if (!net) throw std::logic_error("Engine session requires an initialized game");
+    sessionEndingTarget = globalContainer->automaticEndingSteps;
+    MainLoopState st{};
+    st.adjustableGameSpeed = gui.canChangeGameSpeed();
+    st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
+    st.wasReadyLastTick = true;
+    st.nextGuiStep = 1;
+    st.startTime = now;
+    session = st;
+    automaticGameStartTick = now;
+}
+
+bool Engine::stepSession(Uint64 now)
+{
+    std::vector<SDL_Event> events;
+    SDL_Event event;
+    if (!globalContainer->runNoX)
+        while (SDL_PollEvent(&event)) events.push_back(event);
+    return stepSession(now, events);
+}
+
+bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
+{
+    if (!session) throw std::logic_error("No active engine session");
+    if (!gui.isRunning) return false;
+    auto& st = *session;
+    --st.nextGuiStep;
+    updateTickSpeedAndDrawCadence(st, now);
+    pollAutomaticEndingConditions(now);
+    sessionInput.insert(sessionInput.end(), events.begin(), events.end());
+    if (!globalContainer->runNoX && st.nextGuiStep == 0) {
+        gui.step(sessionInput, now);
+        sessionInput.clear();
+    }
+
+    bool readyNow = st.wasReadyLastTick;
+    if (!gui.hardPause) {
+        if (multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
+            gui.isRunning = false;
+        gatherAndAdvanceOrders(st.wasReadyLastTick);
+        readyNow = net->allOrdersReceived();
+        executeOrdersAndStep(readyNow);
+    }
+    if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {
+        gui.isRunning = false;
+        automaticGameEndTick = now;
+        printf("nox::gui.game.checkSum() = %08x\n", gui.game.checkSum());
+    }
+    st.wasReadyLastTick = readyNow;
+    if (!globalContainer->runNoX) st.needToBeTime += st.speed;
+    handleExitRequest();
+    return gui.isRunning;
+}
+
+std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
+{
+    if (!session) throw std::logic_error("No active engine session");
+    if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
+    if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
+    if (multiplayer) reportMultiplayerResult();
+    teardownSession();
+    session.reset();
+    sessionInput.clear();
+    const auto filename = std::exchange(gui.toLoadGameFileName, {});
+    if (gui.exitGlobCompletely || filename.empty()) return std::nullopt;
+    // The outgoing end screen will not be shown; finalize its replay before
+    // a cooperative initializer creates the next session's writer.
+    globalContainer->replayWriter.reset();
+    return PendingLoad{filename, globalContainer->replaying};
+}
+
+bool Engine::finishSession()
+{
+    const auto request = finishSessionForHost();
+    if (!request) return false;
+    return (request->replay ? loadReplay(request->filename) : initCustom(request->filename)) == EE_NO_ERROR;
+}
+
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
-	MainLoopState st;
-	st.adjustableGameSpeed = gui.canChangeGameSpeed();
-	st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
-	st.wasReadyLastTick = true;
-	// At higher game-speed presets (and during replay fast-forward), render
-	// less frequently so simulation can use the available CPU.
-	st.nextGuiStep = 1;
-	st.needToBeTime = 0;
-	st.startTime = SDL_GetTicks64();
-	st.frameNumber = 0;
-
-	while (gui.isRunning)
-	{
-		st.nextGuiStep--;
-		updateTickSpeedAndDrawCadence(st);
-
-		pollAutomaticEndingConditions();
-
-		if (!globalContainer->runNoX && st.nextGuiStep == 0)
-			gui.step();
-
-		// Hard pause skips the readiness update, so carry the previous value forward.
-		bool readyNow = st.wasReadyLastTick;
-
-		if (!gui.hardPause)
-		{
-			if (multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
-				gui.isRunning = false;
-
-			gatherAndAdvanceOrders(st.wasReadyLastTick);
-
-			// Gate flip: from "previous tick committed" to "all orders for
-			// this tick are now in." Downstream helpers take readyNow, not
-			// wasReadyLastTick.
-			readyNow = net->allOrdersReceived();
-
-			executeOrdersAndStep(readyNow);
-		}
-
-		if (globalContainer->automaticEndingGame)
-		{
-			if ((int)gui.game.stepCounter == globalContainer->automaticEndingSteps)
-			{
-				gui.isRunning = false;
-				automaticGameEndTick = SDL_GetTicks64();
-				printf("nox::gui.game.checkSum() = %08x\n", gui.game.checkSum());
-			}
-		}
-
-		if (!globalContainer->runNoX)
-			drawAndPaceFrame(st, readyNow);
-
-		if (handleExitRequest())
-			break;
-
-		st.wasReadyLastTick = readyNow;
-	}
-
-	if (globalContainer->automaticEndingGame)
-		printAutomaticEndingSummary();
-
-	if (multiplayer)
-		reportMultiplayerResult();
-
-	teardownSession();
-
-	prepareNextGameSession(doRunOnceAgain);
+    beginSession(SDL_GetTicks64());
+    while (gui.isRunning) {
+        stepSession(SDL_GetTicks64());
+        drawSession();
+        if (!globalContainer->runNoX)
+            GAGCore::ApplicationHost::wait(sessionDelay(SDL_GetTicks64()));
+    }
+    doRunOnceAgain = finishSession();
 }

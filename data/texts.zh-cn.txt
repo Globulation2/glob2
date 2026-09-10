@@ -1762,3 +1762,81 @@ OpenGL 在此版本中不可用。
 自动环面视图
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 在地图上移动时自动显示圆环形状的地图概览 (OpenGL)。
+[ERROR_CANT_SAVE_MAP]
+无法保存地图。请检查目标位置和可用空间。您的编辑内容仍处于打开状态。
+[Loading headers]
+正在加载头信息...
+[Loading teams]
+正在加载队伍...
+[Loading terrain]
+正在加载地形...
+[Building gradients]
+正在生成梯度...
+[Loading players]
+正在加载玩家...
+[Loading scripts]
+正在加载脚本...
+[Generating map]
+正在生成地图...
+[ERROR_CANT_GENERATE_MAP]
+无法生成地图。请尝试其他生成设置。
+[Loading units]
+正在加载单位...
+[Loading buildings]
+正在加载建筑...
+[Resolving team links]
+正在解析队伍链接...
+[saving to storage]
+正在保存...
+[save failed retry]
+保存失败，请重试。
+[export save]
+导出存档
+[storage restore failed]
+无法恢复浏览器存储。现有已保存数据未被更改。您可以继续本次会话，但本地更改将无法保留。请从保存失败对话框导出重要存档。重新加载以再次尝试恢复存储。
+[continue]
+继续
+[export file]
+导出文件
+[export failed]
+文件导出失败
+[import file]
+导入
+[select import file]
+选择要导入的文件
+[validating import]
+正在验证文件...
+[import succeeded]
+文件已导入
+[import cancelled]
+导入已取消
+[import failed]
+导入失败：文件无效或不受支持
+[import persistence failed]
+未保存：选择“导入”重试，或“导出文件”
+[import progress]
+导入进度
+[export progress]
+导出进度
+[retry save]
+重试保存
+[campaign save failed]
+战役进度未保存。请重试或导出备份。
+[leave without saving]
+不保存退出
+[campaign import failed]
+进度文件无效或战役版本不同
+[network release mismatch]
+客户端与服务器协议不一致。请安装与服务器相同的 Glob2 版本。
+[settings continue]
+继续
+[settings save failed]
+设置保存尚未确认。请重试，或继续。
+[shutdown save failed]
+最终保存尚未确认。请重试，或不保存退出。
+[quit without saving]
+不保存退出
+[game closed]
+游戏已关闭。您可以关闭此窗口，或重新加载以再次游戏。
+[campaign editor save failed]
+尚未确认保存。“确定”重试；“取消”返回编辑器菜单。

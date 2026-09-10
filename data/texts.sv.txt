@@ -1776,3 +1776,81 @@ Använd grafiken nästa gång ett spel eller kartredigeraren laddas (OpenGL).
 Automatisk torusvy
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Visa automatiskt den torusformade kartöversikten medan du flyttar runt på kartan (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Kartan kunde inte sparas. Kontrollera destinationen och tillgängligt utrymme. Dina ändringar är fortfarande öppna.
+[Loading headers]
+Läser in rubriker...
+[Loading teams]
+Läser in lag...
+[Loading terrain]
+Läser in terräng...
+[Building gradients]
+Bygger gradienter...
+[Loading players]
+Läser in spelare...
+[Loading scripts]
+Läser in skript...
+[Generating map]
+Skapar karta...
+[ERROR_CANT_GENERATE_MAP]
+Kartan kunde inte skapas. Prova andra genereringsinställningar.
+[Loading units]
+Läser in enheter...
+[Loading buildings]
+Läser in byggnader...
+[Resolving team links]
+Löser lagkopplingar...
+[saving to storage]
+Sparar...
+[save failed retry]
+Sparning misslyckades. Försök igen.
+[export save]
+Exportera sparfil
+[storage restore failed]
+Webbläsarens lagring kunde inte återställas. Befintlig sparad data har inte ändrats. Du kan fortsätta den här sessionen, men lokala ändringar kan inte sparas permanent. Exportera viktiga sparfiler från dialogrutan för sparfel. Ladda om för att försöka återställa lagringen igen.
+[continue]
+Fortsätt
+[export file]
+Exportera fil
+[export failed]
+Filexport misslyckades
+[import file]
+Importera
+[select import file]
+Välj en fil att importera
+[validating import]
+Verifierar fil...
+[import succeeded]
+Fil importerad
+[import cancelled]
+Import avbruten
+[import failed]
+Import misslyckades: ogiltig eller ej stödd fil
+[import persistence failed]
+Ej sparat: välj Importera för att försöka igen, eller Exportera fil
+[import progress]
+Importförlopp
+[export progress]
+Exportförlopp
+[retry save]
+Försök spara igen
+[campaign save failed]
+Kampanjförloppet sparades inte. Försök igen eller exportera en säkerhetskopia.
+[leave without saving]
+Avsluta utan att spara
+[campaign import failed]
+Ogiltig förloppsfil eller annan kampanjversion
+[network release mismatch]
+Klient- och serverprotokoll skiljer sig åt. Installera samma Glob2-version som servern.
+[settings continue]
+Fortsätt
+[settings save failed]
+Sparning av inställningar ej bekräftad. Försök igen, eller fortsätt.
+[shutdown save failed]
+Slutlig sparning ej bekräftad. Försök igen, eller avsluta utan att spara.
+[quit without saving]
+Avsluta utan att spara
+[game closed]
+Spelet stängt. Du kan stänga det här fönstret eller ladda om för att spela igen.
+[campaign editor save failed]
+Sparning ej bekräftad. OK försöker igen; Avbryt återgår till redigerarmenyn.

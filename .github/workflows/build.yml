@@ -5,10 +5,22 @@ on:
     branches: [master]
   pull_request:
   workflow_dispatch:
+    inputs:
+      browser_only:
+        description: Run only browser, transport, gateway, and deployment checks
+        required: false
+        type: boolean
+        default: false
+
+# Keep a newer PR/manual run from competing with obsolete builds of its branch.
+concurrency:
+  group: build-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
 
 jobs:
   linux:
     name: linux (${{ matrix.image }})
+    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.browser_only }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -54,7 +66,7 @@ jobs:
             ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
-            libboost-date-time-dev libboost-thread-dev libboost-system-dev \
+            libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
             libcppunit-dev
@@ -82,6 +94,9 @@ jobs:
         id: cache_ready
         run: ccache -z
 
+      - name: Test build identities
+        run: python3 -m unittest discover -s tests/build_system -v
+
       - name: Build glob2
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
 
@@ -101,114 +116,124 @@ jobs:
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 torus-render-test
           mkdir -p /tmp/glob2-render-profile
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
-            xvfb-run -a build/src/torus-render-test -g -F -m -s 1120x720
+            xvfb-run -a build/linux/client/release/src/torus-render-test -g -F -m -s 1120x720
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
-            build/src/torus-render-test -G -F -m -s 1120x720
-
-      - name: Build and run custom-game setup regressions
-        run: |
-          scons -j$(nproc) release=1 server=0 custom-setup-test
-          timeout 180s ./build/src/CustomGameSetupHarness
-          mkdir -p artifacts/custom-game-ci
-          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci > artifacts/custom-game-ci/ui.log 2>&1
-          timeout 60s xvfb-run -a ./build/src/CustomGameSetupHarness preferences-write
-          timeout 60s xvfb-run -a ./build/src/CustomGameSetupHarness preferences-read
-          cat artifacts/custom-game-ci/ui.log
-          ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
-
-      - name: Build and run the selection lifetime regression
-        run: |
-          scons -j$(nproc) release=1 server=0 selection-test
-          ./build/src/GameGUISelectionHarness
-
-      - name: Build and run the wrapped building footprint regression
-        run: |
-          scons -j$(nproc) release=1 server=0 building-footprint-test
-          ./build/src/BuildingFootprintHarness
-          ./build/src/BuildingFootprintHarness --load test/fixtures/wrapped-building/reproducer.game
-
-      - name: Build and run the entering unit save regression
-        run: |
-          scons -j$(nproc) release=1 server=0 entering-unit-save-test
-          ./build/src/EnteringUnitSaveHarness
-          ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
-
-      - name: Test trapped colony elimination
-        run: |
-          scons -j$(nproc) release=1 server=0 trapped-unit-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest
-
-      - name: Build and run the entering unit draw regression
-        run: |
-          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
-          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness
-
-      - name: Build and run the immobile unit gradient regression
-        run: |
-          scons -j$(nproc) release=1 server=0 immobile-unit-gradient-test
-          ./build/src/ImmobileUnitGradientHarness
-
-      - name: Build and run the building expulsion regression
-        run: |
-          scons -j$(nproc) release=1 server=0 building-expel-test
-          timeout 300s ./build/src/BuildingExpelHarness
-
-      - name: Build and run the hiring bucket regression
-        run: |
-          scons -j$(nproc) release=1 server=0 hiring-bucket-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness .
-
-      - name: Build and run the resource-fetch target regression
-        run: |
-          scons -j$(nproc) release=1 server=0 resource-fetch-target-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/ResourceFetchTargetHarness .
-
-      - name: Test savegame loading and atomic autosaves
-        run: |
-          scons -j$(nproc) release=1 server=0 savegame-safety-test buffered-file-test
-          python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness
-          ./build/src/BufferedFileStreamHarness
-
-      - name: Test team statistics save compatibility
-        run: |
-          scons -j$(nproc) release=1 server=0 team-stats-save-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness .
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
+            build/linux/client/release/src/torus-render-test -G -F -m -s 1120x720
 
       - name: Build the YOG server
         run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
 
+      - name: Build and run custom-game setup regressions
+        run: |
+          scons -j$(nproc) release=1 server=0 custom-setup-test
+          timeout 180s ./build/linux/client/release/src/CustomGameSetupHarness
+          mkdir -p artifacts/custom-game-ci
+          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/CustomGameSetupHarness artifacts/custom-game-ci > artifacts/custom-game-ci/ui.log 2>&1
+          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-write
+          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-read
+          cat artifacts/custom-game-ci/ui.log
+          ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
+
+      - name: Test nonblocking screen execution
+        run: |
+          scons release=1 -j$(nproc) screen-test
+          ./build/linux/client/release/libgag/src/ScreenExecutionHarness
+
+      - name: Test incremental engine sessions
+        run: |
+          scons release=1 -j$(nproc) session-test
+          python3 test/run-engine-session-test.py
+
+      - name: Build and run the selection lifetime regression
+        run: |
+          scons -j$(nproc) release=1 server=0 selection-test
+          ./build/linux/client/release/src/GameGUISelectionHarness
+
+      - name: Build and run the wrapped building footprint regression
+        run: |
+          scons -j$(nproc) release=1 server=0 building-footprint-test
+          ./build/linux/client/release/src/BuildingFootprintHarness
+          ./build/linux/client/release/src/BuildingFootprintHarness --load test/fixtures/wrapped-building/reproducer.game
+
+      - name: Build and run the entering unit save regression
+        run: |
+          scons -j$(nproc) release=1 server=0 entering-unit-save-test
+          ./build/linux/client/release/src/EnteringUnitSaveHarness
+          ./build/linux/client/release/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
+
+      - name: Test trapped colony elimination
+        run: |
+          scons -j$(nproc) release=1 server=0 trapped-unit-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TrappedUnitLifecycleTest
+
+      - name: Build and run the entering unit draw regression
+        run: |
+          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/EnteringUnitDrawHarness
+
+      - name: Build and run the immobile unit gradient regression
+        run: |
+          scons -j$(nproc) release=1 server=0 immobile-unit-gradient-test
+          ./build/linux/client/release/src/ImmobileUnitGradientHarness
+
+      - name: Build and run the building expulsion regression
+        run: |
+          scons -j$(nproc) release=1 server=0 building-expel-test
+          timeout 300s ./build/linux/client/release/src/BuildingExpelHarness
+
+      - name: Build and run the hiring bucket regression
+        run: |
+          scons -j$(nproc) release=1 server=0 hiring-bucket-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/HiringBucketHarness .
+
+      - name: Build and run the resource-fetch target regression
+        run: |
+          scons -j$(nproc) release=1 server=0 resource-fetch-target-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/ResourceFetchTargetHarness .
+
+      - name: Test savegame loading and atomic autosaves
+        run: |
+          scons -j$(nproc) release=1 server=0 savegame-safety-test buffered-file-test
+          python3 test/run-savegame-safety-tests.py build/linux/client/release/src/SavegameSafetyHarness
+          ./build/linux/client/release/src/BufferedFileStreamHarness
+
+      - name: Test team statistics save compatibility
+        run: |
+          scons -j$(nproc) release=1 server=0 team-stats-save-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TeamStatsSaveHarness .
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy test/fixtures/team-stats/version88.game
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/linux/client/release/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
+
       - name: Build and run the terrain resource regression
         run: |
           scons -j$(nproc) release=1 server=0 terrain-test
-          ./build/src/TerrainResourcesHarness
+          ./build/linux/client/release/src/TerrainResourcesHarness
 
       - name: Build and run the global gradient regression
         run: |
           scons -j$(nproc) release=1 server=0 global-gradient-test
-          ./build/src/GlobalGradientHarness
+          ./build/linux/client/release/src/GlobalGradientHarness
 
       - name: Build and run the LAN session regression
         run: |
           scons -j$(nproc) release=1 server=0 lan-test
-          python3 test/run_lan_session_test.py build/src/LANSessionHarness
+          python3 test/run_lan_session_test.py build/linux/client/release/src/LANSessionHarness
 
       - name: Build and run the aspect-ratio regression
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
           scons -j$(nproc) release=1 server=0 aspect-test
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness gl
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness software
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness gl
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/FullscreenAspectHarness software
 
       - name: Build and run the window resize regression
         env:
           LIBGL_ALWAYS_SOFTWARE: 1
         run: |
           scons -j$(nproc) release=1 server=0 resize-test
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness gl
-          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness software
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness gl
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/linux/client/release/libgag/src/WindowResizeHarness software
 
       - name: Check game rendering across repeated map copies
         env:
@@ -216,8 +241,8 @@ jobs:
           SDL_AUDIODRIVER: dummy
         run: |
           scons -j$(nproc) release=1 server=0 map-render-resize-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness
-          SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness --gl
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness
+          SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/MapRenderResizeHarness --gl
 
       - name: Build and run the tests
         working-directory: test
@@ -235,13 +260,13 @@ jobs:
           SDL_AUDIODRIVER: dummy
         run: |
           scons -j$(nproc) release=1 server=0 menu-colony-harness
-          ./build/src/MenuColonyHarness check data/menu/colony.bin
-          ./build/src/MenuColonyHarness navigation unused
+          ./build/linux/client/release/src/MenuColonyHarness check data/menu/colony.bin
+          ./build/linux/client/release/src/MenuColonyHarness navigation unused
 
       - name: Test game speed controls and playback
         run: |
           scons -j$(nproc) release=1 server=0 speed-tests
-          xvfb-run -a python3 test/run-game-speed-tests.py
+          GLOB2_BUILD_DIR=build/linux/client/release xvfb-run -a python3 test/run-game-speed-tests.py
 
       - name: Build without OpenGL
         run: |
@@ -271,6 +296,7 @@ jobs:
 
   windows:
     name: windows (mingw-w64)
+    if: ${{ github.event_name != 'workflow_dispatch' || !inputs.browser_only }}
     runs-on: windows-latest
     defaults:
       run:
@@ -296,11 +322,15 @@ jobs:
             mingw-w64-x86_64-zlib
             mingw-w64-x86_64-fribidi
             mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-openssl
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy
             mingw-w64-x86_64-libsystre
 
       - uses: actions/checkout@v4
+
+      - name: Test build identities
+        run: python3 -m unittest discover -s tests/build_system -v
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
@@ -308,7 +338,7 @@ jobs:
       - name: Test trapped colony elimination
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 trapped-unit-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest.exe
+          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TrappedUnitLifecycleTest.exe
 
       - name: Test torus geometry, picking and cloud coordinates
         run: |
@@ -324,7 +354,7 @@ jobs:
       - name: Build and run the hiring bucket regression
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 hiring-bucket-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness.exe .
+          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/HiringBucketHarness.exe .
 
       - name: Check game rendering across repeated map copies
         env:
@@ -332,19 +362,101 @@ jobs:
           SDL_AUDIODRIVER: dummy
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 map-render-resize-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness.exe
+          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/MapRenderResizeHarness.exe
+
+      - name: Build the YOG server
+        run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
 
       - name: Test savegame loading and atomic autosaves
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 savegame-safety-test
-          python3 test/run-savegame-safety-tests.py build/src/SavegameSafetyHarness.exe
+          python3 test/run-savegame-safety-tests.py build/mingw/client/release/src/SavegameSafetyHarness.exe
 
       - name: Test team statistics save compatibility
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 team-stats-save-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TeamStatsSaveHarness.exe .
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
-          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
+          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TeamStatsSaveHarness.exe .
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version88.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy test/fixtures/team-stats/version88.game
+          python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/mingw/client/release/src/TeamStatsSaveHarness.exe . --legacy games/gd-small-2ai.game
 
-      - name: Build the YOG server
-        run: scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
+  web:
+    name: browser
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native and build dependencies
+        run: |
+          # The hosted image adds an unpinned Chrome repository, while this job
+          # installs its pinned browsers through Playwright below.
+          sudo rm -f \
+            /etc/apt/sources.list.d/google-chrome.list \
+            /etc/apt/sources.list.d/google-chrome.sources
+          sudo apt-get update -qq
+          sudo apt-get install -y scons libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev libvorbis-dev libogg-dev libspeex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+      - name: Install pinned Emscripten
+        run: python3 browser/setup.py
+      - name: Test build identities
+        run: python3 -m unittest discover -s tests/build_system -v
+      - name: Build WebAssembly client
+        run: scons target=web release=1 -j$(nproc)
+      - name: Build and test gateway
+        run: |
+          scons role=gateway release=1 -j$(nproc)
+          python3 -m unittest discover -s tests/gateway -v
+      - name: Build headless router
+        run: scons role=router release=1 -j$(nproc)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: browser/package-lock.json
+      - name: Build transport integration fixture
+        run: |
+          scons release=1 transport-test -j$(nproc)
+          python3 test/run-network-transport-tests.py
+          python3 -m unittest discover -s tests/transport -v
+      - name: Test browser lifecycle, renderers and multiplayer
+        working-directory: browser
+        env:
+          GLOB2_FIREFOX_HEADED: '1'
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install --with-deps chromium firefox webkit
+          # Firefox needs an X display for WebGL2 and a real audio service to
+          # complete AudioContext.resume(). A null sink keeps CI silent.
+          sudo apt-get install -y pulseaudio
+          pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
+          node --test unit/*.test.js
+          # Chromium carries the complete behavior suite. The other engines
+          # exercise startup, gameplay and viewport integration without
+          # repeating every persistence and multiplayer scenario.
+          xvfb-run -a npx playwright test --project=chromium
+          xvfb-run -a npx playwright test runtime-build.spec.js viewport.spec.js --project=firefox --project=webkit
+          # WebGL2 shares the game behavior above; keep focused adapter,
+          # lifecycle, persistence and rendering coverage in Chromium.
+          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test runtime-build.spec.js session-reload.spec.js viewport.spec.js rendering.spec.js input.spec.js --project=chromium
+          xvfb-run -a npx playwright test --config visibility.config.js
+          GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js
+      - name: Test self-hosting with real TLS and persistent volumes
+        run: |
+          docker compose -f deploy/compose.yaml build lobby
+          python3 -m unittest discover -s tests/deployment -v
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-failure-traces
+          retention-days: 7
+          path: |
+            build/browser-test-results
+            build/browser-test-report
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: glob2-web-development
+          retention-days: 7
+          path: |
+            build/emscripten/client/release/index.html
+            build/emscripten/client/release/index.js
+            build/emscripten/client/release/index.wasm
+            build/emscripten/client/release/index.data

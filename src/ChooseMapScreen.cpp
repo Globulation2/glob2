@@ -2,12 +2,13 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "ChooseMapScreen.h"
+#include "FileImport.h"
+#include <ApplicationHost.h>
 #include "GUIGlob2FileList.h"
 #include "GUIMapPreview.h"
 #include "GlobalContainer.h"
 #include <FormatableString.h>
 #include <GUIButton.h>
-#include <GUIMessageBox.h>
 #include <GUIText.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -49,6 +50,11 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 		title = new Text(0, 18, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[choose game]"));
 		deleteMap = new TextButton(250, 360, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[delete]"), DELETEGAME);
 		addWidget(deleteMap);
+        if (GAGCore::ApplicationHost::canExportFiles()) {
+            exportButton = new TextButton(250, 300, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+                "menu", Toolkit::getStringTable()->getString("[export file]"), 5);
+            addWidget(exportButton);
+        }
 	}
 	else
 	{
@@ -81,6 +87,16 @@ ChooseMapScreen::ChooseMapScreen(const char *directory, const char *extension, b
 		alternateFileList->visible=false;
 	}
 	
+    if (GAGCore::ApplicationHost::canImportFiles()) {
+        importButton = new TextButton(20, 470, 85, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+            "standard", Toolkit::getStringTable()->getString("[import file]"), 6);
+        addWidget(importButton);
+        if (!exportButton) {
+            exportButton = new TextButton(115, 470, 85, 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED,
+                "standard", Toolkit::getStringTable()->getString("[export file]"), 5);
+            addWidget(exportButton);
+        }
+    }
 	validMapSelected = false;
 	selectedType = NONE;
 }
@@ -89,11 +105,48 @@ ChooseMapScreen::~ChooseMapScreen()
 {
 }
 
+bool ChooseMapScreen::importBusy() const
+{
+    return fileSelection || (fileImport && (fileImport->state() == FileImport::State::Validating || fileImport->state() == FileImport::State::Persisting));
+}
+
 void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 {
+    const bool button = action == BUTTON_RELEASED || action == BUTTON_SHORTCUT;
+    if (importBusy()) {
+        if (button && source == cancel && (!fileImport || fileImport->state() != FileImport::State::Persisting)) {
+            fileSelection.reset(); fileImport.reset();
+            GAGCore::ApplicationHost::importChanged("cancelled");
+            title->setText(Toolkit::getStringTable()->getString("[import cancelled]"));
+        }
+        return;
+    }
+    if (button && importButton && source == importButton) {
+        if (fileImport && fileImport->canRetry()) { fileImport->retryPersistence(); updateImportStatus(); return; }
+        fileImport.reset();
+        importExtension = activeType() == MAP ? "map" : activeType() == REPLAY ? "replay" : "game";
+        fileSelection = GAGCore::ApplicationHost::selectFile(importExtension);
+        GAGCore::ApplicationHost::importChanged("selecting");
+        title->setText(Toolkit::getStringTable()->getString("[select import file]"));
+        return;
+    }
+    if (button && source == exportButton && fileImport && fileImport->canRetry()) {
+        if (!fileImport->exportFile()) title->setText(Toolkit::getStringTable()->getString("[export failed]"));
+        return;
+    }
 	if (action == LIST_ELEMENT_SELECTED)
 	{
 		Glob2FileList* active = activeFileList();
+		// Invalidate the old selection before attempting any fallible file reads.
+		validMapSelected = false;
+		selectedType = NONE;
+		mapDate->setText("");
+		mapVersion->setText("");
+		mapInfo->setText("");
+		mapSize->setText("");
+		mapName->setText("");
+		mapPreview->setMapThumbnail(MapThumbnail());
+		title->setText(Toolkit::getStringTable()->getString(type1 == MAP ? "[choose map]" : "[choose game]"));
 		if (active->selection())
 		{
 			std::string mapFileName = active->listToFile(active->getText(par1).c_str());
@@ -131,26 +184,25 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 			}
 			catch (std::exception &e)
 			{
-				// Show error message
-				GAGGUI::MessageBox(globalContainer->gfx, "standard", GAGGUI::MB_ONEBUTTON, Toolkit::getStringTable()->getString("[ERROR_CANT_LOAD_MAP]"), Toolkit::getStringTable()->getString("[ok]"));
-
+				std::cerr << "ChooseMapScreen: " << e.what() << std::endl;
 				validMapSelected = false;
+				selectedType = NONE;
 			}
-		}
-		else 
-		{
-			mapDate->setText("");
-			mapVersion->setText("");
-			mapInfo->setText("");
-			mapSize->setText("");
-			mapName->setText("");
-			mapPreview->setMapThumbnail("");
-			validMapSelected = false;
+			if (!validMapSelected)
+			{
+				mapPreview->setMapThumbnail(MapThumbnail());
+				title->setText(Toolkit::getStringTable()->getString("[Damaged Map]"));
+			}
 		}
 	}
 	else if ((action == BUTTON_RELEASED) || (action == BUTTON_SHORTCUT))
 	{
-		if (source == ok)
+        if (exportButton && source == exportButton) {
+            auto* active = activeFileList();
+            if (active->selection() && !GAGCore::ApplicationHost::exportLocalFile(active->listToFile(active->get())))
+                title->setText(Toolkit::getStringTable()->getString("[export failed]"));
+        }
+        else if (source == ok)
 		{
 			// we accept only if a valid map is selected
 			if (validMapSelected)
@@ -183,6 +235,46 @@ void ChooseMapScreen::onAction(Widget *source, Action action, int par1, int par2
 	}
 }
 
+
+void ChooseMapScreen::updateImportStatus()
+{
+    const auto state = fileImport->state();
+    GAGCore::ApplicationHost::importChanged(state == FileImport::State::Validating ? "validating" :
+        state == FileImport::State::Persisting ? "persisting" : state == FileImport::State::Succeeded ? "succeeded" :
+        fileImport->canRetry() ? "failed" : "invalid");
+    const char* message = state == FileImport::State::Validating ? "[validating import]" :
+        state == FileImport::State::Persisting ? "[saving to storage]" :
+        state == FileImport::State::Succeeded ? "[import succeeded]" :
+        fileImport->canRetry() ? "[import persistence failed]" : "[import failed]";
+    title->setText(Toolkit::getStringTable()->getString(message));
+}
+
+void ChooseMapScreen::onTimer(Uint32)
+{
+    if (fileSelection) {
+        const auto state = fileSelection->state();
+        if (state == GAGCore::ApplicationHost::FileSelectionState::Pending) return;
+        if (state == GAGCore::ApplicationHost::FileSelectionState::Selected) {
+            try { fileImport = std::make_unique<FileImport>(fileSelection->takeFile(), importExtension); }
+            catch (const std::exception&) { title->setText(Toolkit::getStringTable()->getString("[import failed]")); }
+        } else {
+            GAGCore::ApplicationHost::importChanged(state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "cancelled" : "invalid");
+            title->setText(Toolkit::getStringTable()->getString(state == GAGCore::ApplicationHost::FileSelectionState::Cancelled ? "[import cancelled]" : "[import failed]"));
+        }
+        fileSelection.reset();
+    }
+    if (!fileImport) return;
+    fileImport->advance();
+    updateImportStatus();
+    if (fileImport->state() == FileImport::State::Succeeded) {
+        auto* active = activeFileList();
+        active->generateList();
+        const auto name = glob2FilenameToName(fileImport->path());
+        for (unsigned i = 0; i < active->getCount(); ++i)
+            if (active->getText(i) == name) { active->setSelection(i); active->selectionChanged(); break; }
+        fileImport.reset();
+    }
+}
 
 void ChooseMapScreen::updateMapInformation()
 {

@@ -12,18 +12,26 @@
 void MapEdit::processEvent(SDL_Event& event)
 {
 	updateCamera();
+    inputState.observe(event);
+    if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+        suspendInput();
+    }
+    if (!inputState.hasFocus() && (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP ||
+        event.type == SDL_MOUSEBUTTONDOWN || event.type == SDL_MOUSEBUTTONUP ||
+        event.type == SDL_MOUSEMOTION || event.type == SDL_MOUSEWHEEL)) return;
+
 	if (event.type==SDL_QUIT)
 	{
 		doFullQuit=true;
 	}
 #	ifdef USE_OSX
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && SDL_GetModState() & KMOD_GUI)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q && (event.key.keysym.mod & KMOD_GUI))
 	{
 		doFullQuit=true;
 	}
 #	endif
 #	ifdef USE_WIN32
-	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && SDL_GetModState() & KMOD_ALT)
+	else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F4 && (event.key.keysym.mod & KMOD_ALT))
 	{
 		doFullQuit=true;
 	}
@@ -34,7 +42,7 @@ void MapEdit::processEvent(SDL_Event& event)
 		delegateMenu(event);
 		return;
 	}
-    else if(event.type==SDL_MOUSEWHEEL && (SDL_GetModState() & KMOD_ALT))
+    else if(event.type==SDL_MOUSEWHEEL && (inputState.modifiers() & KMOD_ALT))
     {
         double delta=event.wheel.y;
 #if SDL_VERSION_ATLEAST(2,0,18)
@@ -292,3 +300,16 @@ void MapEdit::handleKeyPressed(SDL_Keysym key, bool pressed)
 }
 
 
+
+void MapEdit::suspendInput()
+{
+    inputState.clearHeld();
+    xSpeed = ySpeed = 0;
+    isDraggingMinimap = isScrollDragging = false;
+    isDraggingZone = isDraggingTerrain = isDraggingDelete = false;
+    isDraggingArea = isDraggingNoResourceGrowthArea = false;
+    // The parent will not receive pointer motion while its child is active.
+    // Neutralize edge scrolling until a new motion event arrives.
+    mouseX = globalContainer->gfx->getW() / 2;
+    mouseY = globalContainer->gfx->getH() / 2;
+}

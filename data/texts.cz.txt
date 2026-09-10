@@ -1766,3 +1766,81 @@ Vybraná grafika se použije při příštím načtení hry nebo editoru map (Op
 Automatický toroidní pohled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenGL).
+[ERROR_CANT_SAVE_MAP]
+Mapu se nepodařilo uložit. Zkontrolujte cíl a dostupné místo. Vaše úpravy jsou stále otevřené.
+[Loading headers]
+Načítání hlaviček...
+[Loading teams]
+Načítání týmů...
+[Loading terrain]
+Načítání terénu...
+[Building gradients]
+Vytvářejí se gradienty...
+[Loading players]
+Načítání hráčů...
+[Loading scripts]
+Načítání skriptů...
+[Generating map]
+Generuje se mapa...
+[ERROR_CANT_GENERATE_MAP]
+Mapu se nepodařilo vytvořit. Zkuste jiná nastavení generování.
+[Loading units]
+Načítání jednotek...
+[Loading buildings]
+Načítání budov...
+[Resolving team links]
+Řeší se propojení týmů...
+[saving to storage]
+Ukládá se...
+[save failed retry]
+Uložení selhalo. Zkuste to znovu.
+[export save]
+Exportovat uloženou hru
+[storage restore failed]
+Úložiště prohlížeče se nepodařilo obnovit. Stávající uložená data nebyla změněna. Můžete pokračovat v této relaci, ale místní změny nebude možné uchovat. Důležité uložené hry exportujte z dialogu chyby uložení. Obnovte stránku a zkuste obnovení úložiště znovu.
+[continue]
+Pokračovat
+[export file]
+Exportovat soubor
+[export failed]
+Export souboru selhal
+[import file]
+Importovat
+[select import file]
+Vyberte soubor k importu
+[validating import]
+Ověřuje se soubor...
+[import succeeded]
+Soubor byl importován
+[import cancelled]
+Import zrušen
+[import failed]
+Import selhal: neplatný nebo nepodporovaný soubor
+[import persistence failed]
+Neuloženo: zvolte Importovat pro nový pokus, nebo Exportovat soubor
+[import progress]
+Průběh importu
+[export progress]
+Průběh exportu
+[retry save]
+Zkusit uložení znovu
+[campaign save failed]
+Postup tažení nebyl uložen. Zkuste to znovu nebo exportujte zálohu.
+[leave without saving]
+Ukončit bez uložení
+[campaign import failed]
+Neplatný soubor postupu nebo jiná verze tažení
+[network release mismatch]
+Protokoly klienta a serveru se liší. Nainstalujte stejnou verzi Glob2 jako server.
+[settings continue]
+Pokračovat
+[settings save failed]
+Uložení nastavení nepotvrzeno. Zkuste to znovu, nebo pokračujte.
+[shutdown save failed]
+Závěrečné uložení nepotvrzeno. Zkuste to znovu, nebo ukončete bez uložení.
+[quit without saving]
+Ukončit bez uložení
+[game closed]
+Hra byla ukončena. Toto okno můžete zavřít nebo znovu načíst stránku a hrát znovu.
+[campaign editor save failed]
+Uložení nepotvrzeno. OK zkusí to znovu; Zrušit se vrátí do nabídky editoru.

@@ -431,11 +431,11 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 
 void GameGUI::handleKeyAlways(void)
 {
-	SDL_PumpEvents();
-	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+	if (!inputState.hasFocus()) return;
+	const Uint8 *keystate = inputState.keyboard();
 	if (notmenu == false)
 	{
-		SDL_Keymod modState = SDL_GetModState();
+		SDL_Keymod modState = inputState.modifiers();
 		updateCamera();
 		double xMotion = 1/camera.zoom;
 		double yMotion = 1/camera.zoom;

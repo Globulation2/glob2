@@ -90,6 +90,7 @@ public:
 	bool operator!=(const MapHeader& rhs) const;
 	bool operator==(const MapHeader& rhs) const;
 private:
+	bool loadFields(GAGCore::InputStream *stream);
 	/// Major map version. Changes only with structural modification
 	Sint32 versionMajor;
 	/// Minor map version. Changes each time something has been changed in serializations

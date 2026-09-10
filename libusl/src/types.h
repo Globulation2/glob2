@@ -8,14 +8,19 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <typeindex>
 
 struct Value;
+struct Prototype;
 
 struct Heap
 {
 	typedef std::vector<Value*> Values;
 
 	Values values;
+	// Native method tables belong to this interpreter, never to another heap.
+	std::map<std::type_index, Prototype*> nativePrototypes;
+	~Heap();
 
 	void collectGarbage();
 };
@@ -44,14 +49,7 @@ struct Value
 	
 	virtual void propagateMarkForGC() { }
 	
-	void markForGC()
-	{
-		if (!marked)
-		{
-			marked = true;
-			propagateMarkForGC();
-		}
-	}
+	void markForGC();
 	
 	void clearGCMark() { marked = false; }
 };
@@ -81,9 +79,7 @@ struct Prototype: Value
 		transform(members.begin(), members.end(), ostream_iterator<string>(stream, " "), [](auto& member) {return member.first; });
 	}
 	
-	// Defined out-of-line below ThunkPrototype: the lambda dynamic_cast's a
-	// ThunkPrototype* (Members::value_type::second_type), which C++17+ requires
-	// to be a complete type at the point the body is parsed.
+	// Defined below ThunkPrototype so its member pointers are complete types.
 	virtual void propagateMarkForGC();
 
 	virtual ThunkPrototype* lookup(const std::string& name) const
@@ -112,18 +108,13 @@ struct ThunkPrototype: Prototype
 		stream << body.size() << " codes";
 	}
 	
-	virtual void propagateMarkForGC()
-	{
-		if (outer != 0)
-			outer->markForGC();
-		Prototype::propagateMarkForGC();
-	}
+	void propagateMarkForGC() override;
 };
 
 inline void Prototype::propagateMarkForGC()
 {
 	using std::for_each;
-	for_each(members.begin(), members.end(), [](auto& member) {dynamic_cast<Value*>(member.second)->markForGC(); });
+	for_each(members.begin(), members.end(), [](auto& member) { if (member.second) member.second->markForGC(); });
 }
 
 struct Thunk: Value
@@ -140,6 +131,7 @@ struct Thunk: Value
 	{
 		return static_cast<ThunkPrototype*>(prototype);
 	}
+	void propagateMarkForGC() override { if (outer) outer->markForGC(); }
 };
 
 struct ScopePrototype: ThunkPrototype
@@ -174,9 +166,8 @@ struct Scope: Thunk
 	
 	virtual void propagateMarkForGC()
 	{
-		using std::for_each;
-		using std::mem_fn;
-		for_each(locals.begin(), locals.end(), mem_fn(&Value::markForGC));
+		Thunk::propagateMarkForGC();
+		for (auto* local : locals) if (local) local->markForGC();
 	}
 	
 	ScopePrototype* scopePrototype() const
@@ -193,6 +184,10 @@ struct MetaPrototype: Value
 	
 	Prototype* prototype; // this is the prototype of the target, not of this meta object
 	Value* outer;
+	void propagateMarkForGC() override {
+		if (prototype) prototype->markForGC();
+		if (outer) outer->markForGC();
+	}
 };
 
 struct Function: MetaPrototype
@@ -201,4 +196,3 @@ struct Function: MetaPrototype
 
 	Function(Heap* heap, Prototype* prototype, Value* outer);
 };
-

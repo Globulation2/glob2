@@ -104,8 +104,7 @@
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
 #define NET_PROTOCOL_VERSION 29
-//Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 29
+// Client and server require this exact version before authentication.
 // version 21 changed OrderModifyWarFlag to more generic OrderModifyMinLevelToFlag
 // version 22 added ConfigCheckSum to check if all use has the same file config.
 // version 23 updated to allow custom prestige settings
@@ -116,3 +115,5 @@
 // version 28 Nicowar's behavior was changed
 // version 29 the pathfinding simulation changed (#184); older clients would desync, so they are refused
 
+
+// version 29 identifies the updated simulation and adds symmetric protocol admission.
