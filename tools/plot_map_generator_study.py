@@ -20,7 +20,7 @@ from matplotlib.colors import ListedColormap
 from matplotlib.patches import Patch
 
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'docs/map-generators'
+OUT=ROOT/'artifacts/map-generators'
 STUDY=OUT/'study'
 BINARY=ROOT/'build/src/MapGeneratorStudy'
 catalog=json.loads(subprocess.check_output([BINARY,'--catalog'],text=True))
