@@ -613,9 +613,9 @@ hauetatik
 [ok]
 Ados
 [old islands terrain]
-ausazko irla lurzoru zaharra
+Artxipelago Malkartsua
 [old random terrain]
-ausazko lurzoru zaharra
+Kostalde Zatikatua
 [on press]
 Sakatzean
 [On the spot]
@@ -1373,9 +1373,9 @@ Ertaina - Esperimentala
 [No AI orders]
 Ez dago AI komandorik
 [Old islands]
-Uharte zaharrak
+Artxipelago Malkartsua
 [Old random]
-Ausazko zaharra
+Kostalde Zatikatua
 [Open at least one colony to start a match.]
 Ireki gutxienez kolonia bat partida bat hasteko.
 [Open book]
@@ -1776,3 +1776,9 @@ Erabili hautatutako artelana joko bat edo mapa-editorea kargatzen den hurrengoan
 Toroide-ikuspegi automatikoa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Erakutsi automatikoki toroide formako maparen ikuspegi orokorra mapan mugitzen zaren bitartean (OpenGL).
+[Channel width]
+Kanalaren zabalera
+[Land bridge width]
+Lur-zubiaren zabalera
+[Lake size]
+Aintziraren tamaina

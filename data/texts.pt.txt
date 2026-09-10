@@ -611,9 +611,9 @@ dos quais há
 [ok]
 Aceitar
 [old islands terrain]
-ilhas aleatórias antigas
+Arquipélago Acidentado
 [old random terrain]
-terreno aleatório antigo
+Costa Fragmentada
 [on press]
 Ao premir
 [On the spot]
@@ -1369,9 +1369,9 @@ Médio - Experimental
 [No AI orders]
 Sem ordens da IA
 [Old islands]
-Ilhas (gerador antigo)
+Arquipélago Acidentado
 [Old random]
-Aleatório (gerador antigo)
+Costa Fragmentada
 [Open at least one colony to start a match.]
 Abra pelo menos uma colónia para iniciar uma partida.
 [Open book]
@@ -1772,3 +1772,9 @@ Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL
 Vista toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a vista geral toroidal enquanto se desloca pelo mapa (OpenGL).
+[Channel width]
+Largura do canal
+[Land bridge width]
+Largura da ponte terrestre
+[Lake size]
+Tamanho do lago

@@ -627,9 +627,9 @@ waarvan
 [ok]
 Ok
 [old islands terrain]
-Oude eilanden
+Ruige Archipel
 [old random terrain]
-Oud willekeurig terrein
+Versplinterde Kust
 [on press]
 Indrukken
 [On the spot]
@@ -1387,9 +1387,9 @@ Gemiddeld - Experimenteel
 [No AI orders]
 Geen AI-opdrachten
 [Old islands]
-Eilanden (oude generator)
+Ruige Archipel
 [Old random]
-Willekeurig (oude generator)
+Versplinterde Kust
 [Open at least one colony to start a match.]
 Open minstens één kolonie om een wedstrijd te starten.
 [Open book]
@@ -1790,3 +1790,9 @@ Pas de grafische beelden toe wanneer een volgende partij of de kaarteditor wordt
 Automatische torusweergave
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Toon automatisch het torusvormige kaartoverzicht terwijl u over de kaart beweegt (OpenGL).
+[Channel width]
+Kanaalbreedte
+[Land bridge width]
+Breedte van de landbrug
+[Lake size]
+Meergrootte

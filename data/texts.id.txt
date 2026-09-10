@@ -617,9 +617,9 @@ di antaranya
 [ok]
 Oke
 [old islands terrain]
-pulau acak lama
+Kepulauan Terjal
 [old random terrain]
-medan acak lama
+Pesisir Terpecah
 [on press]
 Ditekan
 [On the spot]
@@ -1359,9 +1359,9 @@ Sedang - Eksperimental
 [No AI orders]
 Tidak ada perintah AI
 [Old islands]
-Pulau versi lama
+Kepulauan Terjal
 [Old random]
-Acak lama
+Pesisir Terpecah
 [Open at least one colony to start a match.]
 Buka setidaknya satu koloni untuk memulai pertandingan.
 [Open book]
@@ -1762,3 +1762,9 @@ Grafis diterapkan saat permainan atau editor peta dimuat berikutnya (OpenGL).
 Tampilan torus otomatis
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Secara otomatis menampilkan ikhtisar peta berbentuk torus saat bergerak di sekitar peta (OpenGL).
+[Channel width]
+Lebar kanal
+[Land bridge width]
+Lebar jembatan darat
+[Lake size]
+Ukuran danau

@@ -210,8 +210,10 @@ map/generator/GeneratorPoints.cpp
 map/generator/GeneratorHeightmap.cpp
 map/generator/MapHomogen.cpp
 map/generator/MapOldRandom.cpp
+map/generator/MapOldRandomRessources.cpp
 map/generator/MapRandom.cpp
 map/generator/MapOldIslands.cpp
+map/generator/MapOldIslandsRessources.cpp
 map/generator/GameMaps.cpp
 map/io/MapHeader.cpp
 MapScript.cpp
@@ -565,6 +567,13 @@ if not env['server']:
     trapped_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     trapped_test = trapped_env.Program('TrappedUnitLifecycleTest', trapped_sources)
     local.Alias('trapped-unit-test', trapped_test)
+
+# Map analysis and UI contract tests use production generators and widgets.
+if not env['server']:
+    for alias, target in [('map-generator-study', 'MapGeneratorStudy'), ('map-generator-defaults-test', 'MapGeneratorDefaultsTest')]:
+        sources = [source for source in source_files if source != 'Glob2.cpp']
+        sources += local.Object(target + '.o', '#test/' + target + '.cpp')
+        local.Alias(alias, local.Program(target, sources))
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")

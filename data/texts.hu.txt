@@ -605,9 +605,9 @@ ebből
 [ok]
 Rendben
 [old islands terrain]
-régi véletlenszerű szigetek
+Csipkézett szigetvilág
 [old random terrain]
-régi véletlenszerű terep
+Töredezett partvidék
 [on press]
 Lenyomás
 [On the spot]
@@ -1363,9 +1363,9 @@ Közepes – Kísérleti
 [No AI orders]
 Az MI nem ad parancsokat
 [Old islands]
-Régi szigetek
+Csipkézett szigetvilág
 [Old random]
-Régi véletlen
+Töredezett partvidék
 [Open at least one colony to start a match.]
 Nyisson meg legalább egy kolóniát a mérkőzés elindításához.
 [Open book]
@@ -1766,3 +1766,9 @@ A kiválasztott grafika a játék vagy a térképszerkesztő következő betölt
 Automatikus tórusznézet
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 A tórusz alakú térkép áttekintésének automatikus megjelenítése a térképen való mozgás közben (OpenGL).
+[Channel width]
+Csatorna szélessége
+[Land bridge width]
+Földhíd szélessége
+[Lake size]
+Tó mérete

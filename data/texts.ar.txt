@@ -607,9 +607,9 @@ meta-%0
 [ok]
 ﻧﻌﻢ
 [old islands terrain]
-ﺟُﺰﺭ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
+الأرخبيل الوعر
 [old random terrain]
-ﺗﻀﺎﺭﻳﺲ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
+الساحل المتشظي
 [on press]
 ﻋﻨﺪ ﺍﻟﻀﻐﻂ
 [On the spot]
@@ -1361,9 +1361,9 @@ Cortex
 [No AI orders]
 لا توجد أوامر الذكاء الاصطناعي
 [Old islands]
-الجزر القديمة
+الأرخبيل الوعر
 [Old random]
-عشوائية قديمة
+الساحل المتشظي
 [Open at least one colony to start a match.]
 افتح مستعمرة واحدة على الأقل لبدء المباراة.
 [Open book]
@@ -1764,3 +1764,9 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الطارة تلقائيًا
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).
+[Channel width]
+عرض القناة
+[Land bridge width]
+عرض الجسر البري
+[Lake size]
+حجم البحيرة

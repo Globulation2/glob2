@@ -54,7 +54,14 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			break;
 		case MapGenerationDescriptor::eCRATERLAKES:
-			hm.makeCraters(wHeightMap*hHeightMap*descriptor.craterDensity/30000, 30, smoothingFactor);
+			// This mode reuses the diameter slot for the lake stamp radius.
+			// Preserve old descriptors whose unused diameter was 50.
+			hm.makeCraters(wHeightMap * hHeightMap * descriptor.craterDensity / 30000,
+						   descriptor.riverDiameter == 50
+							   ? 30
+							   : MapGenerationDescriptor::control(descriptor.method, "Lake size")
+									 .normalize(descriptor.riverDiameter),
+						   smoothingFactor);
 			waterTiles=(unsigned int)((float)descriptor.waterRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			sandTiles=(unsigned int)((float)descriptor.sandRatio/(float)totalGSWFromUI*wHeightMap*hHeightMap);
 			grassTiles =(unsigned int)((float)descriptor.grassRatio /(float)totalGSWFromUI*wHeightMap*hHeightMap);
@@ -299,4 +306,3 @@ bool Map::makeRandomMap(MapGenerationDescriptor &descriptor)
 	}
 	return true;
 }
-

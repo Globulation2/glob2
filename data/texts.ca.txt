@@ -611,9 +611,9 @@ dels quals
 [ok]
 OK
 [old islands terrain]
-illes aleatòries antigues
+Arxipèlag Abrupte
 [old random terrain]
-vell terreny aleatori
+Costa Fragmentada
 [on press]
 En prémer
 [On the spot]
@@ -1371,9 +1371,9 @@ Mitjana - Experimental
 [No AI orders]
 Sense ordres d'IA
 [Old islands]
-Illes (generador antic)
+Arxipèlag Abrupte
 [Old random]
-Aleatori (generador antic)
+Costa Fragmentada
 [Open at least one colony to start a match.]
 Obre almenys una colònia per iniciar una partida.
 [Open book]
@@ -1774,3 +1774,9 @@ Aplica els gràfics quan es carregui la propera partida o l’editor de mapes (O
 Vista toroidal automàtica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostra automàticament la vista general toroidal mentre us desplaceu pel mapa (OpenGL).
+[Channel width]
+Amplada del canal
+[Land bridge width]
+Amplada del pont de terra
+[Lake size]
+Mida del llac

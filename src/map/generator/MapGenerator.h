@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <optional>
+
 #include "MapGenerationDescriptor.h"
 
 class MapGeneratorPoint;
@@ -14,7 +16,10 @@ class MapGenerator
 {
 public:
 	///Generates a map from the given generation description
-	bool generateMap(Game& game, MapGenerationDescriptor& descriptor);
+	// An explicit sync seed is used by reproducible studies. Normal callers retain
+	// random_device seeding; height-map generators manage their own RNG streams.
+	bool generateMap(Game& game, MapGenerationDescriptor& descriptor,
+		std::optional<Uint32> syncSeed = std::nullopt);
 
 	///This performs the concrete islands generator
 	bool computeConcreteIslands(Game& game, MapGenerationDescriptor& descriptor);

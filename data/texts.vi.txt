@@ -617,9 +617,9 @@ trong đó có
 [ok]
 Đồng ý
 [old islands terrain]
-đảo ngẫu nhiên kiểu cũ
+Quần Đảo Gồ Ghề
 [old random terrain]
-địa hình ngẫu nhiên kiểu cũ
+Bờ Biển Chia Cắt
 [on press]
 Khi nhấn
 [On the spot]
@@ -1359,9 +1359,9 @@ Trung bình - Thử nghiệm
 [No AI orders]
 Không có lệnh AI
 [Old islands]
-Đảo kiểu cũ
+Quần Đảo Gồ Ghề
 [Old random]
-Ngẫu nhiên kiểu cũ
+Bờ Biển Chia Cắt
 [Open at least one colony to start a match.]
 Mở ít nhất một thuộc địa để bắt đầu trận đấu.
 [Open book]
@@ -1762,3 +1762,9 @@ Hình ảnh được áp dụng khi tải ván chơi hoặc trình chỉnh sửa
 Chế độ xem hình xuyến tự động
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển xung quanh bản đồ (OpenGL).
+[Channel width]
+Độ rộng kênh
+[Land bridge width]
+Độ rộng cầu đất
+[Lake size]
+Kích thước hồ

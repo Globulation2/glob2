@@ -617,9 +617,9 @@ Num Lock
 [ok]
 확인
 [old islands terrain]
-기존 무작위 섬
+험준한 군도
 [old random terrain]
-기존 무작위 지형
+갈라진 해안
 [on press]
 누를 때
 [On the spot]
@@ -1359,9 +1359,9 @@ AI 전략 및 대응
 [No AI orders]
 AI 명령 없음
 [Old islands]
-구형 섬 생성
+험준한 군도
 [Old random]
-구형 무작위 생성
+갈라진 해안
 [Open at least one colony to start a match.]
 매치를 시작하려면 콜로니를 하나 이상 여세요.
 [Open book]
@@ -1762,3 +1762,9 @@ Globulation 2 커서를 표시합니다.
 자동 토러스 보기
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 지도 안에서 이동할 때 토러스(도넛) 모양의 지도 전체 보기를 자동으로 표시합니다(OpenGL).
+[Channel width]
+수로 너비
+[Land bridge width]
+육교 너비
+[Lake size]
+호수 크기

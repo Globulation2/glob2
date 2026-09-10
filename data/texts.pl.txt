@@ -607,9 +607,9 @@ z czego
 [ok]
 Ok
 [old islands terrain]
-stare losowe wyspy
+Surowy Archipelag
 [old random terrain]
-stary losowy teren
+Poszarpane Wybrzeże
 [on press]
 Wciśnięcie
 [On the spot]
@@ -1363,9 +1363,9 @@ Mecz zakończony
 [No AI orders]
 Bez rozkazów SI
 [Old islands]
-Stare wyspy
+Surowy Archipelag
 [Old random]
-Stary losowy
+Poszarpane Wybrzeże
 [Open at least one colony to start a match.]
 Otwórz co najmniej jedną kolonię, aby rozpocząć mecz.
 [Open book]
@@ -1766,3 +1766,9 @@ Wybrana grafika zostanie zastosowana przy następnym załadowaniu gry lub edytor
 Automatyczny widok torusa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatycznie pokazuj przegląd mapy w kształcie torusa podczas poruszania się po mapie (OpenGL).
+[Channel width]
+Szerokość kanału
+[Land bridge width]
+Szerokość mostu lądowego
+[Lake size]
+Wielkość jeziora

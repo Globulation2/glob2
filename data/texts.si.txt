@@ -605,9 +605,9 @@ od katerih
 [ok]
 Potrdi
 [old islands terrain]
-naključni otoki (staro)
+Razgibano otočje
 [old random terrain]
-naključni teren (staro)
+Razdrobljena obala
 [on press]
 Pritisk
 [On the spot]
@@ -1363,9 +1363,9 @@ Srednje – eksperimentalno
 [No AI orders]
 Brez ukazov UI
 [Old islands]
-Stari otoki
+Razgibano otočje
 [Old random]
-Staro naključje
+Razdrobljena obala
 [Open at least one colony to start a match.]
 Odprite vsaj eno kolonijo, da začnete tekmo.
 [Open book]
@@ -1766,3 +1766,9 @@ Izbrana grafika se uporabi ob naslednjem nalaganju igre ali urejevalnika zemljev
 Samodejni torusni pogled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljevidu (OpenGL).
+[Channel width]
+Širina kanala
+[Land bridge width]
+Širina kopenskega mostu
+[Lake size]
+Velikost jezera
