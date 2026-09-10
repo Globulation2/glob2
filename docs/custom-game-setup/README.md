@@ -47,33 +47,6 @@ They have not received human native-speaker review. Standard key legends,
 proper names, and shared vocabulary remain unchanged. A regression test rejects new English
 fallbacks outside the documented shared-vocabulary allowlist.
 
-## Native screenshots
-
-These images show compiled game UI, not HTML mockups. Compact captures are
-640×480; spacious captures are 1000×700.
-
-| Premade library | Automatic random preview |
-| --- | --- |
-| ![Premade](premade.png) | ![Random](random.png) |
-
-| Players and teams | Compact roster |
-| --- | --- |
-| ![Players](players.png) | ![Compact players](players-640.png) |
-
-| AI difficulty choices | AI strategy profile |
-| --- | --- |
-| ![AI choices](ai-options.png) | ![AI profile](ai-profile.png) |
-
-| Standard rules | Custom starting conditions and speed |
-| --- | --- |
-| ![Rules](rules.png) | ![Custom rules](rules-custom.png) |
-
-| Expanded generator | Shared-control limit |
-| --- | --- |
-| ![Generator](generator.png) | ![Controller limit](controller-limit.png) |
-
-![Scrolled twelve-colony roster](twelve-colonies.png)
-
 ## Reproduce verification
 
 Run from the repository root on a machine with the native dependencies:
