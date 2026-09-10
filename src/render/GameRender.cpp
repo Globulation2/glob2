@@ -193,10 +193,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 	// draw the deck over the fog if we are in high quality
 	if (drawCloudLayer)
-	{
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
-		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD_CORE);
-	}
 
 	// Draw units that are off the screen for the selected building
 

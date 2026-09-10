@@ -47,15 +47,14 @@ Settings::Settings()
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
 	
-	cloudPatchSize=12;//the bigger the faster the uglier
-	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
+	cloudPatchSize=8;//the bigger the faster the uglier; the torus ring samples the same lattice
+	cloudMaxAlpha=120;//opacity of the clouds over open ground, as on the menus
 	cloudMaxSpeed=3;
 	cloudWindStability=3550;//how much will the wind change
 	cloudStability=13000;//how much will the clouds change shape
-	cloudSize=160;//small enough that a single fogged patch still shows cloud relief
+	cloudSize=110;//spacing of the big lobes in pixels
 	cloudHeight=150;//(cloud - ground) / (eyes - ground) * 100 (to get an int value)
-	cloudCoverage=76;//how much of the deck stands up in sunlight; over open ground it is also how much sky is covered
-	cloudShadeAlpha=0;//explored ground stays as legible as it was without clouds
+	cloudShadeAlpha=178;//70% cloud over ground explored but out of sight; 0 leaves it clear
 }
 
 
@@ -150,7 +149,6 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(cloudStability);
 		READ_PARSED_INT(cloudSize);
 		READ_PARSED_INT(cloudHeight);
-		READ_PARSED_INT(cloudCoverage);
 		READ_PARSED_INT(cloudShadeAlpha);
 		
 		READ_PARSED_INT(version);
@@ -212,7 +210,6 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "cloudStability=%d\n",	cloudStability);
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
-		Utilities::streamprintf(stream, "cloudCoverage=%d\n",	cloudCoverage);
 		Utilities::streamprintf(stream, "cloudShadeAlpha=%d\n",	cloudShadeAlpha);
 		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
 	}
@@ -322,15 +319,14 @@ void Settings::resetDefaultUnitsAssigned()
  */
 void Settings::resetCloudSettings()
 {
-	cloudPatchSize=12;//the bigger the faster the uglier
+	cloudPatchSize=8;
 	cloudMaxAlpha=120;
 	cloudMaxSpeed=3;
 	cloudWindStability=3550;
 	cloudStability=13000;
-	cloudSize=160;
+	cloudSize=110;
 	cloudHeight=150;
-	cloudCoverage=76;
-	cloudShadeAlpha=0;
+	cloudShadeAlpha=178;
 }
 
 void Settings::resetDefaultFlagRadius()

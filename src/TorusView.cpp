@@ -16,7 +16,7 @@ TorusView::TorusView()
     : target(false), amount(0), zoom(1), travelU(0), travelV(0), baseViewportX(0), baseViewportY(0),
       worldW(0), worldH(0), atlasW(0), atlasH(0),
       lastFrame(0), clouds(&globalContainer->settings), texture(0), cloudTexture(0), framebuffer(0),
-      material(0), meshBuffer(0), cloudBuffer(0), indexBuffer(0), meshKey{}, failed(false), originX(0),
+      material(0), cloudMaterial(0), meshBuffer(0), cloudBuffer(0), indexBuffer(0), meshKey{}, failed(false), originX(0),
       originY(0), focusU(0.5f), focusV(0.5f)
 {
 }

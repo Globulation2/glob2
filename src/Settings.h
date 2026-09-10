@@ -99,10 +99,9 @@ public:
 	int cloudMaxSpeed;//in tenths of a pixel per frame
 	int cloudWindStability;//how much will the wind change
 	int cloudStability;//how much will the clouds change shape; higher holds them steadier
-	int cloudSize;//average length of a cloud in pixels; smaller gives the deck more relief per fogged patch
+	int cloudSize;//spacing of the big cloud lobes in pixels
 	int cloudHeight;//(cloud - ground) / (eyes - ground)
-	int cloudCoverage;//relief of the deck in percent; the higher the more of it catches the sun
-	int cloudShadeAlpha;//cloud strength over ground already explored but out of sight, 0 disables
+	int cloudShadeAlpha;//cloud opacity over ground already explored but out of sight, 0 leaves it clear
 
 	int tempUnit;
 	int tempUnitFuture;

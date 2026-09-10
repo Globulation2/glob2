@@ -204,16 +204,19 @@ static int run(int argc, char **argv)
             Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
             DynamicClouds clouds(&globalContainer->settings);
             std::valarray<unsigned char> pixels;
-            int gridW, gridH;
-            clouds.computeWorld(256, 256, 250, pixels, gridW, gridH, 128);
-            assert(gridW == 128 && gridH == 128);
+            int gridW, gridH, cell, row = 0;
+            clouds.getWorldGrid(256, 256, gridW, gridH, cell, 128);
+            assert(gridW == 128 && gridH == 128 && cell == 64);
+            assert(clouds.sampleWorldRows(256, 256, 250, gridW, gridH, cell, row, gridH));
+            clouds.shadeWorld(pixels, gridW, gridH, cell);
+            assert(pixels.size() == static_cast<size_t>(gridW * gridH * 4));
             const auto &settings = globalContainer->settings;
             CloudField field(8192, 8192, 250, settings.cloudSize, settings.cloudStability,
-                settings.cloudMaxSpeed, settings.cloudWindStability, settings.cloudMaxAlpha);
-            for (int row = 0; row < gridH; ++row)
-                for (int col = 0; col < gridW; ++col)
-                    assert(pixels[row * gridW + col] == field.opacity(col * 64, row * 64,
-                        std::max(.01f, settings.cloudHeight / 100.f)));
+                settings.cloudMaxSpeed / 10.0f, settings.cloudWindStability);
+            // Over open ground the deck is opaque only where a lobe stands.
+            for (int r = 0; r < gridH; ++r)
+                for (int c = 0; c < gridW; ++c)
+                    assert((pixels[(r * gridW + c) * 4 + 3] > 0) == (field.sample(c * 64, r * 64).height > .45f));
             int x = 11, y = 13;
             auto draw = [&](float amount)
             {

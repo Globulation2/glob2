@@ -2,16 +2,21 @@
 // Copyright (C) 2007 Leo Wandersleb
 
 #include "DynamicClouds.h"
-#include "CloudField.h"
 #include "GlobalContainer.h"
 #include "GraphicContext.h"
+#include <SDL.h>
+#include <cmath>
+#ifdef HAVE_OPENGL
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <epoxy/gl.h>
+#endif
+#endif
 
-/// how much field depth separates the gullies of the deck from its raised tops
-static const float cloudKnee = .24f;
-/// the shaded underside of the deck, seen against the black of the fog
-static const Color cloudBody(86, 94, 112);
-/// how hard a cloud standing between this one and the sun darkens it
-static const float cloudSelfShadow = 1.6f;
+/// how much the slope of a lobe is exaggerated before it is lit, in big-lobe
+/// spacings: a taller heap has a broader shaded underside
+static const float cloudRelief = .7f;
 /// How far the fog mask is grown and then blurred, in world pixels. Growing by as
 /// much as the blur softens is what keeps the deck at full strength right up to the
 /// edge of the fog; any less and the black layer shows through as a rim.
@@ -24,17 +29,70 @@ static float smoothStep(float from, float to, float value)
     return t * t * (3 - 2 * t);
 }
 
-/// How much this cell stands up, and how bright it ends up: a cell whose
-/// neighbour towards the sun stands higher is in that neighbour's shadow.
-/// The transition widens with the cell size, because a hard one interpolated
-/// across a coarse lattice turns into visible rectangles.
-static void relief(float threshold, int cellSize, float here, float sunwards, float &raised, float &bright)
+DynamicClouds::~DynamicClouds()
 {
-    float knee = cloudKnee * std::max(1.0f, float(cellSize) / 12);
-    raised = smoothStep(threshold, threshold + knee, (here + 1) * .5f);
-    float above = smoothStep(threshold, threshold + knee, (sunwards + 1) * .5f);
-    bright = raised - cloudSelfShadow * std::max(0.0f, above - raised);
-    bright = std::min(1.0f, std::max(0.0f, bright));
+#ifdef HAVE_OPENGL
+    // Object names belong to their creating context; never touch them in another.
+    if (globalContainer && globalContainer->gfx && graphicsContext == SDL_GL_GetCurrentContext() &&
+        graphicsGeneration == globalContainer->gfx->getGLContextGeneration())
+    {
+        if (texture)
+            glDeleteTextures(1, &texture);
+        if (material)
+            glDeleteProgram(material);
+    }
+#endif
+}
+
+unsigned DynamicClouds::createDeckMaterial()
+{
+#ifdef HAVE_OPENGL
+    const char *vertex = "#version 120\n"
+                         "varying vec2 uv; varying vec4 tint;\n"
+                         "void main(){gl_Position=ftransform();uv=(gl_TextureMatrix[0]*gl_MultiTexCoord0).xy;"
+                         "tint=gl_Color;}\n";
+    // The sun stands off the top right corner. The normal's y axis runs down the
+    // screen, so the lit tops are the slopes rising towards the upper right. The
+    // bands are cut a pixel wide, whatever the lattice under them.
+    const char *fragment = "#version 120\n"
+                           "uniform sampler2D deck;\n"
+                           "varying vec2 uv; varying vec4 tint;\n"
+                           "void main(){\n"
+                           "  vec4 t = texture2D(deck, uv);\n"
+                           "  vec2 n = t.rg * 2.0 - 1.0;\n"
+                           "  float facing = dot(vec3(n, sqrt(max(0.0, 1.0 - dot(n, n)))), vec3(0.45, -0.55, 0.70));\n"
+                           "  float edge = max(fwidth(facing), 0.01);\n"
+                           "  float puff = smoothstep(0.0, 0.15, t.b);\n"
+                           "  float lit = smoothstep(0.66 - edge, 0.66 + edge, facing) * puff;\n"
+                           "  float mid = smoothstep(0.40 - edge, 0.40 + edge, facing) * puff;\n"
+                           "  vec3 c = mix(vec3(0.62, 0.667, 0.784), vec3(0.839, 0.871, 0.933), mid);\n"
+                           "  c = mix(c, vec3(1.0), lit);\n"
+                           "  gl_FragColor = vec4(c * tint.rgb, t.a * tint.a);}\n";
+    GLuint vs = glCreateShader(GL_VERTEX_SHADER), fs = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(vs, 1, &vertex, 0);
+    glCompileShader(vs);
+    glShaderSource(fs, 1, &fragment, 0);
+    glCompileShader(fs);
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vs);
+    glAttachShader(program, fs);
+    glLinkProgram(program);
+    GLint okay = 0;
+    glGetProgramiv(program, GL_LINK_STATUS, &okay);
+    if (!okay)
+    {
+        char log[2048];
+        glGetProgramInfoLog(program, sizeof(log), 0, log);
+        fprintf(stderr, "Cloud deck material: %s\n", log);
+        glDeleteProgram(program);
+        program = 0;
+    }
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+    return program;
+#else
+    return 0;
+#endif
 }
 
 void DynamicClouds::feather(const std::valarray<unsigned char> &visibility, int gridW, int gridH,
@@ -101,26 +159,29 @@ void DynamicClouds::feather(const std::valarray<unsigned char> &visibility, int 
     }
 }
 
-void DynamicClouds::shade(int gridW, int gridH, int cellSize, const std::valarray<unsigned char> *fog,
-                          std::valarray<unsigned char> &body, std::valarray<unsigned char> &core) const
+void DynamicClouds::shadeCell(const CloudField::Sample &sample, float spacing, unsigned char weight, bool fog,
+                              unsigned char *rgba) const
 {
-    int step = sunStep(cellSize);
-    for (int y = 0; y < gridH; ++y)
-        for (int x = 0; x < gridW; ++x)
-        {
-            // The sun stands off the top right corner, so a cloud is brightest a
-            // little that way from where it is deepest.
-            int sunX = std::min(x + step, gridW - 1), sunY = std::max(y - step, 0);
-            float raised, bright;
-            relief(threshold, cellSize, depthMap[y * gridW + x], depthMap[sunY * gridW + sunX], raised,
-                   bright);
-            // Inside the fog the sky is solid overcast and the field only decides how
-            // the deck is lit. Over open ground it decides where there is cloud at all.
-            float weight = fog ? float((*fog)[y * gridW + x]) / 255 : 1.0f;
-            float cover = fog ? weight : raised * weight;
-            body[y * gridW + x] = static_cast<unsigned char>(cover * (fog ? 255 : maxAlpha));
-            core[y * gridW + x] = static_cast<unsigned char>(cover * bright * 255);
-        }
+    // The slope is exaggerated into a normal for the shader to light.
+    float relief = cloudRelief * spacing;
+    float nx = -sample.slopeX * relief, ny = -sample.slopeY * relief;
+    float length = std::sqrt(nx * nx + ny * ny + 1);
+    float alpha;
+    float w = weight / 255.0f;
+    if (fog)
+    {
+        // Solid where the fog is solid. Along its edge, the lobes stick out of the
+        // ramp and the gaps retreat into it, so the deck ends in a scalloped coast
+        // rather than a smear. Where the ground is merely out of sight the deck is
+        // thinner, and thinner still in the gaps, where the ground shows through.
+        alpha = w >= .999f ? 1.0f : std::min(w, smoothStep(.3f, .6f, w + .25f * (sample.height - .6f)));
+    }
+    else
+        alpha = maxAlpha / 255.0f * smoothStep(.45f, .7f, sample.height);
+    rgba[0] = static_cast<unsigned char>((nx / length * .5f + .5f) * 255 + .5f);
+    rgba[1] = static_cast<unsigned char>((ny / length * .5f + .5f) * 255 + .5f);
+    rgba[2] = static_cast<unsigned char>(sample.height * 255 + .5f);
+    rgba[3] = static_cast<unsigned char>(alpha * 255 + .5f);
 }
 
 void DynamicClouds::prepare(const int viewPortX, const int viewPortY, const int viewPortWidth,
@@ -128,7 +189,7 @@ void DynamicClouds::prepare(const int viewPortX, const int viewPortY, const int 
                             int &cellSize)
 {
     // Keep the lattice anchored in world space, so the deck does not swim when the
-    // viewport scrolls.
+    // viewport scrolls, and so it lands on the same points the torus ring samples.
     renderCellSize = granularity;
     int pixelX = viewPortX * 32, pixelY = viewPortY * 32;
     renderOffsetX = -(pixelX % renderCellSize);
@@ -150,41 +211,38 @@ void DynamicClouds::compute(const int viewPortX, const int viewPortY, const int 
         return;
     int gridW, gridH, startX, startY, cellSize;
     prepare(viewPortX, viewPortY, viewPortWidth, viewPortHeight, gridW, gridH, startX, startY, cellSize);
-    if (cloudMap.size() != static_cast<size_t>(wGrid * hGrid))
-    {
-        depthMap.resize(wGrid * hGrid);
-        cloudMap.resize(wGrid * hGrid);
-        coreMap.resize(wGrid * hGrid);
-    }
+    if (pixels.size() != static_cast<size_t>(wGrid * hGrid * 4))
+        pixels.resize(wGrid * hGrid * 4);
     if (visibility)
         feather(*visibility, wGrid, hGrid, renderCellSize, false, fogMap);
     else
         fogMap.resize(0);
 
-    CloudField field(worldWidth * 32, worldHeight * 32, time, cloudSize, cloudStability, maxCloudSpeed,
-                     windStability);
+    const CloudField deck = field(worldWidth, worldHeight, time);
     for (int y = 0; y < hGrid; ++y)
         for (int x = 0; x < wGrid; ++x)
         {
-            // Ground the player can see never carries cloud, so skip the noise there.
+            unsigned char *texel = &pixels[(y * wGrid + x) * 4];
+            // Ground the player can see never carries cloud, so skip the lobes there.
             if (fogMap.size() && fogMap[y * wGrid + x] == 0)
             {
-                depthMap[y * wGrid + x] = -1;
+                texel[0] = texel[1] = texel[2] = texel[3] = 0;
                 continue;
             }
             int wx = startX + x * renderCellSize, wy = startY + y * renderCellSize;
-            depthMap[y * wGrid + x] = field.depth(wx, wy);
+            shadeCell(deck.sample(wx, wy), deck.spacing, fogMap.size() ? fogMap[y * wGrid + x] : 255,
+                      fogMap.size() != 0, texel);
         }
-    shade(wGrid, hGrid, renderCellSize, fogMap.size() ? &fogMap : nullptr, cloudMap, coreMap);
 }
 
 void DynamicClouds::getWorldGrid(const int worldWidth, const int worldHeight, int &gridW, int &gridH,
                                  int &cellSize, int maxGridSize) const
 {
-    // Start from a power of two rather than from cloudPatchSize: map sides are
-    // powers of two, and a cell that divides them exactly is what lets the texture
-    // wrap without a seam.
-    cellSize = 8;
+    // Start from the 2D lattice, which is the same power of two the map sides are
+    // multiples of: a cell that divides them exactly is what lets the texture wrap
+    // without a seam, and the same cell is what lets the ring and the flat view
+    // sample the same points.
+    cellSize = std::max(1, granularity);
     while (std::max(worldWidth, worldHeight) * 32 / cellSize > std::max(1, maxGridSize))
         cellSize *= 2;
     gridW = std::max(1, worldWidth * 32 / cellSize);
@@ -196,18 +254,17 @@ bool DynamicClouds::sampleWorldRows(const int worldWidth, const int worldHeight,
 {
     // A whole world at this lattice is far more work than one frame is worth, so it
     // is filled a band at a time and only shown once every row is from the same
-    // moment. Nothing reads worldDepth until then.
-    if (worldDepth.size() != static_cast<size_t>(gridW * gridH))
+    // moment. Nothing reads worldField until then.
+    if (worldField.size() != static_cast<size_t>(gridW * gridH))
     {
-        worldDepth.resize(gridW * gridH);
+        worldField.resize(gridW * gridH);
         nextRow = 0;
     }
-    CloudField field(worldWidth * 32, worldHeight * 32, time, cloudSize, cloudStability, maxCloudSpeed,
-                     windStability);
+    const CloudField deck = field(worldWidth, worldHeight, time);
     int last = std::min(gridH, nextRow + std::max(1, rows));
     for (int y = nextRow; y < last; ++y)
         for (int x = 0; x < gridW; ++x)
-            worldDepth[y * gridW + x] = field.depth(x * cellSize, y * cellSize);
+            worldField[y * gridW + x] = deck.sample(x * cellSize, y * cellSize);
     nextRow = last;
     return nextRow >= gridH;
 }
@@ -215,55 +272,117 @@ bool DynamicClouds::sampleWorldRows(const int worldWidth, const int worldHeight,
 void DynamicClouds::shadeWorld(std::valarray<unsigned char> &out, int gridW, int gridH, int cellSize,
                                const std::valarray<unsigned char> *visibility) const
 {
-    // Two bytes per texel: how bright the cloud is there, and how opaque.
-    if (out.size() != static_cast<size_t>(gridW * gridH * 2))
-        out.resize(gridW * gridH * 2);
+    if (out.size() != static_cast<size_t>(gridW * gridH * 4))
+        out.resize(gridW * gridH * 4);
     // The lattice covers the whole toroidal world, so the mask wraps with it.
     std::valarray<unsigned char> fog;
     if (visibility)
         feather(*visibility, gridW, gridH, cellSize, true, fog);
-
-    int step = sunStep(cellSize);
+    // Only the spacing is needed here, and it does not depend on time.
+    const float spacing = field(gridW * cellSize / 32, gridH * cellSize / 32, 0).spacing;
     for (int y = 0; y < gridH; ++y)
         for (int x = 0; x < gridW; ++x)
-        {
-            int sunX = (x + step) % gridW, sunY = ((y - step) % gridH + gridH) % gridH;
-            float raised, bright;
-            relief(threshold, cellSize, worldDepth[y * gridW + x], worldDepth[sunY * gridW + sunX], raised,
-                   bright);
-            float weight = fog.size() ? float(fog[y * gridW + x]) / 255 : 1.0f;
-            float cover = fog.size() ? weight : raised * weight;
-            // The ring has one texture, so the shaded-to-lit gradient has to travel
-            // as luminance next to the alpha rather than as a second pass.
-            float luminance = (cloudBody.g + (255 - cloudBody.g) * bright) / 255;
-            out[(y * gridW + x) * 2] = static_cast<unsigned char>(luminance * 255);
-            out[(y * gridW + x) * 2 + 1] = static_cast<unsigned char>(cover * 255);
-        }
+            shadeCell(worldField[y * gridW + x], spacing, fog.size() ? fog[y * gridW + x] : 255,
+                      fog.size() != 0, &out[(y * gridW + x) * 4]);
+}
+
+void DynamicClouds::drawQuad(int x, int y, int w, int h, float red, float green, float blue, float alpha)
+{
+#ifdef HAVE_OPENGL
+    // The lattice points are the texel centres, so the quad spans the outermost
+    // ones and the texture is sampled from centre to centre.
+    float u0 = .5f / wGrid, u1 = (wGrid - .5f) / wGrid;
+    float v0 = .5f / hGrid, v1 = (hGrid - .5f) / hGrid;
+    glColor4f(red, green, blue, alpha);
+    glBegin(GL_QUADS);
+    glTexCoord2f(u0, v0);
+    glVertex2f(x, y);
+    glTexCoord2f(u1, v0);
+    glVertex2f(x + w, y);
+    glTexCoord2f(u1, v1);
+    glVertex2f(x + w, y + h);
+    glTexCoord2f(u0, v1);
+    glVertex2f(x, y + h);
+    glEnd();
+#endif
 }
 
 void DynamicClouds::render(DrawableSurface *dest, const int, const int, DynamicClouds::Layer layer)
 {
-    if (!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU))
+#ifdef HAVE_OPENGL
+    GraphicContext *gfx = dynamic_cast<GraphicContext *>(dest);
+    if (!gfx || !(gfx->getOptionFlags() & GraphicContext::USEGPU))
         return;
-    if (wGrid == 0 || hGrid == 0)
+    if (wGrid < 2 || hGrid < 2 || pixels.size() != static_cast<size_t>(wGrid * hGrid * 4))
         return;
-    // Magnification is sampled in world space, never around the viewport center.
-    const std::valarray<unsigned char> *source = &cloudMap;
-    Color colour = cloudBody;
-    int offsetX = renderOffsetX, offsetY = renderOffsetY;
-    if (layer == DynamicClouds::CLOUD_CORE)
+    // Resolution changes can replace SDL's GL context; a name from the old one
+    // must not be reused in the new one.
+    if (graphicsContext != SDL_GL_GetCurrentContext() || graphicsGeneration != gfx->getGLContextGeneration())
     {
-        source = &coreMap;
-        colour = Color(255, 255, 255);
+        graphicsContext = SDL_GL_GetCurrentContext();
+        graphicsGeneration = gfx->getGLContextGeneration();
+        texture = material = 0;
+        textureW = textureH = 0;
+        materialFailed = false;
     }
-    else if (layer == DynamicClouds::SHADOW)
+    if (!material && !materialFailed)
     {
-        colour = Color(0, 0, 0);
+        material = createDeckMaterial();
+        materialFailed = !material;
+    }
+    if (!material)
+        return;
+    // Sprites batched by the game renderer go under the deck, and the state
+    // cache libgag keeps must find the state it left once the deck is drawn.
+    Sprite::flushBatches(gfx);
+    GLint oldProgram;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &oldProgram);
+    glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_CURRENT_BIT | GL_TRANSFORM_BIT);
+    glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
+    glUseProgram(material);
+    glUniform1i(glGetUniformLocation(material, "deck"), 0);
+    glActiveTexture(GL_TEXTURE0);
+    glDisable(GL_TEXTURE_RECTANGLE_ARB);
+    glEnable(GL_TEXTURE_2D);
+    if (!texture)
+        glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    if (layer == CLOUD || textureW != wGrid || textureH != hGrid)
+    {
+        // The deck changes every frame; its shadow is the same texels once more.
+        if (textureW != wGrid || textureH != hGrid)
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wGrid, hGrid, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]);
+            textureW = wGrid;
+            textureH = hGrid;
+        }
+        else
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wGrid, hGrid, GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]);
+    }
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glLoadIdentity();
+    int offsetX = renderOffsetX, offsetY = renderOffsetY;
+    if (layer == SHADOW)
+    {
         // The shadow is this deck cast onto the ground, so it is the same map
         // displaced away from the sun by however high the clouds hang.
         int drop = int((cloudHeight - 1) * 80);
-        offsetX -= drop;
-        offsetY += drop;
+        drawQuad(offsetX - drop, offsetY + drop, (wGrid - 1) * renderCellSize, (hGrid - 1) * renderCellSize, 0, 0,
+                 0, .45f);
     }
-    dest->drawAlphaMap(*source, wGrid, hGrid, offsetX, offsetY, renderCellSize, renderCellSize, colour);
+    else
+        drawQuad(offsetX, offsetY, (wGrid - 1) * renderCellSize, (hGrid - 1) * renderCellSize, 1, 1, 1, 1);
+    glPopMatrix();
+    glPopClientAttrib();
+    glPopAttrib();
+    glUseProgram(oldProgram);
+#endif
 }

@@ -36,8 +36,14 @@ const int atlasLimit = 4096, cloudGridLimit = 512;
 const int cloudRefreshTicks = 30;
 // where the shadow deck hangs, as a share of the lit deck's height
 const float cloudUnderShare = .42f;
-// how much of the ground's fold lighting the deck picks up
-const float cloudLightRoll = .55f;
+// The sun, in the space of the mesh normals: y runs down the screen, z towards
+// the eye. It stands high over the far rim and off to the left, so the far half
+// of the ring is in daylight and the near half, which is the ground the player
+// is looking at, is in a night only slightly darker than the day.
+const float sunX = -.62f, sunY = -.74f, sunZ = -.26f;
+const float nightLight = .72f;
+// how wide the terminator is, as a range of the cosine to the sun
+const float terminatorWidth = .12f;
 const float pi = 3.14159265358979323846f;
 float clamp(float x, float a, float b) { return std::max(a, std::min(b, x)); }
 float smooth(float x)
@@ -137,14 +143,22 @@ GLuint createMaterial()
         "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
         "uniform vec2 mapOffset;\n"
         "void main(){gl_Position=ftransform();uv=gl_MultiTexCoord0.xy+mapOffset;light=gl_Color.rgb;normal=gl_Normal;}\n";
-    // A sun off to the left: its highlight lies on the ring's left flank, where
-    // the surface normal bisects the sun and the eye, never on the front face.
+    // One sun high over the far rim, off to the left. The ring shows every
+    // normal twice, so its glare appears twice: on the outer top of the far
+    // left quarter and on the inner wall of the right quarter. Water flashes
+    // sharply like a sea seen from orbit, dry land barely sheens, undiscovered
+    // black stays black.
     const char *fragment = "#version 120\n"
                            "uniform sampler2D world; uniform vec3 sunHalf; uniform float specular;\n"
                            "varying vec2 uv; varying vec3 light; varying vec3 normal;\n"
                            "void main(){\n"
-                           "  float s = pow(max(dot(normalize(normal), sunHalf), 0.0), 36.0) * specular;\n"
-                           "  gl_FragColor=vec4(texture2D(world,uv).rgb*light + vec3(1.0, 0.96, 0.85) * s, 1.0);}\n";
+                           "  vec3 c = texture2D(world, uv).rgb;\n"
+                           "  vec3 n = normalize(normal);\n"
+                           "  float facing = max(dot(n, sunHalf), 0.0);\n"
+                           "  float water = smoothstep(0.08, 0.25, c.b - max(c.r, c.g));\n"
+                           "  float lit = smoothstep(0.03, 0.15, max(c.r, max(c.g, c.b)));\n"
+                           "  float s = mix(0.12 * pow(facing, 40.0), pow(facing, 40.0), water) * lit * specular;\n"
+                           "  gl_FragColor = vec4(c * light + vec3(1.0, 0.62, 0.38) * s, 1.0);}\n";
     GLuint vs = glCreateShader(GL_VERTEX_SHADER), fs = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(vs, 1, &vertex, 0);
     glCompileShader(vs);
@@ -187,6 +201,8 @@ void TorusView::releaseResources()
             glDeleteBuffers(1, &indexBuffer);
         if (material)
             glDeleteProgram(material);
+        if (cloudMaterial)
+            glDeleteProgram(cloudMaterial);
         if (texture)
             glDeleteTextures(1, &texture);
         if (cloudTexture)
@@ -196,7 +212,7 @@ void TorusView::releaseResources()
     }
 #endif
     graphicsContext = nullptr;
-    texture = cloudTexture = framebuffer = material = meshBuffer = cloudBuffer = 0;
+    texture = cloudTexture = framebuffer = material = cloudMaterial = meshBuffer = cloudBuffer = 0;
     cloudUnderBuffer = indexBuffer = 0;
     atlasW = atlasH = 0;
     cloudW = cloudH = 0;
@@ -257,7 +273,9 @@ bool TorusView::prepareRenderTarget()
         glPopAttrib();
         if (!failed && !material)
             material = createMaterial();
-        if (!material)
+        if (!failed && !cloudMaterial)
+            cloudMaterial = DynamicClouds::createDeckMaterial();
+        if (!material || !cloudMaterial)
             failed = true;
     }
     return !failed;
@@ -314,16 +332,14 @@ void TorusView::updateClouds(Game &game, int team, unsigned options, int time)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        // Luminance carries the shaded-to-lit gradient, alpha the coverage.
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, cloudW, cloudH, 0, GL_LUMINANCE_ALPHA,
-                     GL_UNSIGNED_BYTE, &cloudPixels[0]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cloudW, cloudH, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                     &cloudPixels[0]);
     }
     else
     {
         glBindTexture(GL_TEXTURE_2D, cloudTexture);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, cloudW, cloudH, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
-                        &cloudPixels[0]);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, cloudW, cloudH, GL_RGBA, GL_UNSIGNED_BYTE, &cloudPixels[0]);
     }
     glPopClientAttrib();
     glPopAttrib();
@@ -529,14 +545,12 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glUseProgram(material);
         glUniform1i(glGetUniformLocation(material, "world"), 0);
         glUniform2f(glGetUniformLocation(material, "mapOffset"), anchorU, 1 - anchorV);
-        // A low sun far to the left and a little above; the eye looks along +z.
-        // The highlight sits where the normal bisects the two, on the left flank.
-        float lx = -1.0f, ly = 0.25f, lz = 0.15f;
-        const float ll = std::sqrt(lx * lx + ly * ly + lz * lz);
-        lx /= ll, ly /= ll, lz = lz / ll + 1;
+        // The same sun that lights the vertices; the eye looks along +z. The half
+        // vector between sun and eye marks the glare.
+        float lx = sunX, ly = sunY, lz = sunZ + 1;
         const float hl = std::sqrt(lx * lx + ly * ly + lz * lz);
         glUniform3f(glGetUniformLocation(material, "sunHalf"), lx / hl, ly / hl, lz / hl);
-        glUniform1f(glGetUniformLocation(material, "specular"), 0.18f * roll);
+        glUniform1f(glGetUniformLocation(material, "specular"), roll);
     }
     const int U = meshColumns, V = meshRows;
     using MeshVertex = TorusPicking::Vertex;
@@ -582,12 +596,13 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 TorusGeometry::Point c = {p.x + n.x / len * cloudHeight, p.y + n.y / len * cloudHeight,
                                           p.z + n.z / len * cloudHeight};
                 float nx = n.x / len, ry = n.y / len, rz = n.z / len;
-                float facing = 0.48f + 0.52f * clamp(-nx * 0.35f - ry * 0.45f + rz * 0.82f, 0, 1);
-                float light = mix(1, facing, roll);
-                // The deck hangs above the ground and is already shaded in its own
-                // texture, so the fold moves its light less than the ground's. Flat,
-                // it is lit exactly as the 2D clouds are.
-                float deckLight = mix(1, facing, roll * cloudLightRoll);
+                // The day-night line: the flat map, whose normals all face the eye,
+                // is lit evenly, and the line only forms as the fold turns the far
+                // half towards the sun. The deck above the ground follows the same
+                // light, so the clouds have a night side too.
+                float day = smooth((nx * sunX + ry * sunY + rz * sunZ) / terminatorWidth + 0.5f);
+                float light = mix(1, mix(nightLight, 1, day), roll);
+                float deckLight = light;
                 float w = 1 - p.z * roll / cameraDistance;
                 vertices[j * (U + 1) + i] = {{cx * w + p.x * sx, cy * w + p.y * sy, p.z * scale, w},
                                              {light, light, light},
@@ -654,9 +669,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     if (drawClouds && cloudTexture)
     {
         // Two decks lit like the ground, blended over it without writing depth.
-        glUseProgram(0);
+        glUseProgram(cloudMaterial);
+        glUniform1i(glGetUniformLocation(cloudMaterial, "deck"), 0);
         glBindTexture(GL_TEXTURE_2D, cloudTexture);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_FALSE);
@@ -668,8 +683,14 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         // there because the ring is sampled in absolute map coordinates while the
         // atlas was drawn from the viewport origin, and the half texel puts the
         // sample point on the world pixel the texel was taken at.
-        const float deckU = anchorU + float(originX) / worldW + 0.5f / cloudW;
-        const float deckV = anchorV + float(originY) / worldH + 0.5f / cloudH;
+        // The texture is a moment of the deck up to a refresh old. The wind only
+        // translates the deck, so shifting the texture by what the wind has done
+        // since keeps the ring drifting in step with the flat view between samples.
+        float nowX, nowY, thenX, thenY;
+        clouds.drift(game.mapAnimationTime, nowX, nowY);
+        clouds.drift(cloudTime, thenX, thenY);
+        const float deckU = anchorU + float(originX) / worldW + 0.5f / cloudW + (nowX - thenX) / (worldW * 32);
+        const float deckV = anchorV + float(originY) / worldH + 0.5f / cloudH + (nowY - thenY) / (worldH * 32);
         glMatrixMode(GL_TEXTURE);
         // Only one level deep: GL guarantees a texture matrix stack of just two.
         glPushMatrix();

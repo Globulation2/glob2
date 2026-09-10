@@ -61,7 +61,7 @@ class TorusView
     bool cloudsSampled = false, cloudsSampling = false;
     SDL_GLContext graphicsContext = nullptr;
     unsigned graphicsGeneration = 0;
-    unsigned texture, cloudTexture, framebuffer, material;
+    unsigned texture, cloudTexture, framebuffer, material, cloudMaterial;
     unsigned meshBuffer, cloudBuffer, cloudUnderBuffer, indexBuffer;
     float meshKey[9];
     bool failed;

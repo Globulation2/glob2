@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "CloudField.h"
 #include "Settings.h"
 #include <algorithm>
 #include <valarray>
@@ -13,22 +14,27 @@ namespace GAGCore
 }
 using namespace GAGCore;
 /**
- * DynamicClouds provides 3D (x,y,t) cloud generation based on a fast correlated
- * noise function.
+ * DynamicClouds draws a deck of cartoon clouds over a world-anchored lattice.
  *
- * A cell of the field yields two opacities rather than one: a translucent body
- * and, sampled a little towards the sun, a brighter core. Drawing them as two
- * passes is what gives a flat alpha map the look of depth.
+ * The deck is a CloudField: heaps of round lobes carried by the wind. Each
+ * lattice cell holds the slope and height of the lobe standing there, uploaded
+ * as one texture, and a fragment shader shades every pixel like a cel: a white
+ * sunlit top, a pale flank and a grey-blue underside, with the bands cut at the
+ * pixel rather than at the lattice. The flat view draws that as one quad and
+ * the torus ring drapes it over its own mesh with the same shader, so the two
+ * views agree pixel for pixel when the ring is flat.
  *
  * In game the deck is confined to the fog of war. compute() takes a per-cell
- * visibility mask and fades the clouds out before they reach ground the player
- * can see, so they never obscure anything; the black fog layer is still drawn
- * underneath at full opacity, so they never reveal anything either.
+ * visibility mask: solid overcast where the ground is undiscovered, thinner
+ * where it is explored but out of sight, and gone before it reaches ground the
+ * player can see. The black fog layer is still drawn underneath at full
+ * opacity, so the clouds never reveal anything. Without a mask, as on the
+ * menus, the lobes drift as separate clouds over open ground.
  */
 class DynamicClouds
 {
 	/** the horizontal and vertical distance of neighboring cloud densities.
-	 * this value is set in preferences.txt: cloudPatchSize=16
+	 * this value is set in preferences.txt: cloudPatchSize=8
 	 */
 	int granularity;
 	/** maximum opacity 255 being opaque, 0 being invisible.
@@ -47,47 +53,49 @@ class DynamicClouds
 	 * this value is set in preferences.txt: cloudStability=13000
 	 */
 	float cloudStability;
-	/** average length of clouds in pixels
-	 * this value is set in preferences.txt: cloudSize=300
+	/** spacing of the big lobes in pixels
+	 * this value is set in preferences.txt: cloudSize=110
 	 */
 	float cloudSize;
 	/** scale of the clouds/shadow in percent
 	 * this value is set in preferences.txt: cloudHeight=150
 	 */
 	float cloudHeight;
-	/** depth above which there is cloud at all, derived from
-	 * preferences.txt: cloudCoverage=76
-	 */
-	float threshold;
 	/// screen width/granularity+1
 	int wGrid;
 	/// screen height/granularity+1
 	int hGrid;
-	///cloud density
-	std::valarray<unsigned char> cloudMap;
-	/// opacity of the sunlit core, drawn over cloudMap
-	std::valarray<unsigned char> coreMap;
+	/// the shaded deck, wGrid*hGrid RGBA texels
+	std::valarray<unsigned char> pixels;
 	/// feathered cloud weight; empty unless the deck is confined to the fog of war
 	std::valarray<unsigned char> fogMap;
-	/// scratch for the raw field, kept so it is not reallocated every frame
-	std::valarray<float> depthMap;
 	/// the world lattice, filled a band at a time across several frames
-	std::valarray<float> worldDepth;
-    int renderOffsetX, renderOffsetY, renderCellSize;
+	std::valarray<CloudField::Sample> worldField;
+	int renderOffsetX, renderOffsetY, renderCellSize;
+	/// the texture and shader the 2D quad draws with, owned by one GL context
+	unsigned texture, material;
+	int textureW, textureH;
+	void *graphicsContext;
+	unsigned graphicsGeneration;
+	bool materialFailed;
 
-	/// how many cells away the sunlit core is sampled at this cell size
-	static int sunStep(int cellSize) { return std::max(1, 48/std::max(1, cellSize)); }
-	/// turns depths into a body and a core opacity, weighted by fog when confined
-	void shade(int gridW, int gridH, int cellSize, const std::valarray<unsigned char> *fog,
-	           std::valarray<unsigned char> &body, std::valarray<unsigned char> &core) const;
+	CloudField field(int worldWidth, int worldHeight, int time) const
+	{
+		return CloudField(worldWidth * 32, worldHeight * 32, time, cloudSize, cloudStability, maxCloudSpeed,
+		                  windStability);
+	}
+	/// Turns one sample into its texel: the slope as a normal, the height, and
+	/// the opacity. weight is the fog mask, 255 for solid overcast; fog false
+	/// makes a cloud over open ground instead.
+	void shadeCell(const CloudField::Sample &sample, float spacing, unsigned char weight, bool fog,
+	               unsigned char *rgba) const;
+	void drawQuad(int x, int y, int w, int h, float red, float green, float blue, float alpha);
 public:
 	 ///render() distinguishes between the layers of one deck
 	enum Layer {
-		/// the body of the deck, rendered in the grey of a shaded cloud
+		/// the deck itself
 		CLOUD,
-		/// the sunlit core, rendered white over CLOUD
-		CLOUD_CORE,
-		/// gets rendered black.
+		/// its shadow on the ground, drawn black and displaced away from the sun
 		SHADOW
 	};
 	///initializes DynamicClouds using the settings file (preferences.txt)
@@ -100,16 +108,18 @@ public:
 		cloudStability=settings->cloudStability;
 		cloudSize=settings->cloudSize;
 		cloudHeight=(float)settings->cloudHeight/100.0f;
-		//cloudCoverage is the share of the sky under cloud. The field is far from
-		//uniform, so the useful thresholds sit in a narrow band around its median.
-		threshold=0.80f-0.0055f*(float)settings->cloudCoverage;
 		wGrid=0;
 		hGrid=0;
 		renderOffsetX=0;
 		renderOffsetY=0;
 		renderCellSize=granularity;
+		texture=material=0;
+		textureW=textureH=0;
+		graphicsContext=nullptr;
+		graphicsGeneration=0;
+		materialFailed=false;
 	}
-	virtual ~DynamicClouds() { }
+	virtual ~DynamicClouds();
 
 	/**
 	 * Fixes the lattice this viewport will use and reports what a visibility mask
@@ -124,14 +134,15 @@ public:
 	 * Erodes and blurs a raw visibility mask, so that the deck reaches full
 	 * strength inside the fog and has faded out before it touches ground in sight,
 	 * instead of ending on a case boundary.
-	 * @param visibility 255 where the ground is hidden, 0 where it is in sight
+	 * @param visibility 255 where the ground is undiscovered, less where it is
+	 *        merely out of sight, 0 where it is in sight
 	 * @param wrap true when the grid covers the whole toroidal world
 	 */
 	static void feather(const std::valarray<unsigned char> &visibility, int gridW, int gridH, int cellSize,
 	                    bool wrap, std::valarray<unsigned char> &out);
 
 	/**
-	 * updates cloudMap and coreMap
+	 * updates the deck for this viewport
 	 * @param viewPortX x-coordinate of the viewport
 	 * @param viewPortY y-coordinate of the viewport
 	 * @param time time
@@ -152,11 +163,24 @@ public:
 	                     int cellSize, int &nextRow, int rows);
 	/**
 	 * Turns a completed world sample into a texture.
-	 * @param out receives gridW*gridH luminance/alpha pairs, row-major from the map origin
+	 * @param out receives gridW*gridH RGBA texels, row-major from the map origin
 	 * @param visibility optional mask sized gridW x gridH; getWorldGrid() reports those
 	 */
 	void shadeWorld(std::valarray<unsigned char> &out, int gridW, int gridH, int cellSize,
 	                const std::valarray<unsigned char> *visibility = nullptr) const;
 	/// dimensions the world lattice will use, so a visibility mask can be built first
 	void getWorldGrid(const int worldWidth, const int worldHeight, int &gridW, int &gridH, int &cellSize, int maxGridSize = 2048) const;
+	/// How far the wind has carried the deck by `time`, in world pixels. A sample
+	/// taken earlier shows the deck of `time` when shifted by the difference.
+	void drift(int time, float &x, float &y) const
+	{
+		CloudField::drift(time, maxCloudSpeed, windStability, x, y);
+	}
+	/**
+	 * Builds the shader that turns deck texels into cel-shaded cloud. It samples
+	 * texture unit 0 through the texture matrix and multiplies by the vertex
+	 * colour, so the caller lights and fades the deck with glColor.
+	 * @return the program, or 0 where shaders are unavailable
+	 */
+	static unsigned createDeckMaterial();
 };
