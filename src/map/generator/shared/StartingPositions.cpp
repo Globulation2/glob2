@@ -276,6 +276,10 @@ bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSi
 {
 	for (int s = 0; s < context.request.nbTeams; s++)
 	{
+		// Legacy layout searches may choose a footprint across a torus seam.
+		// Buildings wrap those coordinates, and start metadata must wrap too.
+		context.bootX[s] = game.map.normalizeX(context.bootX[s]);
+		context.bootY[s] = game.map.normalizeY(context.bootY[s]);
 		if (game.mapHeader.getNumberOfTeams() <= s)
 			game.addTeam();
 		int squareSize = 5 + islandSize / 10;
@@ -313,6 +317,10 @@ bool placeStarts(Game &game, GenerationContext &context)
 {
 	for (int s = 0; s < context.request.nbTeams; s++)
 	{
+		// Legacy layout searches may choose a footprint across a torus seam.
+		// Buildings wrap those coordinates, and start metadata must wrap too.
+		context.bootX[s] = game.map.normalizeX(context.bootX[s]);
+		context.bootY[s] = game.map.normalizeY(context.bootY[s]);
 		assert(game.mapHeader.getNumberOfTeams() == s);
 		if (game.mapHeader.getNumberOfTeams() <= s)
 			game.addTeam();

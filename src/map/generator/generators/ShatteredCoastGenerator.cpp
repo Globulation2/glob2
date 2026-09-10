@@ -807,7 +807,7 @@ GeneratorDefinition shatteredCoastDefinition()
 	return {"shattered-coast",
 			7,
 			"Old random",
-			1,
+			2,
 			false,
 			{{"water", "Water weight", 0, 100, 1, 40, ControlGroup::Terrain, false, true},
 			 {"sand", "Sand weight", 0, 100, 1, 4, ControlGroup::Terrain, false, true},

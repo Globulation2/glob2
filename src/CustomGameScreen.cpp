@@ -5,7 +5,7 @@
 #include "CustomGamePreferences.h"
 #include "AINames.h"
 #include "CustomGameScreen.h"
-#include "GUIMapPreview.h"
+#include "LobbyMapPreview.h"
 #include "Game.h"
 #include "GenerationService.h"
 #include "GlobalContainer.h"
@@ -153,37 +153,7 @@ void CustomGameChoiceScreen::onAction(Widget *, Action action, int code, int)
 	}
 }
 
-class LobbyMapPreview : public MapPreview
-{
-  public:
-	struct Start
-	{
-		int x, y;
-		Color color;
-	};
-	std::vector<Start> starts;
-	LobbyMapPreview() : MapPreview(430, 115, A, A) { w = h = 180; }
-	void paint() override
-	{
-		if (!surface)
-			return;
-		int x, y, w, h;
-		getScreenPos(&x, &y, &w, &h);
-		auto target = parent->getSurface();
-		target->drawSurface(x, y, w, h, surface);
-		auto font = Toolkit::getFont("standard");
-		for (size_t i = 0; i < starts.size(); ++i)
-		{
-			int px = x + std::clamp(starts[i].x * w / std::max(1, getLastWidth()), 10, w - 18);
-			int py = y + std::clamp(starts[i].y * h / std::max(1, getLastHeight()), 10, h - 18);
-			target->drawFilledRect(px - 2, py - 2, 20, 20, 20, 30, 20);
-			target->drawFilledRect(px, py, 16, 16, starts[i].color);
-			font->pushStyle(Font::Style(Font::STYLE_NORMAL, Color(0, 0, 0)));
-			target->drawString(px + 3, py, font, std::to_string(i + 1));
-			font->popStyle();
-		}
-	}
-};
+
 namespace
 {
 std::string colorName(Color c)
@@ -997,12 +967,23 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			dimensions + "  /  " + std::to_string(setup.capacity) + " " + tr("colonies"), "little",
 			rightW, true);
 	int size = std::min(rightW, h - 126);
-	int px = rightX + (rightW - size) / 2, py = top + 51;
-	ui.box({px - 3, py - 3, size + 6, size + 6}, ui.line);
+	int previewW = size, previewH = size;
+	if (validMap)
+	{
+		previewW = rightW;
+		previewH = previewW * preview->getLastHeight() / preview->getLastWidth();
+		if (previewH > h - 126)
+		{
+			previewH = h - 126;
+			previewW = previewH * preview->getLastWidth() / preview->getLastHeight();
+		}
+	}
+	int px = rightX + (rightW - previewW) / 2, py = top + 51;
+	ui.box({px - 3, py - 3, previewW + 6, previewH + 6}, ui.line);
 	if (validMap)
 	{
 		preview->setScreenPosition(px - (gfx->getW() - 640) / 2, py - (gfx->getH() - 480) / 2);
-		preview->setDimensions(size, size);
+		preview->setDimensions(previewW, previewH);
 		preview->paint();
 	}
 	else

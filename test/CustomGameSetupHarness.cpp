@@ -9,6 +9,7 @@
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
 #include "LobbyMapCatalog.h"
+#include "LobbyMapPreview.h"
 #include "MapGenerator.h"
 #include "Order.h"
 #include "Player.h"
@@ -594,6 +595,44 @@ struct CustomGameSetupHarness
 
     screen.activateGroup(screen.groups[0]);
     capture("map-1000");
+    // Rectangular terrain and markers must use the same cropped preview area.
+    for (auto dimensions : {std::pair{9, 7}, std::pair{7, 9}, std::pair{9, 6}, std::pair{6, 9}}) {
+      screen.setup.generatorHistory.select(screen.setup.generator, GenerationRequest::eCONTESTEDCOMMONS);
+      screen.setup.generator.wDec = dimensions.first;
+      screen.setup.generator.hDec = dimensions.second;
+      screen.setup.setCapacity(4);
+      screen.invalidate();
+      assert(screen.generateMap());
+      const std::string name = "rectangular-" + std::to_string(1 << dimensions.first) + "x" + std::to_string(1 << dimensions.second);
+      const auto expectedStarts = screen.preview->starts;
+      // Old premade maps can contain equivalent coordinates across a torus seam.
+      screen.preview->starts[0].x -= (1 << dimensions.first);
+      screen.preview->starts[0].y += (1 << dimensions.second);
+      capture(name);
+      const auto rect = screen.preview->getScreenRect();
+      const int mapW = screen.preview->getLastWidth(), mapH = screen.preview->getLastHeight();
+      assert(std::abs(rect.w * mapH - rect.h * mapW) < std::max(mapW, mapH));
+      SDL_Surface *bmp = SDL_LoadBMP((output + "/" + name + ".bmp").c_str());
+      assert(bmp);
+      SDL_Surface *rgba = SDL_ConvertSurfaceFormat(bmp, SDL_PIXELFORMAT_RGBA32, 0);
+      SDL_FreeSurface(bmp);
+      assert(rgba);
+      auto pixel = [&](int x, int y) {
+        assert(x >= 0 && y >= 0 && x < rgba->w && y < rgba->h);
+        return static_cast<const Uint8 *>(rgba->pixels) + y * rgba->pitch + x * 4;
+      };
+      const auto corner = pixel(rect.x + 1, rect.y + 1);
+      assert(corner[0] || corner[1] || corner[2]); // no thumbnail letterbox inside the map
+      for (const auto &start : expectedStarts) {
+        const int x = rect.x + std::clamp(start.x * rect.w / mapW, 2, std::max(2, rect.w - 18));
+        const int y = rect.y + std::clamp(start.y * rect.h / mapH, 2, std::max(2, rect.h - 18));
+        const auto swatch = pixel(x + 1, y + 1);
+        assert(swatch[0] == start.color.r && swatch[1] == start.color.g && swatch[2] == start.color.b);
+      }
+      SDL_FreeSurface(rgba);
+    }
+    puts("PASS rectangular aspect ratios, cropped terrain and colony marker pixels");
+    screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
     screen.setup.setCapacity(12);
     screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
     screen.invalidate();

@@ -117,6 +117,23 @@ class MapGeneratorDefaultsTest
 				assert(rejected.error == GenerationError::NonEmptyTarget);
 				assert(fingerprint(first) == hash);
 			}
+			if (method != D::eUNIFORM)
+				for (auto dimensions : {std::pair{9, 7}, std::pair{7, 9}})
+				{
+					D rectangular = request;
+					rectangular.seed = 31001;
+					rectangular.wDec = dimensions.first;
+					rectangular.hDec = dimensions.second;
+					Game world(nullptr);
+					assert(service.generate(world, rectangular));
+					assert(world.map.getW() == (1 << dimensions.first));
+					assert(world.map.getH() == (1 << dimensions.second));
+					for (int team = 0; team < rectangular.nbTeams; ++team)
+					{
+						assert(world.teams[team]->startPosX >= 0 && world.teams[team]->startPosX < world.map.getW());
+						assert(world.teams[team]->startPosY >= 0 && world.teams[team]->startPosY < world.map.getH());
+					}
+				}
 			for (const auto &c : D::controls(method))
 			{
 				D invalid = request;
