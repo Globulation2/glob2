@@ -41,6 +41,19 @@ void SettingsScreen::drawText(int x,int y,const std::string& text,bool secondary
     font->pushStyle(Font::Style(Font::STYLE_NORMAL,color.r,color.g,color.b));
     gfx->drawString(x,y,font,text);font->popStyle();
 }
+void SettingsScreen::fill(const Rect& r,Color color,int radius)
+{
+    FrontendTheme::rounded(gfx,r.x,r.y,r.w,r.h,radius,color);
+}
+void SettingsScreen::control(const Rect& r,Color color,bool focused,int radius)
+{
+    if(focused)FrontendTheme::rounded(gfx,r.x-3,r.y-3,r.w+6,r.h+6,radius+2,FrontendPalette::violet);
+    FrontendTheme::blob(gfx,r.x,r.y,r.w,r.h,radius,color,ink,r.w>=20&&r.h>=20?1:0);
+}
+void SettingsScreen::rule(int x,int y,int w)
+{
+    gfx->drawFilledRect(x,y,w,1,Color(ink.r,ink.g,ink.b,60));
+}
 void SettingsScreen::drawWrapped(int x,int y,int width,const std::string& text,bool secondary,bool heading)
 {
     const int height=Toolkit::getFont(heading?"menu":"standard")->getStringHeight("Ag")+4;
@@ -120,34 +133,33 @@ void SettingsScreen::paintRow(const Row& r)
     if(r.kind==Kind::Info){drawWrapped(b.x,b.y+(r.columns>1?std::max(0,(b.h-wrappedHeight(r.label,b.w))/2):0),b.w,r.label,true);return;}
     bool focused=focus==r.id;
     if(r.kind==Kind::Button){
-        gfx->drawFilledRect(c.x,c.y,c.w,c.h,r.selected?gold:field);
-        gfx->drawRect(c.x,c.y,c.w,c.h,focused?ink:line);
+        control(c,r.selected?gold:field,focused);
         drawWrapped(c.x+12,c.y+10,c.w-24,r.label,!r.enabled);return;
     }
     int textW=c.x>b.x?c.x-b.x-24:b.w;
     drawWrapped(b.x,b.y+12,textW,r.label,!r.enabled);
     if(!r.help.empty())drawWrapped(b.x,b.y+12+wrappedHeight(r.label,textW)+8,textW,r.help,true);
     if(r.kind==Kind::Toggle){
-        gfx->drawFilledRect(c.x,c.y,c.w,c.h,r.enabled?field:rail);
-        gfx->drawRect(c.x,c.y,c.w,c.h,focused?ink:line);
-        gfx->drawRect(c.x+10,c.y+(c.h-18)/2,18,18,ink);
-        if(r.number){gfx->drawLine(c.x+13,c.y+c.h/2,c.x+17,c.y+c.h/2+5,ink);gfx->drawLine(c.x+17,c.y+c.h/2+5,c.x+25,c.y+c.h/2-6,ink);}
+        control(c,r.enabled?field:rail,focused);
+        FrontendTheme::blob(gfx,c.x+10,c.y+(c.h-18)/2,18,18,4,r.number?gold:field,ink,0);
+        if(r.number)for(int t=0;t<2;++t){gfx->drawLine(c.x+13,c.y+c.h/2+t,c.x+17,c.y+c.h/2+5+t,ink);gfx->drawLine(c.x+17,c.y+c.h/2+5+t,c.x+25,c.y+c.h/2-6+t,ink);}
         drawText(c.x+38,c.y+8,tr(r.number?"On":"Off"));
     }else if(r.kind==Kind::Slider){
         drawText(c.x,c.y,r.value,!r.enabled);
         const int sy=c.y+c.h-10;
-        gfx->drawFilledRect(c.x,sy,c.w,4,line);
-        int dx=(c.w-8)*r.number/std::max(1,r.maximum);
-        gfx->drawFilledRect(c.x+dx,sy-5,8,14,r.enabled?ink:line);
-        if(focused)gfx->drawRect(c.x-3,c.y-3,c.w+6,c.h+6,ink);
+        fill({c.x,sy-1,c.w,6},ink,3);
+        fill({c.x+1,sy,c.w-2,4},rail,2);
+        int dx=(c.w-12)*r.number/std::max(1,r.maximum);
+        fill({c.x+1,sy,dx+5,4},gold,2);
+        if(focused)FrontendTheme::ring(gfx,c.x-4,c.y-4,c.w+8,c.h+8,6,FrontendPalette::violet,0);
+        FrontendTheme::blob(gfx,c.x+dx,sy-6,12,16,5,r.enabled?gold:rail,ink,0);
     }else{
-        gfx->drawFilledRect(c.x,c.y,c.w,c.h,r.enabled?field:rail);
-        gfx->drawRect(c.x,c.y,c.w,c.h,focused?ink:line);
+        control(c,r.enabled?field:rail,focused);
         if(r.kind==Kind::Number){
             const int segment=std::min(32,c.w/4);
             drawText(c.x+8,c.y+8,"−");drawText(c.x+c.w-20,c.y+8,"+");
-            gfx->drawLine(c.x+segment,c.y,c.x+segment,c.y+c.h,line);
-            gfx->drawLine(c.x+c.w-segment,c.y,c.x+c.w-segment,c.y+c.h,line);
+            gfx->drawFilledRect(c.x+segment,c.y+2,1,c.h-4,muted);
+            gfx->drawFilledRect(c.x+c.w-segment,c.y+2,1,c.h-4,muted);
             int tw=Toolkit::getFont("standard")->getStringWidth(r.value);
             drawText(c.x+(c.w-tw)/2,c.y+8,r.value);
         }else{
@@ -162,13 +174,14 @@ void SettingsScreen::paintRow(const Row& r)
                 gfx->drawLine(c.x+c.w-15,c.y+c.h/2+3,c.x+c.w-10,c.y+c.h/2-2,ink);
             }
             if(!r.extraId.empty()){
-                gfx->drawRect(c.x+c.w-36,c.y,36,c.h,focus==r.extraId?ink:line);
+                gfx->drawFilledRect(c.x+c.w-36,c.y+2,1,c.h-4,muted);
+                if(focus==r.extraId)FrontendTheme::ring(gfx,c.x+c.w-38,c.y-2,40,c.h+4,5,FrontendPalette::violet,0);
                 drawText(c.x+c.w-24,c.y+8,"+");
             }
             gfx->setClipRect(viewport.x,viewport.y,viewport.w,viewport.h);
         }
     }
-    gfx->drawLine(b.x,b.y+b.h-1,b.x+b.w,b.y+b.h-1,line);
+    rule(b.x,b.y+b.h-1,b.w);
 }
 void SettingsScreen::paint()
 {
@@ -176,25 +189,24 @@ void SettingsScreen::paint()
     // Opaque settings-local surfaces keep background texture out of the form.
     Glob2Screen::paint();
     gfx->drawFilledRect(0,0,getW(),getH(),Color(FrontendPalette::scrim.r,FrontendPalette::scrim.g,FrontendPalette::scrim.b,200));
-    gfx->drawFilledRect(panel.x,panel.y,panel.w,panel.h,paper);
-    gfx->drawRect(panel.x,panel.y,panel.w,panel.h,line);
+    FrontendTheme::rounded(gfx,panel.x+3,panel.y+5,panel.w,panel.h,12,Color(12,28,16,70));
+    FrontendTheme::blob(gfx,panel.x,panel.y,panel.w,panel.h,12,Color(paper.r,paper.g,paper.b,std::max(232,FrontendTheme::panelAlpha())),ink,2);
     drawText(panel.x+padding,panel.y+20,tr("Settings"),false,true);
     const char* categories[]={"Display & graphics","Audio","Gameplay","Building defaults","Controls","Language & player"};
     if(modal==Modal::None && compactNavigation){
         const auto& c=categoryControl;
-        gfx->drawFilledRect(c.x,c.y,c.w,c.h,field);
-        gfx->drawRect(c.x,c.y,c.w,c.h,focus=="nav.current"?ink:line);
+        control(c,field,focus=="nav.current");
         drawWrapped(c.x+10,c.y+8,c.w-36,tr(categories[int(current)]));
         gfx->drawLine(c.x+c.w-20,c.y+c.h/2-2,c.x+c.w-15,c.y+c.h/2+3,ink);
         gfx->drawLine(c.x+c.w-15,c.y+c.h/2+3,c.x+c.w-10,c.y+c.h/2-2,ink);
     }
     if(modal==Modal::None && !compactNavigation){
-        gfx->drawFilledRect(panel.x+1,panel.y+64,sidebar-1,footer.y-panel.y-64,rail);
+        gfx->drawFilledRect(panel.x+2,panel.y+64,sidebar-2,footer.y-panel.y-66,Color(ink.r,ink.g,ink.b,14));
         int ny=panel.y+76;
         for(int i=0;i<6;++i){
             int height=std::max(42,wrappedHeight(tr(categories[i]),sidebar-32)+20);
-            if(i==int(current))gfx->drawFilledRect(panel.x+8,ny,sidebar-16,height,gold);
-            if(focus=="nav."+std::to_string(i))gfx->drawRect(panel.x+8,ny,sidebar-16,height,ink);
+            if(i==int(current))control({panel.x+8,ny,sidebar-16,height},gold,focus=="nav."+std::to_string(i),6);
+            else if(focus=="nav."+std::to_string(i))FrontendTheme::ring(gfx,panel.x+8,ny,sidebar-16,height,6,FrontendPalette::violet,1);
             drawWrapped(panel.x+16,ny+10,sidebar-32,tr(categories[i]));ny+=height+4;
         }
     }
@@ -202,18 +214,17 @@ void SettingsScreen::paint()
     for(const auto& r:form)paintRow(r);
     gfx->setClipRect();
     if(contentHeight>viewport.h){
-        gfx->drawFilledRect(scrollbar.x,scrollbar.y,scrollbar.w,scrollbar.h,rail);
+        fill(scrollbar,Color(ink.r,ink.g,ink.b,40),3);
         int size=std::max(24,viewport.h*viewport.h/contentHeight);
         int top=scrollOffset()*(viewport.h-size)/std::max(1,contentHeight-viewport.h);
-        gfx->drawFilledRect(scrollbar.x,scrollbar.y+top,scrollbar.w,size,muted);
+        fill({scrollbar.x,scrollbar.y+top,scrollbar.w,size},muted,3);
     }
-    gfx->drawLine(footer.x,footer.y,footer.x+footer.w,footer.y,line);
+    rule(footer.x,footer.y,footer.w);
     std::string status=failed?tr("Could not save"):settingsDirty?tr("Saving…"):restartRequired()?tr("Saved — restart required"):tr("Changes saved automatically");
     drawWrapped(footer.x+padding,footer.y+16,footer.w-240,status,true);
     dropdown.paint(gfx,ink,field,gold,line);
     const Rect doneRect={footer.x+footer.w-112,footer.y+12,96,40};
-    gfx->drawFilledRect(doneRect.x,doneRect.y,doneRect.w,doneRect.h,gold);
-    gfx->drawRect(doneRect.x,doneRect.y,doneRect.w,doneRect.h,focus=="done"?ink:line);
+    control(doneRect,gold,focus=="done",6);
     drawText(doneRect.x+12,doneRect.y+10,tr(modal==Modal::None?"Done":modal==Modal::Display?"Revert":"Cancel"));
-    if(failed && modal==Modal::None){gfx->drawRect(doneRect.x-96,doneRect.y,88,40,focus=="retry"?ink:line);drawText(doneRect.x-88,doneRect.y+10,tr("Retry"));}
+    if(failed && modal==Modal::None){control({doneRect.x-96,doneRect.y,88,40},field,focus=="retry",6);drawText(doneRect.x-88,doneRect.y+10,tr("Retry"));}
 }

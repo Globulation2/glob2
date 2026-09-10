@@ -21,6 +21,7 @@ class CustomGameChoiceScreen : public Glob2Screen
 						   const std::vector<bool> &);
 	void onSDLEvent(SDL_Event *) override;
 	void onAction(Widget *, Action, int, int) override;
+	void paint() override;
 };
 class LobbyMapPreview;
 class LobbyControls;
@@ -38,6 +39,7 @@ class CustomGameScreen : public Glob2TabScreen
 	void onGroupActivated(int) override;
 	void onSDLEvent(SDL_Event *) override;
 	void onTimer(Uint32 tick) override;
+	void paint() override;
 	void updateLayout() override;
 	MapHeader &getMapHeader() { return mapHeader; }
 	GameHeader &getGameHeader();

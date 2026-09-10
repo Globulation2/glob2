@@ -65,6 +65,11 @@ class LobbyControls : public GAGGUI::RectangularWidget
 	{
 		FrontendTheme::rounded(surface(), r.x, r.y, r.w, r.h, radius, color);
 	}
+	// An inked gel pad: every clickable thing in the lobby.
+	void pad(SDL_Rect r, GAGCore::Color fill, int radius = 5, int wobble = 1)
+	{
+		FrontendTheme::blob(surface(), r.x, r.y, r.w, r.h, radius, fill, ink, wobble);
+	}
 	void text(int x, int y, std::string value, const char *font = "standard", int width = 10000,
 			  bool quiet = false)
 	{
@@ -123,13 +128,22 @@ class LobbyControls : public GAGGUI::RectangularWidget
 	{
 		SDL_Rect clipping = clip();
 		hits.push_back({id, r, clipping, std::move(action), enabled, activeRegion});
+		const bool hovered = !popup.open && inside(r, hoverX, hoverY) && inside(clipping, hoverX, hoverY);
+		if (focus == id)
+			box({r.x - 3, r.y - 3, r.w + 6, r.h + 6}, FrontendPalette::violet, 7);
+		// Rows inside a scrolling list stay quiet until chosen; standalone
+		// buttons are inked gel pads.
+		const bool listRow = activeRegion >= 0;
 		if (selected)
-			box(r, gold);
+			pad(r, gold);
+		else if (!quiet && listRow)
+			box(r, enabled ? panel : FrontendPalette::gelDisabled, 4);
 		else if (!quiet)
-			box(r, enabled ? panel : FrontendPalette::gelDisabled);
-		if (focus == id ||
-			(!popup.open && inside(r, hoverX, hoverY) && inside(clipping, hoverX, hoverY)))
-			surface()->drawRect(r.x, r.y, r.w, r.h, focus == id ? ink : line);
+			pad(r, enabled ? panel : FrontendPalette::gelDisabled);
+		if ((quiet || listRow) && !selected && (hovered || focus == id))
+			FrontendTheme::ring(surface(), r.x, r.y, r.w, r.h, 5, ink, listRow ? 0 : 1);
+		if (hovered && !selected && !quiet && enabled)
+			box({r.x + 2, r.y + 2, r.w - 4, r.h - 4}, GAGCore::Color(gold.r, gold.g, gold.b, 110), 3);
 		int fh = GAGCore::Toolkit::getFont(font)->getStringHeight("Ag");
 		text(r.x + 9, r.y + (r.h - fh) / 2, label, font, r.w - 18, !enabled || quiet);
 	}
@@ -144,7 +158,9 @@ class LobbyControls : public GAGGUI::RectangularWidget
 				   popup = {true, r, options, enabled, apply, std::max(0, selected), 0, help};
 				   revealPopup();
 			   });
-		surface()->drawRect(r.x, r.y, r.w, r.h, line);
+		// A choice is always an inked pad, even among quiet list rows.
+		if (activeRegion >= 0)
+			FrontendTheme::ring(surface(), r.x, r.y, r.w, r.h, 5, ink, 1);
 		// The right edge is reserved for the disclosure chevron.
 		box({r.x + r.w - 18, r.y + 4, 14, r.h - 8}, panel, 2);
 		text(r.x + r.w - 15, r.y + (r.h - 12) / 2, "v", "little", 12, true);
@@ -177,10 +193,11 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		button(id, r, "", [this, change] { change(hoverX); }, false, true, true);
 		sliders[id] = change;
 		sliderKeys[id] = [=](int delta) { apply(std::clamp(value + delta, lo, hi)); };
-		box({r.x, r.y + r.h / 2 - 2, r.w, 4}, line, 2);
+		box({r.x, r.y + r.h / 2 - 3, r.w, 6}, ink, 3);
+		box({r.x + 1, r.y + r.h / 2 - 2, r.w - 2, 4}, FrontendPalette::gelDisabled, 2);
 		int pos = (value - lo) * (r.w - 12) / std::max(1, hi - lo);
-		box({r.x, r.y + r.h / 2 - 2, pos + 6, 4}, muted, 2);
-		box({r.x + pos, r.y + 3, 12, r.h - 6}, gold, 4);
+		box({r.x + 1, r.y + r.h / 2 - 2, pos + 5, 4}, gold, 2);
+		pad({r.x + pos, r.y + 2, 12, r.h - 4}, gold, 5, 0);
 	}
 	void beginRegion(int id, SDL_Rect r)
 	{
@@ -199,7 +216,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		if (reg.maximum > 0)
 		{
 			auto b = reg.box;
-			box({b.x + b.w - 5, b.y, 4, b.h}, line, 2);
+			box({b.x + b.w - 5, b.y, 4, b.h}, GAGCore::Color(ink.r, ink.g, ink.b, 40), 2);
 			int thumb = std::max(24, b.h * b.h / (b.h + reg.maximum));
 			box({b.x + b.w - 5, b.y + (b.h - thumb) * reg.offset / reg.maximum, 4, thumb}, muted,
 				2);
@@ -248,8 +265,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		{
 			auto r = popupRect();
 			box({r.x + 3, r.y + 4, r.w, r.h}, GAGCore::Color(FrontendPalette::scrim.r, FrontendPalette::scrim.g, FrontendPalette::scrim.b, 100));
-			box(r, panel);
-			surface()->drawRect(r.x, r.y, r.w, r.h, muted);
+			pad(r, panel, 6, 2);
 			for (int n = 0; n < 8 && n + popup.first < int(popup.options.size()); ++n)
 			{
 				int i = n + popup.first;
@@ -261,7 +277,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 			if (popup.options.size() > 8)
 			{
 				int thumb = 240 * 8 / int(popup.options.size());
-				box({r.x + r.w - 5, r.y + 6, 3, 240}, line, 1);
+				box({r.x + r.w - 5, r.y + 6, 3, 240}, GAGCore::Color(ink.r, ink.g, ink.b, 40), 1);
 				box({r.x + r.w - 5,
 					 r.y + 6 + (240 - thumb) * popup.first / (int(popup.options.size()) - 8), 3,
 					 thumb},

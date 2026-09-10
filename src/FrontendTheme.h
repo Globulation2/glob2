@@ -14,7 +14,7 @@ namespace FrontendPalette
 	inline const GAGCore::Color gold(233, 176, 53);       // primary action, selection
 	inline const GAGCore::Color goldPressed(206, 152, 40);
 	inline const GAGCore::Color violet(92, 74, 198);      // keyboard focus ring (the water's hue)
-	inline const GAGCore::Color membrane(250, 244, 222);  // panel fill
+	inline const GAGCore::Color membrane(255, 232, 192);  // panel fill; tints toward sand over the world
 	inline const GAGCore::Color gel(252, 246, 228);       // opaque control fill
 	inline const GAGCore::Color gelDisabled(232, 224, 200);
 	inline const GAGCore::Color scrim(18, 34, 22);        // veil / modal dim
@@ -28,6 +28,15 @@ public:
 	static FrontendTheme* current;
 	static bool allowed;
 	static void rounded(GAGCore::DrawableSurface*, int, int, int, int, int, GAGCore::Color);
+	// Hand-drawn contour: per-corner radii and a low-frequency edge wobble seeded
+	// from the rect, so it is stable frame to frame. Ink ring, fill, gel highlight.
+	// inflate grows the drawn shape without changing the seed or the caller's rect.
+	static void blob(GAGCore::DrawableSurface*, int x, int y, int w, int h, int r,
+		GAGCore::Color fill, GAGCore::Color ink, int wobble, int inflate = 0);
+	// The ring of blob() alone; never touches the interior (safe over list contents).
+	static void ring(GAGCore::DrawableSurface*, int x, int y, int w, int h, int r,
+		GAGCore::Color ink, int wobble, int inflate = 0);
+	static int panelAlpha();
 	void background(GAGCore::DrawableSurface*, bool panel = true, const SDL_Rect* content = nullptr);
 	void onFrame() override;
 	void drawButtonSelection(GAGCore::DrawableSurface*, int, int, int, int) override;

@@ -48,7 +48,9 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 		auto &ui = *controls;
 		int w = std::min(gfx->getW() - 32, 1000), x = (gfx->getW() - w) / 2, height = gfx->getH();
 		ui.setDimensions(gfx->getW(), height);
-		ui.box({x - 8, 8, w + 16, height - 16}, FrontendPalette::membrane, 8);
+		FrontendTheme::rounded(ui.surface(), x - 5, 13, w + 16, height - 16, 12, Color(12, 28, 16, 70));
+		FrontendTheme::blob(ui.surface(), x - 8, 8, w + 16, height - 16, 12,
+			Color(FrontendPalette::membrane.r, FrontendPalette::membrane.g, FrontendPalette::membrane.b, FrontendTheme::panelAlpha()), ui.ink, 2);
 		ui.text(x + 8, 20, this->title, "standard", w - 16);
 		int left = w < 800 ? 174 : 235, right = x + left + 22, rightW = w - left - 22;
 		ui.beginRegion(20, {x, 60, left, height - 135});
@@ -558,12 +560,32 @@ void CustomGameScreen::showAIProfile(int colony)
 		setup.colonies[colony].ai = (AI::ImplementationID)AINames::selectionOrder()[result];
 }
 
+// Both lobby screens draw their own page membrane sized to the window, so the
+// theme paints only the world behind them (the widget-union panel would be a
+// second, smaller sheet underneath).
+void CustomGameChoiceScreen::paint()
+{
+	if (FrontendTheme::current && GAGGUI::Style::style == FrontendTheme::current)
+		FrontendTheme::current->background(gfx, false);
+	else
+		Glob2Screen::paint();
+}
+void CustomGameScreen::paint()
+{
+	if (FrontendTheme::current && GAGGUI::Style::style == FrontendTheme::current)
+		FrontendTheme::current->background(gfx, false);
+	else
+		Glob2TabScreen::paint();
+}
+
 void CustomGameScreen::renderLobby()
 {
 	auto &ui = *controls;
 	int width = gfx->getW(), height = gfx->getH();
 	int w = std::min(width - 32, 1120), x = (width - w) / 2;
-	ui.box({x - 8, 8, w + 16, height - 16}, FrontendPalette::membrane, 8);
+	FrontendTheme::rounded(ui.surface(), x - 5, 13, w + 16, height - 16, 12, Color(12, 28, 16, 70));
+	FrontendTheme::blob(ui.surface(), x - 8, 8, w + 16, height - 16, 12,
+		Color(FrontendPalette::membrane.r, FrontendPalette::membrane.g, FrontendPalette::membrane.b, FrontendTheme::panelAlpha()), ui.ink, 2);
 	auto speed = globalContainer->settings;
 	speed.gameSpeed = setup.speed;
 	std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
@@ -595,7 +617,7 @@ void CustomGameScreen::renderLobby()
 	else
 		renderMap(x, bodyY, w, bodyH);
 	gfx->setClipRect();
-	gfx->drawLine(x, height - 85, x + w, height - 85, ui.line);
+	gfx->drawFilledRect(x, height - 85, w, 1, Color(ui.ink.r, ui.ink.g, ui.ink.b, 70));
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
 		error = tr("Select a valid map.");
@@ -1031,7 +1053,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			rightW, true);
 	int size = std::min(rightW, h - 126);
 	int px = rightX + (rightW - size) / 2, py = top + 51;
-	ui.box({px - 3, py - 3, size + 6, size + 6}, ui.line);
+	FrontendTheme::ring(gfx, px - 3, py - 3, size + 6, size + 6, 4, ui.ink, 0);
 	if (validMap)
 	{
 		preview->setScreenPosition(px - (gfx->getW() - 640) / 2, py - (gfx->getH() - 480) / 2);

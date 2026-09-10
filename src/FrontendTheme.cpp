@@ -5,6 +5,7 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 using namespace GAGCore;
 using namespace GAGGUI;
@@ -64,6 +65,83 @@ void FrontendTheme::rounded(DrawableSurface* s,int x,int y,int w,int h,int r,Col
 		s->drawFilledRect(x+inset,y+h-row-1,w-2*inset,1,c);
 	}
 }
+namespace
+{
+// Per-row [left inset, right inset] of a blob contour. Corners get slightly
+// unequal radii and the vertical edges a gentle sine wobble, both derived from
+// the rect so the same control always draws the same outline.
+struct Contour
+{
+	std::vector<std::pair<int,int>> inset;
+	Contour(int x,int y,int w,int h,int r,int wobble,int inflate)
+	{
+		const unsigned seed = unsigned(x)*73856093u ^ unsigned(y)*19349663u ^ unsigned(w)*83492791u ^ unsigned(h)*2654435761u;
+		x-=inflate; y-=inflate; w+=2*inflate; h+=2*inflate;
+		r = std::min({r,w/2,h/2});
+		const int jitter = r>=6 ? 1 : 0;
+		const int rTL=r+((seed>>0&1)?jitter:-jitter), rTR=r+((seed>>1&1)?jitter:-jitter);
+		const int rBL=r+((seed>>2&1)?jitter:-jitter), rBR=r+((seed>>3&1)?jitter:-jitter);
+		const float phaseL=(seed>>4&255)/40.0f, phaseR=(seed>>12&255)/40.0f;
+		inset.resize(std::max(0,h));
+		auto corner=[](int radius,int row,int rows)->int
+		{
+			if(row>=radius) return 0;
+			const float dy=radius-row-0.5f;
+			return radius-int(std::sqrt(std::max(0.0f,float(radius*radius)-dy*dy)));
+		};
+		for(int row=0;row<h;++row)
+		{
+			int l=std::max(corner(rTL,row,h),corner(rBL,h-1-row,h));
+			int rr=std::max(corner(rTR,row,h),corner(rBR,h-1-row,h));
+			if(wobble)
+			{
+				l+=int(std::lround(wobble*std::sin(row*0.23f+phaseL)));
+				rr+=int(std::lround(wobble*std::sin(row*0.19f+phaseR)));
+			}
+			inset[row]={std::max(0,l),std::max(0,rr)};
+		}
+	}
+};
+Color lighter(Color c,int by)
+{
+	return Color(std::min(255,c.r+by),std::min(255,c.g+by),std::min(255,c.b+by),c.a);
+}
+}
+
+void FrontendTheme::blob(DrawableSurface* s,int x,int y,int w,int h,int r,Color fill,Color ink,int wobble,int inflate)
+{
+	if(w<=0 || h<=0) return;
+	const Contour c(x,y,w,h,r,wobble,inflate);
+	x-=inflate; y-=inflate; w+=2*inflate; h+=2*inflate;
+	for(int row=0;row<h;++row)
+	{
+		const auto [l,rr]=c.inset[row];
+		s->drawFilledRect(x+l,y+row,std::max(0,w-l-rr),1,ink);
+	}
+	for(int row=2;row<h-2;++row)
+	{
+		const auto [l,rr]=c.inset[row];
+		const int span=w-l-rr-4;
+		if(span>0) s->drawFilledRect(x+l+2,y+row,span,1,row==2 ? lighter(fill,10) : fill);
+	}
+}
+void FrontendTheme::ring(DrawableSurface* s,int x,int y,int w,int h,int r,Color ink,int wobble,int inflate)
+{
+	if(w<=0 || h<=0) return;
+	const Contour c(x,y,w,h,r,wobble,inflate);
+	x-=inflate; y-=inflate; w+=2*inflate; h+=2*inflate;
+	for(int row=0;row<h;++row)
+	{
+		const auto [l,rr]=c.inset[row];
+		if(row<2 || row>=h-2) { s->drawFilledRect(x+l,y+row,std::max(0,w-l-rr),1,ink); continue; }
+		s->drawFilledRect(x+l,y+row,2,1,ink);
+		s->drawFilledRect(x+w-rr-2,y+row,2,1,ink);
+	}
+}
+int FrontendTheme::panelAlpha()
+{
+	return (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) ? 255 : 214;
+}
 void FrontendTheme::onFrame()
 {
 	if (!painted) return; // Present the still before doing any loading work.
@@ -100,32 +178,31 @@ void FrontendTheme::background(DrawableSurface* s, bool panel, const SDL_Rect* c
 		const int x=std::max(0,area.x-12), y=std::max(0,area.y-12);
 		const int pw=std::min(w,area.x+area.w+12)-x, ph=std::min(h,area.y+area.h+12)-y;
 		rounded(s,x+3,y+5,pw,ph,12,Color(12,28,16,70));
-		rounded(s,x,y,pw,ph,12,ink);
-		rounded(s,x+3,y+3,pw-6,ph-6,9,Color(membrane.r,membrane.g,membrane.b,252));
+		blob(s,x,y,pw,ph,12,Color(membrane.r,membrane.g,membrane.b,panelAlpha()),ink,2);
 	}
 	painted=true;
 }
 void FrontendTheme::drawTextButtonBackground(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)
 {
-	rounded(s,x,y,w,h,5,ink);
-	rounded(s,x+2,y+2,w-4,h-4,3,gel);
+	blob(s,x,y,w,h,5,gel,ink,1);
 	if(hi) rounded(s,x+2,y+2,w-4,h-4,3,Color(gold.r,gold.g,gold.b,hi/2));
 }
 void FrontendTheme::drawFrame(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)
 {
 	// Frames are also drawn AFTER list contents; never erase their interior.
-	const Color edge = hi ? highlightColor : frameColor;
-	s->drawRect(x,y,w,h,edge);
-	s->drawRect(x+1,y+1,w-2,h-2,edge);
+	ring(s,x,y,w,h,5,hi ? highlightColor : frameColor,w>=20 && h>=20 ? 1 : 0);
 }
 void FrontendTheme::drawOnOffButton(DrawableSurface* s,int x,int y,int w,int h,unsigned hi,bool state)
 {
-	drawTextButtonBackground(s,x,y,w,h,hi);
-	drawFrame(s,x,y,w,h,hi);
+	blob(s,x,y,w,h,4,state ? gold : gel,ink,w>=20 && h>=20 ? 1 : 0);
+	if(hi) rounded(s,x+2,y+2,w-4,h-4,3,Color(gold.r,gold.g,gold.b,hi/2));
 	if(state)
 	{
-		s->drawLine(x+w/5,y+h/2,x+w*2/5,y+h*3/4,textColor);
-		s->drawLine(x+w*2/5,y+h*3/4,x+w*4/5,y+h/4,textColor);
+		for(int t=0;t<2;++t)
+		{
+			s->drawLine(x+w/5,y+h/2+t,x+w*2/5,y+h*3/4+t,ink);
+			s->drawLine(x+w*2/5,y+h*3/4+t,x+w*4/5,y+h/4+t,ink);
+		}
 	}
 }
 void FrontendTheme::drawTriButton(DrawableSurface* s,int x,int y,int w,int h,unsigned hi,Uint8 state)
@@ -137,8 +214,7 @@ void FrontendTheme::drawScrollBar(DrawableSurface* s,int x,int y,int,int h,int p
 {
 	const int width=getStyleMetric(STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
 	const int end=getStyleMetric(STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
-	rounded(s,x,y,width,h,4,ink);
-	rounded(s,x+1,y+1,width-2,h-2,3,gelDisabled);
+	blob(s,x,y,width,h,4,gelDisabled,ink,0);
 	rounded(s,x+3,y+end+pos,width-6,len,3,muted);
 	for(int i=0;i<4;++i)
 	{
@@ -149,9 +225,8 @@ void FrontendTheme::drawScrollBar(DrawableSurface* s,int x,int y,int,int h,int p
 void FrontendTheme::drawProgressBar(DrawableSurface* s,int x,int y,int w,int value,int range)
 {
 	const int h=getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
-	rounded(s,x,y,w,h,4,ink);
-	rounded(s,x+1,y+1,w-2,h-2,3,gelDisabled);
-	if(range>0) rounded(s,x+1,y+1,std::max(0,int((w-2)*double(std::clamp(value,0,range))/range)),h-2,3,listSelectedElementColor);
+	blob(s,x,y,w,h,4,gelDisabled,ink,0);
+	if(range>0) rounded(s,x+2,y+2,std::max(0,int((w-4)*double(std::clamp(value,0,range))/range)),h-4,3,gold);
 }
 int FrontendTheme::getStyleMetric(StyleMetrics m)
 {
@@ -161,8 +236,7 @@ int FrontendTheme::getStyleMetric(StyleMetrics m)
 
 void FrontendTheme::drawFieldBackground(DrawableSurface* s,int x,int y,int w,int h)
 {
-	rounded(s,x,y,w,h,4,ink);
-	rounded(s,x+2,y+2,w-4,h-4,3,gel);
+	blob(s,x,y,w,h,5,gel,ink,w>=20 && h>=20 ? 1 : 0);
 }
 void FrontendTheme::drawSelectionBackground(DrawableSurface* s,int x,int y,int w,int h)
 {
@@ -172,13 +246,12 @@ bool FrontendTheme::drawSelector(DrawableSurface* s,int x,int y,int w,int h,unsi
 {
 	rounded(s,x,y+h/2-1,w,6,3,ink);
 	rounded(s,x+1,y+h/2,w-2,4,2,gelDisabled);
-	const int position=maximum ? int((w-10)*double(value)/maximum) : 0;
-	rounded(s,x+position,y-1,10,h+6,5,ink);
-	rounded(s,x+position+2,y+1,6,h+2,3,gold);
+	const int position=maximum ? int((w-12)*double(value)/maximum) : 0;
+	blob(s,x+position,y-2,12,h+8,5,gold,ink,0);
 	return true;
 }
 
 void FrontendTheme::drawButtonSelection(DrawableSurface* s,int x,int y,int w,int h)
 {
-	rounded(s,x,y,w,h,4,violet);
+	rounded(s,x+2,y+2,w-4,h-4,3,gold);
 }

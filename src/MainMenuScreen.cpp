@@ -52,14 +52,12 @@ public:
 		if (focused) fillRounded(target, x - 4, y - 4, w + 8, h + 8, radius + 4, violet);
 		if (primary)
 		{
-			fillRounded(target, x, y, w, h, radius, ink);
-			fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, pressed ? goldPressed : gold);
+			FrontendTheme::blob(target, x, y, w, h, radius, pressed ? goldPressed : gold, ink, 1);
 			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(255, 235, 170, hover / 4));
 		}
 		else
 		{
-			fillRounded(target, x, y, w, h, radius, ink);
-			fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, gel);
+			FrontendTheme::blob(target, x, y, w, h, radius, gel, ink, 1);
 			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(gold.r, gold.g, gold.b, hover / 2));
 			if (pressed) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(180, 140, 50, 70));
 		}
@@ -192,8 +190,8 @@ void MainMenuScreen::paint()
 {
 	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
 	fillRounded(gfx, panelX + 3, panelY + 5, panelW, panelH, 12, Color(12, 28, 16, 70));
-	fillRounded(gfx, panelX, panelY, panelW, panelH, 12, ink);
-	fillRounded(gfx, panelX + 3, panelY + 3, panelW - 6, panelH - 6, 9, Color(membrane.r, membrane.g, membrane.b, 252));
+	FrontendTheme::blob(gfx, panelX, panelY, panelW, panelH, 12,
+		Color(membrane.r, membrane.g, membrane.b, FrontendTheme::panelAlpha()), ink, 2);
 	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, gold);
 	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get());
 	else
