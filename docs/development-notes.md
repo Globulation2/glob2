@@ -77,10 +77,29 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   difference and test the intended behavior rather than claiming old/new equivalence.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
   the current implementation; independent scratch, stable inputs and deterministic
-  publication are relevant checks. The byte AI helper's
-  256-pass chamfer cap is a value-range bound, not an obstacle-free geometry bound.
-  Obstacles can require many sweeps even on 128×128 maps; the cap guards monotonicity
-  failures. Do not lower it based on the obstacle-free one-pass result.
+  publication are relevant checks.
+- In `src/map/gradient/MapGradientGlobal.cpp` the chamfer distance transform's
+  convergence-pass cap is bounded by the Uint8 value range (256), not by the
+  Borgefors 1-pass result. Borgefors holds only on an obstacle-free grid; with
+  obstacles each bend in the propagation path costs about K/2 passes, and real
+  128×128 maps needed well over 8. The cap is a tripwire for monotonicity
+  violations, not a throttle. Do not derive a tighter bound from grid geometry.
+- A candidate comparison used only to pick the best of several options (which unit
+  to hire, which move to take) must not allocate, rebuild or refresh anything it
+  touches, including cache-use timestamps. If scoring can trigger the same side
+  effects as actually doing the work, "read-only" claims about it are false and any
+  performance comparison built on it is unreliable.
+- Never bound simulation work by wall-clock time or a timeout: this is a lockstep
+  engine, and two machines running the same tick at different real speeds must still
+  do identical work. Use a fixed count of ticks, steps or comparisons instead.
+- A new regression harness only protects the codebase once
+  `.github/workflows/build.yml` actually builds and runs it; one that only runs by
+  hand, once, is not a regression test.
+- When fixing a bug, confirm the regression actually fails against the unpatched
+  code before trusting that it passes against the fix. A test that passes either way
+  is not testing the bug.
+- A cache or other retained state with no eviction policy needs an explicit bound —
+  a count or a byte budget. "It would take an enormous game to reach" is not a bound.
 - For suspected uninitialized reads on macOS, `DET_INIT=zero` versus `pattern` and
   allocator scribbling (`MallocPreScribble=1 MallocScribble=1`) can help isolate
   the cause where Valgrind/MSan are unavailable. Repeat the same seed serially in
