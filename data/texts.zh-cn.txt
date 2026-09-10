@@ -1228,3 +1228,209 @@ Cortex
 自动环面视图
 [toggle torus view]
 切换 2D／环面视图
+[settings Add key to sequence]
+添加按键到序列
+[settings Add shortcut]
+添加快捷键
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+使用鼠标滚轮更改分配的单位数量。如果关闭此选项，请按住 Ctrl 键以使用滚轮。按住 Shift 键可调整旗帜半径。此选项还控制其他菜单中的鼠标滚轮输入。
+[settings Adjust music and voice volume.]
+调节音乐和语音音量。
+[settings Adjust the pace of play.]
+调整游戏速度。
+[settings Advanced binding]
+高级快捷键设置
+[settings Artwork & effects]
+美术与特效
+[settings Audio]
+音频
+[settings Bind Escape]
+绑定 Escape 键
+[settings Building]
+建筑物
+[settings Building defaults]
+建筑默认设置
+[settings Cancel]
+取消
+[settings Changes saved automatically]
+自动保存更改
+[settings Changes you make during play update these defaults for future games.]
+游戏中所做的更改会更新这些默认值，供之后的游戏使用。
+[settings Changing the renderer requires a restart.]
+更改渲染器需要重新启动。
+[settings Choose a binding to change it, or add another shortcut for an action.]
+选择快捷键进行编辑，或为某个操作添加另一组快捷键。
+[settings Choose a window or fill the screen.]
+选择窗口或全屏模式。
+[settings Choose how the game looks on your screen.]
+选择游戏在屏幕上的外观。
+[settings Completed]
+已竣工建筑物
+[settings Construction]
+建造中
+[settings Controls]
+游戏控制
+[settings Could not change display mode. The previous mode was restored.]
+无法更改显示模式，已恢复为之前的模式。
+[settings Could not save]
+无法保存
+[settings Current display]
+当前显示设置
+[settings Default]
+默认
+[settings Display]
+显示
+[settings Display & graphics]
+显示和图形
+[settings Display the Globulation 2 cursor.]
+显示 Globulation 2 光标。
+[settings Done]
+完成
+[settings Edit shortcut]
+编辑键盘快捷键
+[settings Flags]
+旗帜
+[settings Full]
+完整细节
+[settings Fullscreen]
+全屏幕
+[settings Game]
+游戏
+[settings Game speed]
+游戏速度
+[settings Gameplay]
+游戏玩法
+[settings Graphics detail]
+图形细节
+[settings Keep]
+保留更改
+[settings Keep this display mode?]
+要保留这个显示模式吗？
+[settings Keep your volume levels while silencing audio.]
+将所有声音静音而不更改保存的音量级别。
+[settings Key]
+按键
+[settings Keyboard shortcuts]
+键盘快捷键
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+按键依次组成序列。每个步骤可设置为在按下或松开该按键时触发。
+[settings Language]
+语言
+[settings Language & player]
+语言与玩家
+[settings Language used throughout the interface.]
+整个界面使用的语言。
+[settings Level]
+等级
+[settings Map editor]
+地图编辑器
+[settings Missing font]
+缺少字体
+[settings Music volume]
+音量 (音乐)
+[settings Mute audio]
+静音
+[settings Name shown to other players.]
+向其他玩家显示的名称。
+[settings Off]
+关闭
+[settings On]
+开启
+[settings OpenGL is not available in this build.]
+OpenGL 在此版本中不可用。
+[settings Player name]
+玩家名称
+[settings Press]
+按下时
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+请按下按键。Escape 可取消按键捕获。要绑定 Escape，请选择“绑定 Escape 键”。
+[settings Radius]
+半径
+[settings Reduced]
+精简细节
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+精简细节会关闭云及其阴影、简化魔法特效，并降低透明度。
+[settings Release]
+松开时
+[settings Remember assignments between games]
+记住游戏之间的单位分配
+[settings Remove key]
+移除按键
+[settings Remove shortcut]
+移除快捷键
+[settings Renderer]
+图形渲染器
+[settings Replace conflicting bindings]
+替换冲突的键盘快捷键
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+要将此情境中的快捷键恢复为默认值吗？更改会立即保存。
+[settings Resolution]
+屏幕分辨率
+[settings Restore default shortcuts]
+恢复默认快捷键
+[settings Retry]
+再试一次
+[settings Revert]
+撤销更改
+[settings Reverting in]
+恢复倒计时：
+[settings Save shortcut]
+保存键盘快捷键
+[settings Saved — restart required]
+已保存 — 需要重新启动
+[settings Saving…]
+正在保存…
+[settings Scroll wheel enabled]
+滚轮开启
+[settings Set starting unit assignments by building type and level.]
+按建筑类型和级别设置起始单位分配。
+[settings Set your language and player name.]
+设置您的语言和玩家名称。
+[settings Settings]
+设定
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+仅限单人游戏和录像回放。多人游戏固定为1x速度。
+[settings Software]
+软件渲染
+[settings Starting unit counts and radius for newly placed flags.]
+新放置旗帜的初始单位数量和半径。
+[settings This shortcut conflicts with existing bindings:]
+此键盘快捷键与现有快捷键冲突：
+[settings Trigger]
+触发方式
+[settings Unbound]
+未绑定
+[settings Unit counts assigned to new construction sites.]
+分配给新建筑工地的单位数量。
+[settings Unit counts for completed buildings.]
+分配给已完工建筑物的单位数量。
+[settings Unit counts while a building is being upgraded.]
+建筑物升级期间分配的单位数量。
+[settings Units]
+单位
+[settings Upgrades]
+建筑升级
+[settings Use game cursor]
+使用游戏光标
+[settings Voice volume]
+语音音量
+[settings Window mode]
+窗口模式
+[settings Window-only sizes also switch the game to windowed mode.]
+选择仅支持窗口模式的分辨率也会将游戏切换到窗口模式。
+[settings Windowed]
+窗口模式
+[settings Windowed only]
+仅限窗口模式
+[settings seconds]
+秒
+[settings Flag]
+旗帜
+[settings High-resolution artwork]
+高分辨率美术素材
+[settings Apply artwork on the next game or editor load (OpenGL).]
+美术素材会在下次加载游戏或地图编辑器时应用 (OpenGL)。
+[settings Automatic torus view]
+自动环面视图
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+在地图上移动时自动显示圆环形状的地图概览 (OpenGL)。

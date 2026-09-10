@@ -1230,3 +1230,209 @@ Cortex
 عرض الطارة تلقائيًا
 [toggle torus view]
 التبديل بين العرض ثنائي الأبعاد والطارة
+[settings Add key to sequence]
+إضافة مفتاح إلى التسلسل
+[settings Add shortcut]
+ﺃﺿِﻒ ﺍﺧﺘﺼﺎﺭًﺍ
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+استخدم عجلة الماوس لتغيير عدد الوحدات المخصصة. إذا تم إيقاف تشغيل هذا الخيار، فاضغط باستمرار على مفتاح Ctrl لاستخدام العجلة. اضغط مع الاستمرار على مفتاح Shift لضبط نصف قطر العلم. يتحكم هذا الخيار أيضًا في إدخال عجلة الماوس في القوائم الأخرى.
+[settings Adjust music and voice volume.]
+اضبط مستوى صوت الموسيقى والكلام.
+[settings Adjust the pace of play.]
+ضبط سرعة اللعبة.
+[settings Advanced binding]
+إعداد متقدم للاختصار
+[settings Artwork & effects]
+الرسومات والمؤثرات
+[settings Audio]
+ﺍﻟﺼﻮﺕ
+[settings Bind Escape]
+تعيين مفتاح Escape
+[settings Building]
+مبنى
+[settings Building defaults]
+الإعدادات الافتراضية للمباني
+[settings Cancel]
+ﺃﻟﻎِ
+[settings Changes saved automatically]
+تُحفظ التغييرات تلقائيًا
+[settings Changes you make during play update these defaults for future games.]
+تعمل التغييرات التي تجريها أثناء اللعب على تحديث هذه الإعدادات الافتراضية للألعاب المستقبلية.
+[settings Changing the renderer requires a restart.]
+يتطلب تغيير العارض إعادة التشغيل.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+حدد اختصار لوحة المفاتيح لتحريره، أو قم بإضافة اختصار آخر لإجراء ما.
+[settings Choose a window or fill the screen.]
+اختر وضع النافذة أو ملء الشاشة.
+[settings Choose how the game looks on your screen.]
+اختر كيف تبدو اللعبة على شاشتك.
+[settings Completed]
+المباني المكتملة
+[settings Construction]
+قيد الإنشاء
+[settings Controls]
+التحكم
+[settings Could not change display mode. The previous mode was restored.]
+لا يمكن تغيير وضع العرض. تمت استعادة الوضع السابق.
+[settings Could not save]
+لا يمكن الحفظ
+[settings Current display]
+إعدادات العرض الحالية
+[settings Default]
+الافتراضي
+[settings Display]
+ﺍﻟﻌﺮﺽ
+[settings Display & graphics]
+العرض والرسومات
+[settings Display the Globulation 2 cursor.]
+عرض مؤشر Globulation 2.
+[settings Done]
+تم
+[settings Edit shortcut]
+تحرير اختصار لوحة المفاتيح
+[settings Flags]
+أعلام
+[settings Full]
+التفاصيل الكاملة
+[settings Fullscreen]
+ﻣﻞء ﺍﻟﺸﺎﺷﺔ
+[settings Game]
+ﺍﻟﻠﻌﺒﺔ
+[settings Game speed]
+ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+[settings Gameplay]
+أسلوب اللعب
+[settings Graphics detail]
+تفاصيل الرسومات
+[settings Keep]
+احتفظ بالتغييرات
+[settings Keep this display mode?]
+هل تريد الاحتفاظ بوضع العرض هذا؟
+[settings Keep your volume levels while silencing audio.]
+كتم الصوت بالكامل دون تغيير مستويات الصوت المحفوظة.
+[settings Key]
+مفتاح
+[settings Keyboard shortcuts]
+اختصارات لوحة المفاتيح
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+تشكّل المفاتيح تسلسلاً حسب ترتيبها. يمكن تفعيل كل خطوة عند الضغط على مفتاحها أو إفلاته.
+[settings Language]
+ﺍﻟﻠﻐﺔ
+[settings Language & player]
+اللغة واللاعب
+[settings Language used throughout the interface.]
+اللغة المستخدمة في جميع أنحاء الواجهة.
+[settings Level]
+ﺍﻟﻤﺴﺘﻮﻯ
+[settings Map editor]
+محرر الخرائط
+[settings Missing font]
+الخط مفقود
+[settings Music volume]
+ﻣﺴﺘﻮﻯ ﺍﻟﻤﻮﺳﻴﻘﻰ
+[settings Mute audio]
+كتم الصوت
+[settings Name shown to other players.]
+الاسم الموضح للاعبين الآخرين.
+[settings Off]
+معطّل
+[settings On]
+مفعّل
+[settings OpenGL is not available in this build.]
+OpenGL غير متوفر في هذا الإصدار.
+[settings Player name]
+ﺍﺳﻢ ﺍﻟﻼﻋﺐ
+[settings Press]
+ضغط المفتاح
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+اضغط على مفتاح. يلغي Escape تسجيل المفتاح. لتعيين Escape، اختر «تعيين مفتاح Escape».
+[settings Radius]
+نصف القطر
+[settings Reduced]
+تفاصيل مخفضة
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+يؤدي تقليل التفاصيل إلى تعطيل السحب وظلالها، وتبسيط التأثيرات السحرية، وتقليل الشفافية.
+[settings Release]
+إفلات المفتاح
+[settings Remember assignments between games]
+تذكّر أعداد الوحدات المخصصة بين الألعاب
+[settings Remove key]
+إزالة مفتاح لوحة المفاتيح
+[settings Remove shortcut]
+ﺃﺯِﻝ ﺍﻻﺧﺘﺼﺎﺭ
+[settings Renderer]
+عارض الرسومات
+[settings Replace conflicting bindings]
+استبدال اختصارات لوحة المفاتيح المتعارضة
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+هل تريد استبدال الاختصارات في هذا السياق بالاختصارات الافتراضية؟ سيتم الحفظ فورًا.
+[settings Resolution]
+دقة الشاشة
+[settings Restore default shortcuts]
+ﺍﺳﺘﻌﺪ ﺍﻻﺧﺘﺼﺎﺭﺍﺕ ﺍﻻﻓﺘﺮﺍﺿﻴﺔ ﻟﻠﻮﺣﺔ ﺍﻟﻤﻔﺎﺗﻴﺢ
+[settings Retry]
+حاول مرة أخرى
+[settings Revert]
+التراجع عن التغييرات
+[settings Reverting in]
+الرجوع خلال
+[settings Save shortcut]
+حفظ اختصار لوحة المفاتيح
+[settings Saved — restart required]
+تم الحفظ — يلزم إعادة التشغيل
+[settings Saving…]
+جارٍ الحفظ…
+[settings Scroll wheel enabled]
+ﻋﺠﻠﺔ ﺍﻟﻔﺄﺭﺓ ﻣﺘﺎﺣﺔ
+[settings Set starting unit assignments by building type and level.]
+حدد عدد الوحدات المخصصة في البداية حسب نوع المبنى ومستواه.
+[settings Set your language and player name.]
+اضبط لغتك واسم اللاعب.
+[settings Settings]
+ﺍﻹﻋﺪﺍﺩﺍﺕ
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
+[settings Software]
+تصيير برمجي
+[settings Starting unit counts and radius for newly placed flags.]
+العدد الأولي للوحدات ونصف القطر للأعلام الموضوعة حديثًا.
+[settings This shortcut conflicts with existing bindings:]
+يتعارض اختصار لوحة المفاتيح هذا مع الاختصارات الموجودة:
+[settings Trigger]
+حدث التنشيط
+[settings Unbound]
+لم يتم تعيين اختصار
+[settings Unit counts assigned to new construction sites.]
+عدد الوحدات المخصصة لمواقع البناء الجديدة.
+[settings Unit counts for completed buildings.]
+عدد الوحدات المخصصة للمباني المكتملة.
+[settings Unit counts while a building is being upgraded.]
+عدد الوحدات المخصصة للمبنى أثناء ترقيته.
+[settings Units]
+وحدات
+[settings Upgrades]
+ترقية المباني
+[settings Use game cursor]
+استخدم مؤشر اللعبة
+[settings Voice volume]
+ﻣﺴﺘﻮﻯ ﺍﻟﺼﻮﺕ
+[settings Window mode]
+وضع النافذة
+[settings Window-only sizes also switch the game to windowed mode.]
+يؤدي اختيار دقة مخصصة لوضع النافذة فقط إلى تحويل اللعبة إلى وضع النافذة أيضًا.
+[settings Windowed]
+وضع النافذة
+[settings Windowed only]
+وضع النافذة فقط
+[settings seconds]
+ثوانٍ
+[settings Flag]
+علم
+[settings High-resolution artwork]
+رسومات عالية الدقة
+[settings Apply artwork on the next game or editor load (OpenGL).]
+تُطبّق الرسومات عند تحميل اللعبة أو محرر الخرائط في المرة القادمة (OpenGL).
+[settings Automatic torus view]
+عرض الطارة تلقائيًا
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).

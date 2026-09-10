@@ -14,7 +14,7 @@ class Settings
 public:
 	Settings();
 	void load(const std::string filename="preferences.txt");
-	void save(const std::string filename="preferences.txt");
+	bool save(const std::string filename="preferences.txt");
 
 	/**
 	 * Returns the username variable in settings.

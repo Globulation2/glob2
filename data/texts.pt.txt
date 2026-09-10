@@ -1238,3 +1238,209 @@ Ainda a trabalhar: %0
 Vista toroidal automática
 [toggle torus view]
 Alternar vista 2D / toroidal
+[settings Add key to sequence]
+Adicionar tecla à sequência
+[settings Add shortcut]
+Adicionar atalho
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Utilize a roda do rato para alterar o número de unidades atribuídas. Se esta opção estiver desativada, mantenha premida a tecla Ctrl para utilizar a roda. Segure a tecla Shift para ajustar o raio da bandeira. Esta opção também controla a entrada da roda do rato noutros menus.
+[settings Adjust music and voice volume.]
+Ajuste o volume da música e da voz.
+[settings Adjust the pace of play.]
+Ajuste a velocidade do jogo.
+[settings Advanced binding]
+Edição avançada de atalhos
+[settings Artwork & effects]
+Arte e efeitos
+[settings Audio]
+Áudio
+[settings Bind Escape]
+Atribuir a tecla Escape
+[settings Building]
+Edifício
+[settings Building defaults]
+Predefinições dos edifícios
+[settings Cancel]
+Cancelar
+[settings Changes saved automatically]
+Alterações guardadas automaticamente
+[settings Changes you make during play update these defaults for future games.]
+As alterações feitas durante uma partida atualizam estas predefinições para partidas futuras.
+[settings Changing the renderer requires a restart.]
+Alterar o renderizador requer uma reinicialização.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Selecione um atalho de teclado para o editar ou adicione outro atalho para uma ação.
+[settings Choose a window or fill the screen.]
+Escolha entre o modo de janela e o ecrã inteiro.
+[settings Choose how the game looks on your screen.]
+Escolha a aparência do jogo no ecrã.
+[settings Completed]
+Edifícios concluídos
+[settings Construction]
+Construção
+[settings Controls]
+Comandos do jogo
+[settings Could not change display mode. The previous mode was restored.]
+Não foi possível alterar o modo de visualização. O modo anterior foi restaurado.
+[settings Could not save]
+Não foi possível guardar
+[settings Current display]
+Definições de visualização atuais
+[settings Default]
+Predefinido
+[settings Display]
+Ecrã
+[settings Display & graphics]
+Ecrã e gráficos
+[settings Display the Globulation 2 cursor.]
+Mostra o cursor do Globulation 2.
+[settings Done]
+Concluído
+[settings Edit shortcut]
+Editar atalho de teclado
+[settings Flags]
+Bandeiras
+[settings Full]
+Detalhes completos
+[settings Fullscreen]
+Ecrã inteiro
+[settings Game]
+Partida
+[settings Game speed]
+Velocidade do jogo
+[settings Gameplay]
+Jogabilidade
+[settings Graphics detail]
+Detalhe gráfico
+[settings Keep]
+Manter alterações
+[settings Keep this display mode?]
+Manter este modo de visualização?
+[settings Keep your volume levels while silencing audio.]
+Silenciar todo o som sem alterar os níveis de volume guardados.
+[settings Key]
+Tecla
+[settings Keyboard shortcuts]
+Atalhos de teclado
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+As teclas formam uma sequência ordenada. Cada tecla pode ativar a ação ao ser premida ou solta.
+[settings Language]
+Língua
+[settings Language & player]
+Língua e jogador
+[settings Language used throughout the interface.]
+Língua utilizada em toda a interface.
+[settings Level]
+Nível
+[settings Map editor]
+Editor de mapas
+[settings Missing font]
+Fonte ausente
+[settings Music volume]
+Volume (música)
+[settings Mute audio]
+Silenciar áudio
+[settings Name shown to other players.]
+Nome mostrado a outros jogadores.
+[settings Off]
+Desativado
+[settings On]
+Ativado
+[settings OpenGL is not available in this build.]
+O OpenGL não está disponível nesta compilação.
+[settings Player name]
+Nome do jogador
+[settings Press]
+Ao premir
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Prima uma tecla. Escape cancela a captura. Para atribuir Escape, selecione "Atribuir a tecla Escape".
+[settings Radius]
+Raio
+[settings Reduced]
+Detalhe reduzido
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Os detalhes reduzidos desativam as nuvens e as suas sombras, simplificam os efeitos mágicos e reduzem a transparência.
+[settings Release]
+Ao soltar
+[settings Remember assignments between games]
+Memorizar atribuições entre partidas
+[settings Remove key]
+Remover tecla
+[settings Remove shortcut]
+Remover atalho
+[settings Renderer]
+Renderizador gráfico
+[settings Replace conflicting bindings]
+Substituir atalhos em conflito
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Substituir os atalhos deste contexto pelos predefinidos? As alterações são guardadas imediatamente.
+[settings Resolution]
+Resolução do ecrã
+[settings Restore default shortcuts]
+Restaurar atalhos predefinidos
+[settings Retry]
+Tentar novamente
+[settings Revert]
+Reverter alterações
+[settings Reverting in]
+A reverter em
+[settings Save shortcut]
+Guardar atalho de teclado
+[settings Saved — restart required]
+Guardado — é necessário reiniciar
+[settings Saving…]
+A guardar…
+[settings Scroll wheel enabled]
+Roda do rato ativada
+[settings Set starting unit assignments by building type and level.]
+Defina o número inicial de unidades atribuídas por tipo e nível de edifício.
+[settings Set your language and player name.]
+Defina a sua língua e o nome de jogador.
+[settings Settings]
+Opções
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Apenas para um jogador e repetições. As partidas multijogador decorrem a 1x.
+[settings Software]
+Renderização por software
+[settings Starting unit counts and radius for newly placed flags.]
+Número inicial de unidades e raio das novas bandeiras.
+[settings This shortcut conflicts with existing bindings:]
+Este atalho de teclado entra em conflito com os atalhos existentes:
+[settings Trigger]
+Evento de ativação
+[settings Unbound]
+Nenhum atalho atribuído
+[settings Unit counts assigned to new construction sites.]
+Número de unidades atribuídas a novos estaleiros de construção.
+[settings Unit counts for completed buildings.]
+Número de unidades para edifícios concluídos.
+[settings Unit counts while a building is being upgraded.]
+Número de unidades durante a melhoria de um edifício.
+[settings Units]
+Unidades
+[settings Upgrades]
+Melhorias
+[settings Use game cursor]
+Utilizar o cursor do jogo
+[settings Voice volume]
+Volume da voz
+[settings Window mode]
+Modo janela
+[settings Window-only sizes also switch the game to windowed mode.]
+A seleção de uma resolução que suporte apenas o modo de janela também muda o jogo para o modo de janela.
+[settings Windowed]
+Janela
+[settings Windowed only]
+Apenas em janela
+[settings seconds]
+segundos
+[settings Flag]
+Bandeira
+[settings High-resolution artwork]
+Arte em alta resolução
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL).
+[settings Automatic torus view]
+Vista toroidal automática
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Mostrar automaticamente a vista geral toroidal enquanto se desloca pelo mapa (OpenGL).

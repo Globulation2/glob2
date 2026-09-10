@@ -1232,3 +1232,209 @@ Cortex
 Аутоматски торусни приказ
 [toggle torus view]
 Промени 2D / торусни приказ
+[settings Add key to sequence]
+Додај тастер у низ
+[settings Add shortcut]
+Додај пречицу
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Точкићем миша мењајте број додељених јединица. Ако је опција искључена, држите Ctrl. Уз Shift мењате радијус заставе. Опција утиче и на употребу точкића у другим менијима.
+[settings Adjust music and voice volume.]
+Подесите јачину музике и гласа.
+[settings Adjust the pace of play.]
+Подесите брзину игре.
+[settings Advanced binding]
+Напредно уређивање пречица
+[settings Artwork & effects]
+Графика и ефекти
+[settings Audio]
+Звук
+[settings Bind Escape]
+Додели Escape
+[settings Building]
+Зграда
+[settings Building defaults]
+Подразумевана подешавања зграда
+[settings Cancel]
+Поништи
+[settings Changes saved automatically]
+Промене се аутоматски чувају
+[settings Changes you make during play update these defaults for future games.]
+Промене које направите током играња ажурирају ове подразумеване вредности за будуће игре.
+[settings Changing the renderer requires a restart.]
+Промена рендерера захтева поновно покретање.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Изаберите пречицу на тастатури да бисте је изменили или додајте другу пречицу за радњу.
+[settings Choose a window or fill the screen.]
+Изаберите приказ у прозору или преко целог екрана.
+[settings Choose how the game looks on your screen.]
+Одаберите како игра изгледа на екрану.
+[settings Completed]
+Завршене зграде
+[settings Construction]
+Изградња
+[settings Controls]
+Контроле игре
+[settings Could not change display mode. The previous mode was restored.]
+Није могуће променити режим приказа. Претходни режим је враћен.
+[settings Could not save]
+Није могуће сачувати
+[settings Current display]
+Тренутни режим приказа
+[settings Default]
+Подразумевано
+[settings Display]
+Екран
+[settings Display & graphics]
+Дисплеј и графика
+[settings Display the Globulation 2 cursor.]
+Прикажите курсор игре Globulation 2.
+[settings Done]
+Готово
+[settings Edit shortcut]
+Уреди пречицу
+[settings Flags]
+Заставе
+[settings Full]
+Потпуни детаљи
+[settings Fullscreen]
+Цео екран
+[settings Game]
+Игра
+[settings Game speed]
+Брзина игре
+[settings Gameplay]
+Ток игре
+[settings Graphics detail]
+Детаљи графике
+[settings Keep]
+Задржи промене
+[settings Keep this display mode?]
+Задржати овај режим приказа?
+[settings Keep your volume levels while silencing audio.]
+Искључите сав звук без промене сачуваних нивоа јачине звука.
+[settings Key]
+Тастер
+[settings Keyboard shortcuts]
+Пречице на тастатури
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Тастери формирају низ у задатом редоследу. Сваки корак може да се активира притиском или отпуштањем одговарајућег тастера.
+[settings Language]
+Језик
+[settings Language & player]
+Језик и играч
+[settings Language used throughout the interface.]
+Језик који се користи у целом интерфејсу.
+[settings Level]
+Ниво
+[settings Map editor]
+Уређивач мапа
+[settings Missing font]
+Недостаје фонт
+[settings Music volume]
+Јачина музике
+[settings Mute audio]
+Искључи звук
+[settings Name shown to other players.]
+Име приказано другим играчима.
+[settings Off]
+Искључено
+[settings On]
+Укључено
+[settings OpenGL is not available in this build.]
+OpenGL није доступан у овој верзији.
+[settings Player name]
+Име играча
+[settings Press]
+При притиску
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Притисните тастер. Escape отказује унос пречице. Да бисте доделили Escape, изаберите „Додели Escape“.
+[settings Radius]
+Радијус
+[settings Reduced]
+Смањени детаљи
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Смањени детаљи онемогућавају облаке и њихове сенке, поједностављују магичне ефекте и смањују транспарентност.
+[settings Release]
+При отпуштању
+[settings Remember assignments between games]
+Памти доделе јединица између игара
+[settings Remove key]
+Уклони тастер
+[settings Remove shortcut]
+Уклони пречицу
+[settings Renderer]
+Графички рендерер
+[settings Replace conflicting bindings]
+Замени пречице у сукобу
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Заменити пречице у овом контексту подразумеваним? Промене се одмах чувају.
+[settings Resolution]
+Резолуција екрана
+[settings Restore default shortcuts]
+Врати подразумеване пречице
+[settings Retry]
+Покушај поново
+[settings Revert]
+Поништи промене
+[settings Reverting in]
+Враћање за
+[settings Save shortcut]
+Сачувај пречицу на тастатури
+[settings Saved — restart required]
+Сачувано — потребно је поновно покретање
+[settings Saving…]
+Чување…
+[settings Scroll wheel enabled]
+Точкић миша омогућен
+[settings Set starting unit assignments by building type and level.]
+Подесите почетни број додељених јединица према врсти и нивоу зграде.
+[settings Set your language and player name.]
+Подесите свој језик и име играча.
+[settings Settings]
+Подешавања
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Само за једног играча и снимке. Игра за више играча ради брзином 1x.
+[settings Software]
+Софтверско приказивање
+[settings Starting unit counts and radius for newly placed flags.]
+Почетни број јединица и радијус за новопостављене заставе.
+[settings This shortcut conflicts with existing bindings:]
+Ова пречица на тастатури је у сукобу са постојећим пречицама:
+[settings Trigger]
+Догађај активације
+[settings Unbound]
+Није додељена пречица
+[settings Unit counts assigned to new construction sites.]
+Број јединица додељених новим градилиштима.
+[settings Unit counts for completed buildings.]
+Број јединица додељених завршеним зградама.
+[settings Unit counts while a building is being upgraded.]
+Број додељених јединица током надоградње зграде.
+[settings Units]
+Јединице
+[settings Upgrades]
+Надоградње зграда
+[settings Use game cursor]
+Користи курсор игре
+[settings Voice volume]
+Јачина гласа
+[settings Window mode]
+Прозорски режим
+[settings Window-only sizes also switch the game to windowed mode.]
+Избор резолуције која подржава само прозорски режим такође пребацује игру у прозорски режим.
+[settings Windowed]
+У прозору
+[settings Windowed only]
+Само у прозору
+[settings seconds]
+секунди
+[settings Flag]
+Застава
+[settings High-resolution artwork]
+Графика високе резолуције
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Изабрана графика се примењује при следећем учитавању игре или уређивача мапа (OpenGL).
+[settings Automatic torus view]
+Аутоматски торусни приказ
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Аутоматски прикажи преглед мапе у облику торуса током кретања по мапи (OpenGL).

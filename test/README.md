@@ -308,3 +308,28 @@ python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBu
 ```
 
 The harness runs headlessly in disposable profile directories in Linux and Windows CI.
+
+### Native main Settings redesign
+
+Build `scons -j6 release=1 settings-tests speed-tests` and run
+`python3 test/run-settings-tests.py`. The harness uses disposable profiles and
+writes native captures to `artifacts/settings-redesign/`. It covers all six
+categories, building stages, automatic saving and retry, software display
+confirmation/rollback, pending OpenGL changes, language refresh, and keyboard
+sequence/conflict handling. The shared dropdown checks cover anchoring, mouse and
+keyboard selection, dismissal, wrapping, and scrolling without committing a value.
+It runs at 640×480, 800×600, 1000×700, and 1280×900,
+plus software rendering and doubled English strings. `--quick` runs only 1000×700
+OpenGL. Window and drawable dimensions are logged so 1× runs are not mistaken
+for physical HiDPI validation.
+
+The redesigned screen exposes semantic row IDs (for example `gameplay.speed`)
+for tests; do not locate settings controls by pixel coordinates. Slider updates
+preview immediately and commit on release/idle, whereas discrete changes save
+immediately. Bindings commit only after a complete edit. Legacy preference and
+keyboard file formats remain unchanged.
+
+`python3 test/run-game-speed-tests.py --settings-only` runs the main/in-game
+settings, language, persistence, keyboard, multiplayer eligibility and camera
+cadence regressions without starting the unrelated engine/replay scenarios.
+The full invocation remains available and reports buffered diagnostics on timeout.

@@ -1228,3 +1228,209 @@ Ysagoon Online Gaming
 Автоматичний вигляд тора
 [toggle torus view]
 Перемкнути вигляд 2D / тора
+[settings Add key to sequence]
+Додати клавішу до послідовності
+[settings Add shortcut]
+Додати комбінацію
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Коліщатком миші змінюйте кількість призначених істот. Якщо параметр вимкнено, утримуйте Ctrl. З клавішею Shift змінюється радіус прапора. Параметр також впливає на використання коліщатка в інших меню.
+[settings Adjust music and voice volume.]
+Налаштуйте гучність музики та голосу.
+[settings Adjust the pace of play.]
+Налаштуйте швидкість гри.
+[settings Advanced binding]
+Розширене налаштування комбінації
+[settings Artwork & effects]
+Ілюстрації та ефекти
+[settings Audio]
+Звук
+[settings Bind Escape]
+Призначити клавішу Escape
+[settings Building]
+Будівля
+[settings Building defaults]
+Типові параметри будівель
+[settings Cancel]
+Скасувати
+[settings Changes saved automatically]
+Зміни зберігаються автоматично
+[settings Changes you make during play update these defaults for future games.]
+Зміни, які ви вносите під час гри, оновлюють ці параметри за замовчуванням для майбутніх ігор.
+[settings Changing the renderer requires a restart.]
+Зміна рендерера потребує перезапуску.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Виберіть комбінацію клавіш, щоб змінити її, або додайте іншу комбінацію клавіш для дії.
+[settings Choose a window or fill the screen.]
+Виберіть віконний або повноекранний режим.
+[settings Choose how the game looks on your screen.]
+Виберіть, як гра буде виглядати на вашому екрані.
+[settings Completed]
+Завершені будівлі
+[settings Construction]
+Будівництво
+[settings Controls]
+Керування грою
+[settings Could not change display mode. The previous mode was restored.]
+Не вдалося змінити режим відображення. Відновлено попередній режим.
+[settings Could not save]
+Не вдалося зберегти
+[settings Current display]
+Поточний режим екрана
+[settings Default]
+За замовчуванням
+[settings Display]
+Зображення
+[settings Display & graphics]
+Дисплей і графіка
+[settings Display the Globulation 2 cursor.]
+Показувати курсор гри Globulation 2.
+[settings Done]
+Готово
+[settings Edit shortcut]
+Редагувати комбінацію клавіш
+[settings Flags]
+Прапори
+[settings Full]
+Повна деталізація
+[settings Fullscreen]
+На весь екран
+[settings Game]
+Гра
+[settings Game speed]
+Швидкість гри
+[settings Gameplay]
+Ігровий процес
+[settings Graphics detail]
+Деталізація графіки
+[settings Keep]
+Зберегти зміни
+[settings Keep this display mode?]
+Зберегти цей режим відображення?
+[settings Keep your volume levels while silencing audio.]
+Вимкніть усі звуки, не змінюючи збережених рівнів гучності.
+[settings Key]
+Клавіша
+[settings Keyboard shortcuts]
+Комбінації клавіш
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Клавіші утворюють послідовність у заданому порядку. Кожен крок може спрацьовувати під час натискання або відпускання відповідної клавіші.
+[settings Language]
+Мова
+[settings Language & player]
+Мова та гравець
+[settings Language used throughout the interface.]
+Мова, яка використовується в інтерфейсі.
+[settings Level]
+Рівень
+[settings Map editor]
+Редактор карт
+[settings Missing font]
+Відсутній шрифт
+[settings Music volume]
+Гучність музики
+[settings Mute audio]
+Вимкнути звук
+[settings Name shown to other players.]
+Ім’я, яке бачать інші гравці.
+[settings Off]
+Вимкнено
+[settings On]
+Увімкнено
+[settings OpenGL is not available in this build.]
+OpenGL недоступний у цій збірці.
+[settings Player name]
+Ім’я гравця
+[settings Press]
+Під час натискання
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Натисніть клавішу. Escape скасовує введення комбінації. Щоб призначити Escape, виберіть «Призначити клавішу Escape».
+[settings Radius]
+Радіус
+[settings Reduced]
+Зменшена деталізація
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Зменшена деталізація вимикає хмари та їхні тіні, спрощує магічні ефекти та зменшує прозорість.
+[settings Release]
+Під час відпускання
+[settings Remember assignments between games]
+Запам’ятовувати призначення істот між іграми
+[settings Remove key]
+Видалити клавішу
+[settings Remove shortcut]
+Видалити комбінацію
+[settings Renderer]
+Графічний рендерер
+[settings Replace conflicting bindings]
+Замінити конфліктні комбінації
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Замінити комбінації клавіш у цьому контексті типовими? Зміни збережуться відразу.
+[settings Resolution]
+Роздільна здатність екрана
+[settings Restore default shortcuts]
+Відновити типові комбінації
+[settings Retry]
+Спробувати знову
+[settings Revert]
+Скасувати зміни
+[settings Reverting in]
+Повернення через
+[settings Save shortcut]
+Зберегти комбінацію клавіш
+[settings Saved — restart required]
+Збережено — потрібен перезапуск
+[settings Saving…]
+Збереження…
+[settings Scroll wheel enabled]
+Коліщатко миші увімкнено
+[settings Set starting unit assignments by building type and level.]
+Установіть початкову кількість призначених істот за типом і рівнем будівлі.
+[settings Set your language and player name.]
+Встановіть мову та ім'я гравця.
+[settings Settings]
+Налаштування
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Лише для одиночної гри та повторів. Мережева гра працює на швидкості 1x.
+[settings Software]
+Програмний рендеринг
+[settings Starting unit counts and radius for newly placed flags.]
+Початкова кількість істот і радіус для нових прапорів.
+[settings This shortcut conflicts with existing bindings:]
+Ця комбінація клавіш конфліктує з наявними комбінаціями клавіш:
+[settings Trigger]
+Подія активації
+[settings Unbound]
+Не призначено
+[settings Unit counts assigned to new construction sites.]
+Кількість істот, призначених на нові будівельні майданчики.
+[settings Unit counts for completed buildings.]
+Кількість істот, призначених до завершених будівель.
+[settings Unit counts while a building is being upgraded.]
+Кількість призначених істот під час удосконалення будівлі.
+[settings Units]
+Істоти
+[settings Upgrades]
+Удосконалення будівель
+[settings Use game cursor]
+Використовувати ігровий курсор
+[settings Voice volume]
+Гучність голосу
+[settings Window mode]
+Віконний режим
+[settings Window-only sizes also switch the game to windowed mode.]
+Якщо вибрати роздільну здатність, яка підтримує лише віконний режим, гра також перемикається у віконний режим.
+[settings Windowed]
+Віконний
+[settings Windowed only]
+Лише у вікні
+[settings seconds]
+секунд
+[settings Flag]
+Прапор
+[settings High-resolution artwork]
+Графіка високої роздільності
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Вибрана графіка застосовується під час наступного завантаження гри або редактора карт (OpenGL).
+[settings Automatic torus view]
+Автоматичний вигляд тора
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Автоматично показувати огляд карти у формі тора під час переміщення по карті (OpenGL).

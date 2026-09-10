@@ -229,6 +229,15 @@ public:
 		this->execute(globalContainer->gfx,40);
 		require(GAGGUI::Style::style==before,"screen execution restores theme");
 	}
+	void executeEscape()
+	{
+		prepare();
+		SDL_Event event{};event.type=SDL_KEYDOWN;event.key.keysym.sym=SDLK_ESCAPE;
+		SDL_PushEvent(&event);
+		auto* before=GAGGUI::Style::style;
+		this->execute(globalContainer->gfx,40);
+		require(GAGGUI::Style::style==before,"screen execution restores theme");
+	}
 	int result() const { return this->returnCode; }
 private:
 	bool prepared=false;
@@ -243,8 +252,8 @@ void capture(const std::string& name,const std::string& path)
 	else if(name=="settings" || name=="settings-buildings" || name=="settings-keys")
 	{
 		Preview<SettingsScreen> s;
-		if(name=="settings-buildings") s.activateGroup(1);
-		if(name=="settings-keys") s.activateGroup(2);
+		if(name=="settings-buildings") s.selectCategory(SettingsScreen::Category::Buildings);
+		if(name=="settings-keys") s.selectCategory(SettingsScreen::Category::Controls);
 		s.render(); s.checkBounds();
 	}
 	else if(name=="lan") { Preview<LANMenuScreen> s; s.render(); s.checkBounds(); }
@@ -490,7 +499,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 		{ Preview<CampaignMenuScreen> s("campaigns/Tutorial_Campaign.txt"); s.executeCancellation(); }
 		{ Preview<CustomGameScreen> s; s.selectFirstListItem(); s.executeCancellation(); }
 		{ Preview<ChooseMapScreen> s("games","game",true); s.executeCancellation(); }
-		{ Preview<SettingsScreen> s; s.executeCancellation(); }
+		{ Preview<SettingsScreen> s; s.executeEscape(); }
 		{ Preview<EditorMainMenu> s; s.executeCancellation(); }
 		{ Preview<NewMapScreen> s; s.executeCancellation(); }
 		{ Preview<LANMenuScreen> s; s.executeCancellation(); }
@@ -498,7 +507,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 		{ Preview<YOGLoginScreen> s(std::make_shared<YOGClient>()); s.executeCancellation(); }
 		{ Preview<YOGRegisterScreen> s(std::make_shared<YOGClient>()); s.executeCancellation(); }
 		{ Preview<CreditScreen> s; s.executeCancellation(); }
-		std::cout << "PASS: actual screen loops, mouse cancellation, theme restoration\n";
+		std::cout << "PASS: actual screen loops, mouse/keyboard exits, theme restoration\n";
 		return 0;
 	}
 	if(mode=="record")

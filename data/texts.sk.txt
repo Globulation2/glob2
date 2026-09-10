@@ -1240,3 +1240,209 @@ Ešte v práci: %0
 Automatické toroidné zobrazenie
 [toggle torus view]
 Prepnúť 2D / toroidné zobrazenie
+[settings Add key to sequence]
+Pridať kláves do sekvencie
+[settings Add shortcut]
+Pridať skratku
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Kolieskom meňte počet priradených jednotiek. Ak je voľba vypnutá, podržte Ctrl. So Shiftom meníte polomer vlajky. Voľba ovplyvňuje aj koliesko v ostatných ponukách.
+[settings Adjust music and voice volume.]
+Upravte hlasitosť hudby a hlasu.
+[settings Adjust the pace of play.]
+Upravte rýchlosť hry.
+[settings Advanced binding]
+Pokročilá úprava skratiek
+[settings Artwork & effects]
+Grafika a efekty
+[settings Audio]
+Zvuk
+[settings Bind Escape]
+Priradiť Escape
+[settings Building]
+Budova
+[settings Building defaults]
+Predvolené nastavenia budov
+[settings Cancel]
+Zrušiť
+[settings Changes saved automatically]
+Zmeny sa ukladajú automaticky
+[settings Changes you make during play update these defaults for future games.]
+Zmeny, ktoré vykonáte počas hry, aktualizujú tieto predvolené hodnoty pre budúce hry.
+[settings Changing the renderer requires a restart.]
+Zmena vykresľovacieho modulu vyžaduje reštart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Vyberte klávesovú skratku na jej úpravu alebo pridajte ďalšiu skratku pre akciu.
+[settings Choose a window or fill the screen.]
+Vyberte režim v okne alebo na celú obrazovku.
+[settings Choose how the game looks on your screen.]
+Vyberte, ako bude hra vyzerať na obrazovke.
+[settings Completed]
+Dokončené budovy
+[settings Construction]
+Výstavba
+[settings Controls]
+Ovládanie hry
+[settings Could not change display mode. The previous mode was restored.]
+Nebolo možné zmeniť režim zobrazenia. Predchádzajúci režim bol obnovený.
+[settings Could not save]
+Nepodarilo sa uložiť
+[settings Current display]
+Aktuálny režim zobrazenia
+[settings Default]
+Predvolené
+[settings Display]
+Zobrazenie
+[settings Display & graphics]
+Zobrazenie a grafika
+[settings Display the Globulation 2 cursor.]
+Zobrazovať kurzor hry Globulation 2.
+[settings Done]
+Hotovo
+[settings Edit shortcut]
+Upraviť klávesovú skratku
+[settings Flags]
+Vlajky
+[settings Full]
+Plné
+[settings Fullscreen]
+Celá obrazovka
+[settings Game]
+Hra
+[settings Game speed]
+Rýchlosť hry
+[settings Gameplay]
+Hrateľnosť
+[settings Graphics detail]
+Grafické detaily
+[settings Keep]
+Ponechať zmeny
+[settings Keep this display mode?]
+Ponechať tento režim zobrazenia?
+[settings Keep your volume levels while silencing audio.]
+Stlmiť všetok zvuk bez zmeny uložených úrovní hlasitosti.
+[settings Key]
+Kláves
+[settings Keyboard shortcuts]
+Klávesové skratky
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Klávesy tvoria sekvenciu v danom poradí. Každý krok možno aktivovať stlačením alebo uvoľnením príslušného klávesu.
+[settings Language]
+Jazyk
+[settings Language & player]
+Jazyk a hráč
+[settings Language used throughout the interface.]
+Jazyk používaný v celom rozhraní.
+[settings Level]
+Úroveň
+[settings Map editor]
+Editor máp
+[settings Missing font]
+Chýba písmo
+[settings Music volume]
+Hlasitosť hudby
+[settings Mute audio]
+Stlmiť zvuk
+[settings Name shown to other players.]
+Meno zobrazené ostatným hráčom.
+[settings Off]
+Vypnuté
+[settings On]
+Zapnuté
+[settings OpenGL is not available in this build.]
+OpenGL nie je v tejto zostave k dispozícii.
+[settings Player name]
+Meno hráča
+[settings Press]
+Pri stlačení
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Stlačte kláves. Escape zruší snímanie vstupu. Ak chcete priradiť Escape, vyberte „Priradiť Escape“.
+[settings Radius]
+Polomer
+[settings Reduced]
+Obmedzené
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Znížené detaily deaktivujú oblaky a ich tiene, zjednodušujú magické efekty a znižujú priehľadnosť.
+[settings Release]
+Pri uvoľnení
+[settings Remember assignments between games]
+Pamätať si priradenia jednotiek medzi hrami
+[settings Remove key]
+Odstrániť kláves
+[settings Remove shortcut]
+Odstrániť skratku
+[settings Renderer]
+Grafický renderer
+[settings Replace conflicting bindings]
+Nahradiť konfliktné klávesové skratky
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Nahradiť skratky v tomto kontexte predvolenými? Zmeny sa ihneď uložia.
+[settings Resolution]
+Rozlíšenie obrazovky
+[settings Restore default shortcuts]
+Obnoviť predvolené skratky
+[settings Retry]
+Skúsiť znova
+[settings Revert]
+Vrátiť zmeny
+[settings Reverting in]
+Návrat o
+[settings Save shortcut]
+Uložiť klávesovú skratku
+[settings Saved — restart required]
+Uložené – vyžaduje sa reštart
+[settings Saving…]
+Ukladá sa…
+[settings Scroll wheel enabled]
+Koliesko myši povolené
+[settings Set starting unit assignments by building type and level.]
+Nastavte počiatočné počty priradených jednotiek podľa typu a úrovne budovy.
+[settings Set your language and player name.]
+Nastavte si jazyk a meno hráča.
+[settings Settings]
+Nastavenia
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Iba pre jedného hráča a záznamy. Hra viacerých hráčov beží rýchlosťou 1x.
+[settings Software]
+Softvérové vykresľovanie
+[settings Starting unit counts and radius for newly placed flags.]
+Počiatočné počty jednotiek a polomer pre novo umiestnené vlajky.
+[settings This shortcut conflicts with existing bindings:]
+Táto klávesová skratka je v konflikte s existujúcimi skratkami:
+[settings Trigger]
+Aktivačná udalosť
+[settings Unbound]
+Nepriradené
+[settings Unit counts assigned to new construction sites.]
+Počty jednotiek priradené novým staveniskám.
+[settings Unit counts for completed buildings.]
+Počty jednotiek priradených k dokončeným budovám.
+[settings Unit counts while a building is being upgraded.]
+Počty priradených jednotiek počas vylepšovania budovy.
+[settings Units]
+Jednotky
+[settings Upgrades]
+Vylepšovanie budov
+[settings Use game cursor]
+Používať herný kurzor
+[settings Voice volume]
+Hlasitosť hlasu
+[settings Window mode]
+Režim okna
+[settings Window-only sizes also switch the game to windowed mode.]
+Výber rozlíšenia, ktoré podporuje iba režim v okne, tiež prepne hru do režimu v okne.
+[settings Windowed]
+V okne
+[settings Windowed only]
+Iba v okne
+[settings seconds]
+sekúnd
+[settings Flag]
+Vlajka
+[settings High-resolution artwork]
+Grafika vo vysokom rozlíšení
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Vybraná grafika sa použije pri ďalšom načítaní hry alebo editora máp (OpenGL).
+[settings Automatic torus view]
+Automatické toroidné zobrazenie
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Automaticky zobraziť prehľad mapy v tvare torusu pri pohybe po mape (OpenGL).
