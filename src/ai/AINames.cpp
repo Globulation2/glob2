@@ -30,7 +30,7 @@ namespace AINames
 			{AI::WARRUSH,         "warrush",         "AIWarrush", "Medium"},
 			{AI::REACHTOINFINITY, "reachtoinfinity", "AIReachToInfinity", "Easy"},
 			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard"},
-			{AI::CORTEX,          "cortex",          "AICortex", "Medium - Experimental"},
+			{AI::CORTEX,          "cortex",          "AICortex", "Medium"},
 		};
 	}
 

@@ -19,7 +19,7 @@ keeps the match summary and launch action available while dense content scrolls.
 - FFA, 2 vs 2 and You vs all presets preserve explicit alliance state. Reducing
   map capacity retains hidden assignments for a later larger map.
 - AI profiles explain strategy, strengths and suggested counterplay. Cortex is
-  Medium / Experimental. The seven existing AI implementations are retained;
+  Medium difficulty. The seven existing AI implementations are retained;
   Maxima is not in the base branch and is not introduced here.
 - All-AI matches launch live watching, with whole-map visibility, optional colony
   viewpoints, pause/speed/inspection, and no gameplay orders from the viewer.
