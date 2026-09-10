@@ -47,6 +47,11 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass)
 	}
 	else if (building->dirtyGradient[swimClass] && lastUpdate+DIRTY_REBUILD_TICKS<=now)
 		rebuild=true;
+	// The ground this field was computed against has changed somewhere. Which
+	// cell, and how far away, does not matter: the field spans the map.
+	else if (building->gradientGeneration[swimClass]!=topologyGeneration
+		&& lastUpdate+DIRTY_REBUILD_TICKS<=now)
+		rebuild=true;
 	// A clearing flag's goals are resources, which grow and get cleared.
 	else if (isClearingFlag(building) && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
 		rebuild=true;

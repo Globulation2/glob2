@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 96
+#define VERSION_MINOR 97
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
