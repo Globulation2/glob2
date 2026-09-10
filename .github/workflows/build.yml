@@ -164,7 +164,7 @@ jobs:
       - name: Test trapped colony elimination
         run: |
           scons -j$(nproc) release=1 server=0 trapped-unit-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest
+          python3 test/run-savegame-safety-tests.py --check-preferences build/linux/client/release/src/TrappedUnitLifecycleTest
 
       - name: Build and run the entering unit draw regression
         run: |
@@ -338,7 +338,7 @@ jobs:
       - name: Test trapped colony elimination
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 trapped-unit-test
-          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest.exe
+          python3 test/run-savegame-safety-tests.py --check-preferences build/mingw/client/release/src/TrappedUnitLifecycleTest.exe
 
       - name: Test torus geometry, picking and cloud coordinates
         run: |
