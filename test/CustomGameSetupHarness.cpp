@@ -671,7 +671,7 @@ struct CustomGameSetupHarness
 		// Restore real AIs before serializing; counting AIs have no wire state.
 		for (int i = 0; i < e.gui.game.gameHeader.getNumberOfPlayers(); ++i)
 			if (e.gui.game.players[i]->ai)
-				e.gui.game.players[i]->makeItAI(AI::NUMBI);
+				e.gui.game.players[i]->makeItAI(AI::ECONO);
 		{
 			GAGCore::BinaryOutputStream out(
 				Toolkit::getFileManager()->openOutputStreamBackend(save));

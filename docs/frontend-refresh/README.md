@@ -73,7 +73,7 @@ The generator uses seed 481516, the existing 128x128 legacy island generator,
 one team, an island-size parameter of 35, 48 starting workers, and small resource
 patches seeded through the existing map API. It runs Reach to Infinity for 12,000
 normal simulation ticks before saving. The AI implementation identifier remains
-`REACHTOINFINITY`; renaming it to Econo is a separate change. Victory conditions
+`ECONO`; renaming it to Econo is a separate change. Victory conditions
 are empty and there are no opponents or mission scripts.
 
 `colony.bin` contains a small menu-specific version marker, the unmodified `Game`
