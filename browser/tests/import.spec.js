@@ -69,13 +69,23 @@ test('imports an exported save, preserves duplicate names, rejects corruption an
 
 test('imports a custom map and starts it through the normal setup screen', async ({page},info) => {
   const bytes=await fs.readFile(path.resolve(__dirname,'../../maps/balanced.map'));
-  await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
+  // CustomGameScreen has no import affordance of its own (#237 replaced its
+  // map browsing with "Premade maps"/"Your maps" library tabs); importing a
+  // map still only happens through the editor's "Load Map" chooser, which
+  // writes into the same maps/ library the lobby's "Your maps" tab lists.
+  await clickMainMenu(page,'editor'); await screen(page,'EditorMainMenu');
+  await menu(page,320,150); await screen(page,'ChooseMapScreen');
   await select(page,'Imported.map',bytes); await imported(page);
   expect(await page.evaluate(() => glob2Diagnostics.mapDigest('Imported.map'))).toEqual(digest(bytes));
   await page.screenshot({path:info.outputPath('imported-map.png')});
-  const download=page.waitForEvent('download'); await menu(page,155,485);
-  expect(digest(await fs.readFile(await (await download).path()))).toEqual(digest(bytes));
-  await menu(page,530,380);
+  // Leave without loading it into the editor; only the library entry matters here.
+  await page.locator('#canvas').press('Escape'); await screen(page,'EditorMainMenu');
+  await page.locator('#canvas').press('Escape'); await screen(page,'MainMenuScreen');
+
+  await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
+  await click(page,425,141); // "Your maps" library.
+  await click(page,291,176); // The imported map's row (only entry in a fresh profile).
+  await clickCustomGameStart(page);
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
 });
 
