@@ -7,6 +7,22 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT USER AUTHORIZATION: larger BARRIER-ONLY experiment to narrow uncertainty.
+Active local output/maxima-barrier-large/controller.py, corrected root
+/home/bradley/glob2-maxima-conversion-fixed/output/barrier-large/batch-NNN.
+Fixed21000pairs,42operational batches of500, freshindices2000–22999,one final
+analysis at21000 with alpha .04/53. Pilot sizing estimates>=90%power for2pp
+under its variance bounds; no guarantee of significance. No old results pooled.
+420existing corrected controls verified accepted without reruns; behavior/fleet gates pass.
+All other farming switches/masterON.100kcap,devlaptop12,pharaoh-dev2/3 three,rig30.
+Top STATUS points to active batch STATUS for live counts. PAIRS.json marks validated
+completed batch; batches are not interim statistical looks. FINAL_RESULT.json after
+full budget. Preserve all failures/evidence and resume affected batch after diagnosis;
+NEVER discard full run or silently retry uncertain games. Hourlymonitor this newrun.
+Perbatch logs losslessly compressed after complete, verified by decompressedSHA256.
+Old8-switch results and cancelled replacement remain preserved; do not restart them.
+All newdevtools/docs remain local-only,not pushed to master.
+
 CURRENT: cancelled replacement controls fully drained, all420 completed receipts
 collected locally (29+27+261+103). All four stop-new-dispatch guards remain present,
 no workers/pending jobs and no replacement confirmation directory/controller.

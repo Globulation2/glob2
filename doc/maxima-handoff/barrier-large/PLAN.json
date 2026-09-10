@@ -1,0 +1,25 @@
+{
+  "protocol_id": "c4ad804e1562350a58453b7fb8c45ca01a5411766b39859ea92f1546889afc3f",
+  "switch": "farming.barrier_topology_enabled",
+  "fixed_pairs": 21000,
+  "scenario_indices": [
+    2000,
+    22999
+  ],
+  "batch_pairs": 500,
+  "batches": 42,
+  "looks": [
+    21000
+  ],
+  "alpha": 0.0007547169811320754,
+  "purpose": "detect two-percentage-point ON-minus-OFF effects with at least90% estimated power under pilot variance bounds; significance not guaranteed",
+  "sizing_source": "evidence/pilot-sizing.json",
+  "reference": "all other farming sub-switches and master ON; focal barrier switch only ON/OFF",
+  "hard_tick_limit": 100000,
+  "old_or_pilot_outcomes_pooled": false,
+  "outcome_based_extension": false,
+  "automatic_default_changes": false,
+  "batch_policy": "operational batches only; no per-batch statistical analysis or significance stopping",
+  "failure_policy": "preserve all receipts and failed identities; no silent retries or full-run discard. Investigate new faults, use conservative missing-outcome bounds if needed and label any departure.",
+  "authorization": "user explicitly requests larger barrier-only experiment for statistical certainty"
+}
