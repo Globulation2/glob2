@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts/map-generator-validation'
 BINARY=ROOT/'build/src/MapGeneratorStudy'
 FIELDS=['method','seed','success','tiles','grass_tiles','sand_tiles','water_tiles','shore','free','fit4','um_grass','um_sand','um_water','seconds','hash']
-EXTRA=['min_local_fit4','worst_wheat_distance','worst_wood_distance','viable_teams','wheat_tiles','wood_tiles','stone_tiles','algae_tiles']
+EXTRA=['min_local_fit4','worst_wheat_distance','worst_wood_distance','viable_teams','wheat_tiles','wood_tiles','stone_tiles','algae_tiles','best_wheat_distance','best_wood_distance']
 PROFILES=set()
 atexit.register(lambda:[shutil.rmtree(Path.home()/('.'+p),ignore_errors=True) for p in PROFILES])
 

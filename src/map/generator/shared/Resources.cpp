@@ -13,6 +13,7 @@
 #include "Terrain.h"
 #include <algorithm>
 #include <cmath>
+#include <queue>
 using namespace MapGeneration;
 
 namespace MapGeneration {
@@ -92,6 +93,58 @@ void fillInResource(Map &map, GenerationContext &context,
   for (unsigned int n = 0; n < points.size(); ++n) {
     map.setResource(points[n].x, points[n].y, resourceType,
                     1 + context.stream("regions")() % maxFillSize);
+  }
+}
+
+void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
+                                int woodRange, int clearRadius) {
+  Map &map = game.map;
+  const int w = map.getW(), h = map.getH();
+  const int exploreLimit = std::max(wheatRange, woodRange) * 5 / 2;
+  const int closeRange = wheatRange / 2;
+  for (int team = 0; team < context.request.nbTeams; ++team) {
+    std::vector<int> dist(size_t(w) * h, -1);
+    std::queue<int> q;
+    int start = context.bootY[team] * w + context.bootX[team];
+    dist[start] = 0;
+    q.push(start);
+    int wheatDist = -1, woodDist = -1;
+    std::vector<MapGeneratorPoint> closeGrass, farGrass;
+    while (!q.empty()) {
+      int p = q.front();
+      q.pop();
+      int x = p % w, y = p / w;
+      if (map.getUMTerrain(x, y) == GRASS && dist[p] >= clearRadius && dist[p] <= exploreLimit)
+        (dist[p] <= closeRange ? closeGrass : farGrass).push_back(MapGeneratorPoint(x, y));
+      for (int dy = -1; dy <= 1; ++dy)
+        for (int dx = -1; dx <= 1; ++dx) {
+          if (dx == 0 && dy == 0)
+            continue;
+          int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+          int np = ny * w + nx;
+          int resType = map.getResource(nx, ny).type;
+          if (resType == CORN && wheatDist < 0)
+            wheatDist = dist[p] + 1;
+          if (resType == WOOD && woodDist < 0)
+            woodDist = dist[p] + 1;
+          if (dist[np] < 0 && dist[p] < exploreLimit &&
+              map.isHardSpaceForGroundUnit(nx, ny, false, 0)) {
+            dist[np] = dist[p] + 1;
+            q.push(np);
+          }
+        }
+    }
+    auto placeReachable = [&](int resourceType) {
+      if (!closeGrass.empty() &&
+          placeResourceClumpInArea(map, context, closeGrass, resourceType, 2))
+        return;
+      if (!farGrass.empty())
+        placeResourceClumpInArea(map, context, farGrass, resourceType, 2);
+    };
+    if (wheatDist < 0 || wheatDist > wheatRange)
+      placeReachable(CORN);
+    if (woodDist < 0 || woodDist > woodRange)
+      placeReachable(WOOD);
   }
 }
 } // namespace MapGeneration

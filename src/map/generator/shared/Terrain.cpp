@@ -250,6 +250,18 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 		}
 	}
 
+	// Fairness guarantee: the bands above are painted from map-wide noise levels with no
+	// awareness of where any team actually starts, so a team's assigned tile can land in a
+	// stretch of grass the noise field never happens to touch — or a straight-line-nearby
+	// deposit can sit across water a worker can never walk to. Top up any team without wheat or
+	// wood within comfortable working range with one small guaranteed clump placed through the
+	// same walkable-space flood used to judge that distance, so it's reachable by construction;
+	// teams the noise pass already served are left untouched. This still has to run before
+	// placeStarts() carves out a small rectangle by the boot tile for the swarm and its workers
+	// (StartingPositions.cpp's setNoResource calls), so skip that band or a clump placed here
+	// would just be wiped a moment later.
+	guaranteeStartingResources(game, context, 24, 32, /*clearRadius=*/6);
+
 	// TODO: count of groves(=options.fruit) does not scale with mapsize.
 	// so it has to be adjusted higher on bigger maps now.
 

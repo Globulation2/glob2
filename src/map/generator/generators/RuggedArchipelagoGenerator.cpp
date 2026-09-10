@@ -384,6 +384,11 @@ static bool generate(Game &game, GenerationContext &context)
 		return false;
 	context.stage = "resources";
 	resources(game, context, options);
+	// Each island's own footprint bounds the compass search above (it stops at the first
+	// non-grass tile), so a small or irregular island can still leave a team short on wheat or
+	// wood even though the search ran in every direction. Top up anyone still missing either
+	// within comfortable range; islands that were already generous are left untouched.
+	guaranteeStartingResources(game, context, 24, 32);
 	return true;
 }
 

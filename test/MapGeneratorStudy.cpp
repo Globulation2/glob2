@@ -181,7 +181,7 @@ int main(int argc, char **argv)
 	if (tuning)
 	{
 		int minLocal = map.getW() * map.getH(), minWheat = 100000, minWood = 100000,
-			viableTeams = 0;
+			bestWheat = 100000, bestWood = 100000, viableTeams = 0;
 		if (success && method != 0)
 			for (int t = 0; t < game.teamsCount(); ++t)
 			{
@@ -228,22 +228,30 @@ int main(int argc, char **argv)
 						}
 				}
 				minLocal = std::min(minLocal, local);
-				// Store the worst (largest) resource distance across teams below.
+				// minWheat/minWood keep the worst (largest) distance across teams, i.e. the
+				// least-served team; bestWheat/bestWood keep the smallest, i.e. the
+				// best-served team. worst-minus-best is the per-map fairness spread between
+				// colonies that a single aggregate (like the worst case alone) can't show: a
+				// map can have a great worst case and still hand one team everything while
+				// another gets comparatively little.
 				if (t == 0)
 				{
-					minWheat = wheat;
-					minWood = wood;
+					minWheat = bestWheat = wheat;
+					minWood = bestWood = wood;
 				}
 				else
 				{
 					minWheat = std::max(minWheat, wheat);
 					minWood = std::max(minWood, wood);
+					bestWheat = std::min(bestWheat, wheat);
+					bestWood = std::min(bestWood, wood);
 				}
 				if (local >= 16 && wheat <= 24 && wood <= 32)
 					++viableTeams;
 			}
-		std::printf("TUNE,%d,%d,%d,%d,%d,%d,%d,%d\n", minLocal, minWheat, minWood, viableTeams,
-					resources[CORN], resources[WOOD], resources[STONE], resources[ALGA]);
+		std::printf("TUNE,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", minLocal, minWheat, minWood, viableTeams,
+					resources[CORN], resources[WOOD], resources[STONE], resources[ALGA], bestWheat,
+					bestWood);
 	}
 	if (!dump.empty())
 	{

@@ -643,11 +643,21 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 		bool dirUsed[8];
 		for (int i = 0; i < 8; i++)
 			dirUsed[i] = false;
+		// Wheat and wood are a colony's two primary resources; stone is secondary. This search
+		// gives each of the four slots below its own compass direction, so a fixed 4th entry
+		// doesn't just repeat a resource type, it silently starves whichever type isn't chosen
+		// of the extra slot every single time. It used to hardcode CORN here, guaranteeing
+		// wheat two placement attempts while wood only ever got one — every colony on this
+		// generator was systematically wood-poor relative to wheat. Decide the 4th slot after
+		// seeing how CORN and WOOD actually did (below) and hand it to whichever came out
+		// narrower, so the reinforcement goes to whichever primary resource needs it that game
+		// instead of the same one every time.
 		int resOrder[4];
 		resOrder[0] = CORN;
 		resOrder[1] = WOOD;
 		resOrder[2] = STONE;
 		resOrder[3] = CORN;
+		int primaryWidth[2] = {0, 0};
 
 		int distWeight[4];
 		distWeight[0] = 1;
@@ -694,6 +704,12 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 			{
 				smallestWidth = maxWidth;
 				smallestResource = res;
+			}
+			if (resI == 0 || resI == 1)
+			{
+				primaryWidth[resI] = maxWidth;
+				if (resI == 1)
+					resOrder[3] = primaryWidth[0] <= primaryWidth[1] ? CORN : WOOD;
 			}
 
 			int dx, dy;
@@ -799,6 +815,12 @@ static bool generate(Game &game, GenerationContext &context)
 		return false;
 	context.stage = "resources";
 	resources(game, context, options);
+	// The directional search above scores each of a team's 8 compass directions by how far a
+	// grass run extends, so a team boxed into a small or oddly-shaped patch can still end up
+	// short on wheat or wood — same gap as the other generators, just reached by a different
+	// placement method. Top up anyone still missing either within comfortable range now that
+	// placeStarts() has already carved its own clearing, so there's nothing left to step on.
+	guaranteeStartingResources(game, context, 24, 32);
 	return true;
 }
 
