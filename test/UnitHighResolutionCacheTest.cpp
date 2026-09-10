@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Run after installing the complete 32-pose HD unit pack; optional 'software' mode.
+// HD/native layer mapping, whole-block resolution fallback, and zoom, for the
+// direct-draw replacement of the removed composite cache. See
+// UnitTeamShaderTest.cpp for shader-vs-CPU pixel comparisons and
+// UnitTeamColorCacheTest.cpp for the bounded CPU cache itself.
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL_image.h>
@@ -9,24 +12,13 @@
 #include <epoxy/gl.h>
 #endif
 #include <cassert>
-#include <cmath>
-#include <filesystem>
 #include <iostream>
-#include <vector>
+#include <string>
 #include "render/UnitAnimation.h"
 
 using namespace GAGCore;
 struct InspectUnitSprite : Sprite
 {
-	size_t coloredEntries() const
-	{
-		size_t count = 0;
-		for (auto layers : {&rotated, &experimentRotated})
-			for (auto layer : *layers)
-				if (layer)
-					count += layer->rotationMap.size();
-		return count;
-	}
 	void checkLayers(bool high) const
 	{
 		assert(images.size() == 1792 && rotated.size() == 1792);
@@ -43,56 +35,63 @@ struct InspectUnitSprite : Sprite
 			}
 		}
 	}
+	// Test-only: simulate a corrupted HD install by dropping one frame's HD
+	// team layer, without touching the checked-in production pack.
+	void dropExperimentRotated(int index)
+	{
+		delete experimentRotated[index];
+		experimentRotated[index] = nullptr;
+	}
+	// Test-only: simulate a frame with no team layer at all (as ordinary,
+	// non-team-colored sprites already have for every frame).
+	void dropRotated(int index)
+	{
+		delete rotated[index];
+		rotated[index] = nullptr;
+	}
 };
 
 int main(int argc, char **argv)
 {
 	const bool software = argc > 1 && std::string(argv[1]) == "software";
 	Toolkit::init("glob2-unit-hd-cache-test");
-	auto gfx = Toolkit::initGraphic(640, 480, software ? 0 : GraphicContext::USEGPU,
-	                                "HD unit cache checks");
+	auto gfx = Toolkit::initGraphic(640, 480, software ? 0 : GraphicContext::USEGPU, "HD unit cache checks");
 	Sprite::setHighResolution(true);
-	if (argc > 1 && std::string(argv[1]) == "partial")
-	{
-		{
-			InspectUnitSprite sprite;
-			assert(sprite.load("data/gfx/unit"));
-			assert(sprite.getCachedComposite({{256, 255}})->getW() == 152);
-			assert(sprite.getCachedComposite({{256, 255}, {257, 127}})->getW() == 38);
-			assert(sprite.coloredEntries() == 0);
-		}
-		Toolkit::close();
-		std::cout << "PASS partial HD shutter falls back as a whole; complete HD frame stays sharp"
-		          << std::endl;
-		return 0;
-	}
 	{
 		InspectUnitSprite sprite;
 		assert(sprite.load("data/gfx/unit"));
 		sprite.checkLayers(!software);
-		// A spent budget defers misses, but never hides an existing composite.
-		Sprite::beginCompositeFrame(0);
-		assert(sprite.getCachedComposite({{256,255}}, true) == nullptr);
-		const auto entries = sprite.getCompositeEntries();
-		sprite.drawCachedComposite(gfx, 0, 0, 256, {{256,255}});
-		assert(sprite.getCompositeEntries() == entries && sprite.coloredEntries() == 0);
-		Sprite::beginCompositeFrame();
-		auto ready = sprite.getCachedComposite({{256,255}}, true);
-		assert(ready);
-		Sprite::beginCompositeFrame(0);
-		assert(sprite.getCachedComposite({{256,255}}, true) == ready);
-		assert(sprite.getCachedComposite({{257,255}}, true) == nullptr);
-		gfx->nextFrame(); // Presentation replenishes the budget on either backend.
-		assert(sprite.getCachedComposite({{257,255}}, true));
+		assert(sprite.getTeamColorCacheEntries() == 0);
 
+		// Whole-block native fallback: index 256 and 257 share a 32-phase
+		// action/direction block (see UnitAnimation.h); dropping 257's HD team
+		// layer must make the whole block ineligible for HD, not just 257.
+		if (!software)
+		{
+			assert(sprite.blockHasCompleteHD(256) && sprite.blockHasCompleteHD(257));
+			sprite.dropExperimentRotated(257);
+			assert(!sprite.blockHasCompleteHD(256));
+			assert(!sprite.blockHasCompleteHD(257));
+			sprite.setBaseColor(Color(255, 60, 40));
+			gfx->drawFilledRect(0, 0, 640, 480, 10, 10, 10);
+			gfx->drawSprite(0, 0, &sprite, 256); // still has its own HD team layer
+			gfx->drawSprite(40, 0, &sprite, 257); // HD team layer missing; native still intact
+			assert(glGetError() == GL_NO_ERROR);
+			// Neither draw grew the CPU cache: the shader drew both at native
+			// resolution (256 forced there by its corrupted block-mate).
+			assert(sprite.getTeamColorCacheEntries() == 0);
+
+			// A frame with no team layer at all draws base-only, no GL error.
+			sprite.dropRotated(258);
+			gfx->drawSprite(80, 0, &sprite, 258);
+			assert(glGetError() == GL_NO_ERROR);
+			assert(sprite.getTeamColorCacheEntries() == 0);
+		}
+
+		// All actions/directions/colors at logical size, HD active throughout.
 		GLint viewport[4] = {0, 0, 640, 480};
 		if (!software)
 			glGetIntegerv(GL_VIEWPORT, viewport);
-		const float pixelScale = float(viewport[2]) / gfx->getW();
-		std::vector<Uint8> before(viewport[2] * viewport[3] * 4), after(before.size());
-		int maximumError = 0;
-		// All actions/directions/colors. Compare at one texture pixel per screen pixel
-		// so this measures compositing, not differences in mip/filter order.
 		for (int base = 0; base <= 384; base += 64)
 			for (int dir = 0; dir < 8; ++dir)
 				for (int color = 0; color < 3; ++color)
@@ -100,65 +99,36 @@ int main(int argc, char **argv)
 					sprite.setBaseColor(color == 0   ? Color(255, 60, 40)
 					                    : color == 1 ? Color(0, 255, 128)
 					                                 : Color(70, 110, 255));
-					std::vector<std::pair<int, int>> frames;
-					drawUnitMotionBlur(base, dir, 7, 30, [&](int frame, int alpha)
-					{ frames.emplace_back(frame, alpha); });
-					const int logical = sprite.getW(frames.front().first);
-					const float displaySize = logical * (software ? 1 : 4) / pixelScale;
-					if (!software)
-					{
-						gfx->drawFilledRect(0, 0, 640, 480, 30, 90, 45);
-						for (auto frame : frames)
-							gfx->drawSprite(0.f, 0.f, displaySize, displaySize, &sprite,
-							                frame.first, frame.second);
-						glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA,
-						             GL_UNSIGNED_BYTE, before.data());
-					}
-					auto result = sprite.getCachedComposite(frames);
-					assert(result->getW() == logical * (software ? 1 : 4));
-					assert(result->getH() == logical * (software ? 1 : 4));
-					const auto misses = sprite.getCompositeMisses();
-					assert(sprite.getCachedComposite(frames) == result &&
-					       sprite.getCompositeMisses() == misses);
-					assert(sprite.coloredEntries() == 0);
-					if (!software)
-					{
-						gfx->drawFilledRect(0, 0, 640, 480, 30, 90, 45);
-						gfx->drawSurface(0.f, 0.f, displaySize, displaySize, result);
-						glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA,
-						             GL_UNSIGNED_BYTE, after.data());
-						for (size_t i = 0; i < before.size(); ++i)
-							if (i % 4 != 3)
-								maximumError = std::max(maximumError,
-								                        std::abs(int(before[i]) - int(after[i])));
-						assert(glGetError() == GL_NO_ERROR);
-					}
+					const int index = unitAnimationFrame(base, dir, 96);
+					gfx->drawSprite(0, 0, &sprite, index);
 				}
-		std::cout << "Composite comparison maximum RGB error=" << maximumError
-		          << "/255, cache entries=" << sprite.getCompositeEntries()
-		          << " estimated bytes=" << sprite.getCompositeBytes() << std::endl;
-		assert(maximumError <= 5);
-		// Changing artwork invalidates composites; blur on/off itself does not.
+		if (!software)
+			assert(glGetError() == GL_NO_ERROR);
+
+		// Disabling HD drops back to native logical dimensions (unchanged) and
+		// clears the bounded cache; re-enabling restores HD layer mapping.
 		Sprite::setHighResolution(false);
-		assert(sprite.getCompositeEntries() == 0 && sprite.getCompositeBytes() == 0);
 		sprite.checkLayers(false);
-		assert(sprite.getCachedComposite({{256, 255}})->getW() == 38);
+		assert(sprite.getTeamColorCacheEntries() == 0);
 		Sprite::setHighResolution(true);
-		assert(sprite.getCompositeEntries() == 0);
-		assert(sprite.getCachedComposite({{256, 255}})->getW() == (software ? 38 : 152));
+		{
+			InspectUnitSprite fresh;
+			assert(fresh.load("data/gfx/unit"));
+			fresh.checkLayers(!software);
+		}
+
 		if (!software)
 		{
 			for (double zoom : {.5, 1., 2., 3.})
 			{
 				gfx->beginMapTransform(zoom, 0, 0, 0, 0, 640, 480);
-				gfx->drawSurface(10, 10, 38, 38, sprite.getCachedComposite({{256, 255}}));
-				gfx->drawSprite(64, 10, &sprite, 256);
+				gfx->drawSprite(10, 10, &sprite, 256);
 				gfx->endMapTransform();
 				assert(glGetError() == GL_NO_ERROR);
 			}
 		}
-		std::cout << "PASS all 1792 layer mappings, 7 actions/8 directions/3 colors, cache reuse, "
-		             "HD/classic switching, logical dimensions and zoom"
+		std::cout << "PASS all 1792 layer mappings, whole-block HD/native fallback, HD/classic "
+		             "switching, zoom, and no CPU team-color cache growth under the shader"
 		          << std::endl;
 	}
 	Toolkit::close();

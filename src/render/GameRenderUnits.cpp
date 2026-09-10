@@ -100,14 +100,15 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	{
 		const int step = unitActionStepSpeed(unit->speed, unit->action, unit->dx, unit->dy);
 		const int span = std::max(1, step * globalContainer->settings.getGameSpeedRenderInterval());
-		std::vector<std::pair<int,int>> frames;
+		// Each pose is one ordinary drawSprite call, weighted by its share of the
+		// shutter; drawn in sequence, alpha-over already gives the running average
+		// Giszmo's review sketch describes. No blurred frame is cached or retained.
 		drawUnitMotionBlur(actionBase, dir, delta, span, [&](int frame, int alpha) {
-			frames.emplace_back(frame,alpha);
+			globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, frame, alpha);
 		});
-		unitSprite->drawCachedComposite(globalContainer->gfx, px-decX, py-decY, imgid, frames);
 	}
 	else
-		unitSprite->drawCachedComposite(globalContainer->gfx, px-decX, py-decY, imgid, {{imgid,255}});
+		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
 
 	// draw selection
 	if (unit==view.selectedUnit)

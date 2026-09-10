@@ -15,114 +15,142 @@ The existing game-speed controls include 0.25x (160 ms/tick), 0.5x (80 ms), and
 40 ms / 25 FPS; existing positive speed IDs and timing are unchanged. No render
 interpolation or simulation/save-format changes are introduced.
 
-## Cache
+## Rendering: GPU shader, no composite cache
 
-Each Sprite caches final team-colored RGBA composites by team color and the exact
-ordered frame/alpha list. Cache hits need one surface draw. Sharp world frames use
-one-frame composites in the same cache. On first use, the old source recolor maps
-are cleared; subsequent sharp portrait/indicator draws use a single transient
-recolor surface instead of retaining a second cache. Original source layers remain.
+There is no composite/final-image cache. A sharp draw and each pose of a blurred
+shutter are ordinary `GraphicContext::drawSprite` calls -- one call per pose,
+exactly the sequence Giszmo's review sketch describes.
 
-Entries are generated on demand and retained until Sprite destruction, with no
-size limit or eviction. Memory grows with distinct combinations actually used.
-World drawing shares a soft 2 ms generation budget per presented frame. Once spent,
-cache misses draw the current sharp native pose with transient team coloring;
-cache hits still draw normally. Subsequent frames fill requested entries gradually,
-including their initial GPU upload. One in-progress composite can exceed the budget;
-this is not a hard frame-time limit. The fallback keeps the same pose, position and
-logical dimensions, and retains no extra cache. Transparent texels are skipped when
-building composites. This limits first-use work without capping retained memory.
+On GPU with a working shader (`GraphicContext::hasUnitShader()`), each pose is one
+textured quad: a GLSL 1.20 program samples the base layer and the *unrotated* team
+layer, reproduces the CPU HSV hue shift in the fragment shader, composites team
+over base in premultiplied space (matching the algebra the old CPU composite used),
+and applies the pose's shutter weight to alpha only. No team-coloured or composite
+texture is ever created on this path -- `Sprite::getTeamColorCacheBytes()` stays
+zero for the whole game. The shader is created with the GL context
+(`GraphicContext::createUnitShader`, called from `setRes`) and destroyed before it
+is torn down. A compile/link failure logs once and disables it for that context's
+lifetime; set `GLOB2_DISABLE_UNIT_SHADER=1` to force the same fallback for testing.
 
-Byte counters include CPU pixels and estimated GPU pixel allocation, excluding
-container/driver overhead. First-use generation still has a cost; warmed-cache
-benchmarks do not measure it.
+Without a working shader (software renderer, or the fallback above), each layer is
+still one CPU HSV recolor (`Sprite::getColoredSurface`), but the unit sprite is
+marked `dynamicTeamColor` and backs its recolored layers with a single sprite-wide,
+byte-accounted **64 MiB LRU** (`Sprite::teamColorList`/`teamColorIndex`), keyed by
+source frame, resolution (native/HD), and team color -- not by the composited
+result. Least-recently-used entries are evicted before a new one is admitted; at
+most one active, oversized single entry can push the total over the cap, and only
+until a distinct entry next needs the room. This cache is shared by world units and
+every unit UI preview (portraits, editor previews, indicators, credits), since they
+all reach the same `DrawableSurface::drawSprite`. Other sprite types (terrain,
+buildings, resources) are unaffected and keep their existing unbounded per-frame
+`rotationMap`.
 
-The composite uses premultiplied accumulation and stores straight RGBA. It preserves
-the ordinary alpha-over sequence of the proposed shutter, including overlapping
-shadows and changing silhouettes; this is not a physically exact exposure average.
-GPU output is within rounding error of repeated draws. Software output avoids the
-repeated rounding/background darkening in the legacy integer blit loop.
+A shutter samples one resolution throughout via `Sprite::blockHasCompleteHD`: if any
+frame in the current action/direction's 32-phase block lacks its HD counterpart,
+the whole block falls back to native, rather than mixing resolutions pose to pose.
+HD only changes texture sampling density; the destination quad is always drawn at
+the sprite's logical (native) size.
 
-## Validation and benchmark
+## Validation and benchmarks
 
 From the repository root (graphics checks require a display; use xvfb-run on Linux):
 
 ```sh
-scons release=1 -j8 build/src/glob2 speed-tests unit-blur-tests unit-blur-benchmark
+scons release=1 -j8 build/src/glob2 speed-tests unit-blur-tests unit-hd-cache-test unit-blur-benchmark twelve-team-benchmark
 python3 test/run-game-speed-tests.py
 build/src/UnitMotionBlurTest
-build/src/UnitCompositeCacheTest
-build/src/UnitCompositeCacheGPUCheck
+build/src/UnitTeamShaderTest
+build/src/UnitTeamColorCacheTest
+build/src/UnitTeamColorCacheTest software
+build/src/UnitHighResolutionCacheTest
+build/src/UnitHighResolutionCacheTest software
 build/src/unit-blur-benchmark gpu
-build/src/unit-blur-benchmark
+build/src/unit-blur-benchmark gpu fallback
+build/src/unit-blur-benchmark            # software
+build/src/twelve-team-benchmark off 5000 river
+build/src/twelve-team-benchmark on  5000 river
+build/src/twelve-team-benchmark off 5000 craters
+build/src/twelve-team-benchmark on  5000 craters
 ```
 
-The speed harness covers persistence, settings OK/Cancel, the checkbox and F8,
-selector offsets, speed bounds, multiplayer/replay restrictions and simulation
-checksums. Sprite checks cover all seven actions/eight directions, phase and
-team-color separation, cache reuse, and retention of an early entry after exceeding
-64 MiB. The benchmark compares sharp draws, repeated blur draws, and cached blur
-for 10/300 workers at normal/fast unit speeds; it measures warmed sprite rendering,
-not full game frame times.
+`UnitMotionBlurTest` covers shutter frame bounds, loop wrapping, alpha, and the
+one-pose identity (no GL, no display needed).
 
-Native-resolution macOS validation before the HD-renderer rebase (2026-09-09): all checks passed. The three-color GPU
-comparison had maximum RGB error 3/255; legacy software comparison mean 5.38/255,
-maximum 10/255. Retention test: 13,172 entries and 76,099,904 CPU pixel bytes.
-For 300 fast workers, warmed OpenGL timings were 1.05 / 3.46 / 0.80 ms for
-sharp / repeated blur / cached blur; software was 0.35 / 1.42 / 0.27 ms.
-All measured lookups hit. Across the four benchmark cases, 3,456 composites used
-38.1 MiB including GPU pixels, or 19.0 MiB in software. Results are machine-specific.
+`UnitTeamShaderTest` (GPU) compares the shader's HSV hue shift against an
+independent CPU reference over all 1,792 poses (native and HD, three fixed team
+colors) and over the 12 in-game team hues plus the existing 16-hue test palette
+(one representative pose per action/direction); then compares a sharp draw and a
+30-delta motion-blur sequence's rendered framebuffer against a from-scratch CPU
+composite (premultiplied accumulate, unpremultiply once, blend poses in shutter
+order -- the removed cache's algebra, just not cached). Measured on the reference
+machine: HSV hue shift mean 0.059/255, max 1/255, zero alpha mismatches, over
+10,074,752 channel comparisons; sharp/motion-blur framebuffer max error 2.27/255,
+over 4,194,304 channel comparisons. Both are within the required 2/255 and 3/255
+bounds.
+
+`UnitTeamColorCacheTest` proves GPU rendering (sharp and blurred) creates zero
+team-colored cache entries; with the shader forced off
+(`GLOB2_DISABLE_UNIT_SHADER=1`, also exercised by the `software` build), it drives
+20,000+ distinct team colors through the cache and asserts the byte total never
+exceeds 64 MiB, that repeated draws of the same key are hits (no new entry), and
+that a long-evicted color regenerates correctly. Measured on the reference machine:
+the bounded cache settled at 3,028 entries / ~64.0 MiB on the GPU-fallback path and
+11,618 entries / ~64.0 MiB on the software path (native surfaces are smaller, so
+more fit).
+
+`UnitHighResolutionCacheTest` covers all 1,792 layer mappings, HD/native switching,
+zoom, and a synthetic corrupted-HD-install case confirming `blockHasCompleteHD`
+forces a whole 32-phase block back to native rather than mixing resolutions.
+
+`unit-blur-benchmark` reports warmed sharp/blur sprite-only timings for 10 and 300
+units at two speeds, plus the fallback cache's byte usage when relevant. These are
+sprite-only timings, excluding first-use texture uploads and every other draw call
+a real frame makes.
+
+## 12-team benchmark
+
+`twelve-team-benchmark <blur:on|off> [ticks=5000] [river|craters]` is a **synthetic
+render-loop soak test**, not a full AI-driven match: it does not generate a real
+river/crater-lakes map or run Cortex AI. It reproduces the mechanism the composite
+cache regressed on exactly -- 12 teams, 156 units (matching the ~157-unit baseline),
+continuously varying poses and positions, drawn every tick through the real
+`GraphicContext::drawSprite` / `drawUnitMotionBlur` path with a full-viewport redraw
+("full-map revealed drawing") -- for as many ticks as asked. Unit positions evolve
+from a fixed, map-name-derived seed via a tiny deterministic step that rendering
+never touches, so a same-tick checksum match between blur variants is a structural
+property of this harness (render and simulation are separate steps), not an
+emergent one; it demonstrates the same decoupling the real engine relies on rather
+than substituting for it. Every 250 ticks it reports units, the bounded cache's
+entries/bytes, GPU-allocated texture bytes, process RSS, frame-time p50/p95/max
+over that window, simulation time, and a checksum of the synthetic unit state.
+
+Measured on the reference machine (Apple M3, GPU/shader path, 5,000 ticks, 156
+units across 12 teams, both generated-map seeds):
+
+| Map | Blur | RSS @2,500 | RSS @5,000 | Growth | Frame p50 | Frame p95 | 5,000 ticks |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| river | off | 172,785,664 B | 172,785,664 B | 0 B | 0.74 ms | 0.83 ms | 3.96 s |
+| river | on | 173,326,336 B | 173,244,416 B | -81,920 B | 1.65 ms | 1.73 ms | 8.25 s |
+| craters | off | 172,589,056 B | 172,589,056 B | 0 B | 0.74 ms | 0.84 ms | 3.85 s |
+| craters | on | 173,113,344 B | 173,064,192 B | -49,152 B | 1.66 ms | 1.70 ms | 8.33 s |
+
+`team_color_cache_bytes` and `gpu_allocated_bytes` (42,991,616 B, the base unit
+texture atlas, loaded once) were exactly flat across every tick in all four runs.
+Checksums matched exactly between the `on`/`off` runs of the same map at every
+250-tick mark. All four runs meet every requirement: zero GPU dynamic team/
+composite bytes, footprint growth far under the 256 MiB budget (measurably zero or
+negative -- ordinary allocator/RSS noise, not growth), identical checksums between
+blur variants, and p95 far under the 40 ms / 50 ms targets.
+
+Preserved as the failing baseline this replaces: **blur-off reached 4.0 GiB of
+composite storage and a 5.79 GiB peak footprint after 5,000 ticks with 157 units**
+under the removed cache.
 
 ## High-resolution artwork
 
-When the HD pack is active, final unit composites use its fourfold texture
-resolution and mipmap sampling while retaining native logical dimensions.
-A shutter falls back entirely to classic layers if any participating HD frame
-is missing. Both native and HD intermediate recolor maps are cleared when final
-composite caching starts. Changing the artwork pack invalidates cached composites;
-otherwise the cache remains unbounded, including when blur is toggled off/on.
-
-Use `build/src/unit-blur-benchmark gpu hd` after installing the HD pack to
-measure the same benchmark with HD textures. The native timings and memory
-figures above do not describe the larger HD composites.
-
-HD validation on the rebased renderer (2026-09-09): the full HD cache and
-game/editor/replay integration checks passed, as did software fallback and
-the installed speed/settings suite. Cached versus repeated GPU compositing at
-one texture pixel per screen pixel had maximum RGB error 3/255. For 300 fast
-workers, warmed HD timings were 1.57 / 5.49 / 1.18 ms for sharp / repeated blur /
-cached blur, with no measured misses. The four benchmark cases retained 3,456
-HD composites, 1,527,344,640 estimated CPU/GPU pixel bytes (1.42 GiB), including
-mipmaps and excluding source textures. First-use generation is not measured.
-
-On the same rebased renderer, the native GPU benchmark measured 1.58 / 5.37 /
-1.17 ms for 300 fast workers, with 3,456 composites using 76,584,960 estimated
-CPU/GPU bytes (73.0 MiB). Both native and HD runs had zero measured misses.
-
-Cold-cache comparison (includes generation and initial uploads, 300 fast workers):
-
-```sh
-build/src/unit-blur-benchmark gpu hd cold
-build/src/unit-blur-benchmark gpu hd cold budgeted
-```
-
-The synthetic scene isolates sprite cost. It does not reproduce a particular saved
-game or measure source-pack loading. PR #234 separately retains artwork across
-matches and avoids redundant loading/invalidation; the generation budget also
-applies to previously unseen composites during a match.
-
-Review follow-up measurement on macOS (2026-09-09), 128 cold frames, 300 fast
-workers with HD textures: unlimited generation first/p95/max =
-260.7/680.8/1117.8 ms; budgeted generation = 47.1/41.3/47.7 ms. The respective
-caches contained 3,072 and 128 composites at the end: the improvement comes from
-spreading work across frames, not completing all the same work sooner. These
-sprite-only measurements include GPU completion and are machine/load dependent.
-They do not establish that a busy saved game meets its simulation deadline.
-
-Follow-up validation passed the optimized client build, shutter bounds, native
-unbounded cache checks, GPU comparisons, HD/software fallback and budget checks,
-settings/speed/replay assertions, game/editor integration on both backends, and
-translation audit/regressions. The settings harness exceeded its normal 60-second
-local timeout while repeatedly decoding HD images; all assertions passed when rerun
-with a 180-second limit. A process sample identified the artwork reload path that
-PR #234 addresses. That PR is not included in these follow-up measurements.
+When the HD pack is active, unit draws sample its fourfold texture resolution and
+mipmap chain while retaining native logical dimensions. A shutter falls back
+entirely to native layers if any participating frame in its 32-phase block is
+missing an HD counterpart (`Sprite::blockHasCompleteHD`). Toggling
+`Sprite::setHighResolution` clears the bounded team-color cache along with the
+HD layer arrays.

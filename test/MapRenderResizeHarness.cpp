@@ -103,6 +103,20 @@ int main(int argc, char **argv)
 	auto *building=game.addBuilding(7,7,globals.buildingsTypes.getTypeNum("inn",0,false),0);
 	assert(unit && building);
 	auto *gfx=globals.gfx;
+	// The resize cases below need the desktop to actually fit an 1800x1100
+	// window; a shorter/narrower usable area (small display, no Xvfb) makes
+	// SDL clamp the requested size instead of honoring it. Checked for both
+	// backends: only the GPU path additionally needs the drawable unscaled.
+	{
+		SDL_Rect usable{};
+		const int displayIndex = SDL_GetWindowDisplayIndex(gfx->window);
+		if (SDL_GetDisplayUsableBounds(displayIndex, &usable) == 0 && (usable.w < 1800 || usable.h < 1100))
+		{
+			std::cerr << "Rendering fixture requires an 1800x1100 desktop; usable area is "
+				<< usable.w << "x" << usable.h << ". Use a sufficiently large desktop or Xvfb.\n";
+			return 1;
+		}
+	}
 	if (gpu)
 	{
 		int drawableW,drawableH;

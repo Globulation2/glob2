@@ -1,4 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Warmed sprite-only timings for sharp vs. motion-blur unit rendering, direct
+// through GraphicContext::drawSprite -- no separate cache/composite draw mode
+// exists anymore. GPU runs go through the unit shader unless
+// GLOB2_DISABLE_UNIT_SHADER forces the bounded CPU fallback, in which case the
+// cache's byte usage is also reported. This is sprite-only cost, excluding
+// first-use texture uploads and every other draw call a real frame makes; see
+// the top-level 12-team benchmark for whole-game figures.
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL.h>
@@ -8,89 +15,57 @@
 #include <GL/gl.h>
 #endif
 #include <chrono>
+#include <cstdlib>
 #include <iostream>
+#include <string>
 #include <vector>
 #include <algorithm>
 #include "render/UnitAnimation.h"
 int main(int argc, char **argv)
 {
 	bool gpu = argc > 1 && std::string(argv[1]) == "gpu";
+	bool fallback = argc > 2 && std::string(argv[2]) == "fallback";
+	if (gpu && fallback)
+		setenv("GLOB2_DISABLE_UNIT_SHADER", "1", 1);
 	GAGCore::Toolkit::init("codex-glob2-blur-benchmark");
-	GAGCore::Sprite::setHighResolution(argc > 2 && std::string(argv[2]) == "hd");
+	GAGCore::Sprite::setHighResolution(argc > 3 && std::string(argv[3]) == "hd");
 	auto *gfx = GAGCore::Toolkit::initGraphic(1280, 480, gpu ? GAGCore::GraphicContext::USEGPU : 0,
 	                                          "Unit blur benchmark");
+	if (gpu)
+		std::cout << "shader active: " << (gfx->hasUnitShader() ? "yes" : "no") << std::endl;
 	auto *sprites = GAGCore::Toolkit::getSprite("data/gfx/unit");
-	auto *original = new GAGCore::Sprite();
-	original->load("data/gfx/unit");
-	auto *cachedSprite = sprites;
-	const bool budgeted = argc > 4 && std::string(argv[4]) == "budgeted";
 	GAGCore::Color colors[] = {GAGCore::Color(255, 60, 40), GAGCore::Color(0, 255, 128),
 	                           GAGCore::Color(70, 110, 255)};
-	auto render = [&](int blur, int step, int tick, int count)
+	auto render = [&](bool blur, int step, int tick, int count)
 	{
-		auto *sprites = blur == 2 ? cachedSprite : original;
-		GAGCore::Sprite::beginCompositeFrame();
 		gfx->drawFilledRect(0, 0, 1280, 480, 24, 31, 40);
 		for (int u = 0; u < count; ++u)
 		{
 			sprites->setBaseColor(colors[u % 3]);
 			int delta = (tick * step + (u % 16) * 16) & 255, dir = u % 8;
-			auto draw = [&](int id, int alpha)
-			{ gfx->drawSprite((u % 32) * 40, (u / 32) * 44, sprites, id, alpha); };
-			if (blur == 2)
-			{
-				std::vector<std::pair<int, int>> frames;
-				drawUnitMotionBlur(64, dir, delta, step,
-				                   [&](int f, int a) { frames.emplace_back(f, a); });
-				if (budgeted)
-					sprites->drawCachedComposite(gfx, (u % 32) * 40, (u / 32) * 44,
-					                             unitAnimationFrame(64, dir, delta), frames);
-				else
-					gfx->drawSurface((u % 32) * 40, (u / 32) * 44, 38, 38,
-					                 sprites->getCachedComposite(frames));
-			}
-			else if (blur)
-				drawUnitMotionBlur(64, dir, delta, step, draw);
+			int px = (u % 32) * 40, py = (u / 32) * 44;
+			if (blur)
+				drawUnitMotionBlur(64, dir, delta, step, [&](int f, int a)
+				{ gfx->drawSprite(px, py, sprites, f, static_cast<Uint8>(a)); });
 			else
-				draw(unitAnimationFrame(64, dir, delta), 255);
+				gfx->drawSprite(px, py, sprites, unitAnimationFrame(64, dir, delta));
 		}
 		if (gpu)
 			glFinish();
 	};
-	// Cold-cache measurement includes generation and first texture uploads.
-	if (argc > 3 && std::string(argv[3]) == "cold")
-	{
-		std::vector<double> times;
-		for (int tick = 0; tick < 128; ++tick)
-		{
-			auto start = std::chrono::steady_clock::now();
-			render(2, 30, tick, 300);
-			times.push_back(std::chrono::duration<double, std::milli>(
-			    std::chrono::steady_clock::now() - start).count());
-		}
-		const double first = times.front();
-		std::sort(times.begin(), times.end());
-		std::cout << "cold_cache units=300 first_ms=" << first
-		          << " p95_ms=" << times[121] << " max_ms=" << times.back()
-		          << " entries=" << sprites->getCompositeEntries() << std::endl;
-		delete original;
-		GAGCore::Toolkit::close();
-		return 0;
-	}
 	for (int count : {10, 300})
 		for (int step : {16, 30})
 		{
 			for (int t = 0; t < 128; ++t)
 			{
-				render(1, step, t, count);
-				render(2, step, t, count);
+				render(false, step, t, count);
+				render(true, step, t, count);
 			}
-			const auto warmMisses = sprites->getCompositeMisses();
-			std::vector<double> results[3];
+			std::vector<double> results[2];
 			for (int round = 0; round < 6; ++round)
-				for (int order = 0; order < 3; ++order)
+				for (int order = 0; order < 2; ++order)
 				{
-					int blur = (order + round) % 3;
+					bool blur = (order + round) % 2;
 					SDL_PumpEvents();
 					auto start = std::chrono::steady_clock::now();
 					for (int t = 0; t < 64; ++t)
@@ -101,15 +76,12 @@ int main(int argc, char **argv)
 				}
 			for (auto &r : results)
 				std::sort(r.begin(), r.end());
-			std::cout << (gpu ? "GPU" : "software") << " units=" << count << " step=" << step
+			std::cout << (gpu ? (fallback ? "GPU-fallback" : "GPU-shader") : "software")
+			          << " units=" << count << " step=" << step
 			          << " sharp_ms=" << (results[0][2] + results[0][3]) / 2
 			          << " blur_ms=" << (results[1][2] + results[1][3]) / 2
-			          << " cached_ms=" << (results[2][2] + results[2][3]) / 2
-			          << " measured_misses=" << sprites->getCompositeMisses() - warmMisses
-			          << " cache_bytes=" << sprites->getCompositeBytes()
-			          << " hits=" << sprites->getCompositeHits()
-			          << " misses=" << sprites->getCompositeMisses() << std::endl;
+			          << " team_color_cache_entries=" << sprites->getTeamColorCacheEntries()
+			          << " team_color_cache_bytes=" << sprites->getTeamColorCacheBytes() << std::endl;
 		}
-	delete original;
 	GAGCore::Toolkit::close();
 }

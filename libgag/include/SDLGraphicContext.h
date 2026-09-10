@@ -16,6 +16,8 @@
 
 #include <set>
 #include <tuple>
+#include <list>
+#include <unordered_map>
 
 #include <SDLCompat.h>
 
@@ -377,6 +379,19 @@ namespace GAGCore
 		void releaseFrameCache();
 		void cacheFrame();
 		void presentLastFrame();
+		// GLSL 1.20 program that recolors a sprite's unrotated team layer on the
+		// GPU (same HSV hue shift as DrawableSurface::shiftHSV) and combines it
+		// with the base layer, so no team-coloured or composite texture is ever
+		// created while it is active. Created after the context above exists and
+		// destroyed before it is torn down. Plain unsigned/int fields, not GL
+		// types, to keep GL headers out of this public header (see Sprite::vbo).
+		unsigned unitShaderProgram = 0;
+		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
+		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;
+		int unitShaderLocHueShift = -1, unitShaderLocAlpha = -1;
+		bool unitShaderFailureLogged = false;
+		void createUnitShader();
+		void destroyUnitShader();
 		// Central presentation boundary, also used by render-validation contexts.
 		virtual void swapBuffers();
 		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
@@ -461,6 +476,16 @@ namespace GAGCore
 		virtual void drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha = Color::ALPHA_OPAQUE);
 
 		void finishDrawingSprite(Sprite* sprite, Uint8 alpha);
+
+		//! Draw one shutter pose combining a base and team-colour layer with the
+		//! unit shader, at logical position (x,y) and explicit destination size
+		//! (independent of the sampled textures' own size, so an HD source
+		//! layer still draws at the sprite's logical dimensions), alpha applied
+		//! to the combined result. Returns false, drawing nothing, when the
+		//! shader is unavailable so the caller can fall back to two ordinary
+		//! drawSurface calls (base, then the CPU-recoloured team layer).
+		bool drawTeamColoredQuad(DrawableSurface *base, DrawableSurface *team, float x, float y, float w, float h, Uint8 alpha, float hueShift);
+		bool hasUnitShader() const { return unitShaderProgram != 0; }
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -526,14 +551,44 @@ namespace GAGCore
 		std::unique_ptr<const DrawableSurface> atlas = nullptr;
 #endif
 		static void checkAllSpritesDrawn();
-		using CompositeKey = std::pair<Color, std::vector<std::pair<int, int>>>;
-		std::map<CompositeKey, std::unique_ptr<DrawableSurface>> compositeCache;
-		std::unique_ptr<DrawableSurface> transientColor;
-		bool compositeOnly = false;
-		size_t compositeBytes = 0, compositeHits = 0, compositeMisses = 0;
 		Color actColor;
-	
+
+		// Team-colour recoloring for sprites marked dynamicTeamColor (currently
+		// only the unit sprite, see load()). GPU rendering recolors in a shader
+		// (GraphicContext::drawTeamColoredQuad) and never creates a CPU/GPU
+		// recolor surface at all; this bounded cache backs the software renderer
+		// and GL-without-a-working-shader fallback, shared by world units and
+		// unit UI previews (portraits, editor previews, indicators, credits) since
+		// they all route through the same DrawableSurface::drawSprite.
+		bool dynamicTeamColor = false;
+		struct TeamColorKey
+		{
+			int index; bool experiment; Uint8 r, g, b;
+			bool operator==(const TeamColorKey &o) const
+			{ return index == o.index && experiment == o.experiment && r == o.r && g == o.g && b == o.b; }
+		};
+		struct TeamColorKeyHash
+		{
+			size_t operator()(const TeamColorKey &k) const
+			{
+				size_t h = static_cast<size_t>(k.index) * 2 + (k.experiment ? 1 : 0);
+				h = h * 257 + k.r; h = h * 257 + k.g; h = h * 257 + k.b;
+				return h;
+			}
+		};
+		struct TeamColorNode { TeamColorKey key; std::unique_ptr<DrawableSurface> surface; size_t bytes; };
+		// Front = most recently used. Byte-accounted LRU: CPU pixels plus any GPU
+		// texture allocation, evicted oldest-first before a new entry is admitted.
+		std::list<TeamColorNode> teamColorList;
+		std::unordered_map<TeamColorKey, std::list<TeamColorNode>::iterator, TeamColorKeyHash> teamColorIndex;
+		size_t teamColorBytes = 0;
+		static const size_t teamColorCacheCap = 64u * 1024u * 1024u;
+		DrawableSurface *lookupTeamColor(const TeamColorKey &key);
+		void insertTeamColor(const TeamColorKey &key, std::unique_ptr<DrawableSurface> surface, size_t bytes);
+		void clearTeamColorCache();
+
 		friend class DrawableSurface;
+		friend class GraphicContext;
 		// Support functions
 		//! Load a frame from two file pointers
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
@@ -542,10 +597,11 @@ namespace GAGCore
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
-		DrawableSurface *getColoredSurface(RotatedImage *image);
+		void applyTeamHueShift(DrawableSurface &surface);
+		DrawableSurface *getColoredSurface(int index, bool experiment);
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
 		void loadExperimentFrame(const std::string &frameName, const std::string &rotatedName);
-	
+
 	public:
 		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
 		bool createTextureAtlas(bool allowVariableSizes = false);
@@ -557,26 +613,28 @@ namespace GAGCore
 		Sprite() : fileName("not loaded yet") { }
 		//! Destructor
 		virtual ~Sprite();
-		
+
 		//! Load a sprite from the file, return true if any frame have been loaded
 		bool load(const std::string filename);
-	
+
 		//! Set the (r,g,b) color to a sprite's base color
 		virtual void setBaseColor(Uint8 r, Uint8 g, Uint8 b) { actColor = Color(r, g, b); }
 		//! Set the color to a sprite's base color
 		virtual void setBaseColor(const Color& color) { actColor = color; }
-		
-		// Cache final alpha-over composites; retain entries for this sprite's lifetime.
-		DrawableSurface *getCachedComposite(const std::vector<std::pair<int, int>>& frames,
-		                                    bool budgeted = false);
-		// Shared per-present budget; cache hits are always available.
-		static void beginCompositeFrame(unsigned microseconds = 2000);
-		void drawCachedComposite(DrawableSurface *dest, int x, int y, int sharpFrame,
-		                         const std::vector<std::pair<int, int>>& frames);
-		size_t getCompositeBytes() const { return compositeBytes; }
-		size_t getCompositeHits() const { return compositeHits; }
-		size_t getCompositeMisses() const { return compositeMisses; }
-		size_t getCompositeEntries() const { return compositeCache.size(); }
+
+		bool isDynamicTeamColor() const { return dynamicTeamColor; }
+		size_t getTeamColorCacheBytes() const { return teamColorBytes; }
+		size_t getTeamColorCacheEntries() const { return teamColorList.size(); }
+		//! True when every frame in index's 32-phase action/direction block (the
+		//! span one motion-blur shutter can draw, see UnitAnimation.h) has a
+		//! matching HD layer wherever the native one exists. A shutter samples
+		//! one resolution throughout; an incomplete block falls back to native
+		//! for all of it rather than mixing resolutions pose to pose.
+		bool blockHasCompleteHD(int index) const;
+		//! Hue shift, in degrees, from this sprite's base team colour to actColor;
+		//! shared by the CPU recolor path and the uHueShift uniform of the shader.
+		//! Not const: Color::getHSV isn't const-qualified.
+		float teamHueShiftDegrees();
 		//! Return the width of index frame of the sprite
 		virtual int getW(int index);
 		//! Return the height of index frame of the sprite

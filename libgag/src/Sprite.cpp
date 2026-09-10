@@ -13,7 +13,6 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
-#include <chrono>
 
 #if __cplusplus >= 201402L
 #include <memory>
@@ -53,28 +52,6 @@ namespace GAGCore
 {
 	static std::set<Sprite*> loadedSprites;
 	static bool highResolutionEnabled = false;
-	static std::chrono::steady_clock::duration compositeTime{};
-	static unsigned compositeBudgetUs = 2000;
-
-	void Sprite::beginCompositeFrame(unsigned microseconds)
-	{
-		compositeTime = {};
-		compositeBudgetUs = microseconds;
-	}
-
-	void Sprite::drawCachedComposite(DrawableSurface *dest, int x, int y, int sharpFrame,
-	                                 const std::vector<std::pair<int, int>>& frames)
-	{
-		if (auto composite = getCachedComposite(frames, true))
-			dest->drawSurface(x, y, getW(sharpFrame), getH(sharpFrame), composite);
-		else
-		{
-			// Use the sharp native source while expensive HD/blur entries warm up.
-			// Recoloring is transient: do not retain a second fallback cache.
-			if (images[sharpFrame]) dest->drawSurface(x, y, images[sharpFrame]);
-			if (rotated[sharpFrame]) dest->drawSurface(x, y, getRotatedSurface(sharpFrame));
-		}
-	}
     static std::string packDirectory, packText;
     static bool packRead=false;
     static bool readPack(const std::string &directory)
@@ -139,7 +116,14 @@ namespace GAGCore
 		{
 			createTextureAtlas();
 		}
-		
+
+		// The unit sprite sheet is shared by world units, portraits, editor
+		// previews, offscreen indicators and credits (see UnitSkin.cpp,
+		// GlobalContainer.cpp). Marking it here, once, routes all of them through
+		// the same GPU shader / bounded CPU cache team-coloring implementation.
+		if (fileName == "data/gfx/unit")
+			dynamicTeamColor = true;
+
 		createHighResolutionAtlas();
 		return getFrameCount() > 0;
 	}
@@ -255,39 +239,97 @@ namespace GAGCore
 #endif
 	}
 	
-	DrawableSurface *Sprite::getRotatedSurface(int index)
+	bool Sprite::blockHasCompleteHD(int index) const
 	{
-		return getColoredSurface(rotated[index]);
+		const int blockStart = (index / 32) * 32;
+		const int blockEnd = std::min(blockStart + 32, static_cast<int>(images.size()));
+		for (int i = blockStart; i < blockEnd; ++i)
+		{
+			if (images[i] && !experimentImages[i]) return false;
+			if (rotated[i] && !experimentRotated[i]) return false;
+		}
+		return true;
 	}
 
-	DrawableSurface *Sprite::getColoredSurface(RotatedImage *image)
+	DrawableSurface *Sprite::getRotatedSurface(int index)
 	{
-		if (compositeOnly)
+		return getColoredSurface(index, false);
+	}
+
+	float Sprite::teamHueShiftDegrees()
+	{
+		float baseHue, actHue, lum, sat;
+		Color(51, 255, 153).getHSV(&baseHue, &sat, &lum);
+		actColor.getHSV(&actHue, &sat, &lum);
+		return actHue - baseHue;
+	}
+
+	void Sprite::applyTeamHueShift(DrawableSurface &surface)
+	{
+		surface.shiftHSV(teamHueShiftDegrees(), 0.0f, 0.0f);
+	}
+
+	DrawableSurface *Sprite::lookupTeamColor(const TeamColorKey &key)
+	{
+		auto it = teamColorIndex.find(key);
+		if (it == teamColorIndex.end())
+			return nullptr;
+		// Touch: splice to the front (most-recently-used end) in O(1), no copy.
+		teamColorList.splice(teamColorList.begin(), teamColorList, it->second);
+		return teamColorList.front().surface.get();
+	}
+
+	void Sprite::insertTeamColor(const TeamColorKey &key, std::unique_ptr<DrawableSurface> surface, size_t bytes)
+	{
+		// Evict least-recently-used entries first, so at most one active,
+		// oversized entry (bigger than the whole cap by itself) is ever retained,
+		// and only until a distinct entry next needs the room.
+		while (!teamColorList.empty() && teamColorBytes + bytes > teamColorCacheCap)
 		{
-			// Sharp UI draws must not repopulate a second retained team-color cache.
-			float baseHue, hue, sat, lum;
-			Color(51,255,153).getHSV(&baseHue, &sat, &lum);
-			actColor.getHSV(&hue, &sat, &lum);
-			transientColor.reset(image->orig->clone());
-			transientColor->shiftHSV(hue-baseHue, 0, 0);
-			return transientColor.get();
+			teamColorBytes -= teamColorList.back().bytes;
+			teamColorIndex.erase(teamColorList.back().key);
+			teamColorList.pop_back();
+		}
+		teamColorList.push_front(TeamColorNode{key, std::move(surface), bytes});
+		teamColorIndex[key] = teamColorList.begin();
+		teamColorBytes += bytes;
+	}
+
+	void Sprite::clearTeamColorCache()
+	{
+		teamColorList.clear();
+		teamColorIndex.clear();
+		teamColorBytes = 0;
+	}
+
+	DrawableSurface *Sprite::getColoredSurface(int index, bool experiment)
+	{
+		RotatedImage *image = experiment ? experimentRotated[index] : rotated[index];
+		assert(image);
+		if (dynamicTeamColor)
+		{
+			// Bounded software/shader-unavailable fallback: keyed by source frame,
+			// resolution (native/HD) and team color, never by the composited result.
+			TeamColorKey key{index, experiment, actColor.r, actColor.g, actColor.b};
+			if (DrawableSurface *hit = lookupTeamColor(key))
+				return hit;
+			std::unique_ptr<DrawableSurface> ds(image->orig->clone());
+			applyTeamHueShift(*ds);
+			// Count the first GPU upload toward the budget, matching every other
+			// GPU-backed entry rather than only discovering its cost on next draw.
+			if (Toolkit::gc && (Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU))
+				ds->uploadToTexture();
+			const size_t bytes = static_cast<size_t>(ds->getW()) * ds->getH() * 4 + ds->gpuBytes;
+			DrawableSurface *raw = ds.get();
+			insertTeamColor(key, std::move(ds), bytes);
+			return raw;
 		}
 		RotatedImage::RotationMap::const_iterator it = image->rotationMap.find(actColor);
 		DrawableSurface *ds;
 		if (it == image->rotationMap.end())
 		{
-			// compute hue shift
-			float baseHue, actHue, lum, sat;
-			float hueShift;
-			Color(51, 255, 153).getHSV(&baseHue, &sat, &lum);
-			actColor.getHSV(&actHue, &sat, &lum);
-			hueShift = actHue - baseHue;
-			
-			// rotate image
 			ds = image->orig->clone();
-			ds->shiftHSV(hueShift, 0.0f, 0.0f);
-			
-			// write back
+			applyTeamHueShift(*ds);
 			image->rotationMap[actColor] = ds;
 		}
 		else
@@ -308,6 +350,13 @@ namespace GAGCore
                 stats.cpuBytes+=r->orig->getW()*r->orig->getH()*4;
                 for(auto entry:r->rotationMap){stats.cpuBytes+=entry.second->getW()*entry.second->getH()*4;++stats.coloredFrames;}
             }
+            // dynamicTeamColor sprites (the unit sprite) never populate the
+            // rotationMap above; count their bounded cache's CPU pixels instead,
+            // native and HD entries alike. It clears on the same reload as the
+            // maps above, so this stays consistent with the cpuBytes==0 checks.
+            if(sprite->dynamicTeamColor)
+                for(auto &node:sprite->teamColorList)
+                {stats.cpuBytes+=static_cast<size_t>(node.surface->getW())*node.surface->getH()*4;++stats.coloredFrames;}
 #ifdef HAVE_OPENGL
             if(sprite->highResolutionAtlas)stats.cpuBytes+=sprite->highResolutionAtlas->atlas->sdlsurface->w*sprite->highResolutionAtlas->atlas->sdlsurface->h*4;
 #endif
@@ -324,10 +373,8 @@ namespace GAGCore
 
 	void Sprite::reloadHighResolution()
 	{
-		// Entries are unbounded while assets are unchanged; a pack reload invalidates them.
-		compositeCache.clear();
-		transientColor.reset();
-		compositeBytes = compositeHits = compositeMisses = 0;
+		// A pack reload invalidates any cached team colors, native and HD alike.
+		clearTeamColorCache();
 		highResolutionAtlas.reset();
 		for (auto p : experimentImages) delete p;
 		for (auto p : experimentRotated) delete p;
@@ -450,8 +497,14 @@ namespace GAGCore
 	{
 		DrawableSurface *surface;
 		if (teamColor)
-			surface = experiment && experimentRotated[index] ? getColoredSurface(experimentRotated[index])
-				: (rotated[index] ? getRotatedSurface(index) : nullptr);
+		{
+			if (experiment && experimentRotated[index])
+				surface = getColoredSurface(index, true);
+			else if (rotated[index])
+				surface = getColoredSurface(index, false);
+			else
+				surface = nullptr;
+		}
 		else
 			surface = experiment && experimentImages[index] ? experimentImages[index] : images[index];
 #ifdef HAVE_OPENGL
@@ -466,151 +519,6 @@ namespace GAGCore
 		}
 #endif
 		return surface;
-	}
-	
-	DrawableSurface *Sprite::getCachedComposite(const std::vector<std::pair<int, int>> &frames, bool budgeted)
-	{
-		assert(!frames.empty());
-		// Switch this sprite to final-image caching without keeping source recolors.
-		if (!compositeOnly)
-		{
-			for (const auto *layers : {&rotated, &experimentRotated})
-				for (auto layer : *layers)
-				{
-					if (!layer)
-						continue;
-					for (auto &cached : layer->rotationMap)
-						delete cached.second;
-					layer->rotationMap.clear();
-				}
-			compositeOnly = true;
-		}
-		CompositeKey key{actColor, frames};
-		auto found = compositeCache.find(key);
-		if (found != compositeCache.end())
-		{
-			++compositeHits;
-			return found->second.get();
-		}
-		if (budgeted && compositeTime >= std::chrono::microseconds(compositeBudgetUs))
-			return nullptr;
-		const auto generationStart = std::chrono::steady_clock::now();
-		++compositeMisses;
-		// A shutter uses one resolution throughout, including partial-pack fallback.
-		bool highResolution = true;
-		for (const auto &frame : frames)
-		{
-			assert(checkBound(frame.first));
-			const auto index = frame.first;
-			highResolution = highResolution
-				&& (!images[index] || experimentImages[index])
-				&& (!rotated[index] || experimentRotated[index]);
-		}
-		const int scale = highResolution ? 4 : 1;
-		const int width = getW(frames.front().first) * scale;
-		const int height = getH(frames.front().first) * scale;
-		// Accumulate premultiplied RGBA so the result can be drawn over any background.
-		std::vector<double> pixels(width * height * 4, 0);
-		float baseHue, hue, sat, lum;
-		Color(51, 255, 153).getHSV(&baseHue, &sat, &lum);
-		actColor.getHSV(&hue, &sat, &lum);
-		for (auto frame : frames)
-		{
-			assert(checkBound(frame.first));
-			assert(getW(frame.first) * scale == width && getH(frame.first) * scale == height);
-			assert(frame.second >= 0 && frame.second <= 255);
-			for (int layer = 0; layer < 2; ++layer)
-			{
-				DrawableSurface *source = highResolution ? experimentImages[frame.first] : images[frame.first];
-				if (layer == 1)
-				{
-					if (!rotated[frame.first])
-						continue;
-					source = highResolution ? experimentRotated[frame.first]->orig : rotated[frame.first]->orig;
-				}
-				if (!source)
-					continue;
-				auto raw = source->getSDLSurface();
-				assert(raw->format->BytesPerPixel == 4);
-				SDL_LockSurface(raw);
-				for (int y = 0; y < height; ++y)
-					for (int x = 0; x < width; ++x)
-					{
-						Uint8 r, g, b, a;
-						SDL_GetRGBA(reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(raw->pixels) +
-						                                       y * raw->pitch)[x],
-						            raw->format, &r, &g, &b, &a);
-						// Transparent texels contribute nothing to the composite.
-						if (!a || !frame.second) continue;
-						if (layer == 1)
-						{
-							Color color(r, g, b, a);
-							float h, s, v;
-							color.getHSV(&h, &s, &v);
-							h += hue - baseHue;
-							if (h >= 360)
-								h -= 360;
-							if (h < 0)
-								h += 360;
-							color.setHSV(h, s, v);
-							r = color.r;
-							g = color.g;
-							b = color.b;
-						}
-						double alpha = double(a) * frame.second / (255.0 * 255.0);
-						auto dest = &pixels[(y * width + x) * 4];
-						dest[0] = r * alpha + dest[0] * (1 - alpha);
-						dest[1] = g * alpha + dest[1] * (1 - alpha);
-						dest[2] = b * alpha + dest[2] * (1 - alpha);
-						dest[3] = alpha + dest[3] * (1 - alpha);
-					}
-				SDL_UnlockSurface(raw);
-			}
-		}
-		std::unique_ptr<DrawableSurface> result(new DrawableSurface(width, height));
-		auto raw = result->getSDLSurface();
-		SDL_LockSurface(raw);
-		for (int y = 0; y < height; ++y)
-			for (int x = 0; x < width; ++x)
-			{
-				auto pixel = &pixels[(y * width + x) * 4];
-				auto byte = [](double v)
-				{ return static_cast<Uint8>(std::min(255.0, std::max(0.0, std::round(v)))); };
-				double a = pixel[3];
-				reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(raw->pixels) + y * raw->pitch)[x] =
-				    SDL_MapRGBA(raw->format, a ? byte(pixel[0] / a) : 0, a ? byte(pixel[1] / a) : 0,
-					            a ? byte(pixel[2] / a) : 0, byte(a * 255));
-			}
-		SDL_UnlockSurface(raw);
-		result->dirty = true;
-		result->highResolutionSampling = highResolution;
-		// Include CPU pixels and GPU allocation (rectangle or padded power-of-two).
-		int texW = 1, texH = 1;
-		while (texW < width)
-			texW *= 2;
-		while (texH < height)
-			texH *= 2;
-		size_t bytes = raw->pitch * height;
-		if (Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU)
-		{
-			bytes += (result->texMultX == 1.0f ? width * height : texW * texH) * 4;
-			if (highResolution && result->texMultX != 1.0f)
-				while (texW > 1 || texH > 1)
-				{
-					texW = std::max(1, texW / 2); texH = std::max(1, texH / 2);
-					bytes += texW * texH * 4;
-				}
-		}
-		if (budgeted)
-		{
-			// Include the first GPU upload in the budget, not just CPU blending.
-			if (Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU)
-				result->uploadToTexture();
-			compositeTime += std::chrono::steady_clock::now() - generationStart;
-		}
-		compositeBytes += bytes;
-		auto inserted = compositeCache.emplace(std::move(key), std::move(result));
-		return inserted.first->second.get();
 	}
 
 	Sprite::~Sprite()

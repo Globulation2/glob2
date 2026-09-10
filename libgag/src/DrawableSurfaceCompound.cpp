@@ -290,24 +290,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawSprite(int x, int y, Sprite *sprite, unsigned index,  Uint8 alpha)
 	{
-		// check bounds
-		assert(sprite);
-		if (!sprite->checkBound(index))
-			return;
-		if (this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU)
-			&& (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
-		{
-			drawSprite(x, y, sprite->getW(index), sprite->getH(index), sprite, index, alpha);
-			return;
-		}
-
-		// draw background
-		if (sprite->images[index])
-			drawSurface(x, y, sprite->images[index], alpha);
-
-		// draw rotation
-		if (sprite->rotated[index])
-			drawSurface(x, y, sprite->getRotatedSurface(index), alpha);
+		drawSprite(static_cast<float>(x), static_cast<float>(y), sprite, index, alpha);
 	}
 
 	void DrawableSurface::drawSprite(float x, float y, Sprite *sprite, unsigned index,  Uint8 alpha)
@@ -316,18 +299,38 @@ namespace GAGCore
 		assert(sprite);
 		if (!sprite->checkBound(index))
 			return;
-		if (this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU)
-			&& (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
+		const bool gpuActive = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
+
+		// Team-colour shader: one quad combining base+team, no CPU/GPU recolor
+		// surface. Shared by world units and unit UI previews since they all
+		// reach here. Picks native or HD per blockHasCompleteHD (a shutter uses
+		// one resolution throughout) but always draws at the sprite's logical
+		// size -- HD only adds texture sampling density. Falls through when the
+		// shader is unavailable (software renderer, or compile/link failure).
+		if (gpuActive && sprite->dynamicTeamColor && _gc->hasUnitShader())
+		{
+			const bool useHD = sprite->blockHasCompleteHD(index)
+				&& (sprite->experimentImages[index] || sprite->experimentRotated[index]);
+			DrawableSurface *base = useHD ? sprite->experimentImages[index] : sprite->images[index];
+			DrawableSurface *team = useHD
+				? (sprite->experimentRotated[index] ? sprite->experimentRotated[index]->orig : nullptr)
+				: (sprite->rotated[index] ? sprite->rotated[index]->orig : nullptr);
+			if (_gc->drawTeamColoredQuad(base, team, x, y, static_cast<float>(sprite->getW(index)),
+			                             static_cast<float>(sprite->getH(index)), alpha, sprite->teamHueShiftDegrees()))
+				return;
+		}
+
+		if (gpuActive && (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
 		{
 			drawSprite(x, y, static_cast<float>(sprite->getW(index)), static_cast<float>(sprite->getH(index)), sprite, index, alpha);
 			return;
 		}
 
-		// draw background
+		// Plain fallback: native only. Reached by the software renderer, by a
+		// shader-unavailable GPU without an HD counterpart to fall back to via
+		// the sized overload above, and by every sprite with no team layer.
 		if (sprite->images[index])
 			drawSurface(x, y, sprite->images[index], alpha);
-
-		// draw rotation
 		if (sprite->rotated[index])
 			drawSurface(x, y, sprite->getRotatedSurface(index), alpha);
 	}

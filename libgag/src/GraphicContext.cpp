@@ -259,6 +259,9 @@ namespace GAGCore
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
 		releaseFrameCache();
 		freeOwnedSurface();
+#ifdef HAVE_OPENGL
+		if (context) destroyUnitShader();
+#endif
 		if (context) SDL_GL_DeleteContext(context);
 		if (window) SDL_DestroyWindow(window);
 		_gc = nullptr;
@@ -450,6 +453,9 @@ namespace GAGCore
 		if (watchingEvents) SDL_DelEventWatch(watchWindow, this);
 		watchingEvents = false;
 		releaseFrameCache();
+#ifdef HAVE_OPENGL
+		if (context) destroyUnitShader();
+#endif
 		if (context) SDL_GL_DeleteContext(context);
 		context = nullptr;
 		freeOwnedSurface();
@@ -544,7 +550,13 @@ namespace GAGCore
 
 			#ifdef HAVE_OPENGL
 			if (optionFlags & USEGPU)
+			{
 				glState.checkExtensions();
+				// A failed compile/link logs once and leaves hasUnitShader() false;
+				// callers fall back to the CPU team-color cache for this context's
+				// lifetime.
+				createUnitShader();
+			}
 			#endif // HAVE_OPENGL
 
 			// setup title and icon
@@ -597,7 +609,6 @@ namespace GAGCore
 	void GraphicContext::nextFrame(void)
 	{
 		DrawableSurface::nextFrame();
-		Sprite::beginCompositeFrame();
 		if (sdlsurface)
 		{
 			if (optionFlags & CUSTOMCURSOR)
