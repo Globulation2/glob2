@@ -11,6 +11,7 @@
 #include <queue>
 #include <map>
 #include <memory>
+#include <string>
 
 #include "MusicTrack.h"
 #include "PlayerVoice.h"
@@ -45,6 +46,7 @@ public:
 	
 protected:
 	void openAudio(void);
+	std::string activeMusicSet = "original";
 
 public:
 	SoundMixer(unsigned musicvol = 255, unsigned voicevol = 255, bool mute = false);
@@ -68,6 +70,12 @@ public:
 	//! sites read as `setNextTrack(MusicTrack::WarEvent, true)` rather than
 	//! `setNextTrack(4, true)`.
 	void setNextTrack(MusicTrack track, bool earlyChange=false);
+
+	static std::vector<std::string> getMusicSets();
+	static std::string musicSetLabel(const std::string& name);
+	//! Empty preference chooses randomly. Replaces the complete trio atomically.
+	bool selectMusicSet(const std::string& preference);
+	const std::string& getMusicSet() const { return activeMusicSet; }
 
 	void setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute);
 	

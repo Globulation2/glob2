@@ -1,0 +1,57 @@
+{
+  "renderer": "FluidSynth",
+  "renderer_version": "2.6.0",
+  "sound_bank": "GeneralUser-GS.sf2",
+  "sound_bank_sha256": "9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe",
+  "settings": {
+    "synth.sample-rate": 44100.0,
+    "synth.gain": 0.2,
+    "synth.polyphony": 256,
+    "synth.cpu-cores": 1,
+    "synth.reverb.active": 1,
+    "synth.chorus.active": 0,
+    "synth.reverb.room-size": 0.35,
+    "synth.reverb.damp": 0.4,
+    "synth.reverb.width": 0.5,
+    "synth.reverb.level": 0.15,
+    "synth.min-note-length": 0,
+    "synth.midi-bank-select": "gm"
+  },
+  "interpolation": 4,
+  "sample_rate": 44100,
+  "shared_gain": 1.0451613707051255,
+  "warmup_loops": 2,
+  "target_rms": {
+    "calm": 0.028453437611460686,
+    "building": 0.06649541854858398,
+    "combat": 0.1424490213394165
+  },
+  "tracks": {
+    "calm": {
+      "frames": 3386880,
+      "seconds": 76.8,
+      "peak": 0.1952572911977768,
+      "rms": 0.02973843365907669,
+      "boundary_step": 4.8282701754942536e-05
+    },
+    "building": {
+      "frames": 3386880,
+      "seconds": 76.8,
+      "peak": 0.42225557565689087,
+      "rms": 0.0694984495639801,
+      "boundary_step": 7.674063090234995e-05
+    },
+    "combat": {
+      "frames": 3386880,
+      "seconds": 76.8,
+      "peak": 0.8999999761581421,
+      "rms": 0.1488822102546692,
+      "boundary_step": 0.0012938641011714935
+    }
+  },
+  "preview_switch_seconds": [
+    9.6,
+    19.2,
+    28.799999999999997
+  ]
+}

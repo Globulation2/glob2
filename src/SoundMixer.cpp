@@ -8,6 +8,9 @@
 using namespace GAGCore;
 #include <iostream>
 #include <assert.h>
+#include <algorithm>
+#include <array>
+#include <cctype>
 
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
@@ -362,6 +365,115 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 int SoundMixer::loadTrack(const std::string name, MusicTrack track)
 {
 	return loadTrack(name, static_cast<int>(track));
+}
+
+std::vector<std::string> SoundMixer::getMusicSets()
+{
+	auto *files = Toolkit::getFileManager();
+	files->initDirectoryListing("data/zik/", "", true);
+	std::vector<std::string> result;
+	std::string name;
+	while (!(name = files->getNextDirectoryEntry()).empty())
+	{
+		if (name == "." || name == ".." || name.find_first_of("/\\\r\n=") != std::string::npos)
+			continue;
+		const std::string directory = "data/zik/" + name;
+		if (!files->isDir(directory))
+			continue;
+		bool complete = true;
+		for (int i = 1; i <= 3; ++i)
+		{
+			FILE *file = files->openFP(directory + "/a" + std::to_string(i) + ".ogg");
+			if (file)
+				fclose(file);
+			else
+				complete = false;
+		}
+		if (complete)
+			result.push_back(name);
+	}
+	std::sort(result.begin(), result.end());
+	result.erase(std::unique(result.begin(), result.end()), result.end());
+	return result;
+}
+
+std::string SoundMixer::musicSetLabel(const std::string& name)
+{
+	std::string label = name;
+	bool capital = true;
+	for (char& c : label)
+	{
+		if (c == '-' || c == '_')
+			c = ' ';
+		else if (capital)
+			c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+		capital = (c == ' ');
+	}
+	return label;
+}
+
+bool SoundMixer::selectMusicSet(const std::string& preference)
+{
+	const auto available = getMusicSets();
+	if (available.empty())
+		return false;
+	const std::string name = preference.empty() ? available[rand() % available.size()] : preference;
+	if (std::find(available.begin(), available.end(), name) == available.end())
+		return false;
+	if (name == activeMusicSet && tracks.size() >= static_cast<unsigned>(MusicTrack::Count))
+		return true;
+
+	auto closeTrack = [](OggVorbis_File *track) { if (track) { ov_clear(track); delete track; } };
+	using Track = std::unique_ptr<OggVorbis_File, decltype(closeTrack)>;
+	std::array<Track, 3> replacement = {Track(nullptr, closeTrack), Track(nullptr, closeTrack), Track(nullptr, closeTrack)};
+	ogg_int64_t frames = 0;
+	for (unsigned i = 0; i < replacement.size(); ++i)
+	{
+		const std::string path = "data/zik/" + name + "/a" + std::to_string(i + 1) + ".ogg";
+		FILE *file = Toolkit::getFileManager()->openFP(path);
+		if (!file)
+			return false;
+		auto track = std::make_unique<OggVorbis_File>();
+		if (ov_open(file, track.get(), nullptr, 0) < 0)
+		{
+			fclose(file);
+			return false;
+		}
+		replacement[i].reset(track.release());
+		const auto *info = ov_info(replacement[i].get(), -1);
+		const auto length = ov_pcm_total(replacement[i].get(), -1);
+		if (!info || info->rate != 44100 || info->channels != 2 || length <= 0 ||
+			(i > 0 && length != frames) || ov_streams(replacement[i].get()) != 1)
+			return false;
+		frames = length;
+	}
+
+	SDL_LockAudio();
+	const unsigned first = static_cast<unsigned>(MusicTrack::InGameDefault);
+	if (tracks.size() < static_cast<unsigned>(MusicTrack::Count))
+	{
+		SDL_UnlockAudio();
+		return false;
+	}
+	for (unsigned i = 0; i < replacement.size(); ++i)
+	{
+		auto *old = tracks[first + i];
+		tracks[first + i] = replacement[i].release();
+		replacement[i].reset(old);
+	}
+	activeMusicSet = name;
+	if (actTrack >= static_cast<int>(first))
+	{
+		// Different sets need not share tempo or length. Start the same mood anew.
+		if (mode == MODE_EARLY_CHANGE && nextTrack >= static_cast<int>(first))
+			actTrack = nextTrack;
+		nextTrack = actTrack;
+		if (mode != MODE_STOPPED)
+			mode = MODE_START;
+	}
+	SDL_UnlockAudio();
+	std::cerr << "selecting music dir " << name << std::endl;
+	return true;
 }
 
 void SoundMixer::setNextTrack(MusicTrack track, bool earlyChange)
