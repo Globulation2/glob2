@@ -7,6 +7,18 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT: second engine abort reproduced the same UnitActivity.cpp:141 assertion.
+Known quarantined keys are ca3cddca076e15fe90357c7959b9ef3fcff5c67d886170568c8bc2bd2c53d5af
+and 1be5400897b765f5a6e9dee48c4011f2fdcdee9a92b2b96ec0db4d27921f402e.
+Updated recovery-controller.py allows only these two investigated failures while
+continuing untouched pending games; neither failed execution is retried or replaced.
+No final inference. SECOND_ABORT_STOP.json preserves the second stop evidence.
+Root cause and fix now verified: Building::kill releases blocked exiting units
+without map occupancy. PR https://github.com/Globulation2/glob2/pull/239,
+commit318a0bfeb, isolated worktree glob2-unit-conversion-fix. Linux differential
+regression, macOS regression/40 adjacent cases, and failed scenario replay pass.
+Fix is NOT deployed into frozen engine. Diagnostic results never pooled.
+
 CURRENT: farming confirmation recovery after a unit-conversion assertion on TheRig.
 Failed key ca3cddca076e15fe90357c7959b9ef3fcff5c67d886170568c8bc2bd2c53d5af
 remains quarantined, not retried/replaced. recovery-controller.py in the current

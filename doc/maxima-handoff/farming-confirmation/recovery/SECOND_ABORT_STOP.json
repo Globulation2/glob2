@@ -1,0 +1,20 @@
+{
+  "reason": {
+    "new_fault": "therig.local",
+    "stop": {
+      "reason": "engine exited -6; inspect before retry",
+      "job": "1be5400897b765f5a6e9dee48c4011f2fdcdee9a92b2b96ec0db4d27921f402e",
+      "host": "therig.local",
+      "active_engines": "preserve; stop new assignments"
+    },
+    "unexpected": [
+      {
+        "id": "1be5400897b765f5a6e9dee48c4011f2fdcdee9a92b2b96ec0db4d27921f402e",
+        "status": "needs_investigation",
+        "error": "engine exited -6; inspect before retry"
+      }
+    ]
+  },
+  "time": 1789007591.4407098,
+  "active_engines": "preserve"
+}
