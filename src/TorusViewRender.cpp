@@ -660,14 +660,16 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_FALSE);
-        // The deck has to land on the same cases as the atlas under it, so V is
-        // resolved exactly as the ground shader resolves it: the mesh carries -dv
-        // and the offset carries 1 - anchorV. The extra map origin term is there
-        // because the ring is sampled in absolute map coordinates while the atlas
-        // was drawn from the viewport origin, and the half texel puts the sample
-        // point on the world pixel the texel was taken at.
+        // The deck has to land on the same cases as the atlas under it, and the two
+        // textures run opposite ways in V: the atlas is drawn top down into a render
+        // target, so its first map row ends up at V = 1, while the ring's own texture
+        // is uploaded row 0 first and has its first map row at V = 0. The mesh feeds
+        // both the same -dv, so the deck has to flip it back. The map origin term is
+        // there because the ring is sampled in absolute map coordinates while the
+        // atlas was drawn from the viewport origin, and the half texel puts the
+        // sample point on the world pixel the texel was taken at.
         const float deckU = anchorU + float(originX) / worldW + 0.5f / cloudW;
-        const float deckV = 1 - anchorV + float(originY) / worldH + 0.5f / cloudH;
+        const float deckV = anchorV + float(originY) / worldH + 0.5f / cloudH;
         glMatrixMode(GL_TEXTURE);
         // Only one level deep: GL guarantees a texture matrix stack of just two.
         glPushMatrix();
@@ -680,6 +682,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         // apart and the ring stops looking like paint.
         glLoadIdentity();
         glTranslatef(deckU, deckV, 0);
+        glScalef(1, -1, 1);
         glDisableClientState(GL_COLOR_ARRAY);
         glColor4f(.42f, .45f, .52f, 1);
         glBindBuffer(GL_ARRAY_BUFFER, cloudUnderBuffer);
@@ -691,6 +694,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
 
         glLoadIdentity();
         glTranslatef(deckU, deckV, 0);
+        glScalef(1, -1, 1);
         glBindBuffer(GL_ARRAY_BUFFER, cloudBuffer);
         glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
                         reinterpret_cast<void *>(offsetof(MeshVertex, position)));
