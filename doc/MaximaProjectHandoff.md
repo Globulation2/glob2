@@ -7,6 +7,14 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT: recovery controller repaired after rsync/SSH timeout to devlaptop terminated
+collection and let dispatch expire. Transfers now have bounded timeouts, record
+failures and retry next cycle without processing incomplete files or rerunning games.
+Host probes tolerate connectivity loss independently; completion requires all hosts
+reachable. Both exit255 and timeout regression checks passed. Inspect CONNECTIVITY.json,
+transfer-<host>.json and fresh STATUS rather than old appended traceback lines.
+Existing assertion quarantine policy and frozen engine remain unchanged.
+
 CURRENT: third same conversion abort investigated and quarantined: 4de46a225ea0e95ea6e6461fad399a6c97caa7f1a38363bc1568f90f42250f4d.
 Recovery now classifies ONLY engine exit -6 with the exact verified UnitActivity.cpp:141
 assertion as the known defect, archives its stop/log metadata, and continues pending

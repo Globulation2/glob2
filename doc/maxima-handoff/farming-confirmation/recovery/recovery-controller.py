@@ -46,9 +46,20 @@ print(json.dumps(evidence))
  value['stop']=None
  return True
 
-for h in hosts:fleet.remote(h,ROOT,REMOTE,'start','weak')
+started_hosts=set()
+def probe(host):
+ try:
+  if host not in started_hosts:
+   fleet.remote(host,ROOT,REMOTE,'start','weak');started_hosts.add(host)
+  return host,fleet.remote(host,ROOT,REMOTE,'pulse'),None
+ except (subprocess.SubprocessError,OSError,RuntimeError) as error:
+  return host,None,str(error)
+
 while True:
- with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:probes=dict(zip(hosts,pool.map(lambda h:fleet.remote(h,ROOT,REMOTE,'pulse'),hosts)))
+ with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:values=list(pool.map(probe,hosts))
+ probes={h:v for h,v,error in values if v is not None}
+ failures={h:error for h,v,error in values if error}
+ e.atomic(BASE/'CONNECTIVITY.json',{'time':time.time(),'failures':failures})
  for h,v in probes.items():
   quarantine_same_assertion(h,v)
   unexpected=[j for j in v['jobs'] if j['status']=='needs_investigation' and j['id'] not in KNOWN]
@@ -56,14 +67,19 @@ while True:
    fleet.exp.HOSTS={h:0 for h in hosts};fleet.propagate_stop(BASE,ROOT,REMOTE,{'new_fault':h,'stop':v['stop'],'unexpected':unexpected});raise RuntimeError('New fault; inspect evidence immediately')
   keys=[j['id'] for j in v['jobs'] if j['status']=='complete' and not (BASE/'results'/j['id']/'result.json.gz').exists()][:64]
   if keys:
-   subprocess.run(['rsync','-az','-e','ssh -F '+CONFIG,'--files-from=-',h+':'+str(REMOTE/'runs')+'/',str(BASE/'results')+'/'],input=''.join(k+'/result.json\n' for k in keys),text=True,check=True)
+   try:
+    transfer=subprocess.run(['rsync','-az','-e','ssh -o ConnectTimeout=5 -F '+CONFIG,'--files-from=-',h+':'+str(REMOTE/'runs')+'/',str(BASE/'results')+'/'],input=''.join(k+'/result.json\n' for k in keys),text=True,capture_output=True,timeout=12)
+    if transfer.returncode:
+     e.atomic(BASE/('transfer-'+h+'.json'),{'time':time.time(),'retry_next_cycle':True,'error':transfer.stderr[-2000:]});continue
+   except (subprocess.TimeoutExpired,OSError) as error:
+    e.atomic(BASE/('transfer-'+h+'.json'),{'time':time.time(),'retry_next_cycle':True,'error':str(error)});continue
    for k in keys:
     p=BASE/'results'/k/'result.json';v=json.loads(p.read_text());assert v['execution_id']==k
     with gzip.open(p.with_suffix('.json.gz.pending'),'wb') as f:f.write(p.read_bytes())
     p.with_suffix('.json.gz.pending').replace(p.with_suffix('.json.gz'));p.unlink()
  complete={p.parent.name for p in (BASE/'results').glob('*/result.json.gz')};running=sum(v['summary'].get('running',0) for v in probes.values());pending=sum(v['summary'].get('pending',0) for v in probes.values())
  e.atomic(BASE/'STATUS.json',{'time':time.time(),'stage':'confirmation_recovery','completed_pairs':sum(r['on'] in complete and r['off'] in complete for r in m['comparisons']),'completed_executions':len(complete),'scheduled_pairs':8000,'scheduled_executions':len(m['jobs']),'running':running,'pending':pending,'quarantined_failed_execution':KNOWN,'final_inference_blocked':True,'hosts':{h:v['summary'] for h,v in probes.items()}})
- if not running and not pending:
+ if len(probes)==len(hosts) and not running and not pending:
   for h in hosts:fleet.remote(h,ROOT,REMOTE,'stop',value={'reason':'Remaining jobs collected; crash resolution required before inference'})
   break
  time.sleep(20)
