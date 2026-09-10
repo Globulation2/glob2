@@ -120,6 +120,12 @@ Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass
 void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
 {
 	Uint16 *gradient=resourcesGradient[teamNumber][resourceType][swimClass];
+	seedResourcesGradient(teamNumber, resourceType, swimClass, gradient);
+	propagateGradient(gradient, swimClass);
+}
+
+void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient)
+{
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
@@ -152,5 +158,4 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 			gradient[i]=GRADIENT_FORBIDDEN;
 	}
 
-	propagateGradient(gradient, swimClass);
 }

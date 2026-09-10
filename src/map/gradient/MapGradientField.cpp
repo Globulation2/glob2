@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "Map.h"
+#include <memory>
 #include "MapInternal.h"
 #include "Utilities.h"
 
@@ -25,10 +26,31 @@ namespace
 	// Costs above this would run into the sentinels; propagation stops there.
 	constexpr int COST_LIMIT = GRADIENT_AT_GOAL - GRADIENT_UNREACHABLE - 1 - MAX_STEP;
 
-	// Shared scratch storage retains capacity between fields. Calls must be serial
-	// and non-reentrant, including calls on different Maps. Before parallelizing
-	// propagation, give each worker its own workspace; these are not cached fields.
+}
+
+// Propagation scratch: the bucket queues. One per thread that propagates (the
+// main thread's below, the worker's on its own stack); capacity is retained
+// between fields. Not a cache: it holds no field data between calls.
+struct Map::GradientScratch
+{
 	std::vector<int> buckets[BUCKETS];
+};
+
+void Map::GradientScratchDeleter::operator()(GradientScratch *scratch) const
+{
+	delete scratch;
+}
+
+Map::GradientScratchPtr Map::newGradientScratch()
+{
+	return GradientScratchPtr(new GradientScratch);
+}
+
+void Map::propagateGradient(Uint16 *gradient, int swimClass)
+{
+	// Main-thread callers only (units, AIs, editor), which are serial.
+	static GradientScratch mainScratch;
+	propagateGradient(gradient, swimClass, mainScratch);
 }
 
 static_assert(WATER_STEP[Map::SWIM_CLASS_EVEN] == GRADIENT_STEP);
@@ -69,22 +91,23 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 // (0 for GRADIENT_AT_GOAL). Seed costs must be in [0, MAX_STEP], so the initial
 // queue fits one bucket rotation. Reseed before reuse; a propagated field is
 // not a valid seed buffer. GRADIENT_FORBIDDEN cells are obstacles.
-void Map::propagateGradient(Uint16 *gradient, int swimClass)
+void Map::propagateGradient(Uint16 *gradient, int swimClass, GradientScratch &scratch)
 {
+	std::vector<int> (&bk)[BUCKETS] = scratch.buckets;
 	for (int b = 0; b < BUCKETS; b++)
-		buckets[b].clear();
+		bk[b].clear();
 	size_t pending = 0;
 	for (size_t i = 0; i < size; i++)
 		if (gradient[i] > GRADIENT_UNREACHABLE)
 		{
 			int cost = GRADIENT_AT_GOAL - gradient[i];
 			assert(cost <= MAX_STEP);
-			buckets[cost % BUCKETS].push_back((int)i);
+			bk[cost % BUCKETS].push_back((int)i);
 			pending++;
 		}
 	for (int cur = 0; pending > 0 && cur <= COST_LIMIT; cur++)
 	{
-		std::vector<int> &bucket = buckets[cur % BUCKETS];
+		std::vector<int> &bucket = bk[cur % BUCKETS];
 		// Relaxations may append to other buckets but never to this one
 		// (each step is positive and less than BUCKETS), so iteration is safe.
 		for (size_t bi = 0; bi < bucket.size(); bi++)
@@ -103,8 +126,8 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass)
 			// All reverse edges enter i, so they share its two terrain costs.
 			const int cardinalCost = cur + stepCost(1, 0, (size_t)i, swimClass);
 			const int diagonalCost = cur + stepCost(1, 1, (size_t)i, swimClass);
-			auto& cardinalBucket = buckets[cardinalCost % BUCKETS];
-			auto& diagonalBucket = buckets[diagonalCost % BUCKETS];
+			auto& cardinalBucket = bk[cardinalCost % BUCKETS];
+			auto& diagonalBucket = bk[diagonalCost % BUCKETS];
 			auto relax = [&](size_t n, int cost, std::vector<int>& destination)
 			{
 				if (gradient[n] != GRADIENT_FORBIDDEN && cost < GRADIENT_AT_GOAL - gradient[n])

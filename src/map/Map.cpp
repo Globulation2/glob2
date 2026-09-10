@@ -86,6 +86,42 @@ Map::Map()
 	fertilityMaximum = 0;
 }
 
+
+#ifndef YOG_SERVER_ONLY
+// Draining the field jobs lives here, next to clear(), so every build that links
+// Map.cpp can free a Map; the scheduling and the worker are in MapStep.cpp.
+
+void Map::publishGradients(Uint32 now)
+{
+	std::unique_lock<std::mutex> lock(gradientMutex);
+	while (!gradientJobs.empty() && gradientJobs.front().publishTick <= now)
+	{
+		gradientWake.wait(lock, [this] { return gradientJobs.front().done; });
+		GradientJob job = gradientJobs.front();
+		gradientJobs.pop_front();
+		std::swap(*job.slot, job.buffer);
+		spareGradients.push_back(job.buffer);
+	}
+}
+
+void Map::finishPendingGradients()
+{
+	publishGradients(0xFFFFFFFF);
+	if (gradientWorker.joinable())
+	{
+		{
+			std::lock_guard<std::mutex> lock(gradientMutex);
+			gradientWorkerQuit = true;
+			gradientWake.notify_all();
+		}
+		gradientWorker.join();
+	}
+	for (Uint16 *spare : spareGradients)
+		delete[] spare;
+	spareGradients.clear();
+}
+#endif  // !YOG_SERVER_ONLY
+
 Map::~Map(void)
 {
 	clear();
@@ -93,6 +129,9 @@ Map::~Map(void)
 
 void Map::clear()
 {
+#ifndef YOG_SERVER_ONLY
+	finishPendingGradients();
+#endif
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{

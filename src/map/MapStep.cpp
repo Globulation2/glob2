@@ -12,6 +12,7 @@
 #endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
+#include <thread>
 
 
 // growResources, syncStep, fog of war, discovery, explored area
@@ -92,50 +93,128 @@ void Map::syncStep(Uint32 stepCounter)
 		if (team < game->mapHeader.getNumberOfTeams())
 			updateExploredArea(team);
 	}
-	
-	// We only update one gradient per step, round robin over the gradients in use:
-	bool updated=false;
-	while (!updated)
+}
+
+namespace {
+
+// Ticks between seeding a round-robin field and publishing it. The worker has
+// this long to propagate it; the units read the previous field meanwhile. Part of
+// the simulation: every peer must use the same value.
+constexpr Uint32 GRADIENT_PIPELINE_TICKS = 3;
+
+} // namespace
+
+void Map::startGradientWorker()
+{
+	if (gradientWorker.joinable())
+		return;
+	gradientWorkerQuit = false;
+	gradientWorker = std::thread([this]
 	{
-		int numberOfTeam=game->mapHeader.getNumberOfTeams();
-		for (int t=0; t<numberOfTeam; t++)
-			for (int r=0; r<MAX_RESOURCES; r++)
-				for (int s=0; s<SWIM_CLASS_COUNT; s++)
+		GradientScratchPtr scratch = newGradientScratch();
+		std::unique_lock<std::mutex> lock(gradientMutex);
+		for (;;)
+		{
+			// Jobs are propagated in order; the first undone one is ours.
+			GradientJob *job = NULL;
+			gradientWake.wait(lock, [this, &job]
+			{
+				if (gradientWorkerQuit)
+					return true;
+				for (GradientJob &j : gradientJobs)
+					if (!j.done)
+					{
+						job = &j;
+						return true;
+					}
+				return false;
+			});
+			if (gradientWorkerQuit)
+				return;
+			Uint16 *buffer = job->buffer;
+			int swimClass = job->swimClass;
+			lock.unlock();
+			propagateGradient(buffer, swimClass, *scratch);
+			lock.lock();
+			// publishGradients pops only done jobs from the front and waits on this
+			// one, so it is still in the deque; find it again by buffer in case the
+			// deque reallocated while we were unlocked.
+			for (GradientJob &j : gradientJobs)
+				if (j.buffer == buffer)
+					j.done = true;
+			gradientWake.notify_all();
+		}
+	});
+}
+
+void Map::stepGradients()
+{
+	const Uint32 now = game->stepCounter;
+	publishGradients(now);
+	if (spareGradients.empty())
+		spareGradients.push_back(new Uint16[size]);
+	GradientJob job;
+	job.buffer = spareGradients.back();
+	if (!pickRoundRobinField(job))
+		return;
+	spareGradients.pop_back();
+	job.publishTick = now + GRADIENT_PIPELINE_TICKS;
+	startGradientWorker();
+	std::lock_guard<std::mutex> lock(gradientMutex);
+	gradientJobs.push_back(job);
+	gradientWake.notify_all();
+}
+
+bool Map::pickRoundRobinField(GradientJob &p)
+{
+	const int numberOfTeam = game->mapHeader.getNumberOfTeams();
+	for (int pass = 0; pass < 2; pass++)
+	{
+		for (int t = 0; t < numberOfTeam; t++)
+			for (int r = 0; r < MAX_RESOURCES; r++)
+				for (int s = 0; s < SWIM_CLASS_COUNT; s++)
 					if (resourcesGradient[t][r][s] && !gradientUpdated[t][r][s])
 					{
-						updateResourcesGradient(t, r, s);
-						gradientUpdated[t][r][s]=true;
-						return;
+						gradientUpdated[t][r][s] = true;
+						p.slot = &resourcesGradient[t][r][s];
+						p.swimClass = s;
+						seedResourcesGradient(t, r, s, p.buffer);
+						return true;
 					}
-		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<SWIM_CLASS_COUNT; s++)
-				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
+		for (int t = 0; t < numberOfTeam; t++)
+			for (int s = 0; s < SWIM_CLASS_COUNT; s++)
+				if (guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
 				{
-					updateGuardAreasGradient(t, s);
-					guardGradientUpdated[t][s]=true;
-					return;
+					guardGradientUpdated[t][s] = true;
+					p.slot = &guardAreasGradient[t][s];
+					p.swimClass = s;
+					seedGuardAreasGradient(t, s, p.buffer);
+					return true;
 				}
-		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<SWIM_CLASS_COUNT; s++)
-				if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
+		for (int t = 0; t < numberOfTeam; t++)
+			for (int s = 0; s < SWIM_CLASS_COUNT; s++)
+				if (clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
 				{
-					updateClearAreasGradient(t, s);
-					clearGradientUpdated[t][s]=true;
-					return;
+					clearGradientUpdated[t][s] = true;
+					p.slot = &clearAreasGradient[t][s];
+					p.swimClass = s;
+					seedClearAreasGradient(t, s, p.buffer);
+					return true;
 				}
-				
-
-		for (int t=0; t<numberOfTeam; t++)
-			for (int r=0; r<MAX_RESOURCES; r++)
-				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					gradientUpdated[t][r][s]=false;
-		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<SWIM_CLASS_COUNT; s++)
+		// A full rotation is done: start the next one.
+		for (int t = 0; t < numberOfTeam; t++)
+		{
+			for (int r = 0; r < MAX_RESOURCES; r++)
+				for (int s = 0; s < SWIM_CLASS_COUNT; s++)
+					gradientUpdated[t][r][s] = false;
+			for (int s = 0; s < SWIM_CLASS_COUNT; s++)
 			{
-				guardGradientUpdated[t][s]=false;
-				clearGradientUpdated[t][s]=false;
+				guardGradientUpdated[t][s] = false;
+				clearGradientUpdated[t][s] = false;
 			}
+		}
 	}
+	return false;
 }
 #endif  // !YOG_SERVER_ONLY
 
