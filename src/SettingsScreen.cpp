@@ -93,20 +93,27 @@ void SettingsScreen::commit(bool defer)
 bool SettingsScreen::persist()
 {
     saveAt=0;
-    if(settingsDirty && globalContainer->settings.save()) settingsDirty=false;
-    if(keyboardDirty[0] && gameKeys.saveKeyboardLayout()) keyboardDirty[0]=false;
-    if(keyboardDirty[1] && editorKeys.saveKeyboardLayout()) keyboardDirty[1]=false;
-    failed=settingsDirty || keyboardDirty[0] || keyboardDirty[1];
-    // The write above is already durable on native builds. In the browser it
-    // lands in Emscripten's virtual filesystem first and needs this separate
-    // flush to survive a reload; poll it from onTimer rather than block here.
-    if(!failed && !persistence) {
-        if(GAGCore::ApplicationHost::storageRestoreFailed()) failed=true;
-        else {
-            persistence=GAGCore::ApplicationHost::persistStorage();
-            if(!persistence) failed=true;
+    try {
+        // Write unconditionally, not only when locally dirty: a close with
+        // nothing edited must still flush to durable storage (a prior browser
+        // storage-restore failure can leave already-committed settings
+        // unflushed), and every other caller only reaches persist() with at
+        // least one dirty flag already set, so this adds no redundant I/O there.
+        if(globalContainer->settings.save()) settingsDirty=false;
+        if(gameKeys.saveKeyboardLayout()) keyboardDirty[0]=false;
+        if(editorKeys.saveKeyboardLayout()) keyboardDirty[1]=false;
+        failed=settingsDirty || keyboardDirty[0] || keyboardDirty[1];
+        // The write above is already durable on native builds. In the browser it
+        // lands in Emscripten's virtual filesystem first and needs this separate
+        // flush to survive a reload; poll it from onTimer rather than block here.
+        if(!failed && !persistence) {
+            if(GAGCore::ApplicationHost::storageRestoreFailed()) failed=true;
+            else {
+                persistence=GAGCore::ApplicationHost::persistStorage();
+                if(!persistence) failed=true;
+            }
         }
-    }
+    } catch(const std::exception&) { failed=true; persistence.reset(); }
     return !failed;
 }
 void SettingsScreen::finishInteraction() { dragging.clear(); if(settingsDirty || keyboardDirty[0] || keyboardDirty[1]) persist(); }
