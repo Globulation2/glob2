@@ -155,6 +155,11 @@ void MenuColony::drawClouds(DynamicClouds& clouds, int width, int height)
 	if (clockStarted) ++cloudTime;
 }
 
+GAGCore::Color MenuColony::teamColor() const
+{
+	return game ? game->teams[0]->color : GAGCore::Color(64, 200, 160);
+}
+
 Uint32 MenuColony::checksum() const
 {
 	return game ? game->checkSum(nullptr, nullptr, nullptr) : 0;

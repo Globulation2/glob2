@@ -4,6 +4,8 @@
 #include "MainMenuScreen.h"
 #include "FrontendTheme.h"
 #include "GlobalContainer.h"
+#include "MenuColony.h"
+#include "render/UnitSkin.h"
 #include <GUIButton.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -151,6 +153,7 @@ MainMenuScreen::MainMenuScreen()
 
 
 	const int x = panelX + 24, w = panelW - 48;
+	glob.x = x + 8;
 	int y = panelY + (compact ? 74 : 110);
 	auto add = [&](const char* label, int action, int h, const char* font, bool primary = false)
 	{
@@ -210,6 +213,68 @@ void MainMenuScreen::paint()
 	auto* caption = Toolkit::getFont("front-caption");
 	caption->setStyle(Font::Style(Font::STYLE_NORMAL, muted));
 	gfx->drawString(panelX + 24, panelY + panelH - 30, caption, PACKAGE_VERSION);
+
+	// The glob: the colony's own worker sprite, in its team colour, walking the
+	// otherwise empty band above the version caption. Direction 3 faces east,
+	// 7 west; eight walk frames per direction.
+	if (globFrames.empty() && FrontendTheme::current && FrontendTheme::current->colony->ready()) buildGlobFrames();
+	if (!globFrames.empty())
+	{
+		const int frame = glob.walking ? int(glob.phase / 80) % 8 : 0;
+		auto* image = globFrames[(glob.dir > 0 ? 0 : 8) + frame].get();
+		const int gx = int(glob.x) - (image->getW() - 32) / 2, gy = panelY + panelH - 92 - (image->getH() - 32) / 2;
+		gfx->drawSurface(gx, gy, image, Uint8(255 * entry / 10));
+	}
+}
+
+void MainMenuScreen::buildGlobFrames()
+{
+	const auto& skin = g_unitSkins[WORKER];
+	if (!skin.sprite) return;
+	skin.sprite->setBaseColor(FrontendTheme::current->colony->teamColor());
+	for (int direction : {3, 7})
+		for (int frame = 0; frame < 8; ++frame)
+		{
+			const int index = int(skin.startImage[WALK]) + 8 * direction + frame;
+			const int w = skin.sprite->getW(index), h = skin.sprite->getH(index);
+			DrawableSurface canvas(w, h);
+			SDL_Surface* pixels = canvas.getSDLSurface();
+			SDL_FillRect(pixels, nullptr, 0);
+			canvas.drawSprite(0, 0, skin.sprite, index);
+			for (int row = 0; row < h; ++row)
+			{
+				auto* line = reinterpret_cast<Uint32*>(static_cast<Uint8*>(pixels->pixels) + row * pixels->pitch);
+				for (int col = 0; col < w; ++col)
+				{
+					Uint8 red, green, blue, alpha;
+					SDL_GetRGBA(line[col], pixels->format, &red, &green, &blue, &alpha);
+					if (alpha < 32) line[col] = SDL_MapRGBA(pixels->format, 0, 0, 0, 0);
+				}
+			}
+			SDL_SetSurfaceBlendMode(pixels, SDL_BLENDMODE_BLEND);
+			globFrames.push_back(std::make_unique<DrawableSurface>(pixels));
+		}
+}
+
+void MainMenuScreen::onTimer(Uint32 tick)
+{
+	if (glob.lastTick == 0) { glob.lastTick = tick; return; }
+	const Uint32 elapsed = std::min<Uint32>(tick - glob.lastTick, 100);
+	glob.lastTick = tick;
+	glob.walking = tick >= glob.idleUntil;
+	if (!glob.walking) return;
+	const int left = panelX + 32, right = panelX + panelW - 64;
+	glob.x += glob.dir * 24.0 * elapsed / 1000.0;
+	glob.phase += elapsed;
+	glob.seed = glob.seed * 1664525u + 1013904223u;
+	const bool atEdge = glob.x <= left || glob.x >= right;
+	// Turn at the edges; otherwise pause now and then, about once every six seconds.
+	if (atEdge || (glob.seed >> 8) % 6000 < elapsed)
+	{
+		glob.x = std::clamp(glob.x, double(left), double(right));
+		if (atEdge) glob.dir = -glob.dir;
+		glob.idleUntil = tick + 1000 + (glob.seed >> 16) % 2000;
+	}
 }
 
 void MainMenuScreen::onSDLEvent(SDL_Event* event)

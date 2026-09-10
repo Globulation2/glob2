@@ -18,6 +18,7 @@ public:
 	// draw() so it can be composited above the interface.
 	void drawClouds(DynamicClouds& clouds, int width, int height);
 	bool ready() const { return bool(game); }
+	GAGCore::Color teamColor() const;
 	Uint32 tick() const { return game ? game->stepCounter : 0; }
 	Uint32 checksum() const;
 private:
