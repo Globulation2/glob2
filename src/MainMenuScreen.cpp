@@ -25,10 +25,10 @@ using namespace GAGCore;
 
 namespace
 {
-const Color gold(227, 192, 119);
-const Color ink(17, 35, 32);
-const Color textColor(36, 69, 49);
-const Color muted(92, 114, 91);
+const Color gold(233, 176, 53);
+const Color ink(20, 38, 24);
+const Color textColor(26, 48, 30);
+const Color muted(112, 102, 70);
 
 const auto fillRounded = FrontendTheme::rounded;
 }
@@ -53,17 +53,19 @@ public:
 		auto* target = parent->getSurface();
 		const unsigned hover = focused ? 255 : getNextHighlightValue();
 		const int radius = primary ? 8 : 4;
-		if (focused) fillRounded(target, x - 3, y - 3, w + 6, h + 6, radius + 3, Color(67, 116, 75));
+		if (focused) fillRounded(target, x - 4, y - 4, w + 8, h + 8, radius + 4, Color(92, 74, 198));
 		if (primary)
 		{
-			fillRounded(target, x, y, w, h, radius, pressed ? Color(208, 172, 99) : gold);
-			if (hover) fillRounded(target, x, y, w, h, radius, Color(255, 245, 211, hover / 5));
+			fillRounded(target, x, y, w, h, radius, Color(26, 48, 30));
+			fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, pressed ? Color(206, 152, 40) : gold);
+			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(255, 235, 170, hover / 4));
 		}
 		else
 		{
-			fillRounded(target, x, y, w, h, radius, Color(234, 240, 228));
-			if (hover) fillRounded(target, x, y, w, h, radius, Color(169, 196, 157, hover / 2));
-			if (pressed) fillRounded(target, x, y, w, h, radius, Color(92, 130, 71, 55));
+			fillRounded(target, x, y, w, h, radius, Color(26, 48, 30));
+			fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(250, 241, 214));
+			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(233, 176, 53, hover / 2));
+			if (pressed) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(180, 140, 50, 70));
 		}
 		Font* labelFont=fontPtr;
 		if(labelFont->getStringWidth(text)>w-(primary?44:28)) labelFont=Toolkit::getFont("front-small");
@@ -138,7 +140,7 @@ MainMenuScreen::MainMenuScreen()
 						double coverage = goldInk ? (int(green) - int(blue) - 20) / 65.0 : (232 - int(red)) / 200.0;
 						coverage = coverage < 0.03 ? 0.0 : std::min(1.0, coverage);
 						pixels[col] = SDL_MapRGBA(fitted->format,
-							goldInk ? 227 : 36, goldInk ? 192 : 69, goldInk ? 119 : 49,
+							goldInk ? 233 : 26, goldInk ? 176 : 48, goldInk ? 53 : 30,
 							static_cast<Uint8>(std::lround(255 * coverage)));
 					}
 				}
@@ -193,8 +195,9 @@ MainMenuScreen::~MainMenuScreen()
 void MainMenuScreen::paint()
 {
 	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
-	fillRounded(gfx, panelX + 2, panelY + 3, panelW, panelH, 10, Color(15, 39, 25, 35));
-	fillRounded(gfx, panelX, panelY, panelW, panelH, 10, Color(230, 231, 210, 248));
+	fillRounded(gfx, panelX + 3, panelY + 5, panelW, panelH, 12, Color(12, 28, 16, 70));
+	fillRounded(gfx, panelX, panelY, panelW, panelH, 12, Color(26, 48, 30));
+	fillRounded(gfx, panelX + 3, panelY + 3, panelW - 6, panelH - 6, 9, Color(240, 224, 188, 252));
 	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, gold);
 	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get());
 	else

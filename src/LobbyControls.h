@@ -33,8 +33,8 @@ class LobbyControls : public GAGGUI::RectangularWidget
 	std::map<int, Region> regions;
 	std::string focus, pressed;
 	int activeRegion = -1, hoverX = 0, hoverY = 0;
-	GAGCore::Color ink{36, 69, 49}, muted{89, 108, 86}, panel{243, 245, 233}, gold{227, 192, 119},
-		line{194, 207, 183};
+	GAGCore::Color ink{26, 48, 30}, muted{112, 102, 70}, panel{250, 241, 214}, gold{233, 176, 53},
+		line{26, 48, 30};
 	struct Popup
 	{
 		bool open = false;

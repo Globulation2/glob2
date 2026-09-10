@@ -16,11 +16,11 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 {
 	current = this;
 	colony = std::make_unique<MenuColony>();
-	textColor = Color(36,69,49);
-	highlightColor = Color(67,116,75);
-	frameColor = Color(137,160,132);
-	listSelectedElementColor = Color(227,192,119);
-	backColor = backOverlayColor = Color(230,231,210);
+	textColor = Color(26,48,30);
+	highlightColor = Color(74,110,58);
+	frameColor = Color(26,48,30);
+	listSelectedElementColor = Color(233,176,53);
+	backColor = backOverlayColor = Color(240,224,188);
 	for (int i=0;i<3;++i) originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
 	fallback = std::make_unique<DrawableSurface>(1,1);
 	if (!fallback->loadImage("data/gfx/menu-colony.png")) fallback.reset();
@@ -92,26 +92,30 @@ void FrontendTheme::background(DrawableSurface* s, bool panel, const SDL_Rect* c
 		}
 		if(fittedFallback) s->drawSurface(0,0,fittedFallback.get());
 	}
-	s->drawFilledRect(0,0,w,h,Color(232,237,218,42));
+	s->drawFilledRect(0,0,w,h,Color(18,34,22,44));
 	if (panel)
 	{
 		const SDL_Rect area=content ? *content : SDL_Rect{(w-640)/2,(h-480)/2,640,480};
 		const int x=std::max(0,area.x-12), y=std::max(0,area.y-12);
 		const int pw=std::min(w,area.x+area.w+12)-x, ph=std::min(h,area.y+area.h+12)-y;
-		rounded(s,x+2,y+3,pw,ph,10,Color(15,39,25,35));
-		rounded(s,x,y,pw,ph,10,Color(230,231,210,248));
+		rounded(s,x+3,y+5,pw,ph,12,Color(12,28,16,70));
+		rounded(s,x,y,pw,ph,12,Color(26,48,30));
+		rounded(s,x+3,y+3,pw-6,ph-6,9,Color(240,224,188,252));
 	}
 	painted=true;
 }
 void FrontendTheme::drawTextButtonBackground(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)
 {
-	rounded(s,x,y,w,h,4,Color(234,240,228));
-	if(hi) rounded(s,x,y,w,h,4,Color(169,196,157,hi/2));
+	rounded(s,x,y,w,h,5,Color(26,48,30));
+	rounded(s,x+2,y+2,w-4,h-4,3,Color(250,241,214));
+	if(hi) rounded(s,x+2,y+2,w-4,h-4,3,Color(233,176,53,hi/2));
 }
 void FrontendTheme::drawFrame(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)
 {
 	// Frames are also drawn AFTER list contents; never erase their interior.
-	s->drawRect(x,y,w,h,hi ? highlightColor : frameColor);
+	const Color edge = hi ? highlightColor : frameColor;
+	s->drawRect(x,y,w,h,edge);
+	s->drawRect(x+1,y+1,w-2,h-2,edge);
 }
 void FrontendTheme::drawOnOffButton(DrawableSurface* s,int x,int y,int w,int h,unsigned hi,bool state)
 {
@@ -132,8 +136,9 @@ void FrontendTheme::drawScrollBar(DrawableSurface* s,int x,int y,int,int h,int p
 {
 	const int width=getStyleMetric(STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
 	const int end=getStyleMetric(STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
-	rounded(s,x,y,width,h,4,Color(202,218,196));
-	rounded(s,x+3,y+end+pos,width-6,len,3,frameColor);
+	rounded(s,x,y,width,h,4,Color(26,48,30));
+	rounded(s,x+1,y+1,width-2,h-2,3,Color(226,208,170));
+	rounded(s,x+3,y+end+pos,width-6,len,3,Color(120,142,86));
 	for(int i=0;i<4;++i)
 	{
 		s->drawLine(x+width/2-i,y+end/2+i,x+width/2+i,y+end/2+i,textColor);
@@ -143,8 +148,9 @@ void FrontendTheme::drawScrollBar(DrawableSurface* s,int x,int y,int,int h,int p
 void FrontendTheme::drawProgressBar(DrawableSurface* s,int x,int y,int w,int value,int range)
 {
 	const int h=getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
-	rounded(s,x,y,w,h,4,Color(202,218,196));
-	if(range>0) rounded(s,x,y,int(w*double(std::clamp(value,0,range))/range),h,4,listSelectedElementColor);
+	rounded(s,x,y,w,h,4,Color(26,48,30));
+	rounded(s,x+1,y+1,w-2,h-2,3,Color(226,208,170));
+	if(range>0) rounded(s,x+1,y+1,std::max(0,int((w-2)*double(std::clamp(value,0,range))/range)),h-2,3,listSelectedElementColor);
 }
 int FrontendTheme::getStyleMetric(StyleMetrics m)
 {
@@ -154,7 +160,8 @@ int FrontendTheme::getStyleMetric(StyleMetrics m)
 
 void FrontendTheme::drawFieldBackground(DrawableSurface* s,int x,int y,int w,int h)
 {
-	rounded(s,x,y,w,h,4,Color(234,240,228));
+	rounded(s,x,y,w,h,4,Color(26,48,30));
+	rounded(s,x+2,y+2,w-4,h-4,3,Color(250,241,214));
 }
 void FrontendTheme::drawSelectionBackground(DrawableSurface* s,int x,int y,int w,int h)
 {
@@ -162,13 +169,15 @@ void FrontendTheme::drawSelectionBackground(DrawableSurface* s,int x,int y,int w
 }
 bool FrontendTheme::drawSelector(DrawableSurface* s,int x,int y,int w,int h,unsigned value,unsigned maximum)
 {
-	rounded(s,x,y+h/2,w,4,2,frameColor);
-	const int position=maximum ? int((w-6)*double(value)/maximum) : 0;
-	rounded(s,x+position,y,6,h+4,3,highlightColor);
+	rounded(s,x,y+h/2-1,w,6,3,Color(26,48,30));
+	rounded(s,x+1,y+h/2,w-2,4,2,Color(226,208,170));
+	const int position=maximum ? int((w-10)*double(value)/maximum) : 0;
+	rounded(s,x+position,y-1,10,h+6,5,Color(26,48,30));
+	rounded(s,x+position+2,y+1,6,h+2,3,Color(233,176,53));
 	return true;
 }
 
 void FrontendTheme::drawButtonSelection(DrawableSurface* s,int x,int y,int w,int h)
 {
-	rounded(s,x,y,w,h,4,Color(227,192,119));
+	rounded(s,x,y,w,h,4,Color(92,74,198));
 }
