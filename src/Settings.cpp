@@ -47,13 +47,15 @@ Settings::Settings()
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
 	
-	cloudPatchSize=16;//the bigger the faster the uglier
+	cloudPatchSize=12;//the bigger the faster the uglier
 	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
 	cloudMaxSpeed=3;
 	cloudWindStability=3550;//how much will the wind change
 	cloudStability=1300;//how much will the clouds change shape
-	cloudSize=300;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
+	cloudSize=160;//small enough that a single fogged patch still shows cloud relief
 	cloudHeight=150;//(cloud - ground) / (eyes - ground) * 100 (to get an int value)
+	cloudCoverage=76;//how much of the deck stands up in sunlight; over open ground it is also how much sky is covered
+	cloudShadeAlpha=0;//explored ground stays as legible as it was without clouds
 }
 
 
@@ -148,6 +150,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(cloudStability);
 		READ_PARSED_INT(cloudSize);
 		READ_PARSED_INT(cloudHeight);
+		READ_PARSED_INT(cloudCoverage);
+		READ_PARSED_INT(cloudShadeAlpha);
 		
 		READ_PARSED_INT(version);
 	}
@@ -156,6 +160,7 @@ void Settings::load(std::string filename)
 	if(version < SETTINGS_VERSION)
 	{
 		resetDefaultUnitsAssigned();
+		resetCloudSettings();
 	}
 }
 
@@ -207,6 +212,8 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "cloudStability=%d\n",	cloudStability);
 		Utilities::streamprintf(stream, "cloudSize=%d\n",	cloudSize);
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
+		Utilities::streamprintf(stream, "cloudCoverage=%d\n",	cloudCoverage);
+		Utilities::streamprintf(stream, "cloudShadeAlpha=%d\n",	cloudShadeAlpha);
 		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
 	}
 	delete stream;
@@ -313,6 +320,19 @@ void Settings::resetDefaultUnitsAssigned()
  * sets the radii of the clear, explore, and attack flags
  * back to their default
  */
+void Settings::resetCloudSettings()
+{
+	cloudPatchSize=12;//the bigger the faster the uglier
+	cloudMaxAlpha=120;
+	cloudMaxSpeed=3;
+	cloudWindStability=3550;
+	cloudStability=1300;
+	cloudSize=160;
+	cloudHeight=150;
+	cloudCoverage=76;
+	cloudShadeAlpha=0;
+}
+
 void Settings::resetDefaultFlagRadius()
 {
 	defaultFlagRadius[0] = 10;

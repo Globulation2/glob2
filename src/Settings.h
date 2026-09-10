@@ -95,20 +95,24 @@ public:
 	int defaultFlagRadius[3];
 
 	int cloudPatchSize;//the bigger the faster the uglier
-	int cloudMaxAlpha;//the higher the nicer the clouds the harder the units are visible
+	int cloudMaxAlpha;//opacity of clouds over open ground; the fog of war is overcast regardless
 	int cloudMaxSpeed;
 	int cloudWindStability;//how much will the wind change
 	int cloudStability;//how much will the clouds change shape
-	int cloudSize;//the bigger the better they look with big Patches. The smaller the better they look with smaller patches
+	int cloudSize;//average length of a cloud in pixels; smaller gives the deck more relief per fogged patch
 	int cloudHeight;//(cloud - ground) / (eyes - ground)
+	int cloudCoverage;//relief of the deck in percent; the higher the more of it catches the sun
+	int cloudShadeAlpha;//cloud strength over ground already explored but out of sight, 0 disables
 
 	int tempUnit;
 	int tempUnitFuture;
 
 	void resetDefaultUnitsAssigned();
+	void resetCloudSettings();
 	void resetDefaultFlagRadius();
 };
 
 //Version 1 - Resets default units assigned and keyboard shortcuts
-#define SETTINGS_VERSION 1
+//Version 2 - Resets the cloud settings, whose scale and opacity changed meaning
+#define SETTINGS_VERSION 2
 

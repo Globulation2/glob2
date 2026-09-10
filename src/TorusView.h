@@ -35,9 +35,9 @@ class TorusView
   private:
     void releaseResources();
     bool prepareRenderTarget();
-    void updateClouds(int time);
+    void updateClouds(Game &game, int team, unsigned options, int time);
     static constexpr int meshColumns = 160, meshRows = 160;
-    std::vector<TorusPicking::Vertex> vertices, cloudVertices;
+    std::vector<TorusPicking::Vertex> vertices, cloudVertices, cloudUnderVertices;
     mutable int cachedPickX = -1, cachedPickY = -1;
     mutable bool cachedPickFound = false;
     mutable TorusPicking::Hit cachedPick;
@@ -55,12 +55,13 @@ class TorusView
     int atlasW, atlasH;
     Uint32 lastFrame;
     DynamicClouds clouds;
-    std::valarray<unsigned char> cloudPixels;
-    int cloudW = 0, cloudH = 0;
+    std::valarray<unsigned char> cloudPixels, cloudVisibility;
+    int cloudW = 0, cloudH = 0, cloudTime = 0;
+    bool cloudsSampled = false;
     SDL_GLContext graphicsContext = nullptr;
     unsigned graphicsGeneration = 0;
     unsigned texture, cloudTexture, framebuffer, material;
-    unsigned meshBuffer, cloudBuffer, indexBuffer;
+    unsigned meshBuffer, cloudBuffer, cloudUnderBuffer, indexBuffer;
     float meshKey[9];
     bool failed;
     int originX, originY;

@@ -72,10 +72,10 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
     return true;
 }
 
-void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit)
+void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options)
 {
     game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
-                 originX, originY, team, view, options, nullptr, &buildingGuiState, gamePaused, cloudGridLimit);
+                 originX, originY, team, view, options, nullptr, &buildingGuiState, gamePaused);
     if (globalContainer->replaying)
         return;
     ghostManager.drawAll(originX, originY, localTeamNo);

@@ -71,6 +71,7 @@ void Glob2Screen::paint(void)
 		ds.compute(0, 0, getW(), getH(), time, (getW()+31)/32, (getH()+31)/32);
 		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::SHADOW);
 		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::CLOUD);
+		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::CLOUD_CORE);
 	}
 }
 
@@ -122,6 +123,7 @@ void Glob2TabScreen::paint(void)
 		ds.compute(0, 0, getW(), getH(), time, (getW()+31)/32, (getH()+31)/32);
 		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::SHADOW);
 		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::CLOUD);
+		ds.render(globalContainer->gfx, getW(), getH(), DynamicClouds::CLOUD_CORE);
 	}
 }
 

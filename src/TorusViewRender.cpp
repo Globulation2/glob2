@@ -30,6 +30,12 @@ namespace
 {
 // Bound overview detail independently of map area. Normal 2D keeps native detail.
 const int atlasLimit = 4096, cloudGridLimit = 128;
+// how many animation ticks a sampled cloud ring stays good for
+const int cloudRefreshTicks = 6;
+// where the shadow deck hangs, as a share of the lit deck's height
+const float cloudUnderShare = .42f;
+// how far the shadow deck's texture is shifted away from the sun, in uv
+const float cloudShadowShift = .012f;
 const float pi = 3.14159265358979323846f;
 float clamp(float x, float a, float b) { return std::max(a, std::min(b, x)); }
 float smooth(float x)
@@ -173,6 +179,8 @@ void TorusView::releaseResources()
             glDeleteBuffers(1, &meshBuffer);
         if (cloudBuffer)
             glDeleteBuffers(1, &cloudBuffer);
+        if (cloudUnderBuffer)
+            glDeleteBuffers(1, &cloudUnderBuffer);
         if (indexBuffer)
             glDeleteBuffers(1, &indexBuffer);
         if (material)
@@ -186,11 +194,13 @@ void TorusView::releaseResources()
     }
 #endif
     graphicsContext = nullptr;
-    texture = cloudTexture = framebuffer = material = meshBuffer = cloudBuffer = indexBuffer = 0;
+    texture = cloudTexture = framebuffer = material = meshBuffer = cloudBuffer = 0;
+    cloudUnderBuffer = indexBuffer = 0;
     atlasW = atlasH = 0;
     cloudW = cloudH = 0;
     vertices.clear();
     cloudVertices.clear();
+    cloudUnderVertices.clear();
     cachedPickX = cachedPickY = -1;
     cachedPickFound = false;
     pickWidth = pickHeight = 0;
@@ -253,16 +263,27 @@ bool TorusView::prepareRenderTarget()
 #endif
 }
 
-// The cloud layer lives on its own ring above the ground, sampled from the
-// same world-anchored field as the shadows the atlas already carries.
-void TorusView::updateClouds(int time)
+// The cloud layer lives on its own ring above the ground, sampled from the same
+// world-anchored field as the 2D view and masked to the same fog of war, so the
+// black layer baked into the atlas is the only thing under it.
+void TorusView::updateClouds(Game &game, int team, unsigned options, int time)
 {
 #ifdef HAVE_OPENGL
-    int gridW, gridH;
-    clouds.computeWorld(worldW, worldH, time, cloudPixels, gridW, gridH, cloudGridLimit);
+    int gridW, gridH, cell;
+    clouds.getWorldGrid(worldW, worldH, gridW, gridH, cell, cloudGridLimit);
+    bool sized = cloudTexture && gridW == cloudW && gridH == cloudH;
+    // Both the field and the explored map move far slower than the view redraws,
+    // so resampling the whole world every frame buys nothing at this lattice.
+    if (cloudsSampled && sized && time >= cloudTime && time - cloudTime < cloudRefreshTicks)
+        return;
+    cloudTime = time;
+    cloudsSampled = true;
+
+    game.computeCloudVisibility(cloudVisibility, gridW, gridH, 0, 0, cell, team, options);
+    clouds.computeWorld(worldW, worldH, time, cloudPixels, gridW, gridH, cloudGridLimit, &cloudVisibility);
     glPushAttrib(GL_TEXTURE_BIT);
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
-    if (!cloudTexture || gridW != cloudW || gridH != cloudH)
+    if (!sized)
     {
         if (cloudTexture)
             glDeleteTextures(1, &cloudTexture);
@@ -275,14 +296,16 @@ void TorusView::updateClouds(int time)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, cloudW, cloudH, 0, GL_ALPHA, GL_UNSIGNED_BYTE,
-                     &cloudPixels[0]);
+        // Luminance carries the body-to-core gradient, alpha the coverage.
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, cloudW, cloudH, 0, GL_LUMINANCE_ALPHA,
+                     GL_UNSIGNED_BYTE, &cloudPixels[0]);
     }
     else
     {
         glBindTexture(GL_TEXTURE_2D, cloudTexture);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, cloudW, cloudH, GL_ALPHA, GL_UNSIGNED_BYTE, &cloudPixels[0]);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, cloudW, cloudH, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
+                        &cloudPixels[0]);
     }
     glPopClientAttrib();
     glPopAttrib();
@@ -395,16 +418,16 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glViewport(0, 0, atlasW, atlasH);
         glOrtho(0, game.map.getW() * 32, game.map.getH() * 32, 0, -1, 1);
         glClear(GL_COLOR_BUFFER_BIT);
-        // Capture the normal map and cloud shadows,
-        // respecting the same graphics-quality setting as the 2D view.
+        // Capture the ground, including the black fog layer the ring must not
+        // let the camera see under.
         if (game.gui)
-            game.gui->drawTorusMap(originX, originY, team, options | Game::DRAW_NO_CLOUD_LAYER, cloudGridLimit);
+            game.gui->drawTorusMap(originX, originY, team, options | Game::DRAW_NO_CLOUD_LAYER);
         else
         {
             Game::ViewState mapView;
             game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
                          originX, originY, team, mapView, options | Game::DRAW_NO_CLOUD_LAYER,
-                         nullptr, nullptr, false, cloudGridLimit);
+                         nullptr, nullptr, false);
         }
         Sprite::flushBatches(gfx);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -412,7 +435,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     const bool drawClouds =
         (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0;
     if (drawClouds)
-        updateClouds(game.mapAnimationTime);
+        updateClouds(game, team, options, game.mapAnimationTime);
 
     // Save GL state AFTER the game renderer: its state cache must still match
     // the restored state when the ordinary HUD resumes drawing.
@@ -514,9 +537,12 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
             glGenBuffers(1, &meshBuffer);
         if (!cloudBuffer)
             glGenBuffers(1, &cloudBuffer);
+        if (!cloudUnderBuffer)
+            glGenBuffers(1, &cloudUnderBuffer);
         cachedPickX = cachedPickY = -1;
         vertices.resize((U + 1) * (V + 1));
         cloudVertices.resize(vertices.size());
+        cloudUnderVertices.resize(vertices.size());
         // The cloud ring floats above the ground by a fixed share of the tube
         // radius; it settles onto the flat map as the fold opens.
         // Keep clouds outside the ground and inside the aperture on very tall maps.
@@ -550,6 +576,17 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                                                   {light, light, light},
                                                   {du, -dv},
                                                   {nx, ry, rz}};
+                // A lower deck for the upper one to cast its shadow onto. Two
+                // separated surfaces are what give the ring thickness edge on.
+                TorusGeometry::Point d = {p.x + n.x / len * cloudHeight * cloudUnderShare,
+                                          p.y + n.y / len * cloudHeight * cloudUnderShare,
+                                          p.z + n.z / len * cloudHeight * cloudUnderShare};
+                float dw = 1 - d.z * roll / cameraDistance;
+                cloudUnderVertices[j * (U + 1) + i] = {
+                    {cx * dw + d.x * sx, cy * dw + d.y * sy, d.z * scale, dw},
+                    {light, light, light},
+                    {du, -dv},
+                    {nx, ry, rz}};
             }
         glBindBuffer(GL_ARRAY_BUFFER, meshBuffer);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(MeshVertex), vertices.data(),
@@ -557,6 +594,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glBindBuffer(GL_ARRAY_BUFFER, cloudBuffer);
         glBufferData(GL_ARRAY_BUFFER, cloudVertices.size() * sizeof(MeshVertex), cloudVertices.data(),
                      GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, cloudUnderBuffer);
+        glBufferData(GL_ARRAY_BUFFER, cloudUnderVertices.size() * sizeof(MeshVertex),
+                     cloudUnderVertices.data(), GL_DYNAMIC_DRAW);
         std::memcpy(meshKey, key, sizeof(key));
     }
     if (!indexBuffer)
@@ -591,7 +631,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
     if (drawClouds && cloudTexture)
     {
-        // White clouds lit like the ground, blended over it without writing depth.
+        // Two decks lit like the ground, blended over it without writing depth.
         glUseProgram(0);
         glBindTexture(GL_TEXTURE_2D, cloudTexture);
         glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -604,6 +644,20 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glTranslatef(anchorU + float(originX) / worldW + 0.5f / cloudW,
                      anchorV + float(originY) / worldH + 0.5f / cloudH, 0);
         glScalef(1, -1, 1);
+        // The lower deck carries the upper one's shadow: same field, shifted away
+        // from the sun and modulated dark, so the two read as one thick body.
+        glPushMatrix();
+        glTranslatef(-cloudShadowShift, cloudShadowShift, 0);
+        glDisableClientState(GL_COLOR_ARRAY);
+        glColor4f(.24f, .26f, .32f, 1);
+        glBindBuffer(GL_ARRAY_BUFFER, cloudUnderBuffer);
+        glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
+                        reinterpret_cast<void *>(offsetof(MeshVertex, position)));
+        glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
+        glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
+        glEnableClientState(GL_COLOR_ARRAY);
+        glPopMatrix();
+
         glBindBuffer(GL_ARRAY_BUFFER, cloudBuffer);
         glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
                         reinterpret_cast<void *>(offsetof(MeshVertex, position)));

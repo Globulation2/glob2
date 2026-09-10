@@ -234,7 +234,7 @@ public:
 	/// move-flag order has executed. The map editor passes nullptr for it — it
 	/// mutates buildings directly without an orderQueue, so there is no pending
 	/// shadow to consult.
-	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0);
+	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false);
 
 	///Sets the mask representing which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
@@ -339,6 +339,9 @@ private:
 	void drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY);
 	void drawMapBulletsExplosionsDeathAnimations(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
+public:
+	void computeCloudVisibility(std::valarray<unsigned char> &out, int gridW, int gridH, int originX, int originY, int cellSize, int localTeam, Uint32 drawOptions);
+private:
 	void drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions);
 	void drawUnitPathLines(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view);
 	void drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit);
@@ -377,6 +380,9 @@ public:
 	///Stores alpha values to be passed to the drawing system. kept here so it isn't re-allocated
 	///every frame
 	std::valarray<unsigned char> overlayAlphas;
+	///Per cloud-grid-cell hiddenness of the ground, 255 undiscovered and 0 in sight.
+	///Kept here for the same reason as overlayAlphas.
+	std::valarray<unsigned char> cloudVisibility;
 
 public:
 	/// Non-simulation view scratch. These fields are NOT part of game state:

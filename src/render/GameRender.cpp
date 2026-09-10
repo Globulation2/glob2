@@ -147,7 +147,7 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 
 
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, bool animationsPaused)
 {
 	// Frozen while paused, so the water and the clouds hold still with the rest.
 	int &time = mapAnimationTime;
@@ -172,12 +172,16 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 
 
-	// compute and draw cloud shadow if we are in high quality
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	// The deck lives in the fog of war, so it needs to know what the player can see
+	// before the fog is drawn, and it goes on top of the black layer afterwards.
+	const bool drawCloudLayer = !(drawOptions & DRAW_NO_CLOUD_LAYER) &&
+		(globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0;
+	if (drawCloudLayer)
 	{
-		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
-		           !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
-		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
+		int gridW, gridH, originX, originY, cellSize;
+		ds.prepare(viewportX, viewportY, sw, sh, gridW, gridH, originX, originY, cellSize);
+		computeCloudVisibility(cloudVisibility, gridW, gridH, originX, originY, cellSize, localTeam, drawOptions);
+		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(), &cloudVisibility);
 	}
 
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
@@ -187,9 +191,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
 
 
-	// draw cloud overlay if we are in high quality
-	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	// draw the deck over the fog if we are in high quality
+	if (drawCloudLayer)
+	{
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
+		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD_CORE);
+	}
 
 	// Draw units that are off the screen for the selected building
 

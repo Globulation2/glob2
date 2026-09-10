@@ -168,6 +168,37 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 	}
 }
 
+void Game::computeCloudVisibility(std::valarray<unsigned char> &out, int gridW, int gridH, int originX, int originY, int cellSize, int localTeam, Uint32 drawOptions)
+{
+	if (out.size() != static_cast<size_t>(gridW*gridH))
+		out.resize(gridW*gridH);
+	if ((drawOptions & DRAW_WHOLE_MAP) != 0)
+	{
+		out = (unsigned char)0;
+		return;
+	}
+
+	Uint32 visibleTeams = teams[localTeam]->me;
+	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+
+	const unsigned char shade = (unsigned char)globalContainer->settings.cloudShadeAlpha;
+	for (int y=0; y<gridH; y++)
+		for (int x=0; x<gridW; x++)
+		{
+			//the lattice is in world pixels, the discovery maps are in cases
+			int mx = (originX + x*cellSize)>>5;
+			int my = (originY + y*cellSize)>>5;
+			unsigned char hidden;
+			if (!map.isMapDiscovered(mx, my, visibleTeams))
+				hidden = 255;
+			else if (!map.isFOWDiscovered(mx, my, visibleTeams))
+				hidden = shade;
+			else
+				hidden = 0;
+			out[gridW*y+x] = hidden;
+		}
+}
+
 void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	if(drawOptions & DRAW_OVERLAY)

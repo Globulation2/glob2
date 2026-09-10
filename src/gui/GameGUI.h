@@ -63,7 +63,7 @@ class GameGUI
     bool handleTorusPointer(const SDL_Event &event);
 	friend class HighResolutionIntegrationHarness;
 public:
-    void drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit);
+    void drawTorusMap(int originX, int originY, int team, unsigned options);
 	///Constructs a GameGUI
 	GameGUI();
 	
