@@ -226,9 +226,12 @@ class MapGeneratorDefaultsTest
 		s.gfx = globalContainer->gfx;
 		s.dispatchInit();
 		CustomGameSetup lobby;
-		D river;
-		river.setMethodDefaults(D::eRIVER);
-		sameControls(lobby.generator, river);
+		D commons;
+		commons.setMethodDefaults(D::eCONTESTEDCOMMONS);
+		assert(GeneratorRegistry::builtins().methods(false).front() == D::eCONTESTEDCOMMONS);
+		assert(s.methods->getSelectionIndex() == 0);
+		sameControls(s.descriptor, commons);
+		sameControls(lobby.generator, commons);
 		for (int m : GeneratorRegistry::builtins().methods())
 		{
 			auto method = static_cast<D::Method>(m);

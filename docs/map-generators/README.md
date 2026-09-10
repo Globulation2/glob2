@@ -2,6 +2,8 @@
 
 The generators now use a modular registry and per-attempt random state. See the [module and extension guide](ADDING_A_GENERATOR.md) and [refactor measurements and map previews](refactor/RESULTS.md). The tuning study below is the frozen PR #238 baseline.
 
+Contested Commons appears first and is the default generator in the custom-game lobby and map editor.
+
 Random maps now start with generator-specific recipes that leave more grassy building room. The custom-game lobby from PR #237 and the map editor use the same names, available controls, ranges, steps, defaults, and per-method setting memory. Old Random is **Shattered Coast**; Old Islands is **Rugged Archipelago**. The modular catalog also includes **Contested Commons**, **Lattice**, **Maze**, and **Fjord Continent**.
 
 ## Development tools

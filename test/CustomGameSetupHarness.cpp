@@ -487,6 +487,8 @@ struct CustomGameSetupHarness
     screen.activateGroup(screen.groups[2]);
     capture("rules-640");
     screen.setup.random = true;
+    // The slider/failure checks below exercise River terrain weights explicitly.
+    screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
     screen.invalidate();
     screen.activateGroup(screen.groups[0]);
     capture("random-controls-640");
@@ -555,9 +557,9 @@ struct CustomGameSetupHarness
     // five-unit steps.
     auto landscape = [&](int method) {
       clickControl("generator/landscape");
-      for (int i = 0; i < 8; ++i)
+      for (size_t i = 0; i < GeneratorRegistry::builtins().methods(false).size(); ++i)
         keyEvent(SDLK_UP);
-      for (int i = 1; i < method; ++i)
+      for (int i = 0; i < GeneratorRegistry::builtins().selectionIndex(method, false); ++i)
         keyEvent(SDLK_DOWN);
       keyEvent(SDLK_RETURN);
       assert(screen.setup.generator.method == method);
