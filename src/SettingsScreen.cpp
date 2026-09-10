@@ -142,6 +142,18 @@ void SettingsScreen::done()
         else endExecute(1);
     }
 }
+void SettingsScreen::abandon()
+{
+    // Always closes in one click, whether or not anything is dirty or
+    // failed: every change is already live and auto-saved as it's made, so
+    // there is nothing to discard, and this never retries persist() or
+    // claims a pending durable write succeeded.
+    dropdown.close();
+    if(modal==Modal::Display) confirmDisplay(false);
+    commitText();
+    dragging.clear();
+    endExecute(1);
+}
 void SettingsScreen::onAction(Widget*,Action action,int,int)
 {
     if(action==SCREEN_DESTROYED) {

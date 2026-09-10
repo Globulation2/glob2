@@ -1,4 +1,4 @@
-const {gameURL,clickMainMenu}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsCancel}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
@@ -90,7 +90,7 @@ test('restore failure is explained before entering the game', async ({page},info
   await page.screenshot({path:info.outputPath('storage-restore-failure.png')});
   await click(page,390,570); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
-  await click(page,810,650); await screen(page,'MainMenuScreen');
+  await clickSettingsCancel(page); await screen(page,'MainMenuScreen');
   // Startup and settings writes must not retry the database after failed restore.
   expect(await page.evaluate(()=>restoreFault.attempts)).toBe(1);
   expect((await state(page)).persistence).toBe('restore-failed');

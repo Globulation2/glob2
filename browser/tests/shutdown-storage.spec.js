@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL}=require('./main-menu');
+const {clickMainMenu,gameURL,clickSettingsDone}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
 const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
@@ -7,7 +7,7 @@ const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80})
 async function start(page){
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
-  await click(page,600,650); await screen(page,'MainMenuScreen');
+  await clickSettingsDone(page); await screen(page,'MainMenuScreen');
 }
 async function failWrites(page){
   await page.evaluate(()=>{

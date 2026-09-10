@@ -1,5 +1,5 @@
 const {test, expect} = require('@playwright/test');
-const {clickMainMenu}=require('./main-menu');
+const {clickMainMenu,clickSettingsDone}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
 const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
@@ -83,7 +83,7 @@ test('WebGL context restoration retains settings, editor and confirmation contro
     expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2').getError())).toBe(0);
   }
   await clickMainMenu(page,'settings'); await recover('SettingsScreen');
-  await click(page,810,650); await screen(page,'MainMenuScreen');
+  await clickSettingsDone(page); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'editor'); await screen(page,'EditorMainMenu');
   await click(page,600,300); await screen(page,'NewMapScreen');
   await click(page,440,650); await recover('MapEditorScreen');

@@ -56,6 +56,7 @@ public:
     bool displayConfirmationPending() const;
     void confirmDisplay(bool keep);
     void done();
+    void abandon();
 
 protected:
     virtual bool applyDisplayMode(int width,int height,Uint32 flags);

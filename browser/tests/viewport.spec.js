@@ -1,4 +1,4 @@
-const {gameURL,clickMainMenu}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsDone}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await snapshot(page)).screen).toContain(name);
@@ -16,7 +16,7 @@ test('menus follow the viewport and keep their controls clickable', async ({page
   await resize(page,1280,720);
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
   await resize(page,900,650);
-  await menu(page,530,440); await screen(page,'MainMenuScreen');
+  await clickSettingsDone(page); await screen(page,'MainMenuScreen');
   await resize(page,1440,900);
   await clickMainMenu(page,'credits'); await screen(page,'CreditScreen');
   await page.locator('#canvas').press('Escape'); await screen(page,'MainMenuScreen');
@@ -59,7 +59,7 @@ test('small viewports retain the active screen and continue rendering', async ({
   await resize(page,500,400); await screen(page,'SettingsScreen');
   await page.screenshot({path:info.outputPath('small-viewport.png')});
   await resize(page,1100,700); await screen(page,'SettingsScreen');
-  await menu(page,530,440); await screen(page,'MainMenuScreen');
+  await clickSettingsDone(page); await screen(page,'MainMenuScreen');
 });
 
 test.describe('initial small viewport', () => {
