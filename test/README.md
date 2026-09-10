@@ -232,6 +232,22 @@ replacement tests cover callback/open/rename failures and temporary-file cleanup
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 
+### Trapped colony elimination
+
+Build `scons release=1 server=0 trapped-unit-test`, then run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest`
+(use `.exe` on Windows). The shared runner uses a disposable profile and checks
+that the normal preferences remain unchanged; Linux and Windows CI run it.
+
+Normal simulation ticks exercise completed feeding/training behind wood or
+wheat, elimination without indoor starvation, active service, open exits,
+free units, allied rescue, and hatchery recovery. A stocked hatchery protects
+the colony even with production sliders at zero, since the player can change
+them; both food and an available exit are required. Repeated seeded runs and
+save/load continuations compare per-tick unit state and win/loss results with
+an explicit RNG checkpoint. This is a focused regression, not whole-game replay
+compatibility. Version 93 rejects older replays because elimination timing changed;
+older saves remain loadable.
 
 ## Team statistics save compatibility
 

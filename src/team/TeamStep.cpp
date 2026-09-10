@@ -10,6 +10,61 @@
 #include "Team.h"
 #include "Unit.h"
 
+namespace
+{
+bool hasExit(Building* building, bool fly, bool canSwim)
+{
+	int x, y, dx, dy;
+	return fly
+		? building->findAirExit(&x, &y, &dx, &dy)
+		: building->findGroundExit(&x, &y, &dx, &dy, canSwim);
+}
+
+bool allRemainingUnitsTrapped(Team& team)
+{
+	bool foundUnit = false;
+	bool freeUnitSlot = false;
+	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+	{
+		Unit* unit = team.myUnits[i];
+		if (!unit) { freeUnitSlot = true; continue; }
+		foundUnit = true;
+		// Active service and normal entry/exit are not a loss of agency.
+		if (unit->displacement != Unit::DIS_EXITING_BUILDING
+			|| unit->movement != Unit::MOV_INSIDE || !unit->attachedBuilding)
+			return false;
+		if (hasExit(unit->attachedBuilding, unit->performance[FLY], unit->performance[SWIM]))
+			return false;
+	}
+	if (!foundUnit) return false; // Keep the existing zero-unit rule.
+
+	// An active ally may clear an exit. Do not attempt a reachability proof.
+	for (int i = 0; i < Team::MAX_COUNT; ++i)
+	{
+		Team* ally = team.game->teams[i];
+		if (ally && ally != &team && (team.allies & ally->me)
+			&& ally->isAlive && !ally->hasLost && ally->playersMask != 0)
+			return false;
+	}
+
+	if (freeUnitSlot)
+		for (Building* swarm : team.swarms)
+		{
+			if (swarm->resources[CORN] < swarm->type->resourceForOneUnit
+				&& swarm->productionTimeout >= 0)
+				continue;
+			// Ratios can still be changed by the player, including from zero.
+			for (int type = 0; type < NB_UNIT_TYPE; ++type)
+			{
+				const UnitType* ut = team.race.getUnitType(type, 0);
+				if (hasExit(swarm, ut->performance[FLY], ut->performance[SWIM]))
+					return false;
+			}
+		}
+	return true;
+}
+}
+
 bool Team::buildingHasHigherPriority(Building* lhs, Building* rhs)
 {
 	if(lhs->priority != rhs->priority)
@@ -240,6 +295,7 @@ void Team::syncStep(void)
 		(*it)->turretStep(game->stepCounter);
 
 	bool isDying= (playersMask==0)
+		|| allRemainingUnitsTrapped(*this)
 		|| (!isEnoughFoodInSwarm && nbUsefulUnitsAlone==0 && (nbUsefulUnits==0 || (canFeedUnit.size()==0 && canHealUnit.size()==0)));
 	if (isAlive && isDying)
 	{
