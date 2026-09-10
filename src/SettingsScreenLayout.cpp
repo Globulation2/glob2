@@ -186,11 +186,13 @@ void SettingsScreen::paintRow(const Row& r)
 void SettingsScreen::paint()
 {
     layout();buildRows();layout();
-    // Opaque settings-local surfaces keep background texture out of the form.
-    Glob2Screen::paint();
-    gfx->drawFilledRect(0,0,getW(),getH(),Color(FrontendPalette::scrim.r,FrontendPalette::scrim.g,FrontendPalette::scrim.b,200));
+    // The theme paints the world and its shared scrim only (its widget-union
+    // panel would be a second sheet underneath); the settings sheet is the same
+    // membrane as every other screen, so the colony reads through it here too.
+    if(FrontendTheme::current && GAGGUI::Style::style==FrontendTheme::current)FrontendTheme::current->background(gfx,false);
+    else Glob2Screen::paint();
     FrontendTheme::rounded(gfx,panel.x+3,panel.y+5,panel.w,panel.h,12,Color(12,28,16,70));
-    FrontendTheme::blob(gfx,panel.x,panel.y,panel.w,panel.h,12,Color(paper.r,paper.g,paper.b,std::max(232,FrontendTheme::panelAlpha())),ink,2);
+    FrontendTheme::blob(gfx,panel.x,panel.y,panel.w,panel.h,12,Color(paper.r,paper.g,paper.b,FrontendTheme::panelAlpha()),ink,2);
     drawText(panel.x+padding,panel.y+20,tr("Settings"),false,true);
     const char* categories[]={"Display & graphics","Audio","Gameplay","Building defaults","Controls","Language & player"};
     if(modal==Modal::None && compactNavigation){
