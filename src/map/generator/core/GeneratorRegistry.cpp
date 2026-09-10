@@ -72,10 +72,11 @@ const GeneratorRegistry &GeneratorRegistry::builtins() {
   // distinctive playable maps first; numeric IDs remain stable compatibility
   // identifiers and do not determine presentation order.
   static const GeneratorRegistry registry(
-      {fjordContinentDefinition(), mazeDefinition(),
-       contestedCommonsDefinition(), latticeDefinition(), islesDefinition(),
+      {fjordContinentDefinition(), shatteredCoastDefinition(),
+       contestedCommonsDefinition(), islesDefinition(),
        ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
        craterLakesDefinition(), islandsDefinition(), swampDefinition(),
-       riverDefinition(), shatteredCoastDefinition(), uniformDefinition()});
+       riverDefinition(), mazeDefinition(), latticeDefinition(),
+       uniformDefinition()});
   return registry;
 }
