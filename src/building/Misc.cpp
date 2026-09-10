@@ -34,7 +34,11 @@ void Building::kill(void)
 	{
 		//TODO: We should somehow try to save their lives. In training buildings they should just drop out untrained etc.
 		Unit *u=*it;
-		if (u->displacement==Unit::DIS_INSIDE)
+		// Finishing service does not place a unit on the map until an exit is
+		// found. A blocked exiting unit is still an occupant, not a survivor
+		// that can be released into random activity with no map slot.
+		if (u->displacement==Unit::DIS_INSIDE
+			|| (u->displacement==Unit::DIS_EXITING_BUILDING && u->movement==Unit::MOV_INSIDE))
 			u->isDead=true;
 
 		if (u->displacement==Unit::DIS_ENTERING_BUILDING)

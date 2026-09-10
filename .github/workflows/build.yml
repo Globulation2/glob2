@@ -122,6 +122,11 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Build and run the building occupant death regression
+        run: |
+          scons -j$(nproc) release=1 server=0 building-occupant-death-test
+          ./build/src/BuildingOccupantDeathHarness
+
       - name: Build and run the entering unit draw regression
         run: |
           scons -j$(nproc) release=1 server=0 entering-unit-draw-test
