@@ -27,6 +27,16 @@ keeps the match summary and launch action available while dense content scrolls.
   workers. Standard, Quick clash, Open book and Last colony standing are visible
   presets. Session speed is restored when the match ends.
 
+The lobby automatically saves choices to `custom-game-settings.txt` in the game's
+writable configuration directory, after edits and when leaving or starting a
+match. Returning to the lobby or restarting the app restores map mode and library,
+premade selection, all generator controls, controller/AI/team assignments
+(including hidden colonies), rules and expanded generator sections. Random mode
+creates a fresh preview using the saved parameters; temporary maps and seeds are
+not stored as preferences. Missing premade maps retain the draft and show the
+existing load error. Malformed or unsupported settings files fall back to the
+normal four-player setup. Writes replace the old file atomically.
+
 Save/replay encodings are unchanged. Generated maps use owned temporary snapshots
 outside the map library; saves and replays remain self-contained after cleanup.
 All 32 non-English language tables include localized lobby labels, AI profiles,
@@ -75,6 +85,8 @@ mkdir -p artifacts/custom-game/compact artifacts/custom-game/large
 build/src/CustomGameSetupHarness artifacts/custom-game/compact
 build/src/CustomGameSetupHarness artifacts/custom-game/large large
 build/src/CustomGameSetupHarness artifacts/custom-game/compact ui
+build/src/CustomGameSetupHarness preferences-write
+build/src/CustomGameSetupHarness preferences-read
 python3 test/run-game-speed-tests.py
 python3 data/check_translations.py --strict
 python3 test/test_translations.py

@@ -3,6 +3,7 @@
 #include "AINames.h"
 #include "CustomGameScreen.h"
 #include "CustomGameSetup.h"
+#include "CustomGamePreferences.h"
 #include "Engine.h"
 #include "FrontendTheme.h"
 #include "GlobalContainer.h"
@@ -37,8 +38,138 @@ struct CountingAI : AIImplementation
 };
 struct CustomGameSetupHarness
 {
+	static void preferencesModel()
+	{
+		CustomGamePreferences original;
+		original.setup.random = true;
+		original.setup.capacity = original.setup.generator.nbTeams = 12;
+		original.setup.premadeMap = "/maps/My \"favorite\" / 地図.map";
+		original.userMaps = true;
+		original.librarySelection[0] = "maps/FourSquares1.map";
+		original.librarySelection[1] = original.setup.premadeMap;
+		original.expanded[0] = original.expanded[2] = true;
+		for (const auto &field : CustomGamePreferences::fields())
+			original.setup.generator.*(field.member) = field.maximum;
+		original.setup.generator.method = MapGenerationDescriptor::eOLDISLANDS;
+		original.setup.generator.logRepeatAreaTimes = 5;
+		original.setup.presetRules(1);
+		original.setup.prestige = false;
+		original.setup.revealed = true;
+		original.setup.locked = false;
+		original.setup.ruleset = "Custom";
+		original.setup.colonies[11].controller = CustomGameSetup::Closed;
+		assert(original.setup.setController(3, CustomGameSetup::Shared));
+		original.setup.colonies[3].ai = AI::CORTEX;
+		original.setup.colonies[11].alliance = 7;
+		original.setup.colonies[11].ai = AI::NICOWAR;
+		CustomGamePreferences restored;
+		const auto encoded = original.encode();
+		assert(restored.decode(encoded) && restored.encode() == encoded);
+		assert(restored.setup.mapRevision == 0);
+		for (size_t length : {size_t(0), size_t(10), encoded.size() / 2, encoded.size() - 5})
+		{
+			assert(!restored.decode(encoded.substr(0, length)));
+			assert(restored.encode() == encoded);
+		}
+		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
+			{"glob2-custom-game 1", "glob2-custom-game 2"},
+			{"wDec 9", "wDec 31"}, {"nbWorkers 8", "nbWorkers -1"},
+			{"generator 8 5", "generator 0 5"}, {"generator 8 5", "generator 8 100"},
+			{"colonies\n1 1 0", "colonies\n99 1 0"}})
+		{
+			auto corrupt = encoded;
+			auto at = corrupt.find(replacement.first);
+			assert(at != std::string::npos);
+			corrupt.replace(at, replacement.first.size(), replacement.second);
+			assert(!restored.decode(corrupt) && restored.encode() == encoded);
+		}
+		assert(!restored.decode(encoded + "trailing junk"));
+		assert(!restored.decode(std::string(65537, 'x')));
+		// Unfinished drafts remain editable rather than losing the user's choices.
+		for (auto &c : original.setup.colonies) c.controller = CustomGameSetup::Closed;
+		assert(restored.decode(original.encode()));
+		assert(!restored.setup.validation().empty());
+		std::cout << "PASS preferences round trip, hidden slots, bounds and corrupt-file recovery\n";
+	}
+	static void preferencesScreen(bool write)
+	{
+		auto *files = Toolkit::getFileManager();
+		if (write) files->remove(CustomGamePreferences::filename);
+		if (write)
+		{
+			CustomGameScreen screen;
+			assert(screen.validMap && screen.setup.capacity == 4);
+			assert(screen.setup.setController(2, CustomGameSetup::Shared));
+			screen.setup.colonies[2].ai = AI::CORTEX;
+			screen.setup.colonies[0].alliance = 2;
+			screen.setup.colonies[11].ai = AI::NICOWAR;
+			screen.setup.colonies[11].alliance = 7;
+			screen.setup.presetRules(1);
+			for (const auto &field : CustomGamePreferences::fields())
+				screen.setup.generator.*(field.member) = field.maximum;
+			screen.setup.generator.method = MapGenerationDescriptor::eISLANDS;
+			screen.setup.generator.logRepeatAreaTimes = 3;
+			screen.expanded[1] = true;
+			screen.userMaps = screen.separateMapLibraries;
+			screen.librarySelection[1] = "maps/favorite-user-map.map";
+			// Persist while the screen is still open, as normal edits do.
+			screen.onTimer(SDL_GetTicks());
+			CustomGamePreferences disk;
+			assert(disk.load(*files) && disk.setup.colonies[2].controller == CustomGameSetup::Shared);
+		}
+		else
+		{
+			std::string premade;
+			{
+				CustomGameScreen screen;
+				assert(screen.validMap && !screen.setup.random && screen.setup.capacity == 4);
+				assert(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
+				assert(screen.setup.colonies[2].ai == AI::CORTEX);
+				assert(screen.setup.colonies[0].alliance == 2);
+				assert(screen.setup.colonies[11].ai == AI::NICOWAR && screen.setup.colonies[11].alliance == 7);
+				assert(screen.setup.speed == 3 && screen.setup.ruleset == "Quick clash");
+				assert(screen.expanded[1]);
+				assert(screen.userMaps == screen.separateMapLibraries);
+				assert(screen.librarySelection[1] == "maps/favorite-user-map.map");
+				for (const auto &field : CustomGamePreferences::fields())
+					assert(screen.setup.generator.*(field.member) == field.maximum);
+				assert(screen.setup.generator.logRepeatAreaTimes == 3);
+				premade = screen.setup.premadeMap;
+				screen.setup.generator.nbTeams = 4;
+				screen.setMapMode(true);
+				assert(screen.previewPending);
+			}
+			{
+				CustomGameScreen screen;
+				assert(screen.setup.random && screen.previewPending && !screen.validMap);
+				assert(screen.snapshot.empty() && screen.source.empty());
+				assert(screen.setup.premadeMap == premade);
+				// Switching back restores the premade choice without disturbing teams.
+				screen.setMapMode(false);
+				assert(screen.validMap && screen.setup.colonies[0].alliance == 2);
+				screen.setup.premadeMap = "/missing/saved-map.map";
+			}
+			{
+				CustomGameScreen screen;
+				assert(!screen.validMap && !screen.setup.random && !screen.message.empty());
+				assert(screen.setup.colonies[2].ai == AI::CORTEX && screen.setup.speed == 3);
+				assert(screen.setup.premadeMap == "/missing/saved-map.map");
+			}
+			files->writeAtomically(CustomGamePreferences::filename, [](GAGCore::OutputStream &out) {
+				const std::string truncated = "glob2-custom-game 1\nsetup";
+				out.write(truncated.data(), truncated.size(), "broken preferences");
+			});
+			{
+				CustomGameScreen screen;
+				assert(screen.validMap && screen.setup.capacity == 4 && screen.setup.speed == 0);
+			}
+			files->remove(CustomGamePreferences::filename);
+		}
+		std::cout << "PASS native preferences " << (write ? "write" : "reload, random preview, missing map and recovery") << "\n";
+	}
 	static void ui(const std::string &output, int control)
 	{
+		Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
 		FrontendTheme theme;
 		struct Driver
 		{
@@ -605,6 +736,13 @@ int main(int argc, char **argv)
 	globals.settings.screenFlags = GraphicContext::USEGPU;
 	globals.settings.mute = true;
 	globals.load();
+	if (argc > 1 && (std::string(argv[1]) == "preferences-write" || std::string(argv[1]) == "preferences-read"))
+	{
+		CustomGameSetupHarness::preferencesScreen(std::string(argv[1]) == "preferences-write");
+		return 0;
+	}
+	Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
+	CustomGameSetupHarness::preferencesModel();
 	assert(SDLNet_Init() == 0);
 	if (argc > 2 && std::string(argv[2]) == "ui")
 	{

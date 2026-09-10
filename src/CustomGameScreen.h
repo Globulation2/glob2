@@ -55,6 +55,9 @@ class CustomGameScreen : public Glob2TabScreen
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	std::string username, source, snapshot, message;
+	std::string lastSavedPreferences;
+	Uint32 preferencesRetryAt = 0;
+	void savePreferences();
 	unsigned previewRevision = ~0u;
 	bool previewPending = false;
 	Uint32 previewDue = 0;

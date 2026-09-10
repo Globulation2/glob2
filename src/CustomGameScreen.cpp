@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
+#include "CustomGamePreferences.h"
 #include "AINames.h"
 #include "GUIMapPreview.h"
 #include "Game.h"
@@ -229,21 +230,39 @@ CustomGameScreen::CustomGameScreen() : Glob2TabScreen(false, true)
 	controls = new LobbyControls();
 	controls->render = [this] { renderLobby(); };
 	addWidget(controls);
-	listMaps();
-	for (const auto &p : mapPaths)
-		if (std::filesystem::path(p).filename() == "FourSquares1.map")
-		{
-			loadMap(p);
-			break;
-		}
-	if (!validMap || setup.capacity != 4)
+	CustomGamePreferences preferences;
+	if (preferences.load(*files))
 	{
-		setup.random = true;
-		setup.setCapacity(4);
-		validMap = false;
-		source.clear();
-		invalidate();
+		setup = preferences.setup;
+		userMaps = preferences.userMaps && separateMapLibraries;
+		std::copy(std::begin(preferences.expanded), std::end(preferences.expanded), expanded);
+		listMaps();
+		if (setup.random)
+			invalidate();
+		else
+			loadMap(setup.premadeMap);
+		// The visible library may differ from the selected map (e.g. an empty library).
+		std::copy(std::begin(preferences.librarySelection), std::end(preferences.librarySelection), librarySelection);
 	}
+	else
+	{
+		listMaps();
+		for (const auto &p : mapPaths)
+			if (std::filesystem::path(p).filename() == "FourSquares1.map")
+			{
+				loadMap(p);
+				break;
+			}
+		if (!validMap || setup.capacity != 4)
+		{
+			setup.random = true;
+			setup.setCapacity(4);
+			validMap = false;
+			source.clear();
+			invalidate();
+		}
+	}
+
 	activateGroup(groups[0]);
 }
 GameHeader &CustomGameScreen::getGameHeader()
@@ -260,11 +279,27 @@ GameHeader &CustomGameScreen::getGameHeader()
 }
 CustomGameScreen::~CustomGameScreen()
 {
+	savePreferences();
 	if (!snapshot.empty())
 	{
 		std::error_code error;
 		std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path(), error);
 	}
+}
+void CustomGameScreen::savePreferences()
+{
+	CustomGamePreferences preferences;
+	preferences.setup = setup;
+	preferences.userMaps = userMaps;
+	std::copy(std::begin(librarySelection), std::end(librarySelection), preferences.librarySelection);
+	std::copy(std::begin(expanded), std::end(expanded), preferences.expanded);
+	const auto text = preferences.encode();
+	if (text == lastSavedPreferences)
+		return;
+	if (preferences.save(*Toolkit::getFileManager()))
+		lastSavedPreferences = text;
+	else
+		preferencesRetryAt = SDL_GetTicks() + 5000;
 }
 int CustomGameScreen::choose(const std::string &title, const std::vector<std::string> &values,
 							 int selected, bool profiles, const std::vector<bool> &enabled)
@@ -482,11 +517,16 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 			if (!generateMap())
 				return;
 		if (validMap)
+		{
+			savePreferences();
 			endExecute(OK);
+		}
 	}
 }
 void CustomGameScreen::onTimer(Uint32 tick)
 {
+	if (controls->pressed.empty() && !controls->popup.open && Sint32(tick - preferencesRetryAt) >= 0)
+		savePreferences();
 	// Wait until the last edit settles and a dragged control/menu is released.
 	if (previewPending && setup.random && Sint32(tick - previewDue) >= 0 &&
 		controls->pressed.empty() && !controls->popup.open)
