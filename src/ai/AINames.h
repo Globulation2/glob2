@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <string>
+#include <vector>
 
 namespace AINames
 {
@@ -11,6 +12,9 @@ namespace AINames
 	/// valid AI id (which are 0..AI::SIZE-1); callers compare with `== AI_UNKNOWN_NAME`.
 	static const int AI_UNKNOWN_NAME = -1;
 
+	/// Presentation order; never changes serialized implementation IDs.
+	const std::vector<int>& selectionOrder();
+	int selectionIndex(int id);
 	std::string getAIText(int id);
 	std::string getAIDescription(int id);
 	std::string getAISelectorText(int id);

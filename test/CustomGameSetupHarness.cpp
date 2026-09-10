@@ -328,16 +328,16 @@ struct CustomGameSetupHarness
 		FrontendTheme theme;
 		FrontendScope scope;
 		std::vector<std::string> labels;
-		for (int i = 0; i < AI::SIZE; ++i)
+		for (int i : AINames::selectionOrder())
 			labels.push_back(AINames::getAISelectorText(i));
 		{
-			CustomGameChoiceScreen profile("AI strategy & counterplay", labels, AI::CORTEX, true,
+			CustomGameChoiceScreen profile("AI strategy & counterplay", labels, AINames::selectionIndex(AI::CORTEX), true,
 										   {});
 			profile.dispatchInit();
 			profile.dispatchPaint(false);
 			globalContainer->gfx->printScreen(output + "/ai-profile.bmp");
 			profile.onAction(nullptr, GAGGUI::BUTTON_SHORTCUT, -3, 0);
-			assert(profile.returnCode == AI::CORTEX);
+			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
 		}
 
 		CustomGameScreen screen;
@@ -773,6 +773,9 @@ int main(int argc, char **argv)
 	std::cout << "PASS all eight playable generator landscapes\n";
 
 	CustomGameSetupHarness::model();
+	assert((AINames::selectionOrder() == std::vector<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::NICOWAR, AI::NONE}));
+	for (int id : AINames::selectionOrder())
+		assert(AINames::selectionOrder()[AINames::selectionIndex(id)] == id);
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
 	assert(AINames::parseAIName("Econo") == AI::ECONO);
 	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy - No warriors");

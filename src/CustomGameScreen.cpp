@@ -80,7 +80,7 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 		int start = yy;
 		ui.text(right, yy, this->choices[this->selected], "standard", rightW - 15);
 		yy += 32;
-		std::string content = this->profiles ? AINames::getAIProfile(this->selected) : "";
+		std::string content = this->profiles ? AINames::getAIProfile(AINames::selectionOrder()[this->selected]) : "";
 		auto first = content.find("\n\n");
 		if (first != std::string::npos)
 			content = content.substr(first + 2);
@@ -550,12 +550,12 @@ void CustomGameScreen::setMapMode(bool random)
 void CustomGameScreen::showAIProfile(int colony)
 {
 	std::vector<std::string> labels;
-	for (int i = 0; i < AI::SIZE; ++i)
+	for (int i : AINames::selectionOrder())
 		labels.push_back(AINames::getAISelectorText(i));
 	int result = choose(colonyLabel(colony) + " / " + tr("AI strategy & counterplay"), labels,
-						setup.colonies[colony].ai, true);
+						AINames::selectionIndex(setup.colonies[colony].ai), true);
 	if (result >= 0)
-		setup.colonies[colony].ai = (AI::ImplementationID)result;
+		setup.colonies[colony].ai = (AI::ImplementationID)AINames::selectionOrder()[result];
 }
 
 void CustomGameScreen::renderLobby()
@@ -671,10 +671,10 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 		if (c.controller == CustomGameSetup::Computer || c.controller == CustomGameSetup::Shared)
 		{
 			std::vector<std::string> names;
-			for (int j = 0; j < AI::SIZE; ++j)
+			for (int j : AINames::selectionOrder())
 				names.push_back(AINames::getAISelectorText(j));
-			ui.dropdown(id + "/ai", {ax, ry + 8, aw, 30}, names, c.ai, [this, i](int value)
-						{ setup.colonies[i].ai = (AI::ImplementationID)value; });
+			ui.dropdown(id + "/ai", {ax, ry + 8, aw, 30}, names, AINames::selectionIndex(c.ai), [this, i](int value)
+						{ setup.colonies[i].ai = (AI::ImplementationID)AINames::selectionOrder()[value]; });
 			ui.button(
 				id + "/info", {x + w - 66, ry + 38, 44, 18}, tr("Info"),
 				[this, i] { showAIProfile(i); }, false, true, true, "little");
