@@ -1568,3 +1568,209 @@ Bu dünyayı keşfetmek için bir önizleme oluşturun.
 Daha fazla işçi koloni büyümesini hızlandırır. Bu ayar oluşturulan haritayı değiştirir.
 [No warriors]
 Savaşçı yok
+[settings Add key to sequence]
+Diziye tuş ekle
+[settings Add shortcut]
+Kısayol ekle
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Atanan birimlerin sayısını değiştirmek için fare tekerleğini kullanın. Bu seçenek kapalıysa tekerleği kullanmak için Ctrl tuşunu basılı tutun. Bayrak yarıçapını ayarlamak için Shift tuşunu basılı tutun. Bu seçenek aynı zamanda diğer menülerdeki fare tekerleği girişini de kontrol eder.
+[settings Adjust music and voice volume.]
+Müzik ve konuşma ses düzeylerini ayarlayın.
+[settings Adjust the pace of play.]
+Oyunun hızını ayarlayın.
+[settings Advanced binding]
+Gelişmiş kısayol düzenleme
+[settings Artwork & effects]
+Çizimler ve efektler
+[settings Audio]
+Ses
+[settings Bind Escape]
+Escape tuşunu ata
+[settings Building]
+Bina
+[settings Building defaults]
+Varsayılan bina ayarları
+[settings Cancel]
+Vazgeç
+[settings Changes saved automatically]
+Değişiklikler otomatik olarak kaydedilir
+[settings Changes you make during play update these defaults for future games.]
+Oyun sırasında yaptığınız değişiklikler, bu varsayılan ayarları gelecekteki oyunlar için günceller.
+[settings Changing the renderer requires a restart.]
+Grafik oluşturucuyu değiştirmek oyunun yeniden başlatılmasını gerektirir.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Düzenlemek için bir klavye kısayolu seçin veya bir eylem için başka bir kısayol ekleyin.
+[settings Choose a window or fill the screen.]
+Pencereli veya tam ekran modunu seçin.
+[settings Choose how the game looks on your screen.]
+Oyunun ekranınızda nasıl görüneceğini seçin.
+[settings Completed]
+Tamamlanan binalar
+[settings Construction]
+İnşaat
+[settings Controls]
+Oyun kontrolleri
+[settings Could not change display mode. The previous mode was restored.]
+Görüntüleme modu değiştirilemedi. Önceki mod geri yüklendi.
+[settings Could not save]
+Kaydedilemedi
+[settings Current display]
+Geçerli görüntüleme modu
+[settings Default]
+Varsayılan
+[settings Display]
+Görünüm
+[settings Display & graphics]
+Ekran ve grafikler
+[settings Display the Globulation 2 cursor.]
+Globulation 2 imlecini görüntüleyin.
+[settings Done]
+Bitti
+[settings Edit shortcut]
+Klavye kısayolunu düzenle
+[settings Flags]
+Bayraklar
+[settings Full]
+Tam
+[settings Fullscreen]
+Tam ekran
+[settings Game]
+Oyun
+[settings Game speed]
+Oyun hızı
+[settings Gameplay]
+Oynanış
+[settings Graphics detail]
+Grafik ayrıntıları
+[settings Keep]
+Değişiklikleri koru
+[settings Keep this display mode?]
+Bu görüntüleme modu korunsun mu?
+[settings Keep your volume levels while silencing audio.]
+Kaydedilen ses seviyelerini değiştirmeden tüm sesleri kapatın.
+[settings Key]
+Tuş
+[settings Keyboard shortcuts]
+Klavye kısayolları
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tuşlar belirtilen sırada bir dizi oluşturur. Her adım, ilgili tuşa basıldığında veya tuş bırakıldığında tetiklenebilir.
+[settings Language]
+Dil
+[settings Language & player]
+Dil ve oyuncu
+[settings Language used throughout the interface.]
+Arayüz boyunca kullanılan dil.
+[settings Level]
+Seviye
+[settings Map editor]
+Harita düzenleyici
+[settings Missing font]
+Eksik yazı tipi
+[settings Music volume]
+Müzik ses düzeyi
+[settings Mute audio]
+Sesi kapat
+[settings Name shown to other players.]
+Diğer oyunculara gösterilen ad.
+[settings Off]
+Kapalı
+[settings On]
+Açık
+[settings OpenGL is not available in this build.]
+Bu derlemede OpenGL kullanılamıyor.
+[settings Player name]
+Oyuncu adı
+[settings Press]
+Basıldığında
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Bir tuşa basın. Escape, tuş yakalamayı iptal eder. Escape tuşunu atamak için “Escape tuşunu ata” seçeneğini kullanın.
+[settings Radius]
+Yarıçap
+[settings Reduced]
+Azaltılmış
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Azaltılmış ayrıntı, bulutları ve gölgelerini devre dışı bırakır, sihirli efektleri basitleştirir ve şeffaflığı azaltır.
+[settings Release]
+Bırakıldığında
+[settings Remember assignments between games]
+Oyunlar arasında birim atamalarını hatırla
+[settings Remove key]
+Klavye tuşunu kaldır
+[settings Remove shortcut]
+Kısayolu kaldır
+[settings Renderer]
+Grafik oluşturucu
+[settings Replace conflicting bindings]
+Çakışan kısayolları değiştir
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Bu bağlamdaki kısayollar varsayılanlarla değiştirilsin mi? Değişiklikler hemen kaydedilir.
+[settings Resolution]
+Ekran çözünürlüğü
+[settings Restore default shortcuts]
+Varsayılan kısayolları geri yükle
+[settings Retry]
+Tekrar dene
+[settings Revert]
+Değişiklikleri geri al
+[settings Reverting in]
+Geri almaya kalan süre:
+[settings Save shortcut]
+Klavye kısayolunu kaydet
+[settings Saved — restart required]
+Kaydedildi — yeniden başlatma gerekli
+[settings Saving…]
+Kaydediliyor…
+[settings Scroll wheel enabled]
+Fare tekerleği etkin
+[settings Set starting unit assignments by building type and level.]
+Bina türüne ve seviyesine göre başlangıçta atanan birim sayılarını ayarlayın.
+[settings Set your language and player name.]
+Dilinizi ve oyuncu adınızı ayarlayın.
+[settings Settings]
+Ayarlar
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
+[settings Software]
+Yazılımsal
+[settings Starting unit counts and radius for newly placed flags.]
+Yeni yerleştirilen bayraklar için başlangıçtaki birim sayıları ve yarıçap.
+[settings This shortcut conflicts with existing bindings:]
+Bu klavye kısayolu mevcut kısayollarla çakışıyor:
+[settings Trigger]
+Tetikleme
+[settings Unbound]
+Kısayol atanmadı
+[settings Unit counts assigned to new construction sites.]
+Yeni inşaat sahalarına atanan birim sayıları.
+[settings Unit counts for completed buildings.]
+Tamamlanan binalar için birim sayıları.
+[settings Unit counts while a building is being upgraded.]
+Bina yükseltilirken atanan birim sayıları.
+[settings Units]
+Birimler
+[settings Upgrades]
+Bina yükseltmeleri
+[settings Use game cursor]
+Oyun imlecini kullan
+[settings Voice volume]
+Konuşma ses düzeyi
+[settings Window mode]
+Pencere modu
+[settings Window-only sizes also switch the game to windowed mode.]
+Yalnızca pencereli modu destekleyen bir çözünürlük seçmek aynı zamanda oyunu pencereli moda geçirir.
+[settings Windowed]
+Pencereli
+[settings Windowed only]
+Yalnızca pencereli
+[settings seconds]
+saniye
+[settings Flag]
+Bayrak
+[settings High-resolution artwork]
+Yüksek çözünürlüklü grafikler
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Seçilen grafikler, oyun veya harita düzenleyici bir sonraki yüklendiğinde uygulanır (OpenGL).
+[settings Automatic torus view]
+Otomatik torus görünümü
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Haritada dolaşırken torus şeklindeki haritaya genel bakışı otomatik olarak gösterin (OpenGL).

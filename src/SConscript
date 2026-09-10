@@ -271,6 +271,8 @@ TorusView.cpp
 TorusViewRender.cpp
 gui/GameGUITorus.cpp
 SettingsScreen.cpp
+SettingsScreenLayout.cpp
+SettingsScreenInput.cpp
 SettingsScreenGeneral.cpp
 SettingsScreenBuildings.cpp
 SettingsScreenKeyboard.cpp
@@ -518,6 +520,12 @@ if not env['server']:
     local.Alias('lan-test', lan_test)
 
 if not env['server']:
+    settings_sources = [source for source in source_files if source != 'Glob2.cpp']
+    settings_sources += local.Object('SettingsScreenTest.o', '#test/SettingsScreenTest.cpp')
+    settings_test = local.Program('settings-screen-tests', settings_sources)
+    local.Alias('settings-tests', settings_test)
+
+if not env['server']:
     speed_sources = [source for source in source_files if source != 'Glob2.cpp']
     speed_sources += local.Object('GameSpeedTest.o', '#test/GameSpeedTest.cpp')
     speed_test = local.Program('game-speed-tests', speed_sources)
@@ -545,6 +553,18 @@ if not env['server']:
     render_test = savegame_env.Program('MapRenderResizeHarness', render_sources)
     local.Alias('map-render-resize-test', render_test)
 
+
+if not env['server']:
+    # Compile with local, not trapped_env, to avoid rebuilding shared objects under a second environment.
+    trapped_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    trapped_sources += [source for source in source_files if not source.endswith('.cpp')]
+    trapped_sources += local.Object('TrappedUnitLifecycleTest.o', '#test/TrappedUnitLifecycleTest.cpp')
+    trapped_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
+    trapped_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    trapped_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    trapped_test = trapped_env.Program('TrappedUnitLifecycleTest', trapped_sources)
+    local.Alias('trapped-unit-test', trapped_test)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")

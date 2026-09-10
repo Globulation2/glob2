@@ -133,6 +133,11 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Test trapped colony elimination
+        run: |
+          scons -j$(nproc) release=1 server=0 trapped-unit-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest
+
       - name: Build and run the entering unit draw regression
         run: |
           scons -j$(nproc) release=1 server=0 entering-unit-draw-test
@@ -294,6 +299,11 @@ jobs:
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Test trapped colony elimination
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 trapped-unit-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest.exe
 
       - name: Test torus geometry, picking and cloud coordinates
         run: |

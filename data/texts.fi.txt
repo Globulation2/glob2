@@ -1560,3 +1560,209 @@ Luo esikatselu tutustuaksesi tähän maailmaan.
 Lisää työntekijöitä nopeuttaa siirtokuntien kasvua. Tämä asetus muuttaa luotua karttaa.
 [No warriors]
 Ei sotureita
+[settings Add key to sequence]
+Lisää näppäin sarjaan
+[settings Add shortcut]
+Lisää pikanäppäin
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Muuta osoitettujen yksiköiden määrää hiiren rullalla. Jos asetus on pois käytöstä, pidä Ctrl painettuna. Shift säätää lipun sädettä. Asetus ohjaa myös rullan käyttöä muissa valikoissa.
+[settings Adjust music and voice volume.]
+Säädä musiikin ja puheen äänenvoimakkuutta.
+[settings Adjust the pace of play.]
+Säädä pelin nopeutta.
+[settings Advanced binding]
+Edistynyt pikanäppäinmuokkaus
+[settings Artwork & effects]
+Grafiikka ja tehosteet
+[settings Audio]
+Ääni
+[settings Bind Escape]
+Määritä Esc-näppäin
+[settings Building]
+Rakennus
+[settings Building defaults]
+Rakennusten oletusasetukset
+[settings Cancel]
+Peruuta
+[settings Changes saved automatically]
+Muutokset tallennetaan automaattisesti
+[settings Changes you make during play update these defaults for future games.]
+Pelin aikana tekemäsi muutokset päivittävät nämä oletusasetukset tulevia pelejä varten.
+[settings Changing the renderer requires a restart.]
+Renderöijän vaihtaminen vaatii uudelleenkäynnistyksen.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Valitse pikanäppäin muokataksesi sitä tai lisää toinen pikanäppäin toimintoa varten.
+[settings Choose a window or fill the screen.]
+Valitse ikkunatila tai koko näytön tila.
+[settings Choose how the game looks on your screen.]
+Valitse, miltä peli näyttää näytölläsi.
+[settings Completed]
+Valmiit rakennukset
+[settings Construction]
+Rakentaminen
+[settings Controls]
+Ohjaus
+[settings Could not change display mode. The previous mode was restored.]
+Näyttötilaa ei voitu vaihtaa. Edellinen tila palautettiin.
+[settings Could not save]
+Ei voitu tallentaa
+[settings Current display]
+Nykyiset näyttöasetukset
+[settings Default]
+Oletus
+[settings Display]
+Näyttö
+[settings Display & graphics]
+Näyttö ja grafiikka
+[settings Display the Globulation 2 cursor.]
+Näytä Globulation 2 -kursori.
+[settings Done]
+Valmis
+[settings Edit shortcut]
+Muokkaa pikanäppäintä
+[settings Flags]
+Liput
+[settings Full]
+Täydet
+[settings Fullscreen]
+Koko näyttö
+[settings Game]
+Peli
+[settings Game speed]
+Pelinopeus
+[settings Gameplay]
+Pelaaminen
+[settings Graphics detail]
+Graafiset yksityiskohdat
+[settings Keep]
+Säilytä muutokset
+[settings Keep this display mode?]
+Säilytetäänkö tämä näyttötila?
+[settings Keep your volume levels while silencing audio.]
+Mykistä kaikki äänet muuttamatta tallennettuja äänenvoimakkuustasoja.
+[settings Key]
+Näppäin
+[settings Keyboard shortcuts]
+Pikanäppäimet
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Näppäimet muodostavat järjestetyn sarjan. Kukin näppäin voi aktivoida toiminnon painettaessa tai vapautettaessa.
+[settings Language]
+Kieli
+[settings Language & player]
+Kieli ja pelaaja
+[settings Language used throughout the interface.]
+Koko käyttöliittymässä käytetty kieli.
+[settings Level]
+Taso
+[settings Map editor]
+Karttaeditori
+[settings Missing font]
+Fontti puuttuu
+[settings Music volume]
+Musiikin voimakkuus
+[settings Mute audio]
+Mykistä ääni
+[settings Name shown to other players.]
+Nimi näytetään muille pelaajille.
+[settings Off]
+Pois
+[settings On]
+Päällä
+[settings OpenGL is not available in this build.]
+OpenGL ei ole saatavilla tässä koontiversiossa.
+[settings Player name]
+Pelaajan nimi
+[settings Press]
+Painettaessa
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Paina näppäimistön näppäintä. Esc-näppäimen painaminen peruuttaa syötteen sieppauksen. Määritä Esc-näppäin valitsemalla "Määritä Esc-näppäin".
+[settings Radius]
+Säde
+[settings Reduced]
+Vähennetyt
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Vähennetyt yksityiskohdat poistavat pilvet ja niiden varjot käytöstä, yksinkertaistavat taikatehosteita ja vähentävät läpinäkyvyyttä.
+[settings Release]
+Vapautettaessa
+[settings Remember assignments between games]
+Muista yksikkömäärät pelien välillä
+[settings Remove key]
+Poista näppäin
+[settings Remove shortcut]
+Poista pikanäppäin
+[settings Renderer]
+Grafiikan renderöijä
+[settings Replace conflicting bindings]
+Korvaa ristiriitaiset pikanäppäimet
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Korvataanko tämän yhteyden pikanäppäimet oletuksilla? Muutos tallennetaan heti.
+[settings Resolution]
+Näytön resoluutio
+[settings Restore default shortcuts]
+Palauta oletuspikanäppäimet
+[settings Retry]
+Yritä uudelleen
+[settings Revert]
+Kumoa muutokset
+[settings Reverting in]
+Palautetaan, kun on kulunut
+[settings Save shortcut]
+Tallenna pikanäppäin
+[settings Saved — restart required]
+Tallennettu – vaaditaan uudelleenkäynnistys
+[settings Saving…]
+Tallennetaan…
+[settings Scroll wheel enabled]
+Vieritysrulla käytössä
+[settings Set starting unit assignments by building type and level.]
+Aseta aluksi osoitettavien yksiköiden määrät rakennustyypin ja tason mukaan.
+[settings Set your language and player name.]
+Aseta kieli ja pelaajanimi.
+[settings Settings]
+Asetukset
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
+[settings Software]
+Ohjelmistorenderöinti
+[settings Starting unit counts and radius for newly placed flags.]
+Uusien lippujen aloitusyksikkömäärät ja säde.
+[settings This shortcut conflicts with existing bindings:]
+Tämä pikanäppäin on ristiriidassa olemassa olevien pikanäppäinten kanssa:
+[settings Trigger]
+Aktivointitapahtuma
+[settings Unbound]
+Ei määritetty
+[settings Unit counts assigned to new construction sites.]
+Uusille rakennustyömaille osoitetut yksikkömäärät.
+[settings Unit counts for completed buildings.]
+Yksikkömäärät valmiille rakennuksille.
+[settings Unit counts while a building is being upgraded.]
+Yksikkömäärät rakennuksen päivityksen aikana.
+[settings Units]
+Yksiköt
+[settings Upgrades]
+Rakennuspäivitykset
+[settings Use game cursor]
+Käytä pelin kursoria
+[settings Voice volume]
+Puheen voimakkuus
+[settings Window mode]
+Ikkunatila
+[settings Window-only sizes also switch the game to windowed mode.]
+Vain ikkunatilaa tukevan resoluution valitseminen vaihtaa myös pelin ikkunatilaan.
+[settings Windowed]
+Ikkunassa
+[settings Windowed only]
+Vain ikkunassa
+[settings seconds]
+sekuntia
+[settings Flag]
+Lippu
+[settings High-resolution artwork]
+Korkearesoluutioinen grafiikka
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Ota grafiikka käyttöön, kun seuraava peli tai karttaeditori ladataan (OpenGL).
+[settings Automatic torus view]
+Automaattinen torusnäkymä
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Näytä toruksen muotoinen karttanäkymä automaattisesti liikkuessasi kartalla (OpenGL).

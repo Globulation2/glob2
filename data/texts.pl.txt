@@ -1560,3 +1560,209 @@ Wygeneruj podgląd, aby poznać ten świat.
 Więcej robotnic przyspiesza rozwój kolonii. To ustawienie zmienia wygenerowaną mapę.
 [No warriors]
 Bez wojowników
+[settings Add key to sequence]
+Dodaj klawisz do sekwencji
+[settings Add shortcut]
+Dodaj skrót
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Kółkiem myszy zmieniaj liczbę przypisanych jednostek. Gdy opcja jest wyłączona, przytrzymaj Ctrl. Shift pozwala zmieniać promień flagi. Opcja wpływa też na obsługę kółka w innych menu.
+[settings Adjust music and voice volume.]
+Dostosuj głośność muzyki i mowy.
+[settings Adjust the pace of play.]
+Dostosuj prędkość gry.
+[settings Advanced binding]
+Zaawansowana edycja skrótów
+[settings Artwork & effects]
+Grafika i efekty
+[settings Audio]
+Dźwięk
+[settings Bind Escape]
+Przypisz klawisz Escape
+[settings Building]
+Budynek
+[settings Building defaults]
+Domyślne ustawienia budynków
+[settings Cancel]
+Anuluj
+[settings Changes saved automatically]
+Zmiany zapisywane automatycznie
+[settings Changes you make during play update these defaults for future games.]
+Zmiany wprowadzone podczas gry aktualizują te ustawienia domyślne dla przyszłych gier.
+[settings Changing the renderer requires a restart.]
+Zmiana modułu renderującego wymaga ponownego uruchomienia.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Wybierz skrót klawiaturowy, aby go edytować, lub dodaj inny skrót do akcji.
+[settings Choose a window or fill the screen.]
+Wybierz grę w oknie lub na pełnym ekranie.
+[settings Choose how the game looks on your screen.]
+Wybierz sposób wyświetlania gry na ekranie.
+[settings Completed]
+Gotowe budynki
+[settings Construction]
+Budowa
+[settings Controls]
+Sterowanie grą
+[settings Could not change display mode. The previous mode was restored.]
+Nie można zmienić trybu wyświetlania. Przywrócono poprzedni tryb.
+[settings Could not save]
+Nie udało się zapisać
+[settings Current display]
+Bieżący tryb wyświetlania
+[settings Default]
+Domyślne
+[settings Display]
+Wyświetlanie
+[settings Display & graphics]
+Wyświetlacz i grafika
+[settings Display the Globulation 2 cursor.]
+Wyświetl kursor Globulation 2.
+[settings Done]
+Gotowe
+[settings Edit shortcut]
+Edytuj skrót klawiaturowy
+[settings Flags]
+Flagi
+[settings Full]
+Pełne
+[settings Fullscreen]
+Pełny ekran
+[settings Game]
+Gra
+[settings Game speed]
+Szybkość gry
+[settings Gameplay]
+Rozgrywka
+[settings Graphics detail]
+Szczegóły grafiki
+[settings Keep]
+Zachowaj zmiany
+[settings Keep this display mode?]
+Zachować ten tryb wyświetlania?
+[settings Keep your volume levels while silencing audio.]
+Wycisz cały dźwięk bez zmiany zapisanych poziomów głośności.
+[settings Key]
+Klawisz
+[settings Keyboard shortcuts]
+Skróty klawiaturowe
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Klawisze tworzą sekwencję w podanej kolejności. Każdy krok może być wyzwalany naciśnięciem lub zwolnieniem danego klawisza.
+[settings Language]
+Język
+[settings Language & player]
+Język i gracz
+[settings Language used throughout the interface.]
+Język używany w całym interfejsie.
+[settings Level]
+Poziom
+[settings Map editor]
+Edytor map
+[settings Missing font]
+Brakująca czcionka
+[settings Music volume]
+Głośność muzyki
+[settings Mute audio]
+Wycisz dźwięk
+[settings Name shown to other players.]
+Nazwa pokazywana innym graczom.
+[settings Off]
+Wyłączone
+[settings On]
+Włączone
+[settings OpenGL is not available in this build.]
+OpenGL nie jest dostępny w tej kompilacji.
+[settings Player name]
+Nazwa gracza
+[settings Press]
+Przy naciśnięciu
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Naciśnij klawisz. Escape anuluje przechwytywanie klawiszy. Aby przypisać Escape, wybierz „Przypisz klawisz Escape”.
+[settings Radius]
+Promień
+[settings Reduced]
+Ograniczone
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Zmniejszona szczegółowość wyłącza chmury i ich cienie, upraszcza efekty magiczne i zmniejsza przezroczystość.
+[settings Release]
+Przy zwolnieniu
+[settings Remember assignments between games]
+Zapamiętuj przydziały jednostek między grami
+[settings Remove key]
+Usuń klawisz
+[settings Remove shortcut]
+Usuń skrót
+[settings Renderer]
+Moduł renderujący
+[settings Replace conflicting bindings]
+Zastąp sprzeczne skróty klawiaturowe
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Zastąpić skróty w tym kontekście domyślnymi? Zmiany zostaną natychmiast zapisane.
+[settings Resolution]
+Rozdzielczość ekranu
+[settings Restore default shortcuts]
+Przywróć domyślne skróty
+[settings Retry]
+Spróbuj ponownie
+[settings Revert]
+Cofnij zmiany
+[settings Reverting in]
+Przywracanie za
+[settings Save shortcut]
+Zapisz skrót klawiaturowy
+[settings Saved — restart required]
+Zapisano — wymagane ponowne uruchomienie
+[settings Saving…]
+Zapisuję…
+[settings Scroll wheel enabled]
+Kółko myszy włączone
+[settings Set starting unit assignments by building type and level.]
+Ustaw początkowe przydziały jednostek według typu i poziomu budynku.
+[settings Set your language and player name.]
+Ustaw swój język i nazwę gracza.
+[settings Settings]
+Ustawienia
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Tylko gra jednoosobowa i powtórki. Gra wieloosobowa działa z szybkością 1x.
+[settings Software]
+Renderowanie programowe
+[settings Starting unit counts and radius for newly placed flags.]
+Początkowa liczba jednostek i promień nowo umieszczonych flag.
+[settings This shortcut conflicts with existing bindings:]
+Ten skrót klawiaturowy powoduje konflikt z istniejącymi skrótami:
+[settings Trigger]
+Zdarzenie wyzwalające
+[settings Unbound]
+Nie przypisano skrótu
+[settings Unit counts assigned to new construction sites.]
+Liczba jednostek przypisanych do nowych placów budowy.
+[settings Unit counts for completed buildings.]
+Liczba jednostek przypisanych do ukończonych budynków.
+[settings Unit counts while a building is being upgraded.]
+Liczba przypisanych jednostek podczas ulepszania budynku.
+[settings Units]
+Jednostki
+[settings Upgrades]
+Ulepszenia budynków
+[settings Use game cursor]
+Użyj kursora w grze
+[settings Voice volume]
+Głośność mowy
+[settings Window mode]
+Tryb okna
+[settings Window-only sizes also switch the game to windowed mode.]
+Wybranie rozdzielczości obsługującej tylko tryb okienkowy powoduje także przełączenie gry w tryb okienkowy.
+[settings Windowed]
+Okienkowy
+[settings Windowed only]
+Tylko w oknie
+[settings seconds]
+sekund
+[settings Flag]
+Flaga
+[settings High-resolution artwork]
+Grafika w wysokiej rozdzielczości
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Wybrana grafika zostanie zastosowana przy następnym załadowaniu gry lub edytora map (OpenGL).
+[settings Automatic torus view]
+Automatyczny widok torusa
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Automatycznie pokazuj przegląd mapy w kształcie torusa podczas poruszania się po mapie (OpenGL).

@@ -1560,3 +1560,209 @@ Készítsen előnézetet a világ felfedezéséhez.
 Több munkás felgyorsítja a kolóniák növekedését. Ez a beállítás módosítja a generált térképet.
 [No warriors]
 Harcosok nélkül
+[settings Add key to sequence]
+Billentyű hozzáadása a sorozathoz
+[settings Add shortcut]
+Új gyorsbillentyű
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Az egérgörgővel módosíthatja a hozzárendelt egységek számát. Kikapcsolva tartsa lenyomva a Ctrl billentyűt. A Shift használatával a zászló sugarát állíthatja. Ez a beállítás más menükben is szabályozza a görgő használatát.
+[settings Adjust music and voice volume.]
+Állítsa be a zene és a beszéd hangerejét.
+[settings Adjust the pace of play.]
+Állítsa be a játék sebességét.
+[settings Advanced binding]
+Speciális billentyűbeállítások
+[settings Artwork & effects]
+Grafika és effektusok
+[settings Audio]
+Hang
+[settings Bind Escape]
+Escape hozzárendelése
+[settings Building]
+Épület
+[settings Building defaults]
+Épületek alapbeállításai
+[settings Cancel]
+Mégsem
+[settings Changes saved automatically]
+A változtatások automatikusan mentésre kerülnek
+[settings Changes you make during play update these defaults for future games.]
+A játék közben végrehajtott változtatások frissítik ezeket az alapértelmezett értékeket a jövőbeli játékokhoz.
+[settings Changing the renderer requires a restart.]
+A renderer megváltoztatása újraindítást igényel.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Válasszon ki egy billentyűparancsot a szerkesztéshez, vagy adjon hozzá egy másik billentyűparancsot egy művelethez.
+[settings Choose a window or fill the screen.]
+Válasszon ablakos vagy teljes képernyős módot.
+[settings Choose how the game looks on your screen.]
+Válassza ki, hogyan nézzen ki a játék a képernyőn.
+[settings Completed]
+Befejezett épületek
+[settings Construction]
+Építés
+[settings Controls]
+Irányítás
+[settings Could not change display mode. The previous mode was restored.]
+Nem sikerült megváltoztatni a megjelenítési módot. Az előző mód visszaállt.
+[settings Could not save]
+Nem sikerült menteni
+[settings Current display]
+Aktuális megjelenítési mód
+[settings Default]
+Alapértelmezett
+[settings Display]
+Kijelző
+[settings Display & graphics]
+Kijelző és grafika
+[settings Display the Globulation 2 cursor.]
+Jelenítse meg a Globulation 2 kurzort.
+[settings Done]
+Kész
+[settings Edit shortcut]
+Billentyűparancs szerkesztése
+[settings Flags]
+Zászlók
+[settings Full]
+Teljes
+[settings Fullscreen]
+Teljes képernyő
+[settings Game]
+Játék
+[settings Game speed]
+Játéksebesség
+[settings Gameplay]
+Játékmenet
+[settings Graphics detail]
+Grafikai részletesség
+[settings Keep]
+Megtartás
+[settings Keep this display mode?]
+Megtartja ezt a megjelenítési módot?
+[settings Keep your volume levels while silencing audio.]
+Minden hang elnémítása a mentett hangerőszint módosítása nélkül.
+[settings Key]
+Billentyű
+[settings Keyboard shortcuts]
+Billentyűparancsok
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+A billentyűk a megadott sorrendben alkotnak sorozatot. Minden lépést a megfelelő billentyű lenyomása vagy felengedése válthat ki.
+[settings Language]
+Nyelv
+[settings Language & player]
+Nyelv és játékos
+[settings Language used throughout the interface.]
+Az egész felületen használt nyelv.
+[settings Level]
+Szint
+[settings Map editor]
+Térképszerkesztő
+[settings Missing font]
+Hiányzó betűtípus
+[settings Music volume]
+Zene hangereje
+[settings Mute audio]
+Hang némítása
+[settings Name shown to other players.]
+A többi játékos számára látható név.
+[settings Off]
+Kikapcsolva
+[settings On]
+Bekapcsolva
+[settings OpenGL is not available in this build.]
+Az OpenGL nem érhető el ebben a buildben.
+[settings Player name]
+A játékos neve
+[settings Press]
+Lenyomáskor
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Nyomjon meg egy billentyűt. Az Escape megszakítja a rögzítést. Az Escape hozzárendeléséhez válassza az „Escape hozzárendelése” lehetőséget.
+[settings Radius]
+Sugár
+[settings Reduced]
+Csökkentett
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+A csökkentett részletesség kikapcsolja a felhőket és árnyékaikat, egyszerűsíti a mágikus effektusokat és csökkenti az átlátszóságot.
+[settings Release]
+Felengedéskor
+[settings Remember assignments between games]
+Hozzárendelések megőrzése játékok között
+[settings Remove key]
+Billentyű eltávolítása
+[settings Remove shortcut]
+Billentyűparancs eltávolítása
+[settings Renderer]
+Grafikus megjelenítő
+[settings Replace conflicting bindings]
+Ütköző billentyűparancsok lecserélése
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Visszaállítja az alapértelmezett billentyűparancsokat ebben a környezetben? A változtatások azonnal mentésre kerülnek.
+[settings Resolution]
+Képernyőfelbontás
+[settings Restore default shortcuts]
+Alapértelmezett billentyűparancsok visszaállítása
+[settings Retry]
+Újra
+[settings Revert]
+Változtatások visszaállítása
+[settings Reverting in]
+Visszaállítás ennyi idő múlva:
+[settings Save shortcut]
+Billentyűparancs mentése
+[settings Saved — restart required]
+Mentve – újraindítás szükséges
+[settings Saving…]
+Mentés…
+[settings Scroll wheel enabled]
+Egérgörgő engedélyezve
+[settings Set starting unit assignments by building type and level.]
+Állítsa be a hozzárendelt egységek kezdeti számát az épület típusa és szintje szerint.
+[settings Set your language and player name.]
+Állítsa be a nyelvet és a játékos nevét.
+[settings Settings]
+Beállítások
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
+[settings Software]
+Szoftveres renderelés
+[settings Starting unit counts and radius for newly placed flags.]
+Az újonnan elhelyezett zászlókhoz rendelt egységek kezdeti száma és a zászlók sugara.
+[settings This shortcut conflicts with existing bindings:]
+Ez a billentyűparancs ütközik a meglévő billentyűparancsokkal:
+[settings Trigger]
+Aktiválási esemény
+[settings Unbound]
+Nincs hozzárendelve
+[settings Unit counts assigned to new construction sites.]
+Új építkezésekhez rendelt egységszámok.
+[settings Unit counts for completed buildings.]
+Az elkészült épületekhez rendelt egységek száma.
+[settings Unit counts while a building is being upgraded.]
+Az épület fejlesztése során hozzárendelt egységek száma.
+[settings Units]
+Egységek
+[settings Upgrades]
+Épületfejlesztések
+[settings Use game cursor]
+Játék kurzorának használata
+[settings Voice volume]
+Beszéd hangereje
+[settings Window mode]
+Ablakmód
+[settings Window-only sizes also switch the game to windowed mode.]
+Ha olyan felbontást választunk, amely csak az ablakos módot támogatja, akkor a játék is ablakos módba vált.
+[settings Windowed]
+Ablakos
+[settings Windowed only]
+Csak ablakos
+[settings seconds]
+másodperc
+[settings Flag]
+Zászló
+[settings High-resolution artwork]
+Nagy felbontású grafika
+[settings Apply artwork on the next game or editor load (OpenGL).]
+A kiválasztott grafika a játék vagy a térképszerkesztő következő betöltésekor lép érvénybe (OpenGL).
+[settings Automatic torus view]
+Automatikus tórusznézet
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+A tórusz alakú térkép áttekintésének automatikus megjelenítése a térképen való mozgás közben (OpenGL).

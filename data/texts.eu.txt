@@ -1570,3 +1570,209 @@ Sortu aurrebista mundu hau esploratzeko.
 Langile gehiagok koloniaren hazkundea bizkortzen dute. Ezarpen honek sortutako mapa aldatzen du.
 [No warriors]
 Gudaririk gabe
+[settings Add key to sequence]
+Gehitu tekla sekuentziari
+[settings Add shortcut]
+Gehitu laster-tekla
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Erabili saguaren gurpila esleitutako unitateen kopurua aldatzeko. Aukera hau desaktibatuta badago, eduki sakatuta Ctrl tekla gurpila erabiltzeko. Eduki sakatuta Shift tekla banderaren erradioa doitzeko. Aukera honek beste menuetako saguaren gurpilaren erabilera ere kontrolatzen du.
+[settings Adjust music and voice volume.]
+Doitu musikaren eta ahotsaren bolumena.
+[settings Adjust the pace of play.]
+Doitu jokoaren abiadura.
+[settings Advanced binding]
+Lasterbideen edizio aurreratua
+[settings Artwork & effects]
+Artelanak eta efektuak
+[settings Audio]
+Soinua
+[settings Bind Escape]
+Esleitu Escape tekla
+[settings Building]
+Eraikina
+[settings Building defaults]
+Eraikinen lehenespenak
+[settings Cancel]
+Utzi
+[settings Changes saved automatically]
+Aldaketak automatikoki gordetzen dira
+[settings Changes you make during play update these defaults for future games.]
+Jokatzerakoan egiten dituzun aldaketek lehenespen hauek eguneratzen dituzte etorkizuneko jokoetarako.
+[settings Changing the renderer requires a restart.]
+Errendatzailea aldatzeko, berrabiarazi behar da.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Hautatu teklatuko lasterbide bat editatzeko, edo gehitu beste lasterbide bat ekintza baterako.
+[settings Choose a window or fill the screen.]
+Aukeratu leiho modua edo pantaila osoa.
+[settings Choose how the game looks on your screen.]
+Aukeratu jokoaren itxura zure pantailan.
+[settings Completed]
+Amaitutako eraikinak
+[settings Construction]
+Eraikuntza
+[settings Controls]
+Joko kontrolak
+[settings Could not change display mode. The previous mode was restored.]
+Ezin izan da bistaratzeko modua aldatu. Aurreko modua leheneratu zen.
+[settings Could not save]
+Ezin izan da gorde
+[settings Current display]
+Uneko pantaila-ezarpenak
+[settings Default]
+Lehenetsia
+[settings Display]
+Pantaila
+[settings Display & graphics]
+Pantaila eta grafikoak
+[settings Display the Globulation 2 cursor.]
+Bistaratu Globulation 2 jokoaren kurtsorea.
+[settings Done]
+Eginda
+[settings Edit shortcut]
+Editatu teklatuko lasterbidea
+[settings Flags]
+Banderak
+[settings Full]
+Xehetasun osoa
+[settings Fullscreen]
+Pantaila osoa
+[settings Game]
+Partida
+[settings Game speed]
+Jokoaren abiadura
+[settings Gameplay]
+Jokagarritasuna
+[settings Graphics detail]
+Xehetasun grafikoa
+[settings Keep]
+Mantendu aldaketak
+[settings Keep this display mode?]
+Bistaratzeko modu hau mantendu nahi duzu?
+[settings Keep your volume levels while silencing audio.]
+Isilarazi soinu guztiak gordetako bolumen-mailak aldatu gabe.
+[settings Key]
+Tekla
+[settings Keyboard shortcuts]
+Teklatuko lasterbideak
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Teklek sekuentzia bat osatzen dute, ordenan. Urrats bakoitza dagokion tekla sakatzean edo askatzean aktiba daiteke.
+[settings Language]
+Hizkuntza
+[settings Language & player]
+Hizkuntza eta jokalaria
+[settings Language used throughout the interface.]
+Interfaze osoan erabiltzen den hizkuntza.
+[settings Level]
+Maila
+[settings Map editor]
+Mapa-editorea
+[settings Missing font]
+Letra-tipoa falta da
+[settings Music volume]
+Bolumena (musika)
+[settings Mute audio]
+Isilarazi soinua
+[settings Name shown to other players.]
+Beste jokalariei erakutsitako izena.
+[settings Off]
+Desaktibatuta
+[settings On]
+Aktibatuta
+[settings OpenGL is not available in this build.]
+OpenGL ez dago erabilgarri bertsio honetan.
+[settings Player name]
+Jokalari izena
+[settings Press]
+Sakatzean
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Sakatu tekla bat. Escape teklak teklaren erregistroa bertan behera uzten du. Escape esleitzeko, hautatu «Esleitu Escape tekla».
+[settings Radius]
+Erradioa
+[settings Reduced]
+Xehetasun murriztua
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Xehetasun murriztuak hodeiak eta haien itzalak desgaitzen ditu, efektu magikoak errazten ditu eta gardentasuna murrizten du.
+[settings Release]
+Askatzean
+[settings Remember assignments between games]
+Gogoratu unitateen esleipenak partiden artean
+[settings Remove key]
+Kendu tekla
+[settings Remove shortcut]
+Kendu laster-tekla
+[settings Renderer]
+Errendatzaile grafikoa
+[settings Replace conflicting bindings]
+Ordeztu gatazkan dauden teklatuko lasterbideak
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Testuinguru honetako lasterbideak lehenetsitakoekin ordeztu nahi dituzu? Aldaketak berehala gordeko dira.
+[settings Resolution]
+Pantailaren bereizmena
+[settings Restore default shortcuts]
+Leheneratu lasterbide lehenetsiak
+[settings Retry]
+Saiatu berriro
+[settings Revert]
+Desegin aldaketak
+[settings Reverting in]
+Leheneratzeko falta den denbora:
+[settings Save shortcut]
+Gorde teklatuko lasterbidea
+[settings Saved — restart required]
+Gordeta — berrabiarazi behar da
+[settings Saving…]
+Gordetzen…
+[settings Scroll wheel enabled]
+Saguaren gurpila gaituta
+[settings Set starting unit assignments by building type and level.]
+Ezarri hasierako unitateen esleipenak eraikin motaren eta mailaren arabera.
+[settings Set your language and player name.]
+Ezarri zure hizkuntza eta jokalariaren izena.
+[settings Settings]
+Ezarpenak
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Jokalari bakarreko jokoetarako eta errepikapenetarako soilik. Jokalari anitzeko jokoak 1x abiaduran doaz.
+[settings Software]
+Software errendatzea
+[settings Starting unit counts and radius for newly placed flags.]
+Jarri berri diren banderen hasierako unitate kopurua eta erradioa.
+[settings This shortcut conflicts with existing bindings:]
+Teklatuko lasterbide hau lehendik dauden lasterbideekin gatazkan dago:
+[settings Trigger]
+Aktibazio-gertaera
+[settings Unbound]
+Ez da lasterbiderik esleitu
+[settings Unit counts assigned to new construction sites.]
+Eraikuntza-gune berriei esleitutako unitate kopurua.
+[settings Unit counts for completed buildings.]
+Amaitutako eraikinei esleitutako unitate kopurua.
+[settings Unit counts while a building is being upgraded.]
+Eraikina hobetzen ari den bitartean esleitutako unitate kopurua.
+[settings Units]
+Unitateak
+[settings Upgrades]
+Eraikinen hobekuntzak
+[settings Use game cursor]
+Erabili jokoaren kurtsorea
+[settings Voice volume]
+Ahotsaren bolumena
+[settings Window mode]
+Leiho modua
+[settings Window-only sizes also switch the game to windowed mode.]
+Leiho modua soilik onartzen duen bereizmen bat hautatzeak leiho modura ere aldatzen du jokoa.
+[settings Windowed]
+Leiho modua
+[settings Windowed only]
+Leiho moduan soilik
+[settings seconds]
+segundo
+[settings Flag]
+Bandera
+[settings High-resolution artwork]
+Bereizmen handiko artelana
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Erabili hautatutako artelana joko bat edo mapa-editorea kargatzen den hurrengoan (OpenGL).
+[settings Automatic torus view]
+Toroide-ikuspegi automatikoa
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Erakutsi automatikoki toroide formako maparen ikuspegi orokorra mapan mugitzen zaren bitartean (OpenGL).

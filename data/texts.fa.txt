@@ -1558,3 +1558,209 @@ Cortex
 کارگران بیشتر رشد مستعمره ها را تسریع می کنند. این تنظیم نقشه تولید شده را تغییر می دهد.
 [No warriors]
 بدون جنگجو
+[settings Add key to sequence]
+افزودن کلید به دنباله
+[settings Add shortcut]
+افزودن میانبر
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+از چرخ ماوس برای تغییر تعداد واحدهای اختصاص داده شده استفاده کنید. اگر این گزینه خاموش است، برای استفاده از چرخ، کلید Ctrl را نگه دارید. برای تنظیم شعاع پرچم، کلید Shift را نگه دارید. این گزینه همچنین ورودی چرخ ماوس را در منوهای دیگر کنترل می کند.
+[settings Adjust music and voice volume.]
+بلندی صدای موسیقی و گفتار را تنظیم کنید.
+[settings Adjust the pace of play.]
+سرعت بازی را تنظیم کنید.
+[settings Advanced binding]
+تنظیم پیشرفتهٔ میانبر
+[settings Artwork & effects]
+تصاویر و جلوه‌ها
+[settings Audio]
+صدا
+[settings Bind Escape]
+اختصاص کلید Escape
+[settings Building]
+ساختمان
+[settings Building defaults]
+پیش‌فرض‌های ساختمان‌ها
+[settings Cancel]
+لغو
+[settings Changes saved automatically]
+تغییرات به صورت خودکار ذخیره می شوند
+[settings Changes you make during play update these defaults for future games.]
+تغییراتی که در حین بازی ایجاد می‌کنید این پیش‌فرض‌ها را برای بازی‌های آینده به‌روزرسانی می‌کنند.
+[settings Changing the renderer requires a restart.]
+تغییر رندرگر نیاز به راه‌اندازی مجدد دارد.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+یک میانبر صفحه کلید برای ویرایش آن انتخاب کنید، یا میانبر دیگری برای یک اقدام اضافه کنید.
+[settings Choose a window or fill the screen.]
+حالت پنجره‌ای یا تمام‌صفحه را انتخاب کنید.
+[settings Choose how the game looks on your screen.]
+نحوه نمایش بازی روی صفحه نمایش خود را انتخاب کنید.
+[settings Completed]
+ساختمان های تکمیل شده
+[settings Construction]
+در حال ساخت
+[settings Controls]
+کنترل های بازی
+[settings Could not change display mode. The previous mode was restored.]
+تغییر حالت نمایش ممکن نیست. حالت قبلی بازیابی شد.
+[settings Could not save]
+ذخیره نشد
+[settings Current display]
+تنظیمات نمایش فعلی
+[settings Default]
+پیش‌فرض
+[settings Display]
+نمایش
+[settings Display & graphics]
+نمایشگر و گرافیک
+[settings Display the Globulation 2 cursor.]
+نشانگر Globulation 2 را نمایش دهید.
+[settings Done]
+انجام شد
+[settings Edit shortcut]
+ویرایش میانبر صفحه کلید
+[settings Flags]
+پرچم ها
+[settings Full]
+جزئیات کامل
+[settings Fullscreen]
+صفحه‌ی کامل
+[settings Game]
+بازی
+[settings Game speed]
+سرعت بازی
+[settings Gameplay]
+روند بازی
+[settings Graphics detail]
+جزئیات گرافیکی
+[settings Keep]
+حفظ تغییرات
+[settings Keep this display mode?]
+این حالت نمایش حفظ شود؟
+[settings Keep your volume levels while silencing audio.]
+تمام صداها را بدون تغییر سطح صدای ذخیره شده قطع کنید.
+[settings Key]
+کلید
+[settings Keyboard shortcuts]
+میانبرهای صفحه کلید
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+کلیدها به ترتیب یک دنباله را تشکیل می‌دهند. هر مرحله می‌تواند هنگام فشردن یا رها کردن کلید مربوط به آن فعال شود.
+[settings Language]
+زبان
+[settings Language & player]
+زبان و بازیکن
+[settings Language used throughout the interface.]
+زبان مورد استفاده در سراسر رابط.
+[settings Level]
+سطح
+[settings Map editor]
+ویرایشگر نقشه
+[settings Missing font]
+فونت موجود نیست
+[settings Music volume]
+بلندی صدای موسیقی
+[settings Mute audio]
+قطع صدا
+[settings Name shown to other players.]
+نام نشان داده شده به سایر بازیکنان
+[settings Off]
+خاموش
+[settings On]
+روشن
+[settings OpenGL is not available in this build.]
+OpenGL در این بیلد موجود نیست.
+[settings Player name]
+نام بازیکن
+[settings Press]
+هنگام فشردن
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+کلیدی را فشار دهید. Escape ثبت کلید را لغو می‌کند. برای اختصاص Escape، گزینهٔ «اختصاص کلید Escape» را انتخاب کنید.
+[settings Radius]
+شعاع
+[settings Reduced]
+جزئیات کمتر
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+جزئیات کاهش یافته ابرها و سایه های آنها را غیرفعال می کند، جلوه های جادویی را ساده می کند و شفافیت را کاهش می دهد.
+[settings Release]
+هنگام رها کردن
+[settings Remember assignments between games]
+به‌خاطر سپردن تعداد واحدهای اختصاص‌یافته بین بازی‌ها
+[settings Remove key]
+حذف کلید
+[settings Remove shortcut]
+حذف میانبر
+[settings Renderer]
+رندرگر گرافیک
+[settings Replace conflicting bindings]
+جایگزینی میانبرهای دارای تداخل
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+میانبرهای این بخش با میانبرهای پیش‌فرض جایگزین شوند؟ تغییرات بلافاصله ذخیره می‌شوند.
+[settings Resolution]
+وضوح صفحه نمایش
+[settings Restore default shortcuts]
+بازگرداندن میانبرهای پیش‌فرض
+[settings Retry]
+تلاش مجدد
+[settings Revert]
+برگرداندن تغییرات
+[settings Reverting in]
+بازگشت پس از
+[settings Save shortcut]
+ذخیره میانبر صفحه کلید
+[settings Saved — restart required]
+ذخیره شده - راه اندازی مجدد لازم است
+[settings Saving…]
+در حال ذخیره…
+[settings Scroll wheel enabled]
+امکان استفاده از چرخ ماوس
+[settings Set starting unit assignments by building type and level.]
+تعداد اولیهٔ واحدهای اختصاص‌یافته را بر اساس نوع و سطح ساختمان تنظیم کنید.
+[settings Set your language and player name.]
+زبان و نام بازیکن خود را تنظیم کنید.
+[settings Settings]
+تنظیمها
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+فقط برای بازی تک‌نفره و بازپخش‌ها. بازی چندنفره با سرعت 1x اجرا می‌شود.
+[settings Software]
+رندر نرم‌افزاری
+[settings Starting unit counts and radius for newly placed flags.]
+تعداد اولیهٔ واحدها و شعاع پرچم‌های تازه قرارگرفته.
+[settings This shortcut conflicts with existing bindings:]
+این میانبر صفحه کلید با میانبرهای موجود در تضاد است:
+[settings Trigger]
+رویداد فعال سازی
+[settings Unbound]
+هیچ میانبری اختصاص داده نشده است
+[settings Unit counts assigned to new construction sites.]
+تعداد واحدهای اختصاص‌یافته به محل‌های ساخت جدید.
+[settings Unit counts for completed buildings.]
+تعداد واحدهای اختصاص‌یافته به ساختمان‌های تکمیل‌شده.
+[settings Unit counts while a building is being upgraded.]
+تعداد واحدهای اختصاص‌یافته به ساختمان در هنگام ارتقا.
+[settings Units]
+واحدها
+[settings Upgrades]
+ارتقاء ساختمان
+[settings Use game cursor]
+استفاده از نشانگر بازی
+[settings Voice volume]
+بلندی صدای صحبت
+[settings Window mode]
+حالت پنجره
+[settings Window-only sizes also switch the game to windowed mode.]
+انتخاب وضوحی که فقط از حالت پنجره ای پشتیبانی می کند، بازی را به حالت پنجره ای نیز تغییر می دهد.
+[settings Windowed]
+پنجره‌ای
+[settings Windowed only]
+فقط پنجره‌ای
+[settings seconds]
+ثانیه
+[settings Flag]
+پرچم
+[settings High-resolution artwork]
+تصاویر با وضوح بالا
+[settings Apply artwork on the next game or editor load (OpenGL).]
+تصاویر هنگام بارگیری بعدی بازی یا ویرایشگر نقشه اعمال می‌شوند (OpenGL).
+[settings Automatic torus view]
+نمای خودکار چنبره
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+هنگام حرکت در نقشه (OpenGL) نمای کلی نقشه به شکل چنبره را به صورت خودکار نشان دهید.

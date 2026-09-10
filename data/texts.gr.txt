@@ -1630,3 +1630,209 @@ Cortex
 Περισσότεροι εργαζόμενοι επιταχύνουν την ανάπτυξη των αποικιών. Αυτή η ρύθμιση αλλάζει τον χάρτη που δημιουργείται.
 [No warriors]
 Χωρίς πολεμιστές
+[settings Add key to sequence]
+Προσθήκη πλήκτρου στην ακολουθία
+[settings Add shortcut]
+Νέα συντόμευση
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Χρησιμοποιήστε τον τροχό του ποντικιού για να αλλάξετε τον αριθμό των εκχωρημένων μονάδων. Εάν αυτή η επιλογή είναι απενεργοποιημένη, κρατήστε πατημένο το πλήκτρο Ctrl για να χρησιμοποιήσετε τον τροχό. Κρατήστε πατημένο το πλήκτρο Shift για να ρυθμίσετε την ακτίνα σημαίας. Αυτή η επιλογή ελέγχει επίσης την είσοδο με τον τροχό του ποντικιού σε άλλα μενού.
+[settings Adjust music and voice volume.]
+Ρυθμίστε την ένταση της μουσικής και της φωνής.
+[settings Adjust the pace of play.]
+Ρυθμίστε την ταχύτητα του παιχνιδιού.
+[settings Advanced binding]
+Σύνθετη επεξεργασία συντομεύσεων
+[settings Artwork & effects]
+Γραφικά και εφέ
+[settings Audio]
+Ήχος
+[settings Bind Escape]
+Αντιστοίχιση Escape
+[settings Building]
+Κτίριο
+[settings Building defaults]
+Προεπιλογές κτιρίων
+[settings Cancel]
+Άκυρο
+[settings Changes saved automatically]
+Οι αλλαγές αποθηκεύονται αυτόματα
+[settings Changes you make during play update these defaults for future games.]
+Οι αλλαγές που κάνετε κατά τη διάρκεια του παιχνιδιού ενημερώνουν αυτές τις προεπιλογές για μελλοντικά παιχνίδια.
+[settings Changing the renderer requires a restart.]
+Η αλλαγή της μηχανής απόδοσης γραφικών απαιτεί επανεκκίνηση.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Επιλέξτε μια συντόμευση πληκτρολογίου για να την επεξεργαστείτε ή προσθέστε μια άλλη συντόμευση για μια ενέργεια.
+[settings Choose a window or fill the screen.]
+Επιλέξτε λειτουργία παραθύρου ή πλήρους οθόνης.
+[settings Choose how the game looks on your screen.]
+Επιλέξτε πώς φαίνεται το παιχνίδι στην οθόνη σας.
+[settings Completed]
+Ολοκληρωμένα κτίρια
+[settings Construction]
+Κατασκευή
+[settings Controls]
+Χειριστήρια παιχνιδιού
+[settings Could not change display mode. The previous mode was restored.]
+Δεν ήταν δυνατή η αλλαγή της λειτουργίας εμφάνισης. Η προηγούμενη λειτουργία αποκαταστάθηκε.
+[settings Could not save]
+Δεν ήταν δυνατή η αποθήκευση
+[settings Current display]
+Τρέχουσα λειτουργία προβολής
+[settings Default]
+Προεπιλογή
+[settings Display]
+Εμφάνιση
+[settings Display & graphics]
+Οθόνη & γραφικά
+[settings Display the Globulation 2 cursor.]
+Εμφάνιση του κέρσορα του Globulation 2.
+[settings Done]
+Έγινε
+[settings Edit shortcut]
+Επεξεργασία συντόμευσης
+[settings Flags]
+Σημαίες
+[settings Full]
+Πλήρης
+[settings Fullscreen]
+Πλήρης οθόνη
+[settings Game]
+Παιχνίδι
+[settings Game speed]
+Ταχύτητα παιχνιδιού
+[settings Gameplay]
+Τρόπος παιχνιδιού
+[settings Graphics detail]
+Λεπτομέρεια γραφικών
+[settings Keep]
+Διατήρηση αλλαγών
+[settings Keep this display mode?]
+Διατήρηση αυτής της λειτουργίας εμφάνισης;
+[settings Keep your volume levels while silencing audio.]
+Σίγαση όλων των ήχων χωρίς αλλαγή των αποθηκευμένων επιπέδων έντασης.
+[settings Key]
+Πλήκτρο
+[settings Keyboard shortcuts]
+Συντομεύσεις πληκτρολογίου
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Τα πλήκτρα σχηματίζουν ακολουθία με τη σειρά που εμφανίζονται. Κάθε βήμα μπορεί να ενεργοποιείται με το πάτημα ή την απελευθέρωση του αντίστοιχου πλήκτρου.
+[settings Language]
+Γλώσσα
+[settings Language & player]
+Γλώσσα και παίκτης
+[settings Language used throughout the interface.]
+Γλώσσα που χρησιμοποιείται σε όλη τη διεπαφή.
+[settings Level]
+Επίπεδο
+[settings Map editor]
+Επεξεργαστής χάρτη
+[settings Missing font]
+Λείπει γραμματοσειρά
+[settings Music volume]
+Ένταση μουσικής
+[settings Mute audio]
+Σίγαση ήχου
+[settings Name shown to other players.]
+Το όνομα που εμφανίζεται στους άλλους παίκτες.
+[settings Off]
+Ανενεργό
+[settings On]
+Ενεργό
+[settings OpenGL is not available in this build.]
+Το OpenGL δεν είναι διαθέσιμο σε αυτήν την έκδοση.
+[settings Player name]
+Όνομα παίκτη
+[settings Press]
+Στο πάτημα
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Πατήστε ένα πλήκτρο. Το Escape ακυρώνει την καταγραφή πλήκτρων. Για να αντιστοιχίσετε το Escape, επιλέξτε «Αντιστοίχιση Escape».
+[settings Radius]
+Ακτίνα
+[settings Reduced]
+Μειωμένη
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Η μειωμένη λεπτομέρεια απενεργοποιεί τα σύννεφα και τις σκιές τους, απλοποιεί τα μαγικά εφέ και μειώνει τη διαφάνεια.
+[settings Release]
+Στην απελευθέρωση
+[settings Remember assignments between games]
+Απομνημόνευση αναθέσεων μονάδων μεταξύ παιχνιδιών
+[settings Remove key]
+Αφαίρεση πλήκτρου
+[settings Remove shortcut]
+Αφαίρεση συντόμευσης
+[settings Renderer]
+Μηχανή απόδοσης γραφικών
+[settings Replace conflicting bindings]
+Αντικατάσταση συντομεύσεων πληκτρολογίου σε διένεξη
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Να αντικατασταθούν οι συντομεύσεις σε αυτό το πλαίσιο με τις προεπιλεγμένες; Οι αλλαγές αποθηκεύονται αμέσως.
+[settings Resolution]
+Ανάλυση οθόνης
+[settings Restore default shortcuts]
+Επαναφορά προεπιλεγμένων συντομεύσεων
+[settings Retry]
+Δοκιμή ξανά
+[settings Revert]
+Αναίρεση αλλαγών
+[settings Reverting in]
+Επαναφορά σε
+[settings Save shortcut]
+Αποθήκευση συντόμευσης
+[settings Saved — restart required]
+Αποθηκεύτηκε — απαιτείται επανεκκίνηση
+[settings Saving…]
+Αποθήκευση…
+[settings Scroll wheel enabled]
+Ενεργός τροχός ποντικιού
+[settings Set starting unit assignments by building type and level.]
+Ορίστε τον αρχικό αριθμό μονάδων που ανατίθενται ανά τύπο και επίπεδο κτιρίου.
+[settings Set your language and player name.]
+Ορίστε τη γλώσσα και το όνομα παίκτη.
+[settings Settings]
+Ρυθμίσεις
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Μόνο για έναν παίκτη και επαναλήψεις. Τα παιχνίδια πολλών παικτών εκτελούνται σε 1x.
+[settings Software]
+Απόδοση μέσω λογισμικού
+[settings Starting unit counts and radius for newly placed flags.]
+Αρχικός αριθμός μονάδων και ακτίνα για τις νέες σημαίες.
+[settings This shortcut conflicts with existing bindings:]
+Αυτή η συντόμευση πληκτρολογίου έρχεται σε διένεξη με τις υπάρχουσες συντομεύσεις:
+[settings Trigger]
+Συμβάν ενεργοποίησης
+[settings Unbound]
+Δεν έχει εκχωρηθεί συντόμευση
+[settings Unit counts assigned to new construction sites.]
+Αριθμός μονάδων που ανατίθενται σε νέα εργοτάξια.
+[settings Unit counts for completed buildings.]
+Αριθμός μονάδων που ανατίθενται σε ολοκληρωμένα κτίρια.
+[settings Unit counts while a building is being upgraded.]
+Αριθμός μονάδων που ανατίθενται κατά την αναβάθμιση ενός κτιρίου.
+[settings Units]
+Μονάδες
+[settings Upgrades]
+Αναβαθμίσεις κτιρίων
+[settings Use game cursor]
+Χρήση κέρσορα παιχνιδιού
+[settings Voice volume]
+Ένταση φωνής
+[settings Window mode]
+Λειτουργία παραθύρου
+[settings Window-only sizes also switch the game to windowed mode.]
+Η επιλογή μιας ανάλυσης που υποστηρίζει μόνο τη λειτουργία παραθύρου αλλάζει επίσης το παιχνίδι σε λειτουργία παραθύρου.
+[settings Windowed]
+Παράθυρο
+[settings Windowed only]
+Μόνο σε παράθυρο
+[settings seconds]
+δευτερόλεπτα
+[settings Flag]
+Σημαία
+[settings High-resolution artwork]
+Γραφικά υψηλής ανάλυσης
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Τα επιλεγμένα γραφικά εφαρμόζονται στην επόμενη φόρτωση παιχνιδιού ή επεξεργαστή χάρτη (OpenGL).
+[settings Automatic torus view]
+Αυτόματη τοροειδής προβολή
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Αυτόματη εμφάνιση της επισκόπησης του χάρτη σε σχήμα τόρου ενώ μετακινείστε στον χάρτη (OpenGL).

@@ -1568,3 +1568,209 @@ Genera una vista prèvia per explorar aquest món.
 Més treballadors acceleren el creixement de les colònies. Aquesta configuració canvia el mapa generat.
 [No warriors]
 Sense guerrers
+[settings Add key to sequence]
+Afegeix una tecla a la seqüència
+[settings Add shortcut]
+Afegeix una drecera
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Utilitzeu la roda del ratolí per canviar el nombre d'unitats assignades. Si aquesta opció està desactivada, manteniu premuda la tecla Ctrl per utilitzar la roda. Manteniu premuda la tecla Maj per ajustar el radi de la bandera. Aquesta opció també controla l'entrada amb la roda del ratolí en altres menús.
+[settings Adjust music and voice volume.]
+Ajusteu el volum de la música i la veu.
+[settings Adjust the pace of play.]
+Ajusta la velocitat del joc.
+[settings Advanced binding]
+Edició avançada de dreceres
+[settings Artwork & effects]
+Gràfics i efectes
+[settings Audio]
+Àudio
+[settings Bind Escape]
+Assigna la tecla Esc
+[settings Building]
+Edifici
+[settings Building defaults]
+Valors per defecte dels edificis
+[settings Cancel]
+Cancel·la
+[settings Changes saved automatically]
+Els canvis es desen automàticament
+[settings Changes you make during play update these defaults for future games.]
+Els canvis que feu durant una partida actualitzen aquests valors per defecte per a les partides futures.
+[settings Changing the renderer requires a restart.]
+Canviar el renderitzador requereix un reinici.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Seleccioneu una drecera de teclat per editar-la o afegiu una altra drecera per a una acció.
+[settings Choose a window or fill the screen.]
+Trieu entre el mode finestra i la pantalla completa.
+[settings Choose how the game looks on your screen.]
+Trieu com es veu el joc a la pantalla.
+[settings Completed]
+Edificis acabats
+[settings Construction]
+Construcció
+[settings Controls]
+Controls del joc
+[settings Could not change display mode. The previous mode was restored.]
+No s'ha pogut canviar el mode de visualització. S'ha restaurat el mode anterior.
+[settings Could not save]
+No s'ha pogut desar
+[settings Current display]
+Configuració de pantalla actual
+[settings Default]
+Per defecte
+[settings Display]
+Pantalla
+[settings Display & graphics]
+Pantalla i gràfics
+[settings Display the Globulation 2 cursor.]
+Mostra el cursor Globulation 2.
+[settings Done]
+Fet
+[settings Edit shortcut]
+Edita la drecera del teclat
+[settings Flags]
+Banderes
+[settings Full]
+Tots els detalls
+[settings Fullscreen]
+Pantalla completa
+[settings Game]
+Partida
+[settings Game speed]
+Velocitat del joc
+[settings Gameplay]
+Jugabilitat
+[settings Graphics detail]
+Detall gràfic
+[settings Keep]
+Mantén els canvis
+[settings Keep this display mode?]
+Voleu mantenir aquest mode de visualització?
+[settings Keep your volume levels while silencing audio.]
+Silencia tot el so sense canviar els nivells de volum desats.
+[settings Key]
+Tecla
+[settings Keyboard shortcuts]
+Dreceres de teclat
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Les tecles formen una seqüència ordenada. Cada tecla pot activar l’acció en prémer-la o deixar-la anar.
+[settings Language]
+Llengua
+[settings Language & player]
+Llengua i jugador
+[settings Language used throughout the interface.]
+Llengua utilitzada a tota la interfície.
+[settings Level]
+Nivell
+[settings Map editor]
+Editor de mapes
+[settings Missing font]
+Falta el tipus de lletra
+[settings Music volume]
+Volum (música)
+[settings Mute audio]
+Silencia l'àudio
+[settings Name shown to other players.]
+Nom mostrat als altres jugadors.
+[settings Off]
+Desactivat
+[settings On]
+Activat
+[settings OpenGL is not available in this build.]
+OpenGL no està disponible en aquesta compilació.
+[settings Player name]
+Nom del jugador
+[settings Press]
+En prémer
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Premeu una tecla. Esc cancel·la la captura. Per assignar Esc, seleccioneu "Assigna la tecla Esc".
+[settings Radius]
+Radi
+[settings Reduced]
+Detall reduït
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+El detall reduït desactiva els núvols i les seves ombres, simplifica els efectes màgics i redueix la transparència.
+[settings Release]
+En deixar anar
+[settings Remember assignments between games]
+Recorda les assignacions entre partides
+[settings Remove key]
+Elimina la tecla
+[settings Remove shortcut]
+Suprimeix la drecera
+[settings Renderer]
+Motor de renderització
+[settings Replace conflicting bindings]
+Substitueix les dreceres de teclat conflictives
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Voleu substituir les dreceres d’aquest context per les predeterminades? Els canvis es desen immediatament.
+[settings Resolution]
+Resolució de pantalla
+[settings Restore default shortcuts]
+Restaura les dreceres per defecte
+[settings Retry]
+Torna-ho a provar
+[settings Revert]
+Reverteix els canvis
+[settings Reverting in]
+Es revertirà en
+[settings Save shortcut]
+Desa la drecera del teclat
+[settings Saved — restart required]
+Desat — cal reiniciar
+[settings Saving…]
+S'està desant…
+[settings Scroll wheel enabled]
+Roda del ratolí activada
+[settings Set starting unit assignments by building type and level.]
+Establiu el nombre inicial d’unitats assignades per tipus i nivell d’edifici.
+[settings Set your language and player name.]
+Configureu la llengua i el nom del jugador.
+[settings Settings]
+Opcions
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Només per a un jugador i repeticions. Les partides multijugador van a 1x.
+[settings Software]
+Renderització per programari
+[settings Starting unit counts and radius for newly placed flags.]
+Nombre inicial d’unitats i radi de les noves banderes.
+[settings This shortcut conflicts with existing bindings:]
+Aquesta drecera de teclat entra en conflicte amb les dreceres existents:
+[settings Trigger]
+Esdeveniment d'activació
+[settings Unbound]
+No s'ha assignat cap drecera
+[settings Unit counts assigned to new construction sites.]
+Nombre d’unitats assignades a les noves obres.
+[settings Unit counts for completed buildings.]
+Nombre d’unitats per als edificis acabats.
+[settings Unit counts while a building is being upgraded.]
+Nombre d’unitats durant la millora d’un edifici.
+[settings Units]
+Unitats
+[settings Upgrades]
+Millores
+[settings Use game cursor]
+Utilitza el cursor del joc
+[settings Voice volume]
+Volum de la veu
+[settings Window mode]
+Mode finestra
+[settings Window-only sizes also switch the game to windowed mode.]
+Si seleccioneu una resolució que només admeti el mode de finestres, també canviarà el joc al mode de finestres.
+[settings Windowed]
+En finestra
+[settings Windowed only]
+Només amb finestra
+[settings seconds]
+segons
+[settings Flag]
+Bandera
+[settings High-resolution artwork]
+Gràfics d’alta resolució
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Aplica els gràfics quan es carregui la propera partida o l’editor de mapes (OpenGL).
+[settings Automatic torus view]
+Vista toroidal automàtica
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Mostra automàticament la vista general toroidal mentre us desplaceu pel mapa (OpenGL).

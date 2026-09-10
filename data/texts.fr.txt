@@ -1570,3 +1570,209 @@ Générez un aperçu pour explorer ce monde.
 Un plus grand nombre d’ouvrières accélère la croissance des colonies. Ce paramètre modifie la carte générée.
 [No warriors]
 Sans guerriers
+[settings Add key to sequence]
+Ajouter une touche à la séquence
+[settings Add shortcut]
+Ajouter un raccourci
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Utilisez la molette de la souris pour modifier le nombre d'unités attribuées. Si cette option est désactivée, maintenez la touche Ctrl enfoncée pour utiliser la molette. Maintenez la touche Maj enfoncée pour ajuster le rayon du drapeau. Cette option contrôle également la saisie avec la molette de la souris dans d'autres menus.
+[settings Adjust music and voice volume.]
+Ajustez le volume de la musique et de la voix.
+[settings Adjust the pace of play.]
+Ajustez la vitesse du jeu.
+[settings Advanced binding]
+Édition avancée des raccourcis
+[settings Artwork & effects]
+Graphismes et effets
+[settings Audio]
+Audio
+[settings Bind Escape]
+Attribuer la touche Échap
+[settings Building]
+Bâtiment
+[settings Building defaults]
+Réglages par défaut des bâtiments
+[settings Cancel]
+Annuler
+[settings Changes saved automatically]
+Modifications enregistrées automatiquement
+[settings Changes you make during play update these defaults for future games.]
+Les modifications apportées pendant une partie mettent à jour ces réglages par défaut pour les prochaines parties.
+[settings Changing the renderer requires a restart.]
+Changer le moteur de rendu nécessite un redémarrage.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Sélectionnez un raccourci clavier pour le modifier ou ajoutez un autre raccourci pour une action.
+[settings Choose a window or fill the screen.]
+Choisissez le mode fenêtré ou le plein écran.
+[settings Choose how the game looks on your screen.]
+Choisissez l'apparence du jeu sur votre écran.
+[settings Completed]
+Bâtiments terminés
+[settings Construction]
+Construction
+[settings Controls]
+Commandes de jeu
+[settings Could not change display mode. The previous mode was restored.]
+Impossible de changer le mode d'affichage. Le mode précédent a été restauré.
+[settings Could not save]
+Impossible d'enregistrer
+[settings Current display]
+Affichage actuel
+[settings Default]
+Par défaut
+[settings Display]
+Affichage
+[settings Display & graphics]
+Affichage et graphismes
+[settings Display the Globulation 2 cursor.]
+Affichez le curseur Globulation 2.
+[settings Done]
+Terminé
+[settings Edit shortcut]
+Modifier le raccourci clavier
+[settings Flags]
+Drapeaux
+[settings Full]
+Tous les détails
+[settings Fullscreen]
+Plein écran
+[settings Game]
+Jeu
+[settings Game speed]
+Vitesse du jeu
+[settings Gameplay]
+Jouabilité
+[settings Graphics detail]
+Détails graphiques
+[settings Keep]
+Conserver
+[settings Keep this display mode?]
+Conserver ce mode d'affichage ?
+[settings Keep your volume levels while silencing audio.]
+Coupez tous les sons sans modifier les niveaux de volume enregistrés.
+[settings Key]
+Touche
+[settings Keyboard shortcuts]
+Raccourcis clavier
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Les touches forment une séquence ordonnée. Chaque touche peut déclencher l’action à l’appui ou au relâchement.
+[settings Language]
+Langue
+[settings Language & player]
+Langue et joueur
+[settings Language used throughout the interface.]
+Langue utilisée dans toute l'interface.
+[settings Level]
+Niveau
+[settings Map editor]
+Éditeur de cartes
+[settings Missing font]
+Police manquante
+[settings Music volume]
+Volume (musique)
+[settings Mute audio]
+Couper le son
+[settings Name shown to other players.]
+Nom montré aux autres joueurs.
+[settings Off]
+Désactivé
+[settings On]
+Activé
+[settings OpenGL is not available in this build.]
+OpenGL n'est pas disponible dans cette version.
+[settings Player name]
+Nom du joueur
+[settings Press]
+À l’appui
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Appuyez sur une touche du clavier. Appuyer sur la touche Échap annule la capture d'entrée. Pour attribuer la touche Échap, sélectionnez "Attribuer la touche Échap".
+[settings Radius]
+Rayon
+[settings Reduced]
+Détail réduit
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+La réduction des détails désactive les nuages et leurs ombres, simplifie les effets magiques et réduit la transparence.
+[settings Release]
+Au relâchement
+[settings Remember assignments between games]
+Mémoriser les affectations entre les parties
+[settings Remove key]
+Supprimer la touche
+[settings Remove shortcut]
+Supprimer le raccourci
+[settings Renderer]
+Moteur de rendu graphique
+[settings Replace conflicting bindings]
+Remplacer les raccourcis clavier conflictuels
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Remplacer les raccourcis de ce contexte par ceux par défaut ? Les modifications seront enregistrées immédiatement.
+[settings Resolution]
+Résolution d'écran
+[settings Restore default shortcuts]
+Restaurer les raccourcis par défaut
+[settings Retry]
+Réessayer
+[settings Revert]
+Annuler les modifications
+[settings Reverting in]
+Rétablissement dans
+[settings Save shortcut]
+Enregistrer le raccourci clavier
+[settings Saved — restart required]
+Enregistré – redémarrage requis
+[settings Saving…]
+Sauvegarde…
+[settings Scroll wheel enabled]
+Molette de la souris activée
+[settings Set starting unit assignments by building type and level.]
+Définissez le nombre d’unités affectées au départ selon le type et le niveau du bâtiment.
+[settings Set your language and player name.]
+Choisissez votre langue et votre nom de joueur.
+[settings Settings]
+Paramètres
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+En solo et dans les rediffusions uniquement. Le multijoueur reste à 1x.
+[settings Software]
+Rendu logiciel
+[settings Starting unit counts and radius for newly placed flags.]
+Nombre initial d’unités et rayon des nouveaux drapeaux.
+[settings This shortcut conflicts with existing bindings:]
+Ce raccourci clavier est en conflit avec les raccourcis existants :
+[settings Trigger]
+Événement d'activation
+[settings Unbound]
+Aucun raccourci attribué
+[settings Unit counts assigned to new construction sites.]
+Nombre d'unités attribuées aux nouveaux chantiers de construction.
+[settings Unit counts for completed buildings.]
+Nombre d'unités pour les bâtiments achevés.
+[settings Unit counts while a building is being upgraded.]
+Nombre d’unités pendant l’amélioration d’un bâtiment.
+[settings Units]
+Unités
+[settings Upgrades]
+Améliorations
+[settings Use game cursor]
+Utiliser le curseur de jeu
+[settings Voice volume]
+Volume de la voix
+[settings Window mode]
+Mode fenêtre
+[settings Window-only sizes also switch the game to windowed mode.]
+La sélection d'une résolution qui prend uniquement en charge le mode fenêtré fait également passer le jeu en mode fenêtré.
+[settings Windowed]
+Fenêtré
+[settings Windowed only]
+Fenêtré seulement
+[settings seconds]
+secondes
+[settings Flag]
+Drapeau
+[settings High-resolution artwork]
+Graphismes haute résolution
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Appliquer les graphismes au prochain chargement d’une partie ou de l’éditeur (OpenGL).
+[settings Automatic torus view]
+Vue torique automatique
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Afficher automatiquement l'aperçu de la carte en forme de tore tout en vous déplaçant sur la carte (OpenGL).

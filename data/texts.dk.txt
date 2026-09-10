@@ -1636,3 +1636,209 @@ Generer en forhåndsvisning for at udforske denne verden.
 Flere arbejdere fremskynder kolonivæksten. Denne indstilling ændrer det genererede kort.
 [No warriors]
 Ingen krigere
+[settings Add key to sequence]
+Tilføj tast til sekvens
+[settings Add shortcut]
+Tilføj genvej
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Brug musehjulet til at ændre antallet af tildelte enheder. Hvis denne indstilling er slået fra, skal du holde Ctrl-tasten nede for at bruge hjulet. Hold Shift-tasten nede for at justere flagradius. Denne indstilling styrer også musehjulsinput i andre menuer.
+[settings Adjust music and voice volume.]
+Juster lydstyrken for musik og stemme.
+[settings Adjust the pace of play.]
+Juster spillets hastighed.
+[settings Advanced binding]
+Avanceret genvejsredigering
+[settings Artwork & effects]
+Grafik og effekter
+[settings Audio]
+Lyd
+[settings Bind Escape]
+Tildel Escape-tasten
+[settings Building]
+Bygning
+[settings Building defaults]
+Standardindstillinger for bygninger
+[settings Cancel]
+Afbryd
+[settings Changes saved automatically]
+Ændringer gemt automatisk
+[settings Changes you make during play update these defaults for future games.]
+Ændringer, du foretager under spillet, opdaterer disse standardindstillinger for fremtidige spil.
+[settings Changing the renderer requires a restart.]
+Ændring af rendereren kræver en genstart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Vælg en tastaturgenvej for at redigere den, eller tilføj en anden genvej til en handling.
+[settings Choose a window or fill the screen.]
+Vælg mellem vindue og fuld skærm.
+[settings Choose how the game looks on your screen.]
+Vælg, hvordan spillet ser ud på din skærm.
+[settings Completed]
+Færdige bygninger
+[settings Construction]
+Opførelse
+[settings Controls]
+Spilkontrol
+[settings Could not change display mode. The previous mode was restored.]
+Kunne ikke ændre visningstilstand. Den tidligere tilstand blev gendannet.
+[settings Could not save]
+Kunne ikke gemme
+[settings Current display]
+Aktuelle skærmindstillinger
+[settings Default]
+Standard
+[settings Display]
+Skærm
+[settings Display & graphics]
+Skærm og grafik
+[settings Display the Globulation 2 cursor.]
+Vis Globulation 2-markøren.
+[settings Done]
+Færdig
+[settings Edit shortcut]
+Rediger tastaturgenvej
+[settings Flags]
+Flag
+[settings Full]
+Alle detaljer
+[settings Fullscreen]
+Fuld skærm
+[settings Game]
+Spil
+[settings Game speed]
+Spilhastighed
+[settings Gameplay]
+Spilforløb
+[settings Graphics detail]
+Grafikdetaljer
+[settings Keep]
+Behold ændringer
+[settings Keep this display mode?]
+Vil du beholde denne visningstilstand?
+[settings Keep your volume levels while silencing audio.]
+Slå al lyd fra uden at ændre de gemte lydstyrkeniveauer.
+[settings Key]
+Tast
+[settings Keyboard shortcuts]
+Tastaturgenveje
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tasterne danner en ordnet sekvens. Hver tast kan aktivere handlingen, når den trykkes ned eller slippes.
+[settings Language]
+Sprog
+[settings Language & player]
+Sprog og spiller
+[settings Language used throughout the interface.]
+Sprog, der bruges i hele grænsefladen.
+[settings Level]
+Niveau
+[settings Map editor]
+Korteditor
+[settings Missing font]
+Manglende skrifttype
+[settings Music volume]
+Lydstyrke (musik)
+[settings Mute audio]
+Slå lyd fra
+[settings Name shown to other players.]
+Navn vist til andre spillere.
+[settings Off]
+Fra
+[settings On]
+Til
+[settings OpenGL is not available in this build.]
+OpenGL er ikke tilgængelig i denne build.
+[settings Player name]
+Spillernavn
+[settings Press]
+Ved tryk
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Tryk på en tast. Escape annullerer registreringen. Vælg "Tildel Escape-tasten" for at tildele Escape.
+[settings Radius]
+Radius
+[settings Reduced]
+Færre detaljer
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Færre detaljer slår skyer og deres skygger fra, forenkler magiske effekter og reducerer gennemsigtigheden.
+[settings Release]
+Ved slip
+[settings Remember assignments between games]
+Husk enhedstildelinger mellem spil
+[settings Remove key]
+Fjern tast
+[settings Remove shortcut]
+Fjern genvej
+[settings Renderer]
+Grafikrenderer
+[settings Replace conflicting bindings]
+Erstat modstridende tastaturgenveje
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Erstat genvejene i denne sammenhæng med standardgenvejene? Ændringen gemmes med det samme.
+[settings Resolution]
+Skærmopløsning
+[settings Restore default shortcuts]
+Gendan standard-tastaturgenveje
+[settings Retry]
+Prøv igen
+[settings Revert]
+Tilbagefør ændringer
+[settings Reverting in]
+Gendanner om
+[settings Save shortcut]
+Gem tastaturgenvej
+[settings Saved — restart required]
+Gemt — genstart påkrævet
+[settings Saving…]
+Gemmer...
+[settings Scroll wheel enabled]
+Musehjul aktiveret
+[settings Set starting unit assignments by building type and level.]
+Indstil det oprindelige antal tildelte enheder efter bygningstype og niveau.
+[settings Set your language and player name.]
+Indstil dit sprog og spillernavn.
+[settings Settings]
+Indstillinger
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
+[settings Software]
+Softwarerendering
+[settings Starting unit counts and radius for newly placed flags.]
+Oprindeligt antal enheder og radius for nye flag.
+[settings This shortcut conflicts with existing bindings:]
+Denne tastaturgenvej er i konflikt med eksisterende genveje:
+[settings Trigger]
+Aktiveringsbegivenhed
+[settings Unbound]
+Ingen genvej tildelt
+[settings Unit counts assigned to new construction sites.]
+Antal enheder tildelt nye byggepladser.
+[settings Unit counts for completed buildings.]
+Antal enheder til færdige bygninger.
+[settings Unit counts while a building is being upgraded.]
+Antal enheder under opgradering af en bygning.
+[settings Units]
+Enheder
+[settings Upgrades]
+Bygningsopgraderinger
+[settings Use game cursor]
+Brug spilmarkøren
+[settings Voice volume]
+Lydstyrke (stemme)
+[settings Window mode]
+Vinduestilstand
+[settings Window-only sizes also switch the game to windowed mode.]
+Hvis du vælger en opløsning, der kun understøtter vinduestilstand, skifter spillet også til vinduestilstand.
+[settings Windowed]
+I vindue
+[settings Windowed only]
+Kun i vindue
+[settings seconds]
+sekunder
+[settings Flag]
+Flag
+[settings High-resolution artwork]
+Grafik i høj opløsning
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Anvend grafikken, næste gang et spil eller korteditoren indlæses (OpenGL).
+[settings Automatic torus view]
+Automatisk torusvisning
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Vis automatisk den torusformede kortoversigt, mens du bevæger dig rundt på kortet (OpenGL).

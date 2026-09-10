@@ -1584,3 +1584,209 @@ Genereer een voorbeeld om deze wereld te verkennen.
 Meer werkers versnellen de groei van de kolonie. Deze instelling verandert de gegenereerde kaart.
 [No warriors]
 Geen krijgers
+[settings Add key to sequence]
+Toets aan reeks toevoegen
+[settings Add shortcut]
+Sneltoets toevoegen
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Gebruik het muiswiel om het aantal toegewezen eenheden te wijzigen. Als deze optie is uitgeschakeld, houdt u de Ctrl-toets ingedrukt om het wiel te gebruiken. Houd de Shift-toets ingedrukt om de vlagradius aan te passen. Deze optie regelt ook de muiswielinvoer in andere menu's.
+[settings Adjust music and voice volume.]
+Pas het muziek- en stemvolume aan.
+[settings Adjust the pace of play.]
+Pas de snelheid van het spel aan.
+[settings Advanced binding]
+Geavanceerde sneltoetsinstellingen
+[settings Artwork & effects]
+Grafische vormgeving en effecten
+[settings Audio]
+Geluid
+[settings Bind Escape]
+Escape-toets toewijzen
+[settings Building]
+Gebouw
+[settings Building defaults]
+Standaardinstellingen voor gebouwen
+[settings Cancel]
+Annuleren
+[settings Changes saved automatically]
+Wijzigingen worden automatisch opgeslagen
+[settings Changes you make during play update these defaults for future games.]
+Wijzigingen tijdens het spelen werken deze standaardinstellingen bij voor toekomstige partijen.
+[settings Changing the renderer requires a restart.]
+Het wijzigen van de renderer vereist een herstart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Selecteer een sneltoets om deze te bewerken, of voeg een andere sneltoets voor een actie toe.
+[settings Choose a window or fill the screen.]
+Kies tussen een venster en volledig scherm.
+[settings Choose how the game looks on your screen.]
+Kies hoe het spel er op uw scherm uitziet.
+[settings Completed]
+Voltooide gebouwen
+[settings Construction]
+Bouw
+[settings Controls]
+Spelbesturing
+[settings Could not change display mode. The previous mode was restored.]
+Kon de weergavemodus niet wijzigen. De vorige modus is hersteld.
+[settings Could not save]
+Kan niet opslaan
+[settings Current display]
+Huidige weergave
+[settings Default]
+Standaard
+[settings Display]
+Beeld
+[settings Display & graphics]
+Beeld en grafische instellingen
+[settings Display the Globulation 2 cursor.]
+Geef de Globulation 2-cursor weer.
+[settings Done]
+Klaar
+[settings Edit shortcut]
+Sneltoets bewerken
+[settings Flags]
+Vlaggen
+[settings Full]
+Volledige details
+[settings Fullscreen]
+Volledig scherm
+[settings Game]
+Spel
+[settings Game speed]
+Spelsnelheid
+[settings Gameplay]
+Spelverloop
+[settings Graphics detail]
+Grafische details
+[settings Keep]
+Behouden
+[settings Keep this display mode?]
+Deze weergavemodus behouden?
+[settings Keep your volume levels while silencing audio.]
+Demp al het geluid zonder de opgeslagen volumeniveaus te wijzigen.
+[settings Key]
+Toets
+[settings Keyboard shortcuts]
+Sneltoetsen
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+De toetsen vormen een geordende reeks. Elke toets kan bij indrukken of loslaten activeren.
+[settings Language]
+Taal
+[settings Language & player]
+Taal & speler
+[settings Language used throughout the interface.]
+Taal die in de hele interface wordt gebruikt.
+[settings Level]
+Niveau
+[settings Map editor]
+Kaarteditor
+[settings Missing font]
+Ontbrekend lettertype
+[settings Music volume]
+Volume (muziek)
+[settings Mute audio]
+Audio dempen
+[settings Name shown to other players.]
+Naam getoond aan andere spelers.
+[settings Off]
+Uit
+[settings On]
+Aan
+[settings OpenGL is not available in this build.]
+OpenGL is niet beschikbaar in deze build.
+[settings Player name]
+Naam speler
+[settings Press]
+Bij indrukken
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Druk op een toets. Escape annuleert de invoer. Kies "Escape-toets toewijzen" om Escape toe te wijzen.
+[settings Radius]
+Straal
+[settings Reduced]
+Minder details
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Met minder details worden wolken en hun schaduwen uitgeschakeld, magische effecten vereenvoudigd en de transparantie verminderd.
+[settings Release]
+Bij loslaten
+[settings Remember assignments between games]
+Eenheidstoewijzingen tussen partijen onthouden
+[settings Remove key]
+Toets verwijderen
+[settings Remove shortcut]
+Verwijder sneltoets
+[settings Renderer]
+Grafische renderer
+[settings Replace conflicting bindings]
+Vervang conflicterende sneltoetsen
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Sneltoetsen in deze context vervangen door de standaardinstellingen? De wijziging wordt onmiddellijk opgeslagen.
+[settings Resolution]
+Schermresolutie
+[settings Restore default shortcuts]
+Standaardsneltoetsen herstellen
+[settings Retry]
+Probeer het opnieuw
+[settings Revert]
+Wijzigingen terugdraaien
+[settings Reverting in]
+Herstellen over
+[settings Save shortcut]
+Sneltoets opslaan
+[settings Saved — restart required]
+Opgeslagen — opnieuw opstarten vereist
+[settings Saving…]
+Opslaan…
+[settings Scroll wheel enabled]
+Muiswiel ingeschakeld
+[settings Set starting unit assignments by building type and level.]
+Stel het aanvankelijke aantal toegewezen eenheden in per gebouwtype en niveau.
+[settings Set your language and player name.]
+Stel uw taal en spelersnaam in.
+[settings Settings]
+Instellingen
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
+[settings Software]
+Softwarematige weergave
+[settings Starting unit counts and radius for newly placed flags.]
+Aanvankelijk aantal eenheden en straal voor nieuwe vlaggen.
+[settings This shortcut conflicts with existing bindings:]
+Deze sneltoets is in conflict met bestaande sneltoetsen:
+[settings Trigger]
+Activeringsgebeurtenis
+[settings Unbound]
+Niet toegewezen
+[settings Unit counts assigned to new construction sites.]
+Aantal eenheden toegewezen aan nieuwe bouwlocaties.
+[settings Unit counts for completed buildings.]
+Aantal eenheden voor voltooide gebouwen.
+[settings Unit counts while a building is being upgraded.]
+Aantal eenheden tijdens het verbeteren van een gebouw.
+[settings Units]
+Eenheden
+[settings Upgrades]
+Upgrades van gebouwen
+[settings Use game cursor]
+Gebruik de spelcursor
+[settings Voice volume]
+Volume (spraak)
+[settings Window mode]
+Venstermodus
+[settings Window-only sizes also switch the game to windowed mode.]
+Als u een resolutie kiest die alleen in een venster werkt, schakelt het spel ook naar de venstermodus.
+[settings Windowed]
+In een venster
+[settings Windowed only]
+Alleen in een venster
+[settings seconds]
+seconden
+[settings Flag]
+Vlag
+[settings High-resolution artwork]
+Beelden in hoge resolutie
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Pas de grafische beelden toe wanneer een volgende partij of de kaarteditor wordt geladen (OpenGL).
+[settings Automatic torus view]
+Automatische torusweergave
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Toon automatisch het torusvormige kaartoverzicht terwijl u over de kaart beweegt (OpenGL).

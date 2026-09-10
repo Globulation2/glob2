@@ -1632,3 +1632,209 @@ AI策略與對抗
 更多工人能加快殖民地的初期發展。修改此設定會改變產生的地圖。
 [No warriors]
 無戰士
+[settings Add key to sequence]
+新增按鍵至序列
+[settings Add shortcut]
+新增快捷鍵
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+使用滑鼠滾輪變更分配的單位數量。如果關閉此選項，請按住 Ctrl 鍵以使用滾輪。按住 Shift 鍵可調整旗幟半徑。此選項還控制其他選單中的滑鼠滾輪輸入。
+[settings Adjust music and voice volume.]
+調整音樂和語音音量。
+[settings Adjust the pace of play.]
+調整遊戲速度。
+[settings Advanced binding]
+進階快捷鍵設定
+[settings Artwork & effects]
+美術與特效
+[settings Audio]
+音訊
+[settings Bind Escape]
+指派 Escape 鍵
+[settings Building]
+建築物
+[settings Building defaults]
+建築物預設值
+[settings Cancel]
+取消
+[settings Changes saved automatically]
+自動儲存變更
+[settings Changes you make during play update these defaults for future games.]
+遊戲中所做的變更會更新這些預設值，供之後的遊戲使用。
+[settings Changing the renderer requires a restart.]
+變更渲染器需要重新啟動。
+[settings Choose a binding to change it, or add another shortcut for an action.]
+選擇快捷鍵進行編輯，或為某個操作新增另一組快捷鍵。
+[settings Choose a window or fill the screen.]
+選擇視窗或全螢幕模式。
+[settings Choose how the game looks on your screen.]
+選擇遊戲在螢幕上的外觀。
+[settings Completed]
+已竣工建築物
+[settings Construction]
+建造中
+[settings Controls]
+遊戲控制
+[settings Could not change display mode. The previous mode was restored.]
+無法變更顯示模式，已還原為先前的模式。
+[settings Could not save]
+無法儲存
+[settings Current display]
+目前顯示設定
+[settings Default]
+預設
+[settings Display]
+顯示
+[settings Display & graphics]
+顯示和圖形
+[settings Display the Globulation 2 cursor.]
+顯示 Globulation 2 遊標。
+[settings Done]
+完成
+[settings Edit shortcut]
+編輯快捷鍵
+[settings Flags]
+旗幟
+[settings Full]
+完整細節
+[settings Fullscreen]
+全螢幕
+[settings Game]
+遊戲
+[settings Game speed]
+遊戲速度
+[settings Gameplay]
+遊戲玩法
+[settings Graphics detail]
+圖形細節
+[settings Keep]
+保留變更
+[settings Keep this display mode?]
+要保留這個顯示模式嗎？
+[settings Keep your volume levels while silencing audio.]
+將所有聲音靜音，同時保留原本的音量設定。
+[settings Key]
+按鍵
+[settings Keyboard shortcuts]
+鍵盤快捷鍵
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+按鍵依序組成序列。每個步驟可設定在按下或放開該按鍵時觸發。
+[settings Language]
+語言
+[settings Language & player]
+語言與玩家
+[settings Language used throughout the interface.]
+整個介面使用的語言。
+[settings Level]
+等級
+[settings Map editor]
+地圖編輯器
+[settings Missing font]
+缺少字型
+[settings Music volume]
+音量 (音樂)
+[settings Mute audio]
+靜音
+[settings Name shown to other players.]
+向其他玩家顯示的名稱。
+[settings Off]
+關閉
+[settings On]
+開啟
+[settings OpenGL is not available in this build.]
+OpenGL 在此版本中不可用。
+[settings Player name]
+玩家名稱
+[settings Press]
+按下時
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+請按下按鍵。Escape 可取消按鍵擷取。若要指派 Escape，請選擇「指派 Escape 鍵」。
+[settings Radius]
+半徑
+[settings Reduced]
+精簡細節
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+精簡細節會關閉雲朵及其陰影、簡化魔法特效，並降低透明度。
+[settings Release]
+放開時
+[settings Remember assignments between games]
+記住遊戲之間的單位分配
+[settings Remove key]
+移除按鍵
+[settings Remove shortcut]
+移除快捷鍵
+[settings Renderer]
+圖形渲染器
+[settings Replace conflicting bindings]
+取代衝突的快捷鍵
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+要將此情境中的快捷鍵還原為預設值嗎？變更會立即儲存。
+[settings Resolution]
+螢幕解析度
+[settings Restore default shortcuts]
+還原預設鍵盤快捷鍵
+[settings Retry]
+再試一次
+[settings Revert]
+還原變更
+[settings Reverting in]
+還原倒數：
+[settings Save shortcut]
+儲存快捷鍵
+[settings Saved — restart required]
+已儲存 — 需要重新啟動
+[settings Saving…]
+儲存中…
+[settings Scroll wheel enabled]
+啟用滑鼠滾輪
+[settings Set starting unit assignments by building type and level.]
+依建築類型和等級設定起始單位分配。
+[settings Set your language and player name.]
+設定您的語言和玩家名稱。
+[settings Settings]
+設定
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
+[settings Software]
+軟體渲染
+[settings Starting unit counts and radius for newly placed flags.]
+新放置旗幟的初始單位數量和半徑。
+[settings This shortcut conflicts with existing bindings:]
+此鍵盤快捷鍵與現有快捷鍵衝突：
+[settings Trigger]
+觸發方式
+[settings Unbound]
+未指派
+[settings Unit counts assigned to new construction sites.]
+分配給新建築工地的單位數量。
+[settings Unit counts for completed buildings.]
+分配給已完工建築物的單位數量。
+[settings Unit counts while a building is being upgraded.]
+建築物升級期間分配的單位數量。
+[settings Units]
+單位
+[settings Upgrades]
+建築升級
+[settings Use game cursor]
+使用遊戲遊標
+[settings Voice volume]
+語音音量
+[settings Window mode]
+視窗模式
+[settings Window-only sizes also switch the game to windowed mode.]
+選擇僅支援視窗模式的解析度也會將遊戲切換到視窗模式。
+[settings Windowed]
+視窗模式
+[settings Windowed only]
+僅限視窗模式
+[settings seconds]
+秒
+[settings Flag]
+旗幟
+[settings High-resolution artwork]
+高解析度美術素材
+[settings Apply artwork on the next game or editor load (OpenGL).]
+美術素材會在下次載入遊戲或地圖編輯器時套用 (OpenGL)。
+[settings Automatic torus view]
+自動環面視圖
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+在地圖上移動時自動顯示圓環形狀的地圖概覽 (OpenGL)。

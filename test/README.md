@@ -232,6 +232,22 @@ replacement tests cover callback/open/rename failures and temporary-file cleanup
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 
+### Trapped colony elimination
+
+Build `scons release=1 server=0 trapped-unit-test`, then run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest`
+(use `.exe` on Windows). The shared runner uses a disposable profile and checks
+that the normal preferences remain unchanged; Linux and Windows CI run it.
+
+Normal simulation ticks exercise completed feeding/training behind wood or
+wheat, elimination without indoor starvation, active service, open exits,
+free units, allied rescue, and hatchery recovery. A stocked hatchery protects
+the colony even with production sliders at zero, since the player can change
+them; both food and an available exit are required. Repeated seeded runs and
+save/load continuations compare per-tick unit state and win/loss results with
+an explicit RNG checkpoint. This is a focused regression, not whole-game replay
+compatibility. Version 93 rejects older replays because elimination timing changed;
+older saves remain loadable.
 
 ## Team statistics save compatibility
 
@@ -292,3 +308,28 @@ python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBu
 ```
 
 The harness runs headlessly in disposable profile directories in Linux and Windows CI.
+
+### Native main Settings redesign
+
+Build `scons -j6 release=1 settings-tests speed-tests` and run
+`python3 test/run-settings-tests.py`. The harness uses disposable profiles and
+writes native captures to `artifacts/settings-redesign/`. It covers all six
+categories, building stages, automatic saving and retry, software display
+confirmation/rollback, pending OpenGL changes, language refresh, and keyboard
+sequence/conflict handling. The shared dropdown checks cover anchoring, mouse and
+keyboard selection, dismissal, wrapping, and scrolling without committing a value.
+It runs at 640×480, 800×600, 1000×700, and 1280×900,
+plus software rendering and doubled English strings. `--quick` runs only 1000×700
+OpenGL. Window and drawable dimensions are logged so 1× runs are not mistaken
+for physical HiDPI validation.
+
+The redesigned screen exposes semantic row IDs (for example `gameplay.speed`)
+for tests; do not locate settings controls by pixel coordinates. Slider updates
+preview immediately and commit on release/idle, whereas discrete changes save
+immediately. Bindings commit only after a complete edit. Legacy preference and
+keyboard file formats remain unchanged.
+
+`python3 test/run-game-speed-tests.py --settings-only` runs the main/in-game
+settings, language, persistence, keyboard, multiplayer eligibility and camera
+cadence regressions without starting the unrelated engine/replay scenarios.
+The full invocation remains available and reports buffered diagnostics on timeout.

@@ -1558,3 +1558,209 @@ Generate a preview to explore this world.
 More workers jump-start colony growth. Changes the generated map.
 [No warriors]
 No warriors
+[settings Add key to sequence]
+Add key to sequence
+[settings Add shortcut]
+Add shortcut
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.
+[settings Adjust music and voice volume.]
+Adjust music and voice volume.
+[settings Adjust the pace of play.]
+Adjust the pace of play.
+[settings Advanced binding]
+Advanced binding
+[settings Artwork & effects]
+Artwork & effects
+[settings Audio]
+Audio
+[settings Bind Escape]
+Bind Escape
+[settings Building]
+Building
+[settings Building defaults]
+Building defaults
+[settings Cancel]
+Cancel
+[settings Changes saved automatically]
+Changes saved automatically
+[settings Changes you make during play update these defaults for future games.]
+Changes you make during play update these defaults for future games.
+[settings Changing the renderer requires a restart.]
+Changing the renderer requires a restart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Choose a binding to change it, or add another shortcut for an action.
+[settings Choose a window or fill the screen.]
+Choose a window or fill the screen.
+[settings Choose how the game looks on your screen.]
+Choose how the game looks on your screen.
+[settings Completed]
+Completed
+[settings Construction]
+Construction
+[settings Controls]
+Controls
+[settings Could not change display mode. The previous mode was restored.]
+Could not change display mode. The previous mode was restored.
+[settings Could not save]
+Could not save
+[settings Current display]
+Current display
+[settings Default]
+Default
+[settings Display]
+Display
+[settings Display & graphics]
+Display & graphics
+[settings Display the Globulation 2 cursor.]
+Display the Globulation 2 cursor.
+[settings Done]
+Done
+[settings Edit shortcut]
+Edit shortcut
+[settings Flags]
+Flags
+[settings Full]
+Full
+[settings Fullscreen]
+Fullscreen
+[settings Game]
+Game
+[settings Game speed]
+Game speed
+[settings Gameplay]
+Gameplay
+[settings Graphics detail]
+Graphics detail
+[settings Keep]
+Keep
+[settings Keep this display mode?]
+Keep this display mode?
+[settings Keep your volume levels while silencing audio.]
+Keep your volume levels while silencing audio.
+[settings Key]
+Key
+[settings Keyboard shortcuts]
+Keyboard shortcuts
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Keys form a sequence in order. Each key can trigger on press or release.
+[settings Language]
+Language
+[settings Language & player]
+Language & player
+[settings Language used throughout the interface.]
+Language used throughout the interface.
+[settings Level]
+Level
+[settings Map editor]
+Map editor
+[settings Missing font]
+Missing font
+[settings Music volume]
+Music volume
+[settings Mute audio]
+Mute audio
+[settings Name shown to other players.]
+Name shown to other players.
+[settings Off]
+Off
+[settings On]
+On
+[settings OpenGL is not available in this build.]
+OpenGL is not available in this build.
+[settings Player name]
+Player name
+[settings Press]
+Press
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Press a key. Escape cancels capture. Use Bind Escape to assign Escape.
+[settings Radius]
+Radius
+[settings Reduced]
+Reduced
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.
+[settings Release]
+Release
+[settings Remember assignments between games]
+Remember assignments between games
+[settings Remove key]
+Remove key
+[settings Remove shortcut]
+Remove shortcut
+[settings Renderer]
+Renderer
+[settings Replace conflicting bindings]
+Replace conflicting bindings
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Replace shortcuts in this context with the defaults? This saves immediately.
+[settings Resolution]
+Resolution
+[settings Restore default shortcuts]
+Restore default shortcuts
+[settings Retry]
+Retry
+[settings Revert]
+Revert
+[settings Reverting in]
+Reverting in
+[settings Save shortcut]
+Save shortcut
+[settings Saved — restart required]
+Saved — restart required
+[settings Saving…]
+Saving…
+[settings Scroll wheel enabled]
+Scroll wheel enabled
+[settings Set starting unit assignments by building type and level.]
+Set starting unit assignments by building type and level.
+[settings Set your language and player name.]
+Set your language and player name.
+[settings Settings]
+Settings
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Single-player and replays only. Multiplayer runs at 1x.
+[settings Software]
+Software
+[settings Starting unit counts and radius for newly placed flags.]
+Starting unit counts and radius for newly placed flags.
+[settings This shortcut conflicts with existing bindings:]
+This shortcut conflicts with existing bindings:
+[settings Trigger]
+Trigger
+[settings Unbound]
+Unbound
+[settings Unit counts assigned to new construction sites.]
+Unit counts assigned to new construction sites.
+[settings Unit counts for completed buildings.]
+Unit counts for completed buildings.
+[settings Unit counts while a building is being upgraded.]
+Unit counts while a building is being upgraded.
+[settings Units]
+Units
+[settings Upgrades]
+Upgrades
+[settings Use game cursor]
+Use game cursor
+[settings Voice volume]
+Voice volume
+[settings Window mode]
+Window mode
+[settings Window-only sizes also switch the game to windowed mode.]
+Window-only sizes also switch the game to windowed mode.
+[settings Windowed]
+Windowed
+[settings Windowed only]
+Windowed only
+[settings seconds]
+seconds
+[settings Flag]
+Flag
+[settings High-resolution artwork]
+High-resolution artwork
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Apply artwork on the next game or editor load (OpenGL).
+[settings Automatic torus view]
+Automatic torus view
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Automatically show the torus overview while moving around the map (OpenGL).

@@ -10,6 +10,7 @@
 #include <StringTable.h>
 #include <string>
 #include <algorithm>
+#include <StreamBackend.h>
 
 using namespace GAGCore;
 
@@ -164,10 +165,11 @@ void Settings::load(std::string filename)
  *
  * @param filename where the config settings will be saved
  */
-void Settings::save(std::string filename)
+bool Settings::save(std::string filename)
 {
-	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
-	if (!stream->isEndOfStream())
+	auto* buffer = new MemoryStreamBackend();
+	OutputStream *stream = new BinaryOutputStream(buffer);
+	// Memory output starts at EOF; it is writable regardless of its read position.
 	{
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
@@ -209,7 +211,9 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
 		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
 	}
+	const std::string contents(buffer->getBuffer(), buffer->getPosition());
 	delete stream;
+	return Toolkit::getFileManager()->writeFileAtomic(filename, contents);
 }
 
 
