@@ -15,7 +15,7 @@
 // One class, two nets (same integer arithmetic, same blob layout, different
 // dims + inference rule):
 //   * worker-cap net  16 -> 32 -> 32 -> 20  (ML_CONTRACT.md):
-//       load() + chooseSwarmWorkers() + forward().
+//       load() + chooseSwarmWorkers().
 //   * decision net     48 -> 64 -> 64 -> 18 (DECIDE_CONTRACT.md):
 //       loadDecide() + scoreDecision() + forwardDecide().
 // The integer core (forwardWide) is dim-agnostic, driven entirely by the blob's
@@ -60,8 +60,6 @@ namespace Cortex
 		bool loadFromMemory(const Uint8* data, size_t size,
 		                    int expectIn, int expectOut);
 
-		bool isLoaded() const { return loaded_; }
-
 		// --- worker-cap net (ML_CONTRACT.md) -------------------------------------
 		/// The 16 input features in ML_CONTRACT.md order.
 		static const int NUM_FEATURES = 16;
@@ -89,10 +87,6 @@ namespace Cortex
 		                       int maxBuildLevel, int freeWorkers,
 		                       int harvestableWheatNearby) const;
 
-		/// Worker-cap integer forward pass: RAW int features -> NUM_LOGITS I16F16
-		/// logits. Exposed for the parity test; chooseSwarmWorkers calls it internally.
-		void forward(const int features[NUM_FEATURES], Sint32 logits[NUM_LOGITS]) const;
-
 		/// Run the DECISION inference rule from DECIDE_CONTRACT.md and return the
 		/// chosen class index (= decide() candidate index):
 		///   1. integer forward pass -> 18 logits,
@@ -105,7 +99,7 @@ namespace Cortex
 
 		/// Decision integer forward pass: RAW int features -> NUM_DECIDE_LOGITS
 		/// I16F16 logits. Exposed for the parity test; scoreDecision calls it
-		/// internally (mirror of forward()).
+		/// internally.
 		void forwardDecide(const int features[NUM_DECIDE_FEATURES],
 		                   Sint32 logits[NUM_DECIDE_LOGITS]) const;
 

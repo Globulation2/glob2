@@ -80,9 +80,6 @@ bool IRC::disconnect(void)
 
 void IRC::forceDisconnect(void)
 {
-	//TODO: fix me
-	//sendString("QUIT :Globulation2");
-
 	if (socket)
 	{
 		SDLNet_TCP_Close(socket);

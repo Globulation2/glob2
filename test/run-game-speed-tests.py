@@ -4,6 +4,7 @@
 Requires a display with OpenGL (on Linux CI, use xvfb-run) and game data.
 All preferences, saves and replays go into a disposable profile.
 """
+import argparse
 import os
 from pathlib import Path
 import re
@@ -13,16 +14,23 @@ import tempfile
 import uuid
 
 root = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser()
+parser.add_argument('--settings-only', action='store_true')
+args = parser.parse_args()
 profile = 'glob2-speed-test-' + uuid.uuid4().hex
 try:
     with tempfile.TemporaryDirectory(prefix=profile) as work:
-        result = subprocess.run(
-            [str(root / 'build/src/game-speed-tests'), profile], cwd=work,
-            env=dict(os.environ, SDL_AUDIODRIVER='dummy'), timeout=60,
-            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
-        )
+        try:
+            result = subprocess.run(
+                [str(root / 'build/src/game-speed-tests'), profile] + (['--settings-only'] if args.settings_only else []), cwd=work,
+                env=dict(os.environ, SDL_AUDIODRIVER='dummy'), timeout=60,
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+            )
+        except subprocess.TimeoutExpired as error:
+            print((error.stdout or b'').decode(errors='replace'), end='')
+            raise
         print(result.stdout, end='')
-        if result.returncode == 0:
+        if result.returncode == 0 and not args.settings_only:
             checksums = re.findall(r'nox::gui\.game\.checkSum\(\) = ([0-9a-f]+)', result.stdout)
             assert len(checksums) == 7, 'Missing engine checksums'
             assert len(set(checksums[:4])) == 1, 'Speed or pause changed the game state'

@@ -15,34 +15,6 @@ using std::unique_ptr;
 using std::cout;
 using std::endl;
 
-void dumpCode(ThunkPrototype* thunk, ThunkDebugInfo* debug, ostream& stream)
-{
-	stream << thunk << " ";
-	thunk->dump(stream);
-	stream << '\n';
-	for (size_t i = 0; i < thunk->body.size(); ++i)
-	{
-		stream << debug->find(i) << ": ";
-		thunk->body[i]->dump(stream);
-		stream << '\n';
-	}
-	stream << '\n';
-}
-
-void dumpCode(Heap* heap, DebugInfo* debug, ostream& stream)
-{
-	for (Heap::Values::iterator values = heap->values.begin(); values != heap->values.end(); ++values)
-	{
-		ThunkPrototype* thunk = dynamic_cast<ThunkPrototype*>(*values);
-		if (thunk != 0)
-		{
-			ThunkDebugInfo* thunkDebug = debug->get(thunk);
-			dumpCode(thunk, thunkDebug, stream);
-		}
-	}
-}
-
-
 struct Load: NativeCode
 {
 	Load():
@@ -126,24 +98,6 @@ Usl::Usl()
 Usl::~Usl() {
 	collectGarbage();
 }
-
-/*Usl::~Usl()
-{
-	delete root->prototype;
-	delete root;
-}
-
-void swap(Usl& first, Usl& second)
-{
-	using std::swap;
-	swap(first.root, second.root);
-}
-
-Usl& Usl::operator=(Usl other)
-{
-	swap(*this, other);
-	return *this;
-}*/
 
 void Usl::markGarbage() const
 {
@@ -276,44 +230,3 @@ size_t Usl::run(size_t steps)
 	collectGarbage();
 	return total;
 }
-
-/*
-int main(int argc, char** argv)
-{
-	if (argc < 2)
-	{
-		cerr << "Wrong number of arguments" << endl;
-		return 1;
-	}
-	
-	Usl usl;
-	
-	try
-	{
-		int i;
-		ifstream stream;
-		for (i = 1; i < argc - 1; ++i)
-		{
-			const char* name = argv[i];
-			stream.open(name);
-			usl.includeScript(name, stream);
-			stream.close();
-		}
-		
-		const char* name = argv[i];
-		stream.open(name);
-		usl.createThread(name, stream);
-		stream.close();
-		
-		size_t steps = 1000000;
-		usl.run(steps);
-	}
-	catch(Exception& e)
-	{
-		cout << e.position << ":" << e.what() << endl;
-		return -1;
-	}
-	
-	return 0;
-}
-*/

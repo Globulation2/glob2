@@ -16,9 +16,6 @@ namespace GAGCore
 class LANGameInformation
 {
 public:
-	///Constructs a LANGameInformation with the given game information
-	LANGameInformation(const YOGGameInfo& information);
-
 	///Constructs an empty LANGameInformation
 	LANGameInformation();
 	

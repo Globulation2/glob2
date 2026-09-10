@@ -26,7 +26,7 @@ bool MapEdit::performBuildingAction(const std::string& action, int relMouseX, in
 	{
 		int x;
 		int y;
-		game.map.displayToMapCaseAligned(mouseX, mouseY, &x, &y, viewportX, viewportY);
+		game.map.displayToMapCaseAligned(mapMouseX(mouseX), mapMouseY(mouseY), &x, &y, viewportX, viewportY);
 		int gid=NOGBID;
 		for(int t=0; t<Team::MAX_COUNT; ++t)
 		{

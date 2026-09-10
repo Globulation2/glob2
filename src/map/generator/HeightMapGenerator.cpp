@@ -88,27 +88,6 @@ inline void HeightMap::lower(unsigned int coordX, unsigned int coordY)
 	}
 }
 
-inline void HeightMap::maxRise(unsigned int coordX, unsigned int coordY)
-{
-	static unsigned int oldX=(unsigned int)-1;
-	static unsigned int oldY=(unsigned int)-1;
-	if((coordX!=oldX) || (coordY!=oldY)) //don't stamp the same spot again. if stamp is moved like in rivermaps this saves a lot of time
-	{
-		assert(_stamp);
-		for(unsigned int x=0; x<2*_r+1;x++)
-		{
-			for(unsigned int y=0; y<2*_r+1;y++)
-			{
-				unsigned int coord1d=(unsigned int)(_w+x-_r+coordX)%_w+((unsigned int)(_h+y-_r+coordY)%_h)*_w;
-				if(_map[coord1d]<1-_stamp[x+y*(2*_r+1)])
-					_map[coord1d]=1-_stamp[x+y*(2*_r+1)];
-			}
-		}
-		oldX=coordX;
-		oldY=coordY;
-	}
-}
-
 inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 {
 	static unsigned int oldX=(unsigned int)-1;

@@ -41,8 +41,8 @@ AI::AI(ImplementationID implementationID, Player *player)
 		case WARRUSH:
 			aiImplementation=new AIWarrush(player);
 		break;
-		case REACHTOINFINITY:
-			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
+		case ECONO:
+			aiImplementation=new AIEcho::Echo(new AIEcho::Econo, player);
 		break;
 		case CORTEX:
 			aiImplementation=new AICortex(player);
@@ -123,8 +123,8 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			aiImplementation=new AIEcho::Echo(new NewNicowar, player);
 			aiImplementation->load(stream, player, versionMinor);
 		break;
-		case REACHTOINFINITY:
-			aiImplementation=new AIEcho::Echo(new AIEcho::ReachToInfinity, player);
+		case ECONO:
+			aiImplementation=new AIEcho::Echo(new AIEcho::Econo, player);
 			aiImplementation->load(stream, player, versionMinor);
 		break;
 		case WARRUSH:

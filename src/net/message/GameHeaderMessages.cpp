@@ -49,7 +49,6 @@ bool NetSendMapHeader::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetSendMapHeader))
 	{
-		//const NetSendMapHeader& r = dynamic_cast<const NetSendMapHeader&>(rhs);
 		return true;
 	}
 	return false;
@@ -101,7 +100,6 @@ bool NetSendGameHeader::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetSendGameHeader))
 	{
-		//const NetSendGameHeader& r = dynamic_cast<const NetSendGameHeader&>(rhs);
 //		if(gameHeader == r.gameHeader)
 		return true;
 	}
@@ -165,7 +163,6 @@ bool NetSendGamePlayerInfo::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetSendGamePlayerInfo))
 	{
-		//const NetSendGamePlayerInfo& r = dynamic_cast<const NetSendGamePlayerInfo&>(rhs);
 		return true;
 	}
 	return false;

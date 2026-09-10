@@ -31,8 +31,8 @@ public:
 		CASTOR=2,
 		///Reference to AIWarrush
 		WARRUSH=3,
-		///Reference to the AIEcho based AIReachToInfinity
-		REACHTOINFINITY=4,
+		///Reference to the AIEcho based AIEcono
+		ECONO=4,
 		///Reference to the AIEcho based AINicowar
 		NICOWAR=5,
 		///Reference to AICortex (direct AIImplementation binding)
@@ -54,8 +54,6 @@ public:
 
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
-
-	static std::string getAIText(int id);
 
 	std::shared_ptr<Order> getOrder(bool paused);
 

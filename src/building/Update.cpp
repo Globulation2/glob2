@@ -407,17 +407,17 @@ bool Building::isHardSpaceForBuildingSite(void)
 
 bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState)
 {
-	int tltn=BUILDING_LEVEL_NONE;
+	int futureBuildingTypeId=BUILDING_LEVEL_NONE;
 	if (requestedState==UPGRADE)
-		tltn=type->nextLevel;
+		futureBuildingTypeId=type->nextLevel;
 	else if (requestedState==REPAIR)
-		tltn=type->prevLevel;
+		futureBuildingTypeId=type->prevLevel;
 	else
 		assert(false);
 
-	if (tltn==BUILDING_LEVEL_NONE)
+	if (futureBuildingTypeId==BUILDING_LEVEL_NONE)
 		return true;
-	BuildingType *bt=globalContainer->buildingsTypes.get(tltn);
+	BuildingType *bt=globalContainer->buildingsTypes.get(futureBuildingTypeId);
 	int x=posX+bt->decLeft-type->decLeft;
 	int y=posY+bt->decTop -type->decTop ;
 	int w=bt->width;

@@ -1,6 +1,17 @@
+import os
 import sys
 
-env = Environment()
+sys.path.append(os.path.abspath("../scons"))
+import ccache
+
+env = Environment(ENV={"PATH": os.environ["PATH"]})
+if "CXX" in ARGUMENTS:
+  env["CXX"] = ARGUMENTS["CXX"]
+
+# Compiler cache, shared with the top-level build. Set before the Clone()s
+# below so every harness environment inherits it.
+if ccache.enabled():
+    ccache.enable(env)
 
 # Shared include paths so tests can compile against game headers.
 # echo/Echo.h transitively pulls in Map.h / Player.h / Team.h / etc.,
@@ -13,6 +24,7 @@ common_cpppath = ['..', '../src', '../src/ai',
                   '../src/yog', '../src/sgsl',
                   '../src/map', '../src/map/edit', '../src/map/generator',
                   '../src/map/gradient', '../src/map/io', '../src/map/pathfind',
+                  '../src/render',
                   '../libgag/include', '../libusl/src']
 common_defines = ['HAVE_CONFIG_H', '_THREAD_SAFE']
 
@@ -45,7 +57,7 @@ gag_server = gag_env.StaticLibrary('gagserver', [
   gag_env.Object('gagserver-' + name + '.o', '../libgag/src/' + name + '.cpp')
   for name in Split("""
     BinaryStream FileManager FileManagerAtomic FormatableString Stream StreamBackend
-    StreamFilter StringTable TextStream Toolkit
+    StringTable TextStream Toolkit
   """)])
 
 sources = Split("""
@@ -66,8 +78,11 @@ GradientBFSTest.cpp
 ../src/ai/echo/GradientBFS.cpp
 
 MapQueryTest.cpp
+GradientTest.cpp
+FetchApportionmentTest.cpp
 MapQueryTestStubs.cpp
 ../src/map/Map.cpp
+../src/map/gradient/MapGradientField.cpp
 ../src/map/MapQuery.cpp
 ../src/map/MapTerrain.cpp
 ../src/BitArray.cpp
@@ -89,11 +104,17 @@ TurretScanTileTest.cpp
 
 ParticleCrossfadeTest.cpp
 
+UnitTimingTest.cpp
+
+UnitDrawGeometryTest.cpp
+
 CortexUpgradeTest.cpp
 
 FilenameStripTest.cpp
 
 AllyTeamWidgetIndexTest.cpp
+
+EditorWidgetLayoutTest.cpp
 
 GUIListSelectionTest.cpp
 

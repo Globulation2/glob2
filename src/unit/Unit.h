@@ -73,6 +73,8 @@ public:
 	void selectPreferredGroundMovement(void);
 	bool isUnitHungry(void);
 	void standardRandomActivity();
+	/// Puts a unit from a destroyed building back on the map at (x, y), walking out along (dx, dy).
+	void expelFromBuilding(int x, int y, int dx, int dy);
 	
 	int getRealArmor(bool isMagic) const;
 	int getRealAttackStrength(void) const; //!< Return the real attack strength for warriors
@@ -190,6 +192,7 @@ protected:
 	void handleActionGoingDxDy();
 	void handleActionEnteringBuilding();
 	void handleActionExitingBuilding();
+	void applyPartialInsideBenefit();
 	void handleActionFilling();
 	void handleActionAttackingTarget();
 	void handleActionHarvesting();
@@ -254,6 +257,8 @@ public:
 
 	// quality parameters
 	Sint32 performance[NB_ABILITY];
+	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
+	int swimClass() const;
 	Sint32 level[NB_ABILITY];
 	bool canLearn[NB_ABILITY];
 	Sint32 experience;
@@ -289,14 +294,11 @@ public:
 public:
 	// optimisation cached values
 	int stepsLeftUntilHungry;
-	int minDistToResource[MAX_RESOURCES];
-	bool allResourcesAreTooFar;
 
 public:
 	// computing optimisation cached values
 	int numberOfStepsLeftUntilHungry(void);
-	void computeMinDistToResources(void);
-	
+
 public:
 	bool integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector);

@@ -22,6 +22,7 @@ MapEdit::MapEdit()
             128, // height
             Minimap::HideFOW)
 {
+	Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
 	doQuit=false;
 	doFullQuit=false;
 	doQuitAfterLoadSave=false;
@@ -306,9 +307,34 @@ MapEdit::MapEdit()
 
 MapEdit::~MapEdit()
 {
+	Sprite::setHighResolution(false);
 	Toolkit::releaseSprite("data/gui/editor");
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{
 		delete *i;
 	}
+}
+
+void MapEdit::updateCamera()
+{
+    if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
+    if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
+    camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
+    if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
+    viewportX=camera.tileX();viewportY=camera.tileY();
+    game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
+    game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
+    view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
+}
+bool MapEdit::zoomMap(double steps,int x,int y)
+{
+    updateCamera();
+    if (!globalContainer->gfx->canDrawStretchedSprite() || y<16 || !camera.contains(x,y)) return false;
+    camera.wheel(steps,x,y);
+    if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
+    viewportX=camera.tileX();viewportY=camera.tileY();
+    game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
+    game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
+    view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
+    return true;
 }

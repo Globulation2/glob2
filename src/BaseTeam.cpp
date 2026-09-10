@@ -25,7 +25,7 @@ BaseTeam::BaseTeam()
 
 bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	// loading baseteam
+	// loading base team
 	stream->readEnterSection("BaseTeam");
 	type = (TeamType)stream->readUint32("type");
 	teamNumber = stream->readSint32("teamNumber");
@@ -55,7 +55,7 @@ bool BaseTeam::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 
 void BaseTeam::save(GAGCore::OutputStream *stream) const
 {
-	// saving baseteam
+	// saving base team
 	stream->writeEnterSection("BaseTeam");
 	stream->writeUint32((Uint32)type, "type");
 	stream->writeSint32(teamNumber, "teamNumber");
@@ -69,51 +69,6 @@ void BaseTeam::save(GAGCore::OutputStream *stream) const
 	stream->write(&colorPad, 1, "colorPAD");
 	stream->writeUint32(playersMask, "playersMask");
 	stream->writeLeaveSection();
-}
-
-
-
-
-Uint8 *BaseTeam::getData()
-{
-	addSint32(data, teamNumber, 0);
-	addSint32(data, numberOfPlayer, 4);
-	addUint8(data, color.r, 8);
-	addUint8(data, color.g, 9);
-	addUint8(data, color.b, 10);
-	addUint8(data, color.a, 11);
-	addSint32(data, playersMask, 12);
-	// TODO : give race to the network here.
-
-	return data;
-}
-
-
-
-
-bool BaseTeam::setData(const Uint8 *data, int dataLength)
-{
-	if (dataLength!=getDataLength())
-		return false;
-
-	teamNumber=getSint32(data, 0);
-	numberOfPlayer=getSint32(data, 4);
-	color.r=getUint8(data, 8);
-	color.g=getUint8(data, 9);
-	color.b=getUint8(data, 10);
-	color.a=getUint8(data, 11);
-	playersMask=getSint32(data, 12);
-	// TODO : create the race from the network here.
-
-	return true;
-}
-
-
-
-
-int BaseTeam::getDataLength()
-{
-	return 16;
 }
 
 

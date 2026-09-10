@@ -4,6 +4,7 @@
 #include <iostream>
 #include <optional>
 #include <string>
+#include <algorithm>
 #include "FileManager.h"
 #include "GameGUIKeyActions.h"
 #include "KeyboardManager.h"
@@ -159,17 +160,46 @@ KeyboardManager::KeyboardManager(ShortcutMode mode)
 {
 	if(mode == GameGUIShortcuts)
 	{
-		if(!loadKeyboardLayout(GameGUIKeyActions::getConfigurationFile()))
-		{
+		if(loadKeyboardLayout(GameGUIKeyActions::getConfigurationFile()))
+			addMissingDefaults(GameGUIKeyActions::getDefaultConfigurationFile());
+		else
 			loadKeyboardLayout(GameGUIKeyActions::getDefaultConfigurationFile());
-		}
 	}
 	else if(mode == MapEditShortcuts)
 	{
-		if(!loadKeyboardLayout(MapEditKeyActions::getConfigurationFile()))
-		{
+		if(loadKeyboardLayout(MapEditKeyActions::getConfigurationFile()))
+			addMissingDefaults(MapEditKeyActions::getDefaultConfigurationFile());
+		else
 			loadKeyboardLayout(MapEditKeyActions::getDefaultConfigurationFile());
+	}
+}
+
+void KeyboardManager::addMissingDefaults(const std::string& file)
+{
+	// a layout saved before an action existed keeps its own keys and gains the default key for that action
+	std::list<KeyboardShortcut> own;
+	own.swap(shortcuts);
+	loadKeyboardLayout(file);
+	std::list<KeyboardShortcut> defaults;
+	defaults.swap(shortcuts);
+	shortcuts.swap(own);
+	for(const KeyboardShortcut& d : defaults)
+	{
+		bool bound = false;
+		for(const KeyboardShortcut& ks : shortcuts)
+		{
+			if(ks.getAction() == d.getAction())
+				bound = true;
+			// A default must not compete with a custom key or sequence prefix.
+			bool samePrefix = true;
+			for(size_t i = 0; i < std::min(ks.getKeyPressCount(), d.getKeyPressCount()); ++i)
+				if(ks.getKeyPress(i) != d.getKeyPress(i))
+					samePrefix = false;
+			if(samePrefix)
+				bound = true;
 		}
+		if(!bound)
+			shortcuts.push_back(d);
 	}
 }
 
@@ -218,7 +248,7 @@ Uint32 KeyboardManager::getAction(const KeyPress& key)
 
 
 
-void KeyboardManager::saveKeyboardLayout() const
+bool KeyboardManager::saveKeyboardLayout() const
 {
 	std::string file;
 	if(mode == GameGUIShortcuts)
@@ -227,14 +257,14 @@ void KeyboardManager::saveKeyboardLayout() const
 		file = MapEditKeyActions::getConfigurationFile();
 
 
-	OutputLineStream *stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend(file));
+	std::string contents;
 	for(std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
 	{
 		if(i->isShortcutValid())
-			stream->writeLine(i->format(mode));
+			contents += i->format(mode) + "\n";
 	}
 
-	delete stream;
+	return Toolkit::getFileManager()->writeFileAtomic(file, contents);
 }
 
 

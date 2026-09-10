@@ -132,10 +132,11 @@ namespace GAGCore
 		DrawableSurface image(w, h);
 		image.drawSprite(0, 0, sprite, frame);
 
-		// A native cursor renders at its own pixel size regardless of window
+		// A native cursor renders at its own backend-specific size regardless of window
 		// scaling, unlike the old blit-into-the-logical-framebuffer approach
 		// which inherited GraphicContext::nextFrame()'s scaled blit for free.
-		// Scale the composited image ourselves so the cursor still matches
+		// The caller excludes backing-pixel density on Cocoa, whose native images
+		// use points. Scale the composited image so the cursor still matches
 		// the rest of a scaled-up window (nearest-neighbour, matching how the
 		// rest of the engine scales -- see DrawableSurface.cpp's GL upload
 		// and GraphicContext::nextFrame()'s software SDL_BlitScaled).

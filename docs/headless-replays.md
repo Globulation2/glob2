@@ -35,7 +35,7 @@ The random game setup (`Engine::createRandomGame`) creates one local player + N 
 Constrains the AI pool that `createRandomGame` draws from when generating
 random matchups for `-test-games` / `-test-games-nox`. Comma-separated,
 case-insensitive AI names. Default (no flag) is the legacy uniform pick
-over `numbi, castor, warrush, reachtoinfinity, nicowar`.
+over `numbi, castor, warrush, econo, nicowar`.
 
 ```bash
 # Bias the dataset toward strong AIs only:
@@ -45,7 +45,7 @@ over `numbi, castor, warrush, reachtoinfinity, nicowar`.
 ./glob2 -test-games-nox 50 --ai-types nicowar
 ```
 
-Valid names: `numbi`, `castor`, `warrush`, `reachtoinfinity`, `nicowar`.
+Valid names: `numbi`, `castor`, `warrush`, `econo`, `nicowar`.
 Unknown names are reported on stderr and skipped (an empty
 remaining pool falls back to default behavior).
 
@@ -79,7 +79,7 @@ Writes the fully-initialised tick-0 game state to `<path>` as a `.game` file bef
 
 ```bash
 GLOB2_TEST_SEED=42 ./glob2 -test-games-nox 1 \
-  --map BigArena --matchup reachtoinfinity,nicowar \
+  --map BigArena --matchup econo,nicowar \
   --save-game-as games/cross-replay.game
 ```
 
@@ -205,7 +205,7 @@ The `ReplayWriter` records live during gameplay:
 | 1 | Numbi | `AI::NUMBI` | Simple beginner AI |
 | 2 | Castor | `AI::CASTOR` | Default toggle AI, moderate |
 | 3 | Warrush | `AI::WARRUSH` | Aggressive rush strategy |
-| 4 | ReachToInfinity | `AI::REACHTOINFINITY` | Expansionist (Echo wrapper) |
+| 4 | Econo | `AI::ECONO` | Expansionist (Echo wrapper) |
 | 5 | Nicowar | `AI::NICOWAR` | Strongest economy-focused AI (Echo wrapper) |
 
 Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The player type encodes which AI: `P_AI + implementationID` maps to the enum above.
