@@ -105,6 +105,9 @@
 // version 96 saves AIEcho::Construction::BuildingOrder::id, which was assigned at
 //            runtime and never serialised, so every pending building order restored
 //            from a save carried an uninitialised heap value as its register key
+// version 97 rebuilds route fields from a map topology generation instead of a proximity
+//            walk, and saves the generation so a loaded game rebuilds on the same ticks:
+//            the simulation changed again
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

@@ -12,6 +12,7 @@
 #include "Utilities.h"
 #include "Order.h"
 #include "Player.h"
+#include "Version.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
