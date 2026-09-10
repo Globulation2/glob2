@@ -7,6 +7,19 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT: corrected-engine TheRig qualification PASSED all five suites, protocol
+c4ad804e1562350a58453b7fb8c45ca01a5411766b39859ea92f1546889afc3f.
+Other three hosts are actively running 40-case continuation. Local fleet-qualify.py
+in output/maxima-conversion-fixed-restart writes FLEET_PASS.json after all signatures
+match. Separate commission.py is ALREADY RUNNING (commission-process.json), waiting
+for that pass; then automatically prepares/runs output/maxima-conversion-fixed-controls
+(200 pairs), and only after accepted controls starts output/maxima-conversion-fixed-confirmation
+(1000 pairs each for eight switches). Check commission.log/process before action;
+do not launch duplicates. Remote corrected root remains glob2-maxima-conversion-fixed.
+Remote output/fresh-controls then output/farming-sub-switches-confirmation.
+Original buggy run is retired; no old outcome pooling or failed-job replacements.
+New pipeline uses the same bounded fixed budget, one final look, 100k cap.
+
 CURRENT September10: old farming confirmation collection FINISHED with 9516/9522
 executions,7991/8000 pairs,six quarantined failures. RETIRED.json on all four hosts.
 No final inference; no retries, no diagnostic replacements, no old/new pooling.
