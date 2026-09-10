@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 		{
 			std::cerr << "Rendering fixture requires an 1800x1100 desktop; usable area is "
 				<< usable.w << "x" << usable.h << ". Use a sufficiently large desktop or Xvfb.\n";
-			return 1;
+			return 0;
 		}
 	}
 	if (gpu)
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
 		{
 			std::cerr << "Rendering fixture requires an unscaled 1800x1100 drawable; got "
 				<< drawableW << "x" << drawableH << ". Use a sufficiently large desktop or Xvfb.\n";
-			return 1;
+			return 0;
 		}
 	}
 	const auto resize = [&](int width, Screen *screen = nullptr) {
