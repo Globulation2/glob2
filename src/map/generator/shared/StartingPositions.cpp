@@ -343,6 +343,80 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 
 	// A site is worth exactly what its *worse* resource costs to reach: a colony next to wood
 	// but a long walk from wheat is not a good start, however good the wood is.
+	// A colony changes its own surroundings the moment it is built: placeStarts() clears a
+	// five by seven box of resources to make room, the swarm itself becomes four by four tiles
+	// of obstacle, and the workers appear on the row above it rather than on the boot tile. A
+	// site scored against the bare map is therefore scored on deposits it is about to destroy
+	// and paths it is about to block, which is how four sites picked as exactly equal can
+	// finish unequal. Score what the colony will actually live with instead. The offsets below
+	// mirror placeStarts(); they are what it does, not a guess at it.
+	std::vector<int> visited(size_t(w) * h, 0);
+	int visitStamp = 0;
+	auto scoreAsBuilt = [&](int bx, int by, int limit) -> int
+	{
+		auto cleared = [&](int tx, int ty)
+		{
+			int ox = map.normalizeX(tx - bx), oy = map.normalizeY(ty - by);
+			if (ox >= w / 2)
+				ox -= w;
+			if (oy >= h / 2)
+				oy -= h;
+			return ox >= 0 && ox <= 4 && oy >= -2 && oy <= 4;
+		};
+		auto blocked = [&](int tx, int ty)
+		{
+			int ox = map.normalizeX(tx - bx), oy = map.normalizeY(ty - by);
+			if (ox >= w / 2)
+				ox -= w;
+			if (oy >= h / 2)
+				oy -= h;
+			return ox >= 0 && ox < swarm->width && oy >= 0 && oy < swarm->height;
+		};
+		++visitStamp;
+		std::queue<std::pair<int, int>> q; // (tile, distance)
+		auto push = [&](int tx, int ty, int d)
+		{
+			int nx = map.normalizeX(tx), ny = map.normalizeY(ty);
+			int np = ny * w + nx;
+			if (visited[np] == visitStamp)
+				return;
+			visited[np] = visitStamp;
+			q.push({np, d});
+		};
+		// Workers spawn on the row above the swarm, so that is where a gathering trip starts.
+		for (int i = 0; i < std::max(1, context.request.nbWorkers); ++i)
+			push(bx + (i % 4), by - 1 - (i / 4), 0);
+		int wood = -1, wheat = -1;
+		while (!q.empty() && (wood < 0 || wheat < 0))
+		{
+			auto [p, d] = q.front();
+			q.pop();
+			if (d >= limit)
+				continue;
+			int x = p % w, y = p / w;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					if (dx == 0 && dy == 0)
+						continue;
+					int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+					int type = map.getResource(nx, ny).type;
+					if (!cleared(nx, ny))
+					{
+						if (type == WOOD && wood < 0)
+							wood = d + 1;
+						if (type == CORN && wheat < 0)
+							wheat = d + 1;
+					}
+					if (!blocked(nx, ny) && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+						push(nx, ny, d + 1);
+				}
+		}
+		if (wood < 0 || wheat < 0)
+			return -1;
+		return std::max(wood, wheat);
+	};
+
 	std::vector<std::pair<int, int>> sites; // (score, tile index)
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -352,6 +426,8 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			const int p = y * w + x;
 			if (woodDist[p] < 0 || wheatDist[p] < 0)
 				continue;
+			// The bare-map distance can only understate what the built colony will walk, so it
+			// is a sound cheap filter: it shortlists sites worth the exact simulation above.
 			sites.push_back({std::max(woodDist[p], wheatDist[p]), p});
 		}
 	if ((int)sites.size() < nbTeams)
@@ -368,6 +444,22 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 		for (size_t i = 0; i < cap; ++i)
 			thinned.push_back(sites[i * sites.size() / cap]);
 		sites.swap(thinned);
+	}
+
+	// Re-score the shortlist as it will actually be built, and re-sort on the honest number.
+	{
+		std::vector<std::pair<int, int>> exact;
+		exact.reserve(sites.size());
+		for (const auto &s : sites)
+		{
+			const int built = scoreAsBuilt(s.second % w, s.second / w, 32);
+			if (built >= 0)
+				exact.push_back({built, s.second});
+		}
+		if ((int)exact.size() < nbTeams)
+			return false;
+		std::sort(exact.begin(), exact.end());
+		sites.swap(exact);
 	}
 
 	// Sites are sorted by score, so any set of colonies drawn from a short window of this list
