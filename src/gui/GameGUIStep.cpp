@@ -182,6 +182,16 @@ void GameGUI::step(void)
 #		endif
 		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
 		{
+			/* Motion is coalesced and replayed after the poll loop, but a
+				button event must not overtake movement that happened before
+				it.  A middle-button release clears panPushed, so a pan whose
+				drag and release land in the same frame would otherwise be
+				discarded entirely. */
+			if (wasMouseMotion)
+			{
+				processEvent(&mouseMotionEvent);
+				wasMouseMotion=false;
+			}
 			lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
 			/* We ignore what SDL_GetMouseState does to
 				lastMouseX and lastMouseY, because that may
