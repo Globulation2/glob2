@@ -81,6 +81,8 @@ private:
     // Background flush to durable browser storage; a native build's writes are
     // already durable, so this stays unset there. See persist() in the .cpp.
     std::unique_ptr<GAGCore::ApplicationHost::Persistence> persistence;
+    // done() was called and is waiting on persistence to resolve before endExecute().
+    bool closing=false;
     bool displayError=false;
     Settings previousDisplay;
     KeyboardManager gameKeys, editorKeys;

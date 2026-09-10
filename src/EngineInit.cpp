@@ -52,10 +52,17 @@ int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam)
     if (!loaded) showMapLoadError();
     return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
 }
-GAGCore::CooperativeTask Engine::initCustomTask(MapHeader map, GameHeader players, int localTeam)
+GAGCore::CooperativeTask Engine::initCustomTask(MapHeader map, GameHeader players, int localTeam, int speed)
 {
     gui.localPlayer = 0;
     gui.localTeamNo = localTeam;
+    // Restored by ~Engine(); a negative speed means the caller doesn't offer
+    // a match-speed choice (e.g. the sync MapHeader/GameHeader overload).
+    if (speed >= 0)
+    {
+        previousCustomSpeed = globalContainer->settings.gameSpeed;
+        globalContainer->settings.gameSpeed = speed;
+    }
     co_return co_await initGameTask(map, players);
 }
 int Engine::initCustom(const std::string& filename)

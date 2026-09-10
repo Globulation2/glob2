@@ -192,7 +192,8 @@ struct CustomGameSetupHarness
 		if (write) files->remove(CustomGamePreferences::filename);
 		if (write)
 		{
-			GAGGUI::ScreenStack screens;			CustomGameScreen screen(screens);
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
+			CustomGameScreen screen(screens);
 			// Nothing saved: a random map (FEEDBACK 2026-09-14). The premade library is what this
 			// file is written with, so switch to it first.
 			assert(screen.setup.random && screen.previewPending && screen.setup.capacity == 4);
@@ -217,7 +218,7 @@ struct CustomGameSetupHarness
 		{
 			std::string premade;
 			{
-				GAGGUI::ScreenStack screens;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
 				CustomGameScreen screen(screens);
 				assert(screen.validMap && !screen.setup.random && screen.setup.capacity == 4);
 				assert(screen.setup.colonies[2].controller == CustomGameSetup::Shared);
@@ -242,7 +243,7 @@ struct CustomGameSetupHarness
 				assert(screen.previewPending);
 			}
 			{
-				GAGGUI::ScreenStack screens;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
 				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap);
 				assert(screen.snapshot.empty() && screen.source.empty());
@@ -253,7 +254,7 @@ struct CustomGameSetupHarness
 				screen.setup.premadeMap = "/missing/saved-map.map";
 			}
 			{
-				GAGGUI::ScreenStack screens;
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
 				CustomGameScreen screen(screens);
 				assert(!screen.validMap && !screen.setup.random && !screen.message.empty());
 				assert(screen.setup.colonies[2].ai == AI::CORTEX && screen.setup.speed == 3);
@@ -266,7 +267,8 @@ struct CustomGameSetupHarness
 			{
 				// A file the lobby cannot read is the same as none: a random map at four colonies,
 				// its preview pending (FEEDBACK 2026-09-14: random maps are the default tab).
-				GAGGUI::ScreenStack screens;				CustomGameScreen screen(screens);
+				GAGGUI::ScreenStack screens(*globalContainer->gfx);
+				CustomGameScreen screen(screens);
 				assert(screen.setup.random && screen.previewPending && !screen.validMap &&
 					   screen.setup.capacity == 4 && screen.setup.speed == 0);
 			}
@@ -450,7 +452,8 @@ struct CustomGameSetupHarness
 			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
 		}
 
-    GAGGUI::ScreenStack screens;
+    GAGGUI::ScreenStack screens(*globalContainer->gfx);
+
     CustomGameScreen screen(screens);
     screen.gfx = globalContainer->gfx;
     screen.dispatchInit();

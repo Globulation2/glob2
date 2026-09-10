@@ -198,7 +198,7 @@ int main(int argc, char** argv)
     {
         SettingsScreen settings;
         settings.beginExecution(globalContainer->gfx);
-        settings.onAction(nullptr, GAGGUI::BUTTON_RELEASED, SettingsScreen::OK, 0);
+        settings.done();
         require(settings.isExecutionRunning(), "Settings must poll persistence before closing");
         settings.onTimer(SDL_GetTicks());
         require(!settings.isExecutionRunning(), "Durable native settings should complete");

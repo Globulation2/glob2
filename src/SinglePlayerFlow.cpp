@@ -29,8 +29,9 @@ void SinglePlayerFlow::custom()
     screens.push(std::make_unique<CustomGameScreen>(screens), [this](GAGGUI::Screen& screen, int result) {
         if (result != CustomGameScreen::OK) return;
         auto& selected = static_cast<CustomGameScreen&>(screen);
-        launch([map = selected.getMapHeader(), players = selected.getGameHeader(), team = selected.getSelectedColor(0)](Engine& engine) {
-            return engine.initCustomTask(map, players, team);
+        launch([map = selected.getMapHeader(), players = selected.getGameHeader(), team = selected.getSelectedColor(0),
+                speed = selected.selectedSpeed()](Engine& engine) {
+            return engine.initCustomTask(map, players, team, speed);
         }, true);
     });
 }

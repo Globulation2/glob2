@@ -122,9 +122,18 @@ void SettingsScreen::done()
 {
     dropdown.close();
     if(modal==Modal::Display) confirmDisplay(false);
-    commitText();finishInteraction();
+    commitText();
+    dragging.clear();
+    // Always confirm durability on close, not just when something in this
+    // session is dirty: a prior browser storage-restore failure can leave
+    // already-committed settings unflushed.
+    persist();
     // Keep Retry available instead of silently losing local shortcut edits.
-    if(!failed)endExecute(1);
+    if(!failed)
+    {
+        if(persistence) closing=true;
+        else endExecute(1);
+    }
 }
 void SettingsScreen::onAction(Widget*,Action action,int,int)
 {
@@ -142,6 +151,7 @@ void SettingsScreen::onTimer(Uint32 tick)
         if(state!=GAGCore::ApplicationHost::PersistenceState::Pending) {
             if(state==GAGCore::ApplicationHost::PersistenceState::Failed) {
                 failed=true;
+                closing=false;
                 // Retry the whole write, not just the flush: the file itself
                 // may also need rewriting if this state was reached because
                 // the browser evicted storage mid-session.
@@ -149,6 +159,7 @@ void SettingsScreen::onTimer(Uint32 tick)
                 saveAt=tick+300;
             }
             persistence.reset();
+            if(closing && !failed) { closing=false; endExecute(1); }
         }
     }
 }
