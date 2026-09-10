@@ -1767,80 +1767,80 @@ Vista toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Muestra automáticamente la vista general toroidal mientras te desplazas por el mapa (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+No se pudo guardar el mapa. Compruebe el destino y el espacio disponible. Sus cambios siguen abiertos.
 [Loading headers]
-Loading headers...
+Cargando cabeceras...
 [Loading teams]
-Loading teams...
+Cargando equipos...
 [Loading terrain]
-Loading terrain...
+Cargando terreno...
 [Building gradients]
-Building gradients...
+Generando gradientes...
 [Loading players]
-Loading players...
+Cargando jugadores...
 [Loading scripts]
-Loading scripts...
+Cargando scripts...
 [Generating map]
-Generating map...
+Generando mapa...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+No se pudo generar el mapa. Pruebe otras opciones de generación.
 [Loading units]
-Loading units...
+Cargando unidades...
 [Loading buildings]
-Loading buildings...
+Cargando construcciones...
 [Resolving team links]
-Resolving team links...
+Resolviendo enlaces de equipo...
 [saving to storage]
-Saving...
+Guardando...
 [save failed retry]
-Save failed. Retry.
+Error al guardar. Reintente.
 [export save]
-Export save
+Exportar partida guardada
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+No se pudo restaurar el almacenamiento del navegador. Los datos guardados existentes no se han modificado. Puede continuar esta sesión, pero los cambios locales no se podrán conservar. Exporte las partidas importantes desde el diálogo de error de guardado. Recargue para intentar restaurar el almacenamiento de nuevo.
 [continue]
-Continue
+Continuar
 [export file]
-Export file
+Exportar archivo
 [export failed]
-File export failed
+Error al exportar el archivo
 [import file]
-Import
+Importar
 [select import file]
-Choose a file to import
+Elija un archivo para importar
 [validating import]
-Validating file...
+Validando archivo...
 [import succeeded]
-File imported
+Archivo importado
 [import cancelled]
-Import cancelled
+Importación cancelada
 [import failed]
-Import failed: invalid or unsupported file
+Error al importar: archivo inválido o no admitido
 [import persistence failed]
-Not saved: select Import to retry or Export file
+No guardado: elija Importar para reintentar o Exportar archivo
 [import progress]
-Import progress
+Progreso de importación
 [export progress]
-Export progress
+Progreso de exportación
 [retry save]
-Retry save
+Reintentar guardado
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Progreso de la campaña no guardado. Reintente o exporte una copia de seguridad.
 [leave without saving]
-Leave without saving
+Salir sin guardar
 [campaign import failed]
-Invalid progress file or different campaign version
+Archivo de progreso inválido o versión de campaña diferente
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Los protocolos del cliente y del servidor difieren. Instale la misma versión de Glob2 que el servidor.
 [settings continue]
-Continue
+Continuar
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Guardado de ajustes no confirmado. Reintente, o continúe.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Guardado final no confirmado. Reintente, o salga sin guardar.
 [quit without saving]
-Quit without saving
+Salir sin guardar
 [game closed]
-Game closed. You can close this window or reload to play again.
+Partida cerrada. Puede cerrar esta ventana o recargar para volver a jugar.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Guardado no confirmado. Aceptar reintenta; Cancelar vuelve al menú del editor.

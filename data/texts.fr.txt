@@ -1777,80 +1777,80 @@ Vue torique automatique
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Afficher automatiquement l'aperçu de la carte en forme de tore tout en vous déplaçant sur la carte (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+La carte n'a pas pu être sauvegardée. Vérifiez la destination et l'espace disponible. Vos modifications sont toujours ouvertes.
 [Loading headers]
-Loading headers...
+Chargement des en-têtes...
 [Loading teams]
-Loading teams...
+Chargement des équipes...
 [Loading terrain]
-Loading terrain...
+Chargement du terrain...
 [Building gradients]
-Building gradients...
+Génération des dégradés...
 [Loading players]
-Loading players...
+Chargement des joueurs...
 [Loading scripts]
-Loading scripts...
+Chargement des scripts...
 [Generating map]
-Generating map...
+Génération de la carte...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+La carte n'a pas pu être générée. Essayez d'autres paramètres de génération.
 [Loading units]
-Loading units...
+Chargement des unités...
 [Loading buildings]
-Loading buildings...
+Chargement des constructions...
 [Resolving team links]
-Resolving team links...
+Résolution des liens d'équipe...
 [saving to storage]
-Saving...
+Sauvegarde...
 [save failed retry]
-Save failed. Retry.
+Échec de la sauvegarde. Réessayez.
 [export save]
-Export save
+Exporter la sauvegarde
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Le stockage du navigateur n'a pas pu être restauré. Les données sauvegardées existantes n'ont pas été modifiées. Vous pouvez continuer cette session, mais les modifications locales ne pourront pas être conservées. Exportez les sauvegardes importantes depuis la fenêtre d'échec de sauvegarde. Rechargez pour retenter la restauration du stockage.
 [continue]
-Continue
+Continuer
 [export file]
-Export file
+Exporter le fichier
 [export failed]
-File export failed
+Échec de l'exportation du fichier
 [import file]
-Import
+Importer
 [select import file]
-Choose a file to import
+Choisissez un fichier à importer
 [validating import]
-Validating file...
+Validation du fichier...
 [import succeeded]
-File imported
+Fichier importé
 [import cancelled]
-Import cancelled
+Importation annulée
 [import failed]
-Import failed: invalid or unsupported file
+Échec de l'importation : fichier invalide ou non pris en charge
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Non sauvegardé : choisissez Importer pour réessayer ou Exporter le fichier
 [import progress]
-Import progress
+Progression de l'importation
 [export progress]
-Export progress
+Progression de l'exportation
 [retry save]
-Retry save
+Réessayer la sauvegarde
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Progression de la campagne non sauvegardée. Réessayez ou exportez une sauvegarde.
 [leave without saving]
-Leave without saving
+Quitter sans sauvegarder
 [campaign import failed]
-Invalid progress file or different campaign version
+Fichier de progression invalide ou version de campagne différente
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Les protocoles du client et du serveur diffèrent. Installez la même version de Glob2 que le serveur.
 [settings continue]
-Continue
+Continuer
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Sauvegarde des paramètres non confirmée. Réessayez, ou continuez.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Sauvegarde finale non confirmée. Réessayez, ou quittez sans sauvegarder.
 [quit without saving]
-Quit without saving
+Quitter sans sauvegarder
 [game closed]
-Game closed. You can close this window or reload to play again.
+Partie terminée. Vous pouvez fermer cette fenêtre ou recharger pour rejouer.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Sauvegarde non confirmée. OK réessaie ; Annuler revient au menu de l'éditeur.

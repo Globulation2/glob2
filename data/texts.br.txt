@@ -1763,80 +1763,80 @@ Visão toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a visão geral toroidal enquanto você se desloca pelo mapa (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Não foi possível salvar o mapa. Verifique o destino e o espaço disponível. Suas edições continuam abertas.
 [Loading headers]
-Loading headers...
+Carregando cabeçalhos...
 [Loading teams]
-Loading teams...
+Carregando equipes...
 [Loading terrain]
-Loading terrain...
+Carregando o terreno...
 [Building gradients]
-Building gradients...
+Gerando gradientes...
 [Loading players]
-Loading players...
+Carregando jogadores...
 [Loading scripts]
-Loading scripts...
+Carregando scripts...
 [Generating map]
-Generating map...
+Gerando o mapa...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Não foi possível gerar o mapa. Tente outras configurações de geração.
 [Loading units]
-Loading units...
+Carregando unidades...
 [Loading buildings]
-Loading buildings...
+Carregando construções...
 [Resolving team links]
-Resolving team links...
+Resolvendo vínculos de equipe...
 [saving to storage]
-Saving...
+Salvando...
 [save failed retry]
-Save failed. Retry.
+Falha ao salvar. Tente de novo.
 [export save]
-Export save
+Exportar jogo salvo
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Não foi possível restaurar o armazenamento do navegador. Os dados salvos existentes não foram alterados. Você pode continuar esta sessão, mas as alterações locais não poderão ser mantidas. Exporte os jogos importantes na caixa de falha de salvamento. Recarregue para tentar restaurar o armazenamento de novo.
 [continue]
-Continue
+Continuar
 [export file]
-Export file
+Exportar arquivo
 [export failed]
-File export failed
+Falha ao exportar o arquivo
 [import file]
-Import
+Importar
 [select import file]
-Choose a file to import
+Escolha um arquivo para importar
 [validating import]
-Validating file...
+Validando o arquivo...
 [import succeeded]
-File imported
+Arquivo importado
 [import cancelled]
-Import cancelled
+Importação cancelada
 [import failed]
-Import failed: invalid or unsupported file
+Falha na importação: arquivo inválido ou não suportado
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Não salvo: escolha Importar para tentar de novo ou Exportar arquivo
 [import progress]
-Import progress
+Progresso da importação
 [export progress]
-Export progress
+Progresso da exportação
 [retry save]
-Retry save
+Tentar salvar de novo
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Progresso da campanha não salvo. Tente novamente ou exporte um backup.
 [leave without saving]
-Leave without saving
+Sair sem salvar
 [campaign import failed]
-Invalid progress file or different campaign version
+Arquivo de progresso inválido ou versão de campanha diferente
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Os protocolos do cliente e do servidor são diferentes. Instale a mesma versão do Glob2 do servidor.
 [settings continue]
-Continue
+Continuar
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Salvamento das configurações não confirmado. Tente de novo, ou continue.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Salvamento final não confirmado. Tente de novo, ou saia sem salvar.
 [quit without saving]
-Quit without saving
+Sair sem salvar
 [game closed]
-Game closed. You can close this window or reload to play again.
+Jogo encerrado. Você pode fechar esta janela ou recarregar para jogar de novo.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Salvamento não confirmado. OK tenta de novo; Cancelar volta ao menu do editor.

@@ -1763,80 +1763,80 @@ Globulation 2 커서를 표시합니다.
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 지도 안에서 이동할 때 토러스(도넛) 모양의 지도 전체 보기를 자동으로 표시합니다(OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+맵을 저장할 수 없습니다. 저장 위치와 사용 가능한 공간을 확인하세요. 편집 내용은 아직 열려 있습니다.
 [Loading headers]
-Loading headers...
+헤더 불러오는 중...
 [Loading teams]
-Loading teams...
+팀 불러오는 중...
 [Loading terrain]
-Loading terrain...
+지형 불러오는 중...
 [Building gradients]
-Building gradients...
+그라디언트 생성 중...
 [Loading players]
-Loading players...
+플레이어 불러오는 중...
 [Loading scripts]
-Loading scripts...
+스크립트 불러오는 중...
 [Generating map]
-Generating map...
+맵 생성 중...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+맵을 생성할 수 없습니다. 다른 생성 설정을 시도해 보세요.
 [Loading units]
-Loading units...
+유닛 불러오는 중...
 [Loading buildings]
-Loading buildings...
+건물 불러오는 중...
 [Resolving team links]
-Resolving team links...
+팀 연결 해석 중...
 [saving to storage]
-Saving...
+저장 중...
 [save failed retry]
-Save failed. Retry.
+저장에 실패했습니다. 다시 시도하세요.
 [export save]
-Export save
+저장 게임 내보내기
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+브라우저 저장소를 복원할 수 없습니다. 기존에 저장된 데이터는 변경되지 않았습니다. 이 세션을 계속할 수 있지만 로컬 변경 사항은 유지되지 않습니다. 저장 실패 대화상자에서 중요한 저장 파일을 내보내세요. 저장소 복원을 다시 시도하려면 새로고침하세요.
 [continue]
-Continue
+계속
 [export file]
-Export file
+파일 내보내기
 [export failed]
-File export failed
+파일 내보내기에 실패했습니다
 [import file]
-Import
+가져오기
 [select import file]
-Choose a file to import
+가져올 파일을 선택하세요
 [validating import]
-Validating file...
+파일 확인 중...
 [import succeeded]
-File imported
+파일을 가져왔습니다
 [import cancelled]
-Import cancelled
+가져오기가 취소되었습니다
 [import failed]
-Import failed: invalid or unsupported file
+가져오기 실패: 잘못되었거나 지원되지 않는 파일입니다
 [import persistence failed]
-Not saved: select Import to retry or Export file
+저장되지 않음: 다시 시도하려면 가져오기, 또는 파일 내보내기를 선택하세요
 [import progress]
-Import progress
+가져오기 진행 상황
 [export progress]
-Export progress
+내보내기 진행 상황
 [retry save]
-Retry save
+저장 다시 시도
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+캠페인 진행 상황이 저장되지 않았습니다. 다시 시도하거나 백업을 내보내세요.
 [leave without saving]
-Leave without saving
+저장하지 않고 나가기
 [campaign import failed]
-Invalid progress file or different campaign version
+진행 파일이 잘못되었거나 캠페인 버전이 다릅니다
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+클라이언트와 서버의 프로토콜이 다릅니다. 서버와 동일한 Glob2 버전을 설치하세요.
 [settings continue]
-Continue
+계속
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+설정 저장이 확인되지 않았습니다. 다시 시도하거나 계속하세요.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+최종 저장이 확인되지 않았습니다. 다시 시도하거나 저장하지 않고 나가세요.
 [quit without saving]
-Quit without saving
+저장하지 않고 나가기
 [game closed]
-Game closed. You can close this window or reload to play again.
+게임이 종료되었습니다. 이 창을 닫거나 새로고침하여 다시 플레이할 수 있습니다.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+저장이 확인되지 않았습니다. 확인은 다시 시도하고, 취소는 편집기 메뉴로 돌아갑니다.

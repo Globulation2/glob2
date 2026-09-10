@@ -1763,80 +1763,80 @@ Chế độ xem hình xuyến tự động
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển xung quanh bản đồ (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Không thể lưu bản đồ. Hãy kiểm tra đích lưu và dung lượng trống. Các chỉnh sửa của bạn vẫn còn mở.
 [Loading headers]
-Loading headers...
+Đang tải phần đầu...
 [Loading teams]
-Loading teams...
+Đang tải đội...
 [Loading terrain]
-Loading terrain...
+Đang tải địa hình...
 [Building gradients]
-Building gradients...
+Đang dựng gradient...
 [Loading players]
-Loading players...
+Đang tải người chơi...
 [Loading scripts]
-Loading scripts...
+Đang tải kịch bản...
 [Generating map]
-Generating map...
+Đang tạo bản đồ...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Không thể tạo bản đồ. Hãy thử các thiết lập tạo khác.
 [Loading units]
-Loading units...
+Đang tải đơn vị...
 [Loading buildings]
-Loading buildings...
+Đang tải công trình...
 [Resolving team links]
-Resolving team links...
+Đang phân giải liên kết đội...
 [saving to storage]
-Saving...
+Đang lưu...
 [save failed retry]
-Save failed. Retry.
+Lưu thất bại. Hãy thử lại.
 [export save]
-Export save
+Xuất bản lưu
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Không thể khôi phục bộ nhớ trình duyệt. Dữ liệu đã lưu hiện có không thay đổi. Bạn có thể tiếp tục phiên này, nhưng các thay đổi cục bộ sẽ không được lưu giữ. Hãy xuất các bản lưu quan trọng từ hộp thoại lỗi lưu. Tải lại trang để thử khôi phục bộ nhớ lần nữa.
 [continue]
-Continue
+Tiếp tục
 [export file]
-Export file
+Xuất tệp
 [export failed]
-File export failed
+Xuất tệp thất bại
 [import file]
-Import
+Nhập
 [select import file]
-Choose a file to import
+Chọn tệp để nhập
 [validating import]
-Validating file...
+Đang kiểm tra tệp...
 [import succeeded]
-File imported
+Đã nhập tệp
 [import cancelled]
-Import cancelled
+Đã hủy nhập
 [import failed]
-Import failed: invalid or unsupported file
+Nhập thất bại: tệp không hợp lệ hoặc không được hỗ trợ
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Chưa lưu: chọn Nhập để thử lại, hoặc Xuất tệp
 [import progress]
-Import progress
+Tiến trình nhập
 [export progress]
-Export progress
+Tiến trình xuất
 [retry save]
-Retry save
+Thử lưu lại
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Tiến trình chiến dịch chưa được lưu. Hãy thử lại hoặc xuất bản sao lưu.
 [leave without saving]
-Leave without saving
+Thoát mà không lưu
 [campaign import failed]
-Invalid progress file or different campaign version
+Tệp tiến trình không hợp lệ hoặc khác phiên bản chiến dịch
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Giao thức máy khách và máy chủ khác nhau. Hãy cài phiên bản Glob2 giống với máy chủ.
 [settings continue]
-Continue
+Tiếp tục
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Chưa xác nhận lưu thiết lập. Hãy thử lại, hoặc tiếp tục.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Chưa xác nhận lưu lần cuối. Hãy thử lại, hoặc thoát mà không lưu.
 [quit without saving]
-Quit without saving
+Thoát mà không lưu
 [game closed]
-Game closed. You can close this window or reload to play again.
+Trò chơi đã đóng. Bạn có thể đóng cửa sổ này hoặc tải lại để chơi tiếp.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Chưa xác nhận lưu. Đồng ý sẽ thử lại; Hủy sẽ quay về menu trình chỉnh sửa.

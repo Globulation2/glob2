@@ -1773,80 +1773,80 @@ Vista toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a vista geral toroidal enquanto se desloca pelo mapa (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Não foi possível gravar o mapa. Verifique o destino e o espaço disponível. As suas edições continuam abertas.
 [Loading headers]
-Loading headers...
+A carregar cabeçalhos...
 [Loading teams]
-Loading teams...
+A carregar equipas...
 [Loading terrain]
-Loading terrain...
+A carregar o terreno...
 [Building gradients]
-Building gradients...
+A gerar gradientes...
 [Loading players]
-Loading players...
+A carregar jogadores...
 [Loading scripts]
-Loading scripts...
+A carregar scripts...
 [Generating map]
-Generating map...
+A gerar o mapa...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Não foi possível gerar o mapa. Experimente outras definições de geração.
 [Loading units]
-Loading units...
+A carregar unidades...
 [Loading buildings]
-Loading buildings...
+A carregar construções...
 [Resolving team links]
-Resolving team links...
+A resolver ligações de equipa...
 [saving to storage]
-Saving...
+A gravar...
 [save failed retry]
-Save failed. Retry.
+Falha ao gravar. Tente novamente.
 [export save]
-Export save
+Exportar jogo gravado
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Não foi possível restaurar o armazenamento do navegador. Os dados gravados existentes não foram alterados. Pode continuar esta sessão, mas as alterações locais não poderão ser mantidas. Exporte os jogos importantes a partir da caixa de diálogo de falha de gravação. Recarregue para tentar restaurar o armazenamento novamente.
 [continue]
-Continue
+Continuar
 [export file]
-Export file
+Exportar ficheiro
 [export failed]
-File export failed
+Falha ao exportar o ficheiro
 [import file]
-Import
+Importar
 [select import file]
-Choose a file to import
+Escolha um ficheiro para importar
 [validating import]
-Validating file...
+A validar o ficheiro...
 [import succeeded]
-File imported
+Ficheiro importado
 [import cancelled]
-Import cancelled
+Importação cancelada
 [import failed]
-Import failed: invalid or unsupported file
+Falha na importação: ficheiro inválido ou não suportado
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Não gravado: escolha Importar para tentar novamente ou Exportar ficheiro
 [import progress]
-Import progress
+Progresso da importação
 [export progress]
-Export progress
+Progresso da exportação
 [retry save]
-Retry save
+Tentar gravar novamente
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Progresso da campanha não gravado. Tente novamente ou exporte uma cópia de segurança.
 [leave without saving]
-Leave without saving
+Sair sem gravar
 [campaign import failed]
-Invalid progress file or different campaign version
+Ficheiro de progresso inválido ou versão de campanha diferente
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Os protocolos do cliente e do servidor são diferentes. Instale a mesma versão do Glob2 que o servidor.
 [settings continue]
-Continue
+Continuar
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Gravação das definições não confirmada. Tente novamente, ou continue.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Gravação final não confirmada. Tente novamente, ou saia sem gravar.
 [quit without saving]
-Quit without saving
+Sair sem gravar
 [game closed]
-Game closed. You can close this window or reload to play again.
+Jogo fechado. Pode fechar esta janela ou recarregar para jogar novamente.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Gravação não confirmada. OK repete a tentativa; Cancelar volta ao menu do editor.

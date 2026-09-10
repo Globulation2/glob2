@@ -1767,80 +1767,80 @@ OpenGL није доступан у овој верзији.
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Аутоматски прикажи преглед мапе у облику торуса током кретања по мапи (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Мапа није могла бити сачувана. Проверите одредиште и доступан простор. Ваше измене су и даље отворене.
 [Loading headers]
-Loading headers...
+Учитавање заглавља...
 [Loading teams]
-Loading teams...
+Учитавање тимова...
 [Loading terrain]
-Loading terrain...
+Учитавање терена...
 [Building gradients]
-Building gradients...
+Праве се градијенти...
 [Loading players]
-Loading players...
+Учитавање играча...
 [Loading scripts]
-Loading scripts...
+Учитавање скрипти...
 [Generating map]
-Generating map...
+Генерисање мапе...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Мапа није могла бити генерисана. Пробајте друга подешавања генерисања.
 [Loading units]
-Loading units...
+Учитавање јединица...
 [Loading buildings]
-Loading buildings...
+Учитавање зграда...
 [Resolving team links]
-Resolving team links...
+Решавање веза тимова...
 [saving to storage]
-Saving...
+Чување...
 [save failed retry]
-Save failed. Retry.
+Чување није успело. Покушајте поново.
 [export save]
-Export save
+Извези сачувану игру
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Складиште прегледача није могло бити обновљено. Постојећи сачувани подаци нису измењени. Можете наставити ову сесију, али локалне измене неће моћи да се сачувају. Извезите важне сачуване игре из дијалога грешке чувања. Поново учитајте страницу да бисте покушали поново да обновите складиште.
 [continue]
-Continue
+Настави
 [export file]
-Export file
+Извези датотеку
 [export failed]
-File export failed
+Извоз датотеке није успео
 [import file]
-Import
+Увези
 [select import file]
-Choose a file to import
+Изаберите датотеку за увоз
 [validating import]
-Validating file...
+Провера датотеке...
 [import succeeded]
-File imported
+Датотека је увезена
 [import cancelled]
-Import cancelled
+Увоз отказан
 [import failed]
-Import failed: invalid or unsupported file
+Увоз није успео: неважећа или неподржана датотека
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Није сачувано: изаберите Увези да покушате поново, или Извези датотеку
 [import progress]
-Import progress
+Напредак увоза
 [export progress]
-Export progress
+Напредак извоза
 [retry save]
-Retry save
+Покушај поново да сачуваш
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Напредак кампање није сачуван. Покушајте поново или извезите резервну копију.
 [leave without saving]
-Leave without saving
+Излаз без чувања
 [campaign import failed]
-Invalid progress file or different campaign version
+Неважећа датотека напретка или друга верзија кампање
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Протоколи клијента и сервера се разликују. Инсталирајте исту верзију Glob2 као сервер.
 [settings continue]
-Continue
+Настави
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Чување подешавања није потврђено. Покушајте поново, или наставите.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Коначно чување није потврђено. Покушајте поново, или изађите без чувања.
 [quit without saving]
-Quit without saving
+Излаз без чувања
 [game closed]
-Game closed. You can close this window or reload to play again.
+Игра је затворена. Можете затворити овај прозор или поново учитати страницу да бисте опет играли.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Чување није потврђено. У реду поново покушава; Откажи се враћа у мени едитора.

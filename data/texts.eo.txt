@@ -1765,80 +1765,80 @@ Aŭtomata tora vido
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Aŭtomate montru la torforman superrigardon de la mapo dum moviĝado tra la mapo (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+La mapo ne povis esti konservita. Kontrolu la celon kaj la disponeblan spacon. Viaj redaktoj ankoraŭ estas malfermitaj.
 [Loading headers]
-Loading headers...
+Ŝargante kapojn...
 [Loading teams]
-Loading teams...
+Ŝargante teamojn...
 [Loading terrain]
-Loading terrain...
+Ŝargante terenon...
 [Building gradients]
-Building gradients...
+Konstruante gradientojn...
 [Loading players]
-Loading players...
+Ŝargante ludantojn...
 [Loading scripts]
-Loading scripts...
+Ŝargante skriptojn...
 [Generating map]
-Generating map...
+Generante mapon...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+La mapo ne povis esti generita. Provu aliajn generajn agordojn.
 [Loading units]
-Loading units...
+Ŝargante unuojn...
 [Loading buildings]
-Loading buildings...
+Ŝargante konstruaĵojn...
 [Resolving team links]
-Resolving team links...
+Solvante teamajn ligilojn...
 [saving to storage]
-Saving...
+Konservante...
 [save failed retry]
-Save failed. Retry.
+Konservado malsukcesis. Reprovu.
 [export save]
-Export save
+Eksporti konservaĵon
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+La retumila konservejo ne povis esti restarigita. Ekzistantaj konservitaj datumoj ne ŝanĝiĝis. Vi povas daŭrigi ĉi tiun seancon, sed lokaj ŝanĝoj ne povos esti konservitaj. Eksportu gravajn konservaĵojn el la dialogo pri konserva malsukceso. Reŝargu por reprovi restarigi la konservejon.
 [continue]
-Continue
+Daŭrigi
 [export file]
-Export file
+Eksporti dosieron
 [export failed]
-File export failed
+Eksportado de dosiero malsukcesis
 [import file]
-Import
+Importi
 [select import file]
-Choose a file to import
+Elektu dosieron por importi
 [validating import]
-Validating file...
+Kontrolante dosieron...
 [import succeeded]
-File imported
+Dosiero importita
 [import cancelled]
-Import cancelled
+Importado nuligita
 [import failed]
-Import failed: invalid or unsupported file
+Importado malsukcesis: nevalida aŭ nesubtenata dosiero
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Ne konservita: elektu Importi por reprovi, aŭ Eksporti dosieron
 [import progress]
-Import progress
+Importa progreso
 [export progress]
-Export progress
+Eksporta progreso
 [retry save]
-Retry save
+Reprovi konservadon
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Kampanja progreso ne konservita. Reprovu aŭ eksportu sekurkopion.
 [leave without saving]
-Leave without saving
+Eliri sen konservi
 [campaign import failed]
-Invalid progress file or different campaign version
+Nevalida progresa dosiero aŭ malsama kampanja versio
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+La protokoloj de kliento kaj servilo malsamas. Instalu la saman version de Glob2 kiel la servilo.
 [settings continue]
-Continue
+Daŭrigi
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Konservado de agordoj ne konfirmita. Reprovu, aŭ daŭrigu.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Fina konservado ne konfirmita. Reprovu, aŭ eliru sen konservi.
 [quit without saving]
-Quit without saving
+Eliri sen konservi
 [game closed]
-Game closed. You can close this window or reload to play again.
+La ludo fermiĝis. Vi povas fermi ĉi tiun fenestron aŭ reŝargi por denove ludi.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Konservado ne konfirmita. Bone reprovas; Nuligi revenas al la redaktila menuo.

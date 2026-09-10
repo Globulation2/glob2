@@ -1765,80 +1765,80 @@ OpenGL در این بیلد موجود نیست.
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 هنگام حرکت در نقشه (OpenGL) نمای کلی نقشه به شکل چنبره را به صورت خودکار نشان دهید.
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+نقشه ذخیره نشد. مقصد و فضای موجود را بررسی کنید. ویرایش‌های شما هنوز باز است.
 [Loading headers]
-Loading headers...
+در حال بارگذاری سرآیندها...
 [Loading teams]
-Loading teams...
+در حال بارگذاری تیم‌ها...
 [Loading terrain]
-Loading terrain...
+در حال بارگذاری زمین...
 [Building gradients]
-Building gradients...
+در حال ساخت گرادیان‌ها...
 [Loading players]
-Loading players...
+در حال بارگذاری بازیکنان...
 [Loading scripts]
-Loading scripts...
+در حال بارگذاری اسکریپت‌ها...
 [Generating map]
-Generating map...
+در حال ساخت نقشه...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+نقشه ساخته نشد. تنظیمات ساخت دیگری را امتحان کنید.
 [Loading units]
-Loading units...
+در حال بارگذاری واحدها...
 [Loading buildings]
-Loading buildings...
+در حال بارگذاری ساختمان‌ها...
 [Resolving team links]
-Resolving team links...
+در حال حل پیوندهای تیم...
 [saving to storage]
-Saving...
+در حال ذخیره...
 [save failed retry]
-Save failed. Retry.
+ذخیره ناموفق بود. دوباره تلاش کنید.
 [export save]
-Export save
+صدور بازی ذخیره‌شده
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+فضای ذخیره‌سازی مرورگر بازیابی نشد. داده‌های ذخیره‌شده موجود تغییر نکرده‌اند. می‌توانید این جلسه را ادامه دهید، اما تغییرات محلی ماندگار نخواهند شد. بازی‌های مهم را از کادر خطای ذخیره صادر کنید. برای تلاش دوباره برای بازیابی فضای ذخیره‌سازی، صفحه را دوباره بارگذاری کنید.
 [continue]
-Continue
+ادامه
 [export file]
-Export file
+صدور فایل
 [export failed]
-File export failed
+صدور فایل ناموفق بود
 [import file]
-Import
+درون‌ریزی
 [select import file]
-Choose a file to import
+فایلی برای درون‌ریزی انتخاب کنید
 [validating import]
-Validating file...
+در حال بررسی فایل...
 [import succeeded]
-File imported
+فایل درون‌ریزی شد
 [import cancelled]
-Import cancelled
+درون‌ریزی لغو شد
 [import failed]
-Import failed: invalid or unsupported file
+درون‌ریزی ناموفق بود: فایل نامعتبر یا پشتیبانی‌نشده
 [import persistence failed]
-Not saved: select Import to retry or Export file
+ذخیره نشد: درون‌ریزی را برای تلاش دوباره یا صدور فایل را انتخاب کنید
 [import progress]
-Import progress
+پیشرفت درون‌ریزی
 [export progress]
-Export progress
+پیشرفت صدور
 [retry save]
-Retry save
+تلاش دوباره برای ذخیره
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+پیشرفت کمپین ذخیره نشد. دوباره تلاش کنید یا یک نسخه پشتیبان صادر کنید.
 [leave without saving]
-Leave without saving
+خروج بدون ذخیره
 [campaign import failed]
-Invalid progress file or different campaign version
+فایل پیشرفت نامعتبر یا نسخه کمپین متفاوت است
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+پروتکل‌های کلاینت و سرور متفاوت است. همان نسخه Glob2 سرور را نصب کنید.
 [settings continue]
-Continue
+ادامه
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+ذخیره تنظیمات تأیید نشد. دوباره تلاش کنید یا ادامه دهید.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+ذخیره نهایی تأیید نشد. دوباره تلاش کنید یا بدون ذخیره خارج شوید.
 [quit without saving]
-Quit without saving
+خروج بدون ذخیره
 [game closed]
-Game closed. You can close this window or reload to play again.
+بازی بسته شد. می‌توانید این پنجره را ببندید یا صفحه را دوباره بارگذاری کنید تا دوباره بازی کنید.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+ذخیره تأیید نشد. تأیید دوباره تلاش می‌کند؛ لغو به منوی ویرایشگر بازمی‌گردد.

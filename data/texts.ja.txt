@@ -1763,80 +1763,80 @@ Globulation 2 のカーソルを表示します。
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 マップ内を移動するときに、トーラス（ドーナツ）形状のマップ全体図を自動的に表示します (OpenGL)。
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+マップを保存できませんでした。保存先と空き容量を確認してください。編集内容はまだ開いています。
 [Loading headers]
-Loading headers...
+ヘッダーを読み込んでいます...
 [Loading teams]
-Loading teams...
+チームを読み込んでいます...
 [Loading terrain]
-Loading terrain...
+地形を読み込んでいます...
 [Building gradients]
-Building gradients...
+勾配を構築しています...
 [Loading players]
-Loading players...
+プレイヤーを読み込んでいます...
 [Loading scripts]
-Loading scripts...
+スクリプトを読み込んでいます...
 [Generating map]
-Generating map...
+マップを生成しています...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+マップを生成できませんでした。別の生成設定を試してください。
 [Loading units]
-Loading units...
+ユニットを読み込んでいます...
 [Loading buildings]
-Loading buildings...
+建物を読み込んでいます...
 [Resolving team links]
-Resolving team links...
+チームのリンクを解決しています...
 [saving to storage]
-Saving...
+保存しています...
 [save failed retry]
-Save failed. Retry.
+保存に失敗しました。再試行してください。
 [export save]
-Export save
+セーブデータをエクスポート
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+ブラウザのストレージを復元できませんでした。既存の保存データは変更されていません。このセッションは続行できますが、ローカルの変更は保存できません。保存失敗ダイアログから重要なセーブデータをエクスポートしてください。再読み込みしてストレージの復元を再試行してください。
 [continue]
-Continue
+続ける
 [export file]
-Export file
+ファイルをエクスポート
 [export failed]
-File export failed
+ファイルのエクスポートに失敗しました
 [import file]
-Import
+インポート
 [select import file]
-Choose a file to import
+インポートするファイルを選択してください
 [validating import]
-Validating file...
+ファイルを検証しています...
 [import succeeded]
-File imported
+ファイルをインポートしました
 [import cancelled]
-Import cancelled
+インポートをキャンセルしました
 [import failed]
-Import failed: invalid or unsupported file
+インポートに失敗しました: 無効またはサポートされていないファイルです
 [import persistence failed]
-Not saved: select Import to retry or Export file
+未保存: 再試行するには「インポート」、またはファイルをエクスポートしてください
 [import progress]
-Import progress
+インポートの進行状況
 [export progress]
-Export progress
+エクスポートの進行状況
 [retry save]
-Retry save
+保存を再試行
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+キャンペーンの進行状況が保存されていません。再試行するか、バックアップをエクスポートしてください。
 [leave without saving]
-Leave without saving
+保存せずに終了
 [campaign import failed]
-Invalid progress file or different campaign version
+進行データが無効か、キャンペーンのバージョンが異なります
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+クライアントとサーバーのプロトコルが異なります。サーバーと同じGlob2のバージョンをインストールしてください。
 [settings continue]
-Continue
+続ける
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+設定の保存が確認されていません。再試行するか、続けてください。
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+最終保存が確認されていません。再試行するか、保存せずに終了してください。
 [quit without saving]
-Quit without saving
+保存せずに終了
 [game closed]
-Game closed. You can close this window or reload to play again.
+ゲームが終了しました。このウィンドウを閉じるか、再読み込みして再度プレイできます。
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+保存が確認されていません。OKで再試行、キャンセルでエディタメニューに戻ります。

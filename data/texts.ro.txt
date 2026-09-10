@@ -1767,80 +1767,80 @@ Vizualizare toroidală automată
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Afișați automat prezentarea generală a hărții în formă de torus în timp ce vă deplasați pe hartă (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Harta nu a putut fi salvată. Verificați destinația și spațiul disponibil. Modificările dvs. sunt încă deschise.
 [Loading headers]
-Loading headers...
+Se încarcă anteturile...
 [Loading teams]
-Loading teams...
+Se încarcă echipele...
 [Loading terrain]
-Loading terrain...
+Se încarcă terenul...
 [Building gradients]
-Building gradients...
+Se generează gradienții...
 [Loading players]
-Loading players...
+Se încarcă jucătorii...
 [Loading scripts]
-Loading scripts...
+Se încarcă scripturile...
 [Generating map]
-Generating map...
+Se generează harta...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Harta nu a putut fi generată. Încercați alte setări de generare.
 [Loading units]
-Loading units...
+Se încarcă unitățile...
 [Loading buildings]
-Loading buildings...
+Se încarcă construcțiile...
 [Resolving team links]
-Resolving team links...
+Se rezolvă legăturile dintre echipe...
 [saving to storage]
-Saving...
+Se salvează...
 [save failed retry]
-Save failed. Retry.
+Salvare eșuată. Reîncercați.
 [export save]
-Export save
+Exportă jocul salvat
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Stocarea din browser nu a putut fi restaurată. Datele salvate existente nu au fost modificate. Puteți continua această sesiune, dar modificările locale nu vor putea fi păstrate. Exportați salvările importante din fereastra de eroare de salvare. Reîncărcați pentru a reîncerca restaurarea stocării.
 [continue]
-Continue
+Continuă
 [export file]
-Export file
+Exportă fișierul
 [export failed]
-File export failed
+Exportul fișierului a eșuat
 [import file]
-Import
+Importă
 [select import file]
-Choose a file to import
+Alegeți un fișier de importat
 [validating import]
-Validating file...
+Se validează fișierul...
 [import succeeded]
-File imported
+Fișier importat
 [import cancelled]
-Import cancelled
+Import anulat
 [import failed]
-Import failed: invalid or unsupported file
+Import eșuat: fișier nevalid sau neacceptat
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Nesalvat: alegeți Importă pentru a reîncerca sau Exportă fișierul
 [import progress]
-Import progress
+Progres import
 [export progress]
-Export progress
+Progres export
 [retry save]
-Retry save
+Reîncearcă salvarea
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Progresul campaniei nu a fost salvat. Reîncercați sau exportați o copie de rezervă.
 [leave without saving]
-Leave without saving
+Ieși fără a salva
 [campaign import failed]
-Invalid progress file or different campaign version
+Fișier de progres nevalid sau versiune de campanie diferită
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Protocoalele clientului și serverului diferă. Instalați aceeași versiune Glob2 ca serverul.
 [settings continue]
-Continue
+Continuă
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Salvarea setărilor neconfirmată. Reîncercați sau continuați.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Salvarea finală neconfirmată. Reîncercați sau ieșiți fără a salva.
 [quit without saving]
-Quit without saving
+Ieși fără a salva
 [game closed]
-Game closed. You can close this window or reload to play again.
+Joc închis. Puteți închide această fereastră sau reîncărca pentru a juca din nou.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Salvare neconfirmată. OK reîncearcă; Anulare revine la meniul editorului.

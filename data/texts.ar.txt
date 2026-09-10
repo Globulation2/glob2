@@ -1765,80 +1765,80 @@ OpenGL غير متوفر في هذا الإصدار.
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+تعذر حفظ الخريطة. تحقق من الوجهة والمساحة المتاحة. تعديلاتك لا تزال مفتوحة.
 [Loading headers]
-Loading headers...
+جارٍ تحميل الترويسات...
 [Loading teams]
-Loading teams...
+جارٍ تحميل الفرق...
 [Loading terrain]
-Loading terrain...
+جارٍ تحميل التضاريس...
 [Building gradients]
-Building gradients...
+جارٍ إنشاء التدرجات...
 [Loading players]
-Loading players...
+جارٍ تحميل اللاعبين...
 [Loading scripts]
-Loading scripts...
+جارٍ تحميل النصوص البرمجية...
 [Generating map]
-Generating map...
+جارٍ إنشاء الخريطة...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+تعذر إنشاء الخريطة. جرّب إعدادات إنشاء مختلفة.
 [Loading units]
-Loading units...
+جارٍ تحميل الوحدات...
 [Loading buildings]
-Loading buildings...
+جارٍ تحميل المباني...
 [Resolving team links]
-Resolving team links...
+جارٍ حل روابط الفرق...
 [saving to storage]
-Saving...
+جارٍ الحفظ...
 [save failed retry]
-Save failed. Retry.
+فشل الحفظ. أعد المحاولة.
 [export save]
-Export save
+تصدير الحفظ
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+تعذرت استعادة تخزين المتصفح. البيانات المحفوظة الحالية لم تتغير. يمكنك متابعة هذه الجلسة، لكن التغييرات المحلية لن تُحفظ. صدّر الملفات المهمة من مربع حوار فشل الحفظ. أعد التحميل لمحاولة استعادة التخزين مرة أخرى.
 [continue]
-Continue
+متابعة
 [export file]
-Export file
+تصدير الملف
 [export failed]
-File export failed
+فشل تصدير الملف
 [import file]
-Import
+استيراد
 [select import file]
-Choose a file to import
+اختر ملفًا للاستيراد
 [validating import]
-Validating file...
+جارٍ التحقق من الملف...
 [import succeeded]
-File imported
+تم استيراد الملف
 [import cancelled]
-Import cancelled
+تم إلغاء الاستيراد
 [import failed]
-Import failed: invalid or unsupported file
+فشل الاستيراد: ملف غير صالح أو غير مدعوم
 [import persistence failed]
-Not saved: select Import to retry or Export file
+غير محفوظ: اختر استيراد لإعادة المحاولة أو تصدير الملف
 [import progress]
-Import progress
+تقدم الاستيراد
 [export progress]
-Export progress
+تقدم التصدير
 [retry save]
-Retry save
+إعادة محاولة الحفظ
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+لم يتم حفظ تقدم الحملة. أعد المحاولة أو صدّر نسخة احتياطية.
 [leave without saving]
-Leave without saving
+الخروج دون حفظ
 [campaign import failed]
-Invalid progress file or different campaign version
+ملف تقدم غير صالح أو إصدار حملة مختلف
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+بروتوكولا العميل والخادم مختلفان. ثبّت نفس إصدار Glob2 المثبت على الخادم.
 [settings continue]
-Continue
+متابعة
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+حفظ الإعدادات غير مؤكد. أعد المحاولة أو تابع.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+الحفظ النهائي غير مؤكد. أعد المحاولة أو اخرج دون حفظ.
 [quit without saving]
-Quit without saving
+الخروج دون حفظ
 [game closed]
-Game closed. You can close this window or reload to play again.
+تم إغلاق اللعبة. يمكنك إغلاق هذه النافذة أو إعادة التحميل للعب مرة أخرى.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+الحفظ غير مؤكد. موافق يعيد المحاولة؛ إلغاء يعود إلى قائمة المحرر.

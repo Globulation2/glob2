@@ -1775,80 +1775,80 @@ Automatické toroidné zobrazenie
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobraziť prehľad mapy v tvare torusu pri pohybe po mape (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Mapu sa nepodarilo uložiť. Skontrolujte cieľ a dostupné miesto. Vaše úpravy sú stále otvorené.
 [Loading headers]
-Loading headers...
+Načítavanie hlavičiek...
 [Loading teams]
-Loading teams...
+Načítavanie tímov...
 [Loading terrain]
-Loading terrain...
+Načítavanie terénu...
 [Building gradients]
-Building gradients...
+Vytvárajú sa prechody...
 [Loading players]
-Loading players...
+Načítavanie hráčov...
 [Loading scripts]
-Loading scripts...
+Načítavanie skriptov...
 [Generating map]
-Generating map...
+Generuje sa mapa...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Mapu sa nepodarilo vygenerovať. Skúste iné nastavenia generovania.
 [Loading units]
-Loading units...
+Načítavanie jednotiek...
 [Loading buildings]
-Loading buildings...
+Načítavanie budov...
 [Resolving team links]
-Resolving team links...
+Riešia sa prepojenia tímov...
 [saving to storage]
-Saving...
+Ukladá sa...
 [save failed retry]
-Save failed. Retry.
+Uloženie zlyhalo. Skúste to znova.
 [export save]
-Export save
+Exportovať uloženú hru
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Úložisko prehliadača sa nepodarilo obnoviť. Existujúce uložené dáta neboli zmenené. Môžete pokračovať v tejto relácii, ale lokálne zmeny sa nebudú dať zachovať. Dôležité uložené hry exportujte z dialógu chyby uloženia. Obnovte stránku a skúste obnovenie úložiska znova.
 [continue]
-Continue
+Pokračovať
 [export file]
-Export file
+Exportovať súbor
 [export failed]
-File export failed
+Export súboru zlyhal
 [import file]
-Import
+Importovať
 [select import file]
-Choose a file to import
+Vyberte súbor na import
 [validating import]
-Validating file...
+Overuje sa súbor...
 [import succeeded]
-File imported
+Súbor bol importovaný
 [import cancelled]
-Import cancelled
+Import zrušený
 [import failed]
-Import failed: invalid or unsupported file
+Import zlyhal: neplatný alebo nepodporovaný súbor
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Neuložené: vyberte Importovať na opätovný pokus, alebo Exportovať súbor
 [import progress]
-Import progress
+Priebeh importu
 [export progress]
-Export progress
+Priebeh exportu
 [retry save]
-Retry save
+Skúsiť uloženie znova
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Postup kampane nebol uložený. Skúste to znova alebo exportujte zálohu.
 [leave without saving]
-Leave without saving
+Ukončiť bez uloženia
 [campaign import failed]
-Invalid progress file or different campaign version
+Neplatný súbor postupu alebo iná verzia kampane
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Protokoly klienta a servera sa líšia. Nainštalujte rovnakú verziu Glob2 ako server.
 [settings continue]
-Continue
+Pokračovať
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Uloženie nastavení nepotvrdené. Skúste to znova, alebo pokračujte.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Záverečné uloženie nepotvrdené. Skúste to znova, alebo ukončite bez uloženia.
 [quit without saving]
-Quit without saving
+Ukončiť bez uloženia
 [game closed]
-Game closed. You can close this window or reload to play again.
+Hra bola ukončená. Toto okno môžete zavrieť alebo znova načítať stránku a hrať znova.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Uloženie nepotvrdené. OK to skúsi znova; Zrušiť sa vráti do ponuky editora.

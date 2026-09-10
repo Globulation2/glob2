@@ -1777,80 +1777,80 @@ Toroide-ikuspegi automatikoa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Erakutsi automatikoki toroide formako maparen ikuspegi orokorra mapan mugitzen zaren bitartean (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Mapa ezin izan da gorde. Egiaztatu helmuga eta erabilgarri dagoen lekua. Zure edizioak oraindik irekita daude.
 [Loading headers]
-Loading headers...
+Goiburuak kargatzen...
 [Loading teams]
-Loading teams...
+Taldeak kargatzen...
 [Loading terrain]
-Loading terrain...
+Lurraldea kargatzen...
 [Building gradients]
-Building gradients...
+Gradienteak eraikitzen...
 [Loading players]
-Loading players...
+Jokalariak kargatzen...
 [Loading scripts]
-Loading scripts...
+Script-ak kargatzen...
 [Generating map]
-Generating map...
+Mapa sortzen...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Mapa ezin izan da sortu. Probatu sortze-ezarpen desberdinak.
 [Loading units]
-Loading units...
+Unitateak kargatzen...
 [Loading buildings]
-Loading buildings...
+Eraikinak kargatzen...
 [Resolving team links]
-Resolving team links...
+Taldeen loturak ebazten...
 [saving to storage]
-Saving...
+Gordetzen...
 [save failed retry]
-Save failed. Retry.
+Gordetzeak huts egin du. Saiatu berriro.
 [export save]
-Export save
+Esportatu gordetako jokoa
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Nabigatzailearen biltegia ezin izan da leheneratu. Lehendik gordetako datuak ez dira aldatu. Saio honekin jarraitu dezakezu, baina tokiko aldaketak ezin izango dira mantendu. Esportatu joko garrantzitsuak gordetze-errorearen elkarrizketa-koadrotik. Berritu orria biltegia berriro leheneratzen saiatzeko.
 [continue]
-Continue
+Jarraitu
 [export file]
-Export file
+Esportatu fitxategia
 [export failed]
-File export failed
+Fitxategia esportatzeak huts egin du
 [import file]
-Import
+Inportatu
 [select import file]
-Choose a file to import
+Aukeratu inportatzeko fitxategi bat
 [validating import]
-Validating file...
+Fitxategia balioztatzen...
 [import succeeded]
-File imported
+Fitxategia inportatu da
 [import cancelled]
-Import cancelled
+Inportazioa bertan behera utzi da
 [import failed]
-Import failed: invalid or unsupported file
+Inportazioak huts egin du: fitxategi baliogabea edo onartu gabea
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Gorde gabe: aukeratu Inportatu berriro saiatzeko, edo Esportatu fitxategia
 [import progress]
-Import progress
+Inportazioaren aurrerapena
 [export progress]
-Export progress
+Esportazioaren aurrerapena
 [retry save]
-Retry save
+Saiatu berriro gordetzen
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Kanpainaren aurrerapena ez da gorde. Saiatu berriro edo esportatu babeskopia bat.
 [leave without saving]
-Leave without saving
+Irten gorde gabe
 [campaign import failed]
-Invalid progress file or different campaign version
+Aurrerapen fitxategi baliogabea edo kanpaina bertsio desberdina
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Bezeroaren eta zerbitzariaren protokoloak desberdinak dira. Instalatu zerbitzariak duen Glob2 bertsio bera.
 [settings continue]
-Continue
+Jarraitu
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Ezarpenak gordetzea ez da berretsi. Saiatu berriro, edo jarraitu.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Azken gordetzea ez da berretsi. Saiatu berriro, edo irten gorde gabe.
 [quit without saving]
-Quit without saving
+Irten gorde gabe
 [game closed]
-Game closed. You can close this window or reload to play again.
+Jokoa itxi da. Leiho hau itxi dezakezu edo orria berritu berriro jolasteko.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Gordetzea ez da berretsi. Ados-ek berriro saiatzen du; Utzi-k editorearen menura itzultzen du.

@@ -1829,80 +1829,80 @@ Vista toroidale automatica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostra automaticamente la panoramica toroidale mentre ti sposti sulla mappa (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Impossibile salvare la mappa. Controlla la destinazione e lo spazio disponibile. Le modifiche sono ancora aperte.
 [Loading headers]
-Loading headers...
+Caricamento intestazioni...
 [Loading teams]
-Loading teams...
+Caricamento squadre...
 [Loading terrain]
-Loading terrain...
+Caricamento terreno...
 [Building gradients]
-Building gradients...
+Generazione dei gradienti...
 [Loading players]
-Loading players...
+Caricamento giocatori...
 [Loading scripts]
-Loading scripts...
+Caricamento script...
 [Generating map]
-Generating map...
+Generazione della mappa...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Impossibile generare la mappa. Prova altre impostazioni di generazione.
 [Loading units]
-Loading units...
+Caricamento unità...
 [Loading buildings]
-Loading buildings...
+Caricamento edifici...
 [Resolving team links]
-Resolving team links...
+Risoluzione dei collegamenti tra squadre...
 [saving to storage]
-Saving...
+Salvataggio...
 [save failed retry]
-Save failed. Retry.
+Salvataggio non riuscito. Riprova.
 [export save]
-Export save
+Esporta salvataggio
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Impossibile ripristinare l'archiviazione del browser. I dati salvati esistenti non sono stati modificati. Puoi continuare questa sessione, ma le modifiche locali non potranno essere mantenute. Esporta i salvataggi importanti dalla finestra di errore di salvataggio. Ricarica per tentare di nuovo il ripristino dell'archiviazione.
 [continue]
-Continue
+Continua
 [export file]
-Export file
+Esporta file
 [export failed]
-File export failed
+Esportazione del file non riuscita
 [import file]
-Import
+Importa
 [select import file]
-Choose a file to import
+Scegli un file da importare
 [validating import]
-Validating file...
+Verifica del file...
 [import succeeded]
-File imported
+File importato
 [import cancelled]
-Import cancelled
+Importazione annullata
 [import failed]
-Import failed: invalid or unsupported file
+Importazione non riuscita: file non valido o non supportato
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Non salvato: scegli Importa per riprovare o Esporta file
 [import progress]
-Import progress
+Avanzamento importazione
 [export progress]
-Export progress
+Avanzamento esportazione
 [retry save]
-Retry save
+Riprova il salvataggio
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Progresso della campagna non salvato. Riprova o esporta un backup.
 [leave without saving]
-Leave without saving
+Esci senza salvare
 [campaign import failed]
-Invalid progress file or different campaign version
+File di progresso non valido o versione della campagna diversa
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+I protocolli client e server differiscono. Installa la stessa versione di Glob2 del server.
 [settings continue]
-Continue
+Continua
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Salvataggio delle impostazioni non confermato. Riprova, oppure continua.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Salvataggio finale non confermato. Riprova, oppure esci senza salvare.
 [quit without saving]
-Quit without saving
+Esci senza salvare
 [game closed]
-Game closed. You can close this window or reload to play again.
+Partita chiusa. Puoi chiudere questa finestra o ricaricare per giocare di nuovo.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Salvataggio non confermato. Ok riprova; Annulla torna al menu dell'editor.

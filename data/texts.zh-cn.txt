@@ -1763,80 +1763,80 @@ OpenGL 在此版本中不可用。
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 在地图上移动时自动显示圆环形状的地图概览 (OpenGL)。
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+无法保存地图。请检查目标位置和可用空间。您的编辑内容仍处于打开状态。
 [Loading headers]
-Loading headers...
+正在加载头信息...
 [Loading teams]
-Loading teams...
+正在加载队伍...
 [Loading terrain]
-Loading terrain...
+正在加载地形...
 [Building gradients]
-Building gradients...
+正在生成梯度...
 [Loading players]
-Loading players...
+正在加载玩家...
 [Loading scripts]
-Loading scripts...
+正在加载脚本...
 [Generating map]
-Generating map...
+正在生成地图...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+无法生成地图。请尝试其他生成设置。
 [Loading units]
-Loading units...
+正在加载单位...
 [Loading buildings]
-Loading buildings...
+正在加载建筑...
 [Resolving team links]
-Resolving team links...
+正在解析队伍链接...
 [saving to storage]
-Saving...
+正在保存...
 [save failed retry]
-Save failed. Retry.
+保存失败，请重试。
 [export save]
-Export save
+导出存档
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+无法恢复浏览器存储。现有已保存数据未被更改。您可以继续本次会话，但本地更改将无法保留。请从保存失败对话框导出重要存档。重新加载以再次尝试恢复存储。
 [continue]
-Continue
+继续
 [export file]
-Export file
+导出文件
 [export failed]
-File export failed
+文件导出失败
 [import file]
-Import
+导入
 [select import file]
-Choose a file to import
+选择要导入的文件
 [validating import]
-Validating file...
+正在验证文件...
 [import succeeded]
-File imported
+文件已导入
 [import cancelled]
-Import cancelled
+导入已取消
 [import failed]
-Import failed: invalid or unsupported file
+导入失败：文件无效或不受支持
 [import persistence failed]
-Not saved: select Import to retry or Export file
+未保存：选择“导入”重试，或“导出文件”
 [import progress]
-Import progress
+导入进度
 [export progress]
-Export progress
+导出进度
 [retry save]
-Retry save
+重试保存
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+战役进度未保存。请重试或导出备份。
 [leave without saving]
-Leave without saving
+不保存退出
 [campaign import failed]
-Invalid progress file or different campaign version
+进度文件无效或战役版本不同
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+客户端与服务器协议不一致。请安装与服务器相同的 Glob2 版本。
 [settings continue]
-Continue
+继续
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+设置保存尚未确认。请重试，或继续。
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+最终保存尚未确认。请重试，或不保存退出。
 [quit without saving]
-Quit without saving
+不保存退出
 [game closed]
-Game closed. You can close this window or reload to play again.
+游戏已关闭。您可以关闭此窗口，或重新加载以再次游戏。
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+尚未确认保存。“确定”重试；“取消”返回编辑器菜单。

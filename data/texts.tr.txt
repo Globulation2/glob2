@@ -1775,80 +1775,80 @@ Otomatik torus görünümü
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Haritada dolaşırken torus şeklindeki haritaya genel bakışı otomatik olarak gösterin (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Harita kaydedilemedi. Hedefi ve kullanılabilir alanı kontrol edin. Düzenlemeleriniz hâlâ açık.
 [Loading headers]
-Loading headers...
+Başlıklar yükleniyor...
 [Loading teams]
-Loading teams...
+Takımlar yükleniyor...
 [Loading terrain]
-Loading terrain...
+Arazi yükleniyor...
 [Building gradients]
-Building gradients...
+Gradyanlar oluşturuluyor...
 [Loading players]
-Loading players...
+Oyuncular yükleniyor...
 [Loading scripts]
-Loading scripts...
+Betikler yükleniyor...
 [Generating map]
-Generating map...
+Harita oluşturuluyor...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Harita oluşturulamadı. Farklı oluşturma ayarları deneyin.
 [Loading units]
-Loading units...
+Birimler yükleniyor...
 [Loading buildings]
-Loading buildings...
+Binalar yükleniyor...
 [Resolving team links]
-Resolving team links...
+Takım bağlantıları çözümleniyor...
 [saving to storage]
-Saving...
+Kaydediliyor...
 [save failed retry]
-Save failed. Retry.
+Kayıt başarısız oldu. Yeniden deneyin.
 [export save]
-Export save
+Kaydı dışa aktar
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Tarayıcı depolaması geri yüklenemedi. Mevcut kayıtlı veriler değiştirilmedi. Bu oturuma devam edebilirsiniz, ancak yerel değişiklikler kalıcı olamaz. Önemli kayıtları, kayıt hatası penceresinden dışa aktarın. Depolamayı yeniden geri yüklemeyi denemek için sayfayı yenileyin.
 [continue]
-Continue
+Devam et
 [export file]
-Export file
+Dosyayı dışa aktar
 [export failed]
-File export failed
+Dosya dışa aktarma başarısız oldu
 [import file]
-Import
+İçe aktar
 [select import file]
-Choose a file to import
+İçe aktarılacak bir dosya seçin
 [validating import]
-Validating file...
+Dosya doğrulanıyor...
 [import succeeded]
-File imported
+Dosya içe aktarıldı
 [import cancelled]
-Import cancelled
+İçe aktarma iptal edildi
 [import failed]
-Import failed: invalid or unsupported file
+İçe aktarma başarısız: geçersiz veya desteklenmeyen dosya
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Kaydedilmedi: yeniden denemek için İçe Aktar veya Dosyayı Dışa Aktar'ı seçin
 [import progress]
-Import progress
+İçe aktarma ilerlemesi
 [export progress]
-Export progress
+Dışa aktarma ilerlemesi
 [retry save]
-Retry save
+Kaydetmeyi yeniden dene
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Kampanya ilerlemesi kaydedilmedi. Yeniden deneyin veya bir yedek dışa aktarın.
 [leave without saving]
-Leave without saving
+Kaydetmeden çık
 [campaign import failed]
-Invalid progress file or different campaign version
+Geçersiz ilerleme dosyası veya farklı kampanya sürümü
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+İstemci ve sunucu protokolleri farklı. Sunucuyla aynı Glob2 sürümünü yükleyin.
 [settings continue]
-Continue
+Devam et
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Ayar kaydı onaylanmadı. Yeniden deneyin veya devam edin.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Son kayıt onaylanmadı. Yeniden deneyin veya kaydetmeden çıkın.
 [quit without saving]
-Quit without saving
+Kaydetmeden çık
 [game closed]
-Game closed. You can close this window or reload to play again.
+Oyun kapatıldı. Bu pencereyi kapatabilir veya yeniden oynamak için sayfayı yenileyebilirsiniz.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Kayıt onaylanmadı. Tamam yeniden dener; İptal düzenleyici menüsüne döner.

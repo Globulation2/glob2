@@ -1767,80 +1767,80 @@ Samodejni torusni pogled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljevidu (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Zemljevida ni bilo mogoče shraniti. Preverite cilj in razpoložljiv prostor. Vaše spremembe so še vedno odprte.
 [Loading headers]
-Loading headers...
+Nalaganje glav...
 [Loading teams]
-Loading teams...
+Nalaganje ekip...
 [Loading terrain]
-Loading terrain...
+Nalaganje terena...
 [Building gradients]
-Building gradients...
+Ustvarjanje gradientov...
 [Loading players]
-Loading players...
+Nalaganje igralcev...
 [Loading scripts]
-Loading scripts...
+Nalaganje skriptov...
 [Generating map]
-Generating map...
+Ustvarjanje zemljevida...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Zemljevida ni bilo mogoče ustvariti. Poskusite druge nastavitve ustvarjanja.
 [Loading units]
-Loading units...
+Nalaganje enot...
 [Loading buildings]
-Loading buildings...
+Nalaganje stavb...
 [Resolving team links]
-Resolving team links...
+Razreševanje povezav ekip...
 [saving to storage]
-Saving...
+Shranjevanje...
 [save failed retry]
-Save failed. Retry.
+Shranjevanje ni uspelo. Poskusite znova.
 [export save]
-Export save
+Izvozi shranjeno igro
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Shrambe brskalnika ni bilo mogoče obnoviti. Obstoječi shranjeni podatki niso bili spremenjeni. To sejo lahko nadaljujete, vendar lokalnih sprememb ne bo mogoče ohraniti. Pomembne shranjene igre izvozite iz pogovornega okna napake shranjevanja. Za nov poskus obnovitve shrambe stran znova naložite.
 [continue]
-Continue
+Nadaljuj
 [export file]
-Export file
+Izvozi datoteko
 [export failed]
-File export failed
+Izvoz datoteke ni uspel
 [import file]
-Import
+Uvozi
 [select import file]
-Choose a file to import
+Izberite datoteko za uvoz
 [validating import]
-Validating file...
+Preverjanje datoteke...
 [import succeeded]
-File imported
+Datoteka uvožena
 [import cancelled]
-Import cancelled
+Uvoz preklican
 [import failed]
-Import failed: invalid or unsupported file
+Uvoz ni uspel: neveljavna ali nepodprta datoteka
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Ni shranjeno: izberite Uvozi za nov poskus, ali Izvozi datoteko
 [import progress]
-Import progress
+Napredek uvoza
 [export progress]
-Export progress
+Napredek izvoza
 [retry save]
-Retry save
+Poskusi znova shraniti
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Napredek pohoda ni bil shranjen. Poskusite znova ali izvozite varnostno kopijo.
 [leave without saving]
-Leave without saving
+Izhod brez shranjevanja
 [campaign import failed]
-Invalid progress file or different campaign version
+Neveljavna datoteka napredka ali druga različica pohoda
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Protokola odjemalca in strežnika se razlikujeta. Namestite enako različico Glob2 kot strežnik.
 [settings continue]
-Continue
+Nadaljuj
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Shranjevanje nastavitev ni potrjeno. Poskusite znova ali nadaljujte.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Končno shranjevanje ni potrjeno. Poskusite znova ali izstopite brez shranjevanja.
 [quit without saving]
-Quit without saving
+Izhod brez shranjevanja
 [game closed]
-Game closed. You can close this window or reload to play again.
+Igra je zaprta. To okno lahko zaprete ali stran znova naložite, da igrate še enkrat.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Shranjevanje ni potrjeno. V redu poskusi znova; Prekliči se vrne v meni urejevalnika.

@@ -1767,80 +1767,80 @@ Automatische Torusansicht
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Zeigt automatisch die torusförmige Kartenübersicht an, während Sie sich auf der Karte bewegen (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Die Karte konnte nicht gespeichert werden. Prüfen Sie Ziel und verfügbaren Speicherplatz. Ihre Änderungen sind weiterhin offen.
 [Loading headers]
-Loading headers...
+Kopfdaten werden geladen...
 [Loading teams]
-Loading teams...
+Teams werden geladen...
 [Loading terrain]
-Loading terrain...
+Gelände wird geladen...
 [Building gradients]
-Building gradients...
+Verlaufsfelder werden erstellt...
 [Loading players]
-Loading players...
+Spieler werden geladen...
 [Loading scripts]
-Loading scripts...
+Skripte werden geladen...
 [Generating map]
-Generating map...
+Karte wird generiert...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Die Karte konnte nicht generiert werden. Versuchen Sie andere Generierungseinstellungen.
 [Loading units]
-Loading units...
+Einheiten werden geladen...
 [Loading buildings]
-Loading buildings...
+Gebäude werden geladen...
 [Resolving team links]
-Resolving team links...
+Team-Verknüpfungen werden aufgelöst...
 [saving to storage]
-Saving...
+Wird gespeichert...
 [save failed retry]
-Save failed. Retry.
+Speichern fehlgeschlagen. Erneut versuchen.
 [export save]
-Export save
+Speicherstand exportieren
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Der Browser-Speicher konnte nicht wiederhergestellt werden. Vorhandene gespeicherte Daten wurden nicht verändert. Sie können diese Sitzung fortsetzen, aber lokale Änderungen können nicht dauerhaft gespeichert werden. Exportieren Sie wichtige Spielstände über den Speicherfehler-Dialog. Laden Sie neu, um die Wiederherstellung erneut zu versuchen.
 [continue]
-Continue
+Weiter
 [export file]
-Export file
+Datei exportieren
 [export failed]
-File export failed
+Dateiexport fehlgeschlagen
 [import file]
-Import
+Importieren
 [select import file]
-Choose a file to import
+Datei zum Importieren auswählen
 [validating import]
-Validating file...
+Datei wird überprüft...
 [import succeeded]
-File imported
+Datei importiert
 [import cancelled]
-Import cancelled
+Import abgebrochen
 [import failed]
-Import failed: invalid or unsupported file
+Import fehlgeschlagen: ungültige oder nicht unterstützte Datei
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Nicht gespeichert: Importieren zum erneuten Versuch oder Datei exportieren wählen
 [import progress]
-Import progress
+Importfortschritt
 [export progress]
-Export progress
+Exportfortschritt
 [retry save]
-Retry save
+Speichern erneut versuchen
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Kampagnenfortschritt nicht gespeichert. Erneut versuchen oder eine Sicherung exportieren.
 [leave without saving]
-Leave without saving
+Beenden ohne zu speichern
 [campaign import failed]
-Invalid progress file or different campaign version
+Ungültige Fortschrittsdatei oder abweichende Kampagnenversion
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Client- und Serverprotokoll stimmen nicht überein. Installieren Sie dieselbe Glob2-Version wie der Server.
 [settings continue]
-Continue
+Weiter
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Einstellungen speichern nicht bestätigt. Erneut versuchen oder fortfahren.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Letztes Speichern nicht bestätigt. Erneut versuchen oder ohne Speichern beenden.
 [quit without saving]
-Quit without saving
+Beenden ohne zu speichern
 [game closed]
-Game closed. You can close this window or reload to play again.
+Spiel beendet. Sie können dieses Fenster schließen oder neu laden, um erneut zu spielen.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Speichern nicht bestätigt. OK versucht es erneut; Abbrechen kehrt zum Editor-Menü zurück.

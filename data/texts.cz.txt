@@ -1767,80 +1767,80 @@ Automatický toroidní pohled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Mapu se nepodařilo uložit. Zkontrolujte cíl a dostupné místo. Vaše úpravy jsou stále otevřené.
 [Loading headers]
-Loading headers...
+Načítání hlaviček...
 [Loading teams]
-Loading teams...
+Načítání týmů...
 [Loading terrain]
-Loading terrain...
+Načítání terénu...
 [Building gradients]
-Building gradients...
+Vytvářejí se gradienty...
 [Loading players]
-Loading players...
+Načítání hráčů...
 [Loading scripts]
-Loading scripts...
+Načítání skriptů...
 [Generating map]
-Generating map...
+Generuje se mapa...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Mapu se nepodařilo vytvořit. Zkuste jiná nastavení generování.
 [Loading units]
-Loading units...
+Načítání jednotek...
 [Loading buildings]
-Loading buildings...
+Načítání budov...
 [Resolving team links]
-Resolving team links...
+Řeší se propojení týmů...
 [saving to storage]
-Saving...
+Ukládá se...
 [save failed retry]
-Save failed. Retry.
+Uložení selhalo. Zkuste to znovu.
 [export save]
-Export save
+Exportovat uloženou hru
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Úložiště prohlížeče se nepodařilo obnovit. Stávající uložená data nebyla změněna. Můžete pokračovat v této relaci, ale místní změny nebude možné uchovat. Důležité uložené hry exportujte z dialogu chyby uložení. Obnovte stránku a zkuste obnovení úložiště znovu.
 [continue]
-Continue
+Pokračovat
 [export file]
-Export file
+Exportovat soubor
 [export failed]
-File export failed
+Export souboru selhal
 [import file]
-Import
+Importovat
 [select import file]
-Choose a file to import
+Vyberte soubor k importu
 [validating import]
-Validating file...
+Ověřuje se soubor...
 [import succeeded]
-File imported
+Soubor byl importován
 [import cancelled]
-Import cancelled
+Import zrušen
 [import failed]
-Import failed: invalid or unsupported file
+Import selhal: neplatný nebo nepodporovaný soubor
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Neuloženo: zvolte Importovat pro nový pokus, nebo Exportovat soubor
 [import progress]
-Import progress
+Průběh importu
 [export progress]
-Export progress
+Průběh exportu
 [retry save]
-Retry save
+Zkusit uložení znovu
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Postup tažení nebyl uložen. Zkuste to znovu nebo exportujte zálohu.
 [leave without saving]
-Leave without saving
+Ukončit bez uložení
 [campaign import failed]
-Invalid progress file or different campaign version
+Neplatný soubor postupu nebo jiná verze tažení
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Protokoly klienta a serveru se liší. Nainstalujte stejnou verzi Glob2 jako server.
 [settings continue]
-Continue
+Pokračovat
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Uložení nastavení nepotvrzeno. Zkuste to znovu, nebo pokračujte.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Závěrečné uložení nepotvrzeno. Zkuste to znovu, nebo ukončete bez uložení.
 [quit without saving]
-Quit without saving
+Ukončit bez uložení
 [game closed]
-Game closed. You can close this window or reload to play again.
+Hra byla ukončena. Toto okno můžete zavřít nebo znovu načíst stránku a hrát znovu.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Uložení nepotvrzeno. OK zkusí to znovu; Zrušit se vrátí do nabídky editoru.

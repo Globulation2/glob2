@@ -1767,80 +1767,80 @@ Automatyczny widok torusa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatycznie pokazuj przegląd mapy w kształcie torusa podczas poruszania się po mapie (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Nie udało się zapisać mapy. Sprawdź miejsce docelowe i dostępną przestrzeń. Twoje zmiany wciąż są otwarte.
 [Loading headers]
-Loading headers...
+Wczytywanie nagłówków...
 [Loading teams]
-Loading teams...
+Wczytywanie drużyn...
 [Loading terrain]
-Loading terrain...
+Wczytywanie terenu...
 [Building gradients]
-Building gradients...
+Tworzenie gradientów...
 [Loading players]
-Loading players...
+Wczytywanie graczy...
 [Loading scripts]
-Loading scripts...
+Wczytywanie skryptów...
 [Generating map]
-Generating map...
+Generowanie mapy...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Nie udało się wygenerować mapy. Spróbuj innych ustawień generowania.
 [Loading units]
-Loading units...
+Wczytywanie jednostek...
 [Loading buildings]
-Loading buildings...
+Wczytywanie budynków...
 [Resolving team links]
-Resolving team links...
+Rozwiązywanie powiązań drużyn...
 [saving to storage]
-Saving...
+Zapisywanie...
 [save failed retry]
-Save failed. Retry.
+Zapis nieudany. Spróbuj ponownie.
 [export save]
-Export save
+Eksportuj zapis
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Nie udało się przywrócić pamięci przeglądarki. Istniejące zapisane dane nie zostały zmienione. Możesz kontynuować tę sesję, ale zmiany lokalne nie zostaną zachowane. Wyeksportuj ważne zapisy z okna błędu zapisu. Przeładuj stronę, aby ponowić przywracanie pamięci.
 [continue]
-Continue
+Kontynuuj
 [export file]
-Export file
+Eksportuj plik
 [export failed]
-File export failed
+Eksport pliku nie powiódł się
 [import file]
-Import
+Importuj
 [select import file]
-Choose a file to import
+Wybierz plik do zaimportowania
 [validating import]
-Validating file...
+Sprawdzanie pliku...
 [import succeeded]
-File imported
+Plik zaimportowany
 [import cancelled]
-Import cancelled
+Import anulowany
 [import failed]
-Import failed: invalid or unsupported file
+Import nie powiódł się: nieprawidłowy lub nieobsługiwany plik
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Niezapisane: wybierz Importuj, aby spróbować ponownie, lub Eksportuj plik
 [import progress]
-Import progress
+Postęp importu
 [export progress]
-Export progress
+Postęp eksportu
 [retry save]
-Retry save
+Ponów zapis
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Postęp kampanii nie został zapisany. Spróbuj ponownie lub wyeksportuj kopię zapasową.
 [leave without saving]
-Leave without saving
+Wyjdź bez zapisywania
 [campaign import failed]
-Invalid progress file or different campaign version
+Nieprawidłowy plik postępu lub inna wersja kampanii
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Protokoły klienta i serwera się różnią. Zainstaluj taką samą wersję Glob2 jak na serwerze.
 [settings continue]
-Continue
+Kontynuuj
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Zapis ustawień niepotwierdzony. Spróbuj ponownie lub kontynuuj.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Zapis końcowy niepotwierdzony. Spróbuj ponownie lub wyjdź bez zapisywania.
 [quit without saving]
-Quit without saving
+Wyjdź bez zapisywania
 [game closed]
-Game closed. You can close this window or reload to play again.
+Gra zamknięta. Możesz zamknąć to okno lub przeładować stronę, aby zagrać ponownie.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Zapis niepotwierdzony. OK ponawia próbę; Anuluj wraca do menu edytora.

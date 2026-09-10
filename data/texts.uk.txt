@@ -1763,80 +1763,80 @@ OpenGL недоступний у цій збірці.
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Автоматично показувати огляд карти у формі тора під час переміщення по карті (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Не вдалося зберегти карту. Перевірте місце призначення та вільний простір. Ваші зміни досі відкриті.
 [Loading headers]
-Loading headers...
+Завантаження заголовків...
 [Loading teams]
-Loading teams...
+Завантаження команд...
 [Loading terrain]
-Loading terrain...
+Завантаження місцевості...
 [Building gradients]
-Building gradients...
+Побудова градієнтів...
 [Loading players]
-Loading players...
+Завантаження гравців...
 [Loading scripts]
-Loading scripts...
+Завантаження скриптів...
 [Generating map]
-Generating map...
+Створення карти...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Не вдалося створити карту. Спробуйте інші параметри генерації.
 [Loading units]
-Loading units...
+Завантаження підрозділів...
 [Loading buildings]
-Loading buildings...
+Завантаження будівель...
 [Resolving team links]
-Resolving team links...
+Визначення зв'язків команд...
 [saving to storage]
-Saving...
+Збереження...
 [save failed retry]
-Save failed. Retry.
+Помилка збереження. Повторіть спробу.
 [export save]
-Export save
+Експортувати збереження
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Не вдалося відновити сховище браузера. Наявні збережені дані не змінено. Ви можете продовжити цей сеанс, але локальні зміни неможливо буде зберегти. Експортуйте важливі збереження з вікна помилки збереження. Перезавантажте сторінку, щоб повторити спробу відновлення сховища.
 [continue]
-Continue
+Продовжити
 [export file]
-Export file
+Експортувати файл
 [export failed]
-File export failed
+Не вдалося експортувати файл
 [import file]
-Import
+Імпорт
 [select import file]
-Choose a file to import
+Виберіть файл для імпорту
 [validating import]
-Validating file...
+Перевірка файлу...
 [import succeeded]
-File imported
+Файл імпортовано
 [import cancelled]
-Import cancelled
+Імпорт скасовано
 [import failed]
-Import failed: invalid or unsupported file
+Помилка імпорту: недійсний або непідтримуваний файл
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Не збережено: виберіть «Імпорт», щоб повторити спробу, або «Експортувати файл»
 [import progress]
-Import progress
+Хід імпорту
 [export progress]
-Export progress
+Хід експорту
 [retry save]
-Retry save
+Повторити збереження
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Прогрес кампанії не збережено. Повторіть спробу або експортуйте резервну копію.
 [leave without saving]
-Leave without saving
+Вийти без збереження
 [campaign import failed]
-Invalid progress file or different campaign version
+Недійсний файл прогресу або інша версія кампанії
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Протоколи клієнта й сервера відрізняються. Установіть таку саму версію Glob2, як на сервері.
 [settings continue]
-Continue
+Продовжити
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Збереження налаштувань не підтверджено. Повторіть спробу або продовжте.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Підсумкове збереження не підтверджено. Повторіть спробу або вийдіть без збереження.
 [quit without saving]
-Quit without saving
+Вийти без збереження
 [game closed]
-Game closed. You can close this window or reload to play again.
+Гру закрито. Можете закрити це вікно або перезавантажити сторінку, щоб зіграти знову.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Збереження не підтверджено. «Гаразд» повторює спробу; «Скасувати» повертає до меню редактора.

@@ -1837,80 +1837,80 @@ Cortex
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Αυτόματη εμφάνιση της επισκόπησης του χάρτη σε σχήμα τόρου ενώ μετακινείστε στον χάρτη (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Ο χάρτης δεν ήταν δυνατό να αποθηκευτεί. Ελέγξτε τον προορισμό και τον διαθέσιμο χώρο. Οι αλλαγές σας παραμένουν ανοιχτές.
 [Loading headers]
-Loading headers...
+Φόρτωση κεφαλίδων...
 [Loading teams]
-Loading teams...
+Φόρτωση ομάδων...
 [Loading terrain]
-Loading terrain...
+Φόρτωση εδάφους...
 [Building gradients]
-Building gradients...
+Δημιουργία διαβαθμίσεων...
 [Loading players]
-Loading players...
+Φόρτωση παικτών...
 [Loading scripts]
-Loading scripts...
+Φόρτωση σεναρίων...
 [Generating map]
-Generating map...
+Δημιουργία χάρτη...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Ο χάρτης δεν ήταν δυνατό να δημιουργηθεί. Δοκιμάστε άλλες ρυθμίσεις δημιουργίας.
 [Loading units]
-Loading units...
+Φόρτωση μονάδων...
 [Loading buildings]
-Loading buildings...
+Φόρτωση κτιρίων...
 [Resolving team links]
-Resolving team links...
+Επίλυση συνδέσμων ομάδας...
 [saving to storage]
-Saving...
+Αποθήκευση...
 [save failed retry]
-Save failed. Retry.
+Η αποθήκευση απέτυχε. Δοκιμάστε ξανά.
 [export save]
-Export save
+Εξαγωγή αποθηκευμένου παιχνιδιού
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Δεν ήταν δυνατή η επαναφορά του χώρου αποθήκευσης του προγράμματος περιήγησης. Τα υπάρχοντα αποθηκευμένα δεδομένα δεν έχουν αλλάξει. Μπορείτε να συνεχίσετε αυτήν τη συνεδρία, αλλά οι τοπικές αλλαγές δεν θα μπορούν να διατηρηθούν. Εξαγάγετε σημαντικά αποθηκευμένα παιχνίδια από το παράθυρο διαλόγου σφάλματος αποθήκευσης. Επαναφορτώστε για να δοκιμάσετε ξανά την επαναφορά του χώρου αποθήκευσης.
 [continue]
-Continue
+Συνέχεια
 [export file]
-Export file
+Εξαγωγή αρχείου
 [export failed]
-File export failed
+Η εξαγωγή αρχείου απέτυχε
 [import file]
-Import
+Εισαγωγή
 [select import file]
-Choose a file to import
+Επιλέξτε αρχείο για εισαγωγή
 [validating import]
-Validating file...
+Επικύρωση αρχείου...
 [import succeeded]
-File imported
+Το αρχείο εισήχθη
 [import cancelled]
-Import cancelled
+Η εισαγωγή ακυρώθηκε
 [import failed]
-Import failed: invalid or unsupported file
+Η εισαγωγή απέτυχε: μη έγκυρο ή μη υποστηριζόμενο αρχείο
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Δεν αποθηκεύτηκε: επιλέξτε Εισαγωγή για νέα προσπάθεια, ή Εξαγωγή αρχείου
 [import progress]
-Import progress
+Πρόοδος εισαγωγής
 [export progress]
-Export progress
+Πρόοδος εξαγωγής
 [retry save]
-Retry save
+Νέα προσπάθεια αποθήκευσης
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Η πρόοδος της εκστρατείας δεν αποθηκεύτηκε. Δοκιμάστε ξανά ή εξαγάγετε αντίγραφο ασφαλείας.
 [leave without saving]
-Leave without saving
+Έξοδος χωρίς αποθήκευση
 [campaign import failed]
-Invalid progress file or different campaign version
+Μη έγκυρο αρχείο προόδου ή διαφορετική έκδοση εκστρατείας
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Τα πρωτόκολλα πελάτη και διακομιστή διαφέρουν. Εγκαταστήστε την ίδια έκδοση Glob2 με τον διακομιστή.
 [settings continue]
-Continue
+Συνέχεια
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Η αποθήκευση ρυθμίσεων δεν επιβεβαιώθηκε. Δοκιμάστε ξανά, ή συνεχίστε.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Η τελική αποθήκευση δεν επιβεβαιώθηκε. Δοκιμάστε ξανά, ή εξέλθετε χωρίς αποθήκευση.
 [quit without saving]
-Quit without saving
+Έξοδος χωρίς αποθήκευση
 [game closed]
-Game closed. You can close this window or reload to play again.
+Το παιχνίδι έκλεισε. Μπορείτε να κλείσετε αυτό το παράθυρο ή να επαναφορτώσετε τη σελίδα για να παίξετε ξανά.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Η αποθήκευση δεν επιβεβαιώθηκε. Το OK ξαναδοκιμάζει· η Ακύρωση επιστρέφει στο μενού του επεξεργαστή.

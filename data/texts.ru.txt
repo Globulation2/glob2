@@ -1765,80 +1765,80 @@ OpenGL недоступен в этой сборке.
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Автоматически отображать обзор карты в форме тора при перемещении по карте (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Не удалось сохранить карту. Проверьте путь и доступное место. Ваши изменения всё ещё открыты.
 [Loading headers]
-Loading headers...
+Загрузка заголовков...
 [Loading teams]
-Loading teams...
+Загрузка команд...
 [Loading terrain]
-Loading terrain...
+Загрузка местности...
 [Building gradients]
-Building gradients...
+Построение градиентов...
 [Loading players]
-Loading players...
+Загрузка игроков...
 [Loading scripts]
-Loading scripts...
+Загрузка скриптов...
 [Generating map]
-Generating map...
+Создание карты...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Не удалось создать карту. Попробуйте другие параметры генерации.
 [Loading units]
-Loading units...
+Загрузка юнитов...
 [Loading buildings]
-Loading buildings...
+Загрузка построек...
 [Resolving team links]
-Resolving team links...
+Установление связей команд...
 [saving to storage]
-Saving...
+Сохранение...
 [save failed retry]
-Save failed. Retry.
+Ошибка сохранения. Повторите попытку.
 [export save]
-Export save
+Экспортировать сохранение
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Не удалось восстановить хранилище браузера. Существующие сохранённые данные не изменены. Вы можете продолжить сеанс, но локальные изменения не смогут сохраниться. Экспортируйте важные сохранения из окна ошибки сохранения. Перезагрузите страницу, чтобы повторить попытку восстановления хранилища.
 [continue]
-Continue
+Продолжить
 [export file]
-Export file
+Экспортировать файл
 [export failed]
-File export failed
+Не удалось экспортировать файл
 [import file]
-Import
+Импорт
 [select import file]
-Choose a file to import
+Выберите файл для импорта
 [validating import]
-Validating file...
+Проверка файла...
 [import succeeded]
-File imported
+Файл импортирован
 [import cancelled]
-Import cancelled
+Импорт отменён
 [import failed]
-Import failed: invalid or unsupported file
+Ошибка импорта: недопустимый или неподдерживаемый файл
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Не сохранено: выберите «Импорт» для повтора или «Экспортировать файл»
 [import progress]
-Import progress
+Ход импорта
 [export progress]
-Export progress
+Ход экспорта
 [retry save]
-Retry save
+Повторить сохранение
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Прогресс кампании не сохранён. Повторите попытку или экспортируйте резервную копию.
 [leave without saving]
-Leave without saving
+Выйти без сохранения
 [campaign import failed]
-Invalid progress file or different campaign version
+Недопустимый файл прогресса или другая версия кампании
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Протоколы клиента и сервера различаются. Установите ту же версию Glob2, что и на сервере.
 [settings continue]
-Continue
+Продолжить
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Сохранение настроек не подтверждено. Повторите попытку или продолжите.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Итоговое сохранение не подтверждено. Повторите попытку или выйдите без сохранения.
 [quit without saving]
-Quit without saving
+Выйти без сохранения
 [game closed]
-Game closed. You can close this window or reload to play again.
+Игра закрыта. Можно закрыть это окно или перезагрузить страницу, чтобы сыграть снова.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Сохранение не подтверждено. «ОК» повторяет попытку; «Отмена» возвращает в меню редактора.

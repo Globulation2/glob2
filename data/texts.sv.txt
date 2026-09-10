@@ -1777,80 +1777,80 @@ Automatisk torusvy
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Visa automatiskt den torusformade kartöversikten medan du flyttar runt på kartan (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Kartan kunde inte sparas. Kontrollera destinationen och tillgängligt utrymme. Dina ändringar är fortfarande öppna.
 [Loading headers]
-Loading headers...
+Läser in rubriker...
 [Loading teams]
-Loading teams...
+Läser in lag...
 [Loading terrain]
-Loading terrain...
+Läser in terräng...
 [Building gradients]
-Building gradients...
+Bygger gradienter...
 [Loading players]
-Loading players...
+Läser in spelare...
 [Loading scripts]
-Loading scripts...
+Läser in skript...
 [Generating map]
-Generating map...
+Skapar karta...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Kartan kunde inte skapas. Prova andra genereringsinställningar.
 [Loading units]
-Loading units...
+Läser in enheter...
 [Loading buildings]
-Loading buildings...
+Läser in byggnader...
 [Resolving team links]
-Resolving team links...
+Löser lagkopplingar...
 [saving to storage]
-Saving...
+Sparar...
 [save failed retry]
-Save failed. Retry.
+Sparning misslyckades. Försök igen.
 [export save]
-Export save
+Exportera sparfil
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Webbläsarens lagring kunde inte återställas. Befintlig sparad data har inte ändrats. Du kan fortsätta den här sessionen, men lokala ändringar kan inte sparas permanent. Exportera viktiga sparfiler från dialogrutan för sparfel. Ladda om för att försöka återställa lagringen igen.
 [continue]
-Continue
+Fortsätt
 [export file]
-Export file
+Exportera fil
 [export failed]
-File export failed
+Filexport misslyckades
 [import file]
-Import
+Importera
 [select import file]
-Choose a file to import
+Välj en fil att importera
 [validating import]
-Validating file...
+Verifierar fil...
 [import succeeded]
-File imported
+Fil importerad
 [import cancelled]
-Import cancelled
+Import avbruten
 [import failed]
-Import failed: invalid or unsupported file
+Import misslyckades: ogiltig eller ej stödd fil
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Ej sparat: välj Importera för att försöka igen, eller Exportera fil
 [import progress]
-Import progress
+Importförlopp
 [export progress]
-Export progress
+Exportförlopp
 [retry save]
-Retry save
+Försök spara igen
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Kampanjförloppet sparades inte. Försök igen eller exportera en säkerhetskopia.
 [leave without saving]
-Leave without saving
+Avsluta utan att spara
 [campaign import failed]
-Invalid progress file or different campaign version
+Ogiltig förloppsfil eller annan kampanjversion
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Klient- och serverprotokoll skiljer sig åt. Installera samma Glob2-version som servern.
 [settings continue]
-Continue
+Fortsätt
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Sparning av inställningar ej bekräftad. Försök igen, eller fortsätt.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Slutlig sparning ej bekräftad. Försök igen, eller avsluta utan att spara.
 [quit without saving]
-Quit without saving
+Avsluta utan att spara
 [game closed]
-Game closed. You can close this window or reload to play again.
+Spelet stängt. Du kan stänga det här fönstret eller ladda om för att spela igen.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Sparning ej bekräftad. OK försöker igen; Avbryt återgår till redigerarmenyn.

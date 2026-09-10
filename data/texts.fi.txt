@@ -1767,80 +1767,80 @@ Automaattinen torusnäkymä
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Näytä toruksen muotoinen karttanäkymä automaattisesti liikkuessasi kartalla (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+Karttaa ei voitu tallentaa. Tarkista kohde ja käytettävissä oleva tila. Muutoksesi ovat yhä avoinna.
 [Loading headers]
-Loading headers...
+Ladataan otsikkotietoja...
 [Loading teams]
-Loading teams...
+Ladataan joukkueita...
 [Loading terrain]
-Loading terrain...
+Ladataan maastoa...
 [Building gradients]
-Building gradients...
+Rakennetaan liukuvärejä...
 [Loading players]
-Loading players...
+Ladataan pelaajia...
 [Loading scripts]
-Loading scripts...
+Ladataan skriptejä...
 [Generating map]
-Generating map...
+Luodaan karttaa...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+Karttaa ei voitu luoda. Kokeile eri luontiasetuksia.
 [Loading units]
-Loading units...
+Ladataan yksiköitä...
 [Loading buildings]
-Loading buildings...
+Ladataan rakennuksia...
 [Resolving team links]
-Resolving team links...
+Ratkaistaan joukkueiden linkkejä...
 [saving to storage]
-Saving...
+Tallennetaan...
 [save failed retry]
-Save failed. Retry.
+Tallennus epäonnistui. Yritä uudelleen.
 [export save]
-Export save
+Vie tallennus
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+Selaimen tallennustilaa ei voitu palauttaa. Olemassa olevaa tallennettua dataa ei ole muutettu. Voit jatkaa tätä istuntoa, mutta paikallisia muutoksia ei voida säilyttää. Vie tärkeät tallennukset tallennusvirheen valintaikkunasta. Lataa sivu uudelleen yrittääksesi palauttaa tallennustilan uudelleen.
 [continue]
-Continue
+Jatka
 [export file]
-Export file
+Vie tiedosto
 [export failed]
-File export failed
+Tiedoston vienti epäonnistui
 [import file]
-Import
+Tuo
 [select import file]
-Choose a file to import
+Valitse tuotava tiedosto
 [validating import]
-Validating file...
+Tarkistetaan tiedostoa...
 [import succeeded]
-File imported
+Tiedosto tuotu
 [import cancelled]
-Import cancelled
+Tuonti peruutettu
 [import failed]
-Import failed: invalid or unsupported file
+Tuonti epäonnistui: virheellinen tai tukematon tiedosto
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Ei tallennettu: valitse Tuo yrittääksesi uudelleen, tai Vie tiedosto
 [import progress]
-Import progress
+Tuonnin edistyminen
 [export progress]
-Export progress
+Viennin edistyminen
 [retry save]
-Retry save
+Yritä tallennusta uudelleen
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+Kampanjan edistymistä ei tallennettu. Yritä uudelleen tai vie varmuuskopio.
 [leave without saving]
-Leave without saving
+Poistu tallentamatta
 [campaign import failed]
-Invalid progress file or different campaign version
+Virheellinen edistymistiedosto tai eri kampanjaversio
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Asiakkaan ja palvelimen protokollat eroavat. Asenna sama Glob2-versio kuin palvelimella.
 [settings continue]
-Continue
+Jatka
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Asetusten tallennusta ei vahvistettu. Yritä uudelleen tai jatka.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Lopullista tallennusta ei vahvistettu. Yritä uudelleen tai poistu tallentamatta.
 [quit without saving]
-Quit without saving
+Poistu tallentamatta
 [game closed]
-Game closed. You can close this window or reload to play again.
+Peli suljettu. Voit sulkea tämän ikkunan tai ladata sivun uudelleen pelataksesi taas.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Tallennusta ei vahvistettu. OK yrittää uudelleen; Peruuta palaa editorin valikkoon.

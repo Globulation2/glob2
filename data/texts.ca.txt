@@ -1775,80 +1775,80 @@ Vista toroidal automàtica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostra automàticament la vista general toroidal mentre us desplaceu pel mapa (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+No s'ha pogut desar el mapa. Comproveu la destinació i l'espai disponible. Les vostres edicions encara estan obertes.
 [Loading headers]
-Loading headers...
+Carregant capçaleres...
 [Loading teams]
-Loading teams...
+Carregant equips...
 [Loading terrain]
-Loading terrain...
+Carregant el terreny...
 [Building gradients]
-Building gradients...
+Generant gradients...
 [Loading players]
-Loading players...
+Carregant jugadors...
 [Loading scripts]
-Loading scripts...
+Carregant scripts...
 [Generating map]
-Generating map...
+Generant el mapa...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+No s'ha pogut generar el mapa. Proveu altres paràmetres de generació.
 [Loading units]
-Loading units...
+Carregant unitats...
 [Loading buildings]
-Loading buildings...
+Carregant construccions...
 [Resolving team links]
-Resolving team links...
+Resolent enllaços d'equip...
 [saving to storage]
-Saving...
+Desant...
 [save failed retry]
-Save failed. Retry.
+Ha fallat el desat. Torneu-ho a provar.
 [export save]
-Export save
+Exporta la partida desada
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+No s'ha pogut restaurar l'emmagatzematge del navegador. Les dades desades existents no s'han modificat. Podeu continuar aquesta sessió, però els canvis locals no es podran conservar. Exporteu les partides importants des del diàleg d'error de desat. Torneu a carregar per reintentar la restauració de l'emmagatzematge.
 [continue]
-Continue
+Continua
 [export file]
-Export file
+Exporta el fitxer
 [export failed]
-File export failed
+Ha fallat l'exportació del fitxer
 [import file]
-Import
+Importa
 [select import file]
-Choose a file to import
+Trieu un fitxer per importar
 [validating import]
-Validating file...
+Validant el fitxer...
 [import succeeded]
-File imported
+Fitxer importat
 [import cancelled]
-Import cancelled
+Importació cancel·lada
 [import failed]
-Import failed: invalid or unsupported file
+Ha fallat la importació: fitxer no vàlid o no compatible
 [import persistence failed]
-Not saved: select Import to retry or Export file
+No desat: trieu Importa per reintentar-ho, o Exporta el fitxer
 [import progress]
-Import progress
+Progrés de la importació
 [export progress]
-Export progress
+Progrés de l'exportació
 [retry save]
-Retry save
+Reintenta el desat
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+El progrés de la campanya no s'ha desat. Torneu-ho a provar o exporteu una còpia de seguretat.
 [leave without saving]
-Leave without saving
+Surt sense desar
 [campaign import failed]
-Invalid progress file or different campaign version
+Fitxer de progrés no vàlid o versió de campanya diferent
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+Els protocols del client i del servidor difereixen. Instal·leu la mateixa versió de Glob2 que el servidor.
 [settings continue]
-Continue
+Continua
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+Desat dels ajustos no confirmat. Torneu-ho a provar, o continueu.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+Desat final no confirmat. Torneu-ho a provar, o sortiu sense desar.
 [quit without saving]
-Quit without saving
+Surt sense desar
 [game closed]
-Game closed. You can close this window or reload to play again.
+Partida tancada. Podeu tancar aquesta finestra o tornar a carregar per jugar de nou.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+Desat no confirmat. D'acord ho reintenta; Cancel·la torna al menú de l'editor.

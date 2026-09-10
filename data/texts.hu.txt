@@ -1767,80 +1767,80 @@ Automatikus tórusznézet
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 A tórusz alakú térkép áttekintésének automatikus megjelenítése a térképen való mozgás közben (OpenGL).
 [ERROR_CANT_SAVE_MAP]
-The map could not be saved. Check the destination and available space. Your edits are still open.
+A térképet nem sikerült menteni. Ellenőrizze a célt és a rendelkezésre álló helyet. A szerkesztések továbbra is nyitva vannak.
 [Loading headers]
-Loading headers...
+Fejlécek betöltése...
 [Loading teams]
-Loading teams...
+Csapatok betöltése...
 [Loading terrain]
-Loading terrain...
+Terep betöltése...
 [Building gradients]
-Building gradients...
+Színátmenetek építése...
 [Loading players]
-Loading players...
+Játékosok betöltése...
 [Loading scripts]
-Loading scripts...
+Szkriptek betöltése...
 [Generating map]
-Generating map...
+Térkép generálása...
 [ERROR_CANT_GENERATE_MAP]
-The map could not be generated. Try different generation settings.
+A térképet nem sikerült legenerálni. Próbáljon más generálási beállításokat.
 [Loading units]
-Loading units...
+Egységek betöltése...
 [Loading buildings]
-Loading buildings...
+Épületek betöltése...
 [Resolving team links]
-Resolving team links...
+Csapatkapcsolatok feloldása...
 [saving to storage]
-Saving...
+Mentés...
 [save failed retry]
-Save failed. Retry.
+A mentés sikertelen. Próbálja újra.
 [export save]
-Export save
+Mentés exportálása
 [storage restore failed]
-Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.
+A böngésző tárolóját nem sikerült helyreállítani. A meglévő mentett adatok nem változtak. Folytathatja ezt a munkamenetet, de a helyi változtatások nem menthetők meg tartósan. Exportálja a fontos mentéseket a mentési hiba párbeszédpaneléből. Töltse újra az oldalt, hogy újra megpróbálja helyreállítani a tárolót.
 [continue]
-Continue
+Folytatás
 [export file]
-Export file
+Fájl exportálása
 [export failed]
-File export failed
+A fájl exportálása sikertelen
 [import file]
-Import
+Importálás
 [select import file]
-Choose a file to import
+Válasszon importálandó fájlt
 [validating import]
-Validating file...
+Fájl ellenőrzése...
 [import succeeded]
-File imported
+Fájl importálva
 [import cancelled]
-Import cancelled
+Az importálás megszakítva
 [import failed]
-Import failed: invalid or unsupported file
+Az importálás sikertelen: érvénytelen vagy nem támogatott fájl
 [import persistence failed]
-Not saved: select Import to retry or Export file
+Nincs mentve: válassza az Importálás lehetőséget az újrapróbálkozáshoz, vagy a Fájl exportálását
 [import progress]
-Import progress
+Importálás folyamata
 [export progress]
-Export progress
+Exportálás folyamata
 [retry save]
-Retry save
+Mentés újrapróbálása
 [campaign save failed]
-Campaign progress not saved. Retry or export a backup.
+A hadjárat haladása nem mentődött. Próbálja újra, vagy exportáljon biztonsági mentést.
 [leave without saving]
-Leave without saving
+Kilépés mentés nélkül
 [campaign import failed]
-Invalid progress file or different campaign version
+Érvénytelen haladásfájl vagy eltérő hadjáratverzió
 [network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
+A kliens és a szerver protokollja eltér. Telepítse a szerverrel megegyező Glob2-verziót.
 [settings continue]
-Continue
+Folytatás
 [settings save failed]
-Settings save not confirmed. Retry, or continue.
+A beállítások mentése nincs megerősítve. Próbálja újra, vagy folytassa.
 [shutdown save failed]
-Final save not confirmed. Retry, or quit without saving.
+A végső mentés nincs megerősítve. Próbálja újra, vagy lépjen ki mentés nélkül.
 [quit without saving]
-Quit without saving
+Kilépés mentés nélkül
 [game closed]
-Game closed. You can close this window or reload to play again.
+A játék bezárult. Bezárhatja ezt az ablakot, vagy újratöltheti az oldalt az ismételt játékhoz.
 [campaign editor save failed]
-Save not confirmed. OK retries; Cancel returns to the editor menu.
+A mentés nincs megerősítve. Az OK újra próbálkozik; a Mégse visszatér a szerkesztő menüjébe.
