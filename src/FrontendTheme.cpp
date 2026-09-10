@@ -194,7 +194,8 @@ void FrontendTheme::background(DrawableSurface* s, bool panel, const SDL_Rect* c
 }
 void FrontendTheme::drawTextButtonBackground(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)
 {
-	blob(s,x,y,w,h,5,gel,ink,1);
+	// Swells up to two pixels under the cursor; the hit rect is unchanged.
+	blob(s,x,y,w,h,5,gel,ink,1,int(hi)*2/255);
 	if(hi) rounded(s,x+2,y+2,w-4,h-4,3,Color(gold.r,gold.g,gold.b,hi/2));
 }
 void FrontendTheme::drawFrame(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)

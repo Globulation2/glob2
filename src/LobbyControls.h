@@ -66,9 +66,9 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		FrontendTheme::rounded(surface(), r.x, r.y, r.w, r.h, radius, color);
 	}
 	// An inked gel pad: every clickable thing in the lobby.
-	void pad(SDL_Rect r, GAGCore::Color fill, int radius = 5, int wobble = 1)
+	void pad(SDL_Rect r, GAGCore::Color fill, int radius = 5, int wobble = 1, int inflate = 0)
 	{
-		FrontendTheme::blob(surface(), r.x, r.y, r.w, r.h, radius, fill, ink, wobble);
+		FrontendTheme::blob(surface(), r.x, r.y, r.w, r.h, radius, fill, ink, wobble, inflate);
 	}
 	void text(int x, int y, std::string value, const char *font = "standard", int width = 10000,
 			  bool quiet = false)
@@ -139,7 +139,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		else if (!quiet && listRow)
 			box(r, enabled ? panel : FrontendPalette::gelDisabled, 4);
 		else if (!quiet)
-			pad(r, enabled ? panel : FrontendPalette::gelDisabled);
+			pad(r, enabled ? panel : FrontendPalette::gelDisabled, 5, 1, hovered && enabled ? 1 : 0);
 		if ((quiet || listRow) && !selected && (hovered || focus == id))
 			FrontendTheme::ring(surface(), r.x, r.y, r.w, r.h, 5, ink, listRow ? 0 : 1);
 		if (hovered && !selected && !quiet && enabled)

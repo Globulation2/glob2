@@ -49,21 +49,25 @@ public:
 		auto* target = parent->getSurface();
 		const unsigned hover = focused ? 255 : getNextHighlightValue();
 		const int radius = primary ? 8 : 4;
-		if (focused) fillRounded(target, x - 4, y - 4, w + 8, h + 8, radius + 4, violet);
+		// Jelly: swell under the cursor, squash while pressed; fade in with the panel.
+		const int inflate = pressed ? -1 : int(hover) * 2 / 255;
+		const Uint8 entry = Uint8(255 * std::min(10, parent->animationFrame) / 10);
+		auto withAlpha = [entry](Color c) { return Color(c.r, c.g, c.b, Uint8(int(c.a) * entry / 255)); };
+		if (focused) fillRounded(target, x - 4, y - 4, w + 8, h + 8, radius + 4, withAlpha(violet));
 		if (primary)
 		{
-			FrontendTheme::blob(target, x, y, w, h, radius, pressed ? goldPressed : gold, ink, 1);
+			FrontendTheme::blob(target, x, y, w, h, radius, withAlpha(pressed ? goldPressed : gold), withAlpha(ink), 1, inflate);
 			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(255, 235, 170, hover / 4));
 		}
 		else
 		{
-			FrontendTheme::blob(target, x, y, w, h, radius, gel, ink, 1);
+			FrontendTheme::blob(target, x, y, w, h, radius, withAlpha(gel), withAlpha(ink), 1, inflate);
 			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(gold.r, gold.g, gold.b, hover / 2));
 			if (pressed) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(180, 140, 50, 70));
 		}
 		Font* labelFont=fontPtr;
 		if(labelFont->getStringWidth(text)>w-(primary?44:28)) labelFont=Toolkit::getFont("front-small");
-		labelFont->pushStyle(Font::Style(Font::STYLE_NORMAL, ink));
+		labelFont->pushStyle(Font::Style(Font::STYLE_NORMAL, withAlpha(ink)));
 		const int textY = y + (h - labelFont->getStringHeight(text)) / 2;
 		int cx, cy, cw, ch;
 		target->getClipRect(&cx, &cy, &cw, &ch);
@@ -189,11 +193,14 @@ MainMenuScreen::~MainMenuScreen()
 void MainMenuScreen::paint()
 {
 	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
-	fillRounded(gfx, panelX + 3, panelY + 5, panelW, panelH, 12, Color(12, 28, 16, 70));
+	// The front page fades in over the screen's first ten frames.
+	const int entry = std::min(10, animationFrame);
+	auto withAlpha = [entry](Color c) { return Color(c.r, c.g, c.b, Uint8(int(c.a) * entry / 10)); };
+	fillRounded(gfx, panelX + 3, panelY + 5, panelW, panelH, 12, withAlpha(Color(12, 28, 16, 70)));
 	FrontendTheme::blob(gfx, panelX, panelY, panelW, panelH, 12,
-		Color(membrane.r, membrane.g, membrane.b, FrontendTheme::panelAlpha()), ink, 2);
-	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, gold);
-	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get());
+		withAlpha(Color(membrane.r, membrane.g, membrane.b, FrontendTheme::panelAlpha())), withAlpha(ink), 2);
+	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, withAlpha(gold));
+	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get(), Uint8(255 * entry / 10));
 	else
 	{
 		auto* title = Toolkit::getFont("front-title");
