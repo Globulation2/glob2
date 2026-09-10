@@ -126,11 +126,11 @@ jobs:
       - name: Build and run custom-game setup regressions
         run: |
           scons -j$(nproc) release=1 server=0 custom-setup-test
-          timeout 180s ./build/src/CustomGameSetupHarness
+          timeout 180s ./build/linux/client/release/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
-          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci > artifacts/custom-game-ci/ui.log 2>&1
-          timeout 60s xvfb-run -a ./build/src/CustomGameSetupHarness preferences-write
-          timeout 60s xvfb-run -a ./build/src/CustomGameSetupHarness preferences-read
+          timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/linux/client/release/src/CustomGameSetupHarness artifacts/custom-game-ci > artifacts/custom-game-ci/ui.log 2>&1
+          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-write
+          timeout 60s xvfb-run -a ./build/linux/client/release/src/CustomGameSetupHarness preferences-read
           cat artifacts/custom-game-ci/ui.log
           ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
 
@@ -179,7 +179,7 @@ jobs:
       - name: Build and run the building expulsion regression
         run: |
           scons -j$(nproc) release=1 server=0 building-expel-test
-          timeout 300s ./build/src/BuildingExpelHarness
+          timeout 300s ./build/linux/client/release/src/BuildingExpelHarness
 
       - name: Build and run the hiring bucket regression
         run: |
