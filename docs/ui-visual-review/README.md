@@ -93,6 +93,24 @@ None of this changes layout, hit rects or the simulation; re-verified with the
 same harness gates listed below, plus a fresh `run-game-speed-tests.py` pass
 (checksum `8b9c6da6`, unchanged from the original captures).
 
+## Follow-up: green over cream, and less see-through
+
+Further playtesting pushed back on the cream/sand chrome itself ("still feels
+a bit 90s") and, separately, on the front page reading as too transparent:
+
+- `FrontendPalette::membrane`/`gel`/`gelDisabled` are now a green tint instead
+  of sand, at HSL hue ~120 — sampled off the actual rendered terrain (not
+  picked by eye) and rotated to the cream tokens' existing saturation/lightness
+  before being taken up to a more saturated tier (`membrane` settled at
+  `(168,230,168)`, one step back from an over-saturated `(103,228,103)` that
+  read as too much). `ink`, `gold` and `violet` are unchanged.
+- The front page's membrane alpha, deliberately lowered to 140 earlier in this
+  branch so the colony would read through, went too far the other way — it's
+  now 210 (out of 255), and the shared `panelAlpha()` default used by Settings
+  and custom-game moved from 214 to 235.
+
+Re-verified the same way as the smoothing follow-up above; checksum unchanged.
+
 ## Verification
 
 Run from the repository root, `SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy`
