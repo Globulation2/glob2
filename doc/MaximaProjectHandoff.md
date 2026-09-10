@@ -7,6 +7,19 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT USER CORRECTION: full replacement campaign CANCELLED. Do not restart it.
+commission.py terminated, STOP_DISPATCH on all corrected-root controls, and original
+controls controller has exited. Already-running control games are allowed to finish;
+output/maxima-conversion-fixed-restart/drain-cancelled-controls.py collects receipts
+only (no dispatch). See CANCELLED_DRAIN_STATUS.json.
+Original9516successful results are usable evidence, not discarded. Six failures
+leave nine comparisons incomplete. analyze-preserved.py evaluates original1000-pair
+samples using pre-existing worst-case missing-pair bounds at original alpha .04/53.
+RECOVERED_SENSITIVITY_RESULT.json will contain clearly labeled recovery analysis,
+not a falsely complete original-gated report. Do not rerun/extend without discussing
+necessity with user. No diagnostic substitutions, no imputed wins/draws, no defaults.
+This supersedes ALL earlier instructions to run replacement controls/confirmations.
+
 CURRENT: corrected-engine TheRig qualification PASSED all five suites, protocol
 c4ad804e1562350a58453b7fb8c45ca01a5411766b39859ea92f1546889afc3f.
 Other three hosts are actively running 40-case continuation. Local fleet-qualify.py
