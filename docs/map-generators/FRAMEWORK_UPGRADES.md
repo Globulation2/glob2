@@ -1,6 +1,4 @@
-# Framework upgrades for the new map concepts
-
-The final concepts from `/Users/bradley/glob2-mapgen` are incorporated as four independent modules: Contested Commons, Lattice, Maze and Fjord Continent. The source worktree remains unchanged. Each module owns its options and ordered recipe while reusing bounded radial geometry, graph topology, constrained settlement placement and clumped resource helpers.
+# Map generator framework capabilities
 
 ## Generalized capabilities
 
@@ -30,11 +28,3 @@ All helpers are ordinary functions or small value objects. There is no new gener
 - Lattice uses larger home clearings and puts wheat and wood on opposite rims. Its tiny repeating islets remain the dominant visual pattern without starving the colonies of construction space.
 
 The generators still validate their actual construction results. A moat must connect to land at both bridge ends, jagged outlines must leave legal settlement footprints, and the fjord core must keep every player peninsula connected. Difficult small/crowded combinations may fail, but return reproducible stage diagnostics and are discarded by the lifecycle service.
-
-## Verification
-
-Synthetic test registrations cover irregular domains, multiple Layout controls, mode history, generation and request/world validation without adding production catalog entries. Helper checks cover transform roundtrips, radial bounds, wrapping, cardinal versus diagonal components, sparse region IDs, disconnected graphs, invalid graph inputs, weighted dispersion, home footprints, exact workers and gameplay RNG restoration.
-
-The final run covers 12,000 attempts (1,000 per playable generator, seeds 20001–21000). The eight PR #238 generators retain their controls and statistical behavior; only Shattered Coast retains its previously investigated failure-rate flag. Lattice generated 1,000/1,000 with 932 all-team proxy passes, Maze 1,000/1,000 with 999 passes, and Fjord Continent 1,000/1,000 with 995 passes. Contested Commons generated 999/1,000; its separated home-island economy intentionally scores lower on the generic start proxy. See [the study and charts](refactor/RESULTS.md) and [the module guide](ADDING_A_GENERATOR.md).
-
-The original 832-attempt edge suite remains recorded under `refactor/`. A further 320 attempts cover every new generator at control extremes, rectangular large maps, solo Fjord, 64×64 maps and crowded eight-colony layouts. Supported combinations repeat deterministically; impossible crowded cases fail cleanly during validation or settlement placement. Native SDL flows pass for all three control modes, along with save/load, replay and editor control checks.

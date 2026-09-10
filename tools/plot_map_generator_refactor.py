@@ -28,8 +28,8 @@ LABELS = ['Grass', 'Sand', 'Water', 'Shore', 'Wheat', 'Wood', 'Stone', 'Building
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('csv', type=Path)
-    parser.add_argument('--baseline', type=Path, default=ROOT/'docs/map-generators/study/summary.json')
-    parser.add_argument('--output', type=Path, default=ROOT/'docs/map-generators/refactor')
+    parser.add_argument('--baseline', type=Path, required=True)
+    parser.add_argument('--output', type=Path, default=ROOT/'artifacts/map-generators/refactor')
     args = parser.parse_args()
     out = args.output.resolve()
     out.mkdir(parents=True, exist_ok=True)

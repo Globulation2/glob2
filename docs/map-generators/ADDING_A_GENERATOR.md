@@ -72,9 +72,9 @@ Run all registered playable defaults without maintaining another generator list:
 python3 tools/map_generator_study.py --count 1000 --start 20001 \
   --output artifacts/map-generator-refactor --label validation
 python3 tools/plot_map_generator_refactor.py \
-  artifacts/map-generator-refactor/validation.csv
+  artifacts/map-generator-refactor/validation.csv --baseline artifacts/baseline/summary.json
 ```
 
 For targeted settings, pass a JSON configuration list with `id`, `method` and a `params` object whose keys are stable control IDs. A sample uses registered defaults plus those overrides. Out-of-range values fail explicitly. `--binary` selects a separately built historical executable for comparison.
 
-Before accepting a generator or structural refactor, inspect fixed-seed previews and poor-performing examples, exercise range endpoints and crowded/rectangular maps, and investigate changes beyond the documented statistical thresholds. Historical PR #238 reports remain under `study/`; current refactor evidence is under `refactor/`.
+Before accepting a generator or structural refactor, inspect fixed-seed previews and poor-performing examples, exercise range endpoints and crowded/rectangular maps, and investigate changes beyond the documented statistical thresholds. Keep generated evidence under ignored `artifacts/` and summarize findings in the pull request. The comparison plotter requires an explicitly supplied baseline study summary.
