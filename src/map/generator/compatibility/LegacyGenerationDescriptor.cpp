@@ -21,6 +21,14 @@ Sint32 D::*legacyField(int method, const std::string &id)
 		return &D::grassRatio;
 	if (id == "desert")
 		return &D::desertRatio;
+	if (id == "wheat")
+		return &D::wheatRatio;
+	if (id == "wood")
+		return &D::woodRatio;
+	if (id == "stone")
+		return &D::stoneRatio;
+	if (id == "algae")
+		return &D::algaeRatio;
 	if (id == "smoothing")
 		return &D::smooth;
 	if (id == "fruit")
@@ -49,23 +57,33 @@ Sint32 D::*legacyField(int method, const std::string &id)
 		return &D::oldBeach;
 	if (id == "island-size")
 		return method == D::eISLES ? &D::grassRatio : &D::oldIslandSize;
-	if (id == "repeat")
-		return nullptr;
-	throw std::invalid_argument("Option has no legacy encoding: " + id);
+	// "repeat" and every option introduced by generators added after the
+	// fixed-size legacy descriptor was frozen (loopiness, home-radius,
+	// cell-size, room-size, corridor-width, islet-size, bridge-count,
+	// commons-size, home-island-size, moat-width, continent-size,
+	// coast-roughness, resource-islands, fjord-width, ...) have no slot in
+	// it. Callers fall back to logRepeatAreaTimes for "repeat" specifically
+	// and otherwise treat a null field as "not representable", rather than
+	// throwing and taking down any caller that converts a newer generator's
+	// full option set through this adapter.
+	return nullptr;
 }
 } // namespace
 int GeneratorControl::get(const D &d) const
 {
 	auto field = legacyField(d.method, id);
-	return field ? d.*field : d.logRepeatAreaTimes;
+	if (field)
+		return d.*field;
+	return id == "repeat" ? d.logRepeatAreaTimes : defaultValue;
 }
 void GeneratorControl::set(D &d, int v) const
 {
 	auto field = legacyField(d.method, id);
 	if (field)
 		d.*field = normalize(v);
-	else
+	else if (id == "repeat")
 		d.logRepeatAreaTimes = normalize(v);
+	// Else: no legacy field for this option: nothing to store.
 }
 const std::vector<D::Control> &D::controls(Method m) { return GenerationRequest::controls(m); }
 const std::vector<D::Control> &D::sharedControls() { return sharedGeneratorControls(); }

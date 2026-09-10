@@ -37,6 +37,20 @@ struct CountingAI : AIImplementation {
 };
 struct CustomGameSetupHarness
 {
+	// Every field() is set to its declared maximum, but only the options
+	// actually registered for the chosen method survive a GenerationRequest
+	// round trip (the rest reset to that method's own defaults) — this
+	// mirrors CustomGamePreferences::encode/decode's own conversion so a
+	// caller can compute the achievable ground truth deterministically.
+	static MapGenerationDescriptor maxedLegacy(MapGenerationDescriptor::Method method, int repeat)
+	{
+		MapGenerationDescriptor legacy;
+		for (const auto &field : CustomGamePreferences::fields())
+			legacy.*(field.member) = field.maximum;
+		legacy.method = method;
+		legacy.logRepeatAreaTimes = repeat;
+		return legacy;
+	}
 	static void preferencesModel()
 	{
 		CustomGamePreferences original;
@@ -47,10 +61,11 @@ struct CustomGameSetupHarness
 		original.librarySelection[0] = "maps/FourSquares1.map";
 		original.librarySelection[1] = original.setup.premadeMap;
 		original.expanded[0] = original.expanded[2] = true;
-		for (const auto &field : CustomGamePreferences::fields())
-			original.setup.generator.*(field.member) = field.maximum;
-		original.setup.generator.method = MapGenerationDescriptor::eOLDISLANDS;
-		original.setup.generator.logRepeatAreaTimes = 5;
+		// Crater Lakes is one of the four modern height-map generators that
+		// still exposes a "repeat landscape" control; Old Islands (the prior
+		// choice) has no repeat option in the modular registry, so it would
+		// always round-trip back to 0 regardless of what is written here.
+		original.setup.generator = fromLegacyDescriptor(maxedLegacy(MapGenerationDescriptor::eCRATERLAKES, 5), 0);
 		original.setup.presetRules(1);
 		original.setup.prestige = false;
 		original.setup.revealed = true;
@@ -73,7 +88,7 @@ struct CustomGameSetupHarness
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
 			{"glob2-custom-game 1", "glob2-custom-game 2"},
 			{"wDec 9", "wDec 31"}, {"nbWorkers 8", "nbWorkers -1"},
-			{"generator 8 5", "generator 0 5"}, {"generator 8 5", "generator 8 100"},
+			{"generator 4 5", "generator 0 5"}, {"generator 4 5", "generator 4 100"},
 			{"colonies\n1 1 0", "colonies\n99 1 0"}})
 		{
 			auto corrupt = encoded;
@@ -104,10 +119,7 @@ struct CustomGameSetupHarness
 			screen.setup.colonies[11].ai = AI::NICOWAR;
 			screen.setup.colonies[11].alliance = 7;
 			screen.setup.presetRules(1);
-			for (const auto &field : CustomGamePreferences::fields())
-				screen.setup.generator.*(field.member) = field.maximum;
-			screen.setup.generator.method = MapGenerationDescriptor::eISLANDS;
-			screen.setup.generator.logRepeatAreaTimes = 3;
+			screen.setup.generator = fromLegacyDescriptor(maxedLegacy(MapGenerationDescriptor::eISLANDS, 3), 0);
 			screen.expanded[1] = true;
 			screen.userMaps = screen.separateMapLibraries;
 			screen.librarySelection[1] = "maps/favorite-user-map.map";
@@ -130,9 +142,14 @@ struct CustomGameSetupHarness
 				assert(screen.expanded[1]);
 				assert(screen.userMaps == screen.separateMapLibraries);
 				assert(screen.librarySelection[1] == "maps/favorite-user-map.map");
+				// Only the options Islands actually registers survive the
+				// GenerationRequest round trip; compare against the same
+				// achievable conversion rather than the raw field maximums.
+				const auto expected = toLegacyDescriptor(fromLegacyDescriptor(maxedLegacy(MapGenerationDescriptor::eISLANDS, 3), 0));
+				const auto restoredLegacy = toLegacyDescriptor(screen.setup.generator);
 				for (const auto &field : CustomGamePreferences::fields())
-					assert(screen.setup.generator.*(field.member) == field.maximum);
-				assert(screen.setup.generator.logRepeatAreaTimes == 3);
+					assert(restoredLegacy.*(field.member) == expected.*(field.member));
+				assert(restoredLegacy.logRepeatAreaTimes == expected.logRepeatAreaTimes);
 				premade = screen.setup.premadeMap;
 				screen.setup.generator.nbTeams = 4;
 				screen.setMapMode(true);
