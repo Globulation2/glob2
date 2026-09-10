@@ -253,7 +253,15 @@ namespace GAGCore
 				do
 				{
 					Uint32 srcValue = *memSrc++;
-					Uint32 srcAlpha = (((srcValue >> alphaShift) & 0xFF) * alpha) >> 8;
+					// x/255 exactly (not x>>8, which is x/256): (x+1+(x>>8))>>8 for a
+					// scalar x, or the same identity applied per lane -- masking the
+					// shifted correction back onto 0x00FF00FF keeps each 16-bit lane's
+					// carry from leaking into its neighbour. A single blend's 1/256
+					// bias is invisible, but motion blur stacks dozens of blends onto
+					// the same pixels, and that compounds into a visible darkening of
+					// the sprite's whole bounding box, including its transparent edges.
+					Uint32 alphaProduct = ((srcValue >> alphaShift) & 0xFF) * alpha;
+					Uint32 srcAlpha = (alphaProduct + 1 + (alphaProduct >> 8)) >> 8;
 					Uint32 destAlpha = 255 - srcAlpha;
 					Uint32 srcPreMult0 =  (srcValue & 0x00FF00FF) * srcAlpha;
 					Uint32 srcPreMult1 = ((srcValue >> 8) & 0x00FF00FF) * srcAlpha;
@@ -264,6 +272,8 @@ namespace GAGCore
 
 					destPreMult0 += srcPreMult0;
 					destPreMult1 += srcPreMult1;
+					destPreMult0 += 0x00010001 + ((destPreMult0 >> 8) & 0x00FF00FF);
+					destPreMult1 += 0x00010001 + ((destPreMult1 >> 8) & 0x00FF00FF);
 
 					*memDest++ = ((destPreMult0 >> 8) & 0x00FF00FF) | (destPreMult1 & 0xFF00FF00);
 				}
