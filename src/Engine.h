@@ -56,7 +56,7 @@ public:
 
 	/// Initiate a custom game from the provided game, without adjusting settings from the user
 	int initCustom(const std::string &gameName);
-    GAGCore::CooperativeTask initCustomTask(MapHeader map, GameHeader players, int localTeam);
+    GAGCore::CooperativeTask initCustomTask(MapHeader map, GameHeader players, int localTeam, int speed = -1);
     GAGCore::CooperativeTask initCustomTask(std::string filename);
     GAGCore::CooperativeTask initCampaignTask(std::string filename, Campaign* campaign = nullptr, std::string mission = {});
     GAGCore::CooperativeTask loadReplayTask(std::string filename);
