@@ -601,13 +601,6 @@ std::shared_ptr<YOGClientCommandManager> YOGClient::getCommandManager()
 
 
 
-YOGClientMapUploader* YOGClient::getMapUploader()
-{
-	return uploader;
-}
-
-
-
 void YOGClient::setMapUploader(YOGClientMapUploader* nuploader)
 {
 	uploader = nuploader;
@@ -635,45 +628,10 @@ void YOGClient::setMapDownloader(YOGClientMapDownloader* ndownloader)
 }
 
 
-	
-YOGClientMapDownloader* YOGClient::getMapDownloader()
-{
-	return downloader;
-}
-
-
 
 void YOGClient::attachGameServer(std::shared_ptr<YOGServer> nserver)
 {
 	server = nserver;
-}
-
-	
-
-std::shared_ptr<YOGServer> YOGClient::getGameServer()
-{
-	return server;
-}
-
-
-
-void  YOGClient::setP2PConnection(std::shared_ptr<P2PConnection> connection)
-{
-	p2pconnection = connection;
-}
-
-
-
-std::shared_ptr<P2PConnection> YOGClient::getP2PConnection()
-{
-	return p2pconnection;
-}
-
-
-
-void YOGClient::setGameListManager(std::shared_ptr<YOGClientGameListManager> ngameListManager)
-{
-	gameListManager = ngameListManager;
 }
 
 
@@ -681,13 +639,6 @@ void YOGClient::setGameListManager(std::shared_ptr<YOGClientGameListManager> nga
 std::shared_ptr<YOGClientGameListManager> YOGClient::getGameListManager()
 {
 	return gameListManager;
-}
-
-
-
-void YOGClient::setPlayerListManager(std::shared_ptr<YOGClientPlayerListManager> nplayerListManager)
-{
-	playerListManager = nplayerListManager;
 }
 
 

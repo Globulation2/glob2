@@ -12,7 +12,7 @@ namespace FertilityCalculator
 	/// Reports compute progress in [0, 1]. Invoked from the worker thread.
 	using ProgressCallback = std::function<void(float)>;
 
-	/// Computes per-tile fertility, writes it into map.getCase(x,y).fertility,
+	/// Computes per-tile fertility, writes it into map.getTile(x,y).fertility,
 	/// and updates map.fertilityMaximum. The optional progress callback is
 	/// invoked once per column. May be called from a worker thread.
 	void compute(Map& map, const ProgressCallback& progress);

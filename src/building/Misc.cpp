@@ -30,22 +30,26 @@ void Building::kill(void)
 		return;
 
 
+	// Units inside need the footprint freed before they can be placed.
+	std::vector<Unit *> unitsToExpel;
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
-		//TODO: We should somehow try to save their lives. In training buildings they should just drop out untrained etc.
 		Unit *u=*it;
-		if (u->displacement==Unit::DIS_INSIDE)
-			u->isDead=true;
-
-		if (u->displacement==Unit::DIS_ENTERING_BUILDING)
+		if (u->displacement==Unit::DIS_INSIDE || u->displacement==Unit::DIS_EXITING_BUILDING)
+			unitsToExpel.push_back(u);
+		else if (u->displacement==Unit::DIS_ENTERING_BUILDING)
 		{
+			// An entering unit still owns the tile it came from: step back onto it.
+			int x=(u->posX-u->dx)&owner->map->getMaskW();
+			int y=(u->posY-u->dy)&owner->map->getMaskH();
 			if (u->performance[FLY])
-				owner->map->setAirUnit(u->posX-u->dx, u->posY-u->dy, NOGUID);
+				owner->map->setAirUnit(x, y, NOGUID);
 			else
-				owner->map->setGroundUnit(u->posX-u->dx, u->posY-u->dy, NOGUID);
-			u->isDead=true;
+				owner->map->setGroundUnit(x, y, NOGUID);
+			u->expelFromBuilding(x, y, -u->dx, -u->dy);
 		}
-		u->standardRandomActivity();
+		else
+			u->standardRandomActivity();
 	}
 	unitsInside.clear();
 
@@ -83,6 +87,19 @@ void Building::kill(void)
 				owner->noMoreBuildingSitesCountdown=Team::noMoreBuildingSitesCountdownMax;
 		}
 
+	}
+
+	for (std::vector<Unit *>::iterator it=unitsToExpel.begin(); it!=unitsToExpel.end(); ++it)
+	{
+		Unit *u=*it;
+		int x, y, dx, dy;
+		if (findExpelTile(u->performance[FLY], u->performance[SWIM], &x, &y, &dx, &dy))
+			u->expelFromBuilding(x, y, dx, dy);
+		else
+		{
+			u->isDead=true;
+			u->standardRandomActivity();
+		}
 	}
 
 	buildingState=DEAD;
@@ -342,6 +359,30 @@ bool Building::findAirExit(int *posX, int *posY, int *dx, int *dy)
 					*dy=0;
 				else
 					*dy=1;
+				return true;
+			}
+	return false;
+}
+
+bool Building::findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *dx, int *dy)
+{
+	// Pass 0 takes the footprint, pass 1 the ring around it.
+	for (int pass=0; pass<2; pass++)
+		for (int y=this->posY-1; y<=this->posY+type->height; y++)
+			for (int x=this->posX-1; x<=this->posX+type->width; x++)
+			{
+				int ox=(x>=this->posX+type->width)-(x<this->posX);
+				int oy=(y>=this->posY+type->height)-(y<this->posY);
+				if ((ox!=0 || oy!=0)!=(pass==1))
+					continue;
+				int wx=x&owner->map->getMaskW();
+				int wy=y&owner->map->getMaskH();
+				if (fly ? !owner->map->isFreeForAirUnit(wx, wy) : !owner->map->isFreeForGroundUnit(wx, wy, canSwim, owner->me))
+					continue;
+				*posX=wx;
+				*posY=wy;
+				*dx=ox;
+				*dy=oy;
 				return true;
 			}
 	return false;

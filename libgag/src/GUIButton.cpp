@@ -103,10 +103,21 @@ namespace GAGGUI
 		
 		Style::style->drawTextButtonBackground(parent->getSurface(), x, y, w, h, getNextHighlightValue());
 		
-		int decX=(w-fontPtr->getStringWidth(this->text.c_str()))>>1;
-		int decY=(h-fontPtr->getStringHeight(this->text.c_str()))>>1;
-	
-		parent->getSurface()->drawString(x+decX, y+decY, fontPtr, text.c_str());
+		if (selected) Style::style->drawButtonSelection(parent->getSurface(), x, y, w, h);
+		Font* labelFont=fontPtr;
+		if (Style::style->usesThemeTextColor() && labelFont->getStringWidth(text)>w-12)
+		{
+			// Keep translated labels inside existing button bounds. These are
+			// the same shared fonts used by the front-end theme's scope.
+			for (const char* name : {"standard", "little"})
+			{
+				labelFont=Toolkit::getFont(name);
+				if(labelFont->getStringWidth(text)<=w-12) break;
+			}
+		}
+		const int decX=(w-labelFont->getStringWidth(text))>>1;
+		const int decY=(h-labelFont->getStringHeight(text))>>1;
+		parent->getSurface()->drawString(x+decX, y+decY, labelFont, text.c_str());
 	}
 	
 	void TextButton::setText(const std::string text)
@@ -392,12 +403,4 @@ namespace GAGGUI
 		setText(texts.at(textIndex));
 	}
 	
-	void MultiTextButton::setIndexFromText(const std::string &s)
-	{
-		for (size_t i = 0; i < texts.size(); i++)
-		{
-			if (texts[i] == s)
-				setIndex(i);
-		}
-	}
 }

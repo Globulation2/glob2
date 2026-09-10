@@ -82,6 +82,8 @@ namespace GAGGUI
 			}
 			onGroupActivated(group_n);
 			activated = group_n;
+			for (auto& entry : groupButtons)
+				static_cast<TextButton*>(entry.second)->selected = entry.first == group_n;
 			for(std::map<int, TabScreenWindow*>::iterator i = windows.begin(); i!=windows.end(); ++i)
 			{
 				if(i->first == group_n)
@@ -103,6 +105,7 @@ namespace GAGGUI
 				groupButtons[group_n] = new TextButton(0, 0, w, 40, ALIGN_LEFT, ALIGN_TOP, "menu", title.c_str(), 0);
 			else
 				groupButtons[group_n] = new TextButton(0, 0, w, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", title.c_str(), 0);
+			static_cast<TextButton*>(groupButtons[group_n])->selected = group_n == activated;
 			addWidget(groupButtons[group_n]);
 			groupButtons[group_n]->internalInit();
 			if(groupButtons.size() == 1)

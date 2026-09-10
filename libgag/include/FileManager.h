@@ -25,18 +25,6 @@ namespace GAGCore
 	//! File Manager (filesystem abstraction)
 	class FileManager
 	{
-	public:
-		//! Type of Stream
-		enum StreamType
-		{
-			//! Binary stream, content directly written in endian-safe binary
-			STREAM_BINARY = 0,
-			//! Compatibility stream, not human-readable but uses the metas infos for backward compatibility
-			STREAM_COMPAT,
-			//! Text stream, human readable and backward compatible
-			STREAM_TEXT,
-		};
-		
 	private:
 		//! List of directory where to search for requested file
 		std::vector<std::string> dirList;
@@ -55,9 +43,7 @@ namespace GAGCore
 		SDL_RWops *openWithbackup(const std::string filename, const std::string mode);
 		//! open a file, if it is in writing, do a backup, fopen version
 		FILE *openWithbackupFP(const std::string filename, const std::string mode);
-		//! open a file, if it is in writing, do a backup, std::ofstream version
-		std::ofstream *openWithbackupOFS(const std::string filename, std::ofstream::openmode mode);
-	
+
 	public:
 		//! FileManager constructor
 		FileManager(const std::string gameName);
@@ -87,20 +73,15 @@ namespace GAGCore
 	
 		//! Open an output stream backend, use it to construct specific output streams
 		StreamBackend *openOutputStreamBackend(const std::string filename);
+		//! Checked replacement; failure leaves the original intact.
+		bool writeFileAtomic(const std::string& filename, const std::string& contents);
 		
 		//! Replace a file only after the writer, flush, and close all succeed.
 		bool writeAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer);
 
 		//! Open an input stream backend, use it to construct specific input streams
 		StreamBackend *openInputStreamBackend(const std::string filename);
-		
-		//! Open a compressed output stream backend, use it to construct specific output streams
-		StreamBackend *openCompressedOutputStreamBackend(const std::string filename);
-		
-		//! Open a compressed input stream backend, use it to construct specific input streams
-		StreamBackend *openCompressedInputStreamBackend(const std::string filename);
-		
-		
+
 		//! Open a file in the SDL_RWops format, COMPAT for GraphicContext PNG loader, can be removed on others backends
 		SDL_RWops *open(const std::string filename, const std::string mode="rb");
 		//! Open a file in the FILE* format

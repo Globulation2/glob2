@@ -35,17 +35,6 @@ struct UnitType
 
 	Sint32 magicActionCooldown;
 
-	UnitType& operator+=(const UnitType &a);
-	UnitType operator+(const UnitType &a);
-	UnitType& operator/=(int a);
-	UnitType operator/(int a);
-	UnitType& operator*=(int a);
-	UnitType operator*(int a);
-	int operator*(const UnitType &a);
-
-	void copyIf(const UnitType a, const UnitType b);
-	void copyIfNot(const UnitType a, const UnitType b);
-
 	// Used by save-file serialization in Race::save() / Race::load(stream).
 	// Note: the text-stream "data/units.txt" load path is gone — the default
 	// table is now baked into race.cpp at compile time.

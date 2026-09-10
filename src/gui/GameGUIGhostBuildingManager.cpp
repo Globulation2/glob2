@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2008 Bradley Arsenault
 
+#include "../render/MapCopies.h"
+#include "GameGUIViewport.h"
 #include "GameGUIGhostBuildingManager.h"
 
 #include "GlobalContainer.h"
@@ -77,6 +79,10 @@ void GameGUIGhostBuildingManager::drawAll(int viewportX, int viewportY, int loca
 		int rectY = (((ghost.y - viewportY) & game.map.hMask) * Map::TILE_PX) - (spriteH - bt->height * Map::TILE_PX);
 
 		//Draw
-		globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, GHOST_SPRITE_ALPHA);
+		forEachMapCopy(rectX, rectY, rectX+sprite->getW(bt->gameSpriteImage)-1, rectY+spriteH-1,
+			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW ? game.map.displayViewportW : globalContainer->gfx->getW()-GAME_GUI_RIGHT_MENU_WIDTH,
+			game.map.displayViewportH ? game.map.displayViewportH : globalContainer->gfx->getH(), [&](int dx, int dy) {
+				globalContainer->gfx->drawSprite(rectX+dx, rectY+dy, sprite, bt->gameSpriteImage, GHOST_SPRITE_ALPHA);
+			});
 	}
 }

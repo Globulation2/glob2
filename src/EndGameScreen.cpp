@@ -74,7 +74,7 @@ void EndGameStat::paint(void)
 		for (pos=0; pos<game->teams[team]->stats.endOfGameStats.size(); pos++)
 			maxValue = std::max(maxValue, game->teams[team]->stats.endOfGameStats[pos].value[type]);
 
-	///You can't draw anything if the game ended so quickly that there wheren't two recorded values to draw a line between
+	///You can't draw anything if the game ended so quickly that there weren't two recorded values to draw a line between
 	if(game->teams[0]->stats.endOfGameStats.size() >= 2)
 	{
 		//Calculate the number of digits used by the max value when rounded up to the nearest 10
@@ -116,7 +116,7 @@ void EndGameStat::paint(void)
 			int pos=int(double(n)*line_separate+0.5);
 			int value=maxValue - (maxValue*n)/num;
 			if(n!=0)
-				parent->getSurface()->drawHorzLine(x+e_width-5, y+pos, 10, 255, 255, 255);
+				parent->getSurface()->drawHorzLine(x+e_width-5, y+pos, 10, Style::style->textColor);
 			std::string valueText = getRightScaleText(value, max_digit_count-1);
 			int height=globalContainer->littleFont->getStringHeight(valueText.c_str());
 			parent->getSurface()->drawString(x+e_width+8, y+pos-height/2, globalContainer->littleFont, valueText.c_str());
@@ -129,7 +129,7 @@ void EndGameStat::paint(void)
 			int pos = int(double(x)+time_line_separate*double(n)+0.5);
 			int time = (time_period * n) / 15;
 			if(n!=15)
-				parent->getSurface()->drawVertLine(pos, y+e_height-5, 10, 255, 255, 255);
+				parent->getSurface()->drawVertLine(pos, y+e_height-5, 10, Style::style->textColor);
 			std::string timeText = getTimeText(time);
 			int width=globalContainer->littleFont->getStringWidth(timeText.c_str());
 			parent->getSurface()->drawString(pos-width/2, y+e_height+8, globalContainer->littleFont, timeText);
@@ -205,29 +205,12 @@ double EndGameStat::getValue(double position, int team, int type)
 	int lower = int(position * float(s));
 	int upper = lower+1;
 	double mu = (position * float(s)) - lower; 
-	
-	//int y0 = game->teams[team]->stats.endOfGameStats[std::max(lower-1, 0)].value[type];
+
 	int y1 = game->teams[team]->stats.endOfGameStats[lower].value[type];
 	int y2 = game->teams[team]->stats.endOfGameStats[upper].value[type];
-	//int y3 = game->teams[team]->stats.endOfGameStats[std::min(upper+1, s)].value[type];
 
 	//Linear interpolation
 	return (1-mu) * y1 + mu * y2;
-
-/*
-	//Cubic interpolation
-	double mu2 = mu * mu;
-	double a0 = y3 - y2 - y0 + y1;
-	double a1 = y0 - y1 - a0;
-	double a2 = y2 - y0;
-	double a3 = y1;
-	return a0*mu*mu2+a1*mu2+a2*mu+a3;
-*/
-/*
-	//Cosine interpolation
-	double mu2 = (1-std::cos(mu*3.141592653))/2;
-	return(y1*(1-mu2)+y2*mu2);
-*/
 }
 	
 
@@ -557,14 +540,15 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 	while(loadSaveScreen->endValue<0)
 	{
 		Uint64 time = SDL_GetTicks64();
-		while (SDL_PollEvent(&event))
+		while (GAGCore::GraphicContext::pollEvent(&event))
 		{
 			GAGCore::GraphicContext::translateMouseEvent(&event);
 			loadSaveScreen->translateAndProcessEvent(&event);
 		}
 		loadSaveScreen->dispatchPaint();
 		
-		globalContainer->gfx->drawSurface(0, 0, background);
+		if (Style::style->usesThemeTextColor()) dispatchPaint(false);
+		else globalContainer->gfx->drawSurface(0, 0, background);
 		globalContainer->gfx->drawSurface(loadSaveScreen->decX, loadSaveScreen->decY, loadSaveScreen->getSurface());
 		globalContainer->gfx->nextFrame();
 		Uint64 ntime = SDL_GetTicks64();

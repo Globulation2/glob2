@@ -25,8 +25,9 @@ enum class ScrollWheelTarget
 /// The building-type gate (whether the selected building actually exposes the
 /// chosen field) is applied by the caller at flush time, not here.
 inline ScrollWheelTarget scrollWheelTarget(bool shiftHeld, bool ctrlHeld,
-                                           bool scrollWheelEnabled)
+                                           bool scrollWheelEnabled, bool altHeld=false)
 {
+	if (altHeld)return ScrollWheelTarget::None;
 	if (scrollWheelEnabled)
 		return shiftHeld ? ScrollWheelTarget::UnitStayRange
 		                 : ScrollWheelTarget::MaxUnitWorking;

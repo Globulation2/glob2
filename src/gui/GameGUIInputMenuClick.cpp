@@ -39,13 +39,13 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			int oldViewportX = viewportX;
 			int oldViewportY = viewportY;
 			minimapMouseToPos(globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + mx, my, &viewportX, &viewportY, true);
-			moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+			viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 		}
 	}
 	// Check if one of the panel buttons has been clicked
 	else if (my<YPOS_BASE_DEFAULT)
 	{
-		if (!globalContainer->replaying)
+		if (!globalContainer->isViewingGame())
 		{
 			const int dec = (RIGHT_MENU_WIDTH - NB_VIEWS*PANEL_BUTTON_WIDTH)/2;
 			if (const auto button = panelButtonIndex(mx, dec, NB_VIEWS))
@@ -73,14 +73,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		handleMenuClickBuildingSelection(mx, my, button);
 	}
-	else if ((displayMode==CONSTRUCTION_VIEW && !globalContainer->replaying))
+	else if ((displayMode==CONSTRUCTION_VIEW && !globalContainer->isViewingGame()))
 	{
 		// Use the same hit grid as the hover preview so click and hover cannot drift.
 		const auto id = pickChoiceUnderMouse(YPOS_BASE_CONSTRUCTION, buildingsChoiceName.size(), 2);
 		if (id && buildingsChoiceState[*id])
 			setSelection(TOOL_SELECTION, (void *)buildingsChoiceName[*id].c_str());
 	}
-	else if ((displayMode==FLAG_VIEW && !globalContainer->replaying))
+	else if ((displayMode==FLAG_VIEW && !globalContainer->isViewingGame()))
 	{
 		int dec = (RIGHT_MENU_WIDTH - BrushTool::WIDTH)/2;
 		int relY = my - YPOS_BASE_FLAG;
@@ -111,14 +111,14 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				setSelection(TOOL_SELECTION, (void*)flagsChoiceName[*id].c_str());
 		}
 	}
-	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->replaying) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->replaying))
+	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->isViewingGame()) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->isViewingGame()))
 	{
 		if(mx > 8 && mx < 24)
 		{
 			// In replays, this menu bar is 15 pixels lower than usual to show "Watching: player-name"
 			int inc;
 
-			if (globalContainer->replaying) inc = 15;
+			if (globalContainer->isViewingGame()) inc = 15;
 			else inc = 0;
 
 			if(my > YPOS_BASE_STAT+140+inc+64 && my < YPOS_BASE_STAT+140+inc+80)
@@ -158,7 +158,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			}
 		}
 	}
-	else if (replayDisplayMode==RDM_REPLAY_VIEW && globalContainer->replaying)
+	else if (replayDisplayMode==RDM_REPLAY_VIEW && globalContainer->isViewingGame())
 	{
 		int x = REPLAY_PANEL_XOFFSET;
 		int y = REPLAY_PANEL_YOFFSET;

@@ -1,91 +1,91 @@
 [%0 has left the game]
-%0 напусти игру.
+%0 је напустио игру.
 [%0 level %1]
-
+%0, ниво %1
 [%0 units can't access building]
-
+Јединице без приступа згради: %0
 [%0 units can't access flag]
-
+Јединице без приступа застави: %0
 [%0 units can't access fruit]
-
+Јединице без приступа воћу: %0
 [%0 units can't access resource]
-
+Јединице без приступа сировини: %0
 [%0 units not available]
-
+Недоступне јединице: %0
 [%0 units too far from building]
-
+Јединице предалеко од зграде: %0
 [%0 units too far from flag]
-
+Јединице предалеко од заставе: %0
 [%0 units too far from fruit]
-
+Јединице предалеко од воћа: %0
 [%0 units too far from resource]
-
+Јединице предалеко од сировине: %0
 [%0 units too low level]
-
+Јединице прениског нивоа: %0
 [%0% Uploaded]
-
+Отпремљено: %0 %
 [%0's game]
-
+Игра играча %0
 [%0's team unit got converted to your team]
-Противничка јединица је пребегла код нас %0
+Јединица тима %0 је прешла на вашу страну
 [abreaviation explanation A]
-
+A: Савезници
 [abreaviation explanation C]
-
+C: Примаоци порука ћаскања
 [abreaviation explanation fV]
-
+fV: Дели видљивост гостионица (за преузимање јединица)
 [abreaviation explanation mV]
-
+mV: Дели видљивост пијаца (за размену воћа)
 [abreaviation explanation V]
-
+V: Дели видљивост свих зграда
 [add map]
-
+Додај мапу
 [add shortcut]
-
+Додај пречицу
 [Add]
-
+Додај
 [AI Descriptions]
-
+Описи вештачке интелигенције
 [AI]
 ВИ
 [ai]
 ВИ
 [AICastor-Description]
-
+Castor игра опрезно и добро се сналази на мапама са мало сировина. Средња тежина.
 [AICastor]
 ВИКастор
 [AINicowar-Description]
-
+Nicowar игра нападачки, брзо се шири и шаље огромне војске на противнике. Висока тежина.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Без ВИ – не ради ништа.
 [AINone]
-НикогоВИћ
+Без ВИ
 [AINumbi-Description]
-
+Numbi се шири умерено, али брзо. Ниска тежина.
 [AINumbi]
-ГлупаВИ
-[AIReachToInfinity-Description]
-
-[AIReachToInfinity]
-ReachToInfinity
+Numbi
+[AIEcono-Description]
+Econo не напада, али гради огромне базе и упорно преводи туђе јединице на своју страну. Ниска тежина.
+[AIEcono]
+Econo
 [AIWarrush-Description]
-
+Warrush напада брзо и жестоко, често доводећи одбрану противника до крајњих граница. Средња тежина.
 [AIWarrush]
 AIWarrush
 [Alga]
 Алге
 [algae]
-
+алге
 [alliances]
 Савези
 [alt %0]
-
+alt-%0
 [and]
 и
 [any explorer]
-
+било који извиђач
 [are dying hungry]
 умиру од глади
 [are hungry]
@@ -97,7 +97,7 @@ AIWarrush
 [armor]
 Оклоп
 [assigned]
-
+Додељено
 [At. speed]
 Брзина напада
 [At. strength]
@@ -115,117 +115,117 @@ AIWarrush
 [away:]
 одсутан:
 [Back]
-
+Назад
 [backspace]
-
+Backspace
 [barracks explanation 2]
-
+ниво ратника
 [barracks explanation]
-Касарна служи за ...
+Побољшава борбени
 [barracks]
 Касарна
 [beach size]
 Величина плажа
 [Blocked Players]
-
+Блокирани играчи
 [break]
-
+Break
 [briefing]
-
+Упутства мисије
 [build %0 level %1]
-
+Изгради: %0, ниво %1
 [Build]
-Гради
+Градња
 [Building Defaults]
-
+Подразумевана подешавања зграда
 [building settings]
-
+Подешавања зграда
 [building site]
 Градилиште
 [Building Tool Box Explanation]
-
+Shift + превлачење = правоугаоник
 [Building Tool Line Explanation]
-
+Ctrl + превлачење = линија
 [Buildings]
 Зграде
 [Bullets]
 Муниција
 [campaign editor]
-
+Уређивач кампања
 [campaign]
 Кампања
 [Can't connect, can't find host]
-
+Повезивање није могуће: домаћин није пронађен
 [Can't host game, port %0 in use]
-
+Није могуће бити домаћин игре: порт %0 је заузет
 [Can't join game, game doesn't exist]
-
+Придруживање није могуће: игра не постоји
 [Can't join game, game has started]
-
+Придруживање није могуће: игра је већ почела
 [Can't join game, game is full]
-
+Придруживање није могуће: игра је попуњена
 [cancel destroy]
-Заустави уништење
+Откажи рушење
 [cancel repair]
-Одложи поправку
+Откажи поправку
 [cancel upgrade]
-Одложи дограду
+Откажи надоградњу
 [Cancel]
 Поништи
 [caps lock]
-
+Caps Lock
 [carry]
 Пренос :
 [Change Area Name]
-
+Промени назив области
 [Cherry]
 Вишње
 [choose campaign]
-
+Изаберите кампању
 [choose game]
 Избор игре
 [choose map]
 Избор мапе
 [clear area]
-
+Област чишћења
 [Clearing:]
 Чишћење:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Застава за чишћење служи за чишћење
+Уклања ресурсе
 [clearingflag]
 Застава чишћења
 [closed]
 Затворен
 [combined vision]
-
+Заједничка видљивост
 [compile]
 Преведи скрипт
 [compose]
-
+Compose
 [Computing Fertility]
-
+Израчунавање плодности
 [concrete islands terrain]
-
+Одвојена острва
 [connect]
 Прикључи се
 [connecting to game]
-
+Повезивање са игром
 [connecting to]
 Повезивање са:
 [Construction Site Defaults]
-
+Подразумевана подешавања градилишта
 [Continue playing]
 Настави игру
 [control %0]
-
+control-%0
 [Corn]
 Жито
 [crater density]
-
+број кратера
 [crater lakes terrain]
-
+Кратерска језера
 [create game]
 Направи игру
 [create map]
@@ -233,215 +233,211 @@ AIWarrush
 [credits]
 Заслуге
 [ctrl - line]
-
+Ctrl – линија
 [current speed]
 Тренутна брзина
 [custom game]
 Произвољна игра
 [customcur]
-
+Прилагођени показивач
 [damage]
 Штета
 [Damaged Map]
-
+Мапа повреда
 [decrease units working]
-
+Смањи број радних јединица
 [Defeat Your Oppenents]
-
+Поразите противнике
 [defencetower explanation 2]
-
+јединице и зграде
 [defencetower explanation]
-Стражара служи за осматрање.
+Напада непријатељске
 [defencetower]
 Стражара
 [Defense Map]
-
+Мапа одбране
 [Defense]
 Одбрана
 [Delete game]
-
+Обриши изабрану игру
 [delete]
-
+Избриши
 [desert]
-
+пустиња
 [destroy building]
-
+Сруши изабрану зграду
 [destroy]
 Уништи
 [display]
 Екран
 [do nothing]
-
+Не ради ништа
 [don't carry anything]
 Не носи ништа
 [down]
-
+доле
 [Download Map]
-
+Преузми мапу
 [Download Maps]
-
+Преузми мапе
 [downloaded %0]
-
+преузето: %0
 [downloading map]
-
+Преузимање мапе
 [edit map]
-
+Уреди мапу
 [editing map]
-
+Уређивање мапе
 [editor shortcuts]
-
+За уређивач
 [editor]
-Уредник
+Уређивач
 [end]
-
+End
 [Enter your nickname :]
 Унесите надимак :
 [Enter your password :]
 Унесите лозинку :
 [enter]
-
+Enter
 [equals]
-
+знак једнакости
 [escape]
-
+Escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-Истраживачка застава служи за истраживање.
+Привлачи извиђаче
 [explorationflag]
 Истраживачка застава
 [Explorer Ratio]
-
+Удео извиђача
 [Explorer]
 Извиђач
 [explorers]
 Извиђачи
 [extra islands]
-
+празна острва
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
-
+Мапа плодности
 [Flag Defaults]
-
+Подразумевана подешавања застава
 [flag settings explanation]
-
+Подразумевани полупречник заставе
 [fog of war]
-
+Магла рата
 [food]
 Храна
 [forbidden area]
-
+Забрањена област
 [Free]
-слободних
-[free]
-Слободно
+Здраве
 [free]
 слободно
 [from:]
 од:
 [fruit]
-
+воће
 [fullscreen]
 Цео екран
 [game full]
-Потпуна игра
+Игра је попуњена
 [game shortcuts]
-
+Пречице игре
 [Game]
-
+Игра
 [general settings]
-
+Општа подешавања
 [go to event]
-
+Иди на догађај
 [go to home]
-
+Иди у матичну базу
 [goto main menu]
 Назад на главни избор
 [grass]
 Трава
 [ground attack]
-
+напад на тлу
 [guard area]
-
+Чувана област
 [GUIMapPreview text 0]
-
+Изаберите
 [GUIMapPreview text 1]
-
+мапу
 [handmade map]
 Ручно направљена мапа
 [Happyness]
 Задовољство
 [hard pause]
-
+Потпуно паузирај
 [Harvest]
-Жањи
+Жетва
 [high priority]
-
+висок
 [hints]
-
+Савети
 [home]
-
+Home
 [hospital explanation 2]
 
 [hospital explanation]
-Болница служи за лечење
+Лечи јединице
 [hospital]
 Болница
 [host]
-Рачунар
-[hp]
-Живот
+Организуј игру
 [hp]
 Здравље
 [Human]
-
+Човек
 [human]
-
+човек
 [hungry]
 гладних
 [hungryness]
-
+Глад
 [In way]
-У путу
+На путу
 [increase units working]
-
+Повећај број радних јединица
 [inn explanation 2]
 
 [inn explanation]
-Зграда у којој се скупља храна.
+Храни јединице
 [inn]
 Гостионица
 [insert]
-
+Insert
 [inside]
 Унутра
 [islands size]
@@ -449,19 +445,19 @@ AIWarrush
 [islands terrain]
 Острвско земљиште
 [isles terrain]
-
+Острвца
 [iterate selection]
-
+Изабери следећи објекат
 [jobs]
-
+послови
 [join a game]
 Придружи се игри
 [join]
 Придружи се
 [keyboard settings]
-
+Подешавања тастатуре
 [kick]
-
+Избаци
 [lan]
 Игра у локалној мрежи
 [language incomplete]
@@ -473,125 +469,125 @@ sr
 [language]
 Српски
 [Leave Game]
-
+Напусти игру
 [left meta]
-
+леви Meta
 [left super]
-
+леви тастер Windows
 [left]
-
+лево
 [level]
 Ниво
 [levels]
 Нивои
 [load campaign]
-
+Учитај кампању
 [load game]
 Учитај игру
 [load map]
-
+Учитај мапу
 [load replay]
-
+Учитај снимак игре
 [load script]
-
+Учитај скрипту
 [load]
 Учитај
 [loading map list]
-
+Учитавање списка мапа...
 [Lobby]
-
+Чекаоница
 [login]
 Пријава
 [look around]
-
+Разгледај
 [Lost : %0 has more prestige than you]
 Пораз : %0 је остварио већи престиж од Вас.
 [Lost : your colony is dead]
 Пораз : Ваша колонија је мртва
 [low priority]
-
+низак
 [lowquality]
 Низак квалитет
 [Magic At. Air]
-
+Штета у вазд.
 [Magic At. Ground]
-
+Штета на тлу
 [map description]
-
+Опис
 [Map Discovered]
-
+Мапа откривена
 [Map download failure: lost connection]
-
+Преузимање мапе није успело: веза са YOG је прекинута
 [Map name: %0]
 Име мапе: %0.
 [map name]
-
+Назив
 [map rated]
-
+Мапа је оцењена
 [map script]
-
+Скрипта мапе
 [map size x]
 Ширина мапе
 [map size y]
 Висина мапе
 [Map upload failure: connection lost]
-
+Отпремање мапе није успело: веза са YOG је прекинута
 [Map upload failure: map name in use]
-
+Отпремање мапе није успело. Назив мапе је већ у употреби.
 [Map upload failure: unknown reason]
-
+Отпремање мапе није успело. Разлог је непознат.
 [Map Upload: Author Name]
-
+Име аутора
 [Map Upload: Waiting for reply]
-
+Чекање одговора
 [mark map]
-
+Означи место савезницима
 [market explanation 2]
-
+воћа са другима
 [market explanation]
-Пијаца служи за
+Омогућава размену
 [market]
 Пијаца
 [medium priority]
-
+средњи
 [meta %0]
-
+meta-%0
 [Min required level:]
 Најмањи потребни ниво:
 [Minimum Level To Flag]
-
+Мин. ниво јед.
 [Music volume]
 Јачина (музика)
 [Mute]
-
+Утишај
 [mute]
-
+утишај
 [new campaign]
-
+Нова кампања
 [new map]
 Нова
 [nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
+Изабрани надимак је већ у употреби на мрежи freenode. Моћи ћете да разговарате само преко YOG-а.
 [no fullscreen]
-
+* само у прозорском режиму
 [No Hints]
-
+Нема савета
 [no key]
-
+тастер није додељен
 [No Objectives]
-
+Нема циљева
 [no ressources growth areas]
-
+Без раста
 [No]
 Не
 [Not Enough Ratings]
-
+Недовољно оцена
 [not ready]
 није спреман
 [Number Of Buildings]
-
+Број зграда
 [number of players: %0 (%1 AI)]
-
+Број играча: %0 (од тога %1 ВИ)
 [number of players: %0]
 Број присутних играча: %0.
 [number of teams: %0]
@@ -599,153 +595,153 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 [number of teams]
 Број тимова
 [Number Of Units]
-
+Број јединица
 [numlock]
-
+Num Lock
 [objectives]
-
+Циљеви
 [of which]
 од чега
 [ok]
 У реду
 [old islands terrain]
-
+насумична острва (старо)
 [old random terrain]
-
+насумични терен (старо)
 [on press]
-
+Притисак
 [On the spot]
 На лицу места
 [on unpress]
-
+Пуштање
 [open chat box]
-
+Отвори ћаскање
 [open load menu]
-
+Отвори мени за учитавање
 [open save menu]
-
+Отвори мени за чување
 [open scenario editor]
-
+Отвори уређивач сценарија
 [open teams editor]
-
+Отвори уређивач тимова
 [open]
-отвори
+Слободно
 [OpenGL]
 OpenGL
 [Options]
-
+Опције
 [options]
-Избори
+Опције
 [Orange]
 Наранџе
 [Other Options]
-
+Остале опције
 [page down]
-
+Page Down
 [page up]
-
+Page Up
 [Papyrus]
 Папирус
 [pause game]
-
+Паузирај игру
 [pause]
-
+Pause
 [Paused]
 Пауза
 [player name]
 Име играча
 [player rating %0]
-
+Оцена играча: %0
 [players]
-
+Играчи
 [please wait]
 Молим сачекајте
 [power]
-
+напајање
 [press space]
-
+Притисните размак за наставак.
 [Prestige Score]
-
+Поени престижа
 [Prestige Win Enabled]
-
+Омогућена победа престижом
 [Prestige]
 Престиж
 [Primary Objectives]
-
+Главни
 [print screen]
-
+Print Screen
 [priority]
-
+Приоритет
 [Prune]
 Шљиве
 [quit the editor]
-
+Напусти уређивач
 [quit the game]
 Напусти игру
 [quit the replay]
-
+Заврши репродукцију
 [quit]
 Излаз
 [racetrack explanation 2]
-
+кретања јединица
 [racetrack explanation]
-Стадион служи за...
+Повећава брзину
 [racetrack]
 Стадион
 [range]
 Домет
 [Rated %0]
-
+Оцена: %0
 [ratios]
 Односи
 [ready?]
-
+спреман?
 [refresh map list]
-
+Освежи списак мапа
 [Register a new YOG user with password]
 Пријави новог корисника на YOG са лозинком. (није шифровано)
 [Register]
-
+Региструј се
 [remember unit]
-
+Памти број јединица
 [Remember YOG password localy]
 Запамти лозинку у локалу (није шифровано)
 [remove map]
-
+Уклони мапу
 [remove shortcut]
-
+Уклони пречицу
 [Remove]
-
+Уклони
 [repair building]
-
+Покрени/заустави поправку
 [repair]
 Поправи
 [repeat area]
-
+понављања истог предела
 [Repeat your password :]
-
+Поновите лозинку:
 [replay ended]
-
+Репродукција је завршена
 [restore default shortcuts]
-
+Врати подразумеване пречице
 [return to editor]
-
+Врати се у уређивач
 [return to game]
 Повратак на игру
 [return to replay]
-
+Врати се на репродукцију
 [return]
-
+Enter
 [right meta]
-
+десни Meta
 [right super]
-
+десни тастер Windows
 [right]
-
+десно
 [river diameter]
-
+ширина реке
 [river terrain]
-
+Река
 [sand]
 Песак
 [save before quit?]
@@ -753,127 +749,127 @@ OpenGL
 [save game]
 Сними игру
 [save map]
-
+Сачувај мапу
 [save replay]
-
+Сачувај снимак игре
 [save script]
-
+Сачувај скрипту
 [Save]
 Сними
 [school explanation 2]
-
+градње радника
 [school explanation]
-Школа служи за учење нових вештина.
+Побољшава ниво
 [school]
 Школа
 [Script Areas]
-
+Области скрипте
 [scroll lock]
-
+Scroll Lock
 [scroll wheel enabled]
-
+Омогући точкић миша
 [Secondary Objectives]
-
+Споредни
 [seeking a job]
 траже посао
 [seeking]
 у потрази
 [select barracks building]
-
+Изабери зграду: Касарна
 [select clearingflag]
-
+Изабери заставу чишћења
 [select construct barracks]
-
+Изабери изградњу: Касарна
 [select construct defencetower]
-
+Изабери изградњу: Стражара
 [select construct hospital]
-
+Изабери изградњу: Болница
 [select construct inn]
-
+Изабери изградњу: Гостионица
 [select construct market]
-
+Изабери изградњу: Пијаца
 [select construct racetrack]
-
+Изабери изградњу: Стадион
 [select construct school]
-
+Изабери изградњу: Школа
 [select construct stonewall]
-
+Изабери изградњу: Камени зид
 [select construct swarm]
-
+Изабери изградњу: Рој
 [select construct swimmingpool]
-
+Изабери изградњу: Пливалиште
 [select delete tool]
-
+Изабери алатку за брисање
 [select explorationflag]
-
+Изабери истраживачку заставу
 [select hospital building]
-
+Изабери зграду: Болница
 [select inn building]
-
+Изабери зграду: Гостионица
 [select market building]
-
+Изабери зграду: Пијаца
 [select place clearing area]
-
+Постави област: Област чишћења
 [select place clearingflag]
-
+Постави заставу чишћења
 [select place explorationflag]
-
+Постави истраживачку заставу
 [select place forbidden area]
-
+Постави област: Забрањена област
 [select place guard area]
-
+Постави област: Чувана област
 [select place warflag]
-
+Постави заставу: Ратна застава
 [select racetrack building]
-
+Изабери зграду: Стадион
 [select school building]
-
+Изабери зграду: Школа
 [select swarm building]
-
+Изабери зграду: Рој
 [select swimmingpool building]
-
+Изабери зграду: Пливалиште
 [select tower building]
-
+Изабери зграду: Стражара
 [select wall building]
-
+Изабери зграду: Камени зид
 [select warflag]
-
+Изабери заставу: Ратна застава
 [settings]
 Подешавања
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
-
+Enter: пошаљи поруку у ћаскање
 [shortcut explanation v]
-
+V: држите за говор
 [show areas]
-
+Прикажи области
 [show flags]
-
+Прикажи заставе
 [show main menu]
-
+Прикажи главни мени
 [skin]
-
+Приказ
 [smoothing]
 Умекшавање
 [sort by name]
-
+Назив
 [sort by rating]
-
+Оцена
 [sort by size]
-
+Величина
 [Sort By]
-
+Поређај по
 [space]
-
+размак
 [start mission]
-
+Покрени мисију
 [start new campaign]
-
+Покрени нову кампању
 [Start]
 Почетак
 [Starving Map]
-
+Мапа гладовања
 [starving]
 умирућих од глади
 [Statistics]
@@ -883,75 +879,75 @@ OpenGL
 [still (w)]
 Чекање
 [still one unit working]
-Једна јединица у послу
+Једна јединица још ради
 [Still one]
 Још једна
 [Stone]
 Камен
 [stone]
-
+камен
 [stonewall explanation 2]
-
+одбране
 [stonewall explanation]
-Камени зид служи за...
+Елемент пасивне
 [stonewall]
 Камени зид
 [submit rating]
-
+Пошаљи оцену
 [svr hostname]
 Име сервера
 [swamp terrain]
-
+Мочвара
 [swarm explanation 2]
 
 [swarm explanation]
-Зграда за ројење.
+Ствара нове јединице
 [swarm]
 Рој
 [Swim]
-Пливај
+Пливање
 [swimmingpool explanation 2]
-
+пливања јединица
 [swimmingpool explanation]
-Пливалиште служи за...
+Повећава брзину
 [swimmingpool]
 Пливалиште
 [switch to adding areas]
-
+Додај области
 [switch to area brush 1]
-
+Изабери четкицу за области: 1
 [switch to area brush 2]
-
+Изабери четкицу за области: 2
 [switch to area brush 3]
-
+Изабери четкицу за области: 3
 [switch to area brush 4]
-
+Изабери четкицу за области: 4
 [switch to area brush 5]
-
+Изабери четкицу за области: 5
 [switch to area brush 6]
-
+Изабери четкицу за области: 6
 [switch to area brush 7]
-
+Изабери четкицу за области: 7
 [switch to area brush 8]
-
+Изабери четкицу за области: 8
 [switch to building view]
-
+Прикажи зграде
 [switch to flag view]
-
+Прикажи заставе
 [switch to removing areas]
-
+Уклони области
 [switch to teams view]
-
+Прикажи тимове
 [switch to terrain view]
-
+Прикажи терен
 [sys req]
-
+Sys Req
 [tab]
-
+Tab
 [teams editor]
-
+Уређивач тимова
 [Teams Fixed]
-
+Непроменљиви тимови
 [teams]
  екипа
 [the barracks is finished]
@@ -963,17 +959,17 @@ OpenGL
 [the building is under attack]
 Зграда је нападнута
 [the clearingflag is finished]
-?? Застава за чишћење је завршена ??
+Застава чишћења је спремна
 [the clearingflag is under attack]
-?? Застава за чишћење је нападута ??
+Застава чишћења је нападнута
 [the defencetower is finished]
 Стражара је завршена
 [the defencetower is under attack]
 Стражара је нападнута
 [the explorationflag is finished]
-?? Истраживачка застава је завршена ??
+Истраживачка застава је спремна
 [the explorationflag is under attack]
-?? Истраживачка застава је нападнута ??
+Истраживачка застава је нападнута
 [The game has not been finished]
 Игра није завршена
 [the games]
@@ -983,11 +979,11 @@ OpenGL
 [the hospital is under attack]
 Болница је нападнута
 [The host has cancelled the game]
-
+Домаћин је отказао игру.
 [the inn is finished]
-Кантина је завршена
+Гостионица је завршена
 [the inn is under attack]
-Кантина је нападнута
+Гостионица је нападнута
 [the maps]
 Мапе
 [the market is finished]
@@ -1003,7 +999,7 @@ OpenGL
 [the racetrack is under attack]
 Стадион је нападнут
 [the replays]
-
+Снимци игара
 [the school is finished]
 Школа је завршена
 [the school is under attack]
@@ -1013,7 +1009,7 @@ OpenGL
 [the stonewall is under attack]
 Камени зид је нападнут
 [the swarm is finished]
-Ројење је завршено
+Рој је завршен
 [the swarm is under attack]
 Рој је нападнут
 [the swimmingpool is finished]
@@ -1021,133 +1017,131 @@ OpenGL
 [the swimmingpool is under attack]
 Пливалиште је нападнуто
 [the warflag is finished]
-?? Ратна застава је завршена ??
+Ратна застава је спремна
 [the warflag is under attack]
-?? Ратна застава је нападнута ??
+Ратна застава је нападнута
 [time]
-
+Време
 [to:]
 ка:
 [toggle draw accessibility aids]
-
+Прикажи/сакриј бројеве тимова
 [toggle draw information]
-
+Укључи/искључи податке
 [toggle draw unit paths]
-
+Укључи/искључи путање јединица
 [toggle menu screen]
-
+Укључи/искључи мени
 [toggle recording voice]
-
+Укључи/искључи снимање гласа
 [Total Attack Power]
-
+Укупна нападачка снага
 [Total Defence Power]
-
+Укупна одбрамбена снага
 [Total Hitpoints]
-
+Укупни животни поени
 [Total prestige reached]
 Укупан постигнут престиж
 [Total]
 Укупно
 [tutorial text 1]
-
+Добро дошли у основну обуку за Globulation 2! Научићете да градите гостионице, истражујете области и уништавате непријатеље. Корисног знања овде не недостаје!
 [tutorial text 2]
-
+Сада када сте савладали основе, време је да упознате друге зграде, као што су стадиони, пливалишта и школе.
 [tutorial text 3]
-
+Добро напредујете. Сада пређимо на ратнике, касарне и надоградње.
 [tutorial text 4]
-
+Скоро сте завршили. Преостале су само заставе и напад. Затим ћете знати довољно да испробате прилагођене игре, а касније и да играте на мрежи против најбољих играча Globulation 2.
 [tutorial]
-Уџбеник
+Обука
 [Uncontrolled]
 Неконтролисан
 [undo]
-
+опозови
 [uniform terrain]
 Једнообразно земљиште
 [Unit editor]
-
+Уређивач јединица
 [unit settings explanation]
-
+Подразумевани број додељених јединица
 [units working]
- јединица у послу
+ јединица ради
 [Units]
 Јединице
 [unlocked at start]
-
+Откључано на почетку
 [unlocked by]
-
+Откључава се завршетком
 [Unnamed Area]
-
+{Неименована област}
 [up]
-
+горе
 [upgrade building]
-
+Покрени/заустави надоградњу
 [Upgrade Defaults]
-
+Подразумевана подешавања надоградње
 [upgrade]
 Догради
 [Upload Map]
-
+Отпреми мапу
 [upload map]
-
+Отпреми мапу
 [username]
 Корисничко име
 [Version]
 Верзија
 [view history]
-
+Прикажи историју
 [Voice volume]
-
+Јачина гласа
 [waiting for %0]
 Чека се на %0
 [waiting for key]
-
+чекање тастера...
 [Waiting]
-
+Чекање
 [Walk]
-Ходај
+Ходање
 [warflag explanation 2]
 
 [warflag explanation]
-Ратна застава служи за ратовање.
+Привлачи ратнике
 [warflag]
 Ратна застава
 [Warning, you need to reboot the game for changes to take effect]
 Упозорење: морате да поново покренете игру да би измене биле уважене.
 [Warrior Ratio]
-
+Удео ратника
 [Warrior]
 Ратник
 [warriors]
 Ратници
 [watch again]
-
+Пусти поново
 [watching:]
-
+Гледате:
 [water]
 Вода
 [Wheat]
-
+Жито
 [Won : you defeated your opponents]
-Победа : Савладали сте противике.
+Победа: Савладали сте противнике.
 [Won : you have the most prestige]
-Победа: Остварили сте највећи могући престиж.
+Победа: Имате највише престижа.
 [Won : your ally %0 has the most prestige]
-Победа : Ваш савезник %0 је достигао највећи могући престиж.
+Победа: Ваш савезник %0 има највише престижа.
 [Wood]
 Дрво
 [wood]
-
+дрво
 [Worker Ratio]
-
+Удео радника
 [Worker]
 Радник
 [workers]
 Радници
-[workers]
-Радници
 [working]
-Ради се
+Раде
 [wounded]
 рањених
 [Yes]
@@ -1161,9 +1155,9 @@ YOG мета-сервер је одбио везу јер је ово корис
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
 YOG мета-сервер је одбио везу јер лозинка коју сте уписали није исправна.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG мета-сервер је одбио везу јер ваше корисничко име нема одређену лозинку. Морате регистровати ваше име и изабрати лозинку.
+Метасервер YOG је одбио везу јер ово корисничко име још нема лозинку. Ако желите да га региструјете са унетом лозинком, пре повезивања укључите опцију "Пријави новог корисника на YOG са лозинком". Ово је потребно урадити само једном.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+Метасервер YOG је одбио везу јер је ова IP адреса привремено блокирана. Сачекајте да забрана истекне или се обратите администраторима.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG мета-сервер је прекинуо везу јер је ваше издање Глобулације2 престаро.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
@@ -1171,29 +1165,29 @@ YOG мета-сервер је одбио везу али није назнач�
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 YOG мета-сервер је одбио везу јер корисничко име које сте изабрали неко већ користи.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+Метасервер YOG је одбио везу јер је ово корисничко име блокирано. Обратите се администраторима.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+Метасервер YOG је одбио везу јер унето корисничко име није исправно. Име сме да садржи само слова, бројеве и доње црте.
 [YESTS_CREATED]
 Подсистем за повезивање је спреман за контакт са YOG метасервером.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+Унете лозинке се не подударају. Унесите их поново.
 [YESTS_UNABLE_TO_CONNECT]
 Грешка при прикључењу. Изгледа да YOG сервер није покренут.
 [yog block command help]
-
+/block <playername>    Блокира играча; његове поруке више нећете видети.
 [yog block command player %0 already blocked]
-
+Играч %0 је већ блокиран
 [yog block command player %0 blocked]
-
+Играч %0 је блокиран
 [yog block command player %0 not found]
-
+Играч %0 није пронађен
 [yog command header]
-
+Списак наредби клијента YOG:
 [yog command unknown]
-
+Непозната наредба.
 [yog help command help]
-
+/help    Приказује ову помоћ
 [yog]
 Игра преко мреже (Ysagoon)
 [you have lost]
@@ -1201,12 +1195,574 @@ YOG мета-сервер је одбио везу јер корисничко �
 [you have won]
 Добили сте игру.
 [You where kicked from the game]
-
+Избачени сте из игре
 [Your %0 are under attack]
 Нападнута јединица: %0
 [Your IP address was temporarily banned]
-
+Ваша IP адреса је привремено блокирана. Сачекајте да забрана истекне или се обратите администраторима.
 [Your unit got converted to %0's team]
-Ваша јединица је пребегла %0
+Ваша јединица је прешла у тим играча %0
 [Your username was banned]
-
+Ваше корисничко име је блокирано. За укидање забране обратите се администраторима.
+[game speed]
+Брзина игре
+[decrease game speed]
+Смањи брзину игре
+[increase game speed]
+Повећај брзину игре
+[maximum game speed]
+Највећа
+[multiplayer game speed]
+Брзина: 1x (више играча)
+[game speed help]
+Само за једног играча и снимке. Игра за више играча ради брзином 1x.
+[AICortex-Description]
+Кортекс се шири ка новим житним пољима и шаље групе ратника у битку, уз подршку гостионица и болница у близини прве линије фронта. Средња тежина. Експериментално.
+[ERROR_CANT_LOAD_MAP]
+Мапа се не може учитати: датотека је оштећена или је верзија некомпатибилна.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Кампања се не може сачувати. Проверите да ли одредишна фасцикла постоји, дозвољава упис и има слободног простора.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Унутра: %0
+[Units still working: %0]
+Још раде: %0
+[2 vs 2]
+2 против 2
+[AI strategy & counterplay]
+Стратегија ВИ и противигра
+[AICastor-Profile]
+Стратегија: Пажљиво се шири и добро ради на мапама са мало ресурса.\n\nПредности: Ограничено проширење је ефикасно у играма са оскудним ресурсима.\n\nПредложена противигра: Заузмите територију рано. Немојте претпостављати да ће недостатак ресурса ослабити ову вештачку интелигенцију.
+[AICastor-Summary]
+Опрезно ширење; добро ради са оскудним ресурсима.
+[AICortex-Profile]
+Стратегија: Управља залихама хране, шири се према новим пољима пшенице и окупља узастопне групе ратника. Гостионице и болнице у близини линије фронта подржавају нападе далеко од базе.\n\nСнаге: Заједно шаље појачање, одржава војни притисак и реагује на несташицу хране.\n\nПредложена противигра: Борите се за контролу над новим житним пољима и нападните његове зграде за подршку близу линије фронта. Нападните пре него што су његове групе ратника спремне.\n\nЕкспериментална ВИ. Средња тежина; предлози за противигру нису оцене из упоредних тестова.
+[AICortex-Summary]
+Проширује се имајући на уму залихе хране и подржава своје нападачке трупе.
+[AINicowar-Profile]
+Стратегија: Брзо се шири и напада противнике са огромним војскама.\n\nПредности: Брза експанзија подржава агресивне војне нападе.\n\nПредложена противигра: Спречите њено ширење. Користите терен да смањите број непријатељских трупа које се могу борити одједном.
+[AINicowar-Summary]
+Брзо се шири и гради велике војске за агресивне нападе.
+[AINone-Profile]
+Стратегија: АИ не даје команде.\n\nПредности: Предвидљив, неактиван противник за експерименте.\n\nСлабости: Не шири се и не прилагођава.
+[AINone-Summary]
+Неактивна колонија за експерименте.
+[AINumbi-Profile]
+Стратегија: Проширује се брзо, али у малом обиму. Лакши противник за вежбање управљања колонијом.\n\nПредности: Омогућава вам да научите и економско управљање и борбу.\n\nПредложена противигра: Развијте јачу економију и обучите своју војску пре напада.
+[AINumbi-Summary]
+Брзо ширење на малом нивоу.
+[AIEcono-Profile]
+Стратегија: Не напада, већ гради огромне базе и активно претвара непријатељске јединице на своју страну.\n\nСнаге: Проширење и конверзија јединица прете противницима без директних напада.\n\nПредложена противигра: Рано развијајте своју колонију и избегавајте слање јединица где их непријатељ може претворити.
+[AIEcono-Summary]
+Огромне базе и конверзија уместо напада.
+[AIWarrush-Profile]
+Стратегија: Напада рано и снажно, пре него што противници заврше са припремама.\n\nПредности: Искориштава небрањено ширење и спору војну припрему.\n\nПредложена противигра: Преживите први напад уз очување економије, а затим крените у противнапад.
+[AIWarrush-Summary]
+Брзи напади који тестирају вашу рану одбрану.
+[Algae]
+Алге
+[Alliances]
+Савези
+[Beach size]
+Величина плаже
+[Blue]
+Плава
+[Brown]
+Браон
+[Built-in maps]
+Уграђене мапе
+[Can change in game]
+Може се променити у игри
+[Closed]
+Затворено
+[Colonies]
+Колоније
+[Colony]
+Колонија
+[Concrete islands]
+Одвојена острва
+[Conquest only]
+Само освајање
+[Conquest or prestige]
+Освајање или престиж
+[Could not launch this map. Your setup is retained; try again.]
+Није могуће покренути ову мапу. Ваше подешавање је задржано; покушајте поново.
+[Could not load this map. Choose another map or retry.]
+Није могуће учитати ову мапу. Изаберите другу мапу или покушајте поново.
+[Crater lakes]
+Кратерска језера
+[Custom]
+Прилагођено
+[Custom teams]
+Прилагођени тимови
+[Cyan]
+Циан
+[Desert weight]
+Удео пустиње
+[Easy]
+Лако
+[Explore as you play]
+Истражујте док играте
+[Extra colony assignments are retained for larger maps.]
+Додатни задаци колонија се задржавају за веће мапе.
+[Extra islands]
+Додатна острва
+[FFA]
+Сви против свих
+[Fruit]
+Воће
+[Game Rules]
+Правила игре
+[Game speed]
+Брзина игре
+[Generate & play]
+Генеришите и играјте
+[Give at least one terrain type a nonzero weight.]
+Бар једном типу терена доделите удео већи од нуле.
+[Grass weight]
+Удео траве
+[Gray]
+Сива
+[Green]
+Зелена
+[Hard]
+Тешко
+[Height]
+Висина
+[Invalid colony count.]
+Неважећи број колонија.
+[Island size]
+Величина острва
+[Islands]
+Острва
+[Isles]
+Острвца
+[Lake density]
+Густина језера
+[Landscape]
+Пејзаж
+[Last colony standing]
+Последња преживела колонија
+[Layout]
+Распоред
+[Locked teams]
+Закључани тимови
+[Magenta]
+Магента
+[Map]
+Мапа
+[Map knowledge]
+Знање о мапи
+[Match finished]
+Утакмица је завршена
+[Medium]
+Средње
+[Medium - Experimental]
+Средње – Експериментално
+[No AI orders]
+Без наређења ВИ
+[Old islands]
+Стара острва
+[Old random]
+Стари случајни
+[Open at least one colony to start a match.]
+Отворите бар једну колонију да бисте започели меч.
+[Open book]
+Откривени свет
+[Pink]
+Ружичаста
+[Play this map]
+Играј на овој мапи
+[Players & Teams]
+Играчи и тимови
+[Premade maps]
+Унапред припремљене карте
+[Preview ready. Start plays this exact map.]
+Преглед спреман. Покретање игре користи ову тачну мапу.
+[Purple]
+Љубичаста
+[Quick clash]
+Брза битка
+[Random map]
+Случајна мапа
+[Red]
+Црвена
+[Repeat landscape]
+Понављање пејзажа
+[Resources]
+Ресурси
+[Restore standard rules]
+Вратите стандардна правила
+[Revealed terrain does not reveal all enemy activity.]
+Откривени терен не открива сву непријатељску активност.
+[River]
+Река
+[River width]
+Ширина реке
+[Sand weight]
+Удео песка
+[Select a valid map.]
+Изаберите важећу мапу.
+[Shared control needs a free controller slot (maximum 12).]
+За заједничко управљање потребно је слободно место за играча или ВИ (највише 12).
+[Smoothing]
+Изглађивање
+[Standard]
+Стандард
+[Start game]
+Започните игру
+[Starting workers]
+Почетни радници
+[Starting workers: Game Rules tab.]
+Почетни радници: картица Правила игре.
+[Swamp]
+Мочвара
+[Team]
+Тим
+[Terrain]
+Терен
+[Terrain revealed]
+Терен откривен
+[Try a ruleset, then make it your own.]
+Испробајте скуп правила, а затим га направите својим.
+[Victory]
+Победа
+[Watch game]
+Гледај игру
+[Water weight]
+Удео воде
+[White]
+Бела
+[Width]
+Ширина
+[Yellow]
+Жута
+[You]
+Ви
+[You + AI]
+Ви + ВИ
+[You and the AI both issue orders. Uses two controller slots.]
+Ви и ВИ можете издавати наређења. Заузима два места за играче и ВИ.
+[You vs all]
+Ви против свих
+[Your maps]
+Ваше мапе
+[colonies]
+колоније
+[* Changed from standard.]
+* Промењено од стандардног.
+[World & diplomacy]
+Свет и дипломатија
+[Starting conditions & pace]
+Почетни услови и темпо
+[Inactive]
+Неактиван
+[8 workers / 2x speed]
+8 радника / 2x брзина
+[Changes the pace of the whole simulation.]
+Мења темпо целе симулације.
+[Choose whether teams can change during the match.]
+Одаберите да ли се тимови могу мењати током утакмице.
+[Classic colony building]
+Традиционални развој колонија
+[Dimensions and colony count are set above.]
+Димензије и број колонија су постављени изнад.
+[Generate & watch]
+Генеришите и гледајте
+[Info]
+Инфо
+[Map-defined starting units]
+Почетне јединице дефинисане на мапи
+[No maps in this library.]
+Нема мапа у овој библиотеци.
+[Premade maps retain their authored starting units.]
+Унапред припремљене мапе задржавају своје ауторске почетне јединице.
+[Premade: only speed changes (2x)]
+Готова мапа: мења се само брзина (2x)
+[Start with terrain known]
+Почните са познатим тереном
+[This colony will not join the match.]
+Ова колонија се неће придружити утакмици.
+[This landscape uses a fixed terrain recipe.]
+Овај пејзаж користи рецепт за фиксни терен.
+[This landscape uses fixed resource placement.]
+Овај пејзаж користи фиксни пласман ресурса.
+[Win through conquest]
+Победите кроз освајање
+[You control this colony.]
+Ви контролишете ову колонију.
+[controllers]
+играчи и ВИ
+[Use]
+Изаберите
+[Lime]
+Лиметнозелена
+[Teal]
+Плавозелена
+[Azure]
+Небескоплава
+[Updating map preview...]
+Ажурирање прегледа мапе...
+[Generation failed. Adjust settings or press Start to retry.]
+Генерација није успела. Подесите подешавања или притисните Старт да покушате поново.
+[Preview unavailable. Adjust settings or start to retry.]
+Преглед није доступан. Промените подешавања или покрените игру да бисте покушали поново.
+[automatic torus view]
+Аутоматски торусни приказ
+[toggle torus view]
+Промени 2D / торусни приказ
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 против 2 захтева четири отворене колоније. Ви против свих захтева људског играча.
+[Alliance]
+Алијанса
+[Choose a rule to change it.]
+Изаберите правило да бисте га променили.
+[Conquest only removes prestige victory; map scripts still apply.]
+Победа само за освајање онемогућава победу у престижу; скрипте мапе и даље важе.
+[Control]
+Управљање
+[Controller]
+Управља
+[Generate preview]
+Генеришите преглед
+[Generation failed. Adjust settings or try again.]
+Генерација није успела. Прилагодите подешавања или покушајте поново.
+[Map settings changed. Generate a new preview or start.]
+Подешавања мапе су промењена. Генеришите нови преглед или започните.
+[Map source]
+Извор карте
+[Map-defined]
+Одређено мапом
+[Match format]
+Формат игре
+[No current preview]
+Нема тренутног прегледа
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Брза битка: двострука брзина; генерисане карте почињу са 8 радника.
+[Reroll]
+Генеришите другу мапу
+[Ruleset]
+Скуп правила
+[Select a map from the library.]
+Изаберите карту из библиотеке.
+[Starting workers affects generated maps only.]
+Почетни број радника се односи само на генерисане карте.
+[Unavailable]
+Недоступно
+[Use selection]
+Користите селекцију
+[Quick clash on premade maps: only speed changes (2x).]
+Брза битка на унапред направљеним мапама: мења се само брзина (дупла брзина).
+[Generate a preview to explore this world.]
+Направите преглед да бисте истражили овај свет.
+[More workers jump-start colony growth. Changes the generated map.]
+Више радника убрзава раст колоније. Ово подешавање мења генерисану мапу.
+[No warriors]
+Без ратника
+[settings Add key to sequence]
+Додај тастер у низ
+[settings Add shortcut]
+Додај пречицу
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Точкићем миша мењајте број додељених јединица. Ако је опција искључена, држите Ctrl. Уз Shift мењате радијус заставе. Опција утиче и на употребу точкића у другим менијима.
+[settings Adjust music and voice volume.]
+Подесите јачину музике и гласа.
+[settings Adjust the pace of play.]
+Подесите брзину игре.
+[settings Advanced binding]
+Напредно уређивање пречица
+[settings Artwork & effects]
+Графика и ефекти
+[settings Audio]
+Звук
+[settings Bind Escape]
+Додели Escape
+[settings Building]
+Зграда
+[settings Building defaults]
+Подразумевана подешавања зграда
+[settings Cancel]
+Поништи
+[settings Changes saved automatically]
+Промене се аутоматски чувају
+[settings Changes you make during play update these defaults for future games.]
+Промене које направите током играња ажурирају ове подразумеване вредности за будуће игре.
+[settings Changing the renderer requires a restart.]
+Промена рендерера захтева поновно покретање.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Изаберите пречицу на тастатури да бисте је изменили или додајте другу пречицу за радњу.
+[settings Choose a window or fill the screen.]
+Изаберите приказ у прозору или преко целог екрана.
+[settings Choose how the game looks on your screen.]
+Одаберите како игра изгледа на екрану.
+[settings Completed]
+Завршене зграде
+[settings Construction]
+Изградња
+[settings Controls]
+Контроле игре
+[settings Could not change display mode. The previous mode was restored.]
+Није могуће променити режим приказа. Претходни режим је враћен.
+[settings Could not save]
+Није могуће сачувати
+[settings Current display]
+Тренутни режим приказа
+[settings Default]
+Подразумевано
+[settings Display]
+Екран
+[settings Display & graphics]
+Дисплеј и графика
+[settings Display the Globulation 2 cursor.]
+Прикажите курсор игре Globulation 2.
+[settings Done]
+Готово
+[settings Edit shortcut]
+Уреди пречицу
+[settings Flags]
+Заставе
+[settings Full]
+Потпуни детаљи
+[settings Fullscreen]
+Цео екран
+[settings Game]
+Игра
+[settings Game speed]
+Брзина игре
+[settings Gameplay]
+Ток игре
+[settings Graphics detail]
+Детаљи графике
+[settings Keep]
+Задржи промене
+[settings Keep this display mode?]
+Задржати овај режим приказа?
+[settings Keep your volume levels while silencing audio.]
+Искључите сав звук без промене сачуваних нивоа јачине звука.
+[settings Key]
+Тастер
+[settings Keyboard shortcuts]
+Пречице на тастатури
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Тастери формирају низ у задатом редоследу. Сваки корак може да се активира притиском или отпуштањем одговарајућег тастера.
+[settings Language]
+Језик
+[settings Language & player]
+Језик и играч
+[settings Language used throughout the interface.]
+Језик који се користи у целом интерфејсу.
+[settings Level]
+Ниво
+[settings Map editor]
+Уређивач мапа
+[settings Missing font]
+Недостаје фонт
+[settings Music volume]
+Јачина музике
+[settings Mute audio]
+Искључи звук
+[settings Name shown to other players.]
+Име приказано другим играчима.
+[settings Off]
+Искључено
+[settings On]
+Укључено
+[settings OpenGL is not available in this build.]
+OpenGL није доступан у овој верзији.
+[settings Player name]
+Име играча
+[settings Press]
+При притиску
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Притисните тастер. Escape отказује унос пречице. Да бисте доделили Escape, изаберите „Додели Escape“.
+[settings Radius]
+Радијус
+[settings Reduced]
+Смањени детаљи
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Смањени детаљи онемогућавају облаке и њихове сенке, поједностављују магичне ефекте и смањују транспарентност.
+[settings Release]
+При отпуштању
+[settings Remember assignments between games]
+Памти доделе јединица између игара
+[settings Remove key]
+Уклони тастер
+[settings Remove shortcut]
+Уклони пречицу
+[settings Renderer]
+Графички рендерер
+[settings Replace conflicting bindings]
+Замени пречице у сукобу
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Заменити пречице у овом контексту подразумеваним? Промене се одмах чувају.
+[settings Resolution]
+Резолуција екрана
+[settings Restore default shortcuts]
+Врати подразумеване пречице
+[settings Retry]
+Покушај поново
+[settings Revert]
+Поништи промене
+[settings Reverting in]
+Враћање за
+[settings Save shortcut]
+Сачувај пречицу на тастатури
+[settings Saved — restart required]
+Сачувано — потребно је поновно покретање
+[settings Saving…]
+Чување…
+[settings Scroll wheel enabled]
+Точкић миша омогућен
+[settings Set starting unit assignments by building type and level.]
+Подесите почетни број додељених јединица према врсти и нивоу зграде.
+[settings Set your language and player name.]
+Подесите свој језик и име играча.
+[settings Settings]
+Подешавања
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Само за једног играча и снимке. Игра за више играча ради брзином 1x.
+[settings Software]
+Софтверско приказивање
+[settings Starting unit counts and radius for newly placed flags.]
+Почетни број јединица и радијус за новопостављене заставе.
+[settings This shortcut conflicts with existing bindings:]
+Ова пречица на тастатури је у сукобу са постојећим пречицама:
+[settings Trigger]
+Догађај активације
+[settings Unbound]
+Није додељена пречица
+[settings Unit counts assigned to new construction sites.]
+Број јединица додељених новим градилиштима.
+[settings Unit counts for completed buildings.]
+Број јединица додељених завршеним зградама.
+[settings Unit counts while a building is being upgraded.]
+Број додељених јединица током надоградње зграде.
+[settings Units]
+Јединице
+[settings Upgrades]
+Надоградње зграда
+[settings Use game cursor]
+Користи курсор игре
+[settings Voice volume]
+Јачина гласа
+[settings Window mode]
+Прозорски режим
+[settings Window-only sizes also switch the game to windowed mode.]
+Избор резолуције која подржава само прозорски режим такође пребацује игру у прозорски режим.
+[settings Windowed]
+У прозору
+[settings Windowed only]
+Само у прозору
+[settings seconds]
+секунди
+[settings Flag]
+Застава
+[settings High-resolution artwork]
+Графика високе резолуције
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Изабрана графика се примењује при следећем учитавању игре или уређивача мапа (OpenGL).
+[settings Automatic torus view]
+Аутоматски торусни приказ
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Аутоматски прикажи преглед мапе у облику торуса током кретања по мапи (OpenGL).

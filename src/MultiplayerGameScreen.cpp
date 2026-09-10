@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "MultiplayerGameScreen.h"
+#include <GUIStyle.h>
 #include "AI.h"
 #include "AINames.h"
 #include "YOGClientLobbyScreen.h"
@@ -92,8 +93,6 @@ MultiplayerGameScreen::MultiplayerGameScreen(TabScreen* parent, std::shared_ptr<
 		addWidget(text[i]);
 		kickButton[i]=new TextButton(220+dx, 112+dy, 80, 20, ALIGN_SCREEN_CENTERED, ALIGN_LEFT, "standard", Toolkit::getStringTable()->getString("[kick]"), CLOSE_BUTTONS+i);
 		addWidget(kickButton[i]);
-
-		wasSlotUsed[i]=false;
 
 		text[i]->visible=false;
 		color[i]->visible=false;
@@ -278,7 +277,7 @@ void MultiplayerGameScreen::handleMultiplayerGameEvent(std::shared_ptr<Multiplay
 				}
 				else
 				{
-					text[i]->setStyle(Font::Style());
+					text[i]->setStyle(Font::Style(Font::STYLE_NORMAL, Style::style->textColor));
 				}
 			}
 		}
@@ -322,14 +321,14 @@ void MultiplayerGameScreen::updateJoinedPlayers()
 			}
 			else
 			{
-				text[i]->setStyle(Font::Style());
+				text[i]->setStyle(Font::Style(Font::STYLE_NORMAL, Style::style->textColor));
 			}
 		}
 		else if(i < mh.getNumberOfTeams())
 		{
 			text[i]->visible=isActivated();
 			text[i]->setText(Toolkit::getStringTable()->getString("[open]"));
-			text[i]->setStyle(Font::Style());
+			text[i]->setStyle(Font::Style(Font::STYLE_NORMAL, Style::style->textColor));
 			color[i]->visible=false;
 			kickButton[i]->visible=false;
 		}

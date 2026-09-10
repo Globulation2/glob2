@@ -25,10 +25,11 @@
 #include "config.h"
 
 
-bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI)
+bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData, bool saveAI, const std::string& sourceFileName)
 {
 	init();
-	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName()));
+	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
+	if (stream->isEndOfStream() && !sourceFileName.empty()) { delete stream; return false; }
 	if (stream->isEndOfStream())
 	{
 		delete stream;

@@ -2,6 +2,9 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <iostream>
+#include <sstream>
+#include <locale>
+#include <stdexcept>
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -37,6 +40,61 @@
 #define BULLET_IMGID 0
 
 // Save/load, integrity, checksum. Split out of Game.cpp.
+
+// Pending sites have already reserved their footprint but are waiting for units
+// to move. Preserve their order and staffing requests across a saved-game load.
+void Game::saveBuildProjects(GAGCore::OutputStream* stream) const
+{
+    stream->writeEnterSection("buildProjects");
+    stream->writeUint32(buildProjects.size(), "count");
+    unsigned index = 0;
+    for (const auto& project : buildProjects)
+    {
+        stream->writeEnterSection(index++);
+        stream->writeSint32(project.posX, "posX");
+        stream->writeSint32(project.posY, "posY");
+        stream->writeSint32(project.teamNumber, "teamNumber");
+        stream->writeSint32(project.typeNum, "typeNum");
+        stream->writeSint32(project.unitWorking, "unitWorking");
+        stream->writeSint32(project.unitWorkingFuture, "unitWorkingFuture");
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+}
+
+void Game::loadBuildProjects(GAGCore::InputStream* stream)
+{
+    stream->readEnterSection("buildProjects");
+    const Uint32 count = stream->readUint32("count");
+    // Bound allocation and reject corrupt references before the scheduler uses them.
+    if (count > 65536) throw std::runtime_error("Invalid pending construction count");
+    std::list<BuildProject> restored;
+    for (Uint32 index = 0; index < count; ++index)
+    {
+        stream->readEnterSection(index);
+        BuildProject project;
+        project.posX = stream->readSint32("posX");
+        project.posY = stream->readSint32("posY");
+        project.teamNumber = stream->readSint32("teamNumber");
+        project.typeNum = stream->readSint32("typeNum");
+        project.unitWorking = stream->readSint32("unitWorking");
+        project.unitWorkingFuture = stream->readSint32("unitWorkingFuture");
+        if (project.posX < 0 || project.posX >= map.getW()
+            || project.posY < 0 || project.posY >= map.getH()
+            || project.teamNumber < 0 || project.teamNumber >= mapHeader.getNumberOfTeams()
+            || project.typeNum < 0 || static_cast<size_t>(project.typeNum) >= globalContainer->buildingsTypes.size()
+            || project.unitWorking < 0 || project.unitWorking > Unit::MAX_COUNT
+            || project.unitWorkingFuture < 0 || project.unitWorkingFuture > Unit::MAX_COUNT)
+            throw std::runtime_error("Invalid pending construction project");
+        restored.push_back(project);
+        stream->readLeaveSection();
+    }
+    stream->readLeaveSection();
+    buildProjects.swap(restored);
+}
+
+
+
 
 namespace
 {
@@ -206,6 +264,28 @@ bool Game::load(GAGCore::InputStream *stream)
 		gameHints.decodeData(stream, mapHeader.getVersionMinor());
 	}
 
+	if (versionMinor >= FILE_FORMAT_VERSION_PENDING_CONSTRUCTION) loadBuildProjects(stream);
+	boost::mt19937 savedRandom;
+	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		// Boost's canonical stream representation is exactly 624 uint32 words.
+		// Store fixed-width words, not locale-dependent text or a raw object.
+		std::ostringstream state;
+		state.imbue(std::locale::classic());
+		stream->readEnterSection("randomState");
+		for (unsigned i=0; i<boost::mt19937::state_size; ++i)
+		{
+			stream->readEnterSection(i);
+			state << stream->readUint32("word") << ' ';
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		std::istringstream input(state.str());
+		input.imbue(std::locale::classic());
+		if (!(input >> savedRandom)) return false;
+		map.loadRuntimeState(stream);
+	}
 	gameSection.commit();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
@@ -223,6 +303,12 @@ bool Game::load(GAGCore::InputStream *stream)
 	    }
 	}
 
+	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
+	{
+		randomGenerator = savedRandom;
+		hasSavedRandomState = true;
+	}
+
 	return true;
 }
 
@@ -235,6 +321,8 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 		{
 			const auto building = team->myBuildings[bi];
 			if (!building)
+				continue;
+			if (building->buildingState==Building::DEAD)  // kill() cleared its footprint
 				continue;
 			const auto x = building->posX;
 			const auto y = building->posY;
@@ -253,14 +341,14 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 					checkInvariant(buildings[index]==NOGBID);
 					buildings[index] = gid;
 					// heal missing cells
-					if (map.getCase(xi, yi).building != gid)
+					if (map.getTile(xi, yi).building != gid)
 					{
 						std::cerr << "Missing map cell GBID at " << xi << "," << yi
 							<< " for team " << ti
 							<< " building " << bi
 							<< " (" << building->type->type << "), healing!"
 							<< std::endl;
-						map.getCase(xi, yi).building = gid;
+						map.getTile(xi, yi).building = gid;
 					}
 				}
 		}
@@ -281,7 +369,7 @@ bool Game::integrity(void)
 	for (int y=0; y<map.getH(); y++)
 		for (int x=0; x<map.getW(); x++)
 		{
-			Case& c = map.getCase(x, y);
+			Tile& c = map.getTile(x, y);
 			if (c.building != NOGBID)
 			{
 				int tid = Building::GIDtoTeam(c.building);
@@ -304,7 +392,7 @@ bool Game::integrity(void)
 							<< " with " << coordName
 							<< " span [" << posValue << ":" << endValue << "[, healing!"
 							<< std::endl;
-						map.getCase(x, y).building = NOGBID;
+						map.getTile(x, y).building = NOGBID;
 					}
 				};
 
@@ -446,6 +534,28 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	objectives.encodeData(stream);
 	stream->writeText(missionBriefing, "missionBriefing");
 	gameHints.encodeData(stream);
+
+	saveBuildProjects(stream);
+	if (!fileIsAMap)
+	{
+		std::ostringstream randomState;
+		randomState.imbue(std::locale::classic());
+		randomState << randomGenerator;
+		std::istringstream state(randomState.str());
+		state.imbue(std::locale::classic());
+		stream->writeEnterSection("randomState");
+		for (unsigned i=0; i<boost::mt19937::state_size; ++i)
+		{
+			stream->writeEnterSection(i);
+			Uint32 word;
+			if (!(state >> word)) throw std::runtime_error("Invalid RNG state while saving");
+			stream->writeUint32(word, "word");
+			stream->writeLeaveSection();
+		}
+
+		stream->writeLeaveSection();
+		map.saveRuntimeState(stream);
+	}
 
 	Uint8 sha1[SHA1_BYTE_LEN];
 	for(int i=0; i<SHA1_BYTE_LEN; ++i)

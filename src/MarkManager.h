@@ -7,6 +7,7 @@
 #include "GraphicContext.h"
 
 class Game;
+class MapCamera;
 
 //! Length (in pixels at scale 1.0) of each cross-arm in the four-line
 //! "+" decoration drawn around a Mark's pulsing circle. See MarkManager.cpp.
@@ -49,7 +50,7 @@ private:
 	void drawInMinimap(int s, int local, int x, int y, Game& game) const;
 	///Draws this mark on the screen, where viewport x and viewport y are the
 	///positions of the viewport and game is the game
-	void drawInMainView(int viewportX, int viewportY, Game& game) const;
+	void drawInMainView(int viewportX, int viewportY, Game& game, const MapCamera *camera = nullptr) const;
 	int showTicks;
 	int totalTime;
 	int px;
@@ -66,7 +67,7 @@ public:
 	MarkManager();
 	
 	///Draw all marks
-	void drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, Game& game);
+	void drawAll(int localTeam, int minimapX, int minimapY, int minimapSize, int viewportX, int viewportY, Game& game, const MapCamera *camera = nullptr);
 
 	///Add another mark to the manager
 	void addMark(const Mark& mark);

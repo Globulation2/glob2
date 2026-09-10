@@ -112,13 +112,16 @@ static constexpr int SLOT_INDEX_NONE = -1;
 static constexpr float TEAM_COLOR_HUE_DEGREES = 360.0f;
 
 //! Padding (in tiles) added on each side of the rectangle passed to
-//! Map::dirtyLocalGradient when a building/flag changes. The width/height
+//! Map::dirtyBuildingGradients when a building/flag changes. The width/height
 //! of the dirty rect therefore grows by 2 * GRADIENT_DIRTY_BORDER_TILES.
 //! See Game_orders.cpp:193, 279, 360, 496.
 static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
 
 class Game
 {
+	bool hasSavedRandomState = false;
+	friend class HighResolutionIntegrationHarness;
+	friend class EnteringUnitDrawHarness;
 	static const bool verbose = false;
 public:
 	/// Per-client viewer state (selection + mouse). Defined below; forward-
@@ -140,6 +143,8 @@ public:
 
 	///Saves data to a stream
 	void save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::string& name);
+	void saveBuildProjects(GAGCore::OutputStream* stream) const;
+	void loadBuildProjects(GAGCore::InputStream* stream);
 
 	enum FlagForRemoval
 	{
@@ -161,6 +166,7 @@ public:
 		DRAW_SCRIPT_AREAS = 0x40,
 		DRAW_NO_RESOURCE_GROWTH_AREAS = 0x80,
 		DRAW_OVERLAY = 0x100,
+		DRAW_NO_CLOUD_LAYER = 0x200,
 	};
 
 	/// This method will prepare the game with the provided gameHeader,
@@ -209,6 +215,8 @@ public:
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
 	bool removeUnitAndBuildingAndFlags(int x, int y, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
 	bool removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
+	//! Over the w*h tiles from (x, y), remove the buildings off grass and the ground units on water that cannot swim.
+	void removeUnallowedUnitsAndBuildings(int x, int y, int w, int h);
 	///A convenience function, returns a pointer to the unit with the guid, or NULL otherwise
 	Unit* getUnit(int guid);
 
@@ -217,6 +225,7 @@ public:
 	bool checkHardRoomForBuilding(int coordX, int coordY, const BuildingType *bt, int *mapX, int *mapY);
 	bool checkHardRoomForBuilding(int x, int y, const BuildingType *bt);
 
+	int mapAnimationTime = 0;
 	void drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int screenW, int screenH, int localTeam, Uint32 drawOptions, ViewState& view);
 	/// `view` carries the calling front-end's selection/mouse state (see
 	/// ViewState); render reads selectedUnit/selectedBuilding for highlights and
@@ -225,7 +234,7 @@ public:
 	/// move-flag order has executed. The map editor passes nullptr for it — it
 	/// mutates buildings directly without an orderQueue, so there is no pending
 	/// shadow to consult.
-	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr);
+	void drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int teamSelected, ViewState& view, Uint32 drawOptions = 0, std::set<Building*> *visibleBuildings = 0, const BuildingGuiStateMap* buildingGuiState = nullptr, bool animationsPaused = false, int cloudGridLimit = 0);
 
 	///Sets the mask representing which players the game is waiting on
 	void setWaitingOnMask(Uint32 mask);
@@ -412,4 +421,3 @@ public:
 protected:
 	int ticksGameSum[TICK_PROFILE_BUF_LEN];
 };
-

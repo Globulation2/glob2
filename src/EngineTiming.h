@@ -46,7 +46,7 @@ static constexpr int REPLAY_FAST_FORWARD_DRAW_RATIO = 16;
 //! Number of selectable AI implementations picked from when generating a
 //! random matchup. The pick is `syncRand() % AI_RANDOM_PICK_COUNT + 1`,
 //! skipping AI::NONE=0. Covers the five shipping AIs AINumbi / AICastor /
-//! AIWarrush / AIReachToInfinity / AINicowar (ids 1..5). It is intentionally
+//! AIWarrush / AIEcono / AINicowar (ids 1..5). It is intentionally
 //! NOT AI::SIZE - 1: the experimental AICortex scaffold (id 6) is excluded
 //! from random matchups, and widening this count would also shift the
 //! syncRand() draw sequence and break replay determinism.

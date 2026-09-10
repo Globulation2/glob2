@@ -21,7 +21,7 @@ ReplayReader::ReplayReader()
 	ordersProcessed = 0;
 	numOrders = 0;
 	stepsUntilNextOrder = -1;
-	wideStepCounter = false;
+	versionMinor = VERSION_MINOR;
 	checksum = 0;
 }
 
@@ -86,8 +86,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 		return false;
 	}
 
-	// Replays written before version 87 store step counters as Uint16
-	wideStepCounter = (version_minor >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR);
+	versionMinor = version_minor;
 
 	// If there are no orders, this is also not a valid replay (there should be at least a NullOrder)
 	if (stream->isEndOfStream())
@@ -105,13 +104,14 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 	std::shared_ptr<Order> order;
 	numSteps = 0;
 	numOrders = 0;
-	stepsUntilNextOrder = readStepCounter();
+	stepsUntilNextOrder = stream->readUint32("replayStepCounter");
 	do
 	{
 		try
 		{
 			// Read an order from the stream
 			NetSendOrder msg;
+			msg.setDecodeVersionMinor(versionMinor);
 			msg.decodeData(stream);
 			order = msg.getOrder();
 
@@ -142,7 +142,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 		// If it was a real order, read and increase numSteps accordingly
 		if (order->getOrderType() != ORDER_NULL)
 		{
-			stepsUntilNextOrder = readStepCounter();
+			stepsUntilNextOrder = stream->readUint32("replayStepCounter");
 		}
 	}
 	while (order->getOrderType() != ORDER_NULL);
@@ -151,7 +151,7 @@ bool ReplayReader::loadReplay(GAGCore::InputStream *inputStream, bool skipToOrde
 	stream->seekFromStart(pos);
 	
 	// Read the number of steps until the first order
-	stepsUntilNextOrder = readStepCounter();
+	stepsUntilNextOrder = stream->readUint32("replayStepCounter");
 
 	// If we get to this point, the replay file should be valid
 	assert(isValid());
@@ -213,6 +213,7 @@ std::shared_ptr<Order> ReplayReader::retrieveOrder()
 	{
 		// Read the order from the stream
 		NetSendOrder msg;
+		msg.setDecodeVersionMinor(versionMinor);
 		msg.decodeData(stream);
 		order = msg.getOrder();
 
@@ -243,21 +244,8 @@ std::shared_ptr<Order> ReplayReader::retrieveOrder()
 	ordersProcessed++;
 
 	// Read the number of steps until the next order, if there is one
-	if (order->getOrderType() != ORDER_NULL) stepsUntilNextOrder = readStepCounter();
+	if (order->getOrderType() != ORDER_NULL) stepsUntilNextOrder = stream->readUint32("replayStepCounter");
 	else assert(ordersProcessed >= numOrders && currentStep >= numSteps);
 
 	return order;
-}
-
-Uint32 ReplayReader::readStepCounter()
-{
-	if (wideStepCounter)
-		return stream->readUint32("replayStepCounter");
-	else
-		return stream->readUint16("replayStepCounter");
-}
-
-GAGCore::InputStream* ReplayReader::getStream() const
-{
-	return stream;
 }

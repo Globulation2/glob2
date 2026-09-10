@@ -63,6 +63,7 @@ GameGUI::GameGUI()
 
 GameGUI::~GameGUI()
 {
+	if (!globalContainer->runNoX) Sprite::setHighResolution(false);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 	if (globalContainer->settings.rememberUnit)
@@ -80,6 +81,10 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 
 void GameGUI::init()
 {
+	torusView.reset();
+	torusPointerDown = false;
+	camera=MapCamera();zoomControlPushed=false;
+	if (!globalContainer->runNoX) Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
 	notmenu = false;
 	isRunning=true;
 	gamePaused=false;
@@ -208,6 +213,7 @@ void GameGUI::adjustInitialViewport()
 
 std::shared_ptr<Order> GameGUI::getOrder(void)
 {
+	if(globalContainer->liveSpectating) { orderQueue.clear(); return std::make_shared<NullOrder>(); }
 	std::shared_ptr<Order> order;
 	if (orderQueue.size()==0)
 		order=shared_ptr<Order>(new NullOrder());
@@ -300,4 +306,33 @@ void GameGUI::addMessage(const GAGCore::Color& color, const std::string &msgText
 void GameGUI::addMark(shared_ptr<MapMarkOrder>mmo)
 {
 	markManager.addMark(Mark(mmo->x, mmo->y, game.teams[mmo->teamNumber]->color));
+}
+
+void GameGUI::updateCamera()
+{
+    if (camera.tileX()!=viewportX) camera.originX=viewportX*32.0+camera.fractionX();
+    if (camera.tileY()!=viewportY) camera.originY=viewportY*32.0+camera.fractionY();
+    camera.resize(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH,globalContainer->gfx->getH(),game.map.getW()*32.0,game.map.getH()*32.0);
+    if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
+    viewportX=camera.tileX();viewportY=camera.tileY();
+    game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
+    game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
+    view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
+}
+bool GameGUI::zoomMap(double steps,int x,int y)
+{
+    updateCamera();
+    if (torusView.active() || !globalContainer->gfx->canDrawStretchedSprite() || y<16 || !camera.contains(x,y)) return false;
+    camera.wheel(steps,x,y);
+    if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
+    viewportX=camera.tileX();viewportY=camera.tileY();
+    game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
+    game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
+    view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
+    return true;
+}
+
+void GameGUI::configureLiveSpectatorView()
+{
+	minimap.setMinimapMode(Minimap::HideFOW);
 }

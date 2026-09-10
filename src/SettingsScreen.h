@@ -1,193 +1,127 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
 #pragma once
 
 #include "Glob2Screen.h"
 #include "Settings.h"
-#include <string>
-
 #include "KeyboardManager.h"
-#include "GUIKeySelector.h"
+#include <GUIDropdown.h>
+#include <array>
+#include <functional>
+#include <vector>
 
-namespace GAGGUI
-{
-	class List;
-	class TextInput;
-	class TextButton;
-	class OnOffButton;
-	class MultiTextButton;
-	class Text;
-	class Selector;
-	class Number;
-}
-
-class SettingsScreen : public Glob2TabScreen
+// Native, settings-local form. A single screen owns layout, clipping and focus,
+// so a scrolled/disabled control cannot receive events through another widget.
+class SettingsScreen : public Glob2Screen
 {
 public:
-	enum
-	{
-		OK = 1,
-		CANCEL = 2,
-		FULLSCREEN = 3,
-		USEGL = 4,
-		LOWQUALITY = 5,
-		CUSTOMCUR = 6,
-		MUTE = 7,
-		REMEMBERUNIT = 8,
-		GENERALSETTINGS = 9,
-		UNITSETTINGS = 10,
-		KEYBOARDSETTINGS = 11,
-		RESTOREDEFAULTSHORTCUTS=12,
-		GAMESHORTCUTS=13,
-		EDITORSHORTCUTS=14,
-		SECONDKEY=15,
-		ADDSHORTCUT=16,
-		REMOVESHORTCUT=17,
-		SCROLLWHEEL=18,
-		BUILDINGSETTINGS=19,
-		CONSTRUCTIONSITES=20,
-		UPGRADES=21,
-		FLAGSETTINGS=22,
-		PRESSEDSELECTOR=23,
-	};
+    enum class Category { Display, Audio, Gameplay, Buildings, Controls, Player };
+    enum class Kind { Section, Info, Toggle, Choice, Slider, Number, Text, Button, Binding };
+    struct Rect {
+        int x=0,y=0,w=0,h=0;
+        bool contains(int px,int py) const { return px>=x && py>=y && px<x+w && py<y+h; }
+    };
+    struct Row {
+        std::string id, label, help, value, extraId;
+        Kind kind=Kind::Info;
+        int number=0, minimum=0, maximum=1;
+        bool enabled=true, selected=false;
+        std::vector<std::string> choices;
+        std::function<void(int)> change;
+        std::function<void()> action;
+        Rect bounds, control;
+        // Table entries share a line only when the viewport is wide enough.
+        int columns=1, column=0;
+    };
+    SettingsScreen();
+    ~SettingsScreen() override;
+    void paint() override;
+    void onTimer(Uint32 tick) override;
+    void onSDLEvent(SDL_Event* event) override;
+    void onAction(Widget*, Action action, int, int) override;
+    static int menu();
 
-	// IDs for the four sub-groups inside the "Building Defaults" tab. Stored in
-	// unitRatioGroupNumbers / flagRadiusGroupNumbers and matched in
-	// activateDefaultAssignedGroupNumber to control which set of widgets is
-	// currently visible.
-	static constexpr int kBuildingGroupCompleted = 1;
-	static constexpr int kBuildingGroupNewConstruction = 2;
-	static constexpr int kBuildingGroupUpgrades = 3;
-	static constexpr int kBuildingGroupFlags = 4;
+    // Stable semantic interface, also used by native integration tests.
+    void selectCategory(Category category);
+    Category category() const { return current; }
+    const std::vector<Row>& rows();
+    bool changeSetting(const std::string& id,int value);
+    void activateSetting(const std::string& id);
+    void finishInteraction();
+    bool saveFailed() const { return failed; }
+    bool restartRequired() const;
+    bool displayConfirmationPending() const;
+    void confirmDisplay(bool keep);
+    void done();
+
+protected:
+    virtual bool applyDisplayMode(int width,int height,Uint32 flags);
+
 private:
-	Settings old_settings;
-	List *languageList;
-	List *modeList;
-	Text *modeListNote;
-	TextInput *userName;
-	
-	TextButton *ok, *cancel;
-	TextButton *buildings, *flags, *constructionsites, *upgrades;
-	OnOffButton *fullscreen, *usegpu, *lowquality, *customcur, *scrollwheel;
-	Selector *musicVol;
-	Selector *voiceVol;
-	Selector *gameSpeed;
-	Text *gameSpeedText;
-	OnOffButton *audioMute, *rememberUnitButton;
-	Number* unitRatios[IntBuildingType::NB_BUILDING][6];
-	Text* unitRatioTexts[IntBuildingType::NB_BUILDING][6];
-	int unitRatioGroupNumbers[IntBuildingType::NB_BUILDING][6];
-	Number* flagRadii[3];
-	Text* flagRadiusTexts[3];
-	int flagRadiusGroupNumbers[3];
-	Text *language, *display, *usernameText, *audio;
-	Text *fullscreenText, *usegpuText, *lowqualityText, *customcurText, *musicVolText, *audioMuteText, *voiceVolText, *rememberUnitText, *scrollwheelText;
-	Text *actDisplay;
-	Text *rebootWarning;
+    enum class Modal { None, Binding, Conflict, Restore, Display };
+    Category current=Category::Display;
+    Modal modal=Modal::None;
+    std::vector<Row> form;
+    std::array<int,6> scroll{};
+    int modalScroll=0, contentHeight=0, buildingTab=0, scrollbarGrab=0;
+    GAGGUI::Dropdown dropdown;
+    std::function<void(int)> dropdownChange;
+    Rect panel, viewport, footer, scrollbar, categoryControl;
+    bool compactNavigation=false;
+    int padding=24, sidebar=176;
+    std::string focus, dragging, textDraft;
+    bool editingText=false, selectAllText=false, scrollingBar=false;
+    size_t textCursor=0;
+    bool failed=false, settingsDirty=false;
+    std::array<bool,2> keyboardDirty{};
+    Uint32 saveAt=0, displayDeadline=0;
+    bool displayError=false;
+    Settings previousDisplay;
+    KeyboardManager gameKeys, editorKeys;
+    ShortcutMode shortcutMode=GameGUIShortcuts;
+    Row picker;
+    std::string returnFocus;
+    int bindingIndex=-1, captureKey=-1;
+    Uint32 bindingAction=0;
+    std::vector<KeyPress> bindingKeys;
+    std::vector<int> conflicts;
+    bool bindingAdvanced=false;
 
-	void addNumbersFor(int low, int high, Number* widget);
-
-	// Constructor helpers — each builds a logical chunk of widgets for the screen.
-	// Split out so the construction order reads top-to-bottom without buried sub-loops.
-	void buildOkCancelButtons();
-	void buildLanguageWidgets();
-	void buildDisplayWidgets();
-	void buildGraphicsToggles();
-	void buildUsernameWidgets();
-	void buildAudioWidgets();
-	void buildBuildingDefaultsTab();
-	void buildCompletedBuildingsGroup();
-	void buildNewConstructionGroup();
-	void buildUpgradesGroup();
-	void buildFlagsGroup();
-	void buildKeyboardShortcutsTab();
-
-	// onAction dispatch helpers — one per event kind.
-	void handleButtonAction(int par1);
-	void flushDefaultsToSettings();
-	void handleListSelected(Widget* source, int par1);
-	void handleValueChanged(Widget* source);
-	void handleButtonStateChanged(Widget* source);
-	// Re-applies the current locale to every string-bearing widget. Called after the
-	// user picks a new language in the language list — every label, button, and text
-	// has to be re-resolved against the new string table.
-	void retranslateUiStrings();
-
-	TextButton* game_shortcuts;
-	TextButton* editor_shortcuts;
-	TextButton* restore_default_shortcuts;
-
-	List* shortcut_list;
-	KeySelector* select_key_1;
-	OnOffButton *key_2_active;
-	KeySelector* select_key_2;
-	MultiTextButton* pressedUnpressedSelector;
-	List* action_list;
-	TextButton* add_shortcut;
-	TextButton* remove_shortcut;
-	
-	Text* unitSettingsExplanation;
-	Text* flagSettingsExplanation;
-	
-	bool gfxAltered;
-	
-	//! If GL is enabled, hide useless options
-	void setVisibilityFromGraphicType(void);
-	//! If mute is set, do not show volume slider
-	void setVisibilityFromAudioSettings(void);
-	//! Refresh the game speed label after changing the preset or language.
-	void updateGameSpeedText(void);
-	//! reset res and redraw everything
-	void updateGfxCtx(void);
-	//! Return a string representing the actual display mode
-	std::string actDisplayModeToString(void);
-	///processes a potential change in the selected fullscreen state
-	void setFullscreen(void);
-
-	///Holds the keyboard layout for the map editor
-	KeyboardManager mapeditKeyboardManager;
-	///Holds the keyboard layout for the game gui
-	KeyboardManager guiKeyboardManager;
-public:
-	int generalGroup;
-	int unitGroup;
-	int keyboardGroup;
-
-	ShortcutMode currentMode;
-	///Quick code that adds in a default unit assignment widget pair at the specific position, and returns the width.
-	int addDefaultUnitAssignmentWidget(int type, int level, int x, int y, int group, bool flag=false);
-	///Quick code that adds in a default flag radius widget pair at the specific position, and returns the width.
-	int addDefaultFlagRadiusWidget(int type, int x, int y, int group);
-	///Activates the given group number for default assignment widgets
-	void activateDefaultAssignedGroupNumber(int group);
-	///Returns the default unit assignment text
-	std::string getDefaultUnitAssignmentText(int type, int level, bool flag);
-	///Sets the texts for all default unit assignment widgets
-	void setLanguageTextsForDefaultAssignmentWidgets();
-	
-	
-	virtual void onGroupActivated(int group_n);
-	
-	///Update shortcut_list, if n is not -1, just update that specific entry
-	void updateShortcutList(int n=-1);
-	///Update the action_list
-	void updateActionList();
-	///Updates the boxes from the current shortcut selection
-	void updateShortcutInfoFromSelection();
-	///Updates the KeyboardManager from the shortcut info
-	void updateKeyboardManagerFromShortcutInfo();
-	///Tells the KeyboardManager to load from the defaults
-	void loadDefaultKeyboardShortcuts();
-	///Adds a shortcut to the current keyboard manager
-	void addNewShortcut();
-	///Removes a shortcut from current keyboard manager
-	void removeShortcut();
-
-	SettingsScreen();
-	virtual ~SettingsScreen() { }
-	void onAction(Widget *source, Action action, int par1, int par2);
-	static int menu(void);
+    static std::string tr(const std::string& text);
+    void buildRows();
+    void buildGeneral();
+    void buildBuildings();
+    void buildKeyboard();
+    void buildModal();
+    void layout();
+    void paintRow(const Row& row);
+    void drawText(int x,int y,const std::string& text, bool muted=false, bool heading=false);
+    int wrappedHeight(const std::string& text,int width,bool heading=false) const;
+    void drawWrapped(int x,int y,int width,const std::string& text,bool muted=false,bool heading=false);
+    std::vector<std::string> wrap(const std::string& text,int width,bool heading=false) const;
+    Row& add(const std::string& id,Kind kind,const std::string& label,const std::string& help="");
+    void button(const std::string& id,const std::string& label,std::function<void()> action,bool selected=false);
+    void section(const std::string& label);
+    void info(const std::string& label);
+    void choice(const std::string& id,const std::string& label,const std::string& help,int value,
+                std::vector<std::string> labels,std::function<void(int)> change);
+    void toggle(const std::string& id,const std::string& label,const std::string& help,bool value,std::function<void(int)> change);
+    void number(const std::string& id,const std::string& label,int value,int minimum,int maximum,std::function<void(int)> change);
+    void commit(bool defer=false);
+    bool persist();
+    void commitText();
+    void closeModal();
+    void changeDisplay(std::function<void(Settings&)> change);
+    int& scrollOffset();
+    void focusNext(bool backward);
+    void openCategoryPicker();
+    void ensureFocusVisible();
+    void invoke(Row row,int direction=0);
+    void adjustSlider(const std::string& id,int x);
+    KeyboardManager& keyboard();
+    void editBinding(int index,Uint32 action);
+    void saveBinding(bool replace=false);
+    void deleteBinding();
+    std::string bindingLabel(const KeyboardShortcut& shortcut) const;
 };
-

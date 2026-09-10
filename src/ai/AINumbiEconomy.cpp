@@ -146,19 +146,6 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 			return shared_ptr<Order>(new OrderModifyBuilding(b->gid, numberRequestedTemp));
 		}
 	}
-	if (ss<minSwarmNumbers)
-	{
-		//printf("AI: not enough swarms (%d<%d).\n", ss, minSwarmNumbers);
-		// TODO !
-		// assert(false);
-		/*int x, y;
-		if (findNewEmplacement(IntBuildingType::SWARM_BUILDING, &x, &y))
-		{
-			Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, true);
-			int teamNumber=player->team->teamNumber;
-			return shared_ptr<Order>(new OrderCreate(teamNumber, x, y, typeNum));
-		}*/
-	}
 	return shared_ptr<Order>(new NullOrder);
 }
 

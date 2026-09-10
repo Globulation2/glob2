@@ -18,8 +18,9 @@ bool MapEdit::performViewAction(const std::string& action, int relMouseX, int re
 	}
 	else if(action=="scroll drag motion")
 	{
-		viewportX+=relMouseX;
-		viewportY+=relMouseY;
+		camera.originX+=relMouseX/camera.zoom;
+		camera.originY+=relMouseY/camera.zoom;
+		camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 		viewportX&=game.map.getMaskW();
 		viewportY&=game.map.getMaskH();
 	}
