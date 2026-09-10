@@ -648,3 +648,10 @@ if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')
     custom_test = local.Program('CustomGameSetupHarness', custom_sources)
     local.Alias('custom-setup-test', custom_test)
+
+# Real engine regression for units surviving building destruction, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('BuildingExpelHarness.o', '#test/BuildingExpelHarness.cpp')
+    regression_test = local.Program('BuildingExpelHarness', regression_sources)
+    local.Alias('building-expel-test', regression_test)
