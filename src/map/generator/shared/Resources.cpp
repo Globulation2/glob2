@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cmath>
 #include <queue>
+#include <utility>
 using namespace MapGeneration;
 
 namespace MapGeneration {
@@ -96,54 +97,167 @@ void fillInResource(Map &map, GenerationContext &context,
   }
 }
 
-void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
-                                int woodRange, int clearRadius) {
-  Map &map = game.map;
+namespace {
+// Ground units can't walk onto a tile carrying a resource (Map::isHardSpaceForGroundUnit
+// excludes them), so a solid, unbroken band from the noise-band resource painting can wall a
+// team's boot tile off from the rest of an otherwise perfectly connected landmass. floodReach
+// walks that real, resource-respecting space; dist is kept (not just aggregated) so a caller
+// can compare it against a wall-blind flood and find exactly where such a wall runs.
+struct ReachResult {
+  int wheatDist = -1, woodDist = -1;
+  std::vector<MapGeneratorPoint> closeGrass, farGrass;
+  std::vector<int> dist;
+};
+ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int closeRange,
+                       int clearRadius) {
   const int w = map.getW(), h = map.getH();
-  const int exploreLimit = std::max(wheatRange, woodRange) * 5 / 2;
-  const int closeRange = wheatRange / 2;
-  for (int team = 0; team < context.request.nbTeams; ++team) {
-    std::vector<int> dist(size_t(w) * h, -1);
-    std::queue<int> q;
-    int start = context.bootY[team] * w + context.bootX[team];
-    dist[start] = 0;
-    q.push(start);
-    int wheatDist = -1, woodDist = -1;
-    std::vector<MapGeneratorPoint> closeGrass, farGrass;
-    while (!q.empty()) {
-      int p = q.front();
-      q.pop();
-      int x = p % w, y = p / w;
-      if (map.getUMTerrain(x, y) == GRASS && dist[p] >= clearRadius && dist[p] <= exploreLimit)
-        (dist[p] <= closeRange ? closeGrass : farGrass).push_back(MapGeneratorPoint(x, y));
-      for (int dy = -1; dy <= 1; ++dy)
+  ReachResult r;
+  r.dist.assign(size_t(w) * h, -1);
+  std::queue<int> q;
+  int start = bootY * w + bootX;
+  r.dist[start] = 0;
+  q.push(start);
+  while (!q.empty()) {
+    int p = q.front();
+    q.pop();
+    int x = p % w, y = p / w;
+    if (map.getUMTerrain(x, y) == GRASS && r.dist[p] >= clearRadius && r.dist[p] <= exploreLimit)
+      (r.dist[p] <= closeRange ? r.closeGrass : r.farGrass).push_back(MapGeneratorPoint(x, y));
+    for (int dy = -1; dy <= 1; ++dy)
+      for (int dx = -1; dx <= 1; ++dx) {
+        if (dx == 0 && dy == 0)
+          continue;
+        int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+        int np = ny * w + nx;
+        int resType = map.getResource(nx, ny).type;
+        if (resType == CORN && r.wheatDist < 0)
+          r.wheatDist = r.dist[p] + 1;
+        if (resType == WOOD && r.woodDist < 0)
+          r.woodDist = r.dist[p] + 1;
+        if (r.dist[np] < 0 && r.dist[p] < exploreLimit &&
+            map.isHardSpaceForGroundUnit(nx, ny, false, 0)) {
+          r.dist[np] = r.dist[p] + 1;
+          q.push(np);
+        }
+      }
+  }
+  return r;
+}
+
+// The same flood, but blocked only by water — as if resources didn't exist. Diffing this
+// against floodReach's result isolates exactly which tiles a resource wall blocks: reachable
+// here, not reachable there, adjacent to what is. Clearing only those tiles (rather than an
+// entire neighborhood) opens the way while disturbing nothing else nearby.
+std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit) {
+  const int w = map.getW(), h = map.getH();
+  std::vector<int> dist(size_t(w) * h, -1);
+  std::queue<int> q;
+  int start = bootY * w + bootX;
+  dist[start] = 0;
+  q.push(start);
+  while (!q.empty()) {
+    int p = q.front();
+    q.pop();
+    if (dist[p] >= limit)
+      continue;
+    int x = p % w, y = p / w;
+    for (int dy = -1; dy <= 1; ++dy)
+      for (int dx = -1; dx <= 1; ++dx) {
+        if (dx == 0 && dy == 0)
+          continue;
+        int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+        int np = ny * w + nx;
+        if (dist[np] < 0 && !map.isWater(nx, ny)) {
+          dist[np] = dist[p] + 1;
+          q.push(np);
+        }
+      }
+  }
+  return dist;
+}
+
+// Clears the resource tiles directly responsible for a team's cramped pocket: exactly the
+// tiles reachable without resources blocking the way, not reachable with them, and touching a
+// tile that is — the wall's inner face — plus, on a wall thick enough to have an outer face
+// too, that face as well. A real dead end (no meaningfully larger landmass once resources are
+// ignored) clears nothing, since there is no better tile on the other side to find. Iterated a
+// few times by the caller in case a wall is thicker still.
+bool clearResourceWall(Map &map, const std::vector<int> &boxedDist,
+                       const std::vector<int> &openDist, int minGain) {
+  const int w = map.getW(), h = map.getH();
+  int cleared = 0;
+  std::vector<std::pair<int, int>> toClear;
+  for (int y = 0; y < h; ++y)
+    for (int x = 0; x < w; ++x) {
+      int p = y * w + x;
+      if (boxedDist[p] >= 0 || openDist[p] < 0 || !map.isResource(x, y))
+        continue;
+      bool touchesBoxed = false;
+      for (int dy = -1; dy <= 1 && !touchesBoxed; ++dy)
         for (int dx = -1; dx <= 1; ++dx) {
           if (dx == 0 && dy == 0)
             continue;
           int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-          int np = ny * w + nx;
-          int resType = map.getResource(nx, ny).type;
-          if (resType == CORN && wheatDist < 0)
-            wheatDist = dist[p] + 1;
-          if (resType == WOOD && woodDist < 0)
-            woodDist = dist[p] + 1;
-          if (dist[np] < 0 && dist[p] < exploreLimit &&
-              map.isHardSpaceForGroundUnit(nx, ny, false, 0)) {
-            dist[np] = dist[p] + 1;
-            q.push(np);
+          if (boxedDist[ny * w + nx] >= 0) {
+            touchesBoxed = true;
+            break;
           }
         }
+      if (touchesBoxed)
+        toClear.push_back({x, y});
+    }
+  if ((int)toClear.size() < minGain)
+    return false;
+  for (auto [x, y] : toClear) {
+    map.setNoResource(x, y, 1);
+    ++cleared;
+  }
+  return cleared > 0;
+}
+} // namespace
+
+void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
+                                int woodRange, int clearRadius) {
+  Map &map = game.map;
+  const int exploreLimit = std::max(wheatRange, woodRange) * 5 / 2;
+  const int closeRange = wheatRange / 2;
+  // Below this many reached tiles a team is badly boxed in, but that has two very different
+  // causes: a resource wall sealing off an otherwise fine landmass (swamp and river both paint
+  // resources with no regard for what they might enclose), or the boot search simply landing on
+  // a genuinely small spot — a real little island on a water-heavy map, say, where there's
+  // nothing bigger on the other side to reach at all. Only the first is fixable, and only its
+  // exact wall tiles are cleared, so a genuinely small spot is correctly left untouched.
+  const int minPocketTiles = 60;
+  for (int team = 0; team < context.request.nbTeams; ++team) {
+    int bootX = context.bootX[team], bootY = context.bootY[team];
+    ReachResult reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
+    auto pocketSize = [&] {
+      int n = 0;
+      for (int v : reach.dist)
+        if (v >= 0)
+          ++n;
+      return n;
+    };
+    bool underServed = reach.wheatDist < 0 || reach.wheatDist > wheatRange ||
+                       reach.woodDist < 0 || reach.woodDist > woodRange;
+    for (int attempt = 0; underServed && pocketSize() < minPocketTiles && attempt < 6; ++attempt) {
+      std::vector<int> open = terrainOnlyReach(map, bootX, bootY, exploreLimit);
+      if (!clearResourceWall(map, reach.dist, open, /*minGain=*/1))
+        break;
+      reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
+      underServed = reach.wheatDist < 0 || reach.wheatDist > wheatRange || reach.woodDist < 0 ||
+                    reach.woodDist > woodRange;
     }
     auto placeReachable = [&](int resourceType) {
-      if (!closeGrass.empty() &&
-          placeResourceClumpInArea(map, context, closeGrass, resourceType, 2))
+      if (!reach.closeGrass.empty() &&
+          placeResourceClumpInArea(map, context, reach.closeGrass, resourceType, 2))
         return;
-      if (!farGrass.empty())
-        placeResourceClumpInArea(map, context, farGrass, resourceType, 2);
+      if (!reach.farGrass.empty())
+        placeResourceClumpInArea(map, context, reach.farGrass, resourceType, 2);
     };
-    if (wheatDist < 0 || wheatDist > wheatRange)
+    if (reach.wheatDist < 0 || reach.wheatDist > wheatRange)
       placeReachable(CORN);
-    if (woodDist < 0 || woodDist > woodRange)
+    if (reach.woodDist < 0 || reach.woodDist > woodRange)
       placeReachable(WOOD);
   }
 }
