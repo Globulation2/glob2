@@ -87,7 +87,16 @@ namespace GAGCore
 		
 		this->fileName = filename;
 		loadedSprites.insert(this);
-		
+
+		// The unit sprite sheet is shared by world units, portraits, editor
+		// previews, offscreen indicators and credits (see UnitSkin.cpp,
+		// GlobalContainer.cpp). Marking it here, once, before any frame loads,
+		// routes all of them through the same GPU shader / bounded CPU cache
+		// team-coloring implementation, and lets loadExperimentFrame (called
+		// below, per frame) recognize this sprite's fixed-size HD layer.
+		if (fileName == "data/gfx/unit")
+			dynamicTeamColor = true;
+
 		while (true)
 		{
 			std::ostringstream frameName;
@@ -116,13 +125,6 @@ namespace GAGCore
 		{
 			createTextureAtlas();
 		}
-
-		// The unit sprite sheet is shared by world units, portraits, editor
-		// previews, offscreen indicators and credits (see UnitSkin.cpp,
-		// GlobalContainer.cpp). Marking it here, once, routes all of them through
-		// the same GPU shader / bounded CPU cache team-coloring implementation.
-		if (fileName == "data/gfx/unit")
-			dynamicTeamColor = true;
 
 		recomputeBlockCompleteHD();
 		createHighResolutionAtlas();
@@ -484,7 +486,12 @@ namespace GAGCore
 		while(stream>>id>>w>>h>>scale>>base>>team)
 		{
 			if(id!=wanted)continue;
-			if(w!=getW(index)||h!=getH(index)||scale!=4){std::cerr<<"High-resolution dimensions rejected: "<<id<<std::endl;return;}
+			// Every unit HD layer renders onto a fixed highResolutionTextureSize
+			// canvas regardless of native size, so frames.txt carries a scale
+			// sentinel of 0 for unit rows rather than a (possibly fractional,
+			// unparseable-as-int) native-to-HD ratio; every other sprite keeps
+			// its exact original scale==4 layout.
+			if(w!=getW(index)||h!=getH(index)||scale!=(dynamicTeamColor?0:4)){std::cerr<<"High-resolution dimensions rejected: "<<id<<std::endl;return;}
 			auto load=[&](const std::string &name,DrawableSurface *original)->DrawableSurface*
 			{
 				if(name=="-")return nullptr;
@@ -493,7 +500,9 @@ namespace GAGCore
 				if(!rw)return nullptr;
 				SDL_Surface *surface=IMG_Load_RW(rw,1);if(!surface)return nullptr;
 				int lw=original?original->getW():w,lh=original?original->getH():h;
-				if(surface->w!=lw*scale||surface->h!=lh*scale){SDL_FreeSurface(surface);return nullptr;}
+				int expectedW=dynamicTeamColor?highResolutionTextureSize:lw*scale;
+				int expectedH=dynamicTeamColor?highResolutionTextureSize:lh*scale;
+				if(surface->w!=expectedW||surface->h!=expectedH){SDL_FreeSurface(surface);return nullptr;}
 				auto result=new DrawableSurface(surface);result->highResolutionSampling=true;SDL_FreeSurface(surface);return result;
 			};
 			auto normal=load(base,images[index]);

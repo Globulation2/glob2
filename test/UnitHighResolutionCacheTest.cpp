@@ -11,9 +11,12 @@
 #else
 #include <epoxy/gl.h>
 #endif
+#include <algorithm>
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 #include <string>
+#include <vector>
 #include "render/UnitAnimation.h"
 
 using namespace GAGCore;
@@ -28,10 +31,18 @@ struct InspectUnitSprite : Sprite
 			assert(bool(experimentRotated[i]) == (high && bool(rotated[i])));
 			if (high)
 			{
+				// Every unit HD layer renders onto a fixed pixel canvas
+				// regardless of this frame's own native size (32, 38 or 40).
 				if (images[i])
-					assert(experimentImages[i]->getW() == images[i]->getW() * 4);
+				{
+					assert(experimentImages[i]->getW() == Sprite::highResolutionTextureSize);
+					assert(experimentImages[i]->getH() == Sprite::highResolutionTextureSize);
+				}
 				if (rotated[i])
-					assert(experimentRotated[i]->orig->getW() == rotated[i]->orig->getW() * 4);
+				{
+					assert(experimentRotated[i]->orig->getW() == Sprite::highResolutionTextureSize);
+					assert(experimentRotated[i]->orig->getH() == Sprite::highResolutionTextureSize);
+				}
 			}
 		}
 	}
@@ -130,6 +141,42 @@ int main(int argc, char **argv)
 				gfx->drawSprite(10, 10, &sprite, 256);
 				gfx->endMapTransform();
 				assert(glGetError() == GL_NO_ERROR);
+			}
+
+			// Pixel-alignment regression check for the sized drawSprite overload
+			// (int/int/int/int): base and team layers must land in the exact same
+			// destination box regardless of the HD texture's own pixel size. Cross
+			// -check it against beginMapTransform's zoom at the same effective
+			// scale, which goes through the already-verified shader path instead
+			// (see UnitTeamShaderTest.cpp) -- a HD:native ratio bug in either
+			// layer's scaling would misalign the two renderers' output.
+			{
+				const int index = unitAnimationFrame(0, 0, 96); // explorer: always has both layers
+				sprite.setBaseColor(Color(255, 60, 40));
+				const float zoom = 2.5f;
+				const int scaledW = static_cast<int>(sprite.getW(index) * zoom);
+				const int scaledH = static_cast<int>(sprite.getH(index) * zoom);
+
+				gfx->drawFilledRect(0, 0, 640, 480, 5, 5, 5);
+				gfx->drawSprite(50, 50, scaledW, scaledH, &sprite, index);
+				glFinish();
+				std::vector<Uint8> sized(640 * 480 * 4);
+				glReadPixels(0, 0, 640, 480, GL_RGBA, GL_UNSIGNED_BYTE, sized.data());
+
+				gfx->drawFilledRect(0, 0, 640, 480, 5, 5, 5);
+				gfx->beginMapTransform(zoom, 50, 50, 0, 0, 640, 480);
+				gfx->drawSprite(0, 0, &sprite, index);
+				gfx->endMapTransform();
+				glFinish();
+				std::vector<Uint8> zoomed(640 * 480 * 4);
+				glReadPixels(0, 0, 640, 480, GL_RGBA, GL_UNSIGNED_BYTE, zoomed.data());
+
+				int maxDiff = 0;
+				for (size_t i = 0; i < sized.size(); ++i)
+					maxDiff = std::max(maxDiff, std::abs(static_cast<int>(sized[i]) - static_cast<int>(zoomed[i])));
+				assert(glGetError() == GL_NO_ERROR);
+				assert(maxDiff <= 3); // filtering/rounding only, not an exact-pixel match
+				std::cout << "Sized-overload vs. zoomed-shader alignment: max diff=" << maxDiff << "/255" << std::endl;
 			}
 		}
 		std::cout << "PASS all 1792 layer mappings, whole-block HD/native fallback, HD/classic "

@@ -25,6 +25,20 @@ SETS = [
     ('warrior-fight', 'glob-warrior-fight.blend', 384, 40, True),
 ]
 
+# Every unit HD texture renders onto this same pixel canvas regardless of its
+# native size (32, 38 or 40), so the ratio is 4x for the 32-native explorer set
+# and non-integer (128/38, 128/40) for the others -- chosen because 128 is
+# already a power of two, unlike 152 or 160, which this engine's texture
+# uploader would otherwise round up to 256 (wasting most of the allocation).
+# frames.txt's scale column is a plain integer and cannot hold a fractional
+# ratio without corrupting the row parse (see Sprite::loadExperimentFrame), so
+# unit rows carry this sentinel instead of a real ratio; every consumer of a
+# unit frame's HD pixel size uses UNIT_HD_PIXEL_SIZE directly, never
+# native_size * scale. Every other frame category's rows are unaffected and
+# keep writing/reading a literal scale of 4.
+UNIT_HD_PIXEL_SIZE = 128
+UNIT_HD_SCALE_SENTINEL = 0
+
 
 def schema_and_scene(data):
     if data[:12] != b'BLENDER_v234':
@@ -87,7 +101,7 @@ def schema_and_scene(data):
     return structures, blocks, scenes[0] + structures['Scene']['r'][0]
 
 
-def prepare(out, render_root, samples, resolution_scale=1):
+def prepare(out, render_root, samples, resolution_scale=1, fixed_size=None):
     if out.resolve() == (ROOT / 'datasrc/gfx/originals/units').resolve():
         raise ValueError('Prepared scenes must not overwrite the original Blender sources')
     out.mkdir(parents=True, exist_ok=True)
@@ -106,8 +120,14 @@ def prepare(out, render_root, samples, resolution_scale=1):
             struct.pack_into('<' + fmt, data, render_offset + fields[field][0], value)
 
         assert get('xsch', 'h') == size and get('ysch', 'h') == size
-        put('xsch', 'h', size * resolution_scale)
-        put('ysch', 'h', size * resolution_scale)
+        # fixed_size renders every set onto the same pixel canvas regardless of
+        # its own native size, unlike resolution_scale which scales each set by
+        # its own native size (used by the unit HD pack to keep a uniform,
+        # power-of-two-friendly texture size across sets with different native
+        # dimensions -- see UNIT_HD_PIXEL_SIZE).
+        target = fixed_size if fixed_size is not None else size * resolution_scale
+        put('xsch', 'h', target)
+        put('ysch', 'h', target)
         assert get('framapto', 'h') % samples == 0
         put('framapto', 'h', get('framapto', 'h') // samples)
         put('framelen', 'f', get('framelen', 'f') / samples)
@@ -151,8 +171,8 @@ def prepare(out, render_root, samples, resolution_scale=1):
         assert all(a == b or i in permitted for i, (a, b) in enumerate(zip(original, data)))
         (out / (name + '.blend')).write_bytes(data)
         manifest.append(dict(name=name, source=source, source_sha256=hashlib.sha256(original).hexdigest(),
-                             legacy_base=base, size=size, resolution_scale=resolution_scale, shadow=shadow,
-                             first=first, last=last, samples_per_original_frame=samples,
+                             legacy_base=base, size=size, resolution_scale=resolution_scale, fixed_size=fixed_size,
+                             shadow=shadow, first=first, last=last, samples_per_original_frame=samples,
                              camera_pixel_offset=[-0.5, 0.5] if name == 'explorer' else [0, 0]))
     (out / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
 
@@ -214,17 +234,19 @@ def install(staged, destination):
 
 
 def highres_layout():
-    """Logical frame geometry stays native; texture dimensions are fourfold."""
+    """Logical frame geometry stays native; texture dimensions are a fixed
+    UNIT_HD_PIXEL_SIZE square regardless of native size (see the sentinel
+    scale column comment above SETS)."""
     files, rows = {}, []
     for name, source, base, size, shadow in SETS:
         for index in range(256):
             frame = base * 4 + index
             regular = 'unit%d.png' % frame if shadow else '-'
             colored = 'unit%dr.png' % frame
-            rows.append('unit%d %d %d 4 %s %s' % (frame, size, size, regular, colored))
-            files[colored] = size * 4
+            rows.append('unit%d %d %d %d %s %s' % (frame, size, size, UNIT_HD_SCALE_SENTINEL, regular, colored))
+            files[colored] = UNIT_HD_PIXEL_SIZE
             if shadow:
-                files[regular] = size * 4
+                files[regular] = UNIT_HD_PIXEL_SIZE
     return files, rows
 
 
@@ -244,7 +266,7 @@ def collect_highres(rendered, destination, reference):
                 src = rendered / name / ('%04d.png' % (4 + index + offset))
                 filename = 'unit%d%s.png' % (base * 4 + index, suffix)
                 with Image.open(src) as image:
-                    if image.mode != 'RGBA' or image.size != (size * 4, size * 4):
+                    if image.mode != 'RGBA' or image.size != (UNIT_HD_PIXEL_SIZE, UNIT_HD_PIXEL_SIZE):
                         raise ValueError('Invalid HD render: ' + str(src))
                     # Compare at native size only for validation; install original PNG bytes.
                     reduced = np.asarray(image.resize((size, size), Image.Resampling.BOX)).astype(float)
@@ -262,11 +284,13 @@ def collect_highres(rendered, destination, reference):
                     sha256=hashlib.sha256(png).hexdigest(), source_sha256=source_hash,
                     logical_width=size, logical_height=size,
                     original_sha256=hashlib.sha256((reference / filename).read_bytes()).hexdigest()))
-            metadata.append(dict(id='unit%d' % (base * 4 + index), width=size, height=size, scale=4,
+            metadata.append(dict(id='unit%d' % (base * 4 + index), width=size, height=size,
+                scale=UNIT_HD_SCALE_SENTINEL,
                 recipe='recovered original: Blender 2.34 render; original rig and layers; 32 poses per direction',
                 layers=layers, sources=[dict(path=str(source_path.relative_to(ROOT)), sha256=source_hash)],
                 animation=name, direction=index // 32, pose=index % 32,
-                render_settings=dict(samples_per_original_frame=4, resolution_scale=4,
+                render_settings=dict(samples_per_original_frame=4, hd_pixel_size=UNIT_HD_PIXEL_SIZE,
+                    resolution_scale=UNIT_HD_PIXEL_SIZE / size,
                     team_frame=4 + index, shadow_frame=260 + index if shadow else None,
                     camera_pixel_offset=[-0.5, 0.5] if name == 'explorer' else [0, 0])))
     files, rows = highres_layout()
@@ -337,7 +361,8 @@ def install_highres(staged, destination):
         (destination / 'README.md').write_text(
             '# High-resolution runtime pack\n\n'
             + str(len(metadata['frames'])) + ' registered frames, including 1,792 unit poses across seven animation sets.\n'
-            'Unit textures are rendered at 4× width and height from the preserved Blender originals, without AI.\n'
+            'Unit textures render onto a fixed 128x128 pixel canvas from the preserved Blender originals, without AI\n'
+            '(4x for the 32px-native explorer set, ~3.37x for the 38px-native worker sets, 3.2x for the 40px-native warrior sets).\n'
             'Native-resolution sprites remain in `data/gfx`; logical geometry, team colors and animation timing are preserved.\n\n'
             'Approved inputs live in `datasrc/gfx/production`; package them with `tools/artwork/package_runtime.py`.\n'
             'See `manifest.json` for all frame/layer/source hashes, `tools/unit-animation/README.md` for unit render recipes,\n'
@@ -358,6 +383,10 @@ def main():
     prep.add_argument('--output', type=Path, required=True)
     prep.add_argument('--render-root', required=True, help='Output path as seen by Blender')
     prep.add_argument('--resolution-scale', type=int, choices=[1, 4], default=1)
+    # Unlike --resolution-scale (a multiplier of each set's own native size),
+    # this renders every set onto the same fixed pixel canvas regardless of
+    # its native size. Used for the unit HD pack; see UNIT_HD_PIXEL_SIZE.
+    prep.add_argument('--highres-pixel-size', type=int, default=None)
     prep.add_argument('--samples', type=int, choices=[1, 4], default=4)
     coll = sub.add_parser('collect')
     coll.add_argument('--rendered', type=Path, required=True)
@@ -376,7 +405,7 @@ def main():
     hi.add_argument('--destination', type=Path, default=ROOT / 'data/highres/v1')
     args = parser.parse_args()
     if args.command == 'prepare':
-        prepare(args.output, args.render_root, args.samples, args.resolution_scale)
+        prepare(args.output, args.render_root, args.samples, args.resolution_scale, args.highres_pixel_size)
     elif args.command == 'collect-highres':
         collect_highres(args.rendered, args.output, args.reference)
     elif args.command == 'install-highres':

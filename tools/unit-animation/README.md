@@ -102,22 +102,31 @@ is included in the C++ TestsRunner and exhaustively checks frame ranges and
 turning cadence. Compare alpha separately from RGB when reviewing the generated
 report: geometry/coverage matching and subtle shading differences are distinct.
 
-## Fourfold-resolution textures
+## High-resolution textures
 
 Native 32-pose sprites remain in `data/gfx`. The Blender originals live in
 `datasrc/gfx/originals/units`. Approved high-resolution layers use the existing
 `datasrc/gfx/production/original-derived` category and are packaged into
 `data/highres/v1` alongside the other artwork. Unit icons are not changed.
-The runtime keeps the native logical dimensions (32, 38 or 40 pixels) and uses
-128, 152 or 160 pixel textures. This is 4× per axis, with the same 32 poses and
-normal 25 FPS cadence. Software and the classic-artwork option use native sprites.
+The runtime keeps the native logical dimensions (32, 38 or 40 pixels) and uses a
+fixed 128×128 pixel texture for every pose, regardless of native size -- 128 is
+a power of two, unlike 152 or 160 (38 or 40 × 4), which the engine's texture
+uploader would otherwise round up to 256 per texture, wasting most of the
+allocation. This is 4× per axis for the 32px-native explorer set, ~3.37× for the
+38px-native worker sets, and 3.2× for the 40px-native warrior sets -- same 32
+poses and normal 25 FPS cadence throughout. Software and the classic-artwork
+option use native sprites. `frames.txt`'s `scale` column is `4` for every other
+frame category; unit rows carry a `0` sentinel instead, since a fractional ratio
+can't round-trip through that column's integer parsing -- every consumer of a
+unit frame's HD pixel size compares against the fixed 128 directly rather than
+`native_size * scale`.
 
 Prepare scenes into an external work directory mounted at the matching container
 path, then run four independent Blender processes under a combined four-CPU cap:
 
 ```sh
 python3 tools/unit-animation/render.py prepare \
-  --output /path/to/work/scenes --render-root /work/job/rendered --resolution-scale 4
+  --output /path/to/work/scenes --render-root /work/job/rendered --highres-pixel-size 128
 python3 tools/unit-animation/render-jobs.py \
   --work /path/to/work --container-work /work/job --workers 4
 python3 tools/unit-animation/render.py collect-highres \

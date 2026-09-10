@@ -529,6 +529,10 @@ if not env['server']:
         local.Object('UnitHighResolutionCacheTest.o', '#test/UnitHighResolutionCacheTest.cpp')
         + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
     local.Alias('unit-hd-cache-test', hd_unit_check)
+    runtime_pack_check = local.Program('RuntimePackCheck',
+        local.Object('RuntimePackCheck.o', '#test/RuntimePackCheck.cpp')
+        + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+    local.Alias('runtime-pack-check', runtime_pack_check)
     benchmark = local.Program('unit-blur-benchmark',
         local.Object('UnitBlurBenchmark.o', '#tools/unit-animation/cache-benchmark.cpp')
         + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])

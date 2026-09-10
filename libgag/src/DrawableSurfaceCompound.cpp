@@ -351,11 +351,11 @@ namespace GAGCore
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
+		// The team layer draws into the exact same destination box as the base
+		// layer above, regardless of the HD/native texture's own pixel size --
+		// drawSurface always stretches a surface's content to fit (x,y,w,h).
 		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
-		{
-			float scale = experiment && sprite->experimentRotated[index] ? 4.0f : 1.0f;
-			drawSurface(static_cast<float>(x), static_cast<float>(y), w * surface->getW() / (scale * sprite->getW(index)), h * surface->getH() / (scale * sprite->getH(index)), surface, alpha);
-		}
+			drawSurface(x, y, w, h, surface, alpha);
 	}
 
 	void DrawableSurface::drawSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha)
@@ -369,10 +369,7 @@ namespace GAGCore
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
 		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
-		{
-			float scale = experiment && sprite->experimentRotated[index] ? 4.0f : 1.0f;
-			drawSurface(static_cast<float>(x), static_cast<float>(y), w * surface->getW() / (scale * sprite->getW(index)), h * surface->getH() / (scale * sprite->getH(index)), surface, alpha);
-		}
+			drawSurface(x, y, w, h, surface, alpha);
 	}
 
 	void DrawableSurface::drawString(int x, int y, Font *font, const std::string &msg, int w, Uint8 alpha)

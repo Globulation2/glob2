@@ -561,6 +561,11 @@ namespace GAGCore
 		// unit UI previews (portraits, editor previews, indicators, credits) since
 		// they all route through the same DrawableSurface::drawSprite.
 		bool dynamicTeamColor = false;
+		//! Every dynamicTeamColor sprite's HD layer renders onto this fixed
+		//! pixel canvas regardless of its own native/logical size (unlike other
+		//! sprite categories' HD layers, which are always exactly 4x native).
+		//! Matches UNIT_HD_PIXEL_SIZE in tools/unit-animation/render.py.
+		static constexpr int highResolutionTextureSize = 128;
 		struct TeamColorKey
 		{
 			int index; bool experiment; Uint8 r, g, b;

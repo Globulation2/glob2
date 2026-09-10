@@ -39,6 +39,38 @@ class PipelineTest(unittest.TestCase):
                     pos,length=fields[field]
                     self.assertEqual(data[offset+pos:offset+pos+length],small[offset+pos:offset+pos+length])
 
+    def test_fixed_highres_size_keeps_timing(self):
+        with tempfile.TemporaryDirectory() as root:
+            root = Path(root)
+            render.prepare(root/'small', '/work/render', 4)
+            render.prepare(root/'fixed', '/work/render', 4, fixed_size=128)
+            for name, _, _, size, _ in render.SETS:
+                data = (root/'fixed'/(name+'.blend')).read_bytes()
+                schema, _, offset = render.schema_and_scene(data)
+                fields = schema['RenderData']
+                for field in ('xsch', 'ysch'):
+                    # Fixed at 128 regardless of this set's own native size,
+                    # unlike --resolution-scale (see test_fourfold_resolution_keeps_timing).
+                    self.assertEqual(struct.unpack_from('<h', data, offset+fields[field][0])[0], 128)
+                small = (root/'small'/(name+'.blend')).read_bytes()
+                for field in ('framapto', 'framelen', 'sfra', 'efra'):
+                    pos, length = fields[field]
+                    self.assertEqual(data[offset+pos:offset+pos+length], small[offset+pos:offset+pos+length])
+
+    def test_highres_layout_uses_unit_scale_sentinel(self):
+        files, rows = render.highres_layout()
+        self.assertEqual(len(files), 2816)
+        self.assertEqual(len(rows), 1792)
+        for value in files.values():
+            self.assertEqual(value, 128)
+        for row in rows:
+            ident, width, height, scale, base, team = row.split()
+            self.assertEqual(scale, '0')
+            # Native logical size is preserved even though the HD texture is
+            # fixed at 128 -- these differ for the 38px/40px-native sets.
+            self.assertIn(int(width), (32, 38, 40))
+            self.assertEqual(width, height)
+
     def test_highres_layout_and_safe_install(self):
         from PIL import Image
         with tempfile.TemporaryDirectory() as root:

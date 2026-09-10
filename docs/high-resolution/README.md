@@ -15,8 +15,9 @@ validators under tools/artwork. Sources and staging exports are preserved in
 datasrc/gfx; production/original-derived contains approved final layers.
 AI fallbacks discussed in source audits are planned for part 3, not included here.
 
-Unit textures are 4× width and height (128, 152 or 160 pixels), while the
-native 32-pose sprites remain in `data/gfx`. This preserves logical sprite size,
+Unit textures render onto a fixed 128×128 pixel canvas (4× for the 32px-native
+explorer set, ~3.37× and 3.2× for the 38px/40px-native worker and warrior sets),
+while the native 32-pose sprites remain in `data/gfx`. This preserves logical sprite size,
 32 poses per direction and the normal 25 FPS display cadence. The seven sets
 cover explorer flight, worker walk/swim/harvest-build, and warrior walk/swim/fight.
 The classic artwork setting and software backend retain native unit textures.

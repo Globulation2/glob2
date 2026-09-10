@@ -99,11 +99,13 @@ int main(int argc, char **argv)
 	const bool blur = argc > 1 && std::string(argv[1]) == "on";
 	const int ticks = argc > 2 ? std::atoi(argv[2]) : 5000;
 	const std::string label = argc > 3 ? argv[3] : "river";
+	const bool hd = argc > 4 && std::string(argv[4]) == "hd";
 	const int numTeams = 12, unitsPerTeam = 13; // 156, matching the ~157 baseline
 
 	Toolkit::init("codex-glob2-12team-benchmark");
 	auto *gfx = Toolkit::initGraphic(1280, 800, GraphicContext::USEGPU, "12-team unit benchmark");
-	std::cout << "map=" << label << " blur=" << (blur ? "on" : "off") << " ticks=" << ticks
+	Sprite::setHighResolution(hd);
+	std::cout << "map=" << label << " blur=" << (blur ? "on" : "off") << " ticks=" << ticks << " hd=" << hd
 	          << " shader=" << (gfx->hasUnitShader() ? "yes" : "no") << std::endl;
 
 	auto *sprite = Toolkit::getSprite("data/gfx/unit");
