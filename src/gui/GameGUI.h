@@ -506,8 +506,6 @@ private:
 	int panMouseX, panMouseY;
 	int lastMouseX = 0, lastMouseY = 0;
 	Uint16 lastMouseButtonState = 0;
-	//! Coordinate of viewport when began panning
-	int panViewX, panViewY;
 
 	bool showStarvingMap;
 	bool showDamagedMap;
