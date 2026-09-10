@@ -482,18 +482,6 @@ void ScriptEditorScreen::onAction(Widget *source, Action action, int par1, int p
 			changeTabAgain=false;
 		}
 	}
-	// else if(action == TEXT_MODIFIED)
-	// {
-	// 	// on typing compilation
-	// 	if (source == scriptEditor)
-	// 	{
-	// 		testCompile();
-	// 		unsigned line;
-	// 		unsigned column;
-	// 		scriptEditor->getCursorPos(line, column);
-	// 		cursorPosition->setText(FormattableString("Line: %0 Col: %1").arg(line+1).arg(column+1));
-	// 	}
-	// }
 	else if ((action == TEXT_CURSOR_MOVED) || (action == TEXT_MODIFIED))
 	{
 		if (source == scriptEditor)
@@ -551,7 +539,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 	while(loadSaveScreen->endValue<0)
 	{
 		Uint64 time = SDL_GetTicks64();
-		while (SDL_PollEvent(&event))
+		while (GAGCore::GraphicContext::pollEvent(&event))
 		{
 			GAGCore::GraphicContext::translateMouseEvent(&event);
 			loadSaveScreen->translateAndProcessEvent(&event);

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <algorithm>
 #include "Unit.h"
 #include "Race.h"
 #include "Team.h"
@@ -147,7 +148,6 @@ void Unit::handleDisplacement(void)
 						int needs[MAX_NB_RESOURCES];
 						attachedBuilding->computeWishedResources(needs);
 						int teamNumber=owner->teamNumber;
-						bool canSwim=performance[SWIM];
 						int timeLeft = numberOfStepsLeftUntilHungry();
 						if (timeLeft > 0)
 						{
@@ -161,7 +161,7 @@ void Unit::handleDisplacement(void)
 								if (need>0)
 								{
 									int distToResource;
-									if (map->resourceAvailable(teamNumber, r, canSwim, posX, posY, &distToResource))
+									if (map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource))
 									{
 										if ((distToResource<<1)>=timeLeft)
 											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.
@@ -179,7 +179,7 @@ void Unit::handleDisplacement(void)
 											if ((*bi)->resources[r]>0)
 											{
 												int buildingDist;
-												if (map->buildingAvailable(*bi, canSwim, posX, posY, &buildingDist))
+												if (map->buildingAvailable(*bi, swimClass(), posX, posY, &buildingDist))
 												{
 													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
 													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
@@ -223,7 +223,7 @@ void Unit::handleDisplacement(void)
 										displacement=DIS_HARVESTING;
 										validTarget=false;
 									}
-									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, canSwim, posX, posY, &targetX, &targetY, &dummyDist))
+									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
 										validTarget=true;
@@ -438,4 +438,45 @@ bool Unit::locationIsInEnemyGuardTowerRange(int x, int y)const
 		}
 	}
 	return false;
+}
+
+// Training is all-or-nothing; a meal or a healing is granted pro rata, and
+// a started meal costs a whole wheat.
+void Unit::applyPartialInsideBenefit()
+{
+	if (displacement!=DIS_INSIDE)
+		return;
+	int total;
+	if (destinationPurpose==FEED)
+		total=attachedBuilding->type->timeToFeedUnit;
+	else if (destinationPurpose==HEAL)
+		total=attachedBuilding->type->timeToHealUnit;
+	else
+		return;
+	int elapsed=std::min(total, total+insideTimeout);
+	if (total<=0 || elapsed<=0)
+		return;
+	if (destinationPurpose==FEED)
+	{
+		if (attachedBuilding->resources[CORN]<=0)
+			return;
+		hungry+=((HUNGRY_MAX-hungry)*elapsed)/total;
+		fruitCount=attachedBuilding->eatOnce(&fruitMask);
+	}
+	else
+		hp+=((performance[HP]-hp)*elapsed)/total;
+}
+
+void Unit::expelFromBuilding(int x, int y, int dx, int dy)
+{
+	applyPartialInsideBenefit();
+	standardRandomActivity();
+	insideTimeout=0;
+	posX=x;
+	posY=y;
+	this->dx=dx;
+	this->dy=dy;
+	delta=0;
+	movement=MOV_EXITING_BUILDING;
+	handleActionExitingBuilding();
 }

@@ -1,93 +1,93 @@
 [%0 has left the game]
 %0 foi embora do jogo
 [%0 level %1]
-
+%0 de nível %1
 [%0 units can't access building]
-
+%0 unidades não conseguem aceder ao edifício
 [%0 units can't access flag]
-
+%0 unidades não conseguem aceder à bandeira
 [%0 units can't access fruit]
-
+%0 unidades não conseguem aceder à fruta
 [%0 units can't access resource]
-
+%0 unidades não conseguem aceder ao recurso
 [%0 units not available]
-
+%0 unidades indisponíveis
 [%0 units too far from building]
-
+%0 unidades estão demasiado longe do edifício
 [%0 units too far from flag]
-
+%0 unidades estão demasiado longe da bandeira
 [%0 units too far from fruit]
-
+%0 unidades estão demasiado longe da fruta
 [%0 units too far from resource]
-
+%0 unidades estão demasiado longe do recurso
 [%0 units too low level]
-
+%0 unidades têm um nível demasiado baixo
 [%0% Uploaded]
-
+%0% enviado
 [%0's game]
-
+Partida de %0
 [%0's team unit got converted to your team]
-Uma unidade de %0 tem se passado a seu bando
+Uma unidade de %0 passou para a tua equipa
 [abreaviation explanation A]
 A: Aliados
 [abreaviation explanation C]
 C: Enviar mensagem de chat a
 [abreaviation explanation fV]
-fV: Mostrar tabernas (para convertir unidades)
+fV: Partilhar a visão das tabernas (para converter unidades)
 [abreaviation explanation mV]
-mV: Mostrar mercados (para intercambiar frutas)
+mV: Partilhar a visão dos mercados (para trocar frutas)
 [abreaviation explanation V]
-V: Mostrar todos os prédios
+V: Partilhar a visão de todos os edifícios
 [add map]
-
+Adicionar mapa
 [add shortcut]
-
+Adicionar atalho
 [Add]
-
+Adicionar
 [AI Descriptions]
-
+Descrições das IA
 [AI]
 IA
 [ai]
 IA
 [AICastor-Description]
-
+Castor joga de forma conservadora e sai-se muito bem em mapas com poucos recursos. Dificuldade média.
 [AICastor]
 IACastor
 [AINicowar-Description]
-
+Nicowar joga de forma agressiva, expande-se rapidamente e lança enormes exércitos contra os adversários. Dificuldade elevada.
 [AINicowar]
 Nicowar
 [AINone-Description]
-
+Nenhuma — não faz nada.
 [AINone]
-IANone
+Nenhuma
 [AINumbi-Description]
-
+Numbi expande-se pouco, mas depressa. Dificuldade baixa.
 [AINumbi]
 IANumbi
-[AIReachToInfinity-Description]
-
-[AIReachToInfinity]
-
+[AIEcono-Description]
+Econo não ataca, mas constrói bases enormes e converte unidades de forma agressiva. Dificuldade baixa.
+[AIEcono]
+Econo
 [AIWarrush-Description]
-
+Warrush ataca depressa e com força, levando frequentemente o defensor ao limite. Dificuldade média.
 [AIWarrush]
 IAWarrush
 [Alga]
 Algas
 [algae]
-
+algas
 [alliances]
 Alianças
 [alt %0]
-
+alt-%0
 [and]
 e
 [any explorer]
 qualquer explorador
 [are dying hungry]
-morrendo
+a morrer de fome
 [are hungry]
 famintos
 [are ok]
@@ -97,11 +97,11 @@ feridos
 [armor]
 Armadura
 [assigned]
-
+Atribuídas
 [At. speed]
 Velocidade at.
 [At. strength]
-Forza at.
+Força at.
 [Attack]
 Ataque
 [audio]
@@ -115,9 +115,9 @@ Esperando jogadores
 [away:]
 ausente:
 [Back]
-
+Voltar
 [backspace]
-
+retrocesso
 [barracks explanation 2]
 dos guerreiros
 [barracks explanation]
@@ -127,43 +127,43 @@ Quartel
 [beach size]
 Tamanho da praia
 [Blocked Players]
-
+Jogadores bloqueados
 [break]
-
+interrupção
 [briefing]
-
+Instruções da missão
 [build %0 level %1]
-
+Construir %0 de nível %1
 [Build]
 Construir
 [Building Defaults]
-
+Predefinições dos edifícios
 [building settings]
-
+Definições dos edifícios
 [building site]
 Sítio de constr.
 [Building Tool Box Explanation]
-
+Shift + arrastar = retângulo
 [Building Tool Line Explanation]
-
+Ctrl + arrastar = linha
 [Buildings]
 Prédios
 [Bullets]
 Balas
 [campaign editor]
-
+Editor de campanhas
 [campaign]
 Campanha
 [Can't connect, can't find host]
-
+Não é possível ligar: anfitrião não encontrado
 [Can't host game, port %0 in use]
-
+Não é possível alojar a partida: porta %0 em uso
 [Can't join game, game doesn't exist]
-
+Não é possível entrar: a partida não existe
 [Can't join game, game has started]
-
+Não é possível entrar: a partida já começou
 [Can't join game, game is full]
-
+Não é possível entrar: a partida está cheia
 [Can't join game, missmatching game parameters]
 Impossível unir-se à partida: parâmetros do jogo diferentes
 [Can't join game, timeout]
@@ -173,25 +173,25 @@ Impossível unir-se à partida: versão do jogo incorreta
 [cancel destroy]
 Cancelar destruição
 [cancel repair]
-Cancelar arrumação
+Cancelar reparação
 [cancel upgrade]
 Cancelar melhora
 [Cancel]
 Cancelar
 [caps lock]
-
+bloqueio de maiúsculas
 [carry]
 Transportando:
 [Change Area Name]
-
+Alterar nome da área
 [Cherry]
 Cereja
 [choose campaign]
-Eleger campanha
+Escolher campanha
 [choose game]
-Eleger una partida
+Escolher uma partida
 [choose map]
-Eleger um mapa
+Escolher um mapa
 [clear area]
 Área de limpeza
 [Clearing:]
@@ -205,33 +205,33 @@ Bandeira de limpeza
 [closed]
 Fechado
 [combined vision]
-
+Visão combinada
 [compile]
 Compilar script
 [compose]
-
+composição
 [Computing Fertility]
-
+A calcular a fertilidade
 [concrete islands terrain]
-
+Ilhas separadas
 [connect]
 Conectar
 [connecting to game]
-
+A ligar à partida
 [connecting to]
 Conectando-se a
 [Construction Site Defaults]
-
+Predefinições das obras
 [Continue playing]
 Continuar jogando
 [control %0]
-
+control-%0
 [Corn]
-Milho
+Trigo
 [crater density]
-
+número de crateras
 [crater lakes terrain]
-
+Lagos de crateras
 [create game]
 Criar partida
 [create map]
@@ -239,7 +239,7 @@ Criar mapa
 [credits]
 Créditos
 [ctrl - line]
-
+Ctrl - linha
 [current speed]
 Velocidade atual
 [custom game]
@@ -247,69 +247,69 @@ Jogo personalizado
 [customcur]
 Cursor personalizado
 [damage]
-Danho
+Dano
 [Damaged Map]
-
+Mapa de feridos
 [decrease units working]
-
+Diminuir unidades a trabalhar
 [Defeat Your Oppenents]
-
+Derrotar os adversários
 [defencetower explanation 2]
-inimigos na cercania
+inimigos próximos
 [defencetower explanation]
-Ataca prédios/unidades
+Ataca unidades e edifícios
 [defencetower]
 Torre de defesa
 [Defense Map]
-
+Mapa de defesa
 [Defense]
 Defesa
 [Delete game]
-Borrar a partida selecionada
+Eliminar a partida selecionada
 [delete]
-
+Eliminar
 [desert]
-
+deserto
 [destroy building]
-
+Destruir edifício selecionado
 [destroy]
 Destruir
 [display]
-Tela
+Ecrã
 [do nothing]
-
+Não fazer nada
 [don't carry anything]
 Não transporta nada
 [down]
-
+baixo
 [Download Map]
-
+Descarregar mapa
 [Download Maps]
-
+Descarregar mapas
 [downloaded %0]
-
+%0 descarregado
 [downloading map]
-
+A descarregar o mapa
 [edit map]
-
+Editar mapa
 [editing map]
-
+A editar o mapa
 [editor shortcuts]
-
+Atalhos do editor
 [editor]
 Editor
 [end]
-
+fim
 [Enter your nickname :]
 Introduza o seu apelido:
 [Enter your password :]
-Introduza sua contrasenha:
+Introduza a sua palavra-passe:
 [enter]
-
+enter
 [equals]
-
+igual
 [escape]
-
+escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -317,79 +317,77 @@ Atrai exploradores
 [explorationflag]
 Bandeira de exploração
 [Explorer Ratio]
-
+Proporção de exploradores
 [Explorer]
 Explorador
 [explorers]
 exploradores
 [extra islands]
-
+ilhas vazias
 [f10]
-
+f10
 [f11]
-
+f11
 [f12]
-
+f12
 [f13]
-
+f13
 [f14]
-
+f14
 [f15]
-
+f15
 [f1]
-
+f1
 [f2]
-
+f2
 [f3]
-
+f3
 [f4]
-
+f4
 [f5]
-
+f5
 [f6]
-
+f6
 [f7]
-
+f7
 [f8]
-
+f8
 [f9]
-
+f9
 [Fertility Map]
-
+Mapa de fertilidade
 [Flag Defaults]
-
+Predefinições das bandeiras
 [flag settings explanation]
-
+Raio predefinido da bandeira
 [fog of war]
-
+Nevoeiro de guerra
 [food]
 Comida
 [forbidden area]
 Área proibida
 [Free]
-Bem
+Saudáveis
 [free]
-libres
-[free]
-libres
+livres
 [from:]
 de:
 [fruit]
-
+fruta
 [fullscreen]
-Tela completa
+Ecrã inteiro
 [game full]
-Partida alotada
+Partida cheia
 [game shortcuts]
-
+Atalhos do jogo
 [Game]
-
+Partida
 [general settings]
-
+Definições gerais
 [go to event]
-
+Ir para o evento
 [go to home]
-
+Ir para a base
 [goto main menu]
 Voltar ao menu principal
 [grass]
@@ -397,49 +395,47 @@ Erva
 [ground attack]
 ataque terrestre
 [guard area]
-Área de guardia
+Área de guarda
 [GUIMapPreview text 0]
-
+Escolha
 [GUIMapPreview text 1]
-
+um mapa
 [handmade map]
 Mapa feito a mão
 [Happyness]
 Felicidade
 [hard pause]
-
+Pausa total
 [Harvest]
 Coletar
 [high priority]
-
+alta
 [hints]
-
+Dicas
 [home]
-
+início
 [hospital explanation 2]
 
 [hospital explanation]
-Sana as unidades
+Cura as unidades
 [hospital]
 Hospital
 [host]
 Servir uma partida
 [hp]
-Danho
-[hp]
-Danho
+PV
 [Human]
-
+Humano
 [human]
-
+humano
 [hungry]
 famint.
 [hungryness]
-
+Fome
 [In way]
 A caminho
 [increase units working]
-
+Aumentar unidades a trabalhar
 [inn explanation 2]
 
 [inn explanation]
@@ -447,27 +443,27 @@ Alimenta as unidades
 [inn]
 Taberna
 [insert]
-
+inserir
 [inside]
 Dentro
 [islands size]
-Tamanho das ínsulas
+Tamanho das ilhas
 [islands terrain]
-ínsulas
+Ilhas
 [isles terrain]
-
+Ilhéus
 [iterate selection]
-
+Passar à seleção seguinte
 [jobs]
-
+tarefas
 [join a game]
 Unir-se a uma partida
 [join]
 Unir-se
 [keyboard settings]
-
+Definições do teclado
 [kick]
-
+Expulsar
 [lan]
 Jogo em rede LAN
 [language incomplete]
@@ -479,79 +475,79 @@ Língua
 [language]
 Português
 [Leave Game]
-
+Sair da partida
 [left meta]
-
+meta esquerda
 [left super]
-
+tecla Windows esquerda
 [left]
-
+esquerda
 [level]
 Nível
 [levels]
 Níveis
 [load campaign]
-
+Carregar campanha
 [load game]
 Carregar partida
 [load map]
-
+Carregar mapa
 [load replay]
-
+Carregar repetição
 [load script]
-
+Carregar script
 [load]
 Carregar
 [loading map list]
-
+A carregar a lista de mapas...
 [Lobby]
-
+Sala de espera
 [login]
-Login
+Entrar
 [look around]
-
+Olhar em redor
 [Lost : %0 has more prestige than you]
 Você perdeu: %0 tem mais prestígio do que você
 [Lost : your colony is dead]
 Você perdeu: Sua colônia foi aniquilada
 [low priority]
-
+baixa
 [lowquality]
-Calidade baixa
+Qualidade baixa
 [Magic At. Air]
 At. aéreo
 [Magic At. Ground]
 At. terrestre
 [map description]
-
+Descrição
 [Map Discovered]
-
+Mapa descoberto
 [Map download failure: lost connection]
-
+Falha ao descarregar o mapa: ligação ao YOG perdida
 [Map name: %0]
 Nome do mapa: %0.
 [map name]
-
+Nome
 [map rated]
-
+Mapa avaliado
 [map script]
-
+Script do mapa
 [map size x]
 Largura do mapa
 [map size y]
 Altura do mapa
 [Map upload failure: connection lost]
-
+Falha ao enviar o mapa: ligação ao YOG perdida
 [Map upload failure: map name in use]
-
+Falha ao enviar o mapa: o nome já está em uso.
 [Map upload failure: unknown reason]
-
+Falha ao enviar o mapa. Motivo desconhecido.
 [Map Upload: Author Name]
-
+Nome do autor
 [Map Upload: Waiting for reply]
-
+A aguardar resposta
 [mark map]
-
+Marcar mapa para os aliados
 [market explanation 2]
 frutas com outros
 [market explanation]
@@ -559,137 +555,137 @@ Permite intercâmbio de
 [market]
 Mercado
 [medium priority]
-
+média
 [meta %0]
-
+meta-%0
 [Min required level:]
 Mín. nível requerido:
 [Minimum Level To Flag]
-
+Nível mín. unidades
 [Music volume]
 Volume (música)
 [Mute]
-
+silêncio
 [mute]
 silêncio
 [new campaign]
-
+Nova campanha
 [new map]
 Novo
 [nick taken]
 Infelizmente o apelido que elegeu já está tomado em freenode. Só poderá falar através de YOG
 [no fullscreen]
-
+* apenas em modo de janela
 [No Hints]
-
+Sem dicas
 [no key]
-
+sem tecla atribuída
 [No Objectives]
-
+Sem objetivos
 [no ressources growth areas]
-
+Sem crescimento
 [No]
 Não
 [Not Enough Ratings]
-
+Avaliações insuficientes
 [not ready]
 não pronto
 [Number Of Buildings]
-
+Número de edifícios
 [number of players: %0 (%1 AI)]
-
+%0 jogadores (%1 IA)
 [number of players: %0]
 %0 jogadores presentes.
 [number of teams: %0]
-%0 times.
+%0 equipas
 [number of teams]
-Número de bandos
+Número de equipas
 [Number Of Units]
-
+Número de unidades
 [numlock]
-
+bloqueio numérico
 [objectives]
-
+Objetivos
 [of which]
 dos quais há
 [ok]
 Aceitar
 [old islands terrain]
-
+ilhas aleatórias antigas
 [old random terrain]
-
+terreno aleatório antigo
 [on press]
-
+Ao premir
 [On the spot]
 Aqui
 [on unpress]
-
+Ao soltar
 [open chat box]
-
+Abrir caixa de conversa
 [open load menu]
-
+Abrir menu de carregamento
 [open save menu]
-
+Abrir menu para guardar
 [open scenario editor]
-
+Abrir editor de cenários
 [open teams editor]
-
+Abrir editor de equipas
 [open]
 aberto
 [OpenGL]
 OpenGL
 [Options]
-
+Opções
 [options]
 Opções
 [Orange]
 Laranja
 [Other Options]
-
+Outras opções
 [page down]
-
+página abaixo
 [page up]
-
+página acima
 [Papyrus]
 Papiro
 [pause game]
-
+Pausar partida
 [pause]
-
+pausa
 [Paused]
 Pausa
 [player name]
 Nome do jogador
 [player rating %0]
-
+Avaliação do jogador: %0
 [players]
-
+Jogadores
 [please wait]
 Espere por favor
 [power]
-
+ligar
 [press space]
 Pressione espaço para continuar.
 [Prestige Score]
-
+Pontuação de prestígio
 [Prestige Win Enabled]
-
+Vitória por prestígio ativada
 [Prestige]
-Prestigio
+Prestígio
 [Primary Objectives]
-
+Principais
 [print screen]
-
+imprimir ecrã
 [priority]
-
+Prioridade
 [Prune]
-Passa
+Ameixa
 [quit the editor]
-
+Sair do editor
 [quit the game]
 Sair do jogo
 [quit the replay]
-
+Sair da repetição
 [quit]
 Sair
 [racetrack explanation 2]
@@ -697,61 +693,61 @@ marcha das unidades
 [racetrack explanation]
 Melhora a velocidade de
 [racetrack]
-Pista de carreiras
+Pista de corrida
 [range]
-Rango
+Alcance
 [Rated %0]
-
+Avaliação: %0
 [ratios]
 Proporções
 [ready?]
-
+pronto?
 [refresh map list]
-
+Atualizar lista de mapas
 [Register a new YOG user with password]
 Registrar um novo usuário de YOG com contrasenha. (inseguro)
 [Register]
-
+Registar
 [remember unit]
-
+Memorizar atribuições
 [Remember YOG password localy]
-Lembrar a contrasenha localmente. (inseguro)
+Memorizar a palavra-passe localmente.
 [remove map]
-
+Remover mapa
 [remove shortcut]
-
+Remover atalho
 [Remove]
-
+Remover
 [repair building]
-
+Iniciar/parar reparação
 [repair]
-Arrumar
+Reparar
 [repeat area]
-
+vezes a mesma paisagem
 [Repeat your password :]
-
+Repita a palavra-passe:
 [replay ended]
-
+Repetição terminada
 [restore default shortcuts]
-
+Restaurar atalhos predefinidos
 [return to editor]
-
+Voltar ao editor
 [return to game]
 Voltar ao jogo
 [return to replay]
-
+Voltar à repetição
 [return]
-
+enter
 [right meta]
-
+meta direita
 [right super]
-
+tecla Windows direita
 [right]
-
+direita
 [river diameter]
-
+largura do rio
 [river terrain]
-
+Rio
 [sand]
 Areia
 [save before quit?]
@@ -759,131 +755,131 @@ Guardar antes de sair?
 [save game]
 Salvar partida
 [save map]
-
+Guardar mapa
 [save replay]
-
+Guardar repetição
 [save script]
-
+Guardar script
 [Save]
 Guardar
 [school explanation 2]
-dos trabalhadores
+construção dos trabalhadores
 [school explanation]
-Melhora as noções
+Melhora o nível de
 [school]
 Escola
 [Script Areas]
-
+Áreas do script
 [scroll lock]
-
+bloqueio de deslocamento
 [scroll wheel enabled]
-
+Roda do rato ativada
 [Secondary Objectives]
-
+Secundários
 [seeking a job]
 procurando trabalho
 [seeking]
 procurando
 [select barracks building]
-
+Selecionar edifício: Quartel
 [select clearingflag]
-
+Selecionar bandeira de limpeza
 [select construct barracks]
-
+Selecionar construção: Quartel
 [select construct defencetower]
-
+Construir torre de defesa
 [select construct hospital]
-
+Selecionar construção: Hospital
 [select construct inn]
-
+Selecionar construção: Taberna
 [select construct market]
-
+Selecionar construção: Mercado
 [select construct racetrack]
-
+Construir pista de corrida
 [select construct school]
-
+Selecionar construção: Escola
 [select construct stonewall]
-
+Construir muro de pedra
 [select construct swarm]
-
+Selecionar construção: Colmeia
 [select construct swimmingpool]
-
+Selecionar construção: Piscina
 [select delete tool]
-
+Selecionar ferramenta de eliminação
 [select explorationflag]
-
+Selecionar bandeira de exploração
 [select hospital building]
-
+Selecionar edifício: Hospital
 [select inn building]
-
+Selecionar edifício: Taberna
 [select market building]
-
+Selecionar edifício: Mercado
 [select place clearing area]
-
+Colocar área: Área de limpeza
 [select place clearingflag]
-
+Colocar bandeira de limpeza
 [select place explorationflag]
-
+Colocar bandeira de exploração
 [select place forbidden area]
-
+Colocar área: Área proibida
 [select place guard area]
-
+Colocar área de guarda
 [select place warflag]
-
+Colocar bandeira de guerra
 [select racetrack building]
-
+Selecionar edifício: Pista de corrida
 [select school building]
-
+Selecionar edifício: Escola
 [select swarm building]
-
+Selecionar edifício: Colmeia
 [select swimmingpool building]
-
+Selecionar edifício: Piscina
 [select tower building]
-
+Selecionar edifício: Torre de defesa
 [select wall building]
-
+Selecionar edifício: Muro de pedra
 [select warflag]
-
+Selecionar bandeira de guerra
 [settings]
 Opções
 [shift %0]
-
+shift-%0
 [shortcut explanation enter]
 Intro: Enviar mensagem de chat
 [shortcut explanation v]
-V: Pedir a palavra
+V: manter premida a tecla para falar
 [show areas]
-
+Mostrar áreas
 [show flags]
-
+Mostrar bandeiras
 [show main menu]
-
+Mostrar menu principal
 [skin]
-
+Visualização
 [smoothing]
 Alisado
 [sort by name]
-
+Nome
 [sort by rating]
-
+Avaliação
 [sort by size]
-
+Tamanho
 [Sort By]
-
+Ordenar por
 [space]
-
+espaço
 [start mission]
-
+Iniciar missão
 [start new campaign]
-
+Iniciar nova campanha
 [Start]
 Começar
 [Starving Map]
-
+Mapa de fome
 [starving]
-morrendo
+a morrer de fome
 [Statistics]
-Estadísticas
+Estatísticas
 [Still (i)]
 Ainda
 [still (w)]
@@ -895,7 +891,7 @@ Ainda uma
 [Stone]
 Pedra
 [stone]
-
+pedra
 [stonewall explanation 2]
 passivo
 [stonewall explanation]
@@ -903,11 +899,11 @@ Elemento de defesa
 [stonewall]
 Muro de pedra
 [submit rating]
-
+Enviar avaliação
 [svr hostname]
 Nome do servidor
 [swamp terrain]
-
+Pântano
 [swarm explanation 2]
 
 [swarm explanation]
@@ -917,49 +913,49 @@ Colmeia
 [Swim]
 Nadar
 [swimmingpool explanation 2]
-nado das unidades
+natação das unidades
 [swimmingpool explanation]
 Melhora a velocidade de
 [swimmingpool]
 Piscina
 [switch to adding areas]
-
+Adicionar áreas
 [switch to area brush 1]
-
+Selecionar pincel de áreas: 1
 [switch to area brush 2]
-
+Selecionar pincel de áreas: 2
 [switch to area brush 3]
-
+Selecionar pincel de áreas: 3
 [switch to area brush 4]
-
+Selecionar pincel de áreas: 4
 [switch to area brush 5]
-
+Selecionar pincel de áreas: 5
 [switch to area brush 6]
-
+Selecionar pincel de áreas: 6
 [switch to area brush 7]
-
+Selecionar pincel de áreas: 7
 [switch to area brush 8]
-
+Selecionar pincel de áreas: 8
 [switch to building view]
-
+Mostrar edifícios
 [switch to flag view]
-
+Mostrar bandeiras
 [switch to removing areas]
-
+Remover áreas
 [switch to teams view]
-
+Mostrar equipas
 [switch to terrain view]
-
+Mostrar terreno
 [sys req]
-
+pedido de sistema
 [tab]
-
+tabulação
 [teams editor]
-
+Editor de equipas
 [Teams Fixed]
-
+Equipas fixas
 [teams]
- times
+ equipas
 [the barracks is finished]
 O quartel foi construído
 [the barracks is under attack]
@@ -981,15 +977,15 @@ A torre de defesa está sendo atacada
 [the explorationflag is under attack]
 ?? A bandeira de exploração está sendo atacada ??
 [The game has not been finished]
-A partida não tem terminado
+A partida ainda não terminou
 [the games]
 Jogos
 [the hospital is finished]
-O hospital tem sido construído
+O hospital foi construído
 [the hospital is under attack]
 O hospital está sendo atacado
 [The host has cancelled the game]
-
+O anfitrião cancelou a partida.
 [the inn is finished]
 A taberna foi construída
 [the inn is under attack]
@@ -1001,27 +997,27 @@ O mercado foi construído
 [the market is under attack]
 O mercado está sendo atacado
 [The player %0 has joined YOG]
-%0 entrou a YOG
+%0 entrou no YOG
 [The player %0 has left YOG]
 %0 foi embora de YOG
 [the racetrack is finished]
-A pista de carreiras foi construída
+A pista de corrida foi construída
 [the racetrack is under attack]
-A pista de carreiras está sendo atacada
+A pista de corrida está a ser atacada
 [the replays]
-
+Repetições
 [the school is finished]
 A escola foi construída
 [the school is under attack]
-A escuela está sendo atacada
+A escola está a ser atacada
 [the stonewall is finished]
 Uma seção do muro de pedra foi construída
 [the stonewall is under attack]
-O inimigo está a sua muralha
+O inimigo está junto às tuas muralhas
 [the swarm is finished]
 A colmeia foi construída
 [the swarm is under attack]
-A colmeia está siendo atacada
+A colmeia está a ser atacada
 [the swimmingpool is finished]
 A piscina foi construída
 [the swimmingpool is under attack]
@@ -1031,85 +1027,85 @@ A piscina está sendo atacada
 [the warflag is under attack]
 ?? A bandeira de guerra está sendo atacada ??
 [time]
-
+Tempo
 [to:]
 a:
 [toggle draw accessibility aids]
-
+Mostrar/ocultar números de equipa
 [toggle draw information]
-
+Mostrar/ocultar informações
 [toggle draw unit paths]
-
+Mostrar/ocultar rotas das unidades
 [toggle menu screen]
-
+Mostrar/ocultar ecrã de menu
 [toggle recording voice]
-
+Ativar/desativar gravação de voz
 [Total Attack Power]
-
+Poder de ataque total
 [Total Defence Power]
-
+Poder de defesa total
 [Total Hitpoints]
-
+Pontos de vida totais
 [Total prestige reached]
 Prestígio total atingido
 [Total]
 Total
 [tutorial text 1]
-
+Bem-vindo ao tutorial básico de Globulation 2! Aqui vais aprender a construir tabernas, explorar zonas e destruir inimigos. Não faltam conhecimentos úteis!
 [tutorial text 2]
-
+Agora que dominas o básico, é altura de conhecer outros edifícios, como pistas de corrida, piscinas e escolas.
 [tutorial text 3]
-
+Chegaste longe. Agora vamos conhecer os guerreiros, os quartéis e as melhorias.
 [tutorial text 4]
-
+Estás quase a terminar. Só faltam as bandeiras e os ataques. Depois saberás o suficiente para experimentar partidas personalizadas e, mais tarde, jogar em linha contra alguns dos melhores jogadores de Globulation 2.
 [tutorial]
 Tutorial
 [Uncontrolled]
 Não controlado
 [undo]
-
+anular
 [uniform terrain]
 Terreno uniforme
 [Unit editor]
-
+Editor de unidades
 [unit settings explanation]
-
+Número predefinido de unidades atribuídas
 [units working]
  unid. trabalhando
 [Units]
 Unidades
 [unlocked at start]
-
+Disponível desde o início
 [unlocked by]
-
+Desbloqueado por
 [Unnamed Area]
-
+{Área sem nome}
 [up]
-
+cima
 [upgrade building]
-
+Iniciar/parar melhoria
 [Upgrade Defaults]
-
+Predefinições das melhorias
 [upgrade]
 Melhorar
 [Upload Map]
-
+Enviar mapa
 [upload map]
-
+Enviar mapa
 [username]
 Nome de usuário
 [Version]
 Versão
 [view history]
-
+Ver histórico
 [Voice volume]
-
+Volume da voz
 [waiting for %0]
 Esperando a %0
 [waiting for key]
-
+à espera de uma tecla...
 [Waiting]
-
+A aguardar
 [Walk]
 Caminhar
 [warflag explanation 2]
@@ -1119,37 +1115,35 @@ Atrai guerreiros
 [warflag]
 Bandeira de guerra
 [Warning, you need to reboot the game for changes to take effect]
-[Aviso: Deve se reiniciar o jogo para que as mudanças surtam efeito]
+Aviso: é necessário reiniciar o jogo para aplicar as alterações
 [Warrior Ratio]
-
+Proporção de guerreiros
 [Warrior]
 Guerreiro
 [warriors]
 guerreiros
 [watch again]
-
+Ver novamente
 [watching:]
-
+A observar:
 [water]
 Água
 [Wheat]
-
+Trigo
 [Won : you defeated your opponents]
-Você ganhou: Tem destruído seus oponentes
+Ganhaste: derrotaste os teus adversários
 [Won : you have the most prestige]
 Você ganhou: Você é quem mais prestígio tem
 [Won : your ally %0 has the most prestige]
-Você ganhou: seus aliados %0 tem atingido o maior prestígio
+Ganhaste: o teu aliado %0 tem mais prestígio
 [Wood]
 Madeira
 [wood]
-
+madeira
 [Worker Ratio]
-
+Proporção de trabalhadores
 [Worker]
 Trabalhador
-[workers]
-Trabalhadores
 [workers]
 trabalhadores
 [working]
@@ -1159,60 +1153,622 @@ feridos
 [Yes]
 Sim
 [YESTS_CONNECTING]
-Conectándo-se o metaservidor YOG...
+A estabelecer ligação ao metasservidor YOG...
 [YESTS_CONNECTION_LOST]
 Conexão ao metaservidor YOG perdida.
 [YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-O metaservidor YOG tem rejeitado a conexão porque este usuário já tem sido registrado. Desactive a opção "Registrar um novo usuário de YOG com contrasenha" se este é seu usuário.
+O metasservidor YOG recusou a ligação porque este nome de utilizador já está registado. Se for o teu, desativa a opção de registar um novo utilizador YOG com palavra-passe.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-O metaservidor YOG tem rejeitado a conexão porque a contrasenha fornecida é incorreta.
+O metasservidor YOG recusou a ligação porque a palavra-passe introduzida está incorreta.
 [YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-O metaservidor YOG tem rejeitado a conexão porque  usuário aínda não tem uma contrasenha. Active por uma vez a opção "Registrar um novo usuário de YOG com contrasenha".
+O metasservidor YOG recusou a ligação porque este nome de utilizador ainda não tem palavra-passe. Para o registar com esta palavra-passe, ativa a opção de registar um novo utilizador YOG com palavra-passe antes de te ligares. Só é necessário ativá-la uma vez.
 [YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-
+O metasservidor YOG recusou a ligação porque este endereço IP está temporariamente banido. Aguarde até o bloqueio terminar ou contacte os administradores.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-O metaservidor YOG tem rejeitado a conexão porque o cliente globulation2 é obsoleto.
+O metasservidor YOG recusou a ligação porque o teu cliente Globulation 2 está desatualizado. Obtém a versão mais recente em www.globulation2.org para jogar em linha.
 [YESTS_CONNECTION_REFUSED_UNEXPLAINED]
 O metaservidor YOG tem rejeitado a conexão sem dar uma explicação.
 [YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
 O metaservidor YOG tem rejeitado a conexão porque o nome de usuário está em uso.
 [YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-
+O metasservidor YOG recusou a ligação porque este nome de utilizador está banido. Contacte os administradores.
 [YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-
+O metasservidor YOG recusou a ligação porque o nome de utilizador é inválido. Os nomes só podem conter letras, números e sublinhados.
 [YESTS_CREATED]
 O sistema de conexão está pronto para contactar-se com o metaservidor YOG.
 [YESTS_PASSWORDS_DONT_MATCH]
-
+As palavras-passe não coincidem. Volte a escrevê-las.
 [YESTS_UNABLE_TO_CONNECT]
-Imposível conectar-se. Parece que o metaservidor YOG está caido.
+Não é possível ligar. O metasservidor YOG parece estar indisponível.
 [yog block command help]
-
+/block <jogador>    Bloqueia um jogador; deixarás de ver as suas mensagens.
 [yog block command player %0 already blocked]
-
+O jogador %0 já está bloqueado
 [yog block command player %0 blocked]
-
+Jogador %0 bloqueado
 [yog block command player %0 not found]
-
+Jogador %0 não encontrado
 [yog command header]
-
+Os comandos disponíveis do cliente YOG são:
 [yog command unknown]
-
+Comando desconhecido.
 [yog help command help]
-
+/help    Mostra esta mensagem de ajuda
 [yog]
 Jogo em linha com Ysagoon
 [you have lost]
-¡Você perdeu!
+Perdeste!
 [you have won]
-¡Você ganhou!
+Ganhaste!
 [You where kicked from the game]
-
+Foste expulso da partida
 [Your %0 are under attack]
-Seus %0 estão sendo atacados
+O teu %0 está a ser atacado
 [Your IP address was temporarily banned]
-
+O teu endereço IP foi temporariamente banido. Aguarda até o bloqueio terminar ou contacta os administradores.
 [Your unit got converted to %0's team]
-Uma unidade tem se passado ao bando de %0
+Uma unidade tua passou para a equipa de %0
 [Your username was banned]
-
+O teu nome de utilizador foi banido. Contacta os administradores para resolver a situação.
+[game speed]
+Velocidade do jogo
+[decrease game speed]
+Diminuir velocidade do jogo
+[increase game speed]
+Aumentar velocidade do jogo
+[maximum game speed]
+Máxima
+[multiplayer game speed]
+Velocidade: 1x (multijogador)
+[game speed help]
+Apenas para um jogador e repetições. As partidas multijogador decorrem a 1x.
+[AICortex-Description]
+Cortex se expande em direção a novos campos de trigo e envia grupos de guerreiros para a batalha, apoiados por tabernas e hospitais próximos à linha de frente. Dificuldade média. Experimental.
+[ERROR_CANT_LOAD_MAP]
+Não foi possível carregar o mapa: o ficheiro está danificado ou a sua versão é incompatível.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Não foi possível guardar a campanha. Verifica se a pasta de destino existe, permite escrita e tem espaço livre.
+[AICortex]
+Cortex
+[Units still inside: %0]
+Dentro: %0
+[Units still working: %0]
+Ainda a trabalhar: %0
+[2 vs 2]
+2 contra 2
+[AI strategy & counterplay]
+Estratégia e contra-jogo de IA
+[AICastor-Profile]
+Estratégia: Expande com cautela e funciona bem em mapas com poucos recursos.\n\nPontos fortes: A expansão limitada é eficaz em jogos com recursos escassos.\n\nTáticas a experimentar: ocupar o território antecipadamente. Não presuma que a falta de recursos enfraquecerá esta IA.
+[AICastor-Summary]
+Expansão cautelosa; funciona bem com recursos escassos.
+[AICortex-Profile]
+Estratégia: Gere o abastecimento de alimentos, expande-se para novos campos de trigo e reúne sucessivos grupos de guerreiros. Tabernas e hospitais próximos à linha de frente apoiam ataques longe da base.\n\nPontos fortes: Envia reforços em conjunto, mantém a pressão militar e reage à escassez de alimentos.\n\nTáticas a experimentar: Lute pelo controlo de novos campos de trigo e ataque seus edifícios de apoio próximos à linha de frente. Ataque antes que seus grupos de guerreiros estejam prontos.\n\nIA experimental. Dificuldade média; as sugestões táticas não são avaliações baseadas em testes comparativos.
+[AICortex-Summary]
+Expansão atenta aos alimentos e ondas de ataque apoiadas.
+[AINicowar-Profile]
+Estratégia: Expande-se rapidamente e ataca adversários com exércitos enormes.\n\nPontos fortes: A rápida expansão apoia ataques militares agressivos.\n\nTáticas a experimentar: Impedir sua expansão. Use o terreno para reduzir o número de tropas inimigas que podem lutar ao mesmo tempo.
+[AINicowar-Summary]
+Expande-se rapidamente e constrói grandes exércitos para ataques agressivos.
+[AINone-Profile]
+Estratégia: A IA não dá comandos.\n\nPontos fortes: Um oponente previsível e inativo para experiências.\n\nFraquezas: Não se expande nem se adapta.
+[AINone-Summary]
+Uma colónia ociosa para experiências.
+[AINumbi-Profile]
+Estratégia: Expande-se rapidamente, mas em pequena escala. Um oponente mais fácil para praticar o gestão de colónias.\n\nPontos fortes: Permite aprender gestão económica e combate.\n\nTáticas a experimentar: Desenvolva uma economia mais forte e treine seu exército antes de atacar.
+[AINumbi-Summary]
+Expansão rápida em pequena escala.
+[AIEcono-Profile]
+Estratégia: Não ataca, mas constrói bases enormes e converte ativamente as unidades inimigas para o seu próprio lado.\n\nPontos fortes: A expansão e a conversão de unidades ameaçam os oponentes sem ataques diretos.\n\nTáticas a experimentar: Desenvolva sua colónia antecipadamente e evite enviar unidades onde o inimigo possa convertê-las.
+[AIEcono-Summary]
+Enormes bases e conversão em vez de ataques.
+[AIWarrush-Profile]
+Estratégia: Ataca cedo e com força, antes que os oponentes terminem de se preparar.\n\nPontos fortes: Explora a expansão sem defesa e a lenta preparação militar.\n\nTáticas a experimentar: Sobreviva ao primeiro ataque enquanto mantém sua economia e depois contra-ataque.
+[AIWarrush-Summary]
+Ataques rápidos que testam suas defesas iniciais.
+[Algae]
+algas
+[Alliances]
+Alianças
+[Beach size]
+Tamanho da praia
+[Blue]
+Azul
+[Brown]
+Castanho
+[Built-in maps]
+Mapas integrados
+[Can change in game]
+Pode mudar no jogo
+[Closed]
+Fechado
+[Colonies]
+Colónias
+[Colony]
+Colónia
+[Concrete islands]
+Ilhas separadas
+[Conquest only]
+Apenas conquista
+[Conquest or prestige]
+Conquista ou prestígio
+[Could not launch this map. Your setup is retained; try again.]
+Não foi possível iniciar este mapa. Sua configuração é mantida; tente novamente.
+[Could not load this map. Choose another map or retry.]
+Não foi possível carregar este mapa. Escolha outro mapa ou tente novamente.
+[Crater lakes]
+Lagos de cratera
+[Custom]
+Personalizado
+[Custom teams]
+Equipas personalizadas
+[Cyan]
+Ciano
+[Desert weight]
+Peso do deserto
+[Easy]
+Fácil
+[Explore as you play]
+Explore enquanto você joga
+[Extra colony assignments are retained for larger maps.]
+Atribuições de colónias extras são mantidas para mapas maiores.
+[Extra islands]
+Ilhas extras
+[FFA]
+Todos contra todos
+[Fruit]
+Fruta
+[Game Rules]
+Regras do jogo
+[Game speed]
+Velocidade do jogo
+[Generate & play]
+Gerar e jogar
+[Give at least one terrain type a nonzero weight.]
+Dê a pelo menos um tipo de terreno um peso diferente de zero.
+[Grass weight]
+Peso da erva
+[Gray]
+Cinza
+[Green]
+Verde
+[Hard]
+Difícil
+[Height]
+Altura
+[Invalid colony count.]
+Contagem de colónias inválida.
+[Island size]
+Tamanho da ilha
+[Islands]
+Ilhas
+[Isles]
+Ilhéus
+[Lake density]
+Densidade de lagos
+[Landscape]
+Paisagem
+[Last colony standing]
+Última colónia em pé
+[Layout]
+Disposição
+[Locked teams]
+Equipas fixas
+[Magenta]
+Magenta
+[Map]
+Mapa
+[Map knowledge]
+Conhecimento do mapa
+[Match finished]
+Partida encerrada
+[Medium]
+Médio
+[Medium - Experimental]
+Médio - Experimental
+[No AI orders]
+Sem ordens da IA
+[Old islands]
+Ilhas (gerador antigo)
+[Old random]
+Aleatório (gerador antigo)
+[Open at least one colony to start a match.]
+Abra pelo menos uma colónia para iniciar uma partida.
+[Open book]
+Mundo revelado
+[Pink]
+Rosa
+[Play this map]
+Jogue este mapa
+[Players & Teams]
+Jogadores e equipas
+[Premade maps]
+Mapas prontos
+[Preview ready. Start plays this exact map.]
+Visualização pronta. Iniciar o jogo usa exatamente este mapa.
+[Purple]
+Roxo
+[Quick clash]
+Batalha rápida
+[Random map]
+Mapa aleatório
+[Red]
+Vermelho
+[Repeat landscape]
+Repetir paisagem
+[Resources]
+Recursos
+[Restore standard rules]
+Restaurar regras padrão
+[Revealed terrain does not reveal all enemy activity.]
+O terreno revelado não revela toda a atividade inimiga.
+[River]
+Rio
+[River width]
+Largura do rio
+[Sand weight]
+Peso da areia
+[Select a valid map.]
+Selecione um mapa válido.
+[Shared control needs a free controller slot (maximum 12).]
+O controlo partilhado requer uma vaga para um jogador humano ou IA (máximo 12).
+[Smoothing]
+Suavização
+[Standard]
+Padrão
+[Start game]
+Iniciar jogo
+[Starting workers]
+Trabalhadores iniciais
+[Starting workers: Game Rules tab.]
+Trabalhadores iniciais: separador Regras do jogo.
+[Swamp]
+Pântano
+[Team]
+Equipa
+[Terrain]
+Terreno
+[Terrain revealed]
+Terreno revelado
+[Try a ruleset, then make it your own.]
+Experimente um conjunto de regras e depois crie o seu próprio.
+[Victory]
+Vitória
+[Watch game]
+Assistir ao jogo
+[Water weight]
+Peso da água
+[White]
+Branco
+[Width]
+Largura
+[Yellow]
+Amarelo
+[You]
+Tu
+[You + AI]
+Tu + IA
+[You and the AI both issue orders. Uses two controller slots.]
+Tu e a IA dão ordens. Ocupa duas vagas de jogador.
+[You vs all]
+Tu contra todos
+[Your maps]
+Os teus mapas
+[colonies]
+colónias
+[* Changed from standard.]
+* Alterado em relação ao padrão.
+[World & diplomacy]
+Mundo e diplomacia
+[Starting conditions & pace]
+Condições iniciais e ritmo
+[Inactive]
+Inativo
+[8 workers / 2x speed]
+8 trabalhadores / velocidade 2x
+[Changes the pace of the whole simulation.]
+Altera o ritmo de toda a simulação.
+[Choose whether teams can change during the match.]
+Escolha se as equipas podem mudar durante a partida.
+[Classic colony building]
+Desenvolvimento de colónia tradicional
+[Dimensions and colony count are set above.]
+As dimensões e a contagem de colónias estão definidas acima.
+[Generate & watch]
+Gerar e assistir
+[Info]
+Informações
+[Map-defined starting units]
+Unidades iniciais definidas no mapa
+[No maps in this library.]
+Não há mapas nesta biblioteca.
+[Premade maps retain their authored starting units.]
+Os mapas prontos mantêm as unidades iniciais escolhidas pelo autor.
+[Premade: only speed changes (2x)]
+Mapa pronto: só a velocidade muda (2x)
+[Start with terrain known]
+Comece com terreno conhecido
+[This colony will not join the match.]
+Esta colónia não entrará na partida.
+[This landscape uses a fixed terrain recipe.]
+Esta paisagem usa uma composição fixa de terreno.
+[This landscape uses fixed resource placement.]
+Este cenário usa posicionamento fixo de recursos.
+[Win through conquest]
+Ganhe através da conquista
+[You control this colony.]
+Tu controlas esta colónia.
+[controllers]
+jogadores humanos e IA
+[Use]
+Selecione
+[Lime]
+Verde limão
+[Teal]
+Azul-petróleo
+[Azure]
+Azul-celeste
+[Updating map preview...]
+A atualizar a pré-visualização do mapa...
+[Generation failed. Adjust settings or press Start to retry.]
+A geração falhou. Ajuste as configurações ou pressione Iniciar para tentar novamente.
+[Preview unavailable. Adjust settings or start to retry.]
+Visualização indisponível. Altere as configurações ou inicie o jogo para tentar novamente.
+[automatic torus view]
+Vista toroidal automática
+[toggle torus view]
+Alternar vista 2D / toroidal
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 contra 2 requer quatro colónias abertas. Tu contra todos requer um jogador humano.
+[Alliance]
+Aliança
+[Choose a rule to change it.]
+Escolha uma regra para alterá-la.
+[Conquest only removes prestige victory; map scripts still apply.]
+A vitória apenas por conquista desativa a vitória por prestígio; scripts de mapa ainda se aplicam.
+[Control]
+Controlo da colónia
+[Controller]
+Controlada por
+[Generate preview]
+Gerar visualização
+[Generation failed. Adjust settings or try again.]
+A geração falhou. Ajuste as configurações ou tente novamente.
+[Map settings changed. Generate a new preview or start.]
+As configurações do mapa foram alteradas. Gere uma nova visualização ou inicie.
+[Map source]
+Fonte do mapa
+[Map-defined]
+Definido pelo mapa
+[Match format]
+Formato de jogo
+[No current preview]
+Nenhuma visualização atual
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Batalha rápida: velocidade dupla; os mapas gerados começam com 8 trabalhadores.
+[Reroll]
+Gere outro mapa
+[Ruleset]
+Conjunto de regras
+[Select a map from the library.]
+Selecione um mapa da biblioteca.
+[Starting workers affects generated maps only.]
+O número inicial de trabalhadores aplica-se apenas aos mapas gerados.
+[Unavailable]
+Indisponível
+[Use selection]
+Usar seleção
+[Quick clash on premade maps: only speed changes (2x).]
+Batalha rápida em mapas prontos: apenas a velocidade muda (velocidade dupla).
+[Generate a preview to explore this world.]
+Gere uma prévia para explorar este mundo.
+[More workers jump-start colony growth. Changes the generated map.]
+Mais trabalhadores aceleram o crescimento das colónias. Esta configuração altera o mapa gerado.
+[No warriors]
+Sem guerreiros
+[settings Add key to sequence]
+Adicionar tecla à sequência
+[settings Add shortcut]
+Adicionar atalho
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Utilize a roda do rato para alterar o número de unidades atribuídas. Se esta opção estiver desativada, mantenha premida a tecla Ctrl para utilizar a roda. Segure a tecla Shift para ajustar o raio da bandeira. Esta opção também controla a entrada da roda do rato noutros menus.
+[settings Adjust music and voice volume.]
+Ajuste o volume da música e da voz.
+[settings Adjust the pace of play.]
+Ajuste a velocidade do jogo.
+[settings Advanced binding]
+Edição avançada de atalhos
+[settings Artwork & effects]
+Arte e efeitos
+[settings Audio]
+Áudio
+[settings Bind Escape]
+Atribuir a tecla Escape
+[settings Building]
+Edifício
+[settings Building defaults]
+Predefinições dos edifícios
+[settings Cancel]
+Cancelar
+[settings Changes saved automatically]
+Alterações guardadas automaticamente
+[settings Changes you make during play update these defaults for future games.]
+As alterações feitas durante uma partida atualizam estas predefinições para partidas futuras.
+[settings Changing the renderer requires a restart.]
+Alterar o renderizador requer uma reinicialização.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Selecione um atalho de teclado para o editar ou adicione outro atalho para uma ação.
+[settings Choose a window or fill the screen.]
+Escolha entre o modo de janela e o ecrã inteiro.
+[settings Choose how the game looks on your screen.]
+Escolha a aparência do jogo no ecrã.
+[settings Completed]
+Edifícios concluídos
+[settings Construction]
+Construção
+[settings Controls]
+Comandos do jogo
+[settings Could not change display mode. The previous mode was restored.]
+Não foi possível alterar o modo de visualização. O modo anterior foi restaurado.
+[settings Could not save]
+Não foi possível guardar
+[settings Current display]
+Definições de visualização atuais
+[settings Default]
+Predefinido
+[settings Display]
+Ecrã
+[settings Display & graphics]
+Ecrã e gráficos
+[settings Display the Globulation 2 cursor.]
+Mostra o cursor do Globulation 2.
+[settings Done]
+Concluído
+[settings Edit shortcut]
+Editar atalho de teclado
+[settings Flags]
+Bandeiras
+[settings Full]
+Detalhes completos
+[settings Fullscreen]
+Ecrã inteiro
+[settings Game]
+Partida
+[settings Game speed]
+Velocidade do jogo
+[settings Gameplay]
+Jogabilidade
+[settings Graphics detail]
+Detalhe gráfico
+[settings Keep]
+Manter alterações
+[settings Keep this display mode?]
+Manter este modo de visualização?
+[settings Keep your volume levels while silencing audio.]
+Silenciar todo o som sem alterar os níveis de volume guardados.
+[settings Key]
+Tecla
+[settings Keyboard shortcuts]
+Atalhos de teclado
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+As teclas formam uma sequência ordenada. Cada tecla pode ativar a ação ao ser premida ou solta.
+[settings Language]
+Língua
+[settings Language & player]
+Língua e jogador
+[settings Language used throughout the interface.]
+Língua utilizada em toda a interface.
+[settings Level]
+Nível
+[settings Map editor]
+Editor de mapas
+[settings Missing font]
+Fonte ausente
+[settings Music volume]
+Volume (música)
+[settings Mute audio]
+Silenciar áudio
+[settings Name shown to other players.]
+Nome mostrado a outros jogadores.
+[settings Off]
+Desativado
+[settings On]
+Ativado
+[settings OpenGL is not available in this build.]
+O OpenGL não está disponível nesta compilação.
+[settings Player name]
+Nome do jogador
+[settings Press]
+Ao premir
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Prima uma tecla. Escape cancela a captura. Para atribuir Escape, selecione "Atribuir a tecla Escape".
+[settings Radius]
+Raio
+[settings Reduced]
+Detalhe reduzido
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Os detalhes reduzidos desativam as nuvens e as suas sombras, simplificam os efeitos mágicos e reduzem a transparência.
+[settings Release]
+Ao soltar
+[settings Remember assignments between games]
+Memorizar atribuições entre partidas
+[settings Remove key]
+Remover tecla
+[settings Remove shortcut]
+Remover atalho
+[settings Renderer]
+Renderizador gráfico
+[settings Replace conflicting bindings]
+Substituir atalhos em conflito
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Substituir os atalhos deste contexto pelos predefinidos? As alterações são guardadas imediatamente.
+[settings Resolution]
+Resolução do ecrã
+[settings Restore default shortcuts]
+Restaurar atalhos predefinidos
+[settings Retry]
+Tentar novamente
+[settings Revert]
+Reverter alterações
+[settings Reverting in]
+A reverter em
+[settings Save shortcut]
+Guardar atalho de teclado
+[settings Saved — restart required]
+Guardado — é necessário reiniciar
+[settings Saving…]
+A guardar…
+[settings Scroll wheel enabled]
+Roda do rato ativada
+[settings Set starting unit assignments by building type and level.]
+Defina o número inicial de unidades atribuídas por tipo e nível de edifício.
+[settings Set your language and player name.]
+Defina a sua língua e o nome de jogador.
+[settings Settings]
+Opções
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Apenas para um jogador e repetições. As partidas multijogador decorrem a 1x.
+[settings Software]
+Renderização por software
+[settings Starting unit counts and radius for newly placed flags.]
+Número inicial de unidades e raio das novas bandeiras.
+[settings This shortcut conflicts with existing bindings:]
+Este atalho de teclado entra em conflito com os atalhos existentes:
+[settings Trigger]
+Evento de ativação
+[settings Unbound]
+Nenhum atalho atribuído
+[settings Unit counts assigned to new construction sites.]
+Número de unidades atribuídas a novos estaleiros de construção.
+[settings Unit counts for completed buildings.]
+Número de unidades para edifícios concluídos.
+[settings Unit counts while a building is being upgraded.]
+Número de unidades durante a melhoria de um edifício.
+[settings Units]
+Unidades
+[settings Upgrades]
+Melhorias
+[settings Use game cursor]
+Utilizar o cursor do jogo
+[settings Voice volume]
+Volume da voz
+[settings Window mode]
+Modo janela
+[settings Window-only sizes also switch the game to windowed mode.]
+A seleção de uma resolução que suporte apenas o modo de janela também muda o jogo para o modo de janela.
+[settings Windowed]
+Janela
+[settings Windowed only]
+Apenas em janela
+[settings seconds]
+segundos
+[settings Flag]
+Bandeira
+[settings High-resolution artwork]
+Arte em alta resolução
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL).
+[settings Automatic torus view]
+Vista toroidal automática
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Mostrar automaticamente a vista geral toroidal enquanto se desloca pelo mapa (OpenGL).

@@ -42,11 +42,11 @@ namespace AIEcho
 		virtual void handle_message(Echo& echo, const std::string& message)=0;
 	};
 
-	///Reach To Infinity is a simple economic test AI for Echo.
-	class ReachToInfinity : public EchoAI
+	///Econo is a simple economic test AI for Echo.
+	class Econo : public EchoAI
 	{
 	public:
-		ReachToInfinity();
+		Econo();
 		bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 		void save(GAGCore::OutputStream *stream);
 		void tick(Echo& echo);
@@ -54,8 +54,8 @@ namespace AIEcho
 	private:
 		// Tick helpers — each guards on its own timer condition and is invoked
 		// unconditionally from tick(). Implementations are split across
-		// ReachToInfinity.cpp, ReachToInfinityBuilding.cpp, and
-		// ReachToInfinityFlags.cpp; the call order in tick() matches the
+		// Econo.cpp, EconoBuilding.cpp, and
+		// EconoFlags.cpp; the call order in tick() matches the
 		// original sequence of if-blocks.
 		void tick_initial_setup(Echo& echo);
 		void tick_explorer_flags_fruit(Echo& echo);

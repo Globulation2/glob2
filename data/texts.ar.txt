@@ -23,7 +23,7 @@
 [%0 units too low level]
 %0 ﻣﻦ ﺍﻟﻮﺣﺪﺍﺕ ﻣﺴﺘﻮﻳﺎﺗﻬﺎ ﻣﻨﺨﻔﻀﺔ
 [%0% Uploaded]
-%0% uploaded
+ﺗﻢ ﺭﻓﻊ %0%
 [%0's game]
 ﻟﻌﺒﺔ %0
 [%0's team unit got converted to your team]
@@ -66,9 +66,9 @@ V: ﺇﺗﺎﺣﺔ ﺍﻟﺮﺅﻳﺔ ﻟﺠﻤﻴﻊ ﺍﻟﻤﺒﺎﻧﻲ
 ﺍﻷﺧﺮﻕ - ﻳﺘَّﺴﻊ ﺑﺸﻜﻞ ﻗﻠﻴﻞ ﻭﺧﻔﻴﻒ. ﻗﻠﻴﻞ ﺍﻟﺼﻌﻮﺑﺔ.
 [AINumbi]
 ﺃﺧﺮﻕ
-[AIReachToInfinity-Description]
+[AIEcono-Description]
 ﻭﺻﻮﻝﺇﻟﻰﺍﻟﻼﻧﻬﺎﺋﻴﺔ - ﻻ ﻳﻬﺎﺟﻢ، ﻭﻟﻜﻨﻪ ﻳﺒﻨﻲ ﻗﻮﺍﻋﺪ ﻫﺎﺋﻠﺔ ﻭﻳﺤﻮﻝ ﺍﻟﻮﺣﺪﺍﺕ ﺑﻌﻨﻒ. ﻗﻠﻴﻞ ﺍﻟﺼﻌﻮﺑﺔ.
-[AIReachToInfinity]
+[AIEcono]
 ﻭﺻﻮﻝﺇﻟﻰﺍﻟﻼﻧﻬﺎﺋﻴﺔ
 [AIWarrush-Description]
 ﺍﻟﻤﻨﺪﻓﻊ - ﻳﻬﺎﺟﻢ ﺑﺴﺮﻋﺔ ﻭﻗﻮﺓ. ﻏﺎﻟﺒًﺎ ﻣﺎ ﻳﻠﻘﻲ ﺑﺎﻟﻼﻋﺐ ﺍﻟﻤﺪﺍﻓﻊ ﺇﻟﻰ ﻧﻬﺎﻳﺔ ﻟﻌﺒﺘﻪ. ﻣﺘﻮﺳﻂ ﺍﻟﺼﻌﻮﺑﺔ.
@@ -113,7 +113,7 @@ alt-%0
 [awaiting players]
 ﺑﺎﻧﺘﻈﺎﺭ ﺍﻟﻼﻋﺒﻴﻦ
 [away:]
-away:
+بعيدا:
 [Back]
 ﻋُﺪ
 [backspace]
@@ -199,15 +199,15 @@ caps lock
 [closed]
 ﻣﻐﻠﻖ
 [combined vision]
-Combined vision
+ﺭﺅﻳﺔ ﻣﺸﺘﺮﻛﺔ
 [compile]
-ﺍﺟﻤﻊ ﺍﻟﻨﺺ
+ﺗﺮﺟﻤﺔ ﺍﻟﻨﺺ ﺍﻟﺒﺮﻣﺠﻲ
 [compose]
 compose
 [Computing Fertility]
 ﻳﺤﺴﺐ ﺍﻟﺨﺼﻮﺑﺔ
 [concrete islands terrain]
-ﺟُﺰﺭ ﺻﻠﺒﺔ
+ﺟﺰﺭ ﻣﻨﻔﺼﻠﺔ
 [connect]
 ﺍﺗﺼﻞ
 [connecting to game]
@@ -243,7 +243,7 @@ control-%0
 [damage]
 ﺍﻟﻀﺮﺭ
 [Damaged Map]
-ﺧﺎﺭﻃﺔ ﺍﻟﻀﺮﺭ
+ﺧﺮﻳﻄﺔ ﺍﻟﺠﺮﺣﻰ
 [decrease units working]
 ﻗﻠﻞ ﻋﺪﺩ ﺍﻟﻮﺣﺪﺍﺕ ﺍﻟﻌﺎﻣﻠﺔ
 [Defeat Your Oppenents]
@@ -303,7 +303,7 @@ end
 [equals]
 ﻳﺴﺎﻭﻱ
 [ERROR_CANT_LOAD_MAP]
-تعذّر تحميل الخريطة لأن الملف تالف أو من إصدار غير متوافق.
+ﺗﻌﺬﺭ ﺗﺤﻤﻴﻞ ﺍﻟﺨﺮﻳﻄﺔ: ﺍﻟﻤﻠﻒ ﺗﺎﻟﻒ ﺃﻭ ﺇﺻﺪﺍﺭﻩ ﻏﻴﺮ ﻣﺘﻮﺍﻓﻖ.
 [escape]
 escape
 [explorationflag explanation 2]
@@ -365,7 +365,7 @@ F9
 [Free]
 ﺳﻠﻴﻢ
 [free]
-free
+متاح
 [from:]
 ﻣﻦ:
 [fruit]
@@ -401,7 +401,7 @@ free
 [Happyness]
 ﺍﻟﺴﻌﺎﺩﺓ
 [hard pause]
-Hard Pause
+ﺇﻳﻘﺎﻑ ﻣﺆﻗﺖ ﺗﺎﻡ
 [Harvest]
 ﺍﻟﺤﺼﺎﺩ
 [high priority]
@@ -473,13 +473,13 @@ ar
 [Leave Game]
 ﻏﺎﺩﺭ ﺍﻟﻠﻌﺒﺔ
 [left meta]
-left meta
+مفتاح ميتا الأيسر
 [left super]
 ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﺴﺮ
 [left]
 ﻳﺴﺎﺭ
 [Leo: nur ein erster Test]
-test
+اختبار
 [level]
 ﺍﻟﻤﺴﺘﻮﻯ
 [levels]
@@ -545,7 +545,7 @@ test
 [Map Upload: Waiting for reply]
 ﺑﺎﻧﺘﻈﺎﺭ ﺭﺩ
 [mark map]
-Mark Map For Allies
+ﻭﺿﻊ ﻋﻼﻣﺔ ﻋﻠﻰ ﺍﻟﺨﺮﻳﻄﺔ ﻟﻠﺤﻠﻔﺎﺀ
 [market explanation 2]
 ﻣﻊ ﺍﻵﺧﺮﻳﻦ
 [market explanation]
@@ -559,7 +559,7 @@ meta-%0
 [Min required level:]
 ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﺍﻟﻤﻄﻠﻮﺏ:
 [Minimum Level To Flag]
-ﺍﻟﻤﺴﺘﻮﻯ ﺍﻷﺩﻧﻰ ﻟﻠﻌَﻠﻢ
+ﺃﺩﻧﻰ ﻣﺴﺘﻮﻯ ﻟﻠﻮﺣﺪﺍﺕ
 [Music volume]
 ﻣﺴﺘﻮﻯ ﺍﻟﻤﻮﺳﻴﻘﻰ
 [Mute]
@@ -615,7 +615,7 @@ meta-%0
 [On the spot]
 ﻫﻨﺎ
 [on unpress]
-ﻋﻨﺪ ﺭﻓﻊ ﺍﻟﻀﻐﻂ
+ﻋﻨﺪ ﺍﻟﺘﺮﻙ
 [open chat box]
 ﺍﻓﺘﺢ ﺻﻨﺪﻭﻕ ﺍﻟﻤﺤﺎﺩﺛﺔ
 [open load menu]
@@ -675,7 +675,7 @@ print screen
 [priority]
 ﺍﻷﻭﻟﻮﻳﺔ
 [Prune]
-ﺃﺟﺎﺹ
+ﺑﺮﻗﻮﻕ
 [quit the editor]
 ﺍﺧﺮﺝ ﻣﻦ ﺍﻟﻤﺤﺮﺭ
 [quit the game]
@@ -703,7 +703,7 @@ print screen
 [Register]
 ﺳﺠِّﻞ
 [remember unit]
-ﺗﺬﻛَّﺮ ﺍﻟﻮﺣﺪﺓ
+ﺣﻔﻆ ﺃﻋﺪﺍﺩ ﺍﻟﻮﺣﺪﺍﺕ
 [Remember YOG password localy]
 ﺗﺬﻛَّﺮ ﻛﻠﻤﺔ ﺍﻟﺴﺮ ﻣﺤﻠﻴًﺎ.
 [remove map]
@@ -733,7 +733,7 @@ print screen
 [return]
 enter
 [right meta]
-right meta
+مفتاح ميتا الأيمن
 [right super]
 ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﻤﻦ
 [right]
@@ -849,7 +849,7 @@ shift-%0
 [show main menu]
 ﺃﻇﻬﺮ ﺍﻟﻘﺎﺋﻤﺔ ﺍﻟﺮﺋﻴﺴﻴﺔ
 [skin]
-Display
+ﺍﻟﻌﺮﺽ
 [smoothing]
 ﺍﻟﺘﻨﻌﻴﻢ
 [sort by name]
@@ -887,7 +887,7 @@ Display
 [stone]
 ﺣﺠﺮ
 [stonewall explanation 2]
-ﻣﻨﻔﺬ
+ﺳﻠﺒﻲ
 [stonewall explanation]
 ﻋﻨﺼﺮ ﺩﻓﺎﻋﻲ
 [stonewall]
@@ -959,17 +959,17 @@ tab
 [the building is under attack]
 ﻳﺘﻌﺮﺽ ﺑﻨﺎء ﻟﻠﻬﺠﻮﻡ!
 [the clearingflag is finished]
-?? clearingflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ.
 [the clearingflag is under attack]
-?? clearingflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ ﻟﻠﻬﺠﻮﻡ.
 [the defencetower is finished]
 ﺗﻢ ﺑﻨﺎء ﺑﺮﺝ ﺩﻓﺎﻉ
 [the defencetower is under attack]
 ﺗﺘﻌﺮﺽ ﺩﻓﺎﻋﺎﺗﻚ ﻟﻠﻬﺠﻮﻡ!
 [the explorationflag is finished]
-?? explorationflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ.
 [the explorationflag is under attack]
-?? explorationflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻻﺳﺘﻜﺸﺎﻑ ﻟﻠﻬﺠﻮﻡ.
 [The game has not been finished]
 ﻟﻢ ﺗﻨﺘﻪِ ﺍﻟﻠﻌﺒﺔ
 [the games]
@@ -1017,15 +1017,15 @@ tab
 [the swimmingpool is under attack]
 ﺗﺘﻌﺮﺽ ﺑﺮﻛﺔ ﺳﺒﺎﺣﺔ ﻟﻠﻬﺠﻮﻡ!
 [the warflag is finished]
-?? warflag finished ??
+ﺗﻢ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺤﺮﺏ.
 [the warflag is under attack]
-?? warflag under attack ??
+ﻳﺘﻌﺮﺽ ﻋﻠﻢ ﺍﻟﺤﺮﺏ ﻟﻠﻬﺠﻮﻡ.
 [time]
 ﺍﻟﻮﻗﺖ
 [to:]
 ﺇﻟﻰ:
 [toggle draw accessibility aids]
-ﺑﺪِّﻝ ﻭﺿﻊ ﻣﺴﺎﻋِﺪﺍﺕ ﺍﻹﺗﺎﺣﺔ
+ﺇﻇﻬﺎﺭ ﺃﺭﻗﺎﻡ ﺍﻟﻔﺮﻕ ﺃﻭ ﺇﺧﻔﺎﺅﻫﺎ
 [toggle draw information]
 ﺑﺪِّﻝ ﻭﺿﻊ ﺍﻟﻤﻌﻠﻮﻣﺎﺕ
 [toggle draw unit paths]
@@ -1055,7 +1055,7 @@ tab
 [tutorial]
 ﺍﻟﺘﺪﺭﻳﺐ
 [Uncontrolled]
-Uncontrolled
+ﺑﻼ ﺗﺤﻜﻢ
 [undo]
 ﺗﺮﺍﺟﻊ
 [uniform terrain]
@@ -1091,7 +1091,7 @@ Uncontrolled
 [Version]
 ﺍﻟﻨﺴﺨﺔ
 [view history]
-View History
+ﻋﺮﺽ ﺍﻟﺴﺠﻞ
 [Voice volume]
 ﻣﺴﺘﻮﻯ ﺍﻟﺼﻮﺕ
 [waiting for %0]
@@ -1204,3 +1204,563 @@ View History
 ﺗﺤﻮﻟﺖ ﻭﺣﺪﺗﻚ ﺇﻟﻰ ﻓﺮﻳﻖ %0
 [Your username was banned]
 ﺣُﻈﺮ ﺍﺳﻢ ﺍﻟﻤﺴﺘﺨﺪﻡ ﺍﻟﺨﺎﺹ ﺑﻚ. ﻳُﺮﺟﻰ ﺍﻟﺘﻮﺍﺻﻞ ﻣﻊ ﺍﻟﻤﺪﺭﺍء ﻟﺘﻐﻴﻴﺮ ﻫﺬﺍ.
+[game speed]
+ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+[decrease game speed]
+ﺧﻔﺾ ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+[increase game speed]
+ﺯﻳﺎﺩﺓ ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+[maximum game speed]
+ﺍﻟﻘﺼﻮﻯ
+[multiplayer game speed]
+ﺍﻟﺴﺮﻋﺔ: 1x (ﻟﻌﺐ ﺟﻤﺎﻋﻲ)
+[game speed help]
+ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
+[AICortex-Description]
+تتوسع Cortex نحو حقول القمح الجديدة وترسل مجموعات من المحاربين إلى المعركة، مدعومين بالنزل والمستشفيات القريبة من خط المواجهة. صعوبة متوسطة. تجريبي.
+[ERROR_CANT_SAVE_CAMPAIGN]
+ﺗﻌﺬﺭ ﺣﻔﻆ ﺍﻟﺤﻤﻠﺔ. ﺗﺤﻘﻖ ﻣﻦ ﻭﺟﻮﺩ ﺍﻟﻤﺠﻠﺪ ﺍﻟﻮﺟﻬﺔ ﻭﺇﻣﻜﺎﻧﻴﺔ ﺍﻟﻜﺘﺎﺑﺔ ﻓﻴﻪ ﻭﺗﻮﻓﺮ ﻣﺴﺎﺣﺔ ﺧﺎﻟﻴﺔ.
+[AICortex]
+Cortex
+[Units still inside: %0]
+ﺑﺎﻟﺪﺍﺧﻞ: %0
+[Units still working: %0]
+ﻭﺣﺪﺍﺕ ﻻ ﺗﺰﺍﻝ ﺗﻌﻤﻞ: %0
+[2 vs 2]
+2 مقابل 2
+[AI strategy & counterplay]
+استراتيجية الذكاء الاصطناعي وطرق مواجهته
+[AICastor-Profile]
+الإستراتيجية: تتوسع بحذر وتعمل بشكل جيد على الخرائط بموارد قليلة.\n\nنقاط القوة: التوسع المحدود فعال في الألعاب ذات الموارد النادرة.\n\nاقتراح للمواجهة: احتلال الأراضي مبكرًا. لا تفترض أن نقص الموارد سيضعف هذا الذكاء الاصطناعي.
+[AICastor-Summary]
+توسع حذر وأداء جيد مع ندرة الموارد.
+[AICortex-Profile]
+الإستراتيجية: إدارة الإمدادات الغذائية والتوسع نحو حقول القمح الجديدة وتجميع مجموعات متتالية من المحاربين. تدعم النزل والمستشفيات القريبة من خط المواجهة الهجمات البعيدة عن القاعدة.\n\nنقاط القوة: يرسل التعزيزات معًا ويحافظ على الضغط العسكري ويتفاعل مع نقص الغذاء.\n\nاقتراح للمواجهة: القتال من أجل السيطرة على حقول القمح الجديدة ومهاجمة المباني الداعمة لها بالقرب من خط المواجهة. قم بالهجوم قبل أن تصبح مجموعات المحاربين جاهزة.\n\nذكاء اصطناعي تجريبي بصعوبة متوسطة. اقتراحات المواجهة ليست تقييمات أداء معيارية.
+[AICortex-Summary]
+توسع يراعي الغذاء وموجات هجوم مدعومة.
+[AINicowar-Profile]
+الإستراتيجية: تتوسع بسرعة وتهاجم المعارضين بجيوش هائلة.\n\nنقاط القوة: التوسع السريع يدعم الهجمات العسكرية العدوانية.\n\nاقتراح للمواجهة: منع توسعه. استخدم التضاريس لتقليل عدد قوات العدو التي يمكنها القتال في وقت واحد.
+[AINicowar-Summary]
+يتوسع بسرعة ويبني جيوشًا كبيرة لشن هجمات عدوانية.
+[AINone-Profile]
+الاستراتيجية: لا يصدر الذكاء الاصطناعي أي أوامر.\n\nنقاط القوة: خصم خامل يمكن توقع سلوكه لإجراء التجارب.\n\nنقاط الضعف: لا يتوسع ولا يتكيف.
+[AINone-Summary]
+مستعمرة خاملة للتجارب.
+[AINumbi-Profile]
+الإستراتيجية: تتوسع بسرعة ولكن على نطاق صغير. خصم أسهل لممارسة إدارة المستعمرة.\n\nنقاط القوة: تتيح لك تعلم الإدارة الاقتصادية والقتال.\n\nاقتراح للمواجهة: قم بتطوير اقتصاد أقوى وقم بتدريب جيشك قبل الهجوم.
+[AINumbi-Summary]
+التوسع السريع على نطاق صغير.
+[AIEcono-Profile]
+الإستراتيجية: لا تهاجم، ولكنها تبني قواعد هائلة وتحول وحدات العدو بشكل فعال إلى جانبها.\n\nنقاط القوة: التوسع وتحويل الوحدات يهدد الخصوم دون شن هجمات مباشرة.\n\nاقتراح للمواجهة: قم بتطوير مستعمرتك مبكرًا وتجنب إرسال الوحدات حيث يمكن للعدو تحويلها.
+[AIEcono-Summary]
+قواعد ضخمة واستمالة وحدات العدو بدلًا من الهجوم.
+[AIWarrush-Profile]
+الاستراتيجية: يهاجم بسرعة وقوة قبل أن يكمل الخصوم استعداداتهم.\n\nنقاط القوة: يستغل التوسع غير المحمي وبطء الاستعداد العسكري.\n\nاقتراح للمواجهة: اصمد أمام الهجوم الأول مع الحفاظ على اقتصادك، ثم شن هجومًا مضادًا.
+[AIWarrush-Summary]
+هجمات سريعة تختبر دفاعاتك المبكرة.
+[Algae]
+ﻃﺤﺎﻟﺐ
+[Alliances]
+ﺍﻟﺘﺤﺎﻟﻔﺎﺕ
+[Beach size]
+حجم الشاطئ
+[Blue]
+أزرق
+[Brown]
+بني
+[Built-in maps]
+الخرائط المضمنة
+[Can change in game]
+يمكن أن تتغير في اللعبة
+[Closed]
+مغلق
+[Colonies]
+المستعمرات
+[Colony]
+مستعمرة
+[Concrete islands]
+جزر منفصلة
+[Conquest only]
+الفتح فقط
+[Conquest or prestige]
+الفتح أو الهيبة
+[Could not launch this map. Your setup is retained; try again.]
+تعذر تشغيل هذه الخريطة. يتم الاحتفاظ بالإعداد الخاص بك؛ حاول ثانية.
+[Could not load this map. Choose another map or retry.]
+تعذر تحميل هذه الخريطة. اختر خريطة أخرى أو أعد المحاولة.
+[Crater lakes]
+بحيرات الحفرة
+[Custom]
+مخصص
+[Custom teams]
+فرق مخصصة
+[Cyan]
+سماوي
+[Desert weight]
+نسبة الصحراء
+[Easy]
+سهل
+[Explore as you play]
+استكشف أثناء اللعب
+[Extra colony assignments are retained for larger maps.]
+تُحفظ إعدادات المستعمرات الزائدة لاستعادتها عند اختيار خريطة أكبر.
+[Extra islands]
+جزر اضافية
+[FFA]
+الجميع ضد الجميع
+[Fruit]
+الفاكهة
+[Game Rules]
+قواعد اللعبة
+[Game speed]
+سرعة اللعبة
+[Generate & play]
+إنشاء ولعب
+[Give at least one terrain type a nonzero weight.]
+قم بإعطاء نوع واحد من التضاريس على الأقل وزنًا غير صفري.
+[Grass weight]
+نسبة العشب
+[Gray]
+رمادي
+[Green]
+أخضر
+[Hard]
+صعب
+[Height]
+الارتفاع
+[Invalid colony count.]
+عدد المستعمرات غير صالح.
+[Island size]
+حجم الجزيرة
+[Islands]
+جزر
+[Isles]
+جزر صغيرة
+[Lake density]
+كثافة البحيرة
+[Landscape]
+المناظر الطبيعية
+[Last colony standing]
+آخر مستعمرة باقية
+[Layout]
+التخطيط
+[Locked teams]
+فرق مغلقة
+[Magenta]
+أرجواني
+[Map]
+خريطة
+[Map knowledge]
+المعرفة بالخريطة
+[Match finished]
+انتهت المباراة
+[Medium]
+متوسط
+[Medium - Experimental]
+متوسطة - تجريبية
+[No AI orders]
+لا توجد أوامر الذكاء الاصطناعي
+[Old islands]
+الجزر القديمة
+[Old random]
+عشوائية قديمة
+[Open at least one colony to start a match.]
+افتح مستعمرة واحدة على الأقل لبدء المباراة.
+[Open book]
+عالم مكشوف
+[Pink]
+وردي
+[Play this map]
+العب هذه الخريطة
+[Players & Teams]
+اللاعبون والفرق
+[Premade maps]
+خرائط مسبقة الصنع
+[Preview ready. Start plays this exact map.]
+المعاينة جاهزة. بدء اللعبة يستخدم هذه الخريطة الدقيقة.
+[Purple]
+بنفسجي
+[Quick clash]
+معركة سريعة
+[Random map]
+خريطة عشوائية
+[Red]
+أحمر
+[Repeat landscape]
+كرر المشهد
+[Resources]
+الموارد
+[Restore standard rules]
+استعادة القواعد القياسية
+[Revealed terrain does not reveal all enemy activity.]
+كشف التضاريس لا يكشف جميع أنشطة العدو.
+[River]
+ﻧﻬﺮ
+[River width]
+عرض النهر
+[Sand weight]
+نسبة الرمال
+[Select a valid map.]
+حدد خريطة صالحة.
+[Shared control needs a free controller slot (maximum 12).]
+يتطلب التحكم المشترك خانة شاغرة لمتحكم إضافي (الحد الأقصى 12).
+[Smoothing]
+تنعيم
+[Standard]
+قياسي
+[Start game]
+ابدأ اللعبة
+[Starting workers]
+عمال البداية
+[Starting workers: Game Rules tab.]
+عمال البداية: تبويب قواعد اللعبة.
+[Swamp]
+ﻣﺴﺘﻨﻘﻊ
+[Team]
+فريق
+[Terrain]
+التضاريس
+[Terrain revealed]
+تضاريس مكشوفة
+[Try a ruleset, then make it your own.]
+جرب مجموعة القواعد، ثم اجعلها خاصة بك.
+[Victory]
+النصر
+[Watch game]
+مشاهدة اللعبة
+[Water weight]
+نسبة الماء
+[White]
+أبيض
+[Width]
+العرض
+[Yellow]
+أصفر
+[You]
+أنت
+[You + AI]
+أنت + الذكاء الاصطناعي
+[You and the AI both issue orders. Uses two controller slots.]
+يمكنك أنت والذكاء الاصطناعي إصدار الأوامر. يستهلك ذلك خانتين للمتحكمين.
+[You vs all]
+أنت ضد الجميع
+[Your maps]
+خرائطك
+[colonies]
+مستعمرات
+[* Changed from standard.]
+* تم التغيير من المعيار.
+[World & diplomacy]
+العالم والدبلوماسية
+[Starting conditions & pace]
+ظروف البداية والسرعة
+[Inactive]
+غير نشط
+[8 workers / 2x speed]
+8 عمال / 2x السرعة
+[Changes the pace of the whole simulation.]
+يغير وتيرة المحاكاة بأكملها.
+[Choose whether teams can change during the match.]
+اختر ما إذا كان يمكن للفرق التغيير أثناء المباراة.
+[Classic colony building]
+تطوير المستعمرة التقليدية
+[Dimensions and colony count are set above.]
+تم تحديد الأبعاد وعدد المستعمرات أعلاه.
+[Generate & watch]
+توليد ومشاهدة
+[Info]
+معلومات
+[Map-defined starting units]
+وحدات البداية المحددة بالخريطة
+[No maps in this library.]
+لا توجد خرائط في هذه المكتبة.
+[Premade maps retain their authored starting units.]
+تحتفظ الخرائط الجاهزة بوحدات البداية التي حددها مؤلفها.
+[Premade: only speed changes (2x)]
+خرائط جاهزة: تتغير السرعة فقط (2x)
+[Start with terrain known]
+ابدأ بالتضاريس المعروفة
+[This colony will not join the match.]
+هذه المستعمرة لن تنضم إلى المباراة.
+[This landscape uses a fixed terrain recipe.]
+يستخدم هذا المشهد وصفة تضاريس ثابتة.
+[This landscape uses fixed resource placement.]
+يستخدم هذا المشهد وضع الموارد الثابتة.
+[Win through conquest]
+الفوز من خلال الفتح
+[You control this colony.]
+يمكنك التحكم في هذه المستعمرة.
+[controllers]
+متحكمون
+[Use]
+اختر
+[Lime]
+أخضر ليموني
+[Teal]
+أزرق مخضر
+[Azure]
+أزرق سماوي
+[Updating map preview...]
+جارٍ تحديث معاينة الخريطة...
+[Generation failed. Adjust settings or press Start to retry.]
+فشل إنشاء الخريطة. عدّل الإعدادات أو اضغط على ابدأ للمحاولة مجددًا.
+[Preview unavailable. Adjust settings or start to retry.]
+المعاينة غير متاحة. قم بتغيير الإعدادات أو قم بتشغيل اللعبة للمحاولة مرة أخرى.
+[automatic torus view]
+عرض الطارة تلقائيًا
+[toggle torus view]
+التبديل بين العرض ثنائي الأبعاد والطارة
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+يتطلب نمط 2 مقابل 2 أربع مستعمرات مشاركة. ويتطلب نمط أنت ضد الجميع لاعبًا بشريًا.
+[Alliance]
+التحالف
+[Choose a rule to change it.]
+اختر قاعدة لتغييرها.
+[Conquest only removes prestige victory; map scripts still apply.]
+انتصار الغزو فقط يعطل انتصار الهيبة؛ لا تزال البرامج النصية للخريطة مطبقة.
+[Control]
+السيطرة على المستعمرة
+[Controller]
+المتحكم
+[Generate preview]
+إنشاء المعاينة
+[Generation failed. Adjust settings or try again.]
+فشل إنشاء الخريطة. عدّل الإعدادات أو حاول مجددًا.
+[Map settings changed. Generate a new preview or start.]
+تم تغيير إعدادات الخريطة. قم بإنشاء معاينة جديدة أو ابدأ.
+[Map source]
+مصدر الخريطة
+[Map-defined]
+محددة بالخريطة
+[Match format]
+شكل اللعبة
+[No current preview]
+لا توجد معاينة حاليًا
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+معركة سريعة: سرعة مضاعفة؛ تبدأ الخرائط التي تم إنشاؤها بـ 8 عمال.
+[Reroll]
+إنشاء خريطة أخرى
+[Ruleset]
+مجموعة القواعد
+[Select a map from the library.]
+اختر خريطة من المكتبة.
+[Starting workers affects generated maps only.]
+ينطبق العدد الأولي للعمال فقط على الخرائط التي تم إنشاؤها.
+[Unavailable]
+غير متاح
+[Use selection]
+استخدم التحديد
+[Quick clash on premade maps: only speed changes (2x).]
+معركة سريعة على الخرائط المعدة مسبقًا: تتغير السرعة فقط (سرعة مضاعفة).
+[Generate a preview to explore this world.]
+قم بإنشاء معاينة لاستكشاف هذا العالم.
+[More workers jump-start colony growth. Changes the generated map.]
+زيادة العمال تسرّع نمو المستعمرة في البداية. يغيّر هذا الإعداد الخريطة المنشأة.
+[No warriors]
+بلا محاربين
+[settings Add key to sequence]
+إضافة مفتاح إلى التسلسل
+[settings Add shortcut]
+ﺃﺿِﻒ ﺍﺧﺘﺼﺎﺭًﺍ
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+استخدم عجلة الماوس لتغيير عدد الوحدات المخصصة. إذا تم إيقاف تشغيل هذا الخيار، فاضغط باستمرار على مفتاح Ctrl لاستخدام العجلة. اضغط مع الاستمرار على مفتاح Shift لضبط نصف قطر العلم. يتحكم هذا الخيار أيضًا في إدخال عجلة الماوس في القوائم الأخرى.
+[settings Adjust music and voice volume.]
+اضبط مستوى صوت الموسيقى والكلام.
+[settings Adjust the pace of play.]
+ضبط سرعة اللعبة.
+[settings Advanced binding]
+إعداد متقدم للاختصار
+[settings Artwork & effects]
+الرسومات والمؤثرات
+[settings Audio]
+ﺍﻟﺼﻮﺕ
+[settings Bind Escape]
+تعيين مفتاح Escape
+[settings Building]
+مبنى
+[settings Building defaults]
+الإعدادات الافتراضية للمباني
+[settings Cancel]
+ﺃﻟﻎِ
+[settings Changes saved automatically]
+تُحفظ التغييرات تلقائيًا
+[settings Changes you make during play update these defaults for future games.]
+تعمل التغييرات التي تجريها أثناء اللعب على تحديث هذه الإعدادات الافتراضية للألعاب المستقبلية.
+[settings Changing the renderer requires a restart.]
+يتطلب تغيير العارض إعادة التشغيل.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+حدد اختصار لوحة المفاتيح لتحريره، أو قم بإضافة اختصار آخر لإجراء ما.
+[settings Choose a window or fill the screen.]
+اختر وضع النافذة أو ملء الشاشة.
+[settings Choose how the game looks on your screen.]
+اختر كيف تبدو اللعبة على شاشتك.
+[settings Completed]
+المباني المكتملة
+[settings Construction]
+قيد الإنشاء
+[settings Controls]
+التحكم
+[settings Could not change display mode. The previous mode was restored.]
+لا يمكن تغيير وضع العرض. تمت استعادة الوضع السابق.
+[settings Could not save]
+لا يمكن الحفظ
+[settings Current display]
+إعدادات العرض الحالية
+[settings Default]
+الافتراضي
+[settings Display]
+ﺍﻟﻌﺮﺽ
+[settings Display & graphics]
+العرض والرسومات
+[settings Display the Globulation 2 cursor.]
+عرض مؤشر Globulation 2.
+[settings Done]
+تم
+[settings Edit shortcut]
+تحرير اختصار لوحة المفاتيح
+[settings Flags]
+أعلام
+[settings Full]
+التفاصيل الكاملة
+[settings Fullscreen]
+ﻣﻞء ﺍﻟﺸﺎﺷﺔ
+[settings Game]
+ﺍﻟﻠﻌﺒﺔ
+[settings Game speed]
+ﺳﺮﻋﺔ ﺍﻟﻠﻌﺒﺔ
+[settings Gameplay]
+أسلوب اللعب
+[settings Graphics detail]
+تفاصيل الرسومات
+[settings Keep]
+احتفظ بالتغييرات
+[settings Keep this display mode?]
+هل تريد الاحتفاظ بوضع العرض هذا؟
+[settings Keep your volume levels while silencing audio.]
+كتم الصوت بالكامل دون تغيير مستويات الصوت المحفوظة.
+[settings Key]
+مفتاح
+[settings Keyboard shortcuts]
+اختصارات لوحة المفاتيح
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+تشكّل المفاتيح تسلسلاً حسب ترتيبها. يمكن تفعيل كل خطوة عند الضغط على مفتاحها أو إفلاته.
+[settings Language]
+ﺍﻟﻠﻐﺔ
+[settings Language & player]
+اللغة واللاعب
+[settings Language used throughout the interface.]
+اللغة المستخدمة في جميع أنحاء الواجهة.
+[settings Level]
+ﺍﻟﻤﺴﺘﻮﻯ
+[settings Map editor]
+محرر الخرائط
+[settings Missing font]
+الخط مفقود
+[settings Music volume]
+ﻣﺴﺘﻮﻯ ﺍﻟﻤﻮﺳﻴﻘﻰ
+[settings Mute audio]
+كتم الصوت
+[settings Name shown to other players.]
+الاسم الموضح للاعبين الآخرين.
+[settings Off]
+معطّل
+[settings On]
+مفعّل
+[settings OpenGL is not available in this build.]
+OpenGL غير متوفر في هذا الإصدار.
+[settings Player name]
+ﺍﺳﻢ ﺍﻟﻼﻋﺐ
+[settings Press]
+ضغط المفتاح
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+اضغط على مفتاح. يلغي Escape تسجيل المفتاح. لتعيين Escape، اختر «تعيين مفتاح Escape».
+[settings Radius]
+نصف القطر
+[settings Reduced]
+تفاصيل مخفضة
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+يؤدي تقليل التفاصيل إلى تعطيل السحب وظلالها، وتبسيط التأثيرات السحرية، وتقليل الشفافية.
+[settings Release]
+إفلات المفتاح
+[settings Remember assignments between games]
+تذكّر أعداد الوحدات المخصصة بين الألعاب
+[settings Remove key]
+إزالة مفتاح لوحة المفاتيح
+[settings Remove shortcut]
+ﺃﺯِﻝ ﺍﻻﺧﺘﺼﺎﺭ
+[settings Renderer]
+عارض الرسومات
+[settings Replace conflicting bindings]
+استبدال اختصارات لوحة المفاتيح المتعارضة
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+هل تريد استبدال الاختصارات في هذا السياق بالاختصارات الافتراضية؟ سيتم الحفظ فورًا.
+[settings Resolution]
+دقة الشاشة
+[settings Restore default shortcuts]
+ﺍﺳﺘﻌﺪ ﺍﻻﺧﺘﺼﺎﺭﺍﺕ ﺍﻻﻓﺘﺮﺍﺿﻴﺔ ﻟﻠﻮﺣﺔ ﺍﻟﻤﻔﺎﺗﻴﺢ
+[settings Retry]
+حاول مرة أخرى
+[settings Revert]
+التراجع عن التغييرات
+[settings Reverting in]
+الرجوع خلال
+[settings Save shortcut]
+حفظ اختصار لوحة المفاتيح
+[settings Saved — restart required]
+تم الحفظ — يلزم إعادة التشغيل
+[settings Saving…]
+جارٍ الحفظ…
+[settings Scroll wheel enabled]
+ﻋﺠﻠﺔ ﺍﻟﻔﺄﺭﺓ ﻣﺘﺎﺣﺔ
+[settings Set starting unit assignments by building type and level.]
+حدد عدد الوحدات المخصصة في البداية حسب نوع المبنى ومستواه.
+[settings Set your language and player name.]
+اضبط لغتك واسم اللاعب.
+[settings Settings]
+ﺍﻹﻋﺪﺍﺩﺍﺕ
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+ﻟﻠﻌﺐ ﺍﻟﻔﺮﺩﻱ ﻭﺍﻹﻋﺎﺩﺍﺕ ﻓﻘﻂ. ﻳﻌﻤﻞ ﺍﻟﻠﻌﺐ ﺍﻟﺠﻤﺎﻋﻲ ﺑﺴﺮﻋﺔ 1x.
+[settings Software]
+تصيير برمجي
+[settings Starting unit counts and radius for newly placed flags.]
+العدد الأولي للوحدات ونصف القطر للأعلام الموضوعة حديثًا.
+[settings This shortcut conflicts with existing bindings:]
+يتعارض اختصار لوحة المفاتيح هذا مع الاختصارات الموجودة:
+[settings Trigger]
+حدث التنشيط
+[settings Unbound]
+لم يتم تعيين اختصار
+[settings Unit counts assigned to new construction sites.]
+عدد الوحدات المخصصة لمواقع البناء الجديدة.
+[settings Unit counts for completed buildings.]
+عدد الوحدات المخصصة للمباني المكتملة.
+[settings Unit counts while a building is being upgraded.]
+عدد الوحدات المخصصة للمبنى أثناء ترقيته.
+[settings Units]
+وحدات
+[settings Upgrades]
+ترقية المباني
+[settings Use game cursor]
+استخدم مؤشر اللعبة
+[settings Voice volume]
+ﻣﺴﺘﻮﻯ ﺍﻟﺼﻮﺕ
+[settings Window mode]
+وضع النافذة
+[settings Window-only sizes also switch the game to windowed mode.]
+يؤدي اختيار دقة مخصصة لوضع النافذة فقط إلى تحويل اللعبة إلى وضع النافذة أيضًا.
+[settings Windowed]
+وضع النافذة
+[settings Windowed only]
+وضع النافذة فقط
+[settings seconds]
+ثوانٍ
+[settings Flag]
+علم
+[settings High-resolution artwork]
+رسومات عالية الدقة
+[settings Apply artwork on the next game or editor load (OpenGL).]
+تُطبّق الرسومات عند تحميل اللعبة أو محرر الخرائط في المرة القادمة (OpenGL).
+[settings Automatic torus view]
+عرض الطارة تلقائيًا
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).

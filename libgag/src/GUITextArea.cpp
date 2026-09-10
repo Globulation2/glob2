@@ -103,6 +103,7 @@ namespace GAGGUI
 		assert(parent);
 		assert(parent->getSurface());
 		
+		Style::style->drawFieldBackground(parent->getSurface(), x, y, w, h);
 		HighlightableWidget::paint();
 		
 		areaHeight=(h-8)/charHeight;

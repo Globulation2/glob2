@@ -16,7 +16,6 @@ public:
 	enum kindOfMap {SWAMP=0,ISLANDS=1,RIVER=2,CRATERS=3,RANDOM=4};
 	
 	HeightMap(unsigned int width, unsigned int height);
-	HeightMap(unsigned int width, unsigned int height, unsigned int playerCount, unsigned int kind);
 	~HeightMap();
 	inline unsigned int uiLevel(unsigned int i, unsigned int scale) {
 		return (unsigned int)(_map[i]*scale);
@@ -46,7 +45,6 @@ private:
 	void init(unsigned int width, unsigned int height);
 	void makeStamp(unsigned int radius); /// generates the stamp (smooth 0 to 1 gradient lookup to generate craters, islands and rivers)
 	inline void lower(unsigned int coordX, unsigned int coordY); /// lower lowers the region around (coordX,coordY) to min(stamp,map)
-	inline void maxRise(unsigned int coordX, unsigned int coordY); /// rise rises the region around (coordX,coordY) to max(1-stamp,map)
 	inline void differenceStamp(unsigned int coordX, unsigned int coordY); /// multiplyStamp sets the region around (coordX,coordY) to (1-stamp)*map if map>0 and to 1-stamp else to bias away from other hills.
 	inline void addNoise(float weight, float smoothingFactor); /// adds noise to the map: map=noise*weight+map*(1-weight)
 	void stampOutput(char * filename); /// generates the file ~/.glob2/filename and writes the raw 0..255 values of stamp to it. to see it, use convert -size [width]x[height] -depth 8 gray:[filename] test.png where with==height as _stamp is always a square

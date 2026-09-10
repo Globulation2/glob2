@@ -40,7 +40,6 @@ bool NetRegisterRouter::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetRegisterRouter))
 	{
-		//const NetRegisterRouter& r = dynamic_cast<const NetRegisterRouter&>(rhs);
 		return true;
 	}
 	return false;
@@ -79,7 +78,6 @@ bool NetAcknowledgeRouter::operator==(const NetMessage& rhs) const
 {
 	if(typeid(rhs)==typeid(NetAcknowledgeRouter))
 	{
-		//const NetAcknowledgeRouter& r = dynamic_cast<const NetAcknowledgeRouter&>(rhs);
 		return true;
 	}
 	return false;

@@ -38,14 +38,21 @@ namespace GAGGUI
 		// a word wider than the area is broken wherever it overflows
 		auto breakLongWord = [&]()
 		{
-			for (unsigned c=0; c<lastWord.size(); ++c)
+			if (!lastLine.empty())
+				lastLine += " ";
+			for (unsigned c=0; c<lastWord.size();)
 			{
-				lastLine += lastWord[c];
-				if (getStringWidth(lastLine) >= length)
+				unsigned next = c+1;
+				while (next < lastWord.size() && (static_cast<unsigned char>(lastWord[next]) & 0xC0) == 0x80)
+					++next;
+				const std::string character = lastWord.substr(c, next-c);
+				if (!lastLine.empty() && getStringWidth(lastLine + character) > length)
 				{
 					wrapAt(pos-lastWord.size()+c);
 					lastLine.clear();
 				}
+				lastLine += character;
+				c = next;
 			}
 		};
 		
@@ -82,7 +89,7 @@ namespace GAGGUI
 				{
 					int actLineLength = getStringWidth(lastLine);
 					int actWordLength = getStringWidth(lastWord);
-					if (actWordLength+actLineLength+spaceLength >= length)
+					if (!lastWord.empty() && actWordLength+actLineLength+spaceLength >= length)
 					{
 						if (actWordLength+spaceLength >= length)
 						{
@@ -118,8 +125,10 @@ namespace GAGGUI
 		int actWordLength = getStringWidth(lastWord);
 		if (actWordLength+actLineLength+spaceLength >= length)
 		{
-			pushFrame();
-			lines.push_back(pos-lastWord.size());
+			if (actWordLength+spaceLength >= length)
+				breakLongWord();
+			else if (!lastWord.empty())
+				wrapAt(pos-lastWord.size());
 		}
 		
 		if (cursorPosY >= lines.size())

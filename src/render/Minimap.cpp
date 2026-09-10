@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2022-2023 Nathan Mills
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -121,22 +122,23 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 	convertToScreen(viewportX, viewportY, startx, starty);
 	convertToScreen(viewportX + viewportW, viewportY + viewportH, endx, endy);
 
-	for (int n=startx; n!=endx;)
+	// Wrapped endpoints coincide for a complete period. Use the extent to
+	// distinguish a full-width/height viewport from an empty one.
+	if (viewportW >= game->map.getW()) { startx = mini_x; endx = mini_x + mini_w - 1; }
+	if (viewportH >= game->map.getH()) { starty = mini_y; endy = mini_y + mini_h - 1; }
+	const int spanX = (endx - startx + mini_w) % mini_w;
+	const int spanY = (endy - starty + mini_h) % mini_h;
+	for (int i=0; i<spanX; ++i)
 	{
+		const int n = mini_x + (startx - mini_x + i) % mini_w;
 		globalContainer->gfx->drawPixel(n, starty, 255, 255, 255);
 		globalContainer->gfx->drawPixel(n, endy, 255, 255, 255);
-		
-		n+=1;
-		if(n == (mini_x + mini_w))
-			n = mini_x;
 	}
-	for (int n=starty; n!=endy;)
+	for (int i=0; i<spanY; ++i)
 	{
+		const int n = mini_y + (starty - mini_y + i) % mini_h;
 		globalContainer->gfx->drawPixel(startx, n, 255, 255, 255);
 		globalContainer->gfx->drawPixel(endx, n, 255, 255, 255);
-		n+=1;
-		if(n == (mini_y + mini_h))
-			n = mini_y;
 	}
 	///The lines are out of alignment, so a single pixel in the bottom right hand of the square
 	///is never drawn
@@ -158,6 +160,7 @@ void Minimap::draw(int localteam, int viewportX, int viewportY, int viewportW, i
 bool Minimap::insideMinimap(int x, int y)
 {
 	if (noX) return false;
+	computeMinimapPositioning();
 
 	if(x > (mini_x) && x < (mini_x + mini_w)
 			&& y > (mini_y) && y < (mini_y + mini_h))
@@ -170,6 +173,7 @@ bool Minimap::insideMinimap(int x, int y)
 void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 {
 	if (noX) return;
+	computeMinimapPositioning();
 
 	int xpos = nx - mini_x;
 	int ypos = ny - mini_y;
@@ -182,6 +186,7 @@ void Minimap::convertToMap(int nx, int ny, int& x, int& y)
 void Minimap::convertToScreen(int nx, int ny, int& x, int& y)
 {
 	if (noX) return;
+	computeMinimapPositioning();
 
 	int xpos = game->map.normalizeX(nx - offset_x);
 	int ypos = game->map.normalizeY(ny - offset_y);
@@ -209,6 +214,7 @@ void Minimap::setMinimapMode(MinimapMode mode)
 void Minimap::computeMinimapPositioning()
 {
 	if (noX) return;
+	gameWidth = globalContainer->gfx->getW();
 	
 	if(game->map.getW() > game->map.getH())
 	{
@@ -292,7 +298,7 @@ void Minimap::computeColors(int row, int localTeam)
 	bool useMapDiscovered = (minimapMode == HideFOW);
 
 	Uint32 visibleTeams = game->teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	const int dy = row;
 	for (int dx=0; dx<szX; dx++)

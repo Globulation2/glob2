@@ -16,6 +16,7 @@ class ScrollWheelTargetTest: public CPPUNIT_NS::TestCase
 {
 CPPUNIT_TEST_SUITE(ScrollWheelTargetTest);
 		CPPUNIT_TEST(testEnabledNoShiftIsWorkers);
+		CPPUNIT_TEST(testAltIsNeverBuildingOrder);
 		CPPUNIT_TEST(testEnabledShiftIsStayRange);
 		CPPUNIT_TEST(testEnabledCtrlIrrelevant);
 		CPPUNIT_TEST(testDisabledCtrlIsWorkers);
@@ -25,6 +26,12 @@ CPPUNIT_TEST_SUITE(ScrollWheelTargetTest);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
+	void testAltIsNeverBuildingOrder()
+	{
+		for(bool shift:{false,true})for(bool ctrl:{false,true})for(bool enabled:{false,true})
+			CPPUNIT_ASSERT(scrollWheelTarget(shift,ctrl,enabled,true)==ScrollWheelTarget::None);
+	}
+
 	// Setting ON: no SHIFT scrolls the assigned-worker count.
 	void testEnabledNoShiftIsWorkers(void)
 	{

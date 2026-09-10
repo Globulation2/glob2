@@ -27,7 +27,7 @@
 [%0's game]
 %0's Game
 [%0's team unit got converted to your team]
-%0's team unit got converted to your team
+A unit from %0's team has joined your team
 [abreaviation explanation A]
 A: Allies
 [abreaviation explanation C]
@@ -55,7 +55,7 @@ Castor plays a conservative game and does very well on maps with few resources. 
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex - Experimental three-layer AI. Work in progress.
+Cortex expands toward fresh wheat and sends supported warrior waves, using forward inns and hospitals. Medium difficulty. Experimental.
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -70,10 +70,10 @@ None
 Numbi - Expands lightly, and swiftly. Easy Difficulty.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Does not attack, but builds monstrous bases and aggressively converts units. Easy Difficulty.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Does not attack, but builds monstrous bases and aggressively converts units. Easy Difficulty.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]
@@ -211,7 +211,7 @@ compose
 [Computing Fertility]
 Computing Fertility
 [concrete islands terrain]
-Concrete Islands
+Separate Islands
 [connect]
 Connect
 [connecting to game]
@@ -247,7 +247,7 @@ Custom cursor
 [damage]
 Damage
 [Damaged Map]
-Damaged Map
+Wounded Units Map
 [decrease game speed]
 Decrease Game Speed
 [decrease units working]
@@ -371,9 +371,7 @@ Food
 [forbidden area]
 Forbidden area
 [Free]
-Ok
-[free]
-free
+Healthy
 [free]
 free
 [from:]
@@ -432,8 +430,6 @@ Hospital
 Host a game
 [hp]
 HP
-[hp]
-Hitpoint
 [Human]
 Human
 [human]
@@ -441,7 +437,7 @@ human
 [hungry]
 hungry
 [hungryness]
-Hungriness
+Hunger
 [In way]
 On the way
 [increase game speed]
@@ -575,7 +571,7 @@ meta-%0
 [Min required level:]
 Minimum required level:
 [Minimum Level To Flag]
-Minimum Flag Level
+Min. unit level
 [Music volume]
 Volume (music)
 [Mute]
@@ -631,7 +627,7 @@ On Press
 [On the spot]
 Here
 [on unpress]
-On Unpress
+On release
 [open chat box]
 Open Chat Box
 [open load menu]
@@ -719,7 +715,7 @@ Refresh Map List
 [Register]
 Register
 [remember unit]
-Remember Unit
+Remember unit counts
 [Remember YOG password localy]
 Remember the password locally.
 [remove map]
@@ -845,7 +841,7 @@ Select Swarm
 [select swimmingpool building]
 Select Swimming Pool
 [select tower building]
-Select Defence Tower
+Select Defense Tower
 [select wall building]
 Select Wall
 [select warflag]
@@ -967,25 +963,25 @@ Teams Fixed
 [teams]
  teams
 [the barracks is finished]
-The training camp is finished.
+The barracks is finished.
 [the barracks is under attack]
-The training camp is under attack.
+The barracks is under attack.
 [the building is finished]
 The building is finished.
 [the building is under attack]
 The building is under attack.
 [the clearingflag is finished]
-?? clearingflag finished ??
+Clearing flag placed.
 [the clearingflag is under attack]
-?? clearingflag under attack ??
+Clearing flag is under attack.
 [the defencetower is finished]
 The defense tower is finished.
 [the defencetower is under attack]
-Your defenses are under attack.
+The defense tower is under attack.
 [the explorationflag is finished]
-?? explorationflag finished ??
+Exploration flag placed.
 [the explorationflag is under attack]
-?? explorationflag under attack ??
+Exploration flag is under attack.
 [The game has not been finished]
 The game has not been finished.
 [the games]
@@ -1033,23 +1029,21 @@ The swimming pool is finished.
 [the swimmingpool is under attack]
 The swimming pool is under attack.
 [the warflag is finished]
-?? warflag finished ??
+War flag placed.
 [the warflag is under attack]
-?? warflag under attack ??
+War flag is under attack.
 [time]
 Time
 [to:]
 to:
 [toggle draw accessibility aids]
-Toggle Draw Accessibility Aids
+Toggle team numbers
 [toggle draw information]
 Toggle Draw Information
 [toggle draw unit paths]
 Toggle Draw Unit Paths
 [toggle menu screen]
 Toggle Menu Screen
-[toggle recording voice]
-Initiate Voice Recording
 [toggle recording voice]
 Toggle Recording Voice
 [Total Attack Power]
@@ -1065,11 +1059,11 @@ Total
 [tutorial text 1]
 Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!
 [tutorial text 2]
-Now that you have mastered the basics, its time to get used to other buildings such as Racetracks, Pools, and Schools.
+Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.
 [tutorial text 3]
-You have done well to get this far. Now let's move onto Warriors, Training Camps, and Upgrades.
+You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.
 [tutorial text 4]
-You are almost complete. Just flags, and attacking left. Then you'll know enough to venture forward into Custom Games and eventually play online against some of Globulation 2's finest players.
+You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players.
 [tutorial]
 Tutorial
 [Uncontrolled]
@@ -1145,9 +1139,9 @@ Wheat
 [Won : you defeated your opponents]
 Won: you defeated your opponents
 [Won : you have the most prestige]
-Won: you have the biggest prestige
+Won: you have the most prestige
 [Won : your ally %0 has the most prestige]
-Won: your ally %0 has the biggest prestige
+Won: your ally %0 has the most prestige
 [Wood]
 Wood
 [wood]
@@ -1156,8 +1150,6 @@ wood
 Worker Ratio
 [Worker]
 Worker
-[workers]
-Workers
 [workers]
 workers
 [working]
@@ -1217,11 +1209,11 @@ You have won!
 [You where kicked from the game]
 You were kicked from the game
 [Your %0 are under attack]
-Your %0 are under attack
+Your %0 is under attack
 [Your IP address was temporarily banned]
 Your IP address was temporarily banned. Please wait patiently until it is unbanned or contact the administrators.
 [Your unit got converted to %0's team]
-Your unit got converted to %0's team
+Your unit has joined %0's team
 [Your username was banned]
 Your username was banned. Please contact the administrators to have this changed.
 [game speed help]
@@ -1230,3 +1222,545 @@ Single-player and replays only. Multiplayer runs at 1x.
 Maximum
 [multiplayer game speed]
 Game speed: 1x (multiplayer)
+[Units still inside: %0]
+Still inside: %0
+[Units still working: %0]
+Still working: %0
+[2 vs 2]
+2 vs 2
+[AI strategy & counterplay]
+AI strategy & counterplay
+[AICastor-Profile]
+Core strategy: Develops conservatively and handles maps with few resources well.\n\nStrengths: Restrained growth suits scarce-resource matches.\n\nCounterplay to try: Claim space early; do not assume that scarce resources will cripple it.
+[AICastor-Summary]
+Conservative growth; comfortable with scarce resources.
+[AICortex-Profile]
+Core strategy: Manages food supply, expands toward fresh wheat, and gathers successive warrior waves. Forward inns and hospitals support distant attacks.\n\nStrengths: Grouped reinforcements, sustained pressure, and responses to food shortages.\n\nCounterplay to try: Contest fresh wheat and forward support; apply pressure before its waves form.\n\nExperimental AI. Medium difficulty; counterplay suggestions are not benchmark ratings.
+[AICortex-Summary]
+Food-aware growth and supported attack waves.
+[AINicowar-Profile]
+Core strategy: Grows large quickly and sends huge armies at its opponents.\n\nStrengths: Rapid expansion supports aggressive military pressure.\n\nCounterplay to try: Contest its expansion and use terrain to limit how much of its army can engage.
+[AINicowar-Summary]
+Rapid expansion into large, aggressive armies.
+[AINone-Profile]
+Core strategy: Issues no AI orders.\n\nStrengths: A predictable idle opponent for experiments.\n\nWeaknesses: Does not expand or adapt.
+[AINone-Summary]
+An idle colony for experiments.
+[AINumbi-Profile]
+Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
+[AINumbi-Summary]
+Light, swift expansion.
+[AIEcono-Profile]
+Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
+[AIEcono-Summary]
+Huge bases and conversion instead of attacks.
+[AIWarrush-Profile]
+Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
+[AIWarrush-Summary]
+Fast attacks that test your early defenses.
+[Algae]
+Algae
+[Alliances]
+Alliances
+[Beach size]
+Beach size
+[Blue]
+Blue
+[Brown]
+Brown
+[Built-in maps]
+Built-in maps
+[Can change in game]
+Can change in game
+[Closed]
+Closed
+[Colonies]
+Colonies
+[Colony]
+Colony
+[Concrete islands]
+Concrete islands
+[Conquest only]
+Conquest only
+[Conquest or prestige]
+Conquest or prestige
+[Could not launch this map. Your setup is retained; try again.]
+Could not launch this map. Your setup is retained; try again.
+[Could not load this map. Choose another map or retry.]
+Could not load this map. Choose another map or retry.
+[Crater lakes]
+Crater lakes
+[Custom]
+Custom
+[Custom teams]
+Custom teams
+[Cyan]
+Cyan
+[Desert weight]
+Desert weight
+[Easy]
+Easy
+[Explore as you play]
+Explore as you play
+[Extra colony assignments are retained for larger maps.]
+Extra colony assignments are retained for larger maps.
+[Extra islands]
+Extra islands
+[FFA]
+FFA
+[Fruit]
+Fruit
+[Game Rules]
+Game Rules
+[Game speed]
+Game speed
+[Generate & play]
+Generate & play
+[Give at least one terrain type a nonzero weight.]
+Give at least one terrain type a nonzero weight.
+[Grass weight]
+Grass weight
+[Gray]
+Gray
+[Green]
+Green
+[Hard]
+Hard
+[Height]
+Height
+[Invalid colony count.]
+Invalid colony count.
+[Island size]
+Island size
+[Islands]
+Islands
+[Isles]
+Isles
+[Lake density]
+Lake density
+[Landscape]
+Landscape
+[Last colony standing]
+Last colony standing
+[Layout]
+Layout
+[Locked teams]
+Locked teams
+[Magenta]
+Magenta
+[Map]
+Map
+[Map knowledge]
+Map knowledge
+[Match finished]
+Match finished
+[Medium]
+Medium
+[Medium - Experimental]
+Medium - Experimental
+[No AI orders]
+No AI orders
+[Old islands]
+Old islands
+[Old random]
+Old random
+[Open at least one colony to start a match.]
+Open at least one colony to start a match.
+[Open book]
+Open book
+[Pink]
+Pink
+[Play this map]
+Play this map
+[Players & Teams]
+Players & Teams
+[Premade maps]
+Premade maps
+[Preview ready. Start plays this exact map.]
+Preview ready. Start plays this exact map.
+[Purple]
+Purple
+[Quick clash]
+Quick clash
+[Random map]
+Random map
+[Red]
+Red
+[Repeat landscape]
+Repeat landscape
+[Resources]
+Resources
+[Restore standard rules]
+Restore standard rules
+[Revealed terrain does not reveal all enemy activity.]
+Revealed terrain does not reveal all enemy activity.
+[River]
+River
+[River width]
+River width
+[Sand weight]
+Sand weight
+[Select a valid map.]
+Select a valid map.
+[Shared control needs a free controller slot (maximum 12).]
+Shared control needs a free controller slot (maximum 12).
+[Smoothing]
+Smoothing
+[Standard]
+Standard
+[Start game]
+Start game
+[Starting workers]
+Starting workers
+[Starting workers: Game Rules tab.]
+Starting workers: Game Rules tab.
+[Swamp]
+Swamp
+[Team]
+Team
+[Terrain]
+Terrain
+[Terrain revealed]
+Terrain revealed
+[Try a ruleset, then make it your own.]
+Try a ruleset, then make it your own.
+[Victory]
+Victory
+[Watch game]
+Watch game
+[Water weight]
+Water weight
+[White]
+White
+[Width]
+Width
+[Yellow]
+Yellow
+[You]
+You
+[You + AI]
+You + AI
+[You and the AI both issue orders. Uses two controller slots.]
+You and the AI both issue orders. Uses two controller slots.
+[You vs all]
+You vs all
+[Your maps]
+Your maps
+[colonies]
+colonies
+[* Changed from standard.]
+* Changed from standard.
+[World & diplomacy]
+World & diplomacy
+[Starting conditions & pace]
+Starting conditions & pace
+[Inactive]
+Inactive
+[8 workers / 2x speed]
+8 workers / 2x speed
+[Changes the pace of the whole simulation.]
+Changes the pace of the whole simulation.
+[Choose whether teams can change during the match.]
+Choose whether teams can change during the match.
+[Classic colony building]
+Classic colony building
+[Dimensions and colony count are set above.]
+Dimensions and colony count are set above.
+[Generate & watch]
+Generate & watch
+[Info]
+Info
+[Map-defined starting units]
+Map-defined starting units
+[No maps in this library.]
+No maps in this library.
+[Premade maps retain their authored starting units.]
+Premade maps retain their authored starting units.
+[Premade: only speed changes (2x)]
+Premade: only speed changes (2x)
+[Start with terrain known]
+Start with terrain known
+[This colony will not join the match.]
+This colony will not join the match.
+[This landscape uses a fixed terrain recipe.]
+This landscape uses a fixed terrain recipe.
+[This landscape uses fixed resource placement.]
+This landscape uses fixed resource placement.
+[Win through conquest]
+Win through conquest
+[You control this colony.]
+You control this colony.
+[controllers]
+controllers
+[Use]
+Use
+[Lime]
+Lime
+[Teal]
+Teal
+[Azure]
+Azure
+[Updating map preview...]
+Updating map preview...
+[Generation failed. Adjust settings or press Start to retry.]
+Generation failed. Adjust settings or press Start to retry.
+[Preview unavailable. Adjust settings or start to retry.]
+Preview unavailable. Adjust settings or start to retry.
+[automatic torus view]
+Automatic torus view
+[toggle torus view]
+Toggle 2D / torus view
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 vs 2 needs four open colonies. You vs all needs a human.
+[Alliance]
+Alliance
+[Choose a rule to change it.]
+Choose a rule to change it.
+[Conquest only removes prestige victory; map scripts still apply.]
+Conquest only removes prestige victory; map scripts still apply.
+[Control]
+Control
+[Controller]
+Controller
+[Generate preview]
+Generate preview
+[Generation failed. Adjust settings or try again.]
+Generation failed. Adjust settings or try again.
+[Map settings changed. Generate a new preview or start.]
+Map settings changed. Generate a new preview or start.
+[Map source]
+Map source
+[Map-defined]
+Map-defined
+[Match format]
+Match format
+[No current preview]
+No current preview
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Quick clash: 2x speed; generated maps start with 8 workers.
+[Reroll]
+Reroll
+[Ruleset]
+Ruleset
+[Select a map from the library.]
+Select a map from the library.
+[Starting workers affects generated maps only.]
+Starting workers affects generated maps only.
+[Unavailable]
+Unavailable
+[Use selection]
+Use selection
+[Quick clash on premade maps: only speed changes (2x).]
+Quick clash on premade maps: only speed changes (2x).
+[Generate a preview to explore this world.]
+Generate a preview to explore this world.
+[More workers jump-start colony growth. Changes the generated map.]
+More workers jump-start colony growth. Changes the generated map.
+[No warriors]
+No warriors
+[settings Add key to sequence]
+Add key to sequence
+[settings Add shortcut]
+Add shortcut
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.
+[settings Adjust music and voice volume.]
+Adjust music and voice volume.
+[settings Adjust the pace of play.]
+Adjust the pace of play.
+[settings Advanced binding]
+Advanced binding
+[settings Artwork & effects]
+Artwork & effects
+[settings Audio]
+Audio
+[settings Bind Escape]
+Bind Escape
+[settings Building]
+Building
+[settings Building defaults]
+Building defaults
+[settings Cancel]
+Cancel
+[settings Changes saved automatically]
+Changes saved automatically
+[settings Changes you make during play update these defaults for future games.]
+Changes you make during play update these defaults for future games.
+[settings Changing the renderer requires a restart.]
+Changing the renderer requires a restart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Choose a binding to change it, or add another shortcut for an action.
+[settings Choose a window or fill the screen.]
+Choose a window or fill the screen.
+[settings Choose how the game looks on your screen.]
+Choose how the game looks on your screen.
+[settings Completed]
+Completed
+[settings Construction]
+Construction
+[settings Controls]
+Controls
+[settings Could not change display mode. The previous mode was restored.]
+Could not change display mode. The previous mode was restored.
+[settings Could not save]
+Could not save
+[settings Current display]
+Current display
+[settings Default]
+Default
+[settings Display]
+Display
+[settings Display & graphics]
+Display & graphics
+[settings Display the Globulation 2 cursor.]
+Display the Globulation 2 cursor.
+[settings Done]
+Done
+[settings Edit shortcut]
+Edit shortcut
+[settings Flags]
+Flags
+[settings Full]
+Full
+[settings Fullscreen]
+Fullscreen
+[settings Game]
+Game
+[settings Game speed]
+Game speed
+[settings Gameplay]
+Gameplay
+[settings Graphics detail]
+Graphics detail
+[settings Keep]
+Keep
+[settings Keep this display mode?]
+Keep this display mode?
+[settings Keep your volume levels while silencing audio.]
+Keep your volume levels while silencing audio.
+[settings Key]
+Key
+[settings Keyboard shortcuts]
+Keyboard shortcuts
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Keys form a sequence in order. Each key can trigger on press or release.
+[settings Language]
+Language
+[settings Language & player]
+Language & player
+[settings Language used throughout the interface.]
+Language used throughout the interface.
+[settings Level]
+Level
+[settings Map editor]
+Map editor
+[settings Missing font]
+Missing font
+[settings Music volume]
+Music volume
+[settings Mute audio]
+Mute audio
+[settings Name shown to other players.]
+Name shown to other players.
+[settings Off]
+Off
+[settings On]
+On
+[settings OpenGL is not available in this build.]
+OpenGL is not available in this build.
+[settings Player name]
+Player name
+[settings Press]
+Press
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Press a key. Escape cancels capture. Use Bind Escape to assign Escape.
+[settings Radius]
+Radius
+[settings Reduced]
+Reduced
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.
+[settings Release]
+Release
+[settings Remember assignments between games]
+Remember assignments between games
+[settings Remove key]
+Remove key
+[settings Remove shortcut]
+Remove shortcut
+[settings Renderer]
+Renderer
+[settings Replace conflicting bindings]
+Replace conflicting bindings
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Replace shortcuts in this context with the defaults? This saves immediately.
+[settings Resolution]
+Resolution
+[settings Restore default shortcuts]
+Restore default shortcuts
+[settings Retry]
+Retry
+[settings Revert]
+Revert
+[settings Reverting in]
+Reverting in
+[settings Save shortcut]
+Save shortcut
+[settings Saved — restart required]
+Saved — restart required
+[settings Saving…]
+Saving…
+[settings Scroll wheel enabled]
+Scroll wheel enabled
+[settings Set starting unit assignments by building type and level.]
+Set starting unit assignments by building type and level.
+[settings Set your language and player name.]
+Set your language and player name.
+[settings Settings]
+Settings
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Single-player and replays only. Multiplayer runs at 1x.
+[settings Software]
+Software
+[settings Starting unit counts and radius for newly placed flags.]
+Starting unit counts and radius for newly placed flags.
+[settings This shortcut conflicts with existing bindings:]
+This shortcut conflicts with existing bindings:
+[settings Trigger]
+Trigger
+[settings Unbound]
+Unbound
+[settings Unit counts assigned to new construction sites.]
+Unit counts assigned to new construction sites.
+[settings Unit counts for completed buildings.]
+Unit counts for completed buildings.
+[settings Unit counts while a building is being upgraded.]
+Unit counts while a building is being upgraded.
+[settings Units]
+Units
+[settings Upgrades]
+Upgrades
+[settings Use game cursor]
+Use game cursor
+[settings Voice volume]
+Voice volume
+[settings Window mode]
+Window mode
+[settings Window-only sizes also switch the game to windowed mode.]
+Window-only sizes also switch the game to windowed mode.
+[settings Windowed]
+Windowed
+[settings Windowed only]
+Windowed only
+[settings seconds]
+seconds
+[settings Flag]
+Flag
+[settings High-resolution artwork]
+High-resolution artwork
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Apply artwork on the next game or editor load (OpenGL).
+[settings Automatic torus view]
+Automatic torus view
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Automatically show the torus overview while moving around the map (OpenGL).

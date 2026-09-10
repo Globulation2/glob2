@@ -1,7 +1,10 @@
+#include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2022-2023 Nathan Mills
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
+#include "../../render/MapCopies.h"
 #include <FormatableString.h>
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -13,9 +16,57 @@
 #include "FertilityCalculatorDialog.h"
 #include "SDLCompat.h"
 
+void MapEdit::draw(Uint64 frameTick)
+{
+	drawMap(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
+
+	drawMenu();
+	drawMiniMap();
+	wasMinimapRendered=false;
+	drawWidgets();
+	if(showingMenuScreen)
+	{
+		globalContainer->gfx->setClipRect();
+		menuScreen->dispatchTimer(frameTick);
+		menuScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)menuScreen->decX, (int)menuScreen->decY, menuScreen->getSurface());
+	}
+	if(showingLoad || showingSave)
+	{
+		globalContainer->gfx->setClipRect();
+		loadSaveScreen->dispatchTimer(frameTick);
+		loadSaveScreen->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)loadSaveScreen->decX, (int)loadSaveScreen->decY, loadSaveScreen->getSurface());
+	}
+	if(showingScriptEditor)
+	{
+		globalContainer->gfx->setClipRect();
+		scriptEditor->dispatchTimer(frameTick);
+		scriptEditor->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)scriptEditor->decX, (int)scriptEditor->decY, scriptEditor->getSurface());
+	}
+	if(showingTeamsEditor)
+	{
+		globalContainer->gfx->setClipRect();
+		teamsEditor->dispatchTimer(frameTick);
+		teamsEditor->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)teamsEditor->decX, (int)teamsEditor->decY, teamsEditor->getSurface());
+	}
+	if(isShowingAreaName)
+	{
+		globalContainer->gfx->setClipRect();
+		areaName->dispatchTimer(frameTick);
+		areaName->dispatchPaint();
+		globalContainer->gfx->drawSurface((int)areaName->decX, (int)areaName->decY, areaName->getSurface());
+	}
+}
+
 void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 {
-	globalContainer->gfx->setClipRect(sx, sy, sw, sh);
+	updateCamera();
+	globalContainer->gfx->setClipRect();
+	globalContainer->gfx->drawFilledRect(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH(),0,0,32);
+	globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));
 
 	Uint32 drawOptions = Game::DRAW_WHOLE_MAP | Game::DRAW_BUILDING_RECT | Game::DRAW_AREA | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_SCRIPT_AREAS | Game::DRAW_NO_RESOURCE_GROWTH_AREAS;
 	if(isFertilityOn)
@@ -23,9 +74,32 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		drawOptions |= Game::DRAW_OVERLAY;
 	}
 
-	game.drawMap(sx, sy, sw, sh, RIGHT_MENU_WIDTH, 16, viewportX, viewportY, team, view, drawOptions);
+	game.drawMap(0, 0, int(std::ceil(camera.visibleW()+camera.fractionX())), int(std::ceil(camera.visibleH()+camera.fractionY())), 0, 0, viewportX, viewportY, team, view, drawOptions);
 
-	if(widgetRectangle(sx, sy, sw, sh).is_in(mouseX, mouseY))
+	if(selectionMode==EditingBuilding && camera.contains(mouseX,mouseY) && mouseY>=16)
+	{
+		Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
+		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
+		int centerX, centerY;
+		// Map editor mutates buildings directly — no orderQueue, no pending shadow.
+		// Use the authoritative position straight from the Building.
+		game.map.buildingPosToCursor(selBuild->posX, selBuild->posY,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
+		const int radius = selBuild->type->width*16;
+		forEachMapCopy(centerX-radius, centerY-radius, centerX+radius, centerY+radius,
+			game.map.getW()*32, game.map.getH()*32, game.map.displayViewportW,
+			game.map.displayViewportH, [&](int dx, int dy) {
+			if (selBuild->owner->teamNumber==team)
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 0, 0, 190);
+			else if ((game.teams[team]->allies) & (selBuild->owner->me))
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 255, 196, 0);
+			else if (!selBuild->type->isVirtual)
+				globalContainer->gfx->drawCircle(centerX+dx, centerY+dy, selBuild->type->width*16, 190, 0, 0);
+		});
+		globalContainer->gfx->setClipRect();
+	}
+
+globalContainer->gfx->drawMapCopies(game.map.getW()*32,game.map.getH()*32,game.map.displayViewportW,game.map.displayViewportH,[&](){
+	if(camera.contains(mouseX,mouseY) && mouseY>=16)
 	{
 		// BrushTool treats -1 as "no stroke origin" for checkerboard parity alignment
 		const int firstX = firstPlacement ? firstPlacement->x : -1;
@@ -33,37 +107,25 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 		if(selectionMode==PlaceBuilding)
 			drawBuildingSelectionOnMap();
 		if(selectionMode==PlaceZone)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
 		if(selectionMode==PlaceTerrain)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY, (terrainType>TerrainSelector::Water ? 0 : 1));
 		if(selectionMode==PlaceUnit)
 			drawPlacingUnitOnMap();
 		if(selectionMode==RemoveObject)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
-		if(selectionMode==EditingBuilding)
-		{
-			Building* selBuild=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)];
-			globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
-			int centerX, centerY;
-			// Map editor mutates buildings directly — no orderQueue, no pending shadow.
-			// Use the authoritative position straight from the Building.
-			game.map.buildingPosToCursor(selBuild->posX, selBuild->posY,  selBuild->type->width, selBuild->type->height, &centerX, &centerY, viewportX, viewportY);
-			if (selBuild->owner->teamNumber==team)
-				globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 0, 0, 190);
-			else if ((game.teams[team]->allies) & (selBuild->owner->me))
-				globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 255, 196, 0);
-			else if (!selBuild->type->isVirtual)
-				globalContainer->gfx->drawCircle(centerX, centerY, selBuild->type->width*16, 190, 0, 0);
-			globalContainer->gfx->setClipRect();
-		}
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
+
 		if(selectionMode==ChangeAreas)
 		{
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
 		}
 		if(selectionMode==ChangeNoResourceGrowthAreas)
-			brush.drawBrush(mouseX, mouseY, viewportX, viewportY, firstX, firstY);
+			brush.drawBrush(int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32)), int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32)), viewportX, viewportY, firstX, firstY);
 	}
 
+});
+	globalContainer->gfx->endMapTransform();
+	drawMapZoomControls(camera);
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 }
 
@@ -71,7 +133,7 @@ void MapEdit::drawMap(int sx, int sy, int sw, int sh)
 
 void MapEdit::drawMiniMap(void)
 {
-	minimap.draw(team, viewportX, viewportY, (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/32, globalContainer->gfx->getH()/32 );
+	minimap.draw(team, viewportX, viewportY, int(std::ceil(camera.visibleW()/32)), int(std::ceil(camera.visibleH()/32)) );
 }
 
 
@@ -101,12 +163,12 @@ void MapEdit::drawBuildingSelectionOnMap()
 			typeNum = globalContainer->buildingsTypes.getTypeNum(selectionName, 0, false);
 		BuildingType *bt = globalContainer->buildingsTypes.get(typeNum);
 		Sprite *sprite = bt->gameSpritePtr;
-		
+
 		// we translate dimensions and situation
 		int tempX, tempY;
 		int mapX, mapY;
 		bool isRoom;
-		game.map.cursorToBuildingPos(mouseX, mouseY, bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
+		game.map.cursorToBuildingPos(mapMouseX(mouseX), mapMouseY(mouseY), bt->width, bt->height, &tempX, &tempY, viewportX, viewportY);
 		if (bt->isVirtual)
 			isRoom = game.checkRoomForBuilding(tempX, tempY, bt, &mapX, &mapY, team);
 		else
@@ -117,13 +179,13 @@ void MapEdit::drawBuildingSelectionOnMap()
 		int rectH = sprite->getH(bt->gameSpriteImage);
 		int rectX = (((mapX-viewportX)&(game.map.wMask))<<5);
 		int rectY = (((mapY-viewportY)&(game.map.hMask))<<5)-(rectH-(bt->height<<5));
-		
+
 		// we draw the building
 		sprite->setBaseColor(game.teams[team]->color);
 		globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH());
 		int spriteIntensity = 127;
 		globalContainer->gfx->drawSprite(rectX, rectY, sprite, bt->gameSpriteImage, spriteIntensity);
-		
+
 		if (!bt->isVirtual)
 		{
 			if (game.teams[team]->noMoreBuildingSitesCountdown>0)
@@ -131,7 +193,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 				globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(rectX, rectY, rectX+rectW-1, rectY+rectH-1, 255, 0, 0, 127);
 				globalContainer->gfx->drawLine(rectX+rectW-1, rectY, rectX, rectY+rectH-1, 255, 0, 0, 127);
-				
+
 				globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0, 127));
 				globalContainer->gfx->drawString(rectX, rectY-12, globalContainer->littleFont, FormattableString("%0.%1").arg(game.teams[team]->noMoreBuildingSitesCountdown/40).arg((game.teams[team]->noMoreBuildingSitesCountdown%40)/4).c_str());
 				globalContainer->littleFont->popStyle();
@@ -142,7 +204,7 @@ void MapEdit::drawBuildingSelectionOnMap()
 					globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 255, 255, 127);
 				else
 					globalContainer->gfx->drawRect(rectX, rectY, rectW, rectH, 255, 0, 0, 127);
-				
+
 				BuildingType *upgradedType=globalContainer->buildingsTypes.getLastLevel(typeNum);
 				int upgradedMapX, upgradedMapY;
 				bool isUpgradedRoom = game.checkHardRoomForBuilding(tempX, tempY, upgradedType, &upgradedMapX, &upgradedMapY);
@@ -185,9 +247,11 @@ bool MapEdit::isUpgradable(int buildingLevel)
 
 void MapEdit::drawMenuEyeCandy()
 {
+	globalContainer->gfx->endMapTransform();
+	drawMapZoomControls(camera);
 	globalContainer->gfx->setClipRect(0, 0, globalContainer->gfx->getW(), globalContainer->gfx->getH());
 
-	// bar background 
+	// bar background
 	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX)
 		globalContainer->gfx->drawFilledRect(0, 0, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, 16, 0, 0, 0);
 	else
@@ -216,14 +280,14 @@ void MapEdit::drawPlacingUnitOnMap()
 		type=WARRIOR;
 	else if(placingUnit==Explorer)
 		type=EXPLORER;
-	
-	int level=placingUnitLevel;
-	
-	int cx=(mouseX>>5)+viewportX;
-	int cy=(mouseY>>5)+viewportY;
 
-	int px=mouseX&0xFFFFFFE0;
-	int py=mouseY&0xFFFFFFE0;
+	int level=placingUnitLevel;
+
+	int cx=((mapMouseX(mouseX)>>5)+viewportX)&game.map.getMaskW();
+	int cy=((mapMouseY(mouseY)>>5)+viewportY)&game.map.getMaskH();
+
+	int px=int(MapCamera::wrap(mapMouseX(mouseX),game.map.getW()*32))&0xFFFFFFE0;
+	int py=int(MapCamera::wrap(mapMouseY(mouseY),game.map.getH()*32))&0xFFFFFFE0;
 	int pw=32;
 	int ph=32;
 

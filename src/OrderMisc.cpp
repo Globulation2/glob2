@@ -31,16 +31,16 @@ std::shared_ptr<MessageOrder> MessageOrder::deserialize(const Uint8 *data, int d
 	return order;
 }
 
-MessageOrder::MessageOrder(Uint32 recepientsMask, Uint32 messageOrderType, const char * text)
+MessageOrder::MessageOrder(Uint32 recipientsMask, Uint32 messageOrderType, const char * text)
 {
 	length=Utilities::strmlen(text, ORDER_TEXT_MESSAGE_MAX_LEN)+9;
 	data=(Uint8 *)malloc(length);
 	memcpy(data+9, text, length-9);
 	data[length-1]=0;
-	addUint32(data, recepientsMask, 0);
+	addUint32(data, recipientsMask, 0);
 	addUint32(data, messageOrderType, 4);
 	addUint8(data, (Uint8)(length-9), 8);
-	this->recepientsMask=recepientsMask;
+	this->recipientsMask=recipientsMask;
 	this->messageOrderType=messageOrderType;
 }
 
@@ -60,7 +60,7 @@ bool MessageOrder::setData(const Uint8 *data, int dataLength, Uint32 versionMino
 	if (dataLength<9)
 		return false;
 	this->length=dataLength;
-	this->recepientsMask=getUint32(data, 0);
+	this->recipientsMask=getUint32(data, 0);
 	this->messageOrderType=getUint32(data, 4);
 	Uint8 textLength=getUint8(data, 8);
 	if (this->data!=NULL)
@@ -86,9 +86,9 @@ std::shared_ptr<OrderVoiceData> OrderVoiceData::deserialize(const Uint8 *data, i
 	return order;
 }
 
-OrderVoiceData::OrderVoiceData(Uint32 recepientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData)
+OrderVoiceData::OrderVoiceData(Uint32 recipientsMask, size_t framesDataLength, Uint8 frameCount, const Uint8 *framesData)
 {
-	this->recepientsMask = recepientsMask;
+	this->recipientsMask = recipientsMask;
 	this->framesDataLength = framesDataLength;
 	this->frameCount = frameCount;
 
@@ -105,7 +105,7 @@ OrderVoiceData::~OrderVoiceData()
 
 Uint8 *OrderVoiceData::getData(void)
 {
-	addUint32(data, recepientsMask, 0);
+	addUint32(data, recipientsMask, 0);
 	addUint8(data, frameCount, 4);
 	return data;
 }
@@ -116,7 +116,7 @@ bool OrderVoiceData::setData(const Uint8 *data, int dataLength, Uint32 versionMi
 		return false;
 
 	this->framesDataLength = (size_t)dataLength - 5;
-	this->recepientsMask = getUint32(data, 0);
+	this->recipientsMask = getUint32(data, 0);
 	this->frameCount = getUint8(data, 4);
 
 	if (this->data != NULL)

@@ -61,7 +61,6 @@ public:
 
 	virtual ~Team(void);
 
-	void setBaseTeam(const BaseTeam *initial);
 	bool load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 
@@ -81,8 +80,6 @@ public:
 
 	//! Step every unit, building and bullet of the team.
 	void syncStep(void);
-	//! A team with no controlling player left is dead.
-	void checkControllingPlayers(void);
 
 	void pushGameEvent(GameEvent event);
 	//! Pop the oldest event, if any.
@@ -95,7 +92,7 @@ public:
 	void setCorrectMasks(void);
 	void setCorrectColor(const GAGCore::Color& color);
 	void setCorrectColor(float value);
-	/// Bit for `team` in team-mask bitfields (allies, sharedVision*, Case::forbidden, ...).
+	/// Bit for `team` in team-mask bitfields (allies, sharedVision*, Tile::forbidden, ...).
 	/// Masks have MAX_COUNT_ON_DISK bits; `1<<31` on a signed int would be UB.
 	inline static Uint32 teamNumberToMask(int team) { return Uint32(1)<<team; }
 
@@ -118,7 +115,6 @@ public:
 	int maxBuildLevel(void);
 
 	// Pathfinding
-	void computeForbiddenArea();
 	void dirtyGlobalGradient();
 	void dirtyWarFlagGradient();
 

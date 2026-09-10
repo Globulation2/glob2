@@ -8,108 +8,6 @@
 namespace GAGCore
 {
 
-	ZLibStreamBackend::ZLibStreamBackend(const std::string& file, bool read)
-	{
-		this->file = file;
-		isRead = read;
-		buffer = new MemoryStreamBackend();
-		if(isRead && isValid())
-		{
-			gzFile fp = gzopen(file.c_str(), "rb");
-			if (fp == NULL)
-			{
-				std::cerr << "ZLibStreamBackend: failed to open " << file << " for reading" << std::endl;
-				return;
-			}
-			unsigned char b[1024];
-			int amount;
-			while ((amount = gzread(fp, b, sizeof(b))) > 0)
-			{
-				buffer->write(b, amount);
-			}
-			if (amount < 0)
-				std::cerr << "ZLibStreamBackend: error reading " << file << std::endl;
-			gzclose(fp);
-			buffer->seekFromStart(0);
-		}
-	}
-
-	ZLibStreamBackend::~ZLibStreamBackend()
-	{
-		if(!isRead && isValid())
-		{
-			buffer->seekFromEnd(0);
-			long size = buffer->getPosition();
-			buffer->seekFromStart(0);
-			gzFile fp = gzopen(file.c_str(), "wb9");
-			if (fp == NULL)
-			{
-				std::cerr << "ZLibStreamBackend: failed to open " << file << " for writing" << std::endl;
-				return;
-			}
-			int written = gzwrite(fp, buffer->getBuffer(), size);
-			if (written != static_cast<int>(size))
-				std::cerr << "ZLibStreamBackend: error writing " << file << std::endl;
-			if (gzclose(fp) != Z_OK)
-				std::cerr << "ZLibStreamBackend: error closing " << file << std::endl;
-		}
-	}
-		
-	void ZLibStreamBackend::write(const void *data, const size_t size)
-	{
-		buffer->write(data, size);
-	}
-	
-	void ZLibStreamBackend::flush(void)
-	{
-		buffer->flush();
-	}
-	
-	void ZLibStreamBackend::read(void *data, size_t size)
-	{
-		buffer->read(data, size);
-	}
-	
-	void ZLibStreamBackend::putc(int c)
-	{
-		buffer->putc(c);
-	}
-	
-	int ZLibStreamBackend::getChar(void)
-	{
-		return buffer->getChar();
-	}
-	
-	void ZLibStreamBackend::seekFromStart(int displacement)
-	{
-		buffer->seekFromStart(displacement);
-	}
-	
-	void ZLibStreamBackend::seekFromEnd(int displacement)
-	{
-		buffer->seekFromEnd(displacement);
-	}
-	
-	void ZLibStreamBackend::seekRelative(int displacement)
-	{
-		buffer->seekRelative(displacement);
-	}
-	
-	size_t ZLibStreamBackend::getPosition(void)
-	{
-		return buffer->getPosition();
-	}
-	
-	bool ZLibStreamBackend::isEndOfStream(void)
-	{
-		return !isValid();
-	}
-	
-	bool ZLibStreamBackend::isValid(void)
-	{
-		return (file.size()>0 && buffer->isValid());
-	}
-
 	MemoryStreamBackend::MemoryStreamBackend(const void *data, const size_t size)
 	{
 		index = 0;
@@ -120,23 +18,23 @@ namespace GAGCore
 	void MemoryStreamBackend::write(const void *data, const size_t size)
 	{
 		const char *_data = static_cast<const char *>(data);
-		if ((index + size) > datas.size())
-			datas.resize(index + size);
-		std::copy(_data, _data+size, datas.begin()+index);
+		if ((index + size) > buffer.size())
+			buffer.resize(index + size);
+		std::copy(_data, _data+size, buffer.begin()+index);
 		index += size;
 	}
 	
 	void MemoryStreamBackend::read(void *data, size_t size)
 	{
 		char *_data = static_cast<char *>(data);
-		if (index+size > datas.size())
+		if (index+size > buffer.size())
 		{
 			// overread, read 0
 			std::fill(_data, _data+size, 0);
 		}
 		else
 		{
-			std::copy(datas.data() + index, datas.data() + index + size, _data);
+			std::copy(buffer.data() + index, buffer.data() + index + size, _data);
 			index += size;
 		}
 	}
@@ -157,19 +55,19 @@ namespace GAGCore
 	
 	void MemoryStreamBackend::seekFromStart(int displacement)
 	{
-		index = std::min(static_cast<size_t>(displacement), datas.size());
+		index = std::min(static_cast<size_t>(displacement), buffer.size());
 	}
 	
 	void MemoryStreamBackend::seekFromEnd(int displacement)
 	{
-		index = static_cast<size_t>(std::max(0, static_cast<int>(datas.size()) - displacement));
+		index = static_cast<size_t>(std::max(0, static_cast<int>(buffer.size()) - displacement));
 	}
 	
 	void MemoryStreamBackend::seekRelative(int displacement)
 	{
 		int newIndex = static_cast<int>(index) + displacement;
 		newIndex = std::max(newIndex, 0);
-		newIndex = std::min(newIndex, static_cast<int>(datas.size()));
+		newIndex = std::min(newIndex, static_cast<int>(buffer.size()));
 		index = static_cast<size_t>(newIndex);
 	}
 	
@@ -180,41 +78,6 @@ namespace GAGCore
 	
 	bool MemoryStreamBackend::isEndOfStream(void)
 	{
-		return index >= datas.size();
-	}
-
-	void HashStreamBackend::write(const void *data, const size_t size)
-	{
-		unsigned char *p = (unsigned char *)data; // Pointer to data
-		unsigned char *e = p + size; // Pointer to the end of the data
-
-		// FNV-1a hash each byte in the buffer
-		while (p < e)
-		{
-			// xor the least significant bits of the hash with the current byte
-			hash ^= (Uint32)(*p);
-
-			// Multiply by the 32 bit FNV magic prime mod 2^32
-			hash *= 0x01000193;
-
-			p++;
-		}
-	}
-
-	void HashStreamBackend::putc(int c)
-	{
-		c = (unsigned int)c;
-
-		while (c != 0)
-		{
-			// xor the least significant bits of the hash with the current byte
-			hash ^= (Uint32)(c|0xFF);
-
-			// Multiply by the 32 bit FNV magic prime mod 2^32
-			hash *= 0x01000193;
-
-			// Next byte
-			c >>= 8;
-		}
+		return index >= buffer.size();
 	}
 }

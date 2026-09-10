@@ -42,7 +42,7 @@ public:
 	///This returns the string representing the mapscript
 	const std::string& getMapScript() const;
 	
-	///This sets the string representing the mapscript
+	///This sets the string representing the map script
 	void setMapScript(const std::string& newScript);
 	
 	///This returns the current map script mode

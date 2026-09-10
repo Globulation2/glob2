@@ -9,13 +9,89 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <Stream.h>
+#include <BinaryStream.h>
+#include <stdexcept>
+#include <cstddef>
 
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "Team.h"
 #include "TeamStat.h"
+#include "FileFormatVersions.h"
 #include "Unit.h"
 #include "Bullet.h"
+
+
+namespace
+{
+void statValue(GAGCore::OutputStream* stream, const char* name, const int& value)
+{
+    stream->writeSint32(value, name);
+}
+
+void statValue(GAGCore::InputStream* stream, const char* name, int& value)
+{
+    value = stream->readSint32(name);
+}
+
+template<class Name>
+void enterStatSection(GAGCore::OutputStream* stream, Name name) { stream->writeEnterSection(name); }
+template<class Name>
+void enterStatSection(GAGCore::InputStream* stream, Name name) { stream->readEnterSection(name); }
+void leaveStatSection(GAGCore::OutputStream* stream) { stream->writeLeaveSection(); }
+void leaveStatSection(GAGCore::InputStream* stream) { stream->readLeaveSection(); }
+
+template<class Stream, class T, std::size_t N>
+void statValue(Stream* stream, const char* name, T (&values)[N])
+{
+    enterStatSection(stream, name);
+    for (unsigned i = 0; i < N; ++i)
+    {
+        enterStatSection(stream, i);
+        statValue(stream, "value", values[i]);
+        leaveStatSection(stream);
+    }
+    leaveStatSection(stream);
+}
+
+template<class Stream, class Stat>
+void liveStatFields(Stream* stream, Stat& stat)
+{
+    statValue(stream, "totalUnit", stat.totalUnit);
+    statValue(stream, "numberUnitPerType", stat.numberUnitPerType);
+    statValue(stream, "totalFree", stat.totalFree);
+    statValue(stream, "isFree", stat.isFree);
+    statValue(stream, "totalNeeded", stat.totalNeeded);
+    statValue(stream, "totalNeededPerLevel", stat.totalNeededPerLevel);
+    statValue(stream, "totalBuilding", stat.totalBuilding);
+    statValue(stream, "numberBuildingPerType", stat.numberBuildingPerType);
+    statValue(stream, "numberBuildingPerTypePerLevel", stat.numberBuildingPerTypePerLevel);
+    statValue(stream, "needFoodCritical", stat.needFoodCritical);
+    statValue(stream, "needFoodNoInns", stat.needFoodNoInns);
+    statValue(stream, "needFood", stat.needFood);
+    statValue(stream, "needHeal", stat.needHeal);
+    statValue(stream, "needNothing", stat.needNothing);
+    statValue(stream, "upgradeState", stat.upgradeState);
+    statValue(stream, "upgradeStatePerType", stat.upgradeStatePerType);
+    statValue(stream, "totalFood", stat.totalFood);
+    statValue(stream, "totalFoodCapacity", stat.totalFoodCapacity);
+    statValue(stream, "totalUnitFoodable", stat.totalUnitFoodable);
+    statValue(stream, "totalUnitFooded", stat.totalUnitFooded);
+    statValue(stream, "totalHP", stat.totalHP);
+    statValue(stream, "totalAttackPower", stat.totalAttackPower);
+    statValue(stream, "totalDefensePower", stat.totalDefensePower);
+    statValue(stream, "happiness", stat.happiness);
+}
+
+template<class Stream, class Stat>
+void smoothedStatFields(Stream* stream, Stat& stat)
+{
+    statValue(stream, "totalFree", stat.totalFree);
+    statValue(stream, "isFree", stat.isFree);
+    statValue(stream, "totalNeeded", stat.totalNeeded);
+    statValue(stream, "totalNeededPerLevel", stat.totalNeededPerLevel);
+}
+}
 
 
 EndOfGameStat::EndOfGameStat(int units, int buildings, int prestige, int hp, int attack, int defense)
@@ -453,7 +529,7 @@ void TeamStats::drawStat(int posx, int posy)
 		int nbOk, nbNeedFood, nbNeedFoodCritical, nbNeedHeal;
 		if (stats[index].totalUnit)
 		{
-			// to avoid some roundoff errors
+			// to avoid some round-off errors
 			if (stats[index].needNothing>0)
 			{
 				nbNeedHeal=(stats[index].needHeal*64)/stats[index].totalUnit;
@@ -547,6 +623,35 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			endOfGameStats.push_back(EndOfGameStat(units, buildings, prestige, hp, attack, defense));
 		stream->readLeaveSection();
 	}
+    if (versionMinor >= FILE_FORMAT_VERSION_LIVE_TEAM_STATS)
+    {
+        GAGCore::BinaryInputStream::CheckedReads checkedReads(stream);
+        statsIndex = stream->readSint32("statsIndex");
+        smoothedIndex = stream->readSint32("smoothedIndex");
+        if (statsIndex < 0 || statsIndex >= STATS_SIZE ||
+            smoothedIndex < 0 || smoothedIndex >= STATS_SMOOTH_SIZE)
+        {
+            stream->readLeaveSection();
+            throw std::runtime_error("Invalid team statistics sampling index");
+        }
+        stream->readEnterSection("liveStats");
+        for (unsigned i = 0; i < STATS_SIZE; ++i)
+        {
+            stream->readEnterSection(i);
+            liveStatFields(stream, stats[i]);
+            stream->readLeaveSection();
+        }
+        stream->readLeaveSection();
+        stream->readEnterSection("smoothedStats");
+        for (unsigned i = 0; i < STATS_SMOOTH_SIZE; ++i)
+        {
+            stream->readEnterSection(i);
+            smoothedStatFields(stream, smoothedStats[i]);
+            stream->readLeaveSection();
+        }
+        stream->readLeaveSection();
+    }
+
 	stream->readLeaveSection();
 	return true;
 }
@@ -566,6 +671,25 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 		stream->writeSint32(endOfGameStats[i].value[EndOfGameStat::TYPE_DEFENSE], "EndOfGameStat::TYPE_DEFENSE");
 		stream->writeLeaveSection();
 	}
+    stream->writeSint32(statsIndex, "statsIndex");
+    stream->writeSint32(smoothedIndex, "smoothedIndex");
+    stream->writeEnterSection("liveStats");
+    for (unsigned i = 0; i < STATS_SIZE; ++i)
+    {
+        stream->writeEnterSection(i);
+        liveStatFields(stream, stats[i]);
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+    stream->writeEnterSection("smoothedStats");
+    for (unsigned i = 0; i < STATS_SMOOTH_SIZE; ++i)
+    {
+        stream->writeEnterSection(i);
+        smoothedStatFields(stream, smoothedStats[i]);
+        stream->writeLeaveSection();
+    }
+    stream->writeLeaveSection();
+
 	stream->writeLeaveSection();
 }
 

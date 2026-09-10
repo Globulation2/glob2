@@ -1,0 +1,360 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "runtime": "swarm0b0.png",
+      "source": "original-derived/swarm0b0.png",
+      "sha256": "8586b89b95f5feb84520fd48b3ce5c6ef3f696758eba8c8b8ed973deb03a2ce9"
+    },
+    {
+      "runtime": "swarm0b0r.png",
+      "source": "original-derived/swarm0b0r.png",
+      "sha256": "7fddfffbe675b7b2b7fdaf87e78f6b8ca52f83ca3ac07e2c2b07724829beed92"
+    },
+    {
+      "runtime": "swarm0c0.png",
+      "source": "original-derived/swarm0c0.png",
+      "sha256": "7535de51a77fd4e4415e9a45a30cbfdaf61157ed9ad42b5ee6b486cbf047bbe0"
+    },
+    {
+      "runtime": "swarm0c0r.png",
+      "source": "original-derived/swarm0c0r.png",
+      "sha256": "35379ff139ab075a00d6348e7af14316ed7b8e342300737275e8d6738be81414"
+    },
+    {
+      "runtime": "racetrack0b0.png",
+      "source": "original-derived/racetrack0b0.png",
+      "sha256": "d28f474c2b9e1f599e2050c28ced0aed60aef43d907db8ab98109c71e45db1ac"
+    },
+    {
+      "runtime": "racetrack0b0r.png",
+      "source": "original-derived/racetrack0b0r.png",
+      "sha256": "3bcc0ad016827484e3c3804e303f19b3672dcf202ef3a883d6d05fac765bafd5"
+    },
+    {
+      "runtime": "racetrack1b0.png",
+      "source": "original-derived/racetrack1b0.png",
+      "sha256": "789d7acdeb9b15891171473edb2432cb51415af0a68178a17d3698d1aa89fdb3"
+    },
+    {
+      "runtime": "racetrack1b0r.png",
+      "source": "original-derived/racetrack1b0r.png",
+      "sha256": "fba51bf7fa56d305c537a3620a47364c7008060eb20e53beed1b4d1c91150be3"
+    },
+    {
+      "runtime": "school1b0.png",
+      "source": "original-derived/school1b0.png",
+      "sha256": "29a78342d0b3a891ff957beeaf7d8de181f35200f9a62d4479fd4bb71b16a74c"
+    },
+    {
+      "runtime": "school1b0r.png",
+      "source": "original-derived/school1b0r.png",
+      "sha256": "d978527455833be9650b77d63fa0df0dba3ca131c8e26401567bbe4968c5af6c"
+    },
+    {
+      "runtime": "buildingsite4.png",
+      "source": "original-derived/buildingsite4.png",
+      "sha256": "a244364f290a6778de96eeadbab62a2bf87cb79006f4dc9ef2a62cdc257864fb"
+    },
+    {
+      "runtime": "buildingsite1.png",
+      "source": "original-derived/buildingsite1.png",
+      "sha256": "d3e049adf14663bad2d3a4bf1070f583a4c9cb6e7b78ff4510688cb65faf1456"
+    },
+    {
+      "runtime": "buildingsite2.png",
+      "source": "original-derived/buildingsite2.png",
+      "sha256": "49c3afd3f3110e42b60598a829ebe61dc3e402b2572063a8bcaaa4b3d6ecfbaa"
+    },
+    {
+      "runtime": "buildingsite3.png",
+      "source": "original-derived/buildingsite3.png",
+      "sha256": "74f4f6860ee9d7048efd56a074b2780b6b1de8792d39253177f1f4fbe6a7b922"
+    },
+    {
+      "runtime": "buildingsite5.png",
+      "source": "original-derived/buildingsite5.png",
+      "sha256": "1a44c7438560f608c933f20308ec2ef6fce6c6ab7a6479f3e4d82fc188ba8bb2"
+    },
+    {
+      "runtime": "explorationflag0.png",
+      "source": "original-derived/explorationflag0.png",
+      "sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee"
+    },
+    {
+      "runtime": "explorationflag0r.png",
+      "source": "original-derived/explorationflag0r.png",
+      "sha256": "1eb3f170e7455f8621e15f6637a01383c1ff18a3b87b380ae9aebac5e12b4ffc"
+    },
+    {
+      "runtime": "warflag0.png",
+      "source": "original-derived/warflag0.png",
+      "sha256": "1594258d650464372a84556d099c6f0fad9551bbf0efe58e7403336fee183eee"
+    },
+    {
+      "runtime": "warflag0r.png",
+      "source": "original-derived/warflag0r.png",
+      "sha256": "2f7ab6fe190662a4dcd2e0acd21f423a50c8faf635aa2e89579784d8ed937cd0"
+    },
+    {
+      "runtime": "clearingflag0.png",
+      "source": "original-derived/clearingflag0.png",
+      "sha256": "cd8968966745ded953dd027154adc39ef3bcd5995a05969acf866e7df057799e"
+    },
+    {
+      "runtime": "clearingflag0r.png",
+      "source": "original-derived/clearingflag0r.png",
+      "sha256": "59b0d491345cd52279daf8052b3f8b59a35b7af21750355151e1d175fa7772a6"
+    },
+    {
+      "runtime": "ressource0.png",
+      "source": "original-derived/ressource0.png",
+      "sha256": "fb40c2575d99a9dea62c628cf3fb24b3ad1480125da6958512f66e232404a29d"
+    },
+    {
+      "runtime": "ressource1.png",
+      "source": "original-derived/ressource1.png",
+      "sha256": "c7fd2975f8a524ebf9d7318f39d14f958ebebbc7c0a214ae8a0e272e743beb3a"
+    },
+    {
+      "runtime": "ressource2.png",
+      "source": "original-derived/ressource2.png",
+      "sha256": "539973e090057f59487c1eabbbc5fd6fe23a032650ae0d27823a0f8160f3ef4e"
+    },
+    {
+      "runtime": "ressource3.png",
+      "source": "original-derived/ressource3.png",
+      "sha256": "5c4ba2c41b605fc79bb949f8c3a1d7ee79e187f64f51e1f82c3a82daf9dd9fc3"
+    },
+    {
+      "runtime": "ressource4.png",
+      "source": "original-derived/ressource4.png",
+      "sha256": "6c94e30e9289afd1583f324103a2d5206205e09ac76606a52382b0f2a389f33b"
+    },
+    {
+      "runtime": "ressource5.png",
+      "source": "original-derived/ressource5.png",
+      "sha256": "d81fd1f956a7f4fd31751c3e2857305910fab909e33382bb852d0cc68fe4a045"
+    },
+    {
+      "runtime": "ressource6.png",
+      "source": "original-derived/ressource6.png",
+      "sha256": "c7fd2975f8a524ebf9d7318f39d14f958ebebbc7c0a214ae8a0e272e743beb3a"
+    },
+    {
+      "runtime": "ressource7.png",
+      "source": "original-derived/ressource7.png",
+      "sha256": "539973e090057f59487c1eabbbc5fd6fe23a032650ae0d27823a0f8160f3ef4e"
+    },
+    {
+      "runtime": "ressource8.png",
+      "source": "original-derived/ressource8.png",
+      "sha256": "5c4ba2c41b605fc79bb949f8c3a1d7ee79e187f64f51e1f82c3a82daf9dd9fc3"
+    },
+    {
+      "runtime": "ressource9.png",
+      "source": "original-derived/ressource9.png",
+      "sha256": "6c94e30e9289afd1583f324103a2d5206205e09ac76606a52382b0f2a389f33b"
+    },
+    {
+      "runtime": "ressource10.png",
+      "source": "original-derived/ressource10.png",
+      "sha256": "37e44e649bbb88772db3fff3ade531aa6953feb6132e394da23bf861ae661340"
+    },
+    {
+      "runtime": "ressource11.png",
+      "source": "original-derived/ressource11.png",
+      "sha256": "8a9fba9f0bf8f86f57a8e86c6d0693aa12a6302fc148bdd4b41fee07fff0f4c9"
+    },
+    {
+      "runtime": "ressource12.png",
+      "source": "original-derived/ressource12.png",
+      "sha256": "f0dab6ac2b553fb4fed1237394991d70ea5334fdbe67ee15fdfd1d31f405e58d"
+    },
+    {
+      "runtime": "ressource13.png",
+      "source": "original-derived/ressource13.png",
+      "sha256": "dd9261e9f4b79fb0175d728ee1da6cd19653d194c83b7bfe31e39d24226c74d9"
+    },
+    {
+      "runtime": "ressource15.png",
+      "source": "original-derived/ressource15.png",
+      "sha256": "948a9f768281ba717c5ae80fec223520a60e1f36f4336b05dc27004366b894cc"
+    },
+    {
+      "runtime": "ressource16.png",
+      "source": "original-derived/ressource16.png",
+      "sha256": "40038334a8d486489e8b0d07ae22252b1637d29e5d4353668c00e4867dee1c28"
+    },
+    {
+      "runtime": "ressource17.png",
+      "source": "original-derived/ressource17.png",
+      "sha256": "30e761c998345e91389480da9067a42a46a7cf98fc62966c6a5789fe5d15463d"
+    },
+    {
+      "runtime": "ressource18.png",
+      "source": "original-derived/ressource18.png",
+      "sha256": "c82b9144b8f4602305e22ae1e778a2a476653bd5478c20bb557cf1dbf8f80f28"
+    },
+    {
+      "runtime": "ressource20.png",
+      "source": "original-derived/ressource20.png",
+      "sha256": "d571ae392bba119cbd1a09cac0ed47854d89778cdc086ef96d652e23103c0ff6"
+    },
+    {
+      "runtime": "ressource21.png",
+      "source": "original-derived/ressource21.png",
+      "sha256": "f84d8c18925ce108666ef05c2d1147f3e7a7323fda03a90c932748d8d5f3c18b"
+    },
+    {
+      "runtime": "ressource22.png",
+      "source": "original-derived/ressource22.png",
+      "sha256": "3baa5ec052d4797a7c399c232d133ecef9c77db48d5a68c86b1a2be84e34a569"
+    },
+    {
+      "runtime": "ressource23.png",
+      "source": "original-derived/ressource23.png",
+      "sha256": "3d7950d886733cd398dc9d3309c2172fb75bd0ed6cf3c0225997819bc38b87e1"
+    },
+    {
+      "runtime": "ressource24.png",
+      "source": "original-derived/ressource24.png",
+      "sha256": "b04bd75fdc180908ea141bdb9a36df050b04dab15b1b099356113f1e27eb1df1"
+    },
+    {
+      "runtime": "area-clearing0.png",
+      "source": "original-derived/area-clearing0.png",
+      "sha256": "ce2c0a602fbad9b0a0088f643648632316a52102e36a5fbd4a6069b12121f244"
+    },
+    {
+      "runtime": "area-clearing1.png",
+      "source": "original-derived/area-clearing1.png",
+      "sha256": "8d49c273053dc520cae3f04df2c5640f180770bdf559d1c5f96e83cac4d6aabb"
+    },
+    {
+      "runtime": "area-clearing2.png",
+      "source": "original-derived/area-clearing2.png",
+      "sha256": "46ad1e9d97f6bc2a74c22d668d2e2c9aab3647d5e1d10f2ef99e05bd342cfcd0"
+    },
+    {
+      "runtime": "area-clearing3.png",
+      "source": "original-derived/area-clearing3.png",
+      "sha256": "a950c490d81703bd5d2da1a04a108726164f852f29858f194531c0a00d22235d"
+    },
+    {
+      "runtime": "area-clearing4.png",
+      "source": "original-derived/area-clearing4.png",
+      "sha256": "65d136c1a8de301931243ff4346e183d4145f206cdfd7a3d91243c8f6d441b7d"
+    },
+    {
+      "runtime": "area-clearing5.png",
+      "source": "original-derived/area-clearing5.png",
+      "sha256": "482666e30886954017c3406b5c1853edf6223b507b1e3deb346e63e3a639ecc4"
+    },
+    {
+      "runtime": "area-clearing6.png",
+      "source": "original-derived/area-clearing6.png",
+      "sha256": "bba9f982daa44bd98fad20ce664fba09d979c2845e07de8bec4b752b7147b027"
+    },
+    {
+      "runtime": "area-clearing7.png",
+      "source": "original-derived/area-clearing7.png",
+      "sha256": "9c9a7f44af7807961c6da0a09882730f76408ec677da0376b4b01e7a79029f7b"
+    },
+    {
+      "runtime": "area-forbidden0.png",
+      "source": "original-derived/area-forbidden0.png",
+      "sha256": "17bc3f70afeffe7c0b1a7ebd27d77fa125a0c254c4b80ee46fb661faf33ade87"
+    },
+    {
+      "runtime": "area-forbidden1.png",
+      "source": "original-derived/area-forbidden1.png",
+      "sha256": "aec46b02f282f99e063e01b4cfad3e1786d619cc35aec24a6cff2de75f927b53"
+    },
+    {
+      "runtime": "area-forbidden2.png",
+      "source": "original-derived/area-forbidden2.png",
+      "sha256": "5069334a858fe91798a92ab61b1140f23dbaaf51ec470168a10774fc1dd037e4"
+    },
+    {
+      "runtime": "area-forbidden3.png",
+      "source": "original-derived/area-forbidden3.png",
+      "sha256": "6b0d2fe1760cf8bd5a6b3ab3e5ad4d4a9481a57cab3fc262a1462df7a32dbf3d"
+    },
+    {
+      "runtime": "area-forbidden4.png",
+      "source": "original-derived/area-forbidden4.png",
+      "sha256": "6b0d2fe1760cf8bd5a6b3ab3e5ad4d4a9481a57cab3fc262a1462df7a32dbf3d"
+    },
+    {
+      "runtime": "area-forbidden5.png",
+      "source": "original-derived/area-forbidden5.png",
+      "sha256": "5069334a858fe91798a92ab61b1140f23dbaaf51ec470168a10774fc1dd037e4"
+    },
+    {
+      "runtime": "area-forbidden6.png",
+      "source": "original-derived/area-forbidden6.png",
+      "sha256": "aec46b02f282f99e063e01b4cfad3e1786d619cc35aec24a6cff2de75f927b53"
+    },
+    {
+      "runtime": "area-forbidden7.png",
+      "source": "original-derived/area-forbidden7.png",
+      "sha256": "9b0b2ffbaff695eb0847623c292d0d431688649255ce587682e81dc181eec47b"
+    },
+    {
+      "runtime": "area-guard0.png",
+      "source": "original-derived/area-guard0.png",
+      "sha256": "aef919c78f831ed7544f546babffec93a1101b13120270c4bf74c55626bc7b5f"
+    },
+    {
+      "runtime": "area-guard1.png",
+      "source": "original-derived/area-guard1.png",
+      "sha256": "caab414d9bd43e036ef90291bc4503c8156a9cc434fd2bb9de28364afdcb57b5"
+    },
+    {
+      "runtime": "area-guard2.png",
+      "source": "original-derived/area-guard2.png",
+      "sha256": "f4d2973c59bebeab18d366c6269c8a85fc7eae5b270bfadb583515f82b5a6221"
+    },
+    {
+      "runtime": "area-guard3.png",
+      "source": "original-derived/area-guard3.png",
+      "sha256": "f6d55102cbcb104c10790f201628fe5e958c6102a97cd7f2c8db6093ab673a47"
+    },
+    {
+      "runtime": "area-guard4.png",
+      "source": "original-derived/area-guard4.png",
+      "sha256": "72470ce245355279ca7cb05e98f326d16db4c55270b4a1ae94eb562a7bcdfb8b"
+    },
+    {
+      "runtime": "area-guard5.png",
+      "source": "original-derived/area-guard5.png",
+      "sha256": "206a9e5787cf84cd15b61f8f3319813e60912833f08efafa0e613f7a4949184a"
+    },
+    {
+      "runtime": "area-guard6.png",
+      "source": "original-derived/area-guard6.png",
+      "sha256": "deb94928b7bfe00b16ad639d6eb1b940974d63a945047a90adbbb474b41d7930"
+    },
+    {
+      "runtime": "area-guard7.png",
+      "source": "original-derived/area-guard7.png",
+      "sha256": "6e8c6f3ac033bcb46efd7957bcfc76c5d82edb3696a6029621c7085ae697eab5"
+    },
+    {
+      "runtime": "manifest.json",
+      "source": "pack-metadata/manifest.json",
+      "sha256": "0f42343856d43bba92f1849e02b3ed9abc51833d16e8184146cecdc024f8e358"
+    },
+    {
+      "runtime": "frames.txt",
+      "source": "pack-metadata/frames.txt",
+      "sha256": "1c52a0c7a9981e8f7843af6f4393972f120b47912b09b1d12018104c2007c18c"
+    },
+    {
+      "runtime": "README.md",
+      "source": "pack-metadata/README.md",
+      "sha256": "b1936943220127b546a99937e82e1cf94f8698028c5a6578b40b6ee4a6d90031"
+    }
+  ]
+}
