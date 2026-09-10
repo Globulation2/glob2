@@ -7,6 +7,16 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT: farming confirmation recovery after a unit-conversion assertion on TheRig.
+Failed key ca3cddca076e15fe90357c7959b9ef3fcff5c67d886170568c8bc2bd2c53d5af
+remains quarantined, not retried/replaced. recovery-controller.py in the current
+confirmation directory resumes untouched pending jobs and collects completed receipts.
+Final inference is BLOCKED. Check recovery-process.json, STATUS.json and recovery log.
+Debugger reproduction: TheRig output/farming-abort-diagnostic/gdb.log and DONE.json
+under frozen root glob2-maxima-defense-fix; diagnostic only, never pool outcomes.
+Assertion is UnitActivity.cpp:141, mismatched ground occupancy during unit conversion.
+Follow diagnosis through verification and recovery; don't merely report stopped.
+
 CURRENT September 9 hourly check: all eight pilots completed (800 pairs/927 games).
 Next fixed confirmation prepared in output/maxima-farming-sub-switches-confirmation:
 1000 pairs for EACH of eight remaining switches, one final look at alpha .04/53.
