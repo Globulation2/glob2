@@ -15,6 +15,7 @@
 #include "EditorMainMenu.h"
 #include "CreditScreen.h"
 #include "MapGenerationDescriptor.h"
+#include "MapGenerator.h"
 #include "FertilityCalculator.h"
 #include "Order.h"
 #include "Player.h"
@@ -119,14 +120,17 @@ void generate(const char* path)
 	std::srand(481516);
 	Game game(nullptr);
 	MapGenerationDescriptor d;
-	d.method=MapGenerationDescriptor::eOLDISLANDS;
-	d.oldIslandSize=35;
+	// Start from the generator's own current defaults (valid control ranges
+	// move as generators are tuned) and override only what this decorative
+	// colony actually needs to differ.
+	d.setMethodDefaults(MapGenerationDescriptor::eOLDISLANDS);
 	d.wDec=d.hDec=7;
-	d.nbTeams=1; d.nbWorkers=48;
+	d.nbTeams=1; d.nbWorkers=8;
 	d.waterRatio=25; d.grassRatio=65; d.sandRatio=10;
-	game.map.setSize(d.wDec,d.hDec);
-	game.map.setGame(&game);
-	require(game.map.oldMakeIslandsMap(d) && game.oldMakeIslandsMap(d),"generate terrain");
+	// The registry-driven generator owns map sizing and the game association;
+	// pass the fixed seed explicitly since it no longer follows the global
+	// sync-rand state seeded above.
+	require(MapGenerator().generateMap(game, d, 481516u),"generate terrain");
 	// The legacy island generator supplies terrain only. Seed small groves
 	// and grain fields with the existing resource API, leaving walking lanes.
 	const int bx=d.bootX[0], by=d.bootY[0];
