@@ -169,14 +169,12 @@ void Game::executeCreate(const OrderCreate& oc, int localPlayer)
 		buildProject.unitWorking = oc.unitWorking;
 		buildProject.unitWorkingFuture = oc.unitWorkingFuture;
 		buildProjects.push_back(buildProject);
-		Uint32 teamMask=Team::teamNumberToMask(oc.teamNumber);
 		for (int y=posY; y<posY+h; y++)
 			for (int x=posX; x<posX+w; x++)
 			{
-				size_t index=(x&map.wMask)+(((y&map.hMask)<<map.wDec));
-				map.tiles[index].forbidden|=teamMask;
+				map.addForbidden(x, y, oc.teamNumber);
 				if (oc.teamNumber == players[localPlayer]->teamNumber)
-					map.displayedForbiddenView.set(index, true);
+					map.displayedForbiddenView.set(map.coordToIndex(x, y), true);
 			}
 		map.updateForbiddenGradient(oc.teamNumber);
 	}
@@ -291,19 +289,17 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 {
 	if (oaa.type == BrushTool::MODE_ADD)
 	{
-		Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
 		size_t orderMaskIndex = 0;
 		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
 			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
 			{
 				if (oaa.mask.get(orderMaskIndex))
 				{
-					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.tiles[index].forbidden |= teamMask;
+					map.addForbidden(x, y, oaa.teamNumber);
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.displayedForbiddenView.set(index, true);
+						map.displayedForbiddenView.set(map.coordToIndex(x, y), true);
 				}
 				orderMaskIndex++;
 			}
@@ -311,19 +307,17 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 	}
 	else if (oaa.type == BrushTool::MODE_DEL)
 	{
-		Uint32 notTeamMask = ~Team::teamNumberToMask(oaa.teamNumber);
 		size_t orderMaskIndex = 0;
 		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
 			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
 			{
 				if (oaa.mask.get(orderMaskIndex))
 				{
-					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
 					// Update real map
-					map.tiles[index].forbidden &= notTeamMask;
+					map.removeForbidden(x, y, oaa.teamNumber);
 					// Update local map
 					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.displayedForbiddenView.set(index, false);
+						map.displayedForbiddenView.set(map.coordToIndex(x, y), false);
 				}
 				orderMaskIndex++;
 			}

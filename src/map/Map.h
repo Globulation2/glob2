@@ -360,6 +360,7 @@ public:
 	{
 		Tile& c=tiles[coordToIndex(x, y)];
 		c.forbidden ^= c.forbidden &  Team::teamNumberToMask(teamNum);
+		bumpTopologyGeneration();
 	}
 	
 	void addClearArea(int x, int y, Uint32 teamNum)
@@ -680,25 +681,13 @@ public:
 	//! Mark the gradients of this team's buildings in the area for a rebuild. Wrap-safe on x,y
 	void dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber);
 
-	//! Bumped when a footprint is stamped or lifted, or a forbidden area painted.
-	//! A cached route field records the value it was built at, so any field can
-	//! tell in constant time whether the ground it was computed against still
-	//! holds: no proximity test, nothing to remember to call, and it reaches
-	//! flags, which never appear in the tile grid.
-	//!
-	//! Resources growing or being cleared, and units becoming immobile, also
-	//! change what a field may route through but are deliberately left out: they
-	//! account for 98% of such changes in a normal game (50594 immobile and 10152
-	//! resource against 1010 structural, over one 8-player match), and rebuilding
-	//! every field that often costs a third of the simulation. Neither has ever
-	//! invalidated a field, so leaving them out keeps the behaviour that was
-	//! already there.
+	//! Bumped whenever a footprint or a forbidden mask changes. A route field
+	//! spans the map, so any such change may cross it: each field records the
+	//! value it was built at and is rebuilt on use once it differs. Resources
+	//! and immobile units are left out on purpose; they change far too often
+	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
 	void bumpTopologyGeneration() { topologyGeneration++; }
-	//! Mark the gradient of every building of every team that could route through
-	//! this rectangle, widened by GRADIENT_DIRTY_BORDER_TILES, as needing a rebuild.
-	//! Call it whenever the rectangle stops being walkable, or starts.
-	void dirtyBuildingGradientsAround(int x, int y, int w, int h);
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.

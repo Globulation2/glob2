@@ -296,8 +296,6 @@ bool Building::tryToBuildingSiteRoom(void)
 		{
 			owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
 			owner->map->setBuilding(newPosX, newPosY, newWidth, newHeight, gid);
-			owner->map->dirtyBuildingGradientsAround(posX, posY, type->width, type->height);
-			owner->map->dirtyBuildingGradientsAround(newPosX, newPosY, newWidth, newHeight);
 		}
 
 

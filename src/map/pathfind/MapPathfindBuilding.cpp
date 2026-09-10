@@ -45,11 +45,7 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass)
 		gradient=new Uint16[size];
 		rebuild=true;
 	}
-	else if (building->dirtyGradient[swimClass] && lastUpdate+DIRTY_REBUILD_TICKS<=now)
-		rebuild=true;
-	// The ground this field was computed against has changed somewhere. Which
-	// cell, and how far away, does not matter: the field spans the map.
-	else if (building->gradientGeneration[swimClass]!=topologyGeneration
+	else if ((building->dirtyGradient[swimClass] || building->gradientGeneration[swimClass]!=topologyGeneration)
 		&& lastUpdate+DIRTY_REBUILD_TICKS<=now)
 		rebuild=true;
 	// A clearing flag's goals are resources, which grow and get cleared.
@@ -147,18 +143,6 @@ bool Map::pathfindBuilding(Building *building, int swimClass, int x, int y, int 
 	return directionByGradient(teamMask, swimClass, x, y, gradient, dx, dy, false);
 }
 
-
-void Map::dirtyBuildingGradientsAround(int x, int y, int w, int h)
-{
-	if (game==NULL)
-		return;
-	// A building's field records which cells were obstacles when it was computed.
-	// These cells have just stopped matching that, for every team's buildings
-	// within reach of them, so every such field has to be recomputed.
-	int border=GRADIENT_DIRTY_BORDER_TILES;
-	for (int t=0; t<game->mapHeader.getNumberOfTeams(); t++)
-		dirtyBuildingGradients(x-border, y-border, w+2*border, h+2*border, t);
-}
 
 void Map::dirtyBuildingGradients(int x, int y, int wl, int hl, int teamNumber)
 {

@@ -242,10 +242,6 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	else
 		map.setBuilding(x, y, w, h, gid);
 	team->myBuildings[id]=b;
-	// The footprint just became an obstacle for every route field around it.
-	// Only now: the dirty walk looks the gid on the map up in myBuildings.
-	if (!b->type->isVirtual)
-		map.dirtyBuildingGradientsAround(x, y, w, h);
 	return b;
 }
 

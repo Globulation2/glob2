@@ -70,7 +70,6 @@ void Building::kill(void)
 	if (!type->isVirtual)
 	{
 		owner->map->setBuilding(posX, posY, type->width, type->height, NOGBID);
-		owner->map->dirtyBuildingGradientsAround(posX, posY, type->width, type->height);
 		owner->dirtyGlobalGradient();
 		owner->map->updateForbiddenGradient(owner->teamNumber);
 		owner->map->updateGuardAreasGradient(owner->teamNumber);
