@@ -68,12 +68,14 @@ int GeneratorRegistry::selectionIndex(int id, bool editor) const {
   return it == ids.end() ? -1 : int(it - ids.begin());
 }
 const GeneratorRegistry &GeneratorRegistry::builtins() {
+  // This is also the product-facing catalog order. Keep the most polished and
+  // distinctive playable maps first; numeric IDs remain stable compatibility
+  // identifiers and do not determine presentation order.
   static const GeneratorRegistry registry(
-      {uniformDefinition(), swampDefinition(), riverDefinition(),
-       islandsDefinition(), craterLakesDefinition(),
-       concreteIslandsDefinition(), islesDefinition(),
-       shatteredCoastDefinition(), ruggedArchipelagoDefinition(),
-       contestedCommonsDefinition(), latticeDefinition(), mazeDefinition(),
-       fjordContinentDefinition()});
+      {fjordContinentDefinition(), mazeDefinition(),
+       contestedCommonsDefinition(), latticeDefinition(), islesDefinition(),
+       ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
+       craterLakesDefinition(), islandsDefinition(), swampDefinition(),
+       riverDefinition(), shatteredCoastDefinition(), uniformDefinition()});
   return registry;
 }
