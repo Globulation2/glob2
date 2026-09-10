@@ -1772,3 +1772,39 @@ Kanalbreite
 Breite der Landbrücke
 [Lake size]
 Seegröße
+[Contested commons]
+Umkämpftes Gemeinschaftsland
+[Lattice]
+Gitternetz
+[Maze]
+Labyrinth
+[Fjord continent]
+Fjordkontinent
+[Islet size]
+Inselchengröße
+[Home radius]
+Radius des Startgebiets
+[Cell size]
+Zellengröße
+[Room size]
+Raumgröße
+[Corridor width]
+Korridorbreite
+[Loopiness]
+Vernetzungsgrad
+[Home island size]
+Größe der Startinsel
+[Commons size]
+Größe des Gemeinschaftslands
+[Moat width]
+Grabenbreite
+[Bridge count]
+Anzahl der Brücken
+[Continent size]
+Kontinentgröße
+[Coast roughness]
+Küstenzerklüftung
+[Fjord width]
+Fjordbreite
+[Resource islands]
+Rohstoffinseln

@@ -1770,3 +1770,39 @@ OpenGL недоступен в этой сборке.
 Ширина перешейка
 [Lake size]
 Размер озера
+[Contested commons]
+Спорные общие земли
+[Lattice]
+Решётка
+[Maze]
+Лабиринт
+[Fjord continent]
+Материк с фьордами
+[Islet size]
+Размер островка
+[Home radius]
+Радиус базы
+[Cell size]
+Размер ячейки
+[Room size]
+Размер комнаты
+[Corridor width]
+Ширина коридора
+[Loopiness]
+Количество петель
+[Home island size]
+Размер стартового острова
+[Commons size]
+Размер общей земли
+[Moat width]
+Ширина рва
+[Bridge count]
+Количество мостов
+[Continent size]
+Размер материка
+[Coast roughness]
+Изрезанность побережья
+[Fjord width]
+Ширина фьорда
+[Resource islands]
+Острова с ресурсами

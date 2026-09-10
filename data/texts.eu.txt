@@ -1782,3 +1782,39 @@ Kanalaren zabalera
 Lur-zubiaren zabalera
 [Lake size]
 Aintziraren tamaina
+[Contested commons]
+Lur komun lehiatuak
+[Lattice]
+Sareta
+[Maze]
+Labirintoa
+[Fjord continent]
+Fiordoen kontinentea
+[Islet size]
+Uharte txikiaren tamaina
+[Home radius]
+Hasierako eremuaren erradioa
+[Cell size]
+Gelaxkaren tamaina
+[Room size]
+Gelaren tamaina
+[Corridor width]
+Korridorearen zabalera
+[Loopiness]
+Begizta-maila
+[Home island size]
+Hasierako uhartearen tamaina
+[Commons size]
+Eremu komunaren tamaina
+[Moat width]
+Lubanarroaren zabalera
+[Bridge count]
+Zubi kopurua
+[Continent size]
+Kontinentearen tamaina
+[Coast roughness]
+Kostaldearen irregulartasuna
+[Fjord width]
+Fiordoaren zabalera
+[Resource islands]
+Baliabide-uharteak

@@ -1,0 +1,338 @@
+[
+  {
+    "method": 1,
+    "seed": 22001,
+    "success": true,
+    "hash": "14920531807079716896",
+    "role": "fixed"
+  },
+  {
+    "method": 1,
+    "seed": 22002,
+    "success": true,
+    "hash": "11206795816039919690",
+    "role": "fixed"
+  },
+  {
+    "method": 1,
+    "seed": 22003,
+    "success": true,
+    "hash": "9177038106079592176",
+    "role": "fixed"
+  },
+  {
+    "method": 1,
+    "seed": 20027,
+    "success": true,
+    "hash": "544194403467468821",
+    "role": "weak-start"
+  },
+  {
+    "method": 2,
+    "seed": 22001,
+    "success": true,
+    "hash": "11437096384349004182",
+    "role": "fixed"
+  },
+  {
+    "method": 2,
+    "seed": 22002,
+    "success": true,
+    "hash": "14770049955031301025",
+    "role": "fixed"
+  },
+  {
+    "method": 2,
+    "seed": 22003,
+    "success": true,
+    "hash": "6504539841165983025",
+    "role": "fixed"
+  },
+  {
+    "method": 2,
+    "seed": 20874,
+    "success": true,
+    "hash": "1561439438145097576",
+    "role": "weak-start"
+  },
+  {
+    "method": 3,
+    "seed": 22001,
+    "success": true,
+    "hash": "9860058263762090266",
+    "role": "fixed"
+  },
+  {
+    "method": 3,
+    "seed": 22002,
+    "success": true,
+    "hash": "5210807649688818574",
+    "role": "fixed"
+  },
+  {
+    "method": 3,
+    "seed": 22003,
+    "success": true,
+    "hash": "10803015415216018498",
+    "role": "fixed"
+  },
+  {
+    "method": 3,
+    "seed": 20665,
+    "success": true,
+    "hash": "9069473070465845841",
+    "role": "weak-start"
+  },
+  {
+    "method": 4,
+    "seed": 22001,
+    "success": true,
+    "hash": "5044719679931046782",
+    "role": "fixed"
+  },
+  {
+    "method": 4,
+    "seed": 22002,
+    "success": true,
+    "hash": "16710061729624559854",
+    "role": "fixed"
+  },
+  {
+    "method": 4,
+    "seed": 22003,
+    "success": true,
+    "hash": "5470594655607351316",
+    "role": "fixed"
+  },
+  {
+    "method": 4,
+    "seed": 20992,
+    "success": true,
+    "hash": "13598708499441320366",
+    "role": "weak-start"
+  },
+  {
+    "method": 5,
+    "seed": 22001,
+    "success": true,
+    "hash": "4081282500915162465",
+    "role": "fixed"
+  },
+  {
+    "method": 5,
+    "seed": 22002,
+    "success": true,
+    "hash": "518787808480994771",
+    "role": "fixed"
+  },
+  {
+    "method": 5,
+    "seed": 22003,
+    "success": true,
+    "hash": "10208999434179203736",
+    "role": "fixed"
+  },
+  {
+    "method": 5,
+    "seed": 20382,
+    "success": true,
+    "hash": "3929662265599224957",
+    "role": "weak-start"
+  },
+  {
+    "method": 6,
+    "seed": 22001,
+    "success": true,
+    "hash": "15492766370562744084",
+    "role": "fixed"
+  },
+  {
+    "method": 6,
+    "seed": 22002,
+    "success": true,
+    "hash": "16842018058235473864",
+    "role": "fixed"
+  },
+  {
+    "method": 6,
+    "seed": 22003,
+    "success": true,
+    "hash": "13407323231470023606",
+    "role": "fixed"
+  },
+  {
+    "method": 6,
+    "seed": 20989,
+    "success": true,
+    "hash": "14400468275467415138",
+    "role": "weak-start"
+  },
+  {
+    "method": 7,
+    "seed": 22001,
+    "success": true,
+    "hash": "11574187082192437596",
+    "role": "fixed"
+  },
+  {
+    "method": 7,
+    "seed": 22002,
+    "success": true,
+    "hash": "4034283354063186255",
+    "role": "fixed"
+  },
+  {
+    "method": 7,
+    "seed": 22003,
+    "success": true,
+    "hash": "6154660420075554243",
+    "role": "fixed"
+  },
+  {
+    "method": 7,
+    "seed": 20666,
+    "success": true,
+    "hash": "5979258390125815431",
+    "role": "weak-start"
+  },
+  {
+    "method": 8,
+    "seed": 22001,
+    "success": true,
+    "hash": "5116402118393623094",
+    "role": "fixed"
+  },
+  {
+    "method": 8,
+    "seed": 22002,
+    "success": true,
+    "hash": "11962301441114388923",
+    "role": "fixed"
+  },
+  {
+    "method": 8,
+    "seed": 22003,
+    "success": true,
+    "hash": "6485435245488238917",
+    "role": "fixed"
+  },
+  {
+    "method": 8,
+    "seed": 20412,
+    "success": true,
+    "hash": "4564946222045695100",
+    "role": "weak-start"
+  },
+  {
+    "method": 9,
+    "seed": 22001,
+    "success": true,
+    "hash": "17350664697783344402",
+    "role": "fixed"
+  },
+  {
+    "method": 9,
+    "seed": 22002,
+    "success": true,
+    "hash": "4057095887845812880",
+    "role": "fixed"
+  },
+  {
+    "method": 9,
+    "seed": 22003,
+    "success": true,
+    "hash": "5606765741091488537",
+    "role": "fixed"
+  },
+  {
+    "method": 9,
+    "seed": 20335,
+    "success": true,
+    "hash": "1400871654614562697",
+    "role": "weak-start"
+  },
+  {
+    "method": 10,
+    "seed": 22001,
+    "success": true,
+    "hash": "8489149481487705140",
+    "role": "fixed"
+  },
+  {
+    "method": 10,
+    "seed": 22002,
+    "success": true,
+    "hash": "14038765396739683628",
+    "role": "fixed"
+  },
+  {
+    "method": 10,
+    "seed": 22003,
+    "success": true,
+    "hash": "13729186607969906376",
+    "role": "fixed"
+  },
+  {
+    "method": 10,
+    "seed": 20204,
+    "success": true,
+    "hash": "6476948285032075565",
+    "role": "weak-start"
+  },
+  {
+    "method": 11,
+    "seed": 22001,
+    "success": true,
+    "hash": "16784330220506045212",
+    "role": "fixed"
+  },
+  {
+    "method": 11,
+    "seed": 22002,
+    "success": true,
+    "hash": "8998178716352640516",
+    "role": "fixed"
+  },
+  {
+    "method": 11,
+    "seed": 22003,
+    "success": true,
+    "hash": "2020498579335314712",
+    "role": "fixed"
+  },
+  {
+    "method": 11,
+    "seed": 20166,
+    "success": true,
+    "hash": "8525398947293004777",
+    "role": "weak-start"
+  },
+  {
+    "method": 12,
+    "seed": 22001,
+    "success": true,
+    "hash": "10008600412084261952",
+    "role": "fixed"
+  },
+  {
+    "method": 12,
+    "seed": 22002,
+    "success": true,
+    "hash": "9047696792498758786",
+    "role": "fixed"
+  },
+  {
+    "method": 12,
+    "seed": 22003,
+    "success": true,
+    "hash": "13791541075664039917",
+    "role": "fixed"
+  },
+  {
+    "method": 12,
+    "seed": 20058,
+    "success": true,
+    "hash": "1776682512706564171",
+    "role": "weak-start"
+  }
+]

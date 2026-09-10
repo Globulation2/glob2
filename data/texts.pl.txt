@@ -1772,3 +1772,39 @@ Szerokość kanału
 Szerokość mostu lądowego
 [Lake size]
 Wielkość jeziora
+[Contested commons]
+Sporny teren wspólny
+[Lattice]
+Siatka
+[Maze]
+Labirynt
+[Fjord continent]
+Kontynent fiordowy
+[Islet size]
+Rozmiar wysepki
+[Home radius]
+Promień obszaru startowego
+[Cell size]
+Rozmiar komórki
+[Room size]
+Rozmiar pomieszczenia
+[Corridor width]
+Szerokość korytarza
+[Loopiness]
+Liczba pętli
+[Home island size]
+Rozmiar wyspy startowej
+[Commons size]
+Rozmiar terenu wspólnego
+[Moat width]
+Szerokość fosy
+[Bridge count]
+Liczba mostów
+[Continent size]
+Rozmiar kontynentu
+[Coast roughness]
+Urozmaicenie wybrzeża
+[Fjord width]
+Szerokość fiordu
+[Resource islands]
+Wyspy z surowcami

@@ -4,7 +4,6 @@
 #pragma once
 
 #include <GUIBase.h>
-#include "MapGenerationDescriptor.h"
 #include <string>
 #include "MapThumbnail.h"
 

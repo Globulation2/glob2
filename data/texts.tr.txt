@@ -1780,3 +1780,39 @@ Kanal genişliği
 Kara köprüsü genişliği
 [Lake size]
 Göl boyutu
+[Contested commons]
+Çekişmeli ortak alan
+[Lattice]
+Kafes
+[Maze]
+Labirent
+[Fjord continent]
+Fiyort kıtası
+[Islet size]
+Adacık boyutu
+[Home radius]
+Üs yarıçapı
+[Cell size]
+Hücre boyutu
+[Room size]
+Oda boyutu
+[Corridor width]
+Koridor genişliği
+[Loopiness]
+Döngü yoğunluğu
+[Home island size]
+Başlangıç adası boyutu
+[Commons size]
+Ortak alan boyutu
+[Moat width]
+Su hendeği genişliği
+[Bridge count]
+Köprü sayısı
+[Continent size]
+Kıta boyutu
+[Coast roughness]
+Kıyı girintiliği
+[Fjord width]
+Fiyort genişliği
+[Resource islands]
+Kaynak adaları

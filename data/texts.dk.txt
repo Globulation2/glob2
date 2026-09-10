@@ -1848,3 +1848,39 @@ Kanalbredde
 Landbroens bredde
 [Lake size]
 Søstørrelse
+[Contested commons]
+Omstridt fællesområde
+[Lattice]
+Gitter
+[Maze]
+Labyrint
+[Fjord continent]
+Fjordkontinent
+[Islet size]
+Holmstørrelse
+[Home radius]
+Radius for startområde
+[Cell size]
+Cellestørrelse
+[Room size]
+Rumstørrelse
+[Corridor width]
+Korridorbredde
+[Loopiness]
+Løkketæthed
+[Home island size]
+Størrelse på startø
+[Commons size]
+Størrelse på fællesområde
+[Moat width]
+Voldgravsbredde
+[Bridge count]
+Antal broer
+[Continent size]
+Kontinentstørrelse
+[Coast roughness]
+Kystens ujævnhed
+[Fjord width]
+Fjordbredde
+[Resource islands]
+Ressourceøer

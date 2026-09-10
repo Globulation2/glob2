@@ -1770,3 +1770,39 @@ Larĝo de kanalo
 Larĝo de terponto
 [Lake size]
 Grandeco de lago
+[Contested commons]
+Pridisputata komunareo
+[Lattice]
+Krado
+[Maze]
+Labirinto
+[Fjord continent]
+Fjorda kontinento
+[Islet size]
+Grandeco de insuleto
+[Home radius]
+Radiuso de hejmareo
+[Cell size]
+Grandeco de ĉelo
+[Room size]
+Grandeco de ĉambro
+[Corridor width]
+Larĝo de koridoro
+[Loopiness]
+Bukleco
+[Home island size]
+Grandeco de hejminsulo
+[Commons size]
+Grandeco de komunareo
+[Moat width]
+Larĝo de fosaĵo
+[Bridge count]
+Nombro de pontoj
+[Continent size]
+Grandeco de kontinento
+[Coast roughness]
+Malglateco de marbordo
+[Fjord width]
+Larĝo de fjordo
+[Resource islands]
+Rimedinsuloj

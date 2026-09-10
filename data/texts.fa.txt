@@ -1770,3 +1770,39 @@ OpenGL در این بیلد موجود نیست.
 پهنای پل خشکی
 [Lake size]
 اندازهٔ دریاچه
+[Contested commons]
+سرزمین مشترک مورد مناقشه
+[Lattice]
+شبکه
+[Maze]
+هزارتو
+[Fjord continent]
+قارهٔ آبدره‌ای
+[Islet size]
+اندازهٔ جزیرهٔ کوچک
+[Home radius]
+شعاع پایگاه
+[Cell size]
+اندازهٔ سلول
+[Room size]
+اندازهٔ اتاق
+[Corridor width]
+پهنای راهرو
+[Loopiness]
+میزان حلقه‌دار بودن
+[Home island size]
+اندازهٔ جزیرهٔ آغازین
+[Commons size]
+اندازهٔ سرزمین مشترک
+[Moat width]
+پهنای خندق آبی
+[Bridge count]
+تعداد پل‌ها
+[Continent size]
+اندازهٔ قاره
+[Coast roughness]
+ناهمواری ساحل
+[Fjord width]
+پهنای آبدره
+[Resource islands]
+جزایر منابع

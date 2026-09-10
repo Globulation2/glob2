@@ -1834,3 +1834,39 @@ Larghezza del canale
 Larghezza del ponte terrestre
 [Lake size]
 Dimensione del lago
+[Contested commons]
+Territori comuni contesi
+[Lattice]
+Reticolo
+[Maze]
+Labirinto
+[Fjord continent]
+Continente dei fiordi
+[Islet size]
+Dimensione dell'isolotto
+[Home radius]
+Raggio dell'area iniziale
+[Cell size]
+Dimensione delle celle
+[Room size]
+Dimensione delle stanze
+[Corridor width]
+Larghezza dei corridoi
+[Loopiness]
+Densità dei cicli
+[Home island size]
+Dimensione dell'isola iniziale
+[Commons size]
+Dimensione dell'area comune
+[Moat width]
+Larghezza del fossato
+[Bridge count]
+Numero di ponti
+[Continent size]
+Dimensione del continente
+[Coast roughness]
+Irregolarità della costa
+[Fjord width]
+Larghezza del fiordo
+[Resource islands]
+Isole di risorse

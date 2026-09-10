@@ -1780,3 +1780,39 @@ Amplada del canal
 Amplada del pont de terra
 [Lake size]
 Mida del llac
+[Contested commons]
+Terres comunals disputades
+[Lattice]
+Retícula
+[Maze]
+Laberint
+[Fjord continent]
+Continent de fiords
+[Islet size]
+Mida de l'illot
+[Home radius]
+Radi de l'àrea inicial
+[Cell size]
+Mida de la cel·la
+[Room size]
+Mida de la sala
+[Corridor width]
+Amplada del passadís
+[Loopiness]
+Densitat de bucles
+[Home island size]
+Mida de l'illa inicial
+[Commons size]
+Mida de l'àrea comuna
+[Moat width]
+Amplada del fossat
+[Bridge count]
+Nombre de ponts
+[Continent size]
+Mida del continent
+[Coast roughness]
+Irregularitat de la costa
+[Fjord width]
+Amplada del fiord
+[Resource islands]
+Illes de recursos

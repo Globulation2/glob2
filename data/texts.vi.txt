@@ -1768,3 +1768,39 @@ Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển 
 Độ rộng cầu đất
 [Lake size]
 Kích thước hồ
+[Contested commons]
+Vùng đất chung tranh chấp
+[Lattice]
+Mạng lưới
+[Maze]
+Mê cung
+[Fjord continent]
+Lục địa vịnh hẹp
+[Islet size]
+Kích thước đảo nhỏ
+[Home radius]
+Bán kính căn cứ
+[Cell size]
+Kích thước ô
+[Room size]
+Kích thước phòng
+[Corridor width]
+Độ rộng hành lang
+[Loopiness]
+Mật độ vòng lặp
+[Home island size]
+Kích thước đảo khởi đầu
+[Commons size]
+Kích thước vùng đất chung
+[Moat width]
+Độ rộng hào nước
+[Bridge count]
+Số lượng cầu
+[Continent size]
+Kích thước lục địa
+[Coast roughness]
+Độ khúc khuỷu của bờ biển
+[Fjord width]
+Độ rộng vịnh hẹp
+[Resource islands]
+Đảo tài nguyên

@@ -1768,3 +1768,39 @@ Globulation 2 のカーソルを表示します。
 陸橋の幅
 [Lake size]
 湖の大きさ
+[Contested commons]
+争奪共有地
+[Lattice]
+格子
+[Maze]
+迷路
+[Fjord continent]
+フィヨルド大陸
+[Islet size]
+小島の大きさ
+[Home radius]
+拠点の半径
+[Cell size]
+マスの大きさ
+[Room size]
+部屋の大きさ
+[Corridor width]
+通路の幅
+[Loopiness]
+ループの多さ
+[Home island size]
+開始地点の島の大きさ
+[Commons size]
+共有地の大きさ
+[Moat width]
+堀の幅
+[Bridge count]
+橋の数
+[Continent size]
+大陸の大きさ
+[Coast roughness]
+海岸線の複雑さ
+[Fjord width]
+フィヨルドの幅
+[Resource islands]
+資源島

@@ -1842,3 +1842,39 @@ Cortex
 Πλάτος χερσαίας γέφυρας
 [Lake size]
 Μέγεθος λίμνης
+[Contested commons]
+Διεκδικούμενη κοινή γη
+[Lattice]
+Πλέγμα
+[Maze]
+Λαβύρινθος
+[Fjord continent]
+Ήπειρος με φιόρδ
+[Islet size]
+Μέγεθος νησίδας
+[Home radius]
+Ακτίνα αρχικής περιοχής
+[Cell size]
+Μέγεθος κελιού
+[Room size]
+Μέγεθος δωματίου
+[Corridor width]
+Πλάτος διαδρόμου
+[Loopiness]
+Βαθμός διασύνδεσης
+[Home island size]
+Μέγεθος αρχικού νησιού
+[Commons size]
+Μέγεθος κοινής περιοχής
+[Moat width]
+Πλάτος τάφρου
+[Bridge count]
+Αριθμός γεφυρών
+[Continent size]
+Μέγεθος ηπείρου
+[Coast roughness]
+Τραχύτητα ακτογραμμής
+[Fjord width]
+Πλάτος φιόρδ
+[Resource islands]
+Νησιά πόρων

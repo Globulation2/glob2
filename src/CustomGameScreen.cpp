@@ -1,13 +1,16 @@
+#include "GenerationContext.h"
+#include "GeneratorRegistry.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
 #include "CustomGamePreferences.h"
 #include "AINames.h"
+#include "CustomGameScreen.h"
 #include "GUIMapPreview.h"
 #include "Game.h"
+#include "GenerationService.h"
 #include "GlobalContainer.h"
 #include "LobbyControls.h"
 #include "LobbyMapCatalog.h"
-#include "MapGenerator.h"
 #include "Player.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -25,9 +28,8 @@ const Uint32 A = ALIGN_SCREEN_CENTERED;
 const std::vector<std::string> methods = []
 {
 	std::vector<std::string> result;
-	for (int m = MapGenerationDescriptor::eSWAMP; m <= MapGenerationDescriptor::eOLDISLANDS; ++m)
-		result.emplace_back(
-			MapGenerationDescriptor::methodName(static_cast<MapGenerationDescriptor::Method>(m)));
+	for (int m : GeneratorRegistry::builtins().methods(false))
+		result.emplace_back(GenerationRequest::methodName(m));
 	return result;
 }();
 std::vector<std::string> localized(std::vector<std::string> v)
@@ -420,21 +422,28 @@ bool CustomGameScreen::generateMap()
 			throw std::runtime_error("snapshot directory");
 		candidate = (directory / "preview.map").string();
 		std::unique_ptr<Game> game;
-		MapGenerator generator;
+		GenerationService generator;
+		const auto rootSeed = GenerationContext::randomSeed();
+		GenerationResult generationResult;
 		setup.generator.nbTeams = setup.capacity;
 		// Some rolls cannot fit every starting colony. Retry those rolls before
 		// reporting failure; only the successful world becomes the preview.
 		for (int attempt = 0; attempt < 5; ++attempt)
 		{
 			game = std::make_unique<Game>(nullptr);
-			if (generator.generateMap(*game, setup.generator) &&
-				game->teamsCount() == setup.capacity)
+			auto request = setup.generator;
+			request.seed =
+				GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
+			generationResult = generator.generate(*game, request);
+			std::cout << "Map generation: " << generationResult.diagnostic() << std::endl;
+			if (generationResult && game->teamsCount() == setup.capacity)
 				break;
 			game.reset();
 		}
 		if (!game)
-			throw std::runtime_error("generation");
+			throw std::runtime_error(generationResult.diagnostic());
 		GameHeader initial;
+		initial.setRandomSeed(generationResult.seed);
 		setup.writeHeader(initial, username);
 		game->setGameHeader(initial);
 		{
@@ -454,8 +463,9 @@ bool CustomGameScreen::generateMap()
 		message = tr("Preview ready. Start plays this exact map.");
 		return true;
 	}
-	catch (const std::exception &)
+	catch (const std::exception &error)
 	{
+		std::cerr << "Map preview: " << error.what() << std::endl;
 		if (!candidate.empty())
 			std::filesystem::remove_all(std::filesystem::path(candidate).parent_path());
 		validMap = false;
@@ -573,7 +583,8 @@ void CustomGameScreen::renderLobby()
 	speed.gameSpeed = setup.speed;
 	std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
 	std::vector<std::string> details = {
-		setup.random ? tr(methods[setup.generator.method - 1]) : mapHeader.getMapName(),
+		setup.random ? tr(GenerationRequest::methodName(setup.generator.method))
+					 : mapHeader.getMapName(),
 		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + tr(setup.format),
 		tr(setup.ruleset)};
 	for (int i = 0; i < 3; ++i)
@@ -798,19 +809,16 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		else
 		{
 			if (setup.random)
-				ui.stepper(
-					"rule/workers", {fieldX, yy + 5, 130, 29}, setup.generator.nbWorkers,
-					MapGenerationDescriptor::control(setup.generator.method, "Starting workers")
-						.minimum,
-					MapGenerationDescriptor::control(setup.generator.method, "Starting workers")
-						.maximum,
-					[this](int v)
-					{
-						setup.generator.nbWorkers = v;
-						++setup.mapRevision;
-						setup.ruleset = "Custom";
-						invalidate();
-					});
+				ui.stepper("rule/workers", {fieldX, yy + 5, 130, 29}, setup.generator.nbWorkers,
+						   GenerationRequest::control(setup.generator.method, "workers").minimum,
+						   GenerationRequest::control(setup.generator.method, "workers").maximum,
+						   [this](int v)
+						   {
+							   setup.generator.nbWorkers = v;
+							   ++setup.mapRevision;
+							   setup.ruleset = "Custom";
+							   invalidate();
+						   });
 			else
 				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
 			help = tr(setup.random ? "More workers jump-start colony growth. Changes the "
@@ -886,40 +894,40 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		};
 		ui.text(x + 4, yy, tr("Landscape"), "little", leftW - 20, true);
 		yy += 18;
-		ui.dropdown(
-			"generator/landscape", {x, yy, leftW - 16, 30}, localized(methods), g.method - 1,
-			[this, changed](int value)
-			{
-				setup.generatorHistory.select(
-					setup.generator, static_cast<MapGenerationDescriptor::Method>(value + 1));
-				changed();
-			});
+		ui.dropdown("generator/landscape", {x, yy, leftW - 16, 30}, localized(methods),
+					GeneratorRegistry::builtins().selectionIndex(g.method, false),
+					[this, changed](int value)
+					{
+						setup.generatorHistory.select(
+							setup.generator,
+							GeneratorRegistry::builtins().methods(false).at(value));
+						changed();
+					});
 		yy += 40;
-		auto discrete = [&](const MapGenerationDescriptor::Control &c, const std::string &id)
+		auto discrete = [&](const GenerationRequest::Control &c, const std::string &id)
 		{
 			ui.text(x + 4, yy + 7, tr(c.label), "little", 110, true);
 			std::vector<std::string> options;
-			for (int v = c.minimum; v <= c.maximum; v += c.step)
-				options.push_back(std::to_string(c.powerOfTwo ? (1 << v) : v));
-			ui.dropdown(id, {x + 112, yy, leftW - 128, 28}, options,
-						(c.get(g) - c.minimum) / c.step,
+			for (int v : c.values())
+				options.push_back(std::to_string(c.displayValue(v)));
+			ui.dropdown(id, {x + 112, yy, leftW - 128, 28}, options, c.indexOf(c.get(g)),
 						[this, c, changed](int i)
 						{
-							c.set(setup.generator, c.minimum + i * c.step);
-							if (c.field == &MapGenerationDescriptor::nbTeams)
+							c.set(setup.generator, c.valueAt(i));
+							if (c.id == "teams")
 								setup.setCapacity(setup.generator.nbTeams);
 							changed();
 						});
 			yy += 36;
 		};
-		for (const auto &c : MapGenerationDescriptor::sharedControls())
-			if (c.field != &MapGenerationDescriptor::nbWorkers)
+		for (const auto &c : GenerationRequest::sharedControls())
+			if (c.id != "workers")
 			{
-				if (c.field == &MapGenerationDescriptor::nbTeams)
+				if (c.id == "teams")
 					g.nbTeams = setup.capacity;
-				const char *id = c.field == &MapGenerationDescriptor::wDec	 ? "generator/width"
-								 : c.field == &MapGenerationDescriptor::hDec ? "generator/height"
-																			 : "generator/colonies";
+				const char *id = c.id == "width"	? "generator/width"
+								 : c.id == "height" ? "generator/height"
+													: "generator/colonies";
 				discrete(c, id);
 			}
 
@@ -936,15 +944,15 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			if (!expanded[section])
 				continue;
 			bool any = false;
-			for (const auto &c : MapGenerationDescriptor::controls(g.method))
+			for (const auto &c : GenerationRequest::controls(g.method))
 			{
 				if (static_cast<int>(c.group) != section)
 					continue;
 				any = true;
-				std::string id = "generator/" + std::string(c.label);
-				if (c.powerOfTwo)
+				std::string id = "generator/" + c.id;
+				if (c.powerOfTwo || !c.allowedValues.empty())
 				{
-					discrete(c, "generator/repeat");
+					discrete(c, id);
 					continue;
 				}
 				ui.text(x + 5, yy, tr(c.label), "little", leftW - 55, true);
@@ -977,10 +985,11 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		ui.endRegion(yy - startY + 8);
 	}
 	ui.text(rightX, top,
-			setup.random ? tr(methods[setup.generator.method - 1]) : mapHeader.getMapName(),
+			setup.random ? tr(GenerationRequest::methodName(setup.generator.method))
+						 : mapHeader.getMapName(),
 			w < 800 ? "standard" : "menu", rightW);
-	std::string dimensions = validMap ? std::to_string(preview->getLastWidth()) + " x " +
-											std::to_string(preview->getLastHeight())
+	std::string dimensions = validMap		? std::to_string(preview->getLastWidth()) + " x " +
+												  std::to_string(preview->getLastHeight())
 							 : setup.random ? std::to_string(1 << setup.generator.wDec) + " x " +
 												  std::to_string(1 << setup.generator.hDec)
 											: "";

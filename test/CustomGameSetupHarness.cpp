@@ -25,16 +25,14 @@
 #include <unistd.h>
 
 GlobalContainer *globalContainer = nullptr;
-struct CountingAI : AIImplementation
-{
-	int calls = 0;
-	bool load(GAGCore::InputStream *, Player *, Sint32) override { return true; }
-	void save(GAGCore::OutputStream *) override {}
-	std::shared_ptr<Order> getOrder() override
-	{
-		++calls;
-		return std::make_shared<NullOrder>();
-	}
+struct CountingAI : AIImplementation {
+  int calls = 0;
+  bool load(GAGCore::InputStream *, Player *, Sint32) override { return true; }
+  void save(GAGCore::OutputStream *) override {}
+  std::shared_ptr<Order> getOrder() override {
+    ++calls;
+    return std::make_shared<NullOrder>();
+  }
 };
 struct CustomGameSetupHarness
 {
@@ -261,67 +259,67 @@ struct CustomGameSetupHarness
 		}
 		click("Launch", 540, 445);
 
-		globalContainer->settings.gameSpeed = 7;
-		{
-			Engine engine;
-			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
-			assert(timer);
-			auto watchdog = SDL_AddTimer(
-				20000,
-				[](Uint32, void *) -> Uint32
-				{
-					SDL_Event event = {};
-					event.type = SDL_QUIT;
-					SDL_PushEvent(&event);
-					return 0;
-				},
-				nullptr);
-			int result = engine.initCustom();
-			SDL_RemoveTimer(timer);
-			SDL_RemoveTimer(watchdog);
-			assert(result == Engine::EE_NO_ERROR);
-			assert(driver.next == driver.steps.size());
-			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
-			assert(globalContainer->settings.gameSpeed == 3);
-			assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
-				   (control == CustomGameSetup::Shared ? 5 : 4));
-			assert(engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
-					   ->ai->implementationID == AI::NICOWAR);
-			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
-				   engine.gui.game.gameHeader.getAllyTeamNumber(1));
-			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
-				   engine.gui.game.gameHeader.getAllyTeamNumber(2));
-			if (globalContainer->liveSpectating)
-			{
-				SDL_Event pause = {};
-				pause.type = SDL_KEYDOWN;
-				pause.key.keysym.sym = SDLK_p;
-				engine.gui.processEvent(&pause);
-				assert(engine.gui.hardPause);
-				engine.gui.processEvent(&pause);
-				assert(!engine.gui.hardPause);
-			}
-			globalContainer->settings.save(); // Simulate persisting in-game options.
-			globalContainer->automaticEndingGame = true;
-			globalContainer->automaticEndingSteps = 30;
-			globalContainer->automaticGameGlobalEndConditions = true;
-			engine.run();
-			{
-				FrontendScope gameplay(false);
-				engine.gui.drawAll(engine.gui.localTeamNo);
-				globalContainer->gfx->printScreen(output + "/live-control-" +
-												  std::to_string(control) + ".bmp");
-			}
-		}
-		assert(globalContainer->settings.gameSpeed == 7);
-		Settings persisted;
-		persisted.load();
-		assert(persisted.gameSpeed == 7);
-		std::cout << "PASS full SDL UI flow mode " << control
-				  << ": clicks, nested choices, shared control, presets, profiles, "
-					 "random preview, "
-					 "match launch and speed restoration\n";
-	}
+    globalContainer->settings.gameSpeed = 7;
+    {
+      Engine engine;
+      auto timer = SDL_AddTimer(500, Driver::tick, &driver);
+      assert(timer);
+      auto watchdog = SDL_AddTimer(
+          20000,
+          [](Uint32, void *) -> Uint32 {
+            SDL_Event event = {};
+            event.type = SDL_QUIT;
+            SDL_PushEvent(&event);
+            return 0;
+          },
+          nullptr);
+      int result = engine.initCustom();
+      SDL_RemoveTimer(timer);
+      SDL_RemoveTimer(watchdog);
+      assert(result == Engine::EE_NO_ERROR);
+      assert(driver.next == driver.steps.size());
+      assert(globalContainer->liveSpectating ==
+             (control == CustomGameSetup::Computer));
+      assert(globalContainer->settings.gameSpeed == 3);
+      assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
+             (control == CustomGameSetup::Shared ? 5 : 4));
+      assert(
+          engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
+              ->ai->implementationID == AI::NICOWAR);
+      assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
+             engine.gui.game.gameHeader.getAllyTeamNumber(1));
+      assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
+             engine.gui.game.gameHeader.getAllyTeamNumber(2));
+      if (globalContainer->liveSpectating) {
+        SDL_Event pause = {};
+        pause.type = SDL_KEYDOWN;
+        pause.key.keysym.sym = SDLK_p;
+        engine.gui.processEvent(&pause);
+        assert(engine.gui.hardPause);
+        engine.gui.processEvent(&pause);
+        assert(!engine.gui.hardPause);
+      }
+      globalContainer->settings.save(); // Simulate persisting in-game options.
+      globalContainer->automaticEndingGame = true;
+      globalContainer->automaticEndingSteps = 30;
+      globalContainer->automaticGameGlobalEndConditions = true;
+      engine.run();
+      {
+        FrontendScope gameplay(false);
+        engine.gui.drawAll(engine.gui.localTeamNo);
+        globalContainer->gfx->printScreen(output + "/live-control-" +
+                                          std::to_string(control) + ".bmp");
+      }
+    }
+    assert(globalContainer->settings.gameSpeed == 7);
+    Settings persisted;
+    persisted.load();
+    assert(persisted.gameSpeed == 7);
+    std::cout << "PASS full SDL UI flow mode " << control
+              << ": clicks, nested choices, shared control, presets, profiles, "
+                 "random preview, "
+                 "match launch and speed restoration\n";
+  }
 
 	static void visual(const std::string &output)
 	{
@@ -340,279 +338,284 @@ struct CustomGameSetupHarness
 			assert(profile.returnCode == AINames::selectionIndex(AI::CORTEX));
 		}
 
-		CustomGameScreen screen;
-		screen.gfx = globalContainer->gfx;
-		screen.dispatchInit();
-		assert(screen.validMap && screen.setup.capacity == 4);
-		screen.separateMapLibraries = false;
-		screen.listMaps();
-		assert(
-			std::any_of(screen.mapPaths.begin(), screen.mapPaths.end(), [](const auto &path)
-						{ return std::filesystem::path(path).filename() == "FourSquares1.map"; }));
-		screen.separateMapLibraries = true;
-		screen.listMaps();
+    CustomGameScreen screen;
+    screen.gfx = globalContainer->gfx;
+    screen.dispatchInit();
+    assert(screen.validMap && screen.setup.capacity == 4);
+    screen.separateMapLibraries = false;
+    screen.listMaps();
+    assert(std::any_of(
+        screen.mapPaths.begin(), screen.mapPaths.end(), [](const auto &path) {
+          return std::filesystem::path(path).filename() == "FourSquares1.map";
+        }));
+    screen.separateMapLibraries = true;
+    screen.listMaps();
 
-		auto paint = [&] { screen.dispatchPaint(false); };
-		auto keyEvent = [&](SDL_Keycode key)
-		{
-			SDL_Event e = {};
-			e.type = SDL_KEYDOWN;
-			e.key.keysym.sym = key;
-			screen.dispatchEvents(&e);
-			paint();
-		};
-		auto clickControl = [&](const std::string &id)
-		{
-			paint();
-			auto find = [&]
-			{
-				return std::find_if(screen.controls->hits.begin(), screen.controls->hits.end(),
-									[&](const auto &hit) { return hit.id == id; });
-			};
-			auto hit = find();
-			assert(hit != screen.controls->hits.end());
-			if (hit->region >= 0)
-			{
-				auto &r = screen.controls->regions[hit->region];
-				if (hit->box.y < r.box.y)
-					screen.controls->scroll(hit->region, hit->box.y - r.box.y);
-				else if (hit->box.y + hit->box.h > r.box.y + r.box.h)
-					screen.controls->scroll(hit->region,
-											hit->box.y + hit->box.h - r.box.y - r.box.h);
-				paint();
-				hit = find();
-			}
-			auto r = hit->box;
-			for (auto type : {SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP})
-			{
-				SDL_Event e = {};
-				e.type = type;
-				e.button.button = SDL_BUTTON_LEFT;
-				e.button.x = r.x + r.w / 2;
-				e.button.y = r.y + r.h / 2;
-				screen.dispatchEvents(&e);
-			}
-			paint();
-		};
-		// Canonical identity, including repeated roots and symlink aliases.
-		auto fixture = std::filesystem::temp_directory_path() /
-					   ("glob2-lobby-catalog-test-" + std::to_string(SDL_GetTicks()));
-		std::filesystem::remove_all(fixture);
-		std::filesystem::create_directories(fixture / "one");
-		std::filesystem::create_directories(fixture / "two");
-		for (auto name : {"one/zebra.map", "one/Alpha.map", "two/Alpha.map"})
-		{
-			std::ofstream file(fixture / name);
-			file << "fixture";
-		}
-		std::filesystem::create_directory_symlink(fixture / "one", fixture / "alias");
-		auto catalog =
-			lobbyMapCatalog({fixture / "one", fixture / "one", fixture / "alias", fixture / "two"});
-		assert(catalog.size() == 3 && catalog[0].name.find("Alpha") == 0 &&
-			   catalog[1].name.find("Alpha") == 0 && catalog[2].name == "zebra");
-		assert(catalog[0].name != catalog[1].name);
-		std::filesystem::remove_all(fixture);
-		assert(std::set<std::string>(screen.mapPaths.begin(), screen.mapPaths.end()).size() ==
-			   screen.mapPaths.size());
-		paint();
-		auto &mapRegion = screen.controls->regions[10];
-		mapRegion.offset = std::min(56, mapRegion.maximum);
-		paint();
-		int savedOffset = mapRegion.offset;
-		int row = savedOffset / 28 + 1;
-		clickControl("map/entry/" + std::to_string(row));
-		assert(mapRegion.offset == savedOffset);
-		keyEvent(SDLK_DOWN);
-		assert(mapRegion.offset == savedOffset);
-		clickControl("map/library/1");
-		clickControl("map/library/0");
-		assert(mapRegion.offset == savedOffset);
-		assert(screen.librarySelection[0] == screen.source);
-		screen.loadMap("maps/FourSquares1.map");
-		screen.activateGroup(screen.groups[1]);
-		paint();
-		auto alliances = screen.setup.colonies;
-		clickControl("colony/0/controller");
-		assert(screen.controls->popup.open);
-		keyEvent(SDLK_DOWN);
-		keyEvent(SDLK_RETURN);
-		assert(screen.setup.colonies[0].controller == CustomGameSetup::Computer);
-		for (int i = 0; i < 4; ++i)
-			assert(screen.setup.colonies[i].alliance == alliances[i].alliance);
-		assert(screen.controls->focus == "colony/0/controller");
-		clickControl("colony/0/controller");
-		keyEvent(SDLK_DOWN);
-		keyEvent(SDLK_RETURN);
-		assert(screen.setup.colonies[0].controller == CustomGameSetup::Shared);
-		clickControl("colony/1/ai");
-		keyEvent(SDLK_DOWN);
-		keyEvent(SDLK_ESCAPE);
-		assert(screen.setup.colonies[1].ai == AI::NUMBI);
-		clickControl("colony/1/ai");
-		SDL_Event outside = {};
-		outside.type = SDL_MOUSEBUTTONDOWN;
-		outside.button.x = 0;
-		outside.button.y = 0;
-		screen.dispatchEvents(&outside);
-		assert(!screen.controls->popup.open);
-		clickControl("format/1");
-		assert(screen.setup.colonies[0].alliance == screen.setup.colonies[1].alliance);
-		screen.activateGroup(screen.groups[2]);
-		paint();
-		clickControl("rule/1/1");
-		assert(screen.setup.revealed && screen.setup.ruleset == "Custom");
-		int rulesOffset = screen.controls->regions[2].offset;
-		clickControl("rule/1/0");
-		assert(!screen.setup.revealed && screen.controls->regions[2].offset == rulesOffset);
-		clickControl("ruleset/1");
-		assert(screen.setup.speed == 3 && screen.setup.generator.nbWorkers == 8);
-		screen.setup = CustomGameSetup();
-		screen.loadMap("maps/FourSquares1.map");
-		screen.controls->regions[2].offset = 0;
-		screen.activateGroup(screen.groups[0]);
-		screen.controls->regions[10].offset = 0;
-		std::cout << "PASS canonical map catalog, selection stability, inline "
-					 "controls, popup cancel, focus preservation and rules\n";
-		auto capture = [&](const std::string &name)
-		{
-			screen.dispatchPaint(false);
-			globalContainer->gfx->printScreen(output + "/" + name + ".bmp");
-		};
-		capture("map-640");
-		screen.activateGroup(screen.groups[1]);
-		capture("players-640");
-		screen.setup.colonies[1].ai = AI::CORTEX;
-		capture("cortex-640");
-		clickControl("colony/1/ai");
-		capture("ai-dropdown");
-		keyEvent(SDLK_ESCAPE);
+    auto paint = [&] { screen.dispatchPaint(false); };
+    auto keyEvent = [&](SDL_Keycode key) {
+      SDL_Event e = {};
+      e.type = SDL_KEYDOWN;
+      e.key.keysym.sym = key;
+      screen.dispatchEvents(&e);
+      paint();
+    };
+    auto clickControl = [&](const std::string &id) {
+      paint();
+      auto find = [&] {
+        return std::find_if(screen.controls->hits.begin(),
+                            screen.controls->hits.end(),
+                            [&](const auto &hit) { return hit.id == id; });
+      };
+      auto hit = find();
+      assert(hit != screen.controls->hits.end());
+      if (hit->region >= 0) {
+        auto &r = screen.controls->regions[hit->region];
+        if (hit->box.y < r.box.y)
+          screen.controls->scroll(hit->region, hit->box.y - r.box.y);
+        else if (hit->box.y + hit->box.h > r.box.y + r.box.h)
+          screen.controls->scroll(hit->region,
+                                  hit->box.y + hit->box.h - r.box.y - r.box.h);
+        paint();
+        hit = find();
+      }
+      auto r = hit->box;
+      for (auto type : {SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP}) {
+        SDL_Event e = {};
+        e.type = type;
+        e.button.button = SDL_BUTTON_LEFT;
+        e.button.x = r.x + r.w / 2;
+        e.button.y = r.y + r.h / 2;
+        screen.dispatchEvents(&e);
+      }
+      paint();
+    };
+    // Canonical identity, including repeated roots and symlink aliases.
+    auto fixture =
+        std::filesystem::temp_directory_path() /
+        ("glob2-lobby-catalog-test-" + std::to_string(SDL_GetTicks()));
+    std::filesystem::remove_all(fixture);
+    std::filesystem::create_directories(fixture / "one");
+    std::filesystem::create_directories(fixture / "two");
+    for (auto name : {"one/zebra.map", "one/Alpha.map", "two/Alpha.map"}) {
+      std::ofstream file(fixture / name);
+      file << "fixture";
+    }
+    std::filesystem::create_directory_symlink(fixture / "one",
+                                              fixture / "alias");
+    auto catalog = lobbyMapCatalog(
+        {fixture / "one", fixture / "one", fixture / "alias", fixture / "two"});
+    assert(catalog.size() == 3 && catalog[0].name.find("Alpha") == 0 &&
+           catalog[1].name.find("Alpha") == 0 && catalog[2].name == "zebra");
+    assert(catalog[0].name != catalog[1].name);
+    std::filesystem::remove_all(fixture);
+    assert(std::set<std::string>(screen.mapPaths.begin(), screen.mapPaths.end())
+               .size() == screen.mapPaths.size());
+    paint();
+    auto &mapRegion = screen.controls->regions[10];
+    mapRegion.offset = std::min(56, mapRegion.maximum);
+    paint();
+    int savedOffset = mapRegion.offset;
+    int row = savedOffset / 28 + 1;
+    clickControl("map/entry/" + std::to_string(row));
+    assert(mapRegion.offset == savedOffset);
+    keyEvent(SDLK_DOWN);
+    assert(mapRegion.offset == savedOffset);
+    clickControl("map/library/1");
+    clickControl("map/library/0");
+    assert(mapRegion.offset == savedOffset);
+    assert(screen.librarySelection[0] == screen.source);
+    screen.loadMap("maps/FourSquares1.map");
+    screen.activateGroup(screen.groups[1]);
+    paint();
+    auto alliances = screen.setup.colonies;
+    clickControl("colony/0/controller");
+    assert(screen.controls->popup.open);
+    keyEvent(SDLK_DOWN);
+    keyEvent(SDLK_RETURN);
+    assert(screen.setup.colonies[0].controller == CustomGameSetup::Computer);
+    for (int i = 0; i < 4; ++i)
+      assert(screen.setup.colonies[i].alliance == alliances[i].alliance);
+    assert(screen.controls->focus == "colony/0/controller");
+    clickControl("colony/0/controller");
+    keyEvent(SDLK_DOWN);
+    keyEvent(SDLK_RETURN);
+    assert(screen.setup.colonies[0].controller == CustomGameSetup::Shared);
+    clickControl("colony/1/ai");
+    keyEvent(SDLK_DOWN);
+    keyEvent(SDLK_ESCAPE);
+    assert(screen.setup.colonies[1].ai == AI::NUMBI);
+    clickControl("colony/1/ai");
+    SDL_Event outside = {};
+    outside.type = SDL_MOUSEBUTTONDOWN;
+    outside.button.x = 0;
+    outside.button.y = 0;
+    screen.dispatchEvents(&outside);
+    assert(!screen.controls->popup.open);
+    clickControl("format/1");
+    assert(screen.setup.colonies[0].alliance ==
+           screen.setup.colonies[1].alliance);
+    screen.activateGroup(screen.groups[2]);
+    paint();
+    clickControl("rule/1/1");
+    assert(screen.setup.revealed && screen.setup.ruleset == "Custom");
+    int rulesOffset = screen.controls->regions[2].offset;
+    clickControl("rule/1/0");
+    assert(!screen.setup.revealed &&
+           screen.controls->regions[2].offset == rulesOffset);
+    clickControl("ruleset/1");
+    assert(screen.setup.speed == 3 && screen.setup.generator.nbWorkers == 8);
+    screen.setup = CustomGameSetup();
+    screen.loadMap("maps/FourSquares1.map");
+    screen.controls->regions[2].offset = 0;
+    screen.activateGroup(screen.groups[0]);
+    screen.controls->regions[10].offset = 0;
+    std::cout << "PASS canonical map catalog, selection stability, inline "
+                 "controls, popup cancel, focus preservation and rules\n";
+    auto capture = [&](const std::string &name) {
+      screen.dispatchPaint(false);
+      globalContainer->gfx->printScreen(output + "/" + name + ".bmp");
+    };
+    capture("map-640");
+    screen.activateGroup(screen.groups[1]);
+    capture("players-640");
+    screen.setup.colonies[1].ai = AI::CORTEX;
+    capture("cortex-640");
+    clickControl("colony/1/ai");
+    capture("ai-dropdown");
+    keyEvent(SDLK_ESCAPE);
 
-		screen.activateGroup(screen.groups[2]);
-		capture("rules-640");
-		screen.setup.random = true;
-		screen.invalidate();
-		screen.activateGroup(screen.groups[0]);
-		capture("random-controls-640");
-		screen.expanded[0] = screen.expanded[1] = screen.expanded[2] = true;
-		paint();
-		screen.controls->regions[3].offset = 180;
-		capture("generator-expanded");
-		screen.controls->regions[3].offset = 0;
-		// Preview appears from the timer, without a Generate control or click.
-		assert(std::none_of(screen.controls->hits.begin(), screen.controls->hits.end(),
-							[](const auto &h) { return h.id == "map/generate"; }));
-		screen.onTimer(screen.previewDue - 1);
-		assert(!screen.validMap);
-		screen.controls->pressed = "generator/Water weight";
-		screen.onTimer(screen.previewDue);
-		assert(!screen.validMap);
-		screen.controls->pressed.clear();
-		screen.onTimer(screen.previewDue);
-		assert(screen.validMap && !screen.previewPending);
-		auto first = screen.snapshot;
-		auto revision = screen.previewRevision;
-		assert(std::filesystem::exists(first));
-		capture("random-preview-640");
-		screen.setup.colonies[1].ai = AI::CASTOR;
-		screen.setup.presetTeams(1);
-		screen.onTimer(SDL_GetTicks() + 1000);
-		assert(screen.previewRevision == revision && screen.sourceFile() == first);
-		clickControl("generator/Water weight");
-		assert(!screen.validMap && screen.setup.mapRevision != revision);
-		auto water = screen.setup.generator.waterRatio;
-		SDL_Event motion = {};
-		motion.type = SDL_MOUSEMOTION;
-		motion.motion.x = 0;
-		motion.motion.y = 0;
-		screen.dispatchEvents(&motion);
-		assert(screen.setup.generator.waterRatio == water);
-		keyEvent(SDLK_RIGHT);
-		assert(screen.setup.generator.waterRatio == water + 1);
-		assert(screen.setup.colonies[0].alliance == screen.setup.colonies[1].alliance);
+    screen.activateGroup(screen.groups[2]);
+    capture("rules-640");
+    screen.setup.random = true;
+    screen.invalidate();
+    screen.activateGroup(screen.groups[0]);
+    capture("random-controls-640");
+    screen.expanded[0] = screen.expanded[1] = screen.expanded[2] = true;
+    paint();
+    screen.controls->regions[3].offset = 180;
+    capture("generator-expanded");
+    screen.controls->regions[3].offset = 0;
+    // Preview appears from the timer, without a Generate control or click.
+    assert(std::none_of(screen.controls->hits.begin(),
+                        screen.controls->hits.end(),
+                        [](const auto &h) { return h.id == "map/generate"; }));
+    screen.onTimer(screen.previewDue - 1);
+    assert(!screen.validMap);
+    screen.controls->pressed = "generator/water";
+    screen.onTimer(screen.previewDue);
+    assert(!screen.validMap);
+    screen.controls->pressed.clear();
+    screen.onTimer(screen.previewDue);
+    assert(screen.validMap && !screen.previewPending);
+    auto first = screen.snapshot;
+    auto revision = screen.previewRevision;
+    assert(std::filesystem::exists(first));
+    capture("random-preview-640");
+    screen.setup.colonies[1].ai = AI::CASTOR;
+    screen.setup.presetTeams(1);
+    screen.onTimer(SDL_GetTicks() + 1000);
+    assert(screen.previewRevision == revision && screen.sourceFile() == first);
+    clickControl("generator/water");
+    assert(!screen.validMap && screen.setup.mapRevision != revision);
+    auto water = screen.setup.generator.options["water"];
+    SDL_Event motion = {};
+    motion.type = SDL_MOUSEMOTION;
+    motion.motion.x = 0;
+    motion.motion.y = 0;
+    screen.dispatchEvents(&motion);
+    assert(screen.setup.generator.options["water"] == water);
+    keyEvent(SDLK_RIGHT);
+    assert(screen.setup.generator.options["water"] == water + 1);
+    assert(screen.setup.colonies[0].alliance ==
+           screen.setup.colonies[1].alliance);
 
-		assert(screen.generateMap());
-		assert(screen.snapshot != first && !std::filesystem::exists(first));
-		screen.setup.presetRules(1);
-		screen.invalidate();
-		assert(!screen.validMap);
-		auto assignments = screen.setup.colonies;
-		screen.setup.generator.waterRatio = screen.setup.generator.sandRatio =
-			screen.setup.generator.grassRatio = screen.setup.generator.desertRatio = 0;
-		screen.onTimer(screen.previewDue);
-		assert(!screen.validMap && !screen.previewPending);
-		for (int i = 0; i < 4; ++i)
-			assert(screen.setup.colonies[i].alliance == assignments[i].alliance);
-		screen.setup.generator.waterRatio = screen.setup.generator.sandRatio =
-			screen.setup.generator.grassRatio = screen.setup.generator.desertRatio = 50;
-		screen.invalidate();
-		screen.onTimer(screen.previewDue);
-		assert(screen.validMap);
+    assert(screen.generateMap());
+    assert(screen.snapshot != first && !std::filesystem::exists(first));
+    screen.setup.presetRules(1);
+    screen.invalidate();
+    assert(!screen.validMap);
+    auto assignments = screen.setup.colonies;
+    screen.setup.generator.options["water"] =
+        screen.setup.generator.options["sand"] =
+            screen.setup.generator.options["grass"] =
+                screen.setup.generator.options["desert"] = 0;
+    screen.onTimer(screen.previewDue);
+    assert(!screen.validMap && !screen.previewPending);
+    for (int i = 0; i < 4; ++i)
+      assert(screen.setup.colonies[i].alliance == assignments[i].alliance);
+    screen.setup.generator.options["water"] =
+        screen.setup.generator.options["sand"] =
+            screen.setup.generator.options["grass"] =
+                screen.setup.generator.options["desert"] = 50;
+    screen.invalidate();
+    screen.onTimer(screen.previewDue);
+    assert(screen.validMap);
 
-		// Drive the same dropdown/steppers used by players, including measured five-unit steps.
-		auto landscape = [&](int method)
-		{
-			clickControl("generator/landscape");
-			for (int i = 0; i < 8; ++i)
-				keyEvent(SDLK_UP);
-			for (int i = 1; i < method; ++i)
-				keyEvent(SDLK_DOWN);
-			keyEvent(SDLK_RETURN);
-			assert(screen.setup.generator.method == method);
-		};
-		landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
-		assert(screen.setup.generator.riverDiameter == 5 &&
-			   screen.setup.generator.extraIslands == 3);
-		clickControl("generator/Channel width/+");
-		assert(screen.setup.generator.riverDiameter == 6);
-		capture("concrete-controls");
-		landscape(MapGenerationDescriptor::eISLES);
-		assert(screen.setup.generator.grassRatio == 60);
-		clickControl("generator/Island size/+");
-		assert(screen.setup.generator.grassRatio == 65);
-		clickControl("generator/Land bridge width/+");
-		assert(screen.setup.generator.riverDiameter == 5);
-		capture("isles-controls");
-		landscape(MapGenerationDescriptor::eCRATERLAKES);
-		assert(screen.setup.generator.riverDiameter == 25 &&
-			   screen.setup.generator.grassRatio == 75);
-		clickControl("generator/Lake size/+");
-		assert(screen.setup.generator.riverDiameter == 30);
-		capture("crater-controls");
-		landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
-		assert(screen.setup.generator.riverDiameter == 6);
-		landscape(MapGenerationDescriptor::eOLDISLANDS);
-		assert(screen.setup.generator.oldIslandSize == 65);
-		capture("rugged-archipelago-controls");
-		landscape(MapGenerationDescriptor::eOLDRANDOM);
-		capture("shattered-coast-controls");
-		landscape(MapGenerationDescriptor::eRIVER);
+    // Drive the same dropdown/steppers used by players, including measured
+    // five-unit steps.
+    auto landscape = [&](int method) {
+      clickControl("generator/landscape");
+      for (int i = 0; i < 8; ++i)
+        keyEvent(SDLK_UP);
+      for (int i = 1; i < method; ++i)
+        keyEvent(SDLK_DOWN);
+      keyEvent(SDLK_RETURN);
+      assert(screen.setup.generator.method == method);
+    };
+    landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
+    assert(screen.setup.generator.options["channel-width"] == 5 &&
+           screen.setup.generator.options["extra-islands"] == 3);
+    clickControl("generator/channel-width/+");
+    assert(screen.setup.generator.options["channel-width"] == 6);
+    capture("concrete-controls");
+    landscape(MapGenerationDescriptor::eISLES);
+    assert(screen.setup.generator.options["island-size"] == 60);
+    clickControl("generator/island-size/+");
+    assert(screen.setup.generator.options["island-size"] == 65);
+    clickControl("generator/bridge-width/+");
+    assert(screen.setup.generator.options["bridge-width"] == 5);
+    capture("isles-controls");
+    landscape(MapGenerationDescriptor::eCRATERLAKES);
+    assert(screen.setup.generator.options["lake-size"] == 25 &&
+           screen.setup.generator.options["grass"] == 75);
+    clickControl("generator/lake-size/+");
+    assert(screen.setup.generator.options["lake-size"] == 30);
+    capture("crater-controls");
+    landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
+    assert(screen.setup.generator.options["channel-width"] == 6);
+    landscape(MapGenerationDescriptor::eOLDISLANDS);
+    assert(screen.setup.generator.options["island-size"] == 65);
+    capture("rugged-archipelago-controls");
+    landscape(MapGenerationDescriptor::eOLDRANDOM);
+    capture("shattered-coast-controls");
+    landscape(MapGenerationDescriptor::eRIVER);
 
-		screen.activateGroup(screen.groups[0]);
-		capture("map-1000");
-		screen.setup.setCapacity(12);
-		screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
-		screen.invalidate();
-		assert(screen.generateMap());
-		screen.setup.setController(0, CustomGameSetup::Computer);
-		screen.activateGroup(screen.groups[1]);
-		capture("players-12-1000");
-		clickControl("colony/0/controller");
-		assert(!screen.controls->popup.enabled[CustomGameSetup::Shared]);
-		capture("controller-limit");
-		keyEvent(SDLK_DOWN);
-		keyEvent(SDLK_RETURN);
-		assert(screen.controls->popup.open && screen.setup.controllerCount() == 12);
-		keyEvent(SDLK_ESCAPE);
-		screen.controls->regions[1].offset = screen.controls->regions[1].maximum;
-		capture("players-12-scrolled");
-		clickControl("colony/11/ai");
-		int rosterOffset = screen.controls->regions[1].offset;
-		keyEvent(SDLK_DOWN);
-		keyEvent(SDLK_RETURN);
-		assert(screen.controls->regions[1].offset == rosterOffset);
-		// Sequential keyboard focus scrolls an off-screen control into view.
-		screen.controls->focus = "colony/11/team";
-		keyEvent(SDLK_TAB);
+    screen.activateGroup(screen.groups[0]);
+    capture("map-1000");
+    screen.setup.setCapacity(12);
+    screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
+    screen.invalidate();
+    assert(screen.generateMap());
+    screen.setup.setController(0, CustomGameSetup::Computer);
+    screen.activateGroup(screen.groups[1]);
+    capture("players-12-1000");
+    clickControl("colony/0/controller");
+    assert(!screen.controls->popup.enabled[CustomGameSetup::Shared]);
+    capture("controller-limit");
+    keyEvent(SDLK_DOWN);
+    keyEvent(SDLK_RETURN);
+    assert(screen.controls->popup.open && screen.setup.controllerCount() == 12);
+    keyEvent(SDLK_ESCAPE);
+    screen.controls->regions[1].offset = screen.controls->regions[1].maximum;
+    capture("players-12-scrolled");
+    clickControl("colony/11/ai");
+    int rosterOffset = screen.controls->regions[1].offset;
+    keyEvent(SDLK_DOWN);
+    keyEvent(SDLK_RETURN);
+    assert(screen.controls->regions[1].offset == rosterOffset);
+    // Sequential keyboard focus scrolls an off-screen control into view.
+    screen.controls->focus = "colony/11/team";
+    keyEvent(SDLK_TAB);
 
 		screen.activateGroup(screen.groups[2]);
 		capture("rules-1000");
@@ -796,20 +799,22 @@ int main(int argc, char **argv)
 		return 0;
 	}
 	assert(SDLNet_Init() == 0);
-	for (int method = 1; method <= 8; ++method)
+	const auto playableMethods = GeneratorRegistry::builtins().methods(false);
+	for (int method : playableMethods)
 	{
 		bool generated = false;
 		for (int retry = 0; retry < 5 && !generated; ++retry)
 		{
 			Game game(nullptr);
 			MapGenerator generator;
-			MapGenerationDescriptor descriptor;
-			descriptor.setMethodDefaults(static_cast<MapGenerationDescriptor::Method>(method));
-			generated = generator.generateMap(game, descriptor) && game.teamsCount() == 4;
+			GenerationRequest request;
+			request.setMethodDefaults(method);
+			request.seed = 0x5eed0000u + unsigned(method * 16 + retry);
+			generated = generator.generateMap(game, request) && game.teamsCount() == 4;
 		}
 		assert(generated);
 	}
-	std::cout << "PASS all eight playable generator landscapes\n";
+	std::cout << "PASS all " << playableMethods.size() << " playable generator landscapes\n";
 
 	CustomGameSetupHarness::model();
 	assert((AINames::selectionOrder() == std::vector<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::NICOWAR, AI::NONE}));

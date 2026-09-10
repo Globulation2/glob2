@@ -1,46 +1,42 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Dedicated analysis executable; invokes the production generators.
 #define SDL_MAIN_HANDLED
-#include "GlobalContainer.h"
 #include "Game.h"
-#include "MapGenerator.h"
+#include "GenerationService.h"
+#include "GeneratorRegistry.h"
+#include "GlobalContainer.h"
 #include "IntBuildingType.h"
+#include "MapGenerator.h"
 #include "Race.h"
-#include "PerlinNoise.h"
+#include "Unit.h"
 #include "Utilities.h"
-#include <ctime>
+#include <algorithm>
+#include <chrono>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
-#include <cstdint>
-#include <chrono>
-#include <string>
+#include <ctime>
 #include <map>
-#include <vector>
 #include <queue>
-#include <algorithm>
-#include "Unit.h"
+#include <string>
+#include <vector>
 
 GlobalContainer *globalContainer = nullptr;
-static time_t studyTime = 1700000000;
-// Production generation reseeds from time() internally. Override time only in
-// this dedicated executable so each sample has a reproducible synthetic clock.
-extern "C" time_t time(time_t *out)
-{
-	if (out)
-		*out = studyTime;
-	return studyTime;
-}
-
 int main(int argc, char **argv)
 {
 	if (argc == 2 && std::string(argv[1]) == "--catalog")
 	{
-		using D = MapGenerationDescriptor;
+		using D = GenerationRequest;
 		std::puts("[");
-		for (int m = 0; m <= D::eOLDISLANDS; ++m)
+		const auto methods = GeneratorRegistry::builtins().methods();
+		for (int m : methods)
 		{
-			auto method = static_cast<D::Method>(m);
-			std::printf("{\"method\":%d,\"nameKey\":\"%s\",\"controls\":[", m,
+			const int method = m;
+			std::printf("{\"method\":%d,\"id\":\"%s\",\"revision\":%u,\"editorOnly\":%s,"
+						"\"nameKey\":\"%s\",\"controls\":[",
+						m, GeneratorRegistry::builtins().at(m).id,
+						GeneratorRegistry::builtins().at(m).revision,
+						GeneratorRegistry::builtins().at(m).editorOnly ? "true" : "false",
 						D::methodName(method));
 			auto controls = D::sharedControls();
 			const auto &specific = D::controls(method);
@@ -48,12 +44,17 @@ int main(int argc, char **argv)
 			for (size_t i = 0; i < controls.size(); ++i)
 			{
 				const auto &c = controls[i];
-				std::printf("%s{\"label\":\"%s\",\"min\":%d,\"max\":%d,\"step\":%d,\"default\":%d,"
-							"\"group\":%d,\"powerOfTwo\":%s}",
-							i ? "," : "", c.label, c.minimum, c.maximum, c.step, c.defaultValue,
-							int(c.group), c.powerOfTwo ? "true" : "false");
+				std::printf("%s{\"id\":\"%s\",\"label\":\"%s\",\"min\":%d,\"max\":%d,\"step\":%d,"
+							"\"default\":%d,"
+							"\"group\":%d,\"powerOfTwo\":%s,\"values\":[",
+							i ? "," : "", c.id.c_str(), c.label, c.minimum, c.maximum, c.step,
+							c.defaultValue, int(c.group), c.powerOfTwo ? "true" : "false");
+				const auto domain = c.values();
+				for (size_t j = 0; j < domain.size(); ++j)
+					std::printf("%s%d", j ? "," : "", domain[j]);
+				std::printf("]}");
 			}
-			std::printf("]}%s\n", m == D::eOLDISLANDS ? "" : ",");
+			std::printf("]}%s\n", m == methods.back() ? "" : ",");
 		}
 		std::puts("]");
 		return 0;
@@ -62,7 +63,7 @@ int main(int argc, char **argv)
 		return 2; // method, seed, disposable profile, [displayed]
 	const int method = std::atoi(argv[1]);
 	const unsigned seed = std::strtoul(argv[2], nullptr, 10);
-	studyTime += seed;
+
 	SDL_SetMainReady();
 	GlobalContainer globals(argv[3]);
 	globalContainer = &globals;
@@ -72,68 +73,63 @@ int main(int argc, char **argv)
 	IntBuildingType::init();
 	Race::loadDefault();
 	Game game(nullptr);
-	MapGenerationDescriptor descriptor;
-	descriptor.method = static_cast<MapGenerationDescriptor::Method>(method);
-	bool terrainOnly = false;
+	GenerationRequest descriptor;
+	if (!GeneratorRegistry::builtins().find(method))
+		return 2;
+	descriptor.setMethodDefaults(method);
+	descriptor.seed = seed;
 	bool tuning = false;
 	std::string dump;
-	std::map<std::string, Sint32 *> controls = {{"water", &descriptor.waterRatio},
-												{"sand", &descriptor.sandRatio},
-												{"grass", &descriptor.grassRatio},
-												{"desert", &descriptor.desertRatio},
-												{"smooth", &descriptor.smooth},
-												{"river", &descriptor.riverDiameter},
-												{"craters", &descriptor.craterDensity},
-												{"extra", &descriptor.extraIslands},
-												{"island", &descriptor.oldIslandSize},
-												{"beach", &descriptor.oldBeach},
-												{"fruit", &descriptor.fruitRatio},
-												{"w", &descriptor.wDec},
-												{"h", &descriptor.hDec},
-												{"teams", &descriptor.nbTeams}};
+	std::map<std::string, std::string> aliases = {{"smooth", "smoothing"},
+												  {"craters", "lake-density"},
+												  {"extra", "extra-islands"},
+												  {"island", "island-size"},
+												  {"beach", "beach-size"},
+												  {"w", "width"},
+												  {"h", "height"}};
+	for (const auto &c : GenerationRequest::controls(method))
+		if (c.id == "lake-size" || c.id == "channel-width" || c.id == "bridge-width" ||
+			c.id == "river-width")
+			aliases["river"] = c.id;
 	for (int i = 4; i < argc; ++i)
 	{
-		if (std::string(argv[i]) == "preset")
-			descriptor.setMethodDefaults(static_cast<MapGenerationDescriptor::Method>(method));
-		if (std::string(argv[i]) == "displayed")
-		{
-			descriptor.sandRatio = 0;
-			descriptor.desertRatio = 0;
-		}
-		if (std::string(argv[i]) == "terrain-only")
-			terrainOnly = true;
-		if (std::string(argv[i]) == "tuning")
-			tuning = true;
 		std::string arg = argv[i];
-		auto eq = arg.find('=');
-		if (eq != std::string::npos)
+		if (arg == "tuning")
+			tuning = true;
+		else if (arg == "preset")
 		{
-			auto key = arg.substr(0, eq);
-			if (key == "dump")
-				dump = arg.substr(eq + 1);
-			else if (controls.count(key))
-				*controls[key] = std::stoi(arg.substr(eq + 1));
-			else
+		} // All new requests start at registered defaults.
+		else
+		{
+			auto eq = arg.find('=');
+			if (eq == std::string::npos)
 				return 2;
+			std::string id = arg.substr(0, eq);
+			if (id == "dump")
+			{
+				dump = arg.substr(eq + 1);
+				continue;
+			}
+			if (aliases.count(id))
+				id = aliases[id];
+			int value = std::stoi(arg.substr(eq + 1));
+			if (id == "width")
+				descriptor.wDec = value;
+			else if (id == "height")
+				descriptor.hDec = value;
+			else if (id == "teams")
+				descriptor.nbTeams = value;
+			else if (id == "workers")
+				descriptor.nbWorkers = value;
+			else
+				descriptor.options[id] = value; // Service validates; never silently clamp studies.
 		}
 	}
-	PerlinNoise::reseed(seed);
-	std::srand(seed);
-	setSyncRandSeed(seed);
 	const auto start = std::chrono::steady_clock::now();
-	MapGenerator generator;
-	bool success;
-	if (terrainOnly && method == MapGenerationDescriptor::eOLDISLANDS)
-	{
-		game.map.setSize(descriptor.wDec, descriptor.hDec);
-		game.map.setGame(&game);
-		setSyncRandSeed(static_cast<Uint32>(studyTime));
-		success = game.map.oldMakeIslandsMap(descriptor);
-	}
-	else
-	{
-		success = generator.generateMap(game, descriptor, static_cast<Uint32>(studyTime));
-	}
+	const auto result = GenerationService().generate(game, descriptor);
+	const bool success = bool(result);
+	if (!success)
+		std::fprintf(stderr, "%s\n", result.diagnostic().c_str());
 	const double seconds =
 		std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
 	auto &map = game.map;

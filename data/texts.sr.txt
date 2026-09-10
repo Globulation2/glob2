@@ -1772,3 +1772,39 @@ OpenGL није доступан у овој верзији.
 Ширина копненог моста
 [Lake size]
 Величина језера
+[Contested commons]
+Спорно заједничко подручје
+[Lattice]
+Мрежа
+[Maze]
+Лавиринт
+[Fjord continent]
+Континент са фјордовима
+[Islet size]
+Величина острвцета
+[Home radius]
+Полупречник базе
+[Cell size]
+Величина ћелије
+[Room size]
+Величина собе
+[Corridor width]
+Ширина ходника
+[Loopiness]
+Учесталост петљи
+[Home island size]
+Величина почетног острва
+[Commons size]
+Величина заједничког подручја
+[Moat width]
+Ширина воденог рова
+[Bridge count]
+Број мостова
+[Continent size]
+Величина континента
+[Coast roughness]
+Разуђеност обале
+[Fjord width]
+Ширина фјорда
+[Resource islands]
+Острва са ресурсима

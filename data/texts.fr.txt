@@ -1782,3 +1782,39 @@ Largeur du chenal
 Largeur du pont terrestre
 [Lake size]
 Taille des lacs
+[Contested commons]
+Terres communes disputées
+[Lattice]
+Quadrillage
+[Maze]
+Labyrinthe
+[Fjord continent]
+Continent à fjords
+[Islet size]
+Taille de l'îlot
+[Home radius]
+Rayon de la zone de départ
+[Cell size]
+Taille des cellules
+[Room size]
+Taille des salles
+[Corridor width]
+Largeur des couloirs
+[Loopiness]
+Taux de boucles
+[Home island size]
+Taille de l'île de départ
+[Commons size]
+Taille de la zone commune
+[Moat width]
+Largeur des douves
+[Bridge count]
+Nombre de ponts
+[Continent size]
+Taille du continent
+[Coast roughness]
+Irrégularité des côtes
+[Fjord width]
+Largeur des fjords
+[Resource islands]
+Îles de ressources

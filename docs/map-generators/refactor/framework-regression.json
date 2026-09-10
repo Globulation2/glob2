@@ -1,0 +1,16 @@
+{
+  "framework-validation": {
+    "attempts": 8000,
+    "successes": 7948,
+    "prior_attempts": 8000,
+    "matching_keys": 8000,
+    "changed_outcomes": 0
+  },
+  "framework-edges": {
+    "attempts": 832,
+    "successes": 717,
+    "prior_attempts": 832,
+    "matching_keys": 832,
+    "changed_outcomes": 14
+  }
+}

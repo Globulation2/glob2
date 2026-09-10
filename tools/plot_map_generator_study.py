@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Publish a reproducible coverage report using the compiled generator catalog.
 
+Historical PR #238 report builder; run from that revision to reproduce its maps.
+For the modular framework use plot_map_generator_refactor.py.
+
 Usage: python3 tools/plot_map_generator_study.py path/to/validation.csv
 Requires numpy and matplotlib. Run after building map-generator-study.
 """

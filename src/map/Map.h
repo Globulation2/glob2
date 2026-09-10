@@ -25,7 +25,6 @@ class Unit;
 
 class Map;
 class Game;
-class MapGenerationDescriptor;
 class SessionGame;
 class MapHeader;
 
@@ -693,6 +692,8 @@ protected:
 	Uint16 lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const;
 
 public:
+	// Rebuild rendered terrain after bulk undermap edits.
+	void rebuildTerrain() { regenerateMap(0, 0, w, h); }
     // here we handle terrain
 	// mapDiscovered
 	bool arraysBuilt; // if true, the next pointers(arrays) have to be valid and filled.
@@ -818,11 +819,6 @@ public:
 	void makeHomogenMap(TerrainType terrainType);
 	void controlSand(void);
 	void smoothResources(int times);
-	bool makeRandomMap(MapGenerationDescriptor &descriptor);
-	bool oldMakeRandomMap(MapGenerationDescriptor &descriptor);
-	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
-	void oldAddResourcesRandomMap(MapGenerationDescriptor &descriptor);
-	void oldAddResourcesIslandsMap(MapGenerationDescriptor &descriptor);
 
 };
 

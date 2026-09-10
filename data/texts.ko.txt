@@ -1768,3 +1768,39 @@ Globulation 2 커서를 표시합니다.
 육교 너비
 [Lake size]
 호수 크기
+[Contested commons]
+쟁탈 공유지
+[Lattice]
+격자
+[Maze]
+미로
+[Fjord continent]
+피오르 대륙
+[Islet size]
+작은 섬 크기
+[Home radius]
+기지 반경
+[Cell size]
+칸 크기
+[Room size]
+방 크기
+[Corridor width]
+통로 너비
+[Loopiness]
+순환로 밀도
+[Home island size]
+시작 섬 크기
+[Commons size]
+공유지 크기
+[Moat width]
+해자 너비
+[Bridge count]
+다리 수
+[Continent size]
+대륙 크기
+[Coast roughness]
+해안선 굴곡도
+[Fjord width]
+피오르 너비
+[Resource islands]
+자원 섬

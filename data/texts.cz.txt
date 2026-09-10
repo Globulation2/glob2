@@ -1772,3 +1772,39 @@ Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenG
 Šířka pevninského mostu
 [Lake size]
 Velikost jezera
+[Contested commons]
+Sporné společné území
+[Lattice]
+Mřížka
+[Maze]
+Bludiště
+[Fjord continent]
+Fjordový kontinent
+[Islet size]
+Velikost ostrůvku
+[Home radius]
+Poloměr domovské oblasti
+[Cell size]
+Velikost buňky
+[Room size]
+Velikost místnosti
+[Corridor width]
+Šířka chodby
+[Loopiness]
+Propojenost
+[Home island size]
+Velikost domovského ostrova
+[Commons size]
+Velikost společného území
+[Moat width]
+Šířka příkopu
+[Bridge count]
+Počet mostů
+[Continent size]
+Velikost kontinentu
+[Coast roughness]
+Členitost pobřeží
+[Fjord width]
+Šířka fjordu
+[Resource islands]
+Surovinové ostrovy

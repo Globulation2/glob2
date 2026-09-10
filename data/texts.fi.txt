@@ -1772,3 +1772,39 @@ Kanavan leveys
 Maasillan leveys
 [Lake size]
 Järven koko
+[Contested commons]
+Kiistelty yhteisalue
+[Lattice]
+Ruudukko
+[Maze]
+Sokkelo
+[Fjord continent]
+Vuonomainen manner
+[Islet size]
+Luodon koko
+[Home radius]
+Kotialueen säde
+[Cell size]
+Solun koko
+[Room size]
+Huoneen koko
+[Corridor width]
+Käytävän leveys
+[Loopiness]
+Silmukoiden määrä
+[Home island size]
+Kotisaaren koko
+[Commons size]
+Yhteisalueen koko
+[Moat width]
+Vallihaudan leveys
+[Bridge count]
+Siltojen määrä
+[Continent size]
+Mantereen koko
+[Coast roughness]
+Rannikon rikkonaisuus
+[Fjord width]
+Vuonon leveys
+[Resource islands]
+Luonnonvarasaaret

@@ -1772,3 +1772,39 @@ Anchura del canal
 Anchura del puente terrestre
 [Lake size]
 Tamaño del lago
+[Contested commons]
+Tierras comunes disputadas
+[Lattice]
+Retícula
+[Maze]
+Laberinto
+[Fjord continent]
+Continente de fiordos
+[Islet size]
+Tamaño del islote
+[Home radius]
+Radio del área inicial
+[Cell size]
+Tamaño de la celda
+[Room size]
+Tamaño de la sala
+[Corridor width]
+Anchura del pasillo
+[Loopiness]
+Densidad de bucles
+[Home island size]
+Tamaño de la isla inicial
+[Commons size]
+Tamaño del área común
+[Moat width]
+Anchura del foso
+[Bridge count]
+Número de puentes
+[Continent size]
+Tamaño del continente
+[Coast roughness]
+Irregularidad de la costa
+[Fjord width]
+Anchura del fiordo
+[Resource islands]
+Islas de recursos

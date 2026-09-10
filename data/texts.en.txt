@@ -1770,3 +1770,39 @@ Channel width
 Land bridge width
 [Lake size]
 Lake size
+[Contested commons]
+Contested commons
+[Lattice]
+Lattice
+[Maze]
+Maze
+[Fjord continent]
+Fjord continent
+[Islet size]
+Islet size
+[Home radius]
+Home radius
+[Cell size]
+Cell size
+[Room size]
+Room size
+[Corridor width]
+Corridor width
+[Loopiness]
+Loopiness
+[Home island size]
+Home island size
+[Commons size]
+Commons size
+[Moat width]
+Moat width
+[Bridge count]
+Bridge count
+[Continent size]
+Continent size
+[Coast roughness]
+Coast roughness
+[Fjord width]
+Fjord width
+[Resource islands]
+Resource islands

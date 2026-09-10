@@ -23,6 +23,8 @@ common_cpppath = ['..', '../src', '../src/ai',
                   '../src/net', '../src/net/irc', '../src/net/message',
                   '../src/yog', '../src/sgsl',
                   '../src/map', '../src/map/edit', '../src/map/generator',
+                  '../src/map/generator/core', '../src/map/generator/shared',
+                  '../src/map/generator/generators', '../src/map/generator/compatibility',
                   '../src/map/gradient', '../src/map/io', '../src/map/pathfind',
                   '../src/render',
                   '../libgag/include', '../libusl/src']
@@ -64,7 +66,7 @@ sources = Split("""
 TestsRunner.cpp
 
 PerlinNoiseTest.cpp
-../src/PerlinNoise.cpp
+../src/map/generator/shared/Noise.cpp
 
 HelloWorldTest.cpp
 

@@ -1844,3 +1844,39 @@ OpenGL 在此版本中不可用。
 陸橋寬度
 [Lake size]
 湖泊大小
+[Contested commons]
+爭奪公地
+[Lattice]
+網格
+[Maze]
+迷宮
+[Fjord continent]
+峽灣大陸
+[Islet size]
+小島大小
+[Home radius]
+基地半徑
+[Cell size]
+單元格大小
+[Room size]
+房間大小
+[Corridor width]
+通道寬度
+[Loopiness]
+迴路密度
+[Home island size]
+起始島嶼大小
+[Commons size]
+公地區域大小
+[Moat width]
+護城河寬度
+[Bridge count]
+橋樑數量
+[Continent size]
+大陸大小
+[Coast roughness]
+海岸線曲折度
+[Fjord width]
+峽灣寬度
+[Resource islands]
+資源島嶼

@@ -1772,3 +1772,39 @@ Csatorna szélessége
 Földhíd szélessége
 [Lake size]
 Tó mérete
+[Contested commons]
+Vitatott közös terület
+[Lattice]
+Rácsozat
+[Maze]
+Labirintus
+[Fjord continent]
+Fjordos kontinens
+[Islet size]
+Szigetecske mérete
+[Home radius]
+Kezdőterület sugara
+[Cell size]
+Cella mérete
+[Room size]
+Szoba mérete
+[Corridor width]
+Folyosó szélessége
+[Loopiness]
+Huroksűrűség
+[Home island size]
+Kezdősziget mérete
+[Commons size]
+Közös terület mérete
+[Moat width]
+Várárok szélessége
+[Bridge count]
+Hidak száma
+[Continent size]
+Kontinens mérete
+[Coast roughness]
+Partvonal tagoltsága
+[Fjord width]
+Fjord szélessége
+[Resource islands]
+Nyersanyagszigetek

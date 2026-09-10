@@ -1770,3 +1770,39 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الجسر البري
 [Lake size]
 حجم البحيرة
+[Contested commons]
+الأراضي المشاع المتنازع عليها
+[Lattice]
+الشبكة
+[Maze]
+المتاهة
+[Fjord continent]
+قارة المضائق البحرية
+[Islet size]
+حجم الجزيرة الصغيرة
+[Home radius]
+نصف قطر القاعدة
+[Cell size]
+حجم الخلية
+[Room size]
+حجم الغرفة
+[Corridor width]
+عرض الممر
+[Loopiness]
+كثافة الحلقات
+[Home island size]
+حجم جزيرة البداية
+[Commons size]
+حجم الأراضي المشاع
+[Moat width]
+عرض الخندق المائي
+[Bridge count]
+عدد الجسور
+[Continent size]
+حجم القارة
+[Coast roughness]
+وعورة الساحل
+[Fjord width]
+عرض المضيق البحري
+[Resource islands]
+جزر الموارد

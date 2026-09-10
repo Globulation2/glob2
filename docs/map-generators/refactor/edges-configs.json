@@ -1,0 +1,1890 @@
+[
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-width-min",
+    "params": {
+      "width": 6
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-width-max",
+    "params": {
+      "width": 9
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-height-min",
+    "params": {
+      "height": 6
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-height-max",
+    "params": {
+      "height": 9
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-teams-min",
+    "params": {
+      "teams": 1
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-teams-max",
+    "params": {
+      "teams": 12
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-workers-min",
+    "params": {
+      "workers": 1
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-workers-max",
+    "params": {
+      "workers": 8
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-water-min",
+    "params": {
+      "water": 0
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-water-max",
+    "params": {
+      "water": 100
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-grass-min",
+    "params": {
+      "grass": 0
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-grass-max",
+    "params": {
+      "grass": 100
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-smoothing-min",
+    "params": {
+      "smoothing": 1
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-smoothing-max",
+    "params": {
+      "smoothing": 8
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-fruit-min",
+    "params": {
+      "fruit": 0
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-fruit-max",
+    "params": {
+      "fruit": 64
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-repeat-min",
+    "params": {
+      "repeat": 0
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "edge-1-repeat-max",
+    "params": {
+      "repeat": 5
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "size-1-6-6-4",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 4
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "size-1-6-6-12",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "size-1-7-7-8",
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 8
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "size-1-6-9-12",
+    "params": {
+      "width": 6,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "size-1-9-6-12",
+    "params": {
+      "width": 9,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "size-1-9-9-12",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "corner-1-min",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 1,
+      "workers": 1,
+      "water": 0,
+      "grass": 0,
+      "smoothing": 1,
+      "fruit": 0,
+      "repeat": 0
+    }
+  },
+  {
+    "method": 1,
+    "preset": true,
+    "id": "corner-1-max",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12,
+      "workers": 8,
+      "water": 100,
+      "grass": 100,
+      "smoothing": 8,
+      "fruit": 64,
+      "repeat": 5
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-width-min",
+    "params": {
+      "width": 6
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-width-max",
+    "params": {
+      "width": 9
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-height-min",
+    "params": {
+      "height": 6
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-height-max",
+    "params": {
+      "height": 9
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-teams-min",
+    "params": {
+      "teams": 1
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-teams-max",
+    "params": {
+      "teams": 12
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-workers-min",
+    "params": {
+      "workers": 1
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-workers-max",
+    "params": {
+      "workers": 8
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-water-min",
+    "params": {
+      "water": 0
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-water-max",
+    "params": {
+      "water": 100
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-sand-min",
+    "params": {
+      "sand": 0
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-sand-max",
+    "params": {
+      "sand": 100
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-grass-min",
+    "params": {
+      "grass": 0
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-grass-max",
+    "params": {
+      "grass": 100
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-desert-min",
+    "params": {
+      "desert": 0
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-desert-max",
+    "params": {
+      "desert": 100
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-smoothing-min",
+    "params": {
+      "smoothing": 1
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-smoothing-max",
+    "params": {
+      "smoothing": 8
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-river-width-min",
+    "params": {
+      "river-width": 20
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-river-width-max",
+    "params": {
+      "river-width": 65
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-fruit-min",
+    "params": {
+      "fruit": 0
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-fruit-max",
+    "params": {
+      "fruit": 64
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-repeat-min",
+    "params": {
+      "repeat": 0
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "edge-2-repeat-max",
+    "params": {
+      "repeat": 5
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "size-2-6-6-4",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 4
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "size-2-6-6-12",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "size-2-7-7-8",
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 8
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "size-2-6-9-12",
+    "params": {
+      "width": 6,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "size-2-9-6-12",
+    "params": {
+      "width": 9,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "size-2-9-9-12",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "corner-2-min",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 1,
+      "workers": 1,
+      "water": 0,
+      "sand": 0,
+      "grass": 0,
+      "desert": 0,
+      "smoothing": 1,
+      "river-width": 20,
+      "fruit": 0,
+      "repeat": 0
+    }
+  },
+  {
+    "method": 2,
+    "preset": true,
+    "id": "corner-2-max",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12,
+      "workers": 8,
+      "water": 100,
+      "sand": 100,
+      "grass": 100,
+      "desert": 100,
+      "smoothing": 8,
+      "river-width": 65,
+      "fruit": 64,
+      "repeat": 5
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-width-min",
+    "params": {
+      "width": 6
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-width-max",
+    "params": {
+      "width": 9
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-height-min",
+    "params": {
+      "height": 6
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-height-max",
+    "params": {
+      "height": 9
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-teams-min",
+    "params": {
+      "teams": 1
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-teams-max",
+    "params": {
+      "teams": 12
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-workers-min",
+    "params": {
+      "workers": 1
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-workers-max",
+    "params": {
+      "workers": 8
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-water-min",
+    "params": {
+      "water": 0
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-water-max",
+    "params": {
+      "water": 100
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-sand-min",
+    "params": {
+      "sand": 0
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-sand-max",
+    "params": {
+      "sand": 100
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-grass-min",
+    "params": {
+      "grass": 0
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-grass-max",
+    "params": {
+      "grass": 100
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-desert-min",
+    "params": {
+      "desert": 0
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-desert-max",
+    "params": {
+      "desert": 100
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-smoothing-min",
+    "params": {
+      "smoothing": 1
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-smoothing-max",
+    "params": {
+      "smoothing": 8
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-extra-islands-min",
+    "params": {
+      "extra-islands": 0
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-extra-islands-max",
+    "params": {
+      "extra-islands": 8
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-fruit-min",
+    "params": {
+      "fruit": 0
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-fruit-max",
+    "params": {
+      "fruit": 64
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-repeat-min",
+    "params": {
+      "repeat": 0
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "edge-3-repeat-max",
+    "params": {
+      "repeat": 5
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "size-3-6-6-4",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 4
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "size-3-6-6-12",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "size-3-7-7-8",
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 8
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "size-3-6-9-12",
+    "params": {
+      "width": 6,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "size-3-9-6-12",
+    "params": {
+      "width": 9,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "size-3-9-9-12",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "corner-3-min",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 1,
+      "workers": 1,
+      "water": 0,
+      "sand": 0,
+      "grass": 0,
+      "desert": 0,
+      "smoothing": 1,
+      "extra-islands": 0,
+      "fruit": 0,
+      "repeat": 0
+    }
+  },
+  {
+    "method": 3,
+    "preset": true,
+    "id": "corner-3-max",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12,
+      "workers": 8,
+      "water": 100,
+      "sand": 100,
+      "grass": 100,
+      "desert": 100,
+      "smoothing": 8,
+      "extra-islands": 8,
+      "fruit": 64,
+      "repeat": 5
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-width-min",
+    "params": {
+      "width": 6
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-width-max",
+    "params": {
+      "width": 9
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-height-min",
+    "params": {
+      "height": 6
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-height-max",
+    "params": {
+      "height": 9
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-teams-min",
+    "params": {
+      "teams": 1
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-teams-max",
+    "params": {
+      "teams": 12
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-workers-min",
+    "params": {
+      "workers": 1
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-workers-max",
+    "params": {
+      "workers": 8
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-water-min",
+    "params": {
+      "water": 0
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-water-max",
+    "params": {
+      "water": 100
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-sand-min",
+    "params": {
+      "sand": 0
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-sand-max",
+    "params": {
+      "sand": 100
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-grass-min",
+    "params": {
+      "grass": 0
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-grass-max",
+    "params": {
+      "grass": 100
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-desert-min",
+    "params": {
+      "desert": 0
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-desert-max",
+    "params": {
+      "desert": 100
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-smoothing-min",
+    "params": {
+      "smoothing": 1
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-smoothing-max",
+    "params": {
+      "smoothing": 8
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-lake-density-min",
+    "params": {
+      "lake-density": 10
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-lake-density-max",
+    "params": {
+      "lake-density": 50
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-lake-size-min",
+    "params": {
+      "lake-size": 10
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-lake-size-max",
+    "params": {
+      "lake-size": 40
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-fruit-min",
+    "params": {
+      "fruit": 0
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-fruit-max",
+    "params": {
+      "fruit": 64
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-repeat-min",
+    "params": {
+      "repeat": 0
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "edge-4-repeat-max",
+    "params": {
+      "repeat": 5
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "size-4-6-6-4",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 4
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "size-4-6-6-12",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "size-4-7-7-8",
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 8
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "size-4-6-9-12",
+    "params": {
+      "width": 6,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "size-4-9-6-12",
+    "params": {
+      "width": 9,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "size-4-9-9-12",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "corner-4-min",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 1,
+      "workers": 1,
+      "water": 0,
+      "sand": 0,
+      "grass": 0,
+      "desert": 0,
+      "smoothing": 1,
+      "lake-density": 10,
+      "lake-size": 10,
+      "fruit": 0,
+      "repeat": 0
+    }
+  },
+  {
+    "method": 4,
+    "preset": true,
+    "id": "corner-4-max",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12,
+      "workers": 8,
+      "water": 100,
+      "sand": 100,
+      "grass": 100,
+      "desert": 100,
+      "smoothing": 8,
+      "lake-density": 50,
+      "lake-size": 40,
+      "fruit": 64,
+      "repeat": 5
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-width-min",
+    "params": {
+      "width": 6
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-width-max",
+    "params": {
+      "width": 9
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-height-min",
+    "params": {
+      "height": 6
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-height-max",
+    "params": {
+      "height": 9
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-teams-min",
+    "params": {
+      "teams": 1
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-teams-max",
+    "params": {
+      "teams": 12
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-workers-min",
+    "params": {
+      "workers": 1
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-workers-max",
+    "params": {
+      "workers": 8
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-channel-width-min",
+    "params": {
+      "channel-width": 5
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-channel-width-max",
+    "params": {
+      "channel-width": 8
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-extra-islands-min",
+    "params": {
+      "extra-islands": 0
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "edge-5-extra-islands-max",
+    "params": {
+      "extra-islands": 6
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "size-5-6-6-4",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 4
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "size-5-6-6-12",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "size-5-7-7-8",
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 8
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "size-5-6-9-12",
+    "params": {
+      "width": 6,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "size-5-9-6-12",
+    "params": {
+      "width": 9,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "size-5-9-9-12",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "corner-5-min",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 1,
+      "workers": 1,
+      "channel-width": 5,
+      "extra-islands": 0
+    }
+  },
+  {
+    "method": 5,
+    "preset": true,
+    "id": "corner-5-max",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12,
+      "workers": 8,
+      "channel-width": 8,
+      "extra-islands": 6
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-width-min",
+    "params": {
+      "width": 6
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-width-max",
+    "params": {
+      "width": 9
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-height-min",
+    "params": {
+      "height": 6
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-height-max",
+    "params": {
+      "height": 9
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-teams-min",
+    "params": {
+      "teams": 1
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-teams-max",
+    "params": {
+      "teams": 12
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-workers-min",
+    "params": {
+      "workers": 1
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-workers-max",
+    "params": {
+      "workers": 8
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-island-size-min",
+    "params": {
+      "island-size": 45
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-island-size-max",
+    "params": {
+      "island-size": 65
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-bridge-width-min",
+    "params": {
+      "bridge-width": 3
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "edge-6-bridge-width-max",
+    "params": {
+      "bridge-width": 6
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "size-6-6-6-4",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 4
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "size-6-6-6-12",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "size-6-7-7-8",
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 8
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "size-6-6-9-12",
+    "params": {
+      "width": 6,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "size-6-9-6-12",
+    "params": {
+      "width": 9,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "size-6-9-9-12",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "corner-6-min",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 1,
+      "workers": 1,
+      "island-size": 45,
+      "bridge-width": 3
+    }
+  },
+  {
+    "method": 6,
+    "preset": true,
+    "id": "corner-6-max",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12,
+      "workers": 8,
+      "island-size": 65,
+      "bridge-width": 6
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-width-min",
+    "params": {
+      "width": 6
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-width-max",
+    "params": {
+      "width": 9
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-height-min",
+    "params": {
+      "height": 6
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-height-max",
+    "params": {
+      "height": 9
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-teams-min",
+    "params": {
+      "teams": 1
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-teams-max",
+    "params": {
+      "teams": 12
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-workers-min",
+    "params": {
+      "workers": 1
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-workers-max",
+    "params": {
+      "workers": 8
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-water-min",
+    "params": {
+      "water": 0
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-water-max",
+    "params": {
+      "water": 100
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-sand-min",
+    "params": {
+      "sand": 0
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-sand-max",
+    "params": {
+      "sand": 100
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-grass-min",
+    "params": {
+      "grass": 0
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-grass-max",
+    "params": {
+      "grass": 100
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-smoothing-min",
+    "params": {
+      "smoothing": 1
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "edge-7-smoothing-max",
+    "params": {
+      "smoothing": 8
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "size-7-6-6-4",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 4
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "size-7-6-6-12",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "size-7-7-7-8",
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 8
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "size-7-6-9-12",
+    "params": {
+      "width": 6,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "size-7-9-6-12",
+    "params": {
+      "width": 9,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "size-7-9-9-12",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "corner-7-min",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 1,
+      "workers": 1,
+      "water": 0,
+      "sand": 0,
+      "grass": 0,
+      "smoothing": 1
+    }
+  },
+  {
+    "method": 7,
+    "preset": true,
+    "id": "corner-7-max",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12,
+      "workers": 8,
+      "water": 100,
+      "sand": 100,
+      "grass": 100,
+      "smoothing": 8
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-width-min",
+    "params": {
+      "width": 6
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-width-max",
+    "params": {
+      "width": 9
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-height-min",
+    "params": {
+      "height": 6
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-height-max",
+    "params": {
+      "height": 9
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-teams-min",
+    "params": {
+      "teams": 1
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-teams-max",
+    "params": {
+      "teams": 12
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-workers-min",
+    "params": {
+      "workers": 1
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-workers-max",
+    "params": {
+      "workers": 8
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-island-size-min",
+    "params": {
+      "island-size": 50
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-island-size-max",
+    "params": {
+      "island-size": 70
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-beach-size-min",
+    "params": {
+      "beach-size": 0
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "edge-8-beach-size-max",
+    "params": {
+      "beach-size": 4
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "size-8-6-6-4",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 4
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "size-8-6-6-12",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "size-8-7-7-8",
+    "params": {
+      "width": 7,
+      "height": 7,
+      "teams": 8
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "size-8-6-9-12",
+    "params": {
+      "width": 6,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "size-8-9-6-12",
+    "params": {
+      "width": 9,
+      "height": 6,
+      "teams": 12
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "size-8-9-9-12",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "corner-8-min",
+    "params": {
+      "width": 6,
+      "height": 6,
+      "teams": 1,
+      "workers": 1,
+      "island-size": 50,
+      "beach-size": 0
+    }
+  },
+  {
+    "method": 8,
+    "preset": true,
+    "id": "corner-8-max",
+    "params": {
+      "width": 9,
+      "height": 9,
+      "teams": 12,
+      "workers": 8,
+      "island-size": 70,
+      "beach-size": 4
+    }
+  }
+]

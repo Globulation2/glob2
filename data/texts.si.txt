@@ -1772,3 +1772,39 @@ Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljev
 Širina kopenskega mostu
 [Lake size]
 Velikost jezera
+[Contested commons]
+Sporno skupno ozemlje
+[Lattice]
+Mreža
+[Maze]
+Labirint
+[Fjord continent]
+Fjordska celina
+[Islet size]
+Velikost otočka
+[Home radius]
+Polmer baze
+[Cell size]
+Velikost celice
+[Room size]
+Velikost sobe
+[Corridor width]
+Širina hodnika
+[Loopiness]
+Gostota zank
+[Home island size]
+Velikost začetnega otoka
+[Commons size]
+Velikost skupnega ozemlja
+[Moat width]
+Širina vodnega jarka
+[Bridge count]
+Število mostov
+[Continent size]
+Velikost celine
+[Coast roughness]
+Razgibanost obale
+[Fjord width]
+Širina fjorda
+[Resource islands]
+Otoki z viri

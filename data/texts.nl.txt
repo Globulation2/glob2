@@ -1796,3 +1796,39 @@ Kanaalbreedte
 Breedte van de landbrug
 [Lake size]
 Meergrootte
+[Contested commons]
+Betwist gemeenschappelijk gebied
+[Lattice]
+Raster
+[Maze]
+Doolhof
+[Fjord continent]
+Fjordencontinent
+[Islet size]
+Grootte van het eilandje
+[Home radius]
+Straal van het startgebied
+[Cell size]
+Celgrootte
+[Room size]
+Kamergrootte
+[Corridor width]
+Gangbreedte
+[Loopiness]
+Aantal lussen
+[Home island size]
+Grootte van het starteiland
+[Commons size]
+Grootte van het gemeenschappelijke gebied
+[Moat width]
+Slotgrachtbreedte
+[Bridge count]
+Aantal bruggen
+[Continent size]
+Continentgrootte
+[Coast roughness]
+Grilligheid van de kust
+[Fjord width]
+Fjordbreedte
+[Resource islands]
+Grondstofeilanden

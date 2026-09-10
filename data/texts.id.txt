@@ -1768,3 +1768,39 @@ Lebar kanal
 Lebar jembatan darat
 [Lake size]
 Ukuran danau
+[Contested commons]
+Tanah bersama yang diperebutkan
+[Lattice]
+Kisi-kisi
+[Maze]
+Labirin
+[Fjord continent]
+Benua fjord
+[Islet size]
+Ukuran pulau kecil
+[Home radius]
+Radius markas
+[Cell size]
+Ukuran sel
+[Room size]
+Ukuran ruangan
+[Corridor width]
+Lebar koridor
+[Loopiness]
+Kepadatan jalur melingkar
+[Home island size]
+Ukuran pulau awal
+[Commons size]
+Ukuran tanah bersama
+[Moat width]
+Lebar parit air
+[Bridge count]
+Jumlah jembatan
+[Continent size]
+Ukuran benua
+[Coast roughness]
+Ketidakteraturan pantai
+[Fjord width]
+Lebar fjord
+[Resource islands]
+Pulau sumber daya

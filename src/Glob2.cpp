@@ -1,3 +1,5 @@
+#include "GeneratorRegistry.h"
+#include "GenerationContext.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -15,7 +17,7 @@
 #include "Game.h"
 #include "LANMenuScreen.h"
 #include "MainMenuScreen.h"
-#include "MapGenerator.h"
+#include "GenerationService.h"
 #include "SettingsScreen.h"
 #include <StringTable.h>
 #include "Utilities.h"
@@ -166,10 +168,11 @@ int Glob2::runTestMapGeneration()
 	setSyncRandSeed(t);
 	while(true)
 	{
-		MapGenerationDescriptor descriptor;
+		GenerationRequest descriptor;
 		
-		using D = MapGenerationDescriptor;
-		auto method = static_cast<D::Method>(D::eSWAMP + syncRand() % (D::METHOD_COUNT - 1));
+		using D = GenerationRequest;
+		const auto methods=GeneratorRegistry::builtins().methods(false);
+        auto method=methods[syncRand()%methods.size()];
 		descriptor.setMethodDefaults(method);
 		auto controls = D::sharedControls();
 		const auto& specific = D::controls(method);
@@ -183,9 +186,11 @@ int Glob2::runTestMapGeneration()
 			continue;
 
 		std::cout<<"Generating Map"<<std::endl;		
-		MapGenerator generator;
+		GenerationService generator;
 		Game game(NULL);
-		generator.generateMap(game, descriptor);
+		descriptor.seed=syncRand();
+        auto result=generator.generate(game, descriptor);
+        if(!result) std::cerr << result.diagnostic() << std::endl;
 	}
 	return 0;
 }

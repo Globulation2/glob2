@@ -1782,3 +1782,39 @@ Kanalbredd
 Landbrons bredd
 [Lake size]
 Sjöstorlek
+[Contested commons]
+Omtvistad allmänning
+[Lattice]
+Rutnät
+[Maze]
+Labyrint
+[Fjord continent]
+Fjordkontinent
+[Islet size]
+Småöns storlek
+[Home radius]
+Basradie
+[Cell size]
+Cellstorlek
+[Room size]
+Rumsstorlek
+[Corridor width]
+Korridorbredd
+[Loopiness]
+Antal slingor
+[Home island size]
+Startöns storlek
+[Commons size]
+Allmänningens storlek
+[Moat width]
+Vallgravens bredd
+[Bridge count]
+Antal broar
+[Continent size]
+Kontinentstorlek
+[Coast roughness]
+Kustlinjens oregelbundenhet
+[Fjord width]
+Fjordbredd
+[Resource islands]
+Resursöar

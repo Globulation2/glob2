@@ -2,17 +2,17 @@
 // Copyright (C) 2010 Leo Wandersleb
 
 #include "PerlinNoiseTest.h"
-#include "../src/PerlinNoise.h"
+#include "../src/map/generator/shared/Noise.h"
 CPPUNIT_TEST_SUITE_REGISTRATION( PerlinNoiseTest );
 
 const static int SEED = 12;
-PerlinNoise * perlinNoise;
+GenerationNoise * perlinNoise;
 float * position;
 
 //initialize perlinNoise with always the same seed and setUp a positon-vector.
 void PerlinNoiseTest::setUp()
 {
-	perlinNoise = new PerlinNoise(SEED);
+	perlinNoise = new GenerationNoise(SEED);
 	position = new float[3];
 	position[0] = .11111f;
 	position[1] = .21111f;
@@ -38,7 +38,7 @@ void PerlinNoiseTest::testNotZeroOne()
 void PerlinNoiseTest::testReseed()
 {
 	float a = perlinNoise->Noise1d(position);
-	perlinNoise->reseed();
+	perlinNoise->reseed(SEED + 1);
 	float b = perlinNoise->Noise1d(position);
 	CPPUNIT_ASSERT(a != b);
 }

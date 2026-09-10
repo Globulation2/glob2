@@ -1772,3 +1772,39 @@ Lățimea canalului
 Lățimea punții de uscat
 [Lake size]
 Mărimea lacului
+[Contested commons]
+Teritoriu comun disputat
+[Lattice]
+Grilă
+[Maze]
+Labirint
+[Fjord continent]
+Continent cu fiorduri
+[Islet size]
+Mărimea insuliței
+[Home radius]
+Raza bazei
+[Cell size]
+Mărimea celulei
+[Room size]
+Mărimea camerei
+[Corridor width]
+Lățimea coridorului
+[Loopiness]
+Densitatea buclelor
+[Home island size]
+Mărimea insulei de pornire
+[Commons size]
+Mărimea teritoriului comun
+[Moat width]
+Lățimea șanțului cu apă
+[Bridge count]
+Numărul de poduri
+[Continent size]
+Mărimea continentului
+[Coast roughness]
+Neregularitatea coastei
+[Fjord width]
+Lățimea fiordului
+[Resource islands]
+Insule cu resurse

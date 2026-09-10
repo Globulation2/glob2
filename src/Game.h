@@ -25,7 +25,6 @@ namespace GAGCore
 	class OutputStream;
 }
 using namespace GAGCore;
-class MapGenerationDescriptor;
 class GameGUI;
 class MapEdit;
 
@@ -412,11 +411,6 @@ public:
 
 	Team *getTeamWithMostPrestige(void);
 	bool isPrestigeWinCondition(void);
-
-public:
-	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
-	bool makeRandomMap(MapGenerationDescriptor &descriptor);
-	bool generateMap(MapGenerationDescriptor &descriptor);
 
 protected:
 	int ticksGameSum[TICK_PROFILE_BUF_LEN];

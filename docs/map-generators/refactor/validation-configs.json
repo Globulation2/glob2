@@ -1,0 +1,42 @@
+[
+  {
+    "id": "modular-1",
+    "method": 1,
+    "preset": true
+  },
+  {
+    "id": "modular-2",
+    "method": 2,
+    "preset": true
+  },
+  {
+    "id": "modular-3",
+    "method": 3,
+    "preset": true
+  },
+  {
+    "id": "modular-4",
+    "method": 4,
+    "preset": true
+  },
+  {
+    "id": "modular-5",
+    "method": 5,
+    "preset": true
+  },
+  {
+    "id": "modular-6",
+    "method": 6,
+    "preset": true
+  },
+  {
+    "id": "modular-7",
+    "method": 7,
+    "preset": true
+  },
+  {
+    "id": "modular-8",
+    "method": 8,
+    "preset": true
+  }
+]
