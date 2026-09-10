@@ -284,7 +284,7 @@ bool Game::load(GAGCore::InputStream *stream)
 		std::istringstream input(state.str());
 		input.imbue(std::locale::classic());
 		if (!(input >> savedRandom)) return false;
-		map.loadRuntimeState(stream);
+		map.loadRuntimeState(stream, versionMinor);
 	}
 	gameSection.commit();
 

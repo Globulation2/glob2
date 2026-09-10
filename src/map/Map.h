@@ -77,7 +77,7 @@ class Map
 {
 public:
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
-	void loadRuntimeState(GAGCore::InputStream *stream);
+	void loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor);
 	//! Type of terrain (used for undermap)
 
 	// === Tile geometry (cross-slice) ===
