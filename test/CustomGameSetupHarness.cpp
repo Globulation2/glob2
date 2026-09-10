@@ -775,7 +775,6 @@ int main(int argc, char **argv)
 	CustomGameSetupHarness::model();
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
 	assert(AINames::parseAIName("Econo") == AI::ECONO);
-	assert(AINames::parseAIName("reachtoinfinity") == AI::ECONO);
 	assert(AINames::getAISelectorText(AI::ECONO) == "Econo - Easy - No warriors");
 	assert(AINames::getAISelectorText(AI::CORTEX).find("Medium") != std::string::npos);
 	assert(AINames::getAIProfile(AI::CORTEX).find("wheat") != std::string::npos);

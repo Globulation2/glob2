@@ -24,8 +24,8 @@ Econo::Econo()
 
 bool Econo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
-	// Preserve the historical save section and numeric AI ID.
-	stream->readEnterSection("ReachToInfinity");
+	// Binary saves ignore section names; the numeric AI ID remains unchanged.
+	stream->readEnterSection("Econo");
 	timer=stream->readUint32("timer");
 	flag_on_cherry=stream->readUint32("flag_on_cherry");
 	flag_on_orange=stream->readUint32("flag_on_orange");
@@ -48,7 +48,7 @@ bool Econo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMin
 
 void Econo::save(GAGCore::OutputStream *stream)
 {
-	stream->writeEnterSection("ReachToInfinity");
+	stream->writeEnterSection("Econo");
 	stream->writeUint32(timer, "timer");
 	stream->writeUint32(flag_on_cherry, "flag_on_cherry");
 	stream->writeUint32(flag_on_orange, "flag_on_orange");

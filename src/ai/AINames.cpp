@@ -82,7 +82,6 @@ namespace AINames
 	{
 		std::string lower = name;
 		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-		if (lower == "reachtoinfinity") return AI::ECONO; // Existing scripts remain valid.
 		for (const auto& entry : aiTable)
 		{
 			if (entry.cliName && lower == entry.cliName)
