@@ -70,10 +70,10 @@ None
 Numbi - Expands lightly, and swiftly. Easy Difficulty.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Does not attack, but builds monstrous bases and aggressively converts units. Easy Difficulty.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Does not attack, but builds monstrous bases and aggressively converts units. Easy Difficulty.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Attacks quickly and punishingly, often pushing a defending player to the edge of its game. Medium Difficulty.
 [AIWarrush]
@@ -1250,9 +1250,9 @@ An idle colony for experiments.
 Core strategy: Expands lightly and quickly. A gentler opponent for practicing colony management.\n\nStrengths: Gives you room to learn economy and combat together.\n\nCounterplay to try: Build a stronger economy and trained army before committing to an attack.
 [AINumbi-Summary]
 Light, swift expansion.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Core strategy: Does not attack, but builds enormous bases and aggressively converts units.\n\nStrengths: Growth and conversion create pressure without conventional attacks.\n\nCounterplay to try: Use the opening to develop, and avoid feeding units into conversion.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Huge bases and conversion instead of attacks.
 [AIWarrush-Profile]
 Core strategy: Attacks quickly and punishingly, before opponents finish their buildup.\n\nStrengths: Punishes undefended expansion and slow military preparation.\n\nCounterplay to try: Survive the first attack while maintaining your economy, then counterattack.
@@ -1556,3 +1556,5 @@ Quick clash on premade maps: only speed changes (2x).
 Generate a preview to explore this world.
 [More workers jump-start colony growth. Changes the generated map.]
 More workers jump-start colony growth. Changes the generated map.
+[No warriors]
+No warriors

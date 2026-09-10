@@ -66,10 +66,10 @@ KINone
 Numbi ist auch für Anfänger keine große Gefahr.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
+[AIEcono-Description]
 Reach-To-Infinity ist mehr eine Machbarkeitsstudie. Er wirtschaftet und wirtschaftet und wirtschaftet, greift aber nicht an.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush ist der schnellste Angreifer. Ohne zu schummeln schafft er es, den Kampf vor der Haustür seiner Gegner stattfinden zu lassen
 [AIWarrush]
@@ -1252,9 +1252,9 @@ Eine untätige Kolonie für Experimente.
 Strategie: Expandiert schnell, aber in kleinem Umfang. Ein leichterer Gegner zum Üben des Kolonieaufbaus.\n\nStärken: Lässt Raum, Wirtschaft und Kampf zugleich zu lernen.\n\nGegenspiel zum Ausprobieren: Baue eine stärkere Wirtschaft auf und bilde deine Armee aus, bevor du angreifst.
 [AINumbi-Summary]
 Schnelle Expansion in kleinem Umfang.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategie: Greift nicht an, baut aber riesige Basen und bekehrt aktiv gegnerische Einheiten.\n\nStärken: Wachstum und Bekehrung erzeugen Druck ohne herkömmliche Angriffe.\n\nGegenspiel zum Ausprobieren: Nutze die Anfangsphase zum Aufbau und schicke keine Einheiten dorthin, wo sie bekehrt werden können.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Riesige Stützpunkte und Konvertierung statt Angriffe.
 [AIWarrush-Profile]
 Strategie: Greift früh und hart an, bevor Gegner ihren Aufbau abgeschlossen haben.\n\nStärken: Nutzt ungeschützte Expansion und langsame militärische Vorbereitung aus.\n\nGegenspiel zum Ausprobieren: Überstehe den ersten Angriff, halte deine Wirtschaft am Laufen und greife dann selbst an.
@@ -1558,3 +1558,5 @@ Schneller Kampf auf vorgefertigten Karten: Nur die Geschwindigkeit ändert sich 
 Erstellen Sie eine Vorschau, um diese Welt zu erkunden.
 [More workers jump-start colony growth. Changes the generated map.]
 Mehr Arbeiter beschleunigen das Koloniewachstum. Diese Einstellung ändert die generierte Karte.
+[No warriors]
+Keine Krieger

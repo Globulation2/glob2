@@ -66,10 +66,10 @@ Nicowar
 Numbi sa rozrastá v malom rozsahu, ale rýchlo. Nízka náročnosť.
 [AINumbi]
 UINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity neútočí, ale buduje obrovské základne a usilovne získava cudzie jednotky na svoju stranu. Nízka náročnosť.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo neútočí, ale buduje obrovské základne a usilovne získava cudzie jednotky na svoju stranu. Nízka náročnosť.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush útočí rýchlo a tvrdo a často zatlačí obrancu na hranicu jeho možností. Stredná náročnosť.
 [AIWarrush]
@@ -1260,9 +1260,9 @@ Nečinná kolónia na experimenty.
 Stratégia: Rozširuje sa rýchlo, ale v malom rozsahu. Ľahší súper pre precvičovanie manažmentu kolónií.\n\nSilné stránky: Umožňuje vám naučiť sa ekonomické riadenie aj boj.\n\nOdporúčaná protihra: Pred útokom vyviňte silnejšiu ekonomiku a vycvičte svoju armádu.
 [AINumbi-Summary]
 Rýchla expanzia v malom meradle.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Stratégia: Neútočí, ale buduje obrovské základne a aktívne konvertuje nepriateľské jednotky na svoju stranu.\n\nSilné stránky: Rozšírenie a konverzia jednotiek ohrozujú protivníkov bez priamych útokov.\n\nOdporúčaná protihra: Rozvíjajte svoju kolóniu včas a vyhnite sa posielaniu jednotiek tam, kde ich môže nepriateľ premeniť.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Obrovské základne a konverzia namiesto útokov.
 [AIWarrush-Profile]
 Stratégia: Útočí skoro a rázne, skôr ako súper dokončí prípravu.\n\nSilné stránky: Využíva nebránenú expanziu a pomalú vojenskú prípravu.\n\nOdporúčaná protihra: Prežite prvý útok pri zachovaní svojej ekonomiky, potom zaútočte.
@@ -1566,3 +1566,5 @@ Rýchla bitka na vopred pripravených mapách: mení sa iba rýchlosť (dvojnás
 Vytvorte ukážku na preskúmanie tohto sveta.
 [More workers jump-start colony growth. Changes the generated map.]
 Viac robotníkov urýchľuje rast kolónií. Toto nastavenie zmení vygenerovanú mapu.
+[No warriors]
+Bez bojovníkov

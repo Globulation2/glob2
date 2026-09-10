@@ -28,7 +28,7 @@ namespace AINames
 			{AI::NUMBI,           "numbi",           "AINumbi", "Easy"},
 			{AI::CASTOR,          "castor",          "AICastor", "Medium"},
 			{AI::WARRUSH,         "warrush",         "AIWarrush", "Medium"},
-			{AI::REACHTOINFINITY, "reachtoinfinity", "AIReachToInfinity", "Easy"},
+			{AI::ECONO, "econo", "AIEcono", "Easy"},
 			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard"},
 			{AI::CORTEX,          "cortex",          "AICortex", "Medium"},
 		};
@@ -55,7 +55,8 @@ namespace AINames
         for (const auto& entry : aiTable)
             if (entry.id == id)
                 return (id == AI::NONE ? Toolkit::getStringTable()->getString("[Inactive]") : getAIText(id))
-                    + std::string(" - ") + Toolkit::getStringTable()->getString("[" + std::string(entry.difficulty) + "]");
+                    + std::string(" - ") + Toolkit::getStringTable()->getString("[" + std::string(entry.difficulty) + "]")
+                    + (id == AI::ECONO ? std::string(" - ") + Toolkit::getStringTable()->getString("[No warriors]") : "");
         return "unknown AI";
     }
     std::string getAISummary(int id)
@@ -81,6 +82,7 @@ namespace AINames
 	{
 		std::string lower = name;
 		std::transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+		if (lower == "reachtoinfinity") return AI::ECONO; // Existing scripts remain valid.
 		for (const auto& entry : aiTable)
 		{
 			if (entry.cliName && lower == entry.cliName)

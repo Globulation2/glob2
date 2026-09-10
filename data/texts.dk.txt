@@ -66,10 +66,10 @@ Ingen
 Numbi udvider sig lidt, men hurtigt. Lav sværhedsgrad.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity angriber ikke, men bygger enorme baser og omvender ihærdigt enheder. Lav sværhedsgrad.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo angriber ikke, men bygger enorme baser og omvender ihærdigt enheder. Lav sværhedsgrad.
+[AIEcono]
+Econo
 [AIToubib-Description]
 
 [AIToubib]
@@ -1328,9 +1328,9 @@ En inaktiv koloni til eksperimenter.
 Strategi: Udvider sig hurtigt, men i lille skala. En lettere modstander til at praktisere kolonistyring.\n\nStyrker: Lader dig lære både økonomisk ledelse og kamp.\n\nForeslået modspil: Udvikl en stærkere økonomi og træn din hær, før du angriber.
 [AINumbi-Summary]
 Hurtig udvidelse i lille skala.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategi: Angriber ikke, men bygger enorme baser og konverterer aktivt fjendtlige enheder til sin egen side.\n\nStyrker: Udvidelse og enhedskonvertering truer modstandere uden direkte angreb.\n\nForeslået modspil: Udvikl din koloni tidligt og undgå at sende enheder, hvor fjenden kan konvertere dem.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Kæmpe baser og konvertering i stedet for angreb.
 [AIWarrush-Profile]
 Strategi: Angriber tidligt og kraftigt, før modstanderne er færdige med at forberede sig.\n\nStyrker: Udnytter uforsvaret ekspansion og langsom militær forberedelse.\n\nForeslået modspil: Overlev det første angreb, mens du bevarer din økonomi, og gå derefter til modangreb.
@@ -1634,3 +1634,5 @@ Hurtig kamp på forudlavede kort: kun hastigheden ændres (dobbelt hastighed).
 Generer en forhåndsvisning for at udforske denne verden.
 [More workers jump-start colony growth. Changes the generated map.]
 Flere arbejdere fremskynder kolonivæksten. Denne indstilling ændrer det genererede kort.
+[No warriors]
+Ingen krigere

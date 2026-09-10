@@ -66,10 +66,10 @@ Nincs MI
 Numbi kis lépésekben, gyorsan terjeszkedik. Könnyű.
 [AINumbi]
 MINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity nem támad, de óriási bázisokat épít, és tömegesen térít át egységeket. Könnyű.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo nem támad, de óriási bázisokat épít, és tömegesen térít át egységeket. Könnyű.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush gyorsan és kíméletlenül támad, gyakran a végsőkig szorítva a védekező játékost. Közepes nehézség.
 [AIWarrush]
@@ -1252,9 +1252,9 @@ Tétlen kolónia kísérletekhez.
 Stratégia: Gyorsan, de kis léptékben bővül. Könnyebb ellenfél a telepkezelés gyakorlásához.\n\nErősségek: Lehetővé teszi a gazdaságirányítás és a harc elsajátítását.\n\nJavasolt ellenjáték: Fejlessz erősebb gazdaságot, és képezd ki a hadseregedet, mielőtt támadsz.
 [AINumbi-Summary]
 Gyors bővítés kis léptékben.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Stratégia: Nem támad, hanem hatalmas bázisokat épít fel, és aktívan a saját oldalára fordítja az ellenséges egységeket.\n\nErősségek: A terjeszkedés és az egységátalakítás közvetlen támadások nélkül fenyegeti az ellenfeleket.\n\nJavasolt ellenjáték: Fejleszd korán a kolóniádat, és ne küldj egységeket oda, ahol az ellenség átalakíthatja őket.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Hatalmas bázisok és átalakítások támadások helyett.
 [AIWarrush-Profile]
 Stratégia: Korán és erőteljesen támad, mielőtt az ellenfél befejezné a felkészülést.\n\nErősségek: Kiaknázza a védtelen terjeszkedést és a lassú katonai felkészülést.\n\nJavasolt ellenjáték: Vészeld át az első támadást a gazdaságod fenntartásával, majd indíts ellentámadást.
@@ -1558,3 +1558,5 @@ Gyors csata előre elkészített térképeken: csak a sebesség változik (dupla
 Készítsen előnézetet a világ felfedezéséhez.
 [More workers jump-start colony growth. Changes the generated map.]
 Több munkás felgyorsítja a kolóniák növekedését. Ez a beállítás módosítja a generált térképet.
+[No warriors]
+Harcosok nélkül

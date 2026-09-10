@@ -14,7 +14,7 @@ using namespace boost::logic;
 
 
 //Explorer flags on the three nearest fruit trees
-void ReachToInfinity::tick_explorer_flags_fruit(Echo& echo)
+void Econo::tick_explorer_flags_fruit(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_FRUIT_FLAG_INTERVAL_TICKS)==0)
 	{
@@ -122,7 +122,7 @@ void ReachToInfinity::tick_explorer_flags_fruit(Echo& echo)
 }
 
 //Place exploration flags on the enemy swarms
-void ReachToInfinity::tick_explorer_flags_enemies(Echo& echo)
+void Econo::tick_explorer_flags_enemies(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_ENEMY_SCAN_INTERVAL_TICKS)==0)
 	{
@@ -157,7 +157,7 @@ void ReachToInfinity::tick_explorer_flags_enemies(Echo& echo)
 }
 
 //Farming wheat and wood near water
-void ReachToInfinity::tick_farming_areas(Echo& echo)
+void Econo::tick_farming_areas(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_FARMING_INTERVAL_TICKS)==0)
 	{

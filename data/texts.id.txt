@@ -70,10 +70,10 @@ Tidak ada
 Numbi - Berkembang secara terbatas dan cepat. Tingkat kesulitan mudah.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Menyerang dengan cepat dan keras, sering kali membuat pemain yang bertahan kewalahan. Tingkat kesulitan sedang.
 [AIWarrush]
@@ -1248,9 +1248,9 @@ Koloni yang diam untuk eksperimen.
 Strategi: Berkembang dengan cepat namun dalam skala kecil. Lawan yang lebih mudah untuk mempraktikkan manajemen koloni.\n\nKekuatan: Memungkinkan Anda mempelajari manajemen ekonomi dan pertempuran.\n\nSaran melawan: Kembangkan ekonomi yang lebih kuat dan latih pasukan Anda sebelum menyerang.
 [AINumbi-Summary]
 Ekspansi cepat dalam skala kecil.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategi: Tidak menyerang, tetapi membangun markas besar dan giat mengubah unit musuh menjadi sekutu.\n\nKekuatan: Pertumbuhan dan pengalihan unit menekan lawan tanpa serangan biasa.\n\nSaran melawan: Manfaatkan awal permainan untuk berkembang, dan hindari mengirim unit ke tempat musuh bisa mengambil alihnya.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Basis besar dan konversi, bukan serangan.
 [AIWarrush-Profile]
 Strategi: Menyerang dengan cepat dan keras sebelum lawan selesai bersiap.\n\nKekuatan: Menghukum ekspansi tanpa pertahanan dan persiapan militer yang lambat.\n\nSaran melawan: Pertahankan ekonomi sambil bertahan dari serangan pertama, lalu serang balik.
@@ -1554,3 +1554,5 @@ Pertarungan cepat di peta yang telah dibuat sebelumnya: hanya kecepatannya yang 
 Hasilkan pratinjau untuk menjelajahi dunia ini.
 [More workers jump-start colony growth. Changes the generated map.]
 Lebih banyak pekerja mempercepat pertumbuhan koloni. Pengaturan ini mengubah peta yang dihasilkan.
+[No warriors]
+Tanpa prajurit

@@ -66,10 +66,10 @@ Fără IA
 Numbi se extinde la scară mică, dar rapid. Dificultate scăzută.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity nu atacă, dar construiește baze uriașe și convertește unități în număr mare. Dificultate scăzută.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo nu atacă, dar construiește baze uriașe și convertește unități în număr mare. Dificultate scăzută.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush atacă rapid și necruțător, aducând adesea jucătorul care se apără la limita înfrângerii. Dificultate medie.
 [AIWarrush]
@@ -1252,9 +1252,9 @@ O colonie inactivă pentru experimente.
 Strategie: se extinde rapid, dar la scară mică. Un adversar mai ușor pentru practicarea managementului coloniei.\n\nPuncte forte: Vă permite să învățați atât managementul economic, cât și lupta.\n\nTactici de încercat: dezvoltă o economie mai puternică și antrenează-ți armata înainte de a ataca.
 [AINumbi-Summary]
 Extindere rapidă la scară mică.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategie: Nu atacă, dar construiește baze enorme și transformă activ unitățile inamice în propria sa parte.\n\nPuncte forte: Expansiunea și conversia unităților amenință adversarii fără atacuri directe.\n\nTactici de încercat: Dezvoltați-vă colonia devreme și evitați trimiterea de unități unde inamicul le poate converti.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Baze uriașe și conversie în loc de atacuri.
 [AIWarrush-Profile]
 Strategie: atacă devreme și cu forță, înainte ca adversarii să termine pregătirea.\n\nPuncte forte: exploatează extinderea lipsită de apărare și pregătirea militară lentă.\n\nTactici de încercat: Supraviețuiește primului atac menținându-ți economia, apoi contraatacă.
@@ -1558,3 +1558,5 @@ Luptă rapidă pe hărți prefabricate: doar viteza se schimbă (viteză dublă)
 Generați o previzualizare pentru a explora această lume.
 [More workers jump-start colony growth. Changes the generated map.]
 Mai mulți muncitori accelerează creșterea coloniei. Această setare modifică harta generată.
+[No warriors]
+Fără războinici

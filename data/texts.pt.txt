@@ -66,10 +66,10 @@ Nenhuma
 Numbi expande-se pouco, mas depressa. Dificuldade baixa.
 [AINumbi]
 IANumbi
-[AIReachToInfinity-Description]
-ReachToInfinity não ataca, mas constrói bases enormes e converte unidades de forma agressiva. Dificuldade baixa.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo não ataca, mas constrói bases enormes e converte unidades de forma agressiva. Dificuldade baixa.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush ataca depressa e com força, levando frequentemente o defensor ao limite. Dificuldade média.
 [AIWarrush]
@@ -1258,9 +1258,9 @@ Uma colónia ociosa para experiências.
 Estratégia: Expande-se rapidamente, mas em pequena escala. Um oponente mais fácil para praticar o gestão de colónias.\n\nPontos fortes: Permite aprender gestão económica e combate.\n\nTáticas a experimentar: Desenvolva uma economia mais forte e treine seu exército antes de atacar.
 [AINumbi-Summary]
 Expansão rápida em pequena escala.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Estratégia: Não ataca, mas constrói bases enormes e converte ativamente as unidades inimigas para o seu próprio lado.\n\nPontos fortes: A expansão e a conversão de unidades ameaçam os oponentes sem ataques diretos.\n\nTáticas a experimentar: Desenvolva sua colónia antecipadamente e evite enviar unidades onde o inimigo possa convertê-las.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Enormes bases e conversão em vez de ataques.
 [AIWarrush-Profile]
 Estratégia: Ataca cedo e com força, antes que os oponentes terminem de se preparar.\n\nPontos fortes: Explora a expansão sem defesa e a lenta preparação militar.\n\nTáticas a experimentar: Sobreviva ao primeiro ataque enquanto mantém sua economia e depois contra-ataque.
@@ -1564,3 +1564,5 @@ Batalha rápida em mapas prontos: apenas a velocidade muda (velocidade dupla).
 Gere uma prévia para explorar este mundo.
 [More workers jump-start colony growth. Changes the generated map.]
 Mais trabalhadores aceleram o crescimento das colónias. Esta configuração altera o mapa gerado.
+[No warriors]
+Sem guerreiros

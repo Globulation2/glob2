@@ -145,7 +145,7 @@ void generate(const char* path)
 	GameHeader header;
 	header.setNumberOfPlayers(1);
 	header.setRandomSeed(481516);
-	header.getBasePlayer(0)=BasePlayer(0,"Menu colony",0,BasePlayer::playerTypeFromImplementationID(AI::REACHTOINFINITY));
+	header.getBasePlayer(0)=BasePlayer(0,"Menu colony",0,BasePlayer::playerTypeFromImplementationID(AI::ECONO));
 	header.getWinningConditions().clear();
 	game.setGameHeader(header);
 	game.setAlliances();

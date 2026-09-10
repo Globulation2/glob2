@@ -70,10 +70,10 @@ Nicowar
 Numbi - 소규모로 빠르게 확장합니다. 난이도: 쉬움.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - 공격하지 않지만 거대한 기지를 건설하고 적극적으로 유닛을 전향시킵니다. 난이도: 쉬움.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - 공격하지 않지만 거대한 기지를 건설하고 적극적으로 유닛을 전향시킵니다. 난이도: 쉬움.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - 빠르고 강력한 공격으로 방어하는 플레이어를 극한까지 몰아붙입니다. 난이도: 보통.
 [AIWarrush]
@@ -1248,9 +1248,9 @@ AI 전략 및 대응
 전략: 빠르게 확장하지만 규모는 작습니다. 식민지 관리를 연습하기에 더 쉬운 상대입니다.\n\n강점: 경제 관리와 전투를 모두 배울 수 있습니다.\n\n대응 제안: 공격하기 전에 더 강력한 경제를 개발하고 군대를 훈련하십시오.
 [AINumbi-Summary]
 소규모로 빠른 확장이 가능합니다.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 전략: 공격하지는 않지만, 거대한 기지를 건설하고 적극적으로 적 유닛을 아군으로 전환시킵니다.\n\n장점: 확장 및 유닛 전환은 직접적인 공격 없이도 상대를 위협합니다.\n\n대응 제안: 식민지를 조기에 개발하고 적군이 전환할 수 있는 곳에 유닛을 보내는 것을 피하십시오.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 직접 공격 대신 거대한 기지와 적 유닛 전향으로 압박합니다.
 [AIWarrush-Profile]
 전략: 상대방이 준비를 마치기 전에 조기에 강력하게 공격합니다.\n\n강점: 무방비 확장과 느린 군사 준비를 이용합니다.\n\n대응 제안: 경제를 유지하면서 첫 번째 공격에서 살아남은 후 반격하십시오.
@@ -1554,3 +1554,5 @@ AI 명령 없음
 이 세계를 탐험하려면 미리보기를 생성하세요.
 [More workers jump-start colony growth. Changes the generated map.]
 더 많은 일꾼이 식민지 성장을 가속화합니다. 이 설정은 생성된 지도를 변경합니다.
+[No warriors]
+전사 없음

@@ -66,10 +66,10 @@ AINone
 Description de AINumbi
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-Description de ReachToInfinity
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Description de Econo
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Description d'AICastor
 [AIWarrush]
@@ -1262,9 +1262,9 @@ Une colonie inactive pour expérimenter.
 Stratégie : Se développe rapidement mais à petite échelle. Un adversaire plus facile pour pratiquer la gestion de colonie.\n\nPoints forts : Permet d'apprendre à la fois la gestion économique et le combat.\n\nTactiques à essayer : Développez une économie plus forte et entraînez votre armée avant d’attaquer.
 [AINumbi-Summary]
 Expansion rapide à petite échelle.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Stratégie : n'attaque pas, mais construit d'énormes bases et convertit activement les unités ennemies dans son propre camp.\n\nPoints forts : L'expansion et la conversion d'unités menacent les adversaires sans attaques directes.\n\nTactiques à essayer : développez votre colonie tôt et évitez d'envoyer des unités là où l'ennemi peut les convertir.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Bases énormes et conversion au lieu d'attaques.
 [AIWarrush-Profile]
 Stratégie : attaque tôt et avec force, avant que les adversaires aient fini de se préparer.\n\nPoints forts : exploite une expansion sans défense et une préparation militaire lente.\n\nTactiques à essayer : Survivez à la première attaque tout en maintenant votre économie, puis contre-attaquez.
@@ -1568,3 +1568,5 @@ Bataille rapide sur des cartes prédéfinies : seule la vitesse change (double v
 Générez un aperçu pour explorer ce monde.
 [More workers jump-start colony growth. Changes the generated map.]
 Un plus grand nombre d’ouvrières accélère la croissance des colonies. Ce paramètre modifie la carte générée.
+[No warriors]
+Sans guerriers

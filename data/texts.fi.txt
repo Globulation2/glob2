@@ -66,10 +66,10 @@ Ei mitään
 Numbi laajentaa nopeasti ja sulavasti. Vaikeustaso: aloittelija.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Ei hyökkää, mutta rakentaa valtavan tukikohdan ja yrittää voimakkaasti käännyttää joukkoja omalle puolelleen. Vaikeustaso: aloittelija.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Ei hyökkää, mutta rakentaa valtavan tukikohdan ja yrittää voimakkaasti käännyttää joukkoja omalle puolelleen. Vaikeustaso: aloittelija.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Hyökkää nopeasti työntäen puolustamiseen painottavan pelaajan häviön partaalle. Vaikeustaso: normaali.
 [AIWarrush]
@@ -1252,9 +1252,9 @@ Toimeton siirtokunta kokeiluja varten.
 Strategia: Laajenee nopeasti, mutta pienessä mittakaavassa. Helpompi vastustaja siirtokunnan hallinnan harjoitteluun.\n\nVahvuudet: Voit oppia sekä talouden hallintaa että taistelua.\n\nEhdotettu vastapeli: Kehitä vahvempi talous ja kouluta armeijasi ennen hyökkäämistä.
 [AINumbi-Summary]
 Nopea laajennus pienessä mittakaavassa.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategia: Ei hyökkää, vaan rakentaa valtavia tukikohtia ja muuntaa aktiivisesti vihollisen yksiköitä omalle puolelleen.\n\nVahvuudet: Laajentuminen ja yksiköiden muuntaminen uhkaavat vastustajia ilman suoria hyökkäyksiä.\n\nEhdotettu vastapeli: Kehitä siirtokuntaasi ajoissa ja vältä yksiköiden lähettämistä sinne, missä vihollinen voi muuttaa ne.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Valtavat tukikohdat ja muunnos hyökkäysten sijaan.
 [AIWarrush-Profile]
 Strategia: Hyökkää aikaisin ja voimakkaasti, ennen kuin vastustajat ovat valmistautuneet.\n\nVahvuudet: Käyttää hyväkseen puolustamatonta laajentumista ja hidasta sotilaallista valmistautumista.\n\nEhdotettu vastapeli: Selviydy ensimmäisestä hyökkäyksestä pitäen samalla taloutesi toiminnassa ja aloita vastahyökkäys.
@@ -1558,3 +1558,5 @@ Nopea taistelu valmiilla kartoilla: vain nopeus muuttuu (kaksinkertainen nopeus)
 Luo esikatselu tutustuaksesi tähän maailmaan.
 [More workers jump-start colony growth. Changes the generated map.]
 Lisää työntekijöitä nopeuttaa siirtokuntien kasvua. Tämä asetus muuttaa luotua karttaa.
+[No warriors]
+Ei sotureita

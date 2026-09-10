@@ -66,10 +66,10 @@ AINone
 Numbi - Expande levemente com rapidez. Dificuldade Fácil.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Não ataca. Porém constrói enormes bases e tenta converter muitas unidades. Dificuldade Fácil.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Não ataca. Porém constrói enormes bases e tenta converter muitas unidades. Dificuldade Fácil.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Ataca rápido e com força, costuma fazer com que o jogador defensor seja levado ao limite. Dificuldade Média.
 [AIWarrush]
@@ -1248,9 +1248,9 @@ Uma colônia ociosa para experimentos.
 Estratégia: Expande-se rapidamente, mas em pequena escala. Um oponente mais fácil para praticar o manejo de colônias.\n\nPontos fortes: Permite aprender gestão econômica e combate.\n\nTáticas a experimentar: Desenvolva uma economia mais forte e treine seu exército antes de atacar.
 [AINumbi-Summary]
 Expansão rápida em pequena escala.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Estratégia: Não ataca, mas constrói bases enormes e converte ativamente as unidades inimigas para o seu próprio lado.\n\nPontos fortes: A expansão e a conversão de unidades ameaçam os oponentes sem ataques diretos.\n\nTáticas a experimentar: Desenvolva sua colônia antecipadamente e evite enviar unidades onde o inimigo possa convertê-las.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Enormes bases e conversão em vez de ataques.
 [AIWarrush-Profile]
 Estratégia: Ataca cedo e com força, antes que os oponentes terminem de se preparar.\n\nPontos fortes: Explora a expansão sem defesa e a lenta preparação militar.\n\nTáticas a experimentar: Sobreviva ao primeiro ataque enquanto mantém sua economia e depois contra-ataque.
@@ -1554,3 +1554,5 @@ Batalha rápida em mapas prontos: apenas a velocidade muda (velocidade dupla).
 Gere uma prévia para explorar este mundo.
 [More workers jump-start colony growth. Changes the generated map.]
 Mais trabalhadores aceleram o crescimento das colônias. Esta configuração altera o mapa gerado.
+[No warriors]
+Sem guerreiros

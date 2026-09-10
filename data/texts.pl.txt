@@ -66,10 +66,10 @@ AINone
 Numbi - Rozszerza się lekko i szybko. Mała trudność.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Nie atakuje, ale buduje ogromne bazy i agresywnie konwertuje jednostki. Mała trudność.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Nie atakuje, ale buduje ogromne bazy i agresywnie konwertuje jednostki. Mała trudność.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Atakuje szybko i skutecznie, często spychając broniącego się gracza na straconą pozycję. Średnia trudność.
 [AIWarrush]
@@ -1252,9 +1252,9 @@ Bezczynna kolonia do eksperymentów.
 Strategia: Rozwija się szybko, ale na małą skalę. Łatwiejszy przeciwnik do ćwiczenia zarządzania kolonią.\n\nMocne strony: Pozwala nauczyć się zarówno zarządzania ekonomicznego, jak i walki.\n\nJak przeciwdziałać: Rozwiń silniejszą gospodarkę i wytrenuj swoją armię przed atakiem.
 [AINumbi-Summary]
 Szybka rozbudowa na małą skalę.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategia: Nie atakuje, ale buduje ogromne bazy i aktywnie konwertuje jednostki wroga na swoją stronę.\n\nMocne strony: Ekspansja i konwersja jednostek zagrażają przeciwnikom bez bezpośrednich ataków.\n\nJak przeciwdziałać: Rozwijaj swoją kolonię już na wczesnym etapie i unikaj wysyłania jednostek tam, gdzie wróg może je skonwertować.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Ogromne bazy i konwersja zamiast ataków.
 [AIWarrush-Profile]
 Strategia: Atakuje wcześnie i mocno, zanim przeciwnicy zakończą przygotowania.\n\nMocne strony: Wykorzystuje niebronioną ekspansję i powolne przygotowanie wojskowe.\n\nJak przeciwdziałać: Przetrwaj pierwszy atak, utrzymując gospodarkę, a następnie kontratakuj.
@@ -1558,3 +1558,5 @@ Szybka bitwa na gotowych mapach: zmienia się tylko prędkość (podwójna pręd
 Wygeneruj podgląd, aby poznać ten świat.
 [More workers jump-start colony growth. Changes the generated map.]
 Więcej robotnic przyspiesza rozwój kolonii. To ustawienie zmienia wygenerowaną mapę.
+[No warriors]
+Bez wojowników

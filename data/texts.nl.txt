@@ -66,10 +66,10 @@ Geen AI
 Numbi is een gemakkelijke vijand die traag groeit en niet goed met grondstoffen kan omgaan. Moeilijkheidsgraad: Gemakkelijk.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity valt niet aan, maar probeert in evenwicht met de natuur enorme steden op te bouwen. Let wel op, want met zijn vele herbergen lopen jouw globs al snel over. Moeilijkheidsgraad: Gemakkelijk.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo valt niet aan, maar probeert in evenwicht met de natuur enorme steden op te bouwen. Let wel op, want met zijn vele herbergen lopen jouw globs al snel over. Moeilijkheidsgraad: Gemakkelijk.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush is snel en onverbiddelijk. Voor je het weet staan zijn legers aan jouw deur en moet je verdedigen alsof je leven er van afhangt, want dat is ook zo. Moeilijkheidsgraad: Gemiddeld.
 [AIWarrush]
@@ -1276,9 +1276,9 @@ Een inactieve kolonie voor experimenten.
 Strategie: Breidt snel uit, maar op kleine schaal. Een gemakkelijkere tegenstander voor het oefenen van koloniebeheer.\n\nSterke punten: Hiermee leer je zowel economisch management als vechten.\n\nVoorgesteld tegenspel: ontwikkel een sterkere economie en train je leger voordat je aanvalt.
 [AINumbi-Summary]
 Snelle uitbreiding op kleine schaal.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategie: Valt niet aan, maar bouwt enorme bases en zet vijandelijke eenheden actief om naar zijn eigen kant.\n\nSterke punten: Uitbreiding en eenheidsconversie bedreigen tegenstanders zonder directe aanvallen.\n\nVoorgesteld tegenspel: ontwikkel je kolonie vroeg en vermijd het sturen van eenheden waar de vijand ze kan bekeren.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Enorme bases en conversie in plaats van aanvallen.
 [AIWarrush-Profile]
 Strategie: Valt vroeg en krachtig aan, voordat de tegenstanders klaar zijn met voorbereiden.\n\nSterke punten: maakt gebruik van onverdedigde expansie en trage militaire voorbereiding.\n\nVoorgesteld tegenspel: overleef de eerste aanval met behoud van je economie, en voer dan een tegenaanval uit.
@@ -1582,3 +1582,5 @@ Snelle strijd op vooraf gemaakte kaarten: alleen de snelheid verandert (dubbele 
 Genereer een voorbeeld om deze wereld te verkennen.
 [More workers jump-start colony growth. Changes the generated map.]
 Meer werkers versnellen de groei van de kolonie. Deze instelling verandert de gegenereerde kaart.
+[No warriors]
+Geen krijgers

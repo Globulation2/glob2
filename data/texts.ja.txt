@@ -70,10 +70,10 @@ AIなし：何もしません。
 Numbi：小規模ながら素早く拡大します。難易度：簡単。
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity：攻撃はしませんが、巨大な拠点を築き、積極的にユニットを引き抜きます。難易度：簡単。
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo：攻撃はしませんが、巨大な拠点を築き、積極的にユニットを引き抜きます。難易度：簡単。
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush：早い段階から激しく攻撃し、防御側を限界まで追い詰めます。難易度：普通。
 [AIWarrush]
@@ -1248,9 +1248,9 @@ AIの戦略と対抗策
 基本戦略: 小規模かつ素早く拡張します。コロニー管理を練習しやすい相手です。\n\n強み: 経済と戦闘を一緒に学ぶ余裕を与えてくれます。\n\n対策のヒント: 経済を強化し、軍隊を訓練してから攻撃を仕掛けましょう。
 [AINumbi-Summary]
 小規模でも迅速な拡張が可能。
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 基本戦略: 攻撃はせず、巨大な拠点を築いて敵ユニットを積極的に味方へ転向させます。\n\n強み: 拡張と転向によって、通常の攻撃なしで圧力をかけます。\n\n対策のヒント: 序盤の余裕を使って発展し、転向させられる場所へユニットを送り込まないようにしましょう。
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 攻撃せず、巨大な拠点と敵ユニットの転向で対抗。
 [AIWarrush-Profile]
 基本戦略: 相手の準備が整う前に、素早く激しい攻撃を仕掛けます。\n\n強み: 無防備な拡張や軍備の遅れを突きます。\n\n対策のヒント: 経済を維持しながら最初の攻撃をしのぎ、その後に反撃しましょう。
@@ -1554,3 +1554,5 @@ AIの命令なし
 この世界を探索するためのプレビューを生成します。
 [More workers jump-start colony growth. Changes the generated map.]
 働き手が増えるとコロニーの成長が加速します。この設定により、生成されるマップが変更されます。
+[No warriors]
+戦士なし

@@ -70,10 +70,10 @@ Không
 Numbi - Mở rộng vừa phải và nhanh chóng. Độ khó thấp.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Không tấn công, nhưng xây căn cứ khổng lồ và ra sức thu phục đơn vị. Độ khó thấp.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Không tấn công, nhưng xây căn cứ khổng lồ và ra sức thu phục đơn vị. Độ khó thấp.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Tấn công nhanh và dữ dội, thường khiến người phòng thủ phải chống đỡ hết sức. Độ khó trung bình.
 [AIWarrush]
@@ -1248,9 +1248,9 @@ Một thuộc địa nhàn rỗi cho các thí nghiệm.
 Chiến lược: Mở rộng nhanh chóng nhưng ở quy mô nhỏ. Một đối thủ dễ dàng hơn để thực hành quản lý thuộc địa.\n\nĐiểm mạnh: Cho phép bạn học cả quản lý kinh tế và chiến đấu.\n\nGợi ý đối phó: Phát triển nền kinh tế mạnh hơn và huấn luyện quân đội của bạn trước khi tấn công.
 [AINumbi-Summary]
 Mở rộng nhanh chóng ở quy mô nhỏ.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Chiến lược: Không tấn công, nhưng xây dựng những căn cứ khổng lồ và chủ động chuyển đổi các đơn vị quân địch về phía mình.\n\nĐiểm mạnh: Mở rộng và chuyển đổi đơn vị đe dọa đối thủ mà không cần tấn công trực tiếp.\n\nGợi ý đối phó: Phát triển thuộc địa của bạn sớm và tránh gửi các đơn vị đến nơi kẻ thù có thể chuyển đổi chúng.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Xây căn cứ lớn và chiêu dụ quân địch thay vì tấn công.
 [AIWarrush-Profile]
 Chiến lược: Tấn công nhanh và mạnh trước khi đối thủ xây dựng lực lượng xong.\n\nĐiểm mạnh: Trừng phạt việc mở rộng thiếu phòng thủ và chuẩn bị quân sự chậm.\n\nGợi ý đối phó: Duy trì kinh tế, chống đỡ đợt tấn công đầu rồi phản công.
@@ -1554,3 +1554,5 @@ Trận chiến nhanh trên bản đồ được tạo sẵn: chỉ có tốc đ�
 Tạo bản xem trước để khám phá thế giới này.
 [More workers jump-start colony growth. Changes the generated map.]
 Nhiều công nhân hơn đẩy nhanh sự phát triển của thuộc địa. Cài đặt này thay đổi bản đồ được tạo.
+[No warriors]
+Không có chiến binh

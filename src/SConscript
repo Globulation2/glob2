@@ -30,9 +30,9 @@ ai/echo/ManagementMisc.cpp
 ai/echo/ManagementOrderBase.cpp
 ai/echo/ManagementTracker.cpp
 ai/echo/MapInfo.cpp
-ai/echo/ReachToInfinity.cpp
-ai/echo/ReachToInfinityBuilding.cpp
-ai/echo/ReachToInfinityFlags.cpp
+ai/echo/Econo.cpp
+ai/echo/EconoBuilding.cpp
+ai/echo/EconoFlags.cpp
 ai/echo/SearchTools.cpp
 ai/AINames.cpp
 ai/nicowar/Attack.cpp

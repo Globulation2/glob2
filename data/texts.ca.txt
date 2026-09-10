@@ -66,10 +66,10 @@ Cap
 Numbi s'expandeix poc, però de pressa. Dificultat baixa.
 [AINumbi]
 IANumbi
-[AIReachToInfinity-Description]
-ReachToInfinity no ataca, però construeix bases enormes i intenta fer passar moltes unitats al seu bàndol. Dificultat baixa.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo no ataca, però construeix bases enormes i intenta fer passar moltes unitats al seu bàndol. Dificultat baixa.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush ataca de pressa i amb duresa, sovint portant el defensor al límit. Dificultat mitjana.
 [AIWarrush]
@@ -1260,9 +1260,9 @@ Una colònia ociosa per a experiments.
 Estratègia: s'expandeix ràpidament però a petita escala. Un oponent més fàcil per practicar la gestió de colònies.\n\nPunts forts: et permet aprendre tant la gestió econòmica com el combat.\n\nContrajoc suggerit: desenvolupa una economia més forta i entrena el teu exèrcit abans d'atacar.
 [AINumbi-Summary]
 Expansió ràpida a petita escala.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Estratègia: no ataca, però construeix bases enormes i converteix activament les unitats enemigues al seu propi bàndol.\n\nPunts forts: l'expansió i la conversió d'unitats amenacen els oponents sense atacs directes.\n\nContrajoc suggerit: desenvolupa la teva colònia aviat i evita enviar unitats on l'enemic les pugui convertir.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Bases enormes i conversió en lloc d'atacs.
 [AIWarrush-Profile]
 Estratègia: ataca aviat i amb força, abans que els oponents s'acabin de preparar.\n\nPunts forts: aprofita l'expansió sense defensa i la preparació militar lenta.\n\nContrajoc suggerit: sobreviu al primer atac mantenint la teva economia i després contraataca.
@@ -1566,3 +1566,5 @@ Batalla ràpida en mapes predissenyats: només canvia la velocitat (velocitat do
 Genera una vista prèvia per explorar aquest món.
 [More workers jump-start colony growth. Changes the generated map.]
 Més treballadors acceleren el creixement de les colònies. Aquesta configuració canvia el mapa generat.
+[No warriors]
+Sense guerrers

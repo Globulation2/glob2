@@ -66,10 +66,10 @@ Bat ere ez
 Numbi gutxi hedatzen da, baina azkar. Zailtasun txikia.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinityk ez du erasotzen, baina base erraldoiak eraikitzen ditu eta unitate asko bere taldera erakartzen ditu. Zailtasun txikia.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econok ez du erasotzen, baina base erraldoiak eraikitzen ditu eta unitate asko bere taldera erakartzen ditu. Zailtasun txikia.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrushek azkar eta gogor erasotzen du, eta sarritan mugara eramaten du defendatzailea. Zailtasun ertaina.
 [AIWarrush]
@@ -1262,9 +1262,9 @@ Esperimentuetarako kolonia inaktiboa.
 Estrategia: azkar hedatzen da baina eskala txikian. Kolonien kudeaketa praktikatzeko aurkari errazagoa.\n\nIndarguneak: kudeaketa ekonomikoa eta borroka ikasteko aukera ematen dizu.\n\nIradokitako kontrako jokua: garatu ekonomia indartsuagoa eta entrenatu zure armada erasotu aurretik.
 [AINumbi-Summary]
 Hedapen azkarra eskala txikian.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Estrategia: ez du erasotzen, baina base erraldoiak eraikitzen ditu eta etsaien unitateak bere aldera bihurtzen ditu.\n\nIndarguneak: hazkundeak eta unitateen bihurketak presioa sortzen dute eraso arruntik gabe.\n\nProbatzeko taktikak: aprobetxatu hasiera zure kolonia garatzeko, eta ez bidali unitateak etsaiak bihur ditzakeen tokietara.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Oinarri erraldoiak eta erasoen ordez bihurketa.
 [AIWarrush-Profile]
 Estrategia: goiz eta gogor erasotzen du, aurkariek prestaketak amaitu aurretik.\n\nIndarguneak: defentsarik gabeko hedapena eta prestaketa militar motela aprobetxatzen ditu.\n\nProbatzeko taktikak: eutsi lehen erasoari ekonomia mantenduz, eta gero kontraerasoa egin.
@@ -1568,3 +1568,5 @@ Aurrez egindako mapetan borroka azkarra: abiadura bakarrik aldatzen da (abiadura
 Sortu aurrebista mundu hau esploratzeko.
 [More workers jump-start colony growth. Changes the generated map.]
 Langile gehiagok koloniaren hazkundea bizkortzen dute. Ezarpen honek sortutako mapa aldatzen du.
+[No warriors]
+Gudaririk gabe

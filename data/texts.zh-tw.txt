@@ -66,10 +66,10 @@ Nicowar
 Numbi 會迅速進行小規模擴張。低難度。
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity 不會進攻，但會建造龐大基地，並積極招降單位。低難度。
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo 不會進攻，但會建造龐大基地，並積極招降單位。低難度。
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush 進攻迅速且猛烈，常讓防守的玩家陷入苦戰。中等難度。
 [AIWarrush]
@@ -1324,9 +1324,9 @@ AI策略與對抗
 核心策略:小規模快速擴張，適合練習殖民地管理。\n\n優勢:讓你有餘地同時學習經濟管理和戰鬥。\n\n可嘗試的對策:先壯大經濟、訓練軍隊，再發動進攻。
 [AINumbi-Summary]
 小規模快速擴張。
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 策略:不攻擊，但建立巨大的基地並積極地將敵方部隊轉變為己方。\n\n優點:擴張和單位轉換無需直接攻擊即可威脅對手。\n\n建議的對策:儘早發展你的殖民地，避免將部隊派遣到敵人可以轉換的地方。
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 不主動進攻，以巨大基地和招降敵軍施壓。
 [AIWarrush-Profile]
 核心策略:在對手完成建設前，發動迅速而猛烈的進攻。\n\n優勢:善於打擊無防備的擴張和緩慢的備戰。\n\n可嘗試的對策:維持經濟，撐過首輪進攻後再反擊。
@@ -1630,3 +1630,5 @@ AI策略與對抗
 生成預覽來探索這個世界。
 [More workers jump-start colony growth. Changes the generated map.]
 更多工人能加快殖民地的初期發展。修改此設定會改變產生的地圖。
+[No warriors]
+無戰士

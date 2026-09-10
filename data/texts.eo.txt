@@ -66,10 +66,10 @@ Nenio
 Numbi Etendas singarde kaj rapide. Ĝi facilas.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity ne atakas, sed konstruas monstrajn fundojn kaj avide konvertigas globulojn. Ĝi facilas.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo ne atakas, sed konstruas monstrajn fundojn kaj avide konvertigas globulojn. Ĝi facilas.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush atakas rapide kaj sovaĝe, kaj ofte puŝas denendanta ludanto al la bordo de sia ludo. Ĝi mezfacilas.
 [AIWarrush]
@@ -1250,9 +1250,9 @@ Neaktiva kolonio por eksperimentoj.
 Strategio: Vastiĝas rapide sed malgrandskale. Pli facila kontraŭulo por praktikado de kolonia administrado.\n\nFortoj: Permesas vin lerni kaj ekonomian administradon kaj batalon.\n\nProponita kontraŭludo: Disvolvu pli fortan ekonomion kaj trejnu vian armeon antaŭ ol ataki.
 [AINumbi-Summary]
 Rapida ekspansio en malgranda skalo.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategio: Ne atakas, sed konstruas enormajn bazojn kaj aktive konvertas malamikunuojn al sia propra flanko.\n\nFortoj: Vastiĝo kaj unuokonverto minacas kontraŭulojn sen rektaj atakoj.\n\nProponita kontraŭludo: Disvolvu vian kolonion frue kaj evitu sendi unuojn kie la malamiko povas konverti ilin.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Grandegaj bazoj kaj konvertiĝo anstataŭ atakoj.
 [AIWarrush-Profile]
 Strategio: Atakas frue kaj forte, antaŭ ol kontraŭuloj finas prepariĝi.\n\nFortoj: Ekspluatas nedefenditan ekspansion kaj malrapidan armean preparon.\n\nProponita kontraŭludo: Travivu la unuan atakon konservante vian ekonomion, poste kontraŭataku.
@@ -1556,3 +1556,5 @@ Rapida batalo sur antaŭfaritaj mapoj: nur la rapideco ŝanĝiĝas (duobla rapid
 Generu antaŭrigardon por esplori ĉi tiun mondon.
 [More workers jump-start colony growth. Changes the generated map.]
 Pli da laboristoj akcelas kolonian kreskon. Ĉi tiu agordo ŝanĝas la generitan mapon.
+[No warriors]
+Sen militistoj

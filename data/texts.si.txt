@@ -66,10 +66,10 @@ Brez UI
 Numbi se širi v manjšem obsegu, a hitro. Nizka težavnost.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity ne napada, a gradi ogromne baze in vztrajno pridobiva tuje enote na svojo stran. Nizka težavnost.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo ne napada, a gradi ogromne baze in vztrajno pridobiva tuje enote na svojo stran. Nizka težavnost.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush napada hitro in silovito ter branilca pogosto potisne do meja njegovih zmožnosti. Srednja težavnost.
 [AIWarrush]
@@ -1252,9 +1252,9 @@ Nedejavna kolonija za eksperimente.
 Strategija: Hitro se širi, vendar v majhnem obsegu. Lažji nasprotnik za vadbo upravljanja kolonije.\n\nPrednosti: Omogoča vam, da se naučite ekonomskega upravljanja in bojevanja.\n\nPredlagana protiigra: Razvijte močnejše gospodarstvo in izurite svojo vojsko pred napadom.
 [AINumbi-Summary]
 Hitra širitev v majhnem obsegu.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategija: Ne napada, ampak gradi ogromne baze in aktivno spreminja sovražne enote na svojo stran.\n\nPrednosti: Razširitev in pretvorba enot ogrožata nasprotnike brez neposrednih napadov.\n\nPredlagana protiigra: zgodaj razvijte svojo kolonijo in se izogibajte pošiljanju enot, kamor jih lahko sovražnik spremeni.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Ogromne baze in pretvorba namesto napadov.
 [AIWarrush-Profile]
 Strategija: Napade zgodaj in odločno, preden se nasprotniki končajo s pripravami.\n\nPrednosti: izkorišča nebranjeno širitev in počasne vojaške priprave.\n\nPredlagana protiigra: Preživite prvi napad in hkrati ohranite gospodarstvo, nato pa izvedite protinapad.
@@ -1558,3 +1558,5 @@ Hitra bitka na vnaprej pripravljenih zemljevidih: spreminja se le hitrost (dvojn
 Ustvarite predogled za raziskovanje tega sveta.
 [More workers jump-start colony growth. Changes the generated map.]
 Več delavcev pospeši rast kolonije. Ta nastavitev spremeni ustvarjeni zemljevid.
+[No warriors]
+Brez bojevnikov

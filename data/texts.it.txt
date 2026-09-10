@@ -66,10 +66,10 @@ NienteIA
 Numbi - Si espande poco e rapidamente. Difficoltà bassa.
 [AINumbi]
 IANumbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Non attacca, ma costruisce basi enormi e converte le unità in modo aggressivo. Difficoltà bassa.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Non attacca, ma costruisce basi enormi e converte le unità in modo aggressivo. Difficoltà bassa.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Attacca rapidamente e con forza, mettendo spesso a dura prova chi si difende. Difficoltà media.
 [AIWarrush]
@@ -1314,9 +1314,9 @@ Una colonia inattiva per gli esperimenti.
 Strategia: si espande rapidamente ma su piccola scala. Un avversario più facile per praticare la gestione della colonia.\n\nPunti di forza: ti consente di apprendere sia la gestione economica che il combattimento.\n\nContromisure suggerite: sviluppa un'economia più forte e addestra il tuo esercito prima di attaccare.
 [AINumbi-Summary]
 Espansione rapida su piccola scala.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strategia: non attacca, ma costruisce basi enormi e converte attivamente le unità nemiche dalla propria parte.\n\nPunti di forza: l'espansione e la conversione delle unità minacciano gli avversari senza attacchi diretti.\n\nContromisure suggerite: sviluppa presto la tua colonia ed evita di inviare unità dove il nemico può convertirle.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Basi enormi e conversione invece di attacchi.
 [AIWarrush-Profile]
 Strategia: attacca presto e con forza, prima che gli avversari finiscano di prepararsi.\n\nPunti di forza: sfrutta l'espansione indifesa e la lenta preparazione militare.\n\nContromisure suggerite: sopravvivi al primo attacco mantenendo la tua economia, quindi contrattacca.
@@ -1620,3 +1620,5 @@ Battaglia veloce su mappe già pronte: cambia solo la velocità (doppia velocit�
 Genera un'anteprima per esplorare questo mondo.
 [More workers jump-start colony growth. Changes the generated map.]
 Più operai accelerano la crescita della colonia. Questa impostazione modifica la mappa generata.
+[No warriors]
+Senza guerrieri

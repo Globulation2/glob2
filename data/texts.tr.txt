@@ -66,10 +66,10 @@ Yapay zekâ yok
 Numbi küçük adımlarla, hızla genişler. Kolay.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity saldırmaz, ancak dev üsler kurar ve çok sayıda birimi kendi tarafına çeker. Kolay.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo saldırmaz, ancak dev üsler kurar ve çok sayıda birimi kendi tarafına çeker. Kolay.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush hızlı ve sert saldırır, savunmadaki oyuncuyu sıklıkla yenilginin eşiğine getirir. Orta zorluk.
 [AIWarrush]
@@ -1260,9 +1260,9 @@ Denemeler için hareketsiz bir koloni.
 Strateji: Hızlı ama küçük ölçekte genişler. Koloni yönetimini uygulamak için daha kolay bir rakip.\n\nGüçlü Yönler: Hem ekonomik yönetimi hem de savaşı öğrenmenizi sağlar.\n\nKarşı taktik önerisi: Daha güçlü bir ekonomi geliştirin ve saldırmadan önce ordunuzu eğitin.
 [AINumbi-Summary]
 Küçük ölçekte hızlı genişleme.
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 Strateji: Saldırmaz ancak devasa üsler inşa eder ve düşman birimlerini aktif olarak kendi tarafına çeker.\n\nGüçlü Yönler: Genişleme ve birim dönüştürme, doğrudan saldırı olmadan rakipleri tehdit eder.\n\nKarşı taktik önerisi: Koloninizi erkenden geliştirin ve düşmanın onları dönüştürebileceği yerlere birimleri göndermekten kaçının.
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 Saldırmak yerine dev üsler kurar ve düşman birimlerini tarafına çeker.
 [AIWarrush-Profile]
 Strateji: Rakipler hazırlıklarını bitirmeden önce erken ve güçlü saldırılar.\n\nGüçlü Yönler: Savunmasız genişlemeden ve yavaş askeri hazırlıktan yararlanır.\n\nKarşı taktik önerisi: İlk saldırıda ekonominizi koruyarak hayatta kalın, ardından karşı saldırı yapın.
@@ -1566,3 +1566,5 @@ Seçimi kullan
 Bu dünyayı keşfetmek için bir önizleme oluşturun.
 [More workers jump-start colony growth. Changes the generated map.]
 Daha fazla işçi koloni büyümesini hızlandırır. Bu ayar oluşturulan haritayı değiştirir.
+[No warriors]
+Savaşçı yok

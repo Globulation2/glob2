@@ -66,10 +66,10 @@ AINone
 AINumbi-描述
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-AIReachToInfinity-描述
-[AIReachToInfinity]
-AIReachToInfinity
+[AIEcono-Description]
+AIEcono-描述
+[AIEcono]
+AIEcono
 [AIWarrush-Description]
 AIWarrush-描述
 [AIWarrush]
@@ -1248,9 +1248,9 @@ AI策略与对抗
 核心策略:小规模快速扩张，适合练习殖民地管理。\n\n优势:让你有余地同时学习经济管理和战斗。\n\n可尝试的对策:先壮大经济、训练军队，再发动进攻。
 [AINumbi-Summary]
 小规模快速扩张。
-[AIReachToInfinity-Profile]
+[AIEcono-Profile]
 策略:不攻击，但建立巨大的基地并积极地将敌方部队转变为己方。\n\n优点:扩张和单位转换无需直接攻击即可威胁对手。\n\n建议的对策:尽早发展你的殖民地，避免将部队派遣到敌人可以转换的地方。
-[AIReachToInfinity-Summary]
+[AIEcono-Summary]
 不主动进攻，以巨大基地和招降敌军施压。
 [AIWarrush-Profile]
 核心策略:在对手完成建设前，发动迅速而猛烈的进攻。\n\n优势:善于打击无防备的扩张和缓慢的备战。\n\n可尝试的对策:维持经济，撑过首轮进攻后再反击。
@@ -1554,3 +1554,5 @@ AI策略与对抗
 生成预览来探索这个世界。
 [More workers jump-start colony growth. Changes the generated map.]
 更多工人能加快殖民地的初期发展。修改此设置会改变生成的地图。
+[No warriors]
+无战士
