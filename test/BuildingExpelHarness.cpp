@@ -33,8 +33,6 @@ struct World
 		game.map.setGame(&game);
 		game.addTeam(0);
 		team = game.teams[0];
-		// The gradient scheduler expects an in-use field; allocation is now lazy.
-		game.map.getResourceGradient(0, WOOD, 0);
 	}
 
 	// Game::addBuilding creates the building; the map footprint is registered separately.
@@ -225,6 +223,17 @@ static void healingIsKeptProRata()
 	std::puts("PASS healing is kept pro rata");
 }
 
+// Gradients are allocated lazily, so a fresh world has none: the per-step
+// round robin must still return instead of spinning until one appears.
+static void stepsWithoutAnyGradient()
+{
+	World world;
+	world.step(3);
+	world.game.map.getResourceGradient(0, WOOD, 0);
+	world.step(3);
+	std::puts("PASS a world without gradients keeps stepping");
+}
+
 int main()
 {
 	GlobalContainer globals;
@@ -234,6 +243,7 @@ int main()
 	globals.buildingsTypes.init();
 	IntBuildingType::init();
 	Race::loadDefault();
+	stepsWithoutAnyGradient();
 	destroyedInnExpelsEveryone();
 	noRoomKillsTheSurplus();
 	healingIsKeptProRata();
