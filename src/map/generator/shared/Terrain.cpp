@@ -127,83 +127,6 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 						static_cast<TerrainType>(tmpUndermap));
 		}
 	map.controlSand();
-
-	context.stage = "starting locations";
-	// Now, we have to find suitable places for teams:
-	int nbTeams = context.request.nbTeams;
-	int minDistSquare = (int)((double)w * h / (double)nbTeams / 5);
-	if (minDistSquare <= 0)
-	{
-		return false;
-	}
-	assert(minDistSquare > 0);
-	int *bootX = context.bootX.data();
-	int *bootY = context.bootY.data();
-
-	// TODO: First pass to find the number of available places.
-	for (int team = 0; team < nbTeams; team++)
-	{
-		int maxSurface = 0;
-		int maxX = 0;
-		int maxY = 0;
-		for (int y = 0; y < h; y++)
-		{
-			int width = 0;
-			int startX = 0;
-			for (int x = 0; x < w; x++)
-			{
-				int a = map.getUMTerrain(x, y);
-				if (a == GRASS)
-					width++;
-				else
-				{
-					if (width > 7)
-					{
-						int centerX = ((x + startX) >> 1);
-						int top, bot;
-						for (top = 0; top < h; top++)
-							if (map.getUMTerrain(centerX, y - top) != GRASS)
-								break;
-						for (bot = 0; bot < h; bot++)
-							if (map.getUMTerrain(centerX, y + bot) != GRASS)
-								break;
-						int height = top + bot - 1;
-						int surface = height * width;
-						assert(surface > 0);
-
-						int centerY = y + ((bot - top) >> 1);
-						bool farEnough = true;
-						for (int ti = 0; ti < team; ti++)
-							if (map.warpDistSquare(centerX, centerY, bootX[ti], bootY[ti]) <
-								minDistSquare)
-							{
-								farEnough = false;
-								break;
-							}
-
-						if (surface > maxSurface && farEnough)
-						{
-							maxSurface = surface;
-							maxX = centerX;
-							maxY = centerY;
-						}
-					}
-					width = 0;
-					startX = x;
-				}
-			}
-		}
-
-		if (maxSurface <= 0)
-		{
-			return false;
-		}
-		assert(maxSurface);
-		bootX[team] = maxX;
-		bootY[team] = maxY;
-	}
-
-	map.controlSand();
 	map.rebuildTerrain();
 	context.stage = "resources";
 	// now to add primary resources for current map generator
@@ -247,6 +170,88 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 					}
 				}
 			}
+		}
+	}
+
+	// Choosing where the colonies go *after* the resources exist is what makes a fair choice
+	// possible at all: the search below scores a site by how far its workers must actually walk
+	// to wood and wheat, which is unknowable while the map is still bare. Nothing in between
+	// reads a boot position or draws from a random stream, so the two passes simply swapped
+	// order. The legacy search — largest grass rectangle first, and everyone after it takes
+	// what is left — stays as a fallback for maps where no set of sites can reach both
+	// resources at all.
+	context.stage = "starting locations";
+	int nbTeams = context.request.nbTeams;
+	int minDistSquare = (int)((double)w * h / (double)nbTeams / 5);
+	if (minDistSquare <= 0)
+	{
+		return false;
+	}
+	int *bootX = context.bootX.data();
+	int *bootY = context.bootY.data();
+	if (!chooseBalancedStarts(game, context, minDistSquare))
+	{
+		// TODO: First pass to find the number of available places.
+		for (int team = 0; team < nbTeams; team++)
+		{
+			int maxSurface = 0;
+			int maxX = 0;
+			int maxY = 0;
+			for (int y = 0; y < h; y++)
+			{
+				int width = 0;
+				int startX = 0;
+				for (int x = 0; x < w; x++)
+				{
+					int a = map.getUMTerrain(x, y);
+					if (a == GRASS)
+						width++;
+					else
+					{
+						if (width > 7)
+						{
+							int centerX = ((x + startX) >> 1);
+							int top, bot;
+							for (top = 0; top < h; top++)
+								if (map.getUMTerrain(centerX, y - top) != GRASS)
+									break;
+							for (bot = 0; bot < h; bot++)
+								if (map.getUMTerrain(centerX, y + bot) != GRASS)
+									break;
+							int height = top + bot - 1;
+							int surface = height * width;
+							assert(surface > 0);
+
+							int centerY = y + ((bot - top) >> 1);
+							bool farEnough = true;
+							for (int ti = 0; ti < team; ti++)
+								if (map.warpDistSquare(centerX, centerY, bootX[ti], bootY[ti]) <
+									minDistSquare)
+								{
+									farEnough = false;
+									break;
+								}
+
+							if (surface > maxSurface && farEnough)
+							{
+								maxSurface = surface;
+								maxX = centerX;
+								maxY = centerY;
+							}
+						}
+						width = 0;
+						startX = x;
+					}
+				}
+			}
+
+			if (maxSurface <= 0)
+			{
+				return false;
+			}
+			assert(maxSurface);
+			bootX[team] = maxX;
+			bootY[team] = maxY;
 		}
 	}
 

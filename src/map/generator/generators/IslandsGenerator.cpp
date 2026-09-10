@@ -30,7 +30,7 @@ GeneratorDefinition islandsDefinition()
 	return {"islands",
 			3,
 			"Islands",
-			1,
+			2,
 			false,
 			{{"water", "Water weight", 0, 100, 1, 55, ControlGroup::Terrain, false, true},
 			 {"sand", "Sand weight", 0, 100, 1, 3, ControlGroup::Terrain, false, true},

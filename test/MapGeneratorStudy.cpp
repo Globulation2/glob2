@@ -79,6 +79,7 @@ int main(int argc, char **argv)
 	descriptor.setMethodDefaults(method);
 	descriptor.seed = seed;
 	bool tuning = false;
+	bool headroom = false;
 	std::string dump;
 	std::map<std::string, std::string> aliases = {{"smooth", "smoothing"},
 												  {"craters", "lake-density"},
@@ -96,6 +97,8 @@ int main(int argc, char **argv)
 		std::string arg = argv[i];
 		if (arg == "tuning")
 			tuning = true;
+		else if (arg == "headroom")
+			headroom = true;
 		else if (arg == "preset")
 		{
 		} // All new requests start at registered defaults.
@@ -252,6 +255,158 @@ int main(int argc, char **argv)
 		std::printf("TUNE,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", minLocal, minWheat, minWood, viableTeams,
 					resources[CORN], resources[WOOD], resources[STONE], resources[ALGA], bestWheat,
 					bestWood);
+	}
+	if (headroom)
+	{
+		// How much of the fairness gap is recoverable by *placement alone*, on this exact
+		// finished map? Nothing here changes the map; it asks what the colony sites could have
+		// been. One multi-source flood per resource gives every tile its walking distance to
+		// the nearest deposit, so scoring a candidate site is a lookup rather than its own
+		// search, and the whole map's candidates cost two floods total.
+		const int mw = map.getW(), mh = map.getH();
+		auto distanceField = [&](int resourceType)
+		{
+			std::vector<int> d(size_t(mw) * mh, -1);
+			std::queue<int> q;
+			// A worker stands beside a deposit rather than on it, so the walkable tiles
+			// touching one are the sources at distance 0.
+			for (int y = 0; y < mh; ++y)
+				for (int x = 0; x < mw; ++x)
+				{
+					if (map.getResource(x, y).type != resourceType)
+						continue;
+					for (int dy = -1; dy <= 1; ++dy)
+						for (int dx = -1; dx <= 1; ++dx)
+						{
+							int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+							int np = ny * mw + nx;
+							if (d[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+							{
+								d[np] = 0;
+								q.push(np);
+							}
+						}
+				}
+			while (!q.empty())
+			{
+				int p = q.front();
+				q.pop();
+				int x = p % mw, y = p / mw;
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+					{
+						if (dx == 0 && dy == 0)
+							continue;
+						int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+						int np = ny * mw + nx;
+						if (d[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+						{
+							d[np] = d[p] + 1;
+							q.push(np);
+						}
+					}
+			}
+			return d;
+		};
+		const std::vector<int> woodField = distanceField(WOOD), wheatField = distanceField(CORN);
+		// A site's score is its binding constraint: the further of its two primary resources.
+		auto siteScore = [&](int x, int y) -> int
+		{
+			int p = map.normalizeY(y) * mw + map.normalizeX(x);
+			int a = woodField[p], b = wheatField[p];
+			if (a < 0 || b < 0)
+				return -1;
+			return std::max(a, b);
+		};
+
+		// What the generator's own placement actually achieved, by this same measure.
+		int actualLo = 1 << 28, actualHi = -1;
+		bool actualValid = success && method != 0;
+		for (int t = 0; actualValid && t < game.teamsCount(); ++t)
+		{
+			int s = -1;
+			for (int y = 0; y < mh && s < 0; ++y)
+				for (int x = 0; x < mw; ++x)
+				{
+					auto gid = map.getGroundUnit(x, y);
+					if (gid != NOGUID && Unit::GIDtoTeam(gid) == t)
+					{
+						s = siteScore(x, y);
+						break;
+					}
+				}
+			if (s < 0)
+				actualValid = false;
+			else
+			{
+				actualLo = std::min(actualLo, s);
+				actualHi = std::max(actualHi, s);
+			}
+		}
+
+		// Every site a colony could legally have occupied, scored and sorted.
+		std::vector<std::pair<int, int>> candidates; // (score, tile index)
+		for (int y = 0; y < mh; ++y)
+			for (int x = 0; x < mw; ++x)
+			{
+				if (!map.isFreeForBuilding(x, y, 4, 4))
+					continue;
+				int s = siteScore(x, y);
+				if (s >= 0)
+					candidates.push_back({s, y * mw + x});
+			}
+		std::sort(candidates.begin(), candidates.end());
+		// Keep the search bounded on large maps; a stride keeps the sample spread over the
+		// whole score range rather than clustering at one end.
+		const size_t cap = 700;
+		if (candidates.size() > cap)
+		{
+			std::vector<std::pair<int, int>> thinned;
+			for (size_t i = 0; i < cap; ++i)
+				thinned.push_back(candidates[i * candidates.size() / cap]);
+			candidates.swap(thinned);
+		}
+
+		// Narrowest score window that still holds nbTeams mutually distant sites. Greedy
+		// selection inside a window understates what a full search would find, so this is a
+		// conservative floor on the achievable spread, not an optimistic one.
+		const int nbTeams = descriptor.nbTeams;
+		const int minDistSquare = int((double)mw * mh / (double)nbTeams / 5);
+		int bestSpread = -1, bestLo = -1, bestHi = -1;
+		for (size_t i = 0; i < candidates.size(); ++i)
+		{
+			std::vector<int> picked;
+			for (size_t j = i; j < candidates.size(); ++j)
+			{
+				int px = candidates[j].second % mw, py = candidates[j].second / mw;
+				bool farEnough = true;
+				for (int q : picked)
+					if (map.warpDistSquare(px, py, q % mw, q / mw) < minDistSquare)
+					{
+						farEnough = false;
+						break;
+					}
+				if (!farEnough)
+					continue;
+				picked.push_back(candidates[j].second);
+				if ((int)picked.size() == nbTeams)
+				{
+					int spread = candidates[j].first - candidates[i].first;
+					if (bestSpread < 0 || spread < bestSpread)
+					{
+						bestSpread = spread;
+						bestLo = candidates[i].first;
+						bestHi = candidates[j].first;
+					}
+					break;
+				}
+			}
+			if (bestSpread == 0)
+				break;
+		}
+		std::printf("HEADROOM,%d,%d,%d,%d,%d,%d,%d,%d\n", (int)candidates.size(),
+					actualValid ? actualHi - actualLo : -1, actualValid ? actualLo : -1,
+					actualValid ? actualHi : -1, bestSpread, bestLo, bestHi, nbTeams);
 	}
 	if (!dump.empty())
 	{

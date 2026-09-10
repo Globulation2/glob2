@@ -15,6 +15,9 @@
 #include "Unit.h"
 #include <algorithm>
 #include <cmath>
+#include <queue>
+#include <utility>
+#include <vector>
 using namespace MapGeneration;
 
 namespace MapGeneration
@@ -272,6 +275,145 @@ Building *addBuilding(Game &game, int x, int y, int team, int type, int level,
 
 namespace MapGeneration
 {
+namespace
+{
+// Walking distance from every tile to the nearest deposit of one resource. Workers stand
+// beside a deposit rather than on it (a resource tile is not walkable), so the sources are the
+// walkable tiles touching one. One flood answers the question for every tile on the map, which
+// is what makes scoring a few hundred candidate sites cheap enough to do exhaustively.
+std::vector<int> distanceToResource(Map &map, int resourceType)
+{
+	const int w = map.getW(), h = map.getH();
+	std::vector<int> dist(size_t(w) * h, -1);
+	std::queue<int> q;
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			if (map.getResource(x, y).type != resourceType)
+				continue;
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+					int np = ny * w + nx;
+					if (dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+					{
+						dist[np] = 0;
+						q.push(np);
+					}
+				}
+		}
+	while (!q.empty())
+	{
+		int p = q.front();
+		q.pop();
+		int x = p % w, y = p / w;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				if (dx == 0 && dy == 0)
+					continue;
+				int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+				int np = ny * w + nx;
+				if (dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+				{
+					dist[np] = dist[p] + 1;
+					q.push(np);
+				}
+			}
+	}
+	return dist;
+}
+} // namespace
+
+bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSquare)
+{
+	Map &map = game.map;
+	const int w = map.getW(), h = map.getH();
+	const int nbTeams = context.request.nbTeams;
+	if (nbTeams <= 0 || minDistSquare <= 0)
+		return false;
+	const int typeNum = globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
+	const BuildingType *swarm = globalContainer->buildingsTypes.get(typeNum);
+	if (!swarm)
+		return false;
+
+	const std::vector<int> woodDist = distanceToResource(map, WOOD);
+	const std::vector<int> wheatDist = distanceToResource(map, CORN);
+
+	// A site is worth exactly what its *worse* resource costs to reach: a colony next to wood
+	// but a long walk from wheat is not a good start, however good the wood is.
+	std::vector<std::pair<int, int>> sites; // (score, tile index)
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			if (!map.isFreeForBuilding(x, y, swarm->width, swarm->height))
+				continue;
+			const int p = y * w + x;
+			if (woodDist[p] < 0 || wheatDist[p] < 0)
+				continue;
+			sites.push_back({std::max(woodDist[p], wheatDist[p]), p});
+		}
+	if ((int)sites.size() < nbTeams)
+		return false;
+	std::sort(sites.begin(), sites.end());
+	// Large maps can offer tens of thousands of legal sites. Thinning by stride keeps the
+	// sample spread across the whole score range instead of crowding one end of it, and keeps
+	// the search below a bounded cost regardless of map size.
+	const size_t cap = 900;
+	if (sites.size() > cap)
+	{
+		std::vector<std::pair<int, int>> thinned;
+		thinned.reserve(cap);
+		for (size_t i = 0; i < cap; ++i)
+			thinned.push_back(sites[i * sites.size() / cap]);
+		sites.swap(thinned);
+	}
+
+	// Sites are sorted by score, so any set of colonies drawn from a short window of this list
+	// is a set whose colonies are closely matched. Find the narrowest window that still holds
+	// nbTeams mutually distant sites; scanning windows from the low-score end means ties are
+	// settled in favour of the set that is not just equal but good.
+	std::vector<int> best;
+	int bestSpread = -1;
+	for (size_t i = 0; i < sites.size(); ++i)
+	{
+		if (bestSpread == 0)
+			break;
+		std::vector<int> picked;
+		for (size_t j = i; j < sites.size(); ++j)
+		{
+			if (bestSpread >= 0 && sites[j].first - sites[i].first >= bestSpread)
+				break; // this window is already no better than what we hold
+			const int px = sites[j].second % w, py = sites[j].second / w;
+			bool farEnough = true;
+			for (int q : picked)
+				if (map.warpDistSquare(px, py, q % w, q / w) < minDistSquare)
+				{
+					farEnough = false;
+					break;
+				}
+			if (!farEnough)
+				continue;
+			picked.push_back(sites[j].second);
+			if ((int)picked.size() == nbTeams)
+			{
+				bestSpread = sites[j].first - sites[i].first;
+				best = picked;
+				break;
+			}
+		}
+	}
+	if ((int)best.size() != nbTeams)
+		return false;
+	for (int team = 0; team < nbTeams; ++team)
+	{
+		context.bootX[team] = best[team] % w;
+		context.bootY[team] = best[team] / w;
+	}
+	return true;
+}
+
 bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSize)
 {
 	for (int s = 0; s < context.request.nbTeams; s++)

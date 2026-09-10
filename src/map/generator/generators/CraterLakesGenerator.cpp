@@ -28,7 +28,7 @@ GeneratorDefinition craterLakesDefinition()
 	return {"crater-lakes",
 			4,
 			"Crater lakes",
-			1,
+			2,
 			false,
 			{{"water", "Water weight", 0, 100, 1, 25, ControlGroup::Terrain, false, true},
 			 {"sand", "Sand weight", 0, 100, 1, 3, ControlGroup::Terrain, false, true},

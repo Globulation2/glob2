@@ -24,7 +24,7 @@ GeneratorDefinition swampDefinition()
 	return {"swamp",
 			1,
 			"Swamp",
-			1,
+			2,
 			false,
 			{{"water", "Water weight", 0, 100, 1, 35, ControlGroup::Terrain, false, true},
 			 {"grass", "Grass weight", 0, 100, 1, 60, ControlGroup::Terrain, false, true},
