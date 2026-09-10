@@ -114,16 +114,16 @@ void FrontendTheme::blob(DrawableSurface* s,int x,int y,int w,int h,int r,Color 
 	if(w<=0 || h<=0) return;
 	const Contour c(x,y,w,h,r,wobble,inflate);
 	x-=inflate; y-=inflate; w+=2*inflate; h+=2*inflate;
+	// Ink and fill never overlap, so a translucent fill shows what is behind it.
 	for(int row=0;row<h;++row)
 	{
 		const auto [l,rr]=c.inset[row];
-		s->drawFilledRect(x+l,y+row,std::max(0,w-l-rr),1,ink);
-	}
-	for(int row=2;row<h-2;++row)
-	{
-		const auto [l,rr]=c.inset[row];
-		const int span=w-l-rr-4;
-		if(span>0) s->drawFilledRect(x+l+2,y+row,span,1,row==2 ? lighter(fill,10) : fill);
+		const int span=w-l-rr;
+		if(span<=0) continue;
+		if(row<2 || row>=h-2) { s->drawFilledRect(x+l,y+row,span,1,ink); continue; }
+		s->drawFilledRect(x+l,y+row,std::min(2,span),1,ink);
+		if(span>2) s->drawFilledRect(x+w-rr-std::min(2,span-2),y+row,std::min(2,span-2),1,ink);
+		if(span>4) s->drawFilledRect(x+l+2,y+row,span-4,1,row==2 ? lighter(fill,10) : fill);
 	}
 }
 void FrontendTheme::ring(DrawableSurface* s,int x,int y,int w,int h,int r,Color ink,int wobble,int inflate)
