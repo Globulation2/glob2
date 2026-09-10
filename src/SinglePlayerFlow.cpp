@@ -30,8 +30,8 @@ void SinglePlayerFlow::custom()
         if (result != CustomGameScreen::OK) return;
         auto& selected = static_cast<CustomGameScreen&>(screen);
         launch([map = selected.getMapHeader(), players = selected.getGameHeader(), team = selected.getSelectedColor(0),
-                speed = selected.selectedSpeed()](Engine& engine) {
-            return engine.initCustomTask(map, players, team, speed);
+                speed = selected.selectedSpeed(), source = selected.sourceFile()](Engine& engine) {
+            return engine.initCustomTask(map, players, team, speed, source);
         }, true);
     });
 }

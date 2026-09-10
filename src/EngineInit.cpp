@@ -46,13 +46,13 @@ GAGCore::CooperativeTask Engine::initCampaignTask(std::string filename, Campaign
     if (loaded && campaign) gui.setCampaignGame(*campaign, mission);
     co_return loaded;
 }
-int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam)
+int Engine::initCustom(MapHeader& map, GameHeader& players, int localTeam, const std::string& sourceFileName)
 {
-    const bool loaded = initCustomTask(map, players, localTeam).run();
+    const bool loaded = initCustomTask(map, players, localTeam, -1, sourceFileName).run();
     if (!loaded) showMapLoadError();
     return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
 }
-GAGCore::CooperativeTask Engine::initCustomTask(MapHeader map, GameHeader players, int localTeam, int speed)
+GAGCore::CooperativeTask Engine::initCustomTask(MapHeader map, GameHeader players, int localTeam, int speed, std::string sourceFileName)
 {
     gui.localPlayer = 0;
     gui.localTeamNo = localTeam;
@@ -63,7 +63,11 @@ GAGCore::CooperativeTask Engine::initCustomTask(MapHeader map, GameHeader player
         previousCustomSpeed = globalContainer->settings.gameSpeed;
         globalContainer->settings.gameSpeed = speed;
     }
-    co_return co_await initGameTask(map, players);
+    // Without this, a generated map falls back to a name-based library
+    // lookup ("Random map" -> maps/Random_map.map) that never exists; a
+    // premade map's on-disk path can also legitimately differ from its
+    // declared map name (user libraries, duplicate names).
+    co_return co_await initGameTask(map, players, true, false, false, sourceFileName);
 }
 int Engine::initCustom(const std::string& filename)
 {

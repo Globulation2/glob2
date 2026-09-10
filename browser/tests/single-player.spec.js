@@ -1,4 +1,4 @@
-const {gameURL,clickMainMenu,clickSettingsDone}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
@@ -92,19 +92,27 @@ test('tutorial sessions quit through the end screen and can restart', async ({pa
   }
 });
 
-test('custom options and AI descriptions return to setup, and a finished game returns there too', async ({page}) => {
+test('game rules and AI descriptions return to setup, and a finished game returns there too', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');
-  await menu(page, 100, 70);
-  await menu(page, 310, 440);
-  await screen(page, 'CustomGameOtherOptions');
-  await page.locator('#canvas').press('Escape');
+  // The lobby redesign (#237) folded "other options" into inline Game Rules
+  // rows - no separate screen to navigate to and back from anymore.
+  await click(page, 969, 35); // Game Rules tab.
+  await click(page, 452, 133); // "Quick clash" tile.
+  // The AI profile picker (Players & Teams tab, a colony's Info button) is a
+  // screen CustomGameScreen pushes - see CustomGameScreen::showAIProfile.
+  // It must actually be pushed, not blocking-executed: the browser host has
+  // no Asyncify, so the old choose()/Screen::execute() pattern this replaced
+  // threw and froze the page (docs/browser/adr-003-screen-execution.md).
+  await click(page, 593, 35); // Players & Teams tab.
+  await click(page, 1113, 438); // Colony 4's Info button (AI by default).
+  await screen(page, 'CustomGameChoiceScreen');
+  await click(page, 213, 201); // Warrush row.
+  await click(page, 728, 862); // "Use Warrush".
   await screen(page, 'CustomGameScreen');
-  await menu(page, 310, 390);
-  await screen(page, 'AIDescriptionScreen');
-  await page.locator('#canvas').press('Enter');
-  await screen(page, 'CustomGameScreen');
-  await menu(page, 530, 380);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('Escape');
   await click(page, 600, 500);
@@ -113,6 +121,7 @@ test('custom options and AI descriptions return to setup, and a finished game re
   await screen(page, 'CustomGameScreen');
   await page.locator('#canvas').press('Escape');
   await screen(page, 'MainMenuScreen');
+  expect(errors).toEqual([]);
 });
 
 test('custom match pauses, persists and resumes after reload', async ({page}) => {
@@ -120,8 +129,7 @@ test('custom match pauses, persists and resumes after reload', async ({page}) =>
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');
-  await menu(page, 100, 70);
-  await menu(page, 530, 380);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('p', {delay:80});
   await expect.poll(async () => (await state(page)).paused).toBe(true);
@@ -281,9 +289,8 @@ test('custom and tutorial startup can be cancelled and retried', async ({page}) 
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');
-  await menu(page, 100, 70);
   await holdLoader(page, 'GameLoadScreen');
-  await menu(page, 530, 380);
+  await clickCustomGameStart(page);
   await cancelHeldLoader(page, 'GameLoadScreen');
   await screen(page, 'CustomGameScreen');
   await page.locator('#canvas').press('Escape', {delay:80});

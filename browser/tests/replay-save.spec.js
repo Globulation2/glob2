@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL}=require('./main-menu');
+const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
 const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
@@ -8,7 +8,7 @@ const digest=page=>page.evaluate(()=>glob2Diagnostics.replayDigest('AAA_review_r
 async function endMatch(page) {
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
-  await click(page,380,280);await click(page,810,590);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(50);
   await page.locator('#canvas').press('Escape');await click(page,600,500);
   await screen(page,'EndGameScreen');

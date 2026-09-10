@@ -301,15 +301,6 @@ void CustomGameScreen::savePreferences()
 	else
 		preferencesRetryAt = SDL_GetTicks() + 5000;
 }
-int CustomGameScreen::choose(const std::string &title, const std::vector<std::string> &values,
-							 int selected, bool profiles, const std::vector<bool> &enabled)
-{
-	CustomGameChoiceScreen screen(title, values, selected, profiles, enabled);
-	int result = screen.execute(globalContainer->gfx, 40);
-	if (result == QUIT_APPLICATION)
-		endExecute(QUIT_APPLICATION);
-	return result;
-}
 void CustomGameScreen::onGroupActivated(int group) { currentTab = group; }
 void CustomGameScreen::invalidate()
 {
@@ -552,10 +543,17 @@ void CustomGameScreen::showAIProfile(int colony)
 	std::vector<std::string> labels;
 	for (int i : AINames::selectionOrder())
 		labels.push_back(AINames::getAISelectorText(i));
-	int result = choose(colonyLabel(colony) + " / " + tr("AI strategy & counterplay"), labels,
-						AINames::selectionIndex(setup.colonies[colony].ai), true);
-	if (result >= 0)
-		setup.colonies[colony].ai = (AI::ImplementationID)AINames::selectionOrder()[result];
+	// CustomGameChoiceScreen must be pushed, not blocking-executed: the
+	// browser host has no Asyncify and ApplicationHost::wait is a hard
+	// error there (docs/browser/adr-003-screen-execution.md).
+	screens.push(std::make_unique<CustomGameChoiceScreen>(
+					 colonyLabel(colony) + " / " + tr("AI strategy & counterplay"), labels,
+					 AINames::selectionIndex(setup.colonies[colony].ai), true, std::vector<bool>{}),
+				 [this, colony](GAGGUI::Screen &, int result)
+				 {
+					 if (result >= 0)
+						 setup.colonies[colony].ai = (AI::ImplementationID)AINames::selectionOrder()[result];
+				 });
 }
 
 void CustomGameScreen::renderLobby()

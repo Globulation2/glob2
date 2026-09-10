@@ -1,4 +1,4 @@
-const {gameURL,clickMainMenu,clickSettingsCancel}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsCancel,clickCustomGameStart}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
@@ -34,7 +34,7 @@ for (const fault of ['abort','quota']) test(`${fault} failure retains the previo
   }, fault);
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
-  await click(page,380,280); await click(page,810,590);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async ()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('p',{delay:80});
   await expect.poll(async ()=>(await state(page)).paused).toBe(true);

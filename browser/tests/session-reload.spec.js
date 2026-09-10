@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL}=require('./main-menu');
+const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
 const path=require('node:path');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
@@ -9,7 +9,7 @@ async function startAndSave(page) {
   await page.goto(gameURL());await screen(page,'MainMenuScreen');
   const existing=await page.evaluate(()=>glob2Diagnostics.saves());
   await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
-  await click(page,380,280);await click(page,810,590);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('Escape',{delay:80});
   await click(page,600,400);await click(page,520,555);
@@ -56,7 +56,7 @@ test('a damaged in-game load returns through a scheduled error notice and permit
   await page.locator('#canvas').press('Escape',{delay:80});await screen(page,'CustomGameScreen');
   await page.setViewportSize({width:1200,height:900});
   await expect.poll(async()=>(await state(page)).width).toBe(1200);
-  await click(page,380,280);await click(page,810,590);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await screen(page,'match');
   const restarted=(await state(page)).tick;
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(restarted+25);

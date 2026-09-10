@@ -81,8 +81,6 @@ class CustomGameScreen : public Glob2TabScreen
 	void listMaps();
 	bool loadMap(const std::string &path);
 	bool generateMap();
-	int choose(const std::string &, const std::vector<std::string> &, int, bool profiles = false,
-			   const std::vector<bool> &enabled = {});
 	void invalidate();
 	std::string colonyLabel(int) const;
 };

@@ -1,5 +1,5 @@
 const {test, expect} = require('@playwright/test');
-const {clickMainMenu,clickSettingsDone}=require('./main-menu');
+const {clickMainMenu,clickSettingsDone,clickCustomGameStart}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
 const click = (page, x, y) => page.locator('#canvas').click({position:{x,y}, delay:80});
@@ -13,7 +13,7 @@ test('WebGL2 draws a playable match and resizes its drawing buffer', async ({pag
   expect((await state(page)).renderer).toBe('webgl2');
   expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2') instanceof WebGL2RenderingContext)).toBe(true);
   await clickMainMenu(page,'custom'); await screen(page, 'CustomGameScreen');
-  await click(page, 380, 280); await click(page, 810, 590);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.setViewportSize({width:1280,height:720});
   await expect.poll(async () => { const s = await state(page); return [s.width,s.height]; }).toEqual([1280,720]);
@@ -39,7 +39,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
   page.on('pageerror', error => errors.push(String(error)));
   await page.goto('/?renderer=webgl2'); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
-  await click(page,380,280); await click(page,810,590);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   for (let count=1; count<=2; ++count) {
     await page.evaluate(() => {

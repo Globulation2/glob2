@@ -1,5 +1,5 @@
 const {test, expect} = require('@playwright/test');
-const {clickMainMenu,gameURL}=require('./main-menu');
+const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const {createHash} = require('node:crypto');
@@ -22,7 +22,7 @@ async function chooseSave(page,name) {
 }
 async function exportedSave(page) {
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
-  await menu(page,100,70); await menu(page,530,380);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   await page.locator('#canvas').press('p',{delay:80});
   await expect.poll(async () => (await state(page)).paused).toBe(true);

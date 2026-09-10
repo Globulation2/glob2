@@ -278,7 +278,7 @@ struct CustomGameSetupHarness
 					if (result != CustomGameScreen::OK) return;
 					auto &selected = static_cast<CustomGameScreen &>(screen);
 					loaded = engine.initCustomTask(selected.getMapHeader(), selected.getGameHeader(),
-						selected.getSelectedColor(0), selected.selectedSpeed()).run();
+						selected.getSelectedColor(0), selected.selectedSpeed(), selected.sourceFile()).run();
 				});
 			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
 			assert(timer);
