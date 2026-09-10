@@ -1,5 +1,5 @@
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL}=require('./main-menu');
+const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
 const click=(page,x,y)=>page.locator('#canvas').click({position:{x,y},delay:80});
@@ -40,7 +40,7 @@ test('click coordinates stay correct when browser motion delivery is missing',as
   await page.evaluate(()=>document.addEventListener('mousemove',event=>{
     if(event.isTrusted)event.stopImmediatePropagation();
   },true));
-  await click(page,380,280);await click(page,810,590);
+  await clickCustomGameStart(page); // A fresh profile has a valid premade map preselected.
   await expect.poll(async()=>(await state(page)).tick).toBeGreaterThan(25);
   await page.setViewportSize({width:1000,height:700});
   await expect.poll(async()=>(await state(page)).width).toBe(1000);

@@ -373,67 +373,77 @@ struct CustomGameSetupHarness
 		}
 		click("Launch", 540, 445);
 
-    globalContainer->settings.gameSpeed = 7;
-    {
-      Engine engine;
-      auto timer = SDL_AddTimer(500, Driver::tick, &driver);
-      assert(timer);
-      auto watchdog = SDL_AddTimer(
-          20000,
-          [](Uint32, void *) -> Uint32 {
-            SDL_Event event = {};
-            event.type = SDL_QUIT;
-            SDL_PushEvent(&event);
-            return 0;
-          },
-          nullptr);
-      int result = engine.initCustom();
-      SDL_RemoveTimer(timer);
-      SDL_RemoveTimer(watchdog);
-      assert(result == Engine::EE_NO_ERROR);
-      assert(driver.next == driver.steps.size());
-      assert(globalContainer->liveSpectating ==
-             (control == CustomGameSetup::Computer));
-      assert(globalContainer->settings.gameSpeed == 3);
-      assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
-             (control == CustomGameSetup::Shared ? 5 : 4));
-      assert(
-          engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
-              ->ai->implementationID == AI::NICOWAR);
-      assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
-             engine.gui.game.gameHeader.getAllyTeamNumber(1));
-      assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
-             engine.gui.game.gameHeader.getAllyTeamNumber(2));
-      if (globalContainer->liveSpectating) {
-        SDL_Event pause = {};
-        pause.type = SDL_KEYDOWN;
-        pause.key.keysym.sym = SDLK_p;
-        engine.gui.processEvent(&pause);
-        assert(engine.gui.hardPause);
-        engine.gui.processEvent(&pause);
-        assert(!engine.gui.hardPause);
-      }
-      globalContainer->settings.save(); // Simulate persisting in-game options.
-      globalContainer->automaticEndingGame = true;
-      globalContainer->automaticEndingSteps = 30;
-      globalContainer->automaticGameGlobalEndConditions = true;
-      engine.run();
-      {
-        FrontendScope gameplay(false);
-        engine.gui.drawAll(engine.gui.localTeamNo);
-        globalContainer->gfx->printScreen(output + "/live-control-" +
-                                          std::to_string(control) + ".bmp");
-      }
-    }
-    assert(globalContainer->settings.gameSpeed == 7);
-    Settings persisted;
-    persisted.load();
-    assert(persisted.gameSpeed == 7);
-    std::cout << "PASS full SDL UI flow mode " << control
-              << ": clicks, nested choices, shared control, presets, profiles, "
-                 "random preview, "
-                 "match launch and speed restoration\n";
-  }
+		globalContainer->settings.gameSpeed = 7;
+		{
+			Engine engine;
+			GAGGUI::ScreenStack screens(*globalContainer->gfx);
+			bool loaded = false;
+			screens.push(std::make_unique<CustomGameScreen>(screens),
+				[&](GAGGUI::Screen &screen, int result)
+				{
+					if (result != CustomGameScreen::OK) return;
+					auto &selected = static_cast<CustomGameScreen &>(screen);
+					loaded = engine.initCustomTask(selected.getMapHeader(), selected.getGameHeader(),
+						selected.getSelectedColor(0), selected.selectedSpeed(), selected.sourceFile()).run();
+				});
+			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
+			assert(timer);
+			auto watchdog = SDL_AddTimer(
+				20000,
+				[](Uint32, void *) -> Uint32
+				{
+					SDL_Event event = {};
+					event.type = SDL_QUIT;
+					SDL_PushEvent(&event);
+					return 0;
+				},
+				nullptr);
+			screens.execute();
+			SDL_RemoveTimer(timer);
+			SDL_RemoveTimer(watchdog);
+			assert(loaded);
+			assert(driver.next == driver.steps.size());
+			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
+			assert(globalContainer->settings.gameSpeed == 3);
+			assert(engine.gui.game.gameHeader.getNumberOfPlayers() ==
+				   (control == CustomGameSetup::Shared ? 5 : 4));
+			assert(engine.gui.game.players[control == CustomGameSetup::Shared ? 2 : 1]
+					   ->ai->implementationID == AI::NICOWAR);
+			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) ==
+				   engine.gui.game.gameHeader.getAllyTeamNumber(1));
+			assert(engine.gui.game.gameHeader.getAllyTeamNumber(0) !=
+				   engine.gui.game.gameHeader.getAllyTeamNumber(2));
+			if (globalContainer->liveSpectating)
+			{
+				SDL_Event pause = {};
+				pause.type = SDL_KEYDOWN;
+				pause.key.keysym.sym = SDLK_p;
+				engine.gui.processEvent(&pause);
+				assert(engine.gui.hardPause);
+				engine.gui.processEvent(&pause);
+				assert(!engine.gui.hardPause);
+			}
+			globalContainer->settings.save(); // Simulate persisting in-game options.
+			globalContainer->automaticEndingGame = true;
+			globalContainer->automaticEndingSteps = 30;
+			globalContainer->automaticGameGlobalEndConditions = true;
+			engine.run();
+			{
+				FrontendScope gameplay(false);
+				engine.gui.drawAll(engine.gui.localTeamNo);
+				globalContainer->gfx->printScreen(output + "/live-control-" +
+												  std::to_string(control) + ".bmp");
+			}
+		}
+		assert(globalContainer->settings.gameSpeed == 7);
+		Settings persisted;
+		persisted.load();
+		assert(persisted.gameSpeed == 7);
+		std::cout << "PASS full SDL UI flow mode " << control
+				  << ": clicks, nested choices, shared control, presets, profiles, "
+					 "random preview, "
+					 "match launch and speed restoration\n";
+	}
 
 	static void visual(const std::string &output)
 	{

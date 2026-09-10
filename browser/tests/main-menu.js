@@ -78,3 +78,13 @@ exports.clickSettingsCancel = (page) => {
   const {width, height} = page.viewportSize();
   return page.locator('#canvas').click({position: settingsFooter(width, height).cancel, delay: 80});
 };
+
+// Mirrors CustomGameScreen::renderLobby()'s "start" button rect
+// (src/CustomGameScreen.cpp). A fresh profile auto-selects a valid premade
+// map (FourSquares1), so this alone is enough to launch a match — no map
+// or player pick required first.
+exports.clickCustomGameStart = (page) => {
+  const {width, height} = page.viewportSize();
+  const w = Math.min(width - 32, 1120), x = Math.floor((width - w) / 2);
+  return page.locator('#canvas').click({position: {x: x + w - 165 + 82, y: height - 52 + 17}, delay: 80});
+};
