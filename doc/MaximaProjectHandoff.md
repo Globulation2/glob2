@@ -7,6 +7,22 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT September10: old farming confirmation collection FINISHED with 9516/9522
+executions,7991/8000 pairs,six quarantined failures. RETIRED.json on all four hosts.
+No final inference; no retries, no diagnostic replacements, no old/new pooling.
+Corrected engine qualification is ACTIVE on TheRig in Docker
+maxima-conversion-fixed-qualification, root /home/bradley/glob2-maxima-conversion-fixed.
+Uses verified PR239 fixed Misc.cpp/object/binary from isolated diagnostic build,
+with frozen source otherwise unchanged. Local orchestration:
+output/maxima-conversion-fixed-restart/qualify.py. Master log is
+/home/bradley/maxima-conversion-fixed-qualification.log; per-gate logs/results in
+newroot/output/qualification. QUALIFICATION_STATUS.json records final exits.
+Checks: routing/continuation,no-orders,tick-limit,both farming behavior suites.
+Follow through failures, then four-host continuation and fresh200-pair controls,
+then fresh1000-pair confirmation for each of eight switches with new protocol.
+Do not restart retired recovery controller or infer results from missing pairs.
+Keep all new development evidence local-only in glob2-maxima-dev.
+
 CURRENT: exact-assertion automatic quarantine worked for a fourth failed execution.
 Recovery now also rechecks worker startup on that host after quarantining, replacing
 exited workers via idempotent fleet.start (existing jobs unchanged, no failed retries).
