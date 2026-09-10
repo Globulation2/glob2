@@ -79,6 +79,7 @@ GradientBFSTest.cpp
 
 MapQueryTest.cpp
 GradientTest.cpp
+FetchApportionmentTest.cpp
 MapQueryTestStubs.cpp
 ../src/map/Map.cpp
 ../src/map/gradient/MapGradientField.cpp

@@ -621,6 +621,13 @@ if not env['server']:
     regression_sources += local.Object('ResourceFetchTargetHarness.o', '#test/ResourceFetchTargetHarness.cpp')
     regression_test = local.Program('ResourceFetchTargetHarness', regression_sources)
     local.Alias('resource-fetch-target-test', regression_test)
+
+# Real engine regression for fetch-job apportionment, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('FetchApportionmentHarness.o', '#test/FetchApportionmentHarness.cpp')
+    regression_test = local.Program('FetchApportionmentHarness', regression_sources)
+    local.Alias('fetch-apportionment-test', regression_test)
 if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
     entering_draw_sources = [source for source in source_files if source != 'Glob2.cpp']
     entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')

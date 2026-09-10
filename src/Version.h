@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 93
+#define VERSION_MINOR 94
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -96,6 +96,10 @@
 //            the simulation changed, so replays recorded before it diverge and are refused
 // version 92 walks the hiring buckets by building instead of by index, so a bucket
 //            resized mid-pass no longer skips or repeats a building
+// version 93 eliminates a colony whose remaining units are all trapped (#180)
+// version 94 apportions fetch jobs across the resources a building wants instead of
+//            letting the nearest one take every slot, and prices a loaded candidate
+//            rather than refusing it: the simulation changed again
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
