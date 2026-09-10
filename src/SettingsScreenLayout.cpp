@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
+#include "FrontendTheme.h"
 #include <Toolkit.h>
 #include <algorithm>
 
 using namespace GAGCore;
 namespace {
-const Color ink(41,70,51),muted(83,101,76),paper(240,241,223),rail(225,231,209),line(190,203,176),field(249,250,240),gold(228,199,121);
+const Color ink=FrontendPalette::ink,muted=FrontendPalette::muted,paper=FrontendPalette::membrane,
+    rail=FrontendPalette::gelDisabled,line=FrontendPalette::ink,field=FrontendPalette::gel,gold=FrontendPalette::gold;
 }
 
 std::vector<std::string> SettingsScreen::wrap(const std::string& text,int width,bool heading) const
@@ -173,7 +175,7 @@ void SettingsScreen::paint()
     layout();buildRows();layout();
     // Opaque settings-local surfaces keep background texture out of the form.
     Glob2Screen::paint();
-    gfx->drawFilledRect(0,0,getW(),getH(),Color(20,32,22,200));
+    gfx->drawFilledRect(0,0,getW(),getH(),Color(FrontendPalette::scrim.r,FrontendPalette::scrim.g,FrontendPalette::scrim.b,200));
     gfx->drawFilledRect(panel.x,panel.y,panel.w,panel.h,paper);
     gfx->drawRect(panel.x,panel.y,panel.w,panel.h,line);
     drawText(panel.x+padding,panel.y+20,tr("Settings"),false,true);

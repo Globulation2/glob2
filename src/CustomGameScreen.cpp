@@ -48,7 +48,7 @@ CustomGameChoiceScreen::CustomGameChoiceScreen(const std::string &title,
 		auto &ui = *controls;
 		int w = std::min(gfx->getW() - 32, 1000), x = (gfx->getW() - w) / 2, height = gfx->getH();
 		ui.setDimensions(gfx->getW(), height);
-		ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
+		ui.box({x - 8, 8, w + 16, height - 16}, FrontendPalette::membrane, 8);
 		ui.text(x + 8, 20, this->title, "standard", w - 16);
 		int left = w < 800 ? 174 : 235, right = x + left + 22, rightW = w - left - 22;
 		ui.beginRegion(20, {x, 60, left, height - 135});
@@ -563,7 +563,7 @@ void CustomGameScreen::renderLobby()
 	auto &ui = *controls;
 	int width = gfx->getW(), height = gfx->getH();
 	int w = std::min(width - 32, 1120), x = (width - w) / 2;
-	ui.box({x - 8, 8, w + 16, height - 16}, Color(232, 237, 218), 8);
+	ui.box({x - 8, 8, w + 16, height - 16}, FrontendPalette::membrane, 8);
 	auto speed = globalContainer->settings;
 	speed.gameSpeed = setup.speed;
 	std::vector<std::string> titles = localized({"Map", "Players & Teams", "Game Rules"});
@@ -641,7 +641,7 @@ void CustomGameScreen::renderPlayers(int x, int y, int w, int h)
 		int ry = top + i * rowH - offset;
 		ui.box({x, ry, w - 12, rowH - 8}, ui.panel);
 		Color color =
-			i < int(preview->starts.size()) ? preview->starts[i].color : Color(160, 172, 149);
+			i < int(preview->starts.size()) ? preview->starts[i].color : FrontendPalette::gelDisabled;
 		ui.box({x + 10, ry + 10, 30, 30}, color, 4);
 		gfx->drawRect(x + 10, ry + 10, 30, 30, ui.ink);
 		auto font = Toolkit::getFont("standard");
@@ -1040,7 +1040,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 	}
 	else
 	{
-		ui.box({px, py, size, size}, Color(211, 223, 197));
+		ui.box({px, py, size, size}, FrontendPalette::gelDisabled);
 		ui.paragraph(px + 16, py + size / 2 - 20, size - 32,
 					 tr(previewPending
 							? "Updating map preview..."

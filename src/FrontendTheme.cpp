@@ -8,6 +8,7 @@
 
 using namespace GAGCore;
 using namespace GAGGUI;
+using namespace FrontendPalette;
 FrontendTheme* FrontendTheme::current = nullptr;
 bool FrontendTheme::allowed = true;
 namespace { const char* fontNames[] = {"menu", "standard", "little"}; }
@@ -16,11 +17,11 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 {
 	current = this;
 	colony = std::make_unique<MenuColony>();
-	textColor = Color(26,48,30);
+	textColor = ink;
 	highlightColor = Color(74,110,58);
-	frameColor = Color(26,48,30);
-	listSelectedElementColor = Color(233,176,53);
-	backColor = backOverlayColor = Color(240,224,188);
+	frameColor = ink;
+	listSelectedElementColor = gold;
+	backColor = backOverlayColor = membrane;
 	for (int i=0;i<3;++i) originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
 	fallback = std::make_unique<DrawableSurface>(1,1);
 	if (!fallback->loadImage("data/gfx/menu-colony.png")) fallback.reset();
@@ -92,23 +93,23 @@ void FrontendTheme::background(DrawableSurface* s, bool panel, const SDL_Rect* c
 		}
 		if(fittedFallback) s->drawSurface(0,0,fittedFallback.get());
 	}
-	s->drawFilledRect(0,0,w,h,Color(18,34,22,44));
+	s->drawFilledRect(0,0,w,h,Color(scrim.r,scrim.g,scrim.b,44));
 	if (panel)
 	{
 		const SDL_Rect area=content ? *content : SDL_Rect{(w-640)/2,(h-480)/2,640,480};
 		const int x=std::max(0,area.x-12), y=std::max(0,area.y-12);
 		const int pw=std::min(w,area.x+area.w+12)-x, ph=std::min(h,area.y+area.h+12)-y;
 		rounded(s,x+3,y+5,pw,ph,12,Color(12,28,16,70));
-		rounded(s,x,y,pw,ph,12,Color(26,48,30));
-		rounded(s,x+3,y+3,pw-6,ph-6,9,Color(240,224,188,252));
+		rounded(s,x,y,pw,ph,12,ink);
+		rounded(s,x+3,y+3,pw-6,ph-6,9,Color(membrane.r,membrane.g,membrane.b,252));
 	}
 	painted=true;
 }
 void FrontendTheme::drawTextButtonBackground(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)
 {
-	rounded(s,x,y,w,h,5,Color(26,48,30));
-	rounded(s,x+2,y+2,w-4,h-4,3,Color(250,241,214));
-	if(hi) rounded(s,x+2,y+2,w-4,h-4,3,Color(233,176,53,hi/2));
+	rounded(s,x,y,w,h,5,ink);
+	rounded(s,x+2,y+2,w-4,h-4,3,gel);
+	if(hi) rounded(s,x+2,y+2,w-4,h-4,3,Color(gold.r,gold.g,gold.b,hi/2));
 }
 void FrontendTheme::drawFrame(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)
 {
@@ -136,9 +137,9 @@ void FrontendTheme::drawScrollBar(DrawableSurface* s,int x,int y,int,int h,int p
 {
 	const int width=getStyleMetric(STYLE_METRIC_LIST_SCROLLBAR_WIDTH);
 	const int end=getStyleMetric(STYLE_METRIC_LIST_SCROLLBAR_TOP_WIDTH);
-	rounded(s,x,y,width,h,4,Color(26,48,30));
-	rounded(s,x+1,y+1,width-2,h-2,3,Color(226,208,170));
-	rounded(s,x+3,y+end+pos,width-6,len,3,Color(120,142,86));
+	rounded(s,x,y,width,h,4,ink);
+	rounded(s,x+1,y+1,width-2,h-2,3,gelDisabled);
+	rounded(s,x+3,y+end+pos,width-6,len,3,muted);
 	for(int i=0;i<4;++i)
 	{
 		s->drawLine(x+width/2-i,y+end/2+i,x+width/2+i,y+end/2+i,textColor);
@@ -148,8 +149,8 @@ void FrontendTheme::drawScrollBar(DrawableSurface* s,int x,int y,int,int h,int p
 void FrontendTheme::drawProgressBar(DrawableSurface* s,int x,int y,int w,int value,int range)
 {
 	const int h=getStyleMetric(STYLE_METRIC_PROGRESS_BAR_HEIGHT);
-	rounded(s,x,y,w,h,4,Color(26,48,30));
-	rounded(s,x+1,y+1,w-2,h-2,3,Color(226,208,170));
+	rounded(s,x,y,w,h,4,ink);
+	rounded(s,x+1,y+1,w-2,h-2,3,gelDisabled);
 	if(range>0) rounded(s,x+1,y+1,std::max(0,int((w-2)*double(std::clamp(value,0,range))/range)),h-2,3,listSelectedElementColor);
 }
 int FrontendTheme::getStyleMetric(StyleMetrics m)
@@ -160,8 +161,8 @@ int FrontendTheme::getStyleMetric(StyleMetrics m)
 
 void FrontendTheme::drawFieldBackground(DrawableSurface* s,int x,int y,int w,int h)
 {
-	rounded(s,x,y,w,h,4,Color(26,48,30));
-	rounded(s,x+2,y+2,w-4,h-4,3,Color(250,241,214));
+	rounded(s,x,y,w,h,4,ink);
+	rounded(s,x+2,y+2,w-4,h-4,3,gel);
 }
 void FrontendTheme::drawSelectionBackground(DrawableSurface* s,int x,int y,int w,int h)
 {
@@ -169,15 +170,15 @@ void FrontendTheme::drawSelectionBackground(DrawableSurface* s,int x,int y,int w
 }
 bool FrontendTheme::drawSelector(DrawableSurface* s,int x,int y,int w,int h,unsigned value,unsigned maximum)
 {
-	rounded(s,x,y+h/2-1,w,6,3,Color(26,48,30));
-	rounded(s,x+1,y+h/2,w-2,4,2,Color(226,208,170));
+	rounded(s,x,y+h/2-1,w,6,3,ink);
+	rounded(s,x+1,y+h/2,w-2,4,2,gelDisabled);
 	const int position=maximum ? int((w-10)*double(value)/maximum) : 0;
-	rounded(s,x+position,y-1,10,h+6,5,Color(26,48,30));
-	rounded(s,x+position+2,y+1,6,h+2,3,Color(233,176,53));
+	rounded(s,x+position,y-1,10,h+6,5,ink);
+	rounded(s,x+position+2,y+1,6,h+2,3,gold);
 	return true;
 }
 
 void FrontendTheme::drawButtonSelection(DrawableSurface* s,int x,int y,int w,int h)
 {
-	rounded(s,x,y,w,h,4,Color(92,74,198));
+	rounded(s,x,y,w,h,4,violet);
 }

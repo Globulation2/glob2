@@ -25,11 +25,7 @@ using namespace GAGCore;
 
 namespace
 {
-const Color gold(233, 176, 53);
-const Color ink(20, 38, 24);
-const Color textColor(26, 48, 30);
-const Color muted(112, 102, 70);
-
+using namespace FrontendPalette;
 const auto fillRounded = FrontendTheme::rounded;
 }
 
@@ -53,23 +49,23 @@ public:
 		auto* target = parent->getSurface();
 		const unsigned hover = focused ? 255 : getNextHighlightValue();
 		const int radius = primary ? 8 : 4;
-		if (focused) fillRounded(target, x - 4, y - 4, w + 8, h + 8, radius + 4, Color(92, 74, 198));
+		if (focused) fillRounded(target, x - 4, y - 4, w + 8, h + 8, radius + 4, violet);
 		if (primary)
 		{
-			fillRounded(target, x, y, w, h, radius, Color(26, 48, 30));
-			fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, pressed ? Color(206, 152, 40) : gold);
+			fillRounded(target, x, y, w, h, radius, ink);
+			fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, pressed ? goldPressed : gold);
 			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(255, 235, 170, hover / 4));
 		}
 		else
 		{
-			fillRounded(target, x, y, w, h, radius, Color(26, 48, 30));
-			fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(250, 241, 214));
-			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(233, 176, 53, hover / 2));
+			fillRounded(target, x, y, w, h, radius, ink);
+			fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, gel);
+			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(gold.r, gold.g, gold.b, hover / 2));
 			if (pressed) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(180, 140, 50, 70));
 		}
 		Font* labelFont=fontPtr;
 		if(labelFont->getStringWidth(text)>w-(primary?44:28)) labelFont=Toolkit::getFont("front-small");
-		labelFont->pushStyle(Font::Style(Font::STYLE_NORMAL, primary ? ink : textColor));
+		labelFont->pushStyle(Font::Style(Font::STYLE_NORMAL, ink));
 		const int textY = y + (h - labelFont->getStringHeight(text)) / 2;
 		int cx, cy, cw, ch;
 		target->getClipRect(&cx, &cy, &cw, &ch);
@@ -140,7 +136,7 @@ MainMenuScreen::MainMenuScreen()
 						double coverage = goldInk ? (int(green) - int(blue) - 20) / 65.0 : (232 - int(red)) / 200.0;
 						coverage = coverage < 0.03 ? 0.0 : std::min(1.0, coverage);
 						pixels[col] = SDL_MapRGBA(fitted->format,
-							goldInk ? 233 : 26, goldInk ? 176 : 48, goldInk ? 53 : 30,
+							goldInk ? gold.r : ink.r, goldInk ? gold.g : ink.g, goldInk ? gold.b : ink.b,
 							static_cast<Uint8>(std::lround(255 * coverage)));
 					}
 				}
@@ -196,14 +192,14 @@ void MainMenuScreen::paint()
 {
 	if (FrontendTheme::current) FrontendTheme::current->background(gfx, false);
 	fillRounded(gfx, panelX + 3, panelY + 5, panelW, panelH, 12, Color(12, 28, 16, 70));
-	fillRounded(gfx, panelX, panelY, panelW, panelH, 12, Color(26, 48, 30));
-	fillRounded(gfx, panelX + 3, panelY + 3, panelW - 6, panelH - 6, 9, Color(240, 224, 188, 252));
+	fillRounded(gfx, panelX, panelY, panelW, panelH, 12, ink);
+	fillRounded(gfx, panelX + 3, panelY + 3, panelW - 6, panelH - 6, 9, Color(membrane.r, membrane.g, membrane.b, 252));
 	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, gold);
 	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get());
 	else
 	{
 		auto* title = Toolkit::getFont("front-title");
-		title->setStyle(Font::Style(Font::STYLE_NORMAL, textColor));
+		title->setStyle(Font::Style(Font::STYLE_NORMAL, ink));
 		gfx->drawString(panelX + 24, panelY + 24, title, "Globulation 2");
 	}
 	auto* caption = Toolkit::getFont("front-caption");

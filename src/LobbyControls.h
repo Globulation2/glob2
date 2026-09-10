@@ -33,8 +33,8 @@ class LobbyControls : public GAGGUI::RectangularWidget
 	std::map<int, Region> regions;
 	std::string focus, pressed;
 	int activeRegion = -1, hoverX = 0, hoverY = 0;
-	GAGCore::Color ink{26, 48, 30}, muted{112, 102, 70}, panel{250, 241, 214}, gold{233, 176, 53},
-		line{26, 48, 30};
+	GAGCore::Color ink = FrontendPalette::ink, muted = FrontendPalette::muted, panel = FrontendPalette::gel,
+		gold = FrontendPalette::gold, line = FrontendPalette::ink;
 	struct Popup
 	{
 		bool open = false;
@@ -126,7 +126,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		if (selected)
 			box(r, gold);
 		else if (!quiet)
-			box(r, enabled ? panel : GAGCore::Color(222, 226, 212));
+			box(r, enabled ? panel : FrontendPalette::gelDisabled);
 		if (focus == id ||
 			(!popup.open && inside(r, hoverX, hoverY) && inside(clipping, hoverX, hoverY)))
 			surface()->drawRect(r.x, r.y, r.w, r.h, focus == id ? ink : line);
@@ -247,7 +247,7 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		if (popup.open)
 		{
 			auto r = popupRect();
-			box({r.x + 3, r.y + 4, r.w, r.h}, GAGCore::Color(34, 54, 36, 100));
+			box({r.x + 3, r.y + 4, r.w, r.h}, GAGCore::Color(FrontendPalette::scrim.r, FrontendPalette::scrim.g, FrontendPalette::scrim.b, 100));
 			box(r, panel);
 			surface()->drawRect(r.x, r.y, r.w, r.h, muted);
 			for (int n = 0; n < 8 && n + popup.first < int(popup.options.size()); ++n)

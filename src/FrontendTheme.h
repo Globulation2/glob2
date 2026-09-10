@@ -5,6 +5,21 @@
 #include <memory>
 class MenuColony;
 
+// The front end's whole palette. Every menu screen reads from here; alpha is
+// applied at the draw site, never baked into a token.
+namespace FrontendPalette
+{
+	inline const GAGCore::Color ink(20, 44, 28);          // text, contours, hover ring
+	inline const GAGCore::Color muted(104, 98, 70);       // secondary text
+	inline const GAGCore::Color gold(233, 176, 53);       // primary action, selection
+	inline const GAGCore::Color goldPressed(206, 152, 40);
+	inline const GAGCore::Color violet(92, 74, 198);      // keyboard focus ring (the water's hue)
+	inline const GAGCore::Color membrane(250, 244, 222);  // panel fill
+	inline const GAGCore::Color gel(252, 246, 228);       // opaque control fill
+	inline const GAGCore::Color gelDisabled(232, 224, 200);
+	inline const GAGCore::Color scrim(18, 34, 22);        // veil / modal dim
+}
+
 class FrontendTheme : public GAGGUI::Style
 {
 public:
