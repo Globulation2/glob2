@@ -7,6 +7,16 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT: preserved-data recovery analysis COMPLETE. See doc/maxima-handoff/preserved-farming-analysis/PRESERVED_RESULTS.md and RECOVERED_SENSITIVITY_RESULT.json.
+All1000plannedpairs per switch retained with unknown failed outcomes. Existing exact
+missing-pair envelope/original alpha .04/53 used. Maintenance clearing +10.1–10.2pp
+(adjusted interval+3.53..18.18pp) and wheat-invasion clearing+5.0–5.2pp
+(interval+0.31..11.76pp) remain helpful under worst-case missing-pair bounds.
+Other six inconclusive. Missing values affect point differences by at most0.3pp.
+Clearly labeled recovery sensitivity analysis; original all-executions gate unmet.
+No reruns, imputed draws/wins, dropping pairs, defaults or diagnostic substitutions.
+Full replacement remains CANCELLED. Do not restart it. Preserve controls already run.
+
 CURRENT USER CORRECTION: full replacement campaign CANCELLED. Do not restart it.
 commission.py terminated, STOP_DISPATCH on all corrected-root controls, and original
 controls controller has exited. Already-running control games are allowed to finish;
