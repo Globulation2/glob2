@@ -47,15 +47,15 @@ Thêm
 [AI Descriptions]
 Mô tả AI
 [AI]
-AI
+trí tuệ nhân tạo
 [ai]
-AI
+trí tuệ nhân tạo
 [AICastor-Description]
 Castor chơi thận trọng và rất giỏi trên các bản đồ ít tài nguyên. Độ khó trung bình.
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex - AI thử nghiệm gồm ba tầng. Đang được phát triển.
+Cortex mở rộng tới những cánh đồng lúa mì mới và gửi các nhóm chiến binh vào trận chiến, được hỗ trợ bởi các nhà trọ và bệnh viện gần tiền tuyến. Độ khó trung bình. Thực nghiệm.
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -70,10 +70,10 @@ Không
 Numbi - Mở rộng vừa phải và nhanh chóng. Độ khó thấp.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Không tấn công, nhưng xây căn cứ khổng lồ và ra sức thu phục đơn vị. Độ khó thấp.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Không tấn công, nhưng xây căn cứ khổng lồ và ra sức thu phục đơn vị. Độ khó thấp.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Tấn công nhanh và dữ dội, thường khiến người phòng thủ phải chống đỡ hết sức. Độ khó trung bình.
 [AIWarrush]
@@ -1224,10 +1224,338 @@ Tốc độ: 1x (chơi mạng)
 Còn trong: %0
 [Units still working: %0]
 Còn làm việc: %0
+[2 vs 2]
+2 đấu 2
+[AI strategy & counterplay]
+Chiến lược và phản đòn AI
+[AICastor-Profile]
+Chiến lược: Mở rộng một cách thận trọng và hoạt động tốt trên các bản đồ có ít tài nguyên.\n\nĐiểm mạnh: Việc mở rộng hạn chế có hiệu quả trong các trò chơi có nguồn tài nguyên khan hiếm.\n\nGợi ý đối phó: Chiếm lãnh thổ sớm. Đừng cho rằng việc thiếu tài nguyên sẽ làm suy yếu AI này.
+[AICastor-Summary]
+Mở rộng thận trọng; hoạt động tốt với nguồn lực khan hiếm.
+[AICortex-Profile]
+Chiến lược: Quản lý nguồn cung cấp lương thực, mở rộng sang các cánh đồng lúa mì mới và tập hợp các nhóm chiến binh liên tiếp. Các nhà trọ và bệnh viện gần tiền tuyến hỗ trợ các cuộc tấn công ở xa căn cứ.\n\nĐiểm mạnh: Cùng nhau gửi quân tiếp viện, duy trì áp lực quân sự và ứng phó với tình trạng thiếu lương thực.\n\nGợi ý đối phó: Chiến đấu để giành quyền kiểm soát các cánh đồng lúa mì mới và tấn công các tòa nhà hỗ trợ của nó gần tiền tuyến. Tấn công trước khi nhóm chiến binh của nó sẵn sàng.\n\nAI thử nghiệm. Độ khó trung bình; các gợi ý đối phó không phải là đánh giá từ phép đo hiệu năng.
+[AICortex-Summary]
+Bảo đảm lương thực và hỗ trợ các đợt tấn công liên tiếp.
+[AINicowar-Profile]
+Chiến lược: Mở rộng nhanh chóng và tấn công đối thủ với đội quân khổng lồ.\n\nĐiểm mạnh: Mở rộng nhanh chóng hỗ trợ các cuộc tấn công quân sự tích cực.\n\nGợi ý đối phó: Ngăn chặn sự mở rộng của nó. Sử dụng địa hình để giảm số lượng quân địch có thể chiến đấu cùng một lúc.
+[AINicowar-Summary]
+Mở rộng nhanh chóng và xây dựng đội quân lớn để tấn công mạnh mẽ.
+[AINone-Profile]
+Chiến lược: AI không đưa ra mệnh lệnh.\n\nĐiểm mạnh: Một đối thủ không hoạt động, có thể đoán trước được để thử nghiệm.\n\nĐiểm yếu: Không mở rộng và thích ứng được.
+[AINone-Summary]
+Một thuộc địa nhàn rỗi cho các thí nghiệm.
+[AINumbi-Profile]
+Chiến lược: Mở rộng nhanh chóng nhưng ở quy mô nhỏ. Một đối thủ dễ dàng hơn để thực hành quản lý thuộc địa.\n\nĐiểm mạnh: Cho phép bạn học cả quản lý kinh tế và chiến đấu.\n\nGợi ý đối phó: Phát triển nền kinh tế mạnh hơn và huấn luyện quân đội của bạn trước khi tấn công.
+[AINumbi-Summary]
+Mở rộng nhanh chóng ở quy mô nhỏ.
+[AIEcono-Profile]
+Chiến lược: Không tấn công, nhưng xây dựng những căn cứ khổng lồ và chủ động chuyển đổi các đơn vị quân địch về phía mình.\n\nĐiểm mạnh: Mở rộng và chuyển đổi đơn vị đe dọa đối thủ mà không cần tấn công trực tiếp.\n\nGợi ý đối phó: Phát triển thuộc địa của bạn sớm và tránh gửi các đơn vị đến nơi kẻ thù có thể chuyển đổi chúng.
+[AIEcono-Summary]
+Xây căn cứ lớn và chiêu dụ quân địch thay vì tấn công.
+[AIWarrush-Profile]
+Chiến lược: Tấn công nhanh và mạnh trước khi đối thủ xây dựng lực lượng xong.\n\nĐiểm mạnh: Trừng phạt việc mở rộng thiếu phòng thủ và chuẩn bị quân sự chậm.\n\nGợi ý đối phó: Duy trì kinh tế, chống đỡ đợt tấn công đầu rồi phản công.
+[AIWarrush-Summary]
+Các cuộc tấn công nhanh kiểm tra khả năng phòng thủ sớm của bạn.
+[Algae]
+Tảo
+[Alliances]
+Liên minh
+[Beach size]
+Kích thước bãi biển
+[Blue]
+Xanh dương
+[Brown]
+Nâu
+[Built-in maps]
+Bản đồ tích hợp
+[Can change in game]
+Có thể thay đổi trong trò chơi
+[Closed]
+Đã đóng
+[Colonies]
+Thuộc địa
+[Colony]
+Thuộc địa
+[Concrete islands]
+Các đảo riêng biệt
+[Conquest only]
+Chỉ chinh phục
+[Conquest or prestige]
+Chinh phục hay uy tín
+[Could not launch this map. Your setup is retained; try again.]
+Không thể khởi chạy bản đồ này. Thiết lập của bạn được giữ lại; thử lại.
+[Could not load this map. Choose another map or retry.]
+Không thể tải bản đồ này. Hãy chọn bản đồ khác hoặc thử lại.
+[Crater lakes]
+Hồ miệng núi lửa
+[Custom]
+Tùy chỉnh
+[Custom teams]
+Đội tùy chỉnh
+[Cyan]
+Lục lam
+[Desert weight]
+Trọng số sa mạc
+[Easy]
+Dễ dàng
+[Explore as you play]
+Khám phá khi bạn chơi
+[Extra colony assignments are retained for larger maps.]
+Thiết lập của các thuộc địa dư ra được giữ lại để khôi phục khi chọn bản đồ lớn hơn.
+[Extra islands]
+Đảo phụ
+[FFA]
+Mọi người chống lại mọi người
+[Fruit]
+Trái cây
+[Game Rules]
+Luật chơi
+[Game speed]
+Tốc độ trò chơi
+[Generate & play]
+Tạo và chơi
+[Give at least one terrain type a nonzero weight.]
+Đặt ít nhất một loại địa hình có trọng số khác 0.
+[Grass weight]
+Trọng số đồng cỏ
+[Gray]
+Màu xám
+[Green]
+Xanh lá cây
+[Hard]
+Khó
+[Height]
+Chiều cao
+[Invalid colony count.]
+Số lượng thuộc địa không hợp lệ.
+[Island size]
+Kích thước đảo
+[Islands]
+Quần đảo
+[Isles]
+Đảo nhỏ
+[Lake density]
+Mật độ hồ
+[Landscape]
+Kiểu địa hình
+[Last colony standing]
+Thuộc địa cuối cùng sống sót
+[Layout]
+Bố cục
+[Locked teams]
+Đội bị khóa
+[Magenta]
+Đỏ tía
+[Map]
+Bản đồ
+[Map knowledge]
+Mức độ biết địa hình
+[Match finished]
+Trận đấu kết thúc
+[Medium]
+Trung bình
+[Medium - Experimental]
+Trung bình - Thử nghiệm
+[No AI orders]
+Không có lệnh AI
+[Old islands]
+Đảo kiểu cũ
+[Old random]
+Ngẫu nhiên kiểu cũ
+[Open at least one colony to start a match.]
+Mở ít nhất một thuộc địa để bắt đầu trận đấu.
+[Open book]
+Thế giới được tiết lộ
+[Pink]
+Hồng
+[Play this map]
+Chơi bản đồ này
+[Players & Teams]
+Người chơi & Đội
+[Premade maps]
+Bản đồ được tạo sẵn
+[Preview ready. Start plays this exact map.]
+Xem trước đã sẵn sàng. Bắt đầu trò chơi sử dụng bản đồ chính xác này.
+[Purple]
+Màu tím
+[Quick clash]
+Trận chiến nhanh
+[Random map]
+Bản đồ ngẫu nhiên
+[Red]
+Đỏ
+[Repeat landscape]
+Lặp lại phong cảnh
+[Resources]
+Tài nguyên
+[Restore standard rules]
+Khôi phục quy tắc tiêu chuẩn
+[Revealed terrain does not reveal all enemy activity.]
+Địa hình được tiết lộ không tiết lộ tất cả hoạt động của kẻ thù.
+[River]
+Sông
+[River width]
+Chiều rộng sông
+[Sand weight]
+Trọng số cát
+[Select a valid map.]
+Chọn bản đồ hợp lệ.
+[Shared control needs a free controller slot (maximum 12).]
+Điều khiển chung cần một chỗ điều khiển còn trống (tối đa 12).
+[Smoothing]
+Làm mịn
+[Standard]
+Tiêu chuẩn
+[Start game]
+Bắt đầu trò chơi
+[Starting workers]
+Công nhân ban đầu
+[Starting workers: Game Rules tab.]
+Công nhân ban đầu: thẻ Luật chơi.
+[Swamp]
+Đầm lầy
+[Team]
+Đội
+[Terrain]
+Địa hình
+[Terrain revealed]
+Địa hình được tiết lộ
+[Try a ruleset, then make it your own.]
+Hãy thử một bộ quy tắc, sau đó biến nó thành của riêng bạn.
+[Victory]
+Chiến thắng
+[Watch game]
+Xem trò chơi
+[Water weight]
+Trọng số nước
+[White]
+Trắng
+[Width]
+Chiều rộng
+[Yellow]
+Vàng
+[You]
+Bạn
+[You + AI]
+Bạn + AI
+[You and the AI both issue orders. Uses two controller slots.]
+Bạn và AI đều có thể ra lệnh. Chiếm hai chỗ điều khiển.
+[You vs all]
+Bạn đấu tất cả
+[Your maps]
+Bản đồ của bạn
+[colonies]
+thuộc địa
+[* Changed from standard.]
+* Thay đổi so với tiêu chuẩn.
+[World & diplomacy]
+Thế giới và ngoại giao
+[Starting conditions & pace]
+Điều kiện xuất phát và tốc độ
+[Inactive]
+Không hoạt động
+[8 workers / 2x speed]
+8 công nhân / tốc độ gấp 2 lần
+[Changes the pace of the whole simulation.]
+Thay đổi tốc độ của toàn bộ mô phỏng.
+[Choose whether teams can change during the match.]
+Chọn xem các đội có thể thay đổi trong trận đấu hay không.
+[Classic colony building]
+Phát triển thuộc địa truyền thống
+[Dimensions and colony count are set above.]
+Kích thước và số lượng thuộc địa được đặt ở trên.
+[Generate & watch]
+Tạo và xem
+[Info]
+Thông tin
+[Map-defined starting units]
+Đơn vị bắt đầu được xác định trên bản đồ
+[No maps in this library.]
+Không có bản đồ trong thư viện này.
+[Premade maps retain their authored starting units.]
+Bản đồ có sẵn giữ nguyên các đơn vị ban đầu do tác giả thiết lập.
+[Premade: only speed changes (2x)]
+Bản đồ có sẵn: chỉ đổi tốc độ (2x)
+[Start with terrain known]
+Bắt đầu với địa hình đã biết
+[This colony will not join the match.]
+Thuộc địa này sẽ không tham gia trận đấu.
+[This landscape uses a fixed terrain recipe.]
+Cảnh quan này sử dụng công thức địa hình cố định.
+[This landscape uses fixed resource placement.]
+Cảnh quan này sử dụng vị trí tài nguyên cố định.
+[Win through conquest]
+Chiến thắng nhờ chinh phục
+[You control this colony.]
+Bạn kiểm soát thuộc địa này.
+[controllers]
+người hoặc AI điều khiển
+[Use]
+Chọn
+[Lime]
+Màu xanh chanh
+[Teal]
+Màu xanh mòng két
+[Azure]
+Xanh da trời
+[Updating map preview...]
+Đang cập nhật bản xem trước bản đồ...
+[Generation failed. Adjust settings or press Start to retry.]
+Tạo bản đồ thất bại. Điều chỉnh cài đặt hoặc nhấn Bắt đầu để thử lại.
+[Preview unavailable. Adjust settings or start to retry.]
+Xem trước không có sẵn. Thay đổi cài đặt hoặc khởi chạy trò chơi để thử lại.
 [automatic torus view]
 Chế độ xem hình xuyến tự động
 [toggle torus view]
 Chuyển chế độ xem 2D / hình xuyến
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 đấu 2 cần bốn thuộc địa tham gia. Bạn đấu tất cả cần một người chơi thật.
+[Alliance]
+Liên minh
+[Choose a rule to change it.]
+Chọn một quy tắc để thay đổi nó.
+[Conquest only removes prestige victory; map scripts still apply.]
+Chỉ chinh phục vô hiệu hóa chiến thắng bằng uy tín; tập lệnh bản đồ vẫn có hiệu lực.
+[Control]
+Kiểm soát thuộc địa
+[Controller]
+Bên điều khiển
+[Generate preview]
+Tạo bản xem trước
+[Generation failed. Adjust settings or try again.]
+Tạo bản đồ thất bại. Điều chỉnh cài đặt hoặc thử lại.
+[Map settings changed. Generate a new preview or start.]
+Cài đặt bản đồ đã thay đổi. Tạo bản xem trước mới hoặc bắt đầu.
+[Map source]
+Nguồn bản đồ
+[Map-defined]
+Theo bản đồ
+[Match format]
+Hình thức trò chơi
+[No current preview]
+Không có bản xem trước hiện tại
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Trận chiến nhanh: tốc độ gấp đôi; bản đồ được tạo bắt đầu với 8 công nhân.
+[Reroll]
+Tạo một bản đồ khác
+[Ruleset]
+Bộ quy tắc
+[Select a map from the library.]
+Chọn bản đồ từ thư viện.
+[Starting workers affects generated maps only.]
+Số lượng công nhân ban đầu chỉ áp dụng cho các bản đồ được tạo.
+[Unavailable]
+Không có sẵn
+[Use selection]
+Sử dụng lựa chọn
+[Quick clash on premade maps: only speed changes (2x).]
+Trận chiến nhanh trên bản đồ được tạo sẵn: chỉ có tốc độ thay đổi (tốc độ gấp đôi).
+[Generate a preview to explore this world.]
+Tạo bản xem trước để khám phá thế giới này.
+[More workers jump-start colony growth. Changes the generated map.]
+Nhiều công nhân hơn đẩy nhanh sự phát triển của thuộc địa. Cài đặt này thay đổi bản đồ được tạo.
+[No warriors]
+Không có chiến binh
 [settings Add key to sequence]
 Thêm phím vào chuỗi
 [settings Add shortcut]

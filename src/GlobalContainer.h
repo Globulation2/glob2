@@ -143,6 +143,8 @@ public:
 	std::string yogHostName;
 
 	// Variables related to the showing of replays:
+	bool liveSpectating = false; //!< Live AI-only viewing; never replay playback.
+	bool isViewingGame() const { return replaying || liveSpectating; }
 	bool replaying; //!< Whether the current game is a replay or a usual game
 	std::string replayFileName; //!< The name of the replay file.
 	bool replayFastForward; //!< If set to true, the replay will play faster.

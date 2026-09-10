@@ -55,7 +55,7 @@ Castor bermain dengan hati-hati dan sangat tangguh di peta dengan sedikit sumber
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex - AI eksperimental dengan tiga lapisan. Masih dalam pengembangan.
+Cortex berekspansi ke ladang gandum baru dan mengirimkan kelompok prajurit ke medan perang, didukung oleh penginapan dan rumah sakit di dekat garis depan. Kesulitan sedang. Eksperimental.
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -70,10 +70,10 @@ Tidak ada
 Numbi - Berkembang secara terbatas dan cepat. Tingkat kesulitan mudah.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Menyerang dengan cepat dan keras, sering kali membuat pemain yang bertahan kewalahan. Tingkat kesulitan sedang.
 [AIWarrush]
@@ -1224,10 +1224,338 @@ Kecepatan: 1x (multipemain)
 Di dalam: %0
 [Units still working: %0]
 Masih bekerja: %0
+[2 vs 2]
+2 lawan 2
+[AI strategy & counterplay]
+Strategi AI & cara melawannya
+[AICastor-Profile]
+Strategi: Berkembang dengan hati-hati dan mampu bertahan di peta dengan sedikit sumber daya.\n\nKekuatan: Pertumbuhan terkendali cocok untuk pertandingan dengan sumber daya langka.\n\nSaran melawan: Kuasai wilayah lebih awal; jangan beranggapan bahwa sumber daya langka akan melumpuhkannya.
+[AICastor-Summary]
+Ekspansi yang hati-hati; berkinerja baik dengan sumber daya yang terbatas.
+[AICortex-Profile]
+Strategi: Mengelola persediaan makanan, memperluas ke ladang gandum baru, dan mengumpulkan kelompok pejuang secara berurutan. Penginapan dan rumah sakit di dekat garis depan mendukung serangan yang jauh dari pangkalan.\n\nKekuatan: Mengirim bala bantuan bersama-sama, mempertahankan tekanan militer, dan bereaksi terhadap kekurangan pangan.\n\nSaran melawan: Berjuang untuk menguasai ladang gandum baru dan serang bangunan pendukungnya di dekat garis depan. Serang sebelum kelompok prajuritnya siap.\n\nAI eksperimental. Kesulitan sedang; saran melawan bukan penilaian tolok ukur kinerja.
+[AICortex-Summary]
+Menjaga pangan sambil melancarkan gelombang serangan dengan dukungan.
+[AINicowar-Profile]
+Strategi: Berekspansi dengan cepat dan menyerang lawan dengan pasukan yang sangat besar.\n\nKekuatan: Ekspansi yang cepat mendukung serangan militer yang agresif.\n\nSaran melawan: Cegah perluasannya. Gunakan medan untuk mengurangi jumlah pasukan musuh yang bisa bertarung sekaligus.
+[AINicowar-Summary]
+Berkembang dengan cepat dan membangun pasukan besar untuk serangan agresif.
+[AINone-Profile]
+Strategi: AI tidak memberikan perintah.\n\nKekuatan: Lawan eksperimen yang dapat diprediksi dan tidak aktif.\n\nKelemahan: Tidak berkembang atau beradaptasi.
+[AINone-Summary]
+Koloni yang diam untuk eksperimen.
+[AINumbi-Profile]
+Strategi: Berkembang dengan cepat namun dalam skala kecil. Lawan yang lebih mudah untuk mempraktikkan manajemen koloni.\n\nKekuatan: Memungkinkan Anda mempelajari manajemen ekonomi dan pertempuran.\n\nSaran melawan: Kembangkan ekonomi yang lebih kuat dan latih pasukan Anda sebelum menyerang.
+[AINumbi-Summary]
+Ekspansi cepat dalam skala kecil.
+[AIEcono-Profile]
+Strategi: Tidak menyerang, tetapi membangun markas besar dan giat mengubah unit musuh menjadi sekutu.\n\nKekuatan: Pertumbuhan dan pengalihan unit menekan lawan tanpa serangan biasa.\n\nSaran melawan: Manfaatkan awal permainan untuk berkembang, dan hindari mengirim unit ke tempat musuh bisa mengambil alihnya.
+[AIEcono-Summary]
+Basis besar dan konversi, bukan serangan.
+[AIWarrush-Profile]
+Strategi: Menyerang dengan cepat dan keras sebelum lawan selesai bersiap.\n\nKekuatan: Menghukum ekspansi tanpa pertahanan dan persiapan militer yang lambat.\n\nSaran melawan: Pertahankan ekonomi sambil bertahan dari serangan pertama, lalu serang balik.
+[AIWarrush-Summary]
+Serangan cepat yang menguji pertahanan awal Anda.
+[Algae]
+Ganggang
+[Alliances]
+Aliansi
+[Beach size]
+Ukuran pantai
+[Blue]
+Biru
+[Brown]
+Cokelat
+[Built-in maps]
+Peta bawaan
+[Can change in game]
+Dapat berubah dalam permainan
+[Closed]
+Tertutup
+[Colonies]
+Koloni
+[Colony]
+Koloni
+[Concrete islands]
+Pulau Terpisah
+[Conquest only]
+Hanya penaklukan
+[Conquest or prestige]
+Penaklukan atau prestise
+[Could not launch this map. Your setup is retained; try again.]
+Tidak dapat meluncurkan peta ini. Penyiapan Anda dipertahankan; coba lagi.
+[Could not load this map. Choose another map or retry.]
+Tidak dapat memuat peta ini. Pilih peta lain atau coba lagi.
+[Crater lakes]
+Danau kawah
+[Custom]
+Kustom
+[Custom teams]
+Tim khusus
+[Cyan]
+Sian
+[Desert weight]
+Bobot gurun
+[Easy]
+Mudah
+[Explore as you play]
+Jelajahi sambil bermain
+[Extra colony assignments are retained for larger maps.]
+Penugasan koloni tambahan dipertahankan untuk peta yang lebih besar.
+[Extra islands]
+Pulau tambahan
+[FFA]
+Semua orang melawan semua orang
+[Fruit]
+Buah
+[Game Rules]
+Aturan Permainan
+[Game speed]
+Kecepatan permainan
+[Generate & play]
+Hasilkan & mainkan
+[Give at least one terrain type a nonzero weight.]
+Berikan setidaknya satu jenis medan bobot bukan nol.
+[Grass weight]
+Bobot rumput
+[Gray]
+Abu-abu
+[Green]
+Hijau
+[Hard]
+Sulit
+[Height]
+Tinggi
+[Invalid colony count.]
+Jumlah koloni tidak valid.
+[Island size]
+Ukuran pulau
+[Islands]
+Pulau
+[Isles]
+Pulau Kecil
+[Lake density]
+Kepadatan danau
+[Landscape]
+Lanskap
+[Last colony standing]
+Koloni terakhir yang bertahan
+[Layout]
+Tata Letak
+[Locked teams]
+Tim yang terkunci
+[Magenta]
+Merah keunguan
+[Map]
+Peta
+[Map knowledge]
+Pengetahuan medan
+[Match finished]
+Pertandingan selesai
+[Medium]
+Sedang
+[Medium - Experimental]
+Sedang - Eksperimental
+[No AI orders]
+Tidak ada perintah AI
+[Old islands]
+Pulau versi lama
+[Old random]
+Acak lama
+[Open at least one colony to start a match.]
+Buka setidaknya satu koloni untuk memulai pertandingan.
+[Open book]
+Dunia yang terungkap
+[Pink]
+Merah Jambu
+[Play this map]
+Mainkan peta ini
+[Players & Teams]
+Pemain & Tim
+[Premade maps]
+Peta yang sudah jadi
+[Preview ready. Start plays this exact map.]
+Pratinjau siap. Memulai permainan menggunakan peta persis ini.
+[Purple]
+Ungu
+[Quick clash]
+Pertarungan cepat
+[Random map]
+Peta acak
+[Red]
+Merah
+[Repeat landscape]
+Ulangi lanskap
+[Resources]
+Sumber daya
+[Restore standard rules]
+Kembalikan aturan standar
+[Revealed terrain does not reveal all enemy activity.]
+Medan yang terungkap tidak mengungkapkan semua aktivitas musuh.
+[River]
+Sungai
+[River width]
+Lebar sungai
+[Sand weight]
+Bobot pasir
+[Select a valid map.]
+Pilih peta yang valid.
+[Shared control needs a free controller slot (maximum 12).]
+Kendali bersama memerlukan satu tempat pengendali kosong (maksimum 12).
+[Smoothing]
+Penghalusan
+[Standard]
+Standar
+[Start game]
+Mulai permainan
+[Starting workers]
+Pekerja awal
+[Starting workers: Game Rules tab.]
+Pekerja awal: tab Aturan Permainan.
+[Swamp]
+Rawa
+[Team]
+Tim
+[Terrain]
+Medan
+[Terrain revealed]
+Medan terungkap
+[Try a ruleset, then make it your own.]
+Cobalah seperangkat aturan, lalu buatlah aturan Anda sendiri.
+[Victory]
+Kemenangan
+[Watch game]
+Tonton pertandingan
+[Water weight]
+Bobot air
+[White]
+Putih
+[Width]
+Lebar
+[Yellow]
+Kuning
+[You]
+Anda
+[You + AI]
+Anda + AI
+[You and the AI both issue orders. Uses two controller slots.]
+Anda dan AI sama-sama memberi perintah. Memakai dua tempat pengendali.
+[You vs all]
+Anda melawan semua orang
+[Your maps]
+Peta Anda
+[colonies]
+koloni
+[* Changed from standard.]
+* Berubah dari standar.
+[World & diplomacy]
+Dunia & diplomasi
+[Starting conditions & pace]
+Kondisi & kecepatan awal
+[Inactive]
+Tidak aktif
+[8 workers / 2x speed]
+8 pekerja / kecepatan 2x
+[Changes the pace of the whole simulation.]
+Mengubah kecepatan seluruh simulasi.
+[Choose whether teams can change during the match.]
+Pilih apakah tim dapat berubah selama pertandingan.
+[Classic colony building]
+Perkembangan koloni tradisional
+[Dimensions and colony count are set above.]
+Dimensi dan jumlah koloni diatur di atas.
+[Generate & watch]
+Hasilkan & tonton
+[Info]
+Informasi
+[Map-defined starting units]
+Unit awal yang ditentukan peta
+[No maps in this library.]
+Tidak ada peta dalam koleksi ini.
+[Premade maps retain their authored starting units.]
+Peta siap pakai tetap memakai unit awal yang ditetapkan pembuatnya.
+[Premade: only speed changes (2x)]
+Peta siap pakai: hanya kecepatan berubah (2x)
+[Start with terrain known]
+Mulailah dengan medan yang diketahui
+[This colony will not join the match.]
+Koloni ini tidak akan ikut pertandingan.
+[This landscape uses a fixed terrain recipe.]
+Lanskap ini menggunakan resep medan tetap.
+[This landscape uses fixed resource placement.]
+Lanskap ini menggunakan penempatan sumber daya tetap.
+[Win through conquest]
+Menang melalui penaklukan
+[You control this colony.]
+Anda mengendalikan koloni ini.
+[controllers]
+pengendali
+[Use]
+Pilih
+[Lime]
+Hijau limau
+[Teal]
+Biru kehijauan
+[Azure]
+Biru langit
+[Updating map preview...]
+Memperbarui pratinjau peta...
+[Generation failed. Adjust settings or press Start to retry.]
+Pembuatan peta gagal. Sesuaikan pengaturan atau tekan Mulai untuk mencoba lagi.
+[Preview unavailable. Adjust settings or start to retry.]
+Pratinjau tidak tersedia. Ubah pengaturan atau luncurkan game untuk mencoba lagi.
 [automatic torus view]
 Tampilan torus otomatis
 [toggle torus view]
 Beralih tampilan 2D / torus
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 lawan 2 memerlukan empat koloni aktif. Anda melawan semua memerlukan seorang pemain manusia.
+[Alliance]
+Aliansi
+[Choose a rule to change it.]
+Pilih aturan untuk mengubahnya.
+[Conquest only removes prestige victory; map scripts still apply.]
+Hanya penaklukan menonaktifkan kemenangan prestise; skrip peta tetap berlaku.
+[Control]
+Kontrol koloni
+[Controller]
+Pengendali koloni
+[Generate preview]
+Hasilkan pratinjau
+[Generation failed. Adjust settings or try again.]
+Pembuatan peta gagal. Sesuaikan pengaturan atau coba lagi.
+[Map settings changed. Generate a new preview or start.]
+Pengaturan peta diubah. Hasilkan pratinjau baru atau mulai.
+[Map source]
+Sumber peta
+[Map-defined]
+Ditentukan peta
+[Match format]
+Format permainan
+[No current preview]
+Tidak ada pratinjau saat ini
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Pertarungan cepat: kecepatan ganda; peta yang dihasilkan dimulai dengan 8 pekerja.
+[Reroll]
+Hasilkan peta lain
+[Ruleset]
+Aturan
+[Select a map from the library.]
+Pilih peta dari koleksi.
+[Starting workers affects generated maps only.]
+Jumlah pekerja awal hanya berlaku untuk peta yang dihasilkan.
+[Unavailable]
+Tidak tersedia
+[Use selection]
+Gunakan seleksi
+[Quick clash on premade maps: only speed changes (2x).]
+Pertarungan cepat di peta yang telah dibuat sebelumnya: hanya kecepatannya yang berubah (kecepatan ganda).
+[Generate a preview to explore this world.]
+Hasilkan pratinjau untuk menjelajahi dunia ini.
+[More workers jump-start colony growth. Changes the generated map.]
+Lebih banyak pekerja mempercepat pertumbuhan koloni. Pengaturan ini mengubah peta yang dihasilkan.
+[No warriors]
+Tanpa prajurit
 [settings Add key to sequence]
 Tambah tombol ke urutan
 [settings Add shortcut]

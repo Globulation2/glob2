@@ -47,9 +47,9 @@ V: 显示所有建筑物
 [AI Descriptions]
 AI 说明
 [AI]
-AI
+人工智能
 [ai]
-ai
+人工智能
 [AICastor-Description]
 AICastor-描述
 [AICastor]
@@ -66,10 +66,10 @@ AINone
 AINumbi-描述
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-AIReachToInfinity-描述
-[AIReachToInfinity]
-AIReachToInfinity
+[AIEcono-Description]
+AIEcono-描述
+[AIEcono]
+AIEcono
 [AIWarrush-Description]
 AIWarrush-描述
 [AIWarrush]
@@ -419,7 +419,7 @@ home
 [host]
 建立游戏
 [hp]
-HP
+生命值
 [Human]
 人类玩家
 [human]
@@ -859,7 +859,7 @@ V: 持键以传送讯息
 [Sort By]
 按分类凭据...
 [space]
-空白区域
+空格键
 [start mission]
 开始任务
 [start new campaign]
@@ -1215,7 +1215,7 @@ Ysagoon 线上游戏
 [game speed help]
 仅限单人游戏和录像回放。多人游戏固定为1x速度。
 [AICortex-Description]
-Cortex - 实验性的三层人工智能，开发中。
+Cortex向新的麦田扩张，利用前线食堂和医院支援一波又一波的战士进攻。难度中等，仍处于实验阶段。
 [ERROR_CANT_SAVE_CAMPAIGN]
 无法保存战役。请检查目标文件夹是否存在、是否可写，以及是否有可用空间。
 [AICortex]
@@ -1224,10 +1224,338 @@ Cortex
 仍在里面：%0
 [Units still working: %0]
 仍在工作：%0
+[2 vs 2]
+2对2
+[AI strategy & counterplay]
+AI策略与对抗
+[AICastor-Profile]
+核心策略:稳健发展，擅长应对资源稀少的地图。\n\n优势:克制的扩张方式适合资源匮乏的对局。\n\n可尝试的对策:尽早占领空间，不要以为资源匮乏就能削弱它。
+[AICastor-Summary]
+谨慎扩张；在稀缺资源下表现良好。
+[AICortex-Profile]
+核心策略:管理粮食供应，向新的麦田扩张，集结一波又一波的战士。前线食堂和医院为远距离进攻提供支援。\n\n优势:集中增援、持续施压，并能应对粮食短缺。\n\n可尝试的对策:争夺新的麦田，打击前线支援设施，在其部队集结前施加压力。\n\n实验阶段的人工智能，难度中等。这些对策建议并非基准测试的评定结果。
+[AICortex-Summary]
+保障粮食供应，并以支援设施维持多波进攻。
+[AINicowar-Profile]
+策略:迅速扩张，以庞大的军队攻击对手。\n\n优势:快速扩张支持侵略性的军事攻击。\n\n建议对策:防止其扩张。利用地形来减少可以同时作战的敌军数量。
+[AINicowar-Summary]
+迅速扩张并建立庞大的军队进行侵略性攻击。
+[AINone-Profile]
+核心策略:不发出任何人工智能命令。\n\n优势:行为可预测、保持不动的实验对手。\n\n弱点:不会扩张或适应局势。
+[AINone-Summary]
+用于实验的闲置殖民地。
+[AINumbi-Profile]
+核心策略:小规模快速扩张，适合练习殖民地管理。\n\n优势:让你有余地同时学习经济管理和战斗。\n\n可尝试的对策:先壮大经济、训练军队，再发动进攻。
+[AINumbi-Summary]
+小规模快速扩张。
+[AIEcono-Profile]
+策略:不攻击，但建立巨大的基地并积极地将敌方部队转变为己方。\n\n优点:扩张和单位转换无需直接攻击即可威胁对手。\n\n建议的对策:尽早发展你的殖民地，避免将部队派遣到敌人可以转换的地方。
+[AIEcono-Summary]
+不主动进攻，以巨大基地和招降敌军施压。
+[AIWarrush-Profile]
+核心策略:在对手完成建设前，发动迅速而猛烈的进攻。\n\n优势:善于打击无防备的扩张和缓慢的备战。\n\n可尝试的对策:维持经济，撑过首轮进攻后再反击。
+[AIWarrush-Summary]
+快速攻击考验你的早期防御能力。
+[Algae]
+海藻
+[Alliances]
+联盟
+[Beach size]
+海滩尺寸
+[Blue]
+蓝色
+[Brown]
+棕色
+[Built-in maps]
+内置地图
+[Can change in game]
+游戏中可以改变
+[Closed]
+关闭
+[Colonies]
+殖民地
+[Colony]
+殖民地
+[Concrete islands]
+独立岛屿
+[Conquest only]
+仅限征服
+[Conquest or prestige]
+征服或声望
+[Could not launch this map. Your setup is retained; try again.]
+无法启动此地图。您的设置将被保留；再试一次。
+[Could not load this map. Choose another map or retry.]
+无法加载此地图。选择另一张地图或重试。
+[Crater lakes]
+火山口湖
+[Custom]
+自定义
+[Custom teams]
+自定义队伍
+[Cyan]
+青色
+[Desert weight]
+沙漠权重
+[Easy]
+简单
+[Explore as you play]
+边玩边探索
+[Extra colony assignments are retained for larger maps.]
+多余的殖民地设置会保留，以便切回更大的地图时恢复。
+[Extra islands]
+额外的岛屿
+[FFA]
+各自为战
+[Fruit]
+水果
+[Game Rules]
+游戏规则
+[Game speed]
+游戏速度
+[Generate & play]
+生成并开始游戏
+[Give at least one terrain type a nonzero weight.]
+为至少一种地形类型赋予非零权重。
+[Grass weight]
+草地权重
+[Gray]
+灰色
+[Green]
+绿色
+[Hard]
+困难
+[Height]
+高度
+[Invalid colony count.]
+殖民地数量无效。
+[Island size]
+岛屿大小
+[Islands]
+岛屿
+[Isles]
+岛屿地形
+[Lake density]
+湖泊密度
+[Landscape]
+地形类型
+[Last colony standing]
+最后的殖民地
+[Layout]
+布局
+[Locked teams]
+锁定队伍
+[Magenta]
+洋红色
+[Map]
+地图
+[Map knowledge]
+地形可见性
+[Match finished]
+比赛结束
+[Medium]
+中等
+[Medium - Experimental]
+中等 - 实验性
+[No AI orders]
+没有AI命令
+[Old islands]
+旧版岛屿生成
+[Old random]
+旧版随机生成
+[Open at least one colony to start a match.]
+至少启用一个殖民地才能开始对局。
+[Open book]
+揭示的世界
+[Pink]
+粉色
+[Play this map]
+游玩此地图
+[Players & Teams]
+玩家与队伍
+[Premade maps]
+预制地图
+[Preview ready. Start plays this exact map.]
+预览准备就绪。开始游戏时使用这张精确的地图。
+[Purple]
+紫色
+[Quick clash]
+快速战斗
+[Random map]
+随机地图
+[Red]
+红色
+[Repeat landscape]
+重复地形
+[Resources]
+资源
+[Restore standard rules]
+恢复标准规则
+[Revealed terrain does not reveal all enemy activity.]
+揭示的地形并不能揭示所有敌人的活动。
+[River]
+河流
+[River width]
+河宽
+[Sand weight]
+沙地权重
+[Select a valid map.]
+选择有效的地图。
+[Shared control needs a free controller slot (maximum 12).]
+共同操控需要一个空余的操控者名额（最多12个）。
+[Smoothing]
+平滑
+[Standard]
+标准
+[Start game]
+开始游戏
+[Starting workers]
+初始工人
+[Starting workers: Game Rules tab.]
+初始工人数量：请在游戏规则页设置。
+[Swamp]
+沼泽
+[Team]
+队伍
+[Terrain]
+地形
+[Terrain revealed]
+地形显露
+[Try a ruleset, then make it your own.]
+尝试一个规则集，然后将其变成你自己的。
+[Victory]
+胜利
+[Watch game]
+观战
+[Water weight]
+水域权重
+[White]
+白色
+[Width]
+宽度
+[Yellow]
+黄色
+[You]
+你
+[You + AI]
+你+人工智能
+[You and the AI both issue orders. Uses two controller slots.]
+你与人工智能都可以下达命令，占用两个操控者名额。
+[You vs all]
+你对抗所有人
+[Your maps]
+你的地图
+[colonies]
+殖民地
+[* Changed from standard.]
+* 从标准更改。
+[World & diplomacy]
+世界与外交
+[Starting conditions & pace]
+起始条件和速度
+[Inactive]
+不活跃
+[8 workers / 2x speed]
+8 名工人/2 倍速度
+[Changes the pace of the whole simulation.]
+改变整个模拟的节奏。
+[Choose whether teams can change during the match.]
+选择是否允许在对局中更换队伍。
+[Classic colony building]
+经典殖民地建设
+[Dimensions and colony count are set above.]
+请在上方设置尺寸和殖民地数量。
+[Generate & watch]
+生成并观看
+[Info]
+信息
+[Map-defined starting units]
+地图定义的起始单位
+[No maps in this library.]
+此地图列表为空。
+[Premade maps retain their authored starting units.]
+预制地图保留作者设定的初始单位。
+[Premade: only speed changes (2x)]
+预制:仅速度变化 (2x)
+[Start with terrain known]
+从已知地形开始
+[This colony will not join the match.]
+该殖民地不会参加比赛。
+[This landscape uses a fixed terrain recipe.]
+此地形类型使用固定的地形配置。
+[This landscape uses fixed resource placement.]
+此地形类型使用固定的资源分布。
+[Win through conquest]
+通过征服赢得胜利
+[You control this colony.]
+你控制着这个殖民地。
+[controllers]
+操控者
+[Use]
+选择
+[Lime]
+柠檬绿
+[Teal]
+蓝绿色
+[Azure]
+天蓝色
+[Updating map preview...]
+正在更新地图预览...
+[Generation failed. Adjust settings or press Start to retry.]
+地图生成失败。请调整设置，或按开始重试。
+[Preview unavailable. Adjust settings or start to retry.]
+预览不可用。更改设置或启动游戏重试。
 [automatic torus view]
 自动环面视图
 [toggle torus view]
 切换 2D／环面视图
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2对2需要4个参与的殖民地。“你对抗所有人”需要一名人类玩家。
+[Alliance]
+联盟
+[Choose a rule to change it.]
+选择一条规则来更改它。
+[Conquest only removes prestige victory; map scripts still apply.]
+“仅限征服”只禁用声望胜利，地图脚本仍然生效。
+[Control]
+操控方式
+[Controller]
+操控者
+[Generate preview]
+生成预览
+[Generation failed. Adjust settings or try again.]
+地图生成失败。请调整设置或重试。
+[Map settings changed. Generate a new preview or start.]
+地图设置已更改。生成新的预览或开始。
+[Map source]
+地图来源
+[Map-defined]
+地图定义
+[Match format]
+游戏形式
+[No current preview]
+当前没有预览
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+快速战斗:双倍速度；生成的地图以 8 个工人开始。
+[Reroll]
+生成另一张地图
+[Ruleset]
+规则集
+[Select a map from the library.]
+从库中选择一张地图。
+[Starting workers affects generated maps only.]
+初始工人数量只影响生成的地图。
+[Unavailable]
+不可用
+[Use selection]
+选择此人工智能
+[Quick clash on premade maps: only speed changes (2x).]
+在预制地图上快速战斗:仅速度变化（双倍速度）。
+[Generate a preview to explore this world.]
+生成预览来探索这个世界。
+[More workers jump-start colony growth. Changes the generated map.]
+更多工人能加快殖民地的初期发展。修改此设置会改变生成的地图。
+[No warriors]
+无战士
 [settings Add key to sequence]
 添加按键到序列
 [settings Add shortcut]

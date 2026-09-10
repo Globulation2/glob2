@@ -55,7 +55,7 @@ Castorは慎重に行動し、資源の少ないマップを得意とします�
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex：実験的な3層構成のAI。開発中です。
+Cortexは新たな小麦畑へ拡張し、前線の食堂や病院で支援しながら戦士の部隊を次々と送り込みます。難易度は普通。実験段階のAIです。
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -70,10 +70,10 @@ AIなし：何もしません。
 Numbi：小規模ながら素早く拡大します。難易度：簡単。
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity：攻撃はしませんが、巨大な拠点を築き、積極的にユニットを引き抜きます。難易度：簡単。
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo：攻撃はしませんが、巨大な拠点を築き、積極的にユニットを引き抜きます。難易度：簡単。
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush：早い段階から激しく攻撃し、防御側を限界まで追い詰めます。難易度：普通。
 [AIWarrush]
@@ -1224,10 +1224,338 @@ Ysagoon Online Gaming
 建物内：%0体
 [Units still working: %0]
 作業中：あと%0体
+[2 vs 2]
+2対2
+[AI strategy & counterplay]
+AIの戦略と対抗策
+[AICastor-Profile]
+基本戦略: 慎重に発展し、資源の少ないマップを得意とします。\n\n強み: 拡張を抑える戦略が、資源の乏しい試合に適しています。\n\n対策のヒント: 早めに領土を確保しましょう。資源不足で弱体化するとは限りません。
+[AICastor-Summary]
+慎重に拡張し、資源の乏しいマップにも対応。
+[AICortex-Profile]
+基本戦略: 食料供給を管理し、新たな小麦畑へ拡張して、戦士の部隊を次々と編成します。前線の食堂や病院が遠方への攻撃を支えます。\n\n強み: まとまった増援、継続的な圧力、食料不足への対応。\n\n対策のヒント: 新たな小麦畑や前線の支援施設を狙いましょう。攻撃部隊が集まる前に圧力をかけてみてください。\n\n実験段階のAI。難易度は普通です。対策のヒントは性能評価に基づくものではありません。
+[AICortex-Summary]
+食料を確保し、支援付きの攻撃部隊を次々と投入。
+[AINicowar-Profile]
+基本戦略: 急速に拡張し、大軍で相手を攻撃します。\n\n強み: 素早い拡張によって、激しい軍事的圧力を維持します。\n\n対策のヒント: 拡張を妨害し、地形を利用して一度に戦える敵の数を制限しましょう。
+[AINicowar-Summary]
+急速に拡張し、大軍で積極的に攻撃。
+[AINone-Profile]
+基本戦略: AIは命令を出しません。\n\n強み: 行動しないため予測しやすく、実験相手に適しています。\n\n弱点: 拡張も状況への対応もしません。
+[AINone-Summary]
+実験用の、何も行動しないコロニー。
+[AINumbi-Profile]
+基本戦略: 小規模かつ素早く拡張します。コロニー管理を練習しやすい相手です。\n\n強み: 経済と戦闘を一緒に学ぶ余裕を与えてくれます。\n\n対策のヒント: 経済を強化し、軍隊を訓練してから攻撃を仕掛けましょう。
+[AINumbi-Summary]
+小規模でも迅速な拡張が可能。
+[AIEcono-Profile]
+基本戦略: 攻撃はせず、巨大な拠点を築いて敵ユニットを積極的に味方へ転向させます。\n\n強み: 拡張と転向によって、通常の攻撃なしで圧力をかけます。\n\n対策のヒント: 序盤の余裕を使って発展し、転向させられる場所へユニットを送り込まないようにしましょう。
+[AIEcono-Summary]
+攻撃せず、巨大な拠点と敵ユニットの転向で対抗。
+[AIWarrush-Profile]
+基本戦略: 相手の準備が整う前に、素早く激しい攻撃を仕掛けます。\n\n強み: 無防備な拡張や軍備の遅れを突きます。\n\n対策のヒント: 経済を維持しながら最初の攻撃をしのぎ、その後に反撃しましょう。
+[AIWarrush-Summary]
+素早い攻撃で初期の防御力が試されます。
+[Algae]
+藻
+[Alliances]
+同盟
+[Beach size]
+砂浜の広さ
+[Blue]
+青
+[Brown]
+茶色
+[Built-in maps]
+内蔵マップ
+[Can change in game]
+ゲーム内で変更可能
+[Closed]
+参加しない
+[Colonies]
+コロニー
+[Colony]
+コロニー
+[Concrete islands]
+独立した島々
+[Conquest only]
+征服のみ
+[Conquest or prestige]
+征服または名声
+[Could not launch this map. Your setup is retained; try again.]
+このマップを起動できませんでした。設定は保持されます。もう一度やり直してください。
+[Could not load this map. Choose another map or retry.]
+このマップを読み込めませんでした。別のマップを選択するか、再試行してください。
+[Crater lakes]
+クレーター湖
+[Custom]
+カスタム
+[Custom teams]
+カスタムチーム
+[Cyan]
+シアン
+[Desert weight]
+砂漠の割合
+[Easy]
+簡単
+[Explore as you play]
+探索して地形を発見
+[Extra colony assignments are retained for larger maps.]
+入りきらないコロニーの設定は、より大きなマップに戻したときのために保持されます。
+[Extra islands]
+追加の島
+[FFA]
+個人戦
+[Fruit]
+フルーツ
+[Game Rules]
+ゲームルール
+[Game speed]
+ゲームスピード
+[Generate & play]
+生成して遊ぶ
+[Give at least one terrain type a nonzero weight.]
+少なくとも 1 つの地形タイプにゼロ以外の重みを与えます。
+[Grass weight]
+草地の割合
+[Gray]
+グレー
+[Green]
+緑
+[Hard]
+難しい
+[Height]
+高さ
+[Invalid colony count.]
+コロニー数が無効です。
+[Island size]
+島のサイズ
+[Islands]
+島々
+[Isles]
+小島
+[Lake density]
+湖の密度
+[Landscape]
+地形タイプ
+[Last colony standing]
+最後まで生き残るコロニー
+[Layout]
+レイアウト
+[Locked teams]
+チーム固定
+[Magenta]
+マゼンタ
+[Map]
+マップ
+[Map knowledge]
+地形の公開範囲
+[Match finished]
+試合終了
+[Medium]
+普通
+[Medium - Experimental]
+普通 - 実験段階
+[No AI orders]
+AIの命令なし
+[Old islands]
+旧式の島生成
+[Old random]
+旧式のランダム生成
+[Open at least one colony to start a match.]
+試合を始めるには、少なくとも1つのコロニーを参加させてください。
+[Open book]
+明らかになった世界
+[Pink]
+ピンク
+[Play this map]
+このマップをプレイする
+[Players & Teams]
+プレイヤーとチーム
+[Premade maps]
+既製のマップ
+[Preview ready. Start plays this exact map.]
+プレビューの準備ができました。ゲームを開始すると、この正確なマップが使用されます。
+[Purple]
+紫
+[Quick clash]
+クイックバトル
+[Random map]
+ランダムマップ
+[Red]
+赤
+[Repeat landscape]
+地形の繰り返し
+[Resources]
+資源
+[Restore standard rules]
+標準ルールを復元する
+[Revealed terrain does not reveal all enemy activity.]
+地形が明らかになったからといって、敵の活動がすべて明らかになるわけではありません。
+[River]
+川
+[River width]
+川幅
+[Sand weight]
+砂地の割合
+[Select a valid map.]
+有効なマップを選択してください。
+[Shared control needs a free controller slot (maximum 12).]
+共同操作には操作担当の空き枠が必要です（合計12枠まで）。
+[Smoothing]
+スムージング
+[Standard]
+標準
+[Start game]
+ゲームを開始する
+[Starting workers]
+初期ワーカー
+[Starting workers: Game Rules tab.]
+初期ワーカー: 「ゲーム ルール」タブ。
+[Swamp]
+沼地
+[Team]
+チーム
+[Terrain]
+地形
+[Terrain revealed]
+地形を最初から公開
+[Try a ruleset, then make it your own.]
+ルールセットを選び、好みに合わせて変更しましょう。
+[Victory]
+勝利
+[Watch game]
+観戦する
+[Water weight]
+水域の割合
+[White]
+白
+[Width]
+幅
+[Yellow]
+黄色
+[You]
+あなた
+[You + AI]
+あなた + AI
+[You and the AI both issue orders. Uses two controller slots.]
+あなたとAIの両方が命令を出します。操作担当を2枠使用します。
+[You vs all]
+あなた対全員
+[Your maps]
+自作マップ
+[colonies]
+コロニー
+[* Changed from standard.]
+※標準からの変更となります。
+[World & diplomacy]
+世界と外交
+[Starting conditions & pace]
+スタート条件とペース
+[Inactive]
+非アクティブ
+[8 workers / 2x speed]
+8 ワーカー / 2 倍速
+[Changes the pace of the whole simulation.]
+シミュレーション全体のペースを変更します。
+[Choose whether teams can change during the match.]
+試合中にチームを変更できるかどうかを選択します。
+[Classic colony building]
+伝統的なコロニー開発
+[Dimensions and colony count are set above.]
+寸法とコロニー数は上記で設定されています。
+[Generate & watch]
+生成して観戦
+[Info]
+情報
+[Map-defined starting units]
+マップで設定された初期ユニット
+[No maps in this library.]
+このライブラリにはマップがありません。
+[Premade maps retain their authored starting units.]
+既製マップでは、作者が設定した初期ユニットを使用します。
+[Premade: only speed changes (2x)]
+既製: 速度のみ変更 (2x)
+[Start with terrain known]
+既知の地形から始める
+[This colony will not join the match.]
+このコロニーは試合に参加しません。
+[This landscape uses a fixed terrain recipe.]
+この地形タイプでは地形の構成が固定されています。
+[This landscape uses fixed resource placement.]
+この地形タイプでは資源の配置が固定されています。
+[Win through conquest]
+征服によって勝利する
+[You control this colony.]
+あなたがこのコロニーを操作します。
+[controllers]
+操作担当
+[Use]
+選択
+[Lime]
+ライムグリーン
+[Teal]
+青緑
+[Azure]
+スカイブルー
+[Updating map preview...]
+マップ プレビューを更新しています...
+[Generation failed. Adjust settings or press Start to retry.]
+生成に失敗しました。設定を調整するか、「開始」を押して再試行してください。
+[Preview unavailable. Adjust settings or start to retry.]
+プレビューは利用できません。設定を変更するか、ゲームを起動してもう一度お試しください。
 [automatic torus view]
 自動トーラス表示
 [toggle torus view]
 2D／トーラス表示を切り替え
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2対2には参加するコロニーが4つ必要です。「あなた対全員」には人間のプレイヤーが必要です。
+[Alliance]
+同盟
+[Choose a rule to change it.]
+変更するルールを選択します。
+[Conquest only removes prestige victory; map scripts still apply.]
+「征服のみ」では名声による勝利を無効にします。マップのスクリプトは引き続き適用されます。
+[Control]
+操作
+[Controller]
+操作担当
+[Generate preview]
+プレビューの生成
+[Generation failed. Adjust settings or try again.]
+生成に失敗しました。設定を調整するか、もう一度試してください。
+[Map settings changed. Generate a new preview or start.]
+マップの設定が変更されました。新しいプレビューを生成するか開始します。
+[Map source]
+マップソース
+[Map-defined]
+マップの設定に従う
+[Match format]
+ゲーム形式
+[No current preview]
+現在のプレビューはありません
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+クイックバトル:2倍速。生成されたマップは 8 人のワーカーから始まります。
+[Reroll]
+別のマップを生成する
+[Ruleset]
+ルールセット
+[Select a map from the library.]
+ライブラリからマップを選択してください。
+[Starting workers affects generated maps only.]
+ワーカーの初期数は、生成されたマップにのみ適用されます。
+[Unavailable]
+利用不可
+[Use selection]
+このAIを選択
+[Quick clash on premade maps: only speed changes (2x).]
+既製マップでのクイックバトル：速度だけが2倍になります。
+[Generate a preview to explore this world.]
+この世界を探索するためのプレビューを生成します。
+[More workers jump-start colony growth. Changes the generated map.]
+働き手が増えるとコロニーの成長が加速します。この設定により、生成されるマップが変更されます。
+[No warriors]
+戦士なし
 [settings Add key to sequence]
 キーをシーケンスに追加
 [settings Add shortcut]

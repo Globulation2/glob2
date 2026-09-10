@@ -66,10 +66,10 @@ Fără IA
 Numbi se extinde la scară mică, dar rapid. Dificultate scăzută.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity nu atacă, dar construiește baze uriașe și convertește unități în număr mare. Dificultate scăzută.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo nu atacă, dar construiește baze uriașe și convertește unități în număr mare. Dificultate scăzută.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush atacă rapid și necruțător, aducând adesea jucătorul care se apără la limita înfrângerii. Dificultate medie.
 [AIWarrush]
@@ -261,7 +261,7 @@ Apărare
 [Delete game]
 Șterge jocul selectat
 [delete]
-Delete
+Ștergeți
 [desert]
 deșert
 [destroy building]
@@ -497,7 +497,7 @@ Se încarcă lista de hărți...
 [Lobby]
 Sală de așteptare
 [login]
-Login
+Autentificare
 [look around]
 Privește în jur
 [Lost : %0 has more prestige than you]
@@ -1217,7 +1217,7 @@ Viteză: 1x (multiplayer)
 [game speed help]
 Doar pentru un singur jucător și reluări. Jocurile multiplayer rulează la 1x.
 [AICortex-Description]
-Cortex - IA experimentală cu trei straturi. În dezvoltare.
+Cortex se extinde către noi câmpuri de grâu și trimite grupuri de războinici în luptă, sprijiniți de popasuri și spitale de lângă linia frontului. Dificultate medie. Experimental.
 [ERROR_CANT_LOAD_MAP]
 Harta nu a putut fi încărcată: fișierul este deteriorat sau are o versiune incompatibilă.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1228,10 +1228,338 @@ Cortex
 Înăuntru: %0
 [Units still working: %0]
 Încă lucrează: %0
+[2 vs 2]
+2 vs 2
+[AI strategy & counterplay]
+Strategia IA și contracarare
+[AICastor-Profile]
+Strategie: se extinde cu precauție și funcționează bine pe hărți cu puține resurse.\n\nPuncte forte: Expansiunea limitată este eficientă în jocurile cu resurse limitate.\n\nTactici de încercat: ocupați teritoriul devreme. Nu presupuneți că lipsa de resurse va slăbi această inteligență artificială.
+[AICastor-Summary]
+Extindere prudentă; funcţionează bine cu resurse limitate.
+[AICortex-Profile]
+Strategie: Gestionează proviziile de hrană, se extinde către noi câmpuri de grâu și adună grupuri succesive de războinici. Popasurile și spitalele de lângă linia frontului susțin atacuri departe de bază.\n\nPuncte forte: Trimite întăriri împreună, menține presiunea militară și reacționează la penuria de alimente.\n\nTactici de încercat: Luptă pentru controlul noilor lanuri de grâu și atacă clădirile de sprijin din apropierea liniei frontului. Atacă înainte ca grupurile sale de războinici să fie gata.\n\nIA experimentală. Dificultate medie; sugestiile tactice nu reprezintă evaluări din teste comparative.
+[AICortex-Summary]
+Se extinde având în vedere proviziile de hrană și își sprijină trupele atacatoare.
+[AINicowar-Profile]
+Strategie: se extinde rapid și atacă adversarii cu armate enorme.\n\nPuncte forte: Expansiunea rapidă sprijină atacuri militare agresive.\n\nTactici de încercat: Preveniți extinderea acestuia. Utilizați terenul pentru a reduce numărul de trupe inamice care pot lupta simultan.
+[AINicowar-Summary]
+Se extinde rapid și construiește armate mari pentru atacuri agresive.
+[AINone-Profile]
+Strategie: AI nu dă comenzi.\n\nPuncte forte: un adversar previzibil, inactiv pentru experimente.\n\nPuncte slabe: Nu se extinde sau nu se adaptează.
+[AINone-Summary]
+O colonie inactivă pentru experimente.
+[AINumbi-Profile]
+Strategie: se extinde rapid, dar la scară mică. Un adversar mai ușor pentru practicarea managementului coloniei.\n\nPuncte forte: Vă permite să învățați atât managementul economic, cât și lupta.\n\nTactici de încercat: dezvoltă o economie mai puternică și antrenează-ți armata înainte de a ataca.
+[AINumbi-Summary]
+Extindere rapidă la scară mică.
+[AIEcono-Profile]
+Strategie: Nu atacă, dar construiește baze enorme și transformă activ unitățile inamice în propria sa parte.\n\nPuncte forte: Expansiunea și conversia unităților amenință adversarii fără atacuri directe.\n\nTactici de încercat: Dezvoltați-vă colonia devreme și evitați trimiterea de unități unde inamicul le poate converti.
+[AIEcono-Summary]
+Baze uriașe și conversie în loc de atacuri.
+[AIWarrush-Profile]
+Strategie: atacă devreme și cu forță, înainte ca adversarii să termine pregătirea.\n\nPuncte forte: exploatează extinderea lipsită de apărare și pregătirea militară lentă.\n\nTactici de încercat: Supraviețuiește primului atac menținându-ți economia, apoi contraatacă.
+[AIWarrush-Summary]
+Atacuri rapide care vă testează apărarea timpurie.
+[Algae]
+Alge
+[Alliances]
+Alianţe
+[Beach size]
+Dimensiunea plajei
+[Blue]
+Albastru
+[Brown]
+Maro
+[Built-in maps]
+Hărți încorporate
+[Can change in game]
+Se poate schimba în joc
+[Closed]
+Închis
+[Colonies]
+Colonii
+[Colony]
+Colonie
+[Concrete islands]
+Insule separate
+[Conquest only]
+Doar cucerirea
+[Conquest or prestige]
+Cucerire sau prestigiu
+[Could not launch this map. Your setup is retained; try again.]
+Harta nu a putut fi pornită. Setările sunt păstrate; încercați din nou.
+[Could not load this map. Choose another map or retry.]
+Această hartă nu a putut fi încărcată. Alegeți o altă hartă sau încercați din nou.
+[Crater lakes]
+Lacuri de crater
+[Custom]
+Personalizat
+[Custom teams]
+Echipe personalizate
+[Cyan]
+Cian
+[Desert weight]
+Ponderea deșertului
+[Easy]
+Ușor
+[Explore as you play]
+Explorează în timp ce te joci
+[Extra colony assignments are retained for larger maps.]
+Atribuțiile suplimentare de colonie sunt păstrate pentru hărți mai mari.
+[Extra islands]
+Insule suplimentare
+[FFA]
+Toți împotriva tuturor
+[Fruit]
+Fructe
+[Game Rules]
+Reguli de joc
+[Game speed]
+Viteza jocului
+[Generate & play]
+Generați și jucați
+[Give at least one terrain type a nonzero weight.]
+Atribuiți cel puțin unui tip de teren o pondere diferită de zero.
+[Grass weight]
+Ponderea ierbii
+[Gray]
+Gri
+[Green]
+Verde
+[Hard]
+Dificil
+[Height]
+Înălțime
+[Invalid colony count.]
+Număr de colonii nevalid.
+[Island size]
+Dimensiunea insulei
+[Islands]
+Insulele
+[Isles]
+Insulițe
+[Lake density]
+Densitatea lacurilor
+[Landscape]
+Peisaj
+[Last colony standing]
+Ultima colonie supraviețuitoare
+[Layout]
+Dispunere
+[Locked teams]
+Echipe blocate
+[Magenta]
+Magenta
+[Map]
+Hartă
+[Map knowledge]
+Cunoașterea hărților
+[Match finished]
+Meciul terminat
+[Medium]
+Mediu
+[Medium - Experimental]
+Mediu - Experimental
+[No AI orders]
+Fără ordine IA
+[Old islands]
+Insule vechi
+[Old random]
+Vechi aleatoriu
+[Open at least one colony to start a match.]
+Deschide cel puțin o colonie pentru a începe un meci.
+[Open book]
+Lumea dezvăluită
+[Pink]
+Roz
+[Play this map]
+Joacă pe această hartă
+[Players & Teams]
+Jucători și echipe
+[Premade maps]
+Hărți prefabricate
+[Preview ready. Start plays this exact map.]
+Previzualizare gata. Pornirea jocului folosește exact această hartă.
+[Purple]
+Violet
+[Quick clash]
+Luptă rapidă
+[Random map]
+Hartă aleatorie
+[Red]
+Roșu
+[Repeat landscape]
+Repetarea peisajului
+[Resources]
+Resurse
+[Restore standard rules]
+Restabiliți regulile standard
+[Revealed terrain does not reveal all enemy activity.]
+Terenul dezvăluit nu dezvăluie toată activitatea inamicului.
+[River]
+Râu
+[River width]
+Lățimea râului
+[Sand weight]
+Ponderea nisipului
+[Select a valid map.]
+Selectați o hartă validă.
+[Shared control needs a free controller slot (maximum 12).]
+Controlul partajat necesită un loc liber pentru un jucător sau IA (maximum 12).
+[Smoothing]
+Netezire
+[Standard]
+Standard
+[Start game]
+Începe jocul
+[Starting workers]
+Muncitori inițiali
+[Starting workers: Game Rules tab.]
+Lucrători inițiali: fila Reguli de joc.
+[Swamp]
+Mlaștină
+[Team]
+Echipa
+[Terrain]
+Teren
+[Terrain revealed]
+Terenul dezvăluit
+[Try a ruleset, then make it your own.]
+Încearcă un set de reguli, apoi creează-l al tău.
+[Victory]
+Victorie
+[Watch game]
+Urmărește jocul
+[Water weight]
+Ponderea apei
+[White]
+Alb
+[Width]
+Lățime
+[Yellow]
+Galben
+[You]
+Tu
+[You + AI]
+Tu + IA
+[You and the AI both issue orders. Uses two controller slots.]
+Tu și IA puteți da ordine. Ocupă două locuri pentru jucători și IA.
+[You vs all]
+Tu împotriva tuturor
+[Your maps]
+Hărțile tale
+[colonies]
+colonii
+[* Changed from standard.]
+* Modificat de la standard.
+[World & diplomacy]
+Lumea și diplomația
+[Starting conditions & pace]
+Condiții de pornire și ritm
+[Inactive]
+Inactiv
+[8 workers / 2x speed]
+8 muncitori / 2x viteza
+[Changes the pace of the whole simulation.]
+Schimbă ritmul întregii simulări.
+[Choose whether teams can change during the match.]
+Alegeți dacă echipele se pot schimba în timpul meciului.
+[Classic colony building]
+Dezvoltarea tradițională a coloniei
+[Dimensions and colony count are set above.]
+Dimensiunile și numărul de colonii sunt stabilite mai sus.
+[Generate & watch]
+Generați și urmăriți
+[Info]
+Info
+[Map-defined starting units]
+Unități de pornire definite de hartă
+[No maps in this library.]
+Nu există hărți în această bibliotecă.
+[Premade maps retain their authored starting units.]
+Hărțile prefabricate își păstrează unitățile de pornire ale autorului.
+[Premade: only speed changes (2x)]
+Hartă existentă: se schimbă doar viteza (2x)
+[Start with terrain known]
+Începeți cu terenul cunoscut
+[This colony will not join the match.]
+Această colonie nu se va alătura meciului.
+[This landscape uses a fixed terrain recipe.]
+Acest peisaj folosește o rețetă de teren fix.
+[This landscape uses fixed resource placement.]
+Acest peisaj folosește plasarea fixă a resurselor.
+[Win through conquest]
+Câștigă prin cucerire
+[You control this colony.]
+Tu controlezi această colonie.
+[controllers]
+jucători și IA
+[Use]
+Selectați
+[Lime]
+Verde lime
+[Teal]
+Albastru-verzui
+[Azure]
+Albastru cer
+[Updating map preview...]
+Se actualizează previzualizarea hărții...
+[Generation failed. Adjust settings or press Start to retry.]
+Generarea a eșuat. Reglați setările sau apăsați Start pentru a reîncerca.
+[Preview unavailable. Adjust settings or start to retry.]
+Previzualizare indisponibilă. Schimbați setările sau lansați jocul pentru a încerca din nou.
 [automatic torus view]
 Vizualizare toroidală automată
 [toggle torus view]
 Comută vizualizarea 2D / toroidală
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 contra 2 necesită patru colonii deschise. Tu contra tuturor necesită un jucător uman.
+[Alliance]
+Alianță
+[Choose a rule to change it.]
+Alegeți o regulă pentru a o schimba.
+[Conquest only removes prestige victory; map scripts still apply.]
+Doar cucerirea dezactivează victoria prin prestigiu; scripturile hărții rămân active.
+[Control]
+Control
+[Controller]
+Controlată de
+[Generate preview]
+Generați previzualizare
+[Generation failed. Adjust settings or try again.]
+Generarea a eșuat. Ajustați setările sau încercați din nou.
+[Map settings changed. Generate a new preview or start.]
+Setările hărții au fost modificate. Generați o nouă previzualizare sau începeți.
+[Map source]
+Sursa hărții
+[Map-defined]
+Definit de hartă
+[Match format]
+Formatul jocului
+[No current preview]
+Nicio previzualizare curentă
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Luptă rapidă: viteză dublă; hărțile generate încep cu 8 lucrători.
+[Reroll]
+Generați o altă hartă
+[Ruleset]
+Set de reguli
+[Select a map from the library.]
+Selectați o hartă din bibliotecă.
+[Starting workers affects generated maps only.]
+Numărul inițial de lucrători se aplică numai hărților generate.
+[Unavailable]
+Indisponibil
+[Use selection]
+Utilizați selecția
+[Quick clash on premade maps: only speed changes (2x).]
+Luptă rapidă pe hărți prefabricate: doar viteza se schimbă (viteză dublă).
+[Generate a preview to explore this world.]
+Generați o previzualizare pentru a explora această lume.
+[More workers jump-start colony growth. Changes the generated map.]
+Mai mulți muncitori accelerează creșterea coloniei. Această setare modifică harta generată.
+[No warriors]
+Fără războinici
 [settings Add key to sequence]
 Adaugă tastă la secvență
 [settings Add shortcut]

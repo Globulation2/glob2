@@ -44,7 +44,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 	Sprite *bulletSprite = globalContainer->bullet;
 
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	int mapPixW=(map.getW())<<5;
 	int mapPixH=(map.getH())<<5;
@@ -135,7 +135,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				unsigned i0, i1, i2, i3;
 
 				Uint32 visibleTeams = teams[localTeam]->me;
-				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 				// first draw black
 				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
@@ -198,7 +198,7 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 			for (int x=0; x<width; x++)
 			{
 				Uint32 visibleTeams = teams[localTeam]->me;
-				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 				int rx=(x+viewportX-1+map.getW())%map.getW();
 				int ry=(y+viewportY-1+map.getH())%map.getH();

@@ -55,7 +55,7 @@ Castor는 신중하게 플레이하며 자원이 적은 지도에서 특히 강�
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex - 개발 중인 실험적 3계층 AI입니다.
+Cortex는 새로운 밀밭으로 확장하고 최전선 근처의 여관과 병원의 지원을 받아 전사 그룹을 전투에 보냅니다. 중간 난이도. 실험적입니다.
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -70,10 +70,10 @@ Nicowar
 Numbi - 소규모로 빠르게 확장합니다. 난이도: 쉬움.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - 공격하지 않지만 거대한 기지를 건설하고 적극적으로 유닛을 전향시킵니다. 난이도: 쉬움.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - 공격하지 않지만 거대한 기지를 건설하고 적극적으로 유닛을 전향시킵니다. 난이도: 쉬움.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - 빠르고 강력한 공격으로 방어하는 플레이어를 극한까지 몰아붙입니다. 난이도: 보통.
 [AIWarrush]
@@ -1224,10 +1224,338 @@ IP 주소가 일시적으로 차단되었습니다. 차단이 해제될 때까�
 내부: %0
 [Units still working: %0]
 작업 중: %0
+[2 vs 2]
+2 대 2
+[AI strategy & counterplay]
+AI 전략 및 대응
+[AICastor-Profile]
+전략: 신중하게 확장하고 자원가 적은 지도에서 잘 작동합니다.\n\n장점: 제한된 확장은 자원가 부족한 게임에서 효과적입니다.\n\n대응 제안: 일찍 영토를 점령하십시오. 자원 부족으로 인해 이 AI가 약화될 것이라고 가정하지 마십시오.
+[AICastor-Summary]
+조심스러운 확장; 부족한 자원으로도 잘 수행됩니다.
+[AICortex-Profile]
+전략: 식량 공급을 관리하고, 새로운 밀밭으로 확장하고, 연속적인 전사 그룹을 소집합니다. 최전선 근처의 여관과 병원은 기지에서 멀리 떨어진 공격을 지원합니다.\n\n강점: 증원군을 함께 보내고 군사적 압력을 유지하며 식량 부족에 대응합니다.\n\n대응 제안: 새로운 밀밭을 장악하기 위해 싸우고 최전선 근처의 지원 건물을 공격하십시오. 전사 그룹이 준비되기 전에 공격하세요.\n\n실험 단계의 AI입니다. 난이도는 중간입니다. 대응 제안은 성능 비교 평가가 아닙니다.
+[AICortex-Summary]
+식량을 확보하며 확장하고 지원을 갖춘 공격 부대를 연이어 보냅니다.
+[AINicowar-Profile]
+전략: 빠르게 확장하며 대규모 군대로 적을 공격합니다.\n\n강점: 빠른 확장을 바탕으로 강력한 군사적 압박을 가합니다.\n\n대응 제안: 확장을 견제하고 지형을 이용해 한 번에 교전할 수 있는 적의 수를 제한해 보세요.
+[AINicowar-Summary]
+빠르게 확장하고 대규모 군대로 적극적으로 공격합니다.
+[AINone-Profile]
+전략: AI는 명령을 내리지 않습니다.\n\n강점: 실험을 위한 예측 가능하고 활동적이지 않은 상대입니다.\n\n약점: 확장하거나 적응하지 못합니다.
+[AINone-Summary]
+실험용으로 사용할 수 있는, 행동하지 않는 식민지입니다.
+[AINumbi-Profile]
+전략: 빠르게 확장하지만 규모는 작습니다. 식민지 관리를 연습하기에 더 쉬운 상대입니다.\n\n강점: 경제 관리와 전투를 모두 배울 수 있습니다.\n\n대응 제안: 공격하기 전에 더 강력한 경제를 개발하고 군대를 훈련하십시오.
+[AINumbi-Summary]
+소규모로 빠른 확장이 가능합니다.
+[AIEcono-Profile]
+전략: 공격하지는 않지만, 거대한 기지를 건설하고 적극적으로 적 유닛을 아군으로 전환시킵니다.\n\n장점: 확장 및 유닛 전환은 직접적인 공격 없이도 상대를 위협합니다.\n\n대응 제안: 식민지를 조기에 개발하고 적군이 전환할 수 있는 곳에 유닛을 보내는 것을 피하십시오.
+[AIEcono-Summary]
+직접 공격 대신 거대한 기지와 적 유닛 전향으로 압박합니다.
+[AIWarrush-Profile]
+전략: 상대방이 준비를 마치기 전에 조기에 강력하게 공격합니다.\n\n강점: 무방비 확장과 느린 군사 준비를 이용합니다.\n\n대응 제안: 경제를 유지하면서 첫 번째 공격에서 살아남은 후 반격하십시오.
+[AIWarrush-Summary]
+초기 방어력을 테스트하는 빠른 공격입니다.
+[Algae]
+해조류
+[Alliances]
+동맹
+[Beach size]
+해변 크기
+[Blue]
+파랑
+[Brown]
+갈색
+[Built-in maps]
+내장된 지도
+[Can change in game]
+게임 내에서 변경 가능
+[Closed]
+참가 안 함
+[Colonies]
+식민지
+[Colony]
+식민지
+[Concrete islands]
+분리된 섬
+[Conquest only]
+정복 전용
+[Conquest or prestige]
+정복 또는 명성
+[Could not launch this map. Your setup is retained; try again.]
+이 지도를 실행할 수 없습니다. 귀하의 설정은 유지됩니다. 다시 시도해 보세요.
+[Could not load this map. Choose another map or retry.]
+이 지도를 로드할 수 없습니다. 다른 지도를 선택하거나 다시 시도하세요.
+[Crater lakes]
+분화구 호수
+[Custom]
+맞춤
+[Custom teams]
+맞춤형 팀
+[Cyan]
+청록색
+[Desert weight]
+사막 비중
+[Easy]
+쉬움
+[Explore as you play]
+플레이하면서 탐험해보세요
+[Extra colony assignments are retained for larger maps.]
+남은 식민지 설정은 더 큰 지도로 돌아올 때를 위해 보관됩니다.
+[Extra islands]
+추가 섬
+[FFA]
+개인전
+[Fruit]
+과일
+[Game Rules]
+게임 규칙
+[Game speed]
+게임 속도
+[Generate & play]
+생성 및 플레이
+[Give at least one terrain type a nonzero weight.]
+하나 이상의 지형 유형에 0이 아닌 가중치를 부여합니다.
+[Grass weight]
+초지 비중
+[Gray]
+그레이
+[Green]
+녹색
+[Hard]
+어려움
+[Height]
+높이
+[Invalid colony count.]
+잘못된 식민지 수입니다.
+[Island size]
+섬 크기
+[Islands]
+섬
+[Isles]
+작은 섬
+[Lake density]
+호수 밀도
+[Landscape]
+지형 유형
+[Last colony standing]
+마지막까지 살아남은 식민지
+[Layout]
+레이아웃
+[Locked teams]
+팀 고정
+[Magenta]
+마젠타
+[Map]
+지도
+[Map knowledge]
+지형 공개 범위
+[Match finished]
+경기 종료
+[Medium]
+중간
+[Medium - Experimental]
+중간 - 실험적
+[No AI orders]
+AI 명령 없음
+[Old islands]
+구형 섬 생성
+[Old random]
+구형 무작위 생성
+[Open at least one colony to start a match.]
+매치를 시작하려면 콜로니를 하나 이상 여세요.
+[Open book]
+드러난 세계
+[Pink]
+핑크
+[Play this map]
+이 지도를 플레이하세요
+[Players & Teams]
+플레이어 및 팀
+[Premade maps]
+미리 만들어진 지도
+[Preview ready. Start plays this exact map.]
+미리보기가 준비되었습니다. 게임을 시작할 때 이 정확한 지도를 사용합니다.
+[Purple]
+보라색
+[Quick clash]
+빠른 전투
+[Random map]
+무작위 지도
+[Red]
+빨간색
+[Repeat landscape]
+지형 반복
+[Resources]
+자원
+[Restore standard rules]
+표준 규칙 복원
+[Revealed terrain does not reveal all enemy activity.]
+공개된 지형은 적의 모든 활동을 공개하지 않습니다.
+[River]
+강
+[River width]
+강 폭
+[Sand weight]
+모래 비중
+[Select a valid map.]
+유효한 지도를 선택하세요.
+[Shared control needs a free controller slot (maximum 12).]
+공동 조종에는 조종자 자리가 하나 더 필요합니다(최대 12명).
+[Smoothing]
+스무딩
+[Standard]
+표준
+[Start game]
+게임 시작
+[Starting workers]
+초기 작업자
+[Starting workers: Game Rules tab.]
+초기 작업자: 게임 규칙 탭.
+[Swamp]
+늪
+[Team]
+팀
+[Terrain]
+지형
+[Terrain revealed]
+지형 공개
+[Try a ruleset, then make it your own.]
+규칙 세트를 사용해 보고 자신만의 것으로 만들어 보세요.
+[Victory]
+승리
+[Watch game]
+경기 보기
+[Water weight]
+물 비중
+[White]
+흰색
+[Width]
+폭
+[Yellow]
+노란색
+[You]
+당신
+[You + AI]
+당신 + AI
+[You and the AI both issue orders. Uses two controller slots.]
+플레이어와 AI가 모두 명령을 내립니다. 조종자 자리 2개를 사용합니다.
+[You vs all]
+나 대 모두
+[Your maps]
+내 지도
+[colonies]
+식민지
+[* Changed from standard.]
+* 표준에서 변경되었습니다.
+[World & diplomacy]
+세계와 외교
+[Starting conditions & pace]
+시작 조건 및 속도
+[Inactive]
+비활성
+[8 workers / 2x speed]
+작업자 8명 / 속도 2배
+[Changes the pace of the whole simulation.]
+전체 시뮬레이션의 속도를 변경합니다.
+[Choose whether teams can change during the match.]
+경기 중에 팀을 변경할 수 있는지 여부를 선택합니다.
+[Classic colony building]
+전통적인 식민지 개발
+[Dimensions and colony count are set above.]
+크기와 콜로니 수는 위에서 설정됩니다.
+[Generate & watch]
+생성 및 시청
+[Info]
+정보
+[Map-defined starting units]
+지도에 설정된 초기 유닛
+[No maps in this library.]
+이 목록에는 지도가 없습니다.
+[Premade maps retain their authored starting units.]
+미리 만들어진 지도는 제작된 시작 유닛을 유지합니다.
+[Premade: only speed changes (2x)]
+사전 제작: 속도 변경만 가능(2x)
+[Start with terrain known]
+알려진 지형부터 시작하세요
+[This colony will not join the match.]
+이 식민지는 경기에 참여하지 않습니다.
+[This landscape uses a fixed terrain recipe.]
+이 지형 유형은 지형 구성이 고정되어 있습니다.
+[This landscape uses fixed resource placement.]
+이 지형 유형은 자원 배치가 고정되어 있습니다.
+[Win through conquest]
+정복을 통해 승리하라
+[You control this colony.]
+당신은 이 식민지를 통제합니다.
+[controllers]
+조종자
+[Use]
+선택
+[Lime]
+라임 그린
+[Teal]
+청록색
+[Azure]
+하늘색
+[Updating map preview...]
+지도 미리보기 업데이트 중...
+[Generation failed. Adjust settings or press Start to retry.]
+생성에 실패했습니다. 설정을 조정하거나 시작을 눌러 다시 시도하세요.
+[Preview unavailable. Adjust settings or start to retry.]
+미리보기를 사용할 수 없습니다. 설정을 변경하거나 게임을 실행해 다시 시도해 보세요.
 [automatic torus view]
 자동 토러스 보기
 [toggle torus view]
 2D / 토러스 보기 전환
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 대 2에는 참가 식민지 4개가 필요합니다. 나 대 모두에는 인간 플레이어가 필요합니다.
+[Alliance]
+동맹
+[Choose a rule to change it.]
+변경하려면 규칙을 선택하세요.
+[Conquest only removes prestige victory; map scripts still apply.]
+정복 전용은 명성 승리만 비활성화합니다. 지도 스크립트는 계속 적용됩니다.
+[Control]
+조종
+[Controller]
+조종자
+[Generate preview]
+미리보기 생성
+[Generation failed. Adjust settings or try again.]
+생성에 실패했습니다. 설정을 조정하거나 다시 시도하세요.
+[Map settings changed. Generate a new preview or start.]
+지도 설정이 변경되었습니다. 새로운 미리보기를 생성하거나 시작하세요.
+[Map source]
+지도 소스
+[Map-defined]
+지도 설정에 따름
+[Match format]
+게임 형식
+[No current preview]
+현재 미리보기 없음
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+빠른 전투: 속도 2배; 생성된 맵은 8명의 작업자로 시작합니다.
+[Reroll]
+다른 지도 생성
+[Ruleset]
+규칙 세트
+[Select a map from the library.]
+라이브러리에서 지도를 선택하세요.
+[Starting workers affects generated maps only.]
+초기 작업자 수는 생성된 맵에만 적용됩니다.
+[Unavailable]
+이용 불가
+[Use selection]
+이 AI 선택
+[Quick clash on premade maps: only speed changes (2x).]
+미리 만들어진 지도에서의 빠른 전투: 속도만 변경됩니다(2배 속도).
+[Generate a preview to explore this world.]
+이 세계를 탐험하려면 미리보기를 생성하세요.
+[More workers jump-start colony growth. Changes the generated map.]
+더 많은 일꾼이 식민지 성장을 가속화합니다. 이 설정은 생성된 지도를 변경합니다.
+[No warriors]
+전사 없음
 [settings Add key to sequence]
 시퀀스에 키보드 키 추가
 [settings Add shortcut]

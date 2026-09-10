@@ -30,9 +30,9 @@ ai/echo/ManagementMisc.cpp
 ai/echo/ManagementOrderBase.cpp
 ai/echo/ManagementTracker.cpp
 ai/echo/MapInfo.cpp
-ai/echo/ReachToInfinity.cpp
-ai/echo/ReachToInfinityBuilding.cpp
-ai/echo/ReachToInfinityFlags.cpp
+ai/echo/Econo.cpp
+ai/echo/EconoBuilding.cpp
+ai/echo/EconoFlags.cpp
 ai/echo/SearchTools.cpp
 ai/AINames.cpp
 ai/nicowar/Attack.cpp
@@ -642,3 +642,9 @@ if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
     hiring_sources = [source for source in source_files if source != 'Glob2.cpp']
     hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
     local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))
+
+if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
+    custom_sources = [source for source in source_files if source != 'Glob2.cpp']
+    custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')
+    custom_test = local.Program('CustomGameSetupHarness', custom_sources)
+    local.Alias('custom-setup-test', custom_test)

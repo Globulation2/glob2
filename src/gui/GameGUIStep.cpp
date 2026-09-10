@@ -40,7 +40,7 @@ using std::static_pointer_cast;
 
 void GameGUI::moveFlag(int mx, int my, bool drop)
 {
-	if (globalContainer->replaying) return;
+	if (globalContainer->isViewingGame()) return;
 
 	int posX, posY;
 	Building* selBuild=selectionBuilding();
@@ -341,6 +341,17 @@ void GameGUI::checkWonConditions(void)
 {
 	if (hasEndOfGameDialogBeenShown || globalContainer->replaying)
 		return;
+
+    if(globalContainer->liveSpectating) {
+        for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
+            inGameMenu=IGM_END_OF_GAME;
+            gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Match finished]"),true));
+            hasEndOfGameDialogBeenShown=true;
+            miniMapPushed=false;
+            break;
+        }
+        return;
+    }
 
 	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
 	{

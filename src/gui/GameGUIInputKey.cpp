@@ -123,6 +123,25 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 				else if(key.sym==SDLK_MINUS || key.sym==SDLK_KP_MINUS)
 					action_t=GameGUIKeyActions::DecreaseGameSpeed;
 			}
+
+            if(globalContainer->liveSpectating) {
+                switch(action_t) {
+                case GameGUIKeyActions::DoNothing:
+                case GameGUIKeyActions::ShowMainMenu:
+                case GameGUIKeyActions::IterateSelection:
+                case GameGUIKeyActions::GoToEvent:
+                case GameGUIKeyActions::GoToHome:
+                case GameGUIKeyActions::PauseGame:
+                case GameGUIKeyActions::HardPause:
+                case GameGUIKeyActions::IncreaseGameSpeed:
+                case GameGUIKeyActions::DecreaseGameSpeed:
+                case GameGUIKeyActions::ToggleDrawUnitPaths:
+                case GameGUIKeyActions::ToggleDrawInformation:
+                case GameGUIKeyActions::ToggleDrawAccessibilityAids:
+                case GameGUIKeyActions::ViewHistory: break;
+                default: return;
+                }
+            }
 			switch(action_t)
 			{
 				case GameGUIKeyActions::DoNothing:
@@ -233,6 +252,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 				}
 				break;
 				case GameGUIKeyActions::PauseGame:
+                    if(globalContainer->liveSpectating){hardPause=!hardPause;break;}
 					orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
 					break;
 				case GameGUIKeyActions::HardPause:

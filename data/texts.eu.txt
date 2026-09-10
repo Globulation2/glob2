@@ -66,10 +66,10 @@ Bat ere ez
 Numbi gutxi hedatzen da, baina azkar. Zailtasun txikia.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinityk ez du erasotzen, baina base erraldoiak eraikitzen ditu eta unitate asko bere taldera erakartzen ditu. Zailtasun txikia.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econok ez du erasotzen, baina base erraldoiak eraikitzen ditu eta unitate asko bere taldera erakartzen ditu. Zailtasun txikia.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrushek azkar eta gogor erasotzen du, eta sarritan mugara eramaten du defendatzailea. Zailtasun ertaina.
 [AIWarrush]
@@ -1227,7 +1227,7 @@ Abiadura: 1x (hainbat jokalari)
 [game speed help]
 Jokalari bakarreko jokoetarako eta errepikapenetarako soilik. Jokalari anitzeko jokoak 1x abiaduran doaz.
 [AICortex-Description]
-Cortex - Hiru geruzako adimen artifizial esperimentala. Garatzen ari da.
+Cortex gari-soro berrietara hedatzen da eta gudari taldeak borrokara bidaltzen ditu, frontetik gertu dauden ostatu eta ospitaleek lagunduta. Zailtasun ertaina. Esperimentala.
 [ERROR_CANT_LOAD_MAP]
 Ezin izan da mapa kargatu: fitxategia hondatuta dago edo bertsioa bateraezina da.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1238,10 +1238,338 @@ Cortex
 Barruan: %0
 [Units still working: %0]
 Oraindik lanean: %0
+[2 vs 2]
+2ren aurka 2
+[AI strategy & counterplay]
+AI estrategia eta kontrajokoa
+[AICastor-Profile]
+Estrategia: zuhurtziaz hedatzen da eta baliabide gutxiko mapetan ondo moldatzen da.\n\nIndarguneak: hazkunde neurritsua egokia da baliabide urriko partidetarako.\n\nProbatzeko taktikak: hartu lurraldea goiz; ez pentsa baliabide faltak AI hau ahulduko duenik.
+[AICastor-Summary]
+Hedapen zuhurra; ondo funtzionatzen du baliabide urriekin.
+[AICortex-Profile]
+Estrategia: elikagaien hornidura kudeatzen du, gari-soro berrietara hedatzen da eta gudariak biltzen ditu eraso-bolada jarraituak egiteko. Fronteko ostatuek eta ospitaleek urruneko erasoei laguntzen diete.\n\nIndarguneak: errefortzuak taldean bidaltzen ditu, presioari eusten dio eta elikagai faltari erantzuten dio.\n\nProbatzeko taktikak: borrokatu gari-soro berriak eskuratzeko eta erasotu fronteko laguntza-eraikinak. Egin presioa eraso-boladak prest egon aurretik.\n\nAI esperimentala. Zailtasun ertaina; taktika-iradokizunak ez dira proben bidez neurtutako balorazioak.
+[AICortex-Summary]
+Elikagaien araberako hedapena eta lagundutako eraso-boladak.
+[AINicowar-Profile]
+Estrategia: azkar hazten da eta armada erraldoiak bidaltzen ditu aurkarien aurka.\n\nIndarguneak: hedapen azkarrak presio militar handia ahalbidetzen du.\n\nProbatzeko taktikak: oztopatu haren hedapena eta erabili lurra aldi berean borroka dezaketen etsaien kopurua mugatzeko.
+[AINicowar-Summary]
+Azkar hedatzen da eta armada handiak eraikitzen ditu eraso oldarkorretarako.
+[AINone-Profile]
+Estrategia: AIak ez du agindurik ematen.\n\nIndarguneak: esperimentuetarako aurkari aurreikusgarria eta inaktiboa.\n\nAhuleziak: Ez da zabaltzen edo egokitzen.
+[AINone-Summary]
+Esperimentuetarako kolonia inaktiboa.
+[AINumbi-Profile]
+Estrategia: azkar hedatzen da baina eskala txikian. Kolonien kudeaketa praktikatzeko aurkari errazagoa.\n\nIndarguneak: kudeaketa ekonomikoa eta borroka ikasteko aukera ematen dizu.\n\nIradokitako kontrako jokua: garatu ekonomia indartsuagoa eta entrenatu zure armada erasotu aurretik.
+[AINumbi-Summary]
+Hedapen azkarra eskala txikian.
+[AIEcono-Profile]
+Estrategia: ez du erasotzen, baina base erraldoiak eraikitzen ditu eta etsaien unitateak bere aldera bihurtzen ditu.\n\nIndarguneak: hazkundeak eta unitateen bihurketak presioa sortzen dute eraso arruntik gabe.\n\nProbatzeko taktikak: aprobetxatu hasiera zure kolonia garatzeko, eta ez bidali unitateak etsaiak bihur ditzakeen tokietara.
+[AIEcono-Summary]
+Oinarri erraldoiak eta erasoen ordez bihurketa.
+[AIWarrush-Profile]
+Estrategia: goiz eta gogor erasotzen du, aurkariek prestaketak amaitu aurretik.\n\nIndarguneak: defentsarik gabeko hedapena eta prestaketa militar motela aprobetxatzen ditu.\n\nProbatzeko taktikak: eutsi lehen erasoari ekonomia mantenduz, eta gero kontraerasoa egin.
+[AIWarrush-Summary]
+Zure hasierako defentsak probatzen dituzten eraso azkarrak.
+[Algae]
+algak
+[Alliances]
+Aliantzak
+[Beach size]
+Hondartzaren tamaina
+[Blue]
+Urdina
+[Brown]
+Marroia
+[Built-in maps]
+Barneko mapak
+[Can change in game]
+Jokoan alda daiteke
+[Closed]
+Itxita
+[Colonies]
+Koloniak
+[Colony]
+Kolonia
+[Concrete islands]
+Uharte bereiziak
+[Conquest only]
+Konkista bakarrik
+[Conquest or prestige]
+Konkista edo prestigioa
+[Could not launch this map. Your setup is retained; try again.]
+Ezin izan da mapa hau abiarazi. Zure konfigurazioa mantentzen da; saiatu berriro.
+[Could not load this map. Choose another map or retry.]
+Ezin izan da mapa hau kargatu. Aukeratu beste mapa bat edo saiatu berriro.
+[Crater lakes]
+Krater lakuak
+[Custom]
+Pertsonalizatua
+[Custom teams]
+Talde pertsonalizatuak
+[Cyan]
+Zian
+[Desert weight]
+Basamortuko pisua
+[Easy]
+Erraza
+[Explore as you play]
+Arakatu jolasten duzun bitartean
+[Extra colony assignments are retained for larger maps.]
+Kolonia gehigarriak mapa handiagoetarako gordetzen dira.
+[Extra islands]
+Uharte gehigarriak
+[FFA]
+Denak denen aurka
+[Fruit]
+Fruta
+[Game Rules]
+Joko Arauak
+[Game speed]
+Jokoaren abiadura
+[Generate & play]
+Sortu eta jolastu
+[Give at least one terrain type a nonzero weight.]
+Eman gutxienez lur mota bati zero ez den pisua.
+[Grass weight]
+Belar pisua
+[Gray]
+Grisa
+[Green]
+Berdea
+[Hard]
+Zaila
+[Height]
+Altuera
+[Invalid colony count.]
+Kolonia-zenbaketa baliogabea.
+[Island size]
+Uhartearen tamaina
+[Islands]
+Uharteak
+[Isles]
+Uhartetxoak
+[Lake density]
+Lakuen dentsitatea
+[Landscape]
+Paisaia
+[Last colony standing]
+Zutik dagoen azken kolonia
+[Layout]
+Diseinua
+[Locked teams]
+Talde blokeatuak
+[Magenta]
+Magenta
+[Map]
+Mapa
+[Map knowledge]
+Maparen ezagutza
+[Match finished]
+Partidua amaitu da
+[Medium]
+Ertaina
+[Medium - Experimental]
+Ertaina - Esperimentala
+[No AI orders]
+Ez dago AI komandorik
+[Old islands]
+Uharte zaharrak
+[Old random]
+Ausazko zaharra
+[Open at least one colony to start a match.]
+Ireki gutxienez kolonia bat partida bat hasteko.
+[Open book]
+Agerian dagoen mundua
+[Pink]
+Arrosa
+[Play this map]
+Jokatu mapa honetan
+[Players & Teams]
+Jokalariak eta taldeak
+[Premade maps]
+Aurrez egindako mapak
+[Preview ready. Start plays this exact map.]
+Aurrebista prest. Jokoa hastean mapa zehatz hau erabiltzen da.
+[Purple]
+Morea
+[Quick clash]
+Borroka azkarra
+[Random map]
+Ausazko mapa
+[Red]
+Gorria
+[Repeat landscape]
+Errepikatu paisaia
+[Resources]
+Baliabideak
+[Restore standard rules]
+Arau estandarrak berreskuratu
+[Revealed terrain does not reveal all enemy activity.]
+Agerian dagoen lursailak ez du etsaien jarduera guztiak erakusten.
+[River]
+Erreka
+[River width]
+Ibaiaren zabalera
+[Sand weight]
+Harea pisua
+[Select a valid map.]
+Hautatu baliozko mapa bat.
+[Shared control needs a free controller slot (maximum 12).]
+Kontrol partekatuak giza edo AI jokalari batentzako leku libre bat behar du (gehienez 12).
+[Smoothing]
+Leuntzea
+[Standard]
+Estandarra
+[Start game]
+Hasi jokoa
+[Starting workers]
+Hasierako langileak
+[Starting workers: Game Rules tab.]
+Hasierako langileak: Joko Arauak fitxa.
+[Swamp]
+Padura
+[Team]
+Taldea
+[Terrain]
+Lurra
+[Terrain revealed]
+Lurra agerian
+[Try a ruleset, then make it your own.]
+Saiatu arau multzo bat, eta egin ezazu zeurea.
+[Victory]
+Garaipena
+[Watch game]
+Ikusi jokoa
+[Water weight]
+Uraren pisua
+[White]
+Zuria
+[Width]
+Zabalera
+[Yellow]
+Horia
+[You]
+Zuk
+[You + AI]
+Zuk + AI
+[You and the AI both issue orders. Uses two controller slots.]
+Zuk eta AIk aginduak ematen dituzue. Bi jokalari-leku erabiltzen ditu.
+[You vs all]
+Zu denen aurka
+[Your maps]
+Zure mapak
+[colonies]
+koloniak
+[* Changed from standard.]
+* Estandarretik aldatuta.
+[World & diplomacy]
+Mundua eta diplomazia
+[Starting conditions & pace]
+Hasierako baldintzak eta erritmoa
+[Inactive]
+Inaktibo
+[8 workers / 2x speed]
+8 langile / 2x abiadura
+[Changes the pace of the whole simulation.]
+Simulazio osoaren erritmoa aldatzen du.
+[Choose whether teams can change during the match.]
+Aukeratu partidan zehar taldeak alda daitezkeen ala ez.
+[Classic colony building]
+Koloniaren garapen tradizionala
+[Dimensions and colony count are set above.]
+Dimentsioak eta kolonia kopurua goian ezartzen dira.
+[Generate & watch]
+Sortu eta ikusi
+[Info]
+Info
+[Map-defined starting units]
+Mapek definitutako hasierako unitateak
+[No maps in this library.]
+Liburutegi honetan ez dago maparik.
+[Premade maps retain their authored starting units.]
+Aurrez egindako mapek beren egilearen hasierako unitateak gordetzen dituzte.
+[Premade: only speed changes (2x)]
+Aurrez egina: abiadura aldaketak bakarrik (2x)
+[Start with terrain known]
+Hasi lurra ezagututa
+[This colony will not join the match.]
+Kolonia hau ez da partidan sartuko.
+[This landscape uses a fixed terrain recipe.]
+Paisaia honek lur finkoko errezeta erabiltzen du.
+[This landscape uses fixed resource placement.]
+Paisaia honek baliabide finkoen kokapena erabiltzen du.
+[Win through conquest]
+Irabazi konkistaren bidez
+[You control this colony.]
+Kolonia hau kontrolatzen duzu.
+[controllers]
+giza eta AI jokalariak
+[Use]
+Hautatu
+[Lime]
+Lima berdea
+[Teal]
+Urdin berdexka
+[Azure]
+Zeru urdina
+[Updating map preview...]
+Maparen aurrebista eguneratzen...
+[Generation failed. Adjust settings or press Start to retry.]
+Maparen sorrerak huts egin du. Doitu ezarpenak edo sakatu Hasi berriro saiatzeko.
+[Preview unavailable. Adjust settings or start to retry.]
+Aurrebista ez dago erabilgarri. Aldatu ezarpenak edo abiarazi jokoa berriro saiatzeko.
 [automatic torus view]
 Toroide-ikuspegi automatikoa
 [toggle torus view]
 Aldatu 2D eta toroide-ikuspegien artean
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2ren aurka 2 aukerak lau kolonia ireki behar ditu. Zu denen aurka aukerak giza jokalari bat behar du.
+[Alliance]
+Aliantza
+[Choose a rule to change it.]
+Aukeratu arau bat aldatzeko.
+[Conquest only removes prestige victory; map scripts still apply.]
+Konkista soilik lortutako garaipenak prestigiozko garaipena desgaitzen du; mapa-gidoiak oraindik ere aplikatzen dira.
+[Control]
+Kolonien kontrola
+[Controller]
+Kolonia kontrolatzailea
+[Generate preview]
+Sortu aurrebista
+[Generation failed. Adjust settings or try again.]
+Maparen sorrerak huts egin du. Doitu ezarpenak edo saiatu berriro.
+[Map settings changed. Generate a new preview or start.]
+Maparen ezarpenak aldatu dira. Sortu aurrebista berri bat edo hasi.
+[Map source]
+Maparen iturria
+[Map-defined]
+Mapak zehaztuta
+[Match format]
+Joko formatua
+[No current preview]
+Ez dago oraingo aurrebistarik
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Borroka azkarra: abiadura bikoitza; sortutako mapak 8 langilerekin hasten dira.
+[Reroll]
+Sortu beste mapa bat
+[Ruleset]
+Arau multzoa
+[Select a map from the library.]
+Hautatu liburutegiko mapa bat.
+[Starting workers affects generated maps only.]
+Hasierako langile kopurua sortutako mapei soilik aplikatzen zaie.
+[Unavailable]
+Ez dago erabilgarri
+[Use selection]
+Erabili hautapena
+[Quick clash on premade maps: only speed changes (2x).]
+Aurrez egindako mapetan borroka azkarra: abiadura bakarrik aldatzen da (abiadura bikoitza).
+[Generate a preview to explore this world.]
+Sortu aurrebista mundu hau esploratzeko.
+[More workers jump-start colony growth. Changes the generated map.]
+Langile gehiagok koloniaren hazkundea bizkortzen dute. Ezarpen honek sortutako mapa aldatzen du.
+[No warriors]
+Gudaririk gabe
 [settings Add key to sequence]
 Gehitu tekla sekuentziari
 [settings Add shortcut]

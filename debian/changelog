@@ -285,7 +285,7 @@ glob2 (0.8.21-1) unstable; urgency=low
     - Synced the amount of teams that can be placed on a map automatically.
     - Completely revamped map editor with better end-user experience.
     - New AI system codenamed Echo for better and easier AI development.
-    - New economic AI using Echo called ReachToInfinity.
+    - New economic AI using Echo called Econo.
     - New war-based AI called WarRush.
     - Brand new language formatting system which will make it easier for
       developers in the future.

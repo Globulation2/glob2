@@ -48,7 +48,7 @@ bool MenuColony::load(const std::string& path)
 		auto loaded = std::make_unique<Game>(nullptr);
 		if (!loaded->load(&input) || loaded->mapHeader.getNumberOfTeams() != 1 ||
 			loaded->gameHeader.getNumberOfPlayers() != 1 || !loaded->players[0] ||
-			!loaded->players[0]->ai || loaded->players[0]->ai->implementationID != AI::REACHTOINFINITY)
+			!loaded->players[0]->ai || loaded->players[0]->ai->implementationID != AI::ECONO)
 			throw std::runtime_error("incompatible menu colony");
 		std::istringstream state(input.readText("rng") + " ");
 		if (!(state >> randomGenerator)) throw std::runtime_error("invalid colony RNG");

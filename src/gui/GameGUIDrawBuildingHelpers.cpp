@@ -181,7 +181,7 @@ void GameGUI::drawBuildingWorkingControls(Building* selBuild, BuildingType* buil
 		if (selBuild->buildingState==Building::ALIVE)
 		{
 			// If we're replaying, display the actual number, not the locally cached one (changeable by the gui user)
-			const int maxUnitsWorking = (globalContainer->replaying?selBuild->maxUnitWorking:displayedMaxUnitWorking(*selBuild));
+			const int maxUnitsWorking = (globalContainer->isViewingGame()?selBuild->maxUnitWorking:displayedMaxUnitWorking(*selBuild));
 
 			std::string working = Toolkit::getStringTable()->getString("[working]");
 			const int len = globalContainer->littleFont->getStringWidth(working)+4;
@@ -221,7 +221,7 @@ void GameGUI::drawBuildingPriorityControls(Building* selBuild, BuildingType* bui
 		return;
 
 	// If we're replaying, display the actual value, not the locally cached one (changeable by the gui user)
-	const int priority = (globalContainer->replaying?selBuild->priority:displayedPriority(*selBuild));
+	const int priority = (globalContainer->isViewingGame()?selBuild->priority:displayedPriority(*selBuild));
 
 	ypos += YOFFSET_B_SEP;
 
@@ -253,7 +253,7 @@ void GameGUI::drawBuildingRangeControls(Building* selBuild, BuildingType* buildi
 	if ((selBuild->owner->allies)&(1<<localTeamNo))
 	{
 		// If we're replaying, display the actual number, not the locally cached one (changeable by the gui user)
-		const int unitStayRange = (globalContainer->replaying?selBuild->unitStayRange:displayedUnitStayRange(*selBuild));
+		const int unitStayRange = (globalContainer->isViewingGame()?selBuild->unitStayRange:displayedUnitStayRange(*selBuild));
 
 		std::string range = Toolkit::getStringTable()->getString("[range]");
 		const int len = globalContainer->littleFont->getStringWidth(range)+4;

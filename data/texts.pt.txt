@@ -66,10 +66,10 @@ Nenhuma
 Numbi expande-se pouco, mas depressa. Dificuldade baixa.
 [AINumbi]
 IANumbi
-[AIReachToInfinity-Description]
-ReachToInfinity não ataca, mas constrói bases enormes e converte unidades de forma agressiva. Dificuldade baixa.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo não ataca, mas constrói bases enormes e converte unidades de forma agressiva. Dificuldade baixa.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush ataca depressa e com força, levando frequentemente o defensor ao limite. Dificuldade média.
 [AIWarrush]
@@ -503,7 +503,7 @@ A carregar a lista de mapas...
 [Lobby]
 Sala de espera
 [login]
-Login
+Entrar
 [look around]
 Olhar em redor
 [Lost : %0 has more prestige than you]
@@ -1223,7 +1223,7 @@ Velocidade: 1x (multijogador)
 [game speed help]
 Apenas para um jogador e repetições. As partidas multijogador decorrem a 1x.
 [AICortex-Description]
-Cortex - IA experimental de três camadas. Em desenvolvimento.
+Cortex se expande em direção a novos campos de trigo e envia grupos de guerreiros para a batalha, apoiados por tabernas e hospitais próximos à linha de frente. Dificuldade média. Experimental.
 [ERROR_CANT_LOAD_MAP]
 Não foi possível carregar o mapa: o ficheiro está danificado ou a sua versão é incompatível.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1234,10 +1234,338 @@ Cortex
 Dentro: %0
 [Units still working: %0]
 Ainda a trabalhar: %0
+[2 vs 2]
+2 contra 2
+[AI strategy & counterplay]
+Estratégia e contra-jogo de IA
+[AICastor-Profile]
+Estratégia: Expande com cautela e funciona bem em mapas com poucos recursos.\n\nPontos fortes: A expansão limitada é eficaz em jogos com recursos escassos.\n\nTáticas a experimentar: ocupar o território antecipadamente. Não presuma que a falta de recursos enfraquecerá esta IA.
+[AICastor-Summary]
+Expansão cautelosa; funciona bem com recursos escassos.
+[AICortex-Profile]
+Estratégia: Gere o abastecimento de alimentos, expande-se para novos campos de trigo e reúne sucessivos grupos de guerreiros. Tabernas e hospitais próximos à linha de frente apoiam ataques longe da base.\n\nPontos fortes: Envia reforços em conjunto, mantém a pressão militar e reage à escassez de alimentos.\n\nTáticas a experimentar: Lute pelo controlo de novos campos de trigo e ataque seus edifícios de apoio próximos à linha de frente. Ataque antes que seus grupos de guerreiros estejam prontos.\n\nIA experimental. Dificuldade média; as sugestões táticas não são avaliações baseadas em testes comparativos.
+[AICortex-Summary]
+Expansão atenta aos alimentos e ondas de ataque apoiadas.
+[AINicowar-Profile]
+Estratégia: Expande-se rapidamente e ataca adversários com exércitos enormes.\n\nPontos fortes: A rápida expansão apoia ataques militares agressivos.\n\nTáticas a experimentar: Impedir sua expansão. Use o terreno para reduzir o número de tropas inimigas que podem lutar ao mesmo tempo.
+[AINicowar-Summary]
+Expande-se rapidamente e constrói grandes exércitos para ataques agressivos.
+[AINone-Profile]
+Estratégia: A IA não dá comandos.\n\nPontos fortes: Um oponente previsível e inativo para experiências.\n\nFraquezas: Não se expande nem se adapta.
+[AINone-Summary]
+Uma colónia ociosa para experiências.
+[AINumbi-Profile]
+Estratégia: Expande-se rapidamente, mas em pequena escala. Um oponente mais fácil para praticar o gestão de colónias.\n\nPontos fortes: Permite aprender gestão económica e combate.\n\nTáticas a experimentar: Desenvolva uma economia mais forte e treine seu exército antes de atacar.
+[AINumbi-Summary]
+Expansão rápida em pequena escala.
+[AIEcono-Profile]
+Estratégia: Não ataca, mas constrói bases enormes e converte ativamente as unidades inimigas para o seu próprio lado.\n\nPontos fortes: A expansão e a conversão de unidades ameaçam os oponentes sem ataques diretos.\n\nTáticas a experimentar: Desenvolva sua colónia antecipadamente e evite enviar unidades onde o inimigo possa convertê-las.
+[AIEcono-Summary]
+Enormes bases e conversão em vez de ataques.
+[AIWarrush-Profile]
+Estratégia: Ataca cedo e com força, antes que os oponentes terminem de se preparar.\n\nPontos fortes: Explora a expansão sem defesa e a lenta preparação militar.\n\nTáticas a experimentar: Sobreviva ao primeiro ataque enquanto mantém sua economia e depois contra-ataque.
+[AIWarrush-Summary]
+Ataques rápidos que testam suas defesas iniciais.
+[Algae]
+algas
+[Alliances]
+Alianças
+[Beach size]
+Tamanho da praia
+[Blue]
+Azul
+[Brown]
+Castanho
+[Built-in maps]
+Mapas integrados
+[Can change in game]
+Pode mudar no jogo
+[Closed]
+Fechado
+[Colonies]
+Colónias
+[Colony]
+Colónia
+[Concrete islands]
+Ilhas separadas
+[Conquest only]
+Apenas conquista
+[Conquest or prestige]
+Conquista ou prestígio
+[Could not launch this map. Your setup is retained; try again.]
+Não foi possível iniciar este mapa. Sua configuração é mantida; tente novamente.
+[Could not load this map. Choose another map or retry.]
+Não foi possível carregar este mapa. Escolha outro mapa ou tente novamente.
+[Crater lakes]
+Lagos de cratera
+[Custom]
+Personalizado
+[Custom teams]
+Equipas personalizadas
+[Cyan]
+Ciano
+[Desert weight]
+Peso do deserto
+[Easy]
+Fácil
+[Explore as you play]
+Explore enquanto você joga
+[Extra colony assignments are retained for larger maps.]
+Atribuições de colónias extras são mantidas para mapas maiores.
+[Extra islands]
+Ilhas extras
+[FFA]
+Todos contra todos
+[Fruit]
+Fruta
+[Game Rules]
+Regras do jogo
+[Game speed]
+Velocidade do jogo
+[Generate & play]
+Gerar e jogar
+[Give at least one terrain type a nonzero weight.]
+Dê a pelo menos um tipo de terreno um peso diferente de zero.
+[Grass weight]
+Peso da erva
+[Gray]
+Cinza
+[Green]
+Verde
+[Hard]
+Difícil
+[Height]
+Altura
+[Invalid colony count.]
+Contagem de colónias inválida.
+[Island size]
+Tamanho da ilha
+[Islands]
+Ilhas
+[Isles]
+Ilhéus
+[Lake density]
+Densidade de lagos
+[Landscape]
+Paisagem
+[Last colony standing]
+Última colónia em pé
+[Layout]
+Disposição
+[Locked teams]
+Equipas fixas
+[Magenta]
+Magenta
+[Map]
+Mapa
+[Map knowledge]
+Conhecimento do mapa
+[Match finished]
+Partida encerrada
+[Medium]
+Médio
+[Medium - Experimental]
+Médio - Experimental
+[No AI orders]
+Sem ordens da IA
+[Old islands]
+Ilhas (gerador antigo)
+[Old random]
+Aleatório (gerador antigo)
+[Open at least one colony to start a match.]
+Abra pelo menos uma colónia para iniciar uma partida.
+[Open book]
+Mundo revelado
+[Pink]
+Rosa
+[Play this map]
+Jogue este mapa
+[Players & Teams]
+Jogadores e equipas
+[Premade maps]
+Mapas prontos
+[Preview ready. Start plays this exact map.]
+Visualização pronta. Iniciar o jogo usa exatamente este mapa.
+[Purple]
+Roxo
+[Quick clash]
+Batalha rápida
+[Random map]
+Mapa aleatório
+[Red]
+Vermelho
+[Repeat landscape]
+Repetir paisagem
+[Resources]
+Recursos
+[Restore standard rules]
+Restaurar regras padrão
+[Revealed terrain does not reveal all enemy activity.]
+O terreno revelado não revela toda a atividade inimiga.
+[River]
+Rio
+[River width]
+Largura do rio
+[Sand weight]
+Peso da areia
+[Select a valid map.]
+Selecione um mapa válido.
+[Shared control needs a free controller slot (maximum 12).]
+O controlo partilhado requer uma vaga para um jogador humano ou IA (máximo 12).
+[Smoothing]
+Suavização
+[Standard]
+Padrão
+[Start game]
+Iniciar jogo
+[Starting workers]
+Trabalhadores iniciais
+[Starting workers: Game Rules tab.]
+Trabalhadores iniciais: separador Regras do jogo.
+[Swamp]
+Pântano
+[Team]
+Equipa
+[Terrain]
+Terreno
+[Terrain revealed]
+Terreno revelado
+[Try a ruleset, then make it your own.]
+Experimente um conjunto de regras e depois crie o seu próprio.
+[Victory]
+Vitória
+[Watch game]
+Assistir ao jogo
+[Water weight]
+Peso da água
+[White]
+Branco
+[Width]
+Largura
+[Yellow]
+Amarelo
+[You]
+Tu
+[You + AI]
+Tu + IA
+[You and the AI both issue orders. Uses two controller slots.]
+Tu e a IA dão ordens. Ocupa duas vagas de jogador.
+[You vs all]
+Tu contra todos
+[Your maps]
+Os teus mapas
+[colonies]
+colónias
+[* Changed from standard.]
+* Alterado em relação ao padrão.
+[World & diplomacy]
+Mundo e diplomacia
+[Starting conditions & pace]
+Condições iniciais e ritmo
+[Inactive]
+Inativo
+[8 workers / 2x speed]
+8 trabalhadores / velocidade 2x
+[Changes the pace of the whole simulation.]
+Altera o ritmo de toda a simulação.
+[Choose whether teams can change during the match.]
+Escolha se as equipas podem mudar durante a partida.
+[Classic colony building]
+Desenvolvimento de colónia tradicional
+[Dimensions and colony count are set above.]
+As dimensões e a contagem de colónias estão definidas acima.
+[Generate & watch]
+Gerar e assistir
+[Info]
+Informações
+[Map-defined starting units]
+Unidades iniciais definidas no mapa
+[No maps in this library.]
+Não há mapas nesta biblioteca.
+[Premade maps retain their authored starting units.]
+Os mapas prontos mantêm as unidades iniciais escolhidas pelo autor.
+[Premade: only speed changes (2x)]
+Mapa pronto: só a velocidade muda (2x)
+[Start with terrain known]
+Comece com terreno conhecido
+[This colony will not join the match.]
+Esta colónia não entrará na partida.
+[This landscape uses a fixed terrain recipe.]
+Esta paisagem usa uma composição fixa de terreno.
+[This landscape uses fixed resource placement.]
+Este cenário usa posicionamento fixo de recursos.
+[Win through conquest]
+Ganhe através da conquista
+[You control this colony.]
+Tu controlas esta colónia.
+[controllers]
+jogadores humanos e IA
+[Use]
+Selecione
+[Lime]
+Verde limão
+[Teal]
+Azul-petróleo
+[Azure]
+Azul-celeste
+[Updating map preview...]
+A atualizar a pré-visualização do mapa...
+[Generation failed. Adjust settings or press Start to retry.]
+A geração falhou. Ajuste as configurações ou pressione Iniciar para tentar novamente.
+[Preview unavailable. Adjust settings or start to retry.]
+Visualização indisponível. Altere as configurações ou inicie o jogo para tentar novamente.
 [automatic torus view]
 Vista toroidal automática
 [toggle torus view]
 Alternar vista 2D / toroidal
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 contra 2 requer quatro colónias abertas. Tu contra todos requer um jogador humano.
+[Alliance]
+Aliança
+[Choose a rule to change it.]
+Escolha uma regra para alterá-la.
+[Conquest only removes prestige victory; map scripts still apply.]
+A vitória apenas por conquista desativa a vitória por prestígio; scripts de mapa ainda se aplicam.
+[Control]
+Controlo da colónia
+[Controller]
+Controlada por
+[Generate preview]
+Gerar visualização
+[Generation failed. Adjust settings or try again.]
+A geração falhou. Ajuste as configurações ou tente novamente.
+[Map settings changed. Generate a new preview or start.]
+As configurações do mapa foram alteradas. Gere uma nova visualização ou inicie.
+[Map source]
+Fonte do mapa
+[Map-defined]
+Definido pelo mapa
+[Match format]
+Formato de jogo
+[No current preview]
+Nenhuma visualização atual
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Batalha rápida: velocidade dupla; os mapas gerados começam com 8 trabalhadores.
+[Reroll]
+Gere outro mapa
+[Ruleset]
+Conjunto de regras
+[Select a map from the library.]
+Selecione um mapa da biblioteca.
+[Starting workers affects generated maps only.]
+O número inicial de trabalhadores aplica-se apenas aos mapas gerados.
+[Unavailable]
+Indisponível
+[Use selection]
+Usar seleção
+[Quick clash on premade maps: only speed changes (2x).]
+Batalha rápida em mapas prontos: apenas a velocidade muda (velocidade dupla).
+[Generate a preview to explore this world.]
+Gere uma prévia para explorar este mundo.
+[More workers jump-start colony growth. Changes the generated map.]
+Mais trabalhadores aceleram o crescimento das colónias. Esta configuração altera o mapa gerado.
+[No warriors]
+Sem guerreiros
 [settings Add key to sequence]
 Adicionar tecla à sequência
 [settings Add shortcut]

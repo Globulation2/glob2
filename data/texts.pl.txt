@@ -66,10 +66,10 @@ AINone
 Numbi - Rozszerza się lekko i szybko. Mała trudność.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Nie atakuje, ale buduje ogromne bazy i agresywnie konwertuje jednostki. Mała trudność.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Nie atakuje, ale buduje ogromne bazy i agresywnie konwertuje jednostki. Mała trudność.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Atakuje szybko i skutecznie, często spychając broniącego się gracza na straconą pozycję. Średnia trudność.
 [AIWarrush]
@@ -499,7 +499,7 @@ Wczytuję Listę Map...
 [Lobby]
 Korytarz
 [login]
-Login
+Zaloguj się
 [look around]
 Rozejrzyj się
 [Lost : %0 has more prestige than you]
@@ -1219,7 +1219,7 @@ Szybkość: 1x (gra sieciowa)
 [game speed help]
 Tylko gra jednoosobowa i powtórki. Gra wieloosobowa działa z szybkością 1x.
 [AICortex-Description]
-Cortex - Eksperymentalna trójwarstwowa SI. W trakcie rozwoju.
+Cortex rozszerza się w kierunku nowych pól pszenicy i wysyła do bitwy grupy wojowników, wspieranych przez gospody i szpitale w pobliżu linii frontu. Średni poziom trudności. Eksperymentalny.
 [ERROR_CANT_SAVE_CAMPAIGN]
 Nie można zapisać kampanii. Sprawdź, czy folder docelowy istnieje, jest dostępny do zapisu i ma wolne miejsce.
 [AICortex]
@@ -1228,10 +1228,338 @@ Cortex
 Wewnątrz: %0
 [Units still working: %0]
 Nadal pracują: %0
+[2 vs 2]
+2 na 2
+[AI strategy & counterplay]
+Strategia SI i przeciwdziałanie
+[AICastor-Profile]
+Strategia: rozwija się ostrożnie i dobrze radzi sobie na mapach z niewielką ilością zasobów.\n\nMocne strony: Ograniczona ekspansja jest skuteczna w grach z ograniczonymi zasobami.\n\nJak przeciwdziałać: Zajmij terytorium wcześnie. Nie zakładaj, że brak zasobów osłabi tę sztuczną inteligencję.
+[AICastor-Summary]
+Ostrożna ekspansja; radzi sobie dobrze przy ograniczonych zasobach.
+[AICortex-Profile]
+Strategia: Zarządza zapasami żywności, rozszerza się w kierunku nowych pól pszenicy i gromadzi kolejne grupy wojowników. Gospody i szpitale w pobliżu linii frontu wspierają ataki z dala od bazy.\n\nMocne strony: Wysyła posiłki w grupach, utrzymuje presję militarną i reaguje na niedobory żywności.\n\nJak przeciwdziałać: Walcz o kontrolę nad nowymi polami pszenicy i atakuj ich budynki pomocnicze w pobliżu linii frontu. Atakuj, zanim grupy wojowników będą gotowe.\n\nEksperymentalna SI. Średni poziom trudności; sugestie przeciwdziałania nie są ocenami z testów porównawczych.
+[AICortex-Summary]
+Rozwija się z myślą o zapasach żywności i wspiera atakujące oddziały.
+[AINicowar-Profile]
+Strategia: Szybko się rozwija i atakuje przeciwników ogromnymi armiami.\n\nMocne strony: Szybka ekspansja wspiera agresywne ataki militarne.\n\nJak przeciwdziałać: Zapobiegnij jego ekspansji. Wykorzystaj teren, aby zmniejszyć liczbę oddziałów wroga, które mogą walczyć jednocześnie.
+[AINicowar-Summary]
+Szybko się rozwija i buduje duże armie do agresywnych ataków.
+[AINone-Profile]
+Strategia: AI nie wydaje żadnych poleceń.\n\nMocne strony: Przewidywalny, nieaktywny przeciwnik do eksperymentów.\n\nSłabe strony: Nie rozwija się i nie dostosowuje.
+[AINone-Summary]
+Bezczynna kolonia do eksperymentów.
+[AINumbi-Profile]
+Strategia: Rozwija się szybko, ale na małą skalę. Łatwiejszy przeciwnik do ćwiczenia zarządzania kolonią.\n\nMocne strony: Pozwala nauczyć się zarówno zarządzania ekonomicznego, jak i walki.\n\nJak przeciwdziałać: Rozwiń silniejszą gospodarkę i wytrenuj swoją armię przed atakiem.
+[AINumbi-Summary]
+Szybka rozbudowa na małą skalę.
+[AIEcono-Profile]
+Strategia: Nie atakuje, ale buduje ogromne bazy i aktywnie konwertuje jednostki wroga na swoją stronę.\n\nMocne strony: Ekspansja i konwersja jednostek zagrażają przeciwnikom bez bezpośrednich ataków.\n\nJak przeciwdziałać: Rozwijaj swoją kolonię już na wczesnym etapie i unikaj wysyłania jednostek tam, gdzie wróg może je skonwertować.
+[AIEcono-Summary]
+Ogromne bazy i konwersja zamiast ataków.
+[AIWarrush-Profile]
+Strategia: Atakuje wcześnie i mocno, zanim przeciwnicy zakończą przygotowania.\n\nMocne strony: Wykorzystuje niebronioną ekspansję i powolne przygotowanie wojskowe.\n\nJak przeciwdziałać: Przetrwaj pierwszy atak, utrzymując gospodarkę, a następnie kontratakuj.
+[AIWarrush-Summary]
+Szybkie ataki, które sprawdzają twoją wczesną obronę.
+[Algae]
+Algi
+[Alliances]
+Sojusze
+[Beach size]
+Rozmiar plaży
+[Blue]
+Niebieski
+[Brown]
+Brązowy
+[Built-in maps]
+Wbudowane mapy
+[Can change in game]
+Możliwość zmiany w grze
+[Closed]
+Zamknięte
+[Colonies]
+Kolonie
+[Colony]
+Kolonia
+[Concrete islands]
+Oddzielne wyspy
+[Conquest only]
+Tylko podbój
+[Conquest or prestige]
+Podbój lub prestiż
+[Could not launch this map. Your setup is retained; try again.]
+Nie można uruchomić tej mapy. Twoja konfiguracja zostanie zachowana; spróbuj ponownie.
+[Could not load this map. Choose another map or retry.]
+Nie udało się wczytać tej mapy. Wybierz inną mapę lub spróbuj ponownie.
+[Crater lakes]
+Jeziora kraterowe
+[Custom]
+Niestandardowe
+[Custom teams]
+Własne drużyny
+[Cyan]
+Cyjan
+[Desert weight]
+Waga pustyni
+[Easy]
+Łatwy
+[Explore as you play]
+Eksploruj podczas gry
+[Extra colony assignments are retained for larger maps.]
+Dodatkowe przydziały kolonii są zachowywane w przypadku większych map.
+[Extra islands]
+Dodatkowe wyspy
+[FFA]
+Wszyscy przeciwko wszystkim
+[Fruit]
+Owoce
+[Game Rules]
+Zasady gry
+[Game speed]
+Szybkość gry
+[Generate & play]
+Generuj i graj
+[Give at least one terrain type a nonzero weight.]
+Nadaj co najmniej jednemu typowi terenu wagę niezerową.
+[Grass weight]
+Waga trawy
+[Gray]
+Szary
+[Green]
+Zielony
+[Hard]
+Trudny
+[Height]
+Wysokość
+[Invalid colony count.]
+Nieprawidłowa liczba kolonii.
+[Island size]
+Rozmiar wyspy
+[Islands]
+Wyspy
+[Isles]
+Wyspy
+[Lake density]
+Gęstość jezior
+[Landscape]
+Krajobraz
+[Last colony standing]
+Ostatnia ocalała kolonia
+[Layout]
+Układ
+[Locked teams]
+Stałe drużyny
+[Magenta]
+Magenta
+[Map]
+Mapa
+[Map knowledge]
+Znajomość mapy
+[Match finished]
+Mecz zakończony
+[Medium]
+Średni
+[Medium - Experimental]
+Średni - eksperymentalny
+[No AI orders]
+Bez rozkazów SI
+[Old islands]
+Stare wyspy
+[Old random]
+Stary losowy
+[Open at least one colony to start a match.]
+Otwórz co najmniej jedną kolonię, aby rozpocząć mecz.
+[Open book]
+Odkryty świat
+[Pink]
+Różowy
+[Play this map]
+Graj na tej mapie
+[Players & Teams]
+Gracze i drużyny
+[Premade maps]
+Gotowe mapy
+[Preview ready. Start plays this exact map.]
+Podgląd gotowy. Rozpoczęcie gry korzysta z dokładnie tej mapy.
+[Purple]
+Fioletowy
+[Quick clash]
+Szybka bitwa
+[Random map]
+Losowa mapa
+[Red]
+Czerwony
+[Repeat landscape]
+Powtarzanie krajobrazu
+[Resources]
+Zasoby
+[Restore standard rules]
+Przywróć standardowe zasady
+[Revealed terrain does not reveal all enemy activity.]
+Odkryty teren nie ujawnia całej aktywności wroga.
+[River]
+Rzeka
+[River width]
+Szerokość rzeki
+[Sand weight]
+Waga piasku
+[Select a valid map.]
+Wybierz prawidłową mapę.
+[Shared control needs a free controller slot (maximum 12).]
+Wspólne sterowanie wymaga wolnego miejsca dla gracza lub SI (maksymalnie 12).
+[Smoothing]
+Wygładzanie
+[Standard]
+Standardowe
+[Start game]
+Rozpocznij grę
+[Starting workers]
+Początkowi pracownicy
+[Starting workers: Game Rules tab.]
+Początkowi pracownicy: zakładka Zasady gry.
+[Swamp]
+Bagno
+[Team]
+Drużyna
+[Terrain]
+Teren
+[Terrain revealed]
+Teren ujawniony
+[Try a ruleset, then make it your own.]
+Wypróbuj zestaw reguł, a następnie stwórz własny.
+[Victory]
+Zwycięstwo
+[Watch game]
+Obejrzyj grę
+[Water weight]
+Waga wody
+[White]
+Biały
+[Width]
+Szerokość
+[Yellow]
+Żółty
+[You]
+Ty
+[You + AI]
+Ty + SI
+[You and the AI both issue orders. Uses two controller slots.]
+Ty i SI możecie wydawać rozkazy. Zajmuje dwa miejsca dla graczy i SI.
+[You vs all]
+Ty przeciwko wszystkim
+[Your maps]
+Twoje mapy
+[colonies]
+kolonie
+[* Changed from standard.]
+* Zmieniono w stosunku do standardu.
+[World & diplomacy]
+Świat i dyplomacja
+[Starting conditions & pace]
+Warunki początkowe i tempo
+[Inactive]
+Nieaktywny
+[8 workers / 2x speed]
+8 pracowników / 2x prędkość
+[Changes the pace of the whole simulation.]
+Zmienia tempo całej symulacji.
+[Choose whether teams can change during the match.]
+Wybierz, czy drużyny mogą zmieniać się w trakcie meczu.
+[Classic colony building]
+Tradycyjny rozwój kolonii
+[Dimensions and colony count are set above.]
+Wymiary i liczbę kolonii podano powyżej.
+[Generate & watch]
+Generuj i oglądaj
+[Info]
+Informacje
+[Map-defined starting units]
+Jednostki początkowe zdefiniowane na mapie
+[No maps in this library.]
+Brak map w tej bibliotece.
+[Premade maps retain their authored starting units.]
+Gotowe mapy zachowują swoje autorskie jednostki początkowe.
+[Premade: only speed changes (2x)]
+Gotowa mapa: zmienia się tylko prędkość (2x)
+[Start with terrain known]
+Zacznij od znanego terenu
+[This colony will not join the match.]
+Ta kolonia nie dołączy do meczu.
+[This landscape uses a fixed terrain recipe.]
+Ten krajobraz wykorzystuje ustalony przepis na teren.
+[This landscape uses fixed resource placement.]
+W tym krajobrazie zastosowano stałe rozmieszczenie zasobów.
+[Win through conquest]
+Wygraj poprzez podbój
+[You control this colony.]
+Kontrolujesz tę kolonię.
+[controllers]
+gracze i SI
+[Use]
+Wybierz
+[Lime]
+Limonkowa zieleń
+[Teal]
+Ciemny turkus
+[Azure]
+Błękit nieba
+[Updating map preview...]
+Aktualizowanie podglądu mapy...
+[Generation failed. Adjust settings or press Start to retry.]
+Generacja nie powiodła się. Dostosuj ustawienia lub naciśnij przycisk Start, aby spróbować ponownie.
+[Preview unavailable. Adjust settings or start to retry.]
+Podgląd niedostępny. Zmień ustawienia lub uruchom grę, aby spróbować ponownie.
 [automatic torus view]
 Automatyczny widok torusa
 [toggle torus view]
 Przełącz widok 2D / torusa
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 na 2 wymaga czterech otwartych kolonii. Ty przeciw wszystkim wymaga gracza ludzkiego.
+[Alliance]
+Sojusz
+[Choose a rule to change it.]
+Wybierz regułę, aby ją zmienić.
+[Conquest only removes prestige victory; map scripts still apply.]
+Zwycięstwo oparte wyłącznie na podboju uniemożliwia zwycięstwo prestiżowe; Skrypty map nadal obowiązują.
+[Control]
+Sterowanie
+[Controller]
+Steruje
+[Generate preview]
+Wygeneruj podgląd
+[Generation failed. Adjust settings or try again.]
+Generacja nie powiodła się. Dostosuj ustawienia lub spróbuj ponownie.
+[Map settings changed. Generate a new preview or start.]
+Ustawienia mapy zostały zmienione. Wygeneruj nowy podgląd lub rozpocznij.
+[Map source]
+Źródło mapy
+[Map-defined]
+Zdefiniowane na mapie
+[Match format]
+Format gry
+[No current preview]
+Brak aktualnego podglądu
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Szybka bitwa: podwójna prędkość; wygenerowane mapy zaczynają się od 8 pracowników.
+[Reroll]
+Wygeneruj kolejną mapę
+[Ruleset]
+Zestaw reguł
+[Select a map from the library.]
+Wybierz mapę z biblioteki.
+[Starting workers affects generated maps only.]
+Początkowa liczba pracowników dotyczy tylko wygenerowanych map.
+[Unavailable]
+Niedostępne
+[Use selection]
+Użyj wyboru
+[Quick clash on premade maps: only speed changes (2x).]
+Szybka bitwa na gotowych mapach: zmienia się tylko prędkość (podwójna prędkość).
+[Generate a preview to explore this world.]
+Wygeneruj podgląd, aby poznać ten świat.
+[More workers jump-start colony growth. Changes the generated map.]
+Więcej robotnic przyspiesza rozwój kolonii. To ustawienie zmienia wygenerowaną mapę.
+[No warriors]
+Bez wojowników
 [settings Add key to sequence]
 Dodaj klawisz do sekwencji
 [settings Add shortcut]

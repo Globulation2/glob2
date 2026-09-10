@@ -145,7 +145,7 @@ void generate(const char* path)
 	GameHeader header;
 	header.setNumberOfPlayers(1);
 	header.setRandomSeed(481516);
-	header.getBasePlayer(0)=BasePlayer(0,"Menu colony",0,BasePlayer::playerTypeFromImplementationID(AI::REACHTOINFINITY));
+	header.getBasePlayer(0)=BasePlayer(0,"Menu colony",0,BasePlayer::playerTypeFromImplementationID(AI::ECONO));
 	header.getWinningConditions().clear();
 	game.setGameHeader(header);
 	game.setAlliances();
@@ -229,6 +229,17 @@ public:
 		this->execute(globalContainer->gfx,40);
 		require(GAGGUI::Style::style==before,"screen execution restores theme");
 	}
+	void executeKeyboardCancellation()
+	{
+		prepare();
+		SDL_Event event{}; event.type=SDL_KEYDOWN; event.key.keysym.sym=SDLK_ESCAPE;
+		SDL_PushEvent(&event);
+		auto* before=GAGGUI::Style::style;
+		const int code=this->execute(globalContainer->gfx,40);
+		require(code==T::CANCEL,"keyboard cancellation returns to menu");
+		require(GAGGUI::Style::style==before,"screen execution restores theme");
+	}
+	int result() const { return GAGGUI::Screen::returnCode; }
 	void executeEscape()
 	{
 		prepare();
@@ -238,7 +249,6 @@ public:
 		this->execute(globalContainer->gfx,40);
 		require(GAGGUI::Style::style==before,"screen execution restores theme");
 	}
-	int result() const { return this->returnCode; }
 private:
 	bool prepared=false;
 };
@@ -275,7 +285,13 @@ void capture(const std::string& name,const std::string& path)
 		gui.localTeamNo=0; gui.localPlayer=0; gui.adjustLocalTeam();
 		Preview<EndGameScreen> s(&gui); s.render(); s.checkBounds();
 	}
-	else if(name=="custom") { Preview<CustomGameScreen> s; s.selectFirstListItem(); s.render(); s.checkBounds(); }
+	else if(name=="custom" || name=="custom-players" || name=="custom-rules")
+	{
+		Preview<CustomGameScreen> s; s.prepare();
+		if(name=="custom-players") s.activateGroup(1);
+		if(name=="custom-rules") s.activateGroup(2);
+		s.render(); s.checkBounds();
+	}
 	else require(false,"unknown screen");
 	DrawableSurface shot(globalContainer->gfx->getW(),globalContainer->gfx->getH());
 	shot.drawSurface(0,0,globalContainer->gfx);
@@ -432,8 +448,8 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 			require(dialog.endValue==LoadSaveScreen::CANCEL,"replay dialog cancellation");
 			Preview<CustomGameScreen> custom; custom.selectFirstListItem(); custom.render();
 			require(custom.getMapHeader().getNumberOfTeams()>0,"map selection loads teams");
-			custom.clickButton(ChooseMapScreen::CANCEL);
-			require(custom.result()==ChooseMapScreen::CANCEL,"custom game cancellation");
+			key.key.keysym.sym=SDLK_ESCAPE; custom.dispatchEvents(&key);
+			require(custom.result()==CustomGameScreen::CANCEL,"custom game cancellation");
 		}
 		std::cout << "PASS: presentation, bounded text, timing, isolation, determinism, scoped style, fallback\n";
 		return 0;
@@ -497,7 +513,7 @@ std::cout << "global_assets_ms=" << std::chrono::duration<double,std::milli>(std
 		{ Preview<CampaignMainMenu> s; s.executeCancellation(); }
 		{ Preview<CampaignSelectorScreen> s; s.executeCancellation(); }
 		{ Preview<CampaignMenuScreen> s("campaigns/Tutorial_Campaign.txt"); s.executeCancellation(); }
-		{ Preview<CustomGameScreen> s; s.selectFirstListItem(); s.executeCancellation(); }
+		{ Preview<CustomGameScreen> s; s.selectFirstListItem(); s.executeKeyboardCancellation(); }
 		{ Preview<ChooseMapScreen> s("games","game",true); s.executeCancellation(); }
 		{ Preview<SettingsScreen> s; s.executeEscape(); }
 		{ Preview<EditorMainMenu> s; s.executeCancellation(); }

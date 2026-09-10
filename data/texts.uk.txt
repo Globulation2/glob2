@@ -55,7 +55,7 @@ Castor грає обережно й добре дає собі раду на м�
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex — експериментальний трирівневий ШІ. Ще розробляється.
+Кортекс розширюється до нових пшеничних полів і посилає групи воїнів у бій за підтримки їдалень і лікарень поблизу лінії фронту. Середня складність. Експериментальний.
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -70,10 +70,10 @@ Nicowar
 Numbi — розвивається скромно, але швидко. Низька складність.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity — не атакує, але будує величезні бази й активно переманює істот. Низька складність.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo — не атакує, але будує величезні бази й активно переманює істот. Низька складність.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush — атакує рано й потужно, часто змушуючи гравця оборонятися з останніх сил. Середня складність.
 [AIWarrush]
@@ -1224,10 +1224,338 @@ Ysagoon Online Gaming
 Усередині: %0
 [Units still working: %0]
 Ще працюють: %0
+[2 vs 2]
+2 проти 2
+[AI strategy & counterplay]
+Стратегія штучного інтелекту та контргра
+[AICastor-Profile]
+Стратегія: розширюється обережно та добре працює на картах з невеликою кількістю ресурсів.\n\nСильні сторони: обмежене розширення ефективне в іграх з обмеженими ресурсами.\n\nПропонована контргра: займіть територію раніше. Не думайте, що брак ресурсів послабить цей ШІ.
+[AICastor-Summary]
+Обережне розширення; добре працює з обмеженими ресурсами.
+[AICortex-Profile]
+Стратегія: керує запасами їжі, розширюється до нових пшеничних полів і збирає послідовні групи воїнів. Їдальні та лікарні поблизу лінії фронту підтримують атаки далеко від бази.\n\nСильні сторони: надсилає підкріплення групами, підтримує військовий тиск і реагує на нестачу їжі.\n\nПропонована протидія: боріться за контроль над новими пшеничними полями та атакуйте їх допоміжні будівлі поблизу лінії фронту. Атакуйте, перш ніж його групи воїнів будуть готові.\n\nЕкспериментальний ШІ. Середня складність; поради щодо протидії не є оцінками за результатами порівняльних тестів.
+[AICortex-Summary]
+Розширюється з огляду на запаси їжі та підтримує атакуючі війська.
+[AINicowar-Profile]
+Стратегія: швидко розширюється і атакує супротивників величезними арміями.\n\nСильні сторони: Швидке розширення підтримує агресивні військові атаки.\n\nПропонована протидія: стримуйте його розширення. Використовуйте місцевість, щоб зменшити кількість ворожих військ, які можуть одночасно битися.
+[AINicowar-Summary]
+Швидко розширюється та створює великі армії для агресивних атак.
+[AINone-Profile]
+Стратегія: ШІ не дає команд.\n\nСильні сторони: передбачуваний, неактивний суперник для експериментів.\n\nСлабкі сторони: не розширюється та не адаптується.
+[AINone-Summary]
+Бездіяльна колонія для експериментів.
+[AINumbi-Profile]
+Стратегія: швидко розширюється, але в невеликому масштабі. Простіший супротивник для практики управління колонією.\n\nСильні сторони: дозволяє навчитися як економічному менеджменту, так і бою.\n\nПропонована протидія: розвивайте сильнішу економіку та тренуйте свою армію перед нападом.
+[AINumbi-Summary]
+Швидке розширення в невеликих масштабах.
+[AIEcono-Profile]
+Стратегія: не атакує, але будує величезні бази та активно переманює ворожих юнітів на свій бік.\n\nСильні сторони: розширення та переманювання юнітів загрожують супротивникам без прямих атак.\n\nПропонована контргра: розвивайте свою колонію на ранній стадії та уникайте надсилання підрозділів туди, де ворог може їх переманити.
+[AIEcono-Summary]
+Величезні бази та конверсія замість атак.
+[AIWarrush-Profile]
+Стратегія: атакує рано і сильно, перш ніж супротивники закінчать підготовку.\n\nСильні сторони: використовує незахищене розширення та повільну військову підготовку.\n\nРекомендована контргра: переживіть першу атаку, зберігаючи свою економіку, а потім контратакуйте.
+[AIWarrush-Summary]
+Швидкі атаки, які перевіряють ваш ранній захист.
+[Algae]
+Водорості
+[Alliances]
+Союзи
+[Beach size]
+Розмір пляжу
+[Blue]
+Синій
+[Brown]
+Коричневий
+[Built-in maps]
+Вбудовані карти
+[Can change in game]
+Може змінюватися в грі
+[Closed]
+Закрито
+[Colonies]
+Колонії
+[Colony]
+Колонія
+[Concrete islands]
+Окремі острови
+[Conquest only]
+Тільки завоювання
+[Conquest or prestige]
+Завоювання чи престиж
+[Could not launch this map. Your setup is retained; try again.]
+Не вдалося запустити цю карту. Ваші налаштування збережено; спробуйте ще раз.
+[Could not load this map. Choose another map or retry.]
+Не вдалося завантажити цю карту. Виберіть іншу карту або повторіть спробу.
+[Crater lakes]
+Кратерні озера
+[Custom]
+Власні
+[Custom teams]
+Власні команди
+[Cyan]
+Блакитний
+[Desert weight]
+Вага пустелі
+[Easy]
+Легкий
+[Explore as you play]
+Досліджуйте під час гри
+[Extra colony assignments are retained for larger maps.]
+Додаткові призначення колоній зберігаються для великих карт.
+[Extra islands]
+Додаткові острови
+[FFA]
+Всі проти всіх
+[Fruit]
+Фрукти
+[Game Rules]
+Правила гри
+[Game speed]
+Швидкість гри
+[Generate & play]
+Створити й грати
+[Give at least one terrain type a nonzero weight.]
+Надайте принаймні одному типу рельєфу ненульову вагу.
+[Grass weight]
+Вага трави
+[Gray]
+Сірий
+[Green]
+Зелений
+[Hard]
+Складний
+[Height]
+Висота
+[Invalid colony count.]
+Недійсна кількість колоній.
+[Island size]
+Розмір острова
+[Islands]
+Острови
+[Isles]
+Острівці
+[Lake density]
+Щільність озер
+[Landscape]
+Ландшафт
+[Last colony standing]
+Остання вціліла колонія
+[Layout]
+Розташування
+[Locked teams]
+Заблоковані команди
+[Magenta]
+Маджента
+[Map]
+Карта
+[Map knowledge]
+Знання карти
+[Match finished]
+Матч закінчено
+[Medium]
+Середній
+[Medium - Experimental]
+Середній – Експериментальний
+[No AI orders]
+Без команд ШІ
+[Old islands]
+Старі острови
+[Old random]
+Старий випадковий
+[Open at least one colony to start a match.]
+Відкрийте принаймні одну колонію, щоб почати матч.
+[Open book]
+Розкритий світ
+[Pink]
+Рожевий
+[Play this map]
+Грати на цій карті
+[Players & Teams]
+Гравці та команди
+[Premade maps]
+Готові карти
+[Preview ready. Start plays this exact map.]
+Попередній перегляд готовий. Початок гри використовує саме цю карту.
+[Purple]
+Фіолетовий
+[Quick clash]
+Швидкий бій
+[Random map]
+Випадкова карта
+[Red]
+Червоний
+[Repeat landscape]
+Повторення ландшафту
+[Resources]
+Ресурси
+[Restore standard rules]
+Відновити стандартні правила
+[Revealed terrain does not reveal all enemy activity.]
+Виявлена місцевість не виявляє всієї активності противника.
+[River]
+Річка
+[River width]
+Ширина річки
+[Sand weight]
+Вага піску
+[Select a valid map.]
+Виберіть дійсну карту.
+[Shared control needs a free controller slot (maximum 12).]
+Спільне керування потребує вільного місця для гравця або ШІ (не більше 12).
+[Smoothing]
+Згладжування
+[Standard]
+Стандартний
+[Start game]
+Почати гру
+[Starting workers]
+Початкові робітники
+[Starting workers: Game Rules tab.]
+Початкові працівники: вкладка Правила гри.
+[Swamp]
+Болото
+[Team]
+Команда
+[Terrain]
+Рельєф місцевості
+[Terrain revealed]
+Розкрито місцевість
+[Try a ruleset, then make it your own.]
+Спробуйте набір правил, а потім створіть його самостійно.
+[Victory]
+Перемога
+[Watch game]
+Дивитися гру
+[Water weight]
+Вага води
+[White]
+Білий
+[Width]
+Ширина
+[Yellow]
+Жовтий
+[You]
+Ви
+[You + AI]
+Ви + ШІ
+[You and the AI both issue orders. Uses two controller slots.]
+Ви та ШІ можете віддавати накази. Займає два місця для гравців і ШІ.
+[You vs all]
+Ви проти всіх
+[Your maps]
+Ваші карти
+[colonies]
+колонії
+[* Changed from standard.]
+* Змінено зі стандартного.
+[World & diplomacy]
+Світ і дипломатія
+[Starting conditions & pace]
+Стартові умови та темп
+[Inactive]
+Неактивний
+[8 workers / 2x speed]
+8 працівників / 2x швидкість
+[Changes the pace of the whole simulation.]
+Змінює темп усієї симуляції.
+[Choose whether teams can change during the match.]
+Виберіть, чи можна змінювати команди під час матчу.
+[Classic colony building]
+Традиційний розвиток колонії
+[Dimensions and colony count are set above.]
+Розміри та кількість колоній встановлюються вище.
+[Generate & watch]
+Створити й дивитися
+[Info]
+Інформація
+[Map-defined starting units]
+Початкові юніти, визначені картою
+[No maps in this library.]
+У цій бібліотеці немає карт.
+[Premade maps retain their authored starting units.]
+Готові карти зберігають початкових юнітів, заданих автором.
+[Premade: only speed changes (2x)]
+Готова карта: змінюється лише швидкість (2x)
+[Start with terrain known]
+Почніть з відомої місцевості
+[This colony will not join the match.]
+Ця колонія не приєднається до матчу.
+[This landscape uses a fixed terrain recipe.]
+Цей пейзаж використовує фіксований рецепт місцевості.
+[This landscape uses fixed resource placement.]
+Цей ландшафт використовує фіксоване розміщення ресурсів.
+[Win through conquest]
+Перемога через завоювання
+[You control this colony.]
+Ви контролюєте цю колонію.
+[controllers]
+гравці та ШІ
+[Use]
+Виберіть
+[Lime]
+Лаймово-зелений
+[Teal]
+Синьо-зелений
+[Azure]
+Небесно-блакитний
+[Updating map preview...]
+Оновлення попереднього перегляду карти...
+[Generation failed. Adjust settings or press Start to retry.]
+Помилка генерації. Налаштуйте параметри або натисніть «Пуск», щоб повторити спробу.
+[Preview unavailable. Adjust settings or start to retry.]
+Попередній перегляд недоступний. Змініть налаштування або запустіть гру, щоб повторити спробу.
 [automatic torus view]
 Автоматичний вигляд тора
 [toggle torus view]
 Перемкнути вигляд 2D / тора
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+Для режиму 2 проти 2 потрібні чотири відкриті колонії. Для режиму Ви проти всіх потрібна людина.
+[Alliance]
+Альянс
+[Choose a rule to change it.]
+Виберіть правило, щоб змінити його.
+[Conquest only removes prestige victory; map scripts still apply.]
+Тільки завоювання вимикає перемогу за престижем; сценарії карти залишаються чинними.
+[Control]
+Керування
+[Controller]
+Хто керує
+[Generate preview]
+Створити попередній перегляд
+[Generation failed. Adjust settings or try again.]
+Помилка генерації. Змініть налаштування або повторіть спробу.
+[Map settings changed. Generate a new preview or start.]
+Налаштування карти змінено. Створіть новий попередній перегляд або почніть.
+[Map source]
+Джерело карти
+[Map-defined]
+Визначено картою
+[Match format]
+Формат гри
+[No current preview]
+Немає поточного попереднього перегляду
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Швидкий бій: подвійна швидкість; створені карти починаються з 8 робітників.
+[Reroll]
+Створіть іншу карту
+[Ruleset]
+Набір правил
+[Select a map from the library.]
+Виберіть карту з бібліотеки.
+[Starting workers affects generated maps only.]
+Початкова кількість робітників стосується лише згенерованих карт.
+[Unavailable]
+Недоступний
+[Use selection]
+Застосувати вибір
+[Quick clash on premade maps: only speed changes (2x).]
+Швидкий бій на готових картах: змінюється лише швидкість (подвійна швидкість).
+[Generate a preview to explore this world.]
+Створіть попередній перегляд, щоб дослідити цей світ.
+[More workers jump-start colony growth. Changes the generated map.]
+Більша кількість робітників прискорює ріст колонії. Цей параметр змінює згенеровану карту.
+[No warriors]
+Без воїнів
 [settings Add key to sequence]
 Додати клавішу до послідовності
 [settings Add shortcut]
