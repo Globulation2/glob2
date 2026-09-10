@@ -12,13 +12,12 @@
 
 namespace
 {
-// Use the same exit rules as movement, without moving or unsubscribing a unit.
-bool hasExit(Building* building, const UnitType* type)
+bool hasExit(Building* building, bool fly, bool canSwim)
 {
 	int x, y, dx, dy;
-	return type->performance[FLY]
+	return fly
 		? building->findAirExit(&x, &y, &dx, &dy)
-		: building->findGroundExit(&x, &y, &dx, &dy, type->performance[SWIM]);
+		: building->findGroundExit(&x, &y, &dx, &dy, canSwim);
 }
 
 bool allRemainingUnitsTrapped(Team& team)
@@ -34,10 +33,7 @@ bool allRemainingUnitsTrapped(Team& team)
 		if (unit->displacement != Unit::DIS_EXITING_BUILDING
 			|| unit->movement != Unit::MOV_INSIDE || !unit->attachedBuilding)
 			return false;
-		int x, y, dx, dy;
-		if (unit->performance[FLY]
-			? unit->attachedBuilding->findAirExit(&x, &y, &dx, &dy)
-			: unit->attachedBuilding->findGroundExit(&x, &y, &dx, &dy, unit->performance[SWIM]))
+		if (hasExit(unit->attachedBuilding, unit->performance[FLY], unit->performance[SWIM]))
 			return false;
 	}
 	if (!foundUnit) return false; // Keep the existing zero-unit rule.
@@ -59,8 +55,11 @@ bool allRemainingUnitsTrapped(Team& team)
 				continue;
 			// Ratios can still be changed by the player, including from zero.
 			for (int type = 0; type < NB_UNIT_TYPE; ++type)
-				if (hasExit(swarm, team.race.getUnitType(type, 0)))
+			{
+				const UnitType* ut = team.race.getUnitType(type, 0);
+				if (hasExit(swarm, ut->performance[FLY], ut->performance[SWIM]))
 					return false;
+			}
 		}
 	return true;
 }
