@@ -1,4 +1,4 @@
-const {gameURL,clickMainMenu}=require('./main-menu');
+const {gameURL,clickMainMenu,clickSettingsDone}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
@@ -52,7 +52,7 @@ test('application host returns from settings and credits and shuts down cleanly'
   page.on('pageerror', error => errors.push(String(error)));
   await clickMainMenu(page, 'settings');
   await screen(page, 'SettingsScreen');
-  await menu(page, 530, 440);
+  await clickSettingsDone(page);
   await screen(page, 'MainMenuScreen');
   await clickMainMenu(page, 'credits');
   await screen(page, 'CreditScreen');

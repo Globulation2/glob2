@@ -49,3 +49,32 @@ exports.clickMainMenu = async (page, action) => {
   const {width, height} = page.viewportSize();
   return page.locator('#canvas').click({position: point(width, height, action), delay: 80});
 };
+
+// Mirrors SettingsScreen::layout()'s panel/footer math (src/SettingsScreenLayout.cpp)
+// for the footer's two buttons. Assumes the footer status line stays on one
+// line, which holds at every viewport this suite resizes to while Settings
+// is open; a panel narrower than ~500px could wrap it and shift these.
+const settingsFooter = (width, height) => {
+  const panelW = Math.min(width - 32, 960);
+  const panelH = Math.min(height - 32, 720);
+  const panelX = Math.floor((width - panelW) / 2);
+  const panelY = Math.floor((height - panelH) / 2);
+  const footH = 64;
+  const footerX = panelX, footerY = panelY + panelH - footH, footerW = panelW;
+  const doneX = footerX + footerW - 112, doneY = footerY + 12;
+  return {
+    done: {x: doneX + 48, y: doneY + 20},
+    // Always visible, and always closes Settings in one click regardless of
+    // any save failure — see SettingsScreen::abandon().
+    cancel: {x: doneX - 52, y: doneY + 20},
+  };
+};
+exports.settingsFooter = settingsFooter;
+exports.clickSettingsDone = (page) => {
+  const {width, height} = page.viewportSize();
+  return page.locator('#canvas').click({position: settingsFooter(width, height).done, delay: 80});
+};
+exports.clickSettingsCancel = (page) => {
+  const {width, height} = page.viewportSize();
+  return page.locator('#canvas').click({position: settingsFooter(width, height).cancel, delay: 80});
+};
