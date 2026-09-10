@@ -1,172 +1,89 @@
-# Front-end visual review
+# Front-end visual revamp
 
-A review of the visual result of the three recent front-end changes — the menu
-refresh (#202), the Settings redesign (#236) and the custom-game lobby (#237) —
-after feedback that the new interface reads as sterile. It is a diagnosis with
-supporting measurements and one demonstration spike. **Nothing here is proposed
-for merge.**
+This directory holds the review that motivated the revamp and the captures that
+show its result. The review's measurements stand as written; the "spike" it
+described has been replaced by the changes summarised below.
 
 Captures come from the real client renderer via `MenuColonyHarness capture`,
-at 1152x720 with the software backend.
+at 1152x720. `before-*.png` is the front end as it shipped after #202, #236 and
+#237; `after-*.png` is this branch on the software backend; `after-gl-*.png` is
+this branch on OpenGL, where cloud shadows, the camera drift and sub-tile
+motion exist.
 
-## The short version
+## What was wrong
 
-The old look was not liked because of *how it was executed* — a seamless grass
-texture tiled at 1:1, and bevel-embossed gold gradients. But it did three things
-the new one does not: it used the game's own colours, its controls read as
-physical objects, and menu and match looked like one product.
+The refreshed front end read as sterile because every channel that could carry
+character was off at once:
 
-The refresh removed the bad execution and the three good properties with it.
-Flat design puts the whole burden of personality on palette, shape and type. The
-current front end is flat *and* uses a palette taken from nothing in the game
-*and* draws no outlines *and* uses the stock system font *and* shows none of the
-game's art. Every channel that could carry character is switched off at once.
+- **Colour.** The chrome ran 11–38% saturation over a world at 56–75%, in a
+  gray-cream nothing in the game uses, with a cream veil desaturating the
+  colony so the pale interface could sit on it.
+- **Line.** Every game sprite and every concept drawing in
+  `datasrc/gfx/concept-art/` is a heavy, slightly wobbly ink contour. The
+  interface separated surfaces by 4%-lightness steps and a 1 px hairline.
+- **Life.** The "live colony" had a fixed camera, its cloud shadows never
+  reached the panel, and the panel was 97% opaque: a wallpaper.
+- **Structure.** Nine near-cream fills across five drifted palette copies, and
+  three parallel drawing layers (theme hooks, `LobbyControls`,
+  `SettingsScreenLayout`) — a full rewrite of the theme left the Settings
+  panel pixel-identical.
 
-The fix is not to restore texture. It is to switch two or three of those
-channels back on.
+## What changed
 
-## What the measurements say
+Six commits, each verified with the harness gates and captures.
 
-### The chrome is not made of the game's colours
+1. **One palette.** `FrontendPalette` in `src/FrontendTheme.h`: ink, muted,
+   gold, violet (the water's hue, for keyboard focus), membrane, gel, scrim.
+   Every front-end literal routes through it.
+2. **Inked gel on a membrane.** `FrontendTheme::blob()` draws a rounded
+   contour with per-corner radii and a gentle, rect-seeded wobble as a 2 px ink
+   ring around a fill with a gel highlight; `ring()` is the outline alone, for
+   frames drawn over list contents. Theme hooks, the main menu, the lobby's pad
+   helpers and the settings screen all draw through it. Panels are a warm,
+   translucent membrane the colony tints through (opaque under low-speed
+   graphics). Widget geometry and hit rects are unchanged.
+3. **The world acts on the UI.** A `Style::afterPaint` hook runs after every
+   widget has painted; the theme uses it for one cloud shadow+layer pass over
+   the whole window, anchored to the colony's viewport, replacing the pass
+   `drawMap` used to make under the panel (`DRAW_NO_CLOUDS`). The colony camera
+   drifts about a tile and a half on a slow Lissajous. Both OpenGL-only by the
+   engine's existing guards; both presentation-only, outside the simulation.
+4. **Jelly.** Buttons swell up to 2 px under the cursor and squash 1 px while
+   pressed; the front page fades in over its first ten frames.
+5. **A glob on the front page.** The colony's worker sprite, in its team
+   colour, walks the band under the utility buttons. The classic sheet's faint
+   matte, invisible on grass, is thresholded off once at composite time.
 
-Dominant colours, sampled from `data/gfx/menu-colony.png` (the world behind the
-menu) and from the theme's own constants:
+## Backend notes
 
-| | hue | saturation | lightness |
-| --- | --- | --- | --- |
-| grass `rgb(16,96,16)` | 120° | **71%** | 22% |
-| water `rgb(64,48,192)` | 247° | **60%** | 47% |
-| beach `rgb(176,160,48)` | 52° | **57%** | 44% |
-| panel `rgb(230,231,210)` | 63° | **30%** | 86% |
-| button `rgb(234,240,228)` | 90° | **29%** | 92% |
-| hover `rgb(169,196,157)` | 102° | **25%** | 69% |
-| frame `rgb(137,160,132)` | 109° | **13%** | 57% |
+- Software: everything except cloud shadows over the UI, camera drift and the
+  entry fade's sub-tile motion. The membrane, ink, jelly and glob all render.
+- OpenGL: all of it. Cloud strength over the sheet follows the same
+  `cloudMaxAlpha` setting as the world; if a maintainer finds it too strong on
+  the large Settings sheet, that is one constant in `FrontendTheme::afterPaint`.
+- Modal dialogs composite over a frozen snapshot of the parent and refill
+  opaquely each frame (`OverlayScreen::executeModal`), so they stay opaque by
+  design.
 
-The world runs 56–75% saturation. The chrome runs 11–38%, median 25%. The greens
-do not even share a hue family: the game's green is a pure 120°, the chrome's is
-a yellowed 102–109° sage. And violet — 22% of the world's pixels — appears
-nowhere in the interface, so the game's actual signature contrast (vivid green
-against deep violet) is thrown away.
+## Verification
 
-`FrontendTheme::background` then draws `Color(232,237,218,42)` across the whole
-window: a cream veil that desaturates the game's art so the pale interface can
-sit on top of it. The art is being dimmed to accommodate the chrome.
+Run from the repository root, `SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy`
+unless noted:
 
-### There is no ink line, and the game is made of ink lines
+```sh
+scons -j8 release=0 server=0 build/src/glob2 menu-colony-harness custom-setup-test speed-tests
+build/src/MenuColonyHarness check data/menu/colony.bin      # presentation, text bounds, checksums, routes
+build/src/MenuColonyHarness navigation unused              # enter/cancel 14 real screen loops
+build/src/MenuColonyHarness sessions unused                # play/quit, replay, results, editor
+build/src/CustomGameSetupHarness                           # lobby model
+xvfb-run -a build/src/CustomGameSetupHarness artifacts/ci   # lobby visual (needs an X server)
+xvfb-run -a python3 test/run-game-speed-tests.py            # sim checksums unchanged (needs a window)
+```
 
-The recovered concept art in `datasrc/gfx/concept-art/` is unambiguous about the
-house style: heavy, slightly wobbly hand-inked contours around soft bulbous
-forms, often doubled with a parallel offset stroke. Every building and unit
-sprite carries a dark outline.
+All pass on this branch. `MenuColonyHarness` previews now invoke the style's
+`afterPaint`, mirroring `Screen::dispatchPaint`, so captures show what the game
+shows; a 120-frame OpenGL `record` measured the world shifting (−9, −4) px over
+80 frames and the panel band's luminance moving 198→204 as a shadow crossed it.
 
-The interface separates surfaces with 4%-lightness steps and a 1px pale-sage
-`drawRect`. It is the one drawing convention the game's art never uses.
-
-### Seven surfaces, one value, five palettes
-
-Panel-ish fills currently in use: `(230,231,210)`, `(234,240,228)`,
-`(202,218,196)`, `(243,245,233)`, `(222,226,212)`, `(232,237,218)`,
-`(211,223,197)`, `(240,241,223)`, `(249,250,240)`. All between 76% and 94%
-lightness, hues scattered across 63–104°. Too close to read as deliberate
-levels, too different to look intentional.
-
-They are spread over five independent definitions that have already drifted:
-
-| | file |
-| --- | --- |
-| `FrontendTheme` | `src/FrontendTheme.cpp:19-23` |
-| main menu | `src/MainMenuScreen.cpp:28-31` |
-| lobby | `src/LobbyControls.h:36` |
-| settings | `src/SettingsScreenLayout.cpp:9` |
-| lobby screen | `src/CustomGameScreen.cpp:51,566,644,1043` |
-
-Muted text is `(92,114,91)` in the main menu and `(89,108,86)` in the lobby.
-Panel shadow is `(15,39,25,35)` in the theme and `(34,54,36,100)` in the lobby.
-Nobody chose those differences.
-
-### The newest screens bypass the theme
-
-This is the structural finding, and it is measurable. The spike below rewrites
-`FrontendTheme` end to end. Cropped to the Settings panel interior, the before
-and after captures are **pixel-identical** — `ImageChops.difference(...).getbbox()`
-returns `None`. The custom lobby picks the change up only partly, because half
-its colours come from the theme and half are literals in its own file.
-
-There are now three parallel drawing vocabularies in the front end:
-
-1. `FrontendTheme`, through the GAG `Style` hooks — used by the older screens
-2. `LobbyControls` — the lobby's own immediate-mode widget kit
-3. `SettingsScreenLayout` — the settings screen's own immediate-mode kit
-
-Each with its own palette, its own corner radii (theme rounds at r=4–10, the
-lobby at r=5, settings draws square `drawRect`s) and its own focus treatment.
-Any styling decision has to be made three times, which is a good part of why it
-has not been made forcefully once.
-
-### Composition
-
-`Glob2Screen::drawFrontend` sizes the shared panel as the bounding box of every
-visible widget, unioned with a 640x480 minimum. That is not a layout — it is a
-beige rectangle stretched around whatever is on screen, which is why the results
-screen is a full-bleed sheet with a hairline chart on it. The main menu panel is
-separately pinned at `min(height-40, 620)` while its content ends around 500,
-which is the empty band under the utility buttons.
-
-### Two more
-
-- **Type.** `data/fonts/sans.ttf` is DejaVu Sans, used at four sizes with no
-  weight contrast. The wordmark is a rounded, playful face; the menu under it is
-  a Linux system font. They do not look related.
-- **Menu and match are different products.** `FrontendScope` suspends the theme
-  for gameplay, so a match still renders the 2003 gold `Glob2Style` HUD. Whatever
-  direction wins has to cover both, or the menus will keep feeling detached.
-
-## The spike
-
-To test whether the palette-and-outline reading is right, the branch carries an
-experiment that changes *only* surface treatment — no layout, no fonts, no new
-assets, about 40 lines:
-
-- chrome recoloured to the game's own hues: parchment `(240,224,188)` from the
-  beach sand, ink `(26,48,30)` from the grass, gold `(233,176,53)`, and the
-  water's violet `(92,74,198)` as the focus ring
-- a drawn 2–3px ink contour on panels, buttons, fields, sliders and scrollbars
-- the cream veil over the world replaced with a dark scrim, so the art keeps its
-  saturation instead of being washed out
-
-`ab-main.png` is the comparison; `now-*.png` and `spike-*.png` are the four
-captured screens each way.
-
-What it establishes:
-
-- Where the theme owns drawing, restoring two channels is enough. The main menu
-  reads as belonging to the game again with identical layout and type.
-- Palette alone does not fix composition. The results screen gets warmer and its
-  buttons become objects, but it is still a bounding-box sheet.
-- Settings does not change at all, and the lobby changes inconsistently. That is
-  the argument for the ordering below.
-
-## Suggested order
-
-1. **Collapse the five palettes into one set of named tokens** on the theme, and
-   route `LobbyControls` and `SettingsScreenLayout` through it. Pure refactor, no
-   visual change, and until it exists no visual direction can actually be applied
-   or iterated.
-2. **Recolour from the game's art** and **add the ink contour.** Cheapest change
-   with the largest effect on whether it feels like Glob; the spike is a starting
-   point, not a finished palette.
-3. **Stop veiling the world.** Dark scrim rather than cream wash; consider
-   letting the colony show through the panel rather than sealing it off.
-4. **Compose the shared screens.** Replace the bounding-box panel with a real
-   header/content/footer frame, and size the main-menu panel to its content.
-5. **Use the game's own art in the interface.** 1450 sprites ship in `data/gfx/`
-   at 32x32 (units) and 96x96 (buildings), plus the high-res pack, and not one
-   appears in a menu. Building icons on the settings categories, a glob for the
-   checkbox tick, unit sprites in the lobby colony rows.
-6. **Give headings a face that matches the wordmark**, or at least real weight
-   contrast.
-7. **Decide what the in-game HUD does**, so a match and its menus look like one
-   game.
-
-Items 1–3 are mechanical and reversible. Items 4–7 are design decisions that
-want a maintainer's eye on the result in motion, not just in screenshots.
+Per `AGENTS.md`, a maintainer playing this in motion is part of review. The
+captures are evidence, not a substitute.

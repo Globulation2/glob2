@@ -2,9 +2,11 @@
 
 The opening menus should feel like an invitation into Glob2's living world. This
 proposal keeps the game's colorful colony art, gives it a real AI-driven life
-behind the menus, and replaces the old textured widget frames with a restrained
-sage-and-gold presentation. The main action is prominent; secondary actions are
-quieter. This is a visual refresh of the existing screens, not a replacement UI
+behind the menus, and replaces the old textured widget frames with inked gel
+controls on a warm, translucent membrane, drawn from one palette
+(`FrontendPalette`) in the game's own hues. The main action is prominent;
+secondary actions are quieter. See `docs/ui-visual-review/` for the review that
+set this direction and the before/after captures. This is a visual refresh of the existing screens, not a replacement UI
 or rendering engine.
 
 ## Design and coverage
@@ -30,6 +32,10 @@ panel calculation. There is no new layout system, shader, rendering backend,
 worker thread, or network session.
 
 `MenuColony` owns a separate `Game`, camera state, fixed-step accumulator and RNG.
+On OpenGL its camera drifts about a tile and a half on a slow Lissajous, and the
+theme composites one cloud shadow+layer pass over the whole window after every
+widget has painted (`Style::afterPaint`), in place of the pass `drawMap` would
+make under the panel (`DRAW_NO_CLOUDS`). Both are presentation state only.
 It polls Econo, executes its order and advances the normal simulation
 at 25 ticks/second. Each update runs at most two steps, dropping excessive lag.
 Loading, stepping and drawing temporarily exchange the legacy global RNG and
