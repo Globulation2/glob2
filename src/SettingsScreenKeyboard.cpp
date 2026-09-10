@@ -1,247 +1,153 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
-// All construction and event handling for the "Keyboard Shortcuts" tab of the
-// settings screen. Split out of SettingsScreen.cpp to keep each file under
-// 500 lines. Owns the two KeyboardManager mirrors (game GUI / map editor)
-// and the widget state that lets the user list, add, remove, and re-bind
-// individual shortcuts.
-
 #include "SettingsScreen.h"
-#include <GUIList.h>
-#include <GUIButton.h>
+#include "GlobalContainer.h"
+#include "GameGUIKeyActions.h"
+#include "MapEditKeyActions.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
-#include <string>
-#include "GameGUIKeyActions.h"
-#include "MapEditKeyActions.h"
 
-
-void SettingsScreen::buildKeyboardShortcutsTab()
+using namespace GAGCore;
+KeyboardManager& SettingsScreen::keyboard() { return shortcutMode==GameGUIShortcuts?gameKeys:editorKeys; }
+std::string SettingsScreen::bindingLabel(const KeyboardShortcut& shortcut) const
 {
-	game_shortcuts=new TextButton( 10, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[game shortcuts]"), GAMESHORTCUTS);
-
-	editor_shortcuts=new TextButton( 140, 60, 120, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[editor shortcuts]"), EDITORSHORTCUTS);
-
-	shortcut_list = new List(20, 110, 325, 160, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	action_list = new List(365, 110 , 265, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	select_key_1 = new KeySelector(20, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 100, 25);
-	key_2_active = new OnOffButton(125, 275, 25, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, false, SECONDKEY);
-	select_key_2 = new KeySelector(155, 275, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", 100, 25);
-	pressedUnpressedSelector = new MultiTextButton(260, 275, 80, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "", PRESSEDSELECTOR);
-	add_shortcut = new TextButton(20, 305, 158, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[add shortcut]"), ADDSHORTCUT);
-	remove_shortcut = new TextButton(188, 305, 157, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remove shortcut]"), REMOVESHORTCUT);
-	restore_default_shortcuts = new TextButton(365, 305, 265, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[restore default shortcuts]"), RESTOREDEFAULTSHORTCUTS);
-
-	pressedUnpressedSelector->clearTexts();
-	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
-	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
-
-	addWidgetToGroup(game_shortcuts, keyboardGroup);
-	addWidgetToGroup(editor_shortcuts, keyboardGroup);
-	addWidgetToGroup(shortcut_list, keyboardGroup);
-	addWidgetToGroup(action_list, keyboardGroup);
-	addWidgetToGroup(select_key_1, keyboardGroup);
-	addWidgetToGroup(key_2_active, keyboardGroup);
-	addWidgetToGroup(select_key_2, keyboardGroup);
-	addWidgetToGroup(pressedUnpressedSelector, keyboardGroup);
-	addWidgetToGroup(add_shortcut, keyboardGroup);
-	addWidgetToGroup(remove_shortcut, keyboardGroup);
-	addWidgetToGroup(restore_default_shortcuts, keyboardGroup);
+    std::string text;
+    for(size_t i=0;i<shortcut.getKeyPressCount();++i){
+        if(i)text+=" → ";
+        text+=shortcut.getKeyPress(i).getTranslated();
+        if(!shortcut.getKeyPress(i).getPressed())text+=" ("+tr("Release")+")";
+    }
+    return text;
 }
-
-
-void SettingsScreen::updateShortcutList(int an)
+void SettingsScreen::buildKeyboard()
 {
-	KeyboardManager* m = NULL;
-	if(currentMode == GameGUIShortcuts)
-		m = &guiKeyboardManager;
-	else if(currentMode == MapEditShortcuts)
-		m = &mapeditKeyboardManager;
+    auto& s=globalContainer->settings;
+    toggle("controls.cursor","Use game cursor","Display the Globulation 2 cursor.",s.screenFlags & GraphicContext::CUSTOMCURSOR,
+        [this](int v){changeDisplay([v](Settings& s){if(v)s.screenFlags|=GraphicContext::CUSTOMCURSOR;else s.screenFlags&=~GraphicContext::CUSTOMCURSOR;});});
+    toggle("controls.wheel","Scroll wheel enabled",
+        "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",s.scrollWheelEnabled,[this](int v){
+            globalContainer->settings.scrollWheelEnabled=v;GAGGUI::Screen::scrollWheelEnabled=v;commit();
+        });
+    section("Keyboard shortcuts");
+    for(int i=0;i<2;++i){
+        button("keys.mode."+std::to_string(i),tr(i?"Map editor":"Game"),[this,i]{shortcutMode=i?MapEditShortcuts:GameGUIShortcuts;},int(shortcutMode)==i);
+        form.back().columns=2;form.back().column=i;
+    }
+    info(tr("Choose a binding to change it, or add another shortcut for an action."));
+    button("keys.restore",tr("Restore default shortcuts"),[this]{modal=Modal::Restore;modalScroll=0;focus="restore.cancel";});
+    auto& bindings=keyboard().getKeyboardShortcuts();
+    const int count=shortcutMode==GameGUIShortcuts?int(GameGUIKeyActions::ActionSize):int(MapEditKeyActions::ActionSize);
+    for(int action=0;action<count;++action){
+        auto name=shortcutMode==GameGUIShortcuts?GameGUIKeyActions::getName(action):MapEditKeyActions::getName(action);
+        auto label=Toolkit::getStringTable()->getString("["+name+"]");
+        int index=0;bool found=false;
+        for(const auto& binding:bindings){
+            if(binding.getAction()==Uint32(action)){
+                const int selected=index;
+                auto& r=add("keys.binding."+std::to_string(index),Kind::Binding,label);
+                r.value=bindingLabel(binding);r.action=[this,selected,action]{editBinding(selected,action);};
+                // The extra button is a distinct focus target but shares the row.
+                if(!found){r.extraId="keys.add."+std::to_string(action);r.change=[this,action](int){editBinding(-1,action);};}
+                found=true;
+            }++index;
+        }
+        if(!found){auto& r=add("keys.add."+std::to_string(action),Kind::Binding,label);
+            r.value=tr("Unbound");r.action=[this,action]{editBinding(-1,action);};}
+    }
 
-	const std::list<KeyboardShortcut>& shortcuts = m->getKeyboardShortcuts();
-	size_t n = 0;
-	for(std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
-	{
-		if(an==-1 || int(n) == an)
-		{
-			std::string name = i->formatTranslated(currentMode);
-			if(n >= shortcut_list->getCount())
-				shortcut_list->addText(name);
-			else if(shortcut_list->getText(n) != name)
-				shortcut_list->setText(n, name);
-		}
-		n += 1;
-	}
-	//Remove entries that are off the end
-	while(n < shortcut_list->getCount())
-		shortcut_list->removeText(n);
 }
-
-
-
-void SettingsScreen::updateActionList()
+void SettingsScreen::editBinding(int index,Uint32 action)
 {
-	action_list->clear();
-	if(shortcut_list->selection())
-	{
-		if(currentMode == GameGUIShortcuts)
-		{
-			for(int i=GameGUIKeyActions::DoNothing; i<GameGUIKeyActions::ActionSize; ++i)
-			{
-				std::string key = "[" + GameGUIKeyActions::getName(i) + "]";
-				action_list->addText(Toolkit::getStringTable()->getString(key.c_str()));
-			}
-		}
-		else if(currentMode == MapEditShortcuts)
-		{
-			for(int i=MapEditKeyActions::DoNothing; i<MapEditKeyActions::ActionSize; ++i)
-			{
-				std::string key = "[" + MapEditKeyActions::getName(i) + "]";
-				action_list->addText(Toolkit::getStringTable()->getString(key.c_str()));
-			}
-		}
-	}
+    bindingIndex=index;bindingAction=action;bindingKeys.clear();
+    if(index>=0){auto it=keyboard().getKeyboardShortcuts().begin();std::advance(it,index);
+        for(size_t i=0;i<it->getKeyPressCount();++i)bindingKeys.push_back(it->getKeyPress(i));
+    }
+    if(bindingKeys.empty())bindingKeys.push_back(KeyPress());
+    modal=Modal::Binding;modalScroll=0;captureKey=0;bindingAdvanced=bindingKeys.size()>1;
+    returnFocus=focus;focus="binding.key.0";
 }
-
-
-
-void SettingsScreen::updateShortcutInfoFromSelection()
+void SettingsScreen::saveBinding(bool replace)
 {
-	KeyboardManager* m = NULL;
-	if(currentMode == GameGUIShortcuts)
-		m = &guiKeyboardManager;
-	else if(currentMode == MapEditShortcuts)
-		m = &mapeditKeyboardManager;
-
-	const std::list<KeyboardShortcut>& shortcuts = m->getKeyboardShortcuts();
-	auto sel = shortcut_list->selection();
-
-	if(!sel)
-	{
-		select_key_1->visible=false;
-		key_2_active->visible=false;
-		select_key_2->visible=false;
-		action_list->visible=false;
-	}
-	else
-	{
-		std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin();
-		std::advance(i, *sel);
-		select_key_1->setKey(i->getKeyPress(0));
-		if(i->getKeyPressCount() == 1)
-		{
-			key_2_active->setState(false);
-			select_key_2->visible=false;
-		}
-		else
-		{
-			select_key_2->setKey(i->getKeyPress(1));
-			key_2_active->setState(true);
-			select_key_2->visible=true;
-		}
-
-		if(i->getKeyPress(0).getPressed())
-			pressedUnpressedSelector->setIndex(0);
-		else
-			pressedUnpressedSelector->setIndex(1);
-
-		action_list->setSelectionIndex(i->getAction());
-		action_list->centerOnItem(action_list->getSelectionIndex());
-	}
+    for(const auto& k:bindingKeys)if(k.getKey()=="no key")return;
+    if(bindingKeys.empty())return;
+    KeyboardShortcut proposed;proposed.setAction(bindingAction);
+    for(const auto& k:bindingKeys)proposed.addKeyPress(k);
+    auto& list=keyboard().getKeyboardShortcuts();
+    if(!replace){
+        conflicts.clear();int index=0;
+        for(const auto& existing:list){
+            if(index!=bindingIndex){
+                size_t n=std::min(existing.getKeyPressCount(),proposed.getKeyPressCount());bool match=n>0;
+                for(size_t i=0;i<n;++i)match=match && existing.getKeyPress(i)==proposed.getKeyPress(i);
+                if(match)conflicts.push_back(index);
+            }++index;
+        }
+        if(!conflicts.empty()){modal=Modal::Conflict;modalScroll=0;captureKey=-1;focus="conflict.cancel";return;}
+    }
+    int index=0;
+    for(auto it=list.begin();it!=list.end();){
+        if(index==bindingIndex){*it=proposed;++it;}
+        else if(std::find(conflicts.begin(),conflicts.end(),index)!=conflicts.end())it=list.erase(it);
+        else ++it;
+        ++index;
+    }
+    if(bindingIndex<0)list.push_back(proposed);
+    keyboardDirty[int(shortcutMode)]=true;persist();closeModal();
 }
-
-
-
-void SettingsScreen::updateKeyboardManagerFromShortcutInfo()
+void SettingsScreen::deleteBinding()
 {
-	KeyboardManager* m = NULL;
-	if(currentMode == GameGUIShortcuts)
-		m = &guiKeyboardManager;
-	else if(currentMode == MapEditShortcuts)
-		m = &mapeditKeyboardManager;
-
-	std::list<KeyboardShortcut>& shortcuts = m->getKeyboardShortcuts();
-	auto sel = shortcut_list->selection();
-
-	if(sel)
-	{
-		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
-		std::advance(i, *sel);
-		KeyboardShortcut new_shortcut;
-
-		KeyPress first = KeyPress(select_key_1->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
-		KeyPress second = KeyPress(select_key_2->getKey(), (pressedUnpressedSelector->getIndex() == 0 ? true : false));
-
-		new_shortcut.addKeyPress(first);
-		if(key_2_active->getState())
-			new_shortcut.addKeyPress(second);
-		new_shortcut.setAction(action_list->getSelectionIndex());
-		(*i) = new_shortcut;
-		updateShortcutList(*sel);
-	}
+    auto& list=keyboard().getKeyboardShortcuts();
+    if(bindingIndex>=0 && bindingIndex<int(list.size())){auto it=list.begin();std::advance(it,bindingIndex);list.erase(it);
+        keyboardDirty[int(shortcutMode)]=true;persist();}
+    closeModal();
 }
-
-
-
-void SettingsScreen::loadDefaultKeyboardShortcuts()
+void SettingsScreen::closeModal()
 {
-	KeyboardManager* m = NULL;
-	if(currentMode == GameGUIShortcuts)
-		m = &guiKeyboardManager;
-	else if(currentMode == MapEditShortcuts)
-		m = &mapeditKeyboardManager;
-	m->loadDefaultShortcuts();
-	updateShortcutList();
-	updateShortcutInfoFromSelection();
+    modal=Modal::None;modalScroll=0;captureKey=-1;focus=returnFocus;
 }
-
-
-
-void SettingsScreen::addNewShortcut()
+void SettingsScreen::buildModal()
 {
-	KeyboardShortcut ks;
-	ks.addKeyPress(KeyPress());
-	if(currentMode == GameGUIShortcuts)
-	{
-		ks.setAction(GameGUIKeyActions::DoNothing);
-		std::list<KeyboardShortcut>& shortcuts = guiKeyboardManager.getKeyboardShortcuts();
-		shortcuts.push_back(ks);
-	}
-	else if(currentMode == MapEditShortcuts)
-	{
-		ks.setAction(MapEditKeyActions::DoNothing);
-		std::list<KeyboardShortcut>& shortcuts = mapeditKeyboardManager.getKeyboardShortcuts();
-		shortcuts.push_back(ks);
-	}
-	updateShortcutList(shortcut_list->getCount());
-	shortcut_list->setSelectionIndex(shortcut_list->getCount()-1);
-	shortcut_list->centerOnItem(shortcut_list->getCount()-1);
-	updateShortcutInfoFromSelection();
-}
-
-
-
-void SettingsScreen::removeShortcut()
-{
-	int selection_n = shortcut_list->getSelectionIndex();
-	if(currentMode == GameGUIShortcuts)
-	{
-		std::list<KeyboardShortcut>& shortcuts = guiKeyboardManager.getKeyboardShortcuts();
-		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
-		std::advance(i, selection_n);
-		shortcuts.erase(i);
-	}
-	else if(currentMode == MapEditShortcuts)
-	{
-		std::list<KeyboardShortcut>& shortcuts = mapeditKeyboardManager.getKeyboardShortcuts();
-		std::list<KeyboardShortcut>::iterator i = shortcuts.begin();
-		std::advance(i, selection_n);
-		shortcuts.erase(i);
-	}
-	shortcut_list->setSelectionIndex(std::max(0, selection_n-1));
-	updateShortcutList();
-	updateShortcutInfoFromSelection();
+    if(modal==Modal::Display){
+        info(tr("Keep this display mode?"));
+        info(tr("Reverting in")+" "+std::to_string(std::max(0,int(Sint32(displayDeadline-SDL_GetTicks())+999)/1000))+" "+tr("seconds"));
+        button("display.keep",tr("Keep"),[this]{confirmDisplay(true);});
+        button("display.revert",tr("Revert"),[this]{confirmDisplay(false);});return;
+    }
+    if(modal==Modal::Restore){
+        info(tr("Replace shortcuts in this context with the defaults? This saves immediately."));
+        button("restore.confirm",tr("Restore default shortcuts"),[this]{keyboard().loadDefaultShortcuts();keyboardDirty[int(shortcutMode)]=true;persist();closeModal();});
+        button("restore.cancel",tr("Cancel"),[this]{closeModal();});return;
+    }
+    if(modal==Modal::Conflict){
+        info(tr("This shortcut conflicts with existing bindings:"));
+        int index=0;for(const auto& b:keyboard().getKeyboardShortcuts()){
+            if(std::find(conflicts.begin(),conflicts.end(),index)!=conflicts.end())info(b.formatTranslated(shortcutMode));++index;
+        }
+        button("conflict.replace",tr("Replace conflicting bindings"),[this]{saveBinding(true);});
+        button("conflict.cancel",tr("Cancel"),[this]{modal=Modal::Binding;modalScroll=0;focus="binding.save";});return;
+    }
+    info(tr("Edit shortcut"));
+    const auto name=shortcutMode==GameGUIShortcuts?GameGUIKeyActions::getName(bindingAction):MapEditKeyActions::getName(bindingAction);
+    info(Toolkit::getStringTable()->getString("["+name+"]"));
+    if(captureKey>=0)info(tr("Press a key. Escape cancels capture. Use Bind Escape to assign Escape."));
+    for(size_t i=0;i<bindingKeys.size();++i){
+        const std::string label=tr("Key")+" "+std::to_string(i+1)+": "+(bindingKeys[i].getKey()=="no key"?tr("Unbound"):bindingKeys[i].getTranslated());
+        button("binding.key."+std::to_string(i),label,[this,i]{captureKey=int(i);},captureKey==int(i));
+        if(bindingAdvanced){
+            choice("binding.trigger."+std::to_string(i),"Trigger","",!bindingKeys[i].getPressed(),{tr("Press"),tr("Release")},[this,i](int v){bindingKeys[i]=KeyPress(bindingKeys[i],!v);});
+            button("binding.remove."+std::to_string(i),tr("Remove key"),[this,i]{bindingKeys.erase(bindingKeys.begin()+i);captureKey=-1;});
+        }
+    }
+    if(captureKey>=0)button("binding.escape",tr("Bind Escape"),[this]{SDL_Keysym k{};k.sym=SDLK_ESCAPE;bindingKeys[captureKey]=KeyPress(k,bindingKeys[captureKey].getPressed());captureKey=-1;});
+    button("binding.advanced",tr("Advanced binding")+(bindingAdvanced?" −":" +"),[this]{bindingAdvanced=!bindingAdvanced;},bindingAdvanced);
+    if(bindingAdvanced){
+        info(tr("Keys form a sequence in order. Each key can trigger on press or release."));
+        button("binding.addkey",tr("Add key to sequence"),[this]{bindingKeys.push_back(KeyPress());captureKey=int(bindingKeys.size())-1;focus="binding.key."+std::to_string(captureKey);});
+    }
+    button("binding.save",tr("Save shortcut"),[this]{saveBinding();});
+    bool valid=!bindingKeys.empty();for(const auto& k:bindingKeys)valid &= k.getKey()!="no key";form.back().enabled=valid;
+    if(bindingIndex>=0)button("binding.delete",tr("Remove shortcut"),[this]{deleteBinding();});
+    button("binding.cancel",tr("Cancel"),[this]{closeModal();});
 }

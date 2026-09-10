@@ -73,6 +73,8 @@ namespace GAGCore
 	
 		//! Open an output stream backend, use it to construct specific output streams
 		StreamBackend *openOutputStreamBackend(const std::string filename);
+		//! Checked replacement; failure leaves the original intact.
+		bool writeFileAtomic(const std::string& filename, const std::string& contents);
 		
 		//! Replace a file only after the writer, flush, and close all succeed.
 		bool writeAtomically(const std::string& filename, const std::function<void(OutputStream&)>& writer);

@@ -1,0 +1,213 @@
+Focused checks and display changes
+==================================
+global_assets_ms=209.257
+theme_setup_ms=14.4228
+colony_load_ms=21.3244
+Menu colony unavailable: missing menu snapshot
+Menu colony unavailable: invalid menu snapshot
+PASS: timing, isolation, determinism, scoped style, fallback
+global_assets_ms=110.947
+theme_setup_ms=14.4758
+PASS: live and fallback resolution changes preserve simulation state
+global_assets_ms=257.076
+theme_setup_ms=13.9935
+colony_load_ms=18.6558
+Menu colony unavailable: missing menu snapshot
+Menu colony unavailable: invalid menu snapshot
+PASS: timing, isolation, determinism, scoped style, fallback
+global_assets_ms=236.826
+theme_setup_ms=13.9001
+PASS: live and fallback resolution changes preserve simulation state
+global_assets_ms=109.198
+theme_setup_ms=14.2965
+PASS: actual screen loops, mouse cancellation, theme restoration
+global_assets_ms=107.912
+theme_setup_ms=14.01
+global_assets_ms=108.581
+theme_setup_ms=13.9275
+
+Actual game/replay/editor returns
+=================================
+global_assets_ms=105.341
+theme_setup_ms=13.186
+music dir found: original
+selecting music dir original
+music dir found: original
+selecting music dir original
+PASS: game, replay, results and editor return to menu theme
+
+Existing game-speed regression
+==============================
+PASS: all presets, bounds, legacy settings, persistence
+PASS: multiplayer controls, replay eligibility, camera cadence 11/13 cells
+PASS: main menu slider, language refresh, tab visibility, Cancel, OK, reopening, in-game slider, shortcuts
+nox::gui.game.checkSum() = 7e7f31de
+nox::gui.game.checkSum() = 7e7f31de
+PASS: live engine runs faster at Maximum
+nox::gui.game.checkSum() = 7e7f31de
+nox::gui.game.checkSum() = 7e7f31de
+PASS: pause and hard pause accept resume input at Maximum
+nox::gui.game.checkSum() = dbd86da7
+nox::gui.game.checkSum() = dbd86da7
+nox::gui.game.checkSum() = dbd86da7
+PASS: replay playback at 1x, Maximum and fast-forward
+
+Ten-minute final-background soak
+================================
+elapsed_ms=68556 tick=13713 mean_frame_ms=3.80533 max_frame_ms=20
+elapsed_ms=137481 tick=15436 mean_frame_ms=4.164 max_frame_ms=20
+elapsed_ms=205867 tick=17146 mean_frame_ms=3.69622 max_frame_ms=20
+elapsed_ms=274039 tick=18850 mean_frame_ms=3.5115 max_frame_ms=80
+elapsed_ms=342268 tick=20556 mean_frame_ms=3.49667 max_frame_ms=80
+elapsed_ms=410286 tick=22256 mean_frame_ms=3.42156 max_frame_ms=80
+elapsed_ms=478742 tick=23968 mean_frame_ms=3.67781 max_frame_ms=80
+elapsed_ms=547351 tick=25683 mean_frame_ms=3.75567 max_frame_ms=80
+update_mean_ms=0.397127 update_max_ms=16.4665 input_dispatch_max_ms=0.007083
+SOAK PASS frames=13136 tick=26998 mean_frame_ms=3.91329 max_frame_ms=80
+      601.03 real        51.26 user         3.99 sys
+            62930944  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                5621  page reclaims
+                  20  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   8  voluntary context switches
+              486313  involuntary context switches
+        308655670317  instructions retired
+        131823016498  cycles elapsed
+            49627664  peak memory footprint
+
+One-hour integration soak (before final visual polish)
+====================================================
+Settings::load("preferences.txt") : error, can't open file.
+Colony center 33,72 tick=12000
+building 35,73
+building 37,68
+building 29,68
+building 34,61
+building 45,67
+building 29,64
+building 25,69
+building 41,69
+building 27,61
+building 29,72
+elapsed_ms=67965 tick=13699 mean_frame_ms=4.712 max_frame_ms=40
+elapsed_ms=134620 tick=15365 mean_frame_ms=4.53267 max_frame_ms=62
+elapsed_ms=200826 tick=17020 mean_frame_ms=4.43956 max_frame_ms=62
+elapsed_ms=266297 tick=18657 mean_frame_ms=4.6925 max_frame_ms=82
+elapsed_ms=331300 tick=20282 mean_frame_ms=4.7396 max_frame_ms=82
+elapsed_ms=398860 tick=21970 mean_frame_ms=4.84144 max_frame_ms=118
+elapsed_ms=464008 tick=23599 mean_frame_ms=4.77724 max_frame_ms=118
+elapsed_ms=529206 tick=25228 mean_frame_ms=4.59942 max_frame_ms=118
+elapsed_ms=595498 tick=26885 mean_frame_ms=4.65911 max_frame_ms=118
+elapsed_ms=662712 tick=28565 mean_frame_ms=4.60793 max_frame_ms=118
+elapsed_ms=729724 tick=30240 mean_frame_ms=4.532 max_frame_ms=118
+elapsed_ms=797779 tick=31942 mean_frame_ms=4.48111 max_frame_ms=118
+elapsed_ms=869805 tick=33742 mean_frame_ms=4.54862 max_frame_ms=118
+elapsed_ms=940409 tick=35507 mean_frame_ms=4.61752 max_frame_ms=118
+elapsed_ms=1010911 tick=37269 mean_frame_ms=4.64724 max_frame_ms=118
+elapsed_ms=1082607 tick=39059 mean_frame_ms=4.72021 max_frame_ms=118
+elapsed_ms=1152394 tick=40804 mean_frame_ms=4.6909 max_frame_ms=118
+elapsed_ms=1222542 tick=42556 mean_frame_ms=4.73904 max_frame_ms=119
+elapsed_ms=1290914 tick=44266 mean_frame_ms=4.83793 max_frame_ms=119
+elapsed_ms=1360145 tick=45996 mean_frame_ms=4.87293 max_frame_ms=119
+elapsed_ms=1426769 tick=47662 mean_frame_ms=4.86857 max_frame_ms=119
+elapsed_ms=1491911 tick=49290 mean_frame_ms=4.87894 max_frame_ms=119
+elapsed_ms=1556755 tick=50912 mean_frame_ms=4.86586 max_frame_ms=119
+elapsed_ms=1621540 tick=52531 mean_frame_ms=4.86 max_frame_ms=119
+elapsed_ms=1687277 tick=54174 mean_frame_ms=4.93587 max_frame_ms=119
+elapsed_ms=1756136 tick=55895 mean_frame_ms=4.96349 max_frame_ms=119
+elapsed_ms=1825585 tick=57631 mean_frame_ms=4.94072 max_frame_ms=119
+elapsed_ms=1894767 tick=59360 mean_frame_ms=4.94371 max_frame_ms=119
+elapsed_ms=1963852 tick=61088 mean_frame_ms=4.95568 max_frame_ms=119
+elapsed_ms=2032069 tick=62793 mean_frame_ms=4.94171 max_frame_ms=119
+elapsed_ms=2100368 tick=64500 mean_frame_ms=4.90542 max_frame_ms=119
+elapsed_ms=2169182 tick=66221 mean_frame_ms=4.8849 max_frame_ms=119
+elapsed_ms=2237554 tick=67930 mean_frame_ms=4.81727 max_frame_ms=119
+elapsed_ms=2305345 tick=69624 mean_frame_ms=4.75784 max_frame_ms=119
+elapsed_ms=2373724 tick=71334 mean_frame_ms=4.71575 max_frame_ms=119
+elapsed_ms=2441455 tick=73027 mean_frame_ms=4.67367 max_frame_ms=119
+elapsed_ms=2509745 tick=74734 mean_frame_ms=4.67663 max_frame_ms=119
+elapsed_ms=2578333 tick=76449 mean_frame_ms=4.66174 max_frame_ms=119
+elapsed_ms=2647641 tick=78182 mean_frame_ms=4.68728 max_frame_ms=119
+elapsed_ms=2716531 tick=79904 mean_frame_ms=4.70108 max_frame_ms=119
+elapsed_ms=2784460 tick=81602 mean_frame_ms=4.69693 max_frame_ms=119
+elapsed_ms=2853561 tick=83330 mean_frame_ms=4.70108 max_frame_ms=119
+elapsed_ms=2921510 tick=85029 mean_frame_ms=4.63544 max_frame_ms=119
+elapsed_ms=2990362 tick=86750 mean_frame_ms=4.66176 max_frame_ms=119
+elapsed_ms=3059322 tick=88474 mean_frame_ms=4.70714 max_frame_ms=119
+elapsed_ms=3128203 tick=90196 mean_frame_ms=4.75377 max_frame_ms=119
+elapsed_ms=3197093 tick=91918 mean_frame_ms=4.79488 max_frame_ms=119
+elapsed_ms=3265975 tick=93640 mean_frame_ms=4.84106 max_frame_ms=119
+elapsed_ms=3335330 tick=95374 mean_frame_ms=4.85034 max_frame_ms=119
+elapsed_ms=3403980 tick=97090 mean_frame_ms=4.89375 max_frame_ms=119
+elapsed_ms=3472852 tick=98811 mean_frame_ms=4.92531 max_frame_ms=119
+elapsed_ms=3541368 tick=100524 mean_frame_ms=4.97171 max_frame_ms=119
+SOAK PASS frames=79282 tick=101989 mean_frame_ms=4.98227 max_frame_ms=119
+     3600.75 real       362.12 user        34.67 sys
+            63389696  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                5888  page reclaims
+                  35  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                  17  voluntary context switches
+             2946487  involuntary context switches
+       1840752604727  instructions retired
+        896226187215  cycles elapsed
+            49431056  peak memory footprint
+
+Rebased software and session checks
+===================================
+global_assets_ms=215.684
+theme_setup_ms=14.8835
+colony_load_ms=20.744
+Menu colony unavailable: missing menu snapshot
+Menu colony unavailable: invalid menu snapshot
+PASS: timing, isolation, determinism, scoped style, fallback
+global_assets_ms=104.499
+theme_setup_ms=13.952
+PASS: actual screen loops, mouse cancellation, theme restoration
+global_assets_ms=109.669
+theme_setup_ms=13.7449
+music dir found: original
+selecting music dir original
+music dir found: original
+selecting music dir original
+PASS: game, replay, results and editor return to menu theme
+global_assets_ms=108.841
+theme_setup_ms=13.3876
+PASS: live and fallback resolution changes preserve simulation state
+warmup_tick=0 buildings=1 units=48
+warmup_tick=3000 buildings=10 units=58
+warmup_tick=6000 buildings=11 units=69
+warmup_tick=9000 buildings=12 units=78
+Generated colony at tick 12000
+
+Rebased OpenGL checks
+=====================
+global_assets_ms=252.281
+theme_setup_ms=14.4467
+colony_load_ms=19.7027
+Menu colony unavailable: missing menu snapshot
+Menu colony unavailable: invalid menu snapshot
+PASS: timing, isolation, determinism, scoped style, fallback
+
+Rebased one-minute smoke
+========================
+global_assets_ms=102.841
+theme_setup_ms=14.248
+update_mean_ms=0.464779 update_max_ms=3.53258 input_dispatch_max_ms=0.008667
+SOAK PASS frames=1291 tick=13499 mean_frame_ms=6.6251 max_frame_ms=15

@@ -5,8 +5,8 @@
 
 // AI Echo per-slice tuning constants — Phase 3b (RTI scheduler / tuning).
 //
-// These name the magic numbers used by AIEcho::ReachToInfinity (the simple
-// economic test AI in glob2/src/ai/echo/ReachToInfinity.cpp) and a handful
+// These name the magic numbers used by AIEcho::Econo (the simple
+// economic test AI in glob2/src/ai/echo/Econo.cpp) and a handful
 // of supporting classes (Gradient, Management, Construction, Conditions,
 // Echo). The Phase 3b high-value pass already named the *sentinel* values
 // in echo/Echo.h — this header covers the remaining *tuning* values.
@@ -16,12 +16,12 @@
 namespace AIEcho
 {
 	// ---- RTI master scheduler ------------------------------------------------
-	// ReachToInfinity::tick rotates through five "primary builders" on a
+	// Econo::tick rotates through five "primary builders" on a
 	// 2000-tick master cycle. The offsets are coupled — change BIG_CYCLE_TICKS
 	// and you must shift the offsets too, or staggering breaks.
 
 	/// Master cycle period for the RTI scheduler (~80s at 25 ticks/s).
-	/// (ReachToInfinity.cpp: 375, 445, 500, 543, 591.)
+	/// (Econo.cpp: 375, 445, 500, 543, 591.)
 	static constexpr int AI_ECHO_RTI_BIG_CYCLE_TICKS = 2000;
 
 	/// Phase offsets within the master cycle. Swarm fires at offset 0, racetrack
@@ -32,34 +32,34 @@ namespace AIEcho
 	static constexpr int AI_ECHO_RTI_SCHOOL_OFFSET_TICKS = 1500;
 
 	/// Inn build attempt cadence (~8s); inhibited on master-cycle boundary.
-	/// (ReachToInfinity.cpp:375.)
+	/// (Econo.cpp:375.)
 	static constexpr int AI_ECHO_RTI_INN_INTERVAL_TICKS = 200;
 
 	/// Cadence for the enemy-swarm exploration-flag pass (~5s).
-	/// (ReachToInfinity.cpp:341.)
+	/// (Econo.cpp:341.)
 	static constexpr int AI_ECHO_RTI_ENEMY_SCAN_INTERVAL_TICKS = 120;
 
 	/// Cadence for the fruit-tree exploration-flag pass (~4s).
-	/// (ReachToInfinity.cpp:236.)
+	/// (Econo.cpp:236.)
 	static constexpr int AI_ECHO_RTI_FRUIT_FLAG_INTERVAL_TICKS = 100;
 
 	/// Cadence for both upgrade scheduler scopes — L1->L2 and L2->L3
-	/// (~12s). (ReachToInfinity.cpp:630, 691.)
+	/// (~12s). (Econo.cpp:630, 691.)
 	static constexpr int AI_ECHO_RTI_UPGRADE_INTERVAL_TICKS = 300;
 
 	/// Cadence for the destroy-failing-buildings scan (~20s).
-	/// (ReachToInfinity.cpp:761.)
+	/// (Econo.cpp:761.)
 	static constexpr int AI_ECHO_RTI_DELETE_SCAN_INTERVAL_TICKS = 500;
 
 	/// Cadence for the forbid-farming-area scan (~10s).
-	/// (ReachToInfinity.cpp:804.)
+	/// (Econo.cpp:804.)
 	static constexpr int AI_ECHO_RTI_FARMING_INTERVAL_TICKS = 250;
 
 
 	// ---- Inn (FOOD_BUILDING) sizing ------------------------------------------
 	// The inn-population check sums "level1*POP_L1 + level2*POP_L2 + level3*POP_L3"
 	// against the total unit count to decide when another inn is warranted.
-	// (ReachToInfinity.cpp:392.)
+	// (Econo.cpp:392.)
 
 	/// Population that a level-1 inn supports.
 	static constexpr int AI_ECHO_RTI_INN_POP_PER_L1 = 8;
@@ -70,7 +70,7 @@ namespace AIEcho
 
 
 	// ---- Stale-inn / stale-swarm destroy thresholds --------------------------
-	// (ReachToInfinity.cpp:771, 773, 791, 793.)
+	// (Econo.cpp:771, 773, 791, 793.)
 
 	/// Min resource-tracker age (~60s) before an inn becomes a destroy candidate.
 	static constexpr int AI_ECHO_RTI_INN_DELETE_AGE_TICKS = 1500;
@@ -85,38 +85,38 @@ namespace AIEcho
 	// ---- Exploration-flag radii / explorer-count gates -----------------------
 
 	/// Radius of fruit-tree exploration flags (cherry/orange/prune sites).
-	/// (ReachToInfinity.cpp:265, 295, 325.)
+	/// (Econo.cpp:265, 295, 325.)
 	static constexpr int AI_ECHO_RTI_FRUIT_FLAG_RADIUS = 4;
 	/// Radius of an exploration flag placed on an enemy swarm.
-	/// (ReachToInfinity.cpp:358.)
+	/// (Econo.cpp:358.)
 	static constexpr int AI_ECHO_RTI_ENEMY_FLAG_RADIUS = 12;
 	/// Min explorer count before the AI sets fruit-tree flags.
-	/// (ReachToInfinity.cpp:240.)
+	/// (Econo.cpp:240.)
 	static constexpr int AI_ECHO_RTI_FRUIT_FLAG_EXPLORER_MIN = 6;
 	/// Min explorer count before the AI flags enemy swarms.
-	/// (ReachToInfinity.cpp:343.)
+	/// (Econo.cpp:343.)
 	static constexpr int AI_ECHO_RTI_ENEMY_FLAG_EXPLORER_MIN = 3;
 
 
 	// ---- Initial / steady-state swarm setup ---------------------------------
 
 	/// Workers assigned to the very first existing swarm at game start.
-	/// (ReachToInfinity.cpp:97.)
+	/// (Econo.cpp:97.)
 	static constexpr int AI_ECHO_RTI_INITIAL_SWARM_WORKERS = 5;
 	/// Resource-tracker history length (in tracker samples; tracker samples
 	/// every 10 ticks, so 12 = ~120 ticks of history). Used in 6 sites.
-	/// (ReachToInfinity.cpp:104, 109, 198, 438, 492, 892.)
+	/// (Econo.cpp:104, 109, 198, 438, 492, 892.)
 	static constexpr int AI_ECHO_RTI_TRACKER_LENGTH = 12;
 	/// Workers assigned to a freshly-ordered swarm site.
-	/// (ReachToInfinity.cpp:455.)
+	/// (Econo.cpp:455.)
 	static constexpr int AI_ECHO_RTI_SWARM_WORKERS_NEW = 3;
 	/// Workers reassigned once a swarm finishes construction.
-	/// (ReachToInfinity.cpp:482.)
+	/// (Econo.cpp:482.)
 	static constexpr int AI_ECHO_RTI_SWARM_WORKERS_FINISHED = 5;
 
 	/// Initial / steady-state swarm ratio (worker:explorer:warrior). Used at
-	/// game start (ReachToInfinity.cpp:100) and on every new swarm completion
-	/// (ReachToInfinity.cpp:487).
+	/// game start (Econo.cpp:100) and on every new swarm completion
+	/// (Econo.cpp:487).
 	static constexpr int AI_ECHO_RTI_SWARM_RATIO_WORKER = 15;
 	static constexpr int AI_ECHO_RTI_SWARM_RATIO_EXPLORER = 1;
 	static constexpr int AI_ECHO_RTI_SWARM_RATIO_WARRIOR = 0;
@@ -124,7 +124,7 @@ namespace AIEcho
 
 	// ---- Swarm cadence: early vs late population thresholds ------------------
 	// "if (number<=EARLY_LIMIT && totalUnit/EARLY_RATIO >= number) || totalUnit/LATE_RATIO >= number"
-	// (ReachToInfinity.cpp:450.)
+	// (Econo.cpp:450.)
 
 	static constexpr int AI_ECHO_RTI_SWARM_EARLY_LIMIT = 3;
 	static constexpr int AI_ECHO_RTI_SWARM_EARLY_RATIO = 20;
@@ -132,8 +132,8 @@ namespace AIEcho
 
 
 	// ---- Inn placement constraint weights / distances ------------------------
-	// Used by the standard inn order (ReachToInfinity.cpp:401, 403, 410, 416,
-	// 426) and the "construct inn" message handler (ReachToInfinity.cpp:855,
+	// Used by the standard inn order (Econo.cpp:401, 403, 410, 416,
+	// 426) and the "construct inn" message handler (Econo.cpp:855,
 	// 857, 864, 870, 880).
 
 	/// Constraint weight: minimize distance to wheat (inn placement).
@@ -149,14 +149,14 @@ namespace AIEcho
 
 
 	// ---- Swarm placement constraint weights / distances ----------------------
-	// (ReachToInfinity.cpp:461, 468, 474.)
+	// (Econo.cpp:461, 468, 474.)
 
 	/// Constraint weight: lighter cluster pull for swarms (vs inns).
 	static constexpr int AI_ECHO_RTI_SWARM_CLUSTER_WEIGHT = 1;
 
 
 	// ---- Racetrack (WALKSPEED_BUILDING) placement ----------------------------
-	// (ReachToInfinity.cpp:505, 508, 514, 520, 522, 529, 535.)
+	// (Econo.cpp:505, 508, 514, 520, 522, 529, 535.)
 
 	/// Workers assigned to a racetrack construction site.
 	static constexpr int AI_ECHO_RTI_RACETRACK_WORKERS = 6;
@@ -171,7 +171,7 @@ namespace AIEcho
 
 
 	// ---- Swimming pool (SWIMSPEED_BUILDING) placement ------------------------
-	// (ReachToInfinity.cpp:548, 551, 557, 563, 569, 576, 582.)
+	// (Econo.cpp:548, 551, 557, 563, 569, 576, 582.)
 
 	static constexpr int AI_ECHO_RTI_SWIMMINGPOOL_WORKERS = 6;
 	static constexpr int AI_ECHO_RTI_SWIMMINGPOOL_WOOD_WEIGHT = 4;
@@ -181,7 +181,7 @@ namespace AIEcho
 
 
 	// ---- School (SCIENCE_BUILDING) placement --------------------------------
-	// (ReachToInfinity.cpp:596, 599, 606, 612, 621.)
+	// (Econo.cpp:596, 599, 606, 612, 621.)
 
 	static constexpr int AI_ECHO_RTI_SCHOOL_WORKERS = 5;
 	/// Min-distance from friendly construction sites (room to upgrade school).
@@ -192,7 +192,7 @@ namespace AIEcho
 
 	// ---- Secondary-building (racetrack/swimming pool/school) population gating
 	// "if (totalUnit/SECONDARY_BLDG_RATIO) >= number && number < MAX_*"
-	// (ReachToInfinity.cpp:505, 548, 596.)
+	// (Econo.cpp:505, 548, 596.)
 
 	/// Population per allowed secondary building (one racetrack per 60 units, etc.).
 	static constexpr int AI_ECHO_RTI_SECONDARY_BLDG_RATIO = 60;
@@ -205,7 +205,7 @@ namespace AIEcho
 
 
 	// ---- Upgrade scheduler (level 1->2 and 2->3) ----------------------------
-	// (ReachToInfinity.cpp:644, 712 — concurrent fraction; 649, 717 — school
+	// (Econo.cpp:644, 712 — concurrent fraction; 649, 717 — school
 	// gate; 662, 730 — workers during; 676 — L2 finished; 744 — L3 finished;
 	// 633, 694 — target-level args.)
 
@@ -229,7 +229,7 @@ namespace AIEcho
 	// ---- Farming-area pattern -----------------------------------------------
 	// The forbidden-farming-area scan applies a brush only on a checker
 	// pattern (every 4th tile) to leave aisles between rows.
-	// (ReachToInfinity.cpp:816, 830.)
+	// (Econo.cpp:816, 830.)
 
 	/// Stride modulus for the farming pattern: brush only on (x % STRIDE == 1
 	/// && y % STRIDE == 1) tiles.

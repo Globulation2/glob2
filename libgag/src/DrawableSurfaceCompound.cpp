@@ -294,6 +294,12 @@ namespace GAGCore
 		assert(sprite);
 		if (!sprite->checkBound(index))
 			return;
+		if (this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU)
+			&& (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
+		{
+			drawSprite(x, y, sprite->getW(index), sprite->getH(index), sprite, index, alpha);
+			return;
+		}
 
 		// draw background
 		if (sprite->images[index])
@@ -310,6 +316,12 @@ namespace GAGCore
 		assert(sprite);
 		if (!sprite->checkBound(index))
 			return;
+		if (this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU)
+			&& (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
+		{
+			drawSprite(x, y, static_cast<float>(sprite->getW(index)), static_cast<float>(sprite->getH(index)), sprite, index, alpha);
+			return;
+		}
 
 		// draw background
 		if (sprite->images[index])
@@ -327,13 +339,14 @@ namespace GAGCore
 		if (!sprite->checkBound(index))
 			return;
 
-		// draw background
-		if (sprite->images[index])
-			drawSurface(x, y, w, h, sprite->images[index], alpha);
-
-		// draw rotation
-		if (sprite->rotated[index])
-			drawSurface(x, y, w, h, sprite->getRotatedSurface(index), alpha);
+		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
+		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
+			drawSurface(x, y, w, h, surface, alpha);
+		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
+		{
+			float scale = experiment && sprite->experimentRotated[index] ? 4.0f : 1.0f;
+			drawSurface(static_cast<float>(x), static_cast<float>(y), w * surface->getW() / (scale * sprite->getW(index)), h * surface->getH() / (scale * sprite->getH(index)), surface, alpha);
+		}
 	}
 
 	void DrawableSurface::drawSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha)
@@ -343,13 +356,14 @@ namespace GAGCore
 		if (!sprite->checkBound(index))
 			return;
 
-		// draw background
-		if (sprite->images[index])
-			drawSurface(x, y, w, h, sprite->images[index], alpha);
-
-		// draw rotation
-		if (sprite->rotated[index])
-			drawSurface(x, y, w, h, sprite->getRotatedSurface(index), alpha);
+		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
+		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
+			drawSurface(x, y, w, h, surface, alpha);
+		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
+		{
+			float scale = experiment && sprite->experimentRotated[index] ? 4.0f : 1.0f;
+			drawSurface(static_cast<float>(x), static_cast<float>(y), w * surface->getW() / (scale * sprite->getW(index)), h * surface->getH() / (scale * sprite->getH(index)), surface, alpha);
+		}
 	}
 
 	void DrawableSurface::drawString(int x, int y, Font *font, const std::string &msg, int w, Uint8 alpha)

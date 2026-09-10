@@ -22,13 +22,11 @@ class Order;
 static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Replays older than this are rejected.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 86;
-
-//! Replays written at this VERSION_MINOR or later store the inter-order step
-//! counter as Uint32. Older replays used Uint16, which silently wrapped after
-//! 65535 order-less steps (~44 minutes without an order).
-static constexpr Uint16 REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR = 87;
+//! the reader still accepts. Replays older than this are rejected: versions 90, 92,
+//! 93 and 94 changed the simulation (weighted pathfinding and diagonal timing,
+//! hiring-bucket iteration, trapped-colony elimination, fetch-job apportionment),
+//! so earlier replays would diverge from what happened.
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 94;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
@@ -85,10 +83,6 @@ private:
 	/// You shouldn't use assignment on this class
 	void operator=(const ReplayReader &reader) { assert(false); };
 
-	/// Reads an inter-order step counter from the stream, honouring the
-	/// width used by the replay's format version (see wideStepCounter).
-	Uint32 readStepCounter();
-
 	/// The stream it reads the replay from
 	GAGCore::InputStream *stream;
 
@@ -106,10 +100,6 @@ private:
 
 	/// The number of steps until the next order
 	Uint32 stepsUntilNextOrder;
-
-	/// True if the loaded replay stores step counters as Uint32
-	/// (format version >= REPLAY_UINT32_STEP_COUNTER_VERSION_MINOR)
-	bool wideStepCounter;
 
 	/// Format version from the replay header, used to decode orders.
 	Uint32 versionMinor;

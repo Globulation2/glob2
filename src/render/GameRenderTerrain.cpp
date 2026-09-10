@@ -55,7 +55,7 @@ void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
 void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	// we draw the terrains, eventually with debug rects:
 	for (int y=top; y<=bot; y++)
@@ -91,7 +91,7 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	for (int y=top; y<=bot; y++)
 		for (int x=left; x<=right; x++)
@@ -145,7 +145,7 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
 						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY));
 						if(b->globalGradient[0])
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->globalGradient[0][(x+viewportX) + (y+viewportY)*map.w]);
+							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->globalGradient[0][((x+viewportX)&map.getMaskW()) + ((y+viewportY)&map.getMaskH())*map.w]);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
 						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
 						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
@@ -192,7 +192,7 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 {
 	static int areaAnimationTick = 0;
 
-	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->replaying || globalContainer->replayShowAreas))
+	if ((drawOptions & DRAW_AREA) != 0 && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
 	{
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea);
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, &map, &Map::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea);

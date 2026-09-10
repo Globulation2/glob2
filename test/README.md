@@ -171,6 +171,38 @@ it on both supported Ubuntu versions.
 
 Saved state and step-by-step before/after reproduction: [PR #166 fixture](fixtures/entering-explorer/README.md).
 
+## Entering unit draw regression
+
+From the repository root, run `scons -j8 release=1 server=0 entering-unit-draw-test`
+and `xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness`.
+
+A unit on its final step into a building keeps its map slot on the tile it is
+leaving (`Unit::handleActionEnteringBuilding`) while `posX`/`posY` already name
+the building tile, so `Game::drawMapGroundUnits` visits it one square behind
+itself. Nothing in `Game::drawUnit` reads `displacement`, so at equal `delta`
+that state must render pixel-for-pixel like the same step expressed as an
+ordinary walk onto the destination tile. The harness renders both and compares
+framebuffers over five points of one step; a mismatch is reported in pixels
+against the 32 px tile size. It protects the fix in `src/render/UnitDrawGeometry.h`
+for issue #230, where the sprite was anchored on the stale map slot and the glob
+walked backwards into the square it came from.
+
+Frames land in `.cache/entering-unit-draw-check/`: `entering-delta<N>.png` and,
+on failure, `walking-delta<N>.png` for the unit-only comparison, plus
+`scene-delta<N>.png` with terrain and the inn for looking at by eye. The
+comparison itself stays on the unit-only render, which has no animated water or
+clouds to make two frames differ by themselves.
+
+It needs a display and a GL context. CI already installs `xvfb` and mesa for the
+fullscreen aspect harness, so a job step is a two-liner:
+
+```yaml
+      - name: Build and run the entering unit draw regression
+        run: |
+          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness
+```
+
 ## Immobile unit gradient regression
 
 From the repository root, run `scons -j8 release=1 server=0 immobile-unit-gradient-test`
@@ -184,6 +216,18 @@ Pass `fresh`, `occupancy`, or `forbidden` to run one scenario. The latter two cl
 the initial occupancy explicitly, so failures in painting or occupancy can be
 reproduced independently of the fresh-map initialization bug. Linux CI runs all
 scenarios.
+
+## Building expulsion regression
+
+From the repository root, run `scons -j8 release=1 server=0 building-expel-test`
+and `./build/src/BuildingExpelHarness`. The harness links the real engine and
+checks that a destroyed building puts the units inside it, entering it, or
+waiting to leave it back on the map alive (footprint first, then the ring around
+it; a unit with no free tile dies), and that the expelled units keep the share of
+the meal or healing they had already received while a started meal still costs
+the building one wheat. Every scenario then runs real simulation steps and
+re-checks `Game::integrity`. It needs no display, AI tournament tooling, or
+external save files.
 
 ### Savegame safety
 
@@ -208,6 +252,23 @@ Build `scons release=1 server=0 clearing-gradient-test` and run
 profile and verifies that preferences remain unchanged. The regression covers
 weighted building gradients, basic-resource switches, fruit, empty tiles,
 allocation padding and every swimming class. CI executes it on Linux and Windows.
+
+### Trapped colony elimination
+
+Build `scons release=1 server=0 trapped-unit-test`, then run
+`python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest`
+(use `.exe` on Windows). The shared runner uses a disposable profile and checks
+that the normal preferences remain unchanged; Linux and Windows CI run it.
+
+Normal simulation ticks exercise completed feeding/training behind wood or
+wheat, elimination without indoor starvation, active service, open exits,
+free units, allied rescue, and hatchery recovery. A stocked hatchery protects
+the colony even with production sliders at zero, since the player can change
+them; both food and an available exit are required. Repeated seeded runs and
+save/load continuations compare per-tick unit state and win/loss results with
+an explicit RNG checkpoint. This is a focused regression, not whole-game replay
+compatibility. Version 93 rejects older replays because elimination timing changed;
+older saves remain loadable.
 
 ## Team statistics save compatibility
 
@@ -254,3 +315,42 @@ target remains unchanged, and a depleted target is refreshed after its resource
 gradient is rebuilt. It invokes the movement method directly, rather than running
 an entire match. The shared runner isolates the profile and working directory and
 checks that preferences remain unchanged. Linux CI runs this regression.
+
+## Hiring bucket iteration
+
+`HiringBucketHarness` uses the real engine to check that two competing inns
+receive one worker each before either retries. Hiring the first worker reorders
+the live bucket; iteration must keep following building identity. The old loop
+fails this fixture with two workers at the first inn and zero at the second. Run with:
+
+```sh
+scons -j6 release=1 server=0 hiring-bucket-test
+python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness .
+```
+
+The harness runs headlessly in disposable profile directories in Linux and Windows CI.
+
+### Native main Settings redesign
+
+Build `scons -j6 release=1 settings-tests speed-tests` and run
+`python3 test/run-settings-tests.py`. The harness uses disposable profiles and
+writes native captures to `artifacts/settings-redesign/`. It covers all six
+categories, building stages, automatic saving and retry, software display
+confirmation/rollback, pending OpenGL changes, language refresh, and keyboard
+sequence/conflict handling. The shared dropdown checks cover anchoring, mouse and
+keyboard selection, dismissal, wrapping, and scrolling without committing a value.
+It runs at 640×480, 800×600, 1000×700, and 1280×900,
+plus software rendering and doubled English strings. `--quick` runs only 1000×700
+OpenGL. Window and drawable dimensions are logged so 1× runs are not mistaken
+for physical HiDPI validation.
+
+The redesigned screen exposes semantic row IDs (for example `gameplay.speed`)
+for tests; do not locate settings controls by pixel coordinates. Slider updates
+preview immediately and commit on release/idle, whereas discrete changes save
+immediately. Bindings commit only after a complete edit. Legacy preference and
+keyboard file formats remain unchanged.
+
+`python3 test/run-game-speed-tests.py --settings-only` runs the main/in-game
+settings, language, persistence, keyboard, multiplayer eligibility and camera
+cadence regressions without starting the unrelated engine/replay scenarios.
+The full invocation remains available and reports buffered diagnostics on timeout.

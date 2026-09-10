@@ -1,164 +1,100 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
-// Construction of the "General Settings" tab: OK / Cancel buttons (which sit
-// on every tab), language list, display / video-mode list, graphics toggles
-// (fullscreen / OpenGL / lowquality / customcursor / remember-unit /
-// scrollwheel) plus the reboot warning, the username field, and the audio
-// section. Split out of SettingsScreen.cpp to keep each file under 500 lines.
-//
-// Event handling for these widgets lives in SettingsScreen.cpp alongside the
-// onAction dispatcher and the GfxContext / audio-mute visibility plumbing.
-
 #include "SettingsScreen.h"
 #include "GlobalContainer.h"
-#include <sstream>
-#include <GUIText.h>
-#include <GUITextInput.h>
-#include <GUIList.h>
-#include <GUIButton.h>
-#include <GUISelector.h>
+#include "SoundMixer.h"
 #include <Toolkit.h>
 #include <StringTable.h>
+#include <algorithm>
 
+using namespace GAGCore;
 
-void SettingsScreen::buildOkCancelButtons()
+void SettingsScreen::buildGeneral()
 {
-	ok=new TextButton( 230, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[ok]"), OK);
-	addWidget(ok);
-	cancel=new TextButton(440, 420, 180, 40, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "menu", Toolkit::getStringTable()->getString("[Cancel]"), CANCEL);
-	addWidget(cancel);
-}
-
-
-void SettingsScreen::buildLanguageWidgets()
-{
-	language=new Text(20, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[language-tr]"));
-	addWidgetToGroup(language, generalGroup);
-	languageList=new List(20, 90, 180, 200, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	Font *listFont = Toolkit::getFont("standard");
-	for (int i=0; i<Toolkit::getStringTable()->getNumberOfLanguage(); i++)
-	{
-		bool complete = Toolkit::getStringTable()->isLangComplete(i);
-		std::string label = Toolkit::getStringTable()->getStringInLang(complete ? "[language]" : "[language incomplete]", i);
-		// The language's own name can use glyphs this font doesn't have (e.g.
-		// Chinese in the bundled sans-serif), which would otherwise render as
-		// a row of tofu boxes. Fall back to the (always-Latin) language code.
-		if (!listFont->hasGlyphsFor(label))
-			label = Toolkit::getStringTable()->getStringInLang("[language-code]", i) + " - missing font";
-		languageList->addText(label);
-	}
-	addWidgetToGroup(languageList, generalGroup);
-}
-
-
-void SettingsScreen::buildDisplayWidgets()
-{
-	display=new Text(230, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[display]"));
-	addWidgetToGroup(display, generalGroup);
-	actDisplay = new Text(440, 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", actDisplayModeToString().c_str());
-	addWidgetToGroup(actDisplay, generalGroup);
-	modeList=new List(440, 90, 180, 190, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard");
-	const auto modes = globalContainer->gfx->listVideoModes();
-	const int standardResolutionsCount=5;
-	int standardResolutions[standardResolutionsCount][2]={{640,480},{800,600},{1024,768},{1280,1024},{1600,1200}};
-	for (auto const& mode : modes)
-	{
-		std::ostringstream ost;
-		ost << mode.w << "x" << mode.h;
-		if (!modeList->isText(ost.str().c_str()))
-			modeList->addText(ost.str().c_str());
-	}
-	for(int i=0; i<standardResolutionsCount; i++)
-	{
-		std::ostringstream ost;
-		ost << standardResolutions[i][0] << "x" << standardResolutions[i][1];
-		if (!modeList->isText(ost.str().c_str()))
-		{
-			ost << " *";
-			modeList->addText(ost.str().c_str());
-		}
-	}
-	addWidgetToGroup(modeList, generalGroup);
-	modeListNote=new Text(modeList->getLeft(), modeList->getTop()+modeList->getHeight(), ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[no fullscreen]"));
-	addWidgetToGroup(modeListNote, generalGroup);
-}
-
-
-void SettingsScreen::buildGraphicsToggles()
-{
-	fullscreen=new OnOffButton(230, 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::FULLSCREEN, FULLSCREEN);
-	addWidgetToGroup(fullscreen, generalGroup);
-	fullscreenText=new Text(260, 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[fullscreen]"), 180);
-	addWidgetToGroup(fullscreenText, generalGroup);
-
-	usegpu=new OnOffButton(230, 90 + 30, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::USEGPU, USEGL);
-	addWidgetToGroup(usegpu, generalGroup);
-	usegpuText=new Text(260, 90 + 30, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[OpenGL]"), 180);
-	addWidgetToGroup(usegpuText, generalGroup);
-
-	lowquality=new OnOffButton(230, 90 + 60, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX, LOWQUALITY);
-	addWidgetToGroup(lowquality, generalGroup);
-	lowqualityText=new Text(260, 90 + 60, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[lowquality]"), 180);
-	addWidgetToGroup(lowqualityText, generalGroup);
-
-	customcur=new OnOffButton(230, 90 + 90, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.screenFlags & GraphicContext::CUSTOMCURSOR, CUSTOMCUR);
-	addWidgetToGroup(customcur, generalGroup);
-	customcurText=new Text(260, 90 + 90, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[customcur]"), 180);
-	addWidgetToGroup(customcurText, generalGroup);
-
-	rememberUnitButton=new OnOffButton(230, 90 + 120, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.rememberUnit, REMEMBERUNIT);
-	addWidgetToGroup(rememberUnitButton, generalGroup);
-	rememberUnitText=new Text(260, 90 + 120, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[remember unit]"), 180);
-	addWidgetToGroup(rememberUnitText, generalGroup);
-
-	scrollwheel=new OnOffButton(230, 90 + 150, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.scrollWheelEnabled, SCROLLWHEEL);
-	addWidgetToGroup(scrollwheel, generalGroup);
-	scrollwheelText=new Text(260, 90 + 150, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[scroll wheel enabled]"), 180);
-	addWidgetToGroup(scrollwheelText, generalGroup);
-
-	gameSpeedText=new Text(230, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
-	addWidgetToGroup(gameSpeedText, generalGroup);
-	gameSpeed=new Selector(230, 285, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180,
-		globalContainer->settings.gameSpeed, Settings::GAME_SPEED_MAXIMUM, true);
-	addWidgetToGroup(gameSpeed, generalGroup);
-	updateGameSpeedText();
-
-	rebootWarning=new Text(0, 300, ALIGN_FILL, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
-	//TODO: warning style should be defined centrally.
-	rebootWarning->setStyle(Font::Style(Font::STYLE_BOLD, 255, 60, 60));
-	addWidget(rebootWarning);
-
-	setVisibilityFromGraphicType();
-	rebootWarning->visible=false;
-}
-
-
-void SettingsScreen::buildUsernameWidgets()
-{
-	userName=new TextInput(20, 360, 180, 25, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", globalContainer->settings.getUsername(), true, 32);
-	addWidgetToGroup(userName, generalGroup);
-	usernameText=new Text(20, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[username]"));
-	addWidgetToGroup(usernameText, generalGroup);
-}
-
-
-void SettingsScreen::buildAudioWidgets()
-{
-	audio=new Text(230, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[audio]"), 300);
-	addWidgetToGroup(audio, generalGroup);
-	audioMute=new OnOffButton(230, 365, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.mute, MUTE);
-	addWidgetToGroup(audioMute, generalGroup);
-	audioMuteText=new Text(260, 365, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[mute]"), 200);
-	addWidgetToGroup(audioMuteText, generalGroup);
-	musicVol=new Selector(320, 350, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.musicVolume, 256, true);
-	addWidgetToGroup(musicVol, generalGroup);
-	voiceVol=new Selector(320, 385, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, 180, globalContainer->settings.voiceVolume, 256, true);
-	addWidgetToGroup(voiceVol, generalGroup);
-	musicVolText=new Text(320, 330, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Music volume]"), 300);
-	addWidgetToGroup(musicVolText, generalGroup);
-	voiceVolText=new Text(320, 365, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[Voice volume]"), 300);
-	addWidgetToGroup(voiceVolText, generalGroup);
-	setVisibilityFromAudioSettings();
+    auto& s=globalContainer->settings;
+    if(current==Category::Display) {
+        info(tr("Choose how the game looks on your screen."));
+        section("Display");
+        choice("display.mode","Window mode","Choose a window or fill the screen.",bool(s.screenFlags & GraphicContext::FULLSCREEN),
+            {tr("Windowed"),tr("Fullscreen")},[this](int v){changeDisplay([v](Settings& s){
+                if(v){s.screenFlags|=GraphicContext::FULLSCREEN;s.screenFlags&=~GraphicContext::RESIZABLE;}
+                else{s.screenFlags&=~GraphicContext::FULLSCREEN;s.screenFlags|=GraphicContext::RESIZABLE;}
+            });});
+        const auto modes=globalContainer->gfx->listVideoModes();
+        std::vector<std::pair<int,int>> sizes;
+        std::vector<std::string> names;
+        std::vector<bool> windowOnly;
+        auto append=[&](int w,int h,bool restricted){
+            if(std::find(sizes.begin(),sizes.end(),std::make_pair(w,h))!=sizes.end())return;
+            sizes.emplace_back(w,h);windowOnly.push_back(restricted);
+            names.push_back(std::to_string(w)+" × "+std::to_string(h)+(restricted?" — "+tr("Windowed only"):""));
+        };
+        for(auto m:modes)append(m.w,m.h,false);
+        for(auto size:std::vector<std::pair<int,int>>{{640,480},{800,600},{1024,768},{1280,1024},{1600,1200}})append(size.first,size.second,true);
+        append(s.screenWidth,s.screenHeight,true);
+        int selected=std::find(sizes.begin(),sizes.end(),std::make_pair(s.screenWidth,s.screenHeight))-sizes.begin();
+        choice("display.resolution","Resolution","Window-only sizes also switch the game to windowed mode.",selected,names,
+            [this,sizes,windowOnly](int v){if(v<0 || v>=int(sizes.size()))return;changeDisplay([=](Settings& s){
+                s.screenWidth=sizes[v].first;s.screenHeight=sizes[v].second;
+                if(windowOnly[v]){s.screenFlags&=~GraphicContext::FULLSCREEN;s.screenFlags|=GraphicContext::RESIZABLE;}
+            });});
+        form.back().value=std::to_string(s.screenWidth)+" × "+std::to_string(s.screenHeight);
+        info(tr("Current display")+": "+std::to_string(globalContainer->gfx->getW())+" × "+std::to_string(globalContainer->gfx->getH())+
+             " · "+((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)?"OpenGL":tr("Software"))+
+             " · "+tr(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN?"Fullscreen":"Windowed"));
+        if(restartRequired()) info(tr("Saved — restart required"));
+        if(displayError)info(tr("Could not change display mode. The previous mode was restored."));
+        section("Artwork & effects");
+        choice("graphics.detail","Graphics detail","Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.",
+            bool(s.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX),{tr("Full"),tr("Reduced")},[this](int v){
+                auto& flags=globalContainer->settings.optionFlags;
+                if(v)flags|=GlobalContainer::OPTION_LOW_SPEED_GFX;else flags&=~GlobalContainer::OPTION_LOW_SPEED_GFX;commit();
+            });
+        toggle("graphics.artwork","High-resolution artwork","Apply artwork on the next game or editor load (OpenGL).",s.highResolutionArtwork,[this](int v){globalContainer->settings.highResolutionArtwork=v;commit();});
+        toggle("graphics.torus","Automatic torus view","Automatically show the torus overview while moving around the map (OpenGL).",s.automaticTorus,[this](int v){globalContainer->settings.automaticTorus=v;commit();});
+        choice("graphics.renderer","Renderer","Changing the renderer requires a restart.",bool(s.screenFlags & GraphicContext::USEGPU),
+            {tr("Software"),"OpenGL"},[this](int v){changeDisplay([v](Settings& s){if(v)s.screenFlags|=GraphicContext::USEGPU;else s.screenFlags&=~GraphicContext::USEGPU;});});
+#ifndef HAVE_OPENGL
+        form.back().enabled=false;
+        form.back().help=tr("OpenGL is not available in this build.");
+#endif
+    } else if(current==Category::Audio) {
+        info(tr("Adjust music and voice volume."));
+        toggle("audio.mute","Mute audio","Keep your volume levels while silencing audio.",s.mute,[this](int v){
+            auto& s=globalContainer->settings;s.mute=v;
+            globalContainer->mix->setVolume(s.musicVolume,s.voiceVolume,s.mute);commit();
+        });
+        for(int voice=0;voice<2;++voice){
+            auto& r=add(voice?"audio.voice":"audio.music",Kind::Slider,tr(voice?"Voice volume":"Music volume"));
+            r.number=voice?s.voiceVolume:s.musicVolume;r.maximum=256;r.enabled=!s.mute;
+            r.value=std::to_string((r.number*100+128)/256)+"%";
+            r.change=[this,voice](int v){auto& s=globalContainer->settings;
+                (voice?s.voiceVolume:s.musicVolume)=std::clamp(v,0,256);
+                globalContainer->mix->setVolume(s.musicVolume,s.voiceVolume,s.mute);commit(true);
+            };
+        }
+    } else if(current==Category::Gameplay) {
+        info(tr("Adjust the pace of play."));
+        std::vector<std::string> labels;
+        Settings copy=s;
+        for(int i=0;i<=Settings::GAME_SPEED_MAXIMUM;++i){copy.gameSpeed=i;labels.push_back(copy.getGameSpeedText());}
+        choice("gameplay.speed","Game speed","Single-player and replays only. Multiplayer runs at 1x.",s.gameSpeed,labels,[this](int v){
+            globalContainer->settings.gameSpeed=std::clamp(v,0,int(Settings::GAME_SPEED_MAXIMUM));commit();
+        });
+    } else if(current==Category::Player) {
+        info(tr("Set your language and player name."));
+        auto* strings=Toolkit::getStringTable();std::vector<std::string> labels;
+        for(int i=0;i<strings->getNumberOfLanguage();++i){
+            auto label=strings->getStringInLang(strings->isLangComplete(i)?"[language]":"[language incomplete]",i);
+            if(!Toolkit::getFont("standard")->hasGlyphsFor(label))label=strings->getStringInLang("[language-code]",i)+" — "+tr("Missing font");
+            labels.push_back(label);
+        }
+        choice("player.language","Language","Language used throughout the interface.",strings->getLang(),labels,[this](int v){
+            auto* strings=Toolkit::getStringTable();strings->setLang(v);
+            globalContainer->settings.language=strings->getStringInLang("[language-code]",v);commit();
+        });
+        auto& r=add("player.name",Kind::Text,tr("Player name"),tr("Name shown to other players."));
+        r.value=editingText?textDraft:s.getUsername();
+    }
 }

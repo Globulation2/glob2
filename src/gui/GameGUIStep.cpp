@@ -40,7 +40,7 @@ using std::static_pointer_cast;
 
 void GameGUI::moveFlag(int mx, int my, bool drop)
 {
-	if (globalContainer->replaying) return;
+	if (globalContainer->isViewingGame()) return;
 
 	int posX, posY;
 	Building* selBuild=selectionBuilding();
@@ -75,6 +75,11 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
+    if (torusView.active()) {
+        if (!torusPointerDown || !torusMapPointer(mx, my, mx, my)) return;
+    }
+
+	if(zoomControlPushed)return;
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
 		dragging from correctly going through intermediate cells.
@@ -82,8 +87,10 @@ void GameGUI::dragStep(int mx, int my, int button)
 		it was at the time in the middle of the event stream, not
 		as it is now.  So instead we make sure the correct data is
 		passed to us as a parameter. */
-	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
+		if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
+		if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
 		{
@@ -104,8 +111,7 @@ void GameGUI::dragStep(int mx, int my, int button)
    information, because we need the information as it was in the
    middle of the event stream.  (There may be many later events we
    have not yet processed.) */
-int lastMouseX = 0, lastMouseY = 0; // can't make these Uint16 because of SDL_GetMouseState
-Uint16 lastMouseButtonState = 0;
+
 
 void GameGUI::step(void)
 {
@@ -114,7 +120,7 @@ void GameGUI::step(void)
 	bool wasWindowEvent=false;
 	int oldMouseMapX = -1, oldMouseMapY = -1; // hopefully the values here will never matter
 	// we get all pending events but for mouse motion we only keep the last one
-	while (SDL_PollEvent(&event))
+	while (GAGCore::GraphicContext::pollEvent(&event))
 	{
 		GAGCore::GraphicContext::translateMouseEvent(&event);
 		if (event.type==SDL_MOUSEMOTION)
@@ -134,7 +140,7 @@ void GameGUI::step(void)
 				when drawing areas with the brush. */
 			if (onViewport)
 			{
-				game.map.cursorToBuildingPos (lastMouseX, lastMouseY, 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
+				game.map.cursorToBuildingPos (mapMouseX(lastMouseX), mapMouseY(lastMouseY), 1, 1, &mouseMapX, &mouseMapY, viewportX, viewportY);
 			}
 			else
 			{
@@ -220,16 +226,19 @@ void GameGUI::step(void)
 	for(unsigned i=0; i<viewportSteps; ++i)
 	{
 		handleKeyAlways();
-		viewportX += viewportSpeedX;
-		viewportY += viewportSpeedY;
+        updateCamera();
+        camera.originX+=viewportSpeedX*32/camera.zoom;
+        camera.originY+=viewportSpeedY*32/camera.zoom;
+        camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 	}
 	viewportX &= game.map.getMaskW();
 	viewportY &= game.map.getMaskH();
 
+	updateCamera();
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 
 	assert(localTeam);
@@ -332,6 +341,17 @@ void GameGUI::checkWonConditions(void)
 {
 	if (hasEndOfGameDialogBeenShown || globalContainer->replaying)
 		return;
+
+    if(globalContainer->liveSpectating) {
+        for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
+            inGameMenu=IGM_END_OF_GAME;
+            gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Match finished]"),true));
+            hasEndOfGameDialogBeenShown=true;
+            miniMapPushed=false;
+            break;
+        }
+        return;
+    }
 
 	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
 	{

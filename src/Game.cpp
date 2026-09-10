@@ -82,6 +82,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 /** Reset player and team lists, game end stuff and selection stuff. */
 void Game::clearGame()
 {
+	hasSavedRandomState = false;
 	// Delete existing teams and players
 	for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 	{
@@ -147,7 +148,11 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		teams[tn]->playersMask|=(1<<i);
 	}
 
-	setSyncRandSeed(newGameHeader.getRandomSeed());
+	// A loaded saved game already restored the live RNG. New maps and old
+	// saves retain the seed-based initialization used by earlier versions.
+	if (!hasSavedRandomState || !mapHeader.getIsSavedGame() ||
+		newGameHeader.getRandomSeed() != gameHeader.getRandomSeed())
+		setSyncRandSeed(newGameHeader.getRandomSeed());
 
 	if(newGameHeader.isMapDiscovered())
 		map.setMapDiscovered();

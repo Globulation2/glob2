@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "MapCopies.h"
 
 #include "AICastor.h"
 
@@ -43,7 +44,7 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 	Sprite *bulletSprite = globalContainer->bullet;
 
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	int mapPixW=(map.getW())<<5;
 	int mapPixH=(map.getH())<<5;
@@ -72,11 +73,13 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 				ballisticShift = static_cast<int>(K * ((-1.0f * time * time) / duration + time));
 			}
 
-			if ( (x<=sw) && (y<=sh) )
-			{
-				globalContainer->gfx->drawSprite(x, y-ballisticShift, bulletSprite, BULLET_IMGID);
-				globalContainer->gfx->drawSprite(x+(ballisticShift/2), y, bulletSprite, BULLET_IMGID+1);
-			}
+			forEachMapCopy(x, y-ballisticShift,
+				x+std::max(bulletSprite->getW(BULLET_IMGID), ballisticShift/2+bulletSprite->getW(BULLET_IMGID+1)),
+				y+std::max(bulletSprite->getH(BULLET_IMGID), bulletSprite->getH(BULLET_IMGID+1)),
+				mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
+					globalContainer->gfx->drawSprite(x+dx, y-ballisticShift+dy, bulletSprite, BULLET_IMGID);
+					globalContainer->gfx->drawSprite(x+ballisticShift/2+dx, y+dy, bulletSprite, BULLET_IMGID+1);
+				});
 		}
 		globalContainer->gfx->finishDrawingSprite(bulletSprite, 255);
 		// explosions
@@ -89,7 +92,11 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 				int frame = globalContainer->bulletExplosion->getFrameCount() - e->ticksLeft - 1;
 				int decX = globalContainer->bulletExplosion->getW(frame)>>1;
 				int decY = globalContainer->bulletExplosion->getH(frame)>>1;
-				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY, globalContainer->bulletExplosion, frame);
+				const int px = x+16-decX, py = y+16-decY;
+				forEachMapCopy(px, py, px+globalContainer->bulletExplosion->getW(frame)-1,
+					py+globalContainer->bulletExplosion->getH(frame)-1, mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
+						globalContainer->gfx->drawSprite(px+dx, py+dy, globalContainer->bulletExplosion, frame);
+					});
 			}
 		}
 		globalContainer->gfx->finishDrawingSprite(globalContainer->bulletExplosion, 255);
@@ -106,7 +113,11 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 				Team *team = a->team;
 
 				globalContainer->deathAnimation->setBaseColor(team->color);
-				globalContainer->gfx->drawSprite(x+16-decX, y+16-decY-frame, globalContainer->deathAnimation, frame);
+				const int px = x+16-decX, py = y+16-decY-frame;
+				forEachMapCopy(px, py, px+globalContainer->deathAnimation->getW(frame)-1,
+					py+globalContainer->deathAnimation->getH(frame)-1, mapPixW, mapPixH, sw, sh, [&](int dx, int dy) {
+						globalContainer->gfx->drawSprite(px+dx, py+dy, globalContainer->deathAnimation, frame);
+					});
 			}
 		}
 		globalContainer->gfx->finishDrawingSprite(globalContainer->deathAnimation, 255);
@@ -124,7 +135,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				unsigned i0, i1, i2, i3;
 
 				Uint32 visibleTeams = teams[localTeam]->me;
-				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 				// first draw black
 				i0=!map.isMapDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
@@ -187,7 +198,7 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 			for (int x=0; x<width; x++)
 			{
 				Uint32 visibleTeams = teams[localTeam]->me;
-				if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 				int rx=(x+viewportX-1+map.getW())%map.getW();
 				int ry=(y+viewportY-1+map.getH())%map.getH();

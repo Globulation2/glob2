@@ -53,6 +53,7 @@ static std::optional<int> interpretScrollBoxClick(int lmx, int current, int max)
 
 void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 {
+	if(globalContainer->liveSpectating) return;
 	Building* selBuild=selectionBuilding();
 	assert (selBuild);
 	if (selBuild->owner->teamNumber!=localTeamNo)
@@ -286,7 +287,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		}
 	}
 
-	if ((my>globalContainer->gfx->getH()-48) && (my<globalContainer->gfx->getH()-32))
+	if ((my>globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET) && (my<globalContainer->gfx->getH()-BOTTOM_BUTTON_PRIMARY_YOFFSET+BOTTOM_BUTTON_HEIGHT))
 	{
 		if (selBuild->constructionResultState==Building::REPAIR)
 		{
@@ -306,7 +307,7 @@ void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 		}
 	}
 
-	if ((my>globalContainer->gfx->getH()-24) && (my<globalContainer->gfx->getH()-8))
+	if ((my>globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET) && (my<globalContainer->gfx->getH()-BOTTOM_BUTTON_SECONDARY_YOFFSET+BOTTOM_BUTTON_HEIGHT))
 	{
 		if (selBuild->buildingState==Building::WAITING_FOR_DESTRUCTION)
 		{

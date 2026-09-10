@@ -10,6 +10,7 @@
 #include <StringTable.h>
 #include <string>
 #include <algorithm>
+#include <StreamBackend.h>
 
 using namespace GAGCore;
 
@@ -31,6 +32,7 @@ Settings::Settings()
 	screenWidth = 800;
 	screenHeight = 600;
 	optionFlags = 0;
+	automaticTorus = false;
 	language = "en";
 	musicVolume = 190;
 	voiceVolume = 190;
@@ -42,6 +44,7 @@ Settings::Settings()
 	version = 0;
 	
 	scrollWheelEnabled=true;
+	highResolutionArtwork=true;
 	resetDefaultUnitsAssigned();
 	resetDefaultFlagRadius();
 	
@@ -107,12 +110,14 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(optionFlags);
+		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
 		READ_PARSED_INT(musicVolume);
 		READ_PARSED_INT(voiceVolume);
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
+		READ_PARSED_INT(highResolutionArtwork);
 		READ_PARSED_INT(gameSpeed);
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_NORMAL),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
@@ -160,10 +165,11 @@ void Settings::load(std::string filename)
  *
  * @param filename where the config settings will be saved
  */
-void Settings::save(std::string filename)
+bool Settings::save(std::string filename)
 {
-	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
-	if (!stream->isEndOfStream())
+	auto* buffer = new MemoryStreamBackend();
+	OutputStream *stream = new BinaryOutputStream(buffer);
+	// Memory output starts at EOF; it is writable regardless of its read position.
 	{
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
@@ -171,12 +177,14 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
+		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
+		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
@@ -203,7 +211,9 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
 		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
 	}
+	const std::string contents(buffer->getBuffer(), buffer->getPosition());
 	delete stream;
+	return Toolkit::getFileManager()->writeFileAtomic(filename, contents);
 }
 
 

@@ -8,6 +8,9 @@
 #endif
 #include "GlobalContainer.h"
 #include "Engine.h"
+#include "Utilities.h"
+#include "Order.h"
+#include "Player.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
@@ -91,7 +94,7 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 #endif
 	for (const auto& entry : fs::directory_iterator(directory))
 		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
-	std::cout << "PASS atomic creation/replacement, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup" << std::endl;
+	std::cout << "PASS atomic creation/replacement, close drains pending writes, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup" << std::endl;
 #ifndef WIN32
 	std::cout << "PASS injected short write and buffered flush failure preserve previous bytes" << std::endl;
 #endif
@@ -174,6 +177,117 @@ static void checkPendingConstruction()
 	std::cout << "PASS pending construction binary/text round trips, queue order, staffing, delayed placement, empty queue and invalid reference" << std::endl;
 }
 
+static void checkRandomContinuation(bool text, bool ai)
+{
+	GameGUI gui;
+	auto map = Engine::loadMapHeader("maps/balanced.map");
+	GameHeader header;
+	header.setNumberOfPlayers(1);
+	header.setRandomSeed(123456);
+	header.getBasePlayer(0) = BasePlayer(0, "Test", 0, ai ? BasePlayer::playerTypeFromImplementationID(AI::NUMBI) : BasePlayer::P_LOCAL);
+	assert(gui.loadFromHeaders(map, header, true, true));
+	for (int i=0; i<713; ++i) syncRand();
+	const auto step = [](Game &game) {
+		if (game.players[0]->ai)
+		{
+			auto order=game.players[0]->ai->getOrder(false);
+			order->sender=0;
+			game.executeOrder(order,0);
+		}
+		game.syncStep(0);
+	};
+	for (int i=0; i<100; ++i) step(gui.game);
+	const auto savedRandom = randomGenerator;
+	auto *backend = new MemoryStreamBackend();
+	class CheckpointOutput : public BinaryOutputStream
+	{
+	public:
+		size_t runtimeStart=0, runtimeEnd=0;
+		explicit CheckpointOutput(StreamBackend *backend) : BinaryOutputStream(backend) {}
+		void writeEnterSection(const std::string name) override
+		{
+			if (name=="mapRuntime") runtimeStart=getPosition();
+			if (name=="GameGUI") runtimeEnd=getPosition();
+			BinaryOutputStream::writeEnterSection(name);
+		}
+	} output(backend);
+	gui.save(&output, "RNG continuation");
+	const std::string bytes(backend->getBuffer(), backend->getPosition());
+	std::string runtimeText;
+	if (text)
+	{
+		auto *storage=new MemoryStreamBackend();
+		TextOutputStream writer(storage);
+		gui.game.map.saveRuntimeState(&writer);
+		runtimeText.assign(storage->getBuffer(),storage->getPosition());
+	}
+
+	assert(randomGenerator == savedRandom);
+	auto simulationState = [](Game &game) {
+		std::vector<Uint32> result, buildings, units;
+		game.checkSum(&result, &buildings, &units, true);
+		result.erase(result.begin()); // save upgrades the map format header
+		result.insert(result.end(), buildings.begin(), buildings.end());
+		result.insert(result.end(), units.begin(), units.end());
+		return result;
+	};
+	std::vector<std::vector<Uint32>> continuation;
+	for (int i=0; i<300; ++i)
+	{
+		step(gui.game);
+		continuation.push_back(simulationState(gui.game));
+	}
+	for (int i=0; i<37; ++i) syncRand();
+	GameGUI restored;
+	if (!text && !ai)
+	{
+		assert(output.runtimeStart>0 && output.runtimeEnd>output.runtimeStart);
+		for (const auto cut : {output.runtimeStart,output.runtimeStart+7,output.runtimeEnd-1})
+		{
+			auto partial=input(bytes.substr(0,cut),true);
+			bool rejected=false;
+			try { rejected=!restored.load(partial.get()); }
+			catch (const std::exception&) { rejected=true; }
+			assert(rejected);
+		}
+		auto corrupt=bytes;
+		corrupt[output.runtimeStart]=2; // fog buffer selector must be 0 or 1
+		auto invalid=input(corrupt,true);
+		bool rejected=false;
+		try { rejected=!restored.load(invalid.get()); }
+		catch (const std::exception&) { rejected=true; }
+		assert(rejected);
+	}
+	auto stream=input(bytes,true);
+	assert(restored.load(stream.get()));
+	if (text)
+	{
+		MemoryStreamBackend source(runtimeText.data(),runtimeText.size());
+		source.seekFromStart(0);
+		TextInputStream reader(&source);
+		restored.game.map.loadRuntimeState(&reader);
+	}
+
+	// The normal saved-game loader replaces the player header after loading.
+	restored.game.setGameHeader(header, true);
+	auto expected = savedRandom;
+	for (int i=0; i<2000; ++i) assert(syncRand() == expected());
+	randomGenerator = savedRandom;
+	for (int i=0; i<300; ++i)
+	{
+		step(restored.game);
+		const auto actual = simulationState(restored.game);
+		if (actual != continuation[i])
+		{
+			std::cerr << "Continuation mismatch at step " << i << " sizes " << actual.size() << '/' << continuation[i].size() << std::endl;
+			for (size_t j=0; j<std::min(actual.size(),continuation[i].size()); ++j)
+				if (actual[j]!=continuation[i][j]) std::cerr << " component " << j << ": " << actual[j] << " != " << continuation[i][j] << std::endl;
+			assert(false);
+		}
+	}
+	std::cout << "PASS " << (text ? "binary + text routing" : "binary") << (ai ? " AI" : " human") << " saved game continues RNG and 300 simulation steps across header replacement" << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	SDL_SetMainReady();
@@ -187,6 +301,8 @@ int main(int argc, char **argv)
 	globals.load();
 	globals.settings.rememberUnit = false;
 	checkPendingConstruction();
+	for (bool text : {false,true})
+		for (bool ai : {false,true}) checkRandomContinuation(text,ai);
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
 	{

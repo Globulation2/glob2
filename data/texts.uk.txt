@@ -1,0 +1,1764 @@
+[%0 has left the game]
+%0 залишає гру.
+[%0 level %1]
+%0 — рівень %1
+[%0 units can't access building]
+Не можуть дістатися будівлі: %0
+[%0 units can't access flag]
+Не можуть дістатися прапора: %0
+[%0 units can't access fruit]
+Не можуть дістатися фруктів: %0
+[%0 units can't access resource]
+Не можуть дістатися ресурсу: %0
+[%0 units not available]
+Недоступних істот: %0
+[%0 units too far from building]
+Надто далеко від будівлі: %0
+[%0 units too far from flag]
+Надто далеко від прапора: %0
+[%0 units too far from fruit]
+Надто далеко від фруктів: %0
+[%0 units too far from resource]
+Надто далеко від ресурсу: %0
+[%0 units too low level]
+Недостатній рівень істот: %0
+[%0% Uploaded]
+Надіслано %0%
+[%0's game]
+Гра гравця %0
+[%0's team unit got converted to your team]
+Істота з команди %0 перейшла до вашої команди
+[abreaviation explanation A]
+A: союзники
+[abreaviation explanation C]
+C: надсилати повідомлення чату
+[abreaviation explanation fV]
+fV: ділитися оглядом навколо їдалень (для переманювання істот)
+[abreaviation explanation mV]
+mV: ділитися оглядом навколо ринків (для обміну фруктами)
+[abreaviation explanation V]
+V: ділитися оглядом навколо всіх будівель
+[add map]
+Додати мапу
+[add shortcut]
+Додати клавішу
+[Add]
+Додати
+[AI Descriptions]
+Описи ШІ
+[AI]
+ШІ
+[ai]
+ШІ
+[AICastor-Description]
+Castor грає обережно й добре дає собі раду на мапах із малою кількістю ресурсів. Середня складність.
+[AICastor]
+Castor
+[AICortex-Description]
+Кортекс розширюється до нових пшеничних полів і посилає групи воїнів у бій за підтримки їдалень і лікарень поблизу лінії фронту. Середня складність. Експериментальний.
+[AICortex]
+Cortex
+[AINicowar-Description]
+Nicowar грає агресивно, швидко розростається й кидає на супротивників величезні армії. Висока складність.
+[AINicowar]
+Nicowar
+[AINone-Description]
+Без ШІ — нічого не робить.
+[AINone]
+Без ШІ
+[AINumbi-Description]
+Numbi — розвивається скромно, але швидко. Низька складність.
+[AINumbi]
+Numbi
+[AIEcono-Description]
+Econo — не атакує, але будує величезні бази й активно переманює істот. Низька складність.
+[AIEcono]
+Econo
+[AIWarrush-Description]
+Warrush — атакує рано й потужно, часто змушуючи гравця оборонятися з останніх сил. Середня складність.
+[AIWarrush]
+Warrush
+[Alga]
+Водорості
+[algae]
+водорості
+[alliances]
+Союзи
+[alt %0]
+Alt-%0
+[and]
+і
+[any explorer]
+будь-який розвідник
+[are dying hungry]
+голодують
+[are hungry]
+голодні
+[are ok]
+здорові
+[are wonded]
+поранені
+[armor]
+Броня
+[assigned]
+Призначено
+[At. speed]
+Швидк. атаки
+[At. strength]
+Сила атаки
+[Attack]
+Атака
+[audio]
+Звук
+[auto save]
+Автозбереження
+[available lan games]
+Доступні локальні ігри
+[awaiting players]
+Очікування гравців
+[away:]
+далеко:
+[Back]
+Назад
+[backspace]
+Backspace
+[barracks explanation 2]
+навички воїнів
+[barracks explanation]
+Поліпшує бойові
+[barracks]
+Казарма
+[beach size]
+розмір пляжу
+[Blocked Players]
+Заблоковані гравці
+[break]
+Break
+[briefing]
+Інструктаж
+[build %0 level %1]
+Збудувати: %0, рівень %1
+[Build]
+Будувати
+[Building Defaults]
+Типові параметри будівель
+[building settings]
+Параметри будівель
+[building site]
+будмайданчик
+[Building Tool Box Explanation]
+Shift + перетягування = прямокутник
+[Building Tool Line Explanation]
+Ctrl + перетягування = лінія
+[Buildings]
+Будівлі
+[Bullets]
+Снаряди
+[campaign editor]
+Редактор кампаній
+[campaign]
+Кампанія
+[Can't connect, can't find host]
+Не вдалося під’єднатися: сервер не знайдено
+[Can't host game, port %0 in use]
+Не вдалося створити гру: порт %0 зайнятий
+[Can't join game, game doesn't exist]
+Не вдалося приєднатися: гра не існує
+[Can't join game, game has started]
+Не вдалося приєднатися: гра вже почалася
+[Can't join game, game is full]
+Не вдалося приєднатися: у грі немає вільних місць
+[cancel destroy]
+Скасувати знесення
+[cancel repair]
+Скасувати ремонт
+[cancel upgrade]
+Скасувати поліпшення
+[Cancel]
+Скасувати
+[caps lock]
+Caps Lock
+[carry]
+Несе:
+[Change Area Name]
+Змінити назву ділянки
+[Cherry]
+Вишня
+[choose campaign]
+Виберіть кампанію
+[choose game]
+Виберіть гру
+[choose map]
+Виберіть мапу
+[clear area]
+Ділянка розчищення
+[Clearing:]
+Розчищення:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+Прибирає ресурси
+[clearingflag]
+Прапор розчищення
+[closed]
+Закрито
+[combined vision]
+Спільний огляд
+[compile]
+Скомпілювати скрипт
+[compose]
+Compose
+[Computing Fertility]
+Обчислення родючості
+[concrete islands terrain]
+Окремі острови
+[connect]
+Під’єднатися
+[connecting to game]
+Під’єднання до гри
+[connecting to]
+Під’єднання до
+[Construction Site Defaults]
+Типові параметри будмайданчиків
+[Continue playing]
+Продовжити гру
+[control %0]
+Ctrl-%0
+[Corn]
+Пшениця
+[crater density]
+кількість кратерів
+[crater lakes terrain]
+Кратерні озера
+[create game]
+Створити гру
+[create map]
+Створити мапу
+[credits]
+Автори
+[ctrl - line]
+Ctrl — лінія
+[current speed]
+Поточна швидкість
+[custom game]
+Власна гра
+[customcur]
+Власний вказівник
+[damage]
+Шкода
+[Damaged Map]
+Мапа поранених
+[decrease game speed]
+Сповільнити гру
+[decrease units working]
+Призначити менше істот
+[Defeat Your Oppenents]
+Переможіть супротивників
+[defencetower explanation 2]
+і будівлі поблизу
+[defencetower explanation]
+Атакує ворожих істот
+[defencetower]
+Оборонна вежа
+[Defense Map]
+Мапа оборони
+[Defense]
+Оборона
+[Delete game]
+Видалити вибрану гру
+[delete]
+Видалити
+[desert]
+пустеля
+[destroy building]
+Знести вибрану будівлю
+[destroy]
+Знести
+[display]
+Зображення
+[do nothing]
+Нічого не робити
+[don't carry anything]
+Нічого не несе
+[down]
+вниз
+[Download Map]
+Завантажити мапу
+[Download Maps]
+Завантажити мапи
+[downloaded %0]
+завантажено %0
+[downloading map]
+Завантаження мапи
+[edit map]
+Редагувати мапу
+[editing map]
+Редагування мапи
+[editor shortcuts]
+Редактор
+[editor]
+Редактор
+[end]
+End
+[Enter your nickname :]
+Введіть псевдонім:
+[Enter your password :]
+Введіть пароль:
+[enter]
+Enter
+[equals]
+дорівнює
+[ERROR_CANT_LOAD_MAP]
+Не вдалося завантажити мапу: файл пошкоджений або має несумісну версію.
+[ERROR_CANT_SAVE_CAMPAIGN]
+Не вдалося зберегти кампанію. Перевірте, чи існує тека призначення, чи дозволено запис до неї та чи є вільне місце.
+[escape]
+Esc
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+Збирає розвідників
+[explorationflag]
+Прапор розвідки
+[Explorer Ratio]
+Частка розвідників
+[Explorer]
+Розвідник
+[explorers]
+розвідники
+[extra islands]
+порожні острови
+[f10]
+F10
+[f11]
+F11
+[f12]
+F12
+[f13]
+F13
+[f14]
+F14
+[f15]
+F15
+[f1]
+F1
+[f2]
+F2
+[f3]
+F3
+[f4]
+F4
+[f5]
+F5
+[f6]
+F6
+[f7]
+F7
+[f8]
+F8
+[f9]
+F9
+[Fertility Map]
+Мапа родючості
+[Flag Defaults]
+Типові параметри прапорів
+[flag settings explanation]
+Типовий радіус дії прапора
+[fog of war]
+Туман війни
+[food]
+Їжа
+[forbidden area]
+Заборонена ділянка
+[Free]
+Здорові
+[free]
+без роботи
+[from:]
+від:
+[fruit]
+фрукти
+[fullscreen]
+На весь екран
+[game full]
+Усі місця зайняті
+[game shortcuts]
+Клавіші гри
+[game speed help]
+Лише для одиночної гри та повторів. Мережева гра працює на швидкості 1x.
+[game speed]
+Швидкість гри
+[Game]
+Гра
+[general settings]
+Загальні параметри
+[go to event]
+До місця події
+[go to home]
+До бази
+[goto main menu]
+До головного меню
+[grass]
+Трава
+[ground attack]
+наземна атака
+[guard area]
+Ділянка охорони
+[GUIMapPreview text 0]
+Будь ласка,
+[GUIMapPreview text 1]
+виберіть мапу
+[handmade map]
+Мапа ручної роботи
+[Happyness]
+Щастя
+[hard pause]
+Повна пауза
+[Harvest]
+Збирання
+[high priority]
+високий
+[hints]
+Підказки
+[home]
+Home
+[hospital explanation 2]
+
+[hospital explanation]
+Лікує ваших істот
+[hospital]
+Лікарня
+[host]
+Створити мережеву гру
+[hp]
+Здоров’я
+[Human]
+Людина
+[human]
+людина
+[hungry]
+голодні
+[hungryness]
+Голод
+[In way]
+У дорозі
+[increase game speed]
+Прискорити гру
+[increase units working]
+Призначити більше істот
+[inn explanation 2]
+
+[inn explanation]
+Годує ваших істот
+[inn]
+Їдальня
+[insert]
+Insert
+[inside]
+Усередині
+[islands size]
+розмір островів
+[islands terrain]
+Острови
+[isles terrain]
+Острівці
+[iterate selection]
+Вибрати наступний об’єкт
+[jobs]
+завдання
+[join a game]
+Приєднатися до гри
+[join]
+Приєднатися
+[keyboard settings]
+Параметри клавіатури
+[kick]
+Вигнати
+[lan]
+Гра в локальній мережі
+[language incomplete]
+Українська — неповний переклад
+[language-code]
+uk
+[language-tr]
+Мова
+[language]
+Українська
+[Leave Game]
+Залишити гру
+[left meta]
+лівий Meta
+[left super]
+лівий Windows
+[left]
+ліворуч
+[level]
+Рівень
+[levels]
+Рівні
+[load campaign]
+Завантажити кампанію
+[load game]
+Завантажити гру
+[load map]
+Завантажити мапу
+[load replay]
+Завантажити повтор
+[load script]
+Завантажити скрипт
+[load]
+Завантажити
+[loading map list]
+Завантаження списку мап...
+[Lobby]
+Ігрова кімната
+[login]
+Увійти
+[look around]
+Оглянутися
+[Lost : %0 has more prestige than you]
+Поразка: %0 має більше престижу за вас
+[Lost : your colony is dead]
+Поразка: ваша колонія загинула
+[low priority]
+низький
+[lowquality]
+Низька якість
+[Magic At. Air]
+Шкода в повітрі
+[Magic At. Ground]
+Шкода на землі
+[map description]
+Опис
+[Map Discovered]
+Мапу відкрито
+[Map download failure: lost connection]
+Не вдалося завантажити мапу: зв’язок із YOG втрачено
+[Map name: %0]
+Назва мапи: %0.
+[map name]
+Назва
+[map rated]
+Мапу оцінено
+[map script]
+Скрипт мапи
+[map size x]
+Ширина мапи
+[map size y]
+Висота мапи
+[Map upload failure: connection lost]
+Не вдалося надіслати мапу: зв’язок із YOG втрачено
+[Map upload failure: map name in use]
+Не вдалося надіслати мапу: цю назву вже використано.
+[Map upload failure: unknown reason]
+Не вдалося надіслати мапу з невідомої причини.
+[Map Upload: Author Name]
+Ім’я автора
+[Map Upload: Waiting for reply]
+Очікування відповіді
+[mark map]
+Позначити місце для союзників
+[market explanation 2]
+фруктами з іншими
+[market explanation]
+Дозволяє обмін
+[market]
+Ринок
+[maximum game speed]
+Максимальна
+[medium priority]
+середній
+[meta %0]
+Meta-%0
+[Min required level:]
+Мін. рівень:
+[Minimum Level To Flag]
+Мін. рівень істот
+[multiplayer game speed]
+Швидкість гри: 1x (мережева гра)
+[Music volume]
+Гучність музики
+[Mute]
+Вимкнути звук
+[mute]
+без звуку
+[new campaign]
+Нова кампанія
+[new map]
+Нова мапа
+[nick taken]
+На жаль, вибране ім’я вже зайняте у freenode. Ви зможете спілкуватися лише через YOG.
+[no fullscreen]
+* лише у віконному режимі
+[No Hints]
+Немає підказок
+[no key]
+не призначено
+[No Objectives]
+Немає цілей
+[no ressources growth areas]
+Заборона росту
+[No]
+Ні
+[Not Enough Ratings]
+Недостатньо оцінок
+[not ready]
+не готово
+[Number Of Buildings]
+Кількість будівель
+[number of players: %0 (%1 AI)]
+Гравців: %0 (ШІ: %1)
+[number of teams: %0]
+Команд: %0
+[number of teams]
+кількість команд
+[Number Of Units]
+Кількість істот
+[numlock]
+Num Lock
+[objectives]
+Цілі
+[of which]
+з них
+[ok]
+Гаразд
+[old islands terrain]
+старі випадкові острови
+[old random terrain]
+старий випадковий ландшафт
+[on press]
+Натиск
+[On the spot]
+Тут
+[on unpress]
+Відпуск
+[open chat box]
+Відкрити чат
+[open load menu]
+Відкрити меню завантаження
+[open save menu]
+Відкрити меню збереження
+[open scenario editor]
+Відкрити редактор сценарію
+[open teams editor]
+Відкрити редактор команд
+[open]
+вільно
+[OpenGL]
+OpenGL
+[Options]
+Параметри
+[options]
+параметри
+[Orange]
+Апельсин
+[Other Options]
+Інші параметри
+[page down]
+Page Down
+[page up]
+Page Up
+[Papyrus]
+Папірус
+[pause game]
+Призупинити гру
+[pause]
+Pause
+[Paused]
+Пауза
+[player name]
+Ім’я гравця
+[player rating %0]
+Рейтинг гравця: %0
+[players]
+Гравці
+[please wait]
+Зачекайте
+[power]
+Power
+[press space]
+Натисніть пробіл, щоб продовжити.
+[Prestige Score]
+Очки престижу
+[Prestige Win Enabled]
+Перемога за престижем
+[Prestige]
+Престиж
+[Primary Objectives]
+Основні
+[print screen]
+Print Screen
+[priority]
+Пріоритет
+[Prune]
+Слива
+[quit the editor]
+Вийти з редактора
+[quit the game]
+Вийти з гри
+[quit the replay]
+Завершити перегляд
+[quit]
+Вийти
+[racetrack explanation 2]
+рух ваших істот
+[racetrack explanation]
+Прискорює наземний
+[racetrack]
+Бігова доріжка
+[range]
+Дальність
+[Rated %0]
+Оцінка: %0
+[ratios]
+Співвідношення
+[ready?]
+готові?
+[refresh map list]
+Оновити список мап
+[Register]
+Зареєструватися
+[remember unit]
+Пам’ятати число істот
+[Remember YOG password localy]
+Зберегти пароль на цьому пристрої.
+[remove map]
+Видалити мапу
+[remove shortcut]
+Видалити клавішу
+[Remove]
+Видалити
+[repair building]
+Почати/скасувати ремонт
+[repair]
+Ремонтувати
+[repeat area]
+повторень ландшафту
+[Repeat your password :]
+Повторіть пароль:
+[replay ended]
+Повтор завершено
+[restore default shortcuts]
+Відновити типові клавіші
+[return to editor]
+Повернутися до редактора
+[return to game]
+Повернутися до гри
+[return to replay]
+Повернутися до повтору
+[return]
+Enter
+[right meta]
+правий Meta
+[right super]
+правий Windows
+[right]
+праворуч
+[river diameter]
+ширина річки
+[river terrain]
+Річка
+[sand]
+Пісок
+[save before quit?]
+Зберегти перед виходом?
+[save game]
+Зберегти гру
+[save map]
+Зберегти мапу
+[save replay]
+Зберегти повтор
+[save script]
+Зберегти скрипт
+[Save]
+Зберегти
+[school explanation 2]
+навички робітників
+[school explanation]
+Поліпшує будівельні
+[school]
+Школа
+[Script Areas]
+Ділянки скрипту
+[scroll lock]
+Scroll Lock
+[scroll wheel enabled]
+Прокручування коліщатком
+[Secondary Objectives]
+Додаткові
+[seeking a job]
+шукає роботу
+[seeking]
+шукає
+[select barracks building]
+Вибрати казарму
+[select clearingflag]
+Вибрати прапор розчищення
+[select construct barracks]
+Будувати казарму
+[select construct defencetower]
+Будувати оборонну вежу
+[select construct hospital]
+Будувати лікарню
+[select construct inn]
+Будувати їдальню
+[select construct market]
+Будувати ринок
+[select construct racetrack]
+Будувати бігову доріжку
+[select construct school]
+Будувати школу
+[select construct stonewall]
+Будувати кам’яну стіну
+[select construct swarm]
+Будувати рій
+[select construct swimmingpool]
+Будувати басейн
+[select delete tool]
+Вибрати інструмент видалення
+[select explorationflag]
+Вибрати прапор розвідки
+[select hospital building]
+Вибрати лікарню
+[select inn building]
+Вибрати їдальню
+[select market building]
+Вибрати ринок
+[select place clearing area]
+Позначати ділянку розчищення
+[select place clearingflag]
+Ставити прапор розчищення
+[select place explorationflag]
+Установлювати прапор розвідки
+[select place forbidden area]
+Позначати заборонену ділянку
+[select place guard area]
+Позначати ділянку охорони
+[select place warflag]
+Установлювати бойовий прапор
+[select racetrack building]
+Вибрати бігову доріжку
+[select school building]
+Вибрати школу
+[select swarm building]
+Вибрати рій
+[select swimmingpool building]
+Вибрати басейн
+[select tower building]
+Вибрати оборонну вежу
+[select wall building]
+Вибрати стіну
+[select warflag]
+Вибрати бойовий прапор
+[settings]
+Налаштування
+[shift %0]
+Shift-%0
+[shortcut explanation enter]
+Enter: надіслати повідомлення чату
+[shortcut explanation v]
+V: утримуйте, щоб говорити
+[show areas]
+Показати ділянки
+[show flags]
+Показати прапори
+[show main menu]
+Показати головне меню
+[skin]
+Зображення
+[smoothing]
+Згладжування
+[sort by name]
+Назва
+[sort by rating]
+Рейтинг
+[sort by size]
+Розмір
+[Sort By]
+Сортувати за
+[space]
+пробіл
+[start mission]
+Почати місію
+[start new campaign]
+Почати нову кампанію
+[Start]
+Почати
+[Starving Map]
+Мапа голодування
+[starving]
+голодують
+[Statistics]
+Статистика
+[Still (i)]
+Залишилося
+[still (w)]
+Ще
+[still one unit working]
+Ще працює одна істота
+[Still one]
+Ще одна
+[Stone]
+Камінь
+[stone]
+камінь
+[stonewall explanation 2]
+захист
+[stonewall explanation]
+Пасивний
+[stonewall]
+Кам’яна стіна
+[submit rating]
+Надіслати оцінку
+[svr hostname]
+Адреса сервера
+[swamp terrain]
+Болото
+[swarm explanation 2]
+
+[swarm explanation]
+Створює нових істот
+[swarm]
+Рій
+[Swim]
+Плавання
+[swimmingpool explanation 2]
+ваших істот
+[swimmingpool explanation]
+Прискорює плавання
+[swimmingpool]
+Басейн
+[switch to adding areas]
+Увімкнути додавання ділянок
+[switch to area brush 1]
+Вибрати пензель ділянок 1
+[switch to area brush 2]
+Вибрати пензель ділянок 2
+[switch to area brush 3]
+Вибрати пензель ділянок 3
+[switch to area brush 4]
+Вибрати пензель ділянок 4
+[switch to area brush 5]
+Вибрати пензель ділянок 5
+[switch to area brush 6]
+Вибрати пензель ділянок 6
+[switch to area brush 7]
+Вибрати пензель ділянок 7
+[switch to area brush 8]
+Вибрати пензель ділянок 8
+[switch to building view]
+Показати панель будівель
+[switch to flag view]
+Показати панель прапорів
+[switch to removing areas]
+Увімкнути видалення ділянок
+[switch to teams view]
+Показати панель команд
+[switch to terrain view]
+Показати панель ландшафту
+[sys req]
+SysRq
+[tab]
+Tab
+[teams editor]
+Редактор команд
+[Teams Fixed]
+Незмінні команди
+[teams]
+ команди
+[the barracks is finished]
+Казарму збудовано.
+[the barracks is under attack]
+Казарма під атакою.
+[the building is finished]
+Будівлю збудовано.
+[the building is under attack]
+Будівля під атакою.
+[the clearingflag is finished]
+Прапор розчищення встановлено.
+[the clearingflag is under attack]
+Прапор розчищення під атакою.
+[the defencetower is finished]
+Оборонну вежу збудовано.
+[the defencetower is under attack]
+Оборонна вежа під атакою.
+[the explorationflag is finished]
+Прапор розвідки встановлено.
+[the explorationflag is under attack]
+Прапор розвідки під атакою.
+[The game has not been finished]
+Гру не завершено.
+[the games]
+Ігри
+[the hospital is finished]
+Лікарню збудовано.
+[the hospital is under attack]
+Лікарня під атакою.
+[The host has cancelled the game]
+Організатор скасував гру.
+[the inn is finished]
+Їдальню збудовано.
+[the inn is under attack]
+Їдальня під атакою.
+[the maps]
+Мапи
+[the market is finished]
+Ринок збудовано.
+[the market is under attack]
+Ринок під атакою.
+[The player %0 has joined YOG]
+%0 приєднується до YOG.
+[The player %0 has left YOG]
+%0 залишає YOG.
+[the racetrack is finished]
+Бігову доріжку збудовано.
+[the racetrack is under attack]
+Бігова доріжка під атакою.
+[the replays]
+Повтори
+[the school is finished]
+Школу збудовано.
+[the school is under attack]
+Школа під атакою.
+[the stonewall is finished]
+Ділянку стіни збудовано.
+[the stonewall is under attack]
+Ворог біля ваших стін.
+[the swarm is finished]
+Рій збудовано.
+[the swarm is under attack]
+Рій під атакою.
+[the swimmingpool is finished]
+Басейн збудовано.
+[the swimmingpool is under attack]
+Басейн під атакою.
+[the warflag is finished]
+Бойовий прапор встановлено.
+[the warflag is under attack]
+Бойовий прапор під атакою.
+[time]
+Час
+[to:]
+до:
+[toggle draw accessibility aids]
+Показати/сховати номери команд
+[toggle draw information]
+Показати/сховати відомості
+[toggle draw unit paths]
+Показати/сховати шляхи істот
+[toggle menu screen]
+Показати/сховати меню
+[toggle recording voice]
+Увімкнути/вимкнути запис голосу
+[Total Attack Power]
+Сумарна сила атаки
+[Total Defence Power]
+Сумарна сила оборони
+[Total Hitpoints]
+Сумарне здоров’я
+[Total prestige reached]
+Загалом здобуто престижу
+[Total]
+Усього
+[tutorial]
+Навчання
+[tutorial text 1]
+Вітаємо в початковому навчанні Globulation 2! Тут ви дізнаєтеся, як будувати їдальні, розвідувати місцевість і знищувати ворогів. На вас чекає багато корисних знань!
+[tutorial text 2]
+Тепер, коли ви опанували основи, час познайомитися з іншими будівлями: біговими доріжками, басейнами та школами.
+[tutorial text 3]
+Ви вже багато чого навчилися. Перейдімо до воїнів, казарм і поліпшень.
+[tutorial text 4]
+Ви майже закінчили. Залишилися лише прапори й атаки. Після цього ви знатимете достатньо, щоб спробувати власні ігри, а згодом — зіграти в мережі проти найкращих гравців Globulation 2.
+[Uncontrolled]
+Без керування
+[undo]
+скасувати
+[uniform terrain]
+Однорідний ландшафт
+[Unit editor]
+Редактор істот
+[unit settings explanation]
+Типова кількість призначених істот
+[units working]
+ істот працюють
+[Units]
+Істоти
+[unlocked at start]
+Доступно від початку
+[unlocked by]
+Відкривається після
+[Unnamed Area]
+{Безіменна ділянка}
+[up]
+вгору
+[upgrade building]
+Почати/скасувати поліпшення
+[Upgrade Defaults]
+Типові параметри поліпшень
+[upgrade]
+Поліпшити
+[Upload Map]
+Надіслати мапу
+[upload map]
+Надіслати мапу
+[username]
+Ім’я користувача
+[Version]
+Версія
+[view history]
+Переглянути історію
+[Voice volume]
+Гучність голосу
+[waiting for %0]
+Очікування: %0
+[waiting for key]
+натисніть клавішу...
+[Waiting]
+Очікування
+[Walk]
+Ходьба
+[warflag explanation 2]
+
+[warflag explanation]
+Збирає воїнів
+[warflag]
+Бойовий прапор
+[Warning, you need to reboot the game for changes to take effect]
+Щоб зміни набули чинності, потрібно перезапустити гру
+[Warrior Ratio]
+Частка воїнів
+[Warrior]
+Воїн
+[warriors]
+воїни
+[watch again]
+Переглянути ще раз
+[watching:]
+Перегляд:
+[water]
+Вода
+[Wheat]
+Пшениця
+[Won : you defeated your opponents]
+Перемога: ви здолали супротивників
+[Won : you have the most prestige]
+Перемога: у вас найбільше престижу
+[Won : your ally %0 has the most prestige]
+Перемога: ваш союзник %0 має найбільше престижу
+[Wood]
+Деревина
+[wood]
+деревина
+[Worker Ratio]
+Частка робітників
+[Worker]
+Робітник
+[workers]
+робітники
+[working]
+Працює
+[wounded]
+поранені
+[Yes]
+Так
+[YESTS_CONNECTING]
+Установлення з’єднання з метасервером YOG...
+[YESTS_CONNECTION_LOST]
+Зв’язок із YOG втрачено.
+[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
+Метасервер YOG відхилив з’єднання, бо це ім’я користувача вже зареєстровано. Якщо це ваше ім’я, вимкніть параметр «Зареєструвати нового користувача YOG із паролем».
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
+Метасервер YOG відхилив з’єднання через неправильний пароль.
+[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
+Метасервер YOG відхилив з’єднання, бо для цього імені користувача ще немає пароля. Якщо ви хочете зареєструвати своє ім’я з цим паролем, перед під’єднанням увімкніть параметр «Зареєструвати нового користувача YOG із паролем». Це потрібно зробити лише один раз.
+[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
+Метасервер YOG відхилив з’єднання, бо цю IP-адресу тимчасово заблоковано. Дочекайтеся розблокування або зверніться до адміністраторів.
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+Метасервер YOG відхилив з’єднання, бо ваша версія Globulation 2 застаріла. Щоб грати в мережі, завантажте найновішу версію з www.globulation2.org.
+[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
+Метасервер YOG відхилив з’єднання без пояснення!
+[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
+Метасервер YOG відхилив з’єднання, бо це ім’я користувача вже використовує хтось інший.
+[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
+Метасервер YOG відхилив з’єднання, бо це ім’я користувача заблоковано. Зверніться до адміністраторів.
+[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
+Метасервер YOG відхилив з’єднання через неприпустиме ім’я користувача. Імена можуть містити лише літери, цифри та знаки підкреслення.
+[YESTS_CREATED]
+Система з’єднання готова під’єднатися до метасервера YOG.
+[YESTS_PASSWORDS_DONT_MATCH]
+Введені паролі не збігаються. Введіть їх знову.
+[YESTS_UNABLE_TO_CONNECT]
+Не вдалося під’єднатися. Схоже, метасервер YOG недоступний.
+[yog block command help]
+/block <ім’я_гравця>    Блокує гравця: ви більше не бачитимете його повідомлень.
+[yog block command player %0 already blocked]
+Гравця %0 вже заблоковано
+[yog block command player %0 blocked]
+Гравця %0 заблоковано
+[yog block command player %0 not found]
+Гравця %0 не знайдено
+[yog command header]
+Доступні команди клієнта YOG:
+[yog command unknown]
+Невідома команда.
+[yog help command help]
+/help    Показує цю довідку
+[yog]
+Ysagoon Online Gaming
+[you have lost]
+Ви програли!
+[you have won]
+Ви перемогли!
+[You where kicked from the game]
+Вас вигнали з гри
+[Your %0 are under attack]
+Під атакою ваша істота: %0
+[Your IP address was temporarily banned]
+Вашу IP-адресу тимчасово заблоковано. Дочекайтеся розблокування або зверніться до адміністраторів.
+[Your unit got converted to %0's team]
+Ваша істота перейшла до команди %0
+[Your username was banned]
+Ваше ім’я користувача заблоковано. Для розблокування зверніться до адміністраторів.
+[Units still inside: %0]
+Усередині: %0
+[Units still working: %0]
+Ще працюють: %0
+[2 vs 2]
+2 проти 2
+[AI strategy & counterplay]
+Стратегія штучного інтелекту та контргра
+[AICastor-Profile]
+Стратегія: розширюється обережно та добре працює на картах з невеликою кількістю ресурсів.\n\nСильні сторони: обмежене розширення ефективне в іграх з обмеженими ресурсами.\n\nПропонована контргра: займіть територію раніше. Не думайте, що брак ресурсів послабить цей ШІ.
+[AICastor-Summary]
+Обережне розширення; добре працює з обмеженими ресурсами.
+[AICortex-Profile]
+Стратегія: керує запасами їжі, розширюється до нових пшеничних полів і збирає послідовні групи воїнів. Їдальні та лікарні поблизу лінії фронту підтримують атаки далеко від бази.\n\nСильні сторони: надсилає підкріплення групами, підтримує військовий тиск і реагує на нестачу їжі.\n\nПропонована протидія: боріться за контроль над новими пшеничними полями та атакуйте їх допоміжні будівлі поблизу лінії фронту. Атакуйте, перш ніж його групи воїнів будуть готові.\n\nЕкспериментальний ШІ. Середня складність; поради щодо протидії не є оцінками за результатами порівняльних тестів.
+[AICortex-Summary]
+Розширюється з огляду на запаси їжі та підтримує атакуючі війська.
+[AINicowar-Profile]
+Стратегія: швидко розширюється і атакує супротивників величезними арміями.\n\nСильні сторони: Швидке розширення підтримує агресивні військові атаки.\n\nПропонована протидія: стримуйте його розширення. Використовуйте місцевість, щоб зменшити кількість ворожих військ, які можуть одночасно битися.
+[AINicowar-Summary]
+Швидко розширюється та створює великі армії для агресивних атак.
+[AINone-Profile]
+Стратегія: ШІ не дає команд.\n\nСильні сторони: передбачуваний, неактивний суперник для експериментів.\n\nСлабкі сторони: не розширюється та не адаптується.
+[AINone-Summary]
+Бездіяльна колонія для експериментів.
+[AINumbi-Profile]
+Стратегія: швидко розширюється, але в невеликому масштабі. Простіший супротивник для практики управління колонією.\n\nСильні сторони: дозволяє навчитися як економічному менеджменту, так і бою.\n\nПропонована протидія: розвивайте сильнішу економіку та тренуйте свою армію перед нападом.
+[AINumbi-Summary]
+Швидке розширення в невеликих масштабах.
+[AIEcono-Profile]
+Стратегія: не атакує, але будує величезні бази та активно переманює ворожих юнітів на свій бік.\n\nСильні сторони: розширення та переманювання юнітів загрожують супротивникам без прямих атак.\n\nПропонована контргра: розвивайте свою колонію на ранній стадії та уникайте надсилання підрозділів туди, де ворог може їх переманити.
+[AIEcono-Summary]
+Величезні бази та конверсія замість атак.
+[AIWarrush-Profile]
+Стратегія: атакує рано і сильно, перш ніж супротивники закінчать підготовку.\n\nСильні сторони: використовує незахищене розширення та повільну військову підготовку.\n\nРекомендована контргра: переживіть першу атаку, зберігаючи свою економіку, а потім контратакуйте.
+[AIWarrush-Summary]
+Швидкі атаки, які перевіряють ваш ранній захист.
+[Algae]
+Водорості
+[Alliances]
+Союзи
+[Beach size]
+Розмір пляжу
+[Blue]
+Синій
+[Brown]
+Коричневий
+[Built-in maps]
+Вбудовані карти
+[Can change in game]
+Може змінюватися в грі
+[Closed]
+Закрито
+[Colonies]
+Колонії
+[Colony]
+Колонія
+[Concrete islands]
+Окремі острови
+[Conquest only]
+Тільки завоювання
+[Conquest or prestige]
+Завоювання чи престиж
+[Could not launch this map. Your setup is retained; try again.]
+Не вдалося запустити цю карту. Ваші налаштування збережено; спробуйте ще раз.
+[Could not load this map. Choose another map or retry.]
+Не вдалося завантажити цю карту. Виберіть іншу карту або повторіть спробу.
+[Crater lakes]
+Кратерні озера
+[Custom]
+Власні
+[Custom teams]
+Власні команди
+[Cyan]
+Блакитний
+[Desert weight]
+Вага пустелі
+[Easy]
+Легкий
+[Explore as you play]
+Досліджуйте під час гри
+[Extra colony assignments are retained for larger maps.]
+Додаткові призначення колоній зберігаються для великих карт.
+[Extra islands]
+Додаткові острови
+[FFA]
+Всі проти всіх
+[Fruit]
+Фрукти
+[Game Rules]
+Правила гри
+[Game speed]
+Швидкість гри
+[Generate & play]
+Створити й грати
+[Give at least one terrain type a nonzero weight.]
+Надайте принаймні одному типу рельєфу ненульову вагу.
+[Grass weight]
+Вага трави
+[Gray]
+Сірий
+[Green]
+Зелений
+[Hard]
+Складний
+[Height]
+Висота
+[Invalid colony count.]
+Недійсна кількість колоній.
+[Island size]
+Розмір острова
+[Islands]
+Острови
+[Isles]
+Острівці
+[Lake density]
+Щільність озер
+[Landscape]
+Ландшафт
+[Last colony standing]
+Остання вціліла колонія
+[Layout]
+Розташування
+[Locked teams]
+Заблоковані команди
+[Magenta]
+Маджента
+[Map]
+Карта
+[Map knowledge]
+Знання карти
+[Match finished]
+Матч закінчено
+[Medium]
+Середній
+[Medium - Experimental]
+Середній – Експериментальний
+[No AI orders]
+Без команд ШІ
+[Old islands]
+Старі острови
+[Old random]
+Старий випадковий
+[Open at least one colony to start a match.]
+Відкрийте принаймні одну колонію, щоб почати матч.
+[Open book]
+Розкритий світ
+[Pink]
+Рожевий
+[Play this map]
+Грати на цій карті
+[Players & Teams]
+Гравці та команди
+[Premade maps]
+Готові карти
+[Preview ready. Start plays this exact map.]
+Попередній перегляд готовий. Початок гри використовує саме цю карту.
+[Purple]
+Фіолетовий
+[Quick clash]
+Швидкий бій
+[Random map]
+Випадкова карта
+[Red]
+Червоний
+[Repeat landscape]
+Повторення ландшафту
+[Resources]
+Ресурси
+[Restore standard rules]
+Відновити стандартні правила
+[Revealed terrain does not reveal all enemy activity.]
+Виявлена місцевість не виявляє всієї активності противника.
+[River]
+Річка
+[River width]
+Ширина річки
+[Sand weight]
+Вага піску
+[Select a valid map.]
+Виберіть дійсну карту.
+[Shared control needs a free controller slot (maximum 12).]
+Спільне керування потребує вільного місця для гравця або ШІ (не більше 12).
+[Smoothing]
+Згладжування
+[Standard]
+Стандартний
+[Start game]
+Почати гру
+[Starting workers]
+Початкові робітники
+[Starting workers: Game Rules tab.]
+Початкові працівники: вкладка Правила гри.
+[Swamp]
+Болото
+[Team]
+Команда
+[Terrain]
+Рельєф місцевості
+[Terrain revealed]
+Розкрито місцевість
+[Try a ruleset, then make it your own.]
+Спробуйте набір правил, а потім створіть його самостійно.
+[Victory]
+Перемога
+[Watch game]
+Дивитися гру
+[Water weight]
+Вага води
+[White]
+Білий
+[Width]
+Ширина
+[Yellow]
+Жовтий
+[You]
+Ви
+[You + AI]
+Ви + ШІ
+[You and the AI both issue orders. Uses two controller slots.]
+Ви та ШІ можете віддавати накази. Займає два місця для гравців і ШІ.
+[You vs all]
+Ви проти всіх
+[Your maps]
+Ваші карти
+[colonies]
+колонії
+[* Changed from standard.]
+* Змінено зі стандартного.
+[World & diplomacy]
+Світ і дипломатія
+[Starting conditions & pace]
+Стартові умови та темп
+[Inactive]
+Неактивний
+[8 workers / 2x speed]
+8 працівників / 2x швидкість
+[Changes the pace of the whole simulation.]
+Змінює темп усієї симуляції.
+[Choose whether teams can change during the match.]
+Виберіть, чи можна змінювати команди під час матчу.
+[Classic colony building]
+Традиційний розвиток колонії
+[Dimensions and colony count are set above.]
+Розміри та кількість колоній встановлюються вище.
+[Generate & watch]
+Створити й дивитися
+[Info]
+Інформація
+[Map-defined starting units]
+Початкові юніти, визначені картою
+[No maps in this library.]
+У цій бібліотеці немає карт.
+[Premade maps retain their authored starting units.]
+Готові карти зберігають початкових юнітів, заданих автором.
+[Premade: only speed changes (2x)]
+Готова карта: змінюється лише швидкість (2x)
+[Start with terrain known]
+Почніть з відомої місцевості
+[This colony will not join the match.]
+Ця колонія не приєднається до матчу.
+[This landscape uses a fixed terrain recipe.]
+Цей пейзаж використовує фіксований рецепт місцевості.
+[This landscape uses fixed resource placement.]
+Цей ландшафт використовує фіксоване розміщення ресурсів.
+[Win through conquest]
+Перемога через завоювання
+[You control this colony.]
+Ви контролюєте цю колонію.
+[controllers]
+гравці та ШІ
+[Use]
+Виберіть
+[Lime]
+Лаймово-зелений
+[Teal]
+Синьо-зелений
+[Azure]
+Небесно-блакитний
+[Updating map preview...]
+Оновлення попереднього перегляду карти...
+[Generation failed. Adjust settings or press Start to retry.]
+Помилка генерації. Налаштуйте параметри або натисніть «Пуск», щоб повторити спробу.
+[Preview unavailable. Adjust settings or start to retry.]
+Попередній перегляд недоступний. Змініть налаштування або запустіть гру, щоб повторити спробу.
+[automatic torus view]
+Автоматичний вигляд тора
+[toggle torus view]
+Перемкнути вигляд 2D / тора
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+Для режиму 2 проти 2 потрібні чотири відкриті колонії. Для режиму Ви проти всіх потрібна людина.
+[Alliance]
+Альянс
+[Choose a rule to change it.]
+Виберіть правило, щоб змінити його.
+[Conquest only removes prestige victory; map scripts still apply.]
+Тільки завоювання вимикає перемогу за престижем; сценарії карти залишаються чинними.
+[Control]
+Керування
+[Controller]
+Хто керує
+[Generate preview]
+Створити попередній перегляд
+[Generation failed. Adjust settings or try again.]
+Помилка генерації. Змініть налаштування або повторіть спробу.
+[Map settings changed. Generate a new preview or start.]
+Налаштування карти змінено. Створіть новий попередній перегляд або почніть.
+[Map source]
+Джерело карти
+[Map-defined]
+Визначено картою
+[Match format]
+Формат гри
+[No current preview]
+Немає поточного попереднього перегляду
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Швидкий бій: подвійна швидкість; створені карти починаються з 8 робітників.
+[Reroll]
+Створіть іншу карту
+[Ruleset]
+Набір правил
+[Select a map from the library.]
+Виберіть карту з бібліотеки.
+[Starting workers affects generated maps only.]
+Початкова кількість робітників стосується лише згенерованих карт.
+[Unavailable]
+Недоступний
+[Use selection]
+Застосувати вибір
+[Quick clash on premade maps: only speed changes (2x).]
+Швидкий бій на готових картах: змінюється лише швидкість (подвійна швидкість).
+[Generate a preview to explore this world.]
+Створіть попередній перегляд, щоб дослідити цей світ.
+[More workers jump-start colony growth. Changes the generated map.]
+Більша кількість робітників прискорює ріст колонії. Цей параметр змінює згенеровану карту.
+[No warriors]
+Без воїнів
+[settings Add key to sequence]
+Додати клавішу до послідовності
+[settings Add shortcut]
+Додати комбінацію
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Коліщатком миші змінюйте кількість призначених істот. Якщо параметр вимкнено, утримуйте Ctrl. З клавішею Shift змінюється радіус прапора. Параметр також впливає на використання коліщатка в інших меню.
+[settings Adjust music and voice volume.]
+Налаштуйте гучність музики та голосу.
+[settings Adjust the pace of play.]
+Налаштуйте швидкість гри.
+[settings Advanced binding]
+Розширене налаштування комбінації
+[settings Artwork & effects]
+Ілюстрації та ефекти
+[settings Audio]
+Звук
+[settings Bind Escape]
+Призначити клавішу Escape
+[settings Building]
+Будівля
+[settings Building defaults]
+Типові параметри будівель
+[settings Cancel]
+Скасувати
+[settings Changes saved automatically]
+Зміни зберігаються автоматично
+[settings Changes you make during play update these defaults for future games.]
+Зміни, які ви вносите під час гри, оновлюють ці параметри за замовчуванням для майбутніх ігор.
+[settings Changing the renderer requires a restart.]
+Зміна рендерера потребує перезапуску.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Виберіть комбінацію клавіш, щоб змінити її, або додайте іншу комбінацію клавіш для дії.
+[settings Choose a window or fill the screen.]
+Виберіть віконний або повноекранний режим.
+[settings Choose how the game looks on your screen.]
+Виберіть, як гра буде виглядати на вашому екрані.
+[settings Completed]
+Завершені будівлі
+[settings Construction]
+Будівництво
+[settings Controls]
+Керування грою
+[settings Could not change display mode. The previous mode was restored.]
+Не вдалося змінити режим відображення. Відновлено попередній режим.
+[settings Could not save]
+Не вдалося зберегти
+[settings Current display]
+Поточний режим екрана
+[settings Default]
+За замовчуванням
+[settings Display]
+Зображення
+[settings Display & graphics]
+Дисплей і графіка
+[settings Display the Globulation 2 cursor.]
+Показувати курсор гри Globulation 2.
+[settings Done]
+Готово
+[settings Edit shortcut]
+Редагувати комбінацію клавіш
+[settings Flags]
+Прапори
+[settings Full]
+Повна деталізація
+[settings Fullscreen]
+На весь екран
+[settings Game]
+Гра
+[settings Game speed]
+Швидкість гри
+[settings Gameplay]
+Ігровий процес
+[settings Graphics detail]
+Деталізація графіки
+[settings Keep]
+Зберегти зміни
+[settings Keep this display mode?]
+Зберегти цей режим відображення?
+[settings Keep your volume levels while silencing audio.]
+Вимкніть усі звуки, не змінюючи збережених рівнів гучності.
+[settings Key]
+Клавіша
+[settings Keyboard shortcuts]
+Комбінації клавіш
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Клавіші утворюють послідовність у заданому порядку. Кожен крок може спрацьовувати під час натискання або відпускання відповідної клавіші.
+[settings Language]
+Мова
+[settings Language & player]
+Мова та гравець
+[settings Language used throughout the interface.]
+Мова, яка використовується в інтерфейсі.
+[settings Level]
+Рівень
+[settings Map editor]
+Редактор карт
+[settings Missing font]
+Відсутній шрифт
+[settings Music volume]
+Гучність музики
+[settings Mute audio]
+Вимкнути звук
+[settings Name shown to other players.]
+Ім’я, яке бачать інші гравці.
+[settings Off]
+Вимкнено
+[settings On]
+Увімкнено
+[settings OpenGL is not available in this build.]
+OpenGL недоступний у цій збірці.
+[settings Player name]
+Ім’я гравця
+[settings Press]
+Під час натискання
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Натисніть клавішу. Escape скасовує введення комбінації. Щоб призначити Escape, виберіть «Призначити клавішу Escape».
+[settings Radius]
+Радіус
+[settings Reduced]
+Зменшена деталізація
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Зменшена деталізація вимикає хмари та їхні тіні, спрощує магічні ефекти та зменшує прозорість.
+[settings Release]
+Під час відпускання
+[settings Remember assignments between games]
+Запам’ятовувати призначення істот між іграми
+[settings Remove key]
+Видалити клавішу
+[settings Remove shortcut]
+Видалити комбінацію
+[settings Renderer]
+Графічний рендерер
+[settings Replace conflicting bindings]
+Замінити конфліктні комбінації
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Замінити комбінації клавіш у цьому контексті типовими? Зміни збережуться відразу.
+[settings Resolution]
+Роздільна здатність екрана
+[settings Restore default shortcuts]
+Відновити типові комбінації
+[settings Retry]
+Спробувати знову
+[settings Revert]
+Скасувати зміни
+[settings Reverting in]
+Повернення через
+[settings Save shortcut]
+Зберегти комбінацію клавіш
+[settings Saved — restart required]
+Збережено — потрібен перезапуск
+[settings Saving…]
+Збереження…
+[settings Scroll wheel enabled]
+Коліщатко миші увімкнено
+[settings Set starting unit assignments by building type and level.]
+Установіть початкову кількість призначених істот за типом і рівнем будівлі.
+[settings Set your language and player name.]
+Встановіть мову та ім'я гравця.
+[settings Settings]
+Налаштування
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Лише для одиночної гри та повторів. Мережева гра працює на швидкості 1x.
+[settings Software]
+Програмний рендеринг
+[settings Starting unit counts and radius for newly placed flags.]
+Початкова кількість істот і радіус для нових прапорів.
+[settings This shortcut conflicts with existing bindings:]
+Ця комбінація клавіш конфліктує з наявними комбінаціями клавіш:
+[settings Trigger]
+Подія активації
+[settings Unbound]
+Не призначено
+[settings Unit counts assigned to new construction sites.]
+Кількість істот, призначених на нові будівельні майданчики.
+[settings Unit counts for completed buildings.]
+Кількість істот, призначених до завершених будівель.
+[settings Unit counts while a building is being upgraded.]
+Кількість призначених істот під час удосконалення будівлі.
+[settings Units]
+Істоти
+[settings Upgrades]
+Удосконалення будівель
+[settings Use game cursor]
+Використовувати ігровий курсор
+[settings Voice volume]
+Гучність голосу
+[settings Window mode]
+Віконний режим
+[settings Window-only sizes also switch the game to windowed mode.]
+Якщо вибрати роздільну здатність, яка підтримує лише віконний режим, гра також перемикається у віконний режим.
+[settings Windowed]
+Віконний
+[settings Windowed only]
+Лише у вікні
+[settings seconds]
+секунд
+[settings Flag]
+Прапор
+[settings High-resolution artwork]
+Графіка високої роздільності
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Вибрана графіка застосовується під час наступного завантаження гри або редактора карт (OpenGL).
+[settings Automatic torus view]
+Автоматичний вигляд тора
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Автоматично показувати огляд карти у формі тора під час переміщення по карті (OpenGL).

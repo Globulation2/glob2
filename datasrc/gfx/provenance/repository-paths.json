@@ -1,0 +1,480 @@
+{
+  "base_commit": "f8cf603270d6ae63402ad102b8f2bae844d659d4",
+  "files": [
+    {
+      "previous_path": "datasrc/gfx/areas/g0.png",
+      "path": "datasrc/gfx/reference-exports/overlays/g0.png",
+      "sha256": "7f79a3caa89b6cbba71e82d72888043e3e3e57b41d15c530ff87cb28aa6bb057"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/g1.png",
+      "path": "datasrc/gfx/reference-exports/overlays/g1.png",
+      "sha256": "72c0be1c43ab4c280b38d9bbdf6eb0e1a4830770c70ee0556b9a08d8f4c2f0ca"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/g2.png",
+      "path": "datasrc/gfx/reference-exports/overlays/g2.png",
+      "sha256": "39b3e31db40e30e78f6ab4a684f3cf5ac6b22a34acbf6bb641371cd4c0c7176d"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/g3.png",
+      "path": "datasrc/gfx/reference-exports/overlays/g3.png",
+      "sha256": "86bb7388aaabbbb35f1e9100d96f758addef7a82cf1303e8b49aa7190f91d209"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/g4.png",
+      "path": "datasrc/gfx/reference-exports/overlays/g4.png",
+      "sha256": "ce728c6033a5eeee5f0f25e664324c287efeae946fe3eda34b8ed1450a850fc2"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/g5.png",
+      "path": "datasrc/gfx/reference-exports/overlays/g5.png",
+      "sha256": "4279c0462e9852df9e6c1bd4452bf6ac076a8fa1f2e3b047929c067f5a746dd9"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/g6.png",
+      "path": "datasrc/gfx/reference-exports/overlays/g6.png",
+      "sha256": "f6a8ea428e15cbedc6e5e9f1f4b3a3292071ed6bda591f1fa93e881250cb6163"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/g7.png",
+      "path": "datasrc/gfx/reference-exports/overlays/g7.png",
+      "sha256": "189299a0e9b064da9ead894840fceb5434f7104bb1af1a11b516a2a962ddca5b"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/h1.png",
+      "path": "datasrc/gfx/reference-exports/overlays/h1.png",
+      "sha256": "eb4c52227f028ff95b8a0b008d19a6dbdf903de0dc643d54b692c1724d58f272"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/h2.png",
+      "path": "datasrc/gfx/reference-exports/overlays/h2.png",
+      "sha256": "c4ef00df7326e0715fc88b8e4aac6b308659ca6bb6e03a34d60e1ae3b882203e"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/h3.png",
+      "path": "datasrc/gfx/reference-exports/overlays/h3.png",
+      "sha256": "78f96d99b7eba36d4fca7b52f9cf9ea92792d9a38ff36f9784f992b3247e0b0b"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/h4.png",
+      "path": "datasrc/gfx/reference-exports/overlays/h4.png",
+      "sha256": "9a7a9a9a0242ffcfcca39701097046cef41f63a0bf4621b4bf3fd6aa6290b9ea"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/h5.png",
+      "path": "datasrc/gfx/reference-exports/overlays/h5.png",
+      "sha256": "e821ad9b8160fe734cffe6b1f8017d794f8f930086639be9a99804fc9876fedb"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/h6.png",
+      "path": "datasrc/gfx/reference-exports/overlays/h6.png",
+      "sha256": "212d65fadeeb98c745b2da65da09854f8e65ed33ff0e49a65df84abf256c327f"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/h7.png",
+      "path": "datasrc/gfx/reference-exports/overlays/h7.png",
+      "sha256": "22d3d83c46cc3716a378ada949aac28baa664f2f7b6596cbee013cca6b4730e4"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/h8.png",
+      "path": "datasrc/gfx/reference-exports/overlays/h8.png",
+      "sha256": "4707a78652cb445ce93fe8f604814b387520f18b1b0d953e6e9876545d0117e2"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/i0.png",
+      "path": "datasrc/gfx/reference-exports/overlays/i0.png",
+      "sha256": "988bbed0b8c760a7462f61353a42bb5ee8fabb00417a219fb555e4518d3b031e"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/i1.png",
+      "path": "datasrc/gfx/reference-exports/overlays/i1.png",
+      "sha256": "d8662a693d5df645825a5fdf10551426284c7e02b5eaa519655d7da6a1f91fdb"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/i2.png",
+      "path": "datasrc/gfx/reference-exports/overlays/i2.png",
+      "sha256": "536dfd32b3d47c396eb43aa5bd13a6a5562c9ae6020df5bd00dac67260bfbd91"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/i3.png",
+      "path": "datasrc/gfx/reference-exports/overlays/i3.png",
+      "sha256": "9ce6acd818f85bdc274d1c96de01392861524003a544331b89c5d58ea442d5b2"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/i4.png",
+      "path": "datasrc/gfx/reference-exports/overlays/i4.png",
+      "sha256": "9ce6acd818f85bdc274d1c96de01392861524003a544331b89c5d58ea442d5b2"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/i5.png",
+      "path": "datasrc/gfx/reference-exports/overlays/i5.png",
+      "sha256": "a17b62e2241bf364054c72123b8a981dde4dd257e0b536cd22ed7b1196fb2a1e"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/i6.png",
+      "path": "datasrc/gfx/reference-exports/overlays/i6.png",
+      "sha256": "b7a0debd9425e0c3f4c9a2cb557ed8cd3775f3ade4a9561683748d2f67e23cb8"
+    },
+    {
+      "previous_path": "datasrc/gfx/areas/i7.png",
+      "path": "datasrc/gfx/reference-exports/overlays/i7.png",
+      "sha256": "e2cbe42a94396b96dae80eeb74a2bdd1afd450b7f3e35444552e0fe984b05f0a"
+    },
+    {
+      "previous_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_down.svg",
+      "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_down.svg",
+      "sha256": "f24769839ab2061fe5c4b27cf851c0721b69b32c2f3995cc63175c34ac5b1530"
+    },
+    {
+      "previous_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_left.svg",
+      "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_left.svg",
+      "sha256": "16960bfb3f81be33a17c0f4f337d072a193e6239cd4cf16e99a880ef5c0fd66f"
+    },
+    {
+      "previous_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_right.svg",
+      "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_right.svg",
+      "sha256": "abd29ff542922019cab746e0a114e769e5e05e40ebc1d55927ebfb336a0f0525"
+    },
+    {
+      "previous_path": "datasrc/gfx/arrows/jean_victor_balin_arrow_blue_up.svg",
+      "path": "datasrc/gfx/originals/ui/arrows/jean_victor_balin_arrow_blue_up.svg",
+      "sha256": "d00af9707e3c9e1a22dde7472087fa8ca4476f5619b312391b7df63dcbd97e41"
+    },
+    {
+      "previous_path": "datasrc/gfx/buildings/catapult-1.blend",
+      "path": "datasrc/gfx/originals/buildings/catapult-1.blend",
+      "sha256": "3896bf05f9d92dbce5874c537a56bf621862478857ab7b53c1a93d3f6931f45f"
+    },
+    {
+      "previous_path": "datasrc/gfx/buildings/pool-1.blend",
+      "path": "datasrc/gfx/originals/buildings/pool-1.blend",
+      "sha256": "de03b606f0c9be1f9d0687cb5f9ae10f08ba0bd700a7176b6bfb24c62a957bc7"
+    },
+    {
+      "previous_path": "datasrc/gfx/buildings/tower-1.blend",
+      "path": "datasrc/gfx/originals/buildings/tower-1.blend",
+      "sha256": "4c7cc28f5d896b46f735cb43f49f593f9869594e25ca1e9333f8ac45869f6ff6"
+    },
+    {
+      "previous_path": "datasrc/gfx/buildings/tower-2.blend",
+      "path": "datasrc/gfx/originals/buildings/tower-2.blend",
+      "sha256": "066cc62cff7c51d37ac284b700fbe4c4ccb3eccf5352fd21d76d83720022dc77"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_click.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_click.blend",
+      "sha256": "edf9674662f2557d50cb4aace43724b4a3f6226b6d2f3085c391c144ce130f02"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_clicked.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_clicked.blend",
+      "sha256": "ccf526525639aed7475b5b9cbd92e77ec29126cbeb85e693956f8e959917a94d"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_direction_d.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_direction_d.blend",
+      "sha256": "15e88db572e6d51de160d9e75cf680490e9bab680c7a8b9be434e91ebefd8ddf"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_direction_l.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_direction_l.blend",
+      "sha256": "18fb15e3b4d9e86733527a30f25150a943e1d5972e4e3f616cec7dc042add822"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_direction_ld.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_direction_ld.blend",
+      "sha256": "c109c6ee177a6f3b66385d56ce01b5336fd3aae81be3f44128923a3407730da8"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_direction_lu.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_direction_lu.blend",
+      "sha256": "0696ab5b39841d8bd545bd8bd8092ab89def8bf472c8116e8750b58e1ca093e2"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_direction_r.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_direction_r.blend",
+      "sha256": "947fd890c5ef81a5f2d6a7864c5bfabb3f5e56433db98c89968eaa7ad65abea1"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_direction_rd.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_direction_rd.blend",
+      "sha256": "b2b71f06970cbe1dcb754882e3e00a9d51d299d6c8fe24ecc77ef4b964d58b3c"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_direction_ru.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_direction_ru.blend",
+      "sha256": "c883f37b873b544c61666547e484a3b5b47e690e3cb379c4c253202808dfa2d5"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_direction_u.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_direction_u.blend",
+      "sha256": "b6af253b9698b62f59f9ad18c4423971e3e0bddd3ea7112388afe9baa8aebcad"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_mark.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_mark.blend",
+      "sha256": "a8f6c6a115c8854dc75cf419bab34e4218a13090820a10153c3fba5a4fbdb0b2"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_normal.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_normal.blend",
+      "sha256": "a5211ef6b45ef5a6e40e76152a8d982720083c3f13d1aa839a0246347eb379cd"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_wait1.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_wait1.blend",
+      "sha256": "9f82f350d7c7b200dc670d3e1b5459aedfef9552c7bb94c6593c0e4d9815f7c1"
+    },
+    {
+      "previous_path": "datasrc/gfx/cursor/cursor_wait2.blend",
+      "path": "datasrc/gfx/originals/cursors/cursor_wait2.blend",
+      "sha256": "4fd391db0ba25385a730cd7427ed237e31d7f612029226415f0f7ac82eab1240"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/bigbutton.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/bigbutton.xcf",
+      "sha256": "a542a6bf30dc7b57e79d12b3e72a76a6661cdb0c07b054f49e3a4979f9e11260"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_add.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_add.xcf",
+      "sha256": "a36c100304798e1968c68ce0324ca21d21868f0441fe57ca8065f84c707ad700"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_brush_circle_3x3.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_3x3.xcf",
+      "sha256": "b65707e14bcb4fb11eb4a9f03563dff9a181be23606a716cb13759cd0fc879a1"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_brush_circle_5x5.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_5x5.xcf",
+      "sha256": "4a21ba849cf74000df303878292fb73a0d6ad8b4076acedc5606a8b07185b8cd"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_brush_circle_7x7.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_circle_7x7.xcf",
+      "sha256": "80e945a751ef1b821c194ba93c565454216fd1c450a86cc4dc763ac9a143c879"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_brush_square_1x1.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_1x1.xcf",
+      "sha256": "b6e1f7acbc757d798d37259eee56e2eef35731a5f4415a654e26287b3c27c003"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_brush_square_3x3.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_3x3.xcf",
+      "sha256": "54d1c5ced6f5952901a9502e411d549c844061f6ab1b38cdf9ffebc4cad26c9e"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_brush_square_5x5.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_5x5.xcf",
+      "sha256": "e62e7b21e3f15720ad40c9e2050d5a8d5dc48738710012c5e7581bee49f74727"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_brush_square_7x7.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_brush_square_7x7.xcf",
+      "sha256": "2f6e21586d6dfc29385a52ed9f077102a32412bb718ed2b7457516c20d577b22"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/forbidden_remove.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/forbidden_remove.xcf",
+      "sha256": "fd8c4ee27457996d5d7e65a74aaf7e335a2fa28ed07c57567f443334981e3710"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/glob2_gold",
+      "path": "datasrc/gfx/originals/ui/controls/glob2_gold",
+      "sha256": "f427b36a0f94f13731a6f0d3a07a8f8caad42fe0e5663feb612dacb83ab3f4f0"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/onoff.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/onoff.xcf",
+      "sha256": "9c7fd7aebeadfe79f503188e5101669c43b3f473a9038f9f2e40e00cb3f77748"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/padlock.svg",
+      "path": "datasrc/gfx/originals/ui/controls/padlock.svg",
+      "sha256": "b5a0e9c33415752282c850219137fa00cbf3fae587e0e8982b357b2e5d94e82a"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/round-base.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/round-base.xcf",
+      "sha256": "957ae342f365af5ff08f022da294ab436f60e699e8848a9c88c7c2b0de2dc561"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/selection32x32.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/selection32x32.xcf",
+      "sha256": "b869482fcb501e267443cd72c2f4fe8f35247785db9c6e9f228703290a828095"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/tab-building.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/tab-building.xcf",
+      "sha256": "da4f8047e1a72138228ceac1072433eb6a17b6f1836bbe229e1e1060e587b550"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/tab-info.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/tab-info.xcf",
+      "sha256": "4cf526917050c2e00cdcea14994422596d7e43c740e7f1a4361cb31aca6ba12a"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/tab-stat-gfx.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/tab-stat-gfx.xcf",
+      "sha256": "953c75d90ff425eab2bf776f70196bbcf7e7d692d54d83e6658f508563a965e4"
+    },
+    {
+      "previous_path": "datasrc/gfx/game-gui/tab-stat-text.xcf",
+      "path": "datasrc/gfx/originals/ui/controls/tab-stat-text.xcf",
+      "sha256": "e245bfa0fce2f568183a7cf2c959ccfb89f7fea7eec09f846c6ebe356df56b3b"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/explorer.blend",
+      "path": "datasrc/gfx/originals/units/explorer.blend",
+      "sha256": "4d6913061c1e25861a12d45cea72f14d5c8bd8ab603158a2e1077cff70cd959d"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/glob-warrior-fight.blend",
+      "path": "datasrc/gfx/originals/units/glob-warrior-fight.blend",
+      "sha256": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/glob-warrior-swim.blend",
+      "path": "datasrc/gfx/originals/units/glob-warrior-swim.blend",
+      "sha256": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/glob-warrior-walk.blend",
+      "path": "datasrc/gfx/originals/units/glob-warrior-walk.blend",
+      "sha256": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/glob-warrior.blend",
+      "path": "datasrc/gfx/originals/units/glob-warrior.blend",
+      "sha256": "19bacb5462998c1260af8252cd1d002b0e18e4192a4806aff42dcd03b5177d1f"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/glob-worker-harvest.blend",
+      "path": "datasrc/gfx/originals/units/glob-worker-harvest.blend",
+      "sha256": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/glob-worker-swim.blend",
+      "path": "datasrc/gfx/originals/units/glob-worker-swim.blend",
+      "sha256": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/glob-worker-walk.blend",
+      "path": "datasrc/gfx/originals/units/glob-worker-walk.blend",
+      "sha256": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/glob-worker-walk2.blend",
+      "path": "datasrc/gfx/originals/units/glob-worker-walk2.blend",
+      "sha256": "1666f9454035f1cc43e978462afa3c3b53361c1eb1c784a1d524a2012e954e89"
+    },
+    {
+      "previous_path": "datasrc/gfx/globules/rename_globules.py",
+      "path": "datasrc/gfx/tools/units/rename_globules.py",
+      "sha256": "9dcfb783a65b7036ad534d45ed525cb459932b6743948911c0bde339b0f7c3a7"
+    },
+    {
+      "previous_path": "datasrc/gfx/headset/headset.blend",
+      "path": "datasrc/gfx/originals/ui/headset/headset.blend",
+      "sha256": "4b780ce7a1c2c988bef83505da51ee5983e9a2b7d1c120196f5f773a860d7290"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/tree/trees_1_1.xcf",
+      "path": "datasrc/gfx/originals/resources/tree/trees_1_1.xcf",
+      "sha256": "36fd3779ad6657efb47d11962cc91c661925607773776831caf844d3a4254898"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/tree/trees_1_2.xcf",
+      "path": "datasrc/gfx/originals/resources/tree/trees_1_2.xcf",
+      "sha256": "cb061fb74cc3bd134356e33d10464030666412bdca48036f19e0e4c333a904bc"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/tree/trees_2_1.xcf",
+      "path": "datasrc/gfx/originals/resources/tree/trees_2_1.xcf",
+      "sha256": "7f5b64fe7ff58dbc1b80dc27b9a0865e9f68c1f96b51ab1fbb9ea954985407e9"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/tree/trees_3_1.xcf",
+      "path": "datasrc/gfx/originals/resources/tree/trees_3_1.xcf",
+      "sha256": "0902918261c95ecac95c24eb4d2805baff0a074028d8e7e21fa1b1799c1bbd03"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/tree/trees_4_1.xcf",
+      "path": "datasrc/gfx/originals/resources/tree/trees_4_1.xcf",
+      "sha256": "b893267a7380f6e4e6d67f7acbb8cc361b0d394b856240a949c911e769dd86d9"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat-classic/ble_1.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat-classic/ble_1.xcf",
+      "sha256": "aac5f93d24b4f95ae9efa22e4bd136bdc013a74d267e1ef853cdc5a667591afd"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat-classic/ble_2.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat-classic/ble_2.xcf",
+      "sha256": "6d77eaec1c68e82a7cbc7598bd4261d6fb27db146b74afe93e61267cd273b34d"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat-classic/ble_3.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat-classic/ble_3.xcf",
+      "sha256": "e2ed494f6c3f8ccc8fe9e96d150db0a7d8b76b1026393fa84b231fcd1422d274"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat-classic/ble_4.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat-classic/ble_4.xcf",
+      "sha256": "690e6c44544cb2190ac328f07db9e9c3feafc238af21d9c394c227dd6abe046c"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat-classic/ble_5.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat-classic/ble_5.xcf",
+      "sha256": "a5d55710a1d2aff286eea2e8450f7a449f7c4c94ab19d340aff3b88a6683b265"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat/wheat_1_1.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat/wheat_1_1.xcf",
+      "sha256": "572e7ad44728d1bc5feed04b6de6637db4a83b57659b51be0882fae2b1ae6ca1"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat/wheat_1_2.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat/wheat_1_2.xcf",
+      "sha256": "97c3cfb79ed04975f5ee1a5ac7600e458084646dc06c6eca221406da2da4136e"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat/wheat_2_1.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat/wheat_2_1.xcf",
+      "sha256": "37d6cc368d14788473c9e87e6dc34f7ec5c4ec96a075a8bc22a732c538785324"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat/wheat_2_2.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat/wheat_2_2.xcf",
+      "sha256": "2bfa2f6b8b109f96f214343b0b1d210f4064ad71f0f906227bb5c2b57620d437"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat/wheat_3_1.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat/wheat_3_1.xcf",
+      "sha256": "0f0b20c5dbdc720d899b8c1e1ff74a6236977c0526cf9d7519521c90478f7847"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat/wheat_3_2.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat/wheat_3_2.xcf",
+      "sha256": "5379a3198612e7c3fae2b42fa6a7523de57a432bfcc064b3bb93a1e3058bb5eb"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat/wheat_4_1.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat/wheat_4_1.xcf",
+      "sha256": "89b5d2245973086b4d8cb1dab1ce8d235a5ea31933e2002e105b4b4ec61a21b3"
+    },
+    {
+      "previous_path": "datasrc/gfx/resources/wheat/wheat_4_2.xcf",
+      "path": "datasrc/gfx/originals/resources/wheat/wheat_4_2.xcf",
+      "sha256": "e4b25cad879d00ac53aa1a47659684e7af2423115578f7c6bd498d16193d8dd9"
+    },
+    {
+      "previous_path": "datasrc/gfx/terrain/water.xcf",
+      "path": "datasrc/gfx/originals/terrain/water.xcf",
+      "sha256": "f6c26a46d6258a6332df554d599e3fa11f95da48979e77dfc109292021e26a17"
+    }
+  ]
+}

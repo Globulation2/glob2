@@ -6,6 +6,7 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "FrontendTheme.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
@@ -18,6 +19,12 @@ Engine::Engine() = default;
 
 Engine::~Engine()
 {
+	globalContainer->liveSpectating=false;
+	if(previousCustomSpeed>=0) {
+        globalContainer->settings.gameSpeed=previousCustomSpeed;
+        // In-game options may have persisted the temporary match speed.
+        globalContainer->settings.save();
+    }
 	// Finalize the replay of the session this Engine ran, if any.
 	// initGame allocated the writer; destroying it (ReplayWriter::finish)
 	// writes the NullOrder terminator and flushes the replay file. This must
@@ -28,6 +35,7 @@ Engine::~Engine()
 
 int Engine::run(void)
 {
+	FrontendScope gameplay(false);
 	bool doRunOnceAgain=true;
 	if (globalContainer->runNoX)
 	{
@@ -91,6 +99,7 @@ int Engine::run(void)
 		globalContainer->mix->setNextTrack(MusicTrack::Menu, true);
 
 		// Display End Game Screen
+		FrontendScope results(true);
 		EndGameScreen endGameScreen(&gui);
 		int result = endGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
 

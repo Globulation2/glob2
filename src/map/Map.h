@@ -76,6 +76,8 @@ enum AreaType
 class Map
 {
 public:
+	void saveRuntimeState(GAGCore::OutputStream *stream) const;
+	void loadRuntimeState(GAGCore::InputStream *stream);
 	//! Type of terrain (used for undermap)
 
 	// === Tile geometry (cross-slice) ===
@@ -565,6 +567,8 @@ public:
 	//! Transform coordinate from map scale (mx,my) to pixel scale (px,py)
 	void mapCaseToPixelCase(int mx, int my, int *px, int *py) const { *px=(mx<<5); *py=(my<<5); }
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a building or an unit to the screen.
+	// Presentation bounds only; never serialized or included in simulation checksums.
+	int displayViewportW=0, displayViewportH=0;
 	void mapCaseToDisplayable(int mx, int my, int *px, int *py, int viewportX, int viewportY) const;
 	//! Transform coordinate from map (mx,my) to screen (px,py). Use this one to display a path line to the screen.
 	void mapCaseToDisplayableVector(int mx, int my, int *px, int *py, int viewportX, int viewportY, int screenW, int screenH) const;

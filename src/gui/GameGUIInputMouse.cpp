@@ -31,8 +31,10 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 	///when for the screen viewport, center
 	if (forScreenViewport)
 	{
-		*cx-=((globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)>>6);
-		*cy-=((globalContainer->gfx->getH())>>6);
+		camera.originX=*cx*32.0-camera.visibleW()/2;
+		camera.originY=*cy*32.0-camera.visibleH()/2;
+		camera.normalize();
+		*cx=camera.tileX();*cy=camera.tileY();
 	}
 
 }
@@ -40,8 +42,8 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
 	const int scrollZoneWidth = 10;
-	view.mouseX=mouseX=mx;
-	view.mouseY=mouseY=my;
+	mouseX=mx;mouseY=my;
+	updateCamera();
 
 	int oldViewportX = viewportX;
 	int oldViewportY = viewportY;
@@ -70,19 +72,22 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	if (panPushed)
 	{
 		// handle panning
-		int dx = (mx-panMouseX)>>1;
-		int dy = (my-panMouseY)>>1;
-		viewportX = (panViewX+dx)&game.map.getMaskW();
-		viewportY = (panViewY+dy)&game.map.getMaskH();
+		camera.originX += (mx-panMouseX)/camera.zoom;
+        camera.originY += (my-panMouseY)/camera.zoom;
+        camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
+        panMouseX=mx;panMouseY=my;
 	}
 
-	moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+	viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 
 	dragStep(mx, my, button);
 }
 
 void GameGUI::handleMapClick(int mx, int my, int button)
 {
+	updateCamera();
+	if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
+	if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
 	if (selectionMode==TOOL_SELECTION)
 	{
 		toolManager.handleMouseDown(mx, my, localTeamNo, viewportX, viewportY);
@@ -157,7 +162,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				if ((buildingTeam==localTeamNo)
 					|| game.map.isFOWDiscovered(mapX, mapY, localTeam->me)
 					|| (game.map.isMapDiscovered(mapX, mapY, localTeam->me) && (game.teams[buildingTeam]->allies&(1<<localTeamNo)))
-					|| globalContainer->replaying )
+					|| globalContainer->isViewingGame() )
 				{
 					setSelection(BUILDING_SELECTION, gbid);
 					selectionPushed=true;

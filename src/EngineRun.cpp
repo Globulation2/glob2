@@ -84,6 +84,8 @@ void Engine::pollAutomaticEndingConditions()
 // and must not advance.
 void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 {
+    // Viewpoint changes must not move the controller used for order bookkeeping.
+    const int orderPlayer=globalContainer->liveSpectating ? 0 : gui.localPlayer;
 	// But some jobs have to be executed synchronously:
 	if (wasReadyLastTick)
 	{
@@ -91,17 +93,19 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 
 		// The gui.localPlayer may have been updated (in replays)
 		// Keep them synchronized here
-		net->setLocalPlayer(gui.localPlayer);
+		net->setLocalPlayer(orderPlayer);
 
 		// We get and push local orders
 		shared_ptr<Order> localOrder = gui.getOrder();
+		if(globalContainer->liveSpectating && gui.game.players[orderPlayer]->ai)
+			localOrder=gui.game.players[orderPlayer]->ai->getOrder(gui.gamePaused);
 		net->addLocalOrder(localOrder);
 	}
 
 	// we get and push ai orders, if they are needed for this frame
 	for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		if (gui.game.players[i]->ai && !net->orderReceived(i))
+		if (gui.game.players[i]->ai && !(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))
 		{
 			shared_ptr<Order> order = gui.game.players[i]->ai->getOrder(gui.gamePaused);
 			net->pushOrder(order, i, true);

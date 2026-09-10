@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <iostream>
+#include <sstream>
+#include <locale>
 #include <stdexcept>
 
 #include "AICastor.h"
@@ -263,6 +265,27 @@ bool Game::load(GAGCore::InputStream *stream)
 	}
 
 	if (versionMinor >= FILE_FORMAT_VERSION_PENDING_CONSTRUCTION) loadBuildProjects(stream);
+	boost::mt19937 savedRandom;
+	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
+	{
+		GAGCore::BinaryInputStream::CheckedReads checked(stream);
+		// Boost's canonical stream representation is exactly 624 uint32 words.
+		// Store fixed-width words, not locale-dependent text or a raw object.
+		std::ostringstream state;
+		state.imbue(std::locale::classic());
+		stream->readEnterSection("randomState");
+		for (unsigned i=0; i<boost::mt19937::state_size; ++i)
+		{
+			stream->readEnterSection(i);
+			state << stream->readUint32("word") << ' ';
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		std::istringstream input(state.str());
+		input.imbue(std::locale::classic());
+		if (!(input >> savedRandom)) return false;
+		map.loadRuntimeState(stream);
+	}
 	gameSection.commit();
 
 	///versions less than 63 did not have fertility computed with the map, but computed it live.
@@ -280,6 +303,12 @@ bool Game::load(GAGCore::InputStream *stream)
 	    }
 	}
 
+	if (versionMinor >= FILE_FORMAT_VERSION_CONTINUATION_STATE && mapHeader.getIsSavedGame())
+	{
+		randomGenerator = savedRandom;
+		hasSavedRandomState = true;
+	}
+
 	return true;
 }
 
@@ -292,6 +321,8 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 		{
 			const auto building = team->myBuildings[bi];
 			if (!building)
+				continue;
+			if (building->buildingState==Building::DEAD)  // kill() cleared its footprint
 				continue;
 			const auto x = building->posX;
 			const auto y = building->posY;
@@ -505,6 +536,26 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	gameHints.encodeData(stream);
 
 	saveBuildProjects(stream);
+	if (!fileIsAMap)
+	{
+		std::ostringstream randomState;
+		randomState.imbue(std::locale::classic());
+		randomState << randomGenerator;
+		std::istringstream state(randomState.str());
+		state.imbue(std::locale::classic());
+		stream->writeEnterSection("randomState");
+		for (unsigned i=0; i<boost::mt19937::state_size; ++i)
+		{
+			stream->writeEnterSection(i);
+			Uint32 word;
+			if (!(state >> word)) throw std::runtime_error("Invalid RNG state while saving");
+			stream->writeUint32(word, "word");
+			stream->writeLeaveSection();
+		}
+
+		stream->writeLeaveSection();
+		map.saveRuntimeState(stream);
+	}
 
 	Uint8 sha1[SHA1_BYTE_LEN];
 	for(int i=0; i<SHA1_BYTE_LEN; ++i)
