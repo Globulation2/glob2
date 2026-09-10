@@ -1556,7 +1556,6 @@ Gere uma prévia para explorar este mundo.
 Mais trabalhadores aceleram o crescimento das colônias. Esta configuração altera o mapa gerado.
 [No warriors]
 Sem guerreiros
-Trec’haoliñ etre gwel 2M ha toreek
 [settings Add key to sequence]
 Adicionar tecla à sequência
 [settings Add shortcut]
