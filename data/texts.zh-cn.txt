@@ -1224,3 +1224,7 @@ Cortex
 仍在里面：%0
 [Units still working: %0]
 仍在工作：%0
+[automatic torus view]
+自动环面视图
+[toggle torus view]
+切换 2D／环面视图

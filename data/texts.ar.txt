@@ -1226,3 +1226,7 @@ Cortex
 ﺑﺎﻟﺪﺍﺧﻞ: %0
 [Units still working: %0]
 ﻭﺣﺪﺍﺕ ﻻ ﺗﺰﺍﻝ ﺗﻌﻤﻞ: %0
+[automatic torus view]
+عرض الطارة تلقائيًا
+[toggle torus view]
+التبديل بين العرض ثنائي الأبعاد والطارة

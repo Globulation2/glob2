@@ -325,7 +325,7 @@ namespace GAGCore
 			DEFAULT = 0,
 			USEGPU = 1,
 			FULLSCREEN = 2,
-			//TODO: either implement "resizable" as a resizable gui or explain what this does
+			//! Allow windowed logical dimensions to follow the window size
 			RESIZABLE = 8,
 			CUSTOMCURSOR = 16,
 		};
@@ -356,6 +356,30 @@ namespace GAGCore
 		//! refresh the window and drawable sizes after the window was resized
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
+		unsigned glContextGeneration = 0;
+		SDL_GLContext context = nullptr;
+		SDL_threadID eventThread = 0;
+		bool pollingEvents = false;
+		bool presenting = false;
+		bool watchingEvents = false;
+		// Owned here and released explicitly while the GL context is still current.
+		struct FrameCache
+		{
+			SDL_Surface *surface = nullptr;
+			unsigned texture = 0;
+			int width = 0, height = 0;
+			int textureWidth = 0, textureHeight = 0;
+			int maximumTextureSize = 0;
+			bool valid = false;
+			bool failureReported = false;
+		} frameCache;
+		void reportFrameCacheFailure(const char *reason);
+		void releaseFrameCache();
+		void cacheFrame();
+		void presentLastFrame();
+		// Central presentation boundary, also used by render-validation contexts.
+		virtual void swapBuffers();
+		static int SDLCALL watchWindow(void *userdata, SDL_Event *event);
 		friend class DrawableSurface;
 		//! option flags
 		Uint32 optionFlags;
@@ -368,6 +392,8 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+		unsigned getGLContextGeneration() const { return glContextGeneration; }
+
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
@@ -392,6 +418,8 @@ namespace GAGCore
 		static void translateMouseCoordinates(int &x, int &y);
 		//! rewrite a polled event's mouse coordinates from window pixels to logical coordinates
 		static void translateMouseEvent(SDL_Event *event);
+		//! Pump events at a frame boundary; modal expose callbacks only present a cached frame.
+		static int pollEvent(SDL_Event *event);
 		virtual void setClipRect(int x, int y, int w, int h);
 		virtual void setClipRect(void);
 		virtual void nextFrame(void);
@@ -506,15 +534,16 @@ namespace GAGCore
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
-		bool createTextureAtlas();
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
 		DrawableSurface *getColoredSurface(RotatedImage *image);
-		DrawableSurface *getDrawSurface(unsigned index, bool teamColor, bool experiment);
+		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
 		void loadExperimentFrame(const std::string &frameName, const std::string &rotatedName);
 	
 	public:
+		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
+		bool createTextureAtlas(bool allowVariableSizes = false);
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
 		static void setHighResolution(bool enabled);

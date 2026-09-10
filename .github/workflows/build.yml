@@ -9,11 +9,10 @@ on:
 jobs:
   linux:
     name: linux (${{ matrix.image }})
-    runs-on: ubuntu-latest
-    container: ${{ matrix.image }}
+    runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
-      CCACHE_DIR: /ccache
+      CCACHE_DIR: /tmp/glob2-ccache
       # Hash the compiler binary instead of trusting its mtime, so a g++ point
       # release landing inside the base image cannot reuse the old one's
       # entries. CCACHE_SLOPPINESS is deliberately left unset: include_file_mtime
@@ -29,21 +28,36 @@ jobs:
         # 1.74 (catches C++20 features the oldest supported compiler lacks),
         # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
         # that no longer come in transitively).
-        image: [ubuntu:22.04, ubuntu:24.04]
+        include:
+          - image: ubuntu:22.04
+            runner: ubuntu-22.04
+            compiler: g++-11
+          - image: ubuntu:24.04
+            runner: ubuntu-24.04
+            compiler: g++-13
     steps:
       - name: Install dependencies
+        timeout-minutes: 15
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          apt-get update -qq
-          apt-get install -y --no-install-recommends \
-            ca-certificates git g++ python3 scons pkg-config ccache \
+          # Fetch immutable package indexes to avoid mirror-sync mismatches,
+          # and bound network stalls without weakening signature verification.
+          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
+          Acquire::By-Hash "force";
+          Acquire::Retries "3";
+          Acquire::http::Timeout "30";
+          Acquire::https::Timeout "30";
+          EOF
+          sudo apt-get update -qq
+          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            ca-certificates git ${{ matrix.compiler }} python3 scons pkg-config ccache \
             libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev \
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
-            libcppunit-dev xvfb xauth libgl1-mesa-dri
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth \
+            libcppunit-dev
 
       - uses: actions/checkout@v4
 
@@ -60,16 +74,36 @@ jobs:
       - name: Restore the compiler cache
         uses: actions/cache/restore@v4
         with:
-          path: /ccache
-          key: ccache-${{ matrix.image }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: ccache-${{ matrix.image }}-
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-${{ matrix.runner }}-
 
       - name: Reset the cache statistics
         id: cache_ready
         run: ccache -z
 
       - name: Build glob2
-        run: scons -j$(nproc) release=1
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1
+
+      - name: Test torus geometry, picking and cloud coordinates
+        run: |
+          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+          /tmp/torus-geometry
+          ${{ matrix.compiler }} -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+          /tmp/torus-picking
+          ${{ matrix.compiler }} -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+          /tmp/cloud-field
+          ${{ matrix.compiler }} -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+          /tmp/map-render-geometry
+
+      - name: Exercise GPU and software game rendering
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 torus-render-test
+          mkdir -p /tmp/glob2-render-profile
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            xvfb-run -a build/src/torus-render-test -g -F -m -s 1120x720
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            build/src/torus-render-test -G -F -m -s 1120x720
 
       - name: Build and run the selection lifetime regression
         run: |
@@ -88,10 +122,25 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Test trapped colony elimination
+        run: |
+          scons -j$(nproc) release=1 server=0 trapped-unit-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest
+
+      - name: Build and run the entering unit draw regression
+        run: |
+          scons -j$(nproc) release=1 server=0 entering-unit-draw-test
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/EnteringUnitDrawHarness
+
       - name: Build and run the immobile unit gradient regression
         run: |
           scons -j$(nproc) release=1 server=0 immobile-unit-gradient-test
           ./build/src/ImmobileUnitGradientHarness
+
+      - name: Build and run the hiring bucket regression
+        run: |
+          scons -j$(nproc) release=1 server=0 hiring-bucket-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness .
 
       - name: Build and run the resource-fetch target regression
         run: |
@@ -112,7 +161,7 @@ jobs:
           python3 test/run-savegame-safety-tests.py --check-preferences --expect-stdout test/fixtures/team-stats/version84.expected.txt build/src/TeamStatsSaveHarness . --legacy games/gd-small-2ai.game
 
       - name: Build the YOG server
-        run: scons -j$(nproc) release=1 server=1 --build=build-server
+        run: scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
 
       - name: Build and run the terrain resource regression
         run: |
@@ -137,10 +186,27 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/FullscreenAspectHarness software
 
+      - name: Build and run the window resize regression
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          scons -j$(nproc) release=1 server=0 resize-test
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness gl
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness software
+
+      - name: Check game rendering across repeated map copies
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          scons -j$(nproc) release=1 server=0 map-render-resize-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness
+          SDL_VIDEODRIVER=x11 LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s '-screen 0 1920x1200x24' python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness --gl
+
       - name: Build and run the tests
         working-directory: test
         run: |
-          scons -j$(nproc)
+          scons CXX=${{ matrix.compiler }} -j$(nproc)
           ./TestsRunner
           for harness in ./*Harness ./*Test; do
             echo "== $harness"
@@ -161,6 +227,14 @@ jobs:
           scons -j$(nproc) release=1 server=0 speed-tests
           xvfb-run -a python3 test/run-game-speed-tests.py
 
+      - name: Build without OpenGL
+        run: |
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software
+          python3 test/SoftwareStartupTest.py build-software/src/glob2
+          scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software torus-render-test
+          GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            build-software/src/torus-render-test -g -F -m -s 1120x720
+
       # A run that touched a widely included header and still shows near-total
       # direct hits means the cache is not seeing the change.
       - name: Report the cache statistics
@@ -176,8 +250,8 @@ jobs:
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
         uses: actions/cache/save@v4
         with:
-          path: /ccache
-          key: ccache-${{ matrix.image }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
 
   windows:
     name: windows (mingw-w64)
@@ -214,6 +288,35 @@ jobs:
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Test trapped colony elimination
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 trapped-unit-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest.exe
+
+      - name: Test torus geometry, picking and cloud coordinates
+        run: |
+          g++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+          /tmp/torus-geometry
+          g++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+          /tmp/torus-picking
+          g++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+          /tmp/cloud-field
+          g++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+          /tmp/map-render-geometry
+
+      - name: Build and run the hiring bucket regression
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 hiring-bucket-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness.exe .
+
+      - name: Check game rendering across repeated map copies
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 map-render-resize-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/MapRenderResizeHarness.exe
 
       - name: Test savegame loading and atomic autosaves
         run: |

@@ -1228,3 +1228,7 @@ Cortex
 Znotraj: %0
 [Units still working: %0]
 Še pri delu: %0
+[automatic torus view]
+Samodejni torusni pogled
+[toggle torus view]
+Preklopi med 2D in torusnim pogledom

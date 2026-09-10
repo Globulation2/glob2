@@ -1226,3 +1226,7 @@ Cortex
 درون: %0
 [Units still working: %0]
 هنوز مشغول: %0
+[automatic torus view]
+نمای خودکار چنبره
+[toggle torus view]
+تغییر بین نمای دوبعدی و چنبره

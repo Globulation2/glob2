@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "MapCopies.h"
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -146,16 +147,18 @@ bool Game::isOnScreen(int left, int top, int right, int bot, int viewportX, int 
 
 
 
-void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState)
+void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam, ViewState& view, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
 {
-	static int time = 0;
+	// Frozen while paused, so the water and the clouds hold still with the rest.
+	int &time = mapAnimationTime;
 	static DynamicClouds ds(&globalContainer->settings);
 	int left=(sx>>5);
 	int top=(sy>>5);
 	int right=((sx+sw+31)>>5);
 	int bot=((sy+sh+31)>>5);
 
-	time++;
+	if (!animationsPaused)
+		time++;
 	drawMapWater(sw, sh, viewportX, viewportY, time);
 	drawMapTerrain(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
 	drawMapResources(left, top, right, bot, viewportX, viewportY, localTeam, drawOptions);
@@ -165,26 +168,27 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	drawMapAirUnits(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
 	if((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
-	globalContainer->gfx->drawMapCopies(map.getW()*32,map.getH()*32,sw,sh,[&](){
+
 	drawMapBulletsExplosionsDeathAnimations(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	});
+
 
 	// compute and draw cloud shadow if we are in high quality
 	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
-		ds.compute(viewportX, viewportY, sw, sh, time);
+		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
+		           !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::SHADOW);
 	}
 
 	drawMapFogOfWar(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapAreas(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
 	drawMapOverlayMaps(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions);
-	globalContainer->gfx->drawMapCopies(map.getW()*32,map.getH()*32,sw,sh,[&](){
+
 	drawUnitPathLines(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, view);
-	});
+
 
 	// draw cloud overlay if we are in high quality
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
 
 	// Draw units that are off the screen for the selected building
@@ -204,7 +208,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		}
 	}
 
-	globalContainer->gfx->drawMapCopies(map.getW()*32,map.getH()*32,sw,sh,[&](){
+
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
 	if (!globalContainer->replaying || globalContainer->replayShowFlags)
@@ -242,42 +246,51 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 				int x, y;
 				const Sint32 dispX = buildingGuiState ? displayedPosX(*buildingGuiState, *building) : building->posX;
 				const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, *building) : building->posY;
-				map.mapCaseToDisplayable(dispX, dispY, &x, &y, viewportX, viewportY);
+				x = ((dispX-viewportX)&map.getMaskW())*32;
+				y = ((dispY-viewportY)&map.getMaskH())*32;
 
-				// all flags are hued:
-				Sprite *buildingSprite = type->gameSpritePtr;
-				buildingSprite->setBaseColor(teams[team]->color);
-				globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+				const int radius = 16 + 32*building->unitStayRange;
+				Sprite *sprite = type->gameSpritePtr;
+				forEachMapCopy(std::min(x,x+16-radius), std::min(y,y+16-radius),
+					std::max(x+sprite->getW(imgid),x+16+radius), std::max(y+sprite->getH(imgid),y+16+radius),
+					map.getW()*32, map.getH()*32, sw, sh, [&](int dx, int dy) {
+					const int x = ((dispX-viewportX)&map.getMaskW())*32 + dx;
+					const int y = ((dispY-viewportY)&map.getMaskH())*32 + dy;
+					// all flags are hued:
+					Sprite *buildingSprite = type->gameSpritePtr;
+					buildingSprite->setBaseColor(teams[team]->color);
+					globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
 
-				// flag circle:
-				if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==view.selectedBuilding))
-					globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
+					// flag circle:
+					if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || (building==view.selectedBuilding))
+						globalContainer->gfx->drawCircle(x+16, y+16, 16+(32*building->unitStayRange), 0, 0, 255);
 
-				if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
-				{
-					int decy=(type->height*32);
-					int healDecx=(type->width-2)*16+1;
-
-					// TODO : find better color for this
-					if (type->hpMax)
+					if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0)
 					{
-						float hpRatio=(float)building->hp/(float)type->hpMax;
-						drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio);
+						int decy=(type->height*32);
+						int healDecx=(type->width-2)*16+1;
+
+						// TODO : find better color for this
+						if (type->hpMax)
+						{
+							float hpRatio=(float)building->hp/(float)type->hpMax;
+							drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio);
+						}
+
+						if (building->maxUnitInside>0)
+							drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
+						if (building->maxUnitWorking>0)
+							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
+
+						if ((type->canFeedUnit) || (type->unitProductionTime))
+							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[CORN], building->resources[CORN], 255, 255, 120);
 					}
-
-					if (building->maxUnitInside>0)
-						drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, (signed)building->unitsInside.size(), 255, 255, 255);
-					if (building->maxUnitWorking>0)
-						drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, (signed)building->unitsWorking.size(), 255, 255, 255);
-
-					if ((type->canFeedUnit) || (type->unitProductionTime))
-						drawBuildingResourceBar(x+1, y+1, type, type->maxResource[CORN], building->resources[CORN], 255, 255, 120);
-				}
+				});
 			}
 		}
 	}
 
-	});
+
 
 	if (DEBUG_RENDER_GRADIENTS)
 		for (int y=top-1; y<=bot; y++)

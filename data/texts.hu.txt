@@ -1228,3 +1228,7 @@ Cortex
 Bent: %0
 [Units still working: %0]
 Még dolgozó egységek: %0
+[automatic torus view]
+Automatikus tórusznézet
+[toggle torus view]
+Váltás 2D és tórusznézet között

@@ -267,6 +267,9 @@ game/entities/Resources.cpp
 ScriptEditorScreen.cpp
 Sector.cpp
 Settings.cpp
+TorusView.cpp
+TorusViewRender.cpp
+gui/GameGUITorus.cpp
 SettingsScreen.cpp
 SettingsScreenGeneral.cpp
 SettingsScreenBuildings.cpp
@@ -466,6 +469,17 @@ source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+# Optional integration executable; normal game/server builds do not build it.
+if not env['server']:
+    render_test = local.Program("torus-render-test",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("TorusRenderIntegrationTest", "#test/TorusRenderIntegrationTest.cpp")])
+    local.Alias("torus-render-test", render_test)
+    render_benchmark = local.Program("torus-render-benchmark",
+        [source for source in source_files if source != "Glob2.cpp"] +
+        [local.Object("TorusRenderBenchmark", "#test/TorusRenderBenchmark.cpp")])
+    local.Alias("torus-render-benchmark", render_benchmark)
+
 if not env['server']:
     # Compile with local, not stats_env, to avoid rebuilding shared objects under a second environment.
     stats_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
@@ -520,6 +534,29 @@ if not env['server']:
     savegame_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
+
+    # Use the real renderer and settings handlers. Access relaxation is confined
+    # to the test translation unit; production objects retain their normal flags.
+    render_env = savegame_env.Clone()
+    render_env['CXXFLAGS'] = local.Split(local['CXXFLAGS']) + ['-fno-access-control']
+    render_sources = [obj for obj in savegame_sources
+                      if str(obj).split('/')[-1] not in ('SavegameSafetyHarness.o', 'CreditScreen.o')]
+    render_sources += render_env.Object('MapRenderResizeHarness.o', '#test/MapRenderResizeHarness.cpp')
+    render_test = savegame_env.Program('MapRenderResizeHarness', render_sources)
+    local.Alias('map-render-resize-test', render_test)
+
+
+if not env['server']:
+    # Compile with local, not trapped_env, to avoid rebuilding shared objects under a second environment.
+    trapped_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    trapped_sources += [source for source in source_files if not source.endswith('.cpp')]
+    trapped_sources += local.Object('TrappedUnitLifecycleTest.o', '#test/TrappedUnitLifecycleTest.cpp')
+    trapped_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
+    trapped_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    trapped_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    trapped_test = trapped_env.Program('TrappedUnitLifecycleTest', trapped_sources)
+    local.Alias('trapped-unit-test', trapped_test)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
@@ -583,6 +620,11 @@ if not env['server']:
     regression_sources += local.Object('FetchApportionmentHarness.o', '#test/FetchApportionmentHarness.cpp')
     regression_test = local.Program('FetchApportionmentHarness', regression_sources)
     local.Alias('fetch-apportionment-test', regression_test)
+if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
+    entering_draw_sources = [source for source in source_files if source != 'Glob2.cpp']
+    entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')
+    entering_draw_test = local.Program('EnteringUnitDrawHarness', entering_draw_sources)
+    local.Alias('entering-unit-draw-test', entering_draw_test)
 if not env['server']:
     highres_sources = [source for source in source_files if source != 'Glob2.cpp']
     highres_sources += local.Object('HighResolutionIntegrationHarness.o', '#test/HighResolutionIntegrationHarness.cpp')
@@ -593,3 +635,9 @@ if not env['server'] and 'menu-colony-harness' in COMMAND_LINE_TARGETS:
     menu_sources += local.Object('MenuColonyHarness.o', '#tools/MenuColonyHarness.cpp')
     menu_test = local.Program('MenuColonyHarness', menu_sources)
     env.Alias('menu-colony-harness', menu_test)
+
+# Exercise production hiring against a bucket that reorders during subscription.
+if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
+    hiring_sources = [source for source in source_files if source != 'Glob2.cpp']
+    hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
+    local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))

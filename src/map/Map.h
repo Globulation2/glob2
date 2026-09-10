@@ -76,6 +76,8 @@ enum AreaType
 class Map
 {
 public:
+	void saveRuntimeState(GAGCore::OutputStream *stream) const;
+	void loadRuntimeState(GAGCore::InputStream *stream);
 	//! Type of terrain (used for undermap)
 
 	// === Tile geometry (cross-slice) ===

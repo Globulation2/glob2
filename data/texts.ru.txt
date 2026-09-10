@@ -1226,3 +1226,7 @@ Cortex
 Внутри: %0
 [Units still working: %0]
 Ещё работают: %0
+[automatic torus view]
+Автоматический вид тора
+[toggle torus view]
+Переключить вид 2D / тора

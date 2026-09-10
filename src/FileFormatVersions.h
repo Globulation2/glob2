@@ -86,6 +86,9 @@ static constexpr int FILE_FORMAT_VERSION_LIVE_TEAM_STATS = 89;
 //! Pending building sites waiting for units to clear their footprint.
 static constexpr int FILE_FORMAT_VERSION_PENDING_CONSTRUCTION = 90;
 
+//! Saved-game live RNG, occupancy, fog buffers and cached routing fields.
+static constexpr int FILE_FORMAT_VERSION_CONTINUATION_STATE = 91;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend

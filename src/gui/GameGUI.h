@@ -13,6 +13,7 @@
 #include <variant>
 
 #include "Game.h"
+#include "TorusView.h"
 #include "Brush.h"
 #include "Campaign.h"
 #include "MapHeader.h"
@@ -55,8 +56,14 @@ class MapMarkOrder;
 */
 class GameGUI
 {
+    friend class TorusRenderIntegrationTest;
+    TorusView torusView;
+    bool torusPointerDown = false;
+    bool torusMapPointer(int x, int y, int &mx, int &my) const;
+    bool handleTorusPointer(const SDL_Event &event);
 	friend class HighResolutionIntegrationHarness;
 public:
+    void drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit);
 	///Constructs a GameGUI
 	GameGUI();
 	
@@ -226,6 +233,8 @@ public:
 	int anyPlayerWaitedTimeFor;
 private:
 	friend class GameGUISelectionHarness;
+	friend class TorusRenderIntegrationTest;
+	friend class TorusRenderBenchmark;
 
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);
@@ -234,7 +243,8 @@ private:
 	bool processScrollableWidget(SDL_Event *event);
 	bool processTypingInput(SDL_Event *event);
 	void handleRightClick(void);
-	void handleKey(SDL_Keysym key, bool pressed);
+	void handleKey(SDL_Keysym key, bool pressed, bool repeat = false);
+	void toggleTorusView();
 	void handleKeyAlways(void);
 	void handleKeyDump(SDL_KeyboardEvent key);
 	void changeGameSpeed(int amount);
@@ -274,8 +284,9 @@ private:
 	void drawTopScreenBar(void);
 	//! Draw the infos that are over the others, like the message, the waiting players, ...
 	void drawOverlayInfos(void);
-	//! Draw the particles (eye-candy)
-	void drawParticles(void);
+	//! Draw the particles (eye-candy). @p advance steps their age and physics.
+	//! Emission is suppressed separately while the game is paused.
+	void drawParticles(bool advance);
 	//! Draw the panel: clip rect, background, tutorial highlight, panel buttons,
 	//! then defers to dispatchSelectionPanel for the body.
 	void drawPanel(void);
@@ -491,6 +502,8 @@ private:
 	bool panPushed;
 	//! Coordinate of mouse when began panning
 	int panMouseX, panMouseY;
+	int lastMouseX = 0, lastMouseY = 0;
+	Uint16 lastMouseButtonState = 0;
 	//! Coordinate of viewport when began panning
 	int panViewX, panViewY;
 
@@ -670,8 +683,8 @@ private:
 	
 	//! Generate new particles if required
 	void generateNewParticles(std::set<Building*> *visibleBuildings);
-	//! Move all particles by a certain amount of pixels
-	void moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
+	//! Update overview navigation and particle offsets after viewport movement
+	void viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY);
 };
 
 

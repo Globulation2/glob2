@@ -15,6 +15,8 @@
 #include <Stream.h>
 #include <BinaryStream.h>
 #include <limits>
+#include <memory>
+#include <stdexcept>
 
 
 bool Map::load(GAGCore::InputStream *stream, MapHeader& header, Game *game)
@@ -299,3 +301,211 @@ void Map::removeTeam(void)
 
 // TODO: completely recreate:
 
+
+
+namespace
+{
+bool loadFlag(GAGCore::InputStream *stream, const char *name)
+{
+	const auto value=stream->readUint8(name);
+	if (value>1) throw std::runtime_error("Invalid saved routing flag");
+	return value != 0;
+}
+void saveGradient(GAGCore::OutputStream *stream, const Uint16 *field, size_t size)
+{
+	stream->writeUint8(field != nullptr, "present");
+	if (field) for (size_t i=0; i<size; ++i)
+	{
+		stream->writeEnterSection(i);
+		stream->writeUint16(field[i], "value");
+		stream->writeLeaveSection();
+	}
+}
+void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size)
+{
+	const bool present=loadFlag(stream,"present");
+	std::unique_ptr<Uint16[]> restored;
+	if (present)
+	{
+		restored=std::make_unique<Uint16[]>(size);
+		for (size_t i=0; i<size; ++i)
+		{
+			stream->readEnterSection(i);
+			restored[i]=stream->readUint16("value");
+			stream->readLeaveSection();
+		}
+	}
+	delete[] field;
+	field=restored.release();
+}
+}
+
+// Cached routing fields deliberately lag map edits. Recomputing them on load
+// changes decisions before their scheduled refresh, even with an identical RNG.
+void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("mapRuntime");
+	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
+	stream->writeEnterSection("cells");
+	for (size_t i=0; i<size; ++i)
+	{
+		stream->writeEnterSection(i);
+		stream->writeUint8(immobileUnits[i], "immobileUnit");
+		stream->writeUint32(fogOfWarA[i], "fogA");
+		stream->writeUint32(fogOfWarB[i], "fogB");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeEnterSection("teams");
+	for (int t=0; t<game->teamsCount(); ++t)
+	{
+		stream->writeEnterSection(t);
+		stream->writeEnterSection("claims");
+		for (size_t i=0; i<size; ++i)
+		{
+			stream->writeEnterSection(i);
+			stream->writeUint16(clearingAreaClaims[t][i], "claim");
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+		stream->writeEnterSection("swimClasses");
+		for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+		{
+			stream->writeEnterSection(sw);
+			stream->writeEnterSection("resources");
+			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			{
+				stream->writeEnterSection(r);
+				saveGradient(stream, resourcesGradient[t][r][sw], size);
+				stream->writeUint8(gradientUpdated[t][r][sw], "updated");
+				stream->writeLeaveSection();
+			}
+			stream->writeLeaveSection();
+			stream->writeEnterSection("forbidden");
+			saveGradient(stream, forbiddenGradient[t][sw], size);
+			stream->writeLeaveSection();
+			stream->writeEnterSection("guard");
+			saveGradient(stream, guardAreasGradient[t][sw], size);
+			stream->writeUint8(guardGradientUpdated[t][sw], "updated");
+			stream->writeLeaveSection();
+			stream->writeEnterSection("clear");
+			saveGradient(stream, clearAreasGradient[t][sw], size);
+			stream->writeUint8(clearGradientUpdated[t][sw], "updated");
+			stream->writeLeaveSection();
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+		stream->writeEnterSection("buildings");
+		for (int b=0; b<Building::MAX_COUNT; ++b) if (auto *building=game->teams[t]->myBuildings[b])
+		{
+			stream->writeEnterSection(b);
+			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+			{
+				stream->writeEnterSection(sw);
+				saveGradient(stream, building->globalGradient[sw], size);
+				stream->writeUint8(building->dirtyGradient[sw], "dirty");
+				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
+				stream->writeLeaveSection();
+			}
+			stream->writeEnterSection("access");
+			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
+			{
+				stream->writeEnterSection(sw);
+				stream->writeUint8(building->locked[sw], "locked");
+				stream->writeUint8(building->anyResourceToClear[sw], "resourceState");
+				stream->writeLeaveSection();
+			}
+			stream->writeLeaveSection();
+			stream->writeLeaveSection();
+		}
+		stream->writeLeaveSection();
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeLeaveSection();
+}
+
+void Map::loadRuntimeState(GAGCore::InputStream *stream)
+{
+	stream->readEnterSection("mapRuntime");
+	const bool fogIsA=loadFlag(stream,"fogIsA");
+	fogOfWar=fogIsA ? fogOfWarA.data() : fogOfWarB.data();
+	stream->readEnterSection("cells");
+	for (size_t i=0; i<size; ++i)
+	{
+		stream->readEnterSection(i);
+		immobileUnits[i]=stream->readUint8("immobileUnit");
+		fogOfWarA[i]=stream->readUint32("fogA");
+		fogOfWarB[i]=stream->readUint32("fogB");
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readEnterSection("teams");
+	for (int t=0; t<game->teamsCount(); ++t)
+	{
+		stream->readEnterSection(t);
+		stream->readEnterSection("claims");
+		for (size_t i=0; i<size; ++i)
+		{
+			stream->readEnterSection(i);
+			clearingAreaClaims[t][i]=stream->readUint16("claim");
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		stream->readEnterSection("swimClasses");
+		for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+		{
+			stream->readEnterSection(sw);
+			stream->readEnterSection("resources");
+			for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			{
+				stream->readEnterSection(r);
+				loadGradient(stream, resourcesGradient[t][r][sw], size);
+				gradientUpdated[t][r][sw]=loadFlag(stream,"updated");
+				stream->readLeaveSection();
+			}
+			stream->readLeaveSection();
+			stream->readEnterSection("forbidden");
+			loadGradient(stream, forbiddenGradient[t][sw], size);
+			stream->readLeaveSection();
+			stream->readEnterSection("guard");
+			loadGradient(stream, guardAreasGradient[t][sw], size);
+			guardGradientUpdated[t][sw]=loadFlag(stream,"updated");
+			stream->readLeaveSection();
+			stream->readEnterSection("clear");
+			loadGradient(stream, clearAreasGradient[t][sw], size);
+			clearGradientUpdated[t][sw]=loadFlag(stream,"updated");
+			stream->readLeaveSection();
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		stream->readEnterSection("buildings");
+		for (int b=0; b<Building::MAX_COUNT; ++b) if (auto *building=game->teams[t]->myBuildings[b])
+		{
+			stream->readEnterSection(b);
+			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+			{
+				stream->readEnterSection(sw);
+				loadGradient(stream, building->globalGradient[sw], size);
+				building->dirtyGradient[sw]=loadFlag(stream,"dirty");
+				building->lastGlobalGradientUpdateStepCounter[sw]=stream->readUint32("lastUpdate");
+				stream->readLeaveSection();
+			}
+			stream->readEnterSection("access");
+			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
+			{
+				stream->readEnterSection(sw);
+				building->locked[sw]=loadFlag(stream,"locked");
+				building->anyResourceToClear[sw]=stream->readUint8("resourceState");
+				if (building->anyResourceToClear[sw]>2) throw std::runtime_error("Invalid saved resource state");
+				stream->readLeaveSection();
+			}
+			stream->readLeaveSection();
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	stream->readLeaveSection();
+}

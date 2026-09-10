@@ -1224,3 +1224,7 @@ Tốc độ: 1x (chơi mạng)
 Còn trong: %0
 [Units still working: %0]
 Còn làm việc: %0
+[automatic torus view]
+Chế độ xem hình xuyến tự động
+[toggle torus view]
+Chuyển chế độ xem 2D / hình xuyến

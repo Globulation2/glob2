@@ -1228,3 +1228,7 @@ Cortex
 Înăuntru: %0
 [Units still working: %0]
 Încă lucrează: %0
+[automatic torus view]
+Vizualizare toroidală automată
+[toggle torus view]
+Comută vizualizarea 2D / toroidală

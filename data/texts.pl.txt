@@ -1228,3 +1228,7 @@ Cortex
 Wewnątrz: %0
 [Units still working: %0]
 Nadal pracują: %0
+[automatic torus view]
+Automatyczny widok torusa
+[toggle torus view]
+Przełącz widok 2D / torusa

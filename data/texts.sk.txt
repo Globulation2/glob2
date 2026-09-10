@@ -1236,3 +1236,7 @@ Cortex
 Vnútri: %0
 [Units still working: %0]
 Ešte v práci: %0
+[automatic torus view]
+Automatické toroidné zobrazenie
+[toggle torus view]
+Prepnúť 2D / toroidné zobrazenie

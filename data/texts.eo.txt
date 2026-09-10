@@ -1226,3 +1226,7 @@ Cortex
 Interne: %0
 [Units still working: %0]
 Ankoraŭ laborantaj: %0
+[automatic torus view]
+Aŭtomata tora vido
+[toggle torus view]
+Ŝalti inter 2D kaj tora vido

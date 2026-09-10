@@ -1252,3 +1252,7 @@ Cortex
 Nog binnen: %0
 [Units still working: %0]
 Nog aan het werk: %0
+[automatic torus view]
+Automatische torusweergave
+[toggle torus view]
+Wissel tussen 2D- en torusweergave

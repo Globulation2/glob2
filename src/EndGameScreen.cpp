@@ -540,7 +540,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 	while(loadSaveScreen->endValue<0)
 	{
 		Uint64 time = SDL_GetTicks64();
-		while (SDL_PollEvent(&event))
+		while (GAGCore::GraphicContext::pollEvent(&event))
 		{
 			GAGCore::GraphicContext::translateMouseEvent(&event);
 			loadSaveScreen->translateAndProcessEvent(&event);

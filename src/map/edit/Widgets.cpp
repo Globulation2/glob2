@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2022-2023 Nathan Mills
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2006 Bradley Arsenault
 
@@ -11,7 +12,7 @@
 #include "SDLCompat.h"
 
 MapEditorWidget::MapEditorWidget(MapEdit& me, const widgetRectangle& rectangle, const std::string& group, const std::string& name, const std::string& action)
-	: me(me), area(rectangle), group(group), name(name), action(action), enabled(false)
+	: me(me), area(rectangle, globalContainer->gfx->getW()), group(group), name(name), action(action), enabled(false)
 {
 
 }
@@ -20,10 +21,18 @@ MapEditorWidget::MapEditorWidget(MapEdit& me, const widgetRectangle& rectangle, 
 
 void MapEditorWidget::drawSelf()
 {
+	area.updateWindowWidth(globalContainer->gfx->getW());
 	if(enabled)
 		draw();
 }
 
+
+
+bool MapEditorWidget::is_in(int x, int y)
+{
+	area.updateWindowWidth(globalContainer->gfx->getW());
+	return area.is_in(x, y);
+}
 
 
 void MapEditorWidget::disable()

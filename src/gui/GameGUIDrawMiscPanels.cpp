@@ -39,6 +39,7 @@ void GameGUI::drawResourceInfos(void)
 	if (!rt->eternal)
 		resImg--;
 	globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+16, ypos, globalContainer->resources, resImg);
+	globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);
 
 	// Draw resource count
 	if (rt->granular)

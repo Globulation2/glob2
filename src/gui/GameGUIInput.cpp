@@ -117,6 +117,30 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    if ((event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_MIDDLE) ||
+        (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST))
+    {
+        panPushed = false;
+    }
+    if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+    {
+        viewportSpeedX = viewportSpeedY = 0;
+        torusView.stopMoving();
+        if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
+        torusPointerDown = false;
+        torusView.setPointerHeld(false);
+    }
+    if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT)
+        torusView.setPointerHeld(false);
+
+    if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText) {
+        int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
+        if (event->type == SDL_MOUSEMOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
+        if (torusView.event(*event, width)) return;
+        if (torusView.active() && handleTorusPointer(*event)) return;
+    }
+
+
 	// handle typing
 	if (processTypingInput(event))
 		return;
@@ -124,16 +148,6 @@ void GameGUI::processEvent(SDL_Event *event)
 	// the dump (debug) keys are always handled
 	if (event->type == SDL_KEYDOWN)
 		handleKeyDump(event->key);
-
-
-	if (event->type==SDL_MOUSEBUTTONUP)
-	{
-		int button=event->button.button;
-		if (button==SDL_BUTTON_MIDDLE)
-		{
-			panPushed=false;
-		}
-	}
 
 
 	if (event->type == SDL_MOUSEBUTTONDOWN)
@@ -155,7 +169,7 @@ void GameGUI::processEvent(SDL_Event *event)
 		}
 		if (event->type==SDL_KEYDOWN)
 		{
-			handleKey(event->key.keysym, true);
+			handleKey(event->key.keysym, true, event->key.repeat != 0);
 		}
 		else if (event->type==SDL_KEYUP)
 		{
