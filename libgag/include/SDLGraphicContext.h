@@ -588,7 +588,6 @@ namespace GAGCore
 		void clearTeamColorCache();
 
 		friend class DrawableSurface;
-		friend class GraphicContext;
 		// Support functions
 		//! Load a frame from two file pointers
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
@@ -597,6 +596,10 @@ namespace GAGCore
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
+		//! One bit per 32-phase block, recomputed whenever the HD layer arrays
+		//! change (load(), reloadHighResolution()); backs blockHasCompleteHD.
+		std::vector<bool> blockCompleteHD;
+		void recomputeBlockCompleteHD();
 		void applyTeamHueShift(DrawableSurface &surface);
 		DrawableSurface *getColoredSurface(int index, bool experiment);
 		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
@@ -629,7 +632,9 @@ namespace GAGCore
 		//! span one motion-blur shutter can draw, see UnitAnimation.h) has a
 		//! matching HD layer wherever the native one exists. A shutter samples
 		//! one resolution throughout; an incomplete block falls back to native
-		//! for all of it rather than mixing resolutions pose to pose.
+		//! for all of it rather than mixing resolutions pose to pose. One
+		//! drawSprite call per pose calls this, so the answer is cached
+		//! (recomputeBlockCompleteHD) rather than rescanned every time.
 		bool blockHasCompleteHD(int index) const;
 		//! Hue shift, in degrees, from this sprite's base team colour to actColor;
 		//! shared by the CPU recolor path and the uHueShift uniform of the shader.

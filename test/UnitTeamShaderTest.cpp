@@ -6,8 +6,7 @@
 //      action/direction).
 //   2. The sharp (single-pose) and motion-blur (multi-pose shutter) combined
 //      base+team framebuffer result, against a CPU reference that composites
-//      each pose in premultiplied space and blends poses in shutter order --
-//      the same math the removed CPU composite cache used.
+//      each pose in premultiplied space and blends poses in shutter order.
 // Both backends' whole-shutter native fallback for an incomplete HD pack, and
 // the GLOB2_DISABLE_UNIT_SHADER escape hatch, are covered by
 // UnitTeamColorCacheTest.cpp instead, since they don't need pixel comparison.
@@ -171,7 +170,7 @@ int main()
 	double totalError = 0; int maxError = 0; size_t channels = 0, alphaMismatches = 0;
 
 	// 1) Exhaustive: all 1,792 poses (every action/direction/phase), native and
-	// HD, at three fixed colors (reused from the removed composite tests).
+	// HD, at three fixed colors.
 	for (bool experiment : {false, true})
 	for (int base = 0; base <= 384; base += 64)
 	for (int dir = 0; dir < 8; ++dir)
@@ -205,8 +204,7 @@ int main()
 	// 3) Sharp and motion-blur framebuffer comparison: shader-rendered sequence
 	// vs. an independent CPU reference that composites base+team per pose in
 	// premultiplied space (team over base, unpremultiplied once) and then
-	// blends poses in shutter order -- the same algebra the removed CPU
-	// composite cache used, just not cached.
+	// blends poses in shutter order.
 	{
 		auto compositePose = [&](DrawableSurface *base, DrawableSurface *team, int x, int y, float hueShift,
 		                          std::vector<double> &canvas, int cw, int poseAlpha)

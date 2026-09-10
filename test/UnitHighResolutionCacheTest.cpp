@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// HD/native layer mapping, whole-block resolution fallback, and zoom, for the
-// direct-draw replacement of the removed composite cache. See
-// UnitTeamShaderTest.cpp for shader-vs-CPU pixel comparisons and
-// UnitTeamColorCacheTest.cpp for the bounded CPU cache itself.
+// HD/native layer mapping, whole-block resolution fallback, and zoom for
+// drawSprite's direct per-pose drawing. See UnitTeamShaderTest.cpp for
+// shader-vs-CPU pixel comparisons and UnitTeamColorCacheTest.cpp for the
+// bounded CPU cache itself.
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL_image.h>
@@ -36,11 +36,15 @@ struct InspectUnitSprite : Sprite
 		}
 	}
 	// Test-only: simulate a corrupted HD install by dropping one frame's HD
-	// team layer, without touching the checked-in production pack.
+	// team layer, without touching the checked-in production pack. Production
+	// code only ever changes these arrays through load()/reloadHighResolution(),
+	// both of which recompute the per-block HD-completeness cache themselves;
+	// poking the arrays directly here has to do the same.
 	void dropExperimentRotated(int index)
 	{
 		delete experimentRotated[index];
 		experimentRotated[index] = nullptr;
+		recomputeBlockCompleteHD();
 	}
 	// Test-only: simulate a frame with no team layer at all (as ordinary,
 	// non-team-colored sprites already have for every frame).
@@ -48,6 +52,7 @@ struct InspectUnitSprite : Sprite
 	{
 		delete rotated[index];
 		rotated[index] = nullptr;
+		recomputeBlockCompleteHD();
 	}
 };
 

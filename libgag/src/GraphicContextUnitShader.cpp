@@ -92,11 +92,10 @@ namespace GAGCore
 			"	}\n"
 			// Team layer over base layer (the same order Sprite::getColoredSurface's
 			// caller draws them in), combined in premultiplied space and divided
-			// back out once -- same pattern as the removed CPU composite's
-			// premultiplied accumulate-then-unpremultiply, needed because base and
-			// team can each be partially transparent at the same edge texel. The
-			// pose's shutter weight is then applied to alpha only: straight,
-			// non-premultiplied output for the fixed GL_SRC_ALPHA /
+			// back out once: needed because base and team can each be partially
+			// transparent at the same edge texel, so neither can be dropped from
+			// the premultiply. The pose's shutter weight is then applied to alpha
+			// only: straight, non-premultiplied output for the fixed GL_SRC_ALPHA /
 			// GL_ONE_MINUS_SRC_ALPHA blend already set for sprites.
 			"	vec3 premultRGB = team.rgb * team.a + base.rgb * base.a * (1.0 - team.a);\n"
 			"	float a = team.a + base.a * (1.0 - team.a);\n"

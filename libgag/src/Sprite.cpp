@@ -124,6 +124,7 @@ namespace GAGCore
 		if (fileName == "data/gfx/unit")
 			dynamicTeamColor = true;
 
+		recomputeBlockCompleteHD();
 		createHighResolutionAtlas();
 		return getFrameCount() > 0;
 	}
@@ -239,16 +240,27 @@ namespace GAGCore
 #endif
 	}
 	
+	void Sprite::recomputeBlockCompleteHD()
+	{
+		const size_t blockCount = (images.size() + 31) / 32;
+		blockCompleteHD.assign(blockCount, true);
+		for (size_t block = 0; block < blockCount; ++block)
+		{
+			const int blockStart = static_cast<int>(block * 32);
+			const int blockEnd = std::min(blockStart + 32, static_cast<int>(images.size()));
+			for (int i = blockStart; i < blockEnd; ++i)
+				if ((images[i] && !experimentImages[i]) || (rotated[i] && !experimentRotated[i]))
+				{
+					blockCompleteHD[block] = false;
+					break;
+				}
+		}
+	}
+
 	bool Sprite::blockHasCompleteHD(int index) const
 	{
-		const int blockStart = (index / 32) * 32;
-		const int blockEnd = std::min(blockStart + 32, static_cast<int>(images.size()));
-		for (int i = blockStart; i < blockEnd; ++i)
-		{
-			if (images[i] && !experimentImages[i]) return false;
-			if (rotated[i] && !experimentRotated[i]) return false;
-		}
-		return true;
+		const size_t block = static_cast<size_t>(index) / 32;
+		return block < blockCompleteHD.size() && blockCompleteHD[block];
 	}
 
 	DrawableSurface *Sprite::getRotatedSurface(int index)
@@ -381,6 +393,7 @@ namespace GAGCore
 		experimentImages.clear(); experimentRotated.clear();
 		for (size_t i=0;i<images.size();++i)
 			loadExperimentFrame(fileName+std::to_string(i)+".png",fileName+std::to_string(i)+"r.png");
+		recomputeBlockCompleteHD();
 		createHighResolutionAtlas();
 	}
 

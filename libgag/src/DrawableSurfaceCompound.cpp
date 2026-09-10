@@ -320,7 +320,13 @@ namespace GAGCore
 				return;
 		}
 
-		if (gpuActive && (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
+		const bool wantsHDRoute = sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index];
+		// A dynamicTeamColor sprite (unit) with an incomplete HD block must not
+		// take the per-frame HD routing below: that would let this frame render
+		// HD while a different pose of the same motion-blur shutter, rejected
+		// by blockHasCompleteHD above, renders native -- mixing resolutions
+		// pose to pose. Falling through renders this frame native too.
+		if (gpuActive && wantsHDRoute && (!sprite->dynamicTeamColor || sprite->blockHasCompleteHD(index)))
 		{
 			drawSprite(x, y, static_cast<float>(sprite->getW(index)), static_cast<float>(sprite->getH(index)), sprite, index, alpha);
 			return;
