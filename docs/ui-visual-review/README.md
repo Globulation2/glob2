@@ -65,6 +65,34 @@ Six commits, each verified with the harness gates and captures.
   opaquely each frame (`OverlayScreen::executeModal`), so they stay opaque by
   design.
 
+## Follow-up: smoother motion and cleaner edges
+
+Playtesting the built client surfaced three concrete rendering bugs behind an
+overall "feels a bit 90s" reaction, none of them requiring a style change to fix:
+
+- **Button swell had only 2-3 states.** The hover inflate was computed as
+  `int(hi)*2/255` — integer division on a smooth 0-255 highlight collapsed it
+  to whole-pixel jumps instead of a continuous grow. `FrontendTheme::swell()`
+  now draws the base size opaque and crossfades a one-pixel-larger outline in
+  over the fractional part, so the swell reads as continuous. Used by the main
+  menu buttons and the shared theme's button background.
+- **Menu-colony camera drift was jarring.** The drift was floored to a whole
+  pixel before being split into tile + sub-tile fraction, so the camera sat
+  still for seconds near the drift's turning points and then hopped a pixel.
+  `MenuColony::draw()` now keeps the drift a `double` all the way to the GL
+  transform, matching how the in-game camera's own fraction is already a
+  float (`TorusView::draw`) for the same reason.
+- **Contour edges read as pixel art, with notches at the corners.** `blob()`
+  and `ring()` rounded every corner and wobble offset to a whole pixel with no
+  anti-aliasing, and the wobble was applied inside the rounded-corner curves
+  themselves, chipping them. The contour now carries fractional insets
+  through to the boundary pixel (blended by coverage) and fades the wobble to
+  zero inside the corner curves.
+
+None of this changes layout, hit rects or the simulation; re-verified with the
+same harness gates listed below, plus a fresh `run-game-speed-tests.py` pass
+(checksum `8b9c6da6`, unchanged from the original captures).
+
 ## Verification
 
 Run from the repository root, `SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy`
