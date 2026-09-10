@@ -619,9 +619,9 @@ there are
 [ok]
 Ok
 [old islands terrain]
-old random islands
+Rugged Archipelago
 [old random terrain]
-old random terrain
+Shattered Coast
 [on press]
 On Press
 [On the spot]
@@ -1361,9 +1361,9 @@ Medium - Experimental
 [No AI orders]
 No AI orders
 [Old islands]
-Old islands
+Rugged Archipelago
 [Old random]
-Old random
+Shattered Coast
 [Open at least one colony to start a match.]
 Open at least one colony to start a match.
 [Open book]
@@ -1764,3 +1764,9 @@ Apply artwork on the next game or editor load (OpenGL).
 Automatic torus view
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatically show the torus overview while moving around the map (OpenGL).
+[Channel width]
+Channel width
+[Land bridge width]
+Land bridge width
+[Lake size]
+Lake size

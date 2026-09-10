@@ -821,6 +821,8 @@ public:
 	bool makeRandomMap(MapGenerationDescriptor &descriptor);
 	bool oldMakeRandomMap(MapGenerationDescriptor &descriptor);
 	bool oldMakeIslandsMap(MapGenerationDescriptor &descriptor);
+	void oldAddResourcesRandomMap(MapGenerationDescriptor &descriptor);
+	void oldAddResourcesIslandsMap(MapGenerationDescriptor &descriptor);
 
 };
 

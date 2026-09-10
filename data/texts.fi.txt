@@ -607,9 +607,9 @@ joista
 [ok]
 Ok
 [old islands terrain]
-vanhat satunnaiset saaret
+Rosoiset saaret
 [old random terrain]
-vanhat satunnaiset maastot
+Rikkonainen rannikko
 [on press]
 Painallus
 [On the spot]
@@ -1363,9 +1363,9 @@ Keskitaso - Kokeellinen
 [No AI orders]
 Ei tekoälyn käskyjä
 [Old islands]
-Vanhat saaret
+Rosoiset saaret
 [Old random]
-Vanha satunnainen
+Rikkonainen rannikko
 [Open at least one colony to start a match.]
 Avaa vähintään yksi siirtokunta aloittaaksesi ottelun.
 [Open book]
@@ -1766,3 +1766,9 @@ Ota grafiikka käyttöön, kun seuraava peli tai karttaeditori ladataan (OpenGL)
 Automaattinen torusnäkymä
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Näytä toruksen muotoinen karttanäkymä automaattisesti liikkuessasi kartalla (OpenGL).
+[Channel width]
+Kanavan leveys
+[Land bridge width]
+Maasillan leveys
+[Lake size]
+Järven koko

@@ -1,0 +1,218 @@
+[
+  {
+    "id": "m5-width5-extra0",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 0
+    }
+  },
+  {
+    "id": "m5-width5-extra1",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 1
+    }
+  },
+  {
+    "id": "m5-width5-extra2",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 2
+    }
+  },
+  {
+    "id": "m5-width5-extra3",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 3
+    }
+  },
+  {
+    "id": "m5-width5-extra4",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 4
+    }
+  },
+  {
+    "id": "m5-width5-extra5",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 5
+    }
+  },
+  {
+    "id": "m5-width5-extra6",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 6
+    }
+  },
+  {
+    "id": "m5-width5-extra7",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 7
+    }
+  },
+  {
+    "id": "m5-width5-extra8",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 8
+    }
+  },
+  {
+    "id": "m5-width6-extra0",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 0
+    }
+  },
+  {
+    "id": "m5-width6-extra1",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 1
+    }
+  },
+  {
+    "id": "m5-width6-extra2",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 2
+    }
+  },
+  {
+    "id": "m5-width6-extra3",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 3
+    }
+  },
+  {
+    "id": "m5-width6-extra4",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 4
+    }
+  },
+  {
+    "id": "m5-width6-extra5",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 5
+    }
+  },
+  {
+    "id": "m5-width6-extra6",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 6
+    }
+  },
+  {
+    "id": "m5-width6-extra7",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 7
+    }
+  },
+  {
+    "id": "m5-width6-extra8",
+    "method": 5,
+    "params": {
+      "river": 6,
+      "extra": 8
+    }
+  },
+  {
+    "id": "m5-width7-extra0",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 0
+    }
+  },
+  {
+    "id": "m5-width7-extra1",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 1
+    }
+  },
+  {
+    "id": "m5-width7-extra2",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 2
+    }
+  },
+  {
+    "id": "m5-width7-extra3",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 3
+    }
+  },
+  {
+    "id": "m5-width7-extra4",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 4
+    }
+  },
+  {
+    "id": "m5-width7-extra5",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 5
+    }
+  },
+  {
+    "id": "m5-width7-extra6",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 6
+    }
+  },
+  {
+    "id": "m5-width7-extra7",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 7
+    }
+  },
+  {
+    "id": "m5-width7-extra8",
+    "method": 5,
+    "params": {
+      "river": 7,
+      "extra": 8
+    }
+  }
+]

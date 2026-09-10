@@ -607,9 +607,9 @@ numlock
 [ok]
 ок
 [old islands terrain]
-старые случайные острова
+Скалистый архипелаг
 [old random terrain]
-старый случайный ландшафт
+Изрезанный берег
 [on press]
 Нажата
 [On the spot]
@@ -1361,9 +1361,9 @@ Cortex
 [No AI orders]
 Никаких команд ИИ
 [Old islands]
-Старые острова
+Скалистый архипелаг
 [Old random]
-Старый рандом
+Изрезанный берег
 [Open at least one colony to start a match.]
 Откройте хотя бы одну колонию, чтобы начать матч.
 [Open book]
@@ -1764,3 +1764,9 @@ OpenGL недоступен в этой сборке.
 Автоматический вид тора
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Автоматически отображать обзор карты в форме тора при перемещении по карте (OpenGL).
+[Channel width]
+Ширина пролива
+[Land bridge width]
+Ширина перешейка
+[Lake size]
+Размер озера

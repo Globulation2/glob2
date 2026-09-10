@@ -548,6 +548,45 @@ struct CustomGameSetupHarness
 		screen.onTimer(screen.previewDue);
 		assert(screen.validMap);
 
+		// Drive the same dropdown/steppers used by players, including measured five-unit steps.
+		auto landscape = [&](int method)
+		{
+			clickControl("generator/landscape");
+			for (int i = 0; i < 8; ++i)
+				keyEvent(SDLK_UP);
+			for (int i = 1; i < method; ++i)
+				keyEvent(SDLK_DOWN);
+			keyEvent(SDLK_RETURN);
+			assert(screen.setup.generator.method == method);
+		};
+		landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
+		assert(screen.setup.generator.riverDiameter == 5 &&
+			   screen.setup.generator.extraIslands == 3);
+		clickControl("generator/Channel width/+");
+		assert(screen.setup.generator.riverDiameter == 6);
+		capture("concrete-controls");
+		landscape(MapGenerationDescriptor::eISLES);
+		assert(screen.setup.generator.grassRatio == 60);
+		clickControl("generator/Island size/+");
+		assert(screen.setup.generator.grassRatio == 65);
+		clickControl("generator/Land bridge width/+");
+		assert(screen.setup.generator.riverDiameter == 5);
+		capture("isles-controls");
+		landscape(MapGenerationDescriptor::eCRATERLAKES);
+		assert(screen.setup.generator.riverDiameter == 25 &&
+			   screen.setup.generator.grassRatio == 75);
+		clickControl("generator/Lake size/+");
+		assert(screen.setup.generator.riverDiameter == 30);
+		capture("crater-controls");
+		landscape(MapGenerationDescriptor::eCONCRETEISLANDS);
+		assert(screen.setup.generator.riverDiameter == 6);
+		landscape(MapGenerationDescriptor::eOLDISLANDS);
+		assert(screen.setup.generator.oldIslandSize == 65);
+		capture("rugged-archipelago-controls");
+		landscape(MapGenerationDescriptor::eOLDRANDOM);
+		capture("shattered-coast-controls");
+		landscape(MapGenerationDescriptor::eRIVER);
+
 		screen.activateGroup(screen.groups[0]);
 		capture("map-1000");
 		screen.setup.setCapacity(12);
@@ -765,7 +804,7 @@ int main(int argc, char **argv)
 			Game game(nullptr);
 			MapGenerator generator;
 			MapGenerationDescriptor descriptor;
-			descriptor.method = static_cast<MapGenerationDescriptor::Method>(method);
+			descriptor.setMethodDefaults(static_cast<MapGenerationDescriptor::Method>(method));
 			generated = generator.generateMap(game, descriptor) && game.teamsCount() == 4;
 		}
 		assert(generated);
@@ -790,7 +829,7 @@ int main(int argc, char **argv)
 		Game g(nullptr);
 		MapGenerator generator;
 		MapGenerationDescriptor d;
-		d.method = MapGenerationDescriptor::eRIVER;
+		d.setMethodDefaults(MapGenerationDescriptor::eRIVER);
 		d.nbTeams = 4;
 		assert(generator.generateMap(g, d));
 		assert(g.teamsCount() == 4);

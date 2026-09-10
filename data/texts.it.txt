@@ -665,9 +665,9 @@ dei quali
 [ok]
 Ok
 [old islands terrain]
-Vecchie isole casuali
+Arcipelago Frastagliato
 [old random terrain]
-Vecchio terreno casuale
+Costa Frammentata
 [on press]
 Premuto
 [On the spot]
@@ -1425,9 +1425,9 @@ Medio - Sperimentale
 [No AI orders]
 Nessun comando dell'IA
 [Old islands]
-Isole (vecchio generatore)
+Arcipelago Frastagliato
 [Old random]
-Casuale (vecchio generatore)
+Costa Frammentata
 [Open at least one colony to start a match.]
 Apri almeno una colonia per iniziare una partita.
 [Open book]
@@ -1828,3 +1828,9 @@ Applica la grafica al prossimo caricamento di una partita o dell’editor di map
 Vista toroidale automatica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostra automaticamente la panoramica toroidale mentre ti sposti sulla mappa (OpenGL).
+[Channel width]
+Larghezza del canale
+[Land bridge width]
+Larghezza del ponte terrestre
+[Lake size]
+Dimensione del lago

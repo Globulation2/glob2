@@ -27,21 +27,18 @@ public:
 	MapGenerationDescriptor descriptor;
 
 private:
-	Number *mapSizeX, *mapSizeY;
-	List *methods, *terrains;
-	Ratio *waterRatio, *sandRatio, *grassRatio, *desertRatio;
-	Ratio *wheatRatio, *woodRatio, *stoneRatio, *algaeRatio, *craterDensity;
-	Ratio *riverDiameter, *fruitRatio;
-	Number *smooth, *extraIslands;
-	Number *nbTeams;
-	Ratio *oldIslandSize;
-	Number *oldBeach;
-	Number *nbWorkers;
-	Number *logRepeatAreaTimes;
-	Text *numberOfTeamText, *numberOfWorkerText, *craterDensityText, *extraIslandsText;
-	Text *ratioText, *waterText, *sandText, *grassText, *desertText, *wheatText, *woodText, *stoneText, *algaeText, *fruitText, *smoothingText, *riverDiameterText, *areaTimesText;
-	Text *oldIslandSizeText, *oldBeachSizeText;
-	
+  friend class MapGeneratorDefaultsTest;
+  struct ControlWidget
+  {
+	  MapGenerationDescriptor::Control definition;
+	  int method; // -1 for shared controls
+	  Number *number;
+	  Text *label;
+  };
+  std::vector<ControlWidget> controlWidgets;
+  MapGenerationHistory history;
+  List *methods, *terrains;
+  void updateControls();
 
 public:
 	//! Constructor

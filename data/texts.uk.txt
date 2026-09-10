@@ -623,9 +623,9 @@ Num Lock
 [ok]
 Гаразд
 [old islands terrain]
-старі випадкові острови
+Скелястий архіпелаг
 [old random terrain]
-старий випадковий ландшафт
+Порізане узбережжя
 [on press]
 Натиск
 [On the spot]
@@ -1359,9 +1359,9 @@ Ysagoon Online Gaming
 [No AI orders]
 Без команд ШІ
 [Old islands]
-Старі острови
+Скелястий архіпелаг
 [Old random]
-Старий випадковий
+Порізане узбережжя
 [Open at least one colony to start a match.]
 Відкрийте принаймні одну колонію, щоб почати матч.
 [Open book]
@@ -1762,3 +1762,9 @@ OpenGL недоступний у цій збірці.
 Автоматичний вигляд тора
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Автоматично показувати огляд карти у формі тора під час переміщення по карті (OpenGL).
+[Channel width]
+Ширина протоки
+[Land bridge width]
+Ширина перешийка
+[Lake size]
+Розмір озера

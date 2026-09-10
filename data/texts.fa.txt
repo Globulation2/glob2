@@ -607,9 +607,9 @@ numlock
 [ok]
 قبول!
 [old islands terrain]
-زمین تصادفی
+مجمع‌الجزایر ناهموار
 [old random terrain]
-مجمع‌الجزایر تصادفی
+ساحل گسسته
 [on press]
 فشارداده
 [On the spot]
@@ -1361,9 +1361,9 @@ Cortex
 [No AI orders]
 بدون دستور هوش مصنوعی
 [Old islands]
-جزایر قدیمی
+مجمع‌الجزایر ناهموار
 [Old random]
-تصادفی قدیمی
+ساحل گسسته
 [Open at least one colony to start a match.]
 حداقل یک کلنی را برای شروع مسابقه باز کنید.
 [Open book]
@@ -1764,3 +1764,9 @@ OpenGL در این بیلد موجود نیست.
 نمای خودکار چنبره
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 هنگام حرکت در نقشه (OpenGL) نمای کلی نقشه به شکل چنبره را به صورت خودکار نشان دهید.
+[Channel width]
+پهنای آبراه
+[Land bridge width]
+پهنای پل خشکی
+[Lake size]
+اندازهٔ دریاچه

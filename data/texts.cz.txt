@@ -605,9 +605,9 @@ z toho
 [ok]
 Budiž
 [old islands terrain]
-náhodné ostrovy (staré)
+Členité souostroví
 [old random terrain]
-náhodný terén (starý)
+Roztříštěné pobřeží
 [on press]
 Stisk
 [On the spot]
@@ -1363,9 +1363,9 @@ Střední – Experimentální
 [No AI orders]
 Žádné příkazy AI
 [Old islands]
-Staré ostrovy
+Členité souostroví
 [Old random]
-Staré náhodné
+Roztříštěné pobřeží
 [Open at least one colony to start a match.]
 Otevřete alespoň jednu kolonii a začněte zápas.
 [Open book]
@@ -1766,3 +1766,9 @@ Vybraná grafika se použije při příštím načtení hry nebo editoru map (Op
 Automatický toroidní pohled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenGL).
+[Channel width]
+Šířka průlivu
+[Land bridge width]
+Šířka pevninského mostu
+[Lake size]
+Velikost jezera

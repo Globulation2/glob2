@@ -1,0 +1,390 @@
+[
+  {
+    "id": "size64-teams4-m1",
+    "method": 1,
+    "params": {
+      "water": 35,
+      "grass": 60,
+      "smooth": 6,
+      "w": 6,
+      "h": 6,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size128-teams2-m1",
+    "method": 1,
+    "params": {
+      "water": 35,
+      "grass": 60,
+      "smooth": 6,
+      "w": 7,
+      "h": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "size128-teams8-m1",
+    "method": 1,
+    "params": {
+      "water": 35,
+      "grass": 60,
+      "smooth": 6,
+      "w": 7,
+      "h": 7,
+      "teams": 8
+    }
+  },
+  {
+    "id": "size256-teams4-m1",
+    "method": 1,
+    "params": {
+      "water": 35,
+      "grass": 60,
+      "smooth": 6,
+      "w": 8,
+      "h": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size64-teams4-m2",
+    "method": 2,
+    "params": {
+      "water": 45,
+      "sand": 3,
+      "grass": 75,
+      "river": 35,
+      "w": 6,
+      "h": 6,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size128-teams2-m2",
+    "method": 2,
+    "params": {
+      "water": 45,
+      "sand": 3,
+      "grass": 75,
+      "river": 35,
+      "w": 7,
+      "h": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "size128-teams8-m2",
+    "method": 2,
+    "params": {
+      "water": 45,
+      "sand": 3,
+      "grass": 75,
+      "river": 35,
+      "w": 7,
+      "h": 7,
+      "teams": 8
+    }
+  },
+  {
+    "id": "size256-teams4-m2",
+    "method": 2,
+    "params": {
+      "water": 45,
+      "sand": 3,
+      "grass": 75,
+      "river": 35,
+      "w": 8,
+      "h": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size64-teams4-m3",
+    "method": 3,
+    "params": {
+      "water": 55,
+      "sand": 3,
+      "grass": 75,
+      "w": 6,
+      "h": 6,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size128-teams2-m3",
+    "method": 3,
+    "params": {
+      "water": 55,
+      "sand": 3,
+      "grass": 75,
+      "w": 7,
+      "h": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "size128-teams8-m3",
+    "method": 3,
+    "params": {
+      "water": 55,
+      "sand": 3,
+      "grass": 75,
+      "w": 7,
+      "h": 7,
+      "teams": 8
+    }
+  },
+  {
+    "id": "size256-teams4-m3",
+    "method": 3,
+    "params": {
+      "water": 55,
+      "sand": 3,
+      "grass": 75,
+      "w": 8,
+      "h": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size64-teams4-m4",
+    "method": 4,
+    "params": {
+      "water": 25,
+      "sand": 3,
+      "grass": 75,
+      "smooth": 6,
+      "craters": 25,
+      "river": 25,
+      "w": 6,
+      "h": 6,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size128-teams2-m4",
+    "method": 4,
+    "params": {
+      "water": 25,
+      "sand": 3,
+      "grass": 75,
+      "smooth": 6,
+      "craters": 25,
+      "river": 25,
+      "w": 7,
+      "h": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "size128-teams8-m4",
+    "method": 4,
+    "params": {
+      "water": 25,
+      "sand": 3,
+      "grass": 75,
+      "smooth": 6,
+      "craters": 25,
+      "river": 25,
+      "w": 7,
+      "h": 7,
+      "teams": 8
+    }
+  },
+  {
+    "id": "size256-teams4-m4",
+    "method": 4,
+    "params": {
+      "water": 25,
+      "sand": 3,
+      "grass": 75,
+      "smooth": 6,
+      "craters": 25,
+      "river": 25,
+      "w": 8,
+      "h": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size64-teams4-m5",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 3,
+      "w": 6,
+      "h": 6,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size128-teams2-m5",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 3,
+      "w": 7,
+      "h": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "size128-teams8-m5",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 3,
+      "w": 7,
+      "h": 7,
+      "teams": 8
+    }
+  },
+  {
+    "id": "size256-teams4-m5",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 3,
+      "w": 8,
+      "h": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size64-teams4-m6",
+    "method": 6,
+    "params": {
+      "grass": 60,
+      "river": 4,
+      "w": 6,
+      "h": 6,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size128-teams2-m6",
+    "method": 6,
+    "params": {
+      "grass": 60,
+      "river": 4,
+      "w": 7,
+      "h": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "size128-teams8-m6",
+    "method": 6,
+    "params": {
+      "grass": 60,
+      "river": 4,
+      "w": 7,
+      "h": 7,
+      "teams": 8
+    }
+  },
+  {
+    "id": "size256-teams4-m6",
+    "method": 6,
+    "params": {
+      "grass": 60,
+      "river": 4,
+      "w": 8,
+      "h": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size64-teams4-m7",
+    "method": 7,
+    "params": {
+      "water": 40,
+      "sand": 4,
+      "grass": 60,
+      "smooth": 3,
+      "w": 6,
+      "h": 6,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size128-teams2-m7",
+    "method": 7,
+    "params": {
+      "water": 40,
+      "sand": 4,
+      "grass": 60,
+      "smooth": 3,
+      "w": 7,
+      "h": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "size128-teams8-m7",
+    "method": 7,
+    "params": {
+      "water": 40,
+      "sand": 4,
+      "grass": 60,
+      "smooth": 3,
+      "w": 7,
+      "h": 7,
+      "teams": 8
+    }
+  },
+  {
+    "id": "size256-teams4-m7",
+    "method": 7,
+    "params": {
+      "water": 40,
+      "sand": 4,
+      "grass": 60,
+      "smooth": 3,
+      "w": 8,
+      "h": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size64-teams4-m8",
+    "method": 8,
+    "params": {
+      "island": 65,
+      "w": 6,
+      "h": 6,
+      "teams": 4
+    }
+  },
+  {
+    "id": "size128-teams2-m8",
+    "method": 8,
+    "params": {
+      "island": 65,
+      "w": 7,
+      "h": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "size128-teams8-m8",
+    "method": 8,
+    "params": {
+      "island": 65,
+      "w": 7,
+      "h": 7,
+      "teams": 8
+    }
+  },
+  {
+    "id": "size256-teams4-m8",
+    "method": 8,
+    "params": {
+      "island": 65,
+      "w": 8,
+      "h": 8,
+      "teams": 4
+    }
+  }
+]

@@ -605,9 +605,9 @@ wovon
 [ok]
 Ok
 [old islands terrain]
-alte Inselzufallskarte
+Raues Archipel
 [old random terrain]
-alte Zufallskarte
+Zerklüftete Küste
 [on press]
 Drücken
 [On the spot]
@@ -1363,9 +1363,9 @@ Mittel – Experimentell
 [No AI orders]
 Keine KI-Befehle
 [Old islands]
-Inseln (alter Generator)
+Raues Archipel
 [Old random]
-Zufall (alter Generator)
+Zerklüftete Küste
 [Open at least one colony to start a match.]
 Öffnen Sie mindestens eine Kolonie, um ein Match zu starten.
 [Open book]
@@ -1766,3 +1766,9 @@ Grafik beim nächsten Laden einer Partie oder des Karteneditors anwenden (OpenGL
 Automatische Torusansicht
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Zeigt automatisch die torusförmige Kartenübersicht an, während Sie sich auf der Karte bewegen (OpenGL).
+[Channel width]
+Kanalbreite
+[Land bridge width]
+Breite der Landbrücke
+[Lake size]
+Seegröße

@@ -1,0 +1,740 @@
+[
+  {
+    "method": 0,
+    "nameKey": "uniform terrain",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      }
+    ]
+  },
+  {
+    "method": 1,
+    "nameKey": "Swamp",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Water weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 35,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Grass weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 60,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Smoothing",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 6,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Fruit",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "default": 4,
+        "group": 1,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Repeat landscape",
+        "min": 0,
+        "max": 5,
+        "step": 1,
+        "default": 0,
+        "group": 2,
+        "powerOfTwo": true
+      }
+    ]
+  },
+  {
+    "method": 2,
+    "nameKey": "River",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Water weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 45,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Sand weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 3,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Grass weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 75,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Desert weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 0,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Smoothing",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "River width",
+        "min": 20,
+        "max": 65,
+        "step": 5,
+        "default": 35,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Fruit",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "default": 4,
+        "group": 1,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Repeat landscape",
+        "min": 0,
+        "max": 5,
+        "step": 1,
+        "default": 0,
+        "group": 2,
+        "powerOfTwo": true
+      }
+    ]
+  },
+  {
+    "method": 3,
+    "nameKey": "Islands",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Water weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 55,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Sand weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 3,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Grass weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 75,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Desert weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 0,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Smoothing",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Extra islands",
+        "min": 0,
+        "max": 8,
+        "step": 1,
+        "default": 0,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Fruit",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "default": 4,
+        "group": 1,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Repeat landscape",
+        "min": 0,
+        "max": 5,
+        "step": 1,
+        "default": 0,
+        "group": 2,
+        "powerOfTwo": true
+      }
+    ]
+  },
+  {
+    "method": 4,
+    "nameKey": "Crater lakes",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Water weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 25,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Sand weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 3,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Grass weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 75,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Desert weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 0,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Smoothing",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 6,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Lake density",
+        "min": 10,
+        "max": 50,
+        "step": 5,
+        "default": 25,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Lake size",
+        "min": 10,
+        "max": 40,
+        "step": 5,
+        "default": 25,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Fruit",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "default": 4,
+        "group": 1,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Repeat landscape",
+        "min": 0,
+        "max": 5,
+        "step": 1,
+        "default": 0,
+        "group": 2,
+        "powerOfTwo": true
+      }
+    ]
+  },
+  {
+    "method": 5,
+    "nameKey": "Concrete islands",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Channel width",
+        "min": 5,
+        "max": 8,
+        "step": 1,
+        "default": 5,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Extra islands",
+        "min": 0,
+        "max": 6,
+        "step": 1,
+        "default": 3,
+        "group": 0,
+        "powerOfTwo": false
+      }
+    ]
+  },
+  {
+    "method": 6,
+    "nameKey": "Isles",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Island size",
+        "min": 45,
+        "max": 65,
+        "step": 5,
+        "default": 60,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Land bridge width",
+        "min": 3,
+        "max": 6,
+        "step": 1,
+        "default": 4,
+        "group": 0,
+        "powerOfTwo": false
+      }
+    ]
+  },
+  {
+    "method": 7,
+    "nameKey": "Old random",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Water weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 40,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Sand weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 4,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Grass weight",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "default": 60,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Smoothing",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 3,
+        "group": 0,
+        "powerOfTwo": false
+      }
+    ]
+  },
+  {
+    "method": 8,
+    "nameKey": "Old islands",
+    "controls": [
+      {
+        "label": "Width",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Height",
+        "min": 6,
+        "max": 9,
+        "step": 1,
+        "default": 7,
+        "group": 3,
+        "powerOfTwo": true
+      },
+      {
+        "label": "Colonies",
+        "min": 1,
+        "max": 12,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Starting workers",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "default": 4,
+        "group": 3,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Island size",
+        "min": 50,
+        "max": 70,
+        "step": 1,
+        "default": 65,
+        "group": 0,
+        "powerOfTwo": false
+      },
+      {
+        "label": "Beach size",
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "default": 1,
+        "group": 0,
+        "powerOfTwo": false
+      }
+    ]
+  }
+]

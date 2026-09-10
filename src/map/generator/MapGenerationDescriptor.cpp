@@ -2,44 +2,198 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <assert.h>
+#include <algorithm>
+#include <cstring>
+#include <stdexcept>
 #include <Stream.h>
 
 #include "MapGenerationDescriptor.h"
 #include "Marshaling.h"
 #include "Utilities.h"
 
+namespace
+{
+using D = MapGenerationDescriptor;
+using C = D::Control;
+using G = D::ControlGroup;
+// Physical descriptor fields have one base definition. Per-method overrides below
+// supply the measured recipe, and are also the controls displayed by both UIs.
+const std::vector<C> baseControls = {
+	{"Water weight", &D::waterRatio, 0, 100, 1, 50},
+	{"Sand weight", &D::sandRatio, 0, 100, 1, 0},
+	{"Grass weight", &D::grassRatio, 0, 100, 1, 50},
+	{"Desert weight", &D::desertRatio, 0, 100, 1, 0},
+	{"Smoothing", &D::smooth, 1, 8, 1, 4},
+	{"River width", &D::riverDiameter, 20, 65, 5, 50},
+	{"Extra islands", &D::extraIslands, 0, 8, 1, 0},
+	{"Lake density", &D::craterDensity, 10, 50, 5, 50},
+	{"Island size", &D::oldIslandSize, 50, 70, 1, 65},
+	{"Beach size", &D::oldBeach, 0, 4, 1, 1},
+	{"Fruit", &D::fruitRatio, 0, 64, 1, 4, G::Resources},
+	{"Repeat landscape", nullptr, 0, 5, 1, 0, G::Layout, true},
+};
+const std::array<std::vector<C>, D::METHOD_COUNT> methodControls = []
+{
+	std::array<std::vector<C>, D::METHOD_COUNT> result;
+	for (int m = 1; m < D::METHOD_COUNT; ++m)
+	{
+		auto &controls = result[m];
+		for (const auto &c : baseControls)
+		{
+			bool include = false;
+			if (m <= D::eCRATERLAKES || m == D::eOLDRANDOM)
+			{
+				include =
+					c.field == &D::waterRatio || c.field == &D::grassRatio || c.field == &D::smooth;
+				include |= m != D::eSWAMP && c.field == &D::sandRatio;
+				include |= m >= D::eRIVER && m <= D::eCRATERLAKES && c.field == &D::desertRatio;
+				include |=
+					m <= D::eCRATERLAKES && (c.group == G::Resources || c.group == G::Layout);
+			}
+			include |= m == D::eRIVER && c.field == &D::riverDiameter;
+			include |= m == D::eISLANDS && c.field == &D::extraIslands;
+			include |= m == D::eCRATERLAKES && c.field == &D::craterDensity;
+			include |=
+				m == D::eOLDISLANDS && (c.field == &D::oldIslandSize || c.field == &D::oldBeach);
+			if (include)
+				controls.push_back(c);
+		}
+	}
+	auto preset = [&](D::Method m, Sint32 D::*field, int value)
+	{
+		for (auto &c : result[m])
+			if (c.field == field)
+				c.defaultValue = value;
+	};
+	preset(D::eSWAMP, &D::waterRatio, 35);
+	preset(D::eSWAMP, &D::grassRatio, 60);
+	preset(D::eSWAMP, &D::smooth, 6);
+	preset(D::eRIVER, &D::waterRatio, 45);
+	preset(D::eRIVER, &D::sandRatio, 3);
+	preset(D::eRIVER, &D::grassRatio, 75);
+	preset(D::eRIVER, &D::riverDiameter, 35);
+	preset(D::eISLANDS, &D::waterRatio, 55);
+	preset(D::eISLANDS, &D::sandRatio, 3);
+	preset(D::eISLANDS, &D::grassRatio, 75);
+	preset(D::eCRATERLAKES, &D::waterRatio, 25);
+	preset(D::eCRATERLAKES, &D::sandRatio, 3);
+	preset(D::eCRATERLAKES, &D::grassRatio, 75);
+	preset(D::eCRATERLAKES, &D::smooth, 6);
+	preset(D::eCRATERLAKES, &D::craterDensity, 25);
+	result[D::eCRATERLAKES].push_back({"Lake size", &D::riverDiameter, 10, 40, 5, 25});
+	result[D::eCONCRETEISLANDS] = {{"Channel width", &D::riverDiameter, 5, 8, 1, 5},
+								   {"Extra islands", &D::extraIslands, 0, 6, 1, 3}};
+	result[D::eISLES] = {{"Island size", &D::grassRatio, 45, 65, 5, 60},
+						 {"Land bridge width", &D::riverDiameter, 3, 6, 1, 4}};
+	preset(D::eOLDRANDOM, &D::waterRatio, 40);
+	preset(D::eOLDRANDOM, &D::sandRatio, 4);
+	preset(D::eOLDRANDOM, &D::grassRatio, 60);
+	preset(D::eOLDRANDOM, &D::smooth, 3);
+	for (auto &controls : result)
+		std::stable_sort(controls.begin(), controls.end(),
+						 [](const C &a, const C &b) { return a.group < b.group; });
+	return result;
+}();
+} // namespace
+
+int MapGenerationDescriptor::Control::get(const MapGenerationDescriptor &d) const
+{
+	return field ? d.*field : static_cast<int>(d.logRepeatAreaTimes);
+}
+int MapGenerationDescriptor::Control::normalize(int value) const
+{
+	value = std::clamp(value, minimum, maximum);
+	return std::min(maximum, minimum + ((value - minimum + step / 2) / step) * step);
+}
+void MapGenerationDescriptor::Control::set(MapGenerationDescriptor &d, int value) const
+{
+	if (field)
+		d.*field = normalize(value);
+	else
+		d.logRepeatAreaTimes = normalize(value);
+}
+const std::vector<MapGenerationDescriptor::Control> &
+MapGenerationDescriptor::controls(Method method)
+{
+	assert(method >= eUNIFORM && method <= eOLDISLANDS);
+	return methodControls[method];
+}
+const std::vector<MapGenerationDescriptor::Control> &MapGenerationDescriptor::sharedControls()
+{
+	static const std::vector<Control> shared = {
+		{"Width", &D::wDec, 6, 9, 1, 7, G::Shared, true},
+		{"Height", &D::hDec, 6, 9, 1, 7, G::Shared, true},
+		{"Colonies", &D::nbTeams, 1, Team::MAX_COUNT, 1, 4, G::Shared},
+		{"Starting workers", &D::nbWorkers, 1, 8, 1, 4, G::Shared}};
+	return shared;
+}
+const MapGenerationDescriptor::Control &MapGenerationDescriptor::control(Method method,
+																		 const char *label)
+{
+	for (const auto &c : controls(method))
+		if (std::strcmp(c.label, label) == 0)
+			return c;
+	for (const auto &c : sharedControls())
+		if (std::strcmp(c.label, label) == 0)
+			return c;
+	throw std::logic_error("Unknown map generator control");
+}
+const char *MapGenerationDescriptor::methodName(Method method)
+{
+	static const char *names[] = {"uniform terrain", "Swamp",		 "River",
+								  "Islands",		 "Crater lakes", "Concrete islands",
+								  "Isles",			 "Old random",	 "Old islands"};
+	assert(method >= eUNIFORM && method <= eOLDISLANDS);
+	return names[method]; // Stable translation keys; English values carry the new names.
+}
 MapGenerationDescriptor::MapGenerationDescriptor()
 {
-	wDec=7;
-	hDec=7;
-	
 	terrainType=GRASS;
-	
-	method=eUNIFORM;
-	waterRatio=50;
-	sandRatio=50;
-	grassRatio=50;
-	desertRatio=50;
-	wheatRatio=50;
-	woodRatio=50;
-	stoneRatio=50;
-	algaeRatio=50;
-	riverDiameter=50;
-	craterDensity=50;
-	extraIslands=0;
-	smooth=4;
-	fruitRatio=4;
-	logRepeatAreaTimes=0;
-	
-	oldIslandSize=50;
-	oldBeach=1;	
-	for (int i=0; i<MAX_NB_RESOURCES; i++)
-		resource[i]=7;
-	
-	nbWorkers=4;
-	nbTeams=4;
+	for (const auto &c : sharedControls())
+		c.set(*this, c.defaultValue);
+	setMethodDefaults(eUNIFORM);
+	for (int i = 0; i < MAX_NB_RESOURCES; ++i)
+		resource[i] = 7;
 }
-
+void MapGenerationDescriptor::setMethodDefaults(Method newMethod)
+{
+	method = newMethod;
+	for (const auto &c : baseControls)
+		c.set(*this, c.defaultValue);
+	// These legacy serialized fields are unused by resource placement. Do not
+	// advertise inert sliders; retain their historic values for descriptor compatibility.
+	wheatRatio = woodRatio = stoneRatio = algaeRatio = 50;
+	for (const auto &c : controls(method))
+		c.set(*this, c.defaultValue);
+}
+bool MapGenerationDescriptor::hasTerrainWeight() const
+{
+	if (method == eSWAMP)
+		return waterRatio + grassRatio > 0;
+	if (method == eOLDRANDOM)
+		return waterRatio + sandRatio + grassRatio > 0;
+	if (method >= eRIVER && method <= eCRATERLAKES)
+		return waterRatio + sandRatio + grassRatio + desertRatio > 0;
+	return true;
+}
+MapGenerationHistory::MapGenerationHistory()
+{
+	for (int m = 0; m <= MapGenerationDescriptor::eOLDISLANDS; ++m)
+		settings[m].setMethodDefaults(static_cast<MapGenerationDescriptor::Method>(m));
+}
+void MapGenerationHistory::select(MapGenerationDescriptor &current,
+								  MapGenerationDescriptor::Method method)
+{
+	if (method == current.method)
+		return;
+	assert(method >= 0 && method <= MapGenerationDescriptor::eOLDISLANDS);
+	settings[current.method] = current;
+	auto next = settings[method];
+	for (const auto &c : MapGenerationDescriptor::sharedControls())
+		c.set(next, c.get(current));
+	next.terrainType = current.terrainType;
+	current = next;
+}
 
 MapGenerationDescriptor::~MapGenerationDescriptor()
 {
@@ -216,4 +370,3 @@ Uint32 MapGenerationDescriptor::checkSum()
 	
 	return cs;
 }
-

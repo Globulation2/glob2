@@ -6,6 +6,8 @@
 #include "Ressource.h"
 #include "TerrainType.h"
 #include "Team.h"
+#include <array>
+#include <vector>
 
 namespace GAGCore
 {
@@ -48,6 +50,34 @@ public:
 		eOLDRANDOM=7,
 		eOLDISLANDS=8
 	};
+	static constexpr int METHOD_COUNT = eOLDISLANDS + 1;
+	/// Set this generator's terrain controls without changing map size or teams.
+	void setMethodDefaults(Method newMethod);
+
+	// UI-independent definitions shared by the lobby, editor, presets and validation.
+	enum class ControlGroup
+	{
+		Terrain,
+		Resources,
+		Layout,
+		Shared
+	};
+	struct Control
+	{
+		const char *label;
+		Sint32 MapGenerationDescriptor::*field; // null only for unsigned repeat exponent
+		int minimum, maximum, step, defaultValue;
+		ControlGroup group = ControlGroup::Terrain;
+		bool powerOfTwo = false;
+		int get(const MapGenerationDescriptor &descriptor) const;
+		void set(MapGenerationDescriptor &descriptor, int value) const;
+		int normalize(int value) const;
+	};
+	static const std::vector<Control> &controls(Method method);
+	static const std::vector<Control> &sharedControls();
+	static const Control &control(Method method, const char *label);
+	static const char *methodName(Method method);
+	bool hasTerrainWeight() const;
 
 	Method method;
 	
@@ -56,6 +86,9 @@ public:
 	Sint32 waterRatio, sandRatio, grassRatio, desertRatio, wheatRatio,
 		woodRatio, fruitRatio, algaeRatio, stoneRatio, riverDiameter, craterDensity, extraIslands;
 	Sint32 oldIslandSize, oldBeach;
+	// Mode-specific reuse keeps the existing serialized layout:
+	// riverDiameter = river diameter / lake size / channel width / bridge width;
+	// grassRatio = island size for Isles; extraIslands = neutral count for Concrete Islands.
 	Sint32 smooth;
 	Sint32 resource[MAX_NB_RESOURCES];
 	///n=2^n-times the same landscape. So 0=all random.
@@ -64,11 +97,22 @@ public:
 	Sint32 nbTeams, nbWorkers;
 public:
 	// Those may not be in data
-	Sint32 bootX[Team::MAX_COUNT];
-	Sint32 bootY[Team::MAX_COUNT];
+  Sint32 bootX[Team::MAX_COUNT]{};
+  Sint32 bootY[Team::MAX_COUNT]{};
+
 public:
 	enum {DATA_SIZE=100+MAX_NB_RESOURCES*4};
 protected:
 	//! Serialized form of MapGenerationDescriptor
-	Uint8 data[DATA_SIZE];
+  Uint8 data[DATA_SIZE]{};
+};
+
+// Remember terrain edits per method while sharing map size, teams and workers.
+class MapGenerationHistory
+{
+	std::array<MapGenerationDescriptor, MapGenerationDescriptor::METHOD_COUNT> settings;
+
+  public:
+	MapGenerationHistory();
+	void select(MapGenerationDescriptor &current, MapGenerationDescriptor::Method method);
 };

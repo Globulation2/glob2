@@ -1,0 +1,114 @@
+[
+  {
+    "id": "range-concrete-w5-e0",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 0
+    }
+  },
+  {
+    "id": "range-concrete-w5-e6",
+    "method": 5,
+    "params": {
+      "river": 5,
+      "extra": 6
+    }
+  },
+  {
+    "id": "range-concrete-w8-e0",
+    "method": 5,
+    "params": {
+      "river": 8,
+      "extra": 0
+    }
+  },
+  {
+    "id": "range-concrete-w8-e6",
+    "method": 5,
+    "params": {
+      "river": 8,
+      "extra": 6
+    }
+  },
+  {
+    "id": "range-isles-s45-w3",
+    "method": 6,
+    "params": {
+      "grass": 45,
+      "river": 3
+    }
+  },
+  {
+    "id": "range-isles-s45-w6",
+    "method": 6,
+    "params": {
+      "grass": 45,
+      "river": 6
+    }
+  },
+  {
+    "id": "range-isles-s65-w3",
+    "method": 6,
+    "params": {
+      "grass": 65,
+      "river": 3
+    }
+  },
+  {
+    "id": "range-isles-s65-w6",
+    "method": 6,
+    "params": {
+      "grass": 65,
+      "river": 6
+    }
+  },
+  {
+    "id": "range-lakes-s10-d10",
+    "method": 4,
+    "params": {
+      "water": 25,
+      "sand": 3,
+      "grass": 75,
+      "smooth": 6,
+      "craters": 10,
+      "river": 10
+    }
+  },
+  {
+    "id": "range-lakes-s10-d50",
+    "method": 4,
+    "params": {
+      "water": 25,
+      "sand": 3,
+      "grass": 75,
+      "smooth": 6,
+      "craters": 50,
+      "river": 10
+    }
+  },
+  {
+    "id": "range-lakes-s40-d10",
+    "method": 4,
+    "params": {
+      "water": 25,
+      "sand": 3,
+      "grass": 75,
+      "smooth": 6,
+      "craters": 10,
+      "river": 40
+    }
+  },
+  {
+    "id": "range-lakes-s40-d50",
+    "method": 4,
+    "params": {
+      "water": 25,
+      "sand": 3,
+      "grass": 75,
+      "smooth": 6,
+      "craters": 50,
+      "river": 40
+    }
+  }
+]

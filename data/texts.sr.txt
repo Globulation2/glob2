@@ -605,9 +605,9 @@ Num Lock
 [ok]
 У реду
 [old islands terrain]
-насумична острва (старо)
+Кршевити архипелаг
 [old random terrain]
-насумични терен (старо)
+Разуђена обала
 [on press]
 Притисак
 [On the spot]
@@ -1363,9 +1363,9 @@ Cortex
 [No AI orders]
 Без наређења ВИ
 [Old islands]
-Стара острва
+Кршевити архипелаг
 [Old random]
-Стари случајни
+Разуђена обала
 [Open at least one colony to start a match.]
 Отворите бар једну колонију да бисте започели меч.
 [Open book]
@@ -1766,3 +1766,9 @@ OpenGL није доступан у овој верзији.
 Аутоматски торусни приказ
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Аутоматски прикажи преглед мапе у облику торуса током кретања по мапи (OpenGL).
+[Channel width]
+Ширина канала
+[Land bridge width]
+Ширина копненог моста
+[Lake size]
+Величина језера

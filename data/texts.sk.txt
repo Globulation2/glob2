@@ -611,9 +611,9 @@ z nich
 [ok]
 Ok
 [old islands terrain]
-staré náhodné ostrovy
+Členité súostrovie
 [old random terrain]
-starý náhodný terén
+Roztrieštené pobrežie
 [on press]
 Stlačenie
 [On the spot]
@@ -1371,9 +1371,9 @@ Stredná - Experimentálna
 [No AI orders]
 Žiadne príkazy AI
 [Old islands]
-Staré ostrovy
+Členité súostrovie
 [Old random]
-Staré náhodné
+Roztrieštené pobrežie
 [Open at least one colony to start a match.]
 Otvorte aspoň jednu kolóniu a začnite zápas.
 [Open book]
@@ -1774,3 +1774,9 @@ Vybraná grafika sa použije pri ďalšom načítaní hry alebo editora máp (Op
 Automatické toroidné zobrazenie
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobraziť prehľad mapy v tvare torusu pri pohybe po mape (OpenGL).
+[Channel width]
+Šírka prielivu
+[Land bridge width]
+Šírka pevninského mosta
+[Lake size]
+Veľkosť jazera

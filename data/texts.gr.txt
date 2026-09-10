@@ -673,9 +673,9 @@ numlock
 [ok]
 Εντάξει
 [old islands terrain]
-παλιά τυχαία νησιά
+Τραχύ Αρχιπέλαγος
 [old random terrain]
-παλιά τυχαία πεδία
+Κατακερματισμένη Ακτή
 [on press]
 Πάτημα
 [On the spot]
@@ -1433,9 +1433,9 @@ Cortex
 [No AI orders]
 Χωρίς εντολές AI
 [Old islands]
-Παλιά νησιά
+Τραχύ Αρχιπέλαγος
 [Old random]
-Παλιό τυχαίο
+Κατακερματισμένη Ακτή
 [Open at least one colony to start a match.]
 Ανοίξτε τουλάχιστον μία αποικία για να ξεκινήσετε έναν αγώνα.
 [Open book]
@@ -1836,3 +1836,9 @@ Cortex
 Αυτόματη τοροειδής προβολή
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Αυτόματη εμφάνιση της επισκόπησης του χάρτη σε σχήμα τόρου ενώ μετακινείστε στον χάρτη (OpenGL).
+[Channel width]
+Πλάτος καναλιού
+[Land bridge width]
+Πλάτος χερσαίας γέφυρας
+[Lake size]
+Μέγεθος λίμνης

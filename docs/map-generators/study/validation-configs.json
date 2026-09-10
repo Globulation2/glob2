@@ -1,0 +1,149 @@
+[
+  {
+    "id": "tuned-1",
+    "method": 1,
+    "preset": true
+  },
+  {
+    "id": "lobby-before-1",
+    "method": 1,
+    "params": {
+      "sand": 50,
+      "desert": 50
+    }
+  },
+  {
+    "id": "editor-before-1",
+    "method": 1,
+    "params": {}
+  },
+  {
+    "id": "tuned-2",
+    "method": 2,
+    "preset": true
+  },
+  {
+    "id": "lobby-before-2",
+    "method": 2,
+    "params": {
+      "sand": 50,
+      "desert": 50
+    }
+  },
+  {
+    "id": "editor-before-2",
+    "method": 2,
+    "params": {}
+  },
+  {
+    "id": "tuned-3",
+    "method": 3,
+    "preset": true
+  },
+  {
+    "id": "lobby-before-3",
+    "method": 3,
+    "params": {
+      "sand": 50,
+      "desert": 50
+    }
+  },
+  {
+    "id": "editor-before-3",
+    "method": 3,
+    "params": {}
+  },
+  {
+    "id": "tuned-4",
+    "method": 4,
+    "preset": true
+  },
+  {
+    "id": "lobby-before-4",
+    "method": 4,
+    "params": {
+      "sand": 50,
+      "desert": 50
+    }
+  },
+  {
+    "id": "editor-before-4",
+    "method": 4,
+    "params": {}
+  },
+  {
+    "id": "tuned-5",
+    "method": 5,
+    "preset": true
+  },
+  {
+    "id": "lobby-before-5",
+    "method": 5,
+    "params": {
+      "sand": 50,
+      "desert": 50,
+      "extra": -1
+    }
+  },
+  {
+    "id": "editor-before-5",
+    "method": 5,
+    "params": {
+      "extra": -1
+    }
+  },
+  {
+    "id": "tuned-6",
+    "method": 6,
+    "preset": true
+  },
+  {
+    "id": "lobby-before-6",
+    "method": 6,
+    "params": {
+      "sand": 50,
+      "desert": 50
+    }
+  },
+  {
+    "id": "editor-before-6",
+    "method": 6,
+    "params": {}
+  },
+  {
+    "id": "tuned-7",
+    "method": 7,
+    "preset": true
+  },
+  {
+    "id": "lobby-before-7",
+    "method": 7,
+    "params": {
+      "sand": 50,
+      "desert": 50
+    }
+  },
+  {
+    "id": "editor-before-7",
+    "method": 7,
+    "params": {}
+  },
+  {
+    "id": "tuned-8",
+    "method": 8,
+    "preset": true
+  },
+  {
+    "id": "lobby-before-8",
+    "method": 8,
+    "params": {
+      "sand": 50,
+      "desert": 50
+    }
+  },
+  {
+    "id": "editor-before-8",
+    "method": 8,
+    "params": {}
+  }
+]

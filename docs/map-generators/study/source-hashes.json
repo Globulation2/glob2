@@ -1,0 +1,13 @@
+{
+  "base": "82943d96ebab7a994612eaf2ef1fc00214a72d02",
+  "sha256": {
+    "src/map/generator/Generator.cpp": "7721575551ab64ff35fcf70b6a6eb4274cc7707561d33755d0629b9c609116f6",
+    "src/map/generator/MapRandom.cpp": "415c4d4822f81207191ee3142dfff690e13e395d5e6b75cff73ef5fc8702126f",
+    "src/map/generator/MapGenerationDescriptor.cpp": "2d053672a769f72b6e2541a322b354c45f2a74c6d8069767c0d50232cd4408ca",
+    "src/map/generator/MapGenerationDescriptor.h": "7a6318e7f307bb3a550f9da9722dff38cab4677f683ed49b011332436d423df4",
+    "src/map/generator/MapGenerator.h": "c9005b8854c2e93a29c97683bb53ef677a2c3cac153c9584e85b878947727775",
+    "src/map/generator/MapOldIslandsRessources.cpp": "4df7ae0ca44875cae68ee23633081953d7649a0b86dba4ab7f7f05f2d39ad68e",
+    "src/map/generator/MapOldRandomRessources.cpp": "44b87d84d6b33a6563f0bc7914bdad25495a20b57c3f53353264a497325ffebf",
+    "test/MapGeneratorStudy.cpp": "6f5aa1b4ef37e81655d3d6cd355d5205b68f91897ab411ce155b132f72137b9f"
+  }
+}
