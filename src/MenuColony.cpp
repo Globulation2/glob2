@@ -120,19 +120,24 @@ void MenuColony::draw(int width, int height)
 	} viewContext;
 	// Place the starting settlement to the right of the front-page panel, then
 	// let the camera wander about a tile and a half around it over ~1.5 minutes.
-	int driftX = 0, driftY = 0;
+	// Kept as a double throughout: flooring to a pixel before splitting into
+	// tile+fraction quantized the whole path to whole-pixel steps, so the
+	// camera would sit still for seconds near the drift's turning points and
+	// then hop a pixel — the in-game camera's own fraction is a float for the
+	// same reason (see TorusView::draw).
+	double driftX = 0, driftY = 0;
 	if (smoothCamera())
 	{
-		driftX = int(std::floor(48.0 * std::sin(driftClock * 2.0 * M_PI / 97.0)));
-		driftY = int(std::floor(32.0 * std::sin(driftClock * 2.0 * M_PI / 131.0)));
+		driftX = 48.0 * std::sin(driftClock * 2.0 * M_PI / 97.0);
+		driftY = 32.0 * std::sin(driftClock * 2.0 * M_PI / 131.0);
 	}
 	const int tileX = int(std::floor(driftX / 32.0)), tileY = int(std::floor(driftY / 32.0));
-	fractionX = driftX - tileX * 32;
-	fractionY = driftY - tileY * 32;
+	fractionX = float(driftX - tileX * 32.0);
+	fractionY = float(driftY - tileY * 32.0);
 	viewX = (centerX - width * 2 / 3 / 32 + tileX) & game->map.getMaskW();
 	viewY = (centerY - height / 2 / 32 + tileY) & game->map.getMaskH();
 	auto* gfx = globalContainer->gfx;
-	gfx->beginMapTransform(1.0f, float(-fractionX), float(-fractionY), 0, 0, width, height);
+	gfx->beginMapTransform(1.0f, -fractionX, -fractionY, 0, 0, width, height);
 	game->drawMap(0, 0, width + 32, height + 32, 0, 0, viewX, viewY, 0, view,
 		Game::DRAW_WHOLE_MAP | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_NO_CLOUDS);
 	gfx->endMapTransform();

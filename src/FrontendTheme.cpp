@@ -68,12 +68,16 @@ void FrontendTheme::rounded(DrawableSurface* s,int x,int y,int w,int h,int r,Col
 }
 namespace
 {
-// Per-row [left inset, right inset] of a blob contour. Corners get slightly
-// unequal radii and the vertical edges a gentle sine wobble, both derived from
-// the rect so the same control always draws the same outline.
+// Per-row [left inset, right inset] of a blob contour, kept fractional so the
+// caller can anti-alias the boundary instead of snapping it to a whole pixel.
+// Corners get slightly unequal radii and the vertical edges a gentle sine
+// wobble, both derived from the rect so the same control always draws the
+// same outline. The wobble fades out inside the corner curves themselves
+// (where the corner inset is already large) so it ripples the straight edges
+// without chipping notches out of the rounded corners.
 struct Contour
 {
-	std::vector<std::pair<int,int>> inset;
+	std::vector<std::pair<float,float>> inset;
 	Contour(int x,int y,int w,int h,int r,int wobble,int inflate)
 	{
 		const unsigned seed = unsigned(x)*73856093u ^ unsigned(y)*19349663u ^ unsigned(w)*83492791u ^ unsigned(h)*2654435761u;
@@ -84,28 +88,48 @@ struct Contour
 		const int rBL=r+((seed>>2&1)?jitter:-jitter), rBR=r+((seed>>3&1)?jitter:-jitter);
 		const float phaseL=(seed>>4&255)/40.0f, phaseR=(seed>>12&255)/40.0f;
 		inset.resize(std::max(0,h));
-		auto corner=[](int radius,int row,int rows)->int
+		auto corner=[](int radius,int row)->float
 		{
-			if(row>=radius) return 0;
+			if(row>=radius) return 0.0f;
 			const float dy=radius-row-0.5f;
-			return radius-int(std::sqrt(std::max(0.0f,float(radius*radius)-dy*dy)));
+			return radius-std::sqrt(std::max(0.0f,float(radius*radius)-dy*dy));
 		};
 		for(int row=0;row<h;++row)
 		{
-			int l=std::max(corner(rTL,row,h),corner(rBL,h-1-row,h));
-			int rr=std::max(corner(rTR,row,h),corner(rBR,h-1-row,h));
+			const float cl=std::max(corner(rTL,row),corner(rBL,h-1-row));
+			const float cr=std::max(corner(rTR,row),corner(rBR,h-1-row));
+			float l=cl, rr=cr;
 			if(wobble)
 			{
-				l+=int(std::lround(wobble*std::sin(row*0.23f+phaseL)));
-				rr+=int(std::lround(wobble*std::sin(row*0.19f+phaseR)));
+				// Full wobble once a pixel clear of the corner curve; ramped
+				// to zero over that last pixel so it blends into the curve
+				// instead of stepping across it.
+				const float fadeL=std::clamp(1.0f-cl,0.0f,1.0f), fadeR=std::clamp(1.0f-cr,0.0f,1.0f);
+				l+=wobble*std::sin(row*0.23f+phaseL)*fadeL;
+				rr+=wobble*std::sin(row*0.19f+phaseR)*fadeR;
 			}
-			inset[row]={std::max(0,l),std::max(0,rr)};
+			inset[row]={std::max(0.0f,l),std::max(0.0f,rr)};
 		}
 	}
 };
 Color lighter(Color c,int by)
 {
 	return Color(std::min(255,c.r+by),std::min(255,c.g+by),std::min(255,c.b+by),c.a);
+}
+Color faded(Color c,float coverage)
+{
+	return Color(c.r,c.g,c.b,Uint8(c.a*coverage));
+}
+// Splits a fractional inset into the whole pixel where solid drawing can
+// resume (`full`) and, if the inset lands mid-pixel, paints that boundary
+// pixel at partial coverage so the edge reads as antialiased rather than a
+// hard step. `edgePx` is the absolute x of the pixel the inset falls into.
+int aaEdge(DrawableSurface* s,int edgePx,int py,float inset,Color c)
+{
+	const int i=int(std::floor(inset));
+	const float frac=inset-i;
+	if(frac>0.004f) s->drawFilledRect(edgePx,py,1,1,faded(c,1.0f-frac));
+	return i+(frac>0.004f?1:0);
 }
 }
 
@@ -118,12 +142,14 @@ void FrontendTheme::blob(DrawableSurface* s,int x,int y,int w,int h,int r,Color 
 	for(int row=0;row<h;++row)
 	{
 		const auto [l,rr]=c.inset[row];
-		const int span=w-l-rr;
+		const int lFull=aaEdge(s,x+int(std::floor(l)),y+row,l,ink);
+		const int rFull=aaEdge(s,x+w-1-int(std::floor(rr)),y+row,rr,ink);
+		const int span=w-lFull-rFull;
 		if(span<=0) continue;
-		if(row<2 || row>=h-2) { s->drawFilledRect(x+l,y+row,span,1,ink); continue; }
-		s->drawFilledRect(x+l,y+row,std::min(2,span),1,ink);
-		if(span>2) s->drawFilledRect(x+w-rr-std::min(2,span-2),y+row,std::min(2,span-2),1,ink);
-		if(span>4) s->drawFilledRect(x+l+2,y+row,span-4,1,row==2 ? lighter(fill,10) : fill);
+		if(row<2 || row>=h-2) { s->drawFilledRect(x+lFull,y+row,span,1,ink); continue; }
+		s->drawFilledRect(x+lFull,y+row,std::min(2,span),1,ink);
+		if(span>2) s->drawFilledRect(x+w-rFull-std::min(2,span-2),y+row,std::min(2,span-2),1,ink);
+		if(span>4) s->drawFilledRect(x+lFull+2,y+row,span-4,1,row==2 ? lighter(fill,10) : fill);
 	}
 }
 void FrontendTheme::ring(DrawableSurface* s,int x,int y,int w,int h,int r,Color ink,int wobble,int inflate)
@@ -134,10 +160,24 @@ void FrontendTheme::ring(DrawableSurface* s,int x,int y,int w,int h,int r,Color 
 	for(int row=0;row<h;++row)
 	{
 		const auto [l,rr]=c.inset[row];
-		if(row<2 || row>=h-2) { s->drawFilledRect(x+l,y+row,std::max(0,w-l-rr),1,ink); continue; }
-		s->drawFilledRect(x+l,y+row,2,1,ink);
-		s->drawFilledRect(x+w-rr-2,y+row,2,1,ink);
+		const int lFull=aaEdge(s,x+int(std::floor(l)),y+row,l,ink);
+		const int rFull=aaEdge(s,x+w-1-int(std::floor(rr)),y+row,rr,ink);
+		const int span=std::max(0,w-lFull-rFull);
+		if(row<2 || row>=h-2) { if(span>0) s->drawFilledRect(x+lFull,y+row,span,1,ink); continue; }
+		s->drawFilledRect(x+lFull,y+row,std::min(2,span),1,ink);
+		if(span>2) s->drawFilledRect(x+w-rFull-std::min(2,span-2),y+row,std::min(2,span-2),1,ink);
 	}
+}
+// A blob whose inflate can be fractional: the base size draws opaque, and a
+// second, one-pixel-larger blob crossfades in over it at `inflate`'s
+// fractional part. Hover/press swelling reads as a continuous grow instead of
+// popping between the whole-pixel sizes blob() alone can draw.
+void FrontendTheme::swell(DrawableSurface* s,int x,int y,int w,int h,int r,Color fill,Color ink,int wobble,float inflate)
+{
+	const int base=int(std::floor(inflate));
+	const float frac=inflate-base;
+	blob(s,x,y,w,h,r,fill,ink,wobble,base);
+	if(frac>0.004f) blob(s,x,y,w,h,r,faded(fill,frac),faded(ink,frac),wobble,base+1);
 }
 int FrontendTheme::panelAlpha(int normal)
 {
@@ -195,7 +235,7 @@ void FrontendTheme::background(DrawableSurface* s, bool panel, const SDL_Rect* c
 void FrontendTheme::drawTextButtonBackground(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)
 {
 	// Swells up to two pixels under the cursor; the hit rect is unchanged.
-	blob(s,x,y,w,h,5,gel,ink,1,int(hi)*2/255);
+	swell(s,x,y,w,h,5,gel,ink,1,hi*2.0f/255.0f);
 	if(hi) rounded(s,x+2,y+2,w-4,h-4,3,Color(gold.r,gold.g,gold.b,hi/2));
 }
 void FrontendTheme::drawFrame(DrawableSurface* s,int x,int y,int w,int h,unsigned hi)

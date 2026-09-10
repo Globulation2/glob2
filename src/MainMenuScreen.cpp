@@ -54,18 +54,18 @@ public:
 		const unsigned hover = focused ? 255 : getNextHighlightValue();
 		const int radius = primary ? 8 : 4;
 		// Jelly: swell under the cursor, squash while pressed; fade in with the panel.
-		const int inflate = pressed ? -1 : int(hover) * 2 / 255;
+		const float inflate = pressed ? -1.0f : hover * 2.0f / 255.0f;
 		const Uint8 entry = Uint8(255 * std::min(10, parent->animationFrame) / 10);
 		auto withAlpha = [entry](Color c) { return Color(c.r, c.g, c.b, Uint8(int(c.a) * entry / 255)); };
 		if (focused) fillRounded(target, x - 4, y - 4, w + 8, h + 8, radius + 4, withAlpha(violet));
 		if (primary)
 		{
-			FrontendTheme::blob(target, x, y, w, h, radius, withAlpha(pressed ? goldPressed : gold), withAlpha(ink), 1, inflate);
+			FrontendTheme::swell(target, x, y, w, h, radius, withAlpha(pressed ? goldPressed : gold), withAlpha(ink), 1, inflate);
 			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(255, 235, 170, hover / 4));
 		}
 		else
 		{
-			FrontendTheme::blob(target, x, y, w, h, radius, withAlpha(gel), withAlpha(ink), 1, inflate);
+			FrontendTheme::swell(target, x, y, w, h, radius, withAlpha(gel), withAlpha(ink), 1, inflate);
 			if (hover) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(gold.r, gold.g, gold.b, hover / 2));
 			if (pressed) fillRounded(target, x + 2, y + 2, w - 4, h - 4, radius - 1, Color(180, 140, 50, 70));
 		}

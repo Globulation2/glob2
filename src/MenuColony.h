@@ -30,6 +30,9 @@ private:
 	int centerX = 0, centerY = 0;
 	// Slow camera drift (OpenGL only: the software path has no sub-tile blit).
 	double driftClock = 0;
-	int viewX = 0, viewY = 0, fractionX = 0, fractionY = 0, cloudTime = 0;
+	int viewX = 0, viewY = 0, cloudTime = 0;
+	// Sub-tile camera offset: float so drift moves continuously instead of
+	// snapping to whole pixels (see draw()).
+	float fractionX = 0, fractionY = 0;
 	bool smoothCamera() const;
 };

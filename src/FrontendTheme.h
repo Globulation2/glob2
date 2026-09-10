@@ -37,6 +37,11 @@ public:
 	// The ring of blob() alone; never touches the interior (safe over list contents).
 	static void ring(GAGCore::DrawableSurface*, int x, int y, int w, int h, int r,
 		GAGCore::Color ink, int wobble, int inflate = 0);
+	// blob(), but inflate may be fractional: the extra pixel of growth
+	// crossfades in instead of popping, so continuous hover/press animation
+	// reads as a smooth swell rather than 2-3 discrete sizes.
+	static void swell(GAGCore::DrawableSurface*, int x, int y, int w, int h, int r,
+		GAGCore::Color fill, GAGCore::Color ink, int wobble, float inflate);
 	// Membrane opacity: 'normal' for the usual case; 255 under low-speed graphics.
 	static int panelAlpha(int normal = 214);
 	void background(GAGCore::DrawableSurface*, bool panel = true, const SDL_Rect* content = nullptr);
