@@ -1,0 +1,19 @@
+{
+  "time": 1789041014.0478332,
+  "hosts": {
+    "pharaoh-dev-2.local": {
+      "complete": 29
+    },
+    "pharaoh-dev-3.local": {
+      "complete": 27
+    },
+    "therig.local": {
+      "complete": 261
+    },
+    "devlaptop.local": {
+      "complete": 103
+    }
+  },
+  "errors": {},
+  "new_dispatch": false
+}

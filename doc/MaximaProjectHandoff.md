@@ -7,6 +7,12 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT: cancelled replacement controls fully drained, all420 completed receipts
+collected locally (29+27+261+103). All four stop-new-dispatch guards remain present,
+no workers/pending jobs and no replacement confirmation directory/controller.
+These corrected-engine control results remain separate from original farming evidence.
+Do not launch new games or replacement campaigns from stale historical notes.
+
 CURRENT: preserved-data recovery analysis COMPLETE. See doc/maxima-handoff/preserved-farming-analysis/PRESERVED_RESULTS.md and RECOVERED_SENSITIVITY_RESULT.json.
 All1000plannedpairs per switch retained with unknown failed outcomes. Existing exact
 missing-pair envelope/original alpha .04/53 used. Maintenance clearing +10.1–10.2pp
