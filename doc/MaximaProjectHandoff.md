@@ -7,6 +7,15 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT: third same conversion abort investigated and quarantined: 4de46a225ea0e95ea6e6461fad399a6c97caa7f1a38363bc1568f90f42250f4d.
+Recovery now classifies ONLY engine exit -6 with the exact verified UnitActivity.cpp:141
+assertion as the known defect, archives its stop/log metadata, and continues pending
+work automatically without retrying or replacing the failed execution. Other faults
+still stop. Classifier negative/positive checks passed. Dynamic quarantines are in
+known-conversion-failures.json and crash-investigation/<key>.json; never infer only
+the three historical keys from this document. Final inference remains blocked.
+Engine remains frozen, PR239 fix remains isolated, no diagnostic outcomes pooled.
+
 CURRENT: second engine abort reproduced the same UnitActivity.cpp:141 assertion.
 Known quarantined keys are ca3cddca076e15fe90357c7959b9ef3fcff5c67d886170568c8bc2bd2c53d5af
 and 1be5400897b765f5a6e9dee48c4011f2fdcdee9a92b2b96ec0db4d27921f402e.
