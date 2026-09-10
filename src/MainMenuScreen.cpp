@@ -29,8 +29,8 @@ namespace
 {
 using namespace FrontendPalette;
 const auto fillRounded = FrontendTheme::rounded;
-// The front page is the most translucent sheet: the colony should read through it.
-const int frontPageAlpha = 140;
+// The front page still lets the colony read through, but less than before.
+const int frontPageAlpha = 210;
 }
 
 // Front-page layout and primary-action emphasis; shared drawing comes from the theme.
