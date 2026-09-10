@@ -7,6 +7,12 @@ cleanup, and authorized rebasing onto mainline. Do not recreate the project.
 
 ## Latest direction: repairs retired; performance first; 100k cap
 
+CURRENT: exact-assertion automatic quarantine worked for a fourth failed execution.
+Recovery now also rechecks worker startup on that host after quarantining, replacing
+exited workers via idempotent fleet.start (existing jobs unchanged, no failed retries).
+Three idle TheRig slots were restored by restarting only the local recovery controller;
+live game processes were preserved. Use dynamic quarantine registry for current count.
+
 CURRENT: recovery controller repaired after rsync/SSH timeout to devlaptop terminated
 collection and let dispatch expire. Transfers now have bounded timeouts, record
 failures and retry next cycle without processing incomplete files or rerunning games.

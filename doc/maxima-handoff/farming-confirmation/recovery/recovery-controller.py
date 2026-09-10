@@ -43,6 +43,8 @@ print(json.dumps(evidence))
  for item in evidence:
   e.atomic(BASE/'crash-investigation'/(item['execution_id']+'.json'),{**item,'host':host,'time':time.time(),'policy':'same verified assertion; quarantine only, never retry or substitute','fix_pr':239})
  KNOWN.extend(ids);e.atomic(registry,KNOWN)
+ # Existing queue entries remain immutable; start replaces only exited workers.
+ started_hosts.discard(host)
  value['stop']=None
  return True
 
