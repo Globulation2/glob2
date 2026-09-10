@@ -6,6 +6,7 @@
 #include <FileManager.h>
 #include <SupportFunctions.h>
 #include <assert.h>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <memory>
@@ -32,6 +33,8 @@ namespace GAGCore
 
 		// A single normalized texture target supports both legacy atlases and HD mipmaps.
 		isTextureSRectangle = false;
+		hasS3TCCompression = (strstr(glExtensions, "GL_EXT_texture_compression_s3tc") != NULL)
+			&& !std::getenv("GLOB2_DISABLE_S3TC");
 		const char *glVendor = (const char *)glGetString(GL_VENDOR);
 		if (strstr(glVendor, "ATI"))
 			useATIWorkaround = true; // ugly temporary bug fix for bug 13823. We think it is an ATI driver bug
