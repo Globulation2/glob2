@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "FrontendTheme.h"
 #include "MenuColony.h"
+#include "DynamicClouds.h"
 #include "GlobalContainer.h"
 #include <Toolkit.h>
 #include <algorithm>
@@ -149,6 +150,15 @@ void FrontendTheme::onFrame()
 	SDL_Window* window = SDL_GetKeyboardFocus();
 	const bool visible = window && !(SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED);
 	colony->update(SDL_GetTicks64(), visible);
+}
+// Cloud shadows cross the panel and its controls: the interface is a thing in
+// the world, not a window over it. The engine's own guard keeps this GL-only.
+void FrontendTheme::afterPaint(DrawableSurface* s)
+{
+	if (s != globalContainer->gfx || Style::style != this || !colony->ready()) return;
+	if (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) return;
+	if (!clouds) clouds = std::make_unique<DynamicClouds>(&globalContainer->settings);
+	colony->drawClouds(*clouds, s->getW(), s->getH());
 }
 void FrontendTheme::background(DrawableSurface* s, bool panel, const SDL_Rect* content)
 {

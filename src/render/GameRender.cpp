@@ -173,7 +173,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 
 	// compute and draw cloud shadow if we are in high quality
-	if ((globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	if (!(drawOptions & DRAW_NO_CLOUDS) && (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 	{
 		ds.compute(viewportX, viewportY, sw, sh, time, map.getW(), map.getH(),
 		           !(drawOptions & DRAW_NO_CLOUD_LAYER), cloudGridLimit);
@@ -188,7 +188,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 
 	// draw cloud overlay if we are in high quality
-	if (!(drawOptions & DRAW_NO_CLOUD_LAYER) && (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
+	if (!(drawOptions & (DRAW_NO_CLOUD_LAYER | DRAW_NO_CLOUDS)) && (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) == 0)
 		ds.render(globalContainer->gfx, sw, sh, DynamicClouds::CLOUD);
 
 	// Draw units that are off the screen for the selected building

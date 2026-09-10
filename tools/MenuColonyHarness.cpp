@@ -176,7 +176,8 @@ template<class T> class Preview : public T
 public:
 	using T::T;
 	void prepare() { if(!prepared) { this->gfx=globalContainer->gfx; this->dispatchInit(); prepared=true; } }
-	void render() { prepare(); this->paint(); for(auto* w:this->widgets) if(w->visible) w->paint(); }
+	// Mirrors Screen::dispatchPaint, including the style's pass over the finished frame.
+	void render() { prepare(); this->paint(); for(auto* w:this->widgets) if(w->visible) w->paint(); GAGGUI::Style::style->afterPaint(this->gfx); }
 	void advance(unsigned frames) { prepare(); for(unsigned i=0;i<frames;++i) this->dispatchTimer(i*40); }
 	void checkBounds()
 	{

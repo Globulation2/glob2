@@ -6,6 +6,8 @@
 #include "DatasetWriter.h"
 #include "Order.h"
 #include "Player.h"
+#include "DynamicClouds.h"
+#include <cmath>
 #include <sstream>
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -79,7 +81,9 @@ void MenuColony::update(Uint64 now, bool visible)
 {
 	if (!game || !visible) { pause(); return; }
 	if (!clockStarted) { lastTime = now; clockStarted = true; return; }
-	pending += std::min<Uint64>(now - lastTime, 2 * GAME_TICK_MS);
+	const Uint64 elapsed = std::min<Uint64>(now - lastTime, 2 * GAME_TICK_MS);
+	pending += elapsed;
+	driftClock += elapsed / 1000.0;
 	lastTime = now;
 	ColonyContext context(rng);
 	// At most two steps per menu frame; never accumulate hidden-time debt.
@@ -114,10 +118,41 @@ void MenuColony::draw(int width, int height)
 			globalContainer->replayVisibleTeams=teams;
 		}
 	} viewContext;
-	// Place the starting settlement to the right of the front-page panel.
-	const int x = (centerX - width * 2 / 3 / 32) & game->map.getMaskW();
-	const int y = (centerY - height / 2 / 32) & game->map.getMaskH();
-	game->drawMap(0, 0, width, height, 0, 0, x, y, 0, view, Game::DRAW_WHOLE_MAP | Game::DRAW_HEALTH_FOOD_BAR);
+	// Place the starting settlement to the right of the front-page panel, then
+	// let the camera wander about a tile and a half around it over ~1.5 minutes.
+	int driftX = 0, driftY = 0;
+	if (smoothCamera())
+	{
+		driftX = int(std::floor(48.0 * std::sin(driftClock * 2.0 * M_PI / 97.0)));
+		driftY = int(std::floor(32.0 * std::sin(driftClock * 2.0 * M_PI / 131.0)));
+	}
+	const int tileX = int(std::floor(driftX / 32.0)), tileY = int(std::floor(driftY / 32.0));
+	fractionX = driftX - tileX * 32;
+	fractionY = driftY - tileY * 32;
+	viewX = (centerX - width * 2 / 3 / 32 + tileX) & game->map.getMaskW();
+	viewY = (centerY - height / 2 / 32 + tileY) & game->map.getMaskH();
+	auto* gfx = globalContainer->gfx;
+	gfx->beginMapTransform(1.0f, float(-fractionX), float(-fractionY), 0, 0, width, height);
+	game->drawMap(0, 0, width + 32, height + 32, 0, 0, viewX, viewY, 0, view,
+		Game::DRAW_WHOLE_MAP | Game::DRAW_HEALTH_FOOD_BAR | Game::DRAW_NO_CLOUDS);
+	gfx->endMapTransform();
+}
+
+bool MenuColony::smoothCamera() const
+{
+	return (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU) != 0;
+}
+
+void MenuColony::drawClouds(DynamicClouds& clouds, int width, int height)
+{
+	if (!game) return;
+	auto* gfx = globalContainer->gfx;
+	gfx->beginMapTransform(1.0f, float(-fractionX), float(-fractionY), 0, 0, width, height);
+	clouds.compute(viewX, viewY, width + 32, height + 32, cloudTime, game->map.getW(), game->map.getH());
+	clouds.render(gfx, width + 32, height + 32, DynamicClouds::SHADOW);
+	clouds.render(gfx, width + 32, height + 32, DynamicClouds::CLOUD);
+	gfx->endMapTransform();
+	if (clockStarted) ++cloudTime;
 }
 
 Uint32 MenuColony::checksum() const

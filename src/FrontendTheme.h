@@ -4,6 +4,7 @@
 #include <GraphicContext.h>
 #include <memory>
 class MenuColony;
+class DynamicClouds;
 
 // The front end's whole palette. Every menu screen reads from here; alpha is
 // applied at the draw site, never baked into a token.
@@ -39,6 +40,7 @@ public:
 	static int panelAlpha();
 	void background(GAGCore::DrawableSurface*, bool panel = true, const SDL_Rect* content = nullptr);
 	void onFrame() override;
+	void afterPaint(GAGCore::DrawableSurface*) override;
 	void drawButtonSelection(GAGCore::DrawableSurface*, int, int, int, int) override;
 	bool usesThemeTextColor() const override { return true; }
 	void drawFieldBackground(GAGCore::DrawableSurface*, int, int, int, int) override;
@@ -57,6 +59,7 @@ public:
 private:
 	bool attempted = false, painted = false;
 	std::unique_ptr<GAGCore::DrawableSurface> fallback, fittedFallback;
+	std::unique_ptr<DynamicClouds> clouds;
 };
 
 // Also used to suspend front-end presentation around gameplay/editor loops.
