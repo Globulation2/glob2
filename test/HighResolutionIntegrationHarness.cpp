@@ -8,7 +8,6 @@
 #include "Unit.h"
 #include "Player.h"
 #include "FrontendTheme.h"
-#include <GUIButton.h>
 #include <SDL_image.h>
 #include <FileManager.h>
 #ifdef __APPLE__
@@ -26,19 +25,10 @@ GlobalContainer* globalContainer=nullptr;
 class SettingsPaintHarness:public SettingsScreen
 {
 public:
-    void chooseArtwork(bool enabled)
-    {
-        for (auto widget : widgets)
-            if (auto button = dynamic_cast<GAGGUI::OnOffButton*>(widget); button && button->returnCode == HIGHRES)
-            {
-                button->setState(enabled);
-                onAction(button, BUTTON_STATE_CHANGED, HIGHRES, 0);
-                return;
-            }
-        assert(false);
-    }
-    void confirm() { onAction(nullptr, BUTTON_RELEASED, OK, 0); }
-    void cancel() { onAction(nullptr, BUTTON_RELEASED, CANCEL, 0); }
+    // The redesigned screen has no separate confirm/cancel step for discrete
+    // toggles (see the "Stable semantic interface" in SettingsScreen.h):
+    // changeSetting applies and persists immediately, same as a real click.
+    void chooseArtwork(bool enabled) { assert(changeSetting("graphics.artwork", enabled)); }
     void draw(GraphicContext *surface){gfx=surface;dispatchInit();paint();for(auto widget:widgets)if(widget->visible)widget->paint();}
 };
 class HighResolutionIntegrationHarness
@@ -176,30 +166,30 @@ public:
         assert(startup.manifestParses == (originalSetting && gpu ? 1u : 0u));
         assert((startup.cpuBytes > 0) == (originalSetting && gpu));
         {
+            // Choosing the value already in effect is a no-op: no reload.
             SettingsPaintHarness screen;
             auto before = Sprite::highResolutionStats();
-            screen.chooseArtwork(!originalSetting);
-            unchangedArtwork(before);
-            screen.cancel();
+            screen.chooseArtwork(originalSetting);
             unchangedArtwork(before);
             assert(globalContainer->settings.highResolutionArtwork == originalSetting);
         }
         {
+            // Toggling away and back applies live each time and reloads on
+            // both edges (there is no batched confirm left to coalesce them).
             SettingsPaintHarness screen;
             auto before = Sprite::highResolutionStats();
             screen.chooseArtwork(!originalSetting);
             screen.chooseArtwork(originalSetting);
-            screen.confirm();
-            unchangedArtwork(before);
+            const auto after = Sprite::highResolutionStats();
+            assert(after.packReloads == before.packReloads + (gpu ? 2u : 0u));
+            assert(globalContainer->settings.highResolutionArtwork == originalSetting);
         }
         for (const bool hd : { !originalSetting, originalSetting })
         {
             SettingsPaintHarness screen;
             const auto before = Sprite::highResolutionStats();
-            screen.chooseArtwork(hd);
-            unchangedArtwork(before);
             const auto start = std::chrono::steady_clock::now();
-            screen.confirm();
+            screen.chooseArtwork(hd);
             const double ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count();
             const auto after = Sprite::highResolutionStats();
             assert(after.packReloads == before.packReloads + (gpu ? 1 : 0));
@@ -250,7 +240,9 @@ public:
                     warmBytes = resident.cpuBytes;
                     std::cout << "ARTWORK_MATCH map=" << mapName << " repeat=" << repeat << " ms=" << ms
                         << " cpu_bytes=" << resident.cpuBytes << " gpu_bytes=" << DrawableSurface::allocatedTextureBytes()
-                        << " image_loads=0 manifest_parses=0 pack_reloads=0\n";
+                        << " image_loads=" << (resident.imageLoads - loads.imageLoads)
+                        << " manifest_parses=" << (resident.manifestParses - loads.manifestParses)
+                        << " pack_reloads=" << (resident.packReloads - loads.packReloads) << "\n";
                 }
                 drawMenu();
                 unchangedArtwork(before);
@@ -263,7 +255,7 @@ public:
             unchangedArtwork(before);
         }
         globalContainer->automaticEndingGame = false;
-        std::cout << "PASS startup, settings confirmation/cancel, repeated matches/editor visits, and stable retained artwork\n";
+        std::cout << "PASS startup, live settings application, repeated matches/editor visits, and stable retained artwork\n";
     }
     static void runSoftware()
     {

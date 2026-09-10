@@ -354,8 +354,10 @@ repeat with `software` to check pack caching, validation, explicit reload, late
 sprites, and toolkit reinitialization.
 
 Run `build/src/HighResolutionIntegrationHarness lifecycle`, `lifecycle-original`,
-and `lifecycle-software` to check startup selection, settings confirmation/cancel,
-and repeated game/editor transitions. The harness reports startup, settings and
+and `lifecycle-software` to check startup selection, live settings application
+(a no-op re-choice reloads nothing, a real change reloads on every apply since
+the redesigned settings screen has no batched confirm step), and repeated
+game/editor transitions. The harness reports startup, settings and
 one-tick game timings, retained artwork bytes, and asserts zero sprite image
 loads, manifest parses or pack reloads during matches. Its normal invocation and
 `software` mode additionally check rendering, replay loading and simulation

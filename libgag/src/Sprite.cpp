@@ -100,7 +100,11 @@ namespace GAGCore
 			std::string text(static_cast<size_t>(size), '\0');
 			const auto count = SDL_RWread(input, text.data(), 1, text.size());
 			SDL_RWclose(input);
-			if (count != text.size()) return;
+			if (count != text.size())
+			{
+				std::cerr << "Truncated high-resolution manifest: " << artwork.directory << std::endl;
+				return;
+			}
 			std::istringstream stream(text);
 			std::string magic, id;
 			int version = 0;
