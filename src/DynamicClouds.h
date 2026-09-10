@@ -35,7 +35,7 @@ class DynamicClouds
 	 * this value is set in preferences.txt: cloudMaxAlpha=120
 	 */
 	unsigned char maxAlpha;
-	/** maximum horizontal cloud speed in ca pixels per frame.
+	/** maximum horizontal cloud speed in tenths of a pixel per frame.
 	 * this value is set in preferences.txt: cloudMaxSpeed=3
 	 */
 	float maxCloudSpeed;
@@ -44,7 +44,7 @@ class DynamicClouds
 	 */
 	float windStability;
 	/** 1/rate at which clouds change shape
-	 * this value is set in preferences.txt: cloudStability=1300
+	 * this value is set in preferences.txt: cloudStability=13000
 	 */
 	float cloudStability;
 	/** average length of clouds in pixels
@@ -71,6 +71,8 @@ class DynamicClouds
 	std::valarray<unsigned char> fogMap;
 	/// scratch for the raw field, kept so it is not reallocated every frame
 	std::valarray<float> depthMap;
+	/// the world lattice, filled a band at a time across several frames
+	std::valarray<float> worldDepth;
     int renderOffsetX, renderOffsetY, renderCellSize;
 
 	/// how many cells away the sunlit core is sampled at this cell size
@@ -93,7 +95,7 @@ public:
 	{
 		granularity=std::max(1, settings->cloudPatchSize);
 		maxAlpha=(unsigned char)settings->cloudMaxAlpha;
-		maxCloudSpeed=settings->cloudMaxSpeed;
+		maxCloudSpeed=(float)settings->cloudMaxSpeed/10.0f;
 		windStability=settings->cloudWindStability;
 		cloudStability=settings->cloudStability;
 		cloudSize=settings->cloudSize;
@@ -125,8 +127,8 @@ public:
 	 * @param visibility 255 where the ground is hidden, 0 where it is in sight
 	 * @param wrap true when the grid covers the whole toroidal world
 	 */
-	static void feather(const std::valarray<unsigned char> &visibility, int gridW, int gridH, bool wrap,
-	                    std::valarray<unsigned char> &out);
+	static void feather(const std::valarray<unsigned char> &visibility, int gridW, int gridH, int cellSize,
+	                    bool wrap, std::valarray<unsigned char> &out);
 
 	/**
 	 * updates cloudMap and coreMap
@@ -141,13 +143,20 @@ public:
 	             const std::valarray<unsigned char> *visibility = nullptr);
 	void render(DrawableSurface *dest, const int viewPortWidth, const int viewPortHeight, Layer layer);
 	/**
-	 * Samples the cloud layer over the whole world at a coarse lattice.
-	 * @param out receives gridW*gridH luminance/alpha pairs, row-major from the map origin
-	 * @param visibility optional feathered mask sized gridW x gridH; call
-	 *        getWorldGrid() first to learn those dimensions
+	 * Samples a band of the cloud layer over the whole world.
+	 * @param nextRow first row to fill, advanced to the first one still missing
+	 * @param rows how many rows to fill this call
+	 * @return true once the whole lattice holds one moment of the field
 	 */
-	void computeWorld(const int worldWidth, const int worldHeight, const int time, std::valarray<unsigned char> &out, int &gridW, int &gridH,
-	                  int maxGridSize = 2048, const std::valarray<unsigned char> *visibility = nullptr) const;
-	/// dimensions computeWorld() will use, so a visibility mask can be built first
+	bool sampleWorldRows(const int worldWidth, const int worldHeight, const int time, int gridW, int gridH,
+	                     int cellSize, int &nextRow, int rows);
+	/**
+	 * Turns a completed world sample into a texture.
+	 * @param out receives gridW*gridH luminance/alpha pairs, row-major from the map origin
+	 * @param visibility optional mask sized gridW x gridH; getWorldGrid() reports those
+	 */
+	void shadeWorld(std::valarray<unsigned char> &out, int gridW, int gridH, int cellSize,
+	                const std::valarray<unsigned char> *visibility = nullptr) const;
+	/// dimensions the world lattice will use, so a visibility mask can be built first
 	void getWorldGrid(const int worldWidth, const int worldHeight, int &gridW, int &gridH, int &cellSize, int maxGridSize = 2048) const;
 };

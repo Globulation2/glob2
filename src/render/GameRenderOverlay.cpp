@@ -185,17 +185,22 @@ void Game::computeCloudVisibility(std::valarray<unsigned char> &out, int gridW, 
 	for (int y=0; y<gridH; y++)
 		for (int x=0; x<gridW; x++)
 		{
-			//the lattice is in world pixels, the discovery maps are in cases
-			int mx = (originX + x*cellSize)>>5;
-			int my = (originY + y*cellSize)>>5;
-			unsigned char hidden;
-			if (!map.isMapDiscovered(mx, my, visibleTeams))
-				hidden = 255;
-			else if (!map.isFOWDiscovered(mx, my, visibleTeams))
-				hidden = shade;
-			else
-				hidden = 0;
-			out[gridW*y+x] = hidden;
+			//drawMapFogOfWar spans each of its sprites from one case centre to the
+			//next and shades it from all four corners, so a pixel can carry black
+			//from any of the four cases around it. The deck has to cover the same
+			//four, or it leaves a rim of black along every edge of the fog.
+			int mx = (originX + x*cellSize - 16)>>5;
+			int my = (originY + y*cellSize - 16)>>5;
+			bool anyUndiscovered = false, anyOutOfSight = false;
+			for (int dy=0; dy<2; dy++)
+				for (int dx=0; dx<2; dx++)
+				{
+					if (!map.isMapDiscovered(mx+dx, my+dy, visibleTeams))
+						anyUndiscovered = true;
+					else if (!map.isFOWDiscovered(mx+dx, my+dy, visibleTeams))
+						anyOutOfSight = true;
+				}
+			out[gridW*y+x] = anyUndiscovered ? 255 : (anyOutOfSight ? shade : 0);
 		}
 }
 

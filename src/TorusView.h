@@ -57,7 +57,8 @@ class TorusView
     DynamicClouds clouds;
     std::valarray<unsigned char> cloudPixels, cloudVisibility;
     int cloudW = 0, cloudH = 0, cloudTime = 0;
-    bool cloudsSampled = false;
+    int cloudSampleRow = 0, cloudSampleTime = 0;
+    bool cloudsSampled = false, cloudsSampling = false;
     SDL_GLContext graphicsContext = nullptr;
     unsigned graphicsGeneration = 0;
     unsigned texture, cloudTexture, framebuffer, material;

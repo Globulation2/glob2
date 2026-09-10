@@ -96,9 +96,9 @@ public:
 
 	int cloudPatchSize;//the bigger the faster the uglier
 	int cloudMaxAlpha;//opacity of clouds over open ground; the fog of war is overcast regardless
-	int cloudMaxSpeed;
+	int cloudMaxSpeed;//in tenths of a pixel per frame
 	int cloudWindStability;//how much will the wind change
-	int cloudStability;//how much will the clouds change shape
+	int cloudStability;//how much will the clouds change shape; higher holds them steadier
 	int cloudSize;//average length of a cloud in pixels; smaller gives the deck more relief per fogged patch
 	int cloudHeight;//(cloud - ground) / (eyes - ground)
 	int cloudCoverage;//relief of the deck in percent; the higher the more of it catches the sun

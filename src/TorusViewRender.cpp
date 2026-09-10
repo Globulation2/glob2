@@ -29,13 +29,15 @@
 namespace
 {
 // Bound overview detail independently of map area. Normal 2D keeps native detail.
-const int atlasLimit = 4096, cloudGridLimit = 128;
-// how many animation ticks a sampled cloud ring stays good for
-const int cloudRefreshTicks = 6;
+const int atlasLimit = 4096, cloudGridLimit = 512;
+// How many animation ticks a sampled cloud ring stays good for. The deck drifts
+// a fraction of a pixel per frame, so a whole world resample is worth much more
+// than one frame of it.
+const int cloudRefreshTicks = 30;
 // where the shadow deck hangs, as a share of the lit deck's height
 const float cloudUnderShare = .42f;
-// how far the shadow deck's texture is shifted away from the sun, in uv
-const float cloudShadowShift = .012f;
+// how much of the ground's fold lighting the deck picks up
+const float cloudLightRoll = .55f;
 const float pi = 3.14159265358979323846f;
 float clamp(float x, float a, float b) { return std::max(a, std::min(b, x)); }
 float smooth(float x)
@@ -198,6 +200,7 @@ void TorusView::releaseResources()
     cloudUnderBuffer = indexBuffer = 0;
     atlasW = atlasH = 0;
     cloudW = cloudH = 0;
+    cloudsSampled = cloudsSampling = false;
     vertices.clear();
     cloudVertices.clear();
     cloudUnderVertices.clear();
@@ -272,15 +275,30 @@ void TorusView::updateClouds(Game &game, int team, unsigned options, int time)
     int gridW, gridH, cell;
     clouds.getWorldGrid(worldW, worldH, gridW, gridH, cell, cloudGridLimit);
     bool sized = cloudTexture && gridW == cloudW && gridH == cloudH;
-    // Both the field and the explored map move far slower than the view redraws,
-    // so resampling the whole world every frame buys nothing at this lattice.
-    if (cloudsSampled && sized && time >= cloudTime && time - cloudTime < cloudRefreshTicks)
+    if (!cloudsSampling)
+    {
+        // Both the field and the explored map move far slower than the view
+        // redraws, so there is nothing to gain from starting a fresh sample often.
+        bool stale = !cloudsSampled || !sized || time < cloudTime || time - cloudTime >= cloudRefreshTicks;
+        if (!stale)
+            return;
+        cloudsSampling = true;
+        cloudSampleRow = 0;
+        cloudSampleTime = time;
+        game.computeCloudVisibility(cloudVisibility, gridW, gridH, 0, 0, cell, team, options);
+    }
+    // A whole world at this lattice costs far more than one frame, so it is filled
+    // a band at a time and only uploaded once every row is from the same moment.
+    // The first one goes in a single call: one hitch on opening the view beats a
+    // second of ring with no clouds on it.
+    int rows = sized ? std::max(1, (gridH + cloudRefreshTicks - 1) / cloudRefreshTicks) : gridH;
+    if (!clouds.sampleWorldRows(worldW, worldH, cloudSampleTime, gridW, gridH, cell, cloudSampleRow, rows))
         return;
-    cloudTime = time;
+    cloudsSampling = false;
+    cloudTime = cloudSampleTime;
     cloudsSampled = true;
+    clouds.shadeWorld(cloudPixels, gridW, gridH, cell, &cloudVisibility);
 
-    game.computeCloudVisibility(cloudVisibility, gridW, gridH, 0, 0, cell, team, options);
-    clouds.computeWorld(worldW, worldH, time, cloudPixels, gridW, gridH, cloudGridLimit, &cloudVisibility);
     glPushAttrib(GL_TEXTURE_BIT);
     glPushClientAttrib(GL_CLIENT_PIXEL_STORE_BIT);
     if (!sized)
@@ -296,7 +314,7 @@ void TorusView::updateClouds(Game &game, int team, unsigned options, int time)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        // Luminance carries the body-to-core gradient, alpha the coverage.
+        // Luminance carries the shaded-to-lit gradient, alpha the coverage.
         glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, cloudW, cloudH, 0, GL_LUMINANCE_ALPHA,
                      GL_UNSIGNED_BYTE, &cloudPixels[0]);
     }
@@ -564,8 +582,12 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 TorusGeometry::Point c = {p.x + n.x / len * cloudHeight, p.y + n.y / len * cloudHeight,
                                           p.z + n.z / len * cloudHeight};
                 float nx = n.x / len, ry = n.y / len, rz = n.z / len;
-                float light =
-                    mix(1, 0.48f + 0.52f * clamp(-nx * 0.35f - ry * 0.45f + rz * 0.82f, 0, 1), roll);
+                float facing = 0.48f + 0.52f * clamp(-nx * 0.35f - ry * 0.45f + rz * 0.82f, 0, 1);
+                float light = mix(1, facing, roll);
+                // The deck hangs above the ground and is already shaded in its own
+                // texture, so the fold moves its light less than the ground's. Flat,
+                // it is lit exactly as the 2D clouds are.
+                float deckLight = mix(1, facing, roll * cloudLightRoll);
                 float w = 1 - p.z * roll / cameraDistance;
                 vertices[j * (U + 1) + i] = {{cx * w + p.x * sx, cy * w + p.y * sy, p.z * scale, w},
                                              {light, light, light},
@@ -573,7 +595,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                                              {nx, ry, rz}};
                 float cw = 1 - c.z * roll / cameraDistance;
                 cloudVertices[j * (U + 1) + i] = {{cx * cw + c.x * sx, cy * cw + c.y * sy, c.z * scale, cw},
-                                                  {light, light, light},
+                                                  {deckLight, deckLight, deckLight},
                                                   {du, -dv},
                                                   {nx, ry, rz}};
                 // A lower deck for the upper one to cast its shadow onto. Two
@@ -584,7 +606,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 float dw = 1 - d.z * roll / cameraDistance;
                 cloudUnderVertices[j * (U + 1) + i] = {
                     {cx * dw + d.x * sx, cy * dw + d.y * sy, d.z * scale, dw},
-                    {light, light, light},
+                    {deckLight, deckLight, deckLight},
                     {du, -dv},
                     {nx, ry, rz}};
             }
@@ -638,26 +660,37 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_FALSE);
+        // The deck has to land on the same cases as the atlas under it, so V is
+        // resolved exactly as the ground shader resolves it: the mesh carries -dv
+        // and the offset carries 1 - anchorV. The extra map origin term is there
+        // because the ring is sampled in absolute map coordinates while the atlas
+        // was drawn from the viewport origin, and the half texel puts the sample
+        // point on the world pixel the texel was taken at.
+        const float deckU = anchorU + float(originX) / worldW + 0.5f / cloudW;
+        const float deckV = 1 - anchorV + float(originY) / worldH + 0.5f / cloudH;
         glMatrixMode(GL_TEXTURE);
+        // Only one level deep: GL guarantees a texture matrix stack of just two.
         glPushMatrix();
+
+        // The lower deck is the shaded underside of the same cloud, on the same
+        // texel as the deck above it. Displacing it would only expose it where the
+        // upper deck fades at the edge of the fog, which reads as a hole rather than
+        // as shadow; the shadow one cloud casts on another is in the texture. What
+        // this deck is for is thickness: at a grazing angle the two surfaces come
+        // apart and the ring stops looking like paint.
         glLoadIdentity();
-        glTranslatef(anchorU + float(originX) / worldW + 0.5f / cloudW,
-                     anchorV + float(originY) / worldH + 0.5f / cloudH, 0);
-        glScalef(1, -1, 1);
-        // The lower deck carries the upper one's shadow: same field, shifted away
-        // from the sun and modulated dark, so the two read as one thick body.
-        glPushMatrix();
-        glTranslatef(-cloudShadowShift, cloudShadowShift, 0);
+        glTranslatef(deckU, deckV, 0);
         glDisableClientState(GL_COLOR_ARRAY);
-        glColor4f(.24f, .26f, .32f, 1);
+        glColor4f(.42f, .45f, .52f, 1);
         glBindBuffer(GL_ARRAY_BUFFER, cloudUnderBuffer);
         glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
                         reinterpret_cast<void *>(offsetof(MeshVertex, position)));
         glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
         glDrawElements(GL_TRIANGLES, U * V * 6, GL_UNSIGNED_INT, nullptr);
         glEnableClientState(GL_COLOR_ARRAY);
-        glPopMatrix();
 
+        glLoadIdentity();
+        glTranslatef(deckU, deckV, 0);
         glBindBuffer(GL_ARRAY_BUFFER, cloudBuffer);
         glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
                         reinterpret_cast<void *>(offsetof(MeshVertex, position)));

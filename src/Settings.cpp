@@ -51,7 +51,7 @@ Settings::Settings()
 	cloudMaxAlpha=120;//the higher the nicer the clouds the harder the units are visible
 	cloudMaxSpeed=3;
 	cloudWindStability=3550;//how much will the wind change
-	cloudStability=1300;//how much will the clouds change shape
+	cloudStability=13000;//how much will the clouds change shape
 	cloudSize=160;//small enough that a single fogged patch still shows cloud relief
 	cloudHeight=150;//(cloud - ground) / (eyes - ground) * 100 (to get an int value)
 	cloudCoverage=76;//how much of the deck stands up in sunlight; over open ground it is also how much sky is covered
@@ -326,7 +326,7 @@ void Settings::resetCloudSettings()
 	cloudMaxAlpha=120;
 	cloudMaxSpeed=3;
 	cloudWindStability=3550;
-	cloudStability=1300;
+	cloudStability=13000;
 	cloudSize=160;
 	cloudHeight=150;
 	cloudCoverage=76;
