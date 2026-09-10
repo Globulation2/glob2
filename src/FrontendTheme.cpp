@@ -139,9 +139,9 @@ void FrontendTheme::ring(DrawableSurface* s,int x,int y,int w,int h,int r,Color 
 		s->drawFilledRect(x+w-rr-2,y+row,2,1,ink);
 	}
 }
-int FrontendTheme::panelAlpha()
+int FrontendTheme::panelAlpha(int normal)
 {
-	return (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) ? 255 : 214;
+	return (globalContainer->settings.optionFlags & GlobalContainer::OPTION_LOW_SPEED_GFX) ? 255 : normal;
 }
 void FrontendTheme::onFrame()
 {

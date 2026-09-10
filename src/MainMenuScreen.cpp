@@ -29,6 +29,8 @@ namespace
 {
 using namespace FrontendPalette;
 const auto fillRounded = FrontendTheme::rounded;
+// The front page is the most translucent sheet: the colony should read through it.
+const int frontPageAlpha = 140;
 }
 
 // Front-page layout and primary-action emphasis; shared drawing comes from the theme.
@@ -201,7 +203,7 @@ void MainMenuScreen::paint()
 	auto withAlpha = [entry](Color c) { return Color(c.r, c.g, c.b, Uint8(int(c.a) * entry / 10)); };
 	fillRounded(gfx, panelX + 3, panelY + 5, panelW, panelH, 12, withAlpha(Color(12, 28, 16, 70)));
 	FrontendTheme::blob(gfx, panelX, panelY, panelW, panelH, 12,
-		withAlpha(Color(membrane.r, membrane.g, membrane.b, FrontendTheme::panelAlpha())), withAlpha(ink), 2);
+		withAlpha(Color(membrane.r, membrane.g, membrane.b, FrontendTheme::panelAlpha(frontPageAlpha))), withAlpha(ink), 2);
 	fillRounded(gfx, panelX + 24, panelY + 12, 36, 4, 2, withAlpha(gold));
 	if (wordmark) gfx->drawSurface(panelX + 24, panelY + 24, wordmark.get(), Uint8(255 * entry / 10));
 	else

@@ -37,7 +37,8 @@ public:
 	// The ring of blob() alone; never touches the interior (safe over list contents).
 	static void ring(GAGCore::DrawableSurface*, int x, int y, int w, int h, int r,
 		GAGCore::Color ink, int wobble, int inflate = 0);
-	static int panelAlpha();
+	// Membrane opacity: 'normal' for the usual case; 255 under low-speed graphics.
+	static int panelAlpha(int normal = 214);
 	void background(GAGCore::DrawableSurface*, bool panel = true, const SDL_Rect* content = nullptr);
 	void onFrame() override;
 	void afterPaint(GAGCore::DrawableSurface*) override;
