@@ -298,7 +298,8 @@ std::vector<Island> raiseIslands(std::vector<unsigned char> &terrain, int width,
     return islands;
   const std::vector<int> offshore = stepsFrom(width, height, land, water);
   const int wanted = std::max(1, int(std::lround(perStandardMap * double(area) / 16384.0)));
-  const double scale = std::clamp(std::sqrt(std::min(width, height) / 128.0), 0.8, 1.6);
+  // Never smaller than on a 128-tile map: any smaller and the beach leaves no grass for a prize.
+  const double scale = std::clamp(std::sqrt(std::min(width, height) / 128.0), 1.0, 1.6);
   for (int attempt = 0; int(islands.size()) < wanted && attempt < wanted * 40; ++attempt) {
     const int at = sea[context.bounded("islands", sea.size())];
     const int x = at % width, y = at / width;
