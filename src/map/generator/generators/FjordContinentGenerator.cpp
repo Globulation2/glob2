@@ -94,8 +94,16 @@ static bool generate(Game &game, GenerationContext &context) {
   const double lakeR = coreR * (options.lakeSize / 100.0);
   const bool hasLake = lakeR > 0.5;
   const bool lakeConnected = hasLake && options.lakeConnected != 0;
-  // Where every fjord actually stops: the lake's edge in connected mode, coreR otherwise.
-  const double fjordInnerR = lakeConnected ? lakeR : coreR;
+  // Where every fjord actually stops: coreR in disconnected mode. In connected mode this is NOT
+  // the lake's edge itself - the fjord's tip tapers down to a narrow tipWidth (0.65) as it
+  // approaches its target radius, so aiming exactly at lakeR left the channel a near-thread right
+  // where it needed to actually merge with the lake, an almost-but-not-quite connection that
+  // read as a solid sand gap once controlSand ran. Aiming well inside the lake instead (0.4x its
+  // radius) means the fjord's centerline crosses the lake's real boundary much earlier along its
+  // taper, while the channel is still comfortably wide, guaranteeing a real merge instead of a
+  // razor-thin near miss. The extra length beyond the boundary just carves more water inside
+  // ground that's already the lake, which is harmless.
+  const double fjordInnerR = lakeConnected ? lakeR * 0.4 : coreR;
   const double maxStretch = std::max(elongation, 1.0 / elongation);
 
   // One angular sector per team, evenly spaced with a little jitter so it
@@ -161,7 +169,18 @@ static bool generate(Game &game, GenerationContext &context) {
       double phase = randomAngle(context);
       double mouthWidth =
           options.fjordWidth + 0.6 + context.bounded("layout", 1400) / 1000.0;
-      double tipWidth = 0.65;
+      // Map::controlSand (MapTerrain.cpp) converts any water tile with a grass neighbor in its
+      // own 3x3 neighborhood to sand - not just a coastal decoration, it can erase a channel
+      // outright. A width-0.65 tip (diameter ~1.3 tiles) is entirely coastal by that rule, so
+      // every tile in it borders grass and gets sanded over - fine for disconnected mode, where
+      // the tip is meant to taper into a dead end against solid land anyway, but it silently
+      // closes the one connection lake-connected mode actually needs to stay open. A channel
+      // needs a surviving center row not touching grass on either side to remain water at all,
+      // which takes a width (radius) of at least ~1.5; targeting well above that keeps it open
+      // with real margin. Since lakeR is tiny next to the fjord's total length, aiming the tip
+      // radius deeper into the lake (fjordInnerR above) barely moves the width *at* the lake's
+      // actual boundary crossing - this is the fix that matters.
+      double tipWidth = lakeConnected ? std::max(2.5, mouthWidth * 0.6) : 0.65;
 
       int steps = std::max(24, (int)(mouthR - fjordInnerR));
       for (int s = 0; s <= steps; ++s) {
@@ -199,8 +218,9 @@ static bool generate(Game &game, GenerationContext &context) {
   // 2.5) A lake at the very center every fjord points toward (lake-size 0 skips this entirely).
   // In disconnected mode the fjords stop at coreR, well outside lakeR, leaving the coreR-lakeR
   // ring solid - every peninsula stays mutually land-connected around the lake's edge (step 5
-  // verifies this explicitly). In connected mode the fjords already terminate at lakeR itself
-  // (fjordInnerR above), so this carve is what actually opens each fjord into the lake.
+  // verifies this explicitly). In connected mode the fjords already reach well inside lakeR
+  // (fjordInnerR above), so this carve is what actually opens each fjord into the lake - the
+  // fjords' own tapered tips would otherwise be too narrow to reliably merge with it.
   if (hasLake) {
     for (int y = 0; y < H; ++y) {
       for (int x = 0; x < W; ++x) {
@@ -601,7 +621,7 @@ GeneratorDefinition fjordContinentDefinition() {
   return {"fjord-continent",
           12,
           "Fjord continent",
-          9,
+          10,
           false,
           {{"continent-size", "Continent size", 28, 40, 2, 34,
             ControlGroup::Terrain},
