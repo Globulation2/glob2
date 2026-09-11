@@ -77,6 +77,14 @@ bool generate(Game &game, GenerationContext &context) {
                                   2))
       return false;
   scatterResources(game, context, {o.corn, o.wood, o.stone, o.algae, o.fruit});
+  // The guaranteed clumps above ensure wheat and wood exist somewhere in a team's home area, but
+  // the ambient scatter painted afterward doesn't know that - a wide enough patch of one crop can
+  // still wall the other off, or wall the swarm off from either, on a small islet where there's
+  // little room to route around it. guaranteeStartingResources re-checks reachability through the
+  // actual resource layout and clears exactly the tiles responsible before topping up whichever
+  // resource is still out of range - the same backstop RuggedArchipelago and ShatteredCoast
+  // already rely on for the same class of problem.
+  guaranteeStartingResources(game, context, 24, 32);
   return true;
 }
 } // namespace
@@ -93,7 +101,7 @@ GeneratorDefinition latticeDefinition() {
       "lattice",
       10,
       "Lattice",
-      4,
+      5,
       false,
       {{"islet-size", "Islet size", 1, 4, 1, 2, ControlGroup::Terrain},
        {"channel-width", "Channel width", 2, 4, 1, 3, ControlGroup::Terrain},

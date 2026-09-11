@@ -465,6 +465,15 @@ static bool generate(Game &game, GenerationContext &context) {
       }
     }
 
+  // The starter kit guarantees wheat and wood exist somewhere near each boot tile, but the
+  // ambient scatter and bank clumps painted afterward don't know that - a wide enough patch of
+  // one crop can still wall the other off from a swarm that was placed before either existed.
+  // guaranteeStartingResources re-checks reachability through the actual resource layout (not
+  // just distance) and, if a wall is responsible for a cramped pocket, clears exactly the tiles
+  // sealing it before topping up whichever resource is still out of range - the same backstop
+  // RuggedArchipelago and ShatteredCoast already rely on for the same class of problem.
+  guaranteeStartingResources(game, context, 24, 32);
+
   return true;
 }
 
@@ -480,7 +489,7 @@ GeneratorDefinition fjordContinentDefinition() {
   return {"fjord-continent",
           12,
           "Fjord continent",
-          5,
+          6,
           false,
           {{"continent-size", "Continent size", 28, 40, 2, 34,
             ControlGroup::Terrain},

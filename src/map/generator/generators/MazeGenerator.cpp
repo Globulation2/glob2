@@ -187,6 +187,13 @@ bool generate(Game &game, GenerationContext &context) {
         !placeResourceClumpInArea(game.map, context, teamWoodAreas[team], WOOD,
                                   2))
       return false;
+  // Unlike Fjord and Lattice, Maze doesn't get a guaranteeStartingResources backstop here: its
+  // structural walls are themselves stone resource tiles placed on grass seams by design (see
+  // the stamp below), and that helper's wall-clearing branch can't tell an intentional maze wall
+  // from an incidental one - it would happily bulldoze a corridor wall to "fix" a team whose
+  // small starting room is legitimately cramped, undermining the maze itself. The noise-scale
+  // fix above already shrinks the ambient scatter's patches enough that this is a smaller risk
+  // here than it was in Fjord's open banks.
   scatterResources(game, context, {o.corn, o.wood, o.stone, o.algae, o.fruit});
   for (int y = 0; y < height; ++y)
     for (int x = 0; x < width; ++x)
@@ -207,7 +214,7 @@ GeneratorDefinition mazeDefinition() {
   return {"maze",
           11,
           "Maze",
-          4,
+          5,
           false,
           {{"cell-size",
             "Cell size",

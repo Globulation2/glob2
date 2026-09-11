@@ -223,7 +223,14 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
       continue;
     const int share =
         int((std::int64_t(totalTarget) * std::int64_t(compCandidates.size())) / totalCandidates);
-    const int regionWanted = std::min<int>(compCandidates.size(), std::max(1, share) * kWiden);
+    // Widening is proportionally huge on a landmass with little eligible ground to begin with -
+    // a small Lattice islet can have its whole candidate pool absorbed by kWiden's multiplier
+    // even though the unwidened share alone would have left most of it free. Capping the region
+    // at 2/3 of the component's own pool guarantees slack to route around it regardless of
+    // component size, instead of only checking against the (unrelated) map-wide total above.
+    const int widenedShare = std::max(1, share) * kWiden;
+    const int slackCap = std::max<int>(1, int(compCandidates.size()) * 2 / 3);
+    const int regionWanted = std::min<int>(compCandidates.size(), std::min(widenedShare, slackCap));
     unsigned threshold = kBuckets - 1;
     int accumulated = 0;
     for (unsigned b = 0; b < kBuckets; ++b) {
@@ -271,8 +278,15 @@ void scatterResources(Game &game, GenerationContext &context,
   const Fertility::Field fertility = Fertility::forMap(map, false);
   HeightMap noise(width, height, context.stream("scatter-noise"));
   noise.makePlain(24);
+  // A much finer scale than the terrain-shaping noise above: this one only decides which of two
+  // *adjacent* crops a farmland tile becomes, not where the coastline itself bends, so its
+  // features need to be sized like a player's local working area (tens of tiles), not like a
+  // continent (hundreds). Reusing 24 here first produced patches wide enough that a zoomed-in
+  // view could sit entirely inside one - corn and wood alternated across the whole map, but not
+  // within reach of any one colony, so a colony's own farmland still read as a solid wall of one
+  // crop with the other hidden behind it.
   HeightMap splitNoise(width, height, context.stream("scatter-split"));
-  splitNoise.makePlain(24);
+  splitNoise.makePlain(6);
   int numComponents = 0;
   const std::vector<int> landComponent = computeLandComponents(map, numComponents);
 
