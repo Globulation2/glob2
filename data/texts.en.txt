@@ -1804,5 +1804,9 @@ Continent size
 Coast roughness
 [Fjord width]
 Fjord width
+[Lake size]
+Lake size
+[Lake connects to fjords]
+Lake connects to fjords
 [Resource islands]
 Resource islands

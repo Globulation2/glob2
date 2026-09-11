@@ -82,7 +82,20 @@ static bool generate(Game &game, GenerationContext &context) {
 
   const double baseR = options.continentSize / 100.0 * std::min(W, H);
   RadialShape coast(baseR, options.roughness / 100.0, context, "coast", 1.4);
-  const double coreR = baseR * 0.19;
+  // Widened from 0.19 to make room for the central lake and its resource ring below without
+  // starving the fjords of length - coreR is still where every fjord stops short, just a little
+  // further out than before.
+  const double coreR = baseR * 0.23;
+  // lake-size is a percentage of coreR; 0 disables the lake entirely. lake-connected decides
+  // whether the fjords actually cut through to it (every peninsula then water-isolated from its
+  // neighbors, boats required) or stop short of it behind a solid land ring (every peninsula
+  // stays mutually land-connected, verified explicitly in step 5 rather than assumed) - both are
+  // legitimate map styles, so both stay available rather than picking one permanently.
+  const double lakeR = coreR * (options.lakeSize / 100.0);
+  const bool hasLake = lakeR > 0.5;
+  const bool lakeConnected = hasLake && options.lakeConnected != 0;
+  // Where every fjord actually stops: the lake's edge in connected mode, coreR otherwise.
+  const double fjordInnerR = lakeConnected ? lakeR : coreR;
   const double maxStretch = std::max(elongation, 1.0 / elongation);
 
   // One angular sector per team, evenly spaced with a little jitter so it
@@ -140,7 +153,7 @@ static bool generate(Game &game, GenerationContext &context) {
 
       double mouthR = coast.radiusAt(midTheta) + 3.0;
       double mouthU = mouthR * cos(midTheta), mouthV = mouthR * sin(midTheta);
-      double tipU = coreR * cos(midTheta), tipV = coreR * sin(midTheta);
+      double tipU = fjordInnerR * cos(midTheta), tipV = fjordInnerR * sin(midTheta);
       double perpU = -sin(midTheta), perpV = cos(midTheta);
 
       double gap = std::min(d, 2 * pi - d);
@@ -150,7 +163,7 @@ static bool generate(Game &game, GenerationContext &context) {
           options.fjordWidth + 0.6 + context.bounded("layout", 1400) / 1000.0;
       double tipWidth = 0.65;
 
-      int steps = std::max(24, (int)(mouthR - coreR));
+      int steps = std::max(24, (int)(mouthR - fjordInnerR));
       for (int s = 0; s <= steps; ++s) {
         double t = double(s) / steps;
         double baseU = mouthU + t * (tipU - mouthU);
@@ -183,27 +196,74 @@ static bool generate(Game &game, GenerationContext &context) {
     }
   }
 
+  // 2.5) A lake at the very center every fjord points toward (lake-size 0 skips this entirely).
+  // In disconnected mode the fjords stop at coreR, well outside lakeR, leaving the coreR-lakeR
+  // ring solid - every peninsula stays mutually land-connected around the lake's edge (step 5
+  // verifies this explicitly). In connected mode the fjords already terminate at lakeR itself
+  // (fjordInnerR above), so this carve is what actually opens each fjord into the lake.
+  if (hasLake) {
+    for (int y = 0; y < H; ++y) {
+      for (int x = 0; x < W; ++x) {
+        const auto shaped = xf.toShape({double(x), double(y)});
+        double u = shaped.x, v = shaped.y;
+        if (u * u + v * v <= lakeR * lakeR)
+          game.map.setUMatPos(x, y, WATER, 1);
+      }
+    }
+
+    // A sandy no-man's-land ring just outside the lake - wider than controlSand's own thin
+    // coastal fringe would give it, so the open ground around the lake reads as a deliberate
+    // contested space rather than an ordinary beach. Only touches tiles the lake/fjord carving
+    // above left as land, so it never overwrites water.
+    const double sandOuterR = lakeR + lakeR * 0.5;
+    for (int y = 0; y < H; ++y) {
+      for (int x = 0; x < W; ++x) {
+        if (game.map.isWater(x, y))
+          continue;
+        const auto shaped = xf.toShape({double(x), double(y)});
+        double u = shaped.x, v = shaped.y;
+        if (u * u + v * v <= sandOuterR * sandOuterR)
+          game.map.setUMatPos(x, y, SAND, 1);
+      }
+    }
+  }
+
   // 3) A couple of small, unconnected resource islands out in the open sea --
   // purely a bonus for whoever explores, never touching the mainland or each
   // other.
   {
-    double mainlandReach = coast.maximumRadius() * maxStretch;
+    // A single global "mainland reach" bound - even the tightest one, the coastline's actual
+    // sampled maximum over every angle - still has to stay safe in whichever single direction
+    // roughness and elongation happen to push the coastline furthest, and that alone can already
+    // exceed half the map: measured directly (continent-size up to 40%, roughness up to 35%,
+    // elongation up to 1.3x), the margin goes negative on a majority of rolls regardless of map
+    // size, which is exactly why islands were going unplaced almost always rather than just at
+    // small sizes. Each island's own center is independently randomized, though, so it doesn't
+    // need to be safe in the coastline's worst direction everywhere - only at its own location.
+    // Checking each candidate directly against coast.radiusAt() there (the same per-point
+    // technique step 7's algae placement already uses for its own shoreline check, via the same
+    // xf.toShape transform) replaces one pessimistic global annulus with an exact local one, so
+    // an island can land close to a narrow stretch of coast even while the coastline bulges out
+    // far away in some other direction.
     double halfMapMargin = std::min(W, H) / 2.0 - 6.0;
     int outlierCount = std::min(4, options.resourceIslands +
                                        int(context.bounded("layout", 2)));
     std::vector<MapGeneratorPoint> outlierCenters;
     std::vector<int> outlierRadii;
-    for (int oi = 0; oi < outlierCount && mainlandReach + 6.0 < halfMapMargin;
-         ++oi) {
+    for (int oi = 0; oi < outlierCount; ++oi) {
       int islandRadius = 5 + context.bounded("layout", 4);
       bool placed = false;
-      for (int attempt = 0; attempt < 40 && !placed; ++attempt) {
+      for (int attempt = 0; attempt < 60 && !placed; ++attempt) {
         double theta = randomAngle(context);
-        double lo = mainlandReach + 6.0;
-        double hi = halfMapMargin;
-        double r = lo + (context.bounded("layout", 1000)) / 1000.0 * (hi - lo);
+        double r = (context.bounded("layout", 1000)) / 1000.0 * halfMapMargin;
         int cx = game.map.normalizeX((int)lround(W / 2.0 + r * cos(theta)));
         int cy = game.map.normalizeY((int)lround(H / 2.0 + r * sin(theta)));
+
+        const auto shaped = xf.toShape({double(cx), double(cy)});
+        const double shapeR = std::hypot(shaped.x, shaped.y);
+        const double shapeTheta = atan2(shaped.y, shaped.x);
+        if (shapeR < coast.radiusAt(shapeTheta) + islandRadius + 8.0)
+          continue; // too close to (or inside) the mainland at this specific point
 
         bool clear = true;
         for (unsigned int oc = 0; oc < outlierCenters.size() && clear; ++oc) {
@@ -298,8 +358,11 @@ static bool generate(Game &game, GenerationContext &context) {
   // 5) Connectivity: verify, don't assume. The untouched core should make this
   // unreachable in practice, but every other generator checks its own
   // invariants explicitly instead of trusting the construction, so this does
-  // too.
-  {
+  // too. In lake-connected mode every peninsula is water-isolated from its neighbors by
+  // design - failing here would just reject every map that mode ever produces - so this check
+  // only runs in the default, disconnected mode. Each peninsula's own viability is still
+  // verified locally further down (step 8 fails outright if a team's home area comes up empty).
+  if (!lakeConnected) {
     std::vector<bool> visited(W * H, false);
     std::vector<MapGeneratorPoint> stack;
     stack.push_back(teamPts[0]);
@@ -325,14 +388,19 @@ static bool generate(Game &game, GenerationContext &context) {
         return false;
   }
 
-  // 6) Stone and fruit in the untouched core -- the reward for pushing to the
-  // middle of the map instead of staying home.
+  // 6) Stone and fruit in the ring around the new central lake -- the reward for pushing to the
+  // middle of the map instead of staying home. Several stone clumps rather than one, and every
+  // fruit type instead of a single random pick, so finding this area feels like a genuinely rich
+  // destination and not a single repeated deposit.
   {
     int coreArea = areaNumber++;
     std::vector<MapGeneratorPoint> corePts;
     for (int y = 0; y < H; ++y) {
       for (int x = 0; x < W; ++x) {
-        if (game.map.isWater(x, y) || grid[y * W + x] != 0)
+        // Corn/stone/fruit all require grass, so the sand ring the lake just grew (when there
+        // is one) is deliberately excluded here rather than merely non-water - a clump center
+        // landing on sand could miss every grass tile within its own radius and place nothing.
+        if (!game.map.isGrass(x, y) || grid[y * W + x] != 0)
           continue;
         const auto shaped = xf.toShape({double(x), double(y)});
         double u = shaped.x, v = shaped.y;
@@ -343,12 +411,34 @@ static bool generate(Game &game, GenerationContext &context) {
       }
     }
     if (!corePts.empty()) {
-      placeResourceClump(game.map, context,
-                         corePts[context.bounded("resources", corePts.size())],
-                         STONE, 3);
-      placeResourceClump(game.map, context,
-                         corePts[context.bounded("resources", corePts.size())],
-                         CHERRY + context.bounded("resources", 3), 2);
+      for (int stoneClump = 0; stoneClump < 3; ++stoneClump)
+        placeResourceClump(game.map, context,
+                           corePts[context.bounded("resources", corePts.size())],
+                           STONE, 3);
+      for (int fruitType = 0; fruitType < 3; ++fruitType)
+        placeResourceClump(game.map, context,
+                           corePts[context.bounded("resources", corePts.size())],
+                           CHERRY + fruitType, 2);
+    }
+
+    // The lake itself gets the same algae treatment the open sea gets in step 7 below -
+    // collected separately since it's carved well inside the ring just built above.
+    if (hasLake) {
+      std::vector<MapGeneratorPoint> lakeWater;
+      for (int y = 0; y < H; ++y)
+        for (int x = 0; x < W; ++x) {
+          if (!game.map.isWater(x, y))
+            continue;
+          const auto shaped = xf.toShape({double(x), double(y)});
+          double u = shaped.x, v = shaped.y;
+          if (u * u + v * v <= lakeR * lakeR)
+            lakeWater.push_back(MapGeneratorPoint(x, y));
+        }
+      if (!lakeWater.empty())
+        for (int i = 0; i < std::max(1, int(lakeWater.size()) / 40); ++i)
+          placeResourceClump(
+              game.map, context,
+              lakeWater[context.bounded("resources", lakeWater.size())], ALGA, 2);
     }
   }
 
@@ -483,19 +573,24 @@ FjordContinentOptions::FjordContinentOptions(const GenerationRequest &r)
     : continentSize(r.option("continent-size")),
       roughness(r.option("coast-roughness")),
       fjordWidth(r.option("fjord-width")),
-      resourceIslands(r.option("resource-islands")) {}
+      resourceIslands(r.option("resource-islands")),
+      lakeSize(r.option("lake-size")),
+      lakeConnected(r.option("lake-connected")) {}
 
 GeneratorDefinition fjordContinentDefinition() {
   return {"fjord-continent",
           12,
           "Fjord continent",
-          6,
+          7,
           false,
           {{"continent-size", "Continent size", 28, 40, 2, 34,
             ControlGroup::Terrain},
            {"coast-roughness", "Coast roughness", 10, 35, 1, 22,
             ControlGroup::Terrain},
            {"fjord-width", "Fjord width", 2, 10, 1, 4, ControlGroup::Terrain},
+           {"lake-size", "Lake size", 0, 90, 5, 45, ControlGroup::Terrain},
+           {"lake-connected", "Lake connects to fjords", 0, 1, 1, 0,
+            ControlGroup::Terrain},
            {"resource-islands", "Resource islands", 0, 4, 1, 2,
             ControlGroup::Resources}},
           generate};
