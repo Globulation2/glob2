@@ -158,6 +158,9 @@ class MapGeneratorDefaultsTest
 		invalid.wDec = 31;
 		assert(service.generate(fresh, invalid).error == GenerationError::InvalidRequest);
 		invalid = DWithDefaults(D::eSWAMP);
+		// An all-water swamp can still fit its colonies on a big map, so pin this failure to 128x128
+		// whatever the default size is.
+		invalid.wDec = invalid.hDec = 7;
 		invalid.options["water"] = 100;
 		invalid.options["grass"] = 0;
 		auto failed = service.generate(fresh, invalid);

@@ -65,8 +65,8 @@ void GeneratorControl::set(GenerationRequest &r, int value) const
 const std::vector<GeneratorControl> &sharedGeneratorControls()
 {
 	static const std::vector<GeneratorControl> controls = {
-		{"width", "Width", 6, 9, 1, 7, ControlGroup::Shared, true},
-		{"height", "Height", 6, 9, 1, 7, ControlGroup::Shared, true},
+		{"width", "Width", 6, 9, 1, 8, ControlGroup::Shared, true},
+		{"height", "Height", 6, 9, 1, 8, ControlGroup::Shared, true},
 		{"teams", "Colonies", 1, Team::MAX_COUNT, 1, 4, ControlGroup::Shared},
 		{"workers", "Starting workers", 1, 8, 1, 4, ControlGroup::Shared}};
 	return controls;
