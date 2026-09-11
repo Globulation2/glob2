@@ -2,8 +2,9 @@
 
 Globulation 2 runs in a full-page browser client with campaigns, tutorials,
 custom games, map editing, local saves and experimental YOG cross-play.
-WebGL2 is available with `?renderer=webgl2`; software remains the default and
-fallback pending complete GPU qualification. The pinned Emscripten 4.0.15 build
+WebGL2 is the default where the browser accelerates it; otherwise the game uses
+the software renderer. `?renderer=webgl2` or `?renderer=software` forces either
+one. The pinned Emscripten 4.0.15 build
 shares game logic and the GPU renderer with desktop. The browser host schedules frames and cooperative jobs without Asyncify. This is a development target, not a supported stable release.
 The browser ADRs under `docs/browser` describe the implementation boundaries and
 remaining release gates.
@@ -42,7 +43,7 @@ Campaign creation/editing also waits for durable storage before returning.
 Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
-Try `http://127.0.0.1:8765/?renderer=webgl2` to select GPU rendering.
+Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
 With WebGL2, press G in a match for the torus overview, and the map zoom controls
 work; the software renderer keeps the flat, unzoomed map.
 High-quality graphics (including clouds) default to off for new browser profiles.
@@ -124,7 +125,9 @@ test runner and its browser revisions. Failures retain traces and screenshots
 under `build/browser-test-results`. WebKit automation does not substitute for
 release testing in actual Safari, nor Chromium for Edge.
 
-Run the suite with `GLOB2_TEST_RENDERER=webgl2` to select GPU rendering throughout.
+Run the suite with `GLOB2_TEST_RENDERER=webgl2` or `software` to force a renderer
+throughout. Otherwise tests get the default selection, which is software in
+headless browsers that emulate WebGL2.
 Dedicated renderer tests exercise resize and actual context loss/restoration.
 New multiplayer features, including reconnect recovery, are outside this change.
 
