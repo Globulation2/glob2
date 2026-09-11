@@ -33,11 +33,27 @@ tick and would make a standing estimate flicker.
 - **Swarm:** `resourceForOneUnit / unitProductionTime`, five wheat per 150 ticks
   at full output.
 - **Inn:** the modelled population it serves (`model.inn_capacity_levelN`) times
-  the rate a fed unit eats, one wheat per `food.ticks_per_meal` ticks. The
-  default 428 is `HUNGRY_MAX / hungriness`, the hunger period in unit actions.
+  the rate a fed unit eats, one wheat per `food.ticks_per_meal` ticks.
 
-**`food.ticks_per_meal` and `food.growth_period_ticks` are the two values worth
-calibrating against a measured game.** Everything else scales from them.
+`ticks_per_meal` is **measured, not derived**. Hunger drains `hungriness` (350)
+from `HUNGRY_MAX` (150000) once per unit *action*, not once per tick
+(`Unit::handleMedical`, called from `endOfAction`), and it does not drain at all
+while a unit is inside a building. An action completes when `delta` passes 256
+at `stepSpeed` per tick (`Unit.cpp:292-301`), so it takes about `256/speed`
+ticks: 16 for a level-0 worker walking, 32 while harvesting or building, less at
+higher levels. The naive `HUNGRY_MAX / hungriness` = 428 is therefore an
+**action** count, and using it as ticks understates inn demand's period by more
+than an order of magnitude.
+
+Counting real `eatOnce` calls in a headless all-Maxima game on Garden 3 gives
+**11759 ticks per meal per unit**, aggregated over ticks 20000-66000; the 23
+individual two-thousand-tick windows ranged 9441-14043. That sits inside the
+6900-13700 band the engine constants predict, so measurement and derivation
+agree. The value is calibrated on one map and one AI mix, so treat it as a
+default rather than a constant of nature.
+
+**`food.growth_period_ticks` is still only derived** from the growth rule, and
+is the remaining value worth calibrating against a measured game.
 
 ## The ledger is rebuilt every pass, never stored
 

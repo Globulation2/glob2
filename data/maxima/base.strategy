@@ -692,13 +692,15 @@ farming.urgent_space_threshold = 35
 
 # Food ledger: protected farm capacity claimed by inns and swarms. Supply counts
 # only protected wheat cells that currently carry wheat, because that is the
-# capacity a settlement keeps at equilibrium. The growth and meal periods are
-# engine rates and are the two values worth calibrating first.
+# capacity a settlement keeps at equilibrium. ticks_per_meal is measured from
+# real games rather than derived, because hunger drains per unit action and not
+# per tick; see doc/MaximaFoodLedger.md. growth_period_ticks is still derived
+# from the growth rule alone and remains worth calibrating.
 food.enabled = true
 food.retirement_enabled = true
 food.target_capping_enabled = true
 food.growth_period_ticks = 186
-food.ticks_per_meal = 428
+food.ticks_per_meal = 11759
 food.inn_demand_percent = 100
 food.swarm_demand_percent = 100
 food.placement_margin_percent = 120

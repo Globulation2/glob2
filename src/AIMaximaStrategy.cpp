@@ -710,7 +710,7 @@ namespace
 		BOOL_SPEC(food, retirement_enabled, "food.retirement_enabled", "enabled", "food", "Retire inns and swarms that stay below their burden coverage", StrategyImpactHigh),
 		BOOL_SPEC(food, target_capping_enabled, "food.target_capping_enabled", "enabled", "food", "Cap director inn and swarm targets by the capacity the ledger can supply", StrategyImpactHigh),
 		INT_SPEC(food, growth_period_ticks, "food.growth_period_ticks", 1, 100000, "ticks", "food", "Mean ticks between growth samples of one wheat cell, including the wheat growth gate", StrategyImpactCritical),
-		INT_SPEC(food, ticks_per_meal, "food.ticks_per_meal", 1, 100000, "ticks", "food", "Ticks a fed unit takes to consume one wheat, from hunger capacity over hungriness", StrategyImpactCritical),
+		INT_SPEC(food, ticks_per_meal, "food.ticks_per_meal", 1, 100000, "ticks", "food", "Ticks a fed unit takes to consume one wheat, measured from real games because hunger drains per unit action rather than per tick", StrategyImpactCritical),
 		INT_SPEC(food, inn_demand_percent, "food.inn_demand_percent", 1, 1000, "percent", "food", "Scale applied to modelled inn consumption at full capacity", StrategyImpactHigh),
 		INT_SPEC(food, swarm_demand_percent, "food.swarm_demand_percent", 1, 1000, "percent", "food", "Scale applied to modelled swarm consumption at full production", StrategyImpactHigh),
 		INT_SPEC(food, placement_margin_percent, "food.placement_margin_percent", 100, 1000, "percent", "food", "Unclaimed capacity a new or upgraded food building must reach, as a percentage of its full demand", StrategyImpactHigh),
