@@ -89,20 +89,15 @@ static bool generate(Game &game, GenerationContext &context) {
   // lake-size is a percentage of coreR; 0 disables the lake entirely. lake-connected decides
   // whether the fjords actually cut through to it (every peninsula then water-isolated from its
   // neighbors, boats required) or stop short of it behind a solid land ring (every peninsula
-  // stays mutually land-connected, verified explicitly in step 5 rather than assumed) - both are
+  // stays mutually land-connected, verified explicitly in step 6 rather than assumed) - both are
   // legitimate map styles, so both stay available rather than picking one permanently.
   const double lakeR = coreR * (options.lakeSize / 100.0);
   const bool hasLake = lakeR > 0.5;
   const bool lakeConnected = hasLake && options.lakeConnected != 0;
-  // Where every fjord actually stops: coreR in disconnected mode. In connected mode this is NOT
-  // the lake's edge itself - the fjord's tip tapers down to a narrow tipWidth (0.65) as it
-  // approaches its target radius, so aiming exactly at lakeR left the channel a near-thread right
-  // where it needed to actually merge with the lake, an almost-but-not-quite connection that
-  // read as a solid sand gap once controlSand ran. Aiming well inside the lake instead (0.4x its
-  // radius) means the fjord's centerline crosses the lake's real boundary much earlier along its
-  // taper, while the channel is still comfortably wide, guaranteeing a real merge instead of a
-  // razor-thin near miss. The extra length beyond the boundary just carves more water inside
-  // ground that's already the lake, which is harmless.
+  // Where every fjord actually stops: coreR in disconnected mode. In connected mode, well inside
+  // the lake (0.4x its radius) rather than exactly on its edge, so the centerline crosses the
+  // lake's real boundary with margin to spare - the extra length beyond the boundary just carves
+  // more water inside ground that's already the lake, which is harmless.
   const double fjordInnerR = lakeConnected ? lakeR * 0.4 : coreR;
   const double maxStretch = std::max(elongation, 1.0 / elongation);
 
@@ -171,15 +166,11 @@ static bool generate(Game &game, GenerationContext &context) {
           options.fjordWidth + 0.6 + context.bounded("layout", 1400) / 1000.0;
       // Map::controlSand (MapTerrain.cpp) converts any water tile with a grass neighbor in its
       // own 3x3 neighborhood to sand - not just a coastal decoration, it can erase a channel
-      // outright. A width-0.65 tip (diameter ~1.3 tiles) is entirely coastal by that rule, so
-      // every tile in it borders grass and gets sanded over - fine for disconnected mode, where
-      // the tip is meant to taper into a dead end against solid land anyway, but it silently
-      // closes the one connection lake-connected mode actually needs to stay open. A channel
-      // needs a surviving center row not touching grass on either side to remain water at all,
-      // which takes a width (radius) of at least ~1.5; targeting well above that keeps it open
-      // with real margin. Since lakeR is tiny next to the fjord's total length, aiming the tip
-      // radius deeper into the lake (fjordInnerR above) barely moves the width *at* the lake's
-      // actual boundary crossing - this is the fix that matters.
+      // outright. The disconnected-mode tip (0.65, ~1.3 tiles across) is entirely coastal by that
+      // rule and gets sanded over - an intentional dead end there, but it would silently close
+      // the one connection lake-connected mode needs open. A channel needs a surviving center row
+      // not touching grass on either side to stay water at all, which takes a radius of at least
+      // ~1.5; this targets comfortably above that floor.
       double tipWidth = lakeConnected ? std::max(2.5, mouthWidth * 0.6) : 0.65;
 
       int steps = std::max(24, (int)(mouthR - fjordInnerR));
@@ -215,9 +206,9 @@ static bool generate(Game &game, GenerationContext &context) {
     }
   }
 
-  // 2.5) A lake at the very center every fjord points toward (lake-size 0 skips this entirely).
+  // 3) A lake at the very center every fjord points toward (lake-size 0 skips this entirely).
   // In disconnected mode the fjords stop at coreR, well outside lakeR, leaving the coreR-lakeR
-  // ring solid - every peninsula stays mutually land-connected around the lake's edge (step 5
+  // ring solid - every peninsula stays mutually land-connected around the lake's edge (step 6
   // verifies this explicitly). In connected mode the fjords already reach well inside lakeR
   // (fjordInnerR above), so this carve is what actually opens each fjord into the lake - the
   // fjords' own tapered tips would otherwise be too narrow to reliably merge with it.
@@ -248,23 +239,21 @@ static bool generate(Game &game, GenerationContext &context) {
     }
   }
 
-  // 3) A couple of small, unconnected resource islands out in the open sea --
+  // 4) A couple of small, unconnected resource islands out in the open sea --
   // purely a bonus for whoever explores, never touching the mainland or each
   // other.
   {
-    // A single global "mainland reach" bound - even the tightest one, the coastline's actual
-    // sampled maximum over every angle - still has to stay safe in whichever single direction
-    // roughness and elongation happen to push the coastline furthest, and that alone can already
-    // exceed half the map: measured directly (continent-size up to 40%, roughness up to 35%,
-    // elongation up to 1.3x), the margin goes negative on a majority of rolls regardless of map
-    // size, which is exactly why islands were going unplaced almost always rather than just at
-    // small sizes. Each island's own center is independently randomized, though, so it doesn't
-    // need to be safe in the coastline's worst direction everywhere - only at its own location.
-    // Checking each candidate directly against coast.radiusAt() there (the same per-point
-    // technique step 7's algae placement already uses for its own shoreline check, via the same
-    // xf.toShape transform) replaces one pessimistic global annulus with an exact local one, so
-    // an island can land close to a narrow stretch of coast even while the coastline bulges out
-    // far away in some other direction.
+    // A single global "mainland reach" bound has to stay safe in whichever single direction
+    // roughness and elongation happen to push the coastline furthest, and that alone can exceed
+    // half the map (continent-size up to 40%, roughness up to 35%, elongation up to 1.3x) on a
+    // majority of rolls regardless of map size - a global bound leaves islands unplaced almost
+    // always, not just at small sizes. Each island's own center is independently randomized,
+    // though, so it only needs to be safe in the coastline's direction at its own location, not
+    // everywhere. Checking each candidate directly against coast.radiusAt() there (the same
+    // per-point technique step 8's algae placement already uses for its own shoreline check, via
+    // the same xf.toShape transform) replaces the pessimistic global bound with an exact local
+    // one, so an island can land close to a narrow stretch of coast even while the coastline
+    // bulges out far away in some other direction.
     double halfMapMargin = std::min(W, H) / 2.0 - 6.0;
     // No cap beyond the control's own range here - resource-islands now goes up to 20 for
     // players who want an island-heavy map, and each one is still an independent best-effort
@@ -339,7 +328,7 @@ static bool generate(Game &game, GenerationContext &context) {
 
   game.map.controlSand();
 
-  // 4) Anchor each team out at its own tip: start just inland of the coast at
+  // 5) Anchor each team out at its own tip: start just inland of the coast at
   // the team's angle and only back off toward the core if that exact spot turns
   // out to be water (a sharp jaggedness dip, or a fjord belly that swung wider
   // than expected) -- the same "compute where we want to be, then confirm the
@@ -377,13 +366,13 @@ static bool generate(Game &game, GenerationContext &context) {
     teamPts.push_back(MapGeneratorPoint(fx, fy));
   }
 
-  // 5) Connectivity: verify, don't assume. The untouched core should make this
+  // 6) Connectivity: verify, don't assume. The untouched core should make this
   // unreachable in practice, but every other generator checks its own
   // invariants explicitly instead of trusting the construction, so this does
   // too. In lake-connected mode every peninsula is water-isolated from its neighbors by
   // design - failing here would just reject every map that mode ever produces - so this check
   // only runs in the default, disconnected mode. Each peninsula's own viability is still
-  // verified locally further down (step 8 fails outright if a team's home area comes up empty).
+  // verified locally further down (step 9 fails outright if a team's home area comes up empty).
   if (!lakeConnected) {
     std::vector<bool> visited(W * H, false);
     std::vector<MapGeneratorPoint> stack;
@@ -410,7 +399,7 @@ static bool generate(Game &game, GenerationContext &context) {
         return false;
   }
 
-  // 6) Stone and fruit in the ring around the new central lake -- the reward for pushing to the
+  // 7) Stone and fruit in the ring around the new central lake -- the reward for pushing to the
   // middle of the map instead of staying home. Several stone clumps rather than one, and every
   // fruit type instead of a single random pick, so finding this area feels like a genuinely rich
   // destination and not a single repeated deposit.
@@ -445,7 +434,7 @@ static bool generate(Game &game, GenerationContext &context) {
                              CHERRY + fruitType, 2);
     }
 
-    // The lake gets the same algae treatment the open sea gets in step 7 below, but candidates
+    // The lake gets the same algae treatment the open sea gets in step 8 below, but candidates
     // are drawn from well inside the shoreline (innerLakeR, not lakeR) rather than anywhere in
     // the lake - a clump anchored right up against the shore is still entirely valid water, but
     // reads as "stuck to one side" rather than "in the lake". The very first clump is placed
@@ -478,7 +467,7 @@ static bool generate(Game &game, GenerationContext &context) {
     }
   }
 
-  // 7) Algae out in the open sea: any water tile clearly beyond the coastline
+  // 8) Algae out in the open sea: any water tile clearly beyond the coastline
   // (not a fjord, not the moat-ish water right against the shore) gets an
   // occasional patch.
   std::vector<MapGeneratorPoint> algaeWater;
@@ -501,7 +490,7 @@ static bool generate(Game &game, GenerationContext &context) {
           game.map, context,
           algaeWater[context.bounded("resources", algaeWater.size())], ALGA, 2);
 
-  // 8) A light per-team starter kit so nobody is stuck waiting to reach the
+  // 9) A light per-team starter kit so nobody is stuck waiting to reach the
   // fjord banks before they can build anything; the banks and the core are the
   // map's real economy.
   std::vector<MapGeneratorPoint> allWater;
@@ -543,25 +532,25 @@ static bool generate(Game &game, GenerationContext &context) {
       return false;
   }
 
-  // 8.5) Every resource so far is a deliberate, counted placement tied to a specific
+  // 10) Every resource so far is a deliberate, counted placement tied to a specific
   // purpose: a home starter kit, the core, an outlier island. That leaves the whole
   // continent interior in between them bare grass, which reads as empty rather than as a
   // place with its own history the way a noise-painted map does. A light map-wide scatter
   // -- the same mechanism Lattice and Maze already rely on for this -- fills that gap with
   // ordinary, unclaimed deposits. This runs after every swarm and worker is already placed,
   // not before: isResourceAllowed refuses any tile with a building or unit on it, so a
-  // scatter placed earlier could (and, measured directly, occasionally did) claim the one
-  // remaining tile a colony's swarm footprint needed, failing generation outright. Running
+  // scatter placed earlier can claim the one remaining tile a colony's swarm footprint
+  // needed, failing generation outright. Running
   // last costs nothing here -- setResource always overwrites, so a scatter clump landing on
   // an earlier deposit just loses that one tile to it, the same low-stakes trade every other
   // generator's own layering already makes. Algae is left at zero: the shoreline band in
-  // step 7 already places it with a shape tuned to the coastline, and scattering more over
+  // step 8 already places it with a shape tuned to the coastline, and scattering more over
   // open water would just fight that.
   // corn:wood at 2:1 rather than even - wood was reading as overrepresented in practice, and
   // total density is held constant (was 18+18=36) rather than just adding more corn on top.
   scatterResources(game, context, {/*corn=*/24, /*wood=*/12, /*stone=*/10, /*algae=*/0, /*fruit=*/3});
 
-  // 9) Place bank resources last so settlement and regional deposits cannot
+  // 11) Place bank resources last so settlement and regional deposits cannot
   // overwrite the guarantee. Every side of every fjord receives both resources
   // at distinct points along its length.
   context.stage = "fjord bank resources";
