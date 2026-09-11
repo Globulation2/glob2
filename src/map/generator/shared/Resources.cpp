@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <utility>
 using namespace MapGeneration;
 
@@ -38,6 +39,38 @@ int placeResourceClump(Map &map, GenerationContext &context,
       }
     }
   return placed;
+}
+
+void setScaledResource(Map &map, int x, int y, int resourceType, int size, int percent) {
+  if (percent == 100) {
+    map.setResource(x, y, resourceType, size);
+    return;
+  }
+  const int half = size >> 1;
+  const int target = int(scaledCount(std::int64_t(2 * half + 1) * (2 * half + 1), percent));
+  if (target <= 0)
+    return;
+  int reach = 0;
+  while ((2 * reach + 1) * (2 * reach + 1) < target)
+    ++reach;
+  const int side = 2 * reach + 1;
+  // Offset i is column i / side, row i % side, the order setResource visits its square in. Keep
+  // the `target` offsets nearest the centre (by ring, then by distance round it).
+  const auto rank = [side, reach](int i) {
+    const int dx = std::abs(i / side - reach), dy = std::abs(i % side - reach);
+    return std::make_pair(std::max(dx, dy), dx + dy);
+  };
+  std::vector<int> order(size_t(side) * side);
+  for (size_t i = 0; i < order.size(); ++i)
+    order[i] = int(i);
+  std::stable_sort(order.begin(), order.end(), [&](int a, int b) { return rank(a) < rank(b); });
+  std::vector<unsigned char> chosen(order.size(), 0);
+  for (int k = 0; k < target; ++k)
+    chosen[size_t(order[size_t(k)])] = 1;
+  for (int i = 0; i < int(chosen.size()); ++i)
+    if (chosen[size_t(i)])
+      map.setResource(map.normalizeX(x + i / side - reach), map.normalizeY(y + i % side - reach),
+                      resourceType, 1);
 }
 
 int placeResourceClumpInArea(Map &map, GenerationContext &context,

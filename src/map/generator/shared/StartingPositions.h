@@ -2,8 +2,14 @@
 #include "Regions.h"
 namespace MapGeneration
 {
+// Each colony's wheat and wood fields and its stone deposits, as percentages of the default kit.
+struct PlayerLandResources
+{
+	int wheat = 100, wood = 100, stone = 100;
+};
 bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int> &grid,
-						 std::vector<int> &teamAreaNumbers, int &areaNumber);
+						 std::vector<int> &teamAreaNumbers, int &areaNumber,
+						 const PlayerLandResources &resources = {});
 void chooseFreeForBuildingSquares(Game &game, std::vector<MapGeneratorPoint> &points,
 								  BuildingType *type, int team);
 void chooseFreeForGroundUnits(Map &map, std::vector<MapGeneratorPoint> &points, int team);
