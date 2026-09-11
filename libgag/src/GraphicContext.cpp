@@ -331,16 +331,7 @@ namespace GAGCore
 	float GraphicContext::querySystemUiScale(void)
 	{
 		// Opens its own X connection, and the settings form asks on every rebuild.
-		static const float cached = []
-		{
-			if (const float scale = scaleFromXResources())
-				return scale;
-			// GTK splits its scale in two and Qt keeps one factor; either may be set without X11.
-			const float gdk = scaleFromEnv("GDK_SCALE"), gdkDpi = scaleFromEnv("GDK_DPI_SCALE");
-			if (gdk || gdkDpi)
-				return (gdk ? gdk : 1.0f) * (gdkDpi ? gdkDpi : 1.0f);
-			return scaleFromEnv("QT_SCALE_FACTOR");
-		}();
+		static const float cached = scaleFromXResources();
 		return cached;
 	}
 
@@ -519,7 +510,7 @@ namespace GAGCore
 		// smaller logical surface that is scaled back up to fill it. Widgets, fonts and
 		// the map all keep their pixel sizes, so every screen grows by the same factor
 		// without touching any of the layout constants they are written in.
-		uiScale = effectiveUiScale(requestedUiScale);
+		wantedUiScale = uiScale = effectiveUiScale(requestedUiScale);
 		// Widget layouts are authored against 640x480, and setMinRes() has not run yet
 		// on the context's first setRes(), so hold that floor here regardless. Only the
 		// scale is reduced: a window genuinely smaller than the floor keeps scale 1.

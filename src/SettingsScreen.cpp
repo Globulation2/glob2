@@ -7,7 +7,6 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
-#include <cmath>
 
 using namespace GAGCore;
 
@@ -136,14 +135,9 @@ bool SettingsScreen::restartRequired() const
     const Uint32 mask=GraphicContext::USEGPU|GraphicContext::FULLSCREEN|GraphicContext::CUSTOMCURSOR;
     return (s.screenFlags & mask)!=(g->getOptionFlags() & mask) ||
            s.screenWidth!=g->getRequestedW() || s.screenHeight!=g->getRequestedH() ||
-           uiScalePending();
-}
-// The interface scale is resolved against the desktop, so compare the factor in
-// use rather than the stored percentage, which is 0 whenever it follows the desktop.
-bool SettingsScreen::uiScalePending() const
-{
-    const float wanted=GraphicContext::effectiveUiScale(globalContainer->settings.uiScale/100.0f);
-    return std::abs(wanted-globalContainer->gfx->getUiScale())>0.005f;
+           // The preference is resolved against the desktop, and the window floor may
+           // have reduced the scale in use, so compare what setRes() was asked for.
+           GraphicContext::effectiveUiScale(s.uiScale/100.0f)!=g->getWantedUiScale();
 }
 void SettingsScreen::changeUiScale(int percent)
 {

@@ -341,6 +341,8 @@ namespace GAGCore
 		int requestedW = 0, requestedH = 0;
 		//! window pixels per logical pixel; widgets keep their pixel sizes and the frame is scaled up
 		float uiScale = 1.0f;
+		//! the scale setRes() was asked for, before the window floor reduced it
+		float wantedUiScale = 1.0f;
 		//! interface scale for the next setRes(); 0 follows the desktop
 		static float requestedUiScale;
 		//! ratio of GL drawable pixels to logical pixels
@@ -410,6 +412,8 @@ namespace GAGCore
 		static void setRequestedUiScale(float scale) { requestedUiScale = scale; }
 		//! the interface scale in use
 		float getUiScale(void) const { return uiScale; }
+		//! the scale the last setRes() was asked for, before the window floor reduced it
+		float getWantedUiScale(void) const { return wantedUiScale; }
 		//! the interface scale the desktop asks for, or 0 when nothing reports one
 		static float querySystemUiScale(void);
 		//! the scale actually used for a preference; 0 follows the desktop, GLOB2_UI_SCALE wins

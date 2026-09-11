@@ -56,7 +56,6 @@ void SettingsScreen::buildGeneral()
             choice("display.uiscale","Interface scale",
                 "Enlarge menus, text and the sidebar on a high-resolution screen.",selected,labels,
                 [this](int v){if(v>=0 && v<int(std::size(percents)))changeUiScale(percents[v]);});
-            form.back().value=std::to_string(int(std::lround(globalContainer->gfx->getUiScale()*100)))+" %";
         }
         info(tr("Current display")+": "+std::to_string(globalContainer->gfx->getW())+" × "+std::to_string(globalContainer->gfx->getH())+
              " · "+((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)?"OpenGL":tr("Software"))+

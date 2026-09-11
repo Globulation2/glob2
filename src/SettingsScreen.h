@@ -51,7 +51,6 @@ public:
     void finishInteraction();
     bool saveFailed() const { return failed; }
     bool restartRequired() const;
-    bool uiScalePending() const;
     bool displayConfirmationPending() const;
     void confirmDisplay(bool keep);
     void done();
