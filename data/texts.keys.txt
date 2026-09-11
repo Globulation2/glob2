@@ -901,3 +901,6 @@
 [Lake size]
 [Lake connects to fjords]
 [Resource islands]
+[Ring world]
+[Belt width]
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]

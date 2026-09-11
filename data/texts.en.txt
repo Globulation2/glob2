@@ -1806,3 +1806,9 @@ Lake size
 Lake connects to fjords
 [Resource islands]
 Resource islands
+[Ring world]
+Ring world
+[Belt width]
+Belt width
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+The belt is too short for this many colonies; use a longer map or fewer colonies.
