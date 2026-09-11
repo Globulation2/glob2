@@ -176,7 +176,7 @@ BuildingType g_buildingTypesColony[] = {
 extern const std::size_t g_buildingTypesColonyCount =
 	sizeof(g_buildingTypesColony) / sizeof(g_buildingTypesColony[0]);
 
-// Flat table entries 49..50.
+// Flat table entries 49..54.
 BuildingType g_buildingTypesMarket[] = {
 	// 49: market0c (level 0, under construction)
 	{ .type = "market",
@@ -201,6 +201,56 @@ BuildingType g_buildingTypesMarket[] = {
 	  .hpInit = 400, .hpMax = 400,
 	  .armor = 6,
 	  .level = 0, .shortTypeNum = 12 },
+
+	// 51: market1c (level 1, under construction)
+	{ .type = "market",
+	  .gameSprite = "data/gfx/buildingsite", .gameSpriteImage = 2,
+	  .miniSprite = "data/gfx/minibuildingsite", .miniSpriteImage = 2,
+	  .fillable = 1,
+	  .width = 3, .height = 3, .decLeft = -1, .decTop = -1,
+	  .maxResource = { /*wood*/6, /*corn*/0, /*papyrus*/0, /*stone*/6, /*algue*/4 },
+	  .maxUnitWorking = 1,
+	  .hpInit = 400, .hpMax = 600, .hpInc = 10,
+	  .armor = 6,
+	  .level = 1, .shortTypeNum = 12, .isBuildingSite = 1 },
+
+	// 52: market1 (level 1, completed) — also stores wheat and wood for the colony
+	{ .type = "market",
+	  .gameSprite = "data/gfx/market0b", .miniSprite = "data/gfx/minimarket0b",
+	  .fillable = 1,
+	  .canExchange = 1, .useTeamResources = 1,
+	  .width = 3, .height = 3, .decLeft = -1, .decTop = -1,
+	  .maxResource = { /*wood*/200, /*corn*/200, /*papyrus*/0, /*stone*/0, /*algue*/0,
+	                    /*fruit0*/200, /*fruit1*/200, /*fruit2*/200 },
+	  .maxUnitWorking = 1,
+	  .hpInit = 600, .hpMax = 600,
+	  .armor = 8,
+	  .level = 1, .shortTypeNum = 12 },
+
+	// 53: market2c (level 2, under construction)
+	{ .type = "market",
+	  .gameSprite = "data/gfx/buildingsite", .gameSpriteImage = 2,
+	  .miniSprite = "data/gfx/minibuildingsite", .miniSpriteImage = 2,
+	  .fillable = 1,
+	  .width = 3, .height = 3, .decLeft = -1, .decTop = -1,
+	  .maxResource = { /*wood*/8, /*corn*/0, /*papyrus*/4, /*stone*/8, /*algue*/8 },
+	  .maxUnitWorking = 1,
+	  .hpInit = 600, .hpMax = 800, .hpInc = 10,
+	  .armor = 8,
+	  .level = 2, .shortTypeNum = 12, .isBuildingSite = 1 },
+
+	// 54: market2 (level 2, completed) — stores every resource for the colony
+	{ .type = "market",
+	  .gameSprite = "data/gfx/market0b", .miniSprite = "data/gfx/minimarket0b",
+	  .fillable = 1,
+	  .canExchange = 1, .useTeamResources = 1,
+	  .width = 3, .height = 3, .decLeft = -1, .decTop = -1,
+	  .maxResource = { /*wood*/200, /*corn*/200, /*papyrus*/200, /*stone*/200, /*algue*/200,
+	                    /*fruit0*/200, /*fruit1*/200, /*fruit2*/200 },
+	  .maxUnitWorking = 1,
+	  .hpInit = 800, .hpMax = 800,
+	  .armor = 10,
+	  .level = 2, .shortTypeNum = 12 },
 };
 
 extern const std::size_t g_buildingTypesMarketCount =
