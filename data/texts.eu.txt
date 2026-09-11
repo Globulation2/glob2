@@ -1630,6 +1630,8 @@ Bistaratu Globulation 2 jokoaren kurtsorea.
 Eginda
 [settings Edit shortcut]
 Editatu teklatuko lasterbidea
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Handitu menuak, testua eta alboko barra bereizmen handiko pantailan.
 [settings Flags]
 Banderak
 [settings Full]
@@ -1644,6 +1646,8 @@ Jokoaren abiadura
 Jokagarritasuna
 [settings Graphics detail]
 Xehetasun grafikoa
+[settings Interface scale]
+Interfazearen eskala
 [settings Keep]
 Mantendu aldaketak
 [settings Keep this display mode?]
@@ -1666,6 +1670,8 @@ Interfaze osoan erabiltzen den hizkuntza.
 Maila
 [settings Map editor]
 Mapa-editorea
+[settings Match the desktop]
+Mahaigainaren arabera
 [settings Missing font]
 Letra-tipoa falta da
 [settings Music volume]

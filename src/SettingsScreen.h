@@ -51,6 +51,7 @@ public:
     void finishInteraction();
     bool saveFailed() const { return failed; }
     bool restartRequired() const;
+    bool uiScalePending() const;
     bool displayConfirmationPending() const;
     void confirmDisplay(bool keep);
     void done();
@@ -113,6 +114,7 @@ private:
     void commitText();
     void closeModal();
     void changeDisplay(std::function<void(Settings&)> change);
+    void changeUiScale(int percent);
     int& scrollOffset();
     void focusNext(bool backward);
     void openCategoryPicker();

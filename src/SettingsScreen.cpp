@@ -7,6 +7,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
+#include <cmath>
 
 using namespace GAGCore;
 
@@ -134,7 +135,25 @@ bool SettingsScreen::restartRequired() const
     const auto& s=globalContainer->settings;auto* g=globalContainer->gfx;
     const Uint32 mask=GraphicContext::USEGPU|GraphicContext::FULLSCREEN|GraphicContext::CUSTOMCURSOR;
     return (s.screenFlags & mask)!=(g->getOptionFlags() & mask) ||
-           s.screenWidth!=g->getW() || s.screenHeight!=g->getH();
+           s.screenWidth!=g->getRequestedW() || s.screenHeight!=g->getRequestedH() ||
+           uiScalePending();
+}
+// The interface scale is resolved against the desktop, so compare the factor in
+// use rather than the stored percentage, which is 0 whenever it follows the desktop.
+bool SettingsScreen::uiScalePending() const
+{
+    const float wanted=GraphicContext::effectiveUiScale(globalContainer->settings.uiScale/100.0f);
+    return std::abs(wanted-globalContainer->gfx->getUiScale())>0.005f;
+}
+void SettingsScreen::changeUiScale(int percent)
+{
+    auto& s=globalContainer->settings;
+    if(percent==s.uiScale)return;
+    s.uiScale=percent;commit();
+    GraphicContext::setRequestedUiScale(percent/100.0f);
+    // A GPU context cannot be rebuilt in place; restartRequired() reports it instead.
+    if(!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU))
+        applyDisplayMode(s.screenWidth,s.screenHeight,s.screenFlags);
 }
 bool SettingsScreen::applyDisplayMode(int width,int height,Uint32 flags)
 {

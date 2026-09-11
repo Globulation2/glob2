@@ -1616,6 +1616,8 @@ Ysagoon Online Gaming
 Готово
 [settings Edit shortcut]
 Редагувати комбінацію клавіш
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Збільшує меню, текст і бічну панель на екрані з високою роздільною здатністю.
 [settings Flags]
 Прапори
 [settings Full]
@@ -1630,6 +1632,8 @@ Ysagoon Online Gaming
 Ігровий процес
 [settings Graphics detail]
 Деталізація графіки
+[settings Interface scale]
+Масштаб інтерфейсу
 [settings Keep]
 Зберегти зміни
 [settings Keep this display mode?]
@@ -1652,6 +1656,8 @@ Ysagoon Online Gaming
 Рівень
 [settings Map editor]
 Редактор карт
+[settings Match the desktop]
+Як у системі
 [settings Missing font]
 Відсутній шрифт
 [settings Music volume]
