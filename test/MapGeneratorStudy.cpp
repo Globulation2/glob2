@@ -11,18 +11,290 @@
 #include "Unit.h"
 #include "StartQuality.h"
 #include "Utilities.h"
+#include <BinaryStream.h>
+#include <StreamBackend.h>
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 #include <map>
 #include <queue>
 #include <string>
 #include <vector>
 
 GlobalContainer *globalContainer = nullptr;
+
+namespace
+{
+constexpr std::uint64_t kFnvOffset = 14695981039346656037ULL;
+std::uint64_t fnv(std::uint64_t hash, std::uint64_t value)
+{
+	hash ^= value;
+	return hash * 1099511628211ULL;
+}
+std::uint64_t fnvBytes(const std::string &bytes)
+{
+	std::uint64_t hash = kFnvOffset;
+	for (unsigned char c : bytes)
+		hash = fnv(hash, c);
+	return hash;
+}
+
+// A playable map file's bytes, saved the way CustomGameScreen::generateMap() saves the lobby's
+// generated map.
+std::string saveMapBytes(Game &game, const std::string &name)
+{
+	auto *backend = new GAGCore::MemoryStreamBackend();
+	GAGCore::BinaryOutputStream stream(backend); // owns the backend
+	game.save(&stream, true, name);
+	stream.flush();
+	backend->seekFromEnd(0);
+	return std::string(backend->getBuffer(), backend->getPosition());
+}
+
+bool loadMapBytes(Game &game, const std::string &bytes)
+{
+	// The backend's constructor copies the bytes in by writing them, which leaves it at the end.
+	auto *backend = new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size());
+	backend->seekFromStart(0);
+	GAGCore::BinaryInputStream stream(backend); // owns the backend
+	return game.load(&stream);
+}
+
+// Everything on the map that belongs to no colony.
+std::uint64_t worldHash(const Game &game)
+{
+	std::uint64_t hash = kFnvOffset;
+	for (const auto &tile : game.map.tiles)
+	{
+		hash = fnv(hash, tile.terrain);
+		hash = fnv(hash, tile.resource.getUint32());
+		hash = fnv(hash, tile.fertility);
+		hash = fnv(hash, tile.canResourcesGrow);
+	}
+	return hash;
+}
+
+// One colony described without its team number: its start and every object it owns, with that
+// object's state. Equal signatures mean the same colony, whichever team it plays as.
+std::uint64_t colonySignature(const Game &game, int team)
+{
+	const Team *colony = game.teams[team];
+	std::uint64_t hash = kFnvOffset;
+	for (std::int64_t v : {std::int64_t(colony->startPosX), std::int64_t(colony->startPosY),
+						   std::int64_t(colony->startPosSet)})
+		hash = fnv(hash, std::uint64_t(v));
+	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+		if (const Unit *u = colony->myUnits[i])
+			for (std::int64_t v : {std::int64_t(i), std::int64_t(Unit::GIDtoID(u->gid)),
+								   std::int64_t(u->typeNum), std::int64_t(u->posX),
+								   std::int64_t(u->posY), std::int64_t(u->hp),
+								   std::int64_t(u->hungry), std::int64_t(u->direction)})
+				hash = fnv(hash, std::uint64_t(v));
+	for (int i = 0; i < Building::MAX_COUNT; ++i)
+		if (const Building *b = colony->myBuildings[i])
+			for (std::int64_t v : {std::int64_t(i), std::int64_t(Building::GIDtoID(b->gid)),
+								   std::int64_t(b->typeNum), std::int64_t(b->posX),
+								   std::int64_t(b->posY), std::int64_t(b->hp)})
+				hash = fnv(hash, std::uint64_t(v));
+	for (unsigned r = 0; r < MAX_NB_RESOURCES; ++r)
+		hash = fnv(hash, colony->teamResources[r]);
+	return hash;
+}
+
+// Every unit or building a tile names must be the one that team keeps under that id, and every
+// team must answer to its own index.
+bool mapReferencesConsistent(const Game &game)
+{
+	const auto &map = game.map;
+	const int teams = game.mapHeader.getNumberOfTeams();
+	for (int y = 0; y < map.getH(); ++y)
+		for (int x = 0; x < map.getW(); ++x)
+		{
+			for (Uint16 gid : {map.getGroundUnit(x, y), map.getAirUnit(x, y)})
+			{
+				if (gid == NOGUID)
+					continue;
+				const int t = Unit::GIDtoTeam(gid);
+				const Unit *u = t < teams ? game.teams[t]->myUnits[Unit::GIDtoID(gid)] : nullptr;
+				if (!u || u->gid != gid || u->posX != x || u->posY != y)
+					return false;
+			}
+			const Uint16 gbid = map.getBuilding(x, y);
+			if (gbid == NOGBID)
+				continue;
+			const int t = Building::GIDtoTeam(gbid);
+			const Building *b =
+				t < teams ? game.teams[t]->myBuildings[Building::GIDtoID(gbid)] : nullptr;
+			if (!b || b->gid != gbid)
+				return false;
+		}
+	for (int t = 0; t < teams; ++t)
+		if (game.teams[t]->teamNumber != t || game.teams[t]->me != Team::teamNumberToMask(t))
+			return false;
+	return true;
+}
+
+// Relabels colonies so the colony that was team t becomes team (t + shift) mod N, without
+// touching terrain or any colony object's state: only the team number each one answers to
+// changes. That lets a fairness tournament rotate colony-to-start assignments on one generated
+// map, separating the start position from the team index the engine processes it under.
+//
+// A team slot keeps what belongs to the seat rather than the colony (colour, controller
+// bookkeeping), so a rotated map looks like any other. This only runs on a map freshly loaded at
+// tick 0 that is saved straight afterwards; runtime caches a map file does not carry (gradients,
+// explored areas, clearing claims) are never simulated from and are left alone.
+void shiftTeams(Game &game, int shift)
+{
+	const int n = game.mapHeader.getNumberOfTeams();
+	assert(n > 0 && n < 32 && game.stepCounter == 0 && game.gameHeader.getNumberOfPlayers() == 0);
+	shift = ((shift % n) + n) % n;
+	auto to = [n, shift](int t) { return (t + shift) % n; };
+	const Uint32 low = (Uint32(1) << n) - 1;
+	auto mask = [&](Uint32 bits)
+	{
+		Uint32 out = bits & ~low;
+		for (int t = 0; t < n; ++t)
+			if (bits & (Uint32(1) << t))
+				out |= Uint32(1) << to(t);
+		return out;
+	};
+	auto unitGid = [&](Uint16 gid)
+	{
+		return gid == NOGUID ? gid
+							 : Uint16(Unit::GIDfrom(Unit::GIDtoID(gid), to(Unit::GIDtoTeam(gid))));
+	};
+	auto buildingGid = [&](Uint16 gid)
+	{
+		return gid == NOGBID
+				   ? gid
+				   : Uint16(Building::GIDfrom(Building::GIDtoID(gid), to(Building::GIDtoTeam(gid))));
+	};
+	struct Seat
+	{
+		BaseTeam::TeamType type;
+		Sint32 numberOfPlayer;
+		GAGCore::Color color;
+		Uint32 playersMask;
+	};
+	std::vector<Seat> seats;
+	const std::vector<Team *> colonies(game.teams, game.teams + n);
+	for (const Team *team : colonies)
+		seats.push_back({team->type, team->numberOfPlayer, team->color, team->playersMask});
+	for (int t = 0; t < n; ++t)
+		game.teams[to(t)] = colonies[t];
+	for (int t = 0; t < n; ++t)
+	{
+		Team &team = *game.teams[t];
+		team.teamNumber = t;
+		team.type = seats[t].type;
+		team.numberOfPlayer = seats[t].numberOfPlayer;
+		team.color = seats[t].color;
+		team.playersMask = seats[t].playersMask;
+		for (Uint32 *bits : {&team.me, &team.allies, &team.enemies, &team.sharedVisionExchange,
+							 &team.sharedVisionFood, &team.sharedVisionOther})
+			*bits = mask(*bits);
+		for (int i = 0; i < Unit::MAX_COUNT; ++i)
+			if (Unit *unit = team.myUnits[i])
+				unit->gid = unitGid(unit->gid);
+		for (int i = 0; i < Building::MAX_COUNT; ++i)
+			if (Building *building = team.myBuildings[i])
+			{
+				building->gid = buildingGid(building->gid);
+				building->seenByMask = mask(building->seenByMask);
+			}
+	}
+	for (auto &tile : game.map.tiles)
+	{
+		tile.building = buildingGid(tile.building);
+		tile.groundUnit = unitGid(tile.groundUnit);
+		tile.airUnit = unitGid(tile.airUnit);
+		tile.forbidden = mask(tile.forbidden);
+		tile.guardArea = mask(tile.guardArea);
+		tile.clearArea = mask(tile.clearArea);
+	}
+	for (auto &bits : game.map.mapDiscovered)
+		bits = mask(bits);
+}
+
+// Writes <prefix>-r<k>.map for k = 0..rotations-1, where colony t (the generator's team t, which
+// the START and COLONY lines describe) plays as team (t + k) mod N. Each rotation is checked from
+// its saved bytes, and going all the way round must reproduce rotation 0 byte for byte.
+int saveRotatedMaps(Game &game, const GenerationResult &result, const GenerationRequest &request,
+					const std::string &prefix, const std::string &name, int rotations)
+{
+	if (!result)
+		return 4;
+	const int n = game.mapHeader.getNumberOfTeams();
+	if (n < 1 || n >= 32 || rotations < 1 || rotations > n)
+		return 2;
+	std::printf("REQUEST,%s,%u,%u,%d,%d,%d,%d\n", result.generatorId.c_str(), result.revision,
+				result.seed, request.wDec, request.hDec, request.nbTeams, request.nbWorkers);
+	for (const auto &option : request.options)
+		std::printf("OPTION,%s,%d\n", option.first.c_str(), option.second);
+	for (int t = 0; t < n; ++t)
+		std::printf("START,%d,%d,%d\n", t, game.teams[t]->startPosX, game.teams[t]->startPosY);
+
+	// No players: a headless driver assigns every colony's controller when it launches the map.
+	GameHeader header;
+	header.setRandomSeed(result.seed);
+	game.setGameHeader(header);
+	auto label = [&](int k) { return name + "-r" + std::to_string(k); };
+	const std::string generated = saveMapBytes(game, label(0));
+
+	Game canonical(nullptr);
+	if (!loadMapBytes(canonical, generated))
+		return 5;
+	const std::string first = saveMapBytes(canonical, label(0));
+	const bool stable = first == generated;
+	const std::uint64_t world = worldHash(canonical);
+	std::vector<std::uint64_t> colonies;
+	for (int t = 0; t < n; ++t)
+		colonies.push_back(colonySignature(canonical, t));
+	bool consistent = mapReferencesConsistent(canonical), placed = true, roundTrip = false;
+
+	auto write = [&](int k, const std::string &bytes)
+	{
+		const std::string path = prefix + "-r" + std::to_string(k) + ".map";
+		std::ofstream out(path, std::ios::binary);
+		out.write(bytes.data(), std::streamsize(bytes.size()));
+		if (!out)
+			return false;
+		std::printf("MAPFILE,%d,%s,%zu,%llu\n", k, path.c_str(), bytes.size(),
+					(unsigned long long)fnvBytes(bytes));
+		return true;
+	};
+	if (!write(0, first))
+		return 3;
+	std::string previous = first;
+	for (int k = 1; k <= n; ++k)
+	{
+		Game shifted(nullptr);
+		if (!loadMapBytes(shifted, previous))
+			return 5;
+		shiftTeams(shifted, 1);
+		const std::string bytes = saveMapBytes(shifted, label(k % n));
+		Game check(nullptr);
+		if (!loadMapBytes(check, bytes))
+			return 5;
+		consistent = consistent && mapReferencesConsistent(check);
+		placed = placed && worldHash(check) == world;
+		for (int t = 0; t < n; ++t)
+			placed = placed && colonySignature(check, (t + k) % n) == colonies[t];
+		if (k == n)
+			roundTrip = bytes == first;
+		else if (k < rotations && !write(k, bytes))
+			return 3;
+		previous = bytes;
+	}
+	std::printf("ROTATIONS,%d,%d,%d,%d,%d,%d\n", n, rotations, int(stable), int(consistent),
+				int(placed), int(roundTrip));
+	return consistent && placed && roundTrip ? 0 : 6;
+}
+} // namespace
 int main(int argc, char **argv)
 {
 	if (argc == 2 && std::string(argv[1]) == "--catalog")
@@ -82,7 +354,8 @@ int main(int argc, char **argv)
 	bool tuning = false;
 	bool headroom = false;
 	bool quality = false;
-	std::string dump;
+	std::string dump, savePrefix, mapName;
+	int candidates = 0, rotations = 1;
 	std::map<std::string, std::string> aliases = {{"smooth", "smoothing"},
 												  {"craters", "lake-density"},
 												  {"extra", "extra-islands"},
@@ -112,9 +385,14 @@ int main(int argc, char **argv)
 			if (eq == std::string::npos)
 				return 2;
 			std::string id = arg.substr(0, eq);
-			if (id == "dump")
+			if (id == "dump" || id == "save" || id == "name")
 			{
-				dump = arg.substr(eq + 1);
+				(id == "dump" ? dump : id == "save" ? savePrefix : mapName) = arg.substr(eq + 1);
+				continue;
+			}
+			if (id == "candidates" || id == "rotations")
+			{
+				(id == "candidates" ? candidates : rotations) = std::stoi(arg.substr(eq + 1));
 				continue;
 			}
 			if (aliases.count(id))
@@ -131,6 +409,13 @@ int main(int argc, char **argv)
 			else
 				descriptor.options[id] = value; // Service validates; never silently clamp studies.
 		}
+	}
+	if (candidates > 0)
+	{
+		// The lobby's roll: the best-scoring of `candidates` seeds derived from the root seed
+		// (CustomGameScreen::generateMap), so studied maps are the maps players actually get.
+		descriptor.seed = GenerationService().bestSeed(descriptor, seed, candidates);
+		std::printf("SAMPLED,%u,%u,%d\n", seed, descriptor.seed, candidates);
 	}
 	const auto start = std::chrono::steady_clock::now();
 	const auto result = GenerationService().generate(game, descriptor);
@@ -461,5 +746,11 @@ int main(int argc, char **argv)
 		}
 		std::fclose(f);
 	}
+	if (!savePrefix.empty())
+		return saveRotatedMaps(game, result, descriptor, savePrefix,
+							   mapName.empty() ? "study-" + std::to_string(method) + "-" +
+													 std::to_string(seed)
+											   : mapName,
+							   rotations);
 	return 0;
 }

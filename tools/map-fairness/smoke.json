@@ -1,0 +1,15 @@
+{
+  "name": "smoke",
+  "description": "Quick check that the tournament runs end to end: the Symmetric arena baseline and three other generators, two maps each, every rotation once.",
+  "generators": [15, 9, 13, 4],
+  "map_seeds": "1001-1002",
+  "games_per_rotation": 1,
+  "rotations": "all",
+  "size": 128,
+  "colonies": 4,
+  "candidates": 5,
+  "ai": "nicowar",
+  "tick_cap": 90000,
+  "jobs": 3,
+  "verify_games": 2
+}

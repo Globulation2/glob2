@@ -1,0 +1,15 @@
+{
+  "name": "standard",
+  "description": "Standard fairness tournament: every playable generator, twelve maps each, every rotation played by three engine seeds.",
+  "generators": [15, 9, 11, 12, 7, 6, 13, 14, 16, 8, 5, 4, 3, 1, 2],
+  "map_seeds": "2001-2012",
+  "games_per_rotation": 3,
+  "rotations": "all",
+  "size": 128,
+  "colonies": 4,
+  "candidates": 5,
+  "ai": "nicowar",
+  "tick_cap": 90000,
+  "jobs": 3,
+  "verify_games": 4
+}
