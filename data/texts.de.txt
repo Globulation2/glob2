@@ -1870,3 +1870,51 @@ Ringwelt
 Gürtelbreite
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Der Gürtel ist zu kurz für so viele Kolonien; verwenden Sie eine längere Karte oder weniger Kolonien.
+[Wheat amount]
+Weizenmenge
+[Wood amount]
+Holzmenge
+[Stone amount]
+Steinmenge
+[Algae amount]
+Algenmenge
+[Fruit amount]
+Obstmenge
+[Stone on hilltops]
+Stein auf den Hügelkuppen
+[Winding river]
+Gewundener Fluss
+[Sandy beaches]
+Sandstrände
+[Land bridges]
+Landbrücken
+[Colony meadows]
+Wiesen um die Kolonien
+[Extra starting deposit]
+Zusätzliches Startvorkommen
+[Moat bridges]
+Brücken über den Graben
+[Jagged coastlines]
+Zerklüftete Küsten
+[Sand roads]
+Sandwege
+[Treasure in dead ends]
+Schätze in Sackgassen
+[Fjord bank deposits]
+Vorkommen an den Fjordufern
+[Sandy lake shore]
+Sandiges Seeufer
+[River delta]
+Flussdelta
+[Meandering rivers]
+Mäandernde Flüsse
+[Fruit in home valleys]
+Obst in den Starttälern
+[Moat]
+Wassergraben
+[Stone in the orchard]
+Stein im Obstgarten
+[Colonies on both coasts]
+Kolonien an beiden Küsten
+[Winding belt]
+Gewundener Gürtel

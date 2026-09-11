@@ -1868,3 +1868,51 @@ OpenGL недоступен в этой сборке.
 Ширина пояса
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Пояс слишком короткий для такого числа колоний; используйте карту подлиннее или меньше колоний.
+[Wheat amount]
+Количество пшеницы
+[Wood amount]
+Количество дерева
+[Stone amount]
+Количество камня
+[Algae amount]
+Количество водорослей
+[Fruit amount]
+Количество фруктов
+[Stone on hilltops]
+Камень на вершинах холмов
+[Winding river]
+Извилистая река
+[Sandy beaches]
+Песчаные пляжи
+[Land bridges]
+Перешейки
+[Colony meadows]
+Луга вокруг колоний
+[Extra starting deposit]
+Дополнительная стартовая залежь
+[Moat bridges]
+Мосты через ров
+[Jagged coastlines]
+Изрезанные берега
+[Sand roads]
+Песчаные дороги
+[Treasure in dead ends]
+Сокровища в тупиках
+[Fjord bank deposits]
+Залежи на берегах фьордов
+[Sandy lake shore]
+Песчаный берег озера
+[River delta]
+Дельта реки
+[Meandering rivers]
+Петляющие реки
+[Fruit in home valleys]
+Фрукты в стартовых долинах
+[Moat]
+Ров
+[Stone in the orchard]
+Камень в саду
+[Colonies on both coasts]
+Колонии на обоих берегах
+[Winding belt]
+Извилистый пояс

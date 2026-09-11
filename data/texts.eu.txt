@@ -1880,3 +1880,51 @@ Eraztun-mundua
 Gerrikoaren zabalera
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Gerrikoa laburregia da hainbeste koloniarentzat; erabili mapa luzeagoa edo kolonia gutxiago.
+[Wheat amount]
+Gari kopurua
+[Wood amount]
+Egur kopurua
+[Stone amount]
+Harri kopurua
+[Algae amount]
+Alga kopurua
+[Fruit amount]
+Fruta kopurua
+[Stone on hilltops]
+Harria muinoen gailurretan
+[Winding river]
+Ibai bihurgunetsua
+[Sandy beaches]
+Harea-hondartzak
+[Land bridges]
+Lur-zubiak
+[Colony meadows]
+Belardiak kolonien inguruan
+[Extra starting deposit]
+Hasierako baliabide gehigarria
+[Moat bridges]
+Lubanarroko zubiak
+[Jagged coastlines]
+Kostalde malkarrak
+[Sand roads]
+Harea-bideak
+[Treasure in dead ends]
+Altxorrak kale itsuetan
+[Fjord bank deposits]
+Fiordoen ertzetako baliabideak
+[Sandy lake shore]
+Aintziraren ertz hareatsua
+[River delta]
+Ibai-delta
+[Meandering rivers]
+Ibai meandrodunak
+[Fruit in home valleys]
+Fruta hasierako haranetan
+[Moat]
+Lubanarroa
+[Stone in the orchard]
+Harria fruta-baratzean
+[Colonies on both coasts]
+Koloniak bi kostaldeetan
+[Winding belt]
+Gerriko bihurgunetsua

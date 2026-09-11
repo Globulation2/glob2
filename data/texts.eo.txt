@@ -1868,3 +1868,51 @@ Ringa mondo
 Larĝo de zono
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La zono estas tro mallonga por tiom da kolonioj; uzu pli longan mapon aŭ malpli da kolonioj.
+[Wheat amount]
+Kvanto de tritiko
+[Wood amount]
+Kvanto de ligno
+[Stone amount]
+Kvanto de ŝtono
+[Algae amount]
+Kvanto de algoj
+[Fruit amount]
+Kvanto de fruktoj
+[Stone on hilltops]
+Ŝtono sur montetopintoj
+[Winding river]
+Serpentuma rivero
+[Sandy beaches]
+Sablaj plaĝoj
+[Land bridges]
+Terpontoj
+[Colony meadows]
+Herbejoj ĉirkaŭ kolonioj
+[Extra starting deposit]
+Kroma komenca kuŝejo
+[Moat bridges]
+Pontoj super la fosaĵo
+[Jagged coastlines]
+Dentitaj marbordoj
+[Sand roads]
+Sablaj vojoj
+[Treasure in dead ends]
+Trezoroj en senelirejoj
+[Fjord bank deposits]
+Kuŝejoj ĉe fjordaj bordoj
+[Sandy lake shore]
+Sabla lagbordo
+[River delta]
+Riverdelto
+[Meandering rivers]
+Meandrantaj riveroj
+[Fruit in home valleys]
+Fruktoj en hejmvaloj
+[Moat]
+Fosaĵo
+[Stone in the orchard]
+Ŝtono en la fruktoĝardeno
+[Colonies on both coasts]
+Kolonioj ĉe ambaŭ marbordoj
+[Winding belt]
+Serpentuma zono

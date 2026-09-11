@@ -1878,3 +1878,51 @@ Món anell
 Amplada del cinturó
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 El cinturó és massa curt per a tantes colònies; feu servir un mapa més llarg o menys colònies.
+[Wheat amount]
+Quantitat de blat
+[Wood amount]
+Quantitat de fusta
+[Stone amount]
+Quantitat de pedra
+[Algae amount]
+Quantitat d'algues
+[Fruit amount]
+Quantitat de fruita
+[Stone on hilltops]
+Pedra als cims dels turons
+[Winding river]
+Riu sinuós
+[Sandy beaches]
+Platges de sorra
+[Land bridges]
+Ponts de terra
+[Colony meadows]
+Prats al voltant de les colònies
+[Extra starting deposit]
+Dipòsit inicial addicional
+[Moat bridges]
+Ponts sobre el fossat
+[Jagged coastlines]
+Costes retallades
+[Sand roads]
+Camins de sorra
+[Treasure in dead ends]
+Tresors als atzucacs
+[Fjord bank deposits]
+Dipòsits a les ribes dels fiords
+[Sandy lake shore]
+Riba sorrenca del llac
+[River delta]
+Delta del riu
+[Meandering rivers]
+Rius amb meandres
+[Fruit in home valleys]
+Fruita a les valls inicials
+[Moat]
+Fossat
+[Stone in the orchard]
+Pedra a l'hort
+[Colonies on both coasts]
+Colònies a les dues costes
+[Winding belt]
+Cinturó sinuós

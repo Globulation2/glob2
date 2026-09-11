@@ -1866,3 +1866,51 @@ Thế giới hình vòng
 Độ rộng vành đai
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Vành đai quá ngắn cho số thuộc địa này; hãy dùng bản đồ dài hơn hoặc ít thuộc địa hơn.
+[Wheat amount]
+Lượng lúa mì
+[Wood amount]
+Lượng gỗ
+[Stone amount]
+Lượng đá
+[Algae amount]
+Lượng tảo
+[Fruit amount]
+Lượng trái cây
+[Stone on hilltops]
+Đá trên đỉnh đồi
+[Winding river]
+Sông uốn khúc
+[Sandy beaches]
+Bãi cát
+[Land bridges]
+Cầu đất
+[Colony meadows]
+Đồng cỏ quanh thuộc địa
+[Extra starting deposit]
+Mỏ tài nguyên khởi đầu bổ sung
+[Moat bridges]
+Cầu qua hào nước
+[Jagged coastlines]
+Bờ biển lởm chởm
+[Sand roads]
+Đường cát
+[Treasure in dead ends]
+Kho báu ở ngõ cụt
+[Fjord bank deposits]
+Mỏ tài nguyên ven vịnh hẹp
+[Sandy lake shore]
+Bờ hồ đầy cát
+[River delta]
+Châu thổ sông
+[Meandering rivers]
+Sông quanh co
+[Fruit in home valleys]
+Trái cây ở thung lũng khởi đầu
+[Moat]
+Hào nước
+[Stone in the orchard]
+Đá trong vườn cây ăn quả
+[Colonies on both coasts]
+Thuộc địa ở cả hai bờ
+[Winding belt]
+Vành đai uốn lượn

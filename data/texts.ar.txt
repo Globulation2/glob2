@@ -1868,3 +1868,51 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الحزام
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 الحزام أقصر من أن يتسع لهذا العدد من المستعمرات؛ استخدم خريطة أطول أو عددًا أقل من المستعمرات.
+[Wheat amount]
+كمية القمح
+[Wood amount]
+كمية الخشب
+[Stone amount]
+كمية الحجر
+[Algae amount]
+كمية الطحالب
+[Fruit amount]
+كمية الفاكهة
+[Stone on hilltops]
+الحجارة على قمم التلال
+[Winding river]
+نهر متعرج
+[Sandy beaches]
+شواطئ رملية
+[Land bridges]
+الجسور البرية
+[Colony meadows]
+مروج حول المستعمرات
+[Extra starting deposit]
+رواسب إضافية عند البداية
+[Moat bridges]
+جسور فوق الخندق المائي
+[Jagged coastlines]
+سواحل متعرجة
+[Sand roads]
+طرق رملية
+[Treasure in dead ends]
+كنوز في الطرق المسدودة
+[Fjord bank deposits]
+رواسب على ضفاف المضائق البحرية
+[Sandy lake shore]
+شاطئ رملي حول البحيرة
+[River delta]
+دلتا النهر
+[Meandering rivers]
+أنهار كثيرة التعرج
+[Fruit in home valleys]
+الفاكهة في وديان البداية
+[Moat]
+الخندق المائي
+[Stone in the orchard]
+حجارة في البستان
+[Colonies on both coasts]
+مستعمرات على الساحلين
+[Winding belt]
+حزام متعرج

@@ -1870,3 +1870,51 @@ Lume inelară
 Lățimea centurii
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Centura este prea scurtă pentru atâtea colonii; folosiți o hartă mai lungă sau mai puține colonii.
+[Wheat amount]
+Cantitatea de grâu
+[Wood amount]
+Cantitatea de lemn
+[Stone amount]
+Cantitatea de piatră
+[Algae amount]
+Cantitatea de alge
+[Fruit amount]
+Cantitatea de fructe
+[Stone on hilltops]
+Piatră pe vârfurile dealurilor
+[Winding river]
+Râu șerpuit
+[Sandy beaches]
+Plaje nisipoase
+[Land bridges]
+Punți de uscat
+[Colony meadows]
+Pajiști în jurul coloniilor
+[Extra starting deposit]
+Zăcământ inițial suplimentar
+[Moat bridges]
+Poduri peste șanțul cu apă
+[Jagged coastlines]
+Coaste crestate
+[Sand roads]
+Drumuri de nisip
+[Treasure in dead ends]
+Comori în fundături
+[Fjord bank deposits]
+Zăcăminte pe malurile fiordurilor
+[Sandy lake shore]
+Mal nisipos al lacului
+[River delta]
+Delta râului
+[Meandering rivers]
+Râuri cu meandre
+[Fruit in home valleys]
+Fructe în văile de pornire
+[Moat]
+Șanț cu apă
+[Stone in the orchard]
+Piatră în livadă
+[Colonies on both coasts]
+Colonii pe ambele coaste
+[Winding belt]
+Centură șerpuită

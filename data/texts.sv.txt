@@ -1880,3 +1880,51 @@ Ringvärld
 Bältets bredd
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Bältet är för kort för så många kolonier; använd en längre karta eller färre kolonier.
+[Wheat amount]
+Mängd vete
+[Wood amount]
+Mängd trä
+[Stone amount]
+Mängd sten
+[Algae amount]
+Mängd alger
+[Fruit amount]
+Mängd frukt
+[Stone on hilltops]
+Sten på kullarnas toppar
+[Winding river]
+Slingrande flod
+[Sandy beaches]
+Sandstränder
+[Land bridges]
+Landbroar
+[Colony meadows]
+Ängar runt kolonierna
+[Extra starting deposit]
+Extra startfyndighet
+[Moat bridges]
+Broar över vallgraven
+[Jagged coastlines]
+Taggiga kuster
+[Sand roads]
+Sandvägar
+[Treasure in dead ends]
+Skatter i återvändsgränder
+[Fjord bank deposits]
+Fyndigheter längs fjordstränderna
+[Sandy lake shore]
+Sandig sjöstrand
+[River delta]
+Flodens delta
+[Meandering rivers]
+Meandrande floder
+[Fruit in home valleys]
+Frukt i startdalarna
+[Moat]
+Vallgrav
+[Stone in the orchard]
+Sten i fruktträdgården
+[Colonies on both coasts]
+Kolonier på båda kusterna
+[Winding belt]
+Slingrande bälte

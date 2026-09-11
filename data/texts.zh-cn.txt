@@ -1866,3 +1866,51 @@ OpenGL 在此版本中不可用。
 环带宽度
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 环带太短，容纳不下这么多殖民地；请使用更长的地图或减少殖民地数量。
+[Wheat amount]
+小麦数量
+[Wood amount]
+木材数量
+[Stone amount]
+石头数量
+[Algae amount]
+海藻数量
+[Fruit amount]
+水果数量
+[Stone on hilltops]
+山顶的石头
+[Winding river]
+蜿蜒的河流
+[Sandy beaches]
+沙滩
+[Land bridges]
+陆桥
+[Colony meadows]
+殖民地周围的草地
+[Extra starting deposit]
+额外的起始资源
+[Moat bridges]
+护城河上的桥梁
+[Jagged coastlines]
+曲折的海岸线
+[Sand roads]
+沙土路
+[Treasure in dead ends]
+死路尽头的宝藏
+[Fjord bank deposits]
+峡湾岸边的资源
+[Sandy lake shore]
+沙质湖岸
+[River delta]
+河口三角洲
+[Meandering rivers]
+曲流河道
+[Fruit in home valleys]
+起始山谷中的水果
+[Moat]
+护城河
+[Stone in the orchard]
+果园中的石头
+[Colonies on both coasts]
+两岸都有殖民地
+[Winding belt]
+蜿蜒的环带

@@ -1940,3 +1940,51 @@ Cortex
 Πλάτος ζώνης
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Η ζώνη είναι πολύ κοντή για τόσες αποικίες. Χρησιμοποιήστε μακρύτερο χάρτη ή λιγότερες αποικίες.
+[Wheat amount]
+Ποσότητα σιταριού
+[Wood amount]
+Ποσότητα ξύλου
+[Stone amount]
+Ποσότητα πέτρας
+[Algae amount]
+Ποσότητα φυκιών
+[Fruit amount]
+Ποσότητα φρούτων
+[Stone on hilltops]
+Πέτρα στις κορυφές των λόφων
+[Winding river]
+Ελικοειδής ποταμός
+[Sandy beaches]
+Αμμώδεις παραλίες
+[Land bridges]
+Χερσαίες γέφυρες
+[Colony meadows]
+Λιβάδια γύρω από τις αποικίες
+[Extra starting deposit]
+Επιπλέον αρχικό κοίτασμα
+[Moat bridges]
+Γέφυρες πάνω από την τάφρο
+[Jagged coastlines]
+Οδοντωτές ακτές
+[Sand roads]
+Αμμώδεις δρόμοι
+[Treasure in dead ends]
+Θησαυροί στα αδιέξοδα
+[Fjord bank deposits]
+Κοιτάσματα στις όχθες των φιόρδ
+[Sandy lake shore]
+Αμμώδης όχθη λίμνης
+[River delta]
+Δέλτα ποταμού
+[Meandering rivers]
+Μαιανδρικοί ποταμοί
+[Fruit in home valleys]
+Φρούτα στις αρχικές κοιλάδες
+[Moat]
+Τάφρος
+[Stone in the orchard]
+Πέτρα στον οπωρώνα
+[Colonies on both coasts]
+Αποικίες και στις δύο ακτές
+[Winding belt]
+Ελικοειδής ζώνη

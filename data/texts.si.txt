@@ -1870,3 +1870,51 @@ Obročasti svet
 Širina pasu
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Pas je prekratek za toliko kolonij; uporabite daljši zemljevid ali manj kolonij.
+[Wheat amount]
+Količina pšenice
+[Wood amount]
+Količina lesa
+[Stone amount]
+Količina kamenja
+[Algae amount]
+Količina alg
+[Fruit amount]
+Količina sadja
+[Stone on hilltops]
+Kamenje na vrhovih gričev
+[Winding river]
+Vijugasta reka
+[Sandy beaches]
+Peščene plaže
+[Land bridges]
+Kopenski mostovi
+[Colony meadows]
+Travniki okoli kolonij
+[Extra starting deposit]
+Dodatno začetno nahajališče
+[Moat bridges]
+Mostovi čez vodni jarek
+[Jagged coastlines]
+Razčlenjene obale
+[Sand roads]
+Peščene poti
+[Treasure in dead ends]
+Zakladi v slepih ulicah
+[Fjord bank deposits]
+Nahajališča na bregovih fjordov
+[Sandy lake shore]
+Peščena obala jezera
+[River delta]
+Rečna delta
+[Meandering rivers]
+Vijugaste reke
+[Fruit in home valleys]
+Sadje v začetnih dolinah
+[Moat]
+Vodni jarek
+[Stone in the orchard]
+Kamenje v sadovnjaku
+[Colonies on both coasts]
+Kolonije na obeh obalah
+[Winding belt]
+Vijugast pas

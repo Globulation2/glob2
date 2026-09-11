@@ -1894,3 +1894,51 @@ Ringwereld
 Gordelbreedte
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 De gordel is te kort voor zoveel kolonies; gebruik een langere kaart of minder kolonies.
+[Wheat amount]
+Hoeveelheid tarwe
+[Wood amount]
+Hoeveelheid hout
+[Stone amount]
+Hoeveelheid steen
+[Algae amount]
+Hoeveelheid zeewier
+[Fruit amount]
+Hoeveelheid vruchten
+[Stone on hilltops]
+Steen op heuveltoppen
+[Winding river]
+Kronkelende rivier
+[Sandy beaches]
+Zandstranden
+[Land bridges]
+Landbruggen
+[Colony meadows]
+Weiden rond de kolonies
+[Extra starting deposit]
+Extra startvoorraad
+[Moat bridges]
+Bruggen over de gracht
+[Jagged coastlines]
+Grillige kusten
+[Sand roads]
+Zandwegen
+[Treasure in dead ends]
+Schatten in doodlopende gangen
+[Fjord bank deposits]
+Voorraden langs de fjordoevers
+[Sandy lake shore]
+Zandige meeroever
+[River delta]
+Rivierdelta
+[Meandering rivers]
+Meanderende rivieren
+[Fruit in home valleys]
+Vruchten in de startdalen
+[Moat]
+Slotgracht
+[Stone in the orchard]
+Steen in de boomgaard
+[Colonies on both coasts]
+Kolonies aan beide kusten
+[Winding belt]
+Kronkelende gordel

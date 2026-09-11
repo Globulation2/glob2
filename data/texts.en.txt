@@ -1858,3 +1858,51 @@ Ring world
 Belt width
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 The belt is too short for this many colonies; use a longer map or fewer colonies.
+[Wheat amount]
+Wheat amount
+[Wood amount]
+Wood amount
+[Stone amount]
+Stone amount
+[Algae amount]
+Algae amount
+[Fruit amount]
+Fruit amount
+[Stone on hilltops]
+Stone on hilltops
+[Winding river]
+Winding river
+[Sandy beaches]
+Sandy beaches
+[Land bridges]
+Land bridges
+[Colony meadows]
+Colony meadows
+[Extra starting deposit]
+Extra starting deposit
+[Moat bridges]
+Moat bridges
+[Jagged coastlines]
+Jagged coastlines
+[Sand roads]
+Sand roads
+[Treasure in dead ends]
+Treasure in dead ends
+[Fjord bank deposits]
+Fjord bank deposits
+[Sandy lake shore]
+Sandy lake shore
+[River delta]
+River delta
+[Meandering rivers]
+Meandering rivers
+[Fruit in home valleys]
+Fruit in home valleys
+[Moat]
+Moat
+[Stone in the orchard]
+Stone in the orchard
+[Colonies on both coasts]
+Colonies on both coasts
+[Winding belt]
+Winding belt
