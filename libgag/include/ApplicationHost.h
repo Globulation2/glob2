@@ -59,6 +59,8 @@ void screenChanged(const char* name);
 void importChanged(const char* state);
 void simulationAdvanced(std::uint32_t tick);
 void matchFrame(bool paused);
+// Whether the torus overview replaced the flat map on the latest match frame.
+void overviewDrawn(bool drawn);
 // Read-only presentation diagnostic for the active multiplayer room.
 void roomReady(bool canStart);
 void exited(int result);

@@ -201,4 +201,12 @@ void matchFrame(bool paused)
         Module['glob2Paused'] = Boolean($0);
     }, paused);
 }
+void overviewDrawn(bool drawn)
+{
+    // Reported every match frame; publish only changes.
+    static int published = -1;
+    if (published == int(drawn)) return;
+    published = drawn;
+    EM_ASM({ Module['glob2Torus'] = Boolean($0); }, drawn);
+}
 }

@@ -43,6 +43,8 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Try `http://127.0.0.1:8765/?renderer=webgl2` to select GPU rendering.
+With WebGL2, press G in a match for the torus overview, and the map zoom controls
+work; the software renderer keeps the flat, unzoomed map.
 High-quality graphics (including clouds) default to off for new browser profiles.
 You can enable them in Settings; existing saved preferences are preserved.
 

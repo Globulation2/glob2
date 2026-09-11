@@ -7,7 +7,10 @@
 #include <algorithm>
 #include <cmath>
 
-#if defined(HAVE_OPENGL) && !defined(__EMSCRIPTEN__)
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
+#if defined(HAVE_OPENGL)
 #define GLOB2_TORUS_OPENGL
 #endif
 
