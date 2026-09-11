@@ -206,6 +206,8 @@ public:
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
 	bool subscribeToBringResourcesStep(void);
+	//! Whether the unit's type and level qualify it to work for this building.
+	bool canUnitWorkHere(Unit* unit);
 	///This function subscribes any flag that needs units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
@@ -396,7 +398,6 @@ private:
 	/// Tells whether a particular unit can work at this building. Takes into account this buildings level,
 	/// the units type and level, and whether this building is a flag, because flags get a couple of special
 	/// rules.
-	bool canUnitWorkHere(Unit* unit);
 
 	/// Per-zonable candidate-selection helpers for subscribeForFlagingStep.
 	/// Each tests one unit against the per-flag-type requirements (activity,

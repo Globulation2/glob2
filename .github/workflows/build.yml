@@ -169,6 +169,11 @@ jobs:
           scons -j$(nproc) release=1 server=0 round-trip-hunger-gate-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/RoundTripHungerGateHarness .
 
+      - name: Build and run the inn swap regression
+        run: |
+          scons -j$(nproc) release=1 server=0 inn-swap-test
+          timeout 120s ./build/src/InnSwapHarness
+
       - name: Test savegame loading and atomic autosaves
         run: |
           scons -j$(nproc) release=1 server=0 savegame-safety-test buffered-file-test

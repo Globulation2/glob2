@@ -557,15 +557,27 @@ void Unit::handleMovementGoingToResource()
 {
 	Map *map=owner->map;
 	int teamNumber=owner->teamNumber;
+	int swim=swimClass();
 	bool stopWork;
-	if (map->pathfindResource(teamNumber, destinationPurpose, swimClass(), posX, posY, &dx, &dy, &stopWork, attachedBuilding))
+	if (map->pathfindResource(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
-		// Routing can follow a rebuilt gradient while the stored target is stale.
-		// Recompute the target only when it no longer marks a resource goal.
-		if (map->getGradient(teamNumber, destinationPurpose, swimClass(), targetX, targetY)!=GRADIENT_AT_GOAL)
-			map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
+		// targetX/Y (also the debug path line, hotkey T) were set once, by
+		// ascending a gradient, when the fetch task started. pathfindResource
+		// above re-reads whichever gradient actually governs the step fresh
+		// every action -- the round-trip field when attachedBuilding has one
+		// and it is valid here, the plain resource gradient otherwise -- and
+		// either field can be rebuilt, or the preference between them can
+		// flip, while the unit is still walking. Re-ascend from here whenever
+		// the stored target has stopped being a peak of that same gradient;
+		// isGradientPeak is a cheap check to run every action, the ascent
+		// itself only when it actually goes stale.
+		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradient(attachedBuilding, destinationPurpose, swim) : NULL;
+		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
+			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim);
+		if (!map->isGradientPeak(gradient, targetX, targetY))
+			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}
 	else
 	{

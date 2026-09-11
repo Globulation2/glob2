@@ -154,6 +154,7 @@ void Unit::handleActivity(void)
 				if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
 				b->subscribeUnitForInside(this);
+				owner->swapInn(this);
 			}
 			else
 				activity=ACT_RANDOM;

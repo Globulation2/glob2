@@ -672,6 +672,13 @@ if not env['server']:
     regression_test = local.Program('BuildingExpelHarness', regression_sources)
     local.Alias('building-expel-test', regression_test)
 
+# Real engine regression for inn swaps between hungry units, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('InnSwapHarness.o', '#test/InnSwapHarness.cpp')
+    regression_test = local.Program('InnSwapHarness', regression_sources)
+    local.Alias('inn-swap-test', regression_test)
+
 # Real engine regression for the resource hunger gate, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
