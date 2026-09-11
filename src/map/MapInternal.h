@@ -25,6 +25,13 @@ inline void fill(std::vector<T>& vec, const T& value) {
 }
 
 #include "field/GradientConstants.h"
+/// Tiles a fetch out of a market is charged on top of the walk, for the
+/// resource having been carried there once already. Markets sit next to what
+/// they teleport, so the detour is small.
+constexpr int MARKET_DETOUR_TILES = 5;
+/// Seed of a stocked market's tiles in a "with markets" resource gradient: a
+/// goal that costs the detour more than a tile of the resource itself.
+constexpr std::uint16_t GRADIENT_MARKET_SEED = GRADIENT_AT_GOAL - MARKET_DETOUR_TILES * GRADIENT_STEP;
 
 // Guard-area balancing (the "guard-area-balancing" experiment). A painted guard
 // tile is seeded GUARD_CROWD_COST_PER_WARRIOR below the goal for each of the

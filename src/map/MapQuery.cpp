@@ -6,6 +6,8 @@
 #include "Utilities.h"
 #include "BuildingType.h"
 #include "Unit.h"
+#include "Building.h"
+#include "Team.h"
 #include "MapInternal.h"
 
 
@@ -142,6 +144,27 @@ std::optional<Offset> Map::doesUnitTouchResource(Unit *unit, int resourceType) c
 			if (isResourceTakeable(x+tdx, y+tdy, resourceType) && ((getForbidden(x+tdx, y+tdy)&me)==0))
 				return Offset{tdx, tdy};
 	return std::nullopt;
+}
+
+bool Map::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const
+{
+	if (gid == NOGBID || Building::GIDtoTeam(gid) != teamNumber)
+		return false;
+	const Building *b = game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
+	return b && b->type->canExchange && b->buildingState == Building::ALIVE && b->resources[resourceType] > 0;
+}
+
+Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const
+{
+	const int teamNumber=unit->owner->teamNumber;
+	for (int tdx=-1; tdx<=1; tdx++)
+		for (int tdy=-1; tdy<=1; tdy++)
+		{
+			Uint16 gid=getBuilding(unit->posX+tdx, unit->posY+tdy);
+			if (isStockedMarketTile(gid, teamNumber, resourceType))
+				return game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
+		}
+	return NULL;
 }
 
 std::optional<Offset> Map::doesPosTouchResource(int x, int y, int resourceType) const

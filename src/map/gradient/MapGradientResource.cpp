@@ -6,34 +6,38 @@
 #include "gradient/GradientRuntime.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
+#include "Building.h"
+#include "Game.h"
 #include "MapInternal.h"
 
 #include <mutex>
 
-Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass)
+Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets)
 {
 	// AI workers may request the same lazy field concurrently. Cover both
 	// allocation and pipeline invalidation before publishing the pointer.
 	std::lock_guard<std::mutex> lock(resourcesGradientMutex);
-	Uint16 *&gradient = resourcesGradient[teamNumber][resourceType][swimClass];
+	Uint16 *&gradient = withMarkets ? marketResourcesGradient[teamNumber][resourceType][swimClass] : resourcesGradient[teamNumber][resourceType][swimClass];
 	if (gradient == NULL)
 	{
 		gradient = new Uint16[size];
-		updateResourcesGradient(teamNumber, resourceType, swimClass);
+		updateResourcesGradient(teamNumber, resourceType, swimClass, withMarkets);
 	}
 	return gradient;
 }
 
-void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
+void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets)
 {
 	PERF_SCOPE_TIME(ResourceGradient);
-	gradientRuntime->pipeline.invalidate(&resourcesGradient[teamNumber][resourceType][swimClass]);
-	Uint16 *gradient = resourcesGradient[teamNumber][resourceType][swimClass];
-	seedResourcesGradient(teamNumber, resourceType, swimClass, gradient);
+	auto &slot = withMarkets ? marketResourcesGradient[teamNumber][resourceType][swimClass] : resourcesGradient[teamNumber][resourceType][swimClass];
+	gradientRuntime->pipeline.invalidate(&slot);
+	Uint16 *gradient = slot;
+	seedResourcesGradient(teamNumber, resourceType, swimClass, gradient, withMarkets);
 	propagateGradient(gradient, swimClass);
+	if (withMarkets) marketGradientDirty[teamNumber][resourceType][swimClass]=false;
 }
 
-void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient)
+void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, Uint16 *gradient, bool withMarkets)
 {
 	assert(gradient);
 	bool canSwim = swimClass > 0;
@@ -54,7 +58,9 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 			value=GRADIENT_FORBIDDEN;
 		else if (c.resource.type==NO_RES_TYPE)
 		{
-			if (c.building!=NOGBID || (!canSwim && isWater(i)))
+			if (c.building!=NOGBID)
+				value=withMarkets && isStockedMarketTile(c.building, teamNumber, resourceType) ? GRADIENT_MARKET_SEED : GRADIENT_FORBIDDEN;
+			else if (!canSwim && isWater(i))
 				value=GRADIENT_FORBIDDEN;
 			else
 				value=GRADIENT_UNREACHABLE;
@@ -67,4 +73,10 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 	}
 	});
 
+}
+
+void Map::dirtyMarketGradients(int teamNumber, int resourceType)
+{
+	for (int s=0; s<SWIM_CLASS_COUNT; ++s)
+		marketGradientDirty[teamNumber][resourceType][s]=true;
 }

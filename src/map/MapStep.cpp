@@ -346,6 +346,20 @@ void Map::syncStep(Uint32 stepCounter)
 						gradientUpdated[t][r][s]=true;
 						return;
 					}
+		// Market fields participate in the same fixed-tick pipeline and round robin.
+		// A stock transition also requests an early refresh.
+		for (int t=0; t<numberOfTeam; t++)
+			for (int r=0; r<MAX_RESOURCES; r++)
+				for (int s=0; s<SWIM_CLASS_COUNT; s++)
+					if (marketResourcesGradient[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
+					{
+						gradientRuntime->pipeline.invalidate(&marketResourcesGradient[t][r][s]);
+						if (gradientRuntime->pipeline.enabled()) dispatch(&marketResourcesGradient[t][r][s], s, [&](Uint16 *field) { seedResourcesGradient(t, r, s, field, true); });
+						else updateResourcesGradient(t, r, s, true);
+						marketGradientDirty[t][r][s]=false;
+						marketGradientUpdated[t][r][s]=true;
+						return;
+					}
 		for (int t=0; t<numberOfTeam; t++)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
 				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
@@ -369,7 +383,10 @@ void Map::syncStep(Uint32 stepCounter)
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MAX_RESOURCES; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
+				{
 					gradientUpdated[t][r][s]=false;
+					marketGradientUpdated[t][r][s]=false;
+				}
 		for (int t=0; t<numberOfTeam; t++)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
 			{
