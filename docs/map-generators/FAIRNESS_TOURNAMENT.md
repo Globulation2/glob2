@@ -60,6 +60,9 @@ Everything is seeded, so the same preset reproduces the same maps, games and rep
    masks). The tool checks every rotation from its saved bytes: the terrain is unchanged, each
    colony sits under its new team number, every tile reference resolves, and relabelling N times
    reproduces rotation 0 byte for byte. In the games, each team's reported start must match too.
+   Rotation 0 is the generated map as read back from its own file, which is what every game
+   loads. It differs from a direct save of the freshly generated `Game` only in the header's
+   20-byte content SHA1, which the fresh `Game` computes before the real map offset is patched in.
 3. **Matches.** Each rotation is played `games_per_rotation` times with
    `glob2 -test-games-nox 1 --map <map> --matchup nicowar,...`, with the engine seed pinned by
    `GLOB2_TEST_SEED` and nothing else varied. Every game runs in its own `GLOB2_USER_DIR`, which
