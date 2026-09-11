@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <algorithm>
 #include "Unit.h"
 #include "Race.h"
 #include "Team.h"
@@ -86,6 +87,12 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	// Harvest and build are one worker level. A save from before that could
+	// hold the two apart (the editor used to offer a box for each), so even
+	// such a worker out to the higher of the two.
+	if (versionMinor < FILE_FORMAT_VERSION_ONE_WORKER_LEVEL
+		&& canLearn[BUILD] && level[HARVEST] != level[BUILD])
+		setWorkerLevel(std::max(level[HARVEST], level[BUILD]));
 
 
 	experience = stream->readSint32("experience");

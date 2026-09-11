@@ -252,7 +252,7 @@ int Team::maxBuildLevel(void)
 		Unit *u=myUnits[i];
 		if (u && u->performance[BUILD])
 		{
-			int unitLevel=u->level[BUILD];
+			int unitLevel=u->workerLevel();
 			if (unitLevel>maxLevel)
 				maxLevel=unitLevel;
 		}

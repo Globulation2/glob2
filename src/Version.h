@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 97
+#define VERSION_MINOR 98
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -108,6 +108,8 @@
 // version 97 rebuilds route fields from a map topology generation instead of a proximity
 //            walk, and saves the generation so a loaded game rebuilds on the same ticks:
 //            the simulation changed again
+// version 98 reads one worker level (build) where hiring used to read harvest and
+//            the upgrade menu build, and evens the two out on load
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

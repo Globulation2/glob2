@@ -342,9 +342,14 @@ void Unit::handleDisplacement(void)
 						else
 						{
 							assert(canLearn[destinationPurpose]);
-							level[destinationPurpose] = attachedBuilding->type->level + 1;
-							UnitType *ut = race->getUnitType(typeNum, level[destinationPurpose]);
-							performance[destinationPurpose] = ut->performance[destinationPurpose];
+							if (destinationPurpose == BUILD || destinationPurpose == HARVEST)
+								setWorkerLevel(attachedBuilding->type->level + 1);
+							else
+							{
+								level[destinationPurpose] = attachedBuilding->type->level + 1;
+								UnitType *ut = race->getUnitType(typeNum, level[destinationPurpose]);
+								performance[destinationPurpose] = ut->performance[destinationPurpose];
+							}
 						}
 
 
