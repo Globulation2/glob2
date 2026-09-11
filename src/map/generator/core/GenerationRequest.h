@@ -29,7 +29,8 @@ struct GenerationRequest {
     eCONTESTEDCOMMONS = 9,
     eMAZE = 11,
     eFJORDCONTINENT = 12,
-    eWATERSHED = 13
+    eWATERSHED = 13,
+    eSTONEHIGHLANDS = 14
   };
 
   using Control = GeneratorControl;

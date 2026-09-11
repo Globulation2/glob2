@@ -186,6 +186,7 @@ map/generator/generators/IslesGenerator.cpp
 map/generator/generators/RiverGenerator.cpp
 map/generator/generators/RuggedArchipelagoGenerator.cpp
 map/generator/generators/ShatteredCoastGenerator.cpp
+map/generator/generators/StoneHighlandsGenerator.cpp
 map/generator/generators/SwampGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp

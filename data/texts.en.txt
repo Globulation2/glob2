@@ -1816,3 +1816,15 @@ Dryness
 Fords
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.
+[Stone highlands]
+Stone highlands
+[Valley size]
+Valley size
+[Pass width]
+Pass width
+[Pond size]
+Pond size
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+These valleys are too big for the map; use a bigger map or smaller valleys.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+The highlands have too little room for this many colonies; use a bigger map or fewer colonies.

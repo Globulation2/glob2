@@ -10,6 +10,7 @@
 #include "RiverGenerator.h"
 #include "RuggedArchipelagoGenerator.h"
 #include "ShatteredCoastGenerator.h"
+#include "StoneHighlandsGenerator.h"
 #include "SwampGenerator.h"
 #include "UniformGenerator.h"
 #include "WatershedGenerator.h"
@@ -76,6 +77,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins() {
        shatteredCoastDefinition(), islesDefinition(),
        ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
        craterLakesDefinition(), islandsDefinition(), swampDefinition(),
-       riverDefinition(), watershedDefinition(), uniformDefinition()});
+       riverDefinition(), watershedDefinition(), stoneHighlandsDefinition(),
+       uniformDefinition()});
   return registry;
 }

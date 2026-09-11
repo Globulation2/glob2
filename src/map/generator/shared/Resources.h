@@ -19,6 +19,10 @@ void scatterResources(Game &, GenerationContext &, const ResourceDensities &);
 // range are left untouched. clearRadius skips a ring around the boot tile that a caller still
 // has to carve out for the swarm/workers after this runs (StartingPositions.cpp's setNoResource
 // calls) — pass 0 when this runs after that carving has already happened.
+// protectedWalls, when given, is a row-major width*height mask of resource tiles that belong to
+// the map's design (a generator's stone ridgelines, say). They are treated like terrain: never
+// cleared, and never looked past when deciding whether a colony is walled into a pocket.
 void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
-                                int woodRange, int clearRadius = 0);
+                                int woodRange, int clearRadius = 0,
+                                const std::vector<unsigned char> *protectedWalls = nullptr);
 } // namespace MapGeneration
