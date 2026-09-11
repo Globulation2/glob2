@@ -102,6 +102,7 @@ EngineInit.cpp
 EngineLoaders.cpp
 EngineRun.cpp
 FertilityCalculator.cpp
+map/FertilityField.cpp
 FertilityCalculatorDialog.cpp
 Game.cpp
 Game_orders.cpp

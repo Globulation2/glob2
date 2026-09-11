@@ -14,6 +14,6 @@ namespace FertilityCalculator
 
 	/// Computes per-tile fertility, writes it into map.getTile(x,y).fertility,
 	/// and updates map.fertilityMaximum. The optional progress callback is
-	/// invoked once per column. May be called from a worker thread.
+	/// invoked at a few checkpoints. May be called from a worker thread.
 	void compute(Map& map, const ProgressCallback& progress);
 }
