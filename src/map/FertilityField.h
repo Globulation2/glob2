@@ -54,7 +54,13 @@ namespace Fertility
 		int width = 0, height = 0;
 		int waterTiles = 0, sandTiles = 0;
 		Path usedPath = Path::Adaptive;
-		std::vector<std::uint32_t> fertility, first, second;
+		// first/second hold single-axis triangular-kernel partial sums (0-water inputs, so the
+		// 1D triangular kernel's own weight sum of 256 bounds them at 256, or 4096 once a second,
+		// unweighted 16-wide box pass runs over that): both fit uint16_t with no precision loss.
+		// fertility is the full 2D result and can reach 256*256 = 65536, one past uint16_t's
+		// range, so it stays 32-bit.
+		std::vector<std::uint32_t> fertility;
+		std::vector<std::uint16_t> first, second;
 		std::vector<int> wrappedX, wrappedY;
 		int wx(int x, int offset) const;
 		int wy(int y, int offset) const;
