@@ -257,6 +257,19 @@ static bool generate(Game &game, GenerationContext &context) {
 
   game.map.controlSand();
 
+  // 3.5) Every resource so far is a deliberate, counted placement tied to a specific
+  // purpose: a home starter kit, a fjord bank, the core, an outlier island. That leaves
+  // the whole continent interior in between them bare grass, which reads as empty rather
+  // than as a place with its own history the way a noise-painted map does. A light
+  // map-wide scatter -- the same mechanism Lattice and Maze already rely on for this --
+  // fills that gap with ordinary, unclaimed deposits before any of the guaranteed
+  // placements below claim their own spots, so it can never compete with or bury a
+  // guarantee (everything from here on is placed after, and setResource simply
+  // overwrites whatever an earlier scatter happened to put on that exact tile). Algae is
+  // left at zero here: the shoreline band in step 7 already places it with a shape tuned
+  // to the coastline, and scattering more over open water would just fight that.
+  scatterResources(game, context, {/*corn=*/18, /*wood=*/18, /*stone=*/10, /*algae=*/0, /*fruit=*/3});
+
   // 4) Anchor each team out at its own tip: start just inland of the coast at
   // the team's angle and only back off toward the core if that exact spot turns
   // out to be water (a sharp jaggedness dip, or a fjord belly that swung wider
@@ -446,7 +459,7 @@ GeneratorDefinition fjordContinentDefinition() {
   return {"fjord-continent",
           12,
           "Fjord continent",
-          1,
+          2,
           false,
           {{"continent-size", "Continent size", 28, 40, 2, 34,
             ControlGroup::Terrain},
