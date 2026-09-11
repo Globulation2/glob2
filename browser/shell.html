@@ -84,12 +84,25 @@ var Module = {
     canvas.height = height;
     fitCanvas();
     canvas.focus();
-    // Keep the established default until the GPU backend passes performance gates.
-    const software = new URLSearchParams(location.search).get('renderer') !== 'webgl2';
+    // WebGL2 is the default when the browser accelerates it. Emulated WebGL2, such as
+    // SwiftShader, costs several CPU cores where software rendering needs a fraction of
+    // one, so it counts as unavailable unless ?renderer=webgl2 asks for it.
+    const requested = new URLSearchParams(location.search).get('renderer');
+    const accelerated = () => {
+      // Probe a scratch canvas: once the game canvas has a WebGL context it can't use 2D.
+      const probe = document.createElement('canvas').getContext('webgl2', {failIfMajorPerformanceCaveat:true});
+      if (!probe) return false;
+      const info = probe.getExtension('WEBGL_debug_renderer_info');
+      const name = String(probe.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : probe.RENDERER));
+      probe.getExtension('WEBGL_lose_context')?.loseContext();
+      // Chrome doesn't flag SwiftShader as a performance caveat, so check the rasterizer too.
+      return !/SwiftShader|llvmpipe|softpipe|Software Rasterizer|Basic Render Driver/i.test(name);
+    };
+    const webgl2 = requested === 'webgl2' || (requested !== 'software' && accelerated());
     // The torus overview depth-tests its ring, so the GPU context needs a depth buffer.
-    const context = software ? null : canvas.getContext('webgl2', {
+    const context = webgl2 ? canvas.getContext('webgl2', {
       alpha:false, antialias:false, depth:true, stencil:false
-    });
+    }) : null;
     const gpu = Boolean(context);
     Module.renderer = gpu ? 'webgl2' : 'software';
     Module.callMain(['-s', width + 'x' + height, '-F', gpu ? '-g' : '-G']);

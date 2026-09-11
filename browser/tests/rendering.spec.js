@@ -33,6 +33,50 @@ test('software renderer remains available', async ({page}) => {
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
 });
 
+// Test browsers usually emulate WebGL2. These tests answer the shell's acceleration
+// probe at the browser boundary; its renderer selection runs unchanged.
+const UNMASKED_RENDERER_WEBGL = 0x9246;
+test('the default renderer is WebGL2 when the browser accelerates it', async ({page}) => {
+  await page.addInitScript(name => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function(type, attributes) {
+      return getContext.call(this, type, type === 'webgl2' ? {...attributes, failIfMajorPerformanceCaveat:false} : attributes);
+    };
+    const getParameter = WebGL2RenderingContext.prototype.getParameter;
+    WebGL2RenderingContext.prototype.getParameter = function(parameter) {
+      return parameter === name ? 'Test hardware GPU' : getParameter.call(this, parameter);
+    };
+  }, UNMASKED_RENDERER_WEBGL);
+  await page.goto('/'); await screen(page,'MainMenuScreen');
+  expect((await state(page)).renderer).toBe('webgl2');
+  expect(await page.evaluate(() => document.querySelector('#canvas').getContext('webgl2') instanceof WebGL2RenderingContext)).toBe(true);
+});
+
+const fallbacks = {
+  unavailable: () => {
+    const getContext = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function(type, attributes) {
+      return type === 'webgl2' ? null : getContext.call(this, type, attributes);
+    };
+  },
+  emulated: name => {
+    const getParameter = WebGL2RenderingContext.prototype.getParameter;
+    WebGL2RenderingContext.prototype.getParameter = function(parameter) {
+      return parameter === name ? 'ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0)), SwiftShader driver)'
+        : getParameter.call(this, parameter);
+    };
+  },
+};
+for (const [reason, stub] of Object.entries(fallbacks)) {
+  test(`the default renderer falls back to software when WebGL2 is ${reason}`, async ({page}) => {
+    await page.addInitScript(stub, UNMASKED_RENDERER_WEBGL);
+    await page.goto('/'); await screen(page,'MainMenuScreen');
+    expect((await state(page)).renderer).toBe('software');
+    expect(await page.evaluate(() => Boolean(document.querySelector('#canvas').getContext('2d')))).toBe(true);
+    await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');
+  });
+}
+
 
 test('WebGL context restoration keeps the match and can recover repeatedly', async ({page}, info) => {
   const errors = [];

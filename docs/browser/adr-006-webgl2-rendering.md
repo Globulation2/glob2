@@ -15,10 +15,14 @@ performance requires that later.
 
 ## Ownership and lifecycle
 
-The browser host selects WebGL2 with `?renderer=webgl2` when it is available.
-Software remains the default, and `?renderer=software` selects it explicitly.
-Failure to create WebGL2 falls back to software. Native builds retain their
-existing OpenGL dependencies.
+The browser host uses WebGL2 by default when the browser provides a
+hardware-accelerated context, and software rendering otherwise. The host probes a
+scratch canvas: a context the browser flags with a major performance caveat, or
+one drawn by a CPU rasterizer such as SwiftShader or llvmpipe, counts as
+unavailable, because emulated WebGL2 costs several CPU cores and drops frames
+where the software renderer does not. `?renderer=webgl2` forces WebGL2 even when
+emulated, and `?renderer=software` selects software. Failure to create WebGL2
+falls back to software. Native builds retain their existing OpenGL dependencies.
 
 The renderer keeps CPU surfaces, including sprite atlases, as texture-restoration
 sources. Texture names begin at zero and cannot be used before allocation. Atlas
