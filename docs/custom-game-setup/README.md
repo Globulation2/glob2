@@ -12,7 +12,10 @@ keeps the match summary and launch action available while dense content scrolls.
   256×256 unless saved settings say otherwise. Random previews appear
   automatically after a 500 ms edit debounce, with generation deferred during a
   drag or open choice menu. The displayed snapshot is the map that launches.
+  Randomize, under the preview, rolls the same settings again with a new seed.
 - Expand Terrain, Resources and Layout to tune the applicable generator controls.
+  Reset to defaults, below them, returns width, height, colony count and the
+  landscape's own controls to their defaults, keeping the landscape itself.
   Starting workers belong to Game Rules; premade maps retain authored units.
 - Each colony has a numbered color swatch, controller, AI/difficulty and team.
   You, AI, shared You + AI, and Closed are explicit choices. Shared control uses

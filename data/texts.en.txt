@@ -1540,6 +1540,10 @@ No current preview
 Quick clash: 2x speed; generated maps start with 8 workers.
 [Reroll]
 Reroll
+[Randomize]
+Randomize
+[Reset to defaults]
+Reset to defaults
 [Ruleset]
 Ruleset
 [Select a map from the library.]

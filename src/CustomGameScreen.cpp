@@ -962,6 +962,28 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 												 : "Dimensions and colony count are set above.")) +
 					8;
 		}
+		// Reset keeps the chosen landscape and the Game Rules tab's starting workers, and returns
+		// every other field in this column to the landscape's registered defaults.
+		GenerationRequest defaults;
+		defaults.setMethodDefaults(g.method);
+		const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec &&
+								g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
+		ui.button(
+			"generator/reset", {x, yy, std::min(230, leftW - 16), 30}, tr("Reset to defaults"),
+			[this]
+			{
+				GenerationRequest reset;
+				reset.setMethodDefaults(setup.generator.method);
+				reset.nbWorkers = setup.generator.nbWorkers;
+				reset.terrainType = setup.generator.terrainType;
+				reset.seed = setup.generator.seed;
+				setup.generator = reset;
+				setup.setCapacity(reset.nbTeams);
+				++setup.mapRevision;
+				invalidate();
+			},
+			false, !atDefaults, true);
+		yy += 38;
 		ui.endRegion(yy - startY + 8);
 	}
 	ui.text(rightX, top,
@@ -976,15 +998,17 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 	ui.text(rightX, top + 29,
 			dimensions + "  /  " + std::to_string(setup.capacity) + " " + tr("colonies"), "little",
 			rightW, true);
-	int size = std::min(rightW, h - 126);
+	// A random map keeps a row under its preview for the Randomize button.
+	const int previewLimit = h - (setup.random ? 162 : 126);
+	int size = std::min(rightW, previewLimit);
 	int previewW = size, previewH = size;
 	if (validMap)
 	{
 		previewW = rightW;
 		previewH = previewW * preview->getLastHeight() / preview->getLastWidth();
-		if (previewH > h - 126)
+		if (previewH > previewLimit)
 		{
-			previewH = h - 126;
+			previewH = previewLimit;
 			previewW = previewH * preview->getLastWidth() / preview->getLastHeight();
 		}
 	}
@@ -1003,5 +1027,21 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 					 tr(previewPending
 							? "Updating map preview..."
 							: "Preview unavailable. Adjust settings or start to retry."));
+	}
+	if (setup.random)
+	{
+		const int buttonW = std::min(rightW, 160);
+		ui.button(
+			"map/randomize",
+			{rightX + (rightW - buttonW) / 2, py + (validMap ? previewH : size) + 10, buttonW, 30},
+			tr("Randomize"),
+			[this]
+			{
+				// Same settings, new seed: generateMap draws a fresh root seed on every run, so this
+				// only has to ask for the preview now instead of after the edit debounce.
+				invalidate();
+				previewDue = SDL_GetTicks();
+			},
+			false, setup.validation().empty() && !previewPending);
 	}
 }

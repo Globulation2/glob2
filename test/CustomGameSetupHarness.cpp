@@ -494,6 +494,11 @@ struct CustomGameSetupHarness
       globalContainer->gfx->printScreen(output + "/" + name + ".bmp");
     };
     capture("map-640");
+    // Randomize and Reset to defaults only apply to random maps.
+    assert(std::none_of(screen.controls->hits.begin(), screen.controls->hits.end(),
+                        [](const auto &h) {
+                          return h.id == "map/randomize" || h.id == "generator/reset";
+                        }));
     screen.activateGroup(screen.groups[1]);
     capture("players-640");
     screen.setup.colonies[1].ai = AI::CORTEX;
@@ -551,6 +556,47 @@ struct CustomGameSetupHarness
 
     assert(screen.generateMap());
     assert(screen.snapshot != first && !std::filesystem::exists(first));
+    // Randomize rolls the same settings again with a new seed, through the
+    // normal preview path, and releases the snapshot it replaces.
+    {
+      const auto settings = screen.setup.generator;
+      const auto mapRevision = screen.setup.mapRevision;
+      const auto replaced = screen.snapshot;
+      clickControl("map/randomize");
+      assert(!screen.validMap && screen.previewPending);
+      screen.onTimer(screen.previewDue);
+      assert(screen.validMap && screen.snapshot != replaced &&
+             !std::filesystem::exists(replaced));
+      assert(screen.setup.generator.method == settings.method &&
+             screen.setup.generator.options == settings.options &&
+             screen.setup.mapRevision == mapRevision);
+      capture("randomize-640");
+    }
+    // Reset to defaults restores this landscape's registered values, keeping
+    // the landscape and the Game Rules tab's starting workers.
+    {
+      GenerationRequest expected;
+      expected.setMethodDefaults(screen.setup.generator.method);
+      const auto method = screen.setup.generator.method;
+      const auto workers = screen.setup.generator.nbWorkers;
+      assert(screen.setup.generator.options != expected.options);
+      clickControl("generator/reset");
+      assert(screen.setup.generator.method == method &&
+             screen.setup.generator.nbWorkers == workers &&
+             screen.setup.generator.options == expected.options &&
+             screen.setup.generator.wDec == expected.wDec &&
+             screen.setup.generator.hDec == expected.hDec &&
+             screen.setup.capacity == expected.nbTeams && !screen.validMap &&
+             screen.previewPending);
+      paint();
+      const auto reset = std::find_if(
+          screen.controls->hits.begin(), screen.controls->hits.end(),
+          [](const auto &h) { return h.id == "generator/reset"; });
+      assert(reset != screen.controls->hits.end() && !reset->enabled);
+      screen.onTimer(screen.previewDue);
+      assert(screen.validMap);
+      capture("reset-640");
+    }
     screen.setup.presetRules(1);
     screen.invalidate();
     assert(!screen.validMap);
