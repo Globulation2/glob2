@@ -57,8 +57,15 @@ void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 	heightmap.resize(mapSize, 0);
 	for (unsigned int i = 0; i < sources.size(); ++i)
 	{
-		heightmap[sources[i].y * map.getW() + sources[i].x] = 1;
-		places[tail++] = sources[i].y * map.getW() + sources[i].x;
+		// Callers can list a tile more than once (Isles' land-bridge lines cross each other). Queueing
+		// a repeat takes a slot the w*h bound above never counted, so each one overran `places`, and
+		// the flood then read tile indices back from past its end. A repeated source adds nothing
+		// to the flood, so skip it.
+		const int index = sources[i].y * map.getW() + sources[i].x;
+		if (heightmap[index] == 1)
+			continue;
+		heightmap[index] = 1;
+		places[tail++] = index;
 	}
 	for (unsigned int i = 0; i < obstacles.size(); ++i)
 	{

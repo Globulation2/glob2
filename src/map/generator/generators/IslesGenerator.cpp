@@ -231,7 +231,7 @@ GeneratorDefinition islesDefinition()
 	return {"isles",
 			6,
 			"Isles",
-			1,
+			2,
 			false,
 			{{"island-size", "Island size", 45, 65, 5, 60, ControlGroup::Terrain, false},
 			 {"bridge-width", "Land bridge width", 3, 6, 1, 4, ControlGroup::Terrain, false}},

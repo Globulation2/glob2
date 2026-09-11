@@ -109,6 +109,9 @@ class MapGeneratorDefaultsTest
 			service.generate(other, intervening);
 			Game repeat(nullptr);
 			auto b = service.generate(repeat, request);
+			if (bool(a) != bool(b) || a.stage != b.stage || hash != fingerprint(repeat))
+				std::fprintf(stderr, "Not repeatable after an intervening map: generator %d (%s, %s)\n",
+							 method, a.diagnostic().c_str(), b.diagnostic().c_str());
 			assert(bool(a) == bool(b) && a.stage == b.stage && hash == fingerprint(repeat));
 			assert(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
 			assert(request.seed == 22001 && request.options == DWithDefaults(method).options);
