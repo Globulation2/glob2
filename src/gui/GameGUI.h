@@ -30,6 +30,7 @@
 
 namespace GAGCore
 {
+	class BackgroundFileWriter;
 	class Font;
 }
 using namespace GAGCore;
@@ -100,6 +101,8 @@ public:
 
 	// Engine has to call this every "real" steps. (or game steps)
 	void syncStep(void);
+	//! Returns once a pending autosave has reached the disk.
+	void waitForAutosave();
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
@@ -233,12 +236,19 @@ public:
 	/// "[waiting for X]" notice in GameGUIDraw — it is not part of simulation or
 	/// network state and is never checksummed, networked, or saved.
 	int anyPlayerWaitedTimeFor;
-	//! Tick of this session's latest autosave, or -1 before the first.
-	Sint64 lastAutosaveStep;
 private:
 	friend class GameGUISelectionHarness;
 	friend class TorusRenderIntegrationTest;
 	friend class TorusRenderBenchmark;
+
+	//! Serializes the game and hands the bytes to autosaveWriter.
+	void autosave();
+	//! Tick of this session's latest autosave, or -1 before the first.
+	Sint64 lastAutosaveStep;
+	//! Size of the previous autosave, reserved up front for the next one.
+	size_t lastAutosaveSize = 0;
+	//! Writes autosaves off the game thread; created by the first autosave.
+	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
 	// Helper function for key and menu
 	void repairAndUpgradeBuilding(Building *building, bool repair, bool upgrade);

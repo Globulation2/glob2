@@ -1764,6 +1764,10 @@ OpenGL در این بیلد موجود نیست.
 نمای خودکار چنبره
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 هنگام حرکت در نقشه (OpenGL) نمای کلی نقشه به شکل چنبره را به صورت خودکار نشان دهید.
+[settings Autosave]
+ذخیره‌ی خودکار
+[settings Save the game automatically about every 10 seconds.]
+بازی را تقریباً هر 10 ثانیه به‌طور خودکار ذخیره می‌کند.
 [Channel width]
 پهنای آبراه
 [Land bridge width]

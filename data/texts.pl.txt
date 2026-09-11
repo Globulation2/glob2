@@ -1766,6 +1766,10 @@ Wybrana grafika zostanie zastosowana przy następnym załadowaniu gry lub edytor
 Automatyczny widok torusa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatycznie pokazuj przegląd mapy w kształcie torusa podczas poruszania się po mapie (OpenGL).
+[settings Autosave]
+Autozapis
+[settings Save the game automatically about every 10 seconds.]
+Automatycznie zapisuje grę mniej więcej co 10 sekund.
 [Channel width]
 Szerokość kanału
 [Land bridge width]

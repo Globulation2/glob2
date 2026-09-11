@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <optional>
 
+#include <BackgroundFileWriter.h>
 #include <FileManager.h>
 #include <SDLCompat.h>
 #include <StringTable.h>
@@ -335,18 +336,37 @@ void GameGUI::syncStep(void)
 			? REPLAY_FAST_FORWARD_MS : globalContainer->settings.getGameSpeedStepDuration();
 	const Sint64 autosaveInterval = AUTOSAVE_INTERVAL_TICKS * GAME_TICK_MS / std::max(stepMs, 1);
 	// Counting from the last save also keeps a paused game from saving every frame.
-	const bool autosaveDue = lastAutosaveStep < 0
+	const bool autosaveDue = globalContainer->settings.autosaveGames && (lastAutosaveStep < 0
 		? game.stepCounter % AUTOSAVE_INTERVAL_TICKS == AUTOSAVE_PHASE_TICKS
-		: static_cast<Sint64>(game.stepCounter) - lastAutosaveStep >= autosaveInterval;
+		: static_cast<Sint64>(game.stepCounter) - lastAutosaveStep >= autosaveInterval);
 	if (autosaveDue)
 	{
 		lastAutosaveStep = game.stepCounter;
-		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
-		std::string fileName = glob2NameToFilename("games", name, "game");
-		// No file hash: nothing verifies an autosave, and hashing it is a large share of the stall.
-		if (!Toolkit::getFileManager()->writeAtomically(fileName, [&](OutputStream& stream) { save(&stream, name, false); }))
-			std::cerr << "GameGUI::syncStep: autosave failed; previous save retained" << std::endl;
+		autosave();
 	}
+}
+
+void GameGUI::autosave()
+{
+	const std::string name = Toolkit::getStringTable()->getString("[auto save]");
+	// Serialize between ticks into memory sized from the previous autosave;
+	// autosaveWriter's thread does the disk write.
+	auto *memory = new MemoryStreamBackend();
+	memory->reserve(lastAutosaveSize + lastAutosaveSize / 8);
+	BinaryOutputStream stream(memory);
+	// No file hash: nothing verifies an autosave, and hashing it is a large share of the stall.
+	save(&stream, name, false);
+	std::string contents = memory->takeContents();
+	lastAutosaveSize = contents.size();
+	if (!autosaveWriter)
+		autosaveWriter = std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
+	autosaveWriter->write(glob2NameToFilename("games", name, "game"), std::move(contents));
+}
+
+void GameGUI::waitForAutosave()
+{
+	if (autosaveWriter)
+		autosaveWriter->waitUntilIdle();
 }
 
 void GameGUI::checkWonConditions(void)

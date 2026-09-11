@@ -1790,6 +1790,10 @@ Pas de grafische beelden toe wanneer een volgende partij of de kaarteditor wordt
 Automatische torusweergave
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Toon automatisch het torusvormige kaartoverzicht terwijl u over de kaart beweegt (OpenGL).
+[settings Autosave]
+Automatisch opslaan
+[settings Save the game automatically about every 10 seconds.]
+Slaat het spel ongeveer elke 10 seconden automatisch op.
 [Channel width]
 Kanaalbreedte
 [Land bridge width]

@@ -82,6 +82,7 @@ void SettingsScreen::buildGeneral()
         choice("gameplay.speed","Game speed","Single-player and replays only. Multiplayer runs at 1x.",s.gameSpeed,labels,[this](int v){
             globalContainer->settings.gameSpeed=std::clamp(v,0,int(Settings::GAME_SPEED_MAXIMUM));commit();
         });
+        toggle("gameplay.autosave","Autosave","Save the game automatically about every 10 seconds.",s.autosaveGames,[this](int v){globalContainer->settings.autosaveGames=v;commit();});
     } else if(current==Category::Player) {
         info(tr("Set your language and player name."));
         auto* strings=Toolkit::getStringTable();std::vector<std::string> labels;

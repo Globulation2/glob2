@@ -1766,6 +1766,10 @@ Grafica selectată se aplică la următoarea încărcare a jocului sau a editoru
 Vizualizare toroidală automată
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Afișați automat prezentarea generală a hărții în formă de torus în timp ce vă deplasați pe hartă (OpenGL).
+[settings Autosave]
+Salvare automată
+[settings Save the game automatically about every 10 seconds.]
+Salvează jocul automat aproximativ la fiecare 10 secunde.
 [Channel width]
 Lățimea canalului
 [Land bridge width]

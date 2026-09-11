@@ -238,9 +238,11 @@ profile and working directory; an optional final argument supplies a truncated
 save that must be rejected.
 
 The harness checks the production autosave path, byte equivalence with direct
-serialization, successful reload, truncated map data from file and memory
-streams, recovery after failed loads, and oversized map-area strings. Atomic
-replacement tests cover callback/open/rename failures and temporary-file cleanup.
+serialization to a file, successful reload, disabled autosave, truncated map data
+from file and memory streams, recovery after failed loads, and oversized map-area
+strings. Atomic replacement tests cover callback/open/rename failures and
+temporary-file cleanup; background writes cover superseded snapshots, completion
+on destruction and failed writes.
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 

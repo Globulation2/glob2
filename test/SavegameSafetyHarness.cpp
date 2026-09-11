@@ -12,6 +12,7 @@
 #include "Utilities.h"
 #include "Order.h"
 #include "Player.h"
+#include <BackgroundFileWriter.h>
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
@@ -99,6 +100,31 @@ static void checkAtomicWrites(FileManager& files, const fs::path& directory)
 #ifndef WIN32
 	std::cout << "PASS injected short write and buffered flush failure preserve previous bytes" << std::endl;
 #endif
+}
+
+static void checkBackgroundWriter(FileManager& files, const fs::path& directory)
+{
+	const std::string path = (directory / "background.game").string();
+	{
+		BackgroundFileWriter writer(&files);
+		writer.waitUntilIdle();
+		for (int i = 0; i < 50; ++i)
+			writer.write(path, "snapshot " + std::to_string(i));
+		writer.waitUntilIdle();
+		assert(contents(path) == "snapshot 49");
+		writer.write(path, "finished by the destructor");
+	}
+	assert(contents(path) == "finished by the destructor");
+	{
+		BackgroundFileWriter writer(&files);
+		writer.write((directory / "missing" / "save.game").string(), "unwritable");
+		writer.waitUntilIdle();
+		writer.write(path, "written after a failure");
+	}
+	assert(contents(path) == "written after a failure");
+	for (const auto& entry : fs::directory_iterator(directory))
+		assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
+	std::cout << "PASS background writes keep the newest snapshot, finish on destruction and continue after a failure" << std::endl;
 }
 
 static std::unique_ptr<BinaryInputStream> input(const std::string& bytes, bool file)
@@ -306,6 +332,7 @@ int main(int argc, char **argv)
 		for (bool ai : {false,true}) checkRandomContinuation(text,ai);
 	const fs::path directory = fs::absolute(globals.fileManager->getDir(0));
 	checkAtomicWrites(*globals.fileManager, directory);
+	checkBackgroundWriter(*globals.fileManager, directory);
 	{
 		GameGUI gui;
 		auto map = Engine::loadMapHeader("maps/balanced.map");
@@ -323,14 +350,15 @@ int main(int argc, char **argv)
 			gui.save(&initial, "Auto save");
 		}
 		gui.syncStep();
+		gui.waitForAutosave();
 		const fs::path save = directory / "games" / "Auto_save.game";
 		const auto bytes = contents(save);
 		{
-			auto *backend = new MemoryStreamBackend();
-			BinaryOutputStream reference(backend);
-			gui.save(&reference, "Auto save", false);
-			const std::string expected(backend->getBuffer(), backend->getPosition());
-			assert(bytes == expected);
+			// Autosave serializes through memory; compare it with serializing straight to a file.
+			const fs::path reference = directory / "games" / "reference.game";
+			assert(globals.fileManager->writeAtomically(reference.string(), [&](OutputStream& stream) { gui.save(&stream, "Auto save", false); }));
+			assert(contents(reference) == bytes);
+			fs::remove(reference);
 		}
 		std::cout << "PASS atomic autosave bytes match direct serialization" << std::endl;
 
@@ -357,6 +385,7 @@ int main(int argc, char **argv)
 			if (setrlimit(RLIMIT_FSIZE, &budget) != 0) _exit(2);
 			gui.game.stepCounter = 335;
 			gui.syncStep();
+			gui.waitForAutosave();
 			_exit(0);
 		}
 		int status = 0;
@@ -364,6 +393,13 @@ int main(int argc, char **argv)
 		assert(contents(save) == bytes);
 		std::cout << "PASS failed production autosave preserves the previous complete game" << std::endl;
 #endif
+		globals.settings.autosaveGames = false;
+		gui.game.stepCounter = 591;
+		gui.syncStep();
+		gui.waitForAutosave();
+		assert(contents(save) == bytes);
+		globals.settings.autosaveGames = true;
+		std::cout << "PASS disabled autosave leaves the previous save untouched" << std::endl;
 		auto stream = input(bytes, false);
 		MapHeader savedHeader;
 		assert(savedHeader.load(stream.get()));

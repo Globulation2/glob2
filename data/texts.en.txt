@@ -1764,6 +1764,10 @@ Apply artwork on the next game or editor load (OpenGL).
 Automatic torus view
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatically show the torus overview while moving around the map (OpenGL).
+[settings Autosave]
+Autosave
+[settings Save the game automatically about every 10 seconds.]
+Save the game automatically about every 10 seconds.
 [Channel width]
 Channel width
 [Land bridge width]

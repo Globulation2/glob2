@@ -21,11 +21,11 @@ static void require(bool ok)
     if (!ok) { std::fprintf(stderr, "Buffered file stream regression\n"); std::exit(1); }
 }
 
-static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[20], size_t capacity = 16384)
+static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[20])
 {
     FILE* file = std::tmpfile();
     require(file != nullptr);
-    auto* backend = buffered ? static_cast<GAGCore::StreamBackend*>(new GAGCore::BufferedFileStreamBackend(file, capacity))
+    auto* backend = buffered ? static_cast<GAGCore::StreamBackend*>(new GAGCore::BufferedFileStreamBackend(file))
                              : new GAGCore::FileStreamBackend(file);
     GAGCore::BinaryOutputStream writer(backend);
     writer.enableSHA1();
@@ -69,15 +69,35 @@ static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[
     return bytes;
 }
 
+// Memory streams overwrite in place, append past the end, keep a zero-filled
+// gap after a seek past the end, and hand over their contents.
+static void checkMemoryBackend()
+{
+    GAGCore::MemoryStreamBackend memory;
+    memory.reserve(64);
+    memory.write("abcdef", 6);
+    memory.seekFromStart(2);
+    memory.write("XYZWV", 5);
+    require(memory.getPosition() == 7);
+    memory.seekFromStart(1);
+    memory.write("Q", 1);
+    require(memory.takeContents() == "aQXYZWV");
+    require(memory.getPosition() == 0);
+    memory.write("n", 1);
+    require(memory.takeContents() == "n");
+    GAGCore::MemoryStreamBackend gap;
+    gap.write("ab", 2);
+    gap.seekFromEnd(-2);
+    gap.write("k", 1);
+    require(gap.takeContents() == std::string("ab\0\0k", 5));
+}
+
 int main()
 {
-    unsigned char a[20], b[20], c[20];
-    const std::vector<unsigned char> direct = serialize(false,a);
-    require(direct == serialize(true,b));
+    checkMemoryBackend();
+    unsigned char a[20], b[20];
+    require(serialize(false,a) == serialize(true,b));
     require(std::memcmp(a,b,20) == 0);
-    // Atomic saves use a 1 MiB buffer, which also absorbs the large block writes.
-    require(direct == serialize(true,c,size_t(1) << 20));
-    require(std::memcmp(a,c,20) == 0);
     // The duplicated descriptor survives the backend's fclose.
     FILE* file = std::tmpfile();
     require(file != nullptr);
@@ -89,5 +109,5 @@ int main()
     require(std::fread(bytes, 1, sizeof(bytes), verifier) == sizeof(bytes));
     require(std::memcmp(bytes,"final buffered bytes",20) == 0);
     std::fclose(verifier);
-    std::puts("Buffered file stream: bytes, SHA1, boundaries, seeks, reads, flush and destruction passed");
+    std::puts("Buffered file stream: bytes, SHA1, boundaries, seeks, reads, flush and destruction passed; memory stream writes passed");
 }

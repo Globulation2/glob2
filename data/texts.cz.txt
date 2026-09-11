@@ -1766,6 +1766,10 @@ Vybraná grafika se použije při příštím načtení hry nebo editoru map (Op
 Automatický toroidní pohled
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automaticky zobrazovat přehled mapy ve tvaru torusu při pohybu po mapě (OpenGL).
+[settings Autosave]
+Automatické ukládání
+[settings Save the game automatically about every 10 seconds.]
+Hru automaticky ukládá přibližně každých 10 sekund.
 [Channel width]
 Šířka průlivu
 [Land bridge width]

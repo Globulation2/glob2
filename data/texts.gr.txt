@@ -1836,6 +1836,10 @@ Cortex
 Αυτόματη τοροειδής προβολή
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Αυτόματη εμφάνιση της επισκόπησης του χάρτη σε σχήμα τόρου ενώ μετακινείστε στον χάρτη (OpenGL).
+[settings Autosave]
+Αυτόματη αποθήκευση
+[settings Save the game automatically about every 10 seconds.]
+Αποθηκεύει αυτόματα το παιχνίδι περίπου κάθε 10 δευτερόλεπτα.
 [Channel width]
 Πλάτος καναλιού
 [Land bridge width]

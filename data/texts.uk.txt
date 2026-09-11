@@ -1762,6 +1762,10 @@ OpenGL недоступний у цій збірці.
 Автоматичний вигляд тора
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Автоматично показувати огляд карти у формі тора під час переміщення по карті (OpenGL).
+[settings Autosave]
+Автозбереження
+[settings Save the game automatically about every 10 seconds.]
+Автоматично зберігає гру приблизно кожні 10 секунд.
 [Channel width]
 Ширина протоки
 [Land bridge width]

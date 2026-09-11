@@ -880,6 +880,8 @@
 [settings Apply artwork on the next game or editor load (OpenGL).]
 [settings Automatic torus view]
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
+[settings Autosave]
+[settings Save the game automatically about every 10 seconds.]
 [Channel width]
 [Land bridge width]
 [Lake size]

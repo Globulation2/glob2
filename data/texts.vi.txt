@@ -1762,6 +1762,10 @@ Hình ảnh được áp dụng khi tải ván chơi hoặc trình chỉnh sửa
 Chế độ xem hình xuyến tự động
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển xung quanh bản đồ (OpenGL).
+[settings Autosave]
+Tự động lưu
+[settings Save the game automatically about every 10 seconds.]
+Tự động lưu trò chơi khoảng mỗi 10 giây.
 [Channel width]
 Độ rộng kênh
 [Land bridge width]

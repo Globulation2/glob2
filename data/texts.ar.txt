@@ -1764,6 +1764,10 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الطارة تلقائيًا
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).
+[settings Autosave]
+ﺍﻟﺤﻔﻆ ﺍﻟﺘﻠﻘﺎﺋﻲ
+[settings Save the game automatically about every 10 seconds.]
+ﺣﻔﻆ ﺍﻟﻠﻌﺒﺔ ﺗﻠﻘﺎﺋﻴﺎ ﻛﻞ 10 ﺛﻮﺍﻥ ﺗﻘﺮﻳﺒﺎ.
 [Channel width]
 عرض القناة
 [Land bridge width]

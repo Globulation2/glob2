@@ -1762,6 +1762,10 @@ Globulation 2 커서를 표시합니다.
 자동 토러스 보기
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 지도 안에서 이동할 때 토러스(도넛) 모양의 지도 전체 보기를 자동으로 표시합니다(OpenGL).
+[settings Autosave]
+자동 저장
+[settings Save the game automatically about every 10 seconds.]
+약 10초마다 게임을 자동으로 저장합니다.
 [Channel width]
 수로 너비
 [Land bridge width]

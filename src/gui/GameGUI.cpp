@@ -8,6 +8,7 @@
 
 #include <GUITextInput.h>
 #include <GUIList.h>
+#include <BackgroundFileWriter.h>
 #include <SDLCompat.h>
 #include <Toolkit.h>
 

@@ -1776,6 +1776,10 @@ Erabili hautatutako artelana joko bat edo mapa-editorea kargatzen den hurrengoan
 Toroide-ikuspegi automatikoa
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Erakutsi automatikoki toroide formako maparen ikuspegi orokorra mapan mugitzen zaren bitartean (OpenGL).
+[settings Autosave]
+Gordetze automatikoa
+[settings Save the game automatically about every 10 seconds.]
+Jokoa automatikoki gordetzen du, gutxi gorabehera 10 segundoro.
 [Channel width]
 Kanalaren zabalera
 [Land bridge width]
