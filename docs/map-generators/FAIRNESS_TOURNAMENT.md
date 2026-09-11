@@ -46,6 +46,9 @@ Presets live in `tools/map-fairness/*.json`. Most keys can also be set on the co
 
 Everything is seeded, so the same preset reproduces the same maps, games and report.
 
+`python3 test/test_map_fairness_tournament.py` checks the adjudication, the log parsing and the
+statistics against synthetic engine output and known values. It needs no build and plays no games.
+
 ## What a run does
 
 1. **Map production.** `MapGeneratorStudy <id> <seed> <profile> w= h= teams= quality candidates=5
