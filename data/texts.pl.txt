@@ -1870,3 +1870,51 @@ Groble są zbyt blisko siebie; użyj mniej licznych lub węższych grobli albo w
 Szerokość pasa
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Pas jest za krótki dla tylu kolonii; użyj dłuższej mapy lub mniejszej liczby kolonii.
+[Wheat amount]
+Ilość pszenicy
+[Wood amount]
+Ilość drewna
+[Stone amount]
+Ilość kamienia
+[Algae amount]
+Ilość alg
+[Fruit amount]
+Ilość owoców
+[Stone on hilltops]
+Kamień na szczytach wzgórz
+[Winding river]
+Kręta rzeka
+[Sandy beaches]
+Piaszczyste plaże
+[Land bridges]
+Mosty lądowe
+[Colony meadows]
+Łąki wokół kolonii
+[Extra starting deposit]
+Dodatkowe złoże startowe
+[Moat bridges]
+Mosty nad fosą
+[Jagged coastlines]
+Postrzępione wybrzeża
+[Sand roads]
+Piaszczyste drogi
+[Treasure in dead ends]
+Skarby w ślepych zaułkach
+[Fjord bank deposits]
+Złoża na brzegach fiordów
+[Sandy lake shore]
+Piaszczysty brzeg jeziora
+[River delta]
+Delta rzeki
+[Meandering rivers]
+Meandrujące rzeki
+[Fruit in home valleys]
+Owoce w dolinach startowych
+[Moat]
+Fosa
+[Stone in the orchard]
+Kamień w sadzie
+[Colonies on both coasts]
+Kolonie na obu wybrzeżach
+[Winding belt]
+Kręty pas

@@ -12,9 +12,11 @@
 #include "Regions.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
+#include "Unit.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <utility>
 using namespace MapGeneration;
 
@@ -38,6 +40,38 @@ int placeResourceClump(Map &map, GenerationContext &context,
       }
     }
   return placed;
+}
+
+void setScaledResource(Map &map, int x, int y, int resourceType, int size, int percent) {
+  if (percent == 100) {
+    map.setResource(x, y, resourceType, size);
+    return;
+  }
+  const int half = size >> 1;
+  const int target = int(scaledCount(std::int64_t(2 * half + 1) * (2 * half + 1), percent));
+  if (target <= 0)
+    return;
+  int reach = 0;
+  while ((2 * reach + 1) * (2 * reach + 1) < target)
+    ++reach;
+  const int side = 2 * reach + 1;
+  // Offset i is column i / side, row i % side, the order setResource visits its square in. Keep
+  // the `target` offsets nearest the centre (by ring, then by distance round it).
+  const auto rank = [side, reach](int i) {
+    const int dx = std::abs(i / side - reach), dy = std::abs(i % side - reach);
+    return std::make_pair(std::max(dx, dy), dx + dy);
+  };
+  std::vector<int> order(size_t(side) * side);
+  for (size_t i = 0; i < order.size(); ++i)
+    order[i] = int(i);
+  std::stable_sort(order.begin(), order.end(), [&](int a, int b) { return rank(a) < rank(b); });
+  std::vector<unsigned char> chosen(order.size(), 0);
+  for (int k = 0; k < target; ++k)
+    chosen[size_t(order[size_t(k)])] = 1;
+  for (int i = 0; i < int(chosen.size()); ++i)
+    if (chosen[size_t(i)])
+      map.setResource(map.normalizeX(x + i / side - reach), map.normalizeY(y + i % side - reach),
+                      resourceType, 1);
 }
 
 int placeResourceClumpInArea(Map &map, GenerationContext &context,
@@ -475,7 +509,10 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
   // exact wall tiles are cleared, so a genuinely small spot is correctly left untouched.
   const int minPocketTiles = 60;
   for (int team = 0; team < context.request.nbTeams; ++team) {
-    int bootX = context.bootX[team], bootY = context.bootY[team];
+    // A caller can hand over a boot tile it has not wrapped onto the map yet: the height-field
+    // generators' fallback site search does, before placeStarts normalizes it. The floods below
+    // index by it directly.
+    int bootX = map.normalizeX(context.bootX[team]), bootY = map.normalizeY(context.bootY[team]);
     ReachResult reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
     auto pocketSize = [&] {
       int n = 0;
@@ -505,6 +542,83 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
       placeReachable(CORN);
     if (reach.woodDist < 0 || reach.woodDist > woodRange)
       placeReachable(WOOD);
+  }
+}
+
+namespace {
+// Where a team's own workers can walk within `range` — resources, water and buildings all block a
+// unit — and how many of the tiles reached start a 4x4 building. Seeded from the workers rather
+// than the boot tile, which is the swarm's own tile, so this counts the room a colony actually has.
+struct WorkerReach {
+  std::vector<int> dist;
+  int sites = 0;
+};
+WorkerReach reachFromWorkers(Map &map, int team, int range) {
+  const int w = map.getW(), h = map.getH();
+  WorkerReach r;
+  r.dist.assign(size_t(w) * h, -1);
+  std::vector<int> q(size_t(w) * h);
+  size_t qHead = 0, qTail = 0;
+  for (int y = 0; y < h; ++y)
+    for (int x = 0; x < w; ++x) {
+      const Uint16 gid = map.getGroundUnit(x, y);
+      if (gid != NOGUID && Unit::GIDtoTeam(gid) == team) {
+        r.dist[size_t(y) * w + x] = 0;
+        q[qTail++] = y * w + x;
+      }
+    }
+  while (qHead < qTail) {
+    const int p = q[qHead++];
+    const int x = p % w, y = p / w;
+    if (map.isFreeForBuilding(x, y, 4, 4))
+      ++r.sites;
+    if (r.dist[p] >= range)
+      continue;
+    for (int dy = -1; dy <= 1; ++dy)
+      for (int dx = -1; dx <= 1; ++dx) {
+        if (dx == 0 && dy == 0)
+          continue;
+        const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy), np = ny * w + nx;
+        if (r.dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0)) {
+          r.dist[np] = r.dist[p] + 1;
+          q[qTail++] = np;
+        }
+      }
+  }
+  return r;
+}
+} // namespace
+
+void openCrampedStarts(Game &game, GenerationContext &context, int sites, int range,
+                       const std::vector<unsigned char> *protectedWalls) {
+  Map &map = game.map;
+  const int w = map.getW(), h = map.getH();
+  if (protectedWalls && protectedWalls->size() != size_t(w) * h)
+    throw GenerationFailure("Protected wall mask does not match the map size");
+  for (int team = 0; team < context.request.nbTeams; ++team) {
+    WorkerReach reach = reachFromWorkers(map, team, range);
+    if (reach.sites >= sites)
+      continue;
+    // Rings measured with resources ignored, so they walk out through the wall itself instead of
+    // stopping at its inner face the way the colony's own flood does.
+    const int bootX = map.normalizeX(context.bootX[team]),
+              bootY = map.normalizeY(context.bootY[team]);
+    const std::vector<int> open = terrainOnlyReach(map, bootX, bootY, range, protectedWalls);
+    std::vector<std::vector<int>> rings(size_t(range) + 1);
+    for (int p = 0; p < w * h; ++p)
+      if (open[p] >= 1 && open[p] <= range && map.isResource(p % w, p / w) &&
+          !(protectedWalls && (*protectedWalls)[p]))
+        rings[open[p]].push_back(p);
+    // One ring at a time, nearest first, re-measuring after each: the ring that finally gives the
+    // colony its room is the last one cleared, so nothing further out is touched. A colony on a
+    // genuinely small spot — a real islet, with nothing to open up — just runs out of rings.
+    for (int ring = 1; ring <= range && reach.sites < sites; ++ring) {
+      if (rings[ring].empty())
+        continue;
+      for (const int p : rings[ring])
+        map.setNoResource(p % w, p / w, 1);
+      reach = reachFromWorkers(map, team, range);
+    }
   }
 }
 } // namespace MapGeneration

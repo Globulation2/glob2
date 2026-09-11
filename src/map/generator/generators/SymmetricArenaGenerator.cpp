@@ -6,6 +6,7 @@
 #include "GenerationContext.h"
 #include "GlobalContainer.h"
 #include "HeightMap.h"
+#include "Resources.h"
 #include "Unit.h"
 #include <algorithm>
 #include <array>
@@ -18,6 +19,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+using MapGeneration::scaledCount;
+using MapGeneration::scaledShare;
 
 // A symmetric arena: an orchard of all three fruits and some stone on an island behind a moat,
 // crossed by causeways, with the colonies spaced round it so that every colony's ground, route
@@ -479,7 +482,9 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
   homeDisc = stamp(s, homeDisc, true);
   homeZone = stamp(s, homeZone, true);
   t.ponds = stamp(s, pond, true);
-  t.causeways = stamp(s, gate, true);
+  // Without a moat the orchard island joins the land round it, and no causeway is needed; the
+  // moat's width still spaces the homes.
+  t.causeways = o.moat ? stamp(s, gate, true) : std::vector<unsigned char>(n, 0);
 
   t.moat.assign(n, 0);
   std::vector<unsigned char> lakeEligible(n, 0);
@@ -487,7 +492,7 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
     for (int u = 0; u < w; ++u) {
       const size_t i = size_t(v) * w + u;
       const std::int64_t r2 = cornerRadius2(w, h, u, v);
-      t.moat[i] = !within(r2, a.centre) && within(r2, a.centre + a.moat);
+      t.moat[i] = o.moat && !within(r2, a.centre) && within(r2, a.centre + a.moat);
       lakeEligible[i] = !within(r2, a.centre + a.moat + kApron) && !homeZone[i];
     }
   // Capped so big maps get more lakes rather than bigger ones: more shore, more farmland.
@@ -679,14 +684,24 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
       rock[i] = open && waterSteps[i] >= 3;
       alga[i] = water[i] && landSteps[i] >= 2;
     }
+  // The amount controls scale each layer on top of richness: wheat and wood their shares of the
+  // farmland (2:1 at the defaults, which use the shares exactly as they were).
+  const bool farmDefault = o.wheat == 100 && o.wood == 100;
+  const double wheatShare = scaledShare(0.3 * richness * 2 / 3, o.wheat);
+  const double woodShare = scaledShare(0.3 * richness / 3, o.wood);
+  const double farmShare =
+      farmDefault ? std::min(0.9, 0.3 * richness) : std::min(0.9, wheatShare + woodShare);
+  const double woodFraction = farmDefault                     ? 1.0 / 3
+                              : wheatShare + woodShare > 0.0 ? woodShare / (wheatShare + woodShare)
+                                                              : 0.0;
   const auto farmland = topShare(orbitNoise(context, s, "arena-farmland", coarse, false), farm,
-                                 std::min(0.9, 0.3 * richness), true);
+                                 farmShare, true);
   const auto wood = topShare(orbitNoise(context, s, "arena-split", 6.0f, false), farmland,
-                             1.0 / 3, true);
+                             woodFraction, true);
   const auto outcrops = topShare(orbitNoise(context, s, "arena-stone", coarse, false), rock,
-                                 0.012 * richness, true);
+                                 scaledShare(0.012 * richness, o.stone), true);
   const auto algae = topShare(orbitNoise(context, s, "arena-algae", coarse, false), alga,
-                              0.1 * richness, true);
+                              scaledShare(0.1 * richness, o.algae), true);
   for (size_t i = 0; i < n; ++i) {
     if (farmland[i])
       plan[i] = wood[i] ? WOOD : CORN;
@@ -755,14 +770,24 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
       return p->value != q->value ? p->value > q->value : p->key < q->key;
     });
     const size_t stones =
-        std::min(ranked.size() - 3, size_t(std::lround(0.2 * double(ranked.size()))));
+        o.orchardStone ? std::min(ranked.size() - 3, size_t(std::lround(0.2 * double(ranked.size()))))
+                       : 0;
     for (size_t k = 0; k < stones; ++k)
       ranked[k]->stone = true;
     std::sort(ranked.begin(), ranked.end(), [](const Orbit *p, const Orbit *q) {
       return p->radius2 != q->radius2 ? p->radius2 < q->radius2 : p->key < q->key;
     });
+    // The fruit amount keeps that share of the fruit orbits nearest the centre, never fewer than
+    // three so every fruit stays; the rest are left as open grass.
+    const size_t fruitOrbits = ranked.size() - stones;
+    const size_t keptFruit =
+        std::clamp<size_t>(size_t(scaledCount(std::int64_t(fruitOrbits), o.fruit)),
+                           std::min<size_t>(3, fruitOrbits), fruitOrbits);
     int fruit = l.orchardPattern;
+    size_t fruitPlanted = 0;
     for (const Orbit *orbit : ranked) {
+      if (!orbit->stone && fruitPlanted++ >= keptFruit)
+        continue;
       const int type = orbit->stone ? STONE : CHERRY + fruit++ % 3;
       for (int i : orbit->tiles)
         plan[size_t(i)] = type;
@@ -1066,7 +1091,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context) {
 SymmetricArenaOptions::SymmetricArenaOptions(const GenerationRequest &r)
     : centreSize(r.option("centre-size")), moatWidth(r.option("moat-width")),
       causewayWidth(r.option("causeway-width")), causeways(r.option("causeways")),
-      lakes(r.option("lakes")), richness(r.option("richness")) {}
+      lakes(r.option("lakes")), richness(r.option("richness")), moat(r.option("moat") != 0),
+      orchardStone(r.option("orchard-stone") != 0), wheat(r.option("wheat-amount")),
+      wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+      algae(r.option("algae-amount")), fruit(r.option("fruit-amount")) {}
 
 GeneratorDefinition symmetricArenaDefinition() {
   return {"symmetric-arena",
@@ -1083,7 +1111,20 @@ GeneratorDefinition symmetricArenaDefinition() {
            {"causeway-width", "Causeway width", 2, 8, 1, 4, ControlGroup::Layout},
            {"causeways", "Causeways", 1, 2, 1, 1, ControlGroup::Layout},
            {"lakes", "Lakes", 0, 40, 5, 20, ControlGroup::Terrain},
-           {"richness", "Resource richness", 0, 200, 25, 100, ControlGroup::Resources}},
+           {"richness", "Resource richness", 0, 200, 25, 100, ControlGroup::Resources},
+           // Off, no water rings the orchard island; it joins the land around it.
+           GeneratorControl::toggle("moat", "Moat", true, ControlGroup::Terrain),
+           // Off, every grove in the orchard is fruit.
+           GeneratorControl::toggle("orchard-stone", "Stone in the orchard", true,
+                                    ControlGroup::Resources),
+           // Each ambient layer on top of richness: the farmland's wheat and wood, stone outcrops
+           // and algae. Fruit keeps that share of the orchard's groves nearest the centre, never
+           // fewer than three. Every home's kit stays as it is.
+           GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+           GeneratorControl::percentage("wood-amount", "Wood amount"),
+           GeneratorControl::percentage("stone-amount", "Stone amount"),
+           GeneratorControl::percentage("algae-amount", "Algae amount"),
+           GeneratorControl::percentage("fruit-amount", "Fruit amount", 100)},
           generate,
           true,
           validate,

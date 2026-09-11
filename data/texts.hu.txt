@@ -1870,3 +1870,51 @@ Gyűrűvilág
 Öv szélessége
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Az öv túl rövid ennyi kolóniához; használjon hosszabb térképet vagy kevesebb kolóniát.
+[Wheat amount]
+Búza mennyisége
+[Wood amount]
+Fa mennyisége
+[Stone amount]
+Kő mennyisége
+[Algae amount]
+Alga mennyisége
+[Fruit amount]
+Gyümölcs mennyisége
+[Stone on hilltops]
+Kő a dombtetőkön
+[Winding river]
+Kanyargó folyó
+[Sandy beaches]
+Homokos strandok
+[Land bridges]
+Földhidak
+[Colony meadows]
+Rétek a kolóniák körül
+[Extra starting deposit]
+Extra kezdő lelőhely
+[Moat bridges]
+Hidak a várárkon
+[Jagged coastlines]
+Tagolt partok
+[Sand roads]
+Homokutak
+[Treasure in dead ends]
+Kincsek a zsákutcákban
+[Fjord bank deposits]
+Lelőhelyek a fjordok partján
+[Sandy lake shore]
+Homokos tópart
+[River delta]
+Folyódelta
+[Meandering rivers]
+Kanyargó folyók
+[Fruit in home valleys]
+Gyümölcs a kezdővölgyekben
+[Moat]
+Várárok
+[Stone in the orchard]
+Kő a gyümölcsösben
+[Colonies on both coasts]
+Kolóniák mindkét parton
+[Winding belt]
+Kanyargó öv

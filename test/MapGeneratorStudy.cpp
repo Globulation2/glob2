@@ -347,11 +347,12 @@ int main(int argc, char **argv)
 			for (size_t i = 0; i < controls.size(); ++i)
 			{
 				const auto &c = controls[i];
-				std::printf("%s{\"id\":\"%s\",\"label\":\"%s\",\"min\":%d,\"max\":%d,\"step\":%d,"
-							"\"default\":%d,"
+				std::printf("%s{\"id\":\"%s\",\"label\":\"%s\",\"kind\":\"%s\",\"min\":%d,\"max\":%d,"
+							"\"step\":%d,\"default\":%d,"
 							"\"group\":%d,\"powerOfTwo\":%s,\"values\":[",
-							i ? "," : "", c.id.c_str(), c.label, c.minimum, c.maximum, c.step,
-							c.defaultValue, int(c.group), c.powerOfTwo ? "true" : "false");
+							i ? "," : "", c.id.c_str(), c.label, c.isToggle() ? "toggle" : "range",
+							c.minimum, c.maximum, c.step, c.defaultValue, int(c.group),
+							c.powerOfTwo ? "true" : "false");
 				const auto domain = c.values();
 				for (size_t j = 0; j < domain.size(); ++j)
 					std::printf("%s%d", j ? "," : "", domain[j]);

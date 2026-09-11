@@ -59,6 +59,55 @@ Archipelago predate the shared resource/placement machinery and still place reso
 to each boot tile with their own compass-direction search, rather than through
 `scatterResources`/`chooseBalancedStarts`.
 
+## Resource amounts and switches
+
+Every playable generator has amount controls for the resources it places (wheat, wood and stone
+everywhere; algae and fruit where it places them) and one to three on/off switches for its own
+sub-behaviours. An amount is a percentage of the generator's default, 100, from 0 to 300 in steps
+of 25 unless noted. It scales the numbers that already decided that amount, and at 100 every map is
+exactly what it was. Fairness placements (starter kits, 1:1 guaranteed wheat and wood, the
+reachability backstop) stay unscaled wherever a generator has them, so an amount of 0 empties the
+ambient layer but still leaves every colony a start. Maze keeps its explicit densities.
+
+| Generator | What the amounts scale | Switches (default) |
+|---|---|---|
+| Swamp, River, Islands, Crater lakes | Each resource's band of the height field: algae the lowest sixth of the water, stone a third of the farmland share just above the beach, wheat and wood the rest as two separate bands, none past the top of the grass. Fruit still counts groves | Stone on hilltops (off): stone on the highest grass instead of by the shore. River also: Winding river (on) |
+| Concrete islands | Each colony's wheat and wood fields (how far in from the coast they reach) and its six stone deposits; the channels' algae (how deep it grows); the neutral islands' wheat half and fruit count | Sandy beaches (on) |
+| Isles | Each colony's fields and stone deposits, and its algae patch (5×5 at 100) | Land bridges (on); Sandy beaches (on) |
+| Old random | The area of each colony's wheat, wood, stone and algae squares | Colony meadows (on): the cleared grass square round each colony |
+| Old islands | The area of each island's deposits | Extra starting deposit (on): the fourth deposit, of whichever of wheat or wood came out smaller |
+| Contested commons | How many of the commons' zones are wheat, wood or fruit, its quarry's size and the moat's algae; home islands' fields are unscaled | Moat bridges (on); Jagged coastlines (on) |
+| Maze | No new amounts: its existing Wheat, Wood, Stone, Algae and Fruit controls already set them | Sand roads (on); Treasure in dead ends (on): off, the same fruit is scattered along the passages' shores |
+| Fjord continent | The ambient scatter, the core's stone and fruit clumps, the lake's and open sea's algae, and the banks' extra clumps; starter kits and bank guarantees are unscaled | Lake connects to fjords (off); Sandy lake shore (on); Fjord bank deposits (on) |
+| Watershed | Separate wheat and wood farmland budgets, stone outcrops, confluence fruit groves, and algae at the mouths and in the shallows; starter kits are unscaled | River delta (on); Meandering rivers (on) |
+| Stone highlands | The ponds' farmland (wheat and wood) and algae, and how much of the ridgeline is two tiles thick (stone, 0 to 200); kits are unscaled and Fruit still counts groves | Fruit in home valleys (off) |
+| Symmetric arena | The farmland's wheat and wood, stone outcrops and algae, on top of Resource richness; fruit (0 to 100) keeps that share of the orchard's groves nearest the centre, never fewer than three | Moat (on); Stone in the orchard (on) |
+| Ring world | The ambient scatter's wheat, wood, stone and fruit, and the shallows' algae; starter patches and island prizes are unscaled | Winding belt (on); Colonies on both coasts (on) |
+
+`scaledCount` and `scaledShare` (`shared/Resources.h`) apply a percentage to a count or a share and
+return it unchanged at 100. `setScaledResource` scales one `Map::setResource` square to a share of
+its tiles, nearest the centre first, placed in `setResource`'s own order. Where an amount has to
+add random draws (Contested commons' moat algae, Fjord's bank clumps), they come from streams of
+their own, so the rest of the layout doesn't reshuffle.
+
+A high amount can also bury a colony: resources block ground units and buildings alike, so a
+widened farmland band or ambient scatter can wall a swarm into a pocket with nowhere to put a
+building. `guaranteeStartingResources` does not cover that case — a colony buried in wheat has
+wheat at its feet, so it counts as served — so `openCrampedStarts` (`shared/Resources.h`) clears
+the resource tiles nearest such a colony, one ring at a time outwards, until it can walk to 16
+tiles where a 4x4 building fits within 24 steps, and the caller then re-runs the guarantee in case
+the clearing took the nearest crop too. A colony that already has the room is untouched. The
+height-field generators (through `openStartsBuriedByAmounts`), Fjord and Ring world run it at any
+non-default amount, and never at the defaults. Concrete islands and Isles need it differently:
+their colonies' fields can cover every building site the start search looks at, so at a non-default
+amount that search widens its window out from the default field rather than failing.
+
+`placeSettlement` guards the same class of problem for the colonies it places: it measures the
+workers' room (free tiles inside the home mask touching the swarm) before the swarm goes down, and
+if the nearest-tie site the random pick landed on is short of room it takes the nearest site that
+has it instead of failing the map. The pick itself is unchanged wherever the room was already
+there, so this only rescues maps that used to fail outright.
+
 ## Resource placement
 
 `shared/Resources.cpp` gives generators a small set of composable primitives rather than one
@@ -102,8 +151,11 @@ fixed resource pass:
   (nothing reachable even through terrain alone) is left untouched, since there's nothing on the
   other side of a wall that isn't there. `protectedWalls` is an optional width×height mask of
   resource tiles that belong to the map's design, such as Stone highlands' ridgelines; they are
-  treated like terrain, never cleared and never looked past. RuggedArchipelago, ShatteredCoast,
-  Fjord, Watershed, Stone highlands and Ring world call this.
+  treated like terrain, never cleared and never looked past. It wraps each boot tile onto the map
+  first, since the height-field generators' fallback site search can hand over one past the edge.
+  RuggedArchipelago, ShatteredCoast, Fjord, Watershed, Stone highlands and Ring world call this, as
+  do the height-field generators, and Concrete islands and Isles at any wheat or wood amount
+  other than 100.
   Maze doesn't need it: its deposits are placed only along passage shores, leaving a clear lane
   down every passage, and its `validateWorld` confirms every colony can still walk to every
   other.
@@ -164,8 +216,9 @@ The richest generator, and the one most of this framework's resource work was pr
   angularly-neighboring teams as a smooth S-curve centerline from just outside the coast in to
   `coreR` (or, in lake-connected mode, well inside the lake — see below).
 - **Central lake.** `lake-size` (0–90%, of `coreR`; 0 disables it) carves a lake at the exact
-  center, ringed by a sandy no-man's-land wider than `Map::controlSand()`'s own coastal fringe.
-  `lake-connected` (default off) decides whether the fjords actually cut through into the lake —
+  center, ringed by a sandy no-man's-land wider than `Map::controlSand()`'s own coastal fringe
+  (`sandy-lake-shore`, on by default; off, the lake has an ordinary beach).
+  `lake-connected` (a switch, default off) decides whether the fjords actually cut through into the lake —
   every peninsula then water-isolated from its neighbors, boats required — or stop short behind a
   solid land ring, keeping mutual land connectivity; the latter is verified with an explicit
   flood-fill after construction rather than assumed, and only runs in that mode, since a
@@ -183,7 +236,8 @@ The richest generator, and the one most of this framework's resource work was pr
   far away in some other direction.
 - **Fjord banks.** Every fjord guarantees one corn and one wood clump per side, placed last so
   nothing else can overwrite the guarantee, plus six lighter best-effort clumps per side mixing
-  corn/wood/stone along the same bank.
+  corn/wood/stone along the same bank (`bank-deposits`, on by default). Each amount places its
+  rolled clumps that many hundredths of a time, drawing any chance from a stream of its own.
 - **Ambient layer and backstop.** `scatterResources` fills the continent interior at the end
   (corn:wood 2:1, fruit, stone; algae left to the dedicated shoreline/lake passes above), and
   `guaranteeStartingResources` runs last as the reachability backstop described above.
@@ -213,7 +267,8 @@ cul-de-sac.
   so every cell is linked to the rest of the maze by ground that can never be closed:
   `Map::incResource` only seeds a resource on its own terrain and buildings need pure grass, so
   nothing grows over a road or is built on one. At a home the road stops against the swarm's
-  footprint. Shore distances for the resource scatter ignore the road.
+  footprint. Shore distances for the resource scatter ignore the road. With `sand-roads` off
+  (on by default), passages are grass from shore to shore, open to farmland and buildings.
 - **Walls.** Every closed boundary has a stone spine covering the whole boundary line from corner
   to corner, with `channel-width` all-water tiles on either side (default 2). Perpendicular walls
   share their corner tile, so a boundary can only be crossed — on foot or swimming — where it's
@@ -232,7 +287,8 @@ cul-de-sac.
   every passage's shores, never more than three tiles in, so each passage keeps a clear lane down
   its middle however the maze turns. Fruit is treasure: every dead end that isn't a home gets one
   compact patch of `fruit` tiles near its far end, with fruit types dealt round-robin so every
-  kind is somewhere in the maze. Algae is seeded along the channels.
+  kind is somewhere in the maze. With `dead-end-treasure` off (on by default) the same fruit is
+  scattered along the passages' shores instead. Algae is seeded along the channels.
 - **Checked, not assumed.** `validateWorld` floods walkable tiles (water, buildings and every
   resource, including wall spines, block it) from colony 0's workers, and fails the candidate if
   any colony isn't reached.
@@ -248,7 +304,9 @@ dry sandy uplands, and sand fords across the channels.
 - **Rivers.** Springs are sampled by land area (`river-density`) and join the network downstream
   of them nearest-first; a path that runs into another river becomes its tributary. Width grows
   with the square root of the springs upstream (`river-width`), and the trunk splits into one to
-  three distributaries on a delta lobe.
+  three distributaries on a delta lobe (`river-delta`, on by default; off, one mouth and no lobe,
+  with the other distributaries still planned so the rest of the network is unchanged). Every
+  path meanders (`meanders`, on by default; off, rivers run without their meanders).
 - **Channels that keep their water.** Channels are stamped wide enough to keep a four-connected
   water core under an all-at-once version of `controlSand`'s grass-to-sand rule;
   `Map::controlSand()` is then required to change nothing.
@@ -275,7 +333,8 @@ the whole game.
 - **Ridges.** Basin sites spaced about `valley-size` apart are scattered on the torus, and every
   tile takes its nearest site after a periodic warp. A tile becomes ridge when any of its eight
   neighbours has a lower label, so no unit can slip through diagonally; noise thickens some
-  stretches to two tiles, and enclosed pockets under 40 tiles are filled.
+  stretches to two tiles (45% of the ridge at the default stone amount, which scales that
+  share), and enclosed pockets under 40 tiles are filled.
 - **Passes.** A random spanning tree of `pass-width` openings, cut mid-ridge, joins every valley;
   `loopiness` opens that share of the remaining shared ridges.
 - **Homes and ponds.** Colonies take the roomiest valleys by farthest-point spreading, one per
@@ -283,7 +342,8 @@ the whole game.
   interiors away from ridges, passes and homes, with two-tile beaches so algae can regrow; valleys
   under 120 tiles get none.
 - **Resources.** Identical 1:1 wheat and wood kits beside every home, 2:1 farmland ringing the
-  ponds, algae in the water, and `fruit` groves (per 128×128) only in valleys no colony starts in.
+  ponds, algae in the water, and `fruit` groves (per 128×128) only in valleys no colony starts in
+  (unless `home-valley-fruit`, off by default, lets them grow in home valleys too).
   `guaranteeStartingResources` runs with the ridges as protected walls, and any resource left in
   or beside a pass is removed. `validateRequest` rejects maps smaller than four valleys or with
   fewer than 1,024 tiles per colony.
@@ -307,11 +367,14 @@ colonies identical starting ground.
   order dependent, and resource amounts drawn from the engine RNG are equalised across each orbit.
 - **Centre.** `centre-size` sets the island's radius and `moat-width` the water around it;
   `causeways` and `causeway-width` choose one gate straight towards each colony or two flanking it.
-  The orchard deals two-by-two fruit groves out an orbit at a time, turns some orbits to stone and
-  always keeps all three fruits. It is the map's only fruit.
+  With `moat` off (on by default) the island joins the land around it, with no causeways; the
+  moat's width still spaces the homes. The orchard deals two-by-two fruit groves out an orbit at
+  a time, turns some orbits to stone (`orchard-stone`, on by default) and always keeps all three
+  fruits; the fruit amount keeps that share of the fruit orbits nearest the centre, never fewer
+  than three. It is the map's only fruit.
 - **Outside the ring.** Symmetric lakes (`lakes`), shore farmland, stone outcrops and algae scaled
-  by `richness`. Each home gets a pond and a fixed kit, and each colony's shortest route to its
-  causeways is kept as clear land. `scatterResources` is not used.
+  by `richness` and each one's own amount. Each home gets a pond and a fixed kit, and each
+  colony's shortest route to its causeways is kept as clear land. `scatterResources` is not used.
 - **Checked, not assumed.** `validateWorld` requires corner, terrain, deposit, building and unit
   invariance under every symmetry, with a consistent colony permutation that reaches every colony,
   and equal walking distances from every colony to wheat, wood, each fruit and the orchard. Only
@@ -327,11 +390,13 @@ exactly two land neighbours.
 - **Belt.** The centre line and width are whole-number harmonics of the map length and the coast
   is lattice noise whose cells tile the torus, so the seam can't be seen. A dry spine beside the
   centre line and one shared coast budget keep the belt a single landmass and the ocean a band
-  whatever `belt-width` (a percentage of the map's breadth) and `coast-roughness` ask for. Terrain
+  whatever `belt-width` (a percentage of the map's breadth) and `coast-roughness` ask for. With
+  `winding-belt` off (on by default) the centre line runs straight round the map. Terrain
   is stamped with an order-independent beach pass rather than `Map::controlSand()`.
 - **Lakes and islands.** `lake-density` adds inland lakes that keep land between them and the
   ocean and stay off the spine; `resource-islands` (per 128×128) adds themed islands out at sea.
-- **Colonies and resources.** Evenly spaced, jittered slots alternate coasts and sit on the
+- **Colonies and resources.** Evenly spaced, jittered slots alternate coasts (`both-coasts`, on
+  by default; off, every colony takes the same coast) and sit on the
   spine-connected belt at one fixed distance from water, with identical starter patches; then
   `scatterResources`, a shallows algae pass and `guaranteeStartingResources`. A final road pass
   clears only the deposits on the cheapest walk from each colony to the next, closing the loop.
@@ -350,7 +415,9 @@ exactly two land neighbours.
   it is how a reviewer knows a seed's output isn't expected to match a prior build byte-for-byte.
 - `GeneratorControl`s are validated by `GeneratorRegistry`'s constructor: every control's default
   must land on a valid step from its minimum, and (`allowedValues` aside) `(maximum - minimum)`
-  must be evenly divisible by `step`. Every control label needs matching entries in
+  must be evenly divisible by `step`. A `GeneratorControl::Kind::Toggle` control must be exactly 0 to 1 in
+  steps of 1, with no allowed values, power-of-two formatting or terrain weight; the lobby and
+  editor show it as a checkbox. Every control label needs matching entries in
   `data/texts.en.txt` (`[Label]` / `Label`) and `data/texts.keys.txt` (`[Label]`), the same as any
   other UI string.
 
@@ -361,7 +428,7 @@ exactly two land neighbours.
   [tuning] [headroom] [quality] [dump=path]`. `quality` reports `StartQualityReport`/
   `ColonyQuality` per colony; `dump=` writes a plain-text terrain/resource grid for direct
   inspection or scripted flood-fill checks; `--catalog` dumps every registered generator's
-  controls as JSON.
+  controls as JSON, with each control's `kind` (`range` or `toggle`).
 - `test/MapGeneratorDefaultsTest.cpp` builds to `MapGeneratorDefaultsTest`, asserting the
   registry's and every control's contract: discrete domains, shape bounds, topology, home
   footprints, exact worker counts, seed repeatability and RNG stream isolation, and the

@@ -105,6 +105,76 @@ struct CustomGameSetupHarness
 		assert(!restored.setup.validation().empty());
 		std::cout << "PASS preferences round trip, hidden slots, bounds and corrupt-file recovery\n";
 	}
+	// Controls with no legacy descriptor field (every newer generator's, switches included) are
+	// saved in their own section, so a lobby restart keeps them. A file written before that
+	// section existed still loads, with those controls at their defaults.
+	static void preferencesOptions()
+	{
+		auto roundTrip = [](int method, const std::map<std::string, int> &values) {
+			CustomGamePreferences draft;
+			draft.setup.random = true;
+			draft.setup.generatorHistory.select(draft.setup.generator, method);
+			for (const auto &[id, value] : values)
+				GenerationRequest::control(method, id).set(draft.setup.generator, value);
+			draft.setup.capacity = draft.setup.generator.nbTeams;
+			CustomGamePreferences reloaded;
+			const bool loaded = reloaded.decode(draft.encode());
+			return loaded && reloaded.setup.generator.method == method &&
+				   reloaded.setup.generator.options == draft.setup.generator.options;
+		};
+		const int fjord = GenerationRequest::eFJORDCONTINENT, ring = GenerationRequest::eRINGWORLD;
+		// Fjord's lake size shares the legacy field that held the old generators' "use the
+		// default" sentinel 50, and used to reload as 30.
+		assert(roundTrip(fjord, {{"lake-size", 50}}));
+		// Fjord's lake size 0 and 90, and Ring world's lake density 0, lie outside the legacy
+		// fields' old bounds and used to make the whole file fail to load.
+		assert(roundTrip(fjord, {{"lake-size", 0}}) && roundTrip(fjord, {{"lake-size", 90}}));
+		assert(roundTrip(ring, {{"lake-density", 0}}));
+		// Every control's whole range survives, whether it lives in a legacy field or not.
+		for (int method : GeneratorRegistry::builtins().methods(false))
+			for (const auto &c : GenerationRequest::controls(method))
+				assert(roundTrip(method, {{c.id, c.minimum}}) && roundTrip(method, {{c.id, c.maximum}}));
+
+		CustomGamePreferences original;
+		original.setup.random = true;
+		original.setup.generatorHistory.select(original.setup.generator, fjord);
+		auto &g = original.setup.generator;
+		g.options["lake-connected"] = 1;
+		g.options["resource-islands"] = 7;
+		g.options["lake-size"] = 50;
+		original.setup.capacity = g.nbTeams;
+		const auto encoded = original.encode();
+		CustomGamePreferences restored;
+		assert(restored.decode(encoded) && restored.encode() == encoded);
+		assert(restored.setup.generator.options == g.options);
+
+		// The same file as an older build wrote it, without the options section.
+		const auto at = encoded.find("\noptions ") + 1, eol = encoded.find('\n', at);
+		const auto end = encoded.find("colonies\n");
+		assert(at > 0 && eol < end);
+		assert(restored.decode(encoded.substr(0, at) + encoded.substr(end)));
+		GenerationRequest defaults;
+		defaults.setMethodDefaults(fjord);
+		for (const auto &c : GenerationRequest::controls(fjord))
+			assert(c.get(restored.setup.generator) == (c.id == "lake-size" ? 50 : c.get(defaults)));
+
+		// An option this build doesn't have is ignored; a value outside its domain is corrupt.
+		const int count = std::stoi(encoded.substr(at + 8, eol - at - 8));
+		const auto withOption = [&](const std::string &line) {
+			return encoded.substr(0, at) + "options " + std::to_string(count + 1) + "\n" + line +
+				   "\n" + encoded.substr(eol + 1);
+		};
+		assert(restored.decode(withOption("retired-option 5")));
+		assert(restored.setup.generator.options == g.options && restored.encode() == encoded);
+		for (const char *corrupt : {"lake-connected 2", "resource-islands 21", "coast-roughness -1"})
+		{
+			assert(!restored.decode(withOption(corrupt)));
+			assert(restored.encode() == encoded);
+		}
+		assert(!restored.decode(encoded.substr(0, at) + "options 3\nlake-connected 1\n" +
+								encoded.substr(end)));
+		std::cout << "PASS preferences keep every generator option, and older files still load\n";
+	}
 	static void preferencesScreen(bool write)
 	{
 		auto *files = Toolkit::getFileManager();
@@ -370,10 +440,11 @@ struct CustomGameSetupHarness
     screen.listMaps();
 
     auto paint = [&] { screen.dispatchPaint(false); };
-    auto keyEvent = [&](SDL_Keycode key) {
+    auto keyEvent = [&](SDL_Keycode key, Uint16 modifiers = KMOD_NONE) {
       SDL_Event e = {};
       e.type = SDL_KEYDOWN;
       e.key.keysym.sym = key;
+      e.key.keysym.mod = modifiers;
       screen.dispatchEvents(&e);
       paint();
     };
@@ -654,6 +725,35 @@ struct CustomGameSetupHarness
     capture("rugged-archipelago-controls");
     landscape(MapGenerationDescriptor::eOLDRANDOM);
     capture("shattered-coast-controls");
+    // Switches are checkboxes: a click, or Space or Return on the focused row, flips one, and
+    // either edit invalidates the preview like any other generator control.
+    landscape(GenerationRequest::eFJORDCONTINENT);
+    screen.expanded[0] = screen.expanded[1] = screen.expanded[2] = true;
+    screen.onTimer(screen.previewDue);
+    assert(screen.validMap);
+    {
+      auto &options = screen.setup.generator.options;
+      const auto revision = screen.setup.mapRevision;
+      assert(options["lake-connected"] == 0);
+      clickControl("generator/lake-connected");
+      assert(options["lake-connected"] == 1 && screen.setup.mapRevision != revision &&
+             !screen.validMap && screen.previewPending);
+      assert(screen.controls->focus == "generator/lake-connected");
+      keyEvent(SDLK_SPACE);
+      assert(options["lake-connected"] == 0);
+      keyEvent(SDLK_RETURN);
+      assert(options["lake-connected"] == 1);
+      // Tab walks off the checkbox and Shift+Tab back onto it, like any other control.
+      keyEvent(SDLK_TAB);
+      assert(screen.controls->focus != "generator/lake-connected");
+      keyEvent(SDLK_TAB, KMOD_SHIFT);
+      assert(screen.controls->focus == "generator/lake-connected");
+      screen.onTimer(screen.previewDue);
+      assert(screen.validMap);
+      capture("map-checkboxes");
+      clickControl("generator/lake-connected");
+      assert(options["lake-connected"] == 0);
+    }
     landscape(MapGenerationDescriptor::eRIVER);
 
     screen.activateGroup(screen.groups[0]);
@@ -686,10 +786,33 @@ struct CustomGameSetupHarness
       };
       const auto corner = pixel(rect.x + 1, rect.y + 1);
       assert(corner[0] || corner[1] || corner[2]); // no thumbnail letterbox inside the map
+      // LobbyMapPreview clamps a marker's top-left corner so the whole 16x16 square stays inside
+      // the preview, which on a narrow one squeezes a whole edge of the map onto one row or column:
+      // a 128x512 map is 34 pixels wide in the compact window, so every start past about x=60
+      // lands on the same column. Markers then overlap, and each one paints a 20x20 dark backing
+      // two pixels outside its 16x16 fill before filling it, so a later marker legitimately covers
+      // an earlier one's sampled pixel whenever it lands anywhere near it, not only exactly on top
+      // of it. Only a start that nothing is drawn over afterwards can be checked.
+      std::vector<int> markerX, markerY;
       for (const auto &start : expectedStarts) {
-        const int x = rect.x + std::clamp(start.x * rect.w / mapW, 2, std::max(2, rect.w - 18));
-        const int y = rect.y + std::clamp(start.y * rect.h / mapH, 2, std::max(2, rect.h - 18));
-        const auto swatch = pixel(x + 1, y + 1);
+        markerX.push_back(rect.x + std::clamp(start.x * rect.w / mapW, 2, std::max(2, rect.w - 18)));
+        markerY.push_back(rect.y + std::clamp(start.y * rect.h / mapH, 2, std::max(2, rect.h - 18)));
+      }
+      for (size_t i = 0; i < expectedStarts.size(); ++i) {
+        const int sampleX = markerX[i] + 1, sampleY = markerY[i] + 1;
+        bool covered = false;
+        for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
+          covered = sampleX >= markerX[j] - 2 && sampleX <= markerX[j] + 17 &&
+                    sampleY >= markerY[j] - 2 && sampleY <= markerY[j] + 17;
+        if (covered)
+          continue;
+        const auto &start = expectedStarts[i];
+        const auto swatch = pixel(sampleX, sampleY);
+        if (!(swatch[0] == start.color.r && swatch[1] == start.color.g && swatch[2] == start.color.b))
+          std::printf("marker mismatch %s: start (%d,%d) map %dx%d rect %d,%d %dx%d expected"
+                      " %d,%d,%d got %d,%d,%d\n",
+                      name.c_str(), start.x, start.y, mapW, mapH, rect.x, rect.y, rect.w, rect.h,
+                      start.color.r, start.color.g, start.color.b, swatch[0], swatch[1], swatch[2]);
         assert(swatch[0] == start.color.r && swatch[1] == start.color.g && swatch[2] == start.color.b);
       }
       SDL_FreeSurface(rgba);
@@ -889,6 +1012,7 @@ int main(int argc, char **argv)
 	}
 	Toolkit::getFileManager()->remove(CustomGamePreferences::filename);
 	CustomGameSetupHarness::preferencesModel();
+	CustomGameSetupHarness::preferencesOptions();
 	assert(SDLNet_Init() == 0);
 	if (argc > 2 && std::string(argv[2]) == "ui")
 	{

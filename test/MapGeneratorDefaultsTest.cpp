@@ -14,8 +14,10 @@
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
+#include <GUIButton.h>
 #include <GUIList.h>
 #include <GUINumber.h>
+#include <GUIText.h>
 #include <SDL_image.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -46,14 +48,38 @@ class MapGeneratorDefaultsTest
 	static void edit(NewMapScreen &s, const char *label, int value)
 	{
 		for (auto &w : s.controlWidgets)
-			if (w.number->visible && std::strcmp(w.definition.label, label) == 0)
+		{
+			if (!w.field()->visible || std::strcmp(w.definition.label, label) != 0)
+				continue;
+			if (w.toggle)
+			{
+				assert(value == 0 || value == 1);
+				w.toggle->setState(value != 0);
+				s.onAction(w.toggle, GAGGUI::BUTTON_STATE_CHANGED, NewMapScreen::TOGGLE, value);
+			}
+			else
 			{
 				w.number->setNth(w.definition.indexOf(value));
 				s.onAction(w.number, GAGGUI::NUMBER_ELEMENT_SELECTED, 0, 0);
-				assert(w.definition.get(s.descriptor) == value);
-				return;
 			}
+			assert(w.definition.get(s.descriptor) == value);
+			return;
+		}
 		assert(false);
+	}
+	// Presses and releases the mouse over a widget, the way a player clicks it.
+	static void click(NewMapScreen &s, GAGGUI::Widget *widget)
+	{
+		const auto box = static_cast<GAGGUI::RectangularWidget *>(widget)->getScreenRect();
+		for (Uint32 type : {Uint32(SDL_MOUSEBUTTONDOWN), Uint32(SDL_MOUSEBUTTONUP)})
+		{
+			SDL_Event event = {};
+			event.type = type;
+			event.button.button = SDL_BUTTON_LEFT;
+			event.button.x = box.x + box.w / 2;
+			event.button.y = box.y + box.h / 2;
+			s.dispatchEvents(&event);
+		}
 	}
 	static std::uint64_t fingerprint(const Game &game)
 	{
@@ -199,11 +225,14 @@ class MapGeneratorDefaultsTest
 								 false,
 								 false,
 								 {4, 8, 16}},
-								{"test-gap", "Channel width", 1, 5, 2, 3, ControlGroup::Layout}},
+								{"test-gap", "Channel width", 1, 5, 2, 3, ControlGroup::Layout},
+								GeneratorControl::toggle("test-switch", "Lake connects to fjords",
+														 false)},
 							   [](Game &game, GenerationContext &context)
 							   {
 								   const int elevation = context.request.option("test-elevation");
 								   assert(elevation == 8);
+								   assert(context.request.option("test-switch") == 1);
 								   game.map.makeHomogenMap(GRASS);
 								   for (int team = 0; team < context.request.nbTeams; ++team)
 								   {
@@ -212,16 +241,51 @@ class MapGeneratorDefaultsTest
 								   }
 								   return MapGeneration::placeStarts(game, context);
 							   }});
+		// A toggle is exactly 0 or 1, shown as a checkbox: any other domain is a registration error.
+		{
+			const auto rejected = [](GeneratorControl control)
+			{
+				GeneratorDefinition definition{"test-toggle", 102, "uniform terrain", 1, false,
+											   {std::move(control)},
+											   [](Game &, GenerationContext &) { return false; }};
+				try
+				{
+					GeneratorRegistry({definition});
+				}
+				catch (const std::invalid_argument &)
+				{
+					return true;
+				}
+				return false;
+			};
+			const auto on = GeneratorControl::toggle("switch", "Lake connects to fjords", true);
+			assert(on.isToggle() && on.defaultValue == 1 && on.values() == std::vector<int>({0, 1}));
+			assert(!rejected(on));
+			const auto amount = GeneratorControl::percentage("amount", "Fruit");
+			assert(!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount));
+			std::vector<GeneratorControl> broken(6, on);
+			broken[0].maximum = 2;
+			broken[1].minimum = broken[1].defaultValue = 1;
+			broken[2].powerOfTwo = true;
+			broken[3].terrainWeight = true;
+			broken[4].allowedValues = {0, 1};
+			broken[5].defaultValue = 2;
+			for (const auto &control : broken)
+				assert(rejected(control));
+		}
 		GeneratorRegistry registry(std::move(definitions));
 		NewMapScreen screen(registry);
 		select(screen, 101);
 		assert(screen.descriptor.option("test-elevation") == 6);
+		assert(screen.descriptor.option("test-switch") == 0);
 		edit(screen, "Island size", 16);
 		edit(screen, "Channel width", 5);
+		edit(screen, "Lake connects to fjords", 1);
 		select(screen, D::eRIVER);
 		select(screen, 101);
 		assert(screen.descriptor.option("test-cell") == 16 &&
-			   screen.descriptor.option("test-gap") == 5);
+			   screen.descriptor.option("test-gap") == 5 &&
+			   screen.descriptor.option("test-switch") == 1);
 		edit(screen, "Smoothing", 8);
 		assert(registry.selectionIndex(101) == 16);
 		const auto playable = registry.methods(false);
@@ -355,7 +419,7 @@ class MapGeneratorDefaultsTest
 				assert(decoded.setData(encoded.getData(), encoded.getDataLength()));
 				sameControls(fromLegacyDescriptor(decoded, 0), expected);
 			}
-			if (output && m >= 4 && m <= 8)
+			if (output && ((m >= 4 && m <= 8) || m == D::eFJORDCONTINENT))
 			{
 				s.gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(34, 55, 42));
 				for (auto *w : s.widgets)
@@ -364,6 +428,25 @@ class MapGeneratorDefaultsTest
 				std::string path = std::string(output) + "/editor-" + std::to_string(m) + ".png";
 				assert(IMG_SavePNG(s.gfx->getSDLSurface(), path.c_str()) == 0);
 			}
+		}
+		// Every switch is a check button in the editor, and clicking one flips the request's value.
+		for (int m : GeneratorRegistry::builtins().methods())
+		{
+			select(s, m);
+			for (auto &w : s.controlWidgets)
+				if (w.method == m)
+				{
+					assert(w.definition.isToggle() == bool(w.toggle) && bool(w.number) != bool(w.toggle));
+					assert(w.field()->visible && w.label->visible);
+					if (!w.toggle)
+						continue;
+					const int before = w.definition.get(s.descriptor);
+					assert(w.toggle->getState() == (before != 0));
+					click(s, w.toggle);
+					assert(w.definition.get(s.descriptor) == 1 - before && w.toggle->getState() == !before);
+					click(s, w.toggle);
+					assert(w.definition.get(s.descriptor) == before);
+				}
 		}
 		select(s, D::eRIVER);
 		edit(s, "Water weight", 37);

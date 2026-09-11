@@ -109,8 +109,8 @@ static bool generate(Game &game, GenerationContext &context)
 	// the commons radius is large. Size everything off the worst case each jaggedness value
 	// can actually produce, not off the ideal circle, so the sizing math and the moat's
 	// physical enforcement (below) agree on where the real boundary is.
-	const double teamJaggedness = 0.35;
-	const double commonsJaggedness = 0.32;
+	const double teamJaggedness = options.jaggedCoasts ? 0.35 : 0.0;
+	const double commonsJaggedness = options.jaggedCoasts ? 0.32 : 0.0;
 
 	const int homeRadius = std::max(10, minDist * options.homeSize / 100);
 	for (unsigned int i = 0; i < teamPoints.size(); ++i)
@@ -157,7 +157,7 @@ static bool generate(Game &game, GenerationContext &context)
 	// split further down only ever touches the round island, never a narrow connecting strip.
 	int bridgeAreaNumber = areaNumber;
 	areaNumber += 1;
-	for (unsigned int b = 0; b < bridgeAngles.size(); ++b)
+	for (unsigned int b = 0; b < bridgeAngles.size() && options.moatBridges; ++b)
 	{
 		double theta = bridgeAngles[b] * pi / 180.0;
 		for (int r = commonsRadius - 2; r <= commonsRadius + moatWidth + 2; ++r)
@@ -219,7 +219,14 @@ static bool generate(Game &game, GenerationContext &context)
 			if (r >= commonsRadius - 1 && r < commonsRadius + moatWidth)
 			{
 				game.map.setUMatPos(x, y, WATER, 1);
-				if (context.bounded("layout", 4) == 0)
+				// A quarter of the ring gets algae. The algae amount thins or thickens that with
+				// draws from a stream of its own, so the layout's draws stay the same.
+				bool seeded = context.bounded("layout", 4) == 0;
+				if (options.algae < 100)
+					seeded = seeded && int(context.bounded("commons-algae", 100)) < options.algae;
+				else if (options.algae > 100)
+					seeded = seeded || int(context.bounded("commons-algae", 300)) < options.algae - 100;
+				if (seeded)
 					game.map.setResource(x, y, ALGA, 1);
 			}
 		}
@@ -280,9 +287,10 @@ static bool generate(Game &game, GenerationContext &context)
 				ROLE_FRUIT = 3,
 				ROLE_QUARRY = 4
 			};
-			int woodTarget = std::max(1, zoneCount * 2 / 7);
-			int cornTarget = std::max(1, zoneCount * 2 / 7);
-			int fruitTarget = std::max(1, zoneCount / 7);
+			// The amount controls scale how many zones take each role.
+			int woodTarget = int(scaledCount(std::max(1, zoneCount * 2 / 7), options.wood));
+			int cornTarget = int(scaledCount(std::max(1, zoneCount * 2 / 7), options.wheat));
+			int fruitTarget = int(scaledCount(std::max(1, zoneCount / 7), options.fruit));
 
 			std::vector<int> order(zoneCount);
 			for (int z = 0; z < zoneCount; ++z)
@@ -338,7 +346,7 @@ static bool generate(Game &game, GenerationContext &context)
 					if (!pts.empty())
 					{
 						MapGeneratorPoint quarry = pts[context.bounded("layout", pts.size())];
-						game.map.setResource(quarry.x, quarry.y, STONE, 5);
+						setScaledResource(game.map, quarry.x, quarry.y, STONE, 5, options.stone);
 					}
 				}
 				else if (role[z] == ROLE_WOOD)
@@ -434,7 +442,11 @@ static bool generate(Game &game, GenerationContext &context)
 
 ContestedCommonsOptions::ContestedCommonsOptions(const GenerationRequest &r)
 	: homeSize(r.option("home-island-size")), commonsSize(r.option("commons-size")),
-	  moatWidth(r.option("moat-width")), bridgeCount(r.option("bridge-count"))
+	  moatWidth(r.option("moat-width")), bridgeCount(r.option("bridge-count")),
+	  moatBridges(r.option("moat-bridges") != 0), jaggedCoasts(r.option("jagged-coasts") != 0),
+	  wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
+	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+	  fruit(r.option("fruit-amount"))
 {
 }
 
@@ -448,6 +460,17 @@ GeneratorDefinition contestedCommonsDefinition()
 			{{"home-island-size", "Home island size", 20, 35, 5, 25, ControlGroup::Terrain},
 			 {"commons-size", "Commons size", 250, 500, 50, 400, ControlGroup::Terrain},
 			 {"moat-width", "Moat width", 20, 50, 5, 35, ControlGroup::Terrain},
-			 {"bridge-count", "Bridge count", 1, 5, 1, 3, ControlGroup::Layout}},
+			 {"bridge-count", "Bridge count", 1, 5, 1, 3, ControlGroup::Layout},
+			 // Off, no bridge crosses the commons' moat.
+			 GeneratorControl::toggle("moat-bridges", "Moat bridges", true, ControlGroup::Layout),
+			 // Off, the home islands and the commons are smooth rounds.
+			 GeneratorControl::toggle("jagged-coasts", "Jagged coastlines", true, ControlGroup::Terrain),
+			 // How many of the commons' zones are wheat, wood and fruit, the size of its quarry and
+			 // the moat's algae. Every home island's own starter fields stay as they are.
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount"),
+			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
 			generate};
 }

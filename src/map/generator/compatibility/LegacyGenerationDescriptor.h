@@ -90,3 +90,6 @@ class MapGenerationDescriptor
 
 GenerationRequest fromLegacyDescriptor(const MapGenerationDescriptor &, std::uint32_t seed);
 MapGenerationDescriptor toLegacyDescriptor(const GenerationRequest &);
+// Whether a generator's control is stored in the fixed legacy descriptor ("repeat" included);
+// the options of generators added after it was frozen are not.
+bool hasLegacyField(int method, const std::string &id);

@@ -1880,3 +1880,51 @@ Monde-anneau
 Largeur de la ceinture
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La ceinture est trop courte pour autant de colonies ; utilisez une carte plus longue ou moins de colonies.
+[Wheat amount]
+Quantité de blé
+[Wood amount]
+Quantité de bois
+[Stone amount]
+Quantité de pierre
+[Algae amount]
+Quantité d'algues
+[Fruit amount]
+Quantité de fruits
+[Stone on hilltops]
+Pierre au sommet des collines
+[Winding river]
+Rivière sinueuse
+[Sandy beaches]
+Plages de sable
+[Land bridges]
+Ponts terrestres
+[Colony meadows]
+Prairies autour des colonies
+[Extra starting deposit]
+Gisement de départ supplémentaire
+[Moat bridges]
+Ponts sur les douves
+[Jagged coastlines]
+Côtes découpées
+[Sand roads]
+Chemins de sable
+[Treasure in dead ends]
+Trésors dans les culs-de-sac
+[Fjord bank deposits]
+Gisements sur les rives des fjords
+[Sandy lake shore]
+Rive sableuse du lac
+[River delta]
+Delta de la rivière
+[Meandering rivers]
+Rivières à méandres
+[Fruit in home valleys]
+Fruits dans les vallées de départ
+[Moat]
+Douves
+[Stone in the orchard]
+Pierre dans le verger
+[Colonies on both coasts]
+Colonies sur les deux côtes
+[Winding belt]
+Ceinture sinueuse

@@ -1878,3 +1878,51 @@ Halka dünya
 Kuşak genişliği
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Kuşak bu kadar koloni için çok kısa; daha uzun bir harita veya daha az koloni kullanın.
+[Wheat amount]
+Buğday miktarı
+[Wood amount]
+Odun miktarı
+[Stone amount]
+Taş miktarı
+[Algae amount]
+Yosun miktarı
+[Fruit amount]
+Meyve miktarı
+[Stone on hilltops]
+Tepelerin üstünde taş
+[Winding river]
+Kıvrımlı nehir
+[Sandy beaches]
+Kumsallar
+[Land bridges]
+Kara köprüleri
+[Colony meadows]
+Koloni çevresinde çayırlar
+[Extra starting deposit]
+Ek başlangıç kaynağı
+[Moat bridges]
+Su hendeği köprüleri
+[Jagged coastlines]
+Girintili kıyılar
+[Sand roads]
+Kum yollar
+[Treasure in dead ends]
+Çıkmaz yollarda hazine
+[Fjord bank deposits]
+Fiyort kıyılarında kaynaklar
+[Sandy lake shore]
+Kumlu göl kıyısı
+[River delta]
+Nehir deltası
+[Meandering rivers]
+Menderesli nehirler
+[Fruit in home valleys]
+Başlangıç vadilerinde meyve
+[Moat]
+Su hendeği
+[Stone in the orchard]
+Meyve bahçesinde taş
+[Colonies on both coasts]
+Her iki kıyıda koloniler
+[Winding belt]
+Kıvrımlı kuşak

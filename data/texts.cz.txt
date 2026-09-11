@@ -1870,3 +1870,51 @@ Prstencový svět
 Šířka pásu
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Pás je pro tolik kolonií příliš krátký; použijte delší mapu nebo méně kolonií.
+[Wheat amount]
+Množství pšenice
+[Wood amount]
+Množství dřeva
+[Stone amount]
+Množství kamení
+[Algae amount]
+Množství řas
+[Fruit amount]
+Množství ovoce
+[Stone on hilltops]
+Kamení na vrcholcích kopců
+[Winding river]
+Klikatá řeka
+[Sandy beaches]
+Písečné pláže
+[Land bridges]
+Pevninské mosty
+[Colony meadows]
+Louky kolem kolonií
+[Extra starting deposit]
+Ložisko navíc na začátku
+[Moat bridges]
+Mosty přes příkop
+[Jagged coastlines]
+Členité pobřeží
+[Sand roads]
+Písečné cesty
+[Treasure in dead ends]
+Poklady ve slepých uličkách
+[Fjord bank deposits]
+Ložiska na březích fjordů
+[Sandy lake shore]
+Písečný břeh jezera
+[River delta]
+Říční delta
+[Meandering rivers]
+Meandrující řeky
+[Fruit in home valleys]
+Ovoce v domovských údolích
+[Moat]
+Vodní příkop
+[Stone in the orchard]
+Kamení v sadu
+[Colonies on both coasts]
+Kolonie na obou pobřežích
+[Winding belt]
+Zvlněný pás

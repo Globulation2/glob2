@@ -22,7 +22,8 @@ using namespace MapGeneration;
 namespace MapGeneration
 {
 bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int> &grid,
-						 std::vector<int> &teamAreaNumbers, int &areaNumber)
+						 std::vector<int> &teamAreaNumbers, int &areaNumber,
+						 const PlayerLandResources &resources)
 {
 	context.stage = "resources and starts";
 	int typeNum = globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
@@ -80,36 +81,39 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			}
 			areaNumbers = areaIndexes;
 
-			// Place wood
+			// Place wood. A field covers the zone's tiles whose raised height clears 50, so the
+			// wood amount sets how far the raise reaches in from the coast.
 			std::vector<MapGeneratorPoint> wheatWoodPoints;
 			std::vector<MapGeneratorPoint> wheatPoints;
 			getAllPoints(game.map, grid, areaNumbers[3], wheatWoodPoints);
 			getAllPoints(game.map, grid, areaNumbers[4], wheatWoodPoints);
 			getAllPoints(game.map, grid, areaNumbers[5], wheatWoodPoints);
-			adjustHeightmapFromPoints(game.map, wheatWoodPoints, heightmap, 10);
+			const int woodRise = int(scaledCount(10, resources.wood));
+			adjustHeightmapFromPoints(game.map, wheatWoodPoints, heightmap, woodRise);
 			for (unsigned int j = 0; j < wheatWoodPoints.size(); ++j)
 			{
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
-				if (h > 50)
+				if (h > 50 && resources.wood > 0)
 				{
 					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, WOOD, 1);
 				}
 			}
 			wheatWoodPoints.clear();
 
-			// Place wheat
+			// Place wheat. The swarm goes beside the default wheat field, whatever amount is
+			// actually placed, so the base layout doesn't move with the wheat amount.
 			getAllPoints(game.map, grid, areaNumbers[0], wheatWoodPoints);
 			getAllPoints(game.map, grid, areaNumbers[1], wheatWoodPoints);
 			getAllPoints(game.map, grid, areaNumbers[2], wheatWoodPoints);
-			adjustHeightmapFromPoints(game.map, wheatWoodPoints, heightmap, 10);
+			const int wheatRise = int(scaledCount(10, resources.wheat));
+			adjustHeightmapFromPoints(game.map, wheatWoodPoints, heightmap, wheatRise);
 			for (unsigned int j = 0; j < wheatWoodPoints.size(); ++j)
 			{
 				int h = heightmap[wheatWoodPoints[j].y * game.map.getW() + wheatWoodPoints[j].x];
-				if (h > 50)
-				{
+				if (h > 50 && resources.wheat > 0)
 					game.map.setResource(wheatWoodPoints[j].x, wheatWoodPoints[j].y, CORN, 1);
+				if (h - wheatRise + 10 > 50)
 					wheatPoints.push_back(wheatWoodPoints[j]);
-				}
 			}
 
 			// These are all points in the base
@@ -122,7 +126,7 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			getAllPoints(game.map, grid, areaNumbers[11], baseLocations);
 
 			// Place stone
-			int numberOfStone = 6;
+			int numberOfStone = int(scaledCount(6, resources.stone));
 			std::vector<MapGeneratorPoint> stoneLocations = baseLocations;
 			chooseRandomPoints(game.map, context, stoneLocations, numberOfStone);
 			for (unsigned int j = 0; j < stoneLocations.size(); ++j)
@@ -144,27 +148,45 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			computeDistances(game.map, wheatPoints, obstacles, wheatDistance);
 
 			// Only consider points between 1 and 4 squares from wheat
-			std::vector<MapGeneratorPoint> startingLocations;
-			for (unsigned int j = 0; j < baseLocations.size(); ++j)
+			auto startsWithinOfWheat = [&](int window)
 			{
-				int minValue = 100000;
-				for (int x = 0; x < 4; ++x)
+				std::vector<MapGeneratorPoint> found;
+				for (unsigned int j = 0; j < baseLocations.size(); ++j)
 				{
-					for (int y = 0; y < 4; ++y)
+					int minValue = 100000;
+					for (int x = 0; x < 4; ++x)
 					{
-						int nx = game.map.normalizeX(baseLocations[j].x + x);
-						int ny = game.map.normalizeY(baseLocations[j].y + y);
-						minValue = std::min(wheatDistance[ny * game.map.getW() + nx], minValue);
+						for (int y = 0; y < 4; ++y)
+						{
+							int nx = game.map.normalizeX(baseLocations[j].x + x);
+							int ny = game.map.normalizeY(baseLocations[j].y + y);
+							minValue = std::min(wheatDistance[ny * game.map.getW() + nx], minValue);
+						}
+					}
+					if (minValue >= 1 && minValue <= window)
+					{
+						found.push_back(baseLocations[j]);
 					}
 				}
-				if (minValue >= 1 && minValue <= 2)
-				{
-					startingLocations.push_back(baseLocations[j]);
-				}
-			}
+				return found;
+			};
+			std::vector<MapGeneratorPoint> startingLocations = startsWithinOfWheat(2);
 
 			// Place swarms
 			chooseFreeForBuildingSquares(game, startingLocations, swarm, i);
+			// A field grown well past its default size covers the building sites beside it, and the
+			// window above only looks 1 to 2 tiles out from where the default-sized wheat field
+			// would lie. Rather than fail, look further out from that same wheat for a site the
+			// fields have left clear: the colony still starts beside its own farmland, just not
+			// right up against it. Only a non-default amount can reach this.
+			for (int window = 6;
+				 startingLocations.empty() && window <= 24 &&
+				 (resources.wheat != 100 || resources.wood != 100 || resources.stone != 100);
+				 window += 6)
+			{
+				startingLocations = startsWithinOfWheat(window);
+				chooseFreeForBuildingSquares(game, startingLocations, swarm, i);
+			}
 			if (startingLocations.size() == 0)
 			{
 				return false;
@@ -182,6 +204,8 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			game.teams[i]->startPosX = b->posX;
 			game.teams[i]->startPosY = b->posY;
 			game.teams[i]->startPosSet = Team::START_POS_FROM_SWARM;
+			context.bootX[i] = b->posX;
+			context.bootY[i] = b->posY;
 
 			// Place units around the swarm
 			std::vector<MapGeneratorPoint> unitLocations = baseLocations;

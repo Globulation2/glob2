@@ -41,13 +41,23 @@ NewMapScreen::NewMapScreen(const GeneratorRegistry &registry) : registry(registr
 
 	auto addControl = [&](const GenerationRequest::Control &c, int method, int x, int y)
 	{
-		auto *number = new Number(x, y, 114, 18, A, A, 18, "menu");
-		for (int value : c.values())
-			number->add(c.displayValue(value));
-		addWidget(number);
+		Number *number = nullptr;
+		OnOffButton *toggle = nullptr;
+		if (c.isToggle())
+		{
+			toggle = new OnOffButton(x, y, 18, 18, A, A, c.defaultValue != 0, TOGGLE);
+			addWidget(toggle);
+		}
+		else
+		{
+			number = new Number(x, y, 114, 18, A, A, 18, "menu");
+			for (int value : c.values())
+				number->add(c.displayValue(value));
+			addWidget(number);
+		}
 		auto *label = new Text(x + 120, y, A, A, "standard", tr(c.label));
 		addWidget(label);
-		controlWidgets.push_back({c, method, number, label});
+		controlWidgets.push_back({c, method, number, toggle, label});
 	};
 	for (const auto &c : GenerationRequest::sharedControls())
 	{
@@ -57,17 +67,25 @@ NewMapScreen::NewMapScreen(const GeneratorRegistry &registry) : registry(registr
 	}
 	for (int m : registry.methods())
 	{
+		const auto &controls = registry.at(m).controls;
+		// Rows close up for generators with many controls, keeping clear of the OK and Cancel row.
+		const int pitch = std::min(20, 258 / std::max(1, int(controls.size())));
 		int y = 160;
-		for (const auto &c : registry.at(m).controls)
+		for (const auto &c : controls)
 		{
 			addControl(c, m, 310, y);
-			y += 20;
+			y += pitch;
 		}
 	}
 	updateControls();
 	addWidget(new TextButton(10, 420, 300, 40, A, A, "menu", tr("ok"), OK, 13));
 	addWidget(new TextButton(330, 420, 300, 40, A, A, "menu", tr("Cancel"), CANCEL, 27));
 	addWidget(new Text(0, 18, ALIGN_FILL, A, "menu", tr("create map")));
+}
+
+Widget *NewMapScreen::ControlWidget::field() const
+{
+	return number ? static_cast<Widget *>(number) : static_cast<Widget *>(toggle);
 }
 
 void NewMapScreen::updateControls()
@@ -79,8 +97,12 @@ void NewMapScreen::updateControls()
 		bool size = c.id == "width" || c.id == "height";
 		bool visible = widget.method == descriptor.method ||
 					   (widget.method == -1 && (size || !terrains->visible));
-		widget.number->visible = widget.label->visible = visible;
-		if (visible)
+		widget.field()->visible = widget.label->visible = visible;
+		if (!visible)
+			continue;
+		if (widget.toggle)
+			widget.toggle->setState(c.get(descriptor) != 0);
+		else
 			widget.number->setNth(c.indexOf(c.get(descriptor)));
 	}
 }
@@ -100,9 +122,15 @@ void NewMapScreen::onAction(Widget *source, Action action, int par1, int par2)
 	else if (action == NUMBER_ELEMENT_SELECTED)
 	{
 		for (const auto &widget : controlWidgets)
-			if (source == widget.number && widget.number->visible)
+			if (widget.number && source == widget.number && widget.number->visible)
 				widget.definition.set(descriptor,
 									  widget.definition.valueAt(widget.number->getNth()));
+	}
+	else if (action == BUTTON_STATE_CHANGED)
+	{
+		for (const auto &widget : controlWidgets)
+			if (widget.toggle && source == widget.toggle && widget.toggle->visible)
+				widget.definition.set(descriptor, widget.toggle->getState() ? 1 : 0);
 	}
 	else if (action == LIST_ELEMENT_SELECTED)
 	{

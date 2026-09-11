@@ -1870,3 +1870,51 @@ OpenGL није доступан у овој верзији.
 Ширина појаса
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Појас је прекратак за толико колонија; користите дужу мапу или мање колонија.
+[Wheat amount]
+Количина жита
+[Wood amount]
+Количина дрвета
+[Stone amount]
+Количина камена
+[Algae amount]
+Количина алги
+[Fruit amount]
+Количина воћа
+[Stone on hilltops]
+Камен на врховима брда
+[Winding river]
+Кривудава река
+[Sandy beaches]
+Пешчане плаже
+[Land bridges]
+Копнени мостови
+[Colony meadows]
+Ливаде око колонија
+[Extra starting deposit]
+Додатно почетно налазиште
+[Moat bridges]
+Мостови преко воденог рова
+[Jagged coastlines]
+Разуђене обале
+[Sand roads]
+Пешчани путеви
+[Treasure in dead ends]
+Благо у ћорсокацима
+[Fjord bank deposits]
+Налазишта на обалама фјордова
+[Sandy lake shore]
+Пешчана обала језера
+[River delta]
+Делта реке
+[Meandering rivers]
+Меандрирајуће реке
+[Fruit in home valleys]
+Воће у почетним долинама
+[Moat]
+Водени ров
+[Stone in the orchard]
+Камен у воћњаку
+[Colonies on both coasts]
+Колоније на обе обале
+[Winding belt]
+Кривудав појас

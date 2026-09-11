@@ -199,7 +199,7 @@ void HeightMap::makeIslands(unsigned int count, float smoothingFactor)
 	normalize();
 }
 
-void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
+void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor, bool winding)
 {
 	/// riverRadius refers to the distance between center of the river and the maximum distance that
 	/// gets lowered.
@@ -240,15 +240,20 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor)
 		sqrt(pow(targetPointX - startingPointX, 2) + pow(targetPointY - startingPointY, 2));
 	for (float t = 0; t < straightRiverLength; t += straightRiverLength / 10.0 / (_w + _h))
 	{
-		float offset = (1.0 - cos(t / straightRiverLength * 2 * 3.14159265)) *
-					   (_pn.Noise(t / 153.3) * 300.0 + _pn.Noise(t / 13.3) * 50.0 - 175.0);
-		if (t < straightRiverLength / 2.0)
-			offset += (1 + cos(t / straightRiverLength * 2 * 3.14159265)) *
-					  (_pn.Noise(t / 153.3) * 300.0 + _pn.Noise(t / 13.3) * 50.0 - 175.0);
-		else
-			offset += (1 + cos(t / straightRiverLength * 2 * 3.14159265)) *
-					  (_pn.Noise((straightRiverLength - t) / 153.3) * 300.0 +
-					   _pn.Noise((straightRiverLength - t) / 13.3) * 50.0 - 175.0);
+		// The meander is a pure function of t, so leaving it out changes nothing else.
+		float offset = 0;
+		if (winding)
+		{
+			offset = (1.0 - cos(t / straightRiverLength * 2 * 3.14159265)) *
+					 (_pn.Noise(t / 153.3) * 300.0 + _pn.Noise(t / 13.3) * 50.0 - 175.0);
+			if (t < straightRiverLength / 2.0)
+				offset += (1 + cos(t / straightRiverLength * 2 * 3.14159265)) *
+						  (_pn.Noise(t / 153.3) * 300.0 + _pn.Noise(t / 13.3) * 50.0 - 175.0);
+			else
+				offset += (1 + cos(t / straightRiverLength * 2 * 3.14159265)) *
+						  (_pn.Noise((straightRiverLength - t) / 153.3) * 300.0 +
+						   _pn.Noise((straightRiverLength - t) / 13.3) * 50.0 - 175.0);
+		}
 		float reachedPointX = targetDirectionX * t - targetDirectionY * offset / 4;
 		float reachedPointY = targetDirectionY * t + targetDirectionX * offset / 4;
 		lower((unsigned int)reachedPointX, (unsigned int)reachedPointY);

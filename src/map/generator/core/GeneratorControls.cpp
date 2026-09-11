@@ -5,6 +5,17 @@
 #include "Team.h"
 #include <algorithm>
 #include <stdexcept>
+GeneratorControl GeneratorControl::toggle(std::string id, const char *label, bool on,
+										  ControlGroup group)
+{
+	GeneratorControl c{std::move(id), label, 0, 1, 1, on ? 1 : 0, group};
+	c.kind = GeneratorControl::Kind::Toggle;
+	return c;
+}
+GeneratorControl GeneratorControl::percentage(std::string id, const char *label, int maximum)
+{
+	return {std::move(id), label, 0, maximum, 25, 100, ControlGroup::Resources};
+}
 int GeneratorControl::normalize(int v) const
 {
 	if (!allowedValues.empty())

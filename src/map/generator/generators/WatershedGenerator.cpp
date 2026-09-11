@@ -311,6 +311,8 @@ public:
   // Per reach: where each tributary joins it, and from which side.
   std::vector<std::vector<std::pair<int, int>>> joins;
   int trunk = -1;
+  // 0 plans every river without its meander.
+  double meanderScale = 1.0;
 
   int sideOf(int r, int i, Vec source) const {
     const Vec t = tangent(r, i), p = reaches[r].points[i];
@@ -407,7 +409,7 @@ public:
                     end * (t * t * t));
     }
     const std::vector<Vec> base = resample(raw);
-    const double amplitude = std::min(6.5, 0.1 * span) * meander;
+    const double amplitude = std::min(6.5, 0.1 * span) * meander * meanderScale;
     const double waves = std::max(1.0, span / 34.0);
     const double phase1 = between(context, kRiverStream, 0, 2 * kPi);
     const double phase2 = between(context, kRiverStream, 0, 2 * kPi);
@@ -713,15 +715,18 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
   const double clearance = 2 * estimate + 5;
   const double northMargin = estimate + 8, southMargin = estimate + 6;
   RiverPlanner planner(frame, layout.north, layout.south, clearance, northMargin, southMargin);
+  planner.meanderScale = o.meanders ? 1.0 : 0.0;
 
-  // The delta: one to three distributaries fanning out from an apex to the coast.
+  // The delta: one to three distributaries fanning out from an apex to the coast. Without a
+  // delta there is no lobe and only the middle mouth is kept; the others are still planned, so
+  // every later draw is the one it would have been.
   const double deltaLength = std::clamp(0.12 * across + 6, 12.0, 44.0);
   const double spread = std::clamp(0.16 * along, 18.0, 44.0);
   const int mouthLimit = std::max(1, int(0.7 * along / spread) + 1);
   const int mouthCount = std::min(mouthLimit, 1 + int(context.bounded(kLayoutStream, 3)));
   const double u0 = between(context, kLayoutStream, 0, along);
   layout.south.lobeCentre = u0;
-  layout.south.lobeHeight = 0.3 * sea;
+  layout.south.lobeHeight = o.delta ? 0.3 * sea : 0.0;
   layout.south.lobeWidth = 1.1 * spread + 6;
   const Vec apex{u0, layout.south.at(u0) - deltaLength};
   static const double shares[3][3] = {{1, 0, 0}, {0.5, 0.5, 0}, {0.32, 0.36, 0.32}};
@@ -729,11 +734,13 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
   for (int m = 0; m < mouthCount; ++m) {
     const double u = u0 + (m - (mouthCount - 1) / 2.0) * spread *
                               between(context, kLayoutStream, 0.85, 1.15);
-    mouths.push_back({u, layout.south.at(u)});
     Reach reach;
     reach.points =
         planner.path(apex, {u, layout.south.at(u) + std::min(8.0, 0.25 * sea)}, {0, 1}, 0.5, context);
     reach.distributary = true;
+    if (!o.delta && m != mouthCount / 2)
+      continue;
+    mouths.push_back({u, layout.south.at(u)});
     planner.add(std::move(reach));
   }
 
@@ -805,9 +812,10 @@ Layout planLayout(int width, int height, const WatershedOptions &o, GenerationCo
       reach.radius[i] = radiusFor(flow);
     }
   }
-  for (int m = 0; m < mouthCount; ++m) {
+  const int distributaries = int(mouths.size());
+  for (int m = 0; m < distributaries; ++m) {
     Reach &reach = planner.reaches[m];
-    const double radius = radiusFor(std::max(1.0, outflow[trunk] * shares[mouthCount - 1][m]));
+    const double radius = radiusFor(std::max(1.0, outflow[trunk] * shares[distributaries - 1][m]));
     const double last = double(reach.points.size() - 1);
     reach.radius.resize(reach.points.size());
     for (size_t i = 0; i < reach.points.size(); ++i)
@@ -1427,7 +1435,7 @@ void placeStarterKits(Game &game, GenerationContext &context, int teams, const T
 // to wood, with the crop chosen by a coarse field so stretches of bank favour one or the other.
 void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
                    const Fertility::Field &fertility, const std::vector<unsigned char> &keepClear,
-                   Reservations &reservations) {
+                   Reservations &reservations, const WatershedOptions &o) {
   Map &map = game.map;
   const int w = t.w, h = t.h;
   std::mt19937 &random = context.stream("watershed-farmland");
@@ -1451,22 +1459,38 @@ void placeFarmland(Game &game, GenerationContext &context, const Tiles &t,
     return a.score != b.score ? a.score > b.score : a.index < b.index;
   });
   int budget = int(order.size()) / 5;
+  // Other wheat or wood amounts than the default give each crop a budget of its own: its share
+  // of the candidates the crop field gives it, scaled.
+  const bool shared = o.wheat == 100 && o.wood == 100;
+  int cornBudget = 0, woodBudget = 0;
+  if (!shared && !order.empty()) {
+    std::int64_t cornCandidates = 0;
+    for (const Candidate &c : order)
+      cornCandidates += crop.at(c.index % w + 0.5, c.index / w + 0.5) < 0.62;
+    const int cornShare = int(budget * cornCandidates / std::int64_t(order.size()));
+    cornBudget = int(scaledCount(cornShare, o.wheat));
+    woodBudget = int(scaledCount(budget - cornShare, o.wood));
+  }
   for (const Candidate &c : order) {
-    if (budget <= 0)
+    if (shared ? budget <= 0 : cornBudget <= 0 && woodBudget <= 0)
       break;
     const int x = c.index % w, y = c.index / w;
     const int radius = context.bounded("resources", 5) < 2 && t.grassDepth[c.index] > 3 ? 3 : 2;
     if (!reservations.free(x, y, radius))
       continue;
     const int type = crop.at(x + 0.5, y + 0.5) < 0.62 ? CORN : WOOD;
-    budget -= placeResourceClump(map, context, MapGeneratorPoint(x, y), type, radius);
+    int &remaining = shared ? budget : type == CORN ? cornBudget : woodBudget;
+    if (remaining <= 0)
+      continue;
+    remaining -= placeResourceClump(map, context, MapGeneratorPoint(x, y), type, radius);
     reservations.reserve(x, y, radius);
   }
 }
 
 // Stone outcrops at the edge of the dry uplands, well away from the rivers.
 void placeStone(Game &game, GenerationContext &context, const Tiles &t,
-                const std::vector<unsigned char> &keepClear, Reservations &reservations) {
+                const std::vector<unsigned char> &keepClear, Reservations &reservations,
+                int stonePercent) {
   Map &map = game.map;
   const int w = t.w, h = t.h;
   std::vector<int> candidates;
@@ -1482,7 +1506,7 @@ void placeStone(Game &game, GenerationContext &context, const Tiles &t,
       if (edge || t.waterSteps[i] >= 14)
         candidates.push_back(int(i));
     }
-  const int outcrops = std::max(2, w * h / 3000);
+  const int outcrops = int(scaledCount(std::max(2, w * h / 3000), stonePercent));
   std::vector<MapGeneratorPoint> placed;
   for (int attempt = 0; attempt < outcrops * 20 && int(placed.size()) < outcrops && !candidates.empty();
        ++attempt) {
@@ -1502,13 +1526,13 @@ void placeStone(Game &game, GenerationContext &context, const Tiles &t,
 // Fruit is rare: a small grove in the fertile wedge where two rivers meet, one kind at a time.
 void placeFruit(Game &game, GenerationContext &context, const Layout &layout, const Tiles &t,
                 const Fertility::Field &fertility, const std::vector<unsigned char> &keepClear,
-                Reservations &reservations) {
+                Reservations &reservations, int fruitPercent) {
   Map &map = game.map;
   const int w = t.w, h = t.h;
   std::vector<Vec> junctions = layout.junctions;
   for (size_t i = junctions.size(); i > 1; --i)
     std::swap(junctions[i - 1], junctions[context.bounded("resources", i)]);
-  const int groves = std::max(3, w * h / 6000);
+  const int groves = int(scaledCount(std::max(3, w * h / 6000), fruitPercent));
   int type = int(context.bounded("resources", 3)), placed = 0;
   for (size_t j = 0; j < junctions.size() && placed < groves; ++j) {
     const int jx = int(std::floor(junctions[j].x)), jy = int(std::floor(junctions[j].y));
@@ -1537,7 +1561,8 @@ void placeFruit(Game &game, GenerationContext &context, const Layout &layout, co
 
 // Algae off every mouth and in the sea's shallows, where there is sand near enough for it to
 // grow back.
-void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, const Tiles &t) {
+void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, const Tiles &t,
+                int algaePercent) {
   Map &map = game.map;
   const int w = t.w, h = t.h;
   for (Vec mouth : layout.mouths) {
@@ -1550,7 +1575,7 @@ void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, co
         if (dx * dx + dy * dy <= 100 && t.water[i] && t.waterSteps[i] == 0)
           water.push_back(int(i));
       }
-    for (int clump = 0; clump < 3 && !water.empty(); ++clump) {
+    for (int clump = 0; clump < scaledCount(3, algaePercent) && !water.empty(); ++clump) {
       const int i = water[context.bounded("resources", water.size())];
       placeResourceClump(map, context, MapGeneratorPoint(i % w, i / w), ALGA, 2);
     }
@@ -1571,7 +1596,7 @@ void placeAlgae(Game &game, GenerationContext &context, const Layout &layout, co
       if (c.y < layout.north.at(c.x) - 1 || c.y > layout.south.at(c.x) + 1)
         shallows.push_back(int(i));
     }
-  for (int clump = 0; clump < int(shallows.size()) / 60; ++clump) {
+  for (int clump = 0; clump < scaledCount(int(shallows.size()) / 60, algaePercent); ++clump) {
     const int i = shallows[context.bounded("resources", shallows.size())];
     placeResourceClump(map, context, MapGeneratorPoint(i % w, i / w), ALGA, 1);
   }
@@ -1701,10 +1726,10 @@ bool generate(Game &game, GenerationContext &context) {
                   wrapIndex(context.bootX[team] + dx, w)] = 1;
   Reservations reservations(w, h);
   placeStarterKits(game, context, teams, tiles, fertility, reservations);
-  placeFruit(game, context, layout, tiles, fertility, keepClear, reservations);
-  placeStone(game, context, tiles, keepClear, reservations);
-  placeFarmland(game, context, tiles, fertility, keepClear, reservations);
-  placeAlgae(game, context, layout, tiles);
+  placeFruit(game, context, layout, tiles, fertility, keepClear, reservations, o.fruit);
+  placeStone(game, context, tiles, keepClear, reservations, o.stone);
+  placeFarmland(game, context, tiles, fertility, keepClear, reservations, o);
+  placeAlgae(game, context, layout, tiles, o.algae);
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x)
       if (keepClear[size_t(y) * w + x] && map.isResource(x, y) && !map.isWater(x, y))
@@ -1793,7 +1818,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context) {
 
 WatershedOptions::WatershedOptions(const GenerationRequest &r)
     : riverDensity(r.option("river-density")), riverWidth(r.option("river-width")),
-      dryness(r.option("dryness")), fords(r.option("fords")) {}
+      dryness(r.option("dryness")), fords(r.option("fords")), delta(r.option("river-delta") != 0),
+      meanders(r.option("meanders") != 0), wheat(r.option("wheat-amount")),
+      wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+      algae(r.option("algae-amount")), fruit(r.option("fruit-amount")) {}
 
 GeneratorDefinition watershedDefinition() {
   return {"watershed",
@@ -1810,7 +1838,19 @@ GeneratorDefinition watershedDefinition() {
            {"dryness", "Dryness", 0, 10, 1, 5, ControlGroup::Terrain},
            // How often a ford crosses a river: about one per 80 tiles of river at 1, one per 26
            // at 5, and at least one on every reach long enough to hold one.
-           {"fords", "Fords", 1, 5, 1, 3, ControlGroup::Layout}},
+           {"fords", "Fords", 1, 5, 1, 3, ControlGroup::Layout},
+           // Off, the trunk reaches the sea through a single mouth, with no delta lobe.
+           GeneratorControl::toggle("river-delta", "River delta", true, ControlGroup::Terrain),
+           // Off, rivers run without their meanders.
+           GeneratorControl::toggle("meanders", "Meandering rivers", true, ControlGroup::Terrain),
+           // The farmland along the rivers (wheat and wood each), stone outcrops, fruit groves at
+           // the confluences and algae off the mouths and shallows. Every colony's starter kit
+           // stays as it is.
+           GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+           GeneratorControl::percentage("wood-amount", "Wood amount"),
+           GeneratorControl::percentage("stone-amount", "Stone amount"),
+           GeneratorControl::percentage("algae-amount", "Algae amount"),
+           GeneratorControl::percentage("fruit-amount", "Fruit amount")},
           generate,
           true,
           validate,

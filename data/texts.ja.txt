@@ -1866,3 +1866,51 @@ Globulation 2 のカーソルを表示します。
 帯の幅
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 このコロニー数に対して帯が短すぎます。より長いマップを使うか、コロニーを減らしてください。
+[Wheat amount]
+小麦の量
+[Wood amount]
+木材の量
+[Stone amount]
+石の量
+[Algae amount]
+藻の量
+[Fruit amount]
+フルーツの量
+[Stone on hilltops]
+丘の上の石
+[Winding river]
+蛇行する川
+[Sandy beaches]
+砂浜
+[Land bridges]
+陸橋
+[Colony meadows]
+コロニー周辺の草地
+[Extra starting deposit]
+追加の初期資源
+[Moat bridges]
+堀に架かる橋
+[Jagged coastlines]
+入り組んだ海岸線
+[Sand roads]
+砂の道
+[Treasure in dead ends]
+行き止まりの宝
+[Fjord bank deposits]
+フィヨルド岸の資源
+[Sandy lake shore]
+湖の砂浜
+[River delta]
+河口の三角州
+[Meandering rivers]
+蛇行する川筋
+[Fruit in home valleys]
+開始地点の谷のフルーツ
+[Moat]
+堀
+[Stone in the orchard]
+果樹園の石
+[Colonies on both coasts]
+両岸のコロニー
+[Winding belt]
+曲がりくねった帯

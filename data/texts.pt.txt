@@ -1876,3 +1876,51 @@ Mundo anel
 Largura da faixa
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 A faixa é demasiado curta para tantas colónias; use um mapa mais longo ou menos colónias.
+[Wheat amount]
+Quantidade de trigo
+[Wood amount]
+Quantidade de madeira
+[Stone amount]
+Quantidade de pedra
+[Algae amount]
+Quantidade de algas
+[Fruit amount]
+Quantidade de fruta
+[Stone on hilltops]
+Pedra no topo das colinas
+[Winding river]
+Rio sinuoso
+[Sandy beaches]
+Praias de areia
+[Land bridges]
+Pontes terrestres
+[Colony meadows]
+Prados à volta das colónias
+[Extra starting deposit]
+Depósito inicial extra
+[Moat bridges]
+Pontes sobre o fosso
+[Jagged coastlines]
+Costas recortadas
+[Sand roads]
+Estradas de areia
+[Treasure in dead ends]
+Tesouros em becos sem saída
+[Fjord bank deposits]
+Depósitos nas margens dos fiordes
+[Sandy lake shore]
+Margem arenosa do lago
+[River delta]
+Delta do rio
+[Meandering rivers]
+Rios com meandros
+[Fruit in home valleys]
+Fruta nos vales iniciais
+[Moat]
+Fosso
+[Stone in the orchard]
+Pedra no pomar
+[Colonies on both coasts]
+Colónias em ambas as costas
+[Winding belt]
+Faixa sinuosa

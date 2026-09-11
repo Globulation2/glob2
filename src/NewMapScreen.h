@@ -10,6 +10,7 @@
 namespace GAGGUI
 {
 class Number;
+class OnOffButton;
 class Text;
 class Ratio;
 class List;
@@ -22,7 +23,8 @@ class NewMapScreen : public Glob2Screen
 	enum
 	{
 		OK = 1,
-		CANCEL = 2
+		CANCEL = 2,
+		TOGGLE = 3
 	};
 
   public:
@@ -33,9 +35,11 @@ class NewMapScreen : public Glob2Screen
 	struct ControlWidget
 	{
 		GenerationRequest::Control definition;
-		int method; // -1 for shared controls
-		Number *number;
+		int method;			 // -1 for shared controls
+		Number *number;		 // range controls
+		OnOffButton *toggle; // toggle controls, shown as a check button
 		Text *label;
+		Widget *field() const;
 	};
 	std::vector<ControlWidget> controlWidgets;
 	GenerationHistory history;

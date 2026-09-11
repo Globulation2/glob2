@@ -1946,3 +1946,51 @@ Ringverden
 Bæltebredde
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Bæltet er for kort til så mange kolonier; brug et længere kort eller færre kolonier.
+[Wheat amount]
+Mængde hvede
+[Wood amount]
+Mængde træ
+[Stone amount]
+Mængde sten
+[Algae amount]
+Mængde alger
+[Fruit amount]
+Mængde frugt
+[Stone on hilltops]
+Sten på bakketoppene
+[Winding river]
+Slyngende flod
+[Sandy beaches]
+Sandstrande
+[Land bridges]
+Landbroer
+[Colony meadows]
+Enge omkring kolonierne
+[Extra starting deposit]
+Ekstra startforekomst
+[Moat bridges]
+Broer over voldgraven
+[Jagged coastlines]
+Takkede kyster
+[Sand roads]
+Sandveje
+[Treasure in dead ends]
+Skatte i blindgyder
+[Fjord bank deposits]
+Forekomster langs fjordbredderne
+[Sandy lake shore]
+Sandet søbred
+[River delta]
+Floddelta
+[Meandering rivers]
+Bugtede floder
+[Fruit in home valleys]
+Frugt i startdalene
+[Moat]
+Voldgrav
+[Stone in the orchard]
+Sten i frugtplantagen
+[Colonies on both coasts]
+Kolonier på begge kyster
+[Winding belt]
+Bugtet bælte

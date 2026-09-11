@@ -1932,3 +1932,51 @@ Mondo ad anello
 Larghezza della fascia
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 La fascia è troppo corta per così tante colonie; usa una mappa più lunga o meno colonie.
+[Wheat amount]
+Quantità di frumento
+[Wood amount]
+Quantità di legno
+[Stone amount]
+Quantità di roccia
+[Algae amount]
+Quantità di alghe
+[Fruit amount]
+Quantità di frutta
+[Stone on hilltops]
+Roccia sulle cime delle colline
+[Winding river]
+Fiume tortuoso
+[Sandy beaches]
+Spiagge sabbiose
+[Land bridges]
+Ponti terrestri
+[Colony meadows]
+Prati intorno alle colonie
+[Extra starting deposit]
+Giacimento iniziale aggiuntivo
+[Moat bridges]
+Ponti sul fossato
+[Jagged coastlines]
+Coste frastagliate
+[Sand roads]
+Strade di sabbia
+[Treasure in dead ends]
+Tesori nei vicoli ciechi
+[Fjord bank deposits]
+Giacimenti sulle rive dei fiordi
+[Sandy lake shore]
+Riva sabbiosa del lago
+[River delta]
+Delta del fiume
+[Meandering rivers]
+Fiumi con meandri
+[Fruit in home valleys]
+Frutta nelle valli iniziali
+[Moat]
+Fossato
+[Stone in the orchard]
+Roccia nel frutteto
+[Colonies on both coasts]
+Colonie su entrambe le coste
+[Winding belt]
+Fascia sinuosa

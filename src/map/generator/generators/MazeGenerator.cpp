@@ -413,11 +413,12 @@ void placeTreasure(Map &map, const MazeGrid &g, int cell, int exit, int half, in
 
 // Deposits scattered along the shores of every passage outside the homes, as compact clumps
 // grown over free shore tiles. Only tiles within kShoreBand of a shore are eligible, which is
-// what keeps each passage's middle clear. Densities are per 256 shore tiles.
+// what keeps each passage's middle clear. Densities are per 256 shore tiles; fruitTiles of fruit,
+// when the dead ends hold no treasure, follow in small clumps of each kind in turn.
 void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
                         const std::vector<unsigned char> &isHome,
                         const std::vector<unsigned char> &onRoad, int half,
-                        const MazeOptions &o) {
+                        const MazeOptions &o, int fruitTiles) {
   const int w = map.getW(), h = map.getH();
   const std::vector<int> depth = shoreDepth(map, onRoad);
   const int band = std::min(kShoreBand, half - 1);
@@ -473,6 +474,8 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
       remaining -=
           clump(layer.first, std::min(remaining, 4 + int(context.bounded("resources", 9))));
   }
+  for (int attempt = 0, kind = 0; fruitTiles > 0 && attempt < shore; ++attempt, kind = (kind + 1) % 3)
+    fruitTiles -= clump(CHERRY + kind, std::min(fruitTiles, 3 + int(context.bounded("resources", 3))));
 }
 
 // Algae is seeded along the channels. They are only a tile or two wide, so any water tile can
@@ -591,8 +594,11 @@ bool generate(Game &game, GenerationContext &context) {
   // buildings need pure grass, so nothing can grow over a road tile or be built on one. A road's
   // tile rectangle takes undermap sand on (x0, x1] x (y0, y1], giving each of its tiles at least
   // one sand corner and leaving every tile around it untouched.
+  // Without roads, passages are grass from shore to shore.
   std::vector<unsigned char> onRoad(size_t(map.getW()) * map.getH(), 0);
   for (const TileRect &r : roads) {
+    if (!o.sandRoads)
+      break;
     fillUndermap(map, r.x0 + 1, r.y0 + 1, r.x1 - r.x0, r.y1 - r.y0, SAND);
     for (int y = r.y0; y <= r.y1; ++y)
       for (int x = r.x0; x <= r.x1; ++x)
@@ -629,7 +635,8 @@ bool generate(Game &game, GenerationContext &context) {
   // Fruit is treasure: one patch at the far end of every dead end that isn't a home, with fruit
   // types dealt round-robin so every kind is somewhere in the maze and a colony has to go and
   // fight for the ones it lacks. Placed before the shore scatter, which works around them.
-  if (o.fruit > 0) {
+  // Without treasure the same fruit is scattered along the passages' shores instead.
+  if (o.fruit > 0 && o.treasure) {
     for (size_t i = deadEnds.size(); i > 1; --i)
       std::swap(deadEnds[i - 1], deadEnds[context.bounded("resources", i)]);
     const int firstType = context.bounded("resources", 3);
@@ -637,7 +644,8 @@ bool generate(Game &game, GenerationContext &context) {
       placeTreasure(map, g, deadEnds[i], exitOf[deadEnds[i]], half, o.fruit,
                     CHERRY + int((firstType + i) % 3));
   }
-  scatterThroughMaze(map, context, g, isHome, onRoad, half, o);
+  scatterThroughMaze(map, context, g, isHome, onRoad, half, o,
+                     o.treasure ? 0 : int(deadEnds.size()) * o.fruit);
   seedAlgae(map, context, o.algae);
   return true;
 }
@@ -689,7 +697,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context) {
 MazeOptions::MazeOptions(const GenerationRequest &r)
     : cellSize(r.option("cell-size")), channelWidth(r.option("channel-width")),
       loopiness(r.option("loopiness")), corn(r.option("wheat")), wood(r.option("wood")),
-      stone(r.option("stone")), algae(r.option("algae")), fruit(r.option("fruit")) {}
+      stone(r.option("stone")), algae(r.option("algae")), fruit(r.option("fruit")),
+      sandRoads(r.option("sand-roads") != 0), treasure(r.option("dead-end-treasure") != 0) {}
 
 GeneratorDefinition mazeDefinition() {
   return {"maze",
@@ -710,7 +719,12 @@ GeneratorDefinition mazeDefinition() {
            {"wood", "Wood", 0, 64, 1, 24, ControlGroup::Resources},
            {"stone", "Stone", 0, 64, 1, 16, ControlGroup::Resources},
            {"algae", "Algae", 0, 64, 1, 24, ControlGroup::Resources},
-           {"fruit", "Fruit", 0, 25, 1, 9, ControlGroup::Resources}},
+           {"fruit", "Fruit", 0, 25, 1, 9, ControlGroup::Resources},
+           // Off, passages are grass from shore to shore, with no sand road down the middle.
+           GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+           // Off, the treasure's fruit is scattered along the passages' shores instead.
+           GeneratorControl::toggle("dead-end-treasure", "Treasure in dead ends", true,
+                                    ControlGroup::Resources)},
           generate,
           true,
           validate,

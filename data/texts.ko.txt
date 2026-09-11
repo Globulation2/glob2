@@ -1866,3 +1866,51 @@ Globulation 2 커서를 표시합니다.
 띠 너비
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 이 식민지 수에 비해 띠가 너무 짧습니다. 더 긴 지도를 사용하거나 식민지 수를 줄이세요.
+[Wheat amount]
+밀 양
+[Wood amount]
+나무 양
+[Stone amount]
+돌 양
+[Algae amount]
+해조류 양
+[Fruit amount]
+과일 양
+[Stone on hilltops]
+언덕 꼭대기의 돌
+[Winding river]
+구불구불한 강
+[Sandy beaches]
+모래 해변
+[Land bridges]
+육교
+[Colony meadows]
+식민지 주변 초원
+[Extra starting deposit]
+추가 시작 자원
+[Moat bridges]
+해자 위의 다리
+[Jagged coastlines]
+들쭉날쭉한 해안선
+[Sand roads]
+모래길
+[Treasure in dead ends]
+막다른 길의 보물
+[Fjord bank deposits]
+피오르 기슭의 자원
+[Sandy lake shore]
+모래 호숫가
+[River delta]
+강 삼각주
+[Meandering rivers]
+굽이치는 강
+[Fruit in home valleys]
+시작 골짜기의 과일
+[Moat]
+해자
+[Stone in the orchard]
+과수원의 돌
+[Colonies on both coasts]
+양쪽 해안의 식민지
+[Winding belt]
+구불구불한 띠

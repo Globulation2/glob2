@@ -16,6 +16,39 @@
 #include <algorithm>
 #include <cmath>
 using namespace MapGeneration;
+std::vector<GeneratorControl> MapGeneration::heightFieldResourceControls()
+{
+	return {GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			GeneratorControl::percentage("wood-amount", "Wood amount"),
+			GeneratorControl::percentage("stone-amount", "Stone amount"),
+			GeneratorControl::percentage("algae-amount", "Algae amount"),
+			GeneratorControl::toggle("hilltop-stone", "Stone on hilltops", false,
+									 ControlGroup::Resources)};
+}
+void MapGeneration::readResourceControls(HeightFieldOptions &options,
+										 const GenerationRequest &request)
+{
+	options.wheat = request.option("wheat-amount");
+	options.wood = request.option("wood-amount");
+	options.stone = request.option("stone-amount");
+	options.algae = request.option("algae-amount");
+	options.hilltopStone = request.option("hilltop-stone") != 0;
+}
+void MapGeneration::openStartsBuriedByAmounts(Game &game, GenerationContext &context,
+											  const HeightFieldOptions &options)
+{
+	if (options.wheat == 100 && options.wood == 100 && options.stone == 100 &&
+		options.algae == 100)
+		return;
+	// The resource bands are painted from map-wide noise levels with no awareness of where any team
+	// starts, so an amount well above the default widens them until they can wall a colony in with
+	// nowhere left to build — which the wheat/wood guarantee inside generateHeightField doesn't
+	// address, since a colony buried in wheat has wheat at its feet. placeStarts has already carved
+	// out the swarm's own rectangle by now, so nothing needs to be kept clear for it, and the
+	// guarantee runs once more in case the clearing took the colony's nearest crop with the wall.
+	openCrampedStarts(game, context);
+	guaranteeStartingResources(game, context, 24, 32);
+}
 bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 										const HeightFieldOptions &options,
 										const HeightFieldBuilder &build)
@@ -25,7 +58,8 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 
 	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above
 	/// grasslevel is desert
-	float waterLevel, sandLevel, grassLevel, wheatWoodLevel, algaeLevel, stoneLevel;
+	float waterLevel, sandLevel, grassLevel, wheatLevel, woodLevel, algaeLevel, stoneLevel,
+		stoneFloorLevel;
 	/// to influence the roughness
 	float smoothingFactor = (float)(options.smoothing + 4) * 3;
 	/// the proportions requested through the gui can directly be translated into tile counts of the
@@ -64,7 +98,23 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 	}
 	/// wheat/wood needs ground to stand on and water. So:
 	wheatWoodTiles = waterTiles < grassTiles ? waterTiles / 2 : grassTiles / 2;
-	algaeTiles = waterTiles / 6;
+	algaeTiles = scaledCount(waterTiles / 6, options.algae);
+	// A third of that share is stone, right above the beach, and the rest farmland above the stone;
+	// each band is scaled on its own and none reaches past the top of the grass. Hilltop stone
+	// takes the highest grass instead, and farmland then starts at the beach.
+	const unsigned int landTop = waterTiles + sandTiles + grassTiles;
+	const unsigned int stoneTiles =
+		unsigned(std::min<std::int64_t>(grassTiles, scaledCount(wheatWoodTiles / 3, options.stone)));
+	const unsigned int farmTiles = wheatWoodTiles - wheatWoodTiles / 3;
+	const unsigned int stoneTop = options.hilltopStone
+									  ? landTop
+									  : std::min(landTop, waterTiles + sandTiles + stoneTiles);
+	const unsigned int stoneFloor = landTop - stoneTiles;
+	const unsigned int farmStart = options.hilltopStone ? waterTiles + sandTiles : stoneTop;
+	const unsigned int wheatTop =
+		unsigned(std::min<std::int64_t>(landTop, farmStart + scaledCount(farmTiles, options.wheat)));
+	const unsigned int woodTop =
+		unsigned(std::min<std::int64_t>(landTop, farmStart + scaledCount(farmTiles, options.wood)));
 
 	/// histogram[i] collects the count of all terrain levels == i
 	int histogram[2048];
@@ -79,8 +129,10 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 	waterLevel = 0;
 	sandLevel = 0;
 	grassLevel = 0;
-	wheatWoodLevel = 0;
+	wheatLevel = 0;
+	woodLevel = 0;
 	stoneLevel = 0;
+	stoneFloorLevel = 0;
 	algaeLevel = 0;
 	while ((waterLevel == 0) && (i < 2048))
 	{
@@ -99,12 +151,15 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 	while ((grassLevel == 0) && (i < 2048))
 	{
 		accumulatedHistogram += histogram[i++];
-		if (wheatWoodLevel == 0 && accumulatedHistogram >= waterTiles + sandTiles + wheatWoodTiles)
-			wheatWoodLevel = (float)(i - 1) / 2048.0;
-		if (stoneLevel == 0 &&
-			accumulatedHistogram >= waterTiles + sandTiles + (wheatWoodTiles / 3))
+		if (wheatLevel == 0 && accumulatedHistogram >= wheatTop)
+			wheatLevel = (float)(i - 1) / 2048.0;
+		if (woodLevel == 0 && accumulatedHistogram >= woodTop)
+			woodLevel = (float)(i - 1) / 2048.0;
+		if (stoneFloorLevel == 0 && accumulatedHistogram >= stoneFloor)
+			stoneFloorLevel = (float)(i - 1) / 2048.0;
+		if (stoneLevel == 0 && accumulatedHistogram >= stoneTop)
 			stoneLevel = (float)(i - 1) / 2048.0;
-		if (accumulatedHistogram >= waterTiles + sandTiles + grassTiles)
+		if (accumulatedHistogram >= landTop)
 			grassLevel = (float)(i - 1) / 2048.0;
 	}
 	for (unsigned y = 0; y < hHeightMap; y++)
@@ -135,29 +190,33 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 		for (unsigned x = 0; x < wHeightMap; x++)
 		{
 			int tmpResource = NO_RES;
-			if (hm(x + wHeightMap * y) < algaeLevel)
+			const float level = hm(x + wHeightMap * y);
+			const bool stoneBand = options.hilltopStone
+									   ? level >= stoneFloorLevel && level < stoneLevel
+									   : level < stoneLevel;
+			if (level < algaeLevel)
 			{
-				tmpResource = ALGA;
+				if (options.algae > 0)
+					tmpResource = ALGA;
 				// following places stone next to sand & water and keeps wheat & wood more inland
 				// without clogging up the interior too badly
 			}
-			else if (hm(x + wHeightMap * y) < stoneLevel)
+			else if (stoneBand && (options.stone > 0 || !options.hilltopStone))
 			{
-				tmpResource = STONE;
+				if (options.stone > 0)
+					tmpResource = STONE;
 			}
-			else if (hm(x + wHeightMap * y) < wheatWoodLevel)
+			// patch to get smooth areas of wheat and wood:
+			// if the map is ascending at x+w/2,y set wheat. else set wood
+			else if (hm((x + wHeightMap / 2) % wHeightMap + wHeightMap * y) <
+					 hm((x + wHeightMap / 2 + 1) % wHeightMap + wHeightMap * y))
 			{
-				// patch to get smooth areas of wheat and wood:
-				// if the map is ascending at x+w/2,y set wheat. else set wood
-				if (hm((x + wHeightMap / 2) % wHeightMap + wHeightMap * y) <
-					hm((x + wHeightMap / 2 + 1) % wHeightMap + wHeightMap * y))
-				{
+				if (level < wheatLevel)
 					tmpResource = CORN;
-				}
-				else
-				{
-					tmpResource = WOOD;
-				}
+			}
+			else if (level < woodLevel)
+			{
+				tmpResource = WOOD;
 			}
 			if (tmpResource != NO_RES)
 			{

@@ -1870,3 +1870,51 @@ Rengasmaailma
 Vyöhykkeen leveys
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
 Vyöhyke on liian lyhyt näin monelle siirtokunnalle; käytä pidempää karttaa tai vähemmän siirtokuntia.
+[Wheat amount]
+Viljan määrä
+[Wood amount]
+Puun määrä
+[Stone amount]
+Kiven määrä
+[Algae amount]
+Levän määrä
+[Fruit amount]
+Hedelmien määrä
+[Stone on hilltops]
+Kiveä kukkuloiden laella
+[Winding river]
+Mutkitteleva joki
+[Sandy beaches]
+Hiekkarannat
+[Land bridges]
+Maasillat
+[Colony meadows]
+Niityt siirtokuntien ympärillä
+[Extra starting deposit]
+Ylimääräinen aloitusesiintymä
+[Moat bridges]
+Sillat vallihaudan yli
+[Jagged coastlines]
+Rikkonaiset rannikot
+[Sand roads]
+Hiekkatiet
+[Treasure in dead ends]
+Aarteita umpikujissa
+[Fjord bank deposits]
+Esiintymiä vuonojen rannoilla
+[Sandy lake shore]
+Hiekkainen järvenranta
+[River delta]
+Jokisuisto
+[Meandering rivers]
+Meanderoivat joet
+[Fruit in home valleys]
+Hedelmiä kotilaaksoissa
+[Moat]
+Vallihauta
+[Stone in the orchard]
+Kiveä hedelmätarhassa
+[Colonies on both coasts]
+Siirtokuntia molemmilla rannikoilla
+[Winding belt]
+Mutkitteleva vyöhyke

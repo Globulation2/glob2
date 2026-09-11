@@ -110,8 +110,9 @@ static bool generate(Game &game, GenerationContext &context)
 					}
 				}
 			}
-			// Make the connection
-			if (!failed)
+			// Make the connection. Without land bridges the same points are still drawn, so the
+			// rest of the map stays as it was, but the islands are left apart.
+			if (!failed && options.land_bridges)
 			{
 				for (unsigned int p = 0; p < linePoints.size(); ++p)
 				{
@@ -157,7 +158,7 @@ static bool generate(Game &game, GenerationContext &context)
 			int total_height = heightmap[y * game.map.getW() + x];
 			if (total_height < 90)
 				game.map.setUMatPos(x, y, WATER, 1);
-			else if (total_height > 95 && total_height < 105)
+			else if (options.sandy_beaches && total_height > 95 && total_height < 105)
 				game.map.setUMatPos(x, y, SAND, 1);
 			else
 				game.map.setUMatPos(x, y, GRASS, 1);
@@ -191,7 +192,7 @@ static bool generate(Game &game, GenerationContext &context)
 			{
 				int d = distances[y * game.map.getW() + x];
 				int d2 = connectorDistances[y * game.map.getW() + x];
-				if (d == 8 && d2 > bridgeWidth)
+				if (d == 8 && (!options.land_bridges || d2 > bridgeWidth))
 				{
 					possible.push_back(MapGeneratorPoint(x, y));
 				}
@@ -202,20 +203,24 @@ static bool generate(Game &game, GenerationContext &context)
 			return false;
 		}
 		int r = context.stream("layout")() % possible.size();
-		for (int x = -2; x <= 2; ++x)
-		{
-			int nx = game.map.normalizeX(possible[r].x + x);
-			for (int y = -2; y <= 2; ++y)
-			{
-				int ny = game.map.normalizeY(possible[r].y + y);
-				game.map.setResource(nx, ny, ALGA, 1);
-			}
-		}
+		// A five by five patch of algae at the default amount.
+		setScaledResource(game.map, possible[r].x, possible[r].y, ALGA, 5, options.algae);
 	}
 
-	if (!divideUpPlayerLands(game, context, grid, teamAreaNumbers, areaNumber))
+	if (!divideUpPlayerLands(game, context, grid, teamAreaNumbers, areaNumber,
+							 {options.wheat, options.wood, options.stone}))
 	{
 		return false;
+	}
+	// A colony's own fields are its only wheat and wood, and a field or deposit grown well past its
+	// default size can also wall the colony in with nowhere left to build. At any amount other than
+	// the default, open up such a colony and then make sure each still has both crops within reach,
+	// in case the clearing took the nearest one along with the wall.
+	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
+		options.algae != 100)
+	{
+		openCrampedStarts(game, context);
+		guaranteeStartingResources(game, context, 24, 32);
 	}
 
 	// Initialize final team info
@@ -234,6 +239,15 @@ GeneratorDefinition islesDefinition()
 			2,
 			false,
 			{{"island-size", "Island size", 45, 65, 5, 60, ControlGroup::Terrain, false},
-			 {"bridge-width", "Land bridge width", 3, 6, 1, 4, ControlGroup::Terrain, false}},
+			 {"bridge-width", "Land bridge width", 3, 6, 1, 4, ControlGroup::Terrain, false},
+			 // Off, every colony's island stands alone in the sea.
+			 GeneratorControl::toggle("land-bridges", "Land bridges", true, ControlGroup::Terrain),
+			 // Off, islands meet the sea without a band of sand.
+			 GeneratorControl::toggle("sandy-beaches", "Sandy beaches", true, ControlGroup::Terrain),
+			 // Wheat and wood scale each colony's fields, stone its deposits, algae its patch.
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount")},
 			generate};
 }

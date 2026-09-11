@@ -13,6 +13,16 @@ enum class ControlGroup
 };
 struct GeneratorControl
 {
+	// Nested rather than a top-level ControlKind: macOS' Carbon headers, which Glob2.cpp pulls in
+	// through SDL, already declare a struct by that name, and the two clash in that one
+	// translation unit. Keep it scoped here.
+	enum class Kind
+	{
+		// A number from minimum to maximum in steps, or one of allowedValues.
+		Range,
+		// An on/off switch, stored as 0 or 1 and shown as a checkbox.
+		Toggle
+	};
 	std::string id;
 	const char *label;
 	int minimum, maximum, step, defaultValue;
@@ -21,6 +31,12 @@ struct GeneratorControl
 	bool terrainWeight = false;
 	// Optional ordered domain, e.g. {4, 8, 16}; values are stored literally.
 	std::vector<int> allowedValues;
+	Kind kind = Kind::Range;
+	static GeneratorControl toggle(std::string id, const char *label, bool on,
+								   ControlGroup group = ControlGroup::Layout);
+	// A resource amount as a percentage of the generator's own default, which is 100.
+	static GeneratorControl percentage(std::string id, const char *label, int maximum = 300);
+	bool isToggle() const { return kind == Kind::Toggle; }
 	std::vector<int> values() const;
 	int indexOf(int value) const;
 	int valueAt(int index) const;
