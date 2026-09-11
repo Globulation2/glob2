@@ -183,6 +183,7 @@ map/generator/generators/CraterLakesGenerator.cpp
 map/generator/generators/FjordContinentGenerator.cpp
 map/generator/generators/IslandsGenerator.cpp
 map/generator/generators/IslesGenerator.cpp
+map/generator/generators/RingWorldGenerator.cpp
 map/generator/generators/RiverGenerator.cpp
 map/generator/generators/RuggedArchipelagoGenerator.cpp
 map/generator/generators/ShatteredCoastGenerator.cpp

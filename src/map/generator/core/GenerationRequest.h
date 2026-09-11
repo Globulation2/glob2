@@ -31,7 +31,8 @@ struct GenerationRequest {
     eFJORDCONTINENT = 12,
     eWATERSHED = 13,
     eSTONEHIGHLANDS = 14,
-    eSYMMETRICARENA = 15
+    eSYMMETRICARENA = 15,
+    eRINGWORLD = 16
   };
 
   using Control = GeneratorControl;

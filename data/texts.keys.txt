@@ -923,3 +923,6 @@
 [The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
 [The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
 [The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+[Ring world]
+[Belt width]
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
