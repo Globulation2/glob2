@@ -38,6 +38,7 @@ void importChanged(const char*) {}
 void screenChanged(const char*) {}
 void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}
+void overviewDrawn(bool) {}
 void roomReady(bool) {}
 void exited(int) {}
 }

@@ -5,6 +5,7 @@
 #include "../render/MapCopies.h"
 #include <iostream>
 
+#include <ApplicationHost.h>
 #include <FormatableString.h>
 #include <StringTable.h>
 #include <Toolkit.h>
@@ -650,6 +651,7 @@ void GameGUI::drawAll(int team)
 		torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
 			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(),
 			camera.zoom, camera.fractionX(), camera.fractionY());
+	GAGCore::ApplicationHost::overviewDrawn(drewTorus);
 	if (!drewTorus)
 	{
 		globalContainer->gfx->beginMapTransform(camera.zoom, camera.offsetX-camera.fractionX()*camera.zoom, camera.offsetY-camera.fractionY()*camera.zoom, camera.offsetX, std::max(16, int(camera.offsetY)), camera.visibleW()*camera.zoom, camera.visibleH()*camera.zoom-std::max(0,16-int(camera.offsetY)));

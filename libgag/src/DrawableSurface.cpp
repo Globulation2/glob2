@@ -360,6 +360,9 @@ namespace GAGCore {
 void GraphicContext::restoreBrowserContext()
 {
     if (!_gc || !(_gc->optionFlags & USEGPU)) return;
+    // GL objects owned outside libgag, such as the torus overview's, belong to
+    // the lost context; a new generation tells them to recreate, not reuse.
+    ++_gc->glContextGeneration;
     glState.resetCache();
     glDisable(GL_BLEND);
     glDisable(GL_SCISSOR_TEST);
