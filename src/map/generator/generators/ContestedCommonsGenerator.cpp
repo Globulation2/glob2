@@ -443,7 +443,7 @@ GeneratorDefinition contestedCommonsDefinition()
 	return {"contested-commons",
 			9,
 			"Contested commons",
-			1,
+			2,
 			false,
 			{{"home-island-size", "Home island size", 20, 35, 5, 25, ControlGroup::Terrain},
 			 {"commons-size", "Commons size", 250, 500, 50, 400, ControlGroup::Terrain},
