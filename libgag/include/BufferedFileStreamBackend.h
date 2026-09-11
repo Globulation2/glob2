@@ -3,6 +3,7 @@
 
 #include <StreamBackend.h>
 #include <cstring>
+#include <memory>
 
 namespace GAGCore
 {
@@ -10,7 +11,8 @@ namespace GAGCore
 // bytes; seeks, reads, explicit flushes and destruction drain them in order.
 class BufferedFileStreamBackend : public FileStreamBackend
 {
-    char buffer[16384];
+    std::unique_ptr<char[]> buffer;
+    size_t capacity;
     size_t used = 0;
 
 protected:
@@ -24,11 +26,12 @@ protected:
         {
             const size_t size = used;
             used = 0;
-            writeBufferedData(buffer, size);
+            writeBufferedData(buffer.get(), size);
         }
     }
 public:
-    explicit BufferedFileStreamBackend(FILE* fp) : FileStreamBackend(fp) {}
+    explicit BufferedFileStreamBackend(FILE* fp, size_t capacity = 16384)
+        : FileStreamBackend(fp), buffer(new char[capacity]), capacity(capacity) {}
     // Destruction drains through the unchecked base implementation; callers
     // requiring error reporting must explicitly flush or close first.
     ~BufferedFileStreamBackend() override { drain(); }
@@ -38,16 +41,16 @@ public:
     void write(const void* data, size_t size) override
     {
         const char* bytes = static_cast<const char*>(data);
-        if (size > sizeof(buffer) - used)
+        if (size > capacity - used)
         {
             drain();
-            if (size >= sizeof(buffer))
+            if (size >= capacity)
             {
                 writeBufferedData(data, size);
                 return;
             }
         }
-        if (size) std::memcpy(buffer + used, bytes, size);
+        if (size) std::memcpy(buffer.get() + used, bytes, size);
         used += size;
     }
     void putc(int c) override

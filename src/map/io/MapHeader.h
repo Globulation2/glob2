@@ -83,6 +83,9 @@ public:
 	/// Returns the complete game checksum
 	void resetGameSHA1();
 
+	/// False when the file was saved without a hash (autosaves)
+	bool hasGameSHA1() const;
+
 	/// Returns a checksum of the map header information
 	Uint32 checkSum() const;
 	

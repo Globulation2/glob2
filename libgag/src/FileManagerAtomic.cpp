@@ -41,7 +41,8 @@ namespace GAGCore
 		class CheckedFileBackend : public BufferedFileStreamBackend
 		{
 		public:
-			explicit CheckedFileBackend(FILE *file) : BufferedFileStreamBackend(file) {}
+			// Whole-game saves reach tens of megabytes: write them in fewer, larger chunks.
+			explicit CheckedFileBackend(FILE *file) : BufferedFileStreamBackend(file, 1 << 20) {}
 			void writeBufferedData(const void *data, size_t size) override
 			{
 				if (fwrite(data, 1, size, fp) != size)

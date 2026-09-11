@@ -328,7 +328,7 @@ int main(int argc, char **argv)
 		{
 			auto *backend = new MemoryStreamBackend();
 			BinaryOutputStream reference(backend);
-			gui.save(&reference, "Auto save");
+			gui.save(&reference, "Auto save", false);
 			const std::string expected(backend->getBuffer(), backend->getPosition());
 			assert(bytes == expected);
 		}
@@ -367,6 +367,8 @@ int main(int argc, char **argv)
 		auto stream = input(bytes, false);
 		MapHeader savedHeader;
 		assert(savedHeader.load(stream.get()));
+		assert(!savedHeader.hasGameSHA1());
+		std::cout << "PASS production autosave is written without a file hash" << std::endl;
 		const size_t offset = savedHeader.getMapOffset();
 		assert(bytes.substr(offset, 4) == "MapB");
 		const auto mapBytes = bytes.substr(offset);

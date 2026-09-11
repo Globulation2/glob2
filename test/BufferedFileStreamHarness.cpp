@@ -21,11 +21,11 @@ static void require(bool ok)
     if (!ok) { std::fprintf(stderr, "Buffered file stream regression\n"); std::exit(1); }
 }
 
-static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[20])
+static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[20], size_t capacity = 16384)
 {
     FILE* file = std::tmpfile();
     require(file != nullptr);
-    auto* backend = buffered ? static_cast<GAGCore::StreamBackend*>(new GAGCore::BufferedFileStreamBackend(file))
+    auto* backend = buffered ? static_cast<GAGCore::StreamBackend*>(new GAGCore::BufferedFileStreamBackend(file, capacity))
                              : new GAGCore::FileStreamBackend(file);
     GAGCore::BinaryOutputStream writer(backend);
     writer.enableSHA1();
@@ -71,9 +71,13 @@ static std::vector<unsigned char> serialize(bool buffered, unsigned char digest[
 
 int main()
 {
-    unsigned char a[20], b[20];
-    require(serialize(false,a) == serialize(true,b));
+    unsigned char a[20], b[20], c[20];
+    const std::vector<unsigned char> direct = serialize(false,a);
+    require(direct == serialize(true,b));
     require(std::memcmp(a,b,20) == 0);
+    // Atomic saves use a 1 MiB buffer, which also absorbs the large block writes.
+    require(direct == serialize(true,c,size_t(1) << 20));
+    require(std::memcmp(a,c,20) == 0);
     // The duplicated descriptor survives the backend's fclose.
     FILE* file = std::tmpfile();
     require(file != nullptr);

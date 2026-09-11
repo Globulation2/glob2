@@ -221,6 +221,13 @@ void MapHeader::resetGameSHA1()
 
 
 
+bool MapHeader::hasGameSHA1() const
+{
+	return std::any_of(SHA1, SHA1+20, [](Uint8 byte) { return byte != 0; });
+}
+
+
+
 Uint32 MapHeader::checkSum() const
 {
 	// `cs` is signed `Sint32` so the open-coded `(cs<<31)|(cs>>1)` rotate

@@ -94,7 +94,7 @@ public:
 	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
-	void save(GAGCore::OutputStream *stream, const std::string name);
+	void save(GAGCore::OutputStream *stream, const std::string name, bool computeSHA1 = true);
 
 	void processEvent(SDL_Event *event);
 
@@ -233,6 +233,8 @@ public:
 	/// "[waiting for X]" notice in GameGUIDraw — it is not part of simulation or
 	/// network state and is never checksummed, networked, or saved.
 	int anyPlayerWaitedTimeFor;
+	//! Tick of this session's latest autosave, or -1 before the first.
+	Sint64 lastAutosaveStep;
 private:
 	friend class GameGUISelectionHarness;
 	friend class TorusRenderIntegrationTest;

@@ -1,10 +1,20 @@
 # Buffered save output
 
-FileManager output streams batch field-sized writes in a bounded 16 KiB buffer.
-Large writes bypass it after draining earlier data. Positions include pending
-bytes; reads, seeks, flushes, and destruction drain in order. Atomic saving
-retains checked write/flush/seek/close errors before replacing the previous file.
-The serialization format, fields, SHA1, and autosave cadence remain unchanged.
+FileManager output streams batch field-sized writes in a bounded 16 KiB buffer;
+the atomic autosave writer uses 1 MiB, since late-game saves reach tens of
+megabytes. Large writes bypass the buffer after draining earlier data. Positions
+include pending bytes; reads, seeks, flushes, and destruction drain in order.
+Atomic saving retains checked write/flush/seek/close errors before replacing the
+previous file. Gradient fields go out as one run of bytes each
+(`OutputStream::writeUint16Sections`), with the same bytes and SHA1 as writing
+each value in its own section. The serialization format and fields are
+unchanged. Autosaves skip the whole-file SHA1 and store zeros in its place:
+nothing verifies an autosave, and `Engine::haveMap` makes a joining client
+download any file without a hash rather than trust a local copy of the same name.
+
+Autosave runs every `AUTOSAVE_INTERVAL_TICKS` (256) ticks at normal speed, first
+on tick 79 of a session, and waits proportionally more ticks at faster speed
+presets so saves stay about 10 seconds of real time apart.
 
 On Apple M3, optimized integration revision c71373bb, an eight-team Playground
 match (seed 20260907) took 84.19 seconds with Cortex geometry optimization and
