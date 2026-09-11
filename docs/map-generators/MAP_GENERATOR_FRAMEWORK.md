@@ -212,9 +212,11 @@ cul-de-sac.
   leave a passage narrower than 9 tiles.
 - **Resources.** Every home starts identical: fixed 1:1 wheat and wood banking the dead end's side
   shores, a compact stone deposit at its back wall, and a clear square around the swarm. Outside
-  the homes, clumps of wheat, wood and stone (densities per 256 shore tiles) and `fruit` patches
-  are scattered along every passage's shores, never more than three tiles in, so each passage
-  keeps a clear lane down its middle however the maze turns. Algae is seeded in open water.
+  the homes, clumps of wheat, wood and stone (densities per 256 shore tiles) are scattered along
+  every passage's shores, never more than three tiles in, so each passage keeps a clear lane down
+  its middle however the maze turns. Fruit is treasure: every dead end that isn't a home gets one
+  compact patch of `fruit` tiles near its far end, with fruit types dealt round-robin so every
+  kind is somewhere in the maze. Algae is seeded along the channels.
 - **Checked, not assumed.** `validateWorld` floods walkable tiles (water, buildings and every
   resource, including wall spines, block it) from colony 0's workers, and fails the candidate if
   any colony isn't reached.

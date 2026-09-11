@@ -449,6 +449,10 @@ int main(int argc, char **argv)
 					c = 5;
 				if (map.getResource(x, y).type == STONE)
 					c = 6;
+				if (map.getResource(x, y).type >= CHERRY && map.getResource(x, y).type <= CHERRY + 2)
+					c = 8;
+				if (map.getResource(x, y).type == ALGA)
+					c = 9;
 				if (map.getBuilding(x, y) != NOGBID)
 					c = 7;
 				std::fprintf(f, "%d ", c);

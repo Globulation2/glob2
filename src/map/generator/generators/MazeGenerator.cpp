@@ -327,13 +327,13 @@ std::vector<int> grassDepth(const Map &map) {
   return depth;
 }
 
-struct HomeTile {
-  int x, y, u, v; // u: towards the home's exit; v: to the exit's right
+struct CellTile {
+  int x, y, u, v; // u: towards the cell's exit; v: to the exit's right
 };
 
 // Places the first `count` tiles of a region in the order `before` ranks them.
 template <typename Order>
-void fillInOrder(Map &map, std::vector<HomeTile> region, int count, int resourceType,
+void fillInOrder(Map &map, std::vector<CellTile> region, int count, int resourceType,
                  Order before) {
   std::stable_sort(region.begin(), region.end(), before);
   for (int i = 0; i < count && i < int(region.size()); ++i)
@@ -349,7 +349,7 @@ void furnishHome(Map &map, const MazeGrid &g, int cell, int exit, int half) {
   const int fx = forward[exit][0], fy = forward[exit][1], rx = -fy, ry = fx;
   const int cx = g.centerX(cell), cy = g.centerY(cell);
   const int lane = std::max(1, half - kShoreBand);
-  std::vector<HomeTile> left, right, back;
+  std::vector<CellTile> left, right, back;
   const int c = g.column(cell), r = g.row(cell);
   for (int y = g.ys[r]; y < g.ys[r + 1]; ++y)
     for (int x = g.xs[c]; x < g.xs[c + 1]; ++x) {
@@ -367,10 +367,10 @@ void furnishHome(Map &map, const MazeGrid &g, int cell, int exit, int half) {
       else if (u <= -half + 2)
         back.push_back({x, y, u, v});
     }
-  const auto shoreFromBack = [](const HomeTile &a, const HomeTile &b) {
+  const auto shoreFromBack = [](const CellTile &a, const CellTile &b) {
     return a.u != b.u ? a.u < b.u : std::abs(a.v) > std::abs(b.v);
   };
-  const auto nearBackCentre = [half](const HomeTile &a, const HomeTile &b) {
+  const auto nearBackCentre = [half](const CellTile &a, const CellTile &b) {
     const int da = std::max(a.u + half, std::abs(a.v)), db = std::max(b.u + half, std::abs(b.v));
     if (da != db)
       return da < db;
@@ -381,6 +381,33 @@ void furnishHome(Map &map, const MazeGrid &g, int cell, int exit, int half) {
   fillInOrder(map, left, kHomeFarmland, CORN, shoreFromBack);
   fillInOrder(map, right, kHomeFarmland, WOOD, shoreFromBack);
   fillInOrder(map, back, kHomeStone, STONE, nearBackCentre);
+}
+
+// A treasure: a compact patch of one fruit at the far end of a dead end, so colonies have to
+// go and take it rather than passing it on the way somewhere else. It sits a few tiles back
+// from the end wall, so its front always faces the passage's clear lane.
+void placeTreasure(Map &map, const MazeGrid &g, int cell, int exit, int half, int size,
+                   int fruitType) {
+  static const int forward[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+  const int fx = forward[exit][0], fy = forward[exit][1], rx = -fy, ry = fx;
+  const int cx = g.centerX(cell), cy = g.centerY(cell), anchor = -half + 3;
+  std::vector<CellTile> tiles;
+  const int c = g.column(cell), r = g.row(cell);
+  for (int y = g.ys[r]; y < g.ys[r + 1]; ++y)
+    for (int x = g.xs[c]; x < g.xs[c + 1]; ++x)
+      if (map.isGrass(x, y) && !map.isResource(x, y)) {
+        const int ox = x - cx, oy = y - cy;
+        tiles.push_back({x, y, ox * fx + oy * fy, ox * rx + oy * ry});
+      }
+  fillInOrder(map, tiles, size, fruitType, [anchor](const CellTile &a, const CellTile &b) {
+    const int da = std::max(std::abs(a.u - anchor), std::abs(a.v));
+    const int db = std::max(std::abs(b.u - anchor), std::abs(b.v));
+    if (da != db)
+      return da < db;
+    if (std::abs(a.v) != std::abs(b.v))
+      return std::abs(a.v) < std::abs(b.v);
+    return a.u != b.u ? a.u < b.u : a.v < b.v;
+  });
 }
 
 // Deposits scattered along the shores of every passage outside the homes, as compact clumps
@@ -444,30 +471,23 @@ void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
       remaining -=
           clump(layer.first, std::min(remaining, 4 + int(context.bounded("resources", 9))));
   }
-  for (int i = 0; i < o.fruit; ++i)
-    clump(CHERRY + context.bounded("resources", 3), 3);
 }
 
-// Algae is seeded in open water at least one tile from any land, where it's still reachable
-// from the nearest shore.
+// Algae is seeded along the channels. They are only a tile or two wide, so any water tile can
+// seed a clump: channel water borders a passage's shore, where the algae stays harvestable, and
+// algae on water never blocks anyone on foot.
 void seedAlgae(Map &map, GenerationContext &context, int algae) {
   const int w = map.getW(), h = map.getH();
-  std::vector<MapGeneratorPoint> openWater;
+  std::vector<MapGeneratorPoint> water;
   for (int y = 0; y < h; ++y)
-    for (int x = 0; x < w; ++x) {
-      bool clear = true;
-      for (int dy = -1; dy <= 1 && clear; ++dy)
-        for (int dx = -1; dx <= 1 && clear; ++dx)
-          clear = map.isWater(map.normalizeX(x + dx), map.normalizeY(y + dy));
-      if (clear)
-        openWater.emplace_back(x, y);
-    }
-  if (openWater.empty())
+    for (int x = 0; x < w; ++x)
+      if (map.isWater(x, y))
+        water.emplace_back(x, y);
+  if (water.empty())
     return;
-  int remaining = int(openWater.size()) * algae / 1600;
-  for (int attempt = 0; remaining > 0 && attempt < int(openWater.size()) / 4 + 16; ++attempt)
-    remaining -= placeResourceClump(map, context,
-                                    openWater[context.bounded("resources", openWater.size())],
+  int remaining = int(water.size()) * algae / 400;
+  for (int attempt = 0; remaining > 0 && attempt < int(water.size()) / 4 + 16; ++attempt)
+    remaining -= placeResourceClump(map, context, water[context.bounded("resources", water.size())],
                                     ALGA, 1);
 }
 
@@ -510,6 +530,21 @@ bool generate(Game &game, GenerationContext &context) {
     exitOf[home] = d;
   }
   addLoops(g, context, isHome, o.loopiness, open);
+  std::vector<int> deadEnds;
+  for (int cell = 0; cell < g.cells(); ++cell) {
+    if (isHome[cell])
+      continue;
+    int degree = 0, exit = -1;
+    for (int d = 0; d < 4; ++d)
+      if (open[g.edgeId(cell, d)]) {
+        ++degree;
+        exit = d;
+      }
+    if (degree == 1) {
+      deadEnds.push_back(cell);
+      exitOf[cell] = exit;
+    }
+  }
 
   // Every cell is a chamber as wide as a passage, and every open boundary a band of that width
   // joining two chambers, so a run of passage reads as one continuous strip of grass.
@@ -570,6 +605,17 @@ bool generate(Game &game, GenerationContext &context) {
   context.stage = "maze resources";
   for (int home : homes)
     furnishHome(map, g, home, exitOf[home], half);
+  // Fruit is treasure: one patch at the far end of every dead end that isn't a home, with fruit
+  // types dealt round-robin so every kind is somewhere in the maze and a colony has to go and
+  // fight for the ones it lacks. Placed before the shore scatter, which works around them.
+  if (o.fruit > 0) {
+    for (size_t i = deadEnds.size(); i > 1; --i)
+      std::swap(deadEnds[i - 1], deadEnds[context.bounded("resources", i)]);
+    const int firstType = context.bounded("resources", 3);
+    for (size_t i = 0; i < deadEnds.size(); ++i)
+      placeTreasure(map, g, deadEnds[i], exitOf[deadEnds[i]], half, o.fruit,
+                    CHERRY + int((firstType + i) % 3));
+  }
   scatterThroughMaze(map, context, g, isHome, half, o);
   seedAlgae(map, context, o.algae);
   return true;
@@ -628,7 +674,7 @@ GeneratorDefinition mazeDefinition() {
   return {"maze",
           11,
           "Maze",
-          9,
+          10,
           false,
           {{"cell-size", "Cell size", 24, 48, 1, 32, ControlGroup::Layout, false, false,
             {24, 32, 40, 48}},
@@ -637,12 +683,13 @@ GeneratorDefinition mazeDefinition() {
            {"loopiness", "Loopiness", 0, 50, 1, 10, ControlGroup::Layout, false, false,
             {0, 5, 10, 20, 35, 50}},
            // Densities for the deposits scattered along the passages (per 256 shore tiles);
-           // homes always get the same fixed amounts. Fruit is a count of patches.
+           // homes always get the same fixed amounts. Fruit is the size, in tiles, of the
+           // treasure at every dead end that isn't a home.
            {"wheat", "Wheat", 0, 64, 1, 48, ControlGroup::Resources},
            {"wood", "Wood", 0, 64, 1, 24, ControlGroup::Resources},
            {"stone", "Stone", 0, 64, 1, 16, ControlGroup::Resources},
            {"algae", "Algae", 0, 64, 1, 24, ControlGroup::Resources},
-           {"fruit", "Fruit", 0, 32, 1, 8, ControlGroup::Resources}},
+           {"fruit", "Fruit", 0, 25, 1, 9, ControlGroup::Resources}},
           generate,
           true,
           validate,

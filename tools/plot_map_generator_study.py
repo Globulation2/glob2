@@ -87,7 +87,7 @@ for mode in catalog[1:]:
     report += [row(c) for c in mode['controls'] if c['group']!=3]
 (OUT/'RESULTS.md').write_text('\n'.join(report)+'\n')
 # Fixed seeds selected before rendering, without replacements.
-colors=['#96bb70','#ddc38e','#5c9cbc','#b8c4a3','#e4c34b','#285838','#7f8490','#292936']
+colors=['#96bb70','#ddc38e','#5c9cbc','#b8c4a3','#e4c34b','#285838','#7f8490','#292936','#c2413b','#3fa69a']
 seeds=(22001,22002,22003)
 profile='glob2-map-gallery'
 preview=ROOT/'artifacts/map-generator-validation/previews';preview.mkdir(parents=True,exist_ok=True)
@@ -101,12 +101,12 @@ try:
             study=next(x for x in result.stdout.splitlines() if x.startswith('STUDY,')).split(',')
             assert study[3]=='1',(m,seed,'Preview seed failed; do not replace it.')
             grid=np.loadtxt(path,skiprows=1,dtype=int)
-            panel.imshow(grid,cmap=ListedColormap(colors),vmin=0,vmax=7,interpolation='nearest');panel.set_title(f'Seed {seed}');panel.axis('off')
-            if seed==seeds[0]:ax.imshow(grid,cmap=ListedColormap(colors),vmin=0,vmax=7,interpolation='nearest')
+            panel.imshow(grid,cmap=ListedColormap(colors),vmin=0,vmax=9,interpolation='nearest');panel.set_title(f'Seed {seed}');panel.axis('off')
+            if seed==seeds[0]:ax.imshow(grid,cmap=ListedColormap(colors),vmin=0,vmax=9,interpolation='nearest')
         detail.suptitle(names[m],fontsize=16,fontweight='bold');detail.tight_layout(rect=(0,0,1,.93));detail.savefig(OUT/f'generator-{m}.png',dpi=130);plt.close(detail)
         ax.set_title(names[m],fontweight='bold');ax.axis('off')
 finally:shutil.rmtree(Path.home()/('.'+profile),ignore_errors=True)
 fig.suptitle('Tuned defaults · same seed 22001 for every generator',fontsize=17,fontweight='bold')
-fig.legend(handles=[Patch(color=c,label=n) for c,n in zip(colors,['Grass','Sand','Water','Shore','Wheat','Wood','Stone','Buildings'])],loc='lower center',ncol=8,frameon=False)
+fig.legend(handles=[Patch(color=c,label=n) for c,n in zip(colors,['Grass','Sand','Water','Shore','Wheat','Wood','Stone','Buildings','Fruit','Algae'])],loc='lower center',ncol=10,frameon=False)
 fig.tight_layout(rect=(0,.055,1,.94),h_pad=2.5);fig.savefig(OUT/'maps.png',dpi=150);plt.close(fig)
 print('Coverage invariants, published results and 24 fixed-seed map previews passed.')

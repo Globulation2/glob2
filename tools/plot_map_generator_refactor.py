@@ -21,8 +21,9 @@ from matplotlib.patches import Patch
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-COLORS = ['#96bb70', '#ddc38e', '#5c9cbc', '#b8c4a3', '#e4c34b', '#285838', '#7f8490', '#292936']
-LABELS = ['Grass', 'Sand', 'Water', 'Shore', 'Wheat', 'Wood', 'Stone', 'Buildings']
+COLORS = ['#96bb70', '#ddc38e', '#5c9cbc', '#b8c4a3', '#e4c34b', '#285838', '#7f8490', '#292936',
+          '#c2413b', '#3fa69a']
+LABELS = ['Grass', 'Sand', 'Water', 'Shore', 'Wheat', 'Wood', 'Stone', 'Buildings', 'Fruit', 'Algae']
 
 
 def main():
@@ -119,12 +120,12 @@ def main():
                 success = study[3] == '1'
                 grid = np.loadtxt(dump, skiprows=1, dtype=int)
                 dump.unlink()
-                ax.imshow(grid, cmap=ListedColormap(COLORS), vmin=0, vmax=7, interpolation='nearest')
+                ax.imshow(grid, cmap=ListedColormap(COLORS), vmin=0, vmax=len(COLORS) - 1, interpolation='nearest')
                 ax.set_title(f'Seed {seed}'+('\nWeak start example' if index == 3 else '')+(' · FAILED' if not success else ''), fontsize=10)
                 ax.axis('off')
                 preview_records.append(dict(method=method, seed=seed, success=success, hash=study[-1], role='weak-start' if index == 3 else 'fixed'))
             fig.suptitle(record['name'], fontweight='bold')
-            fig.legend(handles=[Patch(color=c, label=l) for c, l in zip(COLORS, LABELS)], loc='lower center', ncol=8, frameon=False, fontsize=8)
+            fig.legend(handles=[Patch(color=c, label=l) for c, l in zip(COLORS, LABELS)], loc='lower center', ncol=len(COLORS), frameon=False, fontsize=8)
             fig.tight_layout(rect=(0, .06, 1, .94))
             fig.savefig(out/f'generator-{method}.png', dpi=145)
             plt.close(fig)
