@@ -51,9 +51,8 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 	void makeSwamp(float smoothingFactor); /// a plain perlin height field
 	void makeIslands(unsigned int count,
 					 float smoothingFactor); /// generates a 'swamp' with count hills
-	void
-	makeRiver(unsigned int maxDiameter,
-			  float smoothingFactor); /// generates a 'swamp' with a river based on a random walk.
+	/// generates a 'swamp' with a river based on a random walk; a straight one unless winding.
+	void makeRiver(unsigned int maxDiameter, float smoothingFactor, bool winding = true);
 	void makeCraters(unsigned int craterCount, unsigned int craterRadius,
 					 float smoothingFactor); /// generates a 'swamp' with craterCount craters
   private:
