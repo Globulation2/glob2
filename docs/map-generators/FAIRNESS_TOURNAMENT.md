@@ -148,7 +148,32 @@ colony index (does the generator favour a colony it places early or late?) and w
 
 ## Cost
 
-<!-- COST TABLE -->
+Measured with a release build on an 8-core arm64 Mac shared with another build: four Nicowar
+colonies, three games at a time and the default 90,000-tick cap (60 minutes of game time), on one
+Symmetric arena and one Contested commons map, every rotation once.
+
+| Map | Games | Wall time per game: mean / median / range | Seconds per 1,000 ticks | Reached the cap |
+| --- | ---: | --- | ---: | ---: |
+| 128x128 | 8 | 26.9 / 24.1 / 9.3-59.3 s | 0.38 | 4 of 8 |
+| 256x256 | 8 | 288.7 / 279.6 / 233.2-357.4 s | 3.21 | 8 of 8 |
+
+Generating a map with its five lobby rolls and every rotation check takes about a second, so games
+are the whole cost. A run takes about `games x mean time per game / jobs`:
+
+| Run | Games | Projected wall time at 3 jobs |
+| --- | ---: | --- |
+| `smoke` (4 generators x 3 maps x 4 rotations x 2 seeds, 128x128) | 96 | about 15 minutes |
+| `standard` (15 generators x 12 maps x 4 rotations x 3 seeds, 128x128) | 2,160 | about 5.5 hours |
+| `standard --size 256` | 2,160 | about 58 hours |
+| `standard --size 256 --map-seeds 2001-2004 --games-per-rotation 1` | 240 | about 6.5 hours |
+
+Game length varies by generator (a map where colonies stall reaches the cap sooner in wall time
+than one they build out), and the machine was shared, so treat these as rough.
+
+The presets use 128x128 because at 256x256 no game finished within 90,000 ticks. Every 256x256
+result is then an adjudication: colonies were almost all still alive, several often shared the
+same prestige, and population decided. A higher `--tick-cap` gets more games won outright, at a
+proportional cost in wall time.
 
 ## Limits
 

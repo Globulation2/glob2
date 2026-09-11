@@ -1,6 +1,6 @@
 {
   "name": "standard",
-  "description": "Standard fairness tournament: every playable generator, twelve maps each, every rotation played by three engine seeds.",
+  "description": "Standard fairness tournament: every playable generator, twelve 128x128 maps each, every rotation played by three engine seeds (2,160 games, about 5.5 hours at 3 jobs).",
   "generators": [15, 9, 11, 12, 7, 6, 13, 14, 16, 8, 5, 4, 3, 1, 2],
   "map_seeds": "2001-2012",
   "games_per_rotation": 3,
