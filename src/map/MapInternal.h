@@ -43,6 +43,13 @@ constexpr std::uint16_t GRADIENT_FORBIDDEN        = 0;
 constexpr std::uint16_t GRADIENT_UNREACHABLE      = 1;
 constexpr std::uint16_t GRADIENT_AT_GOAL          = 0xFFFF;
 constexpr std::uint16_t GRADIENT_FORBIDDEN_BORDER = GRADIENT_AT_GOAL - GRADIENT_STEP;
+/// Tiles a fetch out of a market is charged on top of the walk, for the
+/// resource having been carried there once already. Markets sit next to what
+/// they teleport, so the detour is small.
+constexpr int MARKET_DETOUR_TILES = 5;
+/// Seed of a stocked market's tiles in a "with markets" resource gradient: a
+/// goal that costs the detour more than a tile of the resource itself.
+constexpr std::uint16_t GRADIENT_MARKET_SEED = GRADIENT_AT_GOAL - MARKET_DETOUR_TILES * GRADIENT_STEP;
 
 // Weighted cost rounded to whole land-step equivalents, for a reachable value.
 // This is not a geometric tile count: water and diagonal steps change the cost.

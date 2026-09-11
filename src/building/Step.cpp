@@ -89,7 +89,7 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 	int timeLeft=(unit->hungry-unit->trigHungry)/unit->race->hungriness;
 	int distResource = 0;
 	if(!owner->map->resourceAvailable(owner->teamNumber, wantedResource, unit->swimClass(),
-	                                  unit->posX, unit->posY, &distResource))
+	                                  unit->posX, unit->posY, &distResource, fetchesFromMarkets()))
 	{
 		if(wantedResource<BASIC_COUNT)
 			unitsFailingRequirements[UnitCantAccessResource] += 1;

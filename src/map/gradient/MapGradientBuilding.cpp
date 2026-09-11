@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Unit.h"
 #include "MapInternal.h"
+#include <algorithm>
 
 
 
@@ -136,14 +137,19 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	assert(gradient);
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
 	const Uint16 *toBuilding=building->globalGradient[swimClass];
-	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass);
+	// Building::fetchesFromMarkets, spelled out: the YOG server links the map
+	// but not the building code.
+	const bool withMarkets=!building->type->canExchange;
+	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets);
 	// Same obstacles as the resource gradient. A resource tile is seeded with
 	// the cost of carrying from the cheapest free cell next to it, where the
-	// unit harvests, to the building.
+	// unit harvests, to the building. A stocked market's tile is a goal as
+	// well, its seed the detour dearer.
 	Uint16 bestSeed=GRADIENT_UNREACHABLE;
 	for (size_t i=0; i<size; i++)
 	{
-		if (toResource[i]!=GRADIENT_AT_GOAL)
+		const bool marketGoal=withMarkets && tiles[i].building!=NOGBID && toResource[i]>GRADIENT_UNREACHABLE;
+		if (toResource[i]!=GRADIENT_AT_GOAL && !marketGoal)
 		{
 			gradient[i]=toResource[i]==GRADIENT_FORBIDDEN ? GRADIENT_FORBIDDEN : GRADIENT_UNREACHABLE;
 			continue;
@@ -157,6 +163,8 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 			if (toResource[n]>GRADIENT_UNREACHABLE && toBuilding[n]>best)
 				best=toBuilding[n];
 		}
+		if (marketGoal && best>GRADIENT_UNREACHABLE)
+			best=std::max<int>(GRADIENT_UNREACHABLE+1, best-MARKET_DETOUR_TILES*GRADIENT_STEP);
 		gradient[i]=best;
 		if (best>bestSeed)
 			bestSeed=best;

@@ -559,7 +559,8 @@ void Unit::handleMovementGoingToResource()
 	int teamNumber=owner->teamNumber;
 	int swim=swimClass();
 	bool stopWork;
-	if (map->pathfindResource(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding))
+	const bool withMarkets=attachedBuilding && attachedBuilding->fetchesFromMarkets();
+	if (map->pathfindResource(teamNumber, destinationPurpose, swim, posX, posY, &dx, &dy, &stopWork, attachedBuilding, withMarkets))
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -575,7 +576,7 @@ void Unit::handleMovementGoingToResource()
 		// itself only when it actually goes stale.
 		const Uint16 *roundTrip = attachedBuilding ? map->roundTripGradient(attachedBuilding, destinationPurpose, swim) : NULL;
 		const Uint16 *gradient = (roundTrip && roundTrip[map->coordToIndex(posX, posY)]>GRADIENT_UNREACHABLE)
-			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim);
+			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim, withMarkets);
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
 	}

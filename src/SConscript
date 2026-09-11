@@ -659,6 +659,12 @@ if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
     hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
     local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))
 
+# A building's fetch is led to a stocked market of its team when that is the shorter trip.
+if not env['server'] and 'market-fetch-test' in COMMAND_LINE_TARGETS:
+    market_sources = [source for source in source_files if source != 'Glob2.cpp']
+    market_sources += local.Object('MarketFetchHarness.o', '#test/MarketFetchHarness.cpp')
+    local.Alias('market-fetch-test', local.Program('MarketFetchHarness', market_sources))
+
 if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_sources = [source for source in source_files if source != 'Glob2.cpp']
     custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')

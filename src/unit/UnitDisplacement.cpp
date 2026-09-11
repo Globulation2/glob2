@@ -49,6 +49,21 @@ void Unit::handleDisplacement(void)
 					displacement=DIS_HARVESTING;
 					validTarget=false;
 				}
+				else if (attachedBuilding->fetchesFromMarkets())
+				{
+					// The gradient led here to a stocked market of ours: take the
+					// resource at its door and carry it home.
+					if (Building *market = owner->map->touchedStockedMarket(this, destinationPurpose))
+					{
+						market->removeResourceFromBuilding(destinationPurpose);
+						carriedResource=destinationPurpose;
+						setTargetBuilding(attachedBuilding);
+						displacement=DIS_GOING_TO_BUILDING;
+						validTarget=true;
+						if (verbose)
+							printf("guid=(%d) took resource (%d) out of market gbid=(%d)\n", gid, destinationPurpose, market->gid);
+					}
+				}
 			}
 			else if (displacement==DIS_HARVESTING)
 			{
@@ -142,117 +157,21 @@ void Unit::handleDisplacement(void)
 					}
 					else
 					{
-						///Find a resource that the building wants and a location to get it from
-						///The location may be a market, or the harvesting the resource from the
-						///map.
-						int needs[MAX_NB_RESOURCES];
-						attachedBuilding->computeWishedResources(needs);
-						int teamNumber=owner->teamNumber;
-						int timeLeft = numberOfStepsLeftUntilHungry();
-						if (timeLeft > 0)
-						{
-							int bestResource=-1;
-							int minValue=owner->map->getW()+owner->map->getW();
-							bool takeInExchangeBuilding=false;
-							Map* map=owner->map;
-							for (int r=0; r<MAX_NB_RESOURCES; r++)
-							{
-								int need=needs[r];
-								if (need>0)
-								{
-									int distToResource;
-									bool available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
-									if (available)
-										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
-									else
-										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
-									if (available)
-									{
-										if ((distToResource<<1)>=timeLeft)
-											continue; //We don't choose this resource, because it won't have time to reach the resource and bring it back.
-										int value=distToResource/need;
-										if (value<minValue)
-										{
-											bestResource=r;
-											minValue=value;
-											takeInExchangeBuilding=false;
-										}
-									}
-
-									if (attachedBuilding->type->canFeedUnit)
-										for (std::list<Building *>::iterator bi=owner->canExchange.begin(); bi!=owner->canExchange.end(); ++bi)
-											if ((*bi)->resources[r]>0)
-											{
-												int buildingDist;
-												if (map->buildingAvailable(*bi, swimClass(), posX, posY, &buildingDist))
-												{
-													// We increase the cost to get a resource in an exchange building to reflect the costs to get the resources to the exchange building.
-													// increase is +5 as markets will in general be very close to fruits as they are the fruit teleporters.
-													int value=(buildingDist+5)/need;
-													if (value<minValue)
-													{
-														bestResource=r;
-														minValue=value;
-
-														ownExchangeBuilding=*bi;
-														setTargetBuilding(*bi);
-														takeInExchangeBuilding=true;
-													}
-												}
-											}
-								}
-							}
-
-							if (verbose)
-								printf("guid=(%d) bestResource=%d, minValue=%d\n", gid, bestResource, minValue);
-
-							if (bestResource>=0)
-							{
-								destinationPurpose=bestResource;
-								assert(activity==ACT_FILLING);
-								if (takeInExchangeBuilding)
-								{
-									displacement=DIS_GOING_TO_BUILDING;
-									targetX=targetBuilding->getMidX();
-									targetY=targetBuilding->getMidY();
-									targetBuilding->insertUnitToHarvesting(this);
-									validTarget=true;
-								}
-								else
-								{
-									int dummyDist;
-									if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
-									{
-										dx = off->dx;
-										dy = off->dy;
-										displacement=DIS_HARVESTING;
-										validTarget=false;
-									}
-									else if (map->resourceAvailableUpdate(teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, &dummyDist))
-									{
-										displacement=DIS_GOING_TO_RESOURCE;
-										validTarget=true;
-									}
-									else
-									{
-										assert(false);//You can remove this assert(), but *do* notice me!
-										stopAttachedForBuilding(false);
-									}
-								}
-							}
-							else
-							{
-								if (verbose)
-									printf("guid=(%d) can't find any wished resource, unsubscribing.\n", gid);
-								stopAttachedForBuilding(false);
-							}
-						}
-						else
-						{
-							if (verbose)
-								printf("guid=(%d) not enough time for anything, unsubscribing.\n", gid);
-							stopAttachedForBuilding(false);
-						}
+						// One delivery is one gig. Hand the unit back to the free pool
+						// instead of letting it re-hire itself for the next trip out of
+						// its own building's wish list: Team::updateAllBuildingTasks runs
+						// later in this same tick, after every unit has stepped, and only
+						// ACT_RANDOM units are candidates. So the next trip is auctioned
+						// among every worker and every building that wants one, instead of
+						// belonging to whoever happened to deliver here last.
+						//
+						// The unit standing at the door is usually the cheapest hire and
+						// wins its own job back. When it does not, the random step it
+						// starts below is still in flight while the auction runs, so
+						// losing costs it that one tile and nothing else.
+						if (verbose)
+							printf("guid=(%d) delivered; back on the market.\n", gid);
+						stopAttachedForBuilding(false);
 					}
 				}
 			}
