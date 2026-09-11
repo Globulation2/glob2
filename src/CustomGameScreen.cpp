@@ -286,6 +286,19 @@ CustomGameScreen::~CustomGameScreen()
 		std::filesystem::remove_all(std::filesystem::path(snapshot).parent_path(), error);
 	}
 }
+std::shared_ptr<void> CustomGameScreen::releaseSnapshot()
+{
+	if (snapshot.empty())
+		return nullptr;
+	const auto directory = std::filesystem::path(snapshot).parent_path();
+	snapshot.clear();
+	return std::shared_ptr<void>(nullptr,
+								 [directory](void *)
+								 {
+									 std::error_code error;
+									 std::filesystem::remove_all(directory, error);
+								 });
+}
 void CustomGameScreen::savePreferences()
 {
 	CustomGamePreferences preferences;

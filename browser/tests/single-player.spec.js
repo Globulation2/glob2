@@ -308,6 +308,23 @@ test('custom and tutorial startup can be cancelled and retried', async ({page}) 
   expect(errors).toEqual([]);
 });
 
+test('a generated custom map loads after its setup screen closes', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  // Each generated preview lives in its own private temporary directory.
+  const previews = () => page.evaluate(() => FS.readdir('/tmp').filter(name => name.startsWith('glob2-custom-')));
+  await clickMainMenu(page, 'custom');
+  await screen(page, 'CustomGameScreen');
+  const {width} = page.viewportSize();
+  await click(page, Math.floor((width - Math.min(width - 32, 1120)) / 2) + 225, 100); // "Random map"
+  await expect.poll(previews).toHaveLength(1);
+  await clickCustomGameStart(page);
+  await screen(page, 'match');
+  await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
+  expect(await previews()).toEqual([]); // Removed once loading no longer needs it.
+  expect(errors).toEqual([]);
+});
+
 test('cancelling an editor replacement preserves edits and a completed load replaces the map', async ({page}) => {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));

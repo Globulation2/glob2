@@ -44,6 +44,9 @@ class CustomGameScreen : public Glob2TabScreen
 	GameHeader &getGameHeader();
 	int getSelectedColor(int) { return setup.humanColony().value_or(0); }
 	const std::string &sourceFile() const { return source; }
+	// Hands over a generated map, which this screen would otherwise delete when
+	// destroyed. Releasing the returned owner removes it.
+	std::shared_ptr<void> releaseSnapshot();
 	void launchFailed()
 	{
 		message = "Could not launch this map. Your setup is retained; try again.";

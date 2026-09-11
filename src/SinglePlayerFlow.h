@@ -17,5 +17,5 @@ public:
     void replay(const std::string& filename);
 private:
     GAGGUI::ScreenStack& screens;
-    void launch(GameLoadScreen::Initializer initialize, bool repeatCustom);
+    void launch(GameLoadScreen::Initializer initialize, bool repeatCustom, std::shared_ptr<void> mapFile = nullptr);
 };

@@ -23,6 +23,7 @@
 #include <filesystem>
 #include <functional>
 #include <iostream>
+#include <optional>
 #include <unistd.h>
 
 GlobalContainer *globalContainer = nullptr;
@@ -271,14 +272,20 @@ struct CustomGameSetupHarness
 		{
 			Engine engine;
 			GAGGUI::ScreenStack screens(*globalContainer->gfx);
-			bool loaded = false;
+			std::optional<GAGCore::CooperativeTask> load;
+			std::shared_ptr<void> mapFile;
+			std::string source;
 			screens.push(std::make_unique<CustomGameScreen>(screens),
 				[&](GAGGUI::Screen &screen, int result)
 				{
 					if (result != CustomGameScreen::OK) return;
 					auto &selected = static_cast<CustomGameScreen &>(screen);
-					loaded = engine.initCustomTask(selected.getMapHeader(), selected.getGameHeader(),
-						selected.getSelectedColor(0), selected.selectedSpeed(), selected.sourceFile()).run();
+					// Like SinglePlayerFlow, read the generated map only after the
+					// stack has destroyed this screen.
+					source = selected.sourceFile();
+					load.emplace(engine.initCustomTask(selected.getMapHeader(), selected.getGameHeader(),
+						selected.getSelectedColor(0), selected.selectedSpeed(), source));
+					mapFile = selected.releaseSnapshot();
 				});
 			auto timer = SDL_AddTimer(500, Driver::tick, &driver);
 			assert(timer);
@@ -295,7 +302,10 @@ struct CustomGameSetupHarness
 			screens.execute();
 			SDL_RemoveTimer(timer);
 			SDL_RemoveTimer(watchdog);
+			const bool loaded = load && load->run();
+			mapFile.reset();
 			assert(loaded);
+			assert(!std::filesystem::exists(std::filesystem::path(source).parent_path()));
 			assert(driver.next == driver.steps.size());
 			assert(globalContainer->liveSpectating == (control == CustomGameSetup::Computer));
 			assert(globalContainer->settings.gameSpeed == 3);

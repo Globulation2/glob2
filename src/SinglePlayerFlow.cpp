@@ -8,10 +8,12 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 
-void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repeatCustom)
+void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repeatCustom, std::shared_ptr<void> mapFile)
 {
+    // The stack destroys the choosing screen before this loader reads its map,
+    // so mapFile lives until the loader's own entry is released.
     screens.push(std::make_unique<GameLoadScreen>(std::move(initialize)),
-        [this, repeatCustom](GAGGUI::Screen& screen, int result) {
+        [this, repeatCustom, mapFile = std::move(mapFile)](GAGGUI::Screen& screen, int result) {
             if (result == 1)
                 screens.push(std::make_unique<GameSessionScreen>(screens, static_cast<GameLoadScreen&>(screen).takeEngine()),
                     [this, repeatCustom](GAGGUI::Screen&, int) { if (repeatCustom) custom(); });
@@ -32,7 +34,7 @@ void SinglePlayerFlow::custom()
         launch([map = selected.getMapHeader(), players = selected.getGameHeader(), team = selected.getSelectedColor(0),
                 speed = selected.selectedSpeed(), source = selected.sourceFile()](Engine& engine) {
             return engine.initCustomTask(map, players, team, speed, source);
-        }, true);
+        }, true, selected.releaseSnapshot());
     });
 }
 
