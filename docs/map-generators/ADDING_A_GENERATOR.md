@@ -50,7 +50,7 @@ Use `shared/Topology` for graph distances, sparse-label adjacency and passable-g
 
 Add optional pure `validateRequest` and `validateWorld` callbacks to the definition for relationships between settings and generator-specific invariants. Return an empty string on success or useful diagnostic detail on failure. Request validation is shared by the editor, lobby and service. Final validation runs after the common structural checks. Validate the finished terrain when later carving, resources or buildings can alter connectivity; never silently change the request to satisfy an invariant.
 
-[Framework upgrades for the new concepts](FRAMEWORK_UPGRADES.md) explains the motivating cases and the terrain, placement and resource bugs found during integration.
+[Map generator framework](MAP_GENERATOR_FRAMEWORK.md) describes the shared building blocks, the generator catalog, and how resource placement and colony fairness currently work.
 
 ## Compatibility and verification
 
