@@ -17,7 +17,10 @@ static bool generate(Game &game, GenerationContext &context)
 							 { hm.makeSwamp(smoothing); }))
 		return false;
 	context.stage = "starts";
-	return placeStarts(game, context);
+	if (!placeStarts(game, context))
+		return false;
+	openStartsBuriedByAmounts(game, context, terrain);
+	return true;
 }
 
 GeneratorDefinition swampDefinition()

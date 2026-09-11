@@ -37,4 +37,17 @@ void scatterResources(Game &, GenerationContext &, const ResourceDensities &);
 void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
                                 int woodRange, int clearRadius = 0,
                                 const std::vector<unsigned char> *protectedWalls = nullptr);
+// A colony with nowhere to build is unplayable however rich the ground around it is: resources
+// block ground units and buildings alike, so a resource amount well above the default can wall a
+// swarm into a pocket with no room for a 4x4 building. guaranteeStartingResources above only opens
+// a pocket for a team that cannot reach a crop at all, which is the opposite case — a team buried
+// in wheat has wheat right at its feet. This clears the resource tiles nearest such a colony, one
+// ring at a time outwards, until it can walk to `sites` tiles where a 4x4 building fits within
+// `range` steps (the study tool's own viability measure, counted from the team's own workers), or
+// until the rings pass `range`. A colony that already has the room is left untouched, so this only
+// ever takes away a wall that a non-default amount built. Protected walls are never cleared.
+// Call guaranteeStartingResources again afterwards: the clearing can take away the nearest wheat
+// or wood along with the wall.
+void openCrampedStarts(Game &game, GenerationContext &context, int sites = 16, int range = 24,
+                       const std::vector<unsigned char> *protectedWalls = nullptr);
 } // namespace MapGeneration

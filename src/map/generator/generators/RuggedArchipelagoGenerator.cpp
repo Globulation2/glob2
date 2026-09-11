@@ -395,6 +395,16 @@ static bool generate(Game &game, GenerationContext &context)
 	// wood even though the search ran in every direction. Top up anyone still missing either
 	// within comfortable range; islands that were already generous are left untouched.
 	guaranteeStartingResources(game, context, 24, 32);
+	// A deposit grown well past its default size can wall a colony into its own clearing with
+	// nowhere left to build on an island this small, which the guarantee above doesn't address: a
+	// colony buried in wood has wood at its feet. At any amount other than the default, open such a
+	// colony back up and guarantee the crops once more. At the defaults none of this runs.
+	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
+		options.algae != 100)
+	{
+		openCrampedStarts(game, context);
+		guaranteeStartingResources(game, context, 24, 32);
+	}
 	return true;
 }
 

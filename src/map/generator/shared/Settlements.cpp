@@ -29,6 +29,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 	auto inside = [&](int x, int y)
 	{ return home[game.map.normalizeY(y) * w + game.map.normalizeX(x)] != 0; };
 	std::vector<MapGeneratorPoint> candidates;
+	std::vector<std::pair<int, MapGeneratorPoint>> eligible;
 	int nearest = std::numeric_limits<int>::max();
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -47,6 +48,7 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 				continue;
 			int distance = game.map.warpDistSquare(x, y, game.map.normalizeX(anchor.x),
 												   game.map.normalizeY(anchor.y));
+			eligible.emplace_back(distance, MapGeneratorPoint(x, y));
 			if (distance < nearest)
 			{
 				nearest = distance;
@@ -57,7 +59,43 @@ bool placeSettlement(Game &game, GenerationContext &context, int team,
 		}
 	if (candidates.empty())
 		return fail("no swarm footprint fits inside the home region");
-	const auto p = candidates[context.bounded(stream, candidates.size())];
+	// The workers need room as well as the swarm: a worker tile is a free tile inside the home
+	// region touching the swarm, and Map::doesPosTouchBuilding counts diagonals, so those are the
+	// ring around its footprint. A colony whose own kit fills the ground right against the swarm
+	// can leave too few of them, which used to fail the whole map. Measure that room before the
+	// building goes down, so a site further from the anchor can be taken instead. The first pick is
+	// the same random one as ever, drawn the same way from the same nearest-tie list, so any colony
+	// that already had the room stays exactly where it was.
+	auto workerRoom = [&](const MapGeneratorPoint &at)
+	{
+		int room = 0;
+		for (int y = at.y - 1; y <= at.y + buildingType->height; ++y)
+			for (int x = at.x - 1; x <= at.x + buildingType->width; ++x)
+			{
+				if (x >= at.x && x < at.x + buildingType->width && y >= at.y &&
+					y < at.y + buildingType->height)
+					continue;
+				if (inside(x, y) &&
+					game.map.isFreeForGroundUnit(game.map.normalizeX(x), game.map.normalizeY(y),
+												 false, 1u << team))
+					++room;
+			}
+		return room;
+	};
+	MapGeneratorPoint p = candidates[context.bounded(stream, candidates.size())];
+	if (workerRoom(p) < context.request.nbWorkers)
+	{
+		const MapGeneratorPoint *roomier = nullptr;
+		int roomiestDistance = std::numeric_limits<int>::max();
+		for (const auto &[distance, at] : eligible)
+			if (distance < roomiestDistance && workerRoom(at) >= context.request.nbWorkers)
+			{
+				roomiestDistance = distance;
+				roomier = &at;
+			}
+		if (roomier)
+			p = *roomier;
+	}
 	Building *building = game.addBuilding(p.x, p.y, type, team, 1, 0);
 	if (!building)
 		return fail("swarm placement failed");

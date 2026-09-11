@@ -34,6 +34,21 @@ void MapGeneration::readResourceControls(HeightFieldOptions &options,
 	options.algae = request.option("algae-amount");
 	options.hilltopStone = request.option("hilltop-stone") != 0;
 }
+void MapGeneration::openStartsBuriedByAmounts(Game &game, GenerationContext &context,
+											  const HeightFieldOptions &options)
+{
+	if (options.wheat == 100 && options.wood == 100 && options.stone == 100 &&
+		options.algae == 100)
+		return;
+	// The resource bands are painted from map-wide noise levels with no awareness of where any team
+	// starts, so an amount well above the default widens them until they can wall a colony in with
+	// nowhere left to build — which the wheat/wood guarantee inside generateHeightField doesn't
+	// address, since a colony buried in wheat has wheat at its feet. placeStarts has already carved
+	// out the swarm's own rectangle by now, so nothing needs to be kept clear for it, and the
+	// guarantee runs once more in case the clearing took the colony's nearest crop with the wall.
+	openCrampedStarts(game, context);
+	guaranteeStartingResources(game, context, 24, 32);
+}
 bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 										const HeightFieldOptions &options,
 										const HeightFieldBuilder &build)

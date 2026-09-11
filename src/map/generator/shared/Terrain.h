@@ -19,6 +19,10 @@ struct HeightFieldOptions
 // The resource controls every height-field generator shares, and reading them from a request.
 std::vector<GeneratorControl> heightFieldResourceControls();
 void readResourceControls(HeightFieldOptions &, const GenerationRequest &);
+// Call after placeStarts: at any non-default resource amount, open up a colony that the widened
+// bands walled in (openCrampedStarts) and re-run the wheat/wood guarantee in case the clearing
+// took its nearest crop too. Nothing happens at the default amounts.
+void openStartsBuriedByAmounts(Game &, GenerationContext &, const HeightFieldOptions &);
 using HeightFieldBuilder = std::function<void(HeightMap &, unsigned, unsigned, float)>;
 bool generateHeightField(Game &, GenerationContext &, const HeightFieldOptions &,
 						 const HeightFieldBuilder &);

@@ -12,6 +12,7 @@
 #include "Regions.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
+#include "Unit.h"
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
@@ -541,6 +542,83 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
       placeReachable(CORN);
     if (reach.woodDist < 0 || reach.woodDist > woodRange)
       placeReachable(WOOD);
+  }
+}
+
+namespace {
+// Where a team's own workers can walk within `range` — resources, water and buildings all block a
+// unit — and how many of the tiles reached start a 4x4 building. Seeded from the workers rather
+// than the boot tile, which is the swarm's own tile, so this counts the room a colony actually has.
+struct WorkerReach {
+  std::vector<int> dist;
+  int sites = 0;
+};
+WorkerReach reachFromWorkers(Map &map, int team, int range) {
+  const int w = map.getW(), h = map.getH();
+  WorkerReach r;
+  r.dist.assign(size_t(w) * h, -1);
+  std::vector<int> q(size_t(w) * h);
+  size_t qHead = 0, qTail = 0;
+  for (int y = 0; y < h; ++y)
+    for (int x = 0; x < w; ++x) {
+      const Uint16 gid = map.getGroundUnit(x, y);
+      if (gid != NOGUID && Unit::GIDtoTeam(gid) == team) {
+        r.dist[size_t(y) * w + x] = 0;
+        q[qTail++] = y * w + x;
+      }
+    }
+  while (qHead < qTail) {
+    const int p = q[qHead++];
+    const int x = p % w, y = p / w;
+    if (map.isFreeForBuilding(x, y, 4, 4))
+      ++r.sites;
+    if (r.dist[p] >= range)
+      continue;
+    for (int dy = -1; dy <= 1; ++dy)
+      for (int dx = -1; dx <= 1; ++dx) {
+        if (dx == 0 && dy == 0)
+          continue;
+        const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy), np = ny * w + nx;
+        if (r.dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0)) {
+          r.dist[np] = r.dist[p] + 1;
+          q[qTail++] = np;
+        }
+      }
+  }
+  return r;
+}
+} // namespace
+
+void openCrampedStarts(Game &game, GenerationContext &context, int sites, int range,
+                       const std::vector<unsigned char> *protectedWalls) {
+  Map &map = game.map;
+  const int w = map.getW(), h = map.getH();
+  if (protectedWalls && protectedWalls->size() != size_t(w) * h)
+    throw GenerationFailure("Protected wall mask does not match the map size");
+  for (int team = 0; team < context.request.nbTeams; ++team) {
+    WorkerReach reach = reachFromWorkers(map, team, range);
+    if (reach.sites >= sites)
+      continue;
+    // Rings measured with resources ignored, so they walk out through the wall itself instead of
+    // stopping at its inner face the way the colony's own flood does.
+    const int bootX = map.normalizeX(context.bootX[team]),
+              bootY = map.normalizeY(context.bootY[team]);
+    const std::vector<int> open = terrainOnlyReach(map, bootX, bootY, range, protectedWalls);
+    std::vector<std::vector<int>> rings(size_t(range) + 1);
+    for (int p = 0; p < w * h; ++p)
+      if (open[p] >= 1 && open[p] <= range && map.isResource(p % w, p / w) &&
+          !(protectedWalls && (*protectedWalls)[p]))
+        rings[open[p]].push_back(p);
+    // One ring at a time, nearest first, re-measuring after each: the ring that finally gives the
+    // colony its room is the last one cleared, so nothing further out is touched. A colony on a
+    // genuinely small spot — a real islet, with nothing to open up — just runs out of rings.
+    for (int ring = 1; ring <= range && reach.sites < sites; ++ring) {
+      if (rings[ring].empty())
+        continue;
+      for (const int p : rings[ring])
+        map.setNoResource(p % w, p / w, 1);
+      reach = reachFromWorkers(map, team, range);
+    }
   }
 }
 } // namespace MapGeneration

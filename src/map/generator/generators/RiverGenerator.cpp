@@ -21,7 +21,10 @@ static bool generate(Game &game, GenerationContext &context)
 							 }))
 		return false;
 	context.stage = "starts";
-	return placeStarts(game, context);
+	if (!placeStarts(game, context))
+		return false;
+	openStartsBuriedByAmounts(game, context, terrain);
+	return true;
 }
 
 GeneratorDefinition riverDefinition()

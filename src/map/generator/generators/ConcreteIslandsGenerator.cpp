@@ -177,10 +177,16 @@ static bool generate(Game &game, GenerationContext &context)
 	if (!divideUpPlayerLands(game, context, grid, teamAreaNumbers, areaNumber,
 							 {options.wheat, options.wood, options.stone}))
 		return false;
-	// A colony's own fields are its only starting wheat and wood; with other amounts than the
-	// default, make sure each still has both within reach.
-	if (options.wheat != 100 || options.wood != 100)
+	// A colony's own fields are its only starting wheat and wood, and a field or deposit grown well
+	// past its default size can also wall the colony in with nowhere left to build. At any amount
+	// other than the default, open up such a colony and then make sure each still has both crops
+	// within reach, in case the clearing took the nearest one along with the wall.
+	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
+		options.algae != 100 || options.fruit != 100)
+	{
+		openCrampedStarts(game, context);
 		guaranteeStartingResources(game, context, 24, 32);
+	}
 
 	// Initialize final team info
 	for (int i = 0; i < context.request.nbTeams; ++i)

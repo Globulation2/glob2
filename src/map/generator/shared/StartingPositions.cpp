@@ -148,27 +148,45 @@ bool divideUpPlayerLands(Game &game, GenerationContext &context, std::vector<int
 			computeDistances(game.map, wheatPoints, obstacles, wheatDistance);
 
 			// Only consider points between 1 and 4 squares from wheat
-			std::vector<MapGeneratorPoint> startingLocations;
-			for (unsigned int j = 0; j < baseLocations.size(); ++j)
+			auto startsWithinOfWheat = [&](int window)
 			{
-				int minValue = 100000;
-				for (int x = 0; x < 4; ++x)
+				std::vector<MapGeneratorPoint> found;
+				for (unsigned int j = 0; j < baseLocations.size(); ++j)
 				{
-					for (int y = 0; y < 4; ++y)
+					int minValue = 100000;
+					for (int x = 0; x < 4; ++x)
 					{
-						int nx = game.map.normalizeX(baseLocations[j].x + x);
-						int ny = game.map.normalizeY(baseLocations[j].y + y);
-						minValue = std::min(wheatDistance[ny * game.map.getW() + nx], minValue);
+						for (int y = 0; y < 4; ++y)
+						{
+							int nx = game.map.normalizeX(baseLocations[j].x + x);
+							int ny = game.map.normalizeY(baseLocations[j].y + y);
+							minValue = std::min(wheatDistance[ny * game.map.getW() + nx], minValue);
+						}
+					}
+					if (minValue >= 1 && minValue <= window)
+					{
+						found.push_back(baseLocations[j]);
 					}
 				}
-				if (minValue >= 1 && minValue <= 2)
-				{
-					startingLocations.push_back(baseLocations[j]);
-				}
-			}
+				return found;
+			};
+			std::vector<MapGeneratorPoint> startingLocations = startsWithinOfWheat(2);
 
 			// Place swarms
 			chooseFreeForBuildingSquares(game, startingLocations, swarm, i);
+			// A field grown well past its default size covers the building sites beside it, and the
+			// window above only looks 1 to 2 tiles out from where the default-sized wheat field
+			// would lie. Rather than fail, look further out from that same wheat for a site the
+			// fields have left clear: the colony still starts beside its own farmland, just not
+			// right up against it. Only a non-default amount can reach this.
+			for (int window = 6;
+				 startingLocations.empty() && window <= 24 &&
+				 (resources.wheat != 100 || resources.wood != 100 || resources.stone != 100);
+				 window += 6)
+			{
+				startingLocations = startsWithinOfWheat(window);
+				chooseFreeForBuildingSquares(game, startingLocations, swarm, i);
+			}
 			if (startingLocations.size() == 0)
 			{
 				return false;
