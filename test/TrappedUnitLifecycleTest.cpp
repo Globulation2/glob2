@@ -82,8 +82,6 @@ struct Fixture {
         int x, y, dx, dy;
         assert(!building->findGroundExit(&x, &y, &dx, &dy, false));
         assert(game.addUnit(40, 40, 1, WORKER, 0, 0, 0, 0));
-        // The gradient scheduler expects an in-use field; allocation is now lazy.
-        game.map.getResourceGradient(0, WOOD, 0);
     }
 };
 using Trace = std::vector<std::vector<Uint32>>;
@@ -137,7 +135,6 @@ Trace eliminationAndSave(int resource, int purpose) {
     input.seekFromStart(0);
     assert(restored.game.load(&input));
     restored.game.setWaitingOnMask(0);
-    restored.game.map.getResourceGradient(0, WOOD, 0);
     randomGenerator = checkpointRng;
     const auto after = state(restored.game, f.id);
     for (size_t i = 0; i < before.size(); ++i)

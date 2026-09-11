@@ -93,9 +93,10 @@ void Map::syncStep(Uint32 stepCounter)
 			updateExploredArea(team);
 	}
 	
-	// We only update one gradient per step, round robin over the gradients in use:
-	bool updated=false;
-	while (!updated)
+	// We only update one gradient per step, round robin over the gradients in use.
+	// Fields are allocated lazily: the second pass runs on freshly reset flags,
+	// so finding nothing there means no gradient exists yet and there is nothing to do.
+	for (int pass=0; pass<2; pass++)
 	{
 		int numberOfTeam=game->mapHeader.getNumberOfTeams();
 		for (int t=0; t<numberOfTeam; t++)
