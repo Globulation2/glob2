@@ -29,6 +29,12 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 	int m = s - 1;
 	std::vector<int> undermap(w * h);
 
+	// context.stream() looks up a named std::mt19937 by string key on every call; every use
+	// here names the same "simulation" stream, so looking it up once and reusing the reference
+	// through both w*h-sized loops below skips a map lookup (and a temporary std::string, for
+	// callers passing a literal) per tile per draw instead of changing which numbers come out.
+	std::mt19937 &rng = context.stream("simulation");
+
 	int totalRatio = 0x7FFF;
 	int waterRatio = (int)(baseWater * ((double)totalRatio));
 	int sandRatio = (int)(baseSand * ((double)totalRatio));
@@ -47,7 +53,7 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
 		{
-			int r = context.stream("simulation")() % totalRatio;
+			int r = rng() % totalRatio;
 			r -= waterRatio;
 			if (r < 0)
 			{
@@ -73,7 +79,7 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 		for (int y = 0; y < h; y++)
 			for (int x = 0; x < w; x++)
 			{
-				if (context.stream("simulation")() & 4)
+				if (rng() & 4)
 				{
 					int a = undermap[(y * w + x + 1 + s) & m];
 					int b = undermap[(y * w + x - 1 + s) & m];
@@ -93,7 +99,7 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 						continue;
 					}
 				}
-				if (context.stream("simulation")() & 4)
+				if (rng() & 4)
 				{
 					int a = undermap[(y * w + x + w + 1 + s) & m];
 					int b = undermap[(y * w + x - w - 1 + s) & m];
@@ -113,7 +119,7 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 						continue;
 					}
 				}
-				if (context.stream("simulation")() & 4)
+				if (rng() & 4)
 				{
 					int a = undermap[(y * w + x + w - 2 + s) & m];
 					int b = undermap[(y * w + x - w + 2 + s) & m];
@@ -133,7 +139,7 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 						continue;
 					}
 				}
-				if (context.stream("simulation")() & 4)
+				if (rng() & 4)
 				{
 					int a = undermap[(y * w + x + w + 2 + (h << 1) + s) & m];
 					int b = undermap[(y * w + x - w - 2 - (h << 1) + s) & m];
@@ -183,6 +189,9 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 {
 	Map &map = game.map;
 	const int w = map.getW(), h = map.getH();
+	// Same reasoning as simulateRandomMap's rng: every draw below names the "terrain" stream,
+	// so look it up once rather than on every one of the many draws per tile in the loops below.
+	std::mt19937 &rng = context.stream("terrain");
 
 	int waterRatio = options.water;
 	int sandRatio = options.sand;
@@ -322,7 +331,7 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 	for (int y = 0; y < h; y++)
 		for (int x = 0; x < w; x++)
 		{
-			int r = context.stream("terrain")() % totalRatio;
+			int r = rng() % totalRatio;
 			r -= waterRatio;
 			if (r < 0)
 			{
@@ -425,11 +434,11 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 		for (int y = 0; y < h; y++)
 			for (int x = 0; x < w; x++)
 			{
-				if (context.stream("terrain")() & 4)
+				if (rng() & 4)
 				{
 					int a = map.getUMTerrain(x + 1, y);
 					int b = map.getUMTerrain(x - 1, y);
-					if ((a == b) && (allowed[a] <= context.stream("terrain")()))
+					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
 						continue;
@@ -439,17 +448,17 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 				{
 					int a = map.getUMTerrain(x, y - 1);
 					int b = map.getUMTerrain(x, y + 1);
-					if ((a == b) && (allowed[a] <= context.stream("terrain")()))
+					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
 						continue;
 					}
 				}
-				if (context.stream("terrain")() & 4)
+				if (rng() & 4)
 				{
 					int a = map.getUMTerrain(x + 1, y + 1);
 					int b = map.getUMTerrain(x - 1, y - 1);
-					if ((a == b) && (allowed[a] <= context.stream("terrain")()))
+					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
 						continue;
@@ -459,17 +468,17 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 				{
 					int a = map.getUMTerrain(x + 1, y - 1);
 					int b = map.getUMTerrain(x - 1, y + 1);
-					if ((a == b) && (allowed[a] <= context.stream("terrain")()))
+					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
 						continue;
 					}
 				}
-				if (context.stream("terrain")() & 4)
+				if (rng() & 4)
 				{
 					int a = map.getUMTerrain(x + 2, y);
 					int b = map.getUMTerrain(x - 2, y);
-					if ((a == b) && (allowed[a] <= context.stream("terrain")()))
+					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
 						continue;
@@ -479,17 +488,17 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 				{
 					int a = map.getUMTerrain(x, y - 2);
 					int b = map.getUMTerrain(x, y + 2);
-					if ((a == b) && (allowed[a] <= context.stream("terrain")()))
+					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
 						continue;
 					}
 				}
-				if (context.stream("terrain")() & 4)
+				if (rng() & 4)
 				{
 					int a = map.getUMTerrain(x + 2, y + 2);
 					int b = map.getUMTerrain(x - 2, y - 2);
-					if ((a == b) && (allowed[a] <= context.stream("terrain")()))
+					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
 						continue;
@@ -499,7 +508,7 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 				{
 					int a = map.getUMTerrain(x + 2, y - 2);
 					int b = map.getUMTerrain(x - 2, y + 2);
-					if ((a == b) && (allowed[a] <= context.stream("terrain")()))
+					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
 						continue;

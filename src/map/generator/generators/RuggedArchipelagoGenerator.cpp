@@ -22,6 +22,10 @@ static bool terrain(Game &game, GenerationContext &context, const RuggedArchipel
 {
 	Map &map = game.map;
 	const int w = map.getW(), h = map.getH();
+	// context.stream() looks up a named std::mt19937 by string key on every call; every draw in
+	// this function names the same "terrain" stream, so look it up once and reuse the reference
+	// through the loops below instead of repeating the lookup per tile per draw.
+	std::mt19937 &rng = context.stream("terrain");
 
 	// First, fill with water:
 	for (int y = 0; y < h; y++)
@@ -40,8 +44,8 @@ static bool terrain(Game &game, GenerationContext &context, const RuggedArchipel
 	int c = 0;
 	for (int i = 0; i < nbIslands; i++)
 	{
-		int x = context.stream("terrain")() % w;
-		int y = context.stream("terrain")() % h;
+		int x = rng() % w;
+		int y = rng() % h;
 		bool failed = false;
 		int j;
 		for (j = 0; j < i; j++)
@@ -86,7 +90,7 @@ static bool terrain(Game &game, GenerationContext &context, const RuggedArchipel
 						continue;
 
 					int a, b;
-					switch (context.stream("terrain")() & 15)
+					switch (rng() & 15)
 					{
 					case 0:
 						a = map.getUMTerrain(x + 1, y);
@@ -206,7 +210,7 @@ static bool terrain(Game &game, GenerationContext &context, const RuggedArchipel
 					for (int x = dx; x < w; x += 4)
 					{
 						int a, b;
-						switch (context.stream("terrain")() & 7)
+						switch (rng() & 7)
 						{
 						case 0:
 							a = map.getUMTerrain(x + 1, y);
