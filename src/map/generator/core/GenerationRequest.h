@@ -27,7 +27,6 @@ struct GenerationRequest {
     eOLDRANDOM = 7,
     eOLDISLANDS = 8,
     eCONTESTEDCOMMONS = 9,
-    eLATTICE = 10,
     eMAZE = 11,
     eFJORDCONTINENT = 12
   };

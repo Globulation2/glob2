@@ -1772,16 +1772,10 @@ Land bridge width
 Lake size
 [Contested commons]
 Contested commons
-[Lattice]
-Lattice
 [Maze]
 Maze
 [Fjord continent]
 Fjord continent
-[Islet size]
-Islet size
-[Home radius]
-Home radius
 [Cell size]
 Cell size
 [Room size]

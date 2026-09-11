@@ -187,7 +187,7 @@ bool generate(Game &game, GenerationContext &context) {
         !placeResourceClumpInArea(game.map, context, teamWoodAreas[team], WOOD,
                                   2))
       return false;
-  // Unlike Fjord and Lattice, Maze doesn't get a guaranteeStartingResources backstop here: its
+  // Unlike Fjord, Maze doesn't get a guaranteeStartingResources backstop here: its
   // structural walls are themselves stone resource tiles placed on grass seams by design (see
   // the stamp below), and that helper's wall-clearing branch can't tell an intentional maze wall
   // from an incidental one - it would happily bulldoze a corridor wall to "fix" a team whose

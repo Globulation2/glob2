@@ -216,7 +216,7 @@ class MapGeneratorDefaultsTest
 		assert(screen.descriptor.option("test-cell") == 16 &&
 			   screen.descriptor.option("test-gap") == 5);
 		edit(screen, "Smoothing", 8);
-		assert(registry.selectionIndex(101) == 13);
+		assert(registry.selectionIndex(101) == 12);
 		const auto playable = registry.methods(false);
 		assert(std::find(playable.begin(), playable.end(), 101) != playable.end());
 		Game generated(nullptr);

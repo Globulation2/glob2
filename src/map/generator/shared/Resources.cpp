@@ -74,15 +74,16 @@ namespace {
 // crops a given spot gets - see that function for why.
 //
 // A single global threshold across the whole map works for one connected landmass (Fjord,
-// Maze), but Lattice's islets are separate landmasses that each carry their own, slightly
-// different fertility (or noise) range - a global "take the best tiles first" pass can end up
-// spending almost the entire band on whichever one or two islets happen to score highest,
-// leaving the rest with none at all. That is exactly the "resources aren't balanced between
-// players" complaint this whole scatter is meant to avoid, just at the scale of one islet
-// instead of one player. Grouping candidates by connected landmass and running the same
-// histogram threshold independently within each group, sized to that group's own share of the
-// candidate pool, keeps every landmass' band proportional to how much eligible ground it has -
-// on a single connected map this is one group covering everything, identical to before.
+// Maze), but a generator whose islands are separate landmasses (Isles, ConcreteIslands) gives
+// each one its own, slightly different fertility (or noise) range - a global "take the best
+// tiles first" pass can end up spending almost the entire band on whichever one or two islands
+// happen to score highest, leaving the rest with none at all. That is exactly the "resources
+// aren't balanced between players" complaint this whole scatter is meant to avoid, just at the
+// scale of one island instead of one player. Grouping candidates by connected landmass and
+// running the same histogram threshold independently within each group, sized to that group's
+// own share of the candidate pool, keeps every landmass' band proportional to how much eligible
+// ground it has - on a single connected map this is one group covering everything, identical to
+// before.
 std::vector<int> computeLandComponents(const Map &map, int &numComponents) {
   const int w = map.getW(), h = map.getH();
   std::vector<int> component(size_t(w) * h, -1);
@@ -224,8 +225,8 @@ void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &spl
     const int share =
         int((std::int64_t(totalTarget) * std::int64_t(compCandidates.size())) / totalCandidates);
     // Widening is proportionally huge on a landmass with little eligible ground to begin with -
-    // a small Lattice islet can have its whole candidate pool absorbed by kWiden's multiplier
-    // even though the unwidened share alone would have left most of it free. Capping the region
+    // a small island can have its whole candidate pool absorbed by kWiden's multiplier even
+    // though the unwidened share alone would have left most of it free. Capping the region
     // at 2/3 of the component's own pool guarantees slack to route around it regardless of
     // component size, instead of only checking against the (unrelated) map-wide total above.
     const int widenedShare = std::max(1, share) * kWiden;

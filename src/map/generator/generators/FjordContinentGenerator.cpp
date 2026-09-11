@@ -643,7 +643,7 @@ static bool generate(Game &game, GenerationContext &context) {
   // purpose: a home starter kit, the core, an outlier island. That leaves the whole
   // continent interior in between them bare grass, which reads as empty rather than as a
   // place with its own history the way a noise-painted map does. A light map-wide scatter
-  // -- the same mechanism Lattice and Maze already rely on for this -- fills that gap with
+  // -- the same mechanism Maze already relies on for this -- fills that gap with
   // ordinary, unclaimed deposits. This runs after every swarm and worker is already placed,
   // not before: isResourceAllowed refuses any tile with a building or unit on it, so a
   // scatter placed earlier can claim the one remaining tile a colony's swarm footprint

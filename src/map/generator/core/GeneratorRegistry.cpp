@@ -6,7 +6,6 @@
 #include "FjordContinentGenerator.h"
 #include "IslandsGenerator.h"
 #include "IslesGenerator.h"
-#include "LatticeGenerator.h"
 #include "MazeGenerator.h"
 #include "RiverGenerator.h"
 #include "RuggedArchipelagoGenerator.h"
@@ -76,7 +75,6 @@ const GeneratorRegistry &GeneratorRegistry::builtins() {
        shatteredCoastDefinition(), islesDefinition(),
        ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
        craterLakesDefinition(), islandsDefinition(), swampDefinition(),
-       riverDefinition(), mazeDefinition(), latticeDefinition(),
-       uniformDefinition()});
+       riverDefinition(), mazeDefinition(), uniformDefinition()});
   return registry;
 }
