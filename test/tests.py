@@ -68,6 +68,7 @@ ENGINE_TESTS = [
     '#src/building/InnSwapHarness.cpp',
     '#src/building/LevelGateHarness.cpp',
     '#src/unit/ResourceFetchTargetHarness.cpp',
+    '#src/unit/MarketFetchHarness.cpp',
     '#src/unit/RoundTripHungerGateHarness.cpp',
     '#src/map/TerrainResourcesHarness.cpp',
     '#src/net/LockstepSessionTest.cpp',
