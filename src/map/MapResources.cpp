@@ -161,15 +161,15 @@ void Map::setAreaName(int n, std::string name)
 }
 
 
-bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y)
+bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets)
 {
-	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y);
+	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets);
 	return g>GRADIENT_UNREACHABLE; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
-bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist)
+bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets)
 {
-	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y);
+	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets);
 	if (g>GRADIENT_UNREACHABLE)
 	{
 		*dist = gradientTiles(g);
@@ -179,17 +179,17 @@ bool Map::resourceAvailable(int teamNumber, int resourceType, int swimClass, int
 		return false;
 }
 
-bool Map::resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist)
+bool Map::resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets)
 {
 	// distance and availability
 	bool result;
 	if (dist)
-		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, dist);
+		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, dist, withMarkets);
 	else
-		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y);
+		result = resourceAvailable(teamNumber, resourceType, swimClass, x, y, withMarkets);
 		
 	// target position
-	const Uint16 *gradient = getResourceGradient(teamNumber, resourceType, swimClass);
+	const Uint16 *gradient = getResourceGradient(teamNumber, resourceType, swimClass, withMarkets);
 	getGlobalGradientDestination(gradient, x, y, targetX, targetY);
 
 	return result;

@@ -605,14 +605,22 @@ public:
 	
 	// Gradients are built per team and swim class the first time a unit of that
 	// class asks for one, so classes nobody uses cost nothing.
-	Uint16 *getResourceGradient(int teamNumber, int resourceType, int swimClass);
+	//! withMarkets: the variant where the team's stocked markets are goals too,
+	//! priced MARKET_DETOUR_TILES beyond a tile of the resource. Used by every
+	//! fetch for a building that is not itself a market (Building::fetchesFromMarkets).
+	Uint16 *getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets = false);
 	Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
 	Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
 	Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
 	
-	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y);
-	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist);
-	bool resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist);
+	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets = false);
+	bool resourceAvailable(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets = false);
+	bool resourceAvailableUpdate(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets = false);
+	//! The team's own, alive market next to the unit that holds resourceType, or NULL.
+	Building *touchedStockedMarket(Unit *unit, int resourceType) const;
+	//! A stock of resourceType in one of the team's markets appeared or ran out:
+	//! rebuild the "with markets" gradients for it at the next step.
+	void dirtyMarketGradients(int teamNumber, int resourceType);
 	
 	//! Follow the gradient uphill from (x, y). Returns whether a goal cell was reached; the
 	//! last position is in (targetX, targetY). Works on the Uint16 pathfinding gradients and
@@ -625,9 +633,9 @@ public:
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
-	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y)
+	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, bool withMarkets = false)
 	{
-		return getResourceGradient(teamNumber, resourceType, swimClass)[coordToIndex(x, y)];
+		return getResourceGradient(teamNumber, resourceType, swimClass, withMarkets)[coordToIndex(x, y)];
 	}
 	
 	// Chamfer distance transform on a pre-seeded Uint8 buffer. Caller fills the
@@ -646,11 +654,11 @@ public:
 	//! Step toward the neighbour with the highest value minus step cost. strict requires
 	//! real progress; otherwise a random sidestep to an equal cell is accepted when blocked.
 	bool directionByGradient(Uint32 teamMask, int swimClass, int x, int y, const Uint16 *gradient, int *dx, int *dy, bool strict) const;
-	void updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass);
+	void updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets = false);
 	//! Direction toward a resource of resourceType. With a target building the round-trip
 	//! gradient is descended, so the unit heads for the resource that is nearest for
 	//! fetching and carrying it there; without one, for the resource nearest to itself.
-	bool pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target);
+	bool pathfindResource(int teamNumber, Uint8 resourceType, int swimClass, int x, int y, int *dx, int *dy, bool *stopWork, Building *target, bool withMarkets = false);
 #ifndef YOG_SERVER_ONLY
 	void pathfindRandom(Unit *unit);
 #endif  // !YOG_SERVER_ONLY
@@ -746,6 +754,8 @@ protected:
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	//! Same, with the team's stocked markets as goals (see getResourceGradient).
+	Uint16 *marketResourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	
 	// Used to go out of forbidden areas
 	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
@@ -776,6 +786,11 @@ public:
 protected:
 	//Used for scheduling computation time.
 	bool gradientUpdated[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	//! A market's stock of the resource switched: rebuild the twin before its plain
+	//! gradient's next turn in the round robin.
+	bool marketGradientDirty[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	//! Whether tile gid is one of teamNumber's alive markets holding resourceType.
+	bool isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) const;
 	//Used for scheduling computation time on the guard area gradients
 	bool guardGradientUpdated[Team::MAX_COUNT][SWIM_CLASS_COUNT];
 	//Used for scheduling computation time on the clear area gradients

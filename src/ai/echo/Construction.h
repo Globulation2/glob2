@@ -248,7 +248,11 @@ namespace AIEcho
 			int get_number_of_workers() const { return number_of_workers; }
 			int building_type;
 			int number_of_workers;
-			int id;
+			/// Assigned by Echo::add_building_order from BuildingRegister, and the key
+			/// this order is known by in BuildingRegister::pending_buildings. Defaulted
+			/// so an order that is constructed and never registered is still readable;
+			/// load() leaves it at -1 for saves written before it was serialised.
+			int id = -1;
 			std::vector<std::shared_ptr<Constraint> > constraints;
 			std::vector<std::shared_ptr<Conditions::Condition> > conditions;
 		};

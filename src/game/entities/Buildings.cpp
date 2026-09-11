@@ -2,7 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 // Umbrella file for the static building-type table (was data/buildings.txt +
-// data/buildings.default.txt parsed at startup). The 51 entries are grouped
+// data/buildings.default.txt parsed at startup). The 55 entries are grouped
 // by role across four siblings, following the grouping IntBuildingType::Number
 // already uses:
 //   - BuildingTypesColony.cpp  : swarm, inn, hospital, market
@@ -11,7 +11,7 @@
 //   - BuildingTypesFlags.cpp   : exploration, war and clearing flags
 // each declaring one or more non-static BuildingType[] arrays; this file
 // splices them into a single flat vector indexed 0..50, in the same order
-// data/buildings.txt declared.
+// data/buildings.txt declared, plus the market levels 51..54 appended after it.
 //
 // Role grouping and ID order do not agree — market sits at the end of the
 // table and the flags sit between the defencetower and the stonewall — so a
