@@ -257,19 +257,6 @@ static bool generate(Game &game, GenerationContext &context) {
 
   game.map.controlSand();
 
-  // 3.5) Every resource so far is a deliberate, counted placement tied to a specific
-  // purpose: a home starter kit, a fjord bank, the core, an outlier island. That leaves
-  // the whole continent interior in between them bare grass, which reads as empty rather
-  // than as a place with its own history the way a noise-painted map does. A light
-  // map-wide scatter -- the same mechanism Lattice and Maze already rely on for this --
-  // fills that gap with ordinary, unclaimed deposits before any of the guaranteed
-  // placements below claim their own spots, so it can never compete with or bury a
-  // guarantee (everything from here on is placed after, and setResource simply
-  // overwrites whatever an earlier scatter happened to put on that exact tile). Algae is
-  // left at zero here: the shoreline band in step 7 already places it with a shape tuned
-  // to the coastline, and scattering more over open water would just fight that.
-  scatterResources(game, context, {/*corn=*/18, /*wood=*/18, /*stone=*/10, /*algae=*/0, /*fruit=*/3});
-
   // 4) Anchor each team out at its own tip: start just inland of the coast at
   // the team's angle and only back off toward the core if that exact spot turns
   // out to be water (a sharp jaggedness dip, or a fjord belly that swung wider
@@ -430,6 +417,22 @@ static bool generate(Game &game, GenerationContext &context) {
       return false;
   }
 
+  // 8.5) Every resource so far is a deliberate, counted placement tied to a specific
+  // purpose: a home starter kit, the core, an outlier island. That leaves the whole
+  // continent interior in between them bare grass, which reads as empty rather than as a
+  // place with its own history the way a noise-painted map does. A light map-wide scatter
+  // -- the same mechanism Lattice and Maze already rely on for this -- fills that gap with
+  // ordinary, unclaimed deposits. This runs after every swarm and worker is already placed,
+  // not before: isResourceAllowed refuses any tile with a building or unit on it, so a
+  // scatter placed earlier could (and, measured directly, occasionally did) claim the one
+  // remaining tile a colony's swarm footprint needed, failing generation outright. Running
+  // last costs nothing here -- setResource always overwrites, so a scatter clump landing on
+  // an earlier deposit just loses that one tile to it, the same low-stakes trade every other
+  // generator's own layering already makes. Algae is left at zero: the shoreline band in
+  // step 7 already places it with a shape tuned to the coastline, and scattering more over
+  // open water would just fight that.
+  scatterResources(game, context, {/*corn=*/18, /*wood=*/18, /*stone=*/10, /*algae=*/0, /*fruit=*/3});
+
   // 9) Place bank resources last so settlement and regional deposits cannot
   // overwrite the guarantee. Every side of every fjord receives both resources
   // at distinct points along its length.
@@ -442,6 +445,24 @@ static bool generate(Game &game, GenerationContext &context) {
             !placeBankClump(game.map, context, fjordCenterlines[k], 0.68, side,
                             WOOD))
           return false;
+
+      // A handful more, lighter clumps at other points along the same banks besides
+      // the two guaranteed spots above, so walking a fjord's edge feels like following
+      // a shoreline with its own economy rather than passing exactly two fixed
+      // deposits. Best-effort: unlike the guarantee above, nothing downstream depends
+      // on any single one of these existing, so a spot that doesn't pan out is simply
+      // skipped rather than failing generation. A small jitter on each progress value
+      // keeps the spacing from reading as mechanically regular.
+      static const double bankScatterProgress[] = {0.10, 0.22, 0.48, 0.58, 0.80, 0.92};
+      for (double progress : bankScatterProgress) {
+        const double jitter = (context.bounded("resources", 41) - 20) / 1000.0; // +/-0.02
+        for (int side : {-1, 1}) {
+          const int roll = context.bounded("resources", 8);
+          const int resourceType = roll < 3 ? CORN : roll < 6 ? WOOD : STONE;
+          placeBankClump(game.map, context, fjordCenterlines[k], progress + jitter, side,
+                         resourceType);
+        }
+      }
     }
 
   return true;
