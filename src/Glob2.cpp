@@ -131,7 +131,12 @@ int Glob2::runNoX()
 
 int Glob2::runTestGames()
 {
-	globalContainer->automaticEndingSteps=90000;
+	// GLOB2_TEST_MAX_TICKS overrides the 90,000-tick cap for tooling that
+	// trades game length for throughput (tools/map_fairness_tournament.py).
+	// The cap only decides when the driver stops the game; it never changes
+	// how a tick is simulated.
+	const char* envMaxTicks = getenv("GLOB2_TEST_MAX_TICKS");
+	globalContainer->automaticEndingSteps = (envMaxTicks && atoi(envMaxTicks) > 0) ? atoi(envMaxTicks) : 90000;
 	int maxRuns = globalContainer->runTestGamesCount;
 	int run = 0;
 	while(maxRuns == 0 || run < maxRuns)
