@@ -16,6 +16,7 @@
 #include "TeamDisplay.h"
 #include "Unit.h"
 #include "UnitDisplayNames.h"
+#include "FailureShapes.h"
 
 void GameGUI::drawBuildingHeader(Building* selBuild, BuildingType* buildingType, int& ypos)
 {
@@ -390,6 +391,8 @@ void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* building
 // only for those two reasons. Table is indexed by Building::UnitCantWorkReason;
 // the static_assert keeps it locked to the enum size so future additions
 // to UnitCantWorkReason can't silently fall off the end.
+namespace { constexpr int FAILURE_SHAPE_HALF = 5; }
+
 static const char* failureReasonKey(Building::UnitCantWorkReason reason, bool isVirtual)
 {
 	static constexpr const char* kReasonKey[Building::UnitCantWorkReasonSize] = {
@@ -433,9 +436,14 @@ void GameGUI::drawBuildingFailureReasons(Building* selBuild, BuildingType* build
 		int n = selBuild->unitsFailingRequirements[j];
 		if(n>0 && (int)selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
 		{
-			const char* key = failureReasonKey(static_cast<Building::UnitCantWorkReason>(j), buildingType->isVirtual);
+			const Building::UnitCantWorkReason reason = static_cast<Building::UnitCantWorkReason>(j);
+			const char* key = failureReasonKey(reason, buildingType->isVirtual);
 			std::string s = FormattableString(Toolkit::getStringTable()->getString(key)).arg(n);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos, globalContainer->littleFont, s.c_str());
+			// The shape the same units wear in the map view.
+			const int shapeX = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10;
+			if (reason != Building::UnitNotAvailable)
+				drawFailureShape(globalContainer->gfx, shapeX+FAILURE_SHAPE_HALF, ypos+FAILURE_SHAPE_HALF+1, FAILURE_SHAPE_HALF, reason, failureShapeColor());
+			globalContainer->gfx->drawString(shapeX+2*FAILURE_SHAPE_HALF+6, ypos, globalContainer->littleFont, s.c_str());
 			ypos += YOFFSET_RESOURCE_LINE;
 		}
 	}

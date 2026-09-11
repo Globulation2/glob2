@@ -630,6 +630,17 @@ public:
 	};
 
 	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
+	/// Display only. While the local player has this building selected, the
+	/// units behind each tally are kept by gid so the map view can mark them.
+	/// Never read by the simulation, not saved, not in the checksum.
+	bool recordFailingUnits = false;
+	std::vector<Uint16> unitsFailingByReason[UnitCantWorkReasonSize];
+	void setRecordFailingUnits(bool on);
+	/// Count `unit` under `reason`, and remember it while recording (busy units,
+	/// UnitNotAvailable, are only counted: marking every working unit says nothing).
+	void noteUnitFailing(Unit* unit, UnitCantWorkReason reason);
+	/// Start a hiring pass: every tally and remembered unit is dropped.
+	void resetFailureTallies();
 
 private:
 	// ─── Private data ───────────────────────────────────────────────
