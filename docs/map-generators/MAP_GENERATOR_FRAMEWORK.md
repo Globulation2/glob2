@@ -32,9 +32,9 @@ reused after a generator is retired.
 
 | id | legacy id | Display name | Family |
 |---|---|---|---|
-| `fjord-continent` | 12 | Fjord continent | Its own — see below |
-| `maze` | 11 | Maze | Its own — see below |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/Regions`) |
+| `maze` | 11 | Maze | Its own — see below |
+| `fjord-continent` | 12 | Fjord continent | Its own — see below |
 | `shattered-coast` | 7 | Old random | Iterative water/sand/grass balancer, own resource search |
 | `isles` | 6 | Isles | Point dispersion; islands linked by land bridges |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
