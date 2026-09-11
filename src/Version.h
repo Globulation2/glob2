@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 96
+#define VERSION_MINOR 97
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -104,6 +104,8 @@
 //            round-trip fields with the map runtime state: the simulation changed again
 // version 96 reads one worker level (build) where hiring used to read harvest and
 //            the upgrade menu build, and evens the two out on load
+// version 97 lets any worker stock a completed building; the schooling level only
+//            gates construction and upgrade sites: the simulation changed again
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

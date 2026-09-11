@@ -140,6 +140,12 @@ bool Building::canUnitWorkHere(Unit* unit)
 	}
 	else if(unit->typeNum ==  WORKER)
 	{
+		// The level gate is for builders: raising or upgrading a level-N
+		// building takes a worker schooled to level N. A completed building
+		// only wants stock carried to it (wheat and fruit for an inn, stone
+		// for a tower), and any worker can carry.
+		if(!type->isBuildingSite)
+			return true;
 		if(type->level <= unit->workerLevel())
 			return true;
 	}

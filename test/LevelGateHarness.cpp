@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Real-engine regression for Building::canUnitWorkHere: the schooling gate
-// reads the one worker level (build), not the harvest half.
+// Real-engine regression for Building::canUnitWorkHere: a completed building
+// hires any worker to stock it, a construction or upgrade site keeps the
+// schooling-level gate.
 #define SDL_MAIN_HANDLED
 #ifdef main
 #undef main
@@ -76,16 +77,17 @@ int main(int argc, char** argv)
 	Race::loadDefault();
 
 	Uint32 tooLow = 0;
-	// The gate compares the building's tier with the worker level.
-	require(hiringPass("inn", 0, false, CORN, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-1 inn");
-	require(!hiringPass("inn", 1, false, CORN, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn");
-	require(hiringPass("inn", 1, false, CORN, 1, &tooLow) && tooLow == 0, "level-1 worker stocks a level-2 inn");
+	// Completed buildings: any worker stocks them.
+	require(hiringPass("inn", 1, false, CORN, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-2 inn");
+	require(hiringPass("inn", 2, false, CORN, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-3 inn");
+	require(hiringPass("defencetower", 2, false, STONE, 0, &tooLow) && tooLow == 0, "unschooled worker stocks a level-3 tower");
+	// Sites: the schooling level still gates who builds.
 	require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow) && tooLow == 1, "unschooled worker refused by a level-2 inn site");
 	require(hiringPass("inn", 1, true, WOOD, 1, &tooLow) && tooLow == 0, "level-1 worker builds a level-2 inn site");
+	require(!hiringPass("inn", 2, true, WOOD, 1, &tooLow) && tooLow == 1, "level-1 worker refused by a level-3 inn site");
 	require(hiringPass("inn", 2, true, WOOD, 2, &tooLow) && tooLow == 0, "level-2 worker builds a level-3 inn site");
-	// It reads the worker level (build); a stale harvest value does not matter.
+	// The gate reads the worker level (build); a stale harvest value does not matter.
 	require(hiringPass("inn", 1, true, WOOD, 1, &tooLow, 0) && tooLow == 0, "build level 1 with harvest 0 builds a level-2 inn site");
-	require(!hiringPass("inn", 1, true, WOOD, 0, &tooLow, 1) && tooLow == 1, "build level 0 with harvest 1 is refused by a level-2 inn site");
-	std::puts("PASS the hiring gate reads the one worker level");
+	std::puts("PASS completed buildings hire any worker, sites keep the level gate");
 	return 0;
 }

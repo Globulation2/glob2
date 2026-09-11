@@ -25,9 +25,11 @@ static constexpr Uint32 REPLAY_MIN_VALID_ORDERS = 5;
 //! the reader still accepts. Replays older than this are rejected: versions 90, 92,
 //! 93, 94, 95 and 96 changed the simulation (weighted pathfinding and diagonal timing,
 //! hiring-bucket iteration, trapped-colony elimination, fetch-job apportionment,
-//! round-trip routing and hiring, one worker level), so earlier replays would
-//! diverge from what happened.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 96;
+//! 93, 94, 95, 96 and 97 changed the simulation (weighted pathfinding and diagonal timing,
+//! hiring-bucket iteration, trapped-colony elimination, fetch-job apportionment,
+//! round-trip routing and hiring, one worker level, ungated stocking of completed
+//! buildings), so earlier replays would diverge from what happened.
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 97;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.
