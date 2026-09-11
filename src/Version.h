@@ -6,7 +6,10 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 92
+#define VERSION_MINOR 93
+// version 93 adds Maxima's protected-wheat food ledger supply to its saved
+// placement snapshot. Version 92 saves load without it and rebuild supply on
+// their next planning pass.
 // version 92 adds the standalone Maxima AI and its saved execution state.
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game

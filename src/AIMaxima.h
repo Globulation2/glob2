@@ -702,6 +702,23 @@ private:
 	std::set<int> remote_swarms_ready;
 	std::set<int> remote_swarm_deletion_issued;
 	void update_swarm_retirement(AIMaximaRuntime::Context& echo);
+	///Food ledger retirement. A building whose protected farm capacity stays
+	///below its burden threshold for the confirmation window is removed, but
+	///only while doing so cannot leave the population without inn seats.
+	std::map<int, int> food_burden_since;
+	std::set<int> food_retirement_issued;
+	int last_food_retirement_tick;
+	///Targets the ledger can actually supply, carried across saves so a loaded
+	///game plans from the same numbers as the run that saved it.
+	int food_supported_inns;
+	int food_supported_swarms;
+	bool food_ledger_valid;
+	void update_food_retirement(AIMaximaRuntime::Context& echo,
+		const AIMaximaPlacement::WorldState& world);
+	///Neighbouring cells a protected stack's growth can actually spread into.
+	///Unlike farm expansion, a partly harvested wheat neighbour absorbs growth.
+	int growth_absorbing_neighbors(AIMaximaRuntime::Context& echo,
+		int x, int y) const;
 	///Placement pressure drives small, wheat-safe clearing campaigns. Clearing
 	///damages workers, so campaigns are rate-limited and health-gated.
 	int recent_construction_failures;

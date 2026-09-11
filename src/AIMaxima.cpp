@@ -1097,6 +1097,14 @@ void Maxima::getDiagnosticSections(
 		MAXIMA_DIAGNOSTIC_ROW("Food security", environment.food_security);
 		MAXIMA_DIAGNOSTIC_ROW("Food headroom", environment.food_headroom);
 		MAXIMA_DIAGNOSTIC_ROW("Food pressure trend", trends.food_pressure);
+		{
+			std::ostringstream value;
+			value<<food_supported_inns<<" / "<<food_supported_swarms;
+			section.rows.push_back(
+				AIDiagnosticRow("Farm-supported inns/swarms", value.str()));
+		}
+		MAXIMA_DIAGNOSTIC_ROW("Under-supplied buildings",
+			int(food_burden_since.size()));
 		sections.push_back(section);
 	}
 
@@ -3241,6 +3249,17 @@ void Maxima::build_policy_bids()
 		strategy.economy.swarm_workers_per_building);
 	growth.desired_swarms=birth.swarms;
 	growth.swarm_workers=birth.workers;
+	// Protected farm capacity is the ceiling on both targets. Asking for
+	// buildings the ledger cannot supply would only produce placements the
+	// capacity check refuses, while holding construction slots and builders.
+	if(strategy.food.enabled && strategy.food.target_capping_enabled
+	   && food_ledger_valid)
+	{
+		survival.desired_inns=std::min(survival.desired_inns,
+			std::max(1,food_supported_inns));
+		growth.desired_swarms=std::min(growth.desired_swarms,
+			std::max(1,food_supported_swarms));
+	}
 	growth.construction_sites=
 		growth.utility>=growth_site_utility_high
 			? strategy.construction.growth_utility_high_sites
@@ -5103,6 +5122,10 @@ Maxima::Maxima(Player *player)
 	timer=0;
 	posture=PostureExpand;
 	posture_since=0;
+	last_food_retirement_tick=-1000000;
+	food_supported_inns=0;
+	food_supported_swarms=0;
+	food_ledger_valid=false;
 	director=StrategyDirector();
 	last_director_telemetry_tick=-1000000;
 	explorer_threat_until=-1000000;
@@ -5158,6 +5181,12 @@ Maxima::Maxima(Player *player)
 	remote_swarm_since.clear();
 	remote_swarms_ready.clear();
 	remote_swarm_deletion_issued.clear();
+	food_burden_since.clear();
+	food_retirement_issued.clear();
+	last_food_retirement_tick=-1000000;
+	food_supported_inns=0;
+	food_supported_swarms=0;
+	food_ledger_valid=false;
 	recent_construction_failures=0;
 	last_construction_failure_tick=-1000000;
 	opening_space_constrained=false;
@@ -5401,6 +5430,12 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("development_planner_initialized",development_planner_initialized);
 	a("development_reported_states",development_reported_states);
 	a("remote_swarm_since",remote_swarm_since);
+	a("food_burden_since",food_burden_since);
+	a("food_retirement_issued",food_retirement_issued);
+	a("last_food_retirement_tick",last_food_retirement_tick);
+	a("food_supported_inns",food_supported_inns);
+	a("food_supported_swarms",food_supported_swarms);
+	a("food_ledger_valid",food_ledger_valid);
 	a("remote_swarms_ready",remote_swarms_ready);
 	a("remote_swarm_deletion_issued",remote_swarm_deletion_issued);
 	a("operating_colonies",operating_colonies);
@@ -5457,9 +5492,9 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
         strategy.reconnaissance.force_memory_hold_ticks,
         strategy.reconnaissance.stale_contact_age_ticks,
         strategy.reconnaissance.force_memory_enabled);
-    AIMaximaContinuation::Reader archive(stream);
+    AIMaximaContinuation::Reader archive(stream,versionMinor);
     executionState(archive);
-    development_planner.loadExecutionState(stream);
+    development_planner.loadExecutionState(stream,versionMinor);
     context.loadExecutionState(stream, versionMinor);
     stream->readLeaveSection();
 
@@ -6485,6 +6520,25 @@ void Maxima::configure_development_planner()
 	policy.colonyMinimumFood=strategy.colonization.minimum_new_food;
 	policy.colonyMinimumValue=strategy.colonization.minimum_value;
 	policy.colonyMaximumThreat=strategy.colonization.maximum_threat;
+	policy.foodLedgerEnabled=strategy.food.enabled;
+	policy.foodSupplyRadius=strategy.staffing.swarm_supply_radius;
+	policy.foodMarginPercent=strategy.food.placement_margin_percent;
+	policy.foodQualityBandTiles=strategy.food.quality_band_tiles;
+	policy.foodUnreachablePenaltyTiles=strategy.food.unreachable_penalty_tiles;
+	// Demand comes from the engine's own building rates rather than a tuned
+	// constant: a swarm's wheat per produced unit, and an inn's modelled
+	// population times the rate at which a fed unit eats.
+	const BuildingType* swarmType=globalContainer->buildingsTypes.getByType(
+		"swarm",0,false);
+	policy.foodSwarmDemand=swarmType
+		?AIMaximaFoodLedger::swarmDemand(swarmType->resourceForOneUnit,
+			swarmType->unitProductionTime,strategy.food.swarm_demand_percent):0;
+	const int innCapacity[3]={strategy.model.inn_capacity_level1,
+		strategy.model.inn_capacity_level2,strategy.model.inn_capacity_level3};
+	for(int level=0;level<3;++level)
+		policy.foodInnDemand[level]=AIMaximaFoodLedger::innDemand(
+			innCapacity[level],strategy.food.ticks_per_meal,
+			strategy.food.inn_demand_percent);
 }
 
 
@@ -6561,6 +6615,18 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 			tile.foodOpportunity=tile.fertility;
 			tile.farmCapacity=tile.fertility;
 		}
+		// Standing food supply is protected wheat that currently carries wheat.
+		// Unprotected wheat is harvested away rather than kept, so it is not
+		// capacity a settlement can plan against. A protected stack feeds the
+		// harvestable cells around it, so its growth is only worth what its
+		// neighbours can absorb.
+		if(strategy.food.enabled && tile.resourceType==CORN
+		   && tile.resourceAmount>0
+		   && index<int(wheat_farm_protection_mask.size())
+		   && wheat_farm_protection_mask[index])
+			tile.protectedYield=AIMaximaFoodLedger::cellYield(tile.fertility,
+				growth_absorbing_neighbors(echo,x,y),
+				strategy.food.growth_period_ticks);
 		tile.protectedness=map->isGuardArea(x,y,echo.player->team->me)
 			? strategy.placement.guard_area_protectedness
 			: strategy.placement.baseline_protectedness;
@@ -6907,7 +6973,10 @@ void Maxima::development_cycle(Context& echo)
 		}
 		refreshedWorld=collect_development_world(echo,&worldSignature);
 		development_planner.observe(refreshedWorld,worldSignature);
-		update_swarm_retirement(echo);
+		// The ledger supersedes the older zero-capacity swarm rule: an
+		// under-supplied building is a burden whatever its distance from wheat.
+		if(strategy.food.enabled)update_food_retirement(echo,refreshedWorld);
+		else update_swarm_retirement(echo);
 		// Reconcile any starting construction site when it first becomes a completed
 		// building. Planner-owned campus and standalone actions are ignored here.
 		development_planner.adoptStartingBuildings(refreshedWorld);
@@ -7153,6 +7222,157 @@ void Maxima::development_cycle(Context& echo)
 				std::chrono::duration_cast<std::chrono::microseconds>(
 					std::chrono::steady_clock::now()-profileStarted).count()));
 }
+void Maxima::update_food_retirement(Context& echo,
+	const AIMaximaPlacement::WorldState& world)
+{
+	// Fully qualified: this translation unit has other Result types in scope.
+	const AIMaximaFoodLedger::Result& ledger=
+		development_planner.evaluateFoodLedger(world);
+	const AIMaximaPlacement::PlacementPolicy& policy=development_planner.policy();
+	food_ledger_valid=true;
+
+	// A colony swarm settles land that has no protected farm yet, so it cannot
+	// be judged a burden until its own settlement is running.
+	std::set<int> establishing;
+	for(const auto& entry:development_planner.actions())
+	{
+		const AIMaximaPlacement::DevelopmentAction& action=entry.second;
+		if(action.purpose!=AIMaximaPlacement::ColonySeed
+		   || action.buildingId<0) continue;
+		if(!operating_colonies.count(action.id))
+			establishing.insert(action.buildingId);
+	}
+
+	const int inn_burden=strategy.food.inn_burden_coverage_percent;
+	const int swarm_burden=strategy.food.swarm_burden_coverage_percent;
+	int supported_inns=0, supported_swarms=0;
+	std::set<int> present;
+	for(size_t i=0;i<ledger.consumers.size();++i)
+	{
+		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
+		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
+		if(value.coveragePercent>=burden)
+		{
+			if(value.kind==AIMaximaFoodLedger::InnConsumer)++supported_inns; else ++supported_swarms;
+		}
+		if(value.key<0) continue;
+		present.insert(value.key);
+		// Hysteresis: the confirmation survives a dip, and only a real recovery
+		// clears it, so two similar buildings cannot trade places forever.
+		if(value.coveragePercent>=strategy.food.recovered_coverage_percent)
+			food_burden_since.erase(value.key);
+		else if(value.coveragePercent<burden && !food_burden_since.count(value.key))
+			food_burden_since[value.key]=timer;
+	}
+	// Only capacity one site could actually collect supports another building.
+	// A plain total would add up remnants no single building can ever reach.
+	const long long margin=std::max(1,policy.foodMarginPercent);
+	const long long inn_cost=static_cast<long long>(policy.foodInnDemand[0])*margin/100;
+	const long long swarm_cost=static_cast<long long>(policy.foodSwarmDemand)*margin/100;
+	if(inn_cost>0)
+		supported_inns+=int(std::min<long long>(INT_MAX,
+			ledger.bestSiteResidual/inn_cost));
+	if(swarm_cost>0)
+		supported_swarms+=int(std::min<long long>(INT_MAX,
+			ledger.bestSiteResidual/swarm_cost));
+	food_supported_inns=supported_inns;
+	food_supported_swarms=supported_swarms;
+
+	for(std::map<int,int>::iterator i=food_burden_since.begin();
+		i!=food_burden_since.end();)
+		if(!present.count(i->first))food_burden_since.erase(i++);else ++i;
+	for(std::set<int>::iterator i=food_retirement_issued.begin();
+		i!=food_retirement_issued.end();)
+		if(!present.count(*i))food_retirement_issued.erase(i++);else ++i;
+
+	if(timer%1000<budget.farming_normal_interval)
+	{
+		std::ostringstream fields;
+		fields<<"\tsupply="<<ledger.totalSupply<<"\tdemand="<<ledger.totalDemand
+			<<"\tclaimed="<<ledger.totalClaimed
+			<<"\tresidual="<<ledger.totalResidual
+			<<"\tbest_site="<<ledger.bestSiteResidual
+			<<"\tconsumers="<<ledger.consumers.size()
+			<<"\tsupported_inns="<<food_supported_inns
+			<<"\tsupported_swarms="<<food_supported_swarms
+			<<"\tburdened="<<food_burden_since.size();
+		emit_telemetry(echo,"food_ledger",fields.str());
+	}
+
+	if(!strategy.food.retirement_enabled)return;
+	const bool safe=!budget.recovery_active&&snapshot.critical_food==0
+		&&snapshot.own_buildings_under_attack==0&&snapshot.own_units_under_attack==0;
+	if(!safe)return;
+	if(timer-last_food_retirement_tick<strategy.food.retirement_cooldown_ticks)
+		return;
+
+	int completed_inns=0,completed_swarms=0;
+	std::map<int,int> inn_level;
+	for(size_t b=0;b<world.buildings.size();++b)
+	{
+		const AIMaximaPlacement::WorldBuilding& building=world.buildings[b];
+		if(building.site)continue;
+		if(building.buildingType==IntBuildingType::FOOD_BUILDING)
+		{++completed_inns;inn_level[building.id]=std::max(1,building.level);}
+		else if(building.buildingType==IntBuildingType::SWARM_BUILDING)
+			++completed_swarms;
+	}
+	const int modelled[3]={strategy.model.inn_capacity_level1,
+		strategy.model.inn_capacity_level2,strategy.model.inn_capacity_level3};
+	const auto seats_of=[&](int level)
+	{
+		return modelled[std::min(3,std::max(1,level))-1]
+			*strategy.economy.reliable_inn_percent/100;
+	};
+	int seats=0;
+	for(std::map<int,int>::const_iterator i=inn_level.begin();i!=inn_level.end();++i)
+		seats+=seats_of(i->second);
+
+	const AIMaximaFoodLedger::ConsumerResult* worst=NULL;
+	for(size_t i=0;i<ledger.consumers.size();++i)
+	{
+		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
+		if(value.key<0||!value.retirable)continue;
+		if(establishing.count(value.key)||food_retirement_issued.count(value.key))
+			continue;
+		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
+		if(value.coveragePercent>=burden)continue;
+		const std::map<int,int>::const_iterator since=
+			food_burden_since.find(value.key);
+		if(since==food_burden_since.end()
+		   ||timer-since->second<strategy.food.burden_confirm_ticks)continue;
+		if(value.kind==AIMaximaFoodLedger::InnConsumer)
+		{
+			const std::map<int,int>::const_iterator level=inn_level.find(value.key);
+			if(level==inn_level.end()||completed_inns<=1)continue;
+			// The ledger is an accounting view: workers stock whichever inn they
+			// reach. Never remove seats the population is still eating from.
+			if(seats-seats_of(level->second)<snapshot.population)continue;
+		}
+		// Only completed buildings are retirable, so a swarm reaching here is
+		// physically present; never remove the settlement's last one.
+		else if(completed_swarms<=1)continue;
+		if(!worst||value.coveragePercent<worst->coveragePercent
+		   ||(value.coveragePercent==worst->coveragePercent&&value.key<worst->key))
+			worst=&value;
+	}
+	if(!worst)return;
+	// One at a time: freeing this building's wheat often clears the others.
+	echo.add_management_order(new DestroyBuilding(worst->key));
+	food_retirement_issued.insert(worst->key);
+	last_food_retirement_tick=timer;
+	std::ostringstream fields;
+	fields<<"\tbuilding_id="<<worst->key
+		<<"\tkind="<<(worst->kind==AIMaximaFoodLedger::InnConsumer?"inn":"swarm")
+		<<"\tcoverage="<<worst->coveragePercent
+		<<"\tdemand="<<worst->demand<<"\tclaimed="<<worst->claimed
+		<<"\tquality="<<worst->quality
+		<<"\tburden_age="<<(timer-food_burden_since[worst->key])
+		<<"\tcompleted_inns="<<completed_inns
+		<<"\tcompleted_swarms="<<completed_swarms;
+	emit_telemetry(echo,"food_retirement",fields.str());
+}
+
 void Maxima::update_swarm_retirement(Context& echo)
 {
 	if(!budget.swarm_retirement_enabled)

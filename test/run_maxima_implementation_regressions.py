@@ -28,7 +28,7 @@ def main():
         "MaximaFarmingIntegrationTest", "MaximaBarrierScenarioTest",
         "MaximaEconomyRegressionTest", "MaximaDirectorRegressionTest",
         "MaximaTacticsStandaloneTest", "MaximaPlacementStandaloneTest",
-        "MaximaFarmingStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStaffingStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest"], help="Run only the named test (repeatable)")
+        "MaximaFarmingStandaloneTest", "MaximaFoodLedgerStandaloneTest", "MaximaDefenseStandaloneTest", "MaximaReconStandaloneTest", "MaximaStaffingStandaloneTest", "MaximaStrategyTest", "MaximaLifecycleTest", "MaximaDiagnosticsTest"], help="Run only the named test (repeatable)")
     parser.add_argument("--placement-only", action="store_true",
                         help="Run placement/farming units and placement engine integration")
     parser.add_argument("--production-only", action="store_true",
@@ -37,7 +37,8 @@ def main():
     args = parser.parse_args()
     if args.placement_only:
         args.test = ["MaximaImplementationIntegrationTest",
-                     "MaximaPlacementStandaloneTest", "MaximaFarmingStandaloneTest"]
+                     "MaximaPlacementStandaloneTest", "MaximaFarmingStandaloneTest",
+                     "MaximaFoodLedgerStandaloneTest"]
     if args.production_only:
         args.test = ["MaximaImplementationIntegrationTest", "MaximaEconomyRegressionTest"]
     build = (ROOT / args.build_dir).resolve()
@@ -90,7 +91,9 @@ def main():
             ("MaximaDiagnosticsTest", objects),
             ("MaximaTacticsStandaloneTest", [temporary / "AIMaximaTactics.o"]),
             ("MaximaFarmingStandaloneTest", [temporary / "AIMaximaFarming.o"]),
-            ("MaximaPlacementStandaloneTest", [temporary / "AIMaximaPlacement.o", sha1,
+            ("MaximaFoodLedgerStandaloneTest", [temporary / "AIMaximaFoodLedger.o"]),
+            ("MaximaPlacementStandaloneTest", [temporary / "AIMaximaPlacement.o",
+                *[temporary / "AIMaximaFoodLedger.o"], sha1,
                 *[build/"libgag/src"/n for n in ("Stream.o", "StreamBackend.o", "BinaryStream.o")]]),
         ):
             if args.test and name not in args.test:

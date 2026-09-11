@@ -9,6 +9,8 @@
 #ifndef AI_MAXIMA_PLACEMENT_H
 #define AI_MAXIMA_PLACEMENT_H
 
+#include "AIMaximaFoodLedger.h"
+
 #include <stdint.h>
 #include <map>
 #include <set>
@@ -86,6 +88,8 @@ enum RejectionReason
 	RejectedColonyThreat,
 	RejectedNegativeUtility,
 	RejectedAuthorization,
+	/// No unclaimed protected farm capacity backs this inn or swarm.
+	RejectedFoodCapacity,
 	RejectionReasonCount
 };
 
@@ -200,6 +204,10 @@ struct WorldTile
 	uint32_t fertility;
 	uint32_t farmCapacity;
 	uint32_t foodOpportunity;
+	/// Equilibrium wheat supply of a protected cell that currently carries
+	/// wheat, in micro-wheat per tick. Unprotected wheat is harvested away
+	/// rather than kept, so it is deliberately not standing supply here.
+	uint32_t protectedYield;
 	int threat;
 	int protectedness;
 	int conqueredOpportunity;
@@ -359,6 +367,19 @@ struct PlacementPolicy
 	int colonyMinimumFood;
 	int colonyMinimumValue;
 	int colonyMaximumThreat;
+	/// Food ledger. Disabled by default so a planner that was never configured
+	/// with engine demand rates keeps its previous behavior.
+	bool foodLedgerEnabled;
+	int foodSupplyRadius;
+	/// Unclaimed capacity a new or upgraded food building must reach, as a
+	/// percentage of its full-capacity demand.
+	int foodMarginPercent;
+	int foodQualityBandTiles;
+	int foodUnreachablePenaltyTiles;
+	/// Full-capacity demand per inn level and for a swarm, in micro-wheat per
+	/// tick, as derived from the engine's own building rates.
+	int foodInnDemand[3];
+	int foodSwarmDemand;
 	int score(const UtilityComponents& components,
 		DevelopmentPurpose purpose=CoreCapacity,
 		int spacingQuality=100) const;
@@ -492,6 +513,9 @@ public:
 	const PlacementPolicy& policy() const { return placementPolicy; }
 	PlacementPolicy& mutablePolicy() { return placementPolicy; }
 	const PlacementDiagnostics& diagnostics() const { return lastDiagnostics; }
+	/// The same record under the name the regressions use: what the last
+	/// selection considered, chose, and rejected.
+	const PlacementDiagnostics& selectionSummary() const { return lastDiagnostics; }
 	uint32_t spatialRevision() const { return footprintReferenceRevision; }
 	const std::vector<Campus>& campuses() const { return campusList; }
 	const std::vector<StandaloneContract>& standaloneContracts() const { return standaloneList; }
@@ -505,10 +529,16 @@ public:
 	bool isCirculationReserved(int index) const;
 	uint32_t blockedSignature(int buildingType,
 		DevelopmentPurpose purpose=CoreCapacity) const;
+	/// Rebuilds and returns the food ledger for this snapshot. Retirement and
+	/// the director's targets read the same result the placement checks use.
+	const AIMaximaFoodLedger::Result& evaluateFoodLedger(
+		const WorldState& world) const;
 
 	void save(GAGCore::OutputStream* stream) const;
 	void saveExecutionState(GAGCore::OutputStream* stream) const;
-	void loadExecutionState(GAGCore::InputStream* stream);
+	/// versionMinor is the save format being read, so records added after that
+	/// version are known to be absent from the stream.
+	void loadExecutionState(GAGCore::InputStream* stream, int versionMinor);
 	bool load(GAGCore::InputStream* stream, int versionMinor);
 
 private:
@@ -539,6 +569,28 @@ private:
 		const DevelopmentIntent& intent) const;
 	// Claims include pending food buildings. Revalidation excludes only itself.
 	void prepareColonyClaims(const WorldState& world, int excludeAction=-1) const;
+	/// Rebuilds the whole food ledger from the snapshot. Nothing about claims is
+	/// retained between passes, so destruction, upgrades and farm changes need
+	/// no incremental bookkeeping.
+	void prepareFoodLedger(const WorldState& world, int excludeAction=-1) const;
+	bool foodManagedType(int buildingType) const;
+	int foodDemandFor(int buildingType, int level) const;
+	/// A new inn or swarm must reach its full demand plus the configured margin
+	/// in capacity no existing claimant already holds.
+	bool foodCandidatePasses(const WorldState& world,
+		const DevelopmentIntent* intent, const DevelopmentAction& action,
+		RejectionReason& reason) const;
+	/// An upgrade is judged on what the building could reach at its new level,
+	/// because its own claim is released and retaken by the rebuilt ledger.
+	bool foodUpgradePasses(const WorldState& world,
+		const DevelopmentAction& action, RejectionReason& reason) const;
+	int foodLocationQuality(const WorldState& world,
+		const DevelopmentAction& action) const;
+	mutable AIMaximaFoodLedger::Ledger foodLedger;
+	mutable AIMaximaFoodLedger::Input foodInput;
+	mutable AIMaximaFoodLedger::Result foodResult;
+	mutable int foodLedgerExcludedAction;
+	mutable bool foodLedgerPrepared;
 	std::vector<int> colonyFoodTiles(const WorldState& world, int x, int y,
 		const Footprint& footprint) const;
 	int colonyAnchorDistance(const WorldState& world, int x, int y) const;

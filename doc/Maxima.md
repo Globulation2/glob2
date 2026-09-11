@@ -14,8 +14,11 @@ conditions. Building lifetime identities prevent stale work from attaching to a
 new building that reuses a previous building's slot or address.
 
 The farming module protects sustainable food sources and reserves access routes.
-The placement planner evaluates construction and upgrades incrementally, then
-revalidates the selected action against the live world. Combat policy considers
+The [food ledger](MaximaFoodLedger.md) accounts that protected farm capacity
+against what inns and swarms actually consume, so they are only placed and
+upgraded where wheat can back them, and buildings that stay under-supplied are
+retired. The placement planner evaluates construction and upgrades
+incrementally, then revalidates the selected action against the live world. Combat policy considers
 reachable trained forces, defending reserves, and remembered enemy activity.
 
 ## Configuration

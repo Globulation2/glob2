@@ -1,4 +1,5 @@
 #include "../src/AIMaximaPlacement.h"
+#include "../src/Version.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 
@@ -141,6 +142,45 @@ static void placementReviewRegressions()
 	}
 }
 
+// Food buildings are placed only where protected farm capacity can back them,
+// except for the first one, which has nothing to be measured against.
+static void foodLedgerPlacementRegression()
+{
+	WorldState world=makeWorld();
+	Planner planner;planner.configure(world.profiles,1,2,6,5,7,0);
+	PlacementPolicy& policy=planner.mutablePolicy();
+	policy.foodLedgerEnabled=true;policy.foodSupplyRadius=6;
+	policy.foodMarginPercent=100;policy.foodSwarmDemand=100;
+	policy.foodInnDemand[0]=100;policy.foodInnDemand[1]=200;policy.foodInnDemand[2]=300;
+	DevelopmentIntent intent;intent.buildingType=1;intent.unmetCount=2;intent.priority=100;
+	DevelopmentLimits limits;limits.newConstruction=4;
+
+	// The first inn bootstraps the settlement even with no protected wheat.
+	DevelopmentAction first;
+	assert(planner.selectAction(world,{intent},limits,first));
+	assert(planner.reserve(world,first));
+	planner.markIssued(first.id,30,0);
+
+	// The second has to be backed by capacity, and there is none.
+	DevelopmentAction second;
+	assert(!planner.selectAction(world,{intent},limits,second));
+	assert(planner.diagnostics().rejected[RejectedFoodCapacity]>0);
+
+	// A protected farm appears, and the same request now succeeds beside it.
+	const int farmX=24,farmY=24;
+	for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
+		world.tile(farmX+dx,farmY+dy).protectedYield=80;
+	DevelopmentAction backed;
+	assert(planner.selectAction(world,{intent},limits,backed));
+	// Judge the site by the capacity it can actually harvest rather than by a
+	// distance proxy: harvesting routes are eight-neighbour steps and wrap, so a
+	// site that looks distant in Manhattan terms can still work the same farm.
+	assert(planner.reserve(world,backed));
+	const AIMaximaFoodLedger::Result& after=planner.evaluateFoodLedger(world);
+	const AIMaximaFoodLedger::ConsumerResult* placed=after.consumer(-(backed.id+1));
+	assert(placed&&placed->claimed>0);
+}
+
 // A checkpoint taken during a one-cell search must preserve both its winner
 // and the exact number of remaining slices (order timing is game behavior).
 static void placementContinuationRegression()
@@ -167,7 +207,9 @@ static void placementContinuationRegression()
         delete output;
         GAGCore::BinaryInputStream input(copy);
         assert(restored.load(&input,92));
-        restored.loadExecutionState(&input);
+        // The execution state was just written by the current writer, so it is
+        // read back at the current format rather than the older planner one.
+        restored.loadExecutionState(&input,VERSION_MINOR);
         SelectionProgress progress=SelectionPending;
         for(int step=0;step<10000&&progress==SelectionPending;++step)
         {
@@ -189,6 +231,7 @@ static void placementContinuationRegression()
 int main()
 {
 	placementReviewRegressions();
+	foodLedgerPlacementRegression();
 	placementContinuationRegression();
 	Planner planner;planner.configure(makeProfiles(),1,2,6,5,7);
 	std::string error;assert(planner.validateTemplates(&error));

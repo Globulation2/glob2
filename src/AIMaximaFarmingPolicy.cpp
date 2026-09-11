@@ -2109,6 +2109,31 @@ int Maxima::available_expansion_neighbors(Context& echo, int x, int y) const
 	return available;
 }
 
+int Maxima::growth_absorbing_neighbors(Context& echo, int x, int y) const
+{
+	Map* map=echo.player->map;
+	const ResourceType* corn=globalContainer->resourcesTypes.get(CORN);
+	const int full=corn ? corn->sizesCount : 0;
+	int available=0;
+	for(int dy=-1; dy<=1; ++dy)
+		for(int dx=-1; dx<=1; ++dx)
+		{
+			if(!dx && !dy) continue;
+			const Tile& cell=map->getTile(x+dx, y+dy);
+			if(cell.terrain>=16 || !cell.canResourcesGrow
+			   || cell.building!=NOGBID) continue;
+			// Growth either seeds empty ground or tops up a partly harvested
+			// stack beside it. A full stack absorbs nothing, so a protected
+			// cell hemmed in by full wheat yields nothing either.
+			// Passing units are deliberately ignored: they move every tick and
+			// would make a standing supply estimate flicker.
+			if(cell.resource.type==NO_RES_TYPE
+			   || (cell.resource.type==CORN && cell.resource.amount<full))
+				available+=1;
+		}
+	return available;
+}
+
 void Maxima::release_farming_protection(Context& echo)
 {
 	MapInfo map_info(echo);

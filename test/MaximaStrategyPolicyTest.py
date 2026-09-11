@@ -150,7 +150,8 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             re.findall(r"StrategyImpact(Critical|High|Medium|Low)", line)
             for line in specifications
         ]
-        self.assertEqual(699, len(specifications))
+        # 689 before the food ledger, plus its fifteen food.* parameters.
+        self.assertEqual(704, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},

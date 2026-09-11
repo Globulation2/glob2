@@ -16,6 +16,9 @@ namespace AIMaximaPlacement
 
 namespace
 {
+	/// The engine's corn resource index, as carried in WorldTile::resourceType.
+	const int CornResourceType=1;
+
 	int clamp100(int value) { return std::max(0, std::min(100, value)); }
 
 	template<typename T> void sortUnique(std::vector<T>& values)
@@ -156,8 +159,8 @@ WorldTile::WorldTile()
 	: discovered(false), foodTraversable(true), grass(false), water(false), sand(false),
 	  permanentResource(false), clearableResource(false), occupied(false),
 	  ownOccupied(false), gateCorridor(false), gateDefense(0), resourceType(-1), resourceAmount(0), fertility(0),
-	  farmCapacity(0), foodOpportunity(0), threat(0), protectedness(50),
-	  conqueredOpportunity(0) {}
+	  farmCapacity(0), foodOpportunity(0), protectedYield(0), threat(0),
+	  protectedness(50), conqueredOpportunity(0) {}
 WorldBuilding::WorldBuilding()
 	: id(-1), gid(-1), buildingType(-1), level(0), centerX(0), centerY(0),
 	  hp(0), hpMax(0), age(0), site(false), upgrading(false) {}
@@ -259,7 +262,10 @@ PlacementPolicy::PlacementPolicy()
 	  actionTimeoutTicks(300), routeClearableResourceCost(25), routeFarmCost(12),
 	  routeFertilityCost(2), colonyMinimumAnchorDistance(24),
 	  colonySupplyRadius(12), colonyMinimumFood(8), colonyMinimumValue(5),
-	  colonyMaximumThreat(35) {}
+	  colonyMaximumThreat(35), foodLedgerEnabled(false), foodSupplyRadius(12),
+	  foodMarginPercent(120), foodQualityBandTiles(2),
+	  foodUnreachablePenaltyTiles(8), foodSwarmDemand(0)
+{ std::fill(foodInnDemand, foodInnDemand+3, 0); }
 
 int PlacementPolicy::score(const UtilityComponents& c,
 	DevelopmentPurpose purpose, int spacingQuality) const
@@ -351,6 +357,9 @@ void Planner::reset()
 	for(int resource=0;resource<8;++resource)
 	{resourceDistanceCache[resource].clear();resourceDistanceCacheValid[resource]=false;}
 	maximumFarmCapacityCache=1;maximumFoodOpportunityCache=1;
+	foodInput=AIMaximaFoodLedger::Input();
+	foodResult=AIMaximaFoodLedger::Result();
+	foodLedgerExcludedAction=-1;foodLedgerPrepared=false;
 	foodOpportunitySourceCache.clear();foodHaloMaximumCache.clear();
 	foodHaloRadiusCache=-1;
 	threatProtectionSourceCache.clear();threatPrefixCache.clear();
@@ -685,6 +694,7 @@ void Planner::prepareWaterDistanceCache(const WorldState& world) const
 void Planner::prepareScoringCaches(const WorldState& world) const
 {
 	prepareColonyClaims(world);
+	prepareFoodLedger(world);
 	const int size=world.width*world.height;
 	if(scoringNeighborhoodWidth!=world.width
 	   ||scoringNeighborhoodHeight!=world.height)
@@ -1076,6 +1086,192 @@ bool Planner::colonyCandidatePasses(const WorldState& world,
 	return true;
 }
 
+bool Planner::foodManagedType(int buildingType) const
+{
+	return placementPolicy.foodLedgerEnabled
+		&& (buildingType==configuredInnType||buildingType==configuredSwarmType);
+}
+
+int Planner::foodDemandFor(int buildingType, int level) const
+{
+	if(buildingType==configuredSwarmType)return placementPolicy.foodSwarmDemand;
+	if(buildingType!=configuredInnType)return 0;
+	const int slot=std::min(3,std::max(1,level))-1;
+	return placementPolicy.foodInnDemand[slot];
+}
+
+void Planner::prepareFoodLedger(const WorldState& world, int excludeAction) const
+{
+	using namespace AIMaximaFoodLedger;
+	foodResult=Result();foodInput.consumers.clear();
+	foodLedgerExcludedAction=excludeAction;foodLedgerPrepared=true;
+	if(!placementPolicy.foodLedgerEnabled)return;
+	const int size=world.width*world.height;
+	if(size<=0)return;
+	foodInput.width=world.width;foodInput.height=world.height;
+	foodInput.policy.supplyRadius=placementPolicy.foodSupplyRadius;
+	foodInput.policy.qualityBandTiles=placementPolicy.foodQualityBandTiles;
+	foodInput.policy.unreachablePenaltyTiles=
+		placementPolicy.foodUnreachablePenaltyTiles;
+	foodInput.yield.resize(size);foodInput.traversable.resize(size);
+	for(int i=0;i<size;++i)
+	{
+		const WorldTile& tile=world.tiles[i];
+		foodInput.yield[i]=tile.protectedYield;
+		// The same reach rule production harvesting uses: wheat may be walked
+		// through, anything else solid may not.
+		foodInput.traversable[i]=(tile.discovered&&tile.foodTraversable
+			&&!tile.occupied&&(!tile.water||world.swimmingBuilders>0)
+			&&(tile.resourceType<0||tile.resourceType==CornResourceType))?1:0;
+	}
+	// An authorized upgrade already owns its larger demand: it claims at the
+	// level it is becoming, or the ledger would hand that wheat to someone else
+	// and take it back again on the next pass.
+	std::map<int,int> pendingLevel;
+	std::map<int,bool> colonyBuilding;
+	for(std::map<int,DevelopmentAction>::const_iterator i=actionMap.begin();
+		i!=actionMap.end();++i)
+	{
+		const DevelopmentAction& action=i->second;
+		if(action.id==excludeAction||!activeState(action.state))continue;
+		if(action.buildingId>=0&&action.purpose==ColonySeed)
+			colonyBuilding[action.buildingId]=true;
+		if(action.type==UpgradeBuilding&&action.buildingId>=0
+		   &&foodManagedType(action.buildingType))
+			pendingLevel[action.buildingId]=std::max(pendingLevel[action.buildingId],
+				action.targetLevel);
+	}
+	for(size_t b=0;b<world.buildings.size();++b)
+	{
+		const WorldBuilding& building=world.buildings[b];
+		if(!foodManagedType(building.buildingType))continue;
+		const BuildingProfile* profile=world.profile(building.buildingType);
+		if(!profile)continue;
+		int level=std::max(1,building.level);
+		const std::map<int,int>::const_iterator pending=pendingLevel.find(building.id);
+		if(pending!=pendingLevel.end())level=std::max(level,pending->second);
+		const BuildingLevelProfile* shape=profile->atLevel(level);
+		if(!shape)continue;
+		ConsumerInput consumer;
+		consumer.key=building.id;
+		consumer.kind=building.buildingType==configuredInnType
+			?InnConsumer:SwarmConsumer;
+		consumer.stage=building.site?SiteStage:CompletedStage;
+		consumer.level=level;
+		consumer.demand=foodDemandFor(building.buildingType,level);
+		consumer.centerX=building.centerX;consumer.centerY=building.centerY;
+		consumer.left=shape->footprint.left;consumer.top=shape->footprint.top;
+		consumer.width=shape->footprint.width;consumer.height=shape->footprint.height;
+		consumer.colony=colonyBuilding.count(building.id)>0;
+		consumer.retirable=!building.site;
+		foodInput.consumers.push_back(consumer);
+	}
+	// Planned inns and swarms claim as soon as their parcel is reserved, so a
+	// second one cannot be placed against wheat the first already needs.
+	for(std::map<int,DevelopmentAction>::const_iterator i=actionMap.begin();
+		i!=actionMap.end();++i)
+	{
+		const DevelopmentAction& action=i->second;
+		if(action.id==excludeAction||!activeState(action.state))continue;
+		if(action.type!=BuildCampusMember&&action.type!=BuildStandalone)continue;
+		if(!foodManagedType(action.buildingType))continue;
+		if(action.buildingId>=0&&world.building(action.buildingId))continue;
+		ConsumerInput consumer;
+		// Planned actions cannot collide with building ids in the same ledger.
+		consumer.key=-(action.id+1);
+		consumer.kind=action.buildingType==configuredInnType
+			?InnConsumer:SwarmConsumer;
+		consumer.stage=ReservedStage;
+		consumer.level=1;
+		consumer.demand=foodDemandFor(action.buildingType,1);
+		consumer.centerX=action.centerX;consumer.centerY=action.centerY;
+		consumer.left=action.initialFootprint.left;
+		consumer.top=action.initialFootprint.top;
+		consumer.width=action.initialFootprint.width;
+		consumer.height=action.initialFootprint.height;
+		consumer.colony=action.purpose==ColonySeed;
+		consumer.retirable=false;
+		foodInput.consumers.push_back(consumer);
+	}
+	foodLedger.evaluate(foodInput,foodResult);
+}
+
+const AIMaximaFoodLedger::Result& Planner::evaluateFoodLedger(
+	const WorldState& world) const
+{
+	prepareFoodLedger(world);
+	return foodResult;
+}
+
+bool Planner::foodCandidatePasses(const WorldState& world,
+	const DevelopmentIntent* intent, const DevelopmentAction& action,
+	RejectionReason& reason) const
+{
+	if(!foodManagedType(action.buildingType))return true;
+	if(action.type!=BuildCampusMember&&action.type!=BuildStandalone)return true;
+	// Colonies settle land that has no protected farm yet, so they keep their
+	// own new-food rule. They still claim in the ledger like any other building.
+	const DevelopmentPurpose purpose=intent?intent->purpose:action.purpose;
+	if(purpose==ColonySeed)return true;
+	const int demand=foodDemandFor(action.buildingType,1);
+	if(demand<=0)return true;
+	if(!foodLedgerPrepared)prepareFoodLedger(world);
+	// The first inn and the first swarm have nothing to be measured against and
+	// would otherwise deadlock a settlement that has not started farming.
+	const AIMaximaFoodLedger::ConsumerKind kind=
+		action.buildingType==configuredInnType
+			?AIMaximaFoodLedger::InnConsumer:AIMaximaFoodLedger::SwarmConsumer;
+	size_t existing=0;
+	for(size_t i=0;i<foodResult.consumers.size();++i)
+		if(foodResult.consumers[i].kind==kind)++existing;
+	if(existing==0)return true;
+	const long long required=static_cast<long long>(demand)
+		*placementPolicy.foodMarginPercent/100;
+	const Footprint& shape=action.initialFootprint;
+	// The square bound is cheap and can only overstate reach, so a candidate it
+	// rejects would also fail the exact walk.
+	if(foodLedger.residualUpperBound(foodInput,foodResult,action.centerX,
+		action.centerY,shape.left,shape.top,shape.width,shape.height)<required)
+	{reason=RejectedFoodCapacity;return false;}
+	if(foodLedger.reachableResidual(foodInput,foodResult,action.centerX,
+		action.centerY,shape.left,shape.top,shape.width,shape.height,
+		required)<required)
+	{reason=RejectedFoodCapacity;return false;}
+	return true;
+}
+
+bool Planner::foodUpgradePasses(const WorldState& world,
+	const DevelopmentAction& action, RejectionReason& reason) const
+{
+	if(!foodManagedType(action.buildingType))return true;
+	if(action.type!=UpgradeBuilding)return true;
+	const int demand=foodDemandFor(action.buildingType,action.targetLevel);
+	if(demand<=0)return true;
+	if(!foodLedgerPrepared)prepareFoodLedger(world);
+	const AIMaximaFoodLedger::ConsumerResult* value=
+		foodResult.consumer(action.buildingId);
+	if(!value)return true;
+	const long long required=static_cast<long long>(demand)
+		*placementPolicy.foodMarginPercent/100;
+	if(value->available<required){reason=RejectedFoodCapacity;return false;}
+	return true;
+}
+
+int Planner::foodLocationQuality(const WorldState& world,
+	const DevelopmentAction& action) const
+{
+	const int demand=foodDemandFor(action.buildingType,1);
+	if(demand<=0)return 0;
+	if(!foodLedgerPrepared)prepareFoodLedger(world);
+	const Footprint& shape=action.initialFootprint;
+	// Unclaimed capacity, not distance to the nearest wheat: one wheat tile
+	// beside five inns is not a good site for a sixth.
+	const long long reach=foodLedger.reachableResidual(foodInput,foodResult,
+		action.centerX,action.centerY,shape.left,shape.top,shape.width,
+		shape.height,static_cast<long long>(demand)*2);
+	return clamp100(int(reach*100/demand));
+}
+
 uint32_t Planner::stateSignature(const WorldState& world) const
 {
 	return stateSignature(world.computeSignature());
@@ -1295,6 +1491,8 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 			RejectionReason reason=RejectedTerrain;
 			if(!colonyCandidatePasses(world,intent,candidate.action,reason))
 			{lastDiagnostics.rejected[reason]++;continue;}
+			if(!foodCandidatePasses(world,&intent,candidate.action,reason))
+			{lastDiagnostics.rejected[reason]++;continue;}
 			const std::vector<int> initialTiles=footprintTiles(world,
 				candidate.action.centerX,candidate.action.centerY,
 				slot.initialFootprint);
@@ -1391,6 +1589,8 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				{lastDiagnostics.rejected[reason]++;continue;}
 				candidate.action.parcelTiles=parcelTiles(world,originX,originY,t);
 				if(!colonyCandidatePasses(world,intent,candidate.action,reason))
+				{lastDiagnostics.rejected[reason]++;continue;}
+				if(!foodCandidatePasses(world,&intent,candidate.action,reason))
 				{lastDiagnostics.rejected[reason]++;continue;}
 				const std::vector<int> initialTiles=footprintTiles(world,
 					candidate.action.centerX,candidate.action.centerY,
@@ -1579,6 +1779,10 @@ void Planner::addUpgradeAndRepairCandidates(const WorldState& world,
 		RejectionReason reason=RejectedUpgradeContract;
 		if(!revalidate(world,candidate.action,&reason))
 		{lastDiagnostics.rejected[reason]++;continue;}
+		// A larger inn must be backed by wheat it can actually reach, so badly
+		// sited inns stop collecting upgrades that starve their neighbours.
+		if(!foodUpgradePasses(world,candidate.action,reason))
+		{lastDiagnostics.rejected[reason]++;continue;}
 		candidate.action.utility=scoreCandidate(world,NULL,candidate);
 		if(priority>0)
 		{
@@ -1732,10 +1936,19 @@ UtilityComponents Planner::scoreCandidate(const WorldState& world,
 	{
 		int fruitQuality=0;
 		for(int fruit=5;fruit<=7;++fruit)fruitQuality=std::max(fruitQuality,resourceQuality(fruit));
-		u.roleLocationQuality=clamp100((resourceQuality(1)*3+fruitQuality)/4);
+		// With the ledger on, food siting is unclaimed capacity rather than
+		// distance to the nearest wheat, which spreads settlements out on its
+		// own: claimed wheat stops attracting further buildings.
+		const int foodQuality=foodManagedType(action.buildingType)
+			?foodLocationQuality(world,action):resourceQuality(CornResourceType);
+		u.roleLocationQuality=clamp100((foodQuality*3+fruitQuality)/4);
 	}
 	else if(action.buildingType==configuredSwarmType)
-		u.roleLocationQuality=clamp100((resourceQuality(1)*3+protection)/4);
+	{
+		const int foodQuality=foodManagedType(action.buildingType)
+			?foodLocationQuality(world,action):resourceQuality(CornResourceType);
+		u.roleLocationQuality=clamp100((foodQuality*3+protection)/4);
+	}
 	else if(action.buildingType==configuredSchoolType)
 		u.roleLocationQuality=clamp100(protection-threat);
 	else if(action.buildingType==configuredHospitalType)
@@ -1942,6 +2155,9 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	for(const WorldTile& tile:world.tiles)
 	{
 		hashValue(signature,tile.fertility);hashValue(signature,tile.farmCapacity);
+		// Farm capacity that grew, burned or was harvested away must reopen a
+		// food intent that was previously refused for want of it.
+		hashValue(signature,tile.protectedYield);
 		hashValue(signature,tile.foodOpportunity);hashValue(signature,tile.threat);
 		hashValue(signature,tile.protectedness);hashValue(signature,tile.conqueredOpportunity);
 	}
@@ -2016,6 +2232,14 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	hashValue(signature,placementPolicy.colonyMinimumFood);
 	hashValue(signature,placementPolicy.colonyMinimumValue);
 	hashValue(signature,placementPolicy.colonySupplyRadius);
+	hashValue(signature,placementPolicy.foodLedgerEnabled);
+	hashValue(signature,placementPolicy.foodSupplyRadius);
+	hashValue(signature,placementPolicy.foodMarginPercent);
+	hashValue(signature,placementPolicy.foodQualityBandTiles);
+	hashValue(signature,placementPolicy.foodUnreachablePenaltyTiles);
+	for(int level=0;level<3;++level)
+		hashValue(signature,placementPolicy.foodInnDemand[level]);
+	hashValue(signature,placementPolicy.foodSwarmDemand);
 	retryInputSignature=signature;
 }
 
@@ -2317,6 +2541,14 @@ bool Planner::revalidateSelection(const WorldState& world,
 			if(!colonyCandidatePasses(world,*intent,action,reason))
 			{if(rejected)*rejected=reason;return false;}
 		}
+		else if(foodManagedType(action.buildingType))
+		{
+			// Capacity may have been claimed, burned or harvested away while
+			// this selection was waiting. The action never claims against itself.
+			prepareFoodLedger(world,action.id);
+			if(!foodCandidatePasses(world,intent,action,reason))
+			{if(rejected)*rejected=reason;return false;}
+		}
 	}
 	else
 	{
@@ -2324,6 +2556,12 @@ bool Planner::revalidateSelection(const WorldState& world,
 		if(!building || building->buildingType!=action.buildingType
 		   || building->level!=action.fromLevel)
 		{if(rejected)*rejected=RejectedUpgradeContract;return false;}
+		if(foodManagedType(action.buildingType))
+		{
+			prepareFoodLedger(world,action.id);
+			if(!foodUpgradePasses(world,action,reason))
+			{if(rejected)*rejected=reason;return false;}
+		}
 	}
 	// An authorized upgrade may first need its reserved expansion cleared.
 	// The separate before-issue check still requires an empty engine footprint.
@@ -2422,6 +2660,14 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 		prepareColonyClaims(world,action.id);
 		DevelopmentIntent colony;colony.purpose=ColonySeed;
 		if(!colonyCandidatePasses(world,colony,action,reason))
+		{if(rejected)*rejected=reason;return false;}
+	}
+	else if(beforeIssue && foodManagedType(action.buildingType))
+	{
+		// Reserved parcels can wait for clearing. Recheck the capacity that
+		// justified this site when it finally issues, not only when it won.
+		prepareFoodLedger(world,action.id);
+		if(!foodCandidatePasses(world,NULL,action,reason))
 		{if(rejected)*rejected=reason;return false;}
 	}
 	const std::vector<int> initial=footprintTiles(world,action.centerX,action.centerY,
@@ -2851,10 +3097,10 @@ void Planner::saveExecutionState(GAGCore::OutputStream* stream) const
     const_cast<Planner*>(this)->executionState(archive);
     stream->writeLeaveSection();
 }
-void Planner::loadExecutionState(GAGCore::InputStream* stream)
+void Planner::loadExecutionState(GAGCore::InputStream* stream,int versionMinor)
 {
     stream->readEnterSection("PlacementExecution95");
-    AIMaximaContinuation::Reader archive(stream);
+    AIMaximaContinuation::Reader archive(stream,versionMinor);
     executionState(archive);
     stream->readLeaveSection();
 }
@@ -2908,7 +3154,7 @@ const char* rejectionName(RejectionReason reason)
 		"building","permanent_resource","clearable_resource","reservation",
 		"circulation","water_tier","access","island_builders","quarantine",
 		"upgrade_contract","required_source","colony_distance","colony_corn",
-		"colony_threat","negative_utility","authorization"};
+		"colony_threat","negative_utility","authorization","food_capacity"};
 	return reason>=0&&reason<RejectionReasonCount?names[reason]:"unknown";
 }
 

@@ -690,6 +690,26 @@ farming.gate_clearing_workers_min = 50
 farming.gate_relocation_penalty_cap = 4
 farming.urgent_space_threshold = 35
 
+# Food ledger: protected farm capacity claimed by inns and swarms. Supply counts
+# only protected wheat cells that currently carry wheat, because that is the
+# capacity a settlement keeps at equilibrium. The growth and meal periods are
+# engine rates and are the two values worth calibrating first.
+food.enabled = true
+food.retirement_enabled = true
+food.target_capping_enabled = true
+food.growth_period_ticks = 186
+food.ticks_per_meal = 428
+food.inn_demand_percent = 100
+food.swarm_demand_percent = 100
+food.placement_margin_percent = 120
+food.quality_band_tiles = 2
+food.unreachable_penalty_tiles = 8
+food.inn_burden_coverage_percent = 60
+food.swarm_burden_coverage_percent = 60
+food.recovered_coverage_percent = 85
+food.burden_confirm_ticks = 3000
+food.retirement_cooldown_ticks = 3000
+
 # Scoring: hysteresis and cross-policy construction priority adjustments.
 scoring.posture_switch_margin = 14
 scoring.target_switch_margin = 72

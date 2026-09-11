@@ -3,6 +3,7 @@
 
 // Portable field-wise serialization for execution state added in save version 95.
 // Never serialize object layouts, pointers, padding, or host-sized containers.
+#include "Version.h"
 #include <Stream.h>
 #include <cstdint>
 #include <map>
@@ -23,8 +24,13 @@ template<class A,class X,class Y> void fields(A& a,std::pair<X,Y>& v)
 class Writer
 {
     GAGCore::OutputStream* stream;
+    int formatVersion;
 public:
-    explicit Writer(GAGCore::OutputStream* stream):stream(stream) {}
+    explicit Writer(GAGCore::OutputStream* stream,int formatVersion=VERSION_MINOR)
+        :stream(stream),formatVersion(formatVersion) {}
+    /// Save format of the state being written, so a record added in a later
+    /// version can be written unconditionally and read only where it exists.
+    int version() const { return formatVersion; }
     template<class T> typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value>::type
     operator()(const char* name,const T& value)
     {
@@ -77,6 +83,7 @@ public:
 class Reader
 {
     GAGCore::InputStream* stream;
+    int formatVersion;
     uint32_t count()
     {
         const uint32_t size=stream->readUint32("size");
@@ -84,7 +91,11 @@ class Reader
         return size;
     }
 public:
-    explicit Reader(GAGCore::InputStream* stream):stream(stream) {}
+    explicit Reader(GAGCore::InputStream* stream,int formatVersion=VERSION_MINOR)
+        :stream(stream),formatVersion(formatVersion) {}
+    /// Save format of the state being read. Records added after that version
+    /// are absent from the stream and keep their constructed defaults.
+    int version() const { return formatVersion; }
     template<class T> typename std::enable_if<std::is_integral<T>::value || std::is_enum<T>::value>::type
     operator()(const char* name,T& value)
     {

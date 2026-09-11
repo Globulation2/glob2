@@ -3,6 +3,9 @@
 #include "AIMaximaPlacement.h"
 namespace AIMaximaPlacement
 {
+/// Save format that added the food ledger's per-cell protected wheat supply.
+const int protectedYieldVersion=93;
+
 template<class A> void fields(A& a, Footprint& value)
 {
 	a("left",value.left);
@@ -49,6 +52,9 @@ template<class A> void fields(A& a, WorldTile& value)
 	a("threat",value.threat);
 	a("protectedness",value.protectedness);
 	a("conqueredOpportunity",value.conqueredOpportunity);
+	// Older saves predate the ledger. Their pending selection simply carries no
+	// supply, and the next planning pass rebuilds it from the live map.
+	if(a.version()>=protectedYieldVersion)a("protectedYield",value.protectedYield);
 }
 
 template<class A> void fields(A& a, WorldBuilding& value)

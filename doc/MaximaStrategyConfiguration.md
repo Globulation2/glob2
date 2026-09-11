@@ -49,6 +49,7 @@ layers easy to review:
 | `teamplay` | Ally-aware defense, rescue, target coordination, and shared pressure. |
 | `explorer_campaign`, `fruit`, `recon` | Explorer production, mission count, target valuation, retasking, and fruit work. |
 | `farming` | Review cadence, fertility policy, wood pressure, buffers, and proactive clearing. |
+| `food` | Protected farm capacity claimed by inns and swarms, and the placement, upgrade and retirement decisions taken from it. |
 | `scoring` | Cross-policy construction priorities and target/posture switch margins. |
 | `scheduling` | Director and executor cadence, phase offsets, commitment, warnings, and cooldowns. |
 | `emergencies` | Food and combat conditions that override normal posture selection. |

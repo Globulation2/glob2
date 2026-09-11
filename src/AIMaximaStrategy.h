@@ -756,6 +756,28 @@ struct MaximaStrategy
 		int urgent_space_threshold;
 	} farming;
 
+	/// Food ledger: which inns and swarms are actually backed by protected farm
+	/// capacity. Supply is equilibrium capacity, so only protected wheat cells
+	/// that currently carry wheat count.
+	struct Food
+	{
+		bool enabled;
+		bool retirement_enabled;
+		bool target_capping_enabled;
+		int growth_period_ticks;
+		int ticks_per_meal;
+		int inn_demand_percent;
+		int swarm_demand_percent;
+		int placement_margin_percent;
+		int quality_band_tiles;
+		int unreachable_penalty_tiles;
+		int inn_burden_coverage_percent;
+		int swarm_burden_coverage_percent;
+		int recovered_coverage_percent;
+		int burden_confirm_ticks;
+		int retirement_cooldown_ticks;
+	} food;
+
 	struct Scoring
 	{
 		int posture_switch_margin;
