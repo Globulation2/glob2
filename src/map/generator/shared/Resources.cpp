@@ -376,8 +376,10 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 // The same flood, but blocked only by water — as if resources didn't exist. Diffing this
 // against floodReach's result isolates exactly which tiles a resource wall blocks: reachable
 // here, not reachable there, adjacent to what is. Clearing only those tiles (rather than an
-// entire neighborhood) opens the way while disturbing nothing else nearby.
-std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit) {
+// entire neighborhood) opens the way while disturbing nothing else nearby. Protected walls are
+// part of the terrain, so they block this flood as well.
+std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit,
+                                  const std::vector<unsigned char> *protectedWalls) {
   const int w = map.getW(), h = map.getH();
   std::vector<int> dist(size_t(w) * h, -1);
   std::vector<int> q(size_t(w) * h);
@@ -396,7 +398,7 @@ std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit) {
           continue;
         int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
         int np = ny * w + nx;
-        if (dist[np] < 0 && !map.isWater(nx, ny)) {
+        if (dist[np] < 0 && !map.isWater(nx, ny) && !(protectedWalls && (*protectedWalls)[np])) {
           dist[np] = dist[p] + 1;
           q[qTail++] = np;
         }
@@ -410,16 +412,19 @@ std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit) {
 // tile that is — the wall's inner face — plus, on a wall thick enough to have an outer face
 // too, that face as well. A real dead end (no meaningfully larger landmass once resources are
 // ignored) clears nothing, since there is no better tile on the other side to find. Iterated a
-// few times by the caller in case a wall is thicker still.
+// few times by the caller in case a wall is thicker still. A protected wall tile is never
+// cleared.
 bool clearResourceWall(Map &map, const std::vector<int> &boxedDist,
-                       const std::vector<int> &openDist, int minGain) {
+                       const std::vector<int> &openDist, int minGain,
+                       const std::vector<unsigned char> *protectedWalls) {
   const int w = map.getW(), h = map.getH();
   int cleared = 0;
   std::vector<std::pair<int, int>> toClear;
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x) {
       int p = y * w + x;
-      if (boxedDist[p] >= 0 || openDist[p] < 0 || !map.isResource(x, y))
+      if (boxedDist[p] >= 0 || openDist[p] < 0 || !map.isResource(x, y) ||
+          (protectedWalls && (*protectedWalls)[p]))
         continue;
       bool touchesBoxed = false;
       for (int dy = -1; dy <= 1 && !touchesBoxed; ++dy)
@@ -446,8 +451,11 @@ bool clearResourceWall(Map &map, const std::vector<int> &boxedDist,
 } // namespace
 
 void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
-                                int woodRange, int clearRadius) {
+                                int woodRange, int clearRadius,
+                                const std::vector<unsigned char> *protectedWalls) {
   Map &map = game.map;
+  if (protectedWalls && protectedWalls->size() != size_t(map.getW()) * map.getH())
+    throw GenerationFailure("Protected wall mask does not match the map size");
   const int exploreLimit = std::max(wheatRange, woodRange) * 5 / 2;
   const int closeRange = wheatRange / 2;
   // Below this many reached tiles a team is badly boxed in, but that has two very different
@@ -470,8 +478,8 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
     bool underServed = reach.wheatDist < 0 || reach.wheatDist > wheatRange ||
                        reach.woodDist < 0 || reach.woodDist > woodRange;
     for (int attempt = 0; underServed && pocketSize() < minPocketTiles && attempt < 6; ++attempt) {
-      std::vector<int> open = terrainOnlyReach(map, bootX, bootY, exploreLimit);
-      if (!clearResourceWall(map, reach.dist, open, /*minGain=*/1))
+      std::vector<int> open = terrainOnlyReach(map, bootX, bootY, exploreLimit, protectedWalls);
+      if (!clearResourceWall(map, reach.dist, open, /*minGain=*/1, protectedWalls))
         break;
       reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
       underServed = reach.wheatDist < 0 || reach.wheatDist > wheatRange || reach.woodDist < 0 ||
