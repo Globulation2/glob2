@@ -1806,3 +1806,23 @@ Lake size
 Lake connects to fjords
 [Resource islands]
 Resource islands
+[Symmetric arena]
+Symmetric arena
+[Centre size]
+Centre size
+[Causeway width]
+Causeway width
+[Causeways]
+Causeways
+[Lakes]
+Lakes
+[Resource richness]
+Resource richness
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symmetric arena needs 2, 4 or 8 colonies.
+[Eight colonies need a square map in the symmetric arena.]
+Eight colonies need a square map in the symmetric arena.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+The causeways are too close together; use fewer or narrower causeways, or a bigger centre.

@@ -187,6 +187,7 @@ map/generator/generators/RiverGenerator.cpp
 map/generator/generators/RuggedArchipelagoGenerator.cpp
 map/generator/generators/ShatteredCoastGenerator.cpp
 map/generator/generators/SwampGenerator.cpp
+map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/shared/Distances.cpp
 map/generator/shared/HeightMap.cpp

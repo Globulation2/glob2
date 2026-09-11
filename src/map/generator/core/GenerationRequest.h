@@ -28,7 +28,8 @@ struct GenerationRequest {
     eOLDISLANDS = 8,
     eCONTESTEDCOMMONS = 9,
     eMAZE = 11,
-    eFJORDCONTINENT = 12
+    eFJORDCONTINENT = 12,
+    eSYMMETRICARENA = 15
   };
 
   using Control = GeneratorControl;

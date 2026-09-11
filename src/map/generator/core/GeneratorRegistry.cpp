@@ -11,6 +11,7 @@
 #include "RuggedArchipelagoGenerator.h"
 #include "ShatteredCoastGenerator.h"
 #include "SwampGenerator.h"
+#include "SymmetricArenaGenerator.h"
 #include "UniformGenerator.h"
 #include <algorithm>
 #include <set>
@@ -75,6 +76,7 @@ const GeneratorRegistry &GeneratorRegistry::builtins() {
        shatteredCoastDefinition(), islesDefinition(),
        ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
        craterLakesDefinition(), islandsDefinition(), swampDefinition(),
-       riverDefinition(), mazeDefinition(), uniformDefinition()});
+       riverDefinition(), mazeDefinition(), symmetricArenaDefinition(),
+       uniformDefinition()});
   return registry;
 }
