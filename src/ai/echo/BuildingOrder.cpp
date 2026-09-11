@@ -27,6 +27,9 @@ bool BuildingOrder::load(GAGCore::InputStream *stream, Player *player, Sint32 ve
 
 	building_type=stream->readUint32("building_type");
 	number_of_workers=stream->readUint32("number_of_workers");
+	// Saves older than 96 do not carry it; Echo::load registers a fresh one.
+	if (versionMinor>=96)
+		id=static_cast<int>(stream->readUint32("id"));
 
 	stream->readEnterSection("constraints");
 	Uint32 size = stream->readUint32("size");
@@ -62,6 +65,7 @@ void BuildingOrder::save(GAGCore::OutputStream *stream)
 
 	stream->writeUint32(building_type, "building_type");
 	stream->writeUint32(number_of_workers, "number_of_workers");
+	stream->writeUint32(static_cast<Uint32>(id), "id");
 
 	stream->writeEnterSection("constraints");
 	stream->writeUint32(constraints.size(), "size");
