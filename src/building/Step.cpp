@@ -4,6 +4,7 @@
 #include <list>
 #include <math.h>
 #include <stdlib.h>
+#include <algorithm>
 #include <climits>
 
 #include "Building.h"
@@ -39,6 +40,8 @@ namespace
 void Building::step(void)
 {
 	computeWishedResources(wishedResources);
+	if (((owner->game->stepCounter + gid) & 255) == 0)
+		freeIdleGradients();
 
 	updateCallLists();
 	if(underAttackTimer>0)
@@ -103,7 +106,16 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 		return false;
 	}
 
-	*dist = (distBuilding + distResource)<<Q8_FIXED_POINT_SHIFT;
+	// Score by the whole job: the round-trip field when a fetcher has already
+	// built one. Without one, estimate the carry leg rather than reach for the
+	// building distance alone: a unit standing at the building carries as far
+	// as it walked out, and one standing at the resource carries the building
+	// distance. Building a field here instead would cost one per resource of
+	// every hiring building, nearly all of them never fetched.
+	int roundTrip = 0;
+	if(!owner->map->roundTripDistance(this, wantedResource, unit->swimClass(), unit->posX, unit->posY, &roundTrip))
+		roundTrip = distResource + std::max(distBuilding, distResource);
+	*dist = roundTrip<<Q8_FIXED_POINT_SHIFT;
 	return true;
 }
 

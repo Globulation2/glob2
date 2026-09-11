@@ -436,6 +436,10 @@ private:
 		Unit* choosen;
 	};
 
+	/// Lets test/RoundTripHungerGateHarness.cpp reach considerUnitForResource
+	/// without exposing it to game callers, as GameGUI does for its own harness.
+	friend class RoundTripHungerGateHarness;
+
 	/// Whether a unit is a possible hire at all: harvest-capable, idle, healthy,
 	/// high enough level, and close enough to reach this building before going
 	/// hungry. Fills *distBuilding on success; on failure tallies the rejection
@@ -586,6 +590,18 @@ public:
 	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_CLASS_COUNT];
 	// These flags track physical access (cannot swim / can swim), not travel cost.
 	// All swimming classes share passability, but keep separate weighted fields.
+	//! Last step a unit asked for the gradient; freeIdleGradients drops it when that is long ago.
+	Uint32 globalGradientUsedStep[SWIM_CLASS_COUNT];
+	//! Round-trip gradients per resource type and swim class (see Map::roundTripGradient),
+	//! NULL until a unit fetching that resource for this building asks for one, freed again
+	//! by freeIdleGradients when unused for a while. Their last rebuild and last
+	//! use, in steps.
+	Uint16 *roundTripGradient[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientUsedStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
+	//! buildings with fetchers need one, and each is a full map of Uint16.
+	void freeIdleGradients();
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
 
 	// Per-swim-variant tri-state cache of whether a clearing flag has any
