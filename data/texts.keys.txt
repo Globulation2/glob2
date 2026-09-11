@@ -887,8 +887,6 @@
 [Maze]
 [Fjord continent]
 [Cell size]
-[Room size]
-[Corridor width]
 [Loopiness]
 [Home island size]
 [Commons size]

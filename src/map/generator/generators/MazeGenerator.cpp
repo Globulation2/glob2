@@ -8,34 +8,44 @@
 #include <algorithm>
 #include <cstdlib>
 #include <string>
+#include <utility>
 #include <vector>
 using namespace MapGeneration;
 
-// A maze in the pen-and-paper sense. The world is tiled into square cells on the map's own
-// torus; a recursive backtracker carves a spanning tree of narrow corridors between cell
-// centres; every boundary the tree leaves closed becomes a wall - a thick water channel with a
-// continuous line of stone down its middle. Every colony starts in its own cul-de-sac: a room
-// whose only way out is a single corridor.
+// A maze in the pen-and-paper sense, built to be lived in. The world is tiled into square cells
+// on the map's own torus; a recursive backtracker carves a spanning tree of passages between
+// them; every boundary the tree leaves closed becomes a wall - a line of stone in a narrow water
+// channel. Passages fill their cells with grass, so colonies farm and build their way out into
+// the maze, and every colony starts in its own cul-de-sac.
 //
 // Terrain is stamped directly rather than through Map::controlSand(), whose in-place raster pass
 // shifts shorelines unevenly. Each tile's terrain comes from its four undermap corners
 // (Map::regenerateMap), so a pure-grass tile needs grass at all four, and grass must never touch
-// water; every grass area here is therefore stamped inside a one-tile sand ring. Corridors are
-// sand throughout: walkable, but no crop can ever grow across one, so no corridor can silt shut
-// during a game.
+// water; every grass area here is therefore stamped inside a one-tile sand ring.
 namespace {
 
 enum Direction { East, South, West, North };
 
-// Any tile with a non-water corner is walkable, including a wall's sandy flanks. If those flanks
-// came near a room or corridor, a unit could step onto them and walk along the wall around the
-// maze. Keeping half a cell's pitch at least this much larger than half a room leaves two
-// all-water tiles between the room's shore and the wall's.
-constexpr int kWallClearance = 7;
+// Walking out from a cell's centre towards a wall: the passage's grass, then two walkable tiles of
+// its sand ring, then channel-width all-water tiles, then the wall - two walkable tiles of flank and
+// the stone spine on the boundary itself. Any tile with a non-water corner is walkable, so without
+// that water a unit could step onto a wall's flank and follow the wall around the maze; a single
+// water tile is enough, since a unit can't step across a tile it can't stand on. The ring, flank
+// and spine account for this many tiles of every half-cell.
+constexpr int kWallFootprint = 5;
 
-// Home rooms are guaranteed placements, so their wheat and wood stay 1:1 regardless of the
-// wheat/wood controls, which only shape the bonus rooms at the maze's other dead ends.
-constexpr int kHomeFarmland = 40; // of 64
+// Half the width of the narrowest passage allowed: a 9-wide chamber still seats the 4x4 swarm
+// with room for its workers.
+constexpr int kMinimumPassageHalf = 4;
+
+// Every home starts identical: fixed tile counts rather than densities, so the start doesn't
+// depend on the resource controls, with wheat and wood 1:1 as for any guaranteed placement.
+constexpr int kHomeFarmland = 32;
+constexpr int kHomeStone = 12;
+
+// Deposits hug each passage's shores, at most this many tiles in. That leaves a clear lane down
+// the middle of every passage however the maze turns, so no deposit can seal a route.
+constexpr int kShoreBand = 3;
 
 // The cell lattice. Boundaries are integer tile coordinates chosen so the cells tile the map
 // exactly, which lets the maze wrap across the torus seam like any other boundary; when
@@ -50,6 +60,11 @@ struct MazeGrid {
   int centerX(int cell) const { return (xs[column(cell)] + xs[column(cell) + 1]) / 2; }
   int centerY(int cell) const { return (ys[row(cell)] + ys[row(cell) + 1]) / 2; }
   int minimumPitch() const { return std::min(width / columns, height / rows); }
+  int cellAt(int x, int y) const {
+    const int c = int(std::upper_bound(xs.begin(), xs.end(), x) - xs.begin()) - 1;
+    const int r = int(std::upper_bound(ys.begin(), ys.end(), y) - ys.begin()) - 1;
+    return std::min(r, rows - 1) * columns + std::min(c, columns - 1);
+  }
 
   int neighbour(int cell, int direction) const {
     const int c = column(cell), r = row(cell);
@@ -88,14 +103,20 @@ MazeGrid mazeGrid(int width, int height, int cellSize) {
   return g;
 }
 
+// Passages are as wide as the narrowest cell allows once the wall and its channels are taken
+// out, and odd so they centre on a tile.
+int passageHalf(const MazeGrid &g, int channelWidth) {
+  return g.minimumPitch() / 2 - kWallFootprint - channelWidth;
+}
+
 std::string validate(const GenerationRequest &r) {
   const MazeOptions o(r);
   const MazeGrid g = mazeGrid(1 << r.wDec, 1 << r.hDec, o.cellSize);
   if (g.columns < 3 || g.rows < 3)
     return "The maze needs at least three cells across and down; use a bigger map or smaller cells.";
-  if (g.minimumPitch() / 2 - o.roomSize / 2 < kWallClearance)
-    return "Rooms this large leave no room for water channels between cells; use smaller rooms "
-           "or bigger cells.";
+  if (passageHalf(g, o.channelWidth) < kMinimumPassageHalf)
+    return "Channels this wide leave too little grass in each cell; use narrower channels or "
+           "bigger cells.";
   if (r.nbTeams > (g.columns / 2) * (g.rows / 2))
     return "The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller "
            "cells.";
@@ -105,7 +126,7 @@ std::string validate(const GenerationRequest &r) {
 // Home candidates sit on every other column and row, so no two homes touch even diagonally.
 // That spacing is what keeps the remaining cells connected (every home is ringed by eight
 // non-home cells) and gives every home a non-home neighbour on all four sides to open its one
-// corridor into. Among those candidates, homes are spread by farthest-point selection on the
+// passage into. Among those candidates, homes are spread by farthest-point selection on the
 // torus.
 std::vector<int> chooseHomes(const MazeGrid &g, GenerationContext &context, int teams) {
   const int offsetX = context.bounded("maze", g.columns);
@@ -141,7 +162,7 @@ std::vector<int> chooseHomes(const MazeGrid &g, GenerationContext &context, int 
 }
 
 // Recursive backtracker (iterative, explicit stack) over the non-home cells: long winding
-// corridors with comparatively few, deep dead ends - the classic hand-drawn maze texture.
+// passages with comparatively few, deep dead ends - the classic hand-drawn maze texture.
 bool carveSpanningTree(const MazeGrid &g, GenerationContext &context,
                        const std::vector<unsigned char> &isHome,
                        std::vector<unsigned char> &open) {
@@ -201,113 +222,178 @@ void fillUndermap(Map &map, int x0, int y0, int w, int h, TerrainType t) {
       map.setUMTerrain(map.normalizeX(x0 + dx), map.normalizeY(y0 + dy), t);
 }
 
-// A corridor of walkable width 2m+1 centred on the tile row (or column) through both cell
-// centres needs sand on the 2m undermap lines from centre-m+1 to centre+m. It is extended past
-// each centre by the same amount so corridors meeting at a cell form a square junction.
-void carveCorridor(Map &map, const MazeGrid &g, int cell, int direction, int corridorWidth) {
-  const int x = g.centerX(cell), y = g.centerY(cell), m = corridorWidth / 2;
-  const int next = g.neighbour(cell, direction);
-  if (direction == East) {
-    int farX = g.centerX(next);
-    if (farX < x)
-      farX += g.width;
-    fillUndermap(map, x - m + 1, y - m + 1, farX - x + 2 * m, 2 * m, SAND);
-  } else {
-    int farY = g.centerY(next);
-    if (farY < y)
-      farY += g.height;
-    fillUndermap(map, x - m + 1, y - m + 1, 2 * m, farY - y + 2 * m, SAND);
-  }
+// An inclusive rectangle of pure-grass tiles. Stamping one takes undermap grass on
+// [x0, x1 + 1] x [y0, y1 + 1] inside undermap sand one line further out.
+struct TileRect {
+  int x0, y0, x1, y1;
+};
+
+void stampRing(Map &map, const TileRect &r) {
+  fillUndermap(map, r.x0 - 1, r.y0 - 1, r.x1 - r.x0 + 4, r.y1 - r.y0 + 4, SAND);
+}
+void stampCore(Map &map, const TileRect &r) {
+  fillUndermap(map, r.x0, r.y0, r.x1 - r.x0 + 2, r.y1 - r.y0 + 2, GRASS);
 }
 
 // One wall per closed boundary: a stone spine covering every tile of the boundary line from
 // corner to corner inclusive, so perpendicular walls share their corner tile and nothing can slip
-// between them. The spine sits on a two-wide grass core (so each spine tile is pure grass, which
-// STONE requires) inside a sand ring.
-struct Wall {
-  int x, y, dx, dy, length;
-};
-
-Wall wallFor(const MazeGrid &g, int cell, int direction) {
+// between them. As a tile rectangle one tile wide, its pure-grass core is exactly the spine,
+// which is what lets STONE be placed on every tile of it.
+TileRect wallFor(const MazeGrid &g, int cell, int direction) {
   const int c = g.column(cell), r = g.row(cell);
   if (direction == East)
-    return {g.xs[c + 1], g.ys[r], 0, 1, g.ys[r + 1] - g.ys[r]};
-  return {g.xs[c], g.ys[r + 1], 1, 0, g.xs[c + 1] - g.xs[c]};
+    return {g.xs[c + 1], g.ys[r], g.xs[c + 1], g.ys[r + 1]};
+  return {g.xs[c], g.ys[r + 1], g.xs[c + 1], g.ys[r + 1]};
 }
 
-struct RoomTile {
-  int x, y, u, v; // u: towards the room's exit; v: to the exit's right
+// Distance in 8-neighbour steps from every tile to the nearest tile that isn't pure grass.
+std::vector<int> grassDepth(const Map &map) {
+  const int w = map.getW(), h = map.getH();
+  std::vector<int> depth(size_t(w) * h, -1);
+  std::vector<int> queue;
+  queue.reserve(size_t(w) * h);
+  for (int y = 0; y < h; ++y)
+    for (int x = 0; x < w; ++x)
+      if (!map.isGrass(x, y)) {
+        depth[size_t(y) * w + x] = 0;
+        queue.push_back(y * w + x);
+      }
+  for (size_t head = 0; head < queue.size(); ++head) {
+    const int x = queue[head] % w, y = queue[head] / w;
+    for (int dy = -1; dy <= 1; ++dy)
+      for (int dx = -1; dx <= 1; ++dx) {
+        const size_t n = size_t(map.normalizeY(y + dy)) * w + map.normalizeX(x + dx);
+        if (depth[n] < 0) {
+          depth[n] = depth[size_t(queue[head])] + 1;
+          queue.push_back(int(n));
+        }
+      }
+  }
+  return depth;
+}
+
+struct HomeTile {
+  int x, y, u, v; // u: towards the home's exit; v: to the exit's right
 };
 
-// The free pure-grass tiles of the room at `cell`, in coordinates relative to its single exit.
-// Rooms and corridors are centred on a tile and have odd sizes, so the layout is identical
-// whichever way the exit faces.
-std::vector<RoomTile> roomTiles(const Map &map, const MazeGrid &g, int cell, int exit,
-                                int roomSize) {
-  static const int forward[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-  const int fx = forward[exit][0], fy = forward[exit][1];
-  const int rx = -fy, ry = fx;
-  const int cx = g.centerX(cell), cy = g.centerY(cell), half = roomSize / 2;
-  std::vector<RoomTile> tiles;
-  for (int oy = -half; oy <= half; ++oy)
-    for (int ox = -half; ox <= half; ++ox) {
-      const int x = map.normalizeX(cx + ox), y = map.normalizeY(cy + oy);
-      if (map.isGrass(x, y) && map.getBuilding(x, y) == NOGBID &&
-          map.getGroundUnit(x, y) == NOGUID)
-        tiles.push_back({x, y, ox * fx + oy * fy, ox * rx + oy * ry});
-    }
-  return tiles;
-}
-
-// Fills `count` tiles of a region, outermost first, so a deposit grows inward from the room's
-// walls and the tiles nearest the lane stay free to harvest from.
-void fillRegion(Map &map, std::vector<RoomTile> region, int count, int resourceType,
-                bool acrossLane) {
-  std::stable_sort(region.begin(), region.end(), [&](const RoomTile &a, const RoomTile &b) {
-    if (acrossLane)
-      return std::abs(a.v) != std::abs(b.v) ? std::abs(a.v) > std::abs(b.v) : a.u < b.u;
-    return a.u != b.u ? a.u < b.u : std::abs(a.v) < std::abs(b.v);
-  });
+// Places the first `count` tiles of a region in the order `before` ranks them.
+template <typename Order>
+void fillInOrder(Map &map, std::vector<HomeTile> region, int count, int resourceType,
+                 Order before) {
+  std::stable_sort(region.begin(), region.end(), before);
   for (int i = 0; i < count && i < int(region.size()); ++i)
     map.setResource(region[i].x, region[i].y, resourceType, 1);
 }
 
-// Room layout, seen from inside looking out through the exit: a lane one tile wider on each side
-// than the corridor runs from the back wall to the exit and never gets resources, so the exit can
-// never be sealed; wheat lines the left wall, wood the right, stone the back wall behind the
-// lane. A home also keeps a clear square around its swarm so every worker can walk out.
-void furnishRoom(Map &map, GenerationContext &context, const MazeGrid &g, int cell, int exit,
-                 const MazeOptions &o, bool home, bool fruit) {
-  const int half = o.roomSize / 2, lane = o.corridorWidth / 2 + 1;
-  std::vector<RoomTile> left, right, back, fruitRow;
-  for (const RoomTile &t : roomTiles(map, g, cell, exit, o.roomSize)) {
-    if (home && std::abs(t.u) <= 4 && std::abs(t.v) <= 4)
-      continue;
-    if (t.v < -lane)
-      left.push_back(t);
-    else if (t.v > lane)
-      right.push_back(t);
-    else if (t.u <= -half + 1)
-      back.push_back(t);
-    else if (fruit && t.u == -half + 2 && std::abs(t.v) <= 1)
-      fruitRow.push_back(t);
-  }
-  if (home) {
-    const int farmland = int(std::min(left.size(), right.size())) * kHomeFarmland / 64;
-    fillRegion(map, left, farmland, CORN, true);
-    fillRegion(map, right, farmland, WOOD, true);
-  } else {
-    fillRegion(map, left, int(left.size()) * o.corn / 64, CORN, true);
-    fillRegion(map, right, int(right.size()) * o.wood / 64, WOOD, true);
-  }
-  fillRegion(map, back, int(back.size()) * o.stone / 64, STONE, false);
-  if (!fruitRow.empty())
-    fillRegion(map, fruitRow, int(fruitRow.size()), CHERRY + context.bounded("resources", 3),
-               false);
+// A home's own cell, seen from inside looking out through its exit: wheat banks the left shore
+// and wood the right, both growing forward from the dead end's back wall; stone is a compact
+// deposit at the back wall's centre (a line along it would read as a second wall). The middle of
+// the passage and a square around the swarm stay clear, so workers always walk straight out.
+void furnishHome(Map &map, const MazeGrid &g, int cell, int exit, int half) {
+  static const int forward[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+  const int fx = forward[exit][0], fy = forward[exit][1], rx = -fy, ry = fx;
+  const int cx = g.centerX(cell), cy = g.centerY(cell);
+  const int lane = std::max(1, half - kShoreBand);
+  std::vector<HomeTile> left, right, back;
+  const int c = g.column(cell), r = g.row(cell);
+  for (int y = g.ys[r]; y < g.ys[r + 1]; ++y)
+    for (int x = g.xs[c]; x < g.xs[c + 1]; ++x) {
+      if (!map.isGrass(x, y) || map.isResource(x, y) || map.getBuilding(x, y) != NOGBID ||
+          map.getGroundUnit(x, y) != NOGUID)
+        continue;
+      const int ox = x - cx, oy = y - cy;
+      const int u = ox * fx + oy * fy, v = ox * rx + oy * ry;
+      if (std::abs(u) <= 4 && std::abs(v) <= 4)
+        continue;
+      if (v < -lane)
+        left.push_back({x, y, u, v});
+      else if (v > lane)
+        right.push_back({x, y, u, v});
+      else if (u <= -half + 2)
+        back.push_back({x, y, u, v});
+    }
+  const auto shoreFromBack = [](const HomeTile &a, const HomeTile &b) {
+    return a.u != b.u ? a.u < b.u : std::abs(a.v) > std::abs(b.v);
+  };
+  const auto nearBackCentre = [half](const HomeTile &a, const HomeTile &b) {
+    const int da = std::max(a.u + half, std::abs(a.v)), db = std::max(b.u + half, std::abs(b.v));
+    if (da != db)
+      return da < db;
+    if (std::abs(a.v) != std::abs(b.v))
+      return std::abs(a.v) < std::abs(b.v);
+    return a.u != b.u ? a.u < b.u : a.v < b.v;
+  };
+  fillInOrder(map, left, kHomeFarmland, CORN, shoreFromBack);
+  fillInOrder(map, right, kHomeFarmland, WOOD, shoreFromBack);
+  fillInOrder(map, back, kHomeStone, STONE, nearBackCentre);
 }
 
-// Algae belongs in the channels, not the corridors: clumps are seeded only in open water at
-// least two tiles from any land, where they read as part of the moat and are still reachable
+// Deposits scattered along the shores of every passage outside the homes, as compact clumps
+// grown over free shore tiles. Only tiles within kShoreBand of a shore are eligible, which is
+// what keeps each passage's middle clear. Densities are per 256 shore tiles.
+void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
+                        const std::vector<unsigned char> &isHome, int half,
+                        const MazeOptions &o) {
+  const int w = map.getW(), h = map.getH();
+  const std::vector<int> depth = grassDepth(map);
+  const int band = std::min(kShoreBand, half - 1);
+  std::vector<unsigned char> free(size_t(w) * h, 0);
+  std::vector<int> pool;
+  for (int y = 0; y < h; ++y)
+    for (int x = 0; x < w; ++x) {
+      const size_t i = size_t(y) * w + x;
+      if (depth[i] >= 1 && depth[i] <= band && !isHome[g.cellAt(x, y)] &&
+          !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID &&
+          map.getGroundUnit(x, y) == NOGUID) {
+        free[i] = 1;
+        pool.push_back(int(i));
+      }
+    }
+  if (pool.empty())
+    return;
+
+  auto clump = [&](int resourceType, int size) {
+    int seed = -1;
+    for (int attempt = 0; attempt < 32 && seed < 0; ++attempt) {
+      const int candidate = pool[context.bounded("resources", pool.size())];
+      if (free[candidate])
+        seed = candidate;
+    }
+    if (seed < 0)
+      return 0;
+    static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    std::vector<int> frontier{seed};
+    free[seed] = 0;
+    int placed = 0;
+    for (size_t head = 0; head < frontier.size() && placed < size; ++head, ++placed) {
+      const int x = frontier[head] % w, y = frontier[head] / w;
+      map.setResource(x, y, resourceType, 1);
+      for (const auto &s : steps) {
+        const size_t n = size_t(map.normalizeY(y + s[1])) * w + map.normalizeX(x + s[0]);
+        if (free[n]) {
+          free[n] = 0;
+          frontier.push_back(int(n));
+        }
+      }
+    }
+    for (size_t k = placed; k < frontier.size(); ++k)
+      free[frontier[k]] = 1;
+    return placed;
+  };
+
+  const int shore = int(pool.size());
+  for (const auto &layer : {std::pair<int, int>{CORN, o.corn}, std::pair<int, int>{WOOD, o.wood},
+                            std::pair<int, int>{STONE, o.stone}}) {
+    int remaining = shore * layer.second / 256;
+    for (int attempt = 0; remaining > 0 && attempt < shore; ++attempt)
+      remaining -=
+          clump(layer.first, std::min(remaining, 4 + int(context.bounded("resources", 9))));
+  }
+  for (int i = 0; i < o.fruit; ++i)
+    clump(CHERRY + context.bounded("resources", 3), 3);
+}
+
+// Algae is seeded in open water at least one tile from any land, where it's still reachable
 // from the nearest shore.
 void seedAlgae(Map &map, GenerationContext &context, int algae) {
   const int w = map.getW(), h = map.getH();
@@ -315,8 +401,8 @@ void seedAlgae(Map &map, GenerationContext &context, int algae) {
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x) {
       bool clear = true;
-      for (int dy = -2; dy <= 2 && clear; ++dy)
-        for (int dx = -2; dx <= 2 && clear; ++dx)
+      for (int dy = -1; dy <= 1 && clear; ++dy)
+        for (int dx = -1; dx <= 1 && clear; ++dx)
           clear = map.isWater(map.normalizeX(x + dx), map.normalizeY(y + dy));
       if (clear)
         openWater.emplace_back(x, y);
@@ -324,8 +410,7 @@ void seedAlgae(Map &map, GenerationContext &context, int algae) {
   if (openWater.empty())
     return;
   int remaining = int(openWater.size()) * algae / 1600;
-  for (int attempt = 0; remaining > 0 && attempt < 4 * int(openWater.size()) / 25 + 16;
-       ++attempt)
+  for (int attempt = 0; remaining > 0 && attempt < int(openWater.size()) / 4 + 16; ++attempt)
     remaining -= placeResourceClump(map, context,
                                     openWater[context.bounded("resources", openWater.size())],
                                     ALGA, 1);
@@ -337,11 +422,13 @@ bool generate(Game &game, GenerationContext &context) {
   Map &map = game.map;
   const MazeGrid g = mazeGrid(map.getW(), map.getH(), o.cellSize);
   const int teams = context.request.nbTeams;
+  const int half = passageHalf(g, o.channelWidth);
   map.makeHomogenMap(WATER);
   for (int i = 0; i < teams; ++i)
     game.addTeam();
-  if (g.columns < 3 || g.rows < 3 || teams > (g.columns / 2) * (g.rows / 2)) {
-    context.detail = "the maze grid has too few cul-de-sacs for every colony";
+  if (g.columns < 3 || g.rows < 3 || half < kMinimumPassageHalf ||
+      teams > (g.columns / 2) * (g.rows / 2)) {
+    context.detail = "the maze grid has too few cells or cul-de-sacs for these settings";
     return false;
   }
 
@@ -361,81 +448,67 @@ bool generate(Game &game, GenerationContext &context) {
     exitOf[home] = d;
   }
   addLoops(g, context, isHome, o.loopiness, open);
-  std::vector<int> bonusRooms;
+
+  // Every cell is a chamber as wide as a passage, and every open boundary a band of that width
+  // joining two chambers, so a run of passage reads as one continuous strip of grass.
+  context.stage = "maze terrain";
+  std::vector<TileRect> passages, walls;
   for (int cell = 0; cell < g.cells(); ++cell) {
-    if (isHome[cell])
-      continue;
-    int degree = 0, exit = -1;
-    for (int d = 0; d < 4; ++d)
-      if (open[g.edgeId(cell, d)]) {
-        ++degree;
-        exit = d;
+    const int cx = g.centerX(cell), cy = g.centerY(cell);
+    passages.push_back({cx - half, cy - half, cx + half, cy + half});
+    for (int d : {East, South}) {
+      if (!open[g.edgeId(cell, d)]) {
+        walls.push_back(wallFor(g, cell, d));
+        continue;
       }
-    if (degree == 1) {
-      bonusRooms.push_back(cell);
-      exitOf[cell] = exit;
+      const int next = g.neighbour(cell, d);
+      if (d == East) {
+        const int farX = g.centerX(next) < cx ? g.centerX(next) + g.width : g.centerX(next);
+        passages.push_back({cx - half, cy - half, farX + half, cy + half});
+      } else {
+        const int farY = g.centerY(next) < cy ? g.centerY(next) + g.height : g.centerY(next);
+        passages.push_back({cx - half, cy - half, cx + half, farY + half});
+      }
     }
   }
-
   // All sand before any grass, so a grass core is never overwritten by a neighbouring ring.
-  context.stage = "maze terrain";
-  const int half = o.roomSize / 2;
-  std::vector<Wall> walls;
-  for (int cell = 0; cell < g.cells(); ++cell)
-    for (int d : {East, South}) {
-      if (open[g.edgeId(cell, d)])
-        carveCorridor(map, g, cell, d, o.corridorWidth);
-      else
-        walls.push_back(wallFor(g, cell, d));
-    }
-  for (int cell = 0; cell < g.cells(); ++cell)
-    if (exitOf[cell] >= 0)
-      fillUndermap(map, g.centerX(cell) - half - 1, g.centerY(cell) - half - 1, 2 * half + 4,
-                   2 * half + 4, SAND);
-  for (const Wall &w : walls)
-    fillUndermap(map, w.x - 1, w.y - 1, w.dx ? w.length + 4 : 4, w.dy ? w.length + 4 : 4, SAND);
-  for (int cell = 0; cell < g.cells(); ++cell)
-    if (exitOf[cell] >= 0)
-      fillUndermap(map, g.centerX(cell) - half, g.centerY(cell) - half, 2 * half + 2,
-                   2 * half + 2, GRASS);
-  for (const Wall &w : walls)
-    fillUndermap(map, w.x, w.y, w.dx ? w.length + 2 : 2, w.dy ? w.length + 2 : 2, GRASS);
+  for (const TileRect &r : passages)
+    stampRing(map, r);
+  for (const TileRect &r : walls)
+    stampRing(map, r);
+  for (const TileRect &r : passages)
+    stampCore(map, r);
+  for (const TileRect &r : walls)
+    stampCore(map, r);
   map.rebuildTerrain();
-  for (const Wall &w : walls)
-    for (int i = 0; i <= w.length; ++i) {
-      const int x = map.normalizeX(w.x + i * w.dx), y = map.normalizeY(w.y + i * w.dy);
-      if (map.getTerrainType(x, y) != GRASS) {
-        context.detail = "a wall spine tile is not solid grass";
-        return false;
+  for (const TileRect &r : walls)
+    for (int y = r.y0; y <= r.y1; ++y)
+      for (int x = r.x0; x <= r.x1; ++x) {
+        const int nx = map.normalizeX(x), ny = map.normalizeY(y);
+        if (map.getTerrainType(nx, ny) != GRASS) {
+          context.detail = "a wall spine tile is not solid grass";
+          return false;
+        }
+        map.setResource(nx, ny, STONE, 1);
       }
-      map.setResource(x, y, STONE, 1);
-    }
 
   for (int team = 0; team < teams; ++team) {
-    const int cx = g.centerX(homes[team]), cy = g.centerY(homes[team]);
+    const int cell = homes[team], c = g.column(cell), r = g.row(cell);
     std::vector<unsigned char> home(size_t(map.getW()) * map.getH(), 0);
-    for (int oy = -half - 2; oy <= half + 2; ++oy)
-      for (int ox = -half - 2; ox <= half + 2; ++ox) {
-        const int x = map.normalizeX(cx + ox), y = map.normalizeY(cy + oy);
+    for (int y = g.ys[r]; y < g.ys[r + 1]; ++y)
+      for (int x = g.xs[c]; x < g.xs[c + 1]; ++x)
         if (!map.isWater(x, y))
           home[size_t(y) * map.getW() + x] = 1;
-      }
     // placeSettlement measures from the footprint's top-left tile; this centres the 4x4 swarm.
-    if (!placeSettlement(game, context, team, home, {cx - 2, cy - 2}, "starts"))
+    if (!placeSettlement(game, context, team, home, {g.centerX(cell) - 2, g.centerY(cell) - 2},
+                         "starts"))
       return false;
   }
 
   context.stage = "maze resources";
   for (int home : homes)
-    furnishRoom(map, context, g, home, exitOf[home], o, true, false);
-  std::vector<unsigned char> hasFruit(g.cells(), 0);
-  for (int i = 0; i < o.fruit && i < int(bonusRooms.size()); ++i) {
-    const size_t pick = i + context.bounded("resources", bonusRooms.size() - i);
-    std::swap(bonusRooms[i], bonusRooms[pick]);
-    hasFruit[bonusRooms[i]] = 1;
-  }
-  for (int cell : bonusRooms)
-    furnishRoom(map, context, g, cell, exitOf[cell], o, false, hasFruit[cell]);
+    furnishHome(map, g, home, exitOf[home], half);
+  scatterThroughMaze(map, context, g, isHome, half, o);
   seedAlgae(map, context, o.algae);
   return true;
 }
@@ -485,32 +558,29 @@ std::string validateWorld(const Game &game, const GenerationContext &context) {
 } // namespace
 
 MazeOptions::MazeOptions(const GenerationRequest &r)
-    : cellSize(r.option("cell-size")), roomSize(r.option("room-size")),
-      corridorWidth(r.option("corridor-width")), loopiness(r.option("loopiness")),
-      corn(r.option("wheat")), wood(r.option("wood")), stone(r.option("stone")),
-      algae(r.option("algae")), fruit(r.option("fruit")) {}
+    : cellSize(r.option("cell-size")), channelWidth(r.option("channel-width")),
+      loopiness(r.option("loopiness")), corn(r.option("wheat")), wood(r.option("wood")),
+      stone(r.option("stone")), algae(r.option("algae")), fruit(r.option("fruit")) {}
 
 GeneratorDefinition mazeDefinition() {
   return {"maze",
           11,
           "Maze",
-          7,
+          8,
           false,
           {{"cell-size", "Cell size", 24, 48, 1, 32, ControlGroup::Layout, false, false,
             {24, 32, 40, 48}},
-           // Room and corridor widths are walkable tiles and always odd, so both centre on a tile.
-           {"room-size", "Room size", 9, 17, 2, 15, ControlGroup::Layout},
-           {"corridor-width", "Corridor width", 3, 7, 1, 5, ControlGroup::Layout, false, false,
-            {3, 5, 7}},
+           // Open water on each side of a wall's stone line; passages widen to fill the rest.
+           {"channel-width", "Channel width", 1, 6, 1, 1, ControlGroup::Layout},
            {"loopiness", "Loopiness", 0, 50, 1, 10, ControlGroup::Layout, false, false,
             {0, 5, 10, 20, 35, 50}},
-           // Wheat and wood shape only the bonus rooms (homes are fixed at 1:1); fruit is a
-           // count of fruit patches, one per bonus room at most.
+           // Densities for the deposits scattered along the passages (per 256 shore tiles);
+           // homes always get the same fixed amounts. Fruit is a count of patches.
            {"wheat", "Wheat", 0, 64, 1, 48, ControlGroup::Resources},
            {"wood", "Wood", 0, 64, 1, 24, ControlGroup::Resources},
-           {"stone", "Stone", 0, 64, 1, 32, ControlGroup::Resources},
+           {"stone", "Stone", 0, 64, 1, 16, ControlGroup::Resources},
            {"algae", "Algae", 0, 64, 1, 24, ControlGroup::Resources},
-           {"fruit", "Fruit", 0, 16, 1, 4, ControlGroup::Resources}},
+           {"fruit", "Fruit", 0, 32, 1, 8, ControlGroup::Resources}},
           generate,
           true,
           validate,

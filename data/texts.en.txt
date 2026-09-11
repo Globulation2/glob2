@@ -1778,10 +1778,6 @@ Maze
 Fjord continent
 [Cell size]
 Cell size
-[Room size]
-Room size
-[Corridor width]
-Corridor width
 [Loopiness]
 Loopiness
 [Home island size]

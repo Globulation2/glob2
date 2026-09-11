@@ -93,12 +93,13 @@ fixed resource pass:
   up whichever resource is still out of range. A colony genuinely isolated on its own small spot
   (nothing reachable even through terrain alone) is left untouched, since there's nothing on the
   other side of a wall that isn't there. RuggedArchipelago, ShatteredCoast and Fjord call this.
-  Maze doesn't need it: its resources are placed only inside rooms, behind a lane that keeps
-  every exit clear, and its `validateWorld` confirms every colony can still walk to every other.
+  Maze doesn't need it: its deposits are placed only along passage shores, leaving a clear lane
+  down every passage, and its `validateWorld` confirms every colony can still walk to every
+  other.
 
 Every guaranteed placement (starter kits, bank guarantees, per-team clumps) keeps wheat and wood
 at a 1:1 ratio, since those exist for reachability fairness between colonies. Ambient/bonus
-layers (`scatterResources`, Fjord's bank-scatter roll, Maze's bonus-room defaults) instead use 2:1 corn:wood, which is purely
+layers (`scatterResources`, Fjord's bank-scatter roll, Maze's scattered deposits) instead use 2:1 corn:wood, which is purely
 a feel decision independent of the fairness guarantee.
 
 ### Fertility
@@ -178,8 +179,9 @@ The richest generator, and the one most of this framework's resource work was pr
 
 ## Maze
 
-A maze in the pen-and-paper sense: narrow corridors between thick walls, with every colony in
-its own cul-de-sac.
+A maze in the pen-and-paper sense, built to be lived in: grass passages that colonies farm and
+build out into, separated by thin stone-and-water walls, with every colony in its own
+cul-de-sac.
 
 - **Grid.** The map is tiled into cells of about `cell-size` tiles on the map's own torus.
   Boundaries are chosen so the cells tile the map exactly (neighbouring cells differ in pitch by
@@ -191,24 +193,27 @@ its own cul-de-sac.
   non-home cells, and each home is attached by exactly one corridor, so every colony starts in a
   genuine dead end. `loopiness` knocks through extra walls between non-home cells only, so homes
   stay cul-de-sacs.
-- **Walls.** Every closed boundary is a thick water channel with a stone spine covering the whole
-  boundary line from corner to corner. Perpendicular walls share their corner tile, so a boundary
-  can only be crossed — on foot or swimming — where it's open. STONE only places on a pure-grass
-  tile, which needs grass at all four undermap corners (`Map::regenerateMap`), so each spine sits
-  on a two-wide grass core inside a sand ring. Terrain is stamped directly rather than through
-  `Map::controlSand()`, whose in-place raster pass shifts shorelines unevenly.
-- **No walking along a wall.** A wall's sandy flanks are walkable land. `validateRequest`
-  requires `floor(pitch / 2) - roomSize / 2 >= 7`, which leaves at least two all-water tiles
-  between any room or corridor shore and any wall flank.
-- **Corridors are sand**: walkable, but no crop can grow across one mid-game and nothing can be
-  built on one, so buildings stay in rooms.
-- **Rooms and resources.** Rooms exist only at dead ends: colony homes, plus bonus rooms at every
-  other dead end. Room and corridor widths are odd and centred on a tile, so a room's layout is
-  identical whichever way its exit faces. Each room keeps a lane from its back wall to its exit
-  free of resources; wheat lines the left wall, wood the right, stone the back. Homes also keep a
-  clear square around the swarm and get fixed 1:1 wheat and wood. Bonus rooms follow the
-  wheat/wood/stone controls, and `fruit` is a count of fruit patches placed in bonus rooms. Algae
-  is seeded in open channel water at least two tiles from land.
+- **Passages.** Every cell is a grass chamber and every open boundary a band of the same width
+  joining two chambers, so a run of passage reads as one continuous strip of buildable,
+  farmable grass. Passage width isn't a control of its own: passages fill whatever the narrowest
+  cell leaves once its walls and channels are taken out, and stay odd so they centre on a tile.
+- **Walls.** Every closed boundary has a stone spine covering the whole boundary line from corner
+  to corner, with `channel-width` all-water tiles on either side (default 1). Perpendicular walls
+  share their corner tile, so a boundary can only be crossed — on foot or swimming — where it's
+  open. STONE only places on a pure-grass tile, which needs grass at all four undermap corners
+  (`Map::regenerateMap`), so each spine sits on a two-wide grass core inside a sand ring. Terrain
+  is stamped directly rather than through `Map::controlSand()`, whose in-place raster pass shifts
+  shorelines unevenly.
+- **No walking along a wall.** A wall's sandy flanks are walkable land, so they are always kept at
+  least one all-water tile from every passage's shore — a unit can't step across a tile it can't
+  stand on. From a cell's centre, a passage's grass therefore reaches
+  `floor(pitch / 2) - 5 - channelWidth` tiles; `validateRequest` rejects settings that would
+  leave a passage narrower than 9 tiles.
+- **Resources.** Every home starts identical: fixed 1:1 wheat and wood banking the dead end's side
+  shores, a compact stone deposit at its back wall, and a clear square around the swarm. Outside
+  the homes, clumps of wheat, wood and stone (densities per 256 shore tiles) and `fruit` patches
+  are scattered along every passage's shores, never more than three tiles in, so each passage
+  keeps a clear lane down its middle however the maze turns. Algae is seeded in open water.
 - **Checked, not assumed.** `validateWorld` floods walkable tiles (water, buildings and every
   resource, including wall spines, block it) from colony 0's workers, and fails the candidate if
   any colony isn't reached.

@@ -58,9 +58,8 @@ Sint32 D::*legacyField(int method, const std::string &id)
 	if (id == "island-size")
 		return method == D::eISLES ? &D::grassRatio : &D::oldIslandSize;
 	// "repeat" and every option introduced by generators added after the
-	// fixed-size legacy descriptor was frozen (loopiness, home-radius,
-	// cell-size, room-size, corridor-width, islet-size, bridge-count,
-	// commons-size, home-island-size, moat-width, continent-size,
+	// fixed-size legacy descriptor was frozen (loopiness, cell-size,
+	// bridge-count, commons-size, home-island-size, moat-width, continent-size,
 	// coast-roughness, resource-islands, fjord-width, ...) have no slot in
 	// it. Callers fall back to logRepeatAreaTimes for "repeat" specifically
 	// and otherwise treat a null field as "not representable", rather than
