@@ -37,6 +37,13 @@ public:
 		NICOWAR=5,
 		///Reference to AICortex (direct AIImplementation binding)
 		CORTEX=6,
+		///Reference to AICabino, a resurrected port of the original (2005-2007)
+		///Nicowar: a set of independent specialist modules (defense, attack,
+		///construction, upgrades, unit/swarm management) that each act on
+		///their own but cooperate toward one game plan, direct AIImplementation
+		///binding, no AIEcho involved.
+		///(7 is intentionally skipped: reserved by the in-progress Maxima AI branch.)
+		CABINO=8,
 
 		SIZE
 	};

@@ -74,6 +74,10 @@ Econo
 Description d'AICastor
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino gère la défense, l'attaque et la construction comme des départements indépendants qui convergent vers un seul plan : croître vite et envoyer d'énormes armées contre ses adversaires. Difficulté élevée.
+[AICabino]
+Cabino
 [Alga]
 Algue
 [algae]
@@ -1270,6 +1274,10 @@ Bases énormes et conversion au lieu d'attaques.
 Stratégie : attaque tôt et avec force, avant que les adversaires aient fini de se préparer.\n\nPoints forts : exploite une expansion sans défense et une préparation militaire lente.\n\nTactiques à essayer : Survivez à la première attaque tout en maintenant votre économie, puis contre-attaquez.
 [AIWarrush-Summary]
 Des attaques rapides qui testent vos premières défenses.
+[AICabino-Profile]
+Stratégie principale : un cabinet de départements spécialisés indépendants (défense, attaque, construction, améliorations, gestion des unités) qui agissent chacun de leur propre initiative mais convergent vers un seul plan : croître vite puis envoyer d'énormes armées contre ses adversaires.\n\nPoints forts : une expansion rapide soutient une pression militaire agressive ; les départements indépendants réagissent vite aux menaces locales sans attendre un plan central.\n\nContre-jeu à essayer : contestez son expansion tôt et utilisez le terrain pour limiter le nombre de troupes qu'il peut engager à la fois.
+[AICabino-Summary]
+Des départements indépendants qui coopèrent pour une croissance rapide et des armées énormes.
 [Algae]
 Algues
 [Alliances]

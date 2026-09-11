@@ -74,6 +74,10 @@ Econo
 Warrushek azkar eta gogor erasotzen du, eta sarritan mugara eramaten du defendatzailea. Zailtasun ertaina.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabinok defentsa, erasoa eta eraikuntza sail independente gisa kudeatzen ditu, plan bakar baterantz elkarlanean: azkar hazten da eta armada erraldoiak bidaltzen ditu aurkarien aurka. Zailtasun handia.
+[AICabino]
+Cabino
 [Alga]
 Algak
 [algae]
@@ -1270,6 +1274,10 @@ Oinarri erraldoiak eta erasoen ordez bihurketa.
 Estrategia: goiz eta gogor erasotzen du, aurkariek prestaketak amaitu aurretik.\n\nIndarguneak: defentsarik gabeko hedapena eta prestaketa militar motela aprobetxatzen ditu.\n\nProbatzeko taktikak: eutsi lehen erasoari ekonomia mantenduz, eta gero kontraerasoa egin.
 [AIWarrush-Summary]
 Zure hasierako defentsak probatzen dituzten eraso azkarrak.
+[AICabino-Profile]
+Oinarrizko estrategia: sail espezialista independenteen kabinete bat (defentsa, erasoa, eraikuntza, hobekuntzak, unitateen kudeaketa), bakoitza bere ekimenez jarduten duena baina plan bakar baterantz: azkar hazi eta gero armada erraldoiak bidali aurkarien aurka.\n\nIndarguneak: hedapen azkarrak presio militar erasokorra sostengatzen du; sail independenteek arin erantzuten diete tokiko mehatxuei, plan zentral baten zain egon gabe.\n\nAurkako jokoa: aurre egin bere hedapenari goiz eta erabili lurraldea aldi berean zenbat tropa engaia daitezkeen mugatzeko.
+[AICabino-Summary]
+Sail independenteak elkarlanean, hazkunde azkarra eta armada erraldoiak lortzeko.
 [Algae]
 algak
 [Alliances]

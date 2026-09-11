@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 94
+#define VERSION_MINOR 95
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -100,6 +100,11 @@
 // version 94 apportions fetch jobs across the resources a building wants instead of
 //            letting the nearest one take every slot, and prices a loaded candidate
 //            rather than refusing it: the simulation changed again
+// version 95 adds AI::ImplementationID::CABINO, a resurrected port of the original
+//            (2005-2007) Nicowar: independent specialist modules (defense, attack,
+//            construction, upgrades, unit/swarm management) that cooperate rather
+//            than a phase-driven strategy. Purely additive: older clients simply
+//            can't load a save that names this AI (see AI::load's default case).
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
