@@ -475,7 +475,10 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
   // exact wall tiles are cleared, so a genuinely small spot is correctly left untouched.
   const int minPocketTiles = 60;
   for (int team = 0; team < context.request.nbTeams; ++team) {
-    int bootX = context.bootX[team], bootY = context.bootY[team];
+    // A caller can hand over a boot tile it has not wrapped onto the map yet: the height-field
+    // generators' fallback site search does, before placeStarts normalizes it. The floods below
+    // index by it directly.
+    int bootX = map.normalizeX(context.bootX[team]), bootY = map.normalizeY(context.bootY[team]);
     ReachResult reach = floodReach(map, bootX, bootY, exploreLimit, closeRange, clearRadius);
     auto pocketSize = [&] {
       int n = 0;
