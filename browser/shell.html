@@ -77,6 +77,12 @@ var Module = {
     const width = Math.max(1, Math.floor(innerWidth));
     const height = Math.max(1, Math.floor(innerHeight));
     Module.pendingViewport = {width: Math.floor(innerWidth), height: Math.floor(innerHeight)};
+    // SDL adopts the canvas's CSS size when it creates a resizable window. Size the canvas to
+    // the viewport first; otherwise SDL keeps the 4:3 fit of the 800x600 placeholder and the
+    // full-window game surface stays letterboxed until the first resize.
+    canvas.width = width;
+    canvas.height = height;
+    fitCanvas();
     canvas.focus();
     // Keep the established default until the GPU backend passes performance gates.
     const software = new URLSearchParams(location.search).get('renderer') !== 'webgl2';
