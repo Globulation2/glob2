@@ -49,6 +49,8 @@ Map::Map()
 			{
 				resourcesGradient[t][r][s] = NULL;
 				gradientUpdated[t][r][s] = false;
+				marketResourcesGradient[t][r][s] = NULL;
+				marketGradientDirty[t][r][s] = false;
 			}
 	for (int t=0; t<Team::MAX_COUNT; t++)
 		for (int s=0; s<SWIM_CLASS_COUNT; s++)
@@ -102,6 +104,9 @@ void Map::clear()
 				delete[] resourcesGradient[t][r][swim];
 				resourcesGradient[t][r][swim] = NULL;
 				gradientUpdated[t][r][swim] = false;
+				delete[] marketResourcesGradient[t][r][swim];
+				marketResourcesGradient[t][r][swim] = NULL;
+				marketGradientDirty[t][r][swim] = false;
 			}
 		for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
 		{

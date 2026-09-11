@@ -6,7 +6,7 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 97
+#define VERSION_MINOR 98
 // version 91 saves the live RNG and routing state for deterministic continuation.
 // version 10 adds script saved in game
 // version 11 the gamesfiles do saves which building has been seen under fog of war.
@@ -108,6 +108,9 @@
 // version 97 hires a fetcher for one delivery at a time: a unit that has just
 //            dropped off goes back to the free pool instead of re-hiring itself
 //            for its building's next trip, so every trip is auctioned
+// version 98 puts the team's stocked markets into the resource gradients a
+//            building's fetchers walk and are hired by, so the market path
+//            survives per-delivery hiring: the simulation changed again
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

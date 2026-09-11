@@ -49,6 +49,21 @@ void Unit::handleDisplacement(void)
 					displacement=DIS_HARVESTING;
 					validTarget=false;
 				}
+				else if (attachedBuilding->fetchesFromMarkets())
+				{
+					// The gradient led here to a stocked market of ours: take the
+					// resource at its door and carry it home.
+					if (Building *market = owner->map->touchedStockedMarket(this, destinationPurpose))
+					{
+						market->removeResourceFromBuilding(destinationPurpose);
+						carriedResource=destinationPurpose;
+						setTargetBuilding(attachedBuilding);
+						displacement=DIS_GOING_TO_BUILDING;
+						validTarget=true;
+						if (verbose)
+							printf("guid=(%d) took resource (%d) out of market gbid=(%d)\n", gid, destinationPurpose, market->gid);
+					}
+				}
 			}
 			else if (displacement==DIS_HARVESTING)
 			{

@@ -208,6 +208,10 @@ public:
 	bool subscribeToBringResourcesStep(void);
 	//! Whether the unit's type and level qualify it to work for this building.
 	bool canUnitWorkHere(Unit* unit);
+	/// Whether fetches for this building may take from the team's stocked
+	/// markets. Markets fetch for themselves from the map only, so stock never
+	/// circulates between markets.
+	bool fetchesFromMarkets() const;
 	///This function subscribes any flag that needs units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired

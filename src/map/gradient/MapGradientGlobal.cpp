@@ -4,6 +4,9 @@
 #include "Map.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
+#include "Building.h"
+#include "Team.h"
+#include "Game.h"
 #include "MapInternal.h"
 
 #include <algorithm>
@@ -106,20 +109,30 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 }
 
 
-Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass)
+Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets)
 {
-	Uint16 *&gradient = resourcesGradient[teamNumber][resourceType][swimClass];
+	Uint16 *&gradient = withMarkets
+		? marketResourcesGradient[teamNumber][resourceType][swimClass]
+		: resourcesGradient[teamNumber][resourceType][swimClass];
 	if (gradient == NULL)
 	{
 		gradient = new Uint16[size];
-		updateResourcesGradient(teamNumber, resourceType, swimClass);
+		updateResourcesGradient(teamNumber, resourceType, swimClass, withMarkets);
 	}
 	return gradient;
 }
 
-void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass)
+void Map::dirtyMarketGradients(int teamNumber, int resourceType)
 {
-	Uint16 *gradient=resourcesGradient[teamNumber][resourceType][swimClass];
+	for (int s = 0; s < SWIM_CLASS_COUNT; s++)
+		marketGradientDirty[teamNumber][resourceType][s] = true;
+}
+
+void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets)
+{
+	Uint16 *gradient=withMarkets
+		? marketResourcesGradient[teamNumber][resourceType][swimClass]
+		: resourcesGradient[teamNumber][resourceType][swimClass];
 	assert(gradient);
 	bool canSwim = swimClass > 0;
 
@@ -135,7 +148,14 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 		else if (c.resource.type==NO_RES_TYPE)
 		{
 			if (c.building!=NOGBID)
-				gradient[i]=GRADIENT_FORBIDDEN;
+			{
+				// A stocked market of the team is one more place the resource can
+				// be fetched from, a detour dearer than a tile of it.
+				if (withMarkets && isStockedMarketTile(c.building, teamNumber, resourceType))
+					gradient[i]=GRADIENT_MARKET_SEED;
+				else
+					gradient[i]=GRADIENT_FORBIDDEN;
+			}
 			else if (!canSwim && isWater(i))
 				gradient[i]=GRADIENT_FORBIDDEN;
 			else
@@ -153,4 +173,10 @@ void Map::updateResourcesGradient(int teamNumber, Uint8 resourceType, int swimCl
 	}
 
 	propagateGradient(gradient, swimClass);
+	if (withMarkets)
+		marketGradientDirty[teamNumber][resourceType][swimClass]=false;
+	// The twin is the same field plus the markets: rebuild it from the same
+	// tiles so the two never disagree about the map.
+	else if (marketResourcesGradient[teamNumber][resourceType][swimClass])
+		updateResourcesGradient(teamNumber, resourceType, swimClass, true);
 }

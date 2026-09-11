@@ -108,6 +108,16 @@ void Map::syncStep(Uint32 stepCounter)
 						gradientUpdated[t][r][s]=true;
 						return;
 					}
+		// The "with markets" twins are rebuilt together with their plain gradient;
+		// on their own only when a market's stock switched since.
+		for (int t=0; t<numberOfTeam; t++)
+			for (int r=0; r<MAX_RESOURCES; r++)
+				for (int s=0; s<SWIM_CLASS_COUNT; s++)
+					if (marketResourcesGradient[t][r][s] && marketGradientDirty[t][r][s])
+					{
+						updateResourcesGradient(t, r, s, true);
+						return;
+					}
 		for (int t=0; t<numberOfTeam; t++)
 			for(int s=0; s<SWIM_CLASS_COUNT; s++)
 				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])

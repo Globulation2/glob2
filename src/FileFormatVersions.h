@@ -91,6 +91,9 @@ static constexpr int FILE_FORMAT_VERSION_CONTINUATION_STATE = 91;
 
 //! A building's round-trip fields and gradient use stamps join the cached routing fields.
 static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
+/// The "with markets" twin of each resource gradient travels with the map
+/// runtime state, like the plain one.
+static constexpr int FILE_FORMAT_VERSION_MARKET_GRADIENTS = 98;
 
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted

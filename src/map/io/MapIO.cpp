@@ -258,7 +258,10 @@ void Map::addTeam(void)
 	int t=oldNumberOfTeam;
 	for (int r=0; r<MAX_RESOURCES; r++)
 		for (int s=0; s<SWIM_CLASS_COUNT; s++)
+		{
 			assert(resourcesGradient[t][r][s]==NULL);
+			assert(marketResourcesGradient[t][r][s]==NULL);
+		}
 	
 	assert(exploredArea[t] == NULL);
 	exploredArea[t] = new Uint8[size];
@@ -281,6 +284,9 @@ void Map::removeTeam(void)
 		{
 			delete[] resourcesGradient[t][r][s];
 			resourcesGradient[t][r][s]=NULL;
+			delete[] marketResourcesGradient[t][r][s];
+			marketResourcesGradient[t][r][s]=NULL;
+			marketGradientDirty[t][r][s]=false;
 		}
 		delete[] forbiddenGradient[t][s];
 		forbiddenGradient[t][s]=NULL;
@@ -379,6 +385,14 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeEnterSection(r);
 				saveGradient(stream, resourcesGradient[t][r][sw], size);
 				stream->writeUint8(gradientUpdated[t][r][sw], "updated");
+				// The "with markets" twin is runtime state like its plain gradient:
+				// a resumed game must walk the same field it left. Its own section:
+				// the text format keys tiles by section name, and the plain
+				// gradient's tiles live in this one.
+				stream->writeEnterSection("markets");
+				saveGradient(stream, marketResourcesGradient[t][r][sw], size);
+				stream->writeUint8(marketGradientDirty[t][r][sw], "dirty");
+				stream->writeLeaveSection();
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -479,6 +493,13 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				stream->readEnterSection(r);
 				loadGradient(stream, resourcesGradient[t][r][sw], size);
 				gradientUpdated[t][r][sw]=loadFlag(stream,"updated");
+				if (versionMinor >= FILE_FORMAT_VERSION_MARKET_GRADIENTS)
+				{
+					stream->readEnterSection("markets");
+					loadGradient(stream, marketResourcesGradient[t][r][sw], size);
+					marketGradientDirty[t][r][sw]=loadFlag(stream,"dirty");
+					stream->readLeaveSection();
+				}
 				stream->readLeaveSection();
 			}
 			stream->readLeaveSection();
