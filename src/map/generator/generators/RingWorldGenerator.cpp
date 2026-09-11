@@ -206,7 +206,8 @@ Belt shapeBelt(const Axes &axes, GenerationContext &context, const RingWorldOpti
   double bendSlope = 0, swingSlope = 0;
   const std::vector<double> bend = closedCurve(length, 1.6, rng, bendSlope);
   const std::vector<double> widthCurve = closedCurve(length, 1.2, rng, swingSlope);
-  double bendAmplitude = 0.11 * breadth;
+  // A belt that doesn't wind still draws its curve, so the rest of the belt is unchanged.
+  double bendAmplitude = options.windingBelt ? 0.11 * breadth : 0.0;
   if (bendSlope > 0)
     bendAmplitude = std::min(bendAmplitude, kMaxBendSlope / bendSlope);
   if (swingSlope > 0)
@@ -365,9 +366,10 @@ bool siteFits(const Map &map, int x, int y) {
 }
 
 // Colonies are dealt evenly spaced slots around the ring from a random starting point, with a
-// little jitter, and alternate between the belt's two coasts. Within its slot a colony takes the
-// site whose nearest water is closest to kHomeShore tiles away, so every start has the same shore.
-bool placeColonies(Game &game, GenerationContext &context, const Belt &belt) {
+// little jitter, and alternate between the belt's two coasts (or all take one). Within its slot a
+// colony takes the site whose nearest water is closest to kHomeShore tiles away, so every start
+// has the same shore.
+bool placeColonies(Game &game, GenerationContext &context, const Belt &belt, bool bothCoasts) {
   Map &map = game.map;
   const Axes &axes = belt.axes;
   const int width = axes.width, height = axes.height, length = axes.length();
@@ -396,7 +398,7 @@ bool placeColonies(Game &game, GenerationContext &context, const Belt &belt) {
   for (int team = 0; team < teams; ++team) {
     const double jitter = (int(context.bounded("colonies", 2001)) - 1000) / 1000.0 * 0.08 * slot;
     const double target = first + team * slot + jitter;
-    const double side = (firstSide + team) % 2 ? 1.0 : -1.0;
+    const double side = (firstSide + (bothCoasts ? team : 0)) % 2 ? 1.0 : -1.0;
     const double spacing = 0.5 * slot;
     int bestX = -1, bestY = -1;
     double bestScore = std::numeric_limits<double>::max();
@@ -565,7 +567,7 @@ void stockIslands(Map &map, GenerationContext &context, const std::vector<Island
 
 // Algae in the shallows along every coast, the ocean's and the lakes' alike: close enough to shore
 // to regrow and to be harvested.
-void seedAlgae(Map &map, GenerationContext &context) {
+void seedAlgae(Map &map, GenerationContext &context, int algaePercent) {
   const int width = map.getW(), height = map.getH();
   const size_t area = size_t(width) * height;
   std::vector<unsigned char> water(area), dry(area);
@@ -581,7 +583,7 @@ void seedAlgae(Map &map, GenerationContext &context) {
       shallows.emplace_back(i % width, i / width);
   if (shallows.empty())
     return;
-  for (int clump = 0; clump < int(shallows.size()) / 90; ++clump)
+  for (int clump = 0; clump < scaledCount(int(shallows.size()) / 90, algaePercent); ++clump)
     placeResourceClump(map, context, shallows[context.bounded("resources", shallows.size())],
                        ALGA, 1);
 }
@@ -727,7 +729,7 @@ bool generate(Game &game, GenerationContext &context) {
   map.rebuildTerrain();
 
   context.stage = "ring colonies";
-  if (!placeColonies(game, context, belt))
+  if (!placeColonies(game, context, belt, options.bothCoasts))
     return false;
 
   context.stage = "ring resources";
@@ -735,12 +737,26 @@ bool generate(Game &game, GenerationContext &context) {
   stockIslands(map, context, islands);
   // The same ambient layer as Fjord continent: corn:wood 2:1, some stone, rare fruit. Algae is
   // seeded along the shallows below instead, since the shared band only scatters over land.
-  scatterResources(game, context, {/*corn=*/24, /*wood=*/12, /*stone=*/10, /*algae=*/0,
-                                   /*fruit=*/3});
-  seedAlgae(map, context);
+  scatterResources(game, context,
+                   {/*corn=*/int(scaledCount(24, options.wheat)),
+                    /*wood=*/int(scaledCount(12, options.wood)),
+                    /*stone=*/int(scaledCount(10, options.stone)), /*algae=*/0,
+                    /*fruit=*/int(scaledCount(3, options.fruit))});
+  seedAlgae(map, context, options.algae);
   clearAroundSwarms(map, context);
   guaranteeStartingResources(game, context, 24, 32, 6);
   clearAroundSwarms(map, context);
+
+  // The scatter above is sized by the resource amounts, and at the top of their range it can wall
+  // a colony into its own clearing with nowhere to build — which the guarantee doesn't address,
+  // since a colony buried in wheat has wheat at its feet. At any non-default amount, open such a
+  // colony back up, then guarantee and clear again as above. At the defaults none of this runs.
+  if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
+      options.algae != 100 || options.fruit != 100) {
+    openCrampedStarts(game, context);
+    guaranteeStartingResources(game, context, 24, 32, 6);
+    clearAroundSwarms(map, context);
+  }
 
   context.stage = "ring road";
   return openBeltRoad(game, context, axes);
@@ -846,7 +862,11 @@ std::string validateWorld(const Game &game, const GenerationContext &context) {
 
 RingWorldOptions::RingWorldOptions(const GenerationRequest &r)
     : beltWidth(r.option("belt-width")), coastRoughness(r.option("coast-roughness")),
-      lakeDensity(r.option("lake-density")), resourceIslands(r.option("resource-islands")) {}
+      lakeDensity(r.option("lake-density")), resourceIslands(r.option("resource-islands")),
+      windingBelt(r.option("winding-belt") != 0), bothCoasts(r.option("both-coasts") != 0),
+      wheat(r.option("wheat-amount")), wood(r.option("wood-amount")),
+      stone(r.option("stone-amount")), algae(r.option("algae-amount")),
+      fruit(r.option("fruit-amount")) {}
 
 GeneratorDefinition ringWorldDefinition() {
   return {"ring-world",
@@ -859,7 +879,19 @@ GeneratorDefinition ringWorldDefinition() {
           {{"belt-width", "Belt width", 30, 70, 5, 45, ControlGroup::Terrain},
            {"coast-roughness", "Coast roughness", 0, 100, 5, 50, ControlGroup::Terrain},
            {"lake-density", "Lake density", 0, 8, 1, 2, ControlGroup::Terrain},
-           {"resource-islands", "Resource islands", 0, 10, 1, 2, ControlGroup::Resources}},
+           {"resource-islands", "Resource islands", 0, 10, 1, 2, ControlGroup::Resources},
+           // Off, the belt's centre line runs straight round the map.
+           GeneratorControl::toggle("winding-belt", "Winding belt", true, ControlGroup::Terrain),
+           // Off, every colony starts on the same coast of the belt.
+           GeneratorControl::toggle("both-coasts", "Colonies on both coasts", true,
+                                    ControlGroup::Layout),
+           // The ambient scatter's wheat, wood, stone and fruit and the shallows' algae. Every
+           // home's starter patches and each island's prize stay as they are.
+           GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+           GeneratorControl::percentage("wood-amount", "Wood amount"),
+           GeneratorControl::percentage("stone-amount", "Stone amount"),
+           GeneratorControl::percentage("algae-amount", "Algae amount"),
+           GeneratorControl::percentage("fruit-amount", "Fruit amount")},
           generate,
           true,
           validate,

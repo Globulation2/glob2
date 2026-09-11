@@ -715,15 +715,16 @@ Layout design(const GenerationRequest &request, GenerationContext &context) {
             break;
           }
     }
-  // Stretches of ridgeline two tiles thick, where a noise field says so. More stone never opens
-  // a gap.
+  // Stretches of ridgeline two tiles thick, where a noise field says so: 45% of the ridge at the
+  // default stone amount, which scales that share. More stone never opens a gap.
   const std::vector<int> thickness =
       periodicNoise(t.w, t.h, std::max(4, o.valleySize / 2), context.stream("highlands-ridge"));
-  const int thickLevel = percentile(thickness, 55);
+  const int thickShare = int(std::min<std::int64_t>(100, scaledCount(45, o.stone)));
+  const int thickLevel = percentile(thickness, 100 - thickShare);
   std::vector<unsigned char> thick = L.ridge;
   static const int steps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
   for (int i = 0; i < n; ++i) {
-    if (!L.ridge[i] || thickness[i] < thickLevel)
+    if (!L.ridge[i] || thickShare <= 0 || thickness[i] < thickLevel)
       continue;
     for (const auto &s : steps) {
       const int j = t.at(i % t.w + s[0], i / t.w + s[1]);
@@ -951,7 +952,8 @@ void stampBox(const Torus &t, std::vector<unsigned char> &mask, int cx, int cy, 
 // Ambient farmland: the most fertile ground around each pond, in patches, split 2:1 between
 // wheat and wood by an unrelated noise field so the two crops alternate around the shore.
 void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
-                     const std::vector<int> &pondDistance, const std::vector<unsigned char> &keepClear) {
+                     const std::vector<int> &pondDistance, const std::vector<unsigned char> &keepClear,
+                     int wheatPercent, int woodPercent) {
   const Torus &t = L.t;
   const int n = t.w * t.h;
   const Fertility::Field fertility = Fertility::forMap(map, false);
@@ -981,21 +983,28 @@ void scatterFarmland(Map &map, GenerationContext &context, const Layout &L,
     std::vector<int> &tiles = pool[v];
     const int wanted = std::min(int(std::int64_t(pondTiles[v]) * kFarmlandPercent / 100),
                                 int(tiles.size()) * 2 / 3);
-    if (wanted <= 0)
+    // Two thirds wheat and the rest wood, each scaled by its amount; more than the default may
+    // take every eligible tile, keeping the two crops' proportions.
+    int wheat = int(scaledCount(wanted * 2 / 3, wheatPercent));
+    int total = wheat + int(scaledCount(wanted - wanted * 2 / 3, woodPercent));
+    if (total > int(tiles.size())) {
+      wheat = int(std::int64_t(wheat) * tiles.size() / total);
+      total = int(tiles.size());
+    }
+    if (total <= 0)
       continue;
     std::stable_sort(tiles.begin(), tiles.end(), [&](int a, int b) {
       return fertility.at(a % t.w, a / t.w) > fertility.at(b % t.w, b / t.w);
     });
-    tiles.resize(wanted);
+    tiles.resize(total);
     std::stable_sort(tiles.begin(), tiles.end(), [&](int a, int b) { return split[a] < split[b]; });
-    const int wheat = wanted * 2 / 3;
-    for (int k = 0; k < wanted; ++k)
+    for (int k = 0; k < total; ++k)
       map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheat ? CORN : WOOD, 1);
   }
 }
 
 // Algae in the open water of every pond.
-void seedAlgae(Map &map, GenerationContext &context, const Layout &L) {
+void seedAlgae(Map &map, GenerationContext &context, const Layout &L, int algaePercent) {
   const Torus &t = L.t;
   const std::vector<int> noise = periodicNoise(t.w, t.h, 6, context.stream("highlands-algae"));
   std::vector<int> water, levels;
@@ -1004,19 +1013,20 @@ void seedAlgae(Map &map, GenerationContext &context, const Layout &L) {
       water.push_back(i);
       levels.push_back(noise[i]);
     }
-  if (water.empty())
+  if (water.empty() || algaePercent <= 0)
     return;
-  const int level = percentile(levels, kAlgaePercent);
+  const int level = percentile(
+      levels, int(std::min<std::int64_t>(100, scaledCount(kAlgaePercent, algaePercent))));
   for (int i : water)
     if (noise[i] <= level)
       map.setResource(i % t.w, i / t.w, ALGA, 1);
 }
 
 // Fruit is rare: small groves beside the ponds of valleys no colony starts in, a prize for
-// whoever holds the passes to them.
+// whoever holds the passes to them - or in any valley, colonies' own included, if asked.
 void plantFruit(Map &map, GenerationContext &context, const Layout &L,
                 const std::vector<int> &pondDistance, const std::vector<unsigned char> &keepClear,
-                const std::vector<unsigned char> &homeValley, int fruit) {
+                const std::vector<unsigned char> &homeValley, int fruit, bool inHomeValleys) {
   if (fruit <= 0)
     return;
   const Torus &t = L.t;
@@ -1035,7 +1045,7 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
   std::vector<int> valleys;
   for (int pass = 0; pass < 2 && valleys.empty(); ++pass)
     for (int v = 0; v < L.valleys; ++v)
-      if (!pool[v].empty() && (pass == 1 || !homeValley[v]))
+      if (!pool[v].empty() && (pass == 1 || inHomeValleys || !homeValley[v]))
         valleys.push_back(v);
   if (valleys.empty())
     return;
@@ -1103,9 +1113,9 @@ bool generate(Game &game, GenerationContext &context) {
     homeValley[L.homes[team].valley] = 1;
     furnishHome(map, L, context.bootX[team], context.bootY[team], L.homes[team].valley);
   }
-  scatterFarmland(map, context, L, pondDistance, keepClear);
-  seedAlgae(map, context, L);
-  plantFruit(map, context, L, pondDistance, keepClear, homeValley, o.fruit);
+  scatterFarmland(map, context, L, pondDistance, keepClear, o.wheat, o.wood);
+  seedAlgae(map, context, L, o.algae);
+  plantFruit(map, context, L, pondDistance, keepClear, homeValley, o.fruit, o.homeValleyFruit);
   // The kits above already put wheat and wood a few steps from every swarm; this is only the
   // backstop, and the ridges are designed walls it must never clear.
   guaranteeStartingResources(game, context, 24, 32, 0, &L.ridge);
@@ -1231,7 +1241,10 @@ std::string validateWorld(const Game &game, const GenerationContext &context) {
 
 StoneHighlandsOptions::StoneHighlandsOptions(const GenerationRequest &r)
     : valleySize(r.option("valley-size")), passWidth(r.option("pass-width")),
-      loopiness(r.option("loopiness")), pondSize(r.option("pond-size")), fruit(r.option("fruit")) {}
+      loopiness(r.option("loopiness")), pondSize(r.option("pond-size")), fruit(r.option("fruit")),
+      homeValleyFruit(r.option("home-valley-fruit") != 0), wheat(r.option("wheat-amount")),
+      wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+      algae(r.option("algae-amount")) {}
 
 GeneratorDefinition stoneHighlandsDefinition() {
   return {"stone-highlands",
@@ -1247,7 +1260,17 @@ GeneratorDefinition stoneHighlandsDefinition() {
            // Pond area as a percentage of each valley's area.
            {"pond-size", "Pond size", 4, 16, 2, 8, ControlGroup::Terrain},
            // Fruit groves per 128x128 tiles of map.
-           {"fruit", "Fruit", 0, 12, 1, 4, ControlGroup::Resources}},
+           {"fruit", "Fruit", 0, 12, 1, 4, ControlGroup::Resources},
+           // On, fruit groves may grow in the valleys colonies start in too.
+           GeneratorControl::toggle("home-valley-fruit", "Fruit in home valleys", false,
+                                    ControlGroup::Resources),
+           // Wheat and wood scale the farmland around the ponds and algae the ponds' own; stone
+           // scales how much of the ridgeline is two tiles thick (45% at 100). Every colony's
+           // starting kit stays as it is.
+           GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+           GeneratorControl::percentage("wood-amount", "Wood amount"),
+           GeneratorControl::percentage("stone-amount", "Stone amount", 200),
+           GeneratorControl::percentage("algae-amount", "Algae amount")},
           generate,
           true,
           validateRequest,
