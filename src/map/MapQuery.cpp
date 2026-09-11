@@ -151,7 +151,10 @@ bool Map::isStockedMarketTile(Uint16 gid, int teamNumber, int resourceType) cons
 	if (gid == NOGBID || Building::GIDtoTeam(gid) != teamNumber)
 		return false;
 	const Building *b = game->teams[teamNumber]->myBuildings[Building::GIDtoID(gid)];
-	return b && b->type->canExchange && b->buildingState == Building::ALIVE && b->resources[resourceType] > 0;
+	// The stock is the team's shared pool; only a market whose level takes the
+	// resource at all hands it out.
+	return b && b->type->canExchange && b->buildingState == Building::ALIVE
+		&& b->type->maxResource[resourceType] > 0 && b->resources[resourceType] > 0;
 }
 
 Building *Map::touchedStockedMarket(Unit *unit, int resourceType) const

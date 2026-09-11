@@ -142,6 +142,21 @@ int main(int argc, char** argv)
 		require(bed.inn->unitsWorking.empty() && bed.inn->unitsFailingRequirements[Building::UnitCantAccessFruit] >= 1, "nobody hired, counted as no fruit reachable");
 		std::puts("market fetch: an empty market is no source");
 	}
+	{
+		// Market levels: a level-1 market never hands out wood even though the
+		// team pool holds some; a level-3 market does.
+		Bed bed(36, 36);
+		require(globalContainer->buildingsTypes.getTypeNum("market", 1, false) >= 0 && globalContainer->buildingsTypes.getTypeNum("market", 2, false) >= 0, "market levels 2 and 3 exist");
+		bed.market->resources[WOOD] = 20;
+		int dist = 0;
+		require(!bed.game.map.resourceAvailable(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-1 market is no wood goal");
+		int top = globalContainer->buildingsTypes.getTypeNum("market", 2, false);
+		bed.market->typeNum = top;
+		bed.market->type = globalContainer->buildingsTypes.get(top);
+		bed.game.map.updateResourcesGradient(0, WOOD, bed.unit->swimClass(), true);
+		require(bed.game.map.resourceAvailable(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-3 market hands out wood");
+		std::puts("market levels: only a level that takes the resource hands it out");
+	}
 	std::puts("PASS stocked markets are goals of the fetch gradients");
 	return 0;
 }
