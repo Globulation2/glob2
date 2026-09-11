@@ -418,21 +418,50 @@ bool carvePaths(const Arena &a, const Layout &l, Terrain &t) {
   return true;
 }
 
+// The 8-connected groups of set entries in a mask, on the torus. Which entries share a group is
+// a matter of geometry alone, so every symmetry maps groups onto groups of the same size.
+std::vector<std::vector<int>> groupsOf(const std::vector<unsigned char> &mask, int w, int h) {
+  std::vector<std::vector<int>> groups;
+  std::vector<unsigned char> seen(mask.size(), 0);
+  for (size_t first = 0; first < mask.size(); ++first) {
+    if (!mask[first] || seen[first])
+      continue;
+    std::vector<int> group{int(first)};
+    seen[first] = 1;
+    for (size_t head = 0; head < group.size(); ++head) {
+      const int x = group[head] % w, y = group[head] / w;
+      for (int dy = -1; dy <= 1; ++dy)
+        for (int dx = -1; dx <= 1; ++dx) {
+          const size_t j = size_t(wrap(y + dy, h)) * w + wrap(x + dx, w);
+          if (mask[j] && !seen[j]) {
+            seen[j] = 1;
+            group.push_back(int(j));
+          }
+        }
+    }
+    groups.push_back(std::move(group));
+  }
+  return groups;
+}
+
 bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const Layout &l,
                   const SymmetricArenaOptions &o, Terrain &t) {
+  // A lake of fewer corners than this is a patch of shoreline with no open water in it.
+  constexpr size_t kSmallestLake = 16;
   context.stage = "arena terrain";
   const int w = a.width, h = a.height;
   const size_t n = size_t(w) * h;
   const Symmetry &s = a.symmetry;
+  // Lakes keep clear of every home and of its pond's banks, where the starting kit grows.
   std::vector<unsigned char> homeDisc(n, 0), homeZone(n, 0), pond(n, 0), gate(n, 0);
   for (int v = 0; v < h; ++v)
     for (int u = 0; u < w; ++u) {
       const size_t i = size_t(v) * w + u;
       const Point p = cornerPoint(w, h, u, v);
-      const double toHome = torusDistance(w, h, p, l.home);
+      const double toHome = torusDistance(w, h, p, l.home), toPond = torusDistance(w, h, p, l.pond);
       homeDisc[i] = toHome <= kHomeRadius;
-      homeZone[i] = toHome <= kHomeRadius + 4;
-      pond[i] = torusDistance(w, h, p, l.pond) <= kPondRadius;
+      homeZone[i] = toHome <= kHomeRadius + 4 || toPond <= kPondRadius + 7;
+      pond[i] = toPond <= kPondRadius;
       gate[i] = onCauseway(a, l, p, 3.0, a.causewayWidth / 2);
     }
   homeDisc = stamp(s, homeDisc, true);
@@ -450,9 +479,13 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
       lakeEligible[i] = !within(r2, a.centre + a.moat + kApron) && !homeZone[i];
     }
   const float smoothing = std::max(12.0f, std::min(w, h) / 8.0f);
-  const std::vector<unsigned char> lakes =
+  std::vector<unsigned char> lakes =
       topShare(orbitNoise(context, s, "arena-lakes", smoothing, true), lakeEligible,
                o.lakes / 100.0, false);
+  for (const auto &group : groupsOf(lakes, w, h))
+    if (group.size() < kSmallestLake)
+      for (int i : group)
+        lakes[size_t(i)] = 0;
 
   // Later layers win: lakes and ponds, then clear home ground, the moat, and causeways of sand.
   t.undermap.assign(n, GRASS);
@@ -656,24 +689,42 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
       plan[i] = ALGA;
   }
 
-  // The orchard: single trees on a three-tile lattice squared up to the centre, so every tree
-  // has walkway on all four sides and none can wall another in; a fifth of them are stone.
-  // Lattice phase and fruit pattern come from the seed. A small centre holds few trees, so if
-  // that choice leaves a fruit out, the first combination that has all three is used instead.
+  // The orchard: two-by-two groves on a four-tile lattice squared up to the centre, so every
+  // grove has walkway at least two tiles wide on all four sides and every tree can be picked;
+  // a fifth of the groves are stone. Lattice phase and fruit pattern come from the seed. A small
+  // centre holds few groves, so if that choice leaves a fruit out, the first combination that
+  // has all three is used instead.
   const std::vector<int> orchardNoise = orbitNoise(context, s, "arena-orchard", 4.0f, false);
   bool planted = false;
   for (int attempt = -1; attempt < 18 && !planted; ++attempt) {
-    const int phase = attempt < 0 ? l.orchardPhase : attempt / 6 % 3;
+    // Phase 1 gives even walkways, 2 an avenue along each axis, 3 a grove on the centre; 0
+    // would join the four groves round the centre into one block with unpickable middle trees.
+    const int phase = attempt < 0 ? l.orchardPhase : 1 + attempt / 6 % 3;
     const int pattern = attempt < 0 ? l.orchardPattern : attempt / 2 % 3;
+    // A tile's grove index along one axis from its doubled centred coordinate, or -1 on a
+    // walkway. It depends only on the distance from the axis, so turns and mirrors keep it.
+    const auto grove = [phase](int doubled) {
+      const int i = (std::abs(doubled) - 1) / 2 + 4 - phase;
+      return i % 4 < 2 ? i / 4 : -1;
+    };
     std::vector<unsigned char> trees(n, 0);
     for (int y = 0; y < h; ++y)
       for (int x = 0; x < w; ++x) {
         const size_t i = size_t(y) * w + x;
-        const int col = (std::abs(2 * x + 1 - w) - 1) / 2, row = (std::abs(2 * y + 1 - h) - 1) / 2;
         trees[i] = grass[i] && !blocked[i] && within(tileRadius2(w, h, x, y), a.centre - 2) &&
-                   col % 3 == phase && row % 3 == phase;
+                   grove(2 * x + 1 - w) >= 0 && grove(2 * y + 1 - h) >= 0;
       }
-    const auto stones = attempt < 0 || attempt % 2 == 0 ? topShare(orchardNoise, trees, 0.2, true)
+    // A grove's value is the highest orbit-noise value among its tiles, which its images share,
+    // so stone always takes whole groves.
+    std::vector<int> groveValue(n, INT_MIN);
+    for (const auto &group : groupsOf(trees, w, h)) {
+      int best = INT_MIN;
+      for (int i : group)
+        best = std::max(best, orchardNoise[size_t(i)]);
+      for (int i : group)
+        groveValue[size_t(i)] = best;
+    }
+    const auto stones = attempt < 0 || attempt % 2 == 0 ? topShare(groveValue, trees, 0.2, true)
                                                         : std::vector<unsigned char>(n, 0);
     std::vector<int> orchard(n, -1);
     bool seen[3] = {false, false, false};
@@ -682,8 +733,8 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
         const size_t i = size_t(y) * w + x;
         if (!trees[i])
           continue;
-        const int col = (std::abs(2 * x + 1 - w) - 1) / 2, row = (std::abs(2 * y + 1 - h) - 1) / 2;
-        orchard[i] = stones[i] ? STONE : orchardFruit(col / 3, row / 3, pattern);
+        orchard[i] = stones[i] ? STONE
+                               : orchardFruit(grove(2 * x + 1 - w), grove(2 * y + 1 - h), pattern);
         if (!stones[i])
           seen[orchard[i] - CHERRY] = true;
       }
@@ -710,32 +761,34 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
       kitGround[i] = grass[i] && !blocked[i] && waterSteps[i] >= 2 &&
                      torusDistance(w, h, tilePoint(w, h, x, y), l.home) <= kHomeRadius + 12;
     }
+  // A clump grows outward from the free kit ground nearest its target; if that pocket fills
+  // first, it carries on from the next nearest free tile, so a cramped bank still gets its kit.
   const auto grow = [&](Point target, int type, int size) {
-    int seed = -1;
-    double nearest = 1e18;
+    std::vector<std::pair<double, int>> nearest;
     for (size_t i = 0; i < n; ++i)
-      if (kitGround[i] && kit[i] < 0) {
-        const double d = torusDistance(w, h, tilePoint(w, h, int(i % w), int(i / w)), target);
-        if (d < nearest) {
-          nearest = d;
-          seed = int(i);
-        }
-      }
-    if (seed < 0)
-      return 0;
+      if (kitGround[i] && kit[i] < 0)
+        nearest.emplace_back(
+            torusDistance(w, h, tilePoint(w, h, int(i % w), int(i / w)), target), int(i));
+    std::sort(nearest.begin(), nearest.end());
     static const int steps[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-    std::vector<int> queue{seed};
     std::vector<unsigned char> queued(n, 0);
-    queued[size_t(seed)] = 1;
     int placed = 0;
-    for (size_t head = 0; head < queue.size() && placed < size; ++head, ++placed) {
-      const int i = queue[head], x = i % w, y = i / w;
-      kit[size_t(i)] = type;
-      for (const auto &step : steps) {
-        const size_t j = size_t(wrap(y + step[1], h)) * w + wrap(x + step[0], w);
-        if (!queued[j] && kitGround[j] && kit[j] < 0) {
-          queued[j] = 1;
-          queue.push_back(int(j));
+    for (const auto &candidate : nearest) {
+      if (placed >= size)
+        break;
+      if (queued[size_t(candidate.second)])
+        continue;
+      std::vector<int> queue{candidate.second};
+      queued[size_t(candidate.second)] = 1;
+      for (size_t head = 0; head < queue.size() && placed < size; ++head, ++placed) {
+        const int i = queue[head], x = i % w, y = i / w;
+        kit[size_t(i)] = type;
+        for (const auto &step : steps) {
+          const size_t j = size_t(wrap(y + step[1], h)) * w + wrap(x + step[0], w);
+          if (!queued[j] && kitGround[j] && kit[j] < 0) {
+            queued[j] = 1;
+            queue.push_back(int(j));
+          }
         }
       }
     }
@@ -820,7 +873,7 @@ bool generate(Game &game, GenerationContext &context) {
       std::atan2(l.home.y, l.home.x) + (int(context.bounded("layout", 121)) - 60) * kPi / 180;
   l.pond = {l.home.x + kPondDistance * std::cos(l.pondAngle),
             l.home.y + kPondDistance * std::sin(l.pondAngle)};
-  l.orchardPhase = int(context.bounded("layout", 3));
+  l.orchardPhase = 1 + int(context.bounded("layout", 3));
   l.orchardPattern = int(context.bounded("layout", 3));
   Terrain t;
   return buildTerrain(map, context, a, l, o, t) && placeColonies(game, context, a, l) &&
