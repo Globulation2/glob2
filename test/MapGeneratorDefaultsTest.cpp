@@ -221,6 +221,37 @@ class MapGeneratorDefaultsTest
 		assert(std::find(playable.begin(), playable.end(), 101) != playable.end());
 		Game generated(nullptr);
 		assert(GenerationService(registry).generate(generated, screen.descriptor));
+		// Candidate sampling picks the best-scoring roll and hands back its seed, which the
+		// editor then regenerates. That only works because generation is deterministic and
+		// because the score is a pure function of the finished map.
+		{
+			D sampled = DWithDefaults(D::eRIVER);
+			sampled.nbTeams = 4;
+			const std::uint32_t root = 20260911;
+			const std::uint32_t chosen = service.bestSeed(sampled, root);
+			// Regenerating the chosen seed reproduces the roll that was scored, and choosing
+			// again from the same root returns the same seed.
+			D winner = sampled;
+			winner.seed = chosen;
+			Game first(nullptr), second(nullptr);
+			const auto a = service.generate(first, winner);
+			const auto b = service.generate(second, winner);
+			assert(a && b && a.quality.measured);
+			assert(a.quality.score == b.quality.score);
+			assert(service.bestSeed(sampled, root) == chosen);
+			// It is one of the candidates, and none of the others scores higher.
+			bool sawChosen = false;
+			for (int attempt = 0; attempt < GenerationService::kSampledCandidates; ++attempt)
+			{
+				D roll = sampled;
+				roll.seed = GenerationContext::deriveSeed(root, "attempt/" + std::to_string(attempt));
+				sawChosen = sawChosen || roll.seed == chosen;
+				Game world(nullptr);
+				const auto rolled = service.generate(world, roll);
+				assert(!rolled || rolled.quality.score <= a.quality.score);
+			}
+			assert(sawChosen);
+		}
 		puts("PASS registration extension, explicit seeds, interleaved repeatability, RNG "
 			 "isolation, errors and legacy sentinels");
 	}

@@ -5,6 +5,8 @@
 #include "GenerationValidation.h"
 #include "StartQuality.h"
 #include "Utilities.h"
+#include <algorithm>
+#include <string>
 std::string GenerationResult::diagnostic() const
 {
 	return generatorId + " revision " + std::to_string(revision) + " seed " + std::to_string(seed) +
@@ -93,4 +95,23 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 	}
 	result.stage = "complete";
 	return result;
+}
+
+std::uint32_t GenerationService::bestSeed(const GenerationRequest &request, std::uint32_t rootSeed,
+										  int candidates) const
+{
+	std::uint32_t chosen = GenerationContext::deriveSeed(rootSeed, "attempt/0");
+	double bestScore = -1.0;
+	for (int attempt = 0; attempt < std::max(1, candidates); ++attempt)
+	{
+		Game game(nullptr);
+		GenerationRequest roll = request;
+		roll.seed = GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
+		const auto result = generate(game, roll);
+		if (!result || result.quality.score <= bestScore)
+			continue;
+		bestScore = result.quality.score;
+		chosen = roll.seed;
+	}
+	return chosen;
 }

@@ -396,19 +396,29 @@ bool CustomGameScreen::generateMap()
 		const auto rootSeed = GenerationContext::randomSeed();
 		GenerationResult generationResult;
 		setup.generator.nbTeams = setup.capacity;
-		// Some rolls cannot fit every starting colony. Retry those rolls before
-		// reporting failure; only the successful world becomes the preview.
-		for (int attempt = 0; attempt < 5; ++attempt)
+		// Some rolls cannot fit every starting colony, and among those that can, some hand
+		// one colony far better ground than another. Roll the whole budget either way and
+		// keep the best-scoring world rather than the first that fits.
+		double bestScore = -1.0;
+		for (int attempt = 0; attempt < GenerationService::kSampledCandidates; ++attempt)
 		{
-			game = std::make_unique<Game>(nullptr);
+			auto roll = std::make_unique<Game>(nullptr);
 			auto request = setup.generator;
 			request.seed =
 				GenerationContext::deriveSeed(rootSeed, "attempt/" + std::to_string(attempt));
-			generationResult = generator.generate(*game, request);
-			std::cout << "Map generation: " << generationResult.diagnostic() << std::endl;
-			if (generationResult && game->teamsCount() == setup.capacity)
-				break;
-			game.reset();
+			const auto rollResult = generator.generate(*roll, request);
+			std::cout << "Map generation: " << rollResult.diagnostic() << std::endl;
+			if (!rollResult || roll->teamsCount() != setup.capacity)
+			{
+				if (!game)
+					generationResult = rollResult; // keep a failure worth reporting
+				continue;
+			}
+			if (rollResult.quality.score <= bestScore)
+				continue;
+			bestScore = rollResult.quality.score;
+			game = std::move(roll);
+			generationResult = rollResult;
 		}
 		if (!game)
 			throw std::runtime_error(generationResult.diagnostic());

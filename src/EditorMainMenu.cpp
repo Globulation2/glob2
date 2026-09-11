@@ -51,9 +51,13 @@ void EditorMainMenu::onAction(Widget *source, Action action, int par1, int par2)
 				int rc_nms = newMapScreen.execute(globalContainer->gfx, 40);
 				if (rc_nms == NewMapScreen::OK)
 				{
-					MapEdit mapEdit;
 					GenerationService generator;
-					newMapScreen.descriptor.seed = GenerationContext::randomSeed();
+					// MapEdit owns its Game, so the candidates are rolled into a scratch one
+					// and the winner regenerated here. Generation is deterministic, so that
+					// second run reproduces the roll that was scored.
+					newMapScreen.descriptor.seed =
+						generator.bestSeed(newMapScreen.descriptor, GenerationContext::randomSeed());
+					MapEdit mapEdit;
 					auto result = generator.generate(mapEdit.game, newMapScreen.descriptor);
 					if (result)
 					{
