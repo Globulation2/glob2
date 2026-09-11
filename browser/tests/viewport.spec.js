@@ -71,6 +71,16 @@ test.describe('initial small viewport', () => {
   });
 });
 
+test.describe('initial wide viewport', () => {
+  // Not 4:3, so the 800x600 placeholder's CSS fit must not decide the window size.
+  test.use({viewport:{width:1280,height:554}});
+  test('fills the page before any resize', async ({page}) => {
+    expect(await snapshot(page)).toMatchObject({width:1280,height:554});
+    expect(await page.locator('#canvas').boundingBox()).toMatchObject({x:0,y:0,width:1280,height:554});
+    await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
+  });
+});
+
 test.describe('high density display', () => {
   test.use({deviceScaleFactor:2});
   test('uses the renderer-appropriate backing resolution', async ({page}) => {
