@@ -60,38 +60,19 @@ int placeResourceClumpInArea(Map &map, GenerationContext &context,
 
 namespace {
 // generateHeightField (Terrain.cpp) carves its own resource bands from the same noise field
-// that carved the terrain: every tile's resource is a threshold on a value it already has,
-// so wheat, wood and stone come out following the same contours the water and grass do,
-// rather than looking like independent decisions. scatterResources runs after these
-// generators' terrain is already fixed and irregular, so it cannot share that one field the
-// way generateHeightField does, but it can still take the same threshold approach: fill the
-// tightest (lowest-value) share of some smooth field that covers the requested tile count -
-// the same histogrammed level search generateHeightField uses, just over an explicit candidate
-// list instead of the whole grid. Compact circular clumps at independent random centers are a
-// fundamentally different, and visibly clumpier, shape.
+// that carved the terrain: every tile's resource is a threshold on a value it already has, so
+// stone and algae come out following the same contours the water and grass do, rather than
+// looking like independent decisions. scatterResources runs after these generators' terrain is
+// already fixed and irregular, so it cannot share that one field the way generateHeightField
+// does, but it can still take the same threshold approach: fill the tightest (lowest-value)
+// share of a noise field of its own that covers the requested tile count - the same
+// histogrammed level search generateHeightField uses, just over an explicit candidate list
+// instead of the whole grid. Compact circular clumps at independent random centers are a
+// fundamentally different, and visibly clumpier, shape. Corn and wood go through
+// scatterFarmland below instead: unlike stone and algae, they also need to prefer farmable
+// ground, and that preference must only pick *where* farmland goes, not *which* of the two
+// crops a given spot gets - see that function for why.
 //
-// scatterLevel selects that field: for corn and wood it is (the inverse of) Fertility::Field
-// itself, so the band that gets painted is literally the most farmable ground on the map - it
-// hugs real coastlines, bays and fjord banks because that is exactly the shape the field takes,
-// and it still comes out organic rather than a uniform ring since every coastline this generates
-// already is. An independent noise field would give an organic shape too, but a shape with no
-// relation to where the resource could ever actually regrow (Map::growResources only replaces
-// wheat or wood near water, the same kernel Fertility::Field evaluates exactly) - that was tried
-// and measured: it let the noise contour claim tiles the fertility gate would have rejected on
-// sight, undoing the fix that made these generators prefer farmable ground over merely legal
-// ground in the first place. Stone and algae have no such regrowth rule, so they still use the
-// independent noise field - any legal tile is as good as any other for them.
-unsigned scatterLevel(int x, int y, const Fertility::Field *fertility, HeightMap *noise,
-                     unsigned buckets) {
-  if (fertility) {
-    const std::uint32_t f = fertility->at(x, y);
-    const std::uint32_t scaled =
-        std::min<std::uint32_t>(buckets - 1, (f * buckets) / Fertility::kScale);
-    return buckets - 1 - scaled;
-  }
-  return noise->uiLevel(x, y, buckets);
-}
-
 // A single global threshold across the whole map works for one connected landmass (Fjord,
 // Maze), but Lattice's islets are separate landmasses that each carry their own, slightly
 // different fertility (or noise) range - a global "take the best tiles first" pass can end up
@@ -139,9 +120,8 @@ std::vector<int> computeLandComponents(const Map &map, int &numComponents) {
   return component;
 }
 
-void scatterBand(Map &map, HeightMap *noise, int resourceType, int targetTiles,
-                 const Fertility::Field *fertility, const std::vector<int> &landComponent,
-                 int numComponents) {
+void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
+                 const std::vector<int> &landComponent, int numComponents) {
   if (targetTiles <= 0 || numComponents <= 0)
     return;
   const int width = map.getW(), height = map.getH();
@@ -156,16 +136,10 @@ void scatterBand(Map &map, HeightMap *noise, int resourceType, int targetTiles,
         continue;
       if (!map.isResourceAllowed(x, y, resourceType))
         continue;
-      // Map::growResources only regrows wheat or wood near water (the same triangular kernel
-      // Fertility::Field evaluates exactly) - a corn or wood tile with none nearby is a
-      // one-time find that can never come back, not a farm. Stone and algae don't regrow this
-      // way, so fertility is null for them and every legal tile is a candidate.
-      if (fertility && fertility->at(x, y) == 0)
-        continue;
       const int comp = landComponent[y * width + x];
       if (comp < 0)
         continue;
-      const unsigned lvl = scatterLevel(x, y, fertility, noise, kBuckets);
+      const unsigned lvl = noise.uiLevel(x, y, kBuckets);
       candidates[comp].emplace_back(x, y);
       level[comp].push_back(lvl);
       ++histogram[comp][lvl];
@@ -194,6 +168,100 @@ void scatterBand(Map &map, HeightMap *noise, int resourceType, int targetTiles,
         map.setResource(compCandidates[i].x, compCandidates[i].y, resourceType, 1);
   }
 }
+
+// Map::growResources only regrows a wheat or wood tile near water (the same triangular kernel
+// Fertility::Field evaluates exactly) - a corn or wood tile with none nearby is a one-time find
+// that can never come back, not a farm. But fertility answers only where farmland can be: it
+// says nothing about whether a given fertile spot should become corn or wood, and thresholding
+// corn and wood on the same field back to back (corn takes the highest band, wood the
+// next-highest) turned that lopsided into two concentric rings sorted by distance from water,
+// with wood pushed entirely behind corn instead of the two sitting side by side the way real
+// farmland does. So the two questions are answered separately here: fertility selects the
+// region - widened well past the requested tile count so it reaches into lower-but-still-
+// farmable ground instead of a razor-thin ring at the very highest values - and then an
+// unrelated noise field splits that region into corn and wood, so which crop lands where varies
+// along the coast rather than with distance from it.
+void scatterFarmland(Map &map, const Fertility::Field &fertility, HeightMap &splitNoise,
+                     int cornTarget, int woodTarget, const std::vector<int> &landComponent,
+                     int numComponents) {
+  const int totalTarget = cornTarget + woodTarget;
+  if (totalTarget <= 0 || numComponents <= 0)
+    return;
+  const int width = map.getW(), height = map.getH();
+  constexpr unsigned kBuckets = 2048;
+  constexpr int kWiden = 3; // the fertile region reaches roughly 3x past the requested tile count
+  std::vector<std::vector<MapGeneratorPoint>> candidates(numComponents);
+  std::vector<std::vector<unsigned>> fertLevel(numComponents);
+  std::vector<std::vector<int>> fertHistogram(numComponents, std::vector<int>(kBuckets, 0));
+  int totalCandidates = 0;
+  for (int y = 0; y < height; ++y)
+    for (int x = 0; x < width; ++x) {
+      if (map.getResource(x, y).type != NO_RES_TYPE)
+        continue;
+      // Wood and corn share the same terrain requirement (grass), so either stands in for
+      // eligibility here - which of the two a tile ends up with is decided below, by the split.
+      if (!map.isResourceAllowed(x, y, CORN))
+        continue;
+      const std::uint32_t f = fertility.at(x, y);
+      if (f == 0)
+        continue;
+      const int comp = landComponent[y * width + x];
+      if (comp < 0)
+        continue;
+      const unsigned lvl =
+          kBuckets - 1 - std::min<unsigned>(kBuckets - 1, unsigned((f * kBuckets) / Fertility::kScale));
+      candidates[comp].emplace_back(x, y);
+      fertLevel[comp].push_back(lvl);
+      ++fertHistogram[comp][lvl];
+      ++totalCandidates;
+    }
+  if (totalCandidates == 0)
+    return;
+  for (int c = 0; c < numComponents; ++c) {
+    const auto &compCandidates = candidates[c];
+    if (compCandidates.empty())
+      continue;
+    const int share =
+        int((std::int64_t(totalTarget) * std::int64_t(compCandidates.size())) / totalCandidates);
+    const int regionWanted = std::min<int>(compCandidates.size(), std::max(1, share) * kWiden);
+    unsigned threshold = kBuckets - 1;
+    int accumulated = 0;
+    for (unsigned b = 0; b < kBuckets; ++b) {
+      accumulated += fertHistogram[c][b];
+      if (accumulated >= regionWanted) {
+        threshold = b;
+        break;
+      }
+    }
+    std::vector<MapGeneratorPoint> region;
+    for (size_t i = 0; i < compCandidates.size(); ++i)
+      if (fertLevel[c][i] <= threshold)
+        region.push_back(compCandidates[i]);
+    if (region.empty())
+      continue;
+    // Split the region by an independent noise field instead of fertility - sort it into that
+    // field's order and slice off the lowest share for corn, the next share for wood, so the
+    // two form separate patches following the noise field's own organic contours rather than
+    // corn's band always sitting closer to the water than wood's.
+    std::vector<size_t> order(region.size());
+    for (size_t i = 0; i < order.size(); ++i)
+      order[i] = i;
+    std::sort(order.begin(), order.end(), [&](size_t a, size_t b) {
+      return splitNoise.uiLevel(region[a].x, region[a].y, kBuckets) <
+             splitNoise.uiLevel(region[b].x, region[b].y, kBuckets);
+    });
+    const int cornWanted = std::min<int>(
+        region.size(),
+        std::max(0, int((std::int64_t(cornTarget) * std::int64_t(region.size())) / totalTarget)));
+    const int woodWanted = std::min<int>(
+        int(region.size()) - cornWanted,
+        std::max(0, int((std::int64_t(woodTarget) * std::int64_t(region.size())) / totalTarget)));
+    for (int i = 0; i < cornWanted; ++i)
+      map.setResource(region[order[i]].x, region[order[i]].y, CORN, 1);
+    for (int i = cornWanted; i < cornWanted + woodWanted; ++i)
+      map.setResource(region[order[i]].x, region[order[i]].y, WOOD, 1);
+  }
+}
 } // namespace
 
 void scatterResources(Game &game, GenerationContext &context,
@@ -203,20 +271,15 @@ void scatterResources(Game &game, GenerationContext &context,
   const Fertility::Field fertility = Fertility::forMap(map, false);
   HeightMap noise(width, height, context.stream("scatter-noise"));
   noise.makePlain(24);
+  HeightMap splitNoise(width, height, context.stream("scatter-split"));
+  splitNoise.makePlain(24);
   int numComponents = 0;
   const std::vector<int> landComponent = computeLandComponents(map, numComponents);
 
-  // Corn first, then wood from whatever the corn band didn't already claim (scatterBand skips
-  // any tile that already has a resource) - wood settles for the next-best farmland the corn
-  // band left behind, rather than the two competing over the same prime coastal ground.
-  scatterBand(map, nullptr, CORN, density.corn * area / 1600, &fertility, landComponent,
-             numComponents);
-  scatterBand(map, nullptr, WOOD, density.wood * area / 1600, &fertility, landComponent,
-             numComponents);
-  scatterBand(map, &noise, STONE, density.stone * area / 3000, nullptr, landComponent,
-             numComponents);
-  scatterBand(map, &noise, ALGA, density.algae * area / 800, nullptr, landComponent,
-             numComponents);
+  scatterFarmland(map, fertility, splitNoise, density.corn * area / 1600,
+                  density.wood * area / 1600, landComponent, numComponents);
+  scatterBand(map, noise, STONE, density.stone * area / 3000, landComponent, numComponents);
+  scatterBand(map, noise, ALGA, density.algae * area / 800, landComponent, numComponents);
 
   // Fruit stays a rare, discrete find rather than a background band - "a distinct little
   // prize", the same role it already plays elsewhere in these generators - so it keeps the

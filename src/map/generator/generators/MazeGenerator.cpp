@@ -207,7 +207,7 @@ GeneratorDefinition mazeDefinition() {
   return {"maze",
           11,
           "Maze",
-          3,
+          4,
           false,
           {{"cell-size",
             "Cell size",
