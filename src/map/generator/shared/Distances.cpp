@@ -11,7 +11,6 @@
 #include "Terrain.h"
 #include <algorithm>
 #include <cmath>
-#include <queue>
 using namespace MapGeneration;
 
 namespace MapGeneration
@@ -30,9 +29,13 @@ void adjustHeightmapFromPerlinNoise(Map &map, GenerationContext &context, std::v
 {
 	HeightMap noise(map.getW(), map.getH(), context.stream("noise"));
 	noise.makePlain(4);
-	for (int x = 0; x < map.getW(); ++x)
+	// Every cell's result depends only on its own (x, y), not on visitation order, so nesting
+	// y outside x walks `heights` (and noise's own w*h-sized field) with the grain of its
+	// row-major layout instead of across it: the inner loop's writes land in consecutive
+	// memory instead of striding by a full row on every step.
+	for (int y = 0; y < map.getH(); ++y)
 	{
-		for (int y = 0; y < map.getH(); ++y)
+		for (int x = 0; x < map.getW(); ++x)
 		{
 			heights[y * map.getW() + x] += noise.uiLevel(x, y, spread * 2) - spread;
 		}
@@ -42,13 +45,20 @@ void adjustHeightmapFromPerlinNoise(Map &map, GenerationContext &context, std::v
 void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 					  std::vector<MapGeneratorPoint> &obstacles, std::vector<int> &heightmap)
 {
-	std::queue<int> places;
+	// Every cell is enqueued at most once - the `side == 0` guard below stops a second push
+	// once it's been visited - so a flood over the whole map never needs more than w*h queue
+	// slots. A flat, preallocated FIFO fills that bound with sequential writes; std::queue<int>
+	// (std::deque-backed) instead grows by separately heap-allocated blocks, turning most
+	// pushes and pops into a pointer chase to a freshly touched cache line.
+	const size_t mapSize = size_t(map.getW()) * map.getH();
+	std::vector<int> places(mapSize);
+	size_t head = 0, tail = 0;
 	heightmap.clear();
-	heightmap.resize(map.getW() * map.getH(), 0);
+	heightmap.resize(mapSize, 0);
 	for (unsigned int i = 0; i < sources.size(); ++i)
 	{
 		heightmap[sources[i].y * map.getW() + sources[i].x] = 1;
-		places.push(sources[i].y * map.getW() + sources[i].x);
+		places[tail++] = sources[i].y * map.getW() + sources[i].x;
 	}
 	for (unsigned int i = 0; i < obstacles.size(); ++i)
 	{
@@ -58,10 +68,9 @@ void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 	Uint32 wDec = map.wDec;
 	Uint32 hMask = map.hMask;
 	Uint32 wMask = map.wMask;
-	while (!places.empty())
+	while (head < tail)
 	{
-		int deltaAddrG = places.front();
-		places.pop();
+		int deltaAddrG = places[head++];
 
 		size_t y = deltaAddrG >> wDec; // Calculate the coordinates of
 		size_t x = deltaAddrG & wMask; // the current field and of the
@@ -92,7 +101,7 @@ void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 			if (side == 0)
 			{
 				*addr = g;
-				places.push(deltaAddrC[ci]);
+				places[tail++] = deltaAddrC[ci];
 			}
 		}
 	}
@@ -103,9 +112,11 @@ int computeAverageDistance(Map &map, std::vector<int> &grid, int areaN,
 {
 	long total = 0;
 	int count = 0;
-	for (int x = 0; x < map.getW(); ++x)
+	// Addition is commutative, so summing in whichever order touches memory sequentially -
+	// y outside x, matching grid/heightmap's row-major layout - gives the exact same total.
+	for (int y = 0; y < map.getH(); ++y)
 	{
-		for (int y = 0; y < map.getH(); ++y)
+		for (int x = 0; x < map.getW(); ++x)
 		{
 			if (grid[y * map.getW() + x] == areaN)
 			{

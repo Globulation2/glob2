@@ -14,11 +14,45 @@
 #include <cassert>
 #include <cmath>
 #include <limits>
-#include <list>
 using namespace MapGeneration;
 
 namespace MapGeneration
 {
+namespace
+{
+// Collects every (x, y) with pred(x, y) true, in the same x-major, y-minor order a plain
+// `for x { for y { if (pred(x, y)) points.push_back(...) } }` scan produces - several callers
+// pick a result by a random index, so the elements must land in that same order, not merely be
+// the same set. But such a scan reads a row-major grid against its grain: for fixed x, striding
+// by a full row (map.getW() ints) on every y step touches a new cache line almost every time,
+// where the same predicate evaluated y-outer, x-inner would stay within one line for many
+// consecutive tiles. This gets both: a row-major counting pass sizes each output column, then a
+// second row-major pass drops each point straight into its final slot - two sequential-access
+// passes over the grid instead of one that strides across it, same result either way.
+template <typename Pred>
+void collectPointsColumnOrder(int w, int h, Pred pred, std::vector<MapGeneratorPoint> &points)
+{
+	std::vector<int> countPerColumn(w, 0);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			if (pred(x, y))
+				++countPerColumn[x];
+	std::vector<int> cursor(w);
+	int total = 0;
+	for (int x = 0; x < w; ++x)
+	{
+		cursor[x] = total;
+		total += countPerColumn[x];
+	}
+	const size_t base = points.size();
+	points.resize(base + total, MapGeneratorPoint(0, 0));
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			if (pred(x, y))
+				points[base + cursor[x]++] = MapGeneratorPoint(x, y);
+}
+} // namespace
+
 bool divideUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, int areaN,
 				  std::vector<int> &weights, std::vector<int> &areaNumbers)
 {
@@ -67,15 +101,10 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 		std::any_of(weights.begin(), weights.end(), [](int w) { return w <= 0 || w > 10000; }))
 		throw GenerationFailure("Invalid point dispersion inputs");
 	std::vector<MapGeneratorPoint> startingPoints;
-	for (int x = 0; x < map.getW(); ++x)
 	{
-		for (int y = 0; y < map.getH(); ++y)
-		{
-			if (grid[y * map.getW() + x] == areaN)
-			{
-				startingPoints.push_back(MapGeneratorPoint(x, y));
-			}
-		}
+		const int w = map.getW();
+		collectPointsColumnOrder(w, map.getH(), [&](int x, int y) { return grid[y * w + x] == areaN; },
+								 startingPoints);
 	}
 
 	if (startingPoints.size() < points.size())
@@ -93,24 +122,19 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 
 	for (unsigned int i = 0; i < points.size(); ++i)
 	{
+		const int w = map.getW(), h2 = map.getH();
+		// The original single pass tracked a running max and reset its candidate list on every
+		// strict increase; by construction that converges to exactly "every tile at the eventual
+		// global max", in scan order, whatever the intermediate history was. Two explicit passes
+		// - find the max, then collect every tile equal to it - reach the identical set in the
+		// identical order without carrying that reset logic through a stride-w memory access.
 		int max = 0;
+		for (int y = 0; y < h2; ++y)
+			for (int x = 0; x < w; ++x)
+				max = std::max(max, heights[y * w + x]);
 		std::vector<MapGeneratorPoint> possible;
-		for (int x = 0; x < map.getW(); ++x)
-		{
-			for (int y = 0; y < map.getH(); ++y)
-			{
-				int h = heights[y * map.getW() + x];
-				if (h > max)
-				{
-					max = h;
-					possible.clear();
-				}
-				if (h >= max)
-				{
-					possible.push_back(MapGeneratorPoint(x, y));
-				}
-			}
-		}
+		collectPointsColumnOrder(w, h2, [&](int x, int y) { return heights[y * w + x] >= max; },
+								 possible);
 		int n = context.stream("regions")() % possible.size();
 		points[i] = possible[n];
 		sources.push_back(points[i]);
@@ -149,47 +173,62 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 			std::int64_t orig = best;
 			int best_x = -1;
 			int best_y = -1;
-			for (int dx = search == PointSearch::Local ? -3 : 0;
-				 dx <= (search == PointSearch::Local ? 3 : map.getW() - 1); ++dx)
+			auto tryCandidate = [&](int nx, int ny)
 			{
-				for (int dy = search == PointSearch::Local ? -3 : 0;
-					 dy <= (search == PointSearch::Local ? 3 : map.getH() - 1); ++dy)
+				if (nx == points[i].x && ny == points[i].y)
+					return;
+				if (grid[ny * map.getW() + nx] != areaN)
+					return;
+				std::int64_t score = std::numeric_limits<int>::max();
+				bool invalid = false;
+				for (unsigned int j = 0; j < points.size(); ++j)
 				{
-					int nx = search == PointSearch::Local ? map.normalizeX(points[i].x + dx) : dx;
-					int ny = search == PointSearch::Local ? map.normalizeY(points[i].y + dy) : dy;
-					if (nx == points[i].x && ny == points[i].y)
+					if (i == j)
 						continue;
-					if (grid[ny * map.getW() + nx] != areaN)
-						continue;
-					std::int64_t score = std::numeric_limits<int>::max();
-					bool invalid = false;
-					for (unsigned int j = 0; j < points.size(); ++j)
+					if (nx == points[j].x && ny == points[j].y)
 					{
-						if (i == j)
-							continue;
-						if (nx == points[j].x && ny == points[j].y)
-						{
-							invalid = true;
-							break;
-						}
-						if (search == PointSearch::WholeRegion && ++evaluations > 20000000)
-							throw GenerationFailure(
-								"Point dispersion exhausted its distance-evaluation budget");
-						std::int64_t dist =
-							std::int64_t(map.warpDistSquare(nx, ny, points[j].x, points[j].y)) *
-							weights[j];
-						score = std::min(dist, score);
+						invalid = true;
+						break;
 					}
-					if (invalid)
-						continue;
-
-					if (score > best)
-					{
-						best = score;
-						best_x = nx;
-						best_y = ny;
-					}
+					if (search == PointSearch::WholeRegion && ++evaluations > 20000000)
+						throw GenerationFailure(
+							"Point dispersion exhausted its distance-evaluation budget");
+					std::int64_t dist =
+						std::int64_t(map.warpDistSquare(nx, ny, points[j].x, points[j].y)) *
+						weights[j];
+					score = std::min(dist, score);
 				}
+				if (invalid)
+					return;
+				if (score > best)
+				{
+					best = score;
+					best_x = nx;
+					best_y = ny;
+				}
+			};
+			if (search == PointSearch::WholeRegion)
+			{
+				// A full-grid scan: nesting the row coordinate outside the column coordinate
+				// keeps it within the grain of grid's row-major layout instead of striding
+				// across it a full row at a time on every step. This can change which
+				// exactly-tied candidate wins a placement (best only updates on strict
+				// improvement), but never which candidates exist or how good the eventual
+				// choice is - already documented as bounded best-response, not a single
+				// guaranteed optimum, so a different tie winner is not a different guarantee.
+				for (int ny = 0; ny < map.getH(); ++ny)
+					for (int nx = 0; nx < map.getW(); ++nx)
+						tryCandidate(nx, ny);
+			}
+			else
+			{
+				// PointSearch::Local's window is the 7x7 area right around the point itself -
+				// small enough that traversal order was never going to matter for cache
+				// behavior - so its enumeration order is left exactly as it was.
+				for (int dx = -3; dx <= 3; ++dx)
+					for (int dy = -3; dy <= 3; ++dy)
+						tryCandidate(map.normalizeX(points[i].x + dx),
+									 map.normalizeY(points[i].y + dy));
 			}
 			if (best_x != -1)
 			{
@@ -237,7 +276,14 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 	Uint32 hMask = map.hMask;
 	Uint32 wMask = map.wMask;
 
-	std::vector<std::list<int>> squares(points.size());
+	// Frontier cells are inserted at a random position (not just pushed/popped from one end) so
+	// the flood grows into an organic, non-directional shape rather than a stack's snake or a
+	// queue's rings - that randomness is what's wanted here, not an accident to remove. But nothing
+	// about that requires a linked list: std::vector supports the identical operations (random
+	// std::advance is O(1) pointer arithmetic on its random-access iterator; insert/erase shift
+	// the tail via a contiguous memmove) while never chasing a pointer to a separately allocated
+	// node the way every std::list link does. Same elements, same positions, same output.
+	std::vector<std::vector<int>> squares(points.size());
 	std::vector<int> expansion(points.size(), 0);
 	std::vector<int> current;
 	std::vector<int> count;
@@ -264,7 +310,7 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 			while (expansion[p] > 0 && !squares[p].empty())
 			{
 				Uint32 deltaAddrG = squares[p].back();
-				squares[p].erase(--squares[p].end());
+				squares[p].pop_back();
 
 				size_t y = deltaAddrG >> wDec; // Calculate the coordinates of
 				size_t x = deltaAddrG & wMask; // the current field and of the
@@ -312,7 +358,7 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 						expansion[p] -= 1;
 
 						Uint32 randLocation = context.stream("regions")() % count[p];
-						std::list<int>::iterator i = squares[p].begin();
+						std::vector<int>::iterator i = squares[p].begin();
 						std::advance(i, randLocation);
 						squares[p].insert(i, deltaAddrC[ci]);
 					}
@@ -327,27 +373,17 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 void getAllPoints(Map &map, std::vector<int> &grid, int areaN,
 				  std::vector<MapGeneratorPoint> &points)
 {
-	for (int x = 0; x < map.getW(); ++x)
-	{
-		for (int y = 0; y < map.getH(); ++y)
-		{
-			if (grid[y * map.getW() + x] == areaN)
-				points.push_back(MapGeneratorPoint(x, y));
-		}
-	}
+	const int w = map.getW();
+	collectPointsColumnOrder(w, map.getH(), [&](int x, int y) { return grid[y * w + x] == areaN; },
+							 points);
 }
 
 void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,
 					   std::vector<MapGeneratorPoint> &points)
 {
-	for (int x = 0; x < map.getW(); ++x)
-	{
-		for (int y = 0; y < map.getH(); ++y)
-		{
-			if (grid[y * map.getW() + x] != areaN)
-				points.push_back(MapGeneratorPoint(x, y));
-		}
-	}
+	const int w = map.getW();
+	collectPointsColumnOrder(w, map.getH(), [&](int x, int y) { return grid[y * w + x] != areaN; },
+							 points);
 }
 
 void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
@@ -414,26 +450,19 @@ void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,
 
 void findBorderPoints(Map &map, std::vector<int> &grid, std::vector<MapGeneratorPoint> &points)
 {
-	for (int x = 0; x < map.getW(); ++x)
-	{
-		for (int y = 0; y < map.getH(); ++y)
+	const int w = map.getW();
+	collectPointsColumnOrder(
+		w, map.getH(),
+		[&](int x, int y)
 		{
-			bool found = false;
-			for (int dx = -1; dx <= 1 && !found; ++dx)
-			{
-				for (int dy = -1; dy <= 1 && !found; ++dy)
-				{
-					if (grid[map.normalizeY(y + dy) * map.getW() + map.normalizeX(x + dx)] !=
-						grid[y * map.getW() + x])
-					{
-						found = true;
-					}
-				}
-			}
-			if (found)
-				points.push_back(MapGeneratorPoint(x, y));
-		}
-	}
+			for (int dx = -1; dx <= 1; ++dx)
+				for (int dy = -1; dy <= 1; ++dy)
+					if (grid[map.normalizeY(y + dy) * w + map.normalizeX(x + dx)] !=
+						grid[y * w + x])
+						return true;
+			return false;
+		},
+		points);
 }
 
 void chooseRandomPoints(Map &map, GenerationContext &context,
