@@ -246,8 +246,10 @@ static bool generate(Game &game, GenerationContext &context) {
     // an island can land close to a narrow stretch of coast even while the coastline bulges out
     // far away in some other direction.
     double halfMapMargin = std::min(W, H) / 2.0 - 6.0;
-    int outlierCount = std::min(4, options.resourceIslands +
-                                       int(context.bounded("layout", 2)));
+    // No cap beyond the control's own range here - resource-islands now goes up to 20 for
+    // players who want an island-heavy map, and each one is still an independent best-effort
+    // placement (a request that can't all fit in the margin just places as many as do).
+    int outlierCount = options.resourceIslands + int(context.bounded("layout", 2));
     std::vector<MapGeneratorPoint> outlierCenters;
     std::vector<int> outlierRadii;
     for (int oi = 0; oi < outlierCount; ++oi) {
@@ -415,15 +417,27 @@ static bool generate(Game &game, GenerationContext &context) {
         placeResourceClump(game.map, context,
                            corePts[context.bounded("resources", corePts.size())],
                            STONE, 3);
+      constexpr int kFruitClumpsPerType = 3;
       for (int fruitType = 0; fruitType < 3; ++fruitType)
-        placeResourceClump(game.map, context,
-                           corePts[context.bounded("resources", corePts.size())],
-                           CHERRY + fruitType, 2);
+        for (int clump = 0; clump < kFruitClumpsPerType; ++clump)
+          placeResourceClump(game.map, context,
+                             corePts[context.bounded("resources", corePts.size())],
+                             CHERRY + fruitType, 2);
     }
 
-    // The lake itself gets the same algae treatment the open sea gets in step 7 below -
-    // collected separately since it's carved well inside the ring just built above.
+    // The lake gets the same algae treatment the open sea gets in step 7 below, but candidates
+    // are drawn from well inside the shoreline (innerLakeR, not lakeR) rather than anywhere in
+    // the lake - a clump anchored right up against the shore is still entirely valid water, but
+    // reads as "stuck to one side" rather than "in the lake". The very first clump is placed
+    // dead center, at the shape transform's own origin - the lake's exact geometric middle - so
+    // there's always at least one unambiguously centered deposit regardless of how the interior
+    // sampling below happens to land.
     if (hasLake) {
+      const int centerX = game.map.normalizeX((int)std::lround(W / 2.0));
+      const int centerY = game.map.normalizeY((int)std::lround(H / 2.0));
+      placeResourceClump(game.map, context, MapGeneratorPoint(centerX, centerY), ALGA, 2);
+
+      const double innerLakeR = std::max(0.0, lakeR - 4.0);
       std::vector<MapGeneratorPoint> lakeWater;
       for (int y = 0; y < H; ++y)
         for (int x = 0; x < W; ++x) {
@@ -431,11 +445,13 @@ static bool generate(Game &game, GenerationContext &context) {
             continue;
           const auto shaped = xf.toShape({double(x), double(y)});
           double u = shaped.x, v = shaped.y;
-          if (u * u + v * v <= lakeR * lakeR)
+          if (u * u + v * v <= innerLakeR * innerLakeR)
             lakeWater.push_back(MapGeneratorPoint(x, y));
         }
+      // The center clump above already guarantees at least one, so this is purely bonus
+      // coverage for a lake big enough to have real interior room left over - no forced minimum.
       if (!lakeWater.empty())
-        for (int i = 0; i < std::max(1, int(lakeWater.size()) / 40); ++i)
+        for (int i = 0; i < int(lakeWater.size()) / 40; ++i)
           placeResourceClump(
               game.map, context,
               lakeWater[context.bounded("resources", lakeWater.size())], ALGA, 2);
@@ -521,7 +537,9 @@ static bool generate(Game &game, GenerationContext &context) {
   // generator's own layering already makes. Algae is left at zero: the shoreline band in
   // step 7 already places it with a shape tuned to the coastline, and scattering more over
   // open water would just fight that.
-  scatterResources(game, context, {/*corn=*/18, /*wood=*/18, /*stone=*/10, /*algae=*/0, /*fruit=*/3});
+  // corn:wood at 2:1 rather than even - wood was reading as overrepresented in practice, and
+  // total density is held constant (was 18+18=36) rather than just adding more corn on top.
+  scatterResources(game, context, {/*corn=*/24, /*wood=*/12, /*stone=*/10, /*algae=*/0, /*fruit=*/3});
 
   // 9) Place bank resources last so settlement and regional deposits cannot
   // overwrite the guarantee. Every side of every fjord receives both resources
@@ -547,8 +565,10 @@ static bool generate(Game &game, GenerationContext &context) {
       for (double progress : bankScatterProgress) {
         const double jitter = (context.bounded("resources", 41) - 20) / 1000.0; // +/-0.02
         for (int side : {-1, 1}) {
+          // corn:wood at 2:1 (4:2 of 8) rather than even (3:3), stone's own 2/8 share
+          // unchanged - the same rebalance as the ambient scatter above, for consistency.
           const int roll = context.bounded("resources", 8);
-          const int resourceType = roll < 3 ? CORN : roll < 6 ? WOOD : STONE;
+          const int resourceType = roll < 4 ? CORN : roll < 6 ? WOOD : STONE;
           placeBankClump(game.map, context, fjordCenterlines[k], progress + jitter, side,
                          resourceType);
         }
@@ -581,7 +601,7 @@ GeneratorDefinition fjordContinentDefinition() {
   return {"fjord-continent",
           12,
           "Fjord continent",
-          7,
+          9,
           false,
           {{"continent-size", "Continent size", 28, 40, 2, 34,
             ControlGroup::Terrain},
@@ -591,7 +611,7 @@ GeneratorDefinition fjordContinentDefinition() {
            {"lake-size", "Lake size", 0, 90, 5, 45, ControlGroup::Terrain},
            {"lake-connected", "Lake connects to fjords", 0, 1, 1, 0,
             ControlGroup::Terrain},
-           {"resource-islands", "Resource islands", 0, 4, 1, 2,
+           {"resource-islands", "Resource islands", 0, 20, 1, 2,
             ControlGroup::Resources}},
           generate};
 }

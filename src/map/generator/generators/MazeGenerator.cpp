@@ -214,7 +214,7 @@ GeneratorDefinition mazeDefinition() {
   return {"maze",
           11,
           "Maze",
-          5,
+          6,
           false,
           {{"cell-size",
             "Cell size",
@@ -248,7 +248,9 @@ GeneratorDefinition mazeDefinition() {
             false,
             {0, 10, 25, 50, 75, 100}},
            {"wheat", "Wheat", 0, 64, 1, 50, ControlGroup::Resources},
-           {"wood", "Wood", 0, 64, 1, 50, ControlGroup::Resources},
+           // Default halved relative to wheat's 50 (was even at 50/50) - wood read as
+           // overrepresented in practice, and this keeps the same 2:1 ratio as Fjord's rebalance.
+           {"wood", "Wood", 0, 64, 1, 25, ControlGroup::Resources},
            {"stone", "Stone", 0, 64, 1, 50, ControlGroup::Resources},
            {"algae", "Algae", 0, 64, 1, 50, ControlGroup::Resources},
            {"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources}},

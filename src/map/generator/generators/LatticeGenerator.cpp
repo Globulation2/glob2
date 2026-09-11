@@ -101,13 +101,15 @@ GeneratorDefinition latticeDefinition() {
       "lattice",
       10,
       "Lattice",
-      5,
+      6,
       false,
       {{"islet-size", "Islet size", 1, 4, 1, 2, ControlGroup::Terrain},
        {"channel-width", "Channel width", 2, 4, 1, 3, ControlGroup::Terrain},
        {"home-radius", "Home radius", 12, 20, 2, 16, ControlGroup::Layout},
        {"wheat", "Wheat", 0, 64, 1, 50, ControlGroup::Resources},
-       {"wood", "Wood", 0, 64, 1, 50, ControlGroup::Resources},
+       // Default halved relative to wheat's 50 (was even at 50/50) - wood read as
+       // overrepresented in practice, and this keeps the same 2:1 ratio as Fjord's rebalance.
+       {"wood", "Wood", 0, 64, 1, 25, ControlGroup::Resources},
        {"stone", "Stone", 0, 64, 1, 50, ControlGroup::Resources},
        {"algae", "Algae", 0, 64, 1, 50, ControlGroup::Resources},
        {"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources}},
