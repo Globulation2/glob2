@@ -786,10 +786,29 @@ struct CustomGameSetupHarness
       };
       const auto corner = pixel(rect.x + 1, rect.y + 1);
       assert(corner[0] || corner[1] || corner[2]); // no thumbnail letterbox inside the map
+      // LobbyMapPreview clamps a marker's top-left corner so the whole 16x16 square stays inside
+      // the preview, which on a narrow one squeezes a whole edge of the map onto one row or column:
+      // a 128x512 map is 34 pixels wide in the compact window, so every start past about x=60
+      // lands on the same column. Two starts can then share a pixel, where the later marker covers
+      // the earlier one legitimately, so only a start nothing is drawn over can be checked.
+      std::vector<int> markerX, markerY;
       for (const auto &start : expectedStarts) {
-        const int x = rect.x + std::clamp(start.x * rect.w / mapW, 2, std::max(2, rect.w - 18));
-        const int y = rect.y + std::clamp(start.y * rect.h / mapH, 2, std::max(2, rect.h - 18));
-        const auto swatch = pixel(x + 1, y + 1);
+        markerX.push_back(rect.x + std::clamp(start.x * rect.w / mapW, 2, std::max(2, rect.w - 18)));
+        markerY.push_back(rect.y + std::clamp(start.y * rect.h / mapH, 2, std::max(2, rect.h - 18)));
+      }
+      for (size_t i = 0; i < expectedStarts.size(); ++i) {
+        bool covered = false;
+        for (size_t j = i + 1; j < expectedStarts.size() && !covered; ++j)
+          covered = markerX[j] == markerX[i] && markerY[j] == markerY[i];
+        if (covered)
+          continue;
+        const auto &start = expectedStarts[i];
+        const auto swatch = pixel(markerX[i] + 1, markerY[i] + 1);
+        if (!(swatch[0] == start.color.r && swatch[1] == start.color.g && swatch[2] == start.color.b))
+          std::printf("marker mismatch %s: start (%d,%d) map %dx%d rect %d,%d %dx%d expected"
+                      " %d,%d,%d got %d,%d,%d\n",
+                      name.c_str(), start.x, start.y, mapW, mapH, rect.x, rect.y, rect.w, rect.h,
+                      start.color.r, start.color.g, start.color.b, swatch[0], swatch[1], swatch[2]);
         assert(swatch[0] == start.color.r && swatch[1] == start.color.g && swatch[2] == start.color.b);
       }
       SDL_FreeSurface(rgba);
