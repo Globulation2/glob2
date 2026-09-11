@@ -174,10 +174,8 @@ MapEdit::MapEdit()
 	unitWalkLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 300, 112, 16), "unit editor", "unit editor walk level scroll box", "update unit walk level", NULL, 3);
 	unitSwimLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 316, 128, 16), "unit editor", "unit editor swim level label", "", "[Swim]", NULL, 3);
 	unitSwimLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 332, 112, 16), "unit editor", "unit editor swim level scroll box", "update unit swim level", NULL, 3);
-	unitHarvestLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 348, 128, 16), "unit editor", "unit editor harvest level label", "", "[Harvest]", NULL, 3);
-	unitHarvestLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 364, 112, 16), "unit editor", "unit editor harvest level scroll box", "update unit harvest level", NULL, 3);
-	unitBuildLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 380, 128, 16), "unit editor", "unit editor build level label", "", "[Build]", NULL, 3);
-	unitBuildLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 396, 112, 16), "unit editor", "unit editor build level scroll box", "update unit build level", NULL, 3);
+	unitBuildLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 348, 128, 16), "unit editor", "unit editor build level label", "", "[Build]", NULL, 3);
+	unitBuildLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 364, 112, 16), "unit editor", "unit editor build level scroll box", "update unit build level", NULL, 3);
 	unitAttackSpeedLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 348, 128, 16), "unit editor", "unit editor attack speed level label", "", "[At. speed]", NULL, 3);
 	unitAttackSpeedLevelScrollBox = new ValueScrollBox(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 364, 112, 16), "unit editor", "unit editor attack speed level scroll box", "update unit attack speed level", NULL, 3);
 	unitAttackStrengthLevelLabel = new FractionValueText(*this, widgetRectangle(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+8+decX, 380, 128, 16), "unit editor", "unit editor attack strength level label", "", "[At. strength]", NULL, 3);
@@ -192,8 +190,6 @@ MapEdit::MapEdit()
 	addWidget(unitWalkLevelScrollBox);
 	addWidget(unitSwimLevelLabel);
 	addWidget(unitSwimLevelScrollBox);
-	addWidget(unitHarvestLevelLabel);
-	addWidget(unitHarvestLevelScrollBox);
 	addWidget(unitBuildLevelLabel);
 	addWidget(unitBuildLevelScrollBox);
 	addWidget(unitAttackSpeedLevelLabel);

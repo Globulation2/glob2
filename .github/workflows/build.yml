@@ -159,6 +159,10 @@ jobs:
           scons -j$(nproc) release=1 server=0 hiring-bucket-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBucketHarness .
 
+      - name: Build and run the hiring level-gate regression
+        run: |
+          scons -j$(nproc) release=1 server=0 level-gate-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/LevelGateHarness .
       - name: Build and run the resource-fetch target regression
         run: |
           scons -j$(nproc) release=1 server=0 resource-fetch-target-test

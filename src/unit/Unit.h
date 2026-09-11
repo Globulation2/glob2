@@ -260,6 +260,12 @@ public:
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
 	Sint32 level[NB_ABILITY];
+	//! The worker's schooling level. Harvest and build are taught together by
+	//! the school and mean one thing in play, which building tier the worker
+	//! may raise, so they are kept equal and read through here.
+	Sint32 workerLevel() const { return level[BUILD]; }
+	//! Set both halves of the worker level, and their performance, together.
+	void setWorkerLevel(Sint32 newLevel);
 	bool canLearn[NB_ABILITY];
 	Sint32 experience;
 	Sint32 experienceLevel;
