@@ -1,9 +1,9 @@
 {
   "name": "smoke",
-  "description": "Quick check that the tournament runs end to end: the Symmetric arena baseline and three other generators, two maps each, every rotation once.",
+  "description": "Quick fairness check: the Symmetric arena baseline and three other generators, three 128x128 maps each, every rotation played twice (96 games, about 15 minutes at 3 jobs).",
   "generators": [15, 9, 13, 4],
-  "map_seeds": "1001-1002",
-  "games_per_rotation": 1,
+  "map_seeds": "1001-1003",
+  "games_per_rotation": 2,
   "rotations": "all",
   "size": 128,
   "colonies": 4,

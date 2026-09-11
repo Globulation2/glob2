@@ -721,6 +721,21 @@ def scorer_check(maps, draws, seed):
     return check
 
 
+def decisive_headline(maps, n, draws, seed):
+    """Position bias from games won outright (elimination or prestige), leaving out capped games."""
+    usable = [m for m in maps if m['decisive_slot']['n'] >= 2]
+    biases = [m['decisive_slot']['squared_bias'] for m in usable]
+    mean_bias = statistics.mean(biases) if biases else None
+    return {
+        'decisive_maps': len(usable),
+        'decisive_games': sum(m['decisive_slot']['n'] for m in maps),
+        'decisive_rms_points': rms_points(mean_bias, n),
+        'decisive_rms_points_ci': bootstrap(biases, lambda s: rms_points(statistics.mean(s), n), draws, seed)
+        if biases else None,
+        'decisive_maps_p05': sum(m['decisive_slot']['p'] < 0.05 for m in usable),
+    }
+
+
 def analyse_generator(method, maps, config, catalog):
     n = int(config['colonies'])
     draws = int(config['bootstrap_draws'])
@@ -767,6 +782,8 @@ def analyse_generator(method, maps, config, catalog):
         'start_mismatches': sum(m['start_mismatches'] for m in maps),
         'headline_rms_points': rms_points(mean_bias, n), 'headline_rms_points_ci': ci,
         'mean_squared_bias': mean_bias,
+        # The same headline counting only games won outright, so cap adjudication cannot drive it.
+        **decisive_headline(maps, n, draws, seed + 19),
         'maps_p05': sum(p < 0.05 for p in p_values), 'maps_bh05': sum(q < 0.05 for q in bh),
         'maps_holm05': sum(h < 0.05 for h in hl),
         'expected_p05_by_chance': 0.05 * len(p_values),
@@ -953,14 +970,16 @@ def markdown(summary, config):
               '(95% bootstrap interval over maps). Biased maps counts maps whose wins by start reject a '
               'uniform split: raw p < 0.05, and after Benjamini-Hochberg across that generator\'s maps. '
               'Scorer rho is the within-map rank correlation between a colony\'s start-quality score and its '
-              'win share.', '',
-              '| Generator | Maps | Games | Cap | Position bias (pp) | Biased maps p<.05 / BH | Best start / fair (median) | Any bias p | Scorer rho (wins) |',
-              '| --- | ---: | ---: | ---: | --- | --- | ---: | ---: | --- |']
+              'win share. Decisive only repeats the position bias counting just games won outright, with the '
+              'number of such games, so tick-cap adjudication cannot drive it.', '',
+              '| Generator | Maps | Games | Cap | Position bias (pp) | Decisive only (pp, games) | Biased maps p<.05 / BH | Best start / fair (median) | Any bias p | Scorer rho (wins) |',
+              '| --- | ---: | ---: | ---: | --- | --- | --- | ---: | ---: | --- |']
     for g in summary['generators']:
         scorer = (g['scorer'] or {}).get('total') or {}
         lines.append(
             f'| {g["name"]} ({g["method"]}) | {g["maps_with_winners"]}/{g["maps"]} | {g["played"]} | {pct(g["cap_share"], 0)} '
             f'| {num(g["headline_rms_points"], 1)}{interval(g["headline_rms_points_ci"])} '
+            f'| {num(g["decisive_rms_points"], 1)}{interval(g["decisive_rms_points_ci"])} ({g["decisive_games"]}) '
             f'| {g["maps_p05"]} / {g["maps_bh05"]} (chance {g["expected_p05_by_chance"]:.1f}) '
             f'| {num((g["dominance"] or {}).get("median"))} | {pval(g["pooled_p"])} '
             f'| {num(scorer.get("wins_rho"))}{interval(scorer.get("wins_rho_ci"), lambda v: f"{v:.2f}")} |')
