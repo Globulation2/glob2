@@ -41,6 +41,11 @@ ROOT = Path(__file__).resolve().parents[1]
 PRESET_DIR = ROOT / 'tools' / 'map-fairness'
 BASELINE_METHOD = 15  # Symmetric arena: exactly symmetric starts, the fairness baseline.
 Z95 = 1.959963984540054
+# Two-sided 95% Student t quantiles for 1..30 degrees of freedom.
+T975 = [12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228, 2.201, 2.179, 2.160, 2.145,
+        2.131, 2.120, 2.110, 2.101, 2.093, 2.086, 2.080, 2.074, 2.069, 2.064, 2.060, 2.056, 2.052, 2.048,
+        2.045, 2.042]
+MIN_MAPS_FOR_INTERVAL = 5  # below this a bootstrap over maps cannot say much
 FACTORS = ['wheat', 'wood', 'fertility', 'depth', 'room', 'isolation']
 COLONY_FIELDS = ['wheat_distance', 'wood_distance', 'catchment_tiles', 'build_sites',
                  'resource_amount', 'rival_distance', 'rivals_within_threat', 'mean_fertility',
@@ -327,7 +332,7 @@ def adjudicate(game, record, config):
         outcome['winner_slot'] = slot_of(winner)
     eliminated = sorted((e['eliminated_tick'], t) for t, e in teams.items() if e['eliminated_tick'] >= 0)
     outcome['elimination_order'] = [[slot_of(t), tick] for tick, t in eliminated]
-    # Placement 1 is the winner; other survivors by prestige, then eliminated colonies, the
+    # Placement 1 is the winner; other survivors by strength, then eliminated colonies, the
     # later-eliminated ahead. Ties break towards the lower start index, only to stay deterministic.
     survivors = sorted((t for t in teams if t != winner and teams[t]['eliminated_tick'] < 0),
                        key=lambda t: (tuple(-v for v in strength(t)), slot_of(t)))
@@ -572,6 +577,11 @@ def bootstrap(items, statistic, draws, seed):
     return [values[int(0.025 * (len(values) - 1))], values[int(0.975 * (len(values) - 1))]]
 
 
+def t975(df):
+    """Two-sided 95% Student t quantile; past 30 degrees of freedom a close approximation."""
+    return T975[df - 1] if df <= len(T975) else Z95 + 2.4 / df
+
+
 def squared_bias(counts):
     """Unbiased estimate of sum_s (p_s - 1/k)^2 from multinomial counts.
 
@@ -589,6 +599,43 @@ def rms_points(mean_squared_bias, k):
     if mean_squared_bias is None:
         return None
     return 100 * math.sqrt(max(0.0, mean_squared_bias) / k)
+
+
+def bias_interval(biases, k):
+    """95% t interval over maps for the mean squared bias, expressed as position bias in points.
+
+    Each map's estimate carries its own game-to-game noise, so the spread across maps covers that
+    noise as well as real differences between maps. With few maps it is honestly wide."""
+    if len(biases) < 2:
+        return None
+    mean = statistics.mean(biases)
+    half = t975(len(biases) - 1) * statistics.stdev(biases) / math.sqrt(len(biases))
+    return [rms_points(mean - half, k), rms_points(mean + half, k)]
+
+
+_FLOOR_CACHE = {}
+
+
+def fair_map_floor(game_counts, k, draws=2000):
+    """95th percentile of the position-bias headline if every map were perfectly fair, given the
+    same number of decided games per map: the level a headline has to clear to mean anything."""
+    if not game_counts:
+        return None
+    key = (tuple(sorted(game_counts)), k, draws)
+    if key not in _FLOOR_CACHE:
+        rng = random.Random(hash_text(repr(key)))
+        values = []
+        for _ in range(draws):
+            biases = []
+            for n in key[0]:
+                counts = [0] * k
+                for _ in range(n):
+                    counts[rng.randrange(k)] += 1
+                biases.append(squared_bias(counts))
+            values.append(rms_points(statistics.mean(biases), k))
+        values.sort()
+        _FLOOR_CACHE[key] = values[int(0.95 * (len(values) - 1))]
+    return _FLOOR_CACHE[key]
 
 
 def share_table(counts, seed):
@@ -688,8 +735,30 @@ def scorer_points(maps, factor):
     return points
 
 
+def scorer_permutation_p(points, observed, column, draws, seed):
+    """Two-sided p for a pooled rank correlation: shuffle quality among each map's own colonies."""
+    if observed is None:
+        return None
+    by_map = {}
+    for point in points:
+        by_map.setdefault(point[0], []).append(point)
+    rng = random.Random(seed)
+    hits = 0
+    for _ in range(draws):
+        xs, ys = [], []
+        for rows in by_map.values():
+            qualities = [p[1] for p in rows]
+            rng.shuffle(qualities)
+            xs += qualities
+            ys += [p[column] for p in rows]
+        value = spearman(xs, ys)
+        hits += value is not None and abs(value) >= abs(observed) - 1e-12
+    return (hits + 1) / (draws + 1)
+
+
 def scorer_check(maps, draws, seed):
     check = {}
+    permutation_draws = min(draws, 2000)
     for factor in ['total', *FACTORS]:
         points = scorer_points(maps, factor)
         keys = sorted({p[0] for p in points})
@@ -700,38 +769,48 @@ def scorer_check(maps, draws, seed):
         def rho(sample_keys, column):
             chosen = [p for key in sample_keys for p in points if p[0] == key]
             return spearman([p[1] for p in chosen], [p[column] for p in chosen])
-        check[factor] = {
-            'maps': len(keys), 'colonies': len(points),
-            'wins_rho': rho(keys, 2), 'wins_rho_ci': bootstrap(keys, lambda s: rho(s, 2), draws, seed),
-            'placement_rho': rho(keys, 3),
-            'placement_rho_ci': bootstrap(keys, lambda s: rho(s, 3), draws, seed + 1),
-        }
-    # Does the start the scorer rates best actually win more than its fair share?
+        enough = len(keys) >= MIN_MAPS_FOR_INTERVAL
+        entry = {'maps': len(keys), 'colonies': len(points), 'wins_rho': rho(keys, 2),
+                 'placement_rho': rho(keys, 3),
+                 'wins_rho_ci': bootstrap(keys, lambda s: rho(s, 2), draws, seed) if enough else None,
+                 'placement_rho_ci': bootstrap(keys, lambda s: rho(s, 3), draws, seed + 1) if enough else None}
+        if factor == 'total':
+            entry['wins_rho_p'] = scorer_permutation_p(points, entry['wins_rho'], 2, permutation_draws, seed + 2)
+            entry['placement_rho_p'] = scorer_permutation_p(points, entry['placement_rho'], 3,
+                                                            permutation_draws, seed + 3)
+        check[factor] = entry
+    # Does the start the scorer rates best win more than a start picked at random on the same map?
     top_wins = top_n = 0
+    alternatives = []
     for m in maps:
         values = [c['total'] for c in m['record_colonies']]
-        if not values or max(values) - min(values) < 1e-9:
+        if not values or max(values) - min(values) < 1e-9 or not m['slot']['n']:
             continue
         top = max(range(len(values)), key=lambda i: values[i])
         top_wins += m['slot']['counts'][top]
         top_n += m['slot']['n']
-    check['top_rated_start'] = {'wins': top_wins, 'n': top_n,
-                                'share': top_wins / top_n if top_n else None,
-                                'wilson': list(wilson(top_wins, top_n)) if top_n else None}
+        alternatives.append(m['slot']['counts'])
+    p_value = None
+    if alternatives:
+        rng = random.Random(seed + 4)
+        hits = sum(sum(rng.choice(counts) for counts in alternatives) >= top_wins
+                   for _ in range(permutation_draws))
+        p_value = (hits + 1) / (permutation_draws + 1)
+    check['top_rated_start'] = {'wins': top_wins, 'n': top_n, 'maps': len(alternatives),
+                                'share': top_wins / top_n if top_n else None, 'p_one_sided': p_value}
     return check
 
 
-def decisive_headline(maps, n, draws, seed):
+def decisive_headline(maps, n):
     """Position bias from games won outright (elimination or prestige), leaving out capped games."""
     usable = [m for m in maps if m['decisive_slot']['n'] >= 2]
     biases = [m['decisive_slot']['squared_bias'] for m in usable]
-    mean_bias = statistics.mean(biases) if biases else None
     return {
         'decisive_maps': len(usable),
         'decisive_games': sum(m['decisive_slot']['n'] for m in maps),
-        'decisive_rms_points': rms_points(mean_bias, n),
-        'decisive_rms_points_ci': bootstrap(biases, lambda s: rms_points(statistics.mean(s), n), draws, seed)
-        if biases else None,
+        'decisive_rms_points': rms_points(statistics.mean(biases), n) if biases else None,
+        'decisive_rms_points_ci': bias_interval(biases, n),
+        'decisive_fair_floor': fair_map_floor([m['decisive_slot']['n'] for m in usable], n),
         'decisive_maps_p05': sum(m['decisive_slot']['p'] < 0.05 for m in usable),
     }
 
@@ -749,7 +828,6 @@ def analyse_generator(method, maps, config, catalog):
     biases = [m['slot']['squared_bias'] for m in usable]
     mean_bias = statistics.mean(biases) if biases else None
     seed = seed_for('generator', method)
-    ci = bootstrap(biases, lambda s: rms_points(statistics.mean(s), n), draws, seed) if biases else None
     pooled_slot = [sum(m['slot']['counts'][s] for m in maps) for s in range(n)]
     pooled_team = [sum(m['team']['counts'][t] for m in maps) for t in range(n)]
     # Is any of this generator's maps biased? Sum of per-map chi-square statistics, calibrated
@@ -780,10 +858,11 @@ def analyse_generator(method, maps, config, catalog):
         'prestige_share': sum(m['prestige_games'] for m in maps) / played if played else None,
         'unresolved': sum(m['unresolved'] for m in maps),
         'start_mismatches': sum(m['start_mismatches'] for m in maps),
-        'headline_rms_points': rms_points(mean_bias, n), 'headline_rms_points_ci': ci,
+        'headline_rms_points': rms_points(mean_bias, n), 'headline_rms_points_ci': bias_interval(biases, n),
+        'headline_fair_floor': fair_map_floor([m['slot']['n'] for m in usable], n),
         'mean_squared_bias': mean_bias,
         # The same headline counting only games won outright, so cap adjudication cannot drive it.
-        **decisive_headline(maps, n, draws, seed + 19),
+        **decisive_headline(maps, n),
         'maps_p05': sum(p < 0.05 for p in p_values), 'maps_bh05': sum(q < 0.05 for q in bh),
         'maps_holm05': sum(h < 0.05 for h in hl),
         'expected_p05_by_chance': 0.05 * len(p_values),
@@ -793,7 +872,8 @@ def analyse_generator(method, maps, config, catalog):
         'pooled_chi2': observed, 'pooled_p': pooled_p,
         'slot_index': share_table(pooled_slot, seed + 11),
         'team_index': share_table(pooled_team, seed + 13),
-        'scorer': scorer_check(maps, draws, seed + 17),
+        # Symmetric arena's colonies are identical by construction, so there is nothing to predict.
+        'scorer': scorer_check(maps, draws, seed + 17) if method != BASELINE_METHOD else None,
         'ticks_median': statistics.median([m['ticks_median'] for m in maps if m['ticks_median']])
         if played else None,
         'wall_seconds_mean': statistics.mean([m['wall_seconds_mean'] for m in maps if m['wall_seconds_mean']])
@@ -853,7 +933,8 @@ def summarize(out, config, paths):
                         for reason in sorted({g['outcome']['end_reason'] for g in played}, key=str)},
         'engine_team_index': {'all_generators': share_table(all_team, 101),
                               'baseline': share_table(baseline_team, 103)},
-        'scorer_all_generators': scorer_check(maps, int(config['bootstrap_draws']), 107),
+        'scorer_all_generators': scorer_check([m for m in maps if m['method'] != BASELINE_METHOD],
+                                              int(config['bootstrap_draws']), 107),
         'generators': generators,
         'maps': [{k: v for k, v in m.items() if k != 'record_colonies'} for m in maps],
         'verification': json.loads((out / 'verification.json').read_text())
@@ -894,12 +975,13 @@ def write_csvs(out, records, games):
         for g in ordered:
             record = records[g['map']]
             n = record['colonies']
+            placement = {int(k): v for k, v in g['outcome']['placement'].items()}
             for team, entry in sorted(g['parsed']['teams'].items(), key=lambda i: int(i[0])):
                 slot = (int(team) - g['rotation']) % n
                 rows = record.get('colony_quality', [])
                 quality = rows[slot] if len(rows) == n else {}
                 writer.writerow([record['method'], record['map_seed'], g['rotation'], g['seed'], slot, team,
-                                 *record['starts'][slot], g['outcome']['placement'].get(str(slot)),
+                                 *record['starts'][slot], placement.get(slot),
                                  int(g['outcome']['winner_slot'] == slot),
                                  *[entry.get(k) for k in team_fields], quality.get('total'),
                                  *[quality.get(f) for f in FACTORS]])
@@ -938,6 +1020,22 @@ def interval(ci, fmt=lambda v: f'{v:.1f}'):
     return '' if not ci or ci[0] is None else f' [{fmt(ci[0])}, {fmt(ci[1])}]'
 
 
+def rho_text(entry, which):
+    """'0.21 (p 0.398) [-0.15, 0.57]' for a scorer correlation, with whatever is available."""
+    value = entry.get(f'{which}_rho')
+    text = num(value)
+    if entry.get(f'{which}_rho_p') is not None:
+        text += f' (p {pval(entry[f"{which}_rho_p"])})'
+    return text + interval(entry.get(f'{which}_rho_ci'), lambda v: f'{v:.2f}')
+
+
+def top_rated_text(top, n):
+    if not top['n']:
+        return 'no map had a top-rated start'
+    return (f'the start the scorer rated best won {top["wins"]} of {top["n"]} games on {top["maps"]} maps '
+            f'({pct(top["share"])}, fair {pct(1 / n)}; one-sided permutation p {pval(top["p_one_sided"])})')
+
+
 def markdown(summary, config):
     n = int(config['colonies'])
     lines = [f'# Map fairness tournament: {config["name"]}', '']
@@ -966,23 +1064,28 @@ def markdown(summary, config):
                      f'matched their first run exactly (ticks, winner, order count, every team result).')
     lines += ['', '## Headline by generator', '',
               'Position bias is the root-mean-square gap between each start\'s true win rate and the fair '
-              f'1/{n}, corrected for the scatter raw win shares show even on a fair map, averaged over maps '
-              '(95% bootstrap interval over maps). Biased maps counts maps whose wins by start reject a '
-              'uniform split: raw p < 0.05, and after Benjamini-Hochberg across that generator\'s maps. '
-              'Scorer rho is the within-map rank correlation between a colony\'s start-quality score and its '
-              'win share. Decisive only repeats the position bias counting just games won outright, with the '
-              'number of such games, so tick-cap adjudication cannot drive it.', '',
-              '| Generator | Maps | Games | Cap | Position bias (pp) | Decisive only (pp, games) | Biased maps p<.05 / BH | Best start / fair (median) | Any bias p | Scorer rho (wins) |',
-              '| --- | ---: | ---: | ---: | --- | --- | --- | ---: | ---: | --- |']
+              f'1/{n}, corrected for the scatter raw win shares show even on a fair map and averaged over maps; '
+              'the bracket is a 95% t interval over maps. Fair-map floor is the 95th percentile that headline '
+              'reaches when every map is perfectly fair, with the same decided games per map: a headline below '
+              'it cannot be told apart from a fair generator. Decisive only repeats the position bias counting '
+              'just games won outright, so tick-cap adjudication cannot drive it. Biased maps counts maps whose '
+              'wins by start reject a uniform split, raw p < 0.05 and after Benjamini-Hochberg across that '
+              'generator\'s maps. Any bias p tests whether any of its maps is biased. Scorer rho is the '
+              'within-map rank correlation between a colony\'s start-quality score and its win share, with a '
+              'permutation p-value.', '',
+              '| Generator | Maps | Games | Cap | Position bias (pp) [95%] | Fair-map floor (pp) | Decisive only (pp, games) | Biased maps p<.05 / BH | Best start / fair (median) | Any bias p | Scorer rho (wins) |',
+              '| --- | ---: | ---: | ---: | --- | ---: | --- | --- | ---: | ---: | --- |']
     for g in summary['generators']:
-        scorer = (g['scorer'] or {}).get('total') or {}
+        scorer = (g['scorer'] or {}).get('total')
+        scorer_cell = rho_text(scorer, 'wins') if scorer else ('n/a' if g['method'] == BASELINE_METHOD else '-')
         lines.append(
             f'| {g["name"]} ({g["method"]}) | {g["maps_with_winners"]}/{g["maps"]} | {g["played"]} | {pct(g["cap_share"], 0)} '
             f'| {num(g["headline_rms_points"], 1)}{interval(g["headline_rms_points_ci"])} '
+            f'| {num(g["headline_fair_floor"], 1)} '
             f'| {num(g["decisive_rms_points"], 1)}{interval(g["decisive_rms_points_ci"])} ({g["decisive_games"]}) '
             f'| {g["maps_p05"]} / {g["maps_bh05"]} (chance {g["expected_p05_by_chance"]:.1f}) '
             f'| {num((g["dominance"] or {}).get("median"))} | {pval(g["pooled_p"])} '
-            f'| {num(scorer.get("wins_rho"))}{interval(scorer.get("wins_rho_ci"), lambda v: f"{v:.2f}")} |')
+            f'| {scorer_cell} |')
     lines += ['', '## Engine team-index bias', '',
               'Wins by team index, pooled over rotations, so every index played every start equally often. '
               'A skew here is the engine\'s processing order (team 0 also carries the passive local player of '
@@ -1023,23 +1126,23 @@ def markdown(summary, config):
                   f'- Maps significant after Holm: {g["maps_holm05"]}; best-start dominance min / median / max: {dominance}.']
         scorer = g['scorer'] or {}
         if scorer.get('total'):
-            top = scorer['top_rated_start']
-            lines.append('- Scorer check: rho with win share ' + num(scorer['total']['wins_rho'])
-                         + interval(scorer['total']['wins_rho_ci'], lambda v: f'{v:.2f}')
-                         + ', with placement ' + num(scorer['total']['placement_rho'])
-                         + interval(scorer['total']['placement_rho_ci'], lambda v: f'{v:.2f}')
-                         + f'; the top-rated start won {top["wins"]} of {top["n"]} ({pct(top["share"])}'
-                         + interval(top['wilson'], pct) + f', fair {pct(1 / n)}). By factor (wins rho): '
+            total = scorer['total']
+            lines.append(f'- Scorer check: rho with win share {rho_text(total, "wins")}, with placement '
+                         f'{rho_text(total, "placement")}; {top_rated_text(scorer["top_rated_start"], n)}. '
+                         'By factor (wins rho): '
                          + ', '.join(f'{f} {num((scorer.get(f) or {}).get("wins_rho"))}' for f in FACTORS) + '.')
         elif g['method'] == BASELINE_METHOD:
-            lines.append('- Scorer check: not applicable, every colony scores the same by construction.')
-    overall = (summary['scorer_all_generators'] or {}).get('total')
-    if overall:
+            lines.append('- Scorer check: left out. Symmetric arena colonies are identical by construction; the small '
+                         'score differences between them come from the build-site count, which is not symmetric '
+                         'under rotation.')
+    overall = summary['scorer_all_generators'] or {}
+    if overall.get('total'):
+        total = overall['total']
         lines += ['', '## Scorer check across generators', '',
-                  f'Within-map rank correlation between start-quality score and win share over {overall["colonies"]} '
-                  f'colonies on {overall["maps"]} maps: rho {num(overall["wins_rho"])}'
-                  f'{interval(overall["wins_rho_ci"], lambda v: f"{v:.2f}")}; with placement '
-                  f'{num(overall["placement_rho"])}{interval(overall["placement_rho_ci"], lambda v: f"{v:.2f}")}.']
+                  f'Within-map rank correlation between start-quality score and win share over {total["colonies"]} '
+                  f'colonies on {total["maps"]} maps, Symmetric arena left out: rho {rho_text(total, "wins")}; with '
+                  f'placement {rho_text(total, "placement")}. Across the same maps, '
+                  f'{top_rated_text(overall["top_rated_start"], n)}.']
     lines.append('')
     return '\n'.join(lines)
 
@@ -1122,8 +1225,8 @@ def command_run(args):
     print(f'\nwrote {out / "summary.md"}, summary.json, games.csv, colonies.csv, maps.csv')
     for g in summary['generators']:
         print(f'  {g["name"]} ({g["method"]}): position bias {num(g["headline_rms_points"], 1)} pp'
-              f'{interval(g["headline_rms_points_ci"])}, biased maps {g["maps_p05"]}/{g["maps_with_winners"]} '
-              f'(BH {g["maps_bh05"]}), cap {pct(g["cap_share"], 0)}')
+              f'{interval(g["headline_rms_points_ci"])} (fair-map floor {num(g["headline_fair_floor"], 1)}), '
+              f'biased maps {g["maps_p05"]}/{g["maps_with_winners"]} (BH {g["maps_bh05"]}), cap {pct(g["cap_share"], 0)}')
     return 0
 
 

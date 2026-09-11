@@ -118,8 +118,15 @@ the winner first, other survivors by prestige, then eliminated colonies, the las
   estimate is corrected for chance: with `n` decided games and chi-square statistic `X` against
   uniform, `(X - (N - 1)) / ((n - 1) N)` is an unbiased estimate of `sum_s (p_s - 1/N)^2`. Averaged
   over maps, clipped at zero and converted to an RMS, it reads 0 for fair maps. With four colonies,
-  one start winning 40% and the others 20% is 8.7 pp. The bracket is a 95% bootstrap interval over
-  maps, so it covers both map-to-map variation and the game-to-game noise within each map.
+  one start winning 40% and the others 20% is 8.7 pp. The bracket is a 95% t interval over maps.
+  Each map's estimate carries its own game-to-game noise, so the interval covers that noise as well
+  as real differences between maps. With only a few maps it is honestly wide.
+- **Fair-map floor** is the 95th percentile the position bias reaches when every map is perfectly
+  fair, simulated with the same number of decided games per map. Even fair maps show some bias on a
+  small sample, so a headline below this floor cannot be told apart from a fair generator. With
+  three maps of eight games each the floor is about 14 pp; more games per map lower it.
+- **Decisive only** repeats the position bias counting only games won outright, with the number of
+  such games, so games decided by tick-cap adjudication cannot drive it.
 - **Biased maps** counts maps whose wins by start reject a uniform split at p < 0.05, raw and after
   Benjamini-Hochberg across that generator's maps (false discovery rate 5%). "Chance" is how many
   raw rejections a generator with only fair maps would expect. Holm-adjusted counts are in the
@@ -132,12 +139,17 @@ the winner first, other survivors by prestige, then eliminated colonies, the las
   start's share with a Wilson 95% interval.
 - **Any bias p** tests whether any of the generator's maps is biased: the sum of the per-map
   chi-square statistics, calibrated by simulating every map's winners under a fair split.
-- **Scorer rho** is the rank correlation between a colony's start-quality total and its win share
-  on the same map, pooled over maps after centring both within each map, with a bootstrap interval
-  over maps. Near +1, the scorer ranks starts the way games do. Near 0, it does not predict who
-  wins. The per-generator section adds the correlation with placement (which uses every colony's
-  finish, not just the winner's), per scoring factor, and how often the start the scorer rated best
-  actually won. Symmetric arena scores every colony alike, so it has no scorer check.
+- **Scorer rho** is the rank correlation between a colony's start-quality total and its win share on
+  the same map, pooled over maps after centring both within each map. Near +1 the scorer ranks
+  starts the way games do; near 0 it does not predict who wins. Its p-value comes from a
+  permutation test that shuffles the quality scores among each map's own colonies, which keeps whole
+  maps intact and stays valid with few maps; a bootstrap interval over maps appears only from five
+  maps up, because fewer cannot support one. The per-generator section adds the correlation with
+  placement (every colony's finish, not just the winner's), the correlation for each scoring factor,
+  and how often the start the scorer rated best won, against a permutation null that gives each
+  map's win counts to a start picked at random. Symmetric arena is left out of the scorer check: its
+  colonies are identical by construction, and the small score differences it does show come from the
+  build-site count, which is not symmetric under rotation.
 
 The engine team-index table reports wins by team index for the baseline and for all generators
 pooled, with an exact test and Wilson intervals.
