@@ -226,7 +226,7 @@ carveFjords(Game &game, GenerationContext &context, const FjordLayout &layout,
 // well inside lakeR (fjordInnerR, computed in computeLayout), so this carve is what actually
 // opens each fjord into the lake - the fjords' own tapered tips would otherwise be too narrow
 // to reliably merge with it.
-void carveLake(Game &game, const FjordLayout &layout) {
+void carveLake(Game &game, const FjordLayout &layout, bool sandyShore) {
   if (!layout.hasLake)
     return;
   for (int y = 0; y < layout.H; ++y) {
@@ -241,7 +241,10 @@ void carveLake(Game &game, const FjordLayout &layout) {
   // A sandy no-man's-land ring just outside the lake - wider than controlSand's own thin
   // coastal fringe would give it, so the open ground around the lake reads as a deliberate
   // contested space rather than an ordinary beach. Only touches tiles the lake/fjord carving
-  // above left as land, so it never overwrites water.
+  // above left as land, so it never overwrites water. Without it, the lake has an ordinary
+  // beach and grass to build and farm on right up to it.
+  if (!sandyShore)
+    return;
   const double sandOuterR = layout.lakeR + layout.lakeR * 0.5;
   for (int y = 0; y < layout.H; ++y) {
     for (int x = 0; x < layout.W; ++x) {
@@ -429,7 +432,8 @@ bool verifyConnectivity(Game &game, const FjordLayout &layout,
 // fruit type instead of a single random pick, so finding this area feels like a genuinely rich
 // destination and not a single repeated deposit.
 void placeCoreResources(Game &game, GenerationContext &context, const FjordLayout &layout,
-                        std::vector<int> &grid, int &areaNumber) {
+                        const FjordContinentOptions &options, std::vector<int> &grid,
+                        int &areaNumber) {
   int coreArea = areaNumber++;
   std::vector<MapGeneratorPoint> corePts;
   for (int y = 0; y < layout.H; ++y) {
@@ -448,13 +452,13 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
     }
   }
   if (!corePts.empty()) {
-    for (int stoneClump = 0; stoneClump < 3; ++stoneClump)
+    for (int stoneClump = 0; stoneClump < scaledCount(3, options.stone); ++stoneClump)
       placeResourceClump(game.map, context,
                          corePts[context.bounded("resources", corePts.size())],
                          STONE, 3);
-    constexpr int kFruitClumpsPerType = 3;
+    const int fruitClumpsPerType = int(scaledCount(3, options.fruit));
     for (int fruitType = 0; fruitType < 3; ++fruitType)
-      for (int clump = 0; clump < kFruitClumpsPerType; ++clump)
+      for (int clump = 0; clump < fruitClumpsPerType; ++clump)
         placeResourceClump(game.map, context,
                            corePts[context.bounded("resources", corePts.size())],
                            CHERRY + fruitType, 2);
@@ -467,7 +471,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
   // placed dead center, at the shape transform's own origin - the lake's exact geometric middle
   // - so there's always at least one unambiguously centered deposit regardless of how the
   // interior sampling below happens to land.
-  if (layout.hasLake) {
+  if (layout.hasLake && options.algae > 0) {
     const int centerX = game.map.normalizeX((int)std::lround(layout.W / 2.0));
     const int centerY = game.map.normalizeY((int)std::lround(layout.H / 2.0));
     placeResourceClump(game.map, context, MapGeneratorPoint(centerX, centerY), ALGA, 2);
@@ -486,7 +490,7 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
     // The center clump above already guarantees at least one, so this is purely bonus
     // coverage for a lake big enough to have real interior room left over - no forced minimum.
     if (!lakeWater.empty())
-      for (int i = 0; i < int(lakeWater.size()) / 40; ++i)
+      for (int i = 0; i < scaledCount(int(lakeWater.size()) / 40, options.algae); ++i)
         placeResourceClump(
             game.map, context,
             lakeWater[context.bounded("resources", lakeWater.size())], ALGA, 2);
@@ -496,7 +500,8 @@ void placeCoreResources(Game &game, GenerationContext &context, const FjordLayou
 // 8) Algae out in the open sea: any water tile clearly beyond the coastline
 // (not a fjord, not the moat-ish water right against the shore) gets an
 // occasional patch.
-void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout &layout) {
+void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout &layout,
+                       int algaePercent) {
   std::vector<MapGeneratorPoint> algaeWater;
   for (int y = 0; y < layout.H; ++y) {
     for (int x = 0; x < layout.W; ++x) {
@@ -512,7 +517,7 @@ void placeOpenSeaAlgae(Game &game, GenerationContext &context, const FjordLayout
     }
   }
   if (!algaeWater.empty())
-    for (int i = 0; i < std::max(1, int(algaeWater.size()) / 180); ++i)
+    for (int i = 0; i < scaledCount(std::max(1, int(algaeWater.size()) / 180), algaePercent); ++i)
       placeResourceClump(
           game.map, context,
           algaeWater[context.bounded("resources", algaeWater.size())], ALGA, 2);
@@ -568,7 +573,8 @@ bool placeStarterKits(Game &game, GenerationContext &context, const FjordLayout 
 // overwrite the guarantee. Every side of every fjord receives both resources
 // at distinct points along its length.
 bool placeBankResources(Game &game, GenerationContext &context, const FjordLayout &layout,
-                        const std::vector<std::vector<MapGeneratorPoint>> &fjordCenterlines) {
+                        const std::vector<std::vector<MapGeneratorPoint>> &fjordCenterlines,
+                        const FjordContinentOptions &options) {
   if (layout.nbTeams < 2)
     return true;
   for (int k = 0; k < layout.nbTeams; ++k) {
@@ -578,6 +584,8 @@ bool placeBankResources(Game &game, GenerationContext &context, const FjordLayou
           !placeBankClump(game.map, context, fjordCenterlines[k], 0.68, side,
                           WOOD))
         return false;
+    if (!options.bankDeposits)
+      continue;
 
     // A handful more, lighter clumps at other points along the same banks besides
     // the two guaranteed spots above, so walking a fjord's edge feels like following
@@ -594,8 +602,17 @@ bool placeBankResources(Game &game, GenerationContext &context, const FjordLayou
         // unchanged - the same rebalance as the ambient scatter above, for consistency.
         const int roll = context.bounded("resources", 8);
         const int resourceType = roll < 4 ? CORN : roll < 6 ? WOOD : STONE;
-        placeBankClump(game.map, context, fjordCenterlines[k], progress + jitter, side,
-                       resourceType);
+        // The amount controls place each rolled clump that many hundredths of a time: whole
+        // copies, and one more by chance from a stream of its own, so the rolls stay the same.
+        const int percent = resourceType == CORN   ? options.wheat
+                            : resourceType == WOOD ? options.wood
+                                                   : options.stone;
+        int copies = percent / 100;
+        if (percent % 100 != 0 && int(context.bounded("fjord-bank-amounts", 100)) < percent % 100)
+          ++copies;
+        for (int copy = 0; copy < copies; ++copy)
+          placeBankClump(game.map, context, fjordCenterlines[k], progress + jitter, side,
+                         resourceType);
       }
     }
   }
@@ -624,7 +641,7 @@ static bool generate(Game &game, GenerationContext &context) {
   stampContinent(game, layout);
   std::vector<std::vector<MapGeneratorPoint>> fjordCenterlines =
       carveFjords(game, context, layout, options);
-  carveLake(game, layout);
+  carveLake(game, layout, options.sandyLakeShore);
   placeOutlierIslands(game, context, layout, options, grid, areaNumber);
 
   game.map.controlSand();
@@ -633,8 +650,8 @@ static bool generate(Game &game, GenerationContext &context) {
   if (!verifyConnectivity(game, layout, teamPts))
     return false;
 
-  placeCoreResources(game, context, layout, grid, areaNumber);
-  placeOpenSeaAlgae(game, context, layout);
+  placeCoreResources(game, context, layout, options, grid, areaNumber);
+  placeOpenSeaAlgae(game, context, layout, options.algae);
 
   if (!placeStarterKits(game, context, layout, teamPts))
     return false;
@@ -655,10 +672,14 @@ static bool generate(Game &game, GenerationContext &context) {
   // fight that.
   // corn:wood at 2:1 rather than even - wood was reading as overrepresented in practice, and
   // total density is held constant (was 18+18=36) rather than just adding more corn on top.
-  scatterResources(game, context, {/*corn=*/24, /*wood=*/12, /*stone=*/10, /*algae=*/0, /*fruit=*/3});
+  scatterResources(game, context,
+                   {/*corn=*/int(scaledCount(24, options.wheat)),
+                    /*wood=*/int(scaledCount(12, options.wood)),
+                    /*stone=*/int(scaledCount(10, options.stone)), /*algae=*/0,
+                    /*fruit=*/int(scaledCount(3, options.fruit))});
 
   context.stage = "fjord bank resources";
-  if (!placeBankResources(game, context, layout, fjordCenterlines))
+  if (!placeBankResources(game, context, layout, fjordCenterlines, options))
     return false;
 
   // The starter kit guarantees wheat and wood exist somewhere near each boot tile, but the
@@ -669,6 +690,18 @@ static bool generate(Game &game, GenerationContext &context) {
   // sealing it before topping up whichever resource is still out of range - the same backstop
   // RuggedArchipelago and ShatteredCoast already rely on for the same class of problem.
   guaranteeStartingResources(game, context, 24, 32);
+
+  // The scatter and bank clumps above are sized by the resource amounts, and the ambient scatter
+  // covers up to two thirds of the continent's grass at the top of their range. That can leave a
+  // colony walled into its own clearing with nowhere to build, which the guarantee above doesn't
+  // address: a colony buried in wheat has wheat at its feet, so it counts as served. At any
+  // non-default amount, open such a colony back up and re-run the guarantee in case the clearing
+  // took its nearest crop with the wall. At the defaults none of this runs.
+  if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
+      options.algae != 100 || options.fruit != 100) {
+    openCrampedStarts(game, context);
+    guaranteeStartingResources(game, context, 24, 32);
+  }
 
   return true;
 }
@@ -681,7 +714,11 @@ FjordContinentOptions::FjordContinentOptions(const GenerationRequest &r)
       fjordWidth(r.option("fjord-width")),
       resourceIslands(r.option("resource-islands")),
       lakeSize(r.option("lake-size")),
-      lakeConnected(r.option("lake-connected")) {}
+      lakeConnected(r.option("lake-connected")),
+      sandyLakeShore(r.option("sandy-lake-shore") != 0),
+      bankDeposits(r.option("bank-deposits") != 0), wheat(r.option("wheat-amount")),
+      wood(r.option("wood-amount")), stone(r.option("stone-amount")),
+      algae(r.option("algae-amount")), fruit(r.option("fruit-amount")) {}
 
 GeneratorDefinition fjordContinentDefinition() {
   return {"fjord-continent",
@@ -698,6 +735,20 @@ GeneratorDefinition fjordContinentDefinition() {
            GeneratorControl::toggle("lake-connected", "Lake connects to fjords", false,
                                     ControlGroup::Terrain),
            {"resource-islands", "Resource islands", 0, 20, 1, 2,
-            ControlGroup::Resources}},
+            ControlGroup::Resources},
+           // Off, the lake has an ordinary beach instead of a wide ring of sand.
+           GeneratorControl::toggle("sandy-lake-shore", "Sandy lake shore", true,
+                                    ControlGroup::Terrain),
+           // Off, each fjord bank keeps only its guaranteed wheat and wood.
+           GeneratorControl::toggle("bank-deposits", "Fjord bank deposits", true,
+                                    ControlGroup::Resources),
+           // The ambient scatter, the core's stone and fruit, the lake's and open sea's algae and
+           // the fjord banks' extra deposits. Starter kits and each bank's guaranteed wheat and
+           // wood stay as they are.
+           GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+           GeneratorControl::percentage("wood-amount", "Wood amount"),
+           GeneratorControl::percentage("stone-amount", "Stone amount"),
+           GeneratorControl::percentage("algae-amount", "Algae amount"),
+           GeneratorControl::percentage("fruit-amount", "Fruit amount")},
           generate};
 }
