@@ -1566,6 +1566,10 @@ Geen actueel voorbeeld
 Snelle strijd: dubbele snelheid; gegenereerde kaarten beginnen met 8 werkers.
 [Reroll]
 Genereer nog een kaart
+[Randomize]
+Willekeurig genereren
+[Reset to defaults]
+Standaardwaarden herstellen
 [Ruleset]
 Regelset
 [Select a map from the library.]
@@ -1816,6 +1820,12 @@ Kamergrootte
 Gangbreedte
 [Loopiness]
 Aantal lussen
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Het doolhof heeft minstens twee cellen in de breedte en de hoogte nodig; gebruik een grotere kaart of kleinere cellen.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Zulke brede kanalen laten te weinig gras in elke cel over; gebruik smallere kanalen of grotere cellen.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Het doolhof heeft te weinig doodlopende gangen voor zoveel kolonies; gebruik een grotere kaart of kleinere cellen.
 [Home island size]
 Grootte van het starteiland
 [Commons size]
@@ -1830,5 +1840,57 @@ Continentgrootte
 Grilligheid van de kust
 [Fjord width]
 Fjordbreedte
+[Lake connects to fjords]
+Meer verbonden met fjorden
 [Resource islands]
 Grondstofeilanden
+[Watershed]
+Stroomgebied
+[River density]
+Rivierdichtheid
+[Dryness]
+Droogte
+[Fords]
+Doorwaadplaatsen
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Het stroomgebied heeft te weinig overstromingsvlakte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
+[Stone highlands]
+Stenen hooglanden
+[Valley size]
+Dalgrootte
+[Pass width]
+Pasbreedte
+[Pond size]
+Vijvergrootte
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Deze dalen zijn te groot voor de kaart; gebruik een grotere kaart of kleinere dalen.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+De hooglanden hebben te weinig ruimte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
+[Symmetric arena]
+Symmetrische arena
+[Centre size]
+Grootte van het centrum
+[Causeway width]
+Dijkwegbreedte
+[Causeways]
+Dijkwegen
+[Lakes]
+Meren
+[Resource richness]
+Rijkdom aan grondstoffen
+[Symmetric arena needs 2, 4 or 8 colonies.]
+De symmetrische arena heeft 2, 4 of 8 kolonies nodig.
+[Eight colonies need a square map in the symmetric arena.]
+Acht kolonies hebben in de symmetrische arena een vierkante kaart nodig.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Het centrum is te klein voor een boomgaard op deze kaart; gebruik een groter centrum of een grotere kaart.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+De arena laat te weinig ruimte voor elke kolonie; gebruik een grotere kaart, een kleiner centrum of een smallere slotgracht.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+De dijkwegen liggen te dicht bij elkaar; gebruik minder of smallere dijkwegen, of een groter centrum.
+[Ring world]
+Ringwereld
+[Belt width]
+Gordelbreedte
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+De gordel is te kort voor zoveel kolonies; gebruik een langere kaart of minder kolonies.

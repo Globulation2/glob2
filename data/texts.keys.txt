@@ -898,7 +898,6 @@
 [Continent size]
 [Coast roughness]
 [Fjord width]
-[Lake size]
 [Lake connects to fjords]
 [Resource islands]
 [Watershed]

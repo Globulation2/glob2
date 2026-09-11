@@ -1618,6 +1618,10 @@ Ingen aktuel forhåndsvisning
 Hurtig kamp: dobbelt hastighed; genererede kort starter med 8 arbejdere.
 [Reroll]
 Generer endnu et kort
+[Randomize]
+Generer tilfældigt
+[Reset to defaults]
+Nulstil til standard
 [Ruleset]
 Regelsæt
 [Select a map from the library.]
@@ -1868,6 +1872,12 @@ Rumstørrelse
 Korridorbredde
 [Loopiness]
 Løkketæthed
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labyrinten skal have mindst to celler på tværs og på langs; brug et større kort eller mindre celler.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Så brede kanaler efterlader for lidt græs i hver celle; brug smallere kanaler eller større celler.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labyrinten har for få blindgyder til så mange kolonier; brug et større kort eller mindre celler.
 [Home island size]
 Størrelse på startø
 [Commons size]
@@ -1882,5 +1892,57 @@ Kontinentstørrelse
 Kystens ujævnhed
 [Fjord width]
 Fjordbredde
+[Lake connects to fjords]
+Sø forbundet med fjorde
 [Resource islands]
 Ressourceøer
+[Watershed]
+Afvandingsområde
+[River density]
+Flodtæthed
+[Dryness]
+Tørhed
+[Fords]
+Vadesteder
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Afvandingsområdet har for lidt flodslette til så mange kolonier; brug et større kort eller færre kolonier.
+[Stone highlands]
+Stenhøjland
+[Valley size]
+Dalstørrelse
+[Pass width]
+Pasbredde
+[Pond size]
+Damstørrelse
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Disse dale er for store til kortet; brug et større kort eller mindre dale.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Højlandet har for lidt plads til så mange kolonier; brug et større kort eller færre kolonier.
+[Symmetric arena]
+Symmetrisk arena
+[Centre size]
+Centrets størrelse
+[Causeway width]
+Dæmningsvejsbredde
+[Causeways]
+Dæmningsveje
+[Lakes]
+Søer
+[Resource richness]
+Ressourcerigdom
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symmetrisk arena kræver 2, 4 eller 8 kolonier.
+[Eight colonies need a square map in the symmetric arena.]
+Otte kolonier kræver et kvadratisk kort i den symmetriske arena.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Centret er for lille til en frugtlund på dette kort; brug et større center eller et større kort.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arenaen giver for lidt plads til hver koloni; brug et større kort, et mindre center eller en smallere voldgrav.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Dæmningsvejene ligger for tæt; brug færre eller smallere dæmningsveje, eller et større center.
+[Ring world]
+Ringverden
+[Belt width]
+Bæltebredde
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Bæltet er for kort til så mange kolonier; brug et længere kort eller færre kolonier.

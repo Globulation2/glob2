@@ -1542,6 +1542,10 @@ Cortex
 Брза битка: двострука брзина; генерисане карте почињу са 8 радника.
 [Reroll]
 Генеришите другу мапу
+[Randomize]
+Генеришите насумично
+[Reset to defaults]
+Врати подразумеване вредности
 [Ruleset]
 Скуп правила
 [Select a map from the library.]
@@ -1792,6 +1796,12 @@ OpenGL није доступан у овој верзији.
 Ширина ходника
 [Loopiness]
 Учесталост петљи
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Лавиринту су потребне најмање две ћелије по ширини и по висини; користите већу мапу или мање ћелије.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Овако широки канали остављају премало траве у свакој ћелији; користите уже канале или веће ћелије.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Лавиринт има премало ћорсокака за толико колонија; користите већу мапу или мање ћелије.
 [Home island size]
 Величина почетног острва
 [Commons size]
@@ -1806,5 +1816,57 @@ OpenGL није доступан у овој верзији.
 Разуђеност обале
 [Fjord width]
 Ширина фјорда
+[Lake connects to fjords]
+Језеро повезано са фјордовима
 [Resource islands]
 Острва са ресурсима
+[Watershed]
+Речни слив
+[River density]
+Густина река
+[Dryness]
+Сушност
+[Fords]
+Газови
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Речни слив има премало плавне равнице за толико колонија; користите већу мапу или мање колонија.
+[Stone highlands]
+Камене висоравни
+[Valley size]
+Величина долине
+[Pass width]
+Ширина превоја
+[Pond size]
+Величина баре
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ове долине су превелике за мапу; користите већу мапу или мање долине.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+На висоравнима има премало места за толико колонија; користите већу мапу или мање колонија.
+[Symmetric arena]
+Симетрична арена
+[Centre size]
+Величина средишта
+[Causeway width]
+Ширина насипа
+[Causeways]
+Насипи
+[Lakes]
+Језера
+[Resource richness]
+Богатство ресурса
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Симетричној арени су потребне 2, 4 или 8 колонија.
+[Eight colonies need a square map in the symmetric arena.]
+За осам колонија симетричној арени је потребна квадратна мапа.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Средиште је премало за воћњак на овој мапи; користите веће средиште или већу мапу.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Арена оставља премало места за сваку колонију; користите већу мапу, мање средиште или ужи водени ров.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Насипи су преблизу један другом; користите мање насипа, уже насипе или веће средиште.
+[Ring world]
+Прстенасти свет
+[Belt width]
+Ширина појаса
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Појас је прекратак за толико колонија; користите дужу мапу или мање колонија.

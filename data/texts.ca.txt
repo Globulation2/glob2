@@ -1550,6 +1550,10 @@ No hi ha previsualització actual
 Batalla ràpida: velocitat doble; els mapes generats comencen amb 8 treballadors.
 [Reroll]
 Genera un altre mapa
+[Randomize]
+Genera aleatòriament
+[Reset to defaults]
+Restaura els valors per defecte
 [Ruleset]
 Conjunt de regles
 [Select a map from the library.]
@@ -1800,6 +1804,12 @@ Mida de la sala
 Amplada del passadís
 [Loopiness]
 Densitat de bucles
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+El laberint necessita almenys dues cel·les d'amplada i d'alçada; feu servir un mapa més gran o cel·les més petites.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Uns canals tan amples deixen massa poca herba a cada cel·la; feu servir canals més estrets o cel·les més grans.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+El laberint té massa pocs atzucacs per a tantes colònies; feu servir un mapa més gran o cel·les més petites.
 [Home island size]
 Mida de l'illa inicial
 [Commons size]
@@ -1814,5 +1824,57 @@ Mida del continent
 Irregularitat de la costa
 [Fjord width]
 Amplada del fiord
+[Lake connects to fjords]
+Llac connectat als fiords
 [Resource islands]
 Illes de recursos
+[Watershed]
+Conca hidrogràfica
+[River density]
+Densitat de rius
+[Dryness]
+Aridesa
+[Fords]
+Guals
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+La conca té massa poca plana al·luvial per a tantes colònies; feu servir un mapa més gran o menys colònies.
+[Stone highlands]
+Terres altes de pedra
+[Valley size]
+Mida de la vall
+[Pass width]
+Amplada del pas
+[Pond size]
+Mida de la bassa
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Aquestes valls són massa grans per al mapa; feu servir un mapa més gran o valls més petites.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Les terres altes tenen massa poc espai per a tantes colònies; feu servir un mapa més gran o menys colònies.
+[Symmetric arena]
+Arena simètrica
+[Centre size]
+Mida del centre
+[Causeway width]
+Amplada de la calçada
+[Causeways]
+Calçades
+[Lakes]
+Llacs
+[Resource richness]
+Riquesa de recursos
+[Symmetric arena needs 2, 4 or 8 colonies.]
+L'arena simètrica necessita 2, 4 o 8 colònies.
+[Eight colonies need a square map in the symmetric arena.]
+Vuit colònies necessiten un mapa quadrat a l'arena simètrica.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+El centre és massa petit per a un fruiterar en aquest mapa; feu servir un centre més gran o un mapa més gran.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+L'arena deixa massa poc espai per a cada colònia; feu servir un mapa més gran, un centre més petit o un fossat més estret.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Les calçades són massa a prop entre elles; feu servir menys calçades o més estretes, o un centre més gran.
+[Ring world]
+Món anell
+[Belt width]
+Amplada del cinturó
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+El cinturó és massa curt per a tantes colònies; feu servir un mapa més llarg o menys colònies.

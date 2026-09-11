@@ -1538,6 +1538,10 @@ Tidak ada pratinjau saat ini
 Pertarungan cepat: kecepatan ganda; peta yang dihasilkan dimulai dengan 8 pekerja.
 [Reroll]
 Hasilkan peta lain
+[Randomize]
+Hasilkan secara acak
+[Reset to defaults]
+Pulihkan nilai baku
 [Ruleset]
 Aturan
 [Select a map from the library.]
@@ -1788,6 +1792,12 @@ Ukuran ruangan
 Lebar koridor
 [Loopiness]
 Kepadatan jalur melingkar
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirin memerlukan setidaknya dua sel secara horizontal dan vertikal; gunakan peta yang lebih besar atau sel yang lebih kecil.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Kanal selebar ini menyisakan terlalu sedikit rumput di setiap sel; gunakan kanal yang lebih sempit atau sel yang lebih besar.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirin memiliki terlalu sedikit jalan buntu untuk koloni sebanyak ini; gunakan peta yang lebih besar atau sel yang lebih kecil.
 [Home island size]
 Ukuran pulau awal
 [Commons size]
@@ -1802,5 +1812,57 @@ Ukuran benua
 Ketidakteraturan pantai
 [Fjord width]
 Lebar fjord
+[Lake connects to fjords]
+Danau terhubung ke fjord
 [Resource islands]
 Pulau sumber daya
+[Watershed]
+Daerah aliran sungai
+[River density]
+Kepadatan sungai
+[Dryness]
+Kekeringan
+[Fords]
+Penyeberangan dangkal
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Daerah aliran sungai memiliki terlalu sedikit dataran banjir untuk koloni sebanyak ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[Stone highlands]
+Dataran tinggi batu
+[Valley size]
+Ukuran lembah
+[Pass width]
+Lebar celah gunung
+[Pond size]
+Ukuran kolam
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Lembah-lembah ini terlalu besar untuk peta; gunakan peta yang lebih besar atau lembah yang lebih kecil.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Dataran tinggi terlalu sempit untuk koloni sebanyak ini; gunakan peta yang lebih besar atau lebih sedikit koloni.
+[Symmetric arena]
+Arena simetris
+[Centre size]
+Ukuran pusat
+[Causeway width]
+Lebar jalan tambak
+[Causeways]
+Jalan tambak
+[Lakes]
+Danau
+[Resource richness]
+Kelimpahan sumber daya
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Arena simetris memerlukan 2, 4, atau 8 koloni.
+[Eight colonies need a square map in the symmetric arena.]
+Delapan koloni memerlukan peta persegi di arena simetris.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Pusat terlalu kecil untuk kebun buah di peta ini; gunakan pusat yang lebih besar atau peta yang lebih besar.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena menyisakan terlalu sedikit ruang untuk setiap koloni; gunakan peta yang lebih besar, pusat yang lebih kecil, atau parit air yang lebih sempit.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Jalan tambak terlalu berdekatan; gunakan lebih sedikit jalan tambak atau yang lebih sempit, atau pusat yang lebih besar.
+[Ring world]
+Dunia cincin
+[Belt width]
+Lebar sabuk
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Sabuk terlalu pendek untuk koloni sebanyak ini; gunakan peta yang lebih panjang atau lebih sedikit koloni.

@@ -1550,6 +1550,10 @@ Formát hry
 Rýchla bitka: dvojnásobná rýchlosť; generované mapy začínajú s 8 pracovníkmi.
 [Reroll]
 Vytvorte ďalšiu mapu
+[Randomize]
+Vygenerovať náhodne
+[Reset to defaults]
+Obnoviť predvolené hodnoty
 [Ruleset]
 Pravidlá
 [Select a map from the library.]
@@ -1800,6 +1804,12 @@ Veľkosť miestnosti
 Šírka chodby
 [Loopiness]
 Hustota slučiek
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Bludisko potrebuje aspoň dve bunky na šírku aj na výšku; použite väčšiu mapu alebo menšie bunky.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Takéto široké prielivy nechávajú v každej bunke príliš málo trávy; použite užšie prielivy alebo väčšie bunky.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Bludisko má pre toľko kolónií príliš málo slepých uličiek; použite väčšiu mapu alebo menšie bunky.
 [Home island size]
 Veľkosť štartovacieho ostrova
 [Commons size]
@@ -1814,5 +1824,57 @@ Veľkosť kontinentu
 Členitosť pobrežia
 [Fjord width]
 Šírka fjordu
+[Lake connects to fjords]
+Jazero spojené s fjordmi
 [Resource islands]
 Ostrovy so surovinami
+[Watershed]
+Povodie
+[River density]
+Hustota riek
+[Dryness]
+Vyprahnutosť
+[Fords]
+Brody
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Povodie má pre toľko kolónií príliš málo záplavovej nivy; použite väčšiu mapu alebo menej kolónií.
+[Stone highlands]
+Kamenná vysočina
+[Valley size]
+Veľkosť údolia
+[Pass width]
+Šírka priesmyku
+[Pond size]
+Veľkosť jazierka
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Tieto údolia sú pre mapu príliš veľké; použite väčšiu mapu alebo menšie údolia.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Vysočina má pre toľko kolónií príliš málo miesta; použite väčšiu mapu alebo menej kolónií.
+[Symmetric arena]
+Symetrická aréna
+[Centre size]
+Veľkosť stredu
+[Causeway width]
+Šírka hrádze
+[Causeways]
+Hrádze
+[Lakes]
+Jazerá
+[Resource richness]
+Bohatstvo surovín
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symetrická aréna vyžaduje 2, 4 alebo 8 kolónií.
+[Eight colonies need a square map in the symmetric arena.]
+Osem kolónií vyžaduje v symetrickej aréne štvorcovú mapu.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Stred je na tejto mape príliš malý na ovocný sad; použite väčší stred alebo väčšiu mapu.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Aréna ponecháva príliš málo miesta pre každú kolóniu; použite väčšiu mapu, menší stred alebo užšiu vodnú priekopu.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Hrádze sú príliš blízko pri sebe; použite menej alebo užšie hrádze, prípadne väčší stred.
+[Ring world]
+Prstencový svet
+[Belt width]
+Šírka pásu
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Pás je pre toľko kolónií príliš krátky; použite dlhšiu mapu alebo menej kolónií.

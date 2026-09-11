@@ -1538,6 +1538,10 @@ AIの命令なし
 クイックバトル:2倍速。生成されたマップは 8 人のワーカーから始まります。
 [Reroll]
 別のマップを生成する
+[Randomize]
+ランダム生成
+[Reset to defaults]
+デフォルトに戻す
 [Ruleset]
 ルールセット
 [Select a map from the library.]
@@ -1788,6 +1792,12 @@ Globulation 2 のカーソルを表示します。
 通路の幅
 [Loopiness]
 ループの多さ
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+迷路には縦横それぞれ2マス以上が必要です。より大きなマップを使うか、マスを小さくしてください。
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+水路がこの幅だと各マスに残る草地が少なすぎます。水路を狭くするか、マスを大きくしてください。
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+このコロニー数に対して迷路の行き止まりが少なすぎます。より大きなマップを使うか、マスを小さくしてください。
 [Home island size]
 開始地点の島の大きさ
 [Commons size]
@@ -1802,5 +1812,57 @@ Globulation 2 のカーソルを表示します。
 海岸線の複雑さ
 [Fjord width]
 フィヨルドの幅
+[Lake connects to fjords]
+湖をフィヨルドにつなげる
 [Resource islands]
 資源島
+[Watershed]
+流域
+[River density]
+川の密度
+[Dryness]
+乾燥度
+[Fords]
+浅瀬
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+このコロニー数に対して流域の氾濫原が少なすぎます。より大きなマップを使うか、コロニーを減らしてください。
+[Stone highlands]
+岩の高地
+[Valley size]
+谷の大きさ
+[Pass width]
+峠の幅
+[Pond size]
+池の大きさ
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+谷がマップに対して大きすぎます。より大きなマップを使うか、谷を小さくしてください。
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+このコロニー数に対して高地の広さが足りません。より大きなマップを使うか、コロニーを減らしてください。
+[Symmetric arena]
+対称アリーナ
+[Centre size]
+中央の大きさ
+[Causeway width]
+土手道の幅
+[Causeways]
+土手道
+[Lakes]
+湖
+[Resource richness]
+資源の豊富さ
+[Symmetric arena needs 2, 4 or 8 colonies.]
+対称アリーナにはコロニーが2つ、4つ、または8つ必要です。
+[Eight colonies need a square map in the symmetric arena.]
+対称アリーナでコロニーを8つにするには、正方形のマップが必要です。
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+このマップでは中央が狭すぎて果樹園を置けません。中央を大きくするか、より大きなマップを使ってください。
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+アリーナに各コロニー分の十分な広さがありません。より大きなマップを使うか、中央を小さくするか、堀を狭くしてください。
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+土手道同士が近すぎます。土手道を減らすか狭くするか、中央を大きくしてください。
+[Ring world]
+環状世界
+[Belt width]
+帯の幅
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+このコロニー数に対して帯が短すぎます。より長いマップを使うか、コロニーを減らしてください。

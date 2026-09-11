@@ -1552,6 +1552,10 @@ Ez dago oraingo aurrebistarik
 Borroka azkarra: abiadura bikoitza; sortutako mapak 8 langilerekin hasten dira.
 [Reroll]
 Sortu beste mapa bat
+[Randomize]
+Sortu ausaz
+[Reset to defaults]
+Leheneratu balio lehenetsiak
 [Ruleset]
 Arau multzoa
 [Select a map from the library.]
@@ -1802,6 +1806,12 @@ Gelaren tamaina
 Korridorearen zabalera
 [Loopiness]
 Begizta-maila
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirintoak gutxienez bi gelaxka behar ditu zabaleran eta altueran; erabili mapa handiagoa edo gelaxka txikiagoak.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Hain kanal zabalek belar gutxiegi uzten dute gelaxka bakoitzean; erabili kanal estuagoak edo gelaxka handiagoak.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirintoak kale itsu gutxiegi ditu hainbeste koloniarentzat; erabili mapa handiagoa edo gelaxka txikiagoak.
 [Home island size]
 Hasierako uhartearen tamaina
 [Commons size]
@@ -1816,5 +1826,57 @@ Kontinentearen tamaina
 Kostaldearen irregulartasuna
 [Fjord width]
 Fiordoaren zabalera
+[Lake connects to fjords]
+Aintzira fiordoekin lotuta
 [Resource islands]
 Baliabide-uharteak
+[Watershed]
+Ibai-arroa
+[River density]
+Ibaien dentsitatea
+[Dryness]
+Lehortasuna
+[Fords]
+Ibiak
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Ibai-arroak uholde-lautada gutxiegi du hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
+[Stone highlands]
+Harrizko goi-lurrak
+[Valley size]
+Haranaren tamaina
+[Pass width]
+Mendatearen zabalera
+[Pond size]
+Urmaelaren tamaina
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Haran hauek handiegiak dira maparako; erabili mapa handiagoa edo haran txikiagoak.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Goi-lurrek leku gutxiegi dute hainbeste koloniarentzat; erabili mapa handiagoa edo kolonia gutxiago.
+[Symmetric arena]
+Arena simetrikoa
+[Centre size]
+Erdigunearen tamaina
+[Causeway width]
+Galtzadaren zabalera
+[Causeways]
+Galtzadak
+[Lakes]
+Aintzirak
+[Resource richness]
+Baliabideen ugaritasuna
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Arena simetrikoak 2, 4 edo 8 kolonia behar ditu.
+[Eight colonies need a square map in the symmetric arena.]
+Zortzi koloniarentzat mapa karratua behar da arena simetrikoan.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Erdigunea txikiegia da mapa honetan fruta-baratze baterako; erabili erdigune handiagoa edo mapa handiagoa.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arenak leku gutxiegi uzten du kolonia bakoitzarentzat; erabili mapa handiagoa, erdigune txikiagoa edo lubanarro estuagoa.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Galtzadak elkarrengandik hurbilegi daude; erabili galtzada gutxiago edo estuagoak, edo erdigune handiagoa.
+[Ring world]
+Eraztun-mundua
+[Belt width]
+Gerrikoaren zabalera
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Gerrikoa laburregia da hainbeste koloniarentzat; erabili mapa luzeagoa edo kolonia gutxiago.

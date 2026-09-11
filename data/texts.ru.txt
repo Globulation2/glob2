@@ -1540,6 +1540,10 @@ Cortex
 Быстрый бой: двойная скорость; сгенерированные карты начинаются с 8 рабочих.
 [Reroll]
 Создать еще одну карту
+[Randomize]
+Случайная генерация
+[Reset to defaults]
+Восстановить значения по умолчанию
 [Ruleset]
 Набор правил
 [Select a map from the library.]
@@ -1790,6 +1794,12 @@ OpenGL недоступен в этой сборке.
 Ширина коридора
 [Loopiness]
 Количество петель
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Лабиринту нужно не меньше двух ячеек по горизонтали и по вертикали; используйте карту побольше или ячейки поменьше.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+При такой ширине проливов в каждой ячейке остаётся слишком мало травы; используйте проливы поуже или ячейки побольше.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+В лабиринте слишком мало тупиков для такого числа колоний; используйте карту побольше или ячейки поменьше.
 [Home island size]
 Размер стартового острова
 [Commons size]
@@ -1804,5 +1814,57 @@ OpenGL недоступен в этой сборке.
 Изрезанность побережья
 [Fjord width]
 Ширина фьорда
+[Lake connects to fjords]
+Озеро соединено с фьордами
 [Resource islands]
 Острова с ресурсами
+[Watershed]
+Речной бассейн
+[River density]
+Плотность рек
+[Dryness]
+Засушливость
+[Fords]
+Броды
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+В речном бассейне слишком мало пойменных земель для такого числа колоний; используйте карту побольше или меньше колоний.
+[Stone highlands]
+Каменное нагорье
+[Valley size]
+Размер долины
+[Pass width]
+Ширина перевала
+[Pond size]
+Размер пруда
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Эти долины слишком велики для карты; используйте карту побольше или долины поменьше.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+На нагорье слишком мало места для такого числа колоний; используйте карту побольше или меньше колоний.
+[Symmetric arena]
+Симметричная арена
+[Centre size]
+Размер центра
+[Causeway width]
+Ширина дамбы
+[Causeways]
+Дамбы
+[Lakes]
+Озёра
+[Resource richness]
+Богатство ресурсов
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Симметричной арене нужно 2, 4 или 8 колоний.
+[Eight colonies need a square map in the symmetric arena.]
+Для восьми колоний симметричной арене нужна квадратная карта.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Центр слишком мал для фруктового сада на этой карте; используйте центр побольше или карту побольше.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+На арене слишком мало места для каждой колонии; используйте карту побольше, центр поменьше или ров поуже.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Дамбы расположены слишком близко друг к другу; используйте меньше дамб, более узкие дамбы или центр побольше.
+[Ring world]
+Кольцевой мир
+[Belt width]
+Ширина пояса
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Пояс слишком короткий для такого числа колоний; используйте карту подлиннее или меньше колоний.

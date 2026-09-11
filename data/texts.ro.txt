@@ -1542,6 +1542,10 @@ Nicio previzualizare curentă
 Luptă rapidă: viteză dublă; hărțile generate încep cu 8 lucrători.
 [Reroll]
 Generați o altă hartă
+[Randomize]
+Generați aleatoriu
+[Reset to defaults]
+Restabilește valorile implicite
 [Ruleset]
 Set de reguli
 [Select a map from the library.]
@@ -1792,6 +1796,12 @@ Mărimea camerei
 Lățimea coridorului
 [Loopiness]
 Densitatea buclelor
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirintul are nevoie de cel puțin două celule pe orizontală și pe verticală; folosiți o hartă mai mare sau celule mai mici.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Canalele atât de late lasă prea puțină iarbă în fiecare celulă; folosiți canale mai înguste sau celule mai mari.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirintul are prea puține fundături pentru atâtea colonii; folosiți o hartă mai mare sau celule mai mici.
 [Home island size]
 Mărimea insulei de pornire
 [Commons size]
@@ -1806,5 +1816,57 @@ Mărimea continentului
 Neregularitatea coastei
 [Fjord width]
 Lățimea fiordului
+[Lake connects to fjords]
+Lac conectat la fiorduri
 [Resource islands]
 Insule cu resurse
+[Watershed]
+Bazin hidrografic
+[River density]
+Densitatea râurilor
+[Dryness]
+Ariditate
+[Fords]
+Vaduri
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Bazinul hidrografic are prea puțină luncă pentru atâtea colonii; folosiți o hartă mai mare sau mai puține colonii.
+[Stone highlands]
+Podișuri de piatră
+[Valley size]
+Mărimea văii
+[Pass width]
+Lățimea trecătorii
+[Pond size]
+Mărimea iazului
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Aceste văi sunt prea mari pentru hartă; folosiți o hartă mai mare sau văi mai mici.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Podișurile au prea puțin spațiu pentru atâtea colonii; folosiți o hartă mai mare sau mai puține colonii.
+[Symmetric arena]
+Arenă simetrică
+[Centre size]
+Mărimea centrului
+[Causeway width]
+Lățimea digului
+[Causeways]
+Diguri
+[Lakes]
+Lacuri
+[Resource richness]
+Bogăția resurselor
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Arena simetrică necesită 2, 4 sau 8 colonii.
+[Eight colonies need a square map in the symmetric arena.]
+Opt colonii necesită o hartă pătrată în arena simetrică.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Centrul este prea mic pentru o livadă pe această hartă; folosiți un centru mai mare sau o hartă mai mare.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena lasă prea puțin spațiu pentru fiecare colonie; folosiți o hartă mai mare, un centru mai mic sau un șanț cu apă mai îngust.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Digurile sunt prea apropiate; folosiți mai puține diguri sau diguri mai înguste, ori un centru mai mare.
+[Ring world]
+Lume inelară
+[Belt width]
+Lățimea centurii
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Centura este prea scurtă pentru atâtea colonii; folosiți o hartă mai lungă sau mai puține colonii.
