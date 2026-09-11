@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationValidation.h"
+#include "StartQuality.h"
 #include "Utilities.h"
 std::string GenerationResult::diagnostic() const
 {
@@ -81,6 +82,7 @@ GenerationResult GenerationService::generate(Game &game, const GenerationRequest
 			return result;
 		}
 	}
+	result.quality = MapGeneration::scoreStarts(game, request.nbTeams);
 	result.stage = "script";
 	const auto script = game.sgslScript.compileScript(&game);
 	if (script.type != ErrorReport::ET_OK)

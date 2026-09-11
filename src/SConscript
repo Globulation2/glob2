@@ -198,6 +198,7 @@ map/generator/shared/Settlements.cpp
 map/generator/shared/Regions.cpp
 map/generator/shared/Resources.cpp
 map/generator/shared/StartingPositions.cpp
+map/generator/shared/StartQuality.cpp
 map/generator/shared/Terrain.cpp
 map/gradient/MapGradientArea.cpp
 map/gradient/MapGradientBuilding.cpp

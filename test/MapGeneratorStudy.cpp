@@ -9,6 +9,7 @@
 #include "MapGenerator.h"
 #include "Race.h"
 #include "Unit.h"
+#include "StartQuality.h"
 #include "Utilities.h"
 #include <algorithm>
 #include <chrono>
@@ -80,6 +81,7 @@ int main(int argc, char **argv)
 	descriptor.seed = seed;
 	bool tuning = false;
 	bool headroom = false;
+	bool quality = false;
 	std::string dump;
 	std::map<std::string, std::string> aliases = {{"smooth", "smoothing"},
 												  {"craters", "lake-density"},
@@ -99,6 +101,8 @@ int main(int argc, char **argv)
 			tuning = true;
 		else if (arg == "headroom")
 			headroom = true;
+		else if (arg == "quality")
+			quality = true;
 		else if (arg == "preset")
 		{
 		} // All new requests start at registered defaults.
@@ -407,6 +411,26 @@ int main(int argc, char **argv)
 		std::printf("HEADROOM,%d,%d,%d,%d,%d,%d,%d,%d\n", (int)candidates.size(),
 					actualValid ? actualHi - actualLo : -1, actualValid ? actualLo : -1,
 					actualValid ? actualHi : -1, bestSpread, bestLo, bestHi, nbTeams);
+	}
+	if (quality)
+	{
+		const auto &q = result.quality;
+		// The service already scored this map. Scoring it again times what that costs, which
+		// is what a sampling caller pays per candidate on top of generating it.
+		const auto scoreStart = std::chrono::steady_clock::now();
+		MapGeneration::scoreStarts(game, descriptor.nbTeams);
+		const double scoreSeconds =
+			std::chrono::duration<double>(std::chrono::steady_clock::now() - scoreStart).count();
+		std::printf("QUALITY,%d,%.6f,%.6f,%.6f,%.6f,%d,%.6f\n", q.measured, q.score, q.fairness,
+					q.worst, q.best, (int)q.colonies.size(), scoreSeconds);
+		for (size_t t = 0; t < q.colonies.size(); ++t)
+		{
+			const auto &c = q.colonies[t];
+			std::printf("COLONY,%d,%d,%d,%d,%d,%d,%d,%d,%.1f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n",
+						(int)t, c.wheatDistance, c.woodDistance, c.catchmentTiles, c.buildSites,
+						c.resourceAmount, c.rivalDistance, c.rivalsWithinThreat, c.meanFertility,
+						c.wheat, c.wood, c.fertility, c.depth, c.room, c.isolation, c.total);
+		}
 	}
 	if (!dump.empty())
 	{

@@ -1,0 +1,184 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#include "StartQuality.h"
+#include "FertilityField.h"
+#include "Game.h"
+#include "Map.h"
+#include "Unit.h"
+#include <algorithm>
+#include <cmath>
+#include <queue>
+
+namespace MapGeneration
+{
+namespace
+{
+double clampUnit(double v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+
+/// Distance in walking steps from a colony's starting workers to every tile it can reach.
+/// Workers, not the boot tile: the swarm occupies the boot tile and nobody walks out of it.
+std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers)
+{
+	const int w = map.getW(), h = map.getH();
+	std::vector<int> dist(size_t(w) * h, -1);
+	std::queue<int> q;
+	for (int p : workers)
+		if (dist[p] < 0)
+		{
+			dist[p] = 0;
+			q.push(p);
+		}
+	while (!q.empty())
+	{
+		const int p = q.front();
+		q.pop();
+		const int x = p % w, y = p / w;
+		for (int dy = -1; dy <= 1; ++dy)
+			for (int dx = -1; dx <= 1; ++dx)
+			{
+				if (!dx && !dy)
+					continue;
+				const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
+				const int np = ny * w + nx;
+				if (dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+				{
+					dist[np] = dist[p] + 1;
+					q.push(np);
+				}
+			}
+	}
+	return dist;
+}
+} // namespace
+
+StartQualityReport scoreStarts(const Game &game, int requestedTeams,
+							   const StartQualityWeights &weights, const StartQualityScale &scale)
+{
+	StartQualityReport report;
+	const Map &map = game.map;
+	const int w = map.getW(), h = map.getH();
+	const int nbTeams = std::min(game.teamsCount(), requestedTeams);
+	if (nbTeams <= 0)
+		return report;
+
+	std::vector<std::vector<int>> workers(nbTeams);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const Uint16 gid = map.getGroundUnit(x, y);
+			if (gid == NOGUID)
+				continue;
+			const int team = Unit::GIDtoTeam(gid);
+			if (team >= 0 && team < nbTeams)
+				workers[team].push_back(y * w + x);
+		}
+	for (const auto &team : workers)
+		if (team.empty())
+			return report; // nothing walked out of this colony; there is nothing to score
+
+	const Fertility::Field fertility = Fertility::forMap(map);
+	report.colonies.resize(nbTeams);
+
+	for (int team = 0; team < nbTeams; ++team)
+	{
+		ColonyQuality &colony = report.colonies[team];
+		const std::vector<int> dist = walkFromWorkers(map, workers[team]);
+
+		for (int p = 0; p < w * h; ++p)
+		{
+			if (dist[p] < 0 || dist[p] > scale.catchmentSteps)
+				continue;
+			const int x = p % w, y = p / w;
+			++colony.catchmentTiles;
+			colony.meanFertility += fertility.at(x, y);
+			if (map.isFreeForBuilding(x, y, 4, 4))
+				++colony.buildSites;
+		}
+		if (colony.catchmentTiles)
+			colony.meanFertility /= colony.catchmentTiles;
+
+		// A deposit counts once however many catchment tiles touch it; workers gather from
+		// beside a deposit, so what matters is that the colony can stand next to it at all.
+		for (int y = 0; y < h; ++y)
+			for (int x = 0; x < w; ++x)
+			{
+				const Resource &resource = map.getResource(x, y);
+				if (resource.type != CORN && resource.type != WOOD)
+					continue;
+				int nearest = -1;
+				for (int dy = -1; dy <= 1; ++dy)
+					for (int dx = -1; dx <= 1; ++dx)
+					{
+						if (!dx && !dy)
+							continue;
+						const int d = dist[map.normalizeY(y + dy) * w + map.normalizeX(x + dx)];
+						if (d >= 0 && (nearest < 0 || d < nearest))
+							nearest = d;
+					}
+				if (nearest < 0)
+					continue;
+				const int reach = nearest + 1;
+				int &best = resource.type == CORN ? colony.wheatDistance : colony.woodDistance;
+				if (best < 0 || reach < best)
+					best = reach;
+				if (nearest <= scale.catchmentSteps)
+					colony.resourceAmount += resource.amount;
+			}
+
+		for (int rival = 0; rival < nbTeams; ++rival)
+		{
+			if (rival == team)
+				continue;
+			int nearest = -1;
+			for (int p : workers[rival])
+				if (dist[p] >= 0 && (nearest < 0 || dist[p] < nearest))
+					nearest = dist[p];
+			if (nearest < 0)
+				continue; // no land route to this rival, which is isolation rather than threat
+			if (colony.rivalDistance < 0 || nearest < colony.rivalDistance)
+				colony.rivalDistance = nearest;
+			if (nearest <= scale.threatRadius)
+				++colony.rivalsWithinThreat;
+		}
+
+		colony.wheat = colony.wheatDistance < 0
+						   ? 0
+						   : clampUnit(1.0 - double(colony.wheatDistance) / scale.wheatReference);
+		colony.wood = colony.woodDistance < 0
+						  ? 0
+						  : clampUnit(1.0 - double(colony.woodDistance) / scale.woodReference);
+		colony.fertility = clampUnit(colony.meanFertility / scale.fertilityReference);
+		colony.depth = clampUnit(double(colony.resourceAmount) / scale.depthReference);
+		colony.room = clampUnit(double(colony.buildSites) / scale.roomReference);
+		// No reachable rival is the safest a colony can be; being one of several crowded into
+		// the same neighbourhood is the case the raw distance alone does not describe.
+		const double spacing = colony.rivalDistance < 0
+								   ? 1.0
+								   : clampUnit(double(colony.rivalDistance) / scale.isolationReference);
+		const int crowd = std::max(0, colony.rivalsWithinThreat - 1);
+		colony.isolation = spacing * std::max(0.0, 1.0 - scale.crowdPenalty * crowd);
+
+		const double sum = weights.wheat + weights.wood + weights.fertility + weights.depth +
+						   weights.room + weights.isolation;
+		colony.total = sum <= 0 ? 0
+								: (weights.wheat * colony.wheat + weights.wood * colony.wood +
+								   weights.fertility * colony.fertility + weights.depth * colony.depth +
+								   weights.room * colony.room + weights.isolation * colony.isolation) /
+									  sum;
+		// A colony that cannot reach one of its primary resources has not got a start at all,
+		// whatever room and fertility it was given.
+		if (colony.wheatDistance < 0 || colony.woodDistance < 0)
+			colony.total = 0;
+	}
+
+	report.worst = report.best = report.colonies[0].total;
+	for (const ColonyQuality &colony : report.colonies)
+	{
+		report.worst = std::min(report.worst, colony.total);
+		report.best = std::max(report.best, colony.total);
+	}
+	report.fairness = report.best > 0 ? report.worst / report.best : 0;
+	report.score = report.worst * std::pow(report.fairness, scale.fairnessExponent);
+	report.measured = true;
+	return report;
+}
+} // namespace MapGeneration
