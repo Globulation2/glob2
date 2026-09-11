@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cstdint>
 #include <functional>
+#include <map>
 #include <queue>
 #include <string>
 #include <utility>
@@ -38,6 +39,9 @@ constexpr double kHomeRadius = 6.5;
 constexpr double kPondDistance = 11.5, kPondRadius = 3.5;
 // Open land kept between the moat and the nearest lake.
 constexpr double kApron = 4.0;
+// The smallest orchard island radius that always holds three orbits of groves (one lattice
+// phase has them within five tiles of the centre), wherever the causeways come ashore.
+constexpr double kMinimumCentre = 8.0;
 // The nearest two homes may be.
 constexpr double kMinimumSpacing = 28.0;
 // Every home's starting kit, the same whatever the richness control says.
@@ -265,8 +269,12 @@ std::string validate(const GenerationRequest &r) {
     return "Symmetric arena needs 2, 4 or 8 colonies.";
   if (r.nbTeams == 8 && r.wDec != r.hDec)
     return "Eight colonies need a square map in the symmetric arena.";
+  const Arena a = arenaFor(r);
+  if (a.centre < kMinimumCentre)
+    return "The centre is too small for an orchard on this map; use a bigger centre or a bigger "
+           "map.";
   Fit fit;
-  homeCandidates(arenaFor(r), fit);
+  homeCandidates(a, fit);
   if (fit == Fit::Crowded)
     return "The arena leaves too little room for every colony; use a bigger map, a smaller "
            "centre or a narrower moat.";
@@ -329,7 +337,8 @@ std::vector<unsigned char> topShare(const std::vector<int> &value,
     if (eligible[i])
       pool.push_back(value[i]);
   std::vector<unsigned char> mask(value.size(), 0);
-  const size_t count = std::min(pool.size(), size_t(std::lround(std::max(0.0, share) * pool.size())));
+  const size_t count =
+      std::min(pool.size(), size_t(std::lround(std::max(0.0, share) * pool.size())));
   if (!count)
     return mask;
   std::sort(pool.begin(), pool.end());
@@ -339,12 +348,14 @@ std::vector<unsigned char> topShare(const std::vector<int> &value,
   return mask;
 }
 
-// Whether a point lies on one of colony 0's causeways, extended past both shores.
-bool onCauseway(const Arena &a, const Layout &l, Point p, double extend, double halfWidth) {
+// Whether a point lies on one of colony 0's causeways, extended past the island's shore by
+// `inner` and past the outer shore by `outer`.
+bool onCauseway(const Arena &a, const Layout &l, Point p, double inner, double outer,
+                double halfWidth) {
   for (double angle : l.gates) {
     const double dx = std::cos(angle), dy = std::sin(angle);
     const double along = p.x * dx + p.y * dy, across = std::fabs(p.x * dy - p.y * dx);
-    if (along >= a.centre - extend && along <= a.centre + a.moat + extend && across <= halfWidth)
+    if (along >= a.centre - inner && along <= a.centre + a.moat + outer && across <= halfWidth)
       return true;
   }
   return false;
@@ -458,11 +469,12 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
     for (int u = 0; u < w; ++u) {
       const size_t i = size_t(v) * w + u;
       const Point p = cornerPoint(w, h, u, v);
-      const double toHome = torusDistance(w, h, p, l.home), toPond = torusDistance(w, h, p, l.pond);
+      const double toHome = torusDistance(w, h, p, l.home);
+      const double toPond = torusDistance(w, h, p, l.pond);
       homeDisc[i] = toHome <= kHomeRadius;
       homeZone[i] = toHome <= kHomeRadius + 4 || toPond <= kPondRadius + 7;
       pond[i] = toPond <= kPondRadius;
-      gate[i] = onCauseway(a, l, p, 3.0, a.causewayWidth / 2);
+      gate[i] = onCauseway(a, l, p, 1.5, 1.5, a.causewayWidth / 2);
     }
   homeDisc = stamp(s, homeDisc, true);
   homeZone = stamp(s, homeZone, true);
@@ -478,7 +490,8 @@ bool buildTerrain(Map &map, GenerationContext &context, const Arena &a, const La
       t.moat[i] = !within(r2, a.centre) && within(r2, a.centre + a.moat);
       lakeEligible[i] = !within(r2, a.centre + a.moat + kApron) && !homeZone[i];
     }
-  const float smoothing = std::max(12.0f, std::min(w, h) / 8.0f);
+  // Capped so big maps get more lakes rather than bigger ones: more shore, more farmland.
+  const float smoothing = std::min(32.0f, std::max(12.0f, std::min(w, h) / 10.0f));
   std::vector<unsigned char> lakes =
       topShare(orbitNoise(context, s, "arena-lakes", smoothing, true), lakeEligible,
                o.lakes / 100.0, false);
@@ -616,14 +629,6 @@ bool placeColonies(Game &game, GenerationContext &context, const Arena &a, const
   return true;
 }
 
-// The fruit of the orchard tree at lattice position (ti, tj), for one of three patterns. Each is
-// symmetric in ti and tj, so a quarter turn or diagonal mirror, which swaps them, leaves every
-// tree's fruit unchanged.
-int orchardFruit(int ti, int tj, int pattern) {
-  const int lo = std::min(ti, tj), hi = std::max(ti, tj);
-  return CHERRY + (pattern == 0 ? lo + hi : pattern == 1 ? hi : lo + 2 * hi) % 3;
-}
-
 bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layout &l,
              const SymmetricArenaOptions &o, const Terrain &t) {
   context.stage = "arena resources";
@@ -645,11 +650,13 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
       land[i] = !water[i];
       const Point p = tilePoint(w, h, x, y);
       homeClear[i] = torusDistance(w, h, p, l.home) <= kHomeRadius + 1.5;
-      landing[i] = onCauseway(a, l, p, 6.0, a.causewayWidth / 2 + 2);
+      landing[i] = onCauseway(a, l, p, 3.0, 4.0, a.causewayWidth / 2 + 2);
     }
   homeClear = stamp(s, homeClear, false);
   landing = stamp(s, landing, false);
-  const auto onPath = [&](int u, int v) { return t.paths[size_t(wrap(v, h)) * w + wrap(u, w)] != 0; };
+  const auto onPath = [&](int u, int v) {
+    return t.paths[size_t(wrap(v, h)) * w + wrap(u, w)] != 0;
+  };
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x) {
       const size_t i = size_t(y) * w + x;
@@ -657,17 +664,17 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
                    onPath(x, y + 1) || onPath(x + 1, y + 1);
     }
   const std::vector<int> waterSteps = stepsFrom(w, h, water), landSteps = stepsFrom(w, h, land);
-  const float coarse = std::max(8.0f, std::min(w, h) / 10.0f);
+  const float coarse = std::min(24.0f, std::max(8.0f, std::min(w, h) / 10.0f));
   std::vector<int> plan(n, -1);
 
-  // The ambient layer outside the arena: farmland on lake and pond shores (wheat to wood 2:1),
-  // stone outcrops away from the water, and algae off the shores.
+  // The ambient layer beyond the open apron round the moat: farmland on lake and pond shores
+  // (wheat to wood 2:1), stone outcrops away from the water, and algae off every shore.
   std::vector<unsigned char> farm(n, 0), rock(n, 0), alga(n, 0);
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x) {
       const size_t i = size_t(y) * w + x;
       const bool open = grass[i] && !blocked[i] &&
-                        !within(tileRadius2(w, h, x, y), a.centre + a.moat + 2);
+                        !within(tileRadius2(w, h, x, y), a.centre + a.moat + kApron + 2);
       farm[i] = open && waterSteps[i] >= 2 && waterSteps[i] <= 7;
       rock[i] = open && waterSteps[i] >= 3;
       alga[i] = water[i] && landSteps[i] >= 2;
@@ -690,60 +697,77 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
   }
 
   // The orchard: two-by-two groves on a four-tile lattice squared up to the centre, so every
-  // grove has walkway at least two tiles wide on all four sides and every tree can be picked;
-  // a fifth of the groves are stone. Lattice phase and fruit pattern come from the seed. A small
-  // centre holds few groves, so if that choice leaves a fruit out, the first combination that
-  // has all three is used instead.
+  // grove has walkway at least two tiles wide on all four sides and every tree can be picked.
+  // Groves are dealt out an orbit at a time - the groves the symmetries carry onto each other -
+  // from the centre outwards: cherries, oranges and prunes in turn from a seeded start, with
+  // about a fifth of the orbits turned to stone but never fewer than three left for fruit. The
+  // lattice phase comes from the seed; if it leaves a small centre fewer than three orbits, the
+  // other phases are tried.
+  struct Orbit {
+    std::int64_t radius2 = INT64_MAX;
+    int key = 0, value = INT_MIN;
+    bool stone = false;
+    std::vector<int> tiles;
+  };
   const std::vector<int> orchardNoise = orbitNoise(context, s, "arena-orchard", 4.0f, false);
   bool planted = false;
-  for (int attempt = -1; attempt < 18 && !planted; ++attempt) {
+  for (int attempt = 0; attempt < 4 && !planted; ++attempt) {
     // Phase 1 gives even walkways, 2 an avenue along each axis, 3 a grove on the centre; 0
     // would join the four groves round the centre into one block with unpickable middle trees.
-    const int phase = attempt < 0 ? l.orchardPhase : 1 + attempt / 6 % 3;
-    const int pattern = attempt < 0 ? l.orchardPattern : attempt / 2 % 3;
-    // A tile's grove index along one axis from its doubled centred coordinate, or -1 on a
-    // walkway. It depends only on the distance from the axis, so turns and mirrors keep it.
-    const auto grove = [phase](int doubled) {
-      const int i = (std::abs(doubled) - 1) / 2 + 4 - phase;
-      return i % 4 < 2 ? i / 4 : -1;
+    const int phase = attempt == 0 ? l.orchardPhase : attempt;
+    // Whether a tile's doubled centred coordinate falls in a grove row. It depends only on the
+    // distance from the axis, so turns and mirrors keep it.
+    const auto inGrove = [phase](int doubled) {
+      return ((std::abs(doubled) - 1) / 2 + 4 - phase) % 4 < 2;
     };
     std::vector<unsigned char> trees(n, 0);
     for (int y = 0; y < h; ++y)
       for (int x = 0; x < w; ++x) {
         const size_t i = size_t(y) * w + x;
         trees[i] = grass[i] && !blocked[i] && within(tileRadius2(w, h, x, y), a.centre - 2) &&
-                   grove(2 * x + 1 - w) >= 0 && grove(2 * y + 1 - h) >= 0;
+                   inGrove(2 * x + 1 - w) && inGrove(2 * y + 1 - h);
       }
-    // A grove's value is the highest orbit-noise value among its tiles, which its images share,
-    // so stone always takes whole groves.
-    std::vector<int> groveValue(n, INT_MIN);
+    // An orbit is named by the lowest tile index any symmetry carries one of its tiles to, and
+    // ranked by its nearest tile to the centre and its highest noise value; all three are the
+    // same whichever of its groves they are read from.
+    std::map<int, Orbit> orbits;
     for (const auto &group : groupsOf(trees, w, h)) {
-      int best = INT_MIN;
-      for (int i : group)
-        best = std::max(best, orchardNoise[size_t(i)]);
-      for (int i : group)
-        groveValue[size_t(i)] = best;
-    }
-    const auto stones = attempt < 0 || attempt % 2 == 0 ? topShare(groveValue, trees, 0.2, true)
-                                                        : std::vector<unsigned char>(n, 0);
-    std::vector<int> orchard(n, -1);
-    bool seen[3] = {false, false, false};
-    for (int y = 0; y < h; ++y)
-      for (int x = 0; x < w; ++x) {
-        const size_t i = size_t(y) * w + x;
-        if (!trees[i])
-          continue;
-        orchard[i] = stones[i] ? STONE
-                               : orchardFruit(grove(2 * x + 1 - w), grove(2 * y + 1 - h), pattern);
-        if (!stones[i])
-          seen[orchard[i] - CHERRY] = true;
+      int key = INT_MAX, value = INT_MIN;
+      std::int64_t radius2 = INT64_MAX;
+      for (int i : group) {
+        value = std::max(value, orchardNoise[size_t(i)]);
+        radius2 = std::min(radius2, tileRadius2(w, h, i % w, i / w));
+        for (int e = 0; e < s.order(); ++e)
+          key = std::min(key, s.tile(e, i % w, i / w));
       }
-    if (seen[0] && seen[1] && seen[2]) {
-      planted = true;
-      for (size_t i = 0; i < n; ++i)
-        if (orchard[i] >= 0)
-          plan[i] = orchard[i];
+      Orbit &orbit = orbits[key];
+      orbit.key = key;
+      orbit.radius2 = radius2;
+      orbit.value = value;
+      orbit.tiles.insert(orbit.tiles.end(), group.begin(), group.end());
     }
+    if (orbits.size() < 3)
+      continue;
+    std::vector<Orbit *> ranked;
+    for (auto &entry : orbits)
+      ranked.push_back(&entry.second);
+    std::sort(ranked.begin(), ranked.end(), [](const Orbit *p, const Orbit *q) {
+      return p->value != q->value ? p->value > q->value : p->key < q->key;
+    });
+    const size_t stones =
+        std::min(ranked.size() - 3, size_t(std::lround(0.2 * double(ranked.size()))));
+    for (size_t k = 0; k < stones; ++k)
+      ranked[k]->stone = true;
+    std::sort(ranked.begin(), ranked.end(), [](const Orbit *p, const Orbit *q) {
+      return p->radius2 != q->radius2 ? p->radius2 < q->radius2 : p->key < q->key;
+    });
+    int fruit = l.orchardPattern;
+    for (const Orbit *orbit : ranked) {
+      const int type = orbit->stone ? STONE : CHERRY + fruit++ % 3;
+      for (int i : orbit->tiles)
+        plan[size_t(i)] = type;
+    }
+    planted = true;
   }
   if (!planted) {
     context.detail = "the centre is too small to hold all three fruits";
@@ -796,8 +820,10 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
   };
   const Point side{-std::sin(l.pondAngle), std::cos(l.pondAngle)};
   const double stoneAngle = l.pondAngle + 2 * kPi / 3;
-  const int wheatKit = grow({l.pond.x + 4.5 * side.x, l.pond.y + 4.5 * side.y}, CORN, kKitFarmland);
-  const int woodKit = grow({l.pond.x - 4.5 * side.x, l.pond.y - 4.5 * side.y}, WOOD, kKitFarmland);
+  const int wheatKit =
+      grow({l.pond.x + 4.5 * side.x, l.pond.y + 4.5 * side.y}, CORN, kKitFarmland);
+  const int woodKit =
+      grow({l.pond.x - 4.5 * side.x, l.pond.y - 4.5 * side.y}, WOOD, kKitFarmland);
   const int stoneKit = grow({l.home.x + (kHomeRadius + 3) * std::cos(stoneAngle),
                              l.home.y + (kHomeRadius + 3) * std::sin(stoneAngle)},
                             STONE, kKitStone);
@@ -805,7 +831,9 @@ bool furnish(Game &game, GenerationContext &context, const Arena &a, const Layou
     context.detail = "colony 0's starting kit has no room beside its pond";
     return false;
   }
-  const auto rank = [](int type) { return type == STONE ? 3 : type == WOOD ? 2 : type == CORN ? 1 : 0; };
+  const auto rank = [](int type) {
+    return type == STONE ? 3 : type == WOOD ? 2 : type == CORN ? 1 : 0;
+  };
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x) {
       int best = -1;

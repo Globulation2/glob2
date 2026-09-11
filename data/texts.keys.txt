@@ -909,5 +909,6 @@
 [Resource richness]
 [Symmetric arena needs 2, 4 or 8 colonies.]
 [Eight colonies need a square map in the symmetric arena.]
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
 [The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
 [The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
