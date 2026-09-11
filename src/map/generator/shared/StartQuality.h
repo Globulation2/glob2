@@ -60,8 +60,11 @@ struct StartQualityReport
 	bool measured = false;
 };
 
-/// Requires a finished map: colonies built, workers placed, resources final.
-StartQualityReport scoreStarts(const Game &game, int nbTeams,
-							   const StartQualityWeights &weights = {},
+/// Requires a finished map: colonies built, workers placed, resources final. Also stamps
+/// Map::Tile::fertility and Map::fertilityMaximum from the same Fertility::Field this already
+/// computes for scoring, so a freshly generated map carries real fertility data instead of the
+/// zeroes a never-computed tile defaults to (see FertilityCalculator, which is otherwise the
+/// only thing that ever populates these two fields, and never runs as part of generation).
+StartQualityReport scoreStarts(Game &game, int nbTeams, const StartQualityWeights &weights = {},
 							   const StartQualityScale &scale = {});
 } // namespace MapGeneration

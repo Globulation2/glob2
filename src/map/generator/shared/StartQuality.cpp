@@ -6,6 +6,7 @@
 #include "Unit.h"
 #include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace MapGeneration
 {
@@ -51,11 +52,11 @@ std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers
 }
 } // namespace
 
-StartQualityReport scoreStarts(const Game &game, int requestedTeams,
-							   const StartQualityWeights &weights, const StartQualityScale &scale)
+StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualityWeights &weights,
+							   const StartQualityScale &scale)
 {
 	StartQualityReport report;
-	const Map &map = game.map;
+	Map &map = game.map;
 	const int w = map.getW(), h = map.getH();
 	const int nbTeams = std::min(game.teamsCount(), requestedTeams);
 	if (nbTeams <= 0)
@@ -77,6 +78,26 @@ StartQualityReport scoreStarts(const Game &game, int requestedTeams,
 			return report; // nothing walked out of this colony; there is nothing to score
 
 	const Fertility::Field fertility = Fertility::forMap(map);
+
+	// scoreStarts already pays for this field on every roll; stamping it into the map's own
+	// tiles is a free byproduct of that, not a new cost, and it is otherwise the only way a
+	// freshly generated map ever gets one. FertilityCalculator (the map editor's "compute
+	// fertility" action, and Game_io.cpp's load-time migration for saves older than version 63)
+	// is the only other thing that ever populates these two fields, and neither runs as part of
+	// generation - so without this, every custom or lobby game starts with an all-zero fertility
+	// overlay regardless of how the field itself is computed. Same clamp FertilityCalculator
+	// uses: kScale's own ceiling (an all-water neighbourhood) is one past what a Uint16 holds.
+	constexpr std::uint32_t kFertilityCeiling = std::numeric_limits<Uint16>::max();
+	Uint16 fertilityMax = 0;
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+		{
+			const Uint16 value = static_cast<Uint16>(std::min(fertility.at(x, y), kFertilityCeiling));
+			map.getTile(x, y).fertility = value;
+			fertilityMax = std::max(fertilityMax, value);
+		}
+	map.fertilityMaximum = fertilityMax;
+
 	report.colonies.resize(nbTeams);
 
 	for (int team = 0; team < nbTeams; ++team)
