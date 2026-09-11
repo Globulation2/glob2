@@ -1538,6 +1538,10 @@ Ysagoon Online Gaming
 Швидкий бій: подвійна швидкість; створені карти починаються з 8 робітників.
 [Reroll]
 Створіть іншу карту
+[Randomize]
+Випадкова генерація
+[Reset to defaults]
+Відновити типові значення
 [Ruleset]
 Набір правил
 [Select a map from the library.]
@@ -1788,6 +1792,12 @@ OpenGL недоступний у цій збірці.
 Ширина коридору
 [Loopiness]
 Кількість петель
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Лабіринту потрібно щонайменше дві комірки по горизонталі й вертикалі; використайте більшу карту або менші комірки.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+За такої ширини проток у кожній комірці лишається замало трави; використайте вужчі протоки або більші комірки.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+У лабіринті замало тупиків для такої кількості колоній; використайте більшу карту або менші комірки.
 [Home island size]
 Розмір стартового острова
 [Commons size]
@@ -1802,5 +1812,57 @@ OpenGL недоступний у цій збірці.
 Порізаність узбережжя
 [Fjord width]
 Ширина фіорду
+[Lake connects to fjords]
+Озеро з’єднане з фіордами
 [Resource islands]
 Острови з ресурсами
+[Watershed]
+Річковий басейн
+[River density]
+Щільність річок
+[Dryness]
+Посушливість
+[Fords]
+Броди
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+У річковому басейні замало заплавних земель для такої кількості колоній; використайте більшу карту або менше колоній.
+[Stone highlands]
+Кам’яне нагір’я
+[Valley size]
+Розмір долини
+[Pass width]
+Ширина перевалу
+[Pond size]
+Розмір ставка
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ці долини завеликі для карти; використайте більшу карту або менші долини.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+На нагір’ї замало місця для такої кількості колоній; використайте більшу карту або менше колоній.
+[Symmetric arena]
+Симетрична арена
+[Centre size]
+Розмір центру
+[Causeway width]
+Ширина дамби
+[Causeways]
+Дамби
+[Lakes]
+Озера
+[Resource richness]
+Багатство ресурсів
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Симетричній арені потрібно 2, 4 або 8 колоній.
+[Eight colonies need a square map in the symmetric arena.]
+Для восьми колоній симетрична арена потребує квадратної карти.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Центр замалий для фруктового саду на цій карті; використайте більший центр або більшу карту.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Арена залишає замало місця для кожної колонії; використайте більшу карту, менший центр або вужчий рів.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Дамби розташовані надто близько одна до одної; використайте менше дамб, вужчі дамби або більший центр.
+[Ring world]
+Кільцевий світ
+[Belt width]
+Ширина поясу
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Пояс закороткий для такої кількості колоній; використайте довшу карту або менше колоній.

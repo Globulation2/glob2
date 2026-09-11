@@ -1540,6 +1540,10 @@ Cortex
 معركة سريعة: سرعة مضاعفة؛ تبدأ الخرائط التي تم إنشاؤها بـ 8 عمال.
 [Reroll]
 إنشاء خريطة أخرى
+[Randomize]
+إنشاء عشوائي
+[Reset to defaults]
+استعادة الإعدادات الافتراضية
 [Ruleset]
 مجموعة القواعد
 [Select a map from the library.]
@@ -1790,6 +1794,12 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الممر
 [Loopiness]
 كثافة الحلقات
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+تحتاج المتاهة إلى خليتين على الأقل أفقيًا ورأسيًا؛ استخدم خريطة أكبر أو خلايا أصغر.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+القنوات بهذا العرض تترك عشبًا قليلًا جدًا في كل خلية؛ استخدم قنوات أضيق أو خلايا أكبر.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+لا تحتوي المتاهة على طرق مسدودة كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو خلايا أصغر.
 [Home island size]
 حجم جزيرة البداية
 [Commons size]
@@ -1804,5 +1814,57 @@ OpenGL غير متوفر في هذا الإصدار.
 وعورة الساحل
 [Fjord width]
 عرض المضيق البحري
+[Lake connects to fjords]
+البحيرة متصلة بالمضائق البحرية
 [Resource islands]
 جزر الموارد
+[Watershed]
+مستجمع المياه
+[River density]
+كثافة الأنهار
+[Dryness]
+الجفاف
+[Fords]
+المخاضات
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+لا يحتوي مستجمع المياه على سهول فيضية كافية لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[Stone highlands]
+المرتفعات الحجرية
+[Valley size]
+حجم الوادي
+[Pass width]
+عرض الممر الجبلي
+[Pond size]
+حجم البركة
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+هذه الوديان أكبر من أن تتسع لها الخريطة؛ استخدم خريطة أكبر أو وديانًا أصغر.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+لا تتسع المرتفعات لهذا العدد من المستعمرات؛ استخدم خريطة أكبر أو عددًا أقل من المستعمرات.
+[Symmetric arena]
+الساحة المتناظرة
+[Centre size]
+حجم المركز
+[Causeway width]
+عرض الممر المرتفع
+[Causeways]
+الممرات المرتفعة
+[Lakes]
+البحيرات
+[Resource richness]
+وفرة الموارد
+[Symmetric arena needs 2, 4 or 8 colonies.]
+تحتاج الساحة المتناظرة إلى 2 أو 4 أو 8 مستعمرات.
+[Eight colonies need a square map in the symmetric arena.]
+تحتاج ثماني مستعمرات إلى خريطة مربعة في الساحة المتناظرة.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+المركز أصغر من أن يتسع لبستان في هذه الخريطة؛ استخدم مركزًا أكبر أو خريطة أكبر.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+لا تترك الساحة مساحة كافية لكل مستعمرة؛ استخدم خريطة أكبر أو مركزًا أصغر أو خندقًا مائيًا أضيق.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+الممرات المرتفعة متقاربة جدًا؛ استخدم ممرات مرتفعة أقل أو أضيق، أو مركزًا أكبر.
+[Ring world]
+العالم الحلقي
+[Belt width]
+عرض الحزام
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+الحزام أقصر من أن يتسع لهذا العدد من المستعمرات؛ استخدم خريطة أطول أو عددًا أقل من المستعمرات.

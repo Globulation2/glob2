@@ -1552,6 +1552,10 @@ Ingen aktuell förhandsvisning
 Snabb strid: dubbel hastighet; genererade kartor börjar med 8 arbetare.
 [Reroll]
 Skapa en annan karta
+[Randomize]
+Slumpa
+[Reset to defaults]
+Återställ standardvärden
 [Ruleset]
 Regeluppsättning
 [Select a map from the library.]
@@ -1802,6 +1806,12 @@ Rumsstorlek
 Korridorbredd
 [Loopiness]
 Antal slingor
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labyrinten behöver minst två celler på bredden och på höjden; använd en större karta eller mindre celler.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Så breda kanaler lämnar för lite gräs i varje cell; använd smalare kanaler eller större celler.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labyrinten har för få återvändsgränder för så många kolonier; använd en större karta eller mindre celler.
 [Home island size]
 Startöns storlek
 [Commons size]
@@ -1816,5 +1826,57 @@ Kontinentstorlek
 Kustlinjens oregelbundenhet
 [Fjord width]
 Fjordbredd
+[Lake connects to fjords]
+Sjön ansluter till fjordarna
 [Resource islands]
 Resursöar
+[Watershed]
+Avrinningsområde
+[River density]
+Flodtäthet
+[Dryness]
+Torrhet
+[Fords]
+Vadställen
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Avrinningsområdet har för lite flodslätt för så många kolonier; använd en större karta eller färre kolonier.
+[Stone highlands]
+Stenhögland
+[Valley size]
+Dalstorlek
+[Pass width]
+Passbredd
+[Pond size]
+Dammstorlek
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+De här dalarna är för stora för kartan; använd en större karta eller mindre dalar.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Höglandet har för lite utrymme för så många kolonier; använd en större karta eller färre kolonier.
+[Symmetric arena]
+Symmetrisk arena
+[Centre size]
+Centrumstorlek
+[Causeway width]
+Vägbankarnas bredd
+[Causeways]
+Vägbankar
+[Lakes]
+Sjöar
+[Resource richness]
+Resursrikedom
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symmetrisk arena kräver 2, 4 eller 8 kolonier.
+[Eight colonies need a square map in the symmetric arena.]
+Åtta kolonier kräver en kvadratisk karta i den symmetriska arenan.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Centrum är för litet för en fruktträdgård på den här kartan; använd ett större centrum eller en större karta.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arenan lämnar för lite utrymme för varje koloni; använd en större karta, ett mindre centrum eller en smalare vallgrav.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Vägbankarna ligger för tätt; använd färre eller smalare vägbankar, eller ett större centrum.
+[Ring world]
+Ringvärld
+[Belt width]
+Bältets bredd
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Bältet är för kort för så många kolonier; använd en längre karta eller färre kolonier.

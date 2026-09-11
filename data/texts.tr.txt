@@ -1550,6 +1550,10 @@ Geçerli önizleme yok
 Hızlı savaş: iki kat hız; oluşturulan haritalar 8 işçiyle başlar.
 [Reroll]
 Başka bir harita oluştur
+[Randomize]
+Rastgele oluştur
+[Reset to defaults]
+Varsayılanları geri yükle
 [Ruleset]
 Kural seti
 [Select a map from the library.]
@@ -1800,6 +1804,12 @@ Oda boyutu
 Koridor genişliği
 [Loopiness]
 Döngü yoğunluğu
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Labirent yatayda ve dikeyde en az iki hücre gerektirir; daha büyük bir harita veya daha küçük hücreler kullanın.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Bu kadar geniş kanallar her hücrede çok az çimen bırakır; daha dar kanallar veya daha büyük hücreler kullanın.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Labirentte bu kadar koloni için çok az çıkmaz sokak var; daha büyük bir harita veya daha küçük hücreler kullanın.
 [Home island size]
 Başlangıç adası boyutu
 [Commons size]
@@ -1814,5 +1824,57 @@ Kıta boyutu
 Kıyı girintiliği
 [Fjord width]
 Fiyort genişliği
+[Lake connects to fjords]
+Göl fiyortlara bağlı
 [Resource islands]
 Kaynak adaları
+[Watershed]
+Havza
+[River density]
+Nehir yoğunluğu
+[Dryness]
+Kuraklık
+[Fords]
+Sığ geçitler
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Havzada bu kadar koloni için çok az taşkın ovası var; daha büyük bir harita veya daha az koloni kullanın.
+[Stone highlands]
+Taşlı yaylalar
+[Valley size]
+Vadi boyutu
+[Pass width]
+Geçit genişliği
+[Pond size]
+Gölet boyutu
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Bu vadiler harita için çok büyük; daha büyük bir harita veya daha küçük vadiler kullanın.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Yaylalarda bu kadar koloni için çok az yer var; daha büyük bir harita veya daha az koloni kullanın.
+[Symmetric arena]
+Simetrik arena
+[Centre size]
+Merkez boyutu
+[Causeway width]
+Set yolu genişliği
+[Causeways]
+Set yolları
+[Lakes]
+Göller
+[Resource richness]
+Kaynak zenginliği
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Simetrik arena 2, 4 veya 8 koloni gerektirir.
+[Eight colonies need a square map in the symmetric arena.]
+Simetrik arenada sekiz koloni için kare bir harita gerekir.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Merkez bu haritada bir meyve bahçesi için çok küçük; daha büyük bir merkez veya daha büyük bir harita kullanın.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Arena her koloniye çok az yer bırakıyor; daha büyük bir harita, daha küçük bir merkez veya daha dar bir su hendeği kullanın.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Set yolları birbirine çok yakın; daha az veya daha dar set yolları ya da daha büyük bir merkez kullanın.
+[Ring world]
+Halka dünya
+[Belt width]
+Kuşak genişliği
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Kuşak bu kadar koloni için çok kısa; daha uzun bir harita veya daha az koloni kullanın.

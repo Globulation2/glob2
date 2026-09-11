@@ -1540,6 +1540,10 @@ Cortex
 نبرد سریع: سرعت دو برابر. نقشه های تولید شده با 8 کارگر شروع می شود.
 [Reroll]
 نقشه دیگری ایجاد کنید
+[Randomize]
+ایجاد تصادفی
+[Reset to defaults]
+بازگرداندن مقادیر پیش‌فرض
 [Ruleset]
 مجموعه قوانین
 [Select a map from the library.]
@@ -1790,6 +1794,12 @@ OpenGL در این بیلد موجود نیست.
 پهنای راهرو
 [Loopiness]
 میزان حلقه‌دار بودن
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+هزارتو دست‌کم به دو سلول در عرض و در طول نیاز دارد؛ از نقشهٔ بزرگ‌تر یا سلول‌های کوچک‌تر استفاده کنید.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+آبراه‌هایی با این پهنا در هر سلول چمن بسیار کمی باقی می‌گذارند؛ از آبراه‌های باریک‌تر یا سلول‌های بزرگ‌تر استفاده کنید.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+هزارتو برای این تعداد مستعمره بن‌بست‌های بسیار کمی دارد؛ از نقشهٔ بزرگ‌تر یا سلول‌های کوچک‌تر استفاده کنید.
 [Home island size]
 اندازهٔ جزیرهٔ آغازین
 [Commons size]
@@ -1804,5 +1814,57 @@ OpenGL در این بیلد موجود نیست.
 ناهمواری ساحل
 [Fjord width]
 پهنای آبدره
+[Lake connects to fjords]
+اتصال دریاچه به آبدره‌ها
 [Resource islands]
 جزایر منابع
+[Watershed]
+حوضهٔ آبریز
+[River density]
+تراکم رودخانه‌ها
+[Dryness]
+خشکی
+[Fords]
+گدارها
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+حوضهٔ آبریز برای این تعداد مستعمره دشت سیلابی بسیار کمی دارد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Stone highlands]
+ارتفاعات سنگی
+[Valley size]
+اندازهٔ دره
+[Pass width]
+پهنای گردنه
+[Pond size]
+اندازهٔ برکه
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+این دره‌ها برای نقشه بیش از حد بزرگ‌اند؛ از نقشهٔ بزرگ‌تر یا دره‌های کوچک‌تر استفاده کنید.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+ارتفاعات برای این تعداد مستعمره جای بسیار کمی دارند؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Symmetric arena]
+میدان متقارن
+[Centre size]
+اندازهٔ مرکز
+[Causeway width]
+پهنای گذرگاه مرتفع
+[Causeways]
+گذرگاه‌های مرتفع
+[Lakes]
+دریاچه‌ها
+[Resource richness]
+فراوانی منابع
+[Symmetric arena needs 2, 4 or 8 colonies.]
+میدان متقارن به 2، 4 یا 8 مستعمره نیاز دارد.
+[Eight colonies need a square map in the symmetric arena.]
+هشت مستعمره در میدان متقارن به نقشهٔ مربعی نیاز دارند.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+مرکز در این نقشه برای یک باغ میوه بیش از حد کوچک است؛ از مرکز بزرگ‌تر یا نقشهٔ بزرگ‌تر استفاده کنید.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+میدان برای هر مستعمره جای بسیار کمی باقی می‌گذارد؛ از نقشهٔ بزرگ‌تر، مرکز کوچک‌تر یا خندق آبی باریک‌تر استفاده کنید.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+گذرگاه‌های مرتفع بیش از حد به هم نزدیک‌اند؛ از گذرگاه‌های مرتفع کمتر یا باریک‌تر، یا مرکز بزرگ‌تر استفاده کنید.
+[Ring world]
+جهان حلقه‌ای
+[Belt width]
+پهنای کمربند
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+کمربند برای این تعداد مستعمره بیش از حد کوتاه است؛ از نقشهٔ بلندتر یا مستعمره‌های کمتر استفاده کنید.

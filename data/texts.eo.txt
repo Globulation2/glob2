@@ -1540,6 +1540,10 @@ Neniu aktuala antaŭvido
 Rapida batalo: duobla rapido; generitaj mapoj komenciĝas per 8 laboristoj.
 [Reroll]
 Generu alian mapon
+[Randomize]
+Generu hazarde
+[Reset to defaults]
+Restarigi defaŭltajn valorojn
 [Ruleset]
 Regularo
 [Select a map from the library.]
@@ -1790,6 +1794,12 @@ Grandeco de ĉambro
 Larĝo de koridoro
 [Loopiness]
 Bukleco
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+La labirinto bezonas almenaŭ du ĉelojn laŭlarĝe kaj laŭalte; uzu pli grandan mapon aŭ pli malgrandajn ĉelojn.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Tiel larĝaj kanaloj lasas tro malmulte da herbo en ĉiu ĉelo; uzu pli mallarĝajn kanalojn aŭ pli grandajn ĉelojn.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+La labirinto havas tro malmultajn sakstratojn por tiom da kolonioj; uzu pli grandan mapon aŭ pli malgrandajn ĉelojn.
 [Home island size]
 Grandeco de hejminsulo
 [Commons size]
@@ -1804,5 +1814,57 @@ Grandeco de kontinento
 Malglateco de marbordo
 [Fjord width]
 Larĝo de fjordo
+[Lake connects to fjords]
+Lago ligita al fjordoj
 [Resource islands]
 Rimedinsuloj
+[Watershed]
+Riverbaseno
+[River density]
+Denseco de riveroj
+[Dryness]
+Sekeco
+[Fords]
+Travadejoj
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+La riverbaseno havas tro malmulte da inundebenaĵo por tiom da kolonioj; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Stone highlands]
+Ŝtonaj altebenaĵoj
+[Valley size]
+Grandeco de valo
+[Pass width]
+Larĝo de montpasejo
+[Pond size]
+Grandeco de lageto
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ĉi tiuj valoj estas tro grandaj por la mapo; uzu pli grandan mapon aŭ pli malgrandajn valojn.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+La altebenaĵoj havas tro malmulte da spaco por tiom da kolonioj; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Symmetric arena]
+Simetria areno
+[Centre size]
+Grandeco de centro
+[Causeway width]
+Larĝo de digvojo
+[Causeways]
+Digvojoj
+[Lakes]
+Lagoj
+[Resource richness]
+Riĉeco de rimedoj
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Simetria areno bezonas 2, 4 aŭ 8 koloniojn.
+[Eight colonies need a square map in the symmetric arena.]
+Ok kolonioj bezonas kvadratan mapon en la simetria areno.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+La centro estas tro malgranda por fruktoĝardeno sur ĉi tiu mapo; uzu pli grandan centron aŭ pli grandan mapon.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+La areno lasas tro malmulte da spaco por ĉiu kolonio; uzu pli grandan mapon, pli malgrandan centron aŭ pli mallarĝan fosaĵon.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+La digvojoj estas tro proksimaj unu al la alia; uzu malpli multajn aŭ pli mallarĝajn digvojojn, aŭ pli grandan centron.
+[Ring world]
+Ringa mondo
+[Belt width]
+Larĝo de zono
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+La zono estas tro mallonga por tiom da kolonioj; uzu pli longan mapon aŭ malpli da kolonioj.

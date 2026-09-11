@@ -1538,6 +1538,10 @@ Nenhuma visualização atual
 Batalha rápida: velocidade dupla; os mapas gerados começam com 8 trabalhadores.
 [Reroll]
 Gere outro mapa
+[Randomize]
+Gerar aleatoriamente
+[Reset to defaults]
+Restaurar padrões
 [Ruleset]
 Conjunto de regras
 [Select a map from the library.]
@@ -1788,6 +1792,12 @@ Tamanho da sala
 Largura do corredor
 [Loopiness]
 Densidade de ciclos
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+O labirinto precisa de pelo menos duas células na horizontal e na vertical; use um mapa maior ou células menores.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Canais tão largos deixam pouca grama em cada célula; use canais mais estreitos ou células maiores.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+O labirinto tem poucos becos sem saída para tantas colônias; use um mapa maior ou células menores.
 [Home island size]
 Tamanho da ilha inicial
 [Commons size]
@@ -1802,5 +1812,57 @@ Tamanho do continente
 Irregularidade da costa
 [Fjord width]
 Largura do fiorde
+[Lake connects to fjords]
+Lago ligado aos fiordes
 [Resource islands]
 Ilhas de recursos
+[Watershed]
+Bacia hidrográfica
+[River density]
+Densidade de rios
+[Dryness]
+Aridez
+[Fords]
+Vaus
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+A bacia hidrográfica tem pouca planície aluvial para tantas colônias; use um mapa maior ou menos colônias.
+[Stone highlands]
+Planaltos de pedra
+[Valley size]
+Tamanho do vale
+[Pass width]
+Largura da passagem
+[Pond size]
+Tamanho da lagoa
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Estes vales são grandes demais para o mapa; use um mapa maior ou vales menores.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Os planaltos têm pouco espaço para tantas colônias; use um mapa maior ou menos colônias.
+[Symmetric arena]
+Arena simétrica
+[Centre size]
+Tamanho do centro
+[Causeway width]
+Largura dos caminhos elevados
+[Causeways]
+Caminhos elevados
+[Lakes]
+Lagos
+[Resource richness]
+Riqueza de recursos
+[Symmetric arena needs 2, 4 or 8 colonies.]
+A arena simétrica precisa de 2, 4 ou 8 colônias.
+[Eight colonies need a square map in the symmetric arena.]
+Oito colônias precisam de um mapa quadrado na arena simétrica.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+O centro é pequeno demais para um pomar neste mapa; use um centro maior ou um mapa maior.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+A arena deixa pouco espaço para cada colônia; use um mapa maior, um centro menor ou um fosso mais estreito.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Os caminhos elevados estão próximos demais; use menos caminhos elevados ou mais estreitos, ou um centro maior.
+[Ring world]
+Mundo anel
+[Belt width]
+Largura da faixa
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+A faixa é curta demais para tantas colônias; use um mapa mais longo ou menos colônias.

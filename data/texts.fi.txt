@@ -1542,6 +1542,10 @@ Ei nykyistä esikatselua
 Nopea taistelu: kaksinkertainen nopeus; luodut kartat alkavat 8 työntekijällä.
 [Reroll]
 Luo toinen kartta
+[Randomize]
+Satunnaista
+[Reset to defaults]
+Palauta oletusarvot
 [Ruleset]
 Säännöstö
 [Select a map from the library.]
@@ -1792,6 +1796,12 @@ Huoneen koko
 Käytävän leveys
 [Loopiness]
 Silmukoiden määrä
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Sokkelo tarvitsee vähintään kaksi solua sekä vaaka- että pystysuunnassa; käytä suurempaa karttaa tai pienempiä soluja.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Näin leveät kanavat jättävät jokaiseen soluun liian vähän ruohoa; käytä kapeampia kanavia tai suurempia soluja.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Sokkelossa on liian vähän umpikujia näin monelle siirtokunnalle; käytä suurempaa karttaa tai pienempiä soluja.
 [Home island size]
 Kotisaaren koko
 [Commons size]
@@ -1806,5 +1816,57 @@ Mantereen koko
 Rannikon rikkonaisuus
 [Fjord width]
 Vuonon leveys
+[Lake connects to fjords]
+Järvi yhdistyy vuonoihin
 [Resource islands]
 Luonnonvarasaaret
+[Watershed]
+Valuma-alue
+[River density]
+Jokien tiheys
+[Dryness]
+Kuivuus
+[Fords]
+Kahlaamot
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Valuma-alueella on liian vähän tulvatasankoa näin monelle siirtokunnalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Stone highlands]
+Kiviylänkö
+[Valley size]
+Laakson koko
+[Pass width]
+Solan leveys
+[Pond size]
+Lammen koko
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Nämä laaksot ovat liian suuria kartalle; käytä suurempaa karttaa tai pienempiä laaksoja.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Ylängöllä on liian vähän tilaa näin monelle siirtokunnalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Symmetric arena]
+Symmetrinen areena
+[Centre size]
+Keskialueen koko
+[Causeway width]
+Pengertien leveys
+[Causeways]
+Pengertiet
+[Lakes]
+Järvet
+[Resource richness]
+Luonnonvarojen runsaus
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Symmetrinen areena vaatii 2, 4 tai 8 siirtokuntaa.
+[Eight colonies need a square map in the symmetric arena.]
+Kahdeksan siirtokuntaa vaatii symmetrisessä areenassa neliönmuotoisen kartan.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Keskialue on tällä kartalla liian pieni hedelmätarhalle; käytä suurempaa keskialuetta tai suurempaa karttaa.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Areenalle ei jää tarpeeksi tilaa jokaiselle siirtokunnalle; käytä suurempaa karttaa, pienempää keskialuetta tai kapeampaa vallihautaa.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Pengertiet ovat liian lähellä toisiaan; käytä vähemmän tai kapeampia pengerteitä tai suurempaa keskialuetta.
+[Ring world]
+Rengasmaailma
+[Belt width]
+Vyöhykkeen leveys
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Vyöhyke on liian lyhyt näin monelle siirtokunnalle; käytä pidempää karttaa tai vähemmän siirtokuntia.

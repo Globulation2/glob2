@@ -1612,6 +1612,10 @@ Cortex
 Γρήγορη μάχη: διπλή ταχύτητα. οι χάρτες που δημιουργούνται ξεκινούν με 8 εργαζόμενους.
 [Reroll]
 Δημιουργήστε έναν άλλο χάρτη
+[Randomize]
+Τυχαία δημιουργία
+[Reset to defaults]
+Επαναφορά προεπιλογών
 [Ruleset]
 Σύνολο κανόνων
 [Select a map from the library.]
@@ -1862,6 +1866,12 @@ Cortex
 Πλάτος διαδρόμου
 [Loopiness]
 Βαθμός διασύνδεσης
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Ο λαβύρινθος χρειάζεται τουλάχιστον δύο κελιά σε πλάτος και ύψος. Χρησιμοποιήστε μεγαλύτερο χάρτη ή μικρότερα κελιά.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Τόσο φαρδιά κανάλια αφήνουν πολύ λίγο γρασίδι σε κάθε κελί. Χρησιμοποιήστε στενότερα κανάλια ή μεγαλύτερα κελιά.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Ο λαβύρινθος έχει πολύ λίγα αδιέξοδα για τόσες αποικίες. Χρησιμοποιήστε μεγαλύτερο χάρτη ή μικρότερα κελιά.
 [Home island size]
 Μέγεθος αρχικού νησιού
 [Commons size]
@@ -1876,5 +1886,57 @@ Cortex
 Τραχύτητα ακτογραμμής
 [Fjord width]
 Πλάτος φιόρδ
+[Lake connects to fjords]
+Η λίμνη συνδέεται με τα φιόρδ
 [Resource islands]
 Νησιά πόρων
+[Watershed]
+Λεκάνη απορροής
+[River density]
+Πυκνότητα ποταμών
+[Dryness]
+Ξηρασία
+[Fords]
+Ρηχά περάσματα
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Η λεκάνη απορροής έχει πολύ λίγη πεδιάδα πλημμυρών για τόσες αποικίες. Χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[Stone highlands]
+Πετρώδη υψίπεδα
+[Valley size]
+Μέγεθος κοιλάδας
+[Pass width]
+Πλάτος διάσελου
+[Pond size]
+Μέγεθος λιμνούλας
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Αυτές οι κοιλάδες είναι πολύ μεγάλες για τον χάρτη. Χρησιμοποιήστε μεγαλύτερο χάρτη ή μικρότερες κοιλάδες.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Τα υψίπεδα έχουν πολύ λίγο χώρο για τόσες αποικίες. Χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[Symmetric arena]
+Συμμετρική αρένα
+[Centre size]
+Μέγεθος κέντρου
+[Causeway width]
+Πλάτος αναχώματος
+[Causeways]
+Αναχώματα
+[Lakes]
+Λίμνες
+[Resource richness]
+Αφθονία πόρων
+[Symmetric arena needs 2, 4 or 8 colonies.]
+Η συμμετρική αρένα χρειάζεται 2, 4 ή 8 αποικίες.
+[Eight colonies need a square map in the symmetric arena.]
+Οκτώ αποικίες χρειάζονται τετράγωνο χάρτη στη συμμετρική αρένα.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Το κέντρο είναι πολύ μικρό για οπωρώνα σε αυτόν τον χάρτη. Χρησιμοποιήστε μεγαλύτερο κέντρο ή μεγαλύτερο χάρτη.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+Η αρένα αφήνει πολύ λίγο χώρο για κάθε αποικία. Χρησιμοποιήστε μεγαλύτερο χάρτη, μικρότερο κέντρο ή στενότερη τάφρο.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Τα αναχώματα είναι πολύ κοντά μεταξύ τους. Χρησιμοποιήστε λιγότερα ή στενότερα αναχώματα ή μεγαλύτερο κέντρο.
+[Ring world]
+Δακτυλιοειδής κόσμος
+[Belt width]
+Πλάτος ζώνης
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+Η ζώνη είναι πολύ κοντή για τόσες αποικίες. Χρησιμοποιήστε μακρύτερο χάρτη ή λιγότερες αποικίες.

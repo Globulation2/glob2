@@ -1538,6 +1538,10 @@ AI 명령 없음
 빠른 전투: 속도 2배; 생성된 맵은 8명의 작업자로 시작합니다.
 [Reroll]
 다른 지도 생성
+[Randomize]
+무작위 생성
+[Reset to defaults]
+기본값 복원
 [Ruleset]
 규칙 세트
 [Select a map from the library.]
@@ -1788,6 +1792,12 @@ Globulation 2 커서를 표시합니다.
 통로 너비
 [Loopiness]
 순환로 밀도
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+미로에는 가로와 세로로 각각 칸이 2개 이상 필요합니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+수로가 이렇게 넓으면 각 칸에 남는 초지가 너무 적습니다. 수로를 더 좁게 하거나 칸을 더 크게 하세요.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+이 식민지 수에 비해 미로의 막다른 길이 너무 적습니다. 더 큰 지도를 사용하거나 칸을 더 작게 하세요.
 [Home island size]
 시작 섬 크기
 [Commons size]
@@ -1802,5 +1812,57 @@ Globulation 2 커서를 표시합니다.
 해안선 굴곡도
 [Fjord width]
 피오르 너비
+[Lake connects to fjords]
+호수와 피오르 연결
 [Resource islands]
 자원 섬
+[Watershed]
+유역
+[River density]
+강 밀도
+[Dryness]
+건조도
+[Fords]
+여울
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+이 식민지 수에 비해 유역의 범람원이 너무 적습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Stone highlands]
+바위 고원
+[Valley size]
+골짜기 크기
+[Pass width]
+고갯길 너비
+[Pond size]
+연못 크기
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+골짜기가 지도에 비해 너무 큽니다. 더 큰 지도를 사용하거나 골짜기를 더 작게 하세요.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+이 식민지 수에 비해 고원의 공간이 너무 부족합니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
+[Symmetric arena]
+대칭 경기장
+[Centre size]
+중앙 크기
+[Causeway width]
+둑길 너비
+[Causeways]
+둑길
+[Lakes]
+호수
+[Resource richness]
+자원 풍부도
+[Symmetric arena needs 2, 4 or 8 colonies.]
+대칭 경기장에는 식민지가 2개, 4개 또는 8개 필요합니다.
+[Eight colonies need a square map in the symmetric arena.]
+대칭 경기장에서 식민지를 8개로 하려면 정사각형 지도가 필요합니다.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+이 지도에서는 중앙이 너무 작아 과수원을 둘 수 없습니다. 중앙을 더 크게 하거나 더 큰 지도를 사용하세요.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+경기장에 식민지마다 둘 공간이 너무 부족합니다. 더 큰 지도를 사용하거나, 중앙을 더 작게 하거나, 해자를 더 좁게 하세요.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+둑길끼리 너무 가깝습니다. 둑길 수를 줄이거나 더 좁게 하거나, 중앙을 더 크게 하세요.
+[Ring world]
+고리 세계
+[Belt width]
+띠 너비
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+이 식민지 수에 비해 띠가 너무 짧습니다. 더 긴 지도를 사용하거나 식민지 수를 줄이세요.

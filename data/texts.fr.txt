@@ -1552,6 +1552,10 @@ Aucun aperçu actuel
 Bataille rapide : double vitesse ; les cartes générées commencent avec 8 ouvrières.
 [Reroll]
 Générer une autre carte
+[Randomize]
+Générer aléatoirement
+[Reset to defaults]
+Restaurer les valeurs par défaut
 [Ruleset]
 Ensemble de règles
 [Select a map from the library.]
@@ -1802,6 +1806,12 @@ Taille des salles
 Largeur des couloirs
 [Loopiness]
 Taux de boucles
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+Le labyrinthe doit compter au moins deux cellules en largeur et en hauteur ; utilisez une carte plus grande ou des cellules plus petites.
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+Des chenaux aussi larges laissent trop peu d'herbe dans chaque cellule ; utilisez des chenaux plus étroits ou des cellules plus grandes.
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+Le labyrinthe compte trop peu de culs-de-sac pour autant de colonies ; utilisez une carte plus grande ou des cellules plus petites.
 [Home island size]
 Taille de l'île de départ
 [Commons size]
@@ -1816,5 +1826,57 @@ Taille du continent
 Irrégularité des côtes
 [Fjord width]
 Largeur des fjords
+[Lake connects to fjords]
+Lac relié aux fjords
 [Resource islands]
 Îles de ressources
+[Watershed]
+Bassin versant
+[River density]
+Densité des rivières
+[Dryness]
+Aridité
+[Fords]
+Gués
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+Le bassin versant a trop peu de plaines inondables pour autant de colonies ; utilisez une carte plus grande ou moins de colonies.
+[Stone highlands]
+Hautes terres de pierre
+[Valley size]
+Taille des vallées
+[Pass width]
+Largeur des cols
+[Pond size]
+Taille des étangs
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+Ces vallées sont trop grandes pour la carte ; utilisez une carte plus grande ou des vallées plus petites.
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+Les hautes terres manquent de place pour autant de colonies ; utilisez une carte plus grande ou moins de colonies.
+[Symmetric arena]
+Arène symétrique
+[Centre size]
+Taille du centre
+[Causeway width]
+Largeur des chaussées
+[Causeways]
+Chaussées
+[Lakes]
+Lacs
+[Resource richness]
+Abondance des ressources
+[Symmetric arena needs 2, 4 or 8 colonies.]
+L'arène symétrique nécessite 2, 4 ou 8 colonies.
+[Eight colonies need a square map in the symmetric arena.]
+Huit colonies nécessitent une carte carrée dans l'arène symétrique.
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+Le centre est trop petit pour un verger sur cette carte ; utilisez un centre plus grand ou une carte plus grande.
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+L'arène laisse trop peu de place à chaque colonie ; utilisez une carte plus grande, un centre plus petit ou des douves plus étroites.
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+Les chaussées sont trop rapprochées ; utilisez des chaussées moins nombreuses ou plus étroites, ou un centre plus grand.
+[Ring world]
+Monde-anneau
+[Belt width]
+Largeur de la ceinture
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+La ceinture est trop courte pour autant de colonies ; utilisez une carte plus longue ou moins de colonies.

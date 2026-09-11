@@ -1614,6 +1614,10 @@ AI策略與對抗
 快速戰鬥:雙倍速度；生成的地圖以 8 個工人開始。
 [Reroll]
 生成另一張地圖
+[Randomize]
+隨機生成
+[Reset to defaults]
+還原預設值
 [Ruleset]
 規則集
 [Select a map from the library.]
@@ -1864,6 +1868,12 @@ OpenGL 在此版本中不可用。
 通道寬度
 [Loopiness]
 迴路密度
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+迷宮在橫向和縱向上都至少需要兩個單元格；請使用更大的地圖或更小的單元格。
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+水道這麼寬，每個單元格裡剩下的草地太少；請使用更窄的水道或更大的單元格。
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+迷宮中的死路太少，不足以容納這麼多殖民地；請使用更大的地圖或更小的單元格。
 [Home island size]
 起始島嶼大小
 [Commons size]
@@ -1878,5 +1888,57 @@ OpenGL 在此版本中不可用。
 海岸線曲折度
 [Fjord width]
 峽灣寬度
+[Lake connects to fjords]
+湖泊連通峽灣
 [Resource islands]
 資源島嶼
+[Watershed]
+流域
+[River density]
+河流密度
+[Dryness]
+乾旱程度
+[Fords]
+淺灘
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+流域中的氾濫平原太少，容納不下這麼多殖民地；請使用更大的地圖或減少殖民地數量。
+[Stone highlands]
+石質高地
+[Valley size]
+山谷大小
+[Pass width]
+隘口寬度
+[Pond size]
+池塘大小
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+這些山谷對於地圖來說太大；請使用更大的地圖或更小的山谷。
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+高地空間太少，容納不下這麼多殖民地；請使用更大的地圖或減少殖民地數量。
+[Symmetric arena]
+對稱競技場
+[Centre size]
+中心大小
+[Causeway width]
+堤道寬度
+[Causeways]
+堤道
+[Lakes]
+湖泊
+[Resource richness]
+資源豐富度
+[Symmetric arena needs 2, 4 or 8 colonies.]
+對稱競技場需要2、4或8個殖民地。
+[Eight colonies need a square map in the symmetric arena.]
+在對稱競技場中，八個殖民地需要正方形地圖。
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+在這張地圖上，中心太小，放不下果園；請使用更大的中心或更大的地圖。
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+競技場留給每個殖民地的空間太少；請使用更大的地圖、更小的中心或更窄的護城河。
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+堤道之間靠得太近；請減少堤道數量或使用更窄的堤道，或者使用更大的中心。
+[Ring world]
+環形世界
+[Belt width]
+環帶寬度
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+環帶太短，容納不下這麼多殖民地；請使用更長的地圖或減少殖民地數量。
