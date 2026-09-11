@@ -14,6 +14,8 @@
 #include <vector>
 #include <boost/logic/tribool.hpp>
 
+class EchoBuildingOrderSaveLoadTest;
+
 namespace AIEcho
 {
 	class Echo;
@@ -236,6 +238,7 @@ namespace AIEcho
 			void add_condition(Conditions::Condition* condition);
 		private:
 			friend class AIEcho::Echo;
+			friend class ::EchoBuildingOrderSaveLoadTest;
 			BuildingOrder() {}
 			bool load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			void save(GAGCore::OutputStream *stream);
