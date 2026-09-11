@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 134
+#define VERSION_MINOR 135
+// version 135 adds optional market resource gradients and their scheduling state.
 // version 134 adds canonical terrain properties and calibrated ecology.
 // version 133 adds worker time use, combat-death places and the defence snapshot to team statistics.
 // version 132 preserves legacy AI clocks, specialist caches and learned policy state.
