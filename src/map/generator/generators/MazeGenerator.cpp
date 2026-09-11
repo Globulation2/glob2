@@ -679,7 +679,7 @@ GeneratorDefinition mazeDefinition() {
           {{"cell-size", "Cell size", 24, 48, 1, 32, ControlGroup::Layout, false, false,
             {24, 32, 40, 48}},
            // Open water on each side of a wall's stone line; passages widen to fill the rest.
-           {"channel-width", "Channel width", 1, 6, 1, 4, ControlGroup::Layout},
+           {"channel-width", "Channel width", 1, 6, 1, 2, ControlGroup::Layout},
            {"loopiness", "Loopiness", 0, 50, 1, 5, ControlGroup::Layout, false, false,
             {0, 5, 10, 20, 35, 50}},
            // Densities for the deposits scattered along the passages (per 256 shore tiles);

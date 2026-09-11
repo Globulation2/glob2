@@ -199,7 +199,7 @@ cul-de-sac.
   farmable grass. Passage width isn't a control of its own: passages fill whatever the narrowest
   cell leaves once its walls and channels are taken out, and stay odd so they centre on a tile.
 - **Walls.** Every closed boundary has a stone spine covering the whole boundary line from corner
-  to corner, with `channel-width` all-water tiles on either side (default 4). Perpendicular walls
+  to corner, with `channel-width` all-water tiles on either side (default 2). Perpendicular walls
   share their corner tile, so a boundary can only be crossed — on foot or swimming — where it's
   open. STONE only places on a pure-grass tile, which needs grass at all four undermap corners
   (`Map::regenerateMap`), so each spine sits on a two-wide grass core inside a sand ring. Terrain
