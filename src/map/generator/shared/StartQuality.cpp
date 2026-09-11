@@ -6,7 +6,6 @@
 #include "Unit.h"
 #include <algorithm>
 #include <cmath>
-#include <queue>
 
 namespace MapGeneration
 {
@@ -20,17 +19,19 @@ std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers
 {
 	const int w = map.getW(), h = map.getH();
 	std::vector<int> dist(size_t(w) * h, -1);
-	std::queue<int> q;
+	// Bounded by the dist[np] < 0 guard below to at most w*h enqueues - a flat preallocated FIFO
+	// instead of std::queue<int>'s std::deque, which grows by separately heap-allocated blocks.
+	std::vector<int> q(size_t(w) * h);
+	size_t qHead = 0, qTail = 0;
 	for (int p : workers)
 		if (dist[p] < 0)
 		{
 			dist[p] = 0;
-			q.push(p);
+			q[qTail++] = p;
 		}
-	while (!q.empty())
+	while (qHead < qTail)
 	{
-		const int p = q.front();
-		q.pop();
+		const int p = q[qHead++];
 		const int x = p % w, y = p / w;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
@@ -42,7 +43,7 @@ std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers
 				if (dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
 				{
 					dist[np] = dist[p] + 1;
-					q.push(np);
+					q[qTail++] = np;
 				}
 			}
 	}

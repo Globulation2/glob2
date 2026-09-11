@@ -15,7 +15,6 @@
 #include "Unit.h"
 #include <algorithm>
 #include <cmath>
-#include <queue>
 #include <utility>
 #include <vector>
 using namespace MapGeneration;
@@ -305,7 +304,11 @@ std::vector<std::int16_t> distanceToResource(Map &map, const std::vector<std::ui
 {
 	const int w = map.getW(), h = map.getH();
 	std::vector<std::int16_t> dist(size_t(w) * h, -1);
-	std::queue<int> q;
+	// Every cell is enqueued at most once (the dist[np] < 0 guard below), so this never needs
+	// more than w*h slots - a flat preallocated FIFO instead of std::queue<int>'s
+	// std::deque-backed, block-by-block growth (see computeDistances for the same fix).
+	std::vector<int> q(size_t(w) * h);
+	size_t qHead = 0, qTail = 0;
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
@@ -319,14 +322,13 @@ std::vector<std::int16_t> distanceToResource(Map &map, const std::vector<std::ui
 					if (dist[np] < 0 && hard[np])
 					{
 						dist[np] = 0;
-						q.push(np);
+						q[qTail++] = np;
 					}
 				}
 		}
-	while (!q.empty())
+	while (qHead < qTail)
 	{
-		int p = q.front();
-		q.pop();
+		int p = q[qHead++];
 		int x = p % w, y = p / w;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
@@ -338,7 +340,7 @@ std::vector<std::int16_t> distanceToResource(Map &map, const std::vector<std::ui
 				if (dist[np] < 0 && hard[np])
 				{
 					dist[np] = dist[p] + 1;
-					q.push(np);
+					q[qTail++] = np;
 				}
 			}
 	}
@@ -373,6 +375,12 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	// mirror placeStarts(); they are what it does, not a guess at it.
 	std::vector<std::uint16_t> visited(size_t(w) * h, 0);
 	std::uint16_t visitStamp = 0;
+	// scoreAsBuilt runs its own small flood per candidate site - up to 900 times per call to
+	// this function. A fresh std::queue per call means a fresh std::deque allocation (and its
+	// block-by-block growth) 900 times over; every one of those floods visits each tile at most
+	// once (the visitStamp guard below), so one pair of w*h-sized buffers, reused across every
+	// call and just reset to empty (an O(1) index reset, not a reallocation), is always enough.
+	std::vector<int> queueTile(size_t(w) * h), queueDist(size_t(w) * h);
 	auto scoreAsBuilt = [&](int bx, int by, int limit) -> int
 	{
 		auto cleared = [&](int tx, int ty)
@@ -394,7 +402,7 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			return ox >= 0 && ox < swarm->width && oy >= 0 && oy < swarm->height;
 		};
 		++visitStamp;
-		std::queue<std::pair<int, int>> q; // (tile, distance)
+		size_t qHead = 0, qTail = 0;
 		auto push = [&](int tx, int ty, int d)
 		{
 			int nx = map.normalizeX(tx), ny = map.normalizeY(ty);
@@ -402,16 +410,19 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 			if (visited[np] == visitStamp)
 				return;
 			visited[np] = visitStamp;
-			q.push({np, d});
+			queueTile[qTail] = np;
+			queueDist[qTail] = d;
+			++qTail;
 		};
 		// Workers spawn on the row above the swarm, so that is where a gathering trip starts.
 		for (int i = 0; i < std::max(1, context.request.nbWorkers); ++i)
 			push(bx + (i % 4), by - 1 - (i / 4), 0);
 		int wood = -1, wheat = -1;
-		while (!q.empty() && (wood < 0 || wheat < 0))
+		while (qHead < qTail && (wood < 0 || wheat < 0))
 		{
-			auto [p, d] = q.front();
-			q.pop();
+			int p = queueTile[qHead];
+			int d = queueDist[qHead];
+			++qHead;
 			if (d >= limit)
 				continue;
 			int x = p % w, y = p / w;

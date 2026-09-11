@@ -13,7 +13,6 @@
 #include "Terrain.h"
 #include <algorithm>
 #include <cmath>
-#include <queue>
 #include <utility>
 using namespace MapGeneration;
 
@@ -113,13 +112,16 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
   const int w = map.getW(), h = map.getH();
   ReachResult r;
   r.dist.assign(size_t(w) * h, -1);
-  std::queue<int> q;
+  // Bounded by the r.dist[np] < 0 guard below to at most w*h enqueues - a flat preallocated
+  // FIFO instead of std::queue<int>'s std::deque, which grows by separately heap-allocated
+  // blocks (same fix as computeDistances in Distances.cpp).
+  std::vector<int> q(size_t(w) * h);
+  size_t qHead = 0, qTail = 0;
   int start = bootY * w + bootX;
   r.dist[start] = 0;
-  q.push(start);
-  while (!q.empty()) {
-    int p = q.front();
-    q.pop();
+  q[qTail++] = start;
+  while (qHead < qTail) {
+    int p = q[qHead++];
     int x = p % w, y = p / w;
     if (map.getUMTerrain(x, y) == GRASS && r.dist[p] >= clearRadius && r.dist[p] <= exploreLimit)
       (r.dist[p] <= closeRange ? r.closeGrass : r.farGrass).push_back(MapGeneratorPoint(x, y));
@@ -137,7 +139,7 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
         if (r.dist[np] < 0 && r.dist[p] < exploreLimit &&
             map.isHardSpaceForGroundUnit(nx, ny, false, 0)) {
           r.dist[np] = r.dist[p] + 1;
-          q.push(np);
+          q[qTail++] = np;
         }
       }
   }
@@ -151,13 +153,13 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit) {
   const int w = map.getW(), h = map.getH();
   std::vector<int> dist(size_t(w) * h, -1);
-  std::queue<int> q;
+  std::vector<int> q(size_t(w) * h);
+  size_t qHead = 0, qTail = 0;
   int start = bootY * w + bootX;
   dist[start] = 0;
-  q.push(start);
-  while (!q.empty()) {
-    int p = q.front();
-    q.pop();
+  q[qTail++] = start;
+  while (qHead < qTail) {
+    int p = q[qHead++];
     if (dist[p] >= limit)
       continue;
     int x = p % w, y = p / w;
@@ -169,7 +171,7 @@ std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit) {
         int np = ny * w + nx;
         if (dist[np] < 0 && !map.isWater(nx, ny)) {
           dist[np] = dist[p] + 1;
-          q.push(np);
+          q[qTail++] = np;
         }
       }
   }
