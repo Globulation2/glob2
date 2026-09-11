@@ -619,9 +619,10 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 				map.setUMTerrain(maxX + dx, maxY + dy, GRASS);
 	}
 
-	// Let's add some green space for teams:
+	// Let's add some green space for teams: a meadow around every colony, unless the colonies are
+	// to start in the shattered terrain itself.
 	int squareSize = 5 + (int)(sqrt((double)minDistSquare) / 4.5);
-	for (int team = 0; team < nbTeams; team++)
+	for (int team = 0; team < nbTeams && options.colony_meadows; team++)
 	{
 		map.setUMatPos(context.bootX[team] + 2, context.bootY[team] + 0, GRASS, squareSize);
 		map.setUMatPos(context.bootX[team] + 2, context.bootY[team] + 2, GRASS, squareSize);
@@ -727,9 +728,11 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 			dx *= d;
 			dy *= d;
 
+			// Every deposit is a square of `amount` tiles a side; the amount controls scale its area.
 			int amount = context.request.resourceAmounts[res];
 			if (amount > 0)
-				map.setResource(bootX[team] + dx, bootY[team] + dy, res, amount);
+				setScaledResource(map, bootX[team] + dx, bootY[team] + dy, res, amount,
+								  options.percent(res));
 		}
 
 		if (smallestWidth < limitDist)
@@ -768,7 +771,8 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 
 			int amount = context.request.resourceAmounts[smallestResource];
 			if (amount > 0)
-				map.setResource(bootX[team] + dx, bootY[team] + dy, smallestResource, amount);
+				setScaledResource(map, bootX[team] + dx, bootY[team] + dy, smallestResource, amount,
+								  options.percent(smallestResource));
 		}
 
 		int maxDir = 0;
@@ -803,7 +807,7 @@ static void resources(Game &game, GenerationContext &context, const ShatteredCoa
 
 		int amount = context.request.resourceAmounts[ALGA];
 		if (amount > 0)
-			map.setResource(bootX[team] + dx, bootY[team] + dy, ALGA, amount);
+			setScaledResource(map, bootX[team] + dx, bootY[team] + dy, ALGA, amount, options.algae);
 	}
 
 	// Let's smooth resources...
@@ -843,6 +847,13 @@ GeneratorDefinition shatteredCoastDefinition()
 			{{"water", "Water weight", 0, 100, 1, 40, ControlGroup::Terrain, false, true},
 			 {"sand", "Sand weight", 0, 100, 1, 4, ControlGroup::Terrain, false, true},
 			 {"grass", "Grass weight", 0, 100, 1, 60, ControlGroup::Terrain, false, true},
-			 {"smoothing", "Smoothing", 1, 8, 1, 3, ControlGroup::Terrain, false}},
+			 {"smoothing", "Smoothing", 1, 8, 1, 3, ControlGroup::Terrain, false},
+			 // Off, colonies start in the shattered terrain rather than in a cleared meadow.
+			 GeneratorControl::toggle("colony-meadows", "Colony meadows", true, ControlGroup::Terrain),
+			 // The area of each colony's own wheat, wood, stone and algae deposits.
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount")},
 			generate};
 }

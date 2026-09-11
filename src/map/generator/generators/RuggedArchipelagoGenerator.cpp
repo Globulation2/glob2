@@ -306,7 +306,8 @@ static void resources(Game &game, GenerationContext &context,
 		(int)(((w + h) * options.island_size) / (400.0 * sqrt((double)context.request.nbTeams)));
 	if (islandsSize < 8)
 		islandsSize = 8;
-	// let's add resources...
+	// let's add resources... Each deposit is a square sized to the island; the amount controls
+	// scale its area around the same centre.
 	int smoothResources = islandsSize / 4;
 	for (int s = 0; s < context.request.nbTeams; s++)
 	{
@@ -324,7 +325,7 @@ static void resources(Game &game, GenerationContext &context,
 			amount = 1;
 		p = d - 1 - amount / 2;
 		if (amount > 0)
-			map.setResource(bootX[s], bootY[s] - p, WOOD, amount);
+			setScaledResource(map, bootX[s], bootY[s] - p, WOOD, amount, options.wood);
 		smallestAmount = amount;
 		smallestResource = WOOD;
 
@@ -338,7 +339,7 @@ static void resources(Game &game, GenerationContext &context,
 			amount = 1;
 		p = d - 1 - amount / 2;
 		if (amount > 0)
-			map.setResource(bootX[s] - p, bootY[s], CORN, amount);
+			setScaledResource(map, bootX[s] - p, bootY[s], CORN, amount, options.wheat);
 		if (amount < smallestAmount)
 		{
 			smallestAmount = amount;
@@ -349,9 +350,9 @@ static void resources(Game &game, GenerationContext &context,
 		for (d = 0; d < islandsSize; d++)
 			if (!map.isGrass(bootX[s], bootY[s] + d))
 				break;
-		map.setResource(bootX[s], bootY[s] + p, STONE, 1);
+		setScaledResource(map, bootX[s], bootY[s] + p, STONE, 1, options.stone);
 
-		// We add the resource with the smallest amount:
+		// We add the resource with the smallest amount, unless that extra deposit is switched off:
 		for (d = 0; d < islandsSize; d++)
 			if (!map.isGrass(bootX[s] + d, bootY[s] + d))
 				break;
@@ -360,8 +361,9 @@ static void resources(Game &game, GenerationContext &context,
 		if (amount < 1)
 			amount = 1;
 		p = d - 1 - amount / 2;
-		if (amount > 0)
-			map.setResource(bootX[s] + p, bootY[s] + p, smallestResource, amount);
+		if (amount > 0 && options.extra_deposit)
+			setScaledResource(map, bootX[s] + p, bootY[s] + p, smallestResource, amount,
+							  smallestResource == CORN ? options.wheat : options.wood);
 
 		// ALGAE
 		for (d = 0; d < 2 * islandsSize; d++)
@@ -371,7 +373,7 @@ static void resources(Game &game, GenerationContext &context,
 		amount = smoothResources;
 		p = d + smoothResources - 1 + amount / 2;
 		if (amount > 0)
-			map.setResource(bootX[s] + p, bootY[s], ALGA, amount);
+			setScaledResource(map, bootX[s] + p, bootY[s], ALGA, amount, options.algae);
 	}
 
 	// Let's smooth resources...
@@ -404,6 +406,14 @@ GeneratorDefinition ruggedArchipelagoDefinition()
 			1,
 			false,
 			{{"island-size", "Island size", 50, 70, 1, 65, ControlGroup::Terrain, false},
-			 {"beach-size", "Beach size", 0, 4, 1, 1, ControlGroup::Terrain, false}},
+			 {"beach-size", "Beach size", 0, 4, 1, 1, ControlGroup::Terrain, false},
+			 // Off, an island gets no fourth deposit of whichever of wheat or wood came out smaller.
+			 GeneratorControl::toggle("extra-deposit", "Extra starting deposit", true,
+									  ControlGroup::Resources),
+			 // The area of each island's own wheat, wood, stone and algae deposits.
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount")},
 			generate};
 }
