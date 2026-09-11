@@ -177,13 +177,17 @@ bool generate(Game &game, GenerationContext &context) {
     teamWoodAreas.push_back(woodArea);
   }
   context.stage = "resources";
-  scatterResources(game, context, {o.corn, o.wood, o.stone, o.algae, o.fruit});
+  // Guaranteed per-team wheat/wood claim their (small) reserved area first. scatterResources'
+  // noise bands skip any tile that already carries a resource, so running it after leaves these
+  // reservations alone; running it first let a solid band fill a whole sliver area with a
+  // different resource type before the guarantee got a turn, failing the placement outright.
   for (int team = 0; team < context.request.nbTeams; ++team)
     if (!placeResourceClumpInArea(game.map, context, teamWheatAreas[team], CORN,
                                   2) ||
         !placeResourceClumpInArea(game.map, context, teamWoodAreas[team], WOOD,
                                   2))
       return false;
+  scatterResources(game, context, {o.corn, o.wood, o.stone, o.algae, o.fruit});
   for (int y = 0; y < height; ++y)
     for (int x = 0; x < width; ++x)
       if (stoneWall[y * width + x])
@@ -203,7 +207,7 @@ GeneratorDefinition mazeDefinition() {
   return {"maze",
           11,
           "Maze",
-          2,
+          3,
           false,
           {{"cell-size",
             "Cell size",
