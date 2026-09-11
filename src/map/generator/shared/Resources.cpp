@@ -73,8 +73,8 @@ namespace {
 // ground, and that preference must only pick *where* farmland goes, not *which* of the two
 // crops a given spot gets - see that function for why.
 //
-// A single global threshold across the whole map works for one connected landmass (Fjord,
-// Maze), but a generator whose islands are separate landmasses (Isles, ConcreteIslands) gives
+// A single global threshold across the whole map works for one connected landmass (Fjord),
+// but a generator whose islands are separate landmasses (Isles, ConcreteIslands) gives
 // each one its own, slightly different fertility (or noise) range - a global "take the best
 // tiles first" pass can end up spending almost the entire band on whichever one or two islands
 // happen to score highest, leaving the rest with none at all. That is exactly the "resources

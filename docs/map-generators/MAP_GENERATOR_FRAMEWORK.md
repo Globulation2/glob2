@@ -33,7 +33,7 @@ reused after a generator is retired.
 | id | legacy id | Display name | Family |
 |---|---|---|---|
 | `fjord-continent` | 12 | Fjord continent | Its own — see below |
-| `maze` | 11 | Maze | Its own — a graph of cells and corridors, not a coastline |
+| `maze` | 11 | Maze | Its own — see below |
 | `contested-commons` | 9 | Contested commons | Point dispersion (`shared/Regions`) |
 | `shattered-coast` | 7 | Old random | Iterative water/sand/grass balancer, own resource search |
 | `isles` | 6 | Isles | Point dispersion; islands linked by land bridges |
@@ -79,8 +79,8 @@ fixed resource pass:
 - `scatterBand` is the same per-component noise-threshold technique for stone and algae, which
   have no growth rule to prefer and so use a plain noise field rather than fertility.
 - `scatterResources(game, context, densities)` is the shared ambient layer — ordinary, unclaimed
-  deposits filling the interior between a generator's deliberate placements — used by Fjord and
-  Maze. It runs after every colony's swarm, workers and guaranteed clumps already exist:
+  deposits filling the interior between a generator's deliberate placements — used by Fjord.
+  It runs after every colony's swarm, workers and guaranteed clumps already exist:
   `isResourceAllowed` refuses any tile already holding a building or unit, so scattering earlier
   can claim a tile a swarm footprint needed; scattering last only ever loses a clump's own tile
   to whatever was already there, the same low-stakes trade every generator's own resource
@@ -92,14 +92,13 @@ fixed resource pass:
   tile a ground unit can't stand on — it clears exactly the wall tiles responsible before topping
   up whichever resource is still out of range. A colony genuinely isolated on its own small spot
   (nothing reachable even through terrain alone) is left untouched, since there's nothing on the
-  other side of a wall that isn't there. RuggedArchipelago, ShatteredCoast and Fjord call this;
-  Maze deliberately does not, since its maze walls are themselves stone resource tiles by design
-  and this backstop's wall-clearing can't distinguish an intentional corridor wall from an
-  incidental one.
+  other side of a wall that isn't there. RuggedArchipelago, ShatteredCoast and Fjord call this.
+  Maze doesn't need it: its resources are placed only inside rooms, behind a lane that keeps
+  every exit clear, and its `validateWorld` confirms every colony can still walk to every other.
 
 Every guaranteed placement (starter kits, bank guarantees, per-team clumps) keeps wheat and wood
 at a 1:1 ratio, since those exist for reachability fairness between colonies. Ambient/bonus
-layers (`scatterResources`, Fjord's bank-scatter roll) instead use 2:1 corn:wood, which is purely
+layers (`scatterResources`, Fjord's bank-scatter roll, Maze's bonus-room defaults) instead use 2:1 corn:wood, which is purely
 a feel decision independent of the fairness guarantee.
 
 ### Fertility
@@ -176,6 +175,43 @@ The richest generator, and the one most of this framework's resource work was pr
 - **Ambient layer and backstop.** `scatterResources` fills the continent interior at the end
   (corn:wood 2:1, fruit, stone; algae left to the dedicated shoreline/lake passes above), and
   `guaranteeStartingResources` runs last as the reachability backstop described above.
+
+## Maze
+
+A maze in the pen-and-paper sense: narrow corridors between thick walls, with every colony in
+its own cul-de-sac.
+
+- **Grid.** The map is tiled into cells of about `cell-size` tiles on the map's own torus.
+  Boundaries are chosen so the cells tile the map exactly (neighbouring cells differ in pitch by
+  at most one tile), so the maze wraps across the seam like any other boundary. At least three
+  cells are needed in each direction.
+- **Maze and homes.** Homes are chosen first, on every other column and row and spread by
+  farthest-point selection. That spacing keeps all other cells connected and gives each home four
+  non-home neighbours. A recursive backtracker then carves a spanning tree of corridors over the
+  non-home cells, and each home is attached by exactly one corridor, so every colony starts in a
+  genuine dead end. `loopiness` knocks through extra walls between non-home cells only, so homes
+  stay cul-de-sacs.
+- **Walls.** Every closed boundary is a thick water channel with a stone spine covering the whole
+  boundary line from corner to corner. Perpendicular walls share their corner tile, so a boundary
+  can only be crossed — on foot or swimming — where it's open. STONE only places on a pure-grass
+  tile, which needs grass at all four undermap corners (`Map::regenerateMap`), so each spine sits
+  on a two-wide grass core inside a sand ring. Terrain is stamped directly rather than through
+  `Map::controlSand()`, whose in-place raster pass shifts shorelines unevenly.
+- **No walking along a wall.** A wall's sandy flanks are walkable land. `validateRequest`
+  requires `floor(pitch / 2) - roomSize / 2 >= 7`, which leaves at least two all-water tiles
+  between any room or corridor shore and any wall flank.
+- **Corridors are sand**: walkable, but no crop can grow across one mid-game and nothing can be
+  built on one, so buildings stay in rooms.
+- **Rooms and resources.** Rooms exist only at dead ends: colony homes, plus bonus rooms at every
+  other dead end. Room and corridor widths are odd and centred on a tile, so a room's layout is
+  identical whichever way its exit faces. Each room keeps a lane from its back wall to its exit
+  free of resources; wheat lines the left wall, wood the right, stone the back. Homes also keep a
+  clear square around the swarm and get fixed 1:1 wheat and wood. Bonus rooms follow the
+  wheat/wood/stone controls, and `fruit` is a count of fruit patches placed in bonus rooms. Algae
+  is seeded in open channel water at least two tiles from land.
+- **Checked, not assumed.** `validateWorld` floods walkable tiles (water, buildings and every
+  resource, including wall spines, block it) from colony 0's workers, and fails the candidate if
+  any colony isn't reached.
 
 ## Compatibility notes
 
