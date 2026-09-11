@@ -19,7 +19,12 @@ Then run a preset:
 ```bash
 python3 tools/map_fairness_tournament.py run smoke      # quick end-to-end check
 python3 tools/map_fairness_tournament.py run standard   # the standard measurement
+python3 tools/map_fairness_tournament.py run baseline   # engine team-index bias, symmetric maps only
 ```
+
+The `baseline` preset plays only Symmetric arena, whose colonies are identical by construction. Its
+wins by start should come out uniform, and its wins by team index measure the engine's own
+processing-order bias with no map effect mixed in.
 
 Results go to `artifacts/map-fairness/<name>/` (ignored by Git). A run resumes where it stopped:
 finished maps and games are kept, so re-running the same command after an interruption only plays
