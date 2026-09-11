@@ -34,14 +34,13 @@ struct CustomGamePreferences
 	{
 		// Bounds are a safe envelope across every generator method's current
 		// registry range for the reused legacy field (e.g. riverDiameter also
-		// stands in for lake size, channel width and bridge width; grassRatio
-		// also stands in for Isles' island size), widened from the original
-		// fixed 0-64 terrain-weight bound now that the registry allows 0-100
-		// and Old Islands/Rugged Archipelago's island size reaches 70. This
-		// only needs to be at least as wide as what setMethodDefaults() and
-		// every registered control can produce; it is not a tight per-method
-		// bound, matching how this field list worked before the modular
-		// registry existed.
+		// stands in for river width, lake size - Fjord's reaches 0 and 90 -
+		// channel width and bridge width; craterDensity also stands in for
+		// Ring world's lake density, which reaches 0; grassRatio also stands
+		// in for Isles' island size). This only needs to be at least as wide
+		// as what setMethodDefaults() and every registered control can
+		// produce; it is not a tight per-method bound. Controls with no
+		// legacy field are saved in the options section instead.
 		static const std::vector<Field> values = {
 #define FIELD(name, lo, hi) {#name, &MapGenerationDescriptor::name, lo, hi}
 			FIELD(wDec, 6, 9), FIELD(hDec, 6, 9),
@@ -49,8 +48,8 @@ struct CustomGamePreferences
 			FIELD(grassRatio, 0, 100), FIELD(desertRatio, 0, 100),
 			FIELD(wheatRatio, 0, 64), FIELD(woodRatio, 0, 64),
 			FIELD(fruitRatio, 0, 64), FIELD(algaeRatio, 0, 64),
-			FIELD(stoneRatio, 0, 64), FIELD(riverDiameter, 1, 65),
-			FIELD(craterDensity, 1, 64), FIELD(extraIslands, 0, 8),
+			FIELD(stoneRatio, 0, 64), FIELD(riverDiameter, 0, 100),
+			FIELD(craterDensity, 0, 64), FIELD(extraIslands, 0, 8),
 			FIELD(oldIslandSize, 1, 70), FIELD(oldBeach, 0, 4),
 			FIELD(smooth, 1, 8), FIELD(nbTeams, 2, Team::MAX_COUNT),
 			FIELD(nbWorkers, 1, 8)
@@ -81,7 +80,16 @@ struct CustomGamePreferences
 			out << f.name << ' ' << legacy.*(f.member) << '\n';
 		out << "resources";
 		for (auto value : legacy.resource) out << ' ' << value;
-		out << "\ncolonies\n";
+		// Every control the legacy fields can't hold (newer generators' options, switches
+		// included). Files written before this section still load, with those at defaults.
+		std::vector<const GeneratorControl *> options;
+		for (const auto &c : GenerationRequest::controls(setup.generator.method))
+			if (!hasLegacyField(setup.generator.method, c.id))
+				options.push_back(&c);
+		out << "\noptions " << options.size() << '\n';
+		for (const auto *c : options)
+			out << c->id << ' ' << c->get(setup.generator) << '\n';
+		out << "colonies\n";
 		for (const auto &c : setup.colonies)
 			out << int(c.controller) << ' ' << int(c.ai) << ' ' << c.alliance << '\n';
 		out << "end\n";
@@ -135,7 +143,20 @@ struct CustomGamePreferences
 			if (!number(parsed, 0, 64)) return false;
 			value = parsed;
 		}
-		if (!word("colonies")) return false;
+		std::vector<std::pair<std::string, int>> options;
+		std::string section;
+		if (!(in >> section)) return false;
+		if (section == "options") {
+			int count;
+			if (!number(count, 0, 256)) return false;
+			for (int i = 0; i < count; ++i) {
+				std::string id;
+				int value;
+				if (!(in >> id >> value)) return false;
+				options.emplace_back(id, value);
+			}
+			if (!word("colonies")) return false;
+		} else if (section != "colonies") return false;
 		int humans = 0;
 		for (auto &c : s.colonies) {
 			int controller, ai;
@@ -152,6 +173,16 @@ struct CustomGamePreferences
 		draft.userMaps = user;
 		legacy.logRepeatAreaTimes = repeat;
 		s.generator = fromLegacyDescriptor(legacy, 0);
+		const auto &controls = GenerationRequest::controls(method);
+		for (const auto &[id, value] : options) {
+			const auto c = std::find_if(controls.begin(), controls.end(),
+				[&](const GeneratorControl &control) { return control.id == id; });
+			// An option this build no longer has is dropped; a value outside its control's
+			// domain means the file is corrupt.
+			if (c == controls.end() || hasLegacyField(method, id)) continue;
+			if (c->normalize(value) != value) return false;
+			c->set(s.generator, value);
+		}
 		if (s.random) s.capacity = s.generator.nbTeams;
 		*this = draft;
 		return true;

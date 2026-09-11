@@ -42,6 +42,9 @@ GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
                                c.allowedValues.end()) !=
                 c.allowedValues.end())) ||
           (c.powerOfTwo && (c.minimum < 0 || c.maximum > 30)) ||
+          (c.isToggle() &&
+           (c.minimum != 0 || c.maximum != 1 || c.step != 1 || c.powerOfTwo ||
+            c.terrainWeight || !c.allowedValues.empty())) ||
           c.normalize(c.defaultValue) != c.defaultValue ||
           !controls.insert(c.id).second)
         throw std::invalid_argument("Invalid generator control");

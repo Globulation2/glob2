@@ -1,6 +1,15 @@
 #pragma once
 #include "Regions.h"
+#include <cstdint>
 namespace MapGeneration {
+// A resource-amount percentage (GeneratorControl::percentage) applied to a count or a share,
+// rounding to nearest. 100 returns the input unchanged, so a default map is exactly what it was.
+inline std::int64_t scaledCount(std::int64_t count, int percent) {
+  return percent == 100 ? count : (count * percent + 50) / 100;
+}
+inline double scaledShare(double share, int percent) {
+  return percent == 100 ? share : share * percent / 100.0;
+}
 struct ResourceDensities {
   int corn, wood, stone, algae, fruit;
 };

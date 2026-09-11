@@ -14,8 +14,10 @@ keeps the match summary and launch action available while dense content scrolls.
   drag or open choice menu. The displayed snapshot is the map that launches.
   Randomize, under the preview, rolls the same settings again with a new seed.
 - Expand Terrain, Resources and Layout to tune the applicable generator controls.
-  Reset to defaults, below them, returns width, height, colony count and the
-  landscape's own controls to their defaults, keeping the landscape itself.
+  Resource amounts are percentages of the landscape's own default (100). On/off
+  switches are checkbox rows: click one, or press Space or Return while it has
+  focus. Reset to defaults, below them, returns width, height, colony count and
+  the landscape's own controls to their defaults, keeping the landscape itself.
   Starting workers belong to Game Rules; premade maps retain authored units.
 - Each colony has a numbered color swatch, controller, AI/difficulty and team.
   You, AI, shared You + AI, and Closed are explicit choices. Shared control uses
@@ -37,9 +39,14 @@ match. Returning to the lobby or restarting the app restores map mode and librar
 premade selection, all generator controls, controller/AI/team assignments
 (including hidden colonies), rules and expanded generator sections. Random mode
 creates a fresh preview using the saved parameters; temporary maps and seeds are
-not stored as preferences. Missing premade maps retain the draft and show the
-existing load error. Malformed or unsupported settings files fall back to the
-normal four-player setup. Writes replace the old file atomically.
+not stored as preferences. Generator controls that have a field in the legacy
+map descriptor are saved there; every other control, including every switch and
+resource amount, is saved in an `options` section after it. Files written before
+that section existed still load, with those controls at their defaults, and an
+option the game no longer has is ignored. Missing premade maps retain the draft
+and show the existing load error. Malformed or unsupported settings files, or an
+option value outside its control's range, fall back to the normal four-player
+setup. Writes replace the old file atomically.
 
 Save/replay encodings are unchanged. Generated maps use owned temporary snapshots
 outside the map library; saves and replays remain self-contained after cleanup.

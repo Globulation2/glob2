@@ -350,7 +350,9 @@ exactly two land neighbours.
   it is how a reviewer knows a seed's output isn't expected to match a prior build byte-for-byte.
 - `GeneratorControl`s are validated by `GeneratorRegistry`'s constructor: every control's default
   must land on a valid step from its minimum, and (`allowedValues` aside) `(maximum - minimum)`
-  must be evenly divisible by `step`. Every control label needs matching entries in
+  must be evenly divisible by `step`. A `ControlKind::Toggle` control must be exactly 0 to 1 in
+  steps of 1, with no allowed values, power-of-two formatting or terrain weight; the lobby and
+  editor show it as a checkbox. Every control label needs matching entries in
   `data/texts.en.txt` (`[Label]` / `Label`) and `data/texts.keys.txt` (`[Label]`), the same as any
   other UI string.
 
@@ -361,7 +363,7 @@ exactly two land neighbours.
   [tuning] [headroom] [quality] [dump=path]`. `quality` reports `StartQualityReport`/
   `ColonyQuality` per colony; `dump=` writes a plain-text terrain/resource grid for direct
   inspection or scripted flood-fill checks; `--catalog` dumps every registered generator's
-  controls as JSON.
+  controls as JSON, with each control's `kind` (`range` or `toggle`).
 - `test/MapGeneratorDefaultsTest.cpp` builds to `MapGeneratorDefaultsTest`, asserting the
   registry's and every control's contract: discrete domains, shape bounds, topology, home
   footprints, exact worker counts, seed repeatability and RNG stream isolation, and the

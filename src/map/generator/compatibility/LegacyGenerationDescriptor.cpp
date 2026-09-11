@@ -68,6 +68,10 @@ Sint32 D::*legacyField(int method, const std::string &id)
 	return nullptr;
 }
 } // namespace
+bool hasLegacyField(int method, const std::string &id)
+{
+	return id == "repeat" || legacyField(method, id) != nullptr;
+}
 int GeneratorControl::get(const D &d) const
 {
 	auto field = legacyField(d.method, id);
@@ -138,7 +142,9 @@ GenerationRequest fromLegacyDescriptor(const D &d, std::uint32_t seed)
 	for (const auto &c : D::controls(d.method))
 	{
 		int value = c.get(d);
-		if (d.riverDiameter == 50)
+		// The historical "use the default" sentinel only exists in descriptors of the generators
+		// that predate the modular registry; for a newer one (Fjord's lake size) 50 is just 50.
+		if (d.riverDiameter == 50 && d.method <= D::eOLDISLANDS)
 		{
 			if (c.id == "lake-size")
 				value = 30;

@@ -695,8 +695,8 @@ GeneratorDefinition fjordContinentDefinition() {
             ControlGroup::Terrain},
            {"fjord-width", "Fjord width", 2, 10, 1, 4, ControlGroup::Terrain},
            {"lake-size", "Lake size", 0, 90, 5, 45, ControlGroup::Terrain},
-           {"lake-connected", "Lake connects to fjords", 0, 1, 1, 0,
-            ControlGroup::Terrain},
+           GeneratorControl::toggle("lake-connected", "Lake connects to fjords", false,
+                                    ControlGroup::Terrain),
            {"resource-islands", "Resource islands", 0, 20, 1, 2,
             ControlGroup::Resources}},
           generate};

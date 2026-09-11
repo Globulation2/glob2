@@ -930,6 +930,17 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 					continue;
 				any = true;
 				std::string id = "generator/" + c.id;
+				if (c.isToggle())
+				{
+					ui.checkbox(id, {x, yy, leftW - 16, 28}, tr(c.label), c.get(g) != 0,
+								[this, c, changed](bool on)
+								{
+									c.set(setup.generator, on ? 1 : 0);
+									changed();
+								});
+					yy += 34;
+					continue;
+				}
 				if (c.powerOfTwo || !c.allowedValues.empty())
 				{
 					discrete(c, id);

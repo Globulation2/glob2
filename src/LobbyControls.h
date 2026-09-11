@@ -133,6 +133,32 @@ class LobbyControls : public GAGGUI::RectangularWidget
 		int fh = GAGCore::Toolkit::getFont(font)->getStringHeight("Ag");
 		text(r.x + 9, r.y + (r.h - fh) / 2, label, font, r.w - 18, !enabled || quiet);
 	}
+	// A whole-row toggle: clicking anywhere on the row, or Space or Return while it has focus,
+	// flips it.
+	void checkbox(const std::string &id, SDL_Rect r, const std::string &label, bool checked,
+				  std::function<void(bool)> apply, bool enabled = true,
+				  const char *font = "standard")
+	{
+		SDL_Rect clipping = clip();
+		hits.push_back({id, r, clipping, [=] { apply(!checked); }, enabled, activeRegion});
+		const int side = std::min(18, r.h - 6);
+		SDL_Rect mark{r.x + 5, r.y + (r.h - side) / 2, side, side};
+		box(mark, checked ? gold : enabled ? panel : GAGCore::Color(222, 226, 212), 3);
+		surface()->drawRect(mark.x, mark.y, mark.w, mark.h, enabled ? ink : muted);
+		if (checked)
+			for (int t = 0; t < 2; ++t)
+			{
+				surface()->drawLine(mark.x + 4, mark.y + side / 2 + t, mark.x + side / 2 - 1,
+									mark.y + side - 5 + t, ink);
+				surface()->drawLine(mark.x + side / 2 - 1, mark.y + side - 5 + t, mark.x + side - 4,
+									mark.y + 4 + t, ink);
+			}
+		if (focus == id ||
+			(!popup.open && inside(r, hoverX, hoverY) && inside(clipping, hoverX, hoverY)))
+			surface()->drawRect(r.x, r.y, r.w, r.h, focus == id ? ink : line);
+		int fh = GAGCore::Toolkit::getFont(font)->getStringHeight("Ag");
+		text(mark.x + side + 9, r.y + (r.h - fh) / 2, label, font, r.w - side - 22, !enabled);
+	}
 	void dropdown(const std::string &id, SDL_Rect r, const std::vector<std::string> &options,
 				  int selected, std::function<void(int)> apply,
 				  const std::vector<bool> &enabled = {}, const std::string &help = "")
