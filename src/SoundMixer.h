@@ -30,6 +30,10 @@ public:
 	} mode;
 	std::vector<OggVorbis_File *> tracks;
 	int actTrack, nextTrack;
+	//! How far the current fade has advanced, in Sint16 samples. Carried
+	//! across callbacks so a fade lasts the same time whatever the device
+	//! buffer size. Read and written on the audio thread.
+	unsigned fadePos;
 	bool soundEnabled;
 	unsigned musicVolume;
 	unsigned voiceVolume;

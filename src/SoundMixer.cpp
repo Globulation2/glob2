@@ -21,7 +21,13 @@ using namespace GAGCore;
 #include <malloc.h>
 #endif
 
-#define SAMPLE_COUNT_PER_SLICE 4096*8
+//! Length of a music fade in Sint16 samples, both channels interleaved.
+//! Independent of the device buffer size: a fade spans as many callbacks as
+//! it takes to cover this many samples.
+#define FADE_SAMPLE_COUNT 4096*8
+//! Frames per device buffer. SDL_CloseAudio waits for the in-flight callback,
+//! so this bounds how long teardown blocks.
+#define DEVICE_FRAME_COUNT 1024
 #define INTERPOLATION_RANGE 65535
 #define INTERPOLATION_BITS 16
 #define SPEEX_FRAME_SIZE 160
@@ -32,20 +38,28 @@ using namespace GAGCore;
 #define OGG_BYTEORDER 1
 #endif
 
-static int interpolationTable[SAMPLE_COUNT_PER_SLICE];
+static int interpolationTable[FADE_SAMPLE_COUNT];
 
 static void initInterpolationTable(void)
 {
-	double l = static_cast<double>(SAMPLE_COUNT_PER_SLICE-1);
+	double l = static_cast<double>(FADE_SAMPLE_COUNT-1);
 	double m = INTERPOLATION_RANGE;
 	double a = - (2) / (l * l * l);
 	double b = (3) / (l * l);
-	for (unsigned i=0; i<SAMPLE_COUNT_PER_SLICE; i++)
+	for (unsigned i=0; i<FADE_SAMPLE_COUNT; i++)
 	{
 		double x = static_cast<double>(i);
 		double v = m * (a * (x * x * x) + b * (x* x));
 		interpolationTable[i] = static_cast<int>(v);
 	}
+}
+
+//! Ramp value for the i-th sample of a callback that starts `fadePos` samples
+//! into the fade.
+static inline int fadeValue(unsigned fadePos, unsigned i)
+{
+	unsigned p = fadePos + i;
+	return interpolationTable[p < FADE_SAMPLE_COUNT ? p : FADE_SAMPLE_COUNT-1];
 }
 
 void SoundMixer::handleVoiceInsertion(int *outputSample, int voicevol)
@@ -82,8 +96,6 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 
 	assert(mixer->actTrack >= 0);
 	assert(mixer->mode != SoundMixer::MODE_STOPPED);
-	// Dejan: this is supposed to fix reported problem on Gentoo
-	// assert(nsamples == SAMPLE_COUNT_PER_SLICE);
 	assert(nsamples);
 
 	if (mixer->mode == SoundMixer::MODE_EARLY_CHANGE)
@@ -93,10 +105,14 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		long rest;
 		char *p;
 
+		// align the incoming track to the outgoing one once, at fade start;
+		// afterwards both advance by the same amount every callback
+		if (mixer->fadePos == 0)
+			ov_pcm_seek(mixer->tracks[mixer->nextTrack], ov_pcm_tell(mixer->tracks[mixer->actTrack]));
+
 		// read first ogg
 		rest = len;
 		p = reinterpret_cast<char *>(track0);
-		ogg_int64_t firstPos = ov_pcm_tell(mixer->tracks[mixer->actTrack]);
 		while(rest > 0)
 		{
 			int bs;
@@ -116,7 +132,6 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		}
 
 		// read second ogg
-		ov_pcm_seek(mixer->tracks[mixer->nextTrack], firstPos);
 		rest = len;
 		p = reinterpret_cast<char *>(track1);
 		while(rest > 0)
@@ -142,7 +157,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		{
 			int t0 = track0[i];
 			int t1 = track1[i];
-			int intI = interpolationTable[i];
+			int intI = fadeValue(mixer->fadePos, i);
 			int val = (intI*t1+((INTERPOLATION_RANGE-intI)*t0))>>INTERPOLATION_BITS;
 			val = (val * musicvol)>>8;
 			mixer->handleVoiceInsertion(&val, voicevol);
@@ -150,8 +165,13 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 		}
 
 		// clear change
-		mixer->actTrack = mixer->nextTrack;
-		mixer->mode = SoundMixer::MODE_NORMAL;
+		mixer->fadePos += nsamples;
+		if (mixer->fadePos >= FADE_SAMPLE_COUNT)
+		{
+			mixer->fadePos = 0;
+			mixer->actTrack = mixer->nextTrack;
+			mixer->mode = SoundMixer::MODE_NORMAL;
+		}
 	}
 	else
 	{
@@ -194,26 +214,36 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 			for (unsigned i=0; i<nsamples; i++)
 			{
 				int t = mix[i];
-				t = (interpolationTable[i]*t) >> INTERPOLATION_BITS;
+				t = (fadeValue(mixer->fadePos, i)*t) >> INTERPOLATION_BITS;
 				t = (t * musicvol) >> 8;
 				mixer->handleVoiceInsertion(&t, voicevol);
 				mix[i] = t;
 			}
-			mixer->mode = SoundMixer::MODE_NORMAL;
+			mixer->fadePos += nsamples;
+			if (mixer->fadePos >= FADE_SAMPLE_COUNT)
+			{
+				mixer->fadePos = 0;
+				mixer->mode = SoundMixer::MODE_NORMAL;
+			}
 		}
 		else if (mixer->mode == SoundMixer::MODE_STOP)
 		{
 			for (unsigned i=0; i<nsamples; i++)
 			{
 				int t = mix[i];
-				int intI = interpolationTable[i];
+				int intI = fadeValue(mixer->fadePos, i);
 				t = ((INTERPOLATION_RANGE-intI)*t) >> INTERPOLATION_BITS;
 				t = (t * musicvol) >> 8;
 				mixer->handleVoiceInsertion(&t, voicevol);
 				mix[i] = t;
 			}
-			mixer->mode = SoundMixer::MODE_STOPPED;
-			SDL_PauseAudio(1);
+			mixer->fadePos += nsamples;
+			if (mixer->fadePos >= FADE_SAMPLE_COUNT)
+			{
+				mixer->fadePos = 0;
+				mixer->mode = SoundMixer::MODE_STOPPED;
+				SDL_PauseAudio(1);
+			}
 		}
 	}
 }
@@ -225,7 +255,7 @@ void SoundMixer::openAudio(void)
 	as.freq = 44100;
 	as.format = AUDIO_S16SYS;
 	as.channels = 2;
-	as.samples = SAMPLE_COUNT_PER_SLICE>>1;
+	as.samples = DEVICE_FRAME_COUNT;
 	as.callback = mixaudio;
 	as.userdata = this;
 	
@@ -262,14 +292,20 @@ SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 	this->musicVolume = musicvol;
 	this->voiceVolume = voicevol;
 	mode = MODE_STOPPED;
+	fadePos = 0;
+	soundEnabled = false;
 	speexDecoderState = NULL;
 	
 	initInterpolationTable();
-		
+	
+	// While muted there is nothing to play, so leave the device closed; the
+	// audio thread and its Ogg decoding never start, and there is nothing for
+	// SDL_CloseAudio to wait for at exit. setVolume() opens it on unmute.
 	if (mute)
 	{
 		this->musicVolume = 0;
 		this->voiceVolume = 0;
+		return;
 	}
 	openAudio();
 }
@@ -332,31 +368,38 @@ int SoundMixer::loadTrack(const std::string name, int index)
 	return index;
 }
 
+// The track selection is kept even while the device is closed, so setVolume()
+// can resume it when the user unmutes.
 void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 {
-	if ((soundEnabled) && (i<tracks.size()))
+	if (i >= tracks.size())
+		return;
+
+	SDL_LockAudio();
+
+	// Select next tracks
+	if (actTrack >= 0)
+		nextTrack = i;
+	else
+		nextTrack = actTrack = i;
+
+	// Select mode
+	if (soundEnabled)
 	{
-		SDL_LockAudio();
-
-		// Select next tracks
-		if (actTrack >= 0)
-			nextTrack = i;
-		else
-			nextTrack = actTrack = i;
-
-		// Select mode
 		if (mode == MODE_STOPPED)
 		{
+			fadePos = 0;
 			SDL_PauseAudio(0);
 			mode = MODE_START;
 		}
 		else if (earlyChange)
 		{
+			fadePos = 0;
 			mode = MODE_EARLY_CHANGE;
 		}
-
-		SDL_UnlockAudio();
 	}
+
+	SDL_UnlockAudio();
 }
 
 int SoundMixer::loadTrack(const std::string name, MusicTrack track)
@@ -375,11 +418,13 @@ void SoundMixer::setNextTrack(MusicTrack track, bool earlyChange)
 // cannot fire until SDL_PauseAudio(0) is called from setNextTrack().
 void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute)
 {
+	bool justOpened = false;
 	if (!soundEnabled)
 	{
 		if (mute)
 			return;
 		openAudio();
+		justOpened = soundEnabled;
 	}
 
 	SDL_LockAudio();
@@ -394,12 +439,18 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 		this->voiceVolume = voiceVolume;
 	}
 	SDL_UnlockAudio();
+
+	// start the track that was selected while the device was closed, once the
+	// volumes are in place so the fade-in is not silent
+	if (justOpened && actTrack >= 0)
+		setNextTrack(static_cast<unsigned>(actTrack));
 }
 
 // mode is read by mixaudio() on the audio thread; the write must hold the lock.
 void SoundMixer::stopMusic(void)
 {
 	SDL_LockAudio();
+	fadePos = 0;
 	mode = MODE_STOP;
 	SDL_UnlockAudio();
 }
