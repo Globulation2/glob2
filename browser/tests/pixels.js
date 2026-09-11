@@ -51,3 +51,21 @@ async function hasDarkText(page, clip) {
   }, png.toString('base64'));
 }
 module.exports.hasDarkText = hasDarkText;
+
+// Share of a clip darker than those pale panels in every channel.
+async function darkShare(page, clip) {
+  const png = await page.screenshot({clip});
+  return page.evaluate(async base64 => {
+    const blob = await (await fetch('data:image/png;base64,' + base64)).blob();
+    const bitmap = await createImageBitmap(blob);
+    const canvas = document.createElement('canvas');
+    canvas.width = bitmap.width; canvas.height = bitmap.height;
+    const context = canvas.getContext('2d'); context.drawImage(bitmap, 0, 0); bitmap.close();
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let dark = 0;
+    for (let i = 0; i < pixels.length; i += 4)
+      if (pixels[i] < 130 && pixels[i+1] < 130 && pixels[i+2] < 130) ++dark;
+    return dark / (pixels.length / 4);
+  }, png.toString('base64'));
+}
+module.exports.darkShare = darkShare;
