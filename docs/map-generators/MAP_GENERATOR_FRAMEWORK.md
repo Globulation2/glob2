@@ -67,7 +67,7 @@ fixed resource pass:
 - `placeResourceClump` / `placeResourceClumpInArea` grow a resource outward from a point to a
   requested tile count — the primitive every guaranteed placement (starter kits, bank deposits)
   is built from.
-- `computeLandComponents` flood-fills the map into its connected non-water components. A
+- `computeComponents` flood-fills the map into connected components of land (or of water). A
   generator whose landmasses are separate (an island generator) needs this so that a
   map-wide "take the best tiles first" pass can't spend an entire resource band on whichever one
   or two islands score highest, starving the rest — every subsequent per-component pass below
@@ -81,7 +81,9 @@ fixed resource pass:
   share and a wood share so the two alternate along the region instead of forming two concentric
   rings sorted by fertility.
 - `scatterBand` is the same per-component noise-threshold technique for stone and algae, which
-  have no growth rule to prefer and so use a plain noise field rather than fertility.
+  have no growth rule to prefer and so use a plain noise field rather than fertility. Stone is
+  shared out between landmasses and algae between water bodies (a lake apart from the sea), since
+  algae only places on water.
 - `scatterResources(game, context, densities)` is the shared ambient layer — ordinary, unclaimed
   deposits filling the interior between a generator's deliberate placements — used by Fjord and
   Ring world.

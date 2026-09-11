@@ -84,7 +84,12 @@ namespace {
 // own share of the candidate pool, keeps every landmass' band proportional to how much eligible
 // ground it has - on a single connected map this is one group covering everything, identical to
 // before.
-std::vector<int> computeLandComponents(const Map &map, int &numComponents) {
+//
+// water chooses what the components are made of: false groups land into landmasses, true groups
+// water into separate bodies (a lake apart from the sea). Algae only places on water, so an algae
+// band has to be shared out between water bodies the same way a stone band is shared out between
+// landmasses; drawn over land components it would never find a single candidate.
+std::vector<int> computeComponents(const Map &map, bool water, int &numComponents) {
   const int w = map.getW(), h = map.getH();
   std::vector<int> component(size_t(w) * h, -1);
   // Bounded by the component[np] < 0 guard below to at most w*h enqueues per component, and
@@ -95,7 +100,7 @@ std::vector<int> computeLandComponents(const Map &map, int &numComponents) {
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x) {
       const int start = y * w + x;
-      if (component[start] != -1 || map.isWater(x, y))
+      if (component[start] != -1 || map.isWater(x, y) != water)
         continue;
       size_t qHead = 0, qTail = 0;
       component[start] = nextId;
@@ -109,7 +114,7 @@ std::vector<int> computeLandComponents(const Map &map, int &numComponents) {
               continue;
             const int nx = map.normalizeX(px + dx), ny = map.normalizeY(py + dy);
             const int np = ny * w + nx;
-            if (component[np] == -1 && !map.isWater(nx, ny)) {
+            if (component[np] == -1 && map.isWater(nx, ny) == water) {
               component[np] = nextId;
               queue[qTail++] = np;
             }
@@ -122,7 +127,7 @@ std::vector<int> computeLandComponents(const Map &map, int &numComponents) {
 }
 
 void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
-                 const std::vector<int> &landComponent, int numComponents) {
+                 const std::vector<int> &component, int numComponents) {
   if (targetTiles <= 0 || numComponents <= 0)
     return;
   const int width = map.getW(), height = map.getH();
@@ -137,7 +142,7 @@ void scatterBand(Map &map, HeightMap &noise, int resourceType, int targetTiles,
         continue;
       if (!map.isResourceAllowed(x, y, resourceType))
         continue;
-      const int comp = landComponent[y * width + x];
+      const int comp = component[y * width + x];
       if (comp < 0)
         continue;
       const unsigned lvl = noise.uiLevel(x, y, kBuckets);
@@ -289,12 +294,16 @@ void scatterResources(Game &game, GenerationContext &context,
   HeightMap splitNoise(width, height, context.stream("scatter-split"));
   splitNoise.makePlain(6);
   int numComponents = 0;
-  const std::vector<int> landComponent = computeLandComponents(map, numComponents);
+  const std::vector<int> landComponent = computeComponents(map, false, numComponents);
 
   scatterFarmland(map, fertility, splitNoise, density.corn * area / 1600,
                   density.wood * area / 1600, landComponent, numComponents);
   scatterBand(map, noise, STONE, density.stone * area / 3000, landComponent, numComponents);
-  scatterBand(map, noise, ALGA, density.algae * area / 800, landComponent, numComponents);
+  if (density.algae > 0) {
+    int numWaterBodies = 0;
+    const std::vector<int> waterBody = computeComponents(map, true, numWaterBodies);
+    scatterBand(map, noise, ALGA, density.algae * area / 800, waterBody, numWaterBodies);
+  }
 
   // Fruit stays a rare, discrete find rather than a background band - "a distinct little
   // prize", the same role it already plays elsewhere in these generators - so it keeps the

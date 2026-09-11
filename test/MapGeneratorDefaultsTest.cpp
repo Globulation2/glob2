@@ -10,6 +10,7 @@
 #include "MapGeneratorFrameworkChecks.h"
 #include "NewMapScreen.h"
 #include "Race.h"
+#include "Resources.h"
 #include "StartingPositions.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -255,6 +256,39 @@ class MapGeneratorDefaultsTest
 		puts("PASS registration extension, explicit seeds, interleaved repeatability, RNG "
 			 "isolation, errors and legacy sentinels");
 	}
+	// scatterResources used to group algae candidates by land component, and land components
+	// never label water, so no algae density ever placed a single tile. Algae is now shared out
+	// between water bodies: a sea with an island, and a lake inside the island, must both get some.
+	static void scatterAlgaeOnWater()
+	{
+		Game game(nullptr);
+		game.map.setSize(6, 6);
+		game.map.setGame(&game);
+		game.map.makeHomogenMap(WATER);
+		for (int y = 12; y < 52; ++y)
+			for (int x = 12; x < 52; ++x)
+				game.map.setUMTerrain(x, y, GRASS);
+		for (int y = 24; y < 40; ++y)
+			for (int x = 24; x < 40; ++x)
+				game.map.setUMTerrain(x, y, WATER);
+		game.map.controlSand();
+		game.map.rebuildTerrain();
+		D request;
+		request.seed = 7;
+		GenerationContext context(request);
+		MapGeneration::scatterResources(game, context, {0, 0, 0, 50, 0});
+		int sea = 0, lake = 0;
+		for (int y = 0; y < game.map.getH(); ++y)
+			for (int x = 0; x < game.map.getW(); ++x)
+			{
+				if (game.map.getResource(x, y).type != ALGA)
+					continue;
+				assert(game.map.isWater(x, y));
+				(x >= 24 && x < 40 && y >= 24 && y < 40 ? lake : sea) += 1;
+			}
+		assert(sea > 0 && lake > 0);
+		puts("PASS scatterResources places algae on water, in every water body");
+	}
 	static D DWithDefaults(int method)
 	{
 		D r;
@@ -270,6 +304,7 @@ class MapGeneratorDefaultsTest
 	static void run(const char *output)
 	{
 		generationContracts();
+		scatterAlgaeOnWater();
 		NewMapScreen s;
 		s.gfx = globalContainer->gfx;
 		s.dispatchInit();
