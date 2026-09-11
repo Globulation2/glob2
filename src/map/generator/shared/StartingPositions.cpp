@@ -277,14 +277,34 @@ namespace MapGeneration
 {
 namespace
 {
+// isHardSpaceForGroundUnit(x, y, false, 0) is a pure function of terrain/resource state for
+// every call in this file: canSwim and the team mask are always the same two constants, no
+// forbidden-area bit survives a `& 0`, and nothing places a building before chooseBalancedStarts
+// runs (placeStarts(), the only thing that does, runs after boot tiles are already chosen). So
+// the answer never changes across the two distanceToResource() floods and the up-to-900 calls
+// to scoreAsBuilt() below; computing it once into a flat byte per tile turns what used to be a
+// branchy, multi-array accessor call at every visited tile into a single sequential array read.
+std::vector<std::uint8_t> buildHardSpaceGrid(Map &map)
+{
+	const int w = map.getW(), h = map.getH();
+	std::vector<std::uint8_t> hard(size_t(w) * h);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			hard[size_t(y) * w + x] = map.isHardSpaceForGroundUnit(x, y, false, 0) ? 1 : 0;
+	return hard;
+}
+
 // Walking distance from every tile to the nearest deposit of one resource. Workers stand
 // beside a deposit rather than on it (a resource tile is not walkable), so the sources are the
 // walkable tiles touching one. One flood answers the question for every tile on the map, which
-// is what makes scoring a few hundred candidate sites cheap enough to do exhaustively.
-std::vector<int> distanceToResource(Map &map, int resourceType)
+// is what makes scoring a few hundred candidate sites cheap enough to do exhaustively. Distances
+// on any map this engine supports fit comfortably in 16 bits, halving the footprint of an array
+// this flood (and every scoreAsBuilt call after it) touches over and over.
+std::vector<std::int16_t> distanceToResource(Map &map, const std::vector<std::uint8_t> &hard,
+											  int resourceType)
 {
 	const int w = map.getW(), h = map.getH();
-	std::vector<int> dist(size_t(w) * h, -1);
+	std::vector<std::int16_t> dist(size_t(w) * h, -1);
 	std::queue<int> q;
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
@@ -296,7 +316,7 @@ std::vector<int> distanceToResource(Map &map, int resourceType)
 				{
 					int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
 					int np = ny * w + nx;
-					if (dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+					if (dist[np] < 0 && hard[np])
 					{
 						dist[np] = 0;
 						q.push(np);
@@ -315,7 +335,7 @@ std::vector<int> distanceToResource(Map &map, int resourceType)
 					continue;
 				int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
 				int np = ny * w + nx;
-				if (dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+				if (dist[np] < 0 && hard[np])
 				{
 					dist[np] = dist[p] + 1;
 					q.push(np);
@@ -338,8 +358,9 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	if (!swarm)
 		return false;
 
-	const std::vector<int> woodDist = distanceToResource(map, WOOD);
-	const std::vector<int> wheatDist = distanceToResource(map, CORN);
+	const std::vector<std::uint8_t> hard = buildHardSpaceGrid(map);
+	const std::vector<std::int16_t> woodDist = distanceToResource(map, hard, WOOD);
+	const std::vector<std::int16_t> wheatDist = distanceToResource(map, hard, CORN);
 
 	// A site is worth exactly what its *worse* resource costs to reach: a colony next to wood
 	// but a long walk from wheat is not a good start, however good the wood is.
@@ -350,8 +371,8 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 	// and paths it is about to block, which is how four sites picked as exactly equal can
 	// finish unequal. Score what the colony will actually live with instead. The offsets below
 	// mirror placeStarts(); they are what it does, not a guess at it.
-	std::vector<int> visited(size_t(w) * h, 0);
-	int visitStamp = 0;
+	std::vector<std::uint16_t> visited(size_t(w) * h, 0);
+	std::uint16_t visitStamp = 0;
 	auto scoreAsBuilt = [&](int bx, int by, int limit) -> int
 	{
 		auto cleared = [&](int tx, int ty)
@@ -408,7 +429,7 @@ bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSqu
 						if (type == CORN && wheat < 0)
 							wheat = d + 1;
 					}
-					if (!blocked(nx, ny) && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
+					if (!blocked(nx, ny) && hard[ny * w + nx])
 						push(nx, ny, d + 1);
 				}
 		}
