@@ -245,6 +245,9 @@ void GameGUI::step(void)
 	viewportY &= game.map.getMaskH();
 
 	updateCamera();
+	// Pushed every frame rather than at press and release: several paths clear
+	// panPushed, and this way the two cannot drift apart.
+	torusView.setPanHeld(panPushed);
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
