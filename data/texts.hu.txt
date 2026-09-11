@@ -74,6 +74,10 @@ Econo
 Warrush gyorsan és kíméletlenül támad, gyakran a végsőkig szorítva a védekező játékost. Közepes nehézség.
 [AIWarrush]
 MIWarrush
+[AICabino-Description]
+A Cabino önálló osztályokként irányítja a védelmet, a támadást és az építkezést, amelyek egyetlen terv felé haladnak: gyorsan terjeszkedik, és hatalmas seregeket küld ellenfeleire. Nehéz.
+[AICabino]
+Cabino
 [Alga]
 Alga
 [algae]
@@ -1260,6 +1264,10 @@ Hatalmas bázisok és átalakítások támadások helyett.
 Stratégia: Korán és erőteljesen támad, mielőtt az ellenfél befejezné a felkészülést.\n\nErősségek: Kiaknázza a védtelen terjeszkedést és a lassú katonai felkészülést.\n\nJavasolt ellenjáték: Vészeld át az első támadást a gazdaságod fenntartásával, majd indíts ellentámadást.
 [AIWarrush-Summary]
 Gyors támadások, amelyek tesztelik a korai védekezést.
+[AICabino-Profile]
+Alapstratégia: önálló szakosztályok kabinetje (védelem, támadás, építkezés, fejlesztések, egységkezelés), amelyek saját kezdeményezésre cselekszenek, de egyetlen terv felé haladnak: gyors növekedés, majd hatalmas seregek küldése az ellenfelekre.\n\nErősségek: a gyors terjeszkedés agresszív katonai nyomást tesz lehetővé; az önálló osztályok gyorsan reagálnak a helyi fenyegetésekre, központi terv nélkül.\n\nEllenjáték: támadd meg korán a terjeszkedését, és használd a terepet, hogy korlátozd, hány egysége tud egyszerre harcolni.
+[AICabino-Summary]
+Önálló osztályok, amelyek együttműködnek a gyors növekedés és hatalmas seregek érdekében.
 [Algae]
 Alga
 [Alliances]

@@ -74,6 +74,10 @@ Econo
 Warrush ist der schnellste Angreifer. Ohne zu schummeln schafft er es, den Kampf vor der Haustür seiner Gegner stattfinden zu lassen
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino führt Verteidigung, Angriff und Bau als unabhängige Abteilungen, die auf einen gemeinsamen Plan hinarbeiten: schnell wachsen und dann riesige Armeen auf die Gegner werfen. Schwierigkeitsgrad: Schwer.
+[AICabino]
+Cabino
 [Alga]
 Algen
 [algae]
@@ -1260,6 +1264,10 @@ Riesige Stützpunkte und Konvertierung statt Angriffe.
 Strategie: Greift früh und hart an, bevor Gegner ihren Aufbau abgeschlossen haben.\n\nStärken: Nutzt ungeschützte Expansion und langsame militärische Vorbereitung aus.\n\nGegenspiel zum Ausprobieren: Überstehe den ersten Angriff, halte deine Wirtschaft am Laufen und greife dann selbst an.
 [AIWarrush-Summary]
 Schnelle Angriffe, die deine frühe Verteidigung prüfen.
+[AICabino-Profile]
+Kernstrategie: Ein Kabinett unabhängiger Fachabteilungen (Verteidigung, Angriff, Bau, Aufwertungen, Einheitenverwaltung), die jeweils auf eigene Initiative handeln, aber auf einen gemeinsamen Plan hinarbeiten: schnell wachsen und dann riesige Armeen auf die Gegner werfen.\n\nStärken: Schnelles Wachstum ermöglicht aggressiven militärischen Druck; die unabhängigen Abteilungen reagieren schnell auf lokale Bedrohungen, ohne auf einen zentralen Plan zu warten.\n\nGegenstrategie: Seine Expansion früh angreifen und das Gelände nutzen, um zu begrenzen, wie viele seiner Truppen gleichzeitig kämpfen können.
+[AICabino-Summary]
+Unabhängige Abteilungen, die für schnelles Wachstum und gewaltige Armeen zusammenarbeiten.
 [Algae]
 Algen
 [Alliances]

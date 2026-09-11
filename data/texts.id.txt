@@ -78,6 +78,10 @@ Econo
 Warrush - Menyerang dengan cepat dan keras, sering kali membuat pemain yang bertahan kewalahan. Tingkat kesulitan sedang.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino menjalankan pertahanan, serangan, dan pembangunan sebagai departemen independen yang menuju satu rencana: berkembang pesat lalu mengerahkan pasukan besar untuk menyerang lawan. Tingkat kesulitan sulit.
+[AICabino]
+Cabino
 [Alga]
 Ganggang
 [algae]
@@ -1256,6 +1260,10 @@ Basis besar dan konversi, bukan serangan.
 Strategi: Menyerang dengan cepat dan keras sebelum lawan selesai bersiap.\n\nKekuatan: Menghukum ekspansi tanpa pertahanan dan persiapan militer yang lambat.\n\nSaran melawan: Pertahankan ekonomi sambil bertahan dari serangan pertama, lalu serang balik.
 [AIWarrush-Summary]
 Serangan cepat yang menguji pertahanan awal Anda.
+[AICabino-Profile]
+Strategi inti: sebuah kabinet departemen spesialis independen (pertahanan, serangan, pembangunan, peningkatan, manajemen unit) yang masing-masing bertindak atas inisiatifnya sendiri tetapi menuju satu rencana: berkembang pesat lalu mengerahkan pasukan besar melawan lawan.\n\nKekuatan: ekspansi cepat mendukung tekanan militer yang agresif; departemen independen bereaksi cepat terhadap ancaman lokal tanpa menunggu rencana terpusat.\n\nCara melawan: hadapi ekspansinya sejak awal dan gunakan medan untuk membatasi berapa banyak pasukannya yang bisa bertempur sekaligus.
+[AICabino-Summary]
+Departemen independen yang bekerja sama untuk pertumbuhan cepat dan pasukan besar.
 [Algae]
 Ganggang
 [Alliances]

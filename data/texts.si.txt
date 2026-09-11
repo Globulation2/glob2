@@ -74,6 +74,10 @@ Econo
 Warrush napada hitro in silovito ter branilca pogosto potisne do meja njegovih zmožnosti. Srednja težavnost.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino upravlja obrambo, napad in gradnjo kot neodvisne oddelke, ki delujejo po enotnem načrtu: hitro se širi in nad nasprotnike pošilja ogromne vojske. Visoka težavnost.
+[AICabino]
+Cabino
 [Alga]
 Alga
 [algae]
@@ -1260,6 +1264,10 @@ Ogromne baze in pretvorba namesto napadov.
 Strategija: Napade zgodaj in odločno, preden se nasprotniki končajo s pripravami.\n\nPrednosti: izkorišča nebranjeno širitev in počasne vojaške priprave.\n\nPredlagana protiigra: Preživite prvi napad in hkrati ohranite gospodarstvo, nato pa izvedite protinapad.
 [AIWarrush-Summary]
 Hitri napadi, ki preizkusijo vašo zgodnjo obrambo.
+[AICabino-Profile]
+Osnovna strategija: kabinet neodvisnih specializiranih oddelkov (obramba, napad, gradnja, nadgradnje, upravljanje enot), od katerih vsak deluje na lastno pobudo, a se vsi stekajo v en načrt: hitra rast in nato ogromne vojske proti nasprotnikom.\n\nPrednosti: hitra širitev podpira agresiven vojaški pritisk; neodvisni oddelki hitro odreagirajo na lokalne grožnje, ne da bi čakali na centralni načrt.\n\nProtiukrep: zgodaj izpodbijajte njegovo širitev in uporabite teren, da omejite, koliko njegovih enot se lahko hkrati bojuje.
+[AICabino-Summary]
+Neodvisni oddelki, ki sodelujejo za hitro rast in ogromne vojske.
 [Algae]
 Alge
 [Alliances]

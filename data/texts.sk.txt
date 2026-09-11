@@ -74,6 +74,10 @@ Econo
 Warrush útočí rýchlo a tvrdo a často zatlačí obrancu na hranicu jeho možností. Stredná náročnosť.
 [AIWarrush]
 UIWarrush
+[AICabino-Description]
+Cabino riadi obranu, útok a výstavbu ako nezávislé oddelenia, ktoré smerujú k jednému plánu: rýchlo sa rozrastá a posiela na súperov obrovské armády. Vysoká náročnosť.
+[AICabino]
+Cabino
 [Alga]
 Riasy
 [algae]
@@ -1268,6 +1272,10 @@ Obrovské základne a konverzia namiesto útokov.
 Stratégia: Útočí skoro a rázne, skôr ako súper dokončí prípravu.\n\nSilné stránky: Využíva nebránenú expanziu a pomalú vojenskú prípravu.\n\nOdporúčaná protihra: Prežite prvý útok pri zachovaní svojej ekonomiky, potom zaútočte.
 [AIWarrush-Summary]
 Rýchle útoky, ktoré otestujú vašu skorú obranu.
+[AICabino-Profile]
+Základná stratégia: kabinet nezávislých špecializovaných oddelení (obrana, útok, výstavba, vylepšenia, správa jednotiek), z ktorých každé koná z vlastnej iniciatívy, ale smeruje k jednému plánu: rýchly rast a potom vyslanie obrovských armád proti súperom.\n\nSilné stránky: rýchla expanzia podporuje agresívny vojenský tlak; nezávislé oddelenia rýchlo reagujú na miestne hrozby bez čakania na centrálny plán.\n\nProtiťah, ktorý treba skúsiť: napadnite jeho expanziu včas a využite terén na obmedzenie počtu jednotiek, ktoré môže naraz nasadiť.
+[AICabino-Summary]
+Nezávislé oddelenia spolupracujúce na rýchlom raste a obrovských armádach.
 [Algae]
 Riasy
 [Alliances]

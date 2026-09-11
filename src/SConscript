@@ -49,6 +49,7 @@ ai/AINumbiEconomy.cpp
 ai/AINumbiMilitary.cpp
 ai/AINumbiPlacement.cpp
 ai/AIWarrush.cpp
+ai/AICabino.cpp
 ai/cortex/CortexObservation.cpp
 ai/cortex/CortexObservationObserve.cpp
 ai/cortex/CortexPlacement.cpp

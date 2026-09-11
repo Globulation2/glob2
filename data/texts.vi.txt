@@ -78,6 +78,10 @@ Econo
 Warrush - Tấn công nhanh và dữ dội, thường khiến người phòng thủ phải chống đỡ hết sức. Độ khó trung bình.
 [AIWarrush]
 Warrush
+[AICabino-Description]
+Cabino điều hành phòng thủ, tấn công và xây dựng như những bộ phận độc lập nhưng cùng hướng đến một kế hoạch: phát triển nhanh và tung những đạo quân lớn vào đối thủ. Độ khó cao.
+[AICabino]
+Cabino
 [Alga]
 Tảo
 [algae]
@@ -1256,6 +1260,10 @@ Xây căn cứ lớn và chiêu dụ quân địch thay vì tấn công.
 Chiến lược: Tấn công nhanh và mạnh trước khi đối thủ xây dựng lực lượng xong.\n\nĐiểm mạnh: Trừng phạt việc mở rộng thiếu phòng thủ và chuẩn bị quân sự chậm.\n\nGợi ý đối phó: Duy trì kinh tế, chống đỡ đợt tấn công đầu rồi phản công.
 [AIWarrush-Summary]
 Các cuộc tấn công nhanh kiểm tra khả năng phòng thủ sớm của bạn.
+[AICabino-Profile]
+Chiến lược cốt lõi: một nội các gồm các bộ phận chuyên trách độc lập (phòng thủ, tấn công, xây dựng, nâng cấp, quản lý đơn vị), mỗi bộ phận tự hành động theo sáng kiến riêng nhưng cùng hướng đến một kế hoạch: phát triển nhanh rồi tung những đạo quân lớn vào đối thủ.\n\nĐiểm mạnh: mở rộng nhanh hỗ trợ áp lực quân sự mạnh mẽ; các bộ phận độc lập phản ứng nhanh với các mối đe dọa cục bộ mà không cần chờ một kế hoạch trung tâm.\n\nCách đối phó: ngăn chặn sự mở rộng của nó sớm và dùng địa hình để hạn chế số quân nó có thể huy động cùng lúc.
+[AICabino-Summary]
+Các bộ phận độc lập hợp tác để phát triển nhanh và tạo ra những đạo quân khổng lồ.
 [Algae]
 Tảo
 [Alliances]

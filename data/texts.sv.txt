@@ -74,6 +74,10 @@ Econo
 Warrush anfaller snabbt och hårt och pressar ofta den försvarande spelaren till det yttersta. Medelsvår.
 [AIWarrush]
 AIWarrush
+[AICabino-Description]
+Cabino sköter försvar, anfall och byggande som oberoende avdelningar som ändå strävar mot en enda plan: växer snabbt och skickar enorma arméer mot sina motståndare. Svår.
+[AICabino]
+Cabino
 [Alga]
 Alger
 [algae]
@@ -1270,6 +1274,10 @@ Enorma baser och konvertering istället för attacker.
 Strategi: Anfaller tidigt och kraftfullt innan motståndarna är färdiga med sina förberedelser.\n\nStyrkor: Utnyttjar oförsvarad expansion och långsam militär förberedelse.\n\nFöreslaget motspel: Överlev den första attacken samtidigt som du behåller din ekonomi, och gå sedan till motattack.
 [AIWarrush-Summary]
 Snabba attacker som testar ditt tidiga försvar.
+[AICabino-Profile]
+Grundstrategi: ett kabinett av oberoende specialistavdelningar (försvar, anfall, byggande, uppgraderingar, enhetshantering) som var och en agerar på eget initiativ men strävar mot en enda plan: snabb tillväxt och sedan enorma arméer mot motståndarna.\n\nStyrkor: snabb expansion stöder aggressivt militärt tryck; de oberoende avdelningarna reagerar snabbt på lokala hot utan att vänta på en central plan.\n\nMotdrag att prova: utmana dess expansion tidigt och använd terrängen för att begränsa hur många trupper den kan sätta in samtidigt.
+[AICabino-Summary]
+Oberoende avdelningar som samarbetar för snabb tillväxt och enorma arméer.
 [Algae]
 Alger
 [Alliances]
