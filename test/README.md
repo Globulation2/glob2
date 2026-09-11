@@ -321,6 +321,36 @@ python3 test/run-savegame-safety-tests.py --check-preferences build/src/HiringBu
 
 The harness runs headlessly in disposable profile directories in Linux and Windows CI.
 
+## Echo building-order id save compatibility
+
+`EchoBuildingOrderSaveLoadTest` covers `AIEcho::Construction::BuildingOrder::id`,
+the `BuildingRegister` key handed out at runtime by `Echo::add_building_order`.
+`save()` and `load()` never moved the field and the member had no initialiser, so
+every pending building order restored from a save carried an uninitialised heap
+value into `BuildingRegister::issue_order` and `AssignWorkers`: an AI game resumed
+from a save was not reproducible run to run, and a resumed multiplayer game could
+desync without packet loss or a version mismatch. Version 96 serialises the field.
+Older saves do not carry it and load leaves the member at `-1`, the sentinel
+`Echo::load` replaces with a fresh `register_building()` key.
+
+The fixture checks the version-96 round trip, that an unregistered order's `-1`
+survives the `Uint32` on the wire rather than returning as a huge positive key,
+and that a pre-96 stream leaves the sentinel with every following field still
+decoding from the right offset. `BuildingOrder.cpp` is linked against
+`EchoBuildingOrderTestStubs.cpp`, which satisfies the `find_location` /
+`passes_conditions` link surface (`globalContainer`, `BuildingsTypes`, `Map`,
+`FlagMap`, `GradientManager`, and the `Constraint` / `Condition` factories) that
+a constraint-free order never reaches at runtime. It needs no profile or display:
+
+```sh
+cd test
+scons -j8 EchoBuildingOrderSaveLoadTest
+./EchoBuildingOrderSaveLoadTest
+```
+
+Linux CI runs it through this directory's "Build and run the tests" step, which
+executes `./TestsRunner` and then every `./*Harness` and `./*Test` binary.
+
 ### Native main Settings redesign
 
 Build `scons -j6 release=1 settings-tests speed-tests` and run

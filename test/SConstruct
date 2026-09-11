@@ -465,3 +465,21 @@ replay_objs = [
 ]
 wcdecode_env.Program( target = 'ReplayStepCounterTest', source = replay_objs )
 
+
+# Standalone regression harness for AIEcho::Construction::BuildingOrder::id
+# serialization. The id is a BuildingRegister key handed out at runtime by
+# Echo::add_building_order, but save()/load() never moved it and the member had
+# no initialiser, so every pending building order restored from a save carried
+# an uninitialised heap value into issue_order() and AssignWorkers -- an AI game
+# resumed from a save was not reproducible, and a resumed multiplayer game could
+# desync. Checks the version-96 round trip, the -1 sentinel surviving the Uint32
+# on the wire, and the pre-96 layout. Reuses the wcdecode env's libgagserver.a
+# link surface. Distinct object name for BuildingOrder.cpp because the main
+# build compiles it with different flags.
+echo_order_objs = [
+  wcdecode_env.Object('EchoBuildingOrderSaveLoadTest.o', 'EchoBuildingOrderSaveLoadTest.cpp'),
+  wcdecode_env.Object('BuildingOrder-saveload.o', '../src/ai/echo/BuildingOrder.cpp'),
+  wcdecode_env.Object('EchoBuildingOrderTestStubs.o', 'EchoBuildingOrderTestStubs.cpp'),
+]
+wcdecode_env.Program( target = 'EchoBuildingOrderSaveLoadTest', source = echo_order_objs )
+
