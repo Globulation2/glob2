@@ -198,6 +198,11 @@ cul-de-sac.
   joining two chambers, so a run of passage reads as one continuous strip of buildable,
   farmable grass. Passage width isn't a control of its own: passages fill whatever the narrowest
   cell leaves once its walls and channels are taken out, and stay odd so they centre on a tile.
+- **Roads.** A three-tile sand road runs down the middle of every open passage, centre to centre,
+  so every cell is linked to the rest of the maze by ground that can never be closed:
+  `Map::incResource` only seeds a resource on its own terrain and buildings need pure grass, so
+  nothing grows over a road or is built on one. At a home the road stops against the swarm's
+  footprint. Shore distances for the resource scatter ignore the road.
 - **Walls.** Every closed boundary has a stone spine covering the whole boundary line from corner
   to corner, with `channel-width` all-water tiles on either side (default 2). Perpendicular walls
   share their corner tile, so a boundary can only be crossed — on foot or swimming — where it's

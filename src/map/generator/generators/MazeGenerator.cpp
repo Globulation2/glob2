@@ -301,15 +301,16 @@ TileRect wallFor(const MazeGrid &g, int cell, int direction) {
   return {g.xs[c], g.ys[r + 1], g.xs[c + 1], g.ys[r + 1]};
 }
 
-// Distance in 8-neighbour steps from every tile to the nearest tile that isn't pure grass.
-std::vector<int> grassDepth(const Map &map) {
+// Distance in 8-neighbour steps from every tile to the nearest shore - a tile that isn't pure
+// grass - not counting the sand road, which runs down the middle of passages, not their edges.
+std::vector<int> shoreDepth(const Map &map, const std::vector<unsigned char> &onRoad) {
   const int w = map.getW(), h = map.getH();
   std::vector<int> depth(size_t(w) * h, -1);
   std::vector<int> queue;
   queue.reserve(size_t(w) * h);
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x)
-      if (!map.isGrass(x, y)) {
+      if (!map.isGrass(x, y) && !onRoad[size_t(y) * w + x]) {
         depth[size_t(y) * w + x] = 0;
         queue.push_back(y * w + x);
       }
@@ -414,10 +415,11 @@ void placeTreasure(Map &map, const MazeGrid &g, int cell, int exit, int half, in
 // grown over free shore tiles. Only tiles within kShoreBand of a shore are eligible, which is
 // what keeps each passage's middle clear. Densities are per 256 shore tiles.
 void scatterThroughMaze(Map &map, GenerationContext &context, const MazeGrid &g,
-                        const std::vector<unsigned char> &isHome, int half,
+                        const std::vector<unsigned char> &isHome,
+                        const std::vector<unsigned char> &onRoad, int half,
                         const MazeOptions &o) {
   const int w = map.getW(), h = map.getH();
-  const std::vector<int> depth = grassDepth(map);
+  const std::vector<int> depth = shoreDepth(map, onRoad);
   const int band = std::min(kShoreBand, half - 1);
   std::vector<unsigned char> free(size_t(w) * h, 0);
   std::vector<int> pool;
@@ -549,7 +551,7 @@ bool generate(Game &game, GenerationContext &context) {
   // Every cell is a chamber as wide as a passage, and every open boundary a band of that width
   // joining two chambers, so a run of passage reads as one continuous strip of grass.
   context.stage = "maze terrain";
-  std::vector<TileRect> passages, walls;
+  std::vector<TileRect> passages, walls, roads;
   for (int cell = 0; cell < g.cells(); ++cell) {
     const int cx = g.centerX(cell), cy = g.centerY(cell);
     passages.push_back({cx - half, cy - half, cx + half, cy + half});
@@ -558,13 +560,20 @@ bool generate(Game &game, GenerationContext &context) {
         walls.push_back(wallFor(g, cell, d));
         continue;
       }
+      // A road runs centre to centre, three tiles wide and one tile past each centre so roads
+      // meeting at a cell overlap. At a home it stops against the swarm's 4x4 footprint (the
+      // settlement is anchored on the centre), so the swarm still stands on grass.
       const int next = g.neighbour(cell, d);
       if (d == East) {
         const int farX = g.centerX(next) < cx ? g.centerX(next) + g.width : g.centerX(next);
         passages.push_back({cx - half, cy - half, farX + half, cy + half});
+        roads.push_back({isHome[cell] ? cx + 2 : cx - 1, cy - 1,
+                         isHome[next] ? farX - 3 : farX + 1, cy + 1});
       } else {
         const int farY = g.centerY(next) < cy ? g.centerY(next) + g.height : g.centerY(next);
         passages.push_back({cx - half, cy - half, cx + half, farY + half});
+        roads.push_back({cx - 1, isHome[cell] ? cy + 2 : cy - 1, cx + 1,
+                         isHome[next] ? farY - 3 : farY + 1});
       }
     }
   }
@@ -577,6 +586,18 @@ bool generate(Game &game, GenerationContext &context) {
     stampCore(map, r);
   for (const TileRect &r : walls)
     stampCore(map, r);
+  // Then the roads, cut through the passages' grass: a sand road links every cell to the maze
+  // and can never be closed. Map::incResource only seeds a resource on its own terrain and
+  // buildings need pure grass, so nothing can grow over a road tile or be built on one. A road's
+  // tile rectangle takes undermap sand on (x0, x1] x (y0, y1], giving each of its tiles at least
+  // one sand corner and leaving every tile around it untouched.
+  std::vector<unsigned char> onRoad(size_t(map.getW()) * map.getH(), 0);
+  for (const TileRect &r : roads) {
+    fillUndermap(map, r.x0 + 1, r.y0 + 1, r.x1 - r.x0, r.y1 - r.y0, SAND);
+    for (int y = r.y0; y <= r.y1; ++y)
+      for (int x = r.x0; x <= r.x1; ++x)
+        onRoad[size_t(map.normalizeY(y)) * map.getW() + map.normalizeX(x)] = 1;
+  }
   map.rebuildTerrain();
   for (const TileRect &r : walls)
     for (int y = r.y0; y <= r.y1; ++y)
@@ -616,7 +637,7 @@ bool generate(Game &game, GenerationContext &context) {
       placeTreasure(map, g, deadEnds[i], exitOf[deadEnds[i]], half, o.fruit,
                     CHERRY + int((firstType + i) % 3));
   }
-  scatterThroughMaze(map, context, g, isHome, half, o);
+  scatterThroughMaze(map, context, g, isHome, onRoad, half, o);
   seedAlgae(map, context, o.algae);
   return true;
 }
@@ -674,7 +695,7 @@ GeneratorDefinition mazeDefinition() {
   return {"maze",
           11,
           "Maze",
-          10,
+          11,
           false,
           {{"cell-size", "Cell size", 24, 48, 1, 32, ControlGroup::Layout, false, false,
             {24, 32, 40, 48}},
