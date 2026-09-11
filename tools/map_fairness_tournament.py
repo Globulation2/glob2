@@ -156,7 +156,7 @@ def map_key(method, seed):
 
 
 def parse_study(stdout):
-    record = {'colonies': [], 'starts': [], 'files': [], 'options': {}}
+    record = {'colony_quality': [], 'starts': [], 'files': [], 'options': {}}
     for line in stdout.splitlines():
         parts = line.strip().split(',')
         tag = parts[0]
@@ -170,7 +170,7 @@ def parse_study(stdout):
                                  'fairness': float(parts[3]), 'worst': float(parts[4]),
                                  'best': float(parts[5])}
         elif tag == 'COLONY':
-            record['colonies'].append(dict(zip(COLONY_FIELDS, (float(v) for v in parts[2:]))))
+            record['colony_quality'].append(dict(zip(COLONY_FIELDS, (float(v) for v in parts[2:]))))
         elif tag == 'REQUEST':
             record['request'] = {'generator_id': parts[1], 'revision': int(parts[2]),
                                  'seed': int(parts[3]), 'wDec': int(parts[4]), 'hDec': int(parts[5]),
@@ -185,7 +185,7 @@ def parse_study(stdout):
         elif tag == 'ROTATIONS':
             record['rotation_checks'] = dict(zip(
                 ['teams', 'rotations', 'save_load_stable', 'references_consistent',
-                 'colonies_placed', 'round_trip'], map(int, parts[1:7])))
+                 'colonies_placed', 'round_trip', 'reload_idempotent'], map(int, parts[1:8])))
     return record
 
 
@@ -236,7 +236,8 @@ def produce_map(config, paths, generator, seed):
     if exit_code == 4 or (exit_code == 0 and not record.get('generated', False)):
         record.update(ok=False, failure='generation')
     elif exit_code != 0 or not checks or not all(
-            checks[k] for k in ('references_consistent', 'colonies_placed', 'round_trip')):
+            checks.get(k) for k in ('references_consistent', 'colonies_placed', 'round_trip',
+                                    'reload_idempotent')):
         record.update(ok=False, failure=f'study exit {exit_code}')
     elif len(record['starts']) != colonies or len(record['files']) != config['rotation_count']:
         record.update(ok=False, failure='incomplete study output')
@@ -296,7 +297,10 @@ def adjudicate(game, record, config):
     cap = int(config['tick_cap'])
     winners = [t for t, e in teams.items() if e['result'] == 'won']
     alive = [t for t, e in teams.items() if e['alive']]
-    strength = lambda t: (teams[t]['prestige'], teams[t]['buildings'], teams[t]['units'])
+    # At the cap: prestige (the engine's own victory measure), then population, then finished
+    # buildings. Stalled colonies often have no prestige at all, so population usually decides.
+    criteria = ('prestige', 'units', 'buildings')
+    strength = lambda t: tuple(teams[t][c] for c in criteria)
     if end['winner_team'] >= 0:
         outcome['end_reason'] = game['parsed']['reason'] or 'elimination'
         winner = end['winner_team']
@@ -304,9 +308,13 @@ def adjudicate(game, record, config):
     elif end['ticks'] >= cap:
         outcome['end_reason'] = 'cap'
         ranked = sorted(alive, key=strength, reverse=True)
-        if ranked and (len(ranked) == 1 or strength(ranked[0]) != strength(ranked[1])):
+        if len(ranked) == 1:
             winner = ranked[0]
-            outcome['adjudication'] = 'cap-prestige'
+            outcome['adjudication'] = 'cap-sole-survivor'
+        elif ranked and strength(ranked[0]) != strength(ranked[1]):
+            winner = ranked[0]
+            decided_by = next(c for c, a, b in zip(criteria, strength(ranked[0]), strength(ranked[1])) if a != b)
+            outcome['adjudication'] = f'cap-{decided_by}'
         else:
             winner = None
             outcome['adjudication'] = 'cap-tie' if ranked else 'cap-none-alive'
@@ -636,7 +644,8 @@ def analyse_map(record, games, config):
                 decisive[outcome['winner_slot']] += 1
         for slot, place in outcome['placement'].items():
             placement_points[int(slot)] += (n - place) / (n - 1) if n > 1 else 1.0
-    quality = [c['total'] for c in record['colonies']] if len(record['colonies']) == n else None
+    rows = record.get('colony_quality', [])
+    quality = [c['total'] for c in rows] if len(rows) == n else None
     analysis = {
         'key': record['key'], 'method': record['method'], 'map_seed': record['map_seed'],
         'chosen_seed': record.get('chosen_seed'), 'games': len(games), 'played': len(played),
@@ -653,7 +662,7 @@ def analyse_map(record, games, config):
         'placement_score': [p / len(played) if played else None for p in placement_points],
         'quality': quality, 'quality_score': record.get('quality', {}).get('score'),
         'starts': record['starts'],
-        'record_colonies': record['colonies'] if len(record['colonies']) == n else [],
+        'record_colonies': rows if len(rows) == n else [],
     }
     analysis['quality_spearman'] = spearman(quality, wins) if quality and sum(wins) and n >= 3 else None
     return analysis
@@ -787,6 +796,11 @@ def load_catalog(study):
 
 def summarize(out, config, paths):
     records, games = load_results(out)
+    # Outcomes are recomputed from each game's stored engine output, so a change to the
+    # adjudication rule applies to earlier games without replaying them.
+    for game in games:
+        if game['map'] in records:
+            game['outcome'] = adjudicate(game, records[game['map']], config)
     catalog = load_catalog(paths['study'])
     by_map = {}
     for game in games:
@@ -865,7 +879,8 @@ def write_csvs(out, records, games):
             n = record['colonies']
             for team, entry in sorted(g['parsed']['teams'].items(), key=lambda i: int(i[0])):
                 slot = (int(team) - g['rotation']) % n
-                quality = record['colonies'][slot] if len(record['colonies']) == n else {}
+                rows = record.get('colony_quality', [])
+                quality = rows[slot] if len(rows) == n else {}
                 writer.writerow([record['method'], record['map_seed'], g['rotation'], g['seed'], slot, team,
                                  *record['starts'][slot], g['outcome']['placement'].get(str(slot)),
                                  int(g['outcome']['winner_slot'] == slot),
@@ -881,7 +896,7 @@ def write_csvs(out, records, games):
                              int(bool(record.get('ok'))), record.get('failure'),
                              record.get('quality', {}).get('score'), record.get('quality', {}).get('fairness'),
                              ';'.join(f'{x}:{y}' for x, y in record.get('starts', [])),
-                             ';'.join(f'{c["total"]:.3f}' for c in record.get('colonies', [])),
+                             ';'.join(f'{c["total"]:.3f}' for c in record.get('colony_quality', [])),
                              next((f['fnv1a64'] for f in record.get('files', []) if f['rotation'] == 0), None),
                              record.get('generation_seconds')])
 
@@ -923,9 +938,10 @@ def markdown(summary, config):
         + ('' if summary['balanced'] else ' **Not rotation-balanced: start position and team index are confounded.**'),
         f'- {summary["played"]} of {summary["games"]} games completed ({ends}); wall time per game mean '
         f'{num(wall["mean"], 1)} s, median {num(wall["median"], 1)} s, max {num(wall["max"], 1)} s '
-        f'({num(wall["per_1000_ticks"], 2)} s per 1000 ticks); median game length {summary["ticks"]["median"]} ticks.',
-        '- A game that reaches the tick cap goes to the surviving colony with the most prestige '
-        '(then buildings, then units); an exact tie stays unresolved and is left out of win counts.',
+        f'({num(wall["per_1000_ticks"], 2)} s per 1000 ticks); median game length '
+        f'{num(summary["ticks"]["median"], 0)} ticks.',
+        '- A game that reaches the tick cap goes to the surviving colony with the most prestige, then '
+        'units, then finished buildings; an exact tie stays unresolved and is left out of win counts.',
     ]
     verification = summary.get('verification')
     if verification:

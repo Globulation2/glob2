@@ -96,9 +96,12 @@ own team-index bias with no map effect at all.
 ## Adjudication
 
 A game ends when one colony has defeated every other, when total prestige reaches the lobby
-threshold (the highest-prestige colony wins), or at the tick cap. At the cap, the surviving colony
-with the most prestige wins, then the one with more finished buildings, then more units. That is
-the engine's own prestige victory applied to an unfinished game. An exact tie stays unresolved and
+threshold (the highest-prestige colony wins), or at the tick cap. At the cap, the surviving colonies
+are ranked by prestige, then population (units), then finished buildings, and the top one wins.
+Prestige comes first because it is the engine's own victory measure. Colonies that stall often
+have no prestige at all, and population is then the clearest sign of which one is ahead.
+`games.csv` records what decided each capped game (`cap-prestige`, `cap-units`, `cap-buildings` or
+`cap-sole-survivor`), and the report also gives the bias counting decisive games only. An exact tie stays unresolved and
 is left out of win counts. The report gives the share of games decided at the cap. Placements rank
 the winner first, other survivors by prestige, then eliminated colonies, the last eliminated first.
 

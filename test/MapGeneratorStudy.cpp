@@ -13,6 +13,7 @@
 #include "Utilities.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
+#include <TextStream.h>
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
@@ -49,6 +50,18 @@ std::string saveMapBytes(Game &game, const std::string &name)
 {
 	auto *backend = new GAGCore::MemoryStreamBackend();
 	GAGCore::BinaryOutputStream stream(backend); // owns the backend
+	game.save(&stream, true, name);
+	stream.flush();
+	backend->seekFromEnd(0);
+	return std::string(backend->getBuffer(), backend->getPosition());
+}
+
+// The same save as named text fields, for diffing two saves of one map. A text stream cannot
+// seek, so the header Game::save rewrites once the map offset is known is appended a second time.
+std::string saveMapText(Game &game, const std::string &name)
+{
+	auto *backend = new GAGCore::MemoryStreamBackend();
+	GAGCore::TextOutputStream stream(backend); // owns the backend
 	game.save(&stream, true, name);
 	stream.flush();
 	backend->seekFromEnd(0);
@@ -249,7 +262,24 @@ int saveRotatedMaps(Game &game, const GenerationResult &result, const Generation
 	if (!loadMapBytes(canonical, generated))
 		return 5;
 	const std::string first = saveMapBytes(canonical, label(0));
+	// A freshly generated Game and the same map read back from its file save identically except
+	// for the header's content SHA1: a fresh Game still holds map offset 0 when Game::save hashes
+	// its first header write, before the real offset is patched in. Games only ever start from
+	// the file, so rotations work from the reloaded form, which must re-save byte for byte.
 	const bool stable = first == generated;
+	bool idempotent = false;
+	{
+		Game again(nullptr);
+		idempotent = loadMapBytes(again, first) && saveMapBytes(again, label(0)) == first;
+	}
+	// GLOB2_STUDY_EXPLAIN=<prefix> writes both saves as named fields, to see where they differ.
+	if (const char *explain = std::getenv("GLOB2_STUDY_EXPLAIN"))
+	{
+		std::ofstream(std::string(explain) + "-generated.map", std::ios::binary) << generated;
+		std::ofstream(std::string(explain) + "-reloaded.map", std::ios::binary) << first;
+		std::ofstream(std::string(explain) + "-generated.txt") << saveMapText(game, label(0));
+		std::ofstream(std::string(explain) + "-reloaded.txt") << saveMapText(canonical, label(0));
+	}
 	const std::uint64_t world = worldHash(canonical);
 	std::vector<std::uint64_t> colonies;
 	for (int t = 0; t < n; ++t)
@@ -290,9 +320,9 @@ int saveRotatedMaps(Game &game, const GenerationResult &result, const Generation
 			return 3;
 		previous = bytes;
 	}
-	std::printf("ROTATIONS,%d,%d,%d,%d,%d,%d\n", n, rotations, int(stable), int(consistent),
-				int(placed), int(roundTrip));
-	return consistent && placed && roundTrip ? 0 : 6;
+	std::printf("ROTATIONS,%d,%d,%d,%d,%d,%d,%d\n", n, rotations, int(stable), int(consistent),
+				int(placed), int(roundTrip), int(idempotent));
+	return consistent && placed && roundTrip && idempotent ? 0 : 6;
 }
 } // namespace
 int main(int argc, char **argv)
