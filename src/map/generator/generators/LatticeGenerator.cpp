@@ -89,7 +89,7 @@ GeneratorDefinition latticeDefinition() {
       "lattice",
       10,
       "Lattice",
-      1,
+      2,
       false,
       {{"islet-size", "Islet size", 1, 4, 1, 2, ControlGroup::Terrain},
        {"channel-width", "Channel width", 2, 4, 1, 3, ControlGroup::Terrain},

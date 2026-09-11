@@ -480,7 +480,7 @@ GeneratorDefinition fjordContinentDefinition() {
   return {"fjord-continent",
           12,
           "Fjord continent",
-          2,
+          3,
           false,
           {{"continent-size", "Continent size", 28, 40, 2, 34,
             ControlGroup::Terrain},

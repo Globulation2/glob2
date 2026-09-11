@@ -3,6 +3,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 #include "Resources.h"
 #include "Distances.h"
+#include "FertilityField.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationResult.h"
@@ -60,7 +61,14 @@ void scatterResources(Game &game, GenerationContext &context,
                       const ResourceDensities &density) {
   const int width = game.map.getW(), height = game.map.getH(),
             area = width * height;
-  auto scatter = [&](int type, int count) {
+  // Map::growResources only regrows a wheat or wood tile near water (the same triangular
+  // kernel Fertility::Field evaluates exactly) - a corn or wood clump dropped somewhere with
+  // none nearby is a one-time find that can never come back, not a farm. Computed once here,
+  // ungated: nothing has been harvested yet at this point in generation, so "reachable from an
+  // existing deposit" doesn't apply - this is the more basic question of whether the tile can
+  // regrow at all. Stone, algae and fruit don't regrow this way, so they scatter freely.
+  const Fertility::Field fertility = Fertility::forMap(game.map, false);
+  auto scatter = [&](int type, int count, bool preferFertile) {
     const int radius = count < 8 ? 1 : 2;
     const int expectedClumpSize = radius == 1 ? 5 : 12;
     const int clumps =
@@ -68,21 +76,34 @@ void scatterResources(Game &game, GenerationContext &context,
     for (int i = 0; i < clumps; ++i) {
       MapGeneratorPoint center(0, 0);
       bool found = false;
-      for (int attempt = 0; attempt < 100 && !found; ++attempt) {
-        center = {int(context.bounded("resources", width)),
-                  int(context.bounded("resources", height))};
-        found = game.map.isResourceAllowed(center.x, center.y, type);
+      std::uint32_t bestFertility = 0;
+      // Best of up to 100 random legal tiles, scored by fertility - not a fixed bar, so it
+      // never comes down to a coin flip between "no better candidate turned up in the budget"
+      // and "sacrifice this clump's density entirely". A non-fertile-sensitive type (stone,
+      // algae, fruit) scores every candidate 0, so this keeps its original behaviour of simply
+      // taking the first legal tile found.
+      for (int attempt = 0; attempt < 100; ++attempt) {
+        const MapGeneratorPoint candidate = {int(context.bounded("resources", width)),
+                                             int(context.bounded("resources", height))};
+        if (!game.map.isResourceAllowed(candidate.x, candidate.y, type))
+          continue;
+        const std::uint32_t score = preferFertile ? fertility.at(candidate.x, candidate.y) : 0;
+        if (!found || score > bestFertility) {
+          center = candidate;
+          bestFertility = score;
+          found = true;
+        }
       }
       if (found)
         placeResourceClump(game.map, context, center, type, radius);
     }
   };
-  scatter(CORN, density.corn * area / 1600);
-  scatter(WOOD, density.wood * area / 1600);
-  scatter(STONE, density.stone * area / 3000);
-  scatter(ALGA, density.algae * area / 800);
+  scatter(CORN, density.corn * area / 1600, true);
+  scatter(WOOD, density.wood * area / 1600, true);
+  scatter(STONE, density.stone * area / 3000, false);
+  scatter(ALGA, density.algae * area / 800, false);
   for (int i = 0; i < density.fruit; ++i)
-    scatter(CHERRY + context.bounded("resources", 3), 1);
+    scatter(CHERRY + context.bounded("resources", 3), 1, false);
 }
 
 void fillInResource(Map &map, GenerationContext &context,
