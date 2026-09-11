@@ -185,13 +185,14 @@ cul-de-sac.
 
 - **Grid.** The map is tiled into cells of about `cell-size` tiles on the map's own torus.
   Boundaries are chosen so the cells tile the map exactly (neighbouring cells differ in pitch by
-  at most one tile), so the maze wraps across the seam like any other boundary. At least three
+  at most one tile), so the maze wraps across the seam like any other boundary. At least two
   cells are needed in each direction.
-- **Maze and homes.** Homes are chosen first, on every other column and row and spread by
-  farthest-point selection. That spacing keeps all other cells connected and gives each home four
-  non-home neighbours. A recursive backtracker then carves a spanning tree of corridors over the
-  non-home cells, and each home is attached by exactly one corridor, so every colony starts in a
-  genuine dead end. `loopiness` knocks through extra walls between non-home cells only, so homes
+- **Maze and homes.** Homes are chosen first, by farthest-point spreading on the torus that only
+  accepts a cell if every home still has a non-home neighbour and the non-home cells stay
+  connected. The pattern depends only on the grid, so `validateRequest` checks exactly how many
+  colonies fit; each map then places it at a random offset and mirror image. A recursive
+  backtracker carves a spanning tree of passages over the non-home cells, and each home is
+  attached by exactly one passage, so every colony starts in a genuine dead end. `loopiness` knocks through extra walls between non-home cells only, so homes
   stay cul-de-sacs.
 - **Passages.** Every cell is a grass chamber and every open boundary a band of the same width
   joining two chambers, so a run of passage reads as one continuous strip of buildable,

@@ -109,55 +109,110 @@ int passageHalf(const MazeGrid &g, int channelWidth) {
   return g.minimumPitch() / 2 - kWallFootprint - channelWidth;
 }
 
-std::string validate(const GenerationRequest &r) {
-  const MazeOptions o(r);
-  const MazeGrid g = mazeGrid(1 << r.wDec, 1 << r.hDec, o.cellSize);
-  if (g.columns < 3 || g.rows < 3)
-    return "The maze needs at least three cells across and down; use a bigger map or smaller cells.";
-  if (passageHalf(g, o.channelWidth) < kMinimumPassageHalf)
-    return "Channels this wide leave too little grass in each cell; use narrower channels or "
-           "bigger cells.";
-  if (r.nbTeams > (g.columns / 2) * (g.rows / 2))
-    return "The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller "
-           "cells.";
-  return "";
+// Whether a set of home cells leaves a valid layout: every home has a non-home neighbour to open
+// its one passage into, and the non-home cells form a single connected region for the maze to
+// span.
+bool homesFit(const MazeGrid &g, const std::vector<unsigned char> &isHome) {
+  int start = -1, freeCells = 0;
+  for (int cell = 0; cell < g.cells(); ++cell) {
+    if (!isHome[cell]) {
+      ++freeCells;
+      start = cell;
+      continue;
+    }
+    bool opening = false;
+    for (int d = 0; d < 4; ++d)
+      opening |= !isHome[g.neighbour(cell, d)];
+    if (!opening)
+      return false;
+  }
+  if (!freeCells)
+    return false;
+  std::vector<unsigned char> seen(g.cells(), 0);
+  std::vector<int> stack{start};
+  seen[start] = 1;
+  int reached = 1;
+  while (!stack.empty()) {
+    const int cell = stack.back();
+    stack.pop_back();
+    for (int d = 0; d < 4; ++d) {
+      const int next = g.neighbour(cell, d);
+      if (!isHome[next] && !seen[next]) {
+        seen[next] = 1;
+        ++reached;
+        stack.push_back(next);
+      }
+    }
+  }
+  return reached == freeCells;
 }
 
-// Home candidates sit on every other column and row, so no two homes touch even diagonally.
-// That spacing is what keeps the remaining cells connected (every home is ringed by eight
-// non-home cells) and gives every home a non-home neighbour on all four sides to open its one
-// passage into. Among those candidates, homes are spread by farthest-point selection on the
-// torus.
-std::vector<int> chooseHomes(const MazeGrid &g, GenerationContext &context, int teams) {
-  const int offsetX = context.bounded("maze", g.columns);
-  const int offsetY = context.bounded("maze", g.rows);
-  std::vector<int> candidates;
-  for (int j = 0; j < g.rows / 2; ++j)
-    for (int i = 0; i < g.columns / 2; ++i)
-      candidates.push_back(((offsetY + 2 * j) % g.rows) * g.columns +
-                           (offsetX + 2 * i) % g.columns);
-  for (size_t i = candidates.size(); i > 1; --i)
-    std::swap(candidates[i - 1], candidates[context.bounded("maze", i)]);
-
+// The home cells as a pattern fixed by the grid alone, so validation checks exactly what
+// generation will do: farthest-point spreading on the torus, taking at each step the farthest
+// cell that still leaves a valid layout. Empty if the grid can't hold every colony.
+std::vector<int> homePattern(const MazeGrid &g, int teams) {
   auto distance = [&](int a, int b) {
     int dx = std::abs(g.column(a) - g.column(b)), dy = std::abs(g.row(a) - g.row(b));
     dx = std::min(dx, g.columns - dx);
     dy = std::min(dy, g.rows - dy);
     return dx * dx + dy * dy;
   };
-  std::vector<int> homes{candidates[0]};
-  std::vector<int> nearest(candidates.size());
-  for (size_t i = 0; i < candidates.size(); ++i)
-    nearest[i] = distance(candidates[i], homes[0]);
-  while (int(homes.size()) < teams) {
-    size_t best = 0;
-    for (size_t i = 1; i < candidates.size(); ++i)
-      if (nearest[i] > nearest[best])
-        best = i;
-    homes.push_back(candidates[best]);
-    for (size_t i = 0; i < candidates.size(); ++i)
-      nearest[i] = std::min(nearest[i], distance(candidates[i], candidates[best]));
+  std::vector<unsigned char> isHome(g.cells(), 0);
+  std::vector<int> homes, nearest(g.cells(), 0);
+  for (int team = 0; team < teams; ++team) {
+    std::vector<int> order;
+    for (int cell = 0; cell < g.cells(); ++cell)
+      if (!isHome[cell])
+        order.push_back(cell);
+    std::stable_sort(order.begin(), order.end(),
+                     [&](int a, int b) { return nearest[a] > nearest[b]; });
+    int chosen = -1;
+    for (int cell : order) {
+      isHome[cell] = 1;
+      if (homesFit(g, isHome)) {
+        chosen = cell;
+        break;
+      }
+      isHome[cell] = 0;
+    }
+    if (chosen < 0)
+      return {};
+    homes.push_back(chosen);
+    for (int cell = 0; cell < g.cells(); ++cell)
+      nearest[cell] = homes.size() == 1 ? distance(cell, chosen)
+                                        : std::min(nearest[cell], distance(cell, chosen));
   }
+  return homes;
+}
+
+std::string validate(const GenerationRequest &r) {
+  const MazeOptions o(r);
+  const MazeGrid g = mazeGrid(1 << r.wDec, 1 << r.hDec, o.cellSize);
+  if (g.columns < 2 || g.rows < 2)
+    return "The maze needs at least two cells across and down; use a bigger map or smaller cells.";
+  if (passageHalf(g, o.channelWidth) < kMinimumPassageHalf)
+    return "Channels this wide leave too little grass in each cell; use narrower channels or "
+           "bigger cells.";
+  if (int(homePattern(g, r.nbTeams).size()) != r.nbTeams)
+    return "The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller "
+           "cells.";
+  return "";
+}
+
+// The home pattern at a random offset and mirror image on the torus - a translation or reflection
+// of a valid layout is still valid - dealt to the colonies in random order.
+std::vector<int> chooseHomes(const MazeGrid &g, GenerationContext &context, int teams) {
+  std::vector<int> homes = homePattern(g, teams);
+  const int offsetX = context.bounded("maze", g.columns);
+  const int offsetY = context.bounded("maze", g.rows);
+  const bool mirrorX = context.bounded("maze", 2), mirrorY = context.bounded("maze", 2);
+  for (int &home : homes) {
+    const int c = mirrorX ? (g.columns - g.column(home)) % g.columns : g.column(home);
+    const int r = mirrorY ? (g.rows - g.row(home)) % g.rows : g.row(home);
+    home = ((r + offsetY) % g.rows) * g.columns + (c + offsetX) % g.columns;
+  }
+  for (size_t i = homes.size(); i > 1; --i)
+    std::swap(homes[i - 1], homes[context.bounded("maze", i)]);
   return homes;
 }
 
@@ -426,13 +481,16 @@ bool generate(Game &game, GenerationContext &context) {
   map.makeHomogenMap(WATER);
   for (int i = 0; i < teams; ++i)
     game.addTeam();
-  if (g.columns < 3 || g.rows < 3 || half < kMinimumPassageHalf ||
-      teams > (g.columns / 2) * (g.rows / 2)) {
-    context.detail = "the maze grid has too few cells or cul-de-sacs for these settings";
+  if (g.columns < 2 || g.rows < 2 || half < kMinimumPassageHalf) {
+    context.detail = "the maze grid is too small for these settings";
     return false;
   }
 
   const std::vector<int> homes = chooseHomes(g, context, teams);
+  if (int(homes.size()) != teams) {
+    context.detail = "the maze grid has too few cul-de-sacs for every colony";
+    return false;
+  }
   std::vector<unsigned char> isHome(g.cells(), 0);
   for (int home : homes)
     isHome[home] = 1;
@@ -443,7 +501,11 @@ bool generate(Game &game, GenerationContext &context) {
   }
   std::vector<int> exitOf(g.cells(), -1);
   for (int home : homes) {
-    const int d = context.bounded("maze", 4);
+    int choices[4], count = 0;
+    for (int d = 0; d < 4; ++d)
+      if (!isHome[g.neighbour(home, d)])
+        choices[count++] = d;
+    const int d = choices[context.bounded("maze", count)];
     open[g.edgeId(home, d)] = 1;
     exitOf[home] = d;
   }
@@ -566,7 +628,7 @@ GeneratorDefinition mazeDefinition() {
   return {"maze",
           11,
           "Maze",
-          8,
+          9,
           false,
           {{"cell-size", "Cell size", 24, 48, 1, 32, ControlGroup::Layout, false, false,
             {24, 32, 40, 48}},
