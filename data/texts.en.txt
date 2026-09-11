@@ -1806,3 +1806,13 @@ Lake size
 Lake connects to fjords
 [Resource islands]
 Resource islands
+[Watershed]
+Watershed
+[River density]
+River density
+[Dryness]
+Dryness
+[Fords]
+Fords
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.

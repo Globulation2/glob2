@@ -901,3 +901,8 @@
 [Lake size]
 [Lake connects to fjords]
 [Resource islands]
+[Watershed]
+[River density]
+[Dryness]
+[Fords]
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]

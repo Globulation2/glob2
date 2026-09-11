@@ -188,6 +188,7 @@ map/generator/generators/RuggedArchipelagoGenerator.cpp
 map/generator/generators/ShatteredCoastGenerator.cpp
 map/generator/generators/SwampGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
+map/generator/generators/WatershedGenerator.cpp
 map/generator/shared/Distances.cpp
 map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp
