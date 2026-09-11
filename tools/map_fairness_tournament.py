@@ -1195,7 +1195,8 @@ def command_run(args):
         if not binary.exists():
             raise SystemExit(f'error: {binary} not found; build with scons release=1 and '
                              f'scons release=1 map-generator-study')
-    ignored = ('jobs', 'verify_games', 'description', 'git_revision')
+    # Provenance and pure throughput settings, not things that change the games played.
+    ignored = ('jobs', 'verify_games', 'description', 'git_revision', 'preset_file')
     comparable = {k: v for k, v in config.items() if k not in ignored}
     previous = out / 'config.json'
     if previous.exists():
