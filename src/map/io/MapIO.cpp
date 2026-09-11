@@ -354,7 +354,10 @@ GAGCore::CooperativeTask Map::addTeamTask(void)
 	int t=oldNumberOfTeam;
 	for (int r=0; r<MAX_RESOURCES; r++)
 		for (int s=0; s<SWIM_CLASS_COUNT; s++)
+		{
 			assert(resourcesGradient[t][r][s]==NULL);
+			assert(marketResourcesGradient[t][r][s]==NULL);
+		}
 	
 	assert(exploredArea[t] == NULL);
 	exploredArea[t] = new Uint8[size];
@@ -379,6 +382,10 @@ void Map::removeTeam(void)
 		{
 			delete[] resourcesGradient[t][r][s];
 			resourcesGradient[t][r][s]=NULL;
+			delete[] marketResourcesGradient[t][r][s];
+			marketResourcesGradient[t][r][s]=NULL;
+			marketGradientDirty[t][r][s]=false;
+			marketGradientUpdated[t][r][s]=false;
 		}
 		delete[] forbiddenGradient[t][s];
 		forbiddenGradient[t][s]=NULL;
@@ -484,6 +491,15 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeEnterSection(r);
 				saveGradient(stream, resourcesGradient[t][r][sw], size);
 				stream->writeUint8(gradientUpdated[t][r][sw], "updated");
+				// The "with markets" twin is runtime state like its plain gradient:
+				// a resumed game must walk the same field it left. Its own section:
+				// the text format keys tiles by section name, and the plain
+				// gradient's tiles live in this one.
+				stream->writeEnterSection("markets");
+				saveGradient(stream, marketResourcesGradient[t][r][sw], size);
+				stream->writeUint8(marketGradientDirty[t][r][sw], "dirty");
+				stream->writeUint8(marketGradientUpdated[t][r][sw], "updated");
+				stream->writeLeaveSection();
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -555,11 +571,14 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	gradientRuntime->pipeline.visitPendingSnapshots([&](const GradientPipeline::PendingSnapshot &snapshot) {
 		int destination=-1;
 		for (int t=0; t<game->teamsCount(); ++t)
-			for (int kind=0; kind<MAX_NB_RESOURCES+2; ++kind)
+			for (int kind=0; kind<2*MAX_NB_RESOURCES+2; ++kind)
 				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
 					auto *slot=kind<MAX_NB_RESOURCES ? &resourcesGradient[t][kind][sw]
-						: kind==MAX_NB_RESOURCES ? &guardAreasGradient[t][sw] : &clearAreasGradient[t][sw];
-					if (slot==snapshot.slot) destination=(t*(MAX_NB_RESOURCES+2)+kind)*SWIM_CLASS_COUNT+sw;
+						: kind==MAX_NB_RESOURCES ? &guardAreasGradient[t][sw]
+						: kind==MAX_NB_RESOURCES+1 ? &clearAreasGradient[t][sw] : &marketResourcesGradient[t][kind-MAX_NB_RESOURCES-2][sw];
+					if (slot==snapshot.slot) destination=kind<MAX_NB_RESOURCES+2
+						? (t*(MAX_NB_RESOURCES+2)+kind)*SWIM_CLASS_COUNT+sw
+						: Team::MAX_COUNT*(MAX_NB_RESOURCES+2)*SWIM_CLASS_COUNT+(t*MAX_NB_RESOURCES+kind-MAX_NB_RESOURCES-2)*SWIM_CLASS_COUNT+sw;
 				}
 		if (destination<0) throw std::runtime_error("Unknown pending gradient destination");
 		stream->writeEnterSection(index++);
@@ -621,6 +640,14 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				stream->readEnterSection(r);
 				loadGradient(stream, resourcesGradient[t][r][sw], size, packed);
 				gradientUpdated[t][r][sw]=loadFlag(stream,"updated");
+				if (versionMinor >= FILE_FORMAT_VERSION_MARKET_GRADIENTS)
+				{
+					stream->readEnterSection("markets");
+					loadGradient(stream, marketResourcesGradient[t][r][sw], size, packed);
+					marketGradientDirty[t][r][sw]=loadFlag(stream,"dirty");
+					marketGradientUpdated[t][r][sw]=loadFlag(stream,"updated");
+					stream->readLeaveSection();
+				}
 				stream->readLeaveSection();
 			}
 			stream->readLeaveSection();
@@ -700,10 +727,15 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			stream->readEnterSection(index);
 			const unsigned destination=stream->readUint16("destination");
 			const unsigned sw=destination%SWIM_CLASS_COUNT;
-			const unsigned kind=(destination/SWIM_CLASS_COUNT)%(MAX_NB_RESOURCES+2);
-			const unsigned team=destination/(SWIM_CLASS_COUNT*(MAX_NB_RESOURCES+2));
+			const unsigned marketBase=Team::MAX_COUNT*(MAX_NB_RESOURCES+2)*SWIM_CLASS_COUNT;
+			const bool market=destination>=marketBase;
+			if (market && versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS) throw std::runtime_error("Invalid saved gradient destination");
+			const unsigned encoded=market ? destination-marketBase : destination;
+			const unsigned kinds=market ? MAX_NB_RESOURCES : MAX_NB_RESOURCES+2;
+			const unsigned kind=(encoded/SWIM_CLASS_COUNT)%kinds;
+			const unsigned team=encoded/(SWIM_CLASS_COUNT*kinds);
 			if (team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
-			auto *slot=kind<MAX_NB_RESOURCES ? &resourcesGradient[team][kind][sw]
+			auto *slot=market ? &marketResourcesGradient[team][kind][sw] : kind<MAX_NB_RESOURCES ? &resourcesGradient[team][kind][sw]
 				: kind==MAX_NB_RESOURCES ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
 			const unsigned remaining=stream->readUint8("remaining");
 			const bool superseded=loadFlag(stream,"superseded");
