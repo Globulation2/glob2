@@ -5,12 +5,18 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 using namespace GAGCore;
 using namespace GAGGUI;
 FrontendTheme* FrontendTheme::current = nullptr;
 bool FrontendTheme::allowed = true;
-namespace { const char* fontNames[] = {"menu", "standard", "little"}; }
+namespace
+{
+const char* fontNames[] = {"menu", "standard", "little"};
+// Live scopes in creation order.
+std::vector<const FrontendScope*> liveScopes;
+}
 
 FrontendTheme::FrontendTheme() : original(Style::style)
 {
@@ -27,27 +33,30 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 }
 FrontendTheme::~FrontendTheme() { current = nullptr; }
 
-FrontendScope::FrontendScope(bool enabled) : previous(Style::style), previousAllowed(FrontendTheme::allowed)
+FrontendScope::FrontendScope(bool enabled) : enabled(enabled)
 {
-	if (!FrontendTheme::current) return;
-	auto& theme = *FrontendTheme::current;
-	FrontendTheme::allowed = enabled;
-	Style::style = enabled ? &theme : theme.original;
-	for (int i=0;i<3;++i)
-	{
-		auto* font = Toolkit::getFont(fontNames[i]);
-		fonts[i] = font->getStyle();
-		font->setStyle(enabled ? Font::Style(Font::STYLE_NORMAL, theme.textColor) : theme.originalFonts[i]);
-	}
-	if (!enabled) theme.colony->pause();
+	liveScopes.push_back(this);
+	apply();
+	if (!enabled && FrontendTheme::current) FrontendTheme::current->colony->pause();
 }
 FrontendScope::~FrontendScope()
 {
+	liveScopes.erase(std::find(liveScopes.begin(), liveScopes.end(), this));
+	apply();
+	if (FrontendTheme::current) FrontendTheme::current->colony->pause();
+}
+void FrontendScope::apply()
+{
+	// With no live scope, restore the presentation the theme was created over, so
+	// teardown never finds Style::style pointing at a destroyed theme.
+	const bool anyScope = !liveScopes.empty();
+	FrontendTheme::allowed = !anyScope || liveScopes.back()->enabled;
 	if (!FrontendTheme::current) return;
-	Style::style = previous;
-	FrontendTheme::allowed = previousAllowed;
-	for (int i=0;i<3;++i) Toolkit::getFont(fontNames[i])->setStyle(fonts[i]);
-	FrontendTheme::current->colony->pause();
+	auto& theme = *FrontendTheme::current;
+	const bool themed = anyScope && liveScopes.back()->enabled;
+	Style::style = themed ? &theme : theme.original;
+	for (int i=0;i<3;++i)
+		Toolkit::getFont(fontNames[i])->setStyle(themed ? Font::Style(Font::STYLE_NORMAL, theme.textColor) : theme.originalFonts[i]);
 }
 
 void FrontendTheme::rounded(DrawableSurface* s,int x,int y,int w,int h,int r,Color c)
