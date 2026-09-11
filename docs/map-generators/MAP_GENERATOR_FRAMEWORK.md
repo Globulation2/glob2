@@ -37,16 +37,16 @@ reused after a generator is retired.
 | `fjord-continent` | 12 | Fjord continent | Its own — see below |
 | `shattered-coast` | 7 | Old random | Iterative water/sand/grass balancer, own resource search |
 | `isles` | 6 | Isles | Point dispersion; islands linked by land bridges |
+| `watershed` | 13 | Watershed | Its own — see below |
+| `stone-highlands` | 14 | Stone highlands | Its own — see below |
+| `symmetric-arena` | 15 | Symmetric arena | Its own — see below |
+| `ring-world` | 16 | Ring world | Its own — see below |
 | `rugged-archipelago` | 8 | Old islands | Island growth + beach passes, own resource search |
 | `concrete-islands` | 5 | Concrete islands | Point dispersion; islands linked by channels |
 | `crater-lakes` | 4 | Crater lakes | Height-field noise; round lakes in otherwise connected land |
 | `islands` | 3 | Islands | Height-field noise; organic islands with no inter-island passage |
 | `swamp` | 1 | Swamp | Height-field noise; water interleaved with land |
 | `river` | 2 | River | Height-field noise; a winding river through connected land |
-| `watershed` | 13 | Watershed | Its own — see below |
-| `stone-highlands` | 14 | Stone highlands | Its own — see below |
-| `symmetric-arena` | 15 | Symmetric arena | Its own — see below |
-| `ring-world` | 16 | Ring world | Its own — see below |
 | `uniform` | 0 | uniform terrain | Editor-only; one terrain type, unstructured |
 
 Swamp, River, Islands and Crater Lakes ("the height-field generators") shape their terrain and

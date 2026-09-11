@@ -76,10 +76,10 @@ const GeneratorRegistry &GeneratorRegistry::builtins() {
   // identifiers and do not determine presentation order.
   static const GeneratorRegistry registry(
       {contestedCommonsDefinition(), mazeDefinition(), fjordContinentDefinition(),
-       shatteredCoastDefinition(), islesDefinition(),
-       ruggedArchipelagoDefinition(), concreteIslandsDefinition(),
-       craterLakesDefinition(), islandsDefinition(), swampDefinition(),
-       riverDefinition(), watershedDefinition(), stoneHighlandsDefinition(),
-       symmetricArenaDefinition(), ringWorldDefinition(), uniformDefinition()});
+       shatteredCoastDefinition(), islesDefinition(), watershedDefinition(),
+       stoneHighlandsDefinition(), symmetricArenaDefinition(),
+       ringWorldDefinition(), ruggedArchipelagoDefinition(),
+       concreteIslandsDefinition(), craterLakesDefinition(), islandsDefinition(),
+       swampDefinition(), riverDefinition(), uniformDefinition()});
   return registry;
 }
