@@ -1,4 +1,5 @@
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart}=require('./main-menu');
+const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
@@ -323,6 +324,19 @@ test('a generated custom map loads after its setup screen closes', async ({page}
   await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(25);
   expect(await previews()).toEqual([]); // Removed once loading no longer needs it.
   expect(errors).toEqual([]);
+});
+
+test('the custom game preview draws the selected map', async ({page}) => {
+  await clickMainMenu(page, 'custom');
+  await screen(page, 'CustomGameScreen');
+  // Mirrors CustomGameScreen::renderMap()'s preview square on the Map tab.
+  const {width, height} = page.viewportSize();
+  const w = Math.min(width - 32, 1120), leftW = w < 800 ? 280 : Math.floor(w * 46 / 100);
+  const rightX = Math.floor((width - w) / 2) + leftW + 24, rightW = w - leftW - 24;
+  const size = Math.min(rightW, height - 181 - 126);
+  const clip = {x: rightX + Math.floor((rightW - size) / 2), y: 179, width: size, height: size};
+  // A fresh profile previews FourSquares1: water and grass, not a flat panel.
+  await expect.poll(() => darkShare(page, clip)).toBeGreaterThan(0.25);
 });
 
 test('cancelling an editor replacement preserves edits and a completed load replaces the map', async ({page}) => {

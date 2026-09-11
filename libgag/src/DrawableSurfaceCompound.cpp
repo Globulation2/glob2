@@ -285,7 +285,23 @@ namespace GAGCore
 
 	void DrawableSurface::drawSurface(int x, int y, int w, int h, DrawableSurface *surface, int sx, int sy, int sw, int sh,  Uint8 alpha)
 	{
-		// TODO : Implement
+		if ((w <= 0) || (h <= 0) || (sw <= 0) || (sh <= 0))
+			return;
+		if ((w == sw) && (h == sh))
+		{
+			drawSurface(x, y, surface, sx, sy, sw, sh, alpha);
+			return;
+		}
+		// Stretch nearest-neighbour, as the GPU path samples. SDL clips to
+		// clipRect and blends the source's per-pixel alpha, modulated by alpha.
+		SDL_Rect sr = {sx, sy, sw, sh};
+		SDL_Rect dr = {x, y, w, h};
+		if (alpha != Color::ALPHA_OPAQUE)
+			SDL_SetSurfaceAlphaMod(surface->sdlsurface, alpha);
+		SDL_BlitScaled(surface->sdlsurface, &sr, sdlsurface, &dr);
+		if (alpha != Color::ALPHA_OPAQUE)
+			SDL_SetSurfaceAlphaMod(surface->sdlsurface, Color::ALPHA_OPAQUE);
+		dirty = true;
 	}
 
 	void DrawableSurface::drawSurface(float x, float y, float w, float h, DrawableSurface *surface, int sx, int sy, int sw, int sh, Uint8 alpha)
