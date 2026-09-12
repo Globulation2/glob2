@@ -107,8 +107,6 @@ bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int re
 			unitWalkLevelScrollBox->setValues(&view.selectedUnit->level[WALK]);
 			unitSwimLevelLabel->setValues(&view.selectedUnit->level[SWIM]);
 			unitSwimLevelScrollBox->setValues(&view.selectedUnit->level[SWIM]);
-			unitHarvestLevelLabel->setValues(&view.selectedUnit->level[HARVEST]);
-			unitHarvestLevelScrollBox->setValues(&view.selectedUnit->level[HARVEST]);
 			unitBuildLevelLabel->setValues(&view.selectedUnit->level[BUILD]);
 			unitBuildLevelScrollBox->setValues(&view.selectedUnit->level[BUILD]);
 			unitAttackSpeedLevelLabel->setValues(&view.selectedUnit->level[ATTACK_SPEED]);
@@ -127,11 +125,6 @@ bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int re
 			{
 				unitSwimLevelLabel->disable();
 				unitSwimLevelScrollBox->disable();
-			}
-			if(!view.selectedUnit->canLearn[HARVEST])
-			{
-				unitHarvestLevelLabel->disable();
-				unitHarvestLevelScrollBox->disable();
 			}
 			if(!view.selectedUnit->canLearn[BUILD])
 			{
@@ -163,13 +156,12 @@ bool MapEdit::performUnitAction(const std::string& action, int relMouseX, int re
 	{
 		refreshSelectedUnitPerformance(SWIM);
 	}
-	else if(action=="update unit harvest level")
-	{
-		refreshSelectedUnitPerformance(HARVEST);
-	}
 	else if(action=="update unit build level")
 	{
-		refreshSelectedUnitPerformance(BUILD);
+		// One worker level: the build box drives harvest as well.
+		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
+		u->setWorkerLevel(u->level[BUILD]);
+		hasMapBeenModified = true;
 	}
 	else if(action=="update unit attack speed level")
 	{

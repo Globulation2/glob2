@@ -680,6 +680,13 @@ if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
     hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
     local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))
 
+# Which workers a building may hire: completed buildings take any worker,
+# construction and upgrade sites keep the schooling-level gate.
+if not env['server'] and 'level-gate-test' in COMMAND_LINE_TARGETS:
+    level_gate_sources = [source for source in source_files if source != 'Glob2.cpp']
+    level_gate_sources += local.Object('LevelGateHarness.o', '#test/LevelGateHarness.cpp')
+    local.Alias('level-gate-test', local.Program('LevelGateHarness', level_gate_sources))
+
 if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_sources = [source for source in source_files if source != 'Glob2.cpp']
     custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')
