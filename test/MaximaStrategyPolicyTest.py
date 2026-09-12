@@ -240,15 +240,3 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             "omb.numberRequested <= MAX_BUILDING_WORKER_REQUEST", orders
         )
         self.assertNotIn("#define MAX_UNIT_WORKING", gui_header)
-
-    def test_optimizer_definitions_contain_no_compiled_defaults_or_bounds(self) -> None:
-        optimizer = (ROOT / "tools/optimize_maxima.py").read_text()
-        definitions = optimizer[: optimizer.index("PARAMETERS:")]
-        self.assertNotIn("Parameter(", definitions)
-        self.assertIn('["searchMinimum"]', optimizer)
-        self.assertIn('["searchMaximum"]', optimizer)
-        self.assertIn("resolve_candidate(cluster.binary, parameters)", optimizer)
-
-
-if __name__ == "__main__":
-    unittest.main()

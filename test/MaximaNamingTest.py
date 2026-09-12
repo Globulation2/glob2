@@ -10,15 +10,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class MaximaNamingTest(unittest.TestCase):
     def test_ui_uses_dedicated_name_and_description_keys(self) -> None:
-        names = (ROOT / "src/AINames.cpp").read_text()
+        names = (ROOT / "src/ai/AINames.cpp").read_text()
         keys = (ROOT / "data/texts.keys.txt").read_text().splitlines()
         english = (ROOT / "data/texts.en.txt").read_text()
-        self.assertIn('case AI::MAXIMA: sAi="[AIMaxima]"', names)
-        self.assertIn('case AI::MAXIMA: sAi="[AIMaxima-Description]"', names)
+        # One table row drives the CLI name and both localized keys.
+        self.assertRegex(names, r'\{AI::MAXIMA,\s*"maxima",\s*"AIMaxima"')
         self.assertIn("[AIMaxima]", keys)
         self.assertIn("[AIMaxima-Description]", keys)
         self.assertIn("[AIMaxima]\nMaxima\n", english)
-        self.assertIn("[AIMaxima-Description]\nMaxima develops", english)
+        self.assertIn("[AIMaxima-Description]\nAn adaptive AI", english)
 
     def test_configuration_and_build_paths_are_renamed(self) -> None:
         self.assertTrue((ROOT / "data/maxima/base.strategy").is_file())
@@ -29,8 +29,6 @@ class MaximaNamingTest(unittest.TestCase):
                 "SConstruct",
                 "src/SConscript",
                 "test/SConstruct",
-                "glob2.vcproj",
-                "glob2.vcxproj",
             )
         )
         self.assertIn("AIMaxima.cpp", manifests)
@@ -60,12 +58,10 @@ class MaximaNamingTest(unittest.TestCase):
         active = "\n".join(
             (ROOT / path).read_text()
             for path in (
-                "src/AI.h",
-                "src/AI.cpp",
-                "src/AINames.cpp",
+                "src/ai/AI.h",
+                "src/ai/AI.cpp",
+                "src/ai/AINames.cpp",
                 "src/SConscript",
-                "glob2.vcproj",
-                "glob2.vcxproj",
             )
         )
         self.assertNotIn("AINicowarV2", active)

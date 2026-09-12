@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1735,
-      "sha256": "3d48e7b954580e386968efcf70782c0703fa2c2d14fb11fd66c6b41f8ba4b21e",
+      "tokens": 1714,
+      "sha256": "77f8a14476751a03023849cd08a430fec3163a1aec02c6b5dc2931c22fea2be9",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",

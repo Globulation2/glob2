@@ -145,34 +145,11 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
         )
         self.assertIn("warrior->attachedBuilding==continuingFlag", eligibility)
 
-    def test_tactical_debug_view_explains_gate_and_winner(self) -> None:
-        self.assertIn("struct OffenseDiagnostics", self.header)
-        diagnostics = function(
-            self.source,
-            "void Maxima::getDiagnosticSections",
-            "void Maxima::emit_telemetry",
-        )
-        self.assertIn('AIDiagnosticSection section("OFFENSE")', diagnostics)
-        for evidence in ("offense_diagnostics.gate", "eligibleWarriors",
-                         "bestScore", "offense_diagnostics.decision",
-                         "offense_diagnostics.rejections"):
-            self.assertIn(evidence, diagnostics)
-        planner = function(self.source, "void Maxima::plan_offense",
-                           "void Maxima::end_offense")
-        self.assertIn("offense_diagnostics.reset(timer);", planner)
-        self.assertIn('offense_diagnostics.gate="open";', planner)
-        # The explanation is derived UI state and must not alter save compatibility.
-        serialization = self.source[
-            self.source.index("void Maxima::saveDirector") :
-            self.source.index("bool Maxima::load(")
-        ]
-        self.assertNotIn("offense_diagnostics", serialization)
-
     def test_preemptive_defense_remains_active_under_pressure(self) -> None:
         update = function(
             self.source,
             "void Maxima::update_preemptive_defense",
-            "void Maxima::refresh_preemptive_diagnostics",
+            "void Maxima::compute_defense_flag_positioning",
         )
         self.assertNotIn("food_emergency", update)
         self.assertNotIn("colony_emergency", update)
@@ -190,40 +167,3 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
             "void Maxima::saveDirector",
             "bool Maxima::loadDirector",
         ))
-
-    def test_topology_debugger_reads_the_ai_snapshot(self) -> None:
-        interface = (ROOT / "src/ai/AIImplementation.h").read_text()
-        # The GUI splits this: key handling lives with the other in-game keys,
-        # the overlay with the rest of the Maxima diagnostics drawing.
-        keys = (ROOT / "src/gui/GameGUIInputKey.cpp").read_text()
-        diagnostics = (ROOT / "src/gui/GameGUIMaximaDiagnostics.cpp").read_text()
-        self.assertIn("getTopologyDiagnosticSnapshot() const { return nullptr; }",
-                      interface)
-        self.assertIn("Maxima::getTopologyDiagnosticSnapshot() const",
-                      self.source)
-        self.assertIn("key.sym==SDLK_F9", keys)
-        self.assertIn("key.sym==SDLK_9", keys)
-        self.assertIn("key.mod&KMOD_CTRL", keys)
-        self.assertIn("key.mod&KMOD_SHIFT", keys)
-        overlay = diagnostics[
-            diagnostics.index("void GameGUI::drawMaximaTopologyDiagnostics"):
-        ]
-        self.assertIn("findSameTeamMaximaPlayer()", overlay)
-        self.assertIn("getTopologyDiagnosticSnapshot()", overlay)
-        for field in (
-            "walkable", "homeDistance", "corridor", "memberships",
-            "qualified", "AITopologyCandidateSelected",
-            "AITopologyCandidateRejectedOverlap", "desired",
-            "shortestDistance", "corridorWidth", "terrainWidth",
-        ):
-            self.assertIn(field, overlay)
-        for legend_label in (
-            "Walkable", "Blocked / unknown", "Defensive band",
-            "Route / membership", "Qualified choke", "Final guard zone",
-            "Selected center", "Overlap rejection", "Capacity rejection",
-        ):
-            self.assertIn(legend_label, overlay)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -347,16 +347,18 @@ class MaximaStrategyConfigTest(unittest.TestCase):
 
     def test_player_override_changes_only_the_focal_maxima(self) -> None:
         result = self.run_binary(
-            "-nicowar-2v2-match-nox", "maps/FourSquares1.map", "123",
-            "7", "5", "0", "0", "1",
-            "--maxima-player-overrides", "0", "farming.enabled=false",
+            "-test-games-nox", "1", "--map", "SmallForTwo",
+            "--matchup", "maxima,maxima",
+            "--maxima-player-overrides", "1", "farming.enabled=false",
         )
         lines = [line for line in result.stderr.splitlines()
                  if line.startswith("Maxima strategy:")]
-        focal = next(line for line in lines if "player=0 team=0" in line)
-        teammate = next(line for line in lines if "player=1 team=1" in line)
-        self.assertIn("farming.enabled=false", focal)
-        self.assertIn("farming.enabled=true", teammate)
+        self.assertEqual(2, len(lines), lines)
+        overridden = [line for line in lines if "farming.enabled=false" in line]
+        untouched = [line for line in lines if "farming.enabled=true" in line]
+        self.assertEqual(1, len(overridden), lines)
+        self.assertEqual(1, len(untouched), lines)
+        self.assertIn("player=1 ", overridden[0])
 
     def test_empty_sparse_layer_and_bool_are_accepted(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
