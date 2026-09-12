@@ -1912,6 +1912,26 @@ Geunioù
 Os pântanos precisam de pelo menos uma colônia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Re a drevadennoù evit ar gartenn-mañ; implijit ur gartenn vrasoc'h pe nebeutoc'h a drevadennoù.
+[Spider web]
+Gwiad-kevnid
+[Spokes per colony]
+Skinoù dre drevadenn
+[Ring spacing]
+Esaouenn etre ar c'helc'hioù
+[Thread width]
+Ledander an neudennoù
+[Sag]
+Distegnadur
+[Torn strands]
+Neudennoù freget
+[Hub size]
+Ment ar c'hreiz
+[Dew drops]
+Takennoù glizh
+[Spiral]
+Troellenn
+[Spider webs need at least one colony.]
+Ezhomm en deus ur gwiad-kevnid eus un drevadenn da vihanañ.
 [Sandbars]
 Bancos de areia
 [Tide pools]

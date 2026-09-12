@@ -557,9 +557,7 @@ bool generate(Game &game, GenerationContext &context)
 					  /*stone=*/int(scaledCount(10, options.stone)), /*algae=*/0,
 					  /*fruit=*/int(scaledCount(3, options.fruit))});
 	seedAlgae(map, context, t, "resources", options.algae, AlgaeBand::shallows(2, 5));
-	clearAroundSwarms(map, context, t);
-	guaranteeStartingResources(game, context, 24, 32, 6);
-	clearAroundSwarms(map, context, t);
+	secureStartingCrops(game, context, t, 24, 32, 6);
 	// The scatter above is sized by the resource amounts, and at the top of their range it can wall
 	// a colony into its own clearing with nowhere to build; the reopened colony is cleared again.
 	if (reopenCrampedStarts(game, context,

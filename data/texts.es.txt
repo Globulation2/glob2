@@ -1916,6 +1916,26 @@ Ciénagas
 El pantanal necesita al menos una colonia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Demasiadas colonias para este mapa; usa un mapa más grande o menos colonias.
+[Spider web]
+Telaraña
+[Spokes per colony]
+Radios por colonia
+[Ring spacing]
+Separación de anillos
+[Thread width]
+Ancho de los hilos
+[Sag]
+Caída
+[Torn strands]
+Hilos rotos
+[Hub size]
+Tamaño del centro
+[Dew drops]
+Gotas de rocío
+[Spiral]
+Espiral
+[Spider webs need at least one colony.]
+Las telarañas necesitan al menos una colonia.
 [Sandbars]
 Bancos de arena
 [Tide pools]

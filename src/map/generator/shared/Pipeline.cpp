@@ -2,6 +2,7 @@
 #include "Pipeline.h"
 #include "Game.h"
 #include "GenerationContext.h"
+#include "Planting.h"
 #include "Resources.h"
 namespace MapGeneration
 {
@@ -14,6 +15,14 @@ bool reopenCrampedStarts(Game &game, GenerationContext &context, const ResourceA
 	openCrampedStarts(game, context, 16, 24, protectedWalls);
 	guaranteeStartingResources(game, context, wheatRange, woodRange, clearRadius, protectedWalls);
 	return true;
+}
+
+void secureStartingCrops(Game &game, GenerationContext &context, const Torus &t, int wheatRange,
+						 int woodRange, int clearRadius, const std::vector<unsigned char> *keep)
+{
+	clearAroundSwarms(game.map, context, t, keep);
+	guaranteeStartingResources(game, context, wheatRange, woodRange, clearRadius, keep);
+	clearAroundSwarms(game.map, context, t, keep);
 }
 
 ColonyWalk walkFromFirstColony(const Map &map, int teams, const std::string &ground,

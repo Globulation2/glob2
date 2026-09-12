@@ -1916,6 +1916,26 @@ Rimmet
 Suomaat tarvitsevat vähintään yhden siirtokunnan.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Liikaa siirtokuntia tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
+[Spider web]
+Hämähäkinseitti
+[Spokes per colony]
+Puolia siirtokuntaa kohden
+[Ring spacing]
+Renkaiden väli
+[Thread width]
+Lankojen leveys
+[Sag]
+Riippuma
+[Torn strands]
+Katkenneet langat
+[Hub size]
+Keskustan koko
+[Dew drops]
+Kastepisarat
+[Spiral]
+Spiraali
+[Spider webs need at least one colony.]
+Hämähäkinseitti tarvitsee vähintään yhden siirtokunnan.
 [Sandbars]
 Hiekkasärkät
 [Tide pools]

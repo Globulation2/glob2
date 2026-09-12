@@ -1926,6 +1926,26 @@ Zingirak
 Zingirek gutxienez kolonia bat behar dute.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Kolonia gehiegi mapa honetarako; erabili mapa handiagoa edo kolonia gutxiago.
+[Spider web]
+Armiarma-sarea
+[Spokes per colony]
+Erradioak koloniako
+[Ring spacing]
+Eraztunen arteko tartea
+[Thread width]
+Harien zabalera
+[Sag]
+Makurdura
+[Torn strands]
+Hari hautsiak
+[Hub size]
+Erdiko gunearen tamaina
+[Dew drops]
+Ihintz-tantak
+[Spiral]
+Espirala
+[Spider webs need at least one colony.]
+Armiarma-sareak gutxienez kolonia bat behar du.
 [Sandbars]
 Hondar-bankuak
 [Tide pools]

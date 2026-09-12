@@ -1914,6 +1914,26 @@ Marĉkanaloj
 Marĉoj bezonas almenaŭ unu kolonion.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Tro da kolonioj por ĉi tiu mapo; uzu pli grandan mapon aŭ malpli da kolonioj.
+[Spider web]
+Araneaĵo
+[Spokes per colony]
+Radioj po kolonio
+[Ring spacing]
+Interspaco de ringoj
+[Thread width]
+Larĝo de fadenoj
+[Sag]
+Pendiĝo
+[Torn strands]
+Ŝiritaj fadenoj
+[Hub size]
+Grando de la centro
+[Dew drops]
+Rosoguttoj
+[Spiral]
+Spiralo
+[Spider webs need at least one colony.]
+Araneaĵo bezonas almenaŭ unu kolonion.
 [Sandbars]
 Sablobenkoj
 [Tide pools]

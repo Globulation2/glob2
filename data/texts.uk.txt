@@ -1912,6 +1912,26 @@ OpenGL недоступний у цій збірці.
 Болотам потрібна хоча б одна колонія.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Забагато колоній для цієї мапи; використайте більшу мапу або менше колоній.
+[Spider web]
+Павутина
+[Spokes per colony]
+Променів на колонію
+[Ring spacing]
+Крок кілець
+[Thread width]
+Ширина ниток
+[Sag]
+Провисання
+[Torn strands]
+Розірвані нитки
+[Hub size]
+Розмір центру
+[Dew drops]
+Краплі роси
+[Spiral]
+Спіраль
+[Spider webs need at least one colony.]
+Для павутини потрібна принаймні одна колонія.
 [Sandbars]
 Піщані банки
 [Tide pools]

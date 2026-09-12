@@ -1912,6 +1912,26 @@ Rawa-rawa
 Rawa-rawa membutuhkan setidaknya satu koloni.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Terlalu banyak koloni untuk peta ini; gunakan peta lebih besar atau lebih sedikit koloni.
+[Spider web]
+Jaring laba-laba
+[Spokes per colony]
+Jari-jari per koloni
+[Ring spacing]
+Jarak cincin
+[Thread width]
+Lebar benang
+[Sag]
+Kelenturan
+[Torn strands]
+Benang putus
+[Hub size]
+Ukuran pusat
+[Dew drops]
+Tetes embun
+[Spiral]
+Spiral
+[Spider webs need at least one colony.]
+Jaring laba-laba memerlukan setidaknya satu koloni.
 [Sandbars]
 Gosong pasir
 [Tide pools]

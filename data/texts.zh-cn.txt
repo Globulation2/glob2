@@ -1912,6 +1912,26 @@ OpenGL 在此版本中不可用。
 沼泽地至少需要一个殖民地。
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 此地图的殖民地太多；请使用更大的地图或减少殖民地。
+[Spider web]
+蜘蛛网
+[Spokes per colony]
+每个殖民地的辐射线
+[Ring spacing]
+环间距
+[Thread width]
+丝线宽度
+[Sag]
+下垂
+[Torn strands]
+断丝
+[Hub size]
+中心大小
+[Dew drops]
+露珠
+[Spiral]
+螺旋
+[Spider webs need at least one colony.]
+蜘蛛网至少需要一个殖民地。
 [Sandbars]
 沙洲
 [Tide pools]

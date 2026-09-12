@@ -320,16 +320,11 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context)
 		{ return L.clearingOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
 		const double a =
 			std::atan2(double(t.offsetY(L.cy, home.y)), double(t.offsetX(L.cx, home.x)));
-		const auto at = [&](double along, double across, int within)
-		{
-			return KitSeed{home.x + int(std::lround(along * std::cos(a) - across * std::sin(a))),
-						   home.y + int(std::lround(along * std::sin(a) + across * std::cos(a))),
-						   within};
-		};
+		const KitFrame frame{home.x, home.y, a};
 		const double beside = L.g.pond * 1.3 + 3;
 		plantKit(map, t, context,
-				 {at(0, -beside, 10), at(0, beside, 10), at(-(L.g.clearing - 4), 0, 8), kHomeWheat,
-				  kHomeWood, 2},
+				 {frame.at(0, -beside, 10), frame.at(0, beside, 10),
+				  frame.at(-(L.g.clearing - 4), 0, 8), kHomeWheat, kHomeWood, 2},
 				 eligible);
 	}
 }
@@ -360,40 +355,23 @@ void stockSwamp(Map &map, const Layout &L, GenerationContext &context, const Eve
 	const int area = int(ground.size());
 	const int wood = int(scaledCount(std::int64_t(area) * kWoodShare / 100, o.wood));
 	const int wheat = int(scaledCount(std::int64_t(area) * kWheatShare / 100, o.wheat));
-	const int total = std::min(area, wood + wheat);
-	std::vector<int> chosen;
-	for (int k = 0; k < total; ++k)
-		chosen.push_back(byPatch[k].second);
-	std::stable_sort(
-		chosen.begin(), chosen.end(), [&](int p, int q)
-		{ return split.uiLevel(p % t.w, p / t.w, 2048) < split.uiLevel(q % t.w, q / t.w, 2048); });
-	const int wheatShare = int(std::int64_t(total) * wheat / std::max(1, wood + wheat));
-	for (int k = 0; k < total; ++k)
-		map.setResource(chosen[k] % t.w, chosen[k] / t.w, k < wheatShare ? CORN : WOOD, 1);
-	const int outcrops = int(scaledCount(std::max(2, area / 1000), o.stone));
-	for (int k = 0; k < outcrops; ++k)
-		for (int attempt = 0; attempt < 100; ++attempt)
-		{
-			const int at = ground[context.bounded("glades-stone", ground.size())];
-			if (eligible(at))
-			{
-				placeResourceClump(map, context, {at % t.w, at / t.w}, STONE,
-								   1 + int(context.bounded("glades-stone", 2)));
-				break;
-			}
-		}
-	const int groves = int(scaledCount(std::max(3, area / 1500), o.fruit));
-	for (int k = 0; k < groves; ++k)
-		for (int attempt = 0; attempt < 100; ++attempt)
-		{
-			const int at = ground[context.bounded("glades-fruit", ground.size())];
-			if (eligible(at))
-			{
-				placeResourceClump(map, context, {at % t.w, at / t.w},
-								   CHERRY + int(context.bounded("glades-fruit", 3)), 2);
-				break;
-			}
-		}
+	std::vector<int> byDensity;
+	for (const auto &entry : byPatch)
+		byDensity.push_back(entry.second);
+	plantFields(map, t, byDensity, wheat, wood,
+				[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
+	scatterClumps(context, t, ground, int(scaledCount(std::max(2, area / 1000), o.stone)),
+				  "glades-stone", eligible,
+				  [&](MapGeneratorPoint p) {
+					  placeResourceClump(map, context, p, STONE,
+										 1 + int(context.bounded("glades-stone", 2)));
+				  });
+	scatterClumps(context, t, ground, int(scaledCount(std::max(3, area / 1500), o.fruit)),
+				  "glades-fruit", eligible,
+				  [&](MapGeneratorPoint p) {
+					  placeResourceClump(map, context, p,
+										 CHERRY + int(context.bounded("glades-fruit", 3)), 2);
+				  });
 }
 
 // Every colony must be able to walk to colony 0 at the start. Where the swamp or the sloughs box
@@ -545,9 +523,7 @@ bool generate(Game &game, GenerationContext &context)
 	furnishHomes(map, L, context);
 	stockSwamp(map, L, context, o);
 	seedAlgae(map, context, t, "glades-algae", o.algae, AlgaeBand::anyWater());
-	clearAroundSwarms(map, context, t);
-	guaranteeStartingResources(game, context, 24, 32, 0);
-	clearAroundSwarms(map, context, t);
+	secureStartingCrops(game, context, t);
 	context.stage = "glades routes";
 	openRoutes(game, L, context);
 	return true;

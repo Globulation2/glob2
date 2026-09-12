@@ -1914,6 +1914,26 @@ OpenGL غير متوفر في هذا الإصدار.
 تحتاج المستنقعات إلى مستعمرة واحدة على الأقل.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 عدد المستعمرات كبير جدًا لهذه الخريطة؛ استخدم خريطة أكبر أو مستعمرات أقل.
+[Spider web]
+شبكة العنكبوت
+[Spokes per colony]
+أشعة لكل مستعمرة
+[Ring spacing]
+تباعد الحلقات
+[Thread width]
+عرض الخيوط
+[Sag]
+الارتخاء
+[Torn strands]
+خيوط ممزقة
+[Hub size]
+حجم المركز
+[Dew drops]
+قطرات الندى
+[Spiral]
+حلزوني
+[Spider webs need at least one colony.]
+تحتاج شبكة العنكبوت إلى مستعمرة واحدة على الأقل.
 [Sandbars]
 الحواجز الرملية
 [Tide pools]

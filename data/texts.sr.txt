@@ -1916,6 +1916,26 @@ OpenGL није доступан у овој верзији.
 Мочварама треба бар једна колонија.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Превише колонија за ову мапу; користите већу мапу или мање колонија.
+[Spider web]
+Паукова мрежа
+[Spokes per colony]
+Жбица по колонији
+[Ring spacing]
+Размак прстенова
+[Thread width]
+Ширина нити
+[Sag]
+Угиб
+[Torn strands]
+Покидане нити
+[Hub size]
+Величина средишта
+[Dew drops]
+Капи росе
+[Spiral]
+Спирала
+[Spider webs need at least one colony.]
+Паукова мрежа захтева бар једну колонију.
 [Sandbars]
 Пешчани спрудови
 [Tide pools]

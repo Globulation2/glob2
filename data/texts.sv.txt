@@ -1926,6 +1926,26 @@ Sumpkanaler
 Sumpmarker kräver minst en koloni.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 För många kolonier för den här kartan; använd en större karta eller färre kolonier.
+[Spider web]
+Spindelnät
+[Spokes per colony]
+Ekrar per koloni
+[Ring spacing]
+Ringavstånd
+[Thread width]
+Trådbredd
+[Sag]
+Nedhäng
+[Torn strands]
+Trasiga trådar
+[Hub size]
+Navstorlek
+[Dew drops]
+Daggdroppar
+[Spiral]
+Spiral
+[Spider webs need at least one colony.]
+Spindelnät behöver minst en koloni.
 [Sandbars]
 Sandbankar
 [Tide pools]

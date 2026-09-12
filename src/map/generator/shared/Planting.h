@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "GenerationContext.h"
 #include "Grid.h"
 #include "Map.h"
 #include "Resources.h"
 #include "Sketch.h"
+#include <algorithm>
 #include <climits>
+#include <cmath>
+#include <cstdint>
 #include <vector>
 struct GenerationContext;
 namespace MapGeneration
@@ -96,6 +100,62 @@ void plantKit(Map &map, const Torus &t, GenerationContext &context, const Kit &k
 		seed >= 0)
 		placeResourceClump(map, context, MapGeneratorPoint(seed % t.w, seed / t.w), STONE,
 						   kit.stoneRadius);
+}
+
+/// A home's own frame for laying out its kit: an origin and a facing, so a kit designed once as
+/// offsets along and across the facing lands the same way round every home.
+struct KitFrame
+{
+	int x, y;
+	double angle;
+	/// The seed `along` tiles down the facing and `across` tiles to its left, searched `within`.
+	KitSeed at(double along, double across, int within) const
+	{
+		return KitSeed{x + int(std::lround(along * std::cos(angle) - across * std::sin(angle))),
+					   y + int(std::lround(along * std::sin(angle) + across * std::cos(angle))),
+					   within};
+	}
+};
+
+/// Farmland on chosen ground: the first `wheat` + `wood` of `tiles` (already in order of
+/// preference, most fertile first, say) are taken, then ordered by `splitKey(tile)` and dealt
+/// wheat first, in proportion. Splitting by a field unrelated to the preference makes the two
+/// crops form separate patches rather than rings sorted by fertility.
+template <typename SplitKey>
+void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, int wood,
+				 SplitKey splitKey)
+{
+	const int total = std::min(int(tiles.size()), wheat + wood);
+	if (total <= 0)
+		return;
+	tiles.resize(total);
+	std::stable_sort(tiles.begin(), tiles.end(),
+					 [&](int a, int b) { return splitKey(a) < splitKey(b); });
+	const int wheatShare = int(std::int64_t(total) * wheat / std::max(1, wheat + wood));
+	for (int k = 0; k < total; ++k)
+		map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheatShare ? CORN : WOOD, 1);
+}
+
+/// `count` clumps dropped on random tiles of `ground`: for each, up to `attempts` tiles are drawn
+/// from `stream` and the first `eligible` one gets `place(point)`, which places the clump and may
+/// draw its type and size from the same stream. Returns how many were placed.
+template <typename Eligible, typename Place>
+int scatterClumps(GenerationContext &context, const Torus &t, const std::vector<int> &ground,
+				  int count, const char *stream, Eligible eligible, Place place, int attempts = 100)
+{
+	int placed = 0;
+	for (int k = 0; k < count && !ground.empty(); ++k)
+		for (int attempt = 0; attempt < attempts; ++attempt)
+		{
+			const int at = ground[context.bounded(stream, std::uint32_t(ground.size()))];
+			if (eligible(at))
+			{
+				place(MapGeneratorPoint(at % t.w, at / t.w));
+				++placed;
+				break;
+			}
+		}
+	return placed;
 }
 
 /// A mask of the tiles within `clearance` of every colony's swarm footprint: the ground a kit

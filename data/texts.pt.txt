@@ -1922,6 +1922,26 @@ Charcos
 Os pântanos precisam de pelo menos uma colónia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Colónias a mais para este mapa; use um mapa maior ou menos colónias.
+[Spider web]
+Teia de aranha
+[Spokes per colony]
+Raios por colónia
+[Ring spacing]
+Espaçamento dos anéis
+[Thread width]
+Largura dos fios
+[Sag]
+Flacidez
+[Torn strands]
+Fios rompidos
+[Hub size]
+Tamanho do centro
+[Dew drops]
+Gotas de orvalho
+[Spiral]
+Espiral
+[Spider webs need at least one colony.]
+As teias de aranha precisam de pelo menos uma colónia.
 [Sandbars]
 Bancos de areia
 [Tide pools]

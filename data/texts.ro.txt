@@ -1916,6 +1916,26 @@ Mlaștini
 Mlaștinile au nevoie de cel puțin o colonie.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Prea multe colonii pentru această hartă; folosește o hartă mai mare sau mai puține colonii.
+[Spider web]
+Pânză de păianjen
+[Spokes per colony]
+Raze per colonie
+[Ring spacing]
+Distanța dintre inele
+[Thread width]
+Lățimea firelor
+[Sag]
+Lăsare
+[Torn strands]
+Fire rupte
+[Hub size]
+Mărimea centrului
+[Dew drops]
+Picături de rouă
+[Spiral]
+Spirală
+[Spider webs need at least one colony.]
+Pânza de păianjen are nevoie de cel puțin o colonie.
 [Sandbars]
 Bancuri de nisip
 [Tide pools]

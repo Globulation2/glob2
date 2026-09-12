@@ -1912,6 +1912,26 @@ Globulation 2 커서를 표시합니다.
 습지대에는 최소 한 개의 식민지가 필요합니다.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 이 지도에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지를 줄이세요.
+[Spider web]
+거미줄
+[Spokes per colony]
+식민지당 방사줄
+[Ring spacing]
+고리 간격
+[Thread width]
+실 너비
+[Sag]
+처짐
+[Torn strands]
+끊어진 실
+[Hub size]
+중심 크기
+[Dew drops]
+이슬방울
+[Spiral]
+나선
+[Spider webs need at least one colony.]
+거미줄에는 식민지가 하나 이상 필요합니다.
 [Sandbars]
 모래톱
 [Tide pools]

@@ -193,6 +193,7 @@ map/generator/generators/RiverGenerator.cpp
 map/generator/generators/RuggedArchipelagoGenerator.cpp
 map/generator/generators/ShatteredCoastGenerator.cpp
 map/generator/generators/StoneHighlandsGenerator.cpp
+map/generator/generators/SpiderWebGenerator.cpp
 map/generator/generators/SwampGenerator.cpp
 map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp
@@ -202,6 +203,7 @@ map/generator/shared/legacy/Distances.cpp
 map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp
 map/generator/shared/BalancedStarts.cpp
+map/generator/shared/Drawing.cpp
 map/generator/shared/Geometry.cpp
 map/generator/shared/Grid.cpp
 map/generator/shared/LatticeNoise.cpp

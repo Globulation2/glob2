@@ -1916,6 +1916,26 @@ Altwasser
 Das Sumpfland braucht mindestens eine Kolonie.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Zu viele Kolonien für diese Karte; wähle eine größere Karte oder weniger Kolonien.
+[Spider web]
+Spinnennetz
+[Spokes per colony]
+Speichen pro Kolonie
+[Ring spacing]
+Ringabstand
+[Thread width]
+Fadenbreite
+[Sag]
+Durchhang
+[Torn strands]
+Gerissene Fäden
+[Hub size]
+Nabengröße
+[Dew drops]
+Tautropfen
+[Spiral]
+Spirale
+[Spider webs need at least one colony.]
+Spinnennetze brauchen mindestens eine Kolonie.
 [Sandbars]
 Sandbänke
 [Tide pools]

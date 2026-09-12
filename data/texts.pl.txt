@@ -1916,6 +1916,26 @@ Starorzecza
 Mokradła potrzebują co najmniej jednej kolonii.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Za dużo kolonii jak na tę mapę; użyj większej mapy lub mniejszej liczby kolonii.
+[Spider web]
+Pajęczyna
+[Spokes per colony]
+Promienie na kolonię
+[Ring spacing]
+Odstęp pierścieni
+[Thread width]
+Szerokość nici
+[Sag]
+Zwis
+[Torn strands]
+Zerwane nici
+[Hub size]
+Rozmiar środka
+[Dew drops]
+Krople rosy
+[Spiral]
+Spirala
+[Spider webs need at least one colony.]
+Pajęczyna wymaga co najmniej jednej kolonii.
 [Sandbars]
 Łachy piaskowe
 [Tide pools]

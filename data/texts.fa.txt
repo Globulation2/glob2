@@ -1914,6 +1914,26 @@ OpenGL در این بیلد موجود نیست.
 باتلاق‌ها دست‌کم به یک مستعمره نیاز دارند.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 تعداد مستعمره‌ها برای این نقشه زیاد است؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
+[Spider web]
+تار عنکبوت
+[Spokes per colony]
+پره برای هر مستعمره
+[Ring spacing]
+فاصله حلقه‌ها
+[Thread width]
+پهنای رشته‌ها
+[Sag]
+افتادگی
+[Torn strands]
+رشته‌های پاره
+[Hub size]
+اندازه مرکز
+[Dew drops]
+قطره‌های شبنم
+[Spiral]
+مارپیچ
+[Spider webs need at least one colony.]
+تار عنکبوت دست‌کم به یک مستعمره نیاز دارد.
 [Sandbars]
 پشته‌های شنی
 [Tide pools]

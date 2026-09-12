@@ -32,6 +32,14 @@ bool settleColonies(Game &game, GenerationContext &context, const char *stream, 
 	return true;
 }
 
+/// The usual last word on every colony's crops: clear the ground round the swarms, run the
+/// wheat/wood guarantee (guaranteeStartingResources) and clear round the swarms again, since a
+/// topped-up deposit may land there. Tiles of `keep` are designed deposits (walls) that are never
+/// cleared and never looked past.
+void secureStartingCrops(Game &, GenerationContext &, const Torus &, int wheatRange = 24,
+						 int woodRange = 32, int clearRadius = 0,
+						 const std::vector<unsigned char> *keep = nullptr);
+
 /// The resource amounts a generator's ambient layers are scaled by; every one is 100 by default.
 struct ResourceAmounts
 {

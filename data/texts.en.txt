@@ -1904,6 +1904,26 @@ Sloughs
 Everglades need at least one colony.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Too many colonies for this map; use a bigger map or fewer colonies.
+[Spider webs need at least one colony.]
+Spider webs need at least one colony.
+[Spiral]
+Spiral
+[Dew drops]
+Dew drops
+[Hub size]
+Hub size
+[Torn strands]
+Torn strands
+[Sag]
+Sag
+[Thread width]
+Thread width
+[Ring spacing]
+Ring spacing
+[Spokes per colony]
+Spokes per colony
+[Spider web]
+Spider web
 [Sandbars]
 Sandbars
 [Tide pools]

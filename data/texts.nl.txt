@@ -1940,6 +1940,26 @@ Moerassloten
 Het moerasland heeft minstens één kolonie nodig.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Te veel kolonies voor deze kaart; gebruik een grotere kaart of minder kolonies.
+[Spider web]
+Spinnenweb
+[Spokes per colony]
+Spaken per kolonie
+[Ring spacing]
+Ringafstand
+[Thread width]
+Draadbreedte
+[Sag]
+Doorhang
+[Torn strands]
+Gescheurde draden
+[Hub size]
+Grootte van het midden
+[Dew drops]
+Dauwdruppels
+[Spiral]
+Spiraal
+[Spider webs need at least one colony.]
+Een spinnenweb heeft minstens één kolonie nodig.
 [Sandbars]
 Zandbanken
 [Tide pools]

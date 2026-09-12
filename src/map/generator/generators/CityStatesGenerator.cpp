@@ -818,23 +818,6 @@ void carveValleys(std::vector<unsigned char> &terrain, const Layout &L, Generati
 	}
 }
 
-// Splits a set of tiles into wheat and wood by an unrelated noise field, so the two crops form
-// separate patches rather than rings sorted by fertility.
-void plantFields(Map &map, const Torus &t, std::vector<int> tiles, int wheat, int wood,
-				 HeightMap &split)
-{
-	const int total = std::min(int(tiles.size()), wheat + wood);
-	if (total <= 0)
-		return;
-	tiles.resize(total);
-	std::stable_sort(
-		tiles.begin(), tiles.end(), [&](int a, int b)
-		{ return split.uiLevel(a % t.w, a / t.w, 2048) < split.uiLevel(b % t.w, b / t.w, 2048); });
-	const int wheatShare = int(std::int64_t(total) * wheat / std::max(1, wheat + wood));
-	for (int k = 0; k < total; ++k)
-		map.setResource(tiles[k] % t.w, tiles[k] / t.w, k < wheatShare ? CORN : WOOD, 1);
-}
-
 // Every home's kit, identical and unscaled: wheat and wood patches beside its lake, where the lake
 // keeps them growing, and a stone deposit further off; then its own scaled ambient farmland,
 // outcrops and a grove, as a self-sufficient base needs.
@@ -867,19 +850,14 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 		// creek, and the quarry behind the lake.
 		const double reach = std::clamp(0.1 * L.g.depth(), 2.0, 6.0) * 1.3 + 3;
 		const double flank = L.creekSide != 0 ? -L.creekSide : -1.0;
-		const auto at = [&](double along, double across, int within)
-		{
-			return KitSeed{
-				h.lakeX + int(std::lround(along * std::cos(h.angle) - across * std::sin(h.angle))),
-				h.lakeY + int(std::lround(along * std::sin(h.angle) + across * std::cos(h.angle))),
-				within};
-		};
+		const KitFrame frame{h.lakeX, h.lakeY, h.angle};
 		const Kit kit = L.creekSide == 0
-							? Kit{at(-0.3 * reach, -reach, 14), at(-0.3 * reach, reach, 14),
-								  at(reach + 8, 0, 12), kHomeWheat, kHomeWood, 2}
-							: Kit{at(-0.5 * reach, flank * reach, 14),
-								  at(0.6 * reach, flank * (reach + 1), 14), at(reach + 8, 0, 12),
-								  kHomeWheat, kHomeWood, 2};
+							? Kit{frame.at(-0.3 * reach, -reach, 14),
+								  frame.at(-0.3 * reach, reach, 14), frame.at(reach + 8, 0, 12),
+								  kHomeWheat, kHomeWood, 2}
+							: Kit{frame.at(-0.5 * reach, flank * reach, 14),
+								  frame.at(0.6 * reach, flank * (reach + 1), 14),
+								  frame.at(reach + 8, 0, 12), kHomeWheat, kHomeWood, 2};
 		plantKit(map, t, context, kit, eligible);
 		// Ambient farmland on the home's fertile ground, in patches, then outcrops and a grove.
 		std::vector<int> ground;
@@ -910,31 +888,19 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const C
 		for (const auto &entry : farm)
 			chosen.push_back(entry.second);
 		const int area = int(ground.size());
+		const auto bySplit = [&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); };
 		plantFields(map, t, chosen, int(scaledCount(area * 4 / 100, o.wheat)),
-					int(scaledCount(area * 2 / 100, o.wood)), split);
-		const int outcrops = int(scaledCount(std::max(1, area / 2500), o.stone));
-		for (int k = 0; k < outcrops; ++k)
-			for (int attempt = 0; attempt < 100; ++attempt)
-			{
-				const int at = ground[context.bounded("city-home-stone", ground.size())];
-				if (eligible(at))
-				{
-					placeResourceClump(map, context, {at % t.w, at / t.w}, STONE, 1);
-					break;
-				}
-			}
-		const int groves = int(scaledCount(1, o.fruit));
-		for (int k = 0; k < groves; ++k)
-			for (int attempt = 0; attempt < 100; ++attempt)
-			{
-				const int at = ground[context.bounded("city-home-fruit", ground.size())];
-				if (eligible(at))
-				{
-					placeResourceClump(map, context, {at % t.w, at / t.w},
-									   CHERRY + int(context.bounded("city-home-fruit", 3)), 1);
-					break;
-				}
-			}
+					int(scaledCount(area * 2 / 100, o.wood)), bySplit);
+		scatterClumps(context, t, ground, int(scaledCount(std::max(1, area / 2500), o.stone)),
+					  "city-home-stone", eligible,
+					  [&](MapGeneratorPoint p) { placeResourceClump(map, context, p, STONE, 1); });
+		scatterClumps(context, t, ground, int(scaledCount(1, o.fruit)), "city-home-fruit",
+					  eligible,
+					  [&](MapGeneratorPoint p) {
+						  placeResourceClump(map, context, p,
+											 CHERRY + int(context.bounded("city-home-fruit", 3)),
+											 1);
+					  });
 	}
 }
 
@@ -992,7 +958,8 @@ void stockCommons(Map &map, const Layout &L, GenerationContext &context, const C
 		chosen.push_back(entry.second);
 	const int area = int(ground.size());
 	plantFields(map, t, chosen, int(scaledCount(area * 7 / 100, o.wheat)),
-				int(scaledCount(area * 4 / 100, o.wood)), split);
+				int(scaledCount(area * 4 / 100, o.wood)),
+				[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
 
 	const auto pick = [&](const char *stream)
 	{
@@ -1162,11 +1129,9 @@ bool generate(Game &game, GenerationContext &context)
 	stockCommons(map, L, context, o);
 	stockIslands(map, context, islands, "city-islands");
 	seedAlgae(map, context, t, "city-algae", o.algae, AlgaeBand::shallows(2, 4));
-	clearAroundSwarms(map, context, t, &line);
 	// The kits already put wheat and wood a short walk from every swarm; this is only the backstop,
 	// and the walls and the causeways' stone are designed and must never be cleared.
-	guaranteeStartingResources(game, context, 24, 32, 0, &line);
-	clearAroundSwarms(map, context, t, &line);
+	secureStartingCrops(game, context, t, 24, 32, 0, &line);
 	clearRoads(map, L, line);
 	context.stage = "city roads";
 	return openRoads(map, L, line, context);

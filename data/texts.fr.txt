@@ -1926,6 +1926,26 @@ Marigots
 Les marécages ont besoin d'au moins une colonie.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Trop de colonies pour cette carte ; utilisez une carte plus grande ou moins de colonies.
+[Spider web]
+Toile d'araignée
+[Spokes per colony]
+Rayons par colonie
+[Ring spacing]
+Espacement des anneaux
+[Thread width]
+Largeur des fils
+[Sag]
+Affaissement
+[Torn strands]
+Fils rompus
+[Hub size]
+Taille du centre
+[Dew drops]
+Gouttes de rosée
+[Spiral]
+Spirale
+[Spider webs need at least one colony.]
+Une toile d'araignée nécessite au moins une colonie.
 [Sandbars]
 Bancs de sable
 [Tide pools]

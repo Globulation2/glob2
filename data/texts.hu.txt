@@ -1916,6 +1916,26 @@ Holtágak
 A mocsárvidékhez legalább egy kolónia kell.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Túl sok kolónia ehhez a térképhez; használj nagyobb térképet vagy kevesebb kolóniát.
+[Spider web]
+Pókháló
+[Spokes per colony]
+Küllők kolóniánként
+[Ring spacing]
+Gyűrűk távolsága
+[Thread width]
+Szálszélesség
+[Sag]
+Belógás
+[Torn strands]
+Szakadt szálak
+[Hub size]
+Középpont mérete
+[Dew drops]
+Harmatcseppek
+[Spiral]
+Spirál
+[Spider webs need at least one colony.]
+A pókhálóhoz legalább egy kolónia kell.
 [Sandbars]
 Homokpadok
 [Tide pools]

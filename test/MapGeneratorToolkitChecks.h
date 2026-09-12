@@ -5,6 +5,7 @@
 // here before it shows up as a changed golden fingerprint somewhere downstream. Needs the
 // globals loaded: building and resource types.
 #include "BalancedStarts.h"
+#include "Drawing.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Geometry.h"
@@ -614,6 +615,84 @@ inline void shuffleChecks()
 		   "The test design could not be rebuilt: no room");
 }
 
+// strokePath: a thick line covers exactly the tiles within its half width, tapers between points,
+// wraps across the seam and draws a lone point as a disc; bezierPath runs end to end through the
+// pull of its control; fillShape turns an outline without changing its area.
+inline void drawingChecks()
+{
+	const Torus t(32, 16);
+	std::vector<unsigned char> mask(t.size(), 0);
+	strokePath(mask, t, {{2, 8, 2.5}, {12, 8, 2.5}});
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+		{
+			const double dx = x < 2 ? 2 - x : x > 12 ? x - 12 : 0, dy = y - 8;
+			assert(mask[t.at(x, y)] == (dx * dx + dy * dy < 2.5 * 2.5));
+		}
+	std::fill(mask.begin(), mask.end(), 0);
+	strokePath(mask, t, {{-3, 4, 1.5}, {3, 4, 1.5}}, 7);
+	assert(mask[t.at(31, 4)] == 7 && mask[t.at(29, 4)] == 7 && mask[t.at(2, 4)] == 7);
+	assert(mask[t.at(27, 4)] == 0 && mask[t.at(31, 6)] == 0);
+	std::fill(mask.begin(), mask.end(), 0);
+	strokePath(mask, t, {{16, 8, 4}, {26, 8, 0.5}});
+	assert(mask[t.at(16, 11)] && !mask[t.at(25, 9)] && mask[t.at(25, 8)]);
+	std::fill(mask.begin(), mask.end(), 0);
+	strokePath(mask, t, {{10, 10, 1.1}});
+	assert(std::count(mask.begin(), mask.end(), 1) == 5);
+	const std::vector<StrokePoint> curve = bezierPath({0, 0}, {10, 10}, {20, 0}, 1, 3, 10);
+	assert(curve.size() == 11 && curve.front().x == 0 && curve.back().x == 20);
+	assert(std::abs(curve[5].y - 5) < 1e-9 && std::abs(curve[5].halfWidth - 2) < 1e-9);
+
+	GenerationRequest request;
+	request.seed = 11;
+	GenerationContext context(request);
+	const RadialShape shape(5, 0.4, context, "shape");
+	std::vector<unsigned char> upright(t.size(), 0), turned(t.size(), 0);
+	fillShape(upright, t, 16, 8, shape);
+	fillShape(turned, t, 16, 8, shape, kPi / 2);
+	const long area = std::count(upright.begin(), upright.end(), 1);
+	assert(area > 40 && std::abs(area - std::count(turned.begin(), turned.end(), 1)) < area / 8);
+	assert(upright != turned);
+}
+
+// plantFields deals the preferred tiles, wheat first by the split key, in proportion; KitFrame
+// turns its offsets with its facing; scatterClumps stops after its attempts on ineligible ground.
+inline void layerChecks()
+{
+	Game game(nullptr);
+	grassMap(game, 6, 6);
+	Map &map = game.map;
+	const Torus t(map);
+	std::vector<int> tiles;
+	for (int x = 0; x < 20; ++x)
+		tiles.push_back(t.at(x, 5));
+	plantFields(map, t, tiles, 6, 3, [](int i) { return -i; });
+	assert(countResource(map, CORN) == 6 && countResource(map, WOOD) == 3);
+	assert(map.getResource(8, 5).type == CORN && map.getResource(0, 5).type == WOOD);
+	assert(map.getResource(9, 5).type == NO_RES_TYPE);
+
+	const KitFrame east{10, 10, 0}, south{10, 10, kPi / 2};
+	assert(east.at(4, 1, 3).x == 14 && east.at(4, 1, 3).y == 11 && east.at(4, 1, 3).within == 3);
+	assert(south.at(4, 1, 3).x == 9 && south.at(4, 1, 3).y == 14);
+
+	GenerationRequest request;
+	request.seed = 3;
+	GenerationContext context(request);
+	std::vector<int> ground{t.at(40, 40), t.at(50, 50)};
+	int calls = 0;
+	assert(scatterClumps(context, t, ground, 4, "clumps", [&](int i) { return i == ground[1]; },
+						 [&](MapGeneratorPoint p)
+						 {
+							 assert(p.x == 50 && p.y == 50);
+							 ++calls;
+						 }) == 4 &&
+		   calls == 4);
+	assert(scatterClumps(context, t, ground, 2, "clumps", [](int) { return false; },
+						 [](MapGeneratorPoint) { assert(false); }) == 0);
+	assert(scatterClumps(context, t, {}, 2, "clumps", [](int) { return true; },
+						 [](MapGeneratorPoint) { assert(false); }) == 0);
+}
+
 inline void toolkitChecks()
 {
 	floodChecks();
@@ -626,7 +705,9 @@ inline void toolkitChecks()
 	noiseChecks();
 	wedgeChecks();
 	shuffleChecks();
+	drawingChecks();
+	layerChecks();
 	puts("PASS shared toolkit: floods, sketch, planting, roads, settlements, balanced starts, "
-		 "scatter, lattice noise, wedge frame, shuffle");
+		 "scatter, lattice noise, wedge frame, shuffle, drawing, fields and clumps");
 }
 } // namespace ToolkitChecks

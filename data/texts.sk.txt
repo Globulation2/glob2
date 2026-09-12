@@ -1924,6 +1924,26 @@ Mŕtve ramená
 Močiare potrebujú aspoň jednu kolóniu.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Príliš veľa kolónií pre túto mapu; použite väčšiu mapu alebo menej kolónií.
+[Spider web]
+Pavučina
+[Spokes per colony]
+Lúčov na kolóniu
+[Ring spacing]
+Rozostup kruhov
+[Thread width]
+Šírka vlákien
+[Sag]
+Priehyb
+[Torn strands]
+Roztrhnuté vlákna
+[Hub size]
+Veľkosť stredu
+[Dew drops]
+Kvapky rosy
+[Spiral]
+Špirála
+[Spider webs need at least one colony.]
+Pavučina potrebuje aspoň jednu kolóniu.
 [Sandbars]
 Piesočné lavice
 [Tide pools]

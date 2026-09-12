@@ -1986,6 +1986,26 @@ Cortex
 Οι βαλτότοποι χρειάζονται τουλάχιστον μία αποικία.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Πάρα πολλές αποικίες για αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
+[Spider web]
+Ιστός αράχνης
+[Spokes per colony]
+Ακτίνες ανά αποικία
+[Ring spacing]
+Απόσταση δακτυλίων
+[Thread width]
+Πλάτος νημάτων
+[Sag]
+Κρέμασμα
+[Torn strands]
+Σπασμένα νήματα
+[Hub size]
+Μέγεθος κέντρου
+[Dew drops]
+Σταγόνες δροσιάς
+[Spiral]
+Σπιράλ
+[Spider webs need at least one colony.]
+Ο ιστός αράχνης χρειάζεται τουλάχιστον μία αποικία.
 [Sandbars]
 Αμμοσύρτεις
 [Tide pools]

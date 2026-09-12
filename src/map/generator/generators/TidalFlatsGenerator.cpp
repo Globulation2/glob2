@@ -279,17 +279,11 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 		{ return L.islandOf[i] == team && !reserved[i] && clearGround(map, i % t.w, i / t.w); };
 		const double a = std::atan2(double(t.offsetY(L.cy, L.pondY[team])),
 									double(t.offsetX(L.cx, L.pondX[team])));
-		const auto at = [&](double along, double across, int within)
-		{
-			return KitSeed{
-				L.pondX[team] + int(std::lround(along * std::cos(a) - across * std::sin(a))),
-				L.pondY[team] + int(std::lround(along * std::sin(a) + across * std::cos(a))),
-				within};
-		};
+		const KitFrame frame{L.pondX[team], L.pondY[team], a};
 		// Wheat and wood on the two sides of the pond, the quarry towards the map's centre.
 		plantKit(map, t, context,
-				 {at(0, -pondRadius, 12), at(0, pondRadius, 12), at(-(pondRadius + 4), 0, 10),
-				  kHomeWheat, kHomeWood, 2},
+				 {frame.at(0, -pondRadius, 12), frame.at(0, pondRadius, 12),
+				  frame.at(-(pondRadius + 4), 0, 10), kHomeWheat, kHomeWood, 2},
 				 eligible);
 		// Ambient farmland on the island's fertile ground, split two to one.
 		std::vector<int> ground;
@@ -302,33 +296,16 @@ void furnishHomes(Map &map, const Layout &L, GenerationContext &context, const T
 					farm.push_back({-double(f), i});
 			}
 		std::stable_sort(farm.begin(), farm.end());
+		std::vector<int> byFertility;
+		for (const auto &entry : farm)
+			byFertility.push_back(entry.second);
 		const int area = int(ground.size());
-		const int wheat = int(scaledCount(area * 4 / 100, o.wheat)),
-				  wood = int(scaledCount(area * 2 / 100, o.wood));
-		const int total = std::min(int(farm.size()), wheat + wood);
-		std::vector<int> chosen;
-		for (int k = 0; k < total; ++k)
-			chosen.push_back(farm[k].second);
-		std::stable_sort(chosen.begin(), chosen.end(),
-						 [&](int p, int q)
-						 {
-							 return split.uiLevel(p % t.w, p / t.w, 2048) <
-									split.uiLevel(q % t.w, q / t.w, 2048);
-						 });
-		const int wheatShare = int(std::int64_t(total) * wheat / std::max(1, wheat + wood));
-		for (int k = 0; k < total; ++k)
-			map.setResource(chosen[k] % t.w, chosen[k] / t.w, k < wheatShare ? CORN : WOOD, 1);
-		const int outcrops = int(scaledCount(1, o.stone));
-		for (int k = 0; k < outcrops && !ground.empty(); ++k)
-			for (int attempt = 0; attempt < 100; ++attempt)
-			{
-				const int at2 = ground[context.bounded("flats-home-stone", ground.size())];
-				if (eligible(at2))
-				{
-					placeResourceClump(map, context, {at2 % t.w, at2 / t.w}, STONE, 1);
-					break;
-				}
-			}
+		plantFields(map, t, byFertility, int(scaledCount(area * 4 / 100, o.wheat)),
+					int(scaledCount(area * 2 / 100, o.wood)),
+					[&](int i) { return split.uiLevel(i % t.w, i / t.w, 2048); });
+		scatterClumps(context, t, ground, int(scaledCount(1, o.stone)), "flats-home-stone",
+					  eligible, [&](MapGeneratorPoint p)
+					  { placeResourceClump(map, context, p, STONE, 1); });
 	}
 }
 
@@ -468,9 +445,7 @@ bool generate(Game &game, GenerationContext &context)
 	furnishHomes(map, L, context, o);
 	stockIslands(map, L, context, o);
 	seedAlgae(map, context, t, "flats-algae", o.algae, AlgaeBand::anyWater());
-	clearAroundSwarms(map, context, t);
-	guaranteeStartingResources(game, context, 24, 32, 0);
-	clearAroundSwarms(map, context, t);
+	secureStartingCrops(game, context, t);
 	return true;
 }
 

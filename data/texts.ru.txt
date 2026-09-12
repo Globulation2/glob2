@@ -1914,6 +1914,26 @@ OpenGL недоступен в этой сборке.
 Болотам нужна хотя бы одна колония.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Слишком много колоний для этой карты; используйте карту побольше или меньше колоний.
+[Spider web]
+Паутина
+[Spokes per colony]
+Радиусов на колонию
+[Ring spacing]
+Шаг колец
+[Thread width]
+Ширина нитей
+[Sag]
+Провисание
+[Torn strands]
+Порванные нити
+[Hub size]
+Размер центра
+[Dew drops]
+Капли росы
+[Spiral]
+Спираль
+[Spider webs need at least one colony.]
+Для паутины нужна хотя бы одна колония.
 [Sandbars]
 Песчаные банки
 [Tide pools]

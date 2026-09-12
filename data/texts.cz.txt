@@ -1916,6 +1916,26 @@ Slepá ramena
 Mokřady potřebují alespoň jednu kolonii.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Příliš mnoho kolonií pro tuto mapu; použijte větší mapu nebo méně kolonií.
+[Spider web]
+Pavučina
+[Spokes per colony]
+Paprsků na kolonii
+[Ring spacing]
+Rozestup kruhů
+[Thread width]
+Šířka vláken
+[Sag]
+Průvěs
+[Torn strands]
+Přetržená vlákna
+[Hub size]
+Velikost středu
+[Dew drops]
+Kapky rosy
+[Spiral]
+Spirála
+[Spider webs need at least one colony.]
+Pavučina potřebuje alespoň jednu kolonii.
 [Sandbars]
 Písečné lavice
 [Tide pools]

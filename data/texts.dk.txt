@@ -1992,6 +1992,26 @@ Sumpkanaler
 Sumplandet kræver mindst én koloni.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 For mange kolonier til dette kort; brug et større kort eller færre kolonier.
+[Spider web]
+Spindelvæv
+[Spokes per colony]
+Eger pr. koloni
+[Ring spacing]
+Afstand mellem ringe
+[Thread width]
+Trådbredde
+[Sag]
+Nedhæng
+[Torn strands]
+Revne tråde
+[Hub size]
+Navstørrelse
+[Dew drops]
+Dugdråber
+[Spiral]
+Spiral
+[Spider webs need at least one colony.]
+Spindelvæv kræver mindst én koloni.
 [Sandbars]
 Sandbanker
 [Tide pools]

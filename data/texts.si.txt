@@ -1916,6 +1916,26 @@ Mrtvice
 Močvirja potrebujejo vsaj eno kolonijo.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Preveč kolonij za ta zemljevid; uporabite večji zemljevid ali manj kolonij.
+[Spider web]
+Pajčevina
+[Spokes per colony]
+Žarki na kolonijo
+[Ring spacing]
+Razmik obročev
+[Thread width]
+Širina niti
+[Sag]
+Povešenost
+[Torn strands]
+Pretrgane niti
+[Hub size]
+Velikost središča
+[Dew drops]
+Kapljice rose
+[Spiral]
+Spirala
+[Spider webs need at least one colony.]
+Pajčevina potrebuje vsaj eno kolonijo.
 [Sandbars]
 Peščene sipine
 [Tide pools]

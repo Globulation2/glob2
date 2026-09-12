@@ -1912,6 +1912,26 @@ Globulation 2 のカーソルを表示します。
 湿地帯には少なくとも一つのコロニーが必要です。
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 この地図にはコロニーが多すぎます。より大きな地図にするか、コロニーを減らしてください。
+[Spider web]
+クモの巣
+[Spokes per colony]
+コロニーごとの放射糸
+[Ring spacing]
+輪の間隔
+[Thread width]
+糸の幅
+[Sag]
+たるみ
+[Torn strands]
+切れた糸
+[Hub size]
+中心の大きさ
+[Dew drops]
+露のしずく
+[Spiral]
+らせん
+[Spider webs need at least one colony.]
+クモの巣には少なくとも1つのコロニーが必要です。
 [Sandbars]
 砂州
 [Tide pools]
