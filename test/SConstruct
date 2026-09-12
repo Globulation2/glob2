@@ -305,6 +305,20 @@ prestige_toggle_objs = [
 wcdecode_env.Program( target = 'WinningConditionPrestigeToggleTest', source = prestige_toggle_objs )
 
 
+# Standalone regression harness for WinningCondition::setSuddenDeathWinCondition,
+# the custom-game sudden-death-timer toggle. Unlike setPrestigeWinCondition
+# (fixed default-order rank), a newly-enabled instance must be appended at the
+# very end of the list -- a last resort evaluated only after every other
+# condition has had its say that tick -- and retuning an already-present
+# instance's tick must edit it in place rather than remove+re-add. Reuses the
+# wcdecode env's WinningConditions object and stubs.
+sudden_death_toggle_objs = [
+  wcdecode_env.Object('WinningConditionSuddenDeathToggleTest.o', 'WinningConditionSuddenDeathToggleTest.cpp'),
+  wcdecode_objs[1], wcdecode_objs[2],
+]
+wcdecode_env.Program( target = 'WinningConditionSuddenDeathToggleTest', source = sudden_death_toggle_objs )
+
+
 # Standalone regression harness for Bullet::ticksInitial serialization
 # (save() used to omit the field and load() zeroed it, flattening the
 # ballistic-arc rendering of in-flight bullets after a reload). Checks a
