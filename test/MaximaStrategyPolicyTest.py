@@ -65,7 +65,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         state = self.maxima[self.maxima.index("bool Maxima::loadState") :]
         self.assertNotIn('readText("strategy_name")', state)
         self.assertIn("development_planner.load(stream", state)
-        ai = (ROOT / "src/AI.cpp").read_text()
+        ai = (ROOT / "src/ai/AI.cpp").read_text()
         self.assertIn("if(versionMinor<86)", ai)
         self.assertIn("LegacyMaximaStateConsumer", ai)
         self.assertIn("loadLegacyState", self.maxima)
@@ -74,9 +74,9 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         ])
 
     def test_maxima_keeps_id_and_legacy_section_names(self) -> None:
-        ai_header = (ROOT / "src/AI.h").read_text()
-        ai_source = (ROOT / "src/AI.cpp").read_text()
-        self.assertRegex(ai_header, r"MAXIMA\s*=\s*6")
+        ai_header = (ROOT / "src/ai/AI.h").read_text()
+        ai_source = (ROOT / "src/ai/AI.cpp").read_text()
+        self.assertRegex(ai_header, r"MAXIMA\s*=\s*7")
         self.assertNotIn("NICOWAR_V2", ai_header + ai_source)
         self.assertNotIn("NICOWAR_V4", ai_header + ai_source)
         self.assertIn('readEnterSection("AINicowarV3")', self.maxima)
@@ -151,7 +151,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             for line in specifications
         ]
         # 689 before the food ledger, plus its fifteen food.* parameters.
-        self.assertEqual(690, len(specifications))
+        self.assertEqual(689, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},
@@ -193,7 +193,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             "world.accessibleSupplies[ALGA]=accessible_algae_units;", self.maxima
         )
         self.assertIn(
-            "result.accessibleAlgaeUnits+=tile.ressource.amount;", self.maxima
+            "result.accessibleAlgaeUnits+=tile.resource.amount;", self.maxima
         )
         self.assertIn(
             "walking[index]=clear && !map->isWater(x, y);", self.maxima
@@ -218,10 +218,10 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         self.assertIn("SwarmController::plan(", self.maxima)
 
     def test_maxima_worker_assignments_share_the_engine_limit(self) -> None:
-        building = (ROOT / "src/Building.h").read_text()
+        building = (ROOT / "src/building/Building.h").read_text()
         runtime = (ROOT / "src/AIMaximaRuntime.cpp").read_text()
-        gui_header = (ROOT / "src/GameGUI.h").read_text()
-        self.assertIn("static const int MAX_UNIT_WORKING=20;", building)
+        gui_header = (ROOT / "src/gui/GameGUI.h").read_text()
+        self.assertIn("static constexpr int MAX_UNIT_WORKING=20;", building)
         self.assertIn(
             "workers>Building::MAX_UNIT_WORKING?Building::MAX_UNIT_WORKING:workers",
             runtime,

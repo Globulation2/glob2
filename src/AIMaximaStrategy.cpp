@@ -203,7 +203,6 @@ namespace
 		INT_SPEC(economy, swarm_workers_per_building, "economy.swarm_workers_per_building", 1, 20, "workers", "economy", "Funded birth workers per desired swarm", StrategyImpactHigh),
 		INT_SPEC(economy, inn_population_offset, "economy.inn_population_offset", -100, 200, "units", "economy", "Population offset used for inn demand", StrategyImpactCritical),
 		INT_SPEC(economy, inn_population_divisor, "economy.inn_population_divisor", 1, 200, "units", "economy", "Population divisor used for inn demand", StrategyImpactCritical),
-		INT_SPEC(economy, mature_food_headroom_min, "economy.mature_food_headroom_min", 0, 100, "score", "economy", "Food headroom required for the mature-throughput boost", StrategyImpactHigh),
 		INT_SPEC(economy, food_headroom_warning, "economy.food_headroom_warning", 0, 100, "score", "economy", "Food headroom warning threshold", StrategyImpactCritical),
 		INT_SPEC(economy, food_headroom_critical, "economy.food_headroom_critical", 0, 100, "score", "economy", "Food headroom critical threshold", StrategyImpactCritical),
 		INT_SPEC(economy, school_population_min, "economy.school_population_min", 0, 1000, "units", "economy", "Population required for adaptive schools", StrategyImpactHigh),

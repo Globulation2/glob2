@@ -372,17 +372,26 @@ def main():
               
     PackTar(env["TARFILE"], Split("COPYING INSTALL mkdist mkinstall mkuninstall README README.hg SConstruct"))
     #packaging for apple
-    if isDarwinPlatform and env["release"]:
+    # These helpers run at SConscript-read time and rewrite Glob2.app in place
+    # (rm -rf, then re-copy data/maps/campaigns). Only do that when packaging
+    # was actually requested: an ordinary build must not disturb an installed
+    # or running bundle.
+    if (isDarwinPlatform and env["release"]
+            and any(t in COMMAND_LINE_TARGETS for t in ("dist", "bundle", "dmg", "package"))):
         bundle.generate(env)
         dmg.generate(env)
         env.Replace( 
             BUNDLE_NAME="Glob2", 
-            BUNDLE_BINARIES=["src/glob2"],
+            BUNDLE_BINARIES=[GetOption('build') + "/src/glob2"],
             BUNDLE_RESOURCEDIRS=["data","maps", "campaigns"],
             BUNDLE_PLIST="darwin/Info.plist",
             BUNDLE_ICON="darwin/Glob2.icns" )
         bundle.createBundle(os.getcwd(), os.getcwd(), env)
         dmg.create_dmg("Glob2-%s"%env["VERSION"],"%s.app"%env["BUNDLE_NAME"],env)
+        # Name the products so the packaging targets above resolve.
+        env.Alias("bundle", env.Dir("%s.app"%env["BUNDLE_NAME"]))
+        env.Alias("dmg", env.File("Glob2-%s.dmg"%env["VERSION"]))
+        env.Alias("package", ["bundle", "dmg"])
          
         #TODO mac_bundle should be dependency of Dmg:    
         import subprocess

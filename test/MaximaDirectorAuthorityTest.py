@@ -262,9 +262,9 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
         ))
 
     def test_topology_debugger_reads_the_ai_snapshot(self) -> None:
-        interface = (ROOT / "src/AIImplementation.h").read_text()
-        gui = (ROOT / "src/GameGUI.cpp").read_text()
-        self.assertIn("getTopologyDiagnosticSnapshot() const { return NULL; }",
+        interface = (ROOT / "src/ai/AIImplementation.h").read_text()
+        gui = (ROOT / "src/gui/GameGUI.cpp").read_text()
+        self.assertIn("getTopologyDiagnosticSnapshot() const { return nullptr; }",
                       interface)
         self.assertIn("Maxima::getTopologyDiagnosticSnapshot() const",
                       self.source)

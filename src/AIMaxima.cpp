@@ -607,6 +607,11 @@ Maxima::DirectorPlan::DirectorPlan()
 	  first_prestige_trained_workers(0), second_prestige_trained_workers(0),
 	  second_prestige_population_min(0),
 	  swarm_retirement_enabled(true),
+	  food_ledger_enabled(true), food_retirement_enabled(true),
+	  food_inn_burden_percent(60), food_swarm_burden_percent(60),
+	  food_recovered_percent(85), food_burden_confirm_ticks(3000),
+	  food_retirement_cooldown_ticks(3000), food_inn_seats_level1(0),
+	  food_inn_seats_level2(0), food_inn_seats_level3(0),
 	  swarm_supply_radius(12),
 	  attack_clearing_workers(0),
 	  can_swim(false), recovery_active(false), food_emergency(false),
@@ -3620,6 +3625,22 @@ void Maxima::finalize_director_plan(Context& echo)
 		strategy.upgrades.second_prestige_population_min;
 	budget.swarm_retirement_enabled=
 		strategy.economy.swarm_retirement_enabled;
+	budget.food_ledger_enabled=strategy.food.enabled;
+	budget.food_retirement_enabled=strategy.food.retirement_enabled;
+	budget.food_inn_burden_percent=strategy.food.inn_burden_coverage_percent;
+	budget.food_swarm_burden_percent=strategy.food.swarm_burden_coverage_percent;
+	budget.food_recovered_percent=strategy.food.recovered_coverage_percent;
+	budget.food_burden_confirm_ticks=strategy.food.burden_confirm_ticks;
+	budget.food_retirement_cooldown_ticks=
+		strategy.food.retirement_cooldown_ticks;
+	// Discount modelled inn capacity once, here, so the executor never needs the
+	// economic model to judge whether removing an inn would starve anyone.
+	budget.food_inn_seats_level1=strategy.model.inn_capacity_level1
+		*strategy.economy.reliable_inn_percent/100;
+	budget.food_inn_seats_level2=strategy.model.inn_capacity_level2
+		*strategy.economy.reliable_inn_percent/100;
+	budget.food_inn_seats_level3=strategy.model.inn_capacity_level3
+		*strategy.economy.reliable_inn_percent/100;
 
 	budget.staffing_window_samples=strategy.staffing.control_window_samples;
 	budget.staffing_low_permille=strategy.staffing.control_low_permille;
@@ -6868,7 +6889,7 @@ void Maxima::development_cycle(Context& echo)
 		development_planner.observe(refreshedWorld,worldSignature);
 		// The ledger supersedes the older zero-capacity swarm rule: an
 		// under-supplied building is a burden whatever its distance from wheat.
-		if(strategy.food.enabled)update_food_retirement(echo,refreshedWorld);
+		if(budget.food_ledger_enabled)update_food_retirement(echo,refreshedWorld);
 		else update_swarm_retirement(echo);
 		// Reconcile any starting construction site when it first becomes a completed
 		// building. Planner-owned campus and standalone actions are ignored here.
@@ -7136,8 +7157,8 @@ void Maxima::update_food_retirement(Context& echo,
 			establishing.insert(action.buildingId);
 	}
 
-	const int inn_burden=strategy.food.inn_burden_coverage_percent;
-	const int swarm_burden=strategy.food.swarm_burden_coverage_percent;
+	const int inn_burden=budget.food_inn_burden_percent;
+	const int swarm_burden=budget.food_swarm_burden_percent;
 	int supported_inns=0, supported_swarms=0;
 	std::set<int> present;
 	for(size_t i=0;i<ledger.consumers.size();++i)
@@ -7152,7 +7173,7 @@ void Maxima::update_food_retirement(Context& echo,
 		present.insert(value.key);
 		// Hysteresis: the confirmation survives a dip, and only a real recovery
 		// clears it, so two similar buildings cannot trade places forever.
-		if(value.coveragePercent>=strategy.food.recovered_coverage_percent)
+		if(value.coveragePercent>=budget.food_recovered_percent)
 			food_burden_since.erase(value.key);
 		else if(value.coveragePercent<burden && !food_burden_since.count(value.key))
 			food_burden_since[value.key]=timer;
@@ -7192,11 +7213,11 @@ void Maxima::update_food_retirement(Context& echo,
 		emit_telemetry(echo,"food_ledger",fields.str());
 	}
 
-	if(!strategy.food.retirement_enabled)return;
+	if(!budget.food_retirement_enabled)return;
 	const bool safe=!budget.recovery_active&&snapshot.critical_food==0
 		&&snapshot.own_buildings_under_attack==0&&snapshot.own_units_under_attack==0;
 	if(!safe)return;
-	if(timer-last_food_retirement_tick<strategy.food.retirement_cooldown_ticks)
+	if(timer-last_food_retirement_tick<budget.food_retirement_cooldown_ticks)
 		return;
 
 	int completed_inns=0,completed_swarms=0;
@@ -7210,12 +7231,11 @@ void Maxima::update_food_retirement(Context& echo,
 		else if(building.buildingType==IntBuildingType::SWARM_BUILDING)
 			++completed_swarms;
 	}
-	const int modelled[3]={strategy.model.inn_capacity_level1,
-		strategy.model.inn_capacity_level2,strategy.model.inn_capacity_level3};
+	const int modelled[3]={budget.food_inn_seats_level1,
+		budget.food_inn_seats_level2,budget.food_inn_seats_level3};
 	const auto seats_of=[&](int level)
 	{
-		return modelled[std::min(3,std::max(1,level))-1]
-			*strategy.economy.reliable_inn_percent/100;
+		return modelled[std::min(3,std::max(1,level))-1];
 	};
 	int seats=0;
 	for(std::map<int,int>::const_iterator i=inn_level.begin();i!=inn_level.end();++i)
@@ -7233,7 +7253,7 @@ void Maxima::update_food_retirement(Context& echo,
 		const std::map<int,int>::const_iterator since=
 			food_burden_since.find(value.key);
 		if(since==food_burden_since.end()
-		   ||timer-since->second<strategy.food.burden_confirm_ticks)continue;
+		   ||timer-since->second<budget.food_burden_confirm_ticks)continue;
 		if(value.kind==AIMaximaFoodLedger::InnConsumer)
 		{
 			const std::map<int,int>::const_iterator level=inn_level.find(value.key);

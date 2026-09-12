@@ -174,7 +174,6 @@ economy.food_service_safeguards_enabled = true
 economy.worker_birth_throttle_enabled = true
 economy.inn_population_offset = 0
 economy.inn_population_divisor = 36
-economy.mature_food_headroom_min = 55
 economy.food_headroom_warning = 40
 economy.food_headroom_critical = 23
 economy.school_population_min = 50

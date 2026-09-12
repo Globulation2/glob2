@@ -289,7 +289,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
                 map_file,
                 "123",
                 str(players),
-                "6",
+                "7",
                 "5",
                 "0",
                 "0",
@@ -301,7 +301,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
             "-nicowar-2v2-match-nox",
             "maps/FourSquares1.map",
             "123",
-            "6",
+            "7",
             "5",
             "0",
             "0",
@@ -321,7 +321,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
             "maps/FourSquares1.map",
             "123",
             "4",
-            "6",
+            "7",
             "5",
             "0",
             "0",
@@ -352,7 +352,7 @@ class MaximaStrategyConfigTest(unittest.TestCase):
     def test_player_override_changes_only_the_focal_maxima(self) -> None:
         result = self.run_binary(
             "-nicowar-2v2-match-nox", "maps/FourSquares1.map", "123",
-            "6", "5", "0", "0", "1",
+            "7", "5", "0", "0", "1",
             "--maxima-player-overrides", "0", "farming.enabled=false",
         )
         lines = [line for line in result.stderr.splitlines()

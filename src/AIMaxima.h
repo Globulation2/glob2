@@ -188,6 +188,21 @@ private:
 		int second_prestige_trained_workers;
 		int second_prestige_population_min;
 		bool swarm_retirement_enabled;
+		///Food ledger authority. The director decides whether the ledger runs,
+		///what coverage counts as a burden and how long one must persist. The
+		///executor only measures coverage and issues the retirement order.
+		bool food_ledger_enabled;
+		bool food_retirement_enabled;
+		int food_inn_burden_percent;
+		int food_swarm_burden_percent;
+		int food_recovered_percent;
+		int food_burden_confirm_ticks;
+		int food_retirement_cooldown_ticks;
+		///Reliable seats a completed inn of each level actually serves, already
+		///discounted, so the executor never needs the economic model itself.
+		int food_inn_seats_level1;
+		int food_inn_seats_level2;
+		int food_inn_seats_level3;
 		///Per-building staffing control. Every inn and swarm regulates its own
 		///worker request from its own wheat stock and its actual staffing;
 		///there is no colony budget and no apportionment between buildings.

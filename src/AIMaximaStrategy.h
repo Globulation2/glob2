@@ -207,7 +207,6 @@ struct MaximaStrategy
 		int swarm_workers_per_building;
 		int inn_population_offset;
 		int inn_population_divisor;
-		int mature_food_headroom_min;
 		int food_headroom_warning;
 		int food_headroom_critical;
 		int school_population_min;
