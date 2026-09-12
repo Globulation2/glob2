@@ -589,6 +589,9 @@ public:
 	//! have elapsed since the last rebuild.
 	bool dirtyGradient[SWIM_CLASS_COUNT];
 	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_CLASS_COUNT];
+	//! Map::topologyGeneration when each field was computed. Differs from the
+	//! map's current value exactly when the ground it was built against has moved.
+	Uint32 gradientGeneration[SWIM_CLASS_COUNT];
 	// These flags track physical access (cannot swim / can swim), not travel cost.
 	// All swimming classes share passability, but keep separate weighted fields.
 	//! Last step a unit asked for the gradient; freeIdleGradients drops it when that is long ago.

@@ -29,6 +29,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 	assert(gradient);
 	building->dirtyGradient[swimClass]=false;
 	building->lastGlobalGradientUpdateStepCounter[swimClass]=game->stepCounter;
+	building->gradientGeneration[swimClass]=topologyGeneration;
 
 	bool isClearingFlag=false;
 	bool isWarFlag=false;
