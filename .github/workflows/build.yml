@@ -142,6 +142,11 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Test clearing flag resource bounds
+        run: |
+          scons -j$(nproc) release=1 server=0 clearing-gradient-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest
+
       - name: Test trapped colony elimination
         run: |
           scons -j$(nproc) release=1 server=0 trapped-unit-test
@@ -340,6 +345,10 @@ jobs:
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
 
+      - name: Test clearing flag resource bounds
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 clearing-gradient-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest.exe
       - name: Test status-bar bounds in software rendering
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 point-bar-render-test

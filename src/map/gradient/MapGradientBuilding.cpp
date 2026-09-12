@@ -68,7 +68,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 				if (yi2+(xi*xi)<=r2)
 				{
 					size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-					if(tiles[addr].resource.type!=NO_RES_TYPE && building->clearingResources[tiles[addr].resource.type])
+					if(tiles[addr].resource.type < BASIC_COUNT && building->clearingResources[tiles[addr].resource.type])
 					{
 						if(gradient[addr] == GRADIENT_UNREACHABLE)
 							gradient[addr] = GRADIENT_AT_GOAL;

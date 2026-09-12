@@ -546,6 +546,18 @@ if not env['server']:
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
+if not env['server']:
+    # Compile with local, not clearing_env, to avoid rebuilding shared objects under a second environment.
+    clearing_sources = local.Object([source for source in source_files if source != 'Glob2.cpp' and source.endswith('.cpp')])
+    clearing_sources += [source for source in source_files if not source.endswith('.cpp')]
+    clearing_sources += local.Object('ClearingFlagGradientTest.o', '#test/ClearingFlagGradientTest.cpp')
+    clearing_env = local.Clone()
+    # Headless tests use a console entry point so failures reach the CI log.
+    clearing_env['LINKFLAGS'] = [flag for flag in local.Split(local['LINKFLAGS']) if flag != '-mwindows']
+    clearing_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
+    clearing_test = clearing_env.Program('ClearingFlagGradientTest', clearing_sources)
+    local.Alias('clearing-gradient-test', clearing_test)
+
 # Status-bar pixel regression: exercise the shared renderer without a map.
 if not env['server']:
     bar_sources = [source for source in source_files if source != 'Glob2.cpp']
