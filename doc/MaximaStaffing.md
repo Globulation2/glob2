@@ -30,6 +30,17 @@ at least one carrier** and none exceeds the engine's ceiling of 20.
 
 The defaults keep the stock between one third and two thirds full.
 
+## Starting staffing
+
+The loop is deliberately slow: it waits for a settled average and then moves one
+carrier per cooldown. Starting every building at the minimum would leave a newly
+built inn or swarm nearly idle for many passes, which is exactly when it is
+needed. So a building that has just been built is seeded with
+`staffing.new_swarm_workers` (8) or `staffing.new_inn_workers` (4) on its first
+control pass, and the loop takes over from there — free to raise or lower that
+number like any other. The seed applies once per building; it is not a floor,
+and `control_minimum_workers` still bounds the loop from below.
+
 ## Why it is shaped this way
 
 **Stock is the honest signal.** A building that runs dry is understaffed

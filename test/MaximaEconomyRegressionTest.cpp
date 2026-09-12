@@ -208,6 +208,9 @@ void soleSwarmStaffsFromItsOwnStock()
     Fixture f;Building* swarm=f.swarm(10,10,0);
     auto& ai=*f.ai;auto& c=ai.context;c.initialize();
     assert(ai.nearby_farm_capacity(c,0)==0);
+    // Seed neutralised: these cases exercise the control loop, not the
+    // starting staffing a newly built building is given.
+    ai.budget.staffing_new_swarm_workers=1;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
@@ -253,6 +256,7 @@ void nearbyCornDeterminesStaffing()
     assert(world.tile(16,11).foodOpportunity==0);
     assert(world.tile(16,11).farmCapacity==0);
     f.game.map.setResource(16,11,CORN,1);
+    ai.budget.staffing_new_swarm_workers=1;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
@@ -298,6 +302,7 @@ void cornPileInteriorIsSupply()
     // Staffing is a closed loop on the inn's own stock: an empty inn asks for
     // another carrier, a full one hands them back, and it never falls below the
     // minimum. Wheat growing nearby does not enter into the decision.
+    ai.budget.staffing_new_inn_workers=1;
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_low_permille=333;
@@ -518,6 +523,37 @@ void holidayHarvestCapacity()
 
 }
 
+void newBuildingsStartStaffed()
+{
+    Fixture f;
+    Building* swarm=f.swarm(10,10,0);
+    Building* inn=f.game.addBuilding(30,10,
+        globalContainer->buildingsTypes.getTypeNum("inn",0,false),0,0,0);
+    assert(inn);
+    auto& ai=*f.ai; auto& c=ai.context; c.initialize();
+    ai.budget.staffing_new_swarm_workers=8;
+    ai.budget.staffing_new_inn_workers=4;
+    ai.budget.staffing_window_samples=8;
+    ai.budget.staffing_cooldown_passes=3;
+    ai.budget.staffing_minimum_workers=1;
+    ai.budget.staffing_maximum_workers=20;
+    // A newly built building starts where it is useful instead of climbing
+    // from one carrier at a cooldown apiece.
+    ai.manage_swarm(c,0); ai.manage_inn(c,1); f.applyStaffing();
+    assert(swarm->maxUnitWorking==8);
+    assert(inn->maxUnitWorking==4);
+    // The seed applies once. From here the loop owns the number, so a building
+    // that stays full hands carriers back below its starting count.
+    swarm->resources[CORN]=swarm->type->maxResource[CORN];
+    inn->resources[CORN]=inn->type->maxResource[CORN];
+    for(int pass=0;pass<40;++pass)
+    {
+        ai.manage_swarm(c,0); ai.manage_inn(c,1); f.applyStaffing();
+    }
+    assert(swarm->maxUnitWorking<8);
+    assert(inn->maxUnitWorking<4);
+}
+
 int main()
 {
     GlobalContainer container; globalContainer=&container; container.runNoX=true;
@@ -529,6 +565,7 @@ int main()
     growingFoodFundsCapacity();
     colonyStartupAndAffordability();
     soleSwarmStaffsFromItsOwnStock();
+    newBuildingsStartStaffed();
     nearbyCornDeterminesStaffing();
     cornPileInteriorIsSupply();
     explorerTargetAlwaysGetsProduction();

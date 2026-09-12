@@ -684,6 +684,8 @@ Maxima::DirectorPlan::DirectorPlan()
 	staffing_minimum_workers=defaults.minimumWorkers;
 	staffing_maximum_workers=defaults.maximumWorkers;
 	staffing_cooldown_passes=defaults.cooldownPasses;
+	staffing_new_inn_workers=4;
+	staffing_new_swarm_workers=8;
 }
 
 
@@ -3649,6 +3651,8 @@ void Maxima::finalize_director_plan(Context& echo)
 	budget.staffing_minimum_workers=strategy.staffing.control_minimum_workers;
 	budget.staffing_maximum_workers=strategy.staffing.control_maximum_workers;
 	budget.staffing_cooldown_passes=strategy.staffing.control_cooldown_passes;
+	budget.staffing_new_inn_workers=strategy.staffing.new_inn_workers;
+	budget.staffing_new_swarm_workers=strategy.staffing.new_swarm_workers;
 	budget.swarm_supply_radius=
 		strategy.staffing.swarm_supply_radius;
 	budget.attack_clearing_workers=strategy.staffing.attack_clearing_workers;
@@ -5269,14 +5273,37 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("budget.first_prestige_trained_workers",budget.first_prestige_trained_workers);
 	a("budget.second_prestige_trained_workers",budget.second_prestige_trained_workers);
 	a("budget.second_prestige_population_min",budget.second_prestige_population_min);
+	if(a.version()<StaffingControl::SaveVersion)
+	{
+		// Versions 92 and 93 wrote the retired per-level inn staffing plan in
+		// these positions. Consume that exact layout so everything after it
+		// stays aligned; the director recomputes all of these on its next pass,
+		// so nothing is lost by discarding the values.
+		bool retiredAdaptiveStaffing=false;
+		a("budget.inn_adaptive_staffing_enabled",retiredAdaptiveStaffing);
+	}
 	a("budget.swarm_retirement_enabled",budget.swarm_retirement_enabled);
-	a("budget.staffing_window_samples",budget.staffing_window_samples);
-	a("budget.staffing_low_permille",budget.staffing_low_permille);
-	a("budget.staffing_high_permille",budget.staffing_high_permille);
-	a("budget.staffing_slack",budget.staffing_slack);
-	a("budget.staffing_minimum_workers",budget.staffing_minimum_workers);
-	a("budget.staffing_maximum_workers",budget.staffing_maximum_workers);
-	a("budget.staffing_cooldown_passes",budget.staffing_cooldown_passes);
+	if(a.version()>=StaffingControl::SaveVersion)
+	{
+		a("budget.staffing_window_samples",budget.staffing_window_samples);
+		a("budget.staffing_low_permille",budget.staffing_low_permille);
+		a("budget.staffing_high_permille",budget.staffing_high_permille);
+		a("budget.staffing_slack",budget.staffing_slack);
+		a("budget.staffing_minimum_workers",budget.staffing_minimum_workers);
+		a("budget.staffing_maximum_workers",budget.staffing_maximum_workers);
+		a("budget.staffing_cooldown_passes",budget.staffing_cooldown_passes);
+	}
+	else
+	{
+		int retiredLowCornThreshold[3]={0,0,0};
+		int retiredNormalWorkers[3]={0,0,0};
+		int retiredLowCornWorkers[3]={0,0,0};
+		int retiredTrackerSamples=0;
+		a("budget.inn_low_corn_threshold",retiredLowCornThreshold);
+		a("budget.inn_normal_workers",retiredNormalWorkers);
+		a("budget.inn_low_corn_workers",retiredLowCornWorkers);
+		a("budget.resource_tracker_samples",retiredTrackerSamples);
+	}
 	// Each building's control loop is integral state: a save that dropped it
 	// would restart every building from the minimum.
 	if(a.version()>=StaffingControl::SaveVersion)
@@ -7426,7 +7453,15 @@ int Maxima::staff_building(Context& echo, int id)
 	policy.maximumWorkers=std::min(int(Building::MAX_UNIT_WORKING),
 		budget.staffing_maximum_workers);
 	policy.cooldownPasses=budget.staffing_cooldown_passes;
+	// A building that has just been built starts where it is useful rather
+	// than at one carrier: the loop needs several passes to climb, and an inn
+	// or swarm is worth nothing until it is actually stocked. From here the
+	// control loop owns the number and may raise or lower it normally.
+	const bool fresh=staffing_control.find(id)==staffing_control.end();
 	StaffingControl::State& state=staffing_control[id];
+	if(fresh)
+		state.request=building->type->shortTypeNum==IntBuildingType::SWARM_BUILDING
+			? budget.staffing_new_swarm_workers : budget.staffing_new_inn_workers;
 	const int previous=state.request;
 	// The building's own stock and its own actual staffing are the only inputs.
 	const int request=StaffingControl::update(state, policy,

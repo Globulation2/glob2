@@ -61,6 +61,8 @@ namespace
 		INT_SPEC(staffing, control_minimum_workers, "staffing.control_minimum_workers", 0, 20, "workers", "staffing", "Workers every inn and swarm keeps regardless of its stock", StrategyImpactHigh),
 		INT_SPEC(staffing, control_maximum_workers, "staffing.control_maximum_workers", 1, 20, "workers", "staffing", "Ceiling on one building's worker request", StrategyImpactHigh),
 		INT_SPEC(staffing, control_cooldown_passes, "staffing.control_cooldown_passes", 0, 1000, "passes", "staffing", "Passes a building waits after changing its request before it may change again", StrategyImpactHigh),
+		INT_SPEC(staffing, new_inn_workers, "staffing.new_inn_workers", 1, 20, "workers", "staffing", "Workers a newly completed inn starts with before its control loop takes over", StrategyImpactHigh),
+		INT_SPEC(staffing, new_swarm_workers, "staffing.new_swarm_workers", 1, 20, "workers", "staffing", "Workers a newly completed swarm starts with before its control loop takes over", StrategyImpactHigh),
 		INT_SPEC(staffing, swarm_supply_radius, "staffing.swarm_supply_radius", 1, 64, "tiles", "staffing", "Maximum harvesting-route distance used to weight nearby fertile corn for swarm staffing", StrategyImpactHigh),
 		INT_SPEC(staffing, construction_inn_workers, "staffing.construction_inn_workers", 0, 32, "workers", "staffing", "Workers assigned to a new inn construction site", StrategyImpactHigh),
 		INT_SPEC(staffing, construction_swarm_workers, "staffing.construction_swarm_workers", 0, 32, "workers", "staffing", "Workers assigned to a new swarm construction site", StrategyImpactHigh),
