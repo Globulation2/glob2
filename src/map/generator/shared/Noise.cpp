@@ -7,27 +7,40 @@
 // with no warranty. Please email me at mazucker@vassar.edu if
 // you find it useful.
 
-#include <stdio.h>
-
 #include "Noise.h"
 #include <math.h>
 
-// TODO: change these preprocessor macros into inline functions
-
+namespace
+{
 // S curve is (3x^2 - 2x^3) because it's quick to calculate
 // though -cos(x * PI) * 0.5 + 0.5 would work too
-
-#define easeCurve(t) (t * t * (3.0 - 2.0 * t))
-#define linearInterp(t, a, b) (a + t * (b - a))
-#define dot2(rx, ry, q) (rx * q[0] + ry * q[1])
-#define dot3(rx, ry, rz, q) (rx * q[0] + ry * q[1] + rz * q[2])
-
-#define setupValues(t, axis, g0, g1, d0, d1, pos)                                                  \
-	t = pos[axis] + NOISE_LARGE_PWR2;                                                              \
-	g0 = ((int)t) & NOISE_MOD_MASK;                                                                \
-	g1 = (g0 + 1) & NOISE_MOD_MASK;                                                                \
-	d0 = t - (int)t;                                                                               \
+inline float easeCurve(float t)
+{
+	return t * t * (3.0 - 2.0 * t);
+}
+inline float linearInterp(float t, float a, float b)
+{
+	return a + t * (b - a);
+}
+inline float dot2(float rx, float ry, const float *q)
+{
+	return rx * q[0] + ry * q[1];
+}
+inline float dot3(float rx, float ry, float rz, const float *q)
+{
+	return rx * q[0] + ry * q[1] + rz * q[2];
+}
+// The grid points either side of pos on one axis, and the signed distances to them.
+inline void setupValues(float &t, int axis, int &g0, int &g1, float &d0, float &d1,
+						const float *pos)
+{
+	t = pos[axis] + NOISE_LARGE_PWR2;
+	g0 = ((int)t) & NOISE_MOD_MASK;
+	g1 = (g0 + 1) & NOISE_MOD_MASK;
+	d0 = t - (int)t;
 	d1 = d0 - 1.0;
+}
+} // namespace
 
 // Constructor
 GenerationNoise::GenerationNoise(unsigned int seed)

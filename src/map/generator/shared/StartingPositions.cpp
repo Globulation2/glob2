@@ -580,8 +580,7 @@ bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSi
 		if (!game.checkRoomForBuilding(context.bootX[s], context.bootY[s],
 									   globalContainer->buildingsTypes.get(typeNum), s, false))
 		{
-			if (false)
-				printf("Failed to add swarm of team %d\n", s);
+			context.detail = "No room for a colony's swarm";
 			return false;
 		}
 		game.teams[s]->startPosX = context.bootX[s];
@@ -593,8 +592,7 @@ bool placeArchipelagoStarts(Game &game, GenerationContext &context, int islandSi
 			if (game.addUnit(context.bootX[s] + (i % 4), context.bootY[s] - 1 - (i / 4), s, WORKER,
 							 0, 0, 0, 0) == NULL)
 			{
-				if (false)
-					printf("Failed to add unit %d of team %d\n", i, s);
+				context.detail = "No room for a colony's starting workers";
 				return false;
 			}
 		game.teams[s]->createLists();
@@ -624,8 +622,7 @@ bool placeStarts(Game &game, GenerationContext &context)
 		if (!game.checkRoomForBuilding(context.bootX[s], context.bootY[s],
 									   globalContainer->buildingsTypes.get(typeNum), s, false))
 		{
-			if (false)
-				printf("Failed to add swarm of team %d\n", s);
+			context.detail = "No room for a colony's swarm";
 			return false;
 		}
 		game.teams[s]->startPosX = context.bootX[s];
@@ -637,8 +634,7 @@ bool placeStarts(Game &game, GenerationContext &context)
 			if (game.addUnit(context.bootX[s] + (i % 4), context.bootY[s] - 1 - (i / 4), s, WORKER,
 							 0, 0, 0, 0) == NULL)
 			{
-				if (false)
-					printf("Failed to add unit %d of team %d\n", i, s);
+				context.detail = "No room for a colony's starting workers";
 				return false;
 			}
 		game.teams[s]->createLists();

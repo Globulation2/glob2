@@ -4,14 +4,17 @@
 #pragma once
 
 #include "Noise.h"
+#include <algorithm>
+#include <vector>
 
 class HeightMap /// class to generate heightmaps to decide where to put resources, water, sand and
 /// grass later
 {
-	float *_map;         /// height values are always [0,1].
-	unsigned int _w, _h; /// map size
-	float *_stamp;       /// smooth 0 to 1 gradient lookup to generate craters, islands and rivers
-	unsigned int _r;     /// radius of the _stamp
+	std::vector<float> _map; /// height values are always [0,1].
+	unsigned int _w, _h;     /// map size
+	std::vector<float>
+		_stamp;      /// smooth 0 to 1 gradient lookup to generate craters, islands and rivers
+	unsigned int _r; /// radius of the _stamp
 	GenerationNoise _pn;
 	std::mt19937 &random;
 	unsigned oldLowerX = ~0u, oldLowerY = ~0u, oldDifferenceX = ~0u,
@@ -29,7 +32,6 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 	HeightMap(unsigned int width, unsigned int height, std::mt19937 &random);
 	HeightMap(const HeightMap &) = delete;
 	HeightMap &operator=(const HeightMap &) = delete;
-	~HeightMap();
 	inline unsigned int uiLevel(unsigned int i, unsigned int scale)
 	{
 		return std::min(scale - 1, (unsigned int)(_map[i] * scale));
@@ -43,9 +45,6 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 	{
 		return _map[x % _w + (y % _h) * _w];
 	}
-	void mapOutput(char *filename); /// generates the file ~/.glob2/filename and writes the raw
-									/// 0..255 values of map to it. to see it, use convert -size
-									/// [width]x[height] -depth 8 gray:[filename] test.png
 
 	void makePlain(float smoothingFactor); /// a plain perlin height field
 	void makeSwamp(float smoothingFactor); /// a plain perlin height field
@@ -56,7 +55,7 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 	void makeCraters(unsigned int craterCount, unsigned int craterRadius,
 					 float smoothingFactor); /// generates a 'swamp' with craterCount craters
   private:
-	void operator=(float value) { std::fill(_map, _map + _w * _h, value); }
+	void operator=(float value) { std::fill(_map.begin(), _map.end(), value); }
 	void init(unsigned int width, unsigned int height);
 	void makeStamp(unsigned int radius); /// generates the stamp (smooth 0 to 1 gradient lookup to
 										 /// generate craters, islands and rivers)
@@ -70,10 +69,9 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 										  /// away from other hills.
 	inline void
 	addNoise(float weight,
-			 float smoothingFactor);  /// adds noise to the map: map=noise*weight+map*(1-weight)
-	void stampOutput(char *filename); /// generates the file ~/.glob2/filename and writes the raw
-									  /// 0..255 values of stamp to it. to see it, use convert -size
-									  /// [width]x[height] -depth 8 gray:[filename] test.png where
-									  /// with==height as _stamp is always a square
-	void normalize();                 /// fits the values of _map to [0, 1]
+			 float smoothingFactor); /// adds noise to the map: map=noise*weight+map*(1-weight)
+									 /// 0..255 values of stamp to it. to see it, use convert -size
+									 /// [width]x[height] -depth 8 gray:[filename] test.png where
+									 /// with==height as _stamp is always a square
+	void normalize();                /// fits the values of _map to [0, 1]
 };

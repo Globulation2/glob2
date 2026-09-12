@@ -5,9 +5,6 @@
 #include "GenerationResult.h"
 #include "GlobalContainer.h"
 #include "Noise.h"
-#include <BinaryStream.h>
-#include <FileManager.h>
-#include <Toolkit.h>
 #include <math.h>
 #include <vector>
 
@@ -44,28 +41,19 @@ HeightMap::HeightMap(unsigned int width, unsigned int height, std::mt19937 &rng)
 	init(width, height);
 }
 
-HeightMap::~HeightMap()
-{
-	delete[] _map;
-	if (_stamp)
-		delete[] _stamp;
-}
-
 void HeightMap::init(unsigned int width, unsigned int height)
 {
 	_w = width;
 	_h = height;
-	_map = new float[_w * _h];
-	_stamp = NULL;
+	_map.assign(size_t(_w) * _h, 0.f);
+	_stamp.clear();
 }
 
 void HeightMap::makeStamp(unsigned int radius)
 {
 	_r = std::max(1u, radius);
 	oldLowerX = oldLowerY = oldDifferenceX = oldDifferenceY = ~0u;
-	if (_stamp)
-		delete[] _stamp;
-	_stamp = new float[(2 * _r + 1) * (2 * _r + 1)];
+	_stamp.assign(size_t(2 * _r + 1) * (2 * _r + 1), 0.f);
 	for (unsigned int x = 0; x < 2 * _r + 1; x++)
 	{
 		for (unsigned int y = 0; y < 2 * _r + 1; y++)
@@ -85,7 +73,7 @@ inline void HeightMap::lower(unsigned int coordX, unsigned int coordY)
 		(coordY != oldLowerY)) // don't stamp the same spot again. if stamp is moved like in
 							   // rivermaps this saves a lot of time
 	{
-		assert(_stamp);
+		assert(!_stamp.empty());
 		for (unsigned int x = 0; x < 2 * _r + 1; x++)
 		{
 			/// this loop can be replaced by a somehow complicated memcpy
@@ -108,7 +96,7 @@ inline void HeightMap::differenceStamp(unsigned int coordX, unsigned int coordY)
 		(coordY != oldDifferenceY)) // don't stamp the same spot again. if stamp is moved like in
 									// rivermaps this saves a lot of time
 	{
-		assert(_stamp);
+		assert(!_stamp.empty());
 		for (unsigned int x = 0; x < 2 * _r + 1; x++)
 		{
 			for (unsigned int y = 0; y < 2 * _r + 1; y++)
@@ -260,32 +248,6 @@ void HeightMap::makeRiver(unsigned int maxDiameter, float smoothingFactor, bool 
 	}
 	addNoise(.1, smoothingFactor);
 	normalize();
-}
-
-void HeightMap::stampOutput(char *filename)
-{
-	char *hm2 = new char[(2 * _r + 1) * (2 * _r + 1)];
-	StreamBackend *stream = Toolkit::getFileManager()->openOutputStreamBackend(filename);
-
-	for (unsigned int i = 0; i < (2 * _r + 1) * (2 * _r + 1); i++)
-		hm2[i] = (char)(_stamp[i] * 256);
-
-	stream->write(hm2, (2 * _r + 1) * (2 * _r + 1) * sizeof(char));
-	delete stream;
-	delete[] hm2;
-}
-
-void HeightMap::mapOutput(char *filename)
-{
-	char *hm2 = new char[_w * _h];
-	StreamBackend *stream = Toolkit::getFileManager()->openOutputStreamBackend(filename);
-
-	for (unsigned int i = 0; i < _w * _h; i++)
-		hm2[i] = (char)(_map[i] * 256);
-
-	stream->write(hm2, _w * _h * sizeof(char));
-	delete stream;
-	delete[] hm2;
 }
 
 void HeightMap::makeCraters(unsigned int craterCount, unsigned int craterRadius,
