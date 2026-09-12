@@ -825,7 +825,11 @@ public:
 	static const char* formatName(MatchFormat format);
 	static std::string schemaJson();
 	static std::string resolvedJson(const ResolvedStrategy& strategy);
-	static bool restoreValues(const std::string& text, MaximaStrategy& values, std::string& error);
+	/// Restore a saved game's strategy. Saves written before version 97 are
+	/// missing the offense keys and still carry retired ones, so they are
+	/// merged onto `values` rather than replacing it outright.
+	static bool restoreValues(const std::string& text, MaximaStrategy& values,
+		std::string& error, int versionMinor);
 	static std::string canonicalValues(const MaximaStrategy& strategy);
 };
 

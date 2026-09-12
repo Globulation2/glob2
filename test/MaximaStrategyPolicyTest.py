@@ -48,7 +48,11 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
 
     def test_current_save_omits_configuration_plans_and_phases(self) -> None:
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 96", version)
+        self.assertIn("#define VERSION_MINOR 97", version)
+        # The relentless offense changes simulation results, so a pre-97 client
+        # must be refused rather than allowed to desync, and the trimmed Maxima
+        # mission state needs its own load gate.
+        self.assertIn("versionMinor>=97", self.maxima)
         save = self.maxima[self.maxima.index("void Maxima::save(") :]
         self.assertNotIn('writeText(strategy.getStrategyName()', save)
         self.assertNotIn('writeText(tuning', save)

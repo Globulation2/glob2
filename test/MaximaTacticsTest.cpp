@@ -61,15 +61,15 @@ void MaximaTacticsTest::testTacticalLifecycleRegressions()
 	CPPUNIT_ASSERT(!Program::targetQuarantined(43, 99, true, quarantine));
 	CPPUNIT_ASSERT(!Program::targetQuarantined(42, 99, false, quarantine));
 
-	Mission siege;
-	siege.targetGid=42;
-	siege.lastTargetHp=10;
-	siege.lastProgressTick=100;
-	siege.retargetSiege(43, 7, 8, 200);
-	CPPUNIT_ASSERT(siege.targetGid==43 && siege.targetX==7 && siege.targetY==8);
-	CPPUNIT_ASSERT(siege.lastTargetHp==-1 && siege.lastProgressTick==200);
-	// Repeated updates to the same target must not hide a real stall.
-	siege.lastTargetHp=500;
-	siege.retargetSiege(43, 7, 8, 300);
-	CPPUNIT_ASSERT(siege.lastTargetHp==500 && siege.lastProgressTick==200);
+	// A reset objective holds no flag and arms the stall watch with its
+	// "never seen" sentinel, so the first damage reading counts as progress.
+	Mission mission;
+	mission.kind=MissionSiege;
+	mission.phase=PhaseEngage;
+	mission.flagId=7;
+	mission.lastTargetHp=500;
+	mission.reset();
+	CPPUNIT_ASSERT(mission.kind==MissionNone && mission.phase==PhaseIdle);
+	CPPUNIT_ASSERT(mission.flagId==NoFlag && mission.targetGid==NoTarget);
+	CPPUNIT_ASSERT_EQUAL(-1, mission.lastTargetHp);
 }

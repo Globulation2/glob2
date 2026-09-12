@@ -16,7 +16,6 @@ import build_maxima_checkpoint_bank as bank
 import run_maxima_switch_ablation as ablation
 
 
-TEAM_SWITCHES = {key for key in ablation.ALL_SWITCHES if key.startswith("teamplay.")}
 MAJOR = {"farming.enabled", "recon.enabled", "colonization.enabled",
          "economy.food_service_safeguards_enabled",
          "economy.large_economy_adaptation_enabled", "upgrades.enabled"}
@@ -157,8 +156,6 @@ def build(directories: list[Path], switches: list[str], mode: str, horizon: int,
                 continue
             ticks = [save["tick"] for save in saves]
             for switch in switches:
-                if switch in TEAM_SWITCHES and meta["format"] != "2v2":
-                    continue
                 if mode == "from-start":
                     if saves[0]["tick"] != 0:
                         raise ValueError("from-start screen requires a tick-zero checkpoint")

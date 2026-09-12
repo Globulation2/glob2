@@ -90,31 +90,12 @@ void Mission::reset()
 	targetGid=NoTarget;
 	targetX=0;
 	targetY=0;
-	rallyX=0;
-	rallyY=0;
 	requestedForce=0;
-	minimumForce=0;
-	launchedForce=0;
 	startedTick=0;
 	phaseSinceTick=0;
-	lastContactTick=0;
 	lastProgressTick=0;
-	cooldownUntil=0;
-	initialTargetWorkers=0;
 	candidateScore=0;
 	lastTargetHp=-1;
-}
-
-void Mission::retargetSiege(int gid, int x, int y, int tick)
-{
-	if(gid!=targetGid)
-	{
-		lastTargetHp=-1;
-		lastProgressTick=tick;
-	}
-	targetGid=gid;
-	targetX=x;
-	targetY=y;
 }
 
 Program::Program()
@@ -285,15 +266,14 @@ bool Program::targetQuarantined(int gid, int tick, bool enabled,
 
 const char* missionKindName(MissionKind kind)
 {
-	static const char* names[]={"none", "raid", "siege", "relief"};
-	return kind>=MissionNone && kind<=MissionRelief ? names[int(kind)] : "unknown";
+	static const char* names[]={"none", "raid", "siege"};
+	return kind>=MissionNone && kind<=MissionSiege ? names[int(kind)] : "unknown";
 }
 
 const char* missionPhaseName(MissionPhase phase)
 {
-	static const char* names[]={"idle", "muster", "transit", "engage",
-		"withdraw", "cooldown"};
-	return phase>=PhaseIdle && phase<=PhaseCooldown ? names[int(phase)] : "unknown";
+	static const char* names[]={"idle", "engage"};
+	return phase>=PhaseIdle && phase<=PhaseEngage ? names[int(phase)] : "unknown";
 }
 
 }

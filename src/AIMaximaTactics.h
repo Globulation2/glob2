@@ -25,25 +25,15 @@ enum MissionKind
 {
 	MissionNone,
 	MissionRaid,
-	MissionSiege,
-	MissionRelief
+	MissionSiege
 };
 
+/// The offense either holds a flag on a target or it does not; there are no
+/// muster, transit, withdrawal or cooldown states to pass through.
 enum MissionPhase
 {
 	PhaseIdle,
-	PhaseMuster,
-	PhaseTransit,
-	PhaseEngage,
-	PhaseWithdraw,
-	PhaseCooldown
-};
-
-enum SiegeTargetContinuity
-{
-	SiegeTargetTracked,
-	SiegeTargetLost,
-	SiegeTargetReplacementAvailable
+	PhaseEngage
 };
 
 struct WorkerSighting
@@ -107,11 +97,13 @@ struct RaidCandidate
 	std::vector<int> workerGids;
 };
 
+/// The live offensive objective: which flag is out, what it sits on, and the
+/// two clocks the planner reads (how long this objective has been held, and
+/// when the target last took damage).
 struct Mission
 {
 	Mission();
 	void reset();
-	void retargetSiege(int gid, int x, int y, int tick);
 
 	MissionKind kind;
 	MissionPhase phase;
@@ -120,17 +112,10 @@ struct Mission
 	int targetGid;
 	int targetX;
 	int targetY;
-	int rallyX;
-	int rallyY;
 	int requestedForce;
-	int minimumForce;
-	int launchedForce;
 	int startedTick;
 	int phaseSinceTick;
-	int lastContactTick;
 	int lastProgressTick;
-	int cooldownUntil;
-	int initialTargetWorkers;
 	int candidateScore;
 	int lastTargetHp;
 };

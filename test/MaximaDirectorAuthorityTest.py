@@ -103,11 +103,14 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
                            "void Maxima::end_offense")
         control = function(self.source, "void Maxima::control_offense",
                            "void Maxima::choose_enemy_target")
-        for gone in ("PhaseMuster", "PhaseWithdraw", "PhaseCooldown",
-                     "musterLaunchAllowed", "casualtiesRequireWithdrawal",
-                     "MissionRelief"):
+        tactics = (ROOT / "src/AIMaximaTactics.h").read_text()
+        for gone in ("PhaseMuster", "PhaseTransit", "PhaseWithdraw",
+                     "PhaseCooldown", "MissionRelief", "musterLaunchAllowed",
+                     "casualtiesRequireWithdrawal", "SiegeTargetContinuity"):
             self.assertNotIn(gone, planner)
             self.assertNotIn(gone, control)
+            # The retired states are removed from the type, not just unused.
+            self.assertNotIn(gone, tactics)
         self.assertIn("ChangeFlagPosition", control)
         self.assertIn("AssignWorkers", control)
         self.assertIn("budget.tactical_requested_force=std::min(cap, surplus);", planner)
@@ -135,7 +138,8 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
         planner = function(self.source, "void Maxima::plan_offense",
                            "void Maxima::end_offense")
         self.assertIn("get_building(tactical_mission.flagId)", planner)
-        self.assertIn("tactical_warrior_available(warrior, flag,", planner)
+        # Warriors already enrolled on the live flag stay eligible for it.
+        self.assertRegex(planner, r"tactical_warrior_available\([^)]*, flag,")
         eligibility = function(
             self.source, "bool tactical_warrior_available", "int warrior_power"
         )

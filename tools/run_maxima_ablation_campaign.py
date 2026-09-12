@@ -450,7 +450,7 @@ class Campaign:
             if wave == 1:
                 switches += sorted(bank.MAJOR-set(switches))
             for fmt in FORMATS:
-                keys = [k for k in switches if fmt == "2v2" or k not in bank.TEAM_SWITCHES]
+                keys = list(switches)
                 directories = self.discovery_banks(fmt)
                 name = f"wave{wave}-{fmt}-from-start"
                 if name in self.state["completed_stages"]:

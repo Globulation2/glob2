@@ -12,7 +12,7 @@ The Maxima C++ headers and sources contain 23,620 physical lines, including comm
 | --- | --- | --- |
 | Placement | `WorldState`, intents, limits, action lifecycle, `Planner` | Strong foundation: explicit inputs, owned reservations and actions, incremental selection, and revalidation before issuance. Its stream serialization remains a support-library dependency. |
 | Reconnaissance | Sightings, opponent memory, reports, objectives | Useful independent observation model. Engine observation and mission execution still live in the core. |
-| Tactics | Raid observations, candidate scoring, mission data, transition predicates | Useful independent policy primitives. Authorization and the mission controller remain in the core. |
+| Tactics | Raid observations, candidate scoring, mission data, target quarantine | Useful independent policy primitives. Target selection and the flag controller remain in the core. |
 | Defense | Movement masks, topology policy, candidate/result types | Clear deterministic algorithm boundary. Reactive defense and runtime reconciliation remain in the core. |
 | Farming | Fertility cache, circulation and porosity algorithms | Good independent primitives. The much larger farming policy is still part of `Maxima`. |
 | Configuration | Grouped strategy values, resolver, parameter schema and provenance | Keep this separation. `AIMaximaStrategy` primarily means configuration; it does not own strategic decision-making. |
@@ -24,7 +24,13 @@ The existing deterministic scheduling, explicit placement lifecycle, and standal
 
 The nested [StrategyDirector](/Users/bradley/glob2/src/AIMaxima.h:56) owns two flags. Its [evaluate method](/Users/bradley/glob2/src/AIMaxima.cpp:792) calls `owner.evaluate_strategy(echo)`. Strategic state, scoring, arbitration, environment analysis, opponent assessments, and plan construction all remain on `Maxima`.
 
-The same pattern appears in combat: [tactical authorization](/Users/bradley/glob2/src/AIMaxima.cpp:4028) occupies roughly 660 lines and [attack control](/Users/bradley/glob2/src/AIMaxima.cpp:7508) roughly 480, with mission transitions, target selection, engine queries, order issuance, and diagnostics interleaved. `AIMaximaTactics.cpp` does not own that lifecycle.
+Combat used to show the same pattern most sharply: tactical authorization ran
+roughly 660 lines and attack control roughly 480, with muster and withdrawal
+transitions, target selection, engine queries, order issuance and diagnostics
+interleaved. The relentless offense replaced both with `plan_offense` (about
+250 lines, which picks the target) and `control_offense` (about 195, which
+keeps one flag on it). `AIMaximaTactics.cpp` still does not own that lifecycle,
+but there is far less of it to own.
 
 Every member method can access every subsystem's state. Moving more `Maxima::` methods into separate files would improve navigation without establishing a stronger boundary.
 

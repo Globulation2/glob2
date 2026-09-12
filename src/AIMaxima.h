@@ -570,8 +570,6 @@ private:
 	int target_dynamic_plan_weight;
 	std::map<int, int> attack_flag_targets;
 	std::map<int, int> attack_flag_started_ticks;
-	std::map<int, int> attack_flag_last_hp;
-	std::map<int, int> attack_flag_last_progress;
 	std::map<int, std::string> attack_flag_end_reasons;
 	std::map<int, int> attack_target_quarantine_until;
 	///The immutable, fully resolved strategy used for this match.

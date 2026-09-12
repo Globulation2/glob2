@@ -64,16 +64,16 @@ int main()
 	assert(!Program::targetQuarantined(43, 99, true, quarantine));
 	assert(!Program::targetQuarantined(42, 99, false, quarantine));
 
-	Mission siege;
-	siege.targetGid=42;
-	siege.lastTargetHp=10;
-	siege.lastProgressTick=100;
-	siege.retargetSiege(43, 7, 8, 200);
-	assert(siege.targetGid==43 && siege.targetX==7 && siege.targetY==8);
-	assert(siege.lastTargetHp==-1 && siege.lastProgressTick==200);
-	// Repeated updates to the same target must not hide a real stall.
-	siege.lastTargetHp=500;
-	siege.retargetSiege(43, 7, 8, 300);
-	assert(siege.lastTargetHp==500 && siege.lastProgressTick==200);
+	// A reset objective holds no flag and arms the stall watch with its
+	// "never seen" sentinel, so the first damage reading counts as progress.
+	Mission mission;
+	mission.kind=MissionSiege;
+	mission.phase=PhaseEngage;
+	mission.flagId=7;
+	mission.lastTargetHp=500;
+	mission.reset();
+	assert(mission.kind==MissionNone && mission.phase==PhaseIdle);
+	assert(mission.flagId==NoFlag && mission.targetGid==NoTarget);
+	assert(mission.lastTargetHp==-1);
 	return 0;
 }

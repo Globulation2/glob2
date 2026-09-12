@@ -812,7 +812,8 @@ namespace
 	bool applyAssignment(const std::string& source, int lineNumber,
 		const std::string& raw, Strategy& strategy,
 		std::map<std::string, std::string>& provenance,
-		std::set<std::string>& layerKeys, std::string& error)
+		std::set<std::string>& layerKeys, std::string& error,
+		bool ignoreRetiredKeys=false)
 	{
 		std::string line=raw;
 		const std::string::size_type comment=line.find('#');
@@ -848,6 +849,10 @@ namespace
 		const ParameterSpec* spec=findSpec(key);
 		if(!spec)
 		{
+			// A saved game may name a key this build has retired. Every other
+			// source must still be rejected, so a typo is never silent.
+			if(ignoreRetiredKeys)
+				return true;
 			std::ostringstream out;
 			out<<source<<":"<<lineNumber<<": unknown Maxima key '"<<key<<"'";
 			error=out.str();
@@ -955,7 +960,7 @@ namespace
 
 	bool applyInline(const std::string& source, const std::string& settings,
 		Strategy& strategy, std::map<std::string, std::string>& provenance,
-		std::string& error)
+		std::string& error, bool ignoreRetiredKeys=false)
 	{
 		std::string normalized=settings;
 		for(size_t i=0; i<normalized.size(); ++i)
@@ -975,7 +980,7 @@ namespace
 				return false;
 			}
 			if(!applyAssignment(source, number, entry, strategy, provenance,
-				keys, error))
+				keys, error, ignoreRetiredKeys))
 				return false;
 		}
 		return true;
@@ -1341,12 +1346,20 @@ std::string StrategyResolver::resolvedJson(const ResolvedStrategy& strategy)
 
 namespace AIMaxima {
 bool StrategyResolver::restoreValues(const std::string& text, MaximaStrategy& values,
-    std::string& error)
+    std::string& error, int versionMinor)
 {
-    MaximaStrategy restored{};
+    // A save records every key the schema held when it was written. Version 97
+    // retired the muster, relief and teamplay keys and added the offense's own,
+    // so an older save is restored key by key: what it recorded wins, what it
+    // never held keeps this build's resolved value, and what this build retired
+    // is ignored. Saves at the current version must still be exact, so a
+    // truncated one is refused rather than silently half-applied.
+    const bool exact=versionMinor>=97;
+    MaximaStrategy restored=exact ? MaximaStrategy{} : values;
     std::map<std::string, std::string> provenance;
-    if(!applyInline("saved strategy", text, restored, provenance, error)) return false;
-    if(provenance.size()!=parameterCount)
+    if(!applyInline("saved strategy", text, restored, provenance, error, !exact))
+        return false;
+    if(exact && provenance.size()!=parameterCount)
     {
         error="Incomplete saved Maxima strategy";
         return false;

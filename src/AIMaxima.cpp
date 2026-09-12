@@ -741,13 +741,7 @@ void Maxima::getDiagnosticSections(
 				<<" @ "<<tactical_mission.targetX<<","<<tactical_mission.targetY;
 			section.rows.push_back(AIDiagnosticRow("Tactical target", value.str()));
 		}
-		{
-			std::ostringstream value;
-			value<<tactical_mission.requestedForce<<" / "
-				<<tactical_mission.minimumForce<<" / "
-				<<tactical_mission.launchedForce;
-			section.rows.push_back(AIDiagnosticRow("Force req/min/live", value.str()));
-		}
+		MAXIMA_DIAGNOSTIC_ROW("Force requested", tactical_mission.requestedForce);
 		{
 			std::ostringstream value;
 			value<<budget.attack_flags<<" / "<<budget.attack_units;
@@ -4346,7 +4340,7 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
     stream->readEnterSection("MaximaExecution");
     const std::string savedStrategy=stream->readText("strategy");
     std::string error;
-    if(!StrategyResolver::restoreValues(savedStrategy,strategy,error))
+    if(!StrategyResolver::restoreValues(savedStrategy,strategy,error,versionMinor))
         throw std::runtime_error(error);
     // Reconfigure derived policies before restoring incremental work. Local
     // configuration may have changed since this game was saved.
@@ -4399,14 +4393,14 @@ void Maxima::saveDirector(GAGCore::OutputStream* stream) const
 	stream->writeEnterSection("demands");stream->writeSint32(demands.survival,"survival");stream->writeSint32(demands.food,"food");stream->writeSint32(demands.growth,"growth");stream->writeSint32(demands.expansion,"expansion");stream->writeSint32(demands.access,"access");stream->writeSint32(demands.technology,"technology");stream->writeSint32(demands.mobility,"mobility");stream->writeSint32(demands.military,"military");stream->writeSint32(demands.aggression,"aggression");stream->writeLeaveSection();
 	stream->writeEnterSection("opponents");for(int i=0;i<Team::MAX_COUNT;++i){stream->writeEnterSection(i);const OpponentAssessment& o=opponents[i];stream->writeUint8(o.alive,"alive");stream->writeSint32(o.visible_warriors,"visible_warriors");stream->writeSint32(o.estimated_warriors,"estimated_warriors");stream->writeSint32(o.last_observed_warriors,"last_observed_warriors");stream->writeSint32(o.visible_explorers,"visible_explorers");stream->writeSint32(o.visible_buildings,"visible_buildings");stream->writeSint32(o.known_buildings,"known_buildings");stream->writeSint32(o.reachable_buildings,"reachable_buildings");stream->writeSint32(o.strategic_value,"strategic_value");stream->writeSint32(o.nearest_building,"nearest_building");stream->writeSint32(o.score,"score");stream->writeSint32(o.last_seen_tick,"last_seen_tick");stream->writeSint32(o.last_force_seen_tick,"last_force_seen_tick");stream->writeSint32(o.last_building_seen_tick,"last_building_seen_tick");stream->writeSint32(o.intel_confidence,"intel_confidence");stream->writeLeaveSection();}stream->writeLeaveSection();
 	stream->writeEnterSection("campaign");stream->writeSint32(campaign.state,"state");stream->writeSint32(campaign.target_team,"target_team");stream->writeSint32(campaign.started_tick,"started_tick");stream->writeSint32(campaign.last_progress_tick,"last_progress_tick");stream->writeSint32(campaign.last_target_buildings,"last_target_buildings");stream->writeSint32(campaign.buildings_destroyed,"buildings_destroyed");stream->writeSint32(campaign.cooldown_until,"cooldown_until");stream->writeLeaveSection();
-	stream->writeEnterSection("Tactics");stream->writeSint32(tactical_mission.kind,"kind");stream->writeSint32(tactical_mission.phase,"phase");stream->writeSint32(tactical_mission.flagId,"flag_id");stream->writeSint32(tactical_mission.targetTeam,"target_team");stream->writeSint32(tactical_mission.targetGid,"target_gid");stream->writeSint32(tactical_mission.targetX,"target_x");stream->writeSint32(tactical_mission.targetY,"target_y");stream->writeSint32(tactical_mission.rallyX,"rally_x");stream->writeSint32(tactical_mission.rallyY,"rally_y");stream->writeSint32(tactical_mission.requestedForce,"requested_force");stream->writeSint32(tactical_mission.minimumForce,"minimum_force");stream->writeSint32(tactical_mission.launchedForce,"launched_force");stream->writeSint32(tactical_mission.startedTick,"started_tick");stream->writeSint32(tactical_mission.phaseSinceTick,"phase_since_tick");stream->writeSint32(tactical_mission.lastContactTick,"last_contact_tick");stream->writeSint32(tactical_mission.lastProgressTick,"last_progress_tick");stream->writeSint32(tactical_mission.cooldownUntil,"cooldown_until");stream->writeSint32(tactical_mission.initialTargetWorkers,"initial_target_workers");stream->writeSint32(tactical_mission.candidateScore,"candidate_score");stream->writeSint32(tactical_mission.lastTargetHp,"last_target_hp");stream->writeLeaveSection();
+	stream->writeEnterSection("Tactics");stream->writeSint32(tactical_mission.kind,"kind");stream->writeSint32(tactical_mission.phase,"phase");stream->writeSint32(tactical_mission.flagId,"flag_id");stream->writeSint32(tactical_mission.targetTeam,"target_team");stream->writeSint32(tactical_mission.targetGid,"target_gid");stream->writeSint32(tactical_mission.targetX,"target_x");stream->writeSint32(tactical_mission.targetY,"target_y");stream->writeSint32(tactical_mission.requestedForce,"requested_force");stream->writeSint32(tactical_mission.startedTick,"started_tick");stream->writeSint32(tactical_mission.phaseSinceTick,"phase_since_tick");stream->writeSint32(tactical_mission.lastProgressTick,"last_progress_tick");stream->writeSint32(tactical_mission.candidateScore,"candidate_score");stream->writeSint32(tactical_mission.lastTargetHp,"last_target_hp");stream->writeLeaveSection();
 	stream->writeSint32(posture,"posture");stream->writeSint32(posture_since,"posture_since");for(int i=0;i<PostureCount;++i)stream->writeSint32(posture_utilities[i],FormattableString("posture_utility_%0").arg(i).c_str());
 #define WRITE_SCALAR(field) stream->writeSint32(field,#field);
 	WRITE_SCALAR(explorer_threat_until) WRITE_SCALAR(explorer_colony_threat_until) WRITE_SCALAR(global_water_percent) WRITE_SCALAR(global_shoreline_density) WRITE_SCALAR(global_land_components) WRITE_SCALAR(global_largest_land_percent) WRITE_SCALAR(global_start_land_percent) WRITE_SCALAR(global_chokepoint_density) WRITE_SCALAR(global_water_tiles) WRITE_SCALAR(global_grass_tiles) WRITE_SCALAR(global_land_tiles) WRITE_SCALAR(global_buildable_tiles) WRITE_SCALAR(global_corn_tiles) WRITE_SCALAR(global_wood_tiles) WRITE_SCALAR(global_stone_tiles) WRITE_SCALAR(global_algae_tiles) WRITE_SCALAR(global_fruit_tiles) WRITE_SCALAR(global_terrain_abundance) WRITE_SCALAR(global_connected_abundance) WRITE_SCALAR(global_mobility_opportunity) WRITE_SCALAR(recent_construction_failures) WRITE_SCALAR(last_construction_failure_tick) WRITE_SCALAR(proactive_clearing_flag) WRITE_SCALAR(proactive_clearing_started_tick) WRITE_SCALAR(proactive_clearing_initial_wood) WRITE_SCALAR(last_proactive_clearing_tick) WRITE_SCALAR(last_preemptive_defense_tick)
 #undef WRITE_SCALAR
 	stream->writeUint8(large_economy_committed,"large_economy_committed");stream->writeUint8(topology_initialized,"topology_initialized");stream->writeUint8(opening_space_constrained,"opening_space_constrained");stream->writeUint32(preemptive_building_signature,"preemptive_building_signature");
 	auto writeIntMap=[stream](const char* name,const std::map<int,int>& values){stream->writeEnterSection(name);stream->writeUint32(values.size(),"size");size_t n=0;for(std::map<int,int>::const_iterator i=values.begin();i!=values.end();++i,++n){stream->writeEnterSection(n);stream->writeSint32(i->first,"key");stream->writeSint32(i->second,"value");stream->writeLeaveSection();}stream->writeLeaveSection();};
-	writeIntMap("attack_flag_targets",attack_flag_targets);writeIntMap("attack_flag_started_ticks",attack_flag_started_ticks);writeIntMap("attack_flag_last_hp",attack_flag_last_hp);writeIntMap("attack_flag_last_progress",attack_flag_last_progress);writeIntMap("attack_target_quarantine_until",attack_target_quarantine_until);
+	writeIntMap("attack_flag_targets",attack_flag_targets);writeIntMap("attack_flag_started_ticks",attack_flag_started_ticks);writeIntMap("attack_target_quarantine_until",attack_target_quarantine_until);
 	stream->writeEnterSection("attack_flag_end_reasons");stream->writeUint32(attack_flag_end_reasons.size(),"size");size_t n=0;for(std::map<int,std::string>::const_iterator i=attack_flag_end_reasons.begin();i!=attack_flag_end_reasons.end();++i,++n){stream->writeEnterSection(n);stream->writeSint32(i->first,"key");stream->writeText(i->second,"value");stream->writeLeaveSection();}stream->writeLeaveSection();
 	stream->writeEnterSection("ColonizationState");
 
@@ -4462,7 +4456,30 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 	stream->readEnterSection("demands");demands.survival=stream->readSint32("survival");demands.food=stream->readSint32("food");demands.growth=stream->readSint32("growth");demands.expansion=stream->readSint32("expansion");demands.access=stream->readSint32("access");demands.technology=stream->readSint32("technology");demands.mobility=stream->readSint32("mobility");demands.military=stream->readSint32("military");demands.aggression=stream->readSint32("aggression");stream->readLeaveSection();
 	stream->readEnterSection("opponents");for(int i=0;i<Team::MAX_COUNT;++i){stream->readEnterSection(i);OpponentAssessment& o=opponents[i];o.alive=stream->readUint8("alive");o.visible_warriors=stream->readSint32("visible_warriors");o.estimated_warriors=stream->readSint32("estimated_warriors");o.last_observed_warriors=stream->readSint32("last_observed_warriors");o.visible_explorers=stream->readSint32("visible_explorers");o.visible_buildings=stream->readSint32("visible_buildings");o.known_buildings=stream->readSint32("known_buildings");o.reachable_buildings=stream->readSint32("reachable_buildings");o.strategic_value=stream->readSint32("strategic_value");o.nearest_building=stream->readSint32("nearest_building");o.score=stream->readSint32("score");o.last_seen_tick=stream->readSint32("last_seen_tick");o.last_force_seen_tick=stream->readSint32("last_force_seen_tick");{o.last_building_seen_tick=stream->readSint32("last_building_seen_tick");o.intel_confidence=stream->readSint32("intel_confidence");}stream->readLeaveSection();}stream->readLeaveSection();
 	stream->readEnterSection("campaign");campaign.state=static_cast<CampaignState>(stream->readSint32("state"));campaign.target_team=stream->readSint32("target_team");campaign.started_tick=stream->readSint32("started_tick");campaign.last_progress_tick=stream->readSint32("last_progress_tick");campaign.last_target_buildings=stream->readSint32("last_target_buildings");campaign.buildings_destroyed=stream->readSint32("buildings_destroyed");campaign.cooldown_until=stream->readSint32("cooldown_until");stream->readLeaveSection();
-	{stream->readEnterSection("Tactics");tactical_mission.kind=static_cast<Tactics::MissionKind>(stream->readSint32("kind"));tactical_mission.phase=static_cast<Tactics::MissionPhase>(stream->readSint32("phase"));tactical_mission.flagId=stream->readSint32("flag_id");tactical_mission.targetTeam=stream->readSint32("target_team");tactical_mission.targetGid=stream->readSint32("target_gid");tactical_mission.targetX=stream->readSint32("target_x");tactical_mission.targetY=stream->readSint32("target_y");tactical_mission.rallyX=stream->readSint32("rally_x");tactical_mission.rallyY=stream->readSint32("rally_y");tactical_mission.requestedForce=stream->readSint32("requested_force");tactical_mission.minimumForce=stream->readSint32("minimum_force");tactical_mission.launchedForce=stream->readSint32("launched_force");tactical_mission.startedTick=stream->readSint32("started_tick");tactical_mission.phaseSinceTick=stream->readSint32("phase_since_tick");tactical_mission.lastContactTick=stream->readSint32("last_contact_tick");tactical_mission.lastProgressTick=stream->readSint32("last_progress_tick");tactical_mission.cooldownUntil=stream->readSint32("cooldown_until");tactical_mission.initialTargetWorkers=stream->readSint32("initial_target_workers");tactical_mission.candidateScore=stream->readSint32("candidate_score");tactical_mission.lastTargetHp=stream->readSint32("last_target_hp");stream->readLeaveSection();}
+	{
+		stream->readEnterSection("Tactics");
+		if(versionMinor>=97)
+		{
+			tactical_mission.kind=static_cast<Tactics::MissionKind>(stream->readSint32("kind"));tactical_mission.phase=static_cast<Tactics::MissionPhase>(stream->readSint32("phase"));tactical_mission.flagId=stream->readSint32("flag_id");tactical_mission.targetTeam=stream->readSint32("target_team");tactical_mission.targetGid=stream->readSint32("target_gid");tactical_mission.targetX=stream->readSint32("target_x");tactical_mission.targetY=stream->readSint32("target_y");tactical_mission.requestedForce=stream->readSint32("requested_force");tactical_mission.startedTick=stream->readSint32("started_tick");tactical_mission.phaseSinceTick=stream->readSint32("phase_since_tick");tactical_mission.lastProgressTick=stream->readSint32("last_progress_tick");tactical_mission.candidateScore=stream->readSint32("candidate_score");tactical_mission.lastTargetHp=stream->readSint32("last_target_hp");
+		}
+		else
+		{
+			// A pre-97 save carries a muster-and-withdraw mission whose phases
+			// and force contract no longer exist. Read its shape, then discard
+			// it: the planner picks a target on its next review and the
+			// executor sweeps the inherited war flag away.
+			static const char* const legacy[]={"kind","phase","flag_id",
+				"target_team","target_gid","target_x","target_y","rally_x",
+				"rally_y","requested_force","minimum_force","launched_force",
+				"started_tick","phase_since_tick","last_contact_tick",
+				"last_progress_tick","cooldown_until","initial_target_workers",
+				"candidate_score","last_target_hp"};
+			for(size_t field=0; field<sizeof(legacy)/sizeof(legacy[0]); ++field)
+				stream->readSint32(legacy[field]);
+			tactical_mission.reset();
+		}
+		stream->readLeaveSection();
+	}
 	posture=static_cast<StrategicPosture>(stream->readSint32("posture"));posture_since=stream->readSint32("posture_since");for(int i=0;i<PostureCount;++i)posture_utilities[i]=stream->readSint32(FormattableString("posture_utility_%0").arg(i).c_str());
 #define READ_SCALAR(field) field=stream->readSint32(#field);
 	READ_SCALAR(explorer_threat_until) READ_SCALAR(explorer_colony_threat_until) READ_SCALAR(global_water_percent) READ_SCALAR(global_shoreline_density) READ_SCALAR(global_land_components) READ_SCALAR(global_largest_land_percent) READ_SCALAR(global_start_land_percent) READ_SCALAR(global_chokepoint_density) READ_SCALAR(global_water_tiles) READ_SCALAR(global_grass_tiles) READ_SCALAR(global_land_tiles) READ_SCALAR(global_buildable_tiles) READ_SCALAR(global_corn_tiles) READ_SCALAR(global_wood_tiles) READ_SCALAR(global_stone_tiles) READ_SCALAR(global_algae_tiles) READ_SCALAR(global_fruit_tiles) READ_SCALAR(global_terrain_abundance) READ_SCALAR(global_connected_abundance) READ_SCALAR(global_mobility_opportunity) READ_SCALAR(recent_construction_failures) READ_SCALAR(last_construction_failure_tick) READ_SCALAR(proactive_clearing_flag) READ_SCALAR(proactive_clearing_started_tick) READ_SCALAR(proactive_clearing_initial_wood) READ_SCALAR(last_proactive_clearing_tick) READ_SCALAR(last_preemptive_defense_tick)
@@ -4470,7 +4487,7 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 
 	large_economy_committed=stream->readUint8("large_economy_committed");topology_initialized=stream->readUint8("topology_initialized");opening_space_constrained=stream->readUint8("opening_space_constrained");preemptive_building_signature=stream->readUint32("preemptive_building_signature");
 	auto readIntMap=[stream](const char* name,std::map<int,int>& values){values.clear();stream->readEnterSection(name);const Uint32 size=stream->readUint32("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int key=stream->readSint32("key");values[key]=stream->readSint32("value");stream->readLeaveSection();}stream->readLeaveSection();};
-	readIntMap("attack_flag_targets",attack_flag_targets);readIntMap("attack_flag_started_ticks",attack_flag_started_ticks);readIntMap("attack_flag_last_hp",attack_flag_last_hp);readIntMap("attack_flag_last_progress",attack_flag_last_progress);readIntMap("attack_target_quarantine_until",attack_target_quarantine_until);
+	readIntMap("attack_flag_targets",attack_flag_targets);readIntMap("attack_flag_started_ticks",attack_flag_started_ticks);if(versionMinor<97){std::map<int,int> retired;readIntMap("attack_flag_last_hp",retired);readIntMap("attack_flag_last_progress",retired);}readIntMap("attack_target_quarantine_until",attack_target_quarantine_until);
 	attack_flag_end_reasons.clear();stream->readEnterSection("attack_flag_end_reasons");Uint32 size=stream->readUint32("size");for(Uint32 n=0;n<size;++n){stream->readEnterSection(n);const int key=stream->readSint32("key");attack_flag_end_reasons[key]=stream->readText("value");stream->readLeaveSection();}stream->readLeaveSection();
 	{
 		stream->readEnterSection("ColonizationState");
@@ -4559,8 +4576,6 @@ bool Maxima::loadLegacyState(GAGCore::InputStream *stream, Player *player,
 	last_proactive_clearing_tick=-1000000;
 	attack_flag_targets.clear();
 	attack_flag_started_ticks.clear();
-	attack_flag_last_hp.clear();
-	attack_flag_last_progress.clear();
 	attack_flag_end_reasons.clear();
 	attack_target_quarantine_until.clear();
 	campaign=CampaignPlan();
@@ -4762,8 +4777,6 @@ bool Maxima::loadState(GAGCore::InputStream *stream, Player *player,
 	last_proactive_clearing_tick=-1000000;
 	attack_flag_targets.clear();
 	attack_flag_started_ticks.clear();
-	attack_flag_last_hp.clear();
-	attack_flag_last_progress.clear();
 	attack_flag_end_reasons.clear();
 	attack_target_quarantine_until.clear();
 	campaign=CampaignPlan();
@@ -5114,8 +5127,6 @@ void Maxima::handle_event(Context& echo, const RuntimeEvent& event)
 				+boost::lexical_cast<std::string>(campaign.buildings_destroyed));
 		attack_flag_targets.erase(id);
 		attack_flag_started_ticks.erase(id);
-		attack_flag_last_hp.erase(id);
-		attack_flag_last_progress.erase(id);
 		attack_flag_end_reasons.erase(id);
 		if(tactical_flag)
 		{
@@ -6446,15 +6457,10 @@ void Maxima::plan_offense(Context& echo)
 		? echo.get_building_register().get_building(tactical_mission.flagId) : NULL;
 	TacticalReachability reachability(map, strategy.tactics.flag_minimum_level);
 	int eligible=0;
-	int eligible_swimmers=0;
 	for(int id=0; id<Unit::MAX_COUNT; ++id)
-	{
-		const Unit* warrior=echo.player->team->myUnits[id];
-		if(!tactical_warrior_available(warrior, flag, strategy.tactics.flag_minimum_level))
-			continue;
-		++eligible;
-		if(warrior->performance[SWIM]>0) ++eligible_swimmers;
-	}
+		if(tactical_warrior_available(echo.player->team->myUnits[id], flag,
+			strategy.tactics.flag_minimum_level))
+			++eligible;
 	offense_diagnostics.eligibleWarriors=eligible;
 	// Training comes first: every open barracks slot is reserved for a warrior,
 	// and only the surplus beyond that capacity goes to the flag.
@@ -6496,59 +6502,30 @@ void Maxima::plan_offense(Context& echo)
 	swim_info.add_obstacle(new Entities::AnyResource);
 	Gradient& swim_route=echo.get_gradient_manager().get_gradient(swim_info);
 
-	// Reachable force at a point: land walkers first, swimmers when the only
-	// route crosses water. Returns the route length, or -1 when unreachable.
-	struct Reach
-	{
-		int distance;
-		int force;
-	};
+	// Route length to a point, or -1 when it is unreachable or too few of the
+	// surplus can get there. Walkers go first; swimmers carry the crossing when
+	// the only route is over water.
 	const int cap=strategy.military.attack_unit_cap;
-	const int minimum_level=strategy.tactics.flag_minimum_level;
-	Team* team=echo.player->team;
-	const Building* continuing=flag;
-	const int need=minimum;
 	std::map<std::string,int>& why=offense_diagnostics.rejections;
-	// Lambda-free helper via a local functor, so the two candidate loops share it.
-	class Reacher
+	const auto route_to=[&](int x, int y)
 	{
-	public:
-		Reacher(TacticalReachability& reachability, Team* team,
-			const Building* flag, Gradient& land, Gradient& swim,
-			int cap, int need, std::map<std::string,int>& why)
-			: reachability(reachability), team(team), flag(flag), land(land),
-			  swim(swim), cap(cap), need(need), why(why) {}
-		Reach at(int x, int y)
+		int distance=land_route.get_height(x,y);
+		const bool amphibious=distance<0;
+		if(amphibious)
+			distance=swim_route.get_height(x,y);
+		if(distance<0)
 		{
-			Reach result={-1,0};
-			int distance=land.get_height(x,y);
-			bool amphibious=false;
-			if(distance<0)
-			{
-				distance=swim.get_height(x,y);
-				amphibious=true;
-			}
-			if(distance<0) { ++why["no_route"]; return result; }
-			const int force=int(reachability.powersAt(team, flag, x, y, cap,
-				amphibious).size());
-			if(force<need) { ++why["too_few_reachable"]; return result; }
-			result.distance=distance;
-			result.force=force;
-			return result;
+			++why["no_route"];
+			return -1;
 		}
-	private:
-		TacticalReachability& reachability;
-		Team* team;
-		const Building* flag;
-		Gradient& land;
-		Gradient& swim;
-		int cap;
-		int need;
-		std::map<std::string,int>& why;
+		if(int(reachability.powersAt(echo.player->team, flag, x, y, cap,
+			amphibious).size())<minimum)
+		{
+			++why["too_few_reachable"];
+			return -1;
+		}
+		return distance;
 	};
-	Reacher reach(reachability, team, continuing, land_route, swim_route, cap, need, why);
-	(void)minimum_level;
-	(void)eligible_swimmers;
 
 	int best_score=INT_MIN;
 	Tactics::MissionKind best_kind=Tactics::MissionNone;
@@ -6585,8 +6562,8 @@ void Maxima::plan_offense(Context& echo)
 				}
 				const int x=wrapped_center(sighting.x, sighting.width, map->getW());
 				const int y=wrapped_center(sighting.y, sighting.height, map->getH());
-				const Reach r=reach.at(x, y);
-				if(r.distance<0)
+				const int distance=route_to(x, y);
+				if(distance<0)
 				{
 					if(opponents[opponent->first].score>unreachable_score)
 					{
@@ -6609,7 +6586,7 @@ void Maxima::plan_offense(Context& echo)
 					+std::max(0, opponents[opponent->first].score)
 					+(sighting.construction ? strategy.tactics.target_construction_bonus : 0)
 					-nearby_towers*strategy.tactics.target_tower_penalty
-					-r.distance*strategy.tactics.route_distance_weight;
+					-distance*strategy.tactics.route_distance_weight;
 				if(active && sighting.gid==tactical_mission.targetGid)
 				{
 					score+=strategy.tactics.retarget_margin;
@@ -6637,11 +6614,11 @@ void Maxima::plan_offense(Context& echo)
 			++candidate)
 		{
 			++offense_diagnostics.clusterCandidates;
-			const Reach r=reach.at(candidate->x, candidate->y);
-			if(r.distance<0) continue;
+			const int distance=route_to(candidate->x, candidate->y);
+			if(distance<0) continue;
 			++offense_diagnostics.viableClusters;
 			int score=candidate->score
-				-r.distance*strategy.raiding.route_distance_weight;
+				-distance*strategy.raiding.route_distance_weight;
 			// A cluster that drifted within the threat radius of the current
 			// raid is the same objective moving, not a new one.
 			if(active && tactical_mission.kind==Tactics::MissionRaid
@@ -6898,11 +6875,12 @@ void Maxima::control_offense(Context& echo)
 	if(tactical_mission.kind==Tactics::MissionSiege)
 	{
 		if(campaign.target_team!=tactical_mission.targetTeam)
+		{
 			campaign.buildings_destroyed=0;
+			campaign.started_tick=timer;
+		}
 		campaign.state=CampaignActive;
 		campaign.target_team=tactical_mission.targetTeam;
-		campaign.started_tick=campaign.state==CampaignActive && campaign.target_team==tactical_mission.targetTeam
-			? campaign.started_tick : timer;
 		campaign.last_progress_tick=timer;
 	}
 	else
