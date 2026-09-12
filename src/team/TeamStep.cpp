@@ -260,6 +260,21 @@ namespace
 	}
 }
 
+bool Team::idleWorkerShareAtLeast(int percent) const
+{
+	int workers=0, idle=0;
+	for (int i=0; i<Unit::MAX_COUNT; i++)
+	{
+		const Unit *u=myUnits[i];
+		if (!u || u->typeNum!=WORKER || u->isDead)
+			continue;
+		workers++;
+		if (u->activity==Unit::ACT_RANDOM)
+			idle++;
+	}
+	return workers>0 && idle*100>=percent*workers;
+}
+
 void Team::swapTask(Unit *unit)
 {
 	if (!isFetching(unit))
