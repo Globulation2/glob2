@@ -346,32 +346,12 @@ TileRect wallFor(const MazeGrid &g, int cell, int direction)
 // grass - not counting the sand road, which runs down the middle of passages, not their edges.
 std::vector<int> shoreDepth(const Map &map, const std::vector<unsigned char> &onRoad)
 {
-	const int w = map.getW(), h = map.getH();
-	std::vector<int> depth(size_t(w) * h, -1);
-	std::vector<int> queue;
-	queue.reserve(size_t(w) * h);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			if (!map.isGrass(x, y) && !onRoad[size_t(y) * w + x])
-			{
-				depth[size_t(y) * w + x] = 0;
-				queue.push_back(y * w + x);
-			}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int x = queue[head] % w, y = queue[head] / w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const size_t n = size_t(map.normalizeY(y + dy)) * w + map.normalizeX(x + dx);
-				if (depth[n] < 0)
-				{
-					depth[n] = depth[size_t(queue[head])] + 1;
-					queue.push_back(int(n));
-				}
-			}
-	}
-	return depth;
+	const Torus t(map);
+	std::vector<unsigned char> shore(size_t(t.size()), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
+			shore[size_t(y) * t.w + x] = !map.isGrass(x, y) && !onRoad[size_t(y) * t.w + x];
+	return stepsFrom(t, shore);
 }
 
 struct CellTile

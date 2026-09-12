@@ -144,29 +144,10 @@ int percentile(std::vector<int> samples, int percent)
 // Chebyshev steps from every tile to the nearest source tile; kFar with no sources.
 std::vector<int> chebyshevDistance(const Torus &t, const std::vector<unsigned char> &source)
 {
-	std::vector<int> distance(source.size(), kFar);
-	std::vector<int> queue;
-	queue.reserve(source.size());
-	for (size_t i = 0; i < source.size(); ++i)
-		if (source[i])
-		{
-			distance[i] = 0;
-			queue.push_back(int(i));
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int p = queue[head], px = p % t.w, py = p / t.w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int q = t.at(px + dx, py + dy);
-				if (distance[q] == kFar)
-				{
-					distance[q] = distance[p] + 1;
-					queue.push_back(q);
-				}
-			}
-	}
+	std::vector<int> distance = stepsFrom(t, source);
+	for (int &d : distance)
+		if (d < 0)
+			d = kFar;
 	return distance;
 }
 
@@ -730,30 +711,15 @@ void placePonds(Layout &L, GenerationContext &context, int spacing, int pondSize
 	}
 	// Fill any ground a pond has closed in: everything still walkable is reachable from the band
 	// along the ridges, which no pond comes near.
-	std::vector<unsigned char> reached(n, 0);
-	std::vector<int> queue;
+	std::vector<unsigned char> open(n, 0), band(n, 0);
 	for (int i = 0; i < n; ++i)
-		if (!L.ridge[i] && !L.pond[i] && L.ridgeDistance[i] <= 2)
-		{
-			reached[i] = 1;
-			queue.push_back(i);
-		}
-	for (size_t head = 0; head < queue.size(); ++head)
 	{
-		const int p = queue[head], px = p % t.w, py = p / t.w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int q = t.at(px + dx, py + dy);
-				if (!reached[q] && !L.ridge[q] && !L.pond[q])
-				{
-					reached[q] = 1;
-					queue.push_back(q);
-				}
-			}
+		open[i] = !L.ridge[i] && !L.pond[i];
+		band[i] = open[i] && L.ridgeDistance[i] <= 2;
 	}
+	const std::vector<int> reached = stepsFrom(t, band, open);
 	for (int i = 0; i < n; ++i)
-		if (!L.ridge[i] && !L.pond[i] && !reached[i])
+		if (open[i] && reached[i] < 0)
 			L.pond[i] = 1;
 }
 
@@ -841,7 +807,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	// the nearest junction ranks how central a site is on its ridgeline.
 	const int reach = o.passWidth / 2 + 2;
 	std::map<std::pair<int, int>, std::vector<int>> exclusive, anyPair;
-	std::vector<int> alongRidge(n, -1), queue;
+	std::vector<unsigned char> junction(n, 0);
 	for (int y = 0; y < t.h; ++y)
 		for (int x = 0; x < t.w; ++x)
 		{
@@ -853,30 +819,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			int nearIds[3], farIds[3];
 			const int count = nearbyValleys(L, x, y, 2, nearIds, 3);
 			if (count >= 3)
-			{
-				alongRidge[i] = 0;
-				queue.push_back(i);
-			}
+				junction[i] = 1;
 			for (int p = 0; p < count; ++p)
 				for (int q = p + 1; q < count; ++q)
 					anyPair[{nearIds[p], nearIds[q]}].push_back(i);
 			if (count == 2 && nearbyValleys(L, x, y, reach, farIds, 3) == 2)
 				exclusive[{nearIds[0], nearIds[1]}].push_back(i);
 		}
-	for (size_t head = 0; head < queue.size(); ++head)
-	{
-		const int p = queue[head], px = p % t.w, py = p / t.w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				const int q = t.at(px + dx, py + dy);
-				if (L.ridge[q] && alongRidge[q] < 0)
-				{
-					alongRidge[q] = alongRidge[p] + 1;
-					queue.push_back(q);
-				}
-			}
-	}
+	const std::vector<int> alongRidge = stepsFrom(t, junction, L.ridge);
 
 	// A random spanning tree of passes joins every valley; loopiness then opens that share of the
 	// remaining shared ridgelines as well.
