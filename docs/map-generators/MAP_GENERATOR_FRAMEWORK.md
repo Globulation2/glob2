@@ -217,7 +217,10 @@ playable landscape as a freshly generated map at the draft's current size and co
 a Regenerate all button. `LandscapePreviewer` rolls those previews on background threads (one
 roll per landscape, up to three seeds before a tile reports no preview) and hands back the seed
 each shown map came from; the lobby then rolls that one seed instead of sampling five, so the map
-a player picked by sight is the map the preview shows and the match starts on. Any later edit to
+a player picked by sight is the map the preview shows and the match starts on. The lobby's own
+five candidate rolls run on the same workers: the best-scoring seed is rolled once more on the
+UI thread for the snapshot, so a large map with many colonies no longer freezes the lobby while
+its candidates roll. Any later edit to
 the draft drops the remembered seed and returns to candidate sampling. The picker takes only a
 list of localized names and requests, so the editor or a multiplayer lobby can run it too.
 Background rolls are safe because `syncRand()`'s state is per thread: a worker seeds its own

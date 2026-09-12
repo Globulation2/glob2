@@ -443,6 +443,11 @@ struct CustomGameSetupHarness
     screen.listMaps();
 
     auto paint = [&] { screen.dispatchPaint(false); };
+    // The preview rolls its candidates on worker threads; wait for them as the timer would.
+    auto preview = [&] {
+      screen.onTimer(screen.previewDue);
+      screen.finishPreview();
+    };
     auto keyEvent = [&](SDL_Keycode key, Uint16 modifiers = KMOD_NONE) {
       SDL_Event e = {};
       e.type = SDL_KEYDOWN;
@@ -601,10 +606,10 @@ struct CustomGameSetupHarness
     screen.onTimer(screen.previewDue - 1);
     assert(!screen.validMap);
     screen.controls->pressed = "generator/water";
-    screen.onTimer(screen.previewDue);
+    preview();
     assert(!screen.validMap);
     screen.controls->pressed.clear();
-    screen.onTimer(screen.previewDue);
+    preview();
     assert(screen.validMap && !screen.previewPending);
     auto first = screen.snapshot;
     auto revision = screen.previewRevision;
@@ -638,7 +643,7 @@ struct CustomGameSetupHarness
       const auto replaced = screen.snapshot;
       clickControl("map/randomize");
       assert(!screen.validMap && screen.previewPending);
-      screen.onTimer(screen.previewDue);
+      preview();
       assert(screen.validMap && screen.snapshot != replaced &&
              !std::filesystem::exists(replaced));
       assert(screen.setup.generator.method == settings.method &&
@@ -667,7 +672,7 @@ struct CustomGameSetupHarness
           screen.controls->hits.begin(), screen.controls->hits.end(),
           [](const auto &h) { return h.id == "generator/reset"; });
       assert(reset != screen.controls->hits.end() && !reset->enabled);
-      screen.onTimer(screen.previewDue);
+      preview();
       assert(screen.validMap);
       capture("reset-640");
     }
@@ -679,7 +684,7 @@ struct CustomGameSetupHarness
         screen.setup.generator.options["sand"] =
             screen.setup.generator.options["grass"] =
                 screen.setup.generator.options["desert"] = 0;
-    screen.onTimer(screen.previewDue);
+    preview();
     assert(!screen.validMap && !screen.previewPending);
     for (int i = 0; i < 4; ++i)
       assert(screen.setup.colonies[i].alliance == assignments[i].alliance);
@@ -688,7 +693,7 @@ struct CustomGameSetupHarness
             screen.setup.generator.options["grass"] =
                 screen.setup.generator.options["desert"] = 50;
     screen.invalidate();
-    screen.onTimer(screen.previewDue);
+    preview();
     assert(screen.validMap);
 
     // Apply a landscape the way the picker's result does, then drive the same steppers used
@@ -728,7 +733,7 @@ struct CustomGameSetupHarness
     // either edit invalidates the preview like any other generator control.
     landscape(GenerationRequest::eFJORDCONTINENT);
     screen.expanded[0] = screen.expanded[1] = screen.expanded[2] = true;
-    screen.onTimer(screen.previewDue);
+    preview();
     assert(screen.validMap);
     {
       auto &options = screen.setup.generator.options;
@@ -747,7 +752,7 @@ struct CustomGameSetupHarness
       assert(screen.controls->focus != "generator/lake-connected");
       keyEvent(SDLK_TAB, KMOD_SHIFT);
       assert(screen.controls->focus == "generator/lake-connected");
-      screen.onTimer(screen.previewDue);
+      preview();
       assert(screen.validMap);
       capture("map-checkboxes");
       clickControl("generator/lake-connected");
@@ -939,7 +944,7 @@ struct CustomGameSetupHarness
       screen.applyLandscape(entries[other].first, seed);
       assert(screen.previewPending && screen.chosenSeed == seed &&
              screen.setup.generator.method == entries[other].first);
-      screen.onTimer(screen.previewDue);
+      preview();
       assert(screen.validMap && !screen.chosenSeed);
       assert(screen.preview->starts.size() == starts.size());
       for (size_t i = 0; i < starts.size(); ++i)
@@ -963,7 +968,7 @@ struct CustomGameSetupHarness
       keyEvent(SDLK_UP);
       keyEvent(SDLK_RETURN);
       assert(!screen.chosenSeed && screen.previewPending);
-      screen.onTimer(screen.previewDue);
+      preview();
       assert(screen.validMap);
       std::cout << "PASS landscape picker: " << shown.size() << " previews on "
                 << picker.previewer.threadCount()

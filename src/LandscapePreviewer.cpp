@@ -33,19 +33,37 @@ LandscapePreviewer::~LandscapePreviewer()
 		worker.join();
 }
 
+// Caller holds the mutex.
+void LandscapePreviewer::beginPass()
+{
+	++pass;
+	next = 0;
+	const auto root = GenerationContext::randomSeed();
+	for (std::size_t i = 0; i < slots.size(); ++i)
+	{
+		seeds[i] = GenerationContext::deriveSeed(root, "landscape/" + std::to_string(i));
+		slots[i].state = State::Pending;
+		++slots[i].revision;
+	}
+}
+
 void LandscapePreviewer::regenerate()
 {
 	{
 		std::lock_guard<std::mutex> lock(mutex);
-		++pass;
-		next = 0;
-		const auto root = GenerationContext::randomSeed();
-		for (std::size_t i = 0; i < slots.size(); ++i)
-		{
-			seeds[i] = GenerationContext::deriveSeed(root, "landscape/" + std::to_string(i));
-			slots[i].state = State::Pending;
-			++slots[i].revision;
-		}
+		beginPass();
+	}
+	wake.notify_all();
+}
+
+void LandscapePreviewer::restart(std::vector<GenerationRequest> fresh)
+{
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		requests = std::move(fresh);
+		slots.resize(requests.size());
+		seeds.resize(requests.size());
+		beginPass();
 	}
 	wake.notify_all();
 }
@@ -100,6 +118,7 @@ LandscapePreviewer::Preview LandscapePreviewer::roll(const GenerationRequest &re
 			result.starts.push_back(
 				{game.teams[i]->startPosX, game.teams[i]->startPosY, game.teams[i]->color});
 		result.seed = roll.seed;
+		result.score = outcome.quality.score;
 		result.width = game.map.getW();
 		result.height = game.map.getH();
 		result.state = State::Ready;

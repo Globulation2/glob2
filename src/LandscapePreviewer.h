@@ -32,6 +32,8 @@ class LandscapePreviewer
 		std::vector<MapStart> starts;
 		std::uint32_t seed = 0;
 		int width = 0, height = 0;
+		/// How good a start each colony got, as GenerationService scores it; 0 unless Ready.
+		double score = 0;
 		/// The last generation diagnostic, when Failed.
 		std::string detail;
 		/// Increments on every state change, so a viewer polling cheaply knows when to copy.
@@ -46,6 +48,9 @@ class LandscapePreviewer
 	/// Rolls every request again with fresh seeds. Rolls already under way finish, then are
 	/// dropped rather than shown.
 	void regenerate();
+	/// Replaces the requests and rolls them with fresh seeds, on the same workers; rolls of the
+	/// old requests already under way finish, then are dropped.
+	void restart(std::vector<GenerationRequest> requests);
 	std::size_t size() const { return requests.size(); }
 	unsigned revision(std::size_t index) const;
 	Preview preview(std::size_t index) const;
@@ -58,6 +63,7 @@ class LandscapePreviewer
 	static Preview roll(const GenerationRequest &request, std::uint32_t rootSeed);
 
   private:
+	void beginPass();
 	void work();
 	std::vector<GenerationRequest> requests;
 	std::vector<Preview> slots;

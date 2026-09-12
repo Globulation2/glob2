@@ -7,6 +7,7 @@
 #include "CustomGameScreen.h"
 #include "LobbyMapPreview.h"
 #include "LandscapePickerScreen.h"
+#include "LandscapePreviewer.h"
 #include "Game.h"
 #include "GenerationService.h"
 #include "GlobalContainer.h"
@@ -548,6 +549,8 @@ void CustomGameScreen::onAction(Widget *widget, Action action, int code, int val
 		endExecute(CANCEL);
 	if (code == OK && setup.validation().empty())
 	{
+		if (setup.random && candidates)
+			finishPreview();
 		if (setup.random && (!validMap || previewRevision != setup.mapRevision))
 			if (!generateMap())
 				return;
@@ -565,7 +568,67 @@ void CustomGameScreen::onTimer(Uint32 tick)
 	// Wait until the last edit settles and a dragged control/menu is released.
 	if (previewPending && setup.random && Sint32(tick - previewDue) >= 0 &&
 		controls->pressed.empty() && !controls->popup.open)
-		generateMap();
+	{
+		// A map the picker showed, or a draft that fails validation, resolves at once; anything
+		// else rolls its candidates off this thread first.
+		if (chosenSeed || !setup.validation().empty())
+			generateMap();
+		else
+			startCandidates();
+	}
+	if (candidates && !candidates->busy())
+		collectCandidates();
+}
+void CustomGameScreen::startCandidates()
+{
+	previewPending = false;
+	setup.generator.nbTeams = setup.capacity;
+	std::vector<GenerationRequest> requests(GenerationService::kSampledCandidates, setup.generator);
+	if (candidates)
+		candidates->restart(std::move(requests));
+	else
+		candidates = std::make_unique<LandscapePreviewer>(std::move(requests));
+	candidateRevision = setup.mapRevision;
+	message = tr("Updating map preview...");
+}
+// The candidates are in: keep the best-scoring one by rolling its seed for the snapshot, or
+// report that none seated every colony. Returns whether a map came of it.
+bool CustomGameScreen::collectCandidates()
+{
+	if (!candidates)
+		return false;
+	std::optional<std::uint32_t> best;
+	double bestScore = -1.0;
+	for (std::size_t i = 0; i < candidates->size(); ++i)
+	{
+		const auto preview = candidates->preview(i);
+		if (preview.state == LandscapePreviewer::State::Ready && preview.score > bestScore)
+		{
+			bestScore = preview.score;
+			best = preview.seed;
+		}
+	}
+	const bool stale = candidateRevision != setup.mapRevision;
+	candidates.reset();
+	if (stale)
+		return false; // an edit meanwhile already asked for a new preview
+	if (!best)
+	{
+		validMap = false;
+		message = tr("Generation failed. Adjust settings or press Start to retry.");
+		return false;
+	}
+	chosenSeed = best;
+	return generateMap();
+}
+// Wait for candidates in flight and apply them: for a launch that cannot wait for the timer,
+// and for tests that drive the timer by hand.
+void CustomGameScreen::finishPreview()
+{
+	while (candidates && candidates->busy())
+		SDL_Delay(5);
+	if (candidates)
+		collectCandidates();
 }
 void CustomGameScreen::setMapMode(bool random)
 {
@@ -1070,7 +1133,7 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 	{
 		ui.box({px, py, size, size}, Color(211, 223, 197));
 		ui.paragraph(px + 16, py + size / 2 - 20, size - 32,
-					 tr(previewPending
+					 tr(previewBusy()
 							? "Updating map preview..."
 							: "Preview unavailable. Adjust settings or start to retry."));
 	}
@@ -1088,6 +1151,6 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 				invalidate();
 				previewDue = SDL_GetTicks();
 			},
-			false, setup.validation().empty() && !previewPending);
+			false, setup.validation().empty() && !previewBusy());
 	}
 }
