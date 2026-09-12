@@ -253,7 +253,16 @@ namespace GAGCore
 				do
 				{
 					Uint32 srcValue = *memSrc++;
-					Uint32 srcAlpha = (((srcValue >> alphaShift) & 0xFF) * alpha) >> 8;
+					// x/255 exactly (not x>>8, which is x/256): (x+1+(x>>8))>>8 for a
+					// scalar x, or the same identity applied per lane -- masking the
+					// shifted correction back onto 0x00FF00FF keeps each 16-bit lane's
+					// carry from leaking into its neighbour. A single blend's 1/256
+					// bias is invisible, but repeated alpha draws onto the same pixels
+					// compound it into a visible darkening of the sprite's whole
+					// bounding box, including its transparent edges. Covered by
+					// test/DrawableSurfaceBlendTest.cpp.
+					Uint32 alphaProduct = ((srcValue >> alphaShift) & 0xFF) * alpha;
+					Uint32 srcAlpha = (alphaProduct + 1 + (alphaProduct >> 8)) >> 8;
 					Uint32 destAlpha = 255 - srcAlpha;
 					Uint32 srcPreMult0 =  (srcValue & 0x00FF00FF) * srcAlpha;
 					Uint32 srcPreMult1 = ((srcValue >> 8) & 0x00FF00FF) * srcAlpha;
@@ -264,6 +273,8 @@ namespace GAGCore
 
 					destPreMult0 += srcPreMult0;
 					destPreMult1 += srcPreMult1;
+					destPreMult0 += 0x00010001 + ((destPreMult0 >> 8) & 0x00FF00FF);
+					destPreMult1 += 0x00010001 + ((destPreMult1 >> 8) & 0x00FF00FF);
 
 					*memDest++ = ((destPreMult0 >> 8) & 0x00FF00FF) | (destPreMult1 & 0xFF00FF00);
 				}
@@ -290,24 +301,7 @@ namespace GAGCore
 
 	void DrawableSurface::drawSprite(int x, int y, Sprite *sprite, unsigned index,  Uint8 alpha)
 	{
-		// check bounds
-		assert(sprite);
-		if (!sprite->checkBound(index))
-			return;
-		if (this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU)
-			&& (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
-		{
-			drawSprite(x, y, sprite->getW(index), sprite->getH(index), sprite, index, alpha);
-			return;
-		}
-
-		// draw background
-		if (sprite->images[index])
-			drawSurface(x, y, sprite->images[index], alpha);
-
-		// draw rotation
-		if (sprite->rotated[index])
-			drawSurface(x, y, sprite->getRotatedSurface(index), alpha);
+		drawSprite(static_cast<float>(x), static_cast<float>(y), sprite, index, alpha);
 	}
 
 	void DrawableSurface::drawSprite(float x, float y, Sprite *sprite, unsigned index,  Uint8 alpha)
@@ -316,18 +310,44 @@ namespace GAGCore
 		assert(sprite);
 		if (!sprite->checkBound(index))
 			return;
-		if (this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU)
-			&& (sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index]))
+		const bool gpuActive = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
+
+		// Team-colour shader: one quad combining base+team, no CPU/GPU recolor
+		// surface. Shared by world units and unit UI previews since they all
+		// reach here. Picks native or HD per blockHasCompleteHD (a shutter uses
+		// one resolution throughout) but always draws at the sprite's logical
+		// size -- HD only adds texture sampling density. Falls through when the
+		// shader is unavailable (software renderer, or compile/link failure).
+		if (gpuActive && sprite->dynamicTeamColor && _gc->hasUnitShader())
+		{
+			const bool useHD = sprite->blockHasCompleteHD(index)
+				&& (sprite->experimentImages[index] || sprite->experimentRotated[index]);
+			DrawableSurface *base = useHD ? sprite->experimentImages[index] : sprite->images[index];
+			DrawableSurface *team = useHD
+				? (sprite->experimentRotated[index] ? sprite->experimentRotated[index]->orig : nullptr)
+				: (sprite->rotated[index] ? sprite->rotated[index]->orig : nullptr);
+			if (_gc->drawTeamColoredQuad(base, team, x, y, static_cast<float>(sprite->getW(index)),
+			                             static_cast<float>(sprite->getH(index)), alpha, sprite->teamHueShiftDegrees()))
+				return;
+		}
+
+		const bool wantsHDRoute = sprite->highResolutionAtlas || sprite->experimentImages[index] || sprite->experimentRotated[index];
+		// A dynamicTeamColor sprite (unit) with an incomplete HD block must not
+		// take the per-frame HD routing below: that would let this frame render
+		// HD while a different pose of the same motion-blur shutter, rejected
+		// by blockHasCompleteHD above, renders native -- mixing resolutions
+		// pose to pose. Falling through renders this frame native too.
+		if (gpuActive && wantsHDRoute && (!sprite->dynamicTeamColor || sprite->blockHasCompleteHD(index)))
 		{
 			drawSprite(x, y, static_cast<float>(sprite->getW(index)), static_cast<float>(sprite->getH(index)), sprite, index, alpha);
 			return;
 		}
 
-		// draw background
+		// Plain fallback: native only. Reached by the software renderer, by a
+		// shader-unavailable GPU without an HD counterpart to fall back to via
+		// the sized overload above, and by every sprite with no team layer.
 		if (sprite->images[index])
 			drawSurface(x, y, sprite->images[index], alpha);
-
-		// draw rotation
 		if (sprite->rotated[index])
 			drawSurface(x, y, sprite->getRotatedSurface(index), alpha);
 	}
@@ -342,11 +362,11 @@ namespace GAGCore
 		bool experiment = this == _gc && (_gc->getOptionFlags() & GraphicContext::USEGPU);
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
+		// The team layer draws into the exact same destination box as the base
+		// layer above, regardless of the HD/native texture's own pixel size --
+		// drawSurface always stretches a surface's content to fit (x,y,w,h).
 		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
-		{
-			float scale = experiment && sprite->experimentRotated[index] ? 4.0f : 1.0f;
-			drawSurface(static_cast<float>(x), static_cast<float>(y), w * surface->getW() / (scale * sprite->getW(index)), h * surface->getH() / (scale * sprite->getH(index)), surface, alpha);
-		}
+			drawSurface(x, y, w, h, surface, alpha);
 	}
 
 	void DrawableSurface::drawSprite(float x, float y, float w, float h, Sprite *sprite, unsigned index, Uint8 alpha)
@@ -360,10 +380,7 @@ namespace GAGCore
 		if (auto surface = sprite->prepareDrawSurface(index, false, experiment))
 			drawSurface(x, y, w, h, surface, alpha);
 		if (auto surface = sprite->prepareDrawSurface(index, true, experiment))
-		{
-			float scale = experiment && sprite->experimentRotated[index] ? 4.0f : 1.0f;
-			drawSurface(static_cast<float>(x), static_cast<float>(y), w * surface->getW() / (scale * sprite->getW(index)), h * surface->getH() / (scale * sprite->getH(index)), surface, alpha);
-		}
+			drawSurface(x, y, w, h, surface, alpha);
 	}
 
 	void DrawableSurface::drawString(int x, int y, Font *font, const std::string &msg, int w, Uint8 alpha)

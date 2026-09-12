@@ -75,6 +75,7 @@ public:
 
 	enum
 	{
+		GAME_SPEED_MINIMUM = -3,
 		GAME_SPEED_NORMAL = 0,
 		GAME_SPEED_MAXIMUM = 10,
 	};

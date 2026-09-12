@@ -522,6 +522,27 @@ if not env['server']:
     lan_test = local.Program('LANSessionHarness', lan_sources)
     local.Alias('lan-test', lan_test)
 
+# Explicit sprite checks and benchmark; these are not part of the default build.
+if not env['server']:
+    sprite_checks = []
+    for name in ['UnitTeamShaderTest', 'UnitTeamColorCacheTest', 'DrawableSurfaceBlendTest']:
+        check = local.Program(name, local.Object(name + '.o', '#test/' + name + '.cpp')
+            + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+        sprite_checks += check
+    local.Alias('unit-render-tests', sprite_checks)
+    hd_unit_check = local.Program('UnitHighResolutionCacheTest',
+        local.Object('UnitHighResolutionCacheTest.o', '#test/UnitHighResolutionCacheTest.cpp')
+        + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+    local.Alias('unit-hd-cache-test', hd_unit_check)
+    runtime_pack_check = local.Program('RuntimePackCheck',
+        local.Object('RuntimePackCheck.o', '#test/RuntimePackCheck.cpp')
+        + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+    local.Alias('runtime-pack-check', runtime_pack_check)
+    twelve_team_benchmark = local.Program('twelve-team-benchmark',
+        local.Object('TwelveTeamBenchmark.o', '#tools/unit-animation/twelve-team-benchmark.cpp')
+        + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+    local.Alias('twelve-team-benchmark', twelve_team_benchmark)
+
 if not env['server']:
     settings_sources = [source for source in source_files if source != 'Glob2.cpp']
     settings_sources += local.Object('SettingsScreenTest.o', '#test/SettingsScreenTest.cpp')

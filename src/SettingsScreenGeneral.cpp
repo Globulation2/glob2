@@ -95,9 +95,13 @@ void SettingsScreen::buildGeneral()
         info(tr("Adjust the pace of play."));
         std::vector<std::string> labels;
         Settings copy=s;
-        for(int i=0;i<=Settings::GAME_SPEED_MAXIMUM;++i){copy.gameSpeed=i;labels.push_back(copy.getGameSpeedText());}
-        choice("gameplay.speed","Game speed","Single-player and replays only. Multiplayer runs at 1x.",s.gameSpeed,labels,[this](int v){
-            globalContainer->settings.gameSpeed=std::clamp(v,0,int(Settings::GAME_SPEED_MAXIMUM));commit();
+        // The presets now start below 1x, so the row index and the stored speed
+        // are offset by GAME_SPEED_MINIMUM rather than being the same number.
+        for(int i=Settings::GAME_SPEED_MINIMUM;i<=Settings::GAME_SPEED_MAXIMUM;++i){copy.gameSpeed=i;labels.push_back(copy.getGameSpeedText());}
+        choice("gameplay.speed","Game speed","Single-player and replays only. Multiplayer runs at 1x.",
+            s.gameSpeed-Settings::GAME_SPEED_MINIMUM,labels,[this](int v){
+            globalContainer->settings.gameSpeed=std::clamp(v+int(Settings::GAME_SPEED_MINIMUM),
+                int(Settings::GAME_SPEED_MINIMUM),int(Settings::GAME_SPEED_MAXIMUM));commit();
         });
     } else if(current==Category::Player) {
         info(tr("Set your language and player name."));

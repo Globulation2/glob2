@@ -8,6 +8,7 @@
 #include "ReplayReader.h"
 #include "GameGUIKeyActions.h"
 #include <GUISelector.h>
+#include <GUIButton.h>
 #include <GUIText.h>
 #include <GUIList.h>
 #include <StringTable.h>
@@ -22,7 +23,10 @@ using namespace GAGGUI;
 struct TestSettingsScreen : SettingsScreen {
     TestSettingsScreen() { gfx=globalContainer->gfx; dispatchInit(); selectCategory(Category::Gameplay); }
     Row speed() { for(const auto& r:rows()) if(r.id=="gameplay.speed") return r; assert(false); return {}; }
-    void select(int value) { assert(changeSetting("gameplay.speed",value)); }
+    // The presets start below 1x, so a speed value and its row index differ by
+    // GAME_SPEED_MINIMUM. Callers pass the speed; the row index is derived.
+    void select(int value) { assert(changeSetting("gameplay.speed",value-Settings::GAME_SPEED_MINIMUM)); }
+    int speedRow(int value) const { return value-Settings::GAME_SPEED_MINIMUM; }
 };
 
 static Uint32 resumeGame(Uint32, void* data) {
@@ -42,8 +46,8 @@ int main(int argc, char** argv) {
     assert(settings.getGameSpeedStepDuration()==40);
     assert(settings.getGameSpeedRenderInterval()==1);
     assert(settings.getGameSpeedText()=="1x");
-    int previous=41;
-    for(int i=0;i<=Settings::GAME_SPEED_MAXIMUM;++i) {
+    int previous=161;
+    for(int i=Settings::GAME_SPEED_MINIMUM;i<=Settings::GAME_SPEED_MAXIMUM;++i) {
         settings.gameSpeed=i;
         assert(settings.getGameSpeedStepDuration()<previous);
         assert(settings.getGameSpeedRenderInterval()>=1);
@@ -53,14 +57,23 @@ int main(int argc, char** argv) {
         assert(loaded.gameSpeed==i);
     }
     assert(previous==0);
+    for(int i=0;i<3;++i) {
+        settings.gameSpeed=i-3;
+        const int durations[]={160,80,53};
+        const char* labels[]={"0.25x","0.5x","0.75x"};
+        assert(settings.getGameSpeedStepDuration()==durations[i]);
+        assert(settings.getGameSpeedRenderInterval()==1);
+        assert(settings.getGameSpeedText()==labels[i]);
+    }
+    settings.gameSpeed=10;
     settings.changeGameSpeed(1); assert(settings.gameSpeed==10);
-    settings.changeGameSpeed(-100); assert(settings.gameSpeed==0);
-    settings.changeGameSpeed(-1); assert(settings.gameSpeed==0);
+    settings.changeGameSpeed(-100); assert(settings.gameSpeed==-3);
+    settings.changeGameSpeed(-1); assert(settings.gameSpeed==-3);
     const std::string profile=globalContainer->fileManager->getDir(0);
     for(int invalid:{-99,999}) {
         { std::ofstream f(profile+"/speed-invalid.txt"); f<<"gameSpeed="<<invalid<<"\n"; }
         Settings loaded; loaded.load("speed-invalid.txt");
-        assert(loaded.gameSpeed==(invalid<0?0:10));
+        assert(loaded.gameSpeed==(invalid<0?-3:10));
     }
     { std::ofstream f(profile+"/speed-legacy.txt"); f<<"musicVolume=70\n"; }
     Settings legacy; legacy.load("speed-legacy.txt"); assert(legacy.gameSpeed==0);
@@ -72,7 +85,12 @@ int main(int argc, char** argv) {
     assert(SDLNet_Init()==0);
     {
         TestSettingsScreen screen;
-        assert(screen.speed().number==0);
+        assert(screen.speed().number==screen.speedRow(Settings::GAME_SPEED_NORMAL));
+        for(int speed=Settings::GAME_SPEED_MINIMUM;speed<0;++speed) {
+            screen.select(speed);
+            assert(settings.gameSpeed==speed);
+            assert(screen.speed().value==settings.getGameSpeedText());
+        }
         const int music=settings.musicVolume, voice=settings.voiceVolume;
         screen.select(10);
         assert(settings.gameSpeed==10);
@@ -99,14 +117,14 @@ int main(int argc, char** argv) {
     }
     {
         TestSettingsScreen screen;
-        assert(screen.speed().number==7);
+        assert(screen.speed().number==screen.speedRow(7));
         assert(screen.speed().value=="8x");
     }
     {
         GameGUI gui;
         InGameOptionScreen screen(&gui);
-        assert(screen.gameSpeed->getValue()==7);
-        screen.gameSpeed->setValue(10);
+        assert(screen.gameSpeed->getValue()==10);
+        screen.gameSpeed->setValue(13);
         screen.onAction(screen.gameSpeed, VALUE_CHANGED, 10, 0);
         assert(settings.gameSpeed==10);
         assert(screen.gameSpeedText->getText()=="Game speed: Maximum");
@@ -146,6 +164,8 @@ int main(int argc, char** argv) {
         // Same wall time with very different GUI call rates should scroll equally.
         int distance[2];
         for(int pass=0;pass<2;++pass) {
+            // Drain startup/window events and the preceding pass before measuring.
+            gui.step();
             SDL_Event mouse={}; mouse.type=SDL_MOUSEMOTION;
             mouse.motion.x=0; mouse.motion.y=200;
             gui.processEvent(&mouse);
@@ -156,6 +176,9 @@ int main(int argc, char** argv) {
                 gui.step();
                 SDL_Delay(pass==0?40:1);
             }
+            // Account for the final sleep in both cadence measurements.
+            SDL_PushEvent(&mouse);
+            gui.step();
             distance[pass]=(before-gui.viewportX)&gui.game.map.getMaskW();
         }
         std::cerr<<"Camera distances: "<<distance[0]<<"/"<<distance[1]<<std::endl;
