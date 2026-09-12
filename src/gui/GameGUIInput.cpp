@@ -221,6 +221,7 @@ void GameGUI::processEvent(SDL_Event *event)
 // to flush time.
 void GameGUI::accumulateScrollWheelDelta(int delta)
 {
+	if(globalContainer->liveSpectating) return;
 	SDL_Keymod mod = SDL_GetModState();
 	switch (scrollWheelTarget(mod & KMOD_SHIFT, mod & KMOD_CTRL,
 	                          globalContainer->settings.scrollWheelEnabled, mod & KMOD_ALT))
@@ -321,35 +322,10 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 	}
 	else if (button==SDL_BUTTON_MIDDLE)
 	{
-		if ((selectionMode==BUILDING_SELECTION) && (globalContainer->gfx->getW()-mouseEvent.x<RIGHT_MENU_WIDTH))
-		{
-			Building* selBuild=selectionBuilding();
-			assert (selBuild);
-//			selBuild->verbose=(selBuild->verbose+1)%5;
-//			printf("building gid=(%d)\n", selBuild->gid);
-//			if (selBuild->verbose==0)
-//				printf(" verbose off\n");
-//			else if (selBuild->verbose==1 || selBuild->verbose==2)
-//				printf(" verbose global [%d]\n", selBuild->verbose&1);
-//			else if (selBuild->verbose==3 || selBuild->verbose==4)
-//				printf(" verbose local [%d]\n", selBuild->verbose&1);
-//			else
-//				assert(false);
-//			printf(" pos=(%d, %d)\n", selBuild->posX, selBuild->posY);
-//			printf(" dirtyLocalGradient=[%d, %d]\n", selBuild->dirtyLocalGradient[0], selBuild->dirtyLocalGradient[1]);
-//			printf(" globalGradient=[%p, %p]\n", selBuild->globalGradient[0], selBuild->globalGradient[1]);
-//			printf(" locked=[%d, %d]\n", selBuild->locked[0], selBuild->locked[1]);
-
-		}
-		else
-		{
-			// Enable panning
-			panPushed=true;
-			panMouseX=mouseEvent.x;
-			panMouseY=mouseEvent.y;
-			panViewX=viewportX;
-			panViewY=viewportY;
-		}
+		// Enable panning
+		panPushed=true;
+		panMouseX=mouseEvent.x;
+		panMouseY=mouseEvent.y;
 	}
 	else if (button==4)
 	{
@@ -437,7 +413,7 @@ void GameGUI::handleRightClick(void)
 
 void GameGUI::nextDisplayMode(void)
 {
-	if (globalContainer->replaying)
+	if (globalContainer->isViewingGame())
 	{
 		replayDisplayMode=ReplayDisplayMode((replayDisplayMode + 1) % RDM_NB_VIEWS);
 		return;

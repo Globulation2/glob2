@@ -1,413 +1,190 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2007 Bradley Arsenault
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
-
-// Coordination layer for the settings screen: ctor that orchestrates the
-// per-tab build helpers, onAction event-kind dispatcher and its handlers,
-// the language re-translation pass, and the GfxContext / audio-mute
-// visibility plumbing.
-//
-// Per-tab construction lives in:
-//   - SettingsScreenGeneral.cpp   ("General Settings" tab widgets)
-//   - SettingsScreenBuildings.cpp ("Building Defaults" tab)
-//   - SettingsScreenKeyboard.cpp  ("Keyboard Shortcuts" tab)
-
 #include "SettingsScreen.h"
-#include <GUIStyle.h>
 #include "GlobalContainer.h"
-#include <assert.h>
-#include <sstream>
-#include <GUIText.h>
-#include <GUITextInput.h>
-#include <GUIList.h>
-#include <GUIButton.h>
-#include <GUISelector.h>
-#include <FormatableString.h>
+#include "SoundMixer.h"
 #include <Toolkit.h>
 #include <StringTable.h>
-#include "SoundMixer.h"
-#include <ostream>
-#include <string>
+#include <algorithm>
 
-SettingsScreen::SettingsScreen()
- : Glob2TabScreen(false, true), unitRatioGroupNumbers(), flagRadii(), flagRadiusTexts(), flagRadiusGroupNumbers(), mapeditKeyboardManager(MapEditShortcuts), guiKeyboardManager(GameGUIShortcuts)
+using namespace GAGCore;
+
+SettingsScreen::SettingsScreen() : gameKeys(GameGUIShortcuts), editorKeys(MapEditShortcuts) {}
+SettingsScreen::~SettingsScreen()
 {
-	old_settings=globalContainer->settings;
-
-	generalGroup = addGroup(Toolkit::getStringTable()->getString("[general settings]"));
-	unitGroup = addGroup(Toolkit::getStringTable()->getString("[building settings]"));
-	keyboardGroup = addGroup(Toolkit::getStringTable()->getString("[keyboard settings]"));
-
-	buildOkCancelButtons();
-	buildLanguageWidgets();
-	buildDisplayWidgets();
-	buildGraphicsToggles();
-	buildUsernameWidgets();
-	buildAudioWidgets();
-
-	buildBuildingDefaultsTab();
-	buildKeyboardShortcutsTab();
-
-	currentMode = GameGUIShortcuts;
-	activateGroup(generalGroup);
-
-	gfxAltered = false;
+    if (modal==Modal::Display) confirmDisplay(false);
+    commitText();
+    if (settingsDirty || keyboardDirty[0] || keyboardDirty[1]) persist();
+    SDL_StopTextInput();
 }
 
-
-void SettingsScreen::setFullscreen()
+std::string SettingsScreen::tr(const std::string& text)
 {
-    if(fullscreen->getState()){
-        globalContainer->settings.screenFlags |= GraphicContext::FULLSCREEN;
-        globalContainer->settings.screenFlags &= ~(GraphicContext::RESIZABLE);
-    }else{
-        globalContainer->settings.screenFlags &= ~(GraphicContext::FULLSCREEN);
-        globalContainer->settings.screenFlags |= GraphicContext::RESIZABLE;
+    return Toolkit::getStringTable()->getString("[settings "+text+"]");
+}
+
+SettingsScreen::Row& SettingsScreen::add(const std::string& id,Kind kind,const std::string& label,const std::string& help)
+{
+    Row r; r.id=id; r.kind=kind; r.label=label; r.help=help;
+    form.push_back(std::move(r)); return form.back();
+}
+void SettingsScreen::section(const std::string& label) { add("",Kind::Section,tr(label)); }
+void SettingsScreen::info(const std::string& label) { add("",Kind::Info,label); }
+void SettingsScreen::button(const std::string& id,const std::string& label,std::function<void()> action,bool selected)
+{
+    auto& r=add(id,Kind::Button,label); r.action=std::move(action); r.selected=selected;
+}
+void SettingsScreen::choice(const std::string& id,const std::string& label,const std::string& help,int value,
+                           std::vector<std::string> labels,std::function<void(int)> change)
+{
+    auto& r=add(id,Kind::Choice,tr(label),help.empty()?"":tr(help)); r.number=value;
+    r.choices=std::move(labels); r.change=std::move(change);
+    if(value>=0 && value<int(r.choices.size())) r.value=r.choices[value];
+}
+void SettingsScreen::toggle(const std::string& id,const std::string& label,const std::string& help,bool value,std::function<void(int)> change)
+{
+    auto& r=add(id,Kind::Toggle,tr(label),help.empty()?"":tr(help));r.number=value;r.change=std::move(change);
+}
+void SettingsScreen::number(const std::string& id,const std::string& label,int value,int minimum,int maximum,std::function<void(int)> change)
+{
+    auto& r=add(id,Kind::Number,label);r.number=value;r.minimum=minimum;r.maximum=maximum;r.change=std::move(change);r.value=std::to_string(value);
+}
+
+void SettingsScreen::buildRows()
+{
+    form.clear();
+    if(modal!=Modal::None) buildModal();
+    else if(current==Category::Buildings) buildBuildings();
+    else if(current==Category::Controls) buildKeyboard();
+    else buildGeneral();
+}
+const std::vector<SettingsScreen::Row>& SettingsScreen::rows() { layout(); buildRows(); layout(); return form; }
+bool SettingsScreen::changeSetting(const std::string& id,int value)
+{
+    buildRows();
+    for(auto r:form) if(r.id==id && r.enabled && r.change) {
+        if(r.kind==Kind::Choice && (value<0 || value>=int(r.choices.size())))return false;
+        if(r.kind==Kind::Number || r.kind==Kind::Slider)value=std::clamp(value,r.minimum,r.maximum);
+        if(r.kind==Kind::Toggle)value=!!value;
+        r.change(value); return true;
     }
-    modeList->setVisible(fullscreen->getState());
-    updateGfxCtx();
+    return false;
 }
-
-void SettingsScreen::onAction(Widget *source, Action action, int par1, int par2)
+void SettingsScreen::activateSetting(const std::string& id)
 {
-	TabScreen::onAction(source, action, par1, par2);
-	if ((action==BUTTON_RELEASED) || (action==BUTTON_SHORTCUT))
-		handleButtonAction(par1);
-	else if (action==NUMBER_ELEMENT_SELECTED)
-		flushDefaultsToSettings();
-	else if (action==LIST_ELEMENT_SELECTED)
-		handleListSelected(source, par1);
-	else if (action==VALUE_CHANGED)
-		handleValueChanged(source);
-	else if (action==BUTTON_STATE_CHANGED)
-		handleButtonStateChanged(source);
-	else if (action==KEY_CHANGED)
-		updateKeyboardManagerFromShortcutInfo();
+    buildRows(); layout(); for(auto r:form) if(r.enabled) {
+        if(r.id==id){focus=id;invoke(r);return;}
+        if(!r.extraId.empty() && r.extraId==id){focus=id;r.change(0);return;}
+    }
 }
-
-
-void SettingsScreen::handleButtonAction(int par1)
+void SettingsScreen::selectCategory(Category category)
 {
-	if (par1==OK)
-	{
-		globalContainer->settings.setUsername(userName->getText());
-		globalContainer->settings.language = Toolkit::getStringTable()->getStringInLang("[language-code]", Toolkit::getStringTable()->getLang());
-		globalContainer->settings.save();
-		mapeditKeyboardManager.saveKeyboardLayout();
-		guiKeyboardManager.saveKeyboardLayout();
-		endExecute(par1);
-	}
-	else if (par1==CANCEL)
-	{
-		globalContainer->settings=old_settings;
-		if (gfxAltered)
-			updateGfxCtx();
-
-		Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(globalContainer->settings.language));
-
-		///Send the old volume to the mixer
-		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
-
-		endExecute(par1);
-	}
-	else if (par1==RESTOREDEFAULTSHORTCUTS)
-	{
-		loadDefaultKeyboardShortcuts();
-	}
-	else if(par1==GAMESHORTCUTS)
-	{
-		currentMode = GameGUIShortcuts;
-		updateShortcutList();
-		if(shortcut_list->getCount() == 0)
-			shortcut_list->setSelectionIndex(-1);
-		else
-			shortcut_list->setSelectionIndex(0);
-		updateActionList();
-		updateShortcutInfoFromSelection();
-	}
-	else if(par1==EDITORSHORTCUTS)
-	{
-		currentMode = MapEditShortcuts;
-		updateShortcutList();
-		if(shortcut_list->getCount() == 0)
-			shortcut_list->setSelectionIndex(-1);
-		else
-			shortcut_list->setSelectionIndex(0);
-		updateActionList();
-		updateShortcutInfoFromSelection();
-	}
-	else if(par1==PRESSEDSELECTOR)
-	{
-	}
-	else if(par1==ADDSHORTCUT)
-	{
-		addNewShortcut();
-	}
-	else if(par1==REMOVESHORTCUT)
-	{
-		removeShortcut();
-	}
-	else if(par1==BUILDINGSETTINGS)
-	{
-		activateDefaultAssignedGroupNumber(kBuildingGroupCompleted);
-	}
-	else if(par1==CONSTRUCTIONSITES)
-	{
-		activateDefaultAssignedGroupNumber(kBuildingGroupNewConstruction);
-	}
-	else if(par1==UPGRADES)
-	{
-		activateDefaultAssignedGroupNumber(kBuildingGroupUpgrades);
-	}
-	else if(par1==FLAGSETTINGS)
-	{
-		activateDefaultAssignedGroupNumber(kBuildingGroupFlags);
-	}
+    dropdown.close();
+    if(modal==Modal::Display)confirmDisplay(false);
+    commitText();finishInteraction();current=category;modal=Modal::None;focus.clear();
 }
-
-
-void SettingsScreen::handleListSelected(Widget* source, int par1)
+void SettingsScreen::commit(bool defer)
 {
-	if (source==languageList)
-	{
-		Toolkit::getStringTable()->setLang(par1);
-		retranslateUiStrings();
-	}
-	else if (source==modeList)
-	{
-		// Windowed dimensions follow the OS window; presets select fullscreen's
-		// logical rendering resolution only.
-		if (!fullscreen->getState()) return;
-		int w, h;
-		if (sscanf(modeList->getText(par1).c_str(), "%dx%d", &w, &h) != 2) return;
-		globalContainer->settings.screenWidth=w;
-		globalContainer->settings.screenHeight=h;
-
-	    setFullscreen();
-	}
-	else if (source == shortcut_list)
-	{
-		updateShortcutInfoFromSelection();
-	}
-	else if(source == action_list)
-	{
-		updateKeyboardManagerFromShortcutInfo();
-	}
+    settingsDirty=true;
+    if(defer) saveAt=SDL_GetTicks()+300;
+    else persist();
 }
-
-
-void SettingsScreen::handleValueChanged(Widget* source)
+bool SettingsScreen::persist()
 {
-	if(source==gameSpeed)
-	{
-		globalContainer->settings.gameSpeed=gameSpeed->getValue()+Settings::GAME_SPEED_MINIMUM;
-		updateGameSpeedText();
-		return;
-	}
-	globalContainer->settings.musicVolume = musicVol->getValue();
-	globalContainer->settings.voiceVolume = voiceVol->getValue();
-	globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
+    saveAt=0;
+    if(settingsDirty && globalContainer->settings.save()) settingsDirty=false;
+    if(keyboardDirty[0] && gameKeys.saveKeyboardLayout()) keyboardDirty[0]=false;
+    if(keyboardDirty[1] && editorKeys.saveKeyboardLayout()) keyboardDirty[1]=false;
+    failed=settingsDirty || keyboardDirty[0] || keyboardDirty[1];
+    return !failed;
 }
-
-void SettingsScreen::updateGameSpeedText(void)
+void SettingsScreen::finishInteraction() { dragging.clear(); if(settingsDirty || keyboardDirty[0] || keyboardDirty[1]) persist(); }
+void SettingsScreen::commitText()
 {
-	gameSpeed->setTooltip(Toolkit::getStringTable()->getString("[game speed help]"), "standard");
-	gameSpeedText->setText(FormattableString("%0: %1")
-		.arg(Toolkit::getStringTable()->getString("[game speed]"))
-		.arg(globalContainer->settings.getGameSpeedText()));
+    if(!editingText)return;
+    editingText=false;SDL_StopTextInput();
+    if(textDraft!=globalContainer->settings.getUsername()) {
+        globalContainer->settings.setUsername(textDraft);commit();
+    }
 }
-
-
-void SettingsScreen::handleButtonStateChanged(Widget* source)
+void SettingsScreen::done()
 {
-	if (source==highres)
-	{
-		globalContainer->settings.highResolutionArtwork=highres->getState();
-	}
-	else if (source==rememberUnitButton)
-	{
-		globalContainer->settings.rememberUnit=rememberUnitButton->getState();
-	}
-	else if (source==scrollwheel)
-	{
-		globalContainer->settings.scrollWheelEnabled=scrollwheel->getState();
-		scrollWheelEnabled=scrollwheel->getState();
-	}
-	else if (source==automaticTorus)
-	{
-		globalContainer->settings.automaticTorus=automaticTorus->getState();
-	}
-	else if (source==lowquality)
-	{
-		globalContainer->settings.optionFlags=lowquality->getState() ? GlobalContainer::OPTION_LOW_SPEED_GFX : 0;
-	}
-	else if (source==fullscreen)
-	{
-	    setFullscreen();
-	}
-	else if (source==usegpu)
-	{
-		if (usegpu->getState())
-		{
-			globalContainer->settings.screenFlags |= GraphicContext::USEGPU;
-		}
-		else
-		{
-			globalContainer->settings.screenFlags &= ~(GraphicContext::USEGPU);
-		}
-		updateGfxCtx();
-	}
-	else if (source==customcur)
-	{
-		if (customcur->getState())
-		{
-			globalContainer->settings.screenFlags |= GraphicContext::CUSTOMCURSOR;
-		}
-		else
-		{
-			globalContainer->settings.screenFlags &= ~(GraphicContext::CUSTOMCURSOR);
-		}
-		updateGfxCtx();
-	}
-	else if (source==audioMute)
-	{
-		globalContainer->settings.mute = audioMute->getState();
-		globalContainer->mix->setVolume(globalContainer->settings.musicVolume, globalContainer->settings.voiceVolume, globalContainer->settings.mute);
-		setVisibilityFromAudioSettings();
-	}
-	else if (source==key_2_active)
-	{
-		if(key_2_active->getState() == true)
-		{
-			select_key_2->setKey(KeyPress());
-			select_key_2->visible=true;
-		}
-		else
-		{
-			select_key_2->visible=false;
-		}
-		updateKeyboardManagerFromShortcutInfo();
-	}
+    dropdown.close();
+    if(modal==Modal::Display) confirmDisplay(false);
+    commitText();finishInteraction();
+    // Keep Retry available instead of silently losing local shortcut edits.
+    if(!failed)endExecute(1);
 }
-
-
-void SettingsScreen::retranslateUiStrings()
+void SettingsScreen::onAction(Widget*,Action action,int,int)
 {
-	ok->setText(Toolkit::getStringTable()->getString("[ok]"));
-	cancel->setText(Toolkit::getStringTable()->getString("[Cancel]"));
-
-	modifyTitle(generalGroup, Toolkit::getStringTable()->getString("[general settings]"));
-	modifyTitle(unitGroup, Toolkit::getStringTable()->getString("[building settings]"));
-	modifyTitle(keyboardGroup, Toolkit::getStringTable()->getString("[keyboard settings]"));
-
-	language->setText(Toolkit::getStringTable()->getString("[language-tr]"));
-	display->setText(Toolkit::getStringTable()->getString("[display]"));
-	usernameText->setText(Toolkit::getStringTable()->getString("[username]"));
-	audio->setText(Toolkit::getStringTable()->getString("[audio]"));
-
-	fullscreenText->setText(Toolkit::getStringTable()->getString("[fullscreen]"));
-	usegpuText->setText(Toolkit::getStringTable()->getString("[OpenGL]"));
-	lowqualityText->setText(Toolkit::getStringTable()->getString("[lowquality]"));
-	customcurText->setText(Toolkit::getStringTable()->getString("[customcur]"));
-
-
-	rememberUnitText->setText(Toolkit::getStringTable()->getString("[remember unit]"));
-	scrollwheelText->setText(Toolkit::getStringTable()->getString("[scroll wheel enabled]"));
-	automaticTorusText->setText(Toolkit::getStringTable()->getString("[automatic torus view]"));
-	updateGameSpeedText();
-
-	musicVolText->setText(Toolkit::getStringTable()->getString("[Music volume]"));
-	audioMuteText->setText(Toolkit::getStringTable()->getString("[mute]"));
-
-	rebootWarning->setText(Toolkit::getStringTable()->getString("[Warning, you need to reboot the game for changes to take effect]"));
-
-	unitSettingsExplanation->setText(Toolkit::getStringTable()->getString("[unit settings explanation]"));
-	buildings->setText(Toolkit::getStringTable()->getString("[Building Defaults]"));
-	flags->setText(Toolkit::getStringTable()->getString("[Flag Defaults]"));
-	constructionsites->setText(Toolkit::getStringTable()->getString("[Construction Site Defaults]"));
-	upgrades->setText(Toolkit::getStringTable()->getString("[Upgrade Defaults]"));
-	setLanguageTextsForDefaultAssignmentWidgets();
-
-	game_shortcuts->setText(Toolkit::getStringTable()->getString("[game shortcuts]"));
-	editor_shortcuts->setText(Toolkit::getStringTable()->getString("[editor shortcuts]"));
-	restore_default_shortcuts->setText(Toolkit::getStringTable()->getString("[restore default shortcuts]"));
-	add_shortcut->setText(Toolkit::getStringTable()->getString("[add shortcut]"));
-	remove_shortcut->setText(Toolkit::getStringTable()->getString("[remove shortcut]"));
-
-	pressedUnpressedSelector->clearTexts();
-	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on press]"));
-	pressedUnpressedSelector->addText(Toolkit::getStringTable()->getString("[on unpress]"));
+    if(action==SCREEN_DESTROYED) {
+        if(modal==Modal::Display) confirmDisplay(false);
+        commitText();finishInteraction();
+    }
 }
-
-
-void SettingsScreen::setVisibilityFromGraphicType(void)
+void SettingsScreen::onTimer(Uint32 tick)
 {
-	// a change either into or out of the GL renderer only takes effect on restart
-	rebootWarning->visible = (globalContainer->settings.screenFlags & GraphicContext::USEGPU)
-		|| (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU);
+    if(modal==Modal::Display && Sint32(tick-displayDeadline)>=0) confirmDisplay(false);
+    if(saveAt && dragging.empty() && Sint32(tick-saveAt)>=0)persist();
 }
-
-void SettingsScreen::setVisibilityFromAudioSettings(void)
+bool SettingsScreen::displayConfirmationPending() const { return modal==Modal::Display; }
+bool SettingsScreen::restartRequired() const
 {
-	musicVol->visible = !globalContainer->settings.mute;
-	musicVolText->visible = !globalContainer->settings.mute;
-	voiceVol->visible = !globalContainer->settings.mute;
-	voiceVolText->visible = !globalContainer->settings.mute;
+    const auto& s=globalContainer->settings;auto* g=globalContainer->gfx;
+    const Uint32 mask=GraphicContext::USEGPU|GraphicContext::FULLSCREEN|GraphicContext::CUSTOMCURSOR;
+    return (s.screenFlags & mask)!=(g->getOptionFlags() & mask) ||
+           s.screenWidth!=g->getRequestedW() || s.screenHeight!=g->getRequestedH() ||
+           // The preference is resolved against the desktop, and the window floor may
+           // have reduced the scale in use, so compare what setRes() was asked for.
+           GraphicContext::effectiveUiScale(s.uiScale/100.0f)!=g->getWantedUiScale();
 }
-
-void SettingsScreen::updateGfxCtx(void)
+void SettingsScreen::changeUiScale(int percent)
 {
-	// Only reconfigure live while the renderer stays software: a window created for
-	// OpenGL cannot serve SDL_GetWindowSurface, so switching away from GL in place
-	// leaves the old context's contents on screen until the game is restarted.
-	if (((globalContainer->settings.screenFlags & GraphicContext::USEGPU) == 0)
-		&& ((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU) == 0))
-		globalContainer->gfx->setRes(globalContainer->settings.screenWidth, globalContainer->settings.screenHeight, globalContainer->settings.screenFlags);
-	setVisibilityFromGraphicType();
-	actDisplay->setText(actDisplayModeToString().c_str());
-	gfxAltered = true;
+    auto& s=globalContainer->settings;
+    if(percent==s.uiScale)return;
+    s.uiScale=percent;commit();
+    GraphicContext::setRequestedUiScale(percent/100.0f);
+    // A GPU context cannot be rebuilt in place; restartRequired() reports it instead.
+    if(!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU))
+        applyDisplayMode(s.screenWidth,s.screenHeight,s.screenFlags);
 }
-
-std::string SettingsScreen::actDisplayModeToString(void)
+bool SettingsScreen::applyDisplayMode(int width,int height,Uint32 flags)
 {
-	std::ostringstream oss;
-	oss << globalContainer->gfx->getW() << "x" << globalContainer->gfx->getH();
-	if (globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-		oss << " GL";
-	else
-		oss << " SDL";
-	return oss.str();
+    return globalContainer->gfx->setRes(width,height,flags);
 }
-
-void SettingsScreen::onSDLEvent(SDL_Event *event)
+void SettingsScreen::changeDisplay(std::function<void(Settings&)> change)
 {
-	Glob2TabScreen::onSDLEvent(event);
-	// The event pump may coalesce resizing with a later expose/focus event.
-	if (event->type == SDL_WINDOWEVENT)
-		actDisplay->setText(actDisplayModeToString());
+    auto& s=globalContainer->settings;
+    Settings candidate=s;change(candidate);displayError=false;
+    if(candidate.screenWidth==s.screenWidth && candidate.screenHeight==s.screenHeight && candidate.screenFlags==s.screenFlags)return;
+    // A GPU context cannot switch to a software surface in place.
+    if((candidate.screenFlags|globalContainer->gfx->getOptionFlags()) & GraphicContext::USEGPU) {
+        s=candidate;commit();return;
+    }
+    previousDisplay=s;
+    if(!applyDisplayMode(candidate.screenWidth,candidate.screenHeight,candidate.screenFlags)) {
+        applyDisplayMode(s.screenWidth,s.screenHeight,s.screenFlags);
+        displayError=true;return;
+    }
+    if(candidate.screenWidth==s.screenWidth && candidate.screenHeight==s.screenHeight &&
+       ((candidate.screenFlags^s.screenFlags)&GraphicContext::FULLSCREEN)==0) {
+        s=candidate;commit();return;
+    }
+    // Keep the persisted preferences unchanged until the player accepts the mode.
+    picker.number=candidate.screenWidth;picker.maximum=candidate.screenHeight;
+    picker.minimum=int(candidate.screenFlags);
+    modal=Modal::Display;modalScroll=0;focus="display.keep";displayDeadline=SDL_GetTicks()+15000;
 }
-
-
-void SettingsScreen::onGroupActivated(int group_n)
+void SettingsScreen::confirmDisplay(bool keep)
 {
-	if(group_n == generalGroup)
-	{
-		setVisibilityFromAudioSettings();
-		modeList->setVisible(fullscreen->getState());
-	}
-	else if(group_n == unitGroup)
-	{
-		activateDefaultAssignedGroupNumber(kBuildingGroupCompleted);
-	}
-	else if(group_n == keyboardGroup)
-	{
-		currentMode = GameGUIShortcuts;
-		updateShortcutList();
-		if(shortcut_list->getCount() == 0)
-			shortcut_list->setSelectionIndex(-1);
-		else
-			shortcut_list->setSelectionIndex(0);
-		updateActionList();
-		updateShortcutInfoFromSelection();
-	}
+    if(modal!=Modal::Display)return;
+    auto& s=globalContainer->settings;
+    if(keep) {
+        s.screenWidth=picker.number;s.screenHeight=picker.maximum;s.screenFlags=Uint32(picker.minimum);commit();
+    } else if(!applyDisplayMode(previousDisplay.screenWidth,previousDisplay.screenHeight,previousDisplay.screenFlags)) {
+        displayError=true;
+    }
+    modal=Modal::None;focus.clear();
 }
+int SettingsScreen::menu() { return SettingsScreen().execute(globalContainer->gfx,30); }

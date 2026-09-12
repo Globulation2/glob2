@@ -53,6 +53,7 @@ static std::optional<int> interpretScrollBoxClick(int lmx, int current, int max)
 
 void GameGUI::handleMenuClickBuildingSelection(int mx, int my, int button)
 {
+	if(globalContainer->liveSpectating) return;
 	Building* selBuild=selectionBuilding();
 	assert (selBuild);
 	if (selBuild->owner->teamNumber!=localTeamNo)

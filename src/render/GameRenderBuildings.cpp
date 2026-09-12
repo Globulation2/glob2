@@ -115,7 +115,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	}
 
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) && (building->owner->sharedVisionOther & visibleTeams))
 	{
@@ -178,7 +178,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Building*> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	std::set<Building*> drawnBuildings;
 	std::set<std::tuple<Uint16, int, int>> drawnCopies;

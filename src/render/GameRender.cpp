@@ -6,6 +6,7 @@
 #include "AICastor.h"
 #include "AINicowar.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <string.h>
 
@@ -37,7 +38,10 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 {
 	assert(maxLength>=0);
 	assert(maxLength<65536);
-	assert(actLength<=maxLength);
+	// Live counts may exceed the displayed capacity. Bound both sections;
+	// drawing a status bar must not abort gameplay or spill outside the bar.
+	actLength = std::clamp(actLength, 0, maxLength);
+	secondActLength = std::clamp(secondActLength, 0, maxLength - actLength);
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{
@@ -194,7 +198,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	// Draw units that are off the screen for the selected building
 
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	if(view.selectedBuilding != NULL && (view.selectedBuilding->owner->sharedVisionOther & visibleTeams))
 	{
@@ -211,12 +215,12 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 	// we look on the whole map for buildings
 	// TODO : increase speed, do not count on graphic clipping
-	if (!globalContainer->replaying || globalContainer->replayShowFlags)
+	if (!globalContainer->isViewingGame() || globalContainer->replayShowFlags)
 	{
 		// In replays we want to show the flags of all players, so we build a list of whose buildings to show
 		std::list<Team *> teamsToShow;
 
-		if (!globalContainer->replaying)
+		if (!globalContainer->isViewingGame())
 		{
 			// Only add the local team
 			teamsToShow.push_back(teams[localTeam]);

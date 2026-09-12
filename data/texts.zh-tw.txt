@@ -47,9 +47,9 @@ V: 分享所有建築物的視野
 [AI Descriptions]
 AI 說明
 [AI]
-AI
+人工智慧
 [ai]
-AI
+人工智慧
 [AICastor-Description]
 Castor 採取保守策略，在資源稀少的地圖上表現出色。中等難度。
 [AICastor]
@@ -66,10 +66,10 @@ Nicowar
 Numbi 會迅速進行小規模擴張。低難度。
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity 不會進攻，但會建造龐大基地，並積極招降單位。低難度。
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo 不會進攻，但會建造龐大基地，並積極招降單位。低難度。
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush 進攻迅速且猛烈，常讓防守的玩家陷入苦戰。中等難度。
 [AIWarrush]
@@ -673,9 +673,9 @@ Num Lock 鍵
 [ok]
 確定
 [old islands terrain]
-隨機島嶼（舊版）
+崎嶇群島
 [old random terrain]
-隨機地形（舊版）
+破碎海岸
 [on press]
 按下時
 [On the spot]
@@ -1289,7 +1289,7 @@ Ysagoon 線上遊戲
 [game speed help]
 僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
 [AICortex-Description]
-Cortex - 實驗性的三層人工智慧，開發中。
+Cortex向新的麥田擴張，利用前線客棧和醫院支援一波又一波的戰士進攻。難度中等，仍處於實驗階段。
 [ERROR_CANT_LOAD_MAP]
 無法載入地圖：檔案已損毀或版本不相容。
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1300,7 +1300,553 @@ Cortex
 內部：%0
 [Units still working: %0]
 仍在工作：%0
+[2 vs 2]
+2對2
+[AI strategy & counterplay]
+AI策略與對抗
+[AICastor-Profile]
+核心策略:穩健發展，擅長應對資源稀少的地圖。\n\n優勢:克制的擴張方式適合資源匱乏的對局。\n\n可嘗試的對策:儘早佔領空間，不要以為資源匱乏就能削弱它。
+[AICastor-Summary]
+謹慎擴張；在稀缺資源下表現良好。
+[AICortex-Profile]
+核心策略:管理糧食供應，向新的麥田擴張，集結一波又一波的戰士。前線客棧和醫院為遠距離進攻提供支援。\n\n優勢:集中增援、持續施壓，並能應對糧食短缺。\n\n可嘗試的對策:爭奪新的麥田，打擊前線支援設施，在其部隊集結前施加壓力。\n\n實驗階段的人工智慧，難度中等。這些對策建議並非基準測試的評定結果。
+[AICortex-Summary]
+保障糧食供應，並以支援設施維持多波進攻。
+[AINicowar-Profile]
+策略:迅速擴張，以龐大的軍隊攻擊對手。\n\n優勢:快速擴張支持侵略性的軍事攻擊。\n\n建議對策:防止其擴張。利用地形來減少可以同時作戰的敵軍數量。
+[AINicowar-Summary]
+迅速擴張並建立龐大的軍隊進行侵略性攻擊。
+[AINone-Profile]
+核心策略:不發出任何人工智慧命令。\n\n優勢:行為可預測、保持不動的實驗對手。\n\n弱點:不會擴張或適應局勢。
+[AINone-Summary]
+用於實驗的閒置殖民地。
+[AINumbi-Profile]
+核心策略:小規模快速擴張，適合練習殖民地管理。\n\n優勢:讓你有餘地同時學習經濟管理和戰鬥。\n\n可嘗試的對策:先壯大經濟、訓練軍隊，再發動進攻。
+[AINumbi-Summary]
+小規模快速擴張。
+[AIEcono-Profile]
+策略:不攻擊，但建立巨大的基地並積極地將敵方部隊轉變為己方。\n\n優點:擴張和單位轉換無需直接攻擊即可威脅對手。\n\n建議的對策:儘早發展你的殖民地，避免將部隊派遣到敵人可以轉換的地方。
+[AIEcono-Summary]
+不主動進攻，以巨大基地和招降敵軍施壓。
+[AIWarrush-Profile]
+核心策略:在對手完成建設前，發動迅速而猛烈的進攻。\n\n優勢:善於打擊無防備的擴張和緩慢的備戰。\n\n可嘗試的對策:維持經濟，撐過首輪進攻後再反擊。
+[AIWarrush-Summary]
+快速攻擊考驗你的早期防禦能力。
+[Algae]
+海藻
+[Alliances]
+聯盟
+[Beach size]
+海灘尺寸
+[Blue]
+藍色
+[Brown]
+棕色
+[Built-in maps]
+內建地圖
+[Can change in game]
+遊戲中可以改變
+[Closed]
+關閉
+[Colonies]
+殖民地
+[Colony]
+殖民地
+[Concrete islands]
+獨立島嶼
+[Conquest only]
+只限征服
+[Conquest or prestige]
+征服或聲望
+[Could not launch this map. Your setup is retained; try again.]
+無法啟動此地圖。您的設定將被保留；再試一次。
+[Could not load this map. Choose another map or retry.]
+無法載入此地圖。選擇另一張地圖或重試。
+[Crater lakes]
+火山口湖
+[Custom]
+自訂
+[Custom teams]
+自訂隊伍
+[Cyan]
+青色
+[Desert weight]
+沙漠權重
+[Easy]
+簡單
+[Explore as you play]
+邊玩邊探索
+[Extra colony assignments are retained for larger maps.]
+多餘的殖民地設定會保留，以便切回更大的地圖時恢復。
+[Extra islands]
+額外的島嶼
+[FFA]
+各自為戰
+[Fruit]
+水果
+[Game Rules]
+遊戲規則
+[Game speed]
+遊戲速度
+[Generate & play]
+產生並開始遊戲
+[Give at least one terrain type a nonzero weight.]
+為至少一種地形類型賦予非零權重。
+[Grass weight]
+草地權重
+[Gray]
+灰色
+[Green]
+綠色
+[Hard]
+困難
+[Height]
+高度
+[Invalid colony count.]
+殖民地數量無效。
+[Island size]
+島嶼大小
+[Islands]
+島嶼
+[Isles]
+小島
+[Lake density]
+湖泊密度
+[Landscape]
+地形類型
+[Last colony standing]
+最後的殖民地
+[Layout]
+佈局
+[Locked teams]
+鎖定隊伍
+[Magenta]
+洋紅色
+[Map]
+地圖
+[Map knowledge]
+地形可見性
+[Match finished]
+比賽結束
+[Medium]
+中等
+[Medium - Experimental]
+中等 - 實驗性
+[No AI orders]
+沒有AI命令
+[Old islands]
+崎嶇群島
+[Old random]
+破碎海岸
+[Open at least one colony to start a match.]
+至少啟用一個殖民地才能開始對局。
+[Open book]
+揭示的世界
+[Pink]
+粉紅色
+[Play this map]
+遊玩此地圖
+[Players & Teams]
+玩家與隊伍
+[Premade maps]
+預製地圖
+[Preview ready. Start plays this exact map.]
+預覽準備就緒。開始遊戲時使用這張精確的地圖。
+[Purple]
+紫色
+[Quick clash]
+快速戰鬥
+[Random map]
+隨機地圖
+[Red]
+紅色
+[Repeat landscape]
+重複地形
+[Resources]
+資源
+[Restore standard rules]
+恢復標準規則
+[Revealed terrain does not reveal all enemy activity.]
+揭示的地形並不能揭示所有敵人的活動。
+[River]
+河流
+[River width]
+河寬
+[Sand weight]
+沙地權重
+[Select a valid map.]
+選擇有效的地圖。
+[Shared control needs a free controller slot (maximum 12).]
+共同操控需要一個空餘的操控者名額（最多12個）。
+[Smoothing]
+平滑
+[Standard]
+標準
+[Start game]
+開始遊戲
+[Starting workers]
+初始工人
+[Starting workers: Game Rules tab.]
+初始工人數量：請在遊戲規則頁設定。
+[Swamp]
+沼澤
+[Team]
+隊伍
+[Terrain]
+地形
+[Terrain revealed]
+地形顯露
+[Try a ruleset, then make it your own.]
+嘗試一個規則集，然後將其變成你自己的。
+[Victory]
+勝利
+[Watch game]
+觀戰
+[Water weight]
+水域權重
+[White]
+白色
+[Width]
+寬度
+[Yellow]
+黃色
+[You]
+你
+[You + AI]
+你+人工智慧
+[You and the AI both issue orders. Uses two controller slots.]
+你與人工智慧都可以下達命令，佔用兩個操控者名額。
+[You vs all]
+你對抗所有人
+[Your maps]
+你的地圖
+[colonies]
+殖民地
+[* Changed from standard.]
+* 從標準更改。
+[World & diplomacy]
+世界與外交
+[Starting conditions & pace]
+起始條件和速度
+[Inactive]
+不活躍
+[8 workers / 2x speed]
+8 名工人/2 倍速度
+[Changes the pace of the whole simulation.]
+改變整個模擬的節奏。
+[Choose whether teams can change during the match.]
+選擇是否允許在對局中更換隊伍。
+[Classic colony building]
+經典殖民地建設
+[Dimensions and colony count are set above.]
+請在上方設定尺寸和殖民地數量。
+[Generate & watch]
+生成並觀看
+[Info]
+資訊
+[Map-defined starting units]
+地圖定義的起始單位
+[No maps in this library.]
+此地圖清單為空。
+[Premade maps retain their authored starting units.]
+預製地圖保留作者設定的初始單位。
+[Premade: only speed changes (2x)]
+預製:僅速度變化 (2x)
+[Start with terrain known]
+從已知地形開始
+[This colony will not join the match.]
+該殖民地不會參加比賽。
+[This landscape uses a fixed terrain recipe.]
+此地形類型使用固定的地形配置。
+[This landscape uses fixed resource placement.]
+此地形類型使用固定的資源分布。
+[Win through conquest]
+透過征服贏得勝利
+[You control this colony.]
+你控制著這個殖民地。
+[controllers]
+操控者
+[Use]
+選擇
+[Lime]
+檸檬綠
+[Teal]
+藍綠色
+[Azure]
+天藍色
+[Updating map preview...]
+正在更新地圖預覽...
+[Generation failed. Adjust settings or press Start to retry.]
+地圖產生失敗。請調整設定，或按開始重試。
+[Preview unavailable. Adjust settings or start to retry.]
+預覽不可用。更改設定或啟動遊戲重試。
 [automatic torus view]
 自動環面視圖
 [toggle torus view]
 切換 2D／環面視圖
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2對2需要4個參與的殖民地。「你對抗所有人」需要一名人類玩家。
+[Alliance]
+聯盟
+[Choose a rule to change it.]
+選擇一條規則來更改它。
+[Conquest only removes prestige victory; map scripts still apply.]
+「只限征服」只停用聲望勝利，地圖腳本仍然生效。
+[Control]
+操控方式
+[Controller]
+操控者
+[Generate preview]
+生成預覽
+[Generation failed. Adjust settings or try again.]
+地圖產生失敗。請調整設定或重試。
+[Map settings changed. Generate a new preview or start.]
+地圖設定已更改。產生新的預覽或開始。
+[Map source]
+地圖來源
+[Map-defined]
+地圖定義
+[Match format]
+遊戲形式
+[No current preview]
+目前沒有預覽
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+快速戰鬥:雙倍速度；生成的地圖以 8 個工人開始。
+[Reroll]
+生成另一張地圖
+[Ruleset]
+規則集
+[Select a map from the library.]
+從庫中選擇一張地圖。
+[Starting workers affects generated maps only.]
+初始工人數量只影響產生的地圖。
+[Unavailable]
+不可用
+[Use selection]
+選擇此人工智慧
+[Quick clash on premade maps: only speed changes (2x).]
+在預製地圖上快速戰鬥:僅速度變化（雙倍速度）。
+[Generate a preview to explore this world.]
+生成預覽來探索這個世界。
+[More workers jump-start colony growth. Changes the generated map.]
+更多工人能加快殖民地的初期發展。修改此設定會改變產生的地圖。
+[No warriors]
+無戰士
+[settings Add key to sequence]
+新增按鍵至序列
+[settings Add shortcut]
+新增快捷鍵
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+使用滑鼠滾輪變更分配的單位數量。如果關閉此選項，請按住 Ctrl 鍵以使用滾輪。按住 Shift 鍵可調整旗幟半徑。此選項還控制其他選單中的滑鼠滾輪輸入。
+[settings Adjust music and voice volume.]
+調整音樂和語音音量。
+[settings Adjust the pace of play.]
+調整遊戲速度。
+[settings Advanced binding]
+進階快捷鍵設定
+[settings Artwork & effects]
+美術與特效
+[settings Audio]
+音訊
+[settings Bind Escape]
+指派 Escape 鍵
+[settings Building]
+建築物
+[settings Building defaults]
+建築物預設值
+[settings Cancel]
+取消
+[settings Changes saved automatically]
+自動儲存變更
+[settings Changes you make during play update these defaults for future games.]
+遊戲中所做的變更會更新這些預設值，供之後的遊戲使用。
+[settings Changing the renderer requires a restart.]
+變更渲染器需要重新啟動。
+[settings Choose a binding to change it, or add another shortcut for an action.]
+選擇快捷鍵進行編輯，或為某個操作新增另一組快捷鍵。
+[settings Choose a window or fill the screen.]
+選擇視窗或全螢幕模式。
+[settings Choose how the game looks on your screen.]
+選擇遊戲在螢幕上的外觀。
+[settings Completed]
+已竣工建築物
+[settings Construction]
+建造中
+[settings Controls]
+遊戲控制
+[settings Could not change display mode. The previous mode was restored.]
+無法變更顯示模式，已還原為先前的模式。
+[settings Could not save]
+無法儲存
+[settings Current display]
+目前顯示設定
+[settings Default]
+預設
+[settings Display]
+顯示
+[settings Display & graphics]
+顯示和圖形
+[settings Display the Globulation 2 cursor.]
+顯示 Globulation 2 遊標。
+[settings Done]
+完成
+[settings Edit shortcut]
+編輯快捷鍵
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+在高解析度螢幕上放大選單、文字與側邊欄。
+[settings Flags]
+旗幟
+[settings Full]
+完整細節
+[settings Fullscreen]
+全螢幕
+[settings Game]
+遊戲
+[settings Game speed]
+遊戲速度
+[settings Gameplay]
+遊戲玩法
+[settings Graphics detail]
+圖形細節
+[settings Interface scale]
+介面縮放
+[settings Keep]
+保留變更
+[settings Keep this display mode?]
+要保留這個顯示模式嗎？
+[settings Keep your volume levels while silencing audio.]
+將所有聲音靜音，同時保留原本的音量設定。
+[settings Key]
+按鍵
+[settings Keyboard shortcuts]
+鍵盤快捷鍵
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+按鍵依序組成序列。每個步驟可設定在按下或放開該按鍵時觸發。
+[settings Language]
+語言
+[settings Language & player]
+語言與玩家
+[settings Language used throughout the interface.]
+整個介面使用的語言。
+[settings Level]
+等級
+[settings Map editor]
+地圖編輯器
+[settings Match the desktop]
+與桌面相同
+[settings Missing font]
+缺少字型
+[settings Music volume]
+音量 (音樂)
+[settings Mute audio]
+靜音
+[settings Name shown to other players.]
+向其他玩家顯示的名稱。
+[settings Off]
+關閉
+[settings On]
+開啟
+[settings OpenGL is not available in this build.]
+OpenGL 在此版本中不可用。
+[settings Player name]
+玩家名稱
+[settings Press]
+按下時
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+請按下按鍵。Escape 可取消按鍵擷取。若要指派 Escape，請選擇「指派 Escape 鍵」。
+[settings Radius]
+半徑
+[settings Reduced]
+精簡細節
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+精簡細節會關閉雲朵及其陰影、簡化魔法特效，並降低透明度。
+[settings Release]
+放開時
+[settings Remember assignments between games]
+記住遊戲之間的單位分配
+[settings Remove key]
+移除按鍵
+[settings Remove shortcut]
+移除快捷鍵
+[settings Renderer]
+圖形渲染器
+[settings Replace conflicting bindings]
+取代衝突的快捷鍵
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+要將此情境中的快捷鍵還原為預設值嗎？變更會立即儲存。
+[settings Resolution]
+螢幕解析度
+[settings Restore default shortcuts]
+還原預設鍵盤快捷鍵
+[settings Retry]
+再試一次
+[settings Revert]
+還原變更
+[settings Reverting in]
+還原倒數：
+[settings Save shortcut]
+儲存快捷鍵
+[settings Saved — restart required]
+已儲存 — 需要重新啟動
+[settings Saving…]
+儲存中…
+[settings Scroll wheel enabled]
+啟用滑鼠滾輪
+[settings Set starting unit assignments by building type and level.]
+依建築類型和等級設定起始單位分配。
+[settings Set your language and player name.]
+設定您的語言和玩家名稱。
+[settings Settings]
+設定
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
+[settings Software]
+軟體渲染
+[settings Starting unit counts and radius for newly placed flags.]
+新放置旗幟的初始單位數量和半徑。
+[settings This shortcut conflicts with existing bindings:]
+此鍵盤快捷鍵與現有快捷鍵衝突：
+[settings Trigger]
+觸發方式
+[settings Unbound]
+未指派
+[settings Unit counts assigned to new construction sites.]
+分配給新建築工地的單位數量。
+[settings Unit counts for completed buildings.]
+分配給已完工建築物的單位數量。
+[settings Unit counts while a building is being upgraded.]
+建築物升級期間分配的單位數量。
+[settings Units]
+單位
+[settings Upgrades]
+建築升級
+[settings Use game cursor]
+使用遊戲遊標
+[settings Voice volume]
+語音音量
+[settings Window mode]
+視窗模式
+[settings Window-only sizes also switch the game to windowed mode.]
+選擇僅支援視窗模式的解析度也會將遊戲切換到視窗模式。
+[settings Windowed]
+視窗模式
+[settings Windowed only]
+僅限視窗模式
+[settings seconds]
+秒
+[settings Flag]
+旗幟
+[settings High-resolution artwork]
+高解析度美術素材
+[settings Apply artwork on the next game or editor load (OpenGL).]
+美術素材會在下次載入遊戲或地圖編輯器時套用 (OpenGL)。
+[settings Automatic torus view]
+自動環面視圖
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+在地圖上移動時自動顯示圓環形狀的地圖概覽 (OpenGL)。
+[Channel width]
+水道寬度
+[Land bridge width]
+陸橋寬度
+[Lake size]
+湖泊大小

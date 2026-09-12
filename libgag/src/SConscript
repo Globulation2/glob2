@@ -3,7 +3,7 @@ BinaryStream.cpp    CursorManager.cpp     FileManager.cpp FileManagerAtomic.cpp 
 GraphicContext.cpp GraphicContextResize.cpp GraphicContextDraw.cpp GraphicContextCompound.cpp
 GraphicContextUnitShader.cpp
 DrawableSurface.cpp DrawableSurfaceDraw.cpp DrawableSurfaceCompound.cpp
-GUIAnimation.cpp    GUIBase.cpp           GUIButton.cpp
+GUIDropdown.cpp     GUIAnimation.cpp    GUIBase.cpp           GUIButton.cpp
 GUIFileList.cpp     GUIKeySelector.cpp    GUIList.cpp       GUIMessageBox.cpp
 GUINumber.cpp       GUIRatio.cpp          GUISelector.cpp   GUIStyle.cpp
 GUITextArea.cpp     GUITextAreaLayout.cpp GUITextAreaInput.cpp

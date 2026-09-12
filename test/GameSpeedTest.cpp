@@ -5,6 +5,7 @@
 #include "GameGUIDialog.h"
 #include "Engine.h"
 #include "KeyboardManager.h"
+#include "ReplayReader.h"
 #include "GameGUIKeyActions.h"
 #include <GUISelector.h>
 #include <GUIButton.h>
@@ -20,20 +21,12 @@ GlobalContainer *globalContainer = NULL;
 using namespace GAGGUI;
 
 struct TestSettingsScreen : SettingsScreen {
-    TestSettingsScreen() { gfx=globalContainer->gfx; dispatchInit(); }
-    Selector* speed() {
-        for(auto w:widgets) if(auto s=dynamic_cast<Selector*>(w)) if(s->getTop()==285) return s;
-        assert(false); return NULL;
-    }
-    Text* speedLabel() {
-        for(auto w:widgets) if(auto t=dynamic_cast<Text*>(w)) if(t->getTop()==265) return t;
-        assert(false); return NULL;
-    }
-    List* languages() {
-        for(auto w:widgets) if(auto l=dynamic_cast<List*>(w)) if(l->getLeft()==20 && l->getTop()==90) return l;
-        assert(false); return NULL;
-    }
-    void select(int value) { speed()->setValue(value-Settings::GAME_SPEED_MINIMUM); onAction(speed(), VALUE_CHANGED, value, 0); }
+    TestSettingsScreen() { gfx=globalContainer->gfx; dispatchInit(); selectCategory(Category::Gameplay); }
+    Row speed() { for(const auto& r:rows()) if(r.id=="gameplay.speed") return r; assert(false); return {}; }
+    // The presets start below 1x, so a speed value and its row index differ by
+    // GAME_SPEED_MINIMUM. Callers pass the speed; the row index is derived.
+    void select(int value) { assert(changeSetting("gameplay.speed",value-Settings::GAME_SPEED_MINIMUM)); }
+    int speedRow(int value) const { return value-Settings::GAME_SPEED_MINIMUM; }
 };
 
 static Uint32 resumeGame(Uint32, void* data) {
@@ -45,7 +38,7 @@ static Uint32 resumeGame(Uint32, void* data) {
 }
 
 int main(int argc, char** argv) {
-    assert(argc==2 && std::string(argv[1]).find("glob2-speed-test-")==0);
+    assert((argc==2 || (argc==3 && std::string(argv[2])=="--settings-only")) && std::string(argv[1]).find("glob2-speed-test-")==0);
     globalContainer=new GlobalContainer(argv[1]);
     auto& settings=globalContainer->settings;
     settings=Settings();
@@ -92,35 +85,40 @@ int main(int argc, char** argv) {
     assert(SDLNet_Init()==0);
     {
         TestSettingsScreen screen;
-        assert(screen.speed()->getValue()==3);
-        for(int speed=-3;speed<0;++speed) {
+        assert(screen.speed().number==screen.speedRow(Settings::GAME_SPEED_NORMAL));
+        for(int speed=Settings::GAME_SPEED_MINIMUM;speed<0;++speed) {
             screen.select(speed);
             assert(settings.gameSpeed==speed);
-            assert(screen.speedLabel()->getText()=="Game speed: "+settings.getGameSpeedText());
+            assert(screen.speed().value==settings.getGameSpeedText());
         }
         const int music=settings.musicVolume, voice=settings.voiceVolume;
         screen.select(10);
         assert(settings.gameSpeed==10);
         assert(settings.musicVolume==music && settings.voiceVolume==voice);
-        assert(screen.speedLabel()->getText()=="Game speed: Maximum");
-        screen.activateGroup(screen.keyboardGroup); assert(!screen.speed()->visible);
-        screen.activateGroup(screen.generalGroup); assert(screen.speed()->visible);
+        assert(screen.speed().value=="Maximum");
+        screen.selectCategory(SettingsScreen::Category::Controls);
+        for(const auto& r:screen.rows()) assert(r.id!="gameplay.speed");
+        screen.selectCategory(SettingsScreen::Category::Player);
         const int french=Toolkit::getStringTable()->getLangCode("fr");
-        screen.onAction(screen.languages(), LIST_ELEMENT_SELECTED, french, 0);
-        assert(screen.speedLabel()->getText()=="Vitesse du jeu: Maximale");
-        screen.onAction(NULL, BUTTON_RELEASED, SettingsScreen::CANCEL, 0);
-        assert(settings.gameSpeed==0);
+        assert(screen.changeSetting("player.language",french));
+        screen.selectCategory(SettingsScreen::Category::Gameplay);
+        assert(screen.speed().value=="Maximale");
+        screen.selectCategory(SettingsScreen::Category::Player);
+        screen.changeSetting("player.language",Toolkit::getStringTable()->getLangCode("en"));
+        screen.done();
+        Settings loaded; loaded.load(); assert(loaded.gameSpeed==10);
+
     }
     {
         TestSettingsScreen screen;
         screen.select(7);
-        screen.onAction(NULL, BUTTON_RELEASED, SettingsScreen::OK, 0);
+        screen.done();
         Settings loaded; loaded.load(); assert(loaded.gameSpeed==7);
     }
     {
         TestSettingsScreen screen;
-        assert(screen.speed()->getValue()==10);
-        assert(screen.speedLabel()->getText()=="Game speed: 8x");
+        assert(screen.speed().number==screen.speedRow(7));
+        assert(screen.speed().value=="8x");
     }
     {
         GameGUI gui;
@@ -194,7 +192,8 @@ int main(int argc, char** argv) {
     assert(keyboard.getAction(KeyPress(key,true))==GameGUIKeyActions::IncreaseGameSpeed);
     key.sym=SDLK_MINUS;
     assert(keyboard.getAction(KeyPress(key,true))==GameGUIKeyActions::DecreaseGameSpeed);
-    std::cout<<"PASS: main menu slider, language refresh, tab visibility, Cancel, OK, reopening, in-game slider, shortcuts\n";
+    std::cout<<"PASS: main menu presets, language refresh, categories, automatic saving, reopening, in-game slider, shortcuts\n";
+    if(argc==3){delete globalContainer;SDLNet_Quit();return 0;}
     Uint64 normal=0, maximum=0;
     for(int speed:{0,10}) {
         settings.gameSpeed=speed;
@@ -236,6 +235,7 @@ int main(int argc, char** argv) {
         settings.gameSpeed=mode==1?10:0;
         Engine engine;
         assert(engine.loadReplay("replays/last_game.replay")==Engine::EE_NO_ERROR);
+        std::cerr<<"Replay length: "<<globalContainer->replayReader->getNumStepsTotal()<<std::endl;
         globalContainer->replayFastForward=mode==2;
         globalContainer->automaticEndingSteps=25;
         const Uint64 start=SDL_GetTicks64();

@@ -7,10 +7,12 @@
 #undef main
 #endif
 #include "GlobalContainer.h"
+#include "Version.h"
 #include "Engine.h"
 #include "Utilities.h"
 #include "Order.h"
 #include "Player.h"
+#include "Version.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <FileManager.h>
@@ -265,7 +267,7 @@ static void checkRandomContinuation(bool text, bool ai)
 		MemoryStreamBackend source(runtimeText.data(),runtimeText.size());
 		source.seekFromStart(0);
 		TextInputStream reader(&source);
-		restored.game.map.loadRuntimeState(&reader);
+		restored.game.map.loadRuntimeState(&reader, VERSION_MINOR);
 	}
 
 	// The normal saved-game loader replaces the player header after loading.

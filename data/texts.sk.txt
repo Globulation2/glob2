@@ -66,10 +66,10 @@ Nicowar
 Numbi sa rozrastá v malom rozsahu, ale rýchlo. Nízka náročnosť.
 [AINumbi]
 UINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity neútočí, ale buduje obrovské základne a usilovne získava cudzie jednotky na svoju stranu. Nízka náročnosť.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo neútočí, ale buduje obrovské základne a usilovne získava cudzie jednotky na svoju stranu. Nízka náročnosť.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush útočí rýchlo a tvrdo a často zatlačí obrancu na hranicu jeho možností. Stredná náročnosť.
 [AIWarrush]
@@ -267,7 +267,7 @@ Obrana
 [Delete game]
 Zmazať označenú hru
 [delete]
-Delete
+Odstrániť
 [desert]
 púšť
 [destroy building]
@@ -611,9 +611,9 @@ z nich
 [ok]
 Ok
 [old islands terrain]
-staré náhodné ostrovy
+Členité súostrovie
 [old random terrain]
-starý náhodný terén
+Roztrieštené pobrežie
 [on press]
 Stlačenie
 [On the spot]
@@ -1225,7 +1225,7 @@ Rýchlosť: 1x (viac hráčov)
 [game speed help]
 Iba pre jedného hráča a záznamy. Hra viacerých hráčov beží rýchlosťou 1x.
 [AICortex-Description]
-Cortex - Experimentálna trojvrstvová AI. Vo vývoji.
+Cortex sa rozširuje smerom k novým obilným poliam a posiela do boja skupiny bojovníkov, podporovaných jedálňami a nemocnicami v blízkosti frontovej línie. Stredná náročnosť. Experimentálne.
 [ERROR_CANT_LOAD_MAP]
 Mapu nemožno načítať: súbor je poškodený alebo má nekompatibilnú verziu.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1236,7 +1236,553 @@ Cortex
 Vnútri: %0
 [Units still working: %0]
 Ešte v práci: %0
+[2 vs 2]
+2 vs 2
+[AI strategy & counterplay]
+Stratégia AI a protihra
+[AICastor-Profile]
+Stratégia: Opatrne sa rozširuje a funguje dobre na mapách s malým množstvom zdrojov.\n\nSilné stránky: Obmedzená expanzia je účinná v hrách s obmedzenými zdrojmi.\n\nOdporúčaná protihra: Obsaďte územie skôr. Nepredpokladajte, že nedostatok zdrojov oslabí túto AI.
+[AICastor-Summary]
+Opatrná expanzia; funguje dobre s obmedzenými zdrojmi.
+[AICortex-Profile]
+Stratégia: Riadi zásoby jedla, rozširuje sa smerom k novým pšeničným poliam a zostavuje po sebe nasledujúce skupiny bojovníkov. Jedálne a nemocnice v blízkosti frontovej línie podporujú útoky ďaleko od základne.\n\nSilné stránky: Posiela posily, udržiava vojenský tlak a reaguje na nedostatok potravín.\n\nOdporúčaná protihra: Bojujte o kontrolu nad novými pšeničnými poliami a zaútočte na ich podporné budovy v blízkosti prednej línie. Zaútočte skôr, ako budú jeho skupiny bojovníkov pripravené.\n\nExperimentálna AI. Stredná obtiažnosť; odporúčania k protihre nie sú hodnotením z porovnávacích testov.
+[AICortex-Summary]
+Rozširuje sa s ohľadom na zásoby potravín a podporuje svoje útočiace jednotky.
+[AINicowar-Profile]
+Stratégia: Rýchlo expanduje a útočí na protivníkov obrovskými armádami.\n\nSilné stránky: Rýchla expanzia podporuje agresívne vojenské útoky.\n\nOdporúčaná protihra: Zabráňte jej rozširovaniu. Použite terén na zníženie počtu nepriateľských jednotiek, ktoré môžu naraz bojovať.
+[AINicowar-Summary]
+Rýchlo expanduje a buduje veľké armády pre agresívne útoky.
+[AINone-Profile]
+Stratégia: AI nedáva žiadne príkazy.\n\nSilné stránky: Predvídateľný, neaktívny protivník na experimenty.\n\nSlabé stránky: Nerozširuje sa ani sa neprispôsobuje.
+[AINone-Summary]
+Nečinná kolónia na experimenty.
+[AINumbi-Profile]
+Stratégia: Rozširuje sa rýchlo, ale v malom rozsahu. Ľahší súper pre precvičovanie manažmentu kolónií.\n\nSilné stránky: Umožňuje vám naučiť sa ekonomické riadenie aj boj.\n\nOdporúčaná protihra: Pred útokom vyviňte silnejšiu ekonomiku a vycvičte svoju armádu.
+[AINumbi-Summary]
+Rýchla expanzia v malom meradle.
+[AIEcono-Profile]
+Stratégia: Neútočí, ale buduje obrovské základne a aktívne konvertuje nepriateľské jednotky na svoju stranu.\n\nSilné stránky: Rozšírenie a konverzia jednotiek ohrozujú protivníkov bez priamych útokov.\n\nOdporúčaná protihra: Rozvíjajte svoju kolóniu včas a vyhnite sa posielaniu jednotiek tam, kde ich môže nepriateľ premeniť.
+[AIEcono-Summary]
+Obrovské základne a konverzia namiesto útokov.
+[AIWarrush-Profile]
+Stratégia: Útočí skoro a rázne, skôr ako súper dokončí prípravu.\n\nSilné stránky: Využíva nebránenú expanziu a pomalú vojenskú prípravu.\n\nOdporúčaná protihra: Prežite prvý útok pri zachovaní svojej ekonomiky, potom zaútočte.
+[AIWarrush-Summary]
+Rýchle útoky, ktoré otestujú vašu skorú obranu.
+[Algae]
+Riasy
+[Alliances]
+Aliancie
+[Beach size]
+Veľkosť pláže
+[Blue]
+Modrá
+[Brown]
+Hnedá
+[Built-in maps]
+Vstavané mapy
+[Can change in game]
+Môže sa zmeniť v hre
+[Closed]
+Zatvorené
+[Colonies]
+Kolónie
+[Colony]
+Kolónia
+[Concrete islands]
+Oddelené ostrovy
+[Conquest only]
+Iba dobytie
+[Conquest or prestige]
+Dobytie alebo prestíž
+[Could not launch this map. Your setup is retained; try again.]
+Túto mapu sa nepodarilo spustiť. Vaše nastavenie sa zachová; skúste to znova.
+[Could not load this map. Choose another map or retry.]
+Túto mapu sa nepodarilo načítať. Vyberte inú mapu alebo to skúste znova.
+[Crater lakes]
+Kráterové jazerá
+[Custom]
+Vlastné
+[Custom teams]
+Vlastné tímy
+[Cyan]
+Azúrová
+[Desert weight]
+Váha púšte
+[Easy]
+Ľahká
+[Explore as you play]
+Preskúmajte počas hry
+[Extra colony assignments are retained for larger maps.]
+Ďalšie priradenia kolónií sú zachované pre väčšie mapy.
+[Extra islands]
+Extra ostrovy
+[FFA]
+Všetci proti všetkým
+[Fruit]
+Ovocie
+[Game Rules]
+Pravidlá hry
+[Game speed]
+Rýchlosť hry
+[Generate & play]
+Generovať a hrať
+[Give at least one terrain type a nonzero weight.]
+Priraďte aspoň jednému typu terénu nenulovú váhu.
+[Grass weight]
+Váha trávy
+[Gray]
+Šedá
+[Green]
+Zelená
+[Hard]
+Ťažká
+[Height]
+Výška
+[Invalid colony count.]
+Neplatný počet kolónií.
+[Island size]
+Veľkosť ostrova
+[Islands]
+Ostrovy
+[Isles]
+Ostrovčeky
+[Lake density]
+Hustota jazier
+[Landscape]
+Krajina
+[Last colony standing]
+Posledná preživšia kolónia
+[Layout]
+Rozloženie
+[Locked teams]
+Zamknuté tímy
+[Magenta]
+Purpurová
+[Map]
+Mapa
+[Map knowledge]
+Mapové znalosti
+[Match finished]
+Zápas ukončený
+[Medium]
+Stredná
+[Medium - Experimental]
+Stredná - Experimentálna
+[No AI orders]
+Žiadne príkazy AI
+[Old islands]
+Členité súostrovie
+[Old random]
+Roztrieštené pobrežie
+[Open at least one colony to start a match.]
+Otvorte aspoň jednu kolóniu a začnite zápas.
+[Open book]
+Odhalený svet
+[Pink]
+Ružová
+[Play this map]
+Hrať na tejto mape
+[Players & Teams]
+Hráči a tímy
+[Premade maps]
+Predpripravené mapy
+[Preview ready. Start plays this exact map.]
+Ukážka pripravená. Pri spustení hry sa používa presne táto mapa.
+[Purple]
+Fialová
+[Quick clash]
+Rýchla bitka
+[Random map]
+Náhodná mapa
+[Red]
+Červená
+[Repeat landscape]
+Opakovanie krajiny
+[Resources]
+Zdroje
+[Restore standard rules]
+Obnoviť štandardné pravidlá
+[Revealed terrain does not reveal all enemy activity.]
+Odhalený terén neodhaľuje všetku aktivitu nepriateľa.
+[River]
+Rieka
+[River width]
+Šírka rieky
+[Sand weight]
+Váha piesku
+[Select a valid map.]
+Vyberte platnú mapu.
+[Shared control needs a free controller slot (maximum 12).]
+Zdieľané ovládanie vyžaduje voľné miesto pre hráča alebo AI (najviac 12).
+[Smoothing]
+Vyhladzovanie
+[Standard]
+Štandardné
+[Start game]
+Spustiť hru
+[Starting workers]
+Počiatoční pracovníci
+[Starting workers: Game Rules tab.]
+Počiatoční pracovníci: karta Pravidlá hry.
+[Swamp]
+Močiar
+[Team]
+Tím
+[Terrain]
+Terén
+[Terrain revealed]
+Terén odhalený
+[Try a ruleset, then make it your own.]
+Vyskúšajte súbor pravidiel a potom si ho prispôsobte.
+[Victory]
+Víťazstvo
+[Watch game]
+Sledovať hru
+[Water weight]
+Váha vody
+[White]
+Biela
+[Width]
+Šírka
+[Yellow]
+Žltá
+[You]
+Vy
+[You + AI]
+Vy + AI
+[You and the AI both issue orders. Uses two controller slots.]
+Vy aj AI môžete vydávať rozkazy. Zaberá dve miesta pre hráčov a AI.
+[You vs all]
+Vy proti všetkým
+[Your maps]
+Vaše mapy
+[colonies]
+kolónie
+[* Changed from standard.]
+* Zmenené oproti štandardu.
+[World & diplomacy]
+Svet a diplomacia
+[Starting conditions & pace]
+Štartovacie podmienky a tempo
+[Inactive]
+Neaktívne
+[8 workers / 2x speed]
+8 pracovníkov / 2x rýchlosť
+[Changes the pace of the whole simulation.]
+Mení tempo celej simulácie.
+[Choose whether teams can change during the match.]
+Vyberte, či sa tímy môžu počas zápasu meniť.
+[Classic colony building]
+Tradičný vývoj kolónií
+[Dimensions and colony count are set above.]
+Rozmery a počet kolónií sú nastavené vyššie.
+[Generate & watch]
+Generovať a sledovať
+[Info]
+Info
+[Map-defined starting units]
+Štartovacie jednotky definované mapou
+[No maps in this library.]
+V tejto knižnici nie sú žiadne mapy.
+[Premade maps retain their authored starting units.]
+Predpripravené mapy si zachovávajú svoje pôvodné počiatočné jednotky.
+[Premade: only speed changes (2x)]
+Hotová mapa: mení sa iba rýchlosť (2x)
+[Start with terrain known]
+Začnite so známym terénom
+[This colony will not join the match.]
+Táto kolónia sa nezapojí do zápasu.
+[This landscape uses a fixed terrain recipe.]
+Táto krajina používa pevný recept na terén.
+[This landscape uses fixed resource placement.]
+Táto krajina používa pevné umiestnenie zdrojov.
+[Win through conquest]
+Vyhrajte dobývaním
+[You control this colony.]
+Ovládate túto kolóniu.
+[controllers]
+hráči a AI
+[Use]
+Vyberte
+[Lime]
+Limetkovo zelená
+[Teal]
+Modrozelená
+[Azure]
+Nebeská modrá
+[Updating map preview...]
+Aktualizuje sa náhľad mapy...
+[Generation failed. Adjust settings or press Start to retry.]
+Generovanie zlyhalo. Upravte nastavenia alebo spustite hru a skúste to znova.
+[Preview unavailable. Adjust settings or start to retry.]
+Ukážka nie je k dispozícii. Zmeňte nastavenia alebo spustite hru a skúste to znova.
 [automatic torus view]
 Automatické toroidné zobrazenie
 [toggle torus view]
 Prepnúť 2D / toroidné zobrazenie
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 proti 2 vyžaduje štyri otvorené kolónie. Vy proti všetkým vyžaduje ľudského hráča.
+[Alliance]
+Aliancia
+[Choose a rule to change it.]
+Vyberte pravidlo, ktoré chcete zmeniť.
+[Conquest only removes prestige victory; map scripts still apply.]
+Víťazstvo založené len na dobytí znemožňuje prestížne víťazstvo; stále platia mapové skripty.
+[Control]
+Ovládanie
+[Controller]
+Ovláda
+[Generate preview]
+Vygenerovať ukážku
+[Generation failed. Adjust settings or try again.]
+Generovanie zlyhalo. Upravte nastavenia alebo to skúste znova.
+[Map settings changed. Generate a new preview or start.]
+Nastavenia mapy sa zmenili. Vygenerujte nový náhľad alebo začnite.
+[Map source]
+Zdroj mapy
+[Map-defined]
+Mapovo definované
+[Match format]
+Formát hry
+[No current preview]
+Žiadny aktuálny náhľad
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Rýchla bitka: dvojnásobná rýchlosť; generované mapy začínajú s 8 pracovníkmi.
+[Reroll]
+Vytvorte ďalšiu mapu
+[Ruleset]
+Pravidlá
+[Select a map from the library.]
+Vyberte mapu z knižnice.
+[Starting workers affects generated maps only.]
+Počiatočný počet pracovníkov sa vzťahuje len na vygenerované mapy.
+[Unavailable]
+nedostupné
+[Use selection]
+Použiť výber
+[Quick clash on premade maps: only speed changes (2x).]
+Rýchla bitka na vopred pripravených mapách: mení sa iba rýchlosť (dvojnásobná rýchlosť).
+[Generate a preview to explore this world.]
+Vytvorte ukážku na preskúmanie tohto sveta.
+[More workers jump-start colony growth. Changes the generated map.]
+Viac robotníkov urýchľuje rast kolónií. Toto nastavenie zmení vygenerovanú mapu.
+[No warriors]
+Bez bojovníkov
+[settings Add key to sequence]
+Pridať kláves do sekvencie
+[settings Add shortcut]
+Pridať skratku
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Kolieskom meňte počet priradených jednotiek. Ak je voľba vypnutá, podržte Ctrl. So Shiftom meníte polomer vlajky. Voľba ovplyvňuje aj koliesko v ostatných ponukách.
+[settings Adjust music and voice volume.]
+Upravte hlasitosť hudby a hlasu.
+[settings Adjust the pace of play.]
+Upravte rýchlosť hry.
+[settings Advanced binding]
+Pokročilá úprava skratiek
+[settings Artwork & effects]
+Grafika a efekty
+[settings Audio]
+Zvuk
+[settings Bind Escape]
+Priradiť Escape
+[settings Building]
+Budova
+[settings Building defaults]
+Predvolené nastavenia budov
+[settings Cancel]
+Zrušiť
+[settings Changes saved automatically]
+Zmeny sa ukladajú automaticky
+[settings Changes you make during play update these defaults for future games.]
+Zmeny, ktoré vykonáte počas hry, aktualizujú tieto predvolené hodnoty pre budúce hry.
+[settings Changing the renderer requires a restart.]
+Zmena vykresľovacieho modulu vyžaduje reštart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Vyberte klávesovú skratku na jej úpravu alebo pridajte ďalšiu skratku pre akciu.
+[settings Choose a window or fill the screen.]
+Vyberte režim v okne alebo na celú obrazovku.
+[settings Choose how the game looks on your screen.]
+Vyberte, ako bude hra vyzerať na obrazovke.
+[settings Completed]
+Dokončené budovy
+[settings Construction]
+Výstavba
+[settings Controls]
+Ovládanie hry
+[settings Could not change display mode. The previous mode was restored.]
+Nebolo možné zmeniť režim zobrazenia. Predchádzajúci režim bol obnovený.
+[settings Could not save]
+Nepodarilo sa uložiť
+[settings Current display]
+Aktuálny režim zobrazenia
+[settings Default]
+Predvolené
+[settings Display]
+Zobrazenie
+[settings Display & graphics]
+Zobrazenie a grafika
+[settings Display the Globulation 2 cursor.]
+Zobrazovať kurzor hry Globulation 2.
+[settings Done]
+Hotovo
+[settings Edit shortcut]
+Upraviť klávesovú skratku
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Zväčší ponuky, text a bočný panel na obrazovke s vysokým rozlíšením.
+[settings Flags]
+Vlajky
+[settings Full]
+Plné
+[settings Fullscreen]
+Celá obrazovka
+[settings Game]
+Hra
+[settings Game speed]
+Rýchlosť hry
+[settings Gameplay]
+Hrateľnosť
+[settings Graphics detail]
+Grafické detaily
+[settings Interface scale]
+Mierka rozhrania
+[settings Keep]
+Ponechať zmeny
+[settings Keep this display mode?]
+Ponechať tento režim zobrazenia?
+[settings Keep your volume levels while silencing audio.]
+Stlmiť všetok zvuk bez zmeny uložených úrovní hlasitosti.
+[settings Key]
+Kláves
+[settings Keyboard shortcuts]
+Klávesové skratky
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Klávesy tvoria sekvenciu v danom poradí. Každý krok možno aktivovať stlačením alebo uvoľnením príslušného klávesu.
+[settings Language]
+Jazyk
+[settings Language & player]
+Jazyk a hráč
+[settings Language used throughout the interface.]
+Jazyk používaný v celom rozhraní.
+[settings Level]
+Úroveň
+[settings Map editor]
+Editor máp
+[settings Match the desktop]
+Podľa plochy
+[settings Missing font]
+Chýba písmo
+[settings Music volume]
+Hlasitosť hudby
+[settings Mute audio]
+Stlmiť zvuk
+[settings Name shown to other players.]
+Meno zobrazené ostatným hráčom.
+[settings Off]
+Vypnuté
+[settings On]
+Zapnuté
+[settings OpenGL is not available in this build.]
+OpenGL nie je v tejto zostave k dispozícii.
+[settings Player name]
+Meno hráča
+[settings Press]
+Pri stlačení
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Stlačte kláves. Escape zruší snímanie vstupu. Ak chcete priradiť Escape, vyberte „Priradiť Escape“.
+[settings Radius]
+Polomer
+[settings Reduced]
+Obmedzené
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Znížené detaily deaktivujú oblaky a ich tiene, zjednodušujú magické efekty a znižujú priehľadnosť.
+[settings Release]
+Pri uvoľnení
+[settings Remember assignments between games]
+Pamätať si priradenia jednotiek medzi hrami
+[settings Remove key]
+Odstrániť kláves
+[settings Remove shortcut]
+Odstrániť skratku
+[settings Renderer]
+Grafický renderer
+[settings Replace conflicting bindings]
+Nahradiť konfliktné klávesové skratky
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Nahradiť skratky v tomto kontexte predvolenými? Zmeny sa ihneď uložia.
+[settings Resolution]
+Rozlíšenie obrazovky
+[settings Restore default shortcuts]
+Obnoviť predvolené skratky
+[settings Retry]
+Skúsiť znova
+[settings Revert]
+Vrátiť zmeny
+[settings Reverting in]
+Návrat o
+[settings Save shortcut]
+Uložiť klávesovú skratku
+[settings Saved — restart required]
+Uložené – vyžaduje sa reštart
+[settings Saving…]
+Ukladá sa…
+[settings Scroll wheel enabled]
+Koliesko myši povolené
+[settings Set starting unit assignments by building type and level.]
+Nastavte počiatočné počty priradených jednotiek podľa typu a úrovne budovy.
+[settings Set your language and player name.]
+Nastavte si jazyk a meno hráča.
+[settings Settings]
+Nastavenia
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Iba pre jedného hráča a záznamy. Hra viacerých hráčov beží rýchlosťou 1x.
+[settings Software]
+Softvérové vykresľovanie
+[settings Starting unit counts and radius for newly placed flags.]
+Počiatočné počty jednotiek a polomer pre novo umiestnené vlajky.
+[settings This shortcut conflicts with existing bindings:]
+Táto klávesová skratka je v konflikte s existujúcimi skratkami:
+[settings Trigger]
+Aktivačná udalosť
+[settings Unbound]
+Nepriradené
+[settings Unit counts assigned to new construction sites.]
+Počty jednotiek priradené novým staveniskám.
+[settings Unit counts for completed buildings.]
+Počty jednotiek priradených k dokončeným budovám.
+[settings Unit counts while a building is being upgraded.]
+Počty priradených jednotiek počas vylepšovania budovy.
+[settings Units]
+Jednotky
+[settings Upgrades]
+Vylepšovanie budov
+[settings Use game cursor]
+Používať herný kurzor
+[settings Voice volume]
+Hlasitosť hlasu
+[settings Window mode]
+Režim okna
+[settings Window-only sizes also switch the game to windowed mode.]
+Výber rozlíšenia, ktoré podporuje iba režim v okne, tiež prepne hru do režimu v okne.
+[settings Windowed]
+V okne
+[settings Windowed only]
+Iba v okne
+[settings seconds]
+sekúnd
+[settings Flag]
+Vlajka
+[settings High-resolution artwork]
+Grafika vo vysokom rozlíšení
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Vybraná grafika sa použije pri ďalšom načítaní hry alebo editora máp (OpenGL).
+[settings Automatic torus view]
+Automatické toroidné zobrazenie
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Automaticky zobraziť prehľad mapy v tvare torusu pri pohybe po mape (OpenGL).
+[Channel width]
+Šírka prielivu
+[Land bridge width]
+Šírka pevninského mosta
+[Lake size]
+Veľkosť jazera

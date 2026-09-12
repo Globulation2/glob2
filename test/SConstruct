@@ -79,6 +79,7 @@ GradientBFSTest.cpp
 
 MapQueryTest.cpp
 GradientTest.cpp
+FetchApportionmentTest.cpp
 MapQueryTestStubs.cpp
 ../src/map/Map.cpp
 ../src/map/gradient/MapGradientField.cpp
@@ -465,3 +466,42 @@ replay_objs = [
 ]
 wcdecode_env.Program( target = 'ReplayStepCounterTest', source = replay_objs )
 
+
+# Standalone regression harness for AIEcho::Construction::BuildingOrder::id
+# serialization. The id is a BuildingRegister key handed out at runtime by
+# Echo::add_building_order, but save()/load() never moved it and the member had
+# no initialiser, so every pending building order restored from a save carried
+# an uninitialised heap value into issue_order() and AssignWorkers -- an AI game
+# resumed from a save was not reproducible, and a resumed multiplayer game could
+# desync. Checks the version-96 round trip, the -1 sentinel surviving the Uint32
+# on the wire, and the pre-96 layout. Reuses the wcdecode env's libgagserver.a
+# link surface. Distinct object name for BuildingOrder.cpp because the main
+# build compiles it with different flags.
+echo_order_objs = [
+  wcdecode_env.Object('EchoBuildingOrderSaveLoadTest.o', 'EchoBuildingOrderSaveLoadTest.cpp'),
+  wcdecode_env.Object('BuildingOrder-saveload.o', '../src/ai/echo/BuildingOrder.cpp'),
+  wcdecode_env.Object('EchoBuildingOrderTestStubs.o', 'EchoBuildingOrderTestStubs.cpp'),
+]
+wcdecode_env.Program( target = 'EchoBuildingOrderSaveLoadTest', source = echo_order_objs )
+
+# Standalone regression harness for SoundMixer's track selection and fade
+# state machine, both reshaped when the device buffer shrank to 1024 frames
+# and a fade grew from one callback to sixteen. Covers the muted-start
+# selection (actTrack used to stay pinned to the first track ever chosen, so
+# unmuting replayed and then looped the intro instead of resuming what was
+# actually selected) and mid-fade track changes (which used to restart the
+# fade, cutting the incoming track off mid-mix, and are now queued). Drives
+# mixaudio() directly against the game's real ogg tracks, with SDL's dummy
+# audio driver for the openAudio path, so it needs vorbisfile/speex alongside
+# the server-mode libgag that SoundMixer's loadTrack pulls in via Toolkit.
+soundmixer_env = env.Clone()
+soundmixer_env.Append(LIBS = [gag_server, 'z'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  soundmixer_env.ParseConfig("pkg-config sdl2 vorbisfile speex --cflags --libs")
+
+soundmixer_objs = [
+  soundmixer_env.Object('SoundMixerTrackSelectionHarness.o', 'SoundMixerTrackSelectionHarness.cpp'),
+  soundmixer_env.Object('SoundMixer-tracktest.o', '../src/SoundMixer.cpp'),
+  soundmixer_env.Object('PlayerVoice-tracktest.o', '../src/PlayerVoice.cpp'),
+]
+soundmixer_env.Program( target = 'SoundMixerTrackSelectionHarness', source = soundmixer_objs )

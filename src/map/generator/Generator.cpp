@@ -13,13 +13,14 @@
 #include "Unit.h"
 #include "Utilities.h"
 
-bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
+bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor, std::optional<Uint32> syncSeed)
 {
 	if (verbose)
 		printf("Generating map, please wait ....\n");
 	game.map.setSize(descriptor.wDec, descriptor.hDec);
 	game.map.setGame(&game);
-	setRandomSyncRandSeed();
+	if (syncSeed) setSyncRandSeed(*syncSeed);
+	else setRandomSyncRandSeed();
 	
 	switch (descriptor.method)
 	{
@@ -49,12 +50,14 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
 				return false;
 			if (!game.makeRandomMap(descriptor))
 				return false;
+			game.map.oldAddResourcesRandomMap(descriptor);
 			break;
 		case MapGenerationDescriptor::eOLDISLANDS:
 			if (!game.map.oldMakeIslandsMap(descriptor))
 				return false;
 			if (!game.oldMakeIslandsMap(descriptor))
 				return false;
+			game.map.oldAddResourcesIslandsMap(descriptor);
 			break;
 						
 		default:
@@ -72,6 +75,12 @@ bool MapGenerator::generateMap(Game& game, MapGenerationDescriptor &descriptor)
 
 bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& descriptor)
 {
+	// Reuse the serialized diameter slot: this mode measures channel width.
+	// Older descriptors stored the unused value 50; retain their original width.
+	const auto &channelControl =
+		MapGenerationDescriptor::control(descriptor.method, "Channel width");
+	const int channelWidth =
+		descriptor.riverDiameter == 50 ? 6 : channelControl.normalize(descriptor.riverDiameter);
 	game.map.makeHomogenMap(descriptor.terrainType);
 	for(int i=0; i<descriptor.nbTeams; ++i)
 		game.addTeam();
@@ -95,9 +104,13 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 		teamAreaNumbers.push_back(areaNumber);
 		areaNumber+=1;
 	}
-	
-	//Add in auxilary islands
-	int islandsCount = syncRand() % (descriptor.nbTeams*2);
+
+	// Add in auxilary islands
+	//  A negative value retains the original random-count mode for comparisons.
+	int islandsCount = descriptor.extraIslands < 0
+						   ? syncRand() % (descriptor.nbTeams * 2)
+						   : MapGenerationDescriptor::control(descriptor.method, "Extra islands")
+								 .normalize(descriptor.extraIslands);
 	for(int i=0; i<islandsCount; ++i)
 	{
 		teamPoints.push_back(MapGeneratorPoint(0,0));
@@ -131,9 +144,9 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			int d = distances[y * game.map.getW() + x] - 1;
-			if(d < 6)
+			if (d < channelWidth)
 			{
-				heights[y * game.map.getW() + x] -= (5-d)*13;
+				heights[y * game.map.getW() + x] -= (channelWidth - 1 - d) * 13;
 			}
 		}
 	}
@@ -225,6 +238,14 @@ bool MapGenerator::computeConcreteIslands(Game& game, MapGenerationDescriptor& d
 
 bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 {
+	const int islandSize = MapGenerationDescriptor::control(descriptor.method, "Island size")
+							   .normalize(descriptor.grassRatio);
+	const int bridgeWidth =
+		descriptor.riverDiameter == 50
+			? 4
+			: MapGenerationDescriptor::control(descriptor.method, "Land bridge width")
+				  .normalize(descriptor.riverDiameter);
+	const int bridgeRadius = bridgeWidth - 2;
 	game.map.makeHomogenMap(descriptor.terrainType);
 	for(int i=0; i<descriptor.nbTeams; ++i)
 		game.addTeam();
@@ -248,7 +269,8 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	// Construct the areas for the teams
 	for(int i=0; i<descriptor.nbTeams; ++i)
 	{
-		createOval(game, grid, teamAreaNumbers[i], teamPoints[i].x, teamPoints[i].y, minDist/2,minDist/2);
+		createOval(game, grid, teamAreaNumbers[i], teamPoints[i].x, teamPoints[i].y,
+				   minDist * islandSize / 100, minDist * islandSize / 100);
 	}
 	
 	// Construct a heightmap
@@ -296,10 +318,10 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 			bool failed=false;
 			for(unsigned int p=0; p<linePoints.size() && !failed; ++p)
 			{
-				for(int x=-2; x<=2 && !failed; ++x)
+				for (int x = -bridgeRadius; x <= bridgeRadius && !failed; ++x)
 				{
 					int nx = game.map.normalizeX(linePoints[p].x + x);
-					for(int y=-2; y<=2 && !failed; ++y)
+					for (int y = -bridgeRadius; y <= bridgeRadius && !failed; ++y)
 					{
 						int ny = game.map.normalizeY(linePoints[p].y + y);
 						int g = grid[ny * game.map.getW() + nx];
@@ -316,14 +338,14 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 				for(unsigned int p=0; p<linePoints.size(); ++p)
 				{
 					connectorPoints.push_back(linePoints[p]);
-					for(int x=-2; x<=2; ++x)
+					for (int x = -bridgeRadius; x <= bridgeRadius; ++x)
 					{
 						int nx = game.map.normalizeX(linePoints[p].x + x);
-						for(int y=-2; y<=2; ++y)
+						for (int y = -bridgeRadius; y <= bridgeRadius; ++y)
 						{
 							int ny = game.map.normalizeY(linePoints[p].y + y);
 							int d = distances[ny * game.map.getW() + nx];
-							if(d>5)
+							if (d > bridgeWidth + 1)
 							{
 								grid[ny * game.map.getW() + nx] = connectorArea;
 							}
@@ -341,8 +363,8 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 		for(int y=0; y<game.map.getH(); ++y)
 		{
 			int d = distances[y * game.map.getW() + x];
-			if(d > 1 && d <= 4)
-				heightmap[y * game.map.getW() + x] += (4-d)*33;
+			if (d > 1 && d <= bridgeWidth)
+				heightmap[y * game.map.getW() + x] += (bridgeWidth - d) * (100 / (bridgeWidth - 1));
 			else if(d == 1)
 				heightmap[y * game.map.getW() + x] += 100;
 		}
@@ -392,7 +414,7 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 			{
 				int d = distances[y * game.map.getW() + x];
 				int d2 = connectorDistances[y * game.map.getW() + x];
-				if(d == 8 && d2 > 4)
+				if (d == 8 && d2 > bridgeWidth)
 				{
 					possible.push_back(MapGeneratorPoint(x, y));
 				}
@@ -426,6 +448,3 @@ bool MapGenerator::computeIsles(Game& game, MapGenerationDescriptor& descriptor)
 	}
 	return true;
 }
-
-
-

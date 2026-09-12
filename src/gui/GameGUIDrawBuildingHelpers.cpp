@@ -16,6 +16,7 @@
 #include "TeamDisplay.h"
 #include "Unit.h"
 #include "UnitDisplayNames.h"
+#include "FailureShapes.h"
 
 void GameGUI::drawBuildingHeader(Building* selBuild, BuildingType* buildingType, int& ypos)
 {
@@ -181,7 +182,7 @@ void GameGUI::drawBuildingWorkingControls(Building* selBuild, BuildingType* buil
 		if (selBuild->buildingState==Building::ALIVE)
 		{
 			// If we're replaying, display the actual number, not the locally cached one (changeable by the gui user)
-			const int maxUnitsWorking = (globalContainer->replaying?selBuild->maxUnitWorking:displayedMaxUnitWorking(*selBuild));
+			const int maxUnitsWorking = (globalContainer->isViewingGame()?selBuild->maxUnitWorking:displayedMaxUnitWorking(*selBuild));
 
 			std::string working = Toolkit::getStringTable()->getString("[working]");
 			const int len = globalContainer->littleFont->getStringWidth(working)+4;
@@ -221,7 +222,7 @@ void GameGUI::drawBuildingPriorityControls(Building* selBuild, BuildingType* bui
 		return;
 
 	// If we're replaying, display the actual value, not the locally cached one (changeable by the gui user)
-	const int priority = (globalContainer->replaying?selBuild->priority:displayedPriority(*selBuild));
+	const int priority = (globalContainer->isViewingGame()?selBuild->priority:displayedPriority(*selBuild));
 
 	ypos += YOFFSET_B_SEP;
 
@@ -253,7 +254,7 @@ void GameGUI::drawBuildingRangeControls(Building* selBuild, BuildingType* buildi
 	if ((selBuild->owner->allies)&(1<<localTeamNo))
 	{
 		// If we're replaying, display the actual number, not the locally cached one (changeable by the gui user)
-		const int unitStayRange = (globalContainer->replaying?selBuild->unitStayRange:displayedUnitStayRange(*selBuild));
+		const int unitStayRange = (globalContainer->isViewingGame()?selBuild->unitStayRange:displayedUnitStayRange(*selBuild));
 
 		std::string range = Toolkit::getStringTable()->getString("[range]");
 		const int len = globalContainer->littleFont->getStringWidth(range)+4;
@@ -390,6 +391,8 @@ void GameGUI::drawBuildingSwarmRatios(Building* selBuild, BuildingType* building
 // only for those two reasons. Table is indexed by Building::UnitCantWorkReason;
 // the static_assert keeps it locked to the enum size so future additions
 // to UnitCantWorkReason can't silently fall off the end.
+namespace { constexpr int FAILURE_SHAPE_HALF = 5; }
+
 static const char* failureReasonKey(Building::UnitCantWorkReason reason, bool isVirtual)
 {
 	static constexpr const char* kReasonKey[Building::UnitCantWorkReasonSize] = {
@@ -420,22 +423,31 @@ void GameGUI::drawBuildingFailureReasons(Building* selBuild, BuildingType* build
 	if (!((selBuild->owner->allies) & (1<<localTeamNo)))
 		return;
 
-	// Only show the failure-reason rows when a *real* obstruction exists.
-	// A building that merely lacks spare idle units (UnitNotAvailable only) is
-	// in its normal state and gets no rows; see shouldShowBuildingFailureReasons.
-	if (!shouldShowBuildingFailureReasons(selBuild->unitsFailingRequirements,
-	                                      Building::UnitCantWorkReasonSize,
-	                                      Building::UnitNotAvailable))
+	// Only show the failure-reason rows when the building is still asking for
+	// units and a *real* obstruction exists. A building that merely lacks spare
+	// idle units (UnitNotAvailable only) is in its normal state and gets no
+	// rows; see shouldShowFailingUnitMarkers, which the map view's badges ask
+	// too so that the rows and the badges cannot disagree.
+	if (!shouldShowFailingUnitMarkers(selBuild->unitsFailingRequirements,
+	                                  Building::UnitCantWorkReasonSize,
+	                                  Building::UnitNotAvailable,
+	                                  (int)selBuild->unitsWorking.size(),
+	                                  selBuild->desiredMaxUnitWorking))
 		return;
 
 	for(unsigned j=0; j<Building::UnitCantWorkReasonSize; ++j)
 	{
 		int n = selBuild->unitsFailingRequirements[j];
-		if(n>0 && (int)selBuild->unitsWorking.size() < selBuild->desiredMaxUnitWorking)
+		if(n>0)
 		{
-			const char* key = failureReasonKey(static_cast<Building::UnitCantWorkReason>(j), buildingType->isVirtual);
+			const Building::UnitCantWorkReason reason = static_cast<Building::UnitCantWorkReason>(j);
+			const char* key = failureReasonKey(reason, buildingType->isVirtual);
 			std::string s = FormattableString(Toolkit::getStringTable()->getString(key)).arg(n);
-			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10, ypos, globalContainer->littleFont, s.c_str());
+			// The shape the same units wear in the map view.
+			const int shapeX = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH+10;
+			if (reason != Building::UnitNotAvailable)
+				drawFailureShape(globalContainer->gfx, shapeX+FAILURE_SHAPE_HALF, ypos+FAILURE_SHAPE_HALF+1, FAILURE_SHAPE_HALF, reason, failureShapeColor());
+			globalContainer->gfx->drawString(shapeX+2*FAILURE_SHAPE_HALF+6, ypos, globalContainer->littleFont, s.c_str());
 			ypos += YOFFSET_RESOURCE_LINE;
 		}
 	}

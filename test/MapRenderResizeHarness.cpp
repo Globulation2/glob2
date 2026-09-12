@@ -19,6 +19,9 @@
 #include "gui/GameGUIViewport.h"
 #include <GUIList.h>
 #include <GUIText.h>
+#include <FileManager.h>
+#include <StringTable.h>
+#include <filesystem>
 #include "CreditScreen.cpp"
 #include <cassert>
 #include <iostream>
@@ -407,39 +410,62 @@ int main(int argc, char **argv)
 	resize(1800);
 	std::cout << "PASS rectangular maps, bidirectional corner crossings and narrow viewports\n";
 
+	// Autosave is intentional in Settings. Isolate its writes from the renderer
+	// fixture profile, whose preferences must remain untouched.
+	auto* files=Toolkit::getFileManager();
+	const auto settingsDirectory=files->getDir(0)+"/settings-ui";
+	std::filesystem::create_directory(settingsDirectory);
+	files->dirList.insert(files->dirList.begin(),settingsDirectory);
+	const Settings originalSettings=globals.settings;
+	{
 	SettingsScreen settings;
 	settings.gfx=gfx;
 	settings.dispatchInit();
+	auto settingRow = [&](const std::string& id) {
+		for(const auto& row : settings.rows()) if(row.id==id) return row;
+		assert(false && "Missing Settings row"); return SettingsScreen::Row{};
+	};
 	for(int width : {640,1200,1800})
 	{
 		resize(width, &settings);
-		assert(settings.actDisplay->getText()==settings.actDisplayModeToString());
+		const std::string dimensions=std::to_string(gfx->getW())+" × "+std::to_string(gfx->getH());
+		const std::string expected=Toolkit::getStringTable()->getString("[settings Current display]")+": "+dimensions;
+		bool found=false;
+		for(const auto& row:settings.rows()) if(row.kind==SettingsScreen::Kind::Info && row.label.find(expected)==0) found=true;
+		assert(found);
 	}
 	std::cout << "PASS Settings display label follows native window resizing\n";
-	assert(!settings.modeList->visible);
-	settings.activateGroup(settings.keyboardGroup);
-	settings.activateGroup(settings.generalGroup);
-	assert(!settings.modeList->visible);
-	// Exercise the same toggle callback without recreating the dummy window.
+	assert(settingRow("display.resolution").enabled);
+	settings.selectCategory(SettingsScreen::Category::Controls);
+	for(const auto& row:settings.rows()) assert(row.id!="display.resolution");
+	settings.selectCategory(SettingsScreen::Category::Display);
+	assert(settingRow("display.resolution").enabled);
+	// Save a pending GPU mode without recreating the dummy software window.
 	globals.settings.screenFlags |= GraphicContext::USEGPU;
-	settings.fullscreen->setState(true); settings.setFullscreen();
-	assert(settings.modeList->visible);
-	settings.activateGroup(settings.keyboardGroup);
-	assert(!settings.modeList->visible);
-	settings.activateGroup(settings.generalGroup);
-	assert(settings.modeList->visible);
-	int chosenW,chosenH;
-	assert(sscanf(settings.modeList->getText(0).c_str(), "%dx%d", &chosenW, &chosenH)==2);
-	settings.handleListSelected(settings.modeList,0);
-	assert(globals.settings.screenWidth==chosenW && globals.settings.screenHeight==chosenH);
+	assert(settings.changeSetting("display.mode",1));
 	assert(globals.settings.screenFlags & GraphicContext::FULLSCREEN);
-	settings.fullscreen->setState(false); settings.setFullscreen();
-	assert(!settings.modeList->visible);
-	const int oldWidth=globals.settings.screenWidth;
-	settings.handleListSelected(settings.modeList,0);
-	assert(globals.settings.screenWidth==oldWidth);
+	settings.selectCategory(SettingsScreen::Category::Controls);
+	settings.selectCategory(SettingsScreen::Category::Display);
+	assert(settingRow("display.mode").number==1);
+	const auto resolutions=settingRow("display.resolution");
+	assert(!resolutions.choices.empty());
+	const auto choice=resolutions.choices.front();
+	const auto separator=choice.find(" × ");assert(separator!=std::string::npos);
+	const int chosenW=std::stoi(choice),chosenH=std::stoi(choice.substr(separator+4));
+	const std::string windowOnly=Toolkit::getStringTable()->getString("[settings Windowed only]");
+	assert(settings.changeSetting("display.resolution",0));
+	assert(globals.settings.screenWidth==chosenW && globals.settings.screenHeight==chosenH);
+	assert(bool(globals.settings.screenFlags & GraphicContext::FULLSCREEN)==(choice.find(windowOnly)==std::string::npos));
+	assert(settings.changeSetting("display.mode",0));
+	assert(!(globals.settings.screenFlags & GraphicContext::FULLSCREEN));
+	assert(settingRow("display.resolution").enabled);
 	globals.settings.screenFlags=GraphicContext::RESIZABLE | (gpu ? GraphicContext::USEGPU : 0);
-	std::cout << "PASS fullscreen-only resolution choices and tab switching\n";
+	std::cout << "PASS resolution restrictions, pending display choices and category switching\n";
+	Settings savedSettings;savedSettings.load();
+	assert(!(savedSettings.screenFlags & GraphicContext::FULLSCREEN));
+	}
+	files->dirList.erase(files->dirList.begin());
+	globals.settings=originalSettings;
 
 	ScreenProbe screen;
 	screen.attach(gfx);

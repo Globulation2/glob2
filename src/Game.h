@@ -111,17 +111,13 @@ static constexpr int SLOT_INDEX_NONE = -1;
 //! See Game_editor.cpp:113, 139.
 static constexpr float TEAM_COLOR_HUE_DEGREES = 360.0f;
 
-//! Padding (in tiles) added on each side of the rectangle passed to
-//! Map::dirtyBuildingGradients when a building/flag changes. The width/height
-//! of the dirty rect therefore grows by 2 * GRADIENT_DIRTY_BORDER_TILES.
-//! See Game_orders.cpp:193, 279, 360, 496.
-static constexpr int GRADIENT_DIRTY_BORDER_TILES = 16;
-
 class Game
 {
+	friend class PointBarRenderTest;
 	bool hasSavedRandomState = false;
 	friend class HighResolutionIntegrationHarness;
 	friend class EnteringUnitDrawHarness;
+	friend class FailingUnitMarkersHarness;
 	static const bool verbose = false;
 public:
 	/// Per-client viewer state (selection + mouse). Defined below; forward-

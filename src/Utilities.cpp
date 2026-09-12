@@ -17,6 +17,7 @@ using ssize_t = SSIZE_T;
 #include <ctime>
 
 #include "Utilities.h"
+#include <random>
 #include "Game.h"
 
 #if defined(_MSC_VER) && _MSC_VER < 1900
@@ -47,7 +48,7 @@ void setSyncRandSeed(Uint32 seed)
 
 void setRandomSyncRandSeed()
 {
-	randomGenerator.seed(time(NULL));
+	randomGenerator.seed(std::random_device{}());
 }
 
 namespace Utilities

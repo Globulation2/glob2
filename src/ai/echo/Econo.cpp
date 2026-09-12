@@ -13,7 +13,7 @@ using namespace AIEcho::SearchTools;
 
 
 
-ReachToInfinity::ReachToInfinity()
+Econo::Econo()
 {
 	timer=0;
 	flag_on_cherry=false;
@@ -22,9 +22,10 @@ ReachToInfinity::ReachToInfinity()
 }
 
 
-bool ReachToInfinity::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
+bool Econo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
-	stream->readEnterSection("ReachToInfinity");
+	// Binary saves ignore section names; the numeric AI ID remains unchanged.
+	stream->readEnterSection("Econo");
 	timer=stream->readUint32("timer");
 	flag_on_cherry=stream->readUint32("flag_on_cherry");
 	flag_on_orange=stream->readUint32("flag_on_orange");
@@ -45,9 +46,9 @@ bool ReachToInfinity::load(GAGCore::InputStream *stream, Player *player, Sint32 
 }
 
 
-void ReachToInfinity::save(GAGCore::OutputStream *stream)
+void Econo::save(GAGCore::OutputStream *stream)
 {
-	stream->writeEnterSection("ReachToInfinity");
+	stream->writeEnterSection("Econo");
 	stream->writeUint32(timer, "timer");
 	stream->writeUint32(flag_on_cherry, "flag_on_cherry");
 	stream->writeUint32(flag_on_orange, "flag_on_orange");
@@ -68,7 +69,7 @@ void ReachToInfinity::save(GAGCore::OutputStream *stream)
 }
 
 
-void ReachToInfinity::tick(Echo& echo)
+void Econo::tick(Echo& echo)
 {
 	timer++;
 
@@ -87,7 +88,7 @@ void ReachToInfinity::tick(Echo& echo)
 }
 
 
-void ReachToInfinity::tick_initial_setup(Echo& echo)
+void Econo::tick_initial_setup(Echo& echo)
 {
 	if(timer==1)
 	{
@@ -116,7 +117,7 @@ void ReachToInfinity::tick_initial_setup(Echo& echo)
 }
 
 
-void ReachToInfinity::handle_message(Echo& echo, const std::string& message)
+void Econo::handle_message(Echo& echo, const std::string& message)
 {
 	if(message=="construct inn")
 	{

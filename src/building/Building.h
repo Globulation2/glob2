@@ -206,6 +206,8 @@ public:
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
 	bool subscribeToBringResourcesStep(void);
+	//! Whether the unit's type and level qualify it to work for this building.
+	bool canUnitWorkHere(Unit* unit);
 	///This function subscribes any flag that needs units.
 	///It is considered greedy, hiring as many units as it needs in order of its preference
 	///Returns true if a unit was hired
@@ -216,8 +218,8 @@ public:
 	void swarmStep(void);
 	/// This function searches for enemies, computes the best target, and fires a bullet
 	void turretStep(Uint32 stepCounter);
-	/// Kills the building, removing all units that are working or inside the building,
-	/// changing the state and adding it to the list of buildings to be deleted
+	/// Kills the building: releases its workers, expels the units inside onto
+	/// the footprint or the ring around it, and queues it for deletion.
 	void kill(void);
 
 	/// This function removes the unit from the list of units working on the building. Units will remove themselves
@@ -263,6 +265,9 @@ public:
 	/// and provides the x and y coordinates, along with the direction the unit should be travelling
 	/// when it leaves.
 	bool findAirExit(int *posX, int *posY, int *dx, int *dy);
+
+	/// Free tile for a unit expelled by kill(): footprint first, then the ring; dx/dy point outwards.
+	bool findExpelTile(bool fly, bool canSwim, int *posX, int *posY, int *dx, int *dy);
 
 	/// Returns the script level number. Construction sites are odd numbers and completed buildings
 	/// even, from 0 to 5
@@ -393,7 +398,6 @@ private:
 	/// Tells whether a particular unit can work at this building. Takes into account this buildings level,
 	/// the units type and level, and whether this building is a flag, because flags get a couple of special
 	/// rules.
-	bool canUnitWorkHere(Unit* unit);
 
 	/// Per-zonable candidate-selection helpers for subscribeForFlagingStep.
 	/// Each tests one unit against the per-flag-type requirements (activity,
@@ -412,17 +416,15 @@ private:
 	bool considerUnitForWarriorFlag(Unit* unit, int* dist);
 
 	/// One worker that could be hired to carry resources to this building,
-	/// with the metrics the three selection passes of
+	/// with the metrics the selection passes of
 	/// subscribeToBringResourcesStep score on. A null `unit` means the slot
 	/// holds no candidate. `distance` is the linear gradient distance to the
-	/// building when the unit already carries a needed resource, or the
-	/// need-scaled (building + resource) distance when the unit must first
-	/// fetch one. `resource` is the resource the unit carries or will fetch.
+	/// building when the unit already carries the resource being staffed, or
+	/// the round distance by way of the resource when it must fetch one.
 	struct BringResourcesCandidate
 	{
 		Unit* unit;
 		int distance;
-		int resource;
 	};
 
 	/// Running best-candidate state shared, in order, across the three
@@ -435,31 +437,55 @@ private:
 		Unit* choosen;
 	};
 
-	/// Per-unit predicate for subscribeToBringResourcesStep, mirroring the
-	/// considerUnitFor*Flag helpers: tests one harvest-capable unit against
-	/// availability, level, and building/resource reachability. On success it
-	/// fills *dist and *resource for a hireable candidate and returns true; on
-	/// failure it tallies the rejection reason in unitsFailingRequirements and
-	/// returns false. Callers must pre-filter units lacking the HARVEST
-	/// ability or already filling this building.
-	bool considerUnitForResources(Unit* unit, int* dist, int* resource);
+	/// Lets test/RoundTripHungerGateHarness.cpp reach considerUnitForResource
+	/// without exposing it to game callers, as GameGUI does for its own harness.
+	friend class RoundTripHungerGateHarness;
 
-	/// Fills candidates[Unit::MAX_COUNT] with hireable workers (null `unit`
-	/// where the slot is empty or the unit was rejected), tallying rejection
-	/// reasons via considerUnitForResources.
-	void gatherBringResourcesCandidates(BringResourcesCandidate* candidates);
+	/// Whether a unit is a possible hire at all: harvest-capable, idle, healthy,
+	/// high enough level, and close enough to reach this building before going
+	/// hungry. Fills *distBuilding on success; on failure tallies the rejection
+	/// reason in unitsFailingRequirements and returns false.
+	bool considerUnitForBuilding(Unit* unit, int* distBuilding);
 
-	/// The three priority-ordered selection passes of
-	/// subscribeToBringResourcesStep. Each scans all candidates and updates
-	/// `sel` with the best match. The carrying-needed pass also assigns
-	/// destinationPurpose to every carrying candidate it inspects and scores
-	/// on a hunger-discounted distance; the empty-handed and unwanted passes
-	/// assign destinationPurpose only to the unit they actually choose and
-	/// score on the candidate distance directly. These differences are
-	/// deliberate and must be preserved.
-	void selectUnitCarryingNeededResource(const BringResourcesCandidate* candidates, BringResourcesSelection& sel);
-	void selectEmptyHandedUnit(const BringResourcesCandidate* candidates, BringResourcesSelection& sel);
-	void selectUnitCarryingUnwantedResource(const BringResourcesCandidate* candidates, BringResourcesSelection& sel);
+	/// Per-unit predicate for one resource: considerUnitForBuilding plus a
+	/// reachable tile of `wantedResource` the unit can fetch from and still
+	/// carry to this building before going hungry. Fills *dist with the round
+	/// distance by way of the resource. Callers must pre-filter units lacking
+	/// the HARVEST ability or already filling this building.
+	bool considerUnitForResource(Unit* unit, int wantedResource, int* dist);
+
+	/// Fills candidates[Unit::MAX_COUNT] with workers hireable to fetch
+	/// `wantedResource` (null `unit` where the slot is empty or the unit was
+	/// rejected), tallying rejection reasons via considerUnitForResource. The
+	/// tallies are reset per scan, so they describe one resource, never a unit
+	/// counted once per resource the building tried.
+	void gatherBringResourcesCandidates(BringResourcesCandidate* candidates, int wantedResource);
+
+	/// Per-resource delivery targets and how many of each are already accounted
+	/// for by deliveries that landed plus units on their way. Counted in
+	/// deliveries, not resource units: one delivery adds
+	/// multiplierResource[r] to resources[r].
+	void fetchApportionment(int targets[MAX_NB_RESOURCES], int served[MAX_NB_RESOURCES]) const;
+
+	/// Whether another fetcher should be sent for r: the building has physical
+	/// room for one more delivery and the deliveries already subscribed do not
+	/// cover the target.
+	bool wantsAnotherDelivery(int r, const int* targets, const int* served);
+
+	/// Hire a unit that already carries a resource this building still wants. It
+	/// delivers without a fetch trip at all, so it is preferred whatever the
+	/// apportionment says; the apportionment only directs units we must send
+	/// out. Assigns destinationPurpose to every carrying candidate it inspects,
+	/// not only the one chosen, and scores on a hunger-discounted distance.
+	/// Both are deliberate and must be preserved.
+	void selectUnitCarryingWantedResource(const int* targets, const int* served, BringResourcesSelection& sel);
+
+	/// The fetch-out selection pass for one resource. Scans all candidates and
+	/// updates `sel` with the best match, assigning destinationPurpose only to
+	/// the unit it chooses. A candidate holding something else is charged
+	/// CARRIED_RESOURCE_PENALTY_TILES of detour rather than excluded, so it is
+	/// hired when it is enough closer to be worth the loss.
+	void selectFetcher(const BringResourcesCandidate* candidates, int wantedResource, BringResourcesSelection& sel);
 
 	/// This function updates the resources pointer. The variable resources can either point to local resources
 	/// or team resources, depending on the BuildingType.
@@ -563,8 +589,23 @@ public:
 	//! have elapsed since the last rebuild.
 	bool dirtyGradient[SWIM_CLASS_COUNT];
 	Uint32 lastGlobalGradientUpdateStepCounter[SWIM_CLASS_COUNT];
+	//! Map::topologyGeneration when each field was computed. Differs from the
+	//! map's current value exactly when the ground it was built against has moved.
+	Uint32 gradientGeneration[SWIM_CLASS_COUNT];
 	// These flags track physical access (cannot swim / can swim), not travel cost.
 	// All swimming classes share passability, but keep separate weighted fields.
+	//! Last step a unit asked for the gradient; freeIdleGradients drops it when that is long ago.
+	Uint32 globalGradientUsedStep[SWIM_CLASS_COUNT];
+	//! Round-trip gradients per resource type and swim class (see Map::roundTripGradient),
+	//! NULL until a unit fetching that resource for this building asks for one, freed again
+	//! by freeIdleGradients when unused for a while. Their last rebuild and last
+	//! use, in steps.
+	Uint16 *roundTripGradient[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	Uint32 roundTripGradientUsedStep[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	//! Drop the building's and the round-trip gradients nobody asked for lately. Only
+	//! buildings with fetchers need one, and each is a full map of Uint16.
+	void freeIdleGradients();
 	bool locked[SWIM_VARIANT_COUNT]; //True if the building is not reachable.
 
 	// Per-swim-variant tri-state cache of whether a clearing flag has any
@@ -592,6 +633,17 @@ public:
 	};
 
 	Uint32 unitsFailingRequirements[UnitCantWorkReasonSize];
+	/// Display only. While the local player has this building selected, the
+	/// units behind each tally are kept by gid so the map view can mark them.
+	/// Never read by the simulation, not saved, not in the checksum.
+	bool recordFailingUnits = false;
+	std::vector<Uint16> unitsFailingByReason[UnitCantWorkReasonSize];
+	void setRecordFailingUnits(bool on);
+	/// Count `unit` under `reason`, and remember it while recording (busy units,
+	/// UnitNotAvailable, are only counted: marking every working unit says nothing).
+	void noteUnitFailing(Unit* unit, UnitCantWorkReason reason);
+	/// Start a hiring pass: every tally and remembered unit is dropped.
+	void resetFailureTallies();
 
 private:
 	// ─── Private data ───────────────────────────────────────────────

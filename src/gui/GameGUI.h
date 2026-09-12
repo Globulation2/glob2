@@ -56,12 +56,14 @@ class MapMarkOrder;
 */
 class GameGUI
 {
+	friend struct CustomGameSetupHarness;
     friend class TorusRenderIntegrationTest;
     TorusView torusView;
     bool torusPointerDown = false;
     bool torusMapPointer(int x, int y, int &mx, int &my) const;
     bool handleTorusPointer(const SDL_Event &event);
 	friend class HighResolutionIntegrationHarness;
+	friend class FailingUnitMarkersHarness;
 public:
     void drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit);
 	///Constructs a GameGUI
@@ -79,6 +81,7 @@ public:
 	void step(void);
 	//! Get order from gui, return NullOrder if
 	std::shared_ptr<Order> getOrder(void);
+	void configureLiveSpectatorView();
 	//! Return position on x
 	int getViewportX() { return viewportX; }
 	//! Return position on y
@@ -89,7 +92,7 @@ public:
 
 	/// If setGameHeader is true, then the given gameHeader will replace the one loaded with
 	/// the map, otherwise it will be ignored
-	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false);
+	bool loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameHeader, bool ignoreGUIData=false, bool saveAI=false, const std::string& sourceFileName=std::string());
 	//!
 	bool load(GAGCore::InputStream *stream, bool ignoreGUIData=false);
 	void save(GAGCore::OutputStream *stream, const std::string name);
@@ -504,8 +507,6 @@ private:
 	int panMouseX, panMouseY;
 	int lastMouseX = 0, lastMouseY = 0;
 	Uint16 lastMouseButtonState = 0;
-	//! Coordinate of viewport when began panning
-	int panViewX, panViewY;
 
 	bool showStarvingMap;
 	bool showDamagedMap;

@@ -73,6 +73,8 @@ public:
 	void selectPreferredGroundMovement(void);
 	bool isUnitHungry(void);
 	void standardRandomActivity();
+	/// Puts a unit from a destroyed building back on the map at (x, y), walking out along (dx, dy).
+	void expelFromBuilding(int x, int y, int dx, int dy);
 	
 	int getRealArmor(bool isMagic) const;
 	int getRealAttackStrength(void) const; //!< Return the real attack strength for warriors
@@ -190,6 +192,7 @@ protected:
 	void handleActionGoingDxDy();
 	void handleActionEnteringBuilding();
 	void handleActionExitingBuilding();
+	void applyPartialInsideBenefit();
 	void handleActionFilling();
 	void handleActionAttackingTarget();
 	void handleActionHarvesting();

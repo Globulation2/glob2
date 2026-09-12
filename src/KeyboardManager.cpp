@@ -248,7 +248,7 @@ Uint32 KeyboardManager::getAction(const KeyPress& key)
 
 
 
-void KeyboardManager::saveKeyboardLayout() const
+bool KeyboardManager::saveKeyboardLayout() const
 {
 	std::string file;
 	if(mode == GameGUIShortcuts)
@@ -257,14 +257,14 @@ void KeyboardManager::saveKeyboardLayout() const
 		file = MapEditKeyActions::getConfigurationFile();
 
 
-	OutputLineStream *stream = new OutputLineStream(Toolkit::getFileManager()->openOutputStreamBackend(file));
+	std::string contents;
 	for(std::list<KeyboardShortcut>::const_iterator i = shortcuts.begin(); i!=shortcuts.end(); ++i)
 	{
 		if(i->isShortcutValid())
-			stream->writeLine(i->format(mode));
+			contents += i->format(mode) + "\n";
 	}
 
-	delete stream;
+	return Toolkit::getFileManager()->writeFileAtomic(file, contents);
 }
 
 

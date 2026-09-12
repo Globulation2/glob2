@@ -40,7 +40,7 @@ using std::static_pointer_cast;
 
 void GameGUI::moveFlag(int mx, int my, bool drop)
 {
-	if (globalContainer->replaying) return;
+	if (globalContainer->isViewingGame()) return;
 
 	int posX, posY;
 	Building* selBuild=selectionBuilding();
@@ -182,6 +182,16 @@ void GameGUI::step(void)
 #		endif
 		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
 		{
+			/* Motion is coalesced and replayed after the poll loop, but a
+				button event must not overtake movement that happened before
+				it.  A middle-button release clears panPushed, so a pan whose
+				drag and release land in the same frame would otherwise be
+				discarded entirely. */
+			if (wasMouseMotion)
+			{
+				processEvent(&mouseMotionEvent);
+				wasMouseMotion=false;
+			}
 			lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
 			/* We ignore what SDL_GetMouseState does to
 				lastMouseX and lastMouseY, because that may
@@ -235,6 +245,9 @@ void GameGUI::step(void)
 	viewportY &= game.map.getMaskH();
 
 	updateCamera();
+	// Pushed every frame rather than at press and release: several paths clear
+	// panPushed, and this way the two cannot drift apart.
+	torusView.setPanHeld(panPushed);
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
@@ -341,6 +354,17 @@ void GameGUI::checkWonConditions(void)
 {
 	if (hasEndOfGameDialogBeenShown || globalContainer->replaying)
 		return;
+
+    if(globalContainer->liveSpectating) {
+        for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
+            inGameMenu=IGM_END_OF_GAME;
+            gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Match finished]"),true));
+            hasEndOfGameDialogBeenShown=true;
+            miniMapPushed=false;
+            break;
+        }
+        return;
+    }
 
 	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
 	{

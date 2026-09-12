@@ -16,7 +16,7 @@ using namespace AIEcho::SearchTools;
 
 
 //Standard Inns near wheat
-void ReachToInfinity::tick_inns_near_wheat(Echo& echo)
+void Econo::tick_inns_near_wheat(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_INN_INTERVAL_TICKS)==0 && (timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)!=0)
 	{
@@ -89,7 +89,7 @@ void ReachToInfinity::tick_inns_near_wheat(Echo& echo)
 }
 
 //Standard swarms near wheat. Uses special mechanism, builds more swarms early on.
-void ReachToInfinity::tick_swarms_near_wheat(Echo& echo)
+void Econo::tick_swarms_near_wheat(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)==AI_ECHO_RTI_SWARM_OFFSET_TICKS)
 	{
@@ -147,7 +147,7 @@ void ReachToInfinity::tick_swarms_near_wheat(Echo& echo)
 }
 
 //Standard racetrack near stone and wood
-void ReachToInfinity::tick_racetrack_near_stone_wood(Echo& echo)
+void Econo::tick_racetrack_near_stone_wood(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)==AI_ECHO_RTI_RACETRACK_OFFSET_TICKS)
 	{
@@ -193,7 +193,7 @@ void ReachToInfinity::tick_racetrack_near_stone_wood(Echo& echo)
 }
 
 //Standard swimming pool near wheat and wood
-void ReachToInfinity::tick_swimmingpool_near_wheat_wood(Echo& echo)
+void Econo::tick_swimmingpool_near_wheat_wood(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)==AI_ECHO_RTI_SWIMMINGPOOL_OFFSET_TICKS)
 	{
@@ -244,7 +244,7 @@ void ReachToInfinity::tick_swimmingpool_near_wheat_wood(Echo& echo)
 
 
 //Standard school inland away from the enemies
-void ReachToInfinity::tick_school_inland(Echo& echo)
+void Econo::tick_school_inland(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_BIG_CYCLE_TICKS)==AI_ECHO_RTI_SCHOOL_OFFSET_TICKS)
 	{
@@ -286,7 +286,7 @@ void ReachToInfinity::tick_school_inland(Echo& echo)
 
 
 //Level 1 to level 2 upgrades
-void ReachToInfinity::tick_upgrade_l1_to_l2(Echo& echo)
+void Econo::tick_upgrade_l1_to_l2(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_UPGRADE_INTERVAL_TICKS)==0)
 	{
@@ -350,7 +350,7 @@ void ReachToInfinity::tick_upgrade_l1_to_l2(Echo& echo)
 }
 
 //Level 2 to level 3 upgrades
-void ReachToInfinity::tick_upgrade_l2_to_l3(Echo& echo)
+void Econo::tick_upgrade_l2_to_l3(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_UPGRADE_INTERVAL_TICKS)==0)
 	{
@@ -423,7 +423,7 @@ void ReachToInfinity::tick_upgrade_l2_to_l3(Echo& echo)
 
 
 //Delete old inns and swarms that are hard to keep full of wheat
-void ReachToInfinity::tick_delete_old_inns_swarms(Echo& echo)
+void Econo::tick_delete_old_inns_swarms(Echo& echo)
 {
 	if((timer%AI_ECHO_RTI_DELETE_SCAN_INTERVAL_TICKS)==0)
 	{

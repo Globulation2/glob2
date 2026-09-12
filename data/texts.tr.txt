@@ -47,9 +47,9 @@ Ekle
 [AI Descriptions]
 Yapay Zekâ Açıklamaları
 [AI]
-AI
+yapay zeka
 [ai]
-AI
+yapay zeka
 [AICastor-Description]
 Castor temkinli oynar ve kaynakları az olan haritalarda çok başarılıdır. Orta zorluk.
 [AICastor]
@@ -66,10 +66,10 @@ Yapay zekâ yok
 Numbi küçük adımlarla, hızla genişler. Kolay.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity saldırmaz, ancak dev üsler kurar ve çok sayıda birimi kendi tarafına çeker. Kolay.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo saldırmaz, ancak dev üsler kurar ve çok sayıda birimi kendi tarafına çeker. Kolay.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush hızlı ve sert saldırır, savunmadaki oyuncuyu sıklıkla yenilginin eşiğine getirir. Orta zorluk.
 [AIWarrush]
@@ -267,7 +267,7 @@ Savunma
 [Delete game]
 Secili oyunu sil
 [delete]
-Delete
+Sil
 [desert]
 çöl
 [destroy building]
@@ -553,7 +553,7 @@ takasına olanak sağlar
 [market explanation]
 Başkalarıyla meyve
 [market]
-Market
+Pazar
 [medium priority]
 orta
 [meta %0]
@@ -611,9 +611,9 @@ ayrintilar:
 [ok]
 Tamam
 [old islands terrain]
-eski rastgele adalar
+Engebeli Takımadalar
 [old random terrain]
-eski rastgele arazi
+Parçalı Kıyı
 [on press]
 Basınca
 [On the spot]
@@ -1225,7 +1225,7 @@ Hız: 1x (çok oyunculu)
 [game speed help]
 Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
 [AICortex-Description]
-Cortex - Deneysel üç katmanlı yapay zekâ. Geliştirme aşamasında.
+Cortex yeni buğday tarlalarına doğru genişliyor ve ön cepheye yakın hanlar ve hastaneler tarafından desteklenen savaşçı gruplarını savaşa gönderiyor. Orta zorluk. Deneysel.
 [ERROR_CANT_LOAD_MAP]
 Harita yüklenemedi: dosya bozuk veya sürümü uyumsuz.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1236,7 +1236,553 @@ Cortex
 İçeride: %0
 [Units still working: %0]
 Hâlâ çalışıyor: %0
+[2 vs 2]
+2'ye karşı 2
+[AI strategy & counterplay]
+Yapay zekâ stratejisi ve karşı taktikler
+[AICastor-Profile]
+Strateji: Dikkatli bir şekilde genişler ve az sayıda kaynağa sahip haritalarda iyi performans gösterir.\n\nGüçlü Yönler: Sınırlı genişleme, kıt kaynaklara sahip oyunlarda etkilidir.\n\nKarşı taktik önerisi: Bölgeyi erken işgal edin. Kaynak eksikliğinin bu yapay zekâyı zayıflatacağını varsaymayın.
+[AICastor-Summary]
+Dikkatli genişleme; kıt kaynaklarla iyi performans gösterir.
+[AICortex-Profile]
+Strateji: Yiyecek tedarikini yönetir, yeni buğday tarlalarına doğru genişler ve birbirini izleyen savaşçı gruplarını bir araya getirir. Cephe hattı yakınındaki hanlar ve hastaneler, üsten uzaktaki saldırıları destekliyor.\n\nGüçlü Yönleri: Birlikte takviye gönderir, askeri baskıyı sürdürür ve yiyecek kıtlığına tepki verir.\n\nKarşı taktik önerisi: Yeni buğday tarlalarının kontrolü için savaşın ve ön cephe yakınındaki destek binalarına saldırın. Savaşçı grupları hazır olmadan saldırın.\n\nDeneysel yapay zekâ. Orta zorluk; karşı taktik önerileri kıyaslama puanları değildir.
+[AICortex-Summary]
+Gıdayı gözeten büyüme ve destekli saldırı dalgaları.
+[AINicowar-Profile]
+Strateji: Hızla genişler ve devasa ordularla rakiplere saldırır.\n\nGüçlü Yönler: Hızlı genişleme agresif askeri saldırıları destekler.\n\nKarşı taktik önerisi: Genişlemesini önleyin. Aynı anda savaşabilecek düşman birliklerinin sayısını azaltmak için araziyi kullanın.
+[AINicowar-Summary]
+Hızla genişler ve agresif saldırılar için büyük ordular oluşturur.
+[AINone-Profile]
+Strateji: Yapay zeka hiçbir komut vermez.\n\nGüçlü Yönleri: Deneyler için tahmin edilebilir, aktif olmayan bir rakip.\n\nZayıf Yönler: Genişlemez veya uyum sağlamaz.
+[AINone-Summary]
+Denemeler için hareketsiz bir koloni.
+[AINumbi-Profile]
+Strateji: Hızlı ama küçük ölçekte genişler. Koloni yönetimini uygulamak için daha kolay bir rakip.\n\nGüçlü Yönler: Hem ekonomik yönetimi hem de savaşı öğrenmenizi sağlar.\n\nKarşı taktik önerisi: Daha güçlü bir ekonomi geliştirin ve saldırmadan önce ordunuzu eğitin.
+[AINumbi-Summary]
+Küçük ölçekte hızlı genişleme.
+[AIEcono-Profile]
+Strateji: Saldırmaz ancak devasa üsler inşa eder ve düşman birimlerini aktif olarak kendi tarafına çeker.\n\nGüçlü Yönler: Genişleme ve birim dönüştürme, doğrudan saldırı olmadan rakipleri tehdit eder.\n\nKarşı taktik önerisi: Koloninizi erkenden geliştirin ve düşmanın onları dönüştürebileceği yerlere birimleri göndermekten kaçının.
+[AIEcono-Summary]
+Saldırmak yerine dev üsler kurar ve düşman birimlerini tarafına çeker.
+[AIWarrush-Profile]
+Strateji: Rakipler hazırlıklarını bitirmeden önce erken ve güçlü saldırılar.\n\nGüçlü Yönler: Savunmasız genişlemeden ve yavaş askeri hazırlıktan yararlanır.\n\nKarşı taktik önerisi: İlk saldırıda ekonominizi koruyarak hayatta kalın, ardından karşı saldırı yapın.
+[AIWarrush-Summary]
+Erken savunmanızı test eden hızlı saldırılar.
+[Algae]
+Yosun
+[Alliances]
+İttifaklar
+[Beach size]
+Plaj büyüklüğü
+[Blue]
+Mavi
+[Brown]
+Kahverengi
+[Built-in maps]
+Yerleşik haritalar
+[Can change in game]
+Oyunda değişebilir
+[Closed]
+Kapalı
+[Colonies]
+Koloniler
+[Colony]
+Koloni
+[Concrete islands]
+Ayrı Adalar
+[Conquest only]
+Yalnızca fetih
+[Conquest or prestige]
+Fetih veya prestij
+[Could not launch this map. Your setup is retained; try again.]
+Bu harita başlatılamadı. Kurulumunuz korunur; tekrar deneyin.
+[Could not load this map. Choose another map or retry.]
+Bu harita yüklenemedi. Başka bir harita seçin veya yeniden deneyin.
+[Crater lakes]
+Krater gölleri
+[Custom]
+Özel
+[Custom teams]
+Özel takımlar
+[Cyan]
+Camgöbeği
+[Desert weight]
+Çöl ağırlığı
+[Easy]
+Kolay
+[Explore as you play]
+Oynarken keşfedin
+[Extra colony assignments are retained for larger maps.]
+Daha büyük haritalar için ekstra koloni atamaları korunur.
+[Extra islands]
+Ekstra adalar
+[FFA]
+Herkes herkese karşı
+[Fruit]
+Meyve
+[Game Rules]
+Oyun Kuralları
+[Game speed]
+Oyun hızı
+[Generate & play]
+Oluştur ve oyna
+[Give at least one terrain type a nonzero weight.]
+En az bir arazi tipine sıfırdan farklı bir ağırlık verin.
+[Grass weight]
+Çim ağırlığı
+[Gray]
+Gri
+[Green]
+Yeşil
+[Hard]
+Zor
+[Height]
+Yükseklik
+[Invalid colony count.]
+Geçersiz koloni sayısı.
+[Island size]
+Ada boyutu
+[Islands]
+Adalar
+[Isles]
+Adacıklar
+[Lake density]
+Göl yoğunluğu
+[Landscape]
+Manzara
+[Last colony standing]
+Ayakta kalan son koloni
+[Layout]
+Düzen
+[Locked teams]
+Kilitli takımlar
+[Magenta]
+Macenta
+[Map]
+Harita
+[Map knowledge]
+Harita bilgisi
+[Match finished]
+Maç bitti
+[Medium]
+Orta
+[Medium - Experimental]
+Orta - Deneysel
+[No AI orders]
+Yapay zekâ emri yok
+[Old islands]
+Engebeli Takımadalar
+[Old random]
+Parçalı Kıyı
+[Open at least one colony to start a match.]
+Bir maça başlamak için en az bir koloni açın.
+[Open book]
+Açık dünya
+[Pink]
+Pembe
+[Play this map]
+Bu haritada oyna
+[Players & Teams]
+Oyuncular ve Takımlar
+[Premade maps]
+Hazır haritalar
+[Preview ready. Start plays this exact map.]
+Önizleme hazır. Oyunun başlatılması tam olarak bu haritayı kullanır.
+[Purple]
+Mor
+[Quick clash]
+Hızlı savaş
+[Random map]
+Rastgele harita
+[Red]
+Kırmızı
+[Repeat landscape]
+Manzarayı tekrarla
+[Resources]
+Kaynaklar
+[Restore standard rules]
+Standart kuralları geri yükleyin
+[Revealed terrain does not reveal all enemy activity.]
+Ortaya çıkan arazi, düşmanın tüm faaliyetlerini ortaya çıkarmaz.
+[River]
+Nehir
+[River width]
+Nehir genişliği
+[Sand weight]
+Kum ağırlığı
+[Select a valid map.]
+Geçerli bir harita seçin.
+[Shared control needs a free controller slot (maximum 12).]
+Ortak kontrol için boş bir kontrolcü yeri gerekir (en fazla 12).
+[Smoothing]
+Pürüzsüzleştirme
+[Standard]
+Standart
+[Start game]
+Oyunu başlat
+[Starting workers]
+Başlangıç işçileri
+[Starting workers: Game Rules tab.]
+Başlangıç işçileri: Oyun Kuralları sekmesi.
+[Swamp]
+Bataklık
+[Team]
+Takım
+[Terrain]
+Arazi
+[Terrain revealed]
+Arazi açık
+[Try a ruleset, then make it your own.]
+Bir kural seti deneyin ve ardından onu kendinize ait hale getirin.
+[Victory]
+Zafer
+[Watch game]
+Oyunu izle
+[Water weight]
+Su ağırlığı
+[White]
+Beyaz
+[Width]
+Genişlik
+[Yellow]
+Sarı
+[You]
+Siz
+[You + AI]
+Siz + Yapay zekâ
+[You and the AI both issue orders. Uses two controller slots.]
+Siz ve yapay zekâ birlikte emir verebilirsiniz. İki kontrolcü yeri kullanılır.
+[You vs all]
+Siz herkese karşı
+[Your maps]
+Haritalarınız
+[colonies]
+koloniler
+[* Changed from standard.]
+* Standarttan değiştirildi.
+[World & diplomacy]
+Dünya ve diplomasi
+[Starting conditions & pace]
+Başlangıç koşulları ve tempo
+[Inactive]
+Etkin değil
+[8 workers / 2x speed]
+8 işçi / 2x hız
+[Changes the pace of the whole simulation.]
+Tüm simülasyonun hızını değiştirir.
+[Choose whether teams can change during the match.]
+Takımların maç sırasında değişip değişemeyeceğini seçin.
+[Classic colony building]
+Geleneksel koloni gelişimi
+[Dimensions and colony count are set above.]
+Boyutlar ve koloni sayısı yukarıda ayarlanmıştır.
+[Generate & watch]
+Oluştur ve izle
+[Info]
+Bilgi
+[Map-defined starting units]
+Harita tanımlı başlangıç birimleri
+[No maps in this library.]
+Bu kütüphanede harita yok.
+[Premade maps retain their authored starting units.]
+Hazır haritalarda, yapımcının belirlediği başlangıç birimleri korunur.
+[Premade: only speed changes (2x)]
+Önceden hazırlanmış: yalnızca hız değişiklikleri (2x)
+[Start with terrain known]
+Bilinen araziyle başlayın
+[This colony will not join the match.]
+Bu koloni maça katılmayacak.
+[This landscape uses a fixed terrain recipe.]
+Bu manzara sabit bir arazi tarifi kullanıyor.
+[This landscape uses fixed resource placement.]
+Bu ortam sabit kaynak yerleşimini kullanır.
+[Win through conquest]
+Fetih yoluyla kazan
+[You control this colony.]
+Bu koloniyi siz kontrol ediyorsunuz.
+[controllers]
+kontrolcüler
+[Use]
+Seç
+[Lime]
+Limon yeşili
+[Teal]
+Mavi yeşil
+[Azure]
+Gök mavisi
+[Updating map preview...]
+Harita önizlemesi güncelleniyor...
+[Generation failed. Adjust settings or press Start to retry.]
+Harita oluşturulamadı. Ayarları değiştirin veya tekrar denemek için Başlat’a basın.
+[Preview unavailable. Adjust settings or start to retry.]
+Önizleme kullanılamıyor. Tekrar denemek için ayarları değiştirin veya oyunu başlatın.
 [automatic torus view]
 Otomatik torus görünümü
 [toggle torus view]
 2B / torus görünümünü değiştir
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2’ye karşı 2 için dört açık koloni gerekir. Siz herkese karşı için bir insan oyuncu gerekir.
+[Alliance]
+İttifak
+[Choose a rule to change it.]
+Değiştirmek için bir kural seçin.
+[Conquest only removes prestige victory; map scripts still apply.]
+Yalnızca fetih zaferi, prestij zaferini devre dışı bırakır; harita komut dosyaları hala geçerlidir.
+[Control]
+Koloni kontrolü
+[Controller]
+Kontrolcü
+[Generate preview]
+Önizleme oluştur
+[Generation failed. Adjust settings or try again.]
+Harita oluşturulamadı. Ayarları değiştirin veya tekrar deneyin.
+[Map settings changed. Generate a new preview or start.]
+Harita ayarları değiştirildi. Yeni bir önizleme oluşturun veya başlayın.
+[Map source]
+Harita kaynağı
+[Map-defined]
+Harita tanımlı
+[Match format]
+Oyun formatı
+[No current preview]
+Geçerli önizleme yok
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Hızlı savaş: iki kat hız; oluşturulan haritalar 8 işçiyle başlar.
+[Reroll]
+Başka bir harita oluştur
+[Ruleset]
+Kural seti
+[Select a map from the library.]
+Kütüphaneden bir harita seçin.
+[Starting workers affects generated maps only.]
+Başlangıç işçisi sayısı yalnızca oluşturulan haritaları etkiler.
+[Unavailable]
+Kullanılamıyor
+[Use selection]
+Seçimi kullan
+[Quick clash on premade maps: only speed changes (2x).]
+Önceden hazırlanmış haritalarda hızlı savaş: yalnızca hız değişir (çift hız).
+[Generate a preview to explore this world.]
+Bu dünyayı keşfetmek için bir önizleme oluşturun.
+[More workers jump-start colony growth. Changes the generated map.]
+Daha fazla işçi koloni büyümesini hızlandırır. Bu ayar oluşturulan haritayı değiştirir.
+[No warriors]
+Savaşçı yok
+[settings Add key to sequence]
+Diziye tuş ekle
+[settings Add shortcut]
+Kısayol ekle
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Atanan birimlerin sayısını değiştirmek için fare tekerleğini kullanın. Bu seçenek kapalıysa tekerleği kullanmak için Ctrl tuşunu basılı tutun. Bayrak yarıçapını ayarlamak için Shift tuşunu basılı tutun. Bu seçenek aynı zamanda diğer menülerdeki fare tekerleği girişini de kontrol eder.
+[settings Adjust music and voice volume.]
+Müzik ve konuşma ses düzeylerini ayarlayın.
+[settings Adjust the pace of play.]
+Oyunun hızını ayarlayın.
+[settings Advanced binding]
+Gelişmiş kısayol düzenleme
+[settings Artwork & effects]
+Çizimler ve efektler
+[settings Audio]
+Ses
+[settings Bind Escape]
+Escape tuşunu ata
+[settings Building]
+Bina
+[settings Building defaults]
+Varsayılan bina ayarları
+[settings Cancel]
+Vazgeç
+[settings Changes saved automatically]
+Değişiklikler otomatik olarak kaydedilir
+[settings Changes you make during play update these defaults for future games.]
+Oyun sırasında yaptığınız değişiklikler, bu varsayılan ayarları gelecekteki oyunlar için günceller.
+[settings Changing the renderer requires a restart.]
+Grafik oluşturucuyu değiştirmek oyunun yeniden başlatılmasını gerektirir.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Düzenlemek için bir klavye kısayolu seçin veya bir eylem için başka bir kısayol ekleyin.
+[settings Choose a window or fill the screen.]
+Pencereli veya tam ekran modunu seçin.
+[settings Choose how the game looks on your screen.]
+Oyunun ekranınızda nasıl görüneceğini seçin.
+[settings Completed]
+Tamamlanan binalar
+[settings Construction]
+İnşaat
+[settings Controls]
+Oyun kontrolleri
+[settings Could not change display mode. The previous mode was restored.]
+Görüntüleme modu değiştirilemedi. Önceki mod geri yüklendi.
+[settings Could not save]
+Kaydedilemedi
+[settings Current display]
+Geçerli görüntüleme modu
+[settings Default]
+Varsayılan
+[settings Display]
+Görünüm
+[settings Display & graphics]
+Ekran ve grafikler
+[settings Display the Globulation 2 cursor.]
+Globulation 2 imlecini görüntüleyin.
+[settings Done]
+Bitti
+[settings Edit shortcut]
+Klavye kısayolunu düzenle
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Yüksek çözünürlüklü ekranda menüleri, metni ve yan çubuğu büyütür.
+[settings Flags]
+Bayraklar
+[settings Full]
+Tam
+[settings Fullscreen]
+Tam ekran
+[settings Game]
+Oyun
+[settings Game speed]
+Oyun hızı
+[settings Gameplay]
+Oynanış
+[settings Graphics detail]
+Grafik ayrıntıları
+[settings Interface scale]
+Arayüz ölçeği
+[settings Keep]
+Değişiklikleri koru
+[settings Keep this display mode?]
+Bu görüntüleme modu korunsun mu?
+[settings Keep your volume levels while silencing audio.]
+Kaydedilen ses seviyelerini değiştirmeden tüm sesleri kapatın.
+[settings Key]
+Tuş
+[settings Keyboard shortcuts]
+Klavye kısayolları
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tuşlar belirtilen sırada bir dizi oluşturur. Her adım, ilgili tuşa basıldığında veya tuş bırakıldığında tetiklenebilir.
+[settings Language]
+Dil
+[settings Language & player]
+Dil ve oyuncu
+[settings Language used throughout the interface.]
+Arayüz boyunca kullanılan dil.
+[settings Level]
+Seviye
+[settings Map editor]
+Harita düzenleyici
+[settings Match the desktop]
+Masaüstüyle aynı
+[settings Missing font]
+Eksik yazı tipi
+[settings Music volume]
+Müzik ses düzeyi
+[settings Mute audio]
+Sesi kapat
+[settings Name shown to other players.]
+Diğer oyunculara gösterilen ad.
+[settings Off]
+Kapalı
+[settings On]
+Açık
+[settings OpenGL is not available in this build.]
+Bu derlemede OpenGL kullanılamıyor.
+[settings Player name]
+Oyuncu adı
+[settings Press]
+Basıldığında
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Bir tuşa basın. Escape, tuş yakalamayı iptal eder. Escape tuşunu atamak için “Escape tuşunu ata” seçeneğini kullanın.
+[settings Radius]
+Yarıçap
+[settings Reduced]
+Azaltılmış
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Azaltılmış ayrıntı, bulutları ve gölgelerini devre dışı bırakır, sihirli efektleri basitleştirir ve şeffaflığı azaltır.
+[settings Release]
+Bırakıldığında
+[settings Remember assignments between games]
+Oyunlar arasında birim atamalarını hatırla
+[settings Remove key]
+Klavye tuşunu kaldır
+[settings Remove shortcut]
+Kısayolu kaldır
+[settings Renderer]
+Grafik oluşturucu
+[settings Replace conflicting bindings]
+Çakışan kısayolları değiştir
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Bu bağlamdaki kısayollar varsayılanlarla değiştirilsin mi? Değişiklikler hemen kaydedilir.
+[settings Resolution]
+Ekran çözünürlüğü
+[settings Restore default shortcuts]
+Varsayılan kısayolları geri yükle
+[settings Retry]
+Tekrar dene
+[settings Revert]
+Değişiklikleri geri al
+[settings Reverting in]
+Geri almaya kalan süre:
+[settings Save shortcut]
+Klavye kısayolunu kaydet
+[settings Saved — restart required]
+Kaydedildi — yeniden başlatma gerekli
+[settings Saving…]
+Kaydediliyor…
+[settings Scroll wheel enabled]
+Fare tekerleği etkin
+[settings Set starting unit assignments by building type and level.]
+Bina türüne ve seviyesine göre başlangıçta atanan birim sayılarını ayarlayın.
+[settings Set your language and player name.]
+Dilinizi ve oyuncu adınızı ayarlayın.
+[settings Settings]
+Ayarlar
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
+[settings Software]
+Yazılımsal
+[settings Starting unit counts and radius for newly placed flags.]
+Yeni yerleştirilen bayraklar için başlangıçtaki birim sayıları ve yarıçap.
+[settings This shortcut conflicts with existing bindings:]
+Bu klavye kısayolu mevcut kısayollarla çakışıyor:
+[settings Trigger]
+Tetikleme
+[settings Unbound]
+Kısayol atanmadı
+[settings Unit counts assigned to new construction sites.]
+Yeni inşaat sahalarına atanan birim sayıları.
+[settings Unit counts for completed buildings.]
+Tamamlanan binalar için birim sayıları.
+[settings Unit counts while a building is being upgraded.]
+Bina yükseltilirken atanan birim sayıları.
+[settings Units]
+Birimler
+[settings Upgrades]
+Bina yükseltmeleri
+[settings Use game cursor]
+Oyun imlecini kullan
+[settings Voice volume]
+Konuşma ses düzeyi
+[settings Window mode]
+Pencere modu
+[settings Window-only sizes also switch the game to windowed mode.]
+Yalnızca pencereli modu destekleyen bir çözünürlük seçmek aynı zamanda oyunu pencereli moda geçirir.
+[settings Windowed]
+Pencereli
+[settings Windowed only]
+Yalnızca pencereli
+[settings seconds]
+saniye
+[settings Flag]
+Bayrak
+[settings High-resolution artwork]
+Yüksek çözünürlüklü grafikler
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Seçilen grafikler, oyun veya harita düzenleyici bir sonraki yüklendiğinde uygulanır (OpenGL).
+[settings Automatic torus view]
+Otomatik torus görünümü
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Haritada dolaşırken torus şeklindeki haritaya genel bakışı otomatik olarak gösterin (OpenGL).
+[Channel width]
+Kanal genişliği
+[Land bridge width]
+Kara köprüsü genişliği
+[Lake size]
+Göl boyutu

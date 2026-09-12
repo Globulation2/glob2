@@ -66,10 +66,10 @@ Ninguna
 Numbi - Se expande poco. Dificultad Baja.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - No ataca, pero construye bases monstruosas y convierte agresivamente las unidades enemigas. Dificultad Baja.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - No ataca, pero construye bases monstruosas y convierte agresivamente las unidades enemigas. Dificultad Baja.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Ataca agresivamente y con rapidez, a veces incluso presionando al jugador a los bordes del mapa. Dificultad Media.
 [AIWarrush]
@@ -419,7 +419,7 @@ Hospital
 [host]
 Iniciar partida
 [hp]
-HP
+caballos de fuerza
 [Human]
 Humano
 [human]
@@ -607,9 +607,9 @@ de las cuales
 [ok]
 Aceptar
 [old islands terrain]
-Antiguas islas aleatorias
+Archipiélago Escarpado
 [old random terrain]
-Antiguo terreno aleatorio
+Costa Fragmentada
 [on press]
 Al pulsar
 [On the spot]
@@ -899,7 +899,7 @@ Votar
 [svr hostname]
 Nombre del servidor
 [swamp terrain]
-Swamp
+pantano
 [swarm explanation 2]
 
 [swarm explanation]
@@ -1219,7 +1219,7 @@ Velocidad: 1x (multijugador)
 [game speed help]
 Solo para un jugador y repeticiones. Las partidas multijugador van a 1x.
 [AICortex-Description]
-Cortex - IA experimental de tres capas. En desarrollo.
+Cortex se expande hacia nuevos campos de trigo y envía grupos de guerreros a la batalla, apoyados por posadas y hospitales cerca de la línea del frente. Dificultad media. Experimental.
 [ERROR_CANT_SAVE_CAMPAIGN]
 No se pudo guardar la campaña. Comprueba que la carpeta de destino exista, permita escritura y tenga espacio libre.
 [AICortex]
@@ -1228,7 +1228,553 @@ Cortex
 Dentro: %0
 [Units still working: %0]
 Aún trabajando: %0
+[2 vs 2]
+2 contra 2
+[AI strategy & counterplay]
+Estrategia de IA y contrajuego
+[AICastor-Profile]
+Estrategia: Se expande con cautela y funciona bien en mapas con pocos recursos.\n\nPuntos fuertes: la expansión limitada es eficaz en juegos con recursos escasos.\n\nContrajuego sugerido: Ocupar territorio temprano. No asuma que la falta de recursos debilitará esta IA.
+[AICastor-Summary]
+Expansión cautelosa; funciona bien con recursos escasos.
+[AICortex-Profile]
+Estrategia: gestiona el suministro de alimentos, se expande hacia nuevos campos de trigo y reúne sucesivos grupos de guerreros. Las posadas y hospitales cercanos a la línea del frente apoyan los ataques lejos de la base.\n\nFortalezas: Envía refuerzos juntos, mantiene la presión militar y reacciona ante la escasez de alimentos.\n\nContrajuego sugerido: luchar por el control de nuevos campos de trigo y atacar sus edificios de apoyo cerca de la línea del frente. Ataca antes de que sus grupos de guerreros estén listos.\n\nIA experimental. Dificultad media; las tácticas sugeridas no son valoraciones basadas en pruebas comparativas.
+[AICortex-Summary]
+Expansión atenta al alimento y oleadas de ataque con apoyo.
+[AINicowar-Profile]
+Estrategia: Se expande rápidamente y ataca a los oponentes con enormes ejércitos.\n\nFortalezas: La rápida expansión respalda ataques militares agresivos.\n\nContrajuego sugerido: Impedir su expansión. Usa el terreno para reducir la cantidad de tropas enemigas que pueden luchar a la vez.
+[AINicowar-Summary]
+Se expande rápidamente y construye grandes ejércitos para ataques agresivos.
+[AINone-Profile]
+Estrategia: La IA no da órdenes.\n\nPuntos fuertes: Un oponente predecible e inactivo para los experimentos.\n\nDebilidades: No se expande ni se adapta.
+[AINone-Summary]
+Una colonia ociosa para experimentos.
+[AINumbi-Profile]
+Estrategia: Se expande rápidamente pero a pequeña escala. Un oponente más fácil para practicar la gestión de colonias.\n\nPuntos fuertes: Te permite aprender tanto de gestión económica como de combate.\n\nContrajuego sugerido: Desarrolla una economía más fuerte y entrena a tu ejército antes de atacar.
+[AINumbi-Summary]
+Rápida expansión a pequeña escala.
+[AIEcono-Profile]
+Estrategia: No ataca, pero construye bases enormes y convierte activamente las unidades enemigas a su propio bando.\n\nPuntos fuertes: la expansión y la conversión de unidades amenazan a los oponentes sin ataques directos.\n\nContrajuego sugerido: Desarrolla tu colonia temprano y evita enviar unidades donde el enemigo pueda convertirlas.
+[AIEcono-Summary]
+Bases enormes y conversión en lugar de ataques.
+[AIWarrush-Profile]
+Estrategia: Ataca temprano y con fuerza, antes de que los oponentes terminen de prepararse.\n\nFortalezas: Aprovecha la expansión indefensa y la lenta preparación militar.\n\nContrajuego sugerido: sobrevive al primer ataque manteniendo tu economía, luego contraataca.
+[AIWarrush-Summary]
+Ataques rápidos que ponen a prueba tus primeras defensas.
+[Algae]
+algas
+[Alliances]
+Alianzas
+[Beach size]
+Tamaño de la playa
+[Blue]
+azul
+[Brown]
+marrón
+[Built-in maps]
+Mapas incorporados
+[Can change in game]
+Puede cambiar en el juego
+[Closed]
+Cerrado
+[Colonies]
+Colonias
+[Colony]
+colonia
+[Concrete islands]
+Islas separadas
+[Conquest only]
+Sólo conquista
+[Conquest or prestige]
+Conquista o prestigio
+[Could not launch this map. Your setup is retained; try again.]
+No se pudo iniciar este mapa. Se conserva tu configuración; inténtalo de nuevo.
+[Could not load this map. Choose another map or retry.]
+No se pudo cargar este mapa. Elija otro mapa o vuelva a intentarlo.
+[Crater lakes]
+Lagos de cráter
+[Custom]
+personalizado
+[Custom teams]
+Equipos personalizados
+[Cyan]
+cian
+[Desert weight]
+Peso del desierto
+[Easy]
+fácil
+[Explore as you play]
+Explora mientras juegas
+[Extra colony assignments are retained for larger maps.]
+Las asignaciones de colonias adicionales se conservan para mapas más grandes.
+[Extra islands]
+Islas adicionales
+[FFA]
+Todos contra todos
+[Fruit]
+fruta
+[Game Rules]
+Reglas del juego
+[Game speed]
+Velocidad del juego
+[Generate & play]
+Generar y jugar
+[Give at least one terrain type a nonzero weight.]
+Asigne al menos un tipo de terreno un peso distinto de cero.
+[Grass weight]
+Peso de la hierba
+[Gray]
+gris
+[Green]
+Verde
+[Hard]
+Difícil
+[Height]
+altura
+[Invalid colony count.]
+Recuento de colonias no válido.
+[Island size]
+Tamaño de la isla
+[Islands]
+islas
+[Isles]
+Islotes
+[Lake density]
+Densidad de lagos
+[Landscape]
+paisaje
+[Last colony standing]
+Última colonia en pie
+[Layout]
+Diseño
+[Locked teams]
+Equipos bloqueados
+[Magenta]
+Magenta
+[Map]
+Mapa
+[Map knowledge]
+Conocimiento de mapas
+[Match finished]
+Partida terminada
+[Medium]
+Medio
+[Medium - Experimental]
+Medio - Experimental
+[No AI orders]
+Sin comandos de IA
+[Old islands]
+Archipiélago Escarpado
+[Old random]
+Costa Fragmentada
+[Open at least one colony to start a match.]
+Abre al menos una colonia para comenzar una partida.
+[Open book]
+Mundo revelado
+[Pink]
+rosa
+[Play this map]
+Juega este mapa
+[Players & Teams]
+Jugadores y equipos
+[Premade maps]
+Mapas prediseñados
+[Preview ready. Start plays this exact map.]
+Vista previa lista. Al iniciar el juego se utiliza este mapa exacto.
+[Purple]
+Púrpura
+[Quick clash]
+Batalla rápida
+[Random map]
+mapa aleatorio
+[Red]
+rojo
+[Repeat landscape]
+Repetir paisaje
+[Resources]
+Recursos
+[Restore standard rules]
+Restaurar reglas estándar
+[Revealed terrain does not reveal all enemy activity.]
+El terreno revelado no revela toda la actividad enemiga.
+[River]
+Río
+[River width]
+Ancho del río
+[Sand weight]
+Peso de arena
+[Select a valid map.]
+Seleccione un mapa válido.
+[Shared control needs a free controller slot (maximum 12).]
+El control compartido necesita una plaza libre para un jugador humano o IA (máximo 12).
+[Smoothing]
+Suavizado
+[Standard]
+Estándar
+[Start game]
+iniciar juego
+[Starting workers]
+Trabajadores iniciales
+[Starting workers: Game Rules tab.]
+Trabajadores iniciales: pestaña Reglas del juego.
+[Swamp]
+pantano
+[Team]
+equipo
+[Terrain]
+Terreno
+[Terrain revealed]
+Terreno revelado
+[Try a ruleset, then make it your own.]
+Pruebe un conjunto de reglas y luego hágalo suyo.
+[Victory]
+victoria
+[Watch game]
+ver juego
+[Water weight]
+Peso del agua
+[White]
+blanco
+[Width]
+Ancho
+[Yellow]
+amarillo
+[You]
+Tú
+[You + AI]
+Tú + IA
+[You and the AI both issue orders. Uses two controller slots.]
+Tanto tú como la IA dais órdenes. Ocupa dos plazas de jugador.
+[You vs all]
+Tú contra todos
+[Your maps]
+Tus mapas
+[colonies]
+colonias
+[* Changed from standard.]
+* Cambiado del estándar.
+[World & diplomacy]
+Mundo y diplomacia
+[Starting conditions & pace]
+Condiciones iniciales y ritmo
+[Inactive]
+Inactivo
+[8 workers / 2x speed]
+8 trabajadores / 2x velocidad
+[Changes the pace of the whole simulation.]
+Cambia el ritmo de toda la simulación.
+[Choose whether teams can change during the match.]
+Elige si los equipos pueden cambiar durante la partida.
+[Classic colony building]
+Desarrollo de colonias tradicionales
+[Dimensions and colony count are set above.]
+Las dimensiones y el recuento de colonias se establecen arriba.
+[Generate & watch]
+Generar y mirar
+[Info]
+Información
+[Map-defined starting units]
+Unidades iniciales definidas por el mapa
+[No maps in this library.]
+No hay mapas en esta biblioteca.
+[Premade maps retain their authored starting units.]
+Los mapas prediseñados conservan las unidades iniciales elegidas por su autor.
+[Premade: only speed changes (2x)]
+Mapa prediseñado: solo cambia la velocidad (2x)
+[Start with terrain known]
+Comience con terreno conocido
+[This colony will not join the match.]
+Esta colonia no se unirá a la partida.
+[This landscape uses a fixed terrain recipe.]
+Este paisaje usa una composición fija del terreno.
+[This landscape uses fixed resource placement.]
+Este paisaje utiliza una ubicación fija de recursos.
+[Win through conquest]
+Ganar a través de la conquista
+[You control this colony.]
+Tú controlas esta colonia.
+[controllers]
+jugadores humanos e IA
+[Use]
+Seleccionar
+[Lime]
+verde lima
+[Teal]
+azul verdoso
+[Azure]
+azul cielo
+[Updating map preview...]
+Actualizando vista previa del mapa...
+[Generation failed. Adjust settings or press Start to retry.]
+La generación fracasó. Ajuste la configuración o presione Iniciar para volver a intentarlo.
+[Preview unavailable. Adjust settings or start to retry.]
+Vista previa no disponible. Cambia la configuración o inicia el juego para volver a intentarlo.
 [automatic torus view]
 Vista toroidal automática
 [toggle torus view]
 Alternar vista 2D / toroidal
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 contra 2 requiere cuatro colonias abiertas. Tú contra todos requiere un jugador humano.
+[Alliance]
+Alianza
+[Choose a rule to change it.]
+Elija una regla para cambiarla.
+[Conquest only removes prestige victory; map scripts still apply.]
+La victoria basada únicamente en la conquista desactiva la victoria por prestigio; Los scripts de mapas todavía se aplican.
+[Control]
+control de colonias
+[Controller]
+Controlado por
+[Generate preview]
+Generar vista previa
+[Generation failed. Adjust settings or try again.]
+La generación fracasó. Ajuste la configuración o inténtelo de nuevo.
+[Map settings changed. Generate a new preview or start.]
+La configuración del mapa cambió. Generar una nueva vista previa o iniciar.
+[Map source]
+Fuente del mapa
+[Map-defined]
+Definido en el mapa
+[Match format]
+Formato de juego
+[No current preview]
+No hay vista previa actual
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Batalla rápida: doble velocidad; Los mapas generados comienzan con 8 trabajadores.
+[Reroll]
+Generar otro mapa
+[Ruleset]
+Conjunto de reglas
+[Select a map from the library.]
+Seleccione un mapa de la biblioteca.
+[Starting workers affects generated maps only.]
+El número inicial de trabajadores se aplica sólo a los mapas generados.
+[Unavailable]
+No disponible
+[Use selection]
+Usar selección
+[Quick clash on premade maps: only speed changes (2x).]
+Batalla rápida en mapas prediseñados: solo cambia la velocidad (doble velocidad).
+[Generate a preview to explore this world.]
+Genera una vista previa para explorar este mundo.
+[More workers jump-start colony growth. Changes the generated map.]
+Más trabajadores aceleran el crecimiento de las colonias. Esta configuración cambia el mapa generado.
+[No warriors]
+Sin guerreros
+[settings Add key to sequence]
+Añadir tecla a la secuencia
+[settings Add shortcut]
+Añadir atajo
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Ajusta el número de unidades asignadas con la rueda del ratón. Si la opción está desactivada, mantén pulsado Ctrl. Mayús ajusta el radio de la bandera. También controla el uso de la rueda en otros menús.
+[settings Adjust music and voice volume.]
+Ajusta el volumen de la música y la voz.
+[settings Adjust the pace of play.]
+Ajusta la velocidad del juego.
+[settings Advanced binding]
+Edición avanzada de atajos
+[settings Artwork & effects]
+Gráficos y efectos
+[settings Audio]
+Sonido
+[settings Bind Escape]
+Asignar la tecla Escape
+[settings Building]
+Edificio
+[settings Building defaults]
+Valores predeterminados de edificios
+[settings Cancel]
+Cancelar
+[settings Changes saved automatically]
+Los cambios se guardan automáticamente
+[settings Changes you make during play update these defaults for future games.]
+Los cambios que realices durante una partida actualizarán estos valores predeterminados para partidas futuras.
+[settings Changing the renderer requires a restart.]
+Cambiar el renderizador requiere reiniciar.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Selecciona un atajo de teclado para editarlo o añade otro atajo para una acción.
+[settings Choose a window or fill the screen.]
+Elige entre el modo ventana y la pantalla completa.
+[settings Choose how the game looks on your screen.]
+Elige cómo se ve el juego en tu pantalla.
+[settings Completed]
+Edificios terminados
+[settings Construction]
+Construcción
+[settings Controls]
+Controles del juego
+[settings Could not change display mode. The previous mode was restored.]
+No se pudo cambiar el modo de visualización. Se restableció el modo anterior.
+[settings Could not save]
+No se pudo guardar
+[settings Current display]
+Configuración de pantalla actual
+[settings Default]
+Predeterminado
+[settings Display]
+Pantalla
+[settings Display & graphics]
+Pantalla y gráficos
+[settings Display the Globulation 2 cursor.]
+Muestra el cursor de Globulation 2.
+[settings Done]
+Hecho
+[settings Edit shortcut]
+Editar atajo de teclado
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Amplía los menús, el texto y la barra lateral en una pantalla de alta resolución.
+[settings Flags]
+Banderas
+[settings Full]
+Detalle completo
+[settings Fullscreen]
+Pantalla completa
+[settings Game]
+Juego
+[settings Game speed]
+Velocidad del juego
+[settings Gameplay]
+Jugabilidad
+[settings Graphics detail]
+Detalle de gráficos
+[settings Interface scale]
+Escala de la interfaz
+[settings Keep]
+Mantener cambios
+[settings Keep this display mode?]
+¿Mantener este modo de visualización?
+[settings Keep your volume levels while silencing audio.]
+Silencia todo el sonido sin cambiar los niveles de volumen guardados.
+[settings Key]
+Tecla
+[settings Keyboard shortcuts]
+Atajos de teclado
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Las teclas forman una secuencia ordenada. Cada tecla puede activar la acción al pulsarla o soltarla.
+[settings Language]
+Idioma
+[settings Language & player]
+Idioma y jugador
+[settings Language used throughout the interface.]
+Idioma utilizado en toda la interfaz.
+[settings Level]
+Nivel
+[settings Map editor]
+Editor de mapas
+[settings Match the desktop]
+Igual que el escritorio
+[settings Missing font]
+Fuente faltante
+[settings Music volume]
+Volumen (música)
+[settings Mute audio]
+Silenciar audio
+[settings Name shown to other players.]
+Nombre mostrado a otros jugadores.
+[settings Off]
+Desactivado
+[settings On]
+Activado
+[settings OpenGL is not available in this build.]
+OpenGL no está disponible en esta compilación.
+[settings Player name]
+Nombre del jugador
+[settings Press]
+Al pulsar
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Pulsa una tecla. Escape cancela la captura. Para asignar Escape, selecciona "Asignar la tecla Escape".
+[settings Radius]
+Radio
+[settings Reduced]
+Detalle reducido
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Los detalles reducidos desactivan las nubes y sus sombras, simplifican los efectos mágicos y reducen la transparencia.
+[settings Release]
+Al soltar
+[settings Remember assignments between games]
+Recordar asignaciones entre partidas
+[settings Remove key]
+Quitar tecla
+[settings Remove shortcut]
+Eliminar atajo
+[settings Renderer]
+Renderizador de gráficos
+[settings Replace conflicting bindings]
+Reemplazar atajos de teclado conflictivos
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+¿Reemplazar los atajos de este contexto por los predeterminados? Los cambios se guardan inmediatamente.
+[settings Resolution]
+Resolución de pantalla
+[settings Restore default shortcuts]
+Restaurar atajos predeterminados
+[settings Retry]
+Inténtalo de nuevo
+[settings Revert]
+Revertir cambios
+[settings Reverting in]
+Se revertirá en
+[settings Save shortcut]
+Guardar atajo de teclado
+[settings Saved — restart required]
+Guardado: es necesario reiniciar
+[settings Saving…]
+Guardando…
+[settings Scroll wheel enabled]
+Rueda del ratón activada
+[settings Set starting unit assignments by building type and level.]
+Establece el número inicial de unidades asignadas por tipo y nivel de edificio.
+[settings Set your language and player name.]
+Elige tu idioma y nombre de jugador.
+[settings Settings]
+Configuración
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Solo para un jugador y repeticiones. Las partidas multijugador van a 1x.
+[settings Software]
+Renderizado por software
+[settings Starting unit counts and radius for newly placed flags.]
+Número inicial de unidades y radio de las nuevas banderas.
+[settings This shortcut conflicts with existing bindings:]
+Este atajo de teclado entra en conflicto con los atajos existentes:
+[settings Trigger]
+Evento de activación
+[settings Unbound]
+No hay atajos asignados
+[settings Unit counts assigned to new construction sites.]
+Número de unidades asignadas a nuevos sitios de construcción.
+[settings Unit counts for completed buildings.]
+Recuento de unidades para edificios terminados.
+[settings Unit counts while a building is being upgraded.]
+Número de unidades durante la mejora de un edificio.
+[settings Units]
+Unidades
+[settings Upgrades]
+Mejoras de edificios
+[settings Use game cursor]
+Usar el cursor del juego
+[settings Voice volume]
+Volumen (voz)
+[settings Window mode]
+Modo ventana
+[settings Window-only sizes also switch the game to windowed mode.]
+Seleccionar una resolución que solo admita el modo de ventana también cambia el juego al modo de ventana.
+[settings Windowed]
+En ventana
+[settings Windowed only]
+Solo ventana
+[settings seconds]
+segundos
+[settings Flag]
+Bandera
+[settings High-resolution artwork]
+Gráficos de alta resolución
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Aplica los gráficos al cargar la próxima partida o el editor de mapas (OpenGL).
+[settings Automatic torus view]
+Vista toroidal automática
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Muestra automáticamente la vista general toroidal mientras te desplazas por el mapa (OpenGL).
+[Channel width]
+Anchura del canal
+[Land bridge width]
+Anchura del puente terrestre
+[Lake size]
+Tamaño del lago
