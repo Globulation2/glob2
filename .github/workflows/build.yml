@@ -117,6 +117,14 @@ jobs:
           cat artifacts/custom-game-ci/ui.log
           ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
 
+      - name: Test status-bar bounds in GPU and software rendering
+        run: |
+          scons -j$(nproc) release=1 server=0 point-bar-render-test
+          SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            xvfb-run -a ./build/src/point-bar-render-test gl
+          SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            ./build/src/point-bar-render-test software
+
       - name: Build and run the selection lifetime regression
         run: |
           scons -j$(nproc) release=1 server=0 selection-test
@@ -331,6 +339,12 @@ jobs:
 
       - name: Build glob2
         run: scons -j$(nproc) release=1 mingw=1
+
+      - name: Test status-bar bounds in software rendering
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 point-bar-render-test
+          SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            ./build/src/point-bar-render-test.exe software
 
       - name: Test trapped colony elimination
         run: |

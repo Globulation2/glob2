@@ -546,6 +546,14 @@ if not env['server']:
     savegame_test = savegame_env.Program('SavegameSafetyHarness', savegame_sources)
     local.Alias('savegame-safety-test', savegame_test)
 
+# Status-bar pixel regression: exercise the shared renderer without a map.
+if not env['server']:
+    bar_sources = [source for source in source_files if source != 'Glob2.cpp']
+    bar_sources += local.Object('PointBarRenderTest.o', '#test/PointBarRenderTest.cpp')
+    bar_test = local.Program('point-bar-render-test', bar_sources)
+    local.Alias('point-bar-render-test', bar_test)
+
+if not env['server']:
     # Use the real renderer and settings handlers. Access relaxation is confined
     # to the test translation unit; production objects retain their normal flags.
     render_env = savegame_env.Clone()
