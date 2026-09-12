@@ -813,7 +813,7 @@ int main(int argc, char **argv)
 	std::cout << "PASS all eight playable generator landscapes\n";
 
 	CustomGameSetupHarness::model();
-	assert((AINames::selectionOrder() == std::vector<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::NICOWAR, AI::NONE}));
+	assert((AINames::selectionOrder() == std::vector<int>{AI::ECONO, AI::NUMBI, AI::WARRUSH, AI::CASTOR, AI::CORTEX, AI::NICOWAR, AI::MAXIMA, AI::NONE}));
 	for (int id : AINames::selectionOrder())
 		assert(AINames::selectionOrder()[AINames::selectionIndex(id)] == id);
 	static_assert(AI::ECONO == 4, "Econo must retain its save ID");
