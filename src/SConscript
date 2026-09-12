@@ -681,6 +681,12 @@ if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
     hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
     local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))
 
+# Measure inn workers crowding the few ripe tiles of a checkerboard farm.
+if not env['server'] and 'wheat-crowding-harness' in COMMAND_LINE_TARGETS:
+    wheat_sources = [source for source in source_files if source != 'Glob2.cpp']
+    wheat_sources += local.Object('WheatCrowdingHarness.o', '#test/WheatCrowdingHarness.cpp')
+    local.Alias('wheat-crowding-harness', local.Program('WheatCrowdingHarness', wheat_sources))
+
 if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_sources = [source for source in source_files if source != 'Glob2.cpp']
     custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')
