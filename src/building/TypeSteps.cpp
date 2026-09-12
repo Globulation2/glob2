@@ -21,7 +21,7 @@
 void Building::swarmStep(void)
 {
 	// increase HP
-	if (hp<type->hpMax)
+	if (hp<getEffectiveMaxHp())
 		hp++;
 	assert(NB_UNIT_TYPE==3);
 	if ((resources[CORN]>=type->resourceForOneUnit)&&(ratio[0]|ratio[1]|ratio[2]))

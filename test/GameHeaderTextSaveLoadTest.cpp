@@ -59,6 +59,12 @@ GameHeader makeFixtureHeader()
 	header.setRandomSeed(0xCAFEBABE);
 	header.setMapDiscovered(true);
 	header.setAllyTeamsFixed(true);
+	header.setUnitUpgradesDisabled(true);
+	header.setGlassCannonLevel(2);
+	header.setUnitsFearless(true);
+	header.setPermadeathDisabled(true);
+	header.setPeacefulModeEnabled(true);
+	header.setBuildingHpLevel(1);
 	for (int i = 0; i < 4; ++i)
 	{
 		char name[32];
@@ -109,6 +115,12 @@ void testFullRoundTrip()
 	check(loaded.getRandomSeed() == 0xCAFEBABE, "full: seed preserved");
 	check(loaded.isMapDiscovered(), "full: mapDiscovered preserved");
 	check(loaded.areAllyTeamsFixed(), "full: allyTeamsFixed preserved");
+	check(loaded.isUnitUpgradesDisabled(), "full: unitUpgradesDisabled preserved");
+	check(loaded.getGlassCannonLevel() == 2, "full: glassCannonLevel preserved");
+	check(loaded.isUnitsFearless(), "full: unitsFearless preserved");
+	check(loaded.isPermadeathDisabled(), "full: permadeathDisabled preserved");
+	check(loaded.isPeacefulModeEnabled(), "full: peacefulMode preserved");
+	check(loaded.getBuildingHpLevel() == 1, "full: buildingHpLevel preserved");
 	check(playersMatch(original, loaded, 4), "full: players preserved");
 	// allyTeamNumbers values are NOT asserted: save() writes all 32 entries
 	// under the single repeated key "allyTeamNumber" (no per-index section),

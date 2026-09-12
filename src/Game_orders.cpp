@@ -479,7 +479,9 @@ void Game::executeSetAlliance(const SetAllianceOrder& sao)
 {
 	Uint32 team=sao.teamNumber;
 	teams[team]->allies=sao.alliedMask;
-	teams[team]->enemies=sao.enemyMask;
+	// Custom-game "peaceful mode" rule: keep a mid-game alliance change (only
+	// reachable when alliances aren't locked) from re-declaring war.
+	teams[team]->enemies = gameHeader.isPeacefulModeEnabled() ? 0 : sao.enemyMask;
 	teams[team]->sharedVisionExchange=sao.visionExchangeMask;
 	teams[team]->sharedVisionFood=sao.visionFoodMask;
 	teams[team]->sharedVisionOther=sao.visionOtherMask;

@@ -134,6 +134,55 @@ public:
 	
 	///Sets whether the map is discovered at game start
 	inline void setMapDiscovered(bool discovered) { mapDiscovered=discovered; }
+
+	///Returns whether units are exempt from training/upgrading at schools (custom-game rule)
+	inline bool isUnitUpgradesDisabled() const { return unitUpgradesDisabled; }
+
+	///Sets whether units are exempt from training/upgrading at schools (custom-game rule)
+	inline void setUnitUpgradesDisabled(bool disabled) { unitUpgradesDisabled=disabled; }
+
+	///Returns the "glass cannon" tier (0=off/today's balance, 1-2=progressively higher
+	///damage dealt and lower HP/armor)
+	inline Uint8 getGlassCannonLevel() const { return glassCannonLevel; }
+
+	///Sets the "glass cannon" tier (custom-game rule)
+	inline void setGlassCannonLevel(Uint8 level) { glassCannonLevel=level; }
+
+	///Returns whether units fight to the death instead of retreating when damaged (custom-game rule)
+	inline bool isUnitsFearless() const { return unitsFearless; }
+
+	///Sets whether units fight to the death instead of retreating when damaged (custom-game rule)
+	inline void setUnitsFearless(bool fearless) { unitsFearless=fearless; }
+
+	///Returns whether units are exempt from permanent death (custom-game rule)
+	inline bool isPermadeathDisabled() const { return permadeathDisabled; }
+
+	///Sets whether units are exempt from permanent death (custom-game rule)
+	inline void setPermadeathDisabled(bool disabled) { permadeathDisabled=disabled; }
+
+	///Returns whether all combat is disabled for this match (custom-game rule)
+	inline bool isPeacefulModeEnabled() const { return peacefulMode; }
+
+	///Sets whether all combat is disabled for this match (custom-game rule)
+	inline void setPeacefulModeEnabled(bool enabled) { peacefulMode=enabled; }
+
+	///Returns the "fortress buildings" tier (0=off/today's HP, 1-2=progressively higher
+	///building HP)
+	inline Uint8 getBuildingHpLevel() const { return buildingHpLevel; }
+
+	///Sets the "fortress buildings" tier (custom-game rule)
+	inline void setBuildingHpLevel(Uint8 level) { buildingHpLevel=level; }
+
+	///Resolves the "fortress buildings" tier to its actual HP multiplier.
+	///The single canonical place this scale is defined; Building's
+	///getEffectiveMaxHp()/getEffectiveInitHp() and any other type->hpMax/
+	///hpInit read that isn't tied to a live Building instance should go
+	///through this rather than re-deriving the tier->multiplier mapping.
+	inline int getBuildingHpMultiplier() const
+	{
+		static constexpr int multiplier[] = {1, 5, 10};
+		return multiplier[buildingHpLevel];
+	}
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;
@@ -162,6 +211,24 @@ private:
 	
 	///Represents whether fog of war is enabled or disabled
 	bool mapDiscovered;
+
+	///Custom-game rule: units never train/upgrade at schools
+	bool unitUpgradesDisabled;
+
+	///Custom-game rule: 0-2 tier scaling damage dealt up and HP/armor down
+	Uint8 glassCannonLevel;
+
+	///Custom-game rule: units never retreat to heal when damaged
+	bool unitsFearless;
+
+	///Custom-game rule: units never permanently die
+	bool permadeathDisabled;
+
+	///Custom-game rule: no team can ever target another in combat
+	bool peacefulMode;
+
+	///Custom-game rule: 0-2 tier scaling building max HP
+	Uint8 buildingHpLevel;
 };
 
 

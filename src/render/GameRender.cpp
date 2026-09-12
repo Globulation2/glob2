@@ -273,7 +273,7 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						// TODO : find better color for this
 						if (type->hpMax)
 						{
-							float hpRatio=(float)building->hp/(float)type->hpMax;
+							float hpRatio=(float)building->hp/(float)building->getEffectiveMaxHp();
 							drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio);
 						}
 

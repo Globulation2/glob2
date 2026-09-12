@@ -21,12 +21,19 @@ struct CustomGameSetup
 		const char *label;
 		const char *category;
 	};
-	static constexpr std::array<RuleDefinition, 5> ruleDefinitions = {
+	static constexpr std::array<RuleDefinition, 12> ruleDefinitions = {
 		{{"Victory", "Victory"},
 		 {"Map knowledge", "World & diplomacy"},
 		 {"Alliances", "World & diplomacy"},
 		 {"Game speed", "Starting conditions & pace"},
-		 {"Starting workers", "Starting conditions & pace"}}};
+		 {"Starting workers", "Starting conditions & pace"},
+		 {"No upgrades", "Combat"},
+		 {"Glass cannon", "Combat"},
+		 {"Fearless", "Combat"},
+		 {"No permadeath", "Combat"},
+		 {"Peaceful mode", "Combat"},
+		 {"Fortress buildings", "Combat"},
+		 {"Veteran/Fast start", "Starting conditions & pace"}}};
 	bool ruleChanged(int index) const
 	{
 		switch (index)
@@ -43,6 +50,20 @@ struct CustomGameSetup
 			return random && generator.nbWorkers != MapGenerationDescriptor::control(
 														generator.method, "Starting workers")
 														.defaultValue;
+		case 5:
+			return unitUpgradesDisabled;
+		case 6:
+			return glassCannonLevel != 0;
+		case 7:
+			return unitsFearless;
+		case 8:
+			return permadeathDisabled;
+		case 9:
+			return peacefulMode;
+		case 10:
+			return buildingHpLevel != 0;
+		case 11:
+			return random && generator.startingUnitLevel != 0;
 		default:
 			return false;
 		}
@@ -59,6 +80,8 @@ struct CustomGameSetup
 	int capacity;
 	bool random = false, prestige = true, revealed = false, locked = true;
 	int speed = 0;
+	bool unitUpgradesDisabled = false, unitsFearless = false, permadeathDisabled = false, peacefulMode = false;
+	int glassCannonLevel = 0, buildingHpLevel = 0;
 	std::string format = "FFA", ruleset = "Standard";
 	std::string premadeMap;
 	unsigned mapRevision = 0;
@@ -151,6 +174,17 @@ struct CustomGameSetup
 			generator.nbWorkers = workers;
 			++mapRevision;
 		}
+		unitUpgradesDisabled = false;
+		glassCannonLevel = 0;
+		unitsFearless = false;
+		permadeathDisabled = false;
+		peacefulMode = false;
+		buildingHpLevel = 0;
+		if (generator.startingUnitLevel != 0)
+		{
+			generator.startingUnitLevel = 0;
+			++mapRevision;
+		}
 		ruleset = preset == 0	? "Standard"
 				  : preset == 1 ? "Quick clash"
 				  : preset == 2 ? "Open book"
@@ -195,5 +229,11 @@ struct CustomGameSetup
 		header.setAllyTeamsFixed(locked);
 		header.setMapDiscovered(revealed);
 		WinningCondition::setPrestigeWinCondition(header.getWinningConditions(), prestige);
+		header.setUnitUpgradesDisabled(unitUpgradesDisabled);
+		header.setGlassCannonLevel(static_cast<Uint8>(glassCannonLevel));
+		header.setUnitsFearless(unitsFearless);
+		header.setPermadeathDisabled(permadeathDisabled);
+		header.setPeacefulModeEnabled(peacefulMode);
+		header.setBuildingHpLevel(static_cast<Uint8>(buildingHpLevel));
 	}
 };

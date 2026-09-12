@@ -83,7 +83,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	updateResourcesPointer();
 
 	// quality parameters
-	hp=type->hpInit; // (Uint16)
+	hp=getEffectiveInitHp(); // (Uint16)
 
 	// preferred parameters
 

@@ -742,7 +742,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 	}
 	yy += ((4 + columns - 1) / columns) * 54 + 6;
 	std::string category;
-	for (int index = 0; index < 5; ++index)
+	for (int index = 0; index < 12; ++index)
 	{
 		auto definition = CustomGameSetup::ruleDefinitions[index];
 		if (category != definition.category)
@@ -765,6 +765,18 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				setup.locked = value == 0;
 			if (index == 3)
 				setup.speed = value;
+			if (index == 5)
+				setup.unitUpgradesDisabled = value;
+			if (index == 6)
+				setup.glassCannonLevel = value;
+			if (index == 7)
+				setup.unitsFearless = value;
+			if (index == 8)
+				setup.permadeathDisabled = value;
+			if (index == 9)
+				setup.peacefulMode = value;
+			if (index == 10)
+				setup.buildingHpLevel = value;
 			setup.ruleset = "Custom";
 		};
 		std::string help;
@@ -795,7 +807,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			ui.dropdown("rule/speed", {fieldX, yy + 5, fieldW, 29}, options, setup.speed, apply);
 			help = tr("Changes the pace of the whole simulation.");
 		}
-		else
+		else if (index == 4)
 		{
 			if (setup.random)
 				ui.stepper(
@@ -814,6 +826,55 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			else
 				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
 			help = tr(setup.random ? "More workers jump-start colony growth. Changes the "
+									 "generated map."
+								   : "Premade maps retain their authored starting units.");
+		}
+		else if (index == 5 || index == 7 || index == 8 || index == 9)
+		{
+			auto options = index == 5	 ? localized({"Trains normally", "No upgrades"})
+						   : index == 7 ? localized({"Retreats when damaged", "Fearless"})
+						   : index == 8 ? localized({"Can die permanently", "No permadeath"})
+										: localized({"Normal combat", "Peaceful mode"});
+			bool current = index == 5	 ? setup.unitUpgradesDisabled
+						   : index == 7 ? setup.unitsFearless
+						   : index == 8 ? setup.permadeathDisabled
+										: setup.peacefulMode;
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+						current, apply, {}, w < 800 ? "little" : "standard");
+			help = tr(index == 5	? "Units still visit schools but never gain a level."
+					  : index == 7 ? "Units fight to the death instead of retreating to heal."
+					  : index == 8 ? "Units are never permanently lost -- HP just stops at 1."
+									: "Disables all combat between every team.");
+		}
+		else if (index == 6 || index == 10)
+		{
+			std::vector<std::string> options =
+				index == 6 ? localized({"Off (today's balance)", "Glass cannon x2", "Glass cannon x3"})
+						   : localized({"Off (today's HP)", "Fortress x5", "Fortress x10"});
+			int current = index == 6 ? setup.glassCannonLevel : setup.buildingHpLevel;
+			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+						current, apply);
+			help = tr(index == 6 ? "Higher tiers deal more damage but have less HP and armor."
+								  : "Higher tiers give every building much more HP.");
+		}
+		else
+		{
+			if (setup.random)
+			{
+				std::vector<std::string> options = localized({"Standard", "Veteran", "Elite", "Legendary"});
+				ui.dropdown("rule/startingLevel", {fieldX, yy + 5, fieldW, 29}, options,
+					setup.generator.startingUnitLevel,
+					[this](int v)
+					{
+						setup.generator.startingUnitLevel = v;
+						++setup.mapRevision;
+						setup.ruleset = "Custom";
+						invalidate();
+					});
+			}
+			else
+				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
+			help = tr(setup.random ? "Starting units spawn already leveled up. Changes the "
 									 "generated map."
 								   : "Premade maps retain their authored starting units.");
 		}

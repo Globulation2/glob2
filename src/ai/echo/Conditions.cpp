@@ -122,7 +122,7 @@ bool Upgradable::passes(Echo& echo, int id)
 	   building->constructionResultState==Building::NO_CONSTRUCTION &&
 	   building->type->level!=AI_ECHO_MAX_BUILDING_LEVEL_INDEX &&
 	   building->isHardSpaceForBuildingSite(Building::UPGRADE) &&
-	   building->hp == building->type->hpMax
+	   building->hp == building->getEffectiveMaxHp()
 	    )
 		return true;
 	return false;

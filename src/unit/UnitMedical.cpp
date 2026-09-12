@@ -198,6 +198,11 @@ void Unit::handleMedical(void)
 	else if (hp<=trigHP)
 		medical=MED_DAMAGED;
 
+	// Custom-game "no permadeath" rule: clamp back up instead of letting the
+	// unit cross the death threshold, so it never sits at negative HP.
+	if (owner->game->gameHeader.isPermadeathDisabled() && hp<UNIT_HP_DEATH_THRESHOLD)
+		hp = UNIT_HP_DEATH_THRESHOLD;
+
 	if (hp<UNIT_HP_DEATH_THRESHOLD)
 	{
 		if (!isDead)

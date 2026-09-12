@@ -96,6 +96,12 @@ static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
 //! (MapIO.cpp:350, 410, 451, 514).
 static constexpr int FILE_FORMAT_VERSION_TOPOLOGY_GENERATION = 97;
 
+//! Custom-game combat rules: unitUpgradesDisabled, glassCannonLevel,
+//! unitsFearless, permadeathDisabled, peacefulMode, buildingHpLevel
+//! (GameHeader.cpp). NOTE: claims 98 on this branch; rebase the number if
+//! another custom-game-rules PR merges first.
+static constexpr int FILE_FORMAT_VERSION_COMBAT_RULES = 98;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend

@@ -14,6 +14,20 @@
 #include "Order.h"
 #include "Integrity.h"
 
+// Custom-game "fortress buildings" rule: mirrors the getRealAttackStrength()/
+// getRealArmor() unit pattern -- scale once, on read, at a single accessor,
+// rather than touching every one of the many direct type->hpMax/hpInit
+// reads across building logic, rendering and the GUI.
+int Building::getEffectiveMaxHp(void) const
+{
+	return type->hpMax * owner->game->gameHeader.getBuildingHpMultiplier();
+}
+
+int Building::getEffectiveInitHp(void) const
+{
+	return type->hpInit * owner->game->gameHeader.getBuildingHpMultiplier();
+}
+
 void Building::releaseAllWorkers()
 {
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
@@ -203,7 +217,7 @@ void Building::addResourceIntoBuilding(int resourceType)
 		case UPGRADE:
 		{
 			hp+=type->hpInc;
-			hp = std::min(hp, type->hpMax);
+			hp = std::min(hp, getEffectiveMaxHp());
 		}
 		break;
 
@@ -214,8 +228,11 @@ void Building::addResourceIntoBuilding(int resourceType)
 				totResources+=type->maxResource[i];
 			if (totResources>0)
 			{
-				hp += type->hpMax/totResources;
-				hp = std::min(hp, type->hpMax);
+				// Scaled like the cap below: full resource delivery must
+				// repair up to the fortress-scaled ceiling, not the
+				// type's authored (unscaled) hpMax.
+				hp += getEffectiveMaxHp()/totResources;
+				hp = std::min(hp, getEffectiveMaxHp());
 			}
 		}
 		break;

@@ -111,7 +111,7 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 		if (!type->isBuildingSite)
 		{
 			// damaged building smoke
-			float hpRatio = (float)building->hp / (float)type->hpMax;
+			float hpRatio = (float)building->hp / (float)building->getEffectiveMaxHp();
 			if (
 				(hpRatio < SMOKE_HEAVY_HP_RATIO && ((game.stepCounter & 0x1) == 0)) ||
 				(hpRatio < SMOKE_LIGHT_HP_RATIO && ((game.stepCounter & 0x3) == 0))

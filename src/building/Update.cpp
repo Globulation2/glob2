@@ -55,8 +55,8 @@ void Building::updateBuildingSite(void)
 		assert(unitsInside.size()==0);
 		maxUnitInside=type->maxUnitInside;
 
-		if (hp>=type->hpInit)
-			hp=type->hpInit;
+		if (hp>=getEffectiveInitHp())
+			hp=getEffectiveInitHp();
 
 		productionTimeout=type->unitProductionTime;
 		if (type->unitProductionTime)
@@ -228,7 +228,7 @@ void Building::getResourceCountToRepair(int resources[BASIC_COUNT])
 	int repairLevelTypeNum=type->prevLevel;
 	BuildingType *repairBt=globalContainer->buildingsTypes.get(repairLevelTypeNum);
 	assert(repairBt);
-	Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
+	Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
 	Sint32 fTotErr=0;
 	for (int i=0; i<BASIC_COUNT; i++)
 	{
@@ -276,7 +276,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		// OK, we have found enough room to expand our building-site, then we set-up the building-site.
 		if (constructionResultState==REPAIR)
 		{
-			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/type->hpMax;
+			Sint32 fDestructionRatio=(hp<<FIXED_POINT_SHIFT_16)/getEffectiveMaxHp();
 			Sint32 fTotErr=0;
 			for (int i=0; i<MAX_RESOURCES; i++)
 			{
@@ -323,7 +323,7 @@ bool Building::tryToBuildingSiteRoom(void)
 					if (verbose)
 						printf("using %d resources[%d] for fast constr (hp+=%d)\n", res, i, res*type->hpInc);
 					hp+=res*type->hpInc;
-					hp = std::min(hp, type->hpMax);
+					hp = std::min(hp, getEffectiveMaxHp());
 				}
 			}
 

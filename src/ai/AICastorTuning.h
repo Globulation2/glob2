@@ -193,7 +193,7 @@ static constexpr int AI_CASTOR_UPGRADE_MIN_FREE_WORKERS = 4;  // numberOfFreeWor
 static constexpr int AI_CASTOR_UPGRADE_ABLE_FREE_RATIO_DIV = 8; // able > free / 8
 
 // Per-class repair-trigger HP ratios: trigger repair when
-// `b->hp * AI_CASTOR_REPAIR_HP_RATIO_DIV < b->type->hpMax * <NUM>`.
+// `b->hp * AI_CASTOR_REPAIR_HP_RATIO_DIV < b->getEffectiveMaxHp() * <NUM>`.
 // (DIV is implicit at 4 — i.e., the comparisons read "less than 25/75/50%".)
 // C++: Control.cpp:304, 309, 314.
 static constexpr int AI_CASTOR_REPAIR_HP_RATIO_DIV = 4;
