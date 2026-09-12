@@ -162,6 +162,8 @@ public:
 		DRAW_NO_RESOURCE_GROWTH_AREAS = 0x80,
 		DRAW_OVERLAY = 0x100,
 		DRAW_NO_CLOUD_LAYER = 0x200,
+		/// Skip the cloud shadow and layer entirely; the caller composites its own pass.
+		DRAW_NO_CLOUDS = 0x400,
 	};
 
 	/// This method will prepare the game with the provided gameHeader,

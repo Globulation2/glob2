@@ -641,6 +641,7 @@ namespace GAGGUI
 			if ((*it)->visible)
 				(*it)->paint();
 		}
+		Style::style->afterPaint(gfx);
 		/* We need a second loop in order to have tooltip over everything else */
 		for (std::set<Widget *>::iterator it=widgets.begin(); it!=widgets.end(); ++it)
 		{
