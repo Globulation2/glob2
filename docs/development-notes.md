@@ -118,6 +118,9 @@ on macOS need an intermediate filename, e.g. `git mv Foo.cpp temp.cpp` then
 `git mv temp.cpp foo.cpp`. Keep comments terse and about the current code; put change
 history and rationale in commit messages; omit tombstone or “moved to” comments.
 Diagnostics use `std::cerr`; there is no logging facility to target.
+Windows headers define `near`, `far` and `small` as macros, so never name an identifier
+after one: mingw expands `int near[3]` to `int [3]`, which then fails as a structured
+binding declaration, and the error points at the syntax rather than at the macro.
 
 For unused-include cleanup, generate `compile_commands.json` and use
 `tools/remove-unused-includes.py`; do not apply blind bulk fixes. Rebuild client,
