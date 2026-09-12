@@ -64,6 +64,7 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	adminRouter = false;
 	
 	runTestGames=false;
+	disableReplayRecording=false;
 	maximaTelemetry=false;
 	dumpMaximaSchema=false;
 	dumpMaximaStrategy=false;

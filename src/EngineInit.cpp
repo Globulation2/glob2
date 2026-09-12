@@ -320,7 +320,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Failed to load the map: exception received." << std::endl;
+		std::cerr << "Failed to load the map: " << e.what() << std::endl;
 		error = true;
 	}
 	if (error) {
@@ -359,7 +359,7 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 	// and to allow concurrent headless instances to write to distinct files).
 	const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
 	std::string replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
-	if (!globalContainer->replaying)
+	if (!globalContainer->replaying && !globalContainer->disableReplayRecording)
 	{
 		assert(globalContainer->replayWriter == nullptr);
 		globalContainer->replayWriter = std::make_unique<ReplayWriter>();

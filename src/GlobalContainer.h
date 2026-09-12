@@ -98,6 +98,7 @@ public:
 	bool automaticEndingGame;
 	int automaticEndingSteps;
 	bool automaticGameGlobalEndConditions; //! Set false if the automatic game will end if the local team wins/loses, true to wait for the entire game to finish
+	bool disableReplayRecording; //! avoids parallel tournament workers writing the same replay
 	bool maximaTelemetry; //! emits Maxima's per-decision telemetry on stdout
 	AIMaxima::StrategyConfigOptions maximaStrategyOptions;
 	std::map<int, std::string> maximaPlayerOverrides;
