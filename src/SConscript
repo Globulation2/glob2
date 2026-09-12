@@ -6,6 +6,16 @@ ai/castor/Maps.cpp
 ai/castor/Placement.cpp
 ai/castor/Projects.cpp
 ai/castor/State.cpp
+AIMaxima.cpp
+AIMaximaDefense.cpp
+AIMaximaFarming.cpp
+AIMaximaFarmingPolicy.cpp
+AIMaximaFoodLedger.cpp
+AIMaximaPlacement.cpp
+AIMaximaRecon.cpp
+AIMaximaRuntime.cpp
+AIMaximaStrategy.cpp
+AIMaximaTactics.cpp
 ai/AI.cpp
 ai/AIDescriptionScreen.cpp
 ai/echo/BuildingOrder.cpp
@@ -373,6 +383,7 @@ yog/YOGServerRouterPlayer.cpp
 """)
 server_source_files=Split("""
 ai/AINames.cpp
+AIMaximaStrategy.cpp
 BasePlayer.cpp
 BaseTeam.cpp
 BitArray.cpp

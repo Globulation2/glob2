@@ -1230,6 +1230,10 @@ Réduire la vitesse du jeu
 Augmenter la vitesse du jeu
 [AICortex-Description]
 Cortex s'étend vers de nouveaux champs de blé et envoie des groupes de guerriers au combat, soutenus par des auberges et des hôpitaux proches de la ligne de front. Difficulté moyenne. Expérimental.
+[AIMaxima-Description]
+Maxima développe une colonie bien nourrie, explore sans cesse et attaque sans répit, en envoyant chaque guerrier dont elle peut se passer. Difficulté élevée.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 Impossible d'enregistrer la campagne. Vérifiez que le dossier de destination existe, est accessible en écriture et dispose d'espace libre.
 [AICortex]

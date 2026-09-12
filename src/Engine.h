@@ -66,6 +66,8 @@ public:
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
 
+
+
 	/// Load a replay. Commits the global "we are replaying" state
 	/// (globalContainer->replaying, replayFileName, replayReader) only after
 	/// the replay file has been successfully parsed; on any failure the

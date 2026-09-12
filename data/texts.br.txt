@@ -1214,6 +1214,10 @@ Velocidade: 1x (multijogador)
 Apenas para um jogador e replays. Partidas multijogador funcionam a 1x.
 [AICortex-Description]
 Cortex se expande em direção a novos campos de trigo e envia grupos de guerreiros para a batalha, apoiados por tavernas e hospitais próximos à linha de frente. Dificuldade média. Experimental.
+[AIMaxima-Description]
+Maxima desenvolve uma colônia bem alimentada, explora o mapa constantemente e ataca sem pausa, enviando todos os guerreiros que puder dispensar. Dificuldade alta.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Não foi possível carregar o mapa: o arquivo está danificado ou sua versão é incompatível.
 [ERROR_CANT_SAVE_CAMPAIGN]

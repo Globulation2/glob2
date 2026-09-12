@@ -1218,6 +1218,10 @@ Viteză: 1x (multiplayer)
 Doar pentru un singur jucător și reluări. Jocurile multiplayer rulează la 1x.
 [AICortex-Description]
 Cortex se extinde către noi câmpuri de grâu și trimite grupuri de războinici în luptă, sprijiniți de popasuri și spitale de lângă linia frontului. Dificultate medie. Experimental.
+[AIMaxima-Description]
+Maxima dezvoltă o colonie bine hrănită, cercetează constant și atacă fără pauză cu fiecare războinic pe care îl poate trimite. Dificultate ridicată.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Harta nu a putut fi încărcată: fișierul este deteriorat sau are o versiune incompatibilă.
 [ERROR_CANT_SAVE_CAMPAIGN]

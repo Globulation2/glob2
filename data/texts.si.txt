@@ -1218,6 +1218,10 @@ Hitrost: 1x (več igralcev)
 Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
 [AICortex-Description]
 Cortex se širi proti novim pšeničnim poljem in v boj pošilja skupine bojevnikov, ki jih podpirajo restavracije in bolnišnice blizu frontne črte. Srednja težavnost. Eksperimentalno.
+[AIMaxima-Description]
+Maxima razvija dobro prehranjeno kolonijo, nenehno izviduje in napada brez premora z vsakim bojevnikom, ki ga lahko pogreša. Visoka zahtevnost.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Zemljevida ni mogoče naložiti: datoteka je poškodovana ali ima nezdružljivo različico.
 [ERROR_CANT_SAVE_CAMPAIGN]

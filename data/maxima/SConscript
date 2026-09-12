@@ -1,0 +1,7 @@
+Import('env', 'PackTar')
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
+    for strategy in Glob('*.strategy'):
+        PackTar(env['TARFILE'], strategy)
+        env.Install(env['INSTALLDIR'] + '/glob2/data/maxima', strategy)
+    PackTar(env['TARFILE'], 'SConscript')
+    env.Alias('install', env['INSTALLDIR'] + '/glob2/data/maxima')

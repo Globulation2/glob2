@@ -1218,6 +1218,10 @@ Rapido: 1x (plurludanta)
 Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
 [AICortex-Description]
 Cortex disetendiĝas direkte al novaj tritikkampoj kaj sendas grupojn de militistoj en batalon, apogita fare de gastejoj kaj hospitaloj proksime de la frontlinio. Meza malfacileco. Eksperimenta.
+[AIMaxima-Description]
+Maxima kreskigas bone nutritan kolonion, konstante esploras kaj atakas senpaŭze, sendante ĉiun militiston, kiun ĝi povas rezervi. Malfacila.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 Ne eblis konservi la kampanjon. Kontrolu, ke la cela dosierujo ekzistas, estas skribebla kaj havas liberan spacon.
 [AICortex]

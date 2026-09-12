@@ -9,6 +9,8 @@
 #include "BuildingType.h"
 #include "RessourceType.h"
 #include "Settings.h"
+#include "AIMaximaStrategy.h"
+#include <map>
 
 namespace GAGCore
 {
@@ -96,7 +98,15 @@ public:
 	bool automaticEndingGame;
 	int automaticEndingSteps;
 	bool automaticGameGlobalEndConditions; //! Set false if the automatic game will end if the local team wins/loses, true to wait for the entire game to finish
-	
+	bool disableReplayRecording; //! avoids parallel tournament workers writing the same replay
+	bool maximaTelemetry; //! emits Maxima's per-decision telemetry on stdout
+	AIMaxima::StrategyConfigOptions maximaStrategyOptions;
+	std::map<int, std::string> maximaPlayerOverrides;
+	std::map<int, std::string> maximaTeamOverrides;
+	bool dumpMaximaSchema;
+	bool dumpMaximaStrategy;
+
+	bool automaticEndingStepsRelative=false;
 	bool runTestGames; //! runs test games
 	int runTestGamesCount; //! number of test games to run (0 = infinite)
 	//! AI implementation IDs (AI::ImplementationID values) eligible for random
@@ -162,4 +172,3 @@ public:
 };
 
 extern GlobalContainer *globalContainer;
-

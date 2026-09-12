@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
+  "sources": {
+    "src/AIMaxima.cpp": {
+      "tokens": 1755,
+      "sha256": "ae1c510ec5329c40e86c77e482a3b878c5b83b29a4c7b25acedd335b8cd146a1",
+      "classifications": [
+        "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
+        "schema-backed strategy member use",
+        "serialization field, legacy version gate, and version identifier",
+        "engine enum, level, terrain, and order representation",
+        "neutral arithmetic scale or identity",
+        "sentinel and invalid-id state",
+        "fixed deterministic algorithm shape",
+        "derived tactical diagnostic counters and score sentinels",
+        "food-zone opportunity values derived from fertility, crop amount, and expansion space",
+        "colonization cooldown, hotspot decay, and placement HUD diagnostics",
+        "lightweight fog-gated force sampling and combat-power normalization",
+        "owned maintenance-clearing masks for placement and gate invariants",
+        "stable team-phase staggering and deterministic deferred heavy-job priority",
+        "side-effect-free major-switch opportunity probes and stable context hashing",
+        "resource-tracker sampling cadence and fertility-biased swarm allocation warm-up",
+        "execution lifecycle reconciliation, wrapped targeting, and replacement force accounting",
+        "amphibious target connectivity and hostility-filtered placement",
+        "runtime mission identity and continuation-force ownership",
+        "director upgrade authorization keyed by engine building type and source level",
+        "combat flag eligibility, covered defense geometry, relief staffing and siege progress accounting",
+        "reachable worker resource supply, completed swarm counts, and colony-wide explorer production",
+        "per-target warrior connectivity and diplomacy-filtered threat accounting",
+        "placement contract repair: intermediate upgrade geometry, waiting-action authority, and deterministic worker-reachable circulation",
+        "bounded harvesting routes and reachable corn-pile amount-times-fertility weighting for swarm staffing",
+        "nearby productive land capacity independent of harvest amounts; fertility scale and capacity-based food staffing",
+        "independent military authorization, supply-side amphibious rally geometry and muster diagnostics",
+        "configurable proportional offensive muster without an absolute minimum override",
+        "siege and dig-out progress locks apply only to living opponents",
+        "shared deterministic food measurement and single continuous swarm capacity controller",
+        "minimum nonzero explorer production weight for any unmet colony target",
+        "food ledger demand rates, coverage thresholds, and retirement timing",
+        "per-building staffing control band, window and worker bounds",
+        "relentless offense target scoring, dwell, and flag geometry"
+      ]
+    },
+    "src/AIMaximaFarmingPolicy.cpp": {
+      "tokens": 273,
+      "sha256": "d29203b06387bbb5d2fd9556d48048f609b8de6bff607ebaec6fcb6aa4021971",
+      "classifications": [
+        "strategic gate count, width, and inland channel geometry",
+        "farm lattice, shoreline, and creeping-expansion geometry",
+        "exact fertility and resource policy thresholds supplied by strategy",
+        "neutral arithmetic scale or identity",
+        "sentinel and invalid-id state",
+        "fixed deterministic topology, routing, gate-retention scoring, and tie-breaking",
+        "owned maintenance-clearing masks excluding occupied building footprints",
+        "eight-neighbor wheat-boundary invasion detection",
+        "cardinal shoreline detection with toroidal map access",
+        "circular clearing coverage of eight-way gate cells and exact relocation",
+        "actual member footprints, wrapped per-member entrances, and resource-preserving future reservations",
+        "active proactive-clearing flag radius and lifetime exclusion from wood protection",
+        "placement contract repair: intermediate upgrade geometry, waiting-action authority, and deterministic worker-reachable circulation",
+        "aligned fixed-phase farm geometry, shared traversal and gate inspection, and consistent wheat-invasion clearing priority",
+        "water-connected beach traversal and wrapped shoreline adjacency independent of resource harvest state",
+        "terrain-only shoreline adjacency cached once per map load",
+        "growth-absorbing neighbour terrain and stack bounds"
+      ]
+    },
+    "src/AIMaximaFarming.cpp": {
+      "tokens": 176,
+      "sha256": "bb336c9d4224aef830408a1e8c0e64f9dab888c5d6f661caa2486af68a781be8",
+      "classifications": [
+        "exact fertility-kernel geometry",
+        "neutral arithmetic scale or identity",
+        "container indexing and sentinels",
+        "eight-neighbor toroidal adjacency geometry",
+        "deterministic toroidal gate-pair proximity matching",
+        "placement contract repair: intermediate upgrade geometry, waiting-action authority, and deterministic worker-reachable circulation",
+        "aligned fixed-phase farm geometry, shared traversal and gate inspection, and consistent wheat-invasion clearing priority"
+      ]
+    },
+    "src/AIMaximaRecon.cpp": {
+      "tokens": 155,
+      "sha256": "e1e409ea8af5e9d962d659043fb096935683c4fa232447d886a6093e1a4d2489",
+      "classifications": [
+        "coordinate and distance arithmetic",
+        "neutral arithmetic scale or identity",
+        "sentinel and invalid-id state",
+        "fixed deterministic algorithm shape",
+        "force-memory hold and bounded linear-decay arithmetic"
+      ]
+    },
+    "src/AIMaximaPlacement.cpp": {
+      "tokens": 1132,
+      "sha256": "3552099d35024e3e3cb0e9fc01237eff5329c9d40fac64321b64422e85b9c1ec",
+      "classifications": [
+        "live authorization checks using existing construction caps and level contracts",
+        "version-92 purpose-aware placement serialization fields",
+        "standalone compatibility policy defaults overridden by Maxima strategy",
+        "template and water-distance invariants",
+        "deterministic routing costs and tie-breaking",
+        "neutral arithmetic scale or identity",
+        "sentinel and invalid-id state",
+        "food-zone radius geometry and normalized role multipliers",
+        "cache hash seed and revision wraparound sentinels",
+        "exact multi-source building distance fields and wrapped neighborhood geometry",
+        "summed-area threat and protection tables with wrapped rectangle subdivision",
+        "snapshot-stable incremental intent selection, weighted origin budgets, and staged route fields",
+        "director upgrade authorization keyed by engine building type and source level",
+        "retry keys include live utility inputs; new construction has no previous capability",
+        "placement contract repair: intermediate upgrade geometry, waiting-action authority, and deterministic worker-reachable circulation",
+        "nearby productive land capacity independent of harvest amounts; fertility scale and capacity-based food staffing",
+        "food ledger claim ordering, capacity margin, and corn resource index"
+      ]
+    },
+    "src/AIMaximaRuntime.cpp": {
+      "tokens": 557,
+      "sha256": "bde35c565b5bb75d24cac258b501e82217f663fe8538550de669345216065f22",
+      "classifications": [
+        "sequenced deserialization and queued refresh of expired search gradients",
+        "serialization type identifier",
+        "engine coordinate and entity representation",
+        "neutral arithmetic scale or identity",
+        "sentinel and invalid-id state",
+        "bounded deterministic map-search batches and performance percentile windows",
+        "toroidal lookup normalization and reconciliation of queued, pending, and observed flags",
+        "transient building lifetime identity and live-only registration serialization"
+      ]
+    },
+    "src/AIMaximaTactics.cpp": {
+      "tokens": 50,
+      "sha256": "0926bec4a52ccaef82923cbc4cf503193ae290eee2b5b73a661edb322d04d812",
+      "classifications": [
+        "recomputed raid defenders and scores after threat replacement",
+        "schema-backed tactical rule defaults",
+        "coordinate and distance arithmetic",
+        "neutral arithmetic scale or identity",
+        "sentinel and invalid-id state",
+        "fixed deterministic clustering and tie-breaking",
+        "fog-safe siege target continuity classification",
+        "configurable proportional offensive muster without an absolute minimum override"
+      ]
+    },
+    "src/AIMaximaFoodLedger.cpp": {
+      "tokens": 141,
+      "sha256": "a0cab574f662538d8ecceeb13815e3ba6274582296256b80285e414d9b4e4f45",
+      "classifications": [
+        "engine fertility denominator and growth direction count",
+        "micro-wheat rate scale and percentage scale",
+        "reported coverage bound and quality scale"
+      ]
+    }
+  }
+}

@@ -1216,6 +1216,10 @@ Ysagoon 线上游戏
 仅限单人游戏和录像回放。多人游戏固定为1x速度。
 [AICortex-Description]
 Cortex向新的麦田扩张，利用前线食堂和医院支援一波又一波的战士进攻。难度中等，仍处于实验阶段。
+[AIMaxima-Description]
+Maxima 发展粮食充足的殖民地，持续侦察，并以每一名可调度的战士不停进攻。难度高。
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 无法保存战役。请检查目标文件夹是否存在、是否可写，以及是否有可用空间。
 [AICortex]

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "AI.h"
+#include "AIMaxima.h"
 #include "Player.h"
 #include "Utilities.h"
 #include "Game.h"
@@ -43,6 +44,9 @@ AI::AI(ImplementationID implementationID, Player *player)
 		break;
 		case ECONO:
 			aiImplementation=new AIEcho::Echo(new AIEcho::Econo, player);
+		break;
+		case MAXIMA:
+			aiImplementation=new AIMaxima::Maxima(player);
 		break;
 		case CORTEX:
 			aiImplementation=new AICortex(player);
@@ -130,6 +134,9 @@ bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 		case WARRUSH:
 			aiImplementation=new AIWarrush(stream, player, versionMinor);
 		break;
+		case MAXIMA:
+			aiImplementation=new AIMaxima::Maxima(stream,player,versionMinor);
+		break;
 		case CORTEX:
 			aiImplementation=new AICortex(stream, player, versionMinor);
 		break;
@@ -162,4 +169,13 @@ void AI::save(GAGCore::OutputStream *stream)
 	
 	stream->write( "AI e",  4, "signatureEnd");
 	stream->writeLeaveSection();
+}
+
+std::string AI::implementationIdentity() const
+{
+    switch(implementationID) {
+    case NUMBI:return "AINumbi";case CASTOR:return "AICastor";
+    case MAXIMA:return "AIMaxima::Maxima";case NICOWAR:return "AIEcho::Echo/NewNicowar";
+    default:return "unsupported";
+    }
 }

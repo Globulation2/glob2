@@ -1280,6 +1280,10 @@ Velocità: 1x (multigiocatore)
 Solo per giocatore singolo e replay. Le partite multigiocatore si svolgono a 1x.
 [AICortex-Description]
 Cortex si espande verso nuovi campi di grano e manda in battaglia gruppi di guerrieri, supportati da mense e ospedali vicini al fronte. Difficoltà media. Sperimentale.
+[AIMaxima-Description]
+Maxima sviluppa una colonia ben nutrita, esplora costantemente e attacca senza sosta, inviando ogni guerriero di cui può fare a meno. Difficoltà alta.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Impossibile caricare la mappa: il file è danneggiato o la sua versione è incompatibile.
 [ERROR_CANT_SAVE_CAMPAIGN]

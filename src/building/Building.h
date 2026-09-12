@@ -54,6 +54,8 @@ class Building : public BuildingUtils
 {
 public:
 	static const int MAX_COUNT=1024;
+	static constexpr int MAX_UNIT_WORKING=20;
+	Uint64 getRuntimeIdentity() const;
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
 	/// not fired yet this game; the field is `Uint32` step counter.
@@ -558,6 +560,18 @@ public:
 	/// will be changed to point to the global resources Team::teamResources instead of localResources.
 	Sint32* resources;
 	Sint32 wishedResources[MAX_NB_RESOURCES];
+	/// Diagnostics only: unit deliveries of each resource since this building
+	/// was created, loaded or started construction. Never saved or checksummed,
+	/// so it cannot affect the simulation; Maxima's telemetry reads it to
+	/// calibrate carrier cost against harvesting distance.
+	Sint32 resourceDeliveries[MAX_NB_RESOURCES];
+	/// Diagnostics only, like resourceDeliveries: round trips that started at
+	/// this building, their total duration in ticks and their total harvesting
+	/// distance in tiles from the harvested cell to the footprint edge.
+	Sint32 deliveryTripSamples;
+	Sint32 deliveryTripTicks;
+	Sint32 deliveryTripTiles;
+	void recordDeliveryTrip(Sint32 ticks, int harvestX, int harvestY);
 
 	// quality parameters
 	Sint32 hp; // (Uint16)

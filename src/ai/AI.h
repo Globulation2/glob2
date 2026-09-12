@@ -6,6 +6,7 @@
 #include <SDL_rwops.h>
 
 #include <memory>
+#include <string>
 namespace GAGCore
 {
 	class InputStream;
@@ -37,6 +38,8 @@ public:
 		NICOWAR=5,
 		///Reference to AICortex (direct AIImplementation binding)
 		CORTEX=6,
+		///Standalone Maxima strategy AI.
+		MAXIMA=7,
 
 		SIZE
 	};
@@ -52,6 +55,7 @@ public:
 
 	Player *player;
 
+	std::string implementationIdentity() const;
 	bool load(GAGCore::InputStream *stream, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);
 
