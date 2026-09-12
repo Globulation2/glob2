@@ -185,32 +185,40 @@ static void simulateRandomMap(GenerationContext &context, int smooth, double bas
 	*finalGrass = ((double)grassCount) / ((double)totalCount);
 }
 
-static bool terrain(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+// The share of water, sand and grass a map is asked for, and what a patchwork actually ends
+// up with once smoothed.
+struct TerrainMix
 {
-	Map &map = game.map;
-	const int w = map.getW(), h = map.getH();
-	// Same reasoning as simulateRandomMap's rng: every draw below names the "terrain" stream,
-	// so look it up once rather than on every one of the many draws per tile in the loops below.
-	std::mt19937 &rng = context.stream("terrain");
+	double water, sand, grass;
+};
 
-	int waterRatio = options.water;
-	int sandRatio = options.sand;
-	int grassRatio = options.grass;
-	int totalRatio = waterRatio + sandRatio + grassRatio;
-	int smooth = options.smoothing;
-	double baseWater, baseSand, baseGrass;
+static void countTerrain(const Map &map, int &waterCount, int &sandCount, int &grassCount)
+{
+	waterCount = sandCount = grassCount = 0;
+	for (int y = 0; y < map.getH(); y++)
+		for (int x = 0; x < map.getW(); x++)
+		{
+			switch (map.getUMTerrain(x, y))
+			{
+			case WATER:
+				waterCount++;
+				continue;
+			case SAND:
+				sandCount++;
+				continue;
+			case GRASS:
+				grassCount++;
+				continue;
+			}
+		}
+}
 
-	if (totalRatio == 0)
-	{
-		baseWater = baseSand = baseGrass = 1.0 / 3.0;
-	}
-	else
-	{
-		baseWater = (float)waterRatio / (float)totalRatio;
-		baseSand = (float)sandRatio / (float)totalRatio;
-		baseGrass = (float)grassRatio / (float)totalRatio;
-	}
-	// Sorry, the equation is too complex for me. We use a numeric approach:
+// Smoothing eats into whichever terrain is rarest, so the shares the patchwork is painted with
+// are not the shares the map should end up with. There is no closed form; this searches for
+// painting shares whose simulated result lands on the requested ones.
+static TerrainMix fitTerrainMix(GenerationContext &context, const TerrainMix &base, int smooth)
+{
+	const double baseWater = base.water, baseSand = base.sand, baseGrass = base.grass;
 	double alphaWater = baseWater;
 	double alphaSand = baseSand;
 	double alphaGrass = baseGrass;
@@ -311,14 +319,16 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 		}
 	}
 
-	double simWater, simSand, simGrass;
-	simulateRandomMap(context, smooth, alphaWater, alphaSand, alphaGrass, &simWater, &simSand,
-					  &simGrass);
+	return {alphaWater, alphaSand, alphaGrass};
+}
 
-	totalRatio = 0x7FFF;
-	waterRatio = (int)(((double)alphaWater) * ((double)totalRatio));
-	sandRatio = (int)(((double)alphaSand) * ((double)totalRatio));
-	grassRatio = (int)(((double)alphaGrass) * ((double)totalRatio));
+// Every tile draws its terrain independently, in the fitted shares.
+static void paintPatchwork(Map &map, std::mt19937 &rng, const TerrainMix &mix)
+{
+	int totalRatio = 0x7FFF;
+	int waterRatio = (int)(((double)mix.water) * ((double)totalRatio));
+	int sandRatio = (int)(((double)mix.sand) * ((double)totalRatio));
+	int grassRatio = (int)(((double)mix.grass) * ((double)totalRatio));
 	if (waterRatio < 0)
 		waterRatio = 0;
 	if (sandRatio < 0)
@@ -327,9 +337,8 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 		grassRatio = 0;
 	totalRatio = waterRatio + sandRatio + grassRatio;
 
-	// First, we create a fully random patchwork:
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
+	for (int y = 0; y < map.getH(); y++)
+		for (int x = 0; x < map.getW(); x++)
 		{
 			int r = rng() % totalRatio;
 			r -= waterRatio;
@@ -352,59 +361,31 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 			}
 			assert(false); // Want's to sing ?
 		}
+}
 
-	// What's finally in ?
-	int waterCount = 0;
-	int sandCount = 0;
-	int grassCount = 0;
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-		{
-			switch (map.getUMTerrain(x, y))
-			{
-			case WATER:
-				waterCount++;
-				continue;
-			case SAND:
-				sandCount++;
-				continue;
-			case GRASS:
-				grassCount++;
-				continue;
-			}
-		}
-	double totalCount = (double)(waterCount + sandCount + grassCount);
+// The pairs of opposite neighbours a smoothing pass looks across: one draw picks the first or
+// the second of each pair of directions, in the order the passes have always used.
+static const int kSmoothingDirections[8][2] = {{1, 0}, {0, 1}, {1, 1}, {1, -1},
+											   {2, 0}, {0, 2}, {2, 2}, {2, -2}};
 
+// Each pass makes a tile take the terrain of two matching opposite neighbours, one direction
+// after another, but a terrain already over its requested share is allowed to spread only
+// rarely, the more so the further over it is.
+static void smoothPatchwork(Map &map, std::mt19937 &rng, int smooth, const TerrainMix &base)
+{
+	const int w = map.getW(), h = map.getH();
 	for (int i = 0; i < smooth; i++)
 	{
-		// What's in now?
-		waterCount = 0;
-		sandCount = 0;
-		grassCount = 0;
-		for (int y = 0; y < h; y++)
-			for (int x = 0; x < w; x++)
-			{
-				switch (map.getUMTerrain(x, y))
-				{
-				case WATER:
-					waterCount++;
-					continue;
-				case SAND:
-					sandCount++;
-					continue;
-				case GRASS:
-					grassCount++;
-					continue;
-				}
-			}
+		int waterCount, sandCount, grassCount;
+		countTerrain(map, waterCount, sandCount, grassCount);
 		double totalRatioCount = (double)(waterCount + sandCount + grassCount);
 		double waterRatioCount = waterCount / totalRatioCount;
 		double sandRatioCount = sandCount / totalRatioCount;
 		double grassRatioCount = grassCount / totalRatioCount;
 
-		double errWaterRatioCount = waterRatioCount - baseWater;
-		double errSandRatioCount = sandRatioCount - baseSand;
-		double errGrassRatioCount = grassRatioCount - baseGrass;
+		double errWaterRatioCount = waterRatioCount - base.water;
+		double errSandRatioCount = sandRatioCount - base.sand;
+		double errGrassRatioCount = grassRatioCount - base.grass;
 
 		Uint32 allowed[3];
 		if (errWaterRatioCount > 0)
@@ -420,10 +401,6 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 		else
 			allowed[2] = 0;
 
-		assert(allowed[0] <= (Uint32)0xFFFFFFFF);
-		assert(allowed[1] <= (Uint32)0xFFFFFFFF);
-		assert(allowed[2] <= (Uint32)0xFFFFFFFF);
-
 		if (i == 0)
 		{
 			allowed[0] = 0;
@@ -433,114 +410,28 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 
 		for (int y = 0; y < h; y++)
 			for (int x = 0; x < w; x++)
-			{
-				if (rng() & 4)
+				for (int pair = 0; pair < 4; pair++)
 				{
-					int a = map.getUMTerrain(x + 1, y);
-					int b = map.getUMTerrain(x - 1, y);
+					const int d = (rng() & 4) ? 2 * pair : 2 * pair + 1;
+					const int dx = kSmoothingDirections[d][0], dy = kSmoothingDirections[d][1];
+					const int a = map.getUMTerrain(x + dx, y + dy);
+					const int b = map.getUMTerrain(x - dx, y - dy);
 					if ((a == b) && (allowed[a] <= rng()))
 					{
 						map.setUMTerrain(x, y, (TerrainType)a);
-						continue;
+						break;
 					}
 				}
-				else
-				{
-					int a = map.getUMTerrain(x, y - 1);
-					int b = map.getUMTerrain(x, y + 1);
-					if ((a == b) && (allowed[a] <= rng()))
-					{
-						map.setUMTerrain(x, y, (TerrainType)a);
-						continue;
-					}
-				}
-				if (rng() & 4)
-				{
-					int a = map.getUMTerrain(x + 1, y + 1);
-					int b = map.getUMTerrain(x - 1, y - 1);
-					if ((a == b) && (allowed[a] <= rng()))
-					{
-						map.setUMTerrain(x, y, (TerrainType)a);
-						continue;
-					}
-				}
-				else
-				{
-					int a = map.getUMTerrain(x + 1, y - 1);
-					int b = map.getUMTerrain(x - 1, y + 1);
-					if ((a == b) && (allowed[a] <= rng()))
-					{
-						map.setUMTerrain(x, y, (TerrainType)a);
-						continue;
-					}
-				}
-				if (rng() & 4)
-				{
-					int a = map.getUMTerrain(x + 2, y);
-					int b = map.getUMTerrain(x - 2, y);
-					if ((a == b) && (allowed[a] <= rng()))
-					{
-						map.setUMTerrain(x, y, (TerrainType)a);
-						continue;
-					}
-				}
-				else
-				{
-					int a = map.getUMTerrain(x, y - 2);
-					int b = map.getUMTerrain(x, y + 2);
-					if ((a == b) && (allowed[a] <= rng()))
-					{
-						map.setUMTerrain(x, y, (TerrainType)a);
-						continue;
-					}
-				}
-				if (rng() & 4)
-				{
-					int a = map.getUMTerrain(x + 2, y + 2);
-					int b = map.getUMTerrain(x - 2, y - 2);
-					if ((a == b) && (allowed[a] <= rng()))
-					{
-						map.setUMTerrain(x, y, (TerrainType)a);
-						continue;
-					}
-				}
-				else
-				{
-					int a = map.getUMTerrain(x + 2, y - 2);
-					int b = map.getUMTerrain(x - 2, y + 2);
-					if ((a == b) && (allowed[a] <= rng()))
-					{
-						map.setUMTerrain(x, y, (TerrainType)a);
-						continue;
-					}
-				}
-			}
 	}
-	// What's finally in ?
-	waterCount = 0;
-	sandCount = 0;
-	grassCount = 0;
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-		{
-			switch (map.getUMTerrain(x, y))
-			{
-			case WATER:
-				waterCount++;
-				continue;
-			case SAND:
-				sandCount++;
-				continue;
-			case GRASS:
-				grassCount++;
-				continue;
-			}
-		}
-	totalCount = (double)(waterCount + sandCount + grassCount);
+}
 
-	map.controlSand();
-
-	// Now, we have to find suitable places for teams:
+// Seat every colony on grass, each a colony's share of the grass from the others, and give
+// each a meadow unless the colonies are to start in the shattered terrain itself. The counts
+// are the map's before sand control ran.
+static bool placeColonies(Map &map, GenerationContext &context,
+						  const ShatteredCoastOptions &options, int grassCount, double totalCount)
+{
+	const int w = map.getW(), h = map.getH();
 	int nbTeams = context.request.nbTeams;
 	int minDistSquare = (int)((double)((double)w * (double)h * (double)grassCount) /
 							  (double)((double)nbTeams * (double)totalCount));
@@ -633,18 +524,38 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 				map.setUMTerrain(maxX + dx, maxY + dy, GRASS);
 	}
 
-	// Let's add some green space for teams: a meadow around every colony, unless the colonies are
-	// to start in the shattered terrain itself.
 	int squareSize = 5 + (int)(sqrt((double)minDistSquare) / 4.5);
 	for (int team = 0; team < nbTeams && options.colony_meadows; team++)
 	{
 		map.setUMatPos(context.bootX[team] + 2, context.bootY[team] + 0, GRASS, squareSize);
 		map.setUMatPos(context.bootX[team] + 2, context.bootY[team] + 2, GRASS, squareSize);
 	}
+	return true;
+}
+
+static bool terrain(Game &game, GenerationContext &context, const ShatteredCoastOptions &options)
+{
+	Map &map = game.map;
+	// Every draw below names the "terrain" stream; one lookup serves all of them.
+	std::mt19937 &rng = context.stream("terrain");
+
+	const int totalRatio = options.water + options.sand + options.grass;
+	TerrainMix base{1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0};
+	if (totalRatio != 0)
+		base = {(float)options.water / (float)totalRatio, (float)options.sand / (float)totalRatio,
+				(float)options.grass / (float)totalRatio};
+	const TerrainMix mix = fitTerrainMix(context, base, options.smoothing);
+	paintPatchwork(map, rng, mix);
+	smoothPatchwork(map, rng, options.smoothing, base);
+	int waterCount, sandCount, grassCount;
+	countTerrain(map, waterCount, sandCount, grassCount);
+	const double totalCount = (double)(waterCount + sandCount + grassCount);
 
 	map.controlSand();
+	if (!placeColonies(map, context, options, grassCount, totalCount))
+		return false;
+	map.controlSand();
 	map.rebuildTerrain();
-
 	return true;
 }
 
