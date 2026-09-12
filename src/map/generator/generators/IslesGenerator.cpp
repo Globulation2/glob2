@@ -17,65 +17,81 @@
 #include <cmath>
 using namespace MapGeneration;
 #include "IslesGenerator.h"
-static bool generate(Game &game, GenerationContext &context)
+// What the stages of a roll hand each other: the area grid and the next free area number, each
+// colony's seed point, weight and area, the spacing the dispersion found, the height field the
+// islands and bridges are raised in, the last distance field, and the bridges' tiles and area.
+struct Layout
 {
-	context.stage = "layout";
-	const IslesOptions options(context.request);
-	const int islandSize = options.island_size, bridgeWidth = options.bridge_width,
-			  bridgeRadius = bridgeWidth - 2;
-	game.map.makeHomogenMap(context.request.terrainType);
-	for (int i = 0; i < context.request.nbTeams; ++i)
-		game.addTeam();
-
+	std::vector<int> grid;
 	int areaNumber = 1;
-	std::vector<int> grid(game.map.getW() * game.map.getH(), 0);
-
-	// Do the starting locations of the teams
 	std::vector<MapGeneratorPoint> teamPoints;
-	std::vector<int> teamWeights;
-	std::vector<int> teamAreaNumbers;
+	std::vector<int> teamWeights, teamAreaNumbers;
+	int minDist = 0;
+	std::vector<int> heightmap, distances;
+	std::vector<MapGeneratorPoint> connectorPoints;
+	int connectorArea = 0;
+	explicit Layout(const Map &map)
+		: grid(size_t(map.getW()) * map.getH(), 0), heightmap(size_t(map.getW()) * map.getH(), 50)
+	{
+	}
+};
+
+// Spread the colonies apart and give each an oval island of its own.
+static void layoutIslands(Game &game, GenerationContext &context, const IslesOptions &options,
+						  Layout &L)
+{
+	const int islandSize = options.island_size;
+	// Do the starting locations of the teams
 	for (int i = 0; i < context.request.nbTeams; ++i)
 	{
-		teamPoints.push_back(MapGeneratorPoint(0, 0));
-		teamWeights.push_back(1);
-		teamAreaNumbers.push_back(areaNumber);
-		areaNumber += 1;
+		L.teamPoints.push_back(MapGeneratorPoint(0, 0));
+		L.teamWeights.push_back(1);
+		L.teamAreaNumbers.push_back(L.areaNumber);
+		L.areaNumber += 1;
 	}
-	int minDist = splitUpPoints(game.map, context, grid, 0, teamPoints, teamWeights);
+	L.minDist = splitUpPoints(game.map, context, L.grid, 0, L.teamPoints, L.teamWeights);
 
 	// Construct the areas for the teams
 	for (int i = 0; i < context.request.nbTeams; ++i)
 	{
-		createOval(game.map, grid, teamAreaNumbers[i], teamPoints[i].x, teamPoints[i].y,
-				   minDist * islandSize / 100, minDist * islandSize / 100);
+		createOval(game.map, L.grid, L.teamAreaNumbers[i], L.teamPoints[i].x, L.teamPoints[i].y,
+				   L.minDist * islandSize / 100, L.minDist * islandSize / 100);
 	}
+}
 
-	// Construct a heightmap
-	std::vector<int> heightmap(game.map.getW() * game.map.getH(), 50);
+// Raise the islands in the height field, by distance from their edges.
+static void raiseIslands(Game &game, Layout &L)
+{
+	// Construct a L.heightmap
 	std::vector<MapGeneratorPoint> teamAreaPoints;
-	getAllOtherPoints(game.map, grid, 0, teamAreaPoints);
+	getAllOtherPoints(game.map, L.grid, 0, teamAreaPoints);
 	std::vector<MapGeneratorPoint> obstacles;
 
-	std::vector<int> distances;
-	computeDistances(game.map, teamAreaPoints, obstacles, distances);
+	computeDistances(game.map, teamAreaPoints, obstacles, L.distances);
 
 	// Stamp out the team areas
 	for (int x = 0; x < game.map.getW(); ++x)
 	{
 		for (int y = 0; y < game.map.getH(); ++y)
 		{
-			int d = distances[y * game.map.getW() + x];
+			int d = L.distances[y * game.map.getW() + x];
 			if (d > 1 && d <= 11)
-				heightmap[y * game.map.getW() + x] += (11 - d) * 10;
+				L.heightmap[y * game.map.getW() + x] += (11 - d) * 10;
 			else if (d == 1)
-				heightmap[y * game.map.getW() + x] += 100;
+				L.heightmap[y * game.map.getW() + x] += 100;
 		}
 	}
+}
 
+// Join every pair of islands whose straight line crosses no third island with a land bridge.
+static void buildBridges(Game &game, GenerationContext &context, const IslesOptions &options,
+						 Layout &L)
+{
+	const int bridgeWidth = options.bridge_width, bridgeRadius = bridgeWidth - 2;
 	// Connect each teams area to each other players area
-	std::vector<MapGeneratorPoint> connectorPoints;
-	int connectorArea = areaNumber;
-	areaNumber += 1;
+	L.connectorArea = L.areaNumber;
+	L.areaNumber += 1;
+	std::vector<MapGeneratorPoint> obstacles;
 	for (int i = 0; i < context.request.nbTeams; ++i)
 	{
 		for (int j = i + 1; j < context.request.nbTeams; ++j)
@@ -83,8 +99,8 @@ static bool generate(Game &game, GenerationContext &context)
 			// Choose one random point from each players area
 			std::vector<MapGeneratorPoint> teamI;
 			std::vector<MapGeneratorPoint> teamJ;
-			getAllPoints(game.map, grid, teamAreaNumbers[i], teamI);
-			getAllPoints(game.map, grid, teamAreaNumbers[j], teamJ);
+			getAllPoints(game.map, L.grid, L.teamAreaNumbers[i], teamI);
+			getAllPoints(game.map, L.grid, L.teamAreaNumbers[j], teamJ);
 			chooseRandomPoints(game.map, context, teamI, 1);
 			chooseRandomPoints(game.map, context, teamJ, 1);
 
@@ -101,9 +117,9 @@ static bool generate(Game &game, GenerationContext &context)
 					for (int y = -bridgeRadius; y <= bridgeRadius && !failed; ++y)
 					{
 						int ny = game.map.normalizeY(linePoints[p].y + y);
-						int g = grid[ny * game.map.getW() + nx];
-						if (g != 0 && g != teamAreaNumbers[i] && g != teamAreaNumbers[j] &&
-							g != connectorArea)
+						int g = L.grid[ny * game.map.getW() + nx];
+						if (g != 0 && g != L.teamAreaNumbers[i] && g != L.teamAreaNumbers[j] &&
+							g != L.connectorArea)
 						{
 							failed = true;
 						}
@@ -116,17 +132,17 @@ static bool generate(Game &game, GenerationContext &context)
 			{
 				for (unsigned int p = 0; p < linePoints.size(); ++p)
 				{
-					connectorPoints.push_back(linePoints[p]);
+					L.connectorPoints.push_back(linePoints[p]);
 					for (int x = -bridgeRadius; x <= bridgeRadius; ++x)
 					{
 						int nx = game.map.normalizeX(linePoints[p].x + x);
 						for (int y = -bridgeRadius; y <= bridgeRadius; ++y)
 						{
 							int ny = game.map.normalizeY(linePoints[p].y + y);
-							int d = distances[ny * game.map.getW() + nx];
+							int d = L.distances[ny * game.map.getW() + nx];
 							if (d > bridgeWidth + 1)
 							{
-								grid[ny * game.map.getW() + nx] = connectorArea;
+								L.grid[ny * game.map.getW() + nx] = L.connectorArea;
 							}
 						}
 					}
@@ -134,28 +150,35 @@ static bool generate(Game &game, GenerationContext &context)
 			}
 		}
 	}
-	computeDistances(game.map, connectorPoints, obstacles, distances);
+	computeDistances(game.map, L.connectorPoints, obstacles, L.distances);
+}
 
+// Raise the bridges, add noise, and turn the height field into water, sand and grass.
+static void paintTerrain(Game &game, GenerationContext &context, const IslesOptions &options,
+						 Layout &L)
+{
+	const int bridgeWidth = options.bridge_width;
 	// Stamp out the connectors
 	for (int x = 0; x < game.map.getW(); ++x)
 	{
 		for (int y = 0; y < game.map.getH(); ++y)
 		{
-			int d = distances[y * game.map.getW() + x];
+			int d = L.distances[y * game.map.getW() + x];
 			if (d > 1 && d <= bridgeWidth)
-				heightmap[y * game.map.getW() + x] += (bridgeWidth - d) * (100 / (bridgeWidth - 1));
+				L.heightmap[y * game.map.getW() + x] +=
+					(bridgeWidth - d) * (100 / (bridgeWidth - 1));
 			else if (d == 1)
-				heightmap[y * game.map.getW() + x] += 100;
+				L.heightmap[y * game.map.getW() + x] += 100;
 		}
 	}
 
-	// Use the heightmap to put in water, grass, and sand
-	adjustHeightmapFromPerlinNoise(game.map, context, heightmap, 45);
+	// Use the L.heightmap to put in water, grass, and sand
+	adjustHeightmapFromPerlinNoise(game.map, context, L.heightmap, 45);
 	for (int x = 0; x < game.map.getW(); ++x)
 	{
 		for (int y = 0; y < game.map.getH(); ++y)
 		{
-			int total_height = heightmap[y * game.map.getW() + x];
+			int total_height = L.heightmap[y * game.map.getW() + x];
 			if (total_height < 90)
 				game.map.setUMatPos(x, y, WATER, 1);
 			else if (options.sandy_beaches && total_height > 95 && total_height < 105)
@@ -165,32 +188,39 @@ static bool generate(Game &game, GenerationContext &context)
 		}
 	}
 	game.map.controlSand();
+}
 
-	// Reset the grid, and recompute within the boundaries of the various islands
+// Re-divide the land between the colonies and give each an algae patch just off its coast.
+static bool placeAlgae(Game &game, GenerationContext &context, const IslesOptions &options,
+					   Layout &L)
+{
+	const int bridgeWidth = options.bridge_width;
+	// Reset the L.grid, and recompute within the boundaries of the various islands
 	for (int x = 0; x < game.map.getW(); ++x)
 	{
 		for (int y = 0; y < game.map.getH(); ++y)
 		{
-			if (grid[y * game.map.getW() + x] != connectorArea)
-				grid[y * game.map.getW() + x] = 0;
+			if (L.grid[y * game.map.getW() + x] != L.connectorArea)
+				L.grid[y * game.map.getW() + x] = 0;
 		}
 	}
-	splitUpArea(game.map, context, grid, 0, teamPoints, teamWeights, teamAreaNumbers, true);
+	splitUpArea(game.map, context, L.grid, 0, L.teamPoints, L.teamWeights, L.teamAreaNumbers, true);
 
-	std::vector<int> connectorDistances = distances;
+	std::vector<int> connectorDistances = L.distances;
+	std::vector<MapGeneratorPoint> obstacles;
 
 	// For each team, find a point just off the coast and place algae there
 	for (int i = 0; i < context.request.nbTeams; ++i)
 	{
 		std::vector<MapGeneratorPoint> sources;
-		getAllPoints(game.map, grid, teamAreaNumbers[i], sources);
-		computeDistances(game.map, sources, obstacles, distances);
+		getAllPoints(game.map, L.grid, L.teamAreaNumbers[i], sources);
+		computeDistances(game.map, sources, obstacles, L.distances);
 		std::vector<MapGeneratorPoint> possible;
 		for (int x = 0; x < game.map.getW(); ++x)
 		{
 			for (int y = 0; y < game.map.getH(); ++y)
 			{
-				int d = distances[y * game.map.getW() + x];
+				int d = L.distances[y * game.map.getW() + x];
 				int d2 = connectorDistances[y * game.map.getW() + x];
 				if (d == 8 && (!options.land_bridges || d2 > bridgeWidth))
 				{
@@ -206,8 +236,24 @@ static bool generate(Game &game, GenerationContext &context)
 		// A five by five patch of algae at the default amount.
 		setScaledResource(game.map, possible[r].x, possible[r].y, ALGA, 5, options.algae);
 	}
+	return true;
+}
 
-	if (!divideUpPlayerLands(game, context, grid, teamAreaNumbers, areaNumber,
+static bool generate(Game &game, GenerationContext &context)
+{
+	context.stage = "layout";
+	const IslesOptions options(context.request);
+	game.map.makeHomogenMap(context.request.terrainType);
+	for (int i = 0; i < context.request.nbTeams; ++i)
+		game.addTeam();
+	Layout L(game.map);
+	layoutIslands(game, context, options, L);
+	raiseIslands(game, L);
+	buildBridges(game, context, options, L);
+	paintTerrain(game, context, options, L);
+	if (!placeAlgae(game, context, options, L))
+		return false;
+	if (!divideUpPlayerLands(game, context, L.grid, L.teamAreaNumbers, L.areaNumber,
 							 {options.wheat, options.wood, options.stone}))
 	{
 		return false;
