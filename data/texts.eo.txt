@@ -66,10 +66,10 @@ Nenio
 Numbi Etendas singarde kaj rapide. Ĝi facilas.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity ne atakas, sed konstruas monstrajn fundojn kaj avide konvertigas globulojn. Ĝi facilas.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo ne atakas, sed konstruas monstrajn fundojn kaj avide konvertigas globulojn. Ĝi facilas.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush atakas rapide kaj sovaĝe, kaj ofte puŝas denendanta ludanto al la bordo de sia ludo. Ĝi mezfacilas.
 [AIWarrush]
@@ -479,7 +479,7 @@ maldekstra vindozklavo
 [left]
 maldekstrenklavo
 [Leo: nur ein erster Test]
-test
+testo
 [level]
 Nivelo
 [levels]
@@ -607,9 +607,9 @@ da kiuj, estas
 [ok]
 Bone!
 [old islands terrain]
-Insuloj, Hazarde
+Kruta Insularo
 [old random terrain]
-Tereno, Hazarde
+Fragmentita Marbordo
 [on press]
 Premo
 [On the spot]
@@ -1217,7 +1217,7 @@ Rapido: 1x (plurludanta)
 [game speed help]
 Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
 [AICortex-Description]
-Cortex - Eksperimenta tritavola artefarita intelekto. Ankoraŭ evoluigata.
+Cortex disetendiĝas direkte al novaj tritikkampoj kaj sendas grupojn de militistoj en batalon, apogita fare de gastejoj kaj hospitaloj proksime de la frontlinio. Meza malfacileco. Eksperimenta.
 [ERROR_CANT_SAVE_CAMPAIGN]
 Ne eblis konservi la kampanjon. Kontrolu, ke la cela dosierujo ekzistas, estas skribebla kaj havas liberan spacon.
 [AICortex]
@@ -1226,3 +1226,553 @@ Cortex
 Interne: %0
 [Units still working: %0]
 Ankoraŭ laborantaj: %0
+[2 vs 2]
+2 kontraŭ 2
+[AI strategy & counterplay]
+AI-strategio kaj kontraŭludo
+[AICastor-Profile]
+Strategio: Vastiĝas singarde kaj funkcias bone sur mapoj kun malmultaj rimedoj.\n\nFortoj: Limigita ekspansio estas efika en ludoj kun malabundaj rimedoj.\n\nProponita kontraŭludo: Okupu teritorion frue. Ne supozu, ke manko de rimedoj malfortigos ĉi tiun AI.
+[AICastor-Summary]
+Singarda ekspansio; funkcias bone kun malabundaj rimedoj.
+[AICortex-Profile]
+Strategio: Administras manĝaĵojn, disetendiĝas al novaj tritikaj kampoj kaj kunvenas sinsekvajn grupojn de militistoj. Gastejoj kaj hospitaloj proksime de la frontlinio subtenas atakojn malproksime de la bazo.\n\nFortoj: sendas plifortigojn kune, konservas militan premon kaj reagas al manĝaĵmalabundoj.\n\nProponita kontraŭludo: Batalu por kontrolo de novaj tritikaj kampoj kaj ataku ĝiajn subtenajn konstruaĵojn proksime de la frontlinio. Ataku antaŭ ol ĝiaj grupoj de militistoj estas pretaj.\n\nEksperimenta AI. Meza malfacileco; la taktikaj sugestoj ne estas taksoj bazitaj sur komparaj testoj.
+[AICortex-Summary]
+Kresko laŭ manĝaĵprovizo kaj subtenataj atakondoj.
+[AINicowar-Profile]
+Strategio: Vastiĝas rapide kaj atakas kontraŭulojn kun grandegaj armeoj.\n\nFortoj: Rapida ekspansio subtenas agresemajn militajn atakojn.\n\nProponita kontraŭludo: Malhelpu ĝian ekspansion. Uzu terenon por redukti la nombron da malamikaj trupoj, kiuj povas batali samtempe.
+[AINicowar-Summary]
+Vastiĝas rapide kaj konstruas grandajn armeojn por agresemaj atakoj.
+[AINone-Profile]
+Strategio: La AI donas neniujn ordonojn.\n\nFortoj: Antaŭvidebla, neaktiva kontraŭulo por eksperimentoj.\n\nMalfortoj: Nek vastiĝas nek adaptiĝas.
+[AINone-Summary]
+Neaktiva kolonio por eksperimentoj.
+[AINumbi-Profile]
+Strategio: Vastiĝas rapide sed malgrandskale. Pli facila kontraŭulo por praktikado de kolonia administrado.\n\nFortoj: Permesas vin lerni kaj ekonomian administradon kaj batalon.\n\nProponita kontraŭludo: Disvolvu pli fortan ekonomion kaj trejnu vian armeon antaŭ ol ataki.
+[AINumbi-Summary]
+Rapida ekspansio en malgranda skalo.
+[AIEcono-Profile]
+Strategio: Ne atakas, sed konstruas enormajn bazojn kaj aktive konvertas malamikunuojn al sia propra flanko.\n\nFortoj: Vastiĝo kaj unuokonverto minacas kontraŭulojn sen rektaj atakoj.\n\nProponita kontraŭludo: Disvolvu vian kolonion frue kaj evitu sendi unuojn kie la malamiko povas konverti ilin.
+[AIEcono-Summary]
+Grandegaj bazoj kaj konvertiĝo anstataŭ atakoj.
+[AIWarrush-Profile]
+Strategio: Atakas frue kaj forte, antaŭ ol kontraŭuloj finas prepariĝi.\n\nFortoj: Ekspluatas nedefenditan ekspansion kaj malrapidan armean preparon.\n\nProponita kontraŭludo: Travivu la unuan atakon konservante vian ekonomion, poste kontraŭataku.
+[AIWarrush-Summary]
+Rapidaj atakoj, kiuj testas viajn fruajn defendojn.
+[Algae]
+algo
+[Alliances]
+Aliancoj
+[Beach size]
+Grandeco de la plaĝo
+[Blue]
+Blua
+[Brown]
+Bruna
+[Built-in maps]
+Enkonstruitaj mapoj
+[Can change in game]
+Povas ŝanĝiĝi en la ludo
+[Closed]
+Fermita
+[Colonies]
+Kolonioj
+[Colony]
+Kolonio
+[Concrete islands]
+Apartaj insuloj
+[Conquest only]
+Konkero nur
+[Conquest or prestige]
+Konkero aŭ prestiĝo
+[Could not launch this map. Your setup is retained; try again.]
+Ne eblis lanĉi ĉi tiun mapon. Via aranĝo estas konservita; provu denove.
+[Could not load this map. Choose another map or retry.]
+Ne eblis ŝargi ĉi tiun mapon. Elektu alian mapon aŭ reprovu.
+[Crater lakes]
+Krateraj lagoj
+[Custom]
+Propra
+[Custom teams]
+Propraj teamoj
+[Cyan]
+Cejana
+[Desert weight]
+Dezerta pezo
+[Easy]
+Facila
+[Explore as you play]
+Esploru dum vi ludas
+[Extra colony assignments are retained for larger maps.]
+Asignoj de pliaj kolonioj estas konservataj por pli grandaj mapoj.
+[Extra islands]
+Ekstraj insuloj
+[FFA]
+Ĉiuj kontraŭ ĉiuj
+[Fruit]
+Frukto
+[Game Rules]
+Ludaj Reguloj
+[Game speed]
+Ludrapideco
+[Generate & play]
+Generu kaj ludu
+[Give at least one terrain type a nonzero weight.]
+Donu almenaŭ al unu terentipo nenulan pezon.
+[Grass weight]
+Pezo de herbo
+[Gray]
+Griza
+[Green]
+Verda
+[Hard]
+Malfacila
+[Height]
+Alteco
+[Invalid colony count.]
+Nevalida nombro de kolonioj.
+[Island size]
+Grando de insulo
+[Islands]
+Insuloj
+[Isles]
+Insuletoj
+[Lake density]
+Laga denseco
+[Landscape]
+Pejzaĝo
+[Last colony standing]
+Lasta kolonio staranta
+[Layout]
+Aranĝo
+[Locked teams]
+Ŝlositaj teamoj
+[Magenta]
+Magenta
+[Map]
+Mapo
+[Map knowledge]
+Scio pri la mapo
+[Match finished]
+Matĉo finiĝis
+[Medium]
+Meza
+[Medium - Experimental]
+Meza - Eksperimenta
+[No AI orders]
+Neniuj AI-komandoj
+[Old islands]
+Kruta Insularo
+[Old random]
+Fragmentita Marbordo
+[Open at least one colony to start a match.]
+Malfermu almenaŭ unu kolonion por komenci matĉon.
+[Open book]
+Malkaŝita mondo
+[Pink]
+Rozkolora
+[Play this map]
+Ludu ĉi tiun mapon
+[Players & Teams]
+Ludantoj kaj Teamoj
+[Premade maps]
+Antaŭfaritaj mapoj
+[Preview ready. Start plays this exact map.]
+Antaŭrigardo preta. Komenci la ludon uzas ĉi tiun precizan mapon.
+[Purple]
+Purpura
+[Quick clash]
+Rapida batalo
+[Random map]
+Hazarda mapo
+[Red]
+Ruĝa
+[Repeat landscape]
+Ripetu pejzaĝon
+[Resources]
+Rimedoj
+[Restore standard rules]
+Restarigu normajn regulojn
+[Revealed terrain does not reveal all enemy activity.]
+Rivelita tereno ne malkaŝas ĉiun malamikan agadon.
+[River]
+Rivero
+[River width]
+Rivera larĝo
+[Sand weight]
+Sablopezo
+[Select a valid map.]
+Elektu validan mapon.
+[Shared control needs a free controller slot (maximum 12).]
+Komuna regado bezonas liberan lokon por homa aŭ AI-ludanto (maksimume 12).
+[Smoothing]
+Glatigado
+[Standard]
+Norma
+[Start game]
+Komencu ludon
+[Starting workers]
+Komencaj laboristoj
+[Starting workers: Game Rules tab.]
+Komencaj laboristoj: langeto de Ludaj Reguloj.
+[Swamp]
+Marĉo
+[Team]
+Teamo
+[Terrain]
+Tereno
+[Terrain revealed]
+Tereno malkaŝita
+[Try a ruleset, then make it your own.]
+Provu regularon, tiam faru ĝin via.
+[Victory]
+Venko
+[Watch game]
+Rigardu ludon
+[Water weight]
+Akva pezo
+[White]
+Blanka
+[Width]
+Larĝo
+[Yellow]
+Flava
+[You]
+Vi
+[You + AI]
+Vi + AI
+[You and the AI both issue orders. Uses two controller slots.]
+Vi kaj la AI ambaŭ donas ordonojn. Uzas du ludantlokojn.
+[You vs all]
+Vi kontraŭ ĉiuj
+[Your maps]
+Viaj mapoj
+[colonies]
+kolonioj
+[* Changed from standard.]
+* Ŝanĝita de normo.
+[World & diplomacy]
+Mondo & diplomatio
+[Starting conditions & pace]
+Komencaj kondiĉoj kaj ritmo
+[Inactive]
+Neaktiva
+[8 workers / 2x speed]
+8 laboristoj / 2x rapido
+[Changes the pace of the whole simulation.]
+Ŝanĝas la ritmon de la tuta simulado.
+[Choose whether teams can change during the match.]
+Elektu ĉu teamoj povas ŝanĝiĝi dum la matĉo.
+[Classic colony building]
+Tradicia kolonia evoluo
+[Dimensions and colony count are set above.]
+Dimensioj kaj kolonikalkulo estas fiksitaj supre.
+[Generate & watch]
+Generu kaj spektu
+[Info]
+Info
+[Map-defined starting units]
+Map-difinitaj startunuoj
+[No maps in this library.]
+Neniuj mapoj en ĉi tiu biblioteko.
+[Premade maps retain their authored starting units.]
+Antaŭfaritaj mapoj konservas la komencajn unuojn elektitajn de sia aŭtoro.
+[Premade: only speed changes (2x)]
+Antaŭfarita mapo: nur la rapido ŝanĝiĝas (2x)
+[Start with terrain known]
+Komencu kun tereno konata
+[This colony will not join the match.]
+Ĉi tiu kolonio ne aliĝos al la matĉo.
+[This landscape uses a fixed terrain recipe.]
+Ĉi tiu pejzaĝo uzas recepton pri fiksa tereno.
+[This landscape uses fixed resource placement.]
+Ĉi tiu pejzaĝo uzas fiksan rimedlokigon.
+[Win through conquest]
+Venki per konkero
+[You control this colony.]
+Vi regas ĉi tiun kolonion.
+[controllers]
+homaj kaj AI-ludantoj
+[Use]
+Elektu
+[Lime]
+Limetverda
+[Teal]
+Bluverda
+[Azure]
+Ĉielbluo
+[Updating map preview...]
+Ĝisdatigante mapantaŭprezenton...
+[Generation failed. Adjust settings or press Start to retry.]
+Generado malsukcesis. Ŝanĝu la agordojn aŭ premu Komencu por reprovi.
+[Preview unavailable. Adjust settings or start to retry.]
+Antaŭrigardo nedisponebla. Ŝanĝu la agordojn aŭ lanĉu la ludon por provi denove.
+[automatic torus view]
+Aŭtomata tora vido
+[toggle torus view]
+Ŝalti inter 2D kaj tora vido
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 kontraŭ 2 bezonas kvar malfermitajn koloniojn. Vi kontraŭ ĉiuj bezonas homan ludanton.
+[Alliance]
+Alianco
+[Choose a rule to change it.]
+Elektu regulon por ŝanĝi ĝin.
+[Conquest only removes prestige victory; map scripts still apply.]
+Konker-nur-venko malfunkciigas prestiĝan venkon; mapskriptoj ankoraŭ validas.
+[Control]
+Kolonia kontrolo
+[Controller]
+Regata de
+[Generate preview]
+Generu antaŭrigardon
+[Generation failed. Adjust settings or try again.]
+Generado malsukcesis. Ŝanĝu la agordojn aŭ provu denove.
+[Map settings changed. Generate a new preview or start.]
+Mapo-agordoj ŝanĝitaj. Generu novan antaŭrigardon aŭ komencu.
+[Map source]
+Mapfonto
+[Map-defined]
+Map-difinita
+[Match format]
+Ludformato
+[No current preview]
+Neniu aktuala antaŭvido
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Rapida batalo: duobla rapido; generitaj mapoj komenciĝas per 8 laboristoj.
+[Reroll]
+Generu alian mapon
+[Ruleset]
+Regularo
+[Select a map from the library.]
+Elektu mapon el la biblioteko.
+[Starting workers affects generated maps only.]
+La komenca nombro da laboristoj validas nur por generitaj mapoj.
+[Unavailable]
+Nedisponebla
+[Use selection]
+Uzu elekton
+[Quick clash on premade maps: only speed changes (2x).]
+Rapida batalo sur antaŭfaritaj mapoj: nur la rapideco ŝanĝiĝas (duobla rapideco).
+[Generate a preview to explore this world.]
+Generu antaŭrigardon por esplori ĉi tiun mondon.
+[More workers jump-start colony growth. Changes the generated map.]
+Pli da laboristoj akcelas kolonian kreskon. Ĉi tiu agordo ŝanĝas la generitan mapon.
+[No warriors]
+Sen militistoj
+[settings Add key to sequence]
+Aldoni klavon al la sinsekvo
+[settings Add shortcut]
+Aldoni ŝparvojon
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Alĝustigu la nombron de asignitaj unuoj per la musrado. Kiam la opcio estas malŝaltita, tenu Ctrl. Tenu Shift por alĝustigi la flagradiuson. Ĉi tiu opcio ankaŭ regas la musradon en aliaj menuoj.
+[settings Adjust music and voice volume.]
+Alĝustigu la laŭtecon de muziko kaj voĉo.
+[settings Adjust the pace of play.]
+Alĝustigu la rapidon de la ludo.
+[settings Advanced binding]
+Altnivela klavagordo
+[settings Artwork & effects]
+Artaĵoj kaj efikoj
+[settings Audio]
+Sono
+[settings Bind Escape]
+Asigni Escape
+[settings Building]
+Konstruaĵo
+[settings Building defaults]
+Defaŭltoj de konstruaĵoj
+[settings Cancel]
+Nuligi
+[settings Changes saved automatically]
+Ŝanĝoj estas aŭtomate konservataj
+[settings Changes you make during play update these defaults for future games.]
+Ŝanĝoj faritaj dum ludado ĝisdatigas ĉi tiujn defaŭltajn agordojn por estontaj ludoj.
+[settings Changing the renderer requires a restart.]
+Ŝanĝi la bildilon postulas rekomencon.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Elektu klavaran ŝparvojon por redakti ĝin, aŭ aldonu alian ŝparvojon por ago.
+[settings Choose a window or fill the screen.]
+Elektu fenestran aŭ plenekranan reĝimon.
+[settings Choose how the game looks on your screen.]
+Elektu kiel la ludo aspektas sur via ekrano.
+[settings Completed]
+Finitaj konstruaĵoj
+[settings Construction]
+Konstruado
+[settings Controls]
+Ludaj kontroloj
+[settings Could not change display mode. The previous mode was restored.]
+Ne eblis ŝanĝi ekranreĝimon. La antaŭa reĝimo estis restarigita.
+[settings Could not save]
+Ne eblis konservi
+[settings Current display]
+Nunaj ekranagordoj
+[settings Default]
+Defaŭlte
+[settings Display]
+Vidaĵo
+[settings Display & graphics]
+Montriĝo kaj grafikaĵoj
+[settings Display the Globulation 2 cursor.]
+Montru la kursoron de Globulation 2.
+[settings Done]
+Farita
+[settings Edit shortcut]
+Redakti klavaran ŝparvojon
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Pligrandigas menuojn, tekston kaj la flankan strion sur altdistingiva ekrano.
+[settings Flags]
+Flagoj
+[settings Full]
+Plenaj detaloj
+[settings Fullscreen]
+Plenekrana
+[settings Game]
+Ludo
+[settings Game speed]
+Ludrapido
+[settings Gameplay]
+Ludado
+[settings Graphics detail]
+Grafikaj detaloj
+[settings Interface scale]
+Interfaca skalo
+[settings Keep]
+Konservi ŝanĝojn
+[settings Keep this display mode?]
+Ĉu konservi ĉi tiun ekranreĝimon?
+[settings Keep your volume levels while silencing audio.]
+Silentigu la tutan sonon sen ŝanĝi la konservitajn volumnivelojn.
+[settings Key]
+Klavo
+[settings Keyboard shortcuts]
+Klavaj ŝparvojoj
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+La klavoj formas sinsekvon laŭ sia ordo. Ĉiu paŝo povas aktiviĝi ĉe premo aŭ malpremo de sia klavo.
+[settings Language]
+Lingvo
+[settings Language & player]
+Lingvo kaj ludanto
+[settings Language used throughout the interface.]
+Lingvo uzata tra la interfaco.
+[settings Level]
+Nivelo
+[settings Map editor]
+Mapredaktilo
+[settings Match the desktop]
+Kiel la labortablo
+[settings Missing font]
+Mankas tiparo
+[settings Music volume]
+Laŭteco de Muziko
+[settings Mute audio]
+Silentigi sonon
+[settings Name shown to other players.]
+Nomo montrita al aliaj ludantoj.
+[settings Off]
+Malŝaltita
+[settings On]
+Ŝaltita
+[settings OpenGL is not available in this build.]
+OpenGL ne disponeblas en ĉi tiu versio.
+[settings Player name]
+Ludantnomo
+[settings Press]
+Ĉe premo
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Premu klavon. Escape nuligas la klavregistradon. Por asigni Escape, elektu «Asigni Escape».
+[settings Radius]
+Radiuso
+[settings Reduced]
+Reduktitaj detaloj
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Reduktitaj detaloj malŝaltas nubojn kaj iliajn ombrojn, simpligas magiajn efikojn kaj reduktas travideblecon.
+[settings Release]
+Ĉe malpremo
+[settings Remember assignments between games]
+Memori asignojn de unuoj inter ludoj
+[settings Remove key]
+Forigi klavon
+[settings Remove shortcut]
+Forigi ŝparvojon
+[settings Renderer]
+Grafika bildilo
+[settings Replace conflicting bindings]
+Anstataŭigi konfliktajn klavarajn ŝparvojojn
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Ĉu anstataŭigi la ŝparvojojn en ĉi tiu kunteksto per la defaŭltaj? La ŝanĝoj estos tuj konservitaj.
+[settings Resolution]
+Ekrana rezolucio
+[settings Restore default shortcuts]
+Restarigi defaŭltajn ŝparvojojn
+[settings Retry]
+Reprovi
+[settings Revert]
+Malfari ŝanĝojn
+[settings Reverting in]
+Restarigo post
+[settings Save shortcut]
+Konservi klavaran ŝparvojon
+[settings Saved — restart required]
+Konservite — necesas rekomenco
+[settings Saving…]
+Konservante…
+[settings Scroll wheel enabled]
+Ebligi Musradon
+[settings Set starting unit assignments by building type and level.]
+Agordu la komencan nombron de asignitaj unuoj laŭ konstruaĵa tipo kaj nivelo.
+[settings Set your language and player name.]
+Agordu vian lingvon kaj ludantonomon.
+[settings Settings]
+Elektaĵoj
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
+[settings Software]
+Programara bildigo
+[settings Starting unit counts and radius for newly placed flags.]
+Komenca nombro de unuoj kaj radiuso por nove metitaj flagoj.
+[settings This shortcut conflicts with existing bindings:]
+Ĉi tiu klavara ŝparvojo konfliktas kun ekzistantaj ŝparvojoj:
+[settings Trigger]
+Aktiviga evento
+[settings Unbound]
+Neniu ŝparvojo asignita
+[settings Unit counts assigned to new construction sites.]
+Nombro de unuoj asignitaj al novaj konstruejoj.
+[settings Unit counts for completed buildings.]
+Nombro de unuoj asignitaj al finitaj konstruaĵoj.
+[settings Unit counts while a building is being upgraded.]
+Nombro de unuoj asignitaj al konstruaĵo dum ĝia plibonigo.
+[settings Units]
+Globuloj
+[settings Upgrades]
+Plibonigoj de konstruaĵoj
+[settings Use game cursor]
+Uzi ludkursoron
+[settings Voice volume]
+Laŭteco de Voĉo
+[settings Window mode]
+Fenestra reĝimo
+[settings Window-only sizes also switch the game to windowed mode.]
+Elekto de rezolucio uzebla nur en fenestra reĝimo ankaŭ ŝanĝas la ludon al fenestra reĝimo.
+[settings Windowed]
+Fenestra
+[settings Windowed only]
+Nur fenestra
+[settings seconds]
+sekundoj
+[settings Flag]
+Flago
+[settings High-resolution artwork]
+Alt-rezoluciaj bildoj
+[settings Apply artwork on the next game or editor load (OpenGL).]
+La bildoj estos aplikitaj ĉe la sekva ŝargo de ludo aŭ mapredaktilo (OpenGL).
+[settings Automatic torus view]
+Aŭtomata tora vido
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Aŭtomate montru la torforman superrigardon de la mapo dum moviĝado tra la mapo (OpenGL).
+[Channel width]
+Larĝo de kanalo
+[Land bridge width]
+Larĝo de terponto
+[Lake size]
+Grandeco de lago

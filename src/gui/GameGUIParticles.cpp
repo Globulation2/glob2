@@ -47,7 +47,7 @@ namespace
 	}
 }
 
-void GameGUI::drawParticles(void)
+void GameGUI::drawParticles(bool advance)
 {
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); )
 	{
@@ -64,14 +64,16 @@ void GameGUI::drawParticles(void)
 
 			continue;
 		}
-		else
+		else if (advance)
+		{
 			p->age++;
 
-		// do stupid physics
-		p->x += p->vx;
-		p->y += p->vy;
-		p->vx += p->ax;
-		p->vy += p->ay;
+			// do stupid physics
+			p->x += p->vx;
+			p->y += p->vy;
+			p->vx += p->ax;
+			p->vy += p->ay;
+		}
 
 		globalContainer->particles->setBaseColor(p->color);
 
@@ -96,6 +98,9 @@ void GameGUI::drawParticles(void)
 
 void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 {
+	if (gamePaused)
+		return;
+
 	for (std::set<Building*>::iterator it = visibleBuildings->begin(); it != visibleBuildings->end(); ++it)
 	{
 		Building* building = *it;
@@ -164,7 +169,14 @@ void GameGUI::generateNewParticles(std::set<Building*> *visibleBuildings)
 	}
 }
 
-void GameGUI::moveParticles(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
+void GameGUI::viewportChanged(int oldViewportX, int viewportX, int oldViewportY, int viewportY)
 {
-	// Particles now retain world positions; camera changes need no compensation.
+	if ((viewportX==oldViewportX) && (viewportY==oldViewportY))
+		return;
+
+    if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText &&
+        !(lastMouseButtonState & SDL_BUTTON(SDL_BUTTON_LEFT)))
+        torusView.notifyMove();
+    torusView.setViewport(viewportX, viewportY);
+
 }

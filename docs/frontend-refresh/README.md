@@ -30,7 +30,7 @@ panel calculation. There is no new layout system, shader, rendering backend,
 worker thread, or network session.
 
 `MenuColony` owns a separate `Game`, camera state, fixed-step accumulator and RNG.
-It polls Reach to Infinity, executes its order and advances the normal simulation
+It polls Econo, executes its order and advances the normal simulation
 at 25 ticks/second. Each update runs at most two steps, dropping excessive lag.
 Loading, stepping and drawing temporarily exchange the legacy global RNG and
 recording sinks with the menu's own context, then restore them. Drawing also
@@ -71,9 +71,9 @@ identical bytes across engine revisions. The bundled snapshot remains compatible
 
 The generator uses seed 481516, the existing 128x128 legacy island generator,
 one team, an island-size parameter of 35, 48 starting workers, and small resource
-patches seeded through the existing map API. It runs Reach to Infinity for 12,000
+patches seeded through the existing map API. It runs Econo for 12,000
 normal simulation ticks before saving. The AI implementation identifier remains
-`REACHTOINFINITY`; renaming it to Econo is a separate change. Victory conditions
+`ECONO`; renaming it to Econo is a separate change. Victory conditions
 are empty and there are no opponents or mission scripts.
 
 `colony.bin` contains a small menu-specific version marker, the unmodified `Game`

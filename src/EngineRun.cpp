@@ -7,11 +7,6 @@
 #include "ChecksumSidecar.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
-#include "AI.h"
-#include <BinaryStream.h>
-#include <FileManager.h>
-#include <Toolkit.h>
-#include <sstream>
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -89,6 +84,8 @@ void Engine::pollAutomaticEndingConditions()
 // and must not advance.
 void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 {
+    // Viewpoint changes must not move the controller used for order bookkeeping.
+    const int orderPlayer=globalContainer->liveSpectating ? 0 : gui.localPlayer;
 	// But some jobs have to be executed synchronously:
 	if (wasReadyLastTick)
 	{
@@ -96,22 +93,19 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 
 		// The gui.localPlayer may have been updated (in replays)
 		// Keep them synchronized here
-		net->setLocalPlayer(gui.localPlayer);
+		net->setLocalPlayer(orderPlayer);
 
 		// We get and push local orders
-		shared_ptr<Order> localOrder = gui.game.players[gui.localPlayer]->ai
-            ? gui.game.players[gui.localPlayer]->ai->getOrder(gui.gamePaused) : gui.getOrder();
+		shared_ptr<Order> localOrder = gui.getOrder();
+		if(globalContainer->liveSpectating && gui.game.players[orderPlayer]->ai)
+			localOrder=gui.game.players[orderPlayer]->ai->getOrder(gui.gamePaused);
 		net->addLocalOrder(localOrder);
 	}
 
 	// we get and push ai orders, if they are needed for this frame
 	for (int i = 0; i < gui.game.gameHeader.getNumberOfPlayers(); i++)
 	{
-		// The local AI was already polled above. Polling it again before
-        // advanceStep enqueues its order leaves an extra turn buffered, which
-        // is lost at a save/load boundary.
-        if (gui.game.players[i]->ai && !(wasReadyLastTick && i==gui.localPlayer)
-            && !net->orderReceived(i))
+		if (gui.game.players[i]->ai && !(globalContainer->liveSpectating && i==orderPlayer) && !net->orderReceived(i))
 		{
 			shared_ptr<Order> order = gui.game.players[i]->ai->getOrder(gui.gamePaused);
 			net->pushOrder(order, i, true);
@@ -497,8 +491,6 @@ void Engine::prepareNextGameSession(bool& doRunOnceAgain)
 // Track order readiness separately for the previous and current ticks.
 void Engine::runOneGameSession(bool& doRunOnceAgain)
 {
-	const int endingTarget=globalContainer->automaticEndingStepsRelative
-        ? gui.game.stepCounter+globalContainer->automaticEndingSteps : globalContainer->automaticEndingSteps;
 	MainLoopState st;
 	st.adjustableGameSpeed = gui.canChangeGameSpeed();
 	st.speed = st.adjustableGameSpeed ? globalContainer->settings.getGameSpeedStepDuration() : GAME_TICK_MS;
@@ -540,7 +532,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 
 		if (globalContainer->automaticEndingGame)
 		{
-			if ((int)gui.game.stepCounter == endingTarget)
+			if ((int)gui.game.stepCounter == globalContainer->automaticEndingSteps)
 			{
 				gui.isRunning = false;
 				automaticGameEndTick = SDL_GetTicks64();

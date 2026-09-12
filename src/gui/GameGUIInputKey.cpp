@@ -72,6 +72,16 @@ void GameGUI::handleKeySelectPlaceArea(GameGUIToolManager::ZoneType zone)
 	toolManager.activateZoneTool(zone);
 }
 
+void GameGUI::toggleTorusView()
+{
+    if (!torusView.available() || typingInputScreen || inGameMenu != IGM_NONE || scrollableText) return;
+    if (torusPointerDown) toolManager.finishPointerGesture(localTeamNo);
+    torusPointerDown=false;
+    torusView.toggle();
+    selectionPushed = panPushed = miniMapPushed = false;
+    viewportSpeedX = viewportSpeedY = 0;
+}
+
 bool GameGUI::canChangeGameSpeed() const
 {
 	return globalContainer->replaying || !game.gameHeader.hasNetworkPlayer();
@@ -90,7 +100,7 @@ void GameGUI::changeGameSpeed(int amount)
 		.arg(globalContainer->settings.getGameSpeedText()), false);
 }
 
-void GameGUI::handleKey(SDL_Keysym key, bool pressed)
+void GameGUI::handleKey(SDL_Keysym key, bool pressed, bool repeat)
 {
 	if (typingInputScreen == NULL)
 	{
@@ -113,12 +123,34 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 				else if(key.sym==SDLK_MINUS || key.sym==SDLK_KP_MINUS)
 					action_t=GameGUIKeyActions::DecreaseGameSpeed;
 			}
+
+            if(globalContainer->liveSpectating) {
+                switch(action_t) {
+                case GameGUIKeyActions::DoNothing:
+                case GameGUIKeyActions::ShowMainMenu:
+                case GameGUIKeyActions::IterateSelection:
+                case GameGUIKeyActions::GoToEvent:
+                case GameGUIKeyActions::GoToHome:
+                case GameGUIKeyActions::PauseGame:
+                case GameGUIKeyActions::HardPause:
+                case GameGUIKeyActions::IncreaseGameSpeed:
+                case GameGUIKeyActions::DecreaseGameSpeed:
+                case GameGUIKeyActions::ToggleDrawUnitPaths:
+                case GameGUIKeyActions::ToggleDrawInformation:
+                case GameGUIKeyActions::ToggleDrawAccessibilityAids:
+                case GameGUIKeyActions::ViewHistory: break;
+                default: return;
+                }
+            }
 			switch(action_t)
 			{
 				case GameGUIKeyActions::DoNothing:
 				{
 				}
 				break;
+				case GameGUIKeyActions::ToggleTorusView:
+					if (!repeat) toggleTorusView();
+					break;
 				case GameGUIKeyActions::ShowMainMenu:
 				{
 					if (inGameMenu==IGM_NONE)
@@ -200,7 +232,7 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					viewportX = evX-int(camera.visibleW()/64);
 					viewportY = evY-int(camera.visibleH()/64);
 
-					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+					viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::GoToHome:
@@ -216,10 +248,11 @@ void GameGUI::handleKey(SDL_Keysym key, bool pressed)
 					viewportX = evX-int(camera.visibleW()/64);
 					viewportY = evY-int(camera.visibleH()/64);
 
-					moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+					viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 				}
 				break;
 				case GameGUIKeyActions::PauseGame:
+                    if(globalContainer->liveSpectating){hardPause=!hardPause;break;}
 					orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
 					break;
 				case GameGUIKeyActions::HardPause:

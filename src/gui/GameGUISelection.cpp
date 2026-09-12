@@ -14,6 +14,8 @@ void GameGUI::cleanOldSelection(void)
 {
 	if (selectionMode==BUILDING_SELECTION)
 	{
+		if (view.selectedBuilding)
+			view.selectedBuilding->setRecordFailingUnits(false);
 		view.selectedBuilding=NULL;
 	}
 	else if (selectionMode==UNIT_SELECTION)
@@ -46,8 +48,12 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
 		int id=Building::GIDtoID(newSelection);
 		int team=Building::GIDtoTeam(newSelection);
 		Building* b=game.teams[team]->myBuildings[id];
+		if (view.selectedBuilding && view.selectedBuilding!=b)
+			view.selectedBuilding->setRecordFailingUnits(false);
 		selection=b;
 		view.selectedBuilding=b;
+		if (b)
+			b->setRecordFailingUnits(true);
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
@@ -74,8 +80,12 @@ void GameGUI::setSelection(SelectionMode newSelMode, void* newSelection)
 	if (selectionMode==BUILDING_SELECTION)
 	{
 		Building* b=(Building*)newSelection;
+		if (view.selectedBuilding && view.selectedBuilding!=b)
+			view.selectedBuilding->setRecordFailingUnits(false);
 		selection=b;
 		view.selectedBuilding=b;
+		if (b)
+			b->setRecordFailingUnits(true);
 	}
 	else if (selectionMode==UNIT_SELECTION)
 	{
@@ -225,7 +235,7 @@ void GameGUI::centerViewportOnSelection(void)
 		viewportX = viewportX & game.map.getMaskW();
 		viewportY = viewportY & game.map.getMaskH();
 
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 }
 

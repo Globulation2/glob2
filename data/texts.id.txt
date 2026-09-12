@@ -55,7 +55,7 @@ Castor bermain dengan hati-hati dan sangat tangguh di peta dengan sedikit sumber
 [AICastor]
 Castor
 [AICortex-Description]
-Cortex - AI eksperimental dengan tiga lapisan. Masih dalam pengembangan.
+Cortex berekspansi ke ladang gandum baru dan mengirimkan kelompok prajurit ke medan perang, didukung oleh penginapan dan rumah sakit di dekat garis depan. Kesulitan sedang. Eksperimental.
 [AICortex]
 Cortex
 [AINicowar-Description]
@@ -70,10 +70,10 @@ Tidak ada
 Numbi - Berkembang secara terbatas dan cepat. Tingkat kesulitan mudah.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Tidak menyerang, tetapi membangun markas yang sangat besar dan merebut unit secara agresif. Tingkat kesulitan mudah.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Menyerang dengan cepat dan keras, sering kali membuat pemain yang bertahan kewalahan. Tingkat kesulitan sedang.
 [AIWarrush]
@@ -617,9 +617,9 @@ di antaranya
 [ok]
 Oke
 [old islands terrain]
-pulau acak lama
+Kepulauan Terjal
 [old random terrain]
-medan acak lama
+Pesisir Terpecah
 [on press]
 Ditekan
 [On the spot]
@@ -1224,3 +1224,553 @@ Kecepatan: 1x (multipemain)
 Di dalam: %0
 [Units still working: %0]
 Masih bekerja: %0
+[2 vs 2]
+2 lawan 2
+[AI strategy & counterplay]
+Strategi AI & cara melawannya
+[AICastor-Profile]
+Strategi: Berkembang dengan hati-hati dan mampu bertahan di peta dengan sedikit sumber daya.\n\nKekuatan: Pertumbuhan terkendali cocok untuk pertandingan dengan sumber daya langka.\n\nSaran melawan: Kuasai wilayah lebih awal; jangan beranggapan bahwa sumber daya langka akan melumpuhkannya.
+[AICastor-Summary]
+Ekspansi yang hati-hati; berkinerja baik dengan sumber daya yang terbatas.
+[AICortex-Profile]
+Strategi: Mengelola persediaan makanan, memperluas ke ladang gandum baru, dan mengumpulkan kelompok pejuang secara berurutan. Penginapan dan rumah sakit di dekat garis depan mendukung serangan yang jauh dari pangkalan.\n\nKekuatan: Mengirim bala bantuan bersama-sama, mempertahankan tekanan militer, dan bereaksi terhadap kekurangan pangan.\n\nSaran melawan: Berjuang untuk menguasai ladang gandum baru dan serang bangunan pendukungnya di dekat garis depan. Serang sebelum kelompok prajuritnya siap.\n\nAI eksperimental. Kesulitan sedang; saran melawan bukan penilaian tolok ukur kinerja.
+[AICortex-Summary]
+Menjaga pangan sambil melancarkan gelombang serangan dengan dukungan.
+[AINicowar-Profile]
+Strategi: Berekspansi dengan cepat dan menyerang lawan dengan pasukan yang sangat besar.\n\nKekuatan: Ekspansi yang cepat mendukung serangan militer yang agresif.\n\nSaran melawan: Cegah perluasannya. Gunakan medan untuk mengurangi jumlah pasukan musuh yang bisa bertarung sekaligus.
+[AINicowar-Summary]
+Berkembang dengan cepat dan membangun pasukan besar untuk serangan agresif.
+[AINone-Profile]
+Strategi: AI tidak memberikan perintah.\n\nKekuatan: Lawan eksperimen yang dapat diprediksi dan tidak aktif.\n\nKelemahan: Tidak berkembang atau beradaptasi.
+[AINone-Summary]
+Koloni yang diam untuk eksperimen.
+[AINumbi-Profile]
+Strategi: Berkembang dengan cepat namun dalam skala kecil. Lawan yang lebih mudah untuk mempraktikkan manajemen koloni.\n\nKekuatan: Memungkinkan Anda mempelajari manajemen ekonomi dan pertempuran.\n\nSaran melawan: Kembangkan ekonomi yang lebih kuat dan latih pasukan Anda sebelum menyerang.
+[AINumbi-Summary]
+Ekspansi cepat dalam skala kecil.
+[AIEcono-Profile]
+Strategi: Tidak menyerang, tetapi membangun markas besar dan giat mengubah unit musuh menjadi sekutu.\n\nKekuatan: Pertumbuhan dan pengalihan unit menekan lawan tanpa serangan biasa.\n\nSaran melawan: Manfaatkan awal permainan untuk berkembang, dan hindari mengirim unit ke tempat musuh bisa mengambil alihnya.
+[AIEcono-Summary]
+Basis besar dan konversi, bukan serangan.
+[AIWarrush-Profile]
+Strategi: Menyerang dengan cepat dan keras sebelum lawan selesai bersiap.\n\nKekuatan: Menghukum ekspansi tanpa pertahanan dan persiapan militer yang lambat.\n\nSaran melawan: Pertahankan ekonomi sambil bertahan dari serangan pertama, lalu serang balik.
+[AIWarrush-Summary]
+Serangan cepat yang menguji pertahanan awal Anda.
+[Algae]
+Ganggang
+[Alliances]
+Aliansi
+[Beach size]
+Ukuran pantai
+[Blue]
+Biru
+[Brown]
+Cokelat
+[Built-in maps]
+Peta bawaan
+[Can change in game]
+Dapat berubah dalam permainan
+[Closed]
+Tertutup
+[Colonies]
+Koloni
+[Colony]
+Koloni
+[Concrete islands]
+Pulau Terpisah
+[Conquest only]
+Hanya penaklukan
+[Conquest or prestige]
+Penaklukan atau prestise
+[Could not launch this map. Your setup is retained; try again.]
+Tidak dapat meluncurkan peta ini. Penyiapan Anda dipertahankan; coba lagi.
+[Could not load this map. Choose another map or retry.]
+Tidak dapat memuat peta ini. Pilih peta lain atau coba lagi.
+[Crater lakes]
+Danau kawah
+[Custom]
+Kustom
+[Custom teams]
+Tim khusus
+[Cyan]
+Sian
+[Desert weight]
+Bobot gurun
+[Easy]
+Mudah
+[Explore as you play]
+Jelajahi sambil bermain
+[Extra colony assignments are retained for larger maps.]
+Penugasan koloni tambahan dipertahankan untuk peta yang lebih besar.
+[Extra islands]
+Pulau tambahan
+[FFA]
+Semua orang melawan semua orang
+[Fruit]
+Buah
+[Game Rules]
+Aturan Permainan
+[Game speed]
+Kecepatan permainan
+[Generate & play]
+Hasilkan & mainkan
+[Give at least one terrain type a nonzero weight.]
+Berikan setidaknya satu jenis medan bobot bukan nol.
+[Grass weight]
+Bobot rumput
+[Gray]
+Abu-abu
+[Green]
+Hijau
+[Hard]
+Sulit
+[Height]
+Tinggi
+[Invalid colony count.]
+Jumlah koloni tidak valid.
+[Island size]
+Ukuran pulau
+[Islands]
+Pulau
+[Isles]
+Pulau Kecil
+[Lake density]
+Kepadatan danau
+[Landscape]
+Lanskap
+[Last colony standing]
+Koloni terakhir yang bertahan
+[Layout]
+Tata Letak
+[Locked teams]
+Tim yang terkunci
+[Magenta]
+Merah keunguan
+[Map]
+Peta
+[Map knowledge]
+Pengetahuan medan
+[Match finished]
+Pertandingan selesai
+[Medium]
+Sedang
+[Medium - Experimental]
+Sedang - Eksperimental
+[No AI orders]
+Tidak ada perintah AI
+[Old islands]
+Kepulauan Terjal
+[Old random]
+Pesisir Terpecah
+[Open at least one colony to start a match.]
+Buka setidaknya satu koloni untuk memulai pertandingan.
+[Open book]
+Dunia yang terungkap
+[Pink]
+Merah Jambu
+[Play this map]
+Mainkan peta ini
+[Players & Teams]
+Pemain & Tim
+[Premade maps]
+Peta yang sudah jadi
+[Preview ready. Start plays this exact map.]
+Pratinjau siap. Memulai permainan menggunakan peta persis ini.
+[Purple]
+Ungu
+[Quick clash]
+Pertarungan cepat
+[Random map]
+Peta acak
+[Red]
+Merah
+[Repeat landscape]
+Ulangi lanskap
+[Resources]
+Sumber daya
+[Restore standard rules]
+Kembalikan aturan standar
+[Revealed terrain does not reveal all enemy activity.]
+Medan yang terungkap tidak mengungkapkan semua aktivitas musuh.
+[River]
+Sungai
+[River width]
+Lebar sungai
+[Sand weight]
+Bobot pasir
+[Select a valid map.]
+Pilih peta yang valid.
+[Shared control needs a free controller slot (maximum 12).]
+Kendali bersama memerlukan satu tempat pengendali kosong (maksimum 12).
+[Smoothing]
+Penghalusan
+[Standard]
+Standar
+[Start game]
+Mulai permainan
+[Starting workers]
+Pekerja awal
+[Starting workers: Game Rules tab.]
+Pekerja awal: tab Aturan Permainan.
+[Swamp]
+Rawa
+[Team]
+Tim
+[Terrain]
+Medan
+[Terrain revealed]
+Medan terungkap
+[Try a ruleset, then make it your own.]
+Cobalah seperangkat aturan, lalu buatlah aturan Anda sendiri.
+[Victory]
+Kemenangan
+[Watch game]
+Tonton pertandingan
+[Water weight]
+Bobot air
+[White]
+Putih
+[Width]
+Lebar
+[Yellow]
+Kuning
+[You]
+Anda
+[You + AI]
+Anda + AI
+[You and the AI both issue orders. Uses two controller slots.]
+Anda dan AI sama-sama memberi perintah. Memakai dua tempat pengendali.
+[You vs all]
+Anda melawan semua orang
+[Your maps]
+Peta Anda
+[colonies]
+koloni
+[* Changed from standard.]
+* Berubah dari standar.
+[World & diplomacy]
+Dunia & diplomasi
+[Starting conditions & pace]
+Kondisi & kecepatan awal
+[Inactive]
+Tidak aktif
+[8 workers / 2x speed]
+8 pekerja / kecepatan 2x
+[Changes the pace of the whole simulation.]
+Mengubah kecepatan seluruh simulasi.
+[Choose whether teams can change during the match.]
+Pilih apakah tim dapat berubah selama pertandingan.
+[Classic colony building]
+Perkembangan koloni tradisional
+[Dimensions and colony count are set above.]
+Dimensi dan jumlah koloni diatur di atas.
+[Generate & watch]
+Hasilkan & tonton
+[Info]
+Informasi
+[Map-defined starting units]
+Unit awal yang ditentukan peta
+[No maps in this library.]
+Tidak ada peta dalam koleksi ini.
+[Premade maps retain their authored starting units.]
+Peta siap pakai tetap memakai unit awal yang ditetapkan pembuatnya.
+[Premade: only speed changes (2x)]
+Peta siap pakai: hanya kecepatan berubah (2x)
+[Start with terrain known]
+Mulailah dengan medan yang diketahui
+[This colony will not join the match.]
+Koloni ini tidak akan ikut pertandingan.
+[This landscape uses a fixed terrain recipe.]
+Lanskap ini menggunakan resep medan tetap.
+[This landscape uses fixed resource placement.]
+Lanskap ini menggunakan penempatan sumber daya tetap.
+[Win through conquest]
+Menang melalui penaklukan
+[You control this colony.]
+Anda mengendalikan koloni ini.
+[controllers]
+pengendali
+[Use]
+Pilih
+[Lime]
+Hijau limau
+[Teal]
+Biru kehijauan
+[Azure]
+Biru langit
+[Updating map preview...]
+Memperbarui pratinjau peta...
+[Generation failed. Adjust settings or press Start to retry.]
+Pembuatan peta gagal. Sesuaikan pengaturan atau tekan Mulai untuk mencoba lagi.
+[Preview unavailable. Adjust settings or start to retry.]
+Pratinjau tidak tersedia. Ubah pengaturan atau luncurkan game untuk mencoba lagi.
+[automatic torus view]
+Tampilan torus otomatis
+[toggle torus view]
+Beralih tampilan 2D / torus
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 lawan 2 memerlukan empat koloni aktif. Anda melawan semua memerlukan seorang pemain manusia.
+[Alliance]
+Aliansi
+[Choose a rule to change it.]
+Pilih aturan untuk mengubahnya.
+[Conquest only removes prestige victory; map scripts still apply.]
+Hanya penaklukan menonaktifkan kemenangan prestise; skrip peta tetap berlaku.
+[Control]
+Kontrol koloni
+[Controller]
+Pengendali koloni
+[Generate preview]
+Hasilkan pratinjau
+[Generation failed. Adjust settings or try again.]
+Pembuatan peta gagal. Sesuaikan pengaturan atau coba lagi.
+[Map settings changed. Generate a new preview or start.]
+Pengaturan peta diubah. Hasilkan pratinjau baru atau mulai.
+[Map source]
+Sumber peta
+[Map-defined]
+Ditentukan peta
+[Match format]
+Format permainan
+[No current preview]
+Tidak ada pratinjau saat ini
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Pertarungan cepat: kecepatan ganda; peta yang dihasilkan dimulai dengan 8 pekerja.
+[Reroll]
+Hasilkan peta lain
+[Ruleset]
+Aturan
+[Select a map from the library.]
+Pilih peta dari koleksi.
+[Starting workers affects generated maps only.]
+Jumlah pekerja awal hanya berlaku untuk peta yang dihasilkan.
+[Unavailable]
+Tidak tersedia
+[Use selection]
+Gunakan seleksi
+[Quick clash on premade maps: only speed changes (2x).]
+Pertarungan cepat di peta yang telah dibuat sebelumnya: hanya kecepatannya yang berubah (kecepatan ganda).
+[Generate a preview to explore this world.]
+Hasilkan pratinjau untuk menjelajahi dunia ini.
+[More workers jump-start colony growth. Changes the generated map.]
+Lebih banyak pekerja mempercepat pertumbuhan koloni. Pengaturan ini mengubah peta yang dihasilkan.
+[No warriors]
+Tanpa prajurit
+[settings Add key to sequence]
+Tambah tombol ke urutan
+[settings Add shortcut]
+Tambah Pintasan
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Sesuaikan jumlah unit yang ditugaskan dengan roda mouse. Saat opsi ini nonaktif, tahan Ctrl. Tahan Shift untuk menyesuaikan radius bendera. Opsi ini juga mengatur penggunaan roda di menu lain.
+[settings Adjust music and voice volume.]
+Sesuaikan volume musik dan suara.
+[settings Adjust the pace of play.]
+Sesuaikan kecepatan permainan.
+[settings Advanced binding]
+Pengaturan pintasan lanjutan
+[settings Artwork & effects]
+Grafis & efek
+[settings Audio]
+Audio
+[settings Bind Escape]
+Tetapkan tombol Escape
+[settings Building]
+Bangunan
+[settings Building defaults]
+Setelan Baku Bangunan
+[settings Cancel]
+Batal
+[settings Changes saved automatically]
+Perubahan disimpan secara otomatis
+[settings Changes you make during play update these defaults for future games.]
+Perubahan selama bermain akan memperbarui setelan baku ini untuk permainan berikutnya.
+[settings Changing the renderer requires a restart.]
+Mengubah perender memerlukan mulai ulang.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Pilih pintasan keyboard untuk mengeditnya, atau tambahkan pintasan lain untuk suatu tindakan.
+[settings Choose a window or fill the screen.]
+Pilih mode jendela atau layar penuh.
+[settings Choose how the game looks on your screen.]
+Pilih tampilan permainan di layar Anda.
+[settings Completed]
+Bangunan yang sudah selesai
+[settings Construction]
+Pembangunan
+[settings Controls]
+Kontrol permainan
+[settings Could not change display mode. The previous mode was restored.]
+Tidak dapat mengubah mode tampilan. Mode sebelumnya telah dipulihkan.
+[settings Could not save]
+Tidak dapat menyimpan
+[settings Current display]
+Setelan tampilan saat ini
+[settings Default]
+Baku
+[settings Display]
+Tampilan
+[settings Display & graphics]
+Tampilan & grafik
+[settings Display the Globulation 2 cursor.]
+Menampilkan kursor Globulation 2.
+[settings Done]
+Selesai
+[settings Edit shortcut]
+Edit pintasan keyboard
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Memperbesar menu, teks, dan bilah sisi pada layar beresolusi tinggi.
+[settings Flags]
+Bendera
+[settings Full]
+Detail lengkap
+[settings Fullscreen]
+Layar penuh
+[settings Game]
+Permainan
+[settings Game speed]
+Kecepatan permainan
+[settings Gameplay]
+Permainan
+[settings Graphics detail]
+Detail grafis
+[settings Interface scale]
+Skala antarmuka
+[settings Keep]
+Pertahankan perubahan
+[settings Keep this display mode?]
+Pertahankan mode tampilan ini?
+[settings Keep your volume levels while silencing audio.]
+Mematikan semua suara tanpa mengubah tingkat volume yang disimpan.
+[settings Key]
+Tombol
+[settings Keyboard shortcuts]
+Pintasan keyboard
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tombol membentuk urutan sesuai susunannya. Setiap langkah dapat dipicu saat tombolnya ditekan atau dilepas.
+[settings Language]
+Bahasa
+[settings Language & player]
+Bahasa & pemain
+[settings Language used throughout the interface.]
+Bahasa yang digunakan di seluruh antarmuka.
+[settings Level]
+Tingkat
+[settings Map editor]
+Editor peta
+[settings Match the desktop]
+Ikuti desktop
+[settings Missing font]
+Font tidak ditemukan
+[settings Music volume]
+Volume (musik)
+[settings Mute audio]
+Bisukan audio
+[settings Name shown to other players.]
+Nama ditampilkan kepada pemain lain.
+[settings Off]
+Nonaktif
+[settings On]
+Aktif
+[settings OpenGL is not available in this build.]
+OpenGL tidak tersedia di build ini.
+[settings Player name]
+Nama pemain
+[settings Press]
+Saat ditekan
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Tekan sebuah tombol. Escape membatalkan perekaman tombol. Untuk menetapkan Escape, pilih "Tetapkan tombol Escape".
+[settings Radius]
+Radius
+[settings Reduced]
+Detail sederhana
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Pengurangan detail akan menonaktifkan awan dan bayangannya, menyederhanakan efek ajaib, dan mengurangi transparansi.
+[settings Release]
+Saat dilepas
+[settings Remember assignments between games]
+Ingat penugasan unit antarpermainan
+[settings Remove key]
+Hapus tombol keyboard
+[settings Remove shortcut]
+Hapus Pintasan
+[settings Renderer]
+Perender grafis
+[settings Replace conflicting bindings]
+Ganti pintasan keyboard yang bertentangan
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Ganti pintasan dalam konteks ini dengan pintasan baku? Perubahan akan langsung disimpan.
+[settings Resolution]
+Resolusi layar
+[settings Restore default shortcuts]
+Pulihkan Pintasan Baku
+[settings Retry]
+Coba lagi
+[settings Revert]
+Kembalikan perubahan
+[settings Reverting in]
+Mengembalikan dalam
+[settings Save shortcut]
+Simpan pintasan keyboard
+[settings Saved — restart required]
+Tersimpan — perlu dimulai ulang
+[settings Saving…]
+Menyimpan…
+[settings Scroll wheel enabled]
+Roda Gulir Aktif
+[settings Set starting unit assignments by building type and level.]
+Atur jumlah unit yang ditugaskan di awal berdasarkan jenis dan tingkat bangunan.
+[settings Set your language and player name.]
+Tetapkan bahasa dan nama pemain Anda.
+[settings Settings]
+Pengaturan
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Hanya untuk pemain tunggal dan rekaman. Multipemain berjalan pada 1x.
+[settings Software]
+Perenderan perangkat lunak
+[settings Starting unit counts and radius for newly placed flags.]
+Jumlah unit awal dan radius untuk bendera yang baru ditempatkan.
+[settings This shortcut conflicts with existing bindings:]
+Pintasan keyboard ini bertentangan dengan pintasan yang ada:
+[settings Trigger]
+Pemicu
+[settings Unbound]
+Belum ditetapkan
+[settings Unit counts assigned to new construction sites.]
+Jumlah unit yang ditugaskan ke lokasi konstruksi baru.
+[settings Unit counts for completed buildings.]
+Jumlah unit yang ditugaskan ke bangunan yang telah selesai.
+[settings Unit counts while a building is being upgraded.]
+Jumlah unit yang ditugaskan selama bangunan ditingkatkan.
+[settings Units]
+Unit
+[settings Upgrades]
+Peningkatan bangunan
+[settings Use game cursor]
+Gunakan kursor permainan
+[settings Voice volume]
+Volume (suara)
+[settings Window mode]
+Mode jendela
+[settings Window-only sizes also switch the game to windowed mode.]
+Memilih resolusi yang hanya mendukung mode berjendela juga akan mengalihkan permainan ke mode berjendela.
+[settings Windowed]
+Mode jendela
+[settings Windowed only]
+Hanya mode jendela
+[settings seconds]
+detik
+[settings Flag]
+Bendera
+[settings High-resolution artwork]
+Grafis resolusi tinggi
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Grafis diterapkan saat permainan atau editor peta dimuat berikutnya (OpenGL).
+[settings Automatic torus view]
+Tampilan torus otomatis
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Secara otomatis menampilkan ikhtisar peta berbentuk torus saat bergerak di sekitar peta (OpenGL).
+[Channel width]
+Lebar kanal
+[Land bridge width]
+Lebar jembatan darat
+[Lake size]
+Ukuran danau

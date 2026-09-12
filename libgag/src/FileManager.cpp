@@ -70,12 +70,14 @@ namespace GAGCore
 	FileManager::FileManager(const std::string gameName)
 	{
 		#ifndef WIN32
-		const char* homeDir = getenv("HOME");
-		if (homeDir && *homeDir)
+		const char *experimentDir = getenv("GLOB2_USER_DIR");
+		const char *home = getenv("HOME");
+		const std::string homeDir = home ? home : "";
+		if ((experimentDir && *experimentDir) || !homeDir.empty())
 		{
 			std::string gameLocal(homeDir);
-			gameLocal += "/.";
-			gameLocal += gameName;
+			if (experimentDir && *experimentDir) gameLocal = experimentDir;
+			else { gameLocal += "/."; gameLocal += gameName; }
 			mkdir(gameLocal.c_str(), S_IRWXU);
 			addDir(gameLocal.c_str());
 		}
@@ -216,6 +218,37 @@ namespace GAGCore
 		return new FileStreamBackend(NULL);
 	}
 	
+	bool FileManager::writeFileAtomic(const std::string& filename, const std::string& contents)
+	{
+		// Preferences belong to the first (profile) directory, never to bundled data.
+		const std::string path = isAbsolutePath(filename) ? filename :
+			(getDir(0) + DIR_SEPARATOR + filename);
+		const std::string temporary = path + ".tmp";
+		FILE* file = fopen(temporary.c_str(), "wb");
+		if (!file) return false;
+#ifndef WIN32
+		// Replacing a private preferences file must not broaden its permissions.
+		struct stat previous;
+		const mode_t mode = ::stat(path.c_str(), &previous) == 0 ? previous.st_mode & 0777 : 0600;
+		if (fchmod(fileno(file), mode) != 0) {
+			fclose(file);
+			::remove(temporary.c_str());
+			return false;
+		}
+#endif
+		bool ok = fwrite(contents.data(), 1, contents.size(), file) == contents.size();
+		ok = (fflush(file) == 0) && ok;
+		ok = (fclose(file) == 0) && ok;
+#ifdef WIN32
+		if (ok) ok = MoveFileExA(temporary.c_str(), path.c_str(),
+			MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != 0;
+#else
+		if (ok) ok = ::rename(temporary.c_str(), path.c_str()) == 0;
+#endif
+		if (!ok) ::remove(temporary.c_str());
+		return ok;
+	}
+
 	StreamBackend *FileManager::openInputStreamBackend(const std::string filename)
 	{
 		if (isAbsolutePath(filename))

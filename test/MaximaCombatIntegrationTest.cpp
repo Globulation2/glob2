@@ -230,11 +230,11 @@ static void forbiddenDefenseZones()
         // Include the surrounding sea so swimming cannot bypass the barrier.
         for(int y=0;y<64;++y) for(int x=0;x<64;++x)
             if(x<5||x>50||y<20||y>27||(x>=16&&x<=38))
-                f.game.map.setForbidden(x,y,f.player.team->me);
+                f.game.map.addForbidden(x,y,f.player.team->teamNumber);
         a.update_preemptive_defense(c);
         assert(a.preemptive_guard_tiles.empty());
         for(int y=20;y<=27;++y) for(int x=16;x<=38;++x)
-            f.game.map.setForbidden(x,y,0);
+            f.game.map.removeForbidden(x,y,f.player.team->teamNumber);
         a.timer+=a.budget.preemptive_recompute_ticks;
         a.update_preemptive_defense(c);
         assert(!a.preemptive_guard_tiles.empty());

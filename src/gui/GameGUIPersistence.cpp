@@ -29,10 +29,10 @@ bool GameGUI::loadFromHeaders(MapHeader& mapHeader, GameHeader& gameHeader, bool
 {
 	init();
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(sourceFileName.empty()?mapHeader.getFileName():sourceFileName));
+	if (stream->isEndOfStream() && !sourceFileName.empty()) { delete stream; return false; }
 	if (stream->isEndOfStream())
 	{
 		delete stream;
-		if(!sourceFileName.empty()) return false;
 		stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(mapHeader.getFileName(true)));
 		if(stream->isEndOfStream())
 		{

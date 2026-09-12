@@ -318,7 +318,7 @@ Index: b/ChangeLog
 +    * Allowed custom default settings for flags (fixes bug 16547)
 +    * Completely revamped map editor with better end-user experience
 +    * New AI system codenamed Echo for better and easier AI development
-+    * New economic AI using Echo called ReachToInfinity
++    * New economic AI using Echo called Econo
 +    * New war-based AI called WarRush
 +
 +Miscellaneous improvements

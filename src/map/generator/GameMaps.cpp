@@ -25,7 +25,7 @@ bool Game::oldMakeIslandsMap(MapGenerationDescriptor &descriptor)
 		map.setUMatPos(descriptor.bootX[s]+2, descriptor.bootY[s]+2, GRASS, squareSize);
 		
 		Sint32 typeNum=globalContainer->buildingsTypes.getTypeNum("swarm", 0, false);
-		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], globalContainer->buildingsTypes.get(typeNum), -1, false))
+		if (!checkRoomForBuilding(descriptor.bootX[s], descriptor.bootY[s], globalContainer->buildingsTypes.get(typeNum), s, false))
 		{
 			if (verbose)
 				printf("Failed to add swarm of team %d\n", s);
@@ -83,4 +83,3 @@ bool Game::makeRandomMap(MapGenerationDescriptor &descriptor)
 	}
 	return true;
 }
-

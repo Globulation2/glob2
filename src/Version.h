@@ -96,6 +96,20 @@
 // version 89 preserves live team statistics and their sampling cadence
 // version 90 marks the weighted per-swim-class pathfinding and sqrt(2) diagonal timing (#184):
 //            the simulation changed, so replays recorded before it diverge and are refused
+// version 92 walks the hiring buckets by building instead of by index, so a bucket
+//            resized mid-pass no longer skips or repeats a building
+// version 93 eliminates a colony whose remaining units are all trapped (#180)
+// version 94 apportions fetch jobs across the resources a building wants instead of
+//            letting the nearest one take every slot, and prices a loaded candidate
+//            rather than refusing it: the simulation changed again
+// version 95 routes and hires by round trip (fetch plus carry) and saves the
+//            round-trip fields with the map runtime state: the simulation changed again
+// version 96 saves AIEcho::Construction::BuildingOrder::id, which was assigned at
+//            runtime and never serialised, so every pending building order restored
+//            from a save carried an uninitialised heap value as its register key
+// version 97 rebuilds route fields from a map topology generation instead of a proximity
+//            walk, and saves the generation so a loaded game rebuilds on the same ticks:
+//            the simulation changed again
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above

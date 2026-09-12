@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Regression tests for translation corruption that can break the game loader."""
 import importlib.util
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -11,6 +12,29 @@ spec.loader.exec_module(checker)
 
 
 class TranslationAuditTest(unittest.TestCase):
+    def test_catalogs_do_not_reintroduce_english_fallbacks(self):
+        root = Path(__file__).resolve().parents[1]
+        allowed = json.loads((root / 'test/translation_shared_values.json').read_text())
+        english, errors = checker.read_table(root / 'data/texts.en.txt')
+        self.assertEqual(errors, [])
+        for name in checker.read_lines(root / 'data/texts.list.txt')[1:]:
+            if name == 'data/texts.en.txt':
+                continue
+            translated, errors = checker.read_table(root / name)
+            self.assertEqual(errors, [])
+            vocabulary = set(allowed['standard_names_and_key_legends']) | set(
+                allowed['shared_vocabulary'][Path(name).name])
+            for key in checker.read_lines(root / 'data/texts.keys.txt'):
+                source = english[key]
+                with self.subTest(catalog=name, key=key):
+                    value = translated.get(key)
+                    self.assertIsNotNone(value)
+                    if source and source not in vocabulary:
+                        self.assertNotEqual(value, source, 'English fallback')
+                    if key.endswith('-Profile]'):
+                        self.assertEqual(value.count(r'\n\n'), source.count(r'\n\n'))
+                        self.assertTrue(all(part.strip() for part in value.split(r'\n\n')))
+
     def test_duplicate_values_are_reported_without_rewriting(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'texts.test.txt'

@@ -161,6 +161,7 @@ void GlobalContainer::loadClient(void)
 	if (!runNoX)
 	{
 		// create graphic context
+		GraphicContext::setRequestedUiScale(settings.uiScale / 100.0f);
 		gfx = Toolkit::initGraphic(settings.screenWidth, settings.screenHeight, settings.screenFlags, "Globulation 2", "glob 2");
 		gfx->setMinRes(640, 480);
 		
@@ -243,6 +244,7 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(60);
 		// load resources
 		resources = Toolkit::getSprite("data/gfx/ressource");
+		resources->createTextureAtlas(true);
 		resourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
 		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
 		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");

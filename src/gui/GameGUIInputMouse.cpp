@@ -78,7 +78,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
         panMouseX=mx;panMouseY=my;
 	}
 
-	moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+	viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 
 	dragStep(mx, my, button);
 }
@@ -86,8 +86,8 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 void GameGUI::handleMapClick(int mx, int my, int button)
 {
 	updateCamera();
-	if (!camera.contains(mx,my) || my<16) return;
-	mx=mapMouseX(mx);my=mapMouseY(my);
+	if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
+	if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
 	if (selectionMode==TOOL_SELECTION)
 	{
 		toolManager.handleMouseDown(mx, my, localTeamNo, viewportX, viewportY);
@@ -162,7 +162,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
 				if ((buildingTeam==localTeamNo)
 					|| game.map.isFOWDiscovered(mapX, mapY, localTeam->me)
 					|| (game.map.isMapDiscovered(mapX, mapY, localTeam->me) && (game.teams[buildingTeam]->allies&(1<<localTeamNo)))
-					|| globalContainer->replaying )
+					|| globalContainer->isViewingGame() )
 				{
 					setSelection(BUILDING_SELECTION, gbid);
 					selectionPushed=true;

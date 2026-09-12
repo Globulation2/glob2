@@ -285,14 +285,14 @@ static void proactiveProtection() {
     a.budget.farming_clearing_duration=1500;a.budget.farming_clearing_quota=8;
     a.update_farming(c);
     for(auto o:c.managementOrders) if(auto p=dynamic_cast<Management::AddArea*>(o.get()))
-        if(p->areaType==ForbiddenArea) for(auto xy:p->locations) f.game.map.setForbidden(xy.x,xy.y,f.player.team->me);
+        if(p->areaType==ForbiddenArea) for(auto xy:p->locations) f.game.map.addForbidden(xy.x,xy.y,f.player.team->teamNumber);
     c.managementOrders.clear();a.manage_land_clearing(c);
     int x=0,y=0;assert(c.get_building_position(a.proactive_clearing_flag,x,y));
     int released=0;
     for(auto o:c.managementOrders) if(auto p=dynamic_cast<Management::RemoveArea*>(o.get()))
         if(p->areaType==ForbiddenArea) for(auto xy:p->locations) {
             if(f.game.map.isForbidden(xy.x,xy.y,f.player.team->me))++released;
-            f.game.map.setForbidden(xy.x,xy.y,0);
+            f.game.map.removeForbidden(xy.x,xy.y,f.player.team->teamNumber);
         }
     assert(released>0);c.managementOrders.clear();a.timer+=64;a.update_farming(c);
     int openWood=0;

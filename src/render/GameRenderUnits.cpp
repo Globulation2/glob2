@@ -14,6 +14,7 @@
 #include <cmath>
 
 
+#include "BuildingFailureDisplay.h"
 #include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
@@ -21,6 +22,7 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
+#include "UnitDrawGeometry.h"
 #include "UnitSkin.h"
 #include "Utilities.h"
 #include "GameGUI.h"
@@ -30,6 +32,8 @@
 #include "Brush.h"
 #include "UnitSkin.h"
 #include "FertilityCalculatorDialog.h"
+#include "FailureShapes.h"
+#include <algorithm>
 
 
 // Unit rendering. Split from Game_render.cpp.
@@ -50,7 +54,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int dy=unit->dy;
 
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 		if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
@@ -61,9 +65,12 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	assert(unit->action<NB_MOVE);
 	const UnitSkin &skin = g_unitSkins[unit->typeNum];
 	imgid=skin.startImage[unit->action];
-	// Draw the map copy being visited, including repeated copies in wide views.
-	int px = x * 32;
-	int py = y * 32;
+	// Anchor on the visible occurrence x/y rather than on unit->posX/posY, so a
+	// unit on a map seam keeps its opposite-edge copy, and recover the unit's
+	// own tile from it: while entering a building the map slot lags one square
+	// behind the position (see UnitDrawGeometry.h).
+	int px = unitDrawTile(x, viewportX, unit->posX, map.getW()) * Map::TILE_PX;
+	int py = unitDrawTile(y, viewportY, unit->posY, map.getH()) * Map::TILE_PX;
 	int deltaLeft=255-unit->delta;
 	if (unit->action<BUILD)
 	{
@@ -97,6 +104,23 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
 	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+
+	// Units the selected building could not hire wear the badge, the same one
+	// shown next to the tally in the building panel. The panel asks the same
+	// gate, so a unit never wears a badge the panel has no row to explain.
+	if (view.selectedBuilding && view.selectedBuilding->recordFailingUnits && unit->owner->teamNumber==localTeam
+		&& shouldShowFailingUnitMarkers(view.selectedBuilding->unitsFailingRequirements,
+			Building::UnitCantWorkReasonSize, Building::UnitNotAvailable,
+			(int)view.selectedBuilding->unitsWorking.size(), view.selectedBuilding->desiredMaxUnitWorking))
+	{
+		for (int reason=0; reason<Building::UnitCantWorkReasonSize; ++reason)
+		{
+			const std::vector<Uint16>& failing=view.selectedBuilding->unitsFailingByReason[reason];
+			if (std::find(failing.begin(), failing.end(), unit->gid)!=failing.end())
+				// Fist-size, in the tile's top-right corner: a badge, not a ring around the unit.
+				drawFailureShape(globalContainer->gfx, px+26, py+6, 4, static_cast<Building::UnitCantWorkReason>(reason), failureShapeColor());
+		}
+	}
 
 	// draw selection
 	if (unit==view.selectedUnit)
@@ -228,7 +252,7 @@ void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int 
 void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, Unit* unit)
 {
 	Uint32 visibleTeams = teams[localTeam]->me;
-	if (globalContainer->replaying) visibleTeams = globalContainer->replayVisibleTeams;
+	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	if(unit->owner->sharedVisionOther & visibleTeams)
 	{

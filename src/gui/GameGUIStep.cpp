@@ -40,7 +40,7 @@ using std::static_pointer_cast;
 
 void GameGUI::moveFlag(int mx, int my, bool drop)
 {
-	if (globalContainer->replaying) return;
+	if (globalContainer->isViewingGame()) return;
 
 	int posX, posY;
 	Building* selBuild=selectionBuilding();
@@ -75,6 +75,10 @@ void GameGUI::moveFlag(int mx, int my, bool drop)
 
 void GameGUI::dragStep(int mx, int my, int button)
 {
+    if (torusView.active()) {
+        if (!torusPointerDown || !torusMapPointer(mx, my, mx, my)) return;
+    }
+
 	if(zoomControlPushed)return;
 	/* We used to use SDL_GetMouseState, like the following
 		commented-out code, but that was buggy and prevented
@@ -83,10 +87,10 @@ void GameGUI::dragStep(int mx, int my, int button)
 		it was at the time in the middle of the event stream, not
 		as it is now.  So instead we make sure the correct data is
 		passed to us as a parameter. */
-	if ((button&SDL_BUTTON(1)) && (mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
+	if ((button&SDL_BUTTON(1)) && (torusView.active() || mx<globalContainer->gfx->getW()-RIGHT_MENU_WIDTH))
 	{
-		if (!camera.contains(mx,my) || my<16) return;
-		mx=mapMouseX(mx);my=mapMouseY(my);
+		if (!torusView.active() && (!camera.contains(mx,my) || my<16)) return;
+		if (!torusView.active()) {mx=mapMouseX(mx);my=mapMouseY(my);}
 		// Update flag
 		if (selectionMode == BUILDING_SELECTION)
 		{
@@ -107,8 +111,7 @@ void GameGUI::dragStep(int mx, int my, int button)
    information, because we need the information as it was in the
    middle of the event stream.  (There may be many later events we
    have not yet processed.) */
-int lastMouseX = 0, lastMouseY = 0; // can't make these Uint16 because of SDL_GetMouseState
-Uint16 lastMouseButtonState = 0;
+
 
 void GameGUI::step(void)
 {
@@ -179,6 +182,16 @@ void GameGUI::step(void)
 #		endif
 		else if ((event.type == SDL_MOUSEBUTTONDOWN) || (event.type == SDL_MOUSEBUTTONUP))
 		{
+			/* Motion is coalesced and replayed after the poll loop, but a
+				button event must not overtake movement that happened before
+				it.  A middle-button release clears panPushed, so a pan whose
+				drag and release land in the same frame would otherwise be
+				discarded entirely. */
+			if (wasMouseMotion)
+			{
+				processEvent(&mouseMotionEvent);
+				wasMouseMotion=false;
+			}
 			lastMouseButtonState = SDL_GetMouseState (&lastMouseX, &lastMouseY);
 			/* We ignore what SDL_GetMouseState does to
 				lastMouseX and lastMouseY, because that may
@@ -232,10 +245,13 @@ void GameGUI::step(void)
 	viewportY &= game.map.getMaskH();
 
 	updateCamera();
+	// Pushed every frame rather than at press and release: several paths clear
+	// panPushed, and this way the two cannot drift apart.
+	torusView.setPanHeld(panPushed);
 	if ((viewportX!=oldViewportX) || (viewportY!=oldViewportY))
 	{
 		dragStep(lastMouseX, lastMouseY, lastMouseButtonState);
-		moveParticles(oldViewportX, viewportX, oldViewportY, viewportY);
+		viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
 	}
 
 	assert(localTeam);
@@ -338,6 +354,17 @@ void GameGUI::checkWonConditions(void)
 {
 	if (hasEndOfGameDialogBeenShown || globalContainer->replaying)
 		return;
+
+    if(globalContainer->liveSpectating) {
+        for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
+            inGameMenu=IGM_END_OF_GAME;
+            gameMenuScreen.reset(new InGameEndOfGameScreen(Toolkit::getStringTable()->getString("[Match finished]"),true));
+            hasEndOfGameDialogBeenShown=true;
+            miniMapPushed=false;
+            break;
+        }
+        return;
+    }
 
 	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
 	{

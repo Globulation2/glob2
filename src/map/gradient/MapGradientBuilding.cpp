@@ -11,6 +11,8 @@
 
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
 // flag's zone or, for a clearing flag, the clearable resources in its range.
+// updateRoundTripGradient: the gradient of the trip to a resource and on to
+// the building.
 
 void Map::updateGlobalGradient(Building *building, int swimClass)
 {
@@ -27,6 +29,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 	assert(gradient);
 	building->dirtyGradient[swimClass]=false;
 	building->lastGlobalGradientUpdateStepCounter[swimClass]=game->stepCounter;
+	building->gradientGeneration[swimClass]=topologyGeneration;
 
 	bool isClearingFlag=false;
 	bool isWarFlag=false;
@@ -125,4 +128,43 @@ void Map::updateGlobalGradient(Building *building, int swimClass)
 		building->locked[canSwim]=false;
 
 	propagateGradient(gradient, swimClass);
+}
+
+
+void Map::updateRoundTripGradient(Building *building, int resourceType, int swimClass)
+{
+	Uint16 *gradient=building->roundTripGradient[resourceType][swimClass];
+	assert(gradient);
+	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
+	const Uint16 *toBuilding=building->globalGradient[swimClass];
+	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass);
+	// Same obstacles as the resource gradient. A resource tile is seeded with
+	// the cost of carrying from the cheapest free cell next to it, where the
+	// unit harvests, to the building.
+	Uint16 bestSeed=GRADIENT_UNREACHABLE;
+	for (size_t i=0; i<size; i++)
+	{
+		if (toResource[i]!=GRADIENT_AT_GOAL)
+		{
+			gradient[i]=toResource[i]==GRADIENT_FORBIDDEN ? GRADIENT_FORBIDDEN : GRADIENT_UNREACHABLE;
+			continue;
+		}
+		size_t x=i&wMask;
+		size_t y=i>>wDec;
+		Uint16 best=GRADIENT_UNREACHABLE;
+		for (int d=0; d<8; d++)
+		{
+			size_t n=coordToIndex(x+tabClose[d][0], y+tabClose[d][1]);
+			if (toResource[n]>GRADIENT_UNREACHABLE && toBuilding[n]>best)
+				best=toBuilding[n];
+		}
+		gradient[i]=best;
+		if (best>bestSeed)
+			bestSeed=best;
+	}
+	// Units farther than this from the cheapest fetch are scored by the plain
+	// distances instead (the callers fall back when a cell is unreachable
+	// here), which keeps the build small on big maps.
+	constexpr int ROUND_TRIP_RANGE=128*GRADIENT_STEP;
+	propagateGradient(gradient, swimClass, GRADIENT_AT_GOAL-bestSeed+ROUND_TRIP_RANGE);
 }

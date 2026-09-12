@@ -337,6 +337,17 @@ namespace GAGCore
 		int windowW = 0, windowH = 0;
 		//! GL drawable size in pixels; exceeds the window size on HiDPI displays
 		int drawableW = 0, drawableH = 0;
+		//! resolution asked of setRes(), before the interface scale divides it
+		int requestedW = 0, requestedH = 0;
+		//! window pixels per logical pixel; widgets keep their pixel sizes and the frame is scaled up
+		float uiScale = 1.0f;
+		//! the scale setRes() was asked for, before the window floor reduced it
+		float wantedUiScale = 1.0f;
+		//! interface scale for the next setRes(); 0 follows the desktop
+		static float requestedUiScale;
+		//! push minW/minH to SDL scaled by uiScale, so the floor applies to the
+		//! logical surface rather than to the window it is stretched into
+		void applyWindowMinimumSize(void);
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
 		bool mapTransformActive=false;
@@ -356,6 +367,7 @@ namespace GAGCore
 		//! refresh the window and drawable sizes after the window was resized
 		void updateWindowSize(void);
 		SDL_Window *window = nullptr;
+		unsigned glContextGeneration = 0;
 		SDL_GLContext context = nullptr;
 		SDL_threadID eventThread = 0;
 		bool pollingEvents = false;
@@ -391,9 +403,24 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+		unsigned getGLContextGeneration() const { return glContextGeneration; }
+
 		// modifiers
 		virtual bool setRes(int w, int h, Uint32 flags);
 		virtual void setRes(int w, int h) { setRes(w, h, optionFlags); }
+		//! the resolution asked of setRes(), which the interface scale then divides
+		int getRequestedW(void) const { return requestedW; }
+		int getRequestedH(void) const { return requestedH; }
+		//! interface scale to apply on the next setRes(); 0 follows the desktop
+		static void setRequestedUiScale(float scale) { requestedUiScale = scale; }
+		//! the interface scale in use
+		float getUiScale(void) const { return uiScale; }
+		//! the scale the last setRes() was asked for, before the window floor reduced it
+		float getWantedUiScale(void) const { return wantedUiScale; }
+		//! the interface scale the desktop asks for, or 0 when nothing reports one
+		static float querySystemUiScale(void);
+		//! the scale actually used for a preference; 0 follows the desktop, GLOB2_UI_SCALE wins
+		static float effectiveUiScale(float preferred);
 		//! true when the window pixel size differs from the logical resolution, so output is scaled
 		bool isScalingActive(void);
 		bool toggleFullscreen();
@@ -531,15 +558,16 @@ namespace GAGCore
 		void loadFrame(SDL_RWops *frameStream, SDL_RWops *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
-		bool createTextureAtlas();
 		//! Return a rotated drawable surface for actColor, create it if necessary
 		virtual DrawableSurface *getRotatedSurface(int index);
 		void reloadHighResolution();
 		DrawableSurface *getColoredSurface(RotatedImage *image);
-		DrawableSurface *getDrawSurface(unsigned index, bool teamColor, bool experiment);
+		DrawableSurface *prepareDrawSurface(unsigned index, bool teamColor, bool experiment);
 		void loadExperimentFrame(const std::string &frameName, const std::string &rotatedName);
 	
 	public:
+		//! Opt into batching variable-size frames; callers must finishDrawingSprite.
+		bool createTextureAtlas(bool allowVariableSizes = false);
 		struct HighResolutionStats {size_t cpuBytes=0, coloredFrames=0;};
 		static HighResolutionStats highResolutionStats();
 		static void setHighResolution(bool enabled);

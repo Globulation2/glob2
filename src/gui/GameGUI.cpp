@@ -81,6 +81,8 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 
 void GameGUI::init()
 {
+	torusView.reset();
+	torusPointerDown = false;
 	camera=MapCamera();zoomControlPushed=false;
 	if (!globalContainer->runNoX) Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
 	notmenu = false;
@@ -211,6 +213,7 @@ void GameGUI::adjustInitialViewport()
 
 std::shared_ptr<Order> GameGUI::getOrder(void)
 {
+	if(globalContainer->liveSpectating) { orderQueue.clear(); return std::make_shared<NullOrder>(); }
 	std::shared_ptr<Order> order;
 	if (orderQueue.size()==0)
 		order=shared_ptr<Order>(new NullOrder());
@@ -319,7 +322,7 @@ void GameGUI::updateCamera()
 bool GameGUI::zoomMap(double steps,int x,int y)
 {
     updateCamera();
-    if (!globalContainer->gfx->canDrawStretchedSprite() || y<16 || !camera.contains(x,y)) return false;
+    if (torusView.active() || !globalContainer->gfx->canDrawStretchedSprite() || y<16 || !camera.contains(x,y)) return false;
     camera.wheel(steps,x,y);
     if(!globalContainer->gfx->canDrawStretchedSprite()){camera.zoom=1;camera.offsetX=camera.offsetY=0;}
     viewportX=camera.tileX();viewportY=camera.tileY();
@@ -327,4 +330,9 @@ bool GameGUI::zoomMap(double steps,int x,int y)
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
     view.mouseX=mapMouseX(mouseX);view.mouseY=mapMouseY(mouseY);
     return true;
+}
+
+void GameGUI::configureLiveSpectatorView()
+{
+	minimap.setMinimapMode(Minimap::HideFOW);
 }

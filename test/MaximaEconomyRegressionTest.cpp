@@ -490,7 +490,7 @@ void retirementRequiresHarvestRoute()
     assert(ai.remote_swarm_since.count(0));
     // Explicitly forbidden territory is not available productive capacity.
     for(int y=0;y<64;++y) for(int x=0;x<64;++x)
-        f.game.map.setForbidden(x,y,f.player.team->me);
+        f.game.map.addForbidden(x,y,f.player.team->teamNumber);
     ai.update_swarm_retirement(c);
     assert(ai.remote_swarm_since.count(0));
     ai.timer=7000; ai.update_swarm_retirement(c);

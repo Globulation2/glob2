@@ -243,6 +243,7 @@ namespace GAGGUI
 
 		//! Sets the screen position
 		virtual void setScreenPosition(int nx, int ny) { x = nx; y = ny; }
+        void setDimensions(int width, int height) { w = width; h = height; }
 	
 	protected:
 		//! Compute the actual position from the layout informations

@@ -168,40 +168,19 @@ int Glob2::runTestMapGeneration()
 	{
 		MapGenerationDescriptor descriptor;
 		
-		int type = (syncRand() % 7) + 1;
-		int wDec = (syncRand() % 4) + 6;
-		int hDec = (syncRand() % 4) + 6;
-		int teams = (syncRand() % 12) + 1;
-		int workers = (syncRand() % 8) + 1;
-		int repeat = (syncRand() % 5);
-		int smooth = (syncRand() % 8) + 1;
-		
-		int oldBeach = (syncRand() % 4);
-		
-		descriptor.method = static_cast<MapGenerationDescriptor::Method>(type);
-		descriptor.nbTeams = teams;
-		descriptor.wDec=wDec;
-		descriptor.hDec=hDec;
-		descriptor.smooth = smooth;
-		descriptor.oldBeach=oldBeach;
-		descriptor.nbWorkers=workers;
-		descriptor.logRepeatAreaTimes = repeat;
-		
-		descriptor.waterRatio=syncRand() % 100;
-		descriptor.sandRatio=syncRand() % 100;
-		descriptor.grassRatio=syncRand() % 100;
-		descriptor.desertRatio=syncRand() % 100;
-		descriptor.wheatRatio=syncRand() % 100;
-		descriptor.woodRatio=syncRand() % 100;
-		descriptor.algaeRatio=syncRand() % 100;
-		descriptor.stoneRatio=syncRand() % 100;
-		descriptor.fruitRatio=syncRand() % 100;
-		descriptor.riverDiameter=syncRand() % 100;
-		descriptor.craterDensity=syncRand() % 100;
-		descriptor.extraIslands=syncRand() % 9;
-		//eISLANDS
-		descriptor.oldIslandSize=syncRand() % 74;
-		
+		using D = MapGenerationDescriptor;
+		auto method = static_cast<D::Method>(D::eSWAMP + syncRand() % (D::METHOD_COUNT - 1));
+		descriptor.setMethodDefaults(method);
+		auto controls = D::sharedControls();
+		const auto& specific = D::controls(method);
+		controls.insert(controls.end(), specific.begin(), specific.end());
+		for (const auto& control : controls)
+		{
+			int choices = (control.maximum - control.minimum) / control.step + 1;
+			control.set(descriptor, control.minimum + (syncRand() % choices) * control.step);
+		}
+		if (!descriptor.hasTerrainWeight())
+			continue;
 
 		std::cout<<"Generating Map"<<std::endl;		
 		MapGenerator generator;

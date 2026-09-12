@@ -147,7 +147,7 @@ static void integrationRegressions()
 
     // A saved empty pre-growth tile must still belong to the applied mask.
     game.map.setMapDiscovered(10,10,player.team->me);
-    game.map.setForbidden(10,10,player.team->me);
+    game.map.addForbidden(10,10,player.team->teamNumber);
     assert(!game.map.isResource(10,10));
     ai.initialize_farming_cache(context);
     assert(ai.applied_farm_protection_mask[10*64+10]);

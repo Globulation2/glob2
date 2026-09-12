@@ -66,10 +66,10 @@ Nincs MI
 Numbi kis lépésekben, gyorsan terjeszkedik. Könnyű.
 [AINumbi]
 MINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity nem támad, de óriási bázisokat épít, és tömegesen térít át egységeket. Könnyű.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo nem támad, de óriási bázisokat épít, és tömegesen térít át egységeket. Könnyű.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush gyorsan és kíméletlenül támad, gyakran a végsőkig szorítva a védekező játékost. Közepes nehézség.
 [AIWarrush]
@@ -261,7 +261,7 @@ Védelem
 [Delete game]
 Kijelölt játék törlése
 [delete]
-Delete
+Törlés
 [desert]
 sivatag
 [destroy building]
@@ -605,9 +605,9 @@ ebből
 [ok]
 Rendben
 [old islands terrain]
-régi véletlenszerű szigetek
+Csipkézett szigetvilág
 [old random terrain]
-régi véletlenszerű terep
+Töredezett partvidék
 [on press]
 Lenyomás
 [On the spot]
@@ -1217,7 +1217,7 @@ Sebesség: 1x (többjátékos)
 [game speed help]
 Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
 [AICortex-Description]
-Cortex - Kísérleti, háromrétegű MI. Fejlesztés alatt.
+A Cortex új búzamezők felé terjeszkedik, és harcba küldi a harcosok csoportjait, akiket étkezdék és kórházak támogatnak a frontvonal közelében. Közepes nehézségű. Kísérleti.
 [ERROR_CANT_LOAD_MAP]
 A térkép nem tölthető be: a fájl sérült vagy nem kompatibilis verziójú.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1228,3 +1228,553 @@ Cortex
 Bent: %0
 [Units still working: %0]
 Még dolgozó egységek: %0
+[2 vs 2]
+2 vs 2
+[AI strategy & counterplay]
+MI-stratégia és ellenjáték
+[AICastor-Profile]
+Stratégia: Óvatosan bővül, és kevés erőforrással rendelkező térképeken jól teljesít.\n\nErősségek: A korlátozott bővítés hatékony a szűkös erőforrásokkal rendelkező játékokban.\n\nJavasolt ellenjáték: Foglald el a területet korán. Ne feltételezd, hogy az erőforrások hiánya gyengíti ezt az AI-t.
+[AICastor-Summary]
+Óvatos terjeszkedés; szűkös erőforrásokkal jól teljesít.
+[AICortex-Profile]
+Stratégia: Kezeli az élelmiszerellátást, terjeszkedik új búzaföldek felé, és egymás utáni harcoscsoportokat állít össze. A frontvonal közelében található étkezdék és kórházak támogatják a támadásokat a bázistól távol.\n\nErősségek: Erősítést küld együtt, fenntartja a katonai nyomást, és reagál az élelmiszerhiányra.\n\nJavasolt ellenjáték: Harcolj az új búzatáblák felett, és támadd meg a frontvonal közelében lévő támogató épületeket. Támadj, mielőtt a harcosok csoportjai készen állnak.\n\nKísérleti MI. Közepes nehézség; az ellenjátékra vonatkozó javaslatok nem összehasonlító teszteken alapuló értékelések.
+[AICortex-Summary]
+Az élelmiszer-ellátást szem előtt tartva terjeszkedik, és támogatja támadó csapatait.
+[AINicowar-Profile]
+Stratégia: Gyorsan terjeszkedik, és hatalmas seregekkel támadja meg az ellenfeleket.\n\nErősségek: A gyors terjeszkedés támogatja az agresszív katonai támadásokat.\n\nJavasolt ellenjáték: Akadályozd a terjeszkedését. Használd a terepet az egyszerre harcra képes ellenséges csapatok számának csökkentésére.
+[AINicowar-Summary]
+Gyorsan terjeszkedik és nagy hadseregeket épít fel az agresszív támadásokhoz.
+[AINone-Profile]
+Stratégia: Az AI nem ad parancsokat.\n\nErősségek: Kiszámítható, inaktív ellenfél a kísérletekben.\n\nGyengeségek: Nem terjeszkedik és nem alkalmazkodik.
+[AINone-Summary]
+Tétlen kolónia kísérletekhez.
+[AINumbi-Profile]
+Stratégia: Gyorsan, de kis léptékben bővül. Könnyebb ellenfél a telepkezelés gyakorlásához.\n\nErősségek: Lehetővé teszi a gazdaságirányítás és a harc elsajátítását.\n\nJavasolt ellenjáték: Fejlessz erősebb gazdaságot, és képezd ki a hadseregedet, mielőtt támadsz.
+[AINumbi-Summary]
+Gyors bővítés kis léptékben.
+[AIEcono-Profile]
+Stratégia: Nem támad, hanem hatalmas bázisokat épít fel, és aktívan a saját oldalára fordítja az ellenséges egységeket.\n\nErősségek: A terjeszkedés és az egységátalakítás közvetlen támadások nélkül fenyegeti az ellenfeleket.\n\nJavasolt ellenjáték: Fejleszd korán a kolóniádat, és ne küldj egységeket oda, ahol az ellenség átalakíthatja őket.
+[AIEcono-Summary]
+Hatalmas bázisok és átalakítások támadások helyett.
+[AIWarrush-Profile]
+Stratégia: Korán és erőteljesen támad, mielőtt az ellenfél befejezné a felkészülést.\n\nErősségek: Kiaknázza a védtelen terjeszkedést és a lassú katonai felkészülést.\n\nJavasolt ellenjáték: Vészeld át az első támadást a gazdaságod fenntartásával, majd indíts ellentámadást.
+[AIWarrush-Summary]
+Gyors támadások, amelyek tesztelik a korai védekezést.
+[Algae]
+Alga
+[Alliances]
+Szövetségek
+[Beach size]
+Strand mérete
+[Blue]
+Kék
+[Brown]
+Barna
+[Built-in maps]
+Beépített térképek
+[Can change in game]
+Változhat a játékban
+[Closed]
+Zárva
+[Colonies]
+Kolóniák
+[Colony]
+Kolónia
+[Concrete islands]
+Különálló szigetek
+[Conquest only]
+Csak hódítás
+[Conquest or prestige]
+Hódítás vagy presztízs
+[Could not launch this map. Your setup is retained; try again.]
+Nem sikerült elindítani ezt a térképet. A beállítás megmarad; próbáld újra.
+[Could not load this map. Choose another map or retry.]
+Nem sikerült betölteni ezt a térképet. Válasszon másik térképet, vagy próbálja újra.
+[Crater lakes]
+Kráter tavak
+[Custom]
+Egyedi
+[Custom teams]
+Egyedi csapatok
+[Cyan]
+Cián
+[Desert weight]
+Sivatag súlyozása
+[Easy]
+Könnyű
+[Explore as you play]
+Fedezze fel játék közben
+[Extra colony assignments are retained for larger maps.]
+Az extra kolónia-hozzárendelések megmaradnak a nagyobb térképeknél.
+[Extra islands]
+Extra szigetek
+[FFA]
+Mindenki mindenki ellen
+[Fruit]
+Gyümölcs
+[Game Rules]
+Játékszabályok
+[Game speed]
+A játék sebessége
+[Generate & play]
+Generálás és játék
+[Give at least one terrain type a nonzero weight.]
+Legalább egy tereptípusnak adjon nullától eltérő súlyt.
+[Grass weight]
+Fű súlyozása
+[Gray]
+Szürke
+[Green]
+Zöld
+[Hard]
+Nehéz
+[Height]
+Magasság
+[Invalid colony count.]
+Érvénytelen kolóniaszám.
+[Island size]
+Sziget mérete
+[Islands]
+Szigetek
+[Isles]
+Kis szigetek
+[Lake density]
+Tavak sűrűsége
+[Landscape]
+Táj
+[Last colony standing]
+Utolsó túlélő kolónia
+[Layout]
+Elrendezés
+[Locked teams]
+Lezárt csapatok
+[Magenta]
+Magenta
+[Map]
+Térkép
+[Map knowledge]
+Térképismeret
+[Match finished]
+A mérkőzés befejeződött
+[Medium]
+Közepes
+[Medium - Experimental]
+Közepes – Kísérleti
+[No AI orders]
+Az MI nem ad parancsokat
+[Old islands]
+Csipkézett szigetvilág
+[Old random]
+Töredezett partvidék
+[Open at least one colony to start a match.]
+Nyisson meg legalább egy kolóniát a mérkőzés elindításához.
+[Open book]
+Felfedett világ
+[Pink]
+Rózsaszín
+[Play this map]
+Játék ezen a térképen
+[Players & Teams]
+Játékosok és csapatok
+[Premade maps]
+Előre elkészített térképek
+[Preview ready. Start plays this exact map.]
+Az előnézet készen áll. A játék elindítása pontosan ezt a térképet használja.
+[Purple]
+Lila
+[Quick clash]
+Gyors csata
+[Random map]
+Véletlenszerű térkép
+[Red]
+Piros
+[Repeat landscape]
+Táj ismétlése
+[Resources]
+Erőforrások
+[Restore standard rules]
+Alapértelmezett szabályok visszaállítása
+[Revealed terrain does not reveal all enemy activity.]
+A feltárt terep nem fedi fel az összes ellenséges tevékenységet.
+[River]
+Folyó
+[River width]
+Folyó szélessége
+[Sand weight]
+Homok súlyozása
+[Select a valid map.]
+Válasszon érvényes térképet.
+[Shared control needs a free controller slot (maximum 12).]
+A közös irányításhoz szabad játékos- vagy MI-hely kell (legfeljebb 12).
+[Smoothing]
+Simítás
+[Standard]
+Alapértelmezett
+[Start game]
+Indítsa el a játékot
+[Starting workers]
+Kezdeti munkások
+[Starting workers: Game Rules tab.]
+Kezdeti munkások: Játékszabályok lap.
+[Swamp]
+Mocsár
+[Team]
+Csapat
+[Terrain]
+Terep
+[Terrain revealed]
+Felfedett terep
+[Try a ruleset, then make it your own.]
+Próbáljon ki egy szabályrendszert, majd tegye a sajátjának.
+[Victory]
+Győzelem
+[Watch game]
+Nézd meg a játékot
+[Water weight]
+Víz súlyozása
+[White]
+Fehér
+[Width]
+Szélesség
+[Yellow]
+Sárga
+[You]
+Te
+[You + AI]
+Te + MI
+[You and the AI both issue orders. Uses two controller slots.]
+Te és az MI is adhattok parancsokat. Két játékos- vagy MI-helyet foglal.
+[You vs all]
+Te mindenki ellen
+[Your maps]
+A térképeid
+[colonies]
+kolóniák
+[* Changed from standard.]
+* Eltér az alapértelmezettől.
+[World & diplomacy]
+Világ és diplomácia
+[Starting conditions & pace]
+Indulási feltételek és tempó
+[Inactive]
+Inaktív
+[8 workers / 2x speed]
+8 munkás / 2x sebesség
+[Changes the pace of the whole simulation.]
+Módosítja az egész szimuláció ütemét.
+[Choose whether teams can change during the match.]
+Válassza ki, hogy a csapatok változhatnak-e a mérkőzés során.
+[Classic colony building]
+Hagyományos telepfejlesztés
+[Dimensions and colony count are set above.]
+A méretek és a telepek száma fent van beállítva.
+[Generate & watch]
+Generálás és megtekintés
+[Info]
+Info
+[Map-defined starting units]
+A térképen meghatározott kezdő egységek
+[No maps in this library.]
+Nincsenek térképek ebben a könyvtárban.
+[Premade maps retain their authored starting units.]
+Az előre elkészített térképek megtartják a kiindulási egységeiket.
+[Premade: only speed changes (2x)]
+Kész térkép: csak a sebesség változik (2x)
+[Start with terrain known]
+Kezdje ismert tereppel
+[This colony will not join the match.]
+Ez a kolónia nem csatlakozik a mérkőzéshez.
+[This landscape uses a fixed terrain recipe.]
+Ez a táj rögzített terepreceptet használ.
+[This landscape uses fixed resource placement.]
+Ez a táj rögzített erőforrás-elhelyezést használ.
+[Win through conquest]
+Nyerj hódítással
+[You control this colony.]
+Te irányítod ezt a kolóniát.
+[controllers]
+játékosok és MI-k
+[Use]
+Válassza ki
+[Lime]
+Lime zöld
+[Teal]
+Kékeszöld
+[Azure]
+Égszínkék
+[Updating map preview...]
+Térkép előnézetének frissítése...
+[Generation failed. Adjust settings or press Start to retry.]
+A generálás nem sikerült. Módosítsa a beállításokat, vagy nyomja meg a Start gombot az újrapróbálkozáshoz.
+[Preview unavailable. Adjust settings or start to retry.]
+Az előnézet nem érhető el. Módosítsa a beállításokat, vagy indítsa el a játékot, és próbálja újra.
+[automatic torus view]
+Automatikus tórusznézet
+[toggle torus view]
+Váltás 2D és tórusznézet között
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+A 2 a 2 ellen négy nyitott kolóniát igényel. A Te mindenki ellen módhoz emberi játékos kell.
+[Alliance]
+Szövetség
+[Choose a rule to change it.]
+Válasszon egy szabályt a módosításhoz.
+[Conquest only removes prestige victory; map scripts still apply.]
+A csak a hódításon alapuló győzelem letiltja a presztízsgyőzelmet; a térképszkriptek továbbra is érvényesek.
+[Control]
+Irányítás
+[Controller]
+Irányító
+[Generate preview]
+Előnézet generálása
+[Generation failed. Adjust settings or try again.]
+A generálás nem sikerült. Módosítsa a beállításokat, vagy próbálja újra.
+[Map settings changed. Generate a new preview or start.]
+A térkép beállításai megváltoztak. Hozzon létre egy új előnézetet vagy kezdje el.
+[Map source]
+Térkép forrása
+[Map-defined]
+Térkép által meghatározott
+[Match format]
+Játék formátum
+[No current preview]
+Nincs aktuális előnézet
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Gyors csata: dupla sebesség; A generált térképek 8 munkással kezdődnek.
+[Reroll]
+Hozzon létre egy másik térképet
+[Ruleset]
+Szabálykészlet
+[Select a map from the library.]
+Válasszon térképet a könyvtárból.
+[Starting workers affects generated maps only.]
+A dolgozók kezdeti száma csak a generált térképekre vonatkozik.
+[Unavailable]
+Nem elérhető
+[Use selection]
+Használja a kijelölést
+[Quick clash on premade maps: only speed changes (2x).]
+Gyors csata előre elkészített térképeken: csak a sebesség változik (dupla sebesség).
+[Generate a preview to explore this world.]
+Készítsen előnézetet a világ felfedezéséhez.
+[More workers jump-start colony growth. Changes the generated map.]
+Több munkás felgyorsítja a kolóniák növekedését. Ez a beállítás módosítja a generált térképet.
+[No warriors]
+Harcosok nélkül
+[settings Add key to sequence]
+Billentyű hozzáadása a sorozathoz
+[settings Add shortcut]
+Új gyorsbillentyű
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Az egérgörgővel módosíthatja a hozzárendelt egységek számát. Kikapcsolva tartsa lenyomva a Ctrl billentyűt. A Shift használatával a zászló sugarát állíthatja. Ez a beállítás más menükben is szabályozza a görgő használatát.
+[settings Adjust music and voice volume.]
+Állítsa be a zene és a beszéd hangerejét.
+[settings Adjust the pace of play.]
+Állítsa be a játék sebességét.
+[settings Advanced binding]
+Speciális billentyűbeállítások
+[settings Artwork & effects]
+Grafika és effektusok
+[settings Audio]
+Hang
+[settings Bind Escape]
+Escape hozzárendelése
+[settings Building]
+Épület
+[settings Building defaults]
+Épületek alapbeállításai
+[settings Cancel]
+Mégsem
+[settings Changes saved automatically]
+A változtatások automatikusan mentésre kerülnek
+[settings Changes you make during play update these defaults for future games.]
+A játék közben végrehajtott változtatások frissítik ezeket az alapértelmezett értékeket a jövőbeli játékokhoz.
+[settings Changing the renderer requires a restart.]
+A renderer megváltoztatása újraindítást igényel.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Válasszon ki egy billentyűparancsot a szerkesztéshez, vagy adjon hozzá egy másik billentyűparancsot egy művelethez.
+[settings Choose a window or fill the screen.]
+Válasszon ablakos vagy teljes képernyős módot.
+[settings Choose how the game looks on your screen.]
+Válassza ki, hogyan nézzen ki a játék a képernyőn.
+[settings Completed]
+Befejezett épületek
+[settings Construction]
+Építés
+[settings Controls]
+Irányítás
+[settings Could not change display mode. The previous mode was restored.]
+Nem sikerült megváltoztatni a megjelenítési módot. Az előző mód visszaállt.
+[settings Could not save]
+Nem sikerült menteni
+[settings Current display]
+Aktuális megjelenítési mód
+[settings Default]
+Alapértelmezett
+[settings Display]
+Kijelző
+[settings Display & graphics]
+Kijelző és grafika
+[settings Display the Globulation 2 cursor.]
+Jelenítse meg a Globulation 2 kurzort.
+[settings Done]
+Kész
+[settings Edit shortcut]
+Billentyűparancs szerkesztése
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Nagyítja a menüket, a szöveget és az oldalsávot nagy felbontású képernyőn.
+[settings Flags]
+Zászlók
+[settings Full]
+Teljes
+[settings Fullscreen]
+Teljes képernyő
+[settings Game]
+Játék
+[settings Game speed]
+Játéksebesség
+[settings Gameplay]
+Játékmenet
+[settings Graphics detail]
+Grafikai részletesség
+[settings Interface scale]
+Felület mérete
+[settings Keep]
+Megtartás
+[settings Keep this display mode?]
+Megtartja ezt a megjelenítési módot?
+[settings Keep your volume levels while silencing audio.]
+Minden hang elnémítása a mentett hangerőszint módosítása nélkül.
+[settings Key]
+Billentyű
+[settings Keyboard shortcuts]
+Billentyűparancsok
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+A billentyűk a megadott sorrendben alkotnak sorozatot. Minden lépést a megfelelő billentyű lenyomása vagy felengedése válthat ki.
+[settings Language]
+Nyelv
+[settings Language & player]
+Nyelv és játékos
+[settings Language used throughout the interface.]
+Az egész felületen használt nyelv.
+[settings Level]
+Szint
+[settings Map editor]
+Térképszerkesztő
+[settings Match the desktop]
+Az asztalhoz igazítva
+[settings Missing font]
+Hiányzó betűtípus
+[settings Music volume]
+Zene hangereje
+[settings Mute audio]
+Hang némítása
+[settings Name shown to other players.]
+A többi játékos számára látható név.
+[settings Off]
+Kikapcsolva
+[settings On]
+Bekapcsolva
+[settings OpenGL is not available in this build.]
+Az OpenGL nem érhető el ebben a buildben.
+[settings Player name]
+A játékos neve
+[settings Press]
+Lenyomáskor
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Nyomjon meg egy billentyűt. Az Escape megszakítja a rögzítést. Az Escape hozzárendeléséhez válassza az „Escape hozzárendelése” lehetőséget.
+[settings Radius]
+Sugár
+[settings Reduced]
+Csökkentett
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+A csökkentett részletesség kikapcsolja a felhőket és árnyékaikat, egyszerűsíti a mágikus effektusokat és csökkenti az átlátszóságot.
+[settings Release]
+Felengedéskor
+[settings Remember assignments between games]
+Hozzárendelések megőrzése játékok között
+[settings Remove key]
+Billentyű eltávolítása
+[settings Remove shortcut]
+Billentyűparancs eltávolítása
+[settings Renderer]
+Grafikus megjelenítő
+[settings Replace conflicting bindings]
+Ütköző billentyűparancsok lecserélése
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Visszaállítja az alapértelmezett billentyűparancsokat ebben a környezetben? A változtatások azonnal mentésre kerülnek.
+[settings Resolution]
+Képernyőfelbontás
+[settings Restore default shortcuts]
+Alapértelmezett billentyűparancsok visszaállítása
+[settings Retry]
+Újra
+[settings Revert]
+Változtatások visszaállítása
+[settings Reverting in]
+Visszaállítás ennyi idő múlva:
+[settings Save shortcut]
+Billentyűparancs mentése
+[settings Saved — restart required]
+Mentve – újraindítás szükséges
+[settings Saving…]
+Mentés…
+[settings Scroll wheel enabled]
+Egérgörgő engedélyezve
+[settings Set starting unit assignments by building type and level.]
+Állítsa be a hozzárendelt egységek kezdeti számát az épület típusa és szintje szerint.
+[settings Set your language and player name.]
+Állítsa be a nyelvet és a játékos nevét.
+[settings Settings]
+Beállítások
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
+[settings Software]
+Szoftveres renderelés
+[settings Starting unit counts and radius for newly placed flags.]
+Az újonnan elhelyezett zászlókhoz rendelt egységek kezdeti száma és a zászlók sugara.
+[settings This shortcut conflicts with existing bindings:]
+Ez a billentyűparancs ütközik a meglévő billentyűparancsokkal:
+[settings Trigger]
+Aktiválási esemény
+[settings Unbound]
+Nincs hozzárendelve
+[settings Unit counts assigned to new construction sites.]
+Új építkezésekhez rendelt egységszámok.
+[settings Unit counts for completed buildings.]
+Az elkészült épületekhez rendelt egységek száma.
+[settings Unit counts while a building is being upgraded.]
+Az épület fejlesztése során hozzárendelt egységek száma.
+[settings Units]
+Egységek
+[settings Upgrades]
+Épületfejlesztések
+[settings Use game cursor]
+Játék kurzorának használata
+[settings Voice volume]
+Beszéd hangereje
+[settings Window mode]
+Ablakmód
+[settings Window-only sizes also switch the game to windowed mode.]
+Ha olyan felbontást választunk, amely csak az ablakos módot támogatja, akkor a játék is ablakos módba vált.
+[settings Windowed]
+Ablakos
+[settings Windowed only]
+Csak ablakos
+[settings seconds]
+másodperc
+[settings Flag]
+Zászló
+[settings High-resolution artwork]
+Nagy felbontású grafika
+[settings Apply artwork on the next game or editor load (OpenGL).]
+A kiválasztott grafika a játék vagy a térképszerkesztő következő betöltésekor lép érvénybe (OpenGL).
+[settings Automatic torus view]
+Automatikus tórusznézet
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+A tórusz alakú térkép áttekintésének automatikus megjelenítése a térképen való mozgás közben (OpenGL).
+[Channel width]
+Csatorna szélessége
+[Land bridge width]
+Földhíd szélessége
+[Lake size]
+Tó mérete

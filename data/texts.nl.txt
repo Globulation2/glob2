@@ -66,10 +66,10 @@ Geen AI
 Numbi is een gemakkelijke vijand die traag groeit en niet goed met grondstoffen kan omgaan. Moeilijkheidsgraad: Gemakkelijk.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity valt niet aan, maar probeert in evenwicht met de natuur enorme steden op te bouwen. Let wel op, want met zijn vele herbergen lopen jouw globs al snel over. Moeilijkheidsgraad: Gemakkelijk.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo valt niet aan, maar probeert in evenwicht met de natuur enorme steden op te bouwen. Let wel op, want met zijn vele herbergen lopen jouw globs al snel over. Moeilijkheidsgraad: Gemakkelijk.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush is snel en onverbiddelijk. Voor je het weet staan zijn legers aan jouw deur en moet je verdedigen alsof je leven er van afhangt, want dat is ook zo. Moeilijkheidsgraad: Gemiddeld.
 [AIWarrush]
@@ -419,7 +419,7 @@ Verzamelen
 [high priority]
 Hoge prioriteit
 [hints]
-Hints
+Tips
 [home]
 Basis
 [hospital explanation 2]
@@ -627,9 +627,9 @@ waarvan
 [ok]
 Ok
 [old islands terrain]
-Oude eilanden
+Ruige Archipel
 [old random terrain]
-Oud willekeurig terrein
+Versplinterde Kust
 [on press]
 Indrukken
 [On the spot]
@@ -1243,7 +1243,7 @@ Snelheid: 1x (multiplayer)
 [game speed help]
 Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
 [AICortex-Description]
-Cortex - Experimentele AI met drie lagen. In ontwikkeling.
+Cortex breidt zich uit naar nieuwe tarwevelden en stuurt groepen krijgers de strijd in, ondersteund door herbergen en ziekenhuizen nabij de frontlinie. Gemiddelde moeilijkheidsgraad. Experimenteel.
 [ERROR_CANT_SAVE_CAMPAIGN]
 De campagne kon niet worden opgeslagen. Controleer of de doelmap bestaat, beschrijfbaar is en voldoende vrije ruimte heeft.
 [AICortex]
@@ -1252,3 +1252,553 @@ Cortex
 Nog binnen: %0
 [Units still working: %0]
 Nog aan het werk: %0
+[2 vs 2]
+2 tegen 2
+[AI strategy & counterplay]
+AI-strategie en tegenspel
+[AICastor-Profile]
+Strategie: breidt zich voorzichtig uit en presteert goed op kaarten met weinig middelen.\n\nSterke punten: Beperkte uitbreiding is effectief in games met schaarse middelen.\n\nVoorgesteld tegenspel: Bezet gebied vroeg. Ga er niet van uit dat een gebrek aan middelen deze AI zal verzwakken.
+[AICastor-Summary]
+Voorzichtige uitbreiding; kan goed omgaan met schaarse grondstoffen.
+[AICortex-Profile]
+Strategie: Beheert de voedselvoorraden, breidt uit naar nieuwe tarwevelden en verzamelt opeenvolgende groepen krijgers. Herbergen en ziekenhuizen in de buurt van de frontlinie ondersteunen aanvallen ver van de basis.\n\nSterke punten: Stuurt samen versterkingen, handhaaft de militaire druk en reageert op voedseltekorten.\n\nVoorgesteld tegenspel: vecht voor controle over nieuwe tarwevelden en val de ondersteunende gebouwen nabij de frontlinie aan. Val aan voordat de groepen krijgers er klaar voor zijn.\n\nExperimentele AI. Gemiddelde moeilijkheidsgraad; de tactische suggesties zijn geen beoordelingen op basis van prestatietests.
+[AICortex-Summary]
+Uitbreiding met oog voor voedsel en ondersteunde aanvalsgolven.
+[AINicowar-Profile]
+Strategie: Breidt zich snel uit en valt tegenstanders aan met enorme legers.\n\nSterke punten: Snelle expansie ondersteunt agressieve militaire aanvallen.\n\nVoorgesteld tegenspel: Voorkom de uitbreiding ervan. Gebruik terrein om het aantal vijandelijke troepen dat tegelijk kan vechten te verminderen.
+[AINicowar-Summary]
+Breidt zich snel uit en bouwt grote legers voor agressieve aanvallen.
+[AINone-Profile]
+Strategie: De AI geeft geen commando's.\n\nSterke punten: Een voorspelbare, inactieve tegenstander voor experimenten.\n\nZwakke punten: breidt zich niet uit en past zich niet aan.
+[AINone-Summary]
+Een inactieve kolonie voor experimenten.
+[AINumbi-Profile]
+Strategie: Breidt snel uit, maar op kleine schaal. Een gemakkelijkere tegenstander voor het oefenen van koloniebeheer.\n\nSterke punten: Hiermee leer je zowel economisch management als vechten.\n\nVoorgesteld tegenspel: ontwikkel een sterkere economie en train je leger voordat je aanvalt.
+[AINumbi-Summary]
+Snelle uitbreiding op kleine schaal.
+[AIEcono-Profile]
+Strategie: Valt niet aan, maar bouwt enorme bases en zet vijandelijke eenheden actief om naar zijn eigen kant.\n\nSterke punten: Uitbreiding en eenheidsconversie bedreigen tegenstanders zonder directe aanvallen.\n\nVoorgesteld tegenspel: ontwikkel je kolonie vroeg en vermijd het sturen van eenheden waar de vijand ze kan bekeren.
+[AIEcono-Summary]
+Enorme bases en conversie in plaats van aanvallen.
+[AIWarrush-Profile]
+Strategie: Valt vroeg en krachtig aan, voordat de tegenstanders klaar zijn met voorbereiden.\n\nSterke punten: maakt gebruik van onverdedigde expansie en trage militaire voorbereiding.\n\nVoorgesteld tegenspel: overleef de eerste aanval met behoud van je economie, en voer dan een tegenaanval uit.
+[AIWarrush-Summary]
+Snelle aanvallen die je vroege verdediging op de proef stellen.
+[Algae]
+zeewier
+[Alliances]
+Allianties
+[Beach size]
+Strandgrootte
+[Blue]
+Blauw
+[Brown]
+Bruin
+[Built-in maps]
+Ingebouwde kaarten
+[Can change in game]
+Kan tijdens het spel veranderen
+[Closed]
+Gesloten
+[Colonies]
+Kolonies
+[Colony]
+Kolonie
+[Concrete islands]
+Afzonderlijke eilanden
+[Conquest only]
+Alleen verovering
+[Conquest or prestige]
+Verovering of prestige
+[Could not launch this map. Your setup is retained; try again.]
+Kan deze kaart niet starten. Uw instellingen blijven behouden; probeer het opnieuw.
+[Could not load this map. Choose another map or retry.]
+Kan deze kaart niet laden. Kies een andere kaart of probeer het opnieuw.
+[Crater lakes]
+Kratermeren
+[Custom]
+Aangepast
+[Custom teams]
+Aangepaste teams
+[Cyan]
+Cyaan
+[Desert weight]
+Woestijnaandeel
+[Easy]
+Gemakkelijk
+[Explore as you play]
+Ontdek terwijl je speelt
+[Extra colony assignments are retained for larger maps.]
+Extra kolonietoewijzingen blijven behouden voor grotere kaarten.
+[Extra islands]
+Extra eilanden
+[FFA]
+Iedereen tegen iedereen
+[Fruit]
+Vruchten
+[Game Rules]
+Spelregels
+[Game speed]
+Spelsnelheid
+[Generate & play]
+Genereer en speel
+[Give at least one terrain type a nonzero weight.]
+Geef ten minste één terreintype een gewicht dat niet nul is.
+[Grass weight]
+Grasaandeel
+[Gray]
+Grijs
+[Green]
+Groen
+[Hard]
+Moeilijk
+[Height]
+Hoogte
+[Invalid colony count.]
+Ongeldig aantal kolonies.
+[Island size]
+Grootte van het eiland
+[Islands]
+Eilanden
+[Isles]
+Kleine eilandjes
+[Lake density]
+Merendichtheid
+[Landscape]
+Landschap
+[Last colony standing]
+Laatste kolonie die nog overeind staat
+[Layout]
+Indeling
+[Locked teams]
+Vaste teams
+[Magenta]
+Magenta
+[Map]
+Kaart
+[Map knowledge]
+Kaartkennis
+[Match finished]
+Wedstrijd afgelopen
+[Medium]
+Gemiddeld
+[Medium - Experimental]
+Gemiddeld - Experimenteel
+[No AI orders]
+Geen AI-opdrachten
+[Old islands]
+Ruige Archipel
+[Old random]
+Versplinterde Kust
+[Open at least one colony to start a match.]
+Open minstens één kolonie om een wedstrijd te starten.
+[Open book]
+Geopenbaarde wereld
+[Pink]
+Roze
+[Play this map]
+Speel deze kaart
+[Players & Teams]
+Spelers & Teams
+[Premade maps]
+Vooraf gemaakte kaarten
+[Preview ready. Start plays this exact map.]
+Voorbeeld klaar. Bij het starten van het spel wordt deze exacte kaart gebruikt.
+[Purple]
+Paars
+[Quick clash]
+Snelle strijd
+[Random map]
+Willekeurige kaart
+[Red]
+Rood
+[Repeat landscape]
+Herhaal landschap
+[Resources]
+Hulpbronnen
+[Restore standard rules]
+Herstel standaardregels
+[Revealed terrain does not reveal all enemy activity.]
+Onthuld terrein onthult niet alle vijandelijke activiteiten.
+[River]
+Rivier
+[River width]
+Rivierbreedte
+[Sand weight]
+Zandaandeel
+[Select a valid map.]
+Selecteer een geldige kaart.
+[Shared control needs a free controller slot (maximum 12).]
+Gedeelde besturing vereist een vrije plaats voor een mens of AI (maximaal 12).
+[Smoothing]
+Gladmaken
+[Standard]
+Standaard
+[Start game]
+Spel starten
+[Starting workers]
+Werkers bij aanvang
+[Starting workers: Game Rules tab.]
+Werkers bij aanvang: tabblad Spelregels.
+[Swamp]
+Moeras
+[Team]
+Team
+[Terrain]
+Terrein
+[Terrain revealed]
+Terrein onthuld
+[Try a ruleset, then make it your own.]
+Probeer een regelset en maak deze vervolgens uw eigen.
+[Victory]
+Overwinning
+[Watch game]
+Bekijk spel
+[Water weight]
+Wateraandeel
+[White]
+Wit
+[Width]
+Breedte
+[Yellow]
+Geel
+[You]
+Jij
+[You + AI]
+Jij + AI
+[You and the AI both issue orders. Uses two controller slots.]
+Jij en de AI geven allebei bevelen. Gebruikt twee spelersplaatsen.
+[You vs all]
+Jij tegen iedereen
+[Your maps]
+Jouw kaarten
+[colonies]
+kolonies
+[* Changed from standard.]
+* Gewijzigd ten opzichte van standaard.
+[World & diplomacy]
+Wereld & diplomatie
+[Starting conditions & pace]
+Startvoorwaarden & tempo
+[Inactive]
+Inactief
+[8 workers / 2x speed]
+8 werkers / 2x snelheid
+[Changes the pace of the whole simulation.]
+Verandert het tempo van de hele simulatie.
+[Choose whether teams can change during the match.]
+Kies of teams tijdens de wedstrijd kunnen wisselen.
+[Classic colony building]
+Traditionele kolonieontwikkeling
+[Dimensions and colony count are set above.]
+Afmetingen en kolonietelling zijn hierboven ingesteld.
+[Generate & watch]
+Genereer en bekijk
+[Info]
+Info
+[Map-defined starting units]
+Kaartgedefinieerde starteenheden
+[No maps in this library.]
+Geen kaarten in deze bibliotheek.
+[Premade maps retain their authored starting units.]
+Bestaande kaarten behouden de starteenheden die de maker heeft gekozen.
+[Premade: only speed changes (2x)]
+Bestaande kaart: alleen de snelheid verandert (2x)
+[Start with terrain known]
+Begin met bekend terrein
+[This colony will not join the match.]
+Deze kolonie doet niet mee aan de wedstrijd.
+[This landscape uses a fixed terrain recipe.]
+Dit landschap maakt gebruik van een vast terreinrecept.
+[This landscape uses fixed resource placement.]
+Dit landschap gebruikt een vaste verdeling van grondstoffen.
+[Win through conquest]
+Win door verovering
+[You control this colony.]
+Jij bestuurt deze kolonie.
+[controllers]
+mensen en AI’s
+[Use]
+Selecteer
+[Lime]
+Limoengroen
+[Teal]
+Blauwgroen
+[Azure]
+Hemelsblauw
+[Updating map preview...]
+Kaartvoorbeeld bijwerken...
+[Generation failed. Adjust settings or press Start to retry.]
+Generatie mislukt. Pas de instellingen aan of druk op Start om het opnieuw te proberen.
+[Preview unavailable. Adjust settings or start to retry.]
+Voorbeeld niet beschikbaar. Wijzig de instellingen of start het spel om het opnieuw te proberen.
+[automatic torus view]
+Automatische torusweergave
+[toggle torus view]
+Wissel tussen 2D- en torusweergave
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 tegen 2 heeft vier open kolonies nodig. Jij versus iedereen heeft een mens nodig.
+[Alliance]
+Alliantie
+[Choose a rule to change it.]
+Kies een regel om deze te wijzigen.
+[Conquest only removes prestige victory; map scripts still apply.]
+Overwinning alleen door verovering schakelt prestige-overwinning uit; kaartscripts zijn nog steeds van toepassing.
+[Control]
+Koloniebesturing
+[Controller]
+Bestuurd door
+[Generate preview]
+Voorbeeld genereren
+[Generation failed. Adjust settings or try again.]
+Generatie mislukt. Pas de instellingen aan of probeer het opnieuw.
+[Map settings changed. Generate a new preview or start.]
+Kaartinstellingen gewijzigd. Genereer een nieuw voorbeeld of begin.
+[Map source]
+Kaartbron
+[Map-defined]
+Kaartgedefinieerd
+[Match format]
+Spelformaat
+[No current preview]
+Geen actueel voorbeeld
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Snelle strijd: dubbele snelheid; gegenereerde kaarten beginnen met 8 werkers.
+[Reroll]
+Genereer nog een kaart
+[Ruleset]
+Regelset
+[Select a map from the library.]
+Selecteer een kaart uit de bibliotheek.
+[Starting workers affects generated maps only.]
+Het initiële aantal werkers geldt alleen voor gegenereerde kaarten.
+[Unavailable]
+Niet beschikbaar
+[Use selection]
+Gebruik selectie
+[Quick clash on premade maps: only speed changes (2x).]
+Snelle strijd op vooraf gemaakte kaarten: alleen de snelheid verandert (dubbele snelheid).
+[Generate a preview to explore this world.]
+Genereer een voorbeeld om deze wereld te verkennen.
+[More workers jump-start colony growth. Changes the generated map.]
+Meer werkers versnellen de groei van de kolonie. Deze instelling verandert de gegenereerde kaart.
+[No warriors]
+Geen krijgers
+[settings Add key to sequence]
+Toets aan reeks toevoegen
+[settings Add shortcut]
+Sneltoets toevoegen
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Gebruik het muiswiel om het aantal toegewezen eenheden te wijzigen. Als deze optie is uitgeschakeld, houdt u de Ctrl-toets ingedrukt om het wiel te gebruiken. Houd de Shift-toets ingedrukt om de vlagradius aan te passen. Deze optie regelt ook de muiswielinvoer in andere menu's.
+[settings Adjust music and voice volume.]
+Pas het muziek- en stemvolume aan.
+[settings Adjust the pace of play.]
+Pas de snelheid van het spel aan.
+[settings Advanced binding]
+Geavanceerde sneltoetsinstellingen
+[settings Artwork & effects]
+Grafische vormgeving en effecten
+[settings Audio]
+Geluid
+[settings Bind Escape]
+Escape-toets toewijzen
+[settings Building]
+Gebouw
+[settings Building defaults]
+Standaardinstellingen voor gebouwen
+[settings Cancel]
+Annuleren
+[settings Changes saved automatically]
+Wijzigingen worden automatisch opgeslagen
+[settings Changes you make during play update these defaults for future games.]
+Wijzigingen tijdens het spelen werken deze standaardinstellingen bij voor toekomstige partijen.
+[settings Changing the renderer requires a restart.]
+Het wijzigen van de renderer vereist een herstart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Selecteer een sneltoets om deze te bewerken, of voeg een andere sneltoets voor een actie toe.
+[settings Choose a window or fill the screen.]
+Kies tussen een venster en volledig scherm.
+[settings Choose how the game looks on your screen.]
+Kies hoe het spel er op uw scherm uitziet.
+[settings Completed]
+Voltooide gebouwen
+[settings Construction]
+Bouw
+[settings Controls]
+Spelbesturing
+[settings Could not change display mode. The previous mode was restored.]
+Kon de weergavemodus niet wijzigen. De vorige modus is hersteld.
+[settings Could not save]
+Kan niet opslaan
+[settings Current display]
+Huidige weergave
+[settings Default]
+Standaard
+[settings Display]
+Beeld
+[settings Display & graphics]
+Beeld en grafische instellingen
+[settings Display the Globulation 2 cursor.]
+Geef de Globulation 2-cursor weer.
+[settings Done]
+Klaar
+[settings Edit shortcut]
+Sneltoets bewerken
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Vergroot menu's, tekst en de zijbalk op een scherm met hoge resolutie.
+[settings Flags]
+Vlaggen
+[settings Full]
+Volledige details
+[settings Fullscreen]
+Volledig scherm
+[settings Game]
+Spel
+[settings Game speed]
+Spelsnelheid
+[settings Gameplay]
+Spelverloop
+[settings Graphics detail]
+Grafische details
+[settings Interface scale]
+Schaal van de interface
+[settings Keep]
+Behouden
+[settings Keep this display mode?]
+Deze weergavemodus behouden?
+[settings Keep your volume levels while silencing audio.]
+Demp al het geluid zonder de opgeslagen volumeniveaus te wijzigen.
+[settings Key]
+Toets
+[settings Keyboard shortcuts]
+Sneltoetsen
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+De toetsen vormen een geordende reeks. Elke toets kan bij indrukken of loslaten activeren.
+[settings Language]
+Taal
+[settings Language & player]
+Taal & speler
+[settings Language used throughout the interface.]
+Taal die in de hele interface wordt gebruikt.
+[settings Level]
+Niveau
+[settings Map editor]
+Kaarteditor
+[settings Match the desktop]
+Zoals het bureaublad
+[settings Missing font]
+Ontbrekend lettertype
+[settings Music volume]
+Volume (muziek)
+[settings Mute audio]
+Audio dempen
+[settings Name shown to other players.]
+Naam getoond aan andere spelers.
+[settings Off]
+Uit
+[settings On]
+Aan
+[settings OpenGL is not available in this build.]
+OpenGL is niet beschikbaar in deze build.
+[settings Player name]
+Naam speler
+[settings Press]
+Bij indrukken
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Druk op een toets. Escape annuleert de invoer. Kies "Escape-toets toewijzen" om Escape toe te wijzen.
+[settings Radius]
+Straal
+[settings Reduced]
+Minder details
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Met minder details worden wolken en hun schaduwen uitgeschakeld, magische effecten vereenvoudigd en de transparantie verminderd.
+[settings Release]
+Bij loslaten
+[settings Remember assignments between games]
+Eenheidstoewijzingen tussen partijen onthouden
+[settings Remove key]
+Toets verwijderen
+[settings Remove shortcut]
+Verwijder sneltoets
+[settings Renderer]
+Grafische renderer
+[settings Replace conflicting bindings]
+Vervang conflicterende sneltoetsen
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Sneltoetsen in deze context vervangen door de standaardinstellingen? De wijziging wordt onmiddellijk opgeslagen.
+[settings Resolution]
+Schermresolutie
+[settings Restore default shortcuts]
+Standaardsneltoetsen herstellen
+[settings Retry]
+Probeer het opnieuw
+[settings Revert]
+Wijzigingen terugdraaien
+[settings Reverting in]
+Herstellen over
+[settings Save shortcut]
+Sneltoets opslaan
+[settings Saved — restart required]
+Opgeslagen — opnieuw opstarten vereist
+[settings Saving…]
+Opslaan…
+[settings Scroll wheel enabled]
+Muiswiel ingeschakeld
+[settings Set starting unit assignments by building type and level.]
+Stel het aanvankelijke aantal toegewezen eenheden in per gebouwtype en niveau.
+[settings Set your language and player name.]
+Stel uw taal en spelersnaam in.
+[settings Settings]
+Instellingen
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
+[settings Software]
+Softwarematige weergave
+[settings Starting unit counts and radius for newly placed flags.]
+Aanvankelijk aantal eenheden en straal voor nieuwe vlaggen.
+[settings This shortcut conflicts with existing bindings:]
+Deze sneltoets is in conflict met bestaande sneltoetsen:
+[settings Trigger]
+Activeringsgebeurtenis
+[settings Unbound]
+Niet toegewezen
+[settings Unit counts assigned to new construction sites.]
+Aantal eenheden toegewezen aan nieuwe bouwlocaties.
+[settings Unit counts for completed buildings.]
+Aantal eenheden voor voltooide gebouwen.
+[settings Unit counts while a building is being upgraded.]
+Aantal eenheden tijdens het verbeteren van een gebouw.
+[settings Units]
+Eenheden
+[settings Upgrades]
+Upgrades van gebouwen
+[settings Use game cursor]
+Gebruik de spelcursor
+[settings Voice volume]
+Volume (spraak)
+[settings Window mode]
+Venstermodus
+[settings Window-only sizes also switch the game to windowed mode.]
+Als u een resolutie kiest die alleen in een venster werkt, schakelt het spel ook naar de venstermodus.
+[settings Windowed]
+In een venster
+[settings Windowed only]
+Alleen in een venster
+[settings seconds]
+seconden
+[settings Flag]
+Vlag
+[settings High-resolution artwork]
+Beelden in hoge resolutie
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Pas de grafische beelden toe wanneer een volgende partij of de kaarteditor wordt geladen (OpenGL).
+[settings Automatic torus view]
+Automatische torusweergave
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Toon automatisch het torusvormige kaartoverzicht terwijl u over de kaart beweegt (OpenGL).
+[Channel width]
+Kanaalbreedte
+[Land bridge width]
+Breedte van de landbrug
+[Lake size]
+Meergrootte

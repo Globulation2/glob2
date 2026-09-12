@@ -66,10 +66,10 @@ Brez UI
 Numbi se širi v manjšem obsegu, a hitro. Nizka težavnost.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity ne napada, a gradi ogromne baze in vztrajno pridobiva tuje enote na svojo stran. Nizka težavnost.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo ne napada, a gradi ogromne baze in vztrajno pridobiva tuje enote na svojo stran. Nizka težavnost.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush napada hitro in silovito ter branilca pogosto potisne do meja njegovih zmožnosti. Srednja težavnost.
 [AIWarrush]
@@ -261,7 +261,7 @@ Obramba
 [Delete game]
 Izbriši izbrano igro
 [delete]
-Delete
+Izbriši
 [desert]
 puščava
 [destroy building]
@@ -605,9 +605,9 @@ od katerih
 [ok]
 Potrdi
 [old islands terrain]
-naključni otoki (staro)
+Razgibano otočje
 [old random terrain]
-naključni teren (staro)
+Razdrobljena obala
 [on press]
 Pritisk
 [On the spot]
@@ -1217,7 +1217,7 @@ Hitrost: 1x (več igralcev)
 [game speed help]
 Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
 [AICortex-Description]
-Cortex - Poskusna triplastna umetna inteligenca. V razvoju.
+Cortex se širi proti novim pšeničnim poljem in v boj pošilja skupine bojevnikov, ki jih podpirajo restavracije in bolnišnice blizu frontne črte. Srednja težavnost. Eksperimentalno.
 [ERROR_CANT_LOAD_MAP]
 Zemljevida ni mogoče naložiti: datoteka je poškodovana ali ima nezdružljivo različico.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1228,3 +1228,553 @@ Cortex
 Znotraj: %0
 [Units still working: %0]
 Še pri delu: %0
+[2 vs 2]
+2 proti 2
+[AI strategy & counterplay]
+Strategija UI in protiigra
+[AICastor-Profile]
+Strategija: širi se previdno in dobro deluje na zemljevidih z malo viri.\n\nPrednosti: Omejena razširitev je učinkovita v igrah z omejenimi viri.\n\nPredlagana protiigra: zgodaj zasedite ozemlje. Ne domnevajte, da bo pomanjkanje virov oslabilo to umetno inteligenco.
+[AICastor-Summary]
+Previdna širitev; dobro deluje z omejenimi viri.
+[AICortex-Profile]
+Strategija: upravlja z zalogami hrane, se širi proti novim pšeničnim poljem in sestavlja zaporedne skupine bojevnikov. Restavracije in bolnišnice blizu prve črte podpirajo napade daleč od baze.\n\nPrednosti: Pošlje okrepitve skupaj, vzdržuje vojaški pritisk in se odzove na pomanjkanje hrane.\n\nPredlagana protiigra: Borite se za nadzor nad novimi pšeničnimi polji in napadite njihove podporne zgradbe blizu frontne črte. Napadite, preden so njegove skupine bojevnikov pripravljene.\n\nEksperimentalna UI. Srednja težavnost; predlogi protiigre niso ocene iz primerjalnih preizkusov.
+[AICortex-Summary]
+Razširi se z mislijo na zaloge hrane in podpira svoje napadalne čete.
+[AINicowar-Profile]
+Strategija: hitro se širi in napada nasprotnike z ogromnimi vojskami.\n\nPrednosti: Hitra širitev podpira agresivne vojaške napade.\n\nPredlagana protiigra: Preprečite njeno širitev. Uporabite teren, da zmanjšate število sovražnih čet, ki se lahko borijo hkrati.
+[AINicowar-Summary]
+Hitro se širi in gradi velike vojske za agresivne napade.
+[AINone-Profile]
+Strategija: AI ne daje nobenih ukazov.\n\nPrednosti: predvidljiv, neaktiven nasprotnik za eksperimente.\n\nSlabosti: Ne širi se ali prilagaja.
+[AINone-Summary]
+Nedejavna kolonija za eksperimente.
+[AINumbi-Profile]
+Strategija: Hitro se širi, vendar v majhnem obsegu. Lažji nasprotnik za vadbo upravljanja kolonije.\n\nPrednosti: Omogoča vam, da se naučite ekonomskega upravljanja in bojevanja.\n\nPredlagana protiigra: Razvijte močnejše gospodarstvo in izurite svojo vojsko pred napadom.
+[AINumbi-Summary]
+Hitra širitev v majhnem obsegu.
+[AIEcono-Profile]
+Strategija: Ne napada, ampak gradi ogromne baze in aktivno spreminja sovražne enote na svojo stran.\n\nPrednosti: Razširitev in pretvorba enot ogrožata nasprotnike brez neposrednih napadov.\n\nPredlagana protiigra: zgodaj razvijte svojo kolonijo in se izogibajte pošiljanju enot, kamor jih lahko sovražnik spremeni.
+[AIEcono-Summary]
+Ogromne baze in pretvorba namesto napadov.
+[AIWarrush-Profile]
+Strategija: Napade zgodaj in odločno, preden se nasprotniki končajo s pripravami.\n\nPrednosti: izkorišča nebranjeno širitev in počasne vojaške priprave.\n\nPredlagana protiigra: Preživite prvi napad in hkrati ohranite gospodarstvo, nato pa izvedite protinapad.
+[AIWarrush-Summary]
+Hitri napadi, ki preizkusijo vašo zgodnjo obrambo.
+[Algae]
+Alge
+[Alliances]
+Zavezništva
+[Beach size]
+Velikost plaže
+[Blue]
+Modra
+[Brown]
+Rjava
+[Built-in maps]
+Vgrajeni zemljevidi
+[Can change in game]
+Lahko se spremeni v igri
+[Closed]
+Zaprto
+[Colonies]
+Kolonije
+[Colony]
+Kolonija
+[Concrete islands]
+Ločeni otoki
+[Conquest only]
+Samo osvajanje
+[Conquest or prestige]
+Osvajanje ali prestiž
+[Could not launch this map. Your setup is retained; try again.]
+Zemljevida ni bilo mogoče zagnati. Nastavitve so ohranjene; poskusite znova.
+[Could not load this map. Choose another map or retry.]
+Zemljevida ni bilo mogoče naložiti. Izberite drug zemljevid ali poskusite znova.
+[Crater lakes]
+Kraterska jezera
+[Custom]
+Po meri
+[Custom teams]
+Ekipe po meri
+[Cyan]
+Cian
+[Desert weight]
+Utež puščave
+[Easy]
+Lahko
+[Explore as you play]
+Raziskujte med igranjem
+[Extra colony assignments are retained for larger maps.]
+Dodatne dodelitve kolonij se ohranijo za večje zemljevide.
+[Extra islands]
+Dodatni otoki
+[FFA]
+Vsi proti vsem
+[Fruit]
+Sadje
+[Game Rules]
+Pravila igre
+[Game speed]
+Hitrost igre
+[Generate & play]
+Ustvari in igraj
+[Give at least one terrain type a nonzero weight.]
+Vsaj enemu tipu terena določite neničelno utež.
+[Grass weight]
+Utež trave
+[Gray]
+Siva
+[Green]
+Zelena
+[Hard]
+Težko
+[Height]
+Višina
+[Invalid colony count.]
+Neveljavno število kolonij.
+[Island size]
+Velikost otoka
+[Islands]
+Otoki
+[Isles]
+Otočki
+[Lake density]
+Gostota jezer
+[Landscape]
+Pokrajina
+[Last colony standing]
+Zadnja preživela kolonija
+[Layout]
+Postavitev
+[Locked teams]
+Zaklenjene ekipe
+[Magenta]
+Magenta
+[Map]
+Zemljevid
+[Map knowledge]
+Poznavanje zemljevida
+[Match finished]
+Tekma končana
+[Medium]
+Srednje
+[Medium - Experimental]
+Srednje – eksperimentalno
+[No AI orders]
+Brez ukazov UI
+[Old islands]
+Razgibano otočje
+[Old random]
+Razdrobljena obala
+[Open at least one colony to start a match.]
+Odprite vsaj eno kolonijo, da začnete tekmo.
+[Open book]
+Razkriti svet
+[Pink]
+Roza
+[Play this map]
+Igraj na tem zemljevidu
+[Players & Teams]
+Igralci in ekipe
+[Premade maps]
+Pripravljeni zemljevidi
+[Preview ready. Start plays this exact map.]
+Predogled pripravljen. Začetek igre uporablja točno ta zemljevid.
+[Purple]
+Vijolična
+[Quick clash]
+Hitra bitka
+[Random map]
+Naključni zemljevid
+[Red]
+Rdeča
+[Repeat landscape]
+Ponavljanje pokrajine
+[Resources]
+Viri
+[Restore standard rules]
+Obnovi standardna pravila
+[Revealed terrain does not reveal all enemy activity.]
+Razkriti teren ne razkrije vseh sovražnikovih aktivnosti.
+[River]
+Reka
+[River width]
+Širina reke
+[Sand weight]
+Utež peska
+[Select a valid map.]
+Izberite veljaven zemljevid.
+[Shared control needs a free controller slot (maximum 12).]
+Skupno upravljanje zahteva prosto mesto za igralca ali UI (največ 12).
+[Smoothing]
+Glajenje
+[Standard]
+Standardno
+[Start game]
+Začni igro
+[Starting workers]
+Začetni delavci
+[Starting workers: Game Rules tab.]
+Začetni delavci: zavihek Pravila igre.
+[Swamp]
+Močvirje
+[Team]
+Ekipa
+[Terrain]
+Teren
+[Terrain revealed]
+Razkrit teren
+[Try a ruleset, then make it your own.]
+Preizkusite nabor pravil, nato pa ga naredite svojega.
+[Victory]
+Zmaga
+[Watch game]
+Oglejte si igro
+[Water weight]
+Utež vode
+[White]
+Bela
+[Width]
+Širina
+[Yellow]
+Rumena
+[You]
+Vi
+[You + AI]
+Vi + UI
+[You and the AI both issue orders. Uses two controller slots.]
+Vi in UI lahko izdajate ukaze. Zasede dve mesti za igralce in UI.
+[You vs all]
+Vi proti vsem
+[Your maps]
+Vaši zemljevidi
+[colonies]
+kolonije
+[* Changed from standard.]
+* Spremenjeno iz standarda.
+[World & diplomacy]
+Svet in diplomacija
+[Starting conditions & pace]
+Začetni pogoji in tempo
+[Inactive]
+Neaktiven
+[8 workers / 2x speed]
+8 delavcev / 2x hitrost
+[Changes the pace of the whole simulation.]
+Spremeni tempo celotne simulacije.
+[Choose whether teams can change during the match.]
+Izberite, ali se lahko ekipe zamenjajo med tekmo.
+[Classic colony building]
+Tradicionalni razvoj kolonij
+[Dimensions and colony count are set above.]
+Dimenzije in število kolonij so nastavljeni zgoraj.
+[Generate & watch]
+Ustvari in glej
+[Info]
+Informacije
+[Map-defined starting units]
+Začetne enote, določene na zemljevidu
+[No maps in this library.]
+V tej knjižnici ni zemljevidov.
+[Premade maps retain their authored starting units.]
+Predizdelani zemljevidi ohranijo svoje avtorske začetne enote.
+[Premade: only speed changes (2x)]
+Pripravljen zemljevid: spremeni se le hitrost (2x)
+[Start with terrain known]
+Začnite z znanim terenom
+[This colony will not join the match.]
+Ta kolonija se ne bo pridružila tekmi.
+[This landscape uses a fixed terrain recipe.]
+Ta pokrajina uporablja recept fiksnega terena.
+[This landscape uses fixed resource placement.]
+Ta pokrajina uporablja fiksno postavitev virov.
+[Win through conquest]
+Zmagajte z osvajanjem
+[You control this colony.]
+Vi nadzorujete to kolonijo.
+[controllers]
+igralci in UI
+[Use]
+Izberite
+[Lime]
+Limetno zelena
+[Teal]
+Modrozelena
+[Azure]
+Nebeško modra
+[Updating map preview...]
+Posodabljanje predogleda zemljevida ...
+[Generation failed. Adjust settings or press Start to retry.]
+Generiranje ni uspelo. Prilagodite nastavitve ali pritisnite Start za ponovni poskus.
+[Preview unavailable. Adjust settings or start to retry.]
+Predogled ni na voljo. Spremenite nastavitve ali zaženite igro, da poskusite znova.
+[automatic torus view]
+Samodejni torusni pogled
+[toggle torus view]
+Preklopi med 2D in torusnim pogledom
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 proti 2 zahteva štiri odprte kolonije. Vi proti vsem zahteva človeškega igralca.
+[Alliance]
+Zavezništvo
+[Choose a rule to change it.]
+Izberite pravilo, da ga spremenite.
+[Conquest only removes prestige victory; map scripts still apply.]
+Zmaga samo za osvojitev onemogoči prestižno zmago; skripti zemljevidov še vedno veljajo.
+[Control]
+Upravljanje
+[Controller]
+Upravlja
+[Generate preview]
+Ustvari predogled
+[Generation failed. Adjust settings or try again.]
+Generiranje ni uspelo. Prilagodite nastavitve ali poskusite znova.
+[Map settings changed. Generate a new preview or start.]
+Nastavitve zemljevida spremenjene. Ustvarite nov predogled ali začnite.
+[Map source]
+Vir zemljevida
+[Map-defined]
+Določeno na zemljevidu
+[Match format]
+Oblika igre
+[No current preview]
+Ni trenutnega predogleda
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Hitra bitka: dvojna hitrost; generirani zemljevidi se začnejo z 8 delavci.
+[Reroll]
+Ustvarite drug zemljevid
+[Ruleset]
+Nabor pravil
+[Select a map from the library.]
+Izberite zemljevid iz knjižnice.
+[Starting workers affects generated maps only.]
+Začetno število delavcev velja samo za generirane zemljevide.
+[Unavailable]
+Ni na voljo
+[Use selection]
+Uporabi izbor
+[Quick clash on premade maps: only speed changes (2x).]
+Hitra bitka na vnaprej pripravljenih zemljevidih: spreminja se le hitrost (dvojna hitrost).
+[Generate a preview to explore this world.]
+Ustvarite predogled za raziskovanje tega sveta.
+[More workers jump-start colony growth. Changes the generated map.]
+Več delavcev pospeši rast kolonije. Ta nastavitev spremeni ustvarjeni zemljevid.
+[No warriors]
+Brez bojevnikov
+[settings Add key to sequence]
+Dodaj tipko v zaporedje
+[settings Add shortcut]
+Dodaj bližnjico
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+S kolescem spreminjajte število dodeljenih enot. Če je možnost izklopljena, držite Ctrl. S tipko Shift spreminjate polmer zastave. Možnost vpliva tudi na uporabo kolesca v drugih menijih.
+[settings Adjust music and voice volume.]
+Prilagodite glasnost glasbe in govora.
+[settings Adjust the pace of play.]
+Prilagodite hitrost igre.
+[settings Advanced binding]
+Napredno urejanje bližnjic
+[settings Artwork & effects]
+Grafika in učinki
+[settings Audio]
+Zvok
+[settings Bind Escape]
+Dodeli Escape
+[settings Building]
+Zgradba
+[settings Building defaults]
+Privzete nastavitve zgradb
+[settings Cancel]
+Prekliči
+[settings Changes saved automatically]
+Spremembe se samodejno shranjujejo
+[settings Changes you make during play update these defaults for future games.]
+Spremembe, ki jih naredite med igranjem, posodobijo te privzete nastavitve za prihodnje igre.
+[settings Changing the renderer requires a restart.]
+Spreminjanje upodabljalnika zahteva ponovni zagon.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Izberite bližnjico na tipkovnici, da jo uredite, ali dodajte drugo bližnjico za dejanje.
+[settings Choose a window or fill the screen.]
+Izberite prikaz v oknu ali čez celoten zaslon.
+[settings Choose how the game looks on your screen.]
+Izberite, kako bo igra videti na vašem zaslonu.
+[settings Completed]
+Dokončane zgradbe
+[settings Construction]
+Gradnja
+[settings Controls]
+Upravljanje igre
+[settings Could not change display mode. The previous mode was restored.]
+Ni bilo mogoče spremeniti načina prikaza. Prejšnji način je bil obnovljen.
+[settings Could not save]
+Ni bilo mogoče shraniti
+[settings Current display]
+Trenutni način prikaza
+[settings Default]
+Privzeto
+[settings Display]
+Prikaz
+[settings Display & graphics]
+Zaslon in grafika
+[settings Display the Globulation 2 cursor.]
+Prikaži kazalec igre Globulation 2.
+[settings Done]
+Končano
+[settings Edit shortcut]
+Uredi bližnjico na tipkovnici
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Poveča menije, besedilo in stransko vrstico na zaslonu z visoko ločljivostjo.
+[settings Flags]
+Zastave
+[settings Full]
+Vse podrobnosti
+[settings Fullscreen]
+Celotni zaslon
+[settings Game]
+Igra
+[settings Game speed]
+Hitrost igre
+[settings Gameplay]
+Potek igre
+[settings Graphics detail]
+Podrobnosti grafike
+[settings Interface scale]
+Merilo vmesnika
+[settings Keep]
+Obdrži spremembe
+[settings Keep this display mode?]
+Obdržim ta način prikaza?
+[settings Keep your volume levels while silencing audio.]
+Izklopite ves zvok, ne da bi spremenili shranjene ravni glasnosti.
+[settings Key]
+Tipka
+[settings Keyboard shortcuts]
+Bližnjice na tipkovnici
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tipke tvorijo zaporedje v določenem vrstnem redu. Vsak korak se lahko sproži ob pritisku ali izpustu ustrezne tipke.
+[settings Language]
+Jezik
+[settings Language & player]
+Jezik in igralec
+[settings Language used throughout the interface.]
+Jezik, ki se uporablja v celotnem vmesniku.
+[settings Level]
+Stopnja
+[settings Map editor]
+Urejevalnik zemljevidov
+[settings Match the desktop]
+Kot namizje
+[settings Missing font]
+Manjka pisava
+[settings Music volume]
+Glasnost glasbe
+[settings Mute audio]
+Izklop zvoka
+[settings Name shown to other players.]
+Ime, prikazano drugim igralcem.
+[settings Off]
+Izklopljeno
+[settings On]
+Vklopljeno
+[settings OpenGL is not available in this build.]
+OpenGL ni na voljo v tej različici.
+[settings Player name]
+Ime igralca
+[settings Press]
+Ob pritisku
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Pritisnite tipko. Escape prekliče zajem vnosa. Za dodelitev tipke Escape izberite »Dodeli Escape«.
+[settings Radius]
+Polmer
+[settings Reduced]
+Manj podrobnosti
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Zmanjšane podrobnosti onemogočijo oblake in njihove sence, poenostavijo čarobne učinke in zmanjšajo prosojnost.
+[settings Release]
+Ob izpustu
+[settings Remember assignments between games]
+Zapomni si dodelitve enot med igrami
+[settings Remove key]
+Odstrani tipko
+[settings Remove shortcut]
+Odstrani bližnjico
+[settings Renderer]
+Upodabljalnik grafike
+[settings Replace conflicting bindings]
+Zamenjaj nasprotujoče si bližnjice
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Želite zamenjati bližnjice v tem kontekstu s privzetimi? Spremembe se takoj shranijo.
+[settings Resolution]
+Ločljivost zaslona
+[settings Restore default shortcuts]
+Obnovi privzete bližnjice
+[settings Retry]
+Poskusi znova
+[settings Revert]
+Razveljavi spremembe
+[settings Reverting in]
+Povrnitev čez
+[settings Save shortcut]
+Shrani bližnjico na tipkovnici
+[settings Saved — restart required]
+Shranjeno — potreben ponovni zagon
+[settings Saving…]
+Shranjevanje…
+[settings Scroll wheel enabled]
+Miškino kolesce omogočeno
+[settings Set starting unit assignments by building type and level.]
+Nastavite začetno število dodeljenih enot glede na vrsto in stopnjo zgradbe.
+[settings Set your language and player name.]
+Nastavite jezik in ime igralca.
+[settings Settings]
+Nastavitve
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
+[settings Software]
+Programsko upodabljanje
+[settings Starting unit counts and radius for newly placed flags.]
+Začetno število enot in polmer za novo postavljene zastave.
+[settings This shortcut conflicts with existing bindings:]
+Ta bližnjica na tipkovnici je v nasprotju z obstoječimi bližnjicami:
+[settings Trigger]
+Aktivacijski dogodek
+[settings Unbound]
+Bližnjica ni dodeljena
+[settings Unit counts assigned to new construction sites.]
+Število enot, dodeljenih novim gradbiščem.
+[settings Unit counts for completed buildings.]
+Število enot, dodeljenih dokončanim zgradbam.
+[settings Unit counts while a building is being upgraded.]
+Število dodeljenih enot med nadgradnjo zgradbe.
+[settings Units]
+Enote
+[settings Upgrades]
+Nadgradnje zgradb
+[settings Use game cursor]
+Uporabi kazalec igre
+[settings Voice volume]
+Glasnost govora
+[settings Window mode]
+Okenski način
+[settings Window-only sizes also switch the game to windowed mode.]
+Izbira ločljivosti, ki podpira samo okenski način, tudi preklopi igro na okenski način.
+[settings Windowed]
+V oknu
+[settings Windowed only]
+Samo v oknu
+[settings seconds]
+sekund
+[settings Flag]
+Zastava
+[settings High-resolution artwork]
+Grafika visoke ločljivosti
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Izbrana grafika se uporabi ob naslednjem nalaganju igre ali urejevalnika zemljevidov (OpenGL).
+[settings Automatic torus view]
+Samodejni torusni pogled
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Samodejno prikaži pregled zemljevida v obliki torusa med premikanjem po zemljevidu (OpenGL).
+[Channel width]
+Širina kanala
+[Land bridge width]
+Širina kopenskega mostu
+[Lake size]
+Velikost jezera

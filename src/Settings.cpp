@@ -10,6 +10,7 @@
 #include <StringTable.h>
 #include <string>
 #include <algorithm>
+#include <StreamBackend.h>
 
 using namespace GAGCore;
 
@@ -30,7 +31,9 @@ Settings::Settings()
 	screenFlags = GraphicContext::RESIZABLE | GraphicContext::CUSTOMCURSOR;
 	screenWidth = 800;
 	screenHeight = 600;
+	uiScale = 0;
 	optionFlags = 0;
+	automaticTorus = false;
 	language = "en";
 	musicVolume = 190;
 	voiceVolume = 190;
@@ -107,7 +110,9 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
+		READ_PARSED_INT(uiScale);
 		READ_PARSED_INT(optionFlags);
+		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
 		READ_PARSED_INT(musicVolume);
 		READ_PARSED_INT(voiceVolume);
@@ -162,17 +167,20 @@ void Settings::load(std::string filename)
  *
  * @param filename where the config settings will be saved
  */
-void Settings::save(std::string filename)
+bool Settings::save(std::string filename)
 {
-	OutputStream *stream = new BinaryOutputStream(Toolkit::getFileManager()->openOutputStreamBackend(filename));
-	if (!stream->isEndOfStream())
+	auto* buffer = new MemoryStreamBackend();
+	OutputStream *stream = new BinaryOutputStream(buffer);
+	// Memory output starts at EOF; it is writable regardless of its read position.
 	{
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
 		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
+		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags);
+		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());
 		Utilities::streamprintf(stream, "musicVolume=%d\n", musicVolume);
 		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);
@@ -206,7 +214,9 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "cloudHeight=%d\n",	cloudHeight);
 		Utilities::streamprintf(stream, "version=%d\n",	SETTINGS_VERSION);
 	}
+	const std::string contents(buffer->getBuffer(), buffer->getPosition());
 	delete stream;
+	return Toolkit::getFileManager()->writeFileAtomic(filename, contents);
 }
 
 

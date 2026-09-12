@@ -46,7 +46,7 @@ static constexpr int REPLAY_FAST_FORWARD_DRAW_RATIO = 16;
 //! Number of selectable AI implementations picked from when generating a
 //! random matchup. The pick is `syncRand() % AI_RANDOM_PICK_COUNT + 1`,
 //! skipping AI::NONE=0. Covers the five shipping AIs AINumbi / AICastor /
-//! AIWarrush / AIReachToInfinity / AINicowar (ids 1..5). It is intentionally
+//! AIWarrush / AIEcono / AINicowar (ids 1..5). It is intentionally
 //! NOT AI::SIZE - 1: the experimental AICortex scaffold (id 6) is excluded
 //! from random matchups, and widening this count would also shift the
 //! syncRand() draw sequence and break replay determinism.
@@ -95,4 +95,20 @@ static constexpr int MINIMAP_REFRESH_TICKS = 25;
 //! Clearing-flag local-resources gradient refresh cadence. ~5 s. See
 //! TypeSteps.cpp.
 static constexpr int CLEARING_FLAG_REFRESH_TICKS = 125;
+
+//! A building's route field, once invalidated by a map change, is rebuilt on
+//! its next use at most this often (~4 s). The map's topology generation
+//! invalidates every field of every team on any structural change, so this
+//! interval, not the invalidation, is what bounds the rebuild load.
+//! Measured on gd-bigarena-long (Oazis, 11 teams) over 8000 ticks: at 25 the
+//! topology generation costs +42.6% simulation time over a build without it;
+//! at 100 that falls to +10.3% while the symptom it exists to fix stays fully
+//! suppressed (0 stuck-unit forced rebuilds, against 195 without it). The fix
+//! erodes past ~200 (57 stuck at 200, 76 at 400, converging on 195), so 100
+//! sits inside the safe range rather than at its edge. Same shape on
+//! gd-large-4ai and at 4000 ticks. Shared with
+//! test/BuildingGradientInvalidationHarness.cpp, which has to let this
+//! interval elapse before it can judge a field. See
+//! MapPathfindBuilding.cpp.
+static constexpr unsigned int GRADIENT_DIRTY_REBUILD_TICKS = 100;
 

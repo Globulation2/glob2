@@ -61,15 +61,15 @@ Nicowar
 [AINone-Description]
 None ei tee mitään.
 [AINone]
-None
+Ei mitään
 [AINumbi-Description]
 Numbi laajentaa nopeasti ja sulavasti. Vaikeustaso: aloittelija.
 [AINumbi]
 Numbi
-[AIReachToInfinity-Description]
-ReachToInfinity - Ei hyökkää, mutta rakentaa valtavan tukikohdan ja yrittää voimakkaasti käännyttää joukkoja omalle puolelleen. Vaikeustaso: aloittelija.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo - Ei hyökkää, mutta rakentaa valtavan tukikohdan ja yrittää voimakkaasti käännyttää joukkoja omalle puolelleen. Vaikeustaso: aloittelija.
+[AIEcono]
+Econo
 [AIWarrush-Description]
 Warrush - Hyökkää nopeasti työntäen puolustamiseen painottavan pelaajan häviön partaalle. Vaikeustaso: normaali.
 [AIWarrush]
@@ -275,7 +275,7 @@ Näyttö
 [don't carry anything]
 Ei kanna mitään
 [down]
-down
+alas
 [Download Map]
 Lataa kartta
 [Download Maps]
@@ -301,7 +301,7 @@ Salasanasi:
 [enter]
 enter
 [equals]
-equals
+yhtäsuuruusmerkki
 [ERROR_CANT_LOAD_MAP]
 Karttaa ei voitu ladata: tiedosto on vioittunut tai sen versio on yhteensopimaton.
 [escape]
@@ -367,7 +367,7 @@ Terveet
 [free]
 on vapaana
 [from:]
-from:
+alkaen:
 [fruit]
 hedelmä
 [fullscreen]
@@ -421,9 +421,9 @@ Isännöi peli
 [hp]
 HP
 [Human]
-Human
+Ihminen
 [human]
-human
+ihminen
 [hungry]
 nälkäinen
 [hungryness]
@@ -447,7 +447,7 @@ saarien koko
 [islands terrain]
 Saaret
 [isles terrain]
-Isles
+saaret
 [iterate selection]
 Siirrä valinta rakennuksesta toiseen
 [jobs]
@@ -459,7 +459,7 @@ Liity
 [keyboard settings]
 Näppäimistö
 [kick]
-Kick
+Poista pelaaja
 [lan]
 LAN-peli
 [language incomplete]
@@ -607,9 +607,9 @@ joista
 [ok]
 Ok
 [old islands terrain]
-vanhat satunnaiset saaret
+Rosoiset saaret
 [old random terrain]
-vanhat satunnaiset maastot
+Rikkonainen rannikko
 [on press]
 Painallus
 [On the spot]
@@ -861,7 +861,7 @@ Koko
 [Sort By]
 Lajittelu:
 [space]
-space
+välilyönti
 [start mission]
 Aloita tehtävä
 [start new campaign]
@@ -877,7 +877,7 @@ Tilastot
 [Still (i)]
 Vielä
 [still (w)]
-Still
+Paikallaan
 [still one unit working]
 Yksi yksikkö työskentelee yhä
 [Still one]
@@ -1023,7 +1023,7 @@ sotalippusi kimppuun hyökätään
 [time]
 Aika
 [to:]
-to:
+vastaanottajalle:
 [toggle draw accessibility aids]
 Näytä/piilota joukkuenumerot
 [toggle draw information]
@@ -1043,7 +1043,7 @@ Kokonaisosumapisteet
 [Total prestige reached]
 Saavutettu kokonaismaine
 [Total]
-Total
+Yhteensä
 [tutorial text 1]
 Tervetuloa Globulation 2:n tutoriaalin! Tämä tutoriaali kattaa muun muassa majatalojen rakentamisen, alueiden tutkimisen ja vihollisten tuhoamisen. Hyödyllisestä tiedosta ei ole pulaa.
 [tutorial text 2]
@@ -1077,7 +1077,7 @@ Avaava tehtävä
 [Unnamed Area]
 {Nimetön alue}
 [up]
-up
+ylös
 [upgrade building]
 Aloita/Pysäytä Päivitys
 [Upgrade Defaults]
@@ -1219,7 +1219,7 @@ Nopeus: 1x (moninpeli)
 [game speed help]
 Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
 [AICortex-Description]
-Cortex - Kokeellinen kolmikerroksinen tekoäly. Kehitteillä.
+Cortex laajenee kohti uusia vehnäpeltoja ja lähettää soturiryhmiä taisteluun majatalojen ja sairaaloiden tukemana lähellä etulinjaa. Keskivaikeus. Kokeellinen.
 [ERROR_CANT_SAVE_CAMPAIGN]
 Kampanjaa ei voitu tallentaa. Tarkista, että kohdekansio on olemassa, siihen voi kirjoittaa ja vapaata tilaa on riittävästi.
 [AICortex]
@@ -1228,3 +1228,553 @@ Cortex
 Sisällä: %0
 [Units still working: %0]
 Yhä töissä: %0
+[2 vs 2]
+2 vs 2
+[AI strategy & counterplay]
+Tekoälyn strategia ja vastapeli
+[AICastor-Profile]
+Strategia: Laajentuu varovasti ja toimii hyvin kartoilla, joissa on vähän resursseja.\n\nVahvuudet: Rajoitettu laajennus on tehokas peleissä, joissa on niukkoja resursseja.\n\nEhdotettu vastapeli: Miehitä alue aikaisin. Älä oleta, että resurssien puute heikentää tätä tekoälyä.
+[AICastor-Summary]
+Varovainen laajentaminen; toimii hyvin niukoilla resursseilla.
+[AICortex-Profile]
+Strategia: Hallitsee ruokavarastoja, laajenee kohti uusia vehnäpeltoja ja kokoaa peräkkäisiä soturiryhmiä. Majatalot ja sairaalat lähellä etulinjaa tukevat hyökkäyksiä kaukana tukikohdasta.\n\nVahvuudet: Lähettää vahvistuksia yhdessä, ylläpitää sotilaallista painetta ja reagoi ruokapulaan.\n\nEhdotettu vastapeli: Taistele uusien vehnäpeltojen hallinnasta ja hyökkää sen tukirakennuksiin lähellä etulinjaa. Hyökkää ennen kuin sen soturiryhmät ovat valmiita.\n\nKokeellinen tekoäly. Keskitaso; vastapeliehdotukset eivät ole vertailutesteihin perustuvia arvioita.
+[AICortex-Summary]
+Laajentuu ruokavarat mielessään ja tukee hyökkääviä joukkojaan.
+[AINicowar-Profile]
+Strategia: Laajenee nopeasti ja hyökkää vastustajia vastaan valtavilla armeijoilla.\n\nVahvuudet: Nopea laajeneminen tukee aggressiivisia sotilaallisia hyökkäyksiä.\n\nEhdotettu vastapeli: Estä sen laajeneminen. Käytä maastoa vähentääksesi kerralla taistelevien vihollisjoukkojen määrää.
+[AINicowar-Summary]
+Laajenee nopeasti ja rakentaa suuria armeijoita aggressiivisia hyökkäyksiä varten.
+[AINone-Profile]
+Strategia: AI ei anna komentoja.\n\nVahvuudet: Ennustettava, ei-aktiivinen vastustaja kokeissa.\n\nHeikkoudet: Ei laajene tai mukaudu.
+[AINone-Summary]
+Toimeton siirtokunta kokeiluja varten.
+[AINumbi-Profile]
+Strategia: Laajenee nopeasti, mutta pienessä mittakaavassa. Helpompi vastustaja siirtokunnan hallinnan harjoitteluun.\n\nVahvuudet: Voit oppia sekä talouden hallintaa että taistelua.\n\nEhdotettu vastapeli: Kehitä vahvempi talous ja kouluta armeijasi ennen hyökkäämistä.
+[AINumbi-Summary]
+Nopea laajennus pienessä mittakaavassa.
+[AIEcono-Profile]
+Strategia: Ei hyökkää, vaan rakentaa valtavia tukikohtia ja muuntaa aktiivisesti vihollisen yksiköitä omalle puolelleen.\n\nVahvuudet: Laajentuminen ja yksiköiden muuntaminen uhkaavat vastustajia ilman suoria hyökkäyksiä.\n\nEhdotettu vastapeli: Kehitä siirtokuntaasi ajoissa ja vältä yksiköiden lähettämistä sinne, missä vihollinen voi muuttaa ne.
+[AIEcono-Summary]
+Valtavat tukikohdat ja muunnos hyökkäysten sijaan.
+[AIWarrush-Profile]
+Strategia: Hyökkää aikaisin ja voimakkaasti, ennen kuin vastustajat ovat valmistautuneet.\n\nVahvuudet: Käyttää hyväkseen puolustamatonta laajentumista ja hidasta sotilaallista valmistautumista.\n\nEhdotettu vastapeli: Selviydy ensimmäisestä hyökkäyksestä pitäen samalla taloutesi toiminnassa ja aloita vastahyökkäys.
+[AIWarrush-Summary]
+Nopeat hyökkäykset, jotka testaavat varhaista puolustustasi.
+[Algae]
+Levä
+[Alliances]
+Liittoumat
+[Beach size]
+Rantakoko
+[Blue]
+Sininen
+[Brown]
+Ruskea
+[Built-in maps]
+Sisäänrakennetut kartat
+[Can change in game]
+Voi muuttua pelissä
+[Closed]
+Suljettu
+[Colonies]
+Siirtokunnat
+[Colony]
+Siirtokunta
+[Concrete islands]
+Erilliset saaret
+[Conquest only]
+Vain valloitus
+[Conquest or prestige]
+Valloitus tai arvovalta
+[Could not launch this map. Your setup is retained; try again.]
+Tätä karttaa ei voitu käynnistää. Asetuksesi säilytetään; yritä uudelleen.
+[Could not load this map. Choose another map or retry.]
+Tätä karttaa ei voitu ladata. Valitse toinen kartta tai yritä uudelleen.
+[Crater lakes]
+Kraatterijärviä
+[Custom]
+Mukautettu
+[Custom teams]
+Mukautetut joukkueet
+[Cyan]
+Syaani
+[Desert weight]
+Aavikon painotus
+[Easy]
+Helppo
+[Explore as you play]
+Tutki samalla kun pelaat
+[Extra colony assignments are retained for larger maps.]
+Ylimääräiset siirtokuntamääräykset säilytetään suurempia karttoja varten.
+[Extra islands]
+Ylimääräisiä saaria
+[FFA]
+Kaikki kaikkia vastaan
+[Fruit]
+Hedelmä
+[Game Rules]
+Pelin säännöt
+[Game speed]
+Pelin nopeus
+[Generate & play]
+Luo ja pelaa
+[Give at least one terrain type a nonzero weight.]
+Anna vähintään yhdelle maastotyypille nollasta poikkeava paino.
+[Grass weight]
+Ruohon painotus
+[Gray]
+Harmaa
+[Green]
+Vihreä
+[Hard]
+Vaikea
+[Height]
+Korkeus
+[Invalid colony count.]
+Virheellinen siirtokuntien määrä.
+[Island size]
+Saaren koko
+[Islands]
+Saaret
+[Isles]
+saaret
+[Lake density]
+Järvien tiheys
+[Landscape]
+Maisema
+[Last colony standing]
+Viimeinen selviytyvä siirtokunta
+[Layout]
+Asettelu
+[Locked teams]
+Lukitut joukkueet
+[Magenta]
+Magenta
+[Map]
+Kartta
+[Map knowledge]
+Kartan tuntemus
+[Match finished]
+Ottelu päättynyt
+[Medium]
+Keskitaso
+[Medium - Experimental]
+Keskitaso - Kokeellinen
+[No AI orders]
+Ei tekoälyn käskyjä
+[Old islands]
+Rosoiset saaret
+[Old random]
+Rikkonainen rannikko
+[Open at least one colony to start a match.]
+Avaa vähintään yksi siirtokunta aloittaaksesi ottelun.
+[Open book]
+Paljastettu maailma
+[Pink]
+Vaaleanpunainen
+[Play this map]
+Pelaa tällä kartalla
+[Players & Teams]
+Pelaajat & Joukkueet
+[Premade maps]
+Valmiit kartat
+[Preview ready. Start plays this exact map.]
+Esikatselu valmis. Pelin aloittaminen käyttää tätä tarkkaa karttaa.
+[Purple]
+Violetti
+[Quick clash]
+Nopea taistelu
+[Random map]
+Satunnainen kartta
+[Red]
+Punainen
+[Repeat landscape]
+Maiseman toisto
+[Resources]
+Resurssit
+[Restore standard rules]
+Palauta vakiosäännöt
+[Revealed terrain does not reveal all enemy activity.]
+Paljastettu maasto ei paljasta kaikkea vihollisen toimintaa.
+[River]
+Joki
+[River width]
+Joen leveys
+[Sand weight]
+Hiekan painotus
+[Select a valid map.]
+Valitse kelvollinen kartta.
+[Shared control needs a free controller slot (maximum 12).]
+Jaettu hallinta vaatii vapaan paikan pelaajalle tai tekoälylle (enintään 12).
+[Smoothing]
+Tasoitus
+[Standard]
+Vakio
+[Start game]
+Aloita peli
+[Starting workers]
+Työläisiä alussa
+[Starting workers: Game Rules tab.]
+Työläisiä alussa: Pelin säännöt -välilehti.
+[Swamp]
+Suo
+[Team]
+Joukkue
+[Terrain]
+Maasto
+[Terrain revealed]
+Maasto paljastettu
+[Try a ruleset, then make it your own.]
+Kokeile sääntökokoelmaa ja muokkaa sitä mielesi mukaan.
+[Victory]
+Voitto
+[Watch game]
+Katso peli
+[Water weight]
+Veden painotus
+[White]
+Valkoinen
+[Width]
+Leveys
+[Yellow]
+Keltainen
+[You]
+Sinä
+[You + AI]
+Sinä + tekoäly
+[You and the AI both issue orders. Uses two controller slots.]
+Sinä ja tekoäly voitte antaa käskyjä. Vie kaksi pelaaja- tai tekoälypaikkaa.
+[You vs all]
+Sinä kaikkia vastaan
+[Your maps]
+Omat kartat
+[colonies]
+siirtokuntia
+[* Changed from standard.]
+* Muutettu vakiosta.
+[World & diplomacy]
+Maailma ja diplomatia
+[Starting conditions & pace]
+Lähtöolosuhteet ja vauhti
+[Inactive]
+Ei-aktiivinen
+[8 workers / 2x speed]
+8 työntekijää / 2x nopeus
+[Changes the pace of the whole simulation.]
+Muuttaa koko simulaation vauhtia.
+[Choose whether teams can change during the match.]
+Valitse, voivatko joukkueet vaihtua ottelun aikana.
+[Classic colony building]
+Perinteinen siirtokunnan rakentaminen
+[Dimensions and colony count are set above.]
+Mitat ja siirtokuntien määrä asetetaan yllä.
+[Generate & watch]
+Luo ja katso
+[Info]
+Tietoja
+[Map-defined starting units]
+Kartan määritetyt aloitusyksiköt
+[No maps in this library.]
+Tässä kirjastossa ei ole karttoja.
+[Premade maps retain their authored starting units.]
+Valmiit kartat säilyttävät tekijänsä määrittämät aloitusyksiköt.
+[Premade: only speed changes (2x)]
+Valmis kartta: vain nopeus muuttuu (2x)
+[Start with terrain known]
+Aloita tiedossa olevasta maastosta
+[This colony will not join the match.]
+Tämä siirtokunta ei liity otteluun.
+[This landscape uses a fixed terrain recipe.]
+Tämä maisema käyttää kiinteää maastoreseptiä.
+[This landscape uses fixed resource placement.]
+Tämä maisema käyttää kiinteää resurssien sijoittelua.
+[Win through conquest]
+Voita valloituksella
+[You control this colony.]
+Sinä hallitset tätä siirtokuntaa.
+[controllers]
+pelaajat ja tekoälyt
+[Use]
+Valitse
+[Lime]
+Limen vihreä
+[Teal]
+Sinivihreä
+[Azure]
+Taivaansininen
+[Updating map preview...]
+Päivitetään kartan esikatselua...
+[Generation failed. Adjust settings or press Start to retry.]
+Kartan luonti epäonnistui. Muuta asetuksia tai aloita peli yrittääksesi uudelleen.
+[Preview unavailable. Adjust settings or start to retry.]
+Esikatselu ei ole käytettävissä. Muuta asetuksia tai käynnistä peli ja yritä uudelleen.
+[automatic torus view]
+Automaattinen torusnäkymä
+[toggle torus view]
+Vaihda 2D- ja torusnäkymän välillä
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 vastaan 2 vaatii neljä avointa siirtokuntaa. Sinä vastaan kaikki vaatii ihmispelaajan.
+[Alliance]
+Liitto
+[Choose a rule to change it.]
+Valitse sääntö muuttaaksesi sitä.
+[Conquest only removes prestige victory; map scripts still apply.]
+Vain valloitus poistaa arvovaltavoiton; kartan skriptit ovat edelleen voimassa.
+[Control]
+Hallinta
+[Controller]
+Hallitsee
+[Generate preview]
+Luo esikatselu
+[Generation failed. Adjust settings or try again.]
+Kartan luonti epäonnistui. Muuta asetuksia tai yritä uudelleen.
+[Map settings changed. Generate a new preview or start.]
+Kartta-asetuksia muutettu. Luo uusi esikatselu tai aloita.
+[Map source]
+Karttalähde
+[Map-defined]
+Kartan määrittelemä
+[Match format]
+Pelin muoto
+[No current preview]
+Ei nykyistä esikatselua
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Nopea taistelu: kaksinkertainen nopeus; luodut kartat alkavat 8 työntekijällä.
+[Reroll]
+Luo toinen kartta
+[Ruleset]
+Säännöstö
+[Select a map from the library.]
+Valitse kartta kirjastosta.
+[Starting workers affects generated maps only.]
+Alkuperäinen työntekijöiden lukumäärä koskee vain luotuja karttoja.
+[Unavailable]
+Ei saatavilla
+[Use selection]
+Käytä valintaa
+[Quick clash on premade maps: only speed changes (2x).]
+Nopea taistelu valmiilla kartoilla: vain nopeus muuttuu (kaksinkertainen nopeus).
+[Generate a preview to explore this world.]
+Luo esikatselu tutustuaksesi tähän maailmaan.
+[More workers jump-start colony growth. Changes the generated map.]
+Lisää työntekijöitä nopeuttaa siirtokuntien kasvua. Tämä asetus muuttaa luotua karttaa.
+[No warriors]
+Ei sotureita
+[settings Add key to sequence]
+Lisää näppäin sarjaan
+[settings Add shortcut]
+Lisää pikanäppäin
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Muuta osoitettujen yksiköiden määrää hiiren rullalla. Jos asetus on pois käytöstä, pidä Ctrl painettuna. Shift säätää lipun sädettä. Asetus ohjaa myös rullan käyttöä muissa valikoissa.
+[settings Adjust music and voice volume.]
+Säädä musiikin ja puheen äänenvoimakkuutta.
+[settings Adjust the pace of play.]
+Säädä pelin nopeutta.
+[settings Advanced binding]
+Edistynyt pikanäppäinmuokkaus
+[settings Artwork & effects]
+Grafiikka ja tehosteet
+[settings Audio]
+Ääni
+[settings Bind Escape]
+Määritä Esc-näppäin
+[settings Building]
+Rakennus
+[settings Building defaults]
+Rakennusten oletusasetukset
+[settings Cancel]
+Peruuta
+[settings Changes saved automatically]
+Muutokset tallennetaan automaattisesti
+[settings Changes you make during play update these defaults for future games.]
+Pelin aikana tekemäsi muutokset päivittävät nämä oletusasetukset tulevia pelejä varten.
+[settings Changing the renderer requires a restart.]
+Renderöijän vaihtaminen vaatii uudelleenkäynnistyksen.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Valitse pikanäppäin muokataksesi sitä tai lisää toinen pikanäppäin toimintoa varten.
+[settings Choose a window or fill the screen.]
+Valitse ikkunatila tai koko näytön tila.
+[settings Choose how the game looks on your screen.]
+Valitse, miltä peli näyttää näytölläsi.
+[settings Completed]
+Valmiit rakennukset
+[settings Construction]
+Rakentaminen
+[settings Controls]
+Ohjaus
+[settings Could not change display mode. The previous mode was restored.]
+Näyttötilaa ei voitu vaihtaa. Edellinen tila palautettiin.
+[settings Could not save]
+Ei voitu tallentaa
+[settings Current display]
+Nykyiset näyttöasetukset
+[settings Default]
+Oletus
+[settings Display]
+Näyttö
+[settings Display & graphics]
+Näyttö ja grafiikka
+[settings Display the Globulation 2 cursor.]
+Näytä Globulation 2 -kursori.
+[settings Done]
+Valmis
+[settings Edit shortcut]
+Muokkaa pikanäppäintä
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Suurentaa valikot, tekstin ja sivupalkin tarkkaresoluutioisella näytöllä.
+[settings Flags]
+Liput
+[settings Full]
+Täydet
+[settings Fullscreen]
+Koko näyttö
+[settings Game]
+Peli
+[settings Game speed]
+Pelinopeus
+[settings Gameplay]
+Pelaaminen
+[settings Graphics detail]
+Graafiset yksityiskohdat
+[settings Interface scale]
+Käyttöliittymän koko
+[settings Keep]
+Säilytä muutokset
+[settings Keep this display mode?]
+Säilytetäänkö tämä näyttötila?
+[settings Keep your volume levels while silencing audio.]
+Mykistä kaikki äänet muuttamatta tallennettuja äänenvoimakkuustasoja.
+[settings Key]
+Näppäin
+[settings Keyboard shortcuts]
+Pikanäppäimet
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Näppäimet muodostavat järjestetyn sarjan. Kukin näppäin voi aktivoida toiminnon painettaessa tai vapautettaessa.
+[settings Language]
+Kieli
+[settings Language & player]
+Kieli ja pelaaja
+[settings Language used throughout the interface.]
+Koko käyttöliittymässä käytetty kieli.
+[settings Level]
+Taso
+[settings Map editor]
+Karttaeditori
+[settings Match the desktop]
+Työpöydän mukaan
+[settings Missing font]
+Fontti puuttuu
+[settings Music volume]
+Musiikin voimakkuus
+[settings Mute audio]
+Mykistä ääni
+[settings Name shown to other players.]
+Nimi näytetään muille pelaajille.
+[settings Off]
+Pois
+[settings On]
+Päällä
+[settings OpenGL is not available in this build.]
+OpenGL ei ole saatavilla tässä koontiversiossa.
+[settings Player name]
+Pelaajan nimi
+[settings Press]
+Painettaessa
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Paina näppäimistön näppäintä. Esc-näppäimen painaminen peruuttaa syötteen sieppauksen. Määritä Esc-näppäin valitsemalla "Määritä Esc-näppäin".
+[settings Radius]
+Säde
+[settings Reduced]
+Vähennetyt
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Vähennetyt yksityiskohdat poistavat pilvet ja niiden varjot käytöstä, yksinkertaistavat taikatehosteita ja vähentävät läpinäkyvyyttä.
+[settings Release]
+Vapautettaessa
+[settings Remember assignments between games]
+Muista yksikkömäärät pelien välillä
+[settings Remove key]
+Poista näppäin
+[settings Remove shortcut]
+Poista pikanäppäin
+[settings Renderer]
+Grafiikan renderöijä
+[settings Replace conflicting bindings]
+Korvaa ristiriitaiset pikanäppäimet
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Korvataanko tämän yhteyden pikanäppäimet oletuksilla? Muutos tallennetaan heti.
+[settings Resolution]
+Näytön resoluutio
+[settings Restore default shortcuts]
+Palauta oletuspikanäppäimet
+[settings Retry]
+Yritä uudelleen
+[settings Revert]
+Kumoa muutokset
+[settings Reverting in]
+Palautetaan, kun on kulunut
+[settings Save shortcut]
+Tallenna pikanäppäin
+[settings Saved — restart required]
+Tallennettu – vaaditaan uudelleenkäynnistys
+[settings Saving…]
+Tallennetaan…
+[settings Scroll wheel enabled]
+Vieritysrulla käytössä
+[settings Set starting unit assignments by building type and level.]
+Aseta aluksi osoitettavien yksiköiden määrät rakennustyypin ja tason mukaan.
+[settings Set your language and player name.]
+Aseta kieli ja pelaajanimi.
+[settings Settings]
+Asetukset
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
+[settings Software]
+Ohjelmistorenderöinti
+[settings Starting unit counts and radius for newly placed flags.]
+Uusien lippujen aloitusyksikkömäärät ja säde.
+[settings This shortcut conflicts with existing bindings:]
+Tämä pikanäppäin on ristiriidassa olemassa olevien pikanäppäinten kanssa:
+[settings Trigger]
+Aktivointitapahtuma
+[settings Unbound]
+Ei määritetty
+[settings Unit counts assigned to new construction sites.]
+Uusille rakennustyömaille osoitetut yksikkömäärät.
+[settings Unit counts for completed buildings.]
+Yksikkömäärät valmiille rakennuksille.
+[settings Unit counts while a building is being upgraded.]
+Yksikkömäärät rakennuksen päivityksen aikana.
+[settings Units]
+Yksiköt
+[settings Upgrades]
+Rakennuspäivitykset
+[settings Use game cursor]
+Käytä pelin kursoria
+[settings Voice volume]
+Puheen voimakkuus
+[settings Window mode]
+Ikkunatila
+[settings Window-only sizes also switch the game to windowed mode.]
+Vain ikkunatilaa tukevan resoluution valitseminen vaihtaa myös pelin ikkunatilaan.
+[settings Windowed]
+Ikkunassa
+[settings Windowed only]
+Vain ikkunassa
+[settings seconds]
+sekuntia
+[settings Flag]
+Lippu
+[settings High-resolution artwork]
+Korkearesoluutioinen grafiikka
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Ota grafiikka käyttöön, kun seuraava peli tai karttaeditori ladataan (OpenGL).
+[settings Automatic torus view]
+Automaattinen torusnäkymä
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Näytä toruksen muotoinen karttanäkymä automaattisesti liikkuessasi kartalla (OpenGL).
+[Channel width]
+Kanavan leveys
+[Land bridge width]
+Maasillan leveys
+[Lake size]
+Järven koko

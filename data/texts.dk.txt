@@ -66,10 +66,10 @@ Ingen
 Numbi udvider sig lidt, men hurtigt. Lav sværhedsgrad.
 [AINumbi]
 AINumbi
-[AIReachToInfinity-Description]
-ReachToInfinity angriber ikke, men bygger enorme baser og omvender ihærdigt enheder. Lav sværhedsgrad.
-[AIReachToInfinity]
-ReachToInfinity
+[AIEcono-Description]
+Econo angriber ikke, men bygger enorme baser og omvender ihærdigt enheder. Lav sværhedsgrad.
+[AIEcono]
+Econo
 [AIToubib-Description]
 
 [AIToubib]
@@ -519,7 +519,7 @@ Småøer
 [iterate selection]
 Gå til næste valg
 [jobs]
-jobs
+job
 [join a game]
 Forbind til et spil
 [join]
@@ -677,9 +677,9 @@ heraf
 [ok]
 Ok
 [old islands terrain]
-Gamle tilfældige øer
+Barsk øgruppe
 [old random terrain]
-Gammelt tilfældigt terræn
+Opsplittet kyst
 [on press]
 Ved tryk
 [On the spot]
@@ -935,7 +935,7 @@ Sortér efter
 [space]
 mellemrum
 [start mission]
-Start Mission
+Start mission
 [start new campaign]
 Start Ny Kampagne
 [Start]
@@ -1293,7 +1293,7 @@ Hastighed: 1x (flerspiller)
 [game speed help]
 Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
 [AICortex-Description]
-Cortex - Eksperimentel AI med tre lag. Under udvikling.
+Cortex udvider sig mod nye hvedemarker og sender grupper af krigere i kamp, støttet af kroer og hospitaler nær frontlinjen. Middel sværhedsgrad. Eksperimentel.
 [ERROR_CANT_LOAD_MAP]
 Kortet kunne ikke indlæses: filen er beskadiget eller har en inkompatibel version.
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1304,3 +1304,553 @@ Cortex
 Inde: %0
 [Units still working: %0]
 Arbejder stadig: %0
+[2 vs 2]
+2 mod 2
+[AI strategy & counterplay]
+AI-strategi og modspil
+[AICastor-Profile]
+Strategi: Udvider sig forsigtigt og klarer sig godt på kort med få ressourcer.\n\nStyrker: Begrænset udvidelse er effektiv i spil med knappe ressourcer.\n\nForeslået modspil: Indtag territorium tidligt. Antag ikke, at mangel på ressourcer vil svække denne AI.
+[AICastor-Summary]
+Forsigtig udvidelse; klarer sig godt med knappe ressourcer.
+[AICortex-Profile]
+Strategi: Styrer fødevareforsyninger, ekspanderer mod nye hvedemarker og samler successive grupper af krigere. Kroer og hospitaler nær frontlinjen støtter angreb langt fra basen.\n\nStyrker: Sender forstærkninger sammen, opretholder militært pres og reagerer på fødevaremangel.\n\nForeslået modspil: Kæmp om kontrol over nye hvedemarker og angrib dens støttebygninger nær frontlinjen. Angrib før dets grupper af krigere er klar.\n\nEksperimentel AI. Middel sværhedsgrad; forslag til modspil er ikke bedømmelser fra sammenlignende test.
+[AICortex-Summary]
+Udvider med fødevareforsyninger i tankerne og støtter sine angribende tropper.
+[AINicowar-Profile]
+Strategi: Ekspanderer hurtigt og angriber modstandere med enorme hære.\n\nStyrker: Hurtig ekspansion understøtter aggressive militærangreb.\n\nForeslået modspil: Forhindr dens udvidelse. Brug terræn til at reducere antallet af fjendtlige tropper, der kan kæmpe på én gang.
+[AINicowar-Summary]
+Ekspanderer hurtigt og bygger store hære til aggressive angreb.
+[AINone-Profile]
+Strategi: AI'en giver ingen kommandoer.\n\nStyrker: En forudsigelig, inaktiv modstander til eksperimenter.\n\nSvagheder: Udvider eller tilpasser sig ikke.
+[AINone-Summary]
+En inaktiv koloni til eksperimenter.
+[AINumbi-Profile]
+Strategi: Udvider sig hurtigt, men i lille skala. En lettere modstander til at praktisere kolonistyring.\n\nStyrker: Lader dig lære både økonomisk ledelse og kamp.\n\nForeslået modspil: Udvikl en stærkere økonomi og træn din hær, før du angriber.
+[AINumbi-Summary]
+Hurtig udvidelse i lille skala.
+[AIEcono-Profile]
+Strategi: Angriber ikke, men bygger enorme baser og konverterer aktivt fjendtlige enheder til sin egen side.\n\nStyrker: Udvidelse og enhedskonvertering truer modstandere uden direkte angreb.\n\nForeslået modspil: Udvikl din koloni tidligt og undgå at sende enheder, hvor fjenden kan konvertere dem.
+[AIEcono-Summary]
+Kæmpe baser og konvertering i stedet for angreb.
+[AIWarrush-Profile]
+Strategi: Angriber tidligt og kraftigt, før modstanderne er færdige med at forberede sig.\n\nStyrker: Udnytter uforsvaret ekspansion og langsom militær forberedelse.\n\nForeslået modspil: Overlev det første angreb, mens du bevarer din økonomi, og gå derefter til modangreb.
+[AIWarrush-Summary]
+Hurtige angreb, der tester dit tidlige forsvar.
+[Algae]
+Alger
+[Alliances]
+Alliancer
+[Beach size]
+Strandstørrelse
+[Blue]
+Blå
+[Brown]
+Brun
+[Built-in maps]
+Indbyggede kort
+[Can change in game]
+Kan ændre sig i spillet
+[Closed]
+Lukket
+[Colonies]
+Kolonier
+[Colony]
+Koloni
+[Concrete islands]
+Adskilte øer
+[Conquest only]
+Kun erobring
+[Conquest or prestige]
+Erobring eller prestige
+[Could not launch this map. Your setup is retained; try again.]
+Kunne ikke starte dette kort. Din opsætning bibeholdes; prøv igen.
+[Could not load this map. Choose another map or retry.]
+Dette kort kunne ikke indlæses. Vælg et andet kort, eller prøv igen.
+[Crater lakes]
+Kratersøer
+[Custom]
+Brugerdefineret
+[Custom teams]
+Egne hold
+[Cyan]
+Cyan
+[Desert weight]
+Ørkenvægt
+[Easy]
+Let
+[Explore as you play]
+Udforsk, mens du spiller
+[Extra colony assignments are retained for larger maps.]
+Ekstra kolonitildelinger bibeholdes for større kort.
+[Extra islands]
+Ekstra øer
+[FFA]
+Alle mod alle
+[Fruit]
+Frugt
+[Game Rules]
+Spilleregler
+[Game speed]
+Spilhastighed
+[Generate & play]
+Generer og spil
+[Give at least one terrain type a nonzero weight.]
+Giv mindst én terræntype en vægt, der ikke er nul.
+[Grass weight]
+Græsvægt
+[Gray]
+Grå
+[Green]
+Grøn
+[Hard]
+Svær
+[Height]
+Højde
+[Invalid colony count.]
+Ugyldigt koloniantal.
+[Island size]
+Øens størrelse
+[Islands]
+Øer
+[Isles]
+Småøer
+[Lake density]
+Søtæthed
+[Landscape]
+Landskab
+[Last colony standing]
+Sidste overlevende koloni
+[Layout]
+Layout
+[Locked teams]
+Aflåste hold
+[Magenta]
+Magenta
+[Map]
+Kort
+[Map knowledge]
+Kortkendskab
+[Match finished]
+Kampen afsluttet
+[Medium]
+Medium
+[Medium - Experimental]
+Medium - Eksperimentel
+[No AI orders]
+Ingen AI-kommandoer
+[Old islands]
+Barsk øgruppe
+[Old random]
+Opsplittet kyst
+[Open at least one colony to start a match.]
+Åbn mindst én koloni for at starte en kamp.
+[Open book]
+Afsløret verden
+[Pink]
+Pink
+[Play this map]
+Spil dette kort
+[Players & Teams]
+Spillere og hold
+[Premade maps]
+Forudarbejdede kort
+[Preview ready. Start plays this exact map.]
+Forhåndsvisning klar. Start af spillet bruger dette nøjagtige kort.
+[Purple]
+Lilla
+[Quick clash]
+Hurtig kamp
+[Random map]
+Tilfældigt kort
+[Red]
+Rød
+[Repeat landscape]
+Gentag landskab
+[Resources]
+Ressourcer
+[Restore standard rules]
+Gendan standardregler
+[Revealed terrain does not reveal all enemy activity.]
+Afsløret terræn afslører ikke al fjendens aktivitet.
+[River]
+Flod
+[River width]
+Flodbredde
+[Sand weight]
+Sandvægt
+[Select a valid map.]
+Vælg et gyldigt kort.
+[Shared control needs a free controller slot (maximum 12).]
+Delt styring kræver en ledig plads til en spiller eller AI (højst 12).
+[Smoothing]
+Udglatning
+[Standard]
+Standard
+[Start game]
+Start spillet
+[Starting workers]
+Indledende arbejdere
+[Starting workers: Game Rules tab.]
+Indledende arbejdere: Fanen Spilregler.
+[Swamp]
+Sump
+[Team]
+Hold
+[Terrain]
+Terræn
+[Terrain revealed]
+Terræn afsløret
+[Try a ruleset, then make it your own.]
+Prøv et regelsæt, og gør det så til dit eget.
+[Victory]
+Sejr
+[Watch game]
+Se spil
+[Water weight]
+Vandvægt
+[White]
+Hvid
+[Width]
+Bredde
+[Yellow]
+Gul
+[You]
+Dig
+[You + AI]
+Dig + AI
+[You and the AI both issue orders. Uses two controller slots.]
+Både du og AI giver ordrer. Bruger to pladser til spillere og AI.
+[You vs all]
+Dig mod alle
+[Your maps]
+Dine kort
+[colonies]
+kolonier
+[* Changed from standard.]
+* Ændret fra standard.
+[World & diplomacy]
+Verden og diplomati
+[Starting conditions & pace]
+Startforhold og tempo
+[Inactive]
+Inaktiv
+[8 workers / 2x speed]
+8 arbejdere / 2x hastighed
+[Changes the pace of the whole simulation.]
+Ændrer tempoet i hele simuleringen.
+[Choose whether teams can change during the match.]
+Vælg om hold kan skifte i løbet af kampen.
+[Classic colony building]
+Traditionel koloniudvikling
+[Dimensions and colony count are set above.]
+Dimensioner og koloniantal er angivet ovenfor.
+[Generate & watch]
+Generer og se
+[Info]
+Info
+[Map-defined starting units]
+Kortdefinerede startenheder
+[No maps in this library.]
+Ingen kort i dette bibliotek.
+[Premade maps retain their authored starting units.]
+Forudbyggede kort beholder deres oprettede startenheder.
+[Premade: only speed changes (2x)]
+Færdigt kort: kun hastigheden ændres (2x)
+[Start with terrain known]
+Start med kendt terræn
+[This colony will not join the match.]
+Denne koloni vil ikke deltage i kampen.
+[This landscape uses a fixed terrain recipe.]
+Dette landskab bruger en fast terrænopskrift.
+[This landscape uses fixed resource placement.]
+Dette landskab bruger fast ressourceplacering.
+[Win through conquest]
+Vind gennem erobring
+[You control this colony.]
+Du kontrollerer denne koloni.
+[controllers]
+spillere og AI
+[Use]
+Vælg
+[Lime]
+Limegrøn
+[Teal]
+Blågrøn
+[Azure]
+Himmelblå
+[Updating map preview...]
+Opdaterer kortets forhåndsvisning...
+[Generation failed. Adjust settings or press Start to retry.]
+Generation mislykkedes. Juster indstillinger, eller tryk på Start for at prøve igen.
+[Preview unavailable. Adjust settings or start to retry.]
+Forhåndsvisning er ikke tilgængelig. Skift indstillingerne, eller start spillet for at prøve igen.
+[automatic torus view]
+Automatisk torusvisning
+[toggle torus view]
+Skift mellem 2D- og torusvisning
+[2 vs 2 needs four open colonies. You vs all needs a human.]
+2 mod 2 kræver fire åbne kolonier. Du mod alle kræver en menneskelig spiller.
+[Alliance]
+Alliance
+[Choose a rule to change it.]
+Vælg en regel for at ændre den.
+[Conquest only removes prestige victory; map scripts still apply.]
+Kun erobring slår prestigesejr fra; kortets scripts gælder stadig.
+[Control]
+Styring
+[Controller]
+Styres af
+[Generate preview]
+Generer forhåndsvisning
+[Generation failed. Adjust settings or try again.]
+Generation mislykkedes. Juster indstillinger, eller prøv igen.
+[Map settings changed. Generate a new preview or start.]
+Kortindstillingerne er ændret. Generer en ny forhåndsvisning eller start.
+[Map source]
+Kortkilde
+[Map-defined]
+Kortdefineret
+[Match format]
+Spilformat
+[No current preview]
+Ingen aktuel forhåndsvisning
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+Hurtig kamp: dobbelt hastighed; genererede kort starter med 8 arbejdere.
+[Reroll]
+Generer endnu et kort
+[Ruleset]
+Regelsæt
+[Select a map from the library.]
+Vælg et kort fra biblioteket.
+[Starting workers affects generated maps only.]
+Det oprindelige antal arbejdere gælder kun for genererede kort.
+[Unavailable]
+Ikke tilgængelig
+[Use selection]
+Brug markering
+[Quick clash on premade maps: only speed changes (2x).]
+Hurtig kamp på forudlavede kort: kun hastigheden ændres (dobbelt hastighed).
+[Generate a preview to explore this world.]
+Generer en forhåndsvisning for at udforske denne verden.
+[More workers jump-start colony growth. Changes the generated map.]
+Flere arbejdere fremskynder kolonivæksten. Denne indstilling ændrer det genererede kort.
+[No warriors]
+Ingen krigere
+[settings Add key to sequence]
+Tilføj tast til sekvens
+[settings Add shortcut]
+Tilføj genvej
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+Brug musehjulet til at ændre antallet af tildelte enheder. Hvis denne indstilling er slået fra, skal du holde Ctrl-tasten nede for at bruge hjulet. Hold Shift-tasten nede for at justere flagradius. Denne indstilling styrer også musehjulsinput i andre menuer.
+[settings Adjust music and voice volume.]
+Juster lydstyrken for musik og stemme.
+[settings Adjust the pace of play.]
+Juster spillets hastighed.
+[settings Advanced binding]
+Avanceret genvejsredigering
+[settings Artwork & effects]
+Grafik og effekter
+[settings Audio]
+Lyd
+[settings Bind Escape]
+Tildel Escape-tasten
+[settings Building]
+Bygning
+[settings Building defaults]
+Standardindstillinger for bygninger
+[settings Cancel]
+Afbryd
+[settings Changes saved automatically]
+Ændringer gemt automatisk
+[settings Changes you make during play update these defaults for future games.]
+Ændringer, du foretager under spillet, opdaterer disse standardindstillinger for fremtidige spil.
+[settings Changing the renderer requires a restart.]
+Ændring af rendereren kræver en genstart.
+[settings Choose a binding to change it, or add another shortcut for an action.]
+Vælg en tastaturgenvej for at redigere den, eller tilføj en anden genvej til en handling.
+[settings Choose a window or fill the screen.]
+Vælg mellem vindue og fuld skærm.
+[settings Choose how the game looks on your screen.]
+Vælg, hvordan spillet ser ud på din skærm.
+[settings Completed]
+Færdige bygninger
+[settings Construction]
+Opførelse
+[settings Controls]
+Spilkontrol
+[settings Could not change display mode. The previous mode was restored.]
+Kunne ikke ændre visningstilstand. Den tidligere tilstand blev gendannet.
+[settings Could not save]
+Kunne ikke gemme
+[settings Current display]
+Aktuelle skærmindstillinger
+[settings Default]
+Standard
+[settings Display]
+Skærm
+[settings Display & graphics]
+Skærm og grafik
+[settings Display the Globulation 2 cursor.]
+Vis Globulation 2-markøren.
+[settings Done]
+Færdig
+[settings Edit shortcut]
+Rediger tastaturgenvej
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Forstør menuer, tekst og sidepanelet på en skærm med høj opløsning.
+[settings Flags]
+Flag
+[settings Full]
+Alle detaljer
+[settings Fullscreen]
+Fuld skærm
+[settings Game]
+Spil
+[settings Game speed]
+Spilhastighed
+[settings Gameplay]
+Spilforløb
+[settings Graphics detail]
+Grafikdetaljer
+[settings Interface scale]
+Grænsefladeskalering
+[settings Keep]
+Behold ændringer
+[settings Keep this display mode?]
+Vil du beholde denne visningstilstand?
+[settings Keep your volume levels while silencing audio.]
+Slå al lyd fra uden at ændre de gemte lydstyrkeniveauer.
+[settings Key]
+Tast
+[settings Keyboard shortcuts]
+Tastaturgenveje
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+Tasterne danner en ordnet sekvens. Hver tast kan aktivere handlingen, når den trykkes ned eller slippes.
+[settings Language]
+Sprog
+[settings Language & player]
+Sprog og spiller
+[settings Language used throughout the interface.]
+Sprog, der bruges i hele grænsefladen.
+[settings Level]
+Niveau
+[settings Map editor]
+Korteditor
+[settings Match the desktop]
+Følg skrivebordet
+[settings Missing font]
+Manglende skrifttype
+[settings Music volume]
+Lydstyrke (musik)
+[settings Mute audio]
+Slå lyd fra
+[settings Name shown to other players.]
+Navn vist til andre spillere.
+[settings Off]
+Fra
+[settings On]
+Til
+[settings OpenGL is not available in this build.]
+OpenGL er ikke tilgængelig i denne build.
+[settings Player name]
+Spillernavn
+[settings Press]
+Ved tryk
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+Tryk på en tast. Escape annullerer registreringen. Vælg "Tildel Escape-tasten" for at tildele Escape.
+[settings Radius]
+Radius
+[settings Reduced]
+Færre detaljer
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+Færre detaljer slår skyer og deres skygger fra, forenkler magiske effekter og reducerer gennemsigtigheden.
+[settings Release]
+Ved slip
+[settings Remember assignments between games]
+Husk enhedstildelinger mellem spil
+[settings Remove key]
+Fjern tast
+[settings Remove shortcut]
+Fjern genvej
+[settings Renderer]
+Grafikrenderer
+[settings Replace conflicting bindings]
+Erstat modstridende tastaturgenveje
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+Erstat genvejene i denne sammenhæng med standardgenvejene? Ændringen gemmes med det samme.
+[settings Resolution]
+Skærmopløsning
+[settings Restore default shortcuts]
+Gendan standard-tastaturgenveje
+[settings Retry]
+Prøv igen
+[settings Revert]
+Tilbagefør ændringer
+[settings Reverting in]
+Gendanner om
+[settings Save shortcut]
+Gem tastaturgenvej
+[settings Saved — restart required]
+Gemt — genstart påkrævet
+[settings Saving…]
+Gemmer...
+[settings Scroll wheel enabled]
+Musehjul aktiveret
+[settings Set starting unit assignments by building type and level.]
+Indstil det oprindelige antal tildelte enheder efter bygningstype og niveau.
+[settings Set your language and player name.]
+Indstil dit sprog og spillernavn.
+[settings Settings]
+Indstillinger
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
+[settings Software]
+Softwarerendering
+[settings Starting unit counts and radius for newly placed flags.]
+Oprindeligt antal enheder og radius for nye flag.
+[settings This shortcut conflicts with existing bindings:]
+Denne tastaturgenvej er i konflikt med eksisterende genveje:
+[settings Trigger]
+Aktiveringsbegivenhed
+[settings Unbound]
+Ingen genvej tildelt
+[settings Unit counts assigned to new construction sites.]
+Antal enheder tildelt nye byggepladser.
+[settings Unit counts for completed buildings.]
+Antal enheder til færdige bygninger.
+[settings Unit counts while a building is being upgraded.]
+Antal enheder under opgradering af en bygning.
+[settings Units]
+Enheder
+[settings Upgrades]
+Bygningsopgraderinger
+[settings Use game cursor]
+Brug spilmarkøren
+[settings Voice volume]
+Lydstyrke (stemme)
+[settings Window mode]
+Vinduestilstand
+[settings Window-only sizes also switch the game to windowed mode.]
+Hvis du vælger en opløsning, der kun understøtter vinduestilstand, skifter spillet også til vinduestilstand.
+[settings Windowed]
+I vindue
+[settings Windowed only]
+Kun i vindue
+[settings seconds]
+sekunder
+[settings Flag]
+Flag
+[settings High-resolution artwork]
+Grafik i høj opløsning
+[settings Apply artwork on the next game or editor load (OpenGL).]
+Anvend grafikken, næste gang et spil eller korteditoren indlæses (OpenGL).
+[settings Automatic torus view]
+Automatisk torusvisning
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+Vis automatisk den torusformede kortoversigt, mens du bevæger dig rundt på kortet (OpenGL).
+[Channel width]
+Kanalbredde
+[Land bridge width]
+Landbroens bredde
+[Lake size]
+Søstørrelse

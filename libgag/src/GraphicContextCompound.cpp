@@ -2,6 +2,9 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "GraphicContextPrivate.h"
+#ifdef HAVE_OPENGL
+#include <AlphaMapRender.h>
+#endif
 #include <assert.h>
 #include <valarray>
 #include <vector>
@@ -67,25 +70,18 @@ namespace GAGCore
 			if (surface->dirty)
 				surface->uploadToTexture();
 
-			// state change
-			glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glState.doBlend(true);
-			glState.doTexture(true);
-			glColor4ub(255, 255, 255, alpha);
-
-			// Sample texel centres: sprites share an atlas, so reaching the outer
-			// texel edge blends in the neighbouring frame and seams every tile.
-			// With nearest filtering a tiny inset is enough to keep pixel centres
-			// off the boundary; a half-texel inset would shrink the edge texels.
-			const float insetX = (1.0f / 64.0f) * surface->texMultX;
-			const float insetY = (1.0f / 64.0f) * surface->texMultY;
-			const float u0 = static_cast<float>(sx) * surface->texMultX + insetX;
-			const float u1 = static_cast<float>(sx + sw) * surface->texMultX - insetX;
-			const float v0 = static_cast<float>(sy) * surface->texMultY + insetY;
-			const float v1 = static_cast<float>(sy + sh) * surface->texMultY - insetY;
+			// Bias nearest-neighbour ties toward the same texel for standalone
+			// sprites and atlas frames. A symmetric inset crosses texel boundaries
+			// in opposite directions depending on floating-point atlas offsets.
+			// sqrt(2)/1000 texels avoids alignment with common fractional HiDPI scales.
+			const float biasX = 0.00141421356f * surface->texMultX;
+			const float biasY = 0.00141421356f * surface->texMultY;
+			const float u0 = static_cast<float>(sx) * surface->texMultX + biasX;
+			const float u1 = static_cast<float>(sx + sw) * surface->texMultX + biasX;
+			const float v0 = static_cast<float>(sy) * surface->texMultY + biasY;
+			const float v1 = static_cast<float>(sy + sh) * surface->texMultY + biasY;
 
 			// draw
-			glState.setTexture(surface->texture);
 			if (surface->textureInfo && surface->textureInfo->sprite)
 			{
 				Sprite* sprite = surface->textureInfo->sprite;
@@ -116,7 +112,15 @@ namespace GAGCore
 			}
 			else
 			{
-				++drawCalls;glBegin(GL_QUADS);
+				// state change
+				glState.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glState.doBlend(true);
+				glState.doTexture(true);
+				glColor4ub(255, 255, 255, alpha);
+
+				glState.setTexture(surface->texture);
+				++drawCalls;
+				glBegin(GL_QUADS);
 				glTexCoord2f(u0, v0);
 				glVertex2f(x, y);
 				glTexCoord2f(u1, v0);
@@ -293,35 +297,8 @@ namespace GAGCore
 			} else {
 				glState.doBlend(true);
 				glState.doTexture(false);
-				for (int dy=0; dy < mapH-1; dy++)
-				{
-					int midy = y + dy * cellH + cellH/2;
-					for (int dx=0; dx < mapW-1; dx++)
-					{
-
-						++drawCalls;glBegin(GL_TRIANGLE_FAN);
-						//This interpolates to find the center color, then fans out to the four corners.
-						int midx = x + dx * cellW + cellW/2;
-						int mid_top_alpha = (map[mapW * dy + dx] + map[mapW * dy + dx + 1])/2;
-						int mid_bottom_alpha = (map[mapW * (dy + 1) + dx] + map[mapW * (dy + 1) + dx + 1])/2;
-						glColor4ub(color.r, color.g, color.b, (mid_top_alpha + mid_bottom_alpha) / 2);
-						glVertex2f(midx, midy);
-						//Touch each of the four corners
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx]);
-						glVertex2f(x + dx * cellW, y + (dy + 1) * cellH);
-
-						glColor4ub(color.r, color.g, color.b, map[mapW * (dy + 1) + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + (dy + 1) * cellH);
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx + 1]);
-						glVertex2f(x + (dx+1) * cellW, y + dy * cellH);
-
-						glColor4ub(color.r, color.g, color.b, map[mapW * dy + dx]);
-						glVertex2f(x + dx * cellW, y + dy * cellH);
-						glEnd();
-					}
-				}
+				++drawCalls;
+				drawAlphaMapBatched(map, mapW, mapH, x, y, cellW, cellH, color.r, color.g, color.b);
 			}
 		}
 		else

@@ -10,6 +10,7 @@
 #include "AINames.h"
 #include "ChecksumSidecar.h"
 #include "CustomGameScreen.h"
+#include "ChooseMapScreen.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
 #include "EngineTiming.h"
@@ -69,23 +70,21 @@ int Engine::initCustom(void)
 {
 	CustomGameScreen customGameScreen;
 
-	int cgs=customGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
+    for (;;) {
+        int result=customGameScreen.execute(globalContainer->gfx, GAME_TICK_MS);
+        if (result==CustomGameScreen::CANCEL) return EE_CANCEL;
+        if (result==-1) return -1;
+        gui.localPlayer=0;
+        gui.localTeamNo=customGameScreen.getSelectedColor(0);
+        int loaded=initGame(customGameScreen.getMapHeader(), customGameScreen.getGameHeader(),
+                            true, false, false, customGameScreen.sourceFile());
+        if (loaded==-1) return -1;
+        if (loaded==EE_NO_ERROR) break;
+        customGameScreen.launchFailed();
+    }
 
-	if (cgs==CustomGameScreen::CANCEL)
-		return EE_CANCEL;
-	if (cgs==-1)
-		return -1;
-
-	int teamColor=customGameScreen.getSelectedColor(0);
-	gui.localPlayer=0;
-	gui.localTeamNo=teamColor;
-
-	int ret = initGame(customGameScreen.getMapHeader(), customGameScreen.getGameHeader());
-	if(ret != EE_NO_ERROR)
-		return EE_CANT_LOAD_MAP;
-	else if(ret == -1)
-		return -1;
-
+	previousCustomSpeed=globalContainer->settings.gameSpeed;
+	globalContainer->settings.gameSpeed=customGameScreen.selectedSpeed();
 	return EE_NO_ERROR;
 }
 
@@ -329,8 +328,28 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		return EE_CANT_LOAD_MAP;
 	}
 
+
+    const bool offlineSetup = !globalContainer->replaying && !gui.game.gameHeader.hasNetworkPlayer();
+    globalContainer->liveSpectating = offlineSetup;
+    if(offlineSetup) {
+        for(int i=0;i<gui.game.gameHeader.getNumberOfPlayers();++i)
+            if(gui.game.gameHeader.getBasePlayer(i).type==BasePlayer::P_LOCAL) {
+                globalContainer->liveSpectating=false;
+                gui.localPlayer=i;
+                gui.localTeamNo=gui.game.gameHeader.getBasePlayer(i).teamNumber;
+                break;
+            }
+    }
+    if(globalContainer->liveSpectating) {
+        gui.localPlayer=0;gui.localTeamNo=gui.game.gameHeader.getBasePlayer(0).teamNumber;
+        globalContainer->replayVisibleTeams=REPLAY_VISIBLE_TEAMS_ALL;
+        globalContainer->replayShowFog=false;
+        globalContainer->replayShowAreas=false;
+        globalContainer->replayShowFlags=true;
+    }
 	gui.game.clearingUncontrolledTeams();
 	finalAdjustments();
+	if(globalContainer->liveSpectating) gui.configureLiveSpectatorView();
 
 	net = std::make_unique<NetEngine>(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 
