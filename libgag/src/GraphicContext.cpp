@@ -169,7 +169,19 @@ namespace GAGCore
 	{
 		minW = w;
 		minH = h;
-		if (window) SDL_SetWindowMinimumSize(window, minW, minH);
+		if (window) applyWindowMinimumSize();
+	}
+
+	// The minimum is a floor on the *logical* surface, which is the window divided
+	// by the interface scale -- so the window's own minimum has to be the scaled
+	// one. Without this, a window dragged to 640x480 at scale 1.75 lays the
+	// interface out on 366x274, narrower than the 368px main menu panel.
+	void GraphicContext::applyWindowMinimumSize(void)
+	{
+		if (!window) return;
+		SDL_SetWindowMinimumSize(window,
+			std::max(1, static_cast<int>(minW * uiScale + 0.5f)),
+			std::max(1, static_cast<int>(minH * uiScale + 0.5f)));
 	}
 
 	VideoModes GraphicContext::listVideoModes() const
@@ -568,7 +580,7 @@ namespace GAGCore
 		SDL_GetWindowSize(window, &windowW, &windowH);
 		drawableW = windowW;
 		drawableH = windowH;
-		SDL_SetWindowMinimumSize(window, std::max(1, minW), std::max(1, minH));
+		applyWindowMinimumSize();
 		// Own the drawing surface: SDL invalidates its window surface during resizing.
 		sdlsurface = SDL_CreateRGBSurface(0, logicalW, logicalH, 32,
 			0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);

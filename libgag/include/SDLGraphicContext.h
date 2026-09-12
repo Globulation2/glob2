@@ -345,6 +345,9 @@ namespace GAGCore
 		float wantedUiScale = 1.0f;
 		//! interface scale for the next setRes(); 0 follows the desktop
 		static float requestedUiScale;
+		//! push minW/minH to SDL scaled by uiScale, so the floor applies to the
+		//! logical surface rather than to the window it is stretched into
+		void applyWindowMinimumSize(void);
 		//! ratio of GL drawable pixels to logical pixels
 		float drawableScale(void);
 		bool mapTransformActive=false;
