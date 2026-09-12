@@ -1344,6 +1344,72 @@ static void repairLaborContractRegressions()
     }
 }
 
+// An upgrade only pays off once it finishes, so the site outranks its equals
+// for workers while it is live and hands that advantage back on completion.
+void upgradeWorkerPriorityRegressions()
+{
+    using namespace AIMaximaPlacement;
+    Game game(NULL);
+    game.map.setSize(6,6,GRASS); game.map.setGame(&game);
+    game.addTeam(); game.teams[0]->race.loadDefault();
+    Player player; player.setTeam(game.teams[0]);
+    AIMaxima::Maxima ai(&player); Context& c=ai.context;
+    const int raceType=globalContainer->buildingsTypes.getTypeNum("racetrack",0,false);
+    ::Building* track=game.addBuilding(25,25,raceType,0);
+    assert(track);
+    c.initialize(); c.activeAI=&ai;
+    for(int y=0;y<64;++y)for(int x=0;x<64;++x)
+        game.map.setMapDiscovered(x,y,player.team->me);
+    TeamStat* stat=player.team->stats.getLatestStat();
+    stat->totalUnit=100; stat->upgradeState[BUILD][1]=20;
+    ai.snapshot.population=100; ai.snapshot.schools=1;
+    ai.budget.allow_upgrades=true;
+    ai.configure_development_planner();
+    ai.finalize_director_plan(c);
+    WorldState world=ai.collect_development_world(c);
+    ai.development_planner.adoptStartingBuildings(world);
+    DevelopmentAction action;
+    DevelopmentLimits limits=ai.collect_development_limits(c);
+    assert(ai.development_planner.selectAction(world,{},limits,action));
+    assert(action.type==UpgradeBuilding);
+    assert(ai.issue_development_action(c,action));
+
+    auto priorities=[&]()
+    {
+        std::vector<int> found;
+        for(auto order:c.orders)
+            if(auto change=std::dynamic_pointer_cast<OrderChangePriority>(order))
+                found.push_back(change->priority);
+        return found;
+    };
+
+    // The engine has not started the site yet; neither change is due.
+    c.orders.clear();
+    c.update_management_orders();
+    assert(priorities().empty());
+
+    // A live upgrade site is raised above normal.
+    track->constructionResultState=::Building::UPGRADE;
+    c.orders.clear();
+    c.update_management_orders();
+    assert(priorities()==std::vector<int>({1}));
+
+    // While it is still building, nothing further is issued.
+    c.orders.clear();
+    c.update_management_orders();
+    assert(priorities().empty());
+
+    // Completion restores the normal priority exactly once.
+    track->constructionResultState=::Building::NO_CONSTRUCTION;
+    c.buildings.tick();
+    c.orders.clear();
+    c.update_management_orders();
+    assert(priorities()==std::vector<int>({0}));
+    c.orders.clear();
+    c.update_management_orders();
+    assert(priorities().empty());
+}
+
 int main(int argc,char** argv)
 {
     entityRoundTrip(Gradients::Entities::Building(7,2,true));
@@ -1424,5 +1490,6 @@ int main(int argc,char** argv)
     directorUpgradePriorityRegressions();
     directorExecutionRegressions();
     directorUpgradeRegressions();
+    upgradeWorkerPriorityRegressions();
     std::cout << "save, gradient refresh, farming restoration, reused GID and defense reserve regressions passed\n";
 }

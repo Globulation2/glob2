@@ -6,7 +6,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 94
+#define VERSION_MINOR 95
+// version 95 adds Maxima's building-priority management order. Version 94
+// saves contain no such order and load unchanged; older binaries skip it.
 // version 94 adds Maxima's per-building staffing controller state. Version 93
 // saves load without it and each building restarts its control loop.
 // version 93 adds Maxima's protected-wheat food ledger supply to its saved

@@ -263,20 +263,21 @@ class MaximaDirectorAuthorityTest(unittest.TestCase):
 
     def test_topology_debugger_reads_the_ai_snapshot(self) -> None:
         interface = (ROOT / "src/ai/AIImplementation.h").read_text()
-        gui = (ROOT / "src/gui/GameGUI.cpp").read_text()
+        # The GUI splits this: key handling lives with the other in-game keys,
+        # the overlay with the rest of the Maxima diagnostics drawing.
+        keys = (ROOT / "src/gui/GameGUIInputKey.cpp").read_text()
+        diagnostics = (ROOT / "src/gui/GameGUIMaximaDiagnostics.cpp").read_text()
         self.assertIn("getTopologyDiagnosticSnapshot() const { return nullptr; }",
                       interface)
         self.assertIn("Maxima::getTopologyDiagnosticSnapshot() const",
                       self.source)
-        self.assertIn("key.sym==SDLK_F9", gui)
-        self.assertIn("key.sym==SDLK_9", gui)
-        self.assertIn("key.mod&KMOD_CTRL", gui)
-        self.assertIn("key.mod&KMOD_SHIFT", gui)
-        overlay = function(
-            gui,
-            "void GameGUI::drawMaximaTopologyDiagnostics",
-            "void GameGUI::drawInGameMenu",
-        )
+        self.assertIn("key.sym==SDLK_F9", keys)
+        self.assertIn("key.sym==SDLK_9", keys)
+        self.assertIn("key.mod&KMOD_CTRL", keys)
+        self.assertIn("key.mod&KMOD_SHIFT", keys)
+        overlay = diagnostics[
+            diagnostics.index("void GameGUI::drawMaximaTopologyDiagnostics"):
+        ]
         self.assertIn("findSameTeamMaximaPlayer()", overlay)
         self.assertIn("getTopologyDiagnosticSnapshot()", overlay)
         for field in (

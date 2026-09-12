@@ -21,7 +21,11 @@ retired. [Staffing](MaximaStaffing.md) is then each building's own business: an
 inn or swarm adds or returns one carrier at a time to keep its own wheat stock
 inside a band, and never asks for more while it is not receiving what it
 already asked for. The placement planner evaluates construction and upgrades
-incrementally, then revalidates the selected action against the live world. Combat policy considers
+incrementally, then revalidates the selected action against the live world. A
+building being upgraded is raised to high worker priority for as long as its
+site is live, and returns to normal priority when the upgrade completes: a
+half-finished upgrade serves nobody, so it outranks its equals until it is
+done. Combat policy considers
 reachable trained forces, defending reserves, and remembered enemy activity.
 
 ## Configuration

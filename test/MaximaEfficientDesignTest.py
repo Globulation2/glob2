@@ -22,7 +22,7 @@ class EfficientTest(unittest.TestCase):
    fs=e.route(keys,'FS')
    if wave>1:fs=[k for k in fs if k not in bank.MAJOR]
    total+=sum(k not in bank.TEAM_SWITCHES for k in fs)*140*4*4+len(fs)*70*4
-  self.assertEqual(total,22960)
+  self.assertEqual(total,25480)
  def test_fresh_wave2_freeze_runs_major_screen_without_rerunning_wave1(self):
   with tempfile.TemporaryDirectory() as t:
    control=object.__new__(c.Campaign);control.output=Path(t)

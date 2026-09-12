@@ -38,7 +38,7 @@ class MaximaColonizationPolicyTest(unittest.TestCase):
         policy = self.maxima[start:end]
         for text in ("snapshot.free_workers-snapshot.worker_jobs_open",
                      "construction_swarm_workers", "operating_colonies",
-                     "unitsWorking", "ressourceForOneUnit"):
+                     "unitsWorking", "resourceForOneUnit"):
             self.assertIn(text, policy)
         for text in ("food_headroom", "recovery_active", "food_emergency",
                      "cooldown_ticks", "population_min"):
@@ -70,11 +70,12 @@ class MaximaColonizationPolicyTest(unittest.TestCase):
     def test_v92_persists_state_and_old_actions_default_to_core(self) -> None:
         version = (ROOT / "src/Version.h").read_text()
         self.assertRegex(version, r"#define VERSION_MINOR (?:9[2-9]|[1-9][0-9]{2,})")
+        # Only decision state is durable. The colony completion tick and the
+        # established-colony counter are diagnostic only: nothing reads them
+        # back, so restoring them would not change a single order.
         for durable in (
             'writeEnterSection("ColonizationState")',
-            '"last_completion_tick"',
             '"last_accounted_action_id"',
-            '"established_colonies"',
             '"hotspot_count"',
         ):
             self.assertIn(durable, self.maxima)

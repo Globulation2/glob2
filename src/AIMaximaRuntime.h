@@ -523,6 +523,11 @@ namespace Management
 	{ public: explicit UpgradeRepair(int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 10;} void save_payload(GAGCore::OutputStream*)const; private:int id; };
 	class Notify : public ManagementOrder
 	{ public: explicit Notify(const RuntimeEvent& event); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 11;} void save_payload(GAGCore::OutputStream*)const; private:RuntimeEvent event; };
+	///Sets a building's worker priority: -1 low, 0 normal, +1 high. Teams sort
+	///buildings needing work by this value first, so a raised building is served
+	///before its equals.
+	class ChangePriority : public ManagementOrder
+	{ public: ChangePriority(int priority,int id); Conditions::Result wait(Context&) const; void modify(Context&); int type()const{return 12;} void save_payload(GAGCore::OutputStream*)const; private:int priority;int id; };
 }
 
 namespace SearchTools

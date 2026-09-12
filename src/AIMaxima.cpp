@@ -6802,6 +6802,15 @@ bool Maxima::issue_development_action(Context& echo,
 				action.buildingType,buildingId));
 			update->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
 			echo.add_management_order(update);
+			// An upgrade is only useful once it finishes, and a half-upgraded
+			// building serves nobody meanwhile. Outrank equals for workers while
+			// the site is live, then hand the advantage back on completion.
+			ManagementOrder* raise=new ChangePriority(1,buildingId);
+			raise->add_condition(new ParticularBuilding(new UnderConstruction,buildingId));
+			echo.add_management_order(raise);
+			ManagementOrder* restore=new ChangePriority(0,buildingId);
+			restore->add_condition(new ParticularBuilding(new NotUnderConstruction,buildingId));
+			echo.add_management_order(restore);
 		}
 	}
 	development_planner.markIssued(action.id,buildingId,timer);

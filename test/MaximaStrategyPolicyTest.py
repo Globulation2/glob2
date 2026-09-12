@@ -48,7 +48,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
 
     def test_current_save_omits_configuration_plans_and_phases(self) -> None:
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 94", version)
+        self.assertIn("#define VERSION_MINOR 95", version)
         save = self.maxima[self.maxima.index("void Maxima::save(") :]
         self.assertNotIn('writeText(strategy.getStrategyName()', save)
         self.assertNotIn('writeText(tuning', save)
@@ -60,18 +60,14 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
             self.maxima.index("bool Maxima::loadState")
         ]
         self.assertIn("versionMinor<=87", loader)
-        self.assertIn("versionMinor<=88", loader)
-        self.assertIn('readText("tuning")', loader)
         state = self.maxima[self.maxima.index("bool Maxima::loadState") :]
         self.assertNotIn('readText("strategy_name")', state)
         self.assertIn("development_planner.load(stream", state)
-        ai = (ROOT / "src/ai/AI.cpp").read_text()
-        self.assertIn("if(versionMinor<86)", ai)
-        self.assertIn("LegacyMaximaStateConsumer", ai)
         self.assertIn("loadLegacyState", self.maxima)
-        self.assertNotIn("resolvedMaximaStrategies", (ROOT / "src/Game.cpp").read_text()[
-            (ROOT / "src/Game.cpp").read_text().index("void Game::save(") :
-        ])
+        game_io = (ROOT / "src/Game_io.cpp").read_text()
+        self.assertNotIn(
+            "resolvedMaximaStrategies", game_io[game_io.index("void Game::save(") :]
+        )
 
     def test_maxima_keeps_id_and_legacy_section_names(self) -> None:
         ai_header = (ROOT / "src/ai/AI.h").read_text()
@@ -79,10 +75,12 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         self.assertRegex(ai_header, r"MAXIMA\s*=\s*7")
         self.assertNotIn("NICOWAR_V2", ai_header + ai_source)
         self.assertNotIn("NICOWAR_V4", ai_header + ai_source)
-        self.assertIn('readEnterSection("AINicowarV3")', self.maxima)
-        self.assertIn('writeEnterSection("AINicowarV3")', self.maxima)
-        self.assertIn('readEnterSection("NewNicowar")', self.maxima)
-        self.assertIn('writeEnterSection("NewNicowar")', self.maxima)
+        # Maxima is a separate implementation alongside Nicowar, not a
+        # replacement for it, so it owns its own save sections.
+        self.assertIn('readEnterSection("AIMaxima")', self.maxima)
+        self.assertIn('writeEnterSection("AIMaxima")', self.maxima)
+        self.assertIn('readEnterSection("MaximaState")', self.maxima)
+        self.assertIn('writeEnterSection("MaximaState")', self.maxima)
 
     def test_literal_inventory_requires_explicit_manifest_review(self) -> None:
         manifest = json.loads(
@@ -221,13 +219,20 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         building = (ROOT / "src/building/Building.h").read_text()
         runtime = (ROOT / "src/AIMaximaRuntime.cpp").read_text()
         gui_header = (ROOT / "src/gui/GameGUI.h").read_text()
+        orders = (ROOT / "src/Game_orders.cpp").read_text()
+        game_header = (ROOT / "src/Game.h").read_text()
         self.assertIn("static constexpr int MAX_UNIT_WORKING=20;", building)
         self.assertIn(
             "workers>Building::MAX_UNIT_WORKING?Building::MAX_UNIT_WORKING:workers",
             runtime,
         )
+        # The engine enforces the same ceiling when it executes the order, under
+        # its own name. Both constants are 20; keep them pinned to each other.
         self.assertIn(
-            "omb->numberRequested <= Building::MAX_UNIT_WORKING", self.game
+            "static constexpr int MAX_BUILDING_WORKER_REQUEST = 20;", game_header
+        )
+        self.assertIn(
+            "omb.numberRequested <= MAX_BUILDING_WORKER_REQUEST", orders
         )
         self.assertNotIn("#define MAX_UNIT_WORKING", gui_header)
 

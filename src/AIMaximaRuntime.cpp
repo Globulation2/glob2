@@ -530,6 +530,7 @@ ManagementOrder* ManagementOrder::load(GAGCore::InputStream* stream)
 		case 9:{const int team=stream->readSint32("team");const OptionalBool allied=static_cast<OptionalBool>(stream->readSint32("allied"));const OptionalBool enemy=static_cast<OptionalBool>(stream->readSint32("enemy"));const OptionalBool market=static_cast<OptionalBool>(stream->readSint32("market"));const OptionalBool inn=static_cast<OptionalBool>(stream->readSint32("inn"));const OptionalBool other=static_cast<OptionalBool>(stream->readSint32("other"));order=new ChangeAlliances(team,allied,enemy,market,inn,other);break;}
 		case 10:order=new UpgradeRepair(stream->readSint32("id"));break;
 		case 11:{const RuntimeEvent::Type eventType=static_cast<RuntimeEvent::Type>(stream->readSint32("event_type"));const int first=stream->readSint32("first");const int second=stream->readSint32("second");order=new Notify(RuntimeEvent(eventType,first,second));break;}
+		case 12:{const int priority=stream->readSint32("value");order=new ChangePriority(priority,stream->readSint32("id"));break;}
 		default:break;
 	}
 	const Uint32 count=stream->readUint32("condition_count");for(Uint32 i=0;i<count;++i){stream->readEnterSection(i);Conditions::Condition* condition=Conditions::Condition::load(stream);if(order&&condition)order->add_condition(condition);else delete condition;stream->readLeaveSection();}
@@ -598,6 +599,10 @@ void ChangeAlliances::modify(Context& c)
 	c.push_order(shared_ptr<Order>(new SetAllianceOrder(c.player->team->teamNumber,c.allies,c.enemies,c.market_view,c.inn_view,c.other_view)));
 }
 void ChangeAlliances::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(team,"team");s->writeSint32(allied,"allied");s->writeSint32(enemy,"enemy");s->writeSint32(market,"market");s->writeSint32(inn,"inn");s->writeSint32(other,"other");}
+ChangePriority::ChangePriority(int priority,int id):priority(priority),id(id){}
+Result ChangePriority::wait(Context& c) const{return wait_for_building(c,id);}
+void ChangePriority::modify(Context& c){::Building* b=c.get_building_register().get_building(id);if(b)c.push_order(shared_ptr<Order>(new OrderChangePriority(b->gid,priority)));}
+void ChangePriority::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(priority,"value");s->writeSint32(id,"id");}
 UpgradeRepair::UpgradeRepair(int id):id(id){}
 Result UpgradeRepair::wait(Context& c) const{return wait_for_building(c,id);}
 void UpgradeRepair::modify(Context& c){::Building* b=c.get_building_register().get_building(id);if(b){c.push_order(shared_ptr<Order>(new OrderConstruction(b->gid,1,1)));c.get_building_register().set_upgrading(id);}}
