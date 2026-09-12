@@ -104,8 +104,8 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	std::vector<MapGeneratorPoint> startingPoints;
 	{
 		const int w = map.getW();
-		collectPointsColumnOrder(w, map.getH(), [&](int x, int y) { return grid[y * w + x] == areaN; },
-								 startingPoints);
+		collectPointsColumnOrder(
+			w, map.getH(), [&](int x, int y) { return grid[y * w + x] == areaN; }, startingPoints);
 	}
 
 	if (startingPoints.size() < points.size())
@@ -134,8 +134,8 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 			for (int x = 0; x < w; ++x)
 				max = std::max(max, heights[y * w + x]);
 		std::vector<MapGeneratorPoint> possible;
-		collectPointsColumnOrder(w, h2, [&](int x, int y) { return heights[y * w + x] >= max; },
-								 possible);
+		collectPointsColumnOrder(
+			w, h2, [&](int x, int y) { return heights[y * w + x] >= max; }, possible);
 		int n = context.stream("regions")() % possible.size();
 		points[i] = possible[n];
 		sources.push_back(points[i]);
@@ -451,7 +451,7 @@ void splitUpArea(Map &map, GenerationContext &context, std::vector<int> &grid, i
 				}
 
 				for (int ci = 0; ci < 8; ci++) // Check for each of this fields if we
-				{							   // can improve its gradient value
+				{                              // can improve its gradient value
 					addr = &gradient[deltaAddrC[ci]];
 					side = *addr;
 					if (side == 0 && grid[deltaAddrC[ci]] == areaN)
@@ -480,16 +480,16 @@ void getAllPoints(Map &map, std::vector<int> &grid, int areaN,
 				  std::vector<MapGeneratorPoint> &points)
 {
 	const int w = map.getW();
-	collectPointsColumnOrder(w, map.getH(), [&](int x, int y) { return grid[y * w + x] == areaN; },
-							 points);
+	collectPointsColumnOrder(
+		w, map.getH(), [&](int x, int y) { return grid[y * w + x] == areaN; }, points);
 }
 
 void getAllOtherPoints(Map &map, std::vector<int> &grid, int areaN,
 					   std::vector<MapGeneratorPoint> &points)
 {
 	const int w = map.getW();
-	collectPointsColumnOrder(w, map.getH(), [&](int x, int y) { return grid[y * w + x] != areaN; },
-							 points);
+	collectPointsColumnOrder(
+		w, map.getH(), [&](int x, int y) { return grid[y * w + x] != areaN; }, points);
 }
 
 void getAllPointsLine(Map &map, int x1, int y1, int x2, int y2,

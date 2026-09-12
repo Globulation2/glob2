@@ -102,10 +102,10 @@ std::uint64_t colonySignature(const Game &game, int team)
 		hash = fnv(hash, std::uint64_t(v));
 	for (int i = 0; i < Unit::MAX_COUNT; ++i)
 		if (const Unit *u = colony->myUnits[i])
-			for (std::int64_t v : {std::int64_t(i), std::int64_t(Unit::GIDtoID(u->gid)),
-								   std::int64_t(u->typeNum), std::int64_t(u->posX),
-								   std::int64_t(u->posY), std::int64_t(u->hp),
-								   std::int64_t(u->hungry), std::int64_t(u->direction)})
+			for (std::int64_t v :
+				 {std::int64_t(i), std::int64_t(Unit::GIDtoID(u->gid)), std::int64_t(u->typeNum),
+				  std::int64_t(u->posX), std::int64_t(u->posY), std::int64_t(u->hp),
+				  std::int64_t(u->hungry), std::int64_t(u->direction)})
 				hash = fnv(hash, std::uint64_t(v));
 	for (int i = 0; i < Building::MAX_COUNT; ++i)
 		if (const Building *b = colony->myBuildings[i])
@@ -182,9 +182,9 @@ void shiftTeams(Game &game, int shift)
 	};
 	auto buildingGid = [&](Uint16 gid)
 	{
-		return gid == NOGBID
-				   ? gid
-				   : Uint16(Building::GIDfrom(Building::GIDtoID(gid), to(Building::GIDtoTeam(gid))));
+		return gid == NOGBID ? gid
+							 : Uint16(Building::GIDfrom(Building::GIDtoID(gid),
+														to(Building::GIDtoTeam(gid))));
 	};
 	struct Seat
 	{
@@ -347,12 +347,13 @@ int main(int argc, char **argv)
 			for (size_t i = 0; i < controls.size(); ++i)
 			{
 				const auto &c = controls[i];
-				std::printf("%s{\"id\":\"%s\",\"label\":\"%s\",\"kind\":\"%s\",\"min\":%d,\"max\":%d,"
-							"\"step\":%d,\"default\":%d,"
-							"\"group\":%d,\"powerOfTwo\":%s,\"values\":[",
-							i ? "," : "", c.id.c_str(), c.label, c.isToggle() ? "toggle" : "range",
-							c.minimum, c.maximum, c.step, c.defaultValue, int(c.group),
-							c.powerOfTwo ? "true" : "false");
+				std::printf(
+					"%s{\"id\":\"%s\",\"label\":\"%s\",\"kind\":\"%s\",\"min\":%d,\"max\":%d,"
+					"\"step\":%d,\"default\":%d,"
+					"\"group\":%d,\"powerOfTwo\":%s,\"values\":[",
+					i ? "," : "", c.id.c_str(), c.label, c.isToggle() ? "toggle" : "range",
+					c.minimum, c.maximum, c.step, c.defaultValue, int(c.group),
+					c.powerOfTwo ? "true" : "false");
 				const auto domain = c.values();
 				for (size_t j = 0; j < domain.size(); ++j)
 					std::printf("%s%d", j ? "," : "", domain[j]);
@@ -572,9 +573,9 @@ int main(int argc, char **argv)
 				if (local >= 16 && wheat <= 24 && wood <= 32)
 					++viableTeams;
 			}
-		std::printf("TUNE,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", minLocal, minWheat, minWood, viableTeams,
-					resources[CORN], resources[WOOD], resources[STONE], resources[ALGA], bestWheat,
-					bestWood);
+		std::printf("TUNE,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", minLocal, minWheat, minWood,
+					viableTeams, resources[CORN], resources[WOOD], resources[STONE],
+					resources[ALGA], bestWheat, bestWood);
 	}
 	if (headroom)
 	{
@@ -765,7 +766,8 @@ int main(int argc, char **argv)
 					c = 5;
 				if (map.getResource(x, y).type == STONE)
 					c = 6;
-				if (map.getResource(x, y).type >= CHERRY && map.getResource(x, y).type <= CHERRY + 2)
+				if (map.getResource(x, y).type >= CHERRY &&
+					map.getResource(x, y).type <= CHERRY + 2)
 					c = 8;
 				if (map.getResource(x, y).type == ALGA)
 					c = 9;
@@ -779,9 +781,9 @@ int main(int argc, char **argv)
 	}
 	if (!savePrefix.empty())
 		return saveRotatedMaps(game, result, descriptor, savePrefix,
-							   mapName.empty() ? "study-" + std::to_string(method) + "-" +
-													 std::to_string(seed)
-											   : mapName,
+							   mapName.empty()
+								   ? "study-" + std::to_string(method) + "-" + std::to_string(seed)
+								   : mapName,
 							   rotations);
 	return 0;
 }

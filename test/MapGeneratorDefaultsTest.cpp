@@ -106,7 +106,8 @@ class MapGeneratorDefaultsTest
 			Game repeat(nullptr);
 			auto b = service.generate(repeat, request);
 			if (bool(a) != bool(b) || a.stage != b.stage || hash != mapFingerprint(repeat))
-				std::fprintf(stderr, "Not repeatable after an intervening map: generator %d (%s, %s)\n",
+				std::fprintf(stderr,
+							 "Not repeatable after an intervening map: generator %d (%s, %s)\n",
 							 method, a.diagnostic().c_str(), b.diagnostic().c_str());
 			assert(bool(a) == bool(b) && a.stage == b.stage && hash == mapFingerprint(repeat));
 			assert(checksum == repeat.checkSum(nullptr, nullptr, nullptr, true));
@@ -130,8 +131,10 @@ class MapGeneratorDefaultsTest
 					assert(world.map.getH() == (1 << dimensions.second));
 					for (int team = 0; team < rectangular.nbTeams; ++team)
 					{
-						assert(world.teams[team]->startPosX >= 0 && world.teams[team]->startPosX < world.map.getW());
-						assert(world.teams[team]->startPosY >= 0 && world.teams[team]->startPosY < world.map.getH());
+						assert(world.teams[team]->startPosX >= 0 &&
+							   world.teams[team]->startPosX < world.map.getW());
+						assert(world.teams[team]->startPosY >= 0 &&
+							   world.teams[team]->startPosY < world.map.getH());
 					}
 				}
 			for (const auto &c : D::controls(method))
@@ -187,7 +190,7 @@ class MapGeneratorDefaultsTest
 			legacy.riverDiameter = 50;
 			auto converted = fromLegacyDescriptor(legacy, 42);
 			const char *key = pair.first == D::eCRATERLAKES ? "lake-size"
-							  : pair.first == D::eISLES		? "bridge-width"
+							  : pair.first == D::eISLES     ? "bridge-width"
 															: "channel-width";
 			assert(converted.option(key) == pair.second);
 		}
@@ -195,43 +198,47 @@ class MapGeneratorDefaultsTest
 		std::vector<GeneratorDefinition> definitions;
 		for (int id : GeneratorRegistry::builtins().methods())
 			definitions.push_back(GeneratorRegistry::builtins().at(id));
-		definitions.push_back({"test-plateau",
-							   101,
-							   "uniform terrain",
-							   1,
-							   false,
-							   {{"test-elevation", "Smoothing", 2, 10, 2, 6},
-								{"test-cell",
-								 "Island size",
-								 4,
-								 16,
-								 1,
-								 8,
-								 ControlGroup::Layout,
-								 false,
-								 false,
-								 {4, 8, 16}},
-								{"test-gap", "Channel width", 1, 5, 2, 3, ControlGroup::Layout},
-								GeneratorControl::toggle("test-switch", "Lake connects to fjords",
-														 false)},
-							   [](Game &game, GenerationContext &context)
-							   {
-								   const int elevation = context.request.option("test-elevation");
-								   assert(elevation == 8);
-								   assert(context.request.option("test-switch") == 1);
-								   game.map.makeHomogenMap(GRASS);
-								   for (int team = 0; team < context.request.nbTeams; ++team)
-								   {
-									   context.bootX[team] = elevation + (team % 2) * 40;
-									   context.bootY[team] = elevation + (team / 2) * 40;
-								   }
-								   return MapGeneration::placeStarts(game, context);
-							   }});
+		definitions.push_back(
+			{"test-plateau",
+			 101,
+			 "uniform terrain",
+			 1,
+			 false,
+			 {{"test-elevation", "Smoothing", 2, 10, 2, 6},
+			  {"test-cell",
+			   "Island size",
+			   4,
+			   16,
+			   1,
+			   8,
+			   ControlGroup::Layout,
+			   false,
+			   false,
+			   {4, 8, 16}},
+			  {"test-gap", "Channel width", 1, 5, 2, 3, ControlGroup::Layout},
+			  GeneratorControl::toggle("test-switch", "Lake connects to fjords", false)},
+			 [](Game &game, GenerationContext &context)
+			 {
+				 const int elevation = context.request.option("test-elevation");
+				 assert(elevation == 8);
+				 assert(context.request.option("test-switch") == 1);
+				 game.map.makeHomogenMap(GRASS);
+				 for (int team = 0; team < context.request.nbTeams; ++team)
+				 {
+					 context.bootX[team] = elevation + (team % 2) * 40;
+					 context.bootY[team] = elevation + (team / 2) * 40;
+				 }
+				 return MapGeneration::placeStarts(game, context);
+			 }});
 		// A toggle is exactly 0 or 1, shown as a checkbox: any other domain is a registration error.
 		{
 			const auto rejected = [](GeneratorControl control)
 			{
-				GeneratorDefinition definition{"test-toggle", 102, "uniform terrain", 1, false,
+				GeneratorDefinition definition{"test-toggle",
+											   102,
+											   "uniform terrain",
+											   1,
+											   false,
 											   {std::move(control)},
 											   [](Game &, GenerationContext &) { return false; }};
 				try
@@ -245,7 +252,8 @@ class MapGeneratorDefaultsTest
 				return false;
 			};
 			const auto on = GeneratorControl::toggle("switch", "Lake connects to fjords", true);
-			assert(on.isToggle() && on.defaultValue == 1 && on.values() == std::vector<int>({0, 1}));
+			assert(on.isToggle() && on.defaultValue == 1 &&
+				   on.values() == std::vector<int>({0, 1}));
 			assert(!rejected(on));
 			const auto amount = GeneratorControl::percentage("amount", "Fruit");
 			assert(!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount));
@@ -301,7 +309,8 @@ class MapGeneratorDefaultsTest
 			for (int attempt = 0; attempt < GenerationService::kSampledCandidates; ++attempt)
 			{
 				D roll = sampled;
-				roll.seed = GenerationContext::deriveSeed(root, "attempt/" + std::to_string(attempt));
+				roll.seed =
+					GenerationContext::deriveSeed(root, "attempt/" + std::to_string(attempt));
 				sawChosen = sawChosen || roll.seed == chosen;
 				Game world(nullptr);
 				const auto rolled = service.generate(world, roll);
@@ -422,14 +431,16 @@ class MapGeneratorDefaultsTest
 			for (auto &w : s.controlWidgets)
 				if (w.method == m)
 				{
-					assert(w.definition.isToggle() == bool(w.toggle) && bool(w.number) != bool(w.toggle));
+					assert(w.definition.isToggle() == bool(w.toggle) &&
+						   bool(w.number) != bool(w.toggle));
 					assert(w.field()->visible && w.label->visible);
 					if (!w.toggle)
 						continue;
 					const int before = w.definition.get(s.descriptor);
 					assert(w.toggle->getState() == (before != 0));
 					click(s, w.toggle);
-					assert(w.definition.get(s.descriptor) == 1 - before && w.toggle->getState() == !before);
+					assert(w.definition.get(s.descriptor) == 1 - before &&
+						   w.toggle->getState() == !before);
 					click(s, w.toggle);
 					assert(w.definition.get(s.descriptor) == before);
 				}

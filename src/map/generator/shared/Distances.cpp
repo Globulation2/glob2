@@ -102,7 +102,7 @@ void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 		deltaAddrC[6] = (yd << wDec) | xl;
 		deltaAddrC[7] = (y << wDec) | xl;
 		for (int ci = 0; ci < 8; ci++) // Check for each of this fields if we
-		{							   // can improve its gradient value
+		{                              // can improve its gradient value
 			addr = &heightmap[deltaAddrC[ci]];
 			side = *addr;
 			if (side == 0)

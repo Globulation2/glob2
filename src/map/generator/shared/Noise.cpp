@@ -30,7 +30,10 @@
 	d1 = d0 - 1.0;
 
 // Constructor
-GenerationNoise::GenerationNoise(unsigned int seed) { reseed(seed); }
+GenerationNoise::GenerationNoise(unsigned int seed)
+{
+	reseed(seed);
+}
 // Destructor
 GenerationNoise::~GenerationNoise() {}
 
@@ -216,7 +219,10 @@ float GenerationNoise::Noise3d(float pos[3])
 
 // you can call noise component-wise, too.
 
-float GenerationNoise::Noise(float x) { return Noise1d(&x); }
+float GenerationNoise::Noise(float x)
+{
+	return Noise1d(&x);
+}
 
 float GenerationNoise::Noise(float x, float y)
 {

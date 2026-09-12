@@ -8,11 +8,13 @@
 
 namespace
 {
-std::string tr(const std::string &s) { return Toolkit::getStringTable()->getString("[" + s + "]"); }
+std::string tr(const std::string &s)
+{
+	return Toolkit::getStringTable()->getString("[" + s + "]");
+}
 } // namespace
 
-std::vector<GenerationRequest>
-LandscapePickerScreen::requestsOf(const std::vector<Entry> &entries)
+std::vector<GenerationRequest> LandscapePickerScreen::requestsOf(const std::vector<Entry> &entries)
 {
 	std::vector<GenerationRequest> requests;
 	for (const auto &entry : entries)
@@ -62,7 +64,10 @@ void LandscapePickerScreen::confirm()
 		endExecute(selected);
 }
 
-void LandscapePickerScreen::onTimer(Uint32) { refresh(); }
+void LandscapePickerScreen::onTimer(Uint32)
+{
+	refresh();
+}
 
 void LandscapePickerScreen::refresh()
 {
@@ -78,8 +83,8 @@ void LandscapePickerScreen::refresh()
 		if (tile.preview.state == LandscapePreviewer::State::Ready)
 		{
 			// Surfaces belong to the UI thread; the worker only hands over pixels.
-			tile.surface = std::make_unique<DrawableSurface>(MapPreview::PreviewSize,
-															 MapPreview::PreviewSize);
+			tile.surface =
+				std::make_unique<DrawableSurface>(MapPreview::PreviewSize, MapPreview::PreviewSize);
 			tile.preview.thumbnail.loadIntoSurface(tile.surface.get());
 		}
 	}
@@ -95,10 +100,10 @@ void LandscapePickerScreen::onSDLEvent(SDL_Event *event)
 			endExecute(CANCEL);
 			return;
 		}
-		const int step = key == SDLK_LEFT	 ? -1
+		const int step = key == SDLK_LEFT    ? -1
 						 : key == SDLK_RIGHT ? 1
-						 : key == SDLK_UP	 ? -columns
-						 : key == SDLK_DOWN	 ? columns
+						 : key == SDLK_UP    ? -columns
+						 : key == SDLK_DOWN  ? columns
 											 : 0;
 		if (step != 0)
 		{
@@ -142,8 +147,8 @@ void LandscapePickerScreen::render()
 	const int bottom = height - 66;
 	const int gap = 12, scrollbar = 12;
 	const int tileMin = compact ? 176 : 200;
-	columns = std::clamp((w - scrollbar + gap) / (tileMin + gap), 1,
-						 std::max(1, int(entries.size())));
+	columns =
+		std::clamp((w - scrollbar + gap) / (tileMin + gap), 1, std::max(1, int(entries.size())));
 	const int tileW = (w - scrollbar - gap * (columns - 1)) / columns;
 	const int image = tileW - 16;
 	const int nameH = Toolkit::getFont("standard")->getStringHeight("Ag");
@@ -215,9 +220,8 @@ void LandscapePickerScreen::render()
 		"landscape/back", {x, height - 55, 100, 34}, tr("Back"), [this] { endExecute(CANCEL); },
 		false, true, true);
 	const int regenerateW = compact ? 150 : 190;
-	ui.button(
-		"landscape/regenerate", {x + 110, height - 55, regenerateW, 34}, tr("Regenerate all"),
-		[this] { previewer.regenerate(); });
+	ui.button("landscape/regenerate", {x + 110, height - 55, regenerateW, 34}, tr("Regenerate all"),
+			  [this] { previewer.regenerate(); });
 	const int useX = x + 110 + regenerateW + 10;
 	const bool valid = selected >= 0 && selected < int(entries.size());
 	ui.button(

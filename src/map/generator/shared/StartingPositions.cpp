@@ -324,7 +324,7 @@ std::vector<std::uint8_t> buildHardSpaceGrid(Map &map)
 // on any map this engine supports fit comfortably in 16 bits, halving the footprint of an array
 // this flood (and every scoreAsBuilt call after it) touches over and over.
 std::vector<std::int16_t> distanceToResource(Map &map, const std::vector<std::uint8_t> &hard,
-											  int resourceType)
+											 int resourceType)
 {
 	const int w = map.getW(), h = map.getH();
 	std::vector<std::int16_t> dist(size_t(w) * h, -1);

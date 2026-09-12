@@ -48,8 +48,8 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 			const Team *team = g.teams[i];
 			if (!team)
 				return "Missing colony";
-			if (team->startPosX < 0 || team->startPosX >= g.map.getW() ||
-				team->startPosY < 0 || team->startPosY >= g.map.getH())
+			if (team->startPosX < 0 || team->startPosX >= g.map.getW() || team->startPosY < 0 ||
+				team->startPosY >= g.map.getH())
 				return "Starting position outside map bounds";
 			int workers = 0;
 			bool swarm = false;

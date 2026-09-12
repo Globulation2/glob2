@@ -35,8 +35,8 @@ class NewMapScreen : public Glob2Screen
 	struct ControlWidget
 	{
 		GenerationRequest::Control definition;
-		int method;			 // -1 for shared controls
-		Number *number;		 // range controls
+		int method;          // -1 for shared controls
+		Number *number;      // range controls
 		OnOffButton *toggle; // toggle controls, shown as a check button
 		Text *label;
 		Widget *field() const;

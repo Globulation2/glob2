@@ -1,26 +1,28 @@
 #pragma once
 #include "Regions.h"
 #include <cstdint>
-namespace MapGeneration {
+namespace MapGeneration
+{
 // A resource-amount percentage (GeneratorControl::percentage) applied to a count or a share,
 // rounding to nearest. 100 returns the input unchanged, so a default map is exactly what it was.
-inline std::int64_t scaledCount(std::int64_t count, int percent) {
-  return percent == 100 ? count : (count * percent + 50) / 100;
+inline std::int64_t scaledCount(std::int64_t count, int percent)
+{
+	return percent == 100 ? count : (count * percent + 50) / 100;
 }
-inline double scaledShare(double share, int percent) {
-  return percent == 100 ? share : share * percent / 100.0;
+inline double scaledShare(double share, int percent)
+{
+	return percent == 100 ? share : share * percent / 100.0;
 }
-struct ResourceDensities {
-  int corn, wood, stone, algae, fruit;
+struct ResourceDensities
+{
+	int corn, wood, stone, algae, fruit;
 };
-void fillInResource(Map &map, GenerationContext &context,
-                    std::vector<MapGeneratorPoint> &points, int resourceType,
-                    int maxFillSize);
-int placeResourceClump(Map &, GenerationContext &, MapGeneratorPoint center,
-                       int resourceType, int radius);
-int placeResourceClumpInArea(Map &, GenerationContext &,
-                             const std::vector<MapGeneratorPoint> &,
-                             int resourceType, int radius);
+void fillInResource(Map &map, GenerationContext &context, std::vector<MapGeneratorPoint> &points,
+					int resourceType, int maxFillSize);
+int placeResourceClump(Map &, GenerationContext &, MapGeneratorPoint center, int resourceType,
+					   int radius);
+int placeResourceClumpInArea(Map &, GenerationContext &, const std::vector<MapGeneratorPoint> &,
+							 int resourceType, int radius);
 // Map::setResource(x, y, type, size) scaled to `percent` of that square's tiles: the tiles
 // nearest its centre, placed in setResource's own order, so 100 is exactly that call.
 void setScaledResource(Map &, int x, int y, int resourceType, int size, int percent);
@@ -35,8 +37,8 @@ void scatterResources(Game &, GenerationContext &, const ResourceDensities &);
 // the map's design (a generator's stone ridgelines, say). They are treated like terrain: never
 // cleared, and never looked past when deciding whether a colony is walled into a pocket.
 void guaranteeStartingResources(Game &game, GenerationContext &context, int wheatRange,
-                                int woodRange, int clearRadius = 0,
-                                const std::vector<unsigned char> *protectedWalls = nullptr);
+								int woodRange, int clearRadius = 0,
+								const std::vector<unsigned char> *protectedWalls = nullptr);
 // A colony with nowhere to build is unplayable however rich the ground around it is: resources
 // block ground units and buildings alike, so a resource amount well above the default can wall a
 // swarm into a pocket with no room for a 4x4 building. guaranteeStartingResources above only opens
@@ -49,5 +51,5 @@ void guaranteeStartingResources(Game &game, GenerationContext &context, int whea
 // Call guaranteeStartingResources again afterwards: the clearing can take away the nearest wheat
 // or wood along with the wall.
 void openCrampedStarts(Game &game, GenerationContext &context, int sites = 16, int range = 24,
-                       const std::vector<unsigned char> *protectedWalls = nullptr);
+					   const std::vector<unsigned char> *protectedWalls = nullptr);
 } // namespace MapGeneration

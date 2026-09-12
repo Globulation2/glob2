@@ -88,8 +88,14 @@ void GeneratorControl::set(D &d, int v) const
 		d.logRepeatAreaTimes = normalize(v);
 	// Else: no legacy field for this option: nothing to store.
 }
-const std::vector<D::Control> &D::controls(Method m) { return GenerationRequest::controls(m); }
-const std::vector<D::Control> &D::sharedControls() { return sharedGeneratorControls(); }
+const std::vector<D::Control> &D::controls(Method m)
+{
+	return GenerationRequest::controls(m);
+}
+const std::vector<D::Control> &D::sharedControls()
+{
+	return sharedGeneratorControls();
+}
 const D::Control &D::control(Method m, const char *label)
 {
 	for (const auto &c : controls(m))
@@ -100,7 +106,10 @@ const D::Control &D::control(Method m, const char *label)
 			return c;
 	throw std::invalid_argument("Unknown legacy control");
 }
-const char *D::methodName(Method m) { return GenerationRequest::methodName(m); }
+const char *D::methodName(Method m)
+{
+	return GenerationRequest::methodName(m);
+}
 D::MapGenerationDescriptor()
 {
 	terrainType = GRASS;
@@ -126,7 +135,10 @@ void D::setMethodDefaults(Method m)
 	for (const auto &c : controls(m))
 		c.set(*this, c.defaultValue);
 }
-bool D::hasTerrainWeight() const { return fromLegacyDescriptor(*this, 0).hasTerrainWeight(); }
+bool D::hasTerrainWeight() const
+{
+	return fromLegacyDescriptor(*this, 0).hasTerrainWeight();
+}
 GenerationRequest fromLegacyDescriptor(const D &d, std::uint32_t seed)
 {
 	GenerationRequest r;

@@ -6,12 +6,12 @@
 #include "Noise.h"
 
 class HeightMap /// class to generate heightmaps to decide where to put resources, water, sand and
-				/// grass later
+/// grass later
 {
-	float *_map;		 /// height values are always [0,1].
+	float *_map;         /// height values are always [0,1].
 	unsigned int _w, _h; /// map size
-	float *_stamp;		 /// smooth 0 to 1 gradient lookup to generate craters, islands and rivers
-	unsigned int _r;	 /// radius of the _stamp
+	float *_stamp;       /// smooth 0 to 1 gradient lookup to generate craters, islands and rivers
+	unsigned int _r;     /// radius of the _stamp
 	GenerationNoise _pn;
 	std::mt19937 &random;
 	unsigned oldLowerX = ~0u, oldLowerY = ~0u, oldDifferenceX = ~0u,
@@ -75,5 +75,5 @@ class HeightMap /// class to generate heightmaps to decide where to put resource
 									  /// 0..255 values of stamp to it. to see it, use convert -size
 									  /// [width]x[height] -depth 8 gray:[filename] test.png where
 									  /// with==height as _stamp is always a square
-	void normalize();				  /// fits the values of _map to [0, 1]
+	void normalize();                 /// fits the values of _map to [0, 1]
 };

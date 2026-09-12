@@ -37,8 +37,7 @@ void MapGeneration::readResourceControls(HeightFieldOptions &options,
 void MapGeneration::openStartsBuriedByAmounts(Game &game, GenerationContext &context,
 											  const HeightFieldOptions &options)
 {
-	if (options.wheat == 100 && options.wood == 100 && options.stone == 100 &&
-		options.algae == 100)
+	if (options.wheat == 100 && options.wood == 100 && options.stone == 100 && options.algae == 100)
 		return;
 	// The resource bands are painted from map-wide noise levels with no awareness of where any team
 	// starts, so an amount well above the default widens them until they can wall a colony in with
@@ -103,16 +102,15 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 	// each band is scaled on its own and none reaches past the top of the grass. Hilltop stone
 	// takes the highest grass instead, and farmland then starts at the beach.
 	const unsigned int landTop = waterTiles + sandTiles + grassTiles;
-	const unsigned int stoneTiles =
-		unsigned(std::min<std::int64_t>(grassTiles, scaledCount(wheatWoodTiles / 3, options.stone)));
+	const unsigned int stoneTiles = unsigned(
+		std::min<std::int64_t>(grassTiles, scaledCount(wheatWoodTiles / 3, options.stone)));
 	const unsigned int farmTiles = wheatWoodTiles - wheatWoodTiles / 3;
-	const unsigned int stoneTop = options.hilltopStone
-									  ? landTop
-									  : std::min(landTop, waterTiles + sandTiles + stoneTiles);
+	const unsigned int stoneTop =
+		options.hilltopStone ? landTop : std::min(landTop, waterTiles + sandTiles + stoneTiles);
 	const unsigned int stoneFloor = landTop - stoneTiles;
 	const unsigned int farmStart = options.hilltopStone ? waterTiles + sandTiles : stoneTop;
-	const unsigned int wheatTop =
-		unsigned(std::min<std::int64_t>(landTop, farmStart + scaledCount(farmTiles, options.wheat)));
+	const unsigned int wheatTop = unsigned(
+		std::min<std::int64_t>(landTop, farmStart + scaledCount(farmTiles, options.wheat)));
 	const unsigned int woodTop =
 		unsigned(std::min<std::int64_t>(landTop, farmStart + scaledCount(farmTiles, options.wood)));
 

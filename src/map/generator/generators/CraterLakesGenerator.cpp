@@ -9,9 +9,8 @@ using namespace MapGeneration;
 static bool generate(Game &game, GenerationContext &context)
 {
 	const CraterLakesOptions options(context.request);
-	HeightFieldOptions terrain{
-		options.water,	   options.sand,  options.grass,  options.desert,
-		options.smoothing, options.fruit, options.repeat, false};
+	HeightFieldOptions terrain{options.water,     options.sand,  options.grass,  options.desert,
+							   options.smoothing, options.fruit, options.repeat, false};
 	readResourceControls(terrain, context.request);
 	if (!generateHeightField(game, context, terrain,
 							 [&](HeightMap &hm, unsigned w, unsigned h, float smoothing)

@@ -225,7 +225,8 @@ static bool generate(Game &game, GenerationContext &context)
 				if (options.algae < 100)
 					seeded = seeded && int(context.bounded("commons-algae", 100)) < options.algae;
 				else if (options.algae > 100)
-					seeded = seeded || int(context.bounded("commons-algae", 300)) < options.algae - 100;
+					seeded =
+						seeded || int(context.bounded("commons-algae", 300)) < options.algae - 100;
 				if (seeded)
 					game.map.setResource(x, y, ALGA, 1);
 			}
@@ -464,7 +465,8 @@ GeneratorDefinition contestedCommonsDefinition()
 			 // Off, no bridge crosses the commons' moat.
 			 GeneratorControl::toggle("moat-bridges", "Moat bridges", true, ControlGroup::Layout),
 			 // Off, the home islands and the commons are smooth rounds.
-			 GeneratorControl::toggle("jagged-coasts", "Jagged coastlines", true, ControlGroup::Terrain),
+			 GeneratorControl::toggle("jagged-coasts", "Jagged coastlines", true,
+									  ControlGroup::Terrain),
 			 // How many of the commons' zones are wheat, wood and fruit, the size of its quarry and
 			 // the moat's algae. Every home island's own starter fields stay as they are.
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

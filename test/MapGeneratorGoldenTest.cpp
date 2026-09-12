@@ -85,8 +85,8 @@ std::vector<Row> readTable(const std::string &path)
 			continue;
 		std::istringstream fields(line);
 		Row row;
-		if (fields >> row.platform >> row.id >> row.revision >> row.wDec >> row.hDec >>
-			row.teams >> row.seed >> row.status >> row.hash)
+		if (fields >> row.platform >> row.id >> row.revision >> row.wDec >> row.hDec >> row.teams >>
+			row.seed >> row.status >> row.hash)
 			rows.push_back(row);
 		else
 			throw std::runtime_error("Malformed golden row: " + line);
@@ -176,8 +176,8 @@ int check(const std::string &path)
 		auto it = revisions.find(id);
 		if (it == revisions.end())
 		{
-			std::printf("MISSING generator %s (%d): no golden rows; run --update\n",
-						definition.id, id);
+			std::printf("MISSING generator %s (%d): no golden rows; run --update\n", definition.id,
+						id);
 			++failures;
 		}
 		else if (it->second != definition.revision)
@@ -212,8 +212,7 @@ int check(const std::string &path)
 			++failures;
 		}
 	}
-	std::printf("%s: %d golden rows compared, %d failures\n", platform.c_str(), compared,
-				failures);
+	std::printf("%s: %d golden rows compared, %d failures\n", platform.c_str(), compared, failures);
 	return failures ? 1 : 0;
 }
 
@@ -297,7 +296,7 @@ int sweep()
 	};
 	const std::vector<std::uint32_t> five{1, 2, 3, 4, 5}, three{1, 2, 3};
 	const std::vector<Cell> cells = {
-		{7, 2, five}, {7, 4, five}, {8, 2, five},  {8, 3, five}, {8, 4, five},
+		{7, 2, five}, {7, 4, five}, {8, 2, five},  {8, 3, five},  {8, 4, five},
 		{8, 6, five}, {8, 8, five}, {8, 12, five}, {9, 4, three}, {9, 12, three},
 	};
 	int failures = 0;

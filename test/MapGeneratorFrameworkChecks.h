@@ -92,9 +92,9 @@ inline void dispersionChecks()
 			std::int64_t best = std::numeric_limits<int>::max();
 			for (int j = 0; j < count; ++j)
 				if (j != i)
-					best = std::min(best, std::int64_t(map.warpDistSquare(x, y, points[j].x,
-																			points[j].y)) *
-											  weights[j]);
+					best = std::min(
+						best, std::int64_t(map.warpDistSquare(x, y, points[j].x, points[j].y)) *
+								  weights[j]);
 			return best;
 		};
 		std::set<std::pair<int, int>> occupied;
@@ -121,7 +121,8 @@ inline void dispersionChecks()
 			else
 				for (int dx = -3; dx <= 3; ++dx)
 					for (int dy = -3; dy <= 3; ++dy)
-						consider(map.normalizeX(points[i].x + dx), map.normalizeY(points[i].y + dy));
+						consider(map.normalizeX(points[i].x + dx),
+								 map.normalizeY(points[i].y + dy));
 		}
 	}
 }
@@ -174,7 +175,7 @@ inline void frameworkChecks()
 	dispersionChecks();
 	distanceChecks();
 	using namespace MapGeneration;
-	GeneratorControl cells{"cell", "Cell", 4,		  16, 1, 8, ControlGroup::Layout,
+	GeneratorControl cells{"cell", "Cell", 4,         16, 1, 8, ControlGroup::Layout,
 						   false,  false,  {4, 8, 16}};
 	assert(cells.normalize(6) == 8 && cells.normalize(11) == 8 && cells.normalize(12) == 16);
 	assert(cells.normalize(-100) == 4 && cells.normalize(100) == 16);
@@ -298,15 +299,22 @@ inline void frameworkChecks()
 	for (size_t i = 0; i < points.size(); ++i)
 	{
 		int score = 2147483647;
-		for (size_t j = 0; j < points.size(); ++j) if (i != j)
-			score = std::min(score, game.map.warpDistSquare(points[i].x, points[i].y, points[j].x, points[j].y) * weights[j]);
-		for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x)
-		{
-			int candidate = 2147483647;
-			for (size_t j = 0; j < points.size(); ++j) if (i != j)
-				candidate = std::min(candidate, game.map.warpDistSquare(x, y, points[j].x, points[j].y) * weights[j]);
-			assert(candidate <= score);
-		}
+		for (size_t j = 0; j < points.size(); ++j)
+			if (i != j)
+				score = std::min(score, game.map.warpDistSquare(points[i].x, points[i].y,
+																points[j].x, points[j].y) *
+											weights[j]);
+		for (int y = 0; y < 64; ++y)
+			for (int x = 0; x < 64; ++x)
+			{
+				int candidate = 2147483647;
+				for (size_t j = 0; j < points.size(); ++j)
+					if (i != j)
+						candidate = std::min(
+							candidate,
+							game.map.warpDistSquare(x, y, points[j].x, points[j].y) * weights[j]);
+				assert(candidate <= score);
+			}
 	}
 	weights.clear();
 	rejected = false;

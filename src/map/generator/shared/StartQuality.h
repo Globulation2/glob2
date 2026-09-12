@@ -14,8 +14,7 @@ namespace MapGeneration
 // clearing is cleared and the workers are standing where they will actually start walking.
 struct StartQualityWeights
 {
-	double wheat = 0.22, wood = 0.22, fertility = 0.25, depth = 0.12, room = 0.10,
-		   isolation = 0.09;
+	double wheat = 0.22, wood = 0.22, fertility = 0.25, depth = 0.12, room = 0.10, isolation = 0.09;
 };
 
 // Every factor is normalised against an absolute reference, never against the map's own best
@@ -55,8 +54,8 @@ struct StartQualityReport
 {
 	std::vector<ColonyQuality> colonies;
 	double worst = 0, best = 0;
-	double fairness = 0;  ///< worst/best, 1 when a map has a single colony
-	double score = 0;     ///< worst * pow(fairness, fairnessExponent)
+	double fairness = 0; ///< worst/best, 1 when a map has a single colony
+	double score = 0;    ///< worst * pow(fairness, fairnessExponent)
 	bool measured = false;
 };
 

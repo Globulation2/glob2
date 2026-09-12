@@ -21,7 +21,10 @@ std::mt19937 &GenerationContext::stream(const std::string &name)
 {
 	return streams.try_emplace(name, deriveSeed(request.seed, name)).first->second;
 }
-std::uint32_t GenerationContext::randomSeed() { return std::random_device{}(); }
+std::uint32_t GenerationContext::randomSeed()
+{
+	return std::random_device{}();
+}
 
 std::uint32_t GenerationContext::bounded(const std::string &name, std::uint32_t bound)
 {

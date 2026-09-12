@@ -45,8 +45,14 @@ int GeneratorControl::indexOf(int value) const
 	const auto domain = values();
 	return int(std::lower_bound(domain.begin(), domain.end(), normalize(value)) - domain.begin());
 }
-int GeneratorControl::valueAt(int index) const { return values().at(index); }
-int GeneratorControl::displayValue(int value) const { return powerOfTwo ? (1 << value) : value; }
+int GeneratorControl::valueAt(int index) const
+{
+	return values().at(index);
+}
+int GeneratorControl::displayValue(int value) const
+{
+	return powerOfTwo ? (1 << value) : value;
+}
 int GeneratorControl::get(const GenerationRequest &r) const
 {
 	if (id == "width")
@@ -118,7 +124,10 @@ const GeneratorControl &GenerationRequest::control(int method, const std::string
 			return c;
 	throw std::invalid_argument("Unknown generator control: " + id);
 }
-bool GenerationRequest::hasTerrainWeight() const { return hasTerrainWeight(controls(method)); }
+bool GenerationRequest::hasTerrainWeight() const
+{
+	return hasTerrainWeight(controls(method));
+}
 bool GenerationRequest::hasTerrainWeight(const std::vector<Control> &definitions) const
 {
 	int total = 0;

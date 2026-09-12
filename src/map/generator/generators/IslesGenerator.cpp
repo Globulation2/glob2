@@ -216,8 +216,7 @@ static bool generate(Game &game, GenerationContext &context)
 	// default size can also wall the colony in with nowhere left to build. At any amount other than
 	// the default, open up such a colony and then make sure each still has both crops within reach,
 	// in case the clearing took the nearest one along with the wall.
-	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
-		options.algae != 100)
+	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 || options.algae != 100)
 	{
 		openCrampedStarts(game, context);
 		guaranteeStartingResources(game, context, 24, 32);
@@ -233,21 +232,22 @@ static bool generate(Game &game, GenerationContext &context)
 
 GeneratorDefinition islesDefinition()
 {
-	return {"isles",
-			6,
-			"Isles",
-			2,
-			false,
-			{{"island-size", "Island size", 45, 65, 5, 60, ControlGroup::Terrain, false},
-			 {"bridge-width", "Land bridge width", 3, 6, 1, 4, ControlGroup::Terrain, false},
-			 // Off, every colony's island stands alone in the sea.
-			 GeneratorControl::toggle("land-bridges", "Land bridges", true, ControlGroup::Terrain),
-			 // Off, islands meet the sea without a band of sand.
-			 GeneratorControl::toggle("sandy-beaches", "Sandy beaches", true, ControlGroup::Terrain),
-			 // Wheat and wood scale each colony's fields, stone its deposits, algae its patch.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount")},
-			generate};
+	return {
+		"isles",
+		6,
+		"Isles",
+		2,
+		false,
+		{{"island-size", "Island size", 45, 65, 5, 60, ControlGroup::Terrain, false},
+		 {"bridge-width", "Land bridge width", 3, 6, 1, 4, ControlGroup::Terrain, false},
+		 // Off, every colony's island stands alone in the sea.
+		 GeneratorControl::toggle("land-bridges", "Land bridges", true, ControlGroup::Terrain),
+		 // Off, islands meet the sea without a band of sand.
+		 GeneratorControl::toggle("sandy-beaches", "Sandy beaches", true, ControlGroup::Terrain),
+		 // Wheat and wood scale each colony's fields, stone its deposits, algae its patch.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount")},
+		generate};
 }

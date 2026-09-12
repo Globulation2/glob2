@@ -198,21 +198,22 @@ static bool generate(Game &game, GenerationContext &context)
 
 GeneratorDefinition concreteIslandsDefinition()
 {
-	return {"concrete-islands",
-			5,
-			"Concrete islands",
-			1,
-			false,
-			{{"channel-width", "Channel width", 5, 8, 1, 5, ControlGroup::Terrain, false},
-			 {"extra-islands", "Extra islands", 0, 6, 1, 3, ControlGroup::Terrain, false},
-			 // Off, islands meet their channels without a band of sand.
-			 GeneratorControl::toggle("sandy-beaches", "Sandy beaches", true, ControlGroup::Terrain),
-			 // Wheat and wood scale each colony's fields and the neutral islands' wheat; stone
-			 // each colony's deposits; algae the channels'; fruit the neutral islands'.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate};
+	return {
+		"concrete-islands",
+		5,
+		"Concrete islands",
+		1,
+		false,
+		{{"channel-width", "Channel width", 5, 8, 1, 5, ControlGroup::Terrain, false},
+		 {"extra-islands", "Extra islands", 0, 6, 1, 3, ControlGroup::Terrain, false},
+		 // Off, islands meet their channels without a band of sand.
+		 GeneratorControl::toggle("sandy-beaches", "Sandy beaches", true, ControlGroup::Terrain),
+		 // Wheat and wood scale each colony's fields and the neutral islands' wheat; stone
+		 // each colony's deposits; algae the channels'; fruit the neutral islands'.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate};
 }

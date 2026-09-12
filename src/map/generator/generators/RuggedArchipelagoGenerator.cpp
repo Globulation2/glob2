@@ -56,7 +56,6 @@ static bool terrain(Game &game, GenerationContext &context, const RuggedArchipel
 			}
 		if (failed)
 		{
-
 			i--;
 			if (c++ > 65536)
 			{
@@ -399,8 +398,7 @@ static bool generate(Game &game, GenerationContext &context)
 	// nowhere left to build on an island this small, which the guarantee above doesn't address: a
 	// colony buried in wood has wood at its feet. At any amount other than the default, open such a
 	// colony back up and guarantee the crops once more. At the defaults none of this runs.
-	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 ||
-		options.algae != 100)
+	if (options.wheat != 100 || options.wood != 100 || options.stone != 100 || options.algae != 100)
 	{
 		openCrampedStarts(game, context);
 		guaranteeStartingResources(game, context, 24, 32);
@@ -410,20 +408,21 @@ static bool generate(Game &game, GenerationContext &context)
 
 GeneratorDefinition ruggedArchipelagoDefinition()
 {
-	return {"rugged-archipelago",
-			8,
-			"Old islands",
-			1,
-			false,
-			{{"island-size", "Island size", 50, 70, 1, 65, ControlGroup::Terrain, false},
-			 {"beach-size", "Beach size", 0, 4, 1, 1, ControlGroup::Terrain, false},
-			 // Off, an island gets no fourth deposit of whichever of wheat or wood came out smaller.
-			 GeneratorControl::toggle("extra-deposit", "Extra starting deposit", true,
-									  ControlGroup::Resources),
-			 // The area of each island's own wheat, wood, stone and algae deposits.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount")},
-			generate};
+	return {
+		"rugged-archipelago",
+		8,
+		"Old islands",
+		1,
+		false,
+		{{"island-size", "Island size", 50, 70, 1, 65, ControlGroup::Terrain, false},
+		 {"beach-size", "Beach size", 0, 4, 1, 1, ControlGroup::Terrain, false},
+		 // Off, an island gets no fourth deposit of whichever of wheat or wood came out smaller.
+		 GeneratorControl::toggle("extra-deposit", "Extra starting deposit", true,
+								  ControlGroup::Resources),
+		 // The area of each island's own wheat, wood, stone and algae deposits.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount")},
+		generate};
 }

@@ -12,7 +12,10 @@ namespace MapGeneration
 {
 namespace
 {
-double clampUnit(double v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+double clampUnit(double v)
+{
+	return v < 0 ? 0 : (v > 1 ? 1 : v);
+}
 
 /// Distance in walking steps from a colony's starting workers to every tile it can reach.
 /// Workers, not the boot tile: the swarm occupies the boot tile and nobody walks out of it.
@@ -92,7 +95,8 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
 		{
-			const Uint16 value = static_cast<Uint16>(std::min(fertility.at(x, y), kFertilityCeiling));
+			const Uint16 value =
+				static_cast<Uint16>(std::min(fertility.at(x, y), kFertilityCeiling));
 			map.getTile(x, y).fertility = value;
 			fertilityMax = std::max(fertilityMax, value);
 		}
@@ -173,19 +177,21 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 		colony.room = clampUnit(double(colony.buildSites) / scale.roomReference);
 		// No reachable rival is the safest a colony can be; being one of several crowded into
 		// the same neighbourhood is the case the raw distance alone does not describe.
-		const double spacing = colony.rivalDistance < 0
-								   ? 1.0
-								   : clampUnit(double(colony.rivalDistance) / scale.isolationReference);
+		const double spacing =
+			colony.rivalDistance < 0
+				? 1.0
+				: clampUnit(double(colony.rivalDistance) / scale.isolationReference);
 		const int crowd = std::max(0, colony.rivalsWithinThreat - 1);
 		colony.isolation = spacing * std::max(0.0, 1.0 - scale.crowdPenalty * crowd);
 
 		const double sum = weights.wheat + weights.wood + weights.fertility + weights.depth +
 						   weights.room + weights.isolation;
-		colony.total = sum <= 0 ? 0
-								: (weights.wheat * colony.wheat + weights.wood * colony.wood +
-								   weights.fertility * colony.fertility + weights.depth * colony.depth +
-								   weights.room * colony.room + weights.isolation * colony.isolation) /
-									  sum;
+		colony.total = sum <= 0
+						   ? 0
+						   : (weights.wheat * colony.wheat + weights.wood * colony.wood +
+							  weights.fertility * colony.fertility + weights.depth * colony.depth +
+							  weights.room * colony.room + weights.isolation * colony.isolation) /
+								 sum;
 		// A colony that cannot reach one of its primary resources has not got a start at all,
 		// whatever room and fertility it was given.
 		if (colony.wheatDistance < 0 || colony.woodDistance < 0)
