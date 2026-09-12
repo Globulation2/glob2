@@ -99,7 +99,14 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if (globalContainer->settings.motionBlur && dir != 8)
 	{
 		const int step = unitActionStepSpeed(unit->speed, unit->action, unit->dx, unit->dy);
-		const int span = std::max(1, step * globalContainer->settings.getGameSpeedRenderInterval());
+		// The shutter spans one simulation tick, not the whole render interval.
+		// The sprite is drawn at a single position, so the ticks a fast speed
+		// preset skips have no swept position to blur along: averaging their
+		// poses in only smears the unit in place. At 40x the interval-scaled
+		// span reached 512 -- the full 32-pose cycle twice, 64 draws per unit.
+		// One tick is at most 30 delta (the fastest walk/swim), so the shutter
+		// stays under a quarter cycle and never wraps at any speed.
+		const int span = std::max(1, step);
 		// Each pose is one ordinary drawSprite call, weighted by its share of the
 		// shutter; drawn in sequence, alpha-over already gives the running average
 		// Giszmo's review sketch describes. No blurred frame is cached or retained.
