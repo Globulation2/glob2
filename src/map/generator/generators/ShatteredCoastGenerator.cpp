@@ -550,12 +550,14 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 	int *bootX = context.bootX.data();
 	int *bootY = context.bootY.data();
 
-	// TODO: First pass to find the number of available places.
-	for (int team = 0; team < nbTeams; team++)
+	// Each colony takes the widest grass patch that keeps its distance from the ones already
+	// placed. The patches are taken largest first, so on a crowded map the last colonies can
+	// find every remaining patch too close; rather than refuse the map, such a colony accepts a
+	// nearer patch, down to half the spacing, then a quarter. A map that seats every colony at
+	// full spacing never reaches the relaxation, so its starts are as they always were.
+	auto widestPatch = [&](int team, int spacingSquare, int &maxX, int &maxY)
 	{
 		int maxSurface = 0;
-		int maxX = 0;
-		int maxY = 0;
 		for (int y = 0; y < h; y++)
 		{
 			int width = 0;
@@ -585,7 +587,7 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 						bool farEnough = true;
 						for (int ti = 0; ti < team; ti++)
 							if (map.warpDistSquare(centerX, centerY, bootX[ti], bootY[ti]) <
-								minDistSquare)
+								spacingSquare)
 							{
 								farEnough = false;
 								break;
@@ -603,6 +605,19 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 				}
 			}
 		}
+		return maxSurface;
+	};
+	for (int team = 0; team < nbTeams; team++)
+	{
+		int maxSurface = 0;
+		int maxX = 0;
+		int maxY = 0;
+		for (int spacing : {minDistSquare, minDistSquare / 2, minDistSquare / 4})
+		{
+			maxSurface = widestPatch(team, spacing, maxX, maxY);
+			if (maxSurface > 0)
+				break;
+		}
 
 		if (maxSurface <= 0)
 		{
@@ -610,7 +625,6 @@ static bool terrain(Game &game, GenerationContext &context, const ShatteredCoast
 			context.detail = "Cannot space every colony on grass";
 			return false;
 		}
-		assert(maxSurface);
 		bootX[team] = maxX;
 		bootY[team] = maxY;
 
