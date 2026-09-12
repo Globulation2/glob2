@@ -145,6 +145,12 @@ public:
 	Map *map;
 
 	Unit **myUnits;
+	// PROTOTYPE: units on their way to fetch each resource, per swim class.
+	int fetchersGoing[MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	void countFetchersGoing();
+	static bool supplyCapEnabled();
+	//! PROTOTYPE: as many units already fetch this resource as are left on the map.
+	bool resourceOversubscribed(int resource, int swimClass) const;
 
 	Building **myBuildings;
 

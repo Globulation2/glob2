@@ -161,11 +161,17 @@ void Unit::handleDisplacement(void)
 								if (need>0)
 								{
 									int distToResource;
-									bool available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
-									if (available)
-										distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
-									else
-										available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
+									// With GLOB2_PROTO_SUPPLY_CAP, skip fetching from the map while as many
+									// units already fetch r as the map has left; a market still counts.
+									bool available=false;
+									if (!owner->resourceOversubscribed(r, swimClass()))
+									{
+										available=map->roundTripDistance(attachedBuilding, r, swimClass(), posX, posY, &distToResource);
+										if (available)
+											distToResource=(distToResource+1)/2; // half the round trip: the unit is at the building
+										else
+											available=map->resourceAvailable(teamNumber, r, swimClass(), posX, posY, &distToResource);
+									}
 									if (available)
 									{
 										if ((distToResource<<1)>=timeLeft)
@@ -209,6 +215,8 @@ void Unit::handleDisplacement(void)
 							if (bestResource>=0)
 							{
 								destinationPurpose=bestResource;
+								if (Team::supplyCapEnabled() && !takeInExchangeBuilding && bestResource < MAX_RESOURCES)
+									owner->fetchersGoing[bestResource][swimClass()]++;
 								assert(activity==ACT_FILLING);
 								if (takeInExchangeBuilding)
 								{

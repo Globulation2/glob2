@@ -49,6 +49,7 @@ Map::Map()
 			for (int s=0; s<SWIM_CLASS_COUNT; s++)
 			{
 				resourcesGradient[t][r][s] = NULL;
+				resourceSupply[t][r][s] = 0;
 				gradientUpdated[t][r][s] = false;
 			}
 	for (int t=0; t<Team::MAX_COUNT; t++)

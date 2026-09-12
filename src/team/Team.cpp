@@ -58,6 +58,10 @@ void Team::init(void)
 	for (int i=0; i<Building::MAX_COUNT; i++)
 		myBuildings[i]=NULL;
 
+	for (int r=0; r<MAX_NB_RESOURCES; r++)
+		for (int s=0; s<SWIM_CLASS_COUNT; s++)
+			fetchersGoing[r][s]=0;
+
 	startPosX=startPosY=0;
 	startPosSet=START_POS_UNSET;
 

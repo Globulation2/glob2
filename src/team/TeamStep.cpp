@@ -142,6 +142,34 @@ void Team::removeBuildingNeedingWork(Building* b, Sint32 priority)
 
 
 
+void Team::countFetchersGoing()
+{
+	for (int r = 0; r < MAX_NB_RESOURCES; r++)
+		for (int s = 0; s < SWIM_CLASS_COUNT; s++)
+			fetchersGoing[r][s] = 0;
+	if (!supplyCapEnabled())
+		return;
+	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	{
+		const Unit *u = myUnits[i];
+		if (u && u->activity == Unit::ACT_FILLING && u->displacement == Unit::DIS_GOING_TO_RESOURCE
+			&& u->ownExchangeBuilding == NULL && u->destinationPurpose >= 0 && u->destinationPurpose < MAX_NB_RESOURCES)
+			fetchersGoing[u->destinationPurpose][u->swimClass()]++;
+	}
+}
+
+bool Team::supplyCapEnabled()
+{
+	static const bool enabled = getenv("GLOB2_PROTO_SUPPLY_CAP") != NULL;
+	return enabled;
+}
+
+bool Team::resourceOversubscribed(int resource, int swimClass) const
+{
+	return supplyCapEnabled() && resource >= 0 && resource < MAX_RESOURCES
+		&& (Uint32)fetchersGoing[resource][swimClass] >= map->getResourceSupply(teamNumber, resource, swimClass);
+}
+
 void Team::updateAllBuildingTasks()
 {
 	for(std::map<int, std::vector<Building*>, std::greater<int> >::iterator i = buildingsNeedingUnits.begin(); i!=buildingsNeedingUnits.end(); ++i)
@@ -436,6 +464,7 @@ void Team::syncStep(void)
 			++it;
 	}
 
+	countFetchersGoing();
 	updateAllBuildingTasks();
 	for (int k = 0; k < SWAP_CHECKS_PER_TICK; k++)
 		swapTask(myUnits[(game->stepCounter * SWAP_CHECKS_PER_TICK + k) % Unit::MAX_COUNT]);

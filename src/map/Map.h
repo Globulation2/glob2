@@ -632,6 +632,12 @@ public:
 	template<typename T>
 	bool isGradientPeak(const T *gradient, int x, int y) const;
 
+	//! PROTOTYPE: resources left on the goal tiles at the field's last rebuild.
+	Uint32 getResourceSupply(int teamNumber, int resourceType, int swimClass) const
+	{
+		return resourceSupply[teamNumber][resourceType][swimClass];
+	}
+
 	Uint16 getGradient(int teamNumber, Uint8 resourceType, int swimClass, int x, int y)
 	{
 		return getResourceGradient(teamNumber, resourceType, swimClass)[coordToIndex(x, y)];
@@ -758,6 +764,8 @@ protected:
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *resourcesGradient[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
+	// PROTOTYPE: resources left on the goal tiles of each field at its last rebuild.
+	Uint32 resourceSupply[Team::MAX_COUNT][MAX_NB_RESOURCES][SWIM_CLASS_COUNT];
 	
 	// Used to go out of forbidden areas
 	Uint16 *forbiddenGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];

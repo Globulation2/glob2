@@ -122,6 +122,11 @@ bool Building::considerUnitForResource(Unit* unit, int wantedResource, int* dist
 			noteUnitFailing(unit, UnitCantAccessFruit);
 		return false;
 	}
+	if(owner->resourceOversubscribed(wantedResource, unit->swimClass()))
+	{
+		noteUnitFailing(unit, UnitCantAccessResource);
+		return false;
+	}
 	if(distResource >= timeLeft)
 	{
 		if(wantedResource<BASIC_COUNT)
@@ -307,6 +312,9 @@ bool Building::subscribeToBringResourcesStep()
 
 		if (sel.choosen)
 		{
+			const int purpose = sel.choosen->destinationPurpose;
+			if (Team::supplyCapEnabled() && sel.choosen->carriedResource != purpose && purpose >= 0 && purpose < MAX_RESOURCES)
+				owner->fetchersGoing[purpose][sel.choosen->swimClass()]++;
 			unitsWorking.push_back(sel.choosen);
 			sel.choosen->subscriptionSuccess(this, false);
 			owner->swapTask(sel.choosen);
