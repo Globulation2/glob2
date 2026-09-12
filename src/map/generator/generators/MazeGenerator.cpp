@@ -722,7 +722,7 @@ bool generate(Game &game, GenerationContext &context)
 std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	const Map &map = game.map;
-	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
+	const int teams = context.request.nbTeams;
 	const Torus t(map);
 	const auto units = unitTilesByTeam(map, teams);
 	const std::vector<int> reached =

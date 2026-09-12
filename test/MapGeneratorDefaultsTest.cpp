@@ -181,6 +181,7 @@ class MapGeneratorDefaultsTest
 		auto failed = service.generate(fresh, invalid);
 		assert(!failed && failed.error == GenerationError::PlacementFailed &&
 			   !failed.stage.empty());
+		assert(randomGenerator == savedFailureRng);
 		// Legacy sentinel conversion belongs exclusively to the adapter.
 		for (auto pair : {std::pair{D::eCRATERLAKES, 30}, std::pair{D::eCONCRETEISLANDS, 6},
 						  std::pair{D::eISLES, 4}})

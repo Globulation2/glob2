@@ -33,20 +33,23 @@ void createJaggedIsland(Map &map, GenerationContext &context, std::vector<int> &
 	stampShape(grid, map.getW(), map.getH(), area, ShapeTransform({double(x), double(y)}, 0), shape,
 			   true);
 }
-static bool generate(Game &game, GenerationContext &context)
+// What the stages of a roll hand each other: the working area grid and the next free area
+// number, where the colonies and the commons were seeded, and how big everything came out.
+struct Layout
 {
-	context.stage = "layout";
-	const ContestedCommonsOptions options(context.request);
-	game.map.makeHomogenMap(WATER);
-	for (int i = 0; i < context.request.nbTeams; ++i)
-		game.addTeam();
-
-	const int W = game.map.getW();
-	const int H = game.map.getH();
-
+	std::vector<int> grid;
 	int areaNumber = 1;
-	std::vector<int> grid(W * H, 0);
+	std::vector<MapGeneratorPoint> teamPoints;
+	std::vector<int> teamAreaNumbers;
+	MapGeneratorPoint commonsCenter{0, 0};
+	int homeRadius = 0, commonsRadius = 0, moatWidth = 0;
+	int commonsAreaNumber = 0, bridgeAreaNumber = 0;
+	explicit Layout(const Map &map) : grid(size_t(map.getW()) * map.getH(), 0) {}
+};
 
+// Spread the colony seeds and the commons seed jointly, then tell them apart.
+static bool disperseSeeds(Game &game, GenerationContext &context, Layout &L)
+{
 	// Spread the team seeds AND the commons seed jointly, as one dispersion problem, instead
 	// of placing the teams first and hunting for a leftover gap afterward: the commons is an
 	// (N+1)th point in the exact same "push apart until nobody can move to a better spot"
@@ -69,40 +72,45 @@ static bool generate(Game &game, GenerationContext &context)
 	allPoints.push_back(MapGeneratorPoint(0, 0)); // the commons seed
 	allWeights.push_back(commonsWeight);
 
-	if (splitUpPoints(game.map, context, grid, 0, allPoints, allWeights,
+	if (splitUpPoints(game.map, context, L.grid, 0, allPoints, allWeights,
 					  PointSearch::WholeRegion) == 0)
 		return false;
 
 	// splitUpPoints shuffles the whole array, but weights travel with their point, so the
 	// one point that kept commonsWeight is still identifiable regardless of where it landed.
-	std::vector<MapGeneratorPoint> teamPoints;
-	std::vector<int> teamAreaNumbers;
-	MapGeneratorPoint commonsCenter(0, 0);
 	for (unsigned int i = 0; i < allPoints.size(); ++i)
 	{
 		if (allWeights[i] == commonsWeight)
 		{
-			commonsCenter = allPoints[i];
+			L.commonsCenter = allPoints[i];
 		}
 		else
 		{
-			teamPoints.push_back(allPoints[i]);
-			teamAreaNumbers.push_back(areaNumber);
-			areaNumber += 1;
+			L.teamPoints.push_back(allPoints[i]);
+			L.teamAreaNumbers.push_back(L.areaNumber);
+			L.areaNumber += 1;
 		}
 	}
+	return true;
+}
 
+// Size the home islands and the commons off the room the dispersion bought, draw them into the
+// grid and lay the bridge strips across the moat.
+static void sizeIslands(Game &game, GenerationContext &context,
+						const ContestedCommonsOptions &options, Layout &L)
+{
+	const int W = game.map.getW();
 	// Home islands are sized off actual team-to-team separation, not the joint figure
 	// splitUpPoints returns (which is dominated by the deliberately-tighter team/commons gap).
 	int minDist = std::numeric_limits<int>::max();
-	for (unsigned int i = 0; i < teamPoints.size(); ++i)
-		for (unsigned int j = i + 1; j < teamPoints.size(); ++j)
-			minDist = std::min(
-				minDist, (int)std::sqrt((double)game.map.warpDistSquare(
-							 teamPoints[i].x, teamPoints[i].y, teamPoints[j].x, teamPoints[j].y)));
+	for (unsigned int i = 0; i < L.teamPoints.size(); ++i)
+		for (unsigned int j = i + 1; j < L.teamPoints.size(); ++j)
+			minDist = std::min(minDist, (int)std::sqrt((double)game.map.warpDistSquare(
+											L.teamPoints[i].x, L.teamPoints[i].y, L.teamPoints[j].x,
+											L.teamPoints[j].y)));
 	if (minDist == std::numeric_limits<int>::max()) // a single team: no pair to measure
-		minDist = (int)std::sqrt((double)game.map.warpDistSquare(teamPoints[0].x, teamPoints[0].y,
-																 commonsCenter.x, commonsCenter.y));
+		minDist = (int)std::sqrt((double)game.map.warpDistSquare(
+			L.teamPoints[0].x, L.teamPoints[0].y, L.commonsCenter.x, L.commonsCenter.y));
 
 	// Both islands are jagged, which means both can reach noticeably past their nominal
 	// radius in a lucky direction -- comfortably more than a flat few-tile fudge factor once
@@ -112,78 +120,85 @@ static bool generate(Game &game, GenerationContext &context)
 	const double teamJaggedness = options.jaggedCoasts ? 0.35 : 0.0;
 	const double commonsJaggedness = options.jaggedCoasts ? 0.32 : 0.0;
 
-	const int homeRadius = std::max(10, minDist * options.homeSize / 100);
-	for (unsigned int i = 0; i < teamPoints.size(); ++i)
-		createJaggedIsland(game.map, context, grid, teamAreaNumbers[i], teamPoints[i].x,
-						   teamPoints[i].y, homeRadius, teamJaggedness);
+	L.homeRadius = std::max(10, minDist * options.homeSize / 100);
+	for (unsigned int i = 0; i < L.teamPoints.size(); ++i)
+		createJaggedIsland(game.map, context, L.grid, L.teamAreaNumbers[i], L.teamPoints[i].x,
+						   L.teamPoints[i].y, L.homeRadius, teamJaggedness);
 
 	// Real Euclidean room at the chosen commons spot: the same metric createOval/
 	// createJaggedIsland use to draw the islands, measured straight from the seed points.
 	int minGapSquared = std::numeric_limits<int>::max();
-	for (unsigned int i = 0; i < teamPoints.size(); ++i)
+	for (unsigned int i = 0; i < L.teamPoints.size(); ++i)
 		minGapSquared =
-			std::min(minGapSquared, game.map.warpDistSquare(commonsCenter.x, commonsCenter.y,
-															teamPoints[i].x, teamPoints[i].y));
+			std::min(minGapSquared, game.map.warpDistSquare(L.commonsCenter.x, L.commonsCenter.y,
+															L.teamPoints[i].x, L.teamPoints[i].y));
 	const int centerGap = (int)std::sqrt((double)minGapSquared);
 
 	// Budget the gap as: nearest team's worst-case reach, a real moat, the commons' own
 	// worst-case reach, and a small flat buffer on top of all that jaggedness math.
-	const int teamReach = (int)std::ceil(homeRadius * (1.0 + teamJaggedness * 1.4));
-	const int moatWidth = std::max(4, homeRadius * options.moatWidth / 100);
-	const int roomAvailable = std::max(0, centerGap - teamReach - moatWidth - 3);
+	const int teamReach = (int)std::ceil(L.homeRadius * (1.0 + teamJaggedness * 1.4));
+	L.moatWidth = std::max(4, L.homeRadius * options.moatWidth / 100);
+	const int roomAvailable = std::max(0, centerGap - teamReach - L.moatWidth - 3);
 	const int roomLimitedRadius =
-		std::max(homeRadius, (int)(roomAvailable / (1.0 + commonsJaggedness * 1.4)));
+		std::max(L.homeRadius, (int)(roomAvailable / (1.0 + commonsJaggedness * 1.4)));
 
 	// The commons is the whole point of the map, so it should use up the room the joint
 	// dispersion just bought it: aim for 4x a home island's radius (roughly what's actually
 	// available once teams are pushed off it -- measured, not guessed), and let the min()
 	// below be the real safety net for whatever a given layout can't quite support.
-	const int desiredCommonsRadius = homeRadius * options.commonsSize / 100;
-	const int commonsRadius = std::min(desiredCommonsRadius, roomLimitedRadius);
+	const int desiredCommonsRadius = L.homeRadius * options.commonsSize / 100;
+	L.commonsRadius = std::min(desiredCommonsRadius, roomLimitedRadius);
 	const int bridgeCount = options.bridgeCount;
 
 	std::vector<int> bridgeAngles;
 	for (int i = 0; i < bridgeCount; ++i)
 		bridgeAngles.push_back(context.bounded("layout", 360));
 
-	int commonsAreaNumber = areaNumber;
-	areaNumber += 1;
-	createJaggedIsland(game.map, context, grid, commonsAreaNumber, commonsCenter.x, commonsCenter.y,
-					   commonsRadius, commonsJaggedness);
+	L.commonsAreaNumber = L.areaNumber;
+	L.areaNumber += 1;
+	createJaggedIsland(game.map, context, L.grid, L.commonsAreaNumber, L.commonsCenter.x,
+					   L.commonsCenter.y, L.commonsRadius, commonsJaggedness);
 
 	// Extend the commons island out across the moat along each bridge angle, so those strips
 	// get boosted into land by the heightmap pass below just like the island itself. Bridges
 	// get their own area number, kept separate from the island body, so the resource-field
 	// split further down only ever touches the round island, never a narrow connecting strip.
-	int bridgeAreaNumber = areaNumber;
-	areaNumber += 1;
+	L.bridgeAreaNumber = L.areaNumber;
+	L.areaNumber += 1;
 	for (unsigned int b = 0; b < bridgeAngles.size() && options.moatBridges; ++b)
 	{
 		double theta = bridgeAngles[b] * pi / 180.0;
-		for (int r = commonsRadius - 2; r <= commonsRadius + moatWidth + 2; ++r)
+		for (int r = L.commonsRadius - 2; r <= L.commonsRadius + L.moatWidth + 2; ++r)
 		{
-			int cx = commonsCenter.x + (int)round(r * cos(theta));
-			int cy = commonsCenter.y + (int)round(r * sin(theta));
+			int cx = L.commonsCenter.x + (int)round(r * cos(theta));
+			int cy = L.commonsCenter.y + (int)round(r * sin(theta));
 			for (int dx = -1; dx <= 1; ++dx)
 			{
 				for (int dy = -1; dy <= 1; ++dy)
 				{
 					int nx = game.map.normalizeX(cx + dx);
 					int ny = game.map.normalizeY(cy + dy);
-					if (grid[ny * W + nx] == 0)
-						grid[ny * W + nx] = bridgeAreaNumber;
+					if (L.grid[ny * W + nx] == 0)
+						L.grid[ny * W + nx] = L.bridgeAreaNumber;
 				}
 			}
 		}
 	}
+}
 
+// Turn the grid into terrain: noise, islands raised to land, the moat forced back to water.
+static void paintTerrain(Game &game, GenerationContext &context,
+						 const ContestedCommonsOptions &options, const Layout &L)
+{
+	const int W = game.map.getW();
+	const int H = game.map.getH();
 	// Base heightmap: noise everywhere, boosted wherever land has been carved out, so
 	// every island (and every bridge strip) comes out dry and everything else stays ocean.
 	std::vector<int> heights(W * H, 40);
 	adjustHeightmapFromPerlinNoise(game.map, context, heights, 20);
 	for (int y = 0; y < H; ++y)
 		for (int x = 0; x < W; ++x)
-			if (grid[y * W + x] != 0)
+			if (L.grid[y * W + x] != 0)
 				heights[y * W + x] += 60;
 
 	for (int x = 0; x < W; ++x)
@@ -211,12 +226,12 @@ static bool generate(Game &game, GenerationContext &context)
 	{
 		for (int x = 0; x < W; ++x)
 		{
-			if (grid[y * W + x] == commonsAreaNumber || grid[y * W + x] == bridgeAreaNumber)
+			if (L.grid[y * W + x] == L.commonsAreaNumber || L.grid[y * W + x] == L.bridgeAreaNumber)
 				continue;
-			int dx = wrapDelta(x, commonsCenter.x, W);
-			int dy = wrapDelta(y, commonsCenter.y, H);
+			int dx = wrapDelta(x, L.commonsCenter.x, W);
+			int dy = wrapDelta(y, L.commonsCenter.y, H);
 			double r = sqrt((double)(dx * dx + dy * dy));
-			if (r >= commonsRadius - 1 && r < commonsRadius + moatWidth)
+			if (r >= L.commonsRadius - 1 && r < L.commonsRadius + L.moatWidth)
 			{
 				game.map.setUMatPos(x, y, WATER, 1);
 				// A quarter of the ring gets algae. The algae amount thins or thickens that with
@@ -233,7 +248,14 @@ static bool generate(Game &game, GenerationContext &context)
 		}
 	}
 	game.map.controlSand();
+}
 
+// Split the commons into zones and give each a role: wood, wheat, the quarry, fruit, or open.
+static void stockCommons(Game &game, GenerationContext &context,
+						 const ContestedCommonsOptions &options, Layout &L)
+{
+	const int W = game.map.getW();
+	const int H = game.map.getH();
 	// Stock the commons with real fields, not a scattering of single tiles -- but the commons
 	// is several times the area of a home island, so splitting it into the same handful of
 	// zones a home island uses would read as one giant forest next to one giant farm. Scale
@@ -241,16 +263,16 @@ static bool generate(Game &game, GenerationContext &context)
 	// comes out as a patchwork of many small groves and fields instead of two big blobs.
 	{
 		double areaRatio =
-			(double)(commonsRadius * commonsRadius) / (double)(homeRadius * homeRadius);
+			(double)(L.commonsRadius * L.commonsRadius) / (double)(L.homeRadius * L.homeRadius);
 		int zoneCount = (int)std::round(7.0 * std::sqrt(std::max(1.0, areaRatio)));
 		zoneCount = std::max(7, std::min(24, zoneCount));
 
 		std::vector<int> zoneWeights(zoneCount, 1);
 		std::vector<int> zoneAreas;
-		const int firstZoneArea = areaNumber;
+		const int firstZoneArea = L.areaNumber;
 		for (int z = 0; z < zoneCount; ++z)
-			zoneAreas.push_back(areaNumber++);
-		if (divideUpArea(game.map, context, grid, commonsAreaNumber, zoneWeights, zoneAreas))
+			zoneAreas.push_back(L.areaNumber++);
+		if (divideUpArea(game.map, context, L.grid, L.commonsAreaNumber, zoneWeights, zoneAreas))
 		{
 			// Which zone borders which: zoneAreas is a contiguous run of area numbers, so a
 			// tile's zone index is just its area number minus the first one. Two adjacent
@@ -260,15 +282,15 @@ static bool generate(Game &game, GenerationContext &context)
 			{
 				for (int x = 0; x < W; ++x)
 				{
-					int a = grid[y * W + x] - firstZoneArea;
+					int a = L.grid[y * W + x] - firstZoneArea;
 					if (a < 0 || a >= zoneCount)
 						continue;
 					int xr = game.map.normalizeX(x + 1);
-					int b = grid[y * W + xr] - firstZoneArea;
+					int b = L.grid[y * W + xr] - firstZoneArea;
 					if (b >= 0 && b < zoneCount && b != a)
 						adjacent[a][b] = adjacent[b][a] = true;
 					int yd = game.map.normalizeY(y + 1);
-					int c = grid[yd * W + x] - firstZoneArea;
+					int c = L.grid[yd * W + x] - firstZoneArea;
 					if (c >= 0 && c < zoneCount && c != a)
 						adjacent[a][c] = adjacent[c][a] = true;
 				}
@@ -338,7 +360,7 @@ static bool generate(Game &game, GenerationContext &context)
 			for (int z = 0; z < zoneCount; ++z)
 			{
 				std::vector<MapGeneratorPoint> pts;
-				getAllPoints(game.map, grid, zoneAreas[z], pts);
+				getAllPoints(game.map, L.grid, zoneAreas[z], pts);
 				if (role[z] == ROLE_QUARRY)
 				{
 					// One compact quarry, not a scatter: a single setResource call already
@@ -367,7 +389,14 @@ static bool generate(Game &game, GenerationContext &context)
 			}
 		}
 	}
+}
 
+// Each colony's starter kit, swarm and workers on its own island.
+static bool settleHomes(Game &game, GenerationContext &context,
+						const ContestedCommonsOptions &options, Layout &L)
+{
+	const int W = game.map.getW();
+	const int H = game.map.getH();
 	// Give each team a small starter kit, then a swarm and workers, exactly the way the
 	// other generators do it: enough to bootstrap, not enough to make the commons optional.
 	for (int i = 0; i < context.request.nbTeams; ++i)
@@ -378,24 +407,24 @@ static bool generate(Game &game, GenerationContext &context)
 		std::vector<int> zoneWeights(5, 1);
 		std::vector<int> zoneAreas;
 		for (int z = 0; z < 5; ++z)
-			zoneAreas.push_back(areaNumber++);
+			zoneAreas.push_back(L.areaNumber++);
 		std::vector<MapGeneratorPoint> homePoints;
-		if (divideUpArea(game.map, context, grid, teamAreaNumbers[i], zoneWeights, zoneAreas))
+		if (divideUpArea(game.map, context, L.grid, L.teamAreaNumbers[i], zoneWeights, zoneAreas))
 		{
 			std::vector<MapGeneratorPoint> pts;
-			getAllPoints(game.map, grid, zoneAreas[0], pts);
+			getAllPoints(game.map, L.grid, zoneAreas[0], pts);
 			fillInResource(game.map, context, pts, WOOD, 2);
 			homePoints.insert(homePoints.end(), pts.begin(), pts.end());
 			pts.clear();
 
-			getAllPoints(game.map, grid, zoneAreas[1], pts);
+			getAllPoints(game.map, L.grid, zoneAreas[1], pts);
 			fillInResource(game.map, context, pts, CORN, 2);
 			homePoints.insert(homePoints.end(), pts.begin(), pts.end());
 			pts.clear();
 
 			// One compact deposit, not a scatter across the whole zone -- leaves the rest of
 			// it clear to build on instead of peppering it with single-tile boulders.
-			getAllPoints(game.map, grid, zoneAreas[2], pts);
+			getAllPoints(game.map, L.grid, zoneAreas[2], pts);
 			if (!pts.empty())
 			{
 				MapGeneratorPoint quarry = pts[context.bounded("layout", pts.size())];
@@ -404,17 +433,17 @@ static bool generate(Game &game, GenerationContext &context)
 			homePoints.insert(homePoints.end(), pts.begin(), pts.end());
 			pts.clear();
 
-			getAllPoints(game.map, grid, zoneAreas[3], pts);
+			getAllPoints(game.map, L.grid, zoneAreas[3], pts);
 			homePoints.insert(homePoints.end(), pts.begin(), pts.end());
 			pts.clear();
-			getAllPoints(game.map, grid, zoneAreas[4], pts);
+			getAllPoints(game.map, L.grid, zoneAreas[4], pts);
 			homePoints.insert(homePoints.end(), pts.begin(), pts.end());
 		}
 		else
 		{
 			// The island came out too small to subdivide -- fall back to a light scatter
 			// over the whole thing rather than failing the map.
-			getAllPoints(game.map, grid, teamAreaNumbers[i], homePoints);
+			getAllPoints(game.map, L.grid, L.teamAreaNumbers[i], homePoints);
 			if (homePoints.empty())
 				return false;
 			std::vector<MapGeneratorPoint> cornPts = homePoints;
@@ -432,11 +461,26 @@ static bool generate(Game &game, GenerationContext &context)
 		std::vector<unsigned char> home(size_t(W) * H, 0);
 		for (const auto &point : homePoints)
 			home[point.y * W + point.x] = 1;
-		if (!placeSettlement(game, context, i, home, teamPoints[i], "starts"))
+		if (!placeSettlement(game, context, i, home, L.teamPoints[i], "starts"))
 			return false;
 	}
-
 	return true;
+}
+
+static bool generate(Game &game, GenerationContext &context)
+{
+	context.stage = "layout";
+	const ContestedCommonsOptions options(context.request);
+	game.map.makeHomogenMap(WATER);
+	for (int i = 0; i < context.request.nbTeams; ++i)
+		game.addTeam();
+	Layout L(game.map);
+	if (!disperseSeeds(game, context, L))
+		return false;
+	sizeIslands(game, context, options, L);
+	paintTerrain(game, context, options, L);
+	stockCommons(game, context, options, L);
+	return settleHomes(game, context, options, L);
 }
 
 } // namespace
