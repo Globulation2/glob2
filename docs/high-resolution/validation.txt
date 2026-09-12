@@ -1,0 +1,347 @@
+Expanded world pack and repeating-map validation, 2026-09-08
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 7.5116 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 3.65602 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 2.781 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.46497 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 9.29343 ms, 24678 calls, 347843716 GPU bytes
+HD gameplay 100%: 3.34959 ms, 6343 calls, 347843716 GPU bytes
+HD gameplay 200%: 2.70465 ms, 1960 calls, 347843716 GPU bytes
+HD gameplay 300%: 2.18103 ms, 947 calls, 347843716 GPU bytes
+original dense map 50%: 8.24844 ms, 24623 calls, 45406016 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 1.70541 ms, 613 calls, 45406016 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 11.7705 ms, 24634 calls, 357720532 GPU bytes, 260363776 HD CPU bytes, 10 colored frames
+HD dense map 300%: 1.55036 ms, 613 calls, 357829756 GPU bytes, 260429312 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS software game/editor rendering, original artwork, disabled zoom
+
+All 487 frames, 16 team hues: CPU bytes=855948800, GPU bytes=1497354596, colored frames=944
+50% synthetic dense scene: 6.78892 ms/frame, 933 draw calls/frame
+300% synthetic dense scene: 1.75148 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+.........Hello, world!
+..................................................................................................................................................................
+
+
+OK (171 tests)
+
+PASS missing pack, unsupported version, missing layers and incorrect logical dimensions
+
+Connected terrain validation, 2026-09-08
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 11.5269 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 4.85193 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 3.30427 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.91818 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 19.3215 ms, 24678 calls, 347843716 GPU bytes
+HD gameplay 100%: 6.71327 ms, 6343 calls, 347843716 GPU bytes
+HD gameplay 200%: 3.83291 ms, 1960 calls, 347843716 GPU bytes
+HD gameplay 300%: 3.01394 ms, 947 calls, 347843716 GPU bytes
+original dense map 50%: 11.754 ms, 24623 calls, 45406016 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 2.27661 ms, 613 calls, 45406016 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 22.1088 ms, 24634 calls, 357720532 GPU bytes, 260363776 HD CPU bytes, 10 colored frames
+HD dense map 300%: 2.39254 ms, 613 calls, 357829756 GPU bytes, 260429312 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+2026-09-08 — generated grass/water, rugged transitions, sidebar zoom footer
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+PASS software game/editor rendering, original artwork, disabled zoom
+
+2026-09-08 — larger grass tufts and broader water ripples, reviewed at 100%
+PASS: 91136 compatible directed joins across four mip levels
+Exported 487 frames, 543 layers to /Users/bradley/glob2-hd-pr/data/highres/v1
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+2026-09-08 — three large grass tufts per material tile, original smaller water ripples restored byte-for-byte
+PASS: 91136 compatible directed joins across four mip levels
+Exported 487 frames, 543 layers to /Users/bradley/glob2-hd-pr/data/highres/v1
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+2026-09-08 — quiet flat grass and subdued water; resource readability at 100%
+PASS: 91136 compatible directed joins across four mip levels
+Exported 487 frames, 543 layers to /Users/bradley/glob2-hd-pr/data/highres/v1
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+
+Recovered original pack validation (2026-09-08):
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, unchanged alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 7.61315 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 1.99503 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 8.46165 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 3.22191 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 1.67981 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.54643 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 9.36832 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 2.79345 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 2.14592 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 1.80274 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 8.42567 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 1.42039 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 12.3609 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 1.05463 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+
+Recovered tree validation (2026-09-08):
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+swarm0b0: silhouette overlap 0.963; logical canvas (128, 128)
+swarm0c0: silhouette overlap 0.933; logical canvas (128, 128)
+warflag0: silhouette overlap 0.910; logical canvas (32, 32)
+explorationflag0: silhouette overlap 0.927; logical canvas (32, 32)
+clearingflag0: silhouette overlap 0.947; logical canvas (32, 32)
+buildingsite1: silhouette overlap 0.912; logical canvas (64, 64)
+buildingsite2: silhouette overlap 0.871; logical canvas (96, 96)
+buildingsite3: silhouette overlap 0.797; logical canvas (128, 128)
+buildingsite4: silhouette overlap 0.754; logical canvas (192, 192)
+buildingsite5: silhouette overlap 0.827; logical canvas (196, 196)
+PASS: 10 original replacements, source hashes, transparent backgrounds, registration, atomic base/team rejection
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 8.41485 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 3.57508 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 3.02953 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.81495 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 9.95974 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 2.91965 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 1.83564 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 2.23427 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 9.18313 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 1.10109 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 13.0836 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 1.72995 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 6.74155 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 1.41936 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
+
+
+Recovered wheat validation (2026-09-08):
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool/school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree/wheat alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 12.4281 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 5.19981 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 3.35383 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.81352 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 16.0506 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 5.44304 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 3.32205 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 3.06792 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 9.45226 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 1.76136 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 13.2051 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 1.77772 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 13.2808 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 2.25725 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
+
+
+Original layered building validation (2026-09-08):
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool / unreplaced school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree/wheat alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 18.2105 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 6.44405 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 3.35669 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 2.92247 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 22.403 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 7.0541 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 4.49166 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 4.14107 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 12.6165 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 2.06773 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 19.1867 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 2.14624 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 6.77755 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 1.54899 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
+school1b0.png: alpha overlap 0.998; ceiling 255
+school1b0r.png: alpha overlap 0.981; ceiling 64
+racetrack0b0.png: alpha overlap 0.994; ceiling 255
+racetrack0b0r.png: alpha overlap 0.966; ceiling 253
+racetrack1b0.png: alpha overlap 0.979; ceiling 255
+racetrack1b0r.png: alpha overlap 0.907; ceiling 255
+PASS: three originals, both layers, source hashes, logical registration, saved translucency and runtime pixels
+area-guard0: mean premultiplied RGB error 0.0040, alpha coverage 1.006
+area-guard1: mean premultiplied RGB error 0.0037, alpha coverage 1.008
+area-guard2: mean premultiplied RGB error 0.0037, alpha coverage 1.005
+area-guard3: mean premultiplied RGB error 0.0037, alpha coverage 1.002
+area-guard4: mean premultiplied RGB error 0.0037, alpha coverage 1.000
+area-guard5: mean premultiplied RGB error 0.0035, alpha coverage 1.000
+area-guard6: mean premultiplied RGB error 0.0035, alpha coverage 1.000
+area-guard7: mean premultiplied RGB error 0.0036, alpha coverage 1.002
+area-clearing0: mean premultiplied RGB error 0.0054, alpha coverage 0.993
+area-clearing1: mean premultiplied RGB error 0.0055, alpha coverage 0.993
+area-clearing2: mean premultiplied RGB error 0.0053, alpha coverage 0.995
+area-clearing3: mean premultiplied RGB error 0.0055, alpha coverage 0.996
+area-clearing4: mean premultiplied RGB error 0.0054, alpha coverage 0.998
+area-clearing5: mean premultiplied RGB error 0.0054, alpha coverage 0.998
+area-clearing6: mean premultiplied RGB error 0.0054, alpha coverage 0.997
+area-clearing7: mean premultiplied RGB error 0.0053, alpha coverage 1.000
+area-forbidden0: mean premultiplied RGB error 0.0018, alpha coverage 0.992
+area-forbidden1: mean premultiplied RGB error 0.0036, alpha coverage 0.990
+area-forbidden2: mean premultiplied RGB error 0.0049, alpha coverage 0.989
+area-forbidden3: mean premultiplied RGB error 0.0055, alpha coverage 0.989
+area-forbidden4: mean premultiplied RGB error 0.0055, alpha coverage 0.989
+area-forbidden5: mean premultiplied RGB error 0.0049, alpha coverage 0.989
+area-forbidden6: mean premultiplied RGB error 0.0036, alpha coverage 0.990
+area-forbidden7: mean premultiplied RGB error 0.0034, alpha coverage 0.990
+PASS: 24 original animation frames, source hashes, native alpha and pixels, logical sizes and phase coverage
+PASS: split export differs only by <=3 code values; smaller tower XCF reproduces classic visible team pixels and alpha exactly
+
+2026-09-08: 24 recovered original area markers; 55 original-source runtime frames
+Re-export byte-identical; hospital/tower fallback PNGs unchanged.
+
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool / unreplaced school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree/wheat alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 18.8398 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 12.753 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 6.47311 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 4.65915 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 22.6615 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 6.88102 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 4.96264 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 3.27288 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 8.82418 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 1.35848 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 24.2395 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 2.78129 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 15.3444 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 2.63313 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
+
+2026-09-08 papyrus originals and subscription handoff (no C++ changes)
+ressource20: silhouette overlap 0.852, center delta 0.383 logical px, premultiplied RGB error 0.0035
+ressource21: silhouette overlap 0.836, center delta 0.315 logical px, premultiplied RGB error 0.0086
+ressource22: silhouette overlap 0.854, center delta 0.572 logical px, premultiplied RGB error 0.0117
+ressource23: silhouette overlap 0.863, center delta 0.405 logical px, premultiplied RGB error 0.0197
+ressource24: silhouette overlap 0.957, center delta 0.118 logical px, premultiplied RGB error 0.0115
+PASS all five original stages, source hashes, native pixels, alpha and logical registration
+PASS: 487 frames; coverage, layer dimensions, RGBA, hashes, locked pool / unreplaced school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree/wheat/papyrus alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels
+
+All 487 frames, 16 team hues: CPU bytes=856145408, GPU bytes=1497616736, colored frames=944
+50% synthetic dense scene: 15.9623 ms/frame, 953 draw calls/frame
+300% synthetic dense scene: 2.75712 ms/frame, 35 draw calls/frame
+PASS logical sizes, all frames/team hues, GL errors, bounded cache, session release
+
+PASS software: original resources, all logical sizes
+
+Resumed integration with papyrus pack; provenance inventory validated
+Settings::load("preferences.txt") : error, can't open file.
+PASS full-period seam sprite coverage, single building identity, minimap outline and native cursor scale
+original gameplay 50%: 21.7723 ms, 24636 calls, 44588864 GPU bytes
+original gameplay 100%: 8.03978 ms, 6317 calls, 44588864 GPU bytes
+original gameplay 200%: 4.6647 ms, 1932 calls, 44590912 GPU bytes
+original gameplay 300%: 3.98754 ms, 926 calls, 44592960 GPU bytes
+HD gameplay 50%: 31.8748 ms, 24678 calls, 348038276 GPU bytes
+HD gameplay 100%: 7.58023 ms, 6343 calls, 348038276 GPU bytes
+HD gameplay 200%: 4.58768 ms, 1960 calls, 348038276 GPU bytes
+HD gameplay 300%: 4.12625 ms, 947 calls, 348038276 GPU bytes
+original dense map 50%: 27.6987 ms, 24623 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+original dense map 300%: 7.22115 ms, 613 calls, 45403968 GPU bytes, 0 HD CPU bytes, 0 colored frames
+HD dense map 50%: 97.6923 ms, 24634 calls, 357915092 GPU bytes, 260560384 HD CPU bytes, 10 colored frames
+HD dense map 300%: 4.9351 ms, 613 calls, 358024316 GPU bytes, 260625920 HD CPU bytes, 11 colored frames
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
+
+Production folder separation: all 557 assembled runtime files byte-identical to previous pack.
+PASS missing paired layer, corrupt layer hash and original-derived layer placed in AI folder rejected.
+Normal assembler uses Python standard library only; no runtime images or engine code changed.
+
+Final-only cleanup: historical experiments removed from tracked tree.
+PASS all runtime PNGs unchanged; production packaging and independent frame/atlas/terrain/water validation pass.
+Optimized integration harness rebuild passes; runtime checks use .cache/highres-runtime-check.
+PASS gameplay/editor conversions, Alt-wheel isolation, zoom controls, replay drawing, stable simulation checksums and resource release
