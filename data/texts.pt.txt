@@ -1786,8 +1786,6 @@ Repeat map vertically
 tile x
 [tile y]
 tile y
-[colonies]
-colonies
 [bases]
 bases
 [number of colonies]
