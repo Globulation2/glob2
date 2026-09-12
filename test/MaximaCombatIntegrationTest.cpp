@@ -136,6 +136,31 @@ static bool assigned(Context& context, int id, int workers)
     return false;
 }
 
+static void defenseWrapsBuildingOrigins()
+{
+    // A building whose origin has crossed the toroidal seam used to index the
+    // threat arrays out of bounds before any wrapping was applied.
+    for(auto origin:{position(-1,7),position(7,-1),position(64,7),position(7,64)}) {
+        Fixture f;
+        auto* building=f.building(origin.x,origin.y,0);
+        auto& a=*f.ai;
+        a.context.initialize();
+        const int x=building->posX,y=building->posY;
+        building->posX=origin.x;
+        building->posY=origin.y;
+        building->underAttackTimer=100;
+        a.budget.reactive_defense_enabled=true;
+        a.budget.reactive_defense_flag_radius=5;
+        a.budget.reactive_defense_unit_cap=10;
+        a.budget.reactive_defense_advantage_min=3;
+        a.budget.defense_reserve=10;
+        a.compute_defense_flag_positioning(a.context);
+        assert(!a.context.buildingOrders.empty());
+        building->posX=x;
+        building->posY=y;
+    }
+}
+
 static void defenseCoverage()
 {
     // Exercise both threat inputs and wrapping at the map edge. The fourth
@@ -678,6 +703,7 @@ static void offensiveControlSwitches()
 
 static void run()
 {
+    defenseWrapsBuildingOrigins();
     defenseCoverage();
     warriorEligibility();
     untrainedWarriorsFightAtLevelOne();

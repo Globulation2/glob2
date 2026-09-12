@@ -7028,11 +7028,15 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& echo)
 	{
 		Building* building = echo.player->team->myBuildings[i];
 		if(building && building->underAttackTimer
-		   && buildingGID[building->posX * h + building->posY] == NOGBID)
+		   && buildingGID[echo.player->map->normalizeX(building->posX) * h
+		       + echo.player->map->normalizeY(building->posY)] == NOGBID)
 		{
 			int nx = (building->posX - building->type->decLeft + w) %w;
 			int ny = (building->posY - building->type->decTop + h) %h;
-			buildingGID[building->posX * h + building->posY] = building->gid;
+			// Building origins can cross the toroidal seam during upgrades.
+			// Normalize before indexing, as we already do for units.
+			buildingGID[echo.player->map->normalizeX(building->posX) * h
+			    + echo.player->map->normalizeY(building->posY)] = building->gid;
 			modify_points(counts, w, h, nx, ny, RADIUS, 1, locations);
 		}
 	}
