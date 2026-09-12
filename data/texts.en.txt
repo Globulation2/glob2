@@ -56,6 +56,10 @@ Castor plays a conservative game and does very well on maps with few resources. 
 Castor
 [AICortex-Description]
 Cortex expands toward fresh wheat and sends supported warrior waves, using forward inns and hospitals. Medium difficulty. Experimental.
+[AIMaxima-Description]
+Maxima grows a well-fed colony, scouts constantly and attacks without pause, sending every warrior it can spare. Hard Difficulty.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]

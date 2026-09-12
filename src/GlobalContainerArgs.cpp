@@ -119,7 +119,82 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 	for (int  i=1; i<argc; i++)
 	{
 #ifndef YOG_SERVER_ONLY
-		if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
+		if(strncmp(argv[i], "--nicowar-v3-", 13)==0
+		   ||strcmp(argv[i], "--dump-nicowar-v3-schema")==0
+		   ||strcmp(argv[i], "--dump-nicowar-v3-strategy")==0
+		   ||strcmp(argv[i], "-nicowar-v3-castor-match-nox")==0)
+		{
+			std::cerr<<argv[i]<<" has been renamed for Maxima; use the "
+				"corresponding --maxima-* or -maxima-* option"<<std::endl;
+			exit(2);
+		}
+		else if(strcmp(argv[i], "--dump-maxima-schema")==0)
+		{
+			dumpMaximaSchema=true;
+		}
+		else if(strcmp(argv[i], "--dump-maxima-strategy")==0)
+		{
+			dumpMaximaStrategy=true;
+		}
+		else if(strcmp(argv[i], "--maxima-base")==0)
+		{
+			if(i+1>=argc)
+			{
+				fprintf(stderr, "--maxima-base requires a file\n");
+				exit(2);
+			}
+			maximaStrategyOptions.baseFile=argv[++i];
+		}
+		else if(strcmp(argv[i], "--maxima-layer")==0)
+		{
+			if(i+1>=argc)
+			{
+				fprintf(stderr, "--maxima-layer requires a file\n");
+				exit(2);
+			}
+			maximaStrategyOptions.layerFiles.push_back(argv[++i]);
+		}
+		else if(strcmp(argv[i], "--maxima-overrides")==0)
+		{
+			if(i+1>=argc)
+			{
+				fprintf(stderr, "--maxima-overrides requires assignments\n");
+				exit(2);
+			}
+			maximaStrategyOptions.inlineOverrides=argv[++i];
+		}
+		else if(strcmp(argv[i], "--maxima-player-overrides")==0)
+		{
+			int player=-1;
+			if(i+2>=argc || sscanf(argv[i+1], "%d", &player)!=1 || player<0)
+			{
+				fprintf(stderr, "--maxima-player-overrides requires <player> <assignments>\n");
+				exit(2);
+			}
+			maximaPlayerOverrides[player]=argv[i+2];
+			i+=2;
+		}
+		else if(strcmp(argv[i], "--maxima-team-overrides")==0)
+		{
+			int team=-1;
+			if(i+2>=argc || sscanf(argv[i+1], "%d", &team)!=1 || team<0)
+			{
+				fprintf(stderr, "--maxima-team-overrides requires <team> <assignments>\n");
+				exit(2);
+			}
+			maximaTeamOverrides[team]=argv[i+2];
+			i+=2;
+		}
+		else if(strcmp(argv[i], "--maxima-format")==0)
+		{
+			if(i+1>=argc)
+			{
+				fprintf(stderr, "--maxima-format requires a format\n");
+				exit(2);
+			}
+			maximaStrategyOptions.explicitFormat=argv[++i];
+		}
+		else if (strcmp(argv[i], "-nox")==0 || strcmp(argv[i], "--nox")==0)
 		{
 			bool good=true;
 			if (i + 3 < argc)
@@ -167,6 +242,10 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			if (strcmp(argv[i], "-test-games-nox")==0)
 				runNoX=true;
 			runTestGamesCount = optionalIntArg(i, argc, argv, runTestGamesCount);
+		}
+		else if (strcmp(argv[i], "-maxima-telemetry")==0)
+		{
+			maximaTelemetry=true;
 		}
 		else if (strcmp(argv[i], "-test-map-gen")==0)
 		{

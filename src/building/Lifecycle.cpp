@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #include "Building.h"
+#include <map>
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FileFormatVersions.h"
@@ -16,6 +17,23 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "Bullet.h"
+
+namespace
+{
+	std::map<const Building*, Uint64>& buildingRuntimeIdentities()
+	{
+		static std::map<const Building*, Uint64> identities;
+		return identities;
+	}
+}
+
+Uint64 Building::getRuntimeIdentity() const
+{
+	static Uint64 nextIdentity=0;
+	Uint64& identity=buildingRuntimeIdentities()[this];
+	if(!identity) identity=++nextIdentity;
+	return identity;
+}
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -138,6 +156,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 Building::~Building()
 {
+	buildingRuntimeIdentities().erase(this);
 	freeGradients();
 }
 

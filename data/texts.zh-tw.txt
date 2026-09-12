@@ -1290,6 +1290,10 @@ Ysagoon 線上遊戲
 僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
 [AICortex-Description]
 Cortex向新的麥田擴張，利用前線客棧和醫院支援一波又一波的戰士進攻。難度中等，仍處於實驗階段。
+[AIMaxima-Description]
+Maxima 發展糧食充足的殖民地，持續偵察，並以每一名可調度的戰士不停進攻。難度高。
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 無法載入地圖：檔案已損毀或版本不相容。
 [ERROR_CANT_SAVE_CAMPAIGN]

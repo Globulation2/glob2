@@ -1218,6 +1218,10 @@ Sebesség: 1x (többjátékos)
 Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
 [AICortex-Description]
 A Cortex új búzamezők felé terjeszkedik, és harcba küldi a harcosok csoportjait, akiket étkezdék és kórházak támogatnak a frontvonal közelében. Közepes nehézségű. Kísérleti.
+[AIMaxima-Description]
+A Maxima jól ellátott kolóniát épít, folyamatosan felderít, és szünet nélkül támad minden harcossal, akit el tud engedni. Nehéz.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 A térkép nem tölthető be: a fájl sérült vagy nem kompatibilis verziójú.
 [ERROR_CANT_SAVE_CAMPAIGN]

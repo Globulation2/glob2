@@ -1294,6 +1294,10 @@ Hastighed: 1x (flerspiller)
 Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
 [AICortex-Description]
 Cortex udvider sig mod nye hvedemarker og sender grupper af krigere i kamp, støttet af kroer og hospitaler nær frontlinjen. Middel sværhedsgrad. Eksperimentel.
+[AIMaxima-Description]
+Maxima opbygger en velnæret koloni, spejder konstant og angriber uden pause med hver kriger, den kan undvære. Høj sværhedsgrad.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Kortet kunne ikke indlæses: filen er beskadiget eller har en inkompatibel version.
 [ERROR_CANT_SAVE_CAMPAIGN]

@@ -403,6 +403,32 @@ int Glob2::run(int argc, char *argv[])
 
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
+	if(globalContainer->dumpMaximaSchema)
+	{
+		std::cout<<AIMaxima::StrategyResolver::schemaJson()<<std::endl;
+		return 0;
+	}
+	if(globalContainer->dumpMaximaStrategy)
+	{
+		AIMaxima::MatchFormat format;
+		if(!AIMaxima::StrategyResolver::parseFormat(
+			globalContainer->maximaStrategyOptions.explicitFormat, format))
+		{
+			std::cerr<<"--dump-maxima-strategy requires a valid "
+				"--maxima-format"<<std::endl;
+			return 2;
+		}
+		AIMaxima::ResolvedStrategy strategy;
+		std::string error;
+		if(!AIMaxima::StrategyResolver::resolveForFormat(
+			globalContainer->maximaStrategyOptions, format, strategy, error))
+		{
+			std::cerr<<"Maxima strategy error: "<<error<<std::endl;
+			return 2;
+		}
+		std::cout<<AIMaxima::StrategyResolver::resolvedJson(strategy)<<std::endl;
+		return 0;
+	}
 	globalContainer->load();
 
 #ifndef YOG_SERVER_ONLY
@@ -462,6 +488,13 @@ int Glob2::run(int argc, char *argv[])
 		delete globalContainer;
 		return ret;
 	}
+
+
+
+
+
+
+
 	
 	if(globalContainer->runTestMapGeneration)
 	{

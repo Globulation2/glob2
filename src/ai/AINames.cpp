@@ -30,6 +30,7 @@ namespace AINames
 			{AI::WARRUSH,         "warrush",         "AIWarrush", "Medium"},
 			{AI::ECONO, "econo", "AIEcono", "Easy"},
 			{AI::NICOWAR,         "nicowar",         "AINicowar", "Hard"},
+			{AI::MAXIMA,          "maxima",          "AIMaxima", "Hard"},
 			{AI::CORTEX,          "cortex",          "AICortex", "Medium"},
 		};
 	}

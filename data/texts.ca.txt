@@ -1226,6 +1226,10 @@ Velocitat: 1x (multijugador)
 Només per a un jugador i repeticions. Les partides multijugador van a 1x.
 [AICortex-Description]
 Cortex s'expandeix cap a nous camps de blat i envia grups de guerrers a la batalla, recolzats per fondes i hospitals prop de la línia del front. Dificultat mitjana. Experimental.
+[AIMaxima-Description]
+Maxima fa créixer una colònia bé alimentada, explora constantment i ataca sense pausa, enviant tots els guerrers que pot alliberar. Dificultat alta.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 No s'ha pogut carregar el mapa: el fitxer està malmès o té una versió incompatible.
 [ERROR_CANT_SAVE_CAMPAIGN]

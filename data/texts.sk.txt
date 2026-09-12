@@ -1226,6 +1226,10 @@ Rýchlosť: 1x (viac hráčov)
 Iba pre jedného hráča a záznamy. Hra viacerých hráčov beží rýchlosťou 1x.
 [AICortex-Description]
 Cortex sa rozširuje smerom k novým obilným poliam a posiela do boja skupiny bojovníkov, podporovaných jedálňami a nemocnicami v blízkosti frontovej línie. Stredná náročnosť. Experimentálne.
+[AIMaxima-Description]
+Maxima rozvíja dobre nasýtenú kolóniu, neustále prieskumuje a útočí bez prestávky s každým bojovníkom, ktorého môže uvolniť. Vysoká obtiažnosť.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Mapu nemožno načítať: súbor je poškodený alebo má nekompatibilnú verziu.
 [ERROR_CANT_SAVE_CAMPAIGN]

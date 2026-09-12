@@ -56,6 +56,10 @@ Castor bermain dengan hati-hati dan sangat tangguh di peta dengan sedikit sumber
 Castor
 [AICortex-Description]
 Cortex berekspansi ke ladang gandum baru dan mengirimkan kelompok prajurit ke medan perang, didukung oleh penginapan dan rumah sakit di dekat garis depan. Kesulitan sedang. Eksperimental.
+[AIMaxima-Description]
+Maxima mengembangkan koloni yang tercukupi pangannya, terus menjelajah, dan menyerang tanpa henti dengan setiap prajurit yang bisa dikerahkan. Tingkat kesulitan tinggi.
+[AIMaxima]
+Maxima
 [AICortex]
 Cortex
 [AINicowar-Description]

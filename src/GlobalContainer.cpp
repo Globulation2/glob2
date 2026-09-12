@@ -64,6 +64,10 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	adminRouter = false;
 	
 	runTestGames=false;
+	maximaTelemetry=false;
+	dumpMaximaSchema=false;
+	dumpMaximaStrategy=false;
+
 	runTestGamesCount=0;
 	testGamesAIPool.clear();
 	testGamesMap.clear();
