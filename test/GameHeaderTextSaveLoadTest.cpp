@@ -59,6 +59,11 @@ GameHeader makeFixtureHeader()
 	header.setRandomSeed(0xCAFEBABE);
 	header.setMapDiscovered(true);
 	header.setAllyTeamsFixed(true);
+	header.setResourceGrowthDisabled(true);
+	header.setResourceScarcityLevel(2);
+	header.setInstantConstructionEnabled(true);
+	header.setStockpileStartLevel(3);
+	header.setHungerDisabled(true);
 	for (int i = 0; i < 4; ++i)
 	{
 		char name[32];
@@ -109,6 +114,11 @@ void testFullRoundTrip()
 	check(loaded.getRandomSeed() == 0xCAFEBABE, "full: seed preserved");
 	check(loaded.isMapDiscovered(), "full: mapDiscovered preserved");
 	check(loaded.areAllyTeamsFixed(), "full: allyTeamsFixed preserved");
+	check(loaded.isResourceGrowthDisabled(), "full: resourceGrowthDisabled preserved");
+	check(loaded.getResourceScarcityLevel() == 2, "full: resourceScarcityLevel preserved");
+	check(loaded.isInstantConstructionEnabled(), "full: instantConstruction preserved");
+	check(loaded.getStockpileStartLevel() == 3, "full: stockpileStartLevel preserved");
+	check(loaded.isHungerDisabled(), "full: hungerDisabled preserved");
 	check(playersMatch(original, loaded, 4), "full: players preserved");
 	// allyTeamNumbers values are NOT asserted: save() writes all 32 entries
 	// under the single repeated key "allyTeamNumber" (no per-index section),

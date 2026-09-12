@@ -157,6 +157,19 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	if(newGameHeader.isMapDiscovered())
 		map.setMapDiscovered();
 
+	// Custom-game "stockpile start" rule: seed each team's shared market/
+	// exchange resource pool. Only feeds buildings with useTeamResources
+	// (markets/exchanges) -- a fresh regular building still starts empty.
+	// setGameHeader can run more than once before a match starts (e.g. the
+	// lobby's player list changing), so this is a plain assignment -- like
+	// Team::init's own zeroing -- rather than an accumulating "+=", which
+	// would otherwise stack the bonus on every re-call.
+	static constexpr Sint32 stockpileAmount[] = {0, 50, 150, 300};
+	const Sint32 stockpile = stockpileAmount[newGameHeader.getStockpileStartLevel()];
+	for (int i=0; i<mapHeader.getNumberOfTeams(); ++i)
+		for (int r=0; r<MAX_NB_RESOURCES; ++r)
+			teams[i]->teamResources[r] = stockpile;
+
 	gameHeader = newGameHeader;
 	anyPlayerWaited=false;
 }

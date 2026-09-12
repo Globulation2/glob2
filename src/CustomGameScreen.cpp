@@ -742,7 +742,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 	}
 	yy += ((4 + columns - 1) / columns) * 54 + 6;
 	std::string category;
-	for (int index = 0; index < 5; ++index)
+	for (int index = 0; index < 10; ++index)
 	{
 		auto definition = CustomGameSetup::ruleDefinitions[index];
 		if (category != definition.category)
@@ -765,6 +765,16 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 				setup.locked = value == 0;
 			if (index == 3)
 				setup.speed = value;
+			if (index == 5)
+				setup.noResourceGrowth = value;
+			if (index == 6)
+				setup.resourceScarcity = value;
+			if (index == 7)
+				setup.instantConstruction = value;
+			if (index == 8)
+				setup.stockpileStart = value;
+			if (index == 9)
+				setup.noHunger = value;
 			setup.ruleset = "Custom";
 		};
 		std::string help;
@@ -795,7 +805,7 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			ui.dropdown("rule/speed", {fieldX, yy + 5, fieldW, 29}, options, setup.speed, apply);
 			help = tr("Changes the pace of the whole simulation.");
 		}
-		else
+		else if (index == 4)
 		{
 			if (setup.random)
 				ui.stepper(
@@ -816,6 +826,34 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 			help = tr(setup.random ? "More workers jump-start colony growth. Changes the "
 									 "generated map."
 								   : "Premade maps retain their authored starting units.");
+		}
+		else if (index == 5 || index == 7 || index == 9)
+		{
+			auto options = index == 5 ? localized({"Grow normally", "No growth"})
+						   : index == 7 ? localized({"Normal construction", "Instant"})
+										: localized({"Units get hungry", "No hunger"});
+			bool current = index == 5	 ? setup.noResourceGrowth
+						   : index == 7 ? setup.instantConstruction
+										: setup.noHunger;
+			ui.segments("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+						current, apply, {}, w < 800 ? "little" : "standard");
+			help = tr(index == 5	? "Resources never grow or spread across the map."
+					  : index == 7 ? "Building sites complete immediately, skipping delivery."
+								   : "Units never grow hungry and never starve.");
+		}
+		else
+		{
+			std::vector<std::string> options =
+				index == 6 ? localized({"Off (today's growth)", "Scarce (2x slower)",
+										 "Very scarce (4x slower)", "Extremely scarce (8x slower)"})
+						   : localized({"None (today's default)", "Small (+50 each)",
+										"Medium (+150 each)", "Large (+300 each)"});
+			int current = index == 6 ? setup.resourceScarcity : setup.stockpileStart;
+			ui.dropdown("rule/" + std::to_string(index), {fieldX, yy + 5, fieldW, 29}, options,
+						current, apply);
+			help = tr(index == 6 ? "Slows how often resources grow or spread across the map."
+								  : "Seeds each team's shared market/exchange resource pool at "
+									"game start.");
 		}
 		ui.text(x + 10, yy + 39, help, "little", w - 40, true);
 		yy += 65;

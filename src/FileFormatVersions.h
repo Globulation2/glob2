@@ -96,6 +96,10 @@ static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
 //! (MapIO.cpp:350, 410, 451, 514).
 static constexpr int FILE_FORMAT_VERSION_TOPOLOGY_GENERATION = 97;
 
+//! Custom-game economy rules: resourceGrowthDisabled, resourceScarcityLevel,
+//! instantConstruction, stockpileStartLevel, hungerDisabled (GameHeader.cpp).
+static constexpr int FILE_FORMAT_VERSION_ECONOMY_RULES = 98;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend

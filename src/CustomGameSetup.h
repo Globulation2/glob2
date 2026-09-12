@@ -21,12 +21,17 @@ struct CustomGameSetup
 		const char *label;
 		const char *category;
 	};
-	static constexpr std::array<RuleDefinition, 5> ruleDefinitions = {
+	static constexpr std::array<RuleDefinition, 10> ruleDefinitions = {
 		{{"Victory", "Victory"},
 		 {"Map knowledge", "World & diplomacy"},
 		 {"Alliances", "World & diplomacy"},
 		 {"Game speed", "Starting conditions & pace"},
-		 {"Starting workers", "Starting conditions & pace"}}};
+		 {"Starting workers", "Starting conditions & pace"},
+		 {"No resource growth", "Economy"},
+		 {"Scarce resources", "Economy"},
+		 {"Instant construction", "Economy"},
+		 {"Stockpile start", "Economy"},
+		 {"No hunger", "Economy"}}};
 	bool ruleChanged(int index) const
 	{
 		switch (index)
@@ -43,6 +48,16 @@ struct CustomGameSetup
 			return random && generator.nbWorkers != MapGenerationDescriptor::control(
 														generator.method, "Starting workers")
 														.defaultValue;
+		case 5:
+			return noResourceGrowth;
+		case 6:
+			return resourceScarcity != 0;
+		case 7:
+			return instantConstruction;
+		case 8:
+			return stockpileStart != 0;
+		case 9:
+			return noHunger;
 		default:
 			return false;
 		}
@@ -59,6 +74,8 @@ struct CustomGameSetup
 	int capacity;
 	bool random = false, prestige = true, revealed = false, locked = true;
 	int speed = 0;
+	bool noResourceGrowth = false, instantConstruction = false, noHunger = false;
+	int resourceScarcity = 0, stockpileStart = 0;
 	std::string format = "FFA", ruleset = "Standard";
 	std::string premadeMap;
 	unsigned mapRevision = 0;
@@ -151,6 +168,11 @@ struct CustomGameSetup
 			generator.nbWorkers = workers;
 			++mapRevision;
 		}
+		noResourceGrowth = false;
+		resourceScarcity = 0;
+		instantConstruction = false;
+		stockpileStart = 0;
+		noHunger = false;
 		ruleset = preset == 0	? "Standard"
 				  : preset == 1 ? "Quick clash"
 				  : preset == 2 ? "Open book"
@@ -195,5 +217,10 @@ struct CustomGameSetup
 		header.setAllyTeamsFixed(locked);
 		header.setMapDiscovered(revealed);
 		WinningCondition::setPrestigeWinCondition(header.getWinningConditions(), prestige);
+		header.setResourceGrowthDisabled(noResourceGrowth);
+		header.setResourceScarcityLevel(static_cast<Uint8>(resourceScarcity));
+		header.setInstantConstructionEnabled(instantConstruction);
+		header.setStockpileStartLevel(static_cast<Uint8>(stockpileStart));
+		header.setHungerDisabled(noHunger);
 	}
 };

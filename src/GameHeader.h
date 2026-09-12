@@ -134,6 +134,37 @@ public:
 	
 	///Sets whether the map is discovered at game start
 	inline void setMapDiscovered(bool discovered) { mapDiscovered=discovered; }
+
+	///Returns whether resources are allowed to grow/spread over time (custom-game rule)
+	inline bool isResourceGrowthDisabled() const { return resourceGrowthDisabled; }
+
+	///Sets whether resources are allowed to grow/spread over time (custom-game rule)
+	inline void setResourceGrowthDisabled(bool disabled) { resourceGrowthDisabled=disabled; }
+
+	///Returns the resource-scarcity tier (0=off/today's rate, 1-3=progressively slower growth)
+	inline Uint8 getResourceScarcityLevel() const { return resourceScarcityLevel; }
+
+	///Sets the resource-scarcity tier (custom-game rule)
+	inline void setResourceScarcityLevel(Uint8 level) { resourceScarcityLevel=level; }
+
+	///Returns whether buildings complete construction instantly (custom-game rule)
+	inline bool isInstantConstructionEnabled() const { return instantConstruction; }
+
+	///Sets whether buildings complete construction instantly (custom-game rule)
+	inline void setInstantConstructionEnabled(bool enabled) { instantConstruction=enabled; }
+
+	///Returns the stockpile-start tier (0=none/today's default, 1-3=progressively larger
+	///starting amount seeded into each team's shared market/exchange resource pool)
+	inline Uint8 getStockpileStartLevel() const { return stockpileStartLevel; }
+
+	///Sets the stockpile-start tier (custom-game rule)
+	inline void setStockpileStartLevel(Uint8 level) { stockpileStartLevel=level; }
+
+	///Returns whether units are exempt from hunger and starvation (custom-game rule)
+	inline bool isHungerDisabled() const { return hungerDisabled; }
+
+	///Sets whether units are exempt from hunger and starvation (custom-game rule)
+	inline void setHungerDisabled(bool disabled) { hungerDisabled=disabled; }
 private:
 	///The number of players in the game
 	Sint32 numberOfPlayers;
@@ -162,6 +193,21 @@ private:
 	
 	///Represents whether fog of war is enabled or disabled
 	bool mapDiscovered;
+
+	///Custom-game rule: resources never grow/spread (see Map::growResources)
+	bool resourceGrowthDisabled;
+
+	///Custom-game rule: 0-3 tier scaling down how often resources grow/spread
+	Uint8 resourceScarcityLevel;
+
+	///Custom-game rule: building sites complete immediately, skipping resource delivery
+	bool instantConstruction;
+
+	///Custom-game rule: 0-3 tier seeding each team's shared resource pool at game start
+	Uint8 stockpileStartLevel;
+
+	///Custom-game rule: units never grow hungry or starve
+	bool hungerDisabled;
 };
 
 

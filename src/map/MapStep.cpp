@@ -18,6 +18,14 @@
 
 void Map::growResources(void)
 {
+	if (game->gameHeader.isResourceGrowthDisabled())
+		return;
+	// Custom-game "scarce resources" rule: an extra grow/extend probability
+	// divisor, stacking with (not replacing) corn's own CORN_GROWTH_DIVISOR
+	// roll below, applied uniformly to every resource type.
+	static constexpr int scarcityDivisor[] = {1, 2, 4, 8};
+	const int scarcity = scarcityDivisor[game->gameHeader.getResourceScarcityLevel()];
+
 	int dy=(syncRand()&0x3);
 	for (int y=dy; y<h; y+=4)
 	{
@@ -53,7 +61,7 @@ void Map::growResources(void)
 					if(syncRand() % CORN_GROWTH_DIVISOR != 0)
 						expand = false;
 
-				if (expand)
+				if (expand && (scarcity==1 || syncRand()%scarcity==0))
 				{
 					if (r.amount<=(syncRand()&7))
 					{
