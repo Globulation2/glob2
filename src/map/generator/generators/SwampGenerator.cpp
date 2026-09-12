@@ -8,10 +8,7 @@
 using namespace MapGeneration;
 static bool generate(Game &game, GenerationContext &context)
 {
-	const SwampOptions options(context.request);
-	HeightFieldOptions terrain{
-		options.water, 0, options.grass, 0, options.smoothing, options.fruit, options.repeat, true};
-	readResourceControls(terrain, context.request);
+	const HeightFieldOptions terrain = HeightFieldOptions::fromRequest(context.request, true);
 	if (!generateHeightField(game, context, terrain,
 							 [&](HeightMap &hm, unsigned w, unsigned h, float smoothing)
 							 { hm.makeSwamp(smoothing); }))

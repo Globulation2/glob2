@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+// The older colony placers: divideUpPlayerLands for the point-dispersion generators and the
+// boot-tile placers of the height-field and old random generators. A designed generator
+// places its colonies with shared/Settlements.h; the balanced site search the height-field
+// generators use is shared/BalancedStarts.h.
 #include "Regions.h"
 namespace MapGeneration
 {
@@ -21,12 +25,8 @@ Building *addBuilding(Game &game, int x, int y, int team, int type, int level,
 
 namespace MapGeneration
 {
-// Chooses each colony's boot tile so that every colony's walk to its primary resources is as
-// nearly equal as the finished map allows, rather than handing the best land to whoever is
-// picked first. Requires resources to already be on the map. Returns false (leaving bootX/bootY
-// untouched) when no set of legal, mutually distant sites can reach both resources, so a caller
-// can fall back to a terrain-only search.
-bool chooseBalancedStarts(Game &game, GenerationContext &context, int minDistSquare);
+/// Builds every colony's swarm and workers on its chosen boot tile, clearing a small rectangle of
+/// grass for them first.
 bool placeStarts(Game &, GenerationContext &);
 bool placeArchipelagoStarts(Game &, GenerationContext &, int islandSize);
 } // namespace MapGeneration

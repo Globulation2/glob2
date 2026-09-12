@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+// The area-grid toolkit the point-dispersion generators (Concrete islands, Isles, Contested
+// commons) and the older resource passes are built on: a grid of integer area numbers, points
+// as MapGeneratorPoint, and in-out vector arguments. New generators should design on the tile
+// masks and Torus of shared/Grid.h instead; nothing here composes with them without conversion.
 #include <vector>
 class Game;
 class Map;

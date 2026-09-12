@@ -198,9 +198,10 @@ map/generator/generators/SymmetricArenaGenerator.cpp
 map/generator/generators/TidalFlatsGenerator.cpp
 map/generator/generators/UniformGenerator.cpp
 map/generator/generators/WatershedGenerator.cpp
-map/generator/shared/Distances.cpp
+map/generator/shared/legacy/Distances.cpp
 map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp
+map/generator/shared/BalancedStarts.cpp
 map/generator/shared/Geometry.cpp
 map/generator/shared/Grid.cpp
 map/generator/shared/LatticeNoise.cpp
@@ -210,9 +211,9 @@ map/generator/shared/Roads.cpp
 map/generator/shared/Sketch.cpp
 map/generator/shared/Topology.cpp
 map/generator/shared/Settlements.cpp
-map/generator/shared/Regions.cpp
+map/generator/shared/legacy/Regions.cpp
 map/generator/shared/Resources.cpp
-map/generator/shared/StartingPositions.cpp
+map/generator/shared/legacy/StartingPositions.cpp
 map/generator/shared/StartQuality.cpp
 map/generator/shared/Terrain.cpp
 map/gradient/MapGradientArea.cpp

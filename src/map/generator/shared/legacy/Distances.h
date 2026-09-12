@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+// Height and distance fields over the legacy area grid (Regions.h). computeDistances is
+// Grid.h's stepsFrom in the historical encoding; new code should call stepsFrom directly.
 #include "Regions.h"
 namespace MapGeneration
 {

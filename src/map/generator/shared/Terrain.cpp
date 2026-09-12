@@ -2,22 +2,21 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
 #include "Terrain.h"
-#include "Distances.h"
+#include "BalancedStarts.h"
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GeneratorDefinition.h"
-#include "GlobalContainer.h"
 #include "HeightMap.h"
 #include "Map.h"
 #include "Pipeline.h"
-#include "Regions.h"
 #include "Resources.h"
-#include "StartingPositions.h"
-#include "Unit.h"
 #include <algorithm>
+#include <cassert>
 #include <cmath>
-using namespace MapGeneration;
-std::vector<GeneratorControl> MapGeneration::heightFieldResourceControls()
+#include <cstring>
+namespace MapGeneration
+{
+std::vector<GeneratorControl> heightFieldResourceControls()
 {
 	return {GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			GeneratorControl::percentage("wood-amount", "Wood amount"),
@@ -26,17 +25,23 @@ std::vector<GeneratorControl> MapGeneration::heightFieldResourceControls()
 			GeneratorControl::toggle("hilltop-stone", "Stone on hilltops", false,
 									 ControlGroup::Resources)};
 }
-void MapGeneration::readResourceControls(HeightFieldOptions &options,
-										 const GenerationRequest &request)
+
+HeightFieldOptions HeightFieldOptions::fromRequest(const GenerationRequest &r, bool swamp)
 {
-	options.wheat = request.option("wheat-amount");
-	options.wood = request.option("wood-amount");
-	options.stone = request.option("stone-amount");
-	options.algae = request.option("algae-amount");
-	options.hilltopStone = request.option("hilltop-stone") != 0;
+	const auto weight = [&](const char *id) { return r.options.count(id) ? r.option(id) : 0; };
+	HeightFieldOptions options{r.option("water"),     weight("sand"),    r.option("grass"),
+							   weight("desert"),      r.option("smoothing"), r.option("fruit"),
+							   r.option("repeat"),    swamp};
+	options.wheat = r.option("wheat-amount");
+	options.wood = r.option("wood-amount");
+	options.stone = r.option("stone-amount");
+	options.algae = r.option("algae-amount");
+	options.hilltopStone = r.option("hilltop-stone") != 0;
+	return options;
 }
-void MapGeneration::openStartsBuriedByAmounts(Game &game, GenerationContext &context,
-											  const HeightFieldOptions &options)
+
+void openStartsBuriedByAmounts(Game &game, GenerationContext &context,
+							   const HeightFieldOptions &options)
 {
 	// The resource bands are painted from map-wide noise levels with no awareness of where any team
 	// starts, so an amount well above the default widens them until they can wall a colony in.
@@ -45,41 +50,34 @@ void MapGeneration::openStartsBuriedByAmounts(Game &game, GenerationContext &con
 	reopenCrampedStarts(game, context,
 						{options.wheat, options.wood, options.stone, options.algae});
 }
-bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
-										const HeightFieldOptions &options,
-										const HeightFieldBuilder &build)
-{
-	Map &map = game.map;
-	const int w = map.getW(), h = map.getH();
 
-	/// all under waterLevel is water, under sandLevel is beach, under grassLevel is grass and above
-	/// grasslevel is desert
-	float waterLevel, sandLevel, grassLevel, wheatLevel, woodLevel, algaeLevel, stoneLevel,
-		stoneFloorLevel;
-	/// to influence the roughness
-	float smoothingFactor = (float)(options.smoothing + 4) * 3;
+HeightFieldTiling heightFieldTiling(int w, int h, int repeat)
+{
+	/// respect symmetry-requirements
+	unsigned int wPower2Divider = 0, hPower2Divider = 0;
+	for (int i = 0; i < repeat; i++)
+		if ((w >> wPower2Divider) > (h >> hPower2Divider))
+			wPower2Divider++;
+		else
+			hPower2Divider++;
+	HeightFieldTiling tiling;
+	tiling.wRepeat = 1 << wPower2Divider;
+	tiling.hRepeat = 1 << hPower2Divider;
+	tiling.w = (unsigned int)(w / tiling.wRepeat);
+	tiling.h = (unsigned int)(h / tiling.hRepeat);
+	return tiling;
+}
+
+HeightFieldLevels classifyHeightField(HeightMap &hm, const HeightFieldTiling &tiling,
+									  const HeightFieldOptions &options)
+{
+	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
 	/// the proportions requested through the gui can directly be translated into tile counts of the
 	/// undermap.
 	unsigned int waterTiles, sandTiles, grassTiles, wheatWoodTiles, algaeTiles;
 	/// grass + sand + water + desert as from the gui
 	unsigned int totalGSWFromUI =
 		options.water + options.sand + options.grass + options.desert + options.fruit;
-	/// respect symmetry-requirements
-	unsigned int wPower2Divider = 0, hPower2Divider = 0;
-	int power2Divider = options.repeat;
-	for (int i = 0; i < power2Divider; i++)
-		if ((w >> wPower2Divider) > (h >> hPower2Divider))
-			wPower2Divider++;
-		else
-			hPower2Divider++;
-	int wRepeat = 1 << wPower2Divider;
-	int hRepeat = 1 << hPower2Divider;
-	unsigned int wHeightMap = (unsigned int)(w / wRepeat);
-	unsigned int hHeightMap = (unsigned int)(h / hRepeat);
-	/// lets generate a patch of perlin noise. That's a smooth mapping R^2 to ]0;1[
-	HeightMap hm(wHeightMap, hHeightMap, context.stream("heightmap"));
-	/// 1 to avoid division by zero,
-	build(hm, wHeightMap, hHeightMap, smoothingFactor);
 	if (options.swamp)
 	{
 		waterTiles = options.water * wHeightMap * hHeightMap / (1u + options.water + options.grass);
@@ -121,56 +119,57 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 	}
 	unsigned int accumulatedHistogram = 0;
 	int i = 0;
-	waterLevel = 0;
-	sandLevel = 0;
-	grassLevel = 0;
-	wheatLevel = 0;
-	woodLevel = 0;
-	stoneLevel = 0;
-	stoneFloorLevel = 0;
-	algaeLevel = 0;
-	while ((waterLevel == 0) && (i < 2048))
+	HeightFieldLevels levels;
+	while ((levels.water == 0) && (i < 2048))
 	{
 		accumulatedHistogram += histogram[i++];
-		if (algaeLevel == 0 && accumulatedHistogram >= algaeTiles)
-			algaeLevel = (float)(i - 1) / 2048.0;
+		if (levels.algae == 0 && accumulatedHistogram >= algaeTiles)
+			levels.algae = (float)(i - 1) / 2048.0;
 		if (accumulatedHistogram >= waterTiles)
-			waterLevel = (float)(i - 1) / 2048.0;
+			levels.water = (float)(i - 1) / 2048.0;
 	}
-	while ((sandLevel == 0) && (i < 2048))
+	while ((levels.sand == 0) && (i < 2048))
 	{
 		accumulatedHistogram += histogram[i++];
 		if (accumulatedHistogram >= waterTiles + sandTiles)
-			sandLevel = (float)(i - 1) / 2048.0;
+			levels.sand = (float)(i - 1) / 2048.0;
 	}
-	while ((grassLevel == 0) && (i < 2048))
+	while ((levels.grass == 0) && (i < 2048))
 	{
 		accumulatedHistogram += histogram[i++];
-		if (wheatLevel == 0 && accumulatedHistogram >= wheatTop)
-			wheatLevel = (float)(i - 1) / 2048.0;
-		if (woodLevel == 0 && accumulatedHistogram >= woodTop)
-			woodLevel = (float)(i - 1) / 2048.0;
-		if (stoneFloorLevel == 0 && accumulatedHistogram >= stoneFloor)
-			stoneFloorLevel = (float)(i - 1) / 2048.0;
-		if (stoneLevel == 0 && accumulatedHistogram >= stoneTop)
-			stoneLevel = (float)(i - 1) / 2048.0;
+		if (levels.wheat == 0 && accumulatedHistogram >= wheatTop)
+			levels.wheat = (float)(i - 1) / 2048.0;
+		if (levels.wood == 0 && accumulatedHistogram >= woodTop)
+			levels.wood = (float)(i - 1) / 2048.0;
+		if (levels.stoneFloor == 0 && accumulatedHistogram >= stoneFloor)
+			levels.stoneFloor = (float)(i - 1) / 2048.0;
+		if (levels.stone == 0 && accumulatedHistogram >= stoneTop)
+			levels.stone = (float)(i - 1) / 2048.0;
 		if (accumulatedHistogram >= landTop)
-			grassLevel = (float)(i - 1) / 2048.0;
+			levels.grass = (float)(i - 1) / 2048.0;
 	}
+	return levels;
+}
+
+void paintHeightFieldTerrain(Map &map, HeightMap &hm, const HeightFieldTiling &tiling,
+							 const HeightFieldLevels &levels)
+{
+	const int w = map.getW();
+	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
 	for (unsigned y = 0; y < hHeightMap; y++)
 		for (unsigned x = 0; x < wHeightMap; x++)
 		{
 			int tmpUndermap;
-			if (hm(y * wHeightMap + x) < waterLevel)
+			if (hm(y * wHeightMap + x) < levels.water)
 				tmpUndermap = WATER;
-			else if (hm(y * wHeightMap + x) < sandLevel)
+			else if (hm(y * wHeightMap + x) < levels.sand)
 				tmpUndermap = SAND;
-			else if (hm(y * wHeightMap + x) < grassLevel)
+			else if (hm(y * wHeightMap + x) < levels.grass)
 				tmpUndermap = GRASS;
 			else
 				tmpUndermap = SAND;
-			for (int yRepeat = 0; yRepeat < hRepeat; yRepeat++)
-				for (int xRepeat = 0; xRepeat < wRepeat; xRepeat++)
+			for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
+				for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
 					map.setUMTerrain(
 						(xRepeat * wHeightMap + x + (yRepeat * hHeightMap + y) * w) % w,
 						(xRepeat * wHeightMap + x + (yRepeat * hHeightMap + y) * w) / w,
@@ -178,8 +177,12 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 		}
 	map.controlSand();
 	map.rebuildTerrain();
-	context.stage = "resources";
-	// now to add primary resources for current map generator
+}
+
+void paintHeightFieldResources(Map &map, HeightMap &hm, const HeightFieldTiling &tiling,
+							   const HeightFieldLevels &levels, const HeightFieldOptions &options)
+{
+	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
 	for (unsigned y = 0; y < hHeightMap; y++)
 	{
 		for (unsigned x = 0; x < wHeightMap; x++)
@@ -187,9 +190,9 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 			int tmpResource = NO_RES;
 			const float level = hm(x + wHeightMap * y);
 			const bool stoneBand = options.hilltopStone
-									   ? level >= stoneFloorLevel && level < stoneLevel
-									   : level < stoneLevel;
-			if (level < algaeLevel)
+									   ? level >= levels.stoneFloor && level < levels.stone
+									   : level < levels.stone;
+			if (level < levels.algae)
 			{
 				if (options.algae > 0)
 					tmpResource = ALGA;
@@ -206,18 +209,18 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 			else if (hm((x + wHeightMap / 2) % wHeightMap + wHeightMap * y) <
 					 hm((x + wHeightMap / 2 + 1) % wHeightMap + wHeightMap * y))
 			{
-				if (level < wheatLevel)
+				if (level < levels.wheat)
 					tmpResource = CORN;
 			}
-			else if (level < woodLevel)
+			else if (level < levels.wood)
 			{
 				tmpResource = WOOD;
 			}
 			if (tmpResource != NO_RES)
 			{
-				for (int yRepeat = 0; yRepeat < hRepeat; yRepeat++)
+				for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
 				{
-					for (int xRepeat = 0; xRepeat < wRepeat; xRepeat++)
+					for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
 					{
 						map.setResource(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y,
 										tmpResource, 1);
@@ -226,15 +229,17 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 			}
 		}
 	}
+}
 
+bool chooseHeightFieldStarts(Game &game, GenerationContext &context)
+{
+	Map &map = game.map;
+	const int w = map.getW(), h = map.getH();
 	// Choosing where the colonies go *after* the resources exist is what makes a fair choice
-	// possible at all: the search below scores a site by how far its workers must actually walk
-	// to wood and wheat, which is unknowable while the map is still bare. Nothing in between
-	// reads a boot position or draws from a random stream, so the two passes simply swapped
-	// order. The legacy search — largest grass rectangle first, and everyone after it takes
-	// what is left — stays as a fallback for maps where no set of sites can reach both
-	// resources at all.
-	context.stage = "starting locations";
+	// possible at all: the search scores a site by how far its workers must actually walk to wood
+	// and wheat, which is unknowable while the map is still bare. The legacy search — largest grass
+	// rectangle first, and everyone after it takes what is left — stays as a fallback for maps
+	// where no set of sites can reach both resources at all.
 	int nbTeams = context.request.nbTeams;
 	int minDistSquare = (int)((double)w * h / (double)nbTeams / 5);
 	if (minDistSquare <= 0)
@@ -243,72 +248,150 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 	}
 	int *bootX = context.bootX.data();
 	int *bootY = context.bootY.data();
-	if (!chooseBalancedStarts(game, context, minDistSquare))
+	if (chooseBalancedStarts(game, context, minDistSquare))
+		return true;
+	// TODO: First pass to find the number of available places.
+	for (int team = 0; team < nbTeams; team++)
 	{
-		// TODO: First pass to find the number of available places.
-		for (int team = 0; team < nbTeams; team++)
+		int maxSurface = 0;
+		int maxX = 0;
+		int maxY = 0;
+		for (int y = 0; y < h; y++)
 		{
-			int maxSurface = 0;
-			int maxX = 0;
-			int maxY = 0;
-			for (int y = 0; y < h; y++)
+			int width = 0;
+			int startX = 0;
+			for (int x = 0; x < w; x++)
 			{
-				int width = 0;
-				int startX = 0;
-				for (int x = 0; x < w; x++)
+				int a = map.getUMTerrain(x, y);
+				if (a == GRASS)
+					width++;
+				else
 				{
-					int a = map.getUMTerrain(x, y);
-					if (a == GRASS)
-						width++;
-					else
+					if (width > 7)
 					{
-						if (width > 7)
-						{
-							int centerX = ((x + startX) >> 1);
-							int top, bot;
-							for (top = 0; top < h; top++)
-								if (map.getUMTerrain(centerX, y - top) != GRASS)
-									break;
-							for (bot = 0; bot < h; bot++)
-								if (map.getUMTerrain(centerX, y + bot) != GRASS)
-									break;
-							int height = top + bot - 1;
-							int surface = height * width;
-							assert(surface > 0);
+						int centerX = ((x + startX) >> 1);
+						int top, bot;
+						for (top = 0; top < h; top++)
+							if (map.getUMTerrain(centerX, y - top) != GRASS)
+								break;
+						for (bot = 0; bot < h; bot++)
+							if (map.getUMTerrain(centerX, y + bot) != GRASS)
+								break;
+						int height = top + bot - 1;
+						int surface = height * width;
+						assert(surface > 0);
 
-							int centerY = y + ((bot - top) >> 1);
-							bool farEnough = true;
-							for (int ti = 0; ti < team; ti++)
-								if (map.warpDistSquare(centerX, centerY, bootX[ti], bootY[ti]) <
-									minDistSquare)
-								{
-									farEnough = false;
-									break;
-								}
-
-							if (surface > maxSurface && farEnough)
+						int centerY = y + ((bot - top) >> 1);
+						bool farEnough = true;
+						for (int ti = 0; ti < team; ti++)
+							if (map.warpDistSquare(centerX, centerY, bootX[ti], bootY[ti]) <
+								minDistSquare)
 							{
-								maxSurface = surface;
-								maxX = centerX;
-								maxY = centerY;
+								farEnough = false;
+								break;
 							}
+
+						if (surface > maxSurface && farEnough)
+						{
+							maxSurface = surface;
+							maxX = centerX;
+							maxY = centerY;
 						}
-						width = 0;
-						startX = x;
 					}
+					width = 0;
+					startX = x;
 				}
 			}
+		}
 
-			if (maxSurface <= 0)
+		if (maxSurface <= 0)
+		{
+			return false;
+		}
+		assert(maxSurface);
+		bootX[team] = maxX;
+		bootY[team] = maxY;
+	}
+	return true;
+}
+
+bool plantHeightFieldGroves(Map &map, GenerationContext &context, const HeightFieldTiling &tiling,
+							int count)
+{
+	const unsigned int wHeightMap = tiling.w, hHeightMap = tiling.h;
+	// TODO: count of groves does not scale with mapsize, so it has to be adjusted higher on
+	// bigger maps now.
+	for (int q1 = 0; q1 < count; q1++) // counting groves
+	{
+		// choose fruit
+		int fruit;
+		switch (context.stream("resources")() % 3)
+		{
+		case 0:
+			fruit = CHERRY;
+			break;
+		case 1:
+			fruit = ORANGE;
+			break;
+		case 2:
+		default:
+			fruit = PRUNE;
+			break;
+		}
+		// choose coordinate where there is grass but no resource yet
+		int x, y;
+		int attempts = 0;
+		do
+		{
+			if (++attempts > int(wHeightMap * hHeightMap * 4))
 			{
+				context.detail = "No free grass for fruit";
 				return false;
 			}
-			assert(maxSurface);
-			bootX[team] = maxX;
-			bootY[team] = maxY;
+			x = (context.stream("resources")() % wHeightMap);
+			y = (context.stream("resources")() % hHeightMap);
+		} while (map.getUMTerrain(x, y) != GRASS || map.isResource(x, y));
+		// choose size of grove (tree count)
+		int grovesize = (context.stream("resources")() % 10) + 1;
+		for (int i = 0; i < grovesize; i++)
+		{
+			for (int yRepeat = 0; yRepeat < tiling.hRepeat; yRepeat++)
+				for (int xRepeat = 0; xRepeat < tiling.wRepeat; xRepeat++)
+					map.setResource(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y, fruit, 1);
+			// find a valid neighbor of actual coordinate
+			for (int iTry = 0; iTry < 100; iTry++)
+			{
+				int xNew = x + context.stream("resources")() % 3 - 1;
+				int yNew = y + context.stream("resources")() % 3 - 1;
+				if (map.getUMTerrain(xNew, yNew) == GRASS && !map.isResource(xNew, yNew))
+				{
+					x = xNew;
+					y = yNew;
+					break;
+				}
+			}
 		}
 	}
+	return true;
+}
 
+bool generateHeightField(Game &game, GenerationContext &context, const HeightFieldOptions &options,
+						 const HeightFieldBuilder &build)
+{
+	Map &map = game.map;
+	/// to influence the roughness
+	const float smoothingFactor = (float)(options.smoothing + 4) * 3;
+	const HeightFieldTiling tiling = heightFieldTiling(map.getW(), map.getH(), options.repeat);
+	/// lets generate a patch of perlin noise. That's a smooth mapping R^2 to ]0;1[
+	HeightMap hm(tiling.w, tiling.h, context.stream("heightmap"));
+	build(hm, tiling.w, tiling.h, smoothingFactor);
+	const HeightFieldLevels levels = classifyHeightField(hm, tiling, options);
+	paintHeightFieldTerrain(map, hm, tiling, levels);
+	context.stage = "resources";
+	paintHeightFieldResources(map, hm, tiling, levels, options);
+	context.stage = "starting locations";
+	if (!chooseHeightFieldStarts(game, context))
+		return false;
 	// Fairness guarantee: the bands above are painted from map-wide noise levels with no
 	// awareness of where any team actually starts, so a team's assigned tile can land in a
 	// stretch of grass the noise field never happens to touch — or a straight-line-nearby
@@ -320,65 +403,6 @@ bool MapGeneration::generateHeightField(Game &game, GenerationContext &context,
 	// (StartingPositions.cpp's setNoResource calls), so skip that band or a clump placed here
 	// would just be wiped a moment later.
 	guaranteeStartingResources(game, context, 24, 32, /*clearRadius=*/6);
-
-	// TODO: count of groves(=options.fruit) does not scale with mapsize.
-	// so it has to be adjusted higher on bigger maps now.
-
-	// fruit-placement:
-	if (options.fruit > 0)
-	{
-		for (int q1 = 0; q1 < options.fruit; q1++) // counting groves
-		{
-			// choose fruit
-			int fruit;
-			switch (context.stream("resources")() % 3)
-			{
-			case 0:
-				fruit = CHERRY;
-				break;
-			case 1:
-				fruit = ORANGE;
-				break;
-			case 2:
-			default:
-				fruit = PRUNE;
-				break;
-			}
-			// choose coordinate where there is grass but no resource yet
-			int x, y;
-			int attempts = 0;
-			do
-			{
-				if (++attempts > int(wHeightMap * hHeightMap * 4))
-				{
-					context.detail = "No free grass for fruit";
-					return false;
-				}
-				x = (context.stream("resources")() % wHeightMap);
-				y = (context.stream("resources")() % hHeightMap);
-			} while (map.getUMTerrain(x, y) != GRASS || map.isResource(x, y));
-			// choose size of grove (tree count)
-			int grovesize = (context.stream("resources")() % 10) + 1;
-			for (int i = 0; i < grovesize; i++)
-			{
-				for (int yRepeat = 0; yRepeat < hRepeat; yRepeat++)
-					for (int xRepeat = 0; xRepeat < wRepeat; xRepeat++)
-						map.setResource(xRepeat * wHeightMap + x, yRepeat * hHeightMap + y, fruit,
-										1);
-				// find a valid neighbor of actual coordinate
-				for (int iTry = 0; iTry < 100; iTry++)
-				{
-					int xNew = x + context.stream("resources")() % 3 - 1;
-					int yNew = y + context.stream("resources")() % 3 - 1;
-					if (map.getUMTerrain(xNew, yNew) == GRASS && !map.isResource(xNew, yNew))
-					{
-						x = xNew;
-						y = yNew;
-						break;
-					}
-				}
-			}
-		}
-	}
-	return true;
+	return options.fruit <= 0 || plantHeightFieldGroves(map, context, tiling, options.fruit);
 }
+} // namespace MapGeneration
