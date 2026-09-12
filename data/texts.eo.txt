@@ -1630,6 +1630,8 @@ Montru la kursoron de Globulation 2.
 Farita
 [settings Edit shortcut]
 Redakti klavaran ŝparvojon
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Pligrandigas menuojn, tekston kaj la flankan strion sur altdistingiva ekrano.
 [settings Flags]
 Flagoj
 [settings Full]
@@ -1644,6 +1646,8 @@ Ludrapido
 Ludado
 [settings Graphics detail]
 Grafikaj detaloj
+[settings Interface scale]
+Interfaca skalo
 [settings Keep]
 Konservi ŝanĝojn
 [settings Keep this display mode?]
@@ -1666,6 +1670,8 @@ Lingvo uzata tra la interfaco.
 Nivelo
 [settings Map editor]
 Mapredaktilo
+[settings Match the desktop]
+Kiel la labortablo
 [settings Missing font]
 Mankas tiparo
 [settings Music volume]

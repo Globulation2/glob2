@@ -1632,6 +1632,8 @@ Cortex
 Готово
 [settings Edit shortcut]
 Уреди пречицу
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Увећава меније, текст и бочну траку на екрану високе резолуције.
 [settings Flags]
 Заставе
 [settings Full]
@@ -1646,6 +1648,8 @@ Cortex
 Ток игре
 [settings Graphics detail]
 Детаљи графике
+[settings Interface scale]
+Размера интерфејса
 [settings Keep]
 Задржи промене
 [settings Keep this display mode?]
@@ -1668,6 +1672,8 @@ Cortex
 Ниво
 [settings Map editor]
 Уређивач мапа
+[settings Match the desktop]
+Као радна површина
 [settings Missing font]
 Недостаје фонт
 [settings Music volume]

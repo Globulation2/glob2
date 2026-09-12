@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <algorithm>
+#include <cmath>
 
 #include "BuildingType.h"
 #include "Game.h"
@@ -171,6 +172,172 @@ void Team::updateAllBuildingTasks()
 
 
 
+namespace
+{
+	// A swap has to save this many tiles over the two trips to be worth the churn.
+	constexpr int SWAP_MIN_GAIN = 4;
+	// Fetchers checked for a swap per tick; every unit gets its turn every 256 ticks.
+	constexpr int SWAP_CHECKS_PER_TICK = Unit::MAX_COUNT / 256;
+
+	// A unit on its way to fetch, or to deliver, a resource for its building.
+	bool isFetching(const Unit *u)
+	{
+		return u && u->activity == Unit::ACT_FILLING && u->attachedBuilding && u->ownExchangeBuilding == NULL
+			&& u->medical == Unit::MED_FREE && u->destinationPurpose >= 0
+			&& (u->displacement == Unit::DIS_GOING_TO_RESOURCE || u->displacement == Unit::DIS_GOING_TO_BUILDING);
+	}
+
+	// Tiles `u` would walk to do the job (building, resource): deliver what it
+	// carries, or fetch and carry. Only gradients that already exist are read,
+	// so a comparison never builds one. False when it cannot take the job.
+	bool jobCost(Unit *u, Building *b, int resource, int *cost)
+	{
+		Map *map = b->owner->map;
+		int swimClass = u->swimClass();
+		if (b->globalGradient[swimClass] == NULL)
+			return false;
+		if (u->carriedResource >= 0)
+			return u->carriedResource == resource && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost);
+		if (map->roundTripDistance(b, resource, swimClass, u->posX, u->posY, cost))
+			return true;
+		// No round-trip field for this class yet: the plain distances, as hiring uses them.
+		int toBuilding, toResource;
+		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding)
+			|| !map->resourceAvailable(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource))
+			return false;
+		*cost = toBuilding + toResource;
+		return true;
+	}
+
+	// A unit walking to the inn where it booked its meal.
+	bool isWalkingToInn(const Unit *u)
+	{
+		return u && u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == FEED
+			&& u->attachedBuilding && u->displacement == Unit::DIS_GOING_TO_BUILDING;
+	}
+
+	// Tiles `u` walks to reach `b`: the building's gradient, which choosing an inn
+	// already built, or the crow-flight distance findNearestFood uses for a flyer.
+	bool innCost(Unit *u, Building *b, int *cost)
+	{
+		Map *map = b->owner->map;
+		if (u->performance[FLY])
+		{
+			*cost = 1 + (Sint32)sqrt(map->warpDistSquare(u->posX, u->posY, b->posX, b->posY));
+			return true;
+		}
+		return map->buildingAvailable(b, u->swimClass(), u->posX, u->posY, cost);
+	}
+
+	// Move `u`'s booking from one inn to the other; both keep their head count.
+	void rebook(Unit *u, Building *from, Building *to)
+	{
+		from->unitsInside.remove(u);
+		to->unitsInside.push_back(u);
+		u->attachedBuilding = to;
+		u->setTargetBuilding(to);
+	}
+
+	void assignTask(Unit *u, Building *b, int resource)
+	{
+		u->attachedBuilding->removeUnitFromWorking(u);
+		u->attachedBuilding = b;
+		u->destinationPurpose = resource;
+		b->unitsWorking.push_back(u);
+		b->updateCallLists();
+		if (u->carriedResource == resource)
+		{
+			u->displacement = Unit::DIS_GOING_TO_BUILDING;
+			u->setTargetBuilding(b);
+		}
+		else
+		{
+			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
+			u->setTargetBuilding(NULL);
+			b->owner->map->resourceAvailableUpdate(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL);
+		}
+		u->validTarget = true;
+	}
+}
+
+void Team::swapTask(Unit *unit)
+{
+	if (!isFetching(unit))
+		return;
+	Building *a = unit->attachedBuilding;
+	int r = unit->destinationPurpose;
+	int own;
+	if (!jobCost(unit, a, r, &own))
+		return;
+	int timeLeft = (unit->hungry - unit->trigHungry) / unit->race->hungriness;
+	Unit *best = NULL;
+	int bestGain = SWAP_MIN_GAIN;
+	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	{
+		Unit *mate = myUnits[i];
+		if (mate == unit || !isFetching(mate))
+			continue;
+		Building *b = mate->attachedBuilding;
+		int s = mate->destinationPurpose;
+		if ((b == a && s == r) || !b->canUnitWorkHere(unit) || !a->canUnitWorkHere(mate))
+			continue;
+		int mateOwn, mine, theirs;
+		if (!jobCost(mate, b, s, &mateOwn) || !jobCost(unit, b, s, &mine) || !jobCost(mate, a, r, &theirs))
+			continue;
+		if (mine >= timeLeft || theirs >= (mate->hungry - mate->trigHungry) / mate->race->hungriness)
+			continue;
+		int gain = own + mateOwn - mine - theirs;
+		if (gain > bestGain)
+		{
+			bestGain = gain;
+			best = mate;
+		}
+	}
+	if (best == NULL)
+		return;
+	Building *b = best->attachedBuilding;
+	int s = best->destinationPurpose;
+	assignTask(unit, b, s);
+	assignTask(best, a, r);
+}
+
+void Team::swapInn(Unit *unit)
+{
+	if (!isWalkingToInn(unit))
+		return;
+	Building *a = unit->attachedBuilding;
+	int own;
+	if (a->owner != this || !innCost(unit, a, &own))
+		return;
+	Unit *best = NULL;
+	int bestGain = SWAP_MIN_GAIN;
+	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	{
+		Unit *mate = myUnits[i];
+		if (mate == unit || !isWalkingToInn(mate) || mate->attachedBuilding == a || mate->attachedBuilding->owner != this)
+			continue;
+		Building *b = mate->attachedBuilding;
+		int mateOwn, mine, theirs;
+		if (!innCost(mate, b, &mateOwn) || !innCost(unit, b, &mine) || !innCost(mate, a, &theirs))
+			continue;
+		if (mine >= starvationLimitedTravelDistance(unit) || theirs >= starvationLimitedTravelDistance(mate))
+			continue;
+		int gain = own + mateOwn - mine - theirs;
+		if (gain > bestGain)
+		{
+			bestGain = gain;
+			best = mate;
+		}
+	}
+	if (best == NULL)
+		return;
+	Building *b = best->attachedBuilding;
+	rebook(unit, a, b);
+	rebook(best, b, a);
+	a->updateCallLists();
+	b->updateCallLists();
+}
+
 void Team::syncStep(void)
 {
 	integrity();
@@ -214,8 +381,6 @@ void Team::syncStep(void)
 				if (!building->type->isVirtual)
 				{
 					map->setBuilding(building->posX, building->posY, building->type->width, building->type->height, NOGBID);
-					// One tile narrower than the Game_orders.cpp rects; part of the replay-verified behaviour.
-					map->dirtyBuildingGradients(building->posX-GRADIENT_DIRTY_BORDER_TILES, building->posY-GRADIENT_DIRTY_BORDER_TILES, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->width, 2*GRADIENT_DIRTY_BORDER_TILES-1+building->type->height, teamNumber);
 					isDirtyGlobalGradient=true;
 				}
 				building->buildingState=Building::DEAD;
@@ -272,6 +437,8 @@ void Team::syncStep(void)
 	}
 
 	updateAllBuildingTasks();
+	for (int k = 0; k < SWAP_CHECKS_PER_TICK; k++)
+		swapTask(myUnits[(game->stepCounter * SWAP_CHECKS_PER_TICK + k) % Unit::MAX_COUNT]);
 
 	bool isEnoughFoodInSwarm=false;
 

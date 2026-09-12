@@ -56,6 +56,8 @@ private:
 public:
 	int screenWidth;
 	int screenHeight;
+	//! interface scale in percent; 0 follows the desktop
+	int uiScale;
 	Uint32 screenFlags;
 	Uint32 optionFlags;
 	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.

@@ -1630,6 +1630,8 @@ Cortex
 Готово
 [settings Edit shortcut]
 Изменить сочетание клавиш
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Увеличивает меню, текст и боковую панель на экране с высоким разрешением.
 [settings Flags]
 Флаги
 [settings Full]
@@ -1644,6 +1646,8 @@ Cortex
 Игровой процесс
 [settings Graphics detail]
 Детализация графики
+[settings Interface scale]
+Масштаб интерфейса
 [settings Keep]
 Сохранить изменения
 [settings Keep this display mode?]
@@ -1666,6 +1670,8 @@ Cortex
 Уровень
 [settings Map editor]
 Редактор карт
+[settings Match the desktop]
+Как в системе
 [settings Missing font]
 Отсутствует шрифт
 [settings Music volume]

@@ -1640,6 +1640,8 @@ Zobrazovať kurzor hry Globulation 2.
 Hotovo
 [settings Edit shortcut]
 Upraviť klávesovú skratku
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Zväčší ponuky, text a bočný panel na obrazovke s vysokým rozlíšením.
 [settings Flags]
 Vlajky
 [settings Full]
@@ -1654,6 +1656,8 @@ Rýchlosť hry
 Hrateľnosť
 [settings Graphics detail]
 Grafické detaily
+[settings Interface scale]
+Mierka rozhrania
 [settings Keep]
 Ponechať zmeny
 [settings Keep this display mode?]
@@ -1676,6 +1680,8 @@ Jazyk používaný v celom rozhraní.
 Úroveň
 [settings Map editor]
 Editor máp
+[settings Match the desktop]
+Podľa plochy
 [settings Missing font]
 Chýba písmo
 [settings Music volume]

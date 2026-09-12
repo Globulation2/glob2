@@ -1656,6 +1656,8 @@ Geef de Globulation 2-cursor weer.
 Klaar
 [settings Edit shortcut]
 Sneltoets bewerken
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Vergroot menu's, tekst en de zijbalk op een scherm met hoge resolutie.
 [settings Flags]
 Vlaggen
 [settings Full]
@@ -1670,6 +1672,8 @@ Spelsnelheid
 Spelverloop
 [settings Graphics detail]
 Grafische details
+[settings Interface scale]
+Schaal van de interface
 [settings Keep]
 Behouden
 [settings Keep this display mode?]
@@ -1692,6 +1696,8 @@ Taal die in de hele interface wordt gebruikt.
 Niveau
 [settings Map editor]
 Kaarteditor
+[settings Match the desktop]
+Zoals het bureaublad
 [settings Missing font]
 Ontbrekend lettertype
 [settings Music volume]

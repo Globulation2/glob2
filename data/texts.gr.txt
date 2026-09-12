@@ -1702,6 +1702,8 @@ Cortex
 Έγινε
 [settings Edit shortcut]
 Επεξεργασία συντόμευσης
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Μεγεθύνει τα μενού, το κείμενο και την πλαϊνή μπάρα σε οθόνη υψηλής ανάλυσης.
 [settings Flags]
 Σημαίες
 [settings Full]
@@ -1716,6 +1718,8 @@ Cortex
 Τρόπος παιχνιδιού
 [settings Graphics detail]
 Λεπτομέρεια γραφικών
+[settings Interface scale]
+Κλίμακα διεπαφής
 [settings Keep]
 Διατήρηση αλλαγών
 [settings Keep this display mode?]
@@ -1738,6 +1742,8 @@ Cortex
 Επίπεδο
 [settings Map editor]
 Επεξεργαστής χάρτη
+[settings Match the desktop]
+Όπως η επιφάνεια εργασίας
 [settings Missing font]
 Λείπει γραμματοσειρά
 [settings Music volume]

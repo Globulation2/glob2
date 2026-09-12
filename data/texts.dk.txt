@@ -1708,6 +1708,8 @@ Vis Globulation 2-markøren.
 Færdig
 [settings Edit shortcut]
 Rediger tastaturgenvej
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Forstør menuer, tekst og sidepanelet på en skærm med høj opløsning.
 [settings Flags]
 Flag
 [settings Full]
@@ -1722,6 +1724,8 @@ Spilhastighed
 Spilforløb
 [settings Graphics detail]
 Grafikdetaljer
+[settings Interface scale]
+Grænsefladeskalering
 [settings Keep]
 Behold ændringer
 [settings Keep this display mode?]
@@ -1744,6 +1748,8 @@ Sprog, der bruges i hele grænsefladen.
 Niveau
 [settings Map editor]
 Korteditor
+[settings Match the desktop]
+Følg skrivebordet
 [settings Missing font]
 Manglende skrifttype
 [settings Music volume]

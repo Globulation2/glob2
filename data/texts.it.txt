@@ -1694,6 +1694,8 @@ Mostra il cursore di Globulation 2.
 Fatto
 [settings Edit shortcut]
 Modifica la scorciatoia da tastiera
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Ingrandisce menu, testo e barra laterale su uno schermo ad alta risoluzione.
 [settings Flags]
 Bandiere
 [settings Full]
@@ -1708,6 +1710,8 @@ Velocità di gioco
 Gioco
 [settings Graphics detail]
 Dettaglio grafico
+[settings Interface scale]
+Scala dell'interfaccia
 [settings Keep]
 Mantieni le modifiche
 [settings Keep this display mode?]
@@ -1730,6 +1734,8 @@ Lingua utilizzata in tutta l'interfaccia.
 Livello
 [settings Map editor]
 Editor di mappe
+[settings Match the desktop]
+Come il desktop
 [settings Missing font]
 Carattere mancante
 [settings Music volume]

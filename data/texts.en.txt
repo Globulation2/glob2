@@ -1630,6 +1630,8 @@ Display the Globulation 2 cursor.
 Done
 [settings Edit shortcut]
 Edit shortcut
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Enlarge menus, text and the sidebar on a high-resolution screen.
 [settings Flags]
 Flags
 [settings Full]
@@ -1644,6 +1646,8 @@ Game speed
 Gameplay
 [settings Graphics detail]
 Graphics detail
+[settings Interface scale]
+Interface scale
 [settings Keep]
 Keep
 [settings Keep this display mode?]
@@ -1666,6 +1670,8 @@ Language used throughout the interface.
 Level
 [settings Map editor]
 Map editor
+[settings Match the desktop]
+Match the desktop
 [settings Missing font]
 Missing font
 [settings Music volume]

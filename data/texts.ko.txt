@@ -1628,6 +1628,8 @@ Globulation 2 커서를 표시합니다.
 완료
 [settings Edit shortcut]
 키보드 단축키 수정
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+고해상도 화면에서 메뉴, 텍스트, 사이드바를 크게 표시합니다.
 [settings Flags]
 깃발
 [settings Full]
@@ -1642,6 +1644,8 @@ Globulation 2 커서를 표시합니다.
 게임플레이
 [settings Graphics detail]
 그래픽 디테일
+[settings Interface scale]
+인터페이스 배율
 [settings Keep]
 변경사항 유지
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Globulation 2 커서를 표시합니다.
 레벨
 [settings Map editor]
 지도 편집기
+[settings Match the desktop]
+바탕 화면에 맞춤
 [settings Missing font]
 누락된 글꼴
 [settings Music volume]

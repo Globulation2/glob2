@@ -1628,6 +1628,8 @@ Globulation 2 のカーソルを表示します。
 完了
 [settings Edit shortcut]
 キーボードショートカットを編集する
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+高解像度の画面でメニュー、文字、サイドバーを大きくします。
 [settings Flags]
 旗
 [settings Full]
@@ -1642,6 +1644,8 @@ Globulation 2 のカーソルを表示します。
 ゲームプレイ
 [settings Graphics detail]
 グラフィックの詳細度
+[settings Interface scale]
+インターフェースの拡大率
 [settings Keep]
 変更を保持する
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Globulation 2 のカーソルを表示します。
 レベル
 [settings Map editor]
 マップエディター
+[settings Match the desktop]
+デスクトップに合わせる
 [settings Missing font]
 フォントがありません
 [settings Music volume]

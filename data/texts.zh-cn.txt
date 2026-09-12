@@ -1628,6 +1628,8 @@ AI策略与对抗
 完成
 [settings Edit shortcut]
 编辑键盘快捷键
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+在高分辨率屏幕上放大菜单、文字和侧边栏。
 [settings Flags]
 旗帜
 [settings Full]
@@ -1642,6 +1644,8 @@ AI策略与对抗
 游戏玩法
 [settings Graphics detail]
 图形细节
+[settings Interface scale]
+界面缩放
 [settings Keep]
 保留更改
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ AI策略与对抗
 等级
 [settings Map editor]
 地图编辑器
+[settings Match the desktop]
+与桌面相同
 [settings Missing font]
 缺少字体
 [settings Music volume]

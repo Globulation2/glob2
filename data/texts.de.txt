@@ -1632,6 +1632,8 @@ Zeigen Sie den Globulation 2-Cursor an.
 Fertig
 [settings Edit shortcut]
 Tastaturkürzel bearbeiten
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Vergrößert Menüs, Text und die Seitenleiste auf einem hochauflösenden Bildschirm.
 [settings Flags]
 Flaggen
 [settings Full]
@@ -1646,6 +1648,8 @@ Spielgeschwindigkeit
 Spielablauf
 [settings Graphics detail]
 Grafikdetails
+[settings Interface scale]
+Oberflächenskalierung
 [settings Keep]
 Änderungen beibehalten
 [settings Keep this display mode?]
@@ -1668,6 +1672,8 @@ Sprache, die in der gesamten Benutzeroberfläche verwendet wird.
 Stufe
 [settings Map editor]
 Karteneditor
+[settings Match the desktop]
+Wie der Desktop
 [settings Missing font]
 Fehlende Schriftart
 [settings Music volume]

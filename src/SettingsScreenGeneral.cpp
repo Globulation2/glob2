@@ -7,6 +7,8 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
+#include <cmath>
+#include <iterator>
 
 using namespace GAGCore;
 
@@ -40,6 +42,21 @@ void SettingsScreen::buildGeneral()
                 if(windowOnly[v]){s.screenFlags&=~GraphicContext::FULLSCREEN;s.screenFlags|=GraphicContext::RESIZABLE;}
             });});
         form.back().value=std::to_string(s.screenWidth)+" × "+std::to_string(s.screenHeight);
+        {
+            // 0 follows the desktop; the rest are the scales desktops actually offer.
+            static const int percents[]={0,100,125,150,175,200,250,300};
+            const float desktop=GraphicContext::querySystemUiScale();
+            const int desktopPercent=int(std::lround(std::max(1.0f,desktop>0.0f?desktop:1.0f)*100));
+            std::vector<std::string> labels;
+            for(int p:percents)
+                labels.push_back(p ? std::to_string(p)+" %"
+                    : tr("Match the desktop")+" ("+std::to_string(desktopPercent)+" %)");
+            int selected=std::find(std::begin(percents),std::end(percents),s.uiScale)-std::begin(percents);
+            if(selected>=int(std::size(percents)))selected=0;
+            choice("display.uiscale","Interface scale",
+                "Enlarge menus, text and the sidebar on a high-resolution screen.",selected,labels,
+                [this](int v){if(v>=0 && v<int(std::size(percents)))changeUiScale(percents[v]);});
+        }
         info(tr("Current display")+": "+std::to_string(globalContainer->gfx->getW())+" × "+std::to_string(globalContainer->gfx->getH())+
              " · "+((globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)?"OpenGL":tr("Software"))+
              " · "+tr(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN?"Fullscreen":"Windowed"));

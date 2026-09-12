@@ -27,6 +27,9 @@ class Unit;
 
 class Game;
 
+//! Tiles a unit can still walk before it starves: what is left of its hunger, then its hp.
+Sint32 starvationLimitedTravelDistance(const Unit *unit);
+
 class Team:public BaseTeam
 {
 public:
@@ -110,6 +113,12 @@ public:
 	void removeBuildingNeedingWork(Building* b, Sint32 priority);
 	//! Update every building in buildingsNeedingUnits, highest priority first.
 	void updateAllBuildingTasks();
+	//! Give `unit`'s fetching job to a team mate and take the mate's job, when that
+	//! shortens the two trips together by more than a few tiles (see TeamStep.cpp).
+	void swapTask(Unit *unit);
+	//! Give `unit` a team mate's inn and the mate `unit`'s, when that shortens the
+	//! two walks together by more than a few tiles; called as `unit` books its place.
+	void swapInn(Unit *unit);
 
 	//! Highest build level any unit of the team has.
 	int maxBuildLevel(void);

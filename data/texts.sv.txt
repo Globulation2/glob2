@@ -1642,6 +1642,8 @@ Visa Globulation 2-markören.
 Klart
 [settings Edit shortcut]
 Redigera kortkommando
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Förstorar menyer, text och sidopanelen på en högupplöst skärm.
 [settings Flags]
 Flaggor
 [settings Full]
@@ -1656,6 +1658,8 @@ Spelhastighet
 Spelförlopp
 [settings Graphics detail]
 Grafikdetaljer
+[settings Interface scale]
+Gränssnittsskala
 [settings Keep]
 Behåll ändringar
 [settings Keep this display mode?]
@@ -1678,6 +1682,8 @@ Språk som används i hela gränssnittet.
 Nivå
 [settings Map editor]
 Kartredigerare
+[settings Match the desktop]
+Följ skrivbordet
 [settings Missing font]
 Saknar typsnitt
 [settings Music volume]

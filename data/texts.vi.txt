@@ -1628,6 +1628,8 @@ Hiển thị con trỏ Globulation 2.
 Xong
 [settings Edit shortcut]
 Chỉnh sửa phím tắt
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Phóng to menu, văn bản và thanh bên trên màn hình độ phân giải cao.
 [settings Flags]
 Cờ
 [settings Full]
@@ -1642,6 +1644,8 @@ Tốc độ trò chơi
 Lối chơi
 [settings Graphics detail]
 Chi tiết đồ họa
+[settings Interface scale]
+Tỷ lệ giao diện
 [settings Keep]
 Giữ các thay đổi
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Ngôn ngữ được sử dụng xuyên suốt giao diện.
 Cấp
 [settings Map editor]
 Trình chỉnh sửa bản đồ
+[settings Match the desktop]
+Theo màn hình nền
 [settings Missing font]
 Thiếu phông chữ
 [settings Music volume]
