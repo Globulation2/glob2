@@ -4,6 +4,7 @@
 // were placed in. Reproduces the "walled-in inn" experiment: a 3x3 block of inn
 // sites whose centre can only be reached while the ring is incomplete.
 #include "GlobalContainer.h"
+#include "EngineTiming.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "Building.h"
@@ -26,11 +27,13 @@ static void require(bool ok, const char* message)
 	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
 }
 
-// A field flagged by Map::dirtyBuildingGradients is rebuilt on its next use
-// once this many ticks have passed since it was built (DIRTY_REBUILD_TICKS in
-// MapPathfindBuilding.cpp). The harness lets that grace period elapse before
-// judging, so a fix that flags the field and one that drops it both count.
-static const Uint32 DIRTY_GRACE_TICKS = 25;
+// An invalidated field is rebuilt on its next use once GRADIENT_DIRTY_REBUILD_TICKS
+// have passed since it was built. The harness lets that interval elapse before
+// judging, so a fix that flags the field and one that drops it both count. Taking
+// the engine's own constant rather than a copy: when it was raised from 25 to 100
+// a local copy here silently stopped covering the interval and the regression
+// started passing stale fields.
+static const Uint32 DIRTY_GRACE_TICKS = GRADIENT_DIRTY_REBUILD_TICKS;
 
 struct World
 {
