@@ -138,6 +138,20 @@ int main(int argc,char** argv)
             assert(!screen.displayConfirmationPending() && globalContainer->gfx->getW()==oldWidth);
             screen.changeSetting("display.resolution",index);screen.confirmDisplay(true);loaded.load();assert(loaded.screenWidth==800);
         }
+        {
+            // The collapsed control shows the chosen entry, not the scale in use.
+            auto scale=screen.row("display.uiscale");
+            assert(scale.kind==SettingsScreen::Kind::Choice && scale.value.rfind("Match the desktop",0)==0);
+            int index=-1;for(size_t i=0;i<scale.choices.size();++i)if(scale.choices[i]=="175 %")index=i;
+            assert(index>=0 && screen.changeSetting("display.uiscale",index));
+            assert(screen.row("display.uiscale").value=="175 %");
+            loaded.load();assert(loaded.uiScale==175);
+            // Software mode applies it in place; a GPU context waits for a restart.
+            assert(screen.restartRequired()==bool(s.screenFlags & GraphicContext::USEGPU));
+            screen.capture(std::string(argv[5])+"/interface-scale.bmp");
+            assert(screen.changeSetting("display.uiscale",0));
+            assert(screen.row("display.uiscale").value.rfind("Match the desktop",0)==0 && !screen.restartRequired());
+        }
         screen.selectCategory(SettingsScreen::Category::Gameplay);
         assert(screen.changeSetting("gameplay.speed",4));loaded.load();assert(loaded.gameSpeed==4);
         const auto before=readFile(profile+"/preferences.txt");

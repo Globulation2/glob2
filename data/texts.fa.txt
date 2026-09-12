@@ -1618,6 +1618,8 @@ Cortex
 انجام شد
 [settings Edit shortcut]
 ویرایش میانبر صفحه کلید
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+بزرگ‌کردن منوها، متن و نوار کناری در نمایشگر با وضوح بالا.
 [settings Flags]
 پرچم ها
 [settings Full]
@@ -1632,6 +1634,8 @@ Cortex
 روند بازی
 [settings Graphics detail]
 جزئیات گرافیکی
+[settings Interface scale]
+مقیاس رابط کاربری
 [settings Keep]
 حفظ تغییرات
 [settings Keep this display mode?]
@@ -1654,6 +1658,8 @@ Cortex
 سطح
 [settings Map editor]
 ویرایشگر نقشه
+[settings Match the desktop]
+مطابق با میزکار
 [settings Missing font]
 فونت موجود نیست
 [settings Music volume]

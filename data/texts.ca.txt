@@ -1628,6 +1628,8 @@ Mostra el cursor Globulation 2.
 Fet
 [settings Edit shortcut]
 Edita la drecera del teclat
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Amplia els menús, el text i la barra lateral en una pantalla d'alta resolució.
 [settings Flags]
 Banderes
 [settings Full]
@@ -1642,6 +1644,8 @@ Velocitat del joc
 Jugabilitat
 [settings Graphics detail]
 Detall gràfic
+[settings Interface scale]
+Escala de la interfície
 [settings Keep]
 Mantén els canvis
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Llengua utilitzada a tota la interfície.
 Nivell
 [settings Map editor]
 Editor de mapes
+[settings Match the desktop]
+Segueix l'escriptori
 [settings Missing font]
 Falta el tipus de lletra
 [settings Music volume]
