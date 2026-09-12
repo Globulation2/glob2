@@ -106,13 +106,17 @@ namespace
 class FailingUnitMarkersHarness
 {
 public:
+	// Unschooled workers: a four-strong huddle, two pairs and two strays, so
+	// the saved scene shows what a screenful of badges looks like at real size
+	// and whether badges on neighbouring tiles stay apart.
+	static const int LOW_COUNT = 10;
 	struct Scene
 	{
-		Team* team; Building* inn; Unit* low[3]; Unit* schooled;
-		int lowX[3] = {4, 12, 6};
-		int lowY[3] = {4, 5, 12};
+		Team* team; Building* inn; Unit* low[LOW_COUNT]; Unit* schooled;
+		int lowX[LOW_COUNT] = {4, 5, 4,  5, 12, 13,  6,  7, 2, 14};
+		int lowY[LOW_COUNT] = {4, 4, 5,  5,  5,  5, 12, 12, 3, 12};
 	};
-	// A level-2 inn wanting wheat: only schooled workers may stock it. Three
+	// A level-2 inn wanting wheat: only schooled workers may stock it. Ten
 	// unschooled workers spread around it, one schooled next to a wheat tile.
 	static Scene buildScene(Game& game)
 	{
@@ -134,7 +138,7 @@ public:
 		scene.inn->resources[CORN] = 0;
 		scene.inn->updateCallLists();
 		require(game.map.incResource(2, 10, CORN, 0), "seed a wheat tile");
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < LOW_COUNT; ++i)
 			scene.low[i] = worker(game, scene.team, scene.lowX[i], scene.lowY[i], 0);
 		scene.schooled = worker(game, scene.team, 3, 10, 1);
 		return scene;
@@ -187,7 +191,7 @@ public:
 
 	// Not recording: nothing is remembered.
 	team->updateAllBuildingTasks();
-	require(inn->unitsFailingRequirements[Building::UnitTooLowLevel] == 3, "three unschooled workers are counted too low");
+	require(inn->unitsFailingRequirements[Building::UnitTooLowLevel] == LOW_COUNT, "every unschooled worker is counted too low");
 	require(inn->unitsFailingByReason[Building::UnitTooLowLevel].empty(), "nothing remembered while not recording");
 	require(inn->unitsWorking.size() == 1 && inn->unitsWorking.front() == schooled, "the schooled worker is hired");
 
@@ -195,8 +199,8 @@ public:
 	inn->setRecordFailingUnits(true);
 	team->updateAllBuildingTasks();
 	const std::vector<Uint16>& tooLow = inn->unitsFailingByReason[Building::UnitTooLowLevel];
-	require(tooLow.size() == 3, "three gids remembered under too-low-level");
-	for (int i = 0; i < 3; ++i)
+	require(tooLow.size() == LOW_COUNT, "every unschooled worker's gid is remembered under too-low-level");
+	for (int i = 0; i < LOW_COUNT; ++i)
 		require(std::find(tooLow.begin(), tooLow.end(), low[i]->gid) != tooLow.end(), "each unschooled worker is remembered");
 	require(std::find(tooLow.begin(), tooLow.end(), schooled->gid) == tooLow.end(), "the schooled worker (already hired) is not");
 	std::puts("markers: the selected building remembers the units behind each tally");
@@ -220,7 +224,7 @@ public:
 	view.selectedBuilding = inn;
 	Frame frame = render(view);
 	save(frame, "scene-inn-selected");
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < LOW_COUNT; ++i)
 	{
 		const int added = redPixelsInTile(frame, lowX[i], lowY[i]) - redPixelsInTile(baseline, lowX[i], lowY[i]);
 		std::printf("markers: unschooled worker at (%d,%d): %d red marker pixels\n", lowX[i], lowY[i], added);
