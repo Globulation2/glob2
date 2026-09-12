@@ -1972,6 +1972,22 @@ OpenGL 在此版本中不可用。
 沙地
 [Tidal flats]
 潮間帶
+[Everglades]
+沼澤地
+[Pool spacing]
+水塘間距
+[Pool size]
+水塘大小
+[Clearing size]
+空地大小
+[Levee]
+堤壩
+[Sloughs]
+沼澤水道
+[Everglades need at least one colony.]
+沼澤地至少需要一個殖民地。
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+此地圖的殖民地太多；請使用更大的地圖或減少殖民地。
 [Sandbars]
 沙洲
 [Tide pools]

@@ -1910,6 +1910,22 @@ Stenmurar
 Sandfläckar
 [Tidal flats]
 Tidvattenslätter
+[Everglades]
+Sumpmarker
+[Pool spacing]
+Avstånd mellan pölar
+[Pool size]
+Pölarnas storlek
+[Clearing size]
+Gläntans storlek
+[Levee]
+Vall
+[Sloughs]
+Sumpkanaler
+[Everglades need at least one colony.]
+Sumpmarker kräver minst en koloni.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+För många kolonier för den här kartan; använd en större karta eller färre kolonier.
 [Sandbars]
 Sandbankar
 [Tide pools]

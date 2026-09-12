@@ -1898,6 +1898,22 @@ OpenGL недоступен в этой сборке.
 Песчаные участки
 [Tidal flats]
 Приливные отмели
+[Everglades]
+Болота
+[Pool spacing]
+Расстояние между заводями
+[Pool size]
+Размер заводей
+[Clearing size]
+Размер поляны
+[Levee]
+Дамба
+[Sloughs]
+Старицы
+[Everglades need at least one colony.]
+Болотам нужна хотя бы одна колония.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Слишком много колоний для этой карты; используйте карту побольше или меньше колоний.
 [Sandbars]
 Песчаные банки
 [Tide pools]

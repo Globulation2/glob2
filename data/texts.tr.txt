@@ -1908,6 +1908,22 @@ Taş duvarlar
 Kum lekeleri
 [Tidal flats]
 Gelgit düzlükleri
+[Everglades]
+Bataklıklar
+[Pool spacing]
+Gölcük aralığı
+[Pool size]
+Gölcük boyutu
+[Clearing size]
+Açıklık boyutu
+[Levee]
+Set
+[Sloughs]
+Bataklıklar
+[Everglades need at least one colony.]
+Bataklıklar için en az bir koloni gerekir.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Bu harita için çok fazla koloni var; daha büyük bir harita kullanın veya koloni sayısını azaltın.
 [Sandbars]
 Kum tepecikleri
 [Tide pools]

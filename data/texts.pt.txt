@@ -1906,6 +1906,22 @@ Muralhas de pedra
 Manchas de areia
 [Tidal flats]
 Planícies de maré
+[Everglades]
+Pântanos
+[Pool spacing]
+Espaçamento das poças
+[Pool size]
+Tamanho das poças
+[Clearing size]
+Tamanho da clareira
+[Levee]
+Dique
+[Sloughs]
+Charcos
+[Everglades need at least one colony.]
+Os pântanos precisam de pelo menos uma colónia.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Colónias a mais para este mapa; use um mapa maior ou menos colónias.
 [Sandbars]
 Bancos de areia
 [Tide pools]

@@ -1896,6 +1896,22 @@ OpenGL недоступний у цій збірці.
 Піщані ділянки
 [Tidal flats]
 Припливні мілини
+[Everglades]
+Болота
+[Pool spacing]
+Відстань між заводями
+[Pool size]
+Розмір заводей
+[Clearing size]
+Розмір галявини
+[Levee]
+Дамба
+[Sloughs]
+Стариці
+[Everglades need at least one colony.]
+Болотам потрібна хоча б одна колонія.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Забагато колоній для цієї мапи; використайте більшу мапу або менше колоній.
 [Sandbars]
 Піщані банки
 [Tide pools]

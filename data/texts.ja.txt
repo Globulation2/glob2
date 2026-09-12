@@ -1896,6 +1896,22 @@ Globulation 2 のカーソルを表示します。
 砂地
 [Tidal flats]
 干潟
+[Everglades]
+湿地帯
+[Pool spacing]
+池の間隔
+[Pool size]
+池の大きさ
+[Clearing size]
+空き地の大きさ
+[Levee]
+堤防
+[Sloughs]
+沼沢
+[Everglades need at least one colony.]
+湿地帯には少なくとも一つのコロニーが必要です。
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+この地図にはコロニーが多すぎます。より大きな地図にするか、コロニーを減らしてください。
 [Sandbars]
 砂州
 [Tide pools]

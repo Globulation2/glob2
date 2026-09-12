@@ -1888,6 +1888,22 @@ Stone walls
 Sand patches
 [Tidal flats]
 Tidal flats
+[Everglades]
+Everglades
+[Pool spacing]
+Pool spacing
+[Pool size]
+Pool size
+[Clearing size]
+Clearing size
+[Levee]
+Levee
+[Sloughs]
+Sloughs
+[Everglades need at least one colony.]
+Everglades need at least one colony.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Too many colonies for this map; use a bigger map or fewer colonies.
 [Sandbars]
 Sandbars
 [Tide pools]

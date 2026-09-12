@@ -1900,6 +1900,22 @@ Kamienne mury
 Płaty piasku
 [Tidal flats]
 Równiny pływowe
+[Everglades]
+Mokradła
+[Pool spacing]
+Odstęp między rozlewiskami
+[Pool size]
+Rozmiar rozlewisk
+[Clearing size]
+Rozmiar polany
+[Levee]
+Grobla
+[Sloughs]
+Starorzecza
+[Everglades need at least one colony.]
+Mokradła potrzebują co najmniej jednej kolonii.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Za dużo kolonii jak na tę mapę; użyj większej mapy lub mniejszej liczby kolonii.
 [Sandbars]
 Łachy piaskowe
 [Tide pools]

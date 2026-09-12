@@ -1910,6 +1910,22 @@ Murs de pierre
 Zones de sable
 [Tidal flats]
 Estran
+[Everglades]
+Marécages
+[Pool spacing]
+Espacement des mares
+[Pool size]
+Taille des mares
+[Clearing size]
+Taille de la clairière
+[Levee]
+Digue
+[Sloughs]
+Marigots
+[Everglades need at least one colony.]
+Les marécages ont besoin d'au moins une colonie.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Trop de colonies pour cette carte ; utilisez une carte plus grande ou moins de colonies.
 [Sandbars]
 Bancs de sable
 [Tide pools]

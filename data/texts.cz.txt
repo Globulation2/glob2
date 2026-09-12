@@ -1900,6 +1900,22 @@ Kamenné hradby
 Písčiny
 [Tidal flats]
 Přílivové pláně
+[Everglades]
+Mokřady
+[Pool spacing]
+Rozestup tůní
+[Pool size]
+Velikost tůní
+[Clearing size]
+Velikost mýtiny
+[Levee]
+Hráz
+[Sloughs]
+Slepá ramena
+[Everglades need at least one colony.]
+Mokřady potřebují alespoň jednu kolonii.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Příliš mnoho kolonií pro tuto mapu; použijte větší mapu nebo méně kolonií.
 [Sandbars]
 Písečné lavice
 [Tide pools]

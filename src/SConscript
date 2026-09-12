@@ -184,6 +184,7 @@ map/generator/generators/ConcreteIslandsGenerator.cpp
 map/generator/generators/ContestedCommonsGenerator.cpp
 map/generator/generators/MazeGenerator.cpp
 map/generator/generators/CraterLakesGenerator.cpp
+map/generator/generators/EvergladesGenerator.cpp
 map/generator/generators/FjordContinentGenerator.cpp
 map/generator/generators/IslandsGenerator.cpp
 map/generator/generators/IslesGenerator.cpp

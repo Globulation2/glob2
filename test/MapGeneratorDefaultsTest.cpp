@@ -25,6 +25,7 @@
 #include <cstdio>
 #include <cstring>
 #include <set>
+#include <utility>
 
 GlobalContainer *globalContainer = nullptr;
 using D = GenerationRequest;
@@ -282,7 +283,7 @@ class MapGeneratorDefaultsTest
 			   screen.descriptor.option("test-gap") == 5 &&
 			   screen.descriptor.option("test-switch") == 1);
 		edit(screen, "Smoothing", 8);
-		assert(registry.selectionIndex(101) == 18);
+		assert(registry.selectionIndex(101) == 19);
 		const auto playable = registry.methods(false);
 		assert(std::find(playable.begin(), playable.end(), 101) != playable.end());
 		Game generated(nullptr);

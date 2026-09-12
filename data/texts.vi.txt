@@ -1896,6 +1896,22 @@ Tường đá
 Bãi cát
 [Tidal flats]
 Bãi triều
+[Everglades]
+Đầm lầy
+[Pool spacing]
+Khoảng cách các ao
+[Pool size]
+Kích thước ao
+[Clearing size]
+Kích thước khoảng trống
+[Levee]
+Đê
+[Sloughs]
+Đầm lầy
+[Everglades need at least one colony.]
+Đầm lầy cần ít nhất một thuộc địa.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Quá nhiều thuộc địa cho bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [Sandbars]
 Cồn cát
 [Tide pools]

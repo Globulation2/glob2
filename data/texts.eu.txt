@@ -1910,6 +1910,22 @@ Harrizko hormak
 Harea-guneak
 [Tidal flats]
 Marea-lautadak
+[Everglades]
+Zingirak
+[Pool spacing]
+Putzuen arteko tartea
+[Pool size]
+Putzuen tamaina
+[Clearing size]
+Soilgunearen tamaina
+[Levee]
+Dikea
+[Sloughs]
+Zingirak
+[Everglades need at least one colony.]
+Zingirek gutxienez kolonia bat behar dute.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Kolonia gehiegi mapa honetarako; erabili mapa handiagoa edo kolonia gutxiago.
 [Sandbars]
 Hondar-bankuak
 [Tide pools]

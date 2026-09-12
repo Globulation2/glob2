@@ -36,7 +36,8 @@ struct GenerationRequest
 		eSYMMETRICARENA = 15,
 		eRINGWORLD = 16,
 		eCITYSTATES = 17,
-		eTIDALFLATS = 18
+		eTIDALFLATS = 18,
+		eEVERGLADES = 19
 	};
 
 	using Control = GeneratorControl;

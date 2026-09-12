@@ -1924,6 +1924,22 @@ Stenen muren
 Zandvlakken
 [Tidal flats]
 Wadden
+[Everglades]
+Moerasland
+[Pool spacing]
+Afstand tussen poelen
+[Pool size]
+Grootte van de poelen
+[Clearing size]
+Grootte van de open plek
+[Levee]
+Dijk
+[Sloughs]
+Moerassloten
+[Everglades need at least one colony.]
+Het moerasland heeft minstens één kolonie nodig.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Te veel kolonies voor deze kaart; gebruik een grotere kaart of minder kolonies.
 [Sandbars]
 Zandbanken
 [Tide pools]

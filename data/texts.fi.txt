@@ -1900,6 +1900,22 @@ Kivimuurit
 Hiekkaläikät
 [Tidal flats]
 Vuorovesitasangot
+[Everglades]
+Suomaat
+[Pool spacing]
+Lammikoiden väli
+[Pool size]
+Lammikoiden koko
+[Clearing size]
+Aukion koko
+[Levee]
+Pato
+[Sloughs]
+Rimmet
+[Everglades need at least one colony.]
+Suomaat tarvitsevat vähintään yhden siirtokunnan.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Liikaa siirtokuntia tälle kartalle; käytä suurempaa karttaa tai vähemmän siirtokuntia.
 [Sandbars]
 Hiekkasärkät
 [Tide pools]

@@ -1970,6 +1970,22 @@ Cortex
 Αμμώδεις εκτάσεις
 [Tidal flats]
 Παλιρροιακές πεδιάδες
+[Everglades]
+Βαλτότοποι
+[Pool spacing]
+Απόσταση λιμνών
+[Pool size]
+Μέγεθος λιμνών
+[Clearing size]
+Μέγεθος ξέφωτου
+[Levee]
+Ανάχωμα
+[Sloughs]
+Βαλτόνερα
+[Everglades need at least one colony.]
+Οι βαλτότοποι χρειάζονται τουλάχιστον μία αποικία.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Πάρα πολλές αποικίες για αυτόν τον χάρτη· χρησιμοποιήστε μεγαλύτερο χάρτη ή λιγότερες αποικίες.
 [Sandbars]
 Αμμοσύρτεις
 [Tide pools]

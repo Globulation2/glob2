@@ -1962,6 +1962,22 @@ Mura di pietra
 Chiazze di sabbia
 [Tidal flats]
 Piane di marea
+[Everglades]
+Paludi
+[Pool spacing]
+Distanza tra le pozze
+[Pool size]
+Dimensione delle pozze
+[Clearing size]
+Dimensione della radura
+[Levee]
+Argine
+[Sloughs]
+Lanche
+[Everglades need at least one colony.]
+Le paludi hanno bisogno di almeno una colonia.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Troppe colonie per questa mappa; usa una mappa più grande o meno colonie.
 [Sandbars]
 Banchi di sabbia
 [Tide pools]

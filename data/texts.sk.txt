@@ -1908,6 +1908,22 @@ Kamenné hradby
 Piesčiny
 [Tidal flats]
 Prílivové pláne
+[Everglades]
+Močiare
+[Pool spacing]
+Rozostup mlák
+[Pool size]
+Veľkosť mlák
+[Clearing size]
+Veľkosť čistiny
+[Levee]
+Hrádza
+[Sloughs]
+Mŕtve ramená
+[Everglades need at least one colony.]
+Močiare potrebujú aspoň jednu kolóniu.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Príliš veľa kolónií pre túto mapu; použite väčšiu mapu alebo menej kolónií.
 [Sandbars]
 Piesočné lavice
 [Tide pools]

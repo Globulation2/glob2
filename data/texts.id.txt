@@ -1896,6 +1896,22 @@ Tembok batu
 Petak pasir
 [Tidal flats]
 Dataran pasang surut
+[Everglades]
+Rawa-rawa
+[Pool spacing]
+Jarak antar kolam
+[Pool size]
+Ukuran kolam
+[Clearing size]
+Ukuran tanah lapang
+[Levee]
+Tanggul
+[Sloughs]
+Rawa-rawa
+[Everglades need at least one colony.]
+Rawa-rawa membutuhkan setidaknya satu koloni.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Terlalu banyak koloni untuk peta ini; gunakan peta lebih besar atau lebih sedikit koloni.
 [Sandbars]
 Gosong pasir
 [Tide pools]

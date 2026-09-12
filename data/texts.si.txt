@@ -1900,6 +1900,22 @@ Kamniti zidovi
 Peščene zaplate
 [Tidal flats]
 Plimske ravnice
+[Everglades]
+Močvirja
+[Pool spacing]
+Razmik med mlakami
+[Pool size]
+Velikost mlak
+[Clearing size]
+Velikost jase
+[Levee]
+Nasip
+[Sloughs]
+Mrtvice
+[Everglades need at least one colony.]
+Močvirja potrebujejo vsaj eno kolonijo.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Preveč kolonij za ta zemljevid; uporabite večji zemljevid ali manj kolonij.
 [Sandbars]
 Peščene sipine
 [Tide pools]

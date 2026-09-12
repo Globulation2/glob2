@@ -1900,6 +1900,22 @@ Muros de piedra
 Parches de arena
 [Tidal flats]
 Marismas
+[Everglades]
+Pantanal
+[Pool spacing]
+Separación de las charcas
+[Pool size]
+Tamaño de las charcas
+[Clearing size]
+Tamaño del claro
+[Levee]
+Dique
+[Sloughs]
+Ciénagas
+[Everglades need at least one colony.]
+El pantanal necesita al menos una colonia.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Demasiadas colonias para este mapa; usa un mapa más grande o menos colonias.
 [Sandbars]
 Bancos de arena
 [Tide pools]

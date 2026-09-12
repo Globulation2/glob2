@@ -1908,6 +1908,22 @@ Murs de pedra
 Clapes de sorra
 [Tidal flats]
 Planes de marea
+[Everglades]
+Aiguamolls
+[Pool spacing]
+Separació de les basses
+[Pool size]
+Mida de les basses
+[Clearing size]
+Mida de la clariana
+[Levee]
+Dic
+[Sloughs]
+Aiguamolls
+[Everglades need at least one colony.]
+Els aiguamolls necessiten almenys una colònia.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Massa colònies per a aquest mapa; useu un mapa més gran o menys colònies.
 [Sandbars]
 Bancs de sorra
 [Tide pools]

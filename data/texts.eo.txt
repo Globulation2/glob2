@@ -1898,6 +1898,22 @@ Urboŝtatoj bezonas almenaŭ unu kolonion.
 Sablaj makuloj
 [Tidal flats]
 Tajdaj ebenaĵoj
+[Everglades]
+Marĉoj
+[Pool spacing]
+Interspaco de flakoj
+[Pool size]
+Grandeco de flakoj
+[Clearing size]
+Grandeco de maldensejo
+[Levee]
+Digo
+[Sloughs]
+Marĉkanaloj
+[Everglades need at least one colony.]
+Marĉoj bezonas almenaŭ unu kolonion.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Tro da kolonioj por ĉi tiu mapo; uzu pli grandan mapon aŭ malpli da kolonioj.
 [Sandbars]
 Sablobenkoj
 [Tide pools]

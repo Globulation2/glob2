@@ -1900,6 +1900,22 @@ OpenGL није доступан у овој верзији.
 Пешчане површине
 [Tidal flats]
 Плимске равнице
+[Everglades]
+Мочваре
+[Pool spacing]
+Размак између бара
+[Pool size]
+Величина бара
+[Clearing size]
+Величина чистине
+[Levee]
+Насип
+[Sloughs]
+Мртваје
+[Everglades need at least one colony.]
+Мочварама треба бар једна колонија.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Превише колонија за ову мапу; користите већу мапу или мање колонија.
 [Sandbars]
 Пешчани спрудови
 [Tide pools]

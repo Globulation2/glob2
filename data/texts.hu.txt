@@ -1900,6 +1900,22 @@ Kőfalak
 Homokfoltok
 [Tidal flats]
 Árapálysíkság
+[Everglades]
+Mocsárvidék
+[Pool spacing]
+Tavacskák távolsága
+[Pool size]
+Tavacskák mérete
+[Clearing size]
+Tisztás mérete
+[Levee]
+Gát
+[Sloughs]
+Holtágak
+[Everglades need at least one colony.]
+A mocsárvidékhez legalább egy kolónia kell.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Túl sok kolónia ehhez a térképhez; használj nagyobb térképet vagy kevesebb kolóniát.
 [Sandbars]
 Homokpadok
 [Tide pools]

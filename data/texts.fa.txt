@@ -1898,6 +1898,22 @@ OpenGL در این بیلد موجود نیست.
 لکه‌های شنی
 [Tidal flats]
 پهنه‌های جزر و مدی
+[Everglades]
+باتلاق‌ها
+[Pool spacing]
+فاصلهٔ حوضچه‌ها
+[Pool size]
+اندازهٔ حوضچه‌ها
+[Clearing size]
+اندازهٔ محوطهٔ باز
+[Levee]
+خاکریز
+[Sloughs]
+مرداب‌ها
+[Everglades need at least one colony.]
+باتلاق‌ها دست‌کم به یک مستعمره نیاز دارند.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+تعداد مستعمره‌ها برای این نقشه زیاد است؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
 [Sandbars]
 پشته‌های شنی
 [Tide pools]

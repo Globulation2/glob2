@@ -4,6 +4,7 @@
 #include "ConcreteIslandsGenerator.h"
 #include "ContestedCommonsGenerator.h"
 #include "CraterLakesGenerator.h"
+#include "EvergladesGenerator.h"
 #include "FjordContinentGenerator.h"
 #include "IslandsGenerator.h"
 #include "IslesGenerator.h"
@@ -85,8 +86,8 @@ const GeneratorRegistry &GeneratorRegistry::builtins()
 		{contestedCommonsDefinition(), mazeDefinition(), fjordContinentDefinition(),
 		 shatteredCoastDefinition(), islesDefinition(), watershedDefinition(),
 		 stoneHighlandsDefinition(), symmetricArenaDefinition(), ringWorldDefinition(),
-		 cityStatesDefinition(), tidalFlatsDefinition(), ruggedArchipelagoDefinition(),
-		 concreteIslandsDefinition(), craterLakesDefinition(), islandsDefinition(),
-		 swampDefinition(), riverDefinition(), uniformDefinition()});
+		 cityStatesDefinition(), tidalFlatsDefinition(), evergladesDefinition(),
+		 ruggedArchipelagoDefinition(), concreteIslandsDefinition(), craterLakesDefinition(),
+		 islandsDefinition(), swampDefinition(), riverDefinition(), uniformDefinition()});
 	return registry;
 }

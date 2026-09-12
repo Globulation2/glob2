@@ -1900,6 +1900,22 @@ Ziduri de piatră
 Petice de nisip
 [Tidal flats]
 Câmpii de maree
+[Everglades]
+Mlaștini
+[Pool spacing]
+Distanța dintre bălți
+[Pool size]
+Mărimea bălților
+[Clearing size]
+Mărimea poienii
+[Levee]
+Dig
+[Sloughs]
+Mlaștini
+[Everglades need at least one colony.]
+Mlaștinile au nevoie de cel puțin o colonie.
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+Prea multe colonii pentru această hartă; folosește o hartă mai mare sau mai puține colonii.
 [Sandbars]
 Bancuri de nisip
 [Tide pools]

@@ -1896,6 +1896,22 @@ OpenGL 在此版本中不可用。
 沙地
 [Tidal flats]
 潮间带
+[Everglades]
+沼泽地
+[Pool spacing]
+水塘间距
+[Pool size]
+水塘大小
+[Clearing size]
+空地大小
+[Levee]
+堤坝
+[Sloughs]
+沼泽水道
+[Everglades need at least one colony.]
+沼泽地至少需要一个殖民地。
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+此地图的殖民地太多；请使用更大的地图或减少殖民地。
 [Sandbars]
 沙洲
 [Tide pools]
