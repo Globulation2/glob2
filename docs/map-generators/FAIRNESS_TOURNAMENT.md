@@ -127,6 +127,33 @@ index. Per generator the table is noisier, and two of the older generators do sh
 effect in nearest-rival distance (Islands' later colonies and Rugged archipelago's colony 0 sit
 closer to a rival); the script prints the per-generator tables for that.
 
+## What a full-rotation run says
+
+The `smoke` preset played in full on 2026-09-12 (Symmetric arena, Contested commons, Watershed
+and Crater lakes; three 128x128 maps each; every rotation twice; 96 games, 82 decided by
+elimination) separates the two questions the partial run could not:
+
+- **No engine team-index bias is detectable.** Pooled over all rotations, wins by team index were
+  28 / 21 / 23 / 24 (p 0.80); on the Symmetric arena baseline 9 / 2 / 7 / 6 (p 0.21).
+- **No colony-index skew replicates.** Pooled per generator, wins by the generator's colony index
+  were 8 / 8 / 7 / 1 for Contested commons, 7 / 9 / 4 / 4 for Watershed and 1 / 8 / 6 / 9 for
+  Crater lakes: no shared pattern, and nothing like colonies 2 and 3 winning twice as often. The
+  partial run's skew came from two rotations of unevenly dominated maps.
+- **Individual maps are grossly unfair, and that is the real defect.** On seven of the nine
+  asymmetric maps one start won seven or eight of its eight games whichever team played it
+  (Contested commons: start 0, start 1 and start 2 on its three maps; Watershed and Crater lakes
+  one map each at 8 of 8). Position bias was 29 to 35 percentage points against a 14-point floor
+  for a fair map; Symmetric arena, identical starts by construction, sat at 0.
+- **The start scorer only partly sees it.** Within-map rank correlation between start score and
+  win share was 0.68 for Crater lakes, 0.59 for Contested commons and -0.17 for Watershed; the
+  scorer's favourite won 71%, 62% and 17% of those generators' games. Whatever makes a start
+  dominate is only partly resources, room and distance.
+
+So the work ahead is per-map, not per-index: find what a dominant start has that the scorer does
+not measure (expansion room in the direction of the commons or the delta, who is reachable first,
+chokepoints), teach the scorer, and let the lobby's best-of-five reject the lopsided rolls. The
+run's `summary.md`, `games.csv` and `colonies.csv` are the material for that.
+
 ## Adjudication
 
 A game ends when one colony has defeated every other, when total prestige reaches the lobby
