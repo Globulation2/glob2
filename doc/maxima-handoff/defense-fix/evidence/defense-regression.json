@@ -1,6 +1,0 @@
-{
-  "passed": true,
-  "negative_control": "old code heap-buffer-overflow",
-  "fixed": "combat regressions and wrapped building origins passed under ASan",
-  "scope": "fixture only; long scenario and fleet qualification still required"
-}

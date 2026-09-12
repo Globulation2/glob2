@@ -502,12 +502,6 @@ private:
 	OverlayArea overlay;
 
 	bool showUnitWorkingToBuilding;
-	bool showMaximaDiagnostics=false;
-	bool showMaximaTopologyDiagnostics=false;
-	int maximaTopologyDiagnosticPage=0;
-	void drawMaximaDiagnostics();
-	void drawMaximaTopologyDiagnostics();
-	Player* findSameTeamMaximaPlayer() const;
 
 	TeamStats *teamStats;
 	Team *localTeam;

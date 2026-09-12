@@ -10,7 +10,6 @@
 #include <optional>
 #include <string>
 #include "Campaign.h"
-#include "AIMaximaFarming.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
 #include "NetEngine.h"
@@ -64,38 +63,8 @@ public:
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
-	void createNicowarVersionTestGame();
-	//! Creates one deterministic tournament match on the requested four-player map
-	int createNicowarVersionTournamentGame(const std::string& mapFile, Uint32 seed, int rotation);
-	//! Creates a normal-vision 2v2 match with separate allied AI strategy state
-	int createNicowar2v2TournamentGame(const std::string& mapFile, Uint32 seed,
-		int aiA, int aiB, int partition, int swap);
-	//! Creates a 2-5 player FFA with one focal candidate and independent opponents
-	int createNicowarScenarioGame(const std::string& mapFile, Uint32 seed,
-		int players, int candidateAi, int opponentAi, int candidateSeat,
-		int positionOffset);
-	//! Creates one isolated Maxima versus Castor smoke match
-	int createMaximaCastorGame(const std::string& mapFile, Uint32 seed, int maximaTeam, int castorTeam);
-	//! Prints the completed tournament match in a stable tab-separated format
-	void printNicowarVersionTournamentResult(int rotation);
-	void printNicowar2v2TournamentResult(int aiA, int aiB, int partition, int swap);
-	void printNicowarScenarioResult(int candidateAi, int opponentAi,
-		int candidateSeat, int positionOffset);
-	//! Emits an omniscient, read-only per-team tournament snapshot for analysis
-	void printNicowarObserverTelemetry();
-	AIMaxima::Farming::ExactFertilityCache observerFoodFertility;
-	//! Emits the compact, always-on trajectory used by continuous tournament scoring
-	void printNicowarScoreTelemetry();
-	void updateMaximaExperiment();
-	int maximaLastCheckpointTick=-1;
-	//! Prints the result of an isolated Maxima versus Castor smoke match
-	void printMaximaCastorResult();
-	//! Lists all installed maps with exactly four teams
-	static void printNicowarTournamentMaps(std::ostream& output);
-	static void printNicowarScenarioMaps(std::ostream& output);
 
 
-	GameHeader createNicowarVersionTestGame(int numberOfTeams,int rotation=-1);
 
 	/// Load a replay. Commits the global "we are replaying" state
 	/// (globalContainer->replaying, replayFileName, replayReader) only after

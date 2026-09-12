@@ -1,5 +1,4 @@
 #include "AIMaximaContinuation.h"
-#include "MaximaExperimentAudit.h"
 /*
   Copyright (C) 2006 Bradley Arsenault
 
@@ -698,429 +697,10 @@ const char* Maxima::posture_name(StrategicPosture selected) const
 }
 
 
-void Maxima::getDiagnosticSections(
-	std::vector<AIDiagnosticSection>& sections) const
-{
-	sections.clear();
-	if(!director.initialized || !context.player || !context.player->team)
-	{
-		AIDiagnosticSection waiting("MAXIMA");
-		waiting.rows.push_back(AIDiagnosticRow("Status",
-			"Waiting for first strategy update"));
-		sections.push_back(waiting);
-		return;
-	}
-
-	static const char* campaign_names[]={
-		"idle", "preparing", "active", "paused", "retreating"
-	};
-	const char* campaign_name=(campaign.state>=CampaignIdle
-		&& campaign.state<=CampaignRetreating)
-		? campaign_names[int(campaign.state)] : "unknown";
-	TeamStat* stat=context.player->team->stats.getLatestStat();
-	const Recon::ReconReport& recon=reconnaissance.report();
-
-#define MAXIMA_DIAGNOSTIC_ROW(label, value) \
-	section.rows.push_back(AIDiagnosticRow(label, diagnostic_value(value)))
-
-	{
-		AIDiagnosticSection section("DIRECTOR");
-		MAXIMA_DIAGNOSTIC_ROW("Tick", snapshot.tick);
-		MAXIMA_DIAGNOSTIC_ROW("Posture", posture_name(posture));
-		MAXIMA_DIAGNOSTIC_ROW("Posture age", timer-posture_since);
-		MAXIMA_DIAGNOSTIC_ROW("Campaign", campaign_name);
-		MAXIMA_DIAGNOSTIC_ROW("Campaign target", campaign.target_team);
-		MAXIMA_DIAGNOSTIC_ROW("Campaign cooldown",
-			std::max(0, campaign.cooldown_until-timer));
-		MAXIMA_DIAGNOSTIC_ROW("Tactical mission",
-			std::string(Tactics::missionKindName(tactical_mission.kind))+" / "+
-			Tactics::missionPhaseName(tactical_mission.phase));
-		{
-			std::ostringstream value;
-			value<<tactical_mission.targetTeam<<" / "<<tactical_mission.targetGid
-				<<" @ "<<tactical_mission.targetX<<","<<tactical_mission.targetY;
-			section.rows.push_back(AIDiagnosticRow("Tactical target", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Force requested", tactical_mission.requestedForce);
-		{
-			std::ostringstream value;
-			value<<budget.attack_flags<<" / "<<budget.attack_units;
-			section.rows.push_back(AIDiagnosticRow("Attack flags/units", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Defense reserve", budget.defense_reserve);
-		MAXIMA_DIAGNOSTIC_ROW("Food emergency",
-			budget.food_emergency ? "YES" : "no");
-		MAXIMA_DIAGNOSTIC_ROW("Colony emergency",
-			budget.colony_emergency ? "YES" : "no");
-		MAXIMA_DIAGNOSTIC_ROW("Colonization",
-			budget.colony_swarm_requested ? "eligible" : colony_gate_reason);
-		MAXIMA_DIAGNOSTIC_ROW("Active colonial swarm",
-			development_planner.activeBuildCount(
-				IntBuildingType::SWARM_BUILDING,
-				AIMaximaPlacement::ColonySeed));
-		MAXIMA_DIAGNOSTIC_ROW("Established colonies", established_colonies);
-		MAXIMA_DIAGNOSTIC_ROW("Cleared hotspots", cleared_enemy_sites.size());
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("PLACEMENT");
-		const AIMaximaPlacement::PlacementDiagnostics& placement=
-			development_planner.diagnostics();
-		const std::map<int,AIMaximaPlacement::DevelopmentAction>& actions=
-			development_planner.actions();
-		std::map<int,AIMaximaPlacement::DevelopmentAction>::const_iterator selected=
-			actions.find(placement.selectedActionId);
-		const AIMaximaPlacement::DevelopmentAction* action=
-			selected==actions.end() ? NULL : &selected->second;
-		MAXIMA_DIAGNOSTIC_ROW("Intent purpose", action
-			? (action->purpose==AIMaximaPlacement::ColonySeed
-				? "colony seed" : "core capacity") : "none");
-		MAXIMA_DIAGNOSTIC_ROW("Colony gate", colony_gate_reason);
-		MAXIMA_DIAGNOSTIC_ROW("Colony eligible",
-			budget.colony_swarm_requested ? "YES" : "no");
-		MAXIMA_DIAGNOSTIC_ROW("Active colonial action",
-			development_planner.activeBuildCount(
-				IntBuildingType::SWARM_BUILDING,
-				AIMaximaPlacement::ColonySeed));
-		MAXIMA_DIAGNOSTIC_ROW("Friendly distance",
-			action ? action->utility.friendlyDistance : -1);
-		MAXIMA_DIAGNOSTIC_ROW("Corn distance",
-			action ? action->utility.cornDistance : -1);
-		MAXIMA_DIAGNOSTIC_ROW("New colony food",
-			action ? action->utility.frontierGain : 0);
-		MAXIMA_DIAGNOSTIC_ROW("Colony value",
-			action ? action->utility.conqueredGain : 0);
-		MAXIMA_DIAGNOSTIC_ROW("Hotspots", cleared_enemy_sites.size());
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("OFFENSE");
-		MAXIMA_DIAGNOSTIC_ROW("Review tick", offense_diagnostics.tick);
-		MAXIMA_DIAGNOSTIC_ROW("Gate", offense_diagnostics.gate);
-		MAXIMA_DIAGNOSTIC_ROW("Eligible warriors", offense_diagnostics.eligibleWarriors);
-		MAXIMA_DIAGNOSTIC_ROW("Open training slots", offense_diagnostics.openTrainingSlots);
-		{
-			std::ostringstream value;
-			value<<"B "<<offense_diagnostics.viableBuildings<<"/"
-				<<offense_diagnostics.buildingCandidates
-				<<" | C "<<offense_diagnostics.viableClusters<<"/"
-				<<offense_diagnostics.clusterCandidates;
-			section.rows.push_back(AIDiagnosticRow("Reachable/seen buildings, clusters",
-				value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Best score", diagnostic_score(offense_diagnostics.bestScore));
-		MAXIMA_DIAGNOSTIC_ROW("Planned tactic",
-			Tactics::missionKindName(budget.tactical_kind));
-		MAXIMA_DIAGNOSTIC_ROW("Why", offense_diagnostics.decision);
-		for(std::map<std::string,int>::const_iterator r=offense_diagnostics.rejections.begin();
-			r!=offense_diagnostics.rejections.end(); ++r)
-			section.rows.push_back(AIDiagnosticRow("Rejected: "+r->first,
-				diagnostic_value(r->second)));
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("STRATEGY SCORES");
-		for(int candidate=0; candidate<PostureCount; ++candidate)
-			section.rows.push_back(AIDiagnosticRow(
-				std::string("Posture: ")+posture_name(StrategicPosture(candidate)),
-				diagnostic_value(posture_utilities[candidate])));
-		MAXIMA_DIAGNOSTIC_ROW("Demand: survival", demands.survival);
-		MAXIMA_DIAGNOSTIC_ROW("Demand: food", demands.food);
-		MAXIMA_DIAGNOSTIC_ROW("Demand: growth", demands.growth);
-		MAXIMA_DIAGNOSTIC_ROW("Demand: expansion", demands.expansion);
-		MAXIMA_DIAGNOSTIC_ROW("Demand: access", demands.access);
-		MAXIMA_DIAGNOSTIC_ROW("Demand: technology", demands.technology);
-		MAXIMA_DIAGNOSTIC_ROW("Demand: mobility", demands.mobility);
-		MAXIMA_DIAGNOSTIC_ROW("Demand: military", demands.military);
-		MAXIMA_DIAGNOSTIC_ROW("Demand: aggression", demands.aggression);
-		for(int policy=0; policy<PolicyCount; ++policy)
-			section.rows.push_back(AIDiagnosticRow(
-				std::string("Bid: ")+policy_name(PolicyKind(policy)),
-				diagnostic_value(policy_bids[policy].utility)));
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("COLONY");
-		{
-			std::ostringstream value; value<<snapshot.population<<"  ("<<trends.population<<")";
-			section.rows.push_back(AIDiagnosticRow("Population (trend)", value.str()));
-		}
-		{
-			std::ostringstream value; value<<snapshot.workers<<" / "<<snapshot.free_workers
-				<<" / "<<snapshot.trained_workers;
-			section.rows.push_back(AIDiagnosticRow("Workers total/free/trained", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Workers L2+", snapshot.trained_workers_level2);
-		MAXIMA_DIAGNOSTIC_ROW("Worker trend", trends.workers);
-		{
-			std::ostringstream value; value<<snapshot.explorers<<" / "<<snapshot.trained_explorers;
-			section.rows.push_back(AIDiagnosticRow("Explorers total/trained", value.str()));
-		}
-		{
-			std::ostringstream value; value<<snapshot.warriors<<" / "<<snapshot.free_warriors
-				<<" / "<<snapshot.trained_warriors;
-			section.rows.push_back(AIDiagnosticRow("Warriors total/free/trained", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Warrior trend", trends.warriors);
-		{
-			std::ostringstream value; value<<snapshot.swimming_workers<<" / "
-				<<snapshot.swimming_explorers<<" / "<<snapshot.swimming_warriors;
-			section.rows.push_back(AIDiagnosticRow("Swimming W/E/R", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Amphibious attackers",
-			snapshot.amphibious_attack_explorers);
-		MAXIMA_DIAGNOSTIC_ROW("Total HP", snapshot.total_hp);
-		MAXIMA_DIAGNOSTIC_ROW("Attack power", snapshot.attack_power);
-		{
-			std::ostringstream value; value<<snapshot.prestige<<" / "<<snapshot.enemy_prestige;
-			section.rows.push_back(AIDiagnosticRow("Prestige us/enemies", value.str()));
-		}
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("ECONOMY");
-		{
-			std::ostringstream value; value<<stat->totalFood<<" / "<<stat->totalFoodCapacity;
-			section.rows.push_back(AIDiagnosticRow("Food stored/capacity", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Feeding capacity", environment.feeding_capacity);
-		MAXIMA_DIAGNOSTIC_ROW("Hungry", snapshot.hungry);
-		MAXIMA_DIAGNOSTIC_ROW("Critical food", snapshot.critical_food);
-		MAXIMA_DIAGNOSTIC_ROW("Unserved food", snapshot.unserved_food);
-		MAXIMA_DIAGNOSTIC_ROW("Need healing", snapshot.need_heal);
-		MAXIMA_DIAGNOSTIC_ROW("Open jobs", snapshot.worker_jobs_open);
-		MAXIMA_DIAGNOSTIC_ROW("Food security", environment.food_security);
-		MAXIMA_DIAGNOSTIC_ROW("Food headroom", environment.food_headroom);
-		MAXIMA_DIAGNOSTIC_ROW("Food pressure trend", trends.food_pressure);
-		{
-			std::ostringstream value;
-			value<<food_supported_inns<<" / "<<food_supported_swarms;
-			section.rows.push_back(
-				AIDiagnosticRow("Farm-supported inns/swarms", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Under-supplied buildings",
-			int(food_burden_since.size()));
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("BUILDINGS  ACTUAL -> TARGET");
-		const int actual[]={snapshot.inns, snapshot.swarms, snapshot.barracks,
-			snapshot.schools, snapshot.pools, snapshot.hospitals,
-			snapshot.racetracks, snapshot.towers};
-		const int desired[]={budget.desired_inns, budget.desired_swarms,
-			budget.desired_barracks, budget.desired_schools, budget.desired_pools,
-			budget.desired_hospitals, budget.desired_racetracks,
-			budget.desired_towers};
-		const char* labels[]={"Inns", "Swarms", "Barracks", "Schools",
-			"Pools", "Hospitals", "Racetracks", "Towers"};
-		for(int building=0; building<8; ++building)
-		{
-			std::ostringstream value; value<<actual[building]<<" -> "<<desired[building];
-			section.rows.push_back(AIDiagnosticRow(labels[building], value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Total buildings", snapshot.buildings);
-		MAXIMA_DIAGNOSTIC_ROW("Active sites", snapshot.building_sites);
-		MAXIMA_DIAGNOSTIC_ROW("Construction slots", budget.construction_sites);
-		{
-			std::ostringstream value; value<<snapshot.inn_level1<<" / "
-				<<snapshot.inn_level2<<" / "<<snapshot.inn_level3;
-			section.rows.push_back(AIDiagnosticRow("Inn levels 1/2/3", value.str()));
-		}
-		{
-			std::ostringstream value; value<<snapshot.school_level1<<" / "
-				<<snapshot.school_level2<<" / "<<snapshot.school_level3;
-			section.rows.push_back(AIDiagnosticRow("School levels 1/2/3", value.str()));
-		}
-		{
-			std::ostringstream value; value<<snapshot.tower_stone<<" / "<<snapshot.tower_bullets;
-			section.rows.push_back(AIDiagnosticRow("Tower stone/bullets", value.str()));
-		}
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("ALLOCATION");
-		{
-			std::ostringstream value; value<<budget.worker_ratio<<" / "
-				<<budget.explorer_ratio<<" / "<<budget.warrior_ratio;
-			section.rows.push_back(AIDiagnosticRow("Birth ratio W/E/R", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Swarm worker budget", budget.swarm_workers);
-		{
-			std::ostringstream value; value<<budget.desired_explorers<<" / "
-				<<budget.desired_warriors;
-			section.rows.push_back(AIDiagnosticRow("Target explorers/warriors", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Upgrade level 1", budget.allow_upgrades ? "allowed" : "held");
-		MAXIMA_DIAGNOSTIC_ROW("Upgrade level 2", budget.allow_level2_upgrades ? "allowed" : "held");
-		{
-			std::ostringstream value; value<<budget.priority_inns<<" / "<<budget.priority_swarms;
-			section.rows.push_back(AIDiagnosticRow("Priority inn/swarm", value.str()));
-		}
-		{
-			std::ostringstream value; value<<budget.priority_barracks<<" / "<<budget.priority_schools;
-			section.rows.push_back(AIDiagnosticRow("Priority barracks/school", value.str()));
-		}
-		{
-			std::ostringstream value; value<<budget.priority_pools<<" / "<<budget.priority_hospitals;
-			section.rows.push_back(AIDiagnosticRow("Priority pool/hospital", value.str()));
-		}
-		{
-			std::ostringstream value; value<<budget.priority_racetracks<<" / "<<budget.priority_towers;
-			section.rows.push_back(AIDiagnosticRow("Priority track/tower", value.str()));
-		}
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("WORLD MODEL");
-		MAXIMA_DIAGNOSTIC_ROW("Known local tiles", environment.known_tiles);
-		MAXIMA_DIAGNOSTIC_ROW("Buildable / water",
-			diagnostic_value(environment.buildable_tiles)+" / "+diagnostic_value(environment.water_tiles));
-		{
-			std::ostringstream value; value<<environment.accessible_corn<<" / "
-				<<environment.accessible_wood<<" / "<<environment.accessible_stone
-				<<" / "<<environment.accessible_algae;
-			section.rows.push_back(AIDiagnosticRow("Corn/wood/stone/algae", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Resource capacity", environment.resource_capacity);
-		MAXIMA_DIAGNOSTIC_ROW("Space capacity", environment.space_capacity);
-		MAXIMA_DIAGNOSTIC_ROW("Abundance", environment.abundance);
-		MAXIMA_DIAGNOSTIC_ROW("Terrain abundance", environment.terrain_abundance);
-		MAXIMA_DIAGNOSTIC_ROW("Connected abundance", environment.connected_abundance);
-		MAXIMA_DIAGNOSTIC_ROW("Economic momentum", environment.economic_momentum);
-		MAXIMA_DIAGNOSTIC_ROW("Mobility constraint", environment.mobility_constraint);
-		MAXIMA_DIAGNOSTIC_ROW("Mobility opportunity", environment.mobility_opportunity);
-		MAXIMA_DIAGNOSTIC_ROW("Topology complexity", environment.topology_complexity);
-		MAXIMA_DIAGNOSTIC_ROW("Threat pressure", environment.threat_pressure);
-		MAXIMA_DIAGNOSTIC_ROW("Model confidence", environment.confidence);
-		{
-			std::ostringstream value; value<<global_water_percent<<" / "
-				<<global_shoreline_density<<" / "<<global_land_components;
-			section.rows.push_back(AIDiagnosticRow("Water/shore/components", value.str()));
-		}
-		{
-			std::ostringstream value; value<<global_largest_land_percent<<" / "
-				<<global_start_land_percent<<" / "<<global_chokepoint_density;
-			section.rows.push_back(AIDiagnosticRow("Largest/start/chokepoint", value.str()));
-		}
-		sections.push_back(section);
-	}
-
-	{
-		AIDiagnosticSection section("INTEL & OPERATIONS");
-		MAXIMA_DIAGNOSTIC_ROW("Alive enemies", snapshot.alive_enemies);
-		{
-			std::ostringstream value; value<<snapshot.visible_enemy_warriors<<" / "
-				<<snapshot.visible_enemy_explorers<<" / "
-				<<snapshot.visible_enemy_attack_explorers;
-			section.rows.push_back(AIDiagnosticRow("Visible W/E/bombers", value.str()));
-		}
-		{
-			std::ostringstream value; value<<snapshot.visible_colony_threat<<" / "
-				<<snapshot.visible_colony_explorer_threat;
-			section.rows.push_back(AIDiagnosticRow("Colony threats W/E", value.str()));
-		}
-		{
-			std::ostringstream value; value<<snapshot.own_units_under_attack<<" / "
-				<<snapshot.own_buildings_under_attack;
-			section.rows.push_back(AIDiagnosticRow("Units/buildings attacked", value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Recon explored", diagnostic_value(recon.exploredPercent)+"%");
-		{
-			std::ostringstream value; value<<recon.missions.size()<<" / "<<recon.desiredMissions;
-			section.rows.push_back(AIDiagnosticRow("Recon missions live/wanted", value.str()));
-		}
-		for(int team=0; team<Team::MAX_COUNT; ++team)
-		{
-			if(!opponents[team].alive)
-				continue;
-			std::ostringstream label, value;
-			label<<"Team "<<team<<" warriors seen/est";
-			value<<opponents[team].visible_warriors<<" / "
-				<<opponents[team].estimated_warriors;
-			section.rows.push_back(AIDiagnosticRow(label.str(), value.str()));
-			label.str(""); label.clear(); value.str(""); value.clear();
-			label<<"Team "<<team<<" buildings K/R";
-			value<<opponents[team].known_buildings<<" / "
-				<<opponents[team].reachable_buildings;
-			section.rows.push_back(AIDiagnosticRow(label.str(), value.str()));
-			label.str(""); label.clear();
-			label<<"Team "<<team<<" value/confidence";
-			value.str(""); value.clear();
-			value<<opponents[team].strategic_value<<" / "
-				<<opponents[team].intel_confidence;
-			section.rows.push_back(AIDiagnosticRow(label.str(), value.str()));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Recon", budget.reconnaissance_suspended ? "SUSPENDED" : "active");
-		MAXIMA_DIAGNOSTIC_ROW("Preemptive defense", budget.preemptive_defense_active ? "ACTIVE" : "inactive");
-		{
-			int landCandidates=0, amphibiousCandidates=0;
-			int landSelected=0, amphibiousSelected=0;
-			for(size_t mode=0; mode<preemptive_diagnostics.modes.size(); ++mode)
-			{
-				const AITopologyDiagnosticMode& value=preemptive_diagnostics.modes[mode];
-				if(value.mode==AITopologyLand)
-				{
-					landCandidates=value.candidateCount;
-					landSelected=value.selectedCount;
-				}
-				else
-				{
-					amphibiousCandidates=value.candidateCount;
-					amphibiousSelected=value.selectedCount;
-				}
-			}
-			std::ostringstream value;
-			value<<landCandidates<<" / "<<amphibiousCandidates;
-			section.rows.push_back(AIDiagnosticRow("Chokes land/amph", value.str()));
-			value.str(""); value.clear();
-			value<<landSelected<<" / "<<amphibiousSelected<<" / "
-				<<budget.preemptive_effective_zone_max;
-			section.rows.push_back(AIDiagnosticRow("Zones L/A/cap", value.str()));
-			section.rows.push_back(AIDiagnosticRow("Topology age",
-				preemptive_diagnostics.tick>=0
-					? diagnostic_value(timer-preemptive_diagnostics.tick)
-					: std::string("not computed")));
-		}
-		MAXIMA_DIAGNOSTIC_ROW("Farming pace", budget.farming_urgent ? "URGENT" : "normal");
-		MAXIMA_DIAGNOSTIC_ROW("Wood pressure", budget.farming_wood_pressure);
-		MAXIMA_DIAGNOSTIC_ROW("Proactive clearing", budget.farming_allow_proactive_clearing ? "allowed" : "blocked");
-		MAXIMA_DIAGNOSTIC_ROW("Gate clearing", "automatic when boxed in");
-		sections.push_back(section);
-	}
-
-#undef MAXIMA_DIAGNOSTIC_ROW
-}
-
-
-const AITopologyDiagnosticSnapshot*
-Maxima::getTopologyDiagnosticSnapshot() const
-{
-	return &preemptive_diagnostics;
-}
-
-
 void Maxima::emit_telemetry(Context& echo, const std::string& event,
 	const std::string& fields) const
 {
-	if(MaximaExperimentAudit::enabled())
-	{
-		std::ostringstream record;
-		record<<",\"tick\":"<<echo.player->game->stepCounter
-			<<",\"player\":"<<echo.player->number
-			<<",\"team\":"<<echo.player->team->teamNumber
-			<<",\"event\":"<<MaximaExperimentAudit::quote(event)
-			<<",\"fields\":"<<MaximaExperimentAudit::quote(fields);
-		MaximaExperimentAudit::write(MaximaExperimentAudit::started() ? "decision" : "initialization",record.str());
-	}
-	if(!globalContainer || !globalContainer->nicowarTelemetry)
+	if(!globalContainer || !globalContainer->maximaTelemetry)
 		return;
 	std::cout<<"MAXIMA_TELEMETRY\t"<<timer<<"\t"
 		<<echo.player->team->teamNumber<<"\t"<<event<<fields
@@ -1130,7 +710,7 @@ void Maxima::emit_telemetry(Context& echo, const std::string& event,
 
 void Maxima::emit_ablation_opportunities(Context& echo) const
 {
-	if(!globalContainer || !globalContainer->nicowarTelemetry)
+	if(!globalContainer || !globalContainer->maximaTelemetry)
 		return;
 	Uint32 context=2166136261u;
 	const int values[]={snapshot.population, snapshot.workers,
@@ -4093,7 +3673,6 @@ Maxima::Maxima(Player *player)
 	preemptive_building_signature=0;
 	last_preemptive_effective_zone_max=-1;
 	last_preemptive_amphibious_active=false;
-	preemptive_diagnostics=AITopologyDiagnosticSnapshot();
 	applied_maintenance_clearing_mask.clear();
 	maintenance_circulation_mask.clear();
 	wood_firebreak_mask.clear();
@@ -4584,7 +4163,6 @@ bool Maxima::loadLegacyState(GAGCore::InputStream *stream, Player *player,
 	preemptive_building_signature=0;
 	last_preemptive_effective_zone_max=-1;
 	last_preemptive_amphibious_active=false;
-	preemptive_diagnostics=AITopologyDiagnosticSnapshot();
 	applied_farm_protection_mask.clear();
 	applied_maintenance_clearing_mask.clear();
 	maintenance_circulation_mask.clear();
@@ -5750,7 +5328,7 @@ void Maxima::emit_placement_diagnostics(Context& echo,const char* outcome,
 void Maxima::development_cycle(Context& echo)
 {
 	using namespace AIMaximaPlacement;
-	const bool profile=globalContainer&&globalContainer->nicowarTelemetry;
+	const bool profile=globalContainer&&globalContainer->maximaTelemetry;
 	const std::chrono::steady_clock::time_point profileStarted=profile
 		?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point();
 	const bool continuingSelection=development_planner.selectionPending();
@@ -7206,15 +6784,8 @@ void Maxima::update_preemptive_defense(Context& echo)
 		last_preemptive_defense_tick=-1000000;
 		last_preemptive_effective_zone_max=-1;
 		last_preemptive_amphibious_active=false;
-		preemptive_diagnostics=AITopologyDiagnosticSnapshot();
-		preemptive_diagnostics.active=false;
-		preemptive_diagnostics.tick=timer;
-		preemptive_diagnostics.trainedWarriors=snapshot.trained_warriors;
-		preemptive_diagnostics.swimmingWarriors=snapshot.swimming_warriors;
 		if(echo.player && echo.player->map)
 		{
-			preemptive_diagnostics.width=echo.player->map->getW();
-			preemptive_diagnostics.height=echo.player->map->getH();
 		}
 		return;
 	}
@@ -7344,7 +6915,6 @@ void Maxima::update_preemptive_defense(Context& echo)
 	const AIMaxima::Defense::PlanResult plan=AIMaxima::Defense::combineModes(
 		modes, budget.preemptive_effective_zone_max,
 		budget.preemptive_zone_radius);
-	refresh_preemptive_diagnostics(plan);
 
 	std::set<int> desired;
 	for(int index=0; index<map_size; ++index)
@@ -7400,81 +6970,6 @@ void Maxima::update_preemptive_defense(Context& echo)
 			+"\tdesired_tiles="+boost::lexical_cast<std::string>(desired.size())
 			+"\tadded="+boost::lexical_cast<std::string>(additions.size())
 			+"\tremoved="+boost::lexical_cast<std::string>(removals.size()));
-}
-
-
-void Maxima::refresh_preemptive_diagnostics(
-	const AIMaxima::Defense::PlanResult& plan)
-{
-	preemptive_diagnostics=AITopologyDiagnosticSnapshot();
-	preemptive_diagnostics.width=plan.width;
-	preemptive_diagnostics.height=plan.height;
-	preemptive_diagnostics.tick=timer;
-	preemptive_diagnostics.active=budget.preemptive_defense_active;
-	preemptive_diagnostics.trainedWarriors=snapshot.trained_warriors;
-	preemptive_diagnostics.swimmingWarriors=snapshot.swimming_warriors;
-	preemptive_diagnostics.effectiveZoneCap=plan.effectiveZoneCap;
-	preemptive_diagnostics.selectedCount=plan.selectedCount;
-	preemptive_diagnostics.innerDistance=budget.preemptive_inner_distance;
-	preemptive_diagnostics.bandMaximum=budget.preemptive_inner_distance
-		+budget.preemptive_band_width;
-	preemptive_diagnostics.pathSlack=budget.preemptive_path_slack;
-	preemptive_diagnostics.maximumCrossSection=
-		budget.preemptive_cross_section_max;
-	preemptive_diagnostics.desired=plan.desired;
-	for(size_t modeIndex=0; modeIndex<plan.modes.size(); ++modeIndex)
-	{
-		const AIMaxima::Defense::ModeResult& source=plan.modes[modeIndex];
-		AITopologyDiagnosticMode mode;
-		mode.mode=source.mode==AIMaxima::Defense::LandMode
-			? AITopologyLand : AITopologyAmphibious;
-		mode.enabled=true;
-		mode.candidateCount=static_cast<int>(source.candidates.size());
-		for(size_t candidateIndex=0; candidateIndex<plan.candidates.size();
-			++candidateIndex)
-			if(plan.candidates[candidateIndex].mode==source.mode
-			   && plan.candidates[candidateIndex].state
-				==AIMaxima::Defense::CandidateSelected)
-				++mode.selectedCount;
-		mode.walkable=source.walkable;
-		mode.homeDistance=source.homeDistance;
-		mode.memberships=source.memberships;
-		mode.minimumCrossSection=source.minimumCrossSection;
-		mode.minimumTerrainCrossSection=source.minimumTerrainCrossSection;
-		mode.qualified=source.qualified;
-		for(size_t teamIndex=0; teamIndex<source.teams.size(); ++teamIndex)
-		{
-			const AIMaxima::Defense::TeamField& sourceTeam=source.teams[teamIndex];
-			AITopologyDiagnosticTeam team;
-			team.team=sourceTeam.team;
-			team.shortestDistance=sourceTeam.shortestDistance;
-			team.enemyDistance=sourceTeam.enemyDistance;
-			team.corridor=sourceTeam.corridor;
-			team.corridorWidth=sourceTeam.corridorWidth;
-			team.terrainWidth=sourceTeam.terrainWidth;
-			mode.teams.push_back(team);
-		}
-		preemptive_diagnostics.modes.push_back(mode);
-	}
-	for(size_t index=0; index<plan.candidates.size(); ++index)
-	{
-		const AIMaxima::Defense::Candidate& source=plan.candidates[index];
-		AITopologyDiagnosticCandidate candidate;
-		candidate.mode=source.mode==AIMaxima::Defense::LandMode
-			? AITopologyLand : AITopologyAmphibious;
-		candidate.index=source.index;
-		candidate.memberships=source.memberships;
-		candidate.crossSection=source.crossSection;
-		candidate.terrainCrossSection=source.terrainCrossSection;
-		candidate.homeDistance=source.homeDistance;
-		candidate.state=static_cast<AITopologyCandidateState>(source.state);
-		preemptive_diagnostics.candidates.push_back(candidate);
-		if(candidate.state==AITopologyCandidateSelected)
-			for(size_t modeIndex=0;
-				modeIndex<preemptive_diagnostics.modes.size(); ++modeIndex)
-				if(preemptive_diagnostics.modes[modeIndex].mode==candidate.mode)
-					++preemptive_diagnostics.modes[modeIndex].selectedCount;
-	}
 }
 
 

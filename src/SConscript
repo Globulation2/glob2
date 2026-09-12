@@ -6,9 +6,6 @@ ai/castor/Maps.cpp
 ai/castor/Placement.cpp
 ai/castor/Projects.cpp
 ai/castor/State.cpp
-EngineMaximaExperiment.cpp
-MaximaExperimentAudit.cpp
-gui/GameGUIMaximaDiagnostics.cpp
 AIMaxima.cpp
 AIMaximaDefense.cpp
 AIMaximaFarming.cpp

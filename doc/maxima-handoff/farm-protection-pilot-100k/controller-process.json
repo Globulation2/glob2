@@ -1,8 +1,0 @@
-{
-  "pid": 25776,
-  "started": 1788930144.021548,
-  "remote_root": "/home/bradley/glob2-maxima-mainline-100k-final",
-  "remote_output": "/home/bradley/glob2-maxima-mainline-100k-final/output/farm-protection-pilot-100k",
-  "slots": 48,
-  "automatic_next_stage": false
-}

@@ -1,8 +1,0 @@
-{
-  "passed": true,
-  "protocol_id": "ecadf1aa37469c333300a06b11d3a8b01a37f0f85bd4af941db1e9782e3c3dbb",
-  "proof_sha256": "bc0cb53c1ce0e4312649cb212cc21778ebe7e2d19ae3c3276b1264641db2d535",
-  "time": 1788884684.176171,
-  "fresh_control_required": true,
-  "host_extension_time": 1788885607.3306801
-}

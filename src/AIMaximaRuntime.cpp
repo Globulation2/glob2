@@ -1196,7 +1196,7 @@ void Context::record_profile(long long totalMicros,long long aiMicros,
 
 shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 {
-	const bool profiling=globalContainer&&globalContainer->nicowarTelemetry;
+	const bool profiling=globalContainer&&globalContainer->maximaTelemetry;
 	const std::chrono::steady_clock::time_point totalStarted=profiling
 		?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point();
 	activeAI=&ai;if(!initialized)initialize();gradients.update(player->game->stepCounter);

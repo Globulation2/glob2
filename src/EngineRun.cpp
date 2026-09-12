@@ -7,7 +7,6 @@
 #include "ChecksumSidecar.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
-#include "MaximaExperimentAudit.h"
 #include "AI.h"
 #include <BinaryStream.h>
 #include <FileManager.h>
@@ -205,7 +204,6 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 
 		gui.game.syncStep(gui.localTeamNo);
-		updateMaximaExperiment();
 	}
 }
 
@@ -565,7 +563,6 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
 	if (multiplayer)
 		reportMultiplayerResult();
 
-	MaximaExperimentAudit::state(gui.game,"terminal");
 	teardownSession();
 
 	prepareNextGameSession(doRunOnceAgain);

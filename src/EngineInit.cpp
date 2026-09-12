@@ -12,7 +12,6 @@
 #include "CustomGameScreen.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
-#include "MaximaExperimentAudit.h"
 #include "EngineTiming.h"
 #include "Game.h"
 #include "GlobalContainer.h"
@@ -108,7 +107,7 @@ int Engine::initCustom(const std::string &gameName)
 		}
 	}
 
-	int ret = initGame(mapHeader, gameHeader, !globalContainer->runMaximaCheckpoint, false, true, gameName);
+	int ret = initGame(mapHeader, gameHeader, true, false, true, gameName);
 	if(ret != EE_NO_ERROR)
 		return EE_CANT_LOAD_MAP;
 	else if(ret == -1)
@@ -330,7 +329,6 @@ int Engine::initGame(MapHeader& mapHeader, GameHeader& gameHeader, bool setGameH
 		return EE_CANT_LOAD_MAP;
 	}
 
-	MaximaExperimentAudit::state(gui.game,"initialization");
 	gui.game.clearingUncontrolledTeams();
 	finalAdjustments();
 
@@ -517,5 +515,5 @@ void Engine::finalAdjustments(void)
 	{
 		gui.adjustInitialViewport();
 	}
-	if(!globalContainer->runMaximaCheckpoint) gui.game.setAlliances();
+	gui.game.setAlliances();
 }

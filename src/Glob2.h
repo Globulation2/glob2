@@ -17,16 +17,6 @@ public:
 	int runNoX();
 	///Runs random games non stop until the game crashes
 	int runTestGames();
-	///Runs four-player Nicowar version comparison games non stop
-	int runNicowarVersionTestGames();
-	///Runs one deterministic Nicowar tournament worker match
-	int runNicowarTournamentMatch();
-	int runNicowar2v2TournamentMatch();
-	int runNicowarScenarioMatch();
-	int runMaximaCastorMatch();
-	///Prints the maps eligible for Nicowar tournaments
-	int listNicowarTournamentMaps();
-	int listNicowarScenarioMaps();
 	///Generates random maps non stop until the game crashes
 	int runTestMapGeneration();
 	int run(int argc, char *argv[]);

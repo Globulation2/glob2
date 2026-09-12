@@ -1,7 +1,0 @@
-{
-  "protocol_id": "cc3773adbcaf3fddd3c6cfca4c7578f49b80bfebabcfbdd8b5c95781f2f03d6f",
-  "approved": true,
-  "authorization": "user authorized continuing consequential switches; bounded 1000-pair confirmation on existing 48 slots",
-  "fixed_pairs": 1000,
-  "slots": 48
-}

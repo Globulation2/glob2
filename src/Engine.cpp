@@ -7,7 +7,6 @@
 #include "EndGameScreen.h"
 #include "Engine.h"
 #include "FrontendTheme.h"
-#include "MaximaExperimentAudit.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "ReplayWriter.h"
@@ -31,7 +30,6 @@ Engine::~Engine()
 int Engine::run(void)
 {
 	FrontendScope gameplay(false);
-	MaximaExperimentAudit::state(gui.game,"start");
 	bool doRunOnceAgain=true;
 	if (globalContainer->runNoX)
 	{

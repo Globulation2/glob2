@@ -555,8 +555,6 @@ void GameGUI::drawOverlayInfos(void)
 		messageManager.drawAllChatMessages(32, globalContainer->gfx->getH() - 165);
 
 	// Draw the bar continuing number of units, CPU load, etc...
-	drawMaximaTopologyDiagnostics();
-	drawMaximaDiagnostics();
 	drawTopScreenBar();
 }
 

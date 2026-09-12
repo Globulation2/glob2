@@ -325,12 +325,7 @@ void GameGUI::syncStep(void)
 	assert(localTeam);
 	assert(teamStats);
 
-	if (!globalContainer->runNicowarTournamentMatch
-        && !globalContainer->runNicowar2v2TournamentMatch
-        && !globalContainer->runNicowarScenarioMatch
-        && !globalContainer->runMaximaCastorMatch
-        && !globalContainer->runMaximaCheckpoint
-        && (game.stepCounter&255) == 79)
+	if ((game.stepCounter&255) == 79)
 	{
 		const std::string name = Toolkit::getStringTable()->getString("[auto save]");
 		std::string fileName = glob2NameToFilename("games", name, "game");

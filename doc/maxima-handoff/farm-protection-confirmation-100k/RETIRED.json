@@ -1,8 +1,0 @@
-{
-  "time": 1788963709.222204,
-  "restart_allowed": false,
-  "reason": "Superseded by corrected defense-coordinate engine after ASan heap-buffer-overflow diagnosis",
-  "results_preserved": true,
-  "pooling_with_new_engine": false,
-  "successor": "output/maxima-defense-fixed-controls then output/maxima-defense-fixed-confirmation"
-}

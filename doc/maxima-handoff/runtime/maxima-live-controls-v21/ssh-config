@@ -1,4 +1,0 @@
-Include /Users/bradley/.ssh/config
-Host *
-    BatchMode yes
-    ConnectTimeout 8

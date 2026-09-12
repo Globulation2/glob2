@@ -2,7 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "AI.h"
-#include "MaximaExperimentAudit.h"
 #include "AIMaxima.h"
 #include "Player.h"
 #include "Utilities.h"
@@ -80,12 +79,10 @@ AI::~AI()
 std::shared_ptr<Order> AI::getOrder(bool paused)
 {
 	assert(player);
-	if (paused || !player->team->isAlive || MaximaExperimentAudit::ordersDisabled(player->number))
+	if (paused || !player->team->isAlive)
 		return shared_ptr<Order>(new NullOrder());
 	assert(aiImplementation);
-	auto order=aiImplementation->getOrder();
-	MaximaExperimentAudit::order(*player->game,player->number,*order,"order_issued");
-	return order;
+	return aiImplementation->getOrder();
 }
 
 bool AI::load(GAGCore::InputStream *stream, Sint32 versionMinor)

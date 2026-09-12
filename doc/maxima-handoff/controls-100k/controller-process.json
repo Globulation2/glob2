@@ -1,8 +1,0 @@
-{
-  "pid": 88166,
-  "started": 1788920426.616641,
-  "remote_root": "/home/bradley/glob2-maxima-mainline-100k-final",
-  "remote_output": "/home/bradley/glob2-maxima-mainline-100k-final/output/fresh-controls-100k",
-  "slots": 48,
-  "automatic_next_stage": false
-}

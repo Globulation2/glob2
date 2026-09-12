@@ -189,13 +189,9 @@ windows, and construction caps—are checked after all layers resolve.
 ## Optimization scope
 
 The complete schema is a behavior inventory, not a recommendation to optimize
-every dimension in one experiment. Impact ranking helps choose review and
-experiment priority; `tools/optimize_maxima.py` still selects bounded
-stage subsets such as `director`, `economy`, `tactical`, `farming`,
-and `preemptive-defense`. Unselected parameters remain fixed at their resolved
-base or layer value. Every proposed candidate is sent back through the runtime
-resolver before a match, so both individual hard bounds and cross-parameter
-relationships are enforced.
+every dimension in one experiment. Impact ranking helps choose review priority. Whatever sets a parameter, the
+value is sent back through the runtime resolver before a match, so both
+individual hard bounds and cross-parameter relationships are enforced.
 
 Search windows are deliberately local starting ranges, not claims about an
 optimal domain. After evidence supports a promoted value, updating the base
@@ -240,18 +236,6 @@ flags still take precedence when warriors are assigned, while the guard layer
 continues to provide passive enrollment. Disabling the feature or dropping
 below the four-warrior activation floor clears only guard tiles owned by this
 system; unrelated manually painted guard areas are not adopted or removed.
-
-For a live same-team Maxima player, F9 toggles the topology overlay and
-Shift+F9 cycles aggregate land, per-enemy land corridors, aggregate
-amphibious, and per-enemy amphibious corridors. On systems that reserve or
-translate function keys, Control+9 toggles the overlay and Control+Shift+9
-cycles it. The F10 strategic HUD includes
-candidate counts, selected counts, effective capacity, and topology age. These
-views read Maxima's exact cached calculation and do not recompute AI decisions.
-The topology overlay uses high-contrast translucent tints and includes an
-in-game legend for walkability, blocked tiles, defensive-band tiles,
-route/membership strength, qualified chokes, final guard zones, selected
-centers, overlap rejections, and capacity rejections.
 
 Schema-v2 base files are complete rather than sparse. Existing strict custom
 base files must add `military.preemptive_warriors_per_zone`,
@@ -359,12 +343,9 @@ ignored. The full migration list is saved with the controller calibration report
 All formats initially share the four coefficients; old 2v2 swarm-count overrides
 have been removed.
 
-`tools/fit_maxima_swarm_multimap.py` records the fitting design before fitting.
-It uses equal map weights, holds out entire maps and seeds, and fits Nicowar
-imitation only on resource-rich observations. Low-resource imitation error is
-reported, not minimized. The paired validation tournament separately checks
-population, hunger, survival, and outcomes. These checks initialize and evaluate
-an interpretable policy; they do not establish an optimal strategy.
+The coefficients were fitted with equal map weights, holding out entire maps
+and seeds. They initialize an interpretable policy; they do not claim an
+optimal strategy.
 
 
 ## Independent colony construction

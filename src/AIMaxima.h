@@ -47,8 +47,6 @@ public:
 	void save(GAGCore::OutputStream *stream);
 	std::shared_ptr<Order> getOrder();
 	std::string auditStrategyJson() const;
-	void getDiagnosticSections(std::vector<AIDiagnosticSection>& sections) const;
-	const AITopologyDiagnosticSnapshot* getTopologyDiagnosticSnapshot() const;
 	void tick(AIMaximaRuntime::Context& echo);
 	void handle_event(AIMaximaRuntime::Context& echo, const AIMaximaRuntime::RuntimeEvent& event);
 private:
@@ -750,14 +748,12 @@ private:
 	void update_preemptive_defense(AIMaximaRuntime::Context& echo);
 	void clear_preemptive_defense(AIMaximaRuntime::Context& echo);
 	Uint32 compute_preemptive_building_signature(AIMaximaRuntime::Context& echo) const;
-	void refresh_preemptive_diagnostics(const AIMaxima::Defense::PlanResult& plan);
 	///Only cells added by this subsystem are owned and therefore removable.
 	std::set<int> preemptive_guard_tiles;
 	int last_preemptive_defense_tick;
 	Uint32 preemptive_building_signature;
 	int last_preemptive_effective_zone_max;
 	bool last_preemptive_amphibious_active;
-	AITopologyDiagnosticSnapshot preemptive_diagnostics;
 
 	///This function calculates the positions of explorer flags for explorer flag attacks
 	void compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& echo);
