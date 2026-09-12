@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1760,
-      "sha256": "5b47ae44e54db2f470ea581281b0fe4e10971d2eac1653606c07c1ec62a9d31e",
+      "tokens": 1755,
+      "sha256": "ae1c510ec5329c40e86c77e482a3b878c5b83b29a4c7b25acedd335b8cd146a1",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -89,8 +89,8 @@
       ]
     },
     "src/AIMaximaPlacement.cpp": {
-      "tokens": 1133,
-      "sha256": "f670dc92826ed49ba140560cf3ec7d4b0f361c46f490a3c524ff0acb140f5881",
+      "tokens": 1132,
+      "sha256": "3552099d35024e3e3cb0e9fc01237eff5329c9d40fac64321b64422e85b9c1ec",
       "classifications": [
         "live authorization checks using existing construction caps and level contracts",
         "version-92 purpose-aware placement serialization fields",

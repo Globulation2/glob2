@@ -194,8 +194,7 @@ static void configureRelocation(PlacementPolicy& policy)
 	policy.relocationPaybackHorizonTicks=15000;policy.relocationCostMarginPercent=125;
 	policy.carrierTicksPerTile=23;policy.carrierFixedTicksPerTrip=105;
 	policy.builderTicksPerStep=32;
-	policy.relocationInnDistanceRealisationPercent=155;
-	policy.relocationSwarmDistanceRealisationPercent=0;
+	policy.relocationDistanceRealisationPercent=155;
 }
 
 // A stranded inn is rebuilt beside the farm it cannot reach: the replacement is
@@ -288,8 +287,8 @@ static void relocationAppraisalRegression()
 	assert(tightPlanner.appraiseRelocation(tight,sited,11).newQuality
 		<tightPlanner.appraiseRelocation(tight,sited,11).oldQuality);
 
-	// A covered swarm earns nothing from a shorter route: calibration showed
-	// its carriers do not walk less, so only a coverage gain can move it.
+	// A covered swarm is priced like an inn: a shorter route is a saving on
+	// every unit that keeps flowing, and the realisation knob scales it.
 	WorldState swarms=makeWorld();
 	for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
 		swarms.tile(farmX+dx,farmY+dy).protectedYield=80;
@@ -303,12 +302,15 @@ static void relocationAppraisalRegression()
 	DevelopmentAction closer;closer.buildingType=0;closer.purpose=Relocation;
 	closer.replacesBuildingId=20;closer.centerX=27;closer.centerY=24;
 	closer.initialFootprint=swarms.profile(0)->atLevel(1)->footprint;
-	const Planner::RelocationAppraisal unmoved=
+	const Planner::RelocationAppraisal moved=
 		swarmPlanner.appraiseRelocation(swarms,closer,20);
-	assert(unmoved.newQuality<unmoved.oldQuality);
-	assert(unmoved.savingPerTick==0&&!unmoved.viable);
-	swarmPlanner.mutablePolicy().relocationSwarmDistanceRealisationPercent=155;
-	assert(swarmPlanner.appraiseRelocation(swarms,closer,20).savingPerTick>0);
+	assert(moved.newQuality<moved.oldQuality);
+	assert(moved.oldCoverage==100&&moved.newCoverage==100);
+	assert(moved.savingPerTick>0&&moved.viable);
+	swarmPlanner.mutablePolicy().relocationDistanceRealisationPercent=0;
+	const Planner::RelocationAppraisal unpriced=
+		swarmPlanner.appraiseRelocation(swarms,closer,20);
+	assert(unpriced.savingPerTick==0&&!unpriced.viable);
 }
 
 // A checkpoint taken during a one-cell search must preserve both its winner

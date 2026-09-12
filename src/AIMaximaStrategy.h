@@ -726,8 +726,7 @@ struct MaximaStrategy
 		int carrier_ticks_per_tile;
 		int carrier_fixed_ticks_per_trip;
 		int builder_ticks_per_step;
-		int relocation_inn_distance_realisation_percent;
-		int relocation_swarm_distance_realisation_percent;
+		int relocation_distance_realisation_percent;
 	} food;
 
 	struct Scoring

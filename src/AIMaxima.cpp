@@ -4963,10 +4963,8 @@ void Maxima::configure_development_planner()
 	policy.carrierTicksPerTile=strategy.food.carrier_ticks_per_tile;
 	policy.carrierFixedTicksPerTrip=strategy.food.carrier_fixed_ticks_per_trip;
 	policy.builderTicksPerStep=strategy.food.builder_ticks_per_step;
-	policy.relocationInnDistanceRealisationPercent=
-		strategy.food.relocation_inn_distance_realisation_percent;
-	policy.relocationSwarmDistanceRealisationPercent=
-		strategy.food.relocation_swarm_distance_realisation_percent;
+	policy.relocationDistanceRealisationPercent=
+		strategy.food.relocation_distance_realisation_percent;
 	// Demand comes from the engine's own building rates rather than a tuned
 	// constant: a swarm's wheat per produced unit, and an inn's modelled
 	// population times the rate at which a fed unit eats.
@@ -5890,16 +5888,6 @@ void Maxima::update_food_relocation(Context& echo,
 	const std::set<int> establishing=establishing_colony_buildings();
 	const PlacementPolicy& policy=development_planner.policy();
 	const int threshold=budget.food_relocation_min_quality_tiles*100;
-	// Like retirement, never touch the last inn or the last swarm: early on it
-	// is the settlement's only one, starving while its first farm grows in.
-	int completedInns=0,completedSwarms=0;
-	for(size_t b=0;b<world.buildings.size();++b)
-	{
-		const WorldBuilding& building=world.buildings[b];
-		if(building.site)continue;
-		if(building.buildingType==IntBuildingType::FOOD_BUILDING)++completedInns;
-		else if(building.buildingType==IntBuildingType::SWARM_BUILDING)++completedSwarms;
-	}
 	std::set<int> present;
 	const AIMaximaFoodLedger::ConsumerResult* worst=NULL;
 	for(size_t i=0;i<ledger.consumers.size();++i)
@@ -5907,20 +5895,15 @@ void Maxima::update_food_relocation(Context& echo,
 		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
 		if(value.key<0||!value.retirable)continue;
 		present.insert(value.key);
-		const bool last=value.kind==AIMaximaFoodLedger::InnConsumer
-			? completedInns<=1 : completedSwarms<=1;
 		// Quality already charges unreachable demand at the penalty distance,
 		// so a starving building looks far even when its wheat is close.
-		// Only nominate what could clear a gain floor even at a perfect site:
-		// a covered swarm earns no distance credit and has nothing to gain.
-		const int realisation=value.kind==AIMaximaFoodLedger::SwarmConsumer
-			? policy.relocationSwarmDistanceRealisationPercent
-			: policy.relocationInnDistanceRealisationPercent;
-		const bool distanceRoom=static_cast<long long>(value.quality)*realisation/100
+		// Only nominate what could clear a gain floor even at a perfect site.
+		const bool distanceRoom=static_cast<long long>(value.quality)
+			*policy.relocationDistanceRealisationPercent/100
 			>=static_cast<long long>(policy.relocationMinGainTiles)*100;
 		const bool coverageRoom=100-value.coveragePercent
 			>=policy.relocationMinCoverageGainPercent;
-		if(last||establishing.count(value.key)||value.quality<threshold
+		if(establishing.count(value.key)||value.quality<threshold
 		   ||food_retirement_issued.count(value.key)||!(distanceRoom||coverageRoom))
 		{relocation_since.erase(value.key);continue;}
 		if(!relocation_since.count(value.key))relocation_since[value.key]=timer;

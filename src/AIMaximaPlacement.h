@@ -382,9 +382,9 @@ struct PlacementPolicy
 	/// Relocation economics, all in worker-ticks. A relocated building saves
 	/// its carriers a shorter round trip per unit of wheat and stops paying the
 	/// unreachable penalty for wheat it could not get; it costs every level it
-	/// must rebuild, one hauled unit and one build step at a time. Distance
-	/// savings are realised per kind because calibration showed ledger quality
-	/// tracks the trips of inn carriers but not those of swarm carriers.
+	/// must rebuild, one hauled unit and one build step at a time. The
+	/// realisation percentage converts a ledger quality gain into the tiles
+	/// carriers actually stop walking, as measured for inn carriers.
 	bool relocationEnabled;
 	int relocationMinGainTiles;
 	int relocationMinCoverageGainPercent;
@@ -393,8 +393,7 @@ struct PlacementPolicy
 	int carrierTicksPerTile;
 	int carrierFixedTicksPerTrip;
 	int builderTicksPerStep;
-	int relocationInnDistanceRealisationPercent;
-	int relocationSwarmDistanceRealisationPercent;
+	int relocationDistanceRealisationPercent;
 	int score(const UtilityComponents& components,
 		DevelopmentPurpose purpose=CoreCapacity,
 		int spacingQuality=100) const;
