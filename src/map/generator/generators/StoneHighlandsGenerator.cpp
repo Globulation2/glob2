@@ -774,17 +774,19 @@ Layout design(const GenerationRequest &request, GenerationContext &context) {
       const int i = y * t.w + x;
       if (!L.ridge[i])
         continue;
-      int near[3], far[3];
-      const int count = nearbyValleys(L, x, y, 2, near, 3);
+      // Not near/far: both are legacy macros in Windows' windef.h that expand to nothing, which
+      // turns `int near[3]` into a structured binding declaration and fails to compile on mingw.
+      int nearIds[3], farIds[3];
+      const int count = nearbyValleys(L, x, y, 2, nearIds, 3);
       if (count >= 3) {
         alongRidge[i] = 0;
         queue.push_back(i);
       }
       for (int p = 0; p < count; ++p)
         for (int q = p + 1; q < count; ++q)
-          anyPair[{near[p], near[q]}].push_back(i);
-      if (count == 2 && nearbyValleys(L, x, y, reach, far, 3) == 2)
-        exclusive[{near[0], near[1]}].push_back(i);
+          anyPair[{nearIds[p], nearIds[q]}].push_back(i);
+      if (count == 2 && nearbyValleys(L, x, y, reach, farIds, 3) == 2)
+        exclusive[{nearIds[0], nearIds[1]}].push_back(i);
     }
   for (size_t head = 0; head < queue.size(); ++head) {
     const int p = queue[head], px = p % t.w, py = p / t.w;

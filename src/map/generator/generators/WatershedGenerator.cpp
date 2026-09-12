@@ -486,9 +486,11 @@ public:
         continue;
       // Clear of every other river; and while it swings in to join its parent, arriving at an
       // angle rather than running alongside it.
-      int near = -1;
-      if (nearest2(p, parent, -1, &near) < sq(toEnd > joinZone ? clearance : 0.75 * clearance)) {
-        verdict.blocking = near;
+      // Not near: it is a legacy macro in Windows' windef.h and expands to nothing there.
+      int nearestRiver = -1;
+      if (nearest2(p, parent, -1, &nearestRiver) <
+          sq(toEnd > joinZone ? clearance : 0.75 * clearance)) {
+        verdict.blocking = nearestRiver;
         verdict.where = p;
         return verdict;
       }
