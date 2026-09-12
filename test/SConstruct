@@ -483,3 +483,24 @@ echo_order_objs = [
 ]
 wcdecode_env.Program( target = 'EchoBuildingOrderSaveLoadTest', source = echo_order_objs )
 
+# Standalone regression harness for SoundMixer's track selection and fade
+# state machine, both reshaped when the device buffer shrank to 1024 frames
+# and a fade grew from one callback to sixteen. Covers the muted-start
+# selection (actTrack used to stay pinned to the first track ever chosen, so
+# unmuting replayed and then looped the intro instead of resuming what was
+# actually selected) and mid-fade track changes (which used to restart the
+# fade, cutting the incoming track off mid-mix, and are now queued). Drives
+# mixaudio() directly against the game's real ogg tracks, with SDL's dummy
+# audio driver for the openAudio path, so it needs vorbisfile/speex alongside
+# the server-mode libgag that SoundMixer's loadTrack pulls in via Toolkit.
+soundmixer_env = env.Clone()
+soundmixer_env.Append(LIBS = [gag_server, 'z'])
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+  soundmixer_env.ParseConfig("pkg-config sdl2 vorbisfile speex --cflags --libs")
+
+soundmixer_objs = [
+  soundmixer_env.Object('SoundMixerTrackSelectionHarness.o', 'SoundMixerTrackSelectionHarness.cpp'),
+  soundmixer_env.Object('SoundMixer-tracktest.o', '../src/SoundMixer.cpp'),
+  soundmixer_env.Object('PlayerVoice-tracktest.o', '../src/PlayerVoice.cpp'),
+]
+soundmixer_env.Program( target = 'SoundMixerTrackSelectionHarness', source = soundmixer_objs )
