@@ -122,7 +122,7 @@ namespace Cortex
 		    && axisSignedGap(ay, ah, by, bh, mapH) < 0;
 	}
 
-	int innOccupiedSides(const Map& map, int innX, int innY, int innW, int innH,
+	static unsigned innOccupiedSideMask(const Map& map, int innX, int innY, int innW, int innH,
 	                     int candX, int candY, int candW, int candH)
 	{
 		const bool haveCand = (candW > 0 && candH > 0);
@@ -161,10 +161,21 @@ namespace Cortex
 			}
 		}
 
+		return sides;
+	}
+
+	static int sideCount(unsigned sides)
+	{
 		int count = 0;
-		for (int m = sides; m != 0; m >>= 1)
-			count += (m & 1);
+		for (; sides; sides >>= 1) count += sides & 1;
 		return count;
+	}
+
+	int innOccupiedSides(const Map& map, int innX, int innY, int innW, int innH,
+	                     int candX, int candY, int candW, int candH)
+	{
+		return sideCount(innOccupiedSideMask(map, innX, innY, innW, innH,
+		                                    candX, candY, candW, candH));
 	}
 
 	void grownFootprint(const BuildingType* bt, int& w, int& h)
@@ -396,4 +407,78 @@ namespace Cortex
 		}
 		return false;
 	}
+	PlacementGeometry::PlacementGeometry(Team* team, Map& map) : map(map)
+	{
+		if (!team) return;
+		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		{
+			const Building* b = team->myBuildings[i];
+			if (!b || b->buildingState == Building::DEAD) continue;
+			buildings.push_back({b->posX, b->posY, 0, 0});
+			if (!b->type) continue;
+			const int type = b->type->shortTypeNum;
+			if (type == IntBuildingType::FOOD_BUILDING)
+			{
+				int w, h;
+				grownFootprint(b->type, w, h);
+				inns.push_back({{b->posX, b->posY, w, h},
+					innOccupiedSideMask(map, b->posX, b->posY, w, h, -1, -1, 0, 0)});
+			}
+			if (type == IntBuildingType::FOOD_BUILDING ||
+			    type == IntBuildingType::WALKSPEED_BUILDING ||
+			    type == IntBuildingType::SWIMSPEED_BUILDING)
+			{
+				int ox, oy, w, h;
+				grownFootprintBox(b->type, ox, oy, w, h);
+				reservations.push_back({b->posX + ox, b->posY + oy, w, h});
+			}
+		}
+	}
+
+	int PlacementGeometry::distanceToNearestBuilding(int x, int y) const
+	{
+		int best = -1;
+		for (const Box& b : buildings)
+		{
+			const int distance = map.warpDistMax(x, y, b.x, b.y);
+			if (best < 0 || distance < best) best = distance;
+		}
+		return best;
+	}
+
+	bool PlacementGeometry::candidateCrowdsInn(int x, int y, int w, int h) const
+	{
+		if (w <= 0 || h <= 0) return false;
+		const int clear = CORTEX_INN_SIDE_CLEARANCE;
+		for (const Inn& inn : inns)
+		{
+			const Box& b = inn.box;
+			unsigned sides = inn.sides;
+			// The four strips include corners, which occupy both adjacent sides.
+			const Box strips[] = {
+				{b.x - clear, b.y - clear, clear, b.h + 2 * clear},
+				{b.x + b.w, b.y - clear, clear, b.h + 2 * clear},
+				{b.x - clear, b.y - clear, b.w + 2 * clear, clear},
+				{b.x - clear, b.y + b.h, b.w + 2 * clear, clear}
+			};
+			for (unsigned i = 0; i < 4; ++i)
+				if (!(sides & (1u << i)) &&
+				    rectsOverlap(x, w, y, h, strips[i].x, strips[i].w,
+				                 strips[i].y, strips[i].h, map.getW(), map.getH()))
+					sides |= 1u << i;
+			const int count = sideCount(sides);
+			if (count > CORTEX_INN_MAX_TOUCH_SIDES && count > sideCount(inn.sides))
+				return true;
+		}
+		return false;
+	}
+
+	bool PlacementGeometry::candidateOverlapsReservedExpansion(int x, int y, int w, int h) const
+	{
+		for (const Box& b : reservations)
+			if (rectsOverlap(x, w, y, h, b.x, b.w, b.y, b.h, map.getW(), map.getH()))
+				return true;
+		return false;
+	}
+
 }

@@ -277,6 +277,13 @@ replacement tests cover callback/open/rename failures and temporary-file cleanup
 On POSIX, child processes impose file-size limits to exercise short writes and
 buffered flush errors while checking that the previous save survives unchanged.
 
+## Cortex placement regression
+
+Build with `scons release=1 cortex-geometry-test` and run
+`./build/src/CortexGeometryHarness`. It compares 57,600 candidates against
+the tile-scan helpers, including wrapped corners, upgrade reservations,
+construction sites, map-only occupants, dead buildings, and empty colonies.
+
 ### Trapped colony elimination
 
 Build `scons release=1 server=0 trapped-unit-test`, then run

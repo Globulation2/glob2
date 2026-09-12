@@ -134,6 +134,11 @@ jobs:
           ./build/src/EnteringUnitSaveHarness
           ./build/src/EnteringUnitSaveHarness --load test/fixtures/entering-explorer/reproducer.game
 
+      - name: Test Cortex placement equivalence
+        run: |
+          scons -j$(nproc) release=1 server=0 cortex-geometry-test
+          ./build/src/CortexGeometryHarness
+
       - name: Test trapped colony elimination
         run: |
           scons -j$(nproc) release=1 server=0 trapped-unit-test

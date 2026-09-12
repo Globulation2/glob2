@@ -474,6 +474,12 @@ source_files.append("../libgag/src/libgag.a")
 source_files.append("../libusl/src/libusl.a")
 p1 = local.Program("glob2", source_files)
 
+if not env['server']:
+    geometry_sources = [source for source in source_files if source != 'Glob2.cpp']
+    geometry_sources += local.Object('CortexGeometryHarness.o', '#test/CortexGeometryHarness.cpp')
+    geometry_test = local.Program('CortexGeometryHarness', geometry_sources)
+    local.Alias('cortex-geometry-test', geometry_test)
+
 # Optional integration executable; normal game/server builds do not build it.
 if not env['server']:
     render_test = local.Program("torus-render-test",

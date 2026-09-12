@@ -4,6 +4,7 @@
 #pragma once
 
 #include <SDL_stdinc.h>
+#include <vector>
 
 class Game;
 class Team;
@@ -23,6 +24,22 @@ struct BuildingType;
 
 namespace Cortex
 {
+	// Snapshot valid only for a single, read-only placement search.
+	class PlacementGeometry
+	{
+		struct Box { int x, y, w, h; };
+		struct Inn { Box box; unsigned sides; };
+		Map& map;
+		std::vector<Box> buildings;
+		std::vector<Box> reservations;
+		std::vector<Inn> inns;
+	public:
+		PlacementGeometry(Team* team, Map& map);
+		int distanceToNearestBuilding(int x, int y) const;
+		bool candidateCrowdsInn(int x, int y, int w, int h) const;
+		bool candidateOverlapsReservedExpansion(int x, int y, int w, int h) const;
+	};
+
 	/// One scored candidate during a placement/target scan, before it is copied
 	/// into the caller's POD BuildCandidate array. Shared by placeCandidates
 	/// (CortexPlacementCandidates.cpp) and placeFlagTargets (CortexPlacement.cpp)
