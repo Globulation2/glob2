@@ -244,147 +244,91 @@ struct Layout
 	std::string failure;
 };
 
-Layout design(const GenerationRequest &request, GenerationContext &context)
+// A roll's coasts: the profiles and amplitudes drawn for it, and where the commons' shore, the
+// strait's far side and the homes' outer edge lie at any point of a wedge. All periodic in the
+// wedge, so every home gets the same.
+struct Coasts
 {
-	Layout L;
-	L.t = {1 << request.wDec, 1 << request.hDec};
-	L.g = geometryFor(request);
-	const Torus &t = L.t;
-	const Geometry &g = L.g;
-	const int n = t.w * t.h, teams = g.teams;
-	const CityStatesOptions o(request);
-	L.cx = t.w / 2;
-	L.cy = t.h / 2;
-	L.phase = context.bounded("city-layout", 3600) / 3600.0 * 2 * pi;
-	const double wedge = 2 * pi / teams;
-	const double inner = g.innerRadius(), depth = g.depth();
-
-	// What this map is made of.
-	L.homeKind = int(context.bounded("city-kind", kHomeKinds));
-	L.heartKind = int(context.bounded("city-kind", kHeartKinds));
-	if (L.heartKind == Delta && teams < 2)
-		L.heartKind = LakeHeart;
-	if (depth < kFeatureDepth &&
-		(L.homeKind == Riverside || L.homeKind == Highland || L.homeKind == Barrens))
-		L.homeKind = Lakeland;
-
-	// The coasts: bays and headlands round the commons, a ripple on top, bays into the homes'
-	// flanks, and a bow in every channel. All periodic in the wedge, so every home gets the same.
-	const Profile coast = rollProfile(context, "city-coast", 1, 4, 1.2);
-	const Profile ripple = rollProfile(context, "city-coast", 6, 6, 0.6);
-	const Profile innerBays = rollProfile(context, "city-coast", 1, 3, 1.0);
-	const Profile outerBays = rollProfile(context, "city-coast", 1, 3, 1.0);
-	const double coastAmp = kCoastAmplitude * g.amplitude * g.commonsRadius;
-	const double rippleAmp = kRippleAmplitude * g.amplitude * g.commonsRadius;
-	const double innerBayAmp = kInnerBayShare * g.amplitude * depth;
-	const double outerBayAmp = kOuterBayShare * g.amplitude * depth;
-	const double bend = (context.bounded("city-coast", 2001) / 1000.0 - 1) * kChannelBend;
-	// The coasts hold flat for a stretch either side of every causeway, measured in tiles of arc so
-	// the stretch is the same however many homes share the ring, and the flanks' bays begin only
-	// beyond the lake and its clearance.
-	const double lakeRadius = std::clamp(0.1 * depth, 2.0, 6.0);
-	const double lakeReach = 1.3 * lakeRadius;
-	const double flatArc = g.causeway / 2.0 + kShoulder + kLane + 4;
-	const double bayArc = lakeReach + kLakeSeaGap + 6;
-	const auto coastAt = [&](double u, double d)
+	const Geometry &g;
+	double wedge, inner, depth;
+	Profile coast, ripple, innerBays, outerBays;
+	double coastAmp, rippleAmp, innerBayAmp, outerBayAmp, bend;
+	// The coasts hold flat for a stretch either side of every causeway, measured in tiles of
+	// arc so the stretch is the same however many homes share the ring, and the flanks' bays
+	// begin only beyond the lake and its clearance.
+	double lakeRadius, lakeReach, flatArc, bayArc;
+	Coasts(const Geometry &g, GenerationContext &context)
+		: g(g), wedge(2 * pi / g.teams), inner(g.innerRadius()), depth(g.depth()),
+		  coast(rollProfile(context, "city-coast", 1, 4, 1.2)),
+		  ripple(rollProfile(context, "city-coast", 6, 6, 0.6)),
+		  innerBays(rollProfile(context, "city-coast", 1, 3, 1.0)),
+		  outerBays(rollProfile(context, "city-coast", 1, 3, 1.0)),
+		  coastAmp(kCoastAmplitude * g.amplitude * g.commonsRadius),
+		  rippleAmp(kRippleAmplitude * g.amplitude * g.commonsRadius),
+		  innerBayAmp(kInnerBayShare * g.amplitude * depth),
+		  outerBayAmp(kOuterBayShare * g.amplitude * depth),
+		  bend((context.bounded("city-coast", 2001) / 1000.0 - 1) * kChannelBend),
+		  lakeRadius(std::clamp(0.1 * depth, 2.0, 6.0)), lakeReach(1.3 * lakeRadius),
+		  flatArc(g.causeway / 2.0 + kShoulder + kLane + 4), bayArc(lakeReach + kLakeSeaGap + 6)
+	{
+	}
+	double coastAt(double u, double d) const
 	{
 		const double away = awayFromMiddle(d * std::abs(u - 0.5) * wedge, flatArc, 12);
 		return g.commonsRadius + (coastAmp * coast.at(u) + rippleAmp * ripple.at(u)) * away;
-	};
-	const auto innerAt = [&](double u, double d)
+	}
+	double innerAt(double u, double d) const
 	{
 		return coastAt(u, d) + g.strait +
 			   innerBayAmp * std::max(0.0, innerBays.at(u)) *
 				   awayFromMiddle(d * std::abs(u - 0.5) * wedge, bayArc, 10);
-	};
-	const auto outerAt = [&](double u, double d)
+	}
+	double outerAt(double u, double d) const
 	{
 		return std::min(double(g.half - 3),
 						g.outerRadius -
 							outerBayAmp * std::max(0.0, outerBays.at(u)) *
 								awayFromMiddle(d * std::abs(u - 0.5) * wedge, bayArc - 2, 10));
-	};
-	const auto bendAt = [&](double d)
+	}
+	double bendAt(double d) const
 	{
 		const double x = (d - inner) / std::max(1.0, depth);
 		return x <= 0 || x >= 1 ? 0.0 : bend * std::sin(pi * x);
-	};
-
-	for (int k = 0; k < teams; ++k)
-	{
-		const double a = L.phase + wedge * (k + 0.5);
-		L.homes.push_back({a, g.commonsRadius, 0, 0, -1, -1});
 	}
+};
 
-	// The home's features in the wedge's frame: lakes first (the main one first), then whatever
-	// the kind adds. A feature keeps clear of the coasts as bays can bring them, of the channels,
-	// of the causeway's approach and of other features.
-	const double mainLakeR = inner + lakeOffset(g, lakeRadius);
+struct Patch
+{
+	int x, y;
+	RadialShape shape;
+};
+
+// What a roll puts in its homes and on its commons, in the wedge frame: the lakes (the main one
+// first), a creek and its ford, the ridges' arcs and the pass radius, how much of a flank the
+// barrens take, the sand patches, and the commons' heart with its own sand.
+struct Features
+{
+	double mainLakeR = 0;
 	std::vector<Blob> lakes, sandBlobs;
-	lakes.push_back({0.0, mainLakeR, RadialShape(lakeRadius, 0.3, context, "city-home-lakes")});
-	const auto fits =
-		[&](double s0, double r0, double reach, double gap, const std::vector<Blob> &others)
-	{
-		if (std::abs(s0) + reach + gap > g.arcHalf(r0))
-			return false;
-		const double u = 0.5 + s0 / (wedge * r0);
-		if (r0 - reach - gap < innerAt(u, r0) || r0 + reach + gap > outerAt(u, r0))
-			return false;
-		if (r0 - reach < inner + kLanding + 2 && std::abs(s0) < g.causeway + reach + 4)
-			return false;
-		for (const Blob &b : others)
-			if (std::hypot(s0 - b.s, r0 - b.r) < reach + b.shape.maximumRadius() + gap)
-				return false;
-		return true;
-	};
-	if (L.homeKind == Marsh)
-		for (int attempt = 0; attempt < 400 && lakes.size() < 4; ++attempt)
-		{
-			const double r0 =
-				inner + 8 + context.bounded("city-home-lakes", 1000) / 1000.0 * (depth - 16);
-			const double s0 =
-				(context.bounded("city-home-lakes", 2001) / 1000.0 - 1) * 0.6 * g.arcHalf(r0);
-			RadialShape shape(2.0 + context.bounded("city-home-lakes", 1000) / 1000.0 * 2.0, 0.3,
-							  context, "city-home-lakes");
-			if (fits(s0, r0, shape.maximumRadius(), kLakeSeaGap, lakes))
-				lakes.push_back({s0, r0, shape});
-		}
-	// Riverside: a creek from the main lake towards one flank of the inner coast, with a ford.
 	std::vector<std::pair<double, double>> creek;
 	int fordSegment = -1;
-	if (L.homeKind == Riverside)
-	{
-		const double side = context.bounded("city-features", 2) ? 1.0 : -1.0;
-		L.creekSide = side;
-		const double reachArc = 0.32 * g.arcHalf(mainLakeR);
-		const double endR = inner + kLakeSeaGap + 6.0;
-		creek = {{0.0, mainLakeR},
-				 {side * 0.35 * reachArc, mainLakeR - 0.3 * (mainLakeR - endR)},
-				 {side * 0.75 * reachArc, mainLakeR - 0.65 * (mainLakeR - endR)},
-				 {side * reachArc, endR}};
-		fordSegment = 1;
-	}
-	// Highland: two ridges out from the strait to the sea, a pass through each.
-	const double ridgeU[2] = {0.28, 0.72};
-	const double passR = inner + 0.5 * depth;
-	// Barrens: both flanks of the home are sand, leaving a strip of grass down the middle from the
-	// causeway past the lake; the sand keeps clear of every coast so the wall stays on the shore.
-	const double barrenShare = 0.45;
-	// Sand patches, in every kind of home.
-	const double homeArea = wedge * (g.outerRadius * g.outerRadius - inner * inner) / 2;
-	const int homeSand = int(std::lround(o.sand * homeArea / 8192.0));
-	for (int attempt = 0; attempt < 400 && int(sandBlobs.size()) < homeSand; ++attempt)
-	{
-		const double r0 = inner + 8 + context.bounded("city-sand", 1000) / 1000.0 * (depth - 16);
-		const double s0 = (context.bounded("city-sand", 2001) / 1000.0 - 1) * 0.75 * g.arcHalf(r0);
-		RadialShape shape(3.0 + context.bounded("city-sand", 1000) / 1000.0 * 4.0, 0.5, context,
-						  "city-sand");
-		std::vector<Blob> avoid = lakes;
-		avoid.insert(avoid.end(), sandBlobs.begin(), sandBlobs.end());
-		if (fits(s0, r0, shape.maximumRadius(), 5, avoid))
-			sandBlobs.push_back({s0, r0, shape});
-	}
+	double ridgeU[2] = {0.28, 0.72};
+	double passR = 0;
+	double barrenShare = 0.45;
+	double deltaFordR = 0;
+	RadialShape heart;
+	std::vector<Patch> commonsSand;
+	Features(RadialShape heart, double deltaFordR) : deltaFordR(deltaFordR), heart(heart) {}
+};
 
+// Roll the features. Each kind of feature draws from a stream of its own, so the heart, rolled
+// first here for its shape, draws the same as it did after the sand.
+static Features rollFeatures(const GenerationRequest &request, GenerationContext &context,
+							 const Geometry &g, const Coasts &c, Layout &L)
+{
+	const CityStatesOptions o(request);
+	const Torus &t = L.t;
+	const double wedge = c.wedge, inner = c.inner, depth = c.depth;
 	// The heart of the commons.
 	L.lakeR = std::max(3.0, kHeartShare * g.commonsRadius);
 	L.ringR = std::max(8.0, kHeartShare * g.commonsRadius);
@@ -397,18 +341,77 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		L.islandR = std::max(5.0, 0.12 * g.commonsRadius);
 	}
 	L.forestR = L.lakeR + 4 + 0.09 * g.commonsRadius;
-	const double deltaFordR = 0.6 * g.commonsRadius;
-	const RadialShape heart(L.lakeR, L.heartKind == IslandHeart ? 0.2 : 0.3, context, "city-heart");
-	// Sand on the commons: anywhere between the heart and the shore, off the landings.
-	struct Patch
+	Features f(RadialShape(L.lakeR, L.heartKind == IslandHeart ? 0.2 : 0.3, context, "city-heart"),
+			   0.6 * g.commonsRadius);
+	// The home's features in the wedge's frame: f.lakes first (the main one first), then whatever
+	// the kind adds. A feature keeps clear of the coasts as bays can bring them, of the channels,
+	// of the causeway's approach and of other features.
+	f.mainLakeR = inner + lakeOffset(g, c.lakeRadius);
+	f.lakes.push_back(
+		{0.0, f.mainLakeR, RadialShape(c.lakeRadius, 0.3, context, "city-home-lakes")});
+	const auto fits =
+		[&](double s0, double r0, double reach, double gap, const std::vector<Blob> &others)
 	{
-		int x, y;
-		RadialShape shape;
+		if (std::abs(s0) + reach + gap > g.arcHalf(r0))
+			return false;
+		const double u = 0.5 + s0 / (wedge * r0);
+		if (r0 - reach - gap < c.innerAt(u, r0) || r0 + reach + gap > c.outerAt(u, r0))
+			return false;
+		if (r0 - reach < inner + kLanding + 2 && std::abs(s0) < g.causeway + reach + 4)
+			return false;
+		for (const Blob &b : others)
+			if (std::hypot(s0 - b.s, r0 - b.r) < reach + b.shape.maximumRadius() + gap)
+				return false;
+		return true;
 	};
-	std::vector<Patch> commonsSand;
+	if (L.homeKind == Marsh)
+		for (int attempt = 0; attempt < 400 && f.lakes.size() < 4; ++attempt)
+		{
+			const double r0 =
+				inner + 8 + context.bounded("city-home-lakes", 1000) / 1000.0 * (depth - 16);
+			const double s0 =
+				(context.bounded("city-home-lakes", 2001) / 1000.0 - 1) * 0.6 * g.arcHalf(r0);
+			RadialShape shape(2.0 + context.bounded("city-home-lakes", 1000) / 1000.0 * 2.0, 0.3,
+							  context, "city-home-lakes");
+			if (fits(s0, r0, shape.maximumRadius(), kLakeSeaGap, f.lakes))
+				f.lakes.push_back({s0, r0, shape});
+		}
+	// Riverside: a f.creek from the main lake towards one flank of the inner coast, with a ford.
+	if (L.homeKind == Riverside)
+	{
+		const double side = context.bounded("city-features", 2) ? 1.0 : -1.0;
+		L.creekSide = side;
+		const double reachArc = 0.32 * g.arcHalf(f.mainLakeR);
+		const double endR = inner + kLakeSeaGap + 6.0;
+		f.creek = {{0.0, f.mainLakeR},
+				   {side * 0.35 * reachArc, f.mainLakeR - 0.3 * (f.mainLakeR - endR)},
+				   {side * 0.75 * reachArc, f.mainLakeR - 0.65 * (f.mainLakeR - endR)},
+				   {side * reachArc, endR}};
+		f.fordSegment = 1;
+	}
+	// Highland: two ridges out from the strait to the sea, a pass through each.
+	f.passR = inner + 0.5 * depth;
+	// Barrens: both flanks of the home are sand, leaving a strip of grass down the middle from the
+	// causeway past the lake; the sand keeps clear of every coast so the wall stays on the shore.
+	// Sand patches, in every kind of home.
+	const double homeArea = wedge * (g.outerRadius * g.outerRadius - inner * inner) / 2;
+	const int homeSand = int(std::lround(o.sand * homeArea / 8192.0));
+	for (int attempt = 0; attempt < 400 && int(f.sandBlobs.size()) < homeSand; ++attempt)
+	{
+		const double r0 = inner + 8 + context.bounded("city-sand", 1000) / 1000.0 * (depth - 16);
+		const double s0 = (context.bounded("city-sand", 2001) / 1000.0 - 1) * 0.75 * g.arcHalf(r0);
+		RadialShape shape(3.0 + context.bounded("city-sand", 1000) / 1000.0 * 4.0, 0.5, context,
+						  "city-sand");
+		std::vector<Blob> avoid = f.lakes;
+		avoid.insert(avoid.end(), f.sandBlobs.begin(), f.sandBlobs.end());
+		if (fits(s0, r0, shape.maximumRadius(), 5, avoid))
+			f.sandBlobs.push_back({s0, r0, shape});
+	}
+
+	// Sand on the commons: anywhere between the f.heart and the shore, off the landings.
 	const double commonsArea = pi * g.commonsRadius * g.commonsRadius;
 	const int wantedSand = int(std::lround(o.sand * commonsArea / 8192.0));
-	for (int attempt = 0; attempt < 400 && int(commonsSand.size()) < wantedSand; ++attempt)
+	for (int attempt = 0; attempt < 400 && int(f.commonsSand.size()) < wantedSand; ++attempt)
 	{
 		const double a = context.bounded("city-sand", 3600) / 3600.0 * 2 * pi;
 		const double r0 = 0.45 * g.commonsRadius + context.bounded("city-sand", 1000) / 1000.0 *
@@ -421,10 +424,10 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (r0 * std::abs(u - 0.5) * wedge < reach + g.causeway + 4 &&
 			r0 > g.commonsRadius - kLanding - reach - 4)
 			continue;
-		if (r0 + reach > coastAt(u, r0) - 8)
+		if (r0 + reach > c.coastAt(u, r0) - 8)
 			continue;
 		bool open = true;
-		for (const Patch &p : commonsSand)
+		for (const Patch &p : f.commonsSand)
 		{
 			const int px = L.cx + int(std::lround(r0 * std::cos(a))),
 					  py = L.cy + int(std::lround(r0 * std::sin(a)));
@@ -432,10 +435,20 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			open = open && std::hypot(dx, dy) >= reach + p.shape.maximumRadius() + 4;
 		}
 		if (open)
-			commonsSand.push_back({t.x(L.cx + int(std::lround(r0 * std::cos(a)))),
-								   t.y(L.cy + int(std::lround(r0 * std::sin(a)))), shape});
+			f.commonsSand.push_back({t.x(L.cx + int(std::lround(r0 * std::cos(a)))),
+									 t.y(L.cy + int(std::lround(r0 * std::sin(a)))), shape});
 	}
 
+	return f;
+}
+
+// Classify every tile: which region and home it lies in, the causeway and its clearances, and
+// each feature's mask, the same in every wedge; then each home's causeway ends.
+static void rasterize(Layout &L, const Geometry &g, const Coasts &coasts, const Features &f)
+{
+	const Torus &t = L.t;
+	const int n = t.w * t.h, teams = g.teams;
+	const double wedge = coasts.wedge;
 	L.region.assign(n, Sea);
 	L.homeOf.assign(n, -1);
 	for (auto *mask :
@@ -458,14 +471,14 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			// The wedge frame: which home, how far across it and how far along the arc from its middle.
 			double turn = std::fmod(theta - L.phase + 4 * pi, 2 * pi);
 			if (teams >= 2)
-				turn = std::fmod(turn - bendAt(d) / std::max(1.0, d) + 4 * pi, 2 * pi);
+				turn = std::fmod(turn - coasts.bendAt(d) / std::max(1.0, d) + 4 * pi, 2 * pi);
 			const int k = std::min(teams - 1, int(turn / wedge));
 			const double u = turn / wedge - k;
 			const double s = d * (u - 0.5) * wedge;
 			const double toBoundary = teams < 2 ? 1e9 : d * std::min(u, 1 - u) * wedge;
 			const double toLanding = d * std::abs(u - 0.5) * wedge;
-			const double c = coastAt(u, d);
-			const double in = innerAt(u, d), out = outerAt(u, d);
+			const double c = coasts.coastAt(u, d);
+			const double in = coasts.innerAt(u, d), out = coasts.outerAt(u, d);
 			if (d < c)
 			{
 				L.region[i] = Commons;
@@ -516,13 +529,13 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 			// The home's features, the same in every wedge.
 			if (L.region[i] == HomeLand && !L.strip[i])
 			{
-				for (const Blob &b : lakes)
+				for (const Blob &b : f.lakes)
 					if (b.holds(s - b.s, d - b.r))
 						L.lake[i] = 1;
-				for (size_t seg = 0; seg + 1 < creek.size(); ++seg)
+				for (size_t seg = 0; seg + 1 < f.creek.size(); ++seg)
 				{
-					const double ax = creek[seg].first, ay = creek[seg].second;
-					const double bx = creek[seg + 1].first, by = creek[seg + 1].second;
+					const double ax = f.creek[seg].first, ay = f.creek[seg].second;
+					const double bx = f.creek[seg + 1].first, by = f.creek[seg + 1].second;
 					const double len2 = (bx - ax) * (bx - ax) + (by - ay) * (by - ay);
 					const double tt = std::clamp(((s - ax) * (bx - ax) + (d - ay) * (by - ay)) /
 													 std::max(1e-6, len2),
@@ -531,7 +544,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 						std::hypot(s - (ax + tt * (bx - ax)), d - (ay + tt * (by - ay)));
 					if (dist < 1.6)
 					{
-						if (int(seg) == fordSegment && std::abs(tt - 0.5) * std::sqrt(len2) < 2.5)
+						if (int(seg) == f.fordSegment && std::abs(tt - 0.5) * std::sqrt(len2) < 2.5)
 						{
 							L.ford[i] = 1;
 							L.clear[i] = 1;
@@ -541,39 +554,39 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 							L.lake[i] = 1;
 						}
 					}
-					else if (int(seg) == fordSegment && dist < 3.5 &&
+					else if (int(seg) == f.fordSegment && dist < 3.5 &&
 							 std::abs(tt - 0.5) * std::sqrt(len2) < 3.5)
 					{
 						L.clear[i] = 1;
 					}
 				}
 				if (L.homeKind == Highland && d >= in + 1 && d <= out - 1)
-					for (double ur : ridgeU)
+					for (double ur : f.ridgeU)
 					{
 						const double sr = (ur - 0.5) * wedge * d;
 						if (std::abs(s - sr) < 1.25)
 						{
-							if (std::abs(d - passR) < 2.5)
+							if (std::abs(d - f.passR) < 2.5)
 								L.clear[i] = 1;
 							else
 								L.ridge[i] = 1;
 						}
-						else if (std::abs(s - sr) < 3.5 && std::abs(d - passR) < 4.5)
+						else if (std::abs(s - sr) < 3.5 && std::abs(d - f.passR) < 4.5)
 						{
 							L.clear[i] = 1;
 						}
 					}
 				if (L.homeKind == Barrens && d >= in + 8 && d <= out - 8 &&
-					std::abs(s) > barrenShare * g.arcHalf(d) && std::abs(s) < g.arcHalf(d) - 8)
+					std::abs(s) > f.barrenShare * g.arcHalf(d) && std::abs(s) < g.arcHalf(d) - 8)
 					L.sand[i] = 1;
-				for (const Blob &b : sandBlobs)
+				for (const Blob &b : f.sandBlobs)
 					if (b.holds(s - b.s, d - b.r))
 						L.sand[i] = 1;
 			}
-			// The heart of the commons.
+			// The f.heart of the commons.
 			if (L.region[i] == Commons)
 			{
-				const bool inHeart = d < heart.radiusAt(theta);
+				const bool inHeart = d < f.heart.radiusAt(theta);
 				if (L.heartKind == IslandHeart)
 				{
 					if (inHeart && d >= L.islandR)
@@ -601,16 +614,16 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 				{
 					if (toBoundary < 2)
 					{
-						if (std::abs(d - deltaFordR) < 2.5)
+						if (std::abs(d - f.deltaFordR) < 2.5)
 							L.ford[i] = 1;
 						else
 							L.river[i] = 1;
 					}
-					if (toBoundary < 3.5 && std::abs(d - deltaFordR) < 4)
+					if (toBoundary < 3.5 && std::abs(d - f.deltaFordR) < 4)
 						L.clear[i] = 1;
 				}
 				if (!L.lake[i] && !L.river[i] && !L.ford[i] && !L.clear[i] && !L.causeway[i])
-					for (const Patch &p : commonsSand)
+					for (const Patch &p : f.commonsSand)
 					{
 						const double px = t.offsetX(p.x, x), py = t.offsetY(p.y, y);
 						if (std::hypot(px, py) < p.shape.radiusAt(std::atan2(py, px)))
@@ -625,12 +638,47 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		if (L.homes[k].landing < 0 || L.homes[k].shore < 0)
 		{
 			L.failure = "home " + std::to_string(k) + " has no causeway";
-			return L;
+			return;
 		}
 		Home &h = L.homes[k];
-		h.lakeX = t.x(L.cx + int(std::lround(mainLakeR * std::cos(h.angle))));
-		h.lakeY = t.y(L.cy + int(std::lround(mainLakeR * std::sin(h.angle))));
+		h.lakeX = t.x(L.cx + int(std::lround(f.mainLakeR * std::cos(h.angle))));
+		h.lakeY = t.y(L.cy + int(std::lround(f.mainLakeR * std::sin(h.angle))));
 	}
+}
+
+Layout design(const GenerationRequest &request, GenerationContext &context)
+{
+	Layout L;
+	L.t = {1 << request.wDec, 1 << request.hDec};
+	L.g = geometryFor(request);
+	const Torus &t = L.t;
+	const Geometry &g = L.g;
+	const int teams = g.teams;
+	const CityStatesOptions o(request);
+	L.cx = t.w / 2;
+	L.cy = t.h / 2;
+	L.phase = context.bounded("city-layout", 3600) / 3600.0 * 2 * pi;
+	const double wedge = 2 * pi / teams;
+	const double depth = g.depth();
+
+	// What this map is made of.
+	L.homeKind = int(context.bounded("city-kind", kHomeKinds));
+	L.heartKind = int(context.bounded("city-kind", kHeartKinds));
+	if (L.heartKind == Delta && teams < 2)
+		L.heartKind = LakeHeart;
+	if (depth < kFeatureDepth &&
+		(L.homeKind == Riverside || L.homeKind == Highland || L.homeKind == Barrens))
+		L.homeKind = Lakeland;
+
+	const Coasts c(g, context);
+	for (int k = 0; k < teams; ++k)
+	{
+		const double a = L.phase + wedge * (k + 0.5);
+		L.homes.push_back({a, g.commonsRadius, 0, 0, -1, -1});
+	}
+
+	const Features f = rollFeatures(request, context, g, c, L);
+	rasterize(L, g, c, f);
 	return L;
 }
 
