@@ -520,11 +520,11 @@ if not env['server']:
 # Explicit sprite checks and benchmark; these are not part of the default build.
 if not env['server']:
     sprite_checks = []
-    for name in ['UnitMotionBlurTest', 'UnitTeamShaderTest', 'UnitTeamColorCacheTest', 'DrawableSurfaceBlendTest']:
+    for name in ['UnitTeamShaderTest', 'UnitTeamColorCacheTest', 'DrawableSurfaceBlendTest']:
         check = local.Program(name, local.Object(name + '.o', '#test/' + name + '.cpp')
             + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
         sprite_checks += check
-    local.Alias('unit-blur-tests', sprite_checks)
+    local.Alias('unit-render-tests', sprite_checks)
     hd_unit_check = local.Program('UnitHighResolutionCacheTest',
         local.Object('UnitHighResolutionCacheTest.o', '#test/UnitHighResolutionCacheTest.cpp')
         + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
@@ -533,10 +533,6 @@ if not env['server']:
         local.Object('RuntimePackCheck.o', '#test/RuntimePackCheck.cpp')
         + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
     local.Alias('runtime-pack-check', runtime_pack_check)
-    benchmark = local.Program('unit-blur-benchmark',
-        local.Object('UnitBlurBenchmark.o', '#tools/unit-animation/cache-benchmark.cpp')
-        + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
-    local.Alias('unit-blur-benchmark', benchmark)
     twelve_team_benchmark = local.Program('twelve-team-benchmark',
         local.Object('TwelveTeamBenchmark.o', '#tools/unit-animation/twelve-team-benchmark.cpp')
         + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])

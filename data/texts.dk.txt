@@ -1308,9 +1308,3 @@ Arbejder stadig: %0
 Automatisk torusvisning
 [toggle torus view]
 Skift mellem 2D- og torusvisning
-[motion blur]
-Bevægelsessløring
-[motion blur enabled]
-Bevægelsessløring aktiveret (F8)
-[motion blur disabled]
-Bevægelsessløring deaktiveret (F8)

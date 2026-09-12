@@ -1238,9 +1238,3 @@ Ainda a trabalhar: %0
 Vista toroidal automática
 [toggle torus view]
 Alternar vista 2D / toroidal
-[motion blur]
-Desfoque de movimento
-[motion blur enabled]
-Desfoque de movimento ativado (F8)
-[motion blur disabled]
-Desfoque de movimento desativado (F8)

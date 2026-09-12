@@ -1242,9 +1242,3 @@ Arbetar ännu: %0
 Automatisk torusvy
 [toggle torus view]
 Växla mellan 2D- och torusvy
-[motion blur]
-Rörelseoskärpa
-[motion blur enabled]
-Rörelseoskärpa aktiverad (F8)
-[motion blur disabled]
-Rörelseoskärpa inaktiverad (F8)

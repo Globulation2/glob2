@@ -5,16 +5,16 @@
 // does not generate a river/crater-lakes map or run Cortex. What it does
 // reproduce exactly is the mechanism the original composite cache regressed
 // on -- many units, many team colors, continuously varying poses, drawn every
-// tick through the real GraphicContext::drawSprite / drawUnitMotionBlur path
+// tick through the real GraphicContext::drawSprite path
 // -- for as many ticks as asked, with full-viewport redraw every tick
 // ("full-map revealed drawing"). Positions evolve from a fixed seed via a
 // tiny deterministic synthetic simulation that rendering never touches, so
-// the checksum comparison between blur variants is a structural property of
-// this harness (render and simulation are separate steps) rather than an
-// emergent one -- it demonstrates the same decoupling the real engine relies
-// on, not a substitute for it.
+// the checksum is a structural property of this harness (render and
+// simulation are separate steps) rather than an emergent one -- it
+// demonstrates the same decoupling the real engine relies on, not a
+// substitute for it.
 //
-// Usage: twelve-team-benchmark <blur:on|off> [ticks=5000] [label=river]
+// Usage: twelve-team-benchmark [ticks=5000] [label=river] [hd]
 #include <Toolkit.h>
 #include <GraphicContext.h>
 #include <SDL.h>
@@ -96,16 +96,15 @@ namespace
 
 int main(int argc, char **argv)
 {
-	const bool blur = argc > 1 && std::string(argv[1]) == "on";
-	const int ticks = argc > 2 ? std::atoi(argv[2]) : 5000;
-	const std::string label = argc > 3 ? argv[3] : "river";
-	const bool hd = argc > 4 && std::string(argv[4]) == "hd";
+	const int ticks = argc > 1 ? std::atoi(argv[1]) : 5000;
+	const std::string label = argc > 2 ? argv[2] : "river";
+	const bool hd = argc > 3 && std::string(argv[3]) == "hd";
 	const int numTeams = 12, unitsPerTeam = 13; // 156, matching the ~157 baseline
 
 	Toolkit::init("codex-glob2-12team-benchmark");
 	auto *gfx = Toolkit::initGraphic(1280, 800, GraphicContext::USEGPU, "12-team unit benchmark");
 	Sprite::setHighResolution(hd);
-	std::cout << "map=" << label << " blur=" << (blur ? "on" : "off") << " ticks=" << ticks << " hd=" << hd
+	std::cout << "map=" << label << " ticks=" << ticks << " hd=" << hd
 	          << " shader=" << (gfx->hasUnitShader() ? "yes" : "no") << std::endl;
 
 	auto *sprite = Toolkit::getSprite("data/gfx/unit");
@@ -139,14 +138,7 @@ int main(int argc, char **argv)
 		{
 			sprite->setBaseColor(teamColors[u.team]);
 			const int px = (u.x >> 5) % 40 * 32, py = (u.y >> 5) % 25 * 32;
-			if (blur)
-			{
-				const int span = std::max(1, u.speed);
-				drawUnitMotionBlur(64, u.dir, u.delta, span, [&](int f, int a)
-				{ gfx->drawSprite(px, py, sprite, f, static_cast<Uint8>(a)); });
-			}
-			else
-				gfx->drawSprite(px, py, sprite, unitAnimationFrame(64, u.dir, u.delta));
+			gfx->drawSprite(px, py, sprite, unitAnimationFrame(64, u.dir, u.delta));
 		}
 		glFinish();
 		const double frameMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - frameStart).count();

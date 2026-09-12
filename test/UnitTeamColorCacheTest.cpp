@@ -2,7 +2,7 @@
 // Cache-behavior checks for the bounded team-color LRU that replaced the
 // unbounded per-frame rotationMap for the unit sprite:
 //   - GPU rendering through the shader creates zero team-colored surfaces,
-//     motion blur on or off.
+//     for both single-pose draws and stacked alpha draws.
 //   - With the shader unavailable (GLOB2_DISABLE_UNIT_SHADER, or the software
 //     renderer), the cache is used, stays within 64 MiB except one documented
 //     active oversized entry, evicts least-recently-used entries first, and
@@ -28,7 +28,23 @@ using namespace GAGCore;
 
 namespace
 {
-	void drawManyPosesAndColors(GraphicContext *gfx, Sprite *sprite, bool blur, int colors)
+	// Stacked alpha draws of consecutive poses. These sequences used to come
+	// from the production motion-blur shutter; that shutter is gone, but the
+	// cache still needs to be exercised by a stack of alpha-blended poses, so
+	// the generator lives here as test scaffolding.
+	std::vector<std::pair<int, int>> stackedPoses(int base, int dir, int delta, int count)
+	{
+		std::vector<std::pair<int, int>> frames;
+		int drawn = 0;
+		for (int i = count - 1; i >= 0; --i)
+		{
+			++drawn;
+			frames.emplace_back(unitAnimationFrame(base, dir, (delta - i * 8) & 255), 255 / drawn);
+		}
+		return frames;
+	}
+
+	void drawManyPosesAndColors(GraphicContext *gfx, Sprite *sprite, bool stacked, int colors)
 	{
 		for (int c = 0; c < colors; ++c)
 		{
@@ -37,14 +53,12 @@ namespace
 				for (int dir = 0; dir < 8; ++dir)
 				{
 					const int delta = (c * 17) & 255;
-					if (!blur)
+					if (!stacked)
 					{
 						gfx->drawSprite(0, 0, sprite, unitAnimationFrame(base, dir, delta));
 						continue;
 					}
-					std::vector<std::pair<int, int>> frames;
-					drawUnitMotionBlur(base, dir, delta, 30, [&](int f, int a) { frames.emplace_back(f, a); });
-					for (auto &f : frames)
+					for (auto &f : stackedPoses(base, dir, delta, 4))
 						gfx->drawSprite(0, 0, sprite, f.first, static_cast<Uint8>(f.second));
 				}
 		}
@@ -65,14 +79,14 @@ int main(int argc, char **argv)
 		if (!software)
 		{
 			assert(gfx->hasUnitShader() && "GLSL 1.20 unit shader failed to compile/link on this driver");
-			// GPU rendering creates zero team-colored surfaces: sharp, then blur.
+			// GPU rendering creates zero team-colored surfaces: single, then stacked.
 			drawManyPosesAndColors(gfx, &sprite, false, 40);
 			assert(sprite.getTeamColorCacheEntries() == 0);
 			assert(sprite.getTeamColorCacheBytes() == 0);
 			drawManyPosesAndColors(gfx, &sprite, true, 40);
 			assert(sprite.getTeamColorCacheEntries() == 0);
 			assert(sprite.getTeamColorCacheBytes() == 0);
-			std::cout << "PASS: GPU unit rendering created zero team-colored surfaces, blur on and off"
+			std::cout << "PASS: GPU unit rendering created zero team-colored surfaces, single and stacked draws"
 			          << std::endl;
 		}
 	}

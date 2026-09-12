@@ -257,9 +257,10 @@ namespace GAGCore
 					// scalar x, or the same identity applied per lane -- masking the
 					// shifted correction back onto 0x00FF00FF keeps each 16-bit lane's
 					// carry from leaking into its neighbour. A single blend's 1/256
-					// bias is invisible, but motion blur stacks dozens of blends onto
-					// the same pixels, and that compounds into a visible darkening of
-					// the sprite's whole bounding box, including its transparent edges.
+					// bias is invisible, but repeated alpha draws onto the same pixels
+					// compound it into a visible darkening of the sprite's whole
+					// bounding box, including its transparent edges. Covered by
+					// test/DrawableSurfaceBlendTest.cpp.
 					Uint32 alphaProduct = ((srcValue >> alphaShift) & 0xFF) * alpha;
 					Uint32 srcAlpha = (alphaProduct + 1 + (alphaProduct >> 8)) >> 8;
 					Uint32 destAlpha = 255 - srcAlpha;

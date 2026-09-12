@@ -1232,9 +1232,3 @@ Ještě v práci: %0
 Automatický toroidní pohled
 [toggle torus view]
 Přepnout mezi 2D a toroidním pohledem
-[motion blur]
-Rozmazání pohybu
-[motion blur enabled]
-Rozmazání pohybu zapnuto (F8)
-[motion blur disabled]
-Rozmazání pohybu vypnuto (F8)

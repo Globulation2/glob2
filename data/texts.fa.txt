@@ -1230,9 +1230,3 @@ Cortex
 نمای خودکار چنبره
 [toggle torus view]
 تغییر بین نمای دوبعدی و چنبره
-[motion blur]
-تاری حرکت
-[motion blur enabled]
-تاری حرکت فعال شد (F8)
-[motion blur disabled]
-تاری حرکت غیرفعال شد (F8)

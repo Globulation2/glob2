@@ -1242,9 +1242,3 @@ Travaillent encore : %0
 Vue torique automatique
 [toggle torus view]
 Basculer entre les vues 2D et torique
-[motion blur]
-Flou de mouvement
-[motion blur enabled]
-Flou de mouvement activé (F8)
-[motion blur disabled]
-Flou de mouvement désactivé (F8)

@@ -1232,9 +1232,3 @@ Arbeiten noch: %0
 Automatische Torusansicht
 [toggle torus view]
 2D-/Torusansicht umschalten
-[motion blur]
-Bewegungsunschärfe
-[motion blur enabled]
-Bewegungsunschärfe aktiviert (F8)
-[motion blur disabled]
-Bewegungsunschärfe deaktiviert (F8)

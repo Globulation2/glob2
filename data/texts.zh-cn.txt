@@ -1228,9 +1228,3 @@ Cortex
 自动环面视图
 [toggle torus view]
 切换 2D／环面视图
-[motion blur]
-动态模糊
-[motion blur enabled]
-动态模糊已启用 (F8)
-[motion blur disabled]
-动态模糊已禁用 (F8)

@@ -1224,12 +1224,6 @@ Single-player and replays only. Multiplayer runs at 1x.
 Maximum
 [multiplayer game speed]
 Game speed: 1x (multiplayer)
-[motion blur]
-Motion blur
-[motion blur enabled]
-Motion blur enabled (F8)
-[motion blur disabled]
-Motion blur disabled (F8)
 [Units still inside: %0]
 Still inside: %0
 [Units still working: %0]

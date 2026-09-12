@@ -4,7 +4,7 @@
 //      the 1,792 poses (three fixed colors) and over the 12 game-team hues
 //      plus the existing 16-hue test palette (one representative pose per
 //      action/direction).
-//   2. The sharp (single-pose) and motion-blur (multi-pose shutter) combined
+//   2. The single-pose and stacked multi-pose combined
 //      base+team framebuffer result, against a CPU reference that composites
 //      each pose in premultiplied space and blends poses in shutter order.
 // Both backends' whole-shutter native fallback for an incomplete HD pack, and
@@ -29,6 +29,21 @@ using namespace GAGCore;
 
 namespace
 {
+	// Stacked alpha draws of consecutive poses. These sequences used to come
+	// from the production motion-blur shutter; that shutter is gone, but the
+	// shader and the team-color cache still need to be exercised by a stack of
+	// alpha-blended poses, so the generator lives here as test scaffolding.
+	std::vector<std::pair<int, int>> stackedPoses(int base, int dir, int delta, int count)
+	{
+		std::vector<std::pair<int, int>> frames;
+		int drawn = 0;
+		for (int i = count - 1; i >= 0; --i)
+		{
+			++drawn;
+			frames.emplace_back(unitAnimationFrame(base, dir, (delta - i * 8) & 255), 255 / drawn);
+		}
+		return frames;
+	}
 	struct InspectUnitSprite : Sprite
 	{
 		DrawableSurface *teamOrig(int index, bool experiment)
@@ -201,7 +216,7 @@ int main()
 	assert(alphaMismatches == 0);
 	assert(maxError <= 2);
 
-	// 3) Sharp and motion-blur framebuffer comparison: shader-rendered sequence
+	// 3) Single-pose and stacked framebuffer comparison: shader-rendered sequence
 	// vs. an independent CPU reference that composites base+team per pose in
 	// premultiplied space (team over base, unpremultiplied once) and then
 	// blends poses in shutter order.
@@ -261,13 +276,12 @@ int main()
 		for (bool experiment : {false, true})
 		for (int base = 0; base <= 384; base += 64)
 		for (int dir = 0; dir < 8; ++dir)
-		for (int span : {1, 30})
+		for (int count : {1, 4})
 		{
 			const int index = unitAnimationFrame(base, dir, 64);
 			DrawableSurface *baseLayer = sprite.baseImage(index, experiment);
 			if (!baseLayer) continue;
-			std::vector<std::pair<int, int>> frames;
-			drawUnitMotionBlur(base, dir, 64, span, [&](int f, int a) { frames.emplace_back(f, a); });
+			std::vector<std::pair<int, int>> frames = stackedPoses(base, dir, 64, count);
 
 			gfx->drawFilledRect(0, 0, cw, ch, 30, 90, 45);
 			for (auto &f : frames)
@@ -304,13 +318,13 @@ int main()
 					}
 				}
 		}
-		std::cout << "Sharp/motion-blur framebuffer vs CPU reference: max=" << maxFrameError << "/255 comparisons="
+		std::cout << "Single/stacked framebuffer vs CPU reference: max=" << maxFrameError << "/255 comparisons="
 		          << frameChannels / 3 << std::endl;
 		assert(maxFrameError <= 3);
 	}
 
 	std::cout << "PASS: shader vs CPU HSV over all 1,792 poses / 12 team hues + 16-hue palette; "
-	             "sharp and motion-blur framebuffer within tolerance of an independent CPU reference"
+	             "single and stacked framebuffer within tolerance of an independent CPU reference"
 	          << std::endl;
 	Toolkit::close();
 }

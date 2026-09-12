@@ -1294,9 +1294,3 @@ Ancora al lavoro: %0
 Vista toroidale automatica
 [toggle torus view]
 Alterna vista 2D / toroidale
-[motion blur]
-Sfocatura di movimento
-[motion blur enabled]
-Sfocatura di movimento attivata (F8)
-[motion blur disabled]
-Sfocatura di movimento disattivata (F8)

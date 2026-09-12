@@ -229,10 +229,9 @@ jobs:
           scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 opengl=0 --build=build-software torus-render-test
           GLOB2_USER_DIR=/tmp/glob2-render-profile SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
             build-software/src/torus-render-test -g -F -m -s 1120x720
-      - name: Test unit motion blur, team-color shader and HD cache
+      - name: Test unit team-color shader and HD cache
         run: |
-          scons -j$(nproc) release=1 server=0 unit-blur-tests unit-hd-cache-test runtime-pack-check
-          ./build/src/UnitMotionBlurTest
+          scons -j$(nproc) release=1 server=0 unit-render-tests unit-hd-cache-test runtime-pack-check
           xvfb-run -a ./build/src/DrawableSurfaceBlendTest
           xvfb-run -a ./build/src/UnitTeamShaderTest
           xvfb-run -a ./build/src/UnitTeamColorCacheTest

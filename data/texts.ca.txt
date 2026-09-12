@@ -1240,9 +1240,3 @@ Encara treballant: %0
 Vista toroidal automàtica
 [toggle torus view]
 Alterna entre vista 2D i toroidal
-[motion blur]
-Desenfocament de moviment
-[motion blur enabled]
-Desenfocament de moviment activat (F8)
-[motion blur disabled]
-Desenfocament de moviment desactivat (F8)

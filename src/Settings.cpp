@@ -38,7 +38,6 @@ Settings::Settings()
 	mute = 0;
 	rememberUnit = 1;
 	gameSpeed = GAME_SPEED_NORMAL;
-	motionBlur = false;
 	tempUnit = 1;
 	tempUnitFuture = 1;
 	version = 0;
@@ -119,7 +118,6 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(scrollWheelEnabled);
 		READ_PARSED_INT(highResolutionArtwork);
 		READ_PARSED_INT(gameSpeed);
-		READ_PARSED_INT(motionBlur);
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
 #ifndef YOG_SERVER_ONLY
@@ -186,7 +184,6 @@ void Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
-		Utilities::streamprintf(stream, "motionBlur=%d\n", motionBlur);
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{

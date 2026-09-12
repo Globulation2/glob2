@@ -1228,9 +1228,3 @@ Ainda trabalhando: %0
 Gwel toreek emgefre
 [toggle torus view]
 Trec’haoliñ etre gwel 2M ha toreek
-[motion blur]
-Desfoque de movimento
-[motion blur enabled]
-Desfoque de movimento ativado (F8)
-[motion blur disabled]
-Desfoque de movimento desativado (F8)

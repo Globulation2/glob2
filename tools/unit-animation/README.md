@@ -158,4 +158,4 @@ its `software` mode after installing the pack. These cover every unit layer's
 resolution mapping, all action/direction/team-color combinations, cached versus
 repeated HD compositing, sharp fallback, texture invalidation on artwork changes,
 and map zoom. `highres-integration-test` exercises the game's camera/editor/replay
-integration; the existing blur and speed tests remain applicable.
+integration; the existing speed tests remain applicable.

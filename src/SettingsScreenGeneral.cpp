@@ -119,10 +119,6 @@ void SettingsScreen::buildGraphicsToggles()
 	highres=new OnOffButton(230, 300, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.highResolutionArtwork, HIGHRES, "Apply artwork on the next game or editor load (OpenGL)", "standard");
 	addWidgetToGroup(highres,generalGroup);
 	addWidgetToGroup(new Text(260,300,ALIGN_SCREEN_CENTERED,ALIGN_SCREEN_CENTERED,"standard","High-resolution artwork",180),generalGroup);
-	motionBlurButton=new OnOffButton(230, 240, 20, 20, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, globalContainer->settings.motionBlur, MOTIONBLUR);
-	addWidgetToGroup(motionBlurButton, generalGroup);
-	motionBlurText=new Text(260, 240, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", Toolkit::getStringTable()->getString("[motion blur]"), 180);
-	addWidgetToGroup(motionBlurText, generalGroup);
 
 	gameSpeedText=new Text(20, 265, ALIGN_SCREEN_CENTERED, ALIGN_SCREEN_CENTERED, "standard", "");
 	addWidgetToGroup(gameSpeedText, generalGroup);
