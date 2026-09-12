@@ -116,6 +116,10 @@ public:
 	//! Give `unit`'s fetching job to a team mate and take the mate's job, when that
 	//! shortens the two trips together by more than a few tiles (see TeamStep.cpp).
 	void swapTask(Unit *unit);
+	/// Whether at least `percent` of the team's living workers are idle
+	/// (ACT_RANDOM). Read after a delivery to decide whether to release the
+	/// worker for the hiring auction.
+	bool idleWorkerShareAtLeast(int percent) const;
 	//! Give `unit` a team mate's inn and the mate `unit`'s, when that shortens the
 	//! two walks together by more than a few tiles; called as `unit` books its place.
 	void swapInn(Unit *unit);

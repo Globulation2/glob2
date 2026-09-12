@@ -54,6 +54,9 @@ const int NB_UNIT_LEVELS=4;
 //! when the counter is treated as "fully arrived" (Unit.cpp:296, 304;
 //! UnitMovement.cpp; MapQuery.cpp; TypeSteps.cpp turret bullet timing).
 static constexpr int UNIT_DELTA_MAX = 255;
+/// Share of a team's workers that must be idle for a worker to be released
+/// after a delivery instead of keeping its building (Unit::handleDisplacement).
+static constexpr int RELEASE_IDLE_WORKER_PERCENT = 20;
 //! Modular quantum that wraps a unit's `delta` counter, equal to
 //! UNIT_DELTA_MAX + 1. Used in expressions like (256 - delta) / speed.
 static constexpr int UNIT_DELTA_QUANTUM = 256;

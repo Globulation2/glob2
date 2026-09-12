@@ -659,6 +659,12 @@ if not env['server'] and 'hiring-bucket-test' in COMMAND_LINE_TARGETS:
     hiring_sources += local.Object('HiringBucketHarness.o', '#test/HiringBucketHarness.cpp')
     local.Alias('hiring-bucket-test', local.Program('HiringBucketHarness', hiring_sources))
 
+# After a delivery the worker is released only while a fifth of the team is idle.
+if not env['server'] and 'gig-release-test' in COMMAND_LINE_TARGETS:
+    gig_sources = [source for source in source_files if source != 'Glob2.cpp']
+    gig_sources += local.Object('GigReleaseHarness.o', '#test/GigReleaseHarness.cpp')
+    local.Alias('gig-release-test', local.Program('GigReleaseHarness', gig_sources))
+
 if not env['server'] and 'custom-setup-test' in COMMAND_LINE_TARGETS:
     custom_sources = [source for source in source_files if source != 'Glob2.cpp']
     custom_sources += local.Object('CustomGameSetupHarness.o', '#test/CustomGameSetupHarness.cpp')
