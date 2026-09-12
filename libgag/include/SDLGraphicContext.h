@@ -417,6 +417,8 @@ namespace GAGCore
 		float getUiScale(void) const { return uiScale; }
 		//! the scale the last setRes() was asked for, before the window floor reduced it
 		float getWantedUiScale(void) const { return wantedUiScale; }
+		//! drawable pixels per logical pixel for text drawn on this context, 1 when unscaled
+		float textRenderScale(void);
 		//! the interface scale the desktop asks for, or 0 when nothing reports one
 		static float querySystemUiScale(void);
 		//! the scale actually used for a preference; 0 follows the desktop, GLOB2_UI_SCALE wins

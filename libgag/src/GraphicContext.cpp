@@ -291,6 +291,21 @@ namespace GAGCore
 		return windowW && sdlsurface && (windowW != sdlsurface->w || windowH != sdlsurface->h);
 	}
 
+	float GraphicContext::textRenderScale(void)
+	{
+		// Only the GL path magnifies each texture on its way to the screen, so only there
+		// does a finer glyph raster reach more pixels. The software path composes the whole
+		// frame in the logical surface, which caps every glyph at its logical size.
+		if (!(optionFlags & USEGPU))
+			return 1.0f;
+		// Any scale resamples the glyphs, including the slight reduction a fullscreen
+		// resolution the display cannot deliver exactly produces.
+		const float scale = drawableScale();
+		if (std::fabs(scale - 1.0f) < 0.01f)
+			return 1.0f;
+		return std::clamp(scale, 0.25f, 4.0f);
+	}
+
 	float GraphicContext::requestedUiScale = 0.0f;
 
 	namespace
@@ -606,6 +621,9 @@ namespace GAGCore
 				}
 				++glContextGeneration;
 				#ifdef HAVE_OPENGL
+				// The new context starts at the GL defaults, so a cache still describing the
+				// replaced one would skip the enables the next draw call needs.
+				glState.resetCache();
 				// Map the logical projection onto a centered, aspect-correct sub-rect of the
 				// drawable so fullscreen scales without distorting circles into ellipses.
 				// The drawable is in pixels; on HiDPI it is larger than the window points mouse events use.

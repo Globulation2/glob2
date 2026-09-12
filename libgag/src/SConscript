@@ -36,6 +36,9 @@ if not env['server']:
     resize_test = aspect_env.Program('WindowResizeHarness',
         [aspect_env.Object('WindowResizeHarness.o', '#test/WindowResizeHarness.cpp'), l1])
     env.Alias('resize-test', resize_test)
+    text_raster_test = aspect_env.Program('TextRasterHarness',
+        [aspect_env.Object('TextRasterHarness.o', '#test/TextRasterHarness.cpp'), l1])
+    env.Alias('text-raster-test', text_raster_test)
 else:
     Default(l2)
 

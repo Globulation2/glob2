@@ -221,6 +221,14 @@ jobs:
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness gl
           timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/WindowResizeHarness software
 
+      - name: Build and run the scaled text regression
+        env:
+          LIBGL_ALWAYS_SOFTWARE: 1
+        run: |
+          scons -j$(nproc) release=1 server=0 text-raster-test
+          mkdir -p artifacts/text-raster
+          timeout 60s xvfb-run -a -s '-screen 0 1600x1400x24' ./build/libgag/src/TextRasterHarness artifacts/text-raster
+
       - name: Check game rendering across repeated map copies
         env:
           SDL_VIDEODRIVER: dummy
