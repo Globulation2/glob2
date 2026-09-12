@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
+#include "IslesGenerator.h"
 #include "Distances.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -17,7 +18,6 @@
 #include <algorithm>
 #include <cmath>
 using namespace MapGeneration;
-#include "IslesGenerator.h"
 // What the stages of a roll hand each other: the area grid and the next free area number, each
 // colony's seed point, weight and area, the spacing the dispersion found, the height field the
 // islands and bridges are raised in, the last distance field, and the bridges' tiles and area.

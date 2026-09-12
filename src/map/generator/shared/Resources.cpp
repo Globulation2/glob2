@@ -7,11 +7,13 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "GenerationResult.h"
+#include "Grid.h"
 #include "HeightMap.h"
 #include "Map.h"
 #include "Regions.h"
 #include "StartingPositions.h"
 #include "Terrain.h"
+#include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
 #include <cmath>
@@ -134,42 +136,14 @@ namespace
 std::vector<int> computeComponents(const Map &map, bool water, int &numComponents)
 {
 	const int w = map.getW(), h = map.getH();
-	std::vector<int> component(size_t(w) * h, -1);
-	// Bounded by the component[np] < 0 guard below to at most w*h enqueues per component, and
-	// every tile belongs to exactly one component - a flat preallocated FIFO reused across
-	// components, the same fix as floodReach below and computeDistances in Distances.cpp.
-	std::vector<int> queue(size_t(w) * h);
-	int nextId = 0;
+	std::vector<unsigned char> kind(size_t(w) * h);
 	for (int y = 0; y < h; ++y)
 		for (int x = 0; x < w; ++x)
-		{
-			const int start = y * w + x;
-			if (component[start] != -1 || map.isWater(x, y) != water)
-				continue;
-			size_t qHead = 0, qTail = 0;
-			component[start] = nextId;
-			queue[qTail++] = start;
-			while (qHead < qTail)
-			{
-				const int p = queue[qHead++];
-				const int px = p % w, py = p / w;
-				for (int dy = -1; dy <= 1; ++dy)
-					for (int dx = -1; dx <= 1; ++dx)
-					{
-						if (!dx && !dy)
-							continue;
-						const int nx = map.normalizeX(px + dx), ny = map.normalizeY(py + dy);
-						const int np = ny * w + nx;
-						if (component[np] == -1 && map.isWater(nx, ny) == water)
-						{
-							component[np] = nextId;
-							queue[qTail++] = np;
-						}
-					}
-			}
-			++nextId;
-		}
-	numComponents = nextId;
+			kind[size_t(y) * w + x] = map.isWater(x, y) == water;
+	const std::vector<int> component = connectedRegions(kind, w, h, true, GridNeighbors::Eight);
+	numComponents = 0;
+	for (int c : component)
+		numComponents = std::max(numComponents, c + 1);
 	return component;
 }
 
@@ -416,21 +390,14 @@ struct ReachResult
 ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int closeRange,
 					   int clearRadius)
 {
-	const int w = map.getW(), h = map.getH();
+	const Torus t(map);
 	ReachResult r;
-	r.dist.assign(size_t(w) * h, -1);
-	// Bounded by the r.dist[np] < 0 guard below to at most w*h enqueues - a flat preallocated
-	// FIFO instead of std::queue<int>'s std::deque, which grows by separately heap-allocated
-	// blocks (same fix as computeDistances in Distances.cpp).
-	std::vector<int> q(size_t(w) * h);
-	size_t qHead = 0, qTail = 0;
-	int start = bootY * w + bootX;
-	r.dist[start] = 0;
-	q[qTail++] = start;
-	while (qHead < qTail)
+	const Flood flood =
+		floodFrom(t, tileMask(t, {bootY * t.w + bootX}), groundUnitTiles(map), exploreLimit);
+	r.dist = flood.steps;
+	for (int p : flood.visited)
 	{
-		int p = q[qHead++];
-		int x = p % w, y = p / w;
+		const int x = p % t.w, y = p / t.w;
 		if (map.getUMTerrain(x, y) == GRASS && r.dist[p] >= clearRadius &&
 			r.dist[p] <= exploreLimit)
 			(r.dist[p] <= closeRange ? r.closeGrass : r.farGrass)
@@ -440,19 +407,11 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 			{
 				if (dx == 0 && dy == 0)
 					continue;
-				int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-				int np = ny * w + nx;
-				int resType = map.getResource(nx, ny).type;
+				const int resType = map.getResource(t.x(x + dx), t.y(y + dy)).type;
 				if (resType == CORN && r.wheatDist < 0)
 					r.wheatDist = r.dist[p] + 1;
 				if (resType == WOOD && r.woodDist < 0)
 					r.woodDist = r.dist[p] + 1;
-				if (r.dist[np] < 0 && r.dist[p] < exploreLimit &&
-					map.isHardSpaceForGroundUnit(nx, ny, false, 0))
-				{
-					r.dist[np] = r.dist[p] + 1;
-					q[qTail++] = np;
-				}
 			}
 	}
 	return r;
@@ -466,35 +425,11 @@ ReachResult floodReach(Map &map, int bootX, int bootY, int exploreLimit, int clo
 std::vector<int> terrainOnlyReach(Map &map, int bootX, int bootY, int limit,
 								  const std::vector<unsigned char> *protectedWalls)
 {
-	const int w = map.getW(), h = map.getH();
-	std::vector<int> dist(size_t(w) * h, -1);
-	std::vector<int> q(size_t(w) * h);
-	size_t qHead = 0, qTail = 0;
-	int start = bootY * w + bootX;
-	dist[start] = 0;
-	q[qTail++] = start;
-	while (qHead < qTail)
-	{
-		int p = q[qHead++];
-		if (dist[p] >= limit)
-			continue;
-		int x = p % w, y = p / w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				if (dx == 0 && dy == 0)
-					continue;
-				int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-				int np = ny * w + nx;
-				if (dist[np] < 0 && !map.isWater(nx, ny) &&
-					!(protectedWalls && (*protectedWalls)[np]))
-				{
-					dist[np] = dist[p] + 1;
-					q[qTail++] = np;
-				}
-			}
-	}
-	return dist;
+	const Torus t(map);
+	std::vector<unsigned char> open(size_t(t.size()));
+	for (int i = 0; i < t.size(); ++i)
+		open[i] = !map.isWater(i % t.w, i / t.w) && !(protectedWalls && (*protectedWalls)[i]);
+	return floodFrom(t, tileMask(t, {bootY * t.w + bootX}), open, limit).steps;
 }
 
 // Clears the resource tiles directly responsible for a team's cramped pocket: exactly the
@@ -617,43 +552,14 @@ struct WorkerReach
 };
 WorkerReach reachFromWorkers(Map &map, int team, int range)
 {
-	const int w = map.getW(), h = map.getH();
+	const Torus t(map);
+	const Flood flood = floodFrom(t, tileMask(t, unitTilesByTeam(map, team + 1)[team]),
+								  groundUnitTiles(map), range);
 	WorkerReach r;
-	r.dist.assign(size_t(w) * h, -1);
-	std::vector<int> q(size_t(w) * h);
-	size_t qHead = 0, qTail = 0;
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-		{
-			const Uint16 gid = map.getGroundUnit(x, y);
-			if (gid != NOGUID && Unit::GIDtoTeam(gid) == team)
-			{
-				r.dist[size_t(y) * w + x] = 0;
-				q[qTail++] = y * w + x;
-			}
-		}
-	while (qHead < qTail)
-	{
-		const int p = q[qHead++];
-		const int x = p % w, y = p / w;
-		if (map.isFreeForBuilding(x, y, 4, 4))
+	r.dist = flood.steps;
+	for (int p : flood.visited)
+		if (map.isFreeForBuilding(p % t.w, p / t.w, 4, 4))
 			++r.sites;
-		if (r.dist[p] >= range)
-			continue;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				if (dx == 0 && dy == 0)
-					continue;
-				const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy),
-						  np = ny * w + nx;
-				if (r.dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
-				{
-					r.dist[np] = r.dist[p] + 1;
-					q[qTail++] = np;
-				}
-			}
-	}
 	return r;
 }
 } // namespace

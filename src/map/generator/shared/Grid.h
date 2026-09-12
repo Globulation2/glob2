@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <algorithm>
+#include <climits>
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -45,9 +46,20 @@ struct Torus
 /// The four cardinal steps, in the order the generators have always listed them.
 constexpr int kCardinalSteps[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
-/// Breadth-first steps from every source tile, eight-connected across the wrap, through open
-/// tiles only: 0 at a source, -1 where nothing was reached. Every step costs one, so the field
-/// is the same whatever order the tiles were visited in.
+/// A breadth-first flood, eight-connected across the wrap, through open tiles only.
+struct Flood
+{
+	/// Steps from the nearest source: 0 at a source, -1 where nothing was reached. Every step
+	/// costs one, so the field is the same whatever order the tiles were visited in.
+	std::vector<int> steps;
+	/// Every tile reached, in the order it was reached.
+	std::vector<int> visited;
+};
+/// Floods from every source tile. A source is reached whether or not it is open. A tile
+/// `limit` steps out is reached but not stepped on from.
+Flood floodFrom(const Torus &, const std::vector<unsigned char> &source,
+				const std::vector<unsigned char> &open, int limit = INT_MAX);
+/// The steps of floodFrom.
 std::vector<int> stepsFrom(const Torus &, const std::vector<unsigned char> &source,
 						   const std::vector<unsigned char> &open);
 /// The same flood with every tile open.
@@ -60,6 +72,9 @@ std::vector<std::vector<int>> unitTilesByTeam(const Map &, int teams);
 /// The tiles a ground unit can stand on and walk through: land carrying no deposit and no
 /// building.
 std::vector<unsigned char> walkableTiles(const Map &);
+/// The same question put to the engine's own rule, Map::isHardSpaceForGroundUnit, for a unit
+/// that cannot swim and belongs to no team.
+std::vector<unsigned char> groundUnitTiles(const Map &);
 /// The lowest colony from `first` on none of whose units the flood reached, or -1 when every
 /// one was: the check every validator makes that colonies can walk to colony 0.
 int firstColonyCutOff(const std::vector<int> &steps, const std::vector<std::vector<int>> &units,

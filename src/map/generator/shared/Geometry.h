@@ -39,4 +39,9 @@ class RadialShape
 // Wrapping visits each tile once using its nearest image relative to the shape center.
 void stampShape(std::vector<int> &labels, int width, int height, int label, const ShapeTransform &,
 				const RadialShape &, bool wrap);
+// A rough disc round a tile: a RadialShape of the given radius and roughness drawn from `stream`,
+// stamped wrapping. Jagged islands are made of these.
+void stampRoughDisc(std::vector<int> &labels, int width, int height, int label, int x, int y,
+					double radius, double roughness, GenerationContext &, const std::string &stream,
+					double amplitudeMaximum = 1.4);
 } // namespace MapGeneration

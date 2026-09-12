@@ -7,11 +7,12 @@ namespace MapGeneration
 {
 Torus::Torus(const Map &map) : w(map.getW()), h(map.getH()) {}
 
-std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &source,
-						   const std::vector<unsigned char> &open)
+Flood floodFrom(const Torus &t, const std::vector<unsigned char> &source,
+				const std::vector<unsigned char> &open, int limit)
 {
-	std::vector<int> dist(size_t(t.size()), -1);
-	std::vector<int> queue;
+	Flood flood;
+	std::vector<int> &dist = flood.steps, &queue = flood.visited;
+	dist.assign(size_t(t.size()), -1);
 	queue.reserve(dist.size());
 	for (size_t i = 0; i < dist.size(); ++i)
 		if (source[i])
@@ -21,6 +22,8 @@ std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &sou
 		}
 	for (size_t head = 0; head < queue.size(); ++head)
 	{
+		if (dist[queue[head]] >= limit)
+			continue;
 		const int x = queue[head] % t.w, y = queue[head] / t.w;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
@@ -33,7 +36,13 @@ std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &sou
 				}
 			}
 	}
-	return dist;
+	return flood;
+}
+
+std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &source,
+						   const std::vector<unsigned char> &open)
+{
+	return floodFrom(t, source, open).steps;
 }
 
 std::vector<int> stepsFrom(const Torus &t, const std::vector<unsigned char> &source)
@@ -73,6 +82,15 @@ std::vector<unsigned char> walkableTiles(const Map &map)
 			open[size_t(y) * map.getW() + x] =
 				!map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
 	return open;
+}
+
+std::vector<unsigned char> groundUnitTiles(const Map &map)
+{
+	std::vector<unsigned char> hard(size_t(map.getW()) * map.getH(), 0);
+	for (int y = 0; y < map.getH(); ++y)
+		for (int x = 0; x < map.getW(); ++x)
+			hard[size_t(y) * map.getW() + x] = map.isHardSpaceForGroundUnit(x, y, false, 0);
+	return hard;
 }
 
 int firstColonyCutOff(const std::vector<int> &steps, const std::vector<std::vector<int>> &units,

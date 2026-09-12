@@ -5,6 +5,7 @@
 #include "GenerationContext.h"
 #include "Geometry.h"
 #include "Grid.h"
+#include "LatticeNoise.h"
 #include "Pipeline.h"
 #include "Resources.h"
 #include "Roads.h"
@@ -160,37 +161,6 @@ Ripple makeRipple(GenerationContext &context, double base, double amplitude, int
 	}
 	return ripple;
 }
-
-// Smooth value noise on a lattice that tiles the map, so it wraps like the map does.
-class PeriodicNoise
-{
-  public:
-	PeriodicNoise(int width, int height, double cell, std::mt19937 &random)
-		: width(width), height(height), columns(std::max(2, int(std::lround(width / cell)))),
-		  rows(std::max(2, int(std::lround(height / cell)))), lattice(size_t(columns) * rows)
-	{
-		for (double &value : lattice)
-			value = random() / 4294967296.0;
-	}
-	double at(double x, double y) const
-	{
-		const double fx = x * columns / width, fy = y * rows / height;
-		const double x0 = std::floor(fx), y0 = std::floor(fy);
-		double tx = fx - x0, ty = fy - y0;
-		tx = tx * tx * (3 - 2 * tx);
-		ty = ty * ty * (3 - 2 * ty);
-		const int ix = wrapIndex(int(x0), columns), iy = wrapIndex(int(y0), rows);
-		const int jx = (ix + 1) % columns, jy = (iy + 1) % rows;
-		const double top = lattice[iy * columns + ix] * (1 - tx) + lattice[iy * columns + jx] * tx;
-		const double bottom =
-			lattice[jy * columns + ix] * (1 - tx) + lattice[jy * columns + jx] * tx;
-		return top * (1 - ty) + bottom * ty;
-	}
-
-  private:
-	int width, height, columns, rows;
-	std::vector<double> lattice;
-};
 
 // The canonical frame: u runs along the coast, v across it with the sea at large v. The map is
 // the frame turned so the sea lies along one of its sides: orientations 0 and 1 put it south or
@@ -1648,8 +1618,7 @@ void placeFruit(Game &game, GenerationContext &context, const Layout &layout, co
 	Map &map = game.map;
 	const int w = t.w, h = t.h;
 	std::vector<Vec> junctions = layout.junctions;
-	for (size_t i = junctions.size(); i > 1; --i)
-		std::swap(junctions[i - 1], junctions[context.bounded("resources", i)]);
+	context.shuffle(junctions.begin(), junctions.end(), "resources");
 	const int groves = int(scaledCount(std::max(3, w * h / 6000), fruitPercent));
 	int type = int(context.bounded("resources", 3)), placed = 0;
 	for (size_t j = 0; j < junctions.size() && placed < groves; ++j)

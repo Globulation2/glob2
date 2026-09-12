@@ -7,6 +7,7 @@
 #include "GenerationContext.h"
 #include "GeneratorDefinition.h"
 #include "GlobalContainer.h"
+#include "Grid.h"
 #include "HeightMap.h"
 #include "Map.h"
 #include "Regions.h"
@@ -309,12 +310,7 @@ namespace
 // branchy, multi-array accessor call at every visited tile into a single sequential array read.
 std::vector<std::uint8_t> buildHardSpaceGrid(Map &map)
 {
-	const int w = map.getW(), h = map.getH();
-	std::vector<std::uint8_t> hard(size_t(w) * h);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			hard[size_t(y) * w + x] = map.isHardSpaceForGroundUnit(x, y, false, 0) ? 1 : 0;
-	return hard;
+	return groundUnitTiles(map);
 }
 
 // Walking distance from every tile to the nearest deposit of one resource. Workers stand
@@ -322,52 +318,29 @@ std::vector<std::uint8_t> buildHardSpaceGrid(Map &map)
 // walkable tiles touching one. One flood answers the question for every tile on the map, which
 // is what makes scoring a few hundred candidate sites cheap enough to do exhaustively. Distances
 // on any map this engine supports fit comfortably in 16 bits, halving the footprint of an array
-// this flood (and every scoreAsBuilt call after it) touches over and over.
+// every scoreAsBuilt call after it touches over and over.
 std::vector<std::int16_t> distanceToResource(Map &map, const std::vector<std::uint8_t> &hard,
 											 int resourceType)
 {
-	const int w = map.getW(), h = map.getH();
-	std::vector<std::int16_t> dist(size_t(w) * h, -1);
-	// Every cell is enqueued at most once (the dist[np] < 0 guard below), so this never needs
-	// more than w*h slots - a flat preallocated FIFO instead of std::queue<int>'s
-	// std::deque-backed, block-by-block growth (see computeDistances for the same fix).
-	std::vector<int> q(size_t(w) * h);
-	size_t qHead = 0, qTail = 0;
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
+	const Torus t(map);
+	std::vector<unsigned char> beside(size_t(t.size()), 0);
+	for (int y = 0; y < t.h; ++y)
+		for (int x = 0; x < t.w; ++x)
 		{
 			if (map.getResource(x, y).type != resourceType)
 				continue;
 			for (int dy = -1; dy <= 1; ++dy)
 				for (int dx = -1; dx <= 1; ++dx)
 				{
-					int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-					int np = ny * w + nx;
-					if (dist[np] < 0 && hard[np])
-					{
-						dist[np] = 0;
-						q[qTail++] = np;
-					}
+					const int np = t.at(x + dx, y + dy);
+					if (hard[np])
+						beside[np] = 1;
 				}
 		}
-	while (qHead < qTail)
-	{
-		int p = q[qHead++];
-		int x = p % w, y = p / w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				if (dx == 0 && dy == 0)
-					continue;
-				int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-				int np = ny * w + nx;
-				if (dist[np] < 0 && hard[np])
-				{
-					dist[np] = dist[p] + 1;
-					q[qTail++] = np;
-				}
-			}
-	}
+	const std::vector<int> steps = stepsFrom(t, beside, hard);
+	std::vector<std::int16_t> dist(steps.size());
+	for (size_t i = 0; i < steps.size(); ++i)
+		dist[i] = std::int16_t(steps[i]);
 	return dist;
 }
 } // namespace

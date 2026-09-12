@@ -4,6 +4,7 @@
 #include "GenerationContext.h"
 #include "Grid.h"
 #include "Geometry.h"
+#include "LatticeNoise.h"
 #include "Pipeline.h"
 #include "Planting.h"
 #include "Resources.h"
@@ -110,46 +111,6 @@ std::vector<double> closedCurve(int length, double falloff, std::mt19937 &rng, d
 	for (int u = 0; u < length; ++u)
 		slope = std::max(slope, std::abs(curve[(u + 1) % length] - curve[u]));
 	return curve;
-}
-
-// Value noise whose lattice cells divide the map exactly (both sides are powers of two), so it
-// tiles the torus with no seam in either direction. Normalised to [-1, 1].
-std::vector<float> torusNoise(int width, int height, std::mt19937 &rng)
-{
-	static const std::pair<int, double> octaves[] = {{32, 0.4}, {16, 0.3}, {8, 0.2}, {4, 0.1}};
-	std::vector<double> field(size_t(width) * height, 0.0);
-	const auto ease = [](double t) { return t * t * (3 - 2 * t); };
-	for (const auto &octave : octaves)
-	{
-		const int cell = std::min({octave.first, width, height});
-		const int columns = width / cell, rows = height / cell;
-		std::vector<double> lattice(size_t(columns) * rows);
-		for (double &value : lattice)
-			value = 2 * unitDraw(rng) - 1;
-		for (int y = 0; y < height; ++y)
-		{
-			const int r0 = y / cell, r1 = (r0 + 1) % rows;
-			const double ty = ease(double(y % cell) / cell);
-			for (int x = 0; x < width; ++x)
-			{
-				const int c0 = x / cell, c1 = (c0 + 1) % columns;
-				const double tx = ease(double(x % cell) / cell);
-				const double top =
-					lattice[r0 * columns + c0] * (1 - tx) + lattice[r0 * columns + c1] * tx;
-				const double bottom =
-					lattice[r1 * columns + c0] * (1 - tx) + lattice[r1 * columns + c1] * tx;
-				field[size_t(y) * width + x] += octave.second * (top * (1 - ty) + bottom * ty);
-			}
-		}
-	}
-	double peak = 0;
-	for (double value : field)
-		peak = std::max(peak, std::abs(value));
-	std::vector<float> result(field.size(), 0.0f);
-	if (peak > 0)
-		for (size_t i = 0; i < field.size(); ++i)
-			result[i] = float(field[i] / peak);
-	return result;
 }
 
 struct Belt

@@ -227,8 +227,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::array<int, kLeveeSectors> sectors{};
 		for (int s = 0; s < kLeveeSectors; ++s)
 			sectors[s] = s;
-		for (int i = kLeveeSectors - 1; i > 0; --i)
-			std::swap(sectors[i], sectors[context.bounded("glades-levee", i + 1)]);
+		context.shuffle(sectors.begin(), sectors.end(), "glades-levee");
 		const int open = int(std::lround((1 - g.levee) * kLeveeSectors));
 		for (int i = 0; i < open; ++i)
 			home.standing[sectors[i]] = 0;

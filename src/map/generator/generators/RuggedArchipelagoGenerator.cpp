@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
+#include "RuggedArchipelagoGenerator.h"
 #include "Distances.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -17,7 +18,6 @@
 #include <algorithm>
 #include <cmath>
 using namespace MapGeneration;
-#include "RuggedArchipelagoGenerator.h"
 
 // The eight directions the growth passes below draw from: a pair of opposite neighbours at one
 // or two tiles, in the order the draw has always indexed them.
@@ -188,7 +188,6 @@ static void resources(Game &game, GenerationContext &context,
 		for (d = 0; d < islandsSize; d++)
 			if (!map.isGrass(bootX[s], bootY[s] - d))
 				break;
-		amount = context.request.resourceAmounts[WOOD];
 		amount = d - smoothResources - 2;
 		if (amount < 1)
 			amount = 1;
@@ -202,7 +201,6 @@ static void resources(Game &game, GenerationContext &context,
 		for (d = 0; d < islandsSize; d++)
 			if (!map.isGrass(bootX[s] - d, bootY[s]))
 				break;
-		amount = context.request.resourceAmounts[CORN];
 		amount = d - smoothResources - 0;
 		if (amount < 1)
 			amount = 1;
@@ -225,7 +223,6 @@ static void resources(Game &game, GenerationContext &context,
 		for (d = 0; d < islandsSize; d++)
 			if (!map.isGrass(bootX[s] + d, bootY[s] + d))
 				break;
-		amount = context.request.resourceAmounts[smallestResource];
 		amount = d - smoothResources - 3;
 		if (amount < 1)
 			amount = 1;
@@ -238,7 +235,6 @@ static void resources(Game &game, GenerationContext &context,
 		for (d = 0; d < 2 * islandsSize; d++)
 			if (map.isWater(bootX[s] + d, bootY[s]))
 				break;
-		amount = context.request.resourceAmounts[ALGA];
 		amount = smoothResources;
 		p = d + smoothResources - 1 + amount / 2;
 		if (amount > 0)

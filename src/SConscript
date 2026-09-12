@@ -203,6 +203,7 @@ map/generator/shared/HeightMap.cpp
 map/generator/shared/Noise.cpp
 map/generator/shared/Geometry.cpp
 map/generator/shared/Grid.cpp
+map/generator/shared/LatticeNoise.cpp
 map/generator/shared/Pipeline.cpp
 map/generator/shared/Planting.cpp
 map/generator/shared/Roads.cpp

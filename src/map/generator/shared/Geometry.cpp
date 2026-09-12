@@ -74,4 +74,11 @@ void stampShape(std::vector<int> &labels, int width, int height, int label,
 				labels[size_t(y) * width + x] = label;
 		}
 }
+void stampRoughDisc(std::vector<int> &labels, int width, int height, int label, int x, int y,
+					double radius, double roughness, GenerationContext &context,
+					const std::string &stream, double amplitudeMaximum)
+{
+	RadialShape shape(radius, roughness, context, stream, amplitudeMaximum);
+	stampShape(labels, width, height, label, ShapeTransform({double(x), double(y)}, 0), shape, true);
+}
 } // namespace MapGeneration

@@ -3,6 +3,7 @@
 // Copyright (C) 2008 Bradley Arsenault
 #include "Distances.h"
 #include "GenerationContext.h"
+#include "Grid.h"
 #include "HeightMap.h"
 #include "Map.h"
 #include "Regions.h"
@@ -45,73 +46,19 @@ void adjustHeightmapFromPerlinNoise(Map &map, GenerationContext &context, std::v
 void computeDistances(Map &map, std::vector<MapGeneratorPoint> &sources,
 					  std::vector<MapGeneratorPoint> &obstacles, std::vector<int> &heightmap)
 {
-	// Every cell is enqueued at most once - the `side == 0` guard below stops a second push
-	// once it's been visited - so a flood over the whole map never needs more than w*h queue
-	// slots. A flat, preallocated FIFO fills that bound with sequential writes; std::queue<int>
-	// (std::deque-backed) instead grows by separately heap-allocated blocks, turning most
-	// pushes and pops into a pointer chase to a freshly touched cache line.
-	const size_t mapSize = size_t(map.getW()) * map.getH();
-	std::vector<int> places(mapSize);
-	size_t head = 0, tail = 0;
-	heightmap.clear();
-	heightmap.resize(mapSize, 0);
-	for (unsigned int i = 0; i < sources.size(); ++i)
-	{
-		// Callers can list a tile more than once (Isles' land-bridge lines cross each other). Queueing
-		// a repeat takes a slot the w*h bound above never counted, so each one overran `places`, and
-		// the flood then read tile indices back from past its end. A repeated source adds nothing
-		// to the flood, so skip it.
-		const int index = sources[i].y * map.getW() + sources[i].x;
-		if (heightmap[index] == 1)
-			continue;
-		heightmap[index] = 1;
-		places[tail++] = index;
-	}
-	for (unsigned int i = 0; i < obstacles.size(); ++i)
-	{
-		heightmap[obstacles[i].y * map.getW() + obstacles[i].x] = -1;
-	}
-
-	Uint32 wDec = map.wDec;
-	Uint32 hMask = map.hMask;
-	Uint32 wMask = map.wMask;
-	while (head < tail)
-	{
-		int deltaAddrG = places[head++];
-
-		size_t y = deltaAddrG >> wDec; // Calculate the coordinates of
-		size_t x = deltaAddrG & wMask; // the current field and of the
-
-		size_t yu = ((y - 1) & hMask); // fields next to it.
-		size_t yd = ((y + 1) & hMask); // We live on a torus! If we are on
-		size_t xl = ((x - 1) & wMask); // the "last line" of the map, the
-		size_t xr = ((x + 1) & wMask); // next line is the line 0 again.
-
-		int g = heightmap[(y << wDec) | x] + 1;
-
-		size_t deltaAddrC[8];
-		int *addr;
-		int side;
-
-		deltaAddrC[0] = (yu << wDec) | xl; // Calculate the positions of the
-		deltaAddrC[1] = (yu << wDec) | x;  // 8 fields next to us from their
-		deltaAddrC[2] = (yu << wDec) | xr; // coordinates.
-		deltaAddrC[3] = (y << wDec) | xr;
-		deltaAddrC[4] = (yd << wDec) | xr;
-		deltaAddrC[5] = (yd << wDec) | x;
-		deltaAddrC[6] = (yd << wDec) | xl;
-		deltaAddrC[7] = (y << wDec) | xl;
-		for (int ci = 0; ci < 8; ci++) // Check for each of this fields if we
-		{                              // can improve its gradient value
-			addr = &heightmap[deltaAddrC[ci]];
-			side = *addr;
-			if (side == 0)
-			{
-				*addr = g;
-				places[tail++] = deltaAddrC[ci];
-			}
-		}
-	}
+	// Callers can list a tile more than once (Isles' land-bridge lines cross each other); a mask
+	// takes it once. Sources and obstacles never overlap in any caller.
+	const Torus t(map);
+	std::vector<unsigned char> source(size_t(t.size()), 0), open(size_t(t.size()), 1);
+	for (const MapGeneratorPoint &p : sources)
+		source[t.at(p.x, p.y)] = 1;
+	for (const MapGeneratorPoint &p : obstacles)
+		open[t.at(p.x, p.y)] = 0;
+	const std::vector<int> steps = stepsFrom(t, source, open);
+	// The historical encoding: a source reads 1, each ring one more, obstacles -1, unreached 0.
+	heightmap.assign(steps.size(), 0);
+	for (size_t i = 0; i < steps.size(); ++i)
+		heightmap[i] = !open[i] ? -1 : steps[i] < 0 ? 0 : steps[i] + 1;
 }
 
 int computeAverageDistance(Map &map, std::vector<int> &grid, int areaN,

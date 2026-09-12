@@ -20,9 +20,7 @@ namespace
 void createJaggedIsland(Map &map, GenerationContext &context, std::vector<int> &grid, int area,
 						int x, int y, int radius, double roughness)
 {
-	RadialShape shape(radius, roughness, context, "coast", 1.4);
-	stampShape(grid, map.getW(), map.getH(), area, ShapeTransform({double(x), double(y)}, 0), shape,
-			   true);
+	stampRoughDisc(grid, map.getW(), map.getH(), area, x, y, radius, roughness, context, "coast");
 }
 // What the stages of a roll hand each other: the working area grid and the next free area
 // number, where the colonies and the commons were seeded, and how big everything came out.

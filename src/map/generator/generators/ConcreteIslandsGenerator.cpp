@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 // Copyright (C) 2008 Bradley Arsenault
+#include "ConcreteIslandsGenerator.h"
 #include "Distances.h"
 #include "Game.h"
 #include "GenerationContext.h"
@@ -18,7 +19,6 @@
 #include <cmath>
 #include <numeric>
 using namespace MapGeneration;
-#include "ConcreteIslandsGenerator.h"
 static bool generate(Game &game, GenerationContext &context)
 {
 	context.stage = "layout";

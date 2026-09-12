@@ -244,8 +244,7 @@ std::vector<int> chooseHomes(const MazeGrid &g, GenerationContext &context, int 
 		const int r = mirrorY ? (g.rows - g.row(home)) % g.rows : g.row(home);
 		home = ((r + offsetY) % g.rows) * g.columns + (c + offsetX) % g.columns;
 	}
-	for (size_t i = homes.size(); i > 1; --i)
-		std::swap(homes[i - 1], homes[context.bounded("maze", i)]);
+	context.shuffle(homes.begin(), homes.end(), "maze");
 	return homes;
 }
 
@@ -301,8 +300,7 @@ void addLoops(const MazeGrid &g, GenerationContext &context,
 			if (!open[g.edgeId(cell, d)] && !isHome[g.neighbour(cell, d)])
 				closed.push_back(g.edgeId(cell, d));
 	}
-	for (size_t i = closed.size(); i > 1; --i)
-		std::swap(closed[i - 1], closed[context.bounded("maze", i)]);
+	context.shuffle(closed.begin(), closed.end(), "maze");
 	const size_t extra = std::min(closed.size(), size_t(freeCells * loopiness / 100));
 	for (size_t i = 0; i < extra; ++i)
 		open[closed[i]] = 1;
@@ -706,8 +704,7 @@ bool generate(Game &game, GenerationContext &context)
 	// Without treasure the same fruit is scattered along the passages' shores instead.
 	if (o.fruit > 0 && o.treasure)
 	{
-		for (size_t i = deadEnds.size(); i > 1; --i)
-			std::swap(deadEnds[i - 1], deadEnds[context.bounded("resources", i)]);
+		context.shuffle(deadEnds.begin(), deadEnds.end(), "resources");
 		const int firstType = context.bounded("resources", 3);
 		for (size_t i = 0; i < deadEnds.size(); ++i)
 			placeTreasure(map, g, deadEnds[i], exitOf[deadEnds[i]], half, o.fruit,

@@ -9,6 +9,7 @@
 #include "GlobalContainer.h"
 #include "HeightMap.h"
 #include "Resources.h"
+#include "Topology.h"
 #include "Unit.h"
 #include <algorithm>
 #include <array>
@@ -489,30 +490,16 @@ bool carvePaths(const Arena &a, const Layout &l, Terrain &t)
 // a matter of geometry alone, so every symmetry maps groups onto groups of the same size.
 std::vector<std::vector<int>> groupsOf(const std::vector<unsigned char> &mask, int w, int h)
 {
+	const std::vector<int> label =
+		MapGeneration::connectedRegions(mask, w, h, true, MapGeneration::GridNeighbors::Eight);
 	std::vector<std::vector<int>> groups;
-	std::vector<unsigned char> seen(mask.size(), 0);
-	for (size_t first = 0; first < mask.size(); ++first)
-	{
-		if (!mask[first] || seen[first])
-			continue;
-		std::vector<int> group{int(first)};
-		seen[first] = 1;
-		for (size_t head = 0; head < group.size(); ++head)
+	for (size_t i = 0; i < label.size(); ++i)
+		if (label[i] >= 0)
 		{
-			const int x = group[head] % w, y = group[head] / w;
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-				{
-					const size_t j = size_t(wrap(y + dy, h)) * w + wrap(x + dx, w);
-					if (mask[j] && !seen[j])
-					{
-						seen[j] = 1;
-						group.push_back(int(j));
-					}
-				}
+			if (label[i] >= int(groups.size()))
+				groups.resize(label[i] + 1);
+			groups[label[i]].push_back(int(i));
 		}
-		groups.push_back(std::move(group));
-	}
 	return groups;
 }
 
@@ -1033,7 +1020,6 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 {
 	const Map &map = game.map;
 	const int w = map.getW(), h = map.getH(), teams = context.request.nbTeams;
-	const size_t n = size_t(w) * h;
 	const Arena a = arenaFor(context.request);
 	const Symmetry &s = a.symmetry;
 	if (s.order() != teams)
@@ -1111,39 +1097,14 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 
 	static const char *const targets[] = {"wheat",   "wood",   "cherries",
 										  "oranges", "prunes", "the orchard"};
-	std::vector<unsigned char> walkable(n);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-			walkable[size_t(y) * w + x] =
-				!map.isWater(x, y) && !map.isResource(x, y) && map.getBuilding(x, y) == NOGBID;
+	const std::vector<unsigned char> walkable = MapGeneration::walkableTiles(map);
+	const MapGeneration::Torus torus(map);
+	const auto workers = MapGeneration::unitTilesByTeam(map, teams);
 	std::array<int, 6> first{};
 	for (int team = 0; team < teams; ++team)
 	{
-		std::vector<int> dist(n, -1), queue;
-		for (int y = 0; y < h; ++y)
-			for (int x = 0; x < w; ++x)
-			{
-				const Uint16 gid = map.getGroundUnit(x, y);
-				if (gid != NOGUID && Unit::GIDtoTeam(gid) == team)
-				{
-					dist[size_t(y) * w + x] = 0;
-					queue.push_back(y * w + x);
-				}
-			}
-		for (size_t head = 0; head < queue.size(); ++head)
-		{
-			const int x = queue[head] % w, y = queue[head] / w;
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-				{
-					const size_t j = size_t(wrap(y + dy, h)) * w + wrap(x + dx, w);
-					if (dist[j] < 0 && walkable[j])
-					{
-						dist[j] = dist[size_t(queue[head])] + 1;
-						queue.push_back(int(j));
-					}
-				}
-		}
+		const std::vector<int> dist = MapGeneration::stepsFrom(
+			torus, MapGeneration::tileMask(torus, workers[team]), walkable);
 		std::array<int, 6> steps;
 		steps.fill(-1);
 		const auto reach = [&](int slot, int d)

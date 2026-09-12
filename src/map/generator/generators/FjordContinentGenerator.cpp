@@ -24,9 +24,8 @@ double randomAngle(GenerationContext &context)
 void createJaggedIsland(Map &map, GenerationContext &context, std::vector<int> &grid, int area,
 						int x, int y, int radius, double roughness)
 {
-	RadialShape shape(radius, roughness, context, "outliers", 1.4);
-	stampShape(grid, map.getW(), map.getH(), area, ShapeTransform({double(x), double(y)}, 0), shape,
-			   true);
+	stampRoughDisc(grid, map.getW(), map.getH(), area, x, y, radius, roughness, context,
+				   "outliers");
 }
 
 bool placeBankClump(Map &map, GenerationContext &context,

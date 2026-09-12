@@ -2,6 +2,7 @@
 #include "StartQuality.h"
 #include "FertilityField.h"
 #include "Game.h"
+#include "Grid.h"
 #include "Map.h"
 #include "Unit.h"
 #include <algorithm>
@@ -21,37 +22,8 @@ double clampUnit(double v)
 /// Workers, not the boot tile: the swarm occupies the boot tile and nobody walks out of it.
 std::vector<int> walkFromWorkers(const Map &map, const std::vector<int> &workers)
 {
-	const int w = map.getW(), h = map.getH();
-	std::vector<int> dist(size_t(w) * h, -1);
-	// Bounded by the dist[np] < 0 guard below to at most w*h enqueues - a flat preallocated FIFO
-	// instead of std::queue<int>'s std::deque, which grows by separately heap-allocated blocks.
-	std::vector<int> q(size_t(w) * h);
-	size_t qHead = 0, qTail = 0;
-	for (int p : workers)
-		if (dist[p] < 0)
-		{
-			dist[p] = 0;
-			q[qTail++] = p;
-		}
-	while (qHead < qTail)
-	{
-		const int p = q[qHead++];
-		const int x = p % w, y = p / w;
-		for (int dy = -1; dy <= 1; ++dy)
-			for (int dx = -1; dx <= 1; ++dx)
-			{
-				if (!dx && !dy)
-					continue;
-				const int nx = map.normalizeX(x + dx), ny = map.normalizeY(y + dy);
-				const int np = ny * w + nx;
-				if (dist[np] < 0 && map.isHardSpaceForGroundUnit(nx, ny, false, 0))
-				{
-					dist[np] = dist[p] + 1;
-					q[qTail++] = np;
-				}
-			}
-	}
-	return dist;
+	const Torus t(map);
+	return stepsFrom(t, tileMask(t, workers), groundUnitTiles(map));
 }
 } // namespace
 
@@ -65,17 +37,7 @@ StartQualityReport scoreStarts(Game &game, int requestedTeams, const StartQualit
 	if (nbTeams <= 0)
 		return report;
 
-	std::vector<std::vector<int>> workers(nbTeams);
-	for (int y = 0; y < h; ++y)
-		for (int x = 0; x < w; ++x)
-		{
-			const Uint16 gid = map.getGroundUnit(x, y);
-			if (gid == NOGUID)
-				continue;
-			const int team = Unit::GIDtoTeam(gid);
-			if (team >= 0 && team < nbTeams)
-				workers[team].push_back(y * w + x);
-		}
+	const std::vector<std::vector<int>> workers = unitTilesByTeam(map, nbTeams);
 	for (const auto &team : workers)
 		if (team.empty())
 			return report; // nothing walked out of this colony; there is nothing to score

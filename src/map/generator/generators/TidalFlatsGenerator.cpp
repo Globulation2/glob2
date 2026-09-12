@@ -11,6 +11,7 @@
 #include "Resources.h"
 #include "Settlements.h"
 #include "Sketch.h"
+#include "Topology.h"
 #include "Unit.h"
 #include "Wedge.h"
 #include <algorithm>
@@ -342,28 +343,20 @@ void stockIslands(Map &map, const Layout &L, GenerationContext &context, const T
 {
 	const Torus &t = L.t;
 	const int n = t.w * t.h;
-	// Every neutral island is its own component of grass; each gets its prize at its middle.
-	std::vector<unsigned char> seen(n, 0);
-	for (int start = 0; start < n; ++start)
+	// Every neutral island is its own component of grass; each gets its prize at its middle. The
+	// engine draws each deposit's amount from the gameplay RNG as it is placed, so an island's
+	// tiles are planted in the order a flood from its first tile reaches them.
+	std::vector<unsigned char> neutral(n, 0);
+	for (int i = 0; i < n; ++i)
+		neutral[i] = L.islandOf[i] == -3 && L.prizeOf[i] >= 0;
+	const std::vector<int> label = connectedRegions(neutral, t.w, t.h, true, GridNeighbors::Eight);
+	std::vector<int> firstTile;
+	for (int i = 0; i < n; ++i)
+		if (label[i] >= int(firstTile.size()))
+			firstTile.push_back(i);
+	for (const int start : firstTile)
 	{
-		if (seen[start] || L.islandOf[start] != -3 || L.prizeOf[start] < 0)
-			continue;
-		std::vector<int> tiles{start};
-		seen[start] = 1;
-		for (size_t head = 0; head < tiles.size(); ++head)
-		{
-			const int i = tiles[head];
-			for (int dy = -1; dy <= 1; ++dy)
-				for (int dx = -1; dx <= 1; ++dx)
-				{
-					const int m = t.at(i % t.w + dx, i / t.w + dy);
-					if (!seen[m] && L.islandOf[m] == -3 && L.prizeOf[m] >= 0)
-					{
-						seen[m] = 1;
-						tiles.push_back(m);
-					}
-				}
-		}
+		const std::vector<int> tiles = floodFrom(t, tileMask(t, {start}), neutral).visited;
 		double sx = 0, sy = 0;
 		for (int i : tiles)
 		{

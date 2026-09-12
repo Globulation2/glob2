@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GenerationContext.h"
 #include "Grid.h"
+#include "LatticeNoise.h"
 #include "Pipeline.h"
 #include "Resources.h"
 #include "Settlements.h"
@@ -76,71 +77,6 @@ constexpr int kAlgaePercent = 12;     // of each pond's open water
 constexpr int kFruitGrove = 6;
 constexpr int kAreaPerColony = 1024;
 constexpr int kFar = INT_MAX / 4;
-
-template <typename T>
-void shuffle(std::vector<T> &values, GenerationContext &context, const char *stream)
-{
-	for (size_t i = values.size(); i > 1; --i)
-		std::swap(values[i - 1], values[context.bounded(stream, std::uint32_t(i))]);
-}
-
-// Smooth value noise that tiles the map's torus exactly: a lattice of random values about
-// `period` tiles apart (a whole number of lattice cells spans the map), blended with a
-// smoothstep. Integer arithmetic throughout. Values are 0..65535.
-std::vector<int> periodicNoise(int w, int h, int period, std::mt19937 &rng)
-{
-	const int gw = std::max(1, (w + period / 2) / std::max(1, period));
-	const int gh = std::max(1, (h + period / 2) / std::max(1, period));
-	std::vector<int> lattice(size_t(gw) * gh);
-	for (int &v : lattice)
-		v = int(rng() >> 16);
-	const auto smooth = [](int t)
-	{ return int(std::int64_t(t) * t * (3 * 1024 - 2 * t) / (1024 * 1024)); };
-	std::vector<int> field(size_t(w) * h);
-	for (int y = 0; y < h; ++y)
-	{
-		const std::int64_t fy = std::int64_t(y) * gh * 1024 / h;
-		const int y0 = int(fy >> 10), y1 = (y0 + 1) % gh, ty = smooth(int(fy & 1023));
-		for (int x = 0; x < w; ++x)
-		{
-			const std::int64_t fx = std::int64_t(x) * gw * 1024 / w;
-			const int x0 = int(fx >> 10), x1 = (x0 + 1) % gw, tx = smooth(int(fx & 1023));
-			const int a = lattice[size_t(y0) * gw + x0], b = lattice[size_t(y0) * gw + x1];
-			const int c = lattice[size_t(y1) * gw + x0], d = lattice[size_t(y1) * gw + x1];
-			const int top = a + (b - a) * tx / 1024, bottom = c + (d - c) * tx / 1024;
-			field[size_t(y) * w + x] = top + (bottom - top) * ty / 1024;
-		}
-	}
-	return field;
-}
-
-// Octaves at period, period/2, ... weighted 2:1 per step.
-std::vector<int> fractalNoise(int w, int h, int period, int octaves, std::mt19937 &rng)
-{
-	std::vector<int> sum(size_t(w) * h, 0);
-	int total = 0;
-	for (int octave = 0; octave < octaves; ++octave)
-	{
-		const int weight = 1 << (octaves - 1 - octave);
-		const std::vector<int> layer = periodicNoise(w, h, std::max(2, period >> octave), rng);
-		for (size_t i = 0; i < sum.size(); ++i)
-			sum[i] += layer[i] * weight;
-		total += weight;
-	}
-	for (int &v : sum)
-		v /= total;
-	return sum;
-}
-
-// The value below which `percent` of the given samples fall.
-int percentile(std::vector<int> samples, int percent)
-{
-	if (samples.empty())
-		return 0;
-	const size_t k = std::min(samples.size() - 1, samples.size() * size_t(percent) / 100);
-	std::nth_element(samples.begin(), samples.begin() + k, samples.end());
-	return samples[k];
-}
 
 // Chebyshev steps from every tile to the nearest source tile; kFar with no sources.
 std::vector<int> chebyshevDistance(const Torus &t, const std::vector<unsigned char> &source)
@@ -838,7 +774,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 	for (const auto &e : exclusive)
 		if (int(e.second.size()) >= kMinimumBoundary)
 			edges.push_back(e.first);
-	shuffle(edges, context, "highlands-passes");
+	context.shuffle(edges.begin(), edges.end(), "highlands-passes");
 	for (const auto &e : edges)
 	{
 		if (sets.find(e.first) == sets.find(e.second))
@@ -858,7 +794,7 @@ Layout design(const GenerationRequest &request, GenerationContext &context)
 		std::vector<std::pair<int, int>> fallback;
 		for (const auto &e : anyPair)
 			fallback.push_back(e.first);
-		shuffle(fallback, context, "highlands-passes");
+		context.shuffle(fallback.begin(), fallback.end(), "highlands-passes");
 		for (const auto &e : fallback)
 			if (sets.find(e.first) != sets.find(e.second) &&
 				carvePass(L, context, e.first, e.second, anyPair[e], alongRidge, o.passWidth))
@@ -1113,7 +1049,7 @@ void plantFruit(Map &map, GenerationContext &context, const Layout &L,
 				valleys.push_back(v);
 	if (valleys.empty())
 		return;
-	shuffle(valleys, context, "highlands-fruit");
+	context.shuffle(valleys.begin(), valleys.end(), "highlands-fruit");
 	const int groves = std::max(1, int(std::int64_t(fruit) * n / 16384));
 	const int firstType = int(context.bounded("highlands-fruit", 3));
 	for (int g = 0; g < groves; ++g)
