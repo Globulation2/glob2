@@ -134,6 +134,102 @@ often clears the others without further deletions.
 This replaced the older rule that retired only swarms with no farm capacity at
 all, which has since been removed: with `food.enabled` off, nothing is retired.
 
+## Relocation
+
+A building that is far from its wheat, or starving where it stands, is not
+always best retired: often the same inn or swarm would be worth keeping a few
+tiles away. Relocation rebuilds it there first and retires the old one only
+once the replacement stands, so the settlement never loses the capacity in
+between.
+
+**Nomination** is the executor's job (`Maxima::update_food_relocation`). A
+completed, retirable inn or swarm whose ledger quality stays at or above
+`food.relocation_min_quality_tiles` for `food.relocation_confirm_ticks` is a
+candidate; quality already charges unreachable demand at the penalty distance,
+so a starving building looks far even when its wheat is close. The last inn and
+the last swarm are exempt, as in retirement: early on it is the settlement's
+only one, starving while its first farm grows in. Establishing colony swarms
+are exempt, and so is anything that could not clear a gain floor even at a
+perfect site: a swarm with coverage above 75% earns no distance credit and has
+nothing left to gain. When nothing is under attack, nobody is critically
+hungry, no recovery posture is active and `food.relocation_cooldown_ticks` have
+passed since the last relocation ended, the worst candidate is nominated. One
+nomination is live at a time; the nominated building is exempt from burden
+retirement while it waits, and retirement resumes if the nomination is
+abandoned. Relocation runs before retirement in the same pass for that reason.
+
+**Siting and pricing** is the planner's job. The nomination becomes a
+`Relocation` intent for the same building type carrying `replacesBuildingId`.
+Candidates are generated, scored and capacity-checked exactly like a new inn or
+swarm, but against a ledger from which the old building has been removed, so
+its own wheat is free for the replacement. Each candidate then has to pass
+`Planner::appraiseRelocation`, all in worker-ticks:
+
+```text
+flowing   = min(old claimed, new claimed)            # wheat delivered either way
+distance  = flowing * 2 * carrier_ticks_per_tile
+            * (old quality - new quality) * realisation_kind
+coverage  = (new claimed - old claimed)
+            * (carrier_fixed_ticks_per_trip + 2 * carrier_ticks_per_tile
+               * (supply radius + unreachable penalty))
+saving    = distance + coverage                      # per tick
+cost      = margin% * sum over levels 1..current, resources r:
+              units_r * (fixed + 2 * ticks_per_tile * distance to r + builder step)
+viable    = saving > 0 and cost / saving <= payback horizon
+            and (realised quality gain >= min gain tiles
+                 or coverage gain >= min coverage gain percent)
+```
+
+The old building's quality and coverage come from the full ledger; the
+candidate's come from the residual the excluded ledger leaves
+(`Ledger::residualQuality`, `reachableResidual`), i.e. what it would get among
+the current claimants. Coverage shortfall is priced at the ledger's own
+convention for unreachable demand: a trip to the supply radius plus the
+penalty. Distance savings are realised per kind
+(`food.relocation_inn_distance_realisation_percent`, default 155, and
+`..._swarm_...`, default 0), because the [calibration](#carrier-cost-calibration)
+showed inn carriers walk less when quality improves and swarm carriers do not;
+a swarm therefore relocates only for coverage. Every level the old building has
+is charged again, so an upgraded inn must save proportionally more. A candidate
+that fails is reported as `negative_utility`.
+
+**Completion.** The replacement is an ordinary planner action: reserved,
+issued, observed and completed like any build, and a relocation pair counts as
+one building for the director's targets until the old one is gone. When the
+action reaches `Completed` the executor issues `DestroyBuilding` for the old
+building. Because the replacement already stands, an attack does not block this
+the way it blocks a plain retirement; critical hunger or a recovery posture
+does, since the old building may still hold stock, and so does the inn-seat rule
+with seats weighted by their inn's coverage (a starving inn's seats are not
+seats). If the build is invalidated, rejected or destroyed, if the planner
+scans every site and refuses them all, if a busy planner never reaches the
+offer within `food.relocation_offer_ticks`, or if the destroy stays deferred
+for `food.relocation_cooldown_ticks`, the nomination is abandoned (keeping both buildings in the
+last case) and the cooldown restarts. Telemetry: `food_relocation_nominated`, `_lifecycle`,
+`_deferred`, `_destroy`, `_done`, `_abandoned`.
+
+| Parameter | Default | Role |
+| --- | --- | --- |
+| `food.relocation_enabled` | true | switch |
+| `food.relocation_min_quality_tiles` | 5 | never nominate closer buildings |
+| `food.relocation_confirm_ticks` | 3000 | quality must persist |
+| `food.relocation_cooldown_ticks` | 6000 | between relocations; also how long a deferred retirement may wait |
+| `food.relocation_offer_ticks` | 3000 | how long a busy planner gets before the offer lapses |
+| `food.relocation_payback_horizon_ticks` | 15000 | the cutoff |
+| `food.relocation_cost_margin_percent` | 125 | bias toward keeping |
+| `food.relocation_min_gain_tiles` | 3 | churn floor on distance |
+| `food.relocation_min_coverage_gain_percent` | 25 | churn floor on coverage |
+| `food.carrier_ticks_per_tile` | 23 | measured |
+| `food.carrier_fixed_ticks_per_trip` | 105 | measured |
+| `food.builder_ticks_per_step` | 32 | one build action |
+| `food.relocation_inn_distance_realisation_percent` | 155 | measured |
+| `food.relocation_swarm_distance_realisation_percent` | 0 | measured |
+
+The horizon only binds for expensive buildings. At the defaults a level-1 inn
+(three wood) pays back within about two tiles of improvement, so the gain
+floors govern it; a level-3 inn needs roughly seven tiles at 15 000 ticks and
+half that at 30 000, which is where the horizon is the decision.
+
 ## Saturation
 
 Inn and swarm targets are capped by what the ledger can supply: buildings that

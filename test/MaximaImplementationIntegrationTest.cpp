@@ -743,7 +743,7 @@ static void legacySwarmRetirementSaveGateRegression()
     game.addTeam(); game.teams[0]->race.loadDefault();
     Player player; player.setTeam(game.teams[0]);
     std::map<int,size_t> written;
-    for(int formatVersion:{98,VERSION_MINOR})
+    for(int formatVersion:{98,99,VERSION_MINOR})
     {
         AIMaxima::Maxima source(&player);
         source.budget.second_prestige_population_min=11;
@@ -753,6 +753,8 @@ static void legacySwarmRetirementSaveGateRegression()
         source.food_supported_inns=3; source.food_supported_swarms=2;
         source.food_ledger_valid=true;
         source.last_farming_tick=777; source.development_cycle_pending=true;
+        source.relocation_target_building=7; source.relocation_since[3]=55;
+        source.last_food_relocation_tick=4242;
         auto* backend=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(backend);
         AIMaximaContinuation::Writer writer(&output,formatVersion);
@@ -773,8 +775,16 @@ static void legacySwarmRetirementSaveGateRegression()
         assert(loaded.food_supported_inns==3 && loaded.food_supported_swarms==2);
         assert(loaded.food_ledger_valid);
         assert(loaded.last_farming_tick==777 && loaded.development_cycle_pending);
+        // Relocation state exists from format 100; older formats keep defaults.
+        if(formatVersion>=100)
+        {
+            assert(loaded.relocation_target_building==7 && loaded.relocation_since.at(3)==55);
+            assert(loaded.last_food_relocation_tick==4242);
+        }
+        else assert(loaded.relocation_target_building==-1 && loaded.relocation_since.empty());
     }
-    // The old format is exactly the new one plus the four retired records.
+    // Format 98 is exactly format 99 plus the four retired records, and the
+    // current format only appends to 99.
     auto* legacyBackend=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream legacyOutput(legacyBackend);
     AIMaximaContinuation::Writer legacy(&legacyOutput,98);
@@ -785,7 +795,136 @@ static void legacySwarmRetirementSaveGateRegression()
     legacy("remote_swarm_since",retiredSince);
     legacy("remote_swarms_ready",retiredSet);
     legacy("remote_swarm_deletion_issued",retiredSet);
-    assert(written[98]==written[VERSION_MINOR]+legacyBackend->getPosition());
+    assert(written[98]==written[99]+legacyBackend->getPosition());
+    assert(written[VERSION_MINOR]>written[99]);
+}
+
+// The relocation executor nominates a far building, offers it to the planner,
+// destroys it once the replacement stands, and gives up when the planner finds
+// no site or the build fails. Planner actions are injected directly.
+static void foodRelocationExecutorRegression()
+{
+    using namespace AIMaximaPlacement;
+    Game game(NULL); game.map.setSize(6,6,GRASS); game.map.setGame(&game);
+    game.addTeam(); game.teams[0]->race.loadDefault();
+    Player player; player.setTeam(game.teams[0]);
+    const int innType=globalContainer->buildingsTypes.getTypeNum("inn",0,false);
+    assert(game.addBuilding(10,10,innType,0)); assert(game.addBuilding(30,30,innType,0));
+    assert(game.addBuilding(50,50,innType,0)); // the last inn of a settlement is never nominated
+    AIMaxima::Maxima ai(&player); Context& c=ai.context; c.initialize();
+    for(int y=0;y<64;++y)for(int x=0;x<64;++x)game.map.setMapDiscovered(x,y,player.team->me);
+    ai.initialize_farming_cache(c); ai.configure_development_planner();
+    ai.budget.food_ledger_enabled=true; ai.budget.food_relocation_enabled=true;
+    ai.budget.food_relocation_min_quality_tiles=5; ai.budget.food_relocation_confirm_ticks=1000;
+    ai.budget.food_relocation_cooldown_ticks=2000; ai.budget.food_relocation_offer_ticks=2000;
+    ai.budget.recovery_active=false;
+    ai.snapshot.critical_food=0; ai.snapshot.own_buildings_under_attack=0;
+    ai.snapshot.own_units_under_attack=0; ai.snapshot.population=0;
+    WorldState world=ai.collect_development_world(c);
+    assert(world.building(0)&&world.building(1)&&world.building(2));
+    {
+        // A lone inn is never nominated, however far its wheat.
+        WorldState lone=world;
+        lone.buildings.erase(lone.buildings.begin()+1,lone.buildings.end());
+        ai.timer=100; ai.update_food_relocation(c,lone);
+        ai.timer=5000; ai.update_food_relocation(c,lone);
+        assert(ai.relocation_target_building==-1&&ai.relocation_since.empty());
+    }
+
+    // No protected wheat anywhere: both inns sit at the unreachable penalty, so
+    // both start their confirmation and the lowest id is nominated once it ends.
+    ai.timer=100; ai.update_food_relocation(c,world);
+    assert(ai.relocation_since.count(0)&&ai.relocation_since.count(1));
+    assert(ai.relocation_target_building==-1);
+    ai.timer=1100; ai.snapshot.critical_food=3; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==-1); // not while anyone starves
+    ai.snapshot.critical_food=0; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==0&&ai.relocation_target_since==1100);
+    bool offered=false;
+    for(const auto& intent:ai.collect_development_intents(world))
+        if(intent.purpose==Relocation&&intent.replacesBuildingId==0
+           &&intent.buildingType==IntBuildingType::FOOD_BUILDING) offered=true;
+    assert(offered);
+
+    // The planner never finds a site: the offer expires after the offer window.
+    ai.timer=3099; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==0);
+    ai.timer=3100; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==3100);
+
+    // A completed replacement retires the old building, once, when it is safe.
+    ai.timer=6000; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==0);
+    DevelopmentAction action; action.id=77; action.type=BuildStandalone;
+    action.purpose=Relocation; action.replacesBuildingId=0; action.buildingId=1;
+    action.buildingType=IntBuildingType::FOOD_BUILDING; action.state=SiteObserved;
+    ai.development_planner.actionMap[77]=action;
+    offered=false;
+    for(const auto& intent:ai.collect_development_intents(world))
+        if(intent.purpose==Relocation) offered=true;
+    assert(!offered); // an action is underway
+    ai.timer=6200; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==0&&c.managementOrders.empty());
+    ai.development_planner.actionMap[77].state=Completed;
+    ai.snapshot.critical_food=1; ai.update_food_relocation(c,world);
+    assert(c.managementOrders.empty()&&ai.relocation_completed_tick==6200); // not while hungry
+    ai.snapshot.critical_food=0; ai.snapshot.own_units_under_attack=2; // attacks do not block
+    ai.update_food_relocation(c,world);
+    ai.snapshot.own_units_under_attack=0;
+    int destroyed=0;
+    for(auto order:c.managementOrders)
+        if(auto d=dynamic_cast<Management::DestroyBuilding*>(order.get())) destroyed+=d->id==0;
+    assert(destroyed==1&&ai.relocation_destroy_issued.count(0));
+    ai.update_food_relocation(c,world);
+    destroyed=0;
+    for(auto order:c.managementOrders)
+        if(auto d=dynamic_cast<Management::DestroyBuilding*>(order.get())) destroyed+=d->id==0;
+    assert(destroyed==1); // issued once
+    // The old building disappears: the relocation is done and the cooldown restarts.
+    world.buildings.erase(world.buildings.begin());
+    assert(!world.building(0));
+    ai.timer=6400; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==6400);
+    assert(!ai.relocation_destroy_issued.count(0));
+
+    // A planner that scanned every site and refused them all abandons at once.
+    ai.timer=9000; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==1);
+    ai.development_planner.refusedRelocations.insert(1);
+    ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==9000);
+    // Renominating clears the stale refusal.
+    ai.timer=11000; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==1&&!ai.development_planner.relocationRefused(1));
+
+    // A failed build abandons the nomination.
+    ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==1);
+    DevelopmentAction failed=action; failed.id=78; failed.replacesBuildingId=1;
+    failed.buildingId=-1; failed.state=EngineRejected;
+    ai.development_planner.actionMap[78]=failed;
+    ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==11000);
+
+    // A completed pair whose destroy stays deferred is given up after the cooldown.
+    ai.timer=13000; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==1);
+    DevelopmentAction stuck=action; stuck.id=79; stuck.replacesBuildingId=1;
+    stuck.buildingId=1; stuck.state=Completed;
+    ai.development_planner.actionMap[79]=stuck;
+    ai.snapshot.critical_food=1; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==1&&ai.relocation_completed_tick==13000);
+    ai.timer=14999; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==1);
+    ai.timer=15000; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==-1&&ai.last_food_relocation_tick==15000);
+    ai.snapshot.critical_food=0; ai.development_planner.actionMap.erase(79);
+
+    // Switching relocation off clears every nomination.
+    ai.timer=18000; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==1);
+    ai.budget.food_relocation_enabled=false; ai.update_food_relocation(c,world);
+    assert(ai.relocation_target_building==-1&&ai.relocation_since.empty());
 }
 
 static void innCompletionStaffingRegressions()
@@ -1426,6 +1565,7 @@ int main(int argc,char** argv)
     missionForceRegressions();
     economyStaffingRegressions();
     legacySwarmRetirementSaveGateRegression();
+    foodRelocationExecutorRegression();
     explorerSwarmStaffingRegressions();
     completedSwarmBudgetRegressions();
     economicResourceAccessRegressions();

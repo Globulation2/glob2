@@ -52,6 +52,8 @@ namespace
 	const int PREEMPTIVE_UNREACHABLE=-1;
 	// Save format that dropped the zero-capacity swarm retirement records.
 	const int LegacySwarmRetirementRemovedVersion=99;
+	// Save format that added the food relocation nomination state.
+	const int RelocationSaveVersion=100;
 
 	int clamp_score(int value)
 	{
@@ -566,7 +568,10 @@ Maxima::DirectorPlan::DirectorPlan()
 	  food_ledger_enabled(true), food_retirement_enabled(true),
 	  food_inn_burden_percent(60), food_swarm_burden_percent(60),
 	  food_recovered_percent(85), food_burden_confirm_ticks(3000),
-	  food_retirement_cooldown_ticks(3000), food_inn_seats_level1(0),
+	  food_retirement_cooldown_ticks(3000), food_relocation_enabled(true),
+	  food_relocation_min_quality_tiles(5), food_relocation_confirm_ticks(3000),
+	  food_relocation_cooldown_ticks(6000), food_relocation_offer_ticks(3000),
+	  food_inn_seats_level1(0),
 	  food_inn_seats_level2(0), food_inn_seats_level3(0),
 	  swarm_supply_radius(12),
 	  attack_clearing_workers(0),
@@ -2979,6 +2984,13 @@ void Maxima::finalize_director_plan(Context& echo)
 	budget.food_burden_confirm_ticks=strategy.food.burden_confirm_ticks;
 	budget.food_retirement_cooldown_ticks=
 		strategy.food.retirement_cooldown_ticks;
+	budget.food_relocation_enabled=strategy.food.relocation_enabled;
+	budget.food_relocation_min_quality_tiles=
+		strategy.food.relocation_min_quality_tiles;
+	budget.food_relocation_confirm_ticks=strategy.food.relocation_confirm_ticks;
+	budget.food_relocation_cooldown_ticks=
+		strategy.food.relocation_cooldown_ticks;
+	budget.food_relocation_offer_ticks=strategy.food.relocation_offer_ticks;
 	// Discount modelled inn capacity once, here, so the executor never needs the
 	// economic model to judge whether removing an inn would starve anyone.
 	budget.food_inn_seats_level1=strategy.model.inn_capacity_level1
@@ -3591,6 +3603,12 @@ Maxima::Maxima(Player *player)
 	posture=PostureExpand;
 	posture_since=0;
 	last_food_retirement_tick=-1000000;
+	relocation_since.clear();
+	relocation_target_building=-1;
+	relocation_target_since=-1;
+	relocation_completed_tick=-1;
+	last_food_relocation_tick=-1000000;
+	relocation_destroy_issued.clear();
 	food_supported_inns=0;
 	food_supported_swarms=0;
 	food_ledger_valid=false;
@@ -3649,6 +3667,12 @@ Maxima::Maxima(Player *player)
 	food_burden_since.clear();
 	food_retirement_issued.clear();
 	last_food_retirement_tick=-1000000;
+	relocation_since.clear();
+	relocation_target_building=-1;
+	relocation_target_since=-1;
+	relocation_completed_tick=-1;
+	last_food_relocation_tick=-1000000;
+	relocation_destroy_issued.clear();
 	food_supported_inns=0;
 	food_supported_swarms=0;
 	food_ledger_valid=false;
@@ -3896,6 +3920,15 @@ template<class Archive> void Maxima::executionState(Archive& a)
 		std::set<int> retiredRemoteSwarms;
 		a("remote_swarms_ready",retiredRemoteSwarms);
 		a("remote_swarm_deletion_issued",retiredRemoteSwarms);
+	}
+	if(a.version()>=RelocationSaveVersion)
+	{
+		a("relocation_since",relocation_since);
+		a("relocation_target_building",relocation_target_building);
+		a("relocation_target_since",relocation_target_since);
+		a("relocation_completed_tick",relocation_completed_tick);
+		a("last_food_relocation_tick",last_food_relocation_tick);
+		a("relocation_destroy_issued",relocation_destroy_issued);
 	}
 	a("operating_colonies",operating_colonies);
 	a("last_preemptive_effective_zone_max",last_preemptive_effective_zone_max);
@@ -4920,6 +4953,20 @@ void Maxima::configure_development_planner()
 	policy.foodMarginPercent=strategy.food.placement_margin_percent;
 	policy.foodQualityBandTiles=strategy.food.quality_band_tiles;
 	policy.foodUnreachablePenaltyTiles=strategy.food.unreachable_penalty_tiles;
+	policy.relocationEnabled=strategy.food.relocation_enabled;
+	policy.relocationMinGainTiles=strategy.food.relocation_min_gain_tiles;
+	policy.relocationMinCoverageGainPercent=
+		strategy.food.relocation_min_coverage_gain_percent;
+	policy.relocationPaybackHorizonTicks=
+		strategy.food.relocation_payback_horizon_ticks;
+	policy.relocationCostMarginPercent=strategy.food.relocation_cost_margin_percent;
+	policy.carrierTicksPerTile=strategy.food.carrier_ticks_per_tile;
+	policy.carrierFixedTicksPerTrip=strategy.food.carrier_fixed_ticks_per_trip;
+	policy.builderTicksPerStep=strategy.food.builder_ticks_per_step;
+	policy.relocationInnDistanceRealisationPercent=
+		strategy.food.relocation_inn_distance_realisation_percent;
+	policy.relocationSwarmDistanceRealisationPercent=
+		strategy.food.relocation_swarm_distance_realisation_percent;
 	// Demand comes from the engine's own building rates rather than a tuned
 	// constant: a swarm's wheat per produced unit, and an inn's modelled
 	// population times the rate at which a fed unit eats.
@@ -5126,6 +5173,33 @@ Maxima::collect_development_intents(
 				?budget.recovery_active:demands[i].type==IntBuildingType::DEFENSE_BUILDING
 				&&explorer_defense_active();
 			result.push_back(intent);
+		}
+	}
+	if(relocation_target_building>=0)
+	{
+		const WorldBuilding* old=world.building(relocation_target_building);
+		bool underway=false;
+		for(const auto& entry:development_planner.actions())
+		{
+			const DevelopmentAction& action=entry.second;
+			if(action.purpose!=Relocation
+			   || action.replacesBuildingId!=relocation_target_building) continue;
+			if(action.state==ParcelReserved || action.state==CreateIssued
+			   || action.state==SiteObserved || action.state==Completed)
+				underway=true;
+		}
+		if(old && !old->site && !underway)
+		{
+			const bool swarm=old->buildingType==IntBuildingType::SWARM_BUILDING;
+			DevelopmentIntent relocation;
+			relocation.buildingType=old->buildingType;
+			relocation.purpose=Relocation;
+			relocation.replacesBuildingId=relocation_target_building;
+			relocation.unmetCount=1;
+			relocation.priority=clamp_score(swarm?budget.priority_swarms:budget.priority_inns);
+			relocation.workers=swarm?strategy.staffing.construction_swarm_workers
+				:strategy.staffing.construction_inn_workers;
+			result.push_back(relocation);
 		}
 	}
 	if(budget.colony_swarm_requested
@@ -5362,8 +5436,14 @@ void Maxima::development_cycle(Context& echo)
 		refreshedWorld=collect_development_world(echo,&worldSignature);
 		development_planner.observe(refreshedWorld,worldSignature);
 		// An under-supplied building is a burden whatever its distance from
-		// wheat; with the ledger disabled nothing is retired.
-		if(budget.food_ledger_enabled)update_food_retirement(echo,refreshedWorld);
+		// wheat; with the ledger disabled nothing is retired. Relocation goes
+		// first so a building with a better site is rebuilt rather than lost;
+		// retirement takes over once the planner has found nowhere better.
+		if(budget.food_ledger_enabled)
+		{
+			update_food_relocation(echo,refreshedWorld);
+			update_food_retirement(echo,refreshedWorld);
+		}
 		// Reconcile any starting construction site when it first becomes a completed
 		// building. Planner-owned campus and standalone actions are ignored here.
 		development_planner.adoptStartingBuildings(refreshedWorld);
@@ -5377,6 +5457,16 @@ void Maxima::development_cycle(Context& echo)
 		switch(i->second.state){case ParcelReserved:event=RuntimeEvent::DevelopmentParcelReserved;break;case CreateIssued:event=RuntimeEvent::DevelopmentCreateIssued;break;case SiteObserved:event=RuntimeEvent::DevelopmentSiteObserved;break;case Completed:event=RuntimeEvent::DevelopmentCompleted;break;case InvalidatedBeforeIssue:event=RuntimeEvent::DevelopmentInvalidatedBeforeIssue;break;case CreateTimedOut:event=RuntimeEvent::DevelopmentCreateTimedOut;break;case DestroyedDuringConstruction:event=RuntimeEvent::DevelopmentDestroyedDuringConstruction;break;case UpgradeBlocked:event=RuntimeEvent::DevelopmentUpgradeBlocked;break;case RequiredSourceMissing:event=RuntimeEvent::DevelopmentRequiredSourceMissing;break;case EngineRejected:event=RuntimeEvent::DevelopmentEngineRejected;break;default:break;}
 		echo.dispatch_event(RuntimeEvent(event,i->second.id,i->second.buildingId));
 		emit_placement_diagnostics(echo,lifecycleName(i->second.state),&i->second);
+		if(i->second.purpose==Relocation)
+		{
+			std::ostringstream fields;
+			fields<<"\taction_id="<<i->second.id
+				<<"\tbuilding_id="<<i->second.buildingId
+				<<"\treplaces="<<i->second.replacesBuildingId
+				<<"\tx="<<i->second.centerX<<"\ty="<<i->second.centerY
+				<<"\tstate="<<lifecycleName(i->second.state);
+			emit_telemetry(echo,"food_relocation_lifecycle",fields.str());
+		}
 		if(i->second.purpose==ColonySeed)
 		{
 			std::ostringstream fields;
@@ -5618,17 +5708,7 @@ void Maxima::update_food_retirement(Context& echo,
 	const AIMaximaPlacement::PlacementPolicy& policy=development_planner.policy();
 	food_ledger_valid=true;
 
-	// A colony swarm settles land that has no protected farm yet, so it cannot
-	// be judged a burden until its own settlement is running.
-	std::set<int> establishing;
-	for(const auto& entry:development_planner.actions())
-	{
-		const AIMaximaPlacement::DevelopmentAction& action=entry.second;
-		if(action.purpose!=AIMaximaPlacement::ColonySeed
-		   || action.buildingId<0) continue;
-		if(!operating_colonies.count(action.id))
-			establishing.insert(action.buildingId);
-	}
+	const std::set<int> establishing=establishing_colony_buildings();
 
 	const int inn_burden=budget.food_inn_burden_percent;
 	const int swarm_burden=budget.food_swarm_burden_percent;
@@ -5736,6 +5816,9 @@ void Maxima::update_food_retirement(Context& echo,
 		if(value.key<0||!value.retirable)continue;
 		if(establishing.count(value.key)||food_retirement_issued.count(value.key))
 			continue;
+		// A nominated building is being rebuilt elsewhere, or waiting to hear
+		// that it cannot be; retirement resumes if the nomination is abandoned.
+		if(value.key==relocation_target_building)continue;
 		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
 		if(value.coveragePercent>=burden)continue;
 		const std::map<int,int>::const_iterator since=
@@ -5772,6 +5855,215 @@ void Maxima::update_food_retirement(Context& echo,
 		<<"\tcompleted_inns="<<completed_inns
 		<<"\tcompleted_swarms="<<completed_swarms;
 	emit_telemetry(echo,"food_retirement",fields.str());
+}
+
+std::set<int> Maxima::establishing_colony_buildings() const
+{
+	// A colony swarm settles land that has no protected farm yet, so it cannot
+	// be judged a burden until its own settlement is running.
+	std::set<int> establishing;
+	for(const auto& entry:development_planner.actions())
+	{
+		const AIMaximaPlacement::DevelopmentAction& action=entry.second;
+		if(action.purpose!=AIMaximaPlacement::ColonySeed
+		   || action.buildingId<0) continue;
+		if(!operating_colonies.count(action.id))
+			establishing.insert(action.buildingId);
+	}
+	return establishing;
+}
+
+void Maxima::update_food_relocation(Context& echo,
+	const AIMaximaPlacement::WorldState& world)
+{
+	using namespace AIMaximaPlacement;
+	if(!budget.food_relocation_enabled)
+	{
+		relocation_since.clear();
+		relocation_target_building=-1;
+		relocation_target_since=-1;
+		relocation_completed_tick=-1;
+		return;
+	}
+	const AIMaximaFoodLedger::Result& ledger=
+		development_planner.evaluateFoodLedger(world);
+	const std::set<int> establishing=establishing_colony_buildings();
+	const PlacementPolicy& policy=development_planner.policy();
+	const int threshold=budget.food_relocation_min_quality_tiles*100;
+	// Like retirement, never touch the last inn or the last swarm: early on it
+	// is the settlement's only one, starving while its first farm grows in.
+	int completedInns=0,completedSwarms=0;
+	for(size_t b=0;b<world.buildings.size();++b)
+	{
+		const WorldBuilding& building=world.buildings[b];
+		if(building.site)continue;
+		if(building.buildingType==IntBuildingType::FOOD_BUILDING)++completedInns;
+		else if(building.buildingType==IntBuildingType::SWARM_BUILDING)++completedSwarms;
+	}
+	std::set<int> present;
+	const AIMaximaFoodLedger::ConsumerResult* worst=NULL;
+	for(size_t i=0;i<ledger.consumers.size();++i)
+	{
+		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
+		if(value.key<0||!value.retirable)continue;
+		present.insert(value.key);
+		const bool last=value.kind==AIMaximaFoodLedger::InnConsumer
+			? completedInns<=1 : completedSwarms<=1;
+		// Quality already charges unreachable demand at the penalty distance,
+		// so a starving building looks far even when its wheat is close.
+		// Only nominate what could clear a gain floor even at a perfect site:
+		// a covered swarm earns no distance credit and has nothing to gain.
+		const int realisation=value.kind==AIMaximaFoodLedger::SwarmConsumer
+			? policy.relocationSwarmDistanceRealisationPercent
+			: policy.relocationInnDistanceRealisationPercent;
+		const bool distanceRoom=static_cast<long long>(value.quality)*realisation/100
+			>=static_cast<long long>(policy.relocationMinGainTiles)*100;
+		const bool coverageRoom=100-value.coveragePercent
+			>=policy.relocationMinCoverageGainPercent;
+		if(last||establishing.count(value.key)||value.quality<threshold
+		   ||food_retirement_issued.count(value.key)||!(distanceRoom||coverageRoom))
+		{relocation_since.erase(value.key);continue;}
+		if(!relocation_since.count(value.key))relocation_since[value.key]=timer;
+		if(timer-relocation_since[value.key]<budget.food_relocation_confirm_ticks)
+			continue;
+		if(!worst||value.quality>worst->quality
+		   ||(value.quality==worst->quality&&value.key<worst->key))
+			worst=&value;
+	}
+	for(std::map<int,int>::iterator i=relocation_since.begin();
+		i!=relocation_since.end();)
+		if(!present.count(i->first))relocation_since.erase(i++);else ++i;
+	for(std::set<int>::iterator i=relocation_destroy_issued.begin();
+		i!=relocation_destroy_issued.end();)
+		if(!present.count(*i))relocation_destroy_issued.erase(i++);else ++i;
+
+	const bool safe=!budget.recovery_active&&snapshot.critical_food==0
+		&&snapshot.own_buildings_under_attack==0&&snapshot.own_units_under_attack==0;
+
+	if(relocation_target_building>=0)
+	{
+		const int target=relocation_target_building;
+		if(!present.count(target))
+		{
+			// The old building is gone, by our order or otherwise: finished.
+			emit_telemetry(echo,"food_relocation_done",
+				"\tbuilding_id="+boost::lexical_cast<std::string>(target));
+			relocation_target_building=-1;relocation_target_since=-1;
+			relocation_completed_tick=-1;
+			last_food_relocation_tick=timer;
+			return;
+		}
+		// Follow the newest planner action for this nomination.
+		const DevelopmentAction* action=NULL;
+		for(const auto& entry:development_planner.actions())
+			if(entry.second.purpose==Relocation
+			   &&entry.second.replacesBuildingId==target
+			   &&(!action||entry.second.id>action->id))
+				action=&entry.second;
+		const bool underway=action&&(action->state==ParcelReserved
+			||action->state==CreateIssued||action->state==SiteObserved);
+		if(action&&action->state==Completed)
+		{
+			const WorldBuilding* replacement=world.building(action->buildingId);
+			if(replacement&&!replacement->site&&relocation_completed_tick<0)
+				relocation_completed_tick=timer;
+			// Capacity is preserved by the replacement, so an attack does not
+			// block the retirement the way it blocks a plain one; hunger does,
+			// because the old building may still hold the stock people need.
+			const bool hungry=budget.recovery_active||snapshot.critical_food>0;
+			if(replacement&&!replacement->site
+			   &&!relocation_destroy_issued.count(target))
+			{
+				// Never remove seats the population is still eating from. Seats
+				// count for what their inn is actually supplied: the inn being
+				// replaced is usually starving, and its seats with it.
+				bool seatsRemain=true;
+				const WorldBuilding* old=world.building(target);
+				if(old&&old->buildingType==IntBuildingType::FOOD_BUILDING)
+				{
+					const int modelled[3]={budget.food_inn_seats_level1,
+						budget.food_inn_seats_level2,budget.food_inn_seats_level3};
+					long long seats=0,oldSeats=0;
+					for(size_t b=0;b<world.buildings.size();++b)
+					{
+						const WorldBuilding& building=world.buildings[b];
+						if(building.site
+						   ||building.buildingType!=IntBuildingType::FOOD_BUILDING)
+							continue;
+						const int level=std::min(3,std::max(1,building.level));
+						const AIMaximaFoodLedger::ConsumerResult* supplied=
+							ledger.consumer(building.id);
+						const int coverage=supplied
+							? std::min(100,std::max(0,supplied->coveragePercent)) : 100;
+						const long long reliable=modelled[level-1]*coverage/100;
+						seats+=reliable;
+						if(building.id==target)oldSeats=reliable;
+					}
+					seatsRemain=seats-oldSeats>=snapshot.population;
+				}
+				if(hungry||!seatsRemain)
+				{
+					std::ostringstream fields;
+					fields<<"\tbuilding_id="<<target
+						<<"\treason="<<(hungry?"hungry":"seats");
+					emit_telemetry(echo,"food_relocation_deferred",fields.str());
+					// A pair that cannot be resolved keeps both buildings and
+					// frees the slot rather than blocking every later move.
+					if(timer-relocation_completed_tick>=budget.food_relocation_cooldown_ticks)
+					{
+						emit_telemetry(echo,"food_relocation_abandoned",
+							"\tbuilding_id="+boost::lexical_cast<std::string>(target)
+							+"\treason=deferred");
+						relocation_target_building=-1;relocation_target_since=-1;
+						relocation_completed_tick=-1;
+						last_food_relocation_tick=timer;
+					}
+				}
+				else
+				{
+					echo.add_management_order(new DestroyBuilding(target));
+					relocation_destroy_issued.insert(target);
+					std::ostringstream fields;
+					fields<<"\tbuilding_id="<<target
+						<<"\treplacement_id="<<action->buildingId
+						<<"\taction_id="<<action->id;
+					emit_telemetry(echo,"food_relocation_destroy",fields.str());
+				}
+			}
+			return;
+		}
+		if(underway)return;
+		// No live action: the planner refused every site, the build failed, or
+		// the planner never got to the offer before its window closed.
+		const bool failed=action!=NULL;
+		const bool refused=development_planner.relocationRefused(target);
+		if(failed||refused
+		   ||timer-relocation_target_since>=budget.food_relocation_offer_ticks)
+		{
+			std::ostringstream fields;
+			fields<<"\tbuilding_id="<<target
+				<<"\treason="<<(failed?lifecycleName(action->state)
+					:refused?"refused":"no_site");
+			emit_telemetry(echo,"food_relocation_abandoned",fields.str());
+			relocation_target_building=-1;relocation_target_since=-1;
+			relocation_completed_tick=-1;
+			last_food_relocation_tick=timer;
+		}
+		return;
+	}
+
+	if(!safe||!worst)return;
+	if(timer-last_food_relocation_tick<budget.food_relocation_cooldown_ticks)return;
+	relocation_target_building=worst->key;
+	relocation_target_since=timer;
+	development_planner.clearRelocationRefusal(worst->key);
+	std::ostringstream fields;
+	fields<<"\tbuilding_id="<<worst->key
+		<<"\tkind="<<(worst->kind==AIMaximaFoodLedger::InnConsumer?"inn":"swarm")
+		<<"\tquality="<<worst->quality<<"\tcoverage="<<worst->coveragePercent
+		<<"\tclaimed="<<worst->claimed<<"\tdemand="<<worst->demand
+		<<"\tconfirmed_ticks="<<(timer-relocation_since[worst->key]);
+	emit_telemetry(echo,"food_relocation_nominated",fields.str());
 }
 
 void Maxima::manage_buildings(Context& echo)

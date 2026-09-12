@@ -16,7 +16,7 @@ namespace
 	const int fertilityScale=65536;
 	/// Demand and supply are carried as wheat per tick scaled by one million,
 	/// which keeps a single low-fertility cell from rounding away to nothing.
-	const long long rateScale=1000000;
+	const long long rateScale=RateScale;
 	/// A cell's growth picks one of its eight neighbours, so a cell whose
 	/// neighbours are blocked wastes that share of its growth.
 	const int growthDirections=8;
@@ -357,6 +357,25 @@ long long Ledger::residualUpperBound(const Input& input, const Result& result,
 	total+=rect(startX,0,firstWidth,spanY-firstHeight);
 	total+=rect(0,0,spanX-firstWidth,spanY-firstHeight);
 	return total;
+}
+
+int Ledger::residualQuality(const Input& input, const Result& result,
+	int centerX, int centerY, int left, int top, int width, int height,
+	long long demand) const
+{
+	if(demand<=0)return 0;
+	walk(input,centerX,centerY,left,top,width,height,reachScratch);
+	long long remaining=demand,weighted=0,filled=0;
+	for(size_t i=0;i<reachScratch.size()&&remaining>0;++i)
+	{
+		const ReachCell& cell=reachScratch[i];
+		const long long take=std::min<long long>(remaining,result.residual[cell.index]);
+		weighted+=take*cell.distance;filled+=take;remaining-=take;
+	}
+	const long long penaltyDistance=input.policy.supplyRadius
+		+input.policy.unreachablePenaltyTiles;
+	weighted+=remaining*penaltyDistance;filled+=remaining;
+	return filled>0?int(weighted*qualityScale/filled):0;
 }
 
 long long Ledger::reachableResidual(const Input& input, const Result& result,

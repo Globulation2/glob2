@@ -27,6 +27,9 @@
 namespace AIMaximaFoodLedger
 {
 
+/// Supply, demand and claims are rates in millionths of a wheat unit per tick.
+const long long RateScale=1000000;
+
 enum ConsumerKind
 {
 	InnConsumer,
@@ -151,6 +154,16 @@ public:
 	long long reachableResidual(const Input& input, const Result& result,
 		int centerX, int centerY, int left, int top, int width, int height,
 		long long cap) const;
+
+	/// Supply-weighted mean route distance, in hundredths of a tile, to the
+	/// unclaimed supply that would cover `demand` from this footprint, charging
+	/// demand that cannot be reached at the unreachable penalty exactly as
+	/// `evaluate` does. This is the quality a relocated building would have
+	/// among the current claimants, where `evaluate` measures each claimant
+	/// alone.
+	int residualQuality(const Input& input, const Result& result,
+		int centerX, int centerY, int left, int top, int width, int height,
+		long long demand) const;
 
 	/// Sound upper bound for the same query, from a summed-area table over the
 	/// residual. Reach is contained in the Chebyshev square, so a candidate

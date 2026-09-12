@@ -3,7 +3,9 @@
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 
+#include <algorithm>
 #include <cassert>
+#include <cstdlib>
 #include <iostream>
 
 using namespace AIMaximaPlacement;
@@ -181,6 +183,134 @@ static void foodLedgerPlacementRegression()
 	assert(placed&&placed->claimed>0);
 }
 
+static void configureRelocation(PlacementPolicy& policy)
+{
+	policy.foodLedgerEnabled=true;policy.foodSupplyRadius=6;
+	policy.foodUnreachablePenaltyTiles=8;policy.foodMarginPercent=100;
+	policy.foodSwarmDemand=100;
+	policy.foodInnDemand[0]=100;policy.foodInnDemand[1]=200;policy.foodInnDemand[2]=300;
+	policy.relocationEnabled=true;policy.relocationMinGainTiles=3;
+	policy.relocationMinCoverageGainPercent=25;
+	policy.relocationPaybackHorizonTicks=15000;policy.relocationCostMarginPercent=125;
+	policy.carrierTicksPerTile=23;policy.carrierFixedTicksPerTrip=105;
+	policy.builderTicksPerStep=32;
+	policy.relocationInnDistanceRealisationPercent=155;
+	policy.relocationSwarmDistanceRealisationPercent=0;
+}
+
+// A stranded inn is rebuilt beside the farm it cannot reach: the replacement is
+// sited with the old inn removed from the ledger, priced against its hauled
+// materials, and the pair counts as one commitment until the old one is gone.
+static void relocationAppraisalRegression()
+{
+	WorldState world=makeWorld();
+	for(auto& profile:world.profiles)if(profile.buildingType==1)
+		for(auto& level:profile.levels)level.constructionResources[0]=3;
+	// Wood to rebuild from, and a protected farm the old inn cannot reach.
+	world.tile(20,20).resourceType=0;world.tile(20,20).resourceAmount=5;
+	world.tile(20,20).clearableResource=true;
+	const int farmX=24,farmY=24;
+	for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
+		world.tile(farmX+dx,farmY+dy).protectedYield=80;
+	WorldBuilding old;old.id=10;old.buildingType=1;old.level=1;
+	old.centerX=6;old.centerY=20;old.hp=old.hpMax=100;
+	world.buildings.push_back(old);
+	DevelopmentAction footprint;footprint.centerX=6;footprint.centerY=20;
+	footprint.initialFootprint=world.profile(1)->atLevel(1)->footprint;occupy(world,footprint);
+
+	Planner planner;planner.configure(world.profiles,1,2,6,5,7,0);
+	configureRelocation(planner.mutablePolicy());
+	planner.adoptStartingBuildings(world);
+	const AIMaximaFoodLedger::ConsumerResult* stranded=
+		planner.evaluateFoodLedger(world).consumer(10);
+	assert(stranded&&stranded->coveragePercent==0&&stranded->quality==1400);
+
+	DevelopmentIntent intent;intent.buildingType=1;intent.purpose=Relocation;
+	intent.replacesBuildingId=10;intent.unmetCount=1;intent.priority=100;
+	DevelopmentLimits limits;limits.newConstruction=4;
+	DevelopmentAction selected;
+	assert(planner.selectAction(world,{intent},limits,selected));
+	assert(selected.purpose==Relocation&&selected.replacesBuildingId==10);
+	// Harvesting routes are eight-neighbour steps: the site must be within the
+	// supply radius of the farm in Chebyshev terms, plus its own footprint.
+	const int gapX=std::min(std::abs(selected.centerX-farmX),world.width-std::abs(selected.centerX-farmX));
+	const int gapY=std::min(std::abs(selected.centerY-farmY),world.height-std::abs(selected.centerY-farmY));
+	assert(std::max(gapX,gapY)<=9);
+	const Planner::RelocationAppraisal appraisal=
+		planner.appraiseRelocation(world,selected,10);
+	assert(appraisal.viable);
+	assert(appraisal.oldCoverage==0&&appraisal.newCoverage==100);
+	assert(appraisal.newQuality<appraisal.oldQuality);
+	// Three hauled units, each a trip plus a build step, times the margin.
+	assert(appraisal.cost>0&&appraisal.cost<3*(105+2*23*32+32)*125/100);
+	assert(appraisal.paybackTicks>0&&appraisal.paybackTicks<=15000);
+	assert(planner.committedBuildingCount(world,1)==1);
+	assert(planner.reserve(world,selected));
+	assert(planner.committedBuildingCount(world,1)==1);
+
+	// The same request is refused when relocation is switched off.
+	Planner refusing;refusing.configure(world.profiles,1,2,6,5,7,0);
+	configureRelocation(refusing.mutablePolicy());
+	refusing.mutablePolicy().relocationEnabled=false;
+	refusing.adoptStartingBuildings(world);
+	DevelopmentAction refused;
+	assert(!refusing.selectAction(world,{intent},limits,refused));
+	assert(refusing.diagnostics().rejected[RejectedNegativeUtility]>0);
+	assert(refusing.relocationRefused(10)&&!planner.relocationRefused(10));
+	refusing.clearRelocationRefusal(10);
+	assert(!refusing.relocationRefused(10));
+
+	// A covered inn beside a small farm: only with the old inn removed from the
+	// ledger is there capacity for its replacement, so the exclusion is what
+	// lets the request be sited at all.
+	WorldState tight=makeWorld();
+	tight.tile(farmX,farmY).protectedYield=80;tight.tile(farmX+1,farmY).protectedYield=70;
+	WorldBuilding covered;covered.id=11;covered.buildingType=1;covered.level=1;
+	covered.centerX=farmX-6;covered.centerY=farmY;covered.hp=covered.hpMax=100;
+	tight.buildings.push_back(covered);
+	DevelopmentAction coveredFootprint;coveredFootprint.centerX=covered.centerX;
+	coveredFootprint.centerY=covered.centerY;
+	coveredFootprint.initialFootprint=tight.profile(1)->atLevel(1)->footprint;
+	occupy(tight,coveredFootprint);
+	Planner tightPlanner;tightPlanner.configure(tight.profiles,1,2,6,5,7,0);
+	configureRelocation(tightPlanner.mutablePolicy());
+	tightPlanner.adoptStartingBuildings(tight);
+	const AIMaximaFoodLedger::Result& tightLedger=tightPlanner.evaluateFoodLedger(tight);
+	assert(tightLedger.consumer(11)->coveragePercent==100&&tightLedger.totalResidual==50);
+	DevelopmentIntent plain;plain.buildingType=1;plain.unmetCount=1;plain.priority=100;
+	DevelopmentAction unsited;
+	assert(!tightPlanner.selectAction(tight,{plain},limits,unsited));
+	assert(tightPlanner.diagnostics().rejected[RejectedFoodCapacity]>0);
+	DevelopmentIntent replace=plain;replace.purpose=Relocation;replace.replacesBuildingId=11;
+	DevelopmentAction sited;
+	assert(tightPlanner.selectAction(tight,{replace},limits,sited));
+	assert(sited.replacesBuildingId==11);
+	assert(tightPlanner.appraiseRelocation(tight,sited,11).newQuality
+		<tightPlanner.appraiseRelocation(tight,sited,11).oldQuality);
+
+	// A covered swarm earns nothing from a shorter route: calibration showed
+	// its carriers do not walk less, so only a coverage gain can move it.
+	WorldState swarms=makeWorld();
+	for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
+		swarms.tile(farmX+dx,farmY+dy).protectedYield=80;
+	WorldBuilding swarm;swarm.id=20;swarm.buildingType=0;swarm.level=1;
+	swarm.centerX=19;swarm.centerY=24;swarm.hp=swarm.hpMax=100;
+	swarms.buildings.push_back(swarm);
+	Planner swarmPlanner;swarmPlanner.configure(swarms.profiles,1,2,6,5,7,0);
+	configureRelocation(swarmPlanner.mutablePolicy());
+	swarmPlanner.adoptStartingBuildings(swarms);
+	assert(swarmPlanner.evaluateFoodLedger(swarms).consumer(20)->coveragePercent==100);
+	DevelopmentAction closer;closer.buildingType=0;closer.purpose=Relocation;
+	closer.replacesBuildingId=20;closer.centerX=27;closer.centerY=24;
+	closer.initialFootprint=swarms.profile(0)->atLevel(1)->footprint;
+	const Planner::RelocationAppraisal unmoved=
+		swarmPlanner.appraiseRelocation(swarms,closer,20);
+	assert(unmoved.newQuality<unmoved.oldQuality);
+	assert(unmoved.savingPerTick==0&&!unmoved.viable);
+	swarmPlanner.mutablePolicy().relocationSwarmDistanceRealisationPercent=155;
+	assert(swarmPlanner.appraiseRelocation(swarms,closer,20).savingPerTick>0);
+}
+
 // A checkpoint taken during a one-cell search must preserve both its winner
 // and the exact number of remaining slices (order timing is game behavior).
 static void placementContinuationRegression()
@@ -232,6 +362,7 @@ int main()
 {
 	placementReviewRegressions();
 	foodLedgerPlacementRegression();
+	relocationAppraisalRegression();
 	placementContinuationRegression();
 	Planner planner;planner.configure(makeProfiles(),1,2,6,5,7);
 	std::string error;assert(planner.validateTemplates(&error));

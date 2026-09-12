@@ -48,7 +48,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
 
     def test_current_save_omits_configuration_plans_and_phases(self) -> None:
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 99", version)
+        self.assertIn("#define VERSION_MINOR 100", version)
         # The relentless offense changes simulation results, so an older client
         # must be refused rather than allowed to desync, and the trimmed Maxima
         # mission state needs its own load gate.
@@ -154,7 +154,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         ]
         # 689 with the gated tactical layer; the relentless offense removed 50
         # muster, casualty, relief and teamplay keys and added three.
-        self.assertEqual(643, len(specifications))
+        self.assertEqual(657, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},

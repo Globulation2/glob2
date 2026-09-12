@@ -5,6 +5,8 @@ namespace AIMaximaPlacement
 {
 /// Save format that added the food ledger's per-cell protected wheat supply.
 const int protectedYieldVersion=93;
+/// Save format that added relocation actions and their replaced building.
+const int relocationVersion=100;
 
 template<class A> void fields(A& a, Footprint& value)
 {
@@ -91,6 +93,7 @@ template<class A> void fields(A& a, DevelopmentIntent& value)
 	a("workers",value.workers);
 	a("requiredResourceType",value.requiredResourceType);
 	a("emergency",value.emergency);
+	if(a.version()>=relocationVersion)a("replacesBuildingId",value.replacesBuildingId);
 }
 
 template<class A> void fields(A& a, DevelopmentLimits& value)
@@ -159,6 +162,7 @@ template<class A> void fields(A& a, DevelopmentAction& value)
 	a("accessTiles",value.accessTiles);
 	a("arteryTiles",value.arteryTiles);
 	a("utility",value.utility);
+	if(a.version()>=relocationVersion)a("replacesBuildingId",value.replacesBuildingId);
 }
 
 template<class A> void fields(A& a, PlacementDiagnostics& value)

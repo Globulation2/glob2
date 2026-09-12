@@ -221,7 +221,7 @@ uint32_t WorldState::computeSignature() const
 
 DevelopmentIntent::DevelopmentIntent()
 	: buildingType(-1), purpose(CoreCapacity), unmetCount(0), priority(0), workers(1),
-	  requiredResourceType(-1), emergency(false) {}
+	  requiredResourceType(-1), emergency(false), replacesBuildingId(-1) {}
 DevelopmentLimits::DevelopmentLimits()
 	: newConstruction(0), level1Upgrades(0), level2Upgrades(0),
 	  activeNewConstruction(0), activeLevel1Upgrades(0), activeLevel2Upgrades(0),
@@ -262,8 +262,17 @@ PlacementPolicy::PlacementPolicy()
 	  colonySupplyRadius(12), colonyMinimumFood(8), colonyMinimumValue(5),
 	  colonyMaximumThreat(35), foodLedgerEnabled(false), foodSupplyRadius(12),
 	  foodMarginPercent(120), foodQualityBandTiles(2),
-	  foodUnreachablePenaltyTiles(8), foodSwarmDemand(0)
+	  foodUnreachablePenaltyTiles(8), foodSwarmDemand(0),
+	  relocationEnabled(false), relocationMinGainTiles(3),
+	  relocationMinCoverageGainPercent(25), relocationPaybackHorizonTicks(15000),
+	  relocationCostMarginPercent(125), carrierTicksPerTile(23),
+	  carrierFixedTicksPerTrip(105), builderTicksPerStep(32),
+	  relocationInnDistanceRealisationPercent(155),
+	  relocationSwarmDistanceRealisationPercent(0)
 { std::fill(foodInnDemand, foodInnDemand+3, 0); }
+Planner::RelocationAppraisal::RelocationAppraisal()
+	: viable(false), oldQuality(0), newQuality(0), oldCoverage(0), newCoverage(0),
+	  savingPerTick(0), cost(0), paybackTicks(0) {}
 
 int PlacementPolicy::score(const UtilityComponents& c,
 	DevelopmentPurpose purpose, int spacingQuality) const
@@ -294,7 +303,7 @@ DevelopmentAction::DevelopmentAction()
 	: id(-1), type(BuildStandalone), purpose(CoreCapacity), state(QueuedIntent), templateId(NoTemplate),
 	  campusId(-1), slotId(-1), buildingId(-1), buildingType(-1), fromLevel(0),
 	  targetLevel(1), centerX(0), centerY(0), workers(1), fallbackWaterTier(false),
-	  requiresSwimmingBuilders(false), reservationId(-1), issuedTick(-1), worldSignature(0) {}
+	  requiresSwimmingBuilders(false), reservationId(-1), issuedTick(-1), worldSignature(0), replacesBuildingId(-1) {}
 PlacementDiagnostics::PlacementDiagnostics() { clear(); }
 void PlacementDiagnostics::clear()
 {
@@ -343,7 +352,7 @@ void Planner::reset()
 	clearIncrementalSelection();
 	lastDiagnostics.clear(); configuredProfiles.clear(); templateList.clear();
 	campusList.clear(); standaloneList.clear(); reservationMap.clear(); actionMap.clear();
-	blockedIntentSignatures.clear(); coordinateQuarantines.clear();
+	blockedIntentSignatures.clear(); coordinateQuarantines.clear(); refusedRelocations.clear();
 	retryInputSignature=0;
 	footprintRefs.clear(); circulationRefs.clear();
 	circulationReservedTileCount=0;
@@ -357,7 +366,8 @@ void Planner::reset()
 	maximumFarmCapacityCache=1;maximumFoodOpportunityCache=1;
 	foodInput=AIMaximaFoodLedger::Input();
 	foodResult=AIMaximaFoodLedger::Result();
-	foodLedgerExcludedAction=-1;foodLedgerPrepared=false;
+	foodLedgerExcludedAction=-1;foodLedgerExcludedBuilding=-1;foodLedgerPrepared=false;
+	foodBaselineConsumers.clear();foodBaselineValid=false;
 	foodOpportunitySourceCache.clear();foodHaloMaximumCache.clear();
 	foodHaloRadiusCache=-1;
 	threatProtectionSourceCache.clear();threatPrefixCache.clear();
@@ -1097,11 +1107,16 @@ int Planner::foodDemandFor(int buildingType, int level) const
 	return placementPolicy.foodInnDemand[slot];
 }
 
-void Planner::prepareFoodLedger(const WorldState& world, int excludeAction) const
+void Planner::prepareFoodLedger(const WorldState& world, int excludeAction,
+	int excludeBuilding) const
 {
 	using namespace AIMaximaFoodLedger;
+	// An appraisal reads the replaced building's standing from the full ledger
+	// of the same world, so refresh that baseline before excluding anything.
+	if(excludeBuilding>=0)prepareFoodLedger(world,excludeAction,-1);
 	foodResult=Result();foodInput.consumers.clear();
-	foodLedgerExcludedAction=excludeAction;foodLedgerPrepared=true;
+	foodLedgerExcludedAction=excludeAction;foodLedgerExcludedBuilding=excludeBuilding;
+	foodLedgerPrepared=true;
 	if(!placementPolicy.foodLedgerEnabled)return;
 	const int size=world.width*world.height;
 	if(size<=0)return;
@@ -1142,6 +1157,8 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction) cons
 	{
 		const WorldBuilding& building=world.buildings[b];
 		if(!foodManagedType(building.buildingType))continue;
+		// A relocation is judged as if the building it replaces were gone.
+		if(building.id==excludeBuilding)continue;
 		const BuildingProfile* profile=world.profile(building.buildingType);
 		if(!profile)continue;
 		int level=std::max(1,building.level);
@@ -1191,6 +1208,100 @@ void Planner::prepareFoodLedger(const WorldState& world, int excludeAction) cons
 		foodInput.consumers.push_back(consumer);
 	}
 	foodLedger.evaluate(foodInput,foodResult);
+	if(excludeBuilding<0)
+	{
+		foodBaselineConsumers=foodResult.consumers;
+		foodBaselineValid=true;
+	}
+}
+
+bool Planner::relocationCandidatePasses(const WorldState& world,
+	const DevelopmentIntent& intent,const DevelopmentAction& action,
+	RejectionReason& reason) const
+{
+	if(intent.purpose!=Relocation)return true;
+	if(!appraiseRelocation(world,action,intent.replacesBuildingId).viable)
+	{reason=RejectedNegativeUtility;return false;}
+	return true;
+}
+
+Planner::RelocationAppraisal Planner::appraiseRelocation(const WorldState& world,
+	const DevelopmentAction& action,int replacesBuildingId) const
+{
+	RelocationAppraisal appraisal;
+	const PlacementPolicy& p=placementPolicy;
+	if(!p.relocationEnabled||!p.foodLedgerEnabled)return appraisal;
+	const WorldBuilding* old=world.building(replacesBuildingId);
+	if(!old||old->site||old->buildingType!=action.buildingType
+	   ||!foodManagedType(action.buildingType))return appraisal;
+	// The old building's standing comes from a ledger that still contains it;
+	// preparing the excluded ledger below refreshes that baseline first.
+	if(!foodLedgerPrepared||foodLedgerExcludedBuilding!=replacesBuildingId
+	   ||!foodBaselineValid)
+		prepareFoodLedger(world,action.id,replacesBuildingId);
+	const AIMaximaFoodLedger::ConsumerResult* current=NULL;
+	for(size_t i=0;i<foodBaselineConsumers.size();++i)
+		if(foodBaselineConsumers[i].key==replacesBuildingId)
+		{current=&foodBaselineConsumers[i];break;}
+	if(!current||current->demand<=0)return appraisal;
+	appraisal.oldQuality=current->quality;
+	appraisal.oldCoverage=current->coveragePercent;
+	const long long demand=current->demand;
+	const long long claimed=current->claimed;
+	// The candidate's standing among everyone else once the old one is gone.
+	const Footprint& shape=action.initialFootprint;
+	appraisal.newQuality=foodLedger.residualQuality(foodInput,foodResult,
+		action.centerX,action.centerY,shape.left,shape.top,shape.width,
+		shape.height,demand);
+	const long long newClaimed=std::min(demand,foodLedger.reachableResidual(
+		foodInput,foodResult,action.centerX,action.centerY,shape.left,shape.top,
+		shape.width,shape.height,demand));
+	appraisal.newCoverage=int(newClaimed*100/demand);
+	// Savings per tick, in worker-ticks scaled by the ledger's RateScale.
+	// Distance saves a shorter round trip on every unit that keeps flowing;
+	// coverage stops paying the unreachable penalty on units that did not.
+	const int realisation=action.buildingType==configuredSwarmType
+		? p.relocationSwarmDistanceRealisationPercent
+		: p.relocationInnDistanceRealisationPercent;
+	const long long qualityGain=static_cast<long long>(
+		appraisal.oldQuality-appraisal.newQuality)*realisation/100;
+	const long long flowing=std::min(claimed,newClaimed);
+	const long long distanceSaving=flowing*2*p.carrierTicksPerTile*qualityGain/100;
+	const long long penaltyTicks=p.carrierFixedTicksPerTrip
+		+2LL*p.carrierTicksPerTile*(p.foodSupplyRadius+p.foodUnreachablePenaltyTiles);
+	const long long coverageSaving=(newClaimed-claimed)*penaltyTicks;
+	appraisal.savingPerTick=distanceSaving+coverageSaving;
+	// Cost: every level up to the current one is rebuilt, and each delivered
+	// unit is one carrier trip from its nearest source plus one build step.
+	const BuildingProfile* profile=world.profile(action.buildingType);
+	const int index=world.index(action.centerX,action.centerY);
+	long long cost=0;
+	for(int level=1;level<=std::max(1,old->level);++level)
+	{
+		const BuildingLevelProfile* rebuilt=profile?profile->atLevel(level):NULL;
+		if(!rebuilt)continue;
+		for(int r=0;r<5;++r)
+		{
+			const int units=rebuilt->constructionResources[r];
+			if(units<=0)continue;
+			int distance=resourceDistanceAt(world,r,index);
+			if(distance==INT_MAX)
+				distance=p.foodSupplyRadius+p.foodUnreachablePenaltyTiles;
+			cost+=units*(p.carrierFixedTicksPerTrip+2LL*p.carrierTicksPerTile*distance
+				+p.builderTicksPerStep);
+		}
+	}
+	appraisal.cost=cost*p.relocationCostMarginPercent/100;
+	if(appraisal.savingPerTick<=0)return appraisal;
+	appraisal.paybackTicks=appraisal.cost*AIMaximaFoodLedger::RateScale
+		/appraisal.savingPerTick;
+	const bool distanceGain=qualityGain
+		>=static_cast<long long>(p.relocationMinGainTiles)*100;
+	const bool coverageGain=appraisal.newCoverage-appraisal.oldCoverage
+		>=p.relocationMinCoverageGainPercent;
+	appraisal.viable=(distanceGain||coverageGain)
+		&&appraisal.paybackTicks<=p.relocationPaybackHorizonTicks;
+	return appraisal;
 }
 
 const AIMaximaFoodLedger::Result& Planner::evaluateFoodLedger(
@@ -1427,6 +1538,12 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 	const size_t mapArea=size_t(world.width)*size_t(world.height);
 	const size_t totalOrigins=templateList.size()*mapArea;
 	if(intent.unmetCount<=0) { originCursor=totalOrigins; return true; }
+	// A relocation is judged, scored and capacity-checked with the building it
+	// replaces removed from the ledger; every other intent sees the full one.
+	const int excludeBuilding=intent.purpose==Relocation?intent.replacesBuildingId:-1;
+	if(!foodLedgerPrepared||foodLedgerExcludedBuilding!=excludeBuilding
+	   ||foodLedgerExcludedAction!=-1)
+		prepareFoodLedger(world,-1,excludeBuilding);
 	const std::pair<int,int> key(intent.buildingType,int(intent.purpose));
 	std::map<std::pair<int,int>,uint32_t>::const_iterator blocked=
 		blockedIntentSignatures.find(key);
@@ -1439,6 +1556,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 		DevelopmentAction missing;missing.id=nextActionId++;
 		missing.state=RequiredSourceMissing;missing.buildingType=intent.buildingType;
 		missing.purpose=intent.purpose;
+		missing.replacesBuildingId=intent.replacesBuildingId;
 		missing.workers=intent.workers;missing.worldSignature=signature;
 		actionMap[missing.id]=missing;
 		originCursor=totalOrigins;return true;
@@ -1476,6 +1594,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 			const PlannedSlot& slot=t->slots[s]; Candidate candidate;
 			candidate.action.type=BuildCampusMember;candidate.action.templateId=t->id;
 			candidate.action.purpose=intent.purpose;
+			candidate.action.replacesBuildingId=intent.replacesBuildingId;
 			candidate.action.campusId=campus.id;candidate.action.slotId=int(s);
 			candidate.action.buildingType=intent.buildingType;
 			candidate.action.centerX=world.normalizeX(campus.originX+slot.centerX);
@@ -1489,6 +1608,8 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 			if(!colonyCandidatePasses(world,intent,candidate.action,reason))
 			{lastDiagnostics.rejected[reason]++;continue;}
 			if(!foodCandidatePasses(world,&intent,candidate.action,reason))
+			{lastDiagnostics.rejected[reason]++;continue;}
+			if(!relocationCandidatePasses(world,intent,candidate.action,reason))
 			{lastDiagnostics.rejected[reason]++;continue;}
 			const std::vector<int> initialTiles=footprintTiles(world,
 				candidate.action.centerX,candidate.action.centerY,
@@ -1549,6 +1670,7 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				Candidate candidate;candidate.newCampus=t.compact;
 				candidate.action.type=t.compact?BuildCampusMember:BuildStandalone;
 				candidate.action.purpose=intent.purpose;
+				candidate.action.replacesBuildingId=intent.replacesBuildingId;
 				candidate.action.templateId=t.id;candidate.action.slotId=0;
 				candidate.action.buildingType=intent.buildingType;
 				candidate.action.centerX=world.normalizeX(originX+t.slots[0].centerX);
@@ -1585,6 +1707,8 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 				if(!colonyCandidatePasses(world,intent,candidate.action,reason))
 				{lastDiagnostics.rejected[reason]++;continue;}
 				if(!foodCandidatePasses(world,&intent,candidate.action,reason))
+				{lastDiagnostics.rejected[reason]++;continue;}
+				if(!relocationCandidatePasses(world,intent,candidate.action,reason))
 				{lastDiagnostics.rejected[reason]++;continue;}
 				const std::vector<int> initialTiles=footprintTiles(world,
 					candidate.action.centerX,candidate.action.centerY,
@@ -1655,6 +1779,10 @@ bool Planner::addBuildCandidatesRange(const WorldState& world,
 	if(originCursor<totalOrigins)return false;
 	lastDiagnostics.strictCandidateCount+=strictCount;
 	lastDiagnostics.fallbackCandidateCount+=fallbackCount;
+	// A relocation scanned to the end with nothing acceptable is refused; the
+	// executor reads this rather than waiting for its offer to expire.
+	if(intent.purpose==Relocation&&!hasStrict&&!hasFallback)
+		refusedRelocations.insert(intent.replacesBuildingId);
 	// The fallback tier is searched only when no strict legal candidate exists.
 	if(hasStrict)
 	{
@@ -2228,6 +2356,16 @@ void Planner::prepareRetrySignature(const WorldState& world)
 	for(int level=0;level<3;++level)
 		hashValue(signature,placementPolicy.foodInnDemand[level]);
 	hashValue(signature,placementPolicy.foodSwarmDemand);
+	hashValue(signature,placementPolicy.relocationEnabled);
+	hashValue(signature,placementPolicy.relocationMinGainTiles);
+	hashValue(signature,placementPolicy.relocationMinCoverageGainPercent);
+	hashValue(signature,placementPolicy.relocationPaybackHorizonTicks);
+	hashValue(signature,placementPolicy.relocationCostMarginPercent);
+	hashValue(signature,placementPolicy.carrierTicksPerTile);
+	hashValue(signature,placementPolicy.carrierFixedTicksPerTrip);
+	hashValue(signature,placementPolicy.builderTicksPerStep);
+	hashValue(signature,placementPolicy.relocationInnDistanceRealisationPercent);
+	hashValue(signature,placementPolicy.relocationSwarmDistanceRealisationPercent);
 	retryInputSignature=signature;
 }
 
@@ -2432,10 +2570,17 @@ int Planner::committedBuildingCount(const WorldState& world,int buildingType) co
 		if((action.type!=BuildCampusMember&&action.type!=BuildStandalone)
 		   ||action.buildingType!=buildingType||!activeState(action.state))
 			continue;
+		// A relocation replaces a building that still stands: the pair is one
+		// commitment until the executor destroys the old one.
+		const bool replacing=action.purpose==Relocation
+			&&world.building(action.replacesBuildingId)!=NULL;
 		// Once the register observes the building, it is already represented in
 		// world.buildings. Before then, its active planner action is the commitment.
 		if(!world.building(action.buildingId))
-			++count;
+		{
+			if(!replacing)++count;
+		}
+		else if(replacing)--count;
 	}
 	return count;
 }
@@ -2533,8 +2678,11 @@ bool Planner::revalidateSelection(const WorldState& world,
 		{
 			// Capacity may have been claimed, burned or harvested away while
 			// this selection was waiting. The action never claims against itself.
-			prepareFoodLedger(world,action.id);
+			prepareFoodLedger(world,action.id,
+				intent->purpose==Relocation?intent->replacesBuildingId:-1);
 			if(!foodCandidatePasses(world,intent,action,reason))
+			{if(rejected)*rejected=reason;return false;}
+			if(!relocationCandidatePasses(world,*intent,action,reason))
 			{if(rejected)*rejected=reason;return false;}
 		}
 	}
@@ -2598,6 +2746,7 @@ bool Planner::reserve(const WorldState& world, DevelopmentAction& action)
 	}
 	else if(action.type==BuildStandalone) reservation.permanent=true;
 	action.reservationId=reservation.id;action.state=ParcelReserved;
+	if(action.purpose==Relocation)refusedRelocations.erase(action.replacesBuildingId);
 	reservationMap[reservation.id]=reservation;addReservationReferences(reservation);
 	actionMap[action.id]=action;lastDiagnostics.reservationId=reservation.id;return true;
 }
@@ -2652,8 +2801,13 @@ bool Planner::revalidate(const WorldState& world,const DevelopmentAction& action
 	{
 		// Reserved parcels can wait for clearing. Recheck the capacity that
 		// justified this site when it finally issues, not only when it won.
-		prepareFoodLedger(world,action.id);
+		prepareFoodLedger(world,action.id,
+			action.purpose==Relocation?action.replacesBuildingId:-1);
 		if(!foodCandidatePasses(world,NULL,action,reason))
+		{if(rejected)*rejected=reason;return false;}
+		DevelopmentIntent relocation;relocation.purpose=action.purpose;
+		relocation.replacesBuildingId=action.replacesBuildingId;
+		if(!relocationCandidatePasses(world,relocation,action,reason))
 		{if(rejected)*rejected=reason;return false;}
 	}
 	const std::vector<int> initial=footprintTiles(world,action.centerX,action.centerY,
@@ -3072,6 +3226,7 @@ template<class Archive> void Planner::executionState(Archive& a)
 	a("footprintReferenceRevision",footprintReferenceRevision);
 	a("colonyFoodClaims",colonyFoodClaims);
 	a("colonyAnchors",colonyAnchors);
+	if(a.version()>=relocationVersion)a("refusedRelocations",refusedRelocations);
 }
 
 void Planner::saveExecutionState(GAGCore::OutputStream* stream) const
@@ -3105,7 +3260,7 @@ void Planner::save(GAGCore::OutputStream* stream) const
 
 bool Planner::load(GAGCore::InputStream* stream,int versionMinor)
 {
-	campusList.clear();standaloneList.clear();reservationMap.clear();actionMap.clear();blockedIntentSignatures.clear();coordinateQuarantines.clear();footprintRefs.clear();circulationRefs.clear();
+	campusList.clear();standaloneList.clear();reservationMap.clear();actionMap.clear();blockedIntentSignatures.clear();coordinateQuarantines.clear();refusedRelocations.clear();footprintRefs.clear();circulationRefs.clear();
 	circulationReservedTileCount=0;
 	routeCacheSignature=0;routeDistanceCache[0].clear();routeDistanceCache[1].clear();
 	routeParentCache[0].clear();routeParentCache[1].clear();
