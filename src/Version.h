@@ -6,7 +6,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 95
+#define VERSION_MINOR 96
+// version 96 adds Maxima's staffable-construction-site condition. Version 95
+// saves contain no such condition and load unchanged.
 // version 95 adds Maxima's building-priority management order. Version 94
 // saves contain no such order and load unchanged; older binaries skip it.
 // version 94 adds Maxima's per-building staffing controller state. Version 93

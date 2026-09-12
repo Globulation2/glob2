@@ -427,7 +427,7 @@ BuildingCondition* BuildingCondition::load(GAGCore::InputStream* stream)
 {
 	stream->readEnterSection("BuildingCondition");
 	const int kind=stream->readSint32("type");BuildingCondition* result=NULL;
-	switch(kind){case 0:result=new NotUnderConstruction;break;case 1:result=new UnderConstruction;break;case 2:result=new BeingUpgraded;break;case 3:result=new BeingUpgradedTo(stream->readSint32("value"));break;case 4:result=new SpecificBuildingType(stream->readSint32("value"));break;case 5:result=new BuildingLevel(stream->readSint32("value"));break;case 6:result=new Upgradable;break;default:break;}
+	switch(kind){case 0:result=new NotUnderConstruction;break;case 1:result=new UnderConstruction;break;case 2:result=new BeingUpgraded;break;case 3:result=new BeingUpgradedTo(stream->readSint32("value"));break;case 4:result=new SpecificBuildingType(stream->readSint32("value"));break;case 5:result=new BuildingLevel(stream->readSint32("value"));break;case 6:result=new Upgradable;break;case 7:result=new StaffableConstructionSite;break;default:break;}
 	stream->readLeaveSection();return result;
 }
 ParticularBuilding::ParticularBuilding(BuildingCondition* condition,int id)
@@ -466,6 +466,10 @@ bool NotUnderConstruction::passes(Context& c,int id) const
 { ::Building* b=c.get_building_register().get_building(id);return b&&b->constructionResultState==::Building::NO_CONSTRUCTION&&!c.get_building_register().is_building_upgrading(id); }
 bool UnderConstruction::passes(Context& c,int id) const
 { ::Building* b=c.get_building_register().get_building(id);return b&&b->constructionResultState!=::Building::NO_CONSTRUCTION; }
+bool StaffableConstructionSite::passes(Context& c,int id) const
+{ ::Building* b=c.get_building_register().get_building(id);
+  return b&&b->constructionResultState!=::Building::NO_CONSTRUCTION
+      &&b->buildingState==::Building::ALIVE; }
 bool BeingUpgraded::passes(Context& c,int id) const {return c.get_building_register().is_building_upgrading(id);}
 bool BeingUpgradedTo::passes(Context& c,int id) const {return c.get_building_register().is_building_upgrading(id)&&c.get_building_register().get_level(id)==level-1;}
 bool SpecificBuildingType::passes(Context& c,int id) const {return c.get_building_register().get_type(id)==buildingType;}
@@ -479,6 +483,7 @@ void BeingUpgradedTo::save(GAGCore::OutputStream* s)const{s->writeEnterSection("
 void SpecificBuildingType::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeSint32(buildingType,"value");s->writeLeaveSection();}
 void BuildingLevel::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeSint32(level,"value");s->writeLeaveSection();}
 void Upgradable::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeLeaveSection();}
+void StaffableConstructionSite::save(GAGCore::OutputStream* s)const{s->writeEnterSection("BuildingCondition");s->writeSint32(type(),"type");s->writeLeaveSection();}
 }
 
 namespace Management

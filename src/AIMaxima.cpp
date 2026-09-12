@@ -6820,8 +6820,14 @@ bool Maxima::issue_development_action(Context& echo,
 		const int workers=action.type==RepairBuilding ? action.workers
 			: (action.fromLevel<=1 ? budget.upgrade_level1_workers
 				: budget.upgrade_level2_workers);
+		// Wait for a site that can actually take the request. A building that
+		// has only just started upgrading is under construction but not yet
+		// ALIVE, and the engine drops worker orders in that window without
+		// reporting anything; staffing one early would also pin units in place
+		// and stop the site from forming at all.
 		ManagementOrder* assignment=new AssignWorkers(workers,buildingId);
-		assignment->add_condition(new ParticularBuilding(new UnderConstruction,buildingId));
+		assignment->add_condition(
+			new ParticularBuilding(new StaffableConstructionSite,buildingId));
 		echo.add_management_order(assignment);
 		if(action.type==UpgradeBuilding)
 		{
