@@ -5,6 +5,7 @@
 #include <cmath>
 
 #include "BuildingType.h"
+#include "HarvestMetrics.h"
 #include "Game.h"
 #include "GameGUI.h"
 #include "Map.h"
@@ -283,6 +284,7 @@ namespace
 			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
 			b->owner->map->resourceAvailableUpdate(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL);
+			HarvestMetrics::onCommit(u);
 		}
 		u->validTarget = true;
 	}

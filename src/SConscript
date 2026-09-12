@@ -107,6 +107,7 @@ Game.cpp
 Game_orders.cpp
 Game_io.cpp
 Game_sync.cpp
+HarvestMetrics.cpp
 Game_editor.cpp
 render/GameRender.cpp
 render/GameRenderUnits.cpp

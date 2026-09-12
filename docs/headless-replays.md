@@ -171,6 +171,41 @@ GLOB2_GAME_END ticks=2483 winner_team=1 seed=1777219846 map="Playground" orders=
 The format is intended for grep/regex consumption — fields are
 space-separated key=value, with `map` quoted.
 
+## Resource-Fetch Metrics
+
+`GLOB2_HARVEST_METRICS=1` counts how workers fetch map resources and prints,
+next to the summary line, one line per team and resource that saw any activity,
+plus one per team about idle workers and wheat demand. `GLOB2_HARVEST_METRICS_EVERY=N`
+also prints the cumulative lines every `N` ticks, so a game that ends early can
+still be compared over a window. The hooks only read game state
+(`src/HarvestMetrics.h`), so the final checksum is the same with the metrics
+on or off.
+
+```
+GLOB2_HARVEST tick=30000 team=1 res=CORN commits=3175 harvests=2230 deliveries=2129 steps=17924 reversals=776 retargets=... lost=1051 ghosts=... abandoned=7 trips=2230 tripTicks=355134 goingTicks=345784 doomedTicks=155966 maxCrowd=16
+GLOB2_IDLE tick=30000 team=1 ticks=... idleWorkerTicks=... demandTicks=... idleWhenDemandTicks=... boundTicks=... idleWhenBoundTicks=... supplySum=... fetcherSum=... wantedSum=...
+```
+
+- `commits`, `harvests`, `deliveries` — fetches started, resources taken from
+  the map, resources put into a building
+- `steps`, `reversals`, `retargets` — steps walked towards a resource, steps
+  turning more than 90° from the previous one, steps after which the gradient
+  destination moved
+- `lost` — the gradient offered no step and the unit stepped at random;
+  `ghosts` are the ones standing on a tile the gradient still takes for the
+  resource (a field not yet rebuilt). `abandoned` — the unit gave up the job
+- `trips`, `tripTicks` — fetches that reached a harvest, and ticks from start to harvest
+- `goingTicks`, `doomedTicks`, `maxCrowd` — unit-ticks heading to a resource;
+  of those, the ones heading to a tile already outnumbered by the units heading
+  there; the most units ever heading to one tile
+- `GLOB2_IDLE` — per tick, summed: free workers without a job, whether a
+  building wanted wheat, and (for `GLOB2_PROTO_SUPPLY_CAP`) whether as many
+  wheat fetchers were out as the swim class 0 field counted wheat
+
+`GLOB2_SAVE_AT_END=<path>` writes the game reached at the `--nox` step limit
+with `GameGUI::save()`, so a moment of a headless game can be opened later from
+the GUI's Load Game menu (put the file in the profile's `games/` directory).
+
 For cross-codebase testing, the canonical baselines live in `glob2/tests/baselines/`. See [`docs/replay-verification.md`](../../docs/replay-verification.md) at the workspace root for the full verification workflows and the regeneration procedure.
 
 The `ReplayWriter` records live during gameplay:

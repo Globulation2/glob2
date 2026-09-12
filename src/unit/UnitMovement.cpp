@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Unit.h"
+#include "HarvestMetrics.h"
 #include "Race.h"
 #include "Team.h"
 #include "Map.h"
@@ -563,6 +564,7 @@ void Unit::handleMovementGoingToResource()
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
+		const Sint32 previousTargetX = targetX, previousTargetY = targetY;
 		// targetX/Y (also the debug path line, hotkey T) were set once, by
 		// ascending a gradient, when the fetch task started. pathfindResource
 		// above re-reads whichever gradient actually governs the step fresh
@@ -578,9 +580,12 @@ void Unit::handleMovementGoingToResource()
 			? roundTrip : map->getResourceGradient(teamNumber, destinationPurpose, swim);
 		if (!map->isGradientPeak(gradient, targetX, targetY))
 			map->getGlobalGradientDestination(gradient, posX, posY, &targetX, &targetY);
+		HarvestMetrics::onStep(this, targetX != previousTargetX || targetY != previousTargetY);
 	}
 	else
 	{
+		HarvestMetrics::onLost(this, stopWork, HarvestMetrics::enabled
+			&& map->getResourceGradient(teamNumber, destinationPurpose, swim)[map->coordToIndex(posX, posY)] == GRADIENT_AT_GOAL);
 		if (stopWork)
 			stopAttachedForBuilding(false);
 		movement=MOV_RANDOM_GROUND;
