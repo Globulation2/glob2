@@ -22,9 +22,14 @@ namespace
 {
 std::string tr(const std::string &s) { return Toolkit::getStringTable()->getString("[" + s + "]"); }
 const Uint32 A = ALIGN_SCREEN_CENTERED;
-const std::vector<std::string> methods = {
-	"Swamp", "River",	   "Islands",	 "Crater lakes", "Concrete islands",
-	"Isles", "Old random", "Old islands"};
+const std::vector<std::string> methods = []
+{
+	std::vector<std::string> result;
+	for (int m = MapGenerationDescriptor::eSWAMP; m <= MapGenerationDescriptor::eOLDISLANDS; ++m)
+		result.emplace_back(
+			MapGenerationDescriptor::methodName(static_cast<MapGenerationDescriptor::Method>(m)));
+	return result;
+}();
 std::vector<std::string> localized(std::vector<std::string> v)
 {
 	for (auto &s : v)
@@ -793,15 +798,19 @@ void CustomGameScreen::renderRules(int x, int y, int w, int h)
 		else
 		{
 			if (setup.random)
-				ui.stepper("rule/workers", {fieldX, yy + 5, 130, 29}, setup.generator.nbWorkers, 1,
-						   8,
-						   [this](int v)
-						   {
-							   setup.generator.nbWorkers = v;
-							   ++setup.mapRevision;
-							   setup.ruleset = "Custom";
-							   invalidate();
-						   });
+				ui.stepper(
+					"rule/workers", {fieldX, yy + 5, 130, 29}, setup.generator.nbWorkers,
+					MapGenerationDescriptor::control(setup.generator.method, "Starting workers")
+						.minimum,
+					MapGenerationDescriptor::control(setup.generator.method, "Starting workers")
+						.maximum,
+					[this](int v)
+					{
+						setup.generator.nbWorkers = v;
+						++setup.mapRevision;
+						setup.ruleset = "Custom";
+						invalidate();
+					});
 			else
 				ui.text(fieldX + 9, yy + 12, tr("Map-defined starting units"), "standard", fieldW);
 			help = tr(setup.random ? "More workers jump-start colony growth. Changes the "
@@ -877,45 +886,43 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 		};
 		ui.text(x + 4, yy, tr("Landscape"), "little", leftW - 20, true);
 		yy += 18;
-		ui.dropdown("generator/landscape", {x, yy, leftW - 16, 30}, localized(methods),
-					g.method - 1,
-					[this, changed](int value)
-					{
-						setup.generator.method = (MapGenerationDescriptor::Method)(value + 1);
-						changed();
-					});
+		ui.dropdown(
+			"generator/landscape", {x, yy, leftW - 16, 30}, localized(methods), g.method - 1,
+			[this, changed](int value)
+			{
+				setup.generatorHistory.select(
+					setup.generator, static_cast<MapGenerationDescriptor::Method>(value + 1));
+				changed();
+			});
 		yy += 40;
-		auto discrete = [&](const std::string &id, const char *label, int current, int lo, int hi,
-							bool power, std::function<void(int)> apply)
+		auto discrete = [&](const MapGenerationDescriptor::Control &c, const std::string &id)
 		{
-			ui.text(x + 4, yy + 7, tr(label), "little", 110, true);
+			ui.text(x + 4, yy + 7, tr(c.label), "little", 110, true);
 			std::vector<std::string> options;
-			for (int i = lo; i <= hi; ++i)
-				options.push_back(std::to_string(power ? (1 << i) : i));
-			ui.dropdown(id, {x + 112, yy, leftW - 128, 28}, options, current - lo,
-						[apply, lo](int i) { apply(i + lo); });
+			for (int v = c.minimum; v <= c.maximum; v += c.step)
+				options.push_back(std::to_string(c.powerOfTwo ? (1 << v) : v));
+			ui.dropdown(id, {x + 112, yy, leftW - 128, 28}, options,
+						(c.get(g) - c.minimum) / c.step,
+						[this, c, changed](int i)
+						{
+							c.set(setup.generator, c.minimum + i * c.step);
+							if (c.field == &MapGenerationDescriptor::nbTeams)
+								setup.setCapacity(setup.generator.nbTeams);
+							changed();
+						});
 			yy += 36;
 		};
-		discrete("generator/width", "Width", g.wDec, 6, 9, true,
-				 [this, changed](int v)
-				 {
-					 setup.generator.wDec = v;
-					 changed();
-				 });
-		discrete("generator/height", "Height", g.hDec, 6, 9, true,
-				 [this, changed](int v)
-				 {
-					 setup.generator.hDec = v;
-					 changed();
-				 });
-		discrete("generator/colonies", "Colonies", setup.capacity, 2, 12, false,
-				 [this](int v)
-				 {
-					 setup.setCapacity(v);
-					 setup.generator.nbTeams = v;
-					 ++setup.mapRevision;
-					 invalidate();
-				 });
+		for (const auto &c : MapGenerationDescriptor::sharedControls())
+			if (c.field != &MapGenerationDescriptor::nbWorkers)
+			{
+				if (c.field == &MapGenerationDescriptor::nbTeams)
+					g.nbTeams = setup.capacity;
+				const char *id = c.field == &MapGenerationDescriptor::wDec	 ? "generator/width"
+								 : c.field == &MapGenerationDescriptor::hDec ? "generator/height"
+																			 : "generator/colonies";
+				discrete(c, id);
+			}
+
 		ui.text(x + 4, yy, tr("Starting workers: Game Rules tab."), "little", leftW - 20, true);
 		yy += 27;
 		for (int section = 0; section < 3; ++section)
@@ -928,93 +935,44 @@ void CustomGameScreen::renderMap(int x, int y, int w, int h)
 			yy += 38;
 			if (!expanded[section])
 				continue;
-			bool modern = g.method >= 1 && g.method <= 4, old = g.method == 7;
-			auto numeric = [&](const char *label, int *value, int lo, int hi)
+			bool any = false;
+			for (const auto &c : MapGenerationDescriptor::controls(g.method))
 			{
-				std::string id = "generator/" + std::string(label);
-				ui.text(x + 5, yy, tr(label), "little", leftW - 55, true);
-				ui.text(x + leftW - 45, yy, std::to_string(*value), "little", 35);
+				if (static_cast<int>(c.group) != section)
+					continue;
+				any = true;
+				std::string id = "generator/" + std::string(c.label);
+				if (c.powerOfTwo)
+				{
+					discrete(c, "generator/repeat");
+					continue;
+				}
+				ui.text(x + 5, yy, tr(c.label), "little", leftW - 55, true);
+				ui.text(x + leftW - 45, yy, std::to_string(c.get(g)), "little", 35);
 				yy += 18;
-				if (hi - lo > 8)
-					ui.slider(id, {x + 8, yy, leftW - 32, 22}, *value, lo, hi,
-							  [value, changed](int v)
-							  {
-								  if (*value != v)
-								  {
-									  *value = v;
-									  changed();
-								  }
-							  });
+				auto apply = [this, c, changed](int v)
+				{
+					if (c.get(setup.generator) != c.normalize(v))
+					{
+						c.set(setup.generator, v);
+						changed();
+					}
+				};
+				if ((c.maximum - c.minimum) / c.step > 8)
+					ui.slider(id, {x + 8, yy, leftW - 32, 22}, (c.get(g) - c.minimum) / c.step, 0,
+							  (c.maximum - c.minimum) / c.step,
+							  [c, apply](int i) { apply(c.minimum + i * c.step); });
 				else
-					ui.stepper(id, {x + 8, yy, 130, 26}, *value, lo, hi,
-							   [value, changed](int v)
-							   {
-								   *value = v;
-								   changed();
-							   });
+					ui.stepper(id, {x + 8, yy, 130, 26}, c.get(g), c.minimum, c.maximum, apply,
+							   c.step);
 				yy += 34;
-			};
-			if (section == 0)
-			{
-				if (modern || old)
-				{
-					numeric("Water weight", &g.waterRatio, 0, 64);
-					if (g.method != 1)
-						numeric("Sand weight", &g.sandRatio, 0, 64);
-					numeric("Grass weight", &g.grassRatio, 0, 64);
-					if (modern && g.method != 1)
-						numeric("Desert weight", &g.desertRatio, 0, 64);
-					numeric("Smoothing", &g.smooth, 1, 8);
-				}
-				if (g.method == 2)
-					numeric("River width", &g.riverDiameter, 1, 64);
-				if (g.method == 3)
-					numeric("Extra islands", &g.extraIslands, 0, 8);
-				if (g.method == 4)
-					numeric("Lake density", &g.craterDensity, 1, 64);
-				if (g.method == 8)
-				{
-					numeric("Island size", &g.oldIslandSize, 1, 64);
-					numeric("Beach size", &g.oldBeach, 0, 4);
-				}
-				if (g.method == 5 || g.method == 6)
-				{
-					yy += ui.paragraph(x + 5, yy, leftW - 22,
-									   tr("This landscape uses a fixed terrain recipe.")) +
-						  8;
-				}
 			}
-			else if (section == 1)
-			{
-				if (modern || old)
-				{
-					numeric("Wheat", &g.wheatRatio, 0, 64);
-					numeric("Wood", &g.woodRatio, 0, 64);
-					numeric("Stone", &g.stoneRatio, 0, 64);
-					numeric("Algae", &g.algaeRatio, 0, 64);
-					if (modern)
-						numeric("Fruit", &g.fruitRatio, 0, 64);
-				}
-				else
-					yy += ui.paragraph(x + 5, yy, leftW - 22,
-									   tr("This landscape uses fixed resource placement.")) +
-						  8;
-			}
-			else
-			{
-				if (modern)
-					discrete("generator/repeat", "Repeat landscape", g.logRepeatAreaTimes, 0, 5,
-							 true,
-							 [this, changed](int v)
-							 {
-								 setup.generator.logRepeatAreaTimes = v;
-								 changed();
-							 });
-				else
-					yy += ui.paragraph(x + 5, yy, leftW - 22,
-									   tr("Dimensions and colony count are set above.")) +
-						  8;
-			}
+			if (!any)
+				yy +=
+					ui.paragraph(x + 5, yy, leftW - 22,
+								 tr(section == 1 ? "This landscape uses fixed resource placement."
+												 : "Dimensions and colony count are set above.")) +
+					8;
 		}
 		ui.endRegion(yy - startY + 8);
 	}

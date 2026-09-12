@@ -615,9 +615,9 @@ dont
 [ok]
 Accepter
 [old islands terrain]
-Ancien terrain d'île
+Archipel accidenté
 [old random terrain]
-Ancien terrain aléatoire
+Côte morcelée
 [on press]
 Appuyer
 [On the spot]
@@ -1373,9 +1373,9 @@ Moyen - Expérimental
 [No AI orders]
 Aucun ordre de l’IA
 [Old islands]
-Îles (ancien générateur)
+Archipel accidenté
 [Old random]
-Aléatoire (ancien générateur)
+Côte morcelée
 [Open at least one colony to start a match.]
 Ouvrez au moins une colonie pour démarrer une partie.
 [Open book]
@@ -1630,6 +1630,8 @@ Affichez le curseur Globulation 2.
 Terminé
 [settings Edit shortcut]
 Modifier le raccourci clavier
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Agrandit les menus, le texte et la barre latérale sur un écran haute résolution.
 [settings Flags]
 Drapeaux
 [settings Full]
@@ -1644,6 +1646,8 @@ Vitesse du jeu
 Jouabilité
 [settings Graphics detail]
 Détails graphiques
+[settings Interface scale]
+Échelle de l'interface
 [settings Keep]
 Conserver
 [settings Keep this display mode?]
@@ -1666,6 +1670,8 @@ Langue utilisée dans toute l'interface.
 Niveau
 [settings Map editor]
 Éditeur de cartes
+[settings Match the desktop]
+Comme le bureau
 [settings Missing font]
 Police manquante
 [settings Music volume]
@@ -1776,3 +1782,9 @@ Appliquer les graphismes au prochain chargement d’une partie ou de l’éditeu
 Vue torique automatique
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Afficher automatiquement l'aperçu de la carte en forme de tore tout en vous déplaçant sur la carte (OpenGL).
+[Channel width]
+Largeur du chenal
+[Land bridge width]
+Largeur du pont terrestre
+[Lake size]
+Taille des lacs

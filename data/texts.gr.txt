@@ -673,9 +673,9 @@ numlock
 [ok]
 Εντάξει
 [old islands terrain]
-παλιά τυχαία νησιά
+Τραχύ Αρχιπέλαγος
 [old random terrain]
-παλιά τυχαία πεδία
+Κατακερματισμένη Ακτή
 [on press]
 Πάτημα
 [On the spot]
@@ -1433,9 +1433,9 @@ Cortex
 [No AI orders]
 Χωρίς εντολές AI
 [Old islands]
-Παλιά νησιά
+Τραχύ Αρχιπέλαγος
 [Old random]
-Παλιό τυχαίο
+Κατακερματισμένη Ακτή
 [Open at least one colony to start a match.]
 Ανοίξτε τουλάχιστον μία αποικία για να ξεκινήσετε έναν αγώνα.
 [Open book]
@@ -1690,6 +1690,8 @@ Cortex
 Έγινε
 [settings Edit shortcut]
 Επεξεργασία συντόμευσης
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Μεγεθύνει τα μενού, το κείμενο και την πλαϊνή μπάρα σε οθόνη υψηλής ανάλυσης.
 [settings Flags]
 Σημαίες
 [settings Full]
@@ -1704,6 +1706,8 @@ Cortex
 Τρόπος παιχνιδιού
 [settings Graphics detail]
 Λεπτομέρεια γραφικών
+[settings Interface scale]
+Κλίμακα διεπαφής
 [settings Keep]
 Διατήρηση αλλαγών
 [settings Keep this display mode?]
@@ -1726,6 +1730,8 @@ Cortex
 Επίπεδο
 [settings Map editor]
 Επεξεργαστής χάρτη
+[settings Match the desktop]
+Όπως η επιφάνεια εργασίας
 [settings Missing font]
 Λείπει γραμματοσειρά
 [settings Music volume]
@@ -1836,3 +1842,9 @@ Cortex
 Αυτόματη τοροειδής προβολή
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Αυτόματη εμφάνιση της επισκόπησης του χάρτη σε σχήμα τόρου ενώ μετακινείστε στον χάρτη (OpenGL).
+[Channel width]
+Πλάτος καναλιού
+[Land bridge width]
+Πλάτος χερσαίας γέφυρας
+[Lake size]
+Μέγεθος λίμνης

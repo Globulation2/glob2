@@ -63,6 +63,7 @@ class GameGUI
     bool torusMapPointer(int x, int y, int &mx, int &my) const;
     bool handleTorusPointer(const SDL_Event &event);
 	friend class HighResolutionIntegrationHarness;
+	friend class FailingUnitMarkersHarness;
 public:
     void drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit);
 	///Constructs a GameGUI
@@ -506,8 +507,6 @@ private:
 	int panMouseX, panMouseY;
 	int lastMouseX = 0, lastMouseY = 0;
 	Uint16 lastMouseButtonState = 0;
-	//! Coordinate of viewport when began panning
-	int panViewX, panViewY;
 
 	bool showStarvingMap;
 	bool showDamagedMap;

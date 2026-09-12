@@ -6,6 +6,7 @@
 #include "AICastor.h"
 #include "AINicowar.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <string.h>
 
@@ -37,7 +38,10 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 {
 	assert(maxLength>=0);
 	assert(maxLength<65536);
-	assert(actLength<=maxLength);
+	// Live counts may exceed the displayed capacity. Bound both sections;
+	// drawing a status bar must not abort gameplay or spill outside the bar.
+	actLength = std::clamp(actLength, 0, maxLength);
+	secondActLength = std::clamp(secondActLength, 0, maxLength - actLength);
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
 	{

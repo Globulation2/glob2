@@ -607,9 +607,9 @@ da kiuj, estas
 [ok]
 Bone!
 [old islands terrain]
-Insuloj, Hazarde
+Kruta Insularo
 [old random terrain]
-Tereno, Hazarde
+Fragmentita Marbordo
 [on press]
 Premo
 [On the spot]
@@ -1361,9 +1361,9 @@ Meza - Eksperimenta
 [No AI orders]
 Neniuj AI-komandoj
 [Old islands]
-Insuloj (malnova generatoro)
+Kruta Insularo
 [Old random]
-Hazarda (malnova generatoro)
+Fragmentita Marbordo
 [Open at least one colony to start a match.]
 Malfermu almenaŭ unu kolonion por komenci matĉon.
 [Open book]
@@ -1618,6 +1618,8 @@ Montru la kursoron de Globulation 2.
 Farita
 [settings Edit shortcut]
 Redakti klavaran ŝparvojon
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Pligrandigas menuojn, tekston kaj la flankan strion sur altdistingiva ekrano.
 [settings Flags]
 Flagoj
 [settings Full]
@@ -1632,6 +1634,8 @@ Ludrapido
 Ludado
 [settings Graphics detail]
 Grafikaj detaloj
+[settings Interface scale]
+Interfaca skalo
 [settings Keep]
 Konservi ŝanĝojn
 [settings Keep this display mode?]
@@ -1654,6 +1658,8 @@ Lingvo uzata tra la interfaco.
 Nivelo
 [settings Map editor]
 Mapredaktilo
+[settings Match the desktop]
+Kiel la labortablo
 [settings Missing font]
 Mankas tiparo
 [settings Music volume]
@@ -1764,3 +1770,9 @@ La bildoj estos aplikitaj ĉe la sekva ŝargo de ludo aŭ mapredaktilo (OpenGL).
 Aŭtomata tora vido
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Aŭtomate montru la torforman superrigardon de la mapo dum moviĝado tra la mapo (OpenGL).
+[Channel width]
+Larĝo de kanalo
+[Land bridge width]
+Larĝo de terponto
+[Lake size]
+Grandeco de lago

@@ -673,9 +673,9 @@ Num Lock 鍵
 [ok]
 確定
 [old islands terrain]
-隨機島嶼（舊版）
+崎嶇群島
 [old random terrain]
-隨機地形（舊版）
+破碎海岸
 [on press]
 按下時
 [On the spot]
@@ -1435,9 +1435,9 @@ AI策略與對抗
 [No AI orders]
 沒有AI命令
 [Old islands]
-舊版島嶼產生器
+崎嶇群島
 [Old random]
-舊版隨機產生器
+破碎海岸
 [Open at least one colony to start a match.]
 至少啟用一個殖民地才能開始對局。
 [Open book]
@@ -1692,6 +1692,8 @@ AI策略與對抗
 完成
 [settings Edit shortcut]
 編輯快捷鍵
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+在高解析度螢幕上放大選單、文字與側邊欄。
 [settings Flags]
 旗幟
 [settings Full]
@@ -1706,6 +1708,8 @@ AI策略與對抗
 遊戲玩法
 [settings Graphics detail]
 圖形細節
+[settings Interface scale]
+介面縮放
 [settings Keep]
 保留變更
 [settings Keep this display mode?]
@@ -1728,6 +1732,8 @@ AI策略與對抗
 等級
 [settings Map editor]
 地圖編輯器
+[settings Match the desktop]
+與桌面相同
 [settings Missing font]
 缺少字型
 [settings Music volume]
@@ -1838,3 +1844,9 @@ OpenGL 在此版本中不可用。
 自動環面視圖
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 在地圖上移動時自動顯示圓環形狀的地圖概覽 (OpenGL)。
+[Channel width]
+水道寬度
+[Land bridge width]
+陸橋寬度
+[Lake size]
+湖泊大小

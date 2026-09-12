@@ -603,9 +603,9 @@ os quais
 [ok]
 Ok
 [old islands terrain]
-velhas ilhas aleatórias
+Arquipélago Acidentado
 [old random terrain]
-velho terreno aleatório
+Costa Fragmentada
 [on press]
 Ao apertar
 [On the spot]
@@ -1359,9 +1359,9 @@ Médio - Experimental
 [No AI orders]
 Sem ordens da IA
 [Old islands]
-Ilhas (gerador antigo)
+Arquipélago Acidentado
 [Old random]
-Aleatório (gerador antigo)
+Costa Fragmentada
 [Open at least one colony to start a match.]
 Abra pelo menos uma colônia para iniciar uma partida.
 [Open book]
@@ -1616,6 +1616,8 @@ Exibe o cursor do Globulation 2.
 Concluído
 [settings Edit shortcut]
 Editar atalho de teclado
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Amplia menus, texto e a barra lateral em telas de alta resolução.
 [settings Flags]
 Bandeiras
 [settings Full]
@@ -1630,6 +1632,8 @@ Velocidade do jogo
 Jogabilidade
 [settings Graphics detail]
 Detalhe gráfico
+[settings Interface scale]
+Escala da interface
 [settings Keep]
 Manter alterações
 [settings Keep this display mode?]
@@ -1652,6 +1656,8 @@ Idioma usado em toda a interface.
 Nível
 [settings Map editor]
 Editor de mapas
+[settings Match the desktop]
+Acompanhar a área de trabalho
 [settings Missing font]
 Fonte ausente
 [settings Music volume]
@@ -1762,3 +1768,9 @@ Aplicar os gráficos ao carregar a próxima partida ou o editor de mapas (OpenGL
 Visão toroidal automática
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostrar automaticamente a visão geral toroidal enquanto você se desloca pelo mapa (OpenGL).
+[Channel width]
+Largura do canal
+[Land bridge width]
+Largura da ponte de terra
+[Lake size]
+Tamanho do lago

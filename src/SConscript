@@ -124,6 +124,7 @@ gui/GameGUIDrawChoice.cpp
 gui/GameGUIDrawUnitInfos.cpp
 gui/GameGUIDrawBuildingInfos.cpp
 gui/GameGUIDrawBuildingHelpers.cpp
+gui/FailureShapes.cpp
 gui/GameGUIDrawMiscPanels.cpp
 gui/GameGUIGhostBuildingManager.cpp
 gui/GameGUIInput.cpp
@@ -210,8 +211,10 @@ map/generator/GeneratorPoints.cpp
 map/generator/GeneratorHeightmap.cpp
 map/generator/MapHomogen.cpp
 map/generator/MapOldRandom.cpp
+map/generator/MapOldRandomRessources.cpp
 map/generator/MapRandom.cpp
 map/generator/MapOldIslands.cpp
+map/generator/MapOldIslandsRessources.cpp
 map/generator/GameMaps.cpp
 map/io/MapHeader.cpp
 MapScript.cpp
@@ -555,6 +558,14 @@ if not env['server']:
     clearing_test = clearing_env.Program('ClearingFlagGradientTest', clearing_sources)
     local.Alias('clearing-gradient-test', clearing_test)
 
+# Status-bar pixel regression: exercise the shared renderer without a map.
+if not env['server']:
+    bar_sources = [source for source in source_files if source != 'Glob2.cpp']
+    bar_sources += local.Object('PointBarRenderTest.o', '#test/PointBarRenderTest.cpp')
+    bar_test = local.Program('point-bar-render-test', bar_sources)
+    local.Alias('point-bar-render-test', bar_test)
+
+if not env['server']:
     # Use the real renderer and settings handlers. Access relaxation is confined
     # to the test translation unit; production objects retain their normal flags.
     render_env = savegame_env.Clone()
@@ -577,6 +588,13 @@ if not env['server']:
     trapped_env['LIBS'] = [lib for lib in local['LIBS'] if lib != 'SDL2main']
     trapped_test = trapped_env.Program('TrappedUnitLifecycleTest', trapped_sources)
     local.Alias('trapped-unit-test', trapped_test)
+
+# Map analysis and UI contract tests use production generators and widgets.
+if not env['server']:
+    for alias, target in [('map-generator-study', 'MapGeneratorStudy'), ('map-generator-defaults-test', 'MapGeneratorDefaultsTest')]:
+        sources = [source for source in source_files if source != 'Glob2.cpp']
+        sources += local.Object(target + '.o', '#test/' + target + '.cpp')
+        local.Alias(alias, local.Program(target, sources))
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")
@@ -627,6 +645,13 @@ if not env['server']:
     regression_test = local.Program('ImmobileUnitGradientHarness', regression_sources)
     local.Alias('immobile-unit-gradient-test', regression_test)
 
+# Real engine regression for building placement and removal refreshing neighbouring route fields, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('BuildingGradientInvalidationHarness.o', '#test/BuildingGradientInvalidationHarness.cpp')
+    regression_test = local.Program('BuildingGradientInvalidationHarness', regression_sources)
+    local.Alias('building-gradient-invalidation-test', regression_test)
+
 # Real engine regression for resource-fetch target staleness, built only by its explicit target.
 if not env['server']:
     regression_sources = [source for source in source_files if source != 'Glob2.cpp']
@@ -640,6 +665,11 @@ if not env['server']:
     regression_sources += local.Object('FetchApportionmentHarness.o', '#test/FetchApportionmentHarness.cpp')
     regression_test = local.Program('FetchApportionmentHarness', regression_sources)
     local.Alias('fetch-apportionment-test', regression_test)
+# Units a selected building could not hire wear the reason's shape in the map view.
+if not env['server'] and 'failing-unit-markers-test' in COMMAND_LINE_TARGETS:
+    markers_sources = [source for source in source_files if source != 'Glob2.cpp']
+    markers_sources += local.Object('FailingUnitMarkersHarness.o', '#test/FailingUnitMarkersHarness.cpp')
+    local.Alias('failing-unit-markers-test', local.Program('FailingUnitMarkersHarness', markers_sources))
 if not env['server'] and 'entering-unit-draw-test' in COMMAND_LINE_TARGETS:
     entering_draw_sources = [source for source in source_files if source != 'Glob2.cpp']
     entering_draw_sources += local.Object('EnteringUnitDrawHarness.o', '#test/EnteringUnitDrawHarness.cpp')
@@ -674,3 +704,17 @@ if not env['server']:
     regression_sources += local.Object('BuildingExpelHarness.o', '#test/BuildingExpelHarness.cpp')
     regression_test = local.Program('BuildingExpelHarness', regression_sources)
     local.Alias('building-expel-test', regression_test)
+
+# Real engine regression for inn swaps between hungry units, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('InnSwapHarness.o', '#test/InnSwapHarness.cpp')
+    regression_test = local.Program('InnSwapHarness', regression_sources)
+    local.Alias('inn-swap-test', regression_test)
+
+# Real engine regression for the resource hunger gate, built only by its explicit target.
+if not env['server']:
+    regression_sources = [source for source in source_files if source != 'Glob2.cpp']
+    regression_sources += local.Object('RoundTripHungerGateHarness.o', '#test/RoundTripHungerGateHarness.cpp')
+    regression_test = local.Program('RoundTripHungerGateHarness', regression_sources)
+    local.Alias('round-trip-hunger-gate-test', regression_test)

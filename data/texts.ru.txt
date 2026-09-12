@@ -607,9 +607,9 @@ numlock
 [ok]
 ок
 [old islands terrain]
-старые случайные острова
+Скалистый архипелаг
 [old random terrain]
-старый случайный ландшафт
+Изрезанный берег
 [on press]
 Нажата
 [On the spot]
@@ -1361,9 +1361,9 @@ Cortex
 [No AI orders]
 Никаких команд ИИ
 [Old islands]
-Старые острова
+Скалистый архипелаг
 [Old random]
-Старый рандом
+Изрезанный берег
 [Open at least one colony to start a match.]
 Откройте хотя бы одну колонию, чтобы начать матч.
 [Open book]
@@ -1618,6 +1618,8 @@ Cortex
 Готово
 [settings Edit shortcut]
 Изменить сочетание клавиш
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Увеличивает меню, текст и боковую панель на экране с высоким разрешением.
 [settings Flags]
 Флаги
 [settings Full]
@@ -1632,6 +1634,8 @@ Cortex
 Игровой процесс
 [settings Graphics detail]
 Детализация графики
+[settings Interface scale]
+Масштаб интерфейса
 [settings Keep]
 Сохранить изменения
 [settings Keep this display mode?]
@@ -1654,6 +1658,8 @@ Cortex
 Уровень
 [settings Map editor]
 Редактор карт
+[settings Match the desktop]
+Как в системе
 [settings Missing font]
 Отсутствует шрифт
 [settings Music volume]
@@ -1764,3 +1770,9 @@ OpenGL недоступен в этой сборке.
 Автоматический вид тора
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Автоматически отображать обзор карты в форме тора при перемещении по карте (OpenGL).
+[Channel width]
+Ширина пролива
+[Land bridge width]
+Ширина перешейка
+[Lake size]
+Размер озера

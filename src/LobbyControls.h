@@ -161,13 +161,15 @@ class LobbyControls : public GAGGUI::RectangularWidget
 				font);
 	}
 	void stepper(const std::string &id, SDL_Rect r, int value, int lo, int hi,
-				 std::function<void(int)> apply)
+				 std::function<void(int)> apply, int step = 1)
 	{
-		button(id + "/-", {r.x, r.y, 30, r.h}, "-", [=] { apply(value - 1); }, false, value > lo);
+		button(
+			id + "/-", {r.x, r.y, 30, r.h}, "-", [=] { apply(std::max(lo, value - step)); }, false,
+			value > lo);
 		text(r.x + 42, r.y + 5, std::to_string(value));
 		button(
-			id + "/+", {r.x + r.w - 30, r.y, 30, r.h}, "+", [=] { apply(value + 1); }, false,
-			value < hi);
+			id + "/+", {r.x + r.w - 30, r.y, 30, r.h}, "+",
+			[=] { apply(std::min(hi, value + step)); }, false, value < hi);
 	}
 	void slider(const std::string &id, SDL_Rect r, int value, int lo, int hi,
 				std::function<void(int)> apply)

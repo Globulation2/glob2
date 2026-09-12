@@ -623,9 +623,9 @@ Num Lock
 [ok]
 OK
 [old islands terrain]
-旧式のランダムな島々
+険しい群島
 [old random terrain]
-旧式のランダム地形
+入り組んだ海岸
 [on press]
 押した時
 [On the spot]
@@ -1359,9 +1359,9 @@ AIの戦略と対抗策
 [No AI orders]
 AIの命令なし
 [Old islands]
-旧式の島生成
+険しい群島
 [Old random]
-旧式のランダム生成
+入り組んだ海岸
 [Open at least one colony to start a match.]
 試合を始めるには、少なくとも1つのコロニーを参加させてください。
 [Open book]
@@ -1616,6 +1616,8 @@ Globulation 2 のカーソルを表示します。
 完了
 [settings Edit shortcut]
 キーボードショートカットを編集する
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+高解像度の画面でメニュー、文字、サイドバーを大きくします。
 [settings Flags]
 旗
 [settings Full]
@@ -1630,6 +1632,8 @@ Globulation 2 のカーソルを表示します。
 ゲームプレイ
 [settings Graphics detail]
 グラフィックの詳細度
+[settings Interface scale]
+インターフェースの拡大率
 [settings Keep]
 変更を保持する
 [settings Keep this display mode?]
@@ -1652,6 +1656,8 @@ Globulation 2 のカーソルを表示します。
 レベル
 [settings Map editor]
 マップエディター
+[settings Match the desktop]
+デスクトップに合わせる
 [settings Missing font]
 フォントがありません
 [settings Music volume]
@@ -1762,3 +1768,9 @@ Globulation 2 のカーソルを表示します。
 自動トーラス表示
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 マップ内を移動するときに、トーラス（ドーナツ）形状のマップ全体図を自動的に表示します (OpenGL)。
+[Channel width]
+水路の幅
+[Land bridge width]
+陸橋の幅
+[Lake size]
+湖の大きさ

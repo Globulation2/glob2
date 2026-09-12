@@ -605,9 +605,9 @@ numlock
 [ok]
 确定
 [old islands terrain]
-古代岛屿地形
+崎岖群岛
 [old random terrain]
-古代随机地形
+破碎海岸
 [on press]
 按下时
 [On the spot]
@@ -1359,9 +1359,9 @@ AI策略与对抗
 [No AI orders]
 没有AI命令
 [Old islands]
-旧版岛屿生成
+崎岖群岛
 [Old random]
-旧版随机生成
+破碎海岸
 [Open at least one colony to start a match.]
 至少启用一个殖民地才能开始对局。
 [Open book]
@@ -1616,6 +1616,8 @@ AI策略与对抗
 完成
 [settings Edit shortcut]
 编辑键盘快捷键
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+在高分辨率屏幕上放大菜单、文字和侧边栏。
 [settings Flags]
 旗帜
 [settings Full]
@@ -1630,6 +1632,8 @@ AI策略与对抗
 游戏玩法
 [settings Graphics detail]
 图形细节
+[settings Interface scale]
+界面缩放
 [settings Keep]
 保留更改
 [settings Keep this display mode?]
@@ -1652,6 +1656,8 @@ AI策略与对抗
 等级
 [settings Map editor]
 地图编辑器
+[settings Match the desktop]
+与桌面相同
 [settings Missing font]
 缺少字体
 [settings Music volume]
@@ -1762,3 +1768,9 @@ OpenGL 在此版本中不可用。
 自动环面视图
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 在地图上移动时自动显示圆环形状的地图概览 (OpenGL)。
+[Channel width]
+水道宽度
+[Land bridge width]
+陆桥宽度
+[Lake size]
+湖泊大小

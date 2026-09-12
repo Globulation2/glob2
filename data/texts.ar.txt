@@ -607,9 +607,9 @@ meta-%0
 [ok]
 ﻧﻌﻢ
 [old islands terrain]
-ﺟُﺰﺭ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
+الأرخبيل الوعر
 [old random terrain]
-ﺗﻀﺎﺭﻳﺲ ﻋﺸﻮﺍﺋﻴﺔ ﺑﻨﻤﻂ ﻗﺪﻳﻢ
+الساحل المتشظي
 [on press]
 ﻋﻨﺪ ﺍﻟﻀﻐﻂ
 [On the spot]
@@ -1361,9 +1361,9 @@ Cortex
 [No AI orders]
 لا توجد أوامر الذكاء الاصطناعي
 [Old islands]
-الجزر القديمة
+الأرخبيل الوعر
 [Old random]
-عشوائية قديمة
+الساحل المتشظي
 [Open at least one colony to start a match.]
 افتح مستعمرة واحدة على الأقل لبدء المباراة.
 [Open book]
@@ -1618,6 +1618,8 @@ Cortex
 تم
 [settings Edit shortcut]
 تحرير اختصار لوحة المفاتيح
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+تكبير القوائم والنص والشريط الجانبي على شاشة عالية الدقة.
 [settings Flags]
 أعلام
 [settings Full]
@@ -1632,6 +1634,8 @@ Cortex
 أسلوب اللعب
 [settings Graphics detail]
 تفاصيل الرسومات
+[settings Interface scale]
+مقياس الواجهة
 [settings Keep]
 احتفظ بالتغييرات
 [settings Keep this display mode?]
@@ -1654,6 +1658,8 @@ Cortex
 ﺍﻟﻤﺴﺘﻮﻯ
 [settings Map editor]
 محرر الخرائط
+[settings Match the desktop]
+مطابقة سطح المكتب
 [settings Missing font]
 الخط مفقود
 [settings Music volume]
@@ -1764,3 +1770,9 @@ OpenGL غير متوفر في هذا الإصدار.
 عرض الطارة تلقائيًا
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 إظهار نظرة عامة للخريطة على سطح طارة تلقائيًا أثناء التنقل في الخريطة (OpenGL).
+[Channel width]
+عرض القناة
+[Land bridge width]
+عرض الجسر البري
+[Lake size]
+حجم البحيرة

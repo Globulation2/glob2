@@ -107,7 +107,8 @@ jobs:
 
       - name: Build and run custom-game setup regressions
         run: |
-          scons -j$(nproc) release=1 server=0 custom-setup-test
+          scons -j$(nproc) release=1 server=0 custom-setup-test map-generator-defaults-test
+          timeout 60s ./build/src/MapGeneratorDefaultsTest glob2-map-defaults-ci
           timeout 180s ./build/src/CustomGameSetupHarness
           mkdir -p artifacts/custom-game-ci
           timeout 180s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/CustomGameSetupHarness artifacts/custom-game-ci > artifacts/custom-game-ci/ui.log 2>&1
@@ -115,6 +116,14 @@ jobs:
           timeout 60s xvfb-run -a ./build/src/CustomGameSetupHarness preferences-read
           cat artifacts/custom-game-ci/ui.log
           ! grep -q 'no such key' artifacts/custom-game-ci/ui.log
+
+      - name: Test status-bar bounds in GPU and software rendering
+        run: |
+          scons -j$(nproc) release=1 server=0 point-bar-render-test
+          SDL_AUDIODRIVER=dummy LIBGL_ALWAYS_SOFTWARE=1 \
+            xvfb-run -a ./build/src/point-bar-render-test gl
+          SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            ./build/src/point-bar-render-test software
 
       - name: Build and run the selection lifetime regression
         run: |
@@ -143,6 +152,17 @@ jobs:
           scons -j$(nproc) release=1 server=0 trapped-unit-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/TrappedUnitLifecycleTest
 
+      - name: Build and run the failing-unit markers regression
+        run: |
+          scons -j$(nproc) release=1 server=0 failing-unit-markers-test
+          timeout 300s xvfb-run -a -s '-screen 0 1024x768x24' ./build/src/FailingUnitMarkersHarness
+      - name: Upload the failing-unit markers scene
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failing-unit-markers-${{ matrix.runner }}
+          path: .cache/failing-unit-markers/
+          if-no-files-found: ignore
       - name: Build and run the entering unit draw regression
         run: |
           scons -j$(nproc) release=1 server=0 entering-unit-draw-test
@@ -158,6 +178,11 @@ jobs:
           scons -j$(nproc) release=1 server=0 building-expel-test
           timeout 300s ./build/src/BuildingExpelHarness
 
+      - name: Build and run the building gradient invalidation regression
+        run: |
+          scons -j$(nproc) release=1 server=0 building-gradient-invalidation-test
+          ./build/src/BuildingGradientInvalidationHarness
+
       - name: Build and run the hiring bucket regression
         run: |
           scons -j$(nproc) release=1 server=0 hiring-bucket-test
@@ -167,6 +192,16 @@ jobs:
         run: |
           scons -j$(nproc) release=1 server=0 resource-fetch-target-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/ResourceFetchTargetHarness .
+
+      - name: Build and run the round-trip hunger gate regression
+        run: |
+          scons -j$(nproc) release=1 server=0 round-trip-hunger-gate-test
+          python3 test/run-savegame-safety-tests.py --check-preferences build/src/RoundTripHungerGateHarness .
+
+      - name: Build and run the inn swap regression
+        run: |
+          scons -j$(nproc) release=1 server=0 inn-swap-test
+          timeout 120s ./build/src/InnSwapHarness
 
       - name: Test savegame loading and atomic autosaves
         run: |
@@ -314,6 +349,11 @@ jobs:
         run: |
           scons -j$(nproc) release=1 mingw=1 server=0 clearing-gradient-test
           python3 test/run-savegame-safety-tests.py --check-preferences build/src/ClearingFlagGradientTest.exe
+      - name: Test status-bar bounds in software rendering
+        run: |
+          scons -j$(nproc) release=1 mingw=1 server=0 point-bar-render-test
+          SDL_AUDIODRIVER=dummy SDL_VIDEODRIVER=dummy \
+            ./build/src/point-bar-render-test.exe software
 
       - name: Test trapped colony elimination
         run: |

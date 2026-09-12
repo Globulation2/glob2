@@ -627,9 +627,9 @@ waarvan
 [ok]
 Ok
 [old islands terrain]
-Oude eilanden
+Ruige Archipel
 [old random terrain]
-Oud willekeurig terrein
+Versplinterde Kust
 [on press]
 Indrukken
 [On the spot]
@@ -1387,9 +1387,9 @@ Gemiddeld - Experimenteel
 [No AI orders]
 Geen AI-opdrachten
 [Old islands]
-Eilanden (oude generator)
+Ruige Archipel
 [Old random]
-Willekeurig (oude generator)
+Versplinterde Kust
 [Open at least one colony to start a match.]
 Open minstens één kolonie om een wedstrijd te starten.
 [Open book]
@@ -1644,6 +1644,8 @@ Geef de Globulation 2-cursor weer.
 Klaar
 [settings Edit shortcut]
 Sneltoets bewerken
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Vergroot menu's, tekst en de zijbalk op een scherm met hoge resolutie.
 [settings Flags]
 Vlaggen
 [settings Full]
@@ -1658,6 +1660,8 @@ Spelsnelheid
 Spelverloop
 [settings Graphics detail]
 Grafische details
+[settings Interface scale]
+Schaal van de interface
 [settings Keep]
 Behouden
 [settings Keep this display mode?]
@@ -1680,6 +1684,8 @@ Taal die in de hele interface wordt gebruikt.
 Niveau
 [settings Map editor]
 Kaarteditor
+[settings Match the desktop]
+Zoals het bureaublad
 [settings Missing font]
 Ontbrekend lettertype
 [settings Music volume]
@@ -1790,3 +1796,9 @@ Pas de grafische beelden toe wanneer een volgende partij of de kaarteditor wordt
 Automatische torusweergave
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Toon automatisch het torusvormige kaartoverzicht terwijl u over de kaart beweegt (OpenGL).
+[Channel width]
+Kanaalbreedte
+[Land bridge width]
+Breedte van de landbrug
+[Lake size]
+Meergrootte

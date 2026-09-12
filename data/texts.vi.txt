@@ -617,9 +617,9 @@ trong đó có
 [ok]
 Đồng ý
 [old islands terrain]
-đảo ngẫu nhiên kiểu cũ
+Quần Đảo Gồ Ghề
 [old random terrain]
-địa hình ngẫu nhiên kiểu cũ
+Bờ Biển Chia Cắt
 [on press]
 Khi nhấn
 [On the spot]
@@ -1359,9 +1359,9 @@ Trung bình - Thử nghiệm
 [No AI orders]
 Không có lệnh AI
 [Old islands]
-Đảo kiểu cũ
+Quần Đảo Gồ Ghề
 [Old random]
-Ngẫu nhiên kiểu cũ
+Bờ Biển Chia Cắt
 [Open at least one colony to start a match.]
 Mở ít nhất một thuộc địa để bắt đầu trận đấu.
 [Open book]
@@ -1616,6 +1616,8 @@ Hiển thị con trỏ Globulation 2.
 Xong
 [settings Edit shortcut]
 Chỉnh sửa phím tắt
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Phóng to menu, văn bản và thanh bên trên màn hình độ phân giải cao.
 [settings Flags]
 Cờ
 [settings Full]
@@ -1630,6 +1632,8 @@ Tốc độ trò chơi
 Lối chơi
 [settings Graphics detail]
 Chi tiết đồ họa
+[settings Interface scale]
+Tỷ lệ giao diện
 [settings Keep]
 Giữ các thay đổi
 [settings Keep this display mode?]
@@ -1652,6 +1656,8 @@ Ngôn ngữ được sử dụng xuyên suốt giao diện.
 Cấp
 [settings Map editor]
 Trình chỉnh sửa bản đồ
+[settings Match the desktop]
+Theo màn hình nền
 [settings Missing font]
 Thiếu phông chữ
 [settings Music volume]
@@ -1762,3 +1768,9 @@ Hình ảnh được áp dụng khi tải ván chơi hoặc trình chỉnh sửa
 Chế độ xem hình xuyến tự động
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Tự động hiển thị tổng quan bản đồ hình xuyến khi di chuyển xung quanh bản đồ (OpenGL).
+[Channel width]
+Độ rộng kênh
+[Land bridge width]
+Độ rộng cầu đất
+[Lake size]
+Kích thước hồ

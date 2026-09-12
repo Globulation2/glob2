@@ -40,7 +40,9 @@ struct CustomGameSetup
 		case 3:
 			return speed != 0;
 		case 4:
-			return random && generator.nbWorkers != 4;
+			return random && generator.nbWorkers != MapGenerationDescriptor::control(
+														generator.method, "Starting workers")
+														.defaultValue;
 		default:
 			return false;
 		}
@@ -53,7 +55,8 @@ struct CustomGameSetup
 	};
 	std::array<Colony, Team::MAX_COUNT> colonies;
 	MapGenerationDescriptor generator;
-	int capacity = 4;
+	MapGenerationHistory generatorHistory;
+	int capacity;
 	bool random = false, prestige = true, revealed = false, locked = true;
 	int speed = 0;
 	std::string format = "FFA", ruleset = "Standard";
@@ -61,7 +64,8 @@ struct CustomGameSetup
 	unsigned mapRevision = 0;
 	CustomGameSetup()
 	{
-		generator.method = MapGenerationDescriptor::eRIVER;
+		generator.setMethodDefaults(MapGenerationDescriptor::eRIVER);
+		capacity = generator.nbTeams;
 		for (int i = 0; i < Team::MAX_COUNT; ++i)
 			colonies[i].alliance = i;
 		colonies[0].controller = Human;
@@ -139,7 +143,9 @@ struct CustomGameSetup
 		revealed = preset == 2;
 		locked = true;
 		speed = preset == 1 ? 3 : 0;
-		int workers = preset == 1 ? 8 : 4;
+		const auto &workerControl =
+			MapGenerationDescriptor::control(generator.method, "Starting workers");
+		int workers = preset == 1 ? workerControl.maximum : workerControl.defaultValue;
 		if (generator.nbWorkers != workers)
 		{
 			generator.nbWorkers = workers;
@@ -154,18 +160,7 @@ struct CustomGameSetup
 	{
 		if (capacity < 1 || capacity > Team::MAX_COUNT)
 			return "Invalid colony count.";
-		if (random && generator.method >= MapGenerationDescriptor::eSWAMP &&
-			generator.method <= MapGenerationDescriptor::eOLDRANDOM &&
-			generator.method != MapGenerationDescriptor::eCONCRETEISLANDS &&
-			generator.method != MapGenerationDescriptor::eISLES &&
-			generator.waterRatio + generator.grassRatio +
-					(generator.method == MapGenerationDescriptor::eSWAMP
-						 ? 0
-						 : generator.sandRatio +
-							   (generator.method == MapGenerationDescriptor::eOLDRANDOM
-									? 0
-									: generator.desertRatio)) ==
-				0)
+		if (random && !generator.hasTerrainWeight())
 			return "Give at least one terrain type a nonzero weight.";
 		if (controllerCount() > Team::MAX_COUNT)
 			return "Shared control needs a free controller slot (maximum 12).";

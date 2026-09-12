@@ -607,9 +607,9 @@ numlock
 [ok]
 قبول!
 [old islands terrain]
-زمین تصادفی
+مجمع‌الجزایر ناهموار
 [old random terrain]
-مجمع‌الجزایر تصادفی
+ساحل گسسته
 [on press]
 فشارداده
 [On the spot]
@@ -1361,9 +1361,9 @@ Cortex
 [No AI orders]
 بدون دستور هوش مصنوعی
 [Old islands]
-جزایر قدیمی
+مجمع‌الجزایر ناهموار
 [Old random]
-تصادفی قدیمی
+ساحل گسسته
 [Open at least one colony to start a match.]
 حداقل یک کلنی را برای شروع مسابقه باز کنید.
 [Open book]
@@ -1618,6 +1618,8 @@ Cortex
 انجام شد
 [settings Edit shortcut]
 ویرایش میانبر صفحه کلید
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+بزرگ‌کردن منوها، متن و نوار کناری در نمایشگر با وضوح بالا.
 [settings Flags]
 پرچم ها
 [settings Full]
@@ -1632,6 +1634,8 @@ Cortex
 روند بازی
 [settings Graphics detail]
 جزئیات گرافیکی
+[settings Interface scale]
+مقیاس رابط کاربری
 [settings Keep]
 حفظ تغییرات
 [settings Keep this display mode?]
@@ -1654,6 +1658,8 @@ Cortex
 سطح
 [settings Map editor]
 ویرایشگر نقشه
+[settings Match the desktop]
+مطابق با میزکار
 [settings Missing font]
 فونت موجود نیست
 [settings Music volume]
@@ -1764,3 +1770,9 @@ OpenGL در این بیلد موجود نیست.
 نمای خودکار چنبره
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 هنگام حرکت در نقشه (OpenGL) نمای کلی نقشه به شکل چنبره را به صورت خودکار نشان دهید.
+[Channel width]
+پهنای آبراه
+[Land bridge width]
+پهنای پل خشکی
+[Lake size]
+اندازهٔ دریاچه

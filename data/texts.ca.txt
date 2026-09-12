@@ -611,9 +611,9 @@ dels quals
 [ok]
 OK
 [old islands terrain]
-illes aleatòries antigues
+Arxipèlag Abrupte
 [old random terrain]
-vell terreny aleatori
+Costa Fragmentada
 [on press]
 En prémer
 [On the spot]
@@ -1371,9 +1371,9 @@ Mitjana - Experimental
 [No AI orders]
 Sense ordres d'IA
 [Old islands]
-Illes (generador antic)
+Arxipèlag Abrupte
 [Old random]
-Aleatori (generador antic)
+Costa Fragmentada
 [Open at least one colony to start a match.]
 Obre almenys una colònia per iniciar una partida.
 [Open book]
@@ -1628,6 +1628,8 @@ Mostra el cursor Globulation 2.
 Fet
 [settings Edit shortcut]
 Edita la drecera del teclat
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Amplia els menús, el text i la barra lateral en una pantalla d'alta resolució.
 [settings Flags]
 Banderes
 [settings Full]
@@ -1642,6 +1644,8 @@ Velocitat del joc
 Jugabilitat
 [settings Graphics detail]
 Detall gràfic
+[settings Interface scale]
+Escala de la interfície
 [settings Keep]
 Mantén els canvis
 [settings Keep this display mode?]
@@ -1664,6 +1668,8 @@ Llengua utilitzada a tota la interfície.
 Nivell
 [settings Map editor]
 Editor de mapes
+[settings Match the desktop]
+Segueix l'escriptori
 [settings Missing font]
 Falta el tipus de lletra
 [settings Music volume]
@@ -1774,3 +1780,9 @@ Aplica els gràfics quan es carregui la propera partida o l’editor de mapes (O
 Vista toroidal automàtica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Mostra automàticament la vista general toroidal mentre us desplaceu pel mapa (OpenGL).
+[Channel width]
+Amplada del canal
+[Land bridge width]
+Amplada del pont de terra
+[Lake size]
+Mida del llac

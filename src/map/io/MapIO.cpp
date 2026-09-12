@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "FileFormatVersions.h"
 #include "MapInternal.h"
 #include "Game.h"
 #include "Utilities.h"
@@ -346,6 +347,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
+	stream->writeUint32(topologyGeneration, "topologyGeneration");
 	stream->writeEnterSection("cells");
 	for (size_t i=0; i<size; ++i)
 	{
@@ -405,8 +407,25 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				saveGradient(stream, building->globalGradient[sw], size);
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
+				stream->writeUint32(building->gradientGeneration[sw], "generation");
 				stream->writeLeaveSection();
 			}
+			stream->writeEnterSection("roundTrip");
+			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+			{
+				stream->writeEnterSection(sw);
+				stream->writeUint32(building->globalGradientUsedStep[sw], "usedStep");
+				for (int r=0; r<MAX_NB_RESOURCES; ++r)
+				{
+					stream->writeEnterSection(r);
+					saveGradient(stream, building->roundTripGradient[r][sw], size);
+					stream->writeUint32(building->roundTripGradientStep[r][sw], "step");
+					stream->writeUint32(building->roundTripGradientUsedStep[r][sw], "usedStep");
+					stream->writeLeaveSection();
+				}
+				stream->writeLeaveSection();
+			}
+			stream->writeLeaveSection();
 			stream->writeEnterSection("access");
 			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
 			{
@@ -425,10 +444,12 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	stream->writeLeaveSection();
 }
 
-void Map::loadRuntimeState(GAGCore::InputStream *stream)
+void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
+	if (versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION)
+		topologyGeneration=stream->readUint32("topologyGeneration");
 	fogOfWar=fogIsA ? fogOfWarA.data() : fogOfWarB.data();
 	stream->readEnterSection("cells");
 	for (size_t i=0; i<size; ++i)
@@ -489,6 +510,28 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream)
 				loadGradient(stream, building->globalGradient[sw], size);
 				building->dirtyGradient[sw]=loadFlag(stream,"dirty");
 				building->lastGlobalGradientUpdateStepCounter[sw]=stream->readUint32("lastUpdate");
+				// An older save restored its fields as current; keep them so.
+				building->gradientGeneration[sw]=versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION
+					? stream->readUint32("generation") : topologyGeneration;
+				stream->readLeaveSection();
+			}
+			if (versionMinor >= FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS)
+			{
+				stream->readEnterSection("roundTrip");
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				{
+					stream->readEnterSection(sw);
+					building->globalGradientUsedStep[sw]=stream->readUint32("usedStep");
+					for (int r=0; r<MAX_NB_RESOURCES; ++r)
+					{
+						stream->readEnterSection(r);
+						loadGradient(stream, building->roundTripGradient[r][sw], size);
+						building->roundTripGradientStep[r][sw]=stream->readUint32("step");
+						building->roundTripGradientUsedStep[r][sw]=stream->readUint32("usedStep");
+						stream->readLeaveSection();
+					}
+					stream->readLeaveSection();
+				}
 				stream->readLeaveSection();
 			}
 			stream->readEnterSection("access");

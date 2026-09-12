@@ -607,9 +607,9 @@ joista
 [ok]
 Ok
 [old islands terrain]
-vanhat satunnaiset saaret
+Rosoiset saaret
 [old random terrain]
-vanhat satunnaiset maastot
+Rikkonainen rannikko
 [on press]
 Painallus
 [On the spot]
@@ -1363,9 +1363,9 @@ Keskitaso - Kokeellinen
 [No AI orders]
 Ei tekoälyn käskyjä
 [Old islands]
-Vanhat saaret
+Rosoiset saaret
 [Old random]
-Vanha satunnainen
+Rikkonainen rannikko
 [Open at least one colony to start a match.]
 Avaa vähintään yksi siirtokunta aloittaaksesi ottelun.
 [Open book]
@@ -1620,6 +1620,8 @@ Näytä Globulation 2 -kursori.
 Valmis
 [settings Edit shortcut]
 Muokkaa pikanäppäintä
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Suurentaa valikot, tekstin ja sivupalkin tarkkaresoluutioisella näytöllä.
 [settings Flags]
 Liput
 [settings Full]
@@ -1634,6 +1636,8 @@ Pelinopeus
 Pelaaminen
 [settings Graphics detail]
 Graafiset yksityiskohdat
+[settings Interface scale]
+Käyttöliittymän koko
 [settings Keep]
 Säilytä muutokset
 [settings Keep this display mode?]
@@ -1656,6 +1660,8 @@ Koko käyttöliittymässä käytetty kieli.
 Taso
 [settings Map editor]
 Karttaeditori
+[settings Match the desktop]
+Työpöydän mukaan
 [settings Missing font]
 Fontti puuttuu
 [settings Music volume]
@@ -1766,3 +1772,9 @@ Ota grafiikka käyttöön, kun seuraava peli tai karttaeditori ladataan (OpenGL)
 Automaattinen torusnäkymä
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Näytä toruksen muotoinen karttanäkymä automaattisesti liikkuessasi kartalla (OpenGL).
+[Channel width]
+Kanavan leveys
+[Land bridge width]
+Maasillan leveys
+[Lake size]
+Järven koko

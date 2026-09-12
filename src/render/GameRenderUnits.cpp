@@ -14,6 +14,7 @@
 #include <cmath>
 
 
+#include "BuildingFailureDisplay.h"
 #include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
@@ -31,6 +32,8 @@
 #include "Brush.h"
 #include "UnitSkin.h"
 #include "FertilityCalculatorDialog.h"
+#include "FailureShapes.h"
+#include <algorithm>
 
 
 // Unit rendering. Split from Game_render.cpp.
@@ -101,6 +104,23 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
 	globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid);
+
+	// Units the selected building could not hire wear the badge, the same one
+	// shown next to the tally in the building panel. The panel asks the same
+	// gate, so a unit never wears a badge the panel has no row to explain.
+	if (view.selectedBuilding && view.selectedBuilding->recordFailingUnits && unit->owner->teamNumber==localTeam
+		&& shouldShowFailingUnitMarkers(view.selectedBuilding->unitsFailingRequirements,
+			Building::UnitCantWorkReasonSize, Building::UnitNotAvailable,
+			(int)view.selectedBuilding->unitsWorking.size(), view.selectedBuilding->desiredMaxUnitWorking))
+	{
+		for (int reason=0; reason<Building::UnitCantWorkReasonSize; ++reason)
+		{
+			const std::vector<Uint16>& failing=view.selectedBuilding->unitsFailingByReason[reason];
+			if (std::find(failing.begin(), failing.end(), unit->gid)!=failing.end())
+				// Fist-size, in the tile's top-right corner: a badge, not a ring around the unit.
+				drawFailureShape(globalContainer->gfx, px+26, py+6, 4, static_cast<Building::UnitCantWorkReason>(reason), failureShapeColor());
+		}
+	}
 
 	// draw selection
 	if (unit==view.selectedUnit)

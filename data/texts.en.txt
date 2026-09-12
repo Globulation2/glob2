@@ -619,9 +619,9 @@ there are
 [ok]
 Ok
 [old islands terrain]
-old random islands
+Rugged Archipelago
 [old random terrain]
-old random terrain
+Shattered Coast
 [on press]
 On Press
 [On the spot]
@@ -1361,9 +1361,9 @@ Medium - Experimental
 [No AI orders]
 No AI orders
 [Old islands]
-Old islands
+Rugged Archipelago
 [Old random]
-Old random
+Shattered Coast
 [Open at least one colony to start a match.]
 Open at least one colony to start a match.
 [Open book]
@@ -1618,6 +1618,8 @@ Display the Globulation 2 cursor.
 Done
 [settings Edit shortcut]
 Edit shortcut
+[settings Enlarge menus, text and the sidebar on a high-resolution screen.]
+Enlarge menus, text and the sidebar on a high-resolution screen.
 [settings Flags]
 Flags
 [settings Full]
@@ -1632,6 +1634,8 @@ Game speed
 Gameplay
 [settings Graphics detail]
 Graphics detail
+[settings Interface scale]
+Interface scale
 [settings Keep]
 Keep
 [settings Keep this display mode?]
@@ -1654,6 +1658,8 @@ Language used throughout the interface.
 Level
 [settings Map editor]
 Map editor
+[settings Match the desktop]
+Match the desktop
 [settings Missing font]
 Missing font
 [settings Music volume]
@@ -1764,3 +1770,9 @@ Apply artwork on the next game or editor load (OpenGL).
 Automatic torus view
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
 Automatically show the torus overview while moving around the map (OpenGL).
+[Channel width]
+Channel width
+[Land bridge width]
+Land bridge width
+[Lake size]
+Lake size
