@@ -194,7 +194,6 @@ namespace
 		INT_SPEC(demands, aggression_warrior_weight, "demands.aggression_warrior_weight", 0, 20, "weight", "demands", "Trained-warrior contribution to aggression", StrategyImpactHigh),
 		INT_SPEC(demands, aggression_enemy_weight, "demands.aggression_enemy_weight", 0, 20, "weight", "demands", "Enemy-force penalty to aggression", StrategyImpactHigh),
 		INT_SPEC(demands, aggression_target_bonus, "demands.aggression_target_bonus", 0, 100, "score", "demands", "Aggression bonus when an enemy target is known", StrategyImpactHigh),
-		BOOL_SPEC(economy, swarm_retirement_enabled, "economy.swarm_retirement_enabled", "enabled", "economy", "Allow safe retirement of remote unproductive swarms", StrategyImpactHigh),
 		BOOL_SPEC(economy, large_economy_adaptation_enabled, "economy.large_economy_adaptation_enabled", "enabled", "economy", "Enable persistent large-economy adaptation", StrategyImpactHigh),
 		BOOL_SPEC(economy, amphibious_network_maintenance_enabled, "economy.amphibious_network_maintenance_enabled", "enabled", "economy", "Maintain pool capacity after committing to an amphibious economy", StrategyImpactHigh),
 		BOOL_SPEC(economy, food_service_safeguards_enabled, "economy.food_service_safeguards_enabled", "enabled", "economy", "Expand inn construction demand for observed food-service backlog", StrategyImpactCritical),

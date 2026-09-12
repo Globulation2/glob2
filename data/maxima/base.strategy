@@ -169,7 +169,6 @@ demands.aggression_target_bonus = 20
 
 # Economy policy: infrastructure targets, unit-production ratios, service
 # safeguards, and adaptation for large or amphibious economies.
-economy.swarm_retirement_enabled = true
 economy.large_economy_adaptation_enabled = true
 economy.amphibious_network_maintenance_enabled = true
 economy.food_service_safeguards_enabled = true

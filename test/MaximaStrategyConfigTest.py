@@ -140,7 +140,6 @@ class MaximaStrategyConfigTest(unittest.TestCase):
 
     def test_tactic_switches_default_on_and_accept_false(self) -> None:
         expected = {
-            "economy.swarm_retirement_enabled",
             "economy.large_economy_adaptation_enabled",
             "economy.amphibious_network_maintenance_enabled",
             "economy.food_service_safeguards_enabled",

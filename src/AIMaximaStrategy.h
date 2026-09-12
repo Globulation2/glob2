@@ -198,7 +198,6 @@ struct MaximaStrategy
 
 	struct Economy
 	{
-		bool swarm_retirement_enabled;
 		bool large_economy_adaptation_enabled;
 		bool amphibious_network_maintenance_enabled;
 		bool food_service_safeguards_enabled;

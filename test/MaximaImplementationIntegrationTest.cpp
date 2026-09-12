@@ -27,6 +27,7 @@
 #include "../src/AIMaxima.h"
 #include "../src/AIMaximaSwarmController.h"
 #undef private
+#include "../src/AIMaximaContinuation.h"
 #include "../src/building/Building.h"
 #include "../src/game/entities/BuildingType.h"
 #include "../src/building/IntBuildingType.h"
@@ -600,28 +601,6 @@ static void directorExecutionRegressions()
     ai.strategy.military.warrior_training_backlog_throttle_enabled=false;
     ai.build_policy_bids(); ai.arbitrate_policy_bids();
     assert(ai.budget.warrior_ratio>0);
-
-    // The only food lies ten tiles away across water, on a toroidal map.
-    for(int y=0;y<64;++y) for(int x=0;x<64;++x)
-        game.map.setMapDiscovered(x,y,player.team->me);
-    for(int y=0;y<64;++y) {
-        game.map.setTerrain(17,y,256); game.map.setTerrain(18,y,256);
-        game.map.setTerrain(40,y,256); game.map.setTerrain(41,y,256);
-    }
-    game.map.setResource(20,10,CORN,1);
-    ai.fertility_cache=AIMaxima::Farming::ExactFertilityCache();
-    ai.configure_development_planner();
-    ai.snapshot.swimming_workers=0; ai.finalize_director_plan(c);
-    ai.timer=100; ai.update_swarm_retirement(c);
-    ai.timer=3100; ai.update_swarm_retirement(c);
-    assert(ai.remote_swarms_ready.count(0));
-    ai.snapshot.swimming_workers=20; ai.finalize_director_plan(c);
-    ai.update_swarm_retirement(c);
-    assert(ai.remote_swarms_ready.empty() && ai.remote_swarm_since.empty());
-    ai.snapshot.swimming_workers=0; ai.finalize_director_plan(c);
-    ai.timer=3200; ai.update_swarm_retirement(c);
-    ai.timer=6200; ai.update_swarm_retirement(c);
-    assert(ai.remote_swarms_ready.count(0));
 }
 
 static void directorUpgradeRegressions()
@@ -753,33 +732,60 @@ static void economyStaffingRegressions()
         assert(ratio==(count<5 ? 3 : 0));
         c.managementOrders.clear();
     }
+}
 
-    // Two islands: the first swarm's corn requires crossing a water strip.
-    // Retirement evaluates discovered harvesting routes, not hidden terrain.
-    for(int y=0;y<64;++y) for(int x=0;x<64;++x)
-        game.map.setMapDiscovered(x,y,player.team->me);
-    for(int y=0;y<64;++y)
-    { game.map.getTile(0,y).terrain=256; game.map.getTile(16,y).terrain=256; }
-    // The retained swarm needs renewable fertility as well as existing corn.
-    game.map.getTile(36,31).terrain=256;
-    game.map.setResource(19,11,CORN,5); game.map.setResource(34,31,CORN,5);
-    // This fixture changes terrain after manage_swarm populated the cache.
-    ai.fertility_cache=AIMaxima::Farming::ExactFertilityCache();
-    ai.budget.swarm_retirement_enabled=true; ai.budget.desired_swarms=1;
-    ai.budget.recovery_active=false; ai.budget.can_swim=true; ai.can_swim=false;
-    ai.timer=1; ai.update_swarm_retirement(c);
-    ai.timer=3001; ai.update_swarm_retirement(c);
-    assert(ai.remote_swarms_ready.empty());
-    for(auto order:c.managementOrders)
-        assert(!dynamic_cast<Management::DestroyBuilding*>(order.get()));
-    // Losing swimming restores the usual probation and retirement behavior.
-    ai.budget.can_swim=false; ai.can_swim=true;
-    ai.timer=3002; ai.update_swarm_retirement(c);
-    ai.timer=6002; ai.update_swarm_retirement(c);
-    bool deleted=false;
-    for(auto order:c.managementOrders)
-        if(auto d=dynamic_cast<Management::DestroyBuilding*>(order.get())) deleted|=d->id==0;
-    assert(deleted);
+// Saves written before version 99 still carry the retired zero-capacity swarm
+// retirement records. Writing at that format reproduces the old layout, and the
+// loader's gate must consume those records so every later field stays aligned.
+static void legacySwarmRetirementSaveGateRegression()
+{
+    Game game(NULL); game.map.setSize(6,6,GRASS); game.map.setGame(&game);
+    game.addTeam(); game.teams[0]->race.loadDefault();
+    Player player; player.setTeam(game.teams[0]);
+    std::map<int,size_t> written;
+    for(int formatVersion:{98,VERSION_MINOR})
+    {
+        AIMaxima::Maxima source(&player);
+        source.budget.second_prestige_population_min=11;
+        source.food_burden_since[7]=1234;
+        source.food_retirement_issued.insert(9);
+        source.last_food_retirement_tick=4321;
+        source.food_supported_inns=3; source.food_supported_swarms=2;
+        source.food_ledger_valid=true;
+        source.last_farming_tick=777; source.development_cycle_pending=true;
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend);
+        AIMaximaContinuation::Writer writer(&output,formatVersion);
+        source.executionState(writer);
+        const std::string bytes(backend->getBuffer(),backend->getPosition());
+        written[formatVersion]=bytes.size();
+
+        AIMaxima::Maxima loaded(&player);
+        GAGCore::BinaryInputStream input(
+            new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);
+        AIMaximaContinuation::Reader reader(&input,formatVersion);
+        loaded.executionState(reader);
+        assert(loaded.budget.second_prestige_population_min==11);
+        assert(loaded.food_burden_since==source.food_burden_since);
+        assert(loaded.food_retirement_issued==source.food_retirement_issued);
+        assert(loaded.last_food_retirement_tick==4321);
+        assert(loaded.food_supported_inns==3 && loaded.food_supported_swarms==2);
+        assert(loaded.food_ledger_valid);
+        assert(loaded.last_farming_tick==777 && loaded.development_cycle_pending);
+    }
+    // The old format is exactly the new one plus the four retired records.
+    auto* legacyBackend=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream legacyOutput(legacyBackend);
+    AIMaximaContinuation::Writer legacy(&legacyOutput,98);
+    const bool retiredSwitch=false;
+    const std::map<int,int> retiredSince;
+    const std::set<int> retiredSet;
+    legacy("budget.swarm_retirement_enabled",retiredSwitch);
+    legacy("remote_swarm_since",retiredSince);
+    legacy("remote_swarms_ready",retiredSet);
+    legacy("remote_swarm_deletion_issued",retiredSet);
+    assert(written[98]==written[VERSION_MINOR]+legacyBackend->getPosition());
 }
 
 static void innCompletionStaffingRegressions()
@@ -1419,6 +1425,7 @@ int main(int argc,char** argv)
     reviewBugRegressions();
     missionForceRegressions();
     economyStaffingRegressions();
+    legacySwarmRetirementSaveGateRegression();
     explorerSwarmStaffingRegressions();
     completedSwarmBudgetRegressions();
     economicResourceAccessRegressions();

@@ -131,8 +131,8 @@ A retirement also requires all of:
 One building is retired at a time, lowest coverage first. Freeing its wheat
 often clears the others without further deletions.
 
-This supersedes the older rule that retired only swarms with no farm capacity at
-all; `food.enabled` selects between them.
+This replaced the older rule that retired only swarms with no farm capacity at
+all, which has since been removed: with `food.enabled` off, nothing is retired.
 
 ## Saturation
 

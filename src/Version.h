@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 98
+#define VERSION_MINOR 99
+// version 99 removes Maxima's zero-capacity swarm retirement and its saved state.
 // version 98 adds the standalone Maxima AI and its saved execution state,
 // and changes simulation results, so earlier clients and replays are refused.
 // version 91 saves the live RNG and routing state for deterministic continuation.

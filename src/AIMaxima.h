@@ -185,7 +185,6 @@ private:
 		int first_prestige_trained_workers;
 		int second_prestige_trained_workers;
 		int second_prestige_population_min;
-		bool swarm_retirement_enabled;
 		///Food ledger authority. The director decides whether the ledger runs,
 		///what coverage counts as a burden and how long one must persist. The
 		///executor only measures coverage and issues the retirement order.
@@ -644,10 +643,6 @@ private:
 	std::map<int, StaffingControl::State> staffing_control;
 	///Runs one control pass and issues the order when the request changes.
 	int staff_building(AIMaximaRuntime::Context& echo, int id);
-	std::map<int, int> remote_swarm_since;
-	std::set<int> remote_swarms_ready;
-	std::set<int> remote_swarm_deletion_issued;
-	void update_swarm_retirement(AIMaximaRuntime::Context& echo);
 	///Food ledger retirement. A building whose protected farm capacity stays
 	///below its burden threshold for the confirmation window is removed, but
 	///only while doing so cannot leave the population without inn seats.
