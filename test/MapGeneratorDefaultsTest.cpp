@@ -173,6 +173,22 @@ class MapGeneratorDefaultsTest
 				assert(failure.error == GenerationError::InvalidRequest && fresh.teamsCount() == 0);
 			}
 		}
+		// Contested commons spreads its colonies with the whole-region search, which used to run
+		// out of a fixed evaluation budget past four colonies at 256 and at any count at 512.
+		for (auto [dims, teams] : {std::pair{8, 8}, std::pair{9, 4}, std::pair{9, 12}})
+			for (std::uint32_t seed = 1; seed <= 3; ++seed)
+			{
+				D crowded;
+				crowded.setMethodDefaults(D::eCONTESTEDCOMMONS);
+				crowded.wDec = crowded.hDec = dims;
+				crowded.nbTeams = teams;
+				crowded.seed = seed;
+				Game world(nullptr);
+				const auto outcome = service.generate(world, crowded);
+				if (!outcome)
+					std::cerr << outcome.diagnostic() << std::endl;
+				assert(outcome && world.teamsCount() == teams);
+			}
 		// Scoped RNG restoration must also hold when placement fails.
 		setSyncRandSeed(711);
 		auto savedFailureRng = randomGenerator;

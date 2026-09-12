@@ -14,6 +14,7 @@
 #include <cassert>
 #include <cmath>
 #include <limits>
+#include <memory>
 using namespace MapGeneration;
 
 namespace MapGeneration
@@ -147,10 +148,105 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 	sources.clear();
 	obstacles.clear();
 
+	// A point's score at a tile is the smallest weighted squared distance to any other point.
+	// The whole-region search reads that off two per-tile fields, the nearest and second-nearest
+	// weighted distance over every point (a point's own entry is skipped by taking the second),
+	// kept current as points move, instead of looping over every other point at every tile for
+	// every point, which cost map area times points squared per pass and, behind a fixed
+	// evaluation budget, refused any map past four colonies at 256 or any colony count at 512.
+	// The values are the same minimums, so a pass makes the same moves as that loop did.
+	struct NearestTwo
+	{
+		Map &map;
+		const std::vector<MapGeneratorPoint> &points;
+		const std::vector<int> &weights;
+		std::vector<std::int64_t> first, second;
+		std::vector<int> firstId, secondId;
+		NearestTwo(Map &map, const std::vector<MapGeneratorPoint> &points,
+				   const std::vector<int> &weights)
+			: map(map), points(points), weights(weights), first(map.getW() * map.getH()),
+			  second(first.size()), firstId(first.size()), secondId(first.size())
+		{
+			for (std::size_t t = 0; t < first.size(); ++t)
+				rebuild(t);
+		}
+		std::int64_t value(int x, int y, unsigned j) const
+		{
+			return std::int64_t(map.warpDistSquare(x, y, points[j].x, points[j].y)) * weights[j];
+		}
+		void rebuild(std::size_t t)
+		{
+			const int x = int(t % map.getW()), y = int(t / map.getW());
+			first[t] = second[t] = std::numeric_limits<int>::max();
+			firstId[t] = secondId[t] = -1;
+			for (unsigned j = 0; j < points.size(); ++j)
+				offer(t, value(x, y, j), int(j));
+		}
+		void offer(std::size_t t, std::int64_t v, int id)
+		{
+			if (v < first[t])
+			{
+				second[t] = first[t];
+				secondId[t] = firstId[t];
+				first[t] = v;
+				firstId[t] = id;
+			}
+			else if (v < second[t])
+			{
+				second[t] = v;
+				secondId[t] = id;
+			}
+		}
+		std::int64_t excluding(std::size_t t, int id) const
+		{
+			return firstId[t] == id ? second[t] : first[t];
+		}
+		// Point id now stands at its new position: refresh every tile's pair.
+		void moved(int id)
+		{
+			const int w = map.getW();
+			for (std::size_t t = 0; t < first.size(); ++t)
+			{
+				const std::int64_t v = value(int(t % w), int(t / w), id);
+				if (firstId[t] == id)
+				{
+					if (v <= second[t])
+						first[t] = v;
+					else
+						rebuild(t); // its successor is unknown
+				}
+				else if (secondId[t] == id)
+				{
+					if (v < first[t])
+					{
+						second[t] = first[t];
+						secondId[t] = firstId[t];
+						first[t] = v;
+						firstId[t] = id;
+					}
+					else if (v <= second[t])
+						second[t] = v;
+					else
+						rebuild(t);
+				}
+				else
+					offer(t, v, id);
+			}
+		}
+	};
+	std::unique_ptr<NearestTwo> nearest;
+	std::vector<int> occupants;
+	if (search == PointSearch::WholeRegion)
+	{
+		nearest = std::make_unique<NearestTwo>(map, points, weights);
+		occupants.assign(grid.size(), 0);
+		for (const auto &p : points)
+			++occupants[p.y * map.getW() + p.x];
+	}
+
 	bool cont = true;
 	std::int64_t minDist = std::numeric_limits<int>::max();
 	int passes = 0;
-	std::uint64_t evaluations = 0;
 	while (cont)
 	{
 		if (++passes > maxPasses)
@@ -159,6 +255,37 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 		bool changed = false;
 		for (unsigned int i = 0; i < points.size(); ++i)
 		{
+			if (search == PointSearch::WholeRegion)
+			{
+				const int w = map.getW();
+				const std::size_t home = points[i].y * w + points[i].x;
+				std::int64_t best = nearest->excluding(home, int(i));
+				minDist = std::min(best, minDist);
+				std::size_t bestTile = home;
+				// Row-major over the grid, updating on strict improvement only, so the same
+				// candidate wins an exact tie as before.
+				for (std::size_t t = 0; t < grid.size(); ++t)
+				{
+					if (t == home || grid[t] != areaN || occupants[t] != 0)
+						continue;
+					const std::int64_t score = nearest->excluding(t, int(i));
+					if (score > best)
+					{
+						best = score;
+						bestTile = t;
+					}
+				}
+				if (bestTile != home)
+				{
+					changed = true;
+					--occupants[home];
+					++occupants[bestTile];
+					points[i].x = int(bestTile % w);
+					points[i].y = int(bestTile / w);
+					nearest->moved(int(i));
+				}
+				continue;
+			}
 			std::int64_t best = std::numeric_limits<int>::max();
 			for (unsigned int j = 0; j < points.size(); ++j)
 			{
@@ -190,9 +317,6 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 						invalid = true;
 						break;
 					}
-					if (search == PointSearch::WholeRegion && ++evaluations > 20000000)
-						throw GenerationFailure(
-							"Point dispersion exhausted its distance-evaluation budget");
 					std::int64_t dist =
 						std::int64_t(map.warpDistSquare(nx, ny, points[j].x, points[j].y)) *
 						weights[j];
@@ -207,29 +331,11 @@ int splitUpPoints(Map &map, GenerationContext &context, std::vector<int> &grid, 
 					best_y = ny;
 				}
 			};
-			if (search == PointSearch::WholeRegion)
-			{
-				// A full-grid scan: nesting the row coordinate outside the column coordinate
-				// keeps it within the grain of grid's row-major layout instead of striding
-				// across it a full row at a time on every step. This can change which
-				// exactly-tied candidate wins a placement (best only updates on strict
-				// improvement), but never which candidates exist or how good the eventual
-				// choice is - already documented as bounded best-response, not a single
-				// guaranteed optimum, so a different tie winner is not a different guarantee.
-				for (int ny = 0; ny < map.getH(); ++ny)
-					for (int nx = 0; nx < map.getW(); ++nx)
-						tryCandidate(nx, ny);
-			}
-			else
-			{
-				// PointSearch::Local's window is the 7x7 area right around the point itself -
-				// small enough that traversal order was never going to matter for cache
-				// behavior - so its enumeration order is left exactly as it was.
-				for (int dx = -3; dx <= 3; ++dx)
-					for (int dy = -3; dy <= 3; ++dy)
-						tryCandidate(map.normalizeX(points[i].x + dx),
-									 map.normalizeY(points[i].y + dy));
-			}
+			// PointSearch::Local's window is the 7x7 area right around the point itself.
+			for (int dx = -3; dx <= 3; ++dx)
+				for (int dy = -3; dy <= 3; ++dy)
+					tryCandidate(map.normalizeX(points[i].x + dx),
+								 map.normalizeY(points[i].y + dy));
 			if (best_x != -1)
 			{
 				if (best != orig)
