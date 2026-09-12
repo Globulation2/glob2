@@ -18,21 +18,18 @@
 using namespace MapGeneration;
 #include "RuggedArchipelagoGenerator.h"
 
-static bool terrain(Game &game, GenerationContext &context, const RuggedArchipelagoOptions &options)
+// The eight directions the growth passes below draw from: a pair of opposite neighbours at one
+// or two tiles, in the order the draw has always indexed them.
+static const int kGrowthDirections[8][2] = {{1, 0}, {0, 1}, {1, 1}, {1, -1},
+											{2, 0}, {0, 2}, {2, 2}, {2, -2}};
+
+// Seed one grass patch per colony, each at least a colony's share of the map from the others,
+// halving that spacing if a placement keeps failing. Returns how many growth passes the islands
+// get, from the map size and the island size control.
+static int plantBootstraps(Map &map, GenerationContext &context,
+						   const RuggedArchipelagoOptions &options, std::mt19937 &rng)
 {
-	Map &map = game.map;
 	const int w = map.getW(), h = map.getH();
-	// context.stream() looks up a named std::mt19937 by string key on every call; every draw in
-	// this function names the same "terrain" stream, so look it up once and reuse the reference
-	// through the loops below instead of repeating the lookup per tile per draw.
-	std::mt19937 &rng = context.stream("terrain");
-
-	// First, fill with water:
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++)
-			map.setUMTerrain(x, y, WATER);
-
-	// Two, plants "bootstraps"
 	int *bootX = context.bootX.data();
 	int *bootY = context.bootY.data();
 	int nbIslands = context.request.nbTeams;
@@ -74,220 +71,92 @@ static bool terrain(Game &game, GenerationContext &context, const RuggedArchipel
 					map.setUMTerrain(x + dx, y + dy, GRASS);
 		}
 	}
+	return islandsSize;
+}
 
-	// Three, expands islands
-	for (int s = 0; s < islandsSize; s++)
-	{
+// Grow the islands: for so many passes, every non-grass tile on a checkerboard draws one of
+// sixteen values and, for the eight that name a direction, turns to grass when either
+// neighbour that way already is.
+static void expandIslands(Map &map, std::mt19937 &rng, int passes)
+{
+	const int w = map.getW(), h = map.getH();
+	for (int s = 0; s < passes; s++)
 		for (int oddEven = 0; oddEven < 2; oddEven++)
-		{
 			for (int y = oddEven; y < h; y += 2)
-			{
 				for (int x = oddEven; x < w; x += 2)
 				{
-					TerrainType umt = map.getUMTerrain(x, y);
-					if (umt == GRASS)
+					if (map.getUMTerrain(x, y) == GRASS)
 						continue;
-
-					int a, b;
-					switch (rng() & 15)
-					{
-					case 0:
-						a = map.getUMTerrain(x + 1, y);
-						b = map.getUMTerrain(x - 1, y);
-						if ((a == GRASS) || (b == GRASS))
-						{
-							map.setUMTerrain(x, y, GRASS);
-						}
-						break;
-					case 1:
-						a = map.getUMTerrain(x, y - 1);
-						b = map.getUMTerrain(x, y + 1);
-						if ((a == GRASS) || (b == GRASS))
-						{
-							map.setUMTerrain(x, y, GRASS);
-						}
-						break;
-					case 2:
-						a = map.getUMTerrain(x + 1, y + 1);
-						b = map.getUMTerrain(x - 1, y - 1);
-						if ((a == GRASS) || (b == GRASS))
-						{
-							map.setUMTerrain(x, y, GRASS);
-						}
-						break;
-					case 3:
-						a = map.getUMTerrain(x + 1, y - 1);
-						b = map.getUMTerrain(x - 1, y + 1);
-						if ((a == GRASS) || (b == GRASS))
-						{
-							map.setUMTerrain(x, y, GRASS);
-						}
-						break;
-					case 4:
-						a = map.getUMTerrain(x + 2, y);
-						b = map.getUMTerrain(x - 2, y);
-						if ((a == GRASS) || (b == GRASS))
-						{
-							map.setUMTerrain(x, y, GRASS);
-						}
-						break;
-					case 5:
-						a = map.getUMTerrain(x, y - 2);
-						b = map.getUMTerrain(x, y + 2);
-						if ((a == GRASS) || (b == GRASS))
-						{
-							map.setUMTerrain(x, y, GRASS);
-						}
-						break;
-					case 6:
-						a = map.getUMTerrain(x + 2, y + 2);
-						b = map.getUMTerrain(x - 2, y - 2);
-						if ((a == GRASS) || (b == GRASS))
-						{
-							map.setUMTerrain(x, y, GRASS);
-						}
-						break;
-					case 7:
-						a = map.getUMTerrain(x + 2, y - 2);
-						b = map.getUMTerrain(x - 2, y + 2);
-						if ((a == GRASS) || (b == GRASS))
-						{
-							map.setUMTerrain(x, y, GRASS);
-						}
-						break;
-					default:
-						break;
-					}
+					const unsigned draw = rng() & 15;
+					if (draw >= 8)
+						continue;
+					const int dx = kGrowthDirections[draw][0], dy = kGrowthDirections[draw][1];
+					if (map.getUMTerrain(x + dx, y + dy) == GRASS ||
+						map.getUMTerrain(x - dx, y - dy) == GRASS)
+						map.setUMTerrain(x, y, GRASS);
 				}
-			}
-		}
-	}
+}
 
-	// Four, avoid too much sand. Let's smooth
+// Close single-tile gaps: a tile between two grass tiles, in any of the four directions,
+// becomes grass, twice over.
+static void smoothGrass(Map &map)
+{
+	const int w = map.getW(), h = map.getH();
 	for (int s = 0; s < 2; s++)
 		for (int y = 0; y < h; y++)
 			for (int x = 0; x < w; x++)
-			{
-				int a, b;
-				a = map.getUMTerrain(x + 1, y);
-				b = map.getUMTerrain(x - 1, y);
-				if ((a == GRASS) && (b == GRASS))
+				for (int d = 0; d < 4; d++)
 				{
-					map.setUMTerrain(x, y, GRASS);
-					continue;
+					const int dx = kGrowthDirections[d][0], dy = kGrowthDirections[d][1];
+					if (map.getUMTerrain(x + dx, y + dy) == GRASS &&
+						map.getUMTerrain(x - dx, y - dy) == GRASS)
+					{
+						map.setUMTerrain(x, y, GRASS);
+						break;
+					}
 				}
-				a = map.getUMTerrain(x, y - 1);
-				b = map.getUMTerrain(x, y + 1);
-				if ((a == GRASS) && (b == GRASS))
-				{
-					map.setUMTerrain(x, y, GRASS);
-					continue;
-				}
-				a = map.getUMTerrain(x + 1, y + 1);
-				b = map.getUMTerrain(x - 1, y - 1);
-				if ((a == GRASS) && (b == GRASS))
-				{
-					map.setUMTerrain(x, y, GRASS);
-					continue;
-				}
-				a = map.getUMTerrain(x + 1, y - 1);
-				b = map.getUMTerrain(x - 1, y + 1);
-				if ((a == GRASS) && (b == GRASS))
-				{
-					map.setUMTerrain(x, y, GRASS);
-					continue;
-				}
-			}
+}
 
-	map.controlSand();
-
-	// Five, add some sand
-	for (int s = 0; s < options.beach_size; s++)
+// Widen the beaches: for so many passes, every tile on a four-by-four lattice draws one of
+// eight values; the first four turn it to sand between sand and water along that direction,
+// the last four between sand and sand.
+static void spreadBeaches(Map &map, std::mt19937 &rng, int passes)
+{
+	const int w = map.getW(), h = map.getH();
+	for (int s = 0; s < passes; s++)
 		for (int dy = 0; dy < 4; dy++)
 			for (int dx = 0; dx < 4; dx++)
 				for (int y = dy; y < h; y += 4)
 					for (int x = dx; x < w; x += 4)
 					{
-						int a, b;
-						switch (rng() & 7)
-						{
-						case 0:
-							a = map.getUMTerrain(x + 1, y);
-							b = map.getUMTerrain(x - 1, y);
-							if (((a == SAND) && (b == WATER)) || ((a == WATER) && (b == SAND)))
-							{
-								map.setUMTerrain(x, y, SAND);
-								continue;
-							}
-							break;
-						case 1:
-							a = map.getUMTerrain(x, y - 1);
-							b = map.getUMTerrain(x, y + 1);
-							if (((a == SAND) && (b == WATER)) || ((a == WATER) && (b == SAND)))
-							{
-								map.setUMTerrain(x, y, SAND);
-								continue;
-							}
-							break;
-						case 2:
-							a = map.getUMTerrain(x + 1, y + 1);
-							b = map.getUMTerrain(x - 1, y - 1);
-							if (((a == SAND) && (b == WATER)) || ((a == WATER) && (b == SAND)))
-							{
-								map.setUMTerrain(x, y, SAND);
-								continue;
-							}
-							break;
-						case 3:
-							a = map.getUMTerrain(x + 1, y - 1);
-							b = map.getUMTerrain(x - 1, y + 1);
-							if (((a == SAND) && (b == WATER)) || ((a == WATER) && (b == SAND)))
-							{
-								map.setUMTerrain(x, y, SAND);
-								continue;
-							}
-							break;
-
-						case 4:
-							a = map.getUMTerrain(x + 1, y);
-							b = map.getUMTerrain(x - 1, y);
-							if ((a == SAND) && (b == SAND))
-							{
-								map.setUMTerrain(x, y, SAND);
-								continue;
-							}
-							break;
-						case 5:
-							a = map.getUMTerrain(x, y - 1);
-							b = map.getUMTerrain(x, y + 1);
-							if ((a == SAND) && (b == SAND))
-							{
-								map.setUMTerrain(x, y, SAND);
-								continue;
-							}
-							break;
-						case 6:
-							a = map.getUMTerrain(x + 1, y + 1);
-							b = map.getUMTerrain(x - 1, y - 1);
-							if ((a == SAND) && (b == SAND))
-							{
-								map.setUMTerrain(x, y, SAND);
-								continue;
-							}
-							break;
-						case 7:
-							a = map.getUMTerrain(x + 1, y - 1);
-							b = map.getUMTerrain(x - 1, y + 1);
-							if ((a == SAND) && (b == SAND))
-							{
-								map.setUMTerrain(x, y, SAND);
-								continue;
-							}
-							break;
-						}
+						const unsigned draw = rng() & 7;
+						const int ddx = kGrowthDirections[draw & 3][0],
+								  ddy = kGrowthDirections[draw & 3][1];
+						const int a = map.getUMTerrain(x + ddx, y + ddy),
+								  b = map.getUMTerrain(x - ddx, y - ddy);
+						const bool shore =
+							draw < 4 ? (a == SAND && b == WATER) || (a == WATER && b == SAND)
+									 : a == SAND && b == SAND;
+						if (shore)
+							map.setUMTerrain(x, y, SAND);
 					}
+}
 
-	// map.controlSand();
+static bool terrain(Game &game, GenerationContext &context, const RuggedArchipelagoOptions &options)
+{
+	Map &map = game.map;
+	const int w = map.getW(), h = map.getH();
+	// Every draw below names the "terrain" stream; one lookup serves all of them.
+	std::mt19937 &rng = context.stream("terrain");
+
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++)
+			map.setUMTerrain(x, y, WATER);
+	const int passes = plantBootstraps(map, context, options, rng);
+	expandIslands(map, rng, passes);
+	smoothGrass(map);
+	map.controlSand();
+	spreadBeaches(map, rng, options.beach_size);
 	map.rebuildTerrain();
 	return true;
 }
