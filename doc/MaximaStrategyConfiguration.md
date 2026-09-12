@@ -145,7 +145,7 @@ The complete switch inventory is:
 
 | Policy area | Switches |
 | --- | --- |
-| Economy adaptations | `economy.swarm_retirement_enabled`, `economy.large_economy_adaptation_enabled`, `economy.amphibious_network_maintenance_enabled`, `economy.food_service_safeguards_enabled`, `economy.worker_birth_throttle_enabled` |
+| Economy adaptations | `economy.large_economy_adaptation_enabled`, `economy.amphibious_network_maintenance_enabled`, `economy.food_service_safeguards_enabled`, `economy.worker_birth_throttle_enabled` |
 | Development actions | `upgrades.enabled`, `repairs.enabled` |
 | Military responses | `military.explorer_defense_enabled`, `military.warrior_training_backlog_throttle_enabled`, `military.preemptive_defense_enabled`, `military.preemptive_amphibious_enabled` |
 | Strategic postures | `postures.recover_enabled`, `postures.defend_enabled`, `postures.expand_enabled`, `postures.develop_enabled`, `postures.mobilize_enabled`, `postures.campaign_enabled`, `postures.finish_enabled` |
@@ -333,8 +333,8 @@ count is not an input, so constructing another swarm cannot manufacture its own
 staffing demand. Colonization has independent construction permission for genuinely
 new food territory; completed colonies still count toward this production target. The existing supply-weighted
 allocator distributes the budget over completed swarms. Construction scheduling,
-inn policy, unit production mix, and retirement of unusable remote swarms remain
-separate responsibilities.
+inn policy, unit production mix, and food-ledger retirement remain separate
+responsibilities.
 
 The old global caps, committed swarm target, per-headroom staffing tiers, birth
 survival thresholds, and their unused bonuses have been removed from the schema.

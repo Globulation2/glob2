@@ -477,26 +477,6 @@ void trackerLogicalCadence()
     }
 }
 
-void retirementRequiresHarvestRoute()
-{
-    Fixture f;
-    f.swarm(10,10); f.supply(10,10);
-    auto& ai=*f.ai; auto& c=ai.context; c.initialize();
-    ai.budget.swarm_retirement_enabled=true; ai.budget.desired_swarms=1;
-    ai.timer=1; ai.update_swarm_retirement(c);
-    assert(ai.remote_swarm_since.empty());
-    f.game.map.setNoResource(16,11,1);
-    ai.timer=4000; ai.update_swarm_retirement(c);
-    assert(ai.remote_swarm_since.count(0));
-    // Explicitly forbidden territory is not available productive capacity.
-    for(int y=0;y<64;++y) for(int x=0;x<64;++x)
-        f.game.map.addForbidden(x,y,f.player.team->teamNumber);
-    ai.update_swarm_retirement(c);
-    assert(ai.remote_swarm_since.count(0));
-    ai.timer=7000; ai.update_swarm_retirement(c);
-    assert(ai.remote_swarms_ready.count(0));
-}
-
 void holidayHarvestCapacity()
 {
     Game game(NULL);
@@ -572,7 +552,6 @@ int main()
     crisisProductionPause();
     completionReallocatesColony();
     trackerLogicalCadence();
-    retirementRequiresHarvestRoute();
     holidayHarvestCapacity();
     std::cout<<"Maxima economy regression tests passed\n";
 }

@@ -50,6 +50,8 @@ namespace
 	// Let default explorer movement reveal most of the map before active scouting.
 	const int ACTIVE_RECON_MIN_EXPLORED_PERCENT=80;
 	const int PREEMPTIVE_UNREACHABLE=-1;
+	// Save format that dropped the zero-capacity swarm retirement records.
+	const int LegacySwarmRetirementRemovedVersion=99;
 
 	int clamp_score(int value)
 	{
@@ -561,7 +563,6 @@ Maxima::DirectorPlan::DirectorPlan()
 	  upgrade_level2_pool_weight(0), upgrade_level2_barracks_weight(0),
 	  first_prestige_trained_workers(0), second_prestige_trained_workers(0),
 	  second_prestige_population_min(0),
-	  swarm_retirement_enabled(true),
 	  food_ledger_enabled(true), food_retirement_enabled(true),
 	  food_inn_burden_percent(60), food_swarm_burden_percent(60),
 	  food_recovered_percent(85), food_burden_confirm_ticks(3000),
@@ -2970,8 +2971,6 @@ void Maxima::finalize_director_plan(Context& echo)
 		strategy.upgrades.second_prestige_trained_workers;
 	budget.second_prestige_population_min=
 		strategy.upgrades.second_prestige_population_min;
-	budget.swarm_retirement_enabled=
-		strategy.economy.swarm_retirement_enabled;
 	budget.food_ledger_enabled=strategy.food.enabled;
 	budget.food_retirement_enabled=strategy.food.retirement_enabled;
 	budget.food_inn_burden_percent=strategy.food.inn_burden_coverage_percent;
@@ -3647,9 +3646,6 @@ Maxima::Maxima(Player *player)
 		buildings_under_construction_per_type[n]=0;
 	development_planner_initialized=false;
 	development_reported_states.clear();
-	remote_swarm_since.clear();
-	remote_swarms_ready.clear();
-	remote_swarm_deletion_issued.clear();
 	food_burden_since.clear();
 	food_retirement_issued.clear();
 	last_food_retirement_tick=-1000000;
@@ -3757,7 +3753,13 @@ template<class Archive> void Maxima::executionState(Archive& a)
 		bool retiredAdaptiveStaffing=false;
 		a("budget.inn_adaptive_staffing_enabled",retiredAdaptiveStaffing);
 	}
-	a("budget.swarm_retirement_enabled",budget.swarm_retirement_enabled);
+	if(a.version()<LegacySwarmRetirementRemovedVersion)
+	{
+		// Saves before version 99 carry the zero-capacity swarm retirement
+		// switch here. The rule is gone; consume the record to stay aligned.
+		bool retiredSwarmRetirementEnabled=false;
+		a("budget.swarm_retirement_enabled",retiredSwarmRetirementEnabled);
+	}
 	if(a.version()>=StaffingControl::SaveVersion)
 	{
 		a("budget.staffing_window_samples",budget.staffing_window_samples);
@@ -3878,15 +3880,23 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("accessible_algae_units",accessible_algae_units);
 	a("development_planner_initialized",development_planner_initialized);
 	a("development_reported_states",development_reported_states);
-	a("remote_swarm_since",remote_swarm_since);
+	if(a.version()<LegacySwarmRetirementRemovedVersion)
+	{
+		std::map<int,int> retiredRemoteSwarmSince;
+		a("remote_swarm_since",retiredRemoteSwarmSince);
+	}
 	a("food_burden_since",food_burden_since);
 	a("food_retirement_issued",food_retirement_issued);
 	a("last_food_retirement_tick",last_food_retirement_tick);
 	a("food_supported_inns",food_supported_inns);
 	a("food_supported_swarms",food_supported_swarms);
 	a("food_ledger_valid",food_ledger_valid);
-	a("remote_swarms_ready",remote_swarms_ready);
-	a("remote_swarm_deletion_issued",remote_swarm_deletion_issued);
+	if(a.version()<LegacySwarmRetirementRemovedVersion)
+	{
+		std::set<int> retiredRemoteSwarms;
+		a("remote_swarms_ready",retiredRemoteSwarms);
+		a("remote_swarm_deletion_issued",retiredRemoteSwarms);
+	}
 	a("operating_colonies",operating_colonies);
 	a("last_preemptive_effective_zone_max",last_preemptive_effective_zone_max);
 	a("last_preemptive_amphibious_active",last_preemptive_amphibious_active);
@@ -5102,13 +5112,8 @@ Maxima::collect_development_intents(
 			budget.priority_towers,strategy.staffing.construction_large_workers}};
 	for(size_t i=0;i<sizeof(demands)/sizeof(demands[0]);++i)
 	{
-		int current=development_planner.committedBuildingCount(
+		const int current=development_planner.committedBuildingCount(
 			world,demands[i].type);
-		if(demands[i].type==IntBuildingType::SWARM_BUILDING)
-			for(size_t b=0;b<world.buildings.size();++b)
-				if(!world.buildings[b].site
-				   &&remote_swarms_ready.count(world.buildings[b].id))
-					current=std::max(0,current-1);
 		if(demands[i].desired>current)
 		{
 			DevelopmentIntent intent;intent.buildingType=demands[i].type;
@@ -5356,10 +5361,9 @@ void Maxima::development_cycle(Context& echo)
 		}
 		refreshedWorld=collect_development_world(echo,&worldSignature);
 		development_planner.observe(refreshedWorld,worldSignature);
-		// The ledger supersedes the older zero-capacity swarm rule: an
-		// under-supplied building is a burden whatever its distance from wheat.
+		// An under-supplied building is a burden whatever its distance from
+		// wheat; with the ledger disabled nothing is retired.
 		if(budget.food_ledger_enabled)update_food_retirement(echo,refreshedWorld);
-		else update_swarm_retirement(echo);
 		// Reconcile any starting construction site when it first becomes a completed
 		// building. Planner-owned campus and standalone actions are ignored here.
 		development_planner.adoptStartingBuildings(refreshedWorld);
@@ -5754,84 +5758,6 @@ void Maxima::update_food_retirement(Context& echo,
 		<<"\tcompleted_swarms="<<completed_swarms;
 	emit_telemetry(echo,"food_retirement",fields.str());
 }
-
-void Maxima::update_swarm_retirement(Context& echo)
-{
-	if(!budget.swarm_retirement_enabled)
-	{
-		remote_swarm_since.clear();
-		remote_swarms_ready.clear();
-		remote_swarm_deletion_issued.clear();
-		return;
-	}
-	const int probation_ticks=3000;
-
-	std::set<int> present;
-	int useful=0;
-	BuildingSearch swarms(echo);
-	swarms.add_condition(new SpecificBuildingType(IntBuildingType::SWARM_BUILDING));
-	swarms.add_condition(new NotUnderConstruction);
-	for(building_search_iterator i=swarms.begin();i!=swarms.end();++i)
-	{
-		const int id=*i;present.insert(id);
-		Building* building=echo.get_building_register().get_building(id);
-		if(!building)continue;
-		const bool productive=nearby_farm_capacity(echo,id)>0;
-		if(productive)++useful;
-		if(productive)
-		{
-			remote_swarm_since.erase(id);
-			remote_swarms_ready.erase(id);
-			continue;
-		}
-		if(!remote_swarm_since.count(id))remote_swarm_since[id]=timer;
-		if(timer-remote_swarm_since[id]>=probation_ticks)
-			remote_swarms_ready.insert(id);
-		if(timer%1000<budget.farming_normal_interval)
-		{
-			std::ostringstream fields;
-			fields<<"\tbuilding_id="<<id<<"\tfarm_capacity="<<nearby_farm_capacity(echo,id)
-				<<"\tremote_age="<<(timer-remote_swarm_since[id])
-				<<"\tready="<<(remote_swarms_ready.count(id)?1:0);
-			emit_telemetry(echo,"swarm_retirement",fields.str());
-		}
-	}
-	for(std::map<int,int>::iterator i=remote_swarm_since.begin();
-		i!=remote_swarm_since.end();)
-		if(!present.count(i->first))remote_swarm_since.erase(i++);else ++i;
-	for(std::set<int>::iterator i=remote_swarms_ready.begin();
-		i!=remote_swarms_ready.end();)
-		if(!present.count(*i))remote_swarms_ready.erase(i++);else ++i;
-
-	const bool safe=!budget.recovery_active&&snapshot.critical_food==0
-		&&snapshot.own_buildings_under_attack==0&&snapshot.own_units_under_attack==0;
-	if(timer%1000<budget.farming_normal_interval)
-	{
-		std::ostringstream fields;fields<<"\tuseful_swarms="<<useful
-			<<"\tdesired_swarms="<<budget.desired_swarms
-			<<"\tready="<<remote_swarms_ready.size()
-			<<"\tsafe="<<(safe?1:0)
-			<<"\tcritical_food="<<snapshot.critical_food
-			<<"\trecovery="<<(budget.recovery_active?1:0)
-			<<"\tbuildings_attacked="<<snapshot.own_buildings_under_attack
-			<<"\tunits_attacked="<<snapshot.own_units_under_attack;
-		emit_telemetry(echo,"swarm_retirement_summary",fields.str());
-	}
-	if(!safe||useful<budget.desired_swarms)return;
-	for(std::set<int>::const_iterator i=remote_swarms_ready.begin();
-		i!=remote_swarms_ready.end();++i)
-		if(!remote_swarm_deletion_issued.count(*i))
-		{
-			echo.add_management_order(new DestroyBuilding(*i));
-			remote_swarm_deletion_issued.insert(*i);
-			std::ostringstream fields;fields<<"\tbuilding_id="<<*i
-				<<"\tuseful_swarms="<<useful
-				<<"\tdesired_swarms="<<budget.desired_swarms;
-			emit_telemetry(echo,"swarm_retirement_issued",fields.str());
-			break;
-		}
-}
-
 
 void Maxima::manage_buildings(Context& echo)
 {
