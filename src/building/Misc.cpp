@@ -190,8 +190,28 @@ void Building::updateResourcesPointer()
 
 
 
+void Building::recordDeliveryTrip(Sint32 ticks, int harvestX, int harvestY)
+{
+	// Wrap-safe Chebyshev distance from the harvested cell to the footprint.
+	const int w=owner->map->getW();
+	const int h=owner->map->getH();
+	const auto axisGap=[](int cell, int origin, int size, int extent)
+	{
+		const int offset=((cell-origin)%extent+extent)%extent;
+		if (offset<size)
+			return 0;
+		return std::min(offset-size+1, extent-offset);
+	};
+	const int gapX=axisGap(harvestX, posX, type->width, w);
+	const int gapY=axisGap(harvestY, posY, type->height, h);
+	deliveryTripSamples+=1;
+	deliveryTripTicks+=std::max<Sint32>(0, ticks);
+	deliveryTripTiles+=std::max(gapX, gapY);
+}
+
 void Building::addResourceIntoBuilding(int resourceType)
 {
+	resourceDeliveries[resourceType]+=1;
 	resources[resourceType]+=type->multiplierResource[resourceType];
 	//You can not exceed the maximum amount
 	resources[resourceType] = std::min(resources[resourceType], type->maxResource[resourceType]);

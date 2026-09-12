@@ -5684,6 +5684,21 @@ void Maxima::update_food_retirement(Context& echo,
 			<<"\tsupported_swarms="<<food_supported_swarms
 			<<"\tburdened="<<food_burden_since.size();
 		emit_telemetry(echo,"food_ledger",fields.str());
+		for(size_t i=0;i<ledger.consumers.size();++i)
+		{
+			const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
+			std::ostringstream consumer;
+			consumer<<"\tkey="<<value.key
+				<<"\tkind="<<(value.kind==AIMaximaFoodLedger::InnConsumer?"inn":"swarm")
+				<<"\tcolony="<<(value.colony?1:0)
+				<<"\tretirable="<<(value.retirable?1:0)
+				<<"\tdemand="<<value.demand<<"\tclaimed="<<value.claimed
+				<<"\tavailable="<<value.available
+				<<"\tcoverage="<<value.coveragePercent
+				<<"\tquality="<<value.quality<<"\tquality_band="<<value.qualityBand
+				<<"\torder="<<value.order;
+			emit_telemetry(echo,"food_consumer",consumer.str());
+		}
 	}
 
 	if(!budget.food_retirement_enabled)return;
@@ -5838,6 +5853,29 @@ int Maxima::staff_building(Context& echo, int id)
 			<<"\tfill_average="<<state.cornAverage
 			<<"\tenrolled_average="<<state.enrolledAverage;
 		emit_telemetry(echo,"staffing_control",fields.str());
+	}
+	// Calibration sample: deliveries are cumulative, so the analysis can diff
+	// them over any window without the AI holding state that is not saved.
+	if(globalContainer && globalContainer->maximaTelemetry)
+	{
+		long long deliveries=0;
+		for(int resource=0; resource<MAX_NB_RESOURCES; ++resource)
+			deliveries+=building->resourceDeliveries[resource];
+		std::ostringstream fields;
+		fields<<"\tbuilding_id="<<id
+			<<"\tkind="<<(building->type->shortTypeNum==IntBuildingType::SWARM_BUILDING
+				? "swarm" : "inn")
+			<<"\tlevel="<<building->type->level
+			<<"\tenrolled="<<echo.get_building_register().get_enrolled(id)
+			<<"\tassigned="<<request
+			<<"\tcorn="<<building->resources[CORN]
+			<<"\tcapacity="<<building->type->maxResource[CORN]
+			<<"\tcorn_deliveries="<<building->resourceDeliveries[CORN]
+			<<"\tdeliveries="<<deliveries
+			<<"\ttrip_samples="<<building->deliveryTripSamples
+			<<"\ttrip_ticks="<<building->deliveryTripTicks
+			<<"\ttrip_tiles="<<building->deliveryTripTiles;
+		emit_telemetry(echo,"food_delivery",fields.str());
 	}
 	return request;
 }

@@ -109,6 +109,8 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	destinationPurpose=UNIT_DEST_PURPOSE_NONE;
 	carriedResource=UNIT_CARRIED_RESOURCE_NONE;
 	jobTimer = 0;
+	fetchStartTick = -1;
+	harvestX = harvestY = -1;
 
 	previousClearingArea=std::nullopt;
 	previousClearingAreaDistance=0;
@@ -204,6 +206,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside)
 					else
 					{
 						displacement=DIS_GOING_TO_RESOURCE;
+						fetchStartTick=-1;
 						targetBuilding=NULL;
 						owner->map->resourceAvailableUpdate(owner->teamNumber, destinationPurpose, swimClass(), posX, posY, &targetX, &targetY, NULL);
 						validTarget=true;

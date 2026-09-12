@@ -54,6 +54,8 @@ void Unit::handleDisplacement(void)
 			{
 				// we got the resource.
 				carriedResource=destinationPurpose;
+				harvestX=posX+dx;
+				harvestY=posY+dy;
 				owner->map->decResource(posX+dx, posY+dy, carriedResource);
 				assert(movement == MOV_HARVESTING);
 				movement = MOV_RANDOM_GROUND; // we do this to avoid the handleMovement() to additionally decResource() the same resource.
@@ -124,6 +126,12 @@ void Unit::handleDisplacement(void)
 				{
 					if (verbose)
 						printf("guid=(%d) Giving resource (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->resources[carriedResource]);
+					// Record before the delivery: completing a construction site
+					// inside addResourceIntoBuilding can detach this unit.
+					if (fetchStartTick>=0 && harvestX>=0 && owner->game)
+						targetBuilding->recordDeliveryTrip(
+							Sint32(owner->game->stepCounter)-fetchStartTick, harvestX, harvestY);
+					fetchStartTick=-1;
 					targetBuilding->addResourceIntoBuilding(carriedResource);
 					carriedResource=UNIT_CARRIED_RESOURCE_NONE;
 				}
@@ -221,6 +229,7 @@ void Unit::handleDisplacement(void)
 								else
 								{
 									int dummyDist;
+									fetchStartTick = owner->game ? Sint32(owner->game->stepCounter) : -1;
 									if (auto off = owner->map->doesUnitTouchResource(this, destinationPurpose))
 									{
 										dx = off->dx;

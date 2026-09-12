@@ -219,6 +219,9 @@ void Building::cancelConstruction(Sint32 unitWorking)
 		hp=type->hpInit;
 
 	productionTimeout=type->unitProductionTime;
+	for (int i=0; i<MAX_NB_RESOURCES; i++)
+		resourceDeliveries[i]=0;
+	deliveryTripSamples=deliveryTripTicks=deliveryTripTiles=0;
 
 	if (type->unitProductionTime)
 		owner->swarms.push_back(this);

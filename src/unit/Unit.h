@@ -275,6 +275,13 @@ public:
 	/// This counts 32 ticks to wait for a job before a unit goes off
 	/// to upgrade or heal when it is otherwise doing nothing.
 	Sint32 jobTimer;
+	/// Diagnostics only, never saved or checksummed: the tick this unit left
+	/// its building to fetch a resource, and the cell it harvested. The
+	/// delivery records them on the building so Maxima can calibrate carrier
+	/// cost per tile of harvesting distance.
+	Sint32 fetchStartTick;
+	Sint32 harvestX;
+	Sint32 harvestY;
 	
 	// gui
 	int levelUpAnimation;
