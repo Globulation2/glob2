@@ -1244,6 +1244,10 @@ Snelheid: 1x (multiplayer)
 Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
 [AICortex-Description]
 Cortex breidt zich uit naar nieuwe tarwevelden en stuurt groepen krijgers de strijd in, ondersteund door herbergen en ziekenhuizen nabij de frontlinie. Gemiddelde moeilijkheidsgraad. Experimenteel.
+[AIMaxima-Description]
+Maxima laat een goed gevoede kolonie groeien, verkent voortdurend en valt zonder pauze aan met elke krijger die het kan missen. Hoge moeilijkheidsgraad.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 De campagne kon niet worden opgeslagen. Controleer of de doelmap bestaat, beschrijfbaar is en voldoende vrije ruimte heeft.
 [AICortex]

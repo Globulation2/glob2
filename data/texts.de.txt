@@ -1220,6 +1220,10 @@ Tempo: 1x (Mehrspieler)
 Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
 [AICortex-Description]
 Cortex expandiert in Richtung neuer Weizenfelder und schickt Gruppen von Kriegern in die Schlacht, unterstützt von Gasthöfen und Krankenhäusern in der Nähe der Frontlinie. Mittlerer Schwierigkeitsgrad. Experimentell.
+[AIMaxima-Description]
+Maxima baut eine gut ernährte Kolonie auf, erkundet ständig die Karte und greift ohne Pause mit jedem Krieger an, den sie entbehren kann. Hoher Schwierigkeitsgrad.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 Die Kampagne konnte nicht gespeichert werden. Prüfe, ob der Zielordner existiert, beschreibbar ist und genügend Speicherplatz frei ist.
 [AICortex]

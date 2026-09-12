@@ -1220,6 +1220,10 @@ Nopeus: 1x (moninpeli)
 Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
 [AICortex-Description]
 Cortex laajenee kohti uusia vehnäpeltoja ja lähettää soturiryhmiä taisteluun majatalojen ja sairaaloiden tukemana lähellä etulinjaa. Keskivaikeus. Kokeellinen.
+[AIMaxima-Description]
+Maxima kasvattaa hyvin ruokitun siirtokunnan, partioi jatkuvasti ja hyökkää tauotta jokaisella soturilla, jonka se voi irrottaa. Vaikea.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 Kampanjaa ei voitu tallentaa. Tarkista, että kohdekansio on olemassa, siihen voi kirjoittaa ja vapaata tilaa on riittävästi.
 [AICortex]

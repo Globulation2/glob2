@@ -57,7 +57,7 @@ Castor
 [AICortex-Description]
 Cortex expands toward fresh wheat and sends supported warrior waves, using forward inns and hospitals. Medium difficulty. Experimental.
 [AIMaxima-Description]
-An adaptive AI that balances colony growth, food supply, reconnaissance, and coordinated attacks.
+Maxima grows a well-fed colony, scouts constantly and attacks without pause, sending every warrior it can spare. Hard Difficulty.
 [AIMaxima]
 Maxima
 [AICortex]

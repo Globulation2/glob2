@@ -383,6 +383,7 @@ yog/YOGServerRouterPlayer.cpp
 """)
 server_source_files=Split("""
 ai/AINames.cpp
+AIMaximaStrategy.cpp
 BasePlayer.cpp
 BaseTeam.cpp
 BitArray.cpp

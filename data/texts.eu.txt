@@ -1228,6 +1228,10 @@ Abiadura: 1x (hainbat jokalari)
 Jokalari bakarreko jokoetarako eta errepikapenetarako soilik. Jokalari anitzeko jokoak 1x abiaduran doaz.
 [AICortex-Description]
 Cortex gari-soro berrietara hedatzen da eta gudari taldeak borrokara bidaltzen ditu, frontetik gertu dauden ostatu eta ospitaleek lagunduta. Zailtasun ertaina. Esperimentala.
+[AIMaxima-Description]
+Maxima ongi elikatutako kolonia bat hazten du, etengabe esploratzen du eta atsedenik gabe erasotzen du, libre duen gudari oro bidaliz. Zailtasun handia.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Ezin izan da mapa kargatu: fitxategia hondatuta dago edo bertsioa bateraezina da.
 [ERROR_CANT_SAVE_CAMPAIGN]

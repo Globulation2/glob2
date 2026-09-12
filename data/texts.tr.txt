@@ -1226,6 +1226,10 @@ Hız: 1x (çok oyunculu)
 Yalnızca tek oyunculu oyunlar ve tekrarlar için. Çok oyunculu oyunlar 1x hızında çalışır.
 [AICortex-Description]
 Cortex yeni buğday tarlalarına doğru genişliyor ve ön cepheye yakın hanlar ve hastaneler tarafından desteklenen savaşçı gruplarını savaşa gönderiyor. Orta zorluk. Deneysel.
+[AIMaxima-Description]
+Maxima iyi beslenen bir koloni büyütür, sürekli keşif yapar ve ayırabildiği her savaşçıyla durmaksızın saldırır. Yüksek zorluk.
+[AIMaxima]
+Maxima
 [ERROR_CANT_LOAD_MAP]
 Harita yüklenemedi: dosya bozuk veya sürümü uyumsuz.
 [ERROR_CANT_SAVE_CAMPAIGN]

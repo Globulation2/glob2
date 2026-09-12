@@ -1220,6 +1220,10 @@ Szybkość: 1x (gra sieciowa)
 Tylko gra jednoosobowa i powtórki. Gra wieloosobowa działa z szybkością 1x.
 [AICortex-Description]
 Cortex rozszerza się w kierunku nowych pól pszenicy i wysyła do bitwy grupy wojowników, wspieranych przez gospody i szpitale w pobliżu linii frontu. Średni poziom trudności. Eksperymentalny.
+[AIMaxima-Description]
+Maxima rozwija dobrze odżywioną kolonię, nieustannie zwiaduje i atakuje bez przerwy każdym wojownikiem, którego może wysłać. Wysoki poziom trudności.
+[AIMaxima]
+Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
 Nie można zapisać kampanii. Sprawdź, czy folder docelowy istnieje, jest dostępny do zapisu i ma wolne miejsce.
 [AICortex]

@@ -18,7 +18,7 @@ class MaximaNamingTest(unittest.TestCase):
         self.assertIn("[AIMaxima]", keys)
         self.assertIn("[AIMaxima-Description]", keys)
         self.assertIn("[AIMaxima]\nMaxima\n", english)
-        self.assertIn("[AIMaxima-Description]\nAn adaptive AI", english)
+        self.assertIn("[AIMaxima-Description]\nMaxima grows a well-fed colony", english)
 
     def test_configuration_and_build_paths_are_renamed(self) -> None:
         self.assertTrue((ROOT / "data/maxima/base.strategy").is_file())
