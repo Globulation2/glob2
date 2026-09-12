@@ -14,7 +14,7 @@ class Player;
 
 // AICortex wheat-sustainability geometry.
 //
-// Cortex paints a checkerboard `forbidden` pattern over its wheat (CORN) so
+// Cortex paints a checkerboard `forbidden` pattern over its wheat so
 // workers harvest one half while the protected half stays full and reseeds it
 // (forbidden blocks harvest, MapGradientGlobal.cpp:135, but NOT growth,
 // MapStep.cpp:80). See docs/AI/cortex/wheat-protection-plan.md.
@@ -35,11 +35,11 @@ class Player;
 
 namespace Cortex
 {
-	// Per-tile classification of CORN in the scanned territory, for the debug
+	// Per-tile classification of WHEAT in the scanned territory, for the debug
 	// overlay and for deriving the desired forbidden set.
 	enum WheatClass
 	{
-		WC_NONE         = 0, //!< not reachable field wheat (or non-CORN)
+		WC_NONE         = 0, //!< not reachable field wheat (or not wheat at all)
 		WC_OPEN_MARGIN  = 1, //!< depth <= openMargin: harvestable, never painted
 		WC_CHECKER_OPEN = 2, //!< depth > openMargin, (x+y)&1 != PARITY: harvest half
 		WC_FORBIDDEN    = 3  //!< depth > openMargin, (x+y)&1 == PARITY: painted wall
@@ -57,11 +57,11 @@ namespace Cortex
 		Sint32 delCount = 0;
 		Sint32 forbiddenCount = 0; //!< == desired.size()
 		Sint32 openCount = 0;      //!< WC_OPEN_MARGIN tile count
-		Sint32 fieldTileCount = 0; //!< reachable CORN tiles (all classes)
-		Sint32 componentCount = 0; //!< connected components among reachable CORN
+		Sint32 fieldTileCount = 0; //!< reachable WHEAT tiles (all classes)
+		Sint32 componentCount = 0; //!< connected components among reachable WHEAT
 		// Debug overlays, sized map.getW()*map.getH() (empty unless wantDebug):
 		std::vector<Uint8>  classOf; //!< WheatClass per map index
-		std::vector<Sint16> depthOf; //!< CORN wheat-depth per map index, -1 = none
+		std::vector<Sint16> depthOf; //!< wheat-depth per map index, -1 = none
 	};
 
 	//! Compute the desired checkerboard forbidden set for one team's wheat, plus
@@ -74,7 +74,7 @@ namespace Cortex
 	//!                   from these over walkable terrain, counting only wheat tiles,
 	//!                   so the open/protected bands run parallel to the harvest edge.
 	//!   box*          : territory region (inclusive); clamped to the map.
-	//!   openMargin    : N — CORN with wheat-depth <= N stays open (unpainted).
+	//!   openMargin    : N — WHEAT with wheat-depth <= N stays open (unpainted).
 	//!   ignoreFOW     : true skips the isFOWDiscovered gate (static-map debug).
 	//!   wantDebug     : true fills classOf/depthOf.
 	//!   liftAll       : WHEAT-BLITZ override. When true, NO reachable wheat tile is

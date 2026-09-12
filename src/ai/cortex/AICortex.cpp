@@ -403,39 +403,39 @@ shared_ptr<Order> AICortex::getOrder(void)
 			// Per-inn wheat-gate detail (feedCap root-cause). feedCapacity sums only
 			// inns that pass the gate (harvestable >= CORTEX_WHEAT_MIN_TILES=5).
 			// nearestWheat is forbidden-BLIND; harvestable is forbidden-AWARE. When
-			// feedCap==0: corn-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
+			// feedCap==0: wheat-present (nearestWheat small) + gate-fail => FORBIDDEN (b);
 			// nearestWheat large/-1 => DEPLETED/ABSENT (c).
 			for (int i = 0; i < obs.innCount && i < CORTEX_MAX_TRACKED_INNS; i++)
 			{
 				const Cortex::TrackedBuilding& n = obs.trackedInns[i];
 				if (!n.valid) continue;
 				std::cerr << "CORTEX_INN t=" << obs.tick << " inn=" << i
-				          << " corn=" << n.corn << "/" << n.maxCorn
+				          << " wheat=" << n.wheat << "/" << n.maxWheat
 				          << " haulers=" << n.maxUnitWorking
 				          << " restockReq=" << n.restockTripsNeeded
 				          << " inside=" << n.unitsInside << "/" << n.maxUnitInside
 				          << " nearestWheat=" << n.nearestWheatDist
-				          << " blindCorn=" << n.diagBlindCornNearby
+				          << " blindWheat=" << n.diagBlindWheatNearby
 				          << " harvestable=" << n.harvestableWheatNearby
 				          << " feedsGate=" << (n.harvestableWheatNearby >= CORTEX_WHEAT_MIN_TILES ? 1 : 0)
 				          << "\n";
 			}
-			// Per-swarm corn buffer + assigned haulers: contrast against the inns above to
-			// see whether the scarce haulers are feeding PRODUCTION (swarm corn full) while
+			// Per-swarm wheat buffer + assigned haulers: contrast against the inns above to
+			// see whether the scarce haulers are feeding PRODUCTION (swarm wheat full) while
 			// the inns (FEEDING) sit empty.
 			for (int i = 0; i < obs.swarmCount && i < CORTEX_MAX_TRACKED_SWARMS; i++)
 			{
 				const Cortex::TrackedBuilding& s = obs.trackedSwarms[i];
 				if (!s.valid) continue;
 				std::cerr << "CORTEX_SWARM t=" << obs.tick << " swarm=" << i
-				          << " corn=" << s.corn << "/" << s.maxCorn
+				          << " wheat=" << s.wheat << "/" << s.maxWheat
 				          << " haulers=" << s.maxUnitWorking
 				          << " prio=" << s.priority
 				          << " harvestable=" << s.harvestableWheatNearby
 				          << "\n";
 			}
 			// Direct engine-gradient probe per real inn: is COLLECTABLE (ripe, reachable)
-			// corn actually available at the inn? cornAvail=0 with corn tiles nearby ⇒ the
+			// wheat actually available at the inn? wheatAvail=0 with wheat tiles nearby ⇒ the
 			// local wheat is unripe/over-harvested, not merely fogged — that is why
 			// restockTripsNeeded computes 0 and the inn never refills.
 			{
@@ -451,9 +451,9 @@ shared_ptr<Order> AICortex::getOrder(void)
 						continue;
 					std::cerr << "CORTEX_INNGRAD t=" << obs.tick << " inn=" << innIdx++
 					          << " at=" << bb->posX << "," << bb->posY
-					          << " corn=" << bb->resources[CORN] << "/" << bb->type->maxResource[CORN]
-					          << " cornAvail=" << (g->map.resourceAvailable(tm->teamNumber, CORN, 0, bb->posX, bb->posY) ? 1 : 0)
-					          << " cornGrad=" << (int)g->map.getGradient(tm->teamNumber, CORN, 0, bb->posX, bb->posY)
+					          << " wheat=" << bb->resources[WHEAT] << "/" << bb->type->maxResource[WHEAT]
+					          << " wheatAvail=" << (g->map.resourceAvailable(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY) ? 1 : 0)
+					          << " wheatGrad=" << (int)g->map.getGradient(tm->teamNumber, WHEAT, 0, bb->posX, bb->posY)
 					          << "\n";
 				}
 			}

@@ -51,7 +51,7 @@ bool allRemainingUnitsTrapped(Team& team)
 	if (freeUnitSlot)
 		for (Building* swarm : team.swarms)
 		{
-			if (swarm->resources[CORN] < swarm->type->resourceForOneUnit
+			if (swarm->resources[WHEAT] < swarm->type->resourceForOneUnit
 				&& swarm->productionTimeout >= 0)
 				continue;
 			// Ratios can still be changed by the player, including from zero.
@@ -453,7 +453,7 @@ void Team::syncStep(void)
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
 		{
-			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->resources[CORN]>(*it)->type->resourceForOneUnit)
+			if (!(*it)->locked[SWIM_VARIANT_CAN_SWIM] && (*it)->resources[WHEAT]>(*it)->type->resourceForOneUnit)
 				isEnoughFoodInSwarm=true;
 			(*it)->swarmStep();
 		}

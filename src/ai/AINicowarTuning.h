@@ -57,7 +57,7 @@ static constexpr int AI_NICOWAR_EXPLORER_ATTACK_INTERVAL_TICKS = 1000;
 static constexpr int AI_NICOWAR_EXPLORER_ATTACK_OFFSET         = 570;
 
 // ---------------------------------------------------------------------------
-// Resource tracker depth: AddResourceTracker(N, CORN, id) records the last
+// Resource tracker depth: AddResourceTracker(N, WHEAT, id) records the last
 // N resource samples per tracked building. Used at every tracker-creation
 // site (initialization, every newly-ordered inn/swarm, and the per-level
 // inn assignment math which multiplies a wheat-trigger threshold by this

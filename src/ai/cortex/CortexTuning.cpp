@@ -22,9 +22,9 @@ namespace Cortex
 		int minValue;
 	};
 	static const TuningField TUNING_FIELDS[] = {
-		{ "expandCornLo",         &CortexTuning::expandCornLo,         1 },
+		{ "expandWheatLo",        &CortexTuning::expandWheatLo,        1 },
 		{ "swarmWorkerCap",       &CortexTuning::swarmWorkerCap,       1 },
-		{ "swarmCornRemHi",       &CortexTuning::swarmCornRemHi,       1 },
+		{ "swarmWheatRemHi",      &CortexTuning::swarmWheatRemHi,      1 },
 		{ "wheatStarvedTiles",    &CortexTuning::wheatStarvedTiles,    0 },
 		{ "expandWheatVeto",      &CortexTuning::expandWheatVeto,      0 },
 		{ "expandDebounceCycles", &CortexTuning::expandDebounceCycles, 1 },

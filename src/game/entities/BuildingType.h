@@ -74,7 +74,7 @@ struct BuildingType
 	Sint32 resourceForOneUnit = 0; // The amount of wheat consumed in the production of a unit.
 
 	Sint32 maxResource[MAX_NB_RESOURCES] = {};
-	// multiplierResource defaults: 1 for the basic 5 (wood/corn/papyrus/stone/algue), 10 for fruits 0..9.
+	// multiplierResource defaults: 1 for the basic 5 (wood/wheat/papyrus/stone/algue), 10 for fruits 0..9.
 	Sint32 multiplierResource[MAX_NB_RESOURCES] = { 1, 1, 1, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 };
 	Sint32 maxUnitInside = 0;
 	Sint32 maxUnitWorking = 0;

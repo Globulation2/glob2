@@ -301,8 +301,8 @@ namespace Cortex
 
 				// Geography rejects for wheat-fed buildings.
 				//
-				// HARD REJECT (swarm and inn): no CORN within the maximum haul
-				// distance. Engine fact: a swarm L0 stalls when its CORN buffer
+				// HARD REJECT (swarm and inn): no WHEAT within the maximum haul
+				// distance. Engine fact: a swarm L0 stalls when its WHEAT buffer
 				// drops below 5 (building/TypeSteps.cpp:31); a unit on a field tile
 				// more than ~5 tiles away cannot keep the buffer above the stall
 				// line within one production cycle of 150 ticks. CORTEX_WHEAT_MAX_DIST
@@ -310,7 +310,7 @@ namespace Cortex
 				// avoid scanning far on a reject; the full SCAN_CAP is used only for
 				// the retained candidates' wheatDist field at copy-out.
 				if (isWheatFed &&
-				    nearestCornDist(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
+				    nearestWheatDist(map, x, y, CORTEX_WHEAT_MAX_DIST) < 0)
 					continue;
 
 				// HARD REJECT (swarm and inn): the field must hold a real CLUSTER of
@@ -322,36 +322,36 @@ namespace Cortex
 				// it WILL be once the checkerboard settles: a candidate near freshly-
 				// revealed wheat (not yet painted) no longer passes on the full field only
 				// to have the reconcile paint half of it away and leave the inn below the
-				// threshold within a cycle. Depleted tiles are no longer CORN, so this
+				// threshold within a cycle. Depleted tiles are no longer WHEAT, so this
 				// still rejects a swarm hugging a nearly-exhausted patch and an inn dropped
 				// on a field whose wheat is already gone (both observed in play).
 				if (isWheatFed &&
-				    countSurvivingCornWithin(map, x, y, w, h,
+				    countSurvivingWheatWithin(map, x, y, w, h,
 				                             CORTEX_WHEAT_MIN_TILES_RADIUS)
 				        < CORTEX_WHEAT_MIN_TILES)
 					continue;
 
 				// HARD REJECT (swarm only): the swarm's footprint EDGE must sit within
-				// CORTEX_SWARM_WHEAT_EDGE_DIST tiles of a CORN tile. This is STRICTER
-				// than the shared corner-based nearestCornDist check above (which still
+				// CORTEX_SWARM_WHEAT_EDGE_DIST tiles of a WHEAT tile. This is STRICTER
+				// than the shared corner-based nearestWheatDist check above (which still
 				// gates inns): a swarm spawns the haulers that feed the whole colony, so
-				// it must hug the wheat far more tightly than an inn does. anyCornWithin
+				// it must hug the wheat far more tightly than an inn does. anyWheatWithin
 				// is edge-aware (it scans the footprint expanded by `dist`), so this is
 				// measured from the footprint edge, not the top-left corner.
-				if (isSwarm && !anyCornWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
+				if (isSwarm && !anyWheatWithin(map, x, y, w, h, CORTEX_SWARM_WHEAT_EDGE_DIST))
 					continue;
 
 				// HARD REJECT (inn only): the inn's GROWN footprint edge must sit within
-				// CORTEX_INN_WHEAT_EDGE_DIST tiles of a HARVESTABLE (surviving-parity) CORN
-				// tile. Unlike the cluster gate above (which counts surviving corn within a
+				// CORTEX_INN_WHEAT_EDGE_DIST tiles of a HARVESTABLE (surviving-parity) WHEAT
+				// tile. Unlike the cluster gate above (which counts surviving wheat within a
 				// wide radius of the PLACED 2x2 to prove a real field exists), this measures
 				// from the GROWN box (gx, gy, ew x eh) so the expansion area is included: the
 				// inn — at its final size — hugs the wheat with at most a one-tile gap and
 				// never blocks the lane its haulers use to reach the field. countSurviving
-				// CornWithin scans the box expanded by `dist`, so dist == 1 means "wheat
+				// WheatWithin scans the box expanded by `dist`, so dist == 1 means "wheat
 				// touching or one tile off the grown edge".
 				if (isInn &&
-				    countSurvivingCornWithin(map, gx, gy, ew, eh, CORTEX_INN_WHEAT_EDGE_DIST)
+				    countSurvivingWheatWithin(map, gx, gy, ew, eh, CORTEX_INN_WHEAT_EDGE_DIST)
 				        < 1)
 					continue;
 
@@ -382,7 +382,7 @@ namespace Cortex
 				// sit close to wheat. Every other building type is pushed back beyond
 				// CORTEX_WHEAT_CLEAR_DIST so its footprint does not block workers'
 				// paths into the field. AI-design rule, no engine analogue.
-				if (!isWheatFed && anyCornWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
+				if (!isWheatFed && anyWheatWithin(map, x, y, w, h, CORTEX_WHEAT_CLEAR_DIST))
 					continue;
 
 				// EDGE-DISTANCE CAP (non-wheat-fed only): keep tech/military buildings
@@ -476,7 +476,7 @@ namespace Cortex
 			out[i].x = heap[i].x;
 			out[i].y = heap[i].y;
 			out[i].score = heap[i].score;
-			out[i].wheatDist = nearestCornDist(map, heap[i].x, heap[i].y,
+			out[i].wheatDist = nearestWheatDist(map, heap[i].x, heap[i].y,
 			                                   CORTEX_WHEAT_SCAN_CAP);
 		}
 

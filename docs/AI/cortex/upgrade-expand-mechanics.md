@@ -75,7 +75,7 @@ can learn ability `i` iff its LEVEL-3 unit-type has nonzero performance for `i`.
 
 **Default race performance (level-3 rows)** `src/game/entities/Race.cpp:26-131`
 (performance array order is `{stopWalk, stopSwim, stopFly, walk, swim, fly, build,
-harvest, attackSpeed, attackForce, magicAir, magicGround, magicWood, magicCorn,
+harvest, attackSpeed, attackForce, magicAir, magicGround, magicWood, magicWheat,
 magicAlga, armor, hp}`):
 - WORKER L3 (`:53-60`): `walk=30, swim=30, build=20, harvest=11`, attack=0, magicGround=0.
   → WORKER canLearn = **WALK, SWIM, BUILD, HARVEST**.
@@ -168,10 +168,10 @@ barracks blackout. A single barracks mid-upgrade trains zero warriors that whole
 ## 5. Inn (FOOD_BUILDING) feeding capacity by level + training-building inside caps
 
 Inn feeding capacity = `type->maxUnitInside` (trainee/feeding slots) gated by
-`ressources[CORN] > unitsInside.size()` (`src/building/Construction.cpp:344`). Per
+`ressources[WHEAT] > unitsInside.size()` (`src/building/Construction.cpp:344`). Per
 level (`src/game/entities/BuildingTypesColony.cpp`):
 
-| Inn level | maxUnitInside | maxUnitWorking | CORN maxRessource | timeToFeedUnit | cite |
+| Inn level | maxUnitInside | maxUnitWorking | WHEAT maxRessource | timeToFeedUnit | cite |
 |-----------|---------------|----------------|-------------------|----------------|------|
 | 0 (#3)    | 4             | 1              | 10                | 24             | `:60-62,56,58` |
 | 1 (#5)    | 7             | 1              | 30                | 15             | `:83-84,79,81` |
@@ -236,7 +236,7 @@ to WALK/BUILD/HARVEST/SWIM buckets; a warrior to WALK/SWIM/ATTACK_SPEED/ATTACK_S
   (`CortexTypes.h:337,448-488`).
 - `feedCapacity` (`CortexTypes.h:292`) — sum of `maxUnitInside` over finished inns;
   `starvingUnits`/`needFood*` food-pressure signals (`:293-296`).
-- Per-swarm/inn `TrackedBuilding` arrays with CORN buffer, maxUnitWorking, occupancy,
+- Per-swarm/inn `TrackedBuilding` arrays with WHEAT buffer, maxUnitWorking, occupancy,
   nearestWheatDist, priority (`CortexTypes.h:258-269,392-395`).
 
 **MISSING for an expand-vs-upgrade policy** (the observation does NOT carry these):

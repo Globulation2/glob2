@@ -25,7 +25,7 @@ bool Entities::Resource::operator==(const Entity& rhs) const
 
 bool Entities::Resource::can_change()
 {
-	return resource_type==WOOD || resource_type==CORN || resource_type==ALGA;
+	return resource_type==WOOD || resource_type==WHEAT || resource_type==ALGA;
 }
 
 Entities::EntityType Entities::Resource::get_type()

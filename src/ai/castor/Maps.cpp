@@ -107,7 +107,7 @@ void AICastor::computeBuildingNeighbourMapOfBuilding(int bx, int by, int bw, int
 	Uint8 *gradient=buildingNeighbourMap;
 	const auto& tiles=map->tiles;
 	
-	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][WHEAT][canSwim];
 	
 	// we skip building with already a neighbour:
 	bool neighbour=false;
@@ -488,7 +488,7 @@ void AICastor::computeWheatCareMap()
 	int h=map->h;
 	size_t size=w*h;
 	size_t sizeMask=(size-1);
-	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][CORN][canSwim];
+	//Uint8 *wheatGradient=map->resourcesGradient[team->teamNumber][WHEAT][canSwim];
 	
 	Uint8 *temp=wheatCareMap[1];
 	wheatCareMap[1]=wheatCareMap[0];
@@ -512,7 +512,7 @@ void AICastor::computeWheatCareMap()
 // Castor's wheat maps and thresholds keep the historical 8-bit scale of 255 - tiles.
 Uint8 AICastor::wheatGradientAt(size_t index)
 {
-	Uint16 g=map->getResourceGradient(team->teamNumber, CORN, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index];
+	Uint16 g=map->getResourceGradient(team->teamNumber, WHEAT, canSwim ? Map::SWIM_CLASS_EVEN : 0)[index];
 	if (g<=GRADIENT_UNREACHABLE)
 		return (Uint8)g;
 	int tiles=gradientTiles(g);

@@ -39,18 +39,18 @@ void Map::growResources(void)
 				int wax3=x-dwax;
 				int way3=y-dway;
 
-				// alga, wood and corn are limited by near underground. Others are not.
+				// alga, wood and wheat are limited by near underground. Others are not.
 				bool expand=true;
 				if (r.type == ALGA)
 					expand = isWater(wax1, way1) && isSand(wax2, way2);
 				else if (r.type == WOOD)
 					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
-				else if (r.type == CORN)
+				else if (r.type == WHEAT)
 					expand = isWater(wax1, way1) && (!isSand(wax3, way3));
 
-				// Growth rate of corn is 1/CORN_GROWTH_DIVISOR
-				if(r.type == CORN && expand)
-					if(syncRand() % CORN_GROWTH_DIVISOR != 0)
+				// Growth rate of wheat is 1/WHEAT_GROWTH_DIVISOR
+				if(r.type == WHEAT && expand)
+					if(syncRand() % WHEAT_GROWTH_DIVISOR != 0)
 						expand = false;
 
 				if (expand)

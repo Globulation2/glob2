@@ -67,13 +67,13 @@ namespace Cortex
 			// cortexInnUnitSupport / CORTEX_UNIT_WORK_TICKS_PER_FEED. Using the raw
 			// slot count made the second-inn gate (Priority 2) fire at ~4 population.
 			//
-			// An inn with no harvestable wheat in reach cannot be restocked with corn,
+			// An inn with no harvestable wheat in reach cannot be restocked with wheat,
 			// so it keeps nobody fed — counting its slot throughput here would inflate
 			// feedCapacity and suppress the second-inn build gate (Priority 2), leaving
 			// the colony short of real feeding capacity. Gate the contribution on the
 			// SAME wheat test inn placement uses (CortexPlacement.cpp: at least
 			// CORTEX_WHEAT_MIN_TILES wheat tiles within CORTEX_WHEAT_MIN_TILES_RADIUS of
-			// the footprint), measured as the SURVIVING (open-parity) corn the protection
+			// the footprint), measured as the SURVIVING (open-parity) wheat the protection
 			// checkerboard leaves harvestable — NOT the live non-forbidden count. The live
 			// count reads ~zero on a fully-checkerboarded field even when its open half
 			// feeds fine, so it conflated "field drained" (genuinely can't feed) with
@@ -84,7 +84,7 @@ namespace Cortex
 			if (b->maxUnitWorking && bt->canFeedUnit)
 			{
 				const bool innHasWheat = (game == NULL)
-					|| Cortex::countSurvivingCornWithin(game->map,
+					|| Cortex::countSurvivingWheatWithin(game->map,
 					                                    b->posX, b->posY,
 					                                    bt->width, bt->height,
 					                                    CORTEX_WHEAT_MIN_TILES_RADIUS)
@@ -120,8 +120,8 @@ namespace Cortex
 				// C++: BuildingType::maxResource[], maxUnitWorking, maxUnitInside
 				//      game/entities/BuildingType.h:76,80,79
 				// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
-				// C++: nearestCornDist: Chebyshev to nearest CORN tile, ai/cortex/CortexPlacement
-				// NOTE: b->resources[CORN] is safe — for buildings with local (not
+				// C++: nearestWheatDist: Chebyshev to nearest WHEAT tile, ai/cortex/CortexPlacement
+				// NOTE: b->resources[WHEAT] is safe — for buildings with local (not
 				// global) resources it points to localResources; for global-resource
 				// buildings it points to Team::teamResources. The swarm is always a
 				// local-resource building, so this is the building's own wheat stock.
@@ -130,25 +130,25 @@ namespace Cortex
 					TrackedBuilding& t = obs.trackedSwarms[obs.swarmCount];
 					t.valid           = 1;
 					t.gid             = b->gid;
-					t.corn            = b->resources[CORN];
-					t.maxCorn         = bt->maxResource[CORN];
+					t.wheat           = b->resources[WHEAT];
+					t.maxWheat        = bt->maxResource[WHEAT];
 					t.maxUnitWorking  = b->maxUnitWorking;
 					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
 					t.maxUnitInside   = bt->maxUnitInside;
-					// Only call nearestCornDist when game is available — the Map
+					// Only call nearestWheatDist when game is available — the Map
 					// reference is owned by Game and the building scan is NOT guarded
 					// by (game != NULL). When game is absent, leave -1 (no result).
 					t.nearestWheatDist = (game != NULL)
-						? Cortex::nearestCornDist(game->map, b->posX, b->posY,
+						? Cortex::nearestWheatDist(game->map, b->posX, b->posY,
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
 					// Harvestable-wheat count in the swarm's catchment — the input to the
 					// wheat-starved worker throttle (CortexPolicy Priority 1.5). Counts
-					// non-forbidden CORN within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the
+					// non-forbidden WHEAT within CORTEX_SWARM_WHEAT_STARVED_RADIUS of the
 					// footprint, so it tracks the field draining/being checkerboarded over
 					// time, not just the spot the swarm was built on.
 					t.harvestableWheatNearby = (game != NULL)
-						? Cortex::countHarvestableCornWithin(game->map, team->me,
+						? Cortex::countHarvestableWheatWithin(game->map, team->me,
 						                                     b->posX, b->posY,
 						                                     bt->width, bt->height,
 						                                     CORTEX_SWARM_WHEAT_STARVED_RADIUS)
@@ -157,17 +157,17 @@ namespace Cortex
 					// C++: Building::priority (-1/0/+1), building/Building.h:516
 					t.priority        = b->priority;
 					t.ticksSinceFinished = -1; // swarms do not use the inn tune-cooldown.
-					t.diagBlindCornNearby = -1; // inn-only diagnostic; unused for swarms.
+					t.diagBlindWheatNearby = -1; // inn-only diagnostic; unused for swarms.
 					obs.swarmCount++;
 				}
 			}
 			// Finished inns: food-supply per-building signals for the wheat-economy
-			// policy (corn stock, capacity, worker slots, wheat proximity).
+			// policy (wheat stock, capacity, worker slots, wheat proximity).
 			// FOOD_BUILDING == IntBuildingType::FOOD_BUILDING; guarded by the same
 			// ALIVE/!isBuildingSite predicate used for swarmsProducing above.
 			// Buildings beyond CORTEX_MAX_TRACKED_INNS are silently not tracked.
-			// C++: Building::resources[CORN], building/Building.h:538
-			// C++: BuildingType::maxResource[CORN], maxUnitInside, maxUnitWorking
+			// C++: Building::resources[WHEAT], building/Building.h:538
+			// C++: BuildingType::maxResource[WHEAT], maxUnitInside, maxUnitWorking
 			//      game/entities/BuildingType.h:76,79,80
 			// C++: Building::unitsInside (std::list<Unit*>), building/Building.h:510
 			if (bt->shortTypeNum == IntBuildingType::FOOD_BUILDING
@@ -179,60 +179,60 @@ namespace Cortex
 					TrackedBuilding& t = obs.trackedInns[obs.innCount];
 					t.valid           = 1;
 					t.gid             = b->gid;
-					t.corn            = b->resources[CORN];
-					t.maxCorn         = bt->maxResource[CORN];
+					t.wheat           = b->resources[WHEAT];
+					t.maxWheat        = bt->maxResource[WHEAT];
 					t.maxUnitWorking  = b->maxUnitWorking;
 					t.unitsInside     = static_cast<Sint32>(b->unitsInside.size());
 					t.maxUnitInside   = bt->maxUnitInside;
 					t.nearestWheatDist = (game != NULL)
-						? Cortex::nearestCornDist(game->map, b->posX, b->posY,
+						? Cortex::nearestWheatDist(game->map, b->posX, b->posY,
 						                          CORTEX_WHEAT_SCAN_CAP)
 						: -1;
 					// DIAGNOSTIC (Phase-1 feedCap root-cause): the EXACT quantity the
-					// feedCapacity gate tests for this inn — count of non-forbidden CORN
+					// feedCapacity gate tests for this inn — count of non-forbidden WHEAT
 					// tiles within CORTEX_WHEAT_MIN_TILES_RADIUS of the footprint. An inn
 					// contributes to feedCapacity iff this is >= CORTEX_WHEAT_MIN_TILES.
 					// Paired with nearestWheatDist (forbidden-BLIND) this discriminates
-					// (b) corn-present-but-forbidden from (c) corn-depleted/absent. No
+					// (b) wheat-present-but-forbidden from (c) wheat-depleted/absent. No
 					// policy reads inn harvestableWheatNearby (verified swarm-only), so
 					// this is purely a trace signal. -1 when game absent (no map).
 					t.harvestableWheatNearby = (game != NULL)
-						? Cortex::countHarvestableCornWithin(game->map, team->me,
+						? Cortex::countHarvestableWheatWithin(game->map, team->me,
 						                                     b->posX, b->posY,
 						                                     bt->width, bt->height,
 						                                     CORTEX_WHEAT_MIN_TILES_RADIUS)
 						: -1;
-					// Forbidden-BLIND corn count over the SAME box: (blind - harvestable)
-					// is the forbidden-but-present corn. blind>=MIN & harvestable<MIN =>
+					// Forbidden-BLIND wheat count over the SAME box: (blind - harvestable)
+					// is the forbidden-but-present wheat. blind>=MIN & harvestable<MIN =>
 					// checkerboard-forbidding (b); blind<MIN => field depleted/absent (c).
-					t.diagBlindCornNearby = (game != NULL)
-						? Cortex::countCornWithin(game->map, b->posX, b->posY,
+					t.diagBlindWheatNearby = (game != NULL)
+						? Cortex::countWheatWithin(game->map, b->posX, b->posY,
 						                          bt->width, bt->height,
 						                          CORTEX_WHEAT_MIN_TILES_RADIUS)
 						: -1;
 					// Restock demand (the inn-hauler ceiling, CortexPolicy Priority 1.5):
-					// the inn's CORN deficit expressed in HAULER TRIPS. Corn is the feed
+					// the inn's WHEAT deficit expressed in HAULER TRIPS. Wheat is the feed
 					// resource that limits how many units the inn sustains, so the hauler
-					// count tracks how empty the corn buffer is; fruit is happiness garnish
+					// count tracks how empty the wheat buffer is; fruit is happiness garnish
 					// and does not drive feeding, so it is deliberately excluded. One trip
-					// delivers multiplierResource[CORN] units, so divide the deficit by it.
+					// delivers multiplierResource[WHEAT] units, so divide the deficit by it.
 					//
 					// We do NOT gate on Map::resourceAvailable here: it reads the team
 					// resource gradient at (posX, posY), but updateResourcesGradient marks
 					// every building-occupied tile GRADIENT_FORBIDDEN (MapGradientGlobal.cpp
 					// :141), so probing the inn's OWN footprint corner always returned false
-					// and zeroed the deficit — pinning every inn to one hauler. "No corn in
+					// and zeroed the deficit — pinning every inn to one hauler. "No wheat in
 					// reach" is instead handled coarsely in the policy via nearestWheatDist
 					// (CORTEX_INN_WHEAT_STARVED_RADIUS). C++: maxResource/multiplierResource
 					// game/entities/BuildingType.h:76,78.
 					if (game != NULL)
 					{
-						const int cornDeficit = bt->maxResource[CORN] - b->resources[CORN];
-						if (cornDeficit > 0)
+						const int wheatDeficit = bt->maxResource[WHEAT] - b->resources[WHEAT];
+						if (wheatDeficit > 0)
 						{
-							const int mult = (bt->multiplierResource[CORN] > 0)
-								? bt->multiplierResource[CORN] : 1;
-							t.restockTripsNeeded = cornDeficit / mult;
+							const int mult = (bt->multiplierResource[WHEAT] > 0)
+								? bt->multiplierResource[WHEAT] : 1;
+							t.restockTripsNeeded = wheatDeficit / mult;
 						}
 						else
 							t.restockTripsNeeded = 0;

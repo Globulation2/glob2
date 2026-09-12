@@ -77,7 +77,7 @@ struct Fixture {
         Building* food = purpose == FEED ? building : game.addBuilding(30, 30,
             globalContainer->buildingsTypes.getTypeNum("inn", 0, false), 0);
         assert(food);
-        food->resources[CORN] = 10;
+        food->resources[WHEAT] = 10;
         food->updateConstructionState();
         int x, y, dx, dy;
         assert(!building->findGroundExit(&x, &y, &dx, &dy, false));
@@ -191,7 +191,7 @@ void productionRecovery(bool stocked, bool blocked) {
         globalContainer->buildingsTypes.getTypeNum("swarm", 0, false), 0);
     assert(swarm);
     f.game.teams[0]->addToStaticAbilitiesLists(swarm);
-    swarm->resources[CORN] = stocked ? swarm->type->resourceForOneUnit : 0;
+    swarm->resources[WHEAT] = stocked ? swarm->type->resourceForOneUnit : 0;
     swarm->productionTimeout = 100;
     // A player can enable production even when all sliders are at zero.
     for (int t = 0; t < NB_UNIT_TYPE; ++t) swarm->ratio[t] = 0;
@@ -238,7 +238,7 @@ int main(int argc, char** argv) {
     container.settings.rememberUnit = false;
     container.buildingsTypes.init();
     IntBuildingType::init();
-    for (int resource : {WOOD, CORN})
+    for (int resource : {WOOD, WHEAT})
         for (int purpose : {FEED, WALK}) {
             const auto first = eliminationAndSave(resource, purpose);
             assert(eliminationAndSave(resource, purpose) == first);
