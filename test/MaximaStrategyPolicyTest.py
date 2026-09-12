@@ -48,7 +48,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
 
     def test_current_save_omits_configuration_plans_and_phases(self) -> None:
         version = (ROOT / "src/Version.h").read_text()
-        self.assertIn("#define VERSION_MINOR 95", version)
+        self.assertIn("#define VERSION_MINOR 96", version)
         save = self.maxima[self.maxima.index("void Maxima::save(") :]
         self.assertNotIn('writeText(strategy.getStrategyName()', save)
         self.assertNotIn('writeText(tuning', save)
@@ -150,7 +150,7 @@ class MaximaStrategyPolicyTest(unittest.TestCase):
         ]
         # 689 with the gated tactical layer; the relentless offense removed 50
         # muster, casualty, relief and teamplay keys and added three.
-        self.assertEqual(642, len(specifications))
+        self.assertEqual(644, len(specifications))
         self.assertTrue(all(len(impact) == 1 for impact in impacts))
         self.assertEqual(
             {"Critical", "High", "Medium", "Low"},

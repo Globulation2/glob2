@@ -1245,7 +1245,12 @@ static void repairLaborContractRegressions()
             std::vector<DevelopmentIntent>(),limits,action));
         assert(action.type==RepairBuilding && action.workers==1);
         assert(ai.issue_development_action(c,action));
-        inn->launchConstruction(1,1); c.update_management_orders();
+        inn->launchConstruction(1,1);
+        // launchConstruction leaves the building evacuating rather than ALIVE.
+        // The engine drops worker orders until its site is live, so stand the
+        // site up before expecting the repair crew to be assigned.
+        inn->buildingState=::Building::ALIVE;
+        c.update_management_orders();
         bool assigned=false;
         for(auto order:c.orders)
             if(auto a=std::dynamic_pointer_cast<OrderModifyBuilding>(order))
@@ -1295,17 +1300,36 @@ void upgradeWorkerPriorityRegressions()
                 found.push_back(change->priority);
         return found;
     };
+    auto workerRequests=[&]()
+    {
+        std::vector<int> found;
+        for(auto order:c.orders)
+            if(auto assign=std::dynamic_pointer_cast<OrderModifyBuilding>(order))
+                found.push_back(assign->numberRequested);
+        return found;
+    };
 
-    // The engine has not started the site yet; neither change is due.
+    // The engine has not started the site yet; nothing is due.
     c.orders.clear();
     c.update_management_orders();
     assert(priorities().empty());
+    assert(workerRequests().empty());
 
-    // A live upgrade site is raised above normal.
+    // The upgrade has begun but the building is still evacuating into its
+    // site, so it is not ALIVE. Priority applies regardless, but the engine
+    // would silently drop a worker order here, so none is issued yet.
     track->constructionResultState=::Building::UPGRADE;
+    track->buildingState=::Building::WAITING_FOR_CONSTRUCTION;
     c.orders.clear();
     c.update_management_orders();
     assert(priorities()==std::vector<int>({1}));
+    assert(workerRequests().empty());
+
+    // Once the site is live it receives the configured upgrade staffing.
+    track->buildingState=::Building::ALIVE;
+    c.orders.clear();
+    c.update_management_orders();
+    assert(workerRequests()==std::vector<int>({ai.budget.upgrade_level1_workers}));
 
     // While it is still building, nothing further is issued.
     c.orders.clear();

@@ -347,6 +347,11 @@ namespace Conditions
 	{ public: explicit BuildingLevel(int level) : level(level) {} bool passes(Context&, int) const; int type() const{return 5;} void save(GAGCore::OutputStream*) const; private: int level; };
 	class Upgradable : public BuildingCondition
 	{ public: bool passes(Context&, int) const; int type() const{return 6;} void save(GAGCore::OutputStream*) const; };
+	///A live construction site that can actually accept a worker request. While
+	///a building is evacuating into its site it is under construction but not
+	///ALIVE, and the engine silently drops worker orders in that window.
+	class StaffableConstructionSite : public BuildingCondition
+	{ public: bool passes(Context&, int) const; int type() const{return 7;} void save(GAGCore::OutputStream*) const; };
 }
 
 namespace Construction

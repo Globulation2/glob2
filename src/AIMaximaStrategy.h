@@ -52,6 +52,8 @@ struct MaximaStrategy
 		int control_minimum_workers;
 		int control_maximum_workers;
 		int control_cooldown_passes;
+		int new_inn_workers;
+		int new_swarm_workers;
 		int swarm_supply_radius;
 		int construction_inn_workers;
 		int construction_swarm_workers;

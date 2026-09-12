@@ -213,6 +213,9 @@ private:
 		int staffing_minimum_workers;
 		int staffing_maximum_workers;
 		int staffing_cooldown_passes;
+		///Workers a newly completed building starts with, before the loop runs.
+		int staffing_new_inn_workers;
+		int staffing_new_swarm_workers;
 		int swarm_supply_radius;
 		int attack_clearing_workers;
 		bool can_swim;

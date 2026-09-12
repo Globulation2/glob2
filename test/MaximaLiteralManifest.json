@@ -3,8 +3,8 @@
   "algorithm": "sorted-comment-string-stripped-numeric-token-sha256",
   "sources": {
     "src/AIMaxima.cpp": {
-      "tokens": 1731,
-      "sha256": "3c4d383b7c4db60ff001be3fa2d5e1320a5953a8de62dedd198617b16a5ff79c",
+      "tokens": 1746,
+      "sha256": "b5ce27dae44b0fc323e0ab940137aa78a59c868cc21f52d10c1d5c5654eaaf04",
       "classifications": [
         "live selection authorization, swimming-builder counts, and shared reactive-defense reserve",
         "schema-backed strategy member use",
@@ -112,8 +112,8 @@
       ]
     },
     "src/AIMaximaRuntime.cpp": {
-      "tokens": 555,
-      "sha256": "94a9ff76b25ea46e7268a9c8544deb535e5b38769c0e3eeb17af44819ecc76a8",
+      "tokens": 557,
+      "sha256": "bde35c565b5bb75d24cac258b501e82217f663fe8538550de669345216065f22",
       "classifications": [
         "sequenced deserialization and queued refresh of expired search gradients",
         "serialization type identifier",
